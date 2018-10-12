@@ -1,0 +1,34 @@
+## Alice's provers
+
+Peprover
+LEprover
+Ftptp
+Ceprover --auto -s --cpu-limit=%d
+Y# SZS status Theorem
+N# SZS status CounterSatisfiable
+U# SZS status ResourceOut
+U# SZS status GaveUp
+
+
+#
+# Verbose provers
+#
+
+Peproververb
+LEprover
+Ftptp
+Cprovers/eprover -xAuto -tAuto -mAuto --tstp-in -l 2 --cpu-limit=%d
+Y# SZS status Theorem
+N# SZS status CounterSatisfiable
+U# SZS status ResourceOut
+U# SZS status GaveUp
+
+Pspass
+LSPASS
+Fdfg
+Cprovers/SPASS-3.5/SPASS -CNFOptSkolem=0 -PProblem=0 -PGiven=0 -Stdin -TimeLimit=%d
+YSPASS beiseite: Proof found.
+NSPASS beiseite: Completion found.
+USPASS beiseite: Ran out of time.
+#USPASS beiseite: Maximal number of loops exceeded.
+
