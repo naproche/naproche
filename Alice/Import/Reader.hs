@@ -21,6 +21,7 @@ import Alice.Parser.Base
 import Alice.ForTheL.Instruction
 import Alice.Parser.Token
 import Alice.Parser.Combinators
+import Alice.Parser.Primitives
 
 import Debug.Trace
 

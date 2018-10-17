@@ -5,7 +5,21 @@ Message and Parse Error data type and core functions.
 -}
 
 
-module Alice.Parser.Error where
+module Alice.Parser.Error
+  ( ParseError,
+    errorPos,
+    newErrorMessage,
+    newErrorUnknown,
+    (<+>),
+    (<++>),
+    setExpectMessage,
+    unexpectError,
+    newMessage,
+    newUnExpect,
+    newExpect,
+    newWfMsg )
+  where
+    
 import Alice.Parser.Position
 
 import Data.List (nub, sort)
@@ -78,10 +92,6 @@ newErrorUnknown :: SourcePos -> ParseError
 newErrorUnknown pos
   = ParseError pos Unknown
 
-
-defaultError = newErrorUnknown $ SourcePos "" 0 0
-
-
 mostImportantMerge :: ParseError -> ParseError ->  ParseError
 mostImportantMerge e1 e2 = case compare e1 e2 of
        EQ -> e1 {peMsg = mergeMessage (peMsg e1) (peMsg e2)}
@@ -104,12 +114,6 @@ firstSetMerge e1@(ParseError pos1 msg1) e2@(ParseError pos2 msg2) =
 
 
 (<++>) = mostImportantMerge
-
-errorIsUnknown :: ParseError -> Bool
-errorIsUnknown = isUnknownMsg . errorMessage
-
-errorIsExpect :: ParseError -> Bool
-errorIsExpect = isExpectMsg . errorMessage
 
 setExpectMessage :: String -> ParseError -> ParseError
 setExpectMessage exp pe@(ParseError pos msg)
@@ -169,7 +173,3 @@ showErrorMessage msgOr msgUnknown msgExpecting msgUnExpected msg
     separate sep (m:ms) = m ++ sep ++ separate sep ms
 
     clean = nub . filter (not . null)
-
-
-
---- testing

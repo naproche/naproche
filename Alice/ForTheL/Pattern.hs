@@ -16,6 +16,7 @@ import Alice.ForTheL.Base
 import Alice.Parser.Base
 import Alice.Parser.Combinators
 import Alice.Parser.Token
+import Alice.Parser.Primitives
 
 import Alice.Data.Base
 import Alice.Data.Formula

@@ -9,6 +9,7 @@ module Alice.Parser.Combinators where
 import Alice.Parser.Base
 import Alice.Parser.Token
 import Alice.Parser.Error
+import Alice.Parser.Primitives
 
 import Data.Char
 import Data.List
@@ -18,9 +19,59 @@ import Data.Maybe (isJust, fromJust)
 import Debug.Trace
 
 
---- ambiguity parsing combinators
+
+-- choices
+
+---- unambiguous choice
+
+------  Choose in LL1 fashion
+infixr 2 <|>
+{-# INLINE (<|>) #-}
+(<|>) :: Parser st a -> Parser st a -> Parser st a
+(<|>) = mplus
 
 
+------ Choose with lookahead
+{-# INLINE (</>) #-}
+(</>) :: Parser st a -> Parser st a -> Parser st a
+(</>) f g = try f <|> g
+
+
+try :: Parser st a -> Parser st a
+try p = Parser $ \st ok _ eerr -> runParser p st ok eerr eerr
+
+
+---- ambiguous choice
+
+infixr 2 -|-
+(-|-) :: Parser st a -> Parser st a -> Parser st a
+(-|-) m n = Parser $ \st ok cerr eerr ->
+  let mok err eok cok =
+        let nok err' eok' cok' = ok (err <+> err') (eok ++ eok') (cok ++ cok')
+            ncerr err'         = ok (err <+> err') eok cok
+            neerr err'         = ok (err <+> err') eok cok
+        in  runParser n st nok ncerr neerr
+      mcerr err =
+        let nok err'      = ok   $ err <+>  err'
+            ncerr err'    = cerr $ err <++> err'
+            neerr err'    = eerr $ err <++> err'
+        in  runParser n st nok ncerr neerr
+      meerr err =
+        let nok err'      = ok   $ err <+>  err'
+            neerr err'    = eerr $ err <++> err'
+            ncerr err'    = eerr $ err <++> err'
+        in  runParser n st nok ncerr neerr
+  in  runParser m st mok mcerr meerr
+
+------ ambigous parsing applied ot a list of parsers
+tryAll :: [Parser st a] -> Parser st a
+tryAll [] = mzero
+tryAll (p:ps) = p -|- tryAll ps
+
+
+
+
+-- chain parsing combinators
 
 sepBy :: Parser st a -> Parser st sep -> Parser st [a]
 sepBy p sep = liftM2 (:) p $ opt [] $ sep >> sepBy p sep
@@ -29,41 +80,51 @@ sepBy p sep = liftM2 (:) p $ opt [] $ sep >> sepBy p sep
 sepByLL1 :: Parser st a -> Parser st sep -> Parser st [a]
 sepByLL1 p sep = liftM2 (:) p $ optLL1 [] $ sep >> sepByLL1 p sep
 
--- option deciding in LL1 fashion
-optLL1 :: a -> Parser st a -> Parser st a
-optLL1 x p = p <|> return x
-
-optLLx :: a -> Parser st a -> Parser st a
-optLLx x p = p </> return x
 
 opt :: a -> Parser st a -> Parser st a
 opt x p = p -|- return x
 
+
+optLL1 :: a -> Parser st a -> Parser st a
+optLL1 x p = p <|> return x
+
+
+optLLx :: a -> Parser st a -> Parser st a
+optLLx x p = p </> return x
+
+
 chain :: Parser st a -> Parser st [a]
 chain p = liftM2 (:) p $ opt [] $ chain p
+
 
 chainLL1 :: Parser st a -> Parser st [a]
 chainLL1 p = liftM2 (:) p $ optLL1 [] $ chainLL1 p
 
 
-satisfy :: (String -> Bool) -> Parser st String
-satisfy pr = tokenPrim prTest
-  where
-    prTest tk = let s = showToken tk in guard (pr s) >> return s
+
+-- before and after parses: parentheses, brackets, braces, dots
 
 after :: Parser st a -> Parser st b -> Parser st a
 after a b = a >>= ((b >>) . return)
 
-
--- brackets and parentheses
-
+---- mandatory parentheses, brackets, braces
+expar, exbrk, exbrc :: Parser st a -> Parser st a
 expar p = wd_token "(" >> after p (wd_token ")")
 exbrk p = wd_token "[" >> after p (wd_token "]")
 exbrc p = wd_token "{" >> after p (wd_token "}")
+
+---- optional parentheses
+paren :: Parser st a -> Parser st a
 paren p = p -|- expar p
 
+---- mandatory finishing dot
+dot :: Parser st a -> Parser st a
 dot p = after p $ (wd_token "." <?> "a dot")
 
+
+-- Control ambiguity
+
+---- if p is ambiguos, fail and report a well-formedness error
 narrow :: Show a => Parser st a -> Parser st a
 narrow p = Parser $ \st ok cerr eerr ->
   let pok err eok cok = case eok ++ cok of
@@ -72,6 +133,7 @@ narrow p = Parser $ \st ok cerr eerr ->
   in  runParser p st pok cerr eerr
 
 
+---- only take the longest possible parse, discard all others
 takeLongest :: Parser st a -> Parser st a
 takeLongest p = Parser $ \st ok cerr eerr ->
   let pok err eok cok
@@ -88,69 +150,65 @@ takeLongest p = Parser $ \st ok cerr eerr ->
         LT -> lng [c] cs
         EQ -> lng (c:l:ls) cs
 
----- some macros
-
-word = satisfy $ \tk -> all isAlpha tk
-
-wd_token :: String -> Parser st ()
-wd_token s = void $ satisfy $ \tk -> s == map toLower tk
-wd_tokenOf :: [String] -> Parser st ()
-wd_tokenOf ls = void $ satisfy $ \tk -> map toLower tk `elem` ls
-
-sm_token :: String -> Parser st ()
-sm_token s = void $ satisfy $ \tk -> s == tk
-
-symbol :: String -> Parser st ()
-symbol []     = return ()
-symbol (c:cs) = sm_token [c] >> symbol cs
 
 
+-- Deny parses
+
+---- fail if p succeeds
+failing :: Parser st a -> Parser st ()
+failing p = Parser $ \st ok cerr eerr ->
+  let pok err eok _ =
+        if   null eok
+        then cerr $ unexpectError (showCurrentToken st) (stPosi st)
+        else eerr $ unexpectError (showCurrentToken st) (stPosi st)
+      peerr _ = ok (newErrorUnknown (stPosi st)) [PR () st] []
+      pcerr _ = ok (newErrorUnknown (stPosi st)) [PR () st] []
+  in  runParser p st pok pcerr peerr
+  where
+    showCurrentToken st = case stInput st of
+      (t:ts) -> showToken t
+      _      -> "end of input"
 
 
-anyToken = tokenPrim (Just . showToken)
+
+-- labeling of production rules
+
+infix 0 <?>
+(<?>) :: Parser st a -> String -> Parser st a
+p <?> msg = Parser $ \st ok cerr eerr ->
+  let pok err   = ok   $ setError (stPosi st) err
+      pcerr     = cerr
+      peerr err = eerr $ setError (stPosi st) err
+  in  runParser p st pok pcerr peerr
+  where
+    setError pos err =
+      if   pos < errorPos err
+      then err
+      else setExpectMessage msg err
+
+label :: String -> Parser st a -> Parser st a
+label msg p = p <?> msg
 
 
-eof :: Parser st ()
-eof = label "end of input" $ Parser $ \st ok cerr eerr ->
-  let inp = stInput st; t = head inp
-  in  if null inp
-      then ok (unknownError st) [PR () st] []
-      else eerr $ unexpectError (showToken t) (tokenPos t)
+
+-- Control error messages
+
+---- fail with a well-formedness error
+failWF :: String -> Parser st a
+failWF msg = Parser $ \st _ _ eerr ->
+  eerr $ newErrorMessage (newWfMsg [msg]) (stPosi st)
 
 
+---- do not produce an error message
 noError :: Parser st a -> Parser st a
 noError p = Parser $ \st ok cerr eerr ->
-  let pok   err = ok   $ unknownError st
-      pcerr err = cerr $ unknownError st
-      peerr err = eerr $ unknownError st
+  let pok   err = ok   $ newErrorUnknown (stPosi st)
+      pcerr err = cerr $ newErrorUnknown (stPosi st)
+      peerr err = eerr $ newErrorUnknown (stPosi st)
   in  runParser p st pok pcerr peerr
 
 
-
-unexpectedUnit :: Parser st a -> Parser st a
-unexpectedUnit p = Parser $ \st ok cerr eerr ->
-  let pcerr err = cerr $ unexpectError (unit err st) (stPosi st)
-      peerr err = eerr $ unexpectError (unit err st) (stPosi st)
-  in  runParser p st ok pcerr peerr
-  where
-    unit err =
-      let pos = errorPos err
-      in  unwords . map showToken . takeWhile ((>=) pos . tokenPos) . stInput
-
-lexicalCheck :: (a -> Bool) -> Parser st a -> Parser st a
-lexicalCheck check p = Parser $ \st ok cerr eerr ->
-  let pok err eok cok =
-        let wfEok = filter (check . prResult) eok
-            wfCok = filter (check . prResult) cok
-        in  if null $ wfEok ++ wfCok
-            then eerr $ unexpectError (unit err st) (stPosi st)
-            else ok err wfEok wfCok
-  in  runParser p st pok cerr eerr
-  where
-    unit err =
-      let pos = errorPos err
-      in  unwords . map showToken . takeWhile ((>=) pos . tokenPos) . stInput
-
+---- parse and perform a well-formedness check on the result
 wellFormedCheck :: (a -> Maybe String) -> Parser st a -> Parser st a
 wellFormedCheck check p = Parser $ \st ok cerr eerr ->
   let pos = stPosi st
@@ -167,10 +225,53 @@ wellFormedCheck check p = Parser $ \st ok cerr eerr ->
     nwf = map fromJust . filter isJust . map (check . prResult)
 
 
+
+---- parse and perform a check on the result; report errors as normal errors
+---- and not as well-formedness errors
+lexicalCheck :: (a -> Bool) -> Parser st a -> Parser st a
+lexicalCheck check p = Parser $ \st ok cerr eerr ->
+  let pok err eok cok =
+        let wfEok = filter (check . prResult) eok
+            wfCok = filter (check . prResult) cok
+        in  if null $ wfEok ++ wfCok
+            then eerr $ unexpectError (unit err st) (stPosi st)
+            else ok err wfEok wfCok
+  in  runParser p st pok cerr eerr
+  where
+    unit err =
+      let pos = errorPos err
+      in  unwords . map showToken . takeWhile ((>=) pos . tokenPos) . stInput
+
+
+---- in case of failure report every consumed token as unexpected instead of
+---- just the first
+unexpectedUnit :: Parser st a -> Parser st a
+unexpectedUnit p = Parser $ \st ok cerr eerr ->
+  let pcerr err = cerr $ unexpectError (unit err st) (stPosi st)
+      peerr err = eerr $ unexpectError (unit err st) (stPosi st)
+  in  runParser p st ok pcerr peerr
+  where
+    unit err =
+      let pos = errorPos err
+      in  unwords . map showToken . takeWhile ((>=) pos . tokenPos) . stInput
+
+
+
+
+
+
+
+
+
+
 -- Debugging
 
-
-errorTrace :: String -> (ParseResult st a -> String) -> Parser st a -> Parser st a
+---- In case of failure print the error, in case of success print the result
+---- of the function shw.
+---- This function is implemented using the impure function Debug.Trace.trace
+---- and should only be used for debugging purposes.
+errorTrace ::
+  String -> (ParseResult st a -> String) -> Parser st a -> Parser st a
 errorTrace label shw p = Parser $ \st ok cerr eerr ->
     let nok err eok cok = trace (  "error trace (success) : " ++ label ++ "\n"
           ++ tabString ("results (e):\n" ++ tabString (unlines (map shw eok)) )

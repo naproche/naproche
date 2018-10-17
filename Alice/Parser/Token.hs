@@ -4,7 +4,12 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
 Tokenization of input.
 -}
 
-module Alice.Parser.Token where
+module Alice.Parser.Token
+  ( Token (showToken, tokenPos),
+    tokenize,
+    nextPos,
+    composeToken )
+  where
 
 import Data.Char
 import Data.List
@@ -44,7 +49,7 @@ isLexem c = isAscii c && isAlphaNum c || c == '_'
 isNLine :: Char -> Bool
 isNLine c = c == '\n'
 
---- making Token abstract
+-- useful functions
 
 nextPos :: [Token] -> SourcePos
 nextPos [] = EOF

@@ -14,6 +14,7 @@ import Alice.Data.Instr
 
 import Alice.Parser.Base
 import Alice.Parser.Combinators
+import Alice.Parser.Primitives
 
 import Alice.Parser.Token
 

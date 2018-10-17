@@ -19,6 +19,7 @@ import Alice.Data.Kit
 
 import Alice.Parser.Base
 import Alice.Parser.Combinators
+import Alice.Parser.Primitives
 
 import Debug.Trace
 import Alice.Parser.Token
@@ -315,6 +316,7 @@ overfree vs f
 
 --- macro expressions
 
+
 comma = wd_tokenOf [",", "and"]
 is    = wd_tokenOf ["is", "be", "are"]
 art = opt () $ wd_tokenOf ["a","an","the"]
@@ -329,7 +331,6 @@ does = opt () $ wd_tokenOf ["does", "do"]
 has = wd_tokenOf ["has" , "have"]
 with  = wd_tokenOf ["with", "of", "having"]
 such  = wd_tokenOf ["such", "so"]
-
 
 
 --just for now:

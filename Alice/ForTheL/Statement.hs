@@ -14,6 +14,7 @@ module Alice.ForTheL.Statement (
 import Alice.ForTheL.Base
 import Alice.Parser.Base
 import Alice.Parser.Combinators
+import Alice.Parser.Primitives
 
 import Alice.Parser.Token
 

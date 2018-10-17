@@ -16,6 +16,7 @@ import Alice.Data.Kit
 import Alice.ForTheL.Base
 import Alice.ForTheL.Statement
 import Alice.ForTheL.Pattern
+import Alice.Parser.Primitives
 
 import Alice.Parser.Base
 import Alice.Parser.Combinators

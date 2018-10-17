@@ -5,7 +5,12 @@ Token source positions.
 -}
 
 
-module Alice.Parser.Position where
+module Alice.Parser.Position
+  ( SourcePos (EOF, sourceFile, sourceLine, sourceColumn),
+    SourceName,
+    newPos,
+    initialPos )
+  where
 
 type SourceName = String
 type Line = Int

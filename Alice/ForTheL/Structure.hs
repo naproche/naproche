@@ -11,11 +11,12 @@ module Alice.ForTheL.Structure (forthel) where
 import Alice.ForTheL.Base
 import Alice.ForTheL.Statement
 import Alice.ForTheL.Extension
+import Alice.ForTheL.Instruction
 
 import Alice.Parser.Base
 import Alice.Parser.Combinators
 import Alice.Parser.Token
-import Alice.ForTheL.Instruction
+import Alice.Parser.Primitives
 
 import Alice.Data.Text
 import Alice.Data.Base
