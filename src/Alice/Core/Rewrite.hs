@@ -3,7 +3,7 @@ Authors: Steffen Frerix (2017 - 2018)
 
 Term rewriting: extraction of rules and proof of equlities.
 -}
-
+{-# LANGUAGE FlexibleContexts #-}
 
 
 module Alice.Core.Rewrite (eqReason, extractRule, printrules) where
@@ -152,7 +152,7 @@ solve_gs cx verb gs = setup >> easy >>= hard
     easy     = mapM triv gs
     hard hgs | all isRight hgs = whdt hgs >> cleanup
              | otherwise = whd (header lefts hgs ++ thead (rights hgs))
-                          >> (mapM (reason . setForm ccx) (lefts hgs) >> cleanup) <> (cleanup >> mzero)
+                          >> (mapM (reason . setForm ccx) (lefts hgs) >> cleanup) <|> (cleanup >> mzero)
 
 
     setup    = do  askRSII IIchtl 1 >>= addRSIn . InInt IItlim
@@ -175,7 +175,7 @@ solve_gs cx verb gs = setup >> easy >>= hard
     triv g = if rapid g
                then return $ Right g  -- triviality check
                else callown `withGoal` g >> return (Right g)
-                 <> return (Left g)
+                 <|> return (Left g)
 
 
 

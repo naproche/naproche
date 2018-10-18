@@ -8,7 +8,7 @@ module Alice.Core.Verify (verify) where
 
 import Control.Monad
 import Control.Monad.Trans.Class
-import Control.Applicative
+import Control.Applicative hiding ((<|>))
 import Data.IORef
 import Data.Maybe
 import qualified Data.IntMap.Strict as IM
@@ -130,14 +130,14 @@ vLoop st@VS {vsMotv = True, vsRuls = rls, vsThes = ths, vsCtxt = cnt, vsText = [
             do  let rl = rlog bl $ "goal: " ++ tx
                     bl = cnHead ths ; tx = blText bl
                 incRSCI CIeqtn ; whenIB IBPgls True rl
-                timer CTsimp (eqReason ths) <> (rlog bl "equation failed" >>
+                timer CTsimp (eqReason ths) <|> (rlog bl "equation failed" >>
                     guardIB IBskip False >> incRSCI CIeqfl)
             else -- this signifies conventional reasoning -> passed to the prover
             do  let rl = rlog bl $ "goal: " ++ tx
                     bl = cnHead ths ; tx = blText bl
                 when (not . isTop . cnForm $ ths) $ incRSCI CIgoal
                 whenIB IBPgls True rl
-                prvThs <> (rlog bl "goal failed" >> guardIB IBskip False >> incRSCI CIfail)
+                prvThs <|> (rlog bl "goal failed" >> guardIB IBskip False >> incRSCI CIfail)
 
 {- process instructions in the text. We distinguis those that do not concern the
    proof process (simply print something to the screen or change an instruction value)
@@ -225,13 +225,13 @@ procTI VS {vsMotv = mot, vsRuls = rls, vsThes = ths, vsCtxt = cnt} = proc
 
     proc (InBin IBverb True)
       = do (guardNotIB IBPgls True  >> addRSIn (InBin IBPgls True))
-        <> (guardNotIB IBPrsn False >> addRSIn (InBin IBPrsn True))
-        <> (guardNotIB IBPsct False >> addRSIn (InBin IBPsct True))
-        <> (guardNotIB IBPchk False >> addRSIn (InBin IBPchk True))
-        <> (guardNotIB IBPprv False >> addRSIn (InBin IBPprv True))
-        <> (guardNotIB IBPunf False >> addRSIn (InBin IBPunf True))
-        <> (guardNotIB IBPtsk False >> addRSIn (InBin IBPtsk True))
-        <> return ()
+        <|> (guardNotIB IBPrsn False >> addRSIn (InBin IBPrsn True))
+        <|> (guardNotIB IBPsct False >> addRSIn (InBin IBPsct True))
+        <|> (guardNotIB IBPchk False >> addRSIn (InBin IBPchk True))
+        <|> (guardNotIB IBPprv False >> addRSIn (InBin IBPprv True))
+        <|> (guardNotIB IBPunf False >> addRSIn (InBin IBPunf True))
+        <|> (guardNotIB IBPtsk False >> addRSIn (InBin IBPtsk True))
+        <|> return ()
 
     proc (InPar IPgrup ps) = addGroup ps
 

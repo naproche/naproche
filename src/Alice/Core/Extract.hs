@@ -4,6 +4,7 @@ Authors: Steffen Frerix (2017 - 2018)
 Extraction of various information from formulas: definitions,
 function evaluations, elementhood conditions for sets
 -}
+{-# LANGUAGE FlexibleContexts #-}
 
 module Alice.Core.Extract where
 
