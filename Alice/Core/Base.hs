@@ -111,9 +111,9 @@ type RM = CRM
 runRM :: RM a -> IORef RState -> IO (Maybe a)
 runRM m s = runCRM m s (return Nothing) (return . Just)
 
-infixl 0 <>
-(<>) :: (MonadPlus m) => m a -> m a -> m a
-(<>) = mplus
+infixl 0 <|>
+(<|>) :: (MonadPlus m) => m a -> m a -> m a
+(<|>) = mplus
 
 
 data VState = VS { vsMotv :: Bool,       -- if the current thesis is motivated

@@ -79,8 +79,8 @@ fillDef cx
 setDef :: Bool -> Context -> Formula -> VM Formula
 setDef nw cx trm@Trm{trName = t, trId = tId}  = incRSCI CIsymb >>
     (   guard nw >> return trm        -- if the symbol is newly introduced, no def must be checked
-    <>  findDef trm >>= testDef cx trm -- try to verify the symbols domain conditions
-    <>  out >> mzero )                           -- failure message
+    <|>  findDef trm >>= testDef cx trm -- try to verify the symbols domain conditions
+    <|>  out >> mzero )                           -- failure message
   where
     out = rlog (cnHead cx) $ "unrecognized: " ++ showsPrec 2 trm ""
 
@@ -119,7 +119,7 @@ testDef cx trm (gs, nt)
     hard hgs | all isRight hgs = incRSCI CIchkt >> whdchk ("trivial " ++ header rights hgs) >> cleanup
              | otherwise =
                do incRSCI CIchkh >> whdchk (header lefts hgs ++ thead (rights hgs));
-                  mapM (reason . setForm ccx) (lefts hgs) >> incRSCI CIchky >> cleanup <> cleanup >> mzero
+                  mapM (reason . setForm ccx) (lefts hgs) >> incRSCI CIchky >> cleanup <|> cleanup >> mzero
 
     setup    = do  askRSII IIchtl 1 >>= addRSIn . InInt IItlim
                    askRSII IIchdp 3 >>= addRSIn . InInt IIdpth
@@ -143,7 +143,7 @@ testDef cx trm (gs, nt)
     triv g = if rapid g
                then  return $ Right g  -- triviality check
                else callown `withGoal` g >> return (Right g)
-                 <> return (Left g)
+                 <|> return (Left g)
 
 
 -- Info heuristic

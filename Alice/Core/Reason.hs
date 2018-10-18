@@ -50,7 +50,7 @@ prvThs = do  n <- askRSII IIdpth 3 ; guard $ n > 0       -- query whether the us
              filt_context $ (splitG >>= goalseq n 0)-- split goals and start reasoning
 
 goalseq :: Int -> Int -> [Formula] -> VM ()
-goalseq n m (f:fs) = do  (trv <> lnc <> dlp) `withGoal` rfr
+goalseq n m (f:fs) = do  (trv <|> lnc <|> dlp) `withGoal` rfr
                          goalseq n m fs
   where
     rfr = reduce f           -- reduce f in view of evidences
