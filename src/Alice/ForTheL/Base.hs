@@ -60,11 +60,13 @@ initFS  = FState  eq [] nt sn
             ([Sm "-", Sm "<", Sm "-"], zTrm (-2) "iLess"),
             ([Sm "-~-"], \(m:n:_) -> zAll "" $ Iff (zElem (zVar "") m) (zElem (zVar "") n)) ]
     sn  = [ ([Sm "=", Vr], zTrm (-1) "=") ]
-    nt  = [ ([Wd ["function","functions"], Nm], zFun . head), ([Wd ["set","sets"], Nm], zSet . head),
+    nt  = [ ([Wd ["function","functions"], Nm], zFun . head),
+            ([Wd ["set","sets"], Nm], zSet . head),
             ([Wd ["element", "elements"], Nm, Wd ["of"], Vr], \(x:m:_) -> zElem x m),
             ([Wd ["object", "objects"], Nm], zObj . head)]
     rf  = [ ([Sm "[", Vr, Sm "]"], \(f:x:_) -> zApp f x)]
-    cf  = [ ([Sm "Dom", Sm "(",Vr,Sm ")"], zDom . head), ([Sm "(", Vr, Sm ",", Vr, Sm ")"], \(x:y:_) -> zPair x y) ]
+    cf  = [ ([Sm "Dom", Sm "(",Vr,Sm ")"], zDom . head),
+            ([Sm "(", Vr, Sm ",", Vr, Sm ")"], \(x:y:_) -> zPair x y) ]
 
 
 

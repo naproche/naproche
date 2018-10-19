@@ -4,6 +4,10 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
 Verifier state monad and common functions.
 -}
 
+{-# LANGUAGE PolymorphicComponents #-}
+{-# LANGUAGE FlexibleContexts #-}
+
+
 module Alice.Core.Base where
 
 import Control.Monad

@@ -1,4 +1,2 @@
-alice
-.build/
-*.swp
 .stack-work/
+*.swp

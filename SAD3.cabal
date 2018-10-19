@@ -1,0 +1,110 @@
+-- This file has been generated from package.yaml by hpack version 0.28.2.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: e37c9fc9bafeba787302b10b7b224d0bbe2a09e297341e5f55b11e605d3050c9
+
+name:           SAD3
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/SAD3#readme>
+homepage:       https://github.com/githubuser/SAD3#readme
+bug-reports:    https://github.com/githubuser/SAD3/issues
+author:         Author name here
+maintainer:     example@example.com
+copyright:      2018 Author name here
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+cabal-version:  >= 1.10
+extra-source-files:
+    ChangeLog.md
+    README.md
+
+source-repository head
+  type: git
+  location: https://github.com/githubuser/SAD3
+
+library
+  exposed-modules:
+      Alice.Core.Base
+      Alice.Core.Check
+      Alice.Core.Extract
+      Alice.Core.Functions
+      Alice.Core.Reason
+      Alice.Core.Reduction
+      Alice.Core.Rewrite
+      Alice.Core.Thesis
+      Alice.Core.Verify
+      Alice.Data.Base
+      Alice.Data.DisTree
+      Alice.Data.Formula
+      Alice.Data.Instr
+      Alice.Data.Kit
+      Alice.Data.Text
+      Alice.Export.Base
+      Alice.Export.DFG
+      Alice.Export.Prover
+      Alice.Export.TPTP
+      Alice.ForTheL.Base
+      Alice.ForTheL.Extension
+      Alice.ForTheL.Instruction
+      Alice.ForTheL.Pattern
+      Alice.ForTheL.Statement
+      Alice.ForTheL.Structure
+      Alice.Import.Reader
+      Alice.Parser.Base
+      Alice.Parser.Combinators
+      Alice.Parser.Error
+      Alice.Parser.Position
+      Alice.Parser.Primitives
+      Alice.Parser.Token
+      Alice.Prove.MESON
+      Alice.Prove.Normalize
+      Alice.Prove.Unify
+  other-modules:
+      Paths_SAD3
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.7 && <5
+    , containers
+    , mtl
+    , process
+    , time
+    , transformers
+  default-language: Haskell2010
+
+executable SAD3-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_SAD3
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      SAD3
+    , base >=4.7 && <5
+    , containers
+    , mtl
+    , process
+    , time
+    , transformers
+  default-language: Haskell2010
+
+test-suite SAD3-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_SAD3
+  hs-source-dirs:
+      test
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      SAD3
+    , base >=4.7 && <5
+    , containers
+    , mtl
+    , process
+    , time
+    , transformers
+  default-language: Haskell2010
