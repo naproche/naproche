@@ -3,7 +3,7 @@ Authors: Steffen Frerix (2017 - 2018)
 
 Term rewriting: extraction of rules and proof of equlities.
 -}
-
+{-# LANGUAGE FlexibleContexts #-}
 
 
 module Alice.Core.Rewrite (eqReason, extractRule, printrules) where

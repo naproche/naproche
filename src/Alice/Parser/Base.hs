@@ -3,7 +3,7 @@ Authors: Steffen Frerix (2017 - 2018)
 
 Parser datatype and monad instance.
 -}
-
+{-# LANGUAGE PolymorphicComponents #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 module Alice.Parser.Base

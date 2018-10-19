@@ -3,7 +3,7 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
 
 Reasoning methods and export to an external prover.
 -}
-
+{-# LANGUAGE FlexibleContexts #-}
 module Alice.Core.Reason where
 
 import Control.Monad
