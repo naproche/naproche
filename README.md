@@ -14,6 +14,14 @@
       stack build
 
 
+# Test #
+
+    for FILE in examples/*.ftl
+    do
+      stack exec SAD3-exe -- "$FILE"
+    done
+
+
 # Development #
 
 * The Haskell Tool Stack: https://www.haskellstack.org
