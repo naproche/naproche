@@ -2,6 +2,6 @@ theory Test
   imports SAD3
 begin
 
-forthel_file "../test_files/tarski.ftl"
+forthel_file "../examples/tarski.ftl"
 
 end
