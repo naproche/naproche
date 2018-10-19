@@ -1,6 +1,6 @@
 ## SAD3 ##
 
-Development of the System for Automated Deduction - Proof Checking of Natural Mathematical Documents
+*System for Automated Deduction* (SAD 3rd generation) -- Proof Checking of Natural Mathematical Documents
 
 
 # Build #
@@ -12,3 +12,10 @@ Development of the System for Automated Deduction - Proof Checking of Natural Ma
 * Haskell:
 
       stack build
+
+
+# Development #
+
+* The Haskell Tool Stack: https://www.haskellstack.org
+
+* Haskell IDE within VSCode: https://github.com/haskell/haskell-ide-engine
