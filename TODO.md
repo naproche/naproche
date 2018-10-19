@@ -15,3 +15,21 @@
 # Misc #
 
 * more coherent short/long command-line options (e.g. -h vs. --help)
+
+* more robust treatment of external provers:
+    + better error messages
+    + avoid "fishing" from the user's PATH environment
+      (e.g. by re-using E_HOME, SPASS_HOME from Isabelle distribution)
+
+
+# concepts #
+
+* stay-resident server instead of command-line batch-tool (??)
+
+* caching of old results from prefix of source, old versions etc. (??)
+
+* parallel checking: internal and/or external provers (??)
+
+* support for multiple (simultaneous) input files (??)
+
+* more robust / scalable library handling (imports) (!?)
