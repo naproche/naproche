@@ -51,10 +51,10 @@ advancesPos (SourcePos name line column offset) s =
 instance Show SourcePos where
   show EOF = "(end of input)"
   show (SourcePos name line column offset)
-    | null name = showLineColumn
-    | otherwise = "\"" ++ name ++ "\" " ++ showLineColumn
+    | null name = showDetails
+    | otherwise = "\"" ++ name ++ "\" " ++ showDetails
     where
-      showLineColumn =
+      showDetails =
         "(line " ++ show line ++
         ", column " ++ show column ++
         ", offset " ++ show offset ++
