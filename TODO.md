@@ -2,8 +2,7 @@
 
 # Admin #
 
-* suppress generated files from repository (via .gitignore):
-  alice, *.o, *.hi, SAD3.cabal (??)
+* suppress generated files from repository (via .gitignore): SAD3.cabal (??)
 
 * robust build process based on Haskell Tool Stack
 
