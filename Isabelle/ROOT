@@ -1,0 +1,5 @@
+session SAD3 = Pure +
+  theories
+    SAD3
+    Test
+

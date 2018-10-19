@@ -24,6 +24,11 @@
       (e.g. by re-using E_HOME, SPASS_HOME from Isabelle distribution)
 
 
+# Isabelle/jEdit #
+
+* proper editor mode for .ftl files (not "FreeMarker Template Language") (!)
+
+
 # Concepts #
 
 * stay-resident server instead of command-line batch-tool (??)
