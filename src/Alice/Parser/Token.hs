@@ -33,7 +33,7 @@ tokenize name = posToken (initialPos name) False
       where
         (wh,rs) = span isSpace s
 
-    posToken p ws ('#' : rs) = posToken p ws $ snd $ break isNLine rs
+    posToken p ws ('#' : rs) = posToken p ws $ dropWhile (not . isNLine) rs
     posToken p ws (c:cs) =
       Token [c] p ws : posToken (advancePos p c) False cs
     posToken _ _ _ = []
