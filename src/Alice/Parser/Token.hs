@@ -35,7 +35,7 @@ tokenize name = posToken (initialPos name) False
 
     posToken p ws s@('#' : _) = posToken (advancesPos p cs) ws rs
       where
-        (cs, rs) = break isNLine s
+        (cs, rs) = break (== '\n') s
     posToken p ws (c:cs) =
       Token [c] p ws : posToken (advancePos p c) False cs
     posToken _ _ _ = []
@@ -43,8 +43,6 @@ tokenize name = posToken (initialPos name) False
 isLexem :: Char -> Bool
 isLexem c = isAscii c && isAlphaNum c || c == '_'
 
-isNLine :: Char -> Bool
-isNLine c = c == '\n'
 
 -- useful functions
 
