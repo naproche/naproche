@@ -20,28 +20,23 @@ data Token = Token {showToken :: String, tokenPos :: SourcePos,
                     tokenWhiteSpace :: Bool}
 
 tokenize :: SourceName -> String -> [Token]
-tokenize name = posToken (1,1) False
+tokenize name = posToken (initialPos name) False
   where
-    posToken p@(ln,cl) ws s
+    posToken p ws s
       | not (null lx) =
-          Token lx (newP p) ws : posToken (ln, cl + length lx) False rs
+          Token lx p ws : posToken (advancesPos p lx) False rs
       where
         (lx,rs) = span isLexem s
 
     posToken p _ s
-      | not (null wh) = posToken (nextPos p wh) True rs
+      | not (null wh) = posToken (advancesPos p wh) True rs
       where
         (wh,rs) = span isSpace s
-        nextPos p [] = p
-        nextPos (ln, cl) (c:cs) | isNLine c = nextPos (succ ln, 1) cs
-                                | otherwise = nextPos (ln, succ cl) cs
 
     posToken p ws ('#' : rs) = posToken p ws $ snd $ break isNLine rs
-    posToken p@(ln, cl) ws (c:cs) =
-      Token [c] (newP p) ws : posToken (ln, succ cl) False cs
-    posToken _ _ _         = []
-
-    newP (ln, cl) = newPos name ln cl
+    posToken p ws (c:cs) =
+      Token [c] p ws : posToken (advancePos p c) False cs
+    posToken _ _ _ = []
 
 isLexem :: Char -> Bool
 isLexem c = isAscii c && isAlphaNum c || c == '_'

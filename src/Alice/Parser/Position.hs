@@ -8,8 +8,9 @@ Token source positions.
 module Alice.Parser.Position
   ( SourcePos (EOF, sourceFile, sourceLine, sourceColumn),
     SourceName,
-    newPos,
-    initialPos )
+    initialPos,
+    advancePos,
+    advancesPos )
   where
 
 type SourceName = String
@@ -23,11 +24,20 @@ data SourcePos = SourcePos { sourceFile   :: SourceName,
                deriving (Eq, Ord)
 
 
-newPos :: SourceName -> Line -> Column -> SourcePos
-newPos name line column = SourcePos name line column
-
 initialPos :: SourceName -> SourcePos
-initialPos name = newPos name 1 1
+initialPos name = SourcePos name 1 1
+
+advanceLine line c = if c == '\n' then line + 1 else line
+advanceColumn column c = if c == '\n' then 1 else column + 1
+
+advancePos :: SourcePos -> Char -> SourcePos
+advancePos (SourcePos name line column) c =
+  SourcePos name (advanceLine line c) (advanceColumn column c)
+
+advancesPos :: SourcePos -> String -> SourcePos
+advancesPos (SourcePos name line column) s =
+  SourcePos name (foldl advanceLine line s) (foldl advanceColumn column s)
+
 
 instance Show SourcePos where
   show EOF = "(end of input)"
