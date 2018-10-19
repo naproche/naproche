@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 7846cf2a9d4c40d7f85251d2c2942cded3d93e2f632abddc2c6b922a9cbbf74e
+-- hash: e37c9fc9bafeba787302b10b7b224d0bbe2a09e297341e5f55b11e605d3050c9
 
 name:           SAD3
 version:        0.1.0.0
@@ -61,7 +61,6 @@ library
       Alice.Prove.MESON
       Alice.Prove.Normalize
       Alice.Prove.Unify
-      Lib
   other-modules:
       Paths_SAD3
   hs-source-dirs:
