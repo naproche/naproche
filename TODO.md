@@ -16,8 +16,6 @@
 
 # Misc #
 
-* more coherent short/long command-line options (e.g. -h vs. --help)
-
 * more robust treatment of external provers:
     + better error messages
     + avoid "fishing" from the user's PATH environment

@@ -124,7 +124,7 @@ die es = putStr (concatMap ("[Main] " ++) es) >> exitFailure
 usageHeader  = "Usage: alice <options...> <file>"
 
 options = [
-  Option "h" [] (NoArg (InBin IBhelp True)) "this help",
+  Option "h" ["help"] (NoArg (InBin IBhelp True)) "show this help text",
   Option ""  ["init"] (ReqArg (InStr ISinit) "FILE")
     "init file, empty to skip (def: init.opt)",
   Option "T" [] (NoArg (InBin IBtext True))
