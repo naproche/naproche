@@ -20,7 +20,7 @@ data Text = TB Block | TI Instr | TD Idrop
 data Block  = Block { blForm :: Formula,  blBody :: [Text],   -- Formula image / body of the block
                       blType :: Section,  blDecl :: [String], -- block type / variables declared in the block
                       blName :: String,   blLink :: [String], -- identifier of the block / proof link provided in the block ("by" statement)
-                      blPos :: SourcePos, blText :: String }  -- source position / text of that block
+                      blPos :: SourcePos, blText :: String }
 
 data Context  = Context { cnForm :: Formula,  -- formula of the context
                           cnBran :: [Block],  -- branch of the context

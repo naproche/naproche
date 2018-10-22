@@ -171,12 +171,12 @@ unlessIB i d a  = askRSIB i d >>= \ b -> unless b a
 
 -- Counter management
 
-fetchCI c cs  = [ i | CntrI d i <- cs, c == d ]
-fetchCT c cs  = [ i | CntrT d i <- cs, c == d ]
+fetchCI cs c  = [ i | CntrI d i <- cs, c == d ]
+fetchCT cs c  = [ i | CntrT d i <- cs, c == d ]
 
-cumulCI c t = foldr (+) t . fetchCI c
-cumulCT c t = foldr addUTCTime t . fetchCT c
-maximCT c   = foldr max 0 . fetchCT c
+cumulCI cs t = foldr (+) t . fetchCI cs
+cumulCT cs t = foldr addUTCTime t . fetchCT cs
+maximCT cs   = foldr max 0 . fetchCT cs
 
 showTimeDiff t
   | th == 0 = dsh mn ++ ':' : dsh ss ++ '.' : dsh cs

@@ -52,7 +52,7 @@ verify file rst bs =
 
       let initVS = VS False [] DT.empty (Context Bot [] [] Bot) [] [] text
       res <- flip runRM rst $  flip runStateT initGS $ runReaderT (vLoop initVS) undefined -- here we start the verification
-      ign <- liftM (cumulCI CIfail 0 . rsCntr) $ readIORef rst
+      ign <- liftM (\st -> cumulCI (rsCntr st) 0 CIfail) $ readIORef rst
 
       let scs = isJust res && ign == 0
           out = if scs then " successful" else " failed" -- successful if everything went through without failures
