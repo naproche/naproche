@@ -14,6 +14,15 @@
   (e.g. appveyor, travis)
 
 
+# Tokens and positions #
+
+* EOF token with end position, instead of vacous EOF position (!?)
+
+* keep comment tokens (as "improper") for syntax reports (!?)
+
+* Block: body tokens, with "range" position for messages and reports (!?)
+
+
 # Misc #
 
 * standardize message output to `putStrLn` (with message text in one piece)
