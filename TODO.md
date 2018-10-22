@@ -29,10 +29,9 @@
 
 * eliminate spurious use of `putStr` (partial output) and `print`
 
-* more robust treatment of external provers:
-    + better error messages
-    + avoid "fishing" from the user's PATH environment
-      (e.g. by re-using E_HOME, SPASS_HOME from Isabelle distribution)
+* move provers/provers.dat to toplevel directory (no executables there) (??)
+
+* more explicit error on missing external provers
 
 
 # Isabelle/jEdit #

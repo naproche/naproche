@@ -21,8 +21,10 @@ local
                       val input_file = Path.append dir (Path.explode "input.ftl");
                       val _ = File.write input_file (cat_lines lines);
                       val script =
-                        "cd \"$SAD3_HOME\"; stack exec SAD3-exe -- --PIDE=on --prove=off " ^  (* FIXME avoid "stack" *)
-                        File.bash_path input_file;
+                        cat_lines [
+                          "cd \"$SAD3_HOME\"",
+                          "export PATH=\"$E_HOME:$SPASS_HOME:$PATH\"",
+                          "stack exec SAD3-exe -- --PIDE=on --prove=off " ^ File.bash_path input_file]; (* FIXME avoid "stack" *)
                       val rc = Isabelle_System.bash script;
                     in if rc = 0 then () else error ("Return code: " ^ string_of_int rc) end)
               | _ => ());
