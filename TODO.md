@@ -16,6 +16,10 @@
 
 # Misc #
 
+* standardize message output to `putStrLn` (with message text in one piece)
+
+* eliminate spurious use of `putStr` (partial output) and `print`
+
 * more robust treatment of external provers:
     + better error messages
     + avoid "fishing" from the user's PATH environment
