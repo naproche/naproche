@@ -22,6 +22,17 @@
     done
 
 
+# Isabelle PIDE #
+
+* edit $ISABELLE_HOME_USER/etc/settings to include this directory as component, e.g.:
+
+      init_component "$HOME/isabelle/SAD3/repos"
+
+* open theory with Isabelle/jEdit, e.g.
+
+      isabelle jedit -l Pure Isabelle/Test.thy
+
+
 # Development #
 
 * The Haskell Tool Stack: https://www.haskellstack.org

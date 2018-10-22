@@ -15,7 +15,16 @@ local
             val _ = Resources.check_path ctxt (Resources.master_directory thy) path;
             val _ =
               (case Token.get_files tok of
-                [Exn.Res {lines, pos, ...}] => ()  (* FIXME *)
+                [Exn.Res {lines, ...}] =>
+                  Isabelle_System.with_tmp_dir "SAD3" (fn dir =>
+                    let
+                      val input_file = Path.append dir (Path.explode "input.ftl");
+                      val _ = File.write input_file (cat_lines lines);
+                      val script =
+                        "cd \"$SAD3_HOME\"; stack exec SAD3-exe -- --PIDE=on --prove=off " ^  (* FIXME avoid "stack" *)
+                        File.bash_path input_file;
+                      val rc = Isabelle_System.bash script;
+                    in if rc = 0 then () else error ("Return code: " ^ string_of_int rc) end)
               | _ => ());
           in () end)));
 in end;

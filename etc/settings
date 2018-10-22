@@ -1,0 +1,5 @@
+# -*- shell-script -*- :mode=shellscript:
+# Isabelle environment settings
+
+SAD3_HOME="$COMPONENT"
+init_component "$COMPONENT/Isabelle"
