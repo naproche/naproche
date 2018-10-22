@@ -33,6 +33,8 @@
 
 * more explicit error on missing external provers
 
+* check if $SPASS_HOME/SPASS from Isabelle actually works
+
 
 # Isabelle/jEdit #
 
