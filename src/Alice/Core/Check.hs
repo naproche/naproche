@@ -28,122 +28,130 @@ import Alice.Core.Reduction
 import Alice.Core.Functions
 import qualified Alice.Data.DisTree as DT
 
-{-
-fillDef checks for well-definedness and fortifies terms. Furthermore it returns
-the term identifiers of newly introduced terms. this is only important for the
-experimental support for constructed notions.
 
-The fill subfunction makes its round through the formula. The first boolean (pr) tells us whether the
-term in question is a predicate (True) or a term (False). The second boolean (nw)
-tells us whether the symbol in question is introduced in that spot (True) or should be known (False).
-The (at the beginning empty) list (fc) will accumulate the local premises of a position in the formula.
-The Maybe Bool (sg) indicates the polarity of the position we are at (Just True -> positive, Just False -> negative,
-Nothing -> neutral). The integer keeps track of quantification depth.
-
-pr -> predicate, nw -> new word, fc -> formula context, sg -> signum
-
--}
---
 
 fillDef :: Context -> VM Formula
-fillDef cx
-    = fill True False [] (Just True) 0 $ cnForm cx
+fillDef context = fill True False [] (Just True) 0 $ cnForm context
   where
-    fill pr nw fc sg n (Tag tg f)
-      | tg == DHD = liftM (Tag DHD) $ fill pr True fc sg n f --newly introduced symbols
-      | fnTag tg  =  liftM cnForm thesis >>= getMacro cx tg -- macros in function delcarations
-      | otherwise = liftM (Tag tg) $ fill pr nw fc sg n f -- ignore every other tag
+    fill isPredicat isNewWord localContext sign n (Tag tag f)
+      | tag == DHD = -- newly introduced symbol
+          fmap (Tag DHD) $ fill isPredicat True localContext sign n f
+      | fnTag tag  = -- macros in function delcarations
+          fmap cnForm thesis >>= getMacro context tag
+      | otherwise  =  -- ignore every other tag
+          fmap (Tag tag) $ fill isPredicat isNewWord localContext sign n f
     fill _ _ _ _ _ t  | isThesis t = thesis >>= return . cnForm
-    fill _ _ fc _ _ v | isVar v = do
-      uin <- askInstructionBin IBinfo True  -- see if user has disables info collection
-      nct <- cnRaise cx fc
-      sinfo uin v `withCtxt` nct   -- fortify the term
-    fill pr nw fc sg n tr@Trm {trName = t, trArgs = ts, trInfo = is, trId = tId}
-      = do
-        uin <- askInstructionBin IBinfo True
-        nts <- mapM (fill False nw fc sg n) ts;        --fortify subterms
-        nct <- cnRaise cx fc
-        ntr <- setDef nw cx tr { trArgs = nts } `withCtxt` nct
-        sinfo (not pr && uin) ntr `withCtxt` nct        -- fortify term
-    fill pr nw fc sg n f = roundFM 'w' (fill pr nw) fc sg n f                 -- round trough the formula
+    fill _ _ localContext _ _ v | isVar v = do
+      userInfoSetting <- askInstructionBin IBinfo True
+      newContext      <- cnRaise context localContext
+      collectInfo userInfoSetting v `withCtxt` newContext -- fortify the term
+    fill isPredicat isNewWord localContext sign n 
+         term@Trm {trName = t, trArgs = tArgs, trInfo = infos, trId = tId} = do
+      userInfoSetting <- askInstructionBin IBinfo True
+      fortifiedArgs   <- mapM (fill False isNewWord localContext sign n) tArgs
+      newContext      <- cnRaise context localContext
+      fortifiedTerm   <- setDef isNewWord context term {trArgs = fortifiedArgs} 
+        `withCtxt` newContext
+      collectInfo (not isPredicat && userInfoSetting) fortifiedTerm 
+        `withCtxt` newContext        -- fortify term
+    fill isPredicat isNewWord localContext sign n f = -- round throuth formula
+      roundFM 'w' (fill isPredicat isNewWord) localContext sign n f 
 
-    sinfo uin trm -- set info (we only do this for terms and if info collection is enabled)
-      | uin   = setInfo trm
-      | True  = return trm
+    collectInfo infoSetting term
+      | infoSetting = setInfo term
+      | True        = return  term
 
-    cnRaise cx fs = context >>= return . flip (foldr $ (:) . setForm cx) fs
+cnRaise :: Context -> [Formula] -> VM [Context]
+cnRaise thisBlock local = 
+  asks currentContext >>=  return . flip (foldr $ (:) . setForm thisBlock) local
 
 
 
 
 setDef :: Bool -> Context -> Formula -> VM Formula
-setDef nw cx trm@Trm{trName = t, trId = tId}  = incrementIntCounter Symbols >>
-    (   guard nw >> return trm        -- if the symbol is newly introduced, no def must be checked
-    <|>  findDef trm >>= testDef cx trm -- try to verify the symbols domain conditions
-    <|>  out >> mzero )                           -- failure message
+setDef isNewWord context term@Trm{trName = t, trId = tId} = 
+  incrementIntCounter Symbols >>
+    (    guard isNewWord >> return term -- do not check new word
+    <|>  findDef term >>= testDef context term -- check term's definition
+    <|>  out >> mzero ) -- failure message
   where
-    out = reasonerLog (cnHead cx) $ "unrecognized: " ++ showsPrec 2 trm ""
+    out =
+      reasonerLog (cnHead context) $ "unrecognized: " ++ showsPrec 2 term ""
 
 
 -- Find relevant definitions and test them
+type Guards = [Formula]
+type FortifiedTerm = Formula
+type DefDuo = (Guards, FortifiedTerm)
 
-type DefDuo = ([Formula], Formula)
-  -- the list contains the guards, the formula is the term, fortified with definitional evidence
 
-
-findDef :: Formula -> VM DefDuo -- retrieve definition of a symbol and prepare
-findDef trm@Trm{trArgs = ts} = -- for ontological check
-  do def <- getDef trm
-     sb  <- match (dfTerm def) trm
-     let ngs = map (infoSub sb) $ dfGrds def  -- instantiate definition guards
-         nev = map sb $ dfEvid def -- definitional evidence
-         nt  = trm { trInfo = nev } -- fortified term
-     return (ngs, nt)
-  where
-    add nev t = t {trInfo = nev ++ trInfo t}
+findDef :: Formula -> VM DefDuo
+findDef term@Trm{trArgs = tArgs} = do
+  def <- getDef term
+  sb  <- match (dfTerm def) term
+  let guards   = map (infoSub sb) $ dfGrds def -- definition's guards
+      evidence = map sb $ dfEvid def -- definitional evidence
+      newTerm  = term { trInfo = evidence } -- fortified term
+  return (guards, newTerm)
 
 {-
-testDef does what the name suggests and tests a definition. if the use has disabled
-ontological checking we just assume that the definition fits, else we check it.
-setup and cleanup take care of the special proof times that we allow an ontological
- check. easy is the triviality check (i.e. simplification with evidence or build in MESON),
- It passes any guard that could not be proved to the hard check, which calls the external ATP -}
-
+testDef does what the name suggests and tests a definition. if the use has
+disabled ontological checking we just assume that the definition fits, else we
+check it. setup and cleanup take care of the special proof times that we allow
+an ontological check. easyCheck are inbuild reasoning methods, hardCheck passes
+a task to an ATP.
+-}
 
 
 testDef :: Context -> Formula -> DefDuo -> VM Formula
-testDef cx trm (gs, nt)
-    = do chk <- askInstructionBin IBchck True; if chk then setup >> easy >>= hard >> return nt else return nt
+testDef context term (guards, fortifiedTerm) = do 
+  userCheckSetting <- askInstructionBin IBchck True
+  if   userCheckSetting 
+  then setup >> easyCheck >>= hardCheck >> return fortifiedTerm 
+  else return fortifiedTerm
   where
-    easy     = mapM triv gs
-    hard hgs | all isRight hgs = incrementIntCounter TrivialChecks >> whdchk ("trivial " ++ header rights hgs) >> cleanup
-             | otherwise =
-               do incrementIntCounter HardChecks >> whdchk (header lefts hgs ++ thead (rights hgs));
-                  mapM (reason . setForm ccx) (lefts hgs) >> incrementIntCounter SuccessfulChecks >> cleanup <|> cleanup >> mzero
+    easyCheck = mapM trivialityCheck guards
+    hardCheck hardGuards 
+      | all isRight hardGuards = 
+           incrementIntCounter TrivialChecks 
+        >> defLog ("trivial " ++ header rights hardGuards) 
+        >> cleanup
+      | otherwise =
+           (incrementIntCounter HardChecks
+        >> defLog (header lefts hardGuards ++ thead (rights hardGuards))
+        >> mapM_ (reason . setForm (wipeLink context)) (lefts hardGuards)
+        >> incrementIntCounter SuccessfulChecks 
+        >> cleanup) 
+        <|> (cleanup >> mzero)
 
-    setup    = do  askInstructionInt IIchtl 1 >>= addInstruction . InInt IItlim
-                   askInstructionInt IIchdp 3 >>= addInstruction . InInt IIdpth
-                   askInstructionBin IBOnch False >>= addInstruction. InBin IBOnto
-
-
-    cleanup  = do  dropInstruction $ IdInt IItlim
-                   dropInstruction $ IdInt IIdpth
-                   dropInstruction $ IdBin IBOnto
-
-    ccx = let bl:bs = cnBran cx in cx { cnBran = bl { blLink = [] } : bs }
-
-
-    header sel gs = "check: " ++ showsPrec 2 trm " vs " ++ grds (sel gs) --output printcheck messages
-    thead [] = ""; thead gs = "(trivial: " ++ grds gs ++ ")"
-    grds  gs = if null gs then " - " else unwords . map show $ gs
-    whdchk = whenInstruction IBPchk False . reasonerLog (head $ cnBran cx)
+    setup = do  
+      askInstructionInt IIchtl 1 >>= addInstruction . InInt IItlim
+      askInstructionInt IIchdp 3 >>= addInstruction . InInt IIdpth
+      askInstructionBin IBOnch False >>= addInstruction. InBin IBOnto
 
 
+    cleanup = do  
+      dropInstruction $ IdInt IItlim
+      dropInstruction $ IdInt IIdpth
+      dropInstruction $ IdBin IBOnto
 
-    triv g = if rapid g
-               then  return $ Right g  -- triviality check
-               else callown `withGoal` g >> return (Right g)
-                 <|> return (Left g)
+    wipeLink context = 
+      let block:restBranch = cnBran context
+      in  context {cnBran = block {blLink = []} : restBranch}
+
+
+    header select guards = 
+      "check: " ++ showsPrec 2 term " vs " ++ format (select guards)
+    thead [] = ""; thead guards = "(trivial: " ++ format guards ++ ")"
+    format guards = if null guards then " - " else unwords . map show $ guards
+    defLog = whenInstruction IBPchk False . reasonerLog (head $ cnBran context)
+
+
+
+    trivialityCheck g = 
+      if   rapid g
+      then return $ Right g  -- triviality check
+      else callown `withGoal` g >> return (Right g) <|> return (Left g)
 
 
 -- Info heuristic
@@ -152,36 +160,44 @@ testDef cx trm (gs, nt)
    case of equality we also add the typings of the equated term -}
 typings :: (MonadPlus m) => [Context] -> Formula -> m [Formula]
 typings [] _ = mzero
-typings (c:cnt) t = dive (cnForm c) `mplus` typings cnt t
+typings (context:restContext) term = 
+  albetDive (cnForm context) `mplus` typings restContext term
   where
-    dive = dive2 . albet
-    dive2 tr | isLtrl tr = comp [] $ ltArgs tr -- if we encounter a literal, then compare its arguments to t
+    albetDive = dive . albet
+    -- when we encouter a literal, compare its arguments with term
+    dive f | isLtrl f = compare [] $ ltArgs f 
       where
-        comp _ [] = mzero
-        comp ls (arg:rs) =
-          let nt = mbNot tr; prd = predSymb tr
-           in (do match t arg
-                  return $ nt prd {trArgs = reverse ls ++ (ThisT : rs)} : ntnEvid ls prd ++ trInfo arg
-              `mplus` comp (arg:ls) rs)
+        compare _ [] = mzero
+        compare ls (arg:rs) = -- try to match argument, else compare with rest
+          matchThisArgument ls arg rs `mplus` compare (arg:ls) rs 
+        
+        matchThisArgument ls arg rs = 
+          let sign = mbNot f; predicat = predSymb f in do 
+            match term arg
+            let newInfo = sign predicat {trArgs = reverse ls ++ (ThisT : rs)}
+            return $ newInfo : notionEvidence ls predicat ++ trInfo arg
 
-    dive2 e@Trm {trName = "=", trArgs = [l,r]} = if twins l t
-                                      then return $ joinTps t (trInfo l) (trInfo r)
-                                      else if twins r t
-                                        then return $ joinTps t (trInfo r) (trInfo l)
-                                        else mzero
-    dive2 (And f g) = dive g `mplus` dive f
-    dive2 (Tag _ f) = dive f
-    dive2 _         = mzero
+    dive e@Trm {trName = "=", trArgs = [l,r]} = 
+      if   twins l term
+      then return $ joinEvidences (trInfo l) (trInfo r)
+      else if   twins r term
+           then return $ joinEvidences (trInfo r) (trInfo l)
+           else mzero
+    dive (And f g) = albetDive g `mplus` albetDive f
+    dive (Tag _ f) = albetDive f
+    dive _         = mzero
 
-    ntnEvid [] prd | isNtn prd = trInfo prd
-    ntnEvid _ _ = []
+    joinEvidences ls rs =
+      filter (\l -> all (not . infoTwins term l) rs) ls ++ rs
+
+    notionEvidence [] prd | isNtn prd = trInfo prd
+    notionEvidence _ _ = []
 
 
 
 setInfo :: Formula -> VM Formula
 setInfo t = do
-  cnt <- asks currentContext
-  let loc = takeWhile cnLowL cnt; lev = fromMaybe [] $ typings loc t
-  return $ t {trInfo = trInfo t ++ lev}
-
-joinTps t ls rs = filter (\l -> all (not . infoTwins t l) rs) ls ++ rs
+  context <- asks currentContext
+  let lowlevelContext  = takeWhile cnLowL context
+      lowlevelEvidence = fromMaybe [] $ typings lowlevelContext t
+  return $ t {trInfo = trInfo t ++ lowlevelEvidence}
