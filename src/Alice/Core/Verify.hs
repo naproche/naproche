@@ -31,7 +31,7 @@ import Alice.Data.Text
 import Alice.Prove.Normalize
 import Alice.Prove.MESON
 import Alice.Core.Reduction
-import Alice.Core.Functions
+import Alice.Core.ProofTask
 import Alice.Core.Extract
 import qualified Alice.Data.DisTree as DT
 
@@ -73,7 +73,7 @@ vLoop st@VS {thesisMotivated = mot, rewriteRules = rls, currentThesis = ths, bra
              else fillDef cbl   -- check definitions and fortify the formula of the block
 
       flt <- askInstructionBin IBflat False
-      let prt = prfTask sg dv nfr             -- in case of a "Choice" block, the proof task is set here to an existential statement
+      let prt = proofTask sg dv nfr             -- in case of a "Choice" block, the proof task is set here to an existential statement
           sth = Context prt nbr [] prt
           bsg = null brn || blSign (head brn)          -- bsg is false iff the block is an immediate subblock of sigext, definiton or axiom
           smt = bsg && (blSign bl) && not (noForm bl)  -- smt is true iff the block represents a statement that must be proved

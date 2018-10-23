@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e37c9fc9bafeba787302b10b7b224d0bbe2a09e297341e5f55b11e605d3050c9
+-- hash: 815570e8c833b0117d6a9980f657d2e9f667b28fbeec46c082f51f9b77ebb7b8
 
 name:           SAD3
 version:        0.1.0.0
@@ -29,7 +29,7 @@ library
       Alice.Core.Base
       Alice.Core.Check
       Alice.Core.Extract
-      Alice.Core.Functions
+      Alice.Core.ProofTask
       Alice.Core.Reason
       Alice.Core.Reduction
       Alice.Core.Rewrite

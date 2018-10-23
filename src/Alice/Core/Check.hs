@@ -25,7 +25,7 @@ import Alice.Core.Reason
 import Alice.Prove.Normalize
 import Alice.Prove.MESON
 import Alice.Core.Reduction
-import Alice.Core.Functions
+import Alice.Core.ProofTask
 import qualified Alice.Data.DisTree as DT
 
 
