@@ -36,9 +36,9 @@ contrapositives ls = let base = cps [] $ map ltNeg ls
 
 
 {- the monadic action to generate meson rules during text verfication -}
-contras b f = do m <- askGS gsSklm;
+contras b f = do m <- askGlobalState skolemCounter;
                  let (skf, SK { sk = nm }) = sklm m $ simplify f
-                 updateGS (\st -> st { gsSklm = nm })
+                 updateGlobalState (\st -> st { skolemCounter = nm })
                  let cnf = simpcnf . spec 0 . prenex  $ skf
                  return $ concatMap contrapositives cnf
 

@@ -55,12 +55,12 @@ fillDef cx
       | otherwise = liftM (Tag tg) $ fill pr nw fc sg n f -- ignore every other tag
     fill _ _ _ _ _ t  | isThesis t = thesis >>= return . cnForm
     fill _ _ fc _ _ v | isVar v = do
-      uin <- askRSIB IBinfo True  -- see if user has disables info collection
+      uin <- askInstructionBin IBinfo True  -- see if user has disables info collection
       nct <- cnRaise cx fc
       sinfo uin v `withCtxt` nct   -- fortify the term
     fill pr nw fc sg n tr@Trm {trName = t, trArgs = ts, trInfo = is, trId = tId}
       = do
-        uin <- askRSIB IBinfo True
+        uin <- askInstructionBin IBinfo True
         nts <- mapM (fill False nw fc sg n) ts;        --fortify subterms
         nct <- cnRaise cx fc
         ntr <- setDef nw cx tr { trArgs = nts } `withCtxt` nct
@@ -77,12 +77,12 @@ fillDef cx
 
 
 setDef :: Bool -> Context -> Formula -> VM Formula
-setDef nw cx trm@Trm{trName = t, trId = tId}  = incRSCI CIsymb >>
+setDef nw cx trm@Trm{trName = t, trId = tId}  = incrementIntCounter Symbols >>
     (   guard nw >> return trm        -- if the symbol is newly introduced, no def must be checked
     <|>  findDef trm >>= testDef cx trm -- try to verify the symbols domain conditions
     <|>  out >> mzero )                           -- failure message
   where
-    out = rlog (cnHead cx) $ "unrecognized: " ++ showsPrec 2 trm ""
+    out = reasonerLog (cnHead cx) $ "unrecognized: " ++ showsPrec 2 trm ""
 
 
 -- Find relevant definitions and test them
@@ -113,22 +113,22 @@ setup and cleanup take care of the special proof times that we allow an ontologi
 
 testDef :: Context -> Formula -> DefDuo -> VM Formula
 testDef cx trm (gs, nt)
-    = do chk <- askRSIB IBchck True; if chk then setup >> easy >>= hard >> return nt else return nt
+    = do chk <- askInstructionBin IBchck True; if chk then setup >> easy >>= hard >> return nt else return nt
   where
     easy     = mapM triv gs
-    hard hgs | all isRight hgs = incRSCI CIchkt >> whdchk ("trivial " ++ header rights hgs) >> cleanup
+    hard hgs | all isRight hgs = incrementIntCounter TrivialChecks >> whdchk ("trivial " ++ header rights hgs) >> cleanup
              | otherwise =
-               do incRSCI CIchkh >> whdchk (header lefts hgs ++ thead (rights hgs));
-                  mapM (reason . setForm ccx) (lefts hgs) >> incRSCI CIchky >> cleanup <|> cleanup >> mzero
+               do incrementIntCounter HardChecks >> whdchk (header lefts hgs ++ thead (rights hgs));
+                  mapM (reason . setForm ccx) (lefts hgs) >> incrementIntCounter SuccessfulChecks >> cleanup <|> cleanup >> mzero
 
-    setup    = do  askRSII IIchtl 1 >>= addRSIn . InInt IItlim
-                   askRSII IIchdp 3 >>= addRSIn . InInt IIdpth
-                   askRSIB IBOnch False >>= addRSIn. InBin IBOnto
+    setup    = do  askInstructionInt IIchtl 1 >>= addInstruction . InInt IItlim
+                   askInstructionInt IIchdp 3 >>= addInstruction . InInt IIdpth
+                   askInstructionBin IBOnch False >>= addInstruction. InBin IBOnto
 
 
-    cleanup  = do  drpRSIn $ IdInt IItlim
-                   drpRSIn $ IdInt IIdpth
-                   drpRSIn $ IdBin IBOnto
+    cleanup  = do  dropInstruction $ IdInt IItlim
+                   dropInstruction $ IdInt IIdpth
+                   dropInstruction $ IdBin IBOnto
 
     ccx = let bl:bs = cnBran cx in cx { cnBran = bl { blLink = [] } : bs }
 
@@ -136,7 +136,7 @@ testDef cx trm (gs, nt)
     header sel gs = "check: " ++ showsPrec 2 trm " vs " ++ grds (sel gs) --output printcheck messages
     thead [] = ""; thead gs = "(trivial: " ++ grds gs ++ ")"
     grds  gs = if null gs then " - " else unwords . map show $ gs
-    whdchk = whenIB IBPchk False . rlog (head $ cnBran cx)
+    whdchk = whenInstruction IBPchk False . reasonerLog (head $ cnBran cx)
 
 
 
@@ -180,7 +180,7 @@ typings (c:cnt) t = dive (cnForm c) `mplus` typings cnt t
 
 setInfo :: Formula -> VM Formula
 setInfo t = do
-  cnt <- asks vsCtxt
+  cnt <- asks currentContext
   let loc = takeWhile cnLowL cnt; lev = fromMaybe [] $ typings loc t
   return $ t {trInfo = trInfo t ++ lev}
 

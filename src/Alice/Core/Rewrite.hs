@@ -104,8 +104,8 @@ findp verb rls w l r = let ls = findnf rls w l; rs = findnf rls w r; pths = path
   where
     paths ls rs = do lp@((l, _):_) <- ls; rp@((r, _):_) <- rs; guard (twins l r); return (reverse lp, reverse rp)
     out ls rs = when verb $
-                      do slog0 $ "no matching normal forms found"; showpath (head ls); showpath (head rs)
-    showpath ((f,_):ls) = when verb $ slog0 (show f) >> mapM_ (\(f,gs) -> slog0 $ " --> " ++ show f ++ conditions gs) ls
+                      do simpLog0 $ "no matching normal forms found"; showpath (head ls); showpath (head rs)
+    showpath ((f,_):ls) = when verb $ simpLog0 (show f) >> mapM_ (\(f,gs) -> simpLog0 $ " --> " ++ show f ++ conditions gs) ls
     conditions (gs, nm) = annote nm (" by " ++ nm ++ ",") ++  annote gs (" conditions: " ++ unwords (intersperse "," $ map show gs))
     annote s str = if null s then "" else str
 
@@ -120,7 +120,7 @@ simplify verb rls w f = return Top
 
 {- applies computational reasoning to an equality chain -}
 eqReason :: Context -> VM ()
-eqReason ths | body = do whenIB IBPrsn False $ rlog0 $ "eqchain concluded"
+eqReason ths | body = do whenInstruction IBPrsn False $ reasonerLog0 $ "eqchain concluded"
                          return ()
              | (not . null) (link) = do frl <- retrieveRl link; comp frl $ strip $ cnForm ths -- get the referenced rewrite rules and call comp for rewriting
              | otherwise = do rls <- rules; comp rls $ strip $ cnForm ths -- if no link is provided, take all rules
@@ -129,19 +129,30 @@ eqReason ths | body = do whenIB IBPrsn False $ rlog0 $ "eqchain concluded"
       body = (not .null) $ blBody . head . cnBran $ ths -- this is true for the overaching block of the EC
 
 retrieveRl :: [String] -> VM [Rule]
-retrieveRl ln = do rls <- rules; nln <- getLink ln; let (nrl, st) = runState (retrieveMN nln rls) nln
+retrieveRl ln = do rls <- rules; nln <- getLink ln; let (nrl, st) = runState (retrieve nln rls) nln
                    unless (Set.null st) $ warn st; return nrl
   where
-    warn st = slog0 $ "Warning: Could not find rules " ++ unwords (map show $ Set.elems st)
+    warn st = simpLog0 $ "Warning: Could not find rules " ++ unwords (map show $ Set.elems st)
+
+    retrieve _ [] = return []
+    retrieve s (c:cnt) = let nm = rlLabl c in
+      if   Set.member nm s 
+      then modify (Set.delete nm) >> liftM (c:) (retrieve s cnt)
+      else retrieve s cnt
 
 
-rules = asks vsRuls
+rules = asks rewriteRules
+
+
+
+
+
 
 
 {- applies rewriting and compares the resulting normal forms -}
 comp :: [Rule] -> Formula -> VM ()
 comp rls Trm {trName = "=", trArgs = [l,r]}=
-  do verb <- askRSIB IBPsmp False -- check if printsimp is on
+  do verb <- askInstructionBin IBPsmp False -- check if printsimp is on
      gs <- findp verb rls (>) l r; cx <- thesis
      mapM_ (solve_gs cx verb) $ map fst gs
      return ()
@@ -155,19 +166,19 @@ solve_gs cx verb gs = setup >> easy >>= hard
                           >> (mapM (reason . setForm ccx) (lefts hgs) >> cleanup) <|> (cleanup >> mzero)
 
 
-    setup    = do  askRSII IIchtl 1 >>= addRSIn . InInt IItlim
-                   askRSII IIchdp 3 >>= addRSIn . InInt IIdpth
-                   addRSIn $ InBin IBOnto False
+    setup    = do  askInstructionInt IIchtl 1 >>= addInstruction . InInt IItlim
+                   askInstructionInt IIchdp 3 >>= addInstruction . InInt IIdpth
+                   addInstruction $ InBin IBOnto False
 
 
-    cleanup  = do  drpRSIn $ IdInt IItlim
-                   drpRSIn $ IdInt IIdpth
-                   drpRSIn $ IdBin IBOnto
+    cleanup  = do  dropInstruction $ IdInt IItlim
+                   dropInstruction $ IdInt IIdpth
+                   dropInstruction $ IdBin IBOnto
 
     header sel gs = "condition: " ++ grds (sel gs)
     thead [] = ""; thead gs = "(trivial: " ++ grds gs ++ ")"
     grds  gs = if null gs then " - " else unwords . intersperse "," . map show $ reverse gs
-    whd = when verb . slog cx
+    whd = when verb . simpLog cx
     whdt hgs = if all isTop $ rights hgs then return () else whd ("trivial " ++ header rights hgs)
 
     ccx = let bl:bs = cnBran cx in cx { cnBran = bl { blLink = [] } : bs }
@@ -213,8 +224,3 @@ instance Show Rule where
 
 printrules :: [Rule] -> String
 printrules = unlines . map show
-
-slog0 tx = putStrLnRM $ "[Simplf] " ++ tx
-
-slog cx tx = do tfn <- askRSIS ISfile ""
-                slog0 $ blLabl tfn (cnHead cx) ++ tx

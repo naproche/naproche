@@ -8,13 +8,42 @@ Verifier state monad and common functions.
 {-# LANGUAGE FlexibleContexts #-}
 
 
-module Alice.Core.Base where
+module Alice.Core.Base (
+  RState (..), RM,
+  askRS, updateRS,
+  justIO,
+  (<|>),
+  runRM,
+
+  GState (..), GM,
+  askGlobalState, updateGlobalState,
+  addGlobalContext, insertMRule,
+  retrieveContext,
+  initialGlobalState,
+  defForm, getDef, getLink, addGroup,
+
+  VState (..), VM,
+
+  Counter (..), TimeCounter (..), IntCounter (..),
+  accumulateIntCounter, accumulateTimeCounter, maximalTimeCounter,
+  showTimeDiff,
+  timer,
+
+  askInstructionInt, askInstructionBin, askInstructionString,
+  addInstruction, dropInstruction,
+  addTimeCounter, addIntCounter, incrementIntCounter,
+  guardInstruction, guardNotInstruction, whenInstruction,
+
+  putStrLnRM, putStrRM, printRM, 
+  reasonerLog, reasonerLog0, simpLog, simpLog0, thesisLog, thesisLog0,
+  blockLabel
+) where
 
 import Control.Monad
 import Data.IORef
 import Data.List
 import Data.Time
-import Control.Applicative
+import qualified Control.Applicative as App
 import qualified Data.IntMap.Strict as IM
 import Data.Maybe
 import qualified Data.Map as M
@@ -34,9 +63,10 @@ import Debug.Trace
 
 -- Reasoner state
 
-data RState = RState {  rsInst :: [Instr],
-                        rsCntr :: [Count],
-                        rsPrdb :: [Prover] }
+data RState = RState {
+  instructions :: [Instr],
+  counters     :: [Counter],
+  provers      :: [Prover] }
 
 
 {- the global proof state containing:
@@ -47,38 +77,42 @@ data RState = RState {  rsInst :: [Instr],
   ~ a counter for the identifier for skolem constants
 -}
 
-data GState = GL {gsDefs :: Definitions,
-                  gsGlps :: DT.DisTree MRule,
-                  gsGlng :: DT.DisTree MRule,
-                  gsGrup :: M.Map String (Set.Set String),
-                  gsCtxt :: [Context],
-                  gsSklm :: Int}
+data GState = GL {
+  definitions      :: Definitions,
+  mesonPositives   :: DT.DisTree MRule,
+  mesonNegatives   :: DT.DisTree MRule,
+  identifierGroups :: M.Map String (Set.Set String),
+  globalContext    :: [Context],
+  skolemCounter    :: Int }
 
 
 
 -- All of these counters are for gathering statistics to print out later
 
-data Count  = CntrT CntrT NominalDiffTime
-            | CntrI CntrI Int
+data Counter  =
+    TimeCounter TimeCounter NominalDiffTime
+  | IntCounter IntCounter Int
 
-data CntrT  = CTprov -- total proof time
-            | CTprvy -- succesful prove time
-            | CTsimp -- total simplifier time
-            deriving Eq
+data TimeCounter  =
+    ProofTime
+  | SuccessTime  -- succesful prove time
+  | SimplifyTime
+  deriving Eq
 
-data CntrI  = CIsect -- number of sections
-            | CIgoal -- number of goals
-            | CIfail -- number of failed proof tasks
-            | CIsubt -- number of subtasks (not used at the moment)
-            | CIprvy -- number off successful proof tasks
-            | CIsymb -- number of symbols
-            | CIchkt -- number of trivial checks
-            | CIchkh -- number of hard checks
-            | CIchky -- number of succesful checks
-            | CIunfl -- number of unfoldings
-            | CIeqtn -- number of equations
-            | CIeqfl -- number of failed equations
-            deriving Eq
+data IntCounter  =
+    Sections
+  | Goals
+  | FailedGoals
+  | TrivialGoals
+  | SuccessfulGoals
+  | Symbols
+  | TrivialChecks
+  | HardChecks
+  | SuccessfulChecks
+  | Unfolds
+  | Equations
+  | FailedEquations
+  deriving Eq
 
 
 -- CPS IO Maybe monad
@@ -86,9 +120,20 @@ data CntrI  = CIsect -- number of sections
 type CRMC a b = IORef RState -> IO a -> (b -> IO a) -> IO a
 newtype CRM b = CRM { runCRM :: forall a . CRMC a b }
 
+instance Functor CRM where
+  fmap = liftM
+
+instance App.Applicative CRM where
+  pure = return
+  (<*>) = ap
+
 instance Monad CRM where
   return r  = CRM $ \ _ _ k -> k r
   m >>= n   = CRM $ \ s z k -> runCRM m s z (\ r -> runCRM (n r) s z k)
+
+instance App.Alternative CRM where
+  empty = mzero
+  (<|>) = mplus
 
 instance MonadPlus CRM where
   mzero     = CRM $ \ _ z _ -> z
@@ -97,36 +142,25 @@ instance MonadPlus CRM where
 
 
 
--- Standard declaration to prevent compiler errors
-
-instance Functor CRM where
-    fmap = liftM
-
-instance Applicative CRM where
-    pure = return
-    (<*>) = ap
-
-instance Alternative CRM where
-    empty = mzero
-    (<|>) = mplus
----------------------------
 
 type RM = CRM
 runRM :: RM a -> IORef RState -> IO (Maybe a)
 runRM m s = runCRM m s (return Nothing) (return . Just)
 
 infixl 0 <|>
+{-# INLINE (<|>) #-}
 (<|>) :: (MonadPlus m) => m a -> m a -> m a
 (<|>) = mplus
 
 
-data VState = VS { vsMotv :: Bool,       -- if the current thesis is motivated
-                   vsRuls :: [Rule],     -- rewrite rules
-                   vsEval :: DT.DisTree Eval, -- (low level) evaluation rules
-                   vsThes :: Context,    -- current thesis
-                   vsBran :: [Block],    -- branch of the current block
-                   vsCtxt :: [Context],  -- context
-                   vsText :: [Text] }    -- the remaining text}
+data VState = VS {
+  thesisMotivated :: Bool,
+  rewriteRules    :: [Rule],
+  evaluations     :: DT.DisTree Eval, -- (low level) evaluation rules
+  currentThesis   :: Context,
+  branch          :: [Block],         -- branch of the current block
+  currentContext  :: [Context],
+  remainingText   :: [Text] }
 
 
 
@@ -134,59 +168,73 @@ type GM = StateT GState CRM
 type VM = ReaderT VState GM
 
 justRS :: VM (IORef RState)
-justRS      = lift $ lift $ CRM $ \ s _ k -> k s
+justRS = lift $ lift $ CRM $ \ s _ k -> k s
 
 
 justIO :: IO a -> VM a
-justIO m    = lift $ lift $ CRM $ \ _ _ k -> m >>= k
+justIO m = lift $ lift $ CRM $ \ _ _ k -> m >>= k
 
 -- State management from inside the verification monad
 
-getRS       = justRS >>= (justIO . readIORef)          -- retrieve state
-askRS f     = justRS >>= (justIO . fmap f . readIORef) -- retrieve some component of the state
-setRS r     = justRS >>= (justIO . flip writeIORef r)  -- set state
-updateRS f  = justRS >>= (justIO . flip modifyIORef f) -- update state
+askRS f     = justRS >>= (justIO . fmap f . readIORef)
+updateRS f  = justRS >>= (justIO . flip modifyIORef f)
 
-askRSII i d = liftM (askII i d) (askRS rsInst) -- retrieve instructions
-askRSIB i d = liftM (askIB i d) (askRS rsInst)
-askRSIS i d = liftM (askIS i d) (askRS rsInst)
+askInstructionInt    instr _default = 
+  fmap (askII instr _default) (askRS instructions)
+askInstructionBin    instr _default = 
+  fmap (askIB instr _default) (askRS instructions)
+askInstructionString instr _default = 
+  fmap (askIS instr _default) (askRS instructions)
 
-addRSIn ins = updateRS $ \ rs -> rs { rsInst = ins : rsInst rs } -- add/drop/modify instructions
-drpRSIn ind = updateRS $ \ rs -> rs { rsInst = dropI ind $ rsInst rs }
-addRSTI c i = updateRS $ \ rs -> rs { rsCntr = CntrT c i : rsCntr rs }
-addRSCI c i = updateRS $ \ rs -> rs { rsCntr = CntrI c i : rsCntr rs }
-incRSCI c   = addRSCI c 1
+addInstruction  instr = 
+  updateRS $ \rs -> rs { instructions = instr : instructions rs }
+dropInstruction instr = 
+  updateRS $ \rs -> rs { instructions = dropI instr $ instructions rs }
+addTimeCounter counter time = 
+  updateRS $ \rs -> rs { counters = TimeCounter counter time : counters rs }
+addIntCounter  counter time = 
+  updateRS $ \rs -> rs { counters = IntCounter  counter time : counters rs }
+incrementIntCounter counter = addIntCounter counter 1
 
-timer c a   = do  b <- justIO $ getCurrentTime -- time proof tasks
-                  r <- a
-                  e <- justIO $ getCurrentTime
-                  addRSTI c $ diffUTCTime e b
-                  return r
+-- time proof tasks
+timer counter task = do
+  begin  <- justIO $ getCurrentTime
+  result <- task
+  end    <- justIO $ getCurrentTime
+  addTimeCounter counter $ diffUTCTime end begin
+  return result
 
-guardIB i d     = askRSIB i d >>= guard -- manage conditions set by instructions
-guardNotIB i d  = askRSIB i d >>= guard . not
-whenIB i d a    = askRSIB i d >>= \ b -> when b a
-unlessIB i d a  = askRSIB i d >>= \ b -> unless b a
-
+guardInstruction instr _default = 
+  askInstructionBin instr _default >>= guard
+guardNotInstruction instr _default =
+  askInstructionBin instr _default >>= guard . not
+whenInstruction instr _default action = 
+  askInstructionBin instr _default >>= \ b -> when b action
 
 -- Counter management
 
-fetchCI cs c  = [ i | CntrI d i <- cs, c == d ]
-fetchCT cs c  = [ i | CntrT d i <- cs, c == d ]
+fetchIntCounter  counterList counter =
+  [ value | IntCounter  kind value <- counterList, counter == kind ]
+fetchTimeCounter counterList counter =
+  [ value | TimeCounter kind value <- counterList, counter == kind ]
 
-cumulCI cs t = foldr (+) t . fetchCI cs
-cumulCT cs t = foldr addUTCTime t . fetchCT cs
-maximCT cs   = foldr max 0 . fetchCT cs
+accumulateIntCounter  counterList startValue = 
+  foldr (+) startValue . fetchIntCounter counterList
+accumulateTimeCounter counterList startValue = 
+  foldr addUTCTime startValue . fetchTimeCounter counterList
+maximalTimeCounter counterList = foldr max 0 . fetchTimeCounter counterList
 
 showTimeDiff t
-  | th == 0 = dsh mn ++ ':' : dsh ss ++ '.' : dsh cs
-  | True    = dsh th ++ ':' : dsh mn ++ ':' : dsh ss
+  | hours == 0 = 
+      format minutes ++ ':' : format restSeconds ++ '.' : format restCentis
+  | True    = 
+      format hours   ++ ':' : format restMinutes ++ ':' : format restSeconds
   where
-    dsh n   = if n < 10 then '0':show n else show n
-    tc      = truncate $ t * 100
-    (ts,cs) = divMod tc 100
-    (tm,ss) = divMod ts 60
-    (th,mn) = divMod tm 60
+    format n = if n < 10 then '0':show n else show n
+    centiseconds = truncate $ t * 100
+    (seconds, restCentis)  = divMod centiseconds 100
+    (minutes, restSeconds) = divMod seconds 60
+    (hours  , restMinutes) = divMod minutes 60
 
 
 -- IO management (print functions for the log)
@@ -197,128 +245,139 @@ putStrLnRM  = justIO . putStrLn
 putStrRM    = justIO . putStr
 printRM     = justIO . print
 
-rlog0 tx = putStrLnRM $ "[Reason] " ++ tx
+reasonerLog0 msg = putStrLnRM $ "[Reason] " ++ msg
 
-rlog bl tx = do tfn <- askRSIS ISfile ""
-                rlog0 $ blLabl tfn bl ++ tx
+reasonerLog block msg = do 
+  fileName <- askInstructionString ISfile ""
+  reasonerLog0 $ blockLabel fileName block ++ msg
 
-tlog0 tx = putStrLnRM $ "[Thesis] " ++ tx
+thesisLog0 msg = putStrLnRM $ "[Thesis] " ++ msg
 
-tlog n bl tx = do tfn <- askRSIS ISfile ""
-                  tlog0 $ blLabl tfn bl ++take (3*n) (repeat ' ')++ tx
+thesisLog indent block msg = do
+  fileName <- askInstructionString ISfile ""
+  thesisLog0 $ 
+    blockLabel fileName block ++ replicate (3 * indent) ' ' ++ msg
 
-blLabl tf bl =
-  let fl = blFile bl
-  in  (if fl == tf then "" else fl) ++ fill (show (blLnCl bl)) ++ ": "
+simpLog0 msg = putStrLnRM $ "[Simplf] " ++ msg
+
+simpLog context msg = do 
+  fileName <- askInstructionString ISfile ""
+  simpLog0 $ blockLabel fileName (cnHead context) ++ msg
+
+blockLabel fileName block =
+  let blockFile = blFile block
+  in  (if fileName == blockFile then "" else blockFile) 
+        ++ format (show (blLnCl block)) ++ ": "
   where
-    fill s =
-      let l = length s
-      in  if l < 9 then s ++ take (9 - l) (repeat ' ') else s
+    format string =
+      let l = length string
+      in  if l < 9 then string ++ replicate (9 - l) ' ' else string
 
 
 
 -- GlobalState management
 
-askGS    = lift . gets
-updateGS = lift . modify
+askGlobalState    = lift . gets
+updateGlobalState = lift . modify
 
-getGlC :: VM (DT.DisTree MRule, DT.DisTree MRule)
-getGlC = liftM2 (,) (askGS gsGlps) (askGS gsGlng) -- retrieve MESON rules
-                                                  -- for onto checking
-insertGl :: [MRule] -> VM () -- insert new MESON rules into the global context
-insertGl rls = updateGS (add rls)
+insertMRule :: [MRule] -> VM ()
+insertMRule rules = updateGlobalState (add rules)
   where
-    add [] gs = gs
-    add (rl@(MR asm conc):rls) gs | isNot conc = add rls $ gs {gsGlng = DT.insert (ltNeg conc) rl (gsGlng gs) }
-                                  | otherwise  = add rls $ gs {gsGlps = DT.insert conc rl (gsGlps gs) }
+    add [] globalState = globalState
+    add (rule@(MR _ conclusion):rules) gs
+      | isNot conclusion =
+          let negatives     = mesonNegatives gs
+              negConclusion = ltNeg conclusion
+          in  add rules $
+                gs {mesonNegatives = DT.insert negConclusion rule negatives}
+      | otherwise  =
+          let positives = mesonPositives gs
+          in  add rules $ 
+                gs {mesonPositives = DT.insert conclusion rule positives}
 
-    ltNeg (Not f) = f
-    ltNeg f = f
+initialGlobalState = GL initialDefinitions DT.empty DT.empty M.empty [] 0
 
-initGS = GL defs DT.empty DT.empty M.empty [] 0 --initial global state
+addGlobalContext cn = 
+  updateGlobalState (\st -> st {globalContext = cn : globalContext st})
 
-addGlCn cn = updateGS (\st -> st {gsCtxt = cn : gsCtxt st}) -- add global context
 
-retrieveCn nms = -- retrieve the context with the identifiers in nms
-  do gCt <- askGS gsCtxt; let (nct, st) = runState (retrieve gCt) nms
-     unless (Set.null st) $ warn st; return nct -- warn a user if some sections could not be found
+
+retrieveContext names = do
+  globalContext <- askGlobalState globalContext 
+  let (context, unfoundSections) = runState (retrieve globalContext) names
+  -- warn a user if some sections could not be found
+  unless (Set.null unfoundSections) $ warn unfoundSections
+  return context
   where
-    warn st = rlog0 $ "Warning: Could not find sections " ++ unwords (map show $ Set.elems st)
+    warn unfoundSections = reasonerLog0 $ "Warning: Could not find sections "
+      ++ unwords (map show $ Set.elems unfoundSections)
+    retrieve [] = return []
+    retrieve (context:restContext) = let name = cnName context in
+      ifM (gets $ Set.member name) 
+          (modify (Set.delete name) >> fmap (context:) (retrieve restContext))
+          (retrieve restContext)
 
-
-
-class Named a where
-  name :: a -> String
-
-instance Named Context where name = cnName
-instance Named Rule    where name = rlLabl
-
-retrieve [] = return []
-retrieve (c:cnt) = ifM (gets $ Set.member nm) (del >> liftM (c:) (retrieve cnt)) (retrieve cnt) -- if a name matches, delete
-  where                                                                             -- it from the set
-    nm = name c
-    del = modify $ Set.delete nm
-
-retrieveMN _ [] = return []
-retrieveMN s (c:cnt) = if Set.member nm s then del >> liftM (c:) (retrieveMN s cnt) else retrieveMN s cnt
-  where
-    nm = name c
-    del = modify $ Set.delete nm
 
 
 
 -- Definition management
 
 -- initial definitions
-defs = IM.fromList [(-1, eq),(-2, less), (-4, fun),(-5,app),
-                    (-6,dom),(-7,set),(-8,elmnt), (-10, pair)]
+initialDefinitions = IM.fromList [ 
+  (-1,  equality),
+  (-2,  less),
+  (-4,  function),
+  (-5,  functionApplication), 
+  (-6,  domain),
+  (-7,  set),
+  (-8,  elementOf),
+  (-10, pair) ]
 
-  -- equality
-eq = DE [] Top Signature (zEqu (zVar "?0") (zVar "?1")) [] []
-  -- well-founded ordering
-less = DE [] Top Signature (zLess (zVar "?0") (zVar "?1")) [] []
-  -- set
-set = DE [] Top Signature (zSet $ zVar "?0") [] []
-  -- element
-elmnt = DE [zSet $ zVar "?1"] Top Signature (zElem (zVar "?0") (zVar "?1")) [] [[zSet $ zVar "?1"]]
-  -- function
-fun = DE [] Top Signature (zFun $ zVar "?0") [] []
-  -- function application
-app = DE [zFun $ zVar "?0", zElem (zVar $ "?1") $ zDom $ zVar "?0"] Top Signature (zApp (zVar "?0") (zVar "?1")) [] [[zFun $ zVar "?0"],[zElem (zVar $ "?1") $ zDom $ zVar "?0"]]
- -- domain of a function
-dom = DE [zFun $ zVar "?0"] (zSet ThisT) Signature (zDom $ zVar "?0") [zSet ThisT] [[zFun $ zVar "?0"]]
-
-pair = DE [] Top Signature (zPair (zVar "?0") (zVar "?1")) [] []
-
-
-defForm :: IM.IntMap DefEntry -> Formula -> Maybe Formula -- retrieve the definitional formula of a term
-defForm dfs t = do df <- IM.lookup (trId t) dfs           -- return Nothing in case of a SigExt
-                   guard $ dfSign df
-                   sb <- match (dfTerm df) t
-                   return $ sb $ dfForm df
+equality  = DE [] Top Signature (zEqu (zVar "?0") (zVar "?1")) [] []
+less      = DE [] Top Signature (zLess (zVar "?0") (zVar "?1")) [] []
+set       = DE [] Top Signature (zSet $ zVar "?0") [] []
+elementOf = DE [zSet $ zVar "?1"] Top Signature 
+  (zElem (zVar "?0") (zVar "?1")) [] [[zSet $ zVar "?1"]]
+function  = DE [] Top Signature (zFun $ zVar "?0") [] []
+domain    = DE [zFun $ zVar "?0"] (zSet ThisT) Signature
+  (zDom $ zVar "?0") [zSet ThisT] [[zFun $ zVar "?0"]]
+pair      = DE [] Top Signature (zPair (zVar "?0") (zVar "?1")) [] []
+functionApplication = 
+  DE [zFun $ zVar "?0", zElem (zVar $ "?1") $ zDom $ zVar "?0"] Top Signature 
+    (zApp (zVar "?0") (zVar "?1")) [] 
+    [[zFun $ zVar "?0"],[zElem (zVar $ "?1") $ zDom $ zVar "?0"]]
 
 
-getDef :: Formula -> VM DefEntry -- retrieve the definition of a symbol
-getDef t = do defs <- askGS gsDefs
-              let lu = IM.lookup (trId t) defs
-              guard $ isJust lu
-              return $ fromJust lu
+-- retrieve definitional formula of a term
+defForm :: IM.IntMap DefEntry -> Formula -> Maybe Formula
+defForm definitions term = do
+  def <- IM.lookup (trId term) definitions
+  guard $ dfSign def
+  sb <- match (dfTerm def) term
+  return $ sb $ dfForm def
 
 
-printDefs = askGS gsDefs >>= rlog0 . unlines . map show . IM.assocs
-  -- print all definitions to the screen (only for debugging)
+-- retrieve definition of a symbol (monadic)
+getDef :: Formula -> VM DefEntry
+getDef term = do
+  defs <- askGlobalState definitions
+  let mbDef = IM.lookup (trId term) defs
+  guard $ isJust mbDef
+  return $ fromJust mbDef
 
 -- groupings
 
 -- get the section identifiers grouped by a group identifier
 getLink :: [String] -> VM (Set.Set String)
-getLink ln = do
-  grps <- askGS gsGrup
+getLink link = do
+  groups <- askGlobalState identifierGroups
   return $ Set.unions $
-    map (\l -> M.findWithDefault (Set.singleton l) l grps) ln
+    map (\l -> M.findWithDefault (Set.singleton l) l groups) link
 
-addGroup [] = return () -- add a group identifier
-addGroup [nm] = rlog0 $ "Warning: empty group: " ++ show nm
-addGroup (nm:ps) =
-  getLink ps >>=
-    \ln -> updateGS (\st -> st {gsGrup = M.insert nm ln $ gsGrup st})
+-- add group identifier
+addGroup :: [String] -> VM ()
+addGroup [] = return ()
+addGroup [name] = reasonerLog0 $ "Warning: empty group: " ++ show name
+addGroup (name:identifiers) =
+  getLink identifiers >>= \link -> updateGlobalState 
+    (\st -> st {identifierGroups = M.insert name link $ identifierGroups st})

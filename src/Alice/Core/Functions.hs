@@ -140,7 +140,7 @@ getMacro cx tg = liftM (Tag tg . pd ) . either err return . dive
     dive (Tag tg' f) | tg == tg' = return f
     dive _ = Left $ "Warning: could not unfold macro: " ++ mcr tg
 
-    err s = rlog (cnHead cx) s >> return Top
+    err s = reasonerLog (cnHead cx) s >> return Top
 
     pd (Imp f g) = Imp (Tag DIH f) g
     pd f = f                             -- so that an author may instantiate quantified variables

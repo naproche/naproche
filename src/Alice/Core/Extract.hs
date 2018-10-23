@@ -29,8 +29,8 @@ import Debug.Trace
 
 
 {- extract definition from f and add it to the global state -}
-addDef f = do dfs <- askGS gsDefs; let ndf = extrDef dfs f
-              updateGS (\rs -> rs {gsDefs = add ndf (gsDefs rs)})
+addDef f = do dfs <- askGlobalState definitions; let ndf = extrDef dfs f
+              updateGlobalState (\rs -> rs {definitions = add ndf (definitions rs)})
     where
       add df@DE {dfTerm = t} im = IM.insert (trId t) df im
 

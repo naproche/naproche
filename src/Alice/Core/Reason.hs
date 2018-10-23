@@ -38,15 +38,15 @@ import Debug.Trace
 
 -- Reasoner
 
-reason tc = local (\st -> st {vsThes = tc}) prvThs
-withGoal fn g   = local (\st -> st { vsThes = setForm (vsThes st) g}) fn
-withCtxt fn cnt = local (\st -> st { vsCtxt = cnt }) fn
+reason tc = local (\st -> st {currentThesis = tc}) prvThs
+withGoal fn g   = local (\st -> st { currentThesis = setForm (currentThesis st) g}) fn
+withCtxt fn cnt = local (\st -> st { currentContext = cnt }) fn
 
-thesis = asks vsThes; context = asks vsCtxt
+thesis = asks currentThesis; context = asks currentContext
 
 
 prvThs :: VM ()
-prvThs = do  n <- askRSII IIdpth 3 ; guard $ n > 0       -- query whether the user has given a reasoning depth
+prvThs = do  n <- askInstructionInt IIdpth 3 ; guard $ n > 0       -- query whether the user has given a reasoning depth
              filt_context $ (splitG >>= goalseq n 0)-- split goals and start reasoning
 
 goalseq :: Int -> Int -> [Formula] -> VM ()
@@ -55,7 +55,7 @@ goalseq n m (f:fs) = do  (trv <|> lnc <|> dlp) `withGoal` rfr
   where
     rfr = reduce f           -- reduce f in view of evidences
 
-    trv = sbg >> guard (isTop rfr)>> when (not . isTop $ f) (incRSCI CIsubt)  -- check if f is trivially true
+    trv = sbg >> guard (isTop rfr)>> when (not . isTop $ f) (incrementIntCounter TrivialGoals)  -- check if f is trivially true
     lnc = launch m                                                            -- launch the prover with the given context and the reduced goal formula
 
     dlp | n == 1  = rde >> mzero
@@ -63,14 +63,14 @@ goalseq n m (f:fs) = do  (trv <|> lnc <|> dlp) `withGoal` rfr
                         let Context {cnForm = Not nfr} : nct = tsk
                         goalseq (pred n) (succ m) [nfr] `withCtxt` nct  -- start reasoning process again
 
-    rde = whenIB IBPrsn False $ rlog0 $ "reasoning depth exceeded"
-    sbg = when (not . isTop $ f) $ whenIB IBPrsn False $ rlog0 $ tri ++ show f
+    rde = whenInstruction IBPrsn False $ reasonerLog0 $ "reasoning depth exceeded"
+    sbg = when (not . isTop $ f) $ whenInstruction IBPrsn False $ reasonerLog0 $ tri ++ show f
     tri = if (isTop rfr) then "trivial: " else "proving: "
 
 goalseq  _ _ _ = return ()
 
 splitG :: VM [Formula]
-splitG = asks (spl_al . strip . cnForm . vsThes)
+splitG = asks (spl_al . strip . cnForm . currentThesis)
   where
     spl_al = spl . albet
     spl (All u f) = liftM (All u) (spl_al f)
@@ -82,24 +82,24 @@ splitG = asks (spl_al . strip . cnForm . vsThes)
 -- Call prover
 
 launch :: Int -> VM ()
-launch m = do  red <- askRSIB IBOnto False          -- ask if ontological reduction is enabled
-               whenIB IBPtsk False (debug red)      -- print prover taks if the option is enabled
-               prd <- askRS rsPrdb ; ins <- askRS rsInst
+launch m = do  red <- askInstructionBin IBOnto False          -- ask if ontological reduction is enabled
+               whenInstruction IBPtsk False (debug red)      -- print prover taks if the option is enabled
+               prd <- askRS provers ; ins <- askRS instructions
                tc <- thesis; cnt <- context
                let ext = justIO $ export red m prd ins cnt tc -- this is the monadic action for exporting the task
-               ext >>= timer CTprov . justIO >>= guard        -- do it, keep track of the time, then check if it was succesfull
-               CntrT _ td <- liftM head $ askRS rsCntr
-               addRSTI CTprvy td ; incRSCI CIprvy
+               ext >>= timer ProofTime . justIO >>= guard        -- do it, keep track of the time, then check if it was succesfull
+               TimeCounter _ td <- liftM head $ askRS counters
+               addTimeCounter SuccessTime td ; incrementIntCounter SuccessfulGoals
   where
-    debug red = do  rlog0 "prover task:"
-                    tlb <- asks $ map (if red then cnRedu else cnForm) . reverse . vsCtxt
+    debug red = do  reasonerLog0 "prover task:"
+                    tlb <- asks $ map (if red then cnRedu else cnForm) . reverse . currentContext
                     mapM_ ((putStrRM "  " >>) . printRM) tlb
                     putStrRM "  |- " ; thesis >>= printRM . cnForm
 
 
 callown :: VM ()
 callown = do   tc <- thesis; cnt <- context
-               n <- askGS gsSklm; ps <- askGS gsGlps; ng <- askGS gsGlng-- print prover taks if the option is enable
+               n <- askGlobalState skolemCounter; ps <- askGlobalState mesonPositives; ng <- askGlobalState mesonNegatives-- print prover taks if the option is enable
                let loc = takeWhile cnLowL cnt
                    prv = prove n loc ps ng tc
                    ext = timeout (10^4) $ evaluate $  prv    -- set timelimit to 10^4 (usually not necessary as max proof depth is limited)
@@ -114,10 +114,10 @@ callown = do   tc <- thesis; cnt <- context
    Otherwise the whole context is selected. -}
 filt_context :: VM a -> VM a
 filt_context fn =
-  do ln <- asks (cnLink . vsThes) >>= getLink; cnt <- asks vsCtxt;
+  do ln <- asks (cnLink . currentThesis) >>= getLink; cnt <- asks currentContext;
      if Set.null ln then fn `withCtxt` (map rephead $ filter (not .isTop . cnRedu) cnt)
        else let (low,dfs) = deflow cnt in
-      retrieveCn ln >>= \nct -> fn `withCtxt` (low ++ nct ++ dfs)
+      retrieveContext ln >>= \nct -> fn `withCtxt` (low ++ nct ++ dfs)
   where
     deflow cnt = let (low,top) = span cnLowL cnt; dfs = map replacehead $ filter (\c -> (not . isTop . cnRedu $ c) && (defn c || sign c)) top
                   in (low,dfs)
@@ -197,18 +197,18 @@ data UF = UF {dfs :: Definitions, evs :: DT.DisTree Eval, ufl :: Bool, ufs :: Bo
 unfold :: VM [Context]
 unfold = do  ths <- thesis; cnt <- context
              let tsk = setForm ths (Not $ cnForm ths) : cnt
-             dfs <- askGS gsDefs; dt <- asks vsEval
-             ugen  <- askRSIB IBUnfl True; ulow  <- askRSIB IBUfdl True;
-             usgen <- askRSIB IBUnfs True; uslow <- askRSIB IBUfds False
+             dfs <- askGlobalState definitions; dt <- asks evaluations
+             ugen  <- askInstructionBin IBUnfl True; ulow  <- askInstructionBin IBUfdl True;
+             usgen <- askInstructionBin IBUnfs True; uslow <- askInstructionBin IBUfds False
              guard (ugen || usgen)
              let ((gl:tun), rst) = span cnLowL tsk
                  (nloc, num) = W.runWriter $ flip runReaderT (UF dfs dt (ugen && ulow) (usgen && uslow)) $
                    liftM2 (:) (local (\st -> st {ufl = ugen, ufs = usgen}) $ unfoldC gl) (mapM unfoldC tun) --actual unfolding, writer monad records the number of unfolds
-             unf nloc; when (num == 0) $ ntu >> mzero; addRSCI CIunfl (getSum num) -- report what has been unfolded or that nothing has been unfolded (-> fail)
+             unf nloc; when (num == 0) $ ntu >> mzero; addIntCounter Unfolds (getSum num) -- report what has been unfolded or that nothing has been unfolded (-> fail)
              return $ nloc ++  rst
   where
-    ntu         = whenIB IBPunf False $ rlog0 $ "nothing to unfold" -- only write messages if printunfold is turned on
-    unf (tc:lc) = whenIB IBPunf False $ rlog0 $ "unfold to:\n"
+    ntu         = whenInstruction IBPunf False $ reasonerLog0 $ "nothing to unfold" -- only write messages if printunfold is turned on
+    unf (tc:lc) = whenInstruction IBPunf False $ reasonerLog0 $ "unfold to:\n"
                     ++ unlines (reverse $ map ((++) "  " . show . cnForm) lc)
                     ++ "  |- " ++ show (neg $ cnForm tc)
 

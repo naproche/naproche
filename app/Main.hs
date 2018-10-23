@@ -51,44 +51,45 @@ main  = do
   finishTime <- getCurrentTime
   finalReasonerState <- readIORef reasonerState
 
-  let counters   = rsCntr finalReasonerState
-      accumulate = cumulCI counters 0
+  let counterList = counters finalReasonerState
+      accumulate  = accumulateIntCounter counterList 0
 
   -- print statistics
   putStrLn $ "[Main] "
-    ++ "sections "    ++ show (accumulate CIsect)
-    ++ " - goals "    ++ show (accumulate CIgoal)
-    ++ (let ignoredFails = accumulate CIfail
+    ++ "sections "    ++ show (accumulate Sections)
+    ++ " - goals "    ++ show (accumulate Goals)
+    ++ (let ignoredFails = accumulate FailedGoals
         in  if   ignoredFails == 0
             then ""
             else " - failed "   ++ show ignoredFails)
-    ++ " - trivial "   ++ show (accumulate CIsubt)
-    ++ " - proved "    ++ show (accumulate CIprvy)
-    ++ " - equations " ++ show (accumulate CIeqtn)
-    ++ (let failedEquations = accumulate CIeqfl
+    ++ " - trivial "   ++ show (accumulate TrivialGoals)
+    ++ " - proved "    ++ show (accumulate SuccessfulGoals)
+    ++ " - equations " ++ show (accumulate Equations)
+    ++ (let failedEquations = accumulate FailedEquations
         in  if   failedEquations == 0
             then ""
             else " - failed " ++ show failedEquations)
 
-  let trivialChecks = accumulate CIchkt
+  let trivialChecks = accumulate TrivialChecks
 
   putStrLn $ "[Main] "
-    ++ "symbols "     ++ show (accumulate CIsymb)
-    ++ " - checks "   ++ show (cumulCI counters trivialChecks CIchkh)
+    ++ "symbols "     ++ show (accumulate Symbols)
+    ++ " - checks "   ++ show 
+      (accumulateIntCounter counterList trivialChecks HardChecks)
     ++ " - trivial "  ++ show trivialChecks
-    ++ " - proved "   ++ show (accumulate CIchky)
-    ++ " - unfolds "  ++ show (accumulate CIunfl)
+    ++ " - proved "   ++ show (accumulate SuccessfulChecks)
+    ++ " - unfolds "  ++ show (accumulate Unfolds)
 
-  let accumulateTime = cumulCT counters
-      proverTime     = accumulateTime proveStart CTprov
-      simplifyTime   = accumulateTime proverTime CTsimp
+  let accumulateTime = accumulateTimeCounter counterList
+      proverTime     = accumulateTime proveStart ProofTime
+      simplifyTime   = accumulateTime proverTime SimplifyTime
 
   putStrLn $ "[Main] "
     ++ "parser "        ++ showTimeDiff (diffUTCTime proveStart startTime)
     ++ " - reason "     ++ showTimeDiff (diffUTCTime finishTime simplifyTime)
     ++ " - simplifier " ++ showTimeDiff (diffUTCTime simplifyTime proverTime)
     ++ " - prover "     ++ showTimeDiff (diffUTCTime proverTime proveStart)
-    ++ "/" ++ showTimeDiff (maximCT counters CTprvy)
+    ++ "/" ++ showTimeDiff (maximalTimeCounter counterList SuccessTime)
   putStrLn $ "[Main] "
     ++ "total "
     ++ showTimeDiff (diffUTCTime finishTime startTime)
@@ -98,7 +99,7 @@ onlyTranslate :: UTCTime -> [Text] -> IO ()
 onlyTranslate startTime text = do
   mapM_ printTB text; finishTime <- getCurrentTime
   putStrLn $ "[Main] total " ++ timeDifference finishTime
-  exitWith ExitSuccess
+  exitSuccess
   where
     timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)
     printTB (TB bl) = print bl; printTB _ = return ()
@@ -108,7 +109,7 @@ onlyTranslate startTime text = do
 
 readOpts :: IO [Instr]
 readOpts  = do
-  (is, fs, es) <- liftM (getOpt Permute options) getArgs
+  (is, fs, es) <- fmap (getOpt Permute options) getArgs
   let text = is ++ [InStr ISfile $ head $ fs ++ [""]]
   unless (all wellformed is && null es) $ die es
   when (askIB IBPIDE False is) initPIDE
@@ -120,7 +121,7 @@ wellformed _            = True
 
 initPIDE = putStrLn "PIDE protocol init"   -- FIXME proper implementation
 
-helper = putStr (usageInfo usageHeader options) >> exitWith ExitSuccess
+helper = putStr (usageInfo usageHeader options) >> exitSuccess
 
 die es = putStr (concatMap ("[Main] " ++) es) >> exitFailure
 
