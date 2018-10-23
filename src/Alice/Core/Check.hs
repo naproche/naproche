@@ -29,7 +29,7 @@ import Alice.Core.Functions
 import qualified Alice.Data.DisTree as DT
 
 
-
+{- check definitions and fortify terms with evidences in a formula -}
 fillDef :: Context -> VM Formula
 fillDef context = fill True False [] (Just True) 0 $ cnForm context
   where

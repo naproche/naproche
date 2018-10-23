@@ -92,7 +92,7 @@ vLoop st@VS {thesisMotivated = mot, rewriteRules = rls, currentThesis = ths, bra
       let nbl = bl { blForm = deICH nfr, blBody = npr }
           blf = formulate nbl
 
-      when (sg == Defn || sg == Sign) $ addDef blf -- extract Definitions
+      when (sg == Defn || sg == Sign) $ addDefinition blf -- extract Definitions
       mrl <- contras (noForm bl) (deTag blf) -- compute MESON rules for the internal proof method
       dfs <- askGlobalState definitions
       let red = foldr1 And $ map (onto_reduce dfs) (assm_nf blf) -- compute ontological reduction of the formula
@@ -110,7 +110,7 @@ vLoop st@VS {thesisMotivated = mot, rewriteRules = rls, currentThesis = ths, bra
 
       let nrls = extractRule (head nct) ++ rls -- extract rewrite rules
 
-      let nevs = if sg `elem` [Declare, Defn] then addEval evs blf else evs-- extract evaluations
+      let nevs = if sg `elem` [Declare, Defn] then addEvaluation evs blf else evs-- extract evaluations
 
 
       -- now we are done with the block and move on to verify the rest of the text (with an updated VS)
