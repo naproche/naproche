@@ -183,9 +183,9 @@ solve_gs cx verb gs = setup >> easy >>= hard
 
     ccx = let bl:bs = cnBran cx in cx { cnBran = bl { blLink = [] } : bs }
 
-    triv g = if rapid g
+    triv g = if trivialByEvidence g
                then return $ Right g  -- triviality check
-               else callown `withGoal` g >> return (Right g)
+               else launchReasoning `withGoal` g >> return (Right g)
                  <|> return (Left g)
 
 

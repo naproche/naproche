@@ -44,16 +44,16 @@ fillDef context = fill True False [] (Just True) 0 $ cnForm context
     fill _ _ localContext _ _ v | isVar v = do
       userInfoSetting <- askInstructionBin IBinfo True
       newContext      <- cnRaise context localContext
-      collectInfo userInfoSetting v `withCtxt` newContext -- fortify the term
+      collectInfo userInfoSetting v `withContext` newContext -- fortify the term
     fill isPredicat isNewWord localContext sign n 
          term@Trm {trName = t, trArgs = tArgs, trInfo = infos, trId = tId} = do
       userInfoSetting <- askInstructionBin IBinfo True
       fortifiedArgs   <- mapM (fill False isNewWord localContext sign n) tArgs
       newContext      <- cnRaise context localContext
       fortifiedTerm   <- setDef isNewWord context term {trArgs = fortifiedArgs} 
-        `withCtxt` newContext
+        `withContext` newContext
       collectInfo (not isPredicat && userInfoSetting) fortifiedTerm 
-        `withCtxt` newContext        -- fortify term
+        `withContext` newContext        -- fortify term
     fill isPredicat isNewWord localContext sign n f = -- round throuth formula
       roundFM 'w' (fill isPredicat isNewWord) localContext sign n f 
 
@@ -149,9 +149,9 @@ testDef context term (guards, fortifiedTerm) = do
 
 
     trivialityCheck g = 
-      if   rapid g
+      if   trivialByEvidence g
       then return $ Right g  -- triviality check
-      else callown `withGoal` g >> return (Right g) <|> return (Left g)
+      else launchReasoning `withGoal` g >> return (Right g) <|> return (Left g)
 
 
 -- Info heuristic

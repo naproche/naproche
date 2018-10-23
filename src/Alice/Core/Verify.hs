@@ -138,7 +138,7 @@ vLoop st@VS {thesisMotivated = True, rewriteRules = rls, currentThesis = ths, cu
                     bl = cnHead ths ; tx = blText bl
                 when (not . isTop . cnForm $ ths) $ incrementIntCounter Goals
                 whenInstruction IBPgls True rl
-                prvThs <|> (reasonerLog bl "goal failed" >> guardInstruction IBskip False >> incrementIntCounter FailedGoals)
+                proveThesis <|> (reasonerLog bl "goal failed" >> guardInstruction IBskip False >> incrementIntCounter FailedGoals)
 
 {- process instructions in the text. We distinguis those that do not concern the
    proof process (simply print something to the screen or change an instruction value)

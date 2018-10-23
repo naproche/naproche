@@ -302,9 +302,9 @@ dups (v:vs) = infilt vs v `mplus` dups vs
 dups _      = mzero
 
 {- safe identifier extraction -}
-mbId :: Formula -> Maybe Int
-mbId Trm {trId = n} = return n
-mbId _ = mzero
+tryToGetID :: Formula -> Maybe Int
+tryToGetID Trm {trId = n} = return n
+tryToGetID _ = mzero
 
 {- match a formula with another formula and return the substitution. Only variables
    whose name begins with a '?' are considered matchable. All others are treated

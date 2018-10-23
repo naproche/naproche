@@ -36,7 +36,7 @@ new_thesis dfs cnt@(ct:_) tc | fnMacro ct = fn_thesis ct tc
                          | otherwise = (nmt, chng, ntc)
   where
     nmt = nas || isJust ith -- a thesis can only become unmotivated through an assumption
-    ntc = setForm tc $ reduce lth
+    ntc = setForm tc $ reduceWithEvidence lth
     lth = getObj kth
     chng = hasChanged kth
     kth | nas = thsReduce dfs (cnForm ct) jth -- if not an assumption, enable destruction of defined symbols
@@ -79,7 +79,7 @@ tmComp n f g  = cmp (albet f) (albet g) -- tmComp compares two formulas syntacti
     nvr = show n
 
 {- checks whether an instantitation of f can be patched together from the hs.
-   Important to be able to reduce an existential thesis. -}
+   Important to be able to reduceWithEvidence an existential thesis. -}
 instExi (Exi _ f) hs = not . null $ instList 1 M.empty (albet $ inst "i0" f) hs
 instExi (Not f) hs = instExi (albet (Not f)) hs
 
@@ -140,7 +140,7 @@ tmInst dfs (ct:cnt) ths = find gut insts
     gut g = isTop $ getObj $  tmWipe (cjs 0 $ Not g) $ cnForm ct
 
 --- improved reduction
-{- this function enables *affirmations* to reduce defined symbols
+{- this function enables *affirmations* to reduceWithEvidence defined symbols
    before (instead of only assumptions). Only one layer of definition
    can be stripped away at a time. -}
 
@@ -151,7 +151,7 @@ thsReduce dfs fr jth = let njth = tmWipe (cjs 0 fr) jth
                         in
                         if (not . hasChanged) njth                   -- if reduction had no effect
                            then
-                           if (not . hasChanged) nexj                -- we check whether expanding the formula lets us reduce further
+                           if (not . hasChanged) nexj                -- we check whether expanding the formula lets us reduceWithEvidence further
                               then return jth                        -- if not, we cannot detect changes to the thesis
                               else nexj                        -- if yes, we take the reduced expanded formula
                            else njth
@@ -196,7 +196,7 @@ tmPass dfs  = pass [] (Just True) 0
 
         qua u f = tmVars u f >>= dive
         rnd h = roundFM 'z' pass fc sg n h
-        def t = msum . map (dive . reduce . markRec  (trId t)) . maybeToList . defForm dfs $ t -- look behind the definition of symbols
+        def t = msum . map (dive . reduceWithEvidence . markRec  (trId t)) . maybeToList . defForm dfs $ t -- look behind the definition of symbols
                                                                                                   -- to find an instantiation
 
 {- mark symbols that are recursively defined in their defining formula, so that
