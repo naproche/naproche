@@ -300,7 +300,8 @@ unfoldAtomic sign f = do
     localProperties t 
       | isApp t || isElem t = setFunDefinitionalProperties t
       | otherwise = definitionalProperties t t
-
+    
+    -- return definitional property of f instantiated with g
     definitionalProperties f g = do
       definitions <- asks defs
       let definingFormula = maybeToList $ do

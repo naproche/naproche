@@ -35,7 +35,7 @@ import Alice.Core.ProofTask
 import Alice.Core.Extract
 import qualified Alice.Data.DisTree as DT
 
-import Alice.Core.Rewrite hiding (simplify)
+import Alice.Core.Rewrite
 
 import Debug.Trace
 
@@ -108,7 +108,7 @@ vLoop st@VS {thesisMotivated = mot, rewriteRules = rls, currentThesis = ths, bra
       
       when (not nmt && mot) $ thesisLog (length brn - 2) bl $ "Warning: unmotivated assumption"
 
-      let nrls = extractRule (head nct) ++ rls -- extract rewrite rules
+      let nrls = extractRewriteRule (head nct) ++ rls -- extract rewrite rules
 
       let nevs = if sg `elem` [Declare, Defn] then addEvaluation evs blf else evs-- extract evaluations
 
@@ -131,7 +131,7 @@ vLoop st@VS {thesisMotivated = True, rewriteRules = rls, currentThesis = ths, cu
             do  let rl = reasonerLog bl $ "goal: " ++ tx
                     bl = cnHead ths ; tx = blText bl
                 incrementIntCounter Equations ; whenInstruction IBPgls True rl
-                timer SimplifyTime (eqReason ths) <|> (reasonerLog bl "equation failed" >>
+                timer SimplifyTime (equalityReasoning ths) <|> (reasonerLog bl "equation failed" >>
                     guardInstruction IBskip False >> incrementIntCounter FailedEquations)
             else -- this signifies conventional reasoning -> passed to the prover
             do  let rl = reasonerLog bl $ "goal: " ++ tx
@@ -169,7 +169,7 @@ splitTh st@VS {rewriteRules = rls, currentThesis = ths, currentContext = cnt, br
     dive _ _ _                     = vLoop st
 
     fine nct f  = do dfs <- askGlobalState definitions
-                     let nrls     = extractRule (head nct) ++ rls
+                     let nrls     = extractRewriteRule (head nct) ++ rls
                          (_,_,nth) = new_thesis dfs nct $ setForm ths f
                      ib <- askInstructionBin IBPths False
                      when (ib && noICH (cnForm nth) && not (null $ remainingText st)) $ thesisLog (length brn - 2) (head $ cnBran $ head cnt) $ "new thesis " ++ show (cnForm nth)

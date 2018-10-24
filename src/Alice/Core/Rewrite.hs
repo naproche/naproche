@@ -6,7 +6,7 @@ Term rewriting: extraction of rules and proof of equlities.
 {-# LANGUAGE FlexibleContexts #-}
 
 
-module Alice.Core.Rewrite (eqReason, extractRule, printrules) where
+module Alice.Core.Rewrite (equalityReasoning) where
 
 
 import Alice.Data.Base
@@ -18,8 +18,6 @@ import Alice.Data.Instr
 import Alice.Core.Thesis
 import Alice.Core.Reason
 
-
-
 import Data.List
 import Data.Maybe
 import qualified Data.IntMap.Strict as IM
@@ -27,200 +25,211 @@ import qualified Data.Set as Set
 import Control.Monad.State
 import Data.Either
 import Control.Monad.Reader
-
-import Debug.Trace
 import Control.Monad
 
 
+-- Lexicographic path ordering
 
+{- a weighting to parametrize the LPO -}
 type Weighting = String -> String -> Bool
 
-
--- Lexicographic path ordering
 
 {- standard implementation of LPO -}
 lpoGe :: Weighting -> Formula -> Formula -> Bool
 lpoGe w t s = twins t s || lpoGt w t s
 
+
 lpoGt :: Weighting -> Formula -> Formula -> Bool
 lpoGt w tr@Trm {trName = t, trArgs = ts} sr@Trm {trName = s, trArgs = ss} =
-     any (\ti -> lpoGe w ti sr) ts
-  || (all (lpoGt w tr) ss
-  && ((t == s && lexord (lpoGt w) ts ss)
-  || w t s))
-lpoGt w Trm { trName = t, trArgs = ts} v@Var {trName = x} = w t x || any (\ti -> lpoGe w ti v) ts
-lpoGt w v@Var {trName = x} Trm {trName = t, trArgs = ts} = w x t && all (lpoGt w v) ts
+   any (\ti -> lpoGe w ti sr) ts
+    || (all (lpoGt w tr) ss
+    && ((t == s && lexord (lpoGt w) ts ss)
+    || w t s))
+lpoGt w Trm { trName = t, trArgs = ts} v@Var {trName = x} =
+  w t x || any (\ti -> lpoGe w ti v) ts
+lpoGt w v@Var {trName = x} Trm {trName = t, trArgs = ts} =
+  w x t && all (lpoGt w v) ts
 lpoGt w Var{trName = x} Var {trName = y} = w x y
 lpoGt _ _ _ = False
 
+
 lexord :: (Formula -> Formula -> Bool) -> [Formula] -> [Formula] -> Bool
-lexord ord (x:xs) (y:ys) | ord x y = length xs == length ys
-                         | otherwise = twins x y && lexord ord xs ys
+lexord ord (x:xs) (y:ys)
+  | ord x y = length xs == length ys
+  | otherwise = twins x y && lexord ord xs ys
 lexord _ _ _ = False
 
 
 -- simplification
 
-{- performs one simplification step. We always try to simplify in a leftmost-bottommost fashion
-   with respect to the term structure -}
+{- type to record conditions and intermediate steps during simplification -}
+type SimpInfo = ([Formula], String)
 
 
-type SI = ([Formula], String)
-
-
-
-simpstep :: [Rule] -> Weighting -> Formula -> [(Formula, SI)]
-simpstep rls w = flip runStateT undefined . dive -- dive :: StateT SI Maybe Formula
+{- performs one simplification step. We always try to simplify in a 
+leftmost-bottommost fashion with respect to the term structure -}
+simpstep :: [Rule] -> Weighting -> Formula -> [(Formula, SimpInfo)]
+simpstep rules w = flip runStateT undefined . dive
   where
-    dive t@Trm {trName = tr, trArgs = ts} = (try ts [] >>= \nts -> return t {trArgs = nts}) `mplus` app t
-    dive v@Var{} = app v
+    dive t@Trm {trName = tName, trArgs = tArgs} =
+      (do newArgs <- try tArgs; return t {trArgs = newArgs}) `mplus` applyRule t
+    dive v@Var{} = applyRule v
 
-    try [] _ = mzero
-    try (t:ts) rs = (dive t >>= \nt -> return $ reverse rs ++ (nt:ts)) `mplus` try ts (t:rs)
+    try [] = mzero
+    try (t:ts) = (dive t >>= \nt -> return (nt:ts)) `mplus` fmap (t :) (try ts)
 
-    app t = do (f, cnd, rl) <- lift (app_l True t `mplus` app_l False t); put (cnd, rlLabl rl); return f
+    applyRule t = do
+      (f, cnd, rl) <- lift (applyLeftToRight t `mplus` applyRightToLeft t)
+      put (cnd, rlLabl rl); return f
 
-    app_l p t = do rl <- rls; let (l,r) = if p then (rlLeft rl, rlRght rl) else (rlRght rl, rlLeft rl);
-                   sbs <- match l t; guard $ full (sbs r) && check sbs l r; return (sbs r, map sbs $ rlCond rl, rl)
+    applyLeftToRight = applyRuleDirected True
+    applyRightToLeft = applyRuleDirected False
 
-    check sbs l r = lpoGt w (sbs l) (sbs r); full Var {trName = '?':_} = False; full f = allF full f
+    applyRuleDirected p t = do
+      rule <- rules
+      let (l,r) =
+            if   p
+            then (rlLeft rule, rlRght rule)
+            else (rlRght rule, rlLeft rule)
+      sbs <- match l t; let nr = sbs r
+      guard $ full nr && lpoGt w (sbs l) nr -- simplified term must be lighter
+      return (sbs r, map sbs $ rlCond rule, rule)
+
+    full Var {trName = '?':_} = False; full f = allF full f
 
 
-
-
-
-
-findnf :: [Rule] -> Weighting -> Formula -> [[(Formula, SI)]]
-findnf rls w f = map (reverse . (:) (f, (pure Top, ""))) $ dive f
+{- finds ALL normalforms and their corresponding simplification paths -}
+findNormalform :: [Rule] -> Weighting -> Formula -> [[(Formula, SimpInfo)]]
+findNormalform rules w t = map (reverse . (:) (t, trivialSimpInfo)) $ dive t
   where
-    dive f = case simpstep rls w f of [] -> return []; smps -> do (t,gs) <- smps; liftM ((:) (t,gs)) $ dive t
+    trivialSimpInfo = (pure Top, "")
+    dive t = case simpstep rules w t of
+      [] -> return []
+      simplifications -> do
+        (simplifiedTerm, simpInfo) <- simplifications
+        (:) (simplifiedTerm, simpInfo) <$> dive simplifiedTerm
 
 
-
-findp :: Bool -> [Rule] -> Weighting -> Formula -> Formula -> VM [SI]
-findp verb rls w l r = let ls = findnf rls w l; rs = findnf rls w r; pths = paths ls rs
-                        in if null pths then (out ls rs >> mzero)
-                            else let (sl, sr) = head pths in showpath sl >> showpath sr >> return (map snd $ sl ++ sr)
+{- finds two matching normalforms and outputs all conditions accumulated 
+during their rewriting -}
+generateConditions ::
+  Bool -> [Rule] -> Weighting -> Formula -> Formula -> VM [SimpInfo]
+generateConditions verbositySetting rules w l r =
+  let leftNormalForms  = findNormalform rules w l
+      rightNormalForms = findNormalform rules w r
+      paths = simpPaths leftNormalForms rightNormalForms
+  in  if   null paths
+      then log (head leftNormalForms) (head rightNormalForms) >> mzero
+      else let (leftPath, rightPath) = head paths
+            in showPath leftPath >> showPath rightPath >>
+               return (map snd $ leftPath ++ rightPath)
   where
-    paths ls rs = do lp@((l, _):_) <- ls; rp@((r, _):_) <- rs; guard (twins l r); return (reverse lp, reverse rp)
-    out ls rs = when verb $
-                      do simpLog0 $ "no matching normal forms found"; showpath (head ls); showpath (head rs)
-    showpath ((f,_):ls) = when verb $ simpLog0 (show f) >> mapM_ (\(f,gs) -> simpLog0 $ " --> " ++ show f ++ conditions gs) ls
-    conditions (gs, nm) = annote nm (" by " ++ nm ++ ",") ++  annote gs (" conditions: " ++ unwords (intersperse "," $ map show gs))
-    annote s str = if null s then "" else str
+    -- check for matching normalforms and output the paths to them
+    simpPaths leftNormalForms rightNormalForms = do
+      leftPath@ ((simplifiedLeft , _):_) <- leftNormalForms
+      rightPath@((simplifiedRight, _):_) <- rightNormalForms
+      guard (twins simplifiedLeft simplifiedRight)
+      return (reverse leftPath, reverse rightPath)
 
-
-
-{- apply simplification steps until a normal form is reached. If verbose mode is
-   active, also print a log of the simplifications performed -}
-simplify :: Bool -> [Rule] -> Weighting -> Formula -> VM Formula
-simplify verb rls w f = return Top
-
+    -- logging and user communication
+    log leftNormalForm rightNormalForm = when verbositySetting $ do
+      simpLog0 $ "no matching normal forms found"
+      showPath leftNormalForm; showPath rightNormalForm
+    showPath ((t,_):rest) = when verbositySetting $
+      simpLog0 (show t) >> mapM_ (simpLog0 . format) rest
+    -- formatting of paths
+    format (t, simpInfo) = " --> " ++ show t ++ conditions simpInfo
+    conditions (conditions, name) =
+      (if null name then "" else " by " ++ name ++ ",") ++
+      (if null conditions then "" else " conditions: " ++
+        unwords (intersperse "," $ map show conditions))
 
 
 {- applies computational reasoning to an equality chain -}
-eqReason :: Context -> VM ()
-eqReason ths | body = do whenInstruction IBPrsn False $ reasonerLog0 $ "eqchain concluded"
-                         return ()
-             | (not . null) (link) = do frl <- retrieveRl link; comp frl $ strip $ cnForm ths -- get the referenced rewrite rules and call comp for rewriting
-             | otherwise = do rls <- rules; comp rls $ strip $ cnForm ths -- if no link is provided, take all rules
-    where
-      link = cnLink ths
-      body = (not .null) $ blBody . head . cnBran $ ths -- this is true for the overaching block of the EC
-
-retrieveRl :: [String] -> VM [Rule]
-retrieveRl ln = do rls <- rules; nln <- getLink ln; let (nrl, st) = runState (retrieve nln rls) nln
-                   unless (Set.null st) $ warn st; return nrl
+equalityReasoning :: Context -> VM ()
+equalityReasoning thesis
+  | body = whenInstruction IBPrsn False $ reasonerLog0 $ "eqchain concluded"
+  | (not . null) link = getLinkedRules link >>= rewrite equation
+  | otherwise = rules >>= rewrite equation -- if no link is given -> all rules
   where
-    warn st = simpLog0 $ "Warning: Could not find rules " ++ unwords (map show $ Set.elems st)
+    equation = strip $ cnForm thesis
+    link = cnLink thesis
+    -- body is true for the EC section containing the equlity chain
+    body = (not . null) $ blBody . head . cnBran $ thesis
+
+
+getLinkedRules :: [String] -> VM [Rule]
+getLinkedRules link = do
+  rules <- rules; newLink <- getLink link
+  let (linkedRules, unfoundRules) = runState (retrieve newLink rules) newLink
+  unless (Set.null unfoundRules) $ warn unfoundRules
+  return linkedRules
+  where
+    warn st = simpLog0 $ "Warning: Could not find rules " ++
+      unwords (map show $ Set.elems st)
 
     retrieve _ [] = return []
     retrieve s (c:cnt) = let nm = rlLabl c in
-      if   Set.member nm s 
-      then modify (Set.delete nm) >> liftM (c:) (retrieve s cnt)
+      if   Set.member nm s
+      then modify (Set.delete nm) >> fmap (c:) (retrieve s cnt)
       else retrieve s cnt
 
 
+{- fetch all rewrite rules from the global state -}
+rules :: VM [Rule]
 rules = asks rewriteRules
 
 
+{- applies rewriting to both sides of an equation 
+and compares the resulting normal forms -}
+rewrite :: Formula -> [Rule] -> VM ()
+rewrite Trm {trName = "=", trArgs = [l,r]} rules = do
+  verbositySetting <- askInstructionBin IBPsmp False -- check if printsimp is on
+  conditions <- generateConditions verbositySetting rules (>) l r;
+  mapM_ (dischargeConditions verbositySetting . fst) conditions
+rewrite _ _ = error "Alice.Core.Rewrite.rewrite: non-equation argument"
 
 
-
-
-
-{- applies rewriting and compares the resulting normal forms -}
-comp :: [Rule] -> Formula -> VM ()
-comp rls Trm {trName = "=", trArgs = [l,r]}=
-  do verb <- askInstructionBin IBPsmp False -- check if printsimp is on
-     gs <- findp verb rls (>) l r; cx <- thesis
-     mapM_ (solve_gs cx verb) $ map fst gs
-     return ()
-
-
-solve_gs cx verb gs = setup >> easy >>= hard
+{- dischargeConditions accumulated during rewriting -}
+dischargeConditions :: Bool -> [Formula] -> VM ()
+dischargeConditions verbositySetting conditions =
+  setup >> easy >>= hard
   where
-    easy     = mapM triv gs
-    hard hgs | all isRight hgs = whdt hgs >> cleanup
-             | otherwise = whd (header lefts hgs ++ thead (rights hgs))
-                          >> (mapM (reason . setForm ccx) (lefts hgs) >> cleanup) <|> (cleanup >> mzero)
+    easy = mapM trivialityCheck conditions
+    hard hardConditions
+      | all isRight hardConditions =
+          if all isTop $ rights hardConditions
+          then cleanup
+          else log ("trivial " ++ header rights hardConditions) >> cleanup
+      | otherwise = (do
+          log (header lefts hardConditions ++ thead (rights hardConditions))
+          thesis <- thesis
+          mapM_ (reason . setForm (wipeLink thesis)) (lefts hardConditions)
+          cleanup) <|> (cleanup >> mzero)
 
+    setup = do
+      askInstructionInt IIchtl 1 >>= addInstruction . InInt IItlim
+      askInstructionInt IIchdp 3 >>= addInstruction . InInt IIdpth
+      addInstruction $ InBin IBOnto False
 
-    setup    = do  askInstructionInt IIchtl 1 >>= addInstruction . InInt IItlim
-                   askInstructionInt IIchdp 3 >>= addInstruction . InInt IIdpth
-                   addInstruction $ InBin IBOnto False
+    cleanup = do
+      dropInstruction $ IdInt IItlim
+      dropInstruction $ IdInt IIdpth
+      dropInstruction $ IdBin IBOnto
 
+    header select conditions = "condition: " ++ format (select conditions)
+    thead [] = ""; thead conditions = "(trivial: " ++ format conditions ++ ")"
+    format conditions =
+      if   null conditions
+      then " - "
+      else unwords . intersperse "," . map show $ reverse conditions
+    log msg = when verbositySetting $ thesis >>= flip simpLog msg
 
-    cleanup  = do  dropInstruction $ IdInt IItlim
-                   dropInstruction $ IdInt IIdpth
-                   dropInstruction $ IdBin IBOnto
+    wipeLink thesis =
+      let block:restBranch = cnBran thesis
+      in  thesis {cnBran = block {blLink = []} : restBranch}
 
-    header sel gs = "condition: " ++ grds (sel gs)
-    thead [] = ""; thead gs = "(trivial: " ++ grds gs ++ ")"
-    grds  gs = if null gs then " - " else unwords . intersperse "," . map show $ reverse gs
-    whd = when verb . simpLog cx
-    whdt hgs = if all isTop $ rights hgs then return () else whd ("trivial " ++ header rights hgs)
-
-    ccx = let bl:bs = cnBran cx in cx { cnBran = bl { blLink = [] } : bs }
-
-    triv g = if trivialByEvidence g
-               then return $ Right g  -- triviality check
-               else launchReasoning `withGoal` g >> return (Right g)
-                 <|> return (Left g)
-
-
-
-
--- extraction of rewrite rules
-
-{- extracts eligible rewrite rules from a formula.
-   dive moves though the formula and collects conditions
-   for a rewrite rule to be applicable. Only conditions that
-   are made clear by implication can be detected. -}
-extractRule :: Context -> [Rule]
-extractRule c = map (\rl -> rl {rlLabl = cnName c}) $ dive 0 [] $ cnForm c
-  where
-    dive n gs (All _ (Iff (Tag DHD Trm {trName = "=", trArgs = [_,t]}) f )) -- if a DHD is reached, discard all collected guards (they must always be true locally)
-      = dive n gs $ subst t "" $ inst "" f
-    dive n gs (All _ (Imp (Tag DHD Trm {trName = "=", trArgs = [_, t]}) f))                 -- -"-
-      = dive n gs $ subst t "" $ inst "" f
-    dive n gs (All _ f) = let nn = '?' : show n in dive (succ n) gs $ inst nn f -- instantiate universal quant
-    dive n gs (Imp f g) = dive n (deAnd f ++ gs) g            -- record conditions
-    dive n gs (Tag _ f) = dive n gs f                -- ignore tags
-    dive n gs (And f g) = dive n gs f ++ dive n gs g -- search for rewrite rules separately in the conjuncts
-    dive n gs Trm {trName = "=", trArgs = [l,r]} | head (trName l) /= '?' --check that the left side is not simply a variable
-      = return $ Rule l r gs undefined
-    dive n gs (Not Trm{}) = mzero
-    dive n gs f | isNot f = dive n gs $ albet f -- pushdown negation
-    dive _ _ _ = mzero
-
-
-
-
--- show instances and user communication
-
-instance Show Rule where
-  show rl = show (rlLeft rl) ++ " = " ++ show (rlRght rl) ++ ", Cond: " ++ show (rlCond rl) ++ ", Label: " ++ show (rlLabl rl)
-
-printrules :: [Rule] -> String
-printrules = unlines . map show
+    trivialityCheck g =
+      if   trivialByEvidence g
+      then return $ Right g  -- triviality check
+      else launchReasoning `withGoal` g >> return (Right g) <|> return (Left g)

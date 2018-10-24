@@ -104,43 +104,43 @@ a task to an ATP.
 
 
 testDef :: Context -> Formula -> DefDuo -> VM Formula
-testDef context term (guards, fortifiedTerm) = do 
+testDef context term (guards, fortifiedTerm) = do
   userCheckSetting <- askInstructionBin IBchck True
-  if   userCheckSetting 
+  if   userCheckSetting
   then setup >> easyCheck >>= hardCheck >> return fortifiedTerm 
   else return fortifiedTerm
   where
     easyCheck = mapM trivialityCheck guards
     hardCheck hardGuards 
-      | all isRight hardGuards = 
-           incrementIntCounter TrivialChecks 
-        >> defLog ("trivial " ++ header rights hardGuards) 
-        >> cleanup
+      | all isRight hardGuards =
+          incrementIntCounter TrivialChecks >>
+          defLog ("trivial " ++ header rights hardGuards) >>
+          cleanup
       | otherwise =
-           (incrementIntCounter HardChecks
-        >> defLog (header lefts hardGuards ++ thead (rights hardGuards))
-        >> mapM_ (reason . setForm (wipeLink context)) (lefts hardGuards)
-        >> incrementIntCounter SuccessfulChecks 
-        >> cleanup) 
-        <|> (cleanup >> mzero)
+          (incrementIntCounter HardChecks >>
+          defLog (header lefts hardGuards ++ thead (rights hardGuards)) >>
+          mapM_ (reason . setForm (wipeLink context)) (lefts hardGuards) >>
+          incrementIntCounter SuccessfulChecks >>
+          cleanup) 
+          <|> (cleanup >> mzero)
 
-    setup = do  
+    setup = do
       askInstructionInt IIchtl 1 >>= addInstruction . InInt IItlim
       askInstructionInt IIchdp 3 >>= addInstruction . InInt IIdpth
       askInstructionBin IBOnch False >>= addInstruction. InBin IBOnto
 
 
-    cleanup = do  
+    cleanup = do
       dropInstruction $ IdInt IItlim
       dropInstruction $ IdInt IIdpth
       dropInstruction $ IdBin IBOnto
 
-    wipeLink context = 
+    wipeLink context =
       let block:restBranch = cnBran context
       in  context {cnBran = block {blLink = []} : restBranch}
 
 
-    header select guards = 
+    header select guards =
       "check: " ++ showsPrec 2 term " vs " ++ format (select guards)
     thead [] = ""; thead guards = "(trivial: " ++ format guards ++ ")"
     format guards = if null guards then " - " else unwords . map show $ guards

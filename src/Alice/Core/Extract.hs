@@ -6,11 +6,16 @@ function evaluations, elementhood conditions for sets
 -}
 {-# LANGUAGE FlexibleContexts #-}
 
-module Alice.Core.Extract (addDefinition, addEvaluation) where
+module Alice.Core.Extract (
+  addDefinition,
+  addEvaluation,
+  extractRewriteRule
+) where
 
 import Alice.Data.Base
 import Alice.Data.Formula
 import Alice.Data.Kit
+import Alice.Data.Text
 import Alice.Core.Base
 import Alice.Core.Reduction
 import Alice.Prove.Normalize
@@ -100,6 +105,29 @@ closeEvidence dfs def@DE{dfEvid = evidence} = def { dfEvid = newEvidence }
     defEvidence _ = []
 
 
+-- Extraction of Rewrite Rules
+
+
+extractRewriteRule :: Context -> [Rule]
+extractRewriteRule c = 
+  map (\rl -> rl {rlLabl = cnName c}) $ dive 0 [] $ cnForm c
+  where
+    -- if DHD is reached, discard all collected conditions
+    dive n gs (All _ (Iff (Tag DHD Trm {trName = "=", trArgs = [_,t]}) f )) 
+      = dive n gs $ subst t "" $ inst "" f
+    dive n gs (All _ (Imp (Tag DHD Trm {trName = "=", trArgs = [_, t]}) f))
+      = dive n gs $ subst t "" $ inst "" f
+    -- make universal quantifier matchable
+    dive n gs (All _ f) = let nn = '?' : show n in dive (succ n) gs $ inst nn f
+    dive n gs (Imp f g) = dive n (deAnd f ++ gs) g -- record conditions
+    dive n gs (Tag _ f) = dive n gs f -- ignore tags
+    dive n gs (And f g) = dive n gs f ++ dive n gs g
+    -- we do not allow rules where the left side is a variable
+    dive n gs Trm {trName = "=", trArgs = [l,r]} | head (trName l) /= '?'
+      = return $ Rule l r gs undefined -- the name is filled in later
+    dive n gs (Not Trm{}) = mzero
+    dive n gs f | isNot f = dive n gs $ albet f -- pushdown negation
+    dive _ _ _ = mzero
 
 -- Evaluation for functions and sets
 

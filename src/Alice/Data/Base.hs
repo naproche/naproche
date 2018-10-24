@@ -57,6 +57,14 @@ data Rule = Rule {
   rlCond :: [Formula], -- conditions
   rlLabl :: String }   -- label
 
+instance Show Rule where
+  show rl = 
+    show (rlLeft rl) ++ " = " ++ show (rlRght rl) ++
+    ", Cond: " ++ show (rlCond rl) ++ ", Label: " ++ show (rlLabl rl)
+
+printrules :: [Rule] -> String
+printrules = unlines . map show
+
 -- definitions
 
 data DefType = Signature | Definition deriving (Eq, Show)
