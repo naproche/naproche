@@ -101,7 +101,7 @@ vLoop st@VS {thesisMotivated = mot, rewriteRules = rls, currentThesis = ths, bra
       when (noForm bl) $ addGlobalContext ncn -- if the current block is a top level block, add its context to the global context
       when (noForm bl) $ insertMRule mrl
 
-      let (nmt, chng , nth) = if mtv then new_thesis dfs nct ths  -- compute the new thesis if thesis management is not disabled by the user
+      let (nmt, chng , nth) = if mtv then newThesis dfs nct ths  -- compute the new thesis if thesis management is not disabled by the user
                                      else (blSign bl,False, ths)
 
       whenInstruction IBPths False $ do when (chng && mot && nmt && (not $ hasDEC $ blForm $ head brn) ) $ thesisLog (length brn - 2) bl $ "new thesis: " ++ show (cnForm nth)
@@ -170,7 +170,7 @@ splitTh st@VS {rewriteRules = rls, currentThesis = ths, currentContext = cnt, br
 
     fine nct f  = do dfs <- askGlobalState definitions
                      let nrls     = extractRewriteRule (head nct) ++ rls
-                         (_,_,nth) = new_thesis dfs nct $ setForm ths f
+                         (_,_,nth) = newThesis dfs nct $ setForm ths f
                      ib <- askInstructionBin IBPths False
                      when (ib && noICH (cnForm nth) && not (null $ remainingText st)) $ thesisLog (length brn - 2) (head $ cnBran $ head cnt) $ "new thesis " ++ show (cnForm nth)
                      splitTh st {rewriteRules = nrls, currentThesis = nth, currentContext = nct}

@@ -4,13 +4,7 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
 Maintain the current thesis.
 -}
 
-module Alice.Core.Thesis (new_thesis) where 
-import Control.Monad
-import Data.List
-import Data.Maybe
-import Control.Applicative
-import Control.Monad.Trans.State
-import Control.Monad.Trans.Class
+module Alice.Core.Thesis (newThesis) where
 
 import Alice.Data.Base
 import Alice.Data.Formula
@@ -19,228 +13,269 @@ import Alice.Data.Text
 import Alice.Core.Base
 import Alice.Core.Reason
 
-import Debug.Trace
-import qualified Data.IntMap.Strict as IM
-import qualified Data.Map as M
+import Control.Monad
+import Data.List
+import Data.Maybe
+import Control.Applicative
+import Control.Monad.Trans.State
+import Control.Monad.Trans.Class
+import qualified Data.Map as Map
+
 
 
 
 -- Infer new thesis
 
-{- infer the new thesis. return whether the new thesis is motivated (nmt),
-   whether the thesis has changed at all (chng) and what the new thesis
-   actually is (ntc). -}
 
-new_thesis :: IM.IntMap DefEntry -> [Context] -> Context -> (Bool, Bool, Context)
-new_thesis dfs cnt@(ct:_) tc | fnMacro ct = fn_thesis ct tc
-                         | otherwise = (nmt, chng, ntc)
+{- Infer the newThesis. Also report whether it is motivated and whether it has
+changed at all -}
+newThesis :: Definitions -> [Context] -> Context -> (Bool, Bool, Context)
+newThesis definitions wholeContext@(context:_) thesis
+  | isFunctionMacro context = functionTaskThesis context thesis
+  | otherwise = (motivated, changed, newThesis)
   where
-    nmt = nas || isJust ith -- a thesis can only become unmotivated through an assumption
-    ntc = setForm tc $ reduceWithEvidence lth
-    lth = getObj kth
-    chng = hasChanged kth
-    kth | nas = thsReduce dfs (cnForm ct) jth -- if not an assumption, enable destruction of defined symbols
-        | otherwise = tmWipe (cjs 0 $ cnForm ct) jth -- else the usual "reduction in sight of"
-    jth | nas = ths
-        | otherwise = fromMaybe ths ith
-    ith = tmInst dfs cnt ths -- find instantiations
-    ths = strip $ cnForm tc
-    nas = not $ isAssm ct -- true iff the statement in question is not an assumption
+    -- a thesis can only become unmotivated through an assumption
+    motivated = notAnAssumption || isJust usefulVariation
+    newThesis = setForm thesis $ reduceWithEvidence $ getObj postReductionThesis
+    changed = hasChanged postReductionThesis
+    postReductionThesis
+      | notAnAssumption = -- enable destruction of defined symbols in this case
+          reduceThesis definitions (cnForm context) preReductionThesis
+      | otherwise =
+          reductionInViewOf (cnForm context) preReductionThesis
+    preReductionThesis
+      | notAnAssumption = thesisFormula
+      | otherwise = fromMaybe thesisFormula usefulVariation
+    usefulVariation = findUsefulVariation definitions wholeContext thesisFormula
+    thesisFormula = strip $ cnForm thesis
+    notAnAssumption = not $ isAssm context
 
 
-
--- Reduce f in sight of hs
+-- Reduce f in view of g
 
 {- contraction in view of a set of formulae -}
-tmWipe :: [Formula] -> Formula -> ChangeInfo Formula
-tmWipe hs f    | isTop f = return Top
-               | isBot f = return Bot
-               | any (tmComp 0 $ f) hs     = changed Top
-               | any (tmComp 0 $ Not f) hs = changed Bot
-               | isExi f && instExi f hs  = changed Top
-               | isAll f && instExi (Not f) hs = changed Bot
-               | isTrm f                   = return f
-               | isIff f                   = tmWipe hs $ albet f
-               | otherwise                 = liftM bool $ mapFM (tmWipe hs) f
-
-tmComp n f g  = cmp (albet f) (albet g) -- tmComp compares two formulas syntactically after alpha-beta normalizing them
+reductionInViewOf :: Formula -> Formula -> ChangeInfo Formula
+reductionInViewOf = reduce . externalConjuncts
   where
-    cmp (All _ a) (All _ b) = tmComp (succ n) (inst nvr a) (inst nvr b)  -- cmp is the syntactic comparison of two formulas
-    cmp (Exi _ a) (Exi _ b) = tmComp (succ n) (inst nvr a) (inst nvr b)
-    cmp (And a b) (And c d) = tmComp n a c && tmComp n b d
-    cmp (Or a b) (Or c d)   = tmComp n a c && tmComp n b d
-    cmp (Not a) (Not b)     = tmComp n a b
-    cmp (Tag _ a) b         = tmComp n a b
-    cmp a (Tag _ b)         = tmComp n a b
-    cmp Top Top             = True
-    cmp Bot Bot             = True
-    cmp a b                 = twins a b
+    reduce hs f
+      | isTop f = return Top
+      | isBot f = return Bot
+      | any (equivalentTo f) hs = changed Top
+      | any (equivalentTo $ Not f) hs = changed Bot
+      | isExi f && f `hasInstantiationIn` hs = changed Top
+      | isAll f && (albet $ Not f) `hasInstantiationIn` hs = changed Bot
+      | isTrm f = return f
+      | isIff f = reduce hs $ albet f
+      | otherwise = bool <$> mapFM (reduce hs) f
 
-    nvr = show n
-
-{- checks whether an instantitation of f can be patched together from the hs.
-   Important to be able to reduceWithEvidence an existential thesis. -}
-instExi (Exi _ f) hs = not . null $ instList 1 M.empty (albet $ inst "i0" f) hs
-instExi (Not f) hs = instExi (albet (Not f)) hs
-
-{- the actual process of finding an instantiation. Most conveniently expressed
-   within the list monad. -}
-instList n sb f hs = [ s | h <- hs, s <- instanc sb f h] `mplus` cmp (albet f)
-        where -- if f is an instance of one of the hs -> done; else try to patch f together from the hs
-          cmp (And f g) = [ sbs | s   <- instList n sb (albet g) hs,
-                                  sbs <- instList n s (albet f) (subInfo s (pred n) ++ hs)] -- by processing g first and adding certain
-          cmp (Exi _ f) = instList (succ n) sb (albet $ inst ('i':show n) f) hs             -- Info to hs, we can more conveniently deal
-          cmp _ = []                                                                        -- with the typings encountered in existential
-                                                                                            -- statements; it is not necessary though
-          subInfo sb n = let sub = applySb sb $ zVar $ 'i':show n
-                          in map (replace sub ThisT) $ trInfo $ sub
--- instance checking
-
-{- finds an instantiation to make a formula equal to a second formula. An instantiation can be given
-   which is then tried to be extended -}
-instanc sb f g = liftM snd $ runStateT (dive_al 0 f g) sb
+{- the equivalence test used here is quite crude, but cheap:
+syntactic equality modulo alpha-beta normalization -}
+equivalentTo :: Formula -> Formula -> Bool
+equivalentTo = normalizedCheck 0
   where
-    dive_al n f g = dive n (albet f) (albet g)
+    normalizedCheck n f g = check n (albet f) (albet g)
+    check n (All _ a) (All _ b) = let freshVariable = show n in
+      normalizedCheck (succ n) (inst freshVariable a) (inst freshVariable b)
+    check n (Exi _ a) (Exi _ b) = let freshVariable = show n in 
+      normalizedCheck (succ n) (inst freshVariable a) (inst freshVariable b)
+    check n (And a b) (And c d) = normalizedCheck n a c && normalizedCheck n b d
+    check n (Or a b) (Or c d)   = normalizedCheck n a c && normalizedCheck n b d
+    check n (Not a) (Not b)     = normalizedCheck n a b
+    check n (Tag _ a) b         = normalizedCheck n a b
+    check n a (Tag _ b)         = normalizedCheck n a b
+    check _ Top Top             = True
+    check _ Bot Bot             = True
+    check _ a b                 = twins a b
+
+
+{- checks whether an instantitation of f (modulo local properties collected)
+can be patched together from the hs. Important to be able to reduce an
+existential thesis. -}
+hasInstantiationIn:: Formula -> [Formula] -> Bool
+hasInstantiationIn (Exi _ f) = not . null . listOfInstantiations f
+hasInstantiation _ _ =
+  error "Alice.Core.Thesis.hasInstantiationIn:\
+    \non-existentially quantified argument"
+
+type Instantiation = Map.Map String Formula
+{- the actual process of finding an instantiation. -}
+listOfInstantiations :: Formula -> [Formula] -> [Instantiation]
+listOfInstantiations f = instantiations 1 Map.empty (albet $ inst "i0" f)
+
+{- worker function for Alice.Core.Thesis.listOfInstantiations -}
+-- FIXME This functions needs a better way to generate free variables. The 
+--       explicit parameter passing is inadequate.
+instantiations n currentInst f hs =
+  [ newInst | h <- hs, newInst <- extendInstantiation currentInst f h ] ++ 
+  patchTogether (albet f)
+  where
+    patchTogether :: Formula -> [Instantiation]
+    patchTogether (And f g) = -- find instantiation of g then extend them to f
+      [ fInst | gInst <- instantiations n currentInst (albet g) hs,
+                fInst <- instantiations n gInst (albet f) $ 
+                  subInfo gInst (pred n) ++ hs ]--add collected local properties
+    patchTogether (Exi _ f) =
+      instantiations (succ n) currentInst (albet $ inst ('i':show n) f) hs
+    patchTogether _ = []
+
+    subInfo sb n = 
+      let sub = applySb sb $ zVar $ 'i':show n
+      in  map (replace sub ThisT) $ trInfo $ sub
+
+
+{- finds an instantiation to make a formula equal to a second formula. 
+An initial instantiation is given which is then tried to be extended.
+Result is returned within the list monad. -}
+extendInstantiation :: Instantiation -> Formula -> Formula -> [Instantiation]
+extendInstantiation sb f g = snd <$> runStateT (normalizedDive 0 f g) sb
+  where
+    normalizedDive n f g = dive n (albet f) (albet g)
     dive n (All _ f) (All _ g)
-      = let nn = show n in dive_al (succ n) (inst nn f) (inst nn g)
+      = let nn = show n in normalizedDive (succ n) (inst nn f) (inst nn g)
     dive n (Exi _ f) (Exi _ g)
-      = let nn = show n in dive_al (succ n) (inst nn f) (inst nn g)
-    dive n (And f1 g1) (And f2 g2) = dive_al n f1 f2 >> dive_al n g1 g2
-    dive n (Or  f1 g1) (Or  f2 g2) = dive_al n f1 f2 >> dive_al n g1 g2
+      = let nn = show n in normalizedDive (succ n) (inst nn f) (inst nn g)
+    dive n (And f1 g1) (And f2 g2) =
+      normalizedDive n f1 f2 >> normalizedDive n g1 g2
+    dive n (Or  f1 g1) (Or  f2 g2) =
+      normalizedDive n f1 f2 >> normalizedDive n g1 g2
     dive n (Not f) (Not g) = dive n f g
     dive n Trm {trId = t1, trArgs = ts1} Trm {trId = t2, trArgs = ts2}
       = lift (guard $ t1 == t2) >> mapM_ (uncurry $ dive n) (zip ts1 ts2)
-    dive _ v@Var {trName = s@('i':_)} t
-     = do mp <- get; case M.lookup s mp of
-            Nothing -> modify (M.insert s t)
-            Just t' -> lift $ guard (twins t t')
-    dive _ x@Var{} y@Var{} = lift $ guard (twins x y)
+    dive _ v@Var {trName = s@('i':_)} t = do 
+      mp <- get; case Map.lookup s mp of
+        Nothing -> modify (Map.insert s t)
+        Just t' -> lift $ guard (twins t t')
+    dive _ v@Var{} w@Var{} = lift $ guard (twins v w)
     dive _ _ _ = lift mzero
 
--- External conjucnts
+-- External conjuncts
 
-{- find all external conjuncts of a formula. Usually used for "reduction in view of"-}
-cjs :: Int -> Formula -> [Formula]
-cjs n = acc . albet
+{- find all external conjuncts of a formula -}
+externalConjuncts :: Formula -> [Formula]
+externalConjuncts = normalizedDive
   where
-    acc h@(And f g) = h : (cjs n f ++ cjs n g)
-    acc h@(Exi _ f) = h : (cjs (succ n) $ inst nvr f)
-    acc h@(All _ f) = h : (cjs (succ n) $ inst nvr f)
-    acc h@(Or f g)  = [h]
-    acc (Tag _ f)   = cjs n f
-    acc f         = [f]
+    normalizedDive = dive . albet
+    dive h@(And f g) = h : (normalizedDive f ++ normalizedDive g)
+    dive h@(Exi _ f) = h : filter noBoundVars (normalizedDive f)
+    dive h@(All _ f) = h : filter noBoundVars (normalizedDive f)
+    dive (Tag _ f)   = normalizedDive f
+    dive f           = [f]
 
-    nvr = '.' : show n
+    noBoundVars Ind{} = False; noBoundVars f = allF noBoundVars f
 
--- Instantiate f with vs in sight of h
 
-tmInst dfs (ct:cnt) ths = find gut insts
+{- find a useful variation of the thesis (with respect to a given assumption)-}
+findUsefulVariation :: Definitions -> [Context] -> Formula -> Maybe Formula
+findUsefulVariation definitions (assumption:restContext) thesis =
+  find useful variations
   where
-    insts =  map snd $ runTM (tmPass dfs ths) $ cnDecl ct
-    gut g = isTop $ getObj $  tmWipe (cjs 0 $ Not g) $ cnForm ct
+    variations = map snd $
+      runVM (generateVariations definitions thesis) $ cnDecl assumption
+    useful variation = isTop $ getObj $
+      reductionInViewOf (Not variation) $ cnForm assumption
+findUsefulVariation _ _ _ = 
+  error "Alice.Core.Thesis.findUsefulVariation: empty context"
 
 --- improved reduction
-{- this function enables *affirmations* to reduceWithEvidence defined symbols
-   before (instead of only assumptions). Only one layer of definition
-   can be stripped away at a time. -}
 
-thsReduce :: IM.IntMap DefEntry -> Formula -> Formula -> ChangeInfo Formula
-thsReduce dfs fr jth = let njth = tmWipe (cjs 0 fr) jth
-                           expj = expand jth
-                           nexj = tmWipe (cjs 0 fr) expj
-                        in
-                        if (not . hasChanged) njth                   -- if reduction had no effect
-                           then
-                           if (not . hasChanged) nexj                -- we check whether expanding the formula lets us reduceWithEvidence further
-                              then return jth                        -- if not, we cannot detect changes to the thesis
-                              else nexj                        -- if yes, we take the reduced expanded formula
-                           else njth
-    where
-      expand t@Trm{}= fromMaybe t $ defForm dfs t
-      expand f = mapF expand f
-
-
-
-
-
-
-
--- Find possible instantiations
-
-{- Generate all possible instantiations-}
-tmPass dfs  = pass [] (Just True) 0
+{- reduce the thesis and possibly look behind symbol definitions. Only one
+layer of definition can be stripped away. -}
+reduceThesis :: Definitions -> Formula -> Formula -> ChangeInfo Formula
+reduceThesis definitions affirmation thesis = 
+  let reducedThesis = reductionInViewOf affirmation thesis
+      expandedThesis = expandSymbols thesis
+      reducedExpandedThesis =
+        reductionInViewOf affirmation expandedThesis
+  in  if   (not . hasChanged) reducedThesis -- if reduction does not work
+      then if   (not . hasChanged) reducedExpandedThesis--try it after expansion
+           then return thesis -- if it still does nothing -> give up
+           else reducedExpandedThesis
+      else reducedThesis
   where
-    pass fc sg n  = dive
-      where
-        dive h@(All u f)    = case sg of
-                Just True   -> qua u f `mplus` rnd h
-                _           -> return h                 -- do not instantitate beneath a quantifier of wrong polarity
-        dive h@(Exi u f)    = case sg of
-                Just False  -> qua u f `mplus` rnd h
-                _           -> return h                 -- do not instantiate beneath a quantifier of wront polarity
-        dive h@Trm{}  = return h `mplus` def h
-        ---------- the following lines exclude formulas that are
-        ---------- theoretically impossible as useful variations
-        dive h@(And f g)    = case sg of
-                Just True   -> liftM (And f) $ pass (f:fc) sg n g
-                _           -> rnd h
-        dive h@(Or  f g)    = case sg of
-                Just False  -> liftM (Or f) $ pass (Not f:fc) sg n g
-                _           -> rnd h
-        dive h@(Imp f g)    = case sg of
-                Just False  -> liftM (Imp f) $ pass (f:fc) sg n g
-                _           -> rnd h
-        ------------------------------------------------------------------
-        dive (Tag DMK f)    = return f                   -- identify recursively defined symbols that have already been explored
-        dive h              = rnd h
+    expandSymbols t@Trm{}= fromMaybe t $ defForm definitions t
+    expandSymbols f = mapF expandSymbols f
 
-        qua u f = tmVars u f >>= dive
-        rnd h = roundFM 'z' pass fc sg n h
-        def t = msum . map (dive . reduceWithEvidence . markRec  (trId t)) . maybeToList . defForm dfs $ t -- look behind the definition of symbols
-                                                                                                  -- to find an instantiation
+
+
+
+
+
+
+-- Find possible variations
+
+{- Generate all possible variations-}
+generateVariations :: Definitions -> Formula -> VariationMonad Formula
+generateVariations definitions = pass [] (Just True) 0
+  where
+    pass localContext sign n = dive
+      where
+        dive h@(All _ f) = case sign of
+          Just True   -> liberateVariableIn f `mplus` roundThrough h
+          _           -> return h
+        dive h@(Exi _ f) = case sign of
+          Just False  -> liberateVariableIn f `mplus` roundThrough h
+          _           -> return h
+        dive h@Trm{}     = return h `mplus` lookBehindDefinition h
+        dive h@(And f g) = case sign of
+          Just True   -> And f <$> pass (f:localContext) sign n g
+          _           -> roundThrough h
+        dive h@(Or  f g) = case sign of
+          Just False  -> Or f  <$> pass (Not f:localContext) sign n g
+          _           -> roundThrough h
+        dive h@(Imp f g) = case sign of
+          Just False  -> Imp f <$> pass (f:localContext) sign n g
+          _           -> roundThrough h
+        dive (Tag DMK f) = return f
+        dive h           = roundThrough h
+
+        liberateVariableIn f = generateInstantiations f >>= dive
+        roundThrough = roundFM 'z' pass localContext sign n
+        lookBehindDefinition t = msum . map (dive . reduceWithEvidence .
+          markRecursive  (trId t)) . maybeToList . defForm definitions $ t
 
 {- mark symbols that are recursively defined in their defining formula, so that
    the definition is not infinitely expanded -}
-markRec n t@Trm{trId = m} | n == m = Tag DMK t
-                          | otherwise = t
-markRec n f = mapF (markRec n) f
+markRecursive n t@Trm{trId = m} 
+  | n == m = Tag DMK t
+  | otherwise = t
+markRecursive n f = mapF (markRecursive n) f
 
-{- manage which variables have already been used for an instantiation-}
-tmVars u f  = TM (vrs [])
+{- generate all instantiations with as of yet unused variables -}
+generateInstantiations f = VM (tryAllVars [])
   where
-    vrs ov (v:vs) = (ov ++ vs, inst v f) : vrs (v:ov) vs
-    vrs _ [] = []
+    tryAllVars accumulator (v:vs) =
+      (accumulator ++ vs, inst v f) : tryAllVars (v:accumulator) vs
+    tryAllVars _ [] = []
 
--- Thesis monad
-
-
-{- an easy monad to handle the search for an instantiation, i.e. keep track of
-   which variables have not yet been used and conveniently explore all possibilities
-   in the search tree. -}
-newtype TM res = TM { runTM :: [String] -> [([String], res)] }
-
-instance Monad TM where
-  return r  = TM $ \ s -> [(s, r)]
-  m >>= k   = TM $ \ s -> concatMap apply (runTM m s)
-    where apply (s, r) = runTM (k r) s
-
-instance MonadPlus TM where
-  mzero     = TM $ \ _ -> []
-  mplus m k = TM $ \ s -> runTM m s ++ runTM k s
+-- Variation monad
 
 
--- standard declarations to prevent compiler error
+{- monad to do bookkeeping during the search for a variation, i.e. keep track
+of which variables have already been used for an instantiation -}
+newtype VariationMonad res =
+  VM { runVM :: [String] -> [([String], res)] }
 
-instance Functor TM where
-    fmap = liftM
+instance Functor VariationMonad where
+  fmap = liftM
 
-instance Applicative TM where
-    pure = return
-    (<*>) = ap
+instance Applicative VariationMonad where
+  pure  = return
+  (<*>) = ap
 
-instance Alternative TM where
-    empty = mzero
-    (<|>) = mplus
+instance Monad VariationMonad where
+  return r = VM $ \ s -> [(s, r)]
+  m >>= k  = VM $ \ s -> concatMap apply (runVM m s)
+    where apply (s, r) = runVM (k r) s
+
+instance Alternative VariationMonad where
+  empty = mzero
+  (<|>) = mplus
+
+instance MonadPlus VariationMonad where
+  mzero     = VM $ \ _ -> []
+  mplus m k = VM $ \ s -> runVM m s ++ runVM k s
+
+
 
 
 
@@ -248,52 +283,46 @@ instance Alternative TM where
 
 -- special reduction of function thesis
 
-fnMacro = mcr . cnForm
+isFunctionMacro = isMacro . cnForm
   where
-    mcr (Tag tg _ ) = fnTag tg
-    mcr _ = False
+    isMacro (Tag tg _ ) = fnTag tg
+    isMacro _ = False
 
-fn_thesis ct tc = (True, chngd, ntc)
+functionTaskThesis context thesis = (True, changed, newThesis)
   where
-    ntc = setForm tc $ getObj kth
-    chngd = hasChanged kth
-    ths = cnForm tc
-    kth = fn_red (cnForm ct) ths
+    newThesis = setForm thesis $ getObj reducedThesis
+    changed = hasChanged reducedThesis
+    thesisFormula = cnForm thesis
+    reducedThesis = reduceFunctionTask (cnForm context) thesisFormula
 
-fn_red (Tag tg _) = liftM bool_simp . dive
+reduceFunctionTask (Tag tg _) = fmap bool_simp . dive
   where
     dive (Tag tg' _) | tg' == tg = changed Top
     dive f = mapFM dive f
-
+reduceFuntionTask _ = error "Alice.Core.Thesis.reduceFunctionTask:\
+  \argument is not a function task"
 
 -- Change Monad
 
 {- a simple monad to keep track of whether a function has changed its
    input or returns it unchanged -}
+-- FIXME This bookkeeping monad is superfluous. A simple syntactic equality
+--       check to determine the changedness status should suffice and should
+--       not be noticable performancewise.
+data ChangeInfo a = Change {getObj :: a, hasChanged :: Bool}
 
-data ChangeInfo a = Change (a, Bool)
-
-instance Monad ChangeInfo where
-  return a = Change (a, False)
-  Change (a, p) >>= f = let Change (b, q) = f a in Change (b, p || q)
-
-hasChanged :: ChangeInfo a -> Bool -- extranct the change information
-hasChanged (Change (a, p)) = p
-
-getObj :: ChangeInfo a -> a -- extract the object
-getObj (Change (a, p)) = a
-
-changed :: a -> ChangeInfo a -- declare a change to an object
-changed a = Change (a, True)
-
-
-instance (Show a) => Show (ChangeInfo a) where
-  show (Change (a, b)) = show a
--- standard declarations to prevent compiler error
+instance Functor ChangeInfo where
+  fmap = liftM
 
 instance Applicative ChangeInfo where
   pure = return
   (<*>) = ap
 
-instance Functor ChangeInfo where
-  fmap = liftM
+instance Monad ChangeInfo where
+  return a = Change a False
+  Change a p >>= f = let Change b q = f a in Change b (p || q)
+
+changed :: a -> ChangeInfo a -- declare a change to an object
+changed a = Change a True
+
+
