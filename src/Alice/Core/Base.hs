@@ -34,7 +34,7 @@ module Alice.Core.Base (
   addTimeCounter, addIntCounter, incrementIntCounter,
   guardInstruction, guardNotInstruction, whenInstruction,
 
-  putStrLnRM, putStrRM, printRM, 
+  putStrLnRM, putStrRM, printRM,
   reasonerLog, reasonerLog0, simpLog, simpLog0, thesisLog, thesisLog0,
   blockLabel
 ) where
@@ -158,9 +158,9 @@ data VState = VS {
   rewriteRules    :: [Rule],
   evaluations     :: DT.DisTree Eval, -- (low level) evaluation rules
   currentThesis   :: Context,
-  branch          :: [Block],         -- branch of the current block
+  currentBranch   :: [Block],         -- branch of the current block
   currentContext  :: [Context],
-  remainingText   :: [Text] }
+  restText        :: [Text] }
 
 
 
@@ -179,20 +179,20 @@ justIO m = lift $ lift $ CRM $ \ _ _ k -> m >>= k
 askRS f     = justRS >>= (justIO . fmap f . readIORef)
 updateRS f  = justRS >>= (justIO . flip modifyIORef f)
 
-askInstructionInt    instr _default = 
+askInstructionInt    instr _default =
   fmap (askII instr _default) (askRS instructions)
-askInstructionBin    instr _default = 
+askInstructionBin    instr _default =
   fmap (askIB instr _default) (askRS instructions)
-askInstructionString instr _default = 
+askInstructionString instr _default =
   fmap (askIS instr _default) (askRS instructions)
 
-addInstruction  instr = 
+addInstruction  instr =
   updateRS $ \rs -> rs { instructions = instr : instructions rs }
-dropInstruction instr = 
+dropInstruction instr =
   updateRS $ \rs -> rs { instructions = dropI instr $ instructions rs }
-addTimeCounter counter time = 
+addTimeCounter counter time =
   updateRS $ \rs -> rs { counters = TimeCounter counter time : counters rs }
-addIntCounter  counter time = 
+addIntCounter  counter time =
   updateRS $ \rs -> rs { counters = IntCounter  counter time : counters rs }
 incrementIntCounter counter = addIntCounter counter 1
 
@@ -204,11 +204,11 @@ timer counter task = do
   addTimeCounter counter $ diffUTCTime end begin
   return result
 
-guardInstruction instr _default = 
+guardInstruction instr _default =
   askInstructionBin instr _default >>= guard
 guardNotInstruction instr _default =
   askInstructionBin instr _default >>= guard . not
-whenInstruction instr _default action = 
+whenInstruction instr _default action =
   askInstructionBin instr _default >>= \ b -> when b action
 
 -- Counter management
@@ -218,16 +218,16 @@ fetchIntCounter  counterList counter =
 fetchTimeCounter counterList counter =
   [ value | TimeCounter kind value <- counterList, counter == kind ]
 
-accumulateIntCounter  counterList startValue = 
+accumulateIntCounter  counterList startValue =
   foldr (+) startValue . fetchIntCounter counterList
-accumulateTimeCounter counterList startValue = 
+accumulateTimeCounter counterList startValue =
   foldr addUTCTime startValue . fetchTimeCounter counterList
 maximalTimeCounter counterList = foldr max 0 . fetchTimeCounter counterList
 
 showTimeDiff t
-  | hours == 0 = 
+  | hours == 0 =
       format minutes ++ ':' : format restSeconds ++ '.' : format restCentis
-  | True    = 
+  | True    =
       format hours   ++ ':' : format restMinutes ++ ':' : format restSeconds
   where
     format n = if n < 10 then '0':show n else show n
@@ -247,7 +247,7 @@ printRM     = justIO . print
 
 reasonerLog0 msg = putStrLnRM $ "[Reason] " ++ msg
 
-reasonerLog block msg = do 
+reasonerLog block msg = do
   fileName <- askInstructionString ISfile ""
   reasonerLog0 $ blockLabel fileName block ++ msg
 
@@ -255,18 +255,18 @@ thesisLog0 msg = putStrLnRM $ "[Thesis] " ++ msg
 
 thesisLog indent block msg = do
   fileName <- askInstructionString ISfile ""
-  thesisLog0 $ 
+  thesisLog0 $
     blockLabel fileName block ++ replicate (3 * indent) ' ' ++ msg
 
 simpLog0 msg = putStrLnRM $ "[Simplf] " ++ msg
 
-simpLog context msg = do 
+simpLog context msg = do
   fileName <- askInstructionString ISfile ""
   simpLog0 $ blockLabel fileName (cnHead context) ++ msg
 
 blockLabel fileName block =
   let blockFile = blFile block
-  in  (if fileName == blockFile then "" else blockFile) 
+  in  (if fileName == blockFile then "" else blockFile)
         ++ format (show (blLnCl block)) ++ ": "
   where
     format string =
@@ -292,18 +292,18 @@ insertMRule rules = updateGlobalState (add rules)
                 gs {mesonNegatives = DT.insert negConclusion rule negatives}
       | otherwise  =
           let positives = mesonPositives gs
-          in  add rules $ 
+          in  add rules $
                 gs {mesonPositives = DT.insert conclusion rule positives}
 
 initialGlobalState = GL initialDefinitions DT.empty DT.empty M.empty [] 0
 
-addGlobalContext cn = 
+addGlobalContext cn =
   updateGlobalState (\st -> st {globalContext = cn : globalContext st})
 
 
 
 retrieveContext names = do
-  globalContext <- askGlobalState globalContext 
+  globalContext <- askGlobalState globalContext
   let (context, unfoundSections) = runState (retrieve globalContext) names
   -- warn a user if some sections could not be found
   unless (Set.null unfoundSections) $ warn unfoundSections
@@ -313,7 +313,7 @@ retrieveContext names = do
       ++ unwords (map show $ Set.elems unfoundSections)
     retrieve [] = return []
     retrieve (context:restContext) = let name = cnName context in
-      ifM (gets $ Set.member name) 
+      ifM (gets $ Set.member name)
           (modify (Set.delete name) >> fmap (context:) (retrieve restContext))
           (retrieve restContext)
 
@@ -323,11 +323,11 @@ retrieveContext names = do
 -- Definition management
 
 -- initial definitions
-initialDefinitions = IM.fromList [ 
+initialDefinitions = IM.fromList [
   (-1,  equality),
   (-2,  less),
   (-4,  function),
-  (-5,  functionApplication), 
+  (-5,  functionApplication),
   (-6,  domain),
   (-7,  set),
   (-8,  elementOf),
@@ -336,15 +336,15 @@ initialDefinitions = IM.fromList [
 equality  = DE [] Top Signature (zEqu (zVar "?0") (zVar "?1")) [] []
 less      = DE [] Top Signature (zLess (zVar "?0") (zVar "?1")) [] []
 set       = DE [] Top Signature (zSet $ zVar "?0") [] []
-elementOf = DE [zSet $ zVar "?1"] Top Signature 
+elementOf = DE [zSet $ zVar "?1"] Top Signature
   (zElem (zVar "?0") (zVar "?1")) [] [[zSet $ zVar "?1"]]
 function  = DE [] Top Signature (zFun $ zVar "?0") [] []
 domain    = DE [zFun $ zVar "?0"] (zSet ThisT) Signature
   (zDom $ zVar "?0") [zSet ThisT] [[zFun $ zVar "?0"]]
 pair      = DE [] Top Signature (zPair (zVar "?0") (zVar "?1")) [] []
-functionApplication = 
-  DE [zFun $ zVar "?0", zElem (zVar $ "?1") $ zDom $ zVar "?0"] Top Signature 
-    (zApp (zVar "?0") (zVar "?1")) [] 
+functionApplication =
+  DE [zFun $ zVar "?0", zElem (zVar $ "?1") $ zDom $ zVar "?0"] Top Signature
+    (zApp (zVar "?0") (zVar "?1")) []
     [[zFun $ zVar "?0"],[zElem (zVar $ "?1") $ zDom $ zVar "?0"]]
 
 
@@ -379,5 +379,5 @@ addGroup :: [String] -> VM ()
 addGroup [] = return ()
 addGroup [name] = reasonerLog0 $ "Warning: empty group: " ++ show name
 addGroup (name:identifiers) =
-  getLink identifiers >>= \link -> updateGlobalState 
+  getLink identifiers >>= \link -> updateGlobalState
     (\st -> st {identifierGroups = M.insert name link $ identifierGroups st})

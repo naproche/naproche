@@ -48,7 +48,7 @@ extractDefinition defs =
   where
     dive guards _ (All _ (Iff (Tag DHD Trm {trName = "=", trArgs = [_, t]}) f))
       = (guards, instWith ThisT f, Definition, t) -- function definition
-    dive guards _ (All _ (Imp (Tag DHD Trm {trName = "=", trArgs = [_, t]}) f)) 
+    dive guards _ (All _ (Imp (Tag DHD Trm {trName = "=", trArgs = [_, t]}) f))
       = (guards, instWith ThisT f, Signature, t)  -- function sigext
     dive guards _ (Iff (Tag DHD t) f)
       = (guards, f, Definition, t)                -- predicate definition
@@ -56,7 +56,7 @@ extractDefinition defs =
       = (guards, f, Signature,t)                  -- predicate sigext
 
     -- make a universal quant matchable
-    dive guards n (All _ f) = dive guards (succ n) $ inst ('?':show n) f 
+    dive guards n (All _ f) = dive guards (succ n) $ inst ('?':show n) f
     dive guards n (Imp g f) = dive (guards ++ deAnd g) n f
     makeDefinition (guards, formula, kind, term) = DE {
       dfGrds = guards, dfForm = formula,
@@ -67,7 +67,7 @@ extractDefinition defs =
 
 {- get evidence for a defined term from a definitional formula -}
 extractEvidences :: Formula -> Formula -> [Formula]
-extractEvidences t = 
+extractEvidences t =
   filter (isJust . find (twins ThisT) . ltArgs) . filter isLtrl . deAnd .
     if   isNtn t -- notion evidence concerns the first argument.
     then replace ThisT (head $ trArgs t)
@@ -78,7 +78,7 @@ addTypeLikes :: Definitions -> DefEntry -> DefEntry
 addTypeLikes dfs def = def {dfTplk = tp_likes $ dfGrds def}
   where
     tp_likes fs =
-      rn_classes [] $ 
+      rn_classes [] $
         filter (\g -> isTrm g && no_sklm g && type_like dfs g fs) fs
 
     rn_classes _ [] = []
@@ -109,14 +109,14 @@ closeEvidence dfs def@DE{dfEvid = evidence} = def { dfEvid = newEvidence }
 
 
 extractRewriteRule :: Context -> [Rule]
-extractRewriteRule c = 
+extractRewriteRule c =
   map (\rl -> rl {rlLabl = cnName c}) $ dive 0 [] $ cnForm c
   where
     -- if DHD is reached, discard all collected conditions
-    dive n gs (All _ (Iff (Tag DHD Trm {trName = "=", trArgs = [_,t]}) f )) 
-      = dive n gs $ subst t "" $ inst "" f
-    dive n gs (All _ (Imp (Tag DHD Trm {trName = "=", trArgs = [_, t]}) f))
-      = dive n gs $ subst t "" $ inst "" f
+    dive n gs (All _ (Iff (Tag DHD Trm {trName = "=", trArgs = [_,t]}) f )) =
+      dive n gs $ subst t "" $ inst "" f
+    dive n gs (All _ (Imp (Tag DHD Trm {trName = "=", trArgs = [_, t]}) f)) =
+      dive n gs $ subst t "" $ inst "" f
     -- make universal quantifier matchable
     dive n gs (All _ f) = let nn = '?' : show n in dive (succ n) gs $ inst nn f
     dive n gs (Imp f g) = dive n (deAnd f ++ gs) g -- record conditions
@@ -131,8 +131,9 @@ extractRewriteRule c =
 
 -- Evaluation for functions and sets
 
-addEvaluation dt f = 
-  foldr (\eval -> DT.insert (evTerm eval) eval) dt $ extractEvaluation dt f
+addEvaluation evaluations f =
+  foldr (\eval -> DT.insert (evTerm eval) eval) evaluations $
+  extractEvaluation evaluations f
 
 extractEvaluation :: DT.DisTree Eval -> Formula -> [Eval]
 extractEvaluation dt = flip runReaderT (0, dt) . dive
@@ -163,7 +164,7 @@ extractFunctionEval c gs f = dive c gs f
     dive c gs (Tag DEV f@Trm{ trName = "=", trArgs = [tr,vl]} ) =
       let nf = c f {trArgs = [ThisT, vl] }
       in  return $ EV tr nf nf gs
-    dive c gs (Exi x (And (Tag DEF f) 
+    dive c gs (Exi x (And (Tag DEF f)
       (Tag DEV Trm {trName = "=", trArgs = [tr, Ind n]})))
         | n == 0 = extractEv c gs $ dec $ instWith tr f
     dive c gs (Exi x (And f g)) = dive (c . zExi x . And f) gs $ inst x g

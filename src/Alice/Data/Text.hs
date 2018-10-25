@@ -13,7 +13,6 @@ import Alice.Data.Formula
 import Alice.Data.Instr
 import Alice.Data.Kit
 import Alice.Parser.Position
-import Debug.Trace
 
 data Text = TB Block | TI Instr | TD Idrop
 
@@ -38,12 +37,13 @@ data Section = Defn | Sign | Axiom | Theorem | Case | Assume | Select | Affirm |
 {- necessity of proof as derived from the block type -}
 blSign bl = sign $ blType bl
   where
-    sign Defn = False
-    sign Sign = False
-    sign Axiom = False
-    sign Assume = False
+    sign Defn    = False
+    sign Sign    = False
+    sign Axiom   = False
+    sign Assume  = False
+    sign Posit   = False
     sign Declare = True
-    sign _ = True
+    sign _       = True
 
 isDecl = (==) Declare . blType
 
@@ -77,8 +77,8 @@ compose :: [Text] -> Formula
 compose tx = foldr comp Top tx
   where
     comp (TB bl@(Block{ blDecl = dvs })) fb
-      | blSign bl || blType bl == Defn = foldr zExi (bool $ And (formulate bl) fb) dvs
-      | otherwise = foldr zAll (bool $ Imp (formulate bl) fb) dvs
+      | blSign bl || blType bl == Posit = foldr zExi (blAnd (formulate bl) fb) dvs
+      | otherwise = foldr zAll (blImp (formulate bl) fb) dvs
     comp _ fb = fb
 
 

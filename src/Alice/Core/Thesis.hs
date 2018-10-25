@@ -4,7 +4,7 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
 Maintain the current thesis.
 -}
 
-module Alice.Core.Thesis (newThesis) where
+module Alice.Core.Thesis (inferNewThesis) where
 
 import Alice.Data.Base
 import Alice.Data.Formula
@@ -29,8 +29,8 @@ import qualified Data.Map as Map
 
 {- Infer the newThesis. Also report whether it is motivated and whether it has
 changed at all -}
-newThesis :: Definitions -> [Context] -> Context -> (Bool, Bool, Context)
-newThesis definitions wholeContext@(context:_) thesis
+inferNewThesis :: Definitions -> [Context] -> Context -> (Bool, Bool, Context)
+inferNewThesis definitions wholeContext@(context:_) thesis
   | isFunctionMacro context = functionTaskThesis context thesis
   | otherwise = (motivated, changed, newThesis)
   where
@@ -109,7 +109,6 @@ instantiations n currentInst f hs =
   [ newInst | h <- hs, newInst <- extendInstantiation currentInst f h ] ++ 
   patchTogether (albet f)
   where
-    patchTogether :: Formula -> [Instantiation]
     patchTogether (And f g) = -- find instantiation of g then extend them to f
       [ fInst | gInst <- instantiations n currentInst (albet g) hs,
                 fInst <- instantiations n gInst (albet f) $ 
@@ -156,12 +155,10 @@ externalConjuncts = normalizedDive
   where
     normalizedDive = dive . albet
     dive h@(And f g) = h : (normalizedDive f ++ normalizedDive g)
-    dive h@(Exi _ f) = h : filter noBoundVars (normalizedDive f)
-    dive h@(All _ f) = h : filter noBoundVars (normalizedDive f)
+    dive h@(Exi _ f) = h : filter closed (normalizedDive f)
+    dive h@(All _ f) = h : filter closed (normalizedDive f)
     dive (Tag _ f)   = normalizedDive f
     dive f           = [f]
-
-    noBoundVars Ind{} = False; noBoundVars f = allF noBoundVars f
 
 
 {- find a useful variation of the thesis (with respect to a given assumption)-}

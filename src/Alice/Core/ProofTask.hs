@@ -5,7 +5,7 @@ Generation of proof tasks.
 -}
 
 
-module Alice.Core.ProofTask (proofTask, getMacro) where
+module Alice.Core.ProofTask (generateProofTask, getMacro) where
 
 import Alice.Data.Base
 import Alice.Data.Formula
@@ -25,12 +25,12 @@ import Control.Monad.Trans.Reader
 
 {- generate proof task associated with a block -}
 
-proofTask :: Section -> [String] -> Formula -> Formula
-proofTask Select vs f = foldr mbExi f vs
-proofTask Declare _ f
+generateProofTask :: Section -> [String] -> Formula -> Formula
+generateProofTask Select vs f = foldr mbExi f vs
+generateProofTask Declare _ f
   | funDcl f = funTask f
   | setDcl f = setTask f
-proofTask _ _ f = f
+generateProofTask _ _ f = f
 
 {- Check whether a formula is a set or function defintion -}
 funDcl, setDcl :: Formula -> Bool
@@ -59,14 +59,14 @@ replacement x f = fromJust $ dive [] f `mplus` _default
       let vsAlt  = map ((:) 'c') vs
           startF =
             sets vsAlt `blAnd` foldr mbAll (f `blImp` elements vs vsAlt) vs
-      in  return $ foldr mbExi startF vsAlt 
+      in  return $ foldr mbExi startF vsAlt
     dive _ _ = mzero
     _default =
       let x2 = 'c':x; xv = zVar x; x2v = zVar x2
       in  return $ zAll x $ Imp f $ zExi x2 $ zSet x2v `And` (xv `zElem` x2v)
 
     sets = foldr blAnd Top . map (zSet . zVar)
-    elements (v1:vs) (v2:vs2) = 
+    elements (v1:vs) (v2:vs2) =
       zElem (zVar v1) (zVar v2) `blAnd` elements vs vs2
     elements _ _ = Top
 
@@ -90,7 +90,7 @@ choices = Tag FCH . dive
     dive (Tag DEV _) = Top
     dive (Tag _ f) = dive f
     dive (Exi x (And (Tag DEF f) g)) =
-      (proofTask Declare [] $ dec $ inst x $ f) `blAnd`
+      (generateProofTask Declare [] $ dec $ inst x $ f) `blAnd`
       (dec $ inst x $ f `blImp` dive g)
     dive (All x f) =  blAll x $ dive f
     dive (Imp f g) = f `blImp` dive g
@@ -142,7 +142,7 @@ impExi f = f
 
 {- a certain normalization of the term marked with DEV -}
 devReplace :: Formula -> Formula -> Formula
-devReplace y (Tag DEV eq@Trm {trName = "=", trArgs = [_, t]}) = 
+devReplace y (Tag DEV eq@Trm {trName = "=", trArgs = [_, t]}) =
   eq {trArgs = [y,t]}
 devReplace y f = mapF (devReplace y) f
 

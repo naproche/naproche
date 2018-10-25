@@ -34,221 +34,321 @@ import Alice.Core.Reduction
 import Alice.Core.ProofTask
 import Alice.Core.Extract
 import qualified Alice.Data.DisTree as DT
-
 import Alice.Core.Rewrite
-
-import Debug.Trace
 
 -- Main verification loop
 
+verify :: String -> IORef RState -> [Text] -> IO (Maybe ([Text], GState))
+verify file reasonerState blocks = do
+  let text = TI (InStr ISfile file) : blocks
+      fileName = if null file then "stdin" else file
+  putStrLn $ "[Reason] " ++ fileName ++ ": verification started"
+
+  let initialVerificationState =
+        VS False [] DT.empty (Context Bot [] [] Bot) [] [] text
+  result <- flip runRM reasonerState $
+    flip runStateT initialGlobalState $
+    runReaderT (verificationLoop initialVerificationState) undefined
+  ignoredFails <- (\st -> accumulateIntCounter (counters st) 0 FailedGoals) <$>
+    readIORef reasonerState
+
+  let success = isJust result && ignoredFails == 0
+      out = if success then " successful" else " failed"
+  putStrLn $ "[Reason] " ++ fileName ++ ": verification" ++ out
+  return result
 
 
 
--- rst -> reasoner state, bs -> blocks
-verify file rst bs =
-  do  let text = TI (InStr ISfile file) : bs
-          fnam = if null file then "stdin" else file
-      putStrLn $ "[Reason] " ++ fnam ++ ": verification started"
 
-      let initVS = VS False [] DT.empty (Context Bot [] [] Bot) [] [] text
-      res <- flip runRM rst $  flip runStateT initialGlobalState $ runReaderT (vLoop initVS) undefined -- here we start the verification
-      ign <- liftM (\st -> accumulateIntCounter (counters st) 0 FailedGoals) $ readIORef rst
+verificationLoop :: VState -> VM [Text]
+verificationLoop state@VS {
+  thesisMotivated = motivated,
+  rewriteRules    = rules,
+  currentThesis   = thesis,
+  currentBranch   = branch,
+  currentContext  = context,
+  restText = TB block@(Block f body kind declaredVariables _ _ _ _):blocks,
+  evaluations     = evaluations }
+    = local (const state) $ do
 
-      let scs = isJust res && ign == 0
-          out = if scs then " successful" else " failed" -- successful if everything went through without failures
-      putStrLn $ "[Reason] " ++ fnam ++ ": verification" ++ out
-      return res
-
-
-
-
-vLoop :: VState -> VM [Text]
-vLoop st@VS {thesisMotivated = mot, rewriteRules = rls, currentThesis = ths, branch = brn, currentContext = cnt, remainingText = TB bl@(Block fr pr sg dv _ _ _ _) : bs, evaluations = evs } = local (const st) $
-  do  incrementIntCounter Sections ; tfn <- askInstructionString ISfile "" ; whenInstruction IBPsct False $
-        putStrRM $ "[ForTheL] " ++ blockLabel tfn bl ++ showForm 0 bl ""
-      let nbr = bl : brn; cbl = Context fr nbr [] fr
-
-      -- so far only maintanance, user communication and namings
-      nfr <- if noForm bl then return fr               -- noForm signifies that the current block is a top level block
-             else fillDef cbl   -- check definitions and fortify the formula of the block
-
-      flt <- askInstructionBin IBflat False
-      let prt = proofTask sg dv nfr             -- in case of a "Choice" block, the proof task is set here to an existential statement
-          sth = Context prt nbr [] prt
-          bsg = null brn || blSign (head brn)          -- bsg is false iff the block is an immediate subblock of sigext, definiton or axiom
-          smt = bsg && (blSign bl) && not (noForm bl)  -- smt is true iff the block represents a statement that must be proved
-          spr = if flt then [] else pr                 -- this sets the proof for the following proof task. It is empty if "flat" has been activated by the user
-
-      whenInstruction IBPths False $ do when (smt && (not . null) spr && not (hasDEC $ cnForm sth)) $ thesisLog (length brn - 1) bl $ "thesis: " ++ show (cnForm sth) --communicate thesis to the user
+  -- statistics and user communication
+  incrementIntCounter Sections ; fileName <- askInstructionString ISfile "" ;
+  whenInstruction IBPsct False $ putStrRM $
+    "[ForTheL] " ++ blockLabel fileName block ++ showForm 0 block ""
+  let newBranch = block : branch; contextBlock = Context f newBranch [] f
 
 
-      npr <- if smt then splitTh st {thesisMotivated = smt, currentThesis = sth, branch = nbr, remainingText = spr } -- recursively move into the proof to verify the block at hand
-                    else splitTh st {thesisMotivated = smt, currentThesis = sth, branch = nbr, remainingText =  pr } -- after success npr is returned, i.e the proof blocks with fortified formulas
+  fortifiedFormula <-
+    if   noForm block
+    then return f   -- noForm means toplevel block
+    else fillDef contextBlock -- check definitions and fortify terms
 
-      whenInstruction IBPths False $ when (smt && (not . null) spr && not (hasDEC $ cnForm sth)) $ thesisLog (length brn -1 ) bl $ "thesis resolved"
+  let proofTask = generateProofTask kind declaredVariables fortifiedFormula
+      freshThesis = Context proofTask newBranch [] proofTask
+      toBeProved = (blSign block) && not (noForm block)
+  proofBody <- ifM (askInstructionBin IBflat False) (return []) (return body)
 
-      -- in what follows we prepare the current block to contribute to the context, extract rules, definitions and compute the new thesis
-      mtv <- askInstructionBin IBthes True
-      let nbl = bl { blForm = deICH nfr, blBody = npr }
-          blf = formulate nbl
-
-      when (sg == Defn || sg == Sign) $ addDefinition blf -- extract Definitions
-      mrl <- contras (noForm bl) (deTag blf) -- compute MESON rules for the internal proof method
-      dfs <- askGlobalState definitions
-      let red = foldr1 And $ map (onto_reduce dfs) (assm_nf blf) -- compute ontological reduction of the formula
-          ncn = Context blf nbr mrl (if noForm bl then red else blf) --put everything together
-          nct = ncn : cnt -- add to context
-      when (noForm bl) $ addGlobalContext ncn -- if the current block is a top level block, add its context to the global context
-      when (noForm bl) $ insertMRule mrl
-
-      let (nmt, chng , nth) = if mtv then newThesis dfs nct ths  -- compute the new thesis if thesis management is not disabled by the user
-                                     else (blSign bl,False, ths)
-
-      whenInstruction IBPths False $ do when (chng && mot && nmt && (not $ hasDEC $ blForm $ head brn) ) $ thesisLog (length brn - 2) bl $ "new thesis: " ++ show (cnForm nth)
-      
-      when (not nmt && mot) $ thesisLog (length brn - 2) bl $ "Warning: unmotivated assumption"
-
-      let nrls = extractRewriteRule (head nct) ++ rls -- extract rewrite rules
-
-      let nevs = if sg `elem` [Declare, Defn] then addEvaluation evs blf else evs-- extract evaluations
+  whenInstruction IBPths False $ when (
+    toBeProved && (not . null) proofBody &&
+    not (hasDEC $ cnForm freshThesis)) $
+      thesisLog (length branch - 1) block $
+      "thesis: " ++ show (cnForm freshThesis)
 
 
-      -- now we are done with the block and move on to verify the rest of the text (with an updated VS)
-      nbs <- splitTh st {thesisMotivated = mot && nmt, rewriteRules = nrls, evaluations = nevs, currentThesis = nth, currentContext = nct, remainingText = bs }
+  fortifiedProof <-
+    if   toBeProved
+    then verifyProof state {
+      thesisMotivated = True, currentThesis = freshThesis,
+      currentBranch = newBranch, restText = proofBody }
+    else verifyProof state {
+      thesisMotivated = False, currentThesis = freshThesis,
+      currentBranch = newBranch, restText = body }
 
-      -- if the thesis was turned unmotivated by this block, we must provide a composite (and possibly quite difficult) prove task
-      let fth = Imp (compose $ TB nbl : nbs) (cnForm ths)
-      splitTh st {thesisMotivated = mot && not nmt, currentThesis = setForm ths fth, remainingText = [] } -- notice that this is only really executed if mot && not nmt == True
+  whenInstruction IBPths False $ when (
+    toBeProved && (not . null) proofBody &&
+    not (hasDEC $ cnForm freshThesis)) $
+      thesisLog (length branch -1 ) block $ "thesis resolved"
 
-      -- put everything together
-      return $ TB nbl : nbs
+  -- in what follows we prepare the current block to contribute to the context,
+  -- extract rules, definitions and compute the new thesis
+  thesisSetting <- askInstructionBin IBthes True
+  let newBlock = block {
+        blForm = deleteInductionOrCase fortifiedFormula, 
+        blBody = fortifiedProof }
+      formulaImage = formulate newBlock
+
+  -- extract definitions
+  when (kind == Defn || kind == Sign) $ addDefinition formulaImage
+  -- compute MESON rules
+  mesonRules  <- contras (noForm block) (deTag formulaImage)
+  definitions <- askGlobalState definitions
+  let ontoReduction =
+        foldr1 And $ map (onto_reduce definitions) (assm_nf formulaImage)
+      newContextBlock =
+        let reduction = if noForm block then ontoReduction else formulaImage
+        in  Context formulaImage newBranch mesonRules reduction
+      newContext = newContextBlock : context
+  when (noForm block) $ addGlobalContext newContextBlock
+  when (noForm block) $ insertMRule mesonRules
+
+  let (newMotivation, hasChanged , newThesis) =
+        if   thesisSetting
+        then inferNewThesis definitions newContext thesis
+        else (blSign block, False, thesis)
+
+  whenInstruction IBPths False $ when (
+    hasChanged && motivated && newMotivation &&
+    (not $ hasDEC $ blForm $ head branch) ) $
+      thesisLog (length branch - 2) block $
+      "new thesis: " ++ show (cnForm newThesis)
+
+  when (not newMotivation && motivated) $ thesisLog (length branch - 2) block $
+    "Warning: unmotivated assumption"
+
+  let newRewriteRules = extractRewriteRule (head newContext) ++ rules
+
+  let newEvaluations =
+        if   kind `elem` [Declare, Defn]
+        then addEvaluation evaluations formulaImage
+        else evaluations-- extract evaluations
+
+
+  -- Now we are done with the block. Move on and verifiy the rest.
+  newBlocks <- verifyProof state {
+    thesisMotivated = motivated && newMotivation,
+    rewriteRules = newRewriteRules, evaluations = newEvaluations,
+    currentThesis = newThesis, currentContext = newContext, restText = blocks }
+
+  -- if this block made the thesis unmotivated, we must discharge a composite
+  -- (and possibly quite difficult) prove task
+  let finalThesis = Imp (compose $ TB newBlock : newBlocks) (cnForm thesis)
+
+  -- notice that the following is only really executed if 
+  -- motivated && not newMotivated == True
+  verifyProof state {
+    thesisMotivated = motivated && not newMotivation,
+    currentThesis = setForm thesis finalThesis, restText = [] }
+
+  -- put everything together
+  return $ TB newBlock : newBlocks
 
 -- if there is no text to be read in a branch it means we must call the prover
-vLoop st@VS {thesisMotivated = True, rewriteRules = rls, currentThesis = ths, currentContext = cnt, remainingText = [] }
-  = local (const st) $  whenInstruction IBprov True prove >> return []
+verificationLoop st@VS {
+  thesisMotivated = True,
+  rewriteRules    = rules,
+  currentThesis   = thesis,
+  currentContext  = context,
+  restText        = [] }
+  = local (const st) $ whenInstruction IBprov True prove >> return []
   where
-    prove = if hasDEC (cnForm ths) then -- this signifies computational reasoning -> passed to the simplifier (after some bookkeeping operations)
-            do  let rl = reasonerLog bl $ "goal: " ++ tx
-                    bl = cnHead ths ; tx = blText bl
-                incrementIntCounter Equations ; whenInstruction IBPgls True rl
-                timer SimplifyTime (equalityReasoning ths) <|> (reasonerLog bl "equation failed" >>
-                    guardInstruction IBskip False >> incrementIntCounter FailedEquations)
-            else -- this signifies conventional reasoning -> passed to the prover
-            do  let rl = reasonerLog bl $ "goal: " ++ tx
-                    bl = cnHead ths ; tx = blText bl
-                when (not . isTop . cnForm $ ths) $ incrementIntCounter Goals
-                whenInstruction IBPgls True rl
-                proveThesis <|> (reasonerLog bl "goal failed" >> guardInstruction IBskip False >> incrementIntCounter FailedGoals)
+    prove =
+      if hasDEC (cnForm thesis) --computational reasoning
+      then do
+        let logAction = reasonerLog block $ "goal: " ++ text
+            block = cnHead thesis ; text = blText block
+        incrementIntCounter Equations ; whenInstruction IBPgls True logAction
+        timer SimplifyTime (equalityReasoning thesis) <|> (
+          reasonerLog block "equation failed" >>
+          guardInstruction IBskip False >> incrementIntCounter FailedEquations)
+      else do
+        let logAction = reasonerLog block $ "goal: " ++ text
+            block = cnHead thesis ; text = blText block
+        unless (isTop . cnForm $ thesis) $ incrementIntCounter Goals
+        whenInstruction IBPgls True logAction
+        proveThesis <|> (
+          reasonerLog block "goal failed" >> guardInstruction IBskip False >>
+          incrementIntCounter FailedGoals)
 
-{- process instructions in the text. We distinguis those that do not concern the
-   proof process (simply print something to the screen or change an instruction value)
-   and those that do (at the moment only : changing the context with [setCtxt ..]) -}
-vLoop st@VS {remainingText = TI ins : bs}
-  | relevant ins = chngTI st {remainingText = bs} ins
-  | otherwise = procTI st ins >> vLoop st {remainingText = bs}
+-- process instructions. we distinguish between those that influence the
+-- verification state and those that influence (at most) the global state
+verificationLoop state@VS {restText = TI instruction : blocks}
+  | relevant instruction = contextTI state {restText = blocks} instruction
+  | otherwise = procTI state instruction >>
+      verificationLoop state {restText = blocks}
 
 {- process a command to drop an instruction, i.e. [/prove], [/ontored], etc.-}
-vLoop st@VS {remainingText = (TD ind : bs)} =
-      procTD st ind >> vLoop st {remainingText = bs}
+verificationLoop st@VS {restText = (TD instruction : blocks)} =
+  procTD st instruction >> verificationLoop st {restText = blocks}
 
-vLoop _ = return []
+verificationLoop _ = return []
 
-{- Take care of induction hypothesis and case hypothesis befor calling the usual vLoop.
-   If no induction or case hypothesis is present in the current block this is equal
-   to simply "vLoop st". -}
-splitTh st@VS {rewriteRules = rls, currentThesis = ths, currentContext = cnt, branch = brn}
-      = dive id cnt $ cnForm ths
+{- some automated processing steps: add induction hypothesis and case hypothesis
+at the right point in the context; extract rewriteRules from them and further
+refine the currentThesis. Then move on with the verification loop.
+If neither inductive nor case hypothesis is present this is the same as
+verificationLoop state -}
+verifyProof :: VState -> VM [Text]
+verifyProof state@VS {
+  rewriteRules   = rules,
+  currentThesis  = thesis,
+  currentContext = context,
+  currentBranch  = branch}
+  = dive id context $ cnForm thesis
   where
-    dive c cn (Imp (Tag DIH f) g)  | closed f
-                                   = fine (setForm ths f : cn) (c g)
-    dive c cn (Imp (Tag DCH f) g)  | closed f
-                                   = fine (ths {cnForm = f, cnRedu = f} : cn) (c g)
-    dive c cn (Imp f g)            = dive (c . Imp f) cn g
-    dive c cn (All v f)            = dive (c . All v) cn f
-    dive c cn (Tag tg f)           = dive (c . Tag tg) cn f
-    dive _ _ _                     = vLoop st
+    dive construct context (Imp (Tag DIH f) g)
+      | closed f =
+          process (setForm thesis f : context) (construct g)
+    dive construct context (Imp (Tag DCH f) g)
+      | closed f =
+          process (thesis {cnForm = f, cnRedu = f} : context) (construct g)
+    dive construct context (Imp f g)   = dive (construct . Imp f) context g
+    dive construct context (All v f)   = dive (construct . All v) context f
+    dive construct context (Tag tag f) = dive (construct . Tag tag) context f
+    dive _ _ _ = verificationLoop state
 
-    fine nct f  = do dfs <- askGlobalState definitions
-                     let nrls     = extractRewriteRule (head nct) ++ rls
-                         (_,_,nth) = newThesis dfs nct $ setForm ths f
-                     ib <- askInstructionBin IBPths False
-                     when (ib && noICH (cnForm nth) && not (null $ remainingText st)) $ thesisLog (length brn - 2) (head $ cnBran $ head cnt) $ "new thesis " ++ show (cnForm nth)
-                     splitTh st {rewriteRules = nrls, currentThesis = nth, currentContext = nct}
+    -- extract rules, compute new thesis and move on with the verification
+    process newContext f = do
+      definitions <- askGlobalState definitions
+      let newRules = extractRewriteRule (head newContext) ++ rules
+          (_, _, newThesis) =
+            inferNewThesis definitions newContext $ setForm thesis f
+      whenInstruction IBPths False $ when (
+        noInductionOrCase (cnForm newThesis) && not (null $ restText state)) $
+          thesisLog (length branch - 2) (head $ cnBran $ head context) $
+          "new thesis " ++ show (cnForm newThesis)
+      verifyProof state {
+        rewriteRules = newRules, currentThesis = newThesis,
+        currentContext = newContext}
+
+{- checks that a formula containt neither induction nor case hyothesis -}
+noInductionOrCase :: Formula -> Bool
+noInductionOrCase (Tag DIH _) = False
+noInductionOrCase (Tag DCH _) = False
+noInductionOrCase f = allF noInductionOrCase f
 
 
-noICH (Tag DIH _) = False
-noICH (Tag DCH _) = False
-noICH f = allF noICH f
-
-
-{- reconstruct statement from induction and case hypothesis -}
-deICH = dive id
+{- delete induction or case hypothesis from a formula -}
+deleteInductionOrCase :: Formula -> Formula
+deleteInductionOrCase = dive id
   where
-    dive c (Imp (Tag DIH _) f)  = c f
-    dive c (Imp (Tag DCH f) _)  = c $ Not f
-    dive c (Imp f g)            = dive (c . Imp f) g
-    dive c (All v f)            = dive (c . All v) f
-    dive c f                    = c f
+    dive c (Imp (Tag DIH _) f) = c f
+    dive c (Imp (Tag DCH f) _) = c $ Not f
+    dive c (Imp f g) = dive (c . Imp f) g
+    dive c (All v f) = dive (c . All v) f
+    dive c f = c f
 
 
 
 
 -- Instruction handling
 
-procTI VS {thesisMotivated = mot, rewriteRules = rls, currentThesis = ths, currentContext = cnt} = proc
+{- execute an instruction or add an instruction parameter to the state -}
+procTI :: VState -> Instr -> VM ()
+procTI VS {
+  thesisMotivated = motivated,
+  rewriteRules    = rules,
+  currentThesis   = thesis,
+  currentContext  = context}
+  = proc
   where
-    proc (InCom ICRuls)
-      = do  reasonerLog0 $ "current ruleset: " ++ "\n" ++ printrules (reverse rls)
-    proc (InCom ICPths)
-      = do  let smt = if mot then "(mot): " else "(nmt): "
-            reasonerLog0 $ "current thesis " ++ smt ++ show (cnForm ths)
+    proc (InCom ICRuls) =
+      reasonerLog0 $ "current ruleset: " ++ "\n" ++ printrules (reverse rules)
+    proc (InCom ICPths) = do
+      let motivation = if motivated then "(mot): " else "(nmt): "
+      reasonerLog0 $ "current thesis " ++ motivation ++ show (cnForm thesis)
+    proc (InCom ICPcnt) = do
+      reasonerLog0 $ "current context:"
+      mapM_ ((putStrRM "  " >>) . printRM) $ reverse context
+    proc (InCom ICPflt) = do
+      let topLevelContext = filter cnTopL context
+      reasonerLog0 $ "current filtered top-level context:"
+      mapM_ ((putStrRM "  " >>) . printRM) $ reverse topLevelContext
 
-    proc (InCom ICPcnt)
-      = do  let srl = reverse $ cnt
-            reasonerLog0 $ "current context:"
-            mapM_ ((putStrRM "  " >>) . printRM) srl
+    proc (InCom _) = reasonerLog0 "unsupported instruction"
 
-    proc (InCom ICPflt)
-      = do  let srl = reverse $ filter cnTopL cnt
-            reasonerLog0 $ "current filtered top-level context:"
-            mapM_ ((putStrRM "  " >>) . printRM) srl
+    proc (InBin IBverb False) = do
+      addInstruction $ InBin IBPgls False
+      addInstruction $ InBin IBPrsn False
+      addInstruction $ InBin IBPsct False
+      addInstruction $ InBin IBPchk False
+      addInstruction $ InBin IBPprv False
+      addInstruction $ InBin IBPunf False
+      addInstruction $ InBin IBPtsk False
 
-    proc (InCom _)  = reasonerLog0 $ "unsupported instruction"
-
-    proc (InBin IBverb False)
-      = do  addInstruction $ InBin IBPgls False
-            addInstruction $ InBin IBPrsn False
-            addInstruction $ InBin IBPsct False
-            addInstruction $ InBin IBPchk False
-            addInstruction $ InBin IBPprv False
-            addInstruction $ InBin IBPunf False
-            addInstruction $ InBin IBPtsk False
-
-    proc (InBin IBverb True)
-      = do (guardNotInstruction IBPgls True  >> addInstruction (InBin IBPgls True))
-        <|> (guardNotInstruction IBPrsn False >> addInstruction (InBin IBPrsn True))
-        <|> (guardNotInstruction IBPsct False >> addInstruction (InBin IBPsct True))
-        <|> (guardNotInstruction IBPchk False >> addInstruction (InBin IBPchk True))
-        <|> (guardNotInstruction IBPprv False >> addInstruction (InBin IBPprv True))
-        <|> (guardNotInstruction IBPunf False >> addInstruction (InBin IBPunf True))
-        <|> (guardNotInstruction IBPtsk False >> addInstruction (InBin IBPtsk True))
-        <|> return ()
+    proc (InBin IBverb True) = msum [
+      (guardNotInstruction IBPgls True  >> addInstruction (InBin IBPgls True)),
+      (guardNotInstruction IBPrsn False >> addInstruction (InBin IBPrsn True)),
+      (guardNotInstruction IBPsct False >> addInstruction (InBin IBPsct True)),
+      (guardNotInstruction IBPchk False >> addInstruction (InBin IBPchk True)),
+      (guardNotInstruction IBPprv False >> addInstruction (InBin IBPprv True)),
+      (guardNotInstruction IBPunf False >> addInstruction (InBin IBPunf True)),
+      (guardNotInstruction IBPtsk False >> addInstruction (InBin IBPtsk True)),
+       return () ]
 
     proc (InPar IPgrup ps) = addGroup ps
 
-    proc i  = addInstruction i
+    proc i = addInstruction i
 
-procTD _ = proc
-  where
-    proc i  = dropInstruction i
+{- drop an instruction from the state -}
+procTD :: VState -> Idrop -> VM ()
+procTD _ = dropInstruction
 
 -- Context settings
 
-chngTI st@VS {thesisMotivated = mot, rewriteRules = rls, currentThesis = ths, currentContext = cnt} = proc
+{- manipulate context by hand -}
+contextTI :: VState -> Instr -> VM [Text]
+contextTI state@VS {
+  thesisMotivated = motivated,
+  rewriteRules    = rules,
+  currentThesis   = thesis,
+  currentContext  = context}
+  = proc
   where
-    proc (InPar IPscnt ps) = setCtxt ps >>= \nct -> vLoop st {currentContext = takeWhile cnLowL cnt  ++ nct}
-    proc (InPar IPdcnt ps) = getLink ps >>= \nms -> vLoop st {currentContext = filter (not. flip elem nms . cnName) cnt }
-    proc (InPar IPacnt ps) = setCtxt ps >>= \nct -> vLoop st {currentContext = unionBy ((==) `on` cnName) nct cnt}
+    proc (InPar IPscnt groupLink) = do
+      newContext <- setContext groupLink
+      verificationLoop state {
+        currentContext = takeWhile cnLowL context ++ newContext}
+    proc (InPar IPdcnt groupLink) = do
+      link <- getLink groupLink
+      verificationLoop state {
+        currentContext = filter (not . flip elem link . cnName) context }
+    proc (InPar IPacnt groupLink) = do
+      newContext <- setContext groupLink
+      verificationLoop state {
+        currentContext = unionBy ((==) `on` cnName) newContext context}
+{- the function definition must include the continuation with verificationLoop
+since it influences the verification state (procTI only influences the global
+state) -}
 
-setCtxt [] = askGlobalState globalContext
-setCtxt ps = do nms <- getLink ps; retrieveContext nms
+setContext [] = askGlobalState globalContext
+setContext groupLink = getLink groupLink >>= retrieveContext
