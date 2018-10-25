@@ -4,7 +4,7 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
 Various functions on formulas.
 -}
 
-module Alice.Data.Kit where
+module Alice.Data.Formula.Kit where
 
 import Control.Monad
 import Data.Maybe
@@ -13,8 +13,8 @@ import qualified Data.Map as M
 import Debug.Trace
 import Data.List
 
-import Alice.Data.Base
-import Alice.Data.Formula
+import Alice.Data.Formula.Base
+import Alice.Data.Tag
 
 -- Alpha-beta normalization
 

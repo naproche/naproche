@@ -17,7 +17,7 @@ import System.Process
 import Control.Exception
 
 import Alice.Data.Instr
-import Alice.Data.Text
+import Alice.Data.Text.Context
 import Alice.Export.Base
 import Alice.Export.TPTP
 import Alice.Export.DFG

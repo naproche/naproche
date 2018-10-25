@@ -9,10 +9,9 @@ module Alice.Export.TPTP (tptpOut) where
 
 import qualified Data.IntMap.Strict as IM
 
-import Alice.Data.Base
 import Alice.Data.Formula
-import Alice.Data.Kit
-import Alice.Data.Text
+import Alice.Data.Text.Block
+import Alice.Data.Text.Context (Context(..))
 import Alice.Export.Base
 
 import Debug.Trace

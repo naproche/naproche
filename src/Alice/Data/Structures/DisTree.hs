@@ -4,13 +4,17 @@ Authors: Steffen Frerix (2017 - 2018)
 Discrimination tree data structure.
 -}
 
-module Alice.Data.DisTree (DisTree, empty, insert, lookup, find) where
+module Alice.Data.Structures.DisTree (
+  DisTree,
+  empty,
+  insert,
+  lookup,
+  find
+  ) where
 
 -- Discrimination tree for unification
 
-import Alice.Data.Base
-import Alice.Data.Formula
-import Alice.Data.Kit (isTrm)
+import Alice.Data.Formula (Formula(..), isTrm)
 
 import Prelude hiding (lookup)
 import qualified Data.List as L hiding (lookup)

@@ -9,10 +9,9 @@ module Alice.Export.DFG (dfgOut) where
 import Data.List
 import qualified Data.IntMap.Strict as IM
 
-import Alice.Data.Base
 import Alice.Data.Formula
-import Alice.Data.Kit
-import Alice.Data.Text
+import Alice.Data.Text.Block
+import Alice.Data.Text.Context (Context(..))
 import Alice.Export.Base
 
 dfgOut :: Bool -> Prover -> Int -> [Context] -> Context -> String

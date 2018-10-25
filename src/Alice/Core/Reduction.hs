@@ -6,9 +6,8 @@ Ontological reduction.
 
 module Alice.Core.Reduction where
 
-import Alice.Data.Base
 import Alice.Data.Formula
-import Alice.Data.Kit
+import Alice.Data.Definition
 import Alice.Core.Base
 import Alice.Prove.Normalize
 

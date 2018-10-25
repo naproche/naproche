@@ -28,16 +28,17 @@ import qualified Data.Map as M
 import Control.Monad.State
 import Control.Monad.Reader
 
-import Alice.Data.Base
 import Alice.Core.Base
 import Alice.Data.Formula
-import Alice.Data.Kit
 import Alice.Data.Instr
-import Alice.Data.Text
+import Alice.Data.Text.Context as Context
+import Alice.Data.Text.Block as Block
+import Alice.Data.Definition
+import Alice.Data.Evaluation
 import Alice.Export.Prover
 import Alice.ForTheL.Base
 import Alice.Prove.MESON
-import qualified Alice.Data.DisTree as DT
+import qualified Alice.Data.Structures.DisTree as DT
 
 
 -- Reasoner
@@ -349,7 +350,8 @@ unfoldAtomic sign f = do
           return $ replace (Tag DMK t) ThisT $ sb $ 
             if sign then evPos ev else evNeg ev
 
-    unfGuard unfoldSetting action = ifM (asks unfoldSetting) action (return [])
+    unfGuard unfoldSetting action =
+      asks unfoldSetting >>= \p -> if p then action else return []
 
 hasDMK (Tag DMK _ ) = True
 hasDMK _ = False

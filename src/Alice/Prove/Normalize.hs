@@ -8,9 +8,8 @@ Normalization of formulas.
 
 module Alice.Prove.Normalize where
 
-import Alice.Data.Base
 import Alice.Data.Formula
-import Alice.Data.Kit
+
 
 import Data.List
 import Control.Monad.State

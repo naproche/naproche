@@ -18,9 +18,8 @@ import Alice.Parser.Combinators
 import Alice.Parser.Token
 import Alice.Parser.Primitives
 
-import Alice.Data.Base
+
 import Alice.Data.Formula
-import Alice.Data.Kit
 
 import Data.List
 import Data.Char

@@ -51,13 +51,15 @@ import qualified Data.Set as Set
 import Control.Monad.State
 import Control.Monad.Reader
 
-import Alice.Data.Base
-import Alice.Data.Kit
-import Alice.Data.Instr
-import Alice.Data.Text
-import Alice.Export.Base
 import Alice.Data.Formula
-import qualified Alice.Data.DisTree as DT
+import Alice.Data.Instr
+import Alice.Data.Text.Block (Block(..), Text, blFile, blLnCl)
+import Alice.Data.Text.Context
+import Alice.Data.Definition
+import Alice.Data.Rules (Rule)
+import Alice.Data.Evaluation
+import Alice.Export.Base
+import qualified Alice.Data.Structures.DisTree as DT
 
 import Debug.Trace
 
@@ -313,9 +315,9 @@ retrieveContext names = do
       ++ unwords (map show $ Set.elems unfoundSections)
     retrieve [] = return []
     retrieve (context:restContext) = let name = cnName context in
-      ifM (gets $ Set.member name)
-          (modify (Set.delete name) >> fmap (context:) (retrieve restContext))
-          (retrieve restContext)
+      gets (Set.member name) >>= \p -> if p
+      then modify (Set.delete name) >> fmap (context:) (retrieve restContext)
+      else retrieve restContext
 
 
 

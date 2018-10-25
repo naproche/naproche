@@ -13,9 +13,7 @@ import qualified Control.Monad.State.Class as MS
 import Data.Char
 import Data.List
 
-import Alice.Data.Base
 import Alice.Data.Formula
-import Alice.Data.Kit
 
 import Alice.Parser.Base
 import Alice.Parser.Combinators

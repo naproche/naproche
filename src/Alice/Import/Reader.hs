@@ -13,7 +13,7 @@ import System.IO.Error
 import System.Exit hiding (die)
 import Control.Exception
 
-import Alice.Data.Text
+import Alice.Data.Text.Block
 import Alice.Data.Instr
 import Alice.ForTheL.Base
 import Alice.ForTheL.Structure

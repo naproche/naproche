@@ -6,10 +6,10 @@ Maintain the current thesis.
 
 module Alice.Core.Thesis (inferNewThesis) where
 
-import Alice.Data.Base
+
 import Alice.Data.Formula
-import Alice.Data.Kit
-import Alice.Data.Text
+import Alice.Data.Definition (Definitions)
+import Alice.Data.Text.Context
 import Alice.Core.Base
 import Alice.Core.Reason
 

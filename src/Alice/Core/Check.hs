@@ -15,18 +15,18 @@ import Control.Monad.State
 import Control.Monad.Trans.Class
 import Control.Monad.Reader
 
-import Alice.Data.Base
 import Alice.Data.Formula
-import Alice.Data.Kit
 import Alice.Data.Instr
-import Alice.Data.Text
+import Alice.Data.Text.Context
+import Alice.Data.Text.Block (blLink)
+import Alice.Data.Definition
 import Alice.Core.Base
 import Alice.Core.Reason
 import Alice.Prove.Normalize
 import Alice.Prove.MESON
 import Alice.Core.Reduction
 import Alice.Core.ProofTask
-import qualified Alice.Data.DisTree as DT
+import qualified Alice.Data.Structures.DisTree as DT
 
 
 {- check definitions and fortify terms with evidences in a formula -}

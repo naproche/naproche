@@ -9,9 +9,8 @@ macros and synonyms.
 
 module Alice.ForTheL.Extension (introduceSynonym, pretypeVariable, introduceMacro, defExtend, sigExtend) where
 
-import Alice.Data.Base
+
 import Alice.Data.Formula
-import Alice.Data.Kit
 
 import Alice.ForTheL.Base
 import Alice.ForTheL.Statement

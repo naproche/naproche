@@ -19,7 +19,7 @@ import qualified Data.IntMap.Strict as IM
 import Alice.Core.Base
 import Alice.Core.Verify
 import Alice.Data.Instr
-import Alice.Data.Text
+import Alice.Data.Text.Block
 import Alice.Export.Base
 import Alice.Import.Reader
 

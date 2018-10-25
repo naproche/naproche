@@ -12,14 +12,15 @@ module Alice.Core.Extract (
   extractRewriteRule
 ) where
 
-import Alice.Data.Base
 import Alice.Data.Formula
-import Alice.Data.Kit
-import Alice.Data.Text
+import Alice.Data.Definition
+import Alice.Data.Evaluation
+import Alice.Data.Text.Context (Context(cnForm), cnName)
+import Alice.Data.Rules
 import Alice.Core.Base
 import Alice.Core.Reduction
 import Alice.Prove.Normalize
-import qualified Alice.Data.DisTree as DT
+import qualified Alice.Data.Structures.DisTree as DT
 
 import qualified Data.IntMap as IM
 import Data.List

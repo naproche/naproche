@@ -18,9 +18,8 @@ import Alice.Parser.Primitives
 
 import Alice.Parser.Token
 
-import Alice.Data.Base
 import Alice.Data.Formula
-import Alice.Data.Kit
+
 
 import Debug.Trace
 import qualified Control.Monad.State.Class as MS

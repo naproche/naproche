@@ -9,22 +9,16 @@ module Alice.Prove.MESON (prove, contras) where
 
 import Control.Monad
 
-import Alice.Data.Base
 import Alice.Core.Base hiding (retrieve)
 import Alice.Data.Formula
 import Alice.Prove.Unify
 import Alice.Prove.Normalize
-import Alice.Data.Text
-import qualified Alice.Data.DisTree as DT
+import Alice.Data.Text.Context
+import qualified Alice.Data.Structures.DisTree as DT
 import Alice.Core.Reduction
 
 import Debug.Trace
 import Data.Maybe
-
-
-
-
-import Alice.Data.Kit -- just for testing purposes
 
 -- generate MESON rules
 contrapositives :: [Formula] -> [MRule]

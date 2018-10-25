@@ -11,9 +11,7 @@ module Alice.Prove.Unify (unify) where
 import Control.Monad
 import Control.Monad.Trans.Writer
 
-import Alice.Data.Base
 import Alice.Data.Formula
-import Alice.Data.Kit
 
 
 import Debug.Trace

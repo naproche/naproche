@@ -7,10 +7,9 @@ Generation of proof tasks.
 
 module Alice.Core.ProofTask (generateProofTask, getMacro) where
 
-import Alice.Data.Base
 import Alice.Data.Formula
-import Alice.Data.Kit
-import Alice.Data.Text
+import Alice.Data.Text.Block (Section(..))
+import Alice.Data.Text.Context
 import Alice.Prove.Normalize
 import Alice.Core.Base
 

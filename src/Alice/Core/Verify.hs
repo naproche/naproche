@@ -19,21 +19,21 @@ import qualified Control.Monad.Writer as W
 import Control.Monad.Reader
 import Data.Function
 
-import Alice.Data.Base
 import Alice.Core.Base
 import Alice.Core.Check
 import Alice.Core.Reason
 import Alice.Core.Thesis
 import Alice.Data.Formula
-import Alice.Data.Kit
 import Alice.Data.Instr
-import Alice.Data.Text
+import Alice.Data.Text.Block
+import Alice.Data.Text.Context
+import Alice.Data.Rules
 import Alice.Prove.Normalize
 import Alice.Prove.MESON
 import Alice.Core.Reduction
 import Alice.Core.ProofTask
 import Alice.Core.Extract
-import qualified Alice.Data.DisTree as DT
+import qualified Alice.Data.Structures.DisTree as DT
 import Alice.Core.Rewrite
 
 -- Main verification loop
@@ -86,7 +86,8 @@ verificationLoop state@VS {
   let proofTask = generateProofTask kind declaredVariables fortifiedFormula
       freshThesis = Context proofTask newBranch [] proofTask
       toBeProved = (blSign block) && not (noForm block)
-  proofBody <- ifM (askInstructionBin IBflat False) (return []) (return body)
+  proofBody <- askInstructionBin IBflat False >>= \p ->
+    if p then return [] else return body
 
   whenInstruction IBPths False $ when (
     toBeProved && (not . null) proofBody &&

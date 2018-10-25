@@ -1,100 +1,6 @@
-{-
-Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
+module Alice.Data.Formula.Show where
 
-Basic data types and formula show instance.
--}
-
-
-module Alice.Data.Base where
-
-import qualified Data.IntMap.Strict as IM
-
-
--- Formulas
-
-data Formula  = All String  Formula       | Exi String  Formula
-              | Iff Formula Formula       | Imp Formula Formula
-              | Or  Formula Formula       | And Formula Formula
-              | Tag Tag Formula           | Not Formula
-              | Top                       | Bot
-              | Trm { trName :: String,
-                      trArgs :: [Formula],  trInfo :: [Formula] , trId :: Int}
-              | Var { trName :: String,     trInfo :: [Formula] }
-              | Ind { trIndx :: Int }
-              | ThisT
-
-
--- Tags
-
-data Tag  = DIG | DMS | DMP | DHD | DIH | DCH | DEC
-          -- Tags to mark certain parts of function definitions
-          | DMK | DEV | DCD | DEF | DDM | DRP
-          -- Tags to mark parts in function proof tasks
-          | FDM | FEX | FUQ | FCH | FDC
-          deriving (Eq, Show)
-
-
-  -- DIH -> induction hypothesis
-  -- DCH -> case hypothesis
-  -- DHD -> Head of definition
-  -- DEC -> signals computational reasoning
-  -- DMK -> mark to prevent multiple unfolds of the same term during unfolding
-  -- DIG is used in parsing
-  -- DMS -"-
-  -- DMP -"-
-
-{- whether a Tag marks a part in a function proof task -}
-fnTag :: Tag -> Bool
-fnTag FDM = True; fnTag FCH = True; fnTag FEX = True; fnTag FUQ = True
-fnTag _   = False
-
-
--- rewrite rules
-
-data Rule = Rule {
-  rlLeft :: Formula,   -- left side
-  rlRght :: Formula,   -- right side
-  rlCond :: [Formula], -- conditions
-  rlLabl :: String }   -- label
-
-instance Show Rule where
-  show rl = 
-    show (rlLeft rl) ++ " = " ++ show (rlRght rl) ++
-    ", Cond: " ++ show (rlCond rl) ++ ", Label: " ++ show (rlLabl rl)
-
-printrules :: [Rule] -> String
-printrules = unlines . map show
-
--- definitions
-
-data DefType = Signature | Definition deriving (Eq, Show)
-data DefEntry = DE {
-  dfGrds :: [Formula],   -- guards of the definitions
-  dfForm :: Formula,     -- defining formula
-  dfType :: DefType,     -- proper definition or only sig extension
-  dfTerm :: Formula,     -- defined term
-  dfEvid :: [Formula],   -- evidence from the defining formula
-  dfTplk :: [[Formula]]  -- type-likes of the definition
-  } deriving Show
-
-{- yields information as to what can be unfolded -}
-dfSign :: DefEntry -> Bool
-dfSign df = dfSign' $ dfType df
-  where
-    dfSign' Definition = True
-    dfSign' _ = False
-
-{- storage of definitions by term id -}
-type Definitions = IM.IntMap DefEntry
-
-
--- evaluations
-data Eval = EV {
-  evTerm :: Formula,  -- the term to be reduced
-  evPos  :: Formula,  -- reduction for positive positions
-  evNeg  :: Formula,  -- reduction for negative positions
-  evCond :: [Formula] -- conditions
-  } deriving Show
+import Alice.Data.Formula.Base
 
 
 -- show instances
@@ -111,7 +17,6 @@ showFormula p d = dive
       dive (Imp f g)  = showParen True $ sinfix " implies " f g
       dive (Or  f g)  = showParen True $ sinfix " or "  f g
       dive (And f g)  = showParen True $ sinfix " and " f g
-      dive (Tag DMK f) = dive f
       dive (Tag a f)  = showParen True $ shows a
                       . showString " :: " . dive f
       dive (Not f)    = showString "not " . dive f
@@ -247,9 +152,3 @@ symDecode s = sname [] s
     sname ac cs@(':':_)   = reverse ac ++ cs
     sname ac []           = reverse ac
     sname _ _             = s
-
-
-
-
-ifM :: (Monad m) => m Bool -> m a -> m a -> m a
-ifM p f g = do b <- p; if b then f else g

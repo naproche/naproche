@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 815570e8c833b0117d6a9980f657d2e9f667b28fbeec46c082f51f9b77ebb7b8
+-- hash: 9e16e8fcc5b7acde2bd7327f9317b59c3c7fc5fa8f9a08feac04d373b6e8adee
 
 name:           SAD3
 version:        0.1.0.0
@@ -35,12 +35,18 @@ library
       Alice.Core.Rewrite
       Alice.Core.Thesis
       Alice.Core.Verify
-      Alice.Data.Base
-      Alice.Data.DisTree
+      Alice.Data.Definition
+      Alice.Data.Evaluation
       Alice.Data.Formula
+      Alice.Data.Formula.Base
+      Alice.Data.Formula.Kit
+      Alice.Data.Formula.Show
       Alice.Data.Instr
-      Alice.Data.Kit
-      Alice.Data.Text
+      Alice.Data.Rules
+      Alice.Data.Structures.DisTree
+      Alice.Data.Tag
+      Alice.Data.Text.Block
+      Alice.Data.Text.Context
       Alice.Export.Base
       Alice.Export.DFG
       Alice.Export.Prover
