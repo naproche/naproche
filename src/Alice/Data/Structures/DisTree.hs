@@ -16,54 +16,66 @@ module Alice.Data.Structures.DisTree (
 
 import Alice.Data.Formula (Formula(..), isTrm)
 
-import Prelude hiding (lookup)
+import Prelude hiding (lookup, head)
 import qualified Data.List as L hiding (lookup)
 import Control.Monad
 import Data.Maybe
 import Debug.Trace
 
-data DTree a = Node {struct :: Struct, children :: [DTree a]} | Leaf {stored :: a}
+data DTree a =
+  Node {struct :: Struct, children :: [DTree a]} |
+  Leaf {stored :: a}
 
 newtype DisTree a = DT [DTree [a]]
 
+empty :: DisTree a
 empty = DT []
 
 
--- a structure element is a variable or a function symbol with identifier and arity or a generalized constant
-data Struct = Vr | Fun {fId :: Int, ar :: Int} | GC String deriving Show
+{- a sucture element is a variable or a function symbol with identifier and
+arity or a generalized constant (i.e. non-matchable free variable) -}
+data Struct =
+  Variable |
+  Function {symbolId :: Int, symbolArity :: Int} |
+  GeneralizedConstant String
+  deriving Show
 
+isLeaf :: DTree a -> Bool
 isLeaf (Leaf _) = True
 isLeaf _ = False
 
 {- arity generalized for variables -}
 arity :: Struct -> Int
-arity Vr = 0
-arity (GC _) = 0
-arity (Fun n m) = m
+arity Variable = 0
+arity (GeneralizedConstant _) = 0
+arity (Function n m) = m
 
 {- move to the next argument by jumping the arity of the current argument -}
 jump :: DTree [a] -> [DTree [a]]
-jump (Leaf a) = [Leaf a]
-jump (Node st chld) = concatMap (jmp (arity st)) chld
+jump (Leaf value) = [Leaf value]
+jump (Node struct children) = concatMap (jmp (arity struct)) children
   where
-    jmp 0 nd = [nd]
-    jmp ar (Node st chld) = concatMap (jmp (ar + arity st - 1)) chld
+    jmp 0 node = [node]
+    jmp ar (Node struct children) =
+      concatMap (jmp (ar + arity struct - 1)) children
 
+{- test whether a given formula matches a given structure -}
 structMatch :: Formula -> Struct -> Bool
-structMatch Var{trName = '?':_} Vr = True
-structMatch Var{trName = 'x':nm} (GC s) = nm == s
-structMatch (Trm{trId = m}) (Fun n _) = n == m
+structMatch Var{trName = '?':_} Variable = True
+structMatch Var{trName = 'x':nm} (GeneralizedConstant s) = nm == s
+structMatch Trm{trId = m} (Function n _) = n == m
 structMatch _ _ = False
 
-retrMatch :: Formula -> Struct -> Bool
-retrMatch _ Vr = True
-retrMatch f g = structMatch f g
+{- during retrieval everything matches a variable -}
+retrieveMatch :: Formula -> Struct -> Bool
+retrieveMatch _ Variable = True
+retrieveMatch f g = structMatch f g
 
-
+{- compute the structure of a formula -}
 toStruct :: Formula -> Struct
-toStruct Var {trName = '?':_ } = Vr
-toStruct Var {trName = 'x':nm} = GC nm
-toStruct Trm {trId = m, trArgs = ts} = Fun m (length ts)
+toStruct Var {trName = '?':_ } = Variable
+toStruct Var {trName = 'x':nm} = GeneralizedConstant nm
+toStruct Trm {trId = m, trArgs = ts} = Function m (length ts)
 
 {- arguments generalized for variables -}
 args :: Formula -> [Formula]
@@ -73,53 +85,65 @@ args Trm{trArgs = ts} = ts
 
 {- insert an element into the tree -}
 insert :: Formula -> a -> DisTree a -> DisTree a
-insert f _ t | not $ isTrm f = t
-insert f a (DT nds) = DT $ dive nds [f]
+insert key _ tree | not $ isTrm key = tree
+insert key value (DT nodes) = DT $ dive nodes [key]
   where
-    dive nds ls@(f:fs) = case break (structMatch f . struct) nds of
-      (_ , [])  -> dtree ls a ++ nds
-      (pre, nd : post) -> pre ++ (nd {children = dive (children nd) (args f ++ fs)} : post)
-    dive [Leaf as] [] = [Leaf (a:as)]
+    dive nodes keylist@(key:ks) = case break (structMatch key . struct) nodes of
+      -- if nothing matches -> creat a whole new branch with value at the end
+      (_ , [])  -> buildTree keylist value ++ nodes
+      (unmatchedNodes, matchedNode : rest) -> unmatchedNodes ++ (
+        matchedNode {children = dive (children matchedNode) (args key ++ ks)} :
+        rest)
+    -- if we reach a leaf -> add the value
+    dive [Leaf values] [] = [Leaf (value:values)]
 
 {- build a tree from a list of formulas -}
-dtree :: [Formula] -> a -> [DTree [a]]
-dtree [Top] _ = []
-dtree [Bot] _ = []
-dtree fs a = tr fs
+buildTree :: [Formula] -> a -> [DTree [a]]
+buildTree [Top] _ = []
+buildTree [Bot] _ = []
+buildTree keys value = dtree keys
   where
-    tr (f:fs) = [Node (toStruct f) (tr $ args f ++ fs)]
-    tr []     = [Leaf [a]]
+    dtree (k:ks) = [Node (toStruct k) (dtree $ args k ++ ks)]
+    dtree []     = [Leaf [value]]
 
-{- lookup an element from the tree. The key for the lookup is the structure of the
-   formula f -}
+{- lookup values in a tree. The key for the lookup is the structure of
+the given formula. Multiple leafs may match the key. lookup returns all of
+their values. -}
 lookup :: Formula -> DisTree a -> Maybe [a]
-lookup f (DT nds) = mbConcat $ dive nds [f]
+lookup key (DT nodes) = mbConcat $ dive nodes [key]
   where
-    dive nds (Var{trName = '?':_}:fs)
-      = let (lfs, nnds) = L.partition isLeaf $ concatMap jump nds
-         in map stored lfs `mplus` dive nnds fs
-    dive nds ls@(f:fs) = case dropWhile (not . retrMatch f . struct) nds of
-      []  -> mzero
-      nd:rst -> dive (children nd) (mbArgs (struct nd) f ++ fs) `mplus` dive rst ls
-    dive [Leaf as] [] = return as
+    dive nodes (Var{trName = '?':_}:ks)
+      = let (leafs, newNodes) = L.partition isLeaf $ concatMap jump nodes
+         in map stored leafs `mplus` dive newNodes ks
+    dive nodes keylist@(k:ks) =
+      case dropWhile (not . retrieveMatch k . struct) nodes of
+        []  -> mzero -- nothing matches -> key is not in the tree
+        matchedNode:rest ->
+          dive (children matchedNode) (mbArgs (struct matchedNode) k ++ ks)
+          `mplus` dive rest keylist
+    dive [Leaf values] [] = return values
     dive [] [] = return []
 
-    mbArgs Vr = const []; mbArgs _ = args
+    mbArgs Variable = const []; mbArgs _ = args
 
     mbConcat [] = Nothing; mbConcat lst = Just $ concat lst
 
+find :: Formula -> DisTree a -> [a]
 find f = fromMaybe [] . lookup f
 
 {- only for debugging: transform a tree into a readable format -}
 
 showTree :: Show a => DisTree a -> String
 showTree (DT []) = ""
-showTree (DT [Leaf a]) = "Leaf " ++ show a
-showTree (DT (nd:nds)) = "\n" ++ unlines (recursor (nd:nds))
+showTree (DT [Leaf value]) = "Leaf " ++ show value
+showTree (DT (node:rest)) = "\n" ++ unlines (recursor (node:rest))
   where
     recursor [] = []
-    recursor [Leaf a] = ["L " ++ show a]
-    recursor (nd:nds) = helper nd ++ recursor nds
-    helper (Node st chld) = let ([hd],str) = splitAt 1 $ recursor chld; sn = show st; l = length sn in (sn ++ space (4-l) ++ hd) : map ((++) (space 4)) str
+    recursor [Leaf value] = ["L " ++ show value]
+    recursor (node:rest) = helper node ++ recursor rest
+    helper (Node struct children) =
+      let ([head],stringChildren) = splitAt 1 $ recursor children
+          sn = show struct; l = length sn
+      in  (sn ++ space (4-l) ++ head) : map ((space 4) ++ ) stringChildren
 
-    space n = take n $ repeat ' '
+    space n = replicate n ' '
