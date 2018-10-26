@@ -8,6 +8,7 @@ Term rewriting: extraction of rules and proof of equlities.
 
 module Alice.Core.Rewrite (equalityReasoning) where
 
+import Alice.Parser.Position
 import Alice.Data.Formula
 import Alice.Data.Rules
 import Alice.Data.Text.Context
@@ -132,10 +133,10 @@ generateConditions verbositySetting rules w l r =
 
     -- logging and user communication
     log leftNormalForm rightNormalForm = when verbositySetting $ do
-      simpLog0 $ "no matching normal forms found"
+      simpLog0 Normal noPos "no matching normal forms found"
       showPath leftNormalForm; showPath rightNormalForm
     showPath ((t,_):rest) = when verbositySetting $
-      simpLog0 (show t) >> mapM_ (simpLog0 . format) rest
+      simpLog0 Normal noPos (show t) >> mapM_ (simpLog0 Normal noPos . format) rest
     -- formatting of paths
     format (t, simpInfo) = " --> " ++ show t ++ conditions simpInfo
     conditions (conditions, name) =
@@ -147,7 +148,7 @@ generateConditions verbositySetting rules w l r =
 {- applies computational reasoning to an equality chain -}
 equalityReasoning :: Context -> VM ()
 equalityReasoning thesis
-  | body = whenInstruction IBPrsn False $ reasonerLog0 $ "eqchain concluded"
+  | body = whenInstruction IBPrsn False $ reasonerLog0 Normal noPos "eqchain concluded"
   | (not . null) link = getLinkedRules link >>= rewrite equation
   | otherwise = rules >>= rewrite equation -- if no link is given -> all rules
   where
@@ -164,8 +165,9 @@ getLinkedRules link = do
   unless (Set.null unfoundRules) $ warn unfoundRules
   return linkedRules
   where
-    warn st = simpLog0 $ "Warning: Could not find rules " ++
-      unwords (map show $ Set.elems st)
+    warn st =
+      simpLog0 Warning noPos $
+        "Could not find rules " ++ unwords (map show $ Set.elems st)
 
     retrieve _ [] = return []
     retrieve s (c:cnt) = let nm = rlLabl c in
@@ -222,7 +224,7 @@ dischargeConditions verbositySetting conditions =
       if   null conditions
       then " - "
       else unwords . intersperse "," . map show $ reverse conditions
-    log msg = when verbositySetting $ thesis >>= flip simpLog msg
+    log msg = when verbositySetting $ thesis >>= flip (simpLog Normal) msg
 
     wipeLink thesis =
       let block:restBranch = cnBran thesis

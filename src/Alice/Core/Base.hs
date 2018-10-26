@@ -34,8 +34,7 @@ module Alice.Core.Base (
   addTimeCounter, addIntCounter, incrementIntCounter,
   guardInstruction, guardNotInstruction, whenInstruction,
 
-  trimLine,
-  putStrLnRM,
+  trimLine, MessageKind (..), putMessage,
   reasonerLog, reasonerLog0, simpLog, simpLog0, thesisLog, thesisLog0,
   blockLabel
 ) where
@@ -250,26 +249,44 @@ trimLine line =
     '\n' : rest -> reverse rest
     _ -> line
 
-putStrLnRM  = justIO . putStrLn
+data MessageKind = Normal | Warning | Error
+instance Show MessageKind where
+  show Normal = ""
+  show Warning = "Warning"
+  show Error = "Error"
 
-reasonerLog0 msg = putStrLnRM $ "[Reason] " ++ msg
+makeMessage :: String -> MessageKind -> SourcePos -> String -> String
+makeMessage origin kind pos msg =
+  (if null origin then "" else "[" ++ origin ++ "] ") ++
+  (case show kind of "" -> "" ; s -> s ++ ": ") ++
+  (case show pos of "" -> ""; s -> s ++ "\n") ++ msg
 
-reasonerLog block msg = do
+putMessage :: String -> MessageKind -> SourcePos -> String -> VM ()
+putMessage channel kind pos msg =
+  justIO $ putStrLn $ makeMessage channel kind pos msg
+
+reasonerLog0 :: MessageKind -> SourcePos -> String -> VM ()
+reasonerLog0 = putMessage "Reason"
+
+reasonerLog :: MessageKind -> Block -> String -> VM ()
+reasonerLog kind block msg = do
   fileName <- askInstructionString ISfile ""
-  reasonerLog0 $ blockLabel fileName block ++ msg
+  reasonerLog0 kind noPos $ blockLabel fileName block ++ msg
 
-thesisLog0 msg = putStrLnRM $ "[Thesis] " ++ msg
+thesisLog0 :: MessageKind -> SourcePos -> String -> VM ()
+thesisLog0 = putMessage "Thesis"
 
-thesisLog indent block msg = do
+thesisLog kind indent block msg = do
   fileName <- askInstructionString ISfile ""
-  thesisLog0 $
+  thesisLog0 kind noPos $
     blockLabel fileName block ++ replicate (3 * indent) ' ' ++ msg
 
-simpLog0 msg = putStrLnRM $ "[Simplf] " ++ msg
+simpLog0 :: MessageKind -> SourcePos -> String -> VM ()
+simpLog0 = putMessage "Simplf"
 
-simpLog context msg = do
+simpLog kind context msg = do
   fileName <- askInstructionString ISfile ""
-  simpLog0 $ blockLabel fileName (cnHead context) ++ msg
+  simpLog0 kind noPos $ blockLabel fileName (cnHead context) ++ msg
 
 blockLabel fileName block =
   let blockFile = file block; blockPos = position block
@@ -317,8 +334,9 @@ retrieveContext names = do
   unless (Set.null unfoundSections) $ warn unfoundSections
   return context
   where
-    warn unfoundSections = reasonerLog0 $ "Warning: Could not find sections "
-      ++ unwords (map show $ Set.elems unfoundSections)
+    warn unfoundSections =
+      reasonerLog0 Warning noPos $
+        "Could not find sections " ++ unwords (map show $ Set.elems unfoundSections)
     retrieve [] = return []
     retrieve (context:restContext) = let name = cnName context in
       gets (Set.member name) >>= \p -> if p
@@ -385,7 +403,7 @@ getLink link = do
 -- add group identifier
 addGroup :: [String] -> VM ()
 addGroup [] = return ()
-addGroup [name] = reasonerLog0 $ "Warning: empty group: " ++ show name
+addGroup [name] = reasonerLog0 Warning noPos $ "empty group: " ++ show name
 addGroup (name:identifiers) =
   getLink identifiers >>= \link -> updateGlobalState
     (\st -> st {identifierGroups = M.insert name link $ identifierGroups st})

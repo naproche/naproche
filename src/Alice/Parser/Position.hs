@@ -9,6 +9,7 @@ module Alice.Parser.Position
   ( SourcePos (EOF, sourceFile, sourceLine, sourceColumn, sourceOffset),
     SourceName,
     noPos,
+    namePos,
     initialPos,
     advancePos,
     advancesPos )
@@ -30,6 +31,9 @@ data SourcePos =
 
 noPos :: SourcePos
 noPos = SourcePos "" 0 0 0
+
+namePos :: SourceName -> SourcePos
+namePos name = SourcePos name 0 0 0
 
 initialPos :: SourceName -> SourcePos
 initialPos name = SourcePos name 1 1 1

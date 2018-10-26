@@ -19,6 +19,7 @@ import qualified Control.Monad.Writer as W
 import Control.Monad.Reader
 import Data.Function
 
+import Alice.Parser.Position
 import Alice.Core.Base
 import Alice.Core.Check
 import Alice.Core.Reason
@@ -73,8 +74,9 @@ verificationLoop state@VS {
 
   -- statistics and user communication
   incrementIntCounter Sections ; fileName <- askInstructionString ISfile "" ;
-  whenInstruction IBPsct False $ putStrLnRM $
-    "[ForTheL] " ++ blockLabel fileName block ++ trimLine (showForm 0 block "")
+  whenInstruction IBPsct False $
+    putMessage "ForTheL" Normal noPos $
+      blockLabel fileName block ++ trimLine (showForm 0 block "")
   let newBranch = block : branch; contextBlock = Context f newBranch [] f
 
 
@@ -92,7 +94,7 @@ verificationLoop state@VS {
   whenInstruction IBPths False $ when (
     toBeProved && (not . null) proofBody &&
     not (hasDEC $ cnForm freshThesis)) $
-      thesisLog (length branch - 1) block $
+      thesisLog Normal (length branch - 1) block $
       "thesis: " ++ show (cnForm freshThesis)
 
 
@@ -108,7 +110,7 @@ verificationLoop state@VS {
   whenInstruction IBPths False $ when (
     toBeProved && (not . null) proofBody &&
     not (hasDEC $ cnForm freshThesis)) $
-      thesisLog (length branch -1 ) block $ "thesis resolved"
+      thesisLog Normal (length branch - 1) block "thesis resolved"
 
   -- in what follows we prepare the current block to contribute to the context,
   -- extract rules, definitions and compute the new thesis
@@ -140,11 +142,11 @@ verificationLoop state@VS {
   whenInstruction IBPths False $ when (
     hasChanged && motivated && newMotivation &&
     (not $ hasDEC $ formula $ head branch) ) $
-      thesisLog (length branch - 2) block $
+      thesisLog Normal (length branch - 2) block $
       "new thesis: " ++ show (cnForm newThesis)
 
-  when (not newMotivation && motivated) $ thesisLog (length branch - 2) block $
-    "Warning: unmotivated assumption"
+  when (not newMotivation && motivated) $
+    thesisLog Warning (length branch - 2) block "unmotivated assumption"
 
   let newRewriteRules = extractRewriteRule (head newContext) ++ rules
 
@@ -185,19 +187,19 @@ verificationLoop st@VS {
     prove =
       if hasDEC (cnForm thesis) --computational reasoning
       then do
-        let logAction = reasonerLog block $ "goal: " ++ text
+        let logAction = reasonerLog Normal block $ "goal: " ++ text
             block = cnHead thesis ; text = Block.text block
         incrementIntCounter Equations ; whenInstruction IBPgls True logAction
         timer SimplifyTime (equalityReasoning thesis) <|> (
-          reasonerLog block "equation failed" >>
+          reasonerLog Normal block "equation failed" >>
           guardInstruction IBskip False >> incrementIntCounter FailedEquations)
       else do
-        let logAction = reasonerLog block $ "goal: " ++ text
+        let logAction = reasonerLog Normal block $ "goal: " ++ text
             block = cnHead thesis ; text = Block.text block
         unless (isTop . cnForm $ thesis) $ incrementIntCounter Goals
         whenInstruction IBPgls True logAction
         proveThesis <|> (
-          reasonerLog block "goal failed" >> guardInstruction IBskip False >>
+          reasonerLog Normal block "goal failed" >> guardInstruction IBskip False >>
           incrementIntCounter FailedGoals)
 
 -- process instructions. we distinguish between those that influence the
@@ -245,7 +247,7 @@ verifyProof state@VS {
             inferNewThesis definitions newContext $ setForm thesis f
       whenInstruction IBPths False $ when (
         noInductionOrCase (cnForm newThesis) && not (null $ restText state)) $
-          thesisLog (length branch - 2) (head $ cnBran $ head context) $
+          thesisLog Normal (length branch - 2) (head $ cnBran $ head context) $
           "new thesis " ++ show (cnForm newThesis)
       verifyProof state {
         rewriteRules = newRules, currentThesis = newThesis,
@@ -283,19 +285,19 @@ procTI VS {
   = proc
   where
     proc (InCom ICRuls) =
-      reasonerLog0 $ "current ruleset: " ++ "\n" ++ printrules (reverse rules)
+      reasonerLog0 Normal noPos $ "current ruleset: " ++ "\n" ++ printrules (reverse rules)
     proc (InCom ICPths) = do
       let motivation = if motivated then "(mot): " else "(nmt): "
-      reasonerLog0 $ "current thesis " ++ motivation ++ show (cnForm thesis)
+      reasonerLog0 Normal noPos $ "current thesis " ++ motivation ++ show (cnForm thesis)
     proc (InCom ICPcnt) =
-      reasonerLog0 $ "current context:\n" ++
+      reasonerLog0 Normal noPos $ "current context:\n" ++
         concatMap (\form -> "  " ++ show form ++ "\n") (reverse context)
     proc (InCom ICPflt) = do
       let topLevelContext = filter cnTopL context
-      reasonerLog0 $ "current filtered top-level context:\n" ++
+      reasonerLog0 Normal noPos $ "current filtered top-level context:\n" ++
         concatMap (\form -> "  " ++ show form ++ "\n") (reverse topLevelContext)
 
-    proc (InCom _) = reasonerLog0 "unsupported instruction"
+    proc (InCom _) = reasonerLog0 Normal noPos "unsupported instruction"
 
     proc (InBin IBverb False) = do
       addInstruction $ InBin IBPgls False

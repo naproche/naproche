@@ -171,9 +171,9 @@ getMacro cx tg = fmap (Tag tg . pd ) . either err return . dive
     dive (And f g) = dive f `mplus` dive g
     dive (Imp f g) = fmap (Imp f) $ dive g
     dive (Tag tg' f) | tg == tg' = return f
-    dive _ = Left $ "Warning: could not unfold macro: " ++ mcr tg
+    dive _ = Left $ "could not unfold macro: " ++ mcr tg
 
-    err s = reasonerLog (cnHead cx) s >> return Top
+    err s = reasonerLog Warning (cnHead cx) s >> return Top
 
     pd (Imp f g) = Imp (Tag DIH f) g -- auto instantiate quantified variable
     pd f = f
