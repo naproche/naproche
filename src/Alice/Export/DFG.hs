@@ -54,7 +54,7 @@ dfgTerm d = dive
     dive (Not f)    = showString "not" . showArgs dive [f]
     dive Top        = showString "true"
     dive Bot        = showString "false"
-    dive t| isEqu t = showString "equal" . showArgs dive (trArgs t)
+    dive t| isEquality t = showString "equal" . showArgs dive (trArgs t)
           | isTrm t = showTrName t . showArgs dive (trArgs t)
           | isVar t = showTrName t
           | isInd t = showChar 'W' . shows (d - 1 - trIndx t)
@@ -82,7 +82,7 @@ dfgSLS tsk  = sls "functions" fns . sls "predicates" pds
     sms = foldr (union . nub . dfgSyms True . cnForm) [] tsk
 
 dfgSyms :: Bool -> Formula -> [(Bool, String, Int)]
-dfgSyms s f | isEqu f   = concatMap (dfgSyms False) $ trArgs f
+dfgSyms s f | isEquality f   = concatMap (dfgSyms False) $ trArgs f
 dfgSyms s Trm {trName = t, trArgs = ts} = (s, t, length ts) : concatMap (dfgSyms False) ts
 dfgSyms s Var {trName = v}     = [(s, v, 0)]
 dfgSyms s Ind{}     = []

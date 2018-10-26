@@ -33,7 +33,7 @@ generateProofTask _ _ f = f
 
 {- Check whether a formula is a set or function defintion -}
 funDcl, setDcl :: Formula -> Bool
-funDcl (And (And f _) _) = trId f == funId
+funDcl (And (And f _) _) = trId f == functionId
 funDcl _                 = False
 setDcl (And f _)         = trId f == setId
 setDcl _ = error "Alice.Core.ProofTask.setDcl: misformed definition"
@@ -150,12 +150,12 @@ domainCondition :: Formula -> Formula -> Formula
 domainCondition (Tag _ (All _ (Iff Trm {trArgs = [_,dm]} g))) = dive
   where
     dive Trm {trId = tId, trArgs = [x,d]}
-      | tId == elmId && twins d dm = subst x "" $ inst "" g
+      | tId == elementId && twins d dm = subst x "" $ inst "" g
     dive f = mapF dive f
 domainCondition (Tag _ Trm {trName = "=", trArgs = [dm,g]}) = dive
   where
     dive Trm {trId = tId, trArgs = [x,d]}
-      | tId == elmId && twins d dm = zElem x g
+      | tId == elementId && twins d dm = zElem x g
     dive f = mapF dive f
 domainCondition _ =
   error "Alice.Core.ProofTask.domainCondition: misformed argument"

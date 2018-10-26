@@ -292,7 +292,7 @@ functionTaskThesis context thesis = (True, changed, newThesis)
     thesisFormula = cnForm thesis
     reducedThesis = reduceFunctionTask (cnForm context) thesisFormula
 
-reduceFunctionTask (Tag tg _) = fmap bool_simp . dive
+reduceFunctionTask (Tag tg _) = fmap boolSimp . dive
   where
     dive (Tag tg' _) | tg' == tg = changed Top
     dive f = mapFM dive f

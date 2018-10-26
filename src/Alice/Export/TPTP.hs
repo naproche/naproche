@@ -45,7 +45,7 @@ tptpTerm d = dive
     dive (Not f)    = showParen True $ showString " ~ " . dive f
     dive Top        = showString "$true"
     dive Bot        = showString "$false"
-    dive t| isEqu t = let [l, r] = trArgs t in sinfix " = " l r
+    dive t| isEquality t = let [l, r] = trArgs t in sinfix " = " l r
           | isTrm t = showTrName t . showArgs dive (trArgs t)
           | isVar t = showTrName t
           | isInd t = showChar 'W' . shows (d - 1 - trIndx t)

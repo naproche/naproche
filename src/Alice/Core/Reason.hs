@@ -191,8 +191,8 @@ trivialByEvidence f = isTop $ reduceWithEvidence f
 
 reduceWithEvidence :: Formula -> Formula
 reduceWithEvidence t@Trm{trName = "="} = t -- leave equality untouched
-reduceWithEvidence l | isLtrl l = -- try to reduce literals
-  fromMaybe l $ msum $ map (lookFor l) (trArgs $ predSymb l)
+reduceWithEvidence l | isLiteral l = -- try to reduce literals
+  fromMaybe l $ msum $ map (lookFor l) (trArgs $ ltAtomic l)
 reduceWithEvidence f = bool $ mapF reduceWithEvidence $ bool f 
 
 
@@ -201,7 +201,7 @@ lookFor :: Formula -> Formula -> Maybe Formula
 lookFor _ Ind{} = Nothing -- bound variables have no evidence
 lookFor literal (Tag _ t) = lookFor literal t -- ignore tags
 lookFor literal t =
-  let tId = trId (predSymb literal)
+  let tId = trId (ltAtomic literal)
       negatedLiteral = albet $ Not literal
   in  checkFor literal negatedLiteral $ trInfo t
   where
@@ -257,6 +257,7 @@ unfold = do
       whenInstruction IBPunf False $ reasonerLog0 $ "unfold to:\n"
         ++ unlines (reverse $ map ((++) "  " . show . cnForm) lowLevelContext)
         ++ "  |- " ++ show (neg $ cnForm goal)
+    neg (Not f) = f; neg f = f
 
 
 {- conservative unfolding of local properties -}
@@ -300,7 +301,7 @@ unfoldAtomic sign f = do
   -- we have functions we throw in function extensionality
 
     localProperties t 
-      | isApp t || isElem t = setFunDefinitionalProperties t
+      | isApplication t || isElem t = setFunDefinitionalProperties t
       | otherwise = definitionalProperties t t
     
     -- return definitional property of f instantiated with g
@@ -335,7 +336,9 @@ unfoldAtomic sign f = do
          zAll "" (Imp (zElem v $ zDom f) $ zEqu (zApp f v) (zApp g v))
     
     -- depending on the sign we choose the more convenient form of set equality
-    domainEquality = if sign then zEqu else sEqu 
+    domainEquality = 
+      let v = zVar ""; sEqu x y = zAll "" (Iff (zElem v x) (zElem v y))
+      in  if sign then zEqu else sEqu 
 
     setFunDefinitionalProperties t = do 
       evaluations <- asks evals

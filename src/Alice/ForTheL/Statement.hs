@@ -367,7 +367,7 @@ symb_set_notation = cndSet </> finSet
 sepFrom = ntnSep -|- setSep -|- noSep
   where
     ntnSep = do
-      (q, f, v) <- notion >>= single; guard (not . isEqu $ f)
+      (q, f, v) <- notion >>= single; guard (not . isEquality $ f)
       return (Tag DRP, \tr -> subst tr v $ q f, zVar v)
     setSep = do
       t <- s_term; cnd <- wd_token "in" >> elementCnd
@@ -417,7 +417,7 @@ chooseInTerm = do
       ap <- ld_set <|> lambda; h <- hidden; let hv = zVar h
       return $ \fx -> zExi h $ And (Tag DEF $ ap hv) (Tag DEV $ zEqu fx hv)
 
-    ld_set = do (_, t, _) <- set; return $ flip substH t
+    ld_set = do (_, t, _) <- set; return $ flip substHole t
 
 
 lambda = do
@@ -469,12 +469,12 @@ dig f ts  = return (dive f)
     down fn (And f g) = And (down fn f) (down fn g)
     down fn f         = foldl1 And (fn f)
 
-    digS f  | occursH f = map (\ x -> substH x f) ts
+    digS f  | occursH f = map (\ x -> substHole x f) ts
             | otherwise = [f]
 
     digM ps f | not (occursS f) = digS f
-              | not (occursH f) = map (\ y -> substS y f) $ tail ts
-              | otherwise = map (\ (x,y) -> substS y $ substH x f) ps
+              | not (occursH f) = map (\ y -> substSlot y f) $ tail ts
+              | otherwise = map (\ (x,y) -> substSlot y $ substHole x f) ps
 
     pairMP (t:ts) = [ (t, s) | s <- ts ] ++ pairMP ts
     pairMP _      = []

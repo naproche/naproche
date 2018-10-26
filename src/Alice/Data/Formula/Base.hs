@@ -177,6 +177,10 @@ closed  = dive 0
     dive n (Ind v)   = v < n
     dive n f         = allF (dive n) f
 
+{- checks whether the formula t occurs anywhere in the formula f -}
+occurs :: Formula -> Formula -> Bool
+occurs t f = twins t f || anyF (occurs t) f
+
 {- bind a variable with name v in a formula.
 This also affects any info stored. -}
 bind :: String -> Formula -> Formula

@@ -130,7 +130,7 @@ pret dvs tvs bl = assumeBlock {blForm = typing, blDecl = untyped}
                   then Top
                   else foldl1 And $ map (`typeWith` tvs) untyped
     assumeBlock = bl {blBody = [], blType = Assume, blLink = []}
-    typeWith v  = substH (zVar v) . snd . fromJust . find (elem v . fst)
+    typeWith v  = substHole (zVar v) . snd . fromJust . find (elem v . fst)
 
 pretypeBefore :: FTL Block -> FTL [Text] -> FTL [Text]
 pretypeBefore blp p = do
@@ -246,7 +246,7 @@ indThesis fr pre post = do
     indStatem [] f         = return (`Imp` f)
     indStatem _ _          = failWF $  "invalid induction thesis " ++ show fr
 
-    insertIndTerm it cn = cn $ Tag DIH $ substH it $ cn $ zLess it zHole
+    insertIndTerm it cn = cn $ Tag DIH $ substHole it $ cn $ zLess it zHole
 
 
 

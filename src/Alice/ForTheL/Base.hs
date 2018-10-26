@@ -251,7 +251,7 @@ namlist = varlist -|- liftM (:[]) hidden
 varlist = do  vs <- var `sepBy` wd_token ","
               nodups vs ; return vs
 
-nodups vs = unless ((null :: [b] -> Bool) $ dups vs) $
+nodups vs = unless ((null :: [b] -> Bool) $ duplicateNames vs) $
               fail $ "duplicate names: " ++ show vs
 
 hidden  = do n <- MS.gets hid_count
@@ -286,9 +286,9 @@ decl vs = dive
     dive (Imp f g)  = filter (noc f) (dive g)
     dive (And f g)  = dive f `union` filter (noc f) (dive g)
     dive Trm {trName = 'a':_, trArgs = v@Var{trName = u@('x':_)}:ts}
-      | all (not . occurs v) ts = nifilt vs u
+      | all (not . occurs v) ts = guardNotElem vs u
     dive Trm{trName = "=", trArgs = [v@Var{trName = u@('x':_)}, t]}
-      | isTrm t && not (occurs v t) = nifilt vs u
+      | isTrm t && not (occurs v t) = guardNotElem vs u
     dive _  = []
 
     noc f v = not $ occurs (zVar v) f

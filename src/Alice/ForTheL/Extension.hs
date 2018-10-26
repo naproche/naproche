@@ -98,8 +98,8 @@ funVars (f, d) | not ifq   = prdVars (f, d)
                | not idq   = Just $ "illegal function alias: " ++ show d
                | otherwise = prdVars (t {trArgs = v:trArgs t}, d)
   where
-    ifq = isEqu f && isTrm t
-    idq = isEqu d && not (occurs u p)
+    ifq = isEquality f && isTrm t
+    idq = isEquality d && not (occurs u p)
     Trm {trName = "=", trArgs = [v, t]} = f
     Trm {trName = "=", trArgs = [u, p]} = d
 
@@ -107,7 +107,7 @@ funVars (f, d) | not ifq   = prdVars (f, d)
 ntnVars (f, d) | not isFunction = prdVars (f, d)
                | otherwise      = prdVars (t {trArgs = v:vs}, d)
   where
-    isFunction = isEqu f && isTrm t
+    isFunction = isEquality f && isTrm t
     Trm {trName = "=", trArgs =  [v,t]} = f
     Trm {trArgs = vs} = t
 
