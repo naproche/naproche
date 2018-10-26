@@ -34,7 +34,7 @@ module Alice.Core.Base (
   addTimeCounter, addIntCounter, incrementIntCounter,
   guardInstruction, guardNotInstruction, whenInstruction,
 
-  putStrLnRM, putStrRM, printRM,
+  putStrLnRM, putStrRM,
   reasonerLog, reasonerLog0, simpLog, simpLog0, thesisLog, thesisLog0,
   blockLabel
 ) where
@@ -241,11 +241,8 @@ showTimeDiff t
 
 -- IO management (print functions for the log)
 
-printRM :: Show a => a -> VM ()
-
 putStrLnRM  = justIO . putStrLn
 putStrRM    = justIO . putStr
-printRM     = justIO . print
 
 reasonerLog0 msg = putStrLnRM $ "[Reason] " ++ msg
 

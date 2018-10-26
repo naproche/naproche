@@ -287,13 +287,13 @@ procTI VS {
     proc (InCom ICPths) = do
       let motivation = if motivated then "(mot): " else "(nmt): "
       reasonerLog0 $ "current thesis " ++ motivation ++ show (cnForm thesis)
-    proc (InCom ICPcnt) = do
-      reasonerLog0 $ "current context:"
-      mapM_ ((putStrRM "  " >>) . printRM) $ reverse context
+    proc (InCom ICPcnt) =
+      reasonerLog0 $ "current context:\n" ++
+        concatMap (\form -> "  " ++ show form ++ "\n") (reverse context)
     proc (InCom ICPflt) = do
       let topLevelContext = filter cnTopL context
-      reasonerLog0 $ "current filtered top-level context:"
-      mapM_ ((putStrRM "  " >>) . printRM) $ reverse topLevelContext
+      reasonerLog0 $ "current filtered top-level context:\n" ++
+        concatMap (\form -> "  " ++ show form ++ "\n") (reverse topLevelContext)
 
     proc (InCom _) = reasonerLog0 "unsupported instruction"
 
