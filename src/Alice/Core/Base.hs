@@ -34,7 +34,7 @@ module Alice.Core.Base (
   addTimeCounter, addIntCounter, incrementIntCounter,
   guardInstruction, guardNotInstruction, whenInstruction,
 
-  trimLine, MessageKind (..), putMessage,
+  trimLine, MessageKind (..), makeMessage, putMessage,
   reasonLog, simpLog, thesisLog,
 ) where
 

@@ -19,9 +19,11 @@ import Alice.ForTheL.Base
 import Alice.ForTheL.Structure
 import Alice.Parser.Base
 import Alice.ForTheL.Instruction
+import Alice.Parser.Position
 import Alice.Parser.Token
 import Alice.Parser.Combinators
 import Alice.Parser.Primitives
+import Alice.Core.Base (makeMessage, MessageKind (Normal))
 
 import Debug.Trace
 
@@ -92,9 +94,8 @@ launchParser parser st =
 -- Service stuff
 
 info :: String -> String -> String -> IO ()
-info la fn st =
-  let fi = if null fn then "stdin" else fn
-  in  putStrLn $ '[' : la ++ "] " ++ fi ++ ": " ++ st
+info origin fileName msg =
+  putStrLn $ makeMessage origin Normal (namePos fileName) msg
 
 warn :: String -> String -> IO ()
 warn = info "Main"
