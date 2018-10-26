@@ -25,13 +25,11 @@
 
 # Misc #
 
-* standardize message output to `putStrLn` (with message text in one piece)
+* eliminate informal `putStrLn` and `info` in favour of `putMessage`
 
 * move provers/provers.dat to toplevel directory (no executables there) (??)
 
-* more explicit error on missing external provers
-
-* check if $SPASS_HOME/SPASS from Isabelle actually works
+* make $SPASS_HOME/SPASS from Isabelle actually work (!?)
 
 
 # Isabelle/jEdit #
