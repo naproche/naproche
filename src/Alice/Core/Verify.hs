@@ -43,7 +43,7 @@ verify :: String -> IORef RState -> [Text] -> IO (Maybe ([Text], GState))
 verify file reasonerState blocks = do
   let text = TI (InStr ISfile file) : blocks
       fileName = if null file then "stdin" else file
-  putStrLn $ "[Reason] " ++ fileName ++ ": verification started"
+  putStrLn $ "[Reasoner] " ++ fileName ++ ": verification started"
 
   let initialVerificationState =
         VS False [] DT.empty (Context Bot [] [] Bot) [] [] text
@@ -55,7 +55,7 @@ verify file reasonerState blocks = do
 
   let success = isJust result && ignoredFails == 0
       out = if success then " successful" else " failed"
-  putStrLn $ "[Reason] " ++ fileName ++ ": verification" ++ out
+  putStrLn $ "[Reasoner] " ++ fileName ++ ": verification" ++ out
   return result
 
 

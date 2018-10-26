@@ -265,14 +265,14 @@ putMessage channel kind pos msg =
   justIO $ putStrLn $ makeMessage channel kind pos msg
 
 reasonLog :: MessageKind -> SourcePos -> String -> VM ()
-reasonLog = putMessage "Reason"
+reasonLog = putMessage "Reasoner"
 
 thesisLog :: MessageKind -> SourcePos -> Int -> String -> VM ()
 thesisLog kind pos indent msg =
   putMessage "Thesis" kind pos $ replicate (3 * indent) ' ' ++ msg
 
 simpLog :: MessageKind -> SourcePos -> String -> VM ()
-simpLog = putMessage "Simp"
+simpLog = putMessage "Simplifier"
 
 
 
