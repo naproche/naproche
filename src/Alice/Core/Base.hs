@@ -282,7 +282,7 @@ thesisLog kind indent block msg = do
     blockLabel fileName block ++ replicate (3 * indent) ' ' ++ msg
 
 simpLog0 :: MessageKind -> SourcePos -> String -> VM ()
-simpLog0 = putMessage "Simplf"
+simpLog0 = putMessage "Simp"
 
 simpLog kind context msg = do
   fileName <- askInstructionString ISfile ""

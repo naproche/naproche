@@ -87,7 +87,7 @@ main  = do
   putStrLn $ "[Main] "
     ++ "parser "        ++ showTimeDiff (diffUTCTime proveStart startTime)
     ++ " - reason "     ++ showTimeDiff (diffUTCTime finishTime simplifyTime)
-    ++ " - simplifier " ++ showTimeDiff (diffUTCTime simplifyTime proverTime)
+    ++ " - simp "       ++ showTimeDiff (diffUTCTime simplifyTime proverTime)
     ++ " - prover "     ++ showTimeDiff (diffUTCTime proverTime proveStart)
     ++ "/" ++ showTimeDiff (maximalTimeCounter counterList SuccessTime)
   putStrLn $ "[Main] "
