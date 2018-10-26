@@ -35,7 +35,7 @@ module Alice.Core.Base (
   guardInstruction, guardNotInstruction, whenInstruction,
 
   trimLine, MessageKind (..), putMessage,
-  reasonerLog, reasonerLog0, simpLog, simpLog0, thesisLog, thesisLog0,
+  reasonerLog, simpLog, simpLog0, thesisLog, thesisLog0,
   blockLabel
 ) where
 
@@ -265,13 +265,8 @@ putMessage :: String -> MessageKind -> SourcePos -> String -> VM ()
 putMessage channel kind pos msg =
   justIO $ putStrLn $ makeMessage channel kind pos msg
 
-reasonerLog0 :: MessageKind -> SourcePos -> String -> VM ()
-reasonerLog0 = putMessage "Reason"
-
-reasonerLog :: MessageKind -> Block -> String -> VM ()
-reasonerLog kind block msg = do
-  fileName <- askInstructionString ISfile ""
-  reasonerLog0 kind noPos $ blockLabel fileName block ++ msg
+reasonerLog :: MessageKind -> SourcePos -> String -> VM ()
+reasonerLog = putMessage "Reason"
 
 thesisLog0 :: MessageKind -> SourcePos -> String -> VM ()
 thesisLog0 = putMessage "Thesis"
@@ -335,7 +330,7 @@ retrieveContext names = do
   return context
   where
     warn unfoundSections =
-      reasonerLog0 Warning noPos $
+      reasonerLog Warning noPos $
         "Could not find sections " ++ unwords (map show $ Set.elems unfoundSections)
     retrieve [] = return []
     retrieve (context:restContext) = let name = cnName context in
@@ -403,7 +398,7 @@ getLink link = do
 -- add group identifier
 addGroup :: [String] -> VM ()
 addGroup [] = return ()
-addGroup [name] = reasonerLog0 Warning noPos $ "empty group: " ++ show name
+addGroup [name] = reasonerLog Warning noPos $ "empty group: " ++ show name
 addGroup (name:identifiers) =
   getLink identifiers >>= \link -> updateGlobalState
     (\st -> st {identifierGroups = M.insert name link $ identifierGroups st})

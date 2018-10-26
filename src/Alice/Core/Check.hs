@@ -18,7 +18,7 @@ import Control.Monad.Reader
 import Alice.Data.Formula
 import Alice.Data.Instr
 import Alice.Data.Text.Context
-import Alice.Data.Text.Block (link)
+import Alice.Data.Text.Block (link, position)
 import Alice.Data.Definition
 import Alice.Core.Base
 import Alice.Core.Reason
@@ -76,7 +76,8 @@ setDef isNewWord context term@Trm{trName = t, trId = tId} =
     <|>  out >> mzero ) -- failure message
   where
     out =
-      reasonerLog Normal (cnHead context) $ "unrecognized: " ++ showsPrec 2 term ""
+      reasonerLog Normal (position (cnHead context)) $
+        "unrecognized: " ++ showsPrec 2 term ""
 
 
 -- Find relevant definitions and test them
@@ -144,7 +145,9 @@ testDef context term (guards, fortifiedTerm) = do
       "check: " ++ showsPrec 2 term " vs " ++ format (select guards)
     thead [] = ""; thead guards = "(trivial: " ++ format guards ++ ")"
     format guards = if null guards then " - " else unwords . map show $ guards
-    defLog = whenInstruction IBPchk False . reasonerLog Normal (head $ cnBran context)
+    defLog =
+      whenInstruction IBPchk False .
+        reasonerLog Normal (position (head $ cnBran context))
 
 
 
