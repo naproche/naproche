@@ -114,11 +114,12 @@ launchProver iteration = do
   addTimeCounter SuccessTime time ; incrementIntCounter SuccessfulGoals
   where
     printTask reductionSetting = do
-      reasonerLog0 "prover task:"
       let getFormula = if reductionSetting then cnRedu else cnForm
       contextFormulas <- asks $ map getFormula . reverse . currentContext
-      mapM_ ((putStrRM "  " >>) . printRM) contextFormulas
-      putStrRM "  |- " ; thesis >>= printRM . cnForm
+      concl <- thesis
+      reasonerLog0 $ "prover task:\n" ++
+        concatMap (\form -> "  " ++ show form ++ "\n") contextFormulas ++
+        "  |- " ++ show (cnForm concl) ++ "\n"
 
 
 launchReasoning :: VM ()
