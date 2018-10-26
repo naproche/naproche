@@ -73,8 +73,8 @@ verificationLoop state@VS {
 
   -- statistics and user communication
   incrementIntCounter Sections ; fileName <- askInstructionString ISfile "" ;
-  whenInstruction IBPsct False $ putStrRM $
-    "[ForTheL] " ++ blockLabel fileName block ++ showForm 0 block ""
+  whenInstruction IBPsct False $ putStrLnRM $
+    "[ForTheL] " ++ blockLabel fileName block ++ trimLine (showForm 0 block "")
   let newBranch = block : branch; contextBlock = Context f newBranch [] f
 
 
