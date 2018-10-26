@@ -69,5 +69,5 @@ instance Show SourcePos where
       showDetails =
         case filter (not . null) details of
           [] -> ""
-          ds -> "(" ++ intercalate "," ds ++ ")"
+          ds -> "(" ++ intercalate ", " ds ++ ")"
       showName = if null name then "" else "\"" ++ name ++ "\""
