@@ -25,8 +25,8 @@ import Control.Monad.Trans.Reader
 {- generate proof task associated with a block -}
 
 generateProofTask :: Section -> [String] -> Formula -> Formula
-generateProofTask Select vs f = foldr mbExi f vs
-generateProofTask Declare _ f
+generateProofTask Selection vs f = foldr mbExi f vs
+generateProofTask LowDefinition _ f
   | funDcl f = funTask f
   | setDcl f = setTask f
 generateProofTask _ _ f = f
@@ -89,7 +89,7 @@ choices = Tag FCH . dive
     dive (Tag DEV _) = Top
     dive (Tag _ f) = dive f
     dive (Exi x (And (Tag DEF f) g)) =
-      (generateProofTask Declare [] $ dec $ inst x $ f) `blAnd`
+      (generateProofTask LowDefinition [] $ dec $ inst x $ f) `blAnd`
       (dec $ inst x $ f `blImp` dive g)
     dive (All x f) =  blAll x $ dive f
     dive (Imp f g) = f `blImp` dive g

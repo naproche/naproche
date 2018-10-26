@@ -18,7 +18,7 @@ import Control.Monad.Reader
 import Alice.Data.Formula
 import Alice.Data.Instr
 import Alice.Data.Text.Context
-import Alice.Data.Text.Block (blLink)
+import Alice.Data.Text.Block (link)
 import Alice.Data.Definition
 import Alice.Core.Base
 import Alice.Core.Reason
@@ -137,7 +137,7 @@ testDef context term (guards, fortifiedTerm) = do
 
     wipeLink context =
       let block:restBranch = cnBran context
-      in  context {cnBran = block {blLink = []} : restBranch}
+      in  context {cnBran = block {link = []} : restBranch}
 
 
     header select guards =

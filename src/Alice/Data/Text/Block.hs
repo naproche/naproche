@@ -1,4 +1,14 @@
-module Alice.Data.Text.Block where
+module Alice.Data.Text.Block (
+  Text(..),
+  Block(..),
+  Section(..),
+  showForm,
+  formulate,
+  compose,
+  needsProof,
+  isTopLevel,
+  file
+  )where
 
 import Alice.Data.Formula
 import Alice.Parser.Position
@@ -6,99 +16,90 @@ import Alice.Data.Instr (Instr, Idrop)
 
 data Text = TB Block | TI Instr | TD Idrop
 
+data Block  = Block {
+  formula           :: Formula,
+  body              :: [Text],
+  kind              :: Section,
+  declaredVariables :: [String],
+  name              :: String,
+  link              :: [String],
+  position          :: SourcePos,
+  text              :: String }
 
-
--- Block utilities
-
-
-
-getBlock :: Text -> Block
-getBlock (TB bl) = bl
-
+{- All possible types that a ForThel block can have. -}
+data Section =
+  Definition | Signature | Axiom       | Theorem | CaseHypothesis  |
+  Assumption | Selection | Affirmation | Posit   | LowDefinition
+  deriving Eq
 
 -- Composition
 
 {- form the formula image of a whole block -}
 formulate :: Block -> Formula
-formulate bl  | noForm bl = compose $ blBody bl
-              | otherwise = blForm bl
+formulate block
+  | isTopLevel block = compose $ body block
+  | otherwise = formula block
 
 compose :: [Text] -> Formula
-compose tx = foldr comp Top tx
+compose = foldr comp Top
   where
-    comp (TB bl@(Block{ blDecl = dvs })) fb
-      | blSign bl || blType bl == Posit = foldr zExi (blAnd (formulate bl) fb) dvs
-      | otherwise = foldr zAll (blImp (formulate bl) fb) dvs
+    comp (TB block@Block{ declaredVariables = dvs }) f
+      | needsProof block || kind block == Posit =
+          foldr zExi (blAnd (formulate block) f) dvs
+      | otherwise = foldr zAll (blImp (formulate block) f) dvs
     comp _ fb = fb
 
 
 
+{- necessity of proof as derived from the block type -}
+needsProof :: Block -> Bool
+needsProof block = sign $ kind block
+  where
+    sign Definition = False
+    sign Signature  = False
+    sign Axiom      = False
+    sign Assumption = False
+    sign Posit      = False
+    sign _          = True
+
+
+isTopLevel :: Block -> Bool
+isTopLevel  = isHole . formula
+
+noBody :: Block -> Bool
+noBody  = null . body
+
+file :: Block -> String
+file = sourceFile . position
+
 -- Show instances
 
 instance Show Text where
-  showsPrec p (TB bl) = showsPrec p bl
-  showsPrec 0 (TI is) = showsPrec 0 is . showChar '\n'
-  showsPrec 0 (TD is) = showsPrec 0 is . showChar '\n'
+  showsPrec p (TB block) = showsPrec p block
+  showsPrec 0 (TI instruction) = shows instruction . showChar '\n'
+  showsPrec 0 (TD instruction) = shows instruction . showChar '\n'
   showsPrec _ _ = id
 
 instance Show Block where
-  showsPrec p bl  | noBody bl = showForm p bl
-                  | noForm bl = showForm p bl . sbody
-                  | otherwise = showForm p bl
-                              . showIndent p . showString "proof.\n"
-                              . sbody
-                              . showIndent p . showString "qed.\n"
+  showsPrec p block@Block {body = body}
+    | noBody block = showForm p block
+    | isTopLevel block = showForm p block . showBody
+    | otherwise = showForm p block .
+        showIndent p . showString "proof.\n" . showBody .
+        showIndent p . showString "qed.\n"
     where
-      sbody = foldr ((.) . showsPrec (succ p)) id $ blBody bl
+      showBody = foldr ((.) . showsPrec (succ p)) id body
 
-showForm p bl = showIndent p . sform (noForm bl) (blSign bl) . dt
+showForm p block@Block {formula = formula, name = name} =
+  showIndent p . sform (isTopLevel block) (needsProof block) . dot
   where
-      sform True  True  = showString $ "conjecture" ++ mr
-      sform True  False = showString $ "hypothesis" ++ mr
-      sform False False = showString "assume " . shows fr
-      sform False True  = shows fr
+    sform True  True  = showString $ "conjecture" ++ addName
+    sform True  False = showString $ "hypothesis" ++ addName
+    sform False False = showString "assume " . shows formula
+    sform False True  = shows formula
 
-      mr = if null nm then "" else (' ':nm)
-      fr = blForm bl ; nm = blName bl
-      dt = showString ".\n"
+    addName = if null name then "" else (' ':name)
+    dot = showString ".\n"
 
 showIndent :: Int -> ShowS
-showIndent n  = showString $ replicate (n * 2) ' '
-
-
-data Block  = Block { blForm :: Formula,  blBody :: [Text],   -- Formula image / body of the block
-                      blType :: Section,  blDecl :: [String], -- block type / variables declared in the block
-                      blName :: String,   blLink :: [String], -- identifier of the block / proof link provided in the block ("by" statement)
-                      blPos :: SourcePos, blText :: String }
-
-
-{- All possible types that a ForThel block can have. -}
-data Section = Defn | Sign | Axiom | Theorem | Case | Assume | Select | Affirm | Posit | Frame | Declare deriving Eq
-
-{- necessity of proof as derived from the block type -}
-blSign bl = sign $ blType bl
-  where
-    sign Defn    = False
-    sign Sign    = False
-    sign Axiom   = False
-    sign Assume  = False
-    sign Posit   = False
-    sign Declare = True
-    sign _       = True
-
-isDecl = (==) Declare . blType
-
-
-noForm :: Block -> Bool
-noForm  = isHole . blForm
-
-noBody :: Block -> Bool
-noBody  = null . blBody
-
-
-
-blFile :: Block -> String
-blFile = sourceFile . blPos
-
-blLnCl :: Block -> (Int, Int)
-blLnCl bl = let pos = blPos bl in (sourceLine pos, sourceColumn pos)
+showIndent n = showString $ replicate (n * 2) ' '

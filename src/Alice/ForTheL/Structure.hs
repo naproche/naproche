@@ -18,7 +18,8 @@ import Alice.Parser.Combinators
 import Alice.Parser.Token
 import Alice.Parser.Primitives
 
-import Alice.Data.Text.Block
+import Alice.Data.Text.Block hiding (link)
+import qualified Alice.Data.Text.Block as Block
 import Alice.Data.Formula
 
 
@@ -59,7 +60,7 @@ genericTopsection kind header endparser = do
   where
     body = assumption <|> endparser
     assumption = topAssume `pretypeBefore` body
-    topAssume = pretypeSentence Assume (asmH >> statement) assumeVars noLink
+    topAssume = pretypeSentence Assumption (asmH >> statement) assumeVars noLink
 
 --- generic header parser
 
@@ -68,18 +69,20 @@ header titles = dot $ wd_tokenOf titles >> optLL1 "" topIdentifier
 
 -- topsections
 
-signature  = genericTopsection Sign    sigH sigext
-  where
-  sigext = pretype $ pretypeSentence Posit sigExtend defVars noLink
-definition = genericTopsection Defn    defH define
-  where
-    define = pretype $ pretypeSentence Posit defExtend defVars noLink
-axiom      = genericTopsection Axiom   axmH posit
-  where
-    posit = pretype $ pretypeSentence Posit (affH >> statement) affirmVars noLink
-theorem    = genericTopsection Theorem thmH (topProof topAffirm)
-  where
-    topAffirm = pretypeSentence Affirm (affH >> statement) affirmVars link
+signature =
+  let sigext = pretype $ pretypeSentence Posit sigExtend defVars noLink
+  in  genericTopsection Signature sigH sigext
+definition =
+  let define = pretype $ pretypeSentence Posit defExtend defVars noLink
+  in  genericTopsection Definition defH define
+axiom =
+  let posit = pretype $ 
+        pretypeSentence Posit (affH >> statement) affirmVars noLink
+  in  genericTopsection Axiom axmH posit
+theorem = 
+  let topAffirm = pretypeSentence Affirmation (affH >> statement) affirmVars link
+  in  genericTopsection Theorem thmH (topProof topAffirm)
+    
 
 sigH = header ["signature"]
 defH = header ["definition"]
@@ -88,11 +91,11 @@ thmH = header ["theorem", "lemma", "corollary", "proposition"]
 
 
 -- low-level
-choose   = sentence Select (chsH >> selection) assumeVars link
-caseHypo = sentence Case   (casH >> statement) affirmVars link
-affirm   = sentence Affirm (affH >> statement) affirmVars link </> eqChain
-assume   = sentence Assume (asmH >> statement) assumeVars noLink
-llDefn   = sentence Declare(ldfH >> setNotion </> functionNotion)     llDefnVars noLink
+choose   = sentence Selection (chsH >> selection) assumeVars link
+caseHypo = sentence CaseHypothesis   (casH >> statement) affirmVars link
+affirm   = sentence Affirmation (affH >> statement) affirmVars link </> eqChain
+assume   = sentence Assumption (asmH >> statement) assumeVars noLink
+llDefn   = sentence LowDefinition(ldfH >> setNotion </> functionNotion)     llDefnVars noLink
 
 -- Links and Identifiers
 link = dot eqLink
@@ -116,26 +119,26 @@ eqLink = optLL1 [] $ expar $ wd_token "by" >> identifiers
 -- declaration management, typings and pretypings
 
 updateDeclbefore :: FTL Block -> FTL [Text] -> FTL [Text]
-updateDeclbefore blp p = do bl <- blp; addDecl (blDecl bl) $ liftM (TB bl : ) p
+updateDeclbefore blp p = do bl <- blp; addDecl (declaredVariables bl) $ liftM (TB bl : ) p
 
 
 pretyping :: Block -> FTL Block
 pretyping = (<*>) (liftM2 pret getDecl getPretyped) . return
 
-pret dvs tvs bl = assumeBlock {blForm = typing, blDecl = untyped}
+pret dvs tvs bl = assumeBlock {formula = typing, declaredVariables = untyped}
   where
-    blockVars   = blDecl bl
-    untyped     = free (blockVars ++ dvs) (blForm bl)
+    blockVars   = declaredVariables bl
+    untyped     = free (blockVars ++ dvs) (formula bl)
     typing      = if   null untyped
                   then Top
                   else foldl1 And $ map (`typeWith` tvs) untyped
-    assumeBlock = bl {blBody = [], blType = Assume, blLink = []}
+    assumeBlock = bl {body = [], kind = Assumption, Block.link = []}
     typeWith v  = substHole (zVar v) . snd . fromJust . find (elem v . fst)
 
 pretypeBefore :: FTL Block -> FTL [Text] -> FTL [Text]
 pretypeBefore blp p = do
-  bl <- blp; typeBlock <- pretyping bl; let pretyped = blDecl typeBlock
-  pResult   <- addDecl (pretyped ++ blDecl bl) $ liftM (TB bl : ) p
+  bl <- blp; typeBlock <- pretyping bl; let pretyped = declaredVariables typeBlock
+  pResult   <- addDecl (pretyped ++ declaredVariables bl) $ liftM (TB bl : ) p
   return $ if null pretyped then pResult else TB typeBlock : pResult
 
 pretype :: FTL Block -> FTL [Text]
@@ -168,16 +171,16 @@ statementBlock kind p mbLink = do
 pretypeSentence kind p wfVars mbLink = narrow $ do
   dvs <- getDecl; tvr <- liftM (concatMap fst) getPretyped
   bl <- wellFormedCheck (wf dvs tvr) $ statementBlock kind p mbLink
-  return bl {blDecl = decl (dvs ++ tvr) $ blForm bl }
+  return bl {declaredVariables = decl (dvs ++ tvr) $ formula bl }
   where
     wf dvs tvr bl =
-      let fr = blForm bl; nvs = intersect tvr $ free dvs fr
+      let fr = formula bl; nvs = intersect tvr $ free dvs fr
       in  wfVars (nvs ++ dvs) fr
 
 sentence kind p wfVars mbLink = do
   dvs <- getDecl;
-  bl  <- wellFormedCheck (wfVars dvs . blForm) $ statementBlock kind p mbLink
-  return bl {blDecl = decl dvs $ blForm bl}
+  bl  <- wellFormedCheck (wfVars dvs . formula) $ statementBlock kind p mbLink
+  return bl {declaredVariables = decl dvs $ formula bl}
 
 -- variable well-formedness checks
 
@@ -254,17 +257,17 @@ indThesis fr pre post = do
 
 proof p = do
   pre <- preMethod; bl <- p; post <- postMethod;
-  nf <- indThesis (blForm bl) pre post
-  addBody pre post $ bl {blForm = nf}
+  nf <- indThesis (formula bl) pre post
+  addBody pre post $ bl {formula = nf}
 
 
 
 topProof p = do
   pre <- preMethod; bl <- p; post <- postMethod; typeBlock <- pretyping bl;
-  let pretyped = blDecl typeBlock
+  let pretyped = declaredVariables typeBlock
   nbl <- addDecl pretyped $ liftM TB $ do
-          nf <- indThesis (blForm bl) pre post
-          addBody pre post $ bl {blForm = nf}
+          nf <- indThesis (formula bl) pre post
+          addBody pre post $ bl {formula = nf}
   return $ if null pretyped then [nbl] else [TB typeBlock, nbl]
 
 addBody None None = return -- no proof was given
@@ -277,11 +280,11 @@ addBody _ _       = proofBody    -- a full proof was given
 
 proofSentence bl = do
   pbl <- narrow assume </> proof (narrow $ affirm </> choose) </> narrow llDefn
-  return bl {blBody = [TB pbl]}
+  return bl {body = [TB pbl]}
 
 proofBody bl = do
   bs <- proofText; ls <- link
-  return bl {blBody = bs, blLink = ls ++ blLink bl}
+  return bl {body = bs, Block.link = ls ++ Block.link bl}
 
 proofText = assume_affirm_choose_lldefine <|> caseText <|> qed <|> llInstr
   where
@@ -297,8 +300,8 @@ caseText = caseD
     qed       = wd_tokenOf ["qed", "end", "trivial", "obvious"] >> return []
 
     caseDestinction = do
-      bl@(Block { blForm = fr }) <- narrow caseHypo
-      liftM TB $ proofBody $ bl { blForm = Imp (Tag DCH fr) zThesis}
+      bl@(Block { formula = fr }) <- narrow caseHypo
+      liftM TB $ proofBody $ bl { formula = Imp (Tag DCH fr) zThesis}
 
 
 -- equality Chain
@@ -307,12 +310,12 @@ eqChain = do
   dvs <- getDecl; nm <- opt "__" lowIdentifier; pos <- getPos; inp <- getInput
   body <- wellFormedCheck (chainVars dvs) $ s_term >>= nextTerm
   txt <- getText inp
-  let Tag DEC Trm{trArgs = [t,_]} = blForm $ head body
-      Tag DEC Trm{trArgs = [_,s]} = blForm $ last body
+  let Tag DEC Trm{trArgs = [t,_]} = formula $ head body
+      Tag DEC Trm{trArgs = [_,s]} = formula $ last body
       fr = Tag DEC $ zEqu t s; tBody = map TB body
-  return $ Block fr tBody Affirm [] nm [] pos txt
+  return $ Block fr tBody Affirmation [] nm [] pos txt
   where
-    chainVars dvs = affirmVars dvs . foldl1 And . map blForm
+    chainVars dvs = affirmVars dvs . foldl1 And . map formula
 
 
 eq_tail t = nextTerm t </> (sm_token "." >> return [])
@@ -321,4 +324,4 @@ nextTerm :: Formula -> FTL [Block]
 nextTerm t = do
   pos <- getPos; inp <- getInput
   symbol ".="; s <- s_term; ln <- eqLink; txt <- getText inp
-  liftM ((:) $ Block (Tag DEC $ zEqu t s) [] Affirm [] "__" ln pos txt) $ eq_tail s
+  liftM ((:) $ Block (Tag DEC $ zEqu t s) [] Affirmation [] "__" ln pos txt) $ eq_tail s

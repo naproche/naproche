@@ -26,7 +26,7 @@ tptpOut red _ _ cn gl = (axs . cnj) ""
 -- Formula print
 
 tptpForm :: Bool -> String -> Context -> ShowS
-tptpForm red s (Context fr (Block { blName = m } : _) _ g)
+tptpForm red s (Context fr (Block { name = m } : _) _ g)
           = let f = if red then g else fr in
             showString "fof(m"
           . showString (if null m then "_" else m)

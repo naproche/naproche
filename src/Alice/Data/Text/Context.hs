@@ -21,14 +21,14 @@ cnTail  = tail . cnBran
 cnTopL  = null . cnTail                     -- Top Level context
 cnLowL  = not  . cnTopL                     -- Low Level context
 
-cnSign  = blSign . cnHead
-cnDecl  = blDecl . cnHead
-cnName  = blName . cnHead
-cnLink  = blLink . cnHead
+cnSign  = needsProof . cnHead
+cnDecl  = declaredVariables . cnHead
+cnName  = name . cnHead
+cnLink  = link . cnHead
 
 
 
-isAssm = (==) Assume . blType . cnHead
+isAssm = (==) Assumption . kind . cnHead
 
 setForm :: Context -> Formula -> Context
 setForm cx fr = cx { cnForm = fr }

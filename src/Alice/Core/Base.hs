@@ -54,13 +54,14 @@ import Control.Monad.Reader
 
 import Alice.Data.Formula
 import Alice.Data.Instr
-import Alice.Data.Text.Block (Block(..), Text, blFile, blLnCl)
+import Alice.Data.Text.Block (Block(..), Text, file)
 import Alice.Data.Text.Context
 import Alice.Data.Definition
 import Alice.Data.Rules (Rule)
 import Alice.Data.Evaluation
 import Alice.Export.Base
 import qualified Alice.Data.Structures.DisTree as DT
+import Alice.Parser.Position
 
 import Debug.Trace
 
@@ -271,9 +272,10 @@ simpLog context msg = do
   simpLog0 $ blockLabel fileName (cnHead context) ++ msg
 
 blockLabel fileName block =
-  let blockFile = blFile block
+  let blockFile = file block; blockPos = position block
+      line = sourceLine blockPos; column = sourceLine blockPos
   in  (if fileName == blockFile then "" else blockFile)
-        ++ format (show (blLnCl block)) ++ ": "
+        ++ format (show (line, column)) ++ ": "
   where
     format string =
       let l = length string

@@ -11,7 +11,7 @@ module Alice.Core.Rewrite (equalityReasoning) where
 import Alice.Data.Formula
 import Alice.Data.Rules
 import Alice.Data.Text.Context
-import Alice.Data.Text.Block (blLink, blBody)
+import Alice.Data.Text.Block as Block
 import Alice.Core.Base
 import Alice.Data.Instr
 import Alice.Core.Thesis
@@ -154,7 +154,7 @@ equalityReasoning thesis
     equation = strip $ cnForm thesis
     link = cnLink thesis
     -- body is true for the EC section containing the equlity chain
-    body = (not . null) $ blBody . head . cnBran $ thesis
+    body = (not . null) $ Block.body . head . cnBran $ thesis
 
 
 getLinkedRules :: [String] -> VM [Rule]
@@ -226,7 +226,7 @@ dischargeConditions verbositySetting conditions =
 
     wipeLink thesis =
       let block:restBranch = cnBran thesis
-      in  thesis {cnBran = block {blLink = []} : restBranch}
+      in  thesis {cnBran = block {link = []} : restBranch}
 
     trivialityCheck g =
       if   trivialByEvidence g

@@ -160,8 +160,8 @@ filterContext action context = do
       in  map replaceHeadTerm $ filter defOrSig toplevelContext
 
 isDefinition, isSignature :: Context -> Bool
-isDefinition = (==) Defn . blType . cnHead
-isSignature  = (==) Sign . blType . cnHead
+isDefinition = (==) Block.Definition . kind . cnHead
+isSignature  = (==) Block.Signature  . kind . cnHead
 
 replaceHeadTerm :: Context -> Context
 replaceHeadTerm c = setForm c $ dive 0 $ cnForm c
@@ -275,7 +275,7 @@ unfoldConservative toUnfold
     fill localContext sign n (Iff f g) = fill localContext sign n $ zIff f g
     fill localContext sign n f = roundFM 'u' fill localContext sign n f
 
-    isDeclaration = (==) Declare . blType . cnHead
+    isDeclaration = (==) LowDefinition . kind . cnHead
 
 {- unfold an atomic formula f occuring with polarity sign -}
 unfoldAtomic sign f = do

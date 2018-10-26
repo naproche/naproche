@@ -25,7 +25,7 @@ import Alice.Core.Reason
 import Alice.Core.Thesis
 import Alice.Data.Formula
 import Alice.Data.Instr
-import Alice.Data.Text.Block
+import Alice.Data.Text.Block as Block
 import Alice.Data.Text.Context
 import Alice.Data.Rules
 import Alice.Prove.Normalize
@@ -79,13 +79,13 @@ verificationLoop state@VS {
 
 
   fortifiedFormula <-
-    if   noForm block
-    then return f   -- noForm means toplevel block
+    if   isTopLevel block
+    then return f
     else fillDef contextBlock -- check definitions and fortify terms
 
   let proofTask = generateProofTask kind declaredVariables fortifiedFormula
       freshThesis = Context proofTask newBranch [] proofTask
-      toBeProved = (blSign block) && not (noForm block)
+      toBeProved = (needsProof block) && not (isTopLevel block)
   proofBody <- askInstructionBin IBflat False >>= \p ->
     if p then return [] else return body
 
@@ -114,32 +114,32 @@ verificationLoop state@VS {
   -- extract rules, definitions and compute the new thesis
   thesisSetting <- askInstructionBin IBthes True
   let newBlock = block {
-        blForm = deleteInductionOrCase fortifiedFormula, 
-        blBody = fortifiedProof }
+        formula = deleteInductionOrCase fortifiedFormula, 
+        body = fortifiedProof }
       formulaImage = formulate newBlock
 
   -- extract definitions
-  when (kind == Defn || kind == Sign) $ addDefinition formulaImage
+  when (kind == Definition || kind == Signature) $ addDefinition formulaImage
   -- compute MESON rules
-  mesonRules  <- contras (noForm block) (deTag formulaImage)
+  mesonRules  <- contras (isTopLevel block) (deTag formulaImage)
   definitions <- askGlobalState definitions
   let ontoReduction =
         foldr1 And $ map (onto_reduce definitions) (assm_nf formulaImage)
       newContextBlock =
-        let reduction = if noForm block then ontoReduction else formulaImage
+        let reduction = if isTopLevel block then ontoReduction else formulaImage
         in  Context formulaImage newBranch mesonRules reduction
       newContext = newContextBlock : context
-  when (noForm block) $ addGlobalContext newContextBlock
-  when (noForm block) $ insertMRule mesonRules
+  when (isTopLevel block) $ addGlobalContext newContextBlock
+  when (isTopLevel block) $ insertMRule mesonRules
 
   let (newMotivation, hasChanged , newThesis) =
         if   thesisSetting
         then inferNewThesis definitions newContext thesis
-        else (blSign block, False, thesis)
+        else (needsProof block, False, thesis)
 
   whenInstruction IBPths False $ when (
     hasChanged && motivated && newMotivation &&
-    (not $ hasDEC $ blForm $ head branch) ) $
+    (not $ hasDEC $ formula $ head branch) ) $
       thesisLog (length branch - 2) block $
       "new thesis: " ++ show (cnForm newThesis)
 
@@ -149,7 +149,7 @@ verificationLoop state@VS {
   let newRewriteRules = extractRewriteRule (head newContext) ++ rules
 
   let newEvaluations =
-        if   kind `elem` [Declare, Defn]
+        if   kind `elem` [LowDefinition, Definition]
         then addEvaluation evaluations formulaImage
         else evaluations-- extract evaluations
 
@@ -186,14 +186,14 @@ verificationLoop st@VS {
       if hasDEC (cnForm thesis) --computational reasoning
       then do
         let logAction = reasonerLog block $ "goal: " ++ text
-            block = cnHead thesis ; text = blText block
+            block = cnHead thesis ; text = Block.text block
         incrementIntCounter Equations ; whenInstruction IBPgls True logAction
         timer SimplifyTime (equalityReasoning thesis) <|> (
           reasonerLog block "equation failed" >>
           guardInstruction IBskip False >> incrementIntCounter FailedEquations)
       else do
         let logAction = reasonerLog block $ "goal: " ++ text
-            block = cnHead thesis ; text = blText block
+            block = cnHead thesis ; text = Block.text block
         unless (isTop . cnForm $ thesis) $ incrementIntCounter Goals
         whenInstruction IBPgls True logAction
         proveThesis <|> (

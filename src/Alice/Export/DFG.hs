@@ -36,7 +36,7 @@ dfgOut red _ _ cn gl = (hdr . sym . axm . cnj . eop) ""
 -- Formula print
 
 dfgForm :: Bool -> Context -> ShowS
-dfgForm red (Context fr (Block { blName = m } : _) _ g)
+dfgForm red (Context fr (Block { name = m } : _) _ g)
         = let f = if red then g else fr in
           showString "formula(" . dfgTerm 0 f . showChar ','
         . showString (if null m then "_" else m) . showString ").\n"
