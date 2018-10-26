@@ -46,16 +46,16 @@ dfgTerm d = dive
   where
     dive (All _ f)  = showString "forall" . showParen True (binder f)
     dive (Exi _ f)  = showString "exists" . showParen True (binder f)
-    dive (Iff f g)  = showString "equiv" . showArgs dive [f,g]
-    dive (Imp f g)  = showString "implies" . showArgs dive [f,g]
-    dive (Or  f g)  = showString "or" . showArgs dive [f,g]
-    dive (And f g)  = showString "and" . showArgs dive [f,g]
+    dive (Iff f g)  = showString "equiv" . showArgumentsWith dive [f,g]
+    dive (Imp f g)  = showString "implies" . showArgumentsWith dive [f,g]
+    dive (Or  f g)  = showString "or" . showArgumentsWith dive [f,g]
+    dive (And f g)  = showString "and" . showArgumentsWith dive [f,g]
     dive (Tag _ f)  = dive f
-    dive (Not f)    = showString "not" . showArgs dive [f]
+    dive (Not f)    = showString "not" . showArgumentsWith dive [f]
     dive Top        = showString "true"
     dive Bot        = showString "false"
-    dive t| isEquality t = showString "equal" . showArgs dive (trArgs t)
-          | isTrm t = showTrName t . showArgs dive (trArgs t)
+    dive t| isEquality t = showString "equal" . showArgumentsWith dive (trArgs t)
+          | isTrm t = showTrName t . showArgumentsWith dive (trArgs t)
           | isVar t = showTrName t
           | isInd t = showChar 'W' . shows (d - 1 - trIndx t)
 
@@ -71,7 +71,7 @@ dfgSLS :: [Context] -> ShowS
 dfgSLS tsk  = sls "functions" fns . sls "predicates" pds
   where
     sls s (hd:tl) = showString s . showChar '[' . shs hd
-                  . showTail shs tl . showString "].\n"
+                  . showTailWith shs tl . showString "].\n"
     sls _ _ = id
 
     shs (s, a)  = showParen True $ stn s . showChar ',' . shows a

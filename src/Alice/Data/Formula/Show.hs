@@ -1,6 +1,13 @@
-module Alice.Data.Formula.Show where
+module Alice.Data.Formula.Show (
+  showArgumentsWith,
+  showTailWith,
+  symEncode,
+  symChars
+  -- also exports show instance for Formula
+  )where
 
 import Alice.Data.Formula.Base
+import Alice.Data.Formula.Kit
 
 
 -- show instances
@@ -10,44 +17,59 @@ instance Show Formula where
 
 showFormula :: Int -> Int -> Formula -> ShowS
 showFormula p d = dive
-    where
-      dive (All s f)  = showString "forall " . binder f
-      dive (Exi s f)  = showString "exists " . binder f
-      dive (Iff f g)  = showParen True $ sinfix " iff " f g
-      dive (Imp f g)  = showParen True $ sinfix " implies " f g
-      dive (Or  f g)  = showParen True $ sinfix " or "  f g
-      dive (And f g)  = showParen True $ sinfix " and " f g
-      dive (Tag a f)  = showParen True $ shows a
-                      . showString " :: " . dive f
-      dive (Not f)    = showString "not " . dive f
-      dive Top        = showString "truth"
-      dive Bot        = showString "contradiction"
-      dive ThisT      = showString "ThisT"
+  where
+    dive (All s f) = showString "forall " . showBinder f
+    dive (Exi s f) = showString "exists " . showBinder f
+    dive (Iff f g) = showParen True $ showInfix " iff "     f g
+    dive (Imp f g) = showParen True $ showInfix " implies " f g
+    dive (Or  f g) = showParen True $ showInfix " or "      f g
+    dive (And f g) = showParen True $ showInfix " and "     f g
+    dive (Tag a f) = showParen True $ shows a . showString " :: " . dive f
+    dive (Not f)   = showString "not " . dive f
+    dive Top       = showString "truth"
+    dive Bot       = showString "contradiction"
+    dive ThisT     = showString "ThisT"
 
-      dive Trm {trName = "#TH#"}   = showString "thesis"
-      dive Trm {trName = "=", trArgs = [l,r]}  = sinfix " = " l r
-      dive Trm {trName = 's':s, trArgs = ts} = decode s ts p d
-      dive Trm {trName = 't':s, trArgs = ts} = showString s . sargs ts
-      dive Trm {trName = s, trArgs = ts}       = showString s . sargs ts
-      dive Var {trName = 'x':s}      = showString s
-      dive Var {trName = s}            = showString s
-      dive (Ind i )    | i < d = showChar 'v' . shows (d - i - 1)
-                        | True  = showChar 'v' . showChar '?' . showString (show i)
+    dive t@Trm{trName = tName, trArgs = tArgs}
+      | isThesis t = showString "thesis"
+      | isEquality t = let [l,r] = trArgs t in showInfix " = " l r
+      | isSymbolicTerm t = decode (tail tName) tArgs p d
+      | not (null tName) && head tName == 't' =
+          showString (tail tName) . showArguments tArgs
+      | otherwise = showString tName . showArguments tArgs
+    dive v@Var{trName = vName}
+      | isUserVariable v = showString $ tail vName
+      | otherwise = showString vName
+    dive (Ind i )
+      | i < d = showChar 'v' . shows (d - i - 1)
+      | otherwise = showChar 'v' . showChar '?' . showString (show i)
 
-      sargs []  = id
-      sargs _   | p == 1  = showString "(...)"
-      sargs ts  = showArgs (showFormula (pred p) d) ts
+    showArguments _ | p == 1 = showString "(...)"
+    showArguments ts =
+      let showTerm = showFormula (pred p) d
+      in  showArgumentsWith showTerm ts
 
-      binder f      = showFormula p (succ d) (Ind 0) . showChar ' '
-                    . showFormula p (succ d) f
+    showBinder f = showFormula p (succ d) (Ind 0) . showChar ' ' .
+      showFormula p (succ d) f
 
-      sinfix o f g  = dive f . showString o . dive g
+    showInfix operator f g = dive f . showString operator . dive g
 
-showArgs sh (t:ts)  = showParen True $ sh t . showTail sh ts
-showArgs _ _        = id
 
-showTail sh ts      = foldr ((.) . ((showChar ',' .) . sh)) id ts
+showArgumentsWith :: (a -> ShowS) -> [a] -> ShowS
+showArgumentsWith showTerm (t:ts) =
+  showParen True $ showTerm t . showTailWith showTerm ts
+showArgumentsWith _ _ = id
 
+showTailWith :: (a -> ShowS) -> [a] -> ShowS
+showTailWith showTerm = foldr ((.) . ((showChar ',' .) . showTerm)) id
+
+isSymbolicTerm, isUserVariable :: Formula -> Bool
+isSymbolicTerm Trm {trName = 's':_} = True; isSymbolicTerm _ = False
+isUserVariable Var {trName = 'x':_} = True; isUserVariable _ = False
+
+-- decoding of symbolic names
+
+decode :: String -> [Formula] -> Int -> Int -> ShowS
 decode s [] _ _ = showString (symDecode s)
 decode s (t:ts) p d = dec s
   where
@@ -90,7 +112,8 @@ decode s (t:ts) p d = dec s
 
 
     ambig Trm {trName = 's':'d':'t':cs} = not $ funpatt cs
-    ambig Trm {trName = t} = head t == 's' && snd (splitAt (length t - 2) t) == "dt"
+    ambig Trm {trName = t} = 
+      head t == 's' && snd (splitAt (length t - 2) t) == "dt"
     ambig _ = False
 
     funpatt "lbdtrb" = True
@@ -100,9 +123,11 @@ decode s (t:ts) p d = dec s
 
 -- Symbolic names
 
-symChars    = "`~!@$%^&*()-+=[]{}:'\"<>/?\\|;,"
+symChars :: [Char]
+symChars = "`~!@$%^&*()-+=[]{}:'\"<>/?\\|;,"
 
-symEncode s = concatMap chc s
+symEncode :: String -> String
+symEncode = concatMap chc
   where
     chc '`' = "bq" ; chc '~'  = "tl" ; chc '!' = "ex"
     chc '@' = "at" ; chc '$'  = "dl" ; chc '%' = "pc"
@@ -116,6 +141,7 @@ symEncode s = concatMap chc s
     chc ';' = "sc" ; chc ','  = "cm" ; chc '.' = "dt"
     chc c   = ['z', c]
 
+symDecode :: String -> String
 symDecode s = sname [] s
   where
     sname ac ('b':'q':cs) = sname ('`':ac) cs
