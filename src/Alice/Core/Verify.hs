@@ -186,19 +186,19 @@ verificationLoop st@VS {
     prove =
       if hasDEC (cnForm thesis) --computational reasoning
       then do
-        let logAction = reasonerLog Normal (position block) $ "goal: " ++ text
+        let logAction = reasonLog Normal (position block) $ "goal: " ++ text
             block = cnHead thesis ; text = Block.text block
         incrementIntCounter Equations ; whenInstruction IBPgls True logAction
         timer SimplifyTime (equalityReasoning thesis) <|> (
-          reasonerLog Normal (position block) "equation failed" >>
+          reasonLog Normal (position block) "equation failed" >>
           guardInstruction IBskip False >> incrementIntCounter FailedEquations)
       else do
-        let logAction = reasonerLog Normal (position block) $ "goal: " ++ text
+        let logAction = reasonLog Normal (position block) $ "goal: " ++ text
             block = cnHead thesis ; text = Block.text block
         unless (isTop . cnForm $ thesis) $ incrementIntCounter Goals
         whenInstruction IBPgls True logAction
         proveThesis <|> (
-          reasonerLog Normal (position block) "goal failed" >>
+          reasonLog Normal (position block) "goal failed" >>
           guardInstruction IBskip False >>
           incrementIntCounter FailedGoals)
 
@@ -285,19 +285,19 @@ procTI VS {
   = proc
   where
     proc (InCom ICRuls) =
-      reasonerLog Normal noPos $ "current ruleset: " ++ "\n" ++ printrules (reverse rules)
+      reasonLog Normal noPos $ "current ruleset: " ++ "\n" ++ printrules (reverse rules)
     proc (InCom ICPths) = do
       let motivation = if motivated then "(mot): " else "(nmt): "
-      reasonerLog Normal noPos $ "current thesis " ++ motivation ++ show (cnForm thesis)
+      reasonLog Normal noPos $ "current thesis " ++ motivation ++ show (cnForm thesis)
     proc (InCom ICPcnt) =
-      reasonerLog Normal noPos $ "current context:\n" ++
+      reasonLog Normal noPos $ "current context:\n" ++
         concatMap (\form -> "  " ++ show form ++ "\n") (reverse context)
     proc (InCom ICPflt) = do
       let topLevelContext = filter cnTopL context
-      reasonerLog Normal noPos $ "current filtered top-level context:\n" ++
+      reasonLog Normal noPos $ "current filtered top-level context:\n" ++
         concatMap (\form -> "  " ++ show form ++ "\n") (reverse topLevelContext)
 
-    proc (InCom _) = reasonerLog Normal noPos "unsupported instruction"
+    proc (InCom _) = reasonLog Normal noPos "unsupported instruction"
 
     proc (InBin IBverb False) = do
       addInstruction $ InBin IBPgls False

@@ -148,7 +148,7 @@ generateConditions verbositySetting rules w l r =
 {- applies computational reasoning to an equality chain -}
 equalityReasoning :: Context -> VM ()
 equalityReasoning thesis
-  | body = whenInstruction IBPrsn False $ reasonerLog Normal noPos "eqchain concluded"
+  | body = whenInstruction IBPrsn False $ reasonLog Normal noPos "eqchain concluded"
   | (not . null) link = getLinkedRules link >>= rewrite equation
   | otherwise = rules >>= rewrite equation -- if no link is given -> all rules
   where

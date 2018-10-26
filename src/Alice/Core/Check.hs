@@ -76,7 +76,7 @@ setDef isNewWord context term@Trm{trName = t, trId = tId} =
     <|>  out >> mzero ) -- failure message
   where
     out =
-      reasonerLog Normal (position (cnHead context)) $
+      reasonLog Normal (position (cnHead context)) $
         "unrecognized: " ++ showsPrec 2 term ""
 
 
@@ -147,7 +147,7 @@ testDef context term (guards, fortifiedTerm) = do
     format guards = if null guards then " - " else unwords . map show $ guards
     defLog =
       whenInstruction IBPchk False .
-        reasonerLog Normal (position (head $ cnBran context))
+        reasonLog Normal (position (head $ cnBran context))
 
 
 

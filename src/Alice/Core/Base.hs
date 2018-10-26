@@ -35,7 +35,7 @@ module Alice.Core.Base (
   guardInstruction, guardNotInstruction, whenInstruction,
 
   trimLine, MessageKind (..), putMessage,
-  reasonerLog, simpLog, thesisLog,
+  reasonLog, simpLog, thesisLog,
 ) where
 
 import Control.Monad
@@ -264,8 +264,8 @@ putMessage :: String -> MessageKind -> SourcePos -> String -> VM ()
 putMessage channel kind pos msg =
   justIO $ putStrLn $ makeMessage channel kind pos msg
 
-reasonerLog :: MessageKind -> SourcePos -> String -> VM ()
-reasonerLog = putMessage "Reason"
+reasonLog :: MessageKind -> SourcePos -> String -> VM ()
+reasonLog = putMessage "Reason"
 
 thesisLog :: MessageKind -> SourcePos -> Int -> String -> VM ()
 thesisLog kind pos indent msg =
@@ -311,7 +311,7 @@ retrieveContext names = do
   return context
   where
     warn unfoundSections =
-      reasonerLog Warning noPos $
+      reasonLog Warning noPos $
         "Could not find sections " ++ unwords (map show $ Set.elems unfoundSections)
     retrieve [] = return []
     retrieve (context:restContext) = let name = cnName context in
@@ -379,7 +379,7 @@ getLink link = do
 -- add group identifier
 addGroup :: [String] -> VM ()
 addGroup [] = return ()
-addGroup [name] = reasonerLog Warning noPos $ "empty group: " ++ show name
+addGroup [name] = reasonLog Warning noPos $ "empty group: " ++ show name
 addGroup (name:identifiers) =
   getLink identifiers >>= \link -> updateGlobalState
     (\st -> st {identifierGroups = M.insert name link $ identifierGroups st})
