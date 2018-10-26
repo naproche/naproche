@@ -19,6 +19,7 @@ import Alice.Data.Tag
 -- Alpha-beta normalization
 
 {- gets rid of top level negation, implication and equivalence -}
+albet :: Formula -> Formula
 albet (Iff f g)       = zIff f g
 albet (Imp f g)       = Or (Not f) g
 albet (Not (All v f)) = Exi v $ Not f
@@ -34,83 +35,85 @@ albet (Tag t f)       = Tag t $ albet f
 albet f               = f
 
 {- split a formula into its conjucts -}
+deAnd :: Formula -> [Formula]
 deAnd = spl . albet
   where
     spl (And f g) = deAnd f ++ deAnd g
     spl f = [f]
 
-{- split a formula into its disjuncts -}
-deOr  = spl . albet
-  where
-    spl (Or f g)  = deOr f ++ deOr g
-    spl f = [f]
-
 {- remove all tags from a formula -}
+deTag :: Formula -> Formula
 deTag (Tag _ f) = deTag f
 deTag f = mapF deTag f
 
 -- Boolean simplification
 
-bool (All _ Top)  = Top
-bool (All _ Bot)  = Bot
-bool (Exi _ Top)  = Top
-bool (Exi _ Bot)  = Bot
-bool (Iff Top f)  = f
-bool (Iff f Top)  = f
-bool (Iff Bot f)  = bool $ Not f
-bool (Iff f Bot)  = bool $ Not f
-bool (Imp Top f)  = f
-bool (Imp _ Top)  = Top
-bool (Imp Bot _)  = Top
-bool (Imp f Bot)  = bool $ Not f
-bool (Or  Top _)  = Top
-bool (Or  _ Top)  = Top
-bool (Or  Bot f)  = f
-bool (Or  f Bot)  = f
-bool (And Top f)  = f
-bool (And f Top)  = f
-bool (And Bot _)  = Bot
-bool (And _ Bot)  = Bot
-bool (Tag _ Top)  = Top
-bool (Tag _ Bot)  = Bot
-bool (Not Top)    = Bot
-bool (Not Bot)    = Top
-bool f            = f
-
-neg (Not f) = f
-neg f = bool $ Not f
+bool :: Formula -> Formula
+bool (All _ Top) = Top
+bool (All _ Bot) = Bot
+bool (Exi _ Top) = Top
+bool (Exi _ Bot) = Bot
+bool (Iff Top f) = f
+bool (Iff f Top) = f
+bool (Iff Bot f) = bool $ Not f
+bool (Iff f Bot) = bool $ Not f
+bool (Imp Top f) = f
+bool (Imp _ Top) = Top
+bool (Imp Bot _) = Top
+bool (Imp f Bot) = bool $ Not f
+bool (Or  Top _) = Top
+bool (Or  _ Top) = Top
+bool (Or  Bot f) = f
+bool (Or  f Bot) = f
+bool (And Top f) = f
+bool (And f Top) = f
+bool (And Bot _) = Bot
+bool (And _ Bot) = Bot
+bool (Tag _ Top) = Top
+bool (Tag _ Bot) = Bot
+bool (Not Top)   = Bot
+bool (Not Bot)   = Top
+bool f           = f
 
 {- perform boolean simplification through the whole formula -}
-bool_simp f = bool $ mapF bool_simp f
+boolSimp :: Formula -> Formula
+boolSimp f = bool $ mapF boolSimp f
 
 
 -- Maybe quantification
 
-{- maybe quantification handles quantification more efficiently in that it possibly
-   already simplifies formulas. Prototype example:
+{- maybe quantification handles quantification more efficiently in that it
+possibly already simplifies formulas. Prototype example:
        "exists x (x = t /\ P(x))" is replaced by "P(t)"
        "forall x (x = t => P(x))" is replaced by "P(t)" -}
 
+mbBind :: String -> Bool -> Formula -> Maybe Formula
 mbBind v  = dive id
   where
-    dive c s (All u f)  = dive (c . bool . All u) s f
-    dive c s (Exi u f)  = dive (c . bool . Exi u) s f
-    dive c s (Tag a f)  = dive (c . bool . Tag a) s f
-    dive c s (Not f)    = dive (c . bool . Not) (not s) f
-    dive c False (Imp f g)  = dive (c . bool . (`Imp` g)) True f
-                      `mplus` dive (c . bool . (f `Imp`)) False g
-    dive c False (Or f g)   = dive (c . bool . (`Or` g)) False f
-                      `mplus` dive (c . bool . (f `Or`)) False g
-    dive c True (And f g)   = dive (c . bool . (`And` g)) True f
-                      `mplus` dive (c . bool . (f `And`)) True g
+    dive c s (All u f) = dive (c . bool . All u) s f
+    dive c s (Exi u f) = dive (c . bool . Exi u) s f
+    dive c s (Tag a f) = dive (c . bool . Tag a) s f
+    dive c s (Not f)   = dive (c . bool . Not) (not s) f
+    dive c False (Imp f g) =
+      dive (c . bool . (`Imp` g)) True f `mplus` 
+      dive (c . bool . (f `Imp`)) False g
+    dive c False (Or f g) = 
+      dive (c . bool . (`Or` g)) False f `mplus`
+      dive (c . bool . (f `Or`)) False g
+    dive c True (And f g) = 
+      dive (c . bool . (`And` g)) True f `mplus`
+      dive (c . bool . (f `And`)) True g
     dive c True Trm {trName = "=", trArgs = [l@Var {trName = u}, t]}
-      | u == v && not (occurs l t) && closed t
-                = return $ subst t u (c Top)
-    dive _ _ _  = mzero
+      | u == v && not (occurs l t) && closed t = return $ subst t u (c Top)
+    dive _ _ _ = mzero
 
+
+mbExi, mbAll :: String -> Formula -> Formula
 mbExi v f = fromMaybe (zExi v f) (mbBind v True f)
 mbAll v f = fromMaybe (zAll v f) (mbBind v False f)
 
+
+blAnd, blImp :: Formula -> Formula -> Formula
 blAnd Top f = f; blAnd (Tag _ Top) f = f
 blAnd f Top = f; blAnd f (Tag _ Top) = f
 blAnd f g = And f g
@@ -119,266 +122,234 @@ blImp f Top = Top; blImp f (Tag _ Top) = Top
 blImp Top f = f; blImp (Tag _ Top) f = f
 blImp f g = Imp f g
 
+blAll, blExi :: String -> Formula -> Formula
 blAll v Top = Top
 blAll v f = All v f
 
 blExi v Top = Top
 blExi v f = Exi v f
 
+blNot :: Formula -> Formula
 blNot (Not f) = f
 blNot f = Not f
 
--- Useful macros
+-- creation of formulas
+zAll, zExi :: String -> Formula -> Formula
+zAll v f = blAll v $ bind v f
+zExi v f = blExi v $ bind v f
 
-zAll v f  = blAll v $ bind v f
-zExi v f  = blExi v $ bind v f
-
-zIff f g  = And (Imp f g) (Imp g f)
+zIff, zOr :: Formula -> Formula -> Formula
+zIff f g = And (Imp f g) (Imp g f)
 
 zOr (Not f) g = Imp f g
 zOr f g       = Or  f g
 
-zVar v    = Var v []
+zVar :: String -> Formula
+zVar v = Var v []
+
+zTrm :: Int -> String -> [Formula] -> Formula
 zTrm tId t ts = Trm t ts [] tId
-zThesis   = zTrm (-3) "#TH#" []
-zEqu t s  = zTrm (-1) "=" [t,s]
-zLess t s = zTrm (-2) "iLess" [t,s]
-zSSS trId s ts = zTrm trId ('c':'S':':':s) ts
 
-funId = -4 :: Int
-zFun f = zTrm (-4) "aFunction" [f]
-zApp f v = zTrm (-5) "sdtlbdtrb" [f , v]
-zDom f = zTrm (-6) "szDzozmlpdtrp" [f]
 
-sEqu x y = let v = zVar "" in zAll "" (Iff (zElem v x) (zElem v y)) -- macro for set equality
+-- creation of predefined functions and notions
 
-setId = (-7) :: Int
-zSet m = zTrm (-7) "aSet" [m]
-zElem x m = zTrm (-8) "aElementOf" [x,m]
-elmId = (-8) :: Int
-zProd m n = zTrm (-9) "szPzrzozdlpdtcmdtrp" [m, n]
-zPair x y = zTrm (-10) "slpdtcmdtrp" [x,y]
-zObj x = zTrm (-11) "aObj" [x] -- this is a dummy for parsing purposes
+zEqu t s  = zTrm equalityId "=" [t,s]
+zLess t s = zTrm lessId "iLess" [t,s]
+zThesis   = zTrm thesisId "#TH#" []
+zFun      = zTrm functionId "aFunction" . pure
+zApp f v  = zTrm applicationId "sdtlbdtrb" [f , v]
+zDom      = zTrm domainId "szDzozmlpdtrp" . pure
+zSet      = zTrm setId "aSet" . pure
+zElem x m = zTrm elementId "aElementOf" [x,m]
+zProd m n = zTrm productId "szPzrzozdlpdtcmdtrp" [m, n]
+zPair x y = zTrm pairId "slpdtcmdtrp" [x,y]
+zObj      = zTrm objectId "aObj" . pure -- this is a dummy for parsing purposes
 
-pairId = -10 :: Int
-appId = -5 :: Int
-objId = -11 :: Int
-domId = (-6) :: Int
 
-newId = (-15) :: Int -- the temporary id given to symbols that are being introduced
+-- predefined identifier
 
-dhdId Trm {trName = "=", trArgs = [_,t]} = trId t
-dhdId t = trId t
+equalityId    =  -1 :: Int
+lessId        =  -2 :: Int
+thesisId      =  -3 :: Int
+functionId    =  -4 :: Int
+applicationId =  -5 :: Int
+domainId      =  -6 :: Int
+setId         =  -7 :: Int
+elementId     =  -8 :: Int
+productId     =  -9 :: Int
+pairId        = -10 :: Int
+objectId      = -11 :: Int
+newId         = -15 :: Int -- temporary id given to newly introduced symbols
+
 
 -- quick checks of syntactic properties
 
-isApp Trm {trId = -5} = True
-isApp _ = False
+isApplication Trm {trId = -5} = True; isApplication _ = False
+isTop Top = True; isTop _ = False
+isBot Bot = True; isBot _ = False
+isIff (Iff _ _) = True; isIff _ = False
+isInd (Ind _ ) = True; isInd _ = False
+isVar (Var _ _) = True; isVar _ = False
+isTrm t@Trm{} = True; isTrm _ = False
+isEquality t@Trm{} = trId t == equalityId; isEquality _ = False
+isThesis t@Trm{} = trId t == thesisId; isThesis _ = False
+hasDEC (Tag DEC _) = True; hasDEC _ = False
+isExi (Exi _ _) = True; isExi _ = False
+isAll (All _ _) = True; isAll _ = False
+isConst t@Trm{} = null $ trArgs t; isConst Var{} = True; isConst _ = False
+isNot (Not _) = True; isNot _ = False
+isNotion Trm {trName = 'a':_} = True; isNotion _ = False
+isElem t = isTrm t && trId t == elementId
 
-isTop Top = True
-isTop _   = False
-
-isBot Bot = True
-isBot _   = False
-
-isIff (Iff _ _) = True
-isIff _         = False
-
-isInd (Ind _ ) = True
-isInd _         = False
-
-isVar (Var _ _) = True
-isVar _         = False
-
-isTrm (Trm _ _ _ _) = True
-isTrm _             = False
-
-isEqu (Trm "=" [_,_] _ _) = True
-isEqu _                   = False
-
-isThesis (Trm "#TH#" [] _ _)  = True
-isThesis _                    = False
-
-isSSS (Trm ('c':'S':':':_) _ _ _) = True
-isSSS _                           = False
-
-hasDEC (Tag DEC _) = True
-hasDEC _ = False
-
-isExi (Exi _ _) = True
-isExi _ = False
-
-isAll (All _ _) = True
-isAll _ = False
-
-isConst (Trm _ [] _ _) = True
-isConst (Var _ _)      = True
-isConst _              = False
-
-isNot (Not _) = True
-isNot f = False
-
-isNeq (Not (Trm  "=" _ _ _)) = True
-isNeq f = False
-
-isNtn Trm {trName = 'a':_} = True
-isNtn _ = False
-
-
-isElem t = isTrm t && trId t == elmId
 -- Holes and slots
 
 {- holes and slots act as placeholders during parsing, but do not appear
-   during the main verification procedure. -}
-zHole = zVar "?"
-zSlot = zVar "!"
+during the main verification procedure. -}
+zHole, zSlot ::  Formula
+zHole = zVar "?"; zSlot = zVar "!"
 
-isHole (Var "?" _)  = True
-isHole _            = False
+isHole, isSlot :: Formula -> Bool
+isHole (Var "?" _) = True; isHole _ = False
+isSlot (Var "!" _) = True; isSlot _ = False
 
-isSlot (Var "!" _)  = True
-isSlot _            = False
+substHole, substSlot :: Formula -> Formula -> Formula
+substHole t = subst t "?"; substSlot t = subst t "!"
 
-substH t  = subst t "?"
-substS t  = subst t "!"
+occursH, occursS :: Formula -> Bool
+occursH = occurs zHole; occursS = occurs zSlot
 
-occursH = occurs zHole
-occursS = occurs zSlot
-
-fromTo c1 c2 v@Var {trName = c':rst} | c' == c1 = v {trName = c2:rst}
-fromTo c1 c2 f = mapF (fromTo c1 c2) f
 -- functions for operating on literals
+isLiteral :: Formula -> Bool
+isLiteral t@Trm{} = trId t /= equalityId
+isLiteral (Not t) = isTrm t
+isLiteral _ = False
 
-isLtrl Trm {trName = "="} = False
-isLtrl (Not t) = isTrm t
-isLtrl t       = isTrm t
+-- fetch the atomic formula used in a literal
+ltAtomic :: Formula -> Formula
+ltAtomic (Not t) = t; ltAtomic t = t
 
-predSymb (Not t) = t
-predSymb t = t
+ltArgs, ltInfo :: Formula -> [Formula]
+ltArgs = trArgs . ltAtomic
+ltInfo = trInfo . ltAtomic
 
-ltArgs = trArgs . predSymb
-ltId t  = trId   . predSymb $ t
-ltInfo = trInfo . predSymb
+ltId :: Formula -> Int
+ltId   = trId   . ltAtomic
 
+mbNot :: Formula -> Formula -> Formula
 mbNot l = if isNot l then Not else id
 
+ltNeg :: Formula -> Formula
 ltNeg (Not t) = t
 ltNeg t = Not t
 
-
+ltTwins :: Formula -> Formula -> Bool
 ltTwins (Not f) (Not g) = twins f g
 ltTwins f g = twins f g
 
+-- compare and match
 
-{- checks for syntactic equality modulo instantiation of the
-   placeholder token ThisT with the term t -}
+{- checks for syntactic equality of literals modulo instantiation of the
+placeholder token ThisT with the term t -}
+infoTwins :: Formula -> Formula -> Formula -> Bool
 infoTwins t = dive
   where
     dive (Not f) (Not g) = dive f g
-    dive Trm {trArgs = ts, trId = n} Trm {trArgs = ss, trId = m} | m == n = pairs ts ss
+    dive t@Trm{} s@Trm{} | trId t == trId s = pairs (trArgs t) (trArgs s)
     dive _ _ = False
 
-    pairs (tr:ts) (sr:ss) = let b = pairs ts ss
-                             in case (tr,sr) of
-                               (ThisT, ThisT) -> b
-                               (ThisT, f) -> twins t f && b
-                               (f, ThisT) -> twins t f && b
-                               (f, g) -> twins f g && b
+    pairs (tr:ts) (sr:ss) = case (tr,sr) of
+      (ThisT, ThisT) -> pairs ts ss
+      (ThisT, f)     -> twins t f && pairs ts ss
+      (f, ThisT)     -> twins t f && pairs ts ss
+      (f, g)         -> twins f g && pairs ts ss
     pairs [] [] = True
     pairs _ _ = False
+
+
+{- match a formula with another formula and return the substitution.
+Only variables whose name begins with a '?' are considered matchable. 
+All others are treated like constants. -}
+match :: (MonadPlus m) => Formula -> Formula -> m (Formula -> Formula)
+match Var {trName = x@('?':_)} t = return $ subst t x
+match Var {trName = x} Var {trName = y} | x == y = return id
+match t@Trm{} s@Trm{} | trId t == trId s = pairs (trArgs t) (trArgs s)
+  where
+    pairs (p:ps) (q:qs) = do
+      sb <- pairs ps qs
+      sc <- match (sb p) q
+      return $ sc . sb
+    pairs [] [] = return id
+    pairs _ _   = mzero
+match _ _ = mzero
 
 -- Misc stuff
 
 {- strip away a Tag on top level or after neation -}
+strip :: Formula -> Formula
 strip (Tag _ f) = strip f
 strip (Not f)   = Not $ strip f
 strip f         = f
 
-infilt vs v = guard (v `elem` vs) >> return v
-nifilt vs v = guard (v `notElem` vs) >> return v
 
-{- extracts all duplicates (with multiplicity) from a list -}
-dups (v:vs) = infilt vs v `mplus` dups vs
-dups _      = mzero
+guardElem :: [String] -> String -> [String]
+guardElem vs v    = guard (v `elem` vs) >> return v
+
+guardNotElem :: [String] -> String -> [String]
+guardNotElem vs v = guard (v `notElem` vs) >> return v
+
+{- extracts all duplicateNames (with multiplicity) from a list -}
+duplicateNames :: [String] -> [String]
+duplicateNames (v:vs) = guardElem vs v `mplus` duplicateNames vs
+duplicateNames _      = mzero
 
 {- safe identifier extraction -}
 tryToGetID :: Formula -> Maybe Int
 tryToGetID Trm {trId = n} = return n
 tryToGetID _ = mzero
 
-{- match a formula with another formula and return the substitution. Only variables
-   whose name begins with a '?' are considered matchable. All others are treated
-   like constants. -}
-match :: (MonadPlus m) => Formula -> Formula -> m (Formula -> Formula)
-match Var {trName = v@('?':_)} t       = return  $ subst t v           -- an instantiable variable can simply be substituted for
-match Var {trName = u} Var {trName = v}    | u == v  = return id       -- variables considered as constants must be the same
-match Trm {trArgs = ps, trId = n} Trm {trArgs = qs, trId = m} | n == m  = pairs ps qs
-  where -- two terms match if their identifiers are the same and their arguments can be consistently matched
-    pairs (p:ps) (q:qs) = do  sb <- pairs ps qs
-                              sc <- match (sb p) q   -- we apply sb to p here to ensure a consistent matching
-                              return $ sc . sb
-    pairs [] []         = return id
-    pairs _ _           = mzero
-match _ _         = mzero                             -- if we can't match, we fail
 
-
-{-extract the headatom from a sigext or definition -}
-hdatom (All _ f) = hdatom f
-hdatom (Imp  (Tag DHD t) _) = t
-hdatom (Iff  (Tag DHD t) _) = t
-hdatom (Imp f g) = hdatom g
-
-{- extract the headterm from a sigext or definition -}
-hdterm f = case hdatom f of Trm {trName = "=", trArgs = [_,t]} -> t; t -> t
-
-{- return free user named variables in a formula (without duplicates) except those in vs -}
+{- return free user named variables in a formula (without duplicateNames),
+except those in vs -}
+free :: [String] -> Formula -> [String]
 free vs = nub . dive
   where
-    dive f@Var {trName = u@('x':_)}  = nifilt vs u ++ foldF dive f
-    dive f                    = foldF dive f
+    dive f@Var {trName = u@('x':_)} = guardNotElem vs u ++ foldF dive f
+    dive f = foldF dive f
 
-{- return all free variables in a formula (without duplicates) except those in vs -}
+{- return all free variables in a formula (without duplicateNames),
+except those in vs -}
+allFree :: [String] -> Formula -> [String]
 allFree vs = nub . dive
   where
-    dive f@Var {trName = u} = nifilt vs u ++ foldF dive f
+    dive f@Var {trName = u} = guardNotElem vs u ++ foldF dive f
     dive f = foldF dive f
 
-onlyFree c vs = nub. dive
-  where
-    dive f@Var {trName = u@(c:_)} = nifilt vs u ++ foldF dive f
-    dive f = foldF dive f
 
 {- universal closure of a formula -}
+uClose :: [String] -> Formula -> Formula
 uClose ls f = let vs = allFree ls f in foldr zAll f vs
-
-{- checks whether the formula t occurs anywhere in the formula f -}
-occurs :: Formula -> Formula -> Bool
-occurs t  = dive
-  where
-    dive f  = twins t f || anyF dive f
-
-
-
-renull (All _ f)  = All "" f
-renull (Exi _ f)  = Exi "" f
-renull f          = mapF renull f
-
-total_renull (All _ f) = All "" $ total_renull f
-total_renull (Exi _ f) = Exi "" $ total_renull f
-total_renull f = mapF total_renull f
 
 
 -- substitutions as maps
 
 {- apply a substitution that is represented as a finite partial map -}
 applySb :: M.Map String Formula -> Formula -> Formula
-applySb mp vr@Var {trName = v}
-  = case M.lookup v mp of Just t -> t; Nothing -> vr
+applySb mp vr@Var {trName = v} = case M.lookup v mp of 
+  Just t  -> t
+  Nothing -> vr
 applySb mp t = mapF (applySb mp) t
 
-
-infoSub :: (Formula -> Formula) -> Formula -> Formula -- a substitution that also extends to the evidence for the term
-infoSub sb t@Trm {trArgs = ts, trInfo = is}
-  = t {trArgs = map (infoSub sb) ts, trInfo = map sb is}
+{- subsitution is also applied to the evidence for a term -}
+infoSub :: (Formula -> Formula) -> Formula -> Formula
+infoSub sb t@Trm{} = t {
+  trArgs = map (infoSub sb) $ trArgs t, 
+  trInfo = map sb $ trInfo t}
 infoSub sb v@Var{} = sb v
 infoSub sb f = mapF (infoSub sb) f
+
+-- control variable names
+
+{- changes the prefix of a variable name -}
+fromTo :: Char -> Char -> Formula -> Formula
+fromTo c1 c2 v@Var {trName = c':rst} | c' == c1 = v {trName = c2:rst}
+fromTo c1 c2 f = mapF (fromTo c1 c2) f

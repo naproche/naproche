@@ -165,14 +165,14 @@ typings (context:restContext) term =
   where
     albetDive = dive . albet
     -- when we encouter a literal, compare its arguments with term
-    dive f | isLtrl f = compare [] $ ltArgs f 
+    dive f | isLiteral f = compare [] $ ltArgs f 
       where
         compare _ [] = mzero
         compare ls (arg:rs) = -- try to match argument, else compare with rest
           matchThisArgument ls arg rs `mplus` compare (arg:ls) rs 
         
         matchThisArgument ls arg rs = 
-          let sign = mbNot f; predicat = predSymb f in do 
+          let sign = mbNot f; predicat = ltAtomic f in do 
             match term arg
             let newInfo = sign predicat {trArgs = reverse ls ++ (ThisT : rs)}
             return $ newInfo : notionEvidence ls predicat ++ trInfo arg
@@ -190,7 +190,7 @@ typings (context:restContext) term =
     joinEvidences ls rs =
       filter (\l -> all (not . infoTwins term l) rs) ls ++ rs
 
-    notionEvidence [] prd | isNtn prd = trInfo prd
+    notionEvidence [] prd | isNotion prd = trInfo prd
     notionEvidence _ _ = []
 
 

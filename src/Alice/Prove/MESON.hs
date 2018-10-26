@@ -71,7 +71,7 @@ solve n loc ps ng anc g = guard (n >= 0) >> guard repCheck >> (closeBranch `mplu
 
 {- find out which part of a substitution is actually relevant for the current goal-}
 relevantSbs :: Formula -> (Formula -> Formula) -> (Formula -> Formula)
-relevantSbs f sb = let rlvnt = gatherUs [] $ predSymb f
+relevantSbs f sb = let rlvnt = gatherUs [] $ ltAtomic f
                     in foldr (.) id $ map (\u -> subst (sb (zVar u)) u) rlvnt
   where
     gatherUs ls Var {trName = s@('u':_)} | not $ elem s ls = s : ls
@@ -137,5 +137,5 @@ prove n loc ps ng gl = let (vlc, mlc) = span (null . cnMESN) loc
     cs _ [] = []
     cs m (f:fs) = let (skf, SK { sk = nm }) = sklm m $ simplify f
                    in (concatMap contrapositives . simpcnf . spec 0 . prenex) skf ++ cs nm fs
-    start t | isLtrl t || isEqu t = pure $ MR [ltNeg t] Bot
+    start t | isLiteral t || isEquality t = pure $ MR [ltNeg t] Bot
             | otherwise = []
