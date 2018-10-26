@@ -60,7 +60,7 @@ export red m prs ins cnt gl =
 
       seq (length task) $ return $
         do  (wh,rh,eh,ph) <- catch run
-                $ \ e -> die $ "run error: " ++ ioeGetErrorString e
+                $ \ e -> die $ "failed to run \"" ++ path ++ "\": " ++ ioeGetErrorString e
 
             hPutStrLn wh task ; hClose wh
             -- write the task to the prover input
