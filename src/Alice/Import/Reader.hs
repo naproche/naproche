@@ -33,7 +33,7 @@ readInit ""   = return []
 
 readInit file =
   do  input <- catch (readFile file) $ die file . ioeGetErrorString
-      let tkn = tokenize file input ; ips = State () tkn
+      let toks = tokenize file input ; ips = State () toks
       liftM fst $ launchParser instf ips
 
 instf :: Parser st [Instr]
@@ -62,8 +62,8 @@ reader lb fs (ps:ss) [TI (InStr ISfile file)] =
   do  let gfl = if null file  then hGetContents stdin
                               else readFile file
       input <- catch gfl $ die file . ioeGetErrorString
-      let tkn = tokenize file input
-          st  = State ((stUser ps) { tvr_expr = [] }) tkn
+      let toks = tokenize file input
+          st  = State ((stUser ps) { tvr_expr = [] }) toks
       (ntx, nps) <- launchParser forthel st
       reader lb (file:fs) (nps:ps:ss) ntx
 
