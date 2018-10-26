@@ -35,8 +35,7 @@ module Alice.Core.Base (
   guardInstruction, guardNotInstruction, whenInstruction,
 
   trimLine, MessageKind (..), putMessage,
-  reasonerLog, simpLog, simpLog0, thesisLog,
-  blockLabel
+  reasonerLog, simpLog, thesisLog,
 ) where
 
 import Control.Monad
@@ -272,22 +271,8 @@ thesisLog :: MessageKind -> SourcePos -> Int -> String -> VM ()
 thesisLog kind pos indent msg =
   putMessage "Thesis" kind pos $ replicate (3 * indent) ' ' ++ msg
 
-simpLog0 :: MessageKind -> SourcePos -> String -> VM ()
-simpLog0 = putMessage "Simp"
-
-simpLog kind context msg = do
-  fileName <- askInstructionString ISfile ""
-  simpLog0 kind noPos $ blockLabel fileName (cnHead context) ++ msg
-
-blockLabel fileName block =
-  let blockFile = file block; blockPos = position block
-      line = sourceLine blockPos; column = sourceLine blockPos
-  in  (if fileName == blockFile then "" else blockFile)
-        ++ format (show (line, column)) ++ ": "
-  where
-    format string =
-      let l = length string
-      in  if l < 9 then string ++ replicate (9 - l) ' ' else string
+simpLog :: MessageKind -> SourcePos -> String -> VM ()
+simpLog = putMessage "Simp"
 
 
 

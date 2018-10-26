@@ -133,10 +133,10 @@ generateConditions verbositySetting rules w l r =
 
     -- logging and user communication
     log leftNormalForm rightNormalForm = when verbositySetting $ do
-      simpLog0 Normal noPos "no matching normal forms found"
+      simpLog Normal noPos "no matching normal forms found"
       showPath leftNormalForm; showPath rightNormalForm
     showPath ((t,_):rest) = when verbositySetting $
-      simpLog0 Normal noPos (show t) >> mapM_ (simpLog0 Normal noPos . format) rest
+      simpLog Normal noPos (show t) >> mapM_ (simpLog Normal noPos . format) rest
     -- formatting of paths
     format (t, simpInfo) = " --> " ++ show t ++ conditions simpInfo
     conditions (conditions, name) =
@@ -166,7 +166,7 @@ getLinkedRules link = do
   return linkedRules
   where
     warn st =
-      simpLog0 Warning noPos $
+      simpLog Warning noPos $
         "Could not find rules " ++ unwords (map show $ Set.elems st)
 
     retrieve _ [] = return []
@@ -224,7 +224,9 @@ dischargeConditions verbositySetting conditions =
       if   null conditions
       then " - "
       else unwords . intersperse "," . map show $ reverse conditions
-    log msg = when verbositySetting $ thesis >>= flip (simpLog Normal) msg
+    log msg =
+      when verbositySetting $ thesis >>=
+        flip (simpLog Normal . position . cnHead) msg
 
     wipeLink thesis =
       let block:restBranch = cnBran thesis
