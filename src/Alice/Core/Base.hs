@@ -35,7 +35,7 @@ module Alice.Core.Base (
   guardInstruction, guardNotInstruction, whenInstruction,
 
   trimLine, MessageKind (..), putMessage,
-  reasonerLog, simpLog, simpLog0, thesisLog, thesisLog0,
+  reasonerLog, simpLog, simpLog0, thesisLog,
   blockLabel
 ) where
 
@@ -268,13 +268,9 @@ putMessage channel kind pos msg =
 reasonerLog :: MessageKind -> SourcePos -> String -> VM ()
 reasonerLog = putMessage "Reason"
 
-thesisLog0 :: MessageKind -> SourcePos -> String -> VM ()
-thesisLog0 = putMessage "Thesis"
-
-thesisLog kind indent block msg = do
-  fileName <- askInstructionString ISfile ""
-  thesisLog0 kind noPos $
-    blockLabel fileName block ++ replicate (3 * indent) ' ' ++ msg
+thesisLog :: MessageKind -> SourcePos -> Int -> String -> VM ()
+thesisLog kind pos indent msg =
+  putMessage "Thesis" kind pos $ replicate (3 * indent) ' ' ++ msg
 
 simpLog0 :: MessageKind -> SourcePos -> String -> VM ()
 simpLog0 = putMessage "Simp"

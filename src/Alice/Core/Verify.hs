@@ -94,7 +94,7 @@ verificationLoop state@VS {
   whenInstruction IBPths False $ when (
     toBeProved && (not . null) proofBody &&
     not (hasDEC $ cnForm freshThesis)) $
-      thesisLog Normal (length branch - 1) block $
+      thesisLog Normal (position block) (length branch - 1) $
       "thesis: " ++ show (cnForm freshThesis)
 
 
@@ -110,7 +110,7 @@ verificationLoop state@VS {
   whenInstruction IBPths False $ when (
     toBeProved && (not . null) proofBody &&
     not (hasDEC $ cnForm freshThesis)) $
-      thesisLog Normal (length branch - 1) block "thesis resolved"
+      thesisLog Normal (position block) (length branch - 1) "thesis resolved"
 
   -- in what follows we prepare the current block to contribute to the context,
   -- extract rules, definitions and compute the new thesis
@@ -142,11 +142,11 @@ verificationLoop state@VS {
   whenInstruction IBPths False $ when (
     hasChanged && motivated && newMotivation &&
     (not $ hasDEC $ formula $ head branch) ) $
-      thesisLog Normal (length branch - 2) block $
+      thesisLog Normal (position block) (length branch - 2) $
       "new thesis: " ++ show (cnForm newThesis)
 
   when (not newMotivation && motivated) $
-    thesisLog Warning (length branch - 2) block "unmotivated assumption"
+    thesisLog Warning (position block) (length branch - 2) "unmotivated assumption"
 
   let newRewriteRules = extractRewriteRule (head newContext) ++ rules
 
@@ -248,7 +248,7 @@ verifyProof state@VS {
             inferNewThesis definitions newContext $ setForm thesis f
       whenInstruction IBPths False $ when (
         noInductionOrCase (cnForm newThesis) && not (null $ restText state)) $
-          thesisLog Normal (length branch - 2) (head $ cnBran $ head context) $
+          thesisLog Normal (position $ head $ cnBran $ head context) (length branch - 2) $
           "new thesis " ++ show (cnForm newThesis)
       verifyProof state {
         rewriteRules = newRules, currentThesis = newThesis,
