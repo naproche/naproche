@@ -43,32 +43,32 @@ export red m prs ins cnt gl =
 
       when (null prr) $ die $ "no prover: " ++ prn
 
-      let prv@(Prover _ lbl pth ags fmt yes nos uns) = head prr
-          tlm = askII IItlim 3 ins; agl = map (setTlim tlm) ags
+      let prv@(Prover _ label path args fmt yes nos uns) = head prr
+          tlm = askII IItlim 3 ins; agl = map (setTlim tlm) args
           -- check whether user has specified time limit for prove tasks,
           -- else make it 3 seconds
-          run = runInteractiveProcess pth agl Nothing Nothing
+          run = runInteractiveProcess path agl Nothing Nothing
 
       let dmp = case fmt of
                   TPTP  -> tptpOut
                   DFG   -> dfgOut
-          tsk = dmp red prv tlm cnt gl
+          task = dmp red prv tlm cnt gl
           -- translate the prover task into the appropriate input language
 
-      when (askIB IBPdmp False ins) $ putStrLn tsk
+      when (askIB IBPdmp False ins) $ putStrLn task
       -- print the translation if it is enabled (intended only for debugging)
 
-      seq (length tsk) $ return $
+      seq (length task) $ return $
         do  (wh,rh,eh,ph) <- catch run
                 $ \ e -> die $ "run error: " ++ ioeGetErrorString e
 
-            hPutStrLn wh tsk ; hClose wh
+            hPutStrLn wh task ; hClose wh
             -- write the task to the prover input
 
             ofl <- hGetContents rh ; efl <- hGetContents eh
             -- get output and errors
             let lns = filter (not . null) $ lines $ ofl ++ efl
-                out = map (("[" ++ lbl ++ "] ") ++) lns
+                out = map (("[" ++ label ++ "] ") ++) lns
 
             when (length lns == 0) $ die "empty response"
             when (askIB IBPprv False ins) $ mapM_ putStrLn out
