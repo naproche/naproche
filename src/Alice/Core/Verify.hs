@@ -40,10 +40,9 @@ import Alice.Core.Rewrite
 -- Main verification loop
 
 verify :: String -> IORef RState -> [Text] -> IO (Maybe ([Text], GState))
-verify file reasonerState blocks = do
-  let text = TI (InStr ISfile file) : blocks
-      fileName = if null file then "stdin" else file
-  putStrLn $ "[Reasoner] " ++ fileName ++ ": verification started"
+verify fileName reasonerState blocks = do
+  let text = TI (InStr ISfile fileName) : blocks
+  putStrLn $ makeMessage "Reasoner" Normal (namePos fileName) "verification started"
 
   let initialVerificationState =
         VS False [] DT.empty (Context Bot [] [] Bot) [] [] text
@@ -54,8 +53,8 @@ verify file reasonerState blocks = do
     readIORef reasonerState
 
   let success = isJust result && ignoredFails == 0
-      out = if success then " successful" else " failed"
-  putStrLn $ "[Reasoner] " ++ fileName ++ ": verification" ++ out
+  putStrLn $ makeMessage "Reasoner" Normal (namePos fileName) $
+    "verification " ++ (if success then "successful" else "failed")
   return result
 
 
