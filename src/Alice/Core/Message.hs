@@ -6,7 +6,8 @@ Formal output messages, with Prover IDE support.
 
 module Alice.Core.Message (
   trimLine, Kind (..), makeMessage, outputMessage,
-  outputReason, outputThesis, outputSimp, outputForTheL
+  outputMain, outputExport, outputForTheL, outputParser,
+  outputReason, outputThesis, outputSimp,
 )
 
 where
@@ -34,8 +35,20 @@ makeMessage origin kind pos msg =
   (case show pos of "" -> ""; s -> s ++ "\n") ++ msg
 
 outputMessage :: String -> Kind -> SourcePos -> String -> IO ()
-outputMessage channel kind pos msg =
-  putStrLn $ makeMessage channel kind pos msg
+outputMessage origin kind pos msg =
+  putStrLn $ makeMessage origin kind pos msg
+
+outputMain :: Kind -> SourcePos -> String -> IO ()
+outputMain = outputMessage "Main"
+
+outputExport :: Kind -> SourcePos -> String -> IO ()
+outputExport = outputMessage "Export"
+
+outputForTheL :: Kind -> SourcePos -> String -> IO ()
+outputForTheL = outputMessage "ForTheL"
+
+outputParser :: Kind -> SourcePos -> String -> IO ()
+outputParser = outputMessage "Parser"
 
 outputReason :: Kind -> SourcePos -> String -> IO ()
 outputReason = outputMessage "Reasoner"
@@ -46,6 +59,3 @@ outputThesis kind pos indent msg =
 
 outputSimp :: Kind -> SourcePos -> String -> IO ()
 outputSimp = outputMessage "Simplifier"
-
-outputForTheL :: Kind -> SourcePos -> String -> IO ()
-outputForTheL = outputMessage "ForTheL"

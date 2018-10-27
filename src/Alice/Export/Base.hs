@@ -12,6 +12,8 @@ import System.Exit
 import System.IO
 import System.IO.Error
 import Control.Exception
+import Alice.Core.Message
+import Alice.Core.Position
 
 data Prover = Prover {
   prName :: String,    -- prover name
@@ -41,7 +43,7 @@ readPrDB file = do
     Left e  ->  die e
     Right d ->  return d
   where
-    die e = putStrLn ("[Export] " ++ file ++ ": " ++ e) >> exitFailure
+    die e = outputExport NORMAL (namePos file) e >> exitFailure
 
 
 readPrvs :: Int -> Maybe Prover -> [String] -> Either String [Prover]

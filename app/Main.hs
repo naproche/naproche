@@ -17,6 +17,8 @@ import qualified Data.IntMap.Strict as IM
 
 
 import Alice.Core.Base
+import Alice.Core.Message
+import Alice.Core.Position
 import Alice.Core.Verify
 import Alice.Data.Instr
 import Alice.Data.Text.Block
@@ -55,8 +57,8 @@ main  = do
       accumulate  = accumulateIntCounter counterList 0
 
   -- print statistics
-  putStrLn $ "[Main] "
-    ++ "sections "    ++ show (accumulate Sections)
+  outputMain NORMAL noPos $
+    "sections "       ++ show (accumulate Sections)
     ++ " - goals "    ++ show (accumulate Goals)
     ++ (let ignoredFails = accumulate FailedGoals
         in  if   ignoredFails == 0
@@ -72,8 +74,8 @@ main  = do
 
   let trivialChecks = accumulate TrivialChecks
 
-  putStrLn $ "[Main] "
-    ++ "symbols "     ++ show (accumulate Symbols)
+  outputMain NORMAL noPos $
+    "symbols "        ++ show (accumulate Symbols)
     ++ " - checks "   ++ show 
       (accumulateIntCounter counterList trivialChecks HardChecks)
     ++ " - trivial "  ++ show trivialChecks
@@ -84,21 +86,21 @@ main  = do
       proverTime     = accumulateTime proveStart ProofTime
       simplifyTime   = accumulateTime proverTime SimplifyTime
 
-  putStrLn $ "[Main] "
-    ++ "parser "        ++ showTimeDiff (diffUTCTime proveStart startTime)
+  outputMain NORMAL noPos $
+    "parser "           ++ showTimeDiff (diffUTCTime proveStart startTime)
     ++ " - reasoner "   ++ showTimeDiff (diffUTCTime finishTime simplifyTime)
     ++ " - simplifier " ++ showTimeDiff (diffUTCTime simplifyTime proverTime)
     ++ " - prover "     ++ showTimeDiff (diffUTCTime proverTime proveStart)
     ++ "/" ++ showTimeDiff (maximalTimeCounter counterList SuccessTime)
-  putStrLn $ "[Main] "
-    ++ "total "
+  outputMain NORMAL noPos $
+    "total "
     ++ showTimeDiff (diffUTCTime finishTime startTime)
 
 
 onlyTranslate :: UTCTime -> [Text] -> IO ()
 onlyTranslate startTime text = do
   mapM_ printTB text; finishTime <- getCurrentTime
-  putStrLn $ "[Main] total " ++ timeDifference finishTime
+  outputMain NORMAL noPos $ "total " ++ timeDifference finishTime
   exitSuccess
   where
     timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)

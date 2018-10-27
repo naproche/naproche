@@ -16,6 +16,8 @@ import System.IO.Error
 import System.Process
 import Control.Exception
 
+import Alice.Core.Message
+import Alice.Core.Position
 import Alice.Data.Instr
 import Alice.Data.Text.Context
 import Alice.Export.Base
@@ -55,7 +57,7 @@ export red m prs ins cnt gl =
           task = dmp red prv tlm cnt gl
           -- translate the prover task into the appropriate input language
 
-      when (askIB IBPdmp False ins) $ putStrLn task
+      when (askIB IBPdmp False ins) $ outputMessage "" NORMAL noPos task
       -- print the translation if it is enabled (intended only for debugging)
 
       seq (length task) $ return $
@@ -71,7 +73,7 @@ export red m prs ins cnt gl =
                 out = map (("[" ++ label ++ "] ") ++) lns
 
             when (length lns == 0) $ die "empty response"
-            when (askIB IBPprv False ins) $ mapM_ putStrLn out
+            when (askIB IBPprv False ins) $ mapM_ (outputMessage "" NORMAL noPos) out
             -- if the user has enabled it, print the proveroutput
 
             let pos = any (\ l -> any (`isPrefixOf` l) yes) lns
@@ -90,4 +92,4 @@ export red m prs ins cnt gl =
     setTlim tl (s:rs)       = s : setTlim tl rs
     setTlim _ _             = []
 
-    die s = putStrLn ("[Export] " ++ s) >> exitFailure
+    die s = outputExport NORMAL noPos s >> exitFailure

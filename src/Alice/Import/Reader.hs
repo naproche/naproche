@@ -56,7 +56,7 @@ reader lb fs ss [TI (InStr ISread file)] =
       reader lb fs ss [TI $ InStr ISfile $ lb ++ '/' : file]
 
 reader lb fs (ps:ss) [TI (InStr ISfile file)] | file `elem` fs =
-  do  warn file "already read, skipping"
+  do  outputMain NORMAL (namePos file) "already read, skipping"
       (ntx, nps) <- launchParser forthel ps
       reader lb fs (nps:ss) ntx
 
@@ -72,7 +72,7 @@ reader lb fs (ps:ss) [TI (InStr ISfile file)] =
 reader lb fs ss (t:ts) = liftM (t:) $ reader lb fs ss ts
 
 reader lb fs (sps:ps:ss) [] =
-  do  info "Parser" (head fs) "parsing successful"
+  do  outputParser NORMAL (namePos $ head fs) "parsing successful"
       let rps = ps {stUser = (stUser sps) {tvr_expr = tvr_expr $ stUser ps}}
       (ntx, nps) <- launchParser forthel rps
       reader lb fs (nps:ss) ntx
@@ -85,20 +85,13 @@ reader _ _ _ [] = return []
 launchParser :: Parser st a -> State st -> IO (a, State st)
 launchParser parser st =
   case runP parser st of
-    Error err    -> putStrLn (show err) >> exitFailure
+    Error err -> outputParser NORMAL noPos (show err) >> exitFailure
     Ok [PR a st] -> return (a, st)
-    _            -> putStrLn "ambiguity error here" >> exitFailure
+    _ -> outputParser NORMAL noPos "ambiguity error here" >> exitFailure
 
 
 
 -- Service stuff
 
-info :: String -> String -> String -> IO ()
-info origin fileName msg =
-  outputMessage origin NORMAL (namePos fileName) msg
-
-warn :: String -> String -> IO ()
-warn = info "Main"
-
 die :: String -> String -> IO a
-die fn st = warn fn st >> exitFailure
+die fileName st = outputMain NORMAL (namePos fileName) st >> exitFailure
