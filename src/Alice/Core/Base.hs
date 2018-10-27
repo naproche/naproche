@@ -58,7 +58,7 @@ import Alice.Data.Rules (Rule)
 import Alice.Data.Evaluation
 import Alice.Export.Base
 import qualified Alice.Data.Structures.DisTree as DT
-import Alice.Parser.Position
+import Alice.Core.Position
 import Alice.Core.Message
 
 import Debug.Trace

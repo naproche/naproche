@@ -19,7 +19,7 @@ import qualified Control.Monad.Writer as W
 import Control.Monad.Reader
 import Data.Function
 
-import Alice.Parser.Position
+import Alice.Core.Position
 import Alice.Core.Base
 import Alice.Core.Check
 import Alice.Core.Message

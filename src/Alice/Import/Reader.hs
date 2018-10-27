@@ -19,7 +19,7 @@ import Alice.ForTheL.Base
 import Alice.ForTheL.Structure
 import Alice.Parser.Base
 import Alice.ForTheL.Instruction
-import Alice.Parser.Position
+import Alice.Core.Position
 import Alice.Parser.Token
 import Alice.Parser.Combinators
 import Alice.Parser.Primitives

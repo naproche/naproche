@@ -25,7 +25,7 @@ import Control.Monad.State.Class
 
 import Alice.Parser.Token
 import Alice.Parser.Error
-import Alice.Parser.Position
+import Alice.Core.Position
 
 import Data.Char
 import Data.List

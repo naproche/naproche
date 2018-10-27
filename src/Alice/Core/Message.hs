@@ -11,7 +11,7 @@ module Alice.Core.Message (
 
 where
 
-import Alice.Parser.Position
+import Alice.Core.Position
 
 
 trimLine :: String -> String

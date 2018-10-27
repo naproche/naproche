@@ -14,7 +14,7 @@ module Alice.Parser.Token
 import Data.Char
 import Data.List
 
-import Alice.Parser.Position
+import Alice.Core.Position
 
 data Token = Token {showToken :: String, tokenPos :: SourcePos,
                     tokenWhiteSpace :: Bool}

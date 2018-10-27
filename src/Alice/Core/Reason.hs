@@ -28,7 +28,7 @@ import qualified Data.Map as M
 import Control.Monad.State
 import Control.Monad.Reader
 
-import Alice.Parser.Position
+import Alice.Core.Position
 import Alice.Core.Base
 import Alice.Core.Message
 import Alice.Data.Formula

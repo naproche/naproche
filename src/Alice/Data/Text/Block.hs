@@ -11,7 +11,7 @@ module Alice.Data.Text.Block (
   )where
 
 import Alice.Data.Formula
-import Alice.Parser.Position
+import Alice.Core.Position
 import Alice.Data.Instr (Instr, Idrop)
 
 data Text = TB Block | TI Instr | TD Idrop

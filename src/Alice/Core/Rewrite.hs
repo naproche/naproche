@@ -8,7 +8,7 @@ Term rewriting: extraction of rules and proof of equlities.
 
 module Alice.Core.Rewrite (equalityReasoning) where
 
-import Alice.Parser.Position
+import Alice.Core.Position
 import Alice.Data.Formula
 import Alice.Data.Rules
 import Alice.Data.Text.Context

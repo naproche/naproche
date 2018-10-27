@@ -1,11 +1,11 @@
 {-
-Authors: Steffen Frerix (2017 - 2018)
+Authors: Steffen Frerix (2017 - 2018), Makarius Wenzel (2018)
 
 Token source positions.
 -}
 
 
-module Alice.Parser.Position
+module Alice.Core.Position
   ( SourcePos (EOF, sourceFile, sourceLine, sourceColumn, sourceOffset),
     SourceName,
     noPos,

@@ -11,7 +11,7 @@ module Alice.Parser.Primitives where
 import Alice.Parser.Base
 import Alice.Parser.Error
 import Alice.Parser.Token
-import Alice.Parser.Position
+import Alice.Core.Position
 
 import Data.List (uncons)
 import Data.Char (isAlpha, toLower)

@@ -20,7 +20,7 @@ module Alice.Parser.Error
     newWfMsg )
   where
     
-import Alice.Parser.Position
+import Alice.Core.Position
 
 import Data.List (nub, sort)
 import Debug.Trace
