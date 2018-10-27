@@ -16,7 +16,7 @@
 
 # Tokens and positions #
 
-* EOF token with end position, instead of vacous EOF position (!?)
+* EOF token with end position, instead of vacuous EOF position (!?)
 
 * keep comment tokens (as "improper") for syntax reports (!?)
 
@@ -25,7 +25,7 @@
 
 # Misc #
 
-* eliminate informal `putStrLn` and `info` in favour of `putMessage`
+* eliminate informal `putStr` in favour of `outputMessage`
 
 * move provers/provers.dat to toplevel directory (no executables there) (??)
 
