@@ -34,7 +34,6 @@ module Alice.Core.Base (
   addTimeCounter, addIntCounter, incrementIntCounter,
   guardInstruction, guardNotInstruction, whenInstruction,
 
-  trimLine, MessageKind (..), makeMessage, putMessage,
   reasonLog, simpLog, thesisLog,
 ) where
 
@@ -60,6 +59,7 @@ import Alice.Data.Evaluation
 import Alice.Export.Base
 import qualified Alice.Data.Structures.DisTree as DT
 import Alice.Parser.Position
+import Alice.Core.Message
 
 import Debug.Trace
 
@@ -239,40 +239,16 @@ showTimeDiff t
     (hours  , restMinutes) = divMod minutes 60
 
 
--- IO management (print functions for the log)
+-- common messages
 
-trimLine :: String -> String
-trimLine line =
-  case reverse line of
-    '\n' : '\r' : rest -> reverse rest
-    '\n' : rest -> reverse rest
-    _ -> line
+reasonLog :: Kind -> SourcePos -> String -> VM ()
+reasonLog kind pos = justIO . outputReason kind pos
 
-data MessageKind = Normal | Warning | Error
-instance Show MessageKind where
-  show Normal = ""
-  show Warning = "Warning"
-  show Error = "Error"
+thesisLog :: Kind -> SourcePos -> Int -> String -> VM ()
+thesisLog kind pos indent = justIO . outputThesis kind pos indent
 
-makeMessage :: String -> MessageKind -> SourcePos -> String -> String
-makeMessage origin kind pos msg =
-  (if null origin then "" else "[" ++ origin ++ "] ") ++
-  (case show kind of "" -> "" ; s -> s ++ ": ") ++
-  (case show pos of "" -> ""; s -> s ++ "\n") ++ msg
-
-putMessage :: String -> MessageKind -> SourcePos -> String -> VM ()
-putMessage channel kind pos msg =
-  justIO $ putStrLn $ makeMessage channel kind pos msg
-
-reasonLog :: MessageKind -> SourcePos -> String -> VM ()
-reasonLog = putMessage "Reasoner"
-
-thesisLog :: MessageKind -> SourcePos -> Int -> String -> VM ()
-thesisLog kind pos indent msg =
-  putMessage "Thesis" kind pos $ replicate (3 * indent) ' ' ++ msg
-
-simpLog :: MessageKind -> SourcePos -> String -> VM ()
-simpLog = putMessage "Simplifier"
+simpLog :: Kind -> SourcePos -> String -> VM ()
+simpLog kind pos = justIO . outputSimp kind pos
 
 
 

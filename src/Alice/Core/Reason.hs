@@ -30,6 +30,7 @@ import Control.Monad.Reader
 
 import Alice.Parser.Position
 import Alice.Core.Base
+import Alice.Core.Message
 import Alice.Data.Formula
 import Alice.Data.Instr
 import Alice.Data.Text.Context as Context

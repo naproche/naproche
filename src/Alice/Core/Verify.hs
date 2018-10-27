@@ -22,6 +22,7 @@ import Data.Function
 import Alice.Parser.Position
 import Alice.Core.Base
 import Alice.Core.Check
+import Alice.Core.Message
 import Alice.Core.Reason
 import Alice.Core.Thesis
 import Alice.Data.Formula
@@ -73,8 +74,8 @@ verificationLoop state@VS {
 
   -- statistics and user communication
   incrementIntCounter Sections
-  whenInstruction IBPsct False $
-    putMessage "ForTheL" Normal (position block) $ trimLine (showForm 0 block "")
+  whenInstruction IBPsct False $ justIO $
+    outputForTheL Normal (position block) $ trimLine (showForm 0 block "")
   let newBranch = block : branch; contextBlock = Context f newBranch [] f
 
 

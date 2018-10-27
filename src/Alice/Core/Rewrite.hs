@@ -14,6 +14,7 @@ import Alice.Data.Rules
 import Alice.Data.Text.Context
 import Alice.Data.Text.Block as Block
 import Alice.Core.Base
+import Alice.Core.Message
 import Alice.Data.Instr
 import Alice.Core.Thesis
 import Alice.Core.Reason

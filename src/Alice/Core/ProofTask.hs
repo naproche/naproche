@@ -12,6 +12,7 @@ import Alice.Data.Text.Block (Section(..), position)
 import Alice.Data.Text.Context
 import Alice.Prove.Normalize
 import Alice.Core.Base
+import Alice.Core.Message
 
 import qualified Control.Monad.Writer as W
 import Data.List

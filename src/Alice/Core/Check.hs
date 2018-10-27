@@ -21,6 +21,7 @@ import Alice.Data.Text.Context
 import Alice.Data.Text.Block (link, position)
 import Alice.Data.Definition
 import Alice.Core.Base
+import Alice.Core.Message
 import Alice.Core.Reason
 import Alice.Prove.Normalize
 import Alice.Prove.MESON
