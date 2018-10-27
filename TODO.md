@@ -27,6 +27,8 @@
 
 * eliminate informal `putStr` in favour of `outputMessage`
 
+* ensure UTF8 everywhere: stdin, stdout, files
+
 * move provers/provers.dat to toplevel directory (no executables there) (??)
 
 * make $SPASS_HOME/SPASS from Isabelle actually work (!?)
