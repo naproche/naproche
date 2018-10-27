@@ -12,7 +12,8 @@ module Alice.Core.Position
     namePos,
     initialPos,
     advancePos,
-    advancesPos )
+    advancesPos,
+    posProperties)
   where
 
 import Data.List
@@ -56,6 +57,13 @@ advancesPos (SourcePos name line column offset) s =
     (foldl advanceColumn column s)
     (foldl advanceOffset offset s)
 
+
+posProperties :: SourcePos -> [(String, String)]
+posProperties (SourcePos name line column offset) =
+  (if null name then [] else [("file", name)]) ++
+  (if line <= 0 then [] else [("line", show line)]) ++
+  (if column <= 0 then [] else [("column", show column)]) ++
+  (if offset <= 0 then [] else [("offset", show offset)])
 
 instance Show SourcePos where
   show EOF = "(end of input)"

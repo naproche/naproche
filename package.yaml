@@ -15,6 +15,7 @@ dependencies:
 - time
 - mtl
 - transformers
+- bytestring
 
 library:
   source-dirs: src

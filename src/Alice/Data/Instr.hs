@@ -65,7 +65,6 @@ data InBin  = IBprov  --  prove goals (yes)
             | IBUfdl  --  unfold the whole low level context (yes)
             | IBUfds  --  unfold set and function conditions in low level (no)
             | IBOnch  --  enable ontological reduction for checks (off)
-            | IBPIDE  --  enable PIDE protocol (off)
             deriving (Eq,Show)
 
 data InStr  = ISinit  --  init file (init.opt)
@@ -142,8 +141,7 @@ setIB = [ (IBprov,  ["prove"]),
           (IBUnfs,  ["unfoldsf"]),
           (IBUfdl,  ["unfoldlow"]),
           (IBUfds,  ["unfoldlowsf"]),
-          (IBOnch,  ["checkontored"]),
-          (IBPIDE,  ["PIDE"])]
+          (IBOnch,  ["checkontored"])]
 
 setIS :: [(InStr, [String])]
 setIS = [ (ISread,  ["read"]),

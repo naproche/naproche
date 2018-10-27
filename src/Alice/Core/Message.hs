@@ -13,6 +13,11 @@ module Alice.Core.Message (
 where
 
 import Alice.Core.Position
+import System.Environment
+import qualified Alice.Core.XML as XML
+import qualified Alice.Core.YXML as YXML
+import qualified Data.ByteString.Lazy as L
+import Data.ByteString.Builder
 
 
 trimLine :: String -> String
@@ -28,6 +33,19 @@ instance Show Kind where
   show WARNING = "Warning"
   show ERROR = "Error"
 
+xmlKind :: Kind -> String
+xmlKind NORMAL = "writeln"
+xmlKind WARNING = "warning"
+xmlKind ERROR = "error"
+
+xmlMessage :: String -> Kind -> SourcePos -> String -> XML.Tree
+xmlMessage origin kind pos msg =
+  XML.Elem (xmlKind kind, props) [XML.Text msg]
+  where
+    props =
+      if null origin then posProperties pos
+      else ("origin", origin) : posProperties pos
+
 textMessage :: String -> Kind -> SourcePos -> String -> String
 textMessage origin kind pos msg =
   (if null origin then "" else "[" ++ origin ++ "] ") ++
@@ -35,8 +53,18 @@ textMessage origin kind pos msg =
   (case show pos of "" -> ""; s -> s ++ "\n") ++ msg
 
 outputMessage :: String -> Kind -> SourcePos -> String -> IO ()
-outputMessage origin kind pos msg =
-  putStrLn $ textMessage origin kind pos msg
+outputMessage origin kind pos msg = do
+  pide <- lookupEnv "SAD3_PIDE"
+  case pide of
+    Just "true" ->
+      let
+        string = YXML.showTree (xmlMessage origin kind pos msg)
+        bytes = toLazyByteString $ stringUtf8 string
+      in do
+        putStrLn $ "\001" ++ show (L.length bytes)
+        L.putStr bytes
+        putStrLn ""
+    _ -> putStrLn $ textMessage origin kind pos msg
 
 outputMain :: Kind -> SourcePos -> String -> IO ()
 outputMain = outputMessage "Main"

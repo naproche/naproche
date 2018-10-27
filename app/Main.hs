@@ -114,14 +114,11 @@ readOpts  = do
   (is, fs, es) <- fmap (getOpt Permute options) getArgs
   let text = is ++ [InStr ISfile $ head $ fs ++ [""]]
   unless (all wellformed is && null es) $ die es
-  when (askIB IBPIDE False is) initPIDE
   when (askIB IBhelp False is) helper
   return text
 
 wellformed (InBin _ v)  = v == v; wellformed (InInt _ v)  = v == v
 wellformed _            = True
-
-initPIDE = putStrLn "PIDE protocol init"   -- FIXME proper implementation
 
 helper = putStr (usageInfo usageHeader options) >> exitSuccess
 
@@ -202,9 +199,7 @@ options = [
   Option "" ["unfoldlowsf"] (ReqArg (InBin IBUfds . binary) "{on|off}")
     "enable unfolding of set and function conditions in general (def: off)",
   Option "" ["checkontored"] (ReqArg (InBin IBOnch . binary) "{on|off}")
-    "enable ontological reduction for checking of symbols (def: off)",
-  Option "" ["PIDE"] (ReqArg (InBin IBPIDE . binary) "{on|off}")
-    "enable Prover IDE protocol (def: off)"]
+    "enable ontological reduction for checking of symbols (def: off)"]
 
 binary "yes" = True ; binary "on"  = True
 binary "no"  = False; binary "off" = False
