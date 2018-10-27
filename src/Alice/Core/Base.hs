@@ -287,7 +287,7 @@ retrieveContext names = do
   return context
   where
     warn unfoundSections =
-      reasonLog Warning noPos $
+      reasonLog WARNING noPos $
         "Could not find sections " ++ unwords (map show $ Set.elems unfoundSections)
     retrieve [] = return []
     retrieve (context:restContext) = let name = cnName context in
@@ -355,7 +355,7 @@ getLink link = do
 -- add group identifier
 addGroup :: [String] -> VM ()
 addGroup [] = return ()
-addGroup [name] = reasonLog Warning noPos $ "empty group: " ++ show name
+addGroup [name] = reasonLog WARNING noPos $ "empty group: " ++ show name
 addGroup (name:identifiers) =
   getLink identifiers >>= \link -> updateGlobalState
     (\st -> st {identifierGroups = M.insert name link $ identifierGroups st})

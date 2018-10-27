@@ -43,7 +43,7 @@ import Alice.Core.Rewrite
 verify :: String -> IORef RState -> [Text] -> IO (Maybe ([Text], GState))
 verify fileName reasonerState blocks = do
   let text = TI (InStr ISfile fileName) : blocks
-  putStrLn $ makeMessage "Reasoner" Normal (namePos fileName) "verification started"
+  putStrLn $ makeMessage "Reasoner" NORMAL (namePos fileName) "verification started"
 
   let initialVerificationState =
         VS False [] DT.empty (Context Bot [] [] Bot) [] [] text
@@ -54,7 +54,7 @@ verify fileName reasonerState blocks = do
     readIORef reasonerState
 
   let success = isJust result && ignoredFails == 0
-  putStrLn $ makeMessage "Reasoner" Normal (namePos fileName) $
+  putStrLn $ makeMessage "Reasoner" NORMAL (namePos fileName) $
     "verification " ++ (if success then "successful" else "failed")
   return result
 
@@ -75,7 +75,7 @@ verificationLoop state@VS {
   -- statistics and user communication
   incrementIntCounter Sections
   whenInstruction IBPsct False $ justIO $
-    outputForTheL Normal (position block) $ trimLine (showForm 0 block "")
+    outputForTheL NORMAL (position block) $ trimLine (showForm 0 block "")
   let newBranch = block : branch; contextBlock = Context f newBranch [] f
 
 
@@ -93,7 +93,7 @@ verificationLoop state@VS {
   whenInstruction IBPths False $ when (
     toBeProved && (not . null) proofBody &&
     not (hasDEC $ cnForm freshThesis)) $
-      thesisLog Normal (position block) (length branch - 1) $
+      thesisLog NORMAL (position block) (length branch - 1) $
       "thesis: " ++ show (cnForm freshThesis)
 
 
@@ -109,7 +109,7 @@ verificationLoop state@VS {
   whenInstruction IBPths False $ when (
     toBeProved && (not . null) proofBody &&
     not (hasDEC $ cnForm freshThesis)) $
-      thesisLog Normal (position block) (length branch - 1) "thesis resolved"
+      thesisLog NORMAL (position block) (length branch - 1) "thesis resolved"
 
   -- in what follows we prepare the current block to contribute to the context,
   -- extract rules, definitions and compute the new thesis
@@ -141,11 +141,11 @@ verificationLoop state@VS {
   whenInstruction IBPths False $ when (
     hasChanged && motivated && newMotivation &&
     (not $ hasDEC $ formula $ head branch) ) $
-      thesisLog Normal (position block) (length branch - 2) $
+      thesisLog NORMAL (position block) (length branch - 2) $
       "new thesis: " ++ show (cnForm newThesis)
 
   when (not newMotivation && motivated) $
-    thesisLog Warning (position block) (length branch - 2) "unmotivated assumption"
+    thesisLog WARNING (position block) (length branch - 2) "unmotivated assumption"
 
   let newRewriteRules = extractRewriteRule (head newContext) ++ rules
 
@@ -186,19 +186,19 @@ verificationLoop st@VS {
     prove =
       if hasDEC (cnForm thesis) --computational reasoning
       then do
-        let logAction = reasonLog Normal (position block) $ "goal: " ++ text
+        let logAction = reasonLog NORMAL (position block) $ "goal: " ++ text
             block = cnHead thesis ; text = Block.text block
         incrementIntCounter Equations ; whenInstruction IBPgls True logAction
         timer SimplifyTime (equalityReasoning thesis) <|> (
-          reasonLog Normal (position block) "equation failed" >>
+          reasonLog NORMAL (position block) "equation failed" >>
           guardInstruction IBskip False >> incrementIntCounter FailedEquations)
       else do
-        let logAction = reasonLog Normal (position block) $ "goal: " ++ text
+        let logAction = reasonLog NORMAL (position block) $ "goal: " ++ text
             block = cnHead thesis ; text = Block.text block
         unless (isTop . cnForm $ thesis) $ incrementIntCounter Goals
         whenInstruction IBPgls True logAction
         proveThesis <|> (
-          reasonLog Normal (position block) "goal failed" >>
+          reasonLog NORMAL (position block) "goal failed" >>
           guardInstruction IBskip False >>
           incrementIntCounter FailedGoals)
 
@@ -247,7 +247,7 @@ verifyProof state@VS {
             inferNewThesis definitions newContext $ setForm thesis f
       whenInstruction IBPths False $ when (
         noInductionOrCase (cnForm newThesis) && not (null $ restText state)) $
-          thesisLog Normal (position $ head $ cnBran $ head context) (length branch - 2) $
+          thesisLog NORMAL (position $ head $ cnBran $ head context) (length branch - 2) $
           "new thesis " ++ show (cnForm newThesis)
       verifyProof state {
         rewriteRules = newRules, currentThesis = newThesis,
@@ -285,19 +285,19 @@ procTI VS {
   = proc
   where
     proc (InCom ICRuls) =
-      reasonLog Normal noPos $ "current ruleset: " ++ "\n" ++ printrules (reverse rules)
+      reasonLog NORMAL noPos $ "current ruleset: " ++ "\n" ++ printrules (reverse rules)
     proc (InCom ICPths) = do
       let motivation = if motivated then "(mot): " else "(nmt): "
-      reasonLog Normal noPos $ "current thesis " ++ motivation ++ show (cnForm thesis)
+      reasonLog NORMAL noPos $ "current thesis " ++ motivation ++ show (cnForm thesis)
     proc (InCom ICPcnt) =
-      reasonLog Normal noPos $ "current context:\n" ++
+      reasonLog NORMAL noPos $ "current context:\n" ++
         concatMap (\form -> "  " ++ show form ++ "\n") (reverse context)
     proc (InCom ICPflt) = do
       let topLevelContext = filter cnTopL context
-      reasonLog Normal noPos $ "current filtered top-level context:\n" ++
+      reasonLog NORMAL noPos $ "current filtered top-level context:\n" ++
         concatMap (\form -> "  " ++ show form ++ "\n") (reverse topLevelContext)
 
-    proc (InCom _) = reasonLog Normal noPos "unsupported instruction"
+    proc (InCom _) = reasonLog NORMAL noPos "unsupported instruction"
 
     proc (InBin IBverb False) = do
       addInstruction $ InBin IBPgls False

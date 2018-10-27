@@ -21,11 +21,11 @@ trimLine line =
     '\n' : rest -> reverse rest
     _ -> line
 
-data Kind = Normal | Warning | Error
+data Kind = NORMAL | WARNING | ERROR
 instance Show Kind where
-  show Normal = ""
-  show Warning = "Warning"
-  show Error = "Error"
+  show NORMAL = ""
+  show WARNING = "Warning"
+  show ERROR = "Error"
 
 makeMessage :: String -> Kind -> SourcePos -> String -> String
 makeMessage origin kind pos msg =

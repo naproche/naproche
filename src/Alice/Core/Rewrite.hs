@@ -134,10 +134,10 @@ generateConditions verbositySetting rules w l r =
 
     -- logging and user communication
     log leftNormalForm rightNormalForm = when verbositySetting $ do
-      simpLog Normal noPos "no matching normal forms found"
+      simpLog NORMAL noPos "no matching normal forms found"
       showPath leftNormalForm; showPath rightNormalForm
     showPath ((t,_):rest) = when verbositySetting $
-      simpLog Normal noPos (show t) >> mapM_ (simpLog Normal noPos . format) rest
+      simpLog NORMAL noPos (show t) >> mapM_ (simpLog NORMAL noPos . format) rest
     -- formatting of paths
     format (t, simpInfo) = " --> " ++ show t ++ conditions simpInfo
     conditions (conditions, name) =
@@ -149,7 +149,7 @@ generateConditions verbositySetting rules w l r =
 {- applies computational reasoning to an equality chain -}
 equalityReasoning :: Context -> VM ()
 equalityReasoning thesis
-  | body = whenInstruction IBPrsn False $ reasonLog Normal noPos "eqchain concluded"
+  | body = whenInstruction IBPrsn False $ reasonLog NORMAL noPos "eqchain concluded"
   | (not . null) link = getLinkedRules link >>= rewrite equation
   | otherwise = rules >>= rewrite equation -- if no link is given -> all rules
   where
@@ -167,7 +167,7 @@ getLinkedRules link = do
   return linkedRules
   where
     warn st =
-      simpLog Warning noPos $
+      simpLog WARNING noPos $
         "Could not find rules " ++ unwords (map show $ Set.elems st)
 
     retrieve _ [] = return []
@@ -227,7 +227,7 @@ dischargeConditions verbositySetting conditions =
       else unwords . intersperse "," . map show $ reverse conditions
     log msg =
       when verbositySetting $ thesis >>=
-        flip (simpLog Normal . position . cnHead) msg
+        flip (simpLog NORMAL . position . cnHead) msg
 
     wipeLink thesis =
       let block:restBranch = cnBran thesis

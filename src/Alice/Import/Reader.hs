@@ -23,7 +23,7 @@ import Alice.Parser.Position
 import Alice.Parser.Token
 import Alice.Parser.Combinators
 import Alice.Parser.Primitives
-import Alice.Core.Message (outputMessage, Kind (Normal))
+import Alice.Core.Message
 
 import Debug.Trace
 
@@ -95,7 +95,7 @@ launchParser parser st =
 
 info :: String -> String -> String -> IO ()
 info origin fileName msg =
-  outputMessage origin Normal (namePos fileName) msg
+  outputMessage origin NORMAL (namePos fileName) msg
 
 warn :: String -> String -> IO ()
 warn = info "Main"
