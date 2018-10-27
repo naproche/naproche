@@ -5,9 +5,9 @@ Formal output messages, with Prover IDE support.
 -}
 
 module Alice.Core.Message (
-  trimLine, Kind (..), makeMessage, outputMessage,
-  outputMain, outputExport, outputForTheL, outputParser,
-  outputReason, outputThesis, outputSimp,
+  trimLine, Kind (..),
+  outputMessage, outputMain, outputExport, outputForTheL,
+  outputParser, outputReason, outputThesis, outputSimp
 )
 
 where
@@ -28,15 +28,15 @@ instance Show Kind where
   show WARNING = "Warning"
   show ERROR = "Error"
 
-makeMessage :: String -> Kind -> SourcePos -> String -> String
-makeMessage origin kind pos msg =
+textMessage :: String -> Kind -> SourcePos -> String -> String
+textMessage origin kind pos msg =
   (if null origin then "" else "[" ++ origin ++ "] ") ++
   (case show kind of "" -> "" ; s -> s ++ ": ") ++
   (case show pos of "" -> ""; s -> s ++ "\n") ++ msg
 
 outputMessage :: String -> Kind -> SourcePos -> String -> IO ()
 outputMessage origin kind pos msg =
-  putStrLn $ makeMessage origin kind pos msg
+  putStrLn $ textMessage origin kind pos msg
 
 outputMain :: Kind -> SourcePos -> String -> IO ()
 outputMain = outputMessage "Main"
