@@ -2,10 +2,6 @@
 
 # Admin #
 
-* suppress generated files from repository (via .gitignore): SAD3.cabal (??)
-
-* robust build process based on Haskell Tool Stack
-
 * systematic runs of "test" examples
 
 * Isabelle-specific build (optional)
@@ -34,12 +30,9 @@
 * make $SPASS_HOME/SPASS from Isabelle actually work (!?)
 
 
-# Isabelle/jEdit #
+# General #
 
-* proper editor mode for .ftl files (not "FreeMarker Template Language") (!)
-
-
-# Concepts #
+* clarify project / program name: "Alice" vs. "SAD3" vs. "ForTheL"
 
 * stay-resident server instead of command-line batch-tool (??)
 
