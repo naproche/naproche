@@ -30,9 +30,7 @@ import Debug.Trace
 -- Init file parsing
 
 readInit :: String -> IO [Instr]
-
-readInit ""   = return []
-
+readInit "" = return []
 readInit file =
   do  input <- catch (readFile file) $ die file . ioeGetErrorString
       let toks = tokenize (filePos file) input ; ips = State () toks
