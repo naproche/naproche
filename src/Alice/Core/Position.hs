@@ -70,7 +70,7 @@ instance Show SourcePos where
     else showName ++ " " ++ showDetails
     where
       detail a i = if i <= 0 then "" else a ++ " " ++ show i
-      details = [detail "line" line, detail "column" column, detail "offset" offset]
+      details = [detail "line" line, detail "column" column]
       showDetails =
         case filter (not . null) details of
           [] -> ""
