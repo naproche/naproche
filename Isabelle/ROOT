@@ -1,5 +1,4 @@
 session SAD3 = Pure +
-  theories
+  theories [condition=SAD3_HOME]
     SAD3
     Test
-
