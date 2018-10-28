@@ -22,22 +22,21 @@ data Token = Token {showToken :: String, tokenPos :: SourcePos,
 tokenize :: SourcePos -> String -> [Token]
 tokenize start = posToken start False
   where
-    posToken p ws s
-      | not (null lx) =
-          Token lx p ws : posToken (advancesPos p lx) False rs
-      where
-        (lx,rs) = span isLexem s
+    posToken pos ws s
+      | not (null lexem) =
+          Token lexem pos ws : posToken (advancesPos pos lexem) False rest
+      where (lexem, rest) = span isLexem s
 
-    posToken p _ s
-      | not (null wh) = posToken (advancesPos p wh) True rs
-      where
-        (wh,rs) = span isSpace s
+    posToken pos _ s
+      | not (null white) = posToken (advancesPos pos white) True rest
+      where (white, rest) = span isSpace s
 
-    posToken p ws s@('#' : _) = posToken (advancesPos p cs) ws rs
-      where
-        (cs, rs) = break (== '\n') s
-    posToken p ws (c:cs) =
-      Token [c] p ws : posToken (advancePos p c) False cs
+    posToken pos ws s@('#':_) = posToken (advancesPos pos comment) ws rest
+      where (comment, rest) = break (== '\n') s
+
+    posToken pos ws (c:cs) =
+      Token [c] pos ws : posToken (advancePos pos c) False cs
+
     posToken _ _ _ = []
 
 isLexem :: Char -> Bool
