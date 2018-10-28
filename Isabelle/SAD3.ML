@@ -42,14 +42,15 @@ fun forthel_file ctxt (file: Token.file) =
 
       fun print_position props =
         let
-          val pos =
+          val props0 = Position.get_props (#pos file);
+          val props1 =
             (case Properties.get props Markup.fileN of
               SOME name =>
                 if name = tmp_file_name
                 then Properties.put (Markup.fileN, file_name) props
                 else props
-            | NONE => props)
-            |> Position.of_properties;
+            | NONE => props);
+          val pos = Position.of_properties (props1 @ props0);
         in (case Position.here pos of "" => " " | s => s ^ "\n") end;
 
       fun output_acc acc =
