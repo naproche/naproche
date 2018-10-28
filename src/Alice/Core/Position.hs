@@ -7,10 +7,9 @@ Token source positions.
 
 module Alice.Core.Position
   ( SourcePos (EOF, sourceFile, sourceLine, sourceColumn, sourceOffset),
-    SourceFile,
     noPos,
+    fileOnlyPos,
     filePos,
-    initialPos,
     advancePos,
     advancesPos,
     posProperties)
@@ -18,11 +17,9 @@ module Alice.Core.Position
 
 import Data.List
 
-type SourceFile = String
-
 data SourcePos =
   SourcePos {
-    sourceFile :: SourceFile,
+    sourceFile :: String,
     sourceLine :: Int,
     sourceColumn :: Int,
     sourceOffset :: Int }
@@ -33,11 +30,11 @@ data SourcePos =
 noPos :: SourcePos
 noPos = SourcePos "" 0 0 0
 
-filePos :: SourceFile -> SourcePos
-filePos file = SourcePos file 0 0 0
+fileOnlyPos :: String -> SourcePos
+fileOnlyPos file = SourcePos file 0 0 0
 
-initialPos :: SourceFile -> SourcePos
-initialPos file = SourcePos file 1 1 1
+filePos :: String -> SourcePos
+filePos file = SourcePos file 1 1 1
 
 advanceLine line c = if line <= 0 || c /= '\n' then line else line + 1
 advanceColumn column c = if column <= 0 then column else if c == '\n' then 1 else column + 1

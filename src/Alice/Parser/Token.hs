@@ -19,8 +19,8 @@ import Alice.Core.Position
 data Token = Token {showToken :: String, tokenPos :: SourcePos,
                     tokenWhiteSpace :: Bool}
 
-tokenize :: SourceFile -> String -> [Token]
-tokenize name = posToken (initialPos name) False
+tokenize :: SourcePos -> String -> [Token]
+tokenize start = posToken start False
   where
     posToken p ws s
       | not (null lx) =
