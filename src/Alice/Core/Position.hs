@@ -7,9 +7,9 @@ Token source positions.
 
 module Alice.Core.Position
   ( SourcePos (EOF, sourceFile, sourceLine, sourceColumn, sourceOffset),
-    SourceName,
+    SourceFile,
     noPos,
-    namePos,
+    filePos,
     initialPos,
     advancePos,
     advancesPos,
@@ -18,11 +18,11 @@ module Alice.Core.Position
 
 import Data.List
 
-type SourceName = String
+type SourceFile = String
 
 data SourcePos =
   SourcePos {
-    sourceFile :: SourceName,
+    sourceFile :: SourceFile,
     sourceLine :: Int,
     sourceColumn :: Int,
     sourceOffset :: Int }
@@ -33,41 +33,41 @@ data SourcePos =
 noPos :: SourcePos
 noPos = SourcePos "" 0 0 0
 
-namePos :: SourceName -> SourcePos
-namePos name = SourcePos name 0 0 0
+filePos :: SourceFile -> SourcePos
+filePos file = SourcePos file 0 0 0
 
-initialPos :: SourceName -> SourcePos
-initialPos name = SourcePos name 1 1 1
+initialPos :: SourceFile -> SourcePos
+initialPos file = SourcePos file 1 1 1
 
 advanceLine line c = if line <= 0 || c /= '\n' then line else line + 1
 advanceColumn column c = if column <= 0 then column else if c == '\n' then 1 else column + 1
 advanceOffset offset c = if offset <= 0 then offset else offset + 1
 
 advancePos :: SourcePos -> Char -> SourcePos
-advancePos (SourcePos name line column offset) c =
-  SourcePos name
+advancePos (SourcePos file line column offset) c =
+  SourcePos file
     (advanceLine line c)
     (advanceColumn column c)
     (advanceOffset offset c)
 
 advancesPos :: SourcePos -> String -> SourcePos
-advancesPos (SourcePos name line column offset) s =
-  SourcePos name
+advancesPos (SourcePos file line column offset) s =
+  SourcePos file
     (foldl advanceLine line s)
     (foldl advanceColumn column s)
     (foldl advanceOffset offset s)
 
 
 posProperties :: SourcePos -> [(String, String)]
-posProperties (SourcePos name line column offset) =
-  (if null name then [] else [("file", name)]) ++
+posProperties (SourcePos file line column offset) =
+  (if null file then [] else [("file", file)]) ++
   (if line <= 0 then [] else [("line", show line)]) ++
   (if column <= 0 then [] else [("column", show column)]) ++
   (if offset <= 0 then [] else [("offset", show offset)])
 
 instance Show SourcePos where
   show EOF = "(end of input)"
-  show (SourcePos name line column offset) =
+  show (SourcePos file line column offset) =
     if null showName then showDetails
     else if null showDetails then showName
     else showName ++ " " ++ showDetails
@@ -78,4 +78,4 @@ instance Show SourcePos where
         case filter (not . null) details of
           [] -> ""
           ds -> "(" ++ intercalate ", " ds ++ ")"
-      showName = if null name then "" else "\"" ++ name ++ "\""
+      showName = if null file then "" else "\"" ++ file ++ "\""

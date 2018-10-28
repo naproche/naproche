@@ -43,7 +43,7 @@ readPrDB file = do
     Left e  ->  die e
     Right d ->  return d
   where
-    die e = outputExport NORMAL (namePos file) e >> exitFailure
+    die e = outputExport NORMAL (filePos file) e >> exitFailure
 
 
 readPrvs :: Int -> Maybe Prover -> [String] -> Either String [Prover]
