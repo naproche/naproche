@@ -190,7 +190,7 @@ verificationLoop st@VS {
             block = cnHead thesis ; text = Block.text block
         incrementIntCounter Equations ; whenInstruction IBPgls True logAction
         timer SimplifyTime (equalityReasoning thesis) <|> (
-          reasonLog NORMAL (position block) "equation failed" >>
+          reasonLog WARNING (position block) "equation failed" >>
           guardInstruction IBskip False >> incrementIntCounter FailedEquations)
       else do
         let logAction = reasonLog NORMAL (position block) $ "goal: " ++ text
@@ -198,7 +198,7 @@ verificationLoop st@VS {
         unless (isTop . cnForm $ thesis) $ incrementIntCounter Goals
         whenInstruction IBPgls True logAction
         proveThesis <|> (
-          reasonLog NORMAL (position block) "goal failed" >>
+          reasonLog WARNING (position block) "goal failed" >>
           guardInstruction IBskip False >>
           incrementIntCounter FailedGoals)
 

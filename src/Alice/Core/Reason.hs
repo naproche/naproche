@@ -83,7 +83,7 @@ sequenceGoals reasoningDepth iteration (goal:restGoals) = do
 
     depthExceedMessage =
       whenInstruction IBPrsn False $
-        reasonLog NORMAL noPos "reasoning depth exceeded"
+        reasonLog WARNING noPos "reasoning depth exceeded"
 
     updateTrivialStatistics = 
       unless (isTop goal) $ whenInstruction IBPrsn False $

@@ -77,7 +77,7 @@ setDef isNewWord context term@Trm{trName = t, trId = tId} =
     <|>  out >> mzero ) -- failure message
   where
     out =
-      reasonLog NORMAL (position (cnHead context)) $
+      reasonLog ERROR (position (cnHead context)) $
         "unrecognized: " ++ showsPrec 2 term ""
 
 
