@@ -6,11 +6,23 @@ Support for SAD3 / ForTheL within Isabelle.
 
 signature SAD3 =
 sig
+  val forthel_prove: bool Config.T
+  val forthel_check: bool Config.T
   val forthel_file: Proof.context -> Token.file -> unit
 end;
 
 structure SAD3: SAD3 =
 struct
+
+(** options **)
+
+val forthel_prove = Attrib.setup_option_bool (\<^system_option>\<open>forthel_prove\<close>, \<^here>);
+val forthel_check = Attrib.setup_option_bool (\<^system_option>\<open>forthel_check\<close>, \<^here>);
+
+fun bool_option ctxt config = if Config.get ctxt config then "on" else "off";
+
+
+(** process ForTheL files **)
 
 fun output_message "error" = Output.error_message
   | output_message "warning" = warning
@@ -71,7 +83,10 @@ fun forthel_file ctxt (file: Token.file) =
           "cd \"$SAD3_HOME\"",
           "export PATH=\"$E_HOME:$SPASS_HOME:$PATH\"",
           "export SAD3_PIDE=true",
-          File.bash_path (Path.explode "$SAD3_EXE") ^ " --prove=off " ^ File.bash_path tmp_file];
+          File.bash_path (Path.explode "$SAD3_EXE") ^
+            " --prove=" ^ bool_option ctxt forthel_prove ^
+            " --check=" ^ bool_option ctxt forthel_check ^
+            " -- " ^ File.bash_path tmp_file];
       val (out, rc) = Isabelle_System.bash_output script;
       val _ = detect_messages 0 [] (split_lines out);
     in if rc = 0 then () else error ("Return code: " ^ string_of_int rc) end);

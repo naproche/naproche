@@ -1,0 +1,9 @@
+(* :mode=isabelle-options: *)
+
+section "SAD3 / ForTheL"
+
+public option forthel_prove : bool = true
+  -- "prove goals in the text"
+
+public option forthel_check : bool = true
+  -- "check symbols for definedness"
