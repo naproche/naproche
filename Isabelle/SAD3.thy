@@ -65,7 +65,7 @@ fun forthel_file ctxt (file: Token.file) =
           "cd \"$SAD3_HOME\"",
           "export PATH=\"$E_HOME:$SPASS_HOME:$PATH\"",
           "export SAD3_PIDE=true",
-          "stack exec SAD3-exe -- --prove=off " ^ File.bash_path tmp_file];
+          File.bash_path (Path.explode "$SAD3_EXE") ^ " --prove=off " ^ File.bash_path tmp_file];
       val (out, rc) = Isabelle_System.bash_output script;
       val _ = detect_messages 0 [] (split_lines out);
     in if rc = 0 then () else error ("Return code: " ^ string_of_int rc) end);
