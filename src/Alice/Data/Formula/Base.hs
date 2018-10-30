@@ -9,7 +9,6 @@ module Alice.Data.Formula.Base where
 import Control.Monad
 import Data.Maybe
 import qualified Data.Monoid as Monoid
-import qualified Data.IntMap.Strict as IM
 
 import Alice.Data.Tag (Tag)
 
@@ -173,7 +172,7 @@ closed  = dive 0
     dive n (All _ g) = dive (succ n) g
     dive n (Exi _ g) = dive (succ n) g
     dive n t@Trm{}   = all (dive n) $ trArgs t
-    dive n Var{}     = True
+    dive _ Var{}     = True
     dive n (Ind v)   = v < n
     dive n f         = allF (dive n) f
 
@@ -193,18 +192,18 @@ bind v  = dive 0
     dive n t@Trm{}   = t {
       trArgs = map (dive n) $ trArgs t,
       trInfo = map (dive n) $ trInfo t}
-    dive n (Ind m )  = Ind m
+    dive _ (Ind m )  = Ind m
     dive n f         = mapF (dive n) f
 
 {- instantiate a formula with a variable with name v.
 This also affects any info stored. -}
 inst :: String -> Formula -> Formula
-inst v  = dive 0
+inst x = dive 0
   where
     dive n (All u g) = All u $ dive (succ n) g
     dive n (Exi u g) = Exi u $ dive (succ n) g
     dive n (Ind m)
-      | m == n       = Var v []
+      | m == n       = Var x []
     dive n t@Trm{}   = t {
       trArgs = map (dive n) $ trArgs t,
       trInfo = map (dive n) $ trInfo t }

@@ -8,9 +8,7 @@ module Alice.Data.Formula.Kit where
 
 import Control.Monad
 import Data.Maybe
-import qualified Data.IntMap.Strict as IM
 import qualified Data.Map as M
-import Debug.Trace
 import Data.List
 
 import Alice.Data.Formula.Base
@@ -118,15 +116,15 @@ blAnd Top f = f; blAnd (Tag _ Top) f = f
 blAnd f Top = f; blAnd f (Tag _ Top) = f
 blAnd f g = And f g
 
-blImp f Top = Top; blImp f (Tag _ Top) = Top
+blImp _ Top = Top; blImp _ (Tag _ Top) = Top
 blImp Top f = f; blImp (Tag _ Top) f = f
 blImp f g = Imp f g
 
 blAll, blExi :: String -> Formula -> Formula
-blAll v Top = Top
+blAll _ Top = Top
 blAll v f = All v f
 
-blExi v Top = Top
+blExi _ Top = Top
 blExi v f = Exi v f
 
 blNot :: Formula -> Formula
@@ -190,7 +188,7 @@ isBot Bot = True; isBot _ = False
 isIff (Iff _ _) = True; isIff _ = False
 isInd (Ind _ ) = True; isInd _ = False
 isVar (Var _ _) = True; isVar _ = False
-isTrm t@Trm{} = True; isTrm _ = False
+isTrm Trm{} = True; isTrm _ = False
 isEquality t@Trm{} = trId t == equalityId; isEquality _ = False
 isThesis t@Trm{} = trId t == thesisId; isThesis _ = False
 hasDEC (Tag DEC _) = True; hasDEC _ = False
