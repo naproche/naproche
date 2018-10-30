@@ -18,8 +18,8 @@ instance Show Formula where
 showFormula :: Int -> Int -> Formula -> ShowS
 showFormula p d = dive
   where
-    dive (All s f) = showString "forall " . showBinder f
-    dive (Exi s f) = showString "exists " . showBinder f
+    dive (All _ f) = showString "forall " . showBinder f
+    dive (Exi _ f) = showString "exists " . showBinder f
     dive (Iff f g) = showParen True $ showInfix " iff "     f g
     dive (Imp f g) = showParen True $ showInfix " implies " f g
     dive (Or  f g) = showParen True $ showInfix " or "      f g

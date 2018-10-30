@@ -20,7 +20,6 @@ import Prelude hiding (lookup, head)
 import qualified Data.List as L hiding (lookup)
 import Control.Monad
 import Data.Maybe
-import Debug.Trace
 
 data DTree a =
   Node {struct :: Struct, children :: [DTree a]} |
@@ -48,7 +47,7 @@ isLeaf _ = False
 arity :: Struct -> Int
 arity Variable = 0
 arity (GeneralizedConstant _) = 0
-arity (Function n m) = m
+arity (Function _ m) = m
 
 {- move to the next argument by jumping the arity of the current argument -}
 jump :: DTree [a] -> [DTree [a]]
