@@ -19,12 +19,15 @@ import Alice.Core.Position
 data Token = Token {showToken :: String, tokenPos :: SourcePos,
                     tokenWhiteSpace :: Bool}
 
+makeToken s pos ws =
+  Token s (rangePos (pos, advancesPos pos s)) ws
+
 tokenize :: SourcePos -> String -> [Token]
 tokenize start = posToken start False
   where
     posToken pos ws s
       | not (null lexem) =
-          Token lexem pos ws : posToken (advancesPos pos lexem) False rest
+          makeToken lexem pos ws : posToken (advancesPos pos lexem) False rest
       where (lexem, rest) = span isLexem s
 
     posToken pos _ s
@@ -35,7 +38,7 @@ tokenize start = posToken start False
       where (comment, rest) = break (== '\n') s
 
     posToken pos ws (c:cs) =
-      Token [c] pos ws : posToken (advancePos pos c) False cs
+      makeToken [c] pos ws : posToken (advancePos pos c) False cs
 
     posToken _ _ _ = []
 

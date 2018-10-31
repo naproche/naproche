@@ -16,7 +16,7 @@
 
 * keep comment tokens (as "improper") for syntax reports (!?)
 
-* Block: body tokens, with "range" position for messages and reports (!?)
+* Block position: clarify end position (one additional character!??)
 
 
 # Misc #

@@ -56,7 +56,7 @@ topsection = signature <|> definition <|> axiom <|> theorem
 genericTopsection kind header endparser = do
   pos <- getPos; inp <- getInput; nm <- header;
   txt <- getText inp; bs <- body
-  return $ Block zHole bs kind [] nm [] pos txt
+  return $ makeBlock zHole bs kind nm [] pos txt
   where
     body = assumption <|> endparser
     assumption = topAssume `pretypeBefore` body
@@ -165,7 +165,7 @@ statementBlock kind p mbLink = do
   pos <- getPos; inp <- getInput;
   fr <- p; link <- mbLink;
   txt <- getText inp;
-  return $ Block fr [] kind [] nm link pos txt
+  return $ makeBlock fr [] kind nm link pos txt
 
 
 pretypeSentence kind p wfVars mbLink = narrow $ do
@@ -313,7 +313,7 @@ eqChain = do
   let Tag DEC Trm{trArgs = [t,_]} = formula $ head body
       Tag DEC Trm{trArgs = [_,s]} = formula $ last body
       fr = Tag DEC $ zEqu t s; tBody = map TB body
-  return $ Block fr tBody Affirmation [] nm [] pos txt
+  return $ makeBlock fr tBody Affirmation nm [] pos txt
   where
     chainVars dvs = affirmVars dvs . foldl1 And . map formula
 
@@ -324,4 +324,4 @@ nextTerm :: Formula -> FTL [Block]
 nextTerm t = do
   pos <- getPos; inp <- getInput
   symbol ".="; s <- s_term; ln <- eqLink; txt <- getText inp
-  liftM ((:) $ Block (Tag DEC $ zEqu t s) [] Affirmation [] "__" ln pos txt) $ eq_tail s
+  liftM ((:) $ makeBlock (Tag DEC $ zEqu t s) [] Affirmation "__" ln pos txt) $ eq_tail s
