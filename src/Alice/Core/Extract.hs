@@ -15,7 +15,8 @@ module Alice.Core.Extract (
 import Alice.Data.Formula
 import Alice.Data.Definition (DefEntry(DE), Definitions, DefType(..))
 import qualified Alice.Data.Definition as Definition
-import Alice.Data.Evaluation
+import Alice.Data.Evaluation (Evaluation(EV))
+import qualified Alice.Data.Evaluation as Evaluation
 import Alice.Data.Text.Context (Context)
 import qualified Alice.Data.Text.Context as Context (formula, name)
 import Alice.Data.Rules
@@ -135,10 +136,10 @@ extractRewriteRule c =
 -- Evaluation for functions and sets
 
 addEvaluation evaluations f =
-  foldr (\eval -> DT.insert (evTerm eval) eval) evaluations $
+  foldr (\eval -> DT.insert (Evaluation.term eval) eval) evaluations $
   extractEvaluation evaluations f
 
-extractEvaluation :: DT.DisTree Eval -> Formula -> [Eval]
+extractEvaluation :: DT.DisTree Evaluation -> Formula -> [Evaluation]
 extractEvaluation dt = flip runReaderT (0, dt) . dive
   where
     dive (All _ (Iff (Tag DHD Trm {trName = "=", trArgs = [_, t]}) f))
@@ -154,7 +155,7 @@ freshV fn f = do -- generate fresh variables
 
 
 extractFunctionEval :: (Formula -> Formula) -> [Formula] -> Formula
-  -> ReaderT (Int, DT.DisTree Eval) [] Eval
+  -> ReaderT (Int, DT.DisTree Evaluation) [] Evaluation
 extractFunctionEval c gs (And g@(Tag DDM _ ) h) =
   extractSetEval c gs g `mplus` extractFunctionEval c gs h
 extractFunctionEval c gs (And f g) = extractFunctionEval c gs g
@@ -176,7 +177,7 @@ extractFunctionEval c gs f = dive c gs f
     deConj (And f g) = deConj f ++ deConj g; deConj f = [f]
 
 extractSetEval :: (Formula -> Formula) -> [Formula]-> Formula
-  -> ReaderT (Int, DT.DisTree Eval) [] Eval
+  -> ReaderT (Int, DT.DisTree Evaluation) [] Evaluation
 extractSetEval c gs (And f g) =
   extractSetEval c gs f `mplus` extractSetEval c gs g
 extractSetEval c gs (Tag _ f) = extractSetEval c gs f
@@ -194,8 +195,8 @@ simplifyElementCondition evals = dive
     dive f = mapF dive f
 
     simp f = do
-      ev <- DT.lookup f evals >>= single; guard (null $ evCond ev)
-      sb <- match (evTerm ev) f; return $ sb $ evNeg ev
+      ev <- DT.lookup f evals >>= single; guard (null $ Evaluation.conditions ev)
+      sb <- match (Evaluation.term ev) f; return $ sb $ Evaluation.negatives ev
 
     single [x] = return x; single l = mzero
 

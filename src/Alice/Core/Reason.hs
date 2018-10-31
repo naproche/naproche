@@ -39,7 +39,8 @@ import Alice.Data.Text.Block (Block, Section(..))
 import qualified Alice.Data.Text.Block as Block
 import Alice.Data.Definition (Definitions)
 import qualified Alice.Data.Definition as Definition
-import Alice.Data.Evaluation
+import Alice.Data.Evaluation (Evaluation)
+import qualified Alice.Data.Evaluation as Evaluation
 import Alice.Export.Prover
 import Alice.ForTheL.Base
 import Alice.Prove.MESON
@@ -222,7 +223,7 @@ lookFor literal t =
 
 data UnfoldState = UF {
   defs             :: Definitions, 
-  evals            :: DT.DisTree Eval,
+  evals            :: DT.DisTree Evaluation,
   unfoldSetting    :: Bool, -- user parameters that control what is unfolded
   unfoldSetSetting :: Bool }
 
@@ -355,10 +356,10 @@ unfoldAtomic sign f = do
         return evaluationFormula
       where
         findev ev = do
-          sb <- match (evTerm ev) t
-          guard (all trivialByEvidence $ map sb $ evCond ev)
+          sb <- match (Evaluation.term ev) t
+          guard (all trivialByEvidence $ map sb $ Evaluation.conditions ev)
           return $ replace (Tag DMK t) ThisT $ sb $ 
-            if sign then evPos ev else evNeg ev
+            if sign then Evaluation.positives ev else Evaluation.negatives ev
 
     unfGuard unfoldSetting action =
       asks unfoldSetting >>= \p -> if p then action else return []

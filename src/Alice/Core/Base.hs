@@ -57,7 +57,7 @@ import qualified Alice.Data.Text.Context as Context (name)
 import Alice.Data.Definition (Definitions, DefEntry(DE), DefType(..))
 import qualified Alice.Data.Definition as Definition
 import Alice.Data.Rules (Rule)
-import Alice.Data.Evaluation
+import Alice.Data.Evaluation (Evaluation)
 import Alice.Export.Base
 import qualified Alice.Data.Structures.DisTree as DT
 import Alice.Core.Position
@@ -160,7 +160,7 @@ infixl 0 <|>
 data VState = VS {
   thesisMotivated :: Bool,
   rewriteRules    :: [Rule],
-  evaluations     :: DT.DisTree Eval, -- (low level) evaluation rules
+  evaluations     :: DT.DisTree Evaluation, -- (low level) evaluation rules
   currentThesis   :: Context,
   currentBranch   :: [Block],         -- branch of the current block
   currentContext  :: [Context],
