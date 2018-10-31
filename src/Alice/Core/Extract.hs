@@ -19,7 +19,8 @@ import Alice.Data.Evaluation (Evaluation(EV))
 import qualified Alice.Data.Evaluation as Evaluation
 import Alice.Data.Text.Context (Context)
 import qualified Alice.Data.Text.Context as Context (formula, name)
-import Alice.Data.Rules
+import Alice.Data.Rules (Rule(Rule))
+import qualified Alice.Data.Rules as Rule
 import Alice.Core.Base
 import Alice.Core.Reduction
 import Alice.Prove.Normalize
@@ -114,7 +115,7 @@ closeEvidence dfs def@DE{Definition.evidence = evidence} = def { Definition.evid
 
 extractRewriteRule :: Context -> [Rule]
 extractRewriteRule c =
-  map (\rl -> rl {rlLabl = Context.name c}) $ dive 0 [] $ Context.formula c
+  map (\rl -> rl {Rule.label = Context.name c}) $ dive 0 [] $ Context.formula c
   where
     -- if DHD is reached, discard all collected conditions
     dive n gs (All _ (Iff (Tag DHD Trm {trName = "=", trArgs = [_,t]}) f )) =

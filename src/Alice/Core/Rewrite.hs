@@ -10,7 +10,8 @@ module Alice.Core.Rewrite (equalityReasoning) where
 
 import Alice.Core.Position
 import Alice.Data.Formula
-import Alice.Data.Rules
+import Alice.Data.Rules (Rule)
+import qualified Alice.Data.Rules as Rule
 import Alice.Data.Text.Context (Context)
 import qualified Alice.Data.Text.Context as Context
 import qualified Alice.Data.Text.Block as Block (body, link, position)
@@ -82,7 +83,7 @@ simpstep rules w = flip runStateT undefined . dive
 
     applyRule t = do
       (f, cnd, rl) <- lift (applyLeftToRight t `mplus` applyRightToLeft t)
-      put (cnd, rlLabl rl); return f
+      put (cnd, Rule.label rl); return f
 
     applyLeftToRight = applyRuleDirected True
     applyRightToLeft = applyRuleDirected False
@@ -91,11 +92,11 @@ simpstep rules w = flip runStateT undefined . dive
       rule <- rules
       let (l,r) =
             if   p
-            then (rlLeft rule, rlRght rule)
-            else (rlRght rule, rlLeft rule)
+            then (Rule.left rule, Rule.right rule)
+            else (Rule.right rule, Rule.left rule)
       sbs <- match l t; let nr = sbs r
       guard $ full nr && lpoGt w (sbs l) nr -- simplified term must be lighter
-      return (sbs r, map sbs $ rlCond rule, rule)
+      return (sbs r, map sbs $ Rule.condition rule, rule)
 
     full Var {trName = '?':_} = False; full f = allF full f
 
@@ -172,7 +173,7 @@ getLinkedRules link = do
         "Could not find rules " ++ unwords (map show $ Set.elems st)
 
     retrieve _ [] = return []
-    retrieve s (c:cnt) = let nm = rlLabl c in
+    retrieve s (c:cnt) = let nm = Rule.label c in
       if   Set.member nm s
       then modify (Set.delete nm) >> fmap (c:) (retrieve s cnt)
       else retrieve s cnt

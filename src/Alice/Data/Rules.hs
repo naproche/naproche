@@ -3,15 +3,15 @@ module Alice.Data.Rules where
 import Alice.Data.Formula (Formula)
 
 data Rule = Rule {
-  rlLeft :: Formula,   -- left side
-  rlRght :: Formula,   -- right side
-  rlCond :: [Formula], -- conditions
-  rlLabl :: String }   -- label
+  left      :: Formula,   -- left side
+  right     :: Formula,   -- right side
+  condition :: [Formula], -- conditions
+  label     :: String }   -- label
 
 instance Show Rule where
   show rl = 
-    show (rlLeft rl) ++ " = " ++ show (rlRght rl) ++
-    ", Cond: " ++ show (rlCond rl) ++ ", Label: " ++ show (rlLabl rl)
+    show (left rl) ++ " = " ++ show (right rl) ++
+    ", Cond: " ++ show (condition rl) ++ ", Label: " ++ show (label rl)
 
 printrules :: [Rule] -> String
 printrules = unlines . map show

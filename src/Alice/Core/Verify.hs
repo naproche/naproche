@@ -31,7 +31,8 @@ import Alice.Data.Text.Block (Block(Block), Text(..), Section(..))
 import qualified Alice.Data.Text.Block as Block
 import Alice.Data.Text.Context (Context(Context))
 import qualified Alice.Data.Text.Context as Context
-import Alice.Data.Rules
+import Alice.Data.Rules (Rule)
+import qualified Alice.Data.Rules as Rule
 import Alice.Prove.Normalize
 import Alice.Prove.MESON
 import Alice.Core.Reduction
@@ -288,7 +289,7 @@ procTI VS {
   = proc
   where
     proc (InCom ICRuls) =
-      reasonLog NORMAL noPos $ "current ruleset: " ++ "\n" ++ printrules (reverse rules)
+      reasonLog NORMAL noPos $ "current ruleset: " ++ "\n" ++ Rule.printrules (reverse rules)
     proc (InCom ICPths) = do
       let motivation = if motivated then "(mot): " else "(nmt): "
       reasonLog NORMAL noPos $ "current thesis " ++ motivation ++ show (Context.formula thesis)
