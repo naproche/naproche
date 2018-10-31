@@ -13,7 +13,8 @@ import Alice.Core.Base hiding (retrieve)
 import Alice.Data.Formula
 import Alice.Prove.Unify
 import Alice.Prove.Normalize
-import Alice.Data.Text.Context
+import Alice.Data.Text.Context (Context, MRule(MR))
+import qualified Alice.Data.Text.Context as Context
 import qualified Alice.Data.Structures.DisTree as DT
 import Alice.Core.Reduction
 
@@ -129,9 +130,9 @@ umatch _ _         = mzero
    ps -> positive global rules; ng -> negative global rules;
    gl -> goal.-}
 prove :: Int -> [Context] -> DT.DisTree MRule -> DT.DisTree MRule -> Context -> Bool
-prove n loc ps ng gl = let (vlc, mlc) = span (null . mesonRules) loc
-                           nrl = cs n $ (Not $ deTag $ formula gl) : map (deTag . formula) vlc
-                           rls = start (simplify $ Not $ formula gl) ++ nrl ++ concatMap mesonRules mlc
+prove n loc ps ng gl = let (vlc, mlc) = span (null . Context.mesonRules) loc
+                           nrl = cs n $ (Not $ deTag $ Context.formula gl) : map (deTag . Context.formula) vlc
+                           rls = start (simplify $ Not $ Context.formula gl) ++ nrl ++ concatMap Context.mesonRules mlc
                            in not . (null :: [a] -> Bool) $ solve 6 rls ps ng [] Bot
   where
     cs _ [] = []

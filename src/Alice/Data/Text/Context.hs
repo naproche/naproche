@@ -2,6 +2,7 @@ module Alice.Data.Text.Context where
 
 import Prelude hiding (head, tail)
 import qualified Prelude as Prelude (head, tail)
+import Alice.Data.Text.Block (Section(..))
 import qualified Alice.Data.Text.Block as Block
 import Alice.Data.Formula (Formula)
 
@@ -31,7 +32,7 @@ link  = Block.link . head
 
 
 
-isAssumption = (==) Block.Assumption . Block.kind . head
+isAssumption = (==) Assumption . Block.kind . head
 
 setForm :: Context -> Formula -> Context
 setForm context f = context { formula = f }

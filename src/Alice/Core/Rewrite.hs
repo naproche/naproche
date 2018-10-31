@@ -13,7 +13,7 @@ import Alice.Data.Formula
 import Alice.Data.Rules
 import Alice.Data.Text.Context (Context)
 import qualified Alice.Data.Text.Context as Context
-import Alice.Data.Text.Block as Block (body, link, position)
+import qualified Alice.Data.Text.Block as Block (body, link, position)
 import Alice.Core.Base
 import Alice.Core.Message
 import Alice.Data.Instr
@@ -228,11 +228,11 @@ dischargeConditions verbositySetting conditions =
       else unwords . intersperse "," . map show $ reverse conditions
     log msg =
       when verbositySetting $ thesis >>=
-        flip (simpLog NORMAL . position . Context.head) msg
+        flip (simpLog NORMAL . Block.position . Context.head) msg
 
     wipeLink thesis =
       let block:restBranch = Context.branch thesis
-      in  thesis {Context.branch = block {link = []} : restBranch}
+      in  thesis {Context.branch = block {Block.link = []} : restBranch}
 
     trivialityCheck g =
       if   trivialByEvidence g
