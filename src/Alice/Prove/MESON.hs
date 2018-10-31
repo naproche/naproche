@@ -55,11 +55,11 @@ solve n loc ps ng anc g = guard (n >= 0) >> guard repCheck >> (closeBranch `mplu
     closeBranch = msum $ map closeWith anc
     expandBranch = msum $ map expandWith $ (loc ++ if isNot g then DT.find (ltNeg g) ng else DT.find g ps)
 
-    expandWith (MR asm c) = do
+    expandWith (MR assumption c) = do
       sbs <- unify c g
-      let rnsb = rename $ map sbs (g:asm) --rename vars if necessary
-          (ng:nasm) = map (rnsb . sbs) (g:asm)
-      sb <- solveGls (n - length asm) (ng : anc) nasm -- solve remaining goals
+      let rnsb = rename $ map sbs (g:assumption) --rename vars if necessary
+          (ng:nasm) = map (rnsb . sbs) (g:assumption)
+      sb <- solveGls (n - length assumption) (ng : anc) nasm -- solve remaining goals
       return $ relevantSbs g (sb . rnsb . sbs)
       -- only pass down the relevant part of the substitution
     closeWith p = unify (ltNeg g) p
@@ -129,9 +129,9 @@ umatch _ _         = mzero
    ps -> positive global rules; ng -> negative global rules;
    gl -> goal.-}
 prove :: Int -> [Context] -> DT.DisTree MRule -> DT.DisTree MRule -> Context -> Bool
-prove n loc ps ng gl = let (vlc, mlc) = span (null . cnMESN) loc
-                           nrl = cs n $ (Not $ deTag $ cnForm gl) : map (deTag . cnForm) vlc
-                           rls = start (simplify $ Not $ cnForm gl) ++ nrl ++ concatMap cnMESN mlc
+prove n loc ps ng gl = let (vlc, mlc) = span (null . mesonRules) loc
+                           nrl = cs n $ (Not $ deTag $ formula gl) : map (deTag . formula) vlc
+                           rls = start (simplify $ Not $ formula gl) ++ nrl ++ concatMap mesonRules mlc
                            in not . (null :: [a] -> Bool) $ solve 6 rls ps ng [] Bot
   where
     cs _ [] = []

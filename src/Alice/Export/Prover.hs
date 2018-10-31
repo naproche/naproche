@@ -19,7 +19,7 @@ import Control.Exception
 import Alice.Core.Message
 import Alice.Core.Position
 import Alice.Data.Instr
-import Alice.Data.Text.Context
+import Alice.Data.Text.Context (Context)
 import Alice.Export.Base
 import Alice.Export.TPTP
 import Alice.Export.DFG

@@ -8,8 +8,10 @@ Generation of proof tasks.
 module Alice.Core.ProofTask (generateProofTask, getMacro) where
 
 import Alice.Data.Formula
-import Alice.Data.Text.Block (Section(..), position)
-import Alice.Data.Text.Context
+import Alice.Data.Text.Block (Section(..))
+import qualified Alice.Data.Text.Block as Block (position)
+import Alice.Data.Text.Context (Context)
+import qualified Alice.Data.Text.Context as Context
 import Alice.Prove.Normalize
 import Alice.Core.Base
 import Alice.Core.Message
@@ -174,7 +176,7 @@ getMacro cx tg = fmap (Tag tg . pd ) . either err return . dive
     dive (Tag tg' f) | tg == tg' = return f
     dive _ = Left $ "could not unfold macro: " ++ mcr tg
 
-    err s = reasonLog WARNING (position (cnHead cx)) s >> return Top
+    err s = reasonLog WARNING (Block.position (Context.head cx)) s >> return Top
 
     pd (Imp f g) = Imp (Tag DIH f) g -- auto instantiate quantified variable
     pd f = f

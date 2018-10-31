@@ -33,9 +33,12 @@ import Alice.Core.Base
 import Alice.Core.Message
 import Alice.Data.Formula
 import Alice.Data.Instr
-import Alice.Data.Text.Context as Context
-import Alice.Data.Text.Block as Block
-import Alice.Data.Definition
+import Alice.Data.Text.Context (Context(Context))
+import qualified Alice.Data.Text.Context as Context
+import Alice.Data.Text.Block (Block, Section(..))
+import qualified Alice.Data.Text.Block as Block
+import Alice.Data.Definition (Definitions)
+import qualified Alice.Data.Definition as Definition
 import Alice.Data.Evaluation
 import Alice.Export.Prover
 import Alice.ForTheL.Base
@@ -50,7 +53,7 @@ reason tc = local (\st -> st {currentThesis = tc}) proveThesis
 
 withGoal :: VM a -> Formula -> VM a
 withGoal action goal = local (\vState ->
-  vState { currentThesis = setForm (currentThesis vState) goal}) action
+  vState { currentThesis = Context.setForm (currentThesis vState) goal}) action
 
 withContext :: VM a -> [Context] -> VM a
 withContext action context = local (\vState -> 
@@ -77,7 +80,7 @@ sequenceGoals reasoningDepth iteration (goal:restGoals) = do
       | reasoningDepth == 1 = depthExceedMessage >> mzero
       | otherwise = do  
           newTask <- unfold
-          let Context {cnForm = Not newGoal} : newContext = newTask
+          let Context {Context.formula = Not newGoal} : newContext = newTask
           sequenceGoals (pred reasoningDepth) (succ iteration) [newGoal]
             `withContext` newContext
 
@@ -93,7 +96,7 @@ sequenceGoals reasoningDepth iteration (goal:restGoals) = do
 sequenceGoals  _ _ _ = return ()
 
 splitGoal :: VM [Formula]
-splitGoal = asks (normalizedSplit . strip . cnForm . currentThesis)
+splitGoal = asks (normalizedSplit . strip . Context.formula . currentThesis)
   where
     normalizedSplit = split . albet
     split (All u f) = map (All u) (normalizedSplit f)
@@ -117,12 +120,12 @@ launchProver iteration = do
   addTimeCounter SuccessTime time ; incrementIntCounter SuccessfulGoals
   where
     printTask reductionSetting = do
-      let getFormula = if reductionSetting then cnRedu else cnForm
+      let getFormula = if reductionSetting then Context.reducedFormula else Context.formula
       contextFormulas <- asks $ map getFormula . reverse . currentContext
       concl <- thesis
       reasonLog NORMAL noPos $ "prover task:\n" ++
         concatMap (\form -> "  " ++ show form ++ "\n") contextFormulas ++
-        "  |- " ++ show (cnForm concl) ++ "\n"
+        "  |- " ++ show (Context.formula concl) ++ "\n"
 
 
 launchReasoning :: VM ()
@@ -131,7 +134,7 @@ launchReasoning = do
   skolemInt <- askGlobalState skolemCounter
   mesonPos <- askGlobalState mesonPositives
   mesonNeg <- askGlobalState mesonNegatives
-  let lowlevelContext = takeWhile cnLowL context
+  let lowlevelContext = takeWhile Context.isLowLevel context
       proveGoal = prove skolemInt lowlevelContext mesonPos mesonNeg goal
       -- set timelimit to 10^4 
       -- (usually not necessary as max proof depth is limited)
@@ -148,26 +151,26 @@ launchReasoning = do
   context is selected. -}
 filterContext :: VM a -> [Context] -> VM a
 filterContext action context = do
-  link <- asks (cnLink . currentThesis) >>= getLink;
+  link <- asks (Context.link . currentThesis) >>= getLink;
   if Set.null link 
     then action `withContext` 
-         (map replaceSignHead $ filter (not . isTop . cnRedu) context)
+         (map replaceSignHead $ filter (not . isTop . Context.reducedFormula) context)
     else do
          linkedContext <- retrieveContext link 
          action `withContext` (lowlevelContext ++ linkedContext ++ defsAndSigs)
   where
-    (lowlevelContext, toplevelContext) = span cnLowL context
+    (lowlevelContext, toplevelContext) = span Context.isLowLevel context
     defsAndSigs = 
-      let defOrSig c = (not . isTop . cnRedu $ c) 
+      let defOrSig c = (not . isTop . Context.reducedFormula $ c) 
                     && (isDefinition c || isSignature c)
       in  map replaceHeadTerm $ filter defOrSig toplevelContext
 
 isDefinition, isSignature :: Context -> Bool
-isDefinition = (==) Block.Definition . kind . cnHead
-isSignature  = (==) Block.Signature  . kind . cnHead
+isDefinition = (==) Definition . Block.kind . Context.head
+isSignature  = (==) Signature  . Block.kind . Context.head
 
 replaceHeadTerm :: Context -> Context
-replaceHeadTerm c = setForm c $ dive 0 $ cnForm c
+replaceHeadTerm c = Context.setForm c $ dive 0 $ Context.formula c
   where
     dive n (All _ (Imp (Tag DHD Trm {trName = "=", trArgs = [_, t]}) f)) =
       subst t "" $ inst "" f
@@ -228,14 +231,14 @@ data UnfoldState = UF {
 unfold :: VM [Context]
 unfold = do  
   thesis <- thesis; context <- context
-  let task = setForm thesis (Not $ cnForm thesis) : context
+  let task = Context.setForm thesis (Not $ Context.formula thesis) : context
   definitions  <- askGlobalState definitions; evaluations <- asks evaluations
   generalUnfoldSetting     <- askInstructionBin IBUnfl True
   lowlevelUnfoldSetting    <- askInstructionBin IBUfdl True
   generalSetUnfoldSetting  <- askInstructionBin IBUnfs True
   lowlevelSetUnfoldSetting <- askInstructionBin IBUfds False
   guard (generalUnfoldSetting || generalSetUnfoldSetting)
-  let ((goal:toUnfold), topLevelContext) = span cnLowL task
+  let ((goal:toUnfold), topLevelContext) = span Context.isLowLevel task
       unfoldState = UF
         definitions 
         evaluations
@@ -258,8 +261,8 @@ unfold = do
       whenInstruction IBPunf False $ reasonLog NORMAL noPos "nothing to unfold"
     unfoldLog (goal:lowLevelContext) =
       whenInstruction IBPunf False $ reasonLog NORMAL noPos $ "unfold to:\n"
-        ++ unlines (reverse $ map ((++) "  " . show . cnForm) lowLevelContext)
-        ++ "  |- " ++ show (neg $ cnForm goal)
+        ++ unlines (reverse $ map ((++) "  " . show . Context.formula) lowLevelContext)
+        ++ "  |- " ++ show (neg $ Context.formula goal)
     neg (Not f) = f; neg f = f
 
 
@@ -269,7 +272,7 @@ unfoldConservative :: Context
 unfoldConservative toUnfold 
   | isDeclaration toUnfold = return toUnfold
   | otherwise =
-      fmap (setForm toUnfold) $ fill [] (Just True) 0 $ cnForm toUnfold
+      fmap (Context.setForm toUnfold) $ fill [] (Just True) 0 $ Context.formula toUnfold
   where
     fill localContext sign n f 
       | hasDMK f = return f -- check if f has been unfolded already
@@ -278,7 +281,7 @@ unfoldConservative toUnfold
     fill localContext sign n (Iff f g) = fill localContext sign n $ zIff f g
     fill localContext sign n f = roundFM 'u' fill localContext sign n f
 
-    isDeclaration = (==) LowDefinition . kind . cnHead
+    isDeclaration = (==) LowDefinition . Block.kind . Context.head
 
 {- unfold an atomic formula f occuring with polarity sign -}
 unfoldAtomic sign f = do
@@ -313,9 +316,9 @@ unfoldAtomic sign f = do
       let definingFormula = maybeToList $ do
             id <- tryToGetID f; def <- IM.lookup id definitions;
             -- only unfold a definitions or (a sigext in a positive position)
-            guard (sign || dfSign def)
-            sb <- match (dfTerm def) f
-            let definingFormula = replace (Tag DMK g) ThisT $ sb $ dfForm def
+            guard (sign || Definition.dfSign def)
+            sb <- match (Definition.dfTerm def) f
+            let definingFormula = replace (Tag DMK g) ThisT $ sb $ Definition.dfForm def
         -- substitute the (marked) term
             guard (not . isTop $ definingFormula)
             return definingFormula

@@ -11,7 +11,7 @@ import qualified Data.IntMap.Strict as IM
 
 import Alice.Data.Formula
 import Alice.Data.Text.Block
-import Alice.Data.Text.Context (Context(..))
+import Alice.Data.Text.Context as Context (Context(..))
 import Alice.Export.Base
 
 dfgOut :: Bool -> Prover -> Int -> [Context] -> Context -> String
@@ -79,7 +79,7 @@ dfgSLS tsk  = sls "functions" fns . sls "predicates" pds
 
     pds = [ (s, a) | (True,  s, a) <- sms ]
     fns = [ (s, a) | (False, s, a) <- sms ]
-    sms = foldr (union . nub . dfgSyms True . cnForm) [] tsk
+    sms = foldr (union . nub . dfgSyms True . Context.formula) [] tsk
 
 dfgSyms :: Bool -> Formula -> [(Bool, String, Int)]
 dfgSyms s f | isEquality f   = concatMap (dfgSyms False) $ trArgs f

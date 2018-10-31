@@ -27,8 +27,10 @@ import Alice.Core.Reason
 import Alice.Core.Thesis
 import Alice.Data.Formula
 import Alice.Data.Instr
-import Alice.Data.Text.Block as Block
-import Alice.Data.Text.Context
+import Alice.Data.Text.Block (Block(Block), Text(..), Section(..))
+import qualified Alice.Data.Text.Block as Block
+import Alice.Data.Text.Context (Context(Context))
+import qualified Alice.Data.Text.Context as Context
 import Alice.Data.Rules
 import Alice.Prove.Normalize
 import Alice.Prove.MESON
@@ -75,26 +77,26 @@ verificationLoop state@VS {
   -- statistics and user communication
   incrementIntCounter Sections
   whenInstruction IBPsct False $ justIO $
-    outputForTheL NORMAL (position block) $ trimLine (showForm 0 block "")
+    outputForTheL NORMAL (Block.position block) $ trimLine (Block.showForm 0 block "")
   let newBranch = block : branch; contextBlock = Context f newBranch [] f
 
 
   fortifiedFormula <-
-    if   isTopLevel block
+    if   Block.isTopLevel block
     then return f
     else fillDef contextBlock -- check definitions and fortify terms
 
   let proofTask = generateProofTask kind declaredVariables fortifiedFormula
       freshThesis = Context proofTask newBranch [] proofTask
-      toBeProved = (needsProof block) && not (isTopLevel block)
+      toBeProved = (Block.needsProof block) && not (Block.isTopLevel block)
   proofBody <- askInstructionBin IBflat False >>= \p ->
     if p then return [] else return body
 
   whenInstruction IBPths False $ when (
     toBeProved && (not . null) proofBody &&
-    not (hasDEC $ cnForm freshThesis)) $
-      thesisLog NORMAL (position block) (length branch - 1) $
-      "thesis: " ++ show (cnForm freshThesis)
+    not (hasDEC $ Context.formula freshThesis)) $
+      thesisLog NORMAL (Block.position block) (length branch - 1) $
+      "thesis: " ++ show (Context.formula freshThesis)
 
 
   fortifiedProof <-
@@ -108,44 +110,44 @@ verificationLoop state@VS {
 
   whenInstruction IBPths False $ when (
     toBeProved && (not . null) proofBody &&
-    not (hasDEC $ cnForm freshThesis)) $
-      thesisLog NORMAL (position block) (length branch - 1) "thesis resolved"
+    not (hasDEC $ Context.formula freshThesis)) $
+      thesisLog NORMAL (Block.position block) (length branch - 1) "thesis resolved"
 
   -- in what follows we prepare the current block to contribute to the context,
   -- extract rules, definitions and compute the new thesis
   thesisSetting <- askInstructionBin IBthes True
   let newBlock = block {
-        formula = deleteInductionOrCase fortifiedFormula, 
-        body = fortifiedProof }
-      formulaImage = formulate newBlock
+        Block.formula = deleteInductionOrCase fortifiedFormula, 
+        Block.body = fortifiedProof }
+      formulaImage = Block.formulate newBlock
 
   -- extract definitions
   when (kind == Definition || kind == Signature) $ addDefinition formulaImage
   -- compute MESON rules
-  mesonRules  <- contras (isTopLevel block) (deTag formulaImage)
+  mesonRules  <- contras (Block.isTopLevel block) (deTag formulaImage)
   definitions <- askGlobalState definitions
   let ontoReduction =
         foldr1 And $ map (onto_reduce definitions) (assm_nf formulaImage)
       newContextBlock =
-        let reduction = if isTopLevel block then ontoReduction else formulaImage
+        let reduction = if Block.isTopLevel block then ontoReduction else formulaImage
         in  Context formulaImage newBranch mesonRules reduction
       newContext = newContextBlock : context
-  when (isTopLevel block) $ addGlobalContext newContextBlock
-  when (isTopLevel block) $ insertMRule mesonRules
+  when (Block.isTopLevel block) $ addGlobalContext newContextBlock
+  when (Block.isTopLevel block) $ insertMRule mesonRules
 
   let (newMotivation, hasChanged , newThesis) =
         if   thesisSetting
         then inferNewThesis definitions newContext thesis
-        else (needsProof block, False, thesis)
+        else (Block.needsProof block, False, thesis)
 
   whenInstruction IBPths False $ when (
     hasChanged && motivated && newMotivation &&
-    (not $ hasDEC $ formula $ head branch) ) $
-      thesisLog NORMAL (position block) (length branch - 2) $
-      "new thesis: " ++ show (cnForm newThesis)
+    (not $ hasDEC $ Block.formula $ head branch) ) $
+      thesisLog NORMAL (Block.position block) (length branch - 2) $
+      "new thesis: " ++ show (Context.formula newThesis)
 
   when (not newMotivation && motivated) $
-    thesisLog WARNING (position block) (length branch - 2) "unmotivated assumption"
+    thesisLog WARNING (Block.position block) (length branch - 2) "unmotivated assumption"
 
   let newRewriteRules = extractRewriteRule (head newContext) ++ rules
 
@@ -163,13 +165,13 @@ verificationLoop state@VS {
 
   -- if this block made the thesis unmotivated, we must discharge a composite
   -- (and possibly quite difficult) prove task
-  let finalThesis = Imp (compose $ TB newBlock : newBlocks) (cnForm thesis)
+  let finalThesis = Imp (Block.compose $ TB newBlock : newBlocks) (Context.formula thesis)
 
   -- notice that the following is only really executed if 
   -- motivated && not newMotivated == True
   verifyProof state {
     thesisMotivated = motivated && not newMotivation,
-    currentThesis = setForm thesis finalThesis, restText = [] }
+    currentThesis = Context.setForm thesis finalThesis, restText = [] }
 
   -- put everything together
   return $ TB newBlock : newBlocks
@@ -184,21 +186,21 @@ verificationLoop st@VS {
   = local (const st) $ whenInstruction IBprov True prove >> return []
   where
     prove =
-      if hasDEC (cnForm thesis) --computational reasoning
+      if hasDEC (Context.formula thesis) --computational reasoning
       then do
-        let logAction = reasonLog NORMAL (position block) $ "goal: " ++ text
-            block = cnHead thesis ; text = Block.text block
+        let logAction = reasonLog NORMAL (Block.position block) $ "goal: " ++ text
+            block = Context.head thesis ; text = Block.text block
         incrementIntCounter Equations ; whenInstruction IBPgls True logAction
         timer SimplifyTime (equalityReasoning thesis) <|> (
-          reasonLog WARNING (position block) "equation failed" >>
+          reasonLog WARNING (Block.position block) "equation failed" >>
           guardInstruction IBskip False >> incrementIntCounter FailedEquations)
       else do
-        let logAction = reasonLog NORMAL (position block) $ "goal: " ++ text
-            block = cnHead thesis ; text = Block.text block
-        unless (isTop . cnForm $ thesis) $ incrementIntCounter Goals
+        let logAction = reasonLog NORMAL (Block.position block) $ "goal: " ++ text
+            block = Context.head thesis ; text = Block.text block
+        unless (isTop . Context.formula $ thesis) $ incrementIntCounter Goals
         whenInstruction IBPgls True logAction
         proveThesis <|> (
-          reasonLog WARNING (position block) "goal failed" >>
+          reasonLog WARNING (Block.position block) "goal failed" >>
           guardInstruction IBskip False >>
           incrementIntCounter FailedGoals)
 
@@ -226,14 +228,14 @@ verifyProof state@VS {
   currentThesis  = thesis,
   currentContext = context,
   currentBranch  = branch}
-  = dive id context $ cnForm thesis
+  = dive id context $ Context.formula thesis
   where
     dive construct context (Imp (Tag DIH f) g)
       | closed f =
-          process (setForm thesis f : context) (construct g)
+          process (Context.setForm thesis f : context) (construct g)
     dive construct context (Imp (Tag DCH f) g)
       | closed f =
-          process (thesis {cnForm = f, cnRedu = f} : context) (construct g)
+          process (thesis {Context.formula = f, Context.reducedFormula = f} : context) (construct g)
     dive construct context (Imp f g)   = dive (construct . Imp f) context g
     dive construct context (All v f)   = dive (construct . All v) context f
     dive construct context (Tag tag f) = dive (construct . Tag tag) context f
@@ -244,11 +246,12 @@ verifyProof state@VS {
       definitions <- askGlobalState definitions
       let newRules = extractRewriteRule (head newContext) ++ rules
           (_, _, newThesis) =
-            inferNewThesis definitions newContext $ setForm thesis f
+            inferNewThesis definitions newContext $ Context.setForm thesis f
       whenInstruction IBPths False $ when (
-        noInductionOrCase (cnForm newThesis) && not (null $ restText state)) $
-          thesisLog NORMAL (position $ head $ cnBran $ head context) (length branch - 2) $
-          "new thesis " ++ show (cnForm newThesis)
+        noInductionOrCase (Context.formula newThesis) && not (null $ restText state)) $
+          thesisLog NORMAL 
+          (Block.position $ head $ Context.branch $ head context) (length branch - 2) $
+          "new thesis " ++ show (Context.formula newThesis)
       verifyProof state {
         rewriteRules = newRules, currentThesis = newThesis,
         currentContext = newContext}
@@ -288,12 +291,12 @@ procTI VS {
       reasonLog NORMAL noPos $ "current ruleset: " ++ "\n" ++ printrules (reverse rules)
     proc (InCom ICPths) = do
       let motivation = if motivated then "(mot): " else "(nmt): "
-      reasonLog NORMAL noPos $ "current thesis " ++ motivation ++ show (cnForm thesis)
+      reasonLog NORMAL noPos $ "current thesis " ++ motivation ++ show (Context.formula thesis)
     proc (InCom ICPcnt) =
       reasonLog NORMAL noPos $ "current context:\n" ++
         concatMap (\form -> "  " ++ show form ++ "\n") (reverse context)
     proc (InCom ICPflt) = do
-      let topLevelContext = filter cnTopL context
+      let topLevelContext = filter Context.isTopLevel context
       reasonLog NORMAL noPos $ "current filtered top-level context:\n" ++
         concatMap (\form -> "  " ++ show form ++ "\n") (reverse topLevelContext)
 
@@ -340,15 +343,15 @@ contextTI state@VS {
     proc (InPar IPscnt groupLink) = do
       newContext <- setContext groupLink
       verificationLoop state {
-        currentContext = takeWhile cnLowL context ++ newContext}
+        currentContext = takeWhile Context.isLowLevel context ++ newContext}
     proc (InPar IPdcnt groupLink) = do
       link <- getLink groupLink
       verificationLoop state {
-        currentContext = filter (not . flip elem link . cnName) context }
+        currentContext = filter (not . flip elem link . Context.name) context }
     proc (InPar IPacnt groupLink) = do
       newContext <- setContext groupLink
       verificationLoop state {
-        currentContext = unionBy ((==) `on` cnName) newContext context}
+        currentContext = unionBy ((==) `on` Context.name) newContext context}
 {- the function definition must include the continuation with verificationLoop
 since it influences the verification state (procTI only influences the global
 state) -}

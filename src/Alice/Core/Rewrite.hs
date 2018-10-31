@@ -11,8 +11,9 @@ module Alice.Core.Rewrite (equalityReasoning) where
 import Alice.Core.Position
 import Alice.Data.Formula
 import Alice.Data.Rules
-import Alice.Data.Text.Context
-import Alice.Data.Text.Block as Block
+import Alice.Data.Text.Context (Context)
+import qualified Alice.Data.Text.Context as Context
+import Alice.Data.Text.Block as Block (body, link, position)
 import Alice.Core.Base
 import Alice.Core.Message
 import Alice.Data.Instr
@@ -153,10 +154,10 @@ equalityReasoning thesis
   | (not . null) link = getLinkedRules link >>= rewrite equation
   | otherwise = rules >>= rewrite equation -- if no link is given -> all rules
   where
-    equation = strip $ cnForm thesis
-    link = cnLink thesis
+    equation = strip $ Context.formula thesis
+    link = Context.link thesis
     -- body is true for the EC section containing the equlity chain
-    body = (not . null) $ Block.body . head . cnBran $ thesis
+    body = (not . null) $ Block.body . head . Context.branch $ thesis
 
 
 getLinkedRules :: [String] -> VM [Rule]
@@ -206,7 +207,7 @@ dischargeConditions verbositySetting conditions =
       | otherwise = (do
           log (header lefts hardConditions ++ thead (rights hardConditions))
           thesis <- thesis
-          mapM_ (reason . setForm (wipeLink thesis)) (lefts hardConditions)
+          mapM_ (reason . Context.setForm (wipeLink thesis)) (lefts hardConditions)
           cleanup) <|> (cleanup >> mzero)
 
     setup = do
@@ -227,11 +228,11 @@ dischargeConditions verbositySetting conditions =
       else unwords . intersperse "," . map show $ reverse conditions
     log msg =
       when verbositySetting $ thesis >>=
-        flip (simpLog NORMAL . position . cnHead) msg
+        flip (simpLog NORMAL . position . Context.head) msg
 
     wipeLink thesis =
-      let block:restBranch = cnBran thesis
-      in  thesis {cnBran = block {link = []} : restBranch}
+      let block:restBranch = Context.branch thesis
+      in  thesis {Context.branch = block {link = []} : restBranch}
 
     trivialityCheck g =
       if   trivialByEvidence g

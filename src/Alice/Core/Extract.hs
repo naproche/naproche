@@ -15,7 +15,8 @@ module Alice.Core.Extract (
 import Alice.Data.Formula
 import Alice.Data.Definition
 import Alice.Data.Evaluation
-import Alice.Data.Text.Context (Context(cnForm), cnName)
+import Alice.Data.Text.Context (Context)
+import qualified Alice.Data.Text.Context as Context (formula, name)
 import Alice.Data.Rules
 import Alice.Core.Base
 import Alice.Core.Reduction
@@ -111,7 +112,7 @@ closeEvidence dfs def@DE{dfEvid = evidence} = def { dfEvid = newEvidence }
 
 extractRewriteRule :: Context -> [Rule]
 extractRewriteRule c =
-  map (\rl -> rl {rlLabl = cnName c}) $ dive 0 [] $ cnForm c
+  map (\rl -> rl {rlLabl = Context.name c}) $ dive 0 [] $ Context.formula c
   where
     -- if DHD is reached, discard all collected conditions
     dive n gs (All _ (Iff (Tag DHD Trm {trName = "=", trArgs = [_,t]}) f )) =

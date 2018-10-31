@@ -17,8 +17,9 @@ import Control.Monad.Reader
 
 import Alice.Data.Formula
 import Alice.Data.Instr
-import Alice.Data.Text.Context
-import Alice.Data.Text.Block (link, position)
+import Alice.Data.Text.Context (Context)
+import qualified Alice.Data.Text.Context as Context
+import qualified Alice.Data.Text.Block as Block (link, position)
 import Alice.Data.Definition
 import Alice.Core.Base
 import Alice.Core.Message
@@ -32,16 +33,16 @@ import qualified Alice.Data.Structures.DisTree as DT
 
 {- check definitions and fortify terms with evidences in a formula -}
 fillDef :: Context -> VM Formula
-fillDef context = fill True False [] (Just True) 0 $ cnForm context
+fillDef context = fill True False [] (Just True) 0 $ Context.formula context
   where
     fill isPredicat isNewWord localContext sign n (Tag tag f)
       | tag == DHD = -- newly introduced symbol
           fmap (Tag DHD) $ fill isPredicat True localContext sign n f
       | fnTag tag  = -- macros in function delcarations
-          fmap cnForm thesis >>= getMacro context tag
+          fmap Context.formula thesis >>= getMacro context tag
       | otherwise  =  -- ignore every other tag
           fmap (Tag tag) $ fill isPredicat isNewWord localContext sign n f
-    fill _ _ _ _ _ t  | isThesis t = thesis >>= return . cnForm
+    fill _ _ _ _ _ t  | isThesis t = thesis >>= return . Context.formula
     fill _ _ localContext _ _ v | isVar v = do
       userInfoSetting <- askInstructionBin IBinfo True
       newContext      <- cnRaise context localContext
@@ -63,8 +64,8 @@ fillDef context = fill True False [] (Just True) 0 $ cnForm context
       | True        = return  term
 
 cnRaise :: Context -> [Formula] -> VM [Context]
-cnRaise thisBlock local = 
-  asks currentContext >>=  return . flip (foldr $ (:) . setForm thisBlock) local
+cnRaise thisBlock local = asks currentContext >>= 
+  return . flip (foldr $ (:) . Context.setForm thisBlock) local
 
 
 
@@ -77,7 +78,7 @@ setDef isNewWord context term@Trm{trName = t, trId = tId} =
     <|>  out >> mzero ) -- failure message
   where
     out =
-      reasonLog ERROR (position (cnHead context)) $
+      reasonLog ERROR (Block.position (Context.head context)) $
         "unrecognized: " ++ showsPrec 2 term ""
 
 
@@ -121,7 +122,7 @@ testDef context term (guards, fortifiedTerm) = do
       | otherwise =
           (incrementIntCounter HardChecks >>
           defLog (header lefts hardGuards ++ thead (rights hardGuards)) >>
-          mapM_ (reason . setForm (wipeLink context)) (lefts hardGuards) >>
+          mapM_ (reason . Context.setForm (wipeLink context)) (lefts hardGuards) >>
           incrementIntCounter SuccessfulChecks >>
           cleanup) 
           <|> (cleanup >> mzero)
@@ -138,8 +139,8 @@ testDef context term (guards, fortifiedTerm) = do
       dropInstruction $ IdBin IBOnto
 
     wipeLink context =
-      let block:restBranch = cnBran context
-      in  context {cnBran = block {link = []} : restBranch}
+      let block:restBranch = Context.branch context
+      in  context {Context.branch = block {Block.link = []} : restBranch}
 
 
     header select guards =
@@ -148,7 +149,7 @@ testDef context term (guards, fortifiedTerm) = do
     format guards = if null guards then " - " else unwords . map show $ guards
     defLog =
       whenInstruction IBPchk False .
-        reasonLog NORMAL (position (head $ cnBran context))
+        reasonLog NORMAL (Block.position (head $ Context.branch context))
 
 
 
@@ -165,7 +166,7 @@ testDef context term (guards, fortifiedTerm) = do
 typings :: (MonadPlus m) => [Context] -> Formula -> m [Formula]
 typings [] _ = mzero
 typings (context:restContext) term = 
-  albetDive (cnForm context) `mplus` typings restContext term
+  albetDive (Context.formula context) `mplus` typings restContext term
   where
     albetDive = dive . albet
     -- when we encouter a literal, compare its arguments with term
@@ -202,6 +203,6 @@ typings (context:restContext) term =
 setInfo :: Formula -> VM Formula
 setInfo t = do
   context <- asks currentContext
-  let lowlevelContext  = takeWhile cnLowL context
+  let lowlevelContext  = takeWhile Context.isLowLevel context
       lowlevelEvidence = fromMaybe [] $ typings lowlevelContext t
   return $ t {trInfo = trInfo t ++ lowlevelEvidence}

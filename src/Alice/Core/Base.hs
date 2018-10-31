@@ -51,8 +51,9 @@ import Control.Monad.Reader
 
 import Alice.Data.Formula
 import Alice.Data.Instr
-import Alice.Data.Text.Block (Block(..), Text, file)
-import Alice.Data.Text.Context
+import Alice.Data.Text.Block (Block, Text)
+import Alice.Data.Text.Context (Context, MRule(..))
+import qualified Alice.Data.Text.Context as Context (name)
 import Alice.Data.Definition
 import Alice.Data.Rules (Rule)
 import Alice.Data.Evaluation
@@ -290,7 +291,7 @@ retrieveContext names = do
       reasonLog WARNING noPos $
         "Could not find sections " ++ unwords (map show $ Set.elems unfoundSections)
     retrieve [] = return []
-    retrieve (context:restContext) = let name = cnName context in
+    retrieve (context:restContext) = let name = Context.name context in
       gets (Set.member name) >>= \p -> if p
       then modify (Set.delete name) >> fmap (context:) (retrieve restContext)
       else retrieve restContext
