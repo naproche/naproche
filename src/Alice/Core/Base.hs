@@ -54,7 +54,8 @@ import Alice.Data.Instr
 import Alice.Data.Text.Block (Block, Text)
 import Alice.Data.Text.Context (Context, MRule(..))
 import qualified Alice.Data.Text.Context as Context (name)
-import Alice.Data.Definition
+import Alice.Data.Definition (Definitions, DefEntry(DE), DefType(..))
+import qualified Alice.Data.Definition as Definition
 import Alice.Data.Rules (Rule)
 import Alice.Data.Evaluation
 import Alice.Export.Base
@@ -331,9 +332,9 @@ functionApplication =
 defForm :: IM.IntMap DefEntry -> Formula -> Maybe Formula
 defForm definitions term = do
   def <- IM.lookup (trId term) definitions
-  guard $ dfSign def
-  sb <- match (dfTerm def) term
-  return $ sb $ dfForm def
+  guard $ Definition.isDefinition def
+  sb <- match (Definition.term def) term
+  return $ sb $ Definition.formula def
 
 
 -- retrieve definition of a symbol (monadic)

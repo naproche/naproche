@@ -316,9 +316,9 @@ unfoldAtomic sign f = do
       let definingFormula = maybeToList $ do
             id <- tryToGetID f; def <- IM.lookup id definitions;
             -- only unfold a definitions or (a sigext in a positive position)
-            guard (sign || Definition.dfSign def)
-            sb <- match (Definition.dfTerm def) f
-            let definingFormula = replace (Tag DMK g) ThisT $ sb $ Definition.dfForm def
+            guard (sign || Definition.isDefinition def)
+            sb <- match (Definition.term def) f
+            let definingFormula = replace (Tag DMK g) ThisT $ sb $ Definition.formula def
         -- substitute the (marked) term
             guard (not . isTop $ definingFormula)
             return definingFormula

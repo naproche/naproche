@@ -20,7 +20,7 @@ import Alice.Data.Instr
 import Alice.Data.Text.Context (Context)
 import qualified Alice.Data.Text.Context as Context
 import qualified Alice.Data.Text.Block as Block (link, position)
-import Alice.Data.Definition
+import qualified Alice.Data.Definition as Definition
 import Alice.Core.Base
 import Alice.Core.Message
 import Alice.Core.Reason
@@ -91,9 +91,9 @@ type DefDuo = (Guards, FortifiedTerm)
 findDef :: Formula -> VM DefDuo
 findDef term@Trm{trArgs = tArgs} = do
   def <- getDef term
-  sb  <- match (dfTerm def) term
-  let guards   = map (infoSub sb) $ dfGrds def -- definition's guards
-      evidence = map sb $ dfEvid def -- definitional evidence
+  sb  <- match (Definition.term def) term
+  let guards   = map (infoSub sb) $ Definition.guards def -- definition's guards
+      evidence = map sb $ Definition.evidence def -- definitional evidence
       newTerm  = term { trInfo = evidence } -- fortified term
   return (guards, newTerm)
 

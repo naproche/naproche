@@ -13,7 +13,8 @@ module Alice.Core.Extract (
 ) where
 
 import Alice.Data.Formula
-import Alice.Data.Definition
+import Alice.Data.Definition (DefEntry(DE), Definitions, DefType(..))
+import qualified Alice.Data.Definition as Definition
 import Alice.Data.Evaluation
 import Alice.Data.Text.Context (Context)
 import qualified Alice.Data.Text.Context as Context (formula, name)
@@ -40,7 +41,7 @@ addDefinition f = do
   defs <- askGlobalState definitions; let newDef = extractDefinition defs f
   updateGlobalState (\rs -> rs {definitions = add newDef (definitions rs)})
   where
-    add df@DE {dfTerm = t} = IM.insert (trId t) df
+    add df@DE {Definition.term = t} = IM.insert (trId t) df
 
 {- Extract definition from a formula. Evidence closure and type-likes are
 computed afterwards -}
@@ -61,10 +62,10 @@ extractDefinition defs =
     dive guards n (All _ f) = dive guards (succ n) $ inst ('?':show n) f
     dive guards n (Imp g f) = dive (guards ++ deAnd g) n f
     makeDefinition (guards, formula, kind, term) = DE {
-      dfGrds = guards, dfForm = formula,
-      dfType = kind, dfTerm = term,
-      dfEvid = extractEvidences term formula,
-      dfTplk = []}
+      Definition.guards = guards, Definition.formula = formula,
+      Definition.kind = kind, Definition.term = term,
+      Definition.evidence = extractEvidences term formula,
+      Definition.typeLikes = []}
 
 
 {- get evidence for a defined term from a definitional formula -}
@@ -77,7 +78,7 @@ extractEvidences t =
 
 {- computes and adds type-likes for ontological reduction to a definition.-}
 addTypeLikes :: Definitions -> DefEntry -> DefEntry
-addTypeLikes dfs def = def {dfTplk = tp_likes $ dfGrds def}
+addTypeLikes dfs def = def {Definition.typeLikes = tp_likes $ Definition.guards def}
   where
     tp_likes fs =
       rn_classes [] $
@@ -97,13 +98,13 @@ addTypeLikes dfs def = def {dfTplk = tp_likes $ dfGrds def}
 if we have "natural c= rational c= real" then we do not only know that
 a natural number is rational, but also add the info that it is real.-}
 closeEvidence :: Definitions -> DefEntry -> DefEntry
-closeEvidence dfs def@DE{dfEvid = evidence} = def { dfEvid = newEvidence }
+closeEvidence dfs def@DE{Definition.evidence = evidence} = def { Definition.evidence = newEvidence }
   where
     newEvidence = nubBy twins $ evidence ++ concatMap defEvidence evidence
     defEvidence t@Trm {trId = n} =
       let def = fromJust $ IM.lookup n dfs
-          sb  = fromJust $ match (dfTerm def) $ fromTo '?' 'u' t
-      in  map (fromTo 'u' '?' . sb) $ dfEvid def
+          sb  = fromJust $ match (Definition.term def) $ fromTo '?' 'u' t
+      in  map (fromTo 'u' '?' . sb) $ Definition.evidence def
     defEvidence _ = []
 
 

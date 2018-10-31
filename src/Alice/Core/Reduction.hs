@@ -7,7 +7,8 @@ Ontological reduction.
 module Alice.Core.Reduction where
 
 import Alice.Data.Formula
-import Alice.Data.Definition
+import Alice.Data.Definition (DefEntry(DE))
+import qualified Alice.Data.Definition as Definition
 import Alice.Core.Base
 import Alice.Prove.Normalize
 
@@ -61,10 +62,10 @@ elim_f n dfs f g = dive (free_st f) n g -- dive moves through the formula accord
     dive_t _ v@Var{} = True
     dive_t _ Trm {trName = 't':'s':'k':_} = False -- nothing is eliminable for a skolem constant
     dive_t vs t@Trm {trId = m, trArgs = ts} =
-      (if not . Set.null $ Set.intersection vs $ free_Top t then                -- if f has a variable of t on top level
-      let df = fromJust $ IM.lookup m dfs; sb = fromJust $ match (dfTerm df) t  -- then check if f is eliminable for t
-       in atom_elim sb (invImage sb (dfTerm df) vs) (dfTplk df) f vs            -- with atom_elim
-      else True) && allF (dive_t vs) t -- check that f is elimnable for every subterm of t that has a variable of f on top level
+      (if not . Set.null $ Set.intersection vs $ free_Top t then
+      let df = fromJust $ IM.lookup m dfs; sb = fromJust $ match (Definition.term df) t
+       in atom_elim sb (invImage sb (Definition.term df) vs) (Definition.typeLikes df) f vs
+      else True) && allF (dive_t vs) t
 
 {-form the inverse image of the variables of f under the substitution sb -}
 invImage :: (Formula -> Formula) -> Formula -> Set.Set String -> Set.Set String
