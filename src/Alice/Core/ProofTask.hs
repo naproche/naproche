@@ -42,7 +42,7 @@ setDcl (And f _)         = trId f == setId
 setDcl _ = error "Alice.Core.ProofTask.setDcl: misformed definition"
 
 setTask :: Formula -> Formula
-setTask (And _ (All x (Iff _ (Tag DRP f)))) = replacement x f
+setTask (And _ (All x (Iff _ (Tag Replacement f)))) = replacement x f
 setTask (And _ (All _ (Iff _ f))) = separation f
 setTask _ = error "Alice.Core.ProofTask.setTask: misformed definition"
 
@@ -80,18 +80,18 @@ funTask h@(And (And _ g) f) =
 funTask _ = error "Alice.Core.ProofTask.funTask: misformed definition"
 
 domain :: Formula -> Formula
-domain (Tag DDM (All _ (Iff _ f))) = Tag FDM $ separation f
-domain (Tag DDM Trm{trName = "=", trArgs = [_,t]}) = Tag FDM $ zSet t
+domain (Tag Domain (All _ (Iff _ f))) = Tag DomainTask $ separation f
+domain (Tag Domain Trm{trName = "=", trArgs = [_,t]}) = Tag DomainTask $ zSet t
 domain _ = error "Alice.Core.ProofTask.domain: misformed definition"
 
 
 {- extract choice tasks -}
 choices :: Formula -> Formula
-choices = Tag FCH . dive
+choices = Tag ChoiceTask . dive
   where
-    dive (Tag DEV _) = Top
+    dive (Tag Evaluation _) = Top
     dive (Tag _ f) = dive f
-    dive (Exi x (And (Tag DEF f) g)) =
+    dive (Exi x (And (Tag Defined f) g)) =
       (generateProofTask LowDefinition [] $ dec $ inst x $ f) `blAnd`
       (dec $ inst x $ f `blImp` dive g)
     dive (All x f) =  blAll x $ dive f
@@ -102,7 +102,7 @@ choices = Tag FCH . dive
 
 {- extract existence task -}
 existence :: Formula -> Formula
-existence  = Tag FEX . dive 0
+existence  = Tag ExistenceTask . dive 0
   where
     dive n (All x f) = let nn = 'c':show n in blAll nn $ dive (n + 1)$ inst nn f
     dive n (Imp f g) = blImp f $ dive n g
@@ -127,7 +127,7 @@ uniqueness = dive
   quantified formula -}
 describe :: Formula -> Formula
 describe (And f g) = describe f `Or` describe g
-describe (Tag DCD (And f g)) = And f $ deExi g
+describe (Tag Condition (And f g)) = And f $ deExi g
 describe f = deExi f
 
 deExi (Exi x (And f g)) = dec $ And (inst x f) (deExi $ inst x g)
@@ -136,15 +136,15 @@ deExi f = f
 {- like 'describe' above, but choices are assumed instead of stated -}
 describe_exi :: Formula -> Formula
 describe_exi (And f g) = describe_exi f `Or` describe_exi g
-describe_exi (Tag DCD (And f g)) = And f $ impExi g
+describe_exi (Tag Condition (And f g)) = And f $ impExi g
 describe_exi f = impExi f
 
 impExi (Exi x (And f g)) = dec $ Imp (inst x f) (impExi $ inst x g)
 impExi f = f
 
-{- a certain normalization of the term marked with DEV -}
+{- a certain normalization of the term marked with Evaluation -}
 devReplace :: Formula -> Formula -> Formula
-devReplace y (Tag DEV eq@Trm {trName = "=", trArgs = [_, t]}) =
+devReplace y (Tag Evaluation eq@Trm {trName = "=", trArgs = [_, t]}) =
   eq {trArgs = [y,t]}
 devReplace y f = mapF (devReplace y) f
 
@@ -178,8 +178,8 @@ getMacro cx tg = fmap (Tag tg . pd ) . either err return . dive
 
     err s = reasonLog WARNING (Block.position (Context.head cx)) s >> return Top
 
-    pd (Imp f g) = Imp (Tag DIH f) g -- auto instantiate quantified variable
+    pd (Imp f g) = Imp (Tag InductionHypothesis f) g -- auto instantiate quantified variable
     pd f = f
 
-    mcr FDM = "domain"; mcr FEX = "existence"
-    mcr FUQ = "uniqueness"; mcr FCH = "choices"
+    mcr DomainTask = "domain"; mcr ExistenceTask = "existence"
+    mcr UniquenessTask = "uniqueness"; mcr ChoiceTask = "choices"

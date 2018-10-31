@@ -36,8 +36,8 @@ fillDef :: Context -> VM Formula
 fillDef context = fill True False [] (Just True) 0 $ Context.formula context
   where
     fill isPredicat isNewWord localContext sign n (Tag tag f)
-      | tag == DHD = -- newly introduced symbol
-          fmap (Tag DHD) $ fill isPredicat True localContext sign n f
+      | tag == HeadTerm = -- newly introduced symbol
+          fmap (Tag HeadTerm) $ fill isPredicat True localContext sign n f
       | fnTag tag  = -- macros in function delcarations
           fmap Context.formula thesis >>= getMacro context tag
       | otherwise  =  -- ignore every other tag

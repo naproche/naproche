@@ -51,13 +51,13 @@ extractDefinition :: Definitions -> Formula -> DefEntry
 extractDefinition defs =
   closeEvidence defs . addTypeLikes defs . makeDefinition . dive [] 0
   where
-    dive guards _ (All _ (Iff (Tag DHD Trm {trName = "=", trArgs = [_, t]}) f))
+    dive guards _ (All _ (Iff (Tag HeadTerm Trm {trName = "=", trArgs = [_, t]}) f))
       = (guards, instWith ThisT f, Definition, t) -- function definition
-    dive guards _ (All _ (Imp (Tag DHD Trm {trName = "=", trArgs = [_, t]}) f))
+    dive guards _ (All _ (Imp (Tag HeadTerm Trm {trName = "=", trArgs = [_, t]}) f))
       = (guards, instWith ThisT f, Signature, t)  -- function sigext
-    dive guards _ (Iff (Tag DHD t) f)
+    dive guards _ (Iff (Tag HeadTerm t) f)
       = (guards, f, Definition, t)                -- predicate definition
-    dive guards _ (Imp (Tag DHD t) f)
+    dive guards _ (Imp (Tag HeadTerm t) f)
       = (guards, f, Signature,t)                  -- predicate sigext
 
     -- make a universal quant matchable
@@ -117,10 +117,10 @@ extractRewriteRule :: Context -> [Rule]
 extractRewriteRule c =
   map (\rl -> rl {Rule.label = Context.name c}) $ dive 0 [] $ Context.formula c
   where
-    -- if DHD is reached, discard all collected conditions
-    dive n gs (All _ (Iff (Tag DHD Trm {trName = "=", trArgs = [_,t]}) f )) =
+    -- if HeadTerm is reached, discard all collected conditions
+    dive n gs (All _ (Iff (Tag HeadTerm Trm {trName = "=", trArgs = [_,t]}) f )) =
       dive n gs $ subst t "" $ inst "" f
-    dive n gs (All _ (Imp (Tag DHD Trm {trName = "=", trArgs = [_, t]}) f)) =
+    dive n gs (All _ (Imp (Tag HeadTerm Trm {trName = "=", trArgs = [_, t]}) f)) =
       dive n gs $ subst t "" $ inst "" f
     -- make universal quantifier matchable
     dive n gs (All _ f) = let nn = '?' : show n in dive (succ n) gs $ inst nn f
@@ -143,7 +143,7 @@ addEvaluation evaluations f =
 extractEvaluation :: DT.DisTree Evaluation -> Formula -> [Evaluation]
 extractEvaluation dt = flip runReaderT (0, dt) . dive
   where
-    dive (All _ (Iff (Tag DHD Trm {trName = "=", trArgs = [_, t]}) f))
+    dive (All _ (Iff (Tag HeadTerm Trm {trName = "=", trArgs = [_, t]}) f))
       = extractEv id [] $ instWith t f
     dive (All _ f) = freshV dive f
     dive (Imp f g) = dive g
@@ -157,20 +157,20 @@ freshV fn f = do -- generate fresh variables
 
 extractFunctionEval :: (Formula -> Formula) -> [Formula] -> Formula
   -> ReaderT (Int, DT.DisTree Evaluation) [] Evaluation
-extractFunctionEval c gs (And g@(Tag DDM _ ) h) =
+extractFunctionEval c gs (And g@(Tag Domain _ ) h) =
   extractSetEval c gs g `mplus` extractFunctionEval c gs h
 extractFunctionEval c gs (And f g) = extractFunctionEval c gs g
 extractFunctionEval c gs f = dive c gs f
   where
     dive c gs (Imp _ g) = dive c gs g -- ignore ontological assumptions
-    dive c gs (Tag DCD (Imp f g)) = dive c (f:gs) g --but add case distinctions
+    dive c gs (Tag Condition (Imp f g)) = dive c (f:gs) g --but add case distinctions
     dive c gs (All _ f) = freshV (dive c gs) f
     dive c gs (And f g) = dive c gs f `mplus` dive c gs g
-    dive c gs (Tag DEV f@Trm{ trName = "=", trArgs = [tr,vl]} ) =
+    dive c gs (Tag Evaluation f@Trm{ trName = "=", trArgs = [tr,vl]} ) =
       let nf = c f {trArgs = [ThisT, vl] }
       in  return $ EV tr nf nf gs
-    dive c gs (Exi x (And (Tag DEF f)
-      (Tag DEV Trm {trName = "=", trArgs = [tr, Ind n]})))
+    dive c gs (Exi x (And (Tag Defined f)
+      (Tag Evaluation Trm {trName = "=", trArgs = [tr, Ind n]})))
         | n == 0 = extractEv c gs $ dec $ instWith tr f
     dive c gs (Exi x (And f g)) = dive (c . zExi x . And f) gs $ inst x g
     dive _ _ _ = mzero
@@ -185,7 +185,7 @@ extractSetEval c gs (Tag _ f) = extractSetEval c gs f
 extractSetEval c gs (All _ (Iff g@Trm{trArgs = [_,t]} f )) | isElem g = do
   (n, evals) <- ask
   let nm = '?':show n; nf = simplifyElementCondition evals $ strip $ inst nm f
-  return $ EV (zElem (zVar nm) t) (mkPos $ c $ Tag DEV nf)(c nf) gs
+  return $ EV (zElem (zVar nm) t) (mkPos $ c $ Tag Evaluation nf)(c nf) gs
 extractSetEval _ _ f = mzero
 
 
@@ -204,7 +204,7 @@ simplifyElementCondition evals = dive
 mkPos = dive
   where
     dive (Exi x f)   = All x $ dive f
-    dive (Tag DEV f) = f
+    dive (Tag Evaluation f) = f
     dive (And f g) = Imp f $ dive g
 
 

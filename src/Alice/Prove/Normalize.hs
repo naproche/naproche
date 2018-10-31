@@ -50,8 +50,8 @@ pushdown (Not (Or  f g)) = And (Not f) (Not g)
 pushdown (Not (Not f))   = pushdown f
 pushdown (Not Bot)       = Top
 pushdown (Not Top)       = Bot
-pushdown (All _ (Imp (Tag DHD Trm {trName = "=", trArgs = [_,t]} ) f))   = pushdown $ dec $ subst t "" $ inst "" f
-pushdown (All _ (Iff (Tag DHD eq@Trm {trName = "=", trArgs = [_,t]}) f)) = And (All "" (Or eq (Not f))) $ dec $ subst t "" $ inst "" f
+pushdown (All _ (Imp (Tag HeadTerm Trm {trName = "=", trArgs = [_,t]} ) f))   = pushdown $ dec $ subst t "" $ inst "" f
+pushdown (All _ (Iff (Tag HeadTerm eq@Trm {trName = "=", trArgs = [_,t]}) f)) = And (All "" (Or eq (Not f))) $ dec $ subst t "" $ inst "" f
 pushdown f               = f
 
 

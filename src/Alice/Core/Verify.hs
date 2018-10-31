@@ -26,6 +26,7 @@ import Alice.Core.Message
 import Alice.Core.Reason
 import Alice.Core.Thesis
 import Alice.Data.Formula
+import qualified Alice.Data.Tag as Tag
 import Alice.Data.Instr
 import Alice.Data.Text.Block (Block(Block), Text(..), Section(..))
 import qualified Alice.Data.Text.Block as Block
@@ -231,10 +232,10 @@ verifyProof state@VS {
   currentBranch  = branch}
   = dive id context $ Context.formula thesis
   where
-    dive construct context (Imp (Tag DIH f) g)
+    dive construct context (Imp (Tag InductionHypothesis f) g)
       | closed f =
           process (Context.setForm thesis f : context) (construct g)
-    dive construct context (Imp (Tag DCH f) g)
+    dive construct context (Imp (Tag Tag.CaseHypothesis f) g)
       | closed f =
           process (thesis {Context.formula = f, Context.reducedFormula = f} : context) (construct g)
     dive construct context (Imp f g)   = dive (construct . Imp f) context g
@@ -259,8 +260,8 @@ verifyProof state@VS {
 
 {- checks that a formula containt neither induction nor case hyothesis -}
 noInductionOrCase :: Formula -> Bool
-noInductionOrCase (Tag DIH _) = False
-noInductionOrCase (Tag DCH _) = False
+noInductionOrCase (Tag InductionHypothesis _) = False
+noInductionOrCase (Tag Tag.CaseHypothesis _) = False
 noInductionOrCase f = allF noInductionOrCase f
 
 
@@ -268,8 +269,8 @@ noInductionOrCase f = allF noInductionOrCase f
 deleteInductionOrCase :: Formula -> Formula
 deleteInductionOrCase = dive id
   where
-    dive c (Imp (Tag DIH _) f) = c f
-    dive c (Imp (Tag DCH f) _) = c $ Not f
+    dive c (Imp (Tag InductionHypothesis _) f) = c f
+    dive c (Imp (Tag Tag.CaseHypothesis f) _) = c $ Not f
     dive c (Imp f g) = dive (c . Imp f) g
     dive c (All v f) = dive (c . All v) f
     dive c f = c f

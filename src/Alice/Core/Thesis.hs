@@ -223,7 +223,7 @@ generateVariations definitions = pass [] (Just True) 0
         dive h@(Imp f g) = case sign of
           Just False  -> Imp f <$> pass (f:localContext) sign n g
           _           -> roundThrough h
-        dive (Tag DMK f) = return f
+        dive (Tag GenericMark f) = return f
         dive h           = roundThrough h
 
         liberateVariableIn f = generateInstantiations f >>= dive
@@ -234,7 +234,7 @@ generateVariations definitions = pass [] (Just True) 0
 {- mark symbols that are recursively defined in their defining formula, so that
    the definition is not infinitely expanded -}
 markRecursive n t@Trm{trId = m} 
-  | n == m = Tag DMK t
+  | n == m = Tag GenericMark t
   | otherwise = t
 markRecursive n f = mapF (markRecursive n) f
 

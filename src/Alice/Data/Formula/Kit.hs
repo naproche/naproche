@@ -191,7 +191,7 @@ isVar (Var _ _) = True; isVar _ = False
 isTrm Trm{} = True; isTrm _ = False
 isEquality t@Trm{} = trId t == equalityId; isEquality _ = False
 isThesis t@Trm{} = trId t == thesisId; isThesis _ = False
-hasDEC (Tag DEC _) = True; hasDEC _ = False
+hasDEC (Tag EqualityChain _) = True; hasDEC _ = False
 isExi (Exi _ _) = True; isExi _ = False
 isAll (All _ _) = True; isAll _ = False
 isConst t@Trm{} = null $ trArgs t; isConst Var{} = True; isConst _ = False

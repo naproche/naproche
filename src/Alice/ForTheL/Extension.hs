@@ -39,14 +39,14 @@ sigExtend = sig_predicat -|- sig_notion
 
 def_predicat = do
   (f, g) <- wellFormedCheck prdVars defn
-  return $ Iff (Tag DHD f) g
+  return $ Iff (Tag HeadTerm f) g
   where
     defn  = do f <- new_predicat; equiv; g <- statement; return (f,g)
     equiv = iff <|> symbol "<=>"
 
 def_notion = do
   ((n,h),u) <- wellFormedCheck (ntnVars . fst) defn
-  return $ zAll u $ Iff (Tag DHD n) h
+  return $ zAll u $ Iff (Tag HeadTerm n) h
   where
     defn = do
       (n, u) <- new_notion; isOrEq; (q, f) <- anotion
@@ -62,7 +62,7 @@ def_notion = do
 
 sig_predicat = do
   (f,g) <- wellFormedCheck prdVars sig
-  return $ Imp (Tag DHD f) g
+  return $ Imp (Tag HeadTerm f) g
   where
     sig    = do f <- new_predicat; imp; g <- statement </> noInfo; return (f,g)
     imp    = wd_token "is" <|> wd_token "implies" <|> symbol "=>"
@@ -71,7 +71,7 @@ sig_predicat = do
 
 sig_notion = do
   ((n,h),u) <- wellFormedCheck (ntnVars . fst) sig
-  return $ zAll u $ Imp (Tag DHD n) h
+  return $ zAll u $ Imp (Tag HeadTerm n) h
   where
     sig = do
       (n, u) <- new_notion; is; (q, f) <- anotion -|- noInfo

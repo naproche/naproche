@@ -118,42 +118,42 @@ isA_predicat = label "isA predicat" $
     ntn     = liftM (uncurry ($)) anotion
     not_ntn = do
       wd_token "not"; (q, f) <- anotion; let unfinished = dig f [zHole]
-      optLLx (q $ Not f) $ liftM (q. Tag DIG . Not) unfinished
+      optLLx (q $ Not f) $ liftM (q. Tag Dig . Not) unfinished
 
 has_predicat = label "has predicat" $
   no_possessive <|> possessive
   where
     possessive = art >> common <|> unary
-    unary      = liftM (Tag DIG . multExi) $ possess `sepBy` (comma >> art)
+    unary      = liftM (Tag Dig . multExi) $ possess `sepBy` (comma >> art)
     common     = wd_token "common" >> (liftM multExi $ (liftM digadd possess) `sepBy` comma)
 
     no_possessive = n_unary -|- n_common
     n_unary  = do
       wd_token "no"; (q, f, v) <- possess;
-      return $ q . Tag DIG . Not $ foldr mbExi f v
+      return $ q . Tag Dig . Not $ foldr mbExi f v
     n_common = do
       wd_token "no"; wd_token "common"; (q, f, v) <- possess
-      return $ q . Not $ foldr mbExi (Tag DIG f) v
-      -- take a closer look at this later.. why is (Tag DIG) *inside* important?
+      return $ q . Not $ foldr mbExi (Tag Dig f) v
+      -- take a closer look at this later.. why is (Tag Dig) *inside* important?
 
 
 --- predicat parsing
 
 predicat p = (wd_token "not" >> negative) <|> positive
   where
-    positive = do (q, f) <- p term; return $ q . Tag DIG $ f
-    negative = do (q, f) <- p term; return $ q . Tag DIG . Not $ f
+    positive = do (q, f) <- p term; return $ q . Tag Dig $ f
+    negative = do (q, f) <- p term; return $ q . Tag Dig . Not $ f
 
 m_predicat p = (wd_token "not" >> m_negative) <|> m_positive
   where
     m_positive = (wd_token "pairwise" >> p_positive) <|> s_positive
     -- we distinguish between *separate* and *pairwise*
-    s_positive = do (q, f) <- p term; return $ q . Tag DMS $ f
-    p_positive = do (q, f) <- p term; return $ q . Tag DMP $ f
+    s_positive = do (q, f) <- p term; return $ q . Tag DigMultiSubject $ f
+    p_positive = do (q, f) <- p term; return $ q . Tag DigMultiPairwise $ f
 
     m_negative = (wd_token "pairwise" >> p_negative) <|> s_negative
-    s_negative = do (q, f) <- p term; return $ q . Tag DMS . Not $ f
-    p_negative = do (q, f) <- p term; return $ q . Tag DMP . Not $ f
+    s_negative = do (q, f) <- p term; return $ q . Tag DigMultiSubject . Not $ f
+    p_negative = do (q, f) <- p term; return $ q . Tag DigMultiPairwise . Not $ f
 
 
 
@@ -185,7 +185,7 @@ anotion =
   art >> (gnotion basentn rat <?> "notion (at most one name)") >>= single >>= hol
   where
     hol (q, f, v) = return (q, subst zHole v f)
-    rat = liftM (Tag DIG) stattr ---- why here Tag DIG??
+    rat = liftM (Tag Dig) stattr ---- why here Tag Dig??
 
 notion  = label "notion" $ gnotion (basentn </> sym_notion) stattr >>= digntn
 
@@ -194,7 +194,7 @@ possess = gnotion (prim_of_ntn term) stattr >>= digntn
 
 stattr  =  such >> that >> statement
 
-digadd (q, f, v)  = (q, Tag DIG f, v)
+digadd (q, f, v)  = (q, Tag Dig f, v)
 
 digntn (q, f, v)  = dig f (map zVar v) >>= \ g -> return (q, g, v)
 
@@ -336,7 +336,7 @@ selection = liftM (foldl1 And) $ (art >> takeLongest namedNotion) `sepByLL1` com
 -- -- sets
 setNotion = do
   v <- after var (sm_token "="); (_, f, _) <- set
-  dig (Tag DIG f) [zVar v]
+  dig (Tag Dig f) [zVar v]
 
 set = symb_set <|> set_of
   where
@@ -368,12 +368,12 @@ sepFrom = ntnSep -|- setSep -|- noSep
   where
     ntnSep = do
       (q, f, v) <- notion >>= single; guard (not . isEquality $ f)
-      return (Tag DRP, \tr -> subst tr v $ q f, zVar v)
+      return (Tag Replacement, \tr -> subst tr v $ q f, zVar v)
     setSep = do
       t <- s_term; cnd <- wd_token "in" >> elementCnd
       return (id, cnd, t)
     noSep  = do
-      t <- s_term; return (Tag DRP, const Top, t)
+      t <- s_term; return (Tag Replacement, const Top, t)
 
 elementCnd = setTerm </> liftM fst symb_set_notation
   where
@@ -387,7 +387,7 @@ functionNotion = liftM2 (&) s_var $ wordFun <|> (sm_token "=" >> lambda)
     sm_token "["; t <- pair; sm_token "]"; sm_token "="; vs <- freeVars t
     def <- addDecl vs ld_body; (_, _, dom) <- wd_token "for" >> ld_in;
     let body = \f -> foldr zAll (Imp (t `zElem` zDom f) $ def $ zApp f t) vs
-    return $ \f -> zFun f `And` Tag DDM (dom f) `And` (body f)
+    return $ \f -> zFun f `And` Tag Domain (dom f) `And` (body f)
 
 ld_body = paren $  cases <|> chooseInTerm
 
@@ -397,7 +397,7 @@ cases = do
   where
     ld_case = do
       optLL1 () $ wd_token "case"; condition <- statement; arrow
-      liftM ((.) $ Tag DCD . Imp condition) chooseInTerm
+      liftM ((.) $ Tag Condition . Imp condition) chooseInTerm
 
 chooseInTerm = do
   chs <- optLL1 [] $ after (ld_choice `sepByLL1` sm_token ",") (wd_token "in")
@@ -410,19 +410,19 @@ chooseInTerm = do
     def = do
       wd_token "define"; x <- var; sm_token "="
       ap <- ld_set <|> lambda
-      return $ zExi x . And (Tag DEF $ ap $ zVar x)
+      return $ zExi x . And (Tag Defined $ ap $ zVar x)
 
-    term    = liftM ((.) (Tag DEV) . flip zEqu) s_term
+    term    = liftM ((.) (Tag Evaluation) . flip zEqu) s_term
     defTerm = do
       ap <- ld_set <|> lambda; h <- hidden; let hv = zVar h
-      return $ \fx -> zExi h $ And (Tag DEF $ ap hv) (Tag DEV $ zEqu fx hv)
+      return $ \fx -> zExi h $ And (Tag Defined $ ap hv) (Tag Evaluation $ zEqu fx hv)
 
     ld_set = do (_, t, _) <- set; return $ flip substHole t
 
 
 lambda = do
   (t, df_head, dom) <- ld_head; vs <- freeVars t; df <- addDecl vs ld_body
-  return $ \f -> zFun f `And` Tag DDM (dom f) `And` (df_head f $ df $ zApp f t)
+  return $ \f -> zFun f `And` Tag Domain (dom f) `And` (df_head f $ df $ zApp f t)
   where
     ld_head = dot $ sm_token "\\" >> ld_in
 
@@ -460,9 +460,9 @@ qu_chain  = liftM (foldl fld id) $ wd_token "for" >> qu_notion `sepByLL1` comma 
 dig f [_] | occursS f  = fail "too few subjects for an m-predicate"
 dig f ts  = return (dive f)
   where
-    dive (Tag DIG f)  = down (digS) f
-    dive (Tag DMS f)  = down (digM $ zip ts $ tail ts) f
-    dive (Tag DMP f)  = down (digM $ pairMP ts) f
+    dive (Tag Dig f)  = down (digS) f
+    dive (Tag DigMultiSubject f)  = down (digM $ zip ts $ tail ts) f
+    dive (Tag DigMultiPairwise f)  = down (digM $ pairMP ts) f
     dive f  | isTrm f = f
     dive f  = mapF dive f
 

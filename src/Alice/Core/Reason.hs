@@ -173,11 +173,11 @@ isSignature  = (==) Signature  . Block.kind . Context.head
 replaceHeadTerm :: Context -> Context
 replaceHeadTerm c = Context.setForm c $ dive 0 $ Context.formula c
   where
-    dive n (All _ (Imp (Tag DHD Trm {trName = "=", trArgs = [_, t]}) f)) =
+    dive n (All _ (Imp (Tag HeadTerm Trm {trName = "=", trArgs = [_, t]}) f)) =
       subst t "" $ inst "" f
-    dive n (All _ (Iff (Tag DHD eq@Trm {trName = "=", trArgs = [_, t]}) f))
+    dive n (All _ (Iff (Tag HeadTerm eq@Trm {trName = "=", trArgs = [_, t]}) f))
       = And (subst t "" $ inst "" f) (All "" $ Imp f eq)
-    dive n (All _ (Imp (Tag DHD Trm{}) Top)) = Top
+    dive n (All _ (Imp (Tag HeadTerm Trm{}) Top)) = Top
     dive n (All v f) =
       bool $ All v $ bind (show n) $ dive (succ n) $ inst (show n) f
     dive n (Imp f g) = bool $ Imp f $ dive n g
@@ -291,13 +291,13 @@ unfoldAtomic sign f = do
   where
     -- we mark the term so that it does not get 
     -- unfolded again in subsequent iterations
-    marked = Tag DMK f
+    marked = Tag GenericMark f
 
-    subtermLocalProperties (Tag DMK _) = return [] -- do not expand marked terms
+    subtermLocalProperties (Tag GenericMark _) = return [] -- do not expand marked terms
     subtermLocalProperties h = foldFM termLocalProperties h
     termLocalProperties h = 
       liftM2 (++) (subtermLocalProperties h) (localProperties h)
-    localProperties (Tag DMK _) = return []
+    localProperties (Tag GenericMark _) = return []
     localProperties Trm {trName = "=", trArgs = [l,r]} =
       liftM3 (\a b c -> a ++ b ++ c) 
              (definitionalProperties l r)
@@ -319,7 +319,7 @@ unfoldAtomic sign f = do
             -- only unfold a definitions or (a sigext in a positive position)
             guard (sign || Definition.isDefinition def)
             sb <- match (Definition.term def) f
-            let definingFormula = replace (Tag DMK g) ThisT $ sb $ Definition.formula def
+            let definingFormula = replace (Tag GenericMark g) ThisT $ sb $ Definition.formula def
         -- substitute the (marked) term
             guard (not . isTop $ definingFormula)
             return definingFormula
@@ -358,13 +358,13 @@ unfoldAtomic sign f = do
         findev ev = do
           sb <- match (Evaluation.term ev) t
           guard (all trivialByEvidence $ map sb $ Evaluation.conditions ev)
-          return $ replace (Tag DMK t) ThisT $ sb $ 
+          return $ replace (Tag GenericMark t) ThisT $ sb $ 
             if sign then Evaluation.positives ev else Evaluation.negatives ev
 
     unfGuard unfoldSetting action =
       asks unfoldSetting >>= \p -> if p then action else return []
 
-hasDMK (Tag DMK _ ) = True
+hasDMK (Tag GenericMark _ ) = True
 hasDMK _ = False
 
 setType f | hasInfo f = any (infoTwins ThisT $ zSet ThisT) $ trInfo f
