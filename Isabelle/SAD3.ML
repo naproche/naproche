@@ -81,6 +81,7 @@ fun forthel_file ctxt (file: Token.file) =
 
       val script =
         cat_lines [
+          "set -e",
           "cd \"$SAD3_HOME\"",
           "export PATH=\"$E_HOME:$SPASS_HOME:$PATH\"",
           "export SAD3_PIDE=true",
