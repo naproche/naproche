@@ -36,9 +36,9 @@ contrapositives ls =
 contras :: Formula -> VM [MRule]
 contras f = do
   m <- askGlobalState skolemCounter;
-  let (skf, SK { sk = nm }) = sklm m $ simplify f
+  let (skf, nm) = skolemize m $ simplify f
   updateGlobalState (\st -> st { skolemCounter = nm })
-  let cnf = simpcnf . spec 0 . prenex $ skf
+  let cnf = transformToCNF skf
   return $ concatMap contrapositives cnf
 
 
@@ -156,8 +156,8 @@ prove n lowLevelContext positives negatives goal =
   where
     makeContrapositives _ [] = []
     makeContrapositives m (f:fs) =
-      let (skf, SK { sk = nm }) = sklm m $ simplify f
-      in  (concatMap contrapositives . simpcnf . spec 0 . prenex) skf ++
+      let (skf, nm) = skolemize m $ simplify f
+      in  (concatMap contrapositives . transformToCNF) skf ++
           makeContrapositives nm fs
     start t
       | isLiteral t || isEquality t = pure $ MR [ltNeg t] Bot

@@ -5,8 +5,15 @@ Normalization of formulas.
 -}
 
 
+{-# LANGUAGE FlexibleContexts #-}
 
-module Alice.Prove.Normalize where
+module Alice.Prove.Normalize  (
+  simplify,
+  dec, inc,
+  skolemize,
+  transformToCNF,
+  assm_nf
+  ) where
 
 import Alice.Data.Formula
 
@@ -36,8 +43,6 @@ simplify = mapF simplify . nbool . pushdown
     nbool f = f
 
 
-
-
 pushdown :: Formula -> Formula
 pushdown (Iff f g)       = And (Or (Not f) g) (Or f (Not g))
 pushdown (Imp f g)       = Or (Not f) g
@@ -50,9 +55,11 @@ pushdown (Not (Or  f g)) = And (Not f) (Not g)
 pushdown (Not (Not f))   = pushdown f
 pushdown (Not Bot)       = Top
 pushdown (Not Top)       = Bot
-pushdown (All _ (Imp (Tag HeadTerm Trm {trName = "=", trArgs = [_,t]} ) f))   = pushdown $ dec $ subst t "" $ inst "" f
-pushdown (All _ (Iff (Tag HeadTerm eq@Trm {trName = "=", trArgs = [_,t]}) f)) = And (All "" (Or eq (Not f))) $ dec $ subst t "" $ inst "" f
-pushdown f               = f
+pushdown (All _ (Imp (Tag HeadTerm Trm {trName = "=", trArgs = [_,t]} ) f)) =
+  pushdown $ dec $ subst t "" $ inst "" f
+pushdown (All _ (Iff (Tag HeadTerm eq@Trm {trName = "=", trArgs = [_,t]}) f)) =
+  And (All "" (Or eq (Not f))) $ dec $ subst t "" $ inst "" f
+pushdown f = f
 
 
 -- prenex normal form
@@ -77,6 +84,11 @@ prenex (And f g) = pullquants $ And (prenex f) (prenex g)
 prenex (Or  f g) = pullquants $ Or  (prenex f) (prenex g)
 prenex f = f
 
+
+-- Index manangement
+
+{- increase all de Bruijn indices -}
+inc :: Formula -> Formula
 inc = increment 0
   where
     increment n (Ind i) = Ind (if n <= i then succ i else i)
@@ -84,45 +96,8 @@ inc = increment 0
     increment n (Exi x f)  = Exi x $ increment (succ n) f
     increment n f = mapF (increment n) f
 
-
--- skolemization
-
-skolemize = fst . sklm 0
-
-
-data SkState = SK { sk :: Int, tn :: Int}
-
-
-sklm n f = runState (skolem f) $ SK n 0
-  where
-    skolem (All x f) = incCn >> skolem f >>= return . All x
-    skolem (Exi _ f) = instSk f >>= skolem . dec
-    skolem (Or  f g) = do st <- get; liftM2 Or  (skolem f) (modify (reSt st) >> skolem g)
-    skolem (And f g) = do st <- get; liftM2 And (skolem f) (modify (reSt st) >> skolem g)
-    skolem f = return f
-
-    incCn = modify (\st -> st {tn = succ (tn st)})
-    reSt st ost = ost { tn = tn st}
-
-instSk :: Formula -> State SkState Formula
-instSk f = do st <- get; let nf = instSk' (sk st) (tn st) f
-              put $ st { sk = succ (sk st) }; return nf
-
-instSk' :: Int -> Int -> Formula -> Formula
-instSk' sk tn = dive 0
-  where
-    dive d (All x f) = All x $ dive (succ d) f
-    dive d (Exi x f) = Exi x $ dive (succ d) f
-    dive d (Ind m ) | d == m = skS d
-    dive d f = mapF (dive d) f
-
-    skS d = (zTrm skN skStr [Ind (i + d) | i <- [1..tn] ])
-
-    skN = -20 - sk
-    skStr = "tsk" ++ show sk
-
-
-
+{- decrease de Bruijn indices -}
+dec :: Formula -> Formula
 dec = decrement 0
   where
     decrement n (Ind i ) = Ind (if n <= i then pred i else i)
@@ -133,26 +108,78 @@ dec = decrement 0
 
 
 
+-- skolemization
+
+
+data SkState = SK { skolemCounter :: Int, dependencyCounter :: Int}
+
+skolemize :: Int -> Formula -> (Formula, Int)
+skolemize n f =
+  let (skf, SK {skolemCounter = nsk}) = runState (skolem f) $ SK n 0
+  in  (skf, nsk)
+  where
+    skolem (All x f) = fmap (All x) $ increaseDependency >> skolem f
+    skolem (Exi _ f) = instSkolem f >>= skolem . dec
+    skolem (Or  f g) = do
+      st <- get; liftM2 Or  (skolem f) (resetDependency st >> skolem g)
+    skolem (And f g) = do
+      st <- get; liftM2 And (skolem f) (resetDependency st >> skolem g)
+    skolem f = return f
+
+    increaseDependency =
+      modify (\st -> st {dependencyCounter = succ (dependencyCounter st)})
+    resetDependency st =
+      modify (\ost -> ost { dependencyCounter = dependencyCounter st})
+
+instSkolem :: Formula -> State SkState Formula
+instSkolem f = do
+  st <- get; let nf = instSk (skolemCounter st) (dependencyCounter st) f
+  put $ st { skolemCounter = succ (skolemCounter st) }; return nf
+
+instSk :: Int -> Int -> Formula -> Formula
+instSk skolemCnt dependencyCnt = dive 0
+  where
+    dive d (All x f) = All x $ dive (succ d) f
+    dive d (Exi x f) = Exi x $ dive (succ d) f
+    dive d (Ind m ) | d == m = skolemFunction d
+    dive d f = mapF (dive d) f
+
+    skolemFunction = zTrm skolemId skolemName . skolemArguments
+
+
+    skolemArguments d = [Ind (i + d) | i <- [1..dependencyCnt] ]
+
+    skolemId = -20 - skolemCnt
+    skolemName = "tsk" ++ show skolemCnt
+
+
+
 -- specialization of formula: get rid of universal quantifiers
 
+specialize :: Formula -> Formula
+specialize = specCh '?' 0
+
+specCh :: Char -> Int -> Formula -> Formula
 specCh c = dive
   where
     dive n (All _ f) = dive (succ n) $ inst (c:show n) f
     dive n f = f
 
-spec n = specCh '?' n
-
 
 -- Conversion to CNF
 
-simpcnf Top = [[]]
-simpcnf Bot = []
-simpcnf f = subsumptionCheck $ filter (not . trivial) $ purecnf f
+transformToCNF :: Formula -> [[Formula]]
+transformToCNF = simpCNF . specialize . prenex
 
-purecnf :: Formula -> [[Formula]]
-purecnf (And f g) = unionBy listEq (purecnf f) (purecnf g)
-purecnf (Or f g)  = distrib (purecnf f) (purecnf g)
-purecnf f = [[f]]
+simpCNF :: Formula -> [[Formula]]
+simpCNF Top = [[]]
+simpCNF Bot = []
+simpCNF f = subsumptionCheck $ filter (not . trivial) $ pureCNF f
+
+pureCNF :: Formula -> [[Formula]]
+pureCNF (And f g) = unionBy listEq (pureCNF f) (pureCNF g)
+pureCNF (Or f g)  = distrib (pureCNF f) (pureCNF g)
+pureCNF f = [[f]]
 
 
 distrib :: [[Formula]] -> [[Formula]] -> [[Formula]]
@@ -208,30 +235,7 @@ impl (Imp f g)         = pullimp $ Imp f $ impl g
 impl (And f g)         = And (impl f) (impl g)
 impl f = f
 
+pullimp :: Formula -> Formula
 pullimp (Imp f (All x g)) = All x $ pullimp $ Imp (inc f) g
 pullimp (Imp f (Imp g h)) = pullimp $ Imp (And f g) h
 pullimp f = f
-
-
-pushquants :: Formula -> Formula
-pushquants (All x (And f g)) = And (pushquants $ All x f) (pushquants $ All x g)
-pushquants (Exi x (Or  f g)) = Or  (pushquants $ Exi x f) (pushquants $ Exi x g)
-pushquants (All x (Or  f g))
-  | binding f = if binding g then All x $ Or (pushquants f) (pushquants g)
-                             else Or (pushquants $ All x f) (pushquants $ dec g)
-  | binding g = Or (pushquants $ dec f) (pushquants $ All x g)
-  | otherwise = Or (pushquants $ dec f) (pushquants $ dec g)
-pushquants (Exi x (And f g))
-  | binding f = if binding g then Exi x $ And (pushquants f) (pushquants g)
-                             else And (pushquants $ Exi x f) (pushquants $ dec g)
-  | binding g = Or (pushquants $ dec f) (pushquants $ Exi x g)
-  | otherwise = And (pushquants $ dec f) (pushquants $ dec g)
-pushquants f = mapF pushquants f
-
-
-binding = bin 0
-  where
-    bin n (Ind m) = n == m
-    bin n (All _ f) = bin (succ n) f
-    bin n (Exi _ f) = bin (succ n) f
-    bin n f = anyF (bin n) f
