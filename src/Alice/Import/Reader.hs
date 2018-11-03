@@ -30,49 +30,57 @@ import Alice.Core.Message
 
 readInit :: String -> IO [Instr]
 readInit "" = return []
-readInit file =
-  do  input <- catch (readFile file) $ die file . ioeGetErrorString
-      let toks = tokenize (filePos file) input ; ips = State () toks noPos
-      liftM fst $ launchParser instf ips
+readInit file = do
+  input <- catch (readFile file) $ die file . ioeGetErrorString
+  let tokens = tokenize (filePos file) input
+      initialParserState = State () tokens noPos
+  fst <$> launchParser instructionFile initialParserState
 
-instf :: Parser st [Instr]
-instf = after (optLL1 [] $ chainLL1 instr) eof
+instructionFile :: Parser st [Instr]
+instructionFile = after (optLL1 [] $ chainLL1 instr) eof
 
 
 -- Reader loop
 
 readText :: String -> [Text] -> IO [Text]
-readText lb = reader lb [] [State initFS noTokens noPos]
+readText pathToLibrary = reader pathToLibrary [] [State initFS noTokens noPos]
 
 reader :: String -> [String] -> [State FState] -> [Text] -> IO [Text]
 
 reader _ _ _ [TI (InStr ISread file)] | isInfixOf ".." file =
-      die file "contains \"..\", not allowed"
+  die file "contains \"..\", not allowed"
 
-reader lb fs ss [TI (InStr ISread file)] =
-      reader lb fs ss [TI $ InStr ISfile $ lb ++ '/' : file]
+reader pathToLibrary doneFiles stateList [TI (InStr ISread file)] =
+  reader pathToLibrary doneFiles stateList
+    [TI $ InStr ISfile $ pathToLibrary ++ '/' : file]
 
-reader lb fs (ps:ss) [TI (InStr ISfile file)] | file `elem` fs =
-  do  outputMain NORMAL (fileOnlyPos file) "already read, skipping"
-      (ntx, nps) <- launchParser forthel ps
-      reader lb fs (nps:ss) ntx
+reader pathToLibrary doneFiles (pState:states) [TI (InStr ISfile file)]
+  | file `elem` doneFiles = do
+      outputMain NORMAL (fileOnlyPos file) "already read, skipping"
+      (newText, newState) <- launchParser forthel pState
+      reader pathToLibrary doneFiles (newState:states) newText
 
-reader lb fs (ps:ss) [TI (InStr ISfile file)] =
-  do  let gfl = if null file  then hGetContents stdin
-                              else readFile file
-      input <- catch gfl $ die file . ioeGetErrorString
-      let toks = tokenize (filePos file) input
-          st  = State ((stUser ps) { tvr_expr = [] }) toks noPos
-      (ntx, nps) <- launchParser forthel st
-      reader lb (file:fs) (nps:ps:ss) ntx
+reader pathToLibrary doneFiles (pState:states) [TI (InStr ISfile file)] = do
+  let gfl =
+        if   null file
+        then getContents
+        else readFile file
+  input <- catch gfl $ die file . ioeGetErrorString
+  let tokens = tokenize (filePos file) input
+      st  = State ((stUser pState) { tvr_expr = [] }) tokens noPos
+  (ntx, nps) <- launchParser forthel st
+  reader pathToLibrary (file:doneFiles) (nps:pState:states) ntx
 
-reader lb fs ss (t:ts) = liftM (t:) $ reader lb fs ss ts
+-- this happens when t is not a suitable instruction
+reader pathToLibrary doneFiles stateList (t:restText) =
+  (t:) <$> reader pathToLibrary doneFiles stateList restText
 
-reader lb fs (sps:ps:ss) [] =
-  do  outputParser NORMAL (fileOnlyPos $ head fs) "parsing successful"
-      let rps = ps {stUser = (stUser sps) {tvr_expr = tvr_expr $ stUser ps}}
-      (ntx, nps) <- launchParser forthel rps
-      reader lb fs (nps:ss) ntx
+reader pathToLibrary doneFiles (pState:oldState:rest) [] = do
+  outputParser NORMAL (fileOnlyPos $ head doneFiles) "parsing successful"
+  let resetState = oldState {
+        stUser = (stUser pState) {tvr_expr = tvr_expr $ stUser oldState}}
+  (newText, newState) <- launchParser forthel resetState
+  reader pathToLibrary doneFiles (newState:rest) newText
 
 reader _ _ _ [] = return []
 
@@ -80,15 +88,14 @@ reader _ _ _ [] = return []
 
 -- launch a parser in the IO monad
 launchParser :: Parser st a -> State st -> IO (a, State st)
-launchParser parser st =
-  case runP parser st of
+launchParser parser state =
+  case runP parser state of
     Error err -> outputParser NORMAL noPos (show err) >> exitFailure
     Ok [PR a st] -> return (a, st)
-    _ -> outputParser NORMAL noPos "ambiguity error here" >> exitFailure
 
 
 
 -- Service stuff
 
 die :: String -> String -> IO a
-die fileName st = outputMain NORMAL (fileOnlyPos fileName) st >> exitFailure
+die fileName msg = outputMain NORMAL (fileOnlyPos fileName) msg >> exitFailure
