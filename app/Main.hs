@@ -43,7 +43,7 @@ main  = do
   -- if -T is passed as an option, only print the text and exit
   when (askIB IBtext False revInitialOpts) $ onlyTranslate startTime text
   -- read provers.dat
-  provers <- readPrDB (askIS ISprdb "provers.dat" revInitialOpts)
+  provers <- readProverDatabase (askIS ISprdb "provers.dat" revInitialOpts)
   -- initialize reasoner state
   reasonerState <- newIORef (RState [] [] provers)
   proveStart <- getCurrentTime

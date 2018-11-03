@@ -10,7 +10,8 @@ import Data.List
 import qualified Data.IntMap.Strict as IM
 
 import Alice.Data.Formula
-import Alice.Data.Text.Block
+import Alice.Data.Text.Block (Block(Block))
+import  qualified Alice.Data.Text.Block as Block
 import Alice.Data.Text.Context as Context (Context(..))
 import Alice.Export.Base
 
@@ -36,7 +37,7 @@ dfgOut red _ _ cn gl = (hdr . sym . axm . cnj . eop) ""
 -- Formula print
 
 dfgForm :: Bool -> Context -> ShowS
-dfgForm red (Context fr (Block { name = m } : _) _ g)
+dfgForm red (Context fr (Block { Block.name = m } : _) _ g)
         = let f = if red then g else fr in
           showString "formula(" . dfgTerm 0 f . showChar ','
         . showString (if null m then "_" else m) . showString ").\n"

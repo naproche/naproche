@@ -10,7 +10,8 @@ module Alice.Export.TPTP (tptpOut) where
 import qualified Data.IntMap.Strict as IM
 
 import Alice.Data.Formula
-import Alice.Data.Text.Block
+import Alice.Data.Text.Block (Block(Block))
+import qualified Alice.Data.Text.Block as Block
 import Alice.Data.Text.Context (Context(..))
 import Alice.Export.Base
 
@@ -26,7 +27,7 @@ tptpOut red _ _ cn gl = (axs . cnj) ""
 -- Formula print
 
 tptpForm :: Bool -> String -> Context -> ShowS
-tptpForm red s (Context fr (Block { name = m } : _) _ g)
+tptpForm red s (Context fr (Block { Block.name = m } : _) _ g)
           = let f = if red then g else fr in
             showString "fof(m"
           . showString (if null m then "_" else m)

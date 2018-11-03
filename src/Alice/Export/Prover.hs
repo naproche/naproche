@@ -39,9 +39,9 @@ export :: Bool -> Int -> [Prover] -> [Instr] -> [Context] -> Context
 export red m prs ins cnt gl =
   do  when (null prs) $ die "no provers"
 
-      let prn = askIS ISprvr (prName $ head prs) ins
+      let prn = askIS ISprvr (name $ head prs) ins
       -- ask whether the user gave a prover, else take the first on the list
-          prr = filter ((==) prn . prName) prs
+          prr = filter ((==) prn . name) prs
 
       when (null prr) $ die $ "no prover: " ++ prn
 
