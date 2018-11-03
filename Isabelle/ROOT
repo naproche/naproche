@@ -1,4 +1,6 @@
 session SAD3 = Pure +
-  theories [condition=SAD3_HOME]
+  sessions
+    Haskell
+  theories [condition = SAD3_HOME]
     SAD3
     Test
