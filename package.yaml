@@ -16,6 +16,7 @@ dependencies:
 - mtl
 - transformers
 - bytestring
+- utf8-string
 
 library:
   source-dirs:

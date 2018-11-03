@@ -17,8 +17,8 @@ import System.Environment
 import Isabelle.Library as Isabelle
 import qualified Isabelle.XML as XML
 import qualified Isabelle.YXML as YXML
-import qualified Data.ByteString.Lazy as L
-import Data.ByteString.Builder
+import qualified Data.ByteString as ByteString
+import qualified Data.ByteString.UTF8 as UTF8
 
 
 trimLine :: String -> String
@@ -56,10 +56,10 @@ outputMessage origin kind pos msg = do
     Just "true" ->
       let
         string = YXML.string_of (xmlMessage origin kind pos msg)
-        bytes = toLazyByteString $ stringUtf8 string
+        bytes = UTF8.fromString string
       in do
-        putStrLn $ "\001" ++ show (L.length bytes)
-        L.putStr bytes
+        putStrLn $ "\001" ++ show (ByteString.length bytes)
+        ByteString.putStr bytes
         putStrLn ""
     _ -> putStrLn $ textMessage origin kind pos msg
 
