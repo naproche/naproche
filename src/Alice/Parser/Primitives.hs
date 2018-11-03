@@ -22,23 +22,27 @@ import Control.Monad (void, guard)
 
 ---- parse the current token
 tokenPrim :: (Token -> Maybe a) -> Parser st a
-tokenPrim test = Parser $ \(State st input) ok _ eerr ->
+tokenPrim test = Parser $ \(State st input _) ok _ eerr ->
   case uncons input of
-    Nothing     -> eerr $ unexpectError "" EOF
-    Just (t,ts) -> case test t of
+    Nothing     -> eerr $ unexpectError "" noPos
+    Just (t,ts) -> case guard (not $ isEOF t) >> test t of
       Just x  ->
-        let newstate = State st ts
-            newpos   = nextPos ts
-            newerr   = newErrorUnknown newpos
+        let newstate = State st ts (tokenPos t)
+            newerr   = newErrorUnknown $ tokenPos t
         in  seq newstate $ ok newerr [] . pure $ PR x newstate
       Nothing -> eerr $ unexpectError (showToken t) (tokenPos t)
 
 ---- parse end of input
 eof :: Parser st ()
-eof = Parser $ \st ok cerr eerr ->
-  let inp = stInput st; t = head inp
-  in  if null inp
-      then ok (newErrorUnknown (stPosi st)) [PR () st] []
+eof = Parser $ \(State st input _) ok _ eerr ->
+  case uncons input of
+    Nothing -> eerr $ unexpectError "" noPos
+    Just (t, ts) ->
+      if isEOF t
+      then
+        let newstate = State st ts (tokenPos t)
+            newerr   = newErrorUnknown $ tokenPos t
+        in  seq newstate $ ok newerr [] . pure $ PR () newstate
       else eerr $ unexpectError (showToken t) (tokenPos t)
 
 

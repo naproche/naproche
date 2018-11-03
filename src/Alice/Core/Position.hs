@@ -6,7 +6,7 @@ Token source positions.
 
 
 module Alice.Core.Position
-  ( SourcePos (EOF, sourceFile, sourceLine, sourceColumn, sourceOffset, sourceEndOffset),
+  ( SourcePos (sourceFile, sourceLine, sourceColumn, sourceOffset, sourceEndOffset),
     SourceRange,
     noPos,
     fileOnlyPos,
@@ -28,7 +28,6 @@ data SourcePos =
     sourceColumn :: Int,
     sourceOffset :: Int,
     sourceEndOffset :: Int }
-  | EOF
   deriving (Eq, Ord)
 
 type SourceRange = (SourcePos, SourcePos)
@@ -82,7 +81,6 @@ posProperties (SourcePos file line column offset endOffset) =
   (if endOffset <= 0 then [] else [("end_offset", show endOffset)])
 
 instance Show SourcePos where
-  show EOF = "(end of input)"
   show (SourcePos file line column _ _) =
     if null showName then showDetails
     else if null showDetails then showName

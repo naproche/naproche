@@ -129,7 +129,7 @@ narrow :: Show a => Parser st a -> Parser st a
 narrow p = Parser $ \st ok cerr eerr ->
   let pok err eok cok = case eok ++ cok of
         [_] -> ok err eok cok
-        ls  ->  eerr $ newErrorMessage (newWfMsg ["ambiguity error" ++ show (map prResult ls)]) (stPosi st)
+        ls  ->  eerr $ newErrorMessage (newWfMsg ["ambiguity error" ++ show (map prResult ls)]) (stPosition st)
   in  runParser p st pok cerr eerr
 
 
@@ -145,7 +145,7 @@ takeLongest p = Parser $ \st ok cerr eerr ->
     lng ls []          = reverse ls
     lng [] (c:cs)      = lng [c] cs
     lng (l:ls) (c:cs) =
-      case compare (stPosi . prState $ l) (stPosi . prState $ c) of
+      case compare (stPosition . prState $ l) (stPosition . prState $ c) of
         GT -> lng (l:ls) cs
         LT -> lng [c] cs
         EQ -> lng (c:l:ls) cs
@@ -159,10 +159,10 @@ failing :: Parser st a -> Parser st ()
 failing p = Parser $ \st ok cerr eerr ->
   let pok err eok _ =
         if   null eok
-        then cerr $ unexpectError (showCurrentToken st) (stPosi st)
-        else eerr $ unexpectError (showCurrentToken st) (stPosi st)
-      peerr _ = ok (newErrorUnknown (stPosi st)) [PR () st] []
-      pcerr _ = ok (newErrorUnknown (stPosi st)) [PR () st] []
+        then cerr $ unexpectError (showCurrentToken st) (stPosition st)
+        else eerr $ unexpectError (showCurrentToken st) (stPosition st)
+      peerr _ = ok (newErrorUnknown (stPosition st)) [PR () st] []
+      pcerr _ = ok (newErrorUnknown (stPosition st)) [PR () st] []
   in  runParser p st pok pcerr peerr
   where
     showCurrentToken st = case stInput st of
@@ -176,9 +176,9 @@ failing p = Parser $ \st ok cerr eerr ->
 infix 0 <?>
 (<?>) :: Parser st a -> String -> Parser st a
 p <?> msg = Parser $ \st ok cerr eerr ->
-  let pok err   = ok   $ setError (stPosi st) err
+  let pok err   = ok   $ setError (stPosition st) err
       pcerr     = cerr
-      peerr err = eerr $ setError (stPosi st) err
+      peerr err = eerr $ setError (stPosition st) err
   in  runParser p st pok pcerr peerr
   where
     setError pos err =
@@ -196,22 +196,22 @@ label msg p = p <?> msg
 ---- fail with a well-formedness error
 failWF :: String -> Parser st a
 failWF msg = Parser $ \st _ _ eerr ->
-  eerr $ newErrorMessage (newWfMsg [msg]) (stPosi st)
+  eerr $ newErrorMessage (newWfMsg [msg]) (stPosition st)
 
 
 ---- do not produce an error message
 noError :: Parser st a -> Parser st a
 noError p = Parser $ \st ok cerr eerr ->
-  let pok   err = ok   $ newErrorUnknown (stPosi st)
-      pcerr err = cerr $ newErrorUnknown (stPosi st)
-      peerr err = eerr $ newErrorUnknown (stPosi st)
+  let pok   err = ok   $ newErrorUnknown (stPosition st)
+      pcerr err = cerr $ newErrorUnknown (stPosition st)
+      peerr err = eerr $ newErrorUnknown (stPosition st)
   in  runParser p st pok pcerr peerr
 
 
 ---- parse and perform a well-formedness check on the result
 wellFormedCheck :: (a -> Maybe String) -> Parser st a -> Parser st a
 wellFormedCheck check p = Parser $ \st ok cerr eerr ->
-  let pos = stPosi st
+  let pos = stPosition st
       pok err eok cok =
         let wfEok = wf eok; wfCok = wf cok
         in  if   null $ wfEok ++ wfCok
@@ -234,26 +234,26 @@ lexicalCheck check p = Parser $ \st ok cerr eerr ->
         let wfEok = filter (check . prResult) eok
             wfCok = filter (check . prResult) cok
         in  if null $ wfEok ++ wfCok
-            then eerr $ unexpectError (unit err st) (stPosi st)
+            then eerr $ unexpectError (unit err st) (stPosition st)
             else ok err wfEok wfCok
   in  runParser p st pok cerr eerr
   where
     unit err =
       let pos = errorPos err
-      in  unwords . map showToken . takeWhile ((>=) pos . tokenPos) . stInput
+      in  unwords . map showToken . takeWhile ((>=) pos . tokenPos) . filter (not . isEOF) . stInput
 
 
 ---- in case of failure report every consumed token as unexpected instead of
 ---- just the first
 unexpectedUnit :: Parser st a -> Parser st a
 unexpectedUnit p = Parser $ \st ok cerr eerr ->
-  let pcerr err = cerr $ unexpectError (unit err st) (stPosi st)
-      peerr err = eerr $ unexpectError (unit err st) (stPosi st)
+  let pcerr err = cerr $ unexpectError (unit err st) (stPosition st)
+      peerr err = eerr $ unexpectError (unit err st) (stPosition st)
   in  runParser p st ok pcerr peerr
   where
     unit err =
       let pos = errorPos err
-      in  unwords . map showToken . takeWhile ((>=) pos . tokenPos) . stInput
+      in  unwords . map showToken . takeWhile ((>=) pos . tokenPos) . filter (not . isEOF) . stInput
 
 
 

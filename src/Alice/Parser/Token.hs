@@ -5,10 +5,12 @@ Tokenization of input.
 -}
 
 module Alice.Parser.Token
-  ( Token (showToken, tokenPos),
+  ( Token (tokenPos),
+    showToken,
     tokenize,
-    nextPos,
-    composeToken )
+    composeToken,
+    isEOF,
+    noTokens)
   where
 
 import Data.Char
@@ -16,11 +18,21 @@ import Data.List
 
 import Alice.Core.Position
 
-data Token = Token {showToken :: String, tokenPos :: SourcePos,
-                    tokenWhiteSpace :: Bool}
+data Token =
+  Token {showTk :: String, tokenPos :: SourcePos,
+                    tokenWhiteSpace :: Bool} |
+  EOF {tokenPos :: SourcePos}
 
 makeToken s pos ws =
   Token s (rangePos (pos, advancesPos pos s)) ws
+
+showToken :: Token -> String
+showToken t@Token{} = showTk t
+showToken EOF{} = "end of input"
+
+noTokens :: [Token]
+noTokens = [EOF noPos]
+
 
 tokenize :: SourcePos -> String -> [Token]
 tokenize start = posToken start False
@@ -40,7 +52,7 @@ tokenize start = posToken start False
     posToken pos ws (c:cs) =
       makeToken [c] pos ws : posToken (advancePos pos c) False cs
 
-    posToken _ _ _ = []
+    posToken pos _ _ = [EOF pos]
 
 isLexem :: Char -> Bool
 isLexem c = isAscii c && isAlphaNum c || c == '_'
@@ -48,15 +60,14 @@ isLexem c = isAscii c && isAlphaNum c || c == '_'
 
 -- useful functions
 
-nextPos :: [Token] -> SourcePos
-nextPos [] = EOF
-nextPos (t:ts) = tokenPos t
-
 composeToken :: [Token] -> String
 composeToken [] = ""
 composeToken (t:ts) =
   let ws = if tokenWhiteSpace t then " " else ""
   in  ws ++ showToken t ++ composeToken ts
+
+isEOF :: Token -> Bool
+isEOF EOF{} = True; isEOF _ = False
 
 
 
@@ -65,3 +76,4 @@ composeToken (t:ts) =
 
 instance Show Token where
   showsPrec _ (Token s p _) = showString s . shows p
+  showsPrec _ _ = showString ""

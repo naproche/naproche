@@ -9,7 +9,7 @@ Parser datatype and monad instance.
 module Alice.Parser.Base
   ( Parser(..),
     State (..),
-    stPosi,
+    stPosition,
     ParseResult (..),
     Reply (..),
     runP,
@@ -32,13 +32,16 @@ import Data.List
 
 import Debug.Trace
 
-
 -- Parser state
-data State st = State {stUser :: st, stInput :: [Token] }
+data State st = State {
+  stUser  :: st,
+  stInput :: [Token],
+  lastPosition :: SourcePos}
 
-stPosi :: State st -> SourcePos
-stPosi (State _ (t:ts)) = tokenPos t
-stPosi (State _ [])     = EOF
+
+stPosition :: State st -> SourcePos
+stPosition (State _ (t:ts) _) = tokenPos t
+stPosition (State _ _ pos) = pos
 
 -- intermediate parse results
 data ParseResult st a = PR { prResult :: a, prState :: State st }
@@ -75,7 +78,7 @@ instance Applicative.Applicative (Parser st) where
 
 instance Monad (Parser st) where
   return x = Parser $ \st ok _ _ ->
-      ok (newErrorUnknown (stPosi st)) [PR x st] []
+      ok (newErrorUnknown (stPosition st)) [PR x st] []
 
   p >>= f = Parser $ \st ok cerr eerr ->
     let pok = tryParses f ok cerr eerr
@@ -84,7 +87,7 @@ instance Monad (Parser st) where
     in runParser p st pok pcerr peerr
 
   fail s = Parser $ \st _ _ eerr ->
-    eerr $ newErrorMessage (newMessage s) (stPosi st)
+    eerr $ newErrorMessage (newMessage s) (stPosition st)
 
 
 -- The reverses are just for debugging to force an intuitive order,
@@ -130,7 +133,7 @@ instance Applicative.Alternative (Parser st) where
 
 
 instance MonadPlus (Parser st) where
-  mzero       = Parser $ \st _ _ eerr -> eerr $ newErrorUnknown (stPosi st)
+  mzero       = Parser $ \st _ _ eerr -> eerr $ newErrorUnknown (stPosition st)
   mplus m n = Parser $ \st ok cerr eerr ->
     let meerr err =
           let nok   err' = ok   $ err <+>  err'
@@ -159,21 +162,21 @@ runP p st = runParser p st ok cerr eerr
 
 instance MonadState st (Parser st) where
   get   = Parser $ \st ok _ _ ->
-    ok (newErrorUnknown (stPosi st)) [PR (stUser st) st] []
+    ok (newErrorUnknown (stPosition st)) [PR (stUser st) st] []
   put s = Parser $ \st ok cerr eerr ->
-    ok (newErrorUnknown (stPosi st)) [PR () st {stUser = s}] []
+    ok (newErrorUnknown (stPosition st)) [PR () st {stUser = s}] []
 
 
 getInput :: Parser st [Token]
-getInput = Parser $ \st@(State _ inp) ok _ _ ->
-  ok (newErrorUnknown (stPosi st)) [PR inp st] []
+getInput = Parser $ \st ok _ _ ->
+  ok (newErrorUnknown (stPosition st)) [PR (stInput st) st] []
 
 getPos :: Parser st SourcePos
 getPos = Parser $ \st ok _ _ ->
-  ok (newErrorUnknown (stPosi st)) [PR (stPosi st) st] []
+  ok (newErrorUnknown (stPosition st)) [PR (stPosition st) st] []
 
 getText :: [Token] -> Parser st String
 getText inp = Parser $ \st ok _ _ ->
-  let pos = stPosi st
+  let pos = stPosition st
       txt = composeToken $ takeWhile ( (>) pos . tokenPos ) inp
-  in  ok (newErrorUnknown (stPosi st)) [PR txt st] []
+  in  ok (newErrorUnknown (stPosition st)) [PR txt st] []

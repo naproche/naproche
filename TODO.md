@@ -12,8 +12,6 @@
 
 # Tokens and positions #
 
-* EOF token with end position, instead of vacuous EOF position (!?)
-
 * keep comment tokens (as "improper") for syntax reports (!?)
 
 * Block position: clarify end position (one additional character!??)

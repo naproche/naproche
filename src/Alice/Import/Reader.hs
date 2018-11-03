@@ -25,7 +25,6 @@ import Alice.Parser.Combinators
 import Alice.Parser.Primitives
 import Alice.Core.Message
 
-import Debug.Trace
 
 -- Init file parsing
 
@@ -33,7 +32,7 @@ readInit :: String -> IO [Instr]
 readInit "" = return []
 readInit file =
   do  input <- catch (readFile file) $ die file . ioeGetErrorString
-      let toks = tokenize (filePos file) input ; ips = State () toks
+      let toks = tokenize (filePos file) input ; ips = State () toks noPos
       liftM fst $ launchParser instf ips
 
 instf :: Parser st [Instr]
@@ -43,7 +42,7 @@ instf = after (optLL1 [] $ chainLL1 instr) eof
 -- Reader loop
 
 readText :: String -> [Text] -> IO [Text]
-readText lb = reader lb [] [State initFS []]
+readText lb = reader lb [] [State initFS noTokens noPos]
 
 reader :: String -> [String] -> [State FState] -> [Text] -> IO [Text]
 
@@ -63,7 +62,7 @@ reader lb fs (ps:ss) [TI (InStr ISfile file)] =
                               else readFile file
       input <- catch gfl $ die file . ioeGetErrorString
       let toks = tokenize (filePos file) input
-          st  = State ((stUser ps) { tvr_expr = [] }) toks
+          st  = State ((stUser ps) { tvr_expr = [] }) toks noPos
       (ntx, nps) <- launchParser forthel st
       reader lb (file:fs) (nps:ps:ss) ntx
 
