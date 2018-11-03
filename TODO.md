@@ -14,7 +14,9 @@
 
 * keep comment tokens (as "improper") for syntax reports (!?)
 
-* Block position: clarify end position (one additional character!??)
+* proper Block position/range based on input tokens, not output text
+
+* more abstract type Block: no export of constructor, use makeBlock instead (!?)
 
 
 # Misc #
