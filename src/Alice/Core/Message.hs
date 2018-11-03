@@ -14,6 +14,7 @@ where
 
 import Alice.Core.Position
 import System.Environment
+import Isabelle.Library as Isabelle
 import qualified Isabelle.XML as XML
 import qualified Isabelle.YXML as YXML
 import qualified Data.ByteString.Lazy as L
@@ -21,11 +22,7 @@ import Data.ByteString.Builder
 
 
 trimLine :: String -> String
-trimLine line =
-  case reverse line of
-    '\n' : '\r' : rest -> reverse rest
-    '\n' : rest -> reverse rest
-    _ -> line
+trimLine = Isabelle.trim_line
 
 data Kind = NORMAL | WARNING | ERROR
 instance Show Kind where
