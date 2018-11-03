@@ -14,8 +14,8 @@ where
 
 import Alice.Core.Position
 import System.Environment
-import qualified Alice.Core.XML as XML
-import qualified Alice.Core.YXML as YXML
+import qualified Isabelle.XML as XML
+import qualified Isabelle.YXML as YXML
 import qualified Data.ByteString.Lazy as L
 import Data.ByteString.Builder
 
@@ -58,7 +58,7 @@ outputMessage origin kind pos msg = do
   case pide of
     Just "true" ->
       let
-        string = YXML.showTree (xmlMessage origin kind pos msg)
+        string = YXML.string_of (xmlMessage origin kind pos msg)
         bytes = toLazyByteString $ stringUtf8 string
       in do
         putStrLn $ "\001" ++ show (L.length bytes)

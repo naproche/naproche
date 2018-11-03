@@ -18,7 +18,9 @@ dependencies:
 - bytestring
 
 library:
-  source-dirs: src
+  source-dirs:
+    - src
+    - Isabelle/src
 
 executables:
   SAD3-exe:

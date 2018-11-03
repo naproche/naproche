@@ -5,9 +5,12 @@ Support for SAD3 / ForTheL within Isabelle.
 *)
 
 theory SAD3
-  imports Pure
+  imports Pure Haskell.Haskell
   keywords "forthel_file" :: thy_load
 begin
+
+
+section \<open>Commands\<close>
 
 ML_file "SAD3.ML"
 
@@ -19,6 +22,18 @@ val _ =
         (case Token.get_files tok of
           [Exn.Res file] => SAD3.forthel_file (Toplevel.context_of st) file
         | _ => ()))));
+\<close>
+
+
+section \<open>Generated source modules\<close>
+
+ML_command \<open>
+  let
+    val dir = Path.append (Resources.master_directory \<^theory>) \<^path>\<open>src/Isabelle\<close>
+    val _ = Isabelle_System.mkdirs dir;
+  in
+    Haskell.source_modules |> List.app (fn file => Isabelle_System.copy_file file dir)
+  end
 \<close>
 
 end
