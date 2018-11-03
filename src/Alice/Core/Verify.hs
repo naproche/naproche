@@ -126,7 +126,7 @@ verificationLoop state@VS {
   -- extract definitions
   when (kind == Definition || kind == Signature) $ addDefinition formulaImage
   -- compute MESON rules
-  mesonRules  <- contras (Block.isTopLevel block) (deTag formulaImage)
+  mesonRules  <- contras $ deTag formulaImage
   definitions <- askGlobalState definitions
   let ontoReduction =
         foldr1 And $ map (onto_reduce definitions) (assm_nf formulaImage)
