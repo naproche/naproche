@@ -15,11 +15,11 @@ module Alice.Core.Position
     advancesPos,
     noRangePos,
     rangePos,
-    range,
-    posProperties)
+    range)
   where
 
-import Data.List
+import qualified Data.List as List
+
 
 data SourcePos =
   SourcePos {
@@ -72,14 +72,6 @@ rangePos (SourcePos file line column offset _, SourcePos _ _ _ offset' _) =
 range :: (SourcePos, SourcePos) -> SourceRange
 range (pos, pos') = (rangePos (pos, pos'), noRangePos pos')
 
-posProperties :: SourcePos -> [(String, String)]
-posProperties (SourcePos file line column offset endOffset) =
-  (if null file then [] else [("file", file)]) ++
-  (if line <= 0 then [] else [("line", show line)]) ++
-  (if column <= 0 then [] else [("column", show column)]) ++
-  (if offset <= 0 then [] else [("offset", show offset)]) ++
-  (if endOffset <= 0 then [] else [("end_offset", show endOffset)])
-
 instance Show SourcePos where
   show (SourcePos file line column _ _) =
     if null showName then showDetails
@@ -91,5 +83,5 @@ instance Show SourcePos where
       showDetails =
         case filter (not . null) details of
           [] -> ""
-          ds -> "(" ++ intercalate ", " ds ++ ")"
+          ds -> "(" ++ List.intercalate ", " ds ++ ")"
       showName = if null file then "" else "\"" ++ file ++ "\""
