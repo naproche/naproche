@@ -7,7 +7,8 @@
 
 * Isabelle:
 
-      isabelle build -D Isabelle
+      isabelle build Haskell
+      isabelle build -c -D Isabelle
 
 * Haskell:
 
