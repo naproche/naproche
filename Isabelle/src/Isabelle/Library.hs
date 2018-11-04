@@ -8,7 +8,7 @@ Basic library of Isabelle idioms.
 -}
 
 module Isabelle.Library
-  ((|>), (|->), (#>), (#->), fold, fold_rev, single, quote, trim_line)
+  ((|>), (|->), (#>), (#->), the_default, fold, fold_rev, single, quote, trim_line)
 where
 
 import Data.Maybe
