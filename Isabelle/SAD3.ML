@@ -24,9 +24,18 @@ fun bool_option ctxt config = if Config.get ctxt config then "on" else "off";
 
 (** process ForTheL files **)
 
-fun output_message "error" = Output.error_message
-  | output_message "warning" = warning
-  | output_message _ = writeln;
+val message_fns =
+  Symtab.make
+   [(Markup.stateN, Output.state),
+    (Markup.writelnN, writeln),
+    (Markup.informationN, Output.information),
+    (Markup.tracingN, tracing),
+    (Markup.warningN, warning),
+    (Markup.legacyN, legacy_feature),
+    (Markup.errorN, Output.error_message)]
+
+fun output_message name =
+  the_default writeln (Symtab.lookup message_fns name);
 
 fun forthel_file ctxt (file: Token.file) =
   Isabelle_System.with_tmp_dir "SAD3" (fn tmp_dir =>

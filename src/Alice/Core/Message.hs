@@ -26,19 +26,28 @@ import qualified Isabelle.YXML as YXML
 
 {- message kind -}
 
-data Kind = NORMAL | WARNING | ERROR
+data Kind =
+  STATE | WRITELN | INFORMATION | TRACING | WARNING | LEGACY | ERROR
 
 instance Show Kind where
-  show NORMAL = ""
+  show STATE = "State"
+  show WRITELN = ""
+  show INFORMATION = "Information"
+  show TRACING = "Tracing"
   show WARNING = "Warning"
+  show LEGACY = "Legacy feature"
   show ERROR = "Error"
 
 
 {- output as PIDE message -}
 
 kindXML :: Kind -> String
-kindXML NORMAL = Markup.writelnN
+kindXML STATE = Markup.stateN
+kindXML WRITELN = Markup.writelnN
+kindXML INFORMATION = Markup.informationN
+kindXML TRACING = Markup.tracingN
 kindXML WARNING = Markup.warningN
+kindXML LEGACY = Markup.legacyN
 kindXML ERROR = Markup.errorN
 
 posProperties :: SourcePos -> [(String, String)]

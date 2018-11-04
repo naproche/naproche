@@ -91,7 +91,7 @@ sequenceGoals reasoningDepth iteration (goal:restGoals) = do
 
     updateTrivialStatistics = 
       unless (isTop goal) $ whenInstruction IBPrsn False $
-         reasonLog Message.NORMAL noPos ("trivial: " ++ show goal)
+         reasonLog Message.WRITELN noPos ("trivial: " ++ show goal)
       >> incrementIntCounter TrivialGoals
 
 sequenceGoals  _ _ _ = return ()
@@ -124,7 +124,7 @@ launchProver iteration = do
       let getFormula = if reductionSetting then Context.reducedFormula else Context.formula
       contextFormulas <- asks $ map getFormula . reverse . currentContext
       concl <- thesis
-      reasonLog Message.NORMAL noPos $ "prover task:\n" ++
+      reasonLog Message.WRITELN noPos $ "prover task:\n" ++
         concatMap (\form -> "  " ++ show form ++ "\n") contextFormulas ++
         "  |- " ++ show (Context.formula concl) ++ "\n"
 
@@ -259,9 +259,9 @@ unfold = do
   return $ newLowLevelContext ++ topLevelContext
   where
     nothingToUnfold =
-      whenInstruction IBPunf False $ reasonLog Message.NORMAL noPos "nothing to unfold"
+      whenInstruction IBPunf False $ reasonLog Message.WRITELN noPos "nothing to unfold"
     unfoldLog (goal:lowLevelContext) =
-      whenInstruction IBPunf False $ reasonLog Message.NORMAL noPos $ "unfold to:\n"
+      whenInstruction IBPunf False $ reasonLog Message.WRITELN noPos $ "unfold to:\n"
         ++ unlines (reverse $ map ((++) "  " . show . Context.formula) lowLevelContext)
         ++ "  |- " ++ show (neg $ Context.formula goal)
     neg (Not f) = f; neg f = f

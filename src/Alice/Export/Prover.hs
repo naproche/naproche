@@ -57,7 +57,7 @@ export red m prs ins cnt gl =
           task = dmp red prv tlm cnt gl
           -- translate the prover task into the appropriate input language
 
-      when (askIB IBPdmp False ins) $ Message.output "" Message.NORMAL noPos task
+      when (askIB IBPdmp False ins) $ Message.output "" Message.WRITELN noPos task
       -- print the translation if it is enabled (intended only for debugging)
 
       seq (length task) $ return $
@@ -73,7 +73,7 @@ export red m prs ins cnt gl =
                 out = map (("[" ++ label ++ "] ") ++) lns
 
             when (length lns == 0) $ die "empty response"
-            when (askIB IBPprv False ins) $ mapM_ (Message.output "" Message.NORMAL noPos) out
+            when (askIB IBPprv False ins) $ mapM_ (Message.output "" Message.WRITELN noPos) out
             -- if the user has enabled it, print the proveroutput
 
             let pos = any (\ l -> any (`isPrefixOf` l) yes) lns
@@ -92,4 +92,4 @@ export red m prs ins cnt gl =
     setTlim tl (s:rs)       = s : setTlim tl rs
     setTlim _ _             = []
 
-    die s = Message.outputExport Message.NORMAL noPos s >> exitFailure
+    die s = Message.outputExport Message.WRITELN noPos s >> exitFailure

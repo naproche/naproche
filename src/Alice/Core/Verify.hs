@@ -47,7 +47,7 @@ import Alice.Core.Rewrite
 verify :: String -> IORef RState -> [Text] -> IO (Maybe ([Text], GState))
 verify fileName reasonerState blocks = do
   let text = TI (InStr ISfile fileName) : blocks
-  Message.outputReason Message.NORMAL (fileOnlyPos fileName) "verification started"
+  Message.outputReason Message.WRITELN (fileOnlyPos fileName) "verification started"
 
   let initialVerificationState =
         VS False [] DT.empty (Context Bot [] [] Bot) [] [] text
@@ -58,7 +58,7 @@ verify fileName reasonerState blocks = do
     readIORef reasonerState
 
   let success = isJust result && ignoredFails == 0
-  Message.outputReason Message.NORMAL (fileOnlyPos fileName) $
+  Message.outputReason Message.WRITELN (fileOnlyPos fileName) $
     "verification " ++ (if success then "successful" else "failed")
   return result
 
@@ -79,7 +79,7 @@ verificationLoop state@VS {
   -- statistics and user communication
   incrementIntCounter Sections
   whenInstruction IBPsct False $ justIO $
-    Message.outputForTheL Message.NORMAL (Block.position block) $
+    Message.outputForTheL Message.WRITELN (Block.position block) $
     Message.trim (Block.showForm 0 block "")
   let newBranch = block : branch; contextBlock = Context f newBranch [] f
 
@@ -98,7 +98,7 @@ verificationLoop state@VS {
   whenInstruction IBPths False $ when (
     toBeProved && (not . null) proofBody &&
     not (hasDEC $ Context.formula freshThesis)) $
-      thesisLog Message.NORMAL (Block.position block) (length branch - 1) $
+      thesisLog Message.WRITELN (Block.position block) (length branch - 1) $
       "thesis: " ++ show (Context.formula freshThesis)
 
 
@@ -114,7 +114,7 @@ verificationLoop state@VS {
   whenInstruction IBPths False $ when (
     toBeProved && (not . null) proofBody &&
     not (hasDEC $ Context.formula freshThesis)) $
-      thesisLog Message.NORMAL (Block.position block) (length branch - 1) "thesis resolved"
+      thesisLog Message.WRITELN (Block.position block) (length branch - 1) "thesis resolved"
 
   -- in what follows we prepare the current block to contribute to the context,
   -- extract rules, definitions and compute the new thesis
@@ -146,7 +146,7 @@ verificationLoop state@VS {
   whenInstruction IBPths False $ when (
     hasChanged && motivated && newMotivation &&
     (not $ hasDEC $ Block.formula $ head branch) ) $
-      thesisLog Message.NORMAL (Block.position block) (length branch - 2) $
+      thesisLog Message.WRITELN (Block.position block) (length branch - 2) $
       "new thesis: " ++ show (Context.formula newThesis)
 
   when (not newMotivation && motivated) $
@@ -191,14 +191,14 @@ verificationLoop st@VS {
     prove =
       if hasDEC (Context.formula thesis) --computational reasoning
       then do
-        let logAction = reasonLog Message.NORMAL (Block.position block) $ "goal: " ++ text
+        let logAction = reasonLog Message.WRITELN (Block.position block) $ "goal: " ++ text
             block = Context.head thesis ; text = Block.text block
         incrementIntCounter Equations ; whenInstruction IBPgls True logAction
         timer SimplifyTime (equalityReasoning thesis) <|> (
           reasonLog Message.WARNING (Block.position block) "equation failed" >>
           guardInstruction IBskip False >> incrementIntCounter FailedEquations)
       else do
-        let logAction = reasonLog Message.NORMAL (Block.position block) $ "goal: " ++ text
+        let logAction = reasonLog Message.WRITELN (Block.position block) $ "goal: " ++ text
             block = Context.head thesis ; text = Block.text block
         unless (isTop . Context.formula $ thesis) $ incrementIntCounter Goals
         whenInstruction IBPgls True logAction
@@ -252,7 +252,7 @@ verifyProof state@VS {
             inferNewThesis definitions newContext $ Context.setForm thesis f
       whenInstruction IBPths False $ when (
         noInductionOrCase (Context.formula newThesis) && not (null $ restText state)) $
-          thesisLog Message.NORMAL 
+          thesisLog Message.WRITELN
           (Block.position $ head $ Context.branch $ head context) (length branch - 2) $
           "new thesis " ++ show (Context.formula newThesis)
       verifyProof state {
@@ -291,19 +291,19 @@ procTI VS {
   = proc
   where
     proc (InCom ICRuls) =
-      reasonLog Message.NORMAL noPos $ "current ruleset: " ++ "\n" ++ Rule.printrules (reverse rules)
+      reasonLog Message.WRITELN noPos $ "current ruleset: " ++ "\n" ++ Rule.printrules (reverse rules)
     proc (InCom ICPths) = do
       let motivation = if motivated then "(mot): " else "(nmt): "
-      reasonLog Message.NORMAL noPos $ "current thesis " ++ motivation ++ show (Context.formula thesis)
+      reasonLog Message.WRITELN noPos $ "current thesis " ++ motivation ++ show (Context.formula thesis)
     proc (InCom ICPcnt) =
-      reasonLog Message.NORMAL noPos $ "current context:\n" ++
+      reasonLog Message.WRITELN noPos $ "current context:\n" ++
         concatMap (\form -> "  " ++ show form ++ "\n") (reverse context)
     proc (InCom ICPflt) = do
       let topLevelContext = filter Context.isTopLevel context
-      reasonLog Message.NORMAL noPos $ "current filtered top-level context:\n" ++
+      reasonLog Message.WRITELN noPos $ "current filtered top-level context:\n" ++
         concatMap (\form -> "  " ++ show form ++ "\n") (reverse topLevelContext)
 
-    proc (InCom _) = reasonLog Message.NORMAL noPos "unsupported instruction"
+    proc (InCom _) = reasonLog Message.WRITELN noPos "unsupported instruction"
 
     proc (InBin IBverb False) = do
       addInstruction $ InBin IBPgls False

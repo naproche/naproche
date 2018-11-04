@@ -43,7 +43,7 @@ readProverDatabase file = do
     Left e  ->  die e
     Right d ->  return d
   where
-    die e = Message.outputExport Message.NORMAL (fileOnlyPos file) e >> exitFailure
+    die e = Message.outputExport Message.WRITELN (fileOnlyPos file) e >> exitFailure
 
 
 readProvers :: Int -> Maybe Prover -> [String] -> Either String [Prover]

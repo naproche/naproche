@@ -149,7 +149,7 @@ testDef context term (guards, fortifiedTerm) = do
     format guards = if null guards then " - " else unwords . map show $ guards
     defLog =
       whenInstruction IBPchk False .
-        reasonLog Message.NORMAL (Block.position (head $ Context.branch context))
+        reasonLog Message.WRITELN (Block.position (head $ Context.branch context))
 
 
 
