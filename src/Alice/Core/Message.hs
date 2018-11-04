@@ -4,7 +4,7 @@ Authors: Makarius Wenzel (2018)
 Formal output messages, with Prover IDE support.
 -}
 
-module Alice.Core.Message (Kind (..),
+module Alice.Core.Message (Kind (..), checkPIDE,
   output, outputMain, outputExport, outputForTheL,
   outputParser, outputReason, outputThesis, outputSimp,
   trim
@@ -46,19 +46,25 @@ textMessage origin kind pos msg =
   (case show kind of "" -> "" ; s -> s ++ ": ") ++
   (case show pos of "" -> ""; s -> s ++ "\n") ++ msg
 
-output :: String -> Kind -> SourcePos -> String -> IO ()
-output origin kind pos msg = do
+checkPIDE :: IO Bool
+checkPIDE = do
   pide <- lookupEnv "SAD3_PIDE"
   case pide of
-    Just "true" ->
-      let
-        string = YXML.string_of (xmlMessage origin kind pos msg)
-        bytes = UTF8.fromString string
-      in do
-        putStrLn $ "\001" ++ show (ByteString.length bytes)
-        ByteString.putStr bytes
-        putStrLn ""
-    _ -> putStrLn $ textMessage origin kind pos msg
+    Just "true" -> return True
+    _ -> return False
+
+output :: String -> Kind -> SourcePos -> String -> IO ()
+output origin kind pos msg = do
+  pide <- checkPIDE
+  if pide then
+    let
+      string = YXML.string_of (xmlMessage origin kind pos msg)
+      bytes = UTF8.fromString string
+    in do
+      putStrLn $ "\001" ++ show (ByteString.length bytes)
+      ByteString.putStr bytes
+      putStrLn ""
+  else putStrLn $ textMessage origin kind pos msg
 
 outputMain, outputExport, outputForTheL, outputParser, outputReason, outputSimp
   :: Kind -> SourcePos -> String -> IO ()
