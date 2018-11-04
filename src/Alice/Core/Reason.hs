@@ -30,7 +30,7 @@ import Control.Monad.Reader
 
 import Alice.Core.Position
 import Alice.Core.Base
-import Alice.Core.Message
+import qualified Alice.Core.Message as Message
 import Alice.Data.Formula
 import Alice.Data.Instr
 import Alice.Data.Text.Context (Context(Context))
@@ -87,11 +87,11 @@ sequenceGoals reasoningDepth iteration (goal:restGoals) = do
 
     depthExceedMessage =
       whenInstruction IBPrsn False $
-        reasonLog WARNING noPos "reasoning depth exceeded"
+        reasonLog Message.WARNING noPos "reasoning depth exceeded"
 
     updateTrivialStatistics = 
       unless (isTop goal) $ whenInstruction IBPrsn False $
-         reasonLog NORMAL noPos ("trivial: " ++ show goal)
+         reasonLog Message.NORMAL noPos ("trivial: " ++ show goal)
       >> incrementIntCounter TrivialGoals
 
 sequenceGoals  _ _ _ = return ()
@@ -124,7 +124,7 @@ launchProver iteration = do
       let getFormula = if reductionSetting then Context.reducedFormula else Context.formula
       contextFormulas <- asks $ map getFormula . reverse . currentContext
       concl <- thesis
-      reasonLog NORMAL noPos $ "prover task:\n" ++
+      reasonLog Message.NORMAL noPos $ "prover task:\n" ++
         concatMap (\form -> "  " ++ show form ++ "\n") contextFormulas ++
         "  |- " ++ show (Context.formula concl) ++ "\n"
 
@@ -259,9 +259,9 @@ unfold = do
   return $ newLowLevelContext ++ topLevelContext
   where
     nothingToUnfold =
-      whenInstruction IBPunf False $ reasonLog NORMAL noPos "nothing to unfold"
+      whenInstruction IBPunf False $ reasonLog Message.NORMAL noPos "nothing to unfold"
     unfoldLog (goal:lowLevelContext) =
-      whenInstruction IBPunf False $ reasonLog NORMAL noPos $ "unfold to:\n"
+      whenInstruction IBPunf False $ reasonLog Message.NORMAL noPos $ "unfold to:\n"
         ++ unlines (reverse $ map ((++) "  " . show . Context.formula) lowLevelContext)
         ++ "  |- " ++ show (neg $ Context.formula goal)
     neg (Not f) = f; neg f = f

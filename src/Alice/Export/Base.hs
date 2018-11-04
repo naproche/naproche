@@ -12,7 +12,7 @@ import System.Exit
 import System.IO
 import System.IO.Error
 import Control.Exception
-import Alice.Core.Message
+import qualified Alice.Core.Message as Message
 import Alice.Core.Position
 
 data Prover = Prover {
@@ -43,7 +43,7 @@ readProverDatabase file = do
     Left e  ->  die e
     Right d ->  return d
   where
-    die e = outputExport NORMAL (fileOnlyPos file) e >> exitFailure
+    die e = Message.outputExport Message.NORMAL (fileOnlyPos file) e >> exitFailure
 
 
 readProvers :: Int -> Maybe Prover -> [String] -> Either String [Prover]

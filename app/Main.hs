@@ -17,7 +17,7 @@ import qualified Data.IntMap.Strict as IM
 
 
 import Alice.Core.Base
-import Alice.Core.Message
+import qualified Alice.Core.Message as Message
 import Alice.Core.Position
 import Alice.Core.Verify
 import Alice.Data.Instr
@@ -57,7 +57,7 @@ main  = do
       accumulate  = accumulateIntCounter counterList 0
 
   -- print statistics
-  outputMain NORMAL noPos $
+  Message.outputMain Message.NORMAL noPos $
     "sections "       ++ show (accumulate Sections)
     ++ " - goals "    ++ show (accumulate Goals)
     ++ (let ignoredFails = accumulate FailedGoals
@@ -74,7 +74,7 @@ main  = do
 
   let trivialChecks = accumulate TrivialChecks
 
-  outputMain NORMAL noPos $
+  Message.outputMain Message.NORMAL noPos $
     "symbols "        ++ show (accumulate Symbols)
     ++ " - checks "   ++ show 
       (accumulateIntCounter counterList trivialChecks HardChecks)
@@ -86,13 +86,13 @@ main  = do
       proverTime     = accumulateTime proveStart ProofTime
       simplifyTime   = accumulateTime proverTime SimplifyTime
 
-  outputMain NORMAL noPos $
+  Message.outputMain Message.NORMAL noPos $
     "parser "           ++ showTimeDiff (diffUTCTime proveStart startTime)
     ++ " - reasoner "   ++ showTimeDiff (diffUTCTime finishTime simplifyTime)
     ++ " - simplifier " ++ showTimeDiff (diffUTCTime simplifyTime proverTime)
     ++ " - prover "     ++ showTimeDiff (diffUTCTime proverTime proveStart)
     ++ "/" ++ showTimeDiff (maximalTimeCounter counterList SuccessTime)
-  outputMain NORMAL noPos $
+  Message.outputMain Message.NORMAL noPos $
     "total "
     ++ showTimeDiff (diffUTCTime finishTime startTime)
 
@@ -100,7 +100,7 @@ main  = do
 onlyTranslate :: UTCTime -> [Text] -> IO ()
 onlyTranslate startTime text = do
   mapM_ printTB text; finishTime <- getCurrentTime
-  outputMain NORMAL noPos $ "total " ++ timeDifference finishTime
+  Message.outputMain Message.NORMAL noPos $ "total " ++ timeDifference finishTime
   exitSuccess
   where
     timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)

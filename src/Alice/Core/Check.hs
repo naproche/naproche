@@ -22,7 +22,7 @@ import qualified Alice.Data.Text.Context as Context
 import qualified Alice.Data.Text.Block as Block (link, position)
 import qualified Alice.Data.Definition as Definition
 import Alice.Core.Base
-import Alice.Core.Message
+import qualified Alice.Core.Message as Message
 import Alice.Core.Reason
 import Alice.Prove.Normalize
 import Alice.Prove.MESON
@@ -78,7 +78,7 @@ setDef isNewWord context term@Trm{trName = t, trId = tId} =
     <|>  out >> mzero ) -- failure message
   where
     out =
-      reasonLog ERROR (Block.position (Context.head context)) $
+      reasonLog Message.ERROR (Block.position (Context.head context)) $
         "unrecognized: " ++ showsPrec 2 term ""
 
 
@@ -149,7 +149,7 @@ testDef context term (guards, fortifiedTerm) = do
     format guards = if null guards then " - " else unwords . map show $ guards
     defLog =
       whenInstruction IBPchk False .
-        reasonLog NORMAL (Block.position (head $ Context.branch context))
+        reasonLog Message.NORMAL (Block.position (head $ Context.branch context))
 
 
 

@@ -23,7 +23,7 @@ import Alice.Core.Position
 import Alice.Parser.Token
 import Alice.Parser.Combinators
 import Alice.Parser.Primitives
-import Alice.Core.Message
+import qualified Alice.Core.Message as Message
 
 
 -- Init file parsing
@@ -56,7 +56,7 @@ reader pathToLibrary doneFiles stateList [TI (InStr ISread file)] =
 
 reader pathToLibrary doneFiles (pState:states) [TI (InStr ISfile file)]
   | file `elem` doneFiles = do
-      outputMain NORMAL (fileOnlyPos file) "already read, skipping"
+      Message.outputMain Message.NORMAL (fileOnlyPos file) "already read, skipping"
       (newText, newState) <- launchParser forthel pState
       reader pathToLibrary doneFiles (newState:states) newText
 
@@ -76,7 +76,7 @@ reader pathToLibrary doneFiles stateList (t:restText) =
   (t:) <$> reader pathToLibrary doneFiles stateList restText
 
 reader pathToLibrary doneFiles (pState:oldState:rest) [] = do
-  outputParser NORMAL (fileOnlyPos $ head doneFiles) "parsing successful"
+  Message.outputParser Message.NORMAL (fileOnlyPos $ head doneFiles) "parsing successful"
   let resetState = oldState {
         stUser = (stUser pState) {tvr_expr = tvr_expr $ stUser oldState}}
   (newText, newState) <- launchParser forthel resetState
@@ -90,7 +90,7 @@ reader _ _ _ [] = return []
 launchParser :: Parser st a -> State st -> IO (a, State st)
 launchParser parser state =
   case runP parser state of
-    Error err -> outputParser NORMAL noPos (show err) >> exitFailure
+    Error err -> Message.outputParser Message.NORMAL noPos (show err) >> exitFailure
     Ok [PR a st] -> return (a, st)
 
 
@@ -98,4 +98,4 @@ launchParser parser state =
 -- Service stuff
 
 die :: String -> String -> IO a
-die fileName msg = outputMain NORMAL (fileOnlyPos fileName) msg >> exitFailure
+die fileName msg = Message.outputMain Message.NORMAL (fileOnlyPos fileName) msg >> exitFailure

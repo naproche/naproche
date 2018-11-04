@@ -16,7 +16,7 @@ import Alice.Data.Text.Context (Context)
 import qualified Alice.Data.Text.Context as Context
 import qualified Alice.Data.Text.Block as Block (body, link, position)
 import Alice.Core.Base
-import Alice.Core.Message
+import qualified Alice.Core.Message as Message
 import Alice.Data.Instr
 import Alice.Core.Thesis
 import Alice.Core.Reason
@@ -136,10 +136,10 @@ generateConditions verbositySetting rules w l r =
 
     -- logging and user communication
     log leftNormalForm rightNormalForm = when verbositySetting $ do
-      simpLog NORMAL noPos "no matching normal forms found"
+      simpLog Message.NORMAL noPos "no matching normal forms found"
       showPath leftNormalForm; showPath rightNormalForm
     showPath ((t,_):rest) = when verbositySetting $
-      simpLog NORMAL noPos (show t) >> mapM_ (simpLog NORMAL noPos . format) rest
+      simpLog Message.NORMAL noPos (show t) >> mapM_ (simpLog Message.NORMAL noPos . format) rest
     -- formatting of paths
     format (t, simpInfo) = " --> " ++ show t ++ conditions simpInfo
     conditions (conditions, name) =
@@ -151,7 +151,7 @@ generateConditions verbositySetting rules w l r =
 {- applies computational reasoning to an equality chain -}
 equalityReasoning :: Context -> VM ()
 equalityReasoning thesis
-  | body = whenInstruction IBPrsn False $ reasonLog NORMAL noPos "eqchain concluded"
+  | body = whenInstruction IBPrsn False $ reasonLog Message.NORMAL noPos "eqchain concluded"
   | (not . null) link = getLinkedRules link >>= rewrite equation
   | otherwise = rules >>= rewrite equation -- if no link is given -> all rules
   where
@@ -169,7 +169,7 @@ getLinkedRules link = do
   return linkedRules
   where
     warn st =
-      simpLog WARNING noPos $
+      simpLog Message.WARNING noPos $
         "Could not find rules " ++ unwords (map show $ Set.elems st)
 
     retrieve _ [] = return []
@@ -229,7 +229,7 @@ dischargeConditions verbositySetting conditions =
       else unwords . intersperse "," . map show $ reverse conditions
     log msg =
       when verbositySetting $ thesis >>=
-        flip (simpLog NORMAL . Block.position . Context.head) msg
+        flip (simpLog Message.NORMAL . Block.position . Context.head) msg
 
     wipeLink thesis =
       let block:restBranch = Context.branch thesis

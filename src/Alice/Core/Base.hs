@@ -61,7 +61,7 @@ import Alice.Data.Evaluation (Evaluation)
 import Alice.Export.Base
 import qualified Alice.Data.Structures.DisTree as DT
 import Alice.Core.Position
-import Alice.Core.Message
+import qualified Alice.Core.Message as Message
 
 import Debug.Trace
 
@@ -243,14 +243,14 @@ showTimeDiff t
 
 -- common messages
 
-reasonLog :: Kind -> SourcePos -> String -> VM ()
-reasonLog kind pos = justIO . outputReason kind pos
+reasonLog :: Message.Kind -> SourcePos -> String -> VM ()
+reasonLog kind pos = justIO . Message.outputReason kind pos
 
-thesisLog :: Kind -> SourcePos -> Int -> String -> VM ()
-thesisLog kind pos indent = justIO . outputThesis kind pos indent
+thesisLog :: Message.Kind -> SourcePos -> Int -> String -> VM ()
+thesisLog kind pos indent = justIO . Message.outputThesis kind pos indent
 
-simpLog :: Kind -> SourcePos -> String -> VM ()
-simpLog kind pos = justIO . outputSimp kind pos
+simpLog :: Message.Kind -> SourcePos -> String -> VM ()
+simpLog kind pos = justIO . Message.outputSimp kind pos
 
 
 
@@ -289,7 +289,7 @@ retrieveContext names = do
   return context
   where
     warn unfoundSections =
-      reasonLog WARNING noPos $
+      reasonLog Message.WARNING noPos $
         "Could not find sections " ++ unwords (map show $ Set.elems unfoundSections)
     retrieve [] = return []
     retrieve (context:restContext) = let name = Context.name context in
@@ -357,7 +357,7 @@ getLink link = do
 -- add group identifier
 addGroup :: [String] -> VM ()
 addGroup [] = return ()
-addGroup [name] = reasonLog WARNING noPos $ "empty group: " ++ show name
+addGroup [name] = reasonLog Message.WARNING noPos $ "empty group: " ++ show name
 addGroup (name:identifiers) =
   getLink identifiers >>= \link -> updateGlobalState
     (\st -> st {identifierGroups = M.insert name link $ identifierGroups st})

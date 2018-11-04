@@ -4,10 +4,10 @@ Authors: Makarius Wenzel (2018)
 Formal output messages, with Prover IDE support.
 -}
 
-module Alice.Core.Message (
-  trimLine, Kind (..),
-  outputMessage, outputMain, outputExport, outputForTheL,
-  outputParser, outputReason, outputThesis, outputSimp
+module Alice.Core.Message (Kind (..),
+  output, outputMain, outputExport, outputForTheL,
+  outputParser, outputReason, outputThesis, outputSimp,
+  trim
 )
 
 where
@@ -20,9 +20,6 @@ import qualified Isabelle.YXML as YXML
 import qualified Data.ByteString as ByteString
 import qualified Data.ByteString.UTF8 as UTF8
 
-
-trimLine :: String -> String
-trimLine = Isabelle.trim_line
 
 data Kind = NORMAL | WARNING | ERROR
 instance Show Kind where
@@ -49,8 +46,8 @@ textMessage origin kind pos msg =
   (case show kind of "" -> "" ; s -> s ++ ": ") ++
   (case show pos of "" -> ""; s -> s ++ "\n") ++ msg
 
-outputMessage :: String -> Kind -> SourcePos -> String -> IO ()
-outputMessage origin kind pos msg = do
+output :: String -> Kind -> SourcePos -> String -> IO ()
+output origin kind pos msg = do
   pide <- lookupEnv "SAD3_PIDE"
   case pide of
     Just "true" ->
@@ -63,24 +60,18 @@ outputMessage origin kind pos msg = do
         putStrLn ""
     _ -> putStrLn $ textMessage origin kind pos msg
 
-outputMain :: Kind -> SourcePos -> String -> IO ()
-outputMain = outputMessage "Main"
-
-outputExport :: Kind -> SourcePos -> String -> IO ()
-outputExport = outputMessage "Export"
-
-outputForTheL :: Kind -> SourcePos -> String -> IO ()
-outputForTheL = outputMessage "ForTheL"
-
-outputParser :: Kind -> SourcePos -> String -> IO ()
-outputParser = outputMessage "Parser"
-
-outputReason :: Kind -> SourcePos -> String -> IO ()
-outputReason = outputMessage "Reasoner"
+outputMain, outputExport, outputForTheL, outputParser, outputReason, outputSimp
+  :: Kind -> SourcePos -> String -> IO ()
+outputMain = output "Main"
+outputExport = output "Export"
+outputForTheL = output "ForTheL"
+outputParser = output "Parser"
+outputReason = output "Reasoner"
+outputSimp = output "Simplifier"
 
 outputThesis :: Kind -> SourcePos -> Int -> String -> IO ()
 outputThesis kind pos indent msg =
-  outputMessage "Thesis" kind pos $ replicate (3 * indent) ' ' ++ msg
+  output "Thesis" kind pos $ replicate (3 * indent) ' ' ++ msg
 
-outputSimp :: Kind -> SourcePos -> String -> IO ()
-outputSimp = outputMessage "Simplifier"
+trim :: String -> String
+trim = Isabelle.trim_line

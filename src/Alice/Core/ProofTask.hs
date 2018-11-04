@@ -14,7 +14,7 @@ import Alice.Data.Text.Context (Context)
 import qualified Alice.Data.Text.Context as Context
 import Alice.Prove.Normalize
 import Alice.Core.Base
-import Alice.Core.Message
+import qualified Alice.Core.Message as Message
 
 import qualified Control.Monad.Writer as W
 import Data.List
@@ -176,7 +176,7 @@ getMacro cx tg = fmap (Tag tg . pd ) . either err return . dive
     dive (Tag tg' f) | tg == tg' = return f
     dive _ = Left $ "could not unfold macro: " ++ mcr tg
 
-    err s = reasonLog WARNING (Block.position (Context.head cx)) s >> return Top
+    err s = reasonLog Message.WARNING (Block.position (Context.head cx)) s >> return Top
 
     pd (Imp f g) = Imp (Tag InductionHypothesis f) g -- auto instantiate quantified variable
     pd f = f
