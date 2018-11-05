@@ -1,12 +1,12 @@
-name:                SAD3
+name:                Naproche-SAD
 version:             0.1.0.0
-github:              "PeterKoepke/SAD3"
+github:              "Naproche/Naproche-SAD"
 license:             GPL3
 
 extra-source-files:
 - README.md
 
-description:         <https://github.com/PeterKoepke/SAD3>
+description:         <https://github.com/Naproche/Naproche-SAD>
 
 dependencies:
 - base >= 4.7 && < 5
@@ -24,7 +24,7 @@ library:
     - Isabelle/src
 
 executables:
-  SAD3-exe:
+  Naproche-SAD:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
@@ -32,10 +32,10 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - SAD3
+    - Naproche-SAD
 
 tests:
-  SAD3-test:
+  Naproche-SAD-test:
     main:                Spec.hs
     source-dirs:         test
     ghc-options:
@@ -43,4 +43,4 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - SAD3
+    - Naproche-SAD
