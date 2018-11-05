@@ -31,9 +31,8 @@ ML_command \<open>
   let
     val dir = Path.append (Resources.master_directory \<^theory>) \<^path>\<open>src/Isabelle\<close>
     val _ = Isabelle_System.mkdirs dir;
-  in
-    Haskell.source_modules |> List.app (fn file => Isabelle_System.copy_file file dir)
-  end
+    val _ = Haskell.install_sources dir;
+  in () end
 \<close>
 
 end
