@@ -39,3 +39,8 @@
 * The Haskell Tool Stack: https://www.haskellstack.org
 
 * Haskell IDE within VSCode: https://github.com/haskell/haskell-ide-engine
+
+
+# Reference #
+This program is based on the System for Automated Deduction by Andrei Paskevich.
+https://github.com/tertium/SAD
