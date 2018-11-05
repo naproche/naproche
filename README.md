@@ -1,6 +1,6 @@
-## SAD3 ##
+## Naproche-SAD ##
 
-*System for Automated Deduction* (SAD 3rd generation) -- Proof Checking of Natural Mathematical Documents
+*System for Automated Deduction* (Naproche branch) -- Proof Checking of Natural Mathematical Documents
 
 
 # Build #
@@ -19,7 +19,7 @@
 
     for FILE in examples/*.ftl
     do
-      stack exec SAD3-exe -- "$FILE"
+      stack exec Naproche-SAD -- "$FILE"
     done
 
 
