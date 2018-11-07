@@ -35,7 +35,7 @@
 
 * open ForTheL file with implicit theory context, e.g.
 
-      isabelle jedit -l Pure examples/
+      isabelle jedit -l Pure examples/powerset.ftl
 
 
 # Development #
