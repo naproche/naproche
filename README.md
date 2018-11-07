@@ -27,7 +27,7 @@
 
 * edit $ISABELLE_HOME_USER/etc/settings to include this directory as component, e.g.:
 
-      init_component "$HOME/isabelle/SAD3/repos"
+      init_component "$HOME/isabelle/Naproche/repos"
 
 * open theory with Isabelle/jEdit, e.g.
 

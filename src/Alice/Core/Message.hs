@@ -84,7 +84,7 @@ textMessage origin kind pos msg =
 
 checkPIDE :: IO Bool
 checkPIDE = do
-  pide <- lookupEnv "SAD3_PIDE"
+  pide <- lookupEnv "NAPROCHE_PIDE"
   case pide of
     Just "true" -> return True
     _ -> return False

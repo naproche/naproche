@@ -1,6 +1,6 @@
 (* :mode=isabelle-options: *)
 
-section "SAD3 / ForTheL"
+section "NaProChe / ForTheL"
 
 public option forthel_prove : bool = true
   -- "prove goals in the text"

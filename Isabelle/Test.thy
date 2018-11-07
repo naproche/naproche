@@ -1,5 +1,5 @@
 theory Test
-  imports SAD3
+  imports Naproche
 begin
 
 declare [[forthel_prove = false]]

@@ -1,3 +1,3 @@
 # -*- shell-script -*- :mode=shellscript:
 
-SAD3_EXE="$(cd "$SAD3_HOME"; standard_path "$(stack path --local-install-root)/bin/SAD3-exe")"
+NAPROCHE_EXE="$(cd "$NAPROCHE_HOME"; standard_path "$(stack path --local-install-root)/bin/Naproche-SAD")"

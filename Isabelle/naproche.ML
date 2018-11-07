@@ -1,17 +1,17 @@
 (*
 Authors: Makarius (2018)
 
-Support for SAD3 / ForTheL within Isabelle.
+Support for NaProChe / ForTheL within Isabelle.
 *)
 
-signature SAD3 =
+signature NAPROCHE =
 sig
   val forthel_prove: bool Config.T
   val forthel_check: bool Config.T
   val forthel_file: Proof.context -> Token.file -> unit
 end;
 
-structure SAD3: SAD3 =
+structure Naproche: NAPROCHE =
 struct
 
 (** options **)
@@ -38,7 +38,7 @@ fun output_message name =
   the_default writeln (Symtab.lookup message_fns name);
 
 fun forthel_file ctxt (file: Token.file) =
-  Isabelle_System.with_tmp_dir "SAD3" (fn tmp_dir =>
+  Isabelle_System.with_tmp_dir "naproche" (fn tmp_dir =>
     let
       val thy = Proof_Context.theory_of ctxt;
 
@@ -69,7 +69,7 @@ fun forthel_file ctxt (file: Token.file) =
             (case try YXML.parse str of
               SOME (XML.Elem ((elem, props), body)) =>
                 output_message elem
-                  (enclose "[" "]" (the_default "SAD3" (Properties.get props "origin")) ^
+                  (enclose "[" "]" (the_default "NaProChe" (Properties.get props "origin")) ^
                     print_position props ^ YXML.string_of_body body)
             | SOME (XML.Text s) => writeln s
             | NONE => Output.error_message ("Malformed YXML tree " ^ quote str)));
@@ -91,10 +91,10 @@ fun forthel_file ctxt (file: Token.file) =
       val script =
         cat_lines [
           "set -e",
-          "cd \"$SAD3_HOME\"",
+          "cd \"$NAPROCHE_HOME\"",
           "export PATH=\"$E_HOME:$SPASS_HOME:$PATH\"",
-          "export SAD3_PIDE=true",
-          File.bash_path (Path.explode "$SAD3_EXE") ^
+          "export NAPROCHE_PIDE=true",
+          File.bash_path (Path.explode "$NAPROCHE_EXE") ^
             " --prove=" ^ bool_option ctxt forthel_prove ^
             " --check=" ^ bool_option ctxt forthel_check ^
             " -- " ^ File.bash_path tmp_file];

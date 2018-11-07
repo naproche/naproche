@@ -1,6 +1,6 @@
-session SAD3 = Pure +
+session Naproche = Pure +
   sessions
     Haskell
-  theories [condition = SAD3_HOME]
-    SAD3
+  theories [condition = NAPROCHE_HOME]
+    Naproche
     Test

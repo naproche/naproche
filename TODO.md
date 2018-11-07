@@ -32,7 +32,7 @@
 
 # General #
 
-* clarify project / program name: "Alice" vs. "SAD3" vs. "ForTheL"
+* clarify project / program name: "Alice" vs. "Naproche" vs. "ForTheL"
 
 * stay-resident server instead of command-line batch-tool (??)
 
