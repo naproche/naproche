@@ -1,6 +1,7 @@
 ## Naproche-SAD ##
 
-*System for Automated Deduction* (Naproche branch) -- Proof Checking of Natural Mathematical Documents
+*System for Automated Deduction* (Naproche branch) -- Proof Checking of
+Natural Mathematical Documents
 
 
 # Build #
@@ -25,7 +26,8 @@
 
 # Isabelle PIDE #
 
-* edit $ISABELLE_HOME_USER/etc/settings to include this directory as component, e.g.:
+* edit $ISABELLE_HOME_USER/etc/settings to include this directory as
+component, e.g.:
 
       init_component "$HOME/isabelle/Naproche/repos"
 
@@ -46,5 +48,6 @@
 
 
 # Reference #
-This program is based on the System for Automated Deduction by Andrei Paskevich.
-https://github.com/tertium/SAD
+
+This program is based on the System for Automated Deduction by Andrei
+Paskevich, see https://github.com/tertium/SAD
