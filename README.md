@@ -33,6 +33,10 @@
 
       isabelle jedit -l Pure Isabelle/Test.thy
 
+* open ForTheL file with implicit theory context, e.g.
+
+      isabelle jedit -l Pure examples/
+
 
 # Development #
 
