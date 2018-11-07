@@ -102,4 +102,15 @@ fun forthel_file ctxt (file: Token.file) =
       val _ = detect_messages 0 [] (split_lines out);
     in if rc = 0 then () else error ("Return code: " ^ string_of_int rc) end);
 
+
+(* Isabelle/Isar command *)
+
+val _ =
+  Outer_Syntax.command \<^command_keyword>\<open>forthel_file\<close> "check NaProChe .ftl file"
+    (Parse.token Parse.path >> (fn tok =>
+      Toplevel.keep (fn st =>
+        (case Token.get_files tok of
+          [Exn.Res file] => forthel_file (Toplevel.context_of st) file
+        | _ => ()))));
+
 end;
