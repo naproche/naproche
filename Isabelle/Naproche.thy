@@ -1,7 +1,7 @@
 (*
 Authors: Makarius (2018)
 
-Support for NaProChe / ForTheL within Isabelle.
+Isabelle Prover IDE support for NaProChe / ForTheL.
 *)
 
 theory Naproche

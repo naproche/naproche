@@ -1,7 +1,7 @@
 (*
 Authors: Makarius (2018)
 
-Support for NaProChe / ForTheL within Isabelle.
+Isabelle Prover IDE support for NaProChe / ForTheL.
 *)
 
 signature NAPROCHE =
@@ -14,7 +14,7 @@ end;
 structure Naproche: NAPROCHE =
 struct
 
-(** options **)
+(* options *)
 
 val forthel_prove = Attrib.setup_option_bool (\<^system_option>\<open>forthel_prove\<close>, \<^here>);
 val forthel_check = Attrib.setup_option_bool (\<^system_option>\<open>forthel_check\<close>, \<^here>);
@@ -22,7 +22,7 @@ val forthel_check = Attrib.setup_option_bool (\<^system_option>\<open>forthel_ch
 fun bool_option ctxt config = if Config.get ctxt config then "on" else "off";
 
 
-(** process ForTheL files **)
+(* process ForTheL files *)
 
 val message_fns =
   Symtab.make
@@ -103,7 +103,7 @@ fun forthel_file ctxt (file: Token.file) =
     in if rc = 0 then () else error ("Return code: " ^ string_of_int rc) end);
 
 
-(* Isabelle/Isar command *)
+(* Isabelle/Isar command setup *)
 
 val _ =
   Outer_Syntax.command \<^command_keyword>\<open>forthel_file\<close> "check NaProChe .ftl file"
