@@ -24,15 +24,4 @@ val _ =
         | _ => ()))));
 \<close>
 
-
-section \<open>Generated Isabelle/Haskell sources\<close>
-
-ML_command \<open>
-  let
-    val dir = Path.append (Resources.master_directory \<^theory>) \<^path>\<open>src/Isabelle\<close>
-    val _ = Isabelle_System.mkdirs dir;
-    val _ = Haskell.install_sources dir;
-  in () end
-\<close>
-
 end

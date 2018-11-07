@@ -1,4 +1,5 @@
 .stack-work/
+*.jar
 *.swp
 *~
 Naproche-SAD.cabal
