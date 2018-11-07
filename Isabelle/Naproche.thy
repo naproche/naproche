@@ -25,7 +25,7 @@ val _ =
 \<close>
 
 
-section \<open>Generated source modules\<close>
+section \<open>Generated Isabelle/Haskell sources\<close>
 
 ML_command \<open>
   let
