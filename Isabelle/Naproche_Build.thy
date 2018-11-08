@@ -8,7 +8,7 @@ theory Naproche_Build
   imports Pure Haskell.Haskell
 begin
 
-section \<open>Generated Isabelle/Haskell sources\<close>
+section \<open>Isabelle/Haskell modules\<close>
 
 ML_command \<open>
   let
@@ -19,7 +19,7 @@ ML_command \<open>
 \<close>
 
 
-section \<open>Add-ons for Isabelle/Scala\<close>
+section \<open>Isabelle/Scala modules\<close>
 
 external_file "file_format.scala"
 
