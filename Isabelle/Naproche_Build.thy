@@ -27,15 +27,15 @@ ML_command \<open>
   Isabelle_System.with_tmp_dir "scalac" (fn tmp_dir =>
     let
       val master_dir = Resources.master_directory \<^theory>;
+      val bash_paths = Bash.strings o map (File.platform_path o Path.append master_dir);
+
       val sources = [\<^path>\<open>file_format.scala\<close>];
       val target = \<^path>\<open>naproche.jar\<close>;
       val (out, rc) =
         Isabelle_System.bash_output
-          ("cd " ^ File.bash_path tmp_dir ^ " && \n\
-           \isabelle scalac $ISABELLE_SCALAC_OPTIONS " ^
-              File.bash_paths (map (Path.append master_dir) sources) ^ " && \n\
-           \isabelle_jdk jar cf " ^
-              Bash.string (File.platform_path (Path.append master_dir target)) ^ " *");
+          ("cd " ^ File.bash_path tmp_dir ^ " && \
+           \isabelle scalac $ISABELLE_SCALAC_OPTIONS " ^ bash_paths sources ^ " && \
+           \isabelle_jdk jar cf " ^ bash_paths [target] ^ " *");
     in if rc = 0 then writeln out else error out end);
 \<close>
 
