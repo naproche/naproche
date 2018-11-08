@@ -107,10 +107,11 @@ fun forthel_file ctxt (file: Token.file) =
 
 val _ =
   Outer_Syntax.command \<^command_keyword>\<open>forthel_file\<close> "check NaProChe .ftl file"
-    (Parse.token Parse.path >> (fn tok =>
-      Toplevel.keep (fn st =>
-        (case Token.get_files tok of
-          [Exn.Res file] => forthel_file (Toplevel.context_of st) file
-        | _ => ()))));
+    (Resources.provide_parse_files "forthel_file" >> (fn files =>
+      Toplevel.generic_theory (fn gthy =>
+        let
+          val ([file], gthy') = Context.map_theory_result files gthy;
+          val _ = forthel_file (Context.proof_of gthy) file;
+        in gthy' end)));
 
 end;
