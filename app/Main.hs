@@ -82,7 +82,7 @@ main  = do
 
   Message.outputMain Message.WRITELN noPos $
     "symbols "        ++ show (accumulate Symbols)
-    ++ " - checks "   ++ show 
+    ++ " - checks "   ++ show
       (accumulateIntCounter counterList trivialChecks HardChecks)
     ++ " - trivial "  ++ show trivialChecks
     ++ " - proved "   ++ show (accumulate SuccessfulChecks)
@@ -117,18 +117,16 @@ onlyTranslate startTime text = do
 
 readOpts :: IO [Instr]
 readOpts  = do
-  (is, fs, es) <- fmap (getOpt Permute options) getArgs
-  let text = is ++ [InStr ISfile $ head $ fs ++ [""]]
-  unless (all wellformed is && null es) $ die es
-  when (askIB IBhelp False is) helper
+  (instrs, files, errs) <- fmap (getOpt Permute options) getArgs
+  let text = instrs ++ [InStr ISfile $ head $ files ++ [""]]
+  unless (all wellformed instrs && null errs)
+    (putStr (concatMap ("[Main] " ++) errs) >> exitFailure)
+  when (askIB IBhelp False instrs)
+    (putStr (usageInfo usageHeader options) >> exitSuccess)
   return text
 
 wellformed (InBin _ v)  = v == v; wellformed (InInt _ v)  = v == v
 wellformed _            = True
-
-helper = putStr (usageInfo usageHeader options) >> exitSuccess
-
-die es = putStr (concatMap ("[Main] " ++) es) >> exitFailure
 
 usageHeader  = "Usage: alice <options...> <file>"
 
