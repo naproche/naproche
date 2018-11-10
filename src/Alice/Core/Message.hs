@@ -71,16 +71,22 @@ xmlMessage origin kind pos msg =
       else ("origin", origin) : posProperties pos
 
 
-{- output as plain text -}
+{- message text -}
 
-textMessage :: String -> Kind -> SourcePos -> String -> String
-textMessage origin kind pos msg =
-  (if null origin then "" else "[" ++ origin ++ "] ") ++
-  (case show kind of "" -> "" ; s -> s ++ ": ") ++
-  (case show pos of "" -> ""; s -> s ++ "\n") ++ msg
+messageText :: Bool -> String -> Kind -> SourcePos -> String -> String
+messageText pide origin kind pos msg =
+  if pide then
+    let
+      yxml = YXML.string_of (xmlMessage origin kind pos msg)
+      len = ByteString.length (UTF8.fromString yxml)
+    in "\1" ++ Value.print_int len ++ "\n" ++ yxml
+  else
+    (if null origin then "" else "[" ++ origin ++ "] ") ++
+    (case show kind of "" -> "" ; s -> s ++ ": ") ++
+    (case show pos of "" -> ""; s -> s ++ "\n") ++ msg
 
 
-{- conditional output -}
+{- output -}
 
 checkPIDE :: IO Bool
 checkPIDE = do
@@ -92,15 +98,7 @@ checkPIDE = do
 output :: String -> Kind -> SourcePos -> String -> IO ()
 output origin kind pos msg = do
   pide <- checkPIDE
-  if pide then
-    let
-      string = YXML.string_of (xmlMessage origin kind pos msg)
-      bytes = UTF8.fromString string
-    in do
-      putStrLn $ "\1" ++ Value.print_int (ByteString.length bytes)
-      ByteString.putStr bytes
-      putStrLn ""
-  else putStrLn $ textMessage origin kind pos msg
+  putStrLn $ messageText pide origin kind pos msg
 
 
 {- specific messages -}
