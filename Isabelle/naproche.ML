@@ -74,9 +74,13 @@ fun forthel_file ctxt (file: Token.file) =
             | SOME (XML.Text s) => writeln s
             | NONE => Output.error_message ("Malformed YXML tree " ^ quote str)));
 
+      val line_prefixes =
+        ["\001", Path.base_name (Path.expand (Path.explode "$NAPROCHE_EXE")) ^ ": \001"];
+      fun detect_line line = get_first (fn prfx => try (unprefix prfx) line) line_prefixes;
+
       fun detect_messages 0 acc (line :: lines) =
             (output_acc acc;
-             case line |> try (unprefix "\001") |> Option.mapPartial (try Value.parse_nat) of
+             case line |> detect_line |> Option.mapPartial (try Value.parse_nat) of
               SOME n => detect_messages n [] lines
             | NONE => (writeln line; detect_messages 0 [] lines))
         | detect_messages n acc [line] = detect_messages (n - size line) (line :: acc) []
@@ -98,7 +102,8 @@ fun forthel_file ctxt (file: Token.file) =
             " --prove=" ^ bool_option ctxt forthel_prove ^
             " --check=" ^ bool_option ctxt forthel_check ^
             " -- " ^ File.bash_path tmp_file];
-      val (out, rc) = Isabelle_System.bash_output script;
+      val {out, err, rc, ...} = Bash.process script;
+      val _ = detect_messages 0 [] (split_lines err);
       val _ = detect_messages 0 [] (split_lines out);
     in if rc = 0 then () else error ("Return code: " ^ string_of_int rc) end);
 

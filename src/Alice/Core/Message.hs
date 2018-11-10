@@ -5,11 +5,14 @@ Formal output messages, with Prover IDE support.
 -}
 
 module Alice.Core.Message (Kind (..), checkPIDE,
-  output, outputMain, outputExport, outputForTheL,
+  output, error, outputMain, outputExport, outputForTheL,
   outputParser, outputReason, outputThesis, outputSimp,
+  errorExport,
   trim
 ) where
 
+import Prelude hiding (error)
+import qualified Prelude (error)
 import System.Environment
 import qualified Data.ByteString as ByteString
 import qualified Data.ByteString.UTF8 as UTF8
@@ -100,6 +103,11 @@ output origin kind pos msg = do
   pide <- checkPIDE
   putStrLn $ messageText pide origin kind pos msg
 
+error :: String -> SourcePos -> String -> IO a
+error origin pos msg = do
+  pide <- checkPIDE
+  errorWithoutStackTrace $ messageText pide origin ERROR pos msg
+
 
 {- specific messages -}
 
@@ -111,6 +119,8 @@ outputForTheL = output "ForTheL"
 outputParser = output "Parser"
 outputReason = output "Reasoner"
 outputSimp = output "Simplifier"
+
+errorExport = error "Export"
 
 outputThesis :: Kind -> SourcePos -> Int -> String -> IO ()
 outputThesis kind pos indent msg =
