@@ -10,7 +10,6 @@ import Data.List
 import Control.Monad
 import System.IO
 import System.IO.Error
-import System.Exit hiding (die)
 import Control.Exception
 
 import Alice.Data.Text.Block
@@ -23,6 +22,7 @@ import Alice.Core.Position
 import Alice.Parser.Token
 import Alice.Parser.Combinators
 import Alice.Parser.Primitives
+import Alice.Parser.Error
 import qualified Alice.Core.Message as Message
 import qualified Isabelle.File as File
 
@@ -32,7 +32,7 @@ import qualified Isabelle.File as File
 readInit :: String -> IO [Instr]
 readInit "" = return []
 readInit file = do
-  input <- catch (File.read file) $ die file . ioeGetErrorString
+  input <- catch (File.read file) $ Message.errorParser (fileOnlyPos file) . ioeGetErrorString
   let tokens = tokenize (filePos file) input
       initialParserState = State () tokens noPos
   fst <$> launchParser instructionFile initialParserState
@@ -49,7 +49,7 @@ readText pathToLibrary = reader pathToLibrary [] [State initFS noTokens noPos]
 reader :: String -> [String] -> [State FState] -> [Text] -> IO [Text]
 
 reader _ _ _ [TI (InStr ISread file)] | isInfixOf ".." file =
-  die file "contains \"..\", not allowed"
+  Message.errorParser (fileOnlyPos file) "contains \"..\", not allowed"
 
 reader pathToLibrary doneFiles stateList [TI (InStr ISread file)] =
   reader pathToLibrary doneFiles stateList
@@ -66,7 +66,7 @@ reader pathToLibrary doneFiles (pState:states) [TI (InStr ISfile file)] = do
         if   null file
         then getContents
         else File.read file
-  input <- catch gfl $ die file . ioeGetErrorString
+  input <- catch gfl $ Message.errorParser (fileOnlyPos file) . ioeGetErrorString
   let tokens = tokenize (filePos file) input
       st  = State ((stUser pState) { tvr_expr = [] }) tokens noPos
   (ntx, nps) <- launchParser forthel st
@@ -91,12 +91,5 @@ reader _ _ _ [] = return []
 launchParser :: Parser st a -> State st -> IO (a, State st)
 launchParser parser state =
   case runP parser state of
-    Error err -> Message.outputParser Message.WRITELN noPos (show err) >> exitFailure
+    Error err -> Message.errorParser (errorPos err) (show err)
     Ok [PR a st] -> return (a, st)
-
-
-
--- Service stuff
-
-die :: String -> String -> IO a
-die fileName msg = Message.outputMain Message.WRITELN (fileOnlyPos fileName) msg >> exitFailure

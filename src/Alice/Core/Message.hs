@@ -7,7 +7,7 @@ Formal output messages, with Prover IDE support.
 module Alice.Core.Message (Kind (..), checkPIDE,
   output, error, outputMain, outputExport, outputForTheL,
   outputParser, outputReason, outputThesis, outputSimp,
-  errorExport,
+  errorExport, errorParser,
   trim
 ) where
 
@@ -121,6 +121,7 @@ outputReason = output "Reasoner"
 outputSimp = output "Simplifier"
 
 errorExport = error "Export"
+errorParser = error "Parser"
 
 outputThesis :: Kind -> SourcePos -> Int -> String -> IO ()
 outputThesis kind pos indent msg =
