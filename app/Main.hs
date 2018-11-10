@@ -24,12 +24,18 @@ import Alice.Data.Instr
 import Alice.Data.Text.Block
 import Alice.Export.Base
 import Alice.Import.Reader
+import qualified Isabelle.File as File
+
 
 {- and what is the use of a book without pictures or conversation? -}
 
 main :: IO ()
 main  = do
   startTime <- getCurrentTime
+
+  -- setup stdin/stdout
+  File.setup stdin
+  File.setup stdout
   hSetBuffering stdout LineBuffering
 
   commandLine <- readOpts

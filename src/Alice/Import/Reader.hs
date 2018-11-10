@@ -24,6 +24,7 @@ import Alice.Parser.Token
 import Alice.Parser.Combinators
 import Alice.Parser.Primitives
 import qualified Alice.Core.Message as Message
+import qualified Isabelle.File as File
 
 
 -- Init file parsing
@@ -31,7 +32,7 @@ import qualified Alice.Core.Message as Message
 readInit :: String -> IO [Instr]
 readInit "" = return []
 readInit file = do
-  input <- catch (readFile file) $ die file . ioeGetErrorString
+  input <- catch (File.read file) $ die file . ioeGetErrorString
   let tokens = tokenize (filePos file) input
       initialParserState = State () tokens noPos
   fst <$> launchParser instructionFile initialParserState
@@ -64,7 +65,7 @@ reader pathToLibrary doneFiles (pState:states) [TI (InStr ISfile file)] = do
   let gfl =
         if   null file
         then getContents
-        else readFile file
+        else File.read file
   input <- catch gfl $ die file . ioeGetErrorString
   let tokens = tokenize (filePos file) input
       st  = State ((stUser pState) { tvr_expr = [] }) tokens noPos

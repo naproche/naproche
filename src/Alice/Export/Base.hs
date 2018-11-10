@@ -14,6 +14,7 @@ import System.IO.Error
 import Control.Exception
 import qualified Alice.Core.Message as Message
 import Alice.Core.Position
+import qualified Isabelle.File as File
 
 data Prover = Prover {
   name           :: String,
@@ -35,7 +36,7 @@ initPrv l = Prover l "Prover" "" [] TPTP [] [] []
 {- parse the prover database in provers.dat -}
 readProverDatabase :: String -> IO [Prover]
 readProverDatabase file = do
-  inp <- catch (readFile file) $ die . ioeGetErrorString
+  inp <- catch (File.read file) $ die . ioeGetErrorString
   let dropWS = dropWhile isSpace
       trimWS = reverse . dropWS . reverse . dropWS
       lns = map trimWS $ lines inp
