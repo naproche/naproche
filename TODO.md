@@ -40,6 +40,6 @@
 
 * more robust / scalable library handling (imports) (!?)
 
-* clarify exceptions vs. errors vs. system exit, e.g. for stay-resident server
+* clarify error handling in Main, e.g. for stay-resident server
   with multiple running requests, see also
   https://wiki.haskell.org/Error_vs._Exception
