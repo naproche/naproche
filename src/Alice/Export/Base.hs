@@ -6,8 +6,7 @@ Construct prover database.
 
 module Alice.Export.Base (Prover(..),Format(..),readProverDatabase) where
 
-import Data.Char
-import Data.List
+import qualified Data.Char as Char
 import System.Exit
 import System.IO
 import System.IO.Error
@@ -36,11 +35,11 @@ initPrv l = Prover l "Prover" "" [] TPTP [] [] []
 {- parse the prover database in provers.dat -}
 readProverDatabase :: String -> IO [Prover]
 readProverDatabase file = do
-  inp <- catch (File.read file) $ die . ioeGetErrorString
-  let dropWS = dropWhile isSpace
+  input <- catch (File.read file) $ die . ioeGetErrorString
+  let dropWS = dropWhile Char.isSpace
       trimWS = reverse . dropWS . reverse . dropWS
-      lns = map trimWS $ lines inp
-  case readProvers 1 Nothing lns of
+      ls = map trimWS $ lines input
+  case readProvers 1 Nothing ls of
     Left e  ->  die e
     Right d ->  return d
   where
