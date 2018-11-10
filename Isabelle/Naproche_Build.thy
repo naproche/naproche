@@ -12,7 +12,7 @@ section \<open>Isabelle/Haskell modules\<close>
 
 ML_command \<open>
   let
-    val dir = Path.append (Resources.master_directory \<^theory>) \<^path>\<open>src/Isabelle\<close>
+    val dir = Path.append \<^master_dir> \<^path>\<open>src/Isabelle\<close>
     val _ = Isabelle_System.mkdirs dir;
     val _ = Haskell.install_sources dir;
   in () end
@@ -26,9 +26,7 @@ external_file "file_format.scala"
 ML_command \<open>
   Isabelle_System.with_tmp_dir "scalac" (fn tmp_dir =>
     let
-      val master_dir = Resources.master_directory \<^theory>;
-      val bash_paths = Bash.strings o map (File.platform_path o Path.append master_dir);
-
+      val bash_paths = Bash.strings o map (File.platform_path o Path.append \<^master_dir>);
       val sources = [\<^path>\<open>file_format.scala\<close>];
       val target = \<^path>\<open>naproche.jar\<close>;
       val (out, rc) =
