@@ -10,7 +10,6 @@ module Alice.Export.Prover where
 import Control.Monad
 import Data.List
 import Data.Char
-import System.Exit
 import System.IO
 import System.IO.Error
 import System.Process

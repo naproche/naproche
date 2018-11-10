@@ -7,7 +7,6 @@ Construct prover database.
 module Alice.Export.Base (Prover(..),Format(..),readProverDatabase) where
 
 import qualified Data.Char as Char
-import System.Exit
 import System.IO
 import System.IO.Error
 import Control.Exception
