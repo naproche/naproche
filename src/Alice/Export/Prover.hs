@@ -37,13 +37,13 @@ import Alice.Export.DFG
 export :: Bool -> Int -> [Prover] -> [Instr] -> [Context] -> Context
        -> IO (IO Bool)
 export red m prs ins cnt gl =
-  do  when (null prs) $ die "no provers"
+  do  when (null prs) $ Message.errorExport noPos "no provers"
 
       let prn = askIS ISprvr (name $ head prs) ins
       -- ask whether the user gave a prover, else take the first on the list
           prr = filter ((==) prn . name) prs
 
-      when (null prr) $ die $ "no prover: " ++ prn
+      when (null prr) $ Message.errorExport noPos $ "no prover: " ++ prn
 
       let prv@(Prover _ label path args fmt yes nos uns) = head prr
           tlm = askII IItlim 3 ins; agl = map (setTlim tlm) args
@@ -62,7 +62,8 @@ export red m prs ins cnt gl =
 
       seq (length task) $ return $
         do  (wh,rh,eh,ph) <- catch run
-                $ \ e -> die $ "failed to run \"" ++ path ++ "\": " ++ ioeGetErrorString e
+                $ \e -> Message.errorExport noPos $
+                    "failed to run \"" ++ path ++ "\": " ++ ioeGetErrorString e
 
             hPutStrLn wh task ; hClose wh
             -- write the task to the prover input
@@ -72,7 +73,7 @@ export red m prs ins cnt gl =
             let lns = filter (not . null) $ lines $ ofl ++ efl
                 out = map (("[" ++ label ++ "] ") ++) lns
 
-            when (length lns == 0) $ die "empty response"
+            when (length lns == 0) $ Message.errorExport noPos "empty response"
             when (askIB IBPprv False ins) $ mapM_ (Message.output "" Message.WRITELN noPos) out
             -- if the user has enabled it, print the proveroutput
 
@@ -81,7 +82,7 @@ export red m prs ins cnt gl =
                 unk = any (\ l -> any (`isPrefixOf` l) uns) lns
             -- prover response can be: positive, negative or inconclusive
 
-            unless (pos || neg || unk) $ die "bad response"
+            unless (pos || neg || unk) $ Message.errorExport noPos "bad response"
 
             hClose eh ; waitForProcess ph
             -- close error handle and wait for prover to terminate
@@ -91,5 +92,3 @@ export red m prs ins cnt gl =
     setTlim tl ('%':'d':rs) = show tl ++ rs
     setTlim tl (s:rs)       = s : setTlim tl rs
     setTlim _ _             = []
-
-    die s = Message.outputExport Message.WRITELN noPos s >> exitFailure

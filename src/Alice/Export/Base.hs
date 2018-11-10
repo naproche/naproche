@@ -35,15 +35,15 @@ initPrv l = Prover l "Prover" "" [] TPTP [] [] []
 {- parse the prover database in provers.dat -}
 readProverDatabase :: String -> IO [Prover]
 readProverDatabase file = do
-  input <- catch (File.read file) $ die . ioeGetErrorString
+  input <- catch (File.read file) $ err . ioeGetErrorString
   let dropWS = dropWhile Char.isSpace
       trimWS = reverse . dropWS . reverse . dropWS
       ls = map trimWS $ lines input
   case readProvers 1 Nothing ls of
-    Left e  ->  die e
+    Left e  ->  err e
     Right d ->  return d
   where
-    die e = Message.outputExport Message.WRITELN (fileOnlyPos file) e >> exitFailure
+    err = Message.errorExport (fileOnlyPos file)
 
 
 readProvers :: Int -> Maybe Prover -> [String] -> Either String [Prover]
