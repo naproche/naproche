@@ -1,7 +1,7 @@
 name:                Naproche-SAD
 version:             0.1.0.0
 github:              "Naproche/Naproche-SAD"
-license:             GPL3
+license:             GPL-3
 
 extra-source-files:
 - README.md
