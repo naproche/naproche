@@ -4,10 +4,14 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
 Tokenization of input.
 -}
 
+{-# LANGUAGE NamedFieldPuns #-}
+
 module Alice.Parser.Token
   ( Token (tokenPos),
     showToken,
+    properToken,
     tokenize,
+    tokenReports,
     composeToken,
     isEOF,
     noTokens)
@@ -17,47 +21,69 @@ import Data.Char
 import Data.List
 
 import Alice.Core.Position
+import qualified Alice.Core.Message as Message
+import qualified Isabelle.Markup as Markup
+
 
 data Token =
   Token {
     tokenText :: String,
     tokenPos :: SourcePos,
-    tokenWhiteSpace :: Bool} |
+    tokenWhiteSpace :: Bool,
+    tokenProper :: Bool} |
   EOF {tokenPos :: SourcePos}
 
-makeToken s pos ws =
-  Token s (rangePos (pos, advancesPos pos s)) ws
+makeToken s pos ws proper =
+  Token s (rangePos (pos, advancesPos pos s)) ws proper
 
 showToken :: Token -> String
 showToken t@Token{} = tokenText t
 showToken EOF{} = "end of input"
 
+properToken :: Token -> Bool
+properToken Token {tokenProper} = tokenProper
+properToken EOF {} = True
+
 noTokens :: [Token]
 noTokens = [EOF noPos]
 
+
+-- tokenize
 
 tokenize :: SourcePos -> String -> [Token]
 tokenize start = posToken start False
   where
     posToken pos ws s
       | not (null lexem) =
-          makeToken lexem pos ws : posToken (advancesPos pos lexem) False rest
+          makeToken lexem pos ws True : posToken (advancesPos pos lexem) False rest
       where (lexem, rest) = span isLexem s
 
     posToken pos _ s
       | not (null white) = posToken (advancesPos pos white) True rest
       where (white, rest) = span isSpace s
 
-    posToken pos ws s@('#':_) = posToken (advancesPos pos comment) ws rest
+    posToken pos ws s@('#':_) =
+      makeToken comment pos False False : posToken (advancesPos pos comment) ws rest
       where (comment, rest) = break (== '\n') s
 
     posToken pos ws (c:cs) =
-      makeToken [c] pos ws : posToken (advancePos pos c) False cs
+      makeToken [c] pos ws True : posToken (advancePos pos c) False cs
 
     posToken pos _ _ = [EOF pos]
 
 isLexem :: Char -> Bool
 isLexem c = isAscii c && isAlphaNum c || c == '_'
+
+
+-- markup reports
+
+tokReport Token {tokenPos = pos, tokenProper} =
+  if tokenProper then []
+  else [(pos, Markup.inner_comment)]
+tokReport _ = []
+
+tokenReports :: [Token] -> [Message.Report]
+tokenReports = concatMap tokReport
 
 
 -- useful functions
@@ -77,5 +103,5 @@ isEOF EOF{} = True; isEOF _ = False
 -- Show instances
 
 instance Show Token where
-  showsPrec _ (Token s p _) = showString s . shows p
+  showsPrec _ (Token s p _ _) = showString s . shows p
   showsPrec _ _ = showString ""

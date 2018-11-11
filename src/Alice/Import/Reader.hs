@@ -33,7 +33,7 @@ readInit :: String -> IO [Instr]
 readInit "" = return []
 readInit file = do
   input <- catch (File.read file) $ Message.errorParser (fileOnlyPos file) . ioeGetErrorString
-  let tokens = tokenize (filePos file) input
+  let tokens = filter properToken $ tokenize (filePos file) input
       initialParserState = State () tokens noPos
   fst <$> launchParser instructionFile initialParserState
 
@@ -67,8 +67,10 @@ reader pathToLibrary doneFiles (pState:states) [TI (InStr ISfile file)] = do
         then getContents
         else File.read file
   input <- catch gfl $ Message.errorParser (fileOnlyPos file) . ioeGetErrorString
-  let tokens = tokenize (filePos file) input
+  let tokens0 = tokenize (filePos file) input
+      tokens = filter properToken tokens0
       st  = State ((stUser pState) { tvr_expr = [] }) tokens noPos
+  Message.reports $ tokenReports tokens0
   (ntx, nps) <- launchParser forthel st
   reader pathToLibrary (file:doneFiles) (nps:pState:states) ntx
 
