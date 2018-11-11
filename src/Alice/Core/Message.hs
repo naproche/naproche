@@ -4,7 +4,10 @@ Authors: Makarius Wenzel (2018)
 Formal output messages, with Prover IDE support.
 -}
 
+{-# LANGUAGE TupleSections #-}
+
 module Alice.Core.Message (Kind (..), pideActive,
+  Report, ReportText, reportsText, reportText, reports, report,
   output, error, outputMain, outputExport, outputForTheL,
   outputParser, outputReason, outputThesis, outputSimp,
   errorExport, errorParser,
@@ -14,6 +17,7 @@ module Alice.Core.Message (Kind (..), pideActive,
 import Prelude hiding (error)
 import qualified Prelude (error)
 import System.Environment
+import Control.Monad
 import qualified Data.ByteString as ByteString
 import qualified Data.ByteString.UTF8 as UTF8
 
@@ -74,22 +78,7 @@ xmlMessage origin kind pos msg =
       else ("origin", origin) : posProperties pos
 
 
-{- message text -}
-
-messageText :: Bool -> String -> Kind -> SourcePos -> String -> String
-messageText pide origin kind pos msg =
-  if pide then
-    let
-      yxml = YXML.string_of (xmlMessage origin kind pos msg)
-      len = ByteString.length (UTF8.fromString yxml)
-    in "\1" ++ Value.print_int len ++ "\n" ++ yxml
-  else
-    (if null origin then "" else "[" ++ origin ++ "] ") ++
-    (case show kind of "" -> "" ; s -> s ++ ": ") ++
-    (case show pos of "" -> ""; s -> s ++ "\n") ++ msg
-
-
-{- output -}
+{- PIDE messages -}
 
 pideActive :: IO Bool
 pideActive = do
@@ -97,6 +86,49 @@ pideActive = do
   case pide of
     Just "true" -> return True
     _ -> return False
+
+pideMessage :: String -> String
+pideMessage s = "\1" ++ Value.print_int len ++ "\n" ++ s
+  where
+    len = ByteString.length (UTF8.fromString s)
+
+
+{- markup reports -}
+
+type Report = (SourcePos, Markup.T)
+type ReportText = (Report, String)
+
+reportsText :: [ReportText] -> IO ()
+reportsText args = do
+  pide <- pideActive
+  when (pide && not (null args)) $ putStrLn $ pideMessage $
+    YXML.string_of $ XML.Elem Markup.report $
+      map (\((pos, markup), txt) ->
+        let
+          markup' = Markup.properties (posProperties pos) markup
+          body = if null txt then [] else [XML.Text txt]
+        in XML.Elem markup' body) args
+
+reportText :: SourcePos -> Markup.T -> String -> IO ()
+reportText pos markup txt = reportsText [((pos, markup), txt)]
+
+reports :: [Report] -> IO ()
+reports = reportsText . map (, "")
+
+report :: SourcePos -> Markup.T -> IO ()
+report pos markup = reports [(pos, markup)]
+
+
+{- output -}
+
+messageText :: Bool -> String -> Kind -> SourcePos -> String -> String
+messageText pide origin kind pos msg =
+  if pide
+  then pideMessage $ YXML.string_of $ xmlMessage origin kind pos msg
+  else
+    (if null origin then "" else "[" ++ origin ++ "] ") ++
+    (case show kind of "" -> "" ; s -> s ++ ": ") ++
+    (case show pos of "" -> ""; s -> s ++ "\n") ++ msg
 
 output :: String -> Kind -> SourcePos -> String -> IO ()
 output origin kind pos msg = do

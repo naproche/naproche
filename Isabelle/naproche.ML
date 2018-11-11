@@ -24,6 +24,10 @@ fun bool_option ctxt config = if Config.get ctxt config then "on" else "off";
 
 (* process ForTheL files *)
 
+local
+
+val output_reports = Output.report o map YXML.string_of;
+
 val message_fns =
   Symtab.make
    [(Markup.stateN, Output.state),
@@ -37,6 +41,8 @@ val message_fns =
 fun output_message name =
   the_default writeln (Symtab.lookup message_fns name);
 
+in
+
 fun forthel_file ctxt (file: Token.file) =
   Isabelle_System.with_tmp_dir "naproche" (fn tmp_dir =>
     let
@@ -49,7 +55,9 @@ fun forthel_file ctxt (file: Token.file) =
       val file_name =
         File.standard_path (Path.append (Resources.master_directory thy) (#src_path file));
 
-      fun print_position props =
+      val id_props = Position.id_properties_of (Position.thread_data ());
+
+      fun update_props props =
         let
           val props0 = Position.get_props (#pos file);
           val props1 =
@@ -59,7 +67,13 @@ fun forthel_file ctxt (file: Token.file) =
                 then Properties.put (Markup.fileN, file_name) props
                 else props
             | NONE => props);
-          val pos = Position.of_properties (props1 @ props0);
+        in fold_rev Properties.put (id_props @ props1) props0 end;
+
+      fun update_xml (XML.Elem ((elem, props), body)) = XML.Elem ((elem, update_props props), body)
+        | update_xml xml = xml;
+
+      fun print_position props =
+        let val pos = Position.of_properties (update_props props);
         in (case Position.here pos of "" => " " | s => s ^ "\n") end;
 
       fun output_acc acc =
@@ -68,9 +82,11 @@ fun forthel_file ctxt (file: Token.file) =
         | str =>
             (case try YXML.parse str of
               SOME (XML.Elem ((elem, props), body)) =>
-                output_message elem
-                  (enclose "[" "]" (the_default "Naproche-SAD" (Properties.get props "origin")) ^
-                    print_position props ^ YXML.string_of_body body)
+                if elem = Markup.reportN then output_reports (map update_xml body)
+                else
+                  output_message elem
+                    (enclose "[" "]" (the_default "Naproche-SAD" (Properties.get props "origin")) ^
+                      print_position props ^ YXML.string_of_body body)
             | SOME (XML.Text s) => writeln s
             | NONE => Output.error_message ("Malformed YXML tree " ^ quote str)));
 
@@ -102,6 +118,8 @@ fun forthel_file ctxt (file: Token.file) =
       val _ = detect_messages 0 [] (split_lines err);
       val _ = detect_messages 0 [] (split_lines out);
     in if rc = 0 then () else error ("Return code: " ^ string_of_int rc) end);
+
+end;
 
 
 (* Isabelle/Isar command setup *)
