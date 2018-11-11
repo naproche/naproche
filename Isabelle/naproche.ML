@@ -69,7 +69,7 @@ fun forthel_file ctxt (file: Token.file) =
             (case try YXML.parse str of
               SOME (XML.Elem ((elem, props), body)) =>
                 output_message elem
-                  (enclose "[" "]" (the_default "NaProChe" (Properties.get props "origin")) ^
+                  (enclose "[" "]" (the_default "Naproche-SAD" (Properties.get props "origin")) ^
                     print_position props ^ YXML.string_of_body body)
             | SOME (XML.Text s) => writeln s
             | NONE => Output.error_message ("Malformed YXML tree " ^ quote str)));
