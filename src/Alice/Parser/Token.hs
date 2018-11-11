@@ -14,7 +14,7 @@ module Alice.Parser.Token
     properToken,
     tokenize,
     tokenReports,
-    composeToken,
+    composeTokens,
     isEOF,
     noTokens)
   where
@@ -99,11 +99,11 @@ tokenReports = concatMap tokReport
 
 -- useful functions
 
-composeToken :: [Token] -> String
-composeToken [] = ""
-composeToken (t:ts) =
+composeTokens :: [Token] -> String
+composeTokens [] = ""
+composeTokens (t:ts) =
   let ws = if tokenWhiteSpace t then " " else ""
-  in  ws ++ showToken t ++ composeToken ts
+  in  ws ++ showToken t ++ composeTokens ts
 
 isEOF :: Token -> Bool
 isEOF EOF{} = True; isEOF _ = False

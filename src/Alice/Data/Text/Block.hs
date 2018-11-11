@@ -37,7 +37,7 @@ makeBlock form body kind name link pos toks =
   Block form body kind [] name link (rangePos (tokensRange toks)) toks
 
 text :: Block -> String
-text Block {tokens} = composeToken tokens
+text Block {tokens} = composeTokens tokens
 
 {- All possible types that a ForThel block can have. -}
 data Section =
