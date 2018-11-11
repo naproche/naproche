@@ -27,17 +27,17 @@ Natural Mathematical Documents
 # Isabelle PIDE #
 
 * edit $ISABELLE_HOME_USER/etc/settings to include this directory as
-component, e.g.:
+component, e.g. like this:
 
-      init_component "$HOME/isabelle/Naproche/repos"
+      init_component "$HOME/Naproche-SAD"
 
-* open theory with Isabelle/jEdit, e.g.
+* open ForTheL examples in Isabelle/jEdit, e.g.
+
+      isabelle jedit examples/powerset.ftl
+
+* open Isabelle development environment with ForTheL examples, e.g.
 
       isabelle jedit -l Pure Isabelle/Test.thy
-
-* open ForTheL file with implicit theory context, e.g.
-
-      isabelle jedit -l Pure examples/powerset.ftl
 
 
 # Development #
