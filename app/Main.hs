@@ -31,12 +31,14 @@ import qualified Isabelle.File as File
 
 main :: IO ()
 main  = do
-  startTime <- getCurrentTime
-
   -- setup stdin/stdout
   File.setup stdin
   File.setup stdout
+  File.setup stderr
   hSetBuffering stdout LineBuffering
+  hSetBuffering stderr LineBuffering
+
+  startTime <- getCurrentTime
 
   commandLine <- readOpts
   initFile <- readInit (askIS ISinit "init.opt" commandLine)
