@@ -44,7 +44,11 @@ instructionFile = after (optLL1 [] $ chainLL1 instr) eof
 -- Reader loop
 
 readText :: String -> [Text] -> IO [Text]
-readText pathToLibrary = reader pathToLibrary [] [State initFS noTokens noPos]
+readText pathToLibrary text0 = do
+  text <- reader pathToLibrary [] [State initFS noTokens noPos] text0
+  pide <- Message.pideActive
+  when pide $ Message.reports $ concatMap textReports text
+  return text
 
 reader :: String -> [String] -> [State FState] -> [Text] -> IO [Text]
 

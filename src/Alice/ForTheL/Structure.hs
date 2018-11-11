@@ -5,8 +5,15 @@ Syntax of ForTheL sections.
 -}
 
 
-module Alice.ForTheL.Structure (forthel) where
+module Alice.ForTheL.Structure (forthel, textReports) where
 
+
+import qualified Data.Char as Char
+import Data.Set (Set)
+import qualified Data.Set as Set
+
+import qualified Isabelle.Markup as Markup
+import qualified Alice.Core.Message as Message
 
 import Alice.ForTheL.Base
 import Alice.ForTheL.Statement
@@ -90,6 +97,9 @@ defH = header ["definition"]
 axmH = header ["axiom"]
 thmH = header ["theorem", "lemma", "corollary", "proposition"]
 
+headers :: Set String
+headers =
+  Set.fromList ["signature", "definition", "axiom", "theorem", "lemma", "corollary", "proposition"]
 
 -- low-level
 choose   = sentence Selection (chsH >> selection) assumeVars link
@@ -328,3 +338,18 @@ nextTerm t = do
   symbol ".="; s <- s_term; ln <- eqLink; toks <- getTokens inp
   liftM ((:) $ Block.makeBlock (Tag EqualityChain $ zEqu t s)
     [] Affirmation "__" ln pos toks) $ eq_tail s
+
+
+-- markup reports
+
+textReports :: Text -> [Message.Report]
+textReports (TB block) =
+  let
+    reports =
+      case Block.tokens block of
+        tok : _ | Set.member (map Char.toLower $ tokenText tok) headers ->
+          [(tokenPos tok, Markup.keyword1)]
+        _ -> []
+  in reports ++ concatMap textReports (Block.body block)
+textReports (TI _) = []
+textReports (TD _) = []

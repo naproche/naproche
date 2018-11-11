@@ -7,7 +7,7 @@ Tokenization of input.
 {-# LANGUAGE NamedFieldPuns #-}
 
 module Alice.Parser.Token
-  ( Token (tokenPos),
+  ( Token (tokenPos, tokenText),
     tokenEndPos,
     tokensRange,
     showToken,
