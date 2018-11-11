@@ -10,15 +10,6 @@
   (e.g. appveyor, travis)
 
 
-# Tokens and positions #
-
-* keep comment tokens (as "improper") for syntax reports (!?)
-
-* proper Block position/range based on input tokens, not output text
-
-* more abstract type Block: no export of constructor, use makeBlock instead (!?)
-
-
 # Misc #
 
 * move provers/provers.dat to toplevel directory (no executables there) (??)
