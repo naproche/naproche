@@ -284,18 +284,19 @@ addGlobalContext cn =
 retrieveContext names = do
   globalContext <- askGlobalState globalContext
   let (context, unfoundSections) = runState (retrieve globalContext) names
-  -- warn a user if some sections could not be found
-  unless (Set.null unfoundSections) $ warn unfoundSections
+  -- warn the user if some sections could not be found
+  unless (Set.null unfoundSections) $
+    reasonLog Message.WARNING noPos $
+      "Could not find sections " ++ unwords (map show $ Set.elems unfoundSections)
   return context
   where
-    warn unfoundSections =
-      reasonLog Message.WARNING noPos $
-        "Could not find sections " ++ unwords (map show $ Set.elems unfoundSections)
     retrieve [] = return []
-    retrieve (context:restContext) = let name = Context.name context in
-      gets (Set.member name) >>= \p -> if p
-      then modify (Set.delete name) >> fmap (context:) (retrieve restContext)
-      else retrieve restContext
+    retrieve (context:restContext) =
+      let name = Context.name context in
+        gets (Set.member name) >>= \p ->
+          if p
+          then modify (Set.delete name) >> fmap (context:) (retrieve restContext)
+          else retrieve restContext
 
 
 
