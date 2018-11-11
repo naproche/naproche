@@ -19,15 +19,17 @@ import Data.List
 import Alice.Core.Position
 
 data Token =
-  Token {showTk :: String, tokenPos :: SourcePos,
-                    tokenWhiteSpace :: Bool} |
+  Token {
+    tokenText :: String,
+    tokenPos :: SourcePos,
+    tokenWhiteSpace :: Bool} |
   EOF {tokenPos :: SourcePos}
 
 makeToken s pos ws =
   Token s (rangePos (pos, advancesPos pos s)) ws
 
 showToken :: Token -> String
-showToken t@Token{} = showTk t
+showToken t@Token{} = tokenText t
 showToken EOF{} = "end of input"
 
 noTokens :: [Token]
