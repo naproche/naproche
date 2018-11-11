@@ -4,7 +4,7 @@ Authors: Makarius Wenzel (2018)
 Formal output messages, with Prover IDE support.
 -}
 
-module Alice.Core.Message (Kind (..), checkPIDE,
+module Alice.Core.Message (Kind (..), pideActive,
   output, error, outputMain, outputExport, outputForTheL,
   outputParser, outputReason, outputThesis, outputSimp,
   errorExport, errorParser,
@@ -91,8 +91,8 @@ messageText pide origin kind pos msg =
 
 {- output -}
 
-checkPIDE :: IO Bool
-checkPIDE = do
+pideActive :: IO Bool
+pideActive = do
   pide <- lookupEnv "NAPROCHE_PIDE"
   case pide of
     Just "true" -> return True
@@ -100,12 +100,12 @@ checkPIDE = do
 
 output :: String -> Kind -> SourcePos -> String -> IO ()
 output origin kind pos msg = do
-  pide <- checkPIDE
+  pide <- pideActive
   putStrLn $ messageText pide origin kind pos msg
 
 error :: String -> SourcePos -> String -> IO a
 error origin pos msg = do
-  pide <- checkPIDE
+  pide <- pideActive
   errorWithoutStackTrace $ messageText pide origin ERROR pos msg
 
 
