@@ -8,6 +8,8 @@ Tokenization of input.
 
 module Alice.Parser.Token
   ( Token (tokenPos),
+    tokenEndPos,
+    tokensRange,
     showToken,
     properToken,
     tokenize,
@@ -35,6 +37,15 @@ data Token =
 
 makeToken s pos ws proper =
   Token s (rangePos (pos, advancesPos pos s)) ws proper
+
+tokenEndPos :: Token -> SourcePos
+tokenEndPos tok@Token{} = advancesPos (tokenPos tok) (tokenText tok)
+tokenEndPos tok@EOF {} = tokenPos tok
+
+tokensRange :: [Token] -> SourceRange
+tokensRange toks =
+  if null toks then noRange
+  else range (tokenPos $ head toks, tokenEndPos $ last toks)
 
 showToken :: Token -> String
 showToken t@Token{} = tokenText t

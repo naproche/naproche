@@ -15,7 +15,8 @@ module Alice.Core.Position
     advancesPos,
     noRangePos,
     rangePos,
-    range)
+    range,
+    noRange)
   where
 
 import qualified Data.List as List
@@ -71,6 +72,9 @@ rangePos (SourcePos file line column offset _, SourcePos _ _ _ offset' _) =
 
 range :: (SourcePos, SourcePos) -> SourceRange
 range (pos, pos') = (rangePos (pos, pos'), noRangePos pos')
+
+noRange :: SourceRange
+noRange = (noPos, noPos)
 
 instance Show SourcePos where
   show (SourcePos file line column _ _) =
