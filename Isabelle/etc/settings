@@ -6,3 +6,6 @@ if [ -f "$NAPROCHE_HOME/Isabelle/naproche.jar" ]; then
   classpath "$NAPROCHE_HOME/Isabelle/naproche.jar"
   isabelle_file_format "isabelle.naproche.File_Format"
 fi
+
+ISABELLE_LOGIC="Naproche"
+ISABELLE_DOCS_EXAMPLES='$NAPROCHE_HOME/examples/powerset.ftl:$NAPROCHE_HOME/examples/newman.ftl:$NAPROCHE_HOME/examples/chinese.ftl'
