@@ -15,7 +15,7 @@ module Alice.Parser.Base
     runP,
     getInput,
     getPos,
-    getText )
+    getTokens)
   where
 
 import Control.Monad
@@ -175,8 +175,8 @@ getPos :: Parser st SourcePos
 getPos = Parser $ \st ok _ _ ->
   ok (newErrorUnknown (stPosition st)) [PR (stPosition st) st] []
 
-getText :: [Token] -> Parser st String
-getText inp = Parser $ \st ok _ _ ->
+getTokens :: [Token] -> Parser st [Token]
+getTokens inp = Parser $ \st ok _ _ ->
   let pos = stPosition st
-      txt = composeToken $ takeWhile ( (>) pos . tokenPos ) inp
-  in  ok (newErrorUnknown (stPosition st)) [PR txt st] []
+      toks = takeWhile ( (>) pos . tokenPos ) inp
+  in  ok (newErrorUnknown (stPosition st)) [PR toks st] []

@@ -1,7 +1,10 @@
+{-# LANGUAGE NamedFieldPuns #-}
+
 module Alice.Data.Text.Block (
   Text(..),
   Block(..),
   makeBlock,
+  text,
   Section(..),
   showForm,
   formulate,
@@ -14,6 +17,8 @@ module Alice.Data.Text.Block (
 import Alice.Data.Formula
 import Alice.Core.Position
 import Alice.Data.Instr (Instr, Idrop)
+import Alice.Parser.Token
+
 
 data Text = TB Block | TI Instr | TD Idrop
 
@@ -25,11 +30,14 @@ data Block  = Block {
   name              :: String,
   link              :: [String],
   position          :: SourcePos,
-  text              :: String }
+  tokens            :: [Token] }
 
-makeBlock :: Formula -> [Text] -> Section -> String -> [String] -> SourcePos -> String -> Block
-makeBlock form body kind name link pos txt =
-  Block form body kind [] name link (rangePos (pos, advancesPos pos txt)) txt
+makeBlock :: Formula -> [Text] -> Section -> String -> [String] -> SourcePos -> [Token] -> Block
+makeBlock form body kind name link pos toks =
+  Block form body kind [] name link (rangePos (tokensRange toks)) toks
+
+text :: Block -> String
+text Block {tokens} = composeToken tokens
 
 {- All possible types that a ForThel block can have. -}
 data Section =
