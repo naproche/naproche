@@ -13,6 +13,7 @@ import System.Console.GetOpt
 import System.Environment
 import System.Exit hiding (die)
 import System.IO
+import qualified Control.Exception
 import qualified Data.IntMap.Strict as IM
 
 
@@ -38,6 +39,12 @@ main  = do
   hSetBuffering stdout LineBuffering
   hSetBuffering stderr LineBuffering
 
+  -- main body with explicit error handling, notably for PIDE
+  Control.Exception.catch mainBody
+    (\err -> hPrint stderr (err :: Control.Exception.SomeException))
+
+mainBody :: IO ()
+mainBody  = do
   startTime <- getCurrentTime
 
   commandLine <- readOpts
