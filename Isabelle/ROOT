@@ -1,7 +1,13 @@
-session Naproche = Pure +
+session "Naproche" = Pure +
   sessions
     Haskell
   theories [condition = NAPROCHE_HOME]
-    Naproche_Build
     Naproche
+
+session "Naproche-Build" = Naproche +
+  theories [condition = NAPROCHE_HOME]
+    Build
+
+session "Naproche-Test" = Naproche +
+  theories [condition = NAPROCHE_HOME]
     Test

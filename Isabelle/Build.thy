@@ -4,7 +4,7 @@ Authors: Makarius (2018)
 Build Isabelle/Naproche modules.
 *)
 
-theory Naproche_Build
+theory Build
   imports Pure Haskell.Haskell
 begin
 
