@@ -88,13 +88,11 @@ isLexem c = isAscii c && isAlphaNum c || c == '_'
 
 -- markup reports
 
-tokReport Token {tokenPos = pos, tokenProper} =
+tokenReports :: Token -> [Message.Report]
+tokenReports Token {tokenPos = pos, tokenProper} =
   if tokenProper then []
   else [(pos, Markup.inner_comment)]
-tokReport _ = []
-
-tokenReports :: [Token] -> [Message.Report]
-tokenReports = concatMap tokReport
+tokenReports _ = []
 
 
 -- useful functions

@@ -66,7 +66,7 @@ reader pathToLibrary doneFiles (pState:states) [TI (InStr ISfile file)] = do
     catch (if null file then getContents else File.read file)
       (Message.errorParser (fileOnlyPos file) . ioeGetErrorString)
   let tokens0 = tokenize (filePos file) input
-  Message.reports $ tokenReports tokens0
+  Message.reports $ concatMap tokenReports tokens0
   let tokens = filter properToken tokens0
       st  = State ((stUser pState) { tvr_expr = [] }) tokens noPos
   (ntx, nps) <- launchParser forthel st
