@@ -315,14 +315,14 @@ procTI VS {
       addInstruction $ InBin IBPtsk False
 
     proc (InBin IBverb True) = msum [
-      (guardNotInstruction IBPgls True  >> addInstruction (InBin IBPgls True)),
-      (guardNotInstruction IBPrsn False >> addInstruction (InBin IBPrsn True)),
-      (guardNotInstruction IBPsct False >> addInstruction (InBin IBPsct True)),
-      (guardNotInstruction IBPchk False >> addInstruction (InBin IBPchk True)),
-      (guardNotInstruction IBPprv False >> addInstruction (InBin IBPprv True)),
-      (guardNotInstruction IBPunf False >> addInstruction (InBin IBPunf True)),
-      (guardNotInstruction IBPtsk False >> addInstruction (InBin IBPtsk True)),
-       return () ]
+      guardNotInstruction IBPgls True  >> addInstruction (InBin IBPgls True),
+      guardNotInstruction IBPrsn False >> addInstruction (InBin IBPrsn True),
+      guardNotInstruction IBPsct False >> addInstruction (InBin IBPsct True),
+      guardNotInstruction IBPchk False >> addInstruction (InBin IBPchk True),
+      guardNotInstruction IBPprv False >> addInstruction (InBin IBPprv True),
+      guardNotInstruction IBPunf False >> addInstruction (InBin IBPunf True),
+      guardNotInstruction IBPtsk False >> addInstruction (InBin IBPtsk True),
+      return ()]
 
     proc (InPar IPgrup ps) = addGroup ps
 
