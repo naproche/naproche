@@ -62,15 +62,13 @@ reader pathToLibrary doneFiles (pState:states) [TI (InStr ISfile file)]
       reader pathToLibrary doneFiles (newState:states) newText
 
 reader pathToLibrary doneFiles (pState:states) [TI (InStr ISfile file)] = do
-  let gfl =
-        if   null file
-        then getContents
-        else File.read file
-  input <- catch gfl $ Message.errorParser (fileOnlyPos file) . ioeGetErrorString
+  input <-
+    catch (if null file then getContents else File.read file)
+      (Message.errorParser (fileOnlyPos file) . ioeGetErrorString)
   let tokens0 = tokenize (filePos file) input
-      tokens = filter properToken tokens0
-      st  = State ((stUser pState) { tvr_expr = [] }) tokens noPos
   Message.reports $ tokenReports tokens0
+  let tokens = filter properToken tokens0
+      st  = State ((stUser pState) { tvr_expr = [] }) tokens noPos
   (ntx, nps) <- launchParser forthel st
   reader pathToLibrary (file:doneFiles) (nps:pState:states) ntx
 
