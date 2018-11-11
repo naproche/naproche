@@ -8,4 +8,4 @@ if [ -f "$NAPROCHE_HOME/Isabelle/naproche.jar" ]; then
 fi
 
 ISABELLE_LOGIC="Naproche"
-ISABELLE_DOCS_EXAMPLES='$NAPROCHE_HOME/examples/powerset.ftl:$NAPROCHE_HOME/examples/newman.ftl:$NAPROCHE_HOME/examples/chinese.ftl'
+ISABELLE_DOCS_EXAMPLES='$NAPROCHE_HOME/examples/Maximum_principle.ftl:$NAPROCHE_HOME/examples/powerset.ftl:$NAPROCHE_HOME/examples/newman.ftl:$NAPROCHE_HOME/examples/chinese.ftl'
