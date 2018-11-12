@@ -259,7 +259,7 @@ na_patt p ls          = wd_patt p ls
 
 -- Variables
 
-namlist = varlist -|- liftM (:[]) hidden
+namlist = varlist -|- fmap (:[]) hidden
 
 varlist = do
   vs <- var `sepBy` wd_token ","

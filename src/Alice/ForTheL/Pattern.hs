@@ -217,7 +217,7 @@ new_symb_pattern tvr = left -|- right
 
 
 pt_head lxm tvr = do
-  l <- liftM unwords $ chain lxm
+  l <- fmap unwords $ chain lxm
   (ls, vs) <- opt ([], []) $ pt_tail lxm tvr
   return (l ++ ' ' : ls, vs)
 
@@ -229,13 +229,13 @@ pt_tail lxm tvr = do
 
 
 pt_name lxm tvr = do
-  l <- liftM unwords $ chain lxm; n <- nam
+  l <- fmap unwords $ chain lxm; n <- nam
   (ls, vs) <- opt ([], []) $ pt_head lxm tvr
   return (l ++ " . " ++ ls, n:vs)
 
 
 pt_nonm lxm tvr = do
-  l <- liftM unwords $ chain lxm; n <- hid
+  l <- fmap unwords $ chain lxm; n <- hid
   (ls, vs) <- opt ([], []) $ pt_shot lxm tvr
   return (l ++ " . " ++ ls, n:vs)
   where
@@ -278,7 +278,7 @@ avr = do
   return $ zVar v
 
 nam = do
-  n <- liftM (const Top) nvr </> avr
+  n <- fmap (const Top) nvr </> avr
   guard $ isVar n ; return n
 
-hid = liftM zVar hidden
+hid = fmap zVar hidden

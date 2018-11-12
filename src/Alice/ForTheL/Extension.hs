@@ -51,7 +51,7 @@ def_notion = do
     defn = do
       (n, u) <- new_notion; isOrEq; (q, f) <- anotion
       let v = zVar u; fn = replace v (trm n)
-      h <- liftM (fn . q) $ dig f [v]
+      h <- fmap (fn . q) $ dig f [v]
       return ((n,h),u)
 
     isOrEq = wd_token "=" <|> isEq
@@ -76,7 +76,7 @@ sig_notion = do
     sig = do
       (n, u) <- new_notion; is; (q, f) <- anotion -|- noInfo
       let v = zVar u; fn = replace v (trm n)
-      h <- liftM (fn . q) $ dig f [v]
+      h <- fmap (fn . q) $ dig f [v]
       return ((n,h),u)
 
     noInfo =
@@ -141,7 +141,7 @@ introduceSynonym = sym >>= MS.modify . upd >> return ()
       w <- word ; root <- optLL1 w $ sfx w; sm_token "/"
       syms <- (wlexem -|- sfx w) `sepByLL1` sm_token "/"
       return $ root : syms
-    sfx w = sm_token "-" >> liftM (w ++) word
+    sfx w = sm_token "-" >> fmap (w ++) word
 
 
 pretypeVariable = narrow typeVar >>= MS.modify . upd >> return ()
@@ -151,7 +151,7 @@ pretypeVariable = narrow typeVar >>= MS.modify . upd >> return ()
       g <- wellFormedCheck (overfree []) (dot holedNotion)
       return (vs, ignoreNames g)
 
-    holedNotion = do (q, f) <- anotion; liftM q $ dig f [zHole]
+    holedNotion = do (q, f) <- anotion; fmap q $ dig f [zHole]
 
     upd tv st = st { tvr_expr = tv : tvr_expr st }
 
@@ -167,7 +167,7 @@ introduceMacro = do
     ntn = wellFormedCheck funVars $ do
       (n, u) <- unnamedNotion avr
       (q, f) <- standFor >> dot anotion
-      h <- liftM q $ dig f [zVar u]; return (n, h)
+      h <- fmap q $ dig f [zVar u]; return (n, h)
 
 ignoreNames (All _ f) = All "" $ ignoreNames f
 ignoreNames (Exi _ f) = Exi "" $ ignoreNames f

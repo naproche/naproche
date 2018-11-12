@@ -50,12 +50,12 @@ forthel = section <|> macroOrPretype <|> bracketExpression
    between instructions and synonym introductions.-}
 
 bracketExpression = exit </> readfile </> do
-  mbInstr <- liftM Left instruction </> liftM Right introduceSynonym
-  either (\instr -> liftM ((:) instr) forthel) (\_ -> forthel) mbInstr
+  mbInstr <- fmap Left instruction </> fmap Right introduceSynonym
+  either (\instr -> fmap ((:) instr) forthel) (\_ -> forthel) mbInstr
   where
     exit = (iExit <|> eof) >> return []
     readfile = liftM2 ((:) . TI) iRead (return [])
-    instruction = liftM TD iDrop </> liftM TI instr
+    instruction = fmap TD iDrop </> fmap TI instr
 
 topsection = signature <|> definition <|> axiom <|> theorem
 
@@ -130,7 +130,7 @@ eqLink = optLL1 [] $ expar $ wd_token "by" >> identifiers
 -- declaration management, typings and pretypings
 
 updateDeclbefore :: FTL Block -> FTL [Text] -> FTL [Text]
-updateDeclbefore blp p = do bl <- blp; addDecl (Block.declaredVariables bl) $ liftM (TB bl : ) p
+updateDeclbefore blp p = do bl <- blp; addDecl (Block.declaredVariables bl) $ fmap (TB bl : ) p
 
 
 pretyping :: Block -> FTL Block
@@ -150,7 +150,7 @@ pret dvs tvs bl =
 pretypeBefore :: FTL Block -> FTL [Text] -> FTL [Text]
 pretypeBefore blp p = do
   bl <- blp; typeBlock <- pretyping bl; let pretyped = Block.declaredVariables typeBlock
-  pResult   <- addDecl (pretyped ++ Block.declaredVariables bl) $ liftM (TB bl : ) p
+  pResult   <- addDecl (pretyped ++ Block.declaredVariables bl) $ fmap (TB bl : ) p
   return $ if null pretyped then pResult else TB typeBlock : pResult
 
 pretype :: FTL Block -> FTL [Text]
@@ -181,7 +181,7 @@ statementBlock kind p mbLink = do
 
 
 pretypeSentence kind p wfVars mbLink = narrow $ do
-  dvs <- getDecl; tvr <- liftM (concatMap fst) getPretyped
+  dvs <- getDecl; tvr <- fmap (concatMap fst) getPretyped
   bl <- wellFormedCheck (wf dvs tvr) $ statementBlock kind p mbLink
   return bl {Block.declaredVariables = decl (dvs ++ tvr) $ Block.formula bl }
   where
@@ -235,7 +235,7 @@ method = optLL1 Raw $ wd_token "by" >> (contradict <|> cases <|> induction)
   where
     contradict = wd_token "contradiction" >> return Raw
     cases      = wd_token "case" >> wd_token "analysis" >> return Raw
-    induction  = wd_token "induction" >> optLL1 InS (wd_token "on" >> liftM InT s_term)
+    induction  = wd_token "induction" >> optLL1 InS (wd_token "on" >> fmap InT s_term)
 
 
 --- creation of induction thesis
@@ -254,10 +254,10 @@ indThesis fr pre post = do
     indTerm _ _           = return Top
 
     indFormula _ Top fr = return fr
-    indFormula vs it fr = liftM (insertIndTerm it) $ indStatem vs fr
+    indFormula vs it fr = fmap (insertIndTerm it) $ indStatem vs fr
 
-    indStatem vs (Imp g f) = liftM (Imp  g .) $ indStatem vs f
-    indStatem vs (All v f) = liftM (zAll v .) $ indStatem (delete v vs) f
+    indStatem vs (Imp g f) = fmap (Imp  g .) $ indStatem vs f
+    indStatem vs (All v f) = fmap (zAll v .) $ indStatem (delete v vs) f
     indStatem [] f         = return (`Imp` f)
     indStatem _ _          = failWF $  "invalid induction thesis " ++ show fr
 
@@ -277,7 +277,7 @@ proof p = do
 topProof p = do
   pre <- preMethod; bl <- p; post <- postMethod; typeBlock <- pretyping bl;
   let pretyped = Block.declaredVariables typeBlock
-  nbl <- addDecl pretyped $ liftM TB $ do
+  nbl <- addDecl pretyped $ fmap TB $ do
           nf <- indThesis (Block.formula bl) pre post
           addBody pre post $ bl {Block.formula = nf}
   return $ if null pretyped then [nbl] else [TB typeBlock, nbl]
@@ -303,7 +303,7 @@ proofText = assume_affirm_choose_lldefine <|> caseText <|> qed <|> llInstr
     assume_affirm_choose_lldefine =
       (narrow assume </> proof (narrow $ affirm </> choose) </> narrow llDefn) `updateDeclbefore` proofText
     qed = wd_tokenOf ["qed", "end", "trivial", "obvious"] >> return []
-    llInstr = liftM2 (:) (liftM TI instr </> liftM TD iDrop) proofText
+    llInstr = liftM2 (:) (fmap TI instr </> fmap TD iDrop) proofText
 
 caseText = caseD
   where
@@ -313,7 +313,7 @@ caseText = caseD
 
     caseDestinction = do
       bl@(Block { Block.formula = fr }) <- narrow caseHypo
-      liftM TB $ proofBody $ bl { Block.formula = Imp (Tag Tag.CaseHypothesis fr) zThesis}
+      fmap TB $ proofBody $ bl { Block.formula = Imp (Tag Tag.CaseHypothesis fr) zThesis}
 
 
 -- equality Chain
@@ -336,7 +336,7 @@ nextTerm :: Formula -> FTL [Block]
 nextTerm t = do
   pos <- getPos; inp <- getInput
   symbol ".="; s <- s_term; ln <- eqLink; toks <- getTokens inp
-  liftM ((:) $ Block.makeBlock (Tag EqualityChain $ zEqu t s)
+  fmap ((:) $ Block.makeBlock (Tag EqualityChain $ zEqu t s)
     [] Affirmation "__" ln pos toks) $ eq_tail s
 
 
