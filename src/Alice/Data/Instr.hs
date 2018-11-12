@@ -32,7 +32,8 @@ data Drop =
 -- Instructions
 
 data Command =
-    EXIT
+    EXIT     -- exit
+  | QUIT     -- exit
   | THESIS   -- print current thesis
   | CONTEXT  -- print current context
   | FILTER   -- print simplified top-level context
@@ -118,61 +119,62 @@ drop _ _ = []
 
 -- Keywords
 
-keywordsCommand :: [(Command, [Prelude.String])]
+keywordsCommand :: [(Command, Prelude.String)]
 keywordsCommand =
- [(EXIT, ["exit", "quit"]),
-  (THESIS, ["thesis"]),
-  (CONTEXT, ["context"]),
-  (FILTER, ["filter"]),
-  (RULES, ["rules"])]
+ [(EXIT, "exit"),
+  (QUIT, "quit"),
+  (THESIS, "thesis"),
+  (CONTEXT, "context"),
+  (FILTER, "filter"),
+  (RULES, "rules")]
 
-keywordsInt :: [(Int, [Prelude.String])]
+keywordsInt :: [(Int, Prelude.String)]
 keywordsInt =
- [(Timelimit, ["timelimit"]),
-  (Depthlimit, ["depthlimit"]),
-  (Checktime, ["checktime"]),
-  (Checkdepth, ["checkdepth"])]
+ [(Timelimit, "timelimit"),
+  (Depthlimit, "depthlimit"),
+  (Checktime, "checktime"),
+  (Checkdepth, "checkdepth")]
 
-keywordsBool :: [(Bool, [Prelude.String])]
+keywordsBool :: [(Bool, Prelude.String)]
 keywordsBool =
- [(Prove, ["prove"]),
-  (Check, ["check"]),
-  (Symsign, ["symsign"]),
-  (Info, ["info"]),
-  (Thesis, ["thesis"]),
-  (Filter, ["filter"]),
-  (Skipfail, ["skipfail"]),
-  (Flat, ["flat"]),
-  (Printgoal, ["printgoal"]),
-  (Printsection, ["printsection"]),
-  (Printcheck, ["printcheck"]),
-  (Printunfold, ["printunfold"]),
-  (Printreason, ["printreason"]),
-  (Printprover, ["printprover"]),
-  (Printfulltask, ["printfulltask"]),
-  (Dump, ["dump"]),
-  (Printsimp, ["printsimp"]),
-  (Printthesis, ["printthesis"]),
-  (Ontored, ["ontored"]),
-  (Unfold, ["unfold"]),
-  (Unfoldsf, ["unfoldsf"]),
-  (Unfoldlow, ["unfoldlow"]),
-  (Unfoldlowsf, ["unfoldlowsf"]),
-  (Checkontored, ["checkontored"])]
+ [(Prove, "prove"),
+  (Check, "check"),
+  (Symsign, "symsign"),
+  (Info, "info"),
+  (Thesis, "thesis"),
+  (Filter, "filter"),
+  (Skipfail, "skipfail"),
+  (Flat, "flat"),
+  (Printgoal, "printgoal"),
+  (Printsection, "printsection"),
+  (Printcheck, "printcheck"),
+  (Printunfold, "printunfold"),
+  (Printreason, "printreason"),
+  (Printprover, "printprover"),
+  (Printfulltask, "printfulltask"),
+  (Dump, "dump"),
+  (Printsimp, "printsimp"),
+  (Printthesis, "printthesis"),
+  (Ontored, "ontored"),
+  (Unfold, "unfold"),
+  (Unfoldsf, "unfoldsf"),
+  (Unfoldlow, "unfoldlow"),
+  (Unfoldlowsf, "unfoldlowsf"),
+  (Checkontored, "checkontored")]
 
-keywordsString :: [(String, [Prelude.String])]
+keywordsString :: [(String, Prelude.String)]
 keywordsString =
- [(Read, ["read"]),
-  (Library, ["library"]),
-  (Provers, ["provers"]),
-  (Prover, ["prover"]) ]
+ [(Read, "read"),
+  (Library, "library"),
+  (Provers, "provers"),
+  (Prover, "prover")]
 
-keywordsStrings :: [(Strings, [Prelude.String])]
+keywordsStrings :: [(Strings, Prelude.String)]
 keywordsStrings =
- [(Group, ["group"]),
-  (SetCtxt, ["setCtxt"]),
-  (DrpCtxt, ["drpCtxt"]),
-  (AddCtxt, ["addCtxt"])]
+ [(Group, "group"),
+  (SetCtxt, "setCtxt"),
+  (DrpCtxt, "drpCtxt"),
+  (AddCtxt, "addCtxt")]
 
 relevant (Strings SetCtxt _) = True
 relevant _ = False
