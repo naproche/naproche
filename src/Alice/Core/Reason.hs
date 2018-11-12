@@ -32,7 +32,8 @@ import Alice.Core.Position
 import Alice.Core.Base
 import qualified Alice.Core.Message as Message
 import Alice.Data.Formula
-import Alice.Data.Instr
+import Alice.Data.Instr (Instr)
+import qualified Alice.Data.Instr as Instr
 import Alice.Data.Text.Context (Context(Context))
 import qualified Alice.Data.Text.Context as Context
 import Alice.Data.Text.Block (Block, Section(..))
@@ -65,7 +66,7 @@ thesis = asks currentThesis; context = asks currentContext
 
 proveThesis :: VM ()
 proveThesis = do
-  reasoningDepth <- askInstructionInt IIdpth 3;  guard $ reasoningDepth > 0
+  reasoningDepth <- askInstructionInt Instr.IIdpth 3;  guard $ reasoningDepth > 0
   context >>= filterContext (splitGoal >>= sequenceGoals reasoningDepth 0)
 
 sequenceGoals :: Int -> Int -> [Formula] -> VM ()
@@ -86,11 +87,11 @@ sequenceGoals reasoningDepth iteration (goal:restGoals) = do
             `withContext` newContext
 
     depthExceedMessage =
-      whenInstruction IBPrsn False $
+      whenInstruction Instr.IBPrsn False $
         reasonLog Message.WARNING noPos "reasoning depth exceeded"
 
     updateTrivialStatistics = 
-      unless (isTop goal) $ whenInstruction IBPrsn False $
+      unless (isTop goal) $ whenInstruction Instr.IBPrsn False $
          reasonLog Message.WRITELN noPos ("trivial: " ++ show goal)
       >> incrementIntCounter TrivialGoals
 
@@ -110,8 +111,8 @@ splitGoal = asks (normalizedSplit . strip . Context.formula . currentThesis)
 
 launchProver :: Int -> VM ()
 launchProver iteration = do
-  reductionSetting <- askInstructionBin IBOnto False
-  whenInstruction IBPtsk False (printTask reductionSetting)
+  reductionSetting <- askInstructionBin Instr.IBOnto False
+  whenInstruction Instr.IBPtsk False (printTask reductionSetting)
   proverList <- askRS provers ; instrList <- askRS instructions
   goal <- thesis; context <- context
   let callATP = justIO $ 
@@ -234,10 +235,10 @@ unfold = do
   thesis <- thesis; context <- context
   let task = Context.setForm thesis (Not $ Context.formula thesis) : context
   definitions  <- askGlobalState definitions; evaluations <- asks evaluations
-  generalUnfoldSetting     <- askInstructionBin IBUnfl True
-  lowlevelUnfoldSetting    <- askInstructionBin IBUfdl True
-  generalSetUnfoldSetting  <- askInstructionBin IBUnfs True
-  lowlevelSetUnfoldSetting <- askInstructionBin IBUfds False
+  generalUnfoldSetting     <- askInstructionBin Instr.IBUnfl True
+  lowlevelUnfoldSetting    <- askInstructionBin Instr.IBUfdl True
+  generalSetUnfoldSetting  <- askInstructionBin Instr.IBUnfs True
+  lowlevelSetUnfoldSetting <- askInstructionBin Instr.IBUfds False
   guard (generalUnfoldSetting || generalSetUnfoldSetting)
   let ((goal:toUnfold), topLevelContext) = span Context.isLowLevel task
       unfoldState = UF
@@ -259,9 +260,9 @@ unfold = do
   return $ newLowLevelContext ++ topLevelContext
   where
     nothingToUnfold =
-      whenInstruction IBPunf False $ reasonLog Message.WRITELN noPos "nothing to unfold"
+      whenInstruction Instr.IBPunf False $ reasonLog Message.WRITELN noPos "nothing to unfold"
     unfoldLog (goal:lowLevelContext) =
-      whenInstruction IBPunf False $ reasonLog Message.WRITELN noPos $ "unfold to:\n"
+      whenInstruction Instr.IBPunf False $ reasonLog Message.WRITELN noPos $ "unfold to:\n"
         ++ unlines (reverse $ map ((++) "  " . show . Context.formula) lowLevelContext)
         ++ "  |- " ++ show (neg $ Context.formula goal)
     neg (Not f) = f; neg f = f

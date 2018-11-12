@@ -4,13 +4,12 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
 Syntax of ForThel Instructions.
 -}
 
-
-
 module Alice.ForTheL.Instruction where
 
 import Control.Monad
 
-import Alice.Data.Instr
+import Alice.Data.Instr (Instr, Idrop)
+import qualified Alice.Data.Instr as Instr
 
 import Alice.Parser.Base
 import Alice.Parser.Combinators
@@ -21,22 +20,22 @@ import Alice.Parser.Token
 instr :: Parser st Instr
 instr = exbrk (readInstr >>= gut)
   where
-    gut (InStr ISread _)  = fail "'read' not allowed here"
-    gut (InCom ICexit)    = fail "'exit'/'quit' not allowed here"
+    gut (Instr.InStr Instr.ISread _)  = fail "'read' not allowed here"
+    gut (Instr.InCom Instr.ICexit)    = fail "'exit'/'quit' not allowed here"
     gut i = return i
 
 
 iRead :: Parser st Instr
 iRead = exbrk (readInstr >>= gut)
   where
-    gut i@(InStr ISread _)  = return i
+    gut i@(Instr.InStr Instr.ISread _)  = return i
     gut _ = mzero
 
 
 iExit :: Parser st ()
 iExit = exbrk (readInstr >>= gut)
   where
-    gut (InCom ICexit)  = return ()
+    gut (Instr.InCom Instr.ICexit)  = return ()
     gut _ = mzero
 
 iDrop :: Parser st Idrop
@@ -46,11 +45,11 @@ iDrop = exbrk (wdToken "/" >> readInstrDrop)
 readInstr :: Parser st Instr
 readInstr = readIC -|- readII -|- readIB -|- readIS -|- readIP
   where
-    readIC = fmap  InCom (readIX setIC)
-    readII = liftM2 InInt (readIX setII) readInt
-    readIB = liftM2 InBin (readIX setIB) readBin
-    readIS = liftM2 InStr (readIX setIS) readStr
-    readIP = liftM2 InPar (readIX setIP) readPar
+    readIC = fmap Instr.InCom (readIX Instr.setIC)
+    readII = liftM2 Instr.InInt (readIX Instr.setII) readInt
+    readIB = liftM2 Instr.InBin (readIX Instr.setIB) readBin
+    readIS = liftM2 Instr.InStr (readIX Instr.setIS) readStr
+    readIP = liftM2 Instr.InPar (readIX Instr.setIP) readPar
 
 readInt = try $ readStr >>= intCheck
   where
@@ -78,10 +77,10 @@ readPar = chainLL1 notClosingBrk
 readInstrDrop :: Parser st Idrop
 readInstrDrop = readIC -|- readII -|- readIB -|- readIS
   where
-    readIC  = fmap IdCom (readIX setIC)
-    readII  = fmap IdInt (readIX setII)
-    readIB  = fmap IdBin (readIX setIB)
-    readIS  = fmap IdStr (readIX setIS)
+    readIC  = fmap Instr.IdCom (readIX Instr.setIC)
+    readII  = fmap Instr.IdInt (readIX Instr.setII)
+    readIB  = fmap Instr.IdBin (readIX Instr.setIB)
+    readIS  = fmap Instr.IdStr (readIX Instr.setIS)
 
 
 readIX :: [(a, [String])] -> Parser st a

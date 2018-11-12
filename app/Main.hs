@@ -21,7 +21,8 @@ import Alice.Core.Base
 import qualified Alice.Core.Message as Message
 import Alice.Core.Position
 import Alice.Core.Verify
-import Alice.Data.Instr
+import Alice.Data.Instr (Instr)
+import qualified Alice.Data.Instr as Instr
 import Alice.Data.Text.Block
 import Alice.Export.Base
 import Alice.Import.Reader
@@ -48,22 +49,22 @@ mainBody  = do
   startTime <- getCurrentTime
 
   commandLine <- readOpts
-  initFile <- readInit (askIS ISinit "init.opt" commandLine)
+  initFile <- readInit (Instr.askIS Instr.ISinit "init.opt" commandLine)
 
   let initialOpts = initFile ++ commandLine
       revInitialOpts = reverse initialOpts
 
   -- parse input text
-  text <- readText (askIS ISlibr "." revInitialOpts) $ map TI initialOpts
+  text <- readText (Instr.askIS Instr.ISlibr "." revInitialOpts) $ map TI initialOpts
   -- if -T is passed as an option, only print the text and exit
-  when (askIB IBtext False revInitialOpts) $ onlyTranslate startTime text
+  when (Instr.askIB Instr.IBtext False revInitialOpts) $ onlyTranslate startTime text
   -- read provers.dat
-  provers <- readProverDatabase (askIS ISprdb "provers.dat" revInitialOpts)
+  provers <- readProverDatabase (Instr.askIS Instr.ISprdb "provers.dat" revInitialOpts)
   -- initialize reasoner state
   reasonerState <- newIORef (RState [] [] provers)
   proveStart <- getCurrentTime
 
-  verify (askIS ISfile "" revInitialOpts) reasonerState text
+  verify (Instr.askIS Instr.ISfile "" revInitialOpts) reasonerState text
 
   finishTime <- getCurrentTime
   finalReasonerState <- readIORef reasonerState
@@ -127,91 +128,92 @@ onlyTranslate startTime text = do
 readOpts :: IO [Instr]
 readOpts  = do
   (instrs, files, errs) <- fmap (getOpt Permute options) getArgs
-  let text = instrs ++ [InStr ISfile $ head $ files ++ [""]]
+  let text = instrs ++ [Instr.InStr Instr.ISfile $ head $ files ++ [""]]
   unless (all wellformed instrs && null errs)
     (putStr (concatMap ("[Main] " ++) errs) >> exitFailure)
-  when (askIB IBhelp False instrs)
+  when (Instr.askIB Instr.IBhelp False instrs)
     (putStr (usageInfo usageHeader options) >> exitSuccess)
   return text
 
-wellformed (InBin _ v)  = v == v; wellformed (InInt _ v)  = v == v
+wellformed (Instr.InBin _ v) = v == v
+wellformed (Instr.InInt _ v) = v == v
 wellformed _            = True
 
 usageHeader  = "Usage: alice <options...> <file>"
 
 options = [
-  Option "h" ["help"] (NoArg (InBin IBhelp True)) "show this help text",
-  Option ""  ["init"] (ReqArg (InStr ISinit) "FILE")
+  Option "h" ["help"] (NoArg (Instr.InBin Instr.IBhelp True)) "show this help text",
+  Option ""  ["init"] (ReqArg (Instr.InStr Instr.ISinit) "FILE")
     "init file, empty to skip (def: init.opt)",
-  Option "T" [] (NoArg (InBin IBtext True))
+  Option "T" [] (NoArg (Instr.InBin Instr.IBtext True))
     "translate input text and exit",
-  Option ""  ["library"] (ReqArg (InStr ISlibr) "DIR")
+  Option ""  ["library"] (ReqArg (Instr.InStr Instr.ISlibr) "DIR")
     "place to look for library texts (def: .)",
-  Option ""  ["provers"] (ReqArg (InStr ISprdb) "FILE")
+  Option ""  ["provers"] (ReqArg (Instr.InStr Instr.ISprdb) "FILE")
     "index of provers (def: provers.dat)",
-  Option "P" ["prover"] (ReqArg (InStr ISprvr) "NAME")
+  Option "P" ["prover"] (ReqArg (Instr.InStr Instr.ISprvr) "NAME")
     "use prover NAME (def: first listed)",
-  Option "t" ["timelimit"] (ReqArg (InInt IItlim . number) "N")
+  Option "t" ["timelimit"] (ReqArg (Instr.InInt Instr.IItlim . number) "N")
     "N seconds per prover call (def: 3)",
-  Option ""  ["depthlimit"] (ReqArg (InInt IIdpth . number) "N")
+  Option ""  ["depthlimit"] (ReqArg (Instr.InInt Instr.IIdpth . number) "N")
     "N reasoner loops per goal (def: 7)",
-  Option ""  ["checktime"] (ReqArg (InInt IIchtl . number) "N")
+  Option ""  ["checktime"] (ReqArg (Instr.InInt Instr.IIchtl . number) "N")
     "timelimit for checker's tasks (def: 1)",
-  Option ""  ["checkdepth"] (ReqArg (InInt IIchdp . number) "N")
+  Option ""  ["checkdepth"] (ReqArg (Instr.InInt Instr.IIchdp . number) "N")
     "depthlimit for checker's tasks (def: 3)",
-  Option "n" [] (NoArg (InBin IBprov False))
+  Option "n" [] (NoArg (Instr.InBin Instr.IBprov False))
     "cursory mode (equivalent to --prove off)",
-  Option "r" [] (NoArg (InBin IBchck False))
+  Option "r" [] (NoArg (Instr.InBin Instr.IBchck False))
     "raw mode (equivalent to --check off)",
-  Option "" ["prove"] (ReqArg (InBin IBprov . binary) "{on|off}")
+  Option "" ["prove"] (ReqArg (Instr.InBin Instr.IBprov . binary) "{on|off}")
     "prove goals in the text (def: on)",
-  Option "" ["check"] (ReqArg (InBin IBchck . binary) "{on|off}")
+  Option "" ["check"] (ReqArg (Instr.InBin Instr.IBchck . binary) "{on|off}")
     "check symbols for definedness (def: on)",
-  Option "" ["symsign"] (ReqArg (InBin IBsign . binary) "{on|off}")
+  Option "" ["symsign"] (ReqArg (Instr.InBin Instr.IBsign . binary) "{on|off}")
     "prevent ill-typed unification (def: on)",
-  Option "" ["info"] (ReqArg (InBin IBinfo . binary) "{on|off}")
+  Option "" ["info"] (ReqArg (Instr.InBin Instr.IBinfo . binary) "{on|off}")
     "collect \"evidence\" literals (def: on)",
-  Option "" ["thesis"] (ReqArg (InBin IBthes . binary) "{on|off}")
+  Option "" ["thesis"] (ReqArg (Instr.InBin Instr.IBthes . binary) "{on|off}")
     "maintain current thesis (def: on)",
-  Option "" ["filter"] (ReqArg (InBin IBfilt . binary) "{on|off}")
+  Option "" ["filter"] (ReqArg (Instr.InBin Instr.IBfilt . binary) "{on|off}")
     "filter prover tasks (def: on)",
-  Option "" ["skipfail"] (ReqArg (InBin IBskip . binary) "{on|off}")
+  Option "" ["skipfail"] (ReqArg (Instr.InBin Instr.IBskip . binary) "{on|off}")
     "ignore failed goals (def: off)",
-  Option "" ["flat"] (ReqArg (InBin IBflat . binary) "{on|off}")
+  Option "" ["flat"] (ReqArg (Instr.InBin Instr.IBflat . binary) "{on|off}")
     "do not read proofs (def: off)",
-  Option "q" [] (NoArg (InBin IBverb False))
+  Option "q" [] (NoArg (Instr.InBin Instr.IBverb False))
     "print no details",
-  Option "v" [] (NoArg (InBin IBverb True))
+  Option "v" [] (NoArg (Instr.InBin Instr.IBverb True))
     "print more details (-vv, -vvv, etc)",
-  Option "" ["printgoal"] (ReqArg (InBin IBPgls . binary) "{on|off}")
+  Option "" ["printgoal"] (ReqArg (Instr.InBin Instr.IBPgls . binary) "{on|off}")
     "print current goal (def: on)",
-  Option "" ["printreason"] (ReqArg (InBin IBPrsn . binary) "{on|off}")
+  Option "" ["printreason"] (ReqArg (Instr.InBin Instr.IBPrsn . binary) "{on|off}")
     "print reasoner's messages (def: off)",
-  Option "" ["printsection"] (ReqArg (InBin IBPsct . binary) "{on|off}")
+  Option "" ["printsection"] (ReqArg (Instr.InBin Instr.IBPsct . binary) "{on|off}")
     "print sentence translations (def: off)",
-  Option "" ["printcheck"] (ReqArg (InBin IBPchk . binary) "{on|off}")
+  Option "" ["printcheck"] (ReqArg (Instr.InBin Instr.IBPchk . binary) "{on|off}")
     "print checker's messages (def: off)",
-  Option "" ["printprover"] (ReqArg (InBin IBPprv . binary) "{on|off}")
+  Option "" ["printprover"] (ReqArg (Instr.InBin Instr.IBPprv . binary) "{on|off}")
     "print prover's messages (def: off)",
-  Option "" ["printunfold"] (ReqArg (InBin IBPunf . binary) "{on|off}")
+  Option "" ["printunfold"] (ReqArg (Instr.InBin Instr.IBPunf . binary) "{on|off}")
     "print definition unfoldings (def: off)",
-  Option "" ["printfulltask"] (ReqArg (InBin IBPtsk . binary) "{on|off}")
+  Option "" ["printfulltask"] (ReqArg (Instr.InBin Instr.IBPtsk . binary) "{on|off}")
     "print full prover tasks (def: off)",
-  Option "" ["printsimp"] (ReqArg (InBin IBPsmp . binary) "{on|off}")
+  Option "" ["printsimp"] (ReqArg (Instr.InBin Instr.IBPsmp . binary) "{on|off}")
     "print simplification process (def: off)",
-  Option "" ["printthesis"] (ReqArg (InBin IBPths . binary) "{on|off}")
+  Option "" ["printthesis"] (ReqArg (Instr.InBin Instr.IBPths . binary) "{on|off}")
     "print thesis development (def: off)",
-  Option "" ["ontored"] (ReqArg (InBin IBOnto . binary) "{on|off}")
+  Option "" ["ontored"] (ReqArg (Instr.InBin Instr.IBOnto . binary) "{on|off}")
     "enable ontological reduction (def: off)",
-  Option "" ["unfoldlow"] (ReqArg (InBin IBUfdl . binary) "{on|off}")
+  Option "" ["unfoldlow"] (ReqArg (Instr.InBin Instr.IBUfdl . binary) "{on|off}")
     "enable unfolding of definitions in the whole low level context (def: on)",
-  Option "" ["unfold"] (ReqArg (InBin IBUnfl . binary) "{on|off}")
+  Option "" ["unfold"] (ReqArg (Instr.InBin Instr.IBUnfl . binary) "{on|off}")
     "enable unfolding of definitions (def: on)",
-  Option "" ["unfoldsf"] (ReqArg (InBin IBUnfs . binary) "{on|off}")
+  Option "" ["unfoldsf"] (ReqArg (Instr.InBin Instr.IBUnfs . binary) "{on|off}")
     "enable unfolding of set conditions and function evaluations (def: on)",
-  Option "" ["unfoldlowsf"] (ReqArg (InBin IBUfds . binary) "{on|off}")
+  Option "" ["unfoldlowsf"] (ReqArg (Instr.InBin Instr.IBUfds . binary) "{on|off}")
     "enable unfolding of set and function conditions in general (def: off)",
-  Option "" ["checkontored"] (ReqArg (InBin IBOnch . binary) "{on|off}")
+  Option "" ["checkontored"] (ReqArg (Instr.InBin Instr.IBOnch . binary) "{on|off}")
     "enable ontological reduction for checking of symbols (def: off)"]
 
 binary "yes" = True ; binary "on"  = True

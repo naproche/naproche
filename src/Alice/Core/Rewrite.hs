@@ -17,7 +17,7 @@ import qualified Alice.Data.Text.Context as Context
 import qualified Alice.Data.Text.Block as Block (body, link, position)
 import Alice.Core.Base
 import qualified Alice.Core.Message as Message
-import Alice.Data.Instr
+import qualified Alice.Data.Instr as Instr
 import Alice.Core.Thesis
 import Alice.Core.Reason
 
@@ -151,7 +151,7 @@ generateConditions verbositySetting rules w l r =
 {- applies computational reasoning to an equality chain -}
 equalityReasoning :: Context -> VM ()
 equalityReasoning thesis
-  | body = whenInstruction IBPrsn False $ reasonLog Message.WRITELN noPos "eqchain concluded"
+  | body = whenInstruction Instr.IBPrsn False $ reasonLog Message.WRITELN noPos "eqchain concluded"
   | (not . null) link = getLinkedRules link >>= rewrite equation
   | otherwise = rules >>= rewrite equation -- if no link is given -> all rules
   where
@@ -188,7 +188,7 @@ rules = asks rewriteRules
 and compares the resulting normal forms -}
 rewrite :: Formula -> [Rule] -> VM ()
 rewrite Trm {trName = "=", trArgs = [l,r]} rules = do
-  verbositySetting <- askInstructionBin IBPsmp False -- check if printsimp is on
+  verbositySetting <- askInstructionBin Instr.IBPsmp False -- check if printsimp is on
   conditions <- generateConditions verbositySetting rules (>) l r;
   mapM_ (dischargeConditions verbositySetting . fst) conditions
 rewrite _ _ = error "Alice.Core.Rewrite.rewrite: non-equation argument"
@@ -212,14 +212,14 @@ dischargeConditions verbositySetting conditions =
           cleanup) <|> (cleanup >> mzero)
 
     setup = do
-      askInstructionInt IIchtl 1 >>= addInstruction . InInt IItlim
-      askInstructionInt IIchdp 3 >>= addInstruction . InInt IIdpth
-      addInstruction $ InBin IBOnto False
+      askInstructionInt Instr.IIchtl 1 >>= addInstruction . Instr.InInt Instr.IItlim
+      askInstructionInt Instr.IIchdp 3 >>= addInstruction . Instr.InInt Instr.IIdpth
+      addInstruction $ Instr.InBin Instr.IBOnto False
 
     cleanup = do
-      dropInstruction $ IdInt IItlim
-      dropInstruction $ IdInt IIdpth
-      dropInstruction $ IdBin IBOnto
+      dropInstruction $ Instr.IdInt Instr.IItlim
+      dropInstruction $ Instr.IdInt Instr.IIdpth
+      dropInstruction $ Instr.IdBin Instr.IBOnto
 
     header select conditions = "condition: " ++ format (select conditions)
     thead [] = ""; thead conditions = "(trivial: " ++ format conditions ++ ")"

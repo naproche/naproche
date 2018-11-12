@@ -16,7 +16,7 @@ import Control.Monad.Trans.Class
 import Control.Monad.Reader
 
 import Alice.Data.Formula
-import Alice.Data.Instr
+import qualified Alice.Data.Instr as Instr
 import Alice.Data.Text.Context (Context)
 import qualified Alice.Data.Text.Context as Context
 import qualified Alice.Data.Text.Block as Block (link, position)
@@ -44,12 +44,12 @@ fillDef context = fill True False [] (Just True) 0 $ Context.formula context
           fmap (Tag tag) $ fill isPredicat isNewWord localContext sign n f
     fill _ _ _ _ _ t  | isThesis t = thesis >>= return . Context.formula
     fill _ _ localContext _ _ v | isVar v = do
-      userInfoSetting <- askInstructionBin IBinfo True
+      userInfoSetting <- askInstructionBin Instr.IBinfo True
       newContext      <- cnRaise context localContext
       collectInfo userInfoSetting v `withContext` newContext -- fortify the term
     fill isPredicat isNewWord localContext sign n 
          term@Trm {trName = t, trArgs = tArgs, trInfo = infos, trId = tId} = do
-      userInfoSetting <- askInstructionBin IBinfo True
+      userInfoSetting <- askInstructionBin Instr.IBinfo True
       fortifiedArgs   <- mapM (fill False isNewWord localContext sign n) tArgs
       newContext      <- cnRaise context localContext
       fortifiedTerm   <- setDef isNewWord context term {trArgs = fortifiedArgs} 
@@ -108,7 +108,7 @@ a task to an ATP.
 
 testDef :: Context -> Formula -> DefDuo -> VM Formula
 testDef context term (guards, fortifiedTerm) = do
-  userCheckSetting <- askInstructionBin IBchck True
+  userCheckSetting <- askInstructionBin Instr.IBchck True
   if   userCheckSetting
   then setup >> easyCheck >>= hardCheck >> return fortifiedTerm 
   else return fortifiedTerm
@@ -128,15 +128,15 @@ testDef context term (guards, fortifiedTerm) = do
           <|> (cleanup >> mzero)
 
     setup = do
-      askInstructionInt IIchtl 1 >>= addInstruction . InInt IItlim
-      askInstructionInt IIchdp 3 >>= addInstruction . InInt IIdpth
-      askInstructionBin IBOnch False >>= addInstruction. InBin IBOnto
+      askInstructionInt Instr.IIchtl 1 >>= addInstruction . Instr.InInt Instr.IItlim
+      askInstructionInt Instr.IIchdp 3 >>= addInstruction . Instr.InInt Instr.IIdpth
+      askInstructionBin Instr.IBOnch False >>= addInstruction. Instr.InBin Instr.IBOnto
 
 
     cleanup = do
-      dropInstruction $ IdInt IItlim
-      dropInstruction $ IdInt IIdpth
-      dropInstruction $ IdBin IBOnto
+      dropInstruction $ Instr.IdInt Instr.IItlim
+      dropInstruction $ Instr.IdInt Instr.IIdpth
+      dropInstruction $ Instr.IdBin Instr.IBOnto
 
     wipeLink context =
       let block:restBranch = Context.branch context
@@ -148,7 +148,7 @@ testDef context term (guards, fortifiedTerm) = do
     thead [] = ""; thead guards = "(trivial: " ++ format guards ++ ")"
     format guards = if null guards then " - " else unwords . map show $ guards
     defLog =
-      whenInstruction IBPchk False .
+      whenInstruction Instr.IBPchk False .
         reasonLog Message.WRITELN (Block.position (head $ Context.branch context))
 
 

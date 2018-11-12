@@ -50,7 +50,8 @@ import Control.Monad.State
 import Control.Monad.Reader
 
 import Alice.Data.Formula
-import Alice.Data.Instr
+import Alice.Data.Instr (Instr)
+import qualified Alice.Data.Instr as Instr
 import Alice.Data.Text.Block (Block, Text)
 import Alice.Data.Text.Context (Context, MRule(..))
 import qualified Alice.Data.Text.Context as Context (name)
@@ -184,16 +185,16 @@ askRS f     = justRS >>= (justIO . fmap f . readIORef)
 updateRS f  = justRS >>= (justIO . flip modifyIORef f)
 
 askInstructionInt    instr _default =
-  fmap (askII instr _default) (askRS instructions)
+  fmap (Instr.askII instr _default) (askRS instructions)
 askInstructionBin    instr _default =
-  fmap (askIB instr _default) (askRS instructions)
+  fmap (Instr.askIB instr _default) (askRS instructions)
 askInstructionString instr _default =
-  fmap (askIS instr _default) (askRS instructions)
+  fmap (Instr.askIS instr _default) (askRS instructions)
 
 addInstruction  instr =
   updateRS $ \rs -> rs { instructions = instr : instructions rs }
 dropInstruction instr =
-  updateRS $ \rs -> rs { instructions = dropI instr $ instructions rs }
+  updateRS $ \rs -> rs { instructions = Instr.dropI instr $ instructions rs }
 addTimeCounter counter time =
   updateRS $ \rs -> rs { counters = TimeCounter counter time : counters rs }
 addIntCounter  counter time =

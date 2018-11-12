@@ -17,6 +17,7 @@ module Alice.Data.Text.Block (
 import Alice.Data.Formula
 import Alice.Core.Position
 import Alice.Data.Instr (Instr, Idrop)
+import qualified Alice.Data.Instr as Instr
 import Alice.Parser.Token
 
 

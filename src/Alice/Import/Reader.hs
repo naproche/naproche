@@ -13,7 +13,8 @@ import System.IO.Error
 import Control.Exception
 
 import Alice.Data.Text.Block
-import Alice.Data.Instr
+import Alice.Data.Instr (Instr)
+import qualified Alice.Data.Instr as Instr
 import Alice.ForTheL.Base
 import Alice.ForTheL.Structure
 import Alice.Parser.Base
@@ -52,20 +53,20 @@ readText pathToLibrary text0 = do
 
 reader :: String -> [String] -> [State FState] -> [Text] -> IO [Text]
 
-reader _ _ _ [TI (InStr ISread file)] | isInfixOf ".." file =
+reader _ _ _ [TI (Instr.InStr Instr.ISread file)] | isInfixOf ".." file =
   Message.errorParser (fileOnlyPos file) "contains \"..\", not allowed"
 
-reader pathToLibrary doneFiles stateList [TI (InStr ISread file)] =
+reader pathToLibrary doneFiles stateList [TI (Instr.InStr Instr.ISread file)] =
   reader pathToLibrary doneFiles stateList
-    [TI $ InStr ISfile $ pathToLibrary ++ '/' : file]
+    [TI $ Instr.InStr Instr.ISfile $ pathToLibrary ++ '/' : file]
 
-reader pathToLibrary doneFiles (pState:states) [TI (InStr ISfile file)]
+reader pathToLibrary doneFiles (pState:states) [TI (Instr.InStr Instr.ISfile file)]
   | file `elem` doneFiles = do
       Message.outputMain Message.WRITELN (fileOnlyPos file) "already read, skipping"
       (newText, newState) <- launchParser forthel pState
       reader pathToLibrary doneFiles (newState:states) newText
 
-reader pathToLibrary doneFiles (pState:states) [TI (InStr ISfile file)] = do
+reader pathToLibrary doneFiles (pState:states) [TI (Instr.InStr Instr.ISfile file)] = do
   input <-
     catch (if null file then getContents else File.read file)
       (Message.errorParser (fileOnlyPos file) . ioeGetErrorString)

@@ -27,7 +27,8 @@ import Alice.Core.Reason
 import Alice.Core.Thesis
 import Alice.Data.Formula
 import qualified Alice.Data.Tag as Tag
-import Alice.Data.Instr
+import Alice.Data.Instr (Instr, Idrop)
+import qualified Alice.Data.Instr as Instr
 import Alice.Data.Text.Block (Block(Block), Text(..), Section(..))
 import qualified Alice.Data.Text.Block as Block
 import Alice.Data.Text.Context (Context(Context))
@@ -46,7 +47,7 @@ import Alice.Core.Rewrite
 
 verify :: String -> IORef RState -> [Text] -> IO (Maybe ([Text], GState))
 verify fileName reasonerState blocks = do
-  let text = TI (InStr ISfile fileName) : blocks
+  let text = TI (Instr.InStr Instr.ISfile fileName) : blocks
   Message.outputReason Message.WRITELN (fileOnlyPos fileName) "verification started"
 
   let initialVerificationState =
@@ -78,7 +79,7 @@ verificationLoop state@VS {
 
   -- statistics and user communication
   incrementIntCounter Sections
-  whenInstruction IBPsct False $ justIO $
+  whenInstruction Instr.IBPsct False $ justIO $
     Message.outputForTheL Message.WRITELN (Block.position block) $
     Message.trim (Block.showForm 0 block "")
   let newBranch = block : branch; contextBlock = Context f newBranch [] f
@@ -92,10 +93,10 @@ verificationLoop state@VS {
   let proofTask = generateProofTask kind declaredVariables fortifiedFormula
       freshThesis = Context proofTask newBranch [] proofTask
       toBeProved = (Block.needsProof block) && not (Block.isTopLevel block)
-  proofBody <- askInstructionBin IBflat False >>= \p ->
+  proofBody <- askInstructionBin Instr.IBflat False >>= \p ->
     if p then return [] else return body
 
-  whenInstruction IBPths False $ when (
+  whenInstruction Instr.IBPths False $ when (
     toBeProved && (not . null) proofBody &&
     not (hasDEC $ Context.formula freshThesis)) $
       thesisLog Message.WRITELN (Block.position block) (length branch - 1) $
@@ -111,14 +112,14 @@ verificationLoop state@VS {
       thesisMotivated = False, currentThesis = freshThesis,
       currentBranch = newBranch, restText = body }
 
-  whenInstruction IBPths False $ when (
+  whenInstruction Instr.IBPths False $ when (
     toBeProved && (not . null) proofBody &&
     not (hasDEC $ Context.formula freshThesis)) $
       thesisLog Message.WRITELN (Block.position block) (length branch - 1) "thesis resolved"
 
   -- in what follows we prepare the current block to contribute to the context,
   -- extract rules, definitions and compute the new thesis
-  thesisSetting <- askInstructionBin IBthes True
+  thesisSetting <- askInstructionBin Instr.IBthes True
   let newBlock = block {
         Block.formula = deleteInductionOrCase fortifiedFormula, 
         Block.body = fortifiedProof }
@@ -143,7 +144,7 @@ verificationLoop state@VS {
         then inferNewThesis definitions newContext thesis
         else (Block.needsProof block, False, thesis)
 
-  whenInstruction IBPths False $ when (
+  whenInstruction Instr.IBPths False $ when (
     hasChanged && motivated && newMotivation &&
     (not $ hasDEC $ Block.formula $ head branch) ) $
       thesisLog Message.WRITELN (Block.position block) (length branch - 2) $
@@ -186,31 +187,31 @@ verificationLoop st@VS {
   currentThesis   = thesis,
   currentContext  = context,
   restText        = [] }
-  = local (const st) $ whenInstruction IBprov True prove >> return []
+  = local (const st) $ whenInstruction Instr.IBprov True prove >> return []
   where
     prove =
       if hasDEC (Context.formula thesis) --computational reasoning
       then do
         let logAction = reasonLog Message.WRITELN (Block.position block) $ "goal: " ++ text
             block = Context.head thesis ; text = Block.text block
-        incrementIntCounter Equations ; whenInstruction IBPgls True logAction
+        incrementIntCounter Equations ; whenInstruction Instr.IBPgls True logAction
         timer SimplifyTime (equalityReasoning thesis) <|> (
           reasonLog Message.WARNING (Block.position block) "equation failed" >>
-          guardInstruction IBskip False >> incrementIntCounter FailedEquations)
+          guardInstruction Instr.IBskip False >> incrementIntCounter FailedEquations)
       else do
         let logAction = reasonLog Message.WRITELN (Block.position block) $ "goal: " ++ text
             block = Context.head thesis ; text = Block.text block
         unless (isTop . Context.formula $ thesis) $ incrementIntCounter Goals
-        whenInstruction IBPgls True logAction
+        whenInstruction Instr.IBPgls True logAction
         proveThesis <|> (
           reasonLog Message.WARNING (Block.position block) "goal failed" >>
-          guardInstruction IBskip False >>
+          guardInstruction Instr.IBskip False >>
           incrementIntCounter FailedGoals)
 
 -- process instructions. we distinguish between those that influence the
 -- verification state and those that influence (at most) the global state
 verificationLoop state@VS {restText = TI instruction : blocks}
-  | relevant instruction = contextTI state {restText = blocks} instruction
+  | Instr.relevant instruction = contextTI state {restText = blocks} instruction
   | otherwise = procTI state instruction >>
       verificationLoop state {restText = blocks}
 
@@ -250,7 +251,7 @@ verifyProof state@VS {
       let newRules = extractRewriteRule (head newContext) ++ rules
           (_, _, newThesis) =
             inferNewThesis definitions newContext $ Context.setForm thesis f
-      whenInstruction IBPths False $ when (
+      whenInstruction Instr.IBPths False $ when (
         noInductionOrCase (Context.formula newThesis) && not (null $ restText state)) $
           thesisLog Message.WRITELN
           (Block.position $ head $ Context.branch $ head context) (length branch - 2) $
@@ -290,41 +291,41 @@ procTI VS {
   currentContext  = context}
   = proc
   where
-    proc (InCom ICRuls) =
+    proc (Instr.InCom Instr.ICRuls) =
       reasonLog Message.WRITELN noPos $ "current ruleset: " ++ "\n" ++ Rule.printrules (reverse rules)
-    proc (InCom ICPths) = do
+    proc (Instr.InCom Instr.ICPths) = do
       let motivation = if motivated then "(mot): " else "(nmt): "
       reasonLog Message.WRITELN noPos $ "current thesis " ++ motivation ++ show (Context.formula thesis)
-    proc (InCom ICPcnt) =
+    proc (Instr.InCom Instr.ICPcnt) =
       reasonLog Message.WRITELN noPos $ "current context:\n" ++
         concatMap (\form -> "  " ++ show form ++ "\n") (reverse context)
-    proc (InCom ICPflt) = do
+    proc (Instr.InCom Instr.ICPflt) = do
       let topLevelContext = filter Context.isTopLevel context
       reasonLog Message.WRITELN noPos $ "current filtered top-level context:\n" ++
         concatMap (\form -> "  " ++ show form ++ "\n") (reverse topLevelContext)
 
-    proc (InCom _) = reasonLog Message.WRITELN noPos "unsupported instruction"
+    proc (Instr.InCom _) = reasonLog Message.WRITELN noPos "unsupported instruction"
 
-    proc (InBin IBverb False) = do
-      addInstruction $ InBin IBPgls False
-      addInstruction $ InBin IBPrsn False
-      addInstruction $ InBin IBPsct False
-      addInstruction $ InBin IBPchk False
-      addInstruction $ InBin IBPprv False
-      addInstruction $ InBin IBPunf False
-      addInstruction $ InBin IBPtsk False
+    proc (Instr.InBin Instr.IBverb False) = do
+      addInstruction $ Instr.InBin Instr.IBPgls False
+      addInstruction $ Instr.InBin Instr.IBPrsn False
+      addInstruction $ Instr.InBin Instr.IBPsct False
+      addInstruction $ Instr.InBin Instr.IBPchk False
+      addInstruction $ Instr.InBin Instr.IBPprv False
+      addInstruction $ Instr.InBin Instr.IBPunf False
+      addInstruction $ Instr.InBin Instr.IBPtsk False
 
-    proc (InBin IBverb True) = msum [
-      guardNotInstruction IBPgls True  >> addInstruction (InBin IBPgls True),
-      guardNotInstruction IBPrsn False >> addInstruction (InBin IBPrsn True),
-      guardNotInstruction IBPsct False >> addInstruction (InBin IBPsct True),
-      guardNotInstruction IBPchk False >> addInstruction (InBin IBPchk True),
-      guardNotInstruction IBPprv False >> addInstruction (InBin IBPprv True),
-      guardNotInstruction IBPunf False >> addInstruction (InBin IBPunf True),
-      guardNotInstruction IBPtsk False >> addInstruction (InBin IBPtsk True),
+    proc (Instr.InBin Instr.IBverb True) = msum [
+      guardNotInstruction Instr.IBPgls True  >> addInstruction (Instr.InBin Instr.IBPgls True),
+      guardNotInstruction Instr.IBPrsn False >> addInstruction (Instr.InBin Instr.IBPrsn True),
+      guardNotInstruction Instr.IBPsct False >> addInstruction (Instr.InBin Instr.IBPsct True),
+      guardNotInstruction Instr.IBPchk False >> addInstruction (Instr.InBin Instr.IBPchk True),
+      guardNotInstruction Instr.IBPprv False >> addInstruction (Instr.InBin Instr.IBPprv True),
+      guardNotInstruction Instr.IBPunf False >> addInstruction (Instr.InBin Instr.IBPunf True),
+      guardNotInstruction Instr.IBPtsk False >> addInstruction (Instr.InBin Instr.IBPtsk True),
       return ()]
 
-    proc (InPar IPgrup ps) = addGroup ps
+    proc (Instr.InPar Instr.IPgrup ps) = addGroup ps
 
     proc i = addInstruction i
 
@@ -343,15 +344,15 @@ contextTI state@VS {
   currentContext  = context}
   = proc
   where
-    proc (InPar IPscnt groupLink) = do
+    proc (Instr.InPar Instr.IPscnt groupLink) = do
       newContext <- setContext groupLink
       verificationLoop state {
         currentContext = takeWhile Context.isLowLevel context ++ newContext}
-    proc (InPar IPdcnt groupLink) = do
+    proc (Instr.InPar Instr.IPdcnt groupLink) = do
       link <- getLink groupLink
       verificationLoop state {
         currentContext = filter (not . flip elem link . Context.name) context }
-    proc (InPar IPacnt groupLink) = do
+    proc (Instr.InPar Instr.IPacnt groupLink) = do
       newContext <- setContext groupLink
       verificationLoop state {
         currentContext = unionBy ((==) `on` Context.name) newContext context}
