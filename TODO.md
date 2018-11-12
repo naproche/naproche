@@ -16,6 +16,8 @@
 
 * make $SPASS_HOME/SPASS from Isabelle actually work (!?)
 
+* proper names for instructions "setCtxt", "drpCtxt", "addCtxt" etc. (!?)
+
 
 # markup reports #
 
