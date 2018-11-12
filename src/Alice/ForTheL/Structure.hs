@@ -50,12 +50,12 @@ forthel = section <|> macroOrPretype <|> bracketExpression
    between instructions and synonym introductions.-}
 
 bracketExpression = exit </> readfile </> do
-  mbInstr <- liftM Left instruction </> liftM Right introduceSynonym
-  either (\instr -> liftM ((:) instr) forthel) (\_ -> forthel) mbInstr
+  mbInstr <- fmap Left instruction </> fmap Right introduceSynonym
+  either (\instr -> fmap ((:) instr) forthel) (\_ -> forthel) mbInstr
   where
     exit = (iExit <|> eof) >> return []
     readfile = liftM2 ((:) . TI) iRead (return [])
-    instruction = liftM TD iDrop </> liftM TI instr
+    instruction = fmap TD iDrop </> fmap TI instr
 
 topsection = signature <|> definition <|> axiom <|> theorem
 
@@ -72,7 +72,7 @@ genericTopsection kind header endparser = do
 
 --- generic header parser
 
-header titles = dot $ wd_tokenOf titles >> optLL1 "" topIdentifier
+header titles = dot $ wdTokenOf titles >> optLL1 "" topIdentifier
 
 
 -- topsections
@@ -106,7 +106,7 @@ choose   = sentence Selection (chsH >> selection) assumeVars link
 caseHypo = sentence Block.CaseHypothesis   (casH >> statement) affirmVars link
 affirm   = sentence Affirmation (affH >> statement) affirmVars link </> eqChain
 assume   = sentence Assumption (asmH >> statement) assumeVars noLink
-llDefn   = sentence LowDefinition(ldfH >> setNotion </> functionNotion)     llDefnVars noLink
+llDefn   = sentence LowDefinition(ldfH >> setNotion </> functionNotion) llDefnVars noLink
 
 -- Links and Identifiers
 link = dot eqLink
@@ -123,14 +123,14 @@ lowIdentifier = expar topIdentifier
 
 noLink = dot $ return []
 
-eqLink = optLL1 [] $ expar $ wd_token "by" >> identifiers
+eqLink = optLL1 [] $ expar $ wdToken "by" >> identifiers
   where
     identifiers = topIdentifier `sepByLL1` comma
 
 -- declaration management, typings and pretypings
 
 updateDeclbefore :: FTL Block -> FTL [Text] -> FTL [Text]
-updateDeclbefore blp p = do bl <- blp; addDecl (Block.declaredVariables bl) $ liftM (TB bl : ) p
+updateDeclbefore blp p = do bl <- blp; addDecl (Block.declaredVariables bl) $ fmap (TB bl : ) p
 
 
 pretyping :: Block -> FTL Block
@@ -150,7 +150,7 @@ pret dvs tvs bl =
 pretypeBefore :: FTL Block -> FTL [Text] -> FTL [Text]
 pretypeBefore blp p = do
   bl <- blp; typeBlock <- pretyping bl; let pretyped = Block.declaredVariables typeBlock
-  pResult   <- addDecl (pretyped ++ Block.declaredVariables bl) $ liftM (TB bl : ) p
+  pResult   <- addDecl (pretyped ++ Block.declaredVariables bl) $ fmap (TB bl : ) p
   return $ if null pretyped then pResult else TB typeBlock : pResult
 
 pretype :: FTL Block -> FTL [Text]
@@ -158,16 +158,16 @@ pretype p = p `pretypeBefore` return []
 
 
 -- low-level header
-hence = optLL1 () $ wd_tokenOf ["then", "hence", "thus", "therefore"]
-letUs = optLL1 () $ (wd_token "let" >> wd_token "us") <|> (wd_token "we" >> wd_token "can")
+hence = optLL1 () $ wdTokenOf ["then", "hence", "thus", "therefore"]
+letUs = optLL1 () $ (wdToken "let" >> wdToken "us") <|> (wdToken "we" >> wdToken "can")
 
-chsH = hence >> letUs >> wd_tokenOf ["choose", "take", "consider"]
-casH = wd_token "case"
+chsH = hence >> letUs >> wdTokenOf ["choose", "take", "consider"]
+casH = wdToken "case"
 affH = hence
-asmH =  lus </> wd_token "let"
+asmH =  lus </> wdToken "let"
   where
-    lus = letUs >> wd_tokenOf ["assume", "presume", "suppose"] >> optLL1 () that
-ldfH = wd_token "define"
+    lus = letUs >> wdTokenOf ["assume", "presume", "suppose"] >> optLL1 () that
+ldfH = wdToken "define"
 
 
 -- generic sentence parser
@@ -181,7 +181,7 @@ statementBlock kind p mbLink = do
 
 
 pretypeSentence kind p wfVars mbLink = narrow $ do
-  dvs <- getDecl; tvr <- liftM (concatMap fst) getPretyped
+  dvs <- getDecl; tvr <- fmap (concatMap fst) getPretyped
   bl <- wellFormedCheck (wf dvs tvr) $ statementBlock kind p mbLink
   return bl {Block.declaredVariables = decl (dvs ++ tvr) $ Block.formula bl }
   where
@@ -213,7 +213,7 @@ llDefnVars dvs f
 
 assumeVars dvs f = affirmVars (decl dvs f ++ dvs) f
 
-affirmVars dvs f = overfree dvs f
+affirmVars = overfree
 
 
 -- proofs
@@ -222,20 +222,20 @@ affirmVars dvs f = overfree dvs f
 
 data Scheme = None | Short | Raw | InS | InT Formula deriving Show
 
-preMethod  = optLLx None $ letUs >> dem >> after method that
+preMethod = optLLx None $ letUs >> dem >> after method that
   where
-    dem = wd_tokenOf ["prove", "show", "demonstrate"]
+    dem = wdTokenOf ["prove", "show", "demonstrate"]
 
 postMethod = optLL1 None $ short <|> explicit
   where
-    short    = wd_token "indeed" >> return Short
-    explicit = dot $ wd_token "proof"  >> method
+    short = wdToken "indeed" >> return Short
+    explicit = dot $ wdToken "proof"  >> method
 
-method = optLL1 Raw $ wd_token "by" >> (contradict <|> cases <|> induction)
+method = optLL1 Raw $ wdToken "by" >> (contradict <|> cases <|> induction)
   where
-    contradict = wd_token "contradiction" >> return Raw
-    cases      = wd_token "case" >> wd_token "analysis" >> return Raw
-    induction  = wd_token "induction" >> optLL1 InS (wd_token "on" >> liftM InT s_term)
+    contradict = wdToken "contradiction" >> return Raw
+    cases = wdToken "case" >> wdToken "analysis" >> return Raw
+    induction = wdToken "induction" >> optLL1 InS (wdToken "on" >> fmap InT sTerm)
 
 
 --- creation of induction thesis
@@ -245,21 +245,21 @@ indThesis fr pre post = do
   indFormula (free dvs it) it fr
   where
     indScheme (InT _) (InT _) = failWF "conflicting induction schemes"
-    indScheme m@(InT _) _ = return m;   indScheme _ m@(InT _) = return m
-    indScheme InS _        = return InS; indScheme _ m          = return m
+    indScheme m@(InT _) _ = return m; indScheme _ m@(InT _) = return m
+    indScheme InS _ = return InS; indScheme _ m = return m
 
-    indTerm _ (InT t)     = return t
+    indTerm _ (InT t) = return t
     indTerm (All v _) InS = return $ zVar v
-    indTerm _ InS         = failWF "invalid induction thesis"
-    indTerm _ _           = return Top
+    indTerm _ InS = failWF "invalid induction thesis"
+    indTerm _ _ = return Top
 
     indFormula _ Top fr = return fr
-    indFormula vs it fr = liftM (insertIndTerm it) $ indStatem vs fr
+    indFormula vs it fr = fmap (insertIndTerm it) $ indStatem vs fr
 
-    indStatem vs (Imp g f) = liftM (Imp  g .) $ indStatem vs f
-    indStatem vs (All v f) = liftM (zAll v .) $ indStatem (delete v vs) f
-    indStatem [] f         = return (`Imp` f)
-    indStatem _ _          = failWF $  "invalid induction thesis " ++ show fr
+    indStatem vs (Imp g f) = fmap (Imp  g .) $ indStatem vs f
+    indStatem vs (All v f) = fmap (zAll v .) $ indStatem (delete v vs) f
+    indStatem [] f = return (`Imp` f)
+    indStatem _ _ = failWF $ "invalid induction thesis " ++ show fr
 
     insertIndTerm it cn = cn $ Tag InductionHypothesis $ substHole it $ cn $ zLess it zHole
 
@@ -277,14 +277,14 @@ proof p = do
 topProof p = do
   pre <- preMethod; bl <- p; post <- postMethod; typeBlock <- pretyping bl;
   let pretyped = Block.declaredVariables typeBlock
-  nbl <- addDecl pretyped $ liftM TB $ do
-          nf <- indThesis (Block.formula bl) pre post
-          addBody pre post $ bl {Block.formula = nf}
+  nbl <- addDecl pretyped $ fmap TB $ do
+    nf <- indThesis (Block.formula bl) pre post
+    addBody pre post $ bl {Block.formula = nf}
   return $ if null pretyped then [nbl] else [TB typeBlock, nbl]
 
 addBody None None = return -- no proof was given
-addBody _ Short   = proofSentence    -- a short proof was given
-addBody _ _       = proofBody    -- a full proof was given
+addBody _ Short = proofSentence    -- a short proof was given
+addBody _ _ = proofBody    -- a full proof was given
 
 
 
@@ -300,27 +300,31 @@ proofBody bl = do
 
 proofText = assume_affirm_choose_lldefine <|> caseText <|> qed <|> llInstr
   where
-    assume_affirm_choose_lldefine =
-      (narrow assume </> proof (narrow $ affirm </> choose) </> narrow llDefn) `updateDeclbefore` proofText
-    qed = wd_tokenOf ["qed", "end", "trivial", "obvious"] >> return []
-    llInstr = liftM2 (:) (liftM TI instr </> liftM TD iDrop) proofText
+    assume_affirm_choose_lldefine = (
+      narrow assume </>
+      proof (narrow $ affirm </> choose) </>
+      narrow llDefn) `updateDeclbefore`
+      proofText
+    qed = wdTokenOf ["qed", "end", "trivial", "obvious"] >> return []
+    llInstr = liftM2 (:) (fmap TI instr </> fmap TD iDrop) proofText
 
 caseText = caseD
   where
     caseChain = caseD <|> qed
-    caseD     = liftM2 (:) caseDestinction caseChain
-    qed       = wd_tokenOf ["qed", "end", "trivial", "obvious"] >> return []
+    caseD = liftM2 (:) caseDestinction caseChain
+    qed = wdTokenOf ["qed", "end", "trivial", "obvious"] >> return []
 
     caseDestinction = do
-      bl@(Block { Block.formula = fr }) <- narrow caseHypo
-      liftM TB $ proofBody $ bl { Block.formula = Imp (Tag Tag.CaseHypothesis fr) zThesis}
+      bl@Block { Block.formula = fr } <- narrow caseHypo
+      fmap TB $ proofBody $ bl { 
+        Block.formula = Imp (Tag Tag.CaseHypothesis fr) zThesis}
 
 
 -- equality Chain
 
 eqChain = do
   dvs <- getDecl; nm <- opt "__" lowIdentifier; pos <- getPos; inp <- getInput
-  body <- wellFormedCheck (chainVars dvs) $ s_term >>= nextTerm
+  body <- wellFormedCheck (chainVars dvs) $ sTerm >>= nextTerm
   toks <- getTokens inp
   let Tag EqualityChain Trm{trArgs = [t,_]} = Block.formula $ head body
       Tag EqualityChain Trm{trArgs = [_,s]} = Block.formula $ last body
@@ -330,13 +334,13 @@ eqChain = do
     chainVars dvs = affirmVars dvs . foldl1 And . map Block.formula
 
 
-eq_tail t = nextTerm t </> (sm_token "." >> return [])
+eq_tail t = nextTerm t </> (smTokenOf "." >> return [])
 
 nextTerm :: Formula -> FTL [Block]
 nextTerm t = do
   pos <- getPos; inp <- getInput
-  symbol ".="; s <- s_term; ln <- eqLink; toks <- getTokens inp
-  liftM ((:) $ Block.makeBlock (Tag EqualityChain $ zEqu t s)
+  symbol ".="; s <- sTerm; ln <- eqLink; toks <- getTokens inp
+  fmap ((:) $ Block.makeBlock (Tag EqualityChain $ zEqu t s)
     [] Affirmation "__" ln pos toks) $ eq_tail s
 
 

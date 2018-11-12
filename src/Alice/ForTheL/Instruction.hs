@@ -40,13 +40,13 @@ iExit = exbrk (readInstr >>= gut)
     gut _ = mzero
 
 iDrop :: Parser st Idrop
-iDrop = exbrk (wd_token "/" >> readInstrDrop)
+iDrop = exbrk (wdToken "/" >> readInstrDrop)
 
 
 readInstr :: Parser st Instr
 readInstr = readIC -|- readII -|- readIB -|- readIS -|- readIP
   where
-    readIC = liftM  InCom (readIX setIC)
+    readIC = fmap  InCom (readIX setIC)
     readII = liftM2 InInt (readIX setII) readInt
     readIB = liftM2 InBin (readIX setIB) readBin
     readIS = liftM2 InStr (readIX setIS) readStr
@@ -66,7 +66,7 @@ readBin = try $ readStr >>= binCheck
     binCheck "off" = return False
     binCheck _     = mzero
 
-readStr = liftM concat readPar
+readStr = fmap concat readPar
 
 
 readPar = chainLL1 notClosingBrk
@@ -78,10 +78,10 @@ readPar = chainLL1 notClosingBrk
 readInstrDrop :: Parser st Idrop
 readInstrDrop = readIC -|- readII -|- readIB -|- readIS
   where
-    readIC  = liftM IdCom (readIX setIC)
-    readII  = liftM IdInt (readIX setII)
-    readIB  = liftM IdBin (readIX setIB)
-    readIS  = liftM IdStr (readIX setIS)
+    readIC  = fmap IdCom (readIX setIC)
+    readII  = fmap IdInt (readIX setII)
+    readIB  = fmap IdBin (readIX setIB)
+    readIS  = fmap IdStr (readIX setIS)
 
 
 readIX :: [(a, [String])] -> Parser st a
