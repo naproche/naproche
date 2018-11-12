@@ -29,7 +29,7 @@ module Alice.Core.Base (
   showTimeDiff,
   timer,
 
-  askInstructionInt, askInstructionBin, askInstructionString,
+  askInstructionInt, askInstructionBool, askInstructionString,
   addInstruction, dropInstruction,
   addTimeCounter, addIntCounter, incrementIntCounter,
   guardInstruction, guardNotInstruction, whenInstruction,
@@ -184,17 +184,17 @@ justIO m = lift $ lift $ CRM $ \ _ _ k -> m >>= k
 askRS f     = justRS >>= (justIO . fmap f . readIORef)
 updateRS f  = justRS >>= (justIO . flip modifyIORef f)
 
-askInstructionInt    instr _default =
-  fmap (Instr.askII instr _default) (askRS instructions)
-askInstructionBin    instr _default =
-  fmap (Instr.askIB instr _default) (askRS instructions)
+askInstructionInt instr _default =
+  fmap (Instr.askInt instr _default) (askRS instructions)
+askInstructionBool instr _default =
+  fmap (Instr.askBool instr _default) (askRS instructions)
 askInstructionString instr _default =
-  fmap (Instr.askIS instr _default) (askRS instructions)
+  fmap (Instr.askString instr _default) (askRS instructions)
 
 addInstruction  instr =
   updateRS $ \rs -> rs { instructions = instr : instructions rs }
 dropInstruction instr =
-  updateRS $ \rs -> rs { instructions = Instr.dropI instr $ instructions rs }
+  updateRS $ \rs -> rs { instructions = Instr.drop instr $ instructions rs }
 addTimeCounter counter time =
   updateRS $ \rs -> rs { counters = TimeCounter counter time : counters rs }
 addIntCounter  counter time =
@@ -210,11 +210,11 @@ timer counter task = do
   return result
 
 guardInstruction instr _default =
-  askInstructionBin instr _default >>= guard
+  askInstructionBool instr _default >>= guard
 guardNotInstruction instr _default =
-  askInstructionBin instr _default >>= guard . not
+  askInstructionBool instr _default >>= guard . not
 whenInstruction instr _default action =
-  askInstructionBin instr _default >>= \ b -> when b action
+  askInstructionBool instr _default >>= \b -> when b action
 
 -- Counter management
 

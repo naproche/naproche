@@ -44,12 +44,12 @@ fillDef context = fill True False [] (Just True) 0 $ Context.formula context
           fmap (Tag tag) $ fill isPredicat isNewWord localContext sign n f
     fill _ _ _ _ _ t  | isThesis t = thesis >>= return . Context.formula
     fill _ _ localContext _ _ v | isVar v = do
-      userInfoSetting <- askInstructionBin Instr.IBinfo True
+      userInfoSetting <- askInstructionBool Instr.Info True
       newContext      <- cnRaise context localContext
       collectInfo userInfoSetting v `withContext` newContext -- fortify the term
     fill isPredicat isNewWord localContext sign n 
          term@Trm {trName = t, trArgs = tArgs, trInfo = infos, trId = tId} = do
-      userInfoSetting <- askInstructionBin Instr.IBinfo True
+      userInfoSetting <- askInstructionBool Instr.Info True
       fortifiedArgs   <- mapM (fill False isNewWord localContext sign n) tArgs
       newContext      <- cnRaise context localContext
       fortifiedTerm   <- setDef isNewWord context term {trArgs = fortifiedArgs} 
@@ -108,7 +108,7 @@ a task to an ATP.
 
 testDef :: Context -> Formula -> DefDuo -> VM Formula
 testDef context term (guards, fortifiedTerm) = do
-  userCheckSetting <- askInstructionBin Instr.IBchck True
+  userCheckSetting <- askInstructionBool Instr.Check True
   if   userCheckSetting
   then setup >> easyCheck >>= hardCheck >> return fortifiedTerm 
   else return fortifiedTerm
@@ -128,15 +128,15 @@ testDef context term (guards, fortifiedTerm) = do
           <|> (cleanup >> mzero)
 
     setup = do
-      askInstructionInt Instr.IIchtl 1 >>= addInstruction . Instr.InInt Instr.IItlim
-      askInstructionInt Instr.IIchdp 3 >>= addInstruction . Instr.InInt Instr.IIdpth
-      askInstructionBin Instr.IBOnch False >>= addInstruction. Instr.InBin Instr.IBOnto
+      askInstructionInt Instr.Checktime 1 >>= addInstruction . Instr.Int Instr.Timelimit
+      askInstructionInt Instr.Checkdepth 3 >>= addInstruction . Instr.Int Instr.Depthlimit
+      askInstructionBool Instr.Checkontored False >>= addInstruction . Instr.Bool Instr.Ontored
 
 
     cleanup = do
-      dropInstruction $ Instr.IdInt Instr.IItlim
-      dropInstruction $ Instr.IdInt Instr.IIdpth
-      dropInstruction $ Instr.IdBin Instr.IBOnto
+      dropInstruction $ Instr.DropInt Instr.Timelimit
+      dropInstruction $ Instr.DropInt Instr.Depthlimit
+      dropInstruction $ Instr.DropBool Instr.Ontored
 
     wipeLink context =
       let block:restBranch = Context.branch context
@@ -148,7 +148,7 @@ testDef context term (guards, fortifiedTerm) = do
     thead [] = ""; thead guards = "(trivial: " ++ format guards ++ ")"
     format guards = if null guards then " - " else unwords . map show $ guards
     defLog =
-      whenInstruction Instr.IBPchk False .
+      whenInstruction Instr.Printcheck False .
         reasonLog Message.WRITELN (Block.position (head $ Context.branch context))
 
 

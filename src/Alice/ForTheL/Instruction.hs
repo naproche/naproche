@@ -1,5 +1,5 @@
 {-
-Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
+Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018), Makarius (2018)
 
 Syntax of ForThel Instructions.
 -}
@@ -8,7 +8,7 @@ module Alice.ForTheL.Instruction where
 
 import Control.Monad
 
-import Alice.Data.Instr (Instr, Idrop)
+import Alice.Data.Instr (Instr)
 import qualified Alice.Data.Instr as Instr
 
 import Alice.Parser.Base
@@ -17,70 +17,72 @@ import Alice.Parser.Primitives
 
 import Alice.Parser.Token
 
+
 instr :: Parser st Instr
 instr = exbrk (readInstr >>= gut)
   where
-    gut (Instr.InStr Instr.ISread _)  = fail "'read' not allowed here"
-    gut (Instr.InCom Instr.ICexit)    = fail "'exit'/'quit' not allowed here"
+    gut (Instr.String Instr.Read _) = fail "'read' not allowed here"
+    gut (Instr.Command Instr.EXIT) = fail "'exit'/'quit' not allowed here"
     gut i = return i
 
 
 iRead :: Parser st Instr
 iRead = exbrk (readInstr >>= gut)
   where
-    gut i@(Instr.InStr Instr.ISread _)  = return i
+    gut i@(Instr.String Instr.Read _) = return i
     gut _ = mzero
 
 
 iExit :: Parser st ()
 iExit = exbrk (readInstr >>= gut)
   where
-    gut (Instr.InCom Instr.ICexit)  = return ()
+    gut (Instr.Command Instr.EXIT) = return ()
     gut _ = mzero
 
-iDrop :: Parser st Idrop
+iDrop :: Parser st Instr.Drop
 iDrop = exbrk (wdToken "/" >> readInstrDrop)
 
 
 readInstr :: Parser st Instr
-readInstr = readIC -|- readII -|- readIB -|- readIS -|- readIP
+readInstr =
+  readInstrCommand -|- readInstrInt -|- readInstrBool -|- readInstrString -|- readInstrStrings
   where
-    readIC = fmap Instr.InCom (readIX Instr.setIC)
-    readII = liftM2 Instr.InInt (readIX Instr.setII) readInt
-    readIB = liftM2 Instr.InBin (readIX Instr.setIB) readBin
-    readIS = liftM2 Instr.InStr (readIX Instr.setIS) readStr
-    readIP = liftM2 Instr.InPar (readIX Instr.setIP) readPar
+    readInstrCommand = fmap Instr.Command (readIX Instr.keywordsCommand)
+    readInstrInt = liftM2 Instr.Int (readIX Instr.keywordsInt) readInt
+    readInstrBool = liftM2 Instr.Bool (readIX Instr.keywordsBool) readBool
+    readInstrString = liftM2 Instr.String (readIX Instr.keywordsString) readString
+    readInstrStrings = liftM2 Instr.Strings (readIX Instr.keywordsStrings) readStrings
 
-readInt = try $ readStr >>= intCheck
+readInt = try $ readString >>= intCheck
   where
     intCheck s = case reads s of
       ((n,[]):_) | n >= 0 -> return n
       _                   -> mzero
 
-readBin = try $ readStr >>= binCheck
+readBool = try $ readString >>= boolCheck
   where
-    binCheck "yes" = return True
-    binCheck "on"  = return True
-    binCheck "no"  = return False
-    binCheck "off" = return False
-    binCheck _     = mzero
+    boolCheck "yes" = return True
+    boolCheck "on"  = return True
+    boolCheck "no"  = return False
+    boolCheck "off" = return False
+    boolCheck _     = mzero
 
-readStr = fmap concat readPar
+readString = fmap concat readStrings
 
 
-readPar = chainLL1 notClosingBrk
+readStrings = chainLL1 notClosingBrk
   where
     notClosingBrk = tokenPrim notCl
     notCl t = let tk = showToken t in guard (tk /= "]") >> return tk
 
 
-readInstrDrop :: Parser st Idrop
-readInstrDrop = readIC -|- readII -|- readIB -|- readIS
+readInstrDrop :: Parser st Instr.Drop
+readInstrDrop = readInstrCommand -|- readInstrInt -|- readInstrBool -|- readInstrString
   where
-    readIC  = fmap Instr.IdCom (readIX Instr.setIC)
-    readII  = fmap Instr.IdInt (readIX Instr.setII)
-    readIB  = fmap Instr.IdBin (readIX Instr.setIB)
-    readIS  = fmap Instr.IdStr (readIX Instr.setIS)
+    readInstrCommand = fmap Instr.DropCommand (readIX Instr.keywordsCommand)
+    readInstrInt = fmap Instr.DropInt (readIX Instr.keywordsInt)
+    readInstrBool = fmap Instr.DropBool (readIX Instr.keywordsBool)
+    readInstrString = fmap Instr.DropString (readIX Instr.keywordsString)
 
 
 readIX :: [(a, [String])] -> Parser st a

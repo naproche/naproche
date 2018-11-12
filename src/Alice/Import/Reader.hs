@@ -53,20 +53,20 @@ readText pathToLibrary text0 = do
 
 reader :: String -> [String] -> [State FState] -> [Text] -> IO [Text]
 
-reader _ _ _ [TI (Instr.InStr Instr.ISread file)] | isInfixOf ".." file =
+reader _ _ _ [TI (Instr.String Instr.Read file)] | isInfixOf ".." file =
   Message.errorParser (fileOnlyPos file) "contains \"..\", not allowed"
 
-reader pathToLibrary doneFiles stateList [TI (Instr.InStr Instr.ISread file)] =
+reader pathToLibrary doneFiles stateList [TI (Instr.String Instr.Read file)] =
   reader pathToLibrary doneFiles stateList
-    [TI $ Instr.InStr Instr.ISfile $ pathToLibrary ++ '/' : file]
+    [TI $ Instr.String Instr.File $ pathToLibrary ++ '/' : file]
 
-reader pathToLibrary doneFiles (pState:states) [TI (Instr.InStr Instr.ISfile file)]
+reader pathToLibrary doneFiles (pState:states) [TI (Instr.String Instr.File file)]
   | file `elem` doneFiles = do
       Message.outputMain Message.WRITELN (fileOnlyPos file) "already read, skipping"
       (newText, newState) <- launchParser forthel pState
       reader pathToLibrary doneFiles (newState:states) newText
 
-reader pathToLibrary doneFiles (pState:states) [TI (Instr.InStr Instr.ISfile file)] = do
+reader pathToLibrary doneFiles (pState:states) [TI (Instr.String Instr.File file)] = do
   input <-
     catch (if null file then getContents else File.read file)
       (Message.errorParser (fileOnlyPos file) . ioeGetErrorString)

@@ -151,7 +151,7 @@ generateConditions verbositySetting rules w l r =
 {- applies computational reasoning to an equality chain -}
 equalityReasoning :: Context -> VM ()
 equalityReasoning thesis
-  | body = whenInstruction Instr.IBPrsn False $ reasonLog Message.WRITELN noPos "eqchain concluded"
+  | body = whenInstruction Instr.Printreason False $ reasonLog Message.WRITELN noPos "eqchain concluded"
   | (not . null) link = getLinkedRules link >>= rewrite equation
   | otherwise = rules >>= rewrite equation -- if no link is given -> all rules
   where
@@ -188,7 +188,7 @@ rules = asks rewriteRules
 and compares the resulting normal forms -}
 rewrite :: Formula -> [Rule] -> VM ()
 rewrite Trm {trName = "=", trArgs = [l,r]} rules = do
-  verbositySetting <- askInstructionBin Instr.IBPsmp False -- check if printsimp is on
+  verbositySetting <- askInstructionBool Instr.Printsimp False
   conditions <- generateConditions verbositySetting rules (>) l r;
   mapM_ (dischargeConditions verbositySetting . fst) conditions
 rewrite _ _ = error "Alice.Core.Rewrite.rewrite: non-equation argument"
@@ -212,14 +212,14 @@ dischargeConditions verbositySetting conditions =
           cleanup) <|> (cleanup >> mzero)
 
     setup = do
-      askInstructionInt Instr.IIchtl 1 >>= addInstruction . Instr.InInt Instr.IItlim
-      askInstructionInt Instr.IIchdp 3 >>= addInstruction . Instr.InInt Instr.IIdpth
-      addInstruction $ Instr.InBin Instr.IBOnto False
+      askInstructionInt Instr.Checktime 1 >>= addInstruction . Instr.Int Instr.Timelimit
+      askInstructionInt Instr.Checkdepth 3 >>= addInstruction . Instr.Int Instr.Depthlimit
+      addInstruction $ Instr.Bool Instr.Ontored False
 
     cleanup = do
-      dropInstruction $ Instr.IdInt Instr.IItlim
-      dropInstruction $ Instr.IdInt Instr.IIdpth
-      dropInstruction $ Instr.IdBin Instr.IBOnto
+      dropInstruction $ Instr.DropInt Instr.Timelimit
+      dropInstruction $ Instr.DropInt Instr.Depthlimit
+      dropInstruction $ Instr.DropBool Instr.Ontored
 
     header select conditions = "condition: " ++ format (select conditions)
     thead [] = ""; thead conditions = "(trivial: " ++ format conditions ++ ")"

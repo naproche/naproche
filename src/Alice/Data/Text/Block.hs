@@ -16,12 +16,12 @@ module Alice.Data.Text.Block (
 
 import Alice.Data.Formula
 import Alice.Core.Position
-import Alice.Data.Instr (Instr, Idrop)
+import Alice.Data.Instr (Instr)
 import qualified Alice.Data.Instr as Instr
 import Alice.Parser.Token
 
 
-data Text = TB Block | TI Instr | TD Idrop
+data Text = TB Block | TI Instr | TD Instr.Drop
 
 data Block  = Block {
   formula           :: Formula,

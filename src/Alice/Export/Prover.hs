@@ -39,14 +39,14 @@ export :: Bool -> Int -> [Prover] -> [Instr] -> [Context] -> Context
 export red m prs ins cnt gl =
   do  when (null prs) $ Message.errorExport noPos "no provers"
 
-      let prn = Instr.askIS Instr.ISprvr (name $ head prs) ins
+      let prn = Instr.askString Instr.Prover (name $ head prs) ins
       -- ask whether the user gave a prover, else take the first on the list
           prr = filter ((==) prn . name) prs
 
       when (null prr) $ Message.errorExport noPos $ "no prover: " ++ prn
 
       let prv@(Prover _ label path args fmt yes nos uns) = head prr
-          tlm = Instr.askII Instr.IItlim 3 ins; agl = map (setTlim tlm) args
+          tlm = Instr.askInt Instr.Timelimit 3 ins; agl = map (setTlim tlm) args
           -- check whether user has specified time limit for prove tasks,
           -- else make it 3 seconds
           run = runInteractiveProcess path agl Nothing Nothing
@@ -57,7 +57,7 @@ export red m prs ins cnt gl =
           task = dmp red prv tlm cnt gl
           -- translate the prover task into the appropriate input language
 
-      when (Instr.askIB Instr.IBPdmp False ins) $ Message.output "" Message.WRITELN noPos task
+      when (Instr.askBool Instr.Dump False ins) $ Message.output "" Message.WRITELN noPos task
       -- print the translation if it is enabled (intended only for debugging)
 
       seq (length task) $ return $
@@ -74,7 +74,8 @@ export red m prs ins cnt gl =
                 out = map (("[" ++ label ++ "] ") ++) lns
 
             when (length lns == 0) $ Message.errorExport noPos "empty response"
-            when (Instr.askIB Instr.IBPprv False ins) $ mapM_ (Message.output "" Message.WRITELN noPos) out
+            when (Instr.askBool Instr.Printprover False ins) $
+              mapM_ (Message.output "" Message.WRITELN noPos) out
             -- if the user has enabled it, print the proveroutput
 
             let pos = any (\ l -> any (`isPrefixOf` l) yes) lns
