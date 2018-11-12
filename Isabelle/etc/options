@@ -7,3 +7,6 @@ public option forthel_prove : bool = true
 
 public option forthel_check : bool = true
   -- "check symbols for definedness"
+
+public option forthel_skipfail : bool = true
+  -- "ignore failed goals"

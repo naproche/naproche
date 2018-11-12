@@ -8,6 +8,7 @@ signature NAPROCHE =
 sig
   val forthel_prove: bool Config.T
   val forthel_check: bool Config.T
+  val forthel_skipfail: bool Config.T
   val forthel_file: Proof.context -> Token.file -> unit
 end;
 
@@ -18,6 +19,7 @@ struct
 
 val forthel_prove = Attrib.setup_option_bool (\<^system_option>\<open>forthel_prove\<close>, \<^here>);
 val forthel_check = Attrib.setup_option_bool (\<^system_option>\<open>forthel_check\<close>, \<^here>);
+val forthel_skipfail = Attrib.setup_option_bool (\<^system_option>\<open>forthel_skipfail\<close>, \<^here>);
 
 fun bool_option ctxt config = if Config.get ctxt config then "on" else "off";
 
@@ -113,6 +115,7 @@ fun forthel_file ctxt (file: Token.file) =
           File.bash_path (Path.explode "$NAPROCHE_EXE") ^
             " --prove=" ^ bool_option ctxt forthel_prove ^
             " --check=" ^ bool_option ctxt forthel_check ^
+            " --skipfail=" ^ bool_option ctxt forthel_skipfail ^
             " -- " ^ File.bash_path tmp_file];
       val {out, err, rc, ...} = Bash.process script;
       val _ = detect_messages 0 [] (split_lines err);
