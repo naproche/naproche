@@ -59,25 +59,25 @@ word :: Parser st String
 word = satisfy $ \tk -> all isAlpha tk
 
 ---- check if the current token is equal to s after mapping to lowercase
-{-# INLINE wd_token #-}
-wd_token :: String -> Parser st ()
-wd_token s = void $ satisfy $ \tk -> s == map toLower tk
+{-# INLINE wdToken #-}
+wdToken :: String -> Parser st ()
+wdToken s = void $ satisfy $ \tk -> s == map toLower tk
 
 ---- check if the current token is equal to some element of ls after
 ---- mapping to lowercase
-{-# INLINE wd_tokenOf #-}
-wd_tokenOf :: [String] -> Parser st ()
-wd_tokenOf ls = void $ satisfy $ \tk -> map toLower tk `elem` ls
+{-# INLINE wdTokenOf #-}
+wdTokenOf :: [String] -> Parser st ()
+wdTokenOf ls = void $ satisfy $ \tk -> map toLower tk `elem` ls
 
 ---- check if the current token is equal to s respecting case
-{-# INLINE sm_token #-}
-sm_token :: String -> Parser st ()
-sm_token s = void $ satisfy $ \tk -> s == tk
+{-# INLINE smTokenOf #-}
+smTokenOf :: String -> Parser st ()
+smTokenOf s = void $ satisfy $ \tk -> s == tk
 
 ---- check if the next tokens form a given symbol
 symbol :: String -> Parser st ()
 symbol []     = return ()
-symbol (c:cs) = sm_token [c] >> symbol cs
+symbol (c:cs) = smTokenOf [c] >> symbol cs
 
 ---- always succeed and pass on the string of the token
 anyToken :: Parser st String

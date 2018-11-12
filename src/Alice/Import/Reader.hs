@@ -72,7 +72,7 @@ reader pathToLibrary doneFiles (pState:states) [TI (InStr ISfile file)] = do
   let tokens0 = tokenize (filePos file) input
   Message.reports $ concatMap tokenReports tokens0
   let tokens = filter properToken tokens0
-      st  = State ((stUser pState) { tvr_expr = [] }) tokens noPos
+      st  = State ((stUser pState) { tvrExpr = [] }) tokens noPos
   (ntx, nps) <- launchParser forthel st
   reader pathToLibrary (file:doneFiles) (nps:pState:states) ntx
 
@@ -83,7 +83,7 @@ reader pathToLibrary doneFiles stateList (t:restText) =
 reader pathToLibrary doneFiles (pState:oldState:rest) [] = do
   Message.outputParser Message.WRITELN (fileOnlyPos $ head doneFiles) "parsing successful"
   let resetState = oldState {
-        stUser = (stUser pState) {tvr_expr = tvr_expr $ stUser oldState}}
+        stUser = (stUser pState) {tvrExpr = tvrExpr $ stUser oldState}}
   (newText, newState) <- launchParser forthel resetState
   reader pathToLibrary doneFiles (newState:rest) newText
 

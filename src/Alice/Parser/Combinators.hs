@@ -109,9 +109,9 @@ after a b = a >>= ((b >>) . return)
 
 ---- mandatory parentheses, brackets, braces
 expar, exbrk, exbrc :: Parser st a -> Parser st a
-expar p = wd_token "(" >> after p (wd_token ")")
-exbrk p = wd_token "[" >> after p (wd_token "]")
-exbrc p = wd_token "{" >> after p (wd_token "}")
+expar p = wdToken "(" >> after p (wdToken ")")
+exbrk p = wdToken "[" >> after p (wdToken "]")
+exbrc p = wdToken "{" >> after p (wdToken "}")
 
 ---- optional parentheses
 paren :: Parser st a -> Parser st a
@@ -119,7 +119,7 @@ paren p = p -|- expar p
 
 ---- mandatory finishing dot
 dot :: Parser st a -> Parser st a
-dot p = after p $ (wd_token "." <?> "a dot")
+dot p = after p $ (wdToken "." <?> "a dot")
 
 
 -- Control ambiguity

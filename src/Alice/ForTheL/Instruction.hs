@@ -40,7 +40,7 @@ iExit = exbrk (readInstr >>= gut)
     gut _ = mzero
 
 iDrop :: Parser st Idrop
-iDrop = exbrk (wd_token "/" >> readInstrDrop)
+iDrop = exbrk (wdToken "/" >> readInstrDrop)
 
 
 readInstr :: Parser st Instr
