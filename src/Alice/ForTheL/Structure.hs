@@ -345,11 +345,12 @@ nextTerm t = do
 textReports :: Text -> [Message.Report]
 textReports (TB block) =
   let
-    reports =
+    reports1 = [(Block.position block, Markup.expression "text block")]
+    reports2 =
       case Block.tokens block of
         tok : _ | Set.member (map Char.toLower $ tokenText tok) headers ->
           [(tokenPos tok, Markup.keyword1)]
         _ -> []
-  in reports ++ concatMap textReports (Block.body block)
+  in reports1 ++ reports2 ++ concatMap textReports (Block.body block)
 textReports (TI _) = []
 textReports (TD _) = []
