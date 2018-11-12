@@ -17,9 +17,16 @@
 * make $SPASS_HOME/SPASS from Isabelle actually work (!?)
 
 
+# markup reports #
+
+* clarify Markup.expression "text block": duplicates!? sub-structure!?
+
+
 # General #
 
 * clarify project / program name: "Alice" vs. "Naproche" vs. "ForTheL"
+
+* incremental output of Isabelle/ML Bash.process, e.g. via socket (?!)
 
 * stay-resident server instead of command-line batch-tool (??)
 
