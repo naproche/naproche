@@ -71,7 +71,7 @@ posProperties pos =
 
 xmlMessage :: String -> Kind -> SourcePos -> String -> XML.Tree
 xmlMessage origin kind pos msg =
-  XML.Elem (kindXML kind, props) [XML.Text msg]
+  XML.Elem ((kindXML kind, props), [XML.Text msg])
   where
     props =
       if null origin then posProperties pos
@@ -101,13 +101,13 @@ type ReportText = (Report, String)
 reportsText :: [ReportText] -> IO ()
 reportsText args = do
   pide <- pideActive
-  when (pide && not (null args)) $ putStrLn $ pideMessage $
-    YXML.string_of $ XML.Elem Markup.report $
+  when (pide && not (null args)) $ putStrLn $ pideMessage $ YXML.string_of $
+    XML.Elem (Markup.report,
       map (\((pos, markup), txt) ->
         let
           markup' = Markup.properties (posProperties pos) markup
           body = if null txt then [] else [XML.Text txt]
-        in XML.Elem markup' body) args
+        in XML.Elem (markup', body)) args)
 
 reportText :: SourcePos -> Markup.T -> String -> IO ()
 reportText pos markup txt = reportsText [((pos, markup), txt)]
