@@ -1,22 +1,27 @@
-## Naproche-SAD ##
+# Naproche-SAD
 
-*System for Automated Deduction* (Naproche branch) -- Proof Checking of
-Natural Mathematical Documents
-
-
-# Build #
-
-* Isabelle:
-
-      isabelle build Haskell
-      isabelle build -c -D Isabelle
-
-* Haskell:
-
-      stack build
+Proof Checking of Natural Mathematical Documents, with optional support
+for Isabelle Prover IDE.
 
 
-# Test #
+## Command-line tool
+
+### Prerequisites
+
+  * Supported OS platforms: Linux, macOS, Windows (e.g. with Cygwin terminal)
+
+  * Haskell Tool Stack: https://www.haskellstack.org
+
+  * Optional (for development): Haskell IDE within VSCode:
+    https://github.com/haskell/haskell-ide-engine
+
+
+### Build
+
+    stack build
+
+
+### Test
 
     for FILE in examples/*.ftl
     do
@@ -24,30 +29,42 @@ Natural Mathematical Documents
     done
 
 
-# Isabelle PIDE #
+## Isabelle Prover IDE (Isabelle/jEdit)
 
-* edit $ISABELLE_HOME_USER/etc/settings to include this directory as
-component, e.g. like this:
+### Prerequisites
 
-      init_component "$HOME/Naproche-SAD"
+  * Isabelle repository clone from https://isabelle.in.tum.de/repos/isabelle
 
-* open ForTheL examples in Isabelle/jEdit, e.g.
+  * "Quick start in 30min" according to README_REPOSITORY
+    (https://isabelle.in.tum.de/repos/isabelle/raw-file/tip/README_REPOSITORY)
+
+  * Use Isabelle/jEdit to edit $ISABELLE_HOME_USER/etc/settings to include
+    the Naproche-SAD directory as Isabelle component. E.g. like this:
+
+        init_component "$USER_HOME/Naproche-SAD"
+
+  * Shutdown Isabelle/jEdit before building Isabelle/Naproche as follows.
+
+
+### Build
+
+    isabelle build Haskell
+    isabelle build -c -D Isabelle
+    stack build
+
+
+### Test
+
+* Open ForTheL examples in Isabelle/jEdit, e.g.
 
       isabelle jedit examples/powerset.ftl
 
-* open Isabelle development environment with ForTheL examples, e.g.
+* Open Isabelle development environment with ForTheL examples, e.g.
 
       isabelle jedit -l Pure Isabelle/Test.thy
 
 
-# Development #
+## Reference ##
 
-* The Haskell Tool Stack: https://www.haskellstack.org
-
-* Haskell IDE within VSCode: https://github.com/haskell/haskell-ide-engine
-
-
-# Reference #
-
-This program is based on the System for Automated Deduction by Andrei
-Paskevich, see https://github.com/tertium/SAD
+This program is based on the System for Automated Deduction (SAD) by
+Andrei Paskevich, see https://github.com/tertium/SAD
