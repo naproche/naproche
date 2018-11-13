@@ -54,7 +54,7 @@ readText pathToLibrary text0 = do
 reader :: String -> [String] -> [State FState] -> [Text] -> IO [Text]
 
 reader _ _ _ [TI (Instr.String Instr.Read file)] | isInfixOf ".." file =
-  Message.errorParser (fileOnlyPos file) "contains \"..\", not allowed"
+  Message.errorParser (fileOnlyPos file) "File name contains \"..\", not allowed"
 
 reader pathToLibrary doneFiles stateList [TI (Instr.String Instr.Read file)] =
   reader pathToLibrary doneFiles stateList
@@ -62,7 +62,7 @@ reader pathToLibrary doneFiles stateList [TI (Instr.String Instr.Read file)] =
 
 reader pathToLibrary doneFiles (pState:states) [TI (Instr.String Instr.File file)]
   | file `elem` doneFiles = do
-      Message.outputMain Message.WRITELN (fileOnlyPos file) "already read, skipping"
+      Message.outputMain Message.WARNING (fileOnlyPos file) "File already read, skipping"
       (newText, newState) <- launchParser forthel pState
       reader pathToLibrary doneFiles (newState:states) newText
 
