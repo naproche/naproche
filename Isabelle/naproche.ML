@@ -54,6 +54,11 @@ fun forthel_file ctxt (file: Token.file) =
       val tmp_file_name = File.standard_path tmp_file;
       val _ = File.write tmp_file (cat_lines (#lines file));
 
+      val pide_id =
+        (case Position.get_id (Position.thread_data ()) of
+          SOME id => id
+        | NONE => raise Fail "Missing PIDE position id");
+
       val file_name =
         File.standard_path (Path.append (Resources.master_directory thy) (#src_path file));
 
@@ -109,7 +114,7 @@ fun forthel_file ctxt (file: Token.file) =
           "set -e",
           "cd \"$NAPROCHE_HOME\"",
           "export PATH=\"$E_HOME:$SPASS_HOME:$PATH\"",
-          "export NAPROCHE_PIDE=" ^ the_default "true" (Position.get_id (Position.thread_data ())),
+          "export NAPROCHE_PIDE=" ^ Bash.string pide_id,
           File.bash_path (Path.explode "$NAPROCHE_EXE") ^
             " --prove=" ^ bool_option ctxt forthel_prove ^
             " --check=" ^ bool_option ctxt forthel_check ^
