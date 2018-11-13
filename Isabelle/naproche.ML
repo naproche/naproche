@@ -57,8 +57,6 @@ fun forthel_file ctxt (file: Token.file) =
       val file_name =
         File.standard_path (Path.append (Resources.master_directory thy) (#src_path file));
 
-      val id_props = Position.id_properties_of (Position.thread_data ());
-
       fun update_props props =
         let
           val props0 = Position.get_props (#pos file);
@@ -69,7 +67,7 @@ fun forthel_file ctxt (file: Token.file) =
                 then Properties.put (Markup.fileN, file_name) props
                 else props
             | NONE => props);
-        in fold_rev Properties.put (id_props @ props1) props0 end;
+        in fold_rev Properties.put props1 props0 end;
 
       fun update_xml (XML.Elem ((elem, props), body)) = XML.Elem ((elem, update_props props), body)
         | update_xml xml = xml;
@@ -111,7 +109,7 @@ fun forthel_file ctxt (file: Token.file) =
           "set -e",
           "cd \"$NAPROCHE_HOME\"",
           "export PATH=\"$E_HOME:$SPASS_HOME:$PATH\"",
-          "export NAPROCHE_PIDE=true",
+          "export NAPROCHE_PIDE=" ^ the_default "true" (Position.get_id (Position.thread_data ())),
           File.bash_path (Path.explode "$NAPROCHE_EXE") ^
             " --prove=" ^ bool_option ctxt forthel_prove ^
             " --check=" ^ bool_option ctxt forthel_check ^
