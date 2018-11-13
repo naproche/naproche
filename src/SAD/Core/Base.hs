@@ -64,7 +64,6 @@ import qualified SAD.Data.Structures.DisTree as DT
 import SAD.Core.Position
 import qualified SAD.Core.Message as Message
 
-import Debug.Trace
 
 -- Reasoner state
 

@@ -111,6 +111,10 @@ mbExi, mbAll :: String -> Formula -> Formula
 mbExi v f = fromMaybe (zExi v f) (mbBind v True f)
 mbAll v f = fromMaybe (zAll v f) (mbBind v False f)
 
+mbpExi, mbpAll :: (String, SourcePos) -> Formula -> Formula
+mbpExi v f = fromMaybe (pExi v f) (mbBind (fst v) True f)
+mbpAll v f = fromMaybe (pAll v f) (mbBind (fst v) False f)
+
 
 blAnd, blImp :: Formula -> Formula -> Formula
 blAnd Top f = f; blAnd (Tag _ Top) f = f
@@ -134,8 +138,12 @@ blNot f = Not f
 
 -- creation of formulas
 zAll, zExi :: String -> Formula -> Formula
-zAll v f = blAll v $ bind v f
-zExi v f = blExi v $ bind v f
+zAll v = blAll v . bind v
+zExi v = blExi v . bind v
+
+pAll, pExi :: (String, SourcePos) -> Formula -> Formula
+pAll (v, _) = blAll v . bind v
+pExi (v, _) = blExi v . bind v
 
 zIff, zOr :: Formula -> Formula -> Formula
 zIff f g = And (Imp f g) (Imp g f)
@@ -144,7 +152,10 @@ zOr (Not f) g = Imp f g
 zOr f g       = Or  f g
 
 zVar :: String -> Formula
-zVar v = Var v []
+zVar v = pVar (v, noPos)
+
+pVar :: (String, SourcePos) -> Formula
+pVar (v, pos) = Var v [] pos
 
 zTrm :: Int -> String -> [Formula] -> Formula
 zTrm tId t ts = Trm t ts [] tId

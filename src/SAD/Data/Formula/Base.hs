@@ -22,7 +22,7 @@ data Formula =
   Top                   | Bot                     |
   Trm { trName :: String   , trArgs :: [Formula],
         trInfo :: [Formula], trId   :: Int}       |
-  Var { trName :: String   , trInfo :: [Formula]} |
+  Var { trName :: String   , trInfo :: [Formula], trPosition :: SourcePos } |
   Ind { trIndx :: Int } | ThisT
 
 
@@ -204,7 +204,7 @@ inst x = dive 0
     dive n (All u g) = All u $ dive (succ n) g
     dive n (Exi u g) = Exi u $ dive (succ n) g
     dive n (Ind m)
-      | m == n = Var x []
+      | m == n = Var x [] noPos
     dive n t@Trm{} = t {
       trArgs = map (dive n) $ trArgs t,
       trInfo = map (dive n) $ trInfo t }

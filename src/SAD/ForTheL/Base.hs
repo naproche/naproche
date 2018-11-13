@@ -22,6 +22,7 @@ import SAD.Parser.Primitives
 
 import Debug.Trace
 import SAD.Parser.Token
+import SAD.Core.Position
 
 
 type FTL = Parser FState
@@ -29,12 +30,14 @@ type FTL = Parser FState
 
 type UTerm   = (Formula -> Formula, Formula)
 
-type UNotion = (Formula -> Formula, Formula, String)
+type UNotion = (Formula -> Formula, Formula, VarName)
 
 type MTerm   = (Formula -> Formula, [Formula])
-type MNotion = (Formula -> Formula, Formula, [String])
+type MNotion = (Formula -> Formula, Formula, [VarName])
 
 type Prim    = ([Patt], [Formula] -> Formula)
+
+type VarName = (String, SourcePos)
 
 
 data FState = FState {
@@ -140,7 +143,7 @@ primOfNtn p = getExpr ntnExpr ntn
   where
     ntn (pt, fm) = do
       (q, vs, ts) <- ofPatt p pt
-      let fn v = fm $ (zVar v):zHole:ts
+      let fn v = fm $ (pVar v):zHole:ts
       return (q, foldr1 And $ map fn vs, vs)
 
 primCmNtn :: FTL UTerm -> FTL MTerm -> FTL MNotion
@@ -175,6 +178,8 @@ primCsm p (pt, fm) = smPatt p pt >>= \l -> return $ fm l
 primRsm p (pt, fm) = smPatt p pt >>= \l -> return $ \t -> fm $ t:l
 primLsm p (pt, fm) = smPatt p pt >>= \l -> return $ \s -> fm $ l++[s]
 primIsm p (pt, fm) = smPatt p pt >>= \l -> return $ \t s -> fm $ t:l++[s]
+
+
 primSnt :: FTL Formula -> FTL MNotion
 primSnt p  = noError $ varlist >>= getExpr sntExpr . snt
   where
@@ -265,7 +270,7 @@ namlist = varlist -|- fmap (:[]) hidden
 
 varlist = do
   vs <- var `sepBy` wdToken ","
-  nodups vs ; return vs
+  nodups $ map fst vs ; return vs
 
 nodups vs = unless ((null :: [b] -> Bool) $ duplicateNames vs) $
   fail $ "duplicate names: " ++ show vs
@@ -273,22 +278,23 @@ nodups vs = unless ((null :: [b] -> Bool) $ duplicateNames vs) $
 hidden = do
   n <- MS.gets hiddenCount
   MS.modify $ \st -> st {hiddenCount = succ n}
-  return ('h':show n)
+  return ('h':show n, noPos)
 
 var = do
+  pos <- getPos
   v <- satisfy (\s -> all isAlphaNum s && isAlpha (head s))
-  return ('x':v)
+  return ('x':v, pos)
 
 --- pretyped Variables
 
 type TVar = ([String], Formula)
 
 primTvr :: FTL MNotion
-primTvr  = getExpr tvrExpr tvr
+primTvr = getExpr tvrExpr tvr
   where
-    tvr (vr, nt)  = do
-      vs <- varlist
-      guard $ all (`elem` vr) vs
+    tvr (vr, nt) = do
+      vs <- map (\(v, _) -> (v, noPos)) <$> varlist
+      guard $ all (`elem` vr) $ map fst vs
       return (id, nt, vs)
 
 -- free

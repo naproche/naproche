@@ -52,11 +52,11 @@ defPredicat = do
 
 defNotion = do
   ((n,h),u) <- wellFormedCheck (ntnVars . fst) defn
-  return $ zAll u $ Iff (Tag HeadTerm n) h
+  return $ zAll (fst u) $ Iff (Tag HeadTerm n) h
   where
     defn = do
       (n, u) <- newNotion; isOrEq; (q, f) <- anotion
-      let v = zVar u; fn = replace v (trm n)
+      let v = pVar u; fn = replace v (trm n)
       h <- (fn . q) <$> dig f [v]
       return ((n,h),u)
 
@@ -77,11 +77,11 @@ sigPredicat = do
 
 sigNotion = do
   ((n,h),u) <- wellFormedCheck (ntnVars . fst) sig
-  return $ zAll u $ Imp (Tag HeadTerm n) h
+  return $ zAll (fst u) $ Imp (Tag HeadTerm n) h
   where
     sig = do
       (n, u) <- newNotion; is; (q, f) <- anotion -|- noInfo
-      let v = zVar u; fn = replace v (trm n)
+      let v = pVar u; fn = replace v (trm n)
       h <- fmap (fn . q) $ dig f [v]
       return ((n,h),u)
 
@@ -155,9 +155,9 @@ pretypeVariable = narrow typeVar >>= MS.modify . upd >> return ()
     typeVar = do
       wdToken "let"; vs@(_:_) <- varlist; standFor;
       g <- wellFormedCheck (overfree []) (dot holedNotion)
-      return (vs, ignoreNames g)
+      return (map fst vs, ignoreNames g)
 
-    holedNotion = do (q, f) <- anotion; fmap q $ dig f [zHole]
+    holedNotion = do (q, f) <- anotion; q <$> dig f [zHole]
 
     upd tv st = st { tvrExpr = tv : tvrExpr st }
 
@@ -173,7 +173,7 @@ introduceMacro = do
     ntn = wellFormedCheck funVars $ do
       (n, u) <- unnamedNotion avr
       (q, f) <- standFor >> dot anotion
-      h <- fmap q $ dig f [zVar u]; return (n, h)
+      h <- fmap q $ dig f [pVar u]; return (n, h)
 
 ignoreNames (All _ f) = All "" $ ignoreNames f
 ignoreNames (Exi _ f) = Exi "" $ ignoreNames f
