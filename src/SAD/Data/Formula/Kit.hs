@@ -13,6 +13,7 @@ import Data.List
 
 import SAD.Data.Formula.Base
 import SAD.Data.Tag
+import SAD.Core.Position
 
 -- Alpha-beta normalization
 
@@ -187,7 +188,7 @@ isTop Top = True; isTop _ = False
 isBot Bot = True; isBot _ = False
 isIff (Iff _ _) = True; isIff _ = False
 isInd (Ind _ ) = True; isInd _ = False
-isVar (Var _ _) = True; isVar _ = False
+isVar Var{} = True; isVar _ = False
 isTrm Trm{} = True; isTrm _ = False
 isEquality t@Trm{} = trId t == equalityId; isEquality _ = False
 isThesis t@Trm{} = trId t == thesisId; isThesis _ = False
@@ -207,8 +208,8 @@ zHole, zSlot ::  Formula
 zHole = zVar "?"; zSlot = zVar "!"
 
 isHole, isSlot :: Formula -> Bool
-isHole (Var "?" _) = True; isHole _ = False
-isSlot (Var "!" _) = True; isSlot _ = False
+isHole Var {trName = "?"} = True; isHole _ = False
+isSlot Var {trName = "!"} = True; isSlot _ = False
 
 substHole, substSlot :: Formula -> Formula -> Formula
 substHole t = subst t "?"; substSlot t = subst t "!"

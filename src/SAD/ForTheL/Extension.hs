@@ -126,8 +126,8 @@ prdVars (f, d) | not flat  = return $ "compound expression: " ++ show f
 
 allDistinctVars = disVs []
   where
-    disVs ls (Var v@('h':_) _ : vs)  = notElem v ls && disVs (v:ls) vs
-    disVs ls (Var v@('x':_) _ : vs)  = notElem v ls && disVs (v:ls) vs
+    disVs ls (Var {trName = v@('h':_)} : vs) = notElem v ls && disVs (v:ls) vs
+    disVs ls (Var {trName = v@('x':_)} : vs) = notElem v ls && disVs (v:ls) vs
     disVs _ [] = True
     disVs _ _ = False
 
