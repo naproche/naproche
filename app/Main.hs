@@ -17,19 +17,16 @@ import qualified Control.Exception
 import qualified Data.IntMap.Strict as IM
 
 
-import Alice.Core.Base
-import qualified Alice.Core.Message as Message
-import Alice.Core.Position
-import Alice.Core.Verify
-import Alice.Data.Instr (Instr)
-import qualified Alice.Data.Instr as Instr
-import Alice.Data.Text.Block
-import Alice.Export.Base
-import Alice.Import.Reader
+import SAD.Core.Base
+import qualified SAD.Core.Message as Message
+import SAD.Core.Position
+import SAD.Core.Verify
+import SAD.Data.Instr (Instr)
+import qualified SAD.Data.Instr as Instr
+import SAD.Data.Text.Block
+import SAD.Export.Base
+import SAD.Import.Reader
 import qualified Isabelle.File as File
-
-
-{- and what is the use of a book without pictures or conversation? -}
 
 main :: IO ()
 main  = do
