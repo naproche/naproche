@@ -1,15 +1,5 @@
 ## TODO ##
 
-# Admin #
-
-* systematic runs of "test" examples
-
-* Isabelle-specific build (optional)
-
-* semi-automated distribution builds for Linux, macOS, Windows
-  (e.g. appveyor, travis)
-
-
 # Misc #
 
 * move provers/provers.dat to toplevel directory (no executables there) (??)
@@ -19,7 +9,7 @@
 * proper names for instructions "setCtxt", "drpCtxt", "addCtxt" etc. (!?)
 
 
-# markup reports #
+# PIDE markup reports #
 
 * clarify Markup.expression "text block": duplicates!? sub-structure!?
 
@@ -28,6 +18,16 @@
 * instructions: TI/PD position, completion on errors
 
 * vacous keywords: "let us show that", "proof", "qed" etc.
+
+
+# Admin #
+
+* systematic runs of "test" examples
+
+* Isabelle-specific build (optional)
+
+* semi-automated distribution builds for Linux, macOS, Windows
+  (e.g. appveyor, travis)
 
 
 # General #
