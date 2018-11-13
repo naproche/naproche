@@ -186,20 +186,20 @@ newNtnPattern tvr = (ntn <|> fun) </> unnamedNotion tvr
   where
     ntn = do
       an; (t, v:vs) <- ptName wlexem tvr
-      return (zTrm newId ("a " ++ t) (v:vs), trName v)
+      return (zTrm newId ("a " ++ t) (v:vs), (trName v, trPosition v))
     fun = do
       the; (t, v:vs) <- ptName wlexem tvr
-      return (zEqu v $ zTrm newId ("a " ++ t) vs, trName v)
+      return (zEqu v $ zTrm newId ("a " ++ t) vs, (trName v, trPosition v))
 
 unnamedNotion tvr = (ntn <|> fun) </> (newSymbPattern tvr >>= equ)
   where
     ntn = do
       an; (t, v:vs) <- ptNoName wlexem tvr
-      return (zTrm newId ("a " ++ t) (v:vs), trName v)
+      return (zTrm newId ("a " ++ t) (v:vs), (trName v, trPosition v))
     fun = do
       the; (t, v:vs) <- ptNoName wlexem tvr
-      return (zEqu v $ zTrm newId ("a " ++ t) vs, trName v)
-    equ t = do v <- hidden; return (zEqu (zVar v) t, v)
+      return (zEqu v $ zTrm newId ("a " ++ t) vs, (trName v, trPosition v))
+    equ t = do v <- hidden; return (zEqu (pVar v) t, v)
 
 
 newSymbPattern tvr = left -|- right
@@ -272,15 +272,15 @@ wlx = failing nvr >> tokenPrim isWord
 
 nvr = do
   v <- var; dvs <- getDecl; tvs <- MS.gets tvrExpr
-  guard $ v `elem` dvs || any (elem v . fst) tvs
-  return $ zVar v
+  guard $ (fst v) `elem` dvs || any (elem (fst v) . fst) tvs
+  return $ pVar v
 
 avr = do
-  v <- var; guard $ null $ tail $ tail v
-  return $ zVar v
+  v <- var; guard $ null $ tail $ tail $ fst v
+  return $ pVar v
 
 nam = do
   n <- fmap (const Top) nvr </> avr
   guard $ isVar n ; return n
 
-hid = fmap zVar hidden
+hid = fmap pVar hidden

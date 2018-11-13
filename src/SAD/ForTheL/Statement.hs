@@ -19,9 +19,8 @@ import SAD.Parser.Primitives
 import SAD.Parser.Token
 
 import SAD.Data.Formula
+import SAD.Core.Position
 
-
-import Debug.Trace
 import qualified Control.Monad.State.Class as MS
 import Data.Function ((&))
 
@@ -80,7 +79,7 @@ thereIs = there >> (noNotion -|- notions)
   where
     noNotion = do 
       wdToken "no"; (q, f, vs) <- notion;
-      return $ Not $ foldr mbExi (q f) vs
+      return $ Not $ foldr mbpExi (q f) vs
     notions = fmap multExi $ art >> notion `sepBy` comma
 
 
@@ -132,10 +131,10 @@ hasPredicate = label "has predicat" $ noPossessive <|> possessive
     noPossessive = nUnary -|- nCommon
     nUnary = do
       wdToken "no"; (q, f, v) <- possess;
-      return $ q . Tag Dig . Not $ foldr mbExi f v
+      return $ q . Tag Dig . Not $ foldr mbpExi f v
     nCommon = do
       wdToken "no"; wdToken "common"; (q, f, v) <- possess
-      return $ q . Not $ foldr mbExi (Tag Dig f) v
+      return $ q . Not $ foldr mbpExi (Tag Dig f) v
       -- take a closer look at this later.. why is (Tag Dig) *inside* important?
 
 
@@ -188,7 +187,7 @@ anotion =
   art >> (gnotion basentn rat <?> "notion (at most one name)") >>=
   single >>= hol
   where
-    hol (q, f, v) = return (q, subst zHole v f)
+    hol (q, f, v) = return (q, subst zHole (fst v) f)
     rat = fmap (Tag Dig) stattr
 
 notion = label "notion" $ gnotion (basentn </> symNotion) stattr >>= digntn
@@ -200,7 +199,7 @@ stattr = such >> that >> statement
 
 digadd (q, f, v)  = (q, Tag Dig f, v)
 
-digntn (q, f, v)  = dig f (map zVar v) >>= \ g -> return (q, g, v)
+digntn (q, f, v)  = dig f (map pVar v) >>= \ g -> return (q, g, v)
 
 single (q, f, [v])  = return (q, f, v)
 single _            = fail "inadmissible multinamed notion"
@@ -226,15 +225,15 @@ quNotion = label "quantified notion" $
   where
     fa = do
       wdTokenOf ["every", "each", "all", "any"]; (q, f, v) <- notion
-      return (q . flip (foldr zAll) v . blImp f, map zVar v)
+      return (q . flip (foldr pAll) v . blImp f, map pVar v)
 
     ex = do
       wdToken "some"; (q, f, v) <- notion
-      return (q . flip (foldr zExi) v . blAnd f, map zVar v)
+      return (q . flip (foldr pExi) v . blAnd f, map pVar v)
 
     no = do
       wdToken "no"; (q, f, v) <- notion
-      return (q . flip (foldr zAll) v . blImp f . Not, map zVar v)
+      return (q . flip (foldr pAll) v . blImp f . Not, map pVar v)
 
 
 definiteTerm = symbolicTerm -|- definiteNoun
@@ -258,8 +257,8 @@ sForm  = sIff
     sDis = sCon >>= binF Or  (symbol "\\/" >> sDis)
     sCon = sUna >>= binF And (symbol "/\\" >> sCon)
     sUna = sAll -|- sExi -|- sNot -|- sDot -|- sAtm
-    sAll = liftM2 (quaF zAll Imp) (wdToken "forall" >> symNotion) sUna
-    sExi = liftM2 (quaF zExi And) (wdToken "exists" >> symNotion) sUna
+    sAll = liftM2 (quaF pAll Imp) (wdToken "forall" >> symNotion) sUna
+    sExi = liftM2 (quaF pExi And) (wdToken "exists" >> symNotion) sUna
     sNot = fmap Not $ wdToken "not" >> sUna
     sDot = wdToken ":" >> sForm
     sAtm = sAtom
@@ -301,7 +300,7 @@ sTerm = iTerm
 
     cTerm = sVar -|- expar sTerm -|- primCfn sTerm
 
-sVar = fmap zVar var
+sVar = fmap pVar var
 
 -- class term equations
 
@@ -310,18 +309,18 @@ classEq = twoClassTerms </> oneClassTerm
     twoClassTerms = do
       cnd1 <- fmap stripSet symbSetNotation; smTokenOf "="
       cnd2 <- fmap stripSet symbSetNotation; h <- hidden
-      return $ zAll h $ Iff (cnd1 $ zVar h) (cnd2 $ zVar h)
+      return $ pAll h $ Iff (cnd1 $ pVar h) (cnd2 $ pVar h)
     stripSet = (.) strip . fst
 
     oneClassTerm = left </> right
     left = do
       cnd <- fmap stripSet symbSetNotation; smTokenOf "="
-      t <- sTerm; h <- hidden; let hv = zVar h
-      return $ zAll h $ Iff (cnd hv) (zElem hv t)
+      t <- sTerm; h <- hidden; let hv = pVar h
+      return $ All (fst h) $ Iff (cnd hv) (zElem hv t)
     right = do
-      t <- sTerm; smTokenOf "="; h <- hidden; let hv = zVar h
+      t <- sTerm; smTokenOf "="; h <- hidden; let hv = pVar h
       cnd <- fmap stripSet symbSetNotation
-      return $ zAll h $ Iff (zElem hv t) (cnd hv)
+      return $ pAll h $ Iff (zElem hv t) (cnd hv)
 
 
 
@@ -331,7 +330,7 @@ classEq = twoClassTerms </> oneClassTerm
 selection = fmap (foldl1 And) $ (art >> takeLongest namedNotion) `sepByLL1` comma
   where
     namedNotion = label "named notion" $ do
-      (q, f, vs) <- notion; guard (all isExplicitName vs); return $ q f
+      (q, f, vs) <- notion; guard (all isExplicitName $ map fst vs); return $ q f
     isExplicitName ('x':_) = True; isExplicitName _ = False
 
 
@@ -340,28 +339,28 @@ selection = fmap (foldl1 And) $ (art >> takeLongest namedNotion) `sepByLL1` comm
 -- -- sets
 setNotion = do
   v <- after var (smTokenOf "="); (_, f, _) <- set
-  dig (Tag Dig f) [zVar v]
+  dig (Tag Dig f) [pVar v]
 
 set = symbSet <|> setOf
   where
     setOf = do
       wdTokenOf ["set", "sets"]; nm <- var -|- hidden; wdToken "of";
       (q, f, u) <- notion >>= single; vnm <- hidden;
-      return (id, setForm vnm $ subst (zVar vnm) u $ q f, [nm])
+      return (id, setForm vnm $ subst (pVar vnm) (fst u) $ q f, [nm])
     symbSet = do
       (cnd, nm) <- symbSetNotation; h <- hidden
-      return (id, setForm nm $ cnd $ zVar nm, [h])
-    setForm nm = And (zSet zHole) . zAll nm . Iff (zElem (zVar nm) zHole)
+      return (id, setForm (nm, noPos) $ cnd $ zVar nm, [h])
+    setForm nm = And (zSet zHole) . pAll nm . Iff (zElem (pVar nm) zHole)
 
 
 symbSetNotation = cndSet </> finSet
   where
     finSet = exbrc $ do
-      ts <- sTerm `sepByLL1` smTokenOf ","; h <- hidden
+      ts <- sTerm `sepByLL1` smTokenOf ","; h <- fst <$> hidden
       return (\tr -> foldr1 Or $ map (zEqu tr) ts, h)
     cndSet = exbrc $ do
       (tag, c, t) <- sepFrom; st <- smTokenOf "|" >> statement;
-      vs <- freeVars t; nm <- if isVar t then return $ trName t else hidden
+      vs <- freeVars t; nm <- if isVar t then return $ trName t else fst <$> hidden
       return (\tr -> tag $ c tr `blAnd` mbEqu vs tr t st, nm)
 
     mbEqu _ tr Var{trName = v} = subst tr v
@@ -372,7 +371,7 @@ sepFrom = ntnSep -|- setSep -|- noSep
   where
     ntnSep = do
       (q, f, v) <- notion >>= single; guard (not . isEquality $ f)
-      return (Tag Replacement, \tr -> subst tr v $ q f, zVar v)
+      return (Tag Replacement, \tr -> subst tr (fst v) $ q f, pVar v)
     setSep = do
       t <- sTerm; cnd <- wdToken "in" >> elementCnd
       return (id, cnd, t)
@@ -410,16 +409,16 @@ chooseInTerm = do
     ld_choice = chc <|> def
     chc = do
       wdToken "choose"; (q, f, vs) <- art >> notion
-      return $ flip (foldr zExi) vs . And (q f)
+      return $ flip (foldr pExi) vs . And (q f)
     def = do
       wdToken "define"; x <- var; smTokenOf "="
       ap <- ld_set <|> lambda
-      return $ zExi x . And (Tag Defined $ ap $ zVar x)
+      return $ pExi x . And (Tag Defined $ ap $ pVar x)
 
     term = fmap ((.) (Tag Evaluation) . flip zEqu) sTerm
     defTerm = do
-      ap <- ld_set <|> lambda; h <- hidden; let hv = zVar h
-      return $ \fx -> zExi h $ And (Tag Defined $ ap hv) (Tag Evaluation $ zEqu fx hv)
+      ap <- ld_set <|> lambda; h <- hidden; let hv = pVar h
+      return $ \fx -> pExi h $ And (Tag Defined $ ap hv) (Tag Evaluation $ zEqu fx hv)
 
     ld_set = do (_, t, _) <- set; return $ flip substHole t
 
@@ -449,7 +448,7 @@ lambdaIn = do
 
 ---- chain tools
 
-multExi ((q, f, vs):ns) = foldr mbExi (q f `blAnd` multExi ns) vs
+multExi ((q, f, vs):ns) = foldr mbpExi (q f `blAnd` multExi ns) vs
 multExi [] = Top
 
 conjChain = fmap (foldl1 And) . flip sepBy (wdToken "and")
