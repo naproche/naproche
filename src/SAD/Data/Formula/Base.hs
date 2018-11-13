@@ -137,12 +137,12 @@ foldF _ _ = Monoid.mempty
 {- tests whether a predicate holds for all formulas on the next structure level
    of a formula -}
 allF :: (Formula -> Bool) -> Formula -> Bool
-allF predicat = Monoid.getAll . foldF (Monoid.All . predicat)
+allF predicate = Monoid.getAll . foldF (Monoid.All . predicate)
 
 {- tests whether a predicate holds for any formula on the next structure level
    of a formula -}
 anyF :: (Formula -> Bool) -> Formula -> Bool
-anyF predicat = Monoid.getAny . foldF (Monoid.Any . predicat)
+anyF predicate = Monoid.getAny . foldF (Monoid.Any . predicate)
 
 {- sums up a numeric function over the next structure level of a formula -}
 sumF :: (Num a) => (Formula -> a) -> Formula -> a

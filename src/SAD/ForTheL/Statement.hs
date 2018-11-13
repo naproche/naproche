@@ -77,7 +77,7 @@ thesis = art >> (thes <|> contrary <|> contradiction)
 
 thereIs = there >> (noNotion -|- notions)
   where
-    noNotion = do 
+    noNotion = do
       wdToken "no"; (q, f, vs) <- notion;
       return $ Not $ foldr mbpExi (q f) vs
     notions = fmap multExi $ art >> notion `sepBy` comma
@@ -86,7 +86,7 @@ thereIs = there >> (noNotion -|- notions)
 
 
 simple = label "simple statement" $ do
-  (q, ts) <- terms; p <- conjChain doesPredicat;
+  (q, ts) <- terms; p <- conjChain doesPredicate;
   q' <- optLL1 id quChain;
   -- this part is not in the language description
   -- example: x = y *for every real number x*.
@@ -97,23 +97,23 @@ smForm = liftM2 (flip ($)) (sForm -|- classEq) $ optLL1 id quChain
 --- predicates
 
 
-doesPredicat = label "does predicat" $
+doesPredicate = label "does predicate" $
   (does >> (doP -|- multiDoP)) <|> hasP <|> isChain
   where
-    doP = predicat primVer
-    multiDoP = mPredicat primMultiVer
+    doP = predicate primVer
+    multiDoP = mPredicate primMultiVer
     hasP = has >> hasPredicate
-    isChain = is  >> conjChain (isAPredicat -|- isPredicat)
+    isChain = is  >> conjChain (isAPredicat -|- isPredicate)
 
 
-isPredicat = label "is predicat" $
+isPredicate = label "is predicate" $
   pAdj -|- pMultiAdj -|- (with >> hasPredicate)
   where
-    pAdj = predicat primAdj
-    pMultiAdj = mPredicat primMultiAdj
+    pAdj = predicate primAdj
+    pMultiAdj = mPredicate primMultiAdj
 
 
-isAPredicat = label "isA predicat" $ notNtn <|> ntn
+isAPredicat = label "isA predicate" $ notNtn <|> ntn
   -- Unlike the langugae description, we distinguish positive and negative
   -- rather than notions and fixed terms
   where
@@ -122,7 +122,7 @@ isAPredicat = label "isA predicat" $ notNtn <|> ntn
       wdToken "not"; (q, f) <- anotion; let unfinished = dig f [zHole]
       optLLx (q $ Not f) $ fmap (q. Tag Dig . Not) unfinished
 
-hasPredicate = label "has predicat" $ noPossessive <|> possessive
+hasPredicate = label "has predicate" $ noPossessive <|> possessive
   where
     possessive = art >> common <|> unary
     unary = fmap (Tag Dig . multExi) $ possess `sepBy` (comma >> art)
@@ -138,14 +138,14 @@ hasPredicate = label "has predicat" $ noPossessive <|> possessive
       -- take a closer look at this later.. why is (Tag Dig) *inside* important?
 
 
---- predicat parsing
+--- predicate parsing
 
-predicat p = (wdToken "not" >> negative) <|> positive
+predicate p = (wdToken "not" >> negative) <|> positive
   where
     positive = do (q, f) <- p term; return $ q . Tag Dig $ f
     negative = do (q, f) <- p term; return $ q . Tag Dig . Not $ f
 
-mPredicat p = (wdToken "not" >> mNegative) <|> mPositive
+mPredicate p = (wdToken "not" >> mNegative) <|> mPositive
   where
     mPositive = (wdToken "pairwise" >> pPositive) <|> sPositive
     -- we distinguish between *separate* and *pairwise*
@@ -178,9 +178,9 @@ gnotion nt ra = do
   return (q, foldr1 And $ f : ls ++ rs, vs)
   where
     la = opt [] $ liftM2 (:) lc la
-    lc = predicat primUnAdj </> mPredicat primMultiUnAdj
-    rc = (that >> conjChain doesPredicat <?> "that clause") <|>
-      conjChain isPredicat
+    lc = predicate primUnAdj </> mPredicate primMultiUnAdj
+    rc = (that >> conjChain doesPredicate <?> "that clause") <|>
+      conjChain isPredicate
 
 
 anotion =

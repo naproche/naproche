@@ -177,10 +177,10 @@ typings (context:restContext) term =
           matchThisArgument ls arg rs `mplus` compare (arg:ls) rs 
         
         matchThisArgument ls arg rs = 
-          let sign = mbNot f; predicat = ltAtomic f in do 
+          let sign = mbNot f; predicate = ltAtomic f in do 
             match term arg
-            let newInfo = sign predicat {trArgs = reverse ls ++ (ThisT : rs)}
-            return $ newInfo : notionEvidence ls predicat ++ trInfo arg
+            let newInfo = sign predicate {trArgs = reverse ls ++ (ThisT : rs)}
+            return $ newInfo : notionEvidence ls predicate ++ trInfo arg
 
     dive e@Trm {trName = "=", trArgs = [l,r]} = 
       if   twins l term
