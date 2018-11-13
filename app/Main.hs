@@ -136,7 +136,7 @@ wellformed (Instr.Bool _ v) = v == v
 wellformed (Instr.Int _ v) = v == v
 wellformed _            = True
 
-usageHeader  = "Usage: alice <options...> <file>"
+usageHeader  = "Usage: Naproche-SAD <options...> <file>"
 
 options = [
   Option "h" ["help"] (NoArg (Instr.Bool Instr.Help True)) "show this help text",

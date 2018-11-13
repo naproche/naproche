@@ -1,4 +1,4 @@
-# Alice init options
+# init options
 [library examples]
 [provers provers/provers.dat]
 [prover eprover]
