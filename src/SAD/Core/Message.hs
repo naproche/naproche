@@ -58,10 +58,11 @@ kindXML WARNING = Markup.warningN
 kindXML LEGACY = Markup.legacyN
 kindXML ERROR = Markup.errorN
 
-posProperties :: String -> SourcePos -> [(String, String)]
-posProperties id pos =
+posProperties :: String -> String -> SourcePos -> [(String, String)]
+posProperties id defaultFile pos =
   (Markup.idN, id) :
-  (if null file then [] else [(Markup.fileN, file)]) ++
+  (if null file && null defaultFile then []
+   else [(Markup.fileN, if null file then defaultFile else file)]) ++
   (if line <= 0 then [] else [(Markup.lineN, Value.print_int line)]) ++
   (if offset <= 0 then [] else [(Markup.offsetN, Value.print_int offset)]) ++
   (if endOffset <= 0 then [] else [(Markup.end_offsetN, Value.print_int endOffset)])
@@ -71,15 +72,18 @@ posProperties id pos =
     offset = Position.sourceOffset pos
     endOffset = Position.sourceEndOffset pos
 
-xmlMessage :: String -> String -> Kind -> SourcePos -> String -> XML.Tree
-xmlMessage id origin kind pos msg =
+xmlMessage :: String -> String -> String -> Kind -> SourcePos -> String -> XML.Tree
+xmlMessage id defaultFile origin kind pos msg =
   XML.Elem ((kindXML kind, props), [XML.Text msg])
   where
-    props0 = posProperties id pos
+    props0 = posProperties id defaultFile pos
     props = if null origin then props0 else ("origin", origin) : props0
 
 
 {- PIDE messages -}
+
+pideFileName :: IO String
+pideFileName = fromMaybe "" <$> lookupEnv "NAPROCHE_FILE_NAME"
 
 pideID :: IO (Maybe String)
 pideID = do
@@ -90,7 +94,7 @@ pideID = do
     Just id -> return (Just id)
 
 pideActive :: IO Bool
-pideActive = do id <- pideID; return (isJust id)
+pideActive = isJust <$> pideID
 
 pideMessage :: String -> String
 pideMessage s = "\1" ++ Value.print_int len ++ "\n" ++ s
@@ -106,11 +110,12 @@ type ReportText = (Report, String)
 reportsText :: [ReportText] -> IO ()
 reportsText args = do
   pide <- pideID
+  defaultFile <- pideFileName
   when (isJust pide && not (null args)) $ putStrLn $ pideMessage $ YXML.string_of $
     XML.Elem (Markup.report,
       map (\((pos, markup), txt) ->
         let
-          markup' = Markup.properties (posProperties (fromJust pide) pos) markup
+          markup' = Markup.properties (posProperties (fromJust pide) defaultFile pos) markup
           body = if null txt then [] else [XML.Text txt]
         in XML.Elem (markup', body)) args)
 
@@ -126,11 +131,11 @@ report pos markup = reports [(pos, markup)]
 
 {- output -}
 
-messageText :: Maybe String -> String -> Kind -> SourcePos -> String -> String
-messageText pide origin kind pos msg =
+messageText :: Maybe String -> String -> String -> Kind -> SourcePos -> String -> String
+messageText pide defaultFileName origin kind pos msg =
   case pide of
     Just id ->
-      pideMessage $ YXML.string_of $ xmlMessage id origin kind pos msg
+      pideMessage $ YXML.string_of $ xmlMessage id defaultFileName origin kind pos msg
     Nothing ->
       (if null origin then "" else "[" ++ origin ++ "] ") ++
       (case show kind of "" -> "" ; s -> s ++ ": ") ++
@@ -139,12 +144,14 @@ messageText pide origin kind pos msg =
 output :: String -> Kind -> SourcePos -> String -> IO ()
 output origin kind pos msg = do
   pide <- pideID
-  putStrLn $ messageText pide origin kind pos msg
+  defaultFileName <- pideFileName
+  putStrLn $ messageText pide defaultFileName origin kind pos msg
 
 error :: String -> SourcePos -> String -> IO a
 error origin pos msg = do
   pide <- pideID
-  errorWithoutStackTrace $ messageText pide origin ERROR pos msg
+  defaultFile <- pideFileName
+  errorWithoutStackTrace $ messageText pide defaultFile origin ERROR pos msg
 
 
 {- specific messages -}

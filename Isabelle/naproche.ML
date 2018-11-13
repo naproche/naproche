@@ -46,39 +46,20 @@ fun output_message name =
 in
 
 fun forthel_file ctxt (file: Token.file) =
-  Isabelle_System.with_tmp_dir "naproche" (fn tmp_dir =>
+  Isabelle_System.with_tmp_file "naproche" "ftl" (fn tmp_file =>
     let
       val thy = Proof_Context.theory_of ctxt;
 
-      val tmp_file = Path.append tmp_dir (Path.explode "input.ftl");
-      val tmp_file_name = File.standard_path tmp_file;
-      val _ = File.write tmp_file (cat_lines (#lines file));
-
-      val pide_id =
+      val pide =
         (case Position.get_id (Position.thread_data ()) of
           SOME id => id
         | NONE => raise Fail "Missing PIDE position id");
 
-      val file_name =
-        File.standard_path (Path.append (Resources.master_directory thy) (#src_path file));
-
-      fun update_props props =
-        let
-          val props0 = Position.get_props (#pos file);
-          val props1 =
-            (case Properties.get props Markup.fileN of
-              SOME name =>
-                if name = tmp_file_name
-                then Properties.put (Markup.fileN, file_name) props
-                else props
-            | NONE => props);
-        in fold_rev Properties.put props1 props0 end;
-
-      fun update_xml (XML.Elem ((elem, props), body)) = XML.Elem ((elem, update_props props), body)
-        | update_xml xml = xml;
+      val _ = File.write tmp_file (cat_lines (#lines file));
+      val pos_file_name = the_default "" (Position.file_of (#pos file));
 
       fun print_position props =
-        let val pos = Position.of_properties (update_props props);
+        let val pos = Position.of_properties props;
         in (case Position.here pos of "" => " " | s => s ^ "\n") end;
 
       fun output_acc acc =
@@ -87,7 +68,7 @@ fun forthel_file ctxt (file: Token.file) =
         | str =>
             (case try YXML.parse str of
               SOME (XML.Elem ((elem, props), body)) =>
-                if elem = Markup.reportN then output_reports (map update_xml body)
+                if elem = Markup.reportN then output_reports body
                 else
                   output_message elem
                     (enclose "[" "]" (the_default "Naproche-SAD" (Properties.get props "origin")) ^
@@ -114,12 +95,13 @@ fun forthel_file ctxt (file: Token.file) =
           "set -e",
           "cd \"$NAPROCHE_HOME\"",
           "export PATH=\"$E_HOME:$SPASS_HOME:$PATH\"",
-          "export NAPROCHE_PIDE=" ^ Bash.string pide_id,
+          "export NAPROCHE_PIDE=" ^ Bash.string pide,
+          "export NAPROCHE_FILE_NAME=" ^ Bash.string pos_file_name,
           File.bash_path (Path.explode "$NAPROCHE_EXE") ^
             " --prove=" ^ bool_option ctxt forthel_prove ^
             " --check=" ^ bool_option ctxt forthel_check ^
             " --skipfail=" ^ bool_option ctxt forthel_skipfail ^
-            " -- " ^ File.bash_path tmp_file];
+            " < " ^ File.bash_path tmp_file];
       val {out, err, rc, ...} = Bash.process script;
       val _ = detect_messages 0 [] (split_lines err);
       val _ = detect_messages 0 [] (split_lines out);
