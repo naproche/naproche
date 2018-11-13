@@ -28,9 +28,6 @@ import SAD.Export.Base
 import SAD.Import.Reader
 import qualified Isabelle.File as File
 
-
-{- and what is the use of a book without pictures or conversation? -}
-
 main :: IO ()
 main  = do
   -- setup stdin/stdout
