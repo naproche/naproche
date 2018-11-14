@@ -168,7 +168,7 @@ findUsefulVariation definitions (assumption:restContext) thesis =
   find useful variations
   where
     variations = map snd $
-      runVM (generateVariations definitions thesis) $ Context.declaredVariables assumption
+      runVM (generateVariations definitions thesis) $ Context.declaredNames assumption
     useful variation = isTop $ getObj $
       reductionInViewOf (Not variation) $ Context.formula assumption
 findUsefulVariation _ _ _ = 

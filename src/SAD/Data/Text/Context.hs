@@ -27,6 +27,7 @@ isTopLevel  = null . tail
 isLowLevel  = not  . isTopLevel
 
 declaredVariables  = Block.declaredVariables . head
+declaredNames = Block.declaredNames . head
 name  = Block.name . head
 link  = Block.link . head
 

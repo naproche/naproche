@@ -320,11 +320,15 @@ tryToGetID _ = mzero
 
 {- return free user named variables in a formula (without duplicateNames),
 except those in vs -}
-free :: [String] -> Formula -> [String]
-free vs = nub . dive
+freePositions :: [String] -> Formula -> [(String, SourcePos)]
+freePositions vs = nubBy (\a b -> fst a == fst b) . dive
   where
-    dive f@Var {trName = u@('x':_)} = guardNotElem vs u ++ foldF dive f
+    dive f@Var {trName = u@('x':_)} = 
+      (guard (u `notElem` vs) >> return (u, trPosition f)) ++ foldF dive f
     dive f = foldF dive f
+
+free :: [String] -> Formula -> [String]
+free vs = map fst . freePositions vs
 
 {- return all free variables in a formula (without duplicateNames),
 except those in vs -}

@@ -30,6 +30,8 @@ import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Formula
 import qualified SAD.Data.Tag as Tag
 
+import qualified SAD.Data.Text.Declaration as Declaration
+
 
 
 import Data.List
@@ -130,27 +132,32 @@ eqLink = optLL1 [] $ expar $ wdToken "by" >> identifiers
 -- declaration management, typings and pretypings
 
 updateDeclbefore :: FTL Block -> FTL [Text] -> FTL [Text]
-updateDeclbefore blp p = do bl <- blp; addDecl (Block.declaredVariables bl) $ fmap (TB bl : ) p
+updateDeclbefore blp p = do 
+  bl <- blp
+  addDecl (Block.declaredNames bl) $ fmap (TB bl : ) p
 
 
 pretyping :: Block -> FTL Block
-pretyping = (<*>) (liftM2 pret getDecl getPretyped) . return
+pretyping bl = do
+  dvs <- getDecl; tvs <- getPretyped; pret dvs tvs bl
 
-pret dvs tvs bl =
-  assumeBlock {Block.formula = typing, Block.declaredVariables = untyped}
+pret :: [String] -> [TVar] -> Block -> FTL Block
+pret dvs tvs bl = do
+  untyped <- mapM makeDeclaration $ freePositions (blockVars ++ dvs) (Block.formula bl)
+  let typing =
+        if null untyped
+        then Top
+        else foldl1 And $ map (`typeWith` tvs) $ map Declaration.name untyped
+  return $ assumeBlock {Block.formula = typing, Block.declaredVariables = untyped}
   where
-    blockVars   = Block.declaredVariables bl
-    untyped     = free (blockVars ++ dvs) (Block.formula bl)
-    typing      = if   null untyped
-                  then Top
-                  else foldl1 And $ map (`typeWith` tvs) untyped
+    blockVars   = Block.declaredNames bl
     assumeBlock = bl {Block.body = [], Block.kind = Assumption, Block.link = []}
     typeWith v  = substHole (zVar v) . snd . fromJust . find (elem v . fst)
 
 pretypeBefore :: FTL Block -> FTL [Text] -> FTL [Text]
 pretypeBefore blp p = do
-  bl <- blp; typeBlock <- pretyping bl; let pretyped = Block.declaredVariables typeBlock
-  pResult   <- addDecl (pretyped ++ Block.declaredVariables bl) $ fmap (TB bl : ) p
+  bl <- blp; typeBlock <- pretyping bl; let pretyped = Block.declaredNames typeBlock
+  pResult   <- addDecl (pretyped ++ Block.declaredNames bl) $ fmap (TB bl : ) p
   return $ if null pretyped then pResult else TB typeBlock : pResult
 
 pretype :: FTL Block -> FTL [Text]
@@ -183,7 +190,8 @@ statementBlock kind p mbLink = do
 pretypeSentence kind p wfVars mbLink = narrow $ do
   dvs <- getDecl; tvr <- fmap (concatMap fst) getPretyped
   bl <- wellFormedCheck (wf dvs tvr) $ statementBlock kind p mbLink
-  return bl {Block.declaredVariables = decl (dvs ++ tvr) $ Block.formula bl }
+  newDecl <- bindings (dvs ++ tvr) $ Block.formula bl
+  return bl {Block.declaredVariables = newDecl }
   where
     wf dvs tvr bl =
       let fr = Block.formula bl; nvs = intersect tvr $ free dvs fr
@@ -192,7 +200,8 @@ pretypeSentence kind p wfVars mbLink = narrow $ do
 sentence kind p wfVars mbLink = do
   dvs <- getDecl;
   bl  <- wellFormedCheck (wfVars dvs . Block.formula) $ statementBlock kind p mbLink
-  return bl {Block.declaredVariables = decl dvs $ Block.formula bl}
+  newDecl <- bindings dvs $ Block.formula bl
+  return bl {Block.declaredVariables = newDecl}
 
 -- variable well-formedness checks
 
@@ -209,9 +218,9 @@ llDefnVars dvs f
   | x `elem` dvs = Just $ "Defined variable is already in use: " ++ showVar x
   | otherwise    = affirmVars (x : dvs) f
   where
-    [x] = decl [] f
+    [x] = declNames [] f
 
-assumeVars dvs f = affirmVars (decl dvs f ++ dvs) f
+assumeVars dvs f = affirmVars (declNames dvs f ++ dvs) f
 
 affirmVars = overfree
 
@@ -276,7 +285,7 @@ proof p = do
 
 topProof p = do
   pre <- preMethod; bl <- p; post <- postMethod; typeBlock <- pretyping bl;
-  let pretyped = Block.declaredVariables typeBlock
+  let pretyped = Block.declaredNames typeBlock
   nbl <- addDecl pretyped $ fmap TB $ do
     nf <- indThesis (Block.formula bl) pre post
     addBody pre post $ bl {Block.formula = nf}

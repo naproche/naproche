@@ -4,6 +4,7 @@ module SAD.Data.Text.Block (
   Text(..),
   Block(..),
   makeBlock,
+  declaredNames,
   text,
   Section(..),
   showForm,
@@ -19,6 +20,8 @@ import SAD.Core.Position
 import SAD.Data.Instr (Instr)
 import qualified SAD.Data.Instr as Instr
 import SAD.Parser.Token
+import SAD.Data.Text.Declaration (Declaration)
+import qualified SAD.Data.Text.Declaration as Declaration
 
 
 data Text = TB Block | TI Instr | TD Instr.Drop
@@ -27,7 +30,7 @@ data Block  = Block {
   formula           :: Formula,
   body              :: [Text],
   kind              :: Section,
-  declaredVariables :: [String],
+  declaredVariables :: [Declaration],
   name              :: String,
   link              :: [String],
   position          :: SourcePos,
@@ -59,8 +62,8 @@ compose = foldr comp Top
   where
     comp (TB block@Block{ declaredVariables = dvs }) f
       | needsProof block || kind block == Posit =
-          foldr zExi (blAnd (formulate block) f) dvs
-      | otherwise = foldr zAll (blImp (formulate block) f) dvs
+          foldr zExi (blAnd (formulate block) f) $ map Declaration.name dvs
+      | otherwise = foldr zAll (blImp (formulate block) f) $ map Declaration.name dvs
     comp _ fb = fb
 
 
@@ -85,6 +88,10 @@ noBody  = null . body
 
 file :: Block -> String
 file = sourceFile . position
+
+
+declaredNames :: Block -> [String]
+declaredNames = map Declaration.name . declaredVariables
 
 -- Show instances
 

@@ -90,7 +90,7 @@ verificationLoop state@VS {
     then return f
     else fillDef contextBlock -- check definitions and fortify terms
 
-  let proofTask = generateProofTask kind declaredVariables fortifiedFormula
+  let proofTask = generateProofTask kind (Block.declaredNames block) fortifiedFormula
       freshThesis = Context proofTask newBranch [] proofTask
       toBeProved = (Block.needsProof block) && not (Block.isTopLevel block)
   proofBody <- askInstructionBool Instr.Flat False >>= \p ->

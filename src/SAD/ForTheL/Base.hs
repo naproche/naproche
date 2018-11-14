@@ -24,6 +24,8 @@ import Debug.Trace
 import SAD.Parser.Token
 import SAD.Core.Position
 
+import SAD.Data.Text.Declaration (Declaration(Decl))
+
 
 type FTL = Parser FState
 
@@ -46,7 +48,7 @@ data FState = FState {
   cprExpr, rprExpr, lprExpr, iprExpr :: [Prim],
 
   tvrExpr :: [TVar], strSyms :: [[String]], varDecl :: [String],
-  idCount :: Int, hiddenCount :: Int }
+  idCount :: Int, hiddenCount :: Int, serialCounter :: Int }
 
 
 
@@ -54,7 +56,8 @@ initFS = FState
   eq [] nt sn
   cf rf [] []
   [] [] [] sp
-  [] [] [] 0 0
+  [] [] []
+  0 0 0
   where
     eq = [
       ([Wd ["equal"], Wd ["to"], Vr], zTrm (-1) "="),
@@ -96,6 +99,12 @@ addDecl vs p = do
 
 getPretyped :: FTL [TVar]
 getPretyped = MS.gets tvrExpr
+
+makeDeclaration :: VarName -> FTL Declaration
+makeDeclaration (nm, pos) = do
+  serial <- MS.gets serialCounter
+  MS.modify (\st -> st {serialCounter = serial + 1})
+  return $ Decl nm pos serial
 
 -- Predicates: verbs and adjectives
 
@@ -303,20 +312,35 @@ freeVars f = do dvs <- getDecl; return $ free dvs f
 
 --- decl
 
+{- produce the variables delcared by a formula together with their positions. As
+parameter we pass the already known variables-}
+decl :: [String] -> Formula -> [VarName]
 decl vs = dive
   where
-    dive (All _ f)  = dive f
-    dive (Exi _ f)  = dive f
-    dive (Tag _ f)  = dive f
-    dive (Imp f g)  = filter (noc f) (dive g)
-    dive (And f g)  = dive f `union` filter (noc f) (dive g)
+    dive (All _ f) = dive f
+    dive (Exi _ f) = dive f
+    dive (Tag _ f) = dive f
+    dive (Imp f g) = filter (noc f) (dive g)
+    dive (And f g) = dive f `varNameUnion` filter (noc f) (dive g)
     dive Trm {trName = 'a':_, trArgs = v@Var{trName = u@('x':_)}:ts}
-      | all (not . occurs v) ts = guardNotElem vs u
+      | all (not . occurs v) ts =
+          guard (u `notElem` vs) >> return (u, trPosition v)
     dive Trm{trName = "=", trArgs = [v@Var{trName = u@('x':_)}, t]}
-      | isTrm t && not (occurs v t) = guardNotElem vs u
-    dive _  = []
+      | isTrm t && not (occurs v t) =
+          guard (u `notElem` vs) >> return (u, trPosition v)
+    dive _ = []
 
-    noc f v = not $ occurs (zVar v) f
+    noc f v = not $ occurs (pVar v) f
+    varNameUnion = unionBy $ \a b -> fst a == fst b
+
+{- produce variable names declared by a formula -}
+declNames :: [String] -> Formula -> [String]
+declNames vs = map fst . decl vs
+
+{- produce the bindings in a formula in a Declaration data type ant take care of
+the serial counter. -}
+bindings :: [String] -> Formula -> FTL [Declaration]
+bindings vs = mapM makeDeclaration . decl vs
 
 
 overfree :: [String] -> Formula -> Maybe String

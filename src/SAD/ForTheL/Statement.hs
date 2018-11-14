@@ -61,7 +61,7 @@ chainEnd f = optLL1 f $ and_st <|> or_st <|> iff_st <|> where_st
     iff_st = fmap (Iff f) $ iff >> statement
     where_st = do
       wdTokenOf ["when", "where"]; y <- statement
-      return $ foldr zAll (Imp y f) (decl [] y)
+      return $ foldr zAll (Imp y f) (declNames [] y)
 
 
 atomic = label "atomic statement"

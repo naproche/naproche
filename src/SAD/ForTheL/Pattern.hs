@@ -119,7 +119,7 @@ addExpr t@Trm {trName = s, trArgs = vs} f p st =
        | rsm = st {rprExpr = (tail pt, fm) : rprExpr st}
        | True = st {iprExpr = (init (tail pt), fm) : iprExpr st}
     -- check if pattern is a symbolic notion
-    snt = not lsm && elem (trName $ head vs) (decl [] nf)
+    snt = not lsm && elem (trName $ head vs) (declNames [] nf)
     -- and add it there as well if so (and increment id counter)
     nn | snt = ns {sntExpr = (tail pt,fm) : sntExpr st, idCount = incId p n}
        | True = ns {idCount = incId p n}
