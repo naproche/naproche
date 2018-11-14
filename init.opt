@@ -1,6 +1,6 @@
 # init options
 [library examples]
-[provers provers/provers.dat]
+[provers provers.dat]
 [prover eprover]
 [timelimit 3]
 [depthlimit 7]

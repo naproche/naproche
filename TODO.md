@@ -2,8 +2,6 @@
 
 # Misc #
 
-* move provers/provers.dat to toplevel directory (no executables there) (??)
-
 * make $SPASS_HOME/SPASS from Isabelle actually work (!?)
 
 * proper names for instructions "setCtxt", "drpCtxt", "addCtxt" etc. (!?)
