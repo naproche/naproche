@@ -2,11 +2,12 @@
 
 # Misc #
 
-* move provers/provers.dat to toplevel directory (no executables there) (??)
-
 * make $SPASS_HOME/SPASS from Isabelle actually work (!?)
 
 * proper names for instructions "setCtxt", "drpCtxt", "addCtxt" etc. (!?)
+
+* more robust (less redundant) specification of options with their defaults:
+  avoid duplicate information in Haskell sources, comments, init.opt
 
 
 # PIDE markup reports #
@@ -43,3 +44,5 @@
 * caching of old results from prefix of source, old versions etc. (??)
 
 * parallel checking: internal and/or external provers (??)
+
+* clarify treatment of non-ASCII text: Latex vs. Isabelle symbols vs. Unicode (!?!)
