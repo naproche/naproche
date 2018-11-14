@@ -10,7 +10,10 @@ for Isabelle Prover IDE.
 
   * Supported OS platforms: Linux, macOS, Windows (e.g. with Cygwin terminal)
 
-  * Haskell Tool Stack: https://www.haskellstack.org
+  * The Haskell Tool Stack: https://www.haskellstack.org
+
+  * The E Theorem Prover as executable "eprover" in the shell PATH (e.g. the
+    multi-platform version provided by Isabelle: "isabelle getenv -b E_HOME")
 
   * Optional (for development): Haskell IDE within VSCode:
     https://github.com/haskell/haskell-ide-engine
