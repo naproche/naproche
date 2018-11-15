@@ -44,7 +44,7 @@ import Debug.Trace
 forthel :: FTL [Text]
 forthel = section <|> macroOrPretype <|> bracketExpression
   where
-    section = liftM2 ((:) . TB) topsection forthel
+    section = liftM2 ((:) . TextBlock) topsection forthel
     macroOrPretype = (introduceMacro </> pretypeVariable) >> forthel
 
 {- this part may seem a bit finicky, but must be coded this way to avoid
@@ -56,8 +56,8 @@ bracketExpression = exit </> readfile </> do
   either (\instr -> fmap ((:) instr) forthel) (\_ -> forthel) mbInstr
   where
     exit = (iExit <|> eof) >> return []
-    readfile = liftM2 ((:) . TI) iRead (return [])
-    instruction = fmap TD iDrop </> fmap TI instr
+    readfile = liftM2 ((:) . TextInstr) iRead (return [])
+    instruction = fmap TextDrop iDrop </> fmap TextInstr instr
 
 topsection = signature <|> definition <|> axiom <|> theorem
 
@@ -134,7 +134,7 @@ eqLink = optLL1 [] $ expar $ wdToken "by" >> identifiers
 updateDeclbefore :: FTL Block -> FTL [Text] -> FTL [Text]
 updateDeclbefore blp p = do 
   bl <- blp
-  addDecl (Block.declaredNames bl) $ fmap (TB bl : ) p
+  addDecl (Block.declaredNames bl) $ fmap (TextBlock bl : ) p
 
 
 pretyping :: Block -> FTL Block
@@ -157,8 +157,8 @@ pret dvs tvs bl = do
 pretypeBefore :: FTL Block -> FTL [Text] -> FTL [Text]
 pretypeBefore blp p = do
   bl <- blp; typeBlock <- pretyping bl; let pretyped = Block.declaredNames typeBlock
-  pResult   <- addDecl (pretyped ++ Block.declaredNames bl) $ fmap (TB bl : ) p
-  return $ if null pretyped then pResult else TB typeBlock : pResult
+  pResult   <- addDecl (pretyped ++ Block.declaredNames bl) $ fmap (TextBlock bl : ) p
+  return $ if null pretyped then pResult else TextBlock typeBlock : pResult
 
 pretype :: FTL Block -> FTL [Text]
 pretype p = p `pretypeBefore` return []
@@ -286,10 +286,10 @@ proof p = do
 topProof p = do
   pre <- preMethod; bl <- p; post <- postMethod; typeBlock <- pretyping bl;
   let pretyped = Block.declaredNames typeBlock
-  nbl <- addDecl pretyped $ fmap TB $ do
+  nbl <- addDecl pretyped $ fmap TextBlock $ do
     nf <- indThesis (Block.formula bl) pre post
     addBody pre post $ bl {Block.formula = nf}
-  return $ if null pretyped then [nbl] else [TB typeBlock, nbl]
+  return $ if null pretyped then [nbl] else [TextBlock typeBlock, nbl]
 
 addBody None None = return -- no proof was given
 addBody _ Short = proofSentence    -- a short proof was given
@@ -301,7 +301,7 @@ addBody _ _ = proofBody    -- a full proof was given
 
 proofSentence bl = do
   pbl <- narrow assume </> proof (narrow $ affirm </> choose) </> narrow llDefn
-  return bl {Block.body = [TB pbl]}
+  return bl {Block.body = [TextBlock pbl]}
 
 proofBody bl = do
   bs <- proofText; ls <- link
@@ -315,7 +315,7 @@ proofText = assume_affirm_choose_lldefine <|> caseText <|> qed <|> llInstr
       narrow llDefn) `updateDeclbefore`
       proofText
     qed = wdTokenOf ["qed", "end", "trivial", "obvious"] >> return []
-    llInstr = liftM2 (:) (fmap TI instr </> fmap TD iDrop) proofText
+    llInstr = liftM2 (:) (fmap TextInstr instr </> fmap TextDrop iDrop) proofText
 
 caseText = caseD
   where
@@ -325,7 +325,7 @@ caseText = caseD
 
     caseDestinction = do
       bl@Block { Block.formula = fr } <- narrow caseHypo
-      fmap TB $ proofBody $ bl { 
+      fmap TextBlock $ proofBody $ bl { 
         Block.formula = Imp (Tag Tag.CaseHypothesis fr) zThesis}
 
 
@@ -337,7 +337,7 @@ eqChain = do
   toks <- getTokens inp
   let Tag EqualityChain Trm{trArgs = [t,_]} = Block.formula $ head body
       Tag EqualityChain Trm{trArgs = [_,s]} = Block.formula $ last body
-      fr = Tag EqualityChain $ zEqu t s; tBody = map TB body
+      fr = Tag EqualityChain $ zEqu t s; tBody = map TextBlock body
   return $ Block.makeBlock fr tBody Affirmation nm [] pos toks
   where
     chainVars dvs = affirmVars dvs . foldl1 And . map Block.formula
@@ -356,7 +356,7 @@ nextTerm t = do
 -- markup reports
 
 textReports :: Text -> [Message.Report]
-textReports (TB block) =
+textReports (TextBlock block) =
   let
     reports1 = [(Block.position block, Markup.expression "text block")]
     reports2 =
@@ -365,5 +365,5 @@ textReports (TB block) =
           [(tokenPos tok, Markup.keyword1)]
         _ -> []
   in reports1 ++ reports2 ++ concatMap textReports (Block.body block)
-textReports (TI _) = []
-textReports (TD _) = []
+textReports (TextInstr _) = []
+textReports (TextDrop _) = []

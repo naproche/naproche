@@ -52,7 +52,7 @@ mainBody  = do
       revInitialOpts = reverse initialOpts
 
   -- parse input text
-  text <- readText (Instr.askString Instr.Library "." revInitialOpts) $ map TI initialOpts
+  text <- readText (Instr.askString Instr.Library "." revInitialOpts) $ map TextInstr initialOpts
   -- if -T is passed as an option, only print the text and exit
   when (Instr.askBool Instr.OnlyTranslate False revInitialOpts) $ onlyTranslate startTime text
   -- read provers.dat
@@ -112,12 +112,13 @@ mainBody  = do
 
 onlyTranslate :: UTCTime -> [Text] -> IO ()
 onlyTranslate startTime text = do
-  mapM_ printTB text; finishTime <- getCurrentTime
+  mapM_ printTextBlock text; finishTime <- getCurrentTime
   Message.outputMain Message.WRITELN noPos $ "total " ++ timeDifference finishTime
   exitSuccess
   where
     timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)
-    printTB (TB bl) = print bl; printTB _ = return ()
+    printTextBlock (TextBlock bl) = print bl
+    printTextBlock _ = return ()
 
 
 -- Command line parsing

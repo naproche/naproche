@@ -47,7 +47,7 @@ import SAD.Core.Rewrite
 
 verify :: String -> IORef RState -> [Text] -> IO (Maybe ([Text], GState))
 verify fileName reasonerState blocks = do
-  let text = TI (Instr.String Instr.File fileName) : blocks
+  let text = TextInstr (Instr.String Instr.File fileName) : blocks
   Message.outputReason Message.WRITELN (fileOnlyPos fileName) "verification started"
 
   let initialVerificationState =
@@ -73,7 +73,7 @@ verificationLoop state@VS {
   currentThesis   = thesis,
   currentBranch   = branch,
   currentContext  = context,
-  restText = TB block@(Block f body kind declaredVariables _ _ _ _):blocks,
+  restText = TextBlock block@(Block f body kind declaredVariables _ _ _ _):blocks,
   evaluations     = evaluations }
     = local (const state) $ do
 
@@ -121,7 +121,7 @@ verificationLoop state@VS {
   -- extract rules, definitions and compute the new thesis
   thesisSetting <- askInstructionBool Instr.Thesis True
   let newBlock = block {
-        Block.formula = deleteInductionOrCase fortifiedFormula, 
+        Block.formula = deleteInductionOrCase fortifiedFormula,
         Block.body = fortifiedProof }
       formulaImage = Block.formulate newBlock
 
@@ -169,7 +169,7 @@ verificationLoop state@VS {
 
   -- if this block made the thesis unmotivated, we must discharge a composite
   -- (and possibly quite difficult) prove task
-  let finalThesis = Imp (Block.compose $ TB newBlock : newBlocks) (Context.formula thesis)
+  let finalThesis = Imp (Block.compose $ TextBlock newBlock : newBlocks) (Context.formula thesis)
 
   -- notice that the following is only really executed if 
   -- motivated && not newMotivated == True
@@ -178,7 +178,7 @@ verificationLoop state@VS {
     currentThesis = Context.setForm thesis finalThesis, restText = [] }
 
   -- put everything together
-  return $ TB newBlock : newBlocks
+  return $ TextBlock newBlock : newBlocks
 
 -- if there is no text to be read in a branch it means we must call the prover
 verificationLoop st@VS {
@@ -210,14 +210,14 @@ verificationLoop st@VS {
 
 -- process instructions. we distinguish between those that influence the
 -- verification state and those that influence (at most) the global state
-verificationLoop state@VS {restText = TI instruction : blocks}
-  | Instr.relevant instruction = contextTI state {restText = blocks} instruction
-  | otherwise = procTI state instruction >>
+verificationLoop state@VS {restText = TextInstr instruction : blocks}
+  | Instr.relevant instruction = contextTextInstr state {restText = blocks} instruction
+  | otherwise = procTextInstr state instruction >>
       verificationLoop state {restText = blocks}
 
 {- process a command to drop an instruction, i.e. [/prove], [/ontored], etc.-}
-verificationLoop st@VS {restText = (TD instruction : blocks)} =
-  procTD st instruction >> verificationLoop st {restText = blocks}
+verificationLoop st@VS {restText = (TextDrop instruction : blocks)} =
+  procTextDrop st instruction >> verificationLoop st {restText = blocks}
 
 verificationLoop _ = return []
 
@@ -283,8 +283,8 @@ deleteInductionOrCase = dive id
 -- Instruction handling
 
 {- execute an instruction or add an instruction parameter to the state -}
-procTI :: VState -> Instr -> VM ()
-procTI VS {
+procTextInstr :: VState -> Instr -> VM ()
+procTextInstr VS {
   thesisMotivated = motivated,
   rewriteRules    = rules,
   currentThesis   = thesis,
@@ -337,14 +337,14 @@ procTI VS {
     proc i = addInstruction i
 
 {- drop an instruction from the state -}
-procTD :: VState -> Instr.Drop -> VM ()
-procTD _ = dropInstruction
+procTextDrop :: VState -> Instr.Drop -> VM ()
+procTextDrop _ = dropInstruction
 
 -- Context settings
 
 {- manipulate context by hand -}
-contextTI :: VState -> Instr -> VM [Text]
-contextTI state@VS {
+contextTextInstr :: VState -> Instr -> VM [Text]
+contextTextInstr state@VS {
   thesisMotivated = motivated,
   rewriteRules    = rules,
   currentThesis   = thesis,
@@ -364,8 +364,8 @@ contextTI state@VS {
       verificationLoop state {
         currentContext = unionBy ((==) `on` Context.name) newContext context}
 {- the function definition must include the continuation with verificationLoop
-since it influences the verification state (procTI only influences the global
-state) -}
+since it influences the verification state (procTextInstr only influences the
+global state) -}
 
 setContext [] = askGlobalState globalContext
 setContext groupLink = getLink groupLink >>= retrieveContext

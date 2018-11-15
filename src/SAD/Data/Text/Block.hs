@@ -24,7 +24,7 @@ import SAD.Data.Text.Declaration (Declaration)
 import qualified SAD.Data.Text.Declaration as Declaration
 
 
-data Text = TB Block | TI Instr | TD Instr.Drop
+data Text = TextBlock Block | TextInstr Instr | TextDrop Instr.Drop
 
 data Block  = Block {
   formula           :: Formula,
@@ -60,7 +60,7 @@ formulate block
 compose :: [Text] -> Formula
 compose = foldr comp Top
   where
-    comp (TB block@Block{ declaredVariables = dvs }) f
+    comp (TextBlock block@Block{ declaredVariables = dvs }) f
       | needsProof block || kind block == Posit =
           foldr zExi (blAnd (formulate block) f) $ map Declaration.name dvs
       | otherwise = foldr zAll (blImp (formulate block) f) $ map Declaration.name dvs
@@ -96,9 +96,9 @@ declaredNames = map Declaration.name . declaredVariables
 -- Show instances
 
 instance Show Text where
-  showsPrec p (TB block) = showsPrec p block
-  showsPrec 0 (TI instruction) = shows instruction . showChar '\n'
-  showsPrec 0 (TD instruction) = shows instruction . showChar '\n'
+  showsPrec p (TextBlock block) = showsPrec p block
+  showsPrec 0 (TextInstr instruction) = shows instruction . showChar '\n'
+  showsPrec 0 (TextDrop instruction) = shows instruction . showChar '\n'
   showsPrec _ _ = id
 
 instance Show Block where
