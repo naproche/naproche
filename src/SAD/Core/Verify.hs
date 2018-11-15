@@ -47,7 +47,7 @@ import SAD.Core.Rewrite
 
 verify :: String -> IORef RState -> [Text] -> IO (Maybe ([Text], GState))
 verify fileName reasonerState blocks = do
-  let text = TextInstr noRange (Instr.String Instr.File fileName) : blocks
+  let text = TextInstr Instr.noPos (Instr.String Instr.File fileName) : blocks
   Message.outputReason Message.WRITELN (fileOnlyPos fileName) "verification started"
 
   let initialVerificationState =

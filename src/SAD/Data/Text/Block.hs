@@ -26,8 +26,8 @@ import qualified SAD.Data.Text.Declaration as Declaration
 
 data Text =
     TextBlock Block
-  | TextInstr SourceRange Instr
-  | TextDrop SourceRange Instr.Drop
+  | TextInstr Instr.Pos Instr
+  | TextDrop Instr.Pos Instr.Drop
 
 data Block  = Block {
   formula           :: Formula,

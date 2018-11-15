@@ -32,7 +32,7 @@ import qualified Isabelle.File as File
 
 -- Init file parsing
 
-readInit :: String -> IO [(SourceRange, Instr)]
+readInit :: String -> IO [(Instr.Pos, Instr)]
 readInit "" = return []
 readInit file = do
   input <- catch (File.read file) $ Message.errorParser (fileOnlyPos file) . ioeGetErrorString
@@ -40,7 +40,7 @@ readInit file = do
       initialParserState = State () tokens noPos
   fst <$> launchParser instructionFile initialParserState
 
-instructionFile :: Parser st [(SourceRange, Instr)]
+instructionFile :: Parser st [(Instr.Pos, Instr)]
 instructionFile = after (optLL1 [] $ chainLL1 instr) eof
 
 
@@ -55,16 +55,17 @@ readText pathToLibrary text0 = do
 
 reader :: String -> [String] -> [State FState] -> [Text] -> IO [Text]
 
-reader _ _ _ [TextInstr (pos, _) (Instr.String Instr.Read file)] | isInfixOf ".." file =
-  Message.errorParser pos ("Illegal \"..\" in file name: " ++ quote file)
+reader _ _ _ [TextInstr pos (Instr.String Instr.Read file)] | isInfixOf ".." file =
+  Message.errorParser (Instr.position pos) ("Illegal \"..\" in file name: " ++ quote file)
 
-reader pathToLibrary doneFiles stateList [TextInstr range (Instr.String Instr.Read file)] =
+reader pathToLibrary doneFiles stateList [TextInstr pos (Instr.String Instr.Read file)] =
   reader pathToLibrary doneFiles stateList
-    [TextInstr range $ Instr.String Instr.File $ pathToLibrary ++ '/' : file]
+    [TextInstr pos $ Instr.String Instr.File $ pathToLibrary ++ '/' : file]
 
-reader pathToLibrary doneFiles (pState:states) [TextInstr (pos, _) (Instr.String Instr.File file)]
+reader pathToLibrary doneFiles (pState:states) [TextInstr pos (Instr.String Instr.File file)]
   | file `elem` doneFiles = do
-      Message.outputMain Message.WARNING pos ("Skipping already read file: " ++ quote file)
+      Message.outputMain Message.WARNING (Instr.position pos)
+        ("Skipping already read file: " ++ quote file)
       (newText, newState) <- launchParser forthel pState
       reader pathToLibrary doneFiles (newState:states) newText
 

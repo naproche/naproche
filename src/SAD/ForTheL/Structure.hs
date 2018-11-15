@@ -26,6 +26,7 @@ import SAD.Parser.Token
 import SAD.Parser.Primitives
 
 import SAD.Core.SourcePos
+import qualified SAD.Data.Instr as Instr
 import SAD.Data.Text.Block (Block(Block), Text(..), Section(..))
 import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Formula
@@ -360,6 +361,12 @@ nextTerm t = do
 
 -- markup reports
 
+instrReports :: Instr.Pos -> [Message.Report]
+instrReports pos =
+  [(Instr.start pos, Markup.keyword3),
+   (Instr.stop pos, Markup.keyword3),
+   (Instr.position pos, Markup.string)]
+
 textReports :: Text -> [Message.Report]
 textReports (TextBlock block) =
   let
@@ -370,5 +377,5 @@ textReports (TextBlock block) =
           [(tokenPos tok, Markup.keyword1)]
         _ -> []
   in reports1 ++ reports2 ++ concatMap textReports (Block.body block)
-textReports (TextInstr (pos, _) _) = [(pos, Markup.improper)]
-textReports (TextDrop (pos, _) _) = [(pos, Markup.improper)]
+textReports (TextInstr pos _) = instrReports pos
+textReports (TextDrop pos _) = instrReports pos

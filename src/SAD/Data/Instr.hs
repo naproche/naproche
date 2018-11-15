@@ -9,6 +9,19 @@ module SAD.Data.Instr where
 import Prelude hiding (Int, Bool, String, drop)
 import qualified Prelude
 import Control.Monad
+import SAD.Core.SourcePos (SourcePos, SourceRange)
+import qualified SAD.Core.SourcePos as SourcePos
+
+
+-- Position information
+
+data Pos = Pos {start :: SourcePos, stop :: SourcePos, range :: SourceRange}
+
+position :: Pos -> SourcePos
+position = fst . range
+
+noPos :: Pos
+noPos = Pos SourcePos.noPos SourcePos.noPos SourcePos.noRange
 
 
 -- Instruction types

@@ -4,6 +4,8 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
 Parse command line and run verifier.
 -}
 
+{-# LANGUAGE TupleSections #-}
+
 module Main where
 
 import Data.IORef
@@ -49,7 +51,7 @@ mainBody  = do
   let initFileName = Instr.askString Instr.Init "init.opt" commandLine
   initFile <- readInit initFileName
 
-  let initialOpts = initFile ++ map (\instr -> (noRange, instr)) commandLine
+  let initialOpts = initFile ++ map (Instr.noPos,) commandLine
       revInitialOpts = map snd $ reverse initialOpts
 
   -- parse input text

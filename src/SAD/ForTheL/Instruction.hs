@@ -21,9 +21,15 @@ import SAD.Parser.Primitives
 import SAD.Parser.Token
 
 
-instr :: Parser st (SourceRange, Instr)
+instrPos :: Parser st a -> Parser st (Instr.Pos, a)
+instrPos p =
+  enclosed bg en p >>= (\((pos1, pos2), x) ->
+    return (Instr.Pos pos1 pos2 (makeRange (pos1, advancesPos pos2 en)), x))
+  where bg = "["; en = "]"
+
+instr :: Parser st (Instr.Pos, Instr)
 instr =
-  exbrkRange $ readInstr >>=
+  instrPos $ readInstr >>=
     (\case
       Instr.String Instr.Read _ -> fail "'read' not allowed here"
       Instr.Command Instr.EXIT -> fail "'exit' not allowed here"
@@ -31,9 +37,9 @@ instr =
       i -> return i)
 
 
-instrRead :: Parser st (SourceRange, Instr)
+instrRead :: Parser st (Instr.Pos, Instr)
 instrRead =
-  exbrkRange $ readInstr >>=
+  instrPos $ readInstr >>=
     (\case { i@(Instr.String Instr.Read _) -> return i; _ -> mzero })
 
 instrExit :: Parser st ()
@@ -44,8 +50,8 @@ instrExit =
       Instr.Command Instr.QUIT -> return ()
       _ -> mzero)
 
-instrDrop :: Parser st (SourceRange, Instr.Drop)
-instrDrop = exbrkRange (wdToken "/" >> readInstrDrop)
+instrDrop :: Parser st (Instr.Pos, Instr.Drop)
+instrDrop = instrPos (wdToken "/" >> readInstrDrop)
 
 
 readInstr :: Parser st Instr

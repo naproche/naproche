@@ -109,23 +109,18 @@ after :: Parser st a -> Parser st b -> Parser st a
 after a b = a >>= ((b >>) . return)
 
 ---- enclosed body (with range)
-enclosed :: String -> String -> Parser st a -> Parser st (SourceRange, a)
+enclosed :: String -> String -> Parser st a -> Parser st ((SourcePos, SourcePos), a)
 enclosed bg en p = do
   pos1 <- wdTokenPos bg
   x <- p
   pos2 <- wdTokenPos en
-  return (makeRange (pos1, advancesPos pos2 en), x)
+  return ((pos1, pos2), x)
 
 -- mandatory parentheses, brackets, braces etc.
-exparRange, exbrkRange, exbrcRange :: Parser st a -> Parser st (SourceRange, a)
-exparRange = enclosed "(" ")"
-exbrkRange = enclosed "[" "]"
-exbrcRange = enclosed "{" "}"
-
 expar, exbrk, exbrc :: Parser st a -> Parser st a
-expar p = exparRange p >>= return . snd
-exbrk p = exbrkRange p >>= return . snd
-exbrc p = exbrcRange p >>= return . snd
+expar p = enclosed "(" ")" p >>= return . snd
+exbrk p = enclosed "[" "]" p >>= return . snd
+exbrc p = enclosed "{" "}" p >>= return . snd
 
 
 ---- optional parentheses
