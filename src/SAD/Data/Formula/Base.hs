@@ -11,7 +11,7 @@ import Data.Maybe
 import qualified Data.Monoid as Monoid
 
 import SAD.Data.Tag (Tag)
-import SAD.Core.Position (SourcePos, noPos)
+import SAD.Core.SourcePos (SourcePos, noPos)
 
 
 data Formula =

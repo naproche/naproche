@@ -19,7 +19,7 @@ import qualified Control.Monad.Writer as W
 import Control.Monad.Reader
 import Data.Function
 
-import SAD.Core.Position
+import SAD.Core.SourcePos
 import SAD.Core.Base
 import SAD.Core.Check
 import qualified SAD.Core.Message as Message

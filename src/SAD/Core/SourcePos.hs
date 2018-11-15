@@ -5,7 +5,7 @@ Token source positions.
 -}
 
 
-module SAD.Core.Position
+module SAD.Core.SourcePos
   ( SourcePos (sourceFile, sourceLine, sourceColumn, sourceOffset, sourceEndOffset),
     SourceRange,
     noPos,

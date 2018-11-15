@@ -19,7 +19,7 @@ import qualified Data.IntMap.Strict as IM
 
 import SAD.Core.Base
 import qualified SAD.Core.Message as Message
-import SAD.Core.Position
+import SAD.Core.SourcePos
 import SAD.Core.Verify
 import SAD.Data.Instr (Instr)
 import qualified SAD.Data.Instr as Instr

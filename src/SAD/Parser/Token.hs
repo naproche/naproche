@@ -22,7 +22,7 @@ module SAD.Parser.Token
 import Data.Char
 import Data.List
 
-import SAD.Core.Position
+import SAD.Core.SourcePos
 import qualified SAD.Core.Message as Message
 import qualified Isabelle.Markup as Markup
 

@@ -28,7 +28,7 @@ import qualified Data.Map as M
 import Control.Monad.State
 import Control.Monad.Reader
 
-import SAD.Core.Position
+import SAD.Core.SourcePos
 import SAD.Core.Base
 import qualified SAD.Core.Message as Message
 import SAD.Data.Formula

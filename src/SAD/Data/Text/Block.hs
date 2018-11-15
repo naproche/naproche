@@ -16,7 +16,7 @@ module SAD.Data.Text.Block (
   )where
 
 import SAD.Data.Formula
-import SAD.Core.Position
+import SAD.Core.SourcePos
 import SAD.Data.Instr (Instr)
 import qualified SAD.Data.Instr as Instr
 import SAD.Parser.Token

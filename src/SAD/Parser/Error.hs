@@ -20,7 +20,7 @@ module SAD.Parser.Error
     newWfMsg )
   where
     
-import SAD.Core.Position
+import SAD.Core.SourcePos
 
 import Data.List (nub, sort)
 import Debug.Trace

@@ -11,7 +11,7 @@ module SAD.Parser.Primitives where
 import SAD.Parser.Base
 import SAD.Parser.Error
 import SAD.Parser.Token
-import SAD.Core.Position
+import SAD.Core.SourcePos
 
 import Data.List (uncons)
 import Data.Char (isAlpha, toLower)

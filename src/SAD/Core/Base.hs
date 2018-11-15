@@ -61,7 +61,7 @@ import SAD.Data.Rules (Rule)
 import SAD.Data.Evaluation (Evaluation)
 import SAD.Export.Base
 import qualified SAD.Data.Structures.DisTree as DT
-import SAD.Core.Position
+import SAD.Core.SourcePos
 import qualified SAD.Core.Message as Message
 
 

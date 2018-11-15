@@ -16,7 +16,7 @@ import System.Process
 import Control.Exception
 
 import qualified SAD.Core.Message as Message
-import SAD.Core.Position
+import SAD.Core.SourcePos
 import SAD.Data.Instr (Instr)
 import qualified SAD.Data.Instr as Instr
 import SAD.Data.Text.Context (Context)

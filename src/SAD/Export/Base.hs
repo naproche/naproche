@@ -11,7 +11,7 @@ import System.IO
 import System.IO.Error
 import Control.Exception
 import qualified SAD.Core.Message as Message
-import SAD.Core.Position
+import SAD.Core.SourcePos
 import qualified Isabelle.File as File
 
 data Prover = Prover {

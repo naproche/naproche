@@ -13,7 +13,7 @@ import Data.List
 
 import SAD.Data.Formula.Base
 import SAD.Data.Tag
-import SAD.Core.Position
+import SAD.Core.SourcePos
 
 -- Alpha-beta normalization
 

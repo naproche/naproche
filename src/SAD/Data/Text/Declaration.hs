@@ -1,6 +1,6 @@
 module SAD.Data.Text.Declaration (Declaration(..), Serial) where
 
-import SAD.Core.Position
+import SAD.Core.SourcePos
 
 type Serial = Int
 

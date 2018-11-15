@@ -25,7 +25,7 @@ import Control.Monad.State.Class
 
 import SAD.Parser.Token
 import SAD.Parser.Error
-import SAD.Core.Position
+import SAD.Core.SourcePos
 
 import Data.Char
 import Data.List

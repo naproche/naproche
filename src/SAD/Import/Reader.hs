@@ -19,7 +19,7 @@ import SAD.ForTheL.Base
 import SAD.ForTheL.Structure
 import SAD.Parser.Base
 import SAD.ForTheL.Instruction
-import SAD.Core.Position
+import SAD.Core.SourcePos
 import SAD.Parser.Token
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives

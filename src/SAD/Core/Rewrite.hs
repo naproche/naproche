@@ -8,7 +8,7 @@ Term rewriting: extraction of rules and proof of equlities.
 
 module SAD.Core.Rewrite (equalityReasoning) where
 
-import SAD.Core.Position
+import SAD.Core.SourcePos
 import SAD.Data.Formula
 import SAD.Data.Rules (Rule)
 import qualified SAD.Data.Rules as Rule

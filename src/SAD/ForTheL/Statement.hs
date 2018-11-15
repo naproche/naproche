@@ -19,7 +19,7 @@ import SAD.Parser.Primitives
 import SAD.Parser.Token
 
 import SAD.Data.Formula
-import SAD.Core.Position
+import SAD.Core.SourcePos
 
 import qualified Control.Monad.State.Class as MS
 import Data.Function ((&))

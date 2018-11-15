@@ -22,7 +22,7 @@ import SAD.Parser.Primitives
 
 import Debug.Trace
 import SAD.Parser.Token
-import SAD.Core.Position
+import SAD.Core.SourcePos
 
 import SAD.Data.Text.Declaration (Declaration(Decl))
 

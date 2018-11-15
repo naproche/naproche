@@ -22,8 +22,8 @@ import Data.Maybe
 import qualified Data.ByteString as ByteString
 import qualified Data.ByteString.UTF8 as UTF8
 
-import SAD.Core.Position (SourcePos)
-import qualified SAD.Core.Position as Position
+import SAD.Core.SourcePos (SourcePos)
+import qualified SAD.Core.SourcePos as SourcePos
 
 import Isabelle.Library as Isabelle
 import qualified Isabelle.Value as Value
@@ -67,10 +67,10 @@ posProperties id defaultFile pos =
   (if offset <= 0 then [] else [(Markup.offsetN, Value.print_int offset)]) ++
   (if endOffset <= 0 then [] else [(Markup.end_offsetN, Value.print_int endOffset)])
   where
-    file = Position.sourceFile pos
-    line = Position.sourceLine pos
-    offset = Position.sourceOffset pos
-    endOffset = Position.sourceEndOffset pos
+    file = SourcePos.sourceFile pos
+    line = SourcePos.sourceLine pos
+    offset = SourcePos.sourceOffset pos
+    endOffset = SourcePos.sourceEndOffset pos
 
 xmlMessage :: String -> String -> String -> Kind -> SourcePos -> String -> XML.Tree
 xmlMessage id defaultFile origin kind pos msg =
