@@ -56,9 +56,9 @@ bracketExpression = exit </> readfile </> do
   mbInstr <- fmap Left instruction </> fmap Right introduceSynonym
   either (\instr -> fmap ((:) instr) forthel) (\_ -> forthel) mbInstr
   where
-    exit = (iExit <|> eof) >> return []
-    readfile = liftM2 ((:) . TextInstr noRange) iRead (return [])
-    instruction = fmap (TextDrop noRange) iDrop </> fmap (TextInstr noRange) instr
+    exit = (instrExit <|> eof) >> return []
+    readfile = liftM2 ((:) . TextInstr noRange) instrRead (return [])
+    instruction = fmap (TextDrop noRange) instrDrop </> fmap (TextInstr noRange) instr
 
 topsection = signature <|> definition <|> axiom <|> theorem
 
@@ -317,7 +317,7 @@ proofText = assume_affirm_choose_lldefine <|> caseText <|> qed <|> llInstr
       proofText
     qed = wdTokenOf ["qed", "end", "trivial", "obvious"] >> return []
     llInstr =
-      liftM2 (:) (fmap (TextInstr noRange) instr </> fmap (TextDrop noRange) iDrop) proofText
+      liftM2 (:) (fmap (TextInstr noRange) instr </> fmap (TextDrop noRange) instrDrop) proofText
 
 caseText = caseD
   where

@@ -27,22 +27,22 @@ instr = exbrk (readInstr >>= gut)
     gut i = return i
 
 
-iRead :: Parser st Instr
-iRead = exbrk (readInstr >>= gut)
+instrRead :: Parser st Instr
+instrRead = exbrk (readInstr >>= gut)
   where
     gut i@(Instr.String Instr.Read _) = return i
     gut _ = mzero
 
 
-iExit :: Parser st ()
-iExit = exbrk (readInstr >>= gut)
+instrExit :: Parser st ()
+instrExit = exbrk (readInstr >>= gut)
   where
     gut (Instr.Command Instr.EXIT) = return ()
     gut (Instr.Command Instr.QUIT) = return ()
     gut _ = mzero
 
-iDrop :: Parser st Instr.Drop
-iDrop = exbrk (wdToken "/" >> readInstrDrop)
+instrDrop :: Parser st Instr.Drop
+instrDrop = exbrk (wdToken "/" >> readInstrDrop)
 
 
 readInstr :: Parser st Instr
