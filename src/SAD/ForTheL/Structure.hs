@@ -370,5 +370,5 @@ textReports (TextBlock block) =
           [(tokenPos tok, Markup.keyword1)]
         _ -> []
   in reports1 ++ reports2 ++ concatMap textReports (Block.body block)
-textReports (TextInstr _ _) = []
-textReports (TextDrop _ _) = []
+textReports (TextInstr (pos, _) _) = [(pos, Markup.improper)]
+textReports (TextDrop (pos, _) _) = [(pos, Markup.improper)]
