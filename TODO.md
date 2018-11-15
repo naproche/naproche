@@ -16,7 +16,7 @@
 
 * def/ref positions and unique id for declared variables, fact names etc.
 
-* instructions: TextInstr/TextDrop position, completion on errors
+* instructions: completion on errors
 
 * vacous keywords: "let us show that", "proof", "qed" etc.
 
