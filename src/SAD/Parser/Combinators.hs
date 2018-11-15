@@ -114,7 +114,7 @@ enclosed bg en p = do
   pos1 <- wdTokenPos bg
   x <- p
   pos2 <- wdTokenPos en
-  return (range (pos1, advancesPos pos2 en), x)
+  return (makeRange (pos1, advancesPos pos2 en), x)
 
 -- mandatory parentheses, brackets, braces etc.
 exparRange, exbrkRange, exbrcRange :: Parser st a -> Parser st (SourceRange, a)

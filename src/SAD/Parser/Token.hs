@@ -45,7 +45,7 @@ tokenEndPos tok@EOF {} = tokenPos tok
 tokensRange :: [Token] -> SourceRange
 tokensRange toks =
   if null toks then noRange
-  else range (tokenPos $ head toks, tokenEndPos $ last toks)
+  else makeRange (tokenPos $ head toks, tokenEndPos $ last toks)
 
 showToken :: Token -> String
 showToken t@Token{} = tokenText t

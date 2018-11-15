@@ -15,7 +15,7 @@ module SAD.Core.SourcePos
     advancesPos,
     noRangePos,
     rangePos,
-    range,
+    makeRange,
     noRange)
   where
 
@@ -70,8 +70,8 @@ rangePos :: SourceRange -> SourcePos
 rangePos (SourcePos file line column offset _, SourcePos _ _ _ offset' _) =
   SourcePos file line column offset offset'
 
-range :: (SourcePos, SourcePos) -> SourceRange
-range (pos, pos') = (rangePos (pos, pos'), noRangePos pos')
+makeRange :: (SourcePos, SourcePos) -> SourceRange
+makeRange (pos, pos') = (rangePos (pos, pos'), noRangePos pos')
 
 noRange :: SourceRange
 noRange = (noPos, noPos)
