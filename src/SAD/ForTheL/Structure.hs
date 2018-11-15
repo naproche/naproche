@@ -25,6 +25,7 @@ import SAD.Parser.Combinators
 import SAD.Parser.Token
 import SAD.Parser.Primitives
 
+import SAD.Core.SourcePos
 import SAD.Data.Text.Block (Block(Block), Text(..), Section(..))
 import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Formula
@@ -56,8 +57,8 @@ bracketExpression = exit </> readfile </> do
   either (\instr -> fmap ((:) instr) forthel) (\_ -> forthel) mbInstr
   where
     exit = (iExit <|> eof) >> return []
-    readfile = liftM2 ((:) . TextInstr) iRead (return [])
-    instruction = fmap TextDrop iDrop </> fmap TextInstr instr
+    readfile = liftM2 ((:) . TextInstr noRange) iRead (return [])
+    instruction = fmap (TextDrop noRange) iDrop </> fmap (TextInstr noRange) instr
 
 topsection = signature <|> definition <|> axiom <|> theorem
 
@@ -315,7 +316,8 @@ proofText = assume_affirm_choose_lldefine <|> caseText <|> qed <|> llInstr
       narrow llDefn) `updateDeclbefore`
       proofText
     qed = wdTokenOf ["qed", "end", "trivial", "obvious"] >> return []
-    llInstr = liftM2 (:) (fmap TextInstr instr </> fmap TextDrop iDrop) proofText
+    llInstr =
+      liftM2 (:) (fmap (TextInstr noRange) instr </> fmap (TextDrop noRange) iDrop) proofText
 
 caseText = caseD
   where
@@ -365,5 +367,5 @@ textReports (TextBlock block) =
           [(tokenPos tok, Markup.keyword1)]
         _ -> []
   in reports1 ++ reports2 ++ concatMap textReports (Block.body block)
-textReports (TextInstr _) = []
-textReports (TextDrop _) = []
+textReports (TextInstr _ _) = []
+textReports (TextDrop _ _) = []

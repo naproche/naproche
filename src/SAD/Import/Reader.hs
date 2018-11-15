@@ -12,6 +12,8 @@ import System.IO
 import System.IO.Error
 import Control.Exception
 
+import Isabelle.Library (quote)
+
 import SAD.Data.Text.Block
 import SAD.Data.Instr (Instr)
 import qualified SAD.Data.Instr as Instr
@@ -53,20 +55,20 @@ readText pathToLibrary text0 = do
 
 reader :: String -> [String] -> [State FState] -> [Text] -> IO [Text]
 
-reader _ _ _ [TextInstr (Instr.String Instr.Read file)] | isInfixOf ".." file =
-  Message.errorParser (fileOnlyPos file) "File name contains \"..\", not allowed"
+reader _ _ _ [TextInstr (pos, _) (Instr.String Instr.Read file)] | isInfixOf ".." file =
+  Message.errorParser pos ("Illegal \"..\" in file name: " ++ quote file)
 
-reader pathToLibrary doneFiles stateList [TextInstr (Instr.String Instr.Read file)] =
+reader pathToLibrary doneFiles stateList [TextInstr range (Instr.String Instr.Read file)] =
   reader pathToLibrary doneFiles stateList
-    [TextInstr $ Instr.String Instr.File $ pathToLibrary ++ '/' : file]
+    [TextInstr range $ Instr.String Instr.File $ pathToLibrary ++ '/' : file]
 
-reader pathToLibrary doneFiles (pState:states) [TextInstr (Instr.String Instr.File file)]
+reader pathToLibrary doneFiles (pState:states) [TextInstr (pos, _) (Instr.String Instr.File file)]
   | file `elem` doneFiles = do
-      Message.outputMain Message.WARNING (fileOnlyPos file) "File already read, skipping"
+      Message.outputMain Message.WARNING pos ("Skipping already read file: " ++ quote file)
       (newText, newState) <- launchParser forthel pState
       reader pathToLibrary doneFiles (newState:states) newText
 
-reader pathToLibrary doneFiles (pState:states) [TextInstr (Instr.String Instr.File file)] = do
+reader pathToLibrary doneFiles (pState:states) [TextInstr _ (Instr.String Instr.File file)] = do
   input <-
     catch (if null file then getContents else File.read file)
       (Message.errorParser (fileOnlyPos file) . ioeGetErrorString)

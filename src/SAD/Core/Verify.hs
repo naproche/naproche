@@ -47,7 +47,7 @@ import SAD.Core.Rewrite
 
 verify :: String -> IORef RState -> [Text] -> IO (Maybe ([Text], GState))
 verify fileName reasonerState blocks = do
-  let text = TextInstr (Instr.String Instr.File fileName) : blocks
+  let text = TextInstr noRange (Instr.String Instr.File fileName) : blocks
   Message.outputReason Message.WRITELN (fileOnlyPos fileName) "verification started"
 
   let initialVerificationState =
@@ -210,13 +210,13 @@ verificationLoop st@VS {
 
 -- process instructions. we distinguish between those that influence the
 -- verification state and those that influence (at most) the global state
-verificationLoop state@VS {restText = TextInstr instr : blocks}
+verificationLoop state@VS {restText = TextInstr _ instr : blocks}
   | Instr.relevant instr = contextTextInstr state {restText = blocks} instr
   | otherwise = procTextInstr state instr >>
       verificationLoop state {restText = blocks}
 
 {- process a command to drop an instruction, i.e. [/prove], [/ontored], etc.-}
-verificationLoop st@VS {restText = (TextDrop instr : blocks)} =
+verificationLoop st@VS {restText = (TextDrop _ instr : blocks)} =
   procTextDrop st instr >> verificationLoop st {restText = blocks}
 
 verificationLoop _ = return []
