@@ -294,7 +294,7 @@ procTextInstr VS {
     proc (Instr.Command Instr.RULES) =
       reasonLog Message.WRITELN noPos $ "current ruleset: " ++ "\n" ++ Rule.printrules (reverse rules)
     proc (Instr.Command Instr.THESIS) = do
-      let motivation = if motivated then "(mot): " else "(nmt): "
+      let motivation = if motivated then "(motivated): " else "(not motivated): "
       reasonLog Message.WRITELN noPos $ "current thesis " ++ motivation ++ show (Context.formula thesis)
     proc (Instr.Command Instr.CONTEXT) =
       reasonLog Message.WRITELN noPos $ "current context:\n" ++
