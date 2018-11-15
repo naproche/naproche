@@ -48,6 +48,11 @@ forthel = section <|> macroOrPretype <|> bracketExpression
     section = liftM2 ((:) . TextBlock) topsection forthel
     macroOrPretype = (introduceMacro </> pretypeVariable) >> forthel
 
+instruction :: Parser st Text
+instruction =
+  fmap (uncurry TextDrop) instrDrop </>
+  fmap (uncurry TextInstr) instr
+
 {- this part may seem a bit finicky, but must be coded this way to avoid
    memory leaks. The problem is that we cannnot distinguish in an LL1 fashion
    between instructions and synonym introductions.-}
@@ -57,8 +62,7 @@ bracketExpression = exit </> readfile </> do
   either (\instr -> fmap ((:) instr) forthel) (\_ -> forthel) mbInstr
   where
     exit = (instrExit <|> eof) >> return []
-    readfile = liftM2 ((:) . TextInstr noRange) instrRead (return [])
-    instruction = fmap (TextDrop noRange) instrDrop </> fmap (TextInstr noRange) instr
+    readfile = liftM2 ((:) . uncurry TextInstr) instrRead (return [])
 
 topsection = signature <|> definition <|> axiom <|> theorem
 
@@ -316,8 +320,7 @@ proofText = assume_affirm_choose_lldefine <|> caseText <|> qed <|> llInstr
       narrow llDefn) `updateDeclbefore`
       proofText
     qed = wdTokenOf ["qed", "end", "trivial", "obvious"] >> return []
-    llInstr =
-      liftM2 (:) (fmap (TextInstr noRange) instr </> fmap (TextDrop noRange) instrDrop) proofText
+    llInstr = liftM2 (:) instruction proofText
 
 caseText = caseD
   where

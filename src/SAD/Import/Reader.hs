@@ -32,7 +32,7 @@ import qualified Isabelle.File as File
 
 -- Init file parsing
 
-readInit :: String -> IO [Instr]
+readInit :: String -> IO [(SourceRange, Instr)]
 readInit "" = return []
 readInit file = do
   input <- catch (File.read file) $ Message.errorParser (fileOnlyPos file) . ioeGetErrorString
@@ -40,7 +40,7 @@ readInit file = do
       initialParserState = State () tokens noPos
   fst <$> launchParser instructionFile initialParserState
 
-instructionFile :: Parser st [Instr]
+instructionFile :: Parser st [(SourceRange, Instr)]
 instructionFile = after (optLL1 [] $ chainLL1 instr) eof
 
 

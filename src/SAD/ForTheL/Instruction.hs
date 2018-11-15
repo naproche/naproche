@@ -8,6 +8,7 @@ module SAD.ForTheL.Instruction where
 
 import Control.Monad
 
+import SAD.Core.SourcePos
 import SAD.Data.Instr (Instr)
 import qualified SAD.Data.Instr as Instr
 
@@ -18,8 +19,8 @@ import SAD.Parser.Primitives
 import SAD.Parser.Token
 
 
-instr :: Parser st Instr
-instr = exbrk (readInstr >>= gut)
+instr :: Parser st (SourceRange, Instr)
+instr = exbrkRange (readInstr >>= gut)
   where
     gut (Instr.String Instr.Read _) = fail "'read' not allowed here"
     gut (Instr.Command Instr.EXIT) = fail "'exit' not allowed here"
@@ -27,8 +28,8 @@ instr = exbrk (readInstr >>= gut)
     gut i = return i
 
 
-instrRead :: Parser st Instr
-instrRead = exbrk (readInstr >>= gut)
+instrRead :: Parser st (SourceRange, Instr)
+instrRead = exbrkRange (readInstr >>= gut)
   where
     gut i@(Instr.String Instr.Read _) = return i
     gut _ = mzero
@@ -41,8 +42,8 @@ instrExit = exbrk (readInstr >>= gut)
     gut (Instr.Command Instr.QUIT) = return ()
     gut _ = mzero
 
-instrDrop :: Parser st Instr.Drop
-instrDrop = exbrk (wdToken "/" >> readInstrDrop)
+instrDrop :: Parser st (SourceRange, Instr.Drop)
+instrDrop = exbrkRange (wdToken "/" >> readInstrDrop)
 
 
 readInstr :: Parser st Instr

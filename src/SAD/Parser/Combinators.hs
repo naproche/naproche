@@ -6,6 +6,7 @@ Parser combinators.
 
 module SAD.Parser.Combinators where
 
+import SAD.Core.SourcePos
 import SAD.Parser.Base
 import SAD.Parser.Token
 import SAD.Parser.Error
@@ -107,11 +108,25 @@ chainLL1 p = liftM2 (:) p $ optLL1 [] $ chainLL1 p
 after :: Parser st a -> Parser st b -> Parser st a
 after a b = a >>= ((b >>) . return)
 
----- mandatory parentheses, brackets, braces
+---- enclosed body (with range)
+enclosed :: String -> String -> Parser st a -> Parser st (SourceRange, a)
+enclosed bg en p = do
+  pos1 <- wdTokenPos bg
+  x <- p
+  pos2 <- wdTokenPos en
+  return (range (pos1, pos2), x)
+
+-- mandatory parentheses, brackets, braces etc.
+exparRange, exbrkRange, exbrcRange :: Parser st a -> Parser st (SourceRange, a)
+exparRange = enclosed "(" ")"
+exbrkRange = enclosed "[" "]"
+exbrcRange = enclosed "{" "}"
+
 expar, exbrk, exbrc :: Parser st a -> Parser st a
-expar p = wdToken "(" >> after p (wdToken ")")
-exbrk p = wdToken "[" >> after p (wdToken "]")
-exbrc p = wdToken "{" >> after p (wdToken "}")
+expar p = exparRange p >>= return . snd
+exbrk p = exbrkRange p >>= return . snd
+exbrc p = exbrcRange p >>= return . snd
+
 
 ---- optional parentheses
 paren :: Parser st a -> Parser st a

@@ -63,6 +63,12 @@ word = satisfy $ \tk -> all isAlpha tk
 wdToken :: String -> Parser st ()
 wdToken s = void $ satisfy $ \tk -> s == map toLower tk
 
+wdTokenPos :: String -> Parser st SourcePos
+wdTokenPos s = do
+  pos <- getPos
+  () <- wdToken s
+  return pos
+
 ---- check if the current token is equal to some element of ls after
 ---- mapping to lowercase
 {-# INLINE wdTokenOf #-}

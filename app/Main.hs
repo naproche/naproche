@@ -48,16 +48,14 @@ mainBody  = do
   commandLine <- readOpts
   let initFileName = Instr.askString Instr.Init "init.opt" commandLine
   initFile <- readInit initFileName
-  let initFilePos = fileOnlyPos initFileName
-  let initFileRange = (initFilePos, initFilePos)
 
-  let initialOpts = initFile ++ commandLine
-      revInitialOpts = reverse initialOpts
+  let initialOpts = initFile ++ map (\instr -> (noRange, instr)) commandLine
+      revInitialOpts = map snd $ reverse initialOpts
 
   -- parse input text
   text <-
     readText (Instr.askString Instr.Library "." revInitialOpts) $
-    map (TextInstr initFileRange) initialOpts
+    map (uncurry TextInstr) initialOpts
   -- if -T is passed as an option, only print the text and exit
   when (Instr.askBool Instr.OnlyTranslate False revInitialOpts) $ onlyTranslate startTime text
   -- read provers.dat
