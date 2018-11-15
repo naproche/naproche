@@ -97,8 +97,8 @@ declaredNames = map Declaration.name . declaredVariables
 
 instance Show Text where
   showsPrec p (TextBlock block) = showsPrec p block
-  showsPrec 0 (TextInstr instruction) = shows instruction . showChar '\n'
-  showsPrec 0 (TextDrop instruction) = shows instruction . showChar '\n'
+  showsPrec 0 (TextInstr instr) = shows instr . showChar '\n'
+  showsPrec 0 (TextDrop instr) = shows instr . showChar '\n'
   showsPrec _ _ = id
 
 instance Show Block where

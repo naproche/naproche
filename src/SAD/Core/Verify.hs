@@ -210,14 +210,14 @@ verificationLoop st@VS {
 
 -- process instructions. we distinguish between those that influence the
 -- verification state and those that influence (at most) the global state
-verificationLoop state@VS {restText = TextInstr instruction : blocks}
-  | Instr.relevant instruction = contextTextInstr state {restText = blocks} instruction
-  | otherwise = procTextInstr state instruction >>
+verificationLoop state@VS {restText = TextInstr instr : blocks}
+  | Instr.relevant instr = contextTextInstr state {restText = blocks} instr
+  | otherwise = procTextInstr state instr >>
       verificationLoop state {restText = blocks}
 
 {- process a command to drop an instruction, i.e. [/prove], [/ontored], etc.-}
-verificationLoop st@VS {restText = (TextDrop instruction : blocks)} =
-  procTextDrop st instruction >> verificationLoop st {restText = blocks}
+verificationLoop st@VS {restText = (TextDrop instr : blocks)} =
+  procTextDrop st instr >> verificationLoop st {restText = blocks}
 
 verificationLoop _ = return []
 
