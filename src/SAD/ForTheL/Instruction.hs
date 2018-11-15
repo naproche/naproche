@@ -4,6 +4,8 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018), Makarius 
 Syntax of ForThel Instructions.
 -}
 
+{-# LANGUAGE LambdaCase #-}
+
 module SAD.ForTheL.Instruction where
 
 import Control.Monad
@@ -20,27 +22,27 @@ import SAD.Parser.Token
 
 
 instr :: Parser st (SourceRange, Instr)
-instr = exbrkRange (readInstr >>= gut)
-  where
-    gut (Instr.String Instr.Read _) = fail "'read' not allowed here"
-    gut (Instr.Command Instr.EXIT) = fail "'exit' not allowed here"
-    gut (Instr.Command Instr.QUIT) = fail "'quit' not allowed here"
-    gut i = return i
+instr =
+  exbrkRange $ readInstr >>=
+    (\case
+      Instr.String Instr.Read _ -> fail "'read' not allowed here"
+      Instr.Command Instr.EXIT -> fail "'exit' not allowed here"
+      Instr.Command Instr.QUIT -> fail "'quit' not allowed here"
+      i -> return i)
 
 
 instrRead :: Parser st (SourceRange, Instr)
-instrRead = exbrkRange (readInstr >>= gut)
-  where
-    gut i@(Instr.String Instr.Read _) = return i
-    gut _ = mzero
-
+instrRead =
+  exbrkRange $ readInstr >>=
+    (\case { i@(Instr.String Instr.Read _) -> return i; _ -> mzero })
 
 instrExit :: Parser st ()
-instrExit = exbrk (readInstr >>= gut)
-  where
-    gut (Instr.Command Instr.EXIT) = return ()
-    gut (Instr.Command Instr.QUIT) = return ()
-    gut _ = mzero
+instrExit =
+  exbrk $ readInstr >>=
+    (\case
+      Instr.Command Instr.EXIT -> return ()
+      Instr.Command Instr.QUIT -> return ()
+      _ -> mzero)
 
 instrDrop :: Parser st (SourceRange, Instr.Drop)
 instrDrop = exbrkRange (wdToken "/" >> readInstrDrop)
