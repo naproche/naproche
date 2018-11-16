@@ -24,6 +24,8 @@ import Debug.Trace
 import Control.Monad.State
 import Control.Monad.Trans.Reader
 
+import qualified SAD.Data.Text.Declaration as Decl
+
 
 {- generate proof task associated with a block -}
 
@@ -37,12 +39,13 @@ generateProofTask _ _ f = f
 {- Check whether a formula is a set or function defintion -}
 funDcl, setDcl :: Formula -> Bool
 funDcl (And (And f _) _) = trId f == functionId
-funDcl _                 = False
-setDcl (And f _)         = trId f == setId
+funDcl _ = False
+setDcl (And f _) = trId f == setId
 setDcl _ = error "SAD.Core.ProofTask.setDcl: misformed definition"
 
 setTask :: Formula -> Formula
-setTask (And _ (All x (Iff _ (Tag Replacement f)))) = replacement x f
+setTask (And _ (All x (Iff _ (Tag Replacement f)))) =
+  replacement (Decl.name x) f
 setTask (And _ (All _ (Iff _ f))) = separation f
 setTask _ = error "SAD.Core.ProofTask.setTask: misformed definition"
 
@@ -56,7 +59,7 @@ separation _ = error "SAD.Core.ProofTask.separation: misformed argument"
 replacement :: String -> Formula -> Formula
 replacement x f = fromJust $ dive [] f `mplus` _default
   where
-    dive vs (Exi x f) = dive (x:vs) f
+    dive vs (Exi x f) = dive (Decl.name x:vs) f
     dive vs (And f g) | not $ null vs =
       let vsAlt  = map ((:) 'c') vs
           startF =
@@ -91,12 +94,12 @@ choices = Tag ChoiceTask . dive
   where
     dive (Tag Evaluation _) = Top
     dive (Tag _ f) = dive f
-    dive (Exi x (And (Tag Defined f) g)) =
+    dive (Exi dcl (And (Tag Defined f) g)) = let x = Decl.name dcl in 
       (generateProofTask LowDefinition [] $ dec $ inst x $ f) `blAnd`
       (dec $ inst x $ f `blImp` dive g)
-    dive (All x f) =  blAll x $ dive f
+    dive (All x f) = dBlAll x $ dive f
     dive (Imp f g) = f `blImp` dive g
-    dive (Exi x f) = blExi x $ dive $ inst x f
+    dive (Exi x f) = dBlExi x $ dive $ inst (Decl.name x) f
     dive (And f g) = dive f `blAnd` dive g
     dive f = f
 
@@ -130,7 +133,8 @@ describe (And f g) = describe f `Or` describe g
 describe (Tag Condition (And f g)) = And f $ deExi g
 describe f = deExi f
 
-deExi (Exi x (And f g)) = dec $ And (inst x f) (deExi $ inst x g)
+deExi (Exi dcl (And f g)) = let x = Decl.name dcl in 
+  dec $ And (inst x f) (deExi $ inst x g)
 deExi f = f
 
 {- like 'describe' above, but choices are assumed instead of stated -}
@@ -139,7 +143,8 @@ describe_exi (And f g) = describe_exi f `Or` describe_exi g
 describe_exi (Tag Condition (And f g)) = And f $ impExi g
 describe_exi f = impExi f
 
-impExi (Exi x (And f g)) = dec $ Imp (inst x f) (impExi $ inst x g)
+impExi (Exi dcl (And f g)) = let x = Decl.name dcl in
+  dec $ Imp (inst x f) (impExi $ inst x g)
 impExi f = f
 
 {- a certain normalization of the term marked with Evaluation -}

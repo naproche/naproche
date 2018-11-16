@@ -25,6 +25,7 @@ import SAD.Parser.Token
 import SAD.Core.SourcePos
 
 import SAD.Data.Text.Declaration (Declaration(Decl))
+import qualified SAD.Data.Text.Declaration as Decl
 
 
 type FTL = Parser FState
@@ -105,6 +106,9 @@ makeDeclaration (nm, pos) = do
   serial <- MS.gets serialCounter
   MS.modify (\st -> st {serialCounter = serial + 1})
   return $ Decl nm pos serial
+
+declared :: FTL MNotion -> FTL (Formula -> Formula, Formula, [Declaration])
+declared p = do (q, f, v) <- p; nv <- mapM makeDeclaration v; return (q, f, nv)
 
 -- Predicates: verbs and adjectives
 
@@ -309,6 +313,7 @@ primTvr = getExpr tvrExpr tvr
 -- free
 
 freeVars f = do dvs <- getDecl; return $ free dvs f
+freeVarPositions f = do dvs <- getDecl; return $ freePositions dvs f
 
 --- decl
 
@@ -354,8 +359,8 @@ overfree vs f
     ovl = unwords $ map showVar $ over vs f
     inf = "\n in translation: " ++ show f
 
-    over vs (All v f) = bvrs vs v f
-    over vs (Exi v f) = bvrs vs v f
+    over vs (All v f) = bvrs vs (Decl.name v) f
+    over vs (Exi v f) = bvrs vs (Decl.name v) f
     over vs f = foldF (over vs) f
 
     bvrs vs v f

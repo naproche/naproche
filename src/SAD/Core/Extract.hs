@@ -25,6 +25,7 @@ import SAD.Core.Base
 import SAD.Core.Reduction
 import SAD.Prove.Normalize
 import qualified SAD.Data.Structures.DisTree as DT
+import qualified SAD.Data.Text.Declaration as Decl
 
 import qualified Data.IntMap as IM
 import Data.List
@@ -172,7 +173,8 @@ extractFunctionEval c gs f = dive c gs f
     dive c gs (Exi x (And (Tag Defined f)
       (Tag Evaluation Trm {trName = "=", trArgs = [tr, Ind n]})))
         | n == 0 = extractEv c gs $ dec $ instWith tr f
-    dive c gs (Exi x (And f g)) = dive (c . zExi x . And f) gs $ inst x g
+    dive c gs (Exi x (And f g)) =
+      dive (c . dExi x . And f) gs $ inst (Decl.name x) g
     dive _ _ _ = mzero
 
     deConj (And f g) = deConj f ++ deConj g; deConj f = [f]

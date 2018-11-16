@@ -13,17 +13,20 @@ import qualified Data.Monoid as Monoid
 import SAD.Data.Tag (Tag)
 import SAD.Core.SourcePos (SourcePos, noPos)
 
+import SAD.Data.Text.Declaration (Declaration)
+import qualified SAD.Data.Text.Declaration as Decl
+
 
 data Formula =
-  All String  Formula   | Exi String  Formula     |
-  Iff Formula Formula   | Imp Formula Formula     |
-  Or  Formula Formula   | And Formula Formula     |
-  Tag Tag Formula       | Not Formula             |
-  Top                   | Bot                     |
+  All Declaration Formula | Exi Declaration Formula |
+  Iff Formula Formula     | Imp Formula Formula     |
+  Or  Formula Formula     | And Formula Formula     |
+  Tag Tag Formula         | Not Formula             |
+  Top                     | Bot                     |
   Trm { trName :: String   , trArgs :: [Formula],
-        trInfo :: [Formula], trId   :: Int}       |
+        trInfo :: [Formula], trId   :: Int}         |
   Var { trName :: String   , trInfo :: [Formula], trPosition :: SourcePos } |
-  Ind { trIndx :: Int } | ThisT
+  Ind { trIndx :: Int }   | ThisT
 
 
 -- Traversing functions
@@ -184,7 +187,7 @@ occurs t f = twins t f || anyF (occurs t) f
 {- bind a variable with name v in a formula.
 This also affects any info stored. -}
 bind :: String -> Formula -> Formula
-bind v  = dive 0
+bind v = dive 0
   where
     dive n (All u g) = All u $ dive (succ n) g
     dive n (Exi u g) = Exi u $ dive (succ n) g

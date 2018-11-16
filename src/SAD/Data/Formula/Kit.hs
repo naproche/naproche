@@ -14,6 +14,8 @@ import Data.List
 import SAD.Data.Formula.Base
 import SAD.Data.Tag
 import SAD.Core.SourcePos
+import SAD.Data.Text.Declaration (Declaration)
+import qualified SAD.Data.Text.Declaration as Decl
 
 -- Alpha-beta normalization
 
@@ -115,6 +117,10 @@ mbpExi, mbpAll :: (String, SourcePos) -> Formula -> Formula
 mbpExi v f = fromMaybe (pExi v f) (mbBind (fst v) True f)
 mbpAll v f = fromMaybe (pAll v f) (mbBind (fst v) False f)
 
+mbdExi, mbdAll :: Declaration -> Formula -> Formula
+mbdExi v f = fromMaybe (dExi v f) (mbBind (Decl.name v) True f)
+mbdAll v f = fromMaybe (dAll v f) (mbBind (Decl.name v) False f)
+
 
 blAnd, blImp :: Formula -> Formula -> Formula
 blAnd Top f = f; blAnd (Tag _ Top) f = f
@@ -127,10 +133,24 @@ blImp f g = Imp f g
 
 blAll, blExi :: String -> Formula -> Formula
 blAll _ Top = Top
-blAll v f = All v f
+blAll v f = All (Decl.nonText v) f
 
 blExi _ Top = Top
-blExi v f = Exi v f
+blExi v f = Exi (Decl.nonText v) f
+
+pBlAll, pBlExi :: (String, SourcePos) -> Formula -> Formula
+pBlAll _ Top = Top
+pBlAll v f = All (Decl.nonParser v) f
+
+pBlExi _ Top = Top
+pBlExi v f = Exi (Decl.nonParser v) f
+
+dBlAll ,dBlExi :: Declaration -> Formula -> Formula
+dBlAll _ Top = Top
+dBlAll v f = All v f
+
+dBlExi _ Top = Top
+dBlExi v f = Exi v f
 
 blNot :: Formula -> Formula
 blNot (Not f) = f
@@ -142,8 +162,12 @@ zAll v = blAll v . bind v
 zExi v = blExi v . bind v
 
 pAll, pExi :: (String, SourcePos) -> Formula -> Formula
-pAll (v, _) = blAll v . bind v
-pExi (v, _) = blExi v . bind v
+pAll nm@(v, _) = pBlAll nm . bind v
+pExi nm@(v, _) = pBlExi nm . bind v
+
+dAll, dExi :: Declaration -> Formula -> Formula
+dAll dcl = dBlAll dcl . bind (Decl.name dcl)
+dExi dcl = dBlExi dcl . bind (Decl.name dcl)
 
 zIff, zOr :: Formula -> Formula -> Formula
 zIff f g = And (Imp f g) (Imp g f)

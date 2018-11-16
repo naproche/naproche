@@ -21,6 +21,7 @@ import SAD.Data.Formula
 import Data.List
 import Control.Monad.State
 import Debug.Trace
+import qualified SAD.Data.Text.Declaration as Decl
 
 
 
@@ -58,7 +59,7 @@ pushdown (Not Top)       = Bot
 pushdown (All _ (Imp (Tag HeadTerm Trm {trName = "=", trArgs = [_,t]} ) f)) =
   pushdown $ dec $ subst t "" $ inst "" f
 pushdown (All _ (Iff (Tag HeadTerm eq@Trm {trName = "=", trArgs = [_,t]}) f)) =
-  And (All "" (Or eq (Not f))) $ dec $ subst t "" $ inst "" f
+  And (All (Decl.nonText "") (Or eq (Not f))) $ dec $ subst t "" $ inst "" f
 pushdown f = f
 
 

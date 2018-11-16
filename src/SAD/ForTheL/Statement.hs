@@ -20,12 +20,14 @@ import SAD.Parser.Token
 
 import SAD.Data.Formula
 import SAD.Core.SourcePos
+import qualified SAD.Data.Text.Declaration as Decl
 
 import qualified Control.Monad.State.Class as MS
 import Data.Function ((&))
 
 
 import Control.Monad
+
 
 statement = headed <|> chained
 
@@ -78,9 +80,9 @@ thesis = art >> (thes <|> contrary <|> contradiction)
 thereIs = there >> (noNotion -|- notions)
   where
     noNotion = do
-      wdToken "no"; (q, f, vs) <- notion;
-      return $ Not $ foldr mbpExi (q f) vs
-    notions = fmap multExi $ art >> notion `sepBy` comma
+      wdToken "no"; (q, f, vs) <- declared notion;
+      return $ Not $ foldr mbdExi (q f) vs
+    notions = fmap multExi $ art >> declared notion `sepBy` comma
 
 
 
@@ -125,16 +127,17 @@ isAPredicat = label "isA predicate" $ notNtn <|> ntn
 hasPredicate = label "has predicate" $ noPossessive <|> possessive
   where
     possessive = art >> common <|> unary
-    unary = fmap (Tag Dig . multExi) $ possess `sepBy` (comma >> art)
-    common = wdToken "common" >> fmap multExi (fmap digadd possess `sepBy` comma)
+    unary = fmap (Tag Dig . multExi) $ declared possess `sepBy` (comma >> art)
+    common = wdToken "common" >> 
+      fmap multExi (fmap digadd (declared possess) `sepBy` comma)
 
     noPossessive = nUnary -|- nCommon
     nUnary = do
-      wdToken "no"; (q, f, v) <- possess;
-      return $ q . Tag Dig . Not $ foldr mbpExi f v
+      wdToken "no"; (q, f, v) <- declared possess;
+      return $ q . Tag Dig . Not $ foldr mbdExi f v
     nCommon = do
-      wdToken "no"; wdToken "common"; (q, f, v) <- possess
-      return $ q . Not $ foldr mbpExi (Tag Dig f) v
+      wdToken "no"; wdToken "common"; (q, f, v) <- declared possess
+      return $ q . Not $ foldr mbdExi (Tag Dig f) v
       -- take a closer look at this later.. why is (Tag Dig) *inside* important?
 
 
@@ -225,15 +228,18 @@ quNotion = label "quantified notion" $
   where
     fa = do
       wdTokenOf ["every", "each", "all", "any"]; (q, f, v) <- notion
-      return (q . flip (foldr pAll) v . blImp f, map pVar v)
+      vDecl <- mapM makeDeclaration v
+      return (q . flip (foldr dAll) vDecl . blImp f, map pVar v)
 
     ex = do
       wdToken "some"; (q, f, v) <- notion
-      return (q . flip (foldr pExi) v . blAnd f, map pVar v)
+      vDecl <- mapM makeDeclaration v
+      return (q . flip (foldr dExi) vDecl . blAnd f, map pVar v)
 
     no = do
       wdToken "no"; (q, f, v) <- notion
-      return (q . flip (foldr pAll) v . blImp f . Not, map pVar v)
+      vDecl<- mapM makeDeclaration v
+      return (q . flip (foldr dAll) vDecl . blImp f . Not, map pVar v)
 
 
 definiteTerm = symbolicTerm -|- definiteNoun
@@ -257,8 +263,8 @@ sForm  = sIff
     sDis = sCon >>= binF Or  (symbol "\\/" >> sDis)
     sCon = sUna >>= binF And (symbol "/\\" >> sCon)
     sUna = sAll -|- sExi -|- sNot -|- sDot -|- sAtm
-    sAll = liftM2 (quaF pAll Imp) (wdToken "forall" >> symNotion) sUna
-    sExi = liftM2 (quaF pExi And) (wdToken "exists" >> symNotion) sUna
+    sAll = liftM2 (quaF dAll Imp) (wdToken "forall" >> declared symNotion) sUna
+    sExi = liftM2 (quaF dExi And) (wdToken "exists" >> declared symNotion) sUna
     sNot = fmap Not $ wdToken "not" >> sUna
     sDot = wdToken ":" >> sForm
     sAtm = sAtom
@@ -309,18 +315,20 @@ classEq = twoClassTerms </> oneClassTerm
     twoClassTerms = do
       cnd1 <- fmap stripSet symbSetNotation; smTokenOf "="
       cnd2 <- fmap stripSet symbSetNotation; h <- hidden
-      return $ pAll h $ Iff (cnd1 $ pVar h) (cnd2 $ pVar h)
+      hDecl <- makeDeclaration h
+      return $ dAll hDecl $ Iff (cnd1 $ pVar h) (cnd2 $ pVar h)
     stripSet = (.) strip . fst
 
     oneClassTerm = left </> right
     left = do
       cnd <- fmap stripSet symbSetNotation; smTokenOf "="
-      t <- sTerm; h <- hidden; let hv = pVar h
-      return $ All (fst h) $ Iff (cnd hv) (zElem hv t)
+      t <- sTerm; h <- hidden; hDecl <- makeDeclaration h; let hv = pVar h
+      return $ All hDecl $ Iff (cnd hv) (zElem hv t)
     right = do
-      t <- sTerm; smTokenOf "="; h <- hidden; let hv = pVar h
+      t <- sTerm; smTokenOf "="; h <- hidden; hDecl <- makeDeclaration h
+      let hv = pVar h
       cnd <- fmap stripSet symbSetNotation
-      return $ pAll h $ Iff (zElem hv t) (cnd hv)
+      return $ dAll hDecl $ Iff (zElem hv t) (cnd hv)
 
 
 
@@ -345,26 +353,30 @@ set = symbSet <|> setOf
   where
     setOf = do
       wdTokenOf ["set", "sets"]; nm <- var -|- hidden; wdToken "of";
-      (q, f, u) <- notion >>= single; vnm <- hidden;
-      return (id, setForm vnm $ subst (pVar vnm) (fst u) $ q f, [nm])
+      (q, f, u) <- notion >>= single; vnm <- hidden
+      vnmDecl <- makeDeclaration vnm;
+      return (id, setForm vnmDecl $ subst (pVar vnm) (fst u) $ q f, [nm])
     symbSet = do
       (cnd, nm) <- symbSetNotation; h <- hidden
-      return (id, setForm (nm, noPos) $ cnd $ zVar nm, [h])
-    setForm nm = And (zSet zHole) . pAll nm . Iff (zElem (pVar nm) zHole)
+      nmDecl <- makeDeclaration nm
+      return (id, setForm nmDecl $ cnd $ pVar nm, [h])
+    setForm dcl = let nm = (Decl.name dcl, Decl.position dcl) in
+      And (zSet zHole) . dAll dcl . Iff (zElem (pVar nm) zHole)
 
 
 symbSetNotation = cndSet </> finSet
   where
     finSet = exbrc $ do
-      ts <- sTerm `sepByLL1` smTokenOf ","; h <- fst <$> hidden
+      ts <- sTerm `sepByLL1` smTokenOf ","; h <- hidden
       return (\tr -> foldr1 Or $ map (zEqu tr) ts, h)
     cndSet = exbrc $ do
       (tag, c, t) <- sepFrom; st <- smTokenOf "|" >> statement;
-      vs <- freeVars t; nm <- if isVar t then return $ trName t else fst <$> hidden
-      return (\tr -> tag $ c tr `blAnd` mbEqu vs tr t st, nm)
+      vs <- freeVarPositions t; vsDecl <- mapM makeDeclaration vs;
+      nm <- if isVar t then return $ (trName t, trPosition t) else hidden
+      return (\tr -> tag $ c tr `blAnd` mbEqu vsDecl tr t st, nm)
 
     mbEqu _ tr Var{trName = v} = subst tr v
-    mbEqu vs tr t = \st -> foldr mbExi (st `And` zEqu tr t) vs
+    mbEqu vs tr t = \st -> foldr mbdExi (st `And` zEqu tr t) vs
 
 
 sepFrom = ntnSep -|- setSep -|- noSep
@@ -387,9 +399,10 @@ elementCnd = setTerm </> fmap fst symbSetNotation
 functionNotion = liftM2 (&) sVar $ wordFun <|> (smTokenOf "=" >> lambda)
   where
   wordFun = do
-    smTokenOf "["; t <- pair; smTokenOf "]"; smTokenOf "="; vs <- freeVars t
-    def <- addDecl vs lambdaBody; (_, _, dom) <- wdToken "for" >> lambdaIn;
-    let body f = foldr zAll (Imp (t `zElem` zDom f) $ def $ zApp f t) vs
+    smTokenOf "["; t <- pair; smTokenOf "]"; smTokenOf "="; vs <- freeVarPositions t
+    def <- addDecl (map fst vs) lambdaBody; (_, _, dom) <- wdToken "for" >> lambdaIn;
+    vsDecl <- mapM makeDeclaration vs
+    let body f = foldr dAll (Imp (t `zElem` zDom f) $ def $ zApp f t) vsDecl
     return $ \f -> zFun f `And` Tag Domain (dom f) `And` body f
 
 lambdaBody = paren $ cases <|> chooseInTerm
@@ -408,17 +421,19 @@ chooseInTerm = do
   where
     ld_choice = chc <|> def
     chc = do
-      wdToken "choose"; (q, f, vs) <- art >> notion
-      return $ flip (foldr pExi) vs . And (q f)
+      wdToken "choose"; (q, f, vs) <- declared $ art >> notion
+      return $ flip (foldr dExi) vs . And (q f)
     def = do
-      wdToken "define"; x <- var; smTokenOf "="
+      wdToken "define"; x <- var; xDecl <- makeDeclaration x; smTokenOf "="
       ap <- ld_set <|> lambda
-      return $ pExi x . And (Tag Defined $ ap $ pVar x)
+      return $ dExi xDecl . And (Tag Defined $ ap $ pVar x)
 
     term = fmap ((.) (Tag Evaluation) . flip zEqu) sTerm
     defTerm = do
       ap <- ld_set <|> lambda; h <- hidden; let hv = pVar h
-      return $ \fx -> pExi h $ And (Tag Defined $ ap hv) (Tag Evaluation $ zEqu fx hv)
+      hDecl <- makeDeclaration h;
+      return $ \fx -> dExi hDecl $
+        And (Tag Defined $ ap hv) (Tag Evaluation $ zEqu fx hv)
 
     ld_set = do (_, t, _) <- set; return $ flip substHole t
 
@@ -435,20 +450,21 @@ pair = sVar </> pr
     pairPattern = [Sm "(", Vr, Sm ",", Vr, Sm ")"]
 
 lambdaIn = do
-  t <- pair; vs <- freeVars t; wdToken "in"; dom <- ld_dom;
-  let df_head f = foldr ((.) . zAll) (Imp (t `zElem` zDom f)) vs
-  return (t, df_head, \f -> dom f t vs)
+  t <- pair; vs <- freeVarPositions t; vsDecl <- mapM makeDeclaration vs
+  wdToken "in"; dom <- ld_dom;
+  let df_head f = foldr ((.) . dAll) (Imp (t `zElem` zDom f)) vsDecl
+  return (t, df_head, \f -> dom f t vsDecl)
   where
     ld_dom = trm <|> setTrm
     trm = do
       t <- sTerm; return $ \f _ _ -> zDom f `zEqu` t
     setTrm = do
       (ap, _) <- symbSetNotation
-      return $ \f t vs -> foldr zAll (Iff (t `zElem` zDom f) (ap t)) vs
+      return $ \f t -> foldr dAll (Iff (t `zElem` zDom f) (ap t))
 
 ---- chain tools
 
-multExi ((q, f, vs):ns) = foldr mbpExi (q f `blAnd` multExi ns) vs
+multExi ((q, f, vs):ns) = foldr mbdExi (q f `blAnd` multExi ns) vs
 multExi [] = Top
 
 conjChain = fmap (foldl1 And) . flip sepBy (wdToken "and")

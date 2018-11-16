@@ -4,7 +4,7 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
 Syntax of ForTheL sections.
 -}
 
-
+{-# LANGUAGE NamedFieldPuns #-}
 module SAD.ForTheL.Structure (forthel, textReports) where
 
 
@@ -32,7 +32,8 @@ import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Formula
 import qualified SAD.Data.Tag as Tag
 
-import qualified SAD.Data.Text.Declaration as Declaration
+import SAD.Data.Text.Declaration(Declaration(Decl))
+import qualified SAD.Data.Text.Declaration as Decl
 
 
 
@@ -153,7 +154,7 @@ pret dvs tvs bl = do
   let typing =
         if null untyped
         then Top
-        else foldl1 And $ map (`typeWith` tvs) $ map Declaration.name untyped
+        else foldl1 And $ map (`typeWith` tvs) $ map Decl.name untyped
   return $ assumeBlock {Block.formula = typing, Block.declaredVariables = untyped}
   where
     blockVars   = Block.declaredNames bl
@@ -257,14 +258,14 @@ method = optLL1 Raw $ wdToken "by" >> (contradict <|> cases <|> induction)
 
 indThesis fr pre post = do
   it <- indScheme pre post >>= indTerm fr; dvs <- getDecl
-  indFormula (free dvs it) it fr
+  indFormula (freePositions dvs it) it fr
   where
     indScheme (InT _) (InT _) = failWF "conflicting induction schemes"
     indScheme m@(InT _) _ = return m; indScheme _ m@(InT _) = return m
     indScheme InS _ = return InS; indScheme _ m = return m
 
     indTerm _ (InT t) = return t
-    indTerm (All v _) InS = return $ zVar v
+    indTerm (All v _) InS = return $ pVar (Decl.name v, Decl.position v)
     indTerm _ InS = failWF "invalid induction thesis"
     indTerm _ _ = return Top
 
@@ -272,11 +273,13 @@ indThesis fr pre post = do
     indFormula vs it fr = fmap (insertIndTerm it) $ indStatem vs fr
 
     indStatem vs (Imp g f) = fmap (Imp  g .) $ indStatem vs f
-    indStatem vs (All v f) = fmap (zAll v .) $ indStatem (delete v vs) f
+    indStatem vs (All v f) = fmap (dAll v .) $ indStatem (deleteDecl v vs) f
     indStatem [] f = return (`Imp` f)
     indStatem _ _ = failWF $ "invalid induction thesis " ++ show fr
 
     insertIndTerm it cn = cn $ Tag InductionHypothesis $ substHole it $ cn $ zLess it zHole
+
+    deleteDecl Decl{Decl.name, Decl.position} = deleteBy (\a b -> fst a == fst b) (name, position)
 
 
 
