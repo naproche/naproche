@@ -28,6 +28,7 @@ import qualified SAD.Data.Instr as Instr
 import SAD.Data.Text.Block
 import SAD.Export.Base
 import SAD.Import.Reader
+import Isabelle.Library (quote)
 import qualified Isabelle.File as File
 
 main :: IO ()
@@ -221,8 +222,8 @@ options = [
 
 bool "yes" = True ; bool "on"  = True
 bool "no"  = False; bool "off" = False
-bool s     = error $ "invalid boolean argument: " ++ s
+bool s     = errorWithoutStackTrace $ "Invalid boolean argument: " ++ quote s
 
 int s = case reads s of
   ((n,[]):_) | n >= 0 -> n
-  _ -> error $ "invalid integer argument: " ++ s
+  _ -> errorWithoutStackTrace $ "Invalid integer argument: " ++ quote s
