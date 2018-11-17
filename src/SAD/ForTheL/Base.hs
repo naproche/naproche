@@ -105,7 +105,7 @@ makeDecl :: VarName -> FTL Decl
 makeDecl (nm, pos) = do
   serial <- MS.gets serialCounter
   MS.modify (\st -> st {serialCounter = serial + 1})
-  return $ Decl nm pos serial
+  return $ Decl nm pos (serial + 1)
 
 declared :: FTL MNotion -> FTL (Formula -> Formula, Formula, [Decl])
 declared p = do (q, f, v) <- p; nv <- mapM makeDecl v; return (q, f, nv)
