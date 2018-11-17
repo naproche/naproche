@@ -85,7 +85,7 @@ reader pathToLibrary doneFiles stateList (t:restText) =
   (t:) <$> reader pathToLibrary doneFiles stateList restText
 
 reader pathToLibrary doneFiles (pState:oldState:rest) [] = do
-  Message.outputParser Message.WRITELN (fileOnlyPos $ head doneFiles) "parsing successful"
+  Message.outputParser Message.TRACING (fileOnlyPos $ head doneFiles) "parsing successful"
   let resetState = oldState {
         stUser = (stUser pState) {tvrExpr = tvrExpr $ stUser oldState}}
   (newText, newState) <- launchParser forthel resetState

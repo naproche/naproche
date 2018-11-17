@@ -48,7 +48,7 @@ import SAD.Core.Rewrite
 verify :: String -> IORef RState -> [Text] -> IO (Maybe ([Text], GState))
 verify fileName reasonerState blocks = do
   let text = TextInstr Instr.noPos (Instr.String Instr.File fileName) : blocks
-  Message.outputReason Message.WRITELN (fileOnlyPos fileName) "verification started"
+  Message.outputReason Message.TRACING (fileOnlyPos fileName) "verification started"
 
   let initialVerificationState =
         VS False [] DT.empty (Context Bot [] [] Bot) [] [] text
@@ -59,7 +59,7 @@ verify fileName reasonerState blocks = do
     readIORef reasonerState
 
   let success = isJust result && ignoredFails == 0
-  Message.outputReason Message.WRITELN (fileOnlyPos fileName) $
+  Message.outputReason Message.TRACING (fileOnlyPos fileName) $
     "verification " ++ (if success then "successful" else "failed")
   return result
 

@@ -80,7 +80,7 @@ mainBody  = do
       accumulate  = accumulateIntCounter counterList 0
 
   -- print statistics
-  Message.outputMain Message.WRITELN noPos $
+  Message.outputMain Message.TRACING noPos $
     "sections "       ++ show (accumulate Sections)
     ++ " - goals "    ++ show (accumulate Goals)
     ++ (let ignoredFails = accumulate FailedGoals
@@ -97,7 +97,7 @@ mainBody  = do
 
   let trivialChecks = accumulate TrivialChecks
 
-  Message.outputMain Message.WRITELN noPos $
+  Message.outputMain Message.TRACING noPos $
     "symbols "        ++ show (accumulate Symbols)
     ++ " - checks "   ++ show
       (accumulateIntCounter counterList trivialChecks HardChecks)
@@ -109,13 +109,13 @@ mainBody  = do
       proverTime     = accumulateTime proveStart ProofTime
       simplifyTime   = accumulateTime proverTime SimplifyTime
 
-  Message.outputMain Message.WRITELN noPos $
+  Message.outputMain Message.TRACING noPos $
     "parser "           ++ showTimeDiff (diffUTCTime proveStart startTime)
     ++ " - reasoner "   ++ showTimeDiff (diffUTCTime finishTime simplifyTime)
     ++ " - simplifier " ++ showTimeDiff (diffUTCTime simplifyTime proverTime)
     ++ " - prover "     ++ showTimeDiff (diffUTCTime proverTime proveStart)
     ++ "/" ++ showTimeDiff (maximalTimeCounter counterList SuccessTime)
-  Message.outputMain Message.WRITELN noPos $
+  Message.outputMain Message.TRACING noPos $
     "total "
     ++ showTimeDiff (diffUTCTime finishTime startTime)
 
@@ -123,7 +123,7 @@ mainBody  = do
 onlyTranslate :: UTCTime -> [Text] -> IO ()
 onlyTranslate startTime text = do
   mapM_ printTextBlock text; finishTime <- getCurrentTime
-  Message.outputMain Message.WRITELN noPos $ "total " ++ timeDifference finishTime
+  Message.outputMain Message.TRACING noPos $ "total " ++ timeDifference finishTime
   exitSuccess
   where
     timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)
