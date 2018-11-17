@@ -24,8 +24,8 @@ import Debug.Trace
 import SAD.Parser.Token
 import SAD.Core.SourcePos
 
-import SAD.Data.Text.Declaration (Declaration(Decl))
-import qualified SAD.Data.Text.Declaration as Decl
+import SAD.Data.Text.Decl (Decl(Decl))
+import qualified SAD.Data.Text.Decl as Decl
 
 
 type FTL = Parser FState
@@ -101,13 +101,13 @@ addDecl vs p = do
 getPretyped :: FTL [TVar]
 getPretyped = MS.gets tvrExpr
 
-makeDeclaration :: VarName -> FTL Declaration
+makeDeclaration :: VarName -> FTL Decl
 makeDeclaration (nm, pos) = do
   serial <- MS.gets serialCounter
   MS.modify (\st -> st {serialCounter = serial + 1})
   return $ Decl nm pos serial
 
-declared :: FTL MNotion -> FTL (Formula -> Formula, Formula, [Declaration])
+declared :: FTL MNotion -> FTL (Formula -> Formula, Formula, [Decl])
 declared p = do (q, f, v) <- p; nv <- mapM makeDeclaration v; return (q, f, nv)
 
 -- Predicates: verbs and adjectives
@@ -342,9 +342,9 @@ decl vs = dive
 declNames :: [String] -> Formula -> [String]
 declNames vs = map fst . decl vs
 
-{- produce the bindings in a formula in a Declaration data type ant take care of
+{- produce the bindings in a formula in a Decl data type ant take care of
 the serial counter. -}
-bindings :: [String] -> Formula -> FTL [Declaration]
+bindings :: [String] -> Formula -> FTL [Decl]
 bindings vs = mapM makeDeclaration . decl vs
 
 

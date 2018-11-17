@@ -46,7 +46,7 @@ import SAD.Export.Prover
 import SAD.ForTheL.Base
 import SAD.Prove.MESON
 import qualified SAD.Data.Structures.DisTree as DT
-import qualified SAD.Data.Text.Declaration as Decl
+import qualified SAD.Data.Text.Decl as Decl
 
 
 -- Reasoner

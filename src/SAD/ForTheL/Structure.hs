@@ -32,8 +32,8 @@ import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Formula
 import qualified SAD.Data.Tag as Tag
 
-import SAD.Data.Text.Declaration(Declaration(Decl))
-import qualified SAD.Data.Text.Declaration as Decl
+import SAD.Data.Text.Decl (Decl(Decl))
+import qualified SAD.Data.Text.Decl as Decl
 
 
 

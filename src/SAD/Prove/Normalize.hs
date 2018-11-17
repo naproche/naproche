@@ -21,7 +21,7 @@ import SAD.Data.Formula
 import Data.List
 import Control.Monad.State
 import Debug.Trace
-import qualified SAD.Data.Text.Declaration as Decl
+import qualified SAD.Data.Text.Decl as Decl
 
 
 

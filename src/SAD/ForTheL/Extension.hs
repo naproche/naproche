@@ -25,7 +25,7 @@ import SAD.Parser.Primitives
 
 import SAD.Parser.Base
 import SAD.Parser.Combinators
-import qualified SAD.Data.Text.Declaration as Decl
+import qualified SAD.Data.Text.Decl as Decl
 
 
 import Control.Monad

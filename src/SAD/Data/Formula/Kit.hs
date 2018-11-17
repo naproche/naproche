@@ -14,8 +14,8 @@ import Data.List
 import SAD.Data.Formula.Base
 import SAD.Data.Tag
 import SAD.Core.SourcePos
-import SAD.Data.Text.Declaration (Declaration)
-import qualified SAD.Data.Text.Declaration as Decl
+import SAD.Data.Text.Decl (Decl)
+import qualified SAD.Data.Text.Decl as Decl
 
 -- Alpha-beta normalization
 
@@ -117,7 +117,7 @@ mbpExi, mbpAll :: (String, SourcePos) -> Formula -> Formula
 mbpExi v f = fromMaybe (pExi v f) (mbBind (fst v) True f)
 mbpAll v f = fromMaybe (pAll v f) (mbBind (fst v) False f)
 
-mbdExi, mbdAll :: Declaration -> Formula -> Formula
+mbdExi, mbdAll :: Decl -> Formula -> Formula
 mbdExi v f = fromMaybe (dExi v f) (mbBind (Decl.name v) True f)
 mbdAll v f = fromMaybe (dAll v f) (mbBind (Decl.name v) False f)
 
@@ -145,7 +145,7 @@ pBlAll v f = All (Decl.nonParser v) f
 pBlExi _ Top = Top
 pBlExi v f = Exi (Decl.nonParser v) f
 
-dBlAll ,dBlExi :: Declaration -> Formula -> Formula
+dBlAll, dBlExi :: Decl -> Formula -> Formula
 dBlAll _ Top = Top
 dBlAll v f = All v f
 
@@ -165,7 +165,7 @@ pAll, pExi :: (String, SourcePos) -> Formula -> Formula
 pAll nm@(v, _) = pBlAll nm . bind v
 pExi nm@(v, _) = pBlExi nm . bind v
 
-dAll, dExi :: Declaration -> Formula -> Formula
+dAll, dExi :: Decl -> Formula -> Formula
 dAll dcl = dBlAll dcl . bind (Decl.name dcl)
 dExi dcl = dBlExi dcl . bind (Decl.name dcl)
 

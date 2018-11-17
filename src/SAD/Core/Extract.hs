@@ -25,7 +25,7 @@ import SAD.Core.Base
 import SAD.Core.Reduction
 import SAD.Prove.Normalize
 import qualified SAD.Data.Structures.DisTree as DT
-import qualified SAD.Data.Text.Declaration as Decl
+import qualified SAD.Data.Text.Decl as Decl
 
 import qualified Data.IntMap as IM
 import Data.List

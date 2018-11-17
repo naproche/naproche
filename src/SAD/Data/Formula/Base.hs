@@ -13,12 +13,12 @@ import qualified Data.Monoid as Monoid
 import SAD.Data.Tag (Tag)
 import SAD.Core.SourcePos (SourcePos, noPos)
 
-import SAD.Data.Text.Declaration (Declaration)
-import qualified SAD.Data.Text.Declaration as Decl
+import SAD.Data.Text.Decl (Decl)
+import qualified SAD.Data.Text.Decl as Decl
 
 
 data Formula =
-  All Declaration Formula | Exi Declaration Formula |
+  All Decl Formula        | Exi Decl Formula |
   Iff Formula Formula     | Imp Formula Formula     |
   Or  Formula Formula     | And Formula Formula     |
   Tag Tag Formula         | Not Formula             |

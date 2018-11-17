@@ -20,8 +20,8 @@ import SAD.Core.SourcePos
 import SAD.Data.Instr (Instr)
 import qualified SAD.Data.Instr as Instr
 import SAD.Parser.Token
-import SAD.Data.Text.Declaration (Declaration)
-import qualified SAD.Data.Text.Declaration as Declaration
+import SAD.Data.Text.Decl (Decl)
+import qualified SAD.Data.Text.Decl as Decl
 
 
 data Text =
@@ -33,7 +33,7 @@ data Block  = Block {
   formula           :: Formula,
   body              :: [Text],
   kind              :: Section,
-  declaredVariables :: [Declaration],
+  declaredVariables :: [Decl],
   name              :: String,
   link              :: [String],
   position          :: SourcePos,
@@ -65,8 +65,8 @@ compose = foldr comp Top
   where
     comp (TextBlock block@Block{ declaredVariables = dvs }) f
       | needsProof block || kind block == Posit =
-          foldr zExi (blAnd (formulate block) f) $ map Declaration.name dvs
-      | otherwise = foldr zAll (blImp (formulate block) f) $ map Declaration.name dvs
+          foldr zExi (blAnd (formulate block) f) $ map Decl.name dvs
+      | otherwise = foldr zAll (blImp (formulate block) f) $ map Decl.name dvs
     comp _ fb = fb
 
 
@@ -94,7 +94,7 @@ file = sourceFile . position
 
 
 declaredNames :: Block -> [String]
-declaredNames = map Declaration.name . declaredVariables
+declaredNames = map Decl.name . declaredVariables
 
 -- Show instances
 

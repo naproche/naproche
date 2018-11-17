@@ -24,7 +24,7 @@ import Debug.Trace
 import Control.Monad.State
 import Control.Monad.Trans.Reader
 
-import qualified SAD.Data.Text.Declaration as Decl
+import qualified SAD.Data.Text.Decl as Decl
 
 
 {- generate proof task associated with a block -}
