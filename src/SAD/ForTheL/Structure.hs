@@ -150,7 +150,7 @@ pretyping bl = do
 
 pret :: [String] -> [TVar] -> Block -> FTL Block
 pret dvs tvs bl = do
-  untyped <- mapM makeDeclaration $ freePositions (blockVars ++ dvs) (Block.formula bl)
+  untyped <- mapM makeDecl $ freePositions (blockVars ++ dvs) (Block.formula bl)
   let typing =
         if null untyped
         then Top

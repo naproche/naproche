@@ -52,7 +52,7 @@ defPredicat = do
     equiv = iff <|> symbol "<=>"
 
 defNotion = do
-  ((n,h),u) <- wellFormedCheck (ntnVars . fst) defn; uDecl <- makeDeclaration u
+  ((n,h),u) <- wellFormedCheck (ntnVars . fst) defn; uDecl <- makeDecl u
   return $ dAll uDecl $ Iff (Tag HeadTerm n) h
   where
     defn = do
@@ -77,7 +77,7 @@ sigPredicat = do
 
 
 sigNotion = do
-  ((n,h),u) <- wellFormedCheck (ntnVars . fst) sig; uDecl <- makeDeclaration u
+  ((n,h),u) <- wellFormedCheck (ntnVars . fst) sig; uDecl <- makeDecl u
   return $ dAll uDecl $ Imp (Tag HeadTerm n) h
   where
     sig = do

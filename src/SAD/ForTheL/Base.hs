@@ -101,14 +101,14 @@ addDecl vs p = do
 getPretyped :: FTL [TVar]
 getPretyped = MS.gets tvrExpr
 
-makeDeclaration :: VarName -> FTL Decl
-makeDeclaration (nm, pos) = do
+makeDecl :: VarName -> FTL Decl
+makeDecl (nm, pos) = do
   serial <- MS.gets serialCounter
   MS.modify (\st -> st {serialCounter = serial + 1})
   return $ Decl nm pos serial
 
 declared :: FTL MNotion -> FTL (Formula -> Formula, Formula, [Decl])
-declared p = do (q, f, v) <- p; nv <- mapM makeDeclaration v; return (q, f, nv)
+declared p = do (q, f, v) <- p; nv <- mapM makeDecl v; return (q, f, nv)
 
 -- Predicates: verbs and adjectives
 
@@ -345,7 +345,7 @@ declNames vs = map fst . decl vs
 {- produce the bindings in a formula in a Decl data type ant take care of
 the serial counter. -}
 bindings :: [String] -> Formula -> FTL [Decl]
-bindings vs = mapM makeDeclaration . decl vs
+bindings vs = mapM makeDecl . decl vs
 
 
 overfree :: [String] -> Formula -> Maybe String
