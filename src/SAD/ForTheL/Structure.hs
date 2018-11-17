@@ -48,7 +48,7 @@ forthel :: FTL [Text]
 forthel = section <|> macroOrPretype <|> bracketExpression
   where
     section = liftM2 ((:) . TextBlock) topsection forthel
-    macroOrPretype = (introduceMacro </> pretypeVariable) >> forthel
+    macroOrPretype = liftM2 ((:) . TextExtension) (introduceMacro </> pretypeVariable) forthel
 
 instruction :: Parser st Text
 instruction =
