@@ -8,6 +8,7 @@ Parse command line and run verifier.
 
 module Main where
 
+import Data.List (isPrefixOf)
 import Data.IORef
 import Data.Time
 import Control.Monad
@@ -15,7 +16,7 @@ import System.Console.GetOpt
 import System.Environment
 import System.Exit hiding (die)
 import System.IO
-import qualified Control.Exception
+import qualified Control.Exception as Exception
 import qualified Data.IntMap.Strict as IM
 
 
@@ -41,9 +42,10 @@ main  = do
   hSetBuffering stderr LineBuffering
 
   -- main body with explicit error handling, notably for PIDE
-  Control.Exception.catch mainBody
+  Exception.catch mainBody
     (\err -> do
-      hPrint stderr (err :: Control.Exception.SomeException)
+      let msg = Exception.displayException (err :: Exception.SomeException)
+      unless ("ExitFailure" `isPrefixOf` msg) $ hPutStrLn stderr msg
       exitFailure)
 
 mainBody :: IO ()
