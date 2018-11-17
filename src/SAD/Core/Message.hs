@@ -38,13 +38,10 @@ data Kind =
   STATE | WRITELN | INFORMATION | TRACING | WARNING | LEGACY | ERROR
 
 instance Show Kind where
-  show STATE = "State"
-  show WRITELN = ""
-  show INFORMATION = "Information"
-  show TRACING = "Tracing"
   show WARNING = "Warning"
   show LEGACY = "Legacy feature"
   show ERROR = "Error"
+  show _ = ""
 
 
 {- output as PIDE message -}
