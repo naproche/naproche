@@ -16,13 +16,16 @@ module SAD.ForTheL.Extension (
   where
 
 
+import SAD.Core.SourcePos
 import SAD.Data.Formula
+import qualified SAD.Data.Instr as Instr
+import qualified SAD.Data.Text.Block as Block
 
 import SAD.ForTheL.Base
 import SAD.ForTheL.Statement
 import SAD.ForTheL.Pattern
+import SAD.ForTheL.Instruction (instrPos)
 import SAD.Parser.Primitives
-
 import SAD.Parser.Base
 import SAD.Parser.Combinators
 import qualified SAD.Data.Text.Decl as Decl
@@ -137,36 +140,47 @@ allDistinctVars = disVs []
 --- introduce synonyms
 
 
+nonLogicalLanguageExt :: Parser FState Block.Text
 nonLogicalLanguageExt =
-  introduceSynonym </> pretypeVariable </> introduceMacro
+  Block.TextExtension <$> (introduceSynonym </> pretypeVariable </> introduceMacro)
 
-introduceSynonym = sym >>= MS.modify . upd >> return ()
+introduceSynonym :: Parser FState SourcePos
+introduceSynonym = do
+  (pos, ss) <- sym
+  MS.modify $ upd ss
+  return $ Instr.position pos
   where
     upd ss st = st { strSyms = ss : strSyms st }
 
-    sym = exbrk $ do
+    sym = instrPos $ do
       w <- word ; root <- optLL1 w $ sfx w; smTokenOf "/"
       syms <- (wlexem -|- sfx w) `sepByLL1` smTokenOf "/"
       return $ root : syms
     sfx w = smTokenOf "-" >> fmap (w ++) word
 
 
-pretypeVariable = narrow typeVar >>= MS.modify . upd >> return ()
+pretypeVariable :: Parser FState SourcePos
+pretypeVariable = do
+  (pos, tv) <- narrow typeVar
+  MS.modify $ upd tv
+  return pos
   where
     typeVar = do
-      wdToken "let"; vs@(_:_) <- varlist; standFor;
+      pos <- wdTokenPos "let"; vs@(_:_) <- varlist; standFor;
       g <- wellFormedCheck (overfree []) (dot holedNotion)
-      return (map fst vs, ignoreNames g)
+      return (pos, (map fst vs, ignoreNames g))
 
     holedNotion = do (q, f) <- anotion; q <$> dig f [zHole]
 
     upd tv st = st { tvrExpr = tv : tvrExpr st }
 
 
+introduceMacro :: Parser FState SourcePos
 introduceMacro = do
-  (f, g) <- wdToken "let" >> narrow (prd -|- ntn)
+  pos <- wdTokenPos "let"
+  (f, g) <- narrow (prd -|- ntn)
   MS.get >>= addExpr f (ignoreNames g) False
-  return ()
+  return pos
   where
     prd = wellFormedCheck prdVars $ do
       f <- newPrdPattern avr

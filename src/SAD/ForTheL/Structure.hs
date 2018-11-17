@@ -60,8 +60,8 @@ instruction =
    between instructions and synonym introductions.-}
 
 bracketExpression = exit </> readfile </> do
-  mbInstr <- fmap Left instruction </> fmap Right introduceSynonym
-  either (\instr -> fmap ((:) instr) forthel) (\_ -> forthel) mbInstr
+  text <- instruction </> fmap TextExtension introduceSynonym
+  fmap ((:) text) forthel
   where
     exit = (instrExit <|> eof) >> return []
     readfile = liftM2 ((:) . uncurry TextInstr) instrRead (return [])
@@ -365,10 +365,7 @@ nextTerm t = do
 -- markup reports
 
 instrReports :: Instr.Pos -> [Message.Report]
-instrReports pos =
-  [(Instr.start pos, Markup.keyword3),
-   (Instr.stop pos, Markup.keyword3),
-   (Instr.position pos, Markup.string)]
+instrReports pos = [(Instr.position pos, Markup.keyword3)]
 
 textReports :: Text -> [Message.Report]
 textReports (TextBlock block) =
@@ -382,3 +379,4 @@ textReports (TextBlock block) =
   in reports1 ++ reports2 ++ concatMap textReports (Block.body block)
 textReports (TextInstr pos _) = instrReports pos
 textReports (TextDrop pos _) = instrReports pos
+textReports (TextExtension pos) = [(pos, Markup.quasi_keyword)]

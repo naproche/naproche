@@ -219,6 +219,9 @@ verificationLoop state@VS {restText = TextInstr _ instr : blocks}
 verificationLoop st@VS {restText = (TextDrop _ instr : blocks)} =
   procTextDrop st instr >> verificationLoop st {restText = blocks}
 
+verificationLoop st@VS {restText = (TextExtension _ : blocks)} =
+  verificationLoop st {restText = blocks}
+
 verificationLoop _ = return []
 
 {- some automated processing steps: add induction hypothesis and case hypothesis
