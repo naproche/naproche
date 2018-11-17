@@ -118,9 +118,9 @@ enclosed bg en p = do
 
 -- mandatory parentheses, brackets, braces etc.
 expar, exbrk, exbrc :: Parser st a -> Parser st a
-expar p = enclosed "(" ")" p >>= return . snd
-exbrk p = enclosed "[" "]" p >>= return . snd
-exbrc p = enclosed "{" "}" p >>= return . snd
+expar p = snd <$> enclosed "(" ")" p
+exbrk p = snd <$> enclosed "[" "]" p
+exbrc p = snd <$> enclosed "{" "}" p
 
 
 ---- optional parentheses
