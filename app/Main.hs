@@ -42,7 +42,9 @@ main  = do
 
   -- main body with explicit error handling, notably for PIDE
   Control.Exception.catch mainBody
-    (\err -> hPrint stderr (err :: Control.Exception.SomeException))
+    (\err -> do
+      hPrint stderr (err :: Control.Exception.SomeException)
+      exitFailure)
 
 mainBody :: IO ()
 mainBody  = do
