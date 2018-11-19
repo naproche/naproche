@@ -46,15 +46,14 @@ import SAD.Core.Rewrite
 -- Main verification loop
 
 verify :: String -> IORef RState -> [Text] -> IO (Maybe ([Text], GState))
-verify fileName reasonerState blocks = do
-  let text = TextInstr Instr.noPos (Instr.String Instr.File fileName) : blocks
+verify fileName reasonerState text = do
+  let text' = TextInstr Instr.noPos (Instr.String Instr.File fileName) : text
   Message.outputReason Message.TRACING (fileOnlyPos fileName) "verification started"
 
-  let initialVerificationState =
-        VS False [] DT.empty (Context Bot [] [] Bot) [] [] text
+  let verificationState = VS False [] DT.empty (Context Bot [] [] Bot) [] [] text'
   result <- flip runRM reasonerState $
     flip runStateT initialGlobalState $
-    runReaderT (verificationLoop initialVerificationState) undefined
+    runReaderT (verificationLoop verificationState) undefined
   ignoredFails <- (\st -> accumulateIntCounter (counters st) 0 FailedGoals) <$>
     readIORef reasonerState
 
