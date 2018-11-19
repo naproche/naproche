@@ -1,7 +1,7 @@
 {-
 Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
 
-Core functios on formulas.
+Core functions on formulas.
 -}
 
 module SAD.Data.Formula.Base where
@@ -61,8 +61,7 @@ mapFM _ f = return f
 
 
 -- Logical traversing
-{- same as roundFM but without the monadic action. At the moment not in use
-   in the code. -}
+{- same as roundFM but without the monadic action. -}
 roundF :: Char -> ([Formula] -> Maybe Bool -> Int -> Formula -> Formula)
                -> [Formula] -> Maybe Bool -> Int -> Formula -> Formula
 roundF char traversalFunction localContext polarity n = dive
