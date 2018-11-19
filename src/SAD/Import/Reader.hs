@@ -7,6 +7,7 @@ Main text reading functions.
 module SAD.Import.Reader (readInit, readText) where
 
 import Data.List
+import Data.Maybe
 import Control.Monad
 import System.IO
 import System.IO.Error
@@ -49,8 +50,8 @@ instructionFile = after (optLL1 [] $ chainLL1 instr) eof
 readText :: String -> [Text] -> IO [Text]
 readText pathToLibrary text0 = do
   text <- reader pathToLibrary [] [State initFS noTokens noPos] text0
-  pide <- Message.pideActive
-  when pide $ Message.reports $ concatMap textReports text
+  pide <- Message.pideContext
+  when (isJust pide) $ Message.reports $ concatMap (textReports $ fromJust pide) text
   return text
 
 reader :: String -> [String] -> [State FState] -> [Text] -> IO [Text]

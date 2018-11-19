@@ -6,7 +6,8 @@ Formal output messages, with Prover IDE support.
 
 {-# LANGUAGE TupleSections #-}
 
-module SAD.Core.Message (Kind (..), pideActive,
+module SAD.Core.Message (Kind (..), PIDE (..), pideContext, pideActive,
+  entityMarkup,
   Report, ReportText, reportsText, reportText, reports, report,
   output, error, outputMain, outputExport, outputForTheL,
   outputParser, outputReason, outputThesis, outputSimp,
@@ -85,6 +86,18 @@ posProperties PIDE{pideID = id, pideFileName = defaultFile} pos =
     line = SourcePos.sourceLine pos
     offset = SourcePos.sourceOffset pos
     endOffset = SourcePos.sourceEndOffset pos
+
+posDefProperties :: PIDE -> SourcePos -> [(String, String)]
+posDefProperties pide = map (\(a, b) -> ("def_" ++ a, b)) . posProperties pide
+
+entityProperties :: PIDE -> Bool -> Int -> SourcePos -> [(String, String)]
+entityProperties pide def serial pos =
+  if def then (Markup.defN, Value.print_int serial) : posProperties pide pos
+  else (Markup.refN, Value.print_int serial) : posDefProperties pide pos
+
+entityMarkup :: PIDE -> String -> String -> Bool -> Int -> SourcePos -> Markup.T
+entityMarkup pide kind name def serial pos =
+    Markup.properties (entityProperties pide def serial pos) (Markup.entity kind name)
 
 xmlMessage :: PIDE -> String -> Kind -> SourcePos -> String -> XML.Tree
 xmlMessage pide origin kind pos msg =

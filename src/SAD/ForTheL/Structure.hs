@@ -13,6 +13,7 @@ import Data.Set (Set)
 import qualified Data.Set as Set
 
 import qualified Isabelle.Markup as Markup
+import SAD.Core.Message (PIDE (..))
 import qualified SAD.Core.Message as Message
 
 import SAD.ForTheL.Base
@@ -364,26 +365,48 @@ nextTerm t = do
 
 -- markup reports
 
-formulaReports :: Formula -> [Message.Report]
-formulaReports = nub . dive
+textDecls :: Text -> [Decl]
+textDecls (TextBlock block) =
+  Block.declaredVariables block ++ concatMap textDecls (Block.body block)
+textDecls _ = []
+
+entityReport :: PIDE -> Bool -> Decl -> SourcePos -> [Message.Report]
+entityReport pide def decl pos =
+  case Decl.name decl of
+    'x' : name ->
+      [(pos, Message.entityMarkup pide "variable" name def (Decl.serial decl) (Decl.position decl))]
+    _ -> []
+
+formulaReports :: PIDE -> [Decl] -> Formula -> [Message.Report]
+formulaReports pide decls = nub . dive
   where
-    dive f@Var {trPosition = pos} = (pos, Markup.free) : foldF dive f
+    dive f@Var {trName = name, trPosition = pos} =
+      (pos, Markup.free) : entity ++ foldF dive f
+      where
+        entity =
+          case find (\decl -> Decl.name decl == name) decls of
+            Nothing -> []
+            Just decl -> entityReport pide False decl pos
     dive f = foldF dive f
 
 instrReports :: Instr.Pos -> [Message.Report]
 instrReports pos = [(Instr.position pos, Markup.keyword3)]
 
-textReports :: Text -> [Message.Report]
-textReports (TextBlock block) =
-  let
-    reports1 = [(Block.position block, Markup.expression "text block")]
-    reports2 =
-      case Block.tokens block of
-        tok : _ | Set.member (map Char.toLower $ tokenText tok) headers ->
-          [(tokenPos tok, Markup.keyword1)]
-        _ -> []
-    reports3 = formulaReports $ Block.formula block
-  in reports1 ++ reports2 ++ reports3 ++ concatMap textReports (Block.body block)
-textReports (TextInstr pos _) = instrReports pos
-textReports (TextDrop pos _) = instrReports pos
-textReports (TextExtension pos) = [(pos, Markup.quasi_keyword)]
+textReports :: PIDE -> Text -> [Message.Report]
+textReports pide text = reports0 ++ reports text
+  where
+    decls = textDecls text
+    reports0 = concatMap (\decl -> entityReport pide True decl $ Decl.position decl) decls
+    reports (TextBlock block) =
+      let
+        reports1 = [(Block.position block, Markup.expression "text block")]
+        reports2 =
+          case Block.tokens block of
+            tok : _ | Set.member (map Char.toLower $ tokenText tok) headers ->
+              [(tokenPos tok, Markup.keyword1)]
+            _ -> []
+        reports3 = formulaReports pide decls $ Block.formula block
+      in reports1 ++ reports2 ++ reports3 ++ concatMap reports (Block.body block)
+    reports (TextInstr pos _) = instrReports pos
+    reports (TextDrop pos _) = instrReports pos
+    reports (TextExtension pos) = [(pos, Markup.quasi_keyword)]
