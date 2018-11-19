@@ -44,6 +44,23 @@ instance Show Kind where
   show _ = ""
 
 
+{- PIDE context -}
+
+data PIDE = PIDE {pideID :: String, pideFileName :: String}
+
+pideContext :: IO (Maybe PIDE)
+pideContext = do
+  fileName <- fromMaybe "" <$> lookupEnv "NAPROCHE_FILE_NAME"
+  pide <- lookupEnv "NAPROCHE_PIDE"
+  case pide of
+    Nothing -> return Nothing
+    Just "" -> return Nothing
+    Just id -> return (Just $ PIDE id fileName)
+
+pideActive :: IO Bool
+pideActive = isJust <$> pideContext
+
+
 {- output as PIDE message -}
 
 kindXML :: Kind -> String
@@ -55,9 +72,9 @@ kindXML WARNING = Markup.warningN
 kindXML LEGACY = Markup.legacyN
 kindXML ERROR = Markup.errorN
 
-posProperties :: String -> String -> SourcePos -> [(String, String)]
-posProperties id defaultFile pos =
-  (Markup.idN, id) :
+posProperties :: PIDE -> SourcePos -> [(String, String)]
+posProperties PIDE{pideID = id, pideFileName = defaultFile} pos =
+  (if null id then [] else [(Markup.idN, id)]) ++
   (if null file && null defaultFile then []
    else [(Markup.fileN, if null file then defaultFile else file)]) ++
   (if line <= 0 then [] else [(Markup.lineN, Value.print_int line)]) ++
@@ -69,36 +86,18 @@ posProperties id defaultFile pos =
     offset = SourcePos.sourceOffset pos
     endOffset = SourcePos.sourceEndOffset pos
 
-xmlMessage :: String -> String -> String -> Kind -> SourcePos -> String -> XML.Tree
-xmlMessage id defaultFile origin kind pos msg =
+xmlMessage :: PIDE -> String -> Kind -> SourcePos -> String -> XML.Tree
+xmlMessage pide origin kind pos msg =
   XML.Elem ((kindXML kind, props), [XML.Text msg])
   where
-    props0 = posProperties id defaultFile pos
+    props0 = posProperties pide pos
     props = if null origin then props0 else ("origin", origin) : props0
-
-
-{- PIDE messages -}
-
-pideFileName :: IO String
-pideFileName = fromMaybe "" <$> lookupEnv "NAPROCHE_FILE_NAME"
-
-pideID :: IO (Maybe String)
-pideID = do
-  pide <- lookupEnv "NAPROCHE_PIDE"
-  case pide of
-    Nothing -> return Nothing
-    Just "" -> return Nothing
-    Just id -> return (Just id)
-
-pideActive :: IO Bool
-pideActive = isJust <$> pideID
 
 pideMessage :: String -> String
 pideMessage s = "\1" ++ Value.print_int len ++ "\n" ++ s
-  where
-    len = ByteString.length (UTF8.fromString s)
-
-
+  where len = ByteString.length (UTF8.fromString s)
+    
+    
 {- markup reports -}
 
 type Report = (SourcePos, Markup.T)
@@ -106,13 +105,12 @@ type ReportText = (Report, String)
 
 reportsText :: [ReportText] -> IO ()
 reportsText args = do
-  pide <- pideID
-  defaultFile <- pideFileName
+  pide <- pideContext
   when (isJust pide && not (null args)) $ putStrLn $ pideMessage $ YXML.string_of $
     XML.Elem (Markup.report,
       map (\((pos, markup), txt) ->
         let
-          markup' = Markup.properties (posProperties (fromJust pide) defaultFile pos) markup
+          markup' = Markup.properties (posProperties (fromJust pide) pos) markup
           body = if null txt then [] else [XML.Text txt]
         in XML.Elem (markup', body)) args)
 
@@ -128,27 +126,24 @@ report pos markup = reports [(pos, markup)]
 
 {- output -}
 
-messageText :: Maybe String -> String -> String -> Kind -> SourcePos -> String -> String
-messageText pide defaultFileName origin kind pos msg =
-  case pide of
-    Just id ->
-      pideMessage $ YXML.string_of $ xmlMessage id defaultFileName origin kind pos msg
-    Nothing ->
-      (if null origin then "" else "[" ++ origin ++ "] ") ++
-      (case show kind of "" -> "" ; s -> s ++ ": ") ++
-      (case show pos of "" -> ""; s -> s ++ "\n") ++ msg
+messageText :: Maybe PIDE -> String -> Kind -> SourcePos -> String -> String
+messageText pide origin kind pos msg =
+  if isJust pide then
+    pideMessage $ YXML.string_of $ xmlMessage (fromJust pide) origin kind pos msg
+  else
+    (if null origin then "" else "[" ++ origin ++ "] ") ++
+    (case show kind of "" -> "" ; s -> s ++ ": ") ++
+    (case show pos of "" -> ""; s -> s ++ "\n") ++ msg
 
 output :: String -> Kind -> SourcePos -> String -> IO ()
 output origin kind pos msg = do
-  pide <- pideID
-  defaultFileName <- pideFileName
-  putStrLn $ messageText pide defaultFileName origin kind pos msg
+  pide <- pideContext
+  putStrLn $ messageText pide origin kind pos msg
 
 error :: String -> SourcePos -> String -> IO a
 error origin pos msg = do
-  pide <- pideID
-  defaultFile <- pideFileName
-  errorWithoutStackTrace $ messageText pide defaultFile origin ERROR pos msg
+  pide <- pideContext
+  errorWithoutStackTrace $ messageText pide origin ERROR pos msg
 
 
 {- specific messages -}
