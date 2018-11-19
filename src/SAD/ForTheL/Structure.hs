@@ -364,6 +364,12 @@ nextTerm t = do
 
 -- markup reports
 
+formulaReports :: Formula -> [Message.Report]
+formulaReports = nub . dive
+  where
+    dive f@Var {trPosition = pos} = (pos, Markup.free) : foldF dive f
+    dive f = foldF dive f
+
 instrReports :: Instr.Pos -> [Message.Report]
 instrReports pos = [(Instr.position pos, Markup.keyword3)]
 
@@ -376,7 +382,8 @@ textReports (TextBlock block) =
         tok : _ | Set.member (map Char.toLower $ tokenText tok) headers ->
           [(tokenPos tok, Markup.keyword1)]
         _ -> []
-  in reports1 ++ reports2 ++ concatMap textReports (Block.body block)
+    reports3 = formulaReports $ Block.formula block
+  in reports1 ++ reports2 ++ reports3 ++ concatMap textReports (Block.body block)
 textReports (TextInstr pos _) = instrReports pos
 textReports (TextDrop pos _) = instrReports pos
 textReports (TextExtension pos) = [(pos, Markup.quasi_keyword)]
