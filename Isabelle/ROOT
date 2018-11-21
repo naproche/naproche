@@ -1,13 +1,20 @@
+chapter "Naproche"
+
+session "Naproche-Build" = Haskell +
+  description "Build Isabelle/Naproche modules."
+  sessions
+    Naproche
+  theories [condition = NAPROCHE_HOME]
+    Build
+
 session "Naproche" = Pure +
+  description "Isabelle Prover IDE support for NaProChe / ForTheL."
   sessions
     Haskell
   theories [condition = NAPROCHE_HOME]
     Naproche
 
-session "Naproche-Build" = Naproche +
-  theories [condition = NAPROCHE_HOME]
-    Build
-
 session "Naproche-Test" = Naproche +
+  description "Some Isabelle/Naproche examples for testing."
   theories [condition = NAPROCHE_HOME]
     Test

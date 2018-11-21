@@ -91,7 +91,7 @@ isLexem c = isAscii c && isAlphaNum c || c == '_'
 tokenReports :: Token -> [Message.Report]
 tokenReports Token {tokenPos = pos, tokenProper} =
   if tokenProper then []
-  else [(pos, Markup.inner_comment)]
+  else [(pos, Markup.comment1)]
 tokenReports _ = []
 
 

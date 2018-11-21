@@ -5,6 +5,8 @@ Syntax of ForTheL sections.
 -}
 
 {-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE TupleSections #-}
+
 module SAD.ForTheL.Structure (forthel, textReports) where
 
 
@@ -49,7 +51,7 @@ forthel :: FTL [Text]
 forthel = section <|> macroOrPretype <|> bracketExpression
   where
     section = liftM2 ((:) . TextBlock) topsection forthel
-    macroOrPretype = liftM2 ((:) . TextExtension) (introduceMacro </> pretypeVariable) forthel
+    macroOrPretype = liftM2 (:) (introduceMacro </> pretypeVariable) forthel
 
 instruction :: Parser st Text
 instruction =
@@ -61,7 +63,7 @@ instruction =
    between instructions and synonym introductions.-}
 
 bracketExpression = exit </> readfile </> do
-  text <- instruction </> fmap TextExtension introduceSynonym
+  text <- instruction </> introduceSynonym
   fmap ((:) text) forthel
   where
     exit = (instrExit <|> eof) >> return []
@@ -423,6 +425,13 @@ textReports pide text = reports0 ++ reports text
             _ -> []
         reports3 = formulaReports pide decls $ Block.formula block
       in reports1 ++ reports2 ++ reports3 ++ concatMap reports (Block.body block)
-    reports (TextInstr pos _) = instrReports pos
-    reports (TextDrop pos _) = instrReports pos
-    reports (TextExtension pos) = [(pos, Markup.quasi_keyword)]
+    reports (TextInstr pos _) =
+      map (Instr.position pos,) [Markup.comment2, Markup.expression "text instruction"]
+    reports (TextDrop pos _) =
+      map (Instr.position pos,) [Markup.comment2, Markup.expression "drop text instruction"]
+    reports (TextSynonym pos) =
+      map (pos,) [Markup.comment3, Markup.expression "text synonyms"]
+    reports (TextPretyping pos) =
+      map (pos,) [Markup.keyword3, Markup.expression "variable pretyping"]
+    reports (TextMacro pos) =
+      map (pos,) [Markup.keyword3, Markup.expression "macro definition"]
