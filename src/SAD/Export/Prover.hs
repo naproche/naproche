@@ -83,7 +83,8 @@ export red m prs ins cnt gl =
                 unk = any (\ l -> any (`isPrefixOf` l) uns) lns
             -- prover response can be: positive, negative or inconclusive
 
-            unless (pos || neg || unk) $ Message.errorExport noPos "bad response"
+            unless (pos || neg || unk) $
+              Message.errorExport noPos $ intercalate "\n" ("bad response" : lns)
 
             hClose eh ; waitForProcess ph
             -- close error handle and wait for prover to terminate
