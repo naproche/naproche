@@ -28,7 +28,9 @@ data Text =
     TextBlock Block
   | TextInstr Instr.Pos Instr
   | TextDrop Instr.Pos Instr.Drop
-  | TextExtension SourcePos
+  | TextSynonym SourcePos
+  | TextPretyping SourcePos
+  | TextMacro SourcePos
 
 data Block  = Block {
   formula           :: Formula,

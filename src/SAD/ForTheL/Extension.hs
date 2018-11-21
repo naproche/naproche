@@ -19,7 +19,7 @@ module SAD.ForTheL.Extension (
 import SAD.Core.SourcePos
 import SAD.Data.Formula
 import qualified SAD.Data.Instr as Instr
-import qualified SAD.Data.Text.Block as Block
+import SAD.Data.Text.Block (Block, Text (..))
 
 import SAD.ForTheL.Base
 import SAD.ForTheL.Statement
@@ -140,15 +140,14 @@ allDistinctVars = disVs []
 --- introduce synonyms
 
 
-nonLogicalLanguageExt :: Parser FState Block.Text
-nonLogicalLanguageExt =
-  Block.TextExtension <$> (introduceSynonym </> pretypeVariable </> introduceMacro)
+nonLogicalLanguageExt :: Parser FState Text
+nonLogicalLanguageExt = introduceSynonym </> pretypeVariable </> introduceMacro
 
-introduceSynonym :: Parser FState SourcePos
+introduceSynonym :: Parser FState Text
 introduceSynonym = do
   (pos, ss) <- sym
   MS.modify $ upd ss
-  return $ Instr.position pos
+  return $ TextSynonym $ Instr.position pos
   where
     upd ss st = st { strSyms = ss : strSyms st }
 
@@ -159,11 +158,11 @@ introduceSynonym = do
     sfx w = smTokenOf "-" >> fmap (w ++) word
 
 
-pretypeVariable :: Parser FState SourcePos
+pretypeVariable :: Parser FState Text
 pretypeVariable = do
   (pos, tv) <- narrow typeVar
   MS.modify $ upd tv
-  return pos
+  return $ TextPretyping pos
   where
     typeVar = do
       pos <- wdTokenPos "let"; vs@(_:_) <- varlist; standFor;
@@ -175,12 +174,12 @@ pretypeVariable = do
     upd tv st = st { tvrExpr = tv : tvrExpr st }
 
 
-introduceMacro :: Parser FState SourcePos
+introduceMacro :: Parser FState Text
 introduceMacro = do
   pos <- wdTokenPos "let"
   (f, g) <- narrow (prd -|- ntn)
   MS.get >>= addExpr f (ignoreNames g) False
-  return pos
+  return $ TextMacro pos
   where
     prd = wellFormedCheck prdVars $ do
       f <- newPrdPattern avr
