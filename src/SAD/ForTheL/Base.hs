@@ -306,7 +306,7 @@ primTvr :: FTL MNotion
 primTvr = getExpr tvrExpr tvr
   where
     tvr (vr, nt) = do
-      vs <- map (\(v, _) -> (v, noPos)) <$> varlist
+      vs <- varlist
       guard $ all (`elem` vr) $ map fst vs
       return (id, nt, vs)
 
