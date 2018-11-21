@@ -222,7 +222,7 @@ isApplication Trm {trId = -5} = True; isApplication _ = False
 isTop Top = True; isTop _ = False
 isBot Bot = True; isBot _ = False
 isIff (Iff _ _) = True; isIff _ = False
-isInd (Ind _ ) = True; isInd _ = False
+isInd Ind{} = True; isInd _ = False
 isVar Var{} = True; isVar _ = False
 isTrm Trm{} = True; isTrm _ = False
 isEquality t@Trm{} = trId t == equalityId; isEquality _ = False

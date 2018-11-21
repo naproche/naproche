@@ -171,7 +171,7 @@ extractFunctionEval c gs f = dive c gs f
       let nf = c f {trArgs = [ThisT, vl] }
       in  return $ EV tr nf nf gs
     dive c gs (Exi x (And (Tag Defined f)
-      (Tag Evaluation Trm {trName = "=", trArgs = [tr, Ind n]})))
+      (Tag Evaluation Trm {trName = "=", trArgs = [tr, Ind {trIndx = n}]})))
         | n == 0 = extractEv c gs $ dec $ instWith tr f
     dive c gs (Exi x (And f g)) =
       dive (c . dExi x . And f) gs $ inst (Decl.name x) g

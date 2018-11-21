@@ -60,7 +60,7 @@ dfgTerm d = dive
           | isVar t = showTrName t
           | isInd t = showChar 'W' . shows (d - 1 - trIndx t)
 
-    binder f  = showChar '[' . dfgTerm (succ d) (Ind 0)
+    binder f  = showChar '[' . dfgTerm (succ d) (Ind 0 undefined)
               . showString "]," . dfgTerm (succ d) f
 
 showTrName = showString . filter (/= ':') . trName

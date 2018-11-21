@@ -40,7 +40,7 @@ showFormula p d = dive
     dive v@Var{trName = vName}
       | isUserVariable v = showString $ tail vName
       | otherwise = showString vName
-    dive (Ind i )
+    dive Ind {trIndx = i }
       | i < d = showChar 'v' . shows (d - i - 1)
       | otherwise = showChar 'v' . showChar '?' . showString (show i)
 
@@ -49,7 +49,7 @@ showFormula p d = dive
       let showTerm = showFormula (pred p) d
       in  showArgumentsWith showTerm ts
 
-    showBinder f = showFormula p (succ d) (Ind 0) . showChar ' ' .
+    showBinder f = showFormula p (succ d) (Ind 0 undefined) . showChar ' ' .
       showFormula p (succ d) f
 
     showInfix operator f g = dive f . showString operator . dive g

@@ -53,7 +53,7 @@ tptpTerm d = dive
 
     sinfix o f g  = showParen True $ dive f . showString o . dive g
 
-    binder f  = showChar '[' . tptpTerm (succ d) (Ind 0)
+    binder f  = showChar '[' . tptpTerm (succ d) (Ind 0 undefined)
               . showString "] : " . tptpTerm (succ d) f
 
 showTrName = showString . filter (/= ':') . trName

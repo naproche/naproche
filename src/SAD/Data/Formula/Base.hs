@@ -26,7 +26,7 @@ data Formula =
   Trm { trName :: String   , trArgs :: [Formula],
         trInfo :: [Formula], trId   :: Int}         |
   Var { trName :: String   , trInfo :: [Formula], trPosition :: SourcePos } |
-  Ind { trIndx :: Int }   | ThisT
+  Ind { trIndx :: Int, trPosition :: SourcePos }   | ThisT
 
 
 -- Traversing functions
@@ -176,7 +176,7 @@ closed  = dive 0
     dive n (Exi _ g) = dive (succ n) g
     dive n t@Trm{} = all (dive n) $ trArgs t
     dive _ Var{} = True
-    dive n (Ind v) = v < n
+    dive n Ind {trIndx = v} = v < n
     dive n f = allF (dive n) f
 
 {- checks whether the formula t occurs anywhere in the formula f -}
@@ -190,12 +190,12 @@ bind v = dive 0
   where
     dive n (All u g) = All u $ dive (succ n) g
     dive n (Exi u g) = Exi u $ dive (succ n) g
-    dive n Var {trName = u}
-      | u == v = Ind n
+    dive n Var {trName = u, trPosition = pos}
+      | u == v = Ind n pos
     dive n t@Trm{} = t {
       trArgs = map (dive n) $ trArgs t,
       trInfo = map (dive n) $ trInfo t}
-    dive _ (Ind m ) = Ind m
+    dive _ i@Ind{} = i
     dive n f = mapF (dive n) f
 
 {- instantiate a formula with a variable with name v.
@@ -205,8 +205,8 @@ inst x = dive 0
   where
     dive n (All u g) = All u $ dive (succ n) g
     dive n (Exi u g) = Exi u $ dive (succ n) g
-    dive n (Ind m)
-      | m == n = Var x [] noPos
+    dive n Ind {trIndx = m, trPosition = pos}
+      | m == n = Var x [] pos
     dive n t@Trm{} = t {
       trArgs = map (dive n) $ trArgs t,
       trInfo = map (dive n) $ trInfo t }
@@ -235,7 +235,7 @@ substs f vs ts = dive f
 {- check for syntactic equality of terms/atomic formulas. Always yields False
 for compound formulas. -}
 twins :: Formula -> Formula -> Bool
-twins (Ind u ) (Ind v ) = u == v
+twins u@Ind{} v@Ind{} = trIndx u == trIndx v
 twins Var {trName = u} Var {trName = v} = u == v
 twins t@Trm{} s@Trm{}
   | trId t == trId s = pairs (trArgs t) (trArgs s)

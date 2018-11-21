@@ -92,7 +92,7 @@ prenex f = f
 inc :: Formula -> Formula
 inc = increment 0
   where
-    increment n (Ind i) = Ind (if n <= i then succ i else i)
+    increment n v@Ind {trIndx = i} = v {trIndx = if n <= i then succ i else i}
     increment n (All x f)  = All x $ increment (succ n) f
     increment n (Exi x f)  = Exi x $ increment (succ n) f
     increment n f = mapF (increment n) f
@@ -101,7 +101,7 @@ inc = increment 0
 dec :: Formula -> Formula
 dec = decrement 0
   where
-    decrement n (Ind i ) = Ind (if n <= i then pred i else i)
+    decrement n v@Ind {trIndx = i} = v {trIndx = if n <= i then pred i else i}
     decrement n (All x f)  = All x $ decrement (succ n) f
     decrement n (Exi x f)  = Exi x $ decrement (succ n) f
     decrement n f = mapF (decrement n) f
@@ -142,13 +142,13 @@ instSk skolemCnt dependencyCnt = dive 0
   where
     dive d (All x f) = All x $ dive (succ d) f
     dive d (Exi x f) = Exi x $ dive (succ d) f
-    dive d (Ind m ) | d == m = skolemFunction d
+    dive d Ind {trIndx = m} | d == m = skolemFunction d
     dive d f = mapF (dive d) f
 
     skolemFunction = zTrm skolemId skolemName . skolemArguments
 
 
-    skolemArguments d = [Ind (i + d) | i <- [1..dependencyCnt] ]
+    skolemArguments d = [Ind (i + d) undefined | i <- [1..dependencyCnt] ]
 
     skolemId = -20 - skolemCnt
     skolemName = "tsk" ++ show skolemCnt
