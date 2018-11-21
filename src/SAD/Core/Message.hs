@@ -6,7 +6,7 @@ Formal output messages, with Prover IDE support.
 
 {-# LANGUAGE TupleSections #-}
 
-module SAD.Core.Message (Kind (..), PIDE (..), pideContext, pideActive,
+module SAD.Core.Message (Kind (..), PIDE, pideContext, pideActive,
   entityMarkup,
   Report, ReportText, reportsText, reportText, reports, report,
   output, error, outputMain, outputExport, outputForTheL,

@@ -15,7 +15,7 @@ import Data.Set (Set)
 import qualified Data.Set as Set
 
 import qualified Isabelle.Markup as Markup
-import SAD.Core.Message (PIDE (..))
+import SAD.Core.Message (PIDE)
 import qualified SAD.Core.Message as Message
 
 import SAD.ForTheL.Base
