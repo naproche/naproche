@@ -39,8 +39,9 @@ dfgOut red _ _ cn gl = (hdr . sym . axm . cnj . eop) ""
 dfgForm :: Bool -> Context -> ShowS
 dfgForm red (Context fr (Block { Block.name = m } : _) _ g)
         = let f = if red then g else fr in
-          showString "formula(" . dfgTerm 0 f . showChar ','
-        . showString (if null m then "_" else m) . showString ").\n"
+          showString "formula(" . dfgTerm 0 f .
+          (if null m || m == "__" then id else showChar ',' . showString m) .
+          showString ").\n"
 
 dfgTerm :: Int -> Formula -> ShowS
 dfgTerm d = dive
