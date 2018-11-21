@@ -2,7 +2,8 @@
 
 # Misc #
 
-* make $SPASS_HOME/SPASS from Isabelle actually work (!?)
+* eliminate odd crash of --prover spass examples/Maximum_principle.ftl:
+  "Undefined symbol sdtcflbdtrb."
 
 * proper names for instructions "setCtxt", "drpCtxt", "addCtxt" etc. (!?)
 
@@ -14,7 +15,7 @@
 
 * clarify Markup.expression "text block": duplicates!? sub-structure!?
 
-* def/ref positions and unique id for declared variables, fact names etc.
+* def/ref markup for fact names
 
 * instructions: completion on errors
 
