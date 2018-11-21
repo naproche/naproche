@@ -380,14 +380,30 @@ entityReport pide def decl pos =
 formulaReports :: PIDE -> [Decl] -> Formula -> [Message.Report]
 formulaReports pide decls = nub . dive
   where
-    dive f@Var {trName = name, trPosition = pos} =
-      (pos, Markup.free) : entity ++ foldF dive f
+    dive Var {trName = name, trPosition = pos} =
+      (pos, Markup.free) : entity
       where
         entity =
           case find (\decl -> Decl.name decl == name) decls of
             Nothing -> []
             Just decl -> entityReport pide False decl pos
+    dive (All dcl f) = quantDive dcl f
+    dive (Exi dcl f) = quantDive dcl f
     dive f = foldF dive f
+
+    quantDive dcl f = let pos = Decl.position dcl in
+      (pos, Markup.bound) : entityReport pide True dcl pos ++
+      boundReports pide dcl f ++
+      foldF dive f
+
+boundReports :: PIDE -> Decl -> Formula -> [Message.Report]
+boundReports pide dcl = dive 0
+  where
+    dive n (All _ f) = dive (succ n) f
+    dive n (Exi _ f) = dive (succ n) f
+    dive n Ind {trIndx = i, trPosition = pos} | i == n =
+      (pos, Markup.bound) : entityReport pide False dcl pos
+    dive n f = foldF (dive n) f
 
 instrReports :: Instr.Pos -> [Message.Report]
 instrReports pos = [(Instr.position pos, Markup.keyword3)]
