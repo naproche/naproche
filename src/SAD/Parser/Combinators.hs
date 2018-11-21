@@ -128,8 +128,10 @@ paren :: Parser st a -> Parser st a
 paren p = p -|- expar p
 
 ---- dot keyword
-dot :: Parser st SourcePos
-dot = wdTokenPos "." <?> "a dot"
+dot :: Parser st SourceRange
+dot = do
+  pos1 <- wdTokenPos "." <?> "a dot"
+  return $ makeRange (pos1, advancePos pos1 '.')
 
 ---- mandatory finishing dot
 finish :: Parser st a -> Parser st a

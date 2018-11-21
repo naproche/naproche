@@ -30,7 +30,7 @@ data Text =
   | TextInstr Instr.Pos Instr
   | TextDrop Instr.Pos Instr.Drop
   | TextSynonym SourcePos
-  | TextPretyping SourcePos [VarName]
+  | TextPretyping SourcePos SourcePos [VarName]
   | TextMacro SourcePos
 
 data Block  = Block {

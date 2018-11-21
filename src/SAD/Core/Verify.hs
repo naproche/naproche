@@ -220,7 +220,7 @@ verificationLoop st@VS {restText = (TextDrop _ instr : blocks)} =
 
 verificationLoop st@VS {restText = (TextSynonym _ : blocks)} =
   verificationLoop st {restText = blocks}
-verificationLoop st@VS {restText = (TextPretyping _ _ : blocks)} =
+verificationLoop st@VS {restText = (TextPretyping _ _ _ : blocks)} =
   verificationLoop st {restText = blocks}
 verificationLoop st@VS {restText = (TextMacro _ : blocks)} =
   verificationLoop st {restText = blocks}

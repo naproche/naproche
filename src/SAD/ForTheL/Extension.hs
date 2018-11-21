@@ -160,16 +160,20 @@ introduceSynonym = do
 
 pretypeVariable :: Parser FState Text
 pretypeVariable = do
-  (pos, tv) <- narrow typeVar
+  (pos1, pos2, tv) <- narrow typeVar
   MS.modify $ upd tv
-  return $ TextPretyping pos (fst tv)
+  return $ TextPretyping pos1 (rangePos (pos1, pos2)) (fst tv)
   where
     typeVar = do
-      pos <- wdTokenPos "let"; vs@(_:_) <- varlist; standFor;
-      g <- wellFormedCheck (overfree []) (finish holedNotion)
-      return (pos, (vs, ignoreNames g))
+      pos1 <- wdTokenPos "let"; vs@(_:_) <- varlist; standFor;
+      (g, pos2) <- wellFormedCheck (overfree [] . fst) holedNotion
+      return (pos1, pos2, (vs, ignoreNames g))
 
-    holedNotion = do (q, f) <- anotion; q <$> dig f [zHole]
+    holedNotion = do
+      (q, f) <- anotion
+      g <- q <$> dig f [zHole]
+      (_, pos2) <- dot
+      return (g, pos2)
 
     upd (vs, ntn) st = st { tvrExpr = (map fst vs, ntn) : tvrExpr st }
 
