@@ -442,7 +442,7 @@ lambda = do
   (t, df_head, dom) <- ld_head; vs <- freeVars t; df <- addDecl vs lambdaBody
   return $ \f -> zFun f `And` Tag Domain (dom f) `And` (df_head f $ df $ zApp f t)
   where
-    ld_head = dot $ smTokenOf "\\" >> lambdaIn
+    ld_head = finish $ smTokenOf "\\" >> lambdaIn
 
 pair = sVar </> pr
   where

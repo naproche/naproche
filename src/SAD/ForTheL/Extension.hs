@@ -166,7 +166,7 @@ pretypeVariable = do
   where
     typeVar = do
       pos <- wdTokenPos "let"; vs@(_:_) <- varlist; standFor;
-      g <- wellFormedCheck (overfree []) (dot holedNotion)
+      g <- wellFormedCheck (overfree []) (finish holedNotion)
       return (pos, (map fst vs, ignoreNames g))
 
     holedNotion = do (q, f) <- anotion; q <$> dig f [zHole]
@@ -183,10 +183,10 @@ introduceMacro = do
   where
     prd = wellFormedCheck prdVars $ do
       f <- newPrdPattern avr
-      g <- standFor >> dot statement; return (f, g)
+      g <- standFor >> finish statement; return (f, g)
     ntn = wellFormedCheck funVars $ do
       (n, u) <- unnamedNotion avr
-      (q, f) <- standFor >> dot anotion
+      (q, f) <- standFor >> finish anotion
       h <- fmap q $ dig f [pVar u]; return (n, h)
 
 ignoreNames (All dcl f) = All dcl {Decl.name = ""} $ ignoreNames f

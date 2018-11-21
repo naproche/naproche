@@ -84,7 +84,7 @@ genericTopsection kind header endparser = do
 
 --- generic header parser
 
-header titles = dot $ wdTokenOf titles >> optLL1 "" topIdentifier
+header titles = finish $ wdTokenOf titles >> optLL1 "" topIdentifier
 
 
 -- topsections
@@ -121,7 +121,7 @@ assume   = sentence Assumption (asmH >> statement) assumeVars noLink
 llDefn   = sentence LowDefinition(ldfH >> setNotion </> functionNotion) llDefnVars noLink
 
 -- Links and Identifiers
-link = dot eqLink
+link = finish eqLink
   where
     identifiers = topIdentifier `sepByLL1` comma
 
@@ -133,7 +133,7 @@ topIdentifier = tokenPrim notSymb
 
 lowIdentifier = expar topIdentifier
 
-noLink = dot $ return []
+noLink = finish $ return []
 
 eqLink = optLL1 [] $ expar $ wdToken "by" >> identifiers
   where
@@ -248,7 +248,7 @@ preMethod = optLLx None $ letUs >> dem >> after method that
 postMethod = optLL1 None $ short <|> explicit
   where
     short = wdToken "indeed" >> return Short
-    explicit = dot $ wdToken "proof"  >> method
+    explicit = finish $ wdToken "proof"  >> method
 
 method = optLL1 Raw $ wdToken "by" >> (contradict <|> cases <|> induction)
   where
