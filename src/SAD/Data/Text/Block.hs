@@ -125,7 +125,7 @@ showForm p block@Block {formula = formula, name = name} =
     sform False False = showString "assume " . shows formula
     sform False True  = shows formula
 
-    addName = if null name then "" else (' ':name)
+    addName = if null name then "" else ' ':name
     dot = showString ".\n"
 
 showIndent :: Int -> ShowS
