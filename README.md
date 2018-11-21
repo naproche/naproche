@@ -58,6 +58,12 @@ for Isabelle Prover IDE.
     isabelle build -D Isabelle
     stack build
 
+Reference versions for multi-platform executables (x86_64):
+
+  * linux: Ubuntu 14.04 LTS
+  * macos: Mac OS X 10.10 Yosemite
+  * windows: Windows 10
+
 
 ### Test
 
