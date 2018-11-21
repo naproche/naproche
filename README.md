@@ -21,6 +21,8 @@ for Isabelle Prover IDE.
 
 ### Build
 
+    cd .../Naproche-SAD  #repository
+
     stack build
 
 
@@ -51,8 +53,9 @@ for Isabelle Prover IDE.
 
 ### Build
 
-    isabelle build Haskell
-    isabelle build -c -D Isabelle
+    cd .../Naproche-SAD  #repository
+
+    isabelle build -D Isabelle
     stack build
 
 
