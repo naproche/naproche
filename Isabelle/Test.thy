@@ -1,3 +1,9 @@
+(*
+Authors: Makarius (2018)
+
+Some Isabelle/Naproche examples for testing.
+*)
+
 theory Test
   imports Naproche
 begin
