@@ -22,6 +22,7 @@ import qualified SAD.Data.Instr as Instr
 import SAD.Parser.Token
 import SAD.Data.Text.Decl (Decl)
 import qualified SAD.Data.Text.Decl as Decl
+import SAD.ForTheL.Base (VarName)
 
 
 data Text =
@@ -29,7 +30,7 @@ data Text =
   | TextInstr Instr.Pos Instr
   | TextDrop Instr.Pos Instr.Drop
   | TextSynonym SourcePos
-  | TextPretyping SourcePos
+  | TextPretyping SourcePos [VarName]
   | TextMacro SourcePos
 
 data Block  = Block {

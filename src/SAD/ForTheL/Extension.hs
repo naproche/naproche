@@ -162,16 +162,16 @@ pretypeVariable :: Parser FState Text
 pretypeVariable = do
   (pos, tv) <- narrow typeVar
   MS.modify $ upd tv
-  return $ TextPretyping pos
+  return $ TextPretyping pos (fst tv)
   where
     typeVar = do
       pos <- wdTokenPos "let"; vs@(_:_) <- varlist; standFor;
       g <- wellFormedCheck (overfree []) (finish holedNotion)
-      return (pos, (map fst vs, ignoreNames g))
+      return (pos, (vs, ignoreNames g))
 
     holedNotion = do (q, f) <- anotion; q <$> dig f [zHole]
 
-    upd tv st = st { tvrExpr = tv : tvrExpr st }
+    upd (vs, ntn) st = st { tvrExpr = (map fst vs, ntn) : tvrExpr st }
 
 
 introduceMacro :: Parser FState Text

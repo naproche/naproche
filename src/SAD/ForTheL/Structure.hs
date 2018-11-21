@@ -412,7 +412,8 @@ textReports pide text = reports0 ++ reports text
       map (Instr.position pos,) [Markup.comment2, Markup.expression "drop text instruction"]
     reports (TextSynonym pos) =
       map (pos,) [Markup.comment3, Markup.expression "text synonyms"]
-    reports (TextPretyping pos) =
-      map (pos,) [Markup.keyword3, Markup.expression "variable pretyping"]
+    reports (TextPretyping pos vs) =
+      map (pos,) [Markup.keyword3, Markup.expression "variable pretyping"] ++
+      map (\(_, p) -> (p, Markup.free)) vs
     reports (TextMacro pos) =
       map (pos,) [Markup.keyword3, Markup.expression "macro definition"]
