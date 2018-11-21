@@ -180,18 +180,18 @@ pretypeVariable = do
 
 introduceMacro :: Parser FState Text
 introduceMacro = do
-  pos <- wdTokenPos "let"
-  (f, g) <- narrow (prd -|- ntn)
+  pos1 <- wdTokenPos "let"
+  (pos2, (f, g)) <- narrow (prd -|- ntn)
   MS.get >>= addExpr f (ignoreNames g) False
-  return $ TextMacro pos
+  return $ TextMacro pos1 (rangePos (pos1, pos2))
   where
-    prd = wellFormedCheck prdVars $ do
+    prd = wellFormedCheck (prdVars . snd) $ do
       f <- newPrdPattern avr
-      g <- standFor >> finish statement; return (f, g)
-    ntn = wellFormedCheck funVars $ do
+      standFor; g <- statement; (_, pos2) <- dot; return (pos2, (f, g))
+    ntn = wellFormedCheck (funVars . snd) $ do
       (n, u) <- unnamedNotion avr
-      (q, f) <- standFor >> finish anotion
-      h <- fmap q $ dig f [pVar u]; return (n, h)
+      standFor; (q, f) <- anotion; (_, pos2) <- dot
+      h <- fmap q $ dig f [pVar u]; return (pos2, (n, h))
 
 ignoreNames (All dcl f) = All dcl {Decl.name = ""} $ ignoreNames f
 ignoreNames (Exi dcl f) = Exi dcl {Decl.name = ""} $ ignoreNames f

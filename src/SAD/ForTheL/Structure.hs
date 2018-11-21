@@ -415,5 +415,5 @@ textReports pide text = reports0 ++ reports text
     reports (TextPretyping pos1 pos2 vs) =
       [(pos1, Markup.keyword3), (pos2, Markup.expression "variable pretyping")] ++
       map (\(_, p) -> (p, Markup.free)) vs
-    reports (TextMacro pos) =
-      map (pos,) [Markup.keyword3, Markup.expression "macro definition"]
+    reports (TextMacro pos1 pos2) =
+      [(pos1, Markup.keyword3), (pos2, Markup.expression "macro definition")]

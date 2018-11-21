@@ -31,7 +31,7 @@ data Text =
   | TextDrop Instr.Pos Instr.Drop
   | TextSynonym SourcePos
   | TextPretyping SourcePos SourcePos [VarName]
-  | TextMacro SourcePos
+  | TextMacro SourcePos SourcePos
 
 data Block  = Block {
   formula           :: Formula,
