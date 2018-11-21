@@ -15,6 +15,8 @@ import System.IO.Error
 import System.Process
 import Control.Exception
 
+import qualified Isabelle.File as File
+
 import qualified SAD.Core.Message as Message
 import SAD.Core.SourcePos
 import SAD.Data.Instr (Instr)
@@ -64,6 +66,10 @@ export red m prs ins cnt gl =
         do  (wh,rh,eh,ph) <- catch run
                 $ \e -> Message.errorExport noPos $
                     "failed to run \"" ++ path ++ "\": " ++ ioeGetErrorString e
+
+            File.setup wh
+            File.setup rh
+            File.setup eh
 
             hPutStrLn wh task ; hClose wh
             -- write the task to the prover input
