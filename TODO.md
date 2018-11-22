@@ -15,9 +15,9 @@
 
 * clarify Markup.expression "text block": duplicates!? sub-structure!?
 
-* def/ref markup for fact names
+* def/ref markup for bound variables, fact names etc.
 
-* instructions: completion on errors
+* instructions: completion on errors -- better change syntax for synonyms!?
 
 * vacous keywords: "let us show that", "proof", "qed" etc.
 
