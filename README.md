@@ -60,9 +60,9 @@ for Isabelle Prover IDE.
 
 Reference versions for multi-platform executables (x86_64):
 
-  * linux: Ubuntu 14.04 LTS
-  * macos: Mac OS X 10.10 Yosemite
-  * windows: Windows 10
+  * Linux: Ubuntu 14.04 LTS
+  * macOS: Mac OS X 10.10 Yosemite
+  * Windows: Windows 10
 
 
 ### Test
