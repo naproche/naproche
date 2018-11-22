@@ -99,7 +99,7 @@ addExpr Trm {trName = "=", trArgs = [_, t]} eq@Trm {trName = "="} p st =
     ns | csm = st {cfnExpr = (pt, fm) : cfnExpr st}
        | lsm = st {lfnExpr = (init pt, fm) : lfnExpr st}
        | rsm = st {rfnExpr = (tail pt, fm) : rfnExpr st}
-       | True = st {ifnExpr = (init (tail pt), fm) : ifnExpr st}
+       | otherwise = st {ifnExpr = (init (tail pt), fm) : ifnExpr st}
     -- increment id counter
     nn = ns {idCount = incId p n}
 
@@ -117,12 +117,12 @@ addExpr t@Trm {trName = s, trArgs = vs} f p st =
     ns | csm = st {cprExpr = (pt, fm) : cprExpr st}
        | lsm = st {lprExpr = (init pt, fm) : lprExpr st}
        | rsm = st {rprExpr = (tail pt, fm) : rprExpr st}
-       | True = st {iprExpr = (init (tail pt), fm) : iprExpr st}
+       | otherwise = st {iprExpr = (init (tail pt), fm) : iprExpr st}
     -- check if pattern is a symbolic notion
     snt = not lsm && elem (trName $ head vs) (declNames [] nf)
     -- and add it there as well if so (and increment id counter)
     nn | snt = ns {sntExpr = (tail pt,fm) : sntExpr st, idCount = incId p n}
-       | True = ns {idCount = incId p n}
+       | otherwise = ns {idCount = incId p n}
 
 
 
@@ -133,9 +133,9 @@ addExpr t@Trm {trName = s, trArgs = vs} f p st =
 
 extractWordPattern st t@Trm {trName = s, trArgs = vs} f = (pt, nf)
   where
-    pt  = map getPatt ws
-    nt  = t {trName = pr ++ getName pt}
-    nf  = replace nt t {trId = newId} f
+    pt = map getPatt ws
+    nt = t {trName = pr ++ getName pt}
+    nf = replace nt t {trId = newId} f
     (pr:ws) = words s
     dict = strSyms st
 
@@ -150,12 +150,12 @@ extractWordPattern st t@Trm {trName = s, trArgs = vs} f = (pt, nf)
 
 extractSymbPattern t@Trm {trName = s, trArgs = vs} f = (pt, nf)
   where
-    pt  = map getPatt (words s)
-    nt  = t {trName ='s' : getName pt}
-    nf  = replace nt t {trId = newId} f
+    pt = map getPatt (words s)
+    nt = t {trName ='s' : getName pt}
+    nf = replace nt t {trId = newId} f
 
     getPatt "#" = Vr
-    getPatt  w  = Sm w
+    getPatt w = Sm w
 
     getName (Sm s:ls) = symEncode s ++ getName ls
     getName (Vr:ls) = symEncode "." ++ getName ls
@@ -177,9 +177,9 @@ newPrdPattern tvr = multi </> unary </> newSymbPattern tvr
       (t, vs) <- multiAdj -|- multiVerb
       return $ zTrm newId t (u:v:vs)
 
-    unaryAdj = do is; (t, vs) <- ptHead wlexem tvr; return ("is "  ++ t, vs)
+    unaryAdj = do is; (t, vs) <- ptHead wlexem tvr; return ("is " ++ t, vs)
     multiAdj = do is; (t, vs) <- ptHead wlexem tvr; return ("mis " ++ t, vs)
-    unaryVerb = do (t, vs) <- ptHead wlexem tvr; return ("do "  ++ t, vs)
+    unaryVerb = do (t, vs) <- ptHead wlexem tvr; return ("do " ++ t, vs)
     multiVerb = do (t, vs) <- ptHead wlexem tvr; return ("mdo " ++ t, vs)
 
 newNtnPattern tvr = (ntn <|> fun) </> unnamedNotion tvr
@@ -217,7 +217,7 @@ newSymbPattern tvr = left -|- right
 
 
 ptHead lxm tvr = do
-  l <- fmap unwords $ chain lxm
+  l <- unwords <$> chain lxm
   (ls, vs) <- opt ([], []) $ ptTail lxm tvr
   return (l ++ ' ' : ls, vs)
 
@@ -229,13 +229,13 @@ ptTail lxm tvr = do
 
 
 ptName lxm tvr = do
-  l <- fmap unwords $ chain lxm; n <- nam
+  l <- unwords <$> chain lxm; n <- nam
   (ls, vs) <- opt ([], []) $ ptHead lxm tvr
   return (l ++ " . " ++ ls, n:vs)
 
 
 ptNoName lxm tvr = do
-  l <- fmap unwords $ chain lxm; n <- hid
+  l <- unwords <$> chain lxm; n <- hid
   (ls, vs) <- opt ([], []) $ ptShort lxm tvr
   return (l ++ " . " ++ ls, n:vs)
   where
@@ -272,7 +272,7 @@ wlx = failing nvr >> tokenPrim isWord
 
 nvr = do
   v <- var; dvs <- getDecl; tvs <- MS.gets tvrExpr
-  guard $ (fst v) `elem` dvs || any (elem (fst v) . fst) tvs
+  guard $ fst v `elem` dvs || any (elem (fst v) . fst) tvs
   return $ pVar v
 
 avr = do

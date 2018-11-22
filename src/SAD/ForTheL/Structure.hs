@@ -8,14 +8,13 @@ Syntax of ForTheL sections.
 
 module SAD.ForTheL.Structure (forthel) where
 
-
+import Data.List
+import Data.Maybe
+import Data.Char (isAlphaNum)
+import Control.Monad
 import qualified Data.Char as Char
 import Data.Set (Set)
 import qualified Data.Set as Set
-
-import qualified Isabelle.Markup as Markup
-import SAD.Core.Message (PIDE)
-import qualified SAD.Core.Message as Message
 
 import SAD.ForTheL.Base
 import SAD.ForTheL.Statement
@@ -29,23 +28,14 @@ import SAD.Parser.Token
 import SAD.Parser.Primitives
 
 import SAD.Core.SourcePos
+
 import qualified SAD.Data.Instr as Instr
 import SAD.Data.Text.Block (Block(Block), Text(..), Section(..))
 import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Formula
 import qualified SAD.Data.Tag as Tag
-
 import SAD.Data.Text.Decl (Decl(Decl))
 import qualified SAD.Data.Text.Decl as Decl
-
-
-
-import Data.List
-import Data.Maybe
-import Data.Char (isAlphaNum)
-import Control.Monad
-
-import Debug.Trace
 
 forthel :: FTL [Text]
 forthel = section <|> macroOrPretype <|> bracketExpression
@@ -97,7 +87,7 @@ definition =
   let define = pretype $ pretypeSentence Posit defExtend defVars noLink
   in  genericTopsection Definition defH define
 axiom =
-  let posit = pretype $ 
+  let posit = pretype $
         pretypeSentence Posit (affH >> statement) affirmVars noLink
   in  genericTopsection Axiom axmH posit
 theorem = 
@@ -110,16 +100,13 @@ defH = header ["definition"]
 axmH = header ["axiom"]
 thmH = header ["theorem", "lemma", "corollary", "proposition"]
 
-headers :: Set String
-headers =
-  Set.fromList ["signature", "definition", "axiom", "theorem", "lemma", "corollary", "proposition"]
 
 -- low-level
-choose   = sentence Selection (chsH >> selection) assumeVars link
-caseHypo = sentence Block.CaseHypothesis   (casH >> statement) affirmVars link
-affirm   = sentence Affirmation (affH >> statement) affirmVars link </> eqChain
-assume   = sentence Assumption (asmH >> statement) assumeVars noLink
-llDefn   = sentence LowDefinition(ldfH >> setNotion </> functionNotion) llDefnVars noLink
+choose = sentence Selection (chsH >> selection) assumeVars link
+caseHypo = sentence Block.CaseHypothesis (casH >> statement) affirmVars link
+affirm = sentence Affirmation (affH >> statement) affirmVars link </> eqChain
+assume = sentence Assumption (asmH >> statement) assumeVars noLink
+llDefn = sentence LowDefinition(ldfH >> setNotion </> functionNotion) llDefnVars noLink
 
 -- Links and Identifiers
 link = finish eqLink
@@ -130,7 +117,7 @@ topIdentifier = tokenPrim notSymb
   where
     notSymb t = case showToken t of
       [c] -> guard (isAlphaNum c) >> return [c]
-      tk  -> return tk
+      tk -> return tk
 
 lowIdentifier = expar topIdentifier
 
@@ -143,7 +130,7 @@ eqLink = optLL1 [] $ expar $ wdToken "by" >> identifiers
 -- declaration management, typings and pretypings
 
 updateDeclbefore :: FTL Block -> FTL [Text] -> FTL [Text]
-updateDeclbefore blp p = do 
+updateDeclbefore blp p = do
   bl <- blp
   addDecl (Block.declaredNames bl) $ fmap (TextBlock bl : ) p
 
@@ -161,9 +148,9 @@ pret dvs tvs bl = do
         else foldl1 And $ map (`typeWith` tvs) $ map Decl.name untyped
   return $ assumeBlock {Block.formula = typing, Block.declaredVariables = untyped}
   where
-    blockVars   = Block.declaredNames bl
+    blockVars = Block.declaredNames bl
     assumeBlock = bl {Block.body = [], Block.kind = Assumption, Block.link = []}
-    typeWith v  = substHole (zVar v) . snd . fromJust . find (elem v . fst)
+    typeWith v = substHole (zVar v) . snd . fromJust . find (elem v . fst)
 
 pretypeBefore :: FTL Block -> FTL [Text] -> FTL [Text]
 pretypeBefore blp p = do
@@ -182,7 +169,7 @@ letUs = optLL1 () $ (wdToken "let" >> wdToken "us") <|> (wdToken "we" >> wdToken
 chsH = hence >> letUs >> wdTokenOf ["choose", "take", "consider"]
 casH = wdToken "case"
 affH = hence
-asmH =  lus </> wdToken "let"
+asmH = lus </> wdToken "let"
   where
     lus = letUs >> wdTokenOf ["assume", "presume", "suppose"] >> optLL1 () that
 ldfH = wdToken "define"
@@ -211,7 +198,7 @@ pretypeSentence kind p wfVars mbLink = narrow $ do
 
 sentence kind p wfVars mbLink = do
   dvs <- getDecl;
-  bl  <- wellFormedCheck (wfVars dvs . Block.formula) $ statementBlock kind p mbLink
+  bl <- wellFormedCheck (wfVars dvs . Block.formula) $ statementBlock kind p mbLink
   newDecl <- bindings dvs $ Block.formula bl
   let nbl = bl {Block.declaredVariables = newDecl}
   addBlockReports nbl; return nbl
@@ -220,16 +207,17 @@ sentence kind p wfVars mbLink = do
 
 defVars, assumeVars, affirmVars :: [String] -> Formula -> Maybe String
 
-defVars dvs f | null unusedVars = affirmVars dvs f
-              | otherwise       = return errorMsg
+defVars dvs f
+  | null unusedVars = affirmVars dvs f
+  | otherwise = return errorMsg
   where
     unusedVars = let fvs = free [] f in filter (`notElem` fvs) dvs
-    errorMsg   = "extra variables in the guard: " ++ varString
-    varString  = concatMap ((' ' :) . showVar) unusedVars
+    errorMsg = "extra variables in the guard: " ++ varString
+    varString = concatMap ((' ' :) . showVar) unusedVars
 
 llDefnVars dvs f
   | x `elem` dvs = Just $ "Defined variable is already in use: " ++ showVar x
-  | otherwise    = affirmVars (x : dvs) f
+  | otherwise = affirmVars (x : dvs) f
   where
     [x] = declNames [] f
 
@@ -276,10 +264,10 @@ indThesis fr pre post = do
     indTerm _ _ = return Top
 
     indFormula _ Top fr = return fr
-    indFormula vs it fr = fmap (insertIndTerm it) $ indStatem vs fr
+    indFormula vs it fr = insertIndTerm it <$> indStatem vs fr
 
-    indStatem vs (Imp g f) = fmap (Imp  g .) $ indStatem vs f
-    indStatem vs (All v f) = fmap (dAll v .) $ indStatem (deleteDecl v vs) f
+    indStatem vs (Imp g f) = (Imp g .) <$> indStatem vs f
+    indStatem vs (All v f) = (dAll v .) <$> indStatem (deleteDecl v vs) f
     indStatem [] f = return (`Imp` f)
     indStatem _ _ = failWF $ "invalid induction thesis " ++ show fr
 
@@ -358,11 +346,11 @@ eqChain = do
     chainVars dvs = affirmVars dvs . foldl1 And . map Block.formula
 
 
-eq_tail t = nextTerm t </> (smTokenOf "." >> return [])
+eqTail t = nextTerm t </> (smTokenOf "." >> return [])
 
 nextTerm :: Formula -> FTL [Block]
 nextTerm t = do
   pos <- getPos; inp <- getInput
   symbol ".="; s <- sTerm; ln <- eqLink; toks <- getTokens inp
-  fmap ((:) $ Block.makeBlock (Tag EqualityChain $ zEqu t s)
-    [] Affirmation "__" ln pos toks) $ eq_tail s
+  ((:) $ Block.makeBlock (Tag EqualityChain $ zEqu t s)
+    [] Affirmation "__" ln pos toks) <$> eqTail s

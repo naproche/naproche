@@ -200,19 +200,19 @@ possess = gnotion (primOfNtn term) stattr >>= digntn
 
 stattr = such >> that >> statement
 
-digadd (q, f, v)  = (q, Tag Dig f, v)
+digadd (q, f, v) = (q, Tag Dig f, v)
 
-digntn (q, f, v)  = dig f (map pVar v) >>= \ g -> return (q, g, v)
+digntn (q, f, v) = dig f (map pVar v) >>= \ g -> return (q, g, v)
 
-single (q, f, [v])  = return (q, f, v)
-single _            = fail "inadmissible multinamed notion"
+single (q, f, [v]) = return (q, f, v)
+single _ = fail "inadmissible multinamed notion"
 
 --- terms
 
 terms = label "terms" $
   fmap (foldl1 fld) $ m_term `sepBy` comma
   where
-    m_term     = quNotion -|- fmap s2m definiteTerm
+    m_term = quNotion -|- fmap s2m definiteTerm
     s2m (q, t) = (q, [t])
 
     fld (q, ts) (r, ss) = (q . r, ts ++ ss)
@@ -280,8 +280,8 @@ sAtom = sRelation -|- expar statement
 
     sChain = fmap (foldl1 And . concat) sHd
 
-    sHd  = lHd -|- (sTs >>= sTl)
-    lHd  = do
+    sHd = lHd -|- (sTs >>= sTl)
+    lHd = do
       pr <- primLpr sTerm; rs <- sTs
       fmap (map pr rs :) $ opt [] $ sTl rs
 
@@ -481,7 +481,7 @@ quChain = fmap (foldl fld id) $ wdToken "for" >> quNotion `sepByLL1` comma
 dig f [_] | occursS f = fail "too few subjects for an m-predicate"
 dig f ts = return (dive f)
   where
-    dive (Tag Dig f)  = down (digS) f
+    dive (Tag Dig f) = down digS f
     dive (Tag DigMultiSubject f) = down (digM $ zip ts $ tail ts) f
     dive (Tag DigMultiPairwise f) = down (digM $ pairMP ts) f
     dive f | isTrm f = f
@@ -491,12 +491,12 @@ dig f ts = return (dive f)
     down fn f = foldl1 And (fn f)
 
     digS f
-      | occursH f = map (\ x -> substHole x f) ts
+      | occursH f = map ( `substHole` f) ts
       | otherwise = [f]
 
     digM ps f
       | not (occursS f) = digS f
-      | not (occursH f) = map (\ y -> substSlot y f) $ tail ts
+      | not (occursH f) = map ( `substSlot` f) $ tail ts
       | otherwise = map (\ (x,y) -> substSlot y $ substHole x f) ps
 
     pairMP (t:ts) = [ (t, s) | s <- ts ] ++ pairMP ts
