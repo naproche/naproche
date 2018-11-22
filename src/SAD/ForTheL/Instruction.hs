@@ -14,22 +14,26 @@ import SAD.Core.SourcePos
 import SAD.Data.Instr (Instr)
 import qualified SAD.Data.Instr as Instr
 
+import SAD.ForTheL.Base
+
 import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
-
+import SAD.ForTheL.Reports
 import SAD.Parser.Token
 
 
-instrPos :: Parser st a -> Parser st (Instr.Pos, a)
-instrPos p =
-  enclosed bg en p >>= (\((pos1, pos2), x) ->
-    return (Instr.Pos pos1 pos2 (makeRange (pos1, advancesPos pos2 en)), x))
+instrPos :: (Instr.Pos -> FTL ()) -> FTL a -> FTL (Instr.Pos, a)
+instrPos report p = do
+  ((pos1, pos2), x) <- enclosed bg en p
+  let pos = Instr.Pos pos1 pos2 (makeRange (pos1, advancesPos pos2 en))
+  report pos; return (pos, x)
   where bg = "["; en = "]"
 
-instr :: Parser st (Instr.Pos, Instr)
+
+instr :: FTL (Instr.Pos, Instr)
 instr =
-  instrPos $ readInstr >>=
+  instrPos addDropReport $ readInstr >>=
     (\case
       Instr.String Instr.Read _ -> fail "'read' not allowed here"
       Instr.Command Instr.EXIT -> fail "'exit' not allowed here"
@@ -37,12 +41,12 @@ instr =
       i -> return i)
 
 
-instrRead :: Parser st (Instr.Pos, Instr)
+instrRead :: FTL (Instr.Pos, Instr)
 instrRead =
-  instrPos $ readInstr >>=
+  instrPos addInstrReport $ readInstr >>=
     (\case { i@(Instr.String Instr.Read _) -> return i; _ -> mzero })
 
-instrExit :: Parser st ()
+instrExit :: FTL ()
 instrExit =
   exbrk $ readInstr >>=
     (\case
@@ -50,11 +54,11 @@ instrExit =
       Instr.Command Instr.QUIT -> return ()
       _ -> mzero)
 
-instrDrop :: Parser st (Instr.Pos, Instr.Drop)
-instrDrop = instrPos (wdToken "/" >> readInstrDrop)
+instrDrop :: FTL (Instr.Pos, Instr.Drop)
+instrDrop = instrPos addInstrReport (wdToken "/" >> readInstrDrop)
 
 
-readInstr :: Parser st Instr
+readInstr :: FTL Instr
 readInstr =
   readInstrCommand -|- readInstrInt -|- readInstrBool -|- readInstrString -|- readInstrStrings
   where
@@ -87,7 +91,7 @@ readStrings = chainLL1 notClosingBrk
     notCl t = let tk = showToken t in guard (tk /= "]") >> return tk
 
 
-readInstrDrop :: Parser st Instr.Drop
+readInstrDrop :: FTL Instr.Drop
 readInstrDrop = readInstrCommand -|- readInstrInt -|- readInstrBool -|- readInstrString
   where
     readInstrCommand = fmap Instr.DropCommand (readKeywords Instr.keywordsCommand)

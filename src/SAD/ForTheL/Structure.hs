@@ -5,9 +5,8 @@ Syntax of ForTheL sections.
 -}
 
 {-# LANGUAGE NamedFieldPuns #-}
-{-# LANGUAGE TupleSections #-}
 
-module SAD.ForTheL.Structure (forthel, textReports) where
+module SAD.ForTheL.Structure (forthel) where
 
 
 import qualified Data.Char as Char
@@ -22,6 +21,7 @@ import SAD.ForTheL.Base
 import SAD.ForTheL.Statement
 import SAD.ForTheL.Extension
 import SAD.ForTheL.Instruction
+import SAD.ForTheL.Reports
 
 import SAD.Parser.Base
 import SAD.Parser.Combinators
@@ -53,7 +53,7 @@ forthel = section <|> macroOrPretype <|> bracketExpression
     section = liftM2 ((:) . TextBlock) topsection forthel
     macroOrPretype = liftM2 (:) (introduceMacro </> pretypeVariable) forthel
 
-instruction :: Parser st Text
+instruction :: FTL Text
 instruction =
   fmap (uncurry TextDrop) instrDrop </>
   fmap (uncurry TextInstr) instr
@@ -76,7 +76,8 @@ topsection = signature <|> definition <|> axiom <|> theorem
 genericTopsection kind header endparser = do
   pos <- getPos; inp <- getInput; nm <- header;
   toks <- getTokens inp; bs <- body
-  return $ Block.makeBlock zHole bs kind nm [] pos toks
+  let bl = Block.makeBlock zHole bs kind nm [] pos toks
+  addBlockReports bl; return bl
   where
     body = assumption <|> endparser
     assumption = topAssume `pretypeBefore` body
@@ -84,7 +85,7 @@ genericTopsection kind header endparser = do
 
 --- generic header parser
 
-header titles = finish $ wdTokenOf titles >> optLL1 "" topIdentifier
+header titles = finish $ markupTokenOf topsectionHeader titles >> optLL1 "" topIdentifier
 
 
 -- topsections
@@ -201,7 +202,8 @@ pretypeSentence kind p wfVars mbLink = narrow $ do
   dvs <- getDecl; tvr <- fmap (concatMap fst) getPretyped
   bl <- wellFormedCheck (wf dvs tvr) $ statementBlock kind p mbLink
   newDecl <- bindings (dvs ++ tvr) $ Block.formula bl
-  return bl {Block.declaredVariables = newDecl }
+  let nbl = bl {Block.declaredVariables = newDecl}
+  addBlockReports nbl; return nbl
   where
     wf dvs tvr bl =
       let fr = Block.formula bl; nvs = intersect tvr $ free dvs fr
@@ -211,7 +213,8 @@ sentence kind p wfVars mbLink = do
   dvs <- getDecl;
   bl  <- wellFormedCheck (wfVars dvs . Block.formula) $ statementBlock kind p mbLink
   newDecl <- bindings dvs $ Block.formula bl
-  return bl {Block.declaredVariables = newDecl}
+  let nbl = bl {Block.declaredVariables = newDecl}
+  addBlockReports nbl; return nbl
 
 -- variable well-formedness checks
 
@@ -247,8 +250,8 @@ preMethod = optLLx None $ letUs >> dem >> after method that
 
 postMethod = optLL1 None $ short <|> explicit
   where
-    short = wdToken "indeed" >> return Short
-    explicit = finish $ wdToken "proof"  >> method
+    short = markupToken proofStart "indeed" >> return Short
+    explicit = finish $ markupToken proofStart "proof" >> method
 
 method = optLL1 Raw $ wdToken "by" >> (contradict <|> cases <|> induction)
   where
@@ -326,7 +329,7 @@ proofText = assume_affirm_choose_lldefine <|> caseText <|> qed <|> llInstr
       proof (narrow $ affirm </> choose) </>
       narrow llDefn) `updateDeclbefore`
       proofText
-    qed = wdTokenOf ["qed", "end", "trivial", "obvious"] >> return []
+    qed = markupTokenOf proofEnd ["qed", "end", "trivial", "obvious"] >> return []
     llInstr = liftM2 (:) instruction proofText
 
 caseText = caseD
@@ -363,76 +366,3 @@ nextTerm t = do
   symbol ".="; s <- sTerm; ln <- eqLink; toks <- getTokens inp
   fmap ((:) $ Block.makeBlock (Tag EqualityChain $ zEqu t s)
     [] Affirmation "__" ln pos toks) $ eq_tail s
-
-
--- markup reports
-
-textDecls :: Text -> [Decl]
-textDecls (TextBlock block) =
-  Block.declaredVariables block ++ concatMap textDecls (Block.body block)
-textDecls _ = []
-
-entityReport :: PIDE -> Bool -> Decl -> SourcePos -> [Message.Report]
-entityReport pide def decl pos =
-  case Decl.name decl of
-    'x' : name ->
-      [(pos, Message.entityMarkup pide "variable" name def (Decl.serial decl) (Decl.position decl))]
-    _ -> []
-
-formulaReports :: PIDE -> [Decl] -> Formula -> [Message.Report]
-formulaReports pide decls = nub . dive
-  where
-    dive Var {trName = name, trPosition = pos} =
-      (pos, Markup.free) : entity
-      where
-        entity =
-          case find (\decl -> Decl.name decl == name) decls of
-            Nothing -> []
-            Just decl -> entityReport pide False decl pos
-    dive (All dcl f) = quantDive dcl f
-    dive (Exi dcl f) = quantDive dcl f
-    dive f = foldF dive f
-
-    quantDive dcl f = let pos = Decl.position dcl in
-      (pos, Markup.bound) : entityReport pide True dcl pos ++
-      boundReports pide dcl f ++
-      foldF dive f
-
-boundReports :: PIDE -> Decl -> Formula -> [Message.Report]
-boundReports pide dcl = dive 0
-  where
-    dive n (All _ f) = dive (succ n) f
-    dive n (Exi _ f) = dive (succ n) f
-    dive n Ind {trIndx = i, trPosition = pos} | i == n =
-      (pos, Markup.bound) : entityReport pide False dcl pos
-    dive n f = foldF (dive n) f
-
-instrReports :: Instr.Pos -> [Message.Report]
-instrReports pos = [(Instr.position pos, Markup.keyword3)]
-
-textReports :: PIDE -> Text -> [Message.Report]
-textReports pide text = reports0 ++ reports text
-  where
-    decls = textDecls text
-    reports0 = concatMap (\decl -> entityReport pide True decl $ Decl.position decl) decls
-    reports (TextBlock block) =
-      let
-        reports1 = [(Block.position block, Markup.expression "text block")]
-        reports2 =
-          case Block.tokens block of
-            tok : _ | Set.member (map Char.toLower $ tokenText tok) headers ->
-              [(tokenPos tok, Markup.keyword1)]
-            _ -> []
-        reports3 = formulaReports pide decls $ Block.formula block
-      in reports1 ++ reports2 ++ reports3 ++ concatMap reports (Block.body block)
-    reports (TextInstr pos _) =
-      map (Instr.position pos,) [Markup.comment2, Markup.expression "text instruction"]
-    reports (TextDrop pos _) =
-      map (Instr.position pos,) [Markup.comment2, Markup.expression "drop text instruction"]
-    reports (TextSynonym pos) =
-      map (pos,) [Markup.comment3, Markup.expression "text synonyms"]
-    reports (TextPretyping pos1 pos2 vs) =
-      [(pos1, Markup.keyword3), (pos2, Markup.expression "variable pretyping")] ++
-      map (\(_, p) -> (p, Markup.free)) vs
-    reports (TextMacro pos1 pos2) =
-      [(pos1, Markup.keyword3), (pos2, Markup.expression "macro definition")]

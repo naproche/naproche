@@ -25,6 +25,7 @@ import SAD.ForTheL.Base
 import SAD.ForTheL.Statement
 import SAD.ForTheL.Pattern
 import SAD.ForTheL.Instruction (instrPos)
+import SAD.ForTheL.Reports
 import SAD.Parser.Primitives
 import SAD.Parser.Base
 import SAD.Parser.Combinators
@@ -151,7 +152,7 @@ introduceSynonym = do
   where
     upd ss st = st { strSyms = ss : strSyms st }
 
-    sym = instrPos $ do
+    sym = instrPos addSynonymReport $ do
       w <- word ; root <- optLL1 w $ sfx w; smTokenOf "/"
       syms <- (wlexem -|- sfx w) `sepByLL1` smTokenOf "/"
       return $ root : syms
@@ -165,8 +166,9 @@ pretypeVariable = do
   return $ TextPretyping pos1 (rangePos (pos1, pos2)) (fst tv)
   where
     typeVar = do
-      pos1 <- wdTokenPos "let"; vs@(_:_) <- varlist; standFor;
+      pos1 <- getPos; markupToken synonymLet "let"; vs@(_:_) <- varlist; standFor;
       (g, pos2) <- wellFormedCheck (overfree [] . fst) holedNotion
+      addPretypingReport pos2 $ map snd vs; 
       return (pos1, pos2, (vs, ignoreNames g))
 
     holedNotion = do
@@ -180,8 +182,8 @@ pretypeVariable = do
 
 introduceMacro :: Parser FState Text
 introduceMacro = do
-  pos1 <- wdTokenPos "let"
-  (pos2, (f, g)) <- narrow (prd -|- ntn)
+  pos1 <- getPos; markupToken macroLet "let"
+  (pos2, (f, g)) <- narrow (prd -|- ntn); addMacroReport pos2
   MS.get >>= addExpr f (ignoreNames g) False
   return $ TextMacro pos1 (rangePos (pos1, pos2))
   where

@@ -27,6 +27,10 @@ import SAD.Core.SourcePos
 import SAD.Data.Text.Decl (Decl(Decl))
 import qualified SAD.Data.Text.Decl as Decl
 
+import SAD.Core.Message (PIDE)
+import qualified SAD.Core.Message as Message
+
+import qualified Isabelle.Markup as Markup
 
 type FTL = Parser FState
 
@@ -49,7 +53,8 @@ data FState = FState {
   cprExpr, rprExpr, lprExpr, iprExpr :: [Prim],
 
   tvrExpr :: [TVar], strSyms :: [[String]], varDecl :: [String],
-  idCount :: Int, hiddenCount :: Int, serialCounter :: Int }
+  idCount :: Int, hiddenCount :: Int, serialCounter :: Int,
+  reports :: PIDE -> [Message.Report] }
 
 
 
@@ -58,7 +63,7 @@ initFS = FState
   cf rf [] []
   [] [] [] sp
   [] [] []
-  0 0 0
+  0 0 0 (const [])
   where
     eq = [
       ([Wd ["equal"], Wd ["to"], Vr], zTrm (-1) "="),
@@ -386,6 +391,7 @@ does = opt () $ wdTokenOf ["does", "do"]
 has = wdTokenOf ["has" , "have"]
 with = wdTokenOf ["with", "of", "having"]
 such = wdTokenOf ["such", "so"]
+
 
 
 --just for now:

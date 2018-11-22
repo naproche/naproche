@@ -27,6 +27,7 @@ import SAD.Parser.Token
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
 import SAD.Parser.Error
+import SAD.Core.Message (PIDE)
 import qualified SAD.Core.Message as Message
 import qualified Isabelle.File as File
 
@@ -38,10 +39,10 @@ readInit "" = return []
 readInit file = do
   input <- catch (File.read file) $ Message.errorParser (fileOnlyPos file) . ioeGetErrorString
   let tokens = filter properToken $ tokenize (filePos file) input
-      initialParserState = State () tokens noPos
+      initialParserState = State initFS tokens noPos
   fst <$> launchParser instructionFile initialParserState
 
-instructionFile :: Parser st [(Instr.Pos, Instr)]
+instructionFile :: FTL [(Instr.Pos, Instr)]
 instructionFile = after (optLL1 [] $ chainLL1 instr) eof
 
 
@@ -49,12 +50,12 @@ instructionFile = after (optLL1 [] $ chainLL1 instr) eof
 
 readText :: String -> [Text] -> IO [Text]
 readText pathToLibrary text0 = do
-  text <- reader pathToLibrary [] [State initFS noTokens noPos] text0
+  (text, reports) <- reader pathToLibrary [] [State initFS noTokens noPos] text0
   pide <- Message.pideContext
-  when (isJust pide) $ Message.reports $ concatMap (textReports $ fromJust pide) text
+  when (isJust pide) $ Message.reports $ reports (fromJust pide)
   return text
 
-reader :: String -> [String] -> [State FState] -> [Text] -> IO [Text]
+reader :: String -> [String] -> [State FState] -> [Text] -> IO ([Text], PIDE -> [Message.Report])
 
 reader _ _ _ [TextInstr pos (Instr.String Instr.Read file)] | isInfixOf ".." file =
   Message.errorParser (Instr.position pos) ("Illegal \"..\" in file name: " ++ quote file)
@@ -83,7 +84,7 @@ reader pathToLibrary doneFiles (pState:states) [TextInstr _ (Instr.String Instr.
 
 -- this happens when t is not a suitable instruction
 reader pathToLibrary doneFiles stateList (t:restText) =
-  (t:) <$> reader pathToLibrary doneFiles stateList restText
+  consFst t <$> reader pathToLibrary doneFiles stateList restText
 
 reader pathToLibrary doneFiles (pState:oldState:rest) [] = do
   Message.outputParser Message.TRACING (fileOnlyPos $ head doneFiles) "parsing successful"
@@ -92,9 +93,9 @@ reader pathToLibrary doneFiles (pState:oldState:rest) [] = do
   (newText, newState) <- launchParser forthel resetState
   reader pathToLibrary doneFiles (newState:rest) newText
 
-reader _ _ _ [] = return []
+reader _ _ (state:_) [] = return ([], reports $ stUser state)
 
-
+consFst t (ts, ls) = (t:ts, ls)
 
 -- launch a parser in the IO monad
 launchParser :: Parser st a -> State st -> IO (a, State st)
