@@ -218,11 +218,11 @@ verificationLoop state@VS {restText = TextInstr _ instr : blocks}
 verificationLoop st@VS {restText = (TextDrop _ instr : blocks)} =
   procTextDrop st instr >> verificationLoop st {restText = blocks}
 
-verificationLoop st@VS {restText = (TextSynonym _ : blocks)} =
+verificationLoop st@VS {restText = (TextSynonym{} : blocks)} =
   verificationLoop st {restText = blocks}
-verificationLoop st@VS {restText = (TextPretyping _ : blocks)} =
+verificationLoop st@VS {restText = (TextPretyping{} : blocks)} =
   verificationLoop st {restText = blocks}
-verificationLoop st@VS {restText = (TextMacro _ : blocks)} =
+verificationLoop st@VS {restText = (TextMacro{} : blocks)} =
   verificationLoop st {restText = blocks}
 
 verificationLoop VS {restText = []} = return []

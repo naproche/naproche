@@ -160,34 +160,38 @@ introduceSynonym = do
 
 pretypeVariable :: Parser FState Text
 pretypeVariable = do
-  (pos, tv) <- narrow typeVar
+  (pos1, pos2, tv) <- narrow typeVar
   MS.modify $ upd tv
-  return $ TextPretyping pos
+  return $ TextPretyping pos1 (rangePos (pos1, pos2)) (fst tv)
   where
     typeVar = do
-      pos <- wdTokenPos "let"; vs@(_:_) <- varlist; standFor;
-      g <- wellFormedCheck (overfree []) (dot holedNotion)
-      return (pos, (map fst vs, ignoreNames g))
+      pos1 <- wdTokenPos "let"; vs@(_:_) <- varlist; standFor;
+      (g, pos2) <- wellFormedCheck (overfree [] . fst) holedNotion
+      return (pos1, pos2, (vs, ignoreNames g))
 
-    holedNotion = do (q, f) <- anotion; q <$> dig f [zHole]
+    holedNotion = do
+      (q, f) <- anotion
+      g <- q <$> dig f [zHole]
+      (_, pos2) <- dot
+      return (g, pos2)
 
-    upd tv st = st { tvrExpr = tv : tvrExpr st }
+    upd (vs, ntn) st = st { tvrExpr = (map fst vs, ntn) : tvrExpr st }
 
 
 introduceMacro :: Parser FState Text
 introduceMacro = do
-  pos <- wdTokenPos "let"
-  (f, g) <- narrow (prd -|- ntn)
+  pos1 <- wdTokenPos "let"
+  (pos2, (f, g)) <- narrow (prd -|- ntn)
   MS.get >>= addExpr f (ignoreNames g) False
-  return $ TextMacro pos
+  return $ TextMacro pos1 (rangePos (pos1, pos2))
   where
-    prd = wellFormedCheck prdVars $ do
+    prd = wellFormedCheck (prdVars . snd) $ do
       f <- newPrdPattern avr
-      g <- standFor >> dot statement; return (f, g)
-    ntn = wellFormedCheck funVars $ do
+      standFor; g <- statement; (_, pos2) <- dot; return (pos2, (f, g))
+    ntn = wellFormedCheck (funVars . snd) $ do
       (n, u) <- unnamedNotion avr
-      (q, f) <- standFor >> dot anotion
-      h <- fmap q $ dig f [pVar u]; return (n, h)
+      standFor; (q, f) <- anotion; (_, pos2) <- dot
+      h <- fmap q $ dig f [pVar u]; return (pos2, (n, h))
 
 ignoreNames (All dcl f) = All dcl {Decl.name = ""} $ ignoreNames f
 ignoreNames (Exi dcl f) = Exi dcl {Decl.name = ""} $ ignoreNames f

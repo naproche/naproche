@@ -15,7 +15,7 @@ import Data.Set (Set)
 import qualified Data.Set as Set
 
 import qualified Isabelle.Markup as Markup
-import SAD.Core.Message (PIDE (..))
+import SAD.Core.Message (PIDE)
 import qualified SAD.Core.Message as Message
 
 import SAD.ForTheL.Base
@@ -84,7 +84,7 @@ genericTopsection kind header endparser = do
 
 --- generic header parser
 
-header titles = dot $ wdTokenOf titles >> optLL1 "" topIdentifier
+header titles = finish $ wdTokenOf titles >> optLL1 "" topIdentifier
 
 
 -- topsections
@@ -121,7 +121,7 @@ assume   = sentence Assumption (asmH >> statement) assumeVars noLink
 llDefn   = sentence LowDefinition(ldfH >> setNotion </> functionNotion) llDefnVars noLink
 
 -- Links and Identifiers
-link = dot eqLink
+link = finish eqLink
   where
     identifiers = topIdentifier `sepByLL1` comma
 
@@ -133,7 +133,7 @@ topIdentifier = tokenPrim notSymb
 
 lowIdentifier = expar topIdentifier
 
-noLink = dot $ return []
+noLink = finish $ return []
 
 eqLink = optLL1 [] $ expar $ wdToken "by" >> identifiers
   where
@@ -248,7 +248,7 @@ preMethod = optLLx None $ letUs >> dem >> after method that
 postMethod = optLL1 None $ short <|> explicit
   where
     short = wdToken "indeed" >> return Short
-    explicit = dot $ wdToken "proof"  >> method
+    explicit = finish $ wdToken "proof"  >> method
 
 method = optLL1 Raw $ wdToken "by" >> (contradict <|> cases <|> induction)
   where
@@ -431,7 +431,8 @@ textReports pide text = reports0 ++ reports text
       map (Instr.position pos,) [Markup.comment2, Markup.expression "drop text instruction"]
     reports (TextSynonym pos) =
       map (pos,) [Markup.comment3, Markup.expression "text synonyms"]
-    reports (TextPretyping pos) =
-      map (pos,) [Markup.keyword3, Markup.expression "variable pretyping"]
-    reports (TextMacro pos) =
-      map (pos,) [Markup.keyword3, Markup.expression "macro definition"]
+    reports (TextPretyping pos1 pos2 vs) =
+      [(pos1, Markup.keyword3), (pos2, Markup.expression "variable pretyping")] ++
+      map (\(_, p) -> (p, Markup.free)) vs
+    reports (TextMacro pos1 pos2) =
+      [(pos1, Markup.keyword3), (pos2, Markup.expression "macro definition")]

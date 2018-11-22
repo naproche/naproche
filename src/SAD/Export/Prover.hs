@@ -15,6 +15,8 @@ import System.IO.Error
 import System.Process
 import Control.Exception
 
+import qualified Isabelle.File as File
+
 import qualified SAD.Core.Message as Message
 import SAD.Core.SourcePos
 import SAD.Data.Instr (Instr)
@@ -65,6 +67,10 @@ export red m prs ins cnt gl =
                 $ \e -> Message.errorExport noPos $
                     "failed to run \"" ++ path ++ "\": " ++ ioeGetErrorString e
 
+            File.setup wh
+            File.setup rh
+            File.setup eh
+
             hPutStrLn wh task ; hClose wh
             -- write the task to the prover input
 
@@ -83,7 +89,8 @@ export red m prs ins cnt gl =
                 unk = any (\ l -> any (`isPrefixOf` l) uns) lns
             -- prover response can be: positive, negative or inconclusive
 
-            unless (pos || neg || unk) $ Message.errorExport noPos "bad response"
+            unless (pos || neg || unk) $
+              Message.errorExport noPos $ intercalate "\n" ("bad response" : lns)
 
             hClose eh ; waitForProcess ph
             -- close error handle and wait for prover to terminate

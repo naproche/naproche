@@ -127,9 +127,15 @@ exbrc p = snd <$> enclosed "{" "}" p
 paren :: Parser st a -> Parser st a
 paren p = p -|- expar p
 
+---- dot keyword
+dot :: Parser st SourceRange
+dot = do
+  pos1 <- wdTokenPos "." <?> "a dot"
+  return $ makeRange (pos1, advancePos pos1 '.')
+
 ---- mandatory finishing dot
-dot :: Parser st a -> Parser st a
-dot p = after p $ (wdToken "." <?> "a dot")
+finish :: Parser st a -> Parser st a
+finish p = after p dot
 
 
 -- Control ambiguity

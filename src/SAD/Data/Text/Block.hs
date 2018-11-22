@@ -22,6 +22,7 @@ import qualified SAD.Data.Instr as Instr
 import SAD.Parser.Token
 import SAD.Data.Text.Decl (Decl)
 import qualified SAD.Data.Text.Decl as Decl
+import SAD.ForTheL.Base (VarName)
 
 
 data Text =
@@ -29,8 +30,8 @@ data Text =
   | TextInstr Instr.Pos Instr
   | TextDrop Instr.Pos Instr.Drop
   | TextSynonym SourcePos
-  | TextPretyping SourcePos
-  | TextMacro SourcePos
+  | TextPretyping SourcePos SourcePos [VarName]
+  | TextMacro SourcePos SourcePos
 
 data Block  = Block {
   formula           :: Formula,
@@ -125,7 +126,7 @@ showForm p block@Block {formula = formula, name = name} =
     sform False False = showString "assume " . shows formula
     sform False True  = shows formula
 
-    addName = if null name then "" else (' ':name)
+    addName = if null name then "" else ' ':name
     dot = showString ".\n"
 
 showIndent :: Int -> ShowS
