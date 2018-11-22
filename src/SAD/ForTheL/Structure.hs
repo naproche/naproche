@@ -164,15 +164,17 @@ pretype p = p `pretypeBefore` return []
 
 -- low-level header
 hence = optLL1 () $ wdTokenOf ["then", "hence", "thus", "therefore"]
-letUs = optLL1 () $ (wdToken "let" >> wdToken "us") <|> (wdToken "we" >> wdToken "can")
-
-chsH = hence >> letUs >> wdTokenOf ["choose", "take", "consider"]
-casH = wdToken "case"
-affH = hence
-asmH = lus </> wdToken "let"
+letUs = optLL1 () $ (mu "let" >> mu "us") <|> (mu "we" >> mu "can")
   where
-    lus = letUs >> wdTokenOf ["assume", "presume", "suppose"] >> optLL1 () that
-ldfH = wdToken "define"
+    mu = markupToken lowlevelHeader
+
+chsH = hence >> letUs >> markupTokenOf lowlevelHeader ["choose", "take", "consider"]
+casH = markupToken lowlevelHeader "case"
+affH = hence
+asmH = lus </> markupToken lowlevelHeader "let"
+  where
+    lus = letUs >> markupTokenOf lowlevelHeader ["assume", "presume", "suppose"] >> optLL1 () that
+ldfH = markupToken lowlevelHeader "define"
 
 
 -- generic sentence parser
@@ -234,14 +236,15 @@ data Scheme = None | Short | Raw | InS | InT Formula deriving Show
 
 preMethod = optLLx None $ letUs >> dem >> after method that
   where
-    dem = wdTokenOf ["prove", "show", "demonstrate"]
+    dem = markupTokenOf lowlevelHeader ["prove", "show", "demonstrate"]
+    that = markupToken lowlevelHeader "that"
 
 postMethod = optLL1 None $ short <|> explicit
   where
     short = markupToken proofStart "indeed" >> return Short
     explicit = finish $ markupToken proofStart "proof" >> method
 
-method = optLL1 Raw $ wdToken "by" >> (contradict <|> cases <|> induction)
+method = optLL1 Raw $ markupToken byAnnotation "by" >> (contradict <|> cases <|> induction)
   where
     contradict = wdToken "contradiction" >> return Raw
     cases = wdToken "case" >> wdToken "analysis" >> return Raw
