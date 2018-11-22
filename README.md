@@ -55,7 +55,7 @@ for Isabelle Prover IDE.
 
     cd .../Naproche-SAD  #repository
 
-    isabelle build -D Isabelle
+    isabelle build -d Isabelle Naproche-Build
     stack build
 
 Reference versions for multi-platform executables (x86_64):
