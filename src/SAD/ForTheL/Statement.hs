@@ -12,6 +12,8 @@ module SAD.ForTheL.Statement (
   anotion, dig, selection, setNotion, functionNotion) where
 
 import SAD.ForTheL.Base
+import SAD.ForTheL.Reports (markupToken, markupTokenOf)
+import qualified SAD.ForTheL.Reports as Reports
 import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
@@ -34,8 +36,9 @@ statement = headed <|> chained
 headed = quStatem <|> ifThenStatem <|> wrongStatem
   where
     quStatem = liftM2 ($) quChain statement
-    ifThenStatem =
-      liftM2 Imp (wdToken "if" >> statement) (wdToken "then" >> statement)
+    ifThenStatem = liftM2 Imp
+      (markupToken Reports.ifThen "if" >> statement)
+      (markupToken Reports.ifThen "then" >> statement)
     wrongStatem =
       mapM_ wdToken ["it", "is", "wrong", "that"] >> fmap Not statement
 
@@ -45,24 +48,27 @@ chained = label "chained statement" $ andOr <|> neitherNor >>= chainEnd
   where
     andOr = atomic >>= \f -> opt f (andChain f <|> orChain f)
     andChain f =
-      fmap (foldl And f) $ wdToken "and" >> atomic `sepBy` wdToken "and"
+      fmap (foldl And f) $ and >> atomic `sepBy` and
     -- we take sepBy here instead of sepByLLx since we do not  know if the
     -- and/or wdToken binds to this statement or to an ambient one
-    orChain f = fmap (foldl Or f) $ wdToken "or" >> atomic `sepBy` wdToken "or"
+    orChain f = fmap (foldl Or f) $ or >> atomic `sepBy`or
+    and = markupToken Reports.conjunctiveAnd "and"
+    or = markupToken Reports.or "or"
 
     neitherNor = do
-      wdToken "neither"; f <- atomic; wdToken "nor"
-      fs <- atomic `sepBy` wdToken "nor"
+      markupToken Reports.neitherNor "neither"; f <- atomic
+      markupToken Reports.neitherNor "nor"
+      fs <- atomic `sepBy` markupToken Reports.neitherNor "nor"
       return $ foldl1 And $ map Not (f:fs)
 
 
 chainEnd f = optLL1 f $ and_st <|> or_st <|> iff_st <|> where_st
   where
-    and_st = fmap (And f) $ wdToken "and" >> headed
-    or_st = fmap (Or f) $ wdToken "or" >> headed
+    and_st = fmap (And f) $ markupToken Reports.conjunctiveAnd "and" >> headed
+    or_st = fmap (Or f) $ markupToken Reports.or "or" >> headed
     iff_st = fmap (Iff f) $ iff >> statement
     where_st = do
-      wdTokenOf ["when", "where"]; y <- statement
+      markupTokenOf Reports.whenWhere ["when", "where"]; y <- statement
       return $ foldr zAll (Imp y f) (declNames [] y)
 
 
