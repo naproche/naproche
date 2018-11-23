@@ -41,8 +41,8 @@ markupTokenOf markup ss = do
 
 -- formula and variable reports
 
-entityReport :: PIDE -> Bool -> Decl -> SourcePos -> [Message.Report]
-entityReport pide def decl pos =
+variableReport :: PIDE -> Bool -> Decl -> SourcePos -> [Message.Report]
+variableReport pide def decl pos =
   case Decl.name decl of
     'x' : name ->
       [(pos, Message.entityMarkup pide "variable" name def (Decl.serial decl) (Decl.position decl))]
@@ -57,13 +57,13 @@ formulaReports pide decls = nub . dive
         entity =
           case find (\decl -> Decl.name decl == name) decls of
             Nothing -> []
-            Just decl -> entityReport pide False decl pos
+            Just decl -> variableReport pide False decl pos
     dive (All dcl f) = quantDive dcl f
     dive (Exi dcl f) = quantDive dcl f
     dive f = foldF dive f
 
     quantDive dcl f = let pos = Decl.position dcl in
-      (pos, Markup.bound) : entityReport pide True dcl pos ++
+      (pos, Markup.bound) : variableReport pide True dcl pos ++
       boundReports pide dcl f ++
       foldF dive f
 
@@ -73,7 +73,7 @@ boundReports pide dcl = dive 0
     dive n (All _ f) = dive (succ n) f
     dive n (Exi _ f) = dive (succ n) f
     dive n Ind {trIndx = i, trPosition = pos} | i == n =
-      (pos, Markup.bound) : entityReport pide False dcl pos
+      (pos, Markup.bound) : variableReport pide False dcl pos
     dive n f = foldF (dive n) f
 
 
@@ -83,7 +83,7 @@ addBlockReports :: Block -> FTL ()
 addBlockReports bl = addReports $ \pide -> let decls = Block.declaredVariables bl in
   (Block.position bl, Markup.expression "text block") :
   formulaReports pide decls (Block.formula bl) ++
-  concatMap (\decl -> entityReport pide True decl $ Decl.position decl) decls
+  concatMap (\decl -> variableReport pide True decl $ Decl.position decl) decls
 
 addInstrReport :: Instr.Pos -> FTL ()
 addInstrReport pos = addReports $ const $
