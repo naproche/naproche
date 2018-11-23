@@ -161,15 +161,16 @@ introduceSynonym = do
 
 pretypeVariable :: Parser FState Text
 pretypeVariable = do
-  (pos1, pos2, tv) <- narrow typeVar
+  (pos, tv) <- narrow typeVar
   MS.modify $ upd tv
-  return $ TextPretyping pos1 (rangePos (pos1, pos2)) (fst tv)
+  return $ TextPretyping pos (fst tv)
   where
     typeVar = do
       pos1 <- getPos; markupToken synonymLet "let"; vs@(_:_) <- varlist; standFor;
       (g, pos2) <- wellFormedCheck (overfree [] . fst) holedNotion
-      addPretypingReport pos2 $ map snd vs; 
-      return (pos1, pos2, (vs, ignoreNames g))
+      let pos = rangePos (pos1, pos2)
+      addPretypingReport pos $ map snd vs; 
+      return (pos, (vs, ignoreNames g))
 
     holedNotion = do
       (q, f) <- anotion
@@ -183,9 +184,11 @@ pretypeVariable = do
 introduceMacro :: Parser FState Text
 introduceMacro = do
   pos1 <- getPos; markupToken macroLet "let"
-  (pos2, (f, g)) <- narrow (prd -|- ntn); addMacroReport pos2
+  (pos2, (f, g)) <- narrow (prd -|- ntn)
+  let pos = rangePos (pos1, pos2)
+  addMacroReport pos
   MS.get >>= addExpr f (ignoreNames g) False
-  return $ TextMacro pos1 (rangePos (pos1, pos2))
+  return $ TextMacro pos
   where
     prd = wellFormedCheck (prdVars . snd) $ do
       f <- newPrdPattern avr

@@ -30,8 +30,8 @@ data Text =
   | TextInstr Instr.Pos Instr
   | TextDrop Instr.Pos Instr.Drop
   | TextSynonym SourcePos
-  | TextPretyping SourcePos SourcePos [VarName]
-  | TextMacro SourcePos SourcePos
+  | TextPretyping SourcePos [VarName]
+  | TextMacro SourcePos
 
 data Block  = Block {
   formula           :: Formula,
