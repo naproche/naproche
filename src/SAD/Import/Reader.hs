@@ -39,7 +39,7 @@ readInit "" = return []
 readInit file = do
   input <- catch (File.read file) $ Message.errorParser (fileOnlyPos file) . ioeGetErrorString
   let tokens = filter properToken $ tokenize (filePos file) input
-      initialParserState = State initFS tokens noPos
+      initialParserState = State (initFS Nothing) tokens noPos
   fst <$> launchParser instructionFile initialParserState
 
 instructionFile :: FTL [(Instr.Pos, Instr)]
@@ -50,12 +50,12 @@ instructionFile = after (optLL1 [] $ chainLL1 instr) eof
 
 readText :: String -> [Text] -> IO [Text]
 readText pathToLibrary text0 = do
-  (text, reports) <- reader pathToLibrary [] [State initFS noTokens noPos] text0
   pide <- Message.pideContext
-  when (isJust pide) $ Message.reports $ reports (fromJust pide)
+  (text, reports) <- reader pathToLibrary [] [State (initFS pide) noTokens noPos] text0
+  when (isJust pide) $ Message.reports $ reports
   return text
 
-reader :: String -> [String] -> [State FState] -> [Text] -> IO ([Text], PIDE -> [Message.Report])
+reader :: String -> [String] -> [State FState] -> [Text] -> IO ([Text], [Message.Report])
 
 reader _ _ _ [TextInstr pos (Instr.String Instr.Read file)] | isInfixOf ".." file =
   Message.errorParser (Instr.position pos) ("Illegal \"..\" in file name: " ++ quote file)

@@ -25,7 +25,10 @@ import qualified Isabelle.Markup as Markup
 
 
 addReports :: (PIDE -> [Message.Report]) -> FTL ()
-addReports rep = MS.modify (\st -> st {reports = \pide -> rep pide ++ reports st pide})
+addReports rep = MS.modify (\st -> case pide st of
+  Just pide -> let newRep = rep pide
+               in  seq newRep $ st {reports = newRep ++ reports st}
+  Nothing -> st)
 
 
 -- markup tokens while parsing

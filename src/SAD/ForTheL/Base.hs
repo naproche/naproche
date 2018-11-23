@@ -54,7 +54,7 @@ data FState = FState {
 
   tvrExpr :: [TVar], strSyms :: [[String]], varDecl :: [String],
   idCount :: Int, hiddenCount :: Int, serialCounter :: Int,
-  reports :: PIDE -> [Message.Report] }
+  reports :: [Message.Report], pide :: Maybe PIDE }
 
 
 
@@ -63,7 +63,7 @@ initFS = FState
   cf rf [] []
   [] [] [] sp
   [] [] []
-  0 0 0 (const [])
+  0 0 0 []
   where
     eq = [
       ([Wd ["equal"], Wd ["to"], Vr], zTrm (-1) "="),
