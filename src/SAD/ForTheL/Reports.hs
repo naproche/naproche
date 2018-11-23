@@ -21,13 +21,12 @@ import qualified SAD.Data.Instr as Instr
 import SAD.Parser.Base
 import SAD.Parser.Primitives
 
+import qualified Isabelle.Markup as Markup
 
-
-
-import Isabelle.Markup as Markup
 
 addReports :: (PIDE -> [Message.Report]) -> FTL ()
 addReports rep = MS.modify (\st -> st {reports = \pide -> rep pide ++ reports st pide})
+
 
 -- markup tokens while parsing
 
@@ -38,6 +37,7 @@ markupToken markup s = do
 markupTokenOf :: Markup.T -> [String] -> FTL ()
 markupTokenOf markup ss = do
   pos <- getPos; wdTokenOf ss; addReports $ const [(pos, markup)]
+
 
 -- formula and variable reports
 
@@ -99,10 +99,11 @@ addSynonymReport pos = addReports $ const $
 
 addPretypingReport :: SourcePos -> [SourcePos] -> FTL ()
 addPretypingReport pos ps = addReports $ const $
-  (pos, Markup.expression "variable pretyping") : map ( ,Markup.free) ps
+  (pos, Markup.expression "variable pretyping") : map (, Markup.free) ps
 
 addMacroReport :: SourcePos -> FTL ()
 addMacroReport pos = addReports $ const [(pos, Markup.expression "macro definition")]
+
 
 -- markups used
 
