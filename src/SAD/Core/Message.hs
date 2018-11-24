@@ -161,7 +161,7 @@ error origin pos msg = do
 
 -- specific messages
 
-outputMain, outputExport, outputForTheL, outputParser, outputReason, outputSimp
+outputMain, outputExport, outputForTheL, outputParser, outputReason, outputSimp, outputThesis
   :: Kind -> SourcePos -> String -> IO ()
 outputMain = output "Main"
 outputExport = output "Export"
@@ -169,13 +169,11 @@ outputForTheL = output "ForTheL"
 outputParser = output "Parser"
 outputReason = output "Reasoner"
 outputSimp = output "Simplifier"
+outputThesis = output "Thesis"
 
 errorExport = error "Export"
 errorParser = error "Parser"
 
-outputThesis :: Kind -> SourcePos -> Int -> String -> IO ()
-outputThesis kind pos indent msg =
-  output "Thesis" kind pos $ replicate (3 * indent) ' ' ++ msg
 
 trim :: String -> String
 trim = Isabelle.trim_line

@@ -247,7 +247,8 @@ reasonLog :: Message.Kind -> SourcePos -> String -> VM ()
 reasonLog kind pos = justIO . Message.outputReason kind pos
 
 thesisLog :: Message.Kind -> SourcePos -> Int -> String -> VM ()
-thesisLog kind pos indent = justIO . Message.outputThesis kind pos indent
+thesisLog kind pos indent msg =
+  justIO (Message.outputThesis kind pos (replicate (3 * indent) ' ' ++ msg))
 
 simpLog :: Message.Kind -> SourcePos -> String -> VM ()
 simpLog kind pos = justIO . Message.outputSimp kind pos
