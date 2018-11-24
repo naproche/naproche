@@ -80,7 +80,7 @@ verificationLoop state@VS {
   incrementIntCounter Sections
   whenInstruction Instr.Printsection False $ justIO $
     Message.outputForTheL Message.WRITELN (Block.position block) $
-    Message.trim (Block.showForm 0 block "")
+    Message.trimText (Block.showForm 0 block "")
   let newBranch = block : branch; contextBlock = Context f newBranch [] f
 
 

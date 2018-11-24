@@ -9,10 +9,9 @@ Formal output messages, with PIDE (Prover IDE) support.
 module SAD.Core.Message (Kind (..), PIDE, pideContext, pideActive,
   entityMarkup,
   Report, ReportText, reportsText, reportText, reports, report,
-  output, error, outputMain, outputExport, outputForTheL,
+  trimText, output, error, outputMain, outputExport, outputForTheL,
   outputParser, outputReason, outputThesis, outputSimp,
-  errorExport, errorParser,
-  trim
+  errorExport, errorParser
 ) where
 
 import Prelude hiding (error)
@@ -139,6 +138,9 @@ report pos markup = reports [(pos, markup)]
 
 -- output
 
+trimText :: String -> String
+trimText = Isabelle.trim_line
+
 messageText :: Maybe PIDE -> String -> Kind -> SourcePos -> String -> String
 messageText pide origin kind pos msg =
   if isJust pide then
@@ -173,7 +175,3 @@ outputThesis = output "Thesis"
 
 errorExport = error "Export"
 errorParser = error "Parser"
-
-
-trim :: String -> String
-trim = Isabelle.trim_line
