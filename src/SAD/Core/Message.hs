@@ -1,7 +1,7 @@
 {-
 Authors: Makarius Wenzel (2018)
 
-Formal output messages, with Prover IDE support.
+Formal output messages, with PIDE (Prover IDE) support.
 -}
 
 {-# LANGUAGE TupleSections #-}
@@ -33,7 +33,7 @@ import qualified Isabelle.XML as XML
 import qualified Isabelle.YXML as YXML
 
 
-{- message kind -}
+-- message kind
 
 data Kind =
   STATE | WRITELN | INFORMATION | TRACING | WARNING | LEGACY | ERROR
@@ -45,7 +45,7 @@ instance Show Kind where
   show _ = ""
 
 
-{- PIDE context -}
+-- PIDE context
 
 data PIDE = PIDE {pideID :: String, pideFileName :: String}
 
@@ -62,7 +62,7 @@ pideActive :: IO Bool
 pideActive = isJust <$> pideContext
 
 
-{- output as PIDE message -}
+-- PIDE messages
 
 kindXML :: Kind -> String
 kindXML STATE = Markup.stateN
@@ -111,7 +111,7 @@ pideMessage s = "\1" ++ Value.print_int len ++ "\n" ++ s
   where len = ByteString.length (UTF8.fromString s)
     
     
-{- markup reports -}
+-- PIDE markup reports
 
 type Report = (SourcePos, Markup.T)
 type ReportText = (Report, String)
@@ -137,7 +137,7 @@ report :: SourcePos -> Markup.T -> IO ()
 report pos markup = reports [(pos, markup)]
 
 
-{- output -}
+-- output
 
 messageText :: Maybe PIDE -> String -> Kind -> SourcePos -> String -> String
 messageText pide origin kind pos msg =
@@ -159,7 +159,7 @@ error origin pos msg = do
   errorWithoutStackTrace $ messageText pide origin ERROR pos msg
 
 
-{- specific messages -}
+-- specific messages
 
 outputMain, outputExport, outputForTheL, outputParser, outputReason, outputSimp
   :: Kind -> SourcePos -> String -> IO ()

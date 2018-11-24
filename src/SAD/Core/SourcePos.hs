@@ -1,9 +1,8 @@
 {-
 Authors: Steffen Frerix (2017 - 2018), Makarius Wenzel (2018)
 
-Token source positions.
+Token source positions: counting Unicode codepoints.
 -}
-
 
 module SAD.Core.SourcePos
   ( SourcePos (sourceFile, sourceLine, sourceColumn, sourceOffset, sourceEndOffset),
@@ -22,6 +21,8 @@ module SAD.Core.SourcePos
 import qualified Data.List as List
 
 
+-- positions
+
 data SourcePos =
   SourcePos {
     sourceFile :: String,
@@ -31,8 +32,6 @@ data SourcePos =
     sourceEndOffset :: Int }
   deriving (Eq, Ord)
 
-type SourceRange = (SourcePos, SourcePos)
-
 noPos :: SourcePos
 noPos = SourcePos "" 0 0 0 0
 
@@ -41,6 +40,9 @@ fileOnlyPos file = SourcePos file 0 0 0 0
 
 filePos :: String -> SourcePos
 filePos file = SourcePos file 1 1 1 0
+
+
+-- advance position
 
 advanceLine line c = if line <= 0 || c /= '\n' then line else line + 1
 advanceColumn column c = if column <= 0 then column else if c == '\n' then 1 else column + 1
@@ -62,6 +64,11 @@ advancesPos (SourcePos file line column offset endOffset) s =
     (foldl advanceOffset offset s)
     endOffset
 
+
+-- ranges: explicit end position
+
+type SourceRange = (SourcePos, SourcePos)
+
 noRangePos :: SourcePos -> SourcePos
 noRangePos (SourcePos file line column offset _) =
   SourcePos file line column offset 0
@@ -75,6 +82,9 @@ makeRange (pos, pos') = (rangePos (pos, pos'), noRangePos pos')
 
 noRange :: SourceRange
 noRange = (noPos, noPos)
+
+
+-- human-readable output
 
 instance Show SourcePos where
   show (SourcePos file line column _ _) =
