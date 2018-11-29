@@ -30,16 +30,17 @@
 
 # General #
 
-* support for multiple (simultaneous) input files (??)
-
-* more robust and scalable library handling (imports) (!?)
-
-* incremental output of Isabelle/ML Bash.process, e.g. via socket or fifo (?!)
-
 * stay-resident server instead of command-line batch-tool (??)
 
 * caching of old results from prefix of source, old versions etc. (??)
 
+* support for multiple (simultaneous) input files (??)
+
+* more robust and scalable library handling (imports) (!?)
+
+* clarify treatment of non-ASCII text: Latex vs. Isabelle symbols (!?!)
+
 * parallel checking: internal and/or external provers (??)
 
-* clarify treatment of non-ASCII text: Latex vs. Isabelle symbols vs. Unicode (!?!)
+* incremental output of Isabelle/ML Bash.process, e.g. via socket or fifo (?!)
+
