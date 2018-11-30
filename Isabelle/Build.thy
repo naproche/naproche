@@ -11,11 +11,7 @@ begin
 section \<open>Isabelle/Haskell modules\<close>
 
 ML_command \<open>
-  let
-    val dir = Path.append \<^master_dir> \<^path>\<open>src/Isabelle\<close>
-    val _ = Isabelle_System.mkdirs dir;
-    val _ = Haskell.install_sources dir;
-  in () end
+  Generate_File.generate \<^theory>\<open>Haskell\<close> (Path.append \<^master_dir> \<^path>\<open>src/Isabelle\<close>)
 \<close>
 
 
