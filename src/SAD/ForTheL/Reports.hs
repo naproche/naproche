@@ -1,5 +1,11 @@
+{-
+Authors: Steffen Frerix (2018), Makarius Wenzel (2018)
+
+PIDE markup reports for ForTheL text elements.
+-}
 
 {-# LANGUAGE TupleSections #-}
+
 module SAD.ForTheL.Reports where
 
 import Control.Monad
@@ -61,22 +67,22 @@ formulaReports pide decls = nub . dive
           case find (\decl -> Decl.name decl == name) decls of
             Nothing -> []
             Just decl -> variableReport pide False decl pos
-    dive (All dcl f) = quantDive dcl f
-    dive (Exi dcl f) = quantDive dcl f
+    dive (All decl f) = quantDive decl f
+    dive (Exi decl f) = quantDive decl f
     dive f = foldF dive f
 
-    quantDive dcl f = let pos = Decl.position dcl in
-      (pos, Markup.bound) : variableReport pide True dcl pos ++
-      boundReports pide dcl f ++
+    quantDive decl f = let pos = Decl.position decl in
+      (pos, Markup.bound) : variableReport pide True decl pos ++
+      boundReports pide decl f ++
       foldF dive f
 
 boundReports :: PIDE -> Decl -> Formula -> [Message.Report]
-boundReports pide dcl = dive 0
+boundReports pide decl = dive 0
   where
     dive n (All _ f) = dive (succ n) f
     dive n (Exi _ f) = dive (succ n) f
     dive n Ind {trIndx = i, trPosition = pos} | i == n =
-      (pos, Markup.bound) : variableReport pide False dcl pos
+      (pos, Markup.bound) : variableReport pide False decl pos
     dive n f = foldF (dive n) f
 
 
@@ -108,7 +114,7 @@ addMacroReport :: SourcePos -> FTL ()
 addMacroReport pos = addReports $ const [(pos, Markup.expression "macro definition")]
 
 
--- markups used
+-- specific markup
 
 synonymLet = Markup.keyword3
 macroLet = Markup.keyword3
