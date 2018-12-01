@@ -4,9 +4,13 @@ Authors: Makarius (2018)
 Some Isabelle/Naproche examples for testing.
 *)
 
+section \<open>Naproche-SAD texts within the Isabelle context\<close>
+
 theory Test
   imports Naproche
 begin
+
+subsection \<open>Inlined text\<close>
 
 forthel \<open>
 [subset/-s] [surject/-s]
@@ -37,8 +41,14 @@ Then N is not equal to the value of f at any element of M.
 Contradiction. qed.
 \<close>
 
-declare [[forthel_prove = false]]
+
+subsection \<open>External text file\<close>
+
+context notes [[forthel_prove = false]]
+begin
+
 forthel_file "../examples/tarski.ftl"
-declare [[forthel_prove]]
+
+end
 
 end

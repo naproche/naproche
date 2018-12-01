@@ -113,18 +113,17 @@ end;
 (* Isabelle/Isar command setup *)
 
 val _ =
-  Outer_Syntax.command \<^command_keyword>\<open>forthel\<close> "check Naproche-SAD text"
-    (Parse.embedded_position >> (fn inp =>
-      Toplevel.generic_theory (fn gthy =>
-        (process_forthel (Context.proof_of gthy) inp; gthy))));
+  Outer_Syntax.local_theory \<^command_keyword>\<open>forthel\<close> "check Naproche-SAD text"
+    (Parse.embedded_position >> (fn inp => fn lthy => (process_forthel lthy inp; lthy)));
 
 val _ =
-  Outer_Syntax.command \<^command_keyword>\<open>forthel_file\<close> "check Naproche-SAD text file (.ftl)"
-    (Resources.provide_parse_files "forthel_file" >> (fn files =>
-      Toplevel.generic_theory (fn gthy =>
+  Outer_Syntax.local_theory \<^command_keyword>\<open>forthel_file\<close> "check Naproche-SAD text file (.ftl)"
+    (Resources.parse_files "forthel_file" >> (fn files => fn lthy =>
         let
-          val ([file], gthy') = Context.map_theory_result files gthy;
-          val _ = process_forthel (Context.proof_of gthy) (cat_lines (#lines file), #pos file);
-        in gthy' end)));
+          val [file] = files (Proof_Context.theory_of lthy);
+          val lthy' = lthy
+            |> Local_Theory.background_theory (Resources.provide (#src_path file, #digest file));
+          val _ = process_forthel lthy' (cat_lines (#lines file), #pos file);
+        in lthy' end));
 
 end;
