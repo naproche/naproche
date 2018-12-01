@@ -47,3 +47,6 @@
 * clarify treatment of non-ASCII text: Latex vs. Isabelle symbols (!?!)
 
 * parallel checking: internal and/or external provers (??)
+
+* formulate underlying logic + set-theory in Isabelle (syntax only, no rules):
+  thus formulas can be pretty-printed via Isabelle notation
