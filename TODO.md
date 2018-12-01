@@ -30,17 +30,18 @@
 
 # General #
 
-* stay-resident server instead of command-line batch-tool (??)
+* stay-resident server instead of command-line batch-tool -- also relevant for
+  incremental output of Isabelle/ML Bash.process;
 
-* caching of old results from prefix of source, old versions etc. (??)
+* caching of old results from prefix of source, old versions etc.
 
-* support for multiple (simultaneous) input files (??)
+* support for multiple (simultaneous) input files (!?)
+
+* support for concatenated sources, according to Isabelle theory document (??)
+  (e.g. multiple `forthel` commands, even forthel document-antiquotations)
 
 * more robust and scalable library handling (imports) (!?)
 
 * clarify treatment of non-ASCII text: Latex vs. Isabelle symbols (!?!)
 
 * parallel checking: internal and/or external provers (??)
-
-* incremental output of Isabelle/ML Bash.process, e.g. via socket or fifo (?!)
-
