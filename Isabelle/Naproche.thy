@@ -6,7 +6,8 @@ Isabelle Prover IDE support for NaProChe / ForTheL.
 
 theory Naproche
   imports Pure
-  keywords "forthel_file" :: thy_load
+  keywords "forthel" :: thy_decl
+    and "forthel_file" :: thy_load
 begin
 
 ML_file "naproche.ML"

@@ -5,6 +5,7 @@ Formal output messages, with PIDE (Prover IDE) support.
 -}
 
 {-# LANGUAGE TupleSections #-}
+{-# LANGUAGE NamedFieldPuns #-}
 
 module SAD.Core.Message (Kind (..), PIDE, pideContext, pideActive,
   entityMarkup,
@@ -46,16 +47,18 @@ instance Show Kind where
 
 -- PIDE context
 
-data PIDE = PIDE {pideID :: String, pideFileName :: String}
+data PIDE = PIDE {pideID :: String, pideFile :: String, pideShift :: Int}
 
 pideContext :: IO (Maybe PIDE)
 pideContext = do
-  fileName <- fromMaybe "" <$> lookupEnv "NAPROCHE_FILE_NAME"
   pide <- lookupEnv "NAPROCHE_PIDE"
-  case pide of
-    Nothing -> return Nothing
-    Just "" -> return Nothing
-    Just id -> return (Just $ PIDE id fileName)
+  file <- fromMaybe "" <$> lookupEnv "NAPROCHE_POS_FILE"
+  shift <- fromMaybe "0" <$> lookupEnv "NAPROCHE_POS_SHIFT"
+  case (pide, Value.parse_int shift) of
+    (Nothing, _) -> return Nothing
+    (Just "", _) -> return Nothing
+    (_, Nothing) -> return Nothing
+    (Just id, Just i) -> return $ Just (PIDE id file i)
 
 pideActive :: IO Bool
 pideActive = isJust <$> pideContext
@@ -73,18 +76,21 @@ kindXML LEGACY = Markup.legacyN
 kindXML ERROR = Markup.errorN
 
 posProperties :: PIDE -> SourcePos -> [(String, String)]
-posProperties PIDE{pideID = id, pideFileName = defaultFile} pos =
-  (if null id then [] else [(Markup.idN, id)]) ++
-  (if null file && null defaultFile then []
-   else [(Markup.fileN, if null file then defaultFile else file)]) ++
+posProperties PIDE{pideID, pideFile, pideShift} pos =
+  (if null pideID then [] else [(Markup.idN, pideID)]) ++
+  (if null file then [] else [(Markup.fileN, file)]) ++
   (if line <= 0 then [] else [(Markup.lineN, Value.print_int line)]) ++
   (if offset <= 0 then [] else [(Markup.offsetN, Value.print_int offset)]) ++
   (if endOffset <= 0 then [] else [(Markup.end_offsetN, Value.print_int endOffset)])
   where
-    file = SourcePos.sourceFile pos
-    line = SourcePos.sourceLine pos
-    offset = SourcePos.sourceOffset pos
-    endOffset = SourcePos.sourceEndOffset pos
+    file =
+      case SourcePos.sourceFile pos of
+        "" -> pideFile
+        file -> file
+    line = if null file then 0 else SourcePos.sourceLine pos
+    shift i = if i <= 0 then i else i + pideShift
+    offset = shift $ SourcePos.sourceOffset pos
+    endOffset = shift $ SourcePos.sourceEndOffset pos
 
 posDefProperties :: PIDE -> SourcePos -> [(String, String)]
 posDefProperties pide = map (\(a, b) -> ("def_" ++ a, b)) . posProperties pide
@@ -108,8 +114,8 @@ xmlMessage pide origin kind pos msg =
 pideMessage :: String -> String
 pideMessage s = "\1" ++ Value.print_int len ++ "\n" ++ s
   where len = ByteString.length (UTF8.fromString s)
-    
-    
+
+
 -- PIDE markup reports
 
 type Report = (SourcePos, Markup.T)

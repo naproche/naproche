@@ -9,7 +9,7 @@ sig
   val forthel_prove: bool Config.T
   val forthel_check: bool Config.T
   val forthel_skipfail: bool Config.T
-  val forthel_file: Proof.context -> Token.file -> unit
+  val process_forthel: Proof.context -> string * Position.T -> unit
 end;
 
 structure Naproche: NAPROCHE =
@@ -24,7 +24,7 @@ val forthel_skipfail = Attrib.setup_option_bool (\<^system_option>\<open>forthel
 fun bool_option ctxt config = if Config.get ctxt config then "on" else "off";
 
 
-(* process ForTheL files *)
+(* process ForTheL text *)
 
 local
 
@@ -45,18 +45,16 @@ fun output_message name =
 
 in
 
-fun forthel_file ctxt (file: Token.file) =
+fun process_forthel ctxt (text, pos) =
   Isabelle_System.with_tmp_file "naproche" "ftl" (fn tmp_file =>
     let
-      val thy = Proof_Context.theory_of ctxt;
-
       val pide =
         (case Position.get_id (Position.thread_data ()) of
           SOME id => id
         | NONE => raise Fail "Missing PIDE position id");
 
-      val _ = File.write tmp_file (cat_lines (#lines file));
-      val pos_file_name = the_default "" (Position.file_of (#pos file));
+      val pos_file = the_default "" (Position.file_of pos);
+      val pos_offset = the_default 0 (Position.offset_of pos);
 
       fun print_position props =
         let val pos = Position.of_properties props;
@@ -90,13 +88,15 @@ fun forthel_file ctxt (file: Token.file) =
              if n = 0 then ()
              else Output.error_message ("Illegal remaining bytes " ^ signed_string_of_int n));
 
+      val _ = File.write tmp_file text;
       val script =
         cat_lines [
           "set -e",
           "cd \"$NAPROCHE_HOME\"",
           "export PATH=\"$E_HOME:$SPASS_HOME:$PATH\"",
           "export NAPROCHE_PIDE=" ^ Bash.string pide,
-          "export NAPROCHE_FILE_NAME=" ^ Bash.string pos_file_name,
+          "export NAPROCHE_POS_FILE=" ^ Bash.string pos_file,
+          "export NAPROCHE_POS_SHIFT=" ^ Bash.string (string_of_int (pos_offset - 1)),
           File.bash_path (Path.explode "$NAPROCHE_EXE") ^
             " --prove=" ^ bool_option ctxt forthel_prove ^
             " --check=" ^ bool_option ctxt forthel_check ^
@@ -113,12 +113,18 @@ end;
 (* Isabelle/Isar command setup *)
 
 val _ =
-  Outer_Syntax.command \<^command_keyword>\<open>forthel_file\<close> "check NaProChe .ftl file"
+  Outer_Syntax.command \<^command_keyword>\<open>forthel\<close> "check Naproche-SAD text"
+    (Parse.embedded_position >> (fn inp =>
+      Toplevel.generic_theory (fn gthy =>
+        (process_forthel (Context.proof_of gthy) inp; gthy))));
+
+val _ =
+  Outer_Syntax.command \<^command_keyword>\<open>forthel_file\<close> "check Naproche-SAD text file (.ftl)"
     (Resources.provide_parse_files "forthel_file" >> (fn files =>
       Toplevel.generic_theory (fn gthy =>
         let
           val ([file], gthy') = Context.map_theory_result files gthy;
-          val _ = forthel_file (Context.proof_of gthy) file;
+          val _ = process_forthel (Context.proof_of gthy) (cat_lines (#lines file), #pos file);
         in gthy' end)));
 
 end;
