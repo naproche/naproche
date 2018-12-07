@@ -76,6 +76,40 @@ Reference versions for multi-platform executables (x86_64):
       isabelle jedit -l Pure Isabelle/Test.thy
 
 
+### Multi-platform application bundling (with Isabelle)
+
+  * Linux build host, e.g. Ubuntu 18.04 LTS with the following packages:
+      - curl
+      - lib32stdc++6
+      - mercurial
+      - p7zip-full
+      - texlive-fonts-extra
+      - texlive-font-utils
+      - texlive-latex-extra
+      - texlive-science
+
+  * Standard Isabelle repository clone:
+
+        hg clone https://isabelle.in.tum.de/repos/isabelle
+        isabelle/bin/isabelle components -I
+        isabelle/bin/isabelle components -a
+        isabelle/bin/isabelle jedit -b
+
+    optional tests, notably of LaTeX packages:
+    
+        isabelle/bin/isabelle build Pure
+        isabelle/bin/isabelle build -g doc -R -b
+        isabelle/bin/isabelle build -g doc -o document=pdf
+
+  * Isabelle/Naproche component, e.g.:
+
+        curl -o naproche-20181207.tar.gz -L https://github.com/Naproche/Naproche-SAD/releases/download/20181207/naproche-20181207.tar.gz
+
+  * Application bundling, e.g. Isabelle/8985ee17bfd2 + naproche-20181207:
+
+        isabelle/Admin/build_release -r 8985ee17bfd2 -c naproche-20181207.tar.gz -R Isabelle_Naproche-20181207 -O -W dist/website dist
+
+
 ## Reference ##
 
 This program is based on the System for Automated Deduction (SAD) by
