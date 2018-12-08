@@ -29,6 +29,7 @@ import qualified SAD.Data.Instr as Instr
 import SAD.Data.Text.Block
 import SAD.Export.Base
 import SAD.Import.Reader
+import SAD.Parser.Error
 import Isabelle.Library (quote)
 import qualified Isabelle.File as File
 
@@ -70,8 +71,10 @@ mainBody  = do
   -- initialize reasoner state
   reasonerState <- newIORef (RState [] [] provers)
   proveStart <- getCurrentTime
-
-  verify (Instr.askString Instr.File "" revInitialOpts) reasonerState text
+  
+  case checkParseCorrectness text of
+    Nothing -> verify (Instr.askString Instr.File "" revInitialOpts) reasonerState text
+    Just err -> Message.errorParser (errorPos err) (show err)
 
   finishTime <- getCurrentTime
   finalReasonerState <- readIORef reasonerState

@@ -23,6 +23,7 @@ import SAD.Parser.Token
 import SAD.Data.Text.Decl (Decl)
 import qualified SAD.Data.Text.Decl as Decl
 import SAD.ForTheL.Base (VarName)
+import SAD.Parser.Error (ParseError)
 
 
 data Text =
@@ -32,6 +33,7 @@ data Text =
   | TextSynonym SourcePos
   | TextPretyping SourcePos [VarName]
   | TextMacro SourcePos
+  | TextError ParseError
 
 data Block  = Block {
   formula           :: Formula,
@@ -106,6 +108,7 @@ instance Show Text where
   showsPrec p (TextBlock block) = showsPrec p block
   showsPrec 0 (TextInstr _ instr) = shows instr . showChar '\n'
   showsPrec 0 (TextDrop _ instr) = shows instr . showChar '\n'
+  showsPrec 0 (TextError err) = shows err . showChar '\n'
   showsPrec _ _ = id
 
 instance Show Block where

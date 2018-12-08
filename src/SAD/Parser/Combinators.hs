@@ -298,3 +298,13 @@ errorTrace label shw p = Parser $ \st ok cerr eerr ->
     in  runParser p st nok ncerr neerr
     where
       tabString = unlines . map ((++) "   ") . lines
+
+      
+notEof :: Parser st ()
+notEof = Parser $ \st ok _ eerr ->
+  case uncons $ stInput st of
+    Nothing -> eerr $ unexpectError "" noPos
+    Just (t, ts) ->
+      if isEOF t
+      then eerr $ unexpectError (showToken t) (tokenPos t)
+      else ok (newErrorUnknown (tokenPos t)) [] . pure $ PR () st

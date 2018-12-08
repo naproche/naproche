@@ -37,6 +37,8 @@ import qualified SAD.Data.Tag as Tag
 import SAD.Data.Text.Decl (Decl(Decl))
 import qualified SAD.Data.Text.Decl as Decl
 
+import Debug.Trace
+
 forthel :: FTL [Text]
 forthel = section <|> macroOrPretype <|> bracketExpression
   where
@@ -129,11 +131,11 @@ eqLink = optLL1 [] $ expar $ wdToken "by" >> identifiers
 
 -- declaration management, typings and pretypings
 
-updateDeclbefore :: FTL Block -> FTL [Text] -> FTL [Text]
+updateDeclbefore :: FTL Text -> FTL [Text] -> FTL [Text]
 updateDeclbefore blp p = do
-  bl <- blp
-  addDecl (Block.declaredNames bl) $ fmap (TextBlock bl : ) p
-
+  txt <- blp; case txt of
+    TextBlock bl -> addDecl (Block.declaredNames bl) $ fmap (txt : ) p
+    _ -> fmap (txt :) p
 
 pretyping :: Block -> FTL Block
 pretyping bl = do
@@ -313,15 +315,16 @@ proofBody bl = do
   bs <- proofText; ls <- link
   return bl {Block.body = bs, Block.link = ls ++ Block.link bl}
 
-proofText = assume_affirm_choose_lldefine_case <|> qed <|> llInstr
+proofText = 
+  qed <|>
+  (unfailing (fmap TextBlock lowtext <|> instruction) `updateDeclbefore` proofText)
   where
-    assume_affirm_choose_lldefine_case = (
+    lowtext =
       narrow assume </>
       proof (narrow $ affirm </> choose) </>
-      narrow llDefn <|> caseDestinction) `updateDeclbefore`
-      proofText
-    qed = markupTokenOf proofEnd ["qed", "end", "trivial", "obvious"] >> return []
-    llInstr = liftM2 (:) instruction proofText
+      narrow llDefn <|>
+      caseDestinction
+    qed = label "qed" $ markupTokenOf proofEnd ["qed", "end", "trivial", "obvious"] >> return []
 
 caseDestinction = do
   bl@Block { Block.formula = fr } <- narrow caseHypo
@@ -351,3 +354,20 @@ nextTerm t = do
   symbol ".="; s <- sTerm; ln <- eqLink; toks <- getTokens inp
   ((:) $ Block.makeBlock (Tag EqualityChain $ zEqu t s)
     [] Affirmation "__" ln pos toks) <$> eqTail s
+
+-- error handling
+
+unfailing :: FTL Text -> FTL Text
+unfailing p =
+  inspectError p >>= either guardEOF return
+  where
+    guardEOF err = notEof >> jumpToNextUnit (return $ TextError err)
+
+jumpToNextUnit :: FTL a -> FTL a
+jumpToNextUnit = jumpWith nextUnit
+  where
+    nextUnit (t:tks)
+      | isEOF t = [t]
+      | tokenText t == "." && (null tks || isEOF (head tks) || tokenText (head tks) /= "=") = tks
+      | otherwise = nextUnit tks
+    nextUnit [] = []

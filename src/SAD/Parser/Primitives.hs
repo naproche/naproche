@@ -46,6 +46,22 @@ eof = Parser $ \(State st input _) ok _ eerr ->
       else eerr $ unexpectError (showToken t) (tokenPos t)
 
 
+-- error handling outside of the monad
+
+catchError :: (ParseError -> a) -> Parser st a -> Parser st a
+catchError catch p = Parser $ \st ok cerr eerr ->
+  let pcerr err = ok (newErrorUnknown $ stPosition st) [] [PR (catch err) st]
+      peerr err = ok (newErrorUnknown $ stPosition st) [PR (catch err) st] []
+  in  runParser p st ok pcerr peerr
+
+inspectError :: Parser st a -> Parser st (Either ParseError a)
+inspectError = catchError Left . fmap Right
+
+jumpWith :: ([Token] -> [Token]) -> Parser st a -> Parser st a
+jumpWith jump p = Parser $ \st ok cerr err ->
+  let newInput = jump $ stInput st
+  in  runParser p st{stInput = newInput} ok cerr err
+
 -- useful macros
 
 ---- check if the current token satisfies a predicate; if not fail
