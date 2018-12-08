@@ -313,26 +313,20 @@ proofBody bl = do
   bs <- proofText; ls <- link
   return bl {Block.body = bs, Block.link = ls ++ Block.link bl}
 
-proofText = assume_affirm_choose_lldefine <|> caseText <|> qed <|> llInstr
+proofText = assume_affirm_choose_lldefine_case <|> qed <|> llInstr
   where
-    assume_affirm_choose_lldefine = (
+    assume_affirm_choose_lldefine_case = (
       narrow assume </>
       proof (narrow $ affirm </> choose) </>
-      narrow llDefn) `updateDeclbefore`
+      narrow llDefn <|> caseDestinction) `updateDeclbefore`
       proofText
     qed = markupTokenOf proofEnd ["qed", "end", "trivial", "obvious"] >> return []
     llInstr = liftM2 (:) instruction proofText
 
-caseText = caseD
-  where
-    caseChain = caseD <|> qed
-    caseD = liftM2 (:) caseDestinction caseChain
-    qed = wdTokenOf ["qed", "end", "trivial", "obvious"] >> return []
-
-    caseDestinction = do
-      bl@Block { Block.formula = fr } <- narrow caseHypo
-      fmap TextBlock $ proofBody $ bl { 
-        Block.formula = Imp (Tag Tag.CaseHypothesis fr) zThesis}
+caseDestinction = do
+  bl@Block { Block.formula = fr } <- narrow caseHypo
+  proofBody $ bl { 
+  Block.formula = Imp (Tag Tag.CaseHypothesis fr) zThesis}
 
 
 -- equality Chain
