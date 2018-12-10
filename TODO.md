@@ -10,6 +10,8 @@
 * more robust (less redundant) specification of options with their defaults:
   avoid duplicate information in Haskell sources, comments, init.opt
 
+* avoid odd printing of exit code (e.g. ExitSuccess)
+
 
 # PIDE markup reports #
 
