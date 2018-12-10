@@ -11,7 +11,7 @@ begin
 section \<open>Isabelle/Haskell modules\<close>
 
 ML_command \<open>
-  Generated_Files.write_files \<^theory>\<open>Haskell\<close> (Path.append \<^master_dir> \<^path>\<open>src/Isabelle\<close>)
+  Generated_Files.write_files \<^theory>\<open>Haskell\<close> (Path.append \<^master_dir> \<^path>\<open>src\<close>)
 \<close>
 
 
