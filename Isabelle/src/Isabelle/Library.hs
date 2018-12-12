@@ -16,10 +16,13 @@ module Isabelle.Library (
 
   fold, fold_rev, single, map_index, get_index,
 
-  quote, trim_line, clean_name)
+  quote, space_implode, commas, commas_quote, cat_lines,
+  space_explode, split_lines, trim_line, clean_name)
 where
 
 import Data.Maybe
+import qualified Data.List as List
+import qualified Data.List.Split as Split
 
 
 {- functions -}
@@ -81,6 +84,23 @@ get_index f = get_aux 0
 
 quote :: String -> String
 quote s = "\"" ++ s ++ "\""
+
+space_implode :: String -> [String] -> String
+space_implode = List.intercalate
+
+commas, commas_quote :: [String] -> String
+commas = space_implode ", "
+commas_quote = commas . map quote
+
+cat_lines :: [String] -> String
+cat_lines = space_implode "\n"
+
+
+space_explode :: Char -> String -> [String]
+space_explode c = Split.split (Split.dropDelims (Split.whenElt (== c)))
+
+split_lines :: String -> [String]
+split_lines = space_explode '\n'
 
 trim_line :: String -> String
 trim_line line =

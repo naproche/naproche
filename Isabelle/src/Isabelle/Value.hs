@@ -10,7 +10,7 @@ See also "$ISABELLE_HOME/src/Pure/General/value.ML".
 -}
 
 module Isabelle.Value
-  (print_bool, parse_bool, print_int, parse_int, print_real, parse_real)
+  (print_bool, parse_bool, parse_nat, print_int, parse_int, print_real, parse_real)
 where
 
 import Data.Maybe
@@ -28,6 +28,15 @@ parse_bool :: String -> Maybe Bool
 parse_bool "true" = Just True
 parse_bool "false" = Just False
 parse_bool _ = Nothing
+
+
+{- nat -}
+
+parse_nat :: String -> Maybe Int
+parse_nat s =
+  case Read.readMaybe s of
+    Just n | n >= 0 -> Just n
+    _ -> Nothing
 
 
 {- int -}

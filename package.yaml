@@ -18,6 +18,7 @@ dependencies:
 - bytestring
 - utf8-string
 - network
+- split
 
 library:
   source-dirs:

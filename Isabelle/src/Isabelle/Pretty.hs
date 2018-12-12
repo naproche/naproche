@@ -17,7 +17,7 @@ module Isabelle.Pretty (
   commas, enclose, enum, list, str_list, big_list)
 where
 
-import Isabelle.Library hiding (quote)
+import Isabelle.Library hiding (quote, commas)
 import qualified Data.List as List
 import qualified Isabelle.Buffer as Buffer
 import qualified Isabelle.Markup as Markup
