@@ -5,8 +5,6 @@
 * eliminate odd crash of --prover spass examples/Maximum_principle.ftl:
   "Undefined symbol sdtcflbdtrb."
 
-* proper names for instructions "setCtxt", "drpCtxt", "addCtxt" etc. (!?)
-
 * more robust (less redundant) specification of options with their defaults:
   avoid duplicate information in Haskell sources, comments, init.opt
 
