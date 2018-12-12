@@ -173,7 +173,7 @@ domainCondition _ =
 -- notice that this takes place in the FM monad
 -- therefore some lifts to get actions from the RM monad
 
-getMacro :: Context -> Tag -> Formula -> ReaderT VState GM Formula
+getMacro :: Context -> Tag -> Formula -> VM Formula
 getMacro cx tg = fmap (Tag tg . pd ) . either err return . dive
   where
     dive (And f g) = dive f `mplus` dive g

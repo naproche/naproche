@@ -5,15 +5,17 @@ An implementation of the MESON algorithm.
 -}
 
 
-module SAD.Prove.MESON (prove, contras) where
+module SAD.Prove.MESON (prove, contras, addRules) where
 
 import Control.Monad
+import Control.Monad.Reader
+import Data.List
 
 import SAD.Core.Base hiding (retrieve)
 import SAD.Data.Formula
 import SAD.Prove.Unify
 import SAD.Prove.Normalize
-import SAD.Data.Text.Context (Context, MRule(MR))
+import SAD.Data.Text.Context (Context, MRule(MR, conclusion))
 import qualified SAD.Data.Text.Context as Context
 import qualified SAD.Data.Structures.DisTree as DT
 import SAD.Core.Reduction
@@ -33,13 +35,25 @@ contrapositives ls =
 
 
 {- the monadic action to generate meson rules during text verfication -}
-contras :: Formula -> VM [MRule]
+contras :: Formula -> VM (([MRule], [MRule]), Int)
 contras f = do
-  m <- askGlobalState skolemCounter;
+  m <- asks skolemCounter;
   let (skf, nm) = skolemize m $ simplify f
-  updateGlobalState (\st -> st { skolemCounter = nm })
-  let cnf = transformToCNF skf
-  return $ concatMap contrapositives cnf
+      cnf = transformToCNF skf
+  return (splitContras $ concatMap contrapositives cnf, nm)
+
+splitContras :: [MRule] -> ([MRule],[MRule])
+splitContras = partition isPositive
+  where
+    isPositive = not . isNot . conclusion
+
+addRules ::
+  (DT.DisTree MRule, DT.DisTree MRule) ->
+  ([MRule], [MRule]) ->
+  (DT.DisTree MRule, DT.DisTree MRule)
+addRules (pos, neg) (newPos, newNeg) =
+  (foldr (DT.insertBy conclusion) pos newPos,
+  foldr (DT.insertBy (ltNeg. conclusion)) neg newNeg)
 
 
 -- MESON algorithm

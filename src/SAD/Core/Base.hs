@@ -15,12 +15,9 @@ module SAD.Core.Base (
   (<|>),
   runRM,
 
-  GState (..), GM,
-  askGlobalState, updateGlobalState,
-  addGlobalContext, insertMRule,
   retrieveContext,
-  initialGlobalState,
-  defForm, getDef, getLink, addGroup,
+  initialDefinitions,
+  defForm, getDef,
 
   VState (..), VM,
 
@@ -71,25 +68,6 @@ data RState = RState {
   instructions :: [Instr],
   counters     :: [Counter],
   provers      :: [Prover] }
-
-
-{- the global proof state containing:
-  ~ All definitions so far
-  ~ positive and negative MESON rules for ontological checking
-  ~ groupings of theorem identifiers
-  ~ the global context
-  ~ a counter for the identifier for skolem constants
--}
-
-data GState = GL {
-  definitions      :: Definitions,
-  mesonPositives   :: DT.DisTree MRule,
-  mesonNegatives   :: DT.DisTree MRule,
-  identifierGroups :: M.Map String (Set.Set String),
-  globalContext    :: [Context],
-  skolemCounter    :: Int }
-
-
 
 -- All of these counters are for gathering statistics to print out later
 
@@ -164,19 +142,19 @@ data VState = VS {
   currentThesis   :: Context,
   currentBranch   :: [Block],         -- branch of the current block
   currentContext  :: [Context],
+  mesonRules      :: (DT.DisTree MRule, DT.DisTree MRule),
+  definitions     :: Definitions,
+  skolemCounter   :: Int,
   restText        :: [Text] }
 
-
-
-type GM = StateT GState CRM
-type VM = ReaderT VState GM
+type VM = ReaderT VState CRM
 
 justRS :: VM (IORef RState)
-justRS = lift $ lift $ CRM $ \ s _ k -> k s
+justRS = lift $ CRM $ \ s _ k -> k s
 
 
 justIO :: IO a -> VM a
-justIO m = lift $ lift $ CRM $ \ _ _ k -> m >>= k
+justIO m = lift $ CRM $ \ _ _ k -> m >>= k
 
 -- State management from inside the verification monad
 
@@ -255,35 +233,8 @@ simpLog kind pos = justIO . Message.outputSimp kind pos
 
 
 
--- GlobalState management
-
-askGlobalState    = lift . gets
-updateGlobalState = lift . modify
-
-insertMRule :: [MRule] -> VM ()
-insertMRule rules = updateGlobalState (add rules)
-  where
-    add [] globalState = globalState
-    add (rule@(MR _ conclusion):rules) gs
-      | isNot conclusion =
-          let negatives     = mesonNegatives gs
-              negConclusion = ltNeg conclusion
-          in  add rules $
-                gs {mesonNegatives = DT.insert negConclusion rule negatives}
-      | otherwise  =
-          let positives = mesonPositives gs
-          in  add rules $
-                gs {mesonPositives = DT.insert conclusion rule positives}
-
-initialGlobalState = GL initialDefinitions DT.empty DT.empty M.empty [] 0
-
-addGlobalContext cn =
-  updateGlobalState (\st -> st {globalContext = cn : globalContext st})
-
-
-
 retrieveContext names = do
-  globalContext <- askGlobalState globalContext
+  globalContext <- asks currentContext
   let (context, unfoundSections) = runState (retrieve globalContext) names
   -- warn the user if some sections could not be found
   unless (Set.null unfoundSections) $
@@ -342,24 +293,7 @@ defForm definitions term = do
 -- retrieve definition of a symbol (monadic)
 getDef :: Formula -> VM DefEntry
 getDef term = do
-  defs <- askGlobalState definitions
+  defs <- asks definitions
   let mbDef = IM.lookup (trId term) defs
   guard $ isJust mbDef
   return $ fromJust mbDef
-
--- groupings
-
--- get the section identifiers grouped by a group identifier
-getLink :: [String] -> VM (Set.Set String)
-getLink link = do
-  groups <- askGlobalState identifierGroups
-  return $ Set.unions $
-    map (\l -> M.findWithDefault (Set.singleton l) l groups) link
-
--- add group identifier
-addGroup :: [String] -> VM ()
-addGroup [] = return ()
-addGroup [name] = reasonLog Message.WARNING noPos $ "empty group: " ++ show name
-addGroup (name:identifiers) =
-  getLink identifiers >>= \link -> updateGlobalState
-    (\st -> st {identifierGroups = M.insert name link $ identifierGroups st})

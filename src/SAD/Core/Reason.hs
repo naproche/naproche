@@ -134,9 +134,8 @@ launchProver iteration = do
 launchReasoning :: VM ()
 launchReasoning = do 
   goal <- thesis; context <- context
-  skolemInt <- askGlobalState skolemCounter
-  mesonPos <- askGlobalState mesonPositives
-  mesonNeg <- askGlobalState mesonNegatives
+  skolemInt <- asks skolemCounter
+  (mesonPos, mesonNeg) <- asks mesonRules
   let lowlevelContext = takeWhile Context.isLowLevel context
       proveGoal = prove skolemInt lowlevelContext mesonPos mesonNeg goal
       -- set timelimit to 10^4 
@@ -154,7 +153,7 @@ launchReasoning = do
   context is selected. -}
 filterContext :: VM a -> [Context] -> VM a
 filterContext action context = do
-  link <- asks (Context.link . currentThesis) >>= getLink;
+  link <- asks (Set.fromList . Context.link . currentThesis);
   if Set.null link 
     then action `withContext` 
          (map replaceSignHead $ filter (not . isTop . Context.reducedFormula) context)
@@ -235,7 +234,7 @@ unfold :: VM [Context]
 unfold = do  
   thesis <- thesis; context <- context
   let task = Context.setForm thesis (Not $ Context.formula thesis) : context
-  definitions <- askGlobalState definitions; evaluations <- asks evaluations
+  definitions <- asks definitions; evaluations <- asks evaluations
   generalUnfoldSetting <- askInstructionBool Instr.Unfold True
   lowlevelUnfoldSetting <- askInstructionBool Instr.Unfoldlow True
   generalSetUnfoldSetting <- askInstructionBool Instr.Unfoldsf True

@@ -45,14 +45,13 @@ import SAD.Core.Rewrite
 
 -- Main verification loop
 
-verify :: String -> IORef RState -> [Text] -> IO (Maybe ([Text], GState))
+verify :: String -> IORef RState -> [Text] -> IO (Maybe [Text])
 verify fileName reasonerState text = do
   let text' = TextInstr Instr.noPos (Instr.String Instr.File fileName) : text
   Message.outputReason Message.TRACING (fileOnlyPos fileName) "verification started"
 
-  let verificationState = VS False [] DT.empty (Context Bot [] [] Bot) [] [] text'
+  let verificationState = VS False [] DT.empty (Context Bot [] [] Bot) [] [] (DT.empty, DT.empty) initialDefinitions 0 text'
   result <- flip runRM reasonerState $
-    flip runStateT initialGlobalState $
     runReaderT (verificationLoop verificationState) undefined
   ignoredFails <- (\st -> accumulateIntCounter (counters st) 0 FailedGoals) <$>
     readIORef reasonerState
@@ -72,6 +71,8 @@ verificationLoop state@VS {
   currentThesis   = thesis,
   currentBranch   = branch,
   currentContext  = context,
+  mesonRules      = mRules,
+  definitions     = defs,
   restText = TextBlock block@(Block f body kind declaredVariables _ _ _ _):blocks,
   evaluations     = evaluations }
     = local (const state) $ do
@@ -124,23 +125,25 @@ verificationLoop state@VS {
         Block.body = fortifiedProof }
       formulaImage = Block.formulate newBlock
 
-  -- extract definitions
-  when (kind == Definition || kind == Signature) $ addDefinition formulaImage
-  -- compute MESON rules
-  mesonRules  <- contras $ deTag formulaImage
-  definitions <- askGlobalState definitions
-  let ontoReduction =
-        foldr1 And $ map (onto_reduce definitions) (assm_nf formulaImage)
+  (mesonRules, newSkolem)  <- contras $ deTag formulaImage
+  let newDefinitions =
+        if   kind == Definition || kind == Signature
+        then addDefinition defs formulaImage
+        else defs
+      ontoReduction =
+        foldr1 And $ map (onto_reduce newDefinitions) (assm_nf formulaImage)
       newContextBlock =
         let reduction = if Block.isTopLevel block then ontoReduction else formulaImage
-        in  Context formulaImage newBranch mesonRules reduction
+        in  Context formulaImage newBranch (uncurry (++) mesonRules) reduction
       newContext = newContextBlock : context
-  when (Block.isTopLevel block) $ addGlobalContext newContextBlock
-  when (Block.isTopLevel block) $ insertMRule mesonRules
+      newRules =
+        if   Block.isTopLevel block
+        then addRules mRules mesonRules
+        else mRules
 
   let (newMotivation, hasChanged , newThesis) =
         if   thesisSetting
-        then inferNewThesis definitions newContext thesis
+        then inferNewThesis defs newContext thesis
         else (Block.needsProof block, False, thesis)
 
   whenInstruction Instr.Printthesis False $ when (
@@ -164,7 +167,9 @@ verificationLoop state@VS {
   newBlocks <- verifyProof state {
     thesisMotivated = motivated && newMotivation,
     rewriteRules = newRewriteRules, evaluations = newEvaluations,
-    currentThesis = newThesis, currentContext = newContext, restText = blocks }
+    currentThesis = newThesis, currentContext = newContext,
+    mesonRules = newRules, definitions = newDefinitions,
+    skolemCounter = newSkolem, restText = blocks }
 
   -- if this block made the thesis unmotivated, we must discharge a composite
   -- (and possibly quite difficult) prove task
@@ -209,10 +214,8 @@ verificationLoop st@VS {
 
 -- process instructions. we distinguish between those that influence the
 -- verification state and those that influence (at most) the global state
-verificationLoop state@VS {restText = TextInstr _ instr : blocks}
-  | Instr.relevant instr = contextTextInstr state {restText = blocks} instr
-  | otherwise = procTextInstr state instr >>
-      verificationLoop state {restText = blocks}
+verificationLoop state@VS {restText = TextInstr _ instr : blocks} = 
+  procTextInstr state instr >> verificationLoop state {restText = blocks}
 
 {- process a command to drop an instruction, i.e. [/prove], [/ontored], etc.-}
 verificationLoop st@VS {restText = (TextDrop _ instr : blocks)} =
@@ -253,10 +256,9 @@ verifyProof state@VS {
 
     -- extract rules, compute new thesis and move on with the verification
     process newContext f = do
-      definitions <- askGlobalState definitions
       let newRules = extractRewriteRule (head newContext) ++ rules
           (_, _, newThesis) =
-            inferNewThesis definitions newContext $ Context.setForm thesis f
+            inferNewThesis (definitions state) newContext $ Context.setForm thesis f
       whenInstruction Instr.Printthesis False $ when (
         noInductionOrCase (Context.formula newThesis) && not (null $ restText state)) $
           thesisLog Message.WRITELN
@@ -338,40 +340,8 @@ procTextInstr VS {
         >> addInstruction (Instr.Bool Instr.Printfulltask True),
       return ()]
 
-    proc (Instr.Strings Instr.Group ps) = addGroup ps
-
     proc i = addInstruction i
 
 {- drop an instruction from the state -}
 procTextDrop :: VState -> Instr.Drop -> VM ()
 procTextDrop _ = dropInstruction
-
--- Context settings
-
-{- manipulate context by hand -}
-contextTextInstr :: VState -> Instr -> VM [Text]
-contextTextInstr state@VS {
-  thesisMotivated = motivated,
-  rewriteRules    = rules,
-  currentThesis   = thesis,
-  currentContext  = context}
-  = proc
-  where
-    proc (Instr.Strings Instr.SetCtxt groupLink) = do
-      newContext <- setContext groupLink
-      verificationLoop state {
-        currentContext = takeWhile Context.isLowLevel context ++ newContext}
-    proc (Instr.Strings Instr.DrpCtxt groupLink) = do
-      link <- getLink groupLink
-      verificationLoop state {
-        currentContext = filter (not . flip elem link . Context.name) context }
-    proc (Instr.Strings Instr.AddCtxt groupLink) = do
-      newContext <- setContext groupLink
-      verificationLoop state {
-        currentContext = unionBy ((==) `on` Context.name) newContext context}
-{- the function definition must include the continuation with verificationLoop
-since it influences the verification state (procTextInstr only influences the
-global state) -}
-
-setContext [] = askGlobalState globalContext
-setContext groupLink = getLink groupLink >>= retrieveContext

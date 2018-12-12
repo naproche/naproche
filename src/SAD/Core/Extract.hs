@@ -40,9 +40,8 @@ import Debug.Trace
 
 
 {- extract definition from f and add it to the global state -}
-addDefinition f = do
-  defs <- askGlobalState definitions; let newDef = extractDefinition defs f
-  updateGlobalState (\rs -> rs {definitions = add newDef (definitions rs)})
+addDefinition :: Definitions -> Formula -> Definitions
+addDefinition defs f = add (extractDefinition defs f) defs
   where
     add df@DE {Definition.term = t} = IM.insert (trId t) df
 
