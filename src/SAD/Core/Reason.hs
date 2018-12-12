@@ -153,7 +153,7 @@ launchReasoning = do
   context is selected. -}
 filterContext :: VM a -> [Context] -> VM a
 filterContext action context = do
-  link <- asks (Context.link . currentThesis) >>= getLink;
+  link <- asks (Set.fromList . Context.link . currentThesis);
   if Set.null link 
     then action `withContext` 
          (map replaceSignHead $ filter (not . isTop . Context.reducedFormula) context)

@@ -163,8 +163,8 @@ equalityReasoning thesis
 
 getLinkedRules :: [String] -> VM [Rule]
 getLinkedRules link = do
-  rules <- rules; newLink <- getLink link
-  let (linkedRules, unfoundRules) = runState (retrieve newLink rules) newLink
+  rules <- rules; let setLink = Set.fromList link
+  let (linkedRules, unfoundRules) = runState (retrieve setLink rules) setLink
   unless (Set.null unfoundRules) $ warn unfoundRules
   return linkedRules
   where

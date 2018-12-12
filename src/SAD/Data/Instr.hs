@@ -31,7 +31,6 @@ data Instr =
   | Int Int Prelude.Int
   | Bool Bool Prelude.Bool
   | String String Prelude.String
-  | Strings Strings [Prelude.String]
   deriving Show
 
 data Drop =
@@ -98,11 +97,6 @@ data String =
   | Provers  --  prover database
   | Prover   --  current prover
   deriving (Eq,Show)
-
-data Strings =
-    Group    -- form a group of identifiers
-  deriving (Eq,Show)
-
 
 -- Ask
 
@@ -178,7 +172,3 @@ keywordsString =
   (Library, "library"),
   (Provers, "provers"),
   (Prover, "prover")]
-
-keywordsStrings :: [(Strings, Prelude.String)]
-keywordsStrings =
- [(Group, "group")]

@@ -19,7 +19,7 @@ module SAD.Core.Base (
   askGlobalState, updateGlobalState,
   retrieveContext,
   initialGlobalState, initialDefinitions,
-  defForm, getDef, getLink, addGroup,
+  defForm, getDef,
 
   VState (..), VM,
 
@@ -81,7 +81,6 @@ data RState = RState {
 -}
 
 data GState = GL {
-  identifierGroups :: M.Map String (Set.Set String),
   skolemCounter    :: Int }
 
 
@@ -253,11 +252,12 @@ simpLog kind pos = justIO . Message.outputSimp kind pos
 
 
 -- GlobalState management
-
+askGlobalState :: (GState -> a) -> VM a
 askGlobalState    = lift . gets
+updateGlobalState :: (GState -> GState) -> VM ()
 updateGlobalState = lift . modify
 
-initialGlobalState = GL M.empty 0
+initialGlobalState = GL 0
 
 
 
@@ -325,20 +325,3 @@ getDef term = do
   let mbDef = IM.lookup (trId term) defs
   guard $ isJust mbDef
   return $ fromJust mbDef
-
--- groupings
-
--- get the section identifiers grouped by a group identifier
-getLink :: [String] -> VM (Set.Set String)
-getLink link = do
-  groups <- askGlobalState identifierGroups
-  return $ Set.unions $
-    map (\l -> M.findWithDefault (Set.singleton l) l groups) link
-
--- add group identifier
-addGroup :: [String] -> VM ()
-addGroup [] = return ()
-addGroup [name] = reasonLog Message.WARNING noPos $ "empty group: " ++ show name
-addGroup (name:identifiers) =
-  getLink identifiers >>= \link -> updateGlobalState
-    (\st -> st {identifierGroups = M.insert name link $ identifierGroups st})

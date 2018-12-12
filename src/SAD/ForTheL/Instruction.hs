@@ -60,13 +60,12 @@ instrDrop = instrPos addInstrReport (wdToken "/" >> readInstrDrop)
 
 readInstr :: FTL Instr
 readInstr =
-  readInstrCommand -|- readInstrInt -|- readInstrBool -|- readInstrString -|- readInstrStrings
+  readInstrCommand -|- readInstrInt -|- readInstrBool -|- readInstrString
   where
     readInstrCommand = fmap Instr.Command (readKeywords Instr.keywordsCommand)
     readInstrInt = liftM2 Instr.Int (readKeywords Instr.keywordsInt) readInt
     readInstrBool = liftM2 Instr.Bool (readKeywords Instr.keywordsBool) readBool
     readInstrString = liftM2 Instr.String (readKeywords Instr.keywordsString) readString
-    readInstrStrings = liftM2 Instr.Strings (readKeywords Instr.keywordsStrings) readStrings
 
 readInt = try $ readString >>= intCheck
   where
@@ -92,12 +91,11 @@ readStrings = chainLL1 notClosingBrk
 
 
 readInstrDrop :: FTL Instr.Drop
-readInstrDrop = readInstrCommand -|- readInstrInt -|- readInstrBool -|- readInstrString
+readInstrDrop = readInstrCommand -|- readInstrInt -|- readInstrBool
   where
     readInstrCommand = fmap Instr.DropCommand (readKeywords Instr.keywordsCommand)
     readInstrInt = fmap Instr.DropInt (readKeywords Instr.keywordsInt)
     readInstrBool = fmap Instr.DropBool (readKeywords Instr.keywordsBool)
-    readInstrString = fmap Instr.DropString (readKeywords Instr.keywordsString)
 
 
 readKeywords :: [(a, String)] -> Parser st a

@@ -340,8 +340,6 @@ procTextInstr VS {
         >> addInstruction (Instr.Bool Instr.Printfulltask True),
       return ()]
 
-    proc (Instr.Strings Instr.Group ps) = addGroup ps
-
     proc i = addInstruction i
 
 {- drop an instruction from the state -}
