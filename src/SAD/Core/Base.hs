@@ -19,7 +19,7 @@ module SAD.Core.Base (
   askGlobalState, updateGlobalState,
   addGlobalContext,
   retrieveContext,
-  initialGlobalState,
+  initialGlobalState, initialDefinitions,
   defForm, getDef, getLink, addGroup,
 
   VState (..), VM,
@@ -82,7 +82,6 @@ data RState = RState {
 -}
 
 data GState = GL {
-  definitions      :: Definitions,
   identifierGroups :: M.Map String (Set.Set String),
   globalContext    :: [Context],
   skolemCounter    :: Int }
@@ -163,6 +162,7 @@ data VState = VS {
   currentBranch   :: [Block],         -- branch of the current block
   currentContext  :: [Context],
   mesonRules      :: (DT.DisTree MRule, DT.DisTree MRule),
+  definitions     :: Definitions,
   restText        :: [Text] }
 
 
@@ -259,7 +259,7 @@ simpLog kind pos = justIO . Message.outputSimp kind pos
 askGlobalState    = lift . gets
 updateGlobalState = lift . modify
 
-initialGlobalState = GL initialDefinitions M.empty [] 0
+initialGlobalState = GL M.empty [] 0
 
 addGlobalContext cn =
   updateGlobalState (\st -> st {globalContext = cn : globalContext st})
@@ -326,7 +326,7 @@ defForm definitions term = do
 -- retrieve definition of a symbol (monadic)
 getDef :: Formula -> VM DefEntry
 getDef term = do
-  defs <- askGlobalState definitions
+  defs <- asks definitions
   let mbDef = IM.lookup (trId term) defs
   guard $ isJust mbDef
   return $ fromJust mbDef

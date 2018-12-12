@@ -234,7 +234,7 @@ unfold :: VM [Context]
 unfold = do  
   thesis <- thesis; context <- context
   let task = Context.setForm thesis (Not $ Context.formula thesis) : context
-  definitions <- askGlobalState definitions; evaluations <- asks evaluations
+  definitions <- asks definitions; evaluations <- asks evaluations
   generalUnfoldSetting <- askInstructionBool Instr.Unfold True
   lowlevelUnfoldSetting <- askInstructionBool Instr.Unfoldlow True
   generalSetUnfoldSetting <- askInstructionBool Instr.Unfoldsf True

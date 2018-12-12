@@ -50,7 +50,7 @@ verify fileName reasonerState text = do
   let text' = TextInstr Instr.noPos (Instr.String Instr.File fileName) : text
   Message.outputReason Message.TRACING (fileOnlyPos fileName) "verification started"
 
-  let verificationState = VS False [] DT.empty (Context Bot [] [] Bot) [] [] (DT.empty, DT.empty) text'
+  let verificationState = VS False [] DT.empty (Context Bot [] [] Bot) [] [] (DT.empty, DT.empty) initialDefinitions text'
   result <- flip runRM reasonerState $
     flip runStateT initialGlobalState $
     runReaderT (verificationLoop verificationState) undefined
@@ -73,6 +73,7 @@ verificationLoop state@VS {
   currentBranch   = branch,
   currentContext  = context,
   mesonRules      = mRules,
+  definitions     = defs,
   restText = TextBlock block@(Block f body kind declaredVariables _ _ _ _):blocks,
   evaluations     = evaluations }
     = local (const state) $ do
@@ -125,13 +126,13 @@ verificationLoop state@VS {
         Block.body = fortifiedProof }
       formulaImage = Block.formulate newBlock
 
-  -- extract definitions
-  when (kind == Definition || kind == Signature) $ addDefinition formulaImage
-  -- compute MESON rules
   mesonRules  <- contras $ deTag formulaImage
-  definitions <- askGlobalState definitions
-  let ontoReduction =
-        foldr1 And $ map (onto_reduce definitions) (assm_nf formulaImage)
+  let newDefinitions =
+        if   kind == Definition || kind == Signature
+        then addDefinition defs formulaImage
+        else defs
+      ontoReduction =
+        foldr1 And $ map (onto_reduce newDefinitions) (assm_nf formulaImage)
       newContextBlock =
         let reduction = if Block.isTopLevel block then ontoReduction else formulaImage
         in  Context formulaImage newBranch (uncurry (++) mesonRules) reduction
@@ -144,7 +145,7 @@ verificationLoop state@VS {
 
   let (newMotivation, hasChanged , newThesis) =
         if   thesisSetting
-        then inferNewThesis definitions newContext thesis
+        then inferNewThesis defs newContext thesis
         else (Block.needsProof block, False, thesis)
 
   whenInstruction Instr.Printthesis False $ when (
@@ -169,7 +170,7 @@ verificationLoop state@VS {
     thesisMotivated = motivated && newMotivation,
     rewriteRules = newRewriteRules, evaluations = newEvaluations,
     currentThesis = newThesis, currentContext = newContext,
-    mesonRules = newRules, restText = blocks }
+    mesonRules = newRules, definitions = newDefinitions, restText = blocks }
 
   -- if this block made the thesis unmotivated, we must discharge a composite
   -- (and possibly quite difficult) prove task
@@ -258,10 +259,9 @@ verifyProof state@VS {
 
     -- extract rules, compute new thesis and move on with the verification
     process newContext f = do
-      definitions <- askGlobalState definitions
       let newRules = extractRewriteRule (head newContext) ++ rules
           (_, _, newThesis) =
-            inferNewThesis definitions newContext $ Context.setForm thesis f
+            inferNewThesis (definitions state) newContext $ Context.setForm thesis f
       whenInstruction Instr.Printthesis False $ when (
         noInductionOrCase (Context.formula newThesis) && not (null $ restText state)) $
           thesisLog Message.WRITELN
