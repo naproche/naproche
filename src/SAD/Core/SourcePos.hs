@@ -19,6 +19,7 @@ module SAD.Core.SourcePos
   where
 
 import qualified Data.List as List
+import Isabelle.Library
 
 
 -- positions
@@ -97,5 +98,5 @@ instance Show SourcePos where
       showDetails =
         case filter (not . null) details of
           [] -> ""
-          ds -> "(" ++ List.intercalate ", " ds ++ ")"
+          ds -> "(" ++ commas ds ++ ")"
       showName = if null file then "" else "\"" ++ file ++ "\""

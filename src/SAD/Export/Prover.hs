@@ -15,6 +15,7 @@ import System.IO.Error
 import System.Process
 import Control.Exception
 
+import Isabelle.Library
 import qualified Isabelle.File as File
 
 import qualified SAD.Core.Message as Message
@@ -65,7 +66,7 @@ export red m prs ins cnt gl =
       seq (length task) $ return $
         do  (wh,rh,eh,ph) <- catch run
                 $ \e -> Message.errorExport noPos $
-                    "failed to run \"" ++ path ++ "\": " ++ ioeGetErrorString e
+                    "failed to run " ++ quote path ++ ": " ++ ioeGetErrorString e
 
             File.setup wh
             File.setup rh
@@ -90,7 +91,7 @@ export red m prs ins cnt gl =
             -- prover response can be: positive, negative or inconclusive
 
             unless (pos || neg || unk) $
-              Message.errorExport noPos $ intercalate "\n" ("bad response" : lns)
+              Message.errorExport noPos $ cat_lines ("bad response" : lns)
 
             hClose eh ; waitForProcess ph
             -- close error handle and wait for prover to terminate
