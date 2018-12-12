@@ -101,9 +101,6 @@ data String =
 
 data Strings =
     Group    -- form a group of identifiers
-  | SetCtxt  -- set the context
-  | DrpCtxt  -- drop a section from the context
-  | AddCtxt  -- add a section to the context
   deriving (Eq,Show)
 
 
@@ -184,10 +181,4 @@ keywordsString =
 
 keywordsStrings :: [(Strings, Prelude.String)]
 keywordsStrings =
- [(Group, "group"),
-  (SetCtxt, "setCtxt"),
-  (DrpCtxt, "drpCtxt"),
-  (AddCtxt, "addCtxt")]
-
-relevant (Strings SetCtxt _) = True
-relevant _ = False
+ [(Group, "group")]

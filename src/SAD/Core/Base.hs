@@ -17,7 +17,6 @@ module SAD.Core.Base (
 
   GState (..), GM,
   askGlobalState, updateGlobalState,
-  addGlobalContext,
   retrieveContext,
   initialGlobalState, initialDefinitions,
   defForm, getDef, getLink, addGroup,
@@ -83,7 +82,6 @@ data RState = RState {
 
 data GState = GL {
   identifierGroups :: M.Map String (Set.Set String),
-  globalContext    :: [Context],
   skolemCounter    :: Int }
 
 
@@ -259,15 +257,12 @@ simpLog kind pos = justIO . Message.outputSimp kind pos
 askGlobalState    = lift . gets
 updateGlobalState = lift . modify
 
-initialGlobalState = GL M.empty [] 0
-
-addGlobalContext cn =
-  updateGlobalState (\st -> st {globalContext = cn : globalContext st})
+initialGlobalState = GL M.empty 0
 
 
 
 retrieveContext names = do
-  globalContext <- askGlobalState globalContext
+  globalContext <- asks currentContext
   let (context, unfoundSections) = runState (retrieve globalContext) names
   -- warn the user if some sections could not be found
   unless (Set.null unfoundSections) $

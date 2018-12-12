@@ -141,7 +141,6 @@ verificationLoop state@VS {
         if   Block.isTopLevel block
         then addRules mRules mesonRules
         else mRules
-  when (Block.isTopLevel block) $ addGlobalContext newContextBlock
 
   let (newMotivation, hasChanged , newThesis) =
         if   thesisSetting
@@ -215,10 +214,8 @@ verificationLoop st@VS {
 
 -- process instructions. we distinguish between those that influence the
 -- verification state and those that influence (at most) the global state
-verificationLoop state@VS {restText = TextInstr _ instr : blocks}
-  | Instr.relevant instr = contextTextInstr state {restText = blocks} instr
-  | otherwise = procTextInstr state instr >>
-      verificationLoop state {restText = blocks}
+verificationLoop state@VS {restText = TextInstr _ instr : blocks} = 
+  procTextInstr state instr >> verificationLoop state {restText = blocks}
 
 {- process a command to drop an instruction, i.e. [/prove], [/ontored], etc.-}
 verificationLoop st@VS {restText = (TextDrop _ instr : blocks)} =
@@ -350,33 +347,3 @@ procTextInstr VS {
 {- drop an instruction from the state -}
 procTextDrop :: VState -> Instr.Drop -> VM ()
 procTextDrop _ = dropInstruction
-
--- Context settings
-
-{- manipulate context by hand -}
-contextTextInstr :: VState -> Instr -> VM [Text]
-contextTextInstr state@VS {
-  thesisMotivated = motivated,
-  rewriteRules    = rules,
-  currentThesis   = thesis,
-  currentContext  = context}
-  = proc
-  where
-    proc (Instr.Strings Instr.SetCtxt groupLink) = do
-      newContext <- setContext groupLink
-      verificationLoop state {
-        currentContext = takeWhile Context.isLowLevel context ++ newContext}
-    proc (Instr.Strings Instr.DrpCtxt groupLink) = do
-      link <- getLink groupLink
-      verificationLoop state {
-        currentContext = filter (not . flip elem link . Context.name) context }
-    proc (Instr.Strings Instr.AddCtxt groupLink) = do
-      newContext <- setContext groupLink
-      verificationLoop state {
-        currentContext = unionBy ((==) `on` Context.name) newContext context}
-{- the function definition must include the continuation with verificationLoop
-since it influences the verification state (procTextInstr only influences the
-global state) -}
-
-setContext [] = askGlobalState globalContext
-setContext groupLink = getLink groupLink >>= retrieveContext
