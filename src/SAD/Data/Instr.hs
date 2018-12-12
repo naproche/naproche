@@ -80,6 +80,7 @@ data Bool =
   | OnlyTranslate  --  translation only (comline only)
   | Verbose        --  verbosity control (comline only)
   | Help           --  print help (comline only)
+  | Server         --  server mode (comline only)
   | Printsimp      --  print simplifier log (no)
   | Printthesis    --  print thesis development (no)
   | Ontored        --  use ontological reduction (no)

@@ -19,6 +19,11 @@ import System.IO
 import qualified Control.Exception as Exception
 import qualified Data.IntMap.Strict as IM
 
+import Isabelle.Library (quote)
+import qualified Isabelle.File as File
+import qualified Isabelle.Server as Server
+import qualified Isabelle.Byte_Message as Byte_Message
+import Network.Socket (Socket)
 
 import SAD.Core.Base
 import qualified SAD.Core.Message as Message
@@ -30,8 +35,7 @@ import SAD.Data.Text.Block
 import SAD.Export.Base
 import SAD.Import.Reader
 import SAD.Parser.Error
-import Isabelle.Library (quote)
-import qualified Isabelle.File as File
+
 
 main :: IO ()
 main  = do
@@ -59,6 +63,10 @@ mainBody  = do
 
   let initialOpts = initFile ++ map (Instr.noPos,) commandLine
       revInitialOpts = map snd $ reverse initialOpts
+
+  -- server mode
+  when (Instr.askBool Instr.Server False revInitialOpts)
+    (Server.server (\host -> putStrLn ("server = " ++ host)) serverConnection >> exitSuccess)
 
   -- parse input text
   text <-
@@ -123,6 +131,16 @@ mainBody  = do
     ++ showTimeDiff (diffUTCTime finishTime startTime)
 
 
+serverConnection :: Socket -> IO ()
+serverConnection connection = do
+  res <- Byte_Message.read_message connection
+  case res of
+    Just msg -> do
+      Byte_Message.write_message connection msg
+      serverConnection connection
+    Nothing -> return ()
+
+
 onlyTranslate :: UTCTime -> [Text] -> IO ()
 onlyTranslate startTime text = do
   mapM_ printTextBlock text; finishTime <- getCurrentTime
@@ -156,8 +174,8 @@ options = [
   Option "h" ["help"] (NoArg (Instr.Bool Instr.Help True)) "show this help text",
   Option ""  ["init"] (ReqArg (Instr.String Instr.Init) "FILE")
     "init file, empty to skip (def: init.opt)",
-  Option "T" [] (NoArg (Instr.Bool Instr.OnlyTranslate True))
-    "translate input text and exit",
+  Option "" ["server"] (NoArg (Instr.Bool Instr.Server True))
+    "run in server mode",
   Option ""  ["library"] (ReqArg (Instr.String Instr.Library) "DIR")
     "place to look for library texts (def: .)",
   Option ""  ["provers"] (ReqArg (Instr.String Instr.Provers) "FILE")
