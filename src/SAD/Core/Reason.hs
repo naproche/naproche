@@ -134,7 +134,7 @@ launchProver iteration = do
 launchReasoning :: VM ()
 launchReasoning = do 
   goal <- thesis; context <- context
-  skolemInt <- askGlobalState skolemCounter
+  skolemInt <- asks skolemCounter
   (mesonPos, mesonNeg) <- asks mesonRules
   let lowlevelContext = takeWhile Context.isLowLevel context
       proveGoal = prove skolemInt lowlevelContext mesonPos mesonNeg goal

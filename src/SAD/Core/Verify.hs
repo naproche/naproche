@@ -45,14 +45,13 @@ import SAD.Core.Rewrite
 
 -- Main verification loop
 
-verify :: String -> IORef RState -> [Text] -> IO (Maybe ([Text], GState))
+verify :: String -> IORef RState -> [Text] -> IO (Maybe [Text])
 verify fileName reasonerState text = do
   let text' = TextInstr Instr.noPos (Instr.String Instr.File fileName) : text
   Message.outputReason Message.TRACING (fileOnlyPos fileName) "verification started"
 
-  let verificationState = VS False [] DT.empty (Context Bot [] [] Bot) [] [] (DT.empty, DT.empty) initialDefinitions text'
+  let verificationState = VS False [] DT.empty (Context Bot [] [] Bot) [] [] (DT.empty, DT.empty) initialDefinitions 0 text'
   result <- flip runRM reasonerState $
-    flip runStateT initialGlobalState $
     runReaderT (verificationLoop verificationState) undefined
   ignoredFails <- (\st -> accumulateIntCounter (counters st) 0 FailedGoals) <$>
     readIORef reasonerState
@@ -126,7 +125,7 @@ verificationLoop state@VS {
         Block.body = fortifiedProof }
       formulaImage = Block.formulate newBlock
 
-  mesonRules  <- contras $ deTag formulaImage
+  (mesonRules, newSkolem)  <- contras $ deTag formulaImage
   let newDefinitions =
         if   kind == Definition || kind == Signature
         then addDefinition defs formulaImage
@@ -169,7 +168,8 @@ verificationLoop state@VS {
     thesisMotivated = motivated && newMotivation,
     rewriteRules = newRewriteRules, evaluations = newEvaluations,
     currentThesis = newThesis, currentContext = newContext,
-    mesonRules = newRules, definitions = newDefinitions, restText = blocks }
+    mesonRules = newRules, definitions = newDefinitions,
+    skolemCounter = newSkolem, restText = blocks }
 
   -- if this block made the thesis unmotivated, we must discharge a composite
   -- (and possibly quite difficult) prove task

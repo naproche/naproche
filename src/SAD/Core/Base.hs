@@ -15,10 +15,8 @@ module SAD.Core.Base (
   (<|>),
   runRM,
 
-  GState (..), GM,
-  askGlobalState, updateGlobalState,
   retrieveContext,
-  initialGlobalState, initialDefinitions,
+  initialDefinitions,
   defForm, getDef,
 
   VState (..), VM,
@@ -70,20 +68,6 @@ data RState = RState {
   instructions :: [Instr],
   counters     :: [Counter],
   provers      :: [Prover] }
-
-
-{- the global proof state containing:
-  ~ All definitions so far
-  ~ positive and negative MESON rules for ontological checking
-  ~ groupings of theorem identifiers
-  ~ the global context
-  ~ a counter for the identifier for skolem constants
--}
-
-data GState = GL {
-  skolemCounter    :: Int }
-
-
 
 -- All of these counters are for gathering statistics to print out later
 
@@ -160,19 +144,17 @@ data VState = VS {
   currentContext  :: [Context],
   mesonRules      :: (DT.DisTree MRule, DT.DisTree MRule),
   definitions     :: Definitions,
+  skolemCounter   :: Int,
   restText        :: [Text] }
 
-
-
-type GM = StateT GState CRM
-type VM = ReaderT VState GM
+type VM = ReaderT VState CRM
 
 justRS :: VM (IORef RState)
-justRS = lift $ lift $ CRM $ \ s _ k -> k s
+justRS = lift $ CRM $ \ s _ k -> k s
 
 
 justIO :: IO a -> VM a
-justIO m = lift $ lift $ CRM $ \ _ _ k -> m >>= k
+justIO m = lift $ CRM $ \ _ _ k -> m >>= k
 
 -- State management from inside the verification monad
 
@@ -248,16 +230,6 @@ thesisLog kind pos indent msg =
 
 simpLog :: Message.Kind -> SourcePos -> String -> VM ()
 simpLog kind pos = justIO . Message.outputSimp kind pos
-
-
-
--- GlobalState management
-askGlobalState :: (GState -> a) -> VM a
-askGlobalState    = lift . gets
-updateGlobalState :: (GState -> GState) -> VM ()
-updateGlobalState = lift . modify
-
-initialGlobalState = GL 0
 
 
 

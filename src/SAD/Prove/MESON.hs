@@ -8,6 +8,7 @@ An implementation of the MESON algorithm.
 module SAD.Prove.MESON (prove, contras, addRules) where
 
 import Control.Monad
+import Control.Monad.Reader
 import Data.List
 
 import SAD.Core.Base hiding (retrieve)
@@ -34,13 +35,12 @@ contrapositives ls =
 
 
 {- the monadic action to generate meson rules during text verfication -}
-contras :: Formula -> VM ([MRule], [MRule])
+contras :: Formula -> VM (([MRule], [MRule]), Int)
 contras f = do
-  m <- askGlobalState skolemCounter;
+  m <- asks skolemCounter;
   let (skf, nm) = skolemize m $ simplify f
-  updateGlobalState (\st -> st { skolemCounter = nm })
-  let cnf = transformToCNF skf
-  return $ splitContras $ concatMap contrapositives cnf
+      cnf = transformToCNF skf
+  return (splitContras $ concatMap contrapositives cnf, nm)
 
 splitContras :: [MRule] -> ([MRule],[MRule])
 splitContras = partition isPositive
