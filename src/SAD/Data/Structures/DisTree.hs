@@ -7,7 +7,7 @@ Discrimination tree data structure.
 module SAD.Data.Structures.DisTree (
   DisTree,
   empty,
-  insert,
+  insert, insertBy,
   lookup,
   find
   ) where
@@ -129,6 +129,10 @@ lookup key (DT nodes) = mbConcat $ dive nodes [key]
 
 find :: Formula -> DisTree a -> [a]
 find f = fromMaybe [] . lookup f
+
+
+insertBy :: (a -> Formula) -> a -> DisTree a -> DisTree a
+insertBy keyFunction value = insert (keyFunction value) value
 
 {- only for debugging: transform a tree into a readable format -}
 

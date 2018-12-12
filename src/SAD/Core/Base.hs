@@ -17,7 +17,7 @@ module SAD.Core.Base (
 
   GState (..), GM,
   askGlobalState, updateGlobalState,
-  addGlobalContext, insertMRule,
+  addGlobalContext,
   retrieveContext,
   initialGlobalState,
   defForm, getDef, getLink, addGroup,
@@ -83,8 +83,6 @@ data RState = RState {
 
 data GState = GL {
   definitions      :: Definitions,
-  mesonPositives   :: DT.DisTree MRule,
-  mesonNegatives   :: DT.DisTree MRule,
   identifierGroups :: M.Map String (Set.Set String),
   globalContext    :: [Context],
   skolemCounter    :: Int }
@@ -164,6 +162,7 @@ data VState = VS {
   currentThesis   :: Context,
   currentBranch   :: [Block],         -- branch of the current block
   currentContext  :: [Context],
+  mesonRules      :: (DT.DisTree MRule, DT.DisTree MRule),
   restText        :: [Text] }
 
 
@@ -260,22 +259,7 @@ simpLog kind pos = justIO . Message.outputSimp kind pos
 askGlobalState    = lift . gets
 updateGlobalState = lift . modify
 
-insertMRule :: [MRule] -> VM ()
-insertMRule rules = updateGlobalState (add rules)
-  where
-    add [] globalState = globalState
-    add (rule@(MR _ conclusion):rules) gs
-      | isNot conclusion =
-          let negatives     = mesonNegatives gs
-              negConclusion = ltNeg conclusion
-          in  add rules $
-                gs {mesonNegatives = DT.insert negConclusion rule negatives}
-      | otherwise  =
-          let positives = mesonPositives gs
-          in  add rules $
-                gs {mesonPositives = DT.insert conclusion rule positives}
-
-initialGlobalState = GL initialDefinitions DT.empty DT.empty M.empty [] 0
+initialGlobalState = GL initialDefinitions M.empty [] 0
 
 addGlobalContext cn =
   updateGlobalState (\st -> st {globalContext = cn : globalContext st})

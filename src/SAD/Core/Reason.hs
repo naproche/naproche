@@ -135,8 +135,7 @@ launchReasoning :: VM ()
 launchReasoning = do 
   goal <- thesis; context <- context
   skolemInt <- askGlobalState skolemCounter
-  mesonPos <- askGlobalState mesonPositives
-  mesonNeg <- askGlobalState mesonNegatives
+  (mesonPos, mesonNeg) <- asks mesonRules
   let lowlevelContext = takeWhile Context.isLowLevel context
       proveGoal = prove skolemInt lowlevelContext mesonPos mesonNeg goal
       -- set timelimit to 10^4 

@@ -50,7 +50,7 @@ verify fileName reasonerState text = do
   let text' = TextInstr Instr.noPos (Instr.String Instr.File fileName) : text
   Message.outputReason Message.TRACING (fileOnlyPos fileName) "verification started"
 
-  let verificationState = VS False [] DT.empty (Context Bot [] [] Bot) [] [] text'
+  let verificationState = VS False [] DT.empty (Context Bot [] [] Bot) [] [] (DT.empty, DT.empty) text'
   result <- flip runRM reasonerState $
     flip runStateT initialGlobalState $
     runReaderT (verificationLoop verificationState) undefined
@@ -72,6 +72,7 @@ verificationLoop state@VS {
   currentThesis   = thesis,
   currentBranch   = branch,
   currentContext  = context,
+  mesonRules      = mRules,
   restText = TextBlock block@(Block f body kind declaredVariables _ _ _ _):blocks,
   evaluations     = evaluations }
     = local (const state) $ do
@@ -133,10 +134,13 @@ verificationLoop state@VS {
         foldr1 And $ map (onto_reduce definitions) (assm_nf formulaImage)
       newContextBlock =
         let reduction = if Block.isTopLevel block then ontoReduction else formulaImage
-        in  Context formulaImage newBranch mesonRules reduction
+        in  Context formulaImage newBranch (uncurry (++) mesonRules) reduction
       newContext = newContextBlock : context
+      newRules =
+        if   Block.isTopLevel block
+        then addRules mRules mesonRules
+        else mRules
   when (Block.isTopLevel block) $ addGlobalContext newContextBlock
-  when (Block.isTopLevel block) $ insertMRule mesonRules
 
   let (newMotivation, hasChanged , newThesis) =
         if   thesisSetting
@@ -164,7 +168,8 @@ verificationLoop state@VS {
   newBlocks <- verifyProof state {
     thesisMotivated = motivated && newMotivation,
     rewriteRules = newRewriteRules, evaluations = newEvaluations,
-    currentThesis = newThesis, currentContext = newContext, restText = blocks }
+    currentThesis = newThesis, currentContext = newContext,
+    mesonRules = newRules, restText = blocks }
 
   -- if this block made the thesis unmotivated, we must discharge a composite
   -- (and possibly quite difficult) prove task
