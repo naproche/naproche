@@ -66,7 +66,7 @@ mainBody  = do
 
   -- server mode
   when (Instr.askBool Instr.Server False revInitialOpts)
-    (Server.server (\host -> putStrLn ("server = " ++ host)) serverConnection >> exitSuccess)
+    (Server.server (Server.publish_stdout "Naproche-SAD") serverConnection >> exitSuccess)
 
   -- parse input text
   text <-

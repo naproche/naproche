@@ -7,7 +7,7 @@
 TCP server on localhost.
 -}
 
-module Isabelle.Server (server) where
+module Isabelle.Server (localhost_name, localhost, publish_text, publish_stdout, server) where
 
 import Control.Monad (forever)
 import qualified Control.Exception as Exception
@@ -15,28 +15,49 @@ import Network.Socket (Socket)
 import qualified Network.Socket as Socket
 import qualified Control.Concurrent as Concurrent
 
+import Isabelle.Library
+import qualified Isabelle.UUID as UUID
 
-localhost :: Socket.HostAddress
-localhost = Socket.tupleToHostAddress (127, 0, 0, 1)
+
+{- server address -}
 
 localhost_name :: String
 localhost_name = "127.0.0.1"
 
-server :: (String -> IO ()) -> (Socket -> IO ()) -> IO ()
+localhost :: Socket.HostAddress
+localhost = Socket.tupleToHostAddress (127, 0, 0, 1)
+
+publish_text :: String -> String -> UUID.T -> String
+publish_text name address password =
+  "server " ++ quote name ++ " = " ++ address ++ " (password " ++ quote (show password) ++ ")"
+
+publish_stdout :: String -> String -> UUID.T -> IO ()
+publish_stdout name address password = putStrLn (publish_text name address password)
+
+
+{- server -}
+
+server :: (String -> UUID.T -> IO ()) -> (Socket -> IO ()) -> IO ()
 server publish handle =
-  Socket.withSocketsDo $ Exception.bracket open Socket.close loop
+  Socket.withSocketsDo $ Exception.bracket open (Socket.close . fst) (uncurry loop)
   where
-    open :: IO Socket
+    open :: IO (Socket, UUID.T)
     open = do
       socket <- Socket.socket Socket.AF_INET Socket.Stream Socket.defaultProtocol
       Socket.bind socket (Socket.SockAddrInet 0 localhost)
       Socket.listen socket 50
-      port <- Socket.socketPort socket
-      publish (localhost_name ++ ":" ++ show port)
-      return socket
 
-    loop :: Socket -> IO ()
-    loop socket = forever $ do
+      port <- Socket.socketPort socket
+      let address = localhost_name ++ ":" ++ show port
+      password <- UUID.random
+      publish address password
+
+      return (socket, password)
+
+    loop :: Socket -> UUID.T -> IO ()
+    loop socket password = forever $ do
       (connection, peer) <- Socket.accept socket
-      Concurrent.forkFinally (handle connection) (\_ -> Socket.close connection)
+      Concurrent.forkFinally
+        (handle connection)  -- FIXME check password
+        (\_ -> Socket.close connection)
       return ()
