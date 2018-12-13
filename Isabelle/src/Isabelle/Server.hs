@@ -7,9 +7,14 @@
 TCP server on localhost.
 -}
 
-module Isabelle.Server (localhost_name, localhost, publish_text, publish_stdout, server) where
+module Isabelle.Server (
+  localhost_name, localhost, publish_text, publish_stdout,
+  server
+)
+where
 
-import Control.Monad (forever)
+import Data.ByteString (ByteString)
+import Control.Monad (forever, when)
 import qualified Control.Exception as Exception
 import Network.Socket (Socket)
 import qualified Network.Socket as Socket
@@ -17,6 +22,7 @@ import qualified Control.Concurrent as Concurrent
 
 import Isabelle.Library
 import qualified Isabelle.UUID as UUID
+import qualified Isabelle.Byte_Message as Byte_Message
 
 
 {- server address -}
@@ -41,23 +47,25 @@ server :: (String -> UUID.T -> IO ()) -> (Socket -> IO ()) -> IO ()
 server publish handle =
   Socket.withSocketsDo $ Exception.bracket open (Socket.close . fst) (uncurry loop)
   where
-    open :: IO (Socket, UUID.T)
+    open :: IO (Socket, ByteString)
     open = do
-      socket <- Socket.socket Socket.AF_INET Socket.Stream Socket.defaultProtocol
-      Socket.bind socket (Socket.SockAddrInet 0 localhost)
-      Socket.listen socket 50
+      server_socket <- Socket.socket Socket.AF_INET Socket.Stream Socket.defaultProtocol
+      Socket.bind server_socket (Socket.SockAddrInet 0 localhost)
+      Socket.listen server_socket 50
 
-      port <- Socket.socketPort socket
+      port <- Socket.socketPort server_socket
       let address = localhost_name ++ ":" ++ show port
       password <- UUID.random
       publish address password
 
-      return (socket, password)
+      return (server_socket, UUID.bytes password)
 
-    loop :: Socket -> UUID.T -> IO ()
-    loop socket password = forever $ do
-      (connection, peer) <- Socket.accept socket
+    loop :: Socket -> ByteString -> IO ()
+    loop server_socket password = forever $ do
+      (connection, peer) <- Socket.accept server_socket
       Concurrent.forkFinally
-        (handle connection)  -- FIXME check password
+        (do
+          line <- Byte_Message.read_line connection
+          when (line == Just password) $ handle connection)
         (\_ -> Socket.close connection)
       return ()

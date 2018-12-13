@@ -9,9 +9,16 @@ Universally unique identifiers.
 See "$ISABELLE_HOME/src/Pure/General/uuid.scala".
 -}
 
-module Isabelle.UUID (T, random, random_string, parse)
+module Isabelle.UUID (
+    T,
+    parse_string, parse_bytes,
+    string, bytes,
+    random, random_string, random_bytes
+  )
 where
 
+import Data.ByteString (ByteString)
+import qualified Data.ByteString
 import Data.UUID (UUID)
 import qualified Data.UUID as UUID
 import Data.UUID.V4 (nextRandom)
@@ -19,11 +26,32 @@ import Data.UUID.V4 (nextRandom)
 
 type T = UUID
 
+
+{- parse -}
+
+parse_string :: String -> Maybe T
+parse_string = UUID.fromString
+
+parse_bytes :: ByteString -> Maybe T
+parse_bytes = UUID.fromASCIIBytes
+
+
+{- print -}
+
+string :: T -> String
+string = UUID.toString
+
+bytes :: T -> ByteString
+bytes = UUID.toASCIIBytes
+
+
+{- random id -}
+
 random :: IO T
 random = nextRandom
 
 random_string :: IO String
-random_string = UUID.toString <$> random
+random_string = string <$> random
 
-parse :: String -> Maybe T
-parse = UUID.fromString
+random_bytes :: IO ByteString
+random_bytes = bytes <$> random
