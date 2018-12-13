@@ -19,6 +19,7 @@ dependencies:
 - utf8-string
 - network
 - split
+- uuid
 
 library:
   source-dirs:
