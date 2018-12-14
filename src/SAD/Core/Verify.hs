@@ -42,15 +42,16 @@ import SAD.Core.ProofTask
 import SAD.Core.Extract
 import qualified SAD.Data.Structures.DisTree as DT
 import SAD.Core.Rewrite
+import SAD.Export.Base (Prover)
 
 -- Main verification loop
 
-verify :: String -> IORef RState -> [Text] -> IO (Maybe [Text])
-verify fileName reasonerState text = do
+verify :: String -> [Prover] -> IORef RState -> [Text] -> IO (Maybe [Text])
+verify fileName provers reasonerState text = do
   let text' = TextInstr Instr.noPos (Instr.String Instr.File fileName) : text
   Message.outputReason Message.TRACING (fileOnlyPos fileName) "verification started"
 
-  let verificationState = VS False [] DT.empty (Context Bot [] [] Bot) [] [] (DT.empty, DT.empty) initialDefinitions 0 [] text'
+  let verificationState = VS False [] DT.empty (Context Bot [] [] Bot) [] [] (DT.empty, DT.empty) initialDefinitions 0 [] provers text'
   result <- flip runRM reasonerState $
     runReaderT (verificationLoop verificationState) verificationState
   ignoredFails <- (\st -> accumulateIntCounter (counters st) 0 FailedGoals) <$>

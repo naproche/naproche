@@ -65,8 +65,8 @@ import qualified SAD.Core.Message as Message
 -- Reasoner state
 
 data RState = RState {
-  counters     :: [Counter],
-  provers      :: [Prover] }
+  counters     :: [Counter]
+  }
 
 -- All of these counters are for gathering statistics to print out later
 
@@ -145,6 +145,7 @@ data VState = VS {
   definitions     :: Definitions,
   skolemCounter   :: Int,
   instructions    :: [Instr],
+  provers         :: [Prover],
   restText        :: [Text] }
 
 type VM = ReaderT VState CRM

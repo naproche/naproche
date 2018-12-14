@@ -113,7 +113,7 @@ launchProver :: Int -> VM ()
 launchProver iteration = do
   reductionSetting <- askInstructionBool Instr.Ontored False
   whenInstruction Instr.Printfulltask False (printTask reductionSetting)
-  proverList <- askRS provers ; instrList <- asks instructions
+  proverList <- asks provers ; instrList <- asks instructions
   goal <- thesis; context <- context
   let callATP = justIO $ 
         export reductionSetting iteration proverList instrList context goal

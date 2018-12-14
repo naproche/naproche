@@ -77,11 +77,11 @@ mainBody  = do
   -- read provers.dat
   provers <- readProverDatabase (Instr.askString Instr.Provers "provers.dat" revInitialOpts)
   -- initialize reasoner state
-  reasonerState <- newIORef (RState [] provers)
+  reasonerState <- newIORef (RState [] )
   proveStart <- getCurrentTime
   
   case checkParseCorrectness text of
-    Nothing -> verify (Instr.askString Instr.File "" revInitialOpts) reasonerState text
+    Nothing -> verify (Instr.askString Instr.File "" revInitialOpts) provers reasonerState text
     Just err -> Message.errorParser (errorPos err) (show err)
 
   finishTime <- getCurrentTime
