@@ -19,6 +19,7 @@ import qualified Control.Exception as Exception
 import Network.Socket (Socket)
 import qualified Network.Socket as Socket
 import qualified Control.Concurrent as Concurrent
+import qualified System.IO as IO
 
 import Isabelle.Library
 import qualified Isabelle.UUID as UUID
@@ -67,5 +68,9 @@ server publish handle =
         (do
           line <- Byte_Message.read_line connection
           when (line == Just password) $ handle connection)
-        (\_ -> Socket.close connection)
+        (\final -> do
+          Socket.close connection
+          case final of
+            Left exn -> IO.hPutStrLn IO.stderr $ Exception.displayException exn
+            Right () -> return ())
       return ()

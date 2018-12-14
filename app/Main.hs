@@ -50,7 +50,8 @@ main  = do
   Exception.catch mainBody
     (\err -> do
       let msg = Exception.displayException (err :: Exception.SomeException)
-      unless ("ExitFailure" `isPrefixOf` msg) $ hPutStrLn stderr msg
+      unless ("ExitSuccess" `isPrefixOf` msg || "ExitFailure" `isPrefixOf` msg) $
+        hPutStrLn stderr msg
       exitFailure)
 
 mainBody :: IO ()
