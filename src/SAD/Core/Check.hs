@@ -110,33 +110,26 @@ testDef :: Context -> Formula -> DefDuo -> VM Formula
 testDef context term (guards, fortifiedTerm) = do
   userCheckSetting <- askInstructionBool Instr.Check True
   if   userCheckSetting
-  then setup >> easyCheck >>= hardCheck >> return fortifiedTerm 
+  then setup $ easyCheck >>= hardCheck >> return fortifiedTerm 
   else return fortifiedTerm
   where
     easyCheck = mapM trivialityCheck guards
     hardCheck hardGuards 
       | all isRight hardGuards =
           incrementIntCounter TrivialChecks >>
-          defLog ("trivial " ++ header rights hardGuards) >>
-          cleanup
+          defLog ("trivial " ++ header rights hardGuards)
       | otherwise =
-          (incrementIntCounter HardChecks >>
+          incrementIntCounter HardChecks >>
           defLog (header lefts hardGuards ++ thead (rights hardGuards)) >>
           mapM_ (reason . Context.setForm (wipeLink context)) (lefts hardGuards) >>
-          incrementIntCounter SuccessfulChecks >>
-          cleanup) 
-          <|> (cleanup >> mzero)
-
-    setup = do
-      askInstructionInt Instr.Checktime 1 >>= addInstruction . Instr.Int Instr.Timelimit
-      askInstructionInt Instr.Checkdepth 3 >>= addInstruction . Instr.Int Instr.Depthlimit
-      askInstructionBool Instr.Checkontored False >>= addInstruction . Instr.Bool Instr.Ontored
-
-
-    cleanup = do
-      dropInstruction $ Instr.DropInt Instr.Timelimit
-      dropInstruction $ Instr.DropInt Instr.Depthlimit
-      dropInstruction $ Instr.DropBool Instr.Ontored
+          incrementIntCounter SuccessfulChecks
+    
+    setup :: VM a -> VM a
+    setup action = do
+      timelimit <- Instr.Int Instr.Timelimit <$> askInstructionInt Instr.Checktime 1
+      depthlimit <- Instr.Int Instr.Depthlimit <$> askInstructionInt Instr.Checkdepth 3
+      ontored <- Instr.Bool Instr.Ontored <$> askInstructionBool Instr.Checkontored False
+      addInstruction timelimit $ addInstruction depthlimit $ addInstruction ontored action
 
     wipeLink context =
       let block:restBranch = Context.branch context

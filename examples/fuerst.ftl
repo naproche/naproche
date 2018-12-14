@@ -174,10 +174,10 @@ Lemma ArSeqClosed.  ArSeq(a,q) is a closed subset of INT.
 Proof.
 ArSeq (a,q) is a subset of INT.
 Let b << ~ArSeq (a,q). Let us show that ArSeq(b,q) [= ~ArSeq(a,q).
-  Let c << ArSeq(b,q). Assume not c << ~ArSeq(a,q). Then c = b (mod q) and a = c (mod q).
+  Let c << ArSeq(b,q). Assume not c << ~ArSeq(a,q). [prove on]Then c = b (mod q) and a = c (mod q).[prove off]
   Hence b = a (mod q). Therefore b << ArSeq(a,q). Contradiction. end.
 qed.
-
+[exit]
 Theorem Fuerstenberg.   Let S = { ArSeq(0,r) | r is a prime }.
                         S is infinite.
 Proof.

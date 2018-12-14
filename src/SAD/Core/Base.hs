@@ -65,7 +65,6 @@ import qualified SAD.Core.Message as Message
 -- Reasoner state
 
 data RState = RState {
-  instructions :: [Instr],
   counters     :: [Counter],
   provers      :: [Prover] }
 
@@ -145,6 +144,7 @@ data VState = VS {
   mesonRules      :: (DT.DisTree MRule, DT.DisTree MRule),
   definitions     :: Definitions,
   skolemCounter   :: Int,
+  instructions    :: [Instr],
   restText        :: [Text] }
 
 type VM = ReaderT VState CRM
@@ -162,16 +162,16 @@ askRS f     = justRS >>= (justIO . fmap f . readIORef)
 updateRS f  = justRS >>= (justIO . flip modifyIORef f)
 
 askInstructionInt instr _default =
-  fmap (Instr.askInt instr _default) (askRS instructions)
+  fmap (Instr.askInt instr _default) $ asks instructions
 askInstructionBool instr _default =
-  fmap (Instr.askBool instr _default) (askRS instructions)
+  fmap (Instr.askBool instr _default) $ asks instructions
 askInstructionString instr _default =
-  fmap (Instr.askString instr _default) (askRS instructions)
+  fmap (Instr.askString instr _default) $ asks instructions
 
-addInstruction  instr =
-  updateRS $ \rs -> rs { instructions = instr : instructions rs }
+addInstruction instr =
+  local $ \vs -> vs { instructions = instr : instructions vs }
 dropInstruction instr =
-  updateRS $ \rs -> rs { instructions = Instr.drop instr $ instructions rs }
+  local $ \vs -> vs { instructions = Instr.drop instr $ instructions vs }
 addTimeCounter counter time =
   updateRS $ \rs -> rs { counters = TimeCounter counter time : counters rs }
 addIntCounter  counter time =

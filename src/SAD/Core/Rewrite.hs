@@ -197,29 +197,25 @@ rewrite _ _ = error "SAD.Core.Rewrite.rewrite: non-equation argument"
 {- dischargeConditions accumulated during rewriting -}
 dischargeConditions :: Bool -> [Formula] -> VM ()
 dischargeConditions verbositySetting conditions =
-  setup >> easy >>= hard
+  setup $ easy >>= hard
   where
     easy = mapM trivialityCheck conditions
     hard hardConditions
       | all isRight hardConditions =
           if all isTop $ rights hardConditions
-          then cleanup
-          else log ("trivial " ++ header rights hardConditions) >> cleanup
-      | otherwise = (do
+          then return ()
+          else log $ "trivial " ++ header rights hardConditions
+      | otherwise = do
           log (header lefts hardConditions ++ thead (rights hardConditions))
           thesis <- thesis
           mapM_ (reason . Context.setForm (wipeLink thesis)) (lefts hardConditions)
-          cleanup) <|> (cleanup >> mzero)
 
-    setup = do
-      askInstructionInt Instr.Checktime 1 >>= addInstruction . Instr.Int Instr.Timelimit
-      askInstructionInt Instr.Checkdepth 3 >>= addInstruction . Instr.Int Instr.Depthlimit
-      addInstruction $ Instr.Bool Instr.Ontored False
-
-    cleanup = do
-      dropInstruction $ Instr.DropInt Instr.Timelimit
-      dropInstruction $ Instr.DropInt Instr.Depthlimit
-      dropInstruction $ Instr.DropBool Instr.Ontored
+    setup :: VM a -> VM a
+    setup action = do
+      timelimit <- Instr.Int Instr.Timelimit <$> askInstructionInt Instr.Checktime 1
+      depthlimit <- Instr.Int Instr.Depthlimit <$> askInstructionInt Instr.Checkdepth 3
+      ontored <- Instr.Bool Instr.Ontored <$> askInstructionBool Instr.Checkontored False
+      addInstruction timelimit $ addInstruction depthlimit $ addInstruction ontored action
 
     header select conditions = "condition: " ++ format (select conditions)
     thead [] = ""; thead conditions = "(trivial: " ++ format conditions ++ ")"

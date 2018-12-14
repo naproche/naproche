@@ -50,9 +50,9 @@ verify fileName reasonerState text = do
   let text' = TextInstr Instr.noPos (Instr.String Instr.File fileName) : text
   Message.outputReason Message.TRACING (fileOnlyPos fileName) "verification started"
 
-  let verificationState = VS False [] DT.empty (Context Bot [] [] Bot) [] [] (DT.empty, DT.empty) initialDefinitions 0 text'
+  let verificationState = VS False [] DT.empty (Context Bot [] [] Bot) [] [] (DT.empty, DT.empty) initialDefinitions 0 [] text'
   result <- flip runRM reasonerState $
-    runReaderT (verificationLoop verificationState) undefined
+    runReaderT (verificationLoop verificationState) verificationState
   ignoredFails <- (\st -> accumulateIntCounter (counters st) 0 FailedGoals) <$>
     readIORef reasonerState
 
@@ -214,12 +214,12 @@ verificationLoop st@VS {
 
 -- process instructions. we distinguish between those that influence the
 -- verification state and those that influence (at most) the global state
-verificationLoop state@VS {restText = TextInstr _ instr : blocks} = 
-  procTextInstr state instr >> verificationLoop state {restText = blocks}
+verificationLoop state@VS {restText = TextInstr _ instr : blocks} =
+  local (const state {restText = blocks}) $ procTextInstr instr
 
 {- process a command to drop an instruction, i.e. [/prove], [/ontored], etc.-}
-verificationLoop st@VS {restText = (TextDrop _ instr : blocks)} =
-  procTextDrop st instr >> verificationLoop st {restText = blocks}
+verificationLoop state@VS {restText = (TextDrop _ instr : blocks)} =
+  local (const state {restText = blocks}) $ procTextDrop instr
 
 verificationLoop st@VS {restText = (TextSynonym{} : blocks)} =
   verificationLoop st {restText = blocks}
@@ -291,57 +291,49 @@ deleteInductionOrCase = dive id
 -- Instruction handling
 
 {- execute an instruction or add an instruction parameter to the state -}
-procTextInstr :: VState -> Instr -> VM ()
-procTextInstr VS {
-  thesisMotivated = motivated,
-  rewriteRules    = rules,
-  currentThesis   = thesis,
-  currentContext  = context}
-  = proc
+procTextInstr :: Instr -> VM [Text]
+procTextInstr = flip proc $ ask >>= verificationLoop
   where
-    proc (Instr.Command Instr.RULES) =
-      reasonLog Message.WRITELN noPos $ "current ruleset: " ++ "\n" ++ Rule.printrules (reverse rules)
-    proc (Instr.Command Instr.THESIS) = do
+    proc (Instr.Command Instr.RULES) = (>>) $ do
+      rules <- asks rewriteRules
+      reasonLog Message.WRITELN noPos $
+        "current ruleset: " ++ "\n" ++ Rule.printrules (reverse rules)
+    proc (Instr.Command Instr.THESIS) = (>>) $ do
+      motivated <- asks thesisMotivated; thesis <- asks currentThesis
       let motivation = if motivated then "(motivated): " else "(not motivated): "
-      reasonLog Message.WRITELN noPos $ "current thesis " ++ motivation ++ show (Context.formula thesis)
-    proc (Instr.Command Instr.CONTEXT) =
+      reasonLog Message.WRITELN noPos $
+        "current thesis " ++ motivation ++ show (Context.formula thesis)
+    proc (Instr.Command Instr.CONTEXT) = (>>) $ do
+      context <- asks currentContext
       reasonLog Message.WRITELN noPos $ "current context:\n" ++
         concatMap (\form -> "  " ++ show form ++ "\n") (reverse context)
-    proc (Instr.Command Instr.FILTER) = do
+    proc (Instr.Command Instr.FILTER) = (>>) $ do
+      context <- asks currentContext
       let topLevelContext = filter Context.isTopLevel context
       reasonLog Message.WRITELN noPos $ "current filtered top-level context:\n" ++
         concatMap (\form -> "  " ++ show form ++ "\n") (reverse topLevelContext)
 
-    proc (Instr.Command _) = reasonLog Message.WRITELN noPos "unsupported instruction"
+    proc (Instr.Command _) = (>>) $ reasonLog Message.WRITELN noPos "unsupported instruction"
 
-    proc (Instr.Bool Instr.Verbose False) = do
-      addInstruction $ Instr.Bool Instr.Printgoal False
-      addInstruction $ Instr.Bool Instr.Printreason False
-      addInstruction $ Instr.Bool Instr.Printsection False
-      addInstruction $ Instr.Bool Instr.Printcheck False
-      addInstruction $ Instr.Bool Instr.Printprover False
-      addInstruction $ Instr.Bool Instr.Printunfold False
-      addInstruction $ Instr.Bool Instr.Printfulltask False
+    proc (Instr.Bool Instr.Verbose False) =
+      addInstruction (Instr.Bool Instr.Printgoal False) .
+      addInstruction (Instr.Bool Instr.Printreason False) .
+      addInstruction (Instr.Bool Instr.Printsection False) .
+      addInstruction (Instr.Bool Instr.Printcheck False) .
+      addInstruction (Instr.Bool Instr.Printprover False) .
+      addInstruction (Instr.Bool Instr.Printunfold False) .
+      addInstruction (Instr.Bool Instr.Printfulltask False)
 
-    proc (Instr.Bool Instr.Verbose True) = msum [
-      guardNotInstruction Instr.Printgoal True
-        >> addInstruction (Instr.Bool Instr.Printgoal True),
-      guardNotInstruction Instr.Printreason False
-        >> addInstruction (Instr.Bool Instr.Printreason True),
-      guardNotInstruction Instr.Printsection False
-        >> addInstruction (Instr.Bool Instr.Printsection True),
-      guardNotInstruction Instr.Printcheck False
-        >> addInstruction (Instr.Bool Instr.Printcheck True),
-      guardNotInstruction Instr.Printprover False
-        >> addInstruction (Instr.Bool Instr.Printprover True),
-      guardNotInstruction Instr.Printunfold False
-        >> addInstruction (Instr.Bool Instr.Printunfold True),
-      guardNotInstruction Instr.Printfulltask False
-        >> addInstruction (Instr.Bool Instr.Printfulltask True),
-      return ()]
+    proc (Instr.Bool Instr.Verbose True) =
+      addInstruction (Instr.Bool Instr.Printgoal True) .
+      addInstruction (Instr.Bool Instr.Printreason True) .
+      addInstruction (Instr.Bool Instr.Printcheck True) .
+      addInstruction (Instr.Bool Instr.Printprover True) .
+      addInstruction (Instr.Bool Instr.Printunfold True) .
+      addInstruction (Instr.Bool Instr.Printfulltask True)
 
     proc i = addInstruction i
 
 {- drop an instruction from the state -}
-procTextDrop :: VState -> Instr.Drop -> VM ()
-procTextDrop _ = dropInstruction
+procTextDrop :: Instr.Drop -> VM [Text]
+procTextDrop = flip dropInstruction $ ask >>= verificationLoop

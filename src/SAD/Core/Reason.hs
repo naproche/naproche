@@ -48,7 +48,6 @@ import SAD.Prove.MESON
 import qualified SAD.Data.Structures.DisTree as DT
 import qualified SAD.Data.Text.Decl as Decl
 
-
 -- Reasoner
 
 reason :: Context -> VM ()
@@ -114,7 +113,7 @@ launchProver :: Int -> VM ()
 launchProver iteration = do
   reductionSetting <- askInstructionBool Instr.Ontored False
   whenInstruction Instr.Printfulltask False (printTask reductionSetting)
-  proverList <- askRS provers ; instrList <- askRS instructions
+  proverList <- askRS provers ; instrList <- asks instructions
   goal <- thesis; context <- context
   let callATP = justIO $ 
         export reductionSetting iteration proverList instrList context goal
