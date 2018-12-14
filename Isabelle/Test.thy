@@ -13,7 +13,7 @@ begin
 subsection \<open>Inlined text\<close>
 
 forthel \<open>
-[subset/-s] [surject/-s]
+[synonym subset/-s] [synonym surject/-s]
 
 Let M denote a set.
 Let f denote a function.
