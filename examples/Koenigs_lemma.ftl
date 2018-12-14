@@ -1,6 +1,6 @@
 [ontored on]
 
-[cardinal/-s][sequence/-s]
+[synonym cardinal/-s][synonym sequence/-s]
 Let the domain of f stand for Dom(f).
 
 

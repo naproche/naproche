@@ -1,4 +1,4 @@
-[element/-s]
+[synonym element/-s]
 
 Signature ElmSort. An element is a notion.
 
@@ -43,7 +43,7 @@ Axiom Cancel.  x != 0 /\ y != 0 => x * y != 0.
 
 Axiom UnNeZr.  1 != 0.
 
-[set/-s] [belong/-s]
+[synonym set/-s] [synonym belong/-s]
 
 Let X,Y,Z,U,V,W denote sets.
 
@@ -64,7 +64,7 @@ Definition DefSInt.
 X ** Y is a set such that for every element z (z << X +' Y) iff z << X
 and z << Y.
 
-[ideal/-s]
+[synonym ideal/-s]
 
 Definition DefIdeal.
 An ideal is a set X such that for every x << X
@@ -120,7 +120,7 @@ Let us show that w = x (mod I) and w = y (mod J).
 qed.
 
 
-[number/-s]
+[synonym number/-s]
 
 Signature NatSort.  A natural number is a notion.
 
@@ -131,7 +131,7 @@ Let x, y be elements and y != 0. There exist elements q,r such that
         x = (q * y) + r and (r != 0 => |r| -<- |y|).
 
 
-[divisor/-s] [divide/-s]
+[synonym divisor/-s] [synonym divide/-s]
 
 Definition DefDiv.  x divides y  iff  for some z (x * z = y).
 
@@ -169,7 +169,6 @@ proof.
     Therefore the thesis.
     end.
 qed.
-
 
 Theorem GCDin.  Let a, b be elements.
 Assume that a is nonzero or b is nonzero. Let c be a gcd of a and b.

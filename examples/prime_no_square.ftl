@@ -1,4 +1,4 @@
-[number/-s] [devide/-s]
+[synonym number/-s] [synonym devide/-s]
 [ontored on]
 Signature. A rational number is a notion.
 

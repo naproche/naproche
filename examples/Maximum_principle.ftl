@@ -1,4 +1,4 @@
-[number/-s]
+[synonym number/-s]
 [ontored on][checkontored on]
 
 

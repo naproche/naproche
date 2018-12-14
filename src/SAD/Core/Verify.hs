@@ -27,7 +27,7 @@ import SAD.Core.Reason
 import SAD.Core.Thesis
 import SAD.Data.Formula
 import qualified SAD.Data.Tag as Tag
-import SAD.Data.Instr (Instr)
+import SAD.Data.Instr (Instr, isParserInstruction)
 import qualified SAD.Data.Instr as Instr
 import SAD.Data.Text.Block (Block(Block), Text(..), Section(..))
 import qualified SAD.Data.Text.Block as Block
@@ -333,7 +333,9 @@ procTextInstr = flip proc $ ask >>= verificationLoop
       addInstruction (Instr.Bool Instr.Printunfold True) .
       addInstruction (Instr.Bool Instr.Printfulltask True)
 
-    proc i = addInstruction i
+    proc i 
+      | isParserInstruction i = id
+      | otherwise = addInstruction i
 
 {- drop an instruction from the state -}
 procTextDrop :: Instr.Drop -> VM [Text]

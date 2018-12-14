@@ -31,6 +31,7 @@ data Instr =
   | Int Int Prelude.Int
   | Bool Bool Prelude.Bool
   | String String Prelude.String
+  | Strings Strings [Prelude.String]
   deriving Show
 
 data Drop =
@@ -97,6 +98,10 @@ data String =
   | Library  --  library directory
   | Provers  --  prover database
   | Prover   --  current prover
+  deriving (Eq,Show)
+
+data Strings =
+  Synonym
   deriving (Eq,Show)
 
 -- Ask
@@ -173,3 +178,14 @@ keywordsString =
   (Library, "library"),
   (Provers, "provers"),
   (Prover, "prover")]
+
+keywordsStrings :: [(Strings, Prelude.String)]
+keywordsStrings =
+  [(Synonym, "synonym")]
+
+-- distiguish between parser and verifier instructions 
+
+isParserInstruction :: Instr -> Prelude.Bool
+isParserInstruction i = case i of
+  Command EXIT -> True; Command QUIT -> True; String Read _ -> True;
+  Strings Synonym _ -> True; _ -> False

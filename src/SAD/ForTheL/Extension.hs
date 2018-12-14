@@ -8,7 +8,6 @@ macros and synonyms.
 
 
 module SAD.ForTheL.Extension (
-  introduceSynonym,
   pretypeVariable,
   introduceMacro,
   defExtend,
@@ -142,21 +141,7 @@ allDistinctVars = disVs []
 
 
 nonLogicalLanguageExt :: Parser FState Text
-nonLogicalLanguageExt = introduceSynonym </> pretypeVariable </> introduceMacro
-
-introduceSynonym :: Parser FState Text
-introduceSynonym = do
-  (pos, ss) <- sym
-  MS.modify $ upd ss
-  return $ TextSynonym $ Instr.position pos
-  where
-    upd ss st = st { strSyms = ss : strSyms st }
-
-    sym = instrPos addSynonymReport $ do
-      w <- word ; root <- optLL1 w $ sfx w; smTokenOf "/"
-      syms <- (wlexem -|- sfx w) `sepByLL1` smTokenOf "/"
-      return $ root : syms
-    sfx w = smTokenOf "-" >> fmap (w ++) word
+nonLogicalLanguageExt = pretypeVariable </> introduceMacro
 
 
 pretypeVariable :: Parser FState Text

@@ -2,7 +2,7 @@
 # Integers
 #
 [unfoldlow on]
-[integer/-s]
+[synonym integer/-s]
 
 Signature Integers. An integer is a notion.
 
@@ -37,7 +37,7 @@ Axiom ZeroDiv.      a != 0 /\ b != 0 => a * b != 0.
 Let a is nonzero stand for a != 0.
 Let p,q stand for nonzero integers.
 
-[divisor/-s] [divide/-s]
+[synonym divisor/-s] [synonym divide/-s]
 
 Definition Divisor. A divisor of b is a nonzero integer a
                     such that for some n (a * n = b).
@@ -82,7 +82,7 @@ Axiom PrimeDivisor. n has a prime divisor iff n != 1 /\ n != -1.
 #
 # Generic sets
 #
-[belong/-s] [subset/-s]
+[synonym belong/-s] [synonym subset/-s]
 
 
 Let S,T stand for sets.
@@ -174,10 +174,10 @@ Lemma ArSeqClosed.  ArSeq(a,q) is a closed subset of INT.
 Proof.
 ArSeq (a,q) is a subset of INT.
 Let b << ~ArSeq (a,q). Let us show that ArSeq(b,q) [= ~ArSeq(a,q).
-  Let c << ArSeq(b,q). Assume not c << ~ArSeq(a,q). [prove on]Then c = b (mod q) and a = c (mod q).[prove off]
+  Let c << ArSeq(b,q). Assume not c << ~ArSeq(a,q). Then c = b (mod q) and a = c (mod q).
   Hence b = a (mod q). Therefore b << ArSeq(a,q). Contradiction. end.
 qed.
-[exit]
+
 Theorem Fuerstenberg.   Let S = { ArSeq(0,r) | r is a prime }.
                         S is infinite.
 Proof.

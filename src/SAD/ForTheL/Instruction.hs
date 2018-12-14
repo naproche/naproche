@@ -9,6 +9,7 @@ Syntax of ForThel Instructions.
 module SAD.ForTheL.Instruction where
 
 import Control.Monad
+import Data.Char
 
 import SAD.Core.SourcePos
 import SAD.Data.Instr (Instr)
@@ -46,12 +47,12 @@ instrRead =
   instrPos addInstrReport $ readInstr >>=
     (\case { i@(Instr.String Instr.Read _) -> return i; _ -> mzero })
 
-instrExit :: FTL ()
+instrExit :: FTL (Instr.Pos, Instr)
 instrExit =
-  exbrk $ readInstr >>=
+  instrPos addInstrReport $ readInstr >>=
     (\case
-      Instr.Command Instr.EXIT -> return ()
-      Instr.Command Instr.QUIT -> return ()
+      i@(Instr.Command Instr.EXIT) -> return i
+      i@(Instr.Command Instr.QUIT) -> return i
       _ -> mzero)
 
 instrDrop :: FTL (Instr.Pos, Instr.Drop)
@@ -60,12 +61,13 @@ instrDrop = instrPos addInstrReport (wdToken "/" >> readInstrDrop)
 
 readInstr :: FTL Instr
 readInstr =
-  readInstrCommand -|- readInstrInt -|- readInstrBool -|- readInstrString
+  readInstrCommand -|- readInstrInt -|- readInstrBool -|- readInstrString -|- readInstrStrings
   where
     readInstrCommand = fmap Instr.Command (readKeywords Instr.keywordsCommand)
     readInstrInt = liftM2 Instr.Int (readKeywords Instr.keywordsInt) readInt
     readInstrBool = liftM2 Instr.Bool (readKeywords Instr.keywordsBool) readBool
     readInstrString = liftM2 Instr.String (readKeywords Instr.keywordsString) readString
+    readInstrStrings = liftM2 Instr.Strings (readKeywords Instr.keywordsStrings) readWords
 
 readInt = try $ readString >>= intCheck
   where
@@ -89,6 +91,13 @@ readStrings = chainLL1 notClosingBrk
     notClosingBrk = tokenPrim notCl
     notCl t = let tk = showToken t in guard (tk /= "]") >> return tk
 
+readWords = shortHand </> chainLL1 word
+  where
+  shortHand = do
+    w <- word ; root <- optLL1 w $ variant w; smTokenOf "/"
+    syms <- (fmap (map toLower) word -|- variant w) `sepByLL1` smTokenOf "/"
+    return $ root : syms
+  variant w = smTokenOf "-" >> fmap (w ++) word
 
 readInstrDrop :: FTL Instr.Drop
 readInstrDrop = readInstrCommand -|- readInstrInt -|- readInstrBool

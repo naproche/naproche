@@ -15,6 +15,7 @@ import Control.Monad
 import qualified Data.Char as Char
 import Data.Set (Set)
 import qualified Data.Set as Set
+import qualified Control.Monad.State.Class as MS
 
 import SAD.ForTheL.Base
 import SAD.ForTheL.Statement
@@ -40,26 +41,30 @@ import qualified SAD.Data.Text.Decl as Decl
 import Debug.Trace
 
 forthel :: FTL [Text]
-forthel = section <|> macroOrPretype <|> bracketExpression
+forthel = section <|> macroOrPretype <|> bracketExpression <|> endOfFile
   where
     section = liftM2 ((:) . TextBlock) topsection forthel
     macroOrPretype = liftM2 (:) (introduceMacro </> pretypeVariable) forthel
+    endOfFile = eof >> return []
 
-instruction :: FTL Text
-instruction =
-  fmap (uncurry TextDrop) instrDrop </>
-  fmap (uncurry TextInstr) instr
 
-{- this part may seem a bit finicky, but must be coded this way to avoid
-   memory leaks. The problem is that we cannnot distinguish in an LL1 fashion
-   between instructions and synonym introductions.-}
-
-bracketExpression = exit </> readfile </> do
-  text <- instruction </> introduceSynonym
-  fmap ((:) text) forthel
+bracketExpression = topInstruction >>= procParseInstruction
   where
-    exit = (instrExit <|> eof) >> return []
-    readfile = liftM2 ((:) . uncurry TextInstr) instrRead (return [])
+    topInstruction =
+      fmap (uncurry TextDrop) instrDrop </>
+      fmap (uncurry TextInstr) (instr </> instrExit </> instrRead)
+
+procParseInstruction text = case text of
+  TextInstr _ (Instr.String Instr.Read _) -> return [text]
+  TextInstr _ (Instr.Command Instr.EXIT) -> return []
+  TextInstr _ (Instr.Command Instr.QUIT) -> return []
+  TextInstr _ (Instr.Strings Instr.Synonym syms) -> addSynonym syms >> fmap ((:) text) forthel
+  _ -> fmap ((:) text) forthel
+  where
+    addSynonym :: [String] -> FTL ()
+    addSynonym syms 
+      | null syms || null (tail syms) = return ()
+      | otherwise = MS.modify $ \st -> st {strSyms = syms : strSyms st}
 
 topsection = signature <|> definition <|> axiom <|> theorem
 
@@ -325,6 +330,9 @@ proofText =
       narrow llDefn <|>
       caseDestinction
     qed = label "qed" $ markupTokenOf proofEnd ["qed", "end", "trivial", "obvious"] >> return []
+    instruction =
+      fmap (uncurry TextDrop) instrDrop </>
+      fmap (uncurry TextInstr) instr
 
 caseDestinction = do
   bl@Block { Block.formula = fr } <- narrow caseHypo
