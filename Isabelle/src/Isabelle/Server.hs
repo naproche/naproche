@@ -18,12 +18,12 @@ import Control.Monad (forever, when)
 import qualified Control.Exception as Exception
 import Network.Socket (Socket)
 import qualified Network.Socket as Socket
-import qualified Control.Concurrent as Concurrent
 import qualified System.IO as IO
 
 import Isabelle.Library
 import qualified Isabelle.UUID as UUID
 import qualified Isabelle.Byte_Message as Byte_Message
+import qualified Isabelle.Standard_Thread as Standard_Thread
 
 
 {- server address -}
@@ -64,13 +64,13 @@ server publish handle =
     loop :: Socket -> ByteString -> IO ()
     loop server_socket password = forever $ do
       (connection, peer) <- Socket.accept server_socket
-      Concurrent.forkFinally
+      Standard_Thread.fork_finally
         (do
           line <- Byte_Message.read_line connection
           when (line == Just password) $ handle connection)
-        (\final -> do
+        (\finally -> do
           Socket.close connection
-          case final of
+          case finally of
             Left exn -> IO.hPutStrLn IO.stderr $ Exception.displayException exn
             Right () -> return ())
       return ()
