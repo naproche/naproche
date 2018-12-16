@@ -28,8 +28,6 @@ fun bool_option ctxt config = if Config.get ctxt config then "on" else "off";
 
 local
 
-val output_reports = Output.report o map YXML.string_of;
-
 val message_fns =
   Symtab.make
    [(Markup.stateN, Output.state),
@@ -40,8 +38,28 @@ val message_fns =
     (Markup.legacyN, legacy_feature),
     (Markup.errorN, Output.error_message)]
 
-fun output_message name =
-  the_default writeln (Symtab.lookup message_fns name);
+fun output_message ((elem, props), body) =
+  if elem = Markup.reportN then Output.report (map YXML.string_of body)
+  else
+    let
+      val message_fn = the_default writeln (Symtab.lookup message_fns elem);
+      val header = enclose "[" "]" (the_default "Naproche-SAD" (Properties.get props "origin"));
+      val here = (case Position.here (Position.of_properties props) of "" => " " | s => s ^ "\n");
+    in message_fn (header ^ here ^ YXML.string_of_body body) end;
+
+fun input_messages instream =
+  (case Byte_Message.read_line_message instream of
+    NONE => ()
+  | SOME msg =>
+      (case try YXML.parse msg of
+        SOME (XML.Text txt) => writeln txt
+      | SOME (XML.Elem elem) => output_message elem
+      | NONE => Output.error_message ("Malformed YXML tree " ^ quote msg);
+      input_messages instream));
+
+fun read_messages str =
+  Isabelle_System.with_tmp_file "tmp" ""
+    (fn path => (File.write path str; File.open_input input_messages path));
 
 in
 
@@ -55,38 +73,6 @@ fun process_forthel ctxt (text, pos) =
 
       val pos_file = the_default "" (Position.file_of pos);
       val pos_offset = the_default 0 (Position.offset_of pos);
-
-      fun print_position props =
-        let val pos = Position.of_properties props;
-        in (case Position.here pos of "" => " " | s => s ^ "\n") end;
-
-      fun output_acc acc =
-        (case cat_lines (rev acc) of
-          "" => ()
-        | str =>
-            (case try YXML.parse str of
-              SOME (XML.Elem ((elem, props), body)) =>
-                if elem = Markup.reportN then output_reports body
-                else
-                  output_message elem
-                    (enclose "[" "]" (the_default "Naproche-SAD" (Properties.get props "origin")) ^
-                      print_position props ^ YXML.string_of_body body)
-            | SOME (XML.Text s) => writeln s
-            | NONE => Output.error_message ("Malformed YXML tree " ^ quote str)));
-
-      fun detect_messages 0 acc (line :: lines) =
-            (output_acc acc;
-             case line |> try (unprefix "\001") |> Option.mapPartial (try Value.parse_nat) of
-              SOME n => detect_messages n [] lines
-            | NONE => (writeln line; detect_messages 0 [] lines))
-        | detect_messages n acc [line] = detect_messages (n - size line) (line :: acc) []
-        | detect_messages n acc (line :: lines) =
-            let val n' = n - size line
-            in detect_messages (if n' > 0 then n' - 1 else n') (line :: acc) lines end
-        | detect_messages n acc [] =
-            (output_acc acc;
-             if n = 0 then ()
-             else Output.error_message ("Illegal remaining bytes " ^ signed_string_of_int n));
 
       val _ = File.write tmp_file text;
       val script =
@@ -103,8 +89,8 @@ fun process_forthel ctxt (text, pos) =
             " --skipfail=" ^ bool_option ctxt forthel_skipfail ^
             " < " ^ File.bash_path tmp_file];
       val {out, err, rc, ...} = Bash.process script;
-      val _ = detect_messages 0 [] (split_lines err);
-      val _ = detect_messages 0 [] (split_lines out);
+      val _ = read_messages err;
+      val _ = read_messages out;
     in if rc = 0 then () else error ("Return code: " ^ string_of_int rc) end);
 
 end;

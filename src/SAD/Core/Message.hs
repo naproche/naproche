@@ -20,7 +20,9 @@ import qualified Prelude (error)
 import System.Environment
 import Control.Monad
 import Data.Maybe
+import Data.ByteString (ByteString)
 import qualified Data.ByteString as ByteString
+import qualified Data.ByteString.Char8 as Char8
 import qualified Data.ByteString.UTF8 as UTF8
 
 import SAD.Core.SourcePos (SourcePos)
@@ -31,6 +33,7 @@ import qualified Isabelle.Value as Value
 import qualified Isabelle.Markup as Markup
 import qualified Isabelle.XML as XML
 import qualified Isabelle.YXML as YXML
+import qualified Isabelle.Byte_Message as Byte_Message
 
 
 -- message kind
@@ -111,9 +114,8 @@ xmlMessage pide origin kind pos msg =
     props0 = posProperties pide pos
     props = if null origin then props0 else ("origin", origin) : props0
 
-pideMessage :: String -> String
-pideMessage s = "\1" ++ Value.print_int len ++ "\n" ++ s
-  where len = ByteString.length (UTF8.fromString s)
+pideMessage :: String -> ByteString
+pideMessage = ByteString.concat . Byte_Message.make_line_message . UTF8.fromString
 
 
 -- PIDE markup reports
@@ -124,7 +126,7 @@ type ReportText = (Report, String)
 reportsText :: [ReportText] -> IO ()
 reportsText args = do
   pide <- pideContext
-  when (isJust pide && not (null args)) $ putStrLn $ pideMessage $ YXML.string_of $
+  when (isJust pide && not (null args)) $ Char8.putStrLn $ pideMessage $ YXML.string_of $
     XML.Elem (Markup.report,
       map (\((pos, markup), txt) ->
         let
@@ -147,24 +149,25 @@ report pos markup = reports [(pos, markup)]
 trimText :: String -> String
 trimText = Isabelle.trim_line
 
-messageText :: Maybe PIDE -> String -> Kind -> SourcePos -> String -> String
-messageText pide origin kind pos msg =
+messageBytes :: Maybe PIDE -> String -> Kind -> SourcePos -> String -> ByteString
+messageBytes pide origin kind pos msg =
   if isJust pide then
     pideMessage $ YXML.string_of $ xmlMessage (fromJust pide) origin kind pos msg
   else
-    (if null origin then "" else "[" ++ origin ++ "] ") ++
-    (case show kind of "" -> "" ; s -> s ++ ": ") ++
-    (case show pos of "" -> ""; s -> s ++ "\n") ++ msg
+    UTF8.fromString
+      ((if null origin then "" else "[" ++ origin ++ "] ") ++
+       (case show kind of "" -> "" ; s -> s ++ ": ") ++
+       (case show pos of "" -> ""; s -> s ++ "\n") ++ msg)
 
 output :: String -> Kind -> SourcePos -> String -> IO ()
 output origin kind pos msg = do
   pide <- pideContext
-  putStrLn $ messageText pide origin kind pos msg
+  Char8.putStrLn $ messageBytes pide origin kind pos msg
 
 error :: String -> SourcePos -> String -> IO a
 error origin pos msg = do
   pide <- pideContext
-  errorWithoutStackTrace $ messageText pide origin ERROR pos msg
+  errorWithoutStackTrace $ UTF8.toString (messageBytes pide origin ERROR pos msg)
 
 
 -- specific messages
