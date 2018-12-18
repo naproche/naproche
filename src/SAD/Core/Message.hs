@@ -7,8 +7,10 @@ Formal output messages, with PIDE (Prover IDE) support.
 {-# LANGUAGE TupleSections #-}
 {-# LANGUAGE NamedFieldPuns #-}
 
-module SAD.Core.Message (Kind (..), PIDE, pideContext, pideActive,
-  entityMarkup,
+module SAD.Core.Message (
+  PIDE, pideContext, pideActive,
+  initThread, exitThread, consoleThread,
+  Kind (..), entityMarkup,
   Report, ReportText, reportsText, reportText, reports, report,
   trimText, output, error, outputMain, outputExport, outputForTheL,
   outputParser, outputReason, outputThesis, outputSimp,
@@ -20,15 +22,23 @@ import qualified Prelude (error)
 import System.Environment
 import Control.Monad
 import Data.Maybe
+import Data.IORef
+import System.IO.Unsafe
 import Data.ByteString (ByteString)
+import Data.Map.Strict (Map)
+import qualified Data.Map.Strict as Map
 import qualified Data.ByteString as ByteString
 import qualified Data.ByteString.Char8 as Char8
 import qualified Data.ByteString.UTF8 as UTF8
+import Control.Concurrent (ThreadId)
+import qualified Control.Concurrent as Concurrent
+import Network.Socket (Socket)
 
 import SAD.Core.SourcePos (SourcePos)
 import qualified SAD.Core.SourcePos as SourcePos
 
 import Isabelle.Library as Isabelle
+import qualified Isabelle.Properties as Properties
 import qualified Isabelle.Value as Value
 import qualified Isabelle.Markup as Markup
 import qualified Isabelle.XML as XML
@@ -36,7 +46,73 @@ import qualified Isabelle.YXML as YXML
 import qualified Isabelle.Byte_Message as Byte_Message
 
 
--- message kind
+-- PIDE thread context
+
+data PIDE = PIDE {pideID :: String, pideFile :: String, pideShift :: Int}
+type Channel = [ByteString] -> IO ()
+data Context = Context {pide :: Maybe PIDE, channel :: Channel}
+
+defaultChannel :: Channel
+defaultChannel = Char8.putStrLn . ByteString.concat
+
+defaultContext :: Context
+defaultContext = Context Nothing defaultChannel
+
+  
+-- global state
+
+type Threads = Map ThreadId Context
+
+{-# NOINLINE globalState #-}
+globalState :: IORef Threads
+globalState = unsafePerformIO (newIORef Map.empty)
+
+getContext :: IO Context
+getContext = do
+  id <- Concurrent.myThreadId
+  threads <- readIORef globalState
+  return (fromMaybe defaultContext (Map.lookup id threads))
+
+updateState :: (ThreadId -> Threads -> Threads) -> IO ()
+updateState f = do
+  id <- Concurrent.myThreadId
+  atomicModifyIORef' globalState (\threads -> (f id threads, ()))
+
+
+-- PIDE context
+
+pideContext :: IO (Maybe PIDE)
+pideContext = pide <$> getContext
+
+pideActive :: IO Bool
+pideActive = isJust <$> pideContext
+
+
+-- init/exit thread context
+
+initThread :: Properties.T -> Channel -> IO ()
+initThread props channel = do
+  let property parse = Properties.get_value parse props
+  let pideProperty = property proper_string "NAPROCHE_PIDE"
+  let fileProperty = property Just "NAPROCHE_POS_FILE"
+  let shiftProperty = property Value.parse_int "NAPROCHE_POS_SHIFT"
+  let
+    pideContext =
+      case (pideProperty, fileProperty, shiftProperty) of
+        (Just pide, Just file, Just shift) -> Just (PIDE pide file shift)
+        _ -> Nothing
+  updateState (\id -> Map.insert id (Context pideContext channel))
+
+exitThread :: IO ()
+exitThread = updateState Map.delete
+
+consoleThread :: IO ()
+consoleThread = do
+  env <- getEnvironment
+  initThread env defaultChannel
+
+
+-- PIDE messages
 
 data Kind =
   STATE | WRITELN | INFORMATION | TRACING | WARNING | LEGACY | ERROR
@@ -46,28 +122,6 @@ instance Show Kind where
   show LEGACY = "Legacy feature"
   show ERROR = "Error"
   show _ = ""
-
-
--- PIDE context
-
-data PIDE = PIDE {pideID :: String, pideFile :: String, pideShift :: Int}
-
-pideContext :: IO (Maybe PIDE)
-pideContext = do
-  pide <- lookupEnv "NAPROCHE_PIDE"
-  file <- fromMaybe "" <$> lookupEnv "NAPROCHE_POS_FILE"
-  shift <- fromMaybe "0" <$> lookupEnv "NAPROCHE_POS_SHIFT"
-  case (pide, Value.parse_int shift) of
-    (Nothing, _) -> return Nothing
-    (Just "", _) -> return Nothing
-    (_, Nothing) -> return Nothing
-    (Just id, Just i) -> return $ Just (PIDE id file i)
-
-pideActive :: IO Bool
-pideActive = isJust <$> pideContext
-
-
--- PIDE messages
 
 kindXML :: Kind -> String
 kindXML STATE = Markup.stateN
@@ -114,8 +168,8 @@ xmlMessage pide origin kind pos msg =
     props0 = posProperties pide pos
     props = if null origin then props0 else ("origin", origin) : props0
 
-pideMessage :: String -> ByteString
-pideMessage = ByteString.concat . Byte_Message.make_line_message . UTF8.fromString
+pideMessage :: String -> [ByteString]
+pideMessage = Byte_Message.make_line_message . UTF8.fromString
 
 
 -- PIDE markup reports
@@ -125,14 +179,15 @@ type ReportText = (Report, String)
 
 reportsText :: [ReportText] -> IO ()
 reportsText args = do
-  pide <- pideContext
-  when (isJust pide && not (null args)) $ Char8.putStrLn $ pideMessage $ YXML.string_of $
-    XML.Elem (Markup.report,
-      map (\((pos, markup), txt) ->
-        let
-          markup' = Markup.properties (posProperties (fromJust pide) pos) markup
-          body = if null txt then [] else [XML.Text txt]
-        in XML.Elem (markup', body)) args)
+  context <- getContext
+  when (isJust (pide context) && not (null args)) $
+    channel context $ pideMessage $ YXML.string_of $
+      XML.Elem (Markup.report,
+        map (\((pos, markup), txt) ->
+          let
+            markup' = Markup.properties (posProperties (fromJust (pide context)) pos) markup
+            body = if null txt then [] else [XML.Text txt]
+          in XML.Elem (markup', body)) args)
 
 reportText :: SourcePos -> Markup.T -> String -> IO ()
 reportText pos markup txt = reportsText [((pos, markup), txt)]
@@ -149,25 +204,26 @@ report pos markup = reports [(pos, markup)]
 trimText :: String -> String
 trimText = Isabelle.trim_line
 
-messageBytes :: Maybe PIDE -> String -> Kind -> SourcePos -> String -> ByteString
+messageBytes :: Maybe PIDE -> String -> Kind -> SourcePos -> String -> [ByteString]
 messageBytes pide origin kind pos msg =
   if isJust pide then
     pideMessage $ YXML.string_of $ xmlMessage (fromJust pide) origin kind pos msg
   else
-    UTF8.fromString
+    [UTF8.fromString
       ((if null origin then "" else "[" ++ origin ++ "] ") ++
        (case show kind of "" -> "" ; s -> s ++ ": ") ++
-       (case show pos of "" -> ""; s -> s ++ "\n") ++ msg)
+       (case show pos of "" -> ""; s -> s ++ "\n") ++ msg)]
 
 output :: String -> Kind -> SourcePos -> String -> IO ()
 output origin kind pos msg = do
-  pide <- pideContext
-  Char8.putStrLn $ messageBytes pide origin kind pos msg
+  context <- getContext
+  channel context $ messageBytes (pide context) origin kind pos msg
 
 error :: String -> SourcePos -> String -> IO a
 error origin pos msg = do
   pide <- pideContext
-  errorWithoutStackTrace $ UTF8.toString (messageBytes pide origin ERROR pos msg)
+  errorWithoutStackTrace $
+    UTF8.toString $ ByteString.concat $ messageBytes pide origin ERROR pos msg
 
 
 -- specific messages

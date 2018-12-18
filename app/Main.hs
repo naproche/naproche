@@ -69,6 +69,9 @@ mainBody  = do
   when (Instr.askBool Instr.Server False revInitialOpts)
     (Server.server (Server.publish_stdout "Naproche-SAD") serverConnection >> exitSuccess)
 
+  -- console mode
+  Message.consoleThread
+
   -- parse input text
   text <-
     readText (Instr.askString Instr.Library "." revInitialOpts) $
@@ -130,6 +133,8 @@ mainBody  = do
   Message.outputMain Message.TRACING noPos $
     "total "
     ++ showTimeDiff (diffUTCTime finishTime startTime)
+
+  Message.exitThread
 
 
 serverConnection :: Socket -> IO ()
