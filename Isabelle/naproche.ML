@@ -9,7 +9,7 @@ sig
   val forthel_prove: bool Config.T
   val forthel_check: bool Config.T
   val forthel_skipfail: bool Config.T
-  val process_forthel: Proof.context -> string * Position.T -> unit
+  val check_forthel: Proof.context -> string * Position.T -> unit
 end;
 
 structure Naproche: NAPROCHE =
@@ -63,26 +63,35 @@ fun read_messages str =
 
 in
 
-fun process_forthel ctxt (text, pos) =
+fun naproche_properties pos =
+  let
+    val pide =
+      (case Position.get_id (Position.thread_data ()) of
+        SOME id => id
+      | NONE => raise Fail "Missing PIDE position id");
+    val pos_file = the_default "" (Position.file_of pos);
+    val pos_offset = the_default 0 (Position.offset_of pos);
+  in
+    [("NAPROCHE_PIDE", pide),
+     ("NAPROCHE_POS_FILE", pos_file),
+     ("NAPROCHE_POS_SHIFT", string_of_int (pos_offset - 1))]
+  end;
+
+fun check_forthel ctxt (text, pos) =
   Isabelle_System.with_tmp_file "naproche" "ftl" (fn tmp_file =>
     let
-      val pide =
-        (case Position.get_id (Position.thread_data ()) of
-          SOME id => id
-        | NONE => raise Fail "Missing PIDE position id");
-
-      val pos_file = the_default "" (Position.file_of pos);
-      val pos_offset = the_default 0 (Position.offset_of pos);
-
       val _ = File.write tmp_file text;
+
+      val environment =
+        naproche_properties pos
+        |> map (fn (a, b) => "export " ^ a ^ "=" ^ Bash.string b)
+        |> cat_lines;
       val script =
         cat_lines [
           "set -e",
           "cd \"$NAPROCHE_HOME\"",
           "export PATH=\"$E_HOME:$SPASS_HOME:$PATH\"",
-          "export NAPROCHE_PIDE=" ^ Bash.string pide,
-          "export NAPROCHE_POS_FILE=" ^ Bash.string pos_file,
-          "export NAPROCHE_POS_SHIFT=" ^ Bash.string (string_of_int (pos_offset - 1)),
+          environment,
           File.bash_path (Path.explode "$NAPROCHE_EXE") ^
             " --prove=" ^ bool_option ctxt forthel_prove ^
             " --check=" ^ bool_option ctxt forthel_check ^
@@ -100,7 +109,7 @@ end;
 
 val _ =
   Outer_Syntax.local_theory \<^command_keyword>\<open>forthel\<close> "check Naproche-SAD text"
-    (Parse.embedded_position >> (fn inp => fn lthy => (process_forthel lthy inp; lthy)));
+    (Parse.embedded_position >> (fn inp => fn lthy => (check_forthel lthy inp; lthy)));
 
 val _ =
   Outer_Syntax.local_theory \<^command_keyword>\<open>forthel_file\<close> "check Naproche-SAD text file (.ftl)"
@@ -109,7 +118,7 @@ val _ =
           val [file] = files (Proof_Context.theory_of lthy);
           val lthy' = lthy
             |> Local_Theory.background_theory (Resources.provide (#src_path file, #digest file));
-          val _ = process_forthel lthy' (cat_lines (#lines file), #pos file);
+          val _ = check_forthel lthy' (cat_lines (#lines file), #pos file);
         in lthy' end));
 
 end;
