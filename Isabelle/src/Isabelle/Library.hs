@@ -16,7 +16,7 @@ module Isabelle.Library (
 
   fold, fold_rev, single, map_index, get_index,
 
-  quote, space_implode, commas, commas_quote, cat_lines,
+  proper_string, quote, space_implode, commas, commas_quote, cat_lines,
   space_explode, split_lines, trim_line, clean_name)
 where
 
@@ -81,6 +81,9 @@ get_index f = get_aux 0
 
 
 {- strings -}
+
+proper_string :: String -> Maybe String
+proper_string s = if null s then Nothing else Just s
 
 quote :: String -> String
 quote s = "\"" ++ s ++ "\""
