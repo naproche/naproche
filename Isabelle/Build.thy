@@ -5,13 +5,14 @@ Build Isabelle/Naproche modules.
 *)
 
 theory Build
-  imports Pure Haskell.Haskell
+  imports Pure Haskell.Haskell Naproche
 begin
 
 section \<open>Isabelle/Haskell modules\<close>
 
 ML_command \<open>
-  Generated_Files.write_files \<^theory>\<open>Haskell\<close> (Path.append \<^master_dir> \<^path>\<open>src\<close>)
+  Generated_Files.write_files \<^theory>\<open>Haskell\<close> (Path.append \<^master_dir> \<^path>\<open>src\<close>);
+  Generated_Files.write_files \<^theory>\<open>Naproche\<close> (Path.append \<^master_dir> \<^path>\<open>src\<close>)
 \<close>
 
 

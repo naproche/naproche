@@ -44,6 +44,7 @@ import qualified Isabelle.Markup as Markup
 import qualified Isabelle.XML as XML
 import qualified Isabelle.YXML as YXML
 import qualified Isabelle.Byte_Message as Byte_Message
+import qualified Isabelle.Naproche as Naproche
 
 
 -- PIDE thread context
@@ -93,9 +94,9 @@ pideActive = isJust <$> pideContext
 initThread :: Properties.T -> Channel -> IO ()
 initThread props channel = do
   let property parse = Properties.get_value parse props
-  let pideProperty = property proper_string "NAPROCHE_PIDE"
-  let fileProperty = property Just "NAPROCHE_POS_FILE"
-  let shiftProperty = property Value.parse_int "NAPROCHE_POS_SHIFT"
+  let pideProperty = property proper_string Naproche.naproche_pide
+  let fileProperty = property Just Naproche.naproche_pos_file
+  let shiftProperty = property Value.parse_int Naproche.naproche_pos_shift
   let
     pideContext =
       case (pideProperty, fileProperty, shiftProperty) of
@@ -166,7 +167,7 @@ xmlMessage pide origin kind pos msg =
   XML.Elem ((kindXML kind, props), [XML.Text msg])
   where
     props0 = posProperties pide pos
-    props = if null origin then props0 else ("origin", origin) : props0
+    props = if null origin then props0 else (Naproche.origin, origin) : props0
 
 pideMessage :: String -> [ByteString]
 pideMessage = Byte_Message.make_line_message . UTF8.fromString
@@ -230,13 +231,13 @@ error origin pos msg = do
 
 outputMain, outputExport, outputForTheL, outputParser, outputReason, outputSimp, outputThesis
   :: Kind -> SourcePos -> String -> IO ()
-outputMain = output "Main"
-outputExport = output "Export"
-outputForTheL = output "ForTheL"
-outputParser = output "Parser"
-outputReason = output "Reasoner"
-outputSimp = output "Simplifier"
-outputThesis = output "Thesis"
+outputMain = output Naproche.origin_main
+outputExport = output Naproche.origin_export
+outputForTheL = output Naproche.origin_forthel
+outputParser = output Naproche.origin_parser
+outputReason = output Naproche.origin_reasoner
+outputSimp = output Naproche.origin_simplifier
+outputThesis = output Naproche.origin_thesis
 
-errorExport = error "Export"
-errorParser = error "Parser"
+errorExport = error Naproche.origin_export
+errorParser = error Naproche.origin_parser

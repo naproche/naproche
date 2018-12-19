@@ -9,6 +9,17 @@ sig
   val forthel_prove: bool Config.T
   val forthel_check: bool Config.T
   val forthel_skipfail: bool Config.T
+  val NAPROCHE_PIDE: string
+  val NAPROCHE_POS_FILE: string
+  val NAPROCHE_POS_SHIFT: string
+  val origin: string
+  val origin_main: string
+  val origin_export: string
+  val origin_forthel: string
+  val origin_parser: string
+  val origin_reasoner: string
+  val origin_simplifier: string
+  val origin_thesis: string
   val check_forthel: Proof.context -> string * Position.T -> unit
 end;
 
@@ -22,6 +33,41 @@ val forthel_check = Attrib.setup_option_bool (\<^system_option>\<open>forthel_ch
 val forthel_skipfail = Attrib.setup_option_bool (\<^system_option>\<open>forthel_skipfail\<close>, \<^here>);
 
 fun bool_option ctxt config = if Config.get ctxt config then "on" else "off";
+
+
+(* environment *)
+
+val NAPROCHE_PIDE = "NAPROCHE_PIDE";
+val NAPROCHE_POS_FILE = "NAPROCHE_POS_FILE";
+val NAPROCHE_POS_SHIFT = "NAPROCHE_POS_SHIFT";
+
+fun naproche_environment pos =
+  let
+    val pide =
+      (case Position.get_id (Position.thread_data ()) of
+        SOME id => id
+      | NONE => raise Fail "Missing PIDE position id");
+    val pos_file = the_default "" (Position.file_of pos);
+    val pos_offset = the_default 0 (Position.offset_of pos);
+  in
+    [(NAPROCHE_PIDE, pide),
+     (NAPROCHE_POS_FILE, pos_file),
+     (NAPROCHE_POS_SHIFT, string_of_int (pos_offset - 1))]
+  end;
+
+
+(* message origin *)
+
+val origin = "origin";
+
+val origin_default = "Naproche-SAD";
+val origin_main = "Main";
+val origin_export = "Export";
+val origin_forthel = "ForTheL";
+val origin_parser = "Parser";
+val origin_reasoner = "Reasoner";
+val origin_simplifier = "Simplifier";
+val origin_thesis = "Thesis";
 
 
 (* process ForTheL text *)
@@ -43,7 +89,7 @@ fun output_message ((elem, props), body) =
   else
     let
       val message_fn = the_default writeln (Symtab.lookup message_fns elem);
-      val header = enclose "[" "]" (the_default "Naproche-SAD" (Properties.get props "origin"));
+      val header = enclose "[" "]" (the_default origin_default (Properties.get props origin));
       val here = (case Position.here (Position.of_properties props) of "" => " " | s => s ^ "\n");
     in message_fn (header ^ here ^ YXML.string_of_body body) end;
 
@@ -63,27 +109,13 @@ fun read_messages str =
 
 in
 
-fun naproche_properties pos =
-  let
-    val pide =
-      (case Position.get_id (Position.thread_data ()) of
-        SOME id => id
-      | NONE => raise Fail "Missing PIDE position id");
-    val pos_file = the_default "" (Position.file_of pos);
-    val pos_offset = the_default 0 (Position.offset_of pos);
-  in
-    [("NAPROCHE_PIDE", pide),
-     ("NAPROCHE_POS_FILE", pos_file),
-     ("NAPROCHE_POS_SHIFT", string_of_int (pos_offset - 1))]
-  end;
-
 fun check_forthel ctxt (text, pos) =
   Isabelle_System.with_tmp_file "naproche" "ftl" (fn tmp_file =>
     let
       val _ = File.write tmp_file text;
 
       val environment =
-        naproche_properties pos
+        naproche_environment pos
         |> map (fn (a, b) => "export " ^ a ^ "=" ^ Bash.string b)
         |> cat_lines;
       val script =
