@@ -10,6 +10,7 @@ module SAD.Core.SourcePos
     noPos,
     fileOnlyPos,
     filePos,
+    startPos,
     advancePos,
     advancesPos,
     noRangePos,
@@ -41,6 +42,9 @@ fileOnlyPos file = SourcePos file 0 0 0 0
 
 filePos :: String -> SourcePos
 filePos file = SourcePos file 1 1 1 0
+
+startPos :: SourcePos
+startPos = filePos ""
 
 
 -- advance position
