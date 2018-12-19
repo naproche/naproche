@@ -49,7 +49,7 @@ import SAD.Export.Base (Prover)
 verify :: String -> [Prover] -> IORef RState -> [Text] -> IO (Maybe [Text])
 verify fileName provers reasonerState text = do
   let text' = TextInstr Instr.noPos (Instr.String Instr.File fileName) : text
-  Message.outputReason Message.TRACING (fileOnlyPos fileName) "verification started"
+  Message.outputReasoner Message.TRACING (fileOnlyPos fileName) "verification started"
 
   let verificationState = VS False [] DT.empty (Context Bot [] [] Bot) [] [] (DT.empty, DT.empty) initialDefinitions 0 [] provers text'
   result <- flip runRM reasonerState $
@@ -58,7 +58,7 @@ verify fileName provers reasonerState text = do
     readIORef reasonerState
 
   let success = isJust result && ignoredFails == 0
-  Message.outputReason Message.TRACING (fileOnlyPos fileName) $
+  Message.outputReasoner Message.TRACING (fileOnlyPos fileName) $
     "verification " ++ (if success then "successful" else "failed")
   return result
 

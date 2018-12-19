@@ -223,14 +223,14 @@ showTimeDiff t
 -- common messages
 
 reasonLog :: Message.Kind -> SourcePos -> String -> VM ()
-reasonLog kind pos = justIO . Message.outputReason kind pos
+reasonLog kind pos = justIO . Message.outputReasoner kind pos
 
 thesisLog :: Message.Kind -> SourcePos -> Int -> String -> VM ()
 thesisLog kind pos indent msg =
   justIO (Message.outputThesis kind pos (replicate (3 * indent) ' ' ++ msg))
 
 simpLog :: Message.Kind -> SourcePos -> String -> VM ()
-simpLog kind pos = justIO . Message.outputSimp kind pos
+simpLog kind pos = justIO . Message.outputSimplifier kind pos
 
 
 

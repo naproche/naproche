@@ -13,7 +13,7 @@ module SAD.Core.Message (
   Kind (..), entityMarkup,
   Report, ReportText, reportsText, reportText, reports, report,
   trimText, output, error, outputMain, outputExport, outputForTheL,
-  outputParser, outputReason, outputThesis, outputSimp,
+  outputParser, outputReasoner, outputThesis, outputSimplifier,
   errorExport, errorParser
 ) where
 
@@ -229,14 +229,14 @@ error origin pos msg = do
 
 -- specific messages
 
-outputMain, outputExport, outputForTheL, outputParser, outputReason, outputSimp, outputThesis
-  :: Kind -> SourcePos -> String -> IO ()
+outputMain, outputExport, outputForTheL, outputParser, outputReasoner,
+  outputSimplifier, outputThesis :: Kind -> SourcePos -> String -> IO ()
 outputMain = output Naproche.origin_main
 outputExport = output Naproche.origin_export
 outputForTheL = output Naproche.origin_forthel
 outputParser = output Naproche.origin_parser
-outputReason = output Naproche.origin_reasoner
-outputSimp = output Naproche.origin_simplifier
+outputReasoner = output Naproche.origin_reasoner
+outputSimplifier = output Naproche.origin_simplifier
 outputThesis = output Naproche.origin_thesis
 
 errorExport = error Naproche.origin_export
