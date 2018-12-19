@@ -93,6 +93,7 @@ data Bool =
 
 data String =
     Init     --  init file (init.opt)
+  | Text     --  literal text
   | File     --  read file
   | Read     --  read library file
   | Library  --  library directory

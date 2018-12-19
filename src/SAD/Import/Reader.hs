@@ -51,7 +51,7 @@ readText :: String -> [Text] -> IO [Text]
 readText pathToLibrary text0 = do
   pide <- Message.pideContext
   (text, reports) <- reader pathToLibrary [] [State (initFS pide) noTokens noPos] text0
-  when (isJust pide) $ Message.reports $ reports
+  when (isJust pide) $ Message.reports reports
   return text
 
 reader :: String -> [String] -> [State FState] -> [Text] -> IO ([Text], [Message.Report])
@@ -71,22 +71,24 @@ reader pathToLibrary doneFiles (pState:states) [TextInstr pos (Instr.String Inst
       reader pathToLibrary doneFiles (newState:states) newText
 
 reader pathToLibrary doneFiles (pState:states) [TextInstr _ (Instr.String Instr.File file)] = do
-  input <-
+  text <-
     catch (if null file then getContents else File.read file)
       (Message.errorParser (fileOnlyPos file) . ioeGetErrorString)
-  let tokens0 = tokenize (filePos file) input
-  Message.reports $ concatMap tokenReports tokens0
-  let tokens = filter properToken tokens0
-      st  = State ((stUser pState) { tvrExpr = [] }) tokens noPos
-  (ntx, nps) <- launchParser forthel st
-  reader pathToLibrary (file:doneFiles) (nps:pState:states) ntx
+  (newText, newState) <- reader0 (filePos file) text pState
+  reader pathToLibrary (file:doneFiles) (newState:pState:states) newText
+
+reader pathToLibrary doneFiles (pState:states) [TextInstr _ (Instr.String Instr.Text text)] = do
+  (newText, newState) <- reader0 startPos text pState
+  reader pathToLibrary doneFiles (newState:pState:states) newText
 
 -- this happens when t is not a suitable instruction
-reader pathToLibrary doneFiles stateList (t:restText) =
-  consFst t <$> reader pathToLibrary doneFiles stateList restText
+reader pathToLibrary doneFiles stateList (t:restText) = do
+  (ts, ls) <- reader pathToLibrary doneFiles stateList restText
+  return (t:ts, ls)
 
 reader pathToLibrary doneFiles (pState:oldState:rest) [] = do
-  Message.outputParser Message.TRACING (fileOnlyPos $ head doneFiles) "parsing successful"
+  Message.outputParser Message.TRACING
+    (if null doneFiles then noPos else fileOnlyPos $ head doneFiles) "parsing successful"
   let resetState = oldState {
         stUser = (stUser pState) {tvrExpr = tvrExpr $ stUser oldState}}
   (newText, newState) <- launchParser forthel resetState
@@ -94,7 +96,14 @@ reader pathToLibrary doneFiles (pState:oldState:rest) [] = do
 
 reader _ _ (state:_) [] = return ([], reports $ stUser state)
 
-consFst t (ts, ls) = (t:ts, ls)
+reader0 :: SourcePos -> String -> State FState -> IO ([Text], State FState)
+reader0 pos text pState = do
+  let tokens0 = tokenize pos text
+  Message.reports $ concatMap tokenReports tokens0
+  let tokens = filter properToken tokens0
+      st = State ((stUser pState) { tvrExpr = [] }) tokens noPos
+  launchParser forthel st
+
 
 -- launch a parser in the IO monad
 launchParser :: Parser st a -> State st -> IO (a, State st)

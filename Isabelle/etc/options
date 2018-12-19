@@ -10,3 +10,9 @@ public option forthel_check : bool = true
 
 public option forthel_skipfail : bool = true
   -- "ignore failed goals"
+
+option naproche_server : string = ""
+  -- "address/port of Naproche-SAD server"
+
+option naproche_server_password : string = ""
+  -- "password for connection to Naproche-SAD server"

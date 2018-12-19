@@ -37,3 +37,9 @@ origin_parser = "Parser"
 origin_reasoner = "Reasoner"
 origin_simplifier = "Simplifier"
 origin_thesis = "Thesis"
+
+
+-- server commands
+
+forthel_command :: String
+forthel_command = "forthel"

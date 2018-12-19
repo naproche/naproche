@@ -5,12 +5,15 @@ Parse command line and run verifier.
 -}
 
 {-# LANGUAGE TupleSections #-}
+{-# LANGUAGE LambdaCase #-}
 
 module Main where
 
 import Data.List (isPrefixOf)
+import Data.Maybe
 import Data.IORef
 import Data.Time
+import qualified Data.ByteString as ByteString
 import Control.Monad
 import System.Console.GetOpt
 import System.Environment
@@ -23,7 +26,12 @@ import Isabelle.Library (quote)
 import qualified Isabelle.File as File
 import qualified Isabelle.Server as Server
 import qualified Isabelle.Byte_Message as Byte_Message
+import qualified Isabelle.XML as XML
+import qualified Isabelle.YXML as YXML
+import qualified Isabelle.Naproche as Naproche
 import Network.Socket (Socket)
+import qualified Data.ByteString.UTF8 as UTF8
+import qualified Data.ByteString.Char8 as Char8
 
 import SAD.Core.Base
 import qualified SAD.Core.Message as Message
@@ -64,18 +72,19 @@ mainBody  = do
 
   let initialOpts = initFile ++ map (Instr.noPos,) commandLine
       revInitialOpts = map snd $ reverse initialOpts
+      text0 = map (uncurry TextInstr) initialOpts
 
   -- server mode
   when (Instr.askBool Instr.Server False revInitialOpts)
-    (Server.server (Server.publish_stdout "Naproche-SAD") serverConnection >> exitSuccess)
+    (Server.server (Server.publish_stdout "Naproche-SAD") (serverConnection text0)
+      >> exitSuccess)
 
   -- console mode
   Message.consoleThread
 
   -- parse input text
-  text <-
-    readText (Instr.askString Instr.Library "." revInitialOpts) $
-    map (uncurry TextInstr) initialOpts
+  text <- readText (Instr.askString Instr.Library "." revInitialOpts) text0
+    
   -- if -T is passed as an option, only print the text and exit
   when (Instr.askBool Instr.OnlyTranslate False revInitialOpts) $ onlyTranslate startTime text
   -- read provers.dat
@@ -137,14 +146,27 @@ mainBody  = do
   Message.exitThread
 
 
-serverConnection :: Socket -> IO ()
-serverConnection connection = do
-  res <- Byte_Message.read_message connection
-  case res of
-    Just msg -> do
-      Byte_Message.write_message connection msg
-      serverConnection connection
-    Nothing -> return ()
+serverConnection :: [Text] -> Socket -> IO ()
+serverConnection text0 connection = do
+  res <- Byte_Message.read_line_message connection
+  case fmap (YXML.parse . UTF8.toString) res of
+    Just (XML.Elem ((name, props), body)) | name == Naproche.forthel_command -> do
+      Message.initThread props (Byte_Message.write connection)
+      let
+        text1 =
+          filter (\case TextInstr _ (Instr.String Instr.File "") -> False; _ -> True) text0 ++
+            [TextInstr Instr.noPos (Instr.String Instr.Text (XML.content_of body))]
+      Exception.catch
+        (do
+          text <- readText "." text1
+          return ())
+        (\err -> do
+          let msg = Exception.displayException (err :: Exception.SomeException)
+          if YXML.detect msg then
+            Byte_Message.write connection [UTF8.fromString msg]
+          else Message.outputMain Message.ERROR noPos msg)
+      Message.exitThread
+    _ -> return ()
 
 
 onlyTranslate :: UTCTime -> [Text] -> IO ()
