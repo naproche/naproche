@@ -60,7 +60,6 @@ fun naproche_environment pos =
 
 val origin = "origin";
 
-val origin_default = "Naproche-SAD";
 val origin_main = "Main";
 val origin_export = "Export";
 val origin_forthel = "ForTheL";
@@ -89,7 +88,7 @@ fun output_message ((elem, props), body) =
   else
     let
       val message_fn = the_default writeln (Symtab.lookup message_fns elem);
-      val header = enclose "[" "]" (the_default origin_default (Properties.get props origin));
+      val header = enclose "[" "]" (the_default origin_main (Properties.get props origin));
       val here = (case Position.here (Position.of_properties props) of "" => " " | s => s ^ "\n");
     in message_fn (header ^ here ^ YXML.string_of_body body) end;
 
