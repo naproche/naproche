@@ -201,6 +201,8 @@ options = [
   GetOpt.Option "h" ["help"] (GetOpt.NoArg (Instr.Bool Instr.Help True)) "show this help text",
   GetOpt.Option ""  ["init"] (GetOpt.ReqArg (Instr.String Instr.Init) "FILE")
     "init file, empty to skip (def: init.opt)",
+  GetOpt.Option "T" [] (GetOpt.NoArg (Instr.Bool Instr.OnlyTranslate True))
+    "translate input text and exit",
   GetOpt.Option "" ["server"] (GetOpt.NoArg (Instr.Bool Instr.Server True))
     "run in server mode",
   GetOpt.Option ""  ["library"] (GetOpt.ReqArg (Instr.String Instr.Library) "DIR")
