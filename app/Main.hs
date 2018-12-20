@@ -53,47 +53,44 @@ main  = do
   hSetBuffering stdout LineBuffering
   hSetBuffering stderr LineBuffering
 
+
+  -- command line and init file
+  args <- Environment.getArgs
+  (opts0, text0) <- readArgs args
+
+  when (Instr.askBool Instr.Help False opts0)
+    (putStr (GetOpt.usageInfo usageHeader options) >> exitSuccess)
+
+
   -- main body with explicit error handling, notably for PIDE
-  Exception.catch mainBody
+  Exception.catch
+    (if Instr.askBool Instr.Server False opts0 then
+      Server.server (Server.publish_stdout "Naproche-SAD") (serverConnection text0)
+     else do Message.consoleThread; mainBody (opts0, text0))
     (\err -> do
+      Message.exitThread
       let msg = Exception.displayException (err :: Exception.SomeException)
       unless ("ExitSuccess" `isPrefixOf` msg || "ExitFailure" `isPrefixOf` msg) $
         hPutStrLn stderr msg
       exitFailure)
 
-mainBody :: IO ()
-mainBody  = do
+mainBody :: ([Instr], [Text]) -> IO ()
+mainBody (opts0, text0) = do
   startTime <- getCurrentTime
 
-  commandLine <- readOpts
-  let initFileName = Instr.askString Instr.Init "init.opt" commandLine
-  initFile <- readInit initFileName
-
-  let initialOpts = initFile ++ map (Instr.noPos,) commandLine
-      revInitialOpts = map snd $ reverse initialOpts
-      text0 = map (uncurry TextInstr) initialOpts
-
-  -- server mode
-  when (Instr.askBool Instr.Server False revInitialOpts)
-    (Server.server (Server.publish_stdout "Naproche-SAD") (serverConnection text0)
-      >> exitSuccess)
-
-  -- console mode
-  Message.consoleThread
-
   -- parse input text
-  text <- readText (Instr.askString Instr.Library "." revInitialOpts) text0
+  text <- readText (Instr.askString Instr.Library "." opts0) text0
     
   -- if -T is passed as an option, only print the text and exit
-  when (Instr.askBool Instr.OnlyTranslate False revInitialOpts) $ onlyTranslate startTime text
+  when (Instr.askBool Instr.OnlyTranslate False opts0) $ onlyTranslate startTime text
   -- read provers.dat
-  provers <- readProverDatabase (Instr.askString Instr.Provers "provers.dat" revInitialOpts)
+  provers <- readProverDatabase (Instr.askString Instr.Provers "provers.dat" opts0)
   -- initialize reasoner state
   reasonerState <- newIORef (RState [] )
   proveStart <- getCurrentTime
   
   case checkParseCorrectness text of
-    Nothing -> verify (Instr.askString Instr.File "" revInitialOpts) provers reasonerState text
+    Nothing -> verify (Instr.askString Instr.File "" opts0) provers reasonerState text
     Just err -> Message.errorParser (errorPos err) (show err)
 
   finishTime <- getCurrentTime
@@ -142,8 +139,6 @@ mainBody  = do
     "total "
     ++ showTimeDiff (diffUTCTime finishTime startTime)
 
-  Message.exitThread
-
 
 serverConnection :: [Text] -> Socket -> IO ()
 serverConnection text0 connection = do
@@ -181,15 +176,20 @@ onlyTranslate startTime text = do
 
 -- Command line parsing
 
-readOpts :: IO [Instr]
-readOpts  = do
-  (instrs, files, errs) <- fmap (GetOpt.getOpt GetOpt.Permute options) Environment.getArgs
-  let text = instrs ++ [Instr.String Instr.File $ head $ files ++ [""]]
+readArgs :: [String] -> IO ([Instr], [Text])
+readArgs args = do
+  let (instrs, files, errs) = GetOpt.getOpt GetOpt.Permute options args
+  let commandLine = instrs ++ [Instr.String Instr.File $ head $ files ++ [""]]
   unless (all wellformed instrs && null errs)
     (putStr (concatMap ("[Main] " ++) errs) >> exitFailure)
-  when (Instr.askBool Instr.Help False instrs)
-    (putStr (GetOpt.usageInfo usageHeader options) >> exitSuccess)
-  return text
+
+  initFile <- readInit (Instr.askString Instr.Init "init.opt" commandLine)
+  let initialOpts = initFile ++ map (Instr.noPos,) commandLine
+
+  let revInitialOpts = map snd $ reverse initialOpts
+  let initialText = map (uncurry TextInstr) initialOpts
+
+  return (revInitialOpts, initialText)
 
 wellformed (Instr.Bool _ v) = v == v
 wellformed (Instr.Int _ v) = v == v
