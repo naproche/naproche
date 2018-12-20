@@ -41,5 +41,8 @@ origin_thesis = "Thesis"
 
 -- server commands
 
+command_args :: String
+command_args = "command_args"
+
 forthel_command :: String
 forthel_command = "forthel"

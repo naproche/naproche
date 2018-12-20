@@ -20,10 +20,11 @@ import qualified Control.Exception as Exception
 import System.IO (IO)
 import qualified System.IO as IO
 
-import Isabelle.Library (quote)
+import Isabelle.Library
 import qualified Isabelle.File as File
 import qualified Isabelle.Server as Server
 import qualified Isabelle.Byte_Message as Byte_Message
+import qualified Isabelle.Properties as Properties
 import qualified Isabelle.XML as XML
 import qualified Isabelle.YXML as YXML
 import qualified Isabelle.Naproche as Naproche
@@ -54,15 +55,15 @@ main  = do
   IO.hSetBuffering IO.stderr IO.LineBuffering
 
   -- command line and init file
-  args <- Environment.getArgs
-  (opts0, text0) <- readArgs args
+  args0 <- Environment.getArgs
+  (opts0, text0) <- readArgs args0
 
   if Instr.askBool Instr.Help False opts0 then
     putStr (GetOpt.usageInfo usageHeader options)
   else -- main body with explicit error handling, notably for PIDE
     Exception.catch
       (if Instr.askBool Instr.Server False opts0 then
-        Server.server (Server.publish_stdout "Naproche-SAD") (serverConnection text0)
+        Server.server (Server.publish_stdout "Naproche-SAD") (serverConnection args0)
       else do Message.consoleThread; mainBody (opts0, text0))
       (\err -> do
         Message.exitThread
@@ -145,17 +146,18 @@ mainBody (opts0, text0) = do
         ++ showTimeDiff (diffUTCTime finishTime startTime)
 
 
-serverConnection :: [Text] -> Socket -> IO ()
-serverConnection text0 connection = do
+serverConnection :: [String] -> Socket -> IO ()
+serverConnection args0 connection = do
   res <- Byte_Message.read_line_message connection
   case fmap (YXML.parse . UTF8.toString) res of
-    Just (XML.Elem ((name, props), body)) | name == Naproche.forthel_command -> do
+    Just (XML.Elem ((command, props), body)) | command == Naproche.forthel_command -> do
       Message.initThread props (Byte_Message.write connection)
+
+      let args1 = split_lines (the_default "" (Properties.get props Naproche.command_args))
+      (opts1, text0) <- readArgs (args0 ++ args1)
       let text1 = text0 ++ [TextInstr Instr.noPos (Instr.String Instr.Text (XML.content_of body))]
-      Exception.catch
-        (do
-          text <- readText "." text1
-          return ())
+
+      Exception.catch (mainBody (opts1, text1))
         (\err -> do
           let msg = Exception.displayException (err :: Exception.SomeException)
           if YXML.detect msg then

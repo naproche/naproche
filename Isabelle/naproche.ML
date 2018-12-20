@@ -20,6 +20,7 @@ sig
   val origin_reasoner: string
   val origin_simplifier: string
   val origin_thesis: string
+  val command_args: string
   val forthel_command: string
   val check_forthel: Proof.context -> string * Position.T -> unit
 end;
@@ -32,8 +33,6 @@ struct
 val forthel_prove = Attrib.setup_option_bool (\<^system_option>\<open>forthel_prove\<close>, \<^here>);
 val forthel_check = Attrib.setup_option_bool (\<^system_option>\<open>forthel_check\<close>, \<^here>);
 val forthel_skipfail = Attrib.setup_option_bool (\<^system_option>\<open>forthel_skipfail\<close>, \<^here>);
-
-fun bool_option ctxt config = if Config.get ctxt config then "on" else "off";
 
 
 (* environment *)
@@ -109,25 +108,25 @@ fun read_messages str =
 
 in
 
+val command_args = "command_args";
 val forthel_command = "forthel";
 
 fun check_forthel ctxt (text, pos) =
   let
     val server = Options.default_string \<^system_option>\<open>naproche_server\<close>;
     val password = Options.default_string \<^system_option>\<open>naproche_server_password\<close>;
-    val prove = bool_option ctxt forthel_prove;
-    val check = bool_option ctxt forthel_check;
-    val skipfail = bool_option ctxt forthel_skipfail;
+
+    fun bool_option config = if Config.get ctxt config then "on" else "off";
+    val args =
+     ["--prove=" ^ bool_option forthel_prove,
+      "--check=" ^ bool_option forthel_check,
+      "--skipfail=" ^ bool_option forthel_skipfail];
   in
     if server <> "" andalso password <> "" then
       server |> Socket_IO.with_streams (fn (in_stream, out_stream) =>
         let
           val _ = Byte_Message.write_line out_stream password;
-          val props =
-            naproche_environment pos @
-              [(\<^system_option>\<open>forthel_prove\<close>, prove),
-               (\<^system_option>\<open>forthel_check\<close>, check),
-               (\<^system_option>\<open>forthel_skipfail\<close>, skipfail)];
+          val props = (command_args, cat_lines args) :: naproche_environment pos;
           val _ =
             Byte_Message.write_line_message out_stream
               (YXML.string_of (XML.Elem ((forthel_command, props), XML.Encode.string text)));
@@ -139,16 +138,14 @@ fun check_forthel ctxt (text, pos) =
           val _ = File.write tmp_file text;
           val environment =
             naproche_environment pos
-            |> map (fn (a, b) => "export " ^ a ^ "=" ^ Bash.string b)
-            |> cat_lines;
+            |> map (fn (a, b) => "export " ^ a ^ "=" ^ Bash.string b);
           val script =
             cat_lines [
               "set -e",
               "cd \"$NAPROCHE_HOME\"",
               "export PATH=\"$E_HOME:$SPASS_HOME:$PATH\"",
-              environment,
-              File.bash_path (Path.explode "$NAPROCHE_EXE") ^
-                " --prove=" ^ prove ^ " --check=" ^ check ^ " --skipfail=" ^ skipfail ^
+              cat_lines environment,
+              File.bash_path (Path.explode "$NAPROCHE_EXE") ^ " " ^ space_implode " " args ^
                 " \"\" < " ^ File.bash_path tmp_file];
           val {out, err, rc, ...} = Bash.process script;
           val _ = read_messages err;

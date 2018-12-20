@@ -55,6 +55,9 @@ origin_thesis = \<open>Naproche.origin_thesis\<close>
 
 -- server commands
 
+command_args :: String
+command_args = \<open>Naproche.command_args\<close>
+
 forthel_command :: String
 forthel_command = \<open>Naproche.forthel_command\<close>
 \<close>
