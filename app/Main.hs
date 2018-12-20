@@ -9,7 +9,6 @@ Parse command line and run verifier.
 
 module Main where
 
-import Data.List (isPrefixOf)
 import Data.Maybe
 import Data.IORef
 import Data.Time
@@ -67,8 +66,7 @@ main  = do
       (\err -> do
         Message.exitThread
         let msg = Exception.displayException (err :: Exception.SomeException)
-        unless ("ExitSuccess" `isPrefixOf` msg || "ExitFailure" `isPrefixOf` msg) $
-          hPutStrLn stderr msg
+        hPutStrLn stderr msg
         exitFailure)
 
 mainBody :: ([Instr], [Text]) -> IO ()
