@@ -78,7 +78,7 @@ mainBody (opts0, text0) = do
   -- parse input text
   text <- readText (Instr.askString Instr.Library "." opts0) text0
 
-  -- if -T is passed as an option, only print the text
+  -- if -T / --onlytranslate is passed as an option, only print the translated text
   if Instr.askBool Instr.OnlyTranslate False opts0 then
     do
       let timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)
@@ -152,10 +152,7 @@ serverConnection text0 connection = do
   case fmap (YXML.parse . UTF8.toString) res of
     Just (XML.Elem ((name, props), body)) | name == Naproche.forthel_command -> do
       Message.initThread props (Byte_Message.write connection)
-      let
-        text1 =
-          filter (\case TextInstr _ (Instr.String Instr.File "") -> False; _ -> True) text0 ++
-            [TextInstr Instr.noPos (Instr.String Instr.Text (XML.content_of body))]
+      let text1 = text0 ++ [TextInstr Instr.noPos (Instr.String Instr.Text (XML.content_of body))]
       Exception.catch
         (do
           text <- readText "." text1
@@ -175,9 +172,11 @@ serverConnection text0 connection = do
 readArgs :: [String] -> IO ([Instr], [Text])
 readArgs args = do
   let (instrs, files, errs) = GetOpt.getOpt GetOpt.Permute options args
-  let commandLine = instrs ++ [Instr.String Instr.File $ head $ files ++ [""]]
-  unless (all wellformed instrs && null errs)
-    (putStr (concatMap ("[Main] " ++) errs) >> exitFailure)
+
+  let fail msgs = putStr (concatMap ("[Main] " ++) msgs) >> exitFailure
+  unless (all wellformed instrs && null errs) $ fail errs
+  when (length files > 1) $ fail ["More than one file argument\n"]
+  let commandLine = case files of [file] -> instrs ++ [Instr.String Instr.File file]; _ -> instrs
 
   initFile <- readInit (Instr.askString Instr.Init "init.opt" commandLine)
   let initialOpts = initFile ++ map (Instr.noPos,) commandLine
@@ -191,13 +190,14 @@ wellformed (Instr.Bool _ v) = v == v
 wellformed (Instr.Int _ v) = v == v
 wellformed _            = True
 
-usageHeader  = "Usage: Naproche-SAD <options...> <file>"
+usageHeader =
+  "\nUsage: Naproche-SAD <options...> <file...>\n\n  At most one file argument may be given; \"\" refers to stdin.\n\n  Options are:\n"
 
 options = [
-  GetOpt.Option "h" ["help"] (GetOpt.NoArg (Instr.Bool Instr.Help True)) "show this help text",
+  GetOpt.Option "h" ["help"] (GetOpt.NoArg (Instr.Bool Instr.Help True)) "show command-line help",
   GetOpt.Option ""  ["init"] (GetOpt.ReqArg (Instr.String Instr.Init) "FILE")
     "init file, empty to skip (def: init.opt)",
-  GetOpt.Option "T" [] (GetOpt.NoArg (Instr.Bool Instr.OnlyTranslate True))
+  GetOpt.Option "T" ["onlytranslate"] (GetOpt.NoArg (Instr.Bool Instr.OnlyTranslate True))
     "translate input text and exit",
   GetOpt.Option "" ["server"] (GetOpt.NoArg (Instr.Bool Instr.Server True))
     "run in server mode",

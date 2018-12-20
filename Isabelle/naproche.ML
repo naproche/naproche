@@ -149,7 +149,7 @@ fun check_forthel ctxt (text, pos) =
               environment,
               File.bash_path (Path.explode "$NAPROCHE_EXE") ^
                 " --prove=" ^ prove ^ " --check=" ^ check ^ " --skipfail=" ^ skipfail ^
-                " < " ^ File.bash_path tmp_file];
+                " \"\" < " ^ File.bash_path tmp_file];
           val {out, err, rc, ...} = Bash.process script;
           val _ = read_messages err;
           val _ = read_messages out;
