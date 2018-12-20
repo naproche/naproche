@@ -174,7 +174,7 @@ readArgs :: [String] -> IO ([Instr], [Text])
 readArgs args = do
   let (instrs, files, errs) = GetOpt.getOpt GetOpt.Permute options args
 
-  let fail msgs = putStr (concatMap ("[Main] " ++) msgs) >> Exit.exitFailure
+  let fail msgs = errorWithoutStackTrace (cat_lines (map trim_line msgs))
   unless (all wellformed instrs && null errs) $ fail errs
   when (length files > 1) $ fail ["More than one file argument\n"]
   let commandLine = case files of [file] -> instrs ++ [Instr.String Instr.File file]; _ -> instrs
