@@ -1,5 +1,5 @@
 (*
-Authors: Makarius (2018)
+Authors: Makarius Wenzel (2018)
 
 Some Isabelle/Naproche examples for testing.
 *)

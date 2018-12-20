@@ -1,5 +1,5 @@
 (*
-Authors: Makarius (2018)
+Authors: Makarius Wenzel (2018)
 
 Isabelle Prover IDE support for NaProChe / ForTheL.
 *)
