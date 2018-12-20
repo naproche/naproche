@@ -53,26 +53,23 @@ main  = do
   hSetBuffering stdout LineBuffering
   hSetBuffering stderr LineBuffering
 
-
   -- command line and init file
   args <- Environment.getArgs
   (opts0, text0) <- readArgs args
 
-  when (Instr.askBool Instr.Help False opts0)
-    (putStr (GetOpt.usageInfo usageHeader options) >> exitSuccess)
-
-
-  -- main body with explicit error handling, notably for PIDE
-  Exception.catch
-    (if Instr.askBool Instr.Server False opts0 then
-      Server.server (Server.publish_stdout "Naproche-SAD") (serverConnection text0)
-     else do Message.consoleThread; mainBody (opts0, text0))
-    (\err -> do
-      Message.exitThread
-      let msg = Exception.displayException (err :: Exception.SomeException)
-      unless ("ExitSuccess" `isPrefixOf` msg || "ExitFailure" `isPrefixOf` msg) $
-        hPutStrLn stderr msg
-      exitFailure)
+  if Instr.askBool Instr.Help False opts0 then
+    putStr (GetOpt.usageInfo usageHeader options)
+  else -- main body with explicit error handling, notably for PIDE
+    Exception.catch
+      (if Instr.askBool Instr.Server False opts0 then
+        Server.server (Server.publish_stdout "Naproche-SAD") (serverConnection text0)
+      else do Message.consoleThread; mainBody (opts0, text0))
+      (\err -> do
+        Message.exitThread
+        let msg = Exception.displayException (err :: Exception.SomeException)
+        unless ("ExitSuccess" `isPrefixOf` msg || "ExitFailure" `isPrefixOf` msg) $
+          hPutStrLn stderr msg
+        exitFailure)
 
 mainBody :: ([Instr], [Text]) -> IO ()
 mainBody (opts0, text0) = do
@@ -80,64 +77,73 @@ mainBody (opts0, text0) = do
 
   -- parse input text
   text <- readText (Instr.askString Instr.Library "." opts0) text0
-    
-  -- if -T is passed as an option, only print the text and exit
-  when (Instr.askBool Instr.OnlyTranslate False opts0) $ onlyTranslate startTime text
-  -- read provers.dat
-  provers <- readProverDatabase (Instr.askString Instr.Provers "provers.dat" opts0)
-  -- initialize reasoner state
-  reasonerState <- newIORef (RState [] )
-  proveStart <- getCurrentTime
-  
-  case checkParseCorrectness text of
-    Nothing -> verify (Instr.askString Instr.File "" opts0) provers reasonerState text
-    Just err -> Message.errorParser (errorPos err) (show err)
 
-  finishTime <- getCurrentTime
-  finalReasonerState <- readIORef reasonerState
+  -- if -T is passed as an option, only print the text
+  if Instr.askBool Instr.OnlyTranslate False opts0 then
+    do
+      let timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)
+      mapM_ (\case TextBlock bl -> print bl; _ -> return ()) text
 
-  let counterList = counters finalReasonerState
-      accumulate  = accumulateIntCounter counterList 0
+      -- print statistics
+      finishTime <- getCurrentTime
+      Message.outputMain Message.TRACING noPos $ "total " ++ timeDifference finishTime
+  else
+    do
+      -- read provers.dat
+      provers <- readProverDatabase (Instr.askString Instr.Provers "provers.dat" opts0)
+      -- initialize reasoner state
+      reasonerState <- newIORef (RState [] )
+      proveStart <- getCurrentTime
 
-  -- print statistics
-  Message.outputMain Message.TRACING noPos $
-    "sections "       ++ show (accumulate Sections)
-    ++ " - goals "    ++ show (accumulate Goals)
-    ++ (let ignoredFails = accumulate FailedGoals
-        in  if   ignoredFails == 0
-            then ""
-            else " - failed "   ++ show ignoredFails)
-    ++ " - trivial "   ++ show (accumulate TrivialGoals)
-    ++ " - proved "    ++ show (accumulate SuccessfulGoals)
-    ++ " - equations " ++ show (accumulate Equations)
-    ++ (let failedEquations = accumulate FailedEquations
-        in  if   failedEquations == 0
-            then ""
-            else " - failed " ++ show failedEquations)
+      case checkParseCorrectness text of
+        Nothing -> verify (Instr.askString Instr.File "" opts0) provers reasonerState text
+        Just err -> Message.errorParser (errorPos err) (show err)
 
-  let trivialChecks = accumulate TrivialChecks
+      finishTime <- getCurrentTime
+      finalReasonerState <- readIORef reasonerState
 
-  Message.outputMain Message.TRACING noPos $
-    "symbols "        ++ show (accumulate Symbols)
-    ++ " - checks "   ++ show
-      (accumulateIntCounter counterList trivialChecks HardChecks)
-    ++ " - trivial "  ++ show trivialChecks
-    ++ " - proved "   ++ show (accumulate SuccessfulChecks)
-    ++ " - unfolds "  ++ show (accumulate Unfolds)
+      let counterList = counters finalReasonerState
+          accumulate  = accumulateIntCounter counterList 0
 
-  let accumulateTime = accumulateTimeCounter counterList
-      proverTime     = accumulateTime proveStart ProofTime
-      simplifyTime   = accumulateTime proverTime SimplifyTime
+      -- print statistics
+      Message.outputMain Message.TRACING noPos $
+        "sections "       ++ show (accumulate Sections)
+        ++ " - goals "    ++ show (accumulate Goals)
+        ++ (let ignoredFails = accumulate FailedGoals
+            in  if   ignoredFails == 0
+                then ""
+                else " - failed "   ++ show ignoredFails)
+        ++ " - trivial "   ++ show (accumulate TrivialGoals)
+        ++ " - proved "    ++ show (accumulate SuccessfulGoals)
+        ++ " - equations " ++ show (accumulate Equations)
+        ++ (let failedEquations = accumulate FailedEquations
+            in  if   failedEquations == 0
+                then ""
+                else " - failed " ++ show failedEquations)
 
-  Message.outputMain Message.TRACING noPos $
-    "parser "           ++ showTimeDiff (diffUTCTime proveStart startTime)
-    ++ " - reasoner "   ++ showTimeDiff (diffUTCTime finishTime simplifyTime)
-    ++ " - simplifier " ++ showTimeDiff (diffUTCTime simplifyTime proverTime)
-    ++ " - prover "     ++ showTimeDiff (diffUTCTime proverTime proveStart)
-    ++ "/" ++ showTimeDiff (maximalTimeCounter counterList SuccessTime)
-  Message.outputMain Message.TRACING noPos $
-    "total "
-    ++ showTimeDiff (diffUTCTime finishTime startTime)
+      let trivialChecks = accumulate TrivialChecks
+
+      Message.outputMain Message.TRACING noPos $
+        "symbols "        ++ show (accumulate Symbols)
+        ++ " - checks "   ++ show
+          (accumulateIntCounter counterList trivialChecks HardChecks)
+        ++ " - trivial "  ++ show trivialChecks
+        ++ " - proved "   ++ show (accumulate SuccessfulChecks)
+        ++ " - unfolds "  ++ show (accumulate Unfolds)
+
+      let accumulateTime = accumulateTimeCounter counterList
+          proverTime     = accumulateTime proveStart ProofTime
+          simplifyTime   = accumulateTime proverTime SimplifyTime
+
+      Message.outputMain Message.TRACING noPos $
+        "parser "           ++ showTimeDiff (diffUTCTime proveStart startTime)
+        ++ " - reasoner "   ++ showTimeDiff (diffUTCTime finishTime simplifyTime)
+        ++ " - simplifier " ++ showTimeDiff (diffUTCTime simplifyTime proverTime)
+        ++ " - prover "     ++ showTimeDiff (diffUTCTime proverTime proveStart)
+        ++ "/" ++ showTimeDiff (maximalTimeCounter counterList SuccessTime)
+      Message.outputMain Message.TRACING noPos $
+        "total "
+        ++ showTimeDiff (diffUTCTime finishTime startTime)
 
 
 serverConnection :: [Text] -> Socket -> IO ()
@@ -162,16 +168,6 @@ serverConnection text0 connection = do
       Message.exitThread
     _ -> return ()
 
-
-onlyTranslate :: UTCTime -> [Text] -> IO ()
-onlyTranslate startTime text = do
-  mapM_ printTextBlock text; finishTime <- getCurrentTime
-  Message.outputMain Message.TRACING noPos $ "total " ++ timeDifference finishTime
-  exitSuccess
-  where
-    timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)
-    printTextBlock (TextBlock bl) = print bl
-    printTextBlock _ = return ()
 
 
 -- Command line parsing
