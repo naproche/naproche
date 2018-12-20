@@ -1,7 +1,7 @@
 {-
-Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
+Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018), Makarius Wenzel (2018)
 
-Parse command line and run verifier.
+Main application entry point: console or server mode.
 -}
 
 {-# LANGUAGE TupleSections #-}
