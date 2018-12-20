@@ -12,13 +12,13 @@ module Main where
 import Data.Maybe
 import Data.IORef
 import Data.Time
-import qualified Data.ByteString as ByteString
-import Control.Monad
+import Control.Monad (when, unless)
 import qualified System.Console.GetOpt as GetOpt
 import qualified System.Environment as Environment
-import System.Exit hiding (die)
-import System.IO
+import qualified System.Exit as Exit
 import qualified Control.Exception as Exception
+import System.IO (IO)
+import qualified System.IO as IO
 
 import Isabelle.Library (quote)
 import qualified Isabelle.File as File
@@ -27,9 +27,10 @@ import qualified Isabelle.Byte_Message as Byte_Message
 import qualified Isabelle.XML as XML
 import qualified Isabelle.YXML as YXML
 import qualified Isabelle.Naproche as Naproche
-import Network.Socket (Socket)
 import qualified Data.ByteString.UTF8 as UTF8
 import qualified Data.ByteString.Char8 as Char8
+import qualified Data.ByteString as ByteString
+import Network.Socket (Socket)
 
 import SAD.Core.Base
 import qualified SAD.Core.Message as Message
@@ -46,11 +47,11 @@ import SAD.Parser.Error
 main :: IO ()
 main  = do
   -- setup stdin/stdout
-  File.setup stdin
-  File.setup stdout
-  File.setup stderr
-  hSetBuffering stdout LineBuffering
-  hSetBuffering stderr LineBuffering
+  File.setup IO.stdin
+  File.setup IO.stdout
+  File.setup IO.stderr
+  IO.hSetBuffering IO.stdout IO.LineBuffering
+  IO.hSetBuffering IO.stderr IO.LineBuffering
 
   -- command line and init file
   args <- Environment.getArgs
@@ -66,8 +67,8 @@ main  = do
       (\err -> do
         Message.exitThread
         let msg = Exception.displayException (err :: Exception.SomeException)
-        hPutStrLn stderr msg
-        exitFailure)
+        IO.hPutStrLn IO.stderr msg
+        Exit.exitFailure)
 
 mainBody :: ([Instr], [Text]) -> IO ()
 mainBody (opts0, text0) = do
@@ -171,7 +172,7 @@ readArgs :: [String] -> IO ([Instr], [Text])
 readArgs args = do
   let (instrs, files, errs) = GetOpt.getOpt GetOpt.Permute options args
 
-  let fail msgs = putStr (concatMap ("[Main] " ++) msgs) >> exitFailure
+  let fail msgs = putStr (concatMap ("[Main] " ++) msgs) >> Exit.exitFailure
   unless (all wellformed instrs && null errs) $ fail errs
   when (length files > 1) $ fail ["More than one file argument\n"]
   let commandLine = case files of [file] -> instrs ++ [Instr.String Instr.File file]; _ -> instrs
