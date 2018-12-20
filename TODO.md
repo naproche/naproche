@@ -8,8 +8,6 @@
 * more robust (less redundant) specification of options with their defaults:
   avoid duplicate information in Haskell sources, comments, init.opt
 
-* avoid odd printing of exit code (e.g. ExitSuccess)
-
 
 # PIDE markup reports #
 
@@ -32,8 +30,7 @@
 
 # General #
 
-* stay-resident server instead of command-line batch-tool -- also relevant for
-  incremental output of Isabelle/ML Bash.process;
+* stay-resident server: proper cancellation of tasks
 
 * caching of old results from prefix of source, old versions etc.
 
