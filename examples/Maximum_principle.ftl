@@ -1,7 +1,6 @@
 [synonym number/-s]
 [ontored on][checkontored on]
 
-
 Let the domain of f stand for Dom(f).
 Let z is in M stand for z is an element of M.
 Let M contains z stand for z is in M.
@@ -77,14 +76,3 @@ Let us show that f is constant on Ball(eps,z).
 	end.
 Hence f is constant.
 qed.
-
-
-
-
-
-
-
-
-
-
-

@@ -41,6 +41,3 @@ Then p * m^2 = p * (k * n).
 Therefore m * m is equal to p * k^2.
 Hence p divides m. Contradiction.
 qed.
-
-
-

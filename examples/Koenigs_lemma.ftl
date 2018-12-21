@@ -92,5 +92,3 @@ For every element i of D card(Diag[i]) < lambda[i].[ontored off]
 Define f[i] = Choose an element v of lambda[i] \ Diag[i] in v for i in D. Then f is an element of ProdSet(lambda,D). Indeed Dom(f) = D (by Definition).
 Take an element j of D and an element m of kappa[j] such that G[(m,j)] = f. G[(m,j)][j] is an element of Diag[j] and f[j] is not an element of Diag[j]. Contradiction.
 qed.
-
-
