@@ -11,10 +11,10 @@ where
 
 -- options
 
-forthel_prove, forthel_check, forthel_skipfail :: String
-forthel_prove = "forthel_prove"
-forthel_check = "forthel_check"
-forthel_skipfail = "forthel_skipfail"
+naproche_prove, naproche_check, naproche_skipfail :: String
+naproche_prove = "naproche_prove"
+naproche_check = "naproche_check"
+naproche_skipfail = "naproche_skipfail"
 
 
 -- environment

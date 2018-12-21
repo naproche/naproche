@@ -6,9 +6,9 @@ Isabelle Prover IDE support for NaProChe / ForTheL.
 
 signature NAPROCHE =
 sig
-  val forthel_prove: bool Config.T
-  val forthel_check: bool Config.T
-  val forthel_skipfail: bool Config.T
+  val naproche_prove: bool Config.T
+  val naproche_check: bool Config.T
+  val naproche_skipfail: bool Config.T
   val NAPROCHE_PIDE: string
   val NAPROCHE_POS_FILE: string
   val NAPROCHE_POS_SHIFT: string
@@ -30,9 +30,9 @@ struct
 
 (* options *)
 
-val forthel_prove = Attrib.setup_option_bool (\<^system_option>\<open>forthel_prove\<close>, \<^here>);
-val forthel_check = Attrib.setup_option_bool (\<^system_option>\<open>forthel_check\<close>, \<^here>);
-val forthel_skipfail = Attrib.setup_option_bool (\<^system_option>\<open>forthel_skipfail\<close>, \<^here>);
+val naproche_prove = Attrib.setup_option_bool (\<^system_option>\<open>naproche_prove\<close>, \<^here>);
+val naproche_check = Attrib.setup_option_bool (\<^system_option>\<open>naproche_check\<close>, \<^here>);
+val naproche_skipfail = Attrib.setup_option_bool (\<^system_option>\<open>naproche_skipfail\<close>, \<^here>);
 
 
 (* environment *)
@@ -113,19 +113,19 @@ val forthel_command = "forthel";
 
 fun check_forthel ctxt (text, pos) =
   let
-    val server = Options.default_string \<^system_option>\<open>naproche_server\<close>;
-    val password = Options.default_string \<^system_option>\<open>naproche_server_password\<close>;
+    val server_address = Options.default_string \<^system_option>\<open>naproche_server_address\<close>;
+    val server_password = Options.default_string \<^system_option>\<open>naproche_server_password\<close>;
 
     fun bool_option config = if Config.get ctxt config then "on" else "off";
     val args =
-     ["--prove=" ^ bool_option forthel_prove,
-      "--check=" ^ bool_option forthel_check,
-      "--skipfail=" ^ bool_option forthel_skipfail];
+     ["--prove=" ^ bool_option naproche_prove,
+      "--check=" ^ bool_option naproche_check,
+      "--skipfail=" ^ bool_option naproche_skipfail];
   in
-    if server <> "" andalso password <> "" then
-      server |> Socket_IO.with_streams (fn (in_stream, out_stream) =>
+    if server_address <> "" andalso server_password <> "" then
+      server_address |> Socket_IO.with_streams (fn (in_stream, out_stream) =>
         let
-          val _ = Byte_Message.write_line out_stream password;
+          val _ = Byte_Message.write_line out_stream server_password;
           val props = (command_args, cat_lines args) :: naproche_environment pos;
           val _ =
             Byte_Message.write_line_message out_stream

@@ -1,17 +1,17 @@
 (* :mode=isabelle-options: *)
 
-section "NaProChe / ForTheL"
+section "Naproche-SAD"
 
-public option forthel_prove : bool = true
+public option naproche_prove : bool = true
   -- "prove goals in the text"
 
-public option forthel_check : bool = true
+public option naproche_check : bool = true
   -- "check symbols for definedness"
 
-public option forthel_skipfail : bool = true
+public option naproche_skipfail : bool = true
   -- "ignore failed goals"
 
-option naproche_server : string = ""
+option naproche_server_address : string = ""
   -- "address/port of Naproche-SAD server"
 
 option naproche_server_password : string = ""

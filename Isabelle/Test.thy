@@ -44,7 +44,7 @@ Contradiction. qed.
 
 subsection \<open>External text file\<close>
 
-context notes [[forthel_prove = false]]
+context notes [[naproche_prove = false]]
 begin
 
 forthel_file "../examples/tarski.ftl"

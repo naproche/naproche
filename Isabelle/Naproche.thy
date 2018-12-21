@@ -25,10 +25,10 @@ where
 
 -- options
 
-forthel_prove, forthel_check, forthel_skipfail :: String
-forthel_prove = \<open>\<^system_option>\<open>forthel_prove\<close>\<close>
-forthel_check = \<open>\<^system_option>\<open>forthel_check\<close>\<close>
-forthel_skipfail = \<open>\<^system_option>\<open>forthel_skipfail\<close>\<close>
+naproche_prove, naproche_check, naproche_skipfail :: String
+naproche_prove = \<open>\<^system_option>\<open>naproche_prove\<close>\<close>
+naproche_check = \<open>\<^system_option>\<open>naproche_check\<close>\<close>
+naproche_skipfail = \<open>\<^system_option>\<open>naproche_skipfail\<close>\<close>
 
 
 -- environment
