@@ -23,6 +23,7 @@ sig
   val origin_thesis: string
   val command_args: string
   val forthel_command: string
+  val cancel_command: string
   val check_forthel: Proof.context -> string * Position.T -> unit
 end;
 
@@ -111,6 +112,7 @@ fun read_messages str =
 in
 
 val command_args = "command_args";
+val cancel_command = "cancel";
 val forthel_command = "forthel";
 
 fun check_forthel ctxt (text, pos) =
@@ -126,19 +128,26 @@ fun check_forthel ctxt (text, pos) =
     fun server_connection f =
       server_address <> "" andalso server_password <> "" andalso
         server_address |> Socket_IO.with_streams (fn (in_stream, out_stream) =>
-          let
-            val _ = Byte_Message.write_line out_stream server_password;
-            val _ = f {in_stream = in_stream, out_stream = out_stream};
-          in true end);
+          let val _ = Byte_Message.write_line out_stream server_password in
+            (case Byte_Message.read_line_message in_stream of
+              NONE => false
+            | SOME uuid => (f {in_stream = in_stream, out_stream = out_stream, uuid = uuid}; true))
+          end);
+
+    fun cancel_connection uuid =
+      server_connection (fn {out_stream, ...} =>
+        Byte_Message.write_line_message out_stream
+          (YXML.string_of (XML.Elem ((cancel_command, []), XML.Encode.string uuid))));
 
     fun try_server () =
-      server_connection (fn {in_stream, out_stream} =>
+      server_connection (fn {in_stream, out_stream, uuid} =>
         let
           val props = (command_args, cat_lines args) :: naproche_environment pos;
           val _ =
             Byte_Message.write_line_message out_stream
               (YXML.string_of (XML.Elem ((forthel_command, props), XML.Encode.string text)));
-        in input_messages in_stream end)
+        in input_messages in_stream end
+        handle exn => (cancel_connection uuid; Exn.reraise exn))
       orelse (warning "Naproche-SAD server not active: using batch tool"; false);
 
     fun batch_tool () =

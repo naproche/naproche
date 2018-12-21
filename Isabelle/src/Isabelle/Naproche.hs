@@ -44,5 +44,8 @@ origin_thesis = "Thesis"
 command_args :: String
 command_args = "command_args"
 
+cancel_command :: String
+cancel_command = "cancel"
+
 forthel_command :: String
 forthel_command = "forthel"

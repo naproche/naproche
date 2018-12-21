@@ -17,6 +17,7 @@ import Control.Exception
 
 import Isabelle.Library
 import qualified Isabelle.File as File
+import qualified Isabelle.Standard_Thread as Standard_Thread
 
 import qualified SAD.Core.Message as Message
 import SAD.Core.SourcePos
@@ -40,7 +41,9 @@ import SAD.Export.DFG
 export :: Bool -> Int -> [Prover] -> [Instr] -> [Context] -> Context
        -> IO (IO Bool)
 export red m prs ins cnt gl =
-  do  when (null prs) $ Message.errorExport noPos "no provers"
+  do  Standard_Thread.expose_stopped
+
+      when (null prs) $ Message.errorExport noPos "no provers"
 
       let prn = Instr.askString Instr.Prover (name $ head prs) ins
       -- ask whether the user gave a prover, else take the first on the list

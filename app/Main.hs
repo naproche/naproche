@@ -27,6 +27,8 @@ import qualified Isabelle.Byte_Message as Byte_Message
 import qualified Isabelle.Properties as Properties
 import qualified Isabelle.XML as XML
 import qualified Isabelle.YXML as YXML
+import qualified Isabelle.UUID as UUID
+import qualified Isabelle.Standard_Thread as Standard_Thread
 import qualified Isabelle.Naproche as Naproche
 import qualified Data.ByteString.UTF8 as UTF8
 import qualified Data.ByteString.Char8 as Char8
@@ -148,8 +150,14 @@ mainBody (opts0, text0) = do
 
 serverConnection :: [String] -> Socket -> IO ()
 serverConnection args0 connection = do
+  thread_uuid <- Standard_Thread.my_uuid
+  mapM_ (Byte_Message.write_line_message connection . UUID.bytes) thread_uuid
+
   res <- Byte_Message.read_line_message connection
   case fmap (YXML.parse . UTF8.toString) res of
+    Just (XML.Elem ((command, _), body)) | command == Naproche.cancel_command ->
+      mapM_ Standard_Thread.stop_uuid (UUID.parse_string (XML.content_of body))
+
     Just (XML.Elem ((command, props), body)) | command == Naproche.forthel_command -> do
       Message.initThread props (Byte_Message.write connection)
 
@@ -165,7 +173,6 @@ serverConnection args0 connection = do
           else Message.outputMain Message.ERROR noPos msg)
       Message.exitThread
     _ -> return ()
-
 
 
 -- Command line parsing

@@ -27,6 +27,7 @@ import qualified Data.Set as Set
 import qualified Data.Map as M
 import Control.Monad.State
 import Control.Monad.Reader
+import qualified Isabelle.Standard_Thread as Standard_Thread
 
 import SAD.Core.SourcePos
 import SAD.Core.Base
@@ -131,7 +132,7 @@ launchProver iteration = do
 
 
 launchReasoning :: VM ()
-launchReasoning = do 
+launchReasoning = do
   goal <- thesis; context <- context
   skolemInt <- asks skolemCounter
   (mesonPos, mesonNeg) <- asks mesonRules
@@ -139,7 +140,9 @@ launchReasoning = do
       proveGoal = prove skolemInt lowlevelContext mesonPos mesonNeg goal
       -- set timelimit to 10^4 
       -- (usually not necessary as max proof depth is limited)
-      callOwn = timeout (10^4) $ evaluate $ proveGoal
+      callOwn = do
+        Standard_Thread.expose_stopped
+        timeout (10^4) $ evaluate $ proveGoal
   justIO callOwn >>= guard . (==) (Just True)
 
 
