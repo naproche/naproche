@@ -115,30 +115,33 @@ val forthel_command = "forthel";
 
 fun check_forthel ctxt (text, pos) =
   let
-    val server_address = Options.default_string \<^system_option>\<open>naproche_server_address\<close>;
-    val server_password = Options.default_string \<^system_option>\<open>naproche_server_password\<close>;
-
-    fun check_server () =
-      if server_address <> "" andalso server_password <> "" then true
-      else (warning "Naproche-SAD server not active: using batch tool"; false)
-
     fun bool_option config = if Config.get ctxt config then "on" else "off";
     val args =
      ["--prove=" ^ bool_option naproche_prove,
       "--check=" ^ bool_option naproche_check,
       "--skipfail=" ^ bool_option naproche_skipfail];
-  in
-    if Config.get ctxt naproche_server andalso check_server () then
-      server_address |> Socket_IO.with_streams (fn (in_stream, out_stream) =>
+
+    val server_address = Options.default_string \<^system_option>\<open>naproche_server_address\<close>;
+    val server_password = Options.default_string \<^system_option>\<open>naproche_server_password\<close>;
+    fun server_connection f =
+      server_address <> "" andalso server_password <> "" andalso
+        server_address |> Socket_IO.with_streams (fn (in_stream, out_stream) =>
+          let
+            val _ = Byte_Message.write_line out_stream server_password;
+            val _ = f {in_stream = in_stream, out_stream = out_stream};
+          in true end);
+
+    fun try_server () =
+      server_connection (fn {in_stream, out_stream} =>
         let
-          val _ = Byte_Message.write_line out_stream server_password;
           val props = (command_args, cat_lines args) :: naproche_environment pos;
           val _ =
             Byte_Message.write_line_message out_stream
               (YXML.string_of (XML.Elem ((forthel_command, props), XML.Encode.string text)));
-          val _ = input_messages in_stream;
-        in () end)
-    else
+        in input_messages in_stream end)
+      orelse (warning "Naproche-SAD server not active: using batch tool"; false);
+
+    fun batch_tool () =
       Isabelle_System.with_tmp_file "naproche" "ftl" (fn tmp_file =>
         let
           val _ = File.write tmp_file text;
@@ -156,8 +159,10 @@ fun check_forthel ctxt (text, pos) =
           val {out, err, rc, ...} = Bash.process script;
           val _ = read_messages err;
           val _ = read_messages out;
-        in if rc = 0 then () else error ("Return code: " ^ string_of_int rc) end)
-  end;
+        in rc = 0 orelse error ("Return code: " ^ string_of_int rc) end);
+
+    val _ = Config.get ctxt naproche_server andalso try_server () orelse batch_tool ();
+  in () end;
 
 end;
 
