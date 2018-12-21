@@ -158,20 +158,21 @@ serverConnection args0 connection = do
     Just (XML.Elem ((command, _), body)) | command == Naproche.cancel_command ->
       mapM_ Standard_Thread.stop_uuid (UUID.parse_string (XML.content_of body))
 
-    Just (XML.Elem ((command, props), body)) | command == Naproche.forthel_command -> do
-      Message.initThread props (Byte_Message.write connection)
+    Just (XML.Elem ((command, props), body)) | command == Naproche.forthel_command ->
+      Exception.bracket_ (Message.initThread props (Byte_Message.write connection))
+        Message.exitThread
+        (do
+          let args1 = split_lines (the_default "" (Properties.get props Naproche.command_args))
+          (opts1, text0) <- readArgs (args0 ++ args1)
+          let text1 = text0 ++ [TextInstr Instr.noPos (Instr.String Instr.Text (XML.content_of body))]
 
-      let args1 = split_lines (the_default "" (Properties.get props Naproche.command_args))
-      (opts1, text0) <- readArgs (args0 ++ args1)
-      let text1 = text0 ++ [TextInstr Instr.noPos (Instr.String Instr.Text (XML.content_of body))]
-
-      Exception.catch (mainBody (opts1, text1))
-        (\err -> do
-          let msg = Exception.displayException (err :: Exception.SomeException)
-          if YXML.detect msg then
-            Byte_Message.write connection [UTF8.fromString msg]
-          else Message.outputMain Message.ERROR noPos msg)
-      Message.exitThread
+          Exception.catch (mainBody (opts1, text1))
+            (\err -> do
+              let msg = Exception.displayException (err :: Exception.SomeException)
+              if YXML.detect msg then
+                Byte_Message.write connection [UTF8.fromString msg]
+              else Message.outputMain Message.ERROR noPos msg))
+      
     _ -> return ()
 
 
