@@ -16,7 +16,8 @@ module Isabelle.Standard_Thread (
   ThreadId, Result,
   find_id,
   properties, change_properties,
-  stop, is_stopped,
+  is_stopped, expose_stopped, stop,
+  my_uuid, stop_uuid,
   Fork, fork_finally, fork)
 where
 
@@ -25,6 +26,7 @@ import Data.IORef
 import System.IO.Unsafe
 
 import qualified Data.List as List
+import Control.Monad (when, forM_)
 import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
 import Control.Exception.Base (SomeException)
@@ -100,8 +102,24 @@ change_properties f = do
 is_stopped :: IO Bool
 is_stopped = stopped <$> my_info
 
+expose_stopped :: IO ()
+expose_stopped = do
+  stopped <- is_stopped
+  when stopped $ throw ThreadKilled
+
 stop :: ThreadId -> IO ()
 stop id = map_info id (\info -> info {stopped = True})
+
+
+{- UUID -}
+
+my_uuid :: IO UUID.T
+my_uuid = uuid <$> my_info
+
+stop_uuid :: UUID.T -> IO ()
+stop_uuid uuid = do
+  id <- find_id uuid
+  forM_ id stop
 
 
 {- fork -}
