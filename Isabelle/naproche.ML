@@ -6,6 +6,7 @@ Isabelle Prover IDE support for NaProChe / ForTheL.
 
 signature NAPROCHE =
 sig
+  val naproche_server: bool Config.T
   val naproche_prove: bool Config.T
   val naproche_check: bool Config.T
   val naproche_skipfail: bool Config.T
@@ -30,6 +31,7 @@ struct
 
 (* options *)
 
+val naproche_server = Attrib.setup_option_bool (\<^system_option>\<open>naproche_server\<close>, \<^here>);
 val naproche_prove = Attrib.setup_option_bool (\<^system_option>\<open>naproche_prove\<close>, \<^here>);
 val naproche_check = Attrib.setup_option_bool (\<^system_option>\<open>naproche_check\<close>, \<^here>);
 val naproche_skipfail = Attrib.setup_option_bool (\<^system_option>\<open>naproche_skipfail\<close>, \<^here>);
@@ -116,13 +118,17 @@ fun check_forthel ctxt (text, pos) =
     val server_address = Options.default_string \<^system_option>\<open>naproche_server_address\<close>;
     val server_password = Options.default_string \<^system_option>\<open>naproche_server_password\<close>;
 
+    fun check_server () =
+      if server_address <> "" andalso server_password <> "" then true
+      else (warning "Naproche-SAD server not active: using batch tool"; false)
+
     fun bool_option config = if Config.get ctxt config then "on" else "off";
     val args =
      ["--prove=" ^ bool_option naproche_prove,
       "--check=" ^ bool_option naproche_check,
       "--skipfail=" ^ bool_option naproche_skipfail];
   in
-    if server_address <> "" andalso server_password <> "" then
+    if Config.get ctxt naproche_server andalso check_server () then
       server_address |> Socket_IO.with_streams (fn (in_stream, out_stream) =>
         let
           val _ = Byte_Message.write_line out_stream server_password;

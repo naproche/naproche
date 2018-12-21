@@ -11,6 +11,9 @@ public option naproche_check : bool = true
 public option naproche_skipfail : bool = true
   -- "ignore failed goals"
 
+public option naproche_server : bool = true
+  -- "prefer Naproche-SAD server over batch tool (change requires restart)"
+
 option naproche_server_address : string = ""
   -- "address/port of Naproche-SAD server"
 

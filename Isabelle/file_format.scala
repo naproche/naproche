@@ -56,5 +56,7 @@ class File_Format extends isabelle.File_Format
   override def theory_content(name: String): String =
     """theory "ftl" imports Naproche.Naproche begin forthel_file """ + quote(name) + """ end"""
 
-  override def start(session: Session): File_Format.Agent = new File_Format.Agent
+  override def start(session: Session): isabelle.File_Format.Agent =
+    if (session.session_options.bool("naproche_server")) new File_Format.Agent
+    else isabelle.File_Format.No_Agent
 }
