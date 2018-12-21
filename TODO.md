@@ -30,7 +30,7 @@
 
 # General #
 
-* stay-resident server: proper cancellation of tasks
+* server cancellation: kill external processes
 
 * caching of old results from prefix of source, old versions etc.
 
