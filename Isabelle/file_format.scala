@@ -11,8 +11,10 @@ import isabelle._
 
 object File_Format
 {
-  class Agent extends isabelle.File_Format.Agent
+  class Agent(session_options: => Options) extends isabelle.File_Format.Agent
   {
+    private def debugging: Boolean = session_options.bool("naproche_server_debugging")
+
     private val process =
       Bash.process("""export PATH="$E_HOME:$SPASS_HOME:$PATH"; exec "$NAPROCHE_EXE" --server""",
         cwd = Path.explode("$NAPROCHE_HOME").file)
@@ -23,7 +25,11 @@ object File_Format
         info <- Server.Info.parse(line)
       } yield info
 
-    private val process_result = Future.thread("Naproche-SAD") { process.result() }
+    private val process_result = Future.thread("Naproche-SAD") {
+      process.result(
+        progress_stdout = (line) => if (debugging) System.out.println(line),
+        progress_stderr = (line) => if (debugging) System.err.println(line))
+    }
 
     if (server_info.isEmpty) {
       Thread.sleep(50)
@@ -57,6 +63,8 @@ class File_Format extends isabelle.File_Format
     """theory "ftl" imports Naproche.Naproche begin forthel_file """ + quote(name) + """ end"""
 
   override def start(session: Session): isabelle.File_Format.Agent =
-    if (session.session_options.bool("naproche_server")) new File_Format.Agent
+    if (session.session_options.bool("naproche_server")) {
+      new File_Format.Agent(session.session_options)
+    }
     else isabelle.File_Format.No_Agent
 }

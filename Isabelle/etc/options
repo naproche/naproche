@@ -14,6 +14,9 @@ public option naproche_skipfail : bool = true
 public option naproche_server : bool = true
   -- "prefer Naproche-SAD server over batch tool (change requires restart)"
 
+public option naproche_server_debugging : bool = false
+  -- "console debugging for Naproche-SAD server"
+
 option naproche_server_address : string = ""
   -- "address/port of Naproche-SAD server"
 
