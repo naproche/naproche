@@ -1,9 +1,8 @@
 {-
-Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
+Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018), Makarius Wenzel (2018)
 
-Run an external prover.
+Prover interface: export a proof task to an external prover.
 -}
-
 
 module SAD.Export.Prover where
 
@@ -29,78 +28,62 @@ import SAD.Export.TPTP
 import SAD.Export.DFG
 
 
--- Prover interface
-{- exports a proof task to a prover. argument meaning:
-     red -> whether to use the reduced version of a formula or not
-     m   -> reasoning depth we are at at the moment
-     prs -> available provers
-     ins -> instructions
-     cnt -> context
-     gl  -> goal -}
-
-export :: Bool -> Int -> [Prover] -> [Instr] -> [Context] -> Context
-       -> IO (IO Bool)
-export red m prs ins cnt gl =
+export :: Bool -> Int -> [Prover] -> [Instr] -> [Context] -> Context -> IO (IO Bool)
+export reduced depth provers instrs context goal =
   do  Standard_Thread.expose_stopped
 
-      when (null prs) $ Message.errorExport noPos "no provers"
+      when (null provers) $ Message.errorExport noPos "no provers"
 
-      let prn = Instr.askString Instr.Prover (name $ head prs) ins
-      -- ask whether the user gave a prover, else take the first on the list
-          prr = filter ((==) prn . name) prs
+      let proverName = Instr.askString Instr.Prover (name $ head provers) instrs
+          proversNamed = filter ((==) proverName . name) provers
 
-      when (null prr) $ Message.errorExport noPos $ "no prover: " ++ prn
+      when (null proversNamed) $ Message.errorExport noPos $ "no prover: " ++ proverName
 
-      let prv@(Prover _ label path args fmt yes nos uns) = head prr
-          tlm = Instr.askInt Instr.Timelimit 3 ins; agl = map (setTlim tlm) args
-          -- check whether user has specified time limit for prove tasks,
-          -- else make it 3 seconds
-          run = runInteractiveProcess path agl Nothing Nothing
+      let prover@(Prover _ label path args fmt yes nos uns) = head proversNamed
+          timeLimit = Instr.askInt Instr.Timelimit 3 instrs
+          args' = map (setTimeLimit timeLimit) args
+          run = runInteractiveProcess path args' Nothing Nothing
 
-      let dmp = case fmt of
-                  TPTP  -> tptpOut
-                  DFG   -> dfgOut
-          task = dmp red prv tlm cnt gl
-          -- translate the prover task into the appropriate input language
+      let dump = case fmt of TPTP -> tptpOut; DFG -> dfgOut
+          task = dump reduced prover timeLimit context goal
 
-      when (Instr.askBool Instr.Dump False ins) $ Message.output "" Message.WRITELN noPos task
-      -- print the translation if it is enabled (intended only for debugging)
+      when (Instr.askBool Instr.Dump False instrs) $ Message.output "" Message.WRITELN noPos task
 
       seq (length task) $ return $
-        do  (wh,rh,eh,ph) <- catch run
+        do  (prvin, prvout, prverr, prv) <- catch run
                 $ \e -> Message.errorExport noPos $
                     "failed to run " ++ quote path ++ ": " ++ ioeGetErrorString e
 
-            File.setup wh
-            File.setup rh
-            File.setup eh
+            File.setup prvin
+            File.setup prvout
+            File.setup prverr
 
-            hPutStrLn wh task ; hClose wh
-            -- write the task to the prover input
+            hPutStrLn prvin task
+            hClose prvin
 
-            ofl <- hGetContents rh ; efl <- hGetContents eh
-            -- get output and errors
-            let lns = filter (not . null) $ lines $ ofl ++ efl
+            output <- hGetContents prvout
+            errors <- hGetContents prverr
+            let lns = filter (not . null) $ lines $ output ++ errors
                 out = map (("[" ++ label ++ "] ") ++) lns
 
-            when (length lns == 0) $ Message.errorExport noPos "empty response"
-            when (Instr.askBool Instr.Printprover False ins) $
+            when (null lns) $ Message.errorExport noPos "empty response"
+            when (Instr.askBool Instr.Printprover False instrs) $
               mapM_ (Message.output "" Message.WRITELN noPos) out
-            -- if the user has enabled it, print the proveroutput
 
-            let pos = any (\ l -> any (`isPrefixOf` l) yes) lns
-                neg = any (\ l -> any (`isPrefixOf` l) nos) lns
-                unk = any (\ l -> any (`isPrefixOf` l) uns) lns
-            -- prover response can be: positive, negative or inconclusive
+            let positive = any (\l -> any (`isPrefixOf` l) yes) lns
+                negative = any (\l -> any (`isPrefixOf` l) nos) lns
+                inconclusive = any (\l -> any (`isPrefixOf` l) uns) lns
 
-            unless (pos || neg || unk) $
+            unless (positive || negative || inconclusive) $
               Message.errorExport noPos $ cat_lines ("bad response" : lns)
 
-            hClose eh ; waitForProcess ph
-            -- close error handle and wait for prover to terminate
+            hClose prverr
+            waitForProcess prv
 
-            return pos
-  where
-    setTlim tl ('%':'d':rs) = show tl ++ rs
-    setTlim tl (s:rs)       = s : setTlim tl rs
-    setTlim _ _             = []
+            return positive
+
+
+setTimeLimit :: Int -> String -> String
+setTimeLimit timeLimit ('%':'d':rs) = show timeLimit ++ rs
+setTimeLimit timeLimit (s:rs) = s : setTimeLimit timeLimit rs
+setTimeLimit _ _ = []
