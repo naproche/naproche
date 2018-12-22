@@ -7,6 +7,7 @@ Prover interface: export a proof task to an external prover.
 module SAD.Export.Prover where
 
 import Control.Monad (when, unless)
+import Data.Maybe
 import Data.List
 import Data.Char
 import System.IO
@@ -41,8 +42,16 @@ export reduced depth provers instrs context goal = do
 
   let prover@(Prover _ label path args fmt yes nos uns) = head proversNamed
       timeLimit = Instr.askInt Instr.Timelimit 3 instrs
-      args' = map (setTimeLimit timeLimit) args
-      run = Process.runInteractiveProcess path args' Nothing Nothing
+      proc =
+        (Process.proc path (map (setTimeLimit timeLimit) args))
+          {Process.std_in = Process.CreatePipe,
+           Process.std_out = Process.CreatePipe,
+           Process.std_err = Process.CreatePipe,
+           Process.create_group = True,
+           Process.new_session = True}
+      process = do
+        (pin, pout, perr, p) <- Process.createProcess proc
+        return (fromJust pin, fromJust pout, fromJust perr, p)
 
   let output = case fmt of TPTP -> TPTP.output; DFG -> DFG.output
       task = output reduced prover timeLimit context goal
@@ -52,7 +61,7 @@ export reduced depth provers instrs context goal = do
   seq (length task) $ return $
     do
       (prvin, prvout, prverr, prv) <-
-        Exception.catch run
+        Exception.catch process
           (\e -> Message.errorExport noPos $
             "Failed to run " ++ quote path ++ ": " ++ ioeGetErrorString e)
 
@@ -63,26 +72,34 @@ export reduced depth provers instrs context goal = do
       hPutStrLn prvin task
       hClose prvin
 
-      output <- hGetContents prvout
-      errors <- hGetContents prverr
-      let lns = filter (not . null) $ lines $ output ++ errors
-          out = map (("[" ++ label ++ "] ") ++) lns
+      let
+        terminate =
+          do
+            Process.interruptProcessGroupOf prv
+            Process.waitForProcess prv
+            return ()
 
-      when (null lns) $ Message.errorExport noPos "No prover response"
-      when (Instr.askBool Instr.Printprover False instrs) $
-        mapM_ (Message.output "" Message.WRITELN noPos) out
+      Standard_Thread.bracket_resource terminate $ do
+        output <- hGetContents prvout
+        errors <- hGetContents prverr
+        let lns = filter (not . null) $ lines $ output ++ errors
+            out = map (("[" ++ label ++ "] ") ++) lns
 
-      let positive = any (\l -> any (`isPrefixOf` l) yes) lns
-          negative = any (\l -> any (`isPrefixOf` l) nos) lns
-          inconclusive = any (\l -> any (`isPrefixOf` l) uns) lns
+        when (null lns) $ Message.errorExport noPos "No prover response"
+        when (Instr.askBool Instr.Printprover False instrs) $
+            mapM_ (Message.output "" Message.WRITELN noPos) out
 
-      unless (positive || negative || inconclusive) $
-        Message.errorExport noPos $ cat_lines ("Bad prover response:" : lns)
+        let positive = any (\l -> any (`isPrefixOf` l) yes) lns
+            negative = any (\l -> any (`isPrefixOf` l) nos) lns
+            inconclusive = any (\l -> any (`isPrefixOf` l) uns) lns
 
-      hClose prverr
-      Process.waitForProcess prv
+        unless (positive || negative || inconclusive) $
+            Message.errorExport noPos $ cat_lines ("Bad prover response:" : lns)
 
-      return positive
+        hClose prverr
+        Process.waitForProcess prv
+
+        return positive
 
 
 setTimeLimit :: Int -> String -> String
