@@ -169,9 +169,13 @@ serverConnection args0 connection = do
           Exception.catch (mainBody (opts1, text1))
             (\err -> do
               let msg = Exception.displayException (err :: Exception.SomeException)
-              if YXML.detect msg then
-                Byte_Message.write connection [UTF8.fromString msg]
-              else Message.outputMain Message.ERROR noPos msg))
+              Exception.catch
+                (if YXML.detect msg then
+                  Byte_Message.write connection [UTF8.fromString msg]
+                 else Message.outputMain Message.ERROR noPos msg)
+                (\err2 -> do
+                  let e = err2 :: Exception.IOException
+                  return ())))
       
     _ -> return ()
 
