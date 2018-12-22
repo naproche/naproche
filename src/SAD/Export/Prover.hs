@@ -29,58 +29,60 @@ import SAD.Export.DFG
 
 
 export :: Bool -> Int -> [Prover] -> [Instr] -> [Context] -> Context -> IO (IO Bool)
-export reduced depth provers instrs context goal =
-  do  Standard_Thread.expose_stopped
+export reduced depth provers instrs context goal = do
+  Standard_Thread.expose_stopped
 
-      when (null provers) $ Message.errorExport noPos "no provers"
+  when (null provers) $ Message.errorExport noPos "no provers"
 
-      let proverName = Instr.askString Instr.Prover (name $ head provers) instrs
-          proversNamed = filter ((==) proverName . name) provers
+  let proverName = Instr.askString Instr.Prover (name $ head provers) instrs
+      proversNamed = filter ((==) proverName . name) provers
 
-      when (null proversNamed) $ Message.errorExport noPos $ "no prover: " ++ proverName
+  when (null proversNamed) $ Message.errorExport noPos $ "no prover: " ++ proverName
 
-      let prover@(Prover _ label path args fmt yes nos uns) = head proversNamed
-          timeLimit = Instr.askInt Instr.Timelimit 3 instrs
-          args' = map (setTimeLimit timeLimit) args
-          run = runInteractiveProcess path args' Nothing Nothing
+  let prover@(Prover _ label path args fmt yes nos uns) = head proversNamed
+      timeLimit = Instr.askInt Instr.Timelimit 3 instrs
+      args' = map (setTimeLimit timeLimit) args
+      run = runInteractiveProcess path args' Nothing Nothing
 
-      let dump = case fmt of TPTP -> tptpOut; DFG -> dfgOut
-          task = dump reduced prover timeLimit context goal
+  let dump = case fmt of TPTP -> tptpOut; DFG -> dfgOut
+      task = dump reduced prover timeLimit context goal
 
-      when (Instr.askBool Instr.Dump False instrs) $ Message.output "" Message.WRITELN noPos task
+  when (Instr.askBool Instr.Dump False instrs) $ Message.output "" Message.WRITELN noPos task
 
-      seq (length task) $ return $
-        do  (prvin, prvout, prverr, prv) <- catch run
-                $ \e -> Message.errorExport noPos $
-                    "failed to run " ++ quote path ++ ": " ++ ioeGetErrorString e
+  seq (length task) $ return $
+    do
+      (prvin, prvout, prverr, prv) <-
+        catch run
+          $ \e -> Message.errorExport noPos $
+              "failed to run " ++ quote path ++ ": " ++ ioeGetErrorString e
 
-            File.setup prvin
-            File.setup prvout
-            File.setup prverr
+      File.setup prvin
+      File.setup prvout
+      File.setup prverr
 
-            hPutStrLn prvin task
-            hClose prvin
+      hPutStrLn prvin task
+      hClose prvin
 
-            output <- hGetContents prvout
-            errors <- hGetContents prverr
-            let lns = filter (not . null) $ lines $ output ++ errors
-                out = map (("[" ++ label ++ "] ") ++) lns
+      output <- hGetContents prvout
+      errors <- hGetContents prverr
+      let lns = filter (not . null) $ lines $ output ++ errors
+          out = map (("[" ++ label ++ "] ") ++) lns
 
-            when (null lns) $ Message.errorExport noPos "empty response"
-            when (Instr.askBool Instr.Printprover False instrs) $
-              mapM_ (Message.output "" Message.WRITELN noPos) out
+      when (null lns) $ Message.errorExport noPos "empty response"
+      when (Instr.askBool Instr.Printprover False instrs) $
+        mapM_ (Message.output "" Message.WRITELN noPos) out
 
-            let positive = any (\l -> any (`isPrefixOf` l) yes) lns
-                negative = any (\l -> any (`isPrefixOf` l) nos) lns
-                inconclusive = any (\l -> any (`isPrefixOf` l) uns) lns
+      let positive = any (\l -> any (`isPrefixOf` l) yes) lns
+          negative = any (\l -> any (`isPrefixOf` l) nos) lns
+          inconclusive = any (\l -> any (`isPrefixOf` l) uns) lns
 
-            unless (positive || negative || inconclusive) $
-              Message.errorExport noPos $ cat_lines ("bad response" : lns)
+      unless (positive || negative || inconclusive) $
+        Message.errorExport noPos $ cat_lines ("bad response" : lns)
 
-            hClose prverr
-            waitForProcess prv
+      hClose prverr
+      waitForProcess prv
 
-            return positive
+      return positive
 
 
 setTimeLimit :: Int -> String -> String
