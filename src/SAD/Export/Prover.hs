@@ -32,12 +32,12 @@ export :: Bool -> Int -> [Prover] -> [Instr] -> [Context] -> Context -> IO (IO B
 export reduced depth provers instrs context goal = do
   Standard_Thread.expose_stopped
 
-  when (null provers) $ Message.errorExport noPos "no provers"
+  when (null provers) $ Message.errorExport noPos "No provers"
 
   let proverName = Instr.askString Instr.Prover (name $ head provers) instrs
       proversNamed = filter ((==) proverName . name) provers
 
-  when (null proversNamed) $ Message.errorExport noPos $ "no prover: " ++ proverName
+  when (null proversNamed) $ Message.errorExport noPos $ "No prover named " ++ quote proverName
 
   let prover@(Prover _ label path args fmt yes nos uns) = head proversNamed
       timeLimit = Instr.askInt Instr.Timelimit 3 instrs
@@ -54,7 +54,7 @@ export reduced depth provers instrs context goal = do
       (prvin, prvout, prverr, prv) <-
         Exception.catch run
           (\e -> Message.errorExport noPos $
-            "failed to run " ++ quote path ++ ": " ++ ioeGetErrorString e)
+            "Failed to run " ++ quote path ++ ": " ++ ioeGetErrorString e)
 
       File.setup prvin
       File.setup prvout
@@ -68,7 +68,7 @@ export reduced depth provers instrs context goal = do
       let lns = filter (not . null) $ lines $ output ++ errors
           out = map (("[" ++ label ++ "] ") ++) lns
 
-      when (null lns) $ Message.errorExport noPos "empty response"
+      when (null lns) $ Message.errorExport noPos "No prover response"
       when (Instr.askBool Instr.Printprover False instrs) $
         mapM_ (Message.output "" Message.WRITELN noPos) out
 
@@ -77,7 +77,7 @@ export reduced depth provers instrs context goal = do
           inconclusive = any (\l -> any (`isPrefixOf` l) uns) lns
 
       unless (positive || negative || inconclusive) $
-        Message.errorExport noPos $ cat_lines ("bad response" : lns)
+        Message.errorExport noPos $ cat_lines ("Bad prover response:" : lns)
 
       hClose prverr
       Process.waitForProcess prv
