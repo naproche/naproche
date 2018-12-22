@@ -4,7 +4,7 @@ Authors: Andrei Paskevich (2001 - 2008)
 Print proof task in DFG syntax.
 -}
 
-module SAD.Export.DFG (dfgOut) where
+module SAD.Export.DFG (output) where
 
 import Data.List
 import qualified Data.IntMap.Strict as IM
@@ -15,8 +15,8 @@ import  qualified SAD.Data.Text.Block as Block
 import SAD.Data.Text.Context as Context (Context(..))
 import SAD.Export.Base
 
-dfgOut :: Bool -> Prover -> Int -> [Context] -> Context -> String
-dfgOut red _ _ cn gl = (hdr . sym . axm . cnj . eop) ""
+output :: Bool -> Prover -> Int -> [Context] -> Context -> String
+output red _ _ cn gl = (hdr . sym . axm . cnj . eop) ""
   where
     hdr = showString "begin_problem(A).list_of_descriptions.name({*EA*})."
         . showString "author({*EA*}).status(unknown).description({*EA*})."

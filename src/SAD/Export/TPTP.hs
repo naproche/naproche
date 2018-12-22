@@ -4,7 +4,7 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
 Print proof task in TPTP syntax.
 -}
 
-module SAD.Export.TPTP (tptpOut) where
+module SAD.Export.TPTP (output) where
 
 
 import qualified Data.IntMap.Strict as IM
@@ -17,8 +17,8 @@ import SAD.Export.Base
 
 import Debug.Trace
 
-tptpOut :: Bool -> Prover -> Int -> [Context] -> Context -> String
-tptpOut red _ _ cn gl = (axs . cnj) ""
+output :: Bool -> Prover -> Int -> [Context] -> Context -> String
+output red _ _ cn gl = (axs . cnj) ""
   where
     axs = foldr (flip (.) . tptpForm red ",hypothesis,") id cn
     cnj = tptpForm red ",conjecture," gl

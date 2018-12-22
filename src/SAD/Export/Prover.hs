@@ -6,13 +6,13 @@ Prover interface: export a proof task to an external prover.
 
 module SAD.Export.Prover where
 
-import Control.Monad
+import Control.Monad (when, unless)
 import Data.List
 import Data.Char
 import System.IO
 import System.IO.Error
-import System.Process
-import Control.Exception
+import qualified System.Process as Process
+import qualified Control.Exception as Exception
 
 import Isabelle.Library
 import qualified Isabelle.File as File
@@ -24,8 +24,8 @@ import SAD.Data.Instr (Instr)
 import qualified SAD.Data.Instr as Instr
 import SAD.Data.Text.Context (Context)
 import SAD.Export.Base
-import SAD.Export.TPTP
-import SAD.Export.DFG
+import qualified SAD.Export.TPTP as TPTP
+import qualified SAD.Export.DFG as DFG
 
 
 export :: Bool -> Int -> [Prover] -> [Instr] -> [Context] -> Context -> IO (IO Bool)
@@ -42,19 +42,19 @@ export reduced depth provers instrs context goal = do
   let prover@(Prover _ label path args fmt yes nos uns) = head proversNamed
       timeLimit = Instr.askInt Instr.Timelimit 3 instrs
       args' = map (setTimeLimit timeLimit) args
-      run = runInteractiveProcess path args' Nothing Nothing
+      run = Process.runInteractiveProcess path args' Nothing Nothing
 
-  let dump = case fmt of TPTP -> tptpOut; DFG -> dfgOut
-      task = dump reduced prover timeLimit context goal
+  let output = case fmt of TPTP -> TPTP.output; DFG -> DFG.output
+      task = output reduced prover timeLimit context goal
 
   when (Instr.askBool Instr.Dump False instrs) $ Message.output "" Message.WRITELN noPos task
 
   seq (length task) $ return $
     do
       (prvin, prvout, prverr, prv) <-
-        catch run
-          $ \e -> Message.errorExport noPos $
-              "failed to run " ++ quote path ++ ": " ++ ioeGetErrorString e
+        Exception.catch run
+          (\e -> Message.errorExport noPos $
+            "failed to run " ++ quote path ++ ": " ++ ioeGetErrorString e)
 
       File.setup prvin
       File.setup prvout
@@ -80,7 +80,7 @@ export reduced depth provers instrs context goal = do
         Message.errorExport noPos $ cat_lines ("bad response" : lns)
 
       hClose prverr
-      waitForProcess prv
+      Process.waitForProcess prv
 
       return positive
 
