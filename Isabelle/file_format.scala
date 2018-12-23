@@ -28,7 +28,8 @@ object File_Format
     private val process_result = Future.thread("Naproche-SAD") {
       process.result(
         progress_stdout = (line) => if (debugging) Output.writeln(line),
-        progress_stderr = (line) => if (debugging) Output.writeln(line))
+        progress_stderr = (line) => if (debugging) Output.writeln(line),
+        strict = false)
     }
 
     if (server_info.isEmpty) {
