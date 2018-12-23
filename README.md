@@ -103,11 +103,11 @@ Reference versions for multi-platform executables (x86_64):
 
   * Isabelle/Naproche component, e.g.:
 
-        curl -o naproche-20181207.tar.gz -L https://github.com/Naproche/Naproche-SAD/releases/download/20181207/naproche-20181207.tar.gz
+        curl -o naproche-20181223.tar.gz -L https://github.com/Naproche/Naproche-SAD/releases/download/20181223/naproche-20181223.tar.gz
 
-  * Application bundling, e.g. Isabelle/8985ee17bfd2 + naproche-20181207:
+  * Application bundling, e.g. Isabelle/db001bc11855 + naproche-20181223:
 
-        isabelle/Admin/build_release -r 8985ee17bfd2 -c naproche-20181207.tar.gz -R Isabelle_Naproche-20181207 -O -W dist/website dist
+        isabelle/Admin/build_release -r db001bc11855 -c naproche-20181223.tar.gz -R Isabelle_Naproche-20181223 -O -W dist/website dist
 
 
 ## Reference ##
