@@ -81,7 +81,7 @@ boundReports pide decl = dive 0
   where
     dive n (All _ f) = dive (succ n) f
     dive n (Exi _ f) = dive (succ n) f
-    dive n Ind {trIndx = i, trPosition = pos} | i == n =
+    dive n Ind {trIndx = i, trPosition = pos} | i == n - 1 =
       (pos, Markup.bound) : variableReport pide False decl pos
     dive n f = foldF (dive n) f
 
