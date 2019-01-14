@@ -12,7 +12,8 @@ module SAD.Data.Text.Block (
   compose,
   needsProof,
   isTopLevel,
-  file
+  file,
+  textToCheck
   )where
 
 import SAD.Data.Formula
@@ -34,6 +35,8 @@ data Text =
   | TextPretyping SourcePos [VarName]
   | TextMacro SourcePos
   | TextError ParseError
+  | TextChecked Text
+  | TextRoot [Text]
 
 data Block  = Block {
   formula           :: Formula,
@@ -134,3 +137,51 @@ showForm p block@Block {formula = formula, name = name} =
 
 showIndent :: Int -> ShowS
 showIndent n = showString $ replicate (n * 2) ' '
+
+--- comparison of text trees, computation of parts that need checking
+
+textToCheck :: Text -> Text -> Text
+textToCheck old new
+  | isRoot old && isRoot new = dive [] (isChecked old) new (children old) (children new)
+  | otherwise = new
+  where
+    dive acc checked root [] [] = setChecked checked $ setChildren root (reverse acc)
+    dive acc _ root old [] = setChildren root (reverse acc)
+    dive acc _ root [] new = setChildren root (reverse acc ++ new)
+    dive acc checked root (o:old) (n:new) =
+      if   textCompare o n
+      then let newAcc = dive [] (isChecked o) n (children o) (children n) : acc
+           in  dive newAcc checked root old new
+      else setChildren root (reverse acc ++ (n:new))
+
+isRoot (TextRoot _) = True; isRoot _ = False
+
+isChecked :: Text -> Bool
+isChecked (TextChecked _) = True; isChecked _ = False
+
+children :: Text -> [Text]
+children (TextRoot texts) = texts
+children (TextChecked text) = children text
+children (TextBlock bl) = body bl
+children _ = []
+
+setChecked :: Bool -> Text -> Text
+setChecked p = if p then TextChecked else id
+
+setChildren :: Text -> [Text] -> Text
+setChildren (TextRoot _) children = TextRoot children
+setChildren (TextBlock bl) children = TextBlock bl {body = children}
+setChildren txt _ = txt
+
+textCompare :: Text -> Text -> Bool
+textCompare (TextInstr _ i1) (TextInstr _ i2) = i1 == i2
+textCompare (TextDrop _ d1) (TextDrop _ d2) = d1 == d2
+textCompare (TextSynonym _) (TextSynonym _) = True
+textCompare (TextPretyping _ _) (TextPretyping _ _) = True
+textCompare (TextMacro _) (TextMacro _) = True
+textCompare (TextError _) (TextError _) = True
+textCompare (TextChecked txt) text = textCompare txt text
+textCompare (TextRoot _) (TextRoot _) = True
+textCompare (TextBlock bl1) (TextBlock bl2) =
+  syntacticEquality (formula bl1) (formula bl2)
+textCompare _ _ = False

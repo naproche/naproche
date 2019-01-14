@@ -260,3 +260,20 @@ replace t s = dive
     dive_aux v@Var{} = v
     dive_aux i@Ind{} = i
     dive_aux f = mapF dive f
+
+syntacticEquality :: Formula -> Formula -> Bool
+syntacticEquality = dive
+  where
+    dive (And f1 g1) (And f2 g2) = dive f1 f2 && dive g1 g2
+    dive (Or f1 g1) (Or f2 g2) = dive f1 f2 && dive g1 g2
+    dive (Imp f1 g1) (Imp f2 g2) = dive f1 f2 && dive g1 g2
+    dive (Iff f1 g1) (Iff f2 g2) = dive f1 f2 && dive g1 g2
+    dive (All _ f) (All _ g) = dive f g
+    dive (Exi _ f) (Exi _ g) = dive f g
+    dive (Tag t1 f) (Tag t2 g) = t1 == t2 && dive f g
+    dive (Not f) (Not g) = dive f g
+    dive Top Top = True
+    dive Bot Bot = True
+    dive ThisT ThisT = True
+    dive t1@Trm{} t2@Trm{} = twins t1 t2
+    dive _ _ = False

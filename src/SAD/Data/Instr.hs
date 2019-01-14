@@ -32,14 +32,14 @@ data Instr =
   | Bool Bool Prelude.Bool
   | String String Prelude.String
   | Strings Strings [Prelude.String]
-  deriving Show
+  deriving (Show, Eq)
 
 data Drop =
     DropCommand Command
   | DropInt Int
   | DropBool Bool
   | DropString String
-  deriving Show
+  deriving (Show, Eq)
 
 
 -- Instructions
