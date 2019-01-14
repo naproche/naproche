@@ -60,21 +60,23 @@ main  = do
   args0 <- Environment.getArgs
   (opts0, text0) <- readArgs args0
 
+  oldTextRef <- newIORef []
+
   if Instr.askBool Instr.Help False opts0 then
     putStr (GetOpt.usageInfo usageHeader options)
   else -- main body with explicit error handling, notably for PIDE
     Exception.catch
-      (if Instr.askBool Instr.Server False opts0 then
-        Server.server (Server.publish_stdout "Naproche-SAD") (serverConnection args0)
-      else do Message.consoleThread; mainBody (opts0, text0))
+      (if Instr.askBool Instr.Server True opts0 then
+        Server.server (Server.publish_stdout "Naproche-SAD") (serverConnection oldTextRef args0)
+      else do Message.consoleThread; mainBody oldTextRef (opts0, text0))
       (\err -> do
         Message.exitThread
         let msg = Exception.displayException (err :: Exception.SomeException)
         IO.hPutStrLn IO.stderr msg
         Exit.exitFailure)
 
-mainBody :: ([Instr], [Text]) -> IO ()
-mainBody (opts0, text0) = do
+mainBody :: IORef [Text] -> ([Instr], [Text]) -> IO ()
+mainBody oldTextRef (opts0, text0) = do
   startTime <- getCurrentTime
 
   -- parse input text
@@ -148,8 +150,8 @@ mainBody (opts0, text0) = do
         ++ showTimeDiff (diffUTCTime finishTime startTime)
 
 
-serverConnection :: [String] -> Socket -> IO ()
-serverConnection args0 connection = do
+serverConnection :: IORef [Text] -> [String] -> Socket -> IO ()
+serverConnection oldTextRef args0 connection = do
   thread_uuid <- Standard_Thread.my_uuid
   mapM_ (Byte_Message.write_line_message connection . UUID.bytes) thread_uuid
 
@@ -166,7 +168,7 @@ serverConnection args0 connection = do
           (opts1, text0) <- readArgs (args0 ++ args1)
           let text1 = text0 ++ [TextInstr Instr.noPos (Instr.String Instr.Text (XML.content_of body))]
 
-          Exception.catch (mainBody (opts1, text1))
+          Exception.catch (mainBody oldTextRef (opts1, text1))
             (\err -> do
               let msg = Exception.displayException (err :: Exception.SomeException)
               Exception.catch
