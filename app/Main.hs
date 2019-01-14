@@ -60,7 +60,7 @@ main  = do
   args0 <- Environment.getArgs
   (opts0, text0) <- readArgs args0
 
-  oldTextRef <- newIORef []
+  oldTextRef <- newIORef $ TextRoot []
 
   if Instr.askBool Instr.Help False opts0 then
     putStr (GetOpt.usageInfo usageHeader options)
@@ -75,18 +75,19 @@ main  = do
         IO.hPutStrLn IO.stderr msg
         Exit.exitFailure)
 
-mainBody :: IORef [Text] -> ([Instr], [Text]) -> IO ()
+mainBody :: IORef Text -> ([Instr], [Text]) -> IO ()
 mainBody oldTextRef (opts0, text0) = do
   startTime <- getCurrentTime
 
   -- parse input text
-  text <- readText (Instr.askString Instr.Library "." opts0) text0
+  text <- fmap TextRoot $ readText (Instr.askString Instr.Library "." opts0) text0
 
   -- if -T / --onlytranslate is passed as an option, only print the translated text
   if Instr.askBool Instr.OnlyTranslate False opts0 then
     do
       let timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)
-      mapM_ (\case TextBlock bl -> print bl; _ -> return ()) text
+          TextRoot txts = text
+      mapM_ (\case TextBlock bl -> print bl; _ -> return ()) txts
 
       -- print statistics
       finishTime <- getCurrentTime
@@ -150,7 +151,7 @@ mainBody oldTextRef (opts0, text0) = do
         ++ showTimeDiff (diffUTCTime finishTime startTime)
 
 
-serverConnection :: IORef [Text] -> [String] -> Socket -> IO ()
+serverConnection :: IORef Text -> [String] -> Socket -> IO ()
 serverConnection oldTextRef args0 connection = do
   thread_uuid <- Standard_Thread.my_uuid
   mapM_ (Byte_Message.write_line_message connection . UUID.bytes) thread_uuid

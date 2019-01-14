@@ -4,7 +4,7 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
 Main text reading functions.
 -}
 
-module SAD.Import.Reader (readInit, readText, checkParseCorrectness) where
+module SAD.Import.Reader (readInit, readText) where
 
 import Data.List
 import Data.Maybe
@@ -111,11 +111,3 @@ launchParser parser state =
   case runP parser state of
     Error err -> Message.errorParser (errorPos err) (show err)
     Ok [PR a st] -> return (a, st)
-
-
-checkParseCorrectness :: MonadPlus m => [Text] -> m ParseError
-checkParseCorrectness [] = mzero
-checkParseCorrectness (TextBlock bl : rest) =
-  checkParseCorrectness (body bl) `mplus` checkParseCorrectness rest
-checkParseCorrectness (TextError err : _) = return err
-checkParseCorrectness (_ : rest) = checkParseCorrectness rest

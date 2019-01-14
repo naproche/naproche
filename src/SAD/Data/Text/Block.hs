@@ -13,7 +13,8 @@ module SAD.Data.Text.Block (
   needsProof,
   isTopLevel,
   file,
-  textToCheck
+  textToCheck,
+  checkParseCorrectness
   )where
 
 import SAD.Data.Formula
@@ -25,6 +26,8 @@ import SAD.Data.Text.Decl (Decl)
 import qualified SAD.Data.Text.Decl as Decl
 import SAD.ForTheL.Base (VarName)
 import SAD.Parser.Error (ParseError)
+
+import Control.Monad
 
 
 data Text =
@@ -185,3 +188,16 @@ textCompare (TextRoot _) (TextRoot _) = True
 textCompare (TextBlock bl1) (TextBlock bl2) =
   syntacticEquality (formula bl1) (formula bl2)
 textCompare _ _ = False
+
+
+-- parse correctness of a structure tree
+
+
+checkParseCorrectness :: MonadPlus m => Text -> m ParseError
+checkParseCorrectness txt = dive $ children txt
+  where
+    dive [] = mzero
+    dive (TextBlock bl : rest) =
+      dive (body bl) `mplus` dive rest
+    dive (TextError err : _) = return err
+    dive (_ : rest) = dive rest
