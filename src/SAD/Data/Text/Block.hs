@@ -14,7 +14,7 @@ module SAD.Data.Text.Block (
   isTopLevel,
   file,
   textToCheck,
-  checkParseCorrectness
+  findParseError
   )where
 
 import SAD.Data.Formula
@@ -193,8 +193,8 @@ textCompare _ _ = False
 -- parse correctness of a structure tree
 
 
-checkParseCorrectness :: MonadPlus m => Text -> m ParseError
-checkParseCorrectness txt = dive $ children txt
+findParseError :: MonadPlus m => Text -> m ParseError
+findParseError txt = dive $ children txt
   where
     dive [] = mzero
     dive (TextBlock bl : rest) =

@@ -100,7 +100,7 @@ mainBody oldTextRef (opts0, text0) = do
       reasonerState <- newIORef (RState [] )
       proveStart <- getCurrentTime
 
-      case checkParseCorrectness text of
+      case findParseError text of
         Nothing -> verify (Instr.askString Instr.File "" opts0) provers reasonerState text
         Just err -> Message.errorParser (errorPos err) (show err)
 
