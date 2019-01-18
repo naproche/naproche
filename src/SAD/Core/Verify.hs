@@ -44,9 +44,10 @@ import qualified SAD.Data.Structures.DisTree as DT
 import SAD.Core.Rewrite
 import SAD.Export.Base (Prover)
 
+
 -- Main verification loop
 
-verify :: String -> [Prover] -> IORef RState -> Text -> IO (Maybe [Text])
+verify :: String -> [Prover] -> IORef RState -> Text -> IO (Maybe Text)
 verify fileName provers reasonerState (TextRoot text) = do
   let text' = TextInstr Instr.noPos (Instr.String Instr.File fileName) : text
   Message.outputReasoner Message.TRACING (fileOnlyPos fileName) "verification started"
@@ -60,12 +61,9 @@ verify fileName provers reasonerState (TextRoot text) = do
   let success = isJust result && ignoredFails == 0
   Message.outputReasoner Message.TRACING (fileOnlyPos fileName) $
     "verification " ++ (if success then "successful" else "failed")
-  return result
+  return $ fmap (TextRoot . tail . snd) result
 
-
-
-
-verificationLoop :: VState -> VM [Text]
+verificationLoop :: VState -> VM ([Text], [Text])
 verificationLoop state@VS {
   thesisMotivated = motivated,
   rewriteRules    = rules,
@@ -89,101 +87,107 @@ verificationLoop state@VS {
   fortifiedFormula <-
     if   Block.isTopLevel block
     then return f
-    else fillDef contextBlock -- check definitions and fortify terms
+    else fillDef contextBlock <|> (setFailed >> return f) -- check definitions and fortify terms
 
-  let proofTask = generateProofTask kind (Block.declaredNames block) fortifiedFormula
-      freshThesis = Context proofTask newBranch [] proofTask
-      toBeProved = (Block.needsProof block) && not (Block.isTopLevel block)
-  proofBody <- askInstructionBool Instr.Flat False >>= \p ->
-    if p then return [] else return body
+  checkFailed (return (restText state, restText state)) $ do
 
-  whenInstruction Instr.Printthesis False $ when (
-    toBeProved && (not . null) proofBody &&
-    not (hasDEC $ Context.formula freshThesis)) $
-      thesisLog Message.WRITELN (Block.position block) (length branch - 1) $
-      "thesis: " ++ show (Context.formula freshThesis)
+    let proofTask = generateProofTask kind (Block.declaredNames block) fortifiedFormula
+        freshThesis = Context proofTask newBranch [] proofTask
+        toBeProved = (Block.needsProof block) && not (Block.isTopLevel block)
+    proofBody <- askInstructionBool Instr.Flat False >>= \p ->
+      if p then return [] else return body
 
-
-  fortifiedProof <-
-    if   toBeProved
-    then verifyProof state {
-      thesisMotivated = True, currentThesis = freshThesis,
-      currentBranch = newBranch, restText = proofBody }
-    else verifyProof state {
-      thesisMotivated = False, currentThesis = freshThesis,
-      currentBranch = newBranch, restText = body }
-
-  whenInstruction Instr.Printthesis False $ when (
-    toBeProved && (not . null) proofBody &&
-    not (hasDEC $ Context.formula freshThesis)) $
-      thesisLog Message.WRITELN (Block.position block) (length branch - 1) "thesis resolved"
-
-  -- in what follows we prepare the current block to contribute to the context,
-  -- extract rules, definitions and compute the new thesis
-  thesisSetting <- askInstructionBool Instr.Thesis True
-  let newBlock = block {
-        Block.formula = deleteInductionOrCase fortifiedFormula,
-        Block.body = fortifiedProof }
-      formulaImage = Block.formulate newBlock
-
-  (mesonRules, newSkolem)  <- contras $ deTag formulaImage
-  let newDefinitions =
-        if   kind == Definition || kind == Signature
-        then addDefinition defs formulaImage
-        else defs
-      ontoReduction =
-        foldr1 And $ map (onto_reduce newDefinitions) (assm_nf formulaImage)
-      newContextBlock =
-        let reduction = if Block.isTopLevel block then ontoReduction else formulaImage
-        in  Context formulaImage newBranch (uncurry (++) mesonRules) reduction
-      newContext = newContextBlock : context
-      newRules =
-        if   Block.isTopLevel block
-        then addRules mRules mesonRules
-        else mRules
-
-  let (newMotivation, hasChanged , newThesis) =
-        if   thesisSetting
-        then inferNewThesis defs newContext thesis
-        else (Block.needsProof block, False, thesis)
-
-  whenInstruction Instr.Printthesis False $ when (
-    hasChanged && motivated && newMotivation &&
-    (not $ hasDEC $ Block.formula $ head branch) ) $
-      thesisLog Message.WRITELN (Block.position block) (length branch - 2) $
-      "new thesis: " ++ show (Context.formula newThesis)
-
-  when (not newMotivation && motivated) $
-    thesisLog Message.WARNING (Block.position block) (length branch - 2) "unmotivated assumption"
-
-  let newRewriteRules = extractRewriteRule (head newContext) ++ rules
-
-  let newEvaluations =
-        if   kind `elem` [LowDefinition, Definition]
-        then addEvaluation evaluations formulaImage
-        else evaluations-- extract evaluations
+    whenInstruction Instr.Printthesis False $ when (
+      toBeProved && (not . null) proofBody &&
+      not (hasDEC $ Context.formula freshThesis)) $
+        thesisLog Message.WRITELN (Block.position block) (length branch - 1) $
+        "thesis: " ++ show (Context.formula freshThesis)
 
 
-  -- Now we are done with the block. Move on and verifiy the rest.
-  newBlocks <- verifyProof state {
-    thesisMotivated = motivated && newMotivation,
-    rewriteRules = newRewriteRules, evaluations = newEvaluations,
-    currentThesis = newThesis, currentContext = newContext,
-    mesonRules = newRules, definitions = newDefinitions,
-    skolemCounter = newSkolem, restText = blocks }
+    (fortifiedProof, markedProof) <-
+      if   toBeProved
+      then verifyProof state {
+        thesisMotivated = True, currentThesis = freshThesis,
+        currentBranch = newBranch, restText = proofBody }
+      else verifyProof state {
+        thesisMotivated = False, currentThesis = freshThesis,
+        currentBranch = newBranch, restText = body }
+    
 
-  -- if this block made the thesis unmotivated, we must discharge a composite
-  -- (and possibly quite difficult) prove task
-  let finalThesis = Imp (Block.compose $ TextBlock newBlock : newBlocks) (Context.formula thesis)
+    whenInstruction Instr.Printthesis False $ when (
+      toBeProved && (not . null) proofBody &&
+      not (hasDEC $ Context.formula freshThesis)) $
+        thesisLog Message.WRITELN (Block.position block) (length branch - 1) "thesis resolved"
 
-  -- notice that the following is only really executed if 
-  -- motivated && not newMotivated == True
-  verifyProof state {
-    thesisMotivated = motivated && not newMotivation,
-    currentThesis = Context.setForm thesis finalThesis, restText = [] }
+    -- in what follows we prepare the current block to contribute to the context,
+    -- extract rules, definitions and compute the new thesis
+    thesisSetting <- askInstructionBool Instr.Thesis True
+    let newBlock = block {
+          Block.formula = deleteInductionOrCase fortifiedFormula,
+          Block.body = fortifiedProof }
+        formulaImage = Block.formulate newBlock
+        markedBlock = block {Block.body = markedProof}
+    
+    checkFailed (return (TextBlock newBlock : blocks, TextBlock markedBlock : blocks)) $ do
 
-  -- put everything together
-  return $ TextBlock newBlock : newBlocks
+      (mesonRules, newSkolem)  <- contras $ deTag formulaImage
+      let newDefinitions =
+            if   kind == Definition || kind == Signature
+            then addDefinition defs formulaImage
+            else defs
+          ontoReduction =
+            foldr1 And $ map (onto_reduce newDefinitions) (assm_nf formulaImage)
+          newContextBlock =
+            let reduction = if Block.isTopLevel block then ontoReduction else formulaImage
+            in  Context formulaImage newBranch (uncurry (++) mesonRules) reduction
+          newContext = newContextBlock : context
+          newRules =
+            if   Block.isTopLevel block
+            then addRules mRules mesonRules
+            else mRules
+
+      let (newMotivation, hasChanged , newThesis) =
+            if   thesisSetting
+            then inferNewThesis defs newContext thesis
+            else (Block.needsProof block, False, thesis)
+
+      whenInstruction Instr.Printthesis False $ when (
+        hasChanged && motivated && newMotivation &&
+        (not $ hasDEC $ Block.formula $ head branch) ) $
+          thesisLog Message.WRITELN (Block.position block) (length branch - 2) $
+          "new thesis: " ++ show (Context.formula newThesis)
+
+      when (not newMotivation && motivated) $
+        thesisLog Message.WARNING (Block.position block) (length branch - 2) "unmotivated assumption"
+
+      let newRewriteRules = extractRewriteRule (head newContext) ++ rules
+
+      let newEvaluations =
+            if   kind `elem` [LowDefinition, Definition]
+            then addEvaluation evaluations formulaImage
+            else evaluations-- extract evaluations
+
+
+      -- Now we are done with the block. Move on and verifiy the rest.
+      (newBlocks, markedBlocks) <- verifyProof state {
+        thesisMotivated = motivated && newMotivation,
+        rewriteRules = newRewriteRules, evaluations = newEvaluations,
+        currentThesis = newThesis, currentContext = newContext,
+        mesonRules = newRules, definitions = newDefinitions,
+        skolemCounter = newSkolem, restText = blocks }
+        
+      -- if this block made the thesis unmotivated, we must discharge a composite
+      -- (and possibly quite difficult) prove task
+      let finalThesis = Imp (Block.compose $ TextBlock newBlock : newBlocks) (Context.formula thesis)
+
+      -- notice that the following is only really executed if 
+      -- motivated && not newMotivated == True
+      verifyProof state {
+        thesisMotivated = motivated && not newMotivation,
+        currentThesis = Context.setForm thesis finalThesis, restText = [] }
+      -- put everything together
+      let checkMark = if Block.isTopLevel block then id else TextChecked
+      return (TextBlock newBlock : newBlocks, checkMark (TextBlock markedBlock) : markedBlocks)
 
 -- if there is no text to be read in a branch it means we must call the prover
 verificationLoop st@VS {
@@ -192,7 +196,7 @@ verificationLoop st@VS {
   currentThesis   = thesis,
   currentContext  = context,
   restText        = [] }
-  = local (const st) $ whenInstruction Instr.Prove True prove >> return []
+  = local (const st) $ whenInstruction Instr.Prove True prove >> return ([], [])
   where
     prove =
       if hasDEC (Context.formula thesis) --computational reasoning
@@ -201,7 +205,7 @@ verificationLoop st@VS {
             block = Context.head thesis ; text = Block.text block
         incrementIntCounter Equations ; whenInstruction Instr.Printgoal True logAction
         timer SimplifyTime (equalityReasoning thesis) <|> (
-          reasonLog Message.WARNING (Block.position block) "equation failed" >>
+          reasonLog Message.WARNING (Block.position block) "equation failed" >> setFailed >>
           guardInstruction Instr.Skipfail False >> incrementIntCounter FailedEquations)
       else do
         let logAction = reasonLog Message.WRITELN (Block.position block) $ "goal: " ++ text
@@ -209,34 +213,51 @@ verificationLoop st@VS {
         unless (isTop . Context.formula $ thesis) $ incrementIntCounter Goals
         whenInstruction Instr.Printgoal True logAction
         proveThesis <|> (
-          reasonLog Message.WARNING (Block.position block) "goal failed" >>
-          guardInstruction Instr.Skipfail False >>
+          reasonLog Message.WARNING (Block.position block) "goal failed" >> setFailed >>
+          --guardInstruction Instr.Skipfail False >>
           incrementIntCounter FailedGoals)
+
+verificationLoop state@ VS {restText = TextChecked txt : rest} =
+  let newTxt = Block.setChildren txt (Block.children txt ++ newInstructions)
+      newInstructions = [NonTextStoredInstr $
+        Instr.Bool Instr.Prove False :
+        Instr.Bool Instr.Printgoal False :
+        Instr.Bool Instr.Printreason False :
+        Instr.Bool Instr.Printsection False :
+        Instr.Bool Instr.Printcheck False :
+        Instr.Bool Instr.Printprover False :
+        Instr.Bool Instr.Printunfold False :
+        Instr.Bool Instr.Printfulltask False :
+        instructions state]
+  in  verificationLoop state {restText = newTxt : rest}
+
+verificationLoop state@ VS {restText = NonTextStoredInstr ins : rest} =
+  verificationLoop state {restText = rest, instructions = ins}
 
 -- process instructions. we distinguish between those that influence the
 -- verification state and those that influence (at most) the global state
-verificationLoop state@VS {restText = TextInstr _ instr : blocks} =
-  local (const state {restText = blocks}) $ procTextInstr instr
+verificationLoop state@VS {restText = i@(TextInstr _ instr) : blocks} =
+  fmap (\(as,bs) -> (as, i:bs)) $ local (const state {restText = blocks}) $ procTextInstr instr
 
 {- process a command to drop an instruction, i.e. [/prove], [/ontored], etc.-}
-verificationLoop state@VS {restText = (TextDrop _ instr : blocks)} =
-  local (const state {restText = blocks}) $ procTextDrop instr
+verificationLoop state@VS {restText = (i@(TextDrop _ instr) : blocks)} =
+  fmap (\(as,bs) -> (as, i:bs)) $ local (const state {restText = blocks}) $ procTextDrop instr
 
-verificationLoop st@VS {restText = (TextSynonym{} : blocks)} =
-  verificationLoop st {restText = blocks}
-verificationLoop st@VS {restText = (TextPretyping{} : blocks)} =
-  verificationLoop st {restText = blocks}
-verificationLoop st@VS {restText = (TextMacro{} : blocks)} =
-  verificationLoop st {restText = blocks}
+verificationLoop st@VS {restText = (i@TextSynonym{} : blocks)} =
+  fmap (\(as,bs) -> (as, i:bs)) $ verificationLoop st {restText = blocks}
+verificationLoop st@VS {restText = (i@TextPretyping{} : blocks)} =
+  fmap (\(as,bs) -> (as, i:bs)) $ verificationLoop st {restText = blocks}
+verificationLoop st@VS {restText = (i@TextMacro{} : blocks)} =
+  fmap (\(as,bs) -> (as, i:bs)) $ verificationLoop st {restText = blocks}
 
-verificationLoop VS {restText = []} = return []
+verificationLoop VS {restText = []} = return ([], [])
 
 {- some automated processing steps: add induction hypothesis and case hypothesis
 at the right point in the context; extract rewriteRules from them and further
 refine the currentThesis. Then move on with the verification loop.
 If neither inductive nor case hypothesis is present this is the same as
 verificationLoop state -}
-verifyProof :: VState -> VM [Text]
+verifyProof :: VState -> VM ([Text], [Text])
 verifyProof state@VS {
   rewriteRules   = rules,
   currentThesis  = thesis,
@@ -292,7 +313,7 @@ deleteInductionOrCase = dive id
 -- Instruction handling
 
 {- execute an instruction or add an instruction parameter to the state -}
-procTextInstr :: Instr -> VM [Text]
+procTextInstr :: Instr -> VM ([Text], [Text])
 procTextInstr = flip proc $ ask >>= verificationLoop
   where
     proc (Instr.Command Instr.RULES) = (>>) $ do
@@ -338,5 +359,5 @@ procTextInstr = flip proc $ ask >>= verificationLoop
       | otherwise = addInstruction i
 
 {- drop an instruction from the state -}
-procTextDrop :: Instr.Drop -> VM [Text]
+procTextDrop :: Instr.Drop -> VM ([Text], [Text])
 procTextDrop = flip dropInstruction $ ask >>= verificationLoop

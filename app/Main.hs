@@ -66,7 +66,7 @@ main  = do
     putStr (GetOpt.usageInfo usageHeader options)
   else -- main body with explicit error handling, notably for PIDE
     Exception.catch
-      (if Instr.askBool Instr.Server True opts0 then
+      (if Instr.askBool Instr.Server False opts0 then
         Server.server (Server.publish_stdout "Naproche-SAD") (serverConnection oldTextRef args0)
       else do Message.consoleThread; mainBody oldTextRef (opts0, text0))
       (\err -> do
@@ -79,14 +79,16 @@ mainBody :: IORef Text -> ([Instr], [Text]) -> IO ()
 mainBody oldTextRef (opts0, text0) = do
   startTime <- getCurrentTime
 
+  oldText <- readIORef oldTextRef
   -- parse input text
-  text <- fmap TextRoot $ readText (Instr.askString Instr.Library "." opts0) text0
+  text1 <- fmap TextRoot $ readText (Instr.askString Instr.Library "." opts0) text0
+
 
   -- if -T / --onlytranslate is passed as an option, only print the translated text
   if Instr.askBool Instr.OnlyTranslate False opts0 then
     do
       let timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)
-          TextRoot txts = text
+          TextRoot txts = text1
       mapM_ (\case TextBlock bl -> print bl; _ -> return ()) txts
 
       -- print statistics
@@ -97,11 +99,17 @@ mainBody oldTextRef (opts0, text0) = do
       -- read provers.dat
       provers <- readProverDatabase (Instr.askString Instr.Provers "provers.dat" opts0)
       -- initialize reasoner state
-      reasonerState <- newIORef (RState [] )
+      reasonerState <- newIORef (RState [] False)
+      
       proveStart <- getCurrentTime
 
-      case findParseError text of
-        Nothing -> verify (Instr.askString Instr.File "" opts0) provers reasonerState text
+      case findParseError text1 of
+        Nothing -> do 
+          let text = textToCheck oldText text1
+          newText <- verify (Instr.askString Instr.File "" opts0) provers reasonerState text
+          case newText of
+            Just txt -> writeIORef oldTextRef txt
+            _ -> return ()
         Just err -> Message.errorParser (errorPos err) (show err)
 
       finishTime <- getCurrentTime
@@ -199,7 +207,6 @@ readArgs args = do
 
   let revInitialOpts = map snd $ reverse initialOpts
   let initialText = map (uncurry TextInstr) initialOpts
-
   return (revInitialOpts, initialText)
 
 wellformed (Instr.Bool _ v) = v == v

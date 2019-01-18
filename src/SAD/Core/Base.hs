@@ -19,6 +19,8 @@ module SAD.Core.Base (
   initialDefinitions,
   defForm, getDef,
 
+  setFailed, checkFailed,
+
   VState (..), VM,
 
   Counter (..), TimeCounter (..), IntCounter (..),
@@ -65,7 +67,8 @@ import qualified SAD.Core.Message as Message
 -- Reasoner state
 
 data RState = RState {
-  counters     :: [Counter]
+  counters     :: [Counter],
+  failed :: Bool
   }
 
 -- All of these counters are for gathering statistics to print out later
@@ -193,6 +196,13 @@ guardNotInstruction instr _default =
   askInstructionBool instr _default >>= guard . not
 whenInstruction instr _default action =
   askInstructionBool instr _default >>= \b -> when b action
+
+-- explicit failure management
+
+setFailed = updateRS (\st -> st {failed = True})
+checkFailed alt1 alt2 = do
+  failed <- askRS failed
+  if failed then alt1 else alt2 
 
 -- Counter management
 

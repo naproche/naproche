@@ -276,4 +276,5 @@ syntacticEquality = dive
     dive Bot Bot = True
     dive ThisT ThisT = True
     dive t1@Trm{} t2@Trm{} = twins t1 t2
+    dive Var {trName = v1} Var {trName = v2} = v1 == v2
     dive _ _ = False

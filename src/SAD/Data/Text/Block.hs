@@ -14,7 +14,9 @@ module SAD.Data.Text.Block (
   isTopLevel,
   file,
   textToCheck,
-  findParseError
+  findParseError,
+  isChecked,
+  children, setChildren
   )where
 
 import SAD.Data.Formula
@@ -33,6 +35,7 @@ import Control.Monad
 data Text =
     TextBlock Block
   | TextInstr Instr.Pos Instr
+  | NonTextStoredInstr [Instr] -- a way to restore instructions during verification
   | TextDrop Instr.Pos Instr.Drop
   | TextSynonym SourcePos
   | TextPretyping SourcePos [VarName]
@@ -79,6 +82,7 @@ compose = foldr comp Top
       | needsProof block || kind block == Posit =
           foldr zExi (blAnd (formulate block) f) $ map Decl.name dvs
       | otherwise = foldr zAll (blImp (formulate block) f) $ map Decl.name dvs
+    comp (TextChecked txt) f = comp txt f
     comp _ fb = fb
 
 
@@ -115,6 +119,7 @@ instance Show Text where
   showsPrec 0 (TextInstr _ instr) = shows instr . showChar '\n'
   showsPrec 0 (TextDrop _ instr) = shows instr . showChar '\n'
   showsPrec 0 (TextError err) = shows err . showChar '\n'
+  showsPrec 0 (TextRoot txt ) = shows txt
   showsPrec _ _ = id
 
 instance Show Block where
@@ -188,7 +193,6 @@ textCompare (TextRoot _) (TextRoot _) = True
 textCompare (TextBlock bl1) (TextBlock bl2) =
   syntacticEquality (formula bl1) (formula bl2)
 textCompare _ _ = False
-
 
 -- parse correctness of a structure tree
 
