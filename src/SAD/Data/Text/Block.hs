@@ -191,7 +191,7 @@ textCompare (TextError _) (TextError _) = True
 textCompare (TextChecked txt) text = textCompare txt text
 textCompare (TextRoot _) (TextRoot _) = True
 textCompare (TextBlock bl1) (TextBlock bl2) =
-  syntacticEquality (formula bl1) (formula bl2)
+  syntacticEquality (formulate bl1) (formulate bl2)
 textCompare _ _ = False
 
 -- parse correctness of a structure tree
