@@ -99,7 +99,7 @@ choices = Tag ChoiceTask . dive
       (dec $ inst x $ f `blImp` dive g)
     dive (All x f) = dBlAll x $ dive f
     dive (Imp f g) = f `blImp` dive g
-    dive (Exi x f) = dBlExi x $ dive $ inst (Decl.name x) f
+    dive (Exi x f) = dBlExi x $ dive f
     dive (And f g) = dive f `blAnd` dive g
     dive f = f
 
@@ -107,7 +107,7 @@ choices = Tag ChoiceTask . dive
 existence :: Formula -> Formula
 existence  = Tag ExistenceTask . dive 0
   where
-    dive n (All x f) = let nn = 'c':show n in blAll nn $ dive (n + 1)$ inst nn f
+    dive n (All x f) = let nn = 'c':show n in zAll nn $ dive (n + 1)$ inst nn f
     dive n (Imp f g) = blImp f $ dive n g
     dive _ f = let y = zVar "y" in zExi "y" $ devReplace y $ describe_exi f
 
@@ -115,14 +115,14 @@ existence  = Tag ExistenceTask . dive 0
 
 {- extract uniqueness task -}
 uniqueness :: Formula -> Formula
-uniqueness = dive
+uniqueness = Tag UniquenessTask . dive
   where
     dive (All x f) = All x $ dive f
     dive (Imp f g) = f `blImp` dive g
     dive f =
       let y = zVar "y"; cy = zVar "cy"; df = describe f
           yf = devReplace y df; cyf = devReplace cy df
-      in  Imp (yf `And` cyf) $ zEqu y cy
+      in  zAll "y" $ zAll "cy" $ inc $ inc $ Imp (yf `And` cyf) $ zEqu y cy
 
 {- output a description of a function in the form 
   (condition_1 /\ evaluation_1) \/ ... \/ (condition_n /\ evaluation_n)
