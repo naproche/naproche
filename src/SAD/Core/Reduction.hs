@@ -24,28 +24,24 @@ import Control.Monad.Trans.Class
 import Control.Monad.State
 import Control.Monad.Trans.Maybe
 
-import Debug.Trace
+{- the names used in this implementation direclty correspond to the concepts
+occuring in the description and correctness proof of the algorithm. -}
 
-
-{- some notes :
-
-      * We are only interested in atomic positions, therefore a position here only records
-        the path we take at a binary operator. Unary operators (Not, All, Exi) are not reflected
-        in the position.
-
--}
 type Position = [Int]
-
+{- We are only interested in atomic positions, therefore a position here only records
+the path we take at a binary operator. Unary operators (Not, All, Exi) are not reflected
+in the position.-}
 
 ontoReduce dfs skolem f =
   let (conjuncts, nsk) = ontoPrep skolem f; inter = map (boolSimp . ontoRed dfs) conjuncts; red = uClose [] $ foldr blAnd Top inter
   in (red, nsk)
 
-{- takes a list of formulas that represents a disjuction of formulas. If a
-disjunct is a literal, we check whether it is eliminable for the rest. All
-eliminable literals are deleted and the universal closure is formed. -}
+{- Ontologically reduces a given formula f. Notice that by virtue of preparation with
+SAD.Prove.Normalize.ontoPrep, we may assume the following for the given formula:
+  * And, Or, Not, Trm and Var are the only formula constructors appearing in f (in particular no quantifiers can appear)
+  * negation only appears on the literal level-}
 ontoRed :: Definitions -> Formula -> Formula
-ontoRed dfs f = {-trace ("\nreducing " ++ show f) $-} dive [] f
+ontoRed dfs f = dive [] f
   where
     dive position (And g h) =
       And (dive (0:position) g) (dive (1:position) h)
@@ -61,9 +57,8 @@ ontoRed dfs f = {-trace ("\nreducing " ++ show f) $-} dive [] f
 
     isEliminableAt t position =
       let relevantPositions = filter (/= position) atomicPositions
-          res = all (\g -> t `isEliminableFor` g || g `isEliminableFor` t) $
+      in  all (\g -> t `isEliminableFor` g || g `isEliminableFor` t) $
             map (dereference f) relevantPositions
-      in  {-trace ("check eliminability of " ++ show t ++ " yielded " ++ show res)-} res
 
     isEliminableFor g h =
       let gFreeVars = freeVars g
@@ -75,23 +70,19 @@ ontoRed dfs f = {-trace ("\nreducing " ++ show f) $-} dive [] f
             then True
             else h `satisfiesDisjointnessConditionFor` g &&
                  all (\pos -> isCoveredByIn pos g h) relevantPositions
-          res = thisParticleCondition && subParticleCondition
-      in  {-trace ("check eliminability of " ++ show g ++ " for " ++ show h ++ " yielded " ++ show res)-} res
+      in  thisParticleCondition && subParticleCondition
 
     isCoveredByIn position g h = -- disjointness condition is already checked above
       let generalPosGuards = generalPositionGuards position h
           allPosGuards = allPositionGuards position h
           differentFromG = filter (not . hasSameSyntacticStructureAs g) allPosGuards
-          res1 = g `isElemOf` generalPosGuards
-          res2 = all (\g' -> g `isEliminableFor` g' || g' `isEliminableFor` g) differentFromG
-          res  = res1 && res2
-      in {-trace ("check " ++ show position ++ " is covered by " ++ show g ++ " in " ++ show h ++ " is " ++ show res ++ "\n    " ++ show g ++ " is guard " ++ show res1 ++ "; guards are " ++ show generalPosGuards)-} res
+      in  g `isElemOf` generalPosGuards &&
+            all (\g' -> g `isEliminableFor` g' || g' `isEliminableFor` g) differentFromG
 
     satisfiesDisjointnessConditionFor h g =
       let relevantGuards = filter (hasSameSyntacticStructureAs g) $ generalGuards h
           relevantSets = map freeVars relevantGuards
-          res = checkDisjointness relevantSets
-      in  {-trace ("disjointness condition for " ++ show g ++ " is satisfied by " ++ show h ++ " is " ++ show res)-} res
+      in  checkDisjointness relevantSets
       where
         checkDisjointness [] = True
         checkDisjointness (g:rst) =
@@ -121,7 +112,7 @@ ontoRed dfs f = {-trace ("\nreducing " ++ show f) $-} dive [] f
       | otherwise =
           let def = fromJust $ IM.lookup (trId h) dfs
               posName = trName $ ((trArgs $ Definition.term def)!!pos)
-          in  {-trace ("posName of " ++ show pos ++ " is " ++ show posName) $-} filter (Set.member posName . freeVars) $ Definition.guards def
+          in  filter (Set.member posName . freeVars) $ Definition.guards def
 
     generalPositionGuards pos h
       | isSkolem h = []
@@ -130,12 +121,12 @@ ontoRed dfs f = {-trace ("\nreducing " ++ show f) $-} dive [] f
               positionGuards = allPositionGuards pos h
               sb = fromJust $ match (Definition.term def) h
               zipped = zip (map sb positionGuards) positionGuards
-          in  {-trace ("allPosguards for " ++ show h ++ " at " ++ show pos ++ " are " ++ show positionGuards) $-} map fst $ filter (uncurry hasSameSyntacticStructureAs) zipped
-
-  
+          in  map fst $ filter (uncurry hasSameSyntacticStructureAs) zipped
 
 
+--- auxiliary functions
 
+atomicPos :: Formula -> [Position]
 atomicPos = map reverse . dive []
   where
     dive pos (And f g) = dive (0:pos) f ++ dive (1:pos) g
@@ -173,7 +164,8 @@ dereference = dive
     binary (0:pos) f g = dive f pos
     binary (1:pos) f g = dive g pos
 
-subParticles f = filter isTrm . arguments $ f
+subParticles :: Formula -> [Formula]
+subParticles = filter isTrm . arguments
 
 
 freeVars :: Formula -> Set String
