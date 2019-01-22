@@ -75,18 +75,21 @@ verificationLoop state@VS {
   evaluations     = evaluations }
     = local (const state) $ do
 
+  alreadyChecked <- askRS alreadyChecked
+
   -- statistics and user communication
-  incrementIntCounter Sections
+  unless alreadyChecked $ incrementIntCounter Sections
   whenInstruction Instr.Printsection False $ justIO $
     Message.outputForTheL Message.WRITELN (Block.position block) $
     Message.trimText (Block.showForm 0 block "")
   let newBranch = block : branch; contextBlock = Context f newBranch [] f
 
-
   fortifiedFormula <-
     if   Block.isTopLevel block
     then return f
-    else fillDef contextBlock <|> (setFailed >> return f) -- check definitions and fortify terms
+    else fillDef alreadyChecked contextBlock <|> (setFailed >> return f) -- check definitions and fortify terms
+  
+  unsetChecked
 
   checkFailed (return (restText state, restText state)) $ do
 
@@ -229,7 +232,7 @@ verificationLoop state@ VS {restText = TextChecked txt : rest} =
         Instr.Bool Instr.Printunfold False :
         Instr.Bool Instr.Printfulltask False :
         instructions state]
-  in  verificationLoop state {restText = newTxt : rest}
+  in  setChecked >> verificationLoop state {restText = newTxt : rest}
 
 verificationLoop state@ VS {restText = NonTextStoredInstr ins : rest} =
   verificationLoop state {restText = rest, instructions = ins}

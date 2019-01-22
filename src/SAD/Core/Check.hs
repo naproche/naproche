@@ -30,10 +30,9 @@ import SAD.Core.Reduction
 import SAD.Core.ProofTask
 import qualified SAD.Data.Structures.DisTree as DT
 
-
 {- check definitions and fortify terms with evidences in a formula -}
-fillDef :: Context -> VM Formula
-fillDef context = fill True False [] (Just True) 0 $ Context.formula context
+fillDef :: Bool -> Context -> VM Formula
+fillDef alreadyChecked context = fill True False [] (Just True) 0 $ Context.formula context
   where
     fill isPredicat isNewWord localContext sign n (Tag tag f)
       | tag == HeadTerm = -- newly introduced symbol
@@ -48,14 +47,15 @@ fillDef context = fill True False [] (Just True) 0 $ Context.formula context
       newContext      <- cnRaise context localContext
       collectInfo userInfoSetting v `withContext` newContext -- fortify the term
     fill isPredicat isNewWord localContext sign n 
-         term@Trm {trName = t, trArgs = tArgs, trInfo = infos, trId = tId} = do
-      userInfoSetting <- askInstructionBool Instr.Info True
-      fortifiedArgs   <- mapM (fill False isNewWord localContext sign n) tArgs
-      newContext      <- cnRaise context localContext
-      fortifiedTerm   <- setDef isNewWord context term {trArgs = fortifiedArgs} 
-        `withContext` newContext
-      collectInfo (not isPredicat && userInfoSetting) fortifiedTerm 
-        `withContext` newContext        -- fortify term
+         term@Trm {trName = t, trArgs = tArgs, trInfo = infos, trId = tId} =
+      if alreadyChecked then return term else do
+            userInfoSetting <- askInstructionBool Instr.Info True
+            fortifiedArgs   <- mapM (fill False isNewWord localContext sign n) tArgs
+            newContext      <- cnRaise context localContext
+            fortifiedTerm   <- setDef isNewWord context term {trArgs = fortifiedArgs} 
+              `withContext` newContext
+            collectInfo (not isPredicat && userInfoSetting) fortifiedTerm 
+              `withContext` newContext        -- fortify term
     fill isPredicat isNewWord localContext sign n f = -- round throuth formula
       roundFM 'w' (fill isPredicat isNewWord) localContext sign n f 
 

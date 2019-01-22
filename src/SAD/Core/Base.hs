@@ -20,6 +20,7 @@ module SAD.Core.Base (
   defForm, getDef,
 
   setFailed, checkFailed,
+  unsetChecked, setChecked,
 
   VState (..), VM,
 
@@ -68,7 +69,8 @@ import qualified SAD.Core.Message as Message
 
 data RState = RState {
   counters     :: [Counter],
-  failed :: Bool
+  failed :: Bool,
+  alreadyChecked :: Bool
   }
 
 -- All of these counters are for gathering statistics to print out later
@@ -203,6 +205,11 @@ setFailed = updateRS (\st -> st {failed = True})
 checkFailed alt1 alt2 = do
   failed <- askRS failed
   if failed then alt1 else alt2 
+
+-- local checking support
+
+setChecked = updateRS (\st -> st {alreadyChecked = True})
+unsetChecked = updateRS (\st -> st {alreadyChecked = False})
 
 -- Counter management
 

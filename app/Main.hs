@@ -99,7 +99,7 @@ mainBody oldTextRef (opts0, text0) = do
       -- read provers.dat
       provers <- readProverDatabase (Instr.askString Instr.Provers "provers.dat" opts0)
       -- initialize reasoner state
-      reasonerState <- newIORef (RState [] False)
+      reasonerState <- newIORef (RState [] False False)
       
       proveStart <- getCurrentTime
 
