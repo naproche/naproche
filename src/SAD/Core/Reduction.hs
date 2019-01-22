@@ -4,16 +4,19 @@ Authors: Steffen Frerix (2017 - 2018)
 Ontological reduction.
 -}
 
-module SAD.Core.Reduction where
+module SAD.Core.Reduction (ontoReduce) where
 
 import SAD.Data.Formula
-import SAD.Data.Definition (DefEntry(DE))
+import SAD.Data.Definition (DefEntry(DE), Definitions)
 import qualified SAD.Data.Definition as Definition
 import SAD.Core.Base
 import SAD.Prove.Normalize
 
+import Data.IntMap.Strict (IntMap)
 import qualified Data.IntMap.Strict as IM
+import Data.Set (Set)
 import qualified Data.Set as Set
+import Data.Map (Map)
 import qualified Data.Map as Map
 import Data.List
 import Data.Maybe
@@ -23,103 +26,186 @@ import Control.Monad.Trans.Maybe
 
 import Debug.Trace
 
-{- ontoreduce and form universal closure-}
-onto_reduce :: IM.IntMap DefEntry -> [Formula] -> Formula
-onto_reduce _ [] = Top
-onto_reduce dfs fs =
-  let nds = filter (\g -> not $ elim 0 dfs g fs) fs
-  in  case nds of
-        [] -> Top
-        [f] -> uClose [] f
-        _   -> uClose [] $ foldr1 And (map ltNeg $ init nds) `Imp` last nds
+
+{- some notes :
+
+      * We are only interested in atomic positions, therefore a position here only records
+        the path we take at a binary operator. Unary operators (Not, All, Exi) are not reflected
+        in the position.
+
+-}
+type Position = [Int]
 
 
-{-tests eliminability-}
-elim :: Int ->  IM.IntMap DefEntry -> Formula -> [Formula] -> Bool
-elim n dfs f fs = not (null crits) && any (\g -> elim_f n dfs f g) crits && all (\g -> elim_f n dfs f g || elim_f n dfs g f) crits
+ontoReduce dfs skolem f =
+  let (conjuncts, nsk) = ontoPrep skolem f; inter = map (boolSimp . ontoRed dfs) conjuncts; red = uClose [] $ foldr blAnd Top inter
+  in (red, nsk)
+
+{- takes a list of formulas that represents a disjuction of formulas. If a
+disjunct is a literal, we check whether it is eliminable for the rest. All
+eliminable literals are deleted and the universal closure is formed. -}
+ontoRed :: Definitions -> Formula -> Formula
+ontoRed dfs f = {-trace ("\nreducing " ++ show f) $-} dive [] f
   where
-    crits = let fr_vr = free_st f in filter (\g -> not (ltTwins f g) && (not . null . Set.intersection fr_vr . free_st $ g)) fs
-    -- crits are the formulas in fs that are critical for f
+    dive position (And g h) =
+      And (dive (0:position) g) (dive (1:position) h)
+    dive position (Or g h) =
+      Or (dive (0:position) g) (dive (1:position) h)
+    dive position (Not t@Trm{}) = Not $ tryEliminating t position
+    dive _ f = f
+    
+    tryEliminating t position
+      | t `isEliminableAt` reverse position = Top
+      | otherwise = t
 
-{-tests eliminability for a formula-}
-elim_f :: Int -> IM.IntMap DefEntry -> Formula -> Formula -> Bool
-elim_f n dfs f g = dive (free_st f) n g -- dive moves through the formula according to the calculus
+
+    isEliminableAt t position =
+      let relevantPositions = filter (/= position) atomicPositions
+          res = all (\g -> t `isEliminableFor` g || g `isEliminableFor` t) $
+            map (dereference f) relevantPositions
+      in  {-trace ("check eliminability of " ++ show t ++ " yielded " ++ show res)-} res
+
+    isEliminableFor g h =
+      let gFreeVars = freeVars g
+          relevantPositions = map fst $ filter (\(pos, name) -> Set.member name gFreeVars) $
+            directArgumentPositions h
+          subParticleCondition = all (\k -> isEliminableFor g k) $ subParticles h
+          thisParticleCondition =
+            if   null relevantPositions
+            then True
+            else h `satisfiesDisjointnessConditionFor` g &&
+                 all (\pos -> isCoveredByIn pos g h) relevantPositions
+          res = thisParticleCondition && subParticleCondition
+      in  {-trace ("check eliminability of " ++ show g ++ " for " ++ show h ++ " yielded " ++ show res)-} res
+
+    isCoveredByIn position g h = -- disjointness condition is already checked above
+      let generalPosGuards = generalPositionGuards position h
+          allPosGuards = allPositionGuards position h
+          differentFromG = filter (not . hasSameSyntacticStructureAs g) allPosGuards
+          res1 = g `isElemOf` generalPosGuards
+          res2 = all (\g' -> g `isEliminableFor` g' || g' `isEliminableFor` g) differentFromG
+          res  = res1 && res2
+      in {-trace ("check " ++ show position ++ " is covered by " ++ show g ++ " in " ++ show h ++ " is " ++ show res ++ "\n    " ++ show g ++ " is guard " ++ show res1 ++ "; guards are " ++ show generalPosGuards)-} res
+
+    satisfiesDisjointnessConditionFor h g =
+      let relevantGuards = filter (hasSameSyntacticStructureAs g) $ generalGuards h
+          relevantSets = map freeVars relevantGuards
+          res = checkDisjointness relevantSets
+      in  {-trace ("disjointness condition for " ++ show g ++ " is satisfied by " ++ show h ++ " is " ++ show res)-} res
+      where
+        checkDisjointness [] = True
+        checkDisjointness (g:rst) =
+          all (Set.null . Set.intersection g) rst && checkDisjointness rst
+
+
+    atomicPositions = atomicPos f
+
+    --- extracting guards
+
+    allGuards h
+      | isSkolem h = []
+      | otherwise =
+          let def = fromJust $ IM.lookup (trId h) dfs
+              sb  = fromJust $ match (Definition.term def) h
+          in  map sb $ Definition.guards def
+    
+    generalGuards h
+      | isSkolem h = []
+      | otherwise =
+          let def = fromJust $ IM.lookup (trId h) dfs
+              zipped = zip (allGuards h) (Definition.guards def)
+          in  map fst $ filter (uncurry hasSameSyntacticStructureAs) zipped
+
+    allPositionGuards pos h
+      | isSkolem h = []
+      | otherwise =
+          let def = fromJust $ IM.lookup (trId h) dfs
+              posName = trName $ ((trArgs $ Definition.term def)!!pos)
+          in  {-trace ("posName of " ++ show pos ++ " is " ++ show posName) $-} filter (Set.member posName . freeVars) $ Definition.guards def
+
+    generalPositionGuards pos h
+      | isSkolem h = []
+      | otherwise =
+          let def = fromJust $ IM.lookup (trId h) dfs
+              positionGuards = allPositionGuards pos h
+              sb = fromJust $ match (Definition.term def) h
+              zipped = zip (map sb positionGuards) positionGuards
+          in  {-trace ("allPosguards for " ++ show h ++ " at " ++ show pos ++ " are " ++ show positionGuards) $-} map fst $ filter (uncurry hasSameSyntacticStructureAs) zipped
+
+  
+
+
+
+atomicPos = map reverse . dive []
   where
-    dive vs n (And g h) = elim n dfs f [g,h]
-    dive vs n (Or  g h) = elim n dfs f [g,h]
-    dive vs n (Imp g h) = elim n dfs f [g,h]
-    dive vs n (Not g) = dive vs n g
-    dive vs n (All _ g) = dive vs (succ n) $ inst (show n) g
-    dive vs n (Exi _ g) = dive vs (succ n) $ inst (show n) g
-    dive vs n (Iff g h) = elim n dfs f [g,h]
-    dive vs n (Tag _ g) = dive vs n g
-    dive vs n t@Trm {trId = m, trArgs = ts}
-      = let ft = free_st t in
-         if Set.null $ Set.intersection vs ft then False -- False if f and t share no variables
-                                              else dive_t vs t -- else check if f is eliminable for t
+    dive pos (And f g) = dive (0:pos) f ++ dive (1:pos) g
+    dive pos (Or f g) = dive (0:pos) f ++ dive (1:pos) g
+    dive pos (Iff f g) = dive (0:pos) f ++ dive (1:pos) g
+    dive pos (Imp f g) = dive (0:pos) f ++ dive (1:pos) g
+    dive pos Trm{} = [pos]
+    dive pos Top = [pos]
+    dive pos Bot = [pos]
+    dive pos f = foldF (dive pos) f
 
-
-    dive_t _ v@Var{} = True
-    dive_t _ Trm {trName = 't':'s':'k':_} = False -- nothing is eliminable for a skolem constant
-    dive_t vs t@Trm {trId = m, trArgs = ts} =
-      (if not . Set.null $ Set.intersection vs $ free_Top t then
-      let df = fromJust $ IM.lookup m dfs; sb = fromJust $ match (Definition.term df) t
-       in atom_elim sb (invImage sb (Definition.term df) vs) (Definition.typeLikes df) f vs
-      else True) && allF (dive_t vs) t
-
-{-form the inverse image of the variables of f under the substitution sb -}
-invImage :: (Formula -> Formula) -> Formula -> Set.Set String -> Set.Set String
-invImage sb f ft = Set.fromList [ x | x <- allFree [] f, trName (sb (zVar x)) `Set.member` ft]
-
-{-tests eliminability for an atomic formula-}
-atom_elim :: (Formula -> Formula) -> Set.Set String -> [[Formula]] -> Formula -> Set.Set String -> Bool
-atom_elim sb inv tp f vs = case find (any (reveal_rn sb (albet $ Not f))) tp of --find suitable domain conditions of the atom
-  Nothing -> False -- if nothing is suitable then the formula is not eliminable
-  Just dc -> (all (covered dc) inv) &&  all (reveal (albet $ Not f)) (map sb $ covering inv dc) -- otherwise check the covering condition
+directArgumentPositions :: Formula -> [(Int, String)]
+directArgumentPositions f = dive 0 . arguments $ f
   where
-    covered dc v = let dc_vars = map free_st dc in any (Set.member v) dc_vars
-    covering inv = filter $ any (`Set.member` inv) . free_st
-
-{-tests if a domain condition of a symbol is type like-}
-type_like :: IM.IntMap DefEntry -> Formula -> [Formula] -> Bool
-type_like dfs f = all (\g -> if Set.null $ Set.intersection (free_st f) (free_st g) then True else twins f g || elim_f 0 dfs (Not f) g || elim_f 0 dfs (Not g) f)
-
-{-we abstract over the heuristic used to reveal equivalence  of formulas-}
-reveal = twins -- since we only concern ourselves with literals, we use syntactic equality
-
-data RvState = RV {frsh :: Int, assgn :: Map.Map String String, alrdyassgn :: Set.Set String}
-
-{- checks whether sb is a renaming from g to f and if sb g is syntactically equal to f after alpha-beta normalization -}
-reveal_rn sb f g = isJust $ fst $ runState (runMaybeT $ rv_al f g) $ RV 0 Map.empty Set.empty
+    dive _ [] = []
+    dive pos (x:xs) = case x of
+      Var{trName = name} -> (pos, name) : dive (succ pos) xs
+      _ -> dive (succ pos) xs
+  
+dereference :: Formula -> Position -> Formula
+dereference = dive
   where
-    rv_al f g = rv (albet f) (albet g)
-    rv (And f1 g1) (And f2 g2) = rv_al f1 f2 >> rv_al g1 g2;
-    rv (Or  f1 g1) (Or  f2 g2) = rv_al f1 f2 >> rv_al g1 g2
-    rv (All _ f)   (All _ g)   = do v <- freshV; rv_al (inst v f) (inst v g)
-    rv (Exi _ f)   (Exi _ g)   = do v <- freshV; rv_al (inst v f) (inst v g)
+    dive (And f g) pos = binary pos f g
+    dive (Imp f g) pos = binary pos f g
+    dive (Iff f g) pos = binary pos f g
+    dive (Or f g) pos = binary pos f g
+    dive t@Trm{} [] = t
+    dive (All _ f) pos = dive f pos
+    dive (Exi _ f) pos = dive f pos
+    dive (Not f) pos = dive f pos
+    dive (Tag _ f) pos = dive f pos
+    dive Top [] = Top
+    dive Bot [] = Bot
 
-    rv Trm {trId = tId1, trArgs = ts1} Trm {trId = tId2, trArgs = ts2}
-      | tId1 == tId2 = mapM_ (\(f,g) -> rv f g) $ zip ts1 ts2
-    rv Var{trName = v} vr@Var {trName = u@('?':_)} | isVar $ sb vr
-      = do mp <- lift $ gets assgn; al <- lift $ gets alrdyassgn
-           case (Map.lookup u mp, Set.member v al) of
-             (Just x, True) -> guard (x == v)
-             (Nothing, False) -> let nu = trName $ sb vr in
-                                  lift $ modify (\st -> st {assgn = Map.insert u nu mp, alrdyassgn = Set.insert nu al }) >> return ()
-             _ -> mzero
-    rv Var{trName = u} Var {trName = v} = guard (u == v)
+    binary (0:pos) f g = dive f pos
+    binary (1:pos) f g = dive g pos
 
-    rv _ _ = mzero
+subParticles f = filter isTrm . arguments $ f
 
-    freshV = do n <- lift $ gets frsh; lift $ modify (\st -> st {frsh = n + 1}); return $ show n
 
-{-collects the variables that occur freely on the top level of the term-}
-free_Top = Set.unions .map free_tp . trArgs
+freeVars :: Formula -> Set String
+freeVars Var {trName = name} = Set.singleton name
+freeVars f = foldF freeVars f
+
+hasSameSyntacticStructureAs :: Formula -> Formula -> Bool
+hasSameSyntacticStructureAs f g = fst $ runState (dive f g) Map.empty
   where
-    free_tp Var{trName = x} = Set.singleton x
-    free_tp _ = Set.empty
+    dive :: Formula -> Formula -> State (Map String String) Bool
+    dive Var{trName = name1} Var{trName = name2} = do
+      value <- gets $ Map.lookup name1
+      case value of
+        Nothing -> do
+          isInjective <- gets $ notElem name2 . map snd . Map.assocs
+          modify (Map.insert name1 name2) >> return isInjective
+        Just name -> if name == name2 then return True else return False
+    dive Trm{trId = id1, trArgs = args1} Trm{trId = id2, trArgs = args2}
+      | id1 == id2 = pairs args1 args2
+    dive _ _ = return False
+    pairs [] [] = return True
+    pairs (arg1:rst1) (arg2:rst2) = liftM2 (&&) (dive arg1 arg2) (pairs rst1 rst2)
 
-{-collects the free variables of a formula and puts them in a set-}
-free_st :: Formula -> Set.Set String
-free_st Var{trName = x} = Set.singleton x
-free_st f = foldF free_st f
+-- special elementhood predicate for guards
+
+isElemOf :: Formula -> [Formula] -> Bool
+isElemOf g [] = False
+isElemOf g (h:hs) = g `twins` h || isElemOf g hs
+
+
+-- generalization of term arguments
+
+arguments :: Formula -> [Formula]
+arguments Top = []; arguments Bot = []
+arguments f = trArgs f 

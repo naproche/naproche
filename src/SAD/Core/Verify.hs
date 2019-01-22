@@ -44,7 +44,6 @@ import qualified SAD.Data.Structures.DisTree as DT
 import SAD.Core.Rewrite
 import SAD.Export.Base (Prover)
 
-
 -- Main verification loop
 
 verify :: String -> [Prover] -> IORef RState -> Text -> IO (Maybe Text)
@@ -130,16 +129,17 @@ verificationLoop state@VS {
     
     checkFailed (return (TextBlock newBlock : blocks, TextBlock markedBlock : blocks)) $ do
 
-      (mesonRules, newSkolem)  <- contras $ deTag formulaImage
+      (mesonRules, intermediateSkolem) <- contras $ deTag formulaImage
       let newDefinitions =
             if   kind == Definition || kind == Signature
             then addDefinition defs formulaImage
             else defs
-          ontoReduction =
-            foldr1 And $ map (onto_reduce newDefinitions) (assm_nf formulaImage)
+          (ontoReduction, newSkolem) =
+            if Block.isTopLevel block
+            then ontoReduce newDefinitions intermediateSkolem formulaImage
+            else (formulaImage, intermediateSkolem)
           newContextBlock =
-            let reduction = if Block.isTopLevel block then ontoReduction else formulaImage
-            in  Context formulaImage newBranch (uncurry (++) mesonRules) reduction
+            Context formulaImage newBranch (uncurry (++) mesonRules) ontoReduction
           newContext = newContextBlock : context
           newRules =
             if   Block.isTopLevel block

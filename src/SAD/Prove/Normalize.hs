@@ -12,7 +12,8 @@ module SAD.Prove.Normalize  (
   dec, inc,
   skolemize,
   transformToCNF,
-  assm_nf
+  assm_nf, impl, ontoPrep,
+  isSkolem
   ) where
 
 import SAD.Data.Formula
@@ -28,7 +29,7 @@ import qualified SAD.Data.Text.Decl as Decl
 -- simplification : push down negation, replace implication and equivalence
 
 simplify :: Formula -> Formula
-simplify = mapF simplify . nbool . pushdown
+simplify f = mapF simplify . nbool . pushdown $ f
   where
     nbool (Or Top _) = Top
     nbool (Or _ Top) = Top
@@ -56,10 +57,12 @@ pushdown (Not (Or  f g)) = And (Not f) (Not g)
 pushdown (Not (Not f))   = pushdown f
 pushdown (Not Bot)       = Top
 pushdown (Not Top)       = Bot
+pushdown (Tag _ f) = pushdown f
+pushdown (Not (Tag _ f)) = pushdown (Not f)
 pushdown (All _ (Imp (Tag HeadTerm Trm {trName = "=", trArgs = [_,t]} ) f)) =
-  pushdown $ dec $ subst t "" $ inst "" f
+  pushdown $ dec $ indSubst t "" $ inst "" f
 pushdown (All _ (Iff (Tag HeadTerm eq@Trm {trName = "=", trArgs = [_,t]}) f)) =
-  And (All (Decl.nonText "") (Or eq (Not f))) $ dec $ subst t "" $ inst "" f
+  And (All (Decl.nonText "") (Or eq (Not f))) $ dec $ indSubst t "" $ inst "" f
 pushdown f = f
 
 
@@ -107,7 +110,13 @@ dec = decrement 0
     decrement n f = mapF (decrement n) f
 
 
-
+indSubst :: Formula -> String -> Formula -> Formula
+indSubst t v = dive t
+  where
+    dive t (All x f) = All x $ dive (inc t) f
+    dive t (Exi x f) = Exi x $ dive (inc t) f
+    dive t Var {trName = u} | u == v = t
+    dive t f = mapF (dive t) f
 
 -- skolemization
 
@@ -240,3 +249,21 @@ pullimp :: Formula -> Formula
 pullimp (Imp f (All x g)) = All x $ pullimp $ Imp (inc f) g
 pullimp (Imp f (Imp g h)) = pullimp $ Imp (And f g) h
 pullimp f = f
+
+ontoPrep :: Int -> Formula -> ([Formula], Int)
+ontoPrep sk f =
+  let (nf, nsk) = skolemize sk $ simplify f
+      specializedF = specCh 'o' 0 . prenex $ nf
+      conjuncts = leftDistribute specializedF
+  in  (conjuncts, nsk)
+  where
+    leftDistribute (Or f g) = map (Or f) $ leftDistribute g
+    leftDistribute (And f g) = leftDistribute f ++ leftDistribute g
+    leftDistribute f = [f]
+
+
+-- testing for skolem function
+
+isSkolem :: Formula -> Bool
+isSkolem Trm {trName = 't':'s':'k':_} = True
+isSkolem _ = False

@@ -49,7 +49,7 @@ addDefinition defs f = add (extractDefinition defs f) defs
 computed afterwards -}
 extractDefinition :: Definitions -> Formula -> DefEntry
 extractDefinition defs =
-  closeEvidence defs . addTypeLikes defs . makeDefinition . dive [] 0
+  closeEvidence defs . makeDefinition . dive [] 0
   where
     dive guards _ (All _ (Iff (Tag HeadTerm Trm {trName = "=", trArgs = [_, t]}) f))
       = (guards, instWith ThisT f, Definition, t) -- function definition
@@ -77,23 +77,6 @@ extractEvidences t =
     if   isNotion t -- notion evidence concerns the first argument.
     then replace ThisT (head $ trArgs t)
     else id
-
-{- computes and adds type-likes for ontological reduction to a definition.-}
-addTypeLikes :: Definitions -> DefEntry -> DefEntry
-addTypeLikes dfs def = def {Definition.typeLikes = tp_likes $ Definition.guards def}
-  where
-    tp_likes fs =
-      rn_classes [] $
-        filter (\g -> isTrm g && no_sklm g && type_like dfs g fs) fs
-
-    rn_classes _ [] = []
-    rn_classes cl (t:ts) = case break (\t' -> trId t' == trId t) ts of
-      (pre,[])      -> (t:cl): rn_classes [] pre
-      (pre,t':post) -> rn_classes (t':cl) (t:pre ++ post)
-
-    no_sklm Var{} = True
-    no_sklm Trm {trName = 't':'s':'k':_} = False
-    no_sklm f = allF no_sklm f
 
 
 {- downward closure for definitional evidence. Example:
