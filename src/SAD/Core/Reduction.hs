@@ -33,8 +33,10 @@ the path we take at a binary operator. Unary operators (Not, All, Exi) are not r
 in the position.-}
 
 ontoReduce dfs skolem f =
-  let (conjuncts, nsk) = ontoPrep skolem f; inter = map (boolSimp . ontoRed dfs) conjuncts; red = uClose [] $ foldr blAnd Top inter
-  in (red, nsk)
+  let (conjuncts, newSkolem) = ontoPrep skolem f
+      reducedConjuncts = map (boolSimp . ontoRed dfs) conjuncts
+      reducedFormula = uClose [] $ foldr blAnd Top reducedConjuncts
+  in (reducedFormula, newSkolem)
 
 {- Ontologically reduces a given formula f. Notice that by virtue of preparation with
 SAD.Prove.Normalize.ontoPrep, we may assume the following for the given formula:
@@ -66,10 +68,9 @@ ontoRed dfs f = dive [] f
             directArgumentPositions h
           subParticleCondition = all (\k -> isEliminableFor g k) $ subParticles h
           thisParticleCondition =
-            if   null relevantPositions
-            then True
-            else h `satisfiesDisjointnessConditionFor` g &&
-                 all (\pos -> isCoveredByIn pos g h) relevantPositions
+            null relevantPositions ||
+            (h `satisfiesDisjointnessConditionFor` g &&
+              all (\pos -> isCoveredByIn pos g h) relevantPositions)
       in  thisParticleCondition && subParticleCondition
 
     isCoveredByIn position g h = -- disjointness condition is already checked above
@@ -139,7 +140,7 @@ atomicPos = map reverse . dive []
     dive pos f = foldF (dive pos) f
 
 directArgumentPositions :: Formula -> [(Int, String)]
-directArgumentPositions f = dive 0 . arguments $ f
+directArgumentPositions = dive 0 . arguments
   where
     dive _ [] = []
     dive pos (x:xs) = case x of
@@ -173,7 +174,7 @@ freeVars Var {trName = name} = Set.singleton name
 freeVars f = foldF freeVars f
 
 hasSameSyntacticStructureAs :: Formula -> Formula -> Bool
-hasSameSyntacticStructureAs f g = fst $ runState (dive f g) Map.empty
+hasSameSyntacticStructureAs f g = evalState (dive f g) Map.empty
   where
     dive :: Formula -> Formula -> State (Map String String) Bool
     dive Var{trName = name1} Var{trName = name2} = do
