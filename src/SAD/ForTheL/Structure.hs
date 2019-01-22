@@ -326,8 +326,7 @@ proofText =
   where
     lowtext =
       narrow assume </>
-      proof (narrow $ affirm </> choose) </>
-      narrow llDefn <|>
+      proof (narrow $ affirm </> choose </> llDefn) </>
       caseDestinction
     qed = label "qed" $ markupTokenOf proofEnd ["qed", "end", "trivial", "obvious"] >> return []
     instruction =
