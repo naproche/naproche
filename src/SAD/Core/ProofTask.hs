@@ -5,7 +5,7 @@ Generation of proof tasks.
 -}
 
 
-module SAD.Core.ProofTask (generateProofTask, getMacro) where
+module SAD.Core.ProofTask (generateProofTask) where
 
 import SAD.Data.Formula
 import SAD.Data.Text.Block (Section(..))
@@ -167,24 +167,3 @@ domainCondition (Tag _ Trm {trName = "=", trArgs = [dm,g]}) = dive
     dive f = mapF dive f
 domainCondition _ =
   error "SAD.Core.ProofTask.domainCondition: misformed argument"
-
-
-
--- notice that this takes place in the FM monad
--- therefore some lifts to get actions from the RM monad
-
-getMacro :: Context -> Tag -> Formula -> VM Formula
-getMacro cx tg = fmap (Tag tg . pd ) . either err return . dive
-  where
-    dive (And f g) = dive f `mplus` dive g
-    dive (Imp f g) = fmap (Imp f) $ dive g
-    dive (Tag tg' f) | tg == tg' = return f
-    dive _ = Left $ "could not unfold macro: " ++ mcr tg
-
-    err s = reasonLog Message.WARNING (Block.position (Context.head cx)) s >> return Top
-
-    pd (Imp f g) = Imp (Tag InductionHypothesis f) g -- auto instantiate quantified variable
-    pd f = f
-
-    mcr DomainTask = "domain"; mcr ExistenceTask = "existence"
-    mcr UniquenessTask = "uniqueness"; mcr ChoiceTask = "choices"

@@ -37,8 +37,6 @@ fillDef alreadyChecked context = fill True False [] (Just True) 0 $ Context.form
     fill isPredicat isNewWord localContext sign n (Tag tag f)
       | tag == HeadTerm = -- newly introduced symbol
           fmap (Tag HeadTerm) $ fill isPredicat True localContext sign n f
-      | fnTag tag  = -- macros in function delcarations
-          fmap Context.formula thesis >>= getMacro context tag
       | otherwise  =  -- ignore every other tag
           fmap (Tag tag) $ fill isPredicat isNewWord localContext sign n f
     fill _ _ _ _ _ t  | isThesis t = thesis >>= return . Context.formula
