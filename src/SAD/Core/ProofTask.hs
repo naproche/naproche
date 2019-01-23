@@ -130,7 +130,7 @@ uniqueness = Tag UniquenessTask . dive
   quantified formula -}
 describe :: Formula -> Formula
 describe (And f g) = describe f `Or` describe g
-describe (Tag Condition (And f g)) = And f $ deExi g
+describe (Tag Condition (Imp f g)) = And f $ deExi g
 describe f = deExi f
 
 deExi (Exi dcl (And f g)) = let x = Decl.name dcl in 
@@ -140,7 +140,7 @@ deExi f = f
 {- like 'describe' above, but choices are assumed instead of stated -}
 describe_exi :: Formula -> Formula
 describe_exi (And f g) = describe_exi f `Or` describe_exi g
-describe_exi (Tag Condition (And f g)) = And f $ impExi g
+describe_exi (Tag Condition (Imp f g)) = Imp f $ impExi g
 describe_exi f = impExi f
 
 impExi (Exi dcl (And f g)) = let x = Decl.name dcl in
