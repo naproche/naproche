@@ -118,7 +118,7 @@ instance Show Text where
   showsPrec p (TextBlock block) = showsPrec p block
   showsPrec 0 (TextInstr _ instr) = shows instr . showChar '\n'
   showsPrec 0 (TextDrop _ instr) = shows instr . showChar '\n'
-  showsPrec 0 (TextError err) = shows err . showChar '\n'
+  showsPrec _ (TextError err) = shows err . showChar '\n'
   showsPrec 0 (TextRoot txt ) = shows txt
   showsPrec _ _ = id
 
