@@ -29,7 +29,6 @@ import SAD.Parser.Primitives
 
 import qualified Isabelle.Markup as Markup
 
-
 addReports :: (PIDE -> [Message.Report]) -> FTL ()
 addReports rep = MS.modify (\st -> case pide st of
   Just pide -> let newRep = rep pide
@@ -74,14 +73,14 @@ formulaReports pide decls = nub . dive
     quantDive decl f = let pos = Decl.position decl in
       (pos, Markup.bound) : variableReport pide True decl pos ++
       boundReports pide decl f ++
-      foldF dive f
+      dive f
 
 boundReports :: PIDE -> Decl -> Formula -> [Message.Report]
 boundReports pide decl = dive 0
   where
     dive n (All _ f) = dive (succ n) f
     dive n (Exi _ f) = dive (succ n) f
-    dive n Ind {trIndx = i, trPosition = pos} | i == n - 1 =
+    dive n Ind {trIndx = i, trPosition = pos} | i == n =
       (pos, Markup.bound) : variableReport pide False decl pos
     dive n f = foldF (dive n) f
 
