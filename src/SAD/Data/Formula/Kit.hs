@@ -252,6 +252,15 @@ substHole t = subst t "?"; substSlot t = subst t "!"
 occursH, occursS :: Formula -> Bool
 occursH = occurs zHole; occursS = occurs zSlot
 
+
+-- pseudotyping with "object"
+
+removeObject :: Formula -> Formula
+removeObject t@Trm {trId = tId}
+  | tId == objectId = Top
+  | otherwise = t
+removeObject f = mapF removeObject f
+
 -- functions for operating on literals
 isLiteral :: Formula -> Bool
 isLiteral t@Trm{} = trId t /= equalityId

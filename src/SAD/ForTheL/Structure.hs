@@ -198,7 +198,9 @@ pretypeSentence kind p wfVars mbLink = narrow $ do
   dvs <- getDecl; tvr <- fmap (concatMap fst) getPretyped
   bl <- wellFormedCheck (wf dvs tvr) $ statementBlock kind p mbLink
   newDecl <- bindings dvs $ Block.formula bl
-  let nbl = bl {Block.declaredVariables = newDecl}
+  let nbl = bl {
+    Block.declaredVariables = newDecl,
+    Block.formula = removeObject $ Block.formula bl}
   addBlockReports nbl; return nbl
   where
     wf dvs tvr bl =
@@ -209,7 +211,9 @@ sentence kind p wfVars mbLink = do
   dvs <- getDecl;
   bl <- wellFormedCheck (wfVars dvs . Block.formula) $ statementBlock kind p mbLink
   newDecl <- bindings dvs $ Block.formula bl
-  let nbl = bl {Block.declaredVariables = newDecl}
+  let nbl = bl {
+    Block.declaredVariables = newDecl,
+    Block.formula = removeObject $ Block.formula bl}
   addBlockReports nbl; return nbl
 
 -- variable well-formedness checks
