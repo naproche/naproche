@@ -83,9 +83,9 @@ thesis = art >> (thes <|> contrary <|> contradiction)
     contrary = wdToken "contrary" >> return (Not zThesis)
     contradiction = wdToken "contradiction" >> return Bot
 
-thereIs = there >> (noNotion -|- notions)
+thereIs = label "there-is statement" $ there >> (noNotion -|- notions)
   where
-    noNotion = do
+    noNotion = label "no-notion" $ do
       wdToken "no"; (q, f, vs) <- declared notion;
       return $ Not $ foldr mbdExi (q f) vs
     notions = fmap multExi $ art >> declared notion `sepBy` comma
@@ -192,19 +192,18 @@ gnotion nt ra = do
       conjChain isPredicate
 
 
-anotion =
-  art >> (gnotion basentn rat <?> "notion (at most one name)") >>=
-  single >>= hol
+anotion = label "notion (at most one name)" $ 
+  art >> gnotion basentn rat >>= single >>= hol
   where
     hol (q, f, v) = return (q, subst zHole (fst v) f)
     rat = fmap (Tag Dig) stattr
 
 notion = label "notion" $ gnotion (basentn </> symNotion) stattr >>= digntn
 
-possess = gnotion (primOfNtn term) stattr >>= digntn
+possess = label "possesive notion" $ gnotion (primOfNtn term) stattr >>= digntn
 
 
-stattr = such >> that >> statement
+stattr = label "such-that attribute" $ such >> that >> statement
 
 digadd (q, f, v) = (q, Tag Dig f, v)
 
@@ -248,9 +247,9 @@ quNotion = label "quantified notion" $
       return (q . flip (foldr dAll) vDecl . blImp f . Not, map pVar v)
 
 
-definiteTerm = symbolicTerm -|- definiteNoun
+definiteTerm = label "definiteTerm" $  symbolicTerm -|- definiteNoun
   where
-    definiteNoun = paren (art >> primFun term)
+    definiteNoun = label "definiteNoun" $ paren (art >> primFun term)
 
 plainTerm = symbolicTerm -|- plainDefiniteNoun
   where
@@ -305,12 +304,12 @@ sTerm = iTerm
     iTerm = lTerm >>= iTl
     iTl t = opt t $ (primIfn sTerm `ap` return t `ap` iTerm) >>= iTl
 
-    lTerm = rTerm -|- (primLfn sTerm `ap` lTerm)
+    lTerm = rTerm -|- label "symbolic term" (primLfn sTerm `ap` lTerm)
 
     rTerm = cTerm >>= rTl
     rTl t = opt t $ (primRfn sTerm `ap` return t) >>= rTl
 
-    cTerm = sVar -|- expar sTerm -|- primCfn sTerm
+    cTerm = label "symbolic term" $ sVar -|- expar sTerm -|- primCfn sTerm
 
 sVar = fmap pVar var
 
@@ -355,7 +354,7 @@ setNotion = do
   v <- after var (smTokenOf "="); (_, f, _) <- set
   dig (Tag Dig f) [pVar v]
 
-set = symbSet <|> setOf
+set = label "set definition" $ symbSet <|> setOf
   where
     setOf = do
       wdTokenOf ["set", "sets"]; nm <- var -|- hidden; wdToken "of";
@@ -411,7 +410,7 @@ functionNotion = liftM2 (&) sVar $ wordFun <|> (smTokenOf "=" >> lambda)
     let body f = foldr dAll (Imp (t `zElem` zDom f) $ def $ zApp f t) vsDecl
     return $ \f -> zFun f `And` Tag Domain (dom f) `And` body f
 
-lambdaBody = paren $ cases <|> chooseInTerm
+lambdaBody = label "function definition" $ paren $ cases <|> chooseInTerm
 
 cases = do
   cas <- ld_case `sepByLL1` smTokenOf ","

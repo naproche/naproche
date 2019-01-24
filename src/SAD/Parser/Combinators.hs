@@ -64,14 +64,6 @@ infixr 2 -|-
         in  runParser n st nok ncerr neerr
   in  runParser m st mok mcerr meerr
 
------- ambigous parsing applied ot a list of parsers
-tryAll :: [Parser st a] -> Parser st a
-tryAll [] = mzero
-tryAll (p:ps) = p -|- tryAll ps
-
-
-
-
 -- chain parsing combinators
 
 sepBy :: Parser st a -> Parser st sep -> Parser st [a]
@@ -257,27 +249,6 @@ lexicalCheck check p = Parser $ \st ok cerr eerr ->
     unit err =
       let pos = errorPos err
       in  unwords . map showToken . takeWhile ((>=) pos . tokenPos) . filter (not . isEOF) . stInput
-
-
----- in case of failure report every consumed token as unexpected instead of
----- just the first
-unexpectedUnit :: Parser st a -> Parser st a
-unexpectedUnit p = Parser $ \st ok cerr eerr ->
-  let pcerr err = cerr $ unexpectError (unit err st) (stPosition st)
-      peerr err = eerr $ unexpectError (unit err st) (stPosition st)
-  in  runParser p st ok pcerr peerr
-  where
-    unit err =
-      let pos = errorPos err
-      in  unwords . map showToken . takeWhile ((>=) pos . tokenPos) . filter (not . isEOF) . stInput
-
-
-
-
-
-
-
-
 
 
 -- Debugging

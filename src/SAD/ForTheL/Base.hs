@@ -89,7 +89,7 @@ initFS = FState
 
 
 getExpr :: (FState -> [a]) -> (a -> FTL b) -> FTL b
-getExpr e p = MS.gets e >>= tryAll . map (unexpectedUnit . try . p)
+getExpr e p = MS.gets e >>=  foldr ((</>) . p ) mzero
 
 
 getDecl :: FTL [String]
@@ -218,11 +218,13 @@ samePat (Sm s : rst1) (Sm t : rst2) = s == t && samePat rst1 rst2
 samePat _ _ = False
 
 
-
+-- adding error reporting to pattern parsing
+patternWdTokenOf l = label ("a word of " ++ show l) $ wdTokenOf l
+patternSmTokenOf l = label ("the symbol " ++ show l) $ smTokenOf l
 
 -- most basic pattern parser: simply follow the pattern anf parse terms with p
 -- at variable places
-wdPatt p (Wd l : ls) = wdTokenOf l >> wdPatt p ls
+wdPatt p (Wd l : ls) = patternWdTokenOf l >> wdPatt p ls
 wdPatt p (Vr : ls) = do
   (r, t) <- p
   (q, ts) <- wdPatt p ls
@@ -232,7 +234,7 @@ wdPatt _ _ = mzero
 
 -- parses a symbolic pattern
 smPatt p (Vr : ls) = liftM2 (:) p $ smPatt p ls
-smPatt p (Sm s : ls) = smTokenOf s >> smPatt p ls
+smPatt p (Sm s : ls) = patternSmTokenOf s >> smPatt p ls
 smPatt _ [] = return []
 smPatt _ _ = mzero
 
@@ -240,14 +242,14 @@ smPatt _ _ = mzero
 -- right before the first variable. Then check that all "and" tokens have been
 -- consumed. Example pattern: [Wd ["commute","commutes"], Wd ["with"], Vr]. Then
 -- we can parse "a commutes with c and d" as well as "a and b commute".
-mlPatt p (Wd l :_: Vr : ls) = wdTokenOf l >> naPatt p ls
-mlPatt p (Wd l : ls) = wdTokenOf l >> mlPatt p ls
+mlPatt p (Wd l :_: Vr : ls) = patternWdTokenOf l >> naPatt p ls
+mlPatt p (Wd l : ls) = patternWdTokenOf l >> mlPatt p ls
 mlPatt _ _ = mzero
 
 
 -- parses a notion: follow the pattern to the name place, record names,
 -- then keep following the pattern
-ntPatt p (Wd l : ls) = wdTokenOf l >> ntPatt p ls
+ntPatt p (Wd l : ls) = patternWdTokenOf l >> ntPatt p ls
 ntPatt p (Nm : ls) = do
   vs <- namlist
   (q, ts) <- wdPatt p ls
@@ -256,7 +258,7 @@ ntPatt _ _ = mzero
 
 -- parse an "of"-notion: follow the pattern to the notion name, then check that
 -- "of" follows the name followed by a variable that is not followed by "and"
-ofPatt p (Wd l : ls) = wdTokenOf l >> ofPatt p ls
+ofPatt p (Wd l : ls) = patternWdTokenOf l >> ofPatt p ls
 ofPatt p (Nm : Wd l : Vr : ls) = do
   guard $ elem "of" l; vs <- namlist
   (q, ts) <- naPatt p ls
@@ -266,9 +268,9 @@ ofPatt _ _ = mzero
 -- parse a "common"-notion: basically like the above. We use the special parser
 -- s for the first variable place after the "of" since we expect multiple terms
 -- here. Example: A common *divisor of m and n*.
-cmPatt p s (Wd l:ls) = wdTokenOf l >> cmPatt p s ls
+cmPatt p s (Wd l:ls) = patternWdTokenOf l >> cmPatt p s ls
 cmPatt p s (Nm : Wd l : Vr : ls) = do
-  guard $ elem "of" l; vs <- namlist; wdTokenOf l
+  guard $ elem "of" l; vs <- namlist; patternWdTokenOf l
   (r, as) <- s
   when (null $ tail as) $ fail "several objects expected for `common'"
   (q, ts) <- naPatt p ls
@@ -277,7 +279,7 @@ cmPatt _ _ _ = mzero
 
 -- an auxiliary pattern parser that checks that we are not dealing wiht an "and"
 -- wdToken and then continues to follow the pattern
-naPatt p (Wd l : ls) = guard (notElem "and" l) >> wdTokenOf l >> wdPatt p ls
+naPatt p (Wd l : ls) = guard (notElem "and" l) >> patternWdTokenOf l >> wdPatt p ls
 naPatt p ls = wdPatt p ls
 
 
