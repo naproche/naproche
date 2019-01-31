@@ -89,7 +89,7 @@ initFS = FState
 
 
 getExpr :: (FState -> [a]) -> (a -> FTL b) -> FTL b
-getExpr e p = MS.gets e >>=  foldr ((</>) . p ) mzero
+getExpr e p = MS.gets e >>=  foldr ((-|-) . try . p ) mzero
 
 
 getDecl :: FTL [String]
