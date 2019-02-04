@@ -10,7 +10,7 @@ theory Naproche
     and "forthel_file" :: thy_load
 begin
 
-ML_file "naproche.ML"
+ML_file \<open>naproche.ML\<close>
 
 
 generate_file "Isabelle/Naproche.hs" = \<open>

@@ -15,7 +15,7 @@ export_generated_files Haskell Naproche
 
 section \<open>Isabelle/Scala modules\<close>
 
-external_file "file_format.scala"
+external_file \<open>file_format.scala\<close>
 
 ML_command \<open>
   Isabelle_System.with_tmp_dir "scalac" (fn tmp_dir =>

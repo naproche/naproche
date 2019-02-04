@@ -47,7 +47,7 @@ subsection \<open>External text file\<close>
 context notes [[naproche_prove = false]]
 begin
 
-forthel_file "../examples/tarski.ftl"
+forthel_file \<open>../examples/tarski.ftl\<close>
 
 end
 
