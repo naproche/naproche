@@ -328,6 +328,24 @@ comment3N :: String; comment3 :: T
 (comment3N, comment3) = markup_elem "comment3"
 
 
+{- command status -}
+
+acceptedN, forkedN, joinedN, runningN, finishedN, failedN, canceledN,
+  initializedN, finalizedN, consolidatedN :: String
+accepted, forked, joined, running, finished, failed, canceled,
+  initialized, finalized, consolidated :: T
+(acceptedN, accepted) = markup_elem "accepted"
+(forkedN, forked) = markup_elem "forked"
+(joinedN, joined) = markup_elem "joined"
+(runningN, running) = markup_elem "running"
+(finishedN, finished) = markup_elem "finished"
+(failedN, failed) = markup_elem "failed"
+(canceledN, canceled) = markup_elem "canceled"
+(initializedN, initialized) = markup_elem "initialized"
+(finalizedN, finalized) = markup_elem "finalized"
+(consolidatedN, consolidated) = markup_elem "consolidated"
+
+
 {- messages -}
 
 writelnN :: String; writeln :: T
