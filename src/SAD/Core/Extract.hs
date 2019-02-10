@@ -13,7 +13,7 @@ module SAD.Core.Extract (
 ) where
 
 import SAD.Data.Formula
-import SAD.Data.Definition (DefEntry(DE), Definitions, DefType(..))
+import SAD.Data.Definition (DefEntry(DE), Definitions, DefType(..), Guards)
 import qualified SAD.Data.Definition as Definition
 import SAD.Data.Evaluation (Evaluation(EV))
 import qualified SAD.Data.Evaluation as Evaluation
@@ -40,13 +40,19 @@ import Debug.Trace
 
 
 {- extract definition from f and add it to the global state -}
-addDefinition :: Definitions -> Formula -> Definitions
-addDefinition defs f = add (extractDefinition defs f) defs
+addDefinition :: (Definitions, Guards) -> Formula -> (Definitions, Guards)
+addDefinition (defs, grds) f = let newDef = extractDefinition defs f in
+  (addD newDef defs, addG newDef grds)
   where
-    add df@DE {Definition.term = t} = IM.insert (trId t) df
+    addD df@DE {Definition.term = t} = IM.insert (trId t) df
+    addG df@DE {Definition.guards = grd} grds = foldr add grds $ filter isTrm grd
 
-{- Extract definition from a formula. Evidence closure and type-likes are
-computed afterwards -}
+    add guard grds =
+      if   head $ fromMaybe [False] $ DT.lookup guard grds
+      then grds
+      else DT.insert guard True grds
+
+{- Extract definition from a formula. Evidence closure is computed afterwards -}
 extractDefinition :: Definitions -> Formula -> DefEntry
 extractDefinition defs =
   closeEvidence defs . makeDefinition . dive [] 0

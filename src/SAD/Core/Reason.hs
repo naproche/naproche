@@ -158,7 +158,7 @@ filterContext action context = do
   link <- asks (Set.fromList . Context.link . currentThesis);
   if Set.null link 
     then action `withContext` 
-         (map replaceSignHead $ filter (not . isTop . Context.reducedFormula) context)
+         (map replaceSignHead $ filter (not . isTop . Context.formula) context)
     else do
          linkedContext <- retrieveContext link 
          action `withContext` (lowlevelContext ++ linkedContext ++ defsAndSigs)

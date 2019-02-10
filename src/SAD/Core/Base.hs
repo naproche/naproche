@@ -16,7 +16,7 @@ module SAD.Core.Base (
   runRM,
 
   retrieveContext,
-  initialDefinitions,
+  initialDefinitions, initialGuards,
   defForm, getDef,
 
   setFailed, checkFailed,
@@ -55,7 +55,7 @@ import qualified SAD.Data.Instr as Instr
 import SAD.Data.Text.Block (Block, Text)
 import SAD.Data.Text.Context (Context, MRule(..))
 import qualified SAD.Data.Text.Context as Context (name)
-import SAD.Data.Definition (Definitions, DefEntry(DE), DefType(..))
+import SAD.Data.Definition (Definitions, DefEntry(DE), DefType(..), Guards)
 import qualified SAD.Data.Definition as Definition
 import SAD.Data.Rules (Rule)
 import SAD.Data.Evaluation (Evaluation)
@@ -148,6 +148,7 @@ data VState = VS {
   currentContext  :: [Context],
   mesonRules      :: (DT.DisTree MRule, DT.DisTree MRule),
   definitions     :: Definitions,
+  guards          :: Guards, -- record which atomic formulas appear as guard
   skolemCounter   :: Int,
   instructions    :: [Instr],
   provers         :: [Prover],
@@ -298,6 +299,11 @@ functionApplication =
     (zApp (zVar "?0") (zVar "?1")) []
     [[zFun $ zVar "?0"],[zElem (zVar $ "?1") $ zDom $ zVar "?0"]]
 
+
+initialGuards = foldr (\f -> DT.insert f True) (DT.empty) [
+  zSet $ zVar "?1",
+  zFun $ zVar "?0",
+  zElem (zVar $ "?1") $ zDom $ zVar "?0"]
 
 -- retrieve definitional formula of a term
 defForm :: IM.IntMap DefEntry -> Formula -> Maybe Formula

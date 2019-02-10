@@ -51,7 +51,9 @@ verify fileName provers reasonerState (TextRoot text) = do
   let text' = TextInstr Instr.noPos (Instr.String Instr.File fileName) : text
   Message.outputReasoner Message.TRACING (fileOnlyPos fileName) "verification started"
 
-  let verificationState = VS False [] DT.empty (Context Bot [] [] Bot) [] [] (DT.empty, DT.empty) initialDefinitions 0 [] provers text'
+  let verificationState =
+        VS False [] DT.empty (Context Bot [] [] Bot) [] [] (DT.empty, DT.empty) 
+          initialDefinitions initialGuards 0 [] provers text'
   result <- flip runRM reasonerState $
     runReaderT (verificationLoop verificationState) verificationState
   ignoredFails <- (\st -> accumulateIntCounter (counters st) 0 FailedGoals) <$>
@@ -71,6 +73,7 @@ verificationLoop state@VS {
   currentContext  = context,
   mesonRules      = mRules,
   definitions     = defs,
+  guards          = grds,
   restText = TextBlock block@(Block f body kind declaredVariables _ _ _ _):blocks,
   evaluations     = evaluations }
     = local (const state) $ do
@@ -133,13 +136,13 @@ verificationLoop state@VS {
     checkFailed (return (TextBlock newBlock : blocks, TextBlock markedBlock : blocks)) $ do
 
       (mesonRules, intermediateSkolem) <- contras $ deTag formulaImage
-      let newDefinitions =
+      let (newDefinitions, newGuards) =
             if   kind == Definition || kind == Signature
-            then addDefinition defs formulaImage
-            else defs
+            then addDefinition (defs, grds) formulaImage
+            else (defs, grds)
           (ontoReduction, newSkolem) =
             if Block.isTopLevel block
-            then ontoReduce newDefinitions intermediateSkolem formulaImage
+            then ontoReduce newDefinitions newGuards intermediateSkolem formulaImage
             else (formulaImage, intermediateSkolem)
           newContextBlock =
             Context formulaImage newBranch (uncurry (++) mesonRules) ontoReduction
@@ -170,10 +173,9 @@ verificationLoop state@VS {
             then addEvaluation evaluations formulaImage
             else evaluations-- extract evaluations
 
-
       -- Now we are done with the block. Move on and verifiy the rest.
       (newBlocks, markedBlocks) <- verifyProof state {
-        thesisMotivated = motivated && newMotivation,
+        thesisMotivated = motivated && newMotivation, guards = newGuards,
         rewriteRules = newRewriteRules, evaluations = newEvaluations,
         currentThesis = newThesis, currentContext = newContext,
         mesonRules = newRules, definitions = newDefinitions,

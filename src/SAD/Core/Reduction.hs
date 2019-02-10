@@ -7,7 +7,7 @@ Ontological reduction.
 module SAD.Core.Reduction (ontoReduce) where
 
 import SAD.Data.Formula
-import SAD.Data.Definition (DefEntry(DE), Definitions)
+import SAD.Data.Definition (DefEntry(DE), Definitions, Guards, isGuard)
 import qualified SAD.Data.Definition as Definition
 import SAD.Core.Base
 import SAD.Prove.Normalize
@@ -32,9 +32,9 @@ type Position = [Int]
 the path we take at a binary operator. Unary operators (Not, All, Exi) are not reflected
 in the position.-}
 
-ontoReduce dfs skolem f =
+ontoReduce dfs grds skolem f =
   let (conjuncts, newSkolem) = ontoPrep skolem f
-      reducedConjuncts = map (boolSimp . ontoRed dfs) conjuncts
+      reducedConjuncts = map (boolSimp . ontoRed dfs grds) conjuncts
       reducedFormula = uClose [] $ foldr blAnd Top reducedConjuncts
   in (reducedFormula, newSkolem)
 
@@ -42,14 +42,15 @@ ontoReduce dfs skolem f =
 SAD.Prove.Normalize.ontoPrep, we may assume the following for the given formula:
   * And, Or, Not, Trm and Var are the only formula constructors appearing in f (in particular no quantifiers can appear)
   * negation only appears on the literal level-}
-ontoRed :: Definitions -> Formula -> Formula
-ontoRed dfs f = dive [] f
+ontoRed :: Definitions -> Guards -> Formula -> Formula
+ontoRed dfs grds f = dive [] f
   where
     dive position (And g h) =
       And (dive (0:position) g) (dive (1:position) h)
     dive position (Or g h) =
       Or (dive (0:position) g) (dive (1:position) h)
-    dive position (Not t@Trm{}) = Not $ tryEliminating t position
+    dive position (Not t@Trm{})
+      | isGuard t grds = Not $ tryEliminating t position
     dive _ f = f
     
     tryEliminating t position
@@ -77,8 +78,9 @@ ontoRed dfs f = dive [] f
       let generalPosGuards = generalPositionGuards position h
           allPosGuards = allPositionGuards position h
           differentFromG = filter (not . hasSameSyntacticStructureAs g) allPosGuards
+          relevantAtoms = concatMap atoms differentFromG
       in  g `isElemOf` generalPosGuards &&
-            all (\g' -> g `isEliminableFor` g' || g' `isEliminableFor` g) differentFromG
+            all (\g' -> g `isEliminableFor` g' || g' `isEliminableFor` g) relevantAtoms
 
     satisfiesDisjointnessConditionFor h g =
       let relevantGuards = filter (hasSameSyntacticStructureAs g) $ generalGuards h
@@ -172,6 +174,10 @@ subParticles = filter isTrm . arguments
 freeVars :: Formula -> Set String
 freeVars Var {trName = name} = Set.singleton name
 freeVars f = foldF freeVars f
+
+atoms :: Formula -> [Formula]
+atoms f@Trm{} = [f]
+atoms f = foldF atoms f
 
 hasSameSyntacticStructureAs :: Formula -> Formula -> Bool
 hasSameSyntacticStructureAs f g = evalState (dive f g) Map.empty
