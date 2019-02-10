@@ -11,6 +11,7 @@ sig
   val naproche_check: bool Config.T
   val naproche_skipfail: bool Config.T
   val naproche_print_thesis: bool Config.T
+  val naproche_translate: bool Config.T
   val NAPROCHE_PIDE: string
   val NAPROCHE_POS_FILE: string
   val NAPROCHE_POS_SHIFT: string
@@ -38,6 +39,7 @@ val naproche_prove = Attrib.setup_option_bool (\<^system_option>\<open>naproche_
 val naproche_check = Attrib.setup_option_bool (\<^system_option>\<open>naproche_check\<close>, \<^here>);
 val naproche_skipfail = Attrib.setup_option_bool (\<^system_option>\<open>naproche_skipfail\<close>, \<^here>);
 val naproche_print_thesis = Attrib.setup_option_bool (\<^system_option>\<open>naproche_print_thesis\<close>, \<^here>);
+val naproche_translate = Attrib.setup_option_bool (\<^system_option>\<open>naproche_translate\<close>, \<^here>);
 
 
 (* environment *)
@@ -124,7 +126,8 @@ fun check_forthel ctxt (text, pos) =
      ["--prove=" ^ bool_option naproche_prove,
       "--check=" ^ bool_option naproche_check,
       "--skipfail=" ^ bool_option naproche_skipfail,
-      "--printthesis=" ^bool_option naproche_print_thesis];
+      "--printthesis=" ^bool_option naproche_print_thesis,
+      "--translate=" ^bool_option naproche_translate];
 
     val server_address = Options.default_string \<^system_option>\<open>naproche_server_address\<close>;
     val server_password = Options.default_string \<^system_option>\<open>naproche_server_password\<close>;
