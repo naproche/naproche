@@ -16,7 +16,8 @@ module SAD.Data.Text.Block (
   textToCheck,
   findParseError,
   isChecked,
-  children, setChildren
+  children, setChildren,
+  canDeclare
   )where
 
 import SAD.Data.Formula
@@ -97,6 +98,12 @@ needsProof block = sign $ kind block
     sign Assumption = False
     sign Posit      = False
     sign _          = True
+
+
+{- which statements can declare variables -}
+canDeclare :: Section -> Bool
+canDeclare Assumption = True; canDeclare Selection = True
+canDeclare LowDefinition = True; canDeclare _ = False
 
 
 isTopLevel :: Block -> Bool

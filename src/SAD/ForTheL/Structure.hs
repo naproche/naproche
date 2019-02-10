@@ -198,7 +198,7 @@ pretypeSentence kind p wfVars mbLink = narrow $ do
   dvs <- getDecl; tvr <- fmap (concatMap fst) getPretyped
   bl <- wellFormedCheck (wf dvs tvr) $ statementBlock kind p mbLink
   newDecl <- bindings dvs $ Block.formula bl
-  let nbl = bl {Block.declaredVariables = newDecl}
+  let nbl = if Block.canDeclare kind then bl {Block.declaredVariables = newDecl} else bl
   addBlockReports nbl; return nbl {Block.formula = removeObject $ Block.formula bl}
   where
     wf dvs tvr bl =
