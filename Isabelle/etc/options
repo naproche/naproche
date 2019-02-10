@@ -17,6 +17,9 @@ public option naproche_server : bool = true
 public option naproche_server_debugging : bool = false
   -- "console debugging for Naproche-SAD server"
 
+public option naproche_print_thesis : bool = true
+  -- "print thesis development"
+
 option naproche_server_address : string = ""
   -- "address/port of Naproche-SAD server"
 

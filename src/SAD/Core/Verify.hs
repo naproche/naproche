@@ -86,6 +86,8 @@ verificationLoop state@VS {
     Message.outputForTheL Message.WRITELN (Block.position block) $
     Message.trimText (Block.showForm 0 block "")
   let newBranch = block : branch; contextBlock = Context f newBranch [] f
+  
+  unless (Block.isTopLevel block) $ reasonLog Message.WRITELN (Block.position block) $ show f
 
   fortifiedFormula <-
     if   Block.isTopLevel block
@@ -117,12 +119,6 @@ verificationLoop state@VS {
       else verifyProof state {
         thesisMotivated = False, currentThesis = freshThesis,
         currentBranch = newBranch, restText = body }
-    
-
-    whenInstruction Instr.Printthesis False $ when (
-      toBeProved && (not . null) proofBody &&
-      not (hasDEC $ Context.formula freshThesis)) $
-        thesisLog Message.WRITELN (Block.position block) (length branch - 1) "thesis resolved"
 
     -- in what follows we prepare the current block to contribute to the context,
     -- extract rules, definitions and compute the new thesis
@@ -206,14 +202,14 @@ verificationLoop st@VS {
     prove =
       if hasDEC (Context.formula thesis) --computational reasoning
       then do
-        let logAction = reasonLog Message.WRITELN (Block.position block) $ "goal: " ++ text
+        let logAction = reasonLog Message.TRACING (Block.position block) $ "goal: " ++ text
             block = Context.head thesis ; text = Block.text block
         incrementIntCounter Equations ; whenInstruction Instr.Printgoal True logAction
         timer SimplifyTime (equalityReasoning thesis) <|> (
           reasonLog Message.WARNING (Block.position block) "equation failed" >> setFailed >>
           guardInstruction Instr.Skipfail False >> incrementIntCounter FailedEquations)
       else do
-        let logAction = reasonLog Message.WRITELN (Block.position block) $ "goal: " ++ text
+        let logAction = reasonLog Message.TRACING (Block.position block) $ "goal: " ++ text
             block = Context.head thesis ; text = Block.text block
         unless (isTop . Context.formula $ thesis) $ incrementIntCounter Goals
         whenInstruction Instr.Printgoal True logAction
