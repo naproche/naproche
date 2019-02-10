@@ -44,6 +44,8 @@ import qualified SAD.Data.Structures.DisTree as DT
 import SAD.Core.Rewrite
 import SAD.Export.Base (Prover)
 
+import qualified Isabelle.Markup as Markup
+
 -- Main verification loop
 
 verify :: String -> [Prover] -> IORef RState -> Text -> IO (Maybe Text)
@@ -77,7 +79,7 @@ verificationLoop state@VS {
   restText = TextBlock block@(Block f body kind declaredVariables _ _ _ _):blocks,
   evaluations     = evaluations }
     = local (const state) $ do
-
+  justIO $ Message.report (Block.position block) Markup.running
   alreadyChecked <- askRS alreadyChecked
 
   -- statistics and user communication
@@ -169,7 +171,7 @@ verificationLoop state@VS {
             if   kind `elem` [LowDefinition, Definition]
             then addEvaluation evaluations formulaImage
             else evaluations-- extract evaluations
-
+      justIO $ Message.report (Block.position block) Markup.finished
       -- Now we are done with the block. Move on and verifiy the rest.
       (newBlocks, markedBlocks) <- verifyProof state {
         thesisMotivated = motivated && newMotivation, guards = newGuards,
