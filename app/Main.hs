@@ -222,6 +222,8 @@ options = [
     "init file, empty to skip (def: init.opt)",
   GetOpt.Option "T" ["onlytranslate"] (GetOpt.NoArg (Instr.Bool Instr.OnlyTranslate True))
     "translate input text and exit",
+  GetOpt.Option "" ["translate"] (GetOpt.ReqArg (Instr.Bool Instr.Translation . bool) "{on|off}")
+    "print first-order translation of sentences",
   GetOpt.Option "" ["server"] (GetOpt.NoArg (Instr.Bool Instr.Server True))
     "run in server mode",
   GetOpt.Option ""  ["library"] (GetOpt.ReqArg (Instr.String Instr.Library) "DIR")

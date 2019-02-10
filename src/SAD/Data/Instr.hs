@@ -89,6 +89,7 @@ data Bool =
   | Unfoldlow      --  unfold the whole low level context (yes)
   | Unfoldlowsf    --  unfold set and function conditions in low level (no)
   | Checkontored   --  enable ontological reduction for checks (off)
+  | Translation    --  print first-order translation of sentences
   deriving (Eq,Show)
 
 data String =
@@ -171,7 +172,8 @@ keywordsBool =
   (Unfoldsf, "unfoldsf"),
   (Unfoldlow, "unfoldlow"),
   (Unfoldlowsf, "unfoldlowsf"),
-  (Checkontored, "checkontored")]
+  (Checkontored, "checkontored"),
+  (Translation, "translation")]
 
 keywordsString :: [(String, Prelude.String)]
 keywordsString =
