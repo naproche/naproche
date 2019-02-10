@@ -126,8 +126,8 @@ fun check_forthel ctxt (text, pos) =
      ["--prove=" ^ bool_option naproche_prove,
       "--check=" ^ bool_option naproche_check,
       "--skipfail=" ^ bool_option naproche_skipfail,
-      "--printthesis=" ^bool_option naproche_print_thesis,
-      "--translate=" ^bool_option naproche_translate];
+      "--printthesis=" ^ bool_option naproche_print_thesis,
+      "--translate=" ^ bool_option naproche_translate];
 
     val server_address = Options.default_string \<^system_option>\<open>naproche_server_address\<close>;
     val server_password = Options.default_string \<^system_option>\<open>naproche_server_password\<close>;
