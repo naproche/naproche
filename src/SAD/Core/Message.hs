@@ -13,7 +13,7 @@ module SAD.Core.Message (
   Kind (..), entityMarkup,
   Report, ReportText, reportsText, reportText, reports, report,
   trimText, output, error, outputMain, outputExport, outputForTheL,
-  outputParser, outputReasoner, outputThesis, outputSimplifier,
+  outputParser, outputReasoner, outputThesis, outputSimplifier, outputTranslate,
   errorExport, errorParser
 ) where
 
@@ -238,6 +238,7 @@ outputParser = output Naproche.origin_parser
 outputReasoner = output Naproche.origin_reasoner
 outputSimplifier = output Naproche.origin_simplifier
 outputThesis = output Naproche.origin_thesis
+outputTranslate = output Naproche.origin_translate
 
 errorExport = error Naproche.origin_export
 errorParser = error Naproche.origin_parser

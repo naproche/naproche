@@ -34,7 +34,7 @@ module SAD.Core.Base (
   addTimeCounter, addIntCounter, incrementIntCounter,
   guardInstruction, guardNotInstruction, whenInstruction,
 
-  reasonLog, simpLog, thesisLog,
+  reasonLog, simpLog, thesisLog, translateLog
 ) where
 
 import Control.Monad
@@ -249,6 +249,9 @@ thesisLog kind pos indent msg =
 
 simpLog :: Message.Kind -> SourcePos -> String -> VM ()
 simpLog kind pos = justIO . Message.outputSimplifier kind pos
+
+translateLog :: Message.Kind -> SourcePos -> String -> VM ()
+translateLog kind pos = justIO . Message.outputTranslate kind pos
 
 
 

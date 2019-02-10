@@ -88,7 +88,7 @@ verificationLoop state@VS {
   let newBranch = block : branch; contextBlock = Context f newBranch [] f
   
   whenInstruction Instr.Translation False $
-    unless (Block.isTopLevel block) $ reasonLog Message.WRITELN (Block.position block) $ show f
+    unless (Block.isTopLevel block) $ translateLog Message.WRITELN (Block.position block) $ show f
 
   fortifiedFormula <-
     if   Block.isTopLevel block
