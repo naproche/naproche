@@ -51,6 +51,7 @@ origin_parser = \<open>Naproche.origin_parser\<close>
 origin_reasoner = \<open>Naproche.origin_reasoner\<close>
 origin_simplifier = \<open>Naproche.origin_simplifier\<close>
 origin_thesis = \<open>Naproche.origin_thesis\<close>
+origin_translate = \<open>Naproche.origin_translate\<close>
 
 
 -- server commands

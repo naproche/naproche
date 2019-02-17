@@ -37,6 +37,7 @@ origin_parser = "Parser"
 origin_reasoner = "Reasoner"
 origin_simplifier = "Simplifier"
 origin_thesis = "Thesis"
+origin_translate = "Translation"
 
 
 -- server commands

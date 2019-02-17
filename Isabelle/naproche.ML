@@ -23,6 +23,7 @@ sig
   val origin_reasoner: string
   val origin_simplifier: string
   val origin_thesis: string
+  val origin_translate: string
   val command_args: string
   val forthel_command: string
   val cancel_command: string
@@ -74,6 +75,7 @@ val origin_parser = "Parser";
 val origin_reasoner = "Reasoner";
 val origin_simplifier = "Simplifier";
 val origin_thesis = "Thesis";
+val origin_translate = "Translation";
 
 
 (* process ForTheL text *)
