@@ -90,7 +90,7 @@ sigNotion = do
       return ((n,h),u)
 
     noInfo =
-      art >> wdTokenOf ["notion", "function", "constant"] >> return (id,Top)
+      art >> wdTokenOf ["notion", "constant"] >> return (id,Top)
     trm Trm {trName = "=", trArgs = [_,t]} = t; trm t = t
 
 newPredicat = do n <- newPrdPattern nvr; MS.get >>= addExpr n n True
