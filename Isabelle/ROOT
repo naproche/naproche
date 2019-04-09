@@ -7,6 +7,7 @@ session "Naproche-Build" = Haskell +
   theories [condition = NAPROCHE_HOME]
     Build
   export_files (in src) [1] "*:**.hs"
+  export_files (in ".") [1] "*:**.jar"
 
 session "Naproche" = Pure +
   description "Isabelle Prover IDE support for NaProChe / ForTheL."
