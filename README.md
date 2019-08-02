@@ -3,7 +3,6 @@
 Proof Checking of Natural Mathematical Documents, with optional support
 for Isabelle Prover IDE.
 
-
 ## Command-line tool
 
 ### Prerequisites
