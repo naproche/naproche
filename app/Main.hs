@@ -209,6 +209,7 @@ readArgs args = do
   let initialText = map (uncurry TextInstr) initialOpts
   return (revInitialOpts, initialText)
 
+wellformed :: Instr -> Bool
 wellformed (Instr.Bool _ v) = v == v
 wellformed (Instr.Int _ v) = v == v
 wellformed _            = True
@@ -299,6 +300,7 @@ bool "yes" = True ; bool "on"  = True
 bool "no"  = False; bool "off" = False
 bool s     = errorWithoutStackTrace $ "Invalid boolean argument: " ++ quote s
 
+int :: String -> Int
 int s = case reads s of
   ((n,[]):_) | n >= 0 -> n
   _ -> errorWithoutStackTrace $ "Invalid integer argument: " ++ quote s

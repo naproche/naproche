@@ -83,7 +83,7 @@ tokenize start = posToken start False
     posToken pos _ _ = [EOF pos]
 
 isLexem :: Char -> Bool
-isLexem c = isAscii c && isAlphaNum c || c == '_'
+isLexem c = (isAscii c && isAlphaNum c) || c == '_'
 
 
 -- markup reports
