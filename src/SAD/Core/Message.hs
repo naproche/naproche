@@ -238,7 +238,12 @@ outputParser = output Naproche.origin_parser
 outputReasoner = output Naproche.origin_reasoner
 outputSimplifier = output Naproche.origin_simplifier
 outputThesis = output Naproche.origin_thesis
+
+outputTranslate :: Kind -> SourcePos -> String -> IO ()
 outputTranslate = output Naproche.origin_translate
 
+errorExport :: SourcePos -> String -> IO a
 errorExport = error Naproche.origin_export
+
+errorParser :: SourcePos -> String -> IO a
 errorParser = error Naproche.origin_parser

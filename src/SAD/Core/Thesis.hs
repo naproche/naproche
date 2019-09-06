@@ -94,6 +94,7 @@ can be patched together from the hs. Important to be able to reduce an
 existential thesis. -}
 hasInstantiationIn:: Formula -> [Formula] -> Bool
 hasInstantiationIn (Exi _ f) = not . null . listOfInstantiations f
+hasInstantiation :: p1 -> p2 -> a
 hasInstantiation _ _ =
   error "SAD.Core.Thesis.hasInstantiationIn:\
     \non-existentially quantified argument"
@@ -106,6 +107,8 @@ listOfInstantiations f = instantiations 1 Map.empty (albet $ inst "i0" f)
 {- worker function for SAD.Core.Thesis.listOfInstantiations -}
 -- FIXME This functions needs a better way to generate free variables. The 
 --       explicit parameter passing is inadequate.
+instantiations :: (Enum t, Show t) =>
+                  t -> Instantiation -> Formula -> [Formula] -> [Instantiation]
 instantiations n currentInst f hs =
   [ newInst | h <- hs, newInst <- extendInstantiation currentInst f h ] ++ 
   patchTogether (albet f)
@@ -233,12 +236,14 @@ generateVariations definitions = pass [] (Just True) 0
 
 {- mark symbols that are recursively defined in their defining formula, so that
    the definition is not infinitely expanded -}
+markRecursive :: Int -> Formula -> Formula
 markRecursive n t@Trm{trId = m} 
   | n == m = Tag GenericMark t
   | otherwise = t
 markRecursive n f = mapF (markRecursive n) f
 
 {- generate all instantiations with as of yet unused variables -}
+generateInstantiations :: Formula -> VariationMonad Formula
 generateInstantiations f = VM (tryAllVars [])
   where
     tryAllVars accumulator (v:vs) =
@@ -281,11 +286,13 @@ instance MonadPlus VariationMonad where
 
 -- special reduction of function thesis
 
+isFunctionMacro :: Context -> Bool
 isFunctionMacro = isMacro . Context.formula
   where
     isMacro (Tag tg _ ) = fnTag tg
     isMacro _ = False
 
+functionTaskThesis :: Context -> Context -> (Bool, Bool, Context)
 functionTaskThesis context thesis = (True, changed, newThesis)
   where
     newThesis = Context.setForm thesis $ getObj reducedThesis
@@ -293,10 +300,12 @@ functionTaskThesis context thesis = (True, changed, newThesis)
     thesisFormula = Context.formula thesis
     reducedThesis = reduceFunctionTask (Context.formula context) thesisFormula
 
+reduceFunctionTask :: Formula -> Formula -> ChangeInfo Formula
 reduceFunctionTask (Tag tg _) = fmap boolSimp . dive
   where
     dive (Tag tg' _) | tg' == tg = changed Top
     dive f = mapFM dive f
+reduceFuntionTask :: p -> a
 reduceFuntionTask _ = error "SAD.Core.Thesis.reduceFunctionTask:\
   \argument is not a function task"
 

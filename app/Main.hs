@@ -214,9 +214,11 @@ wellformed (Instr.Bool _ v) = v == v
 wellformed (Instr.Int _ v) = v == v
 wellformed _            = True
 
+usageHeader :: [Char]
 usageHeader =
   "\nUsage: Naproche-SAD <options...> <file...>\n\n  At most one file argument may be given; \"\" refers to stdin.\n\n  Options are:\n"
 
+options :: [GetOpt.OptDescr Instr]
 options = [
   GetOpt.Option "h" ["help"] (GetOpt.NoArg (Instr.Bool Instr.Help True)) "show command-line help",
   GetOpt.Option ""  ["init"] (GetOpt.ReqArg (Instr.String Instr.Init) "FILE")
@@ -296,6 +298,7 @@ options = [
   GetOpt.Option "" ["checkontored"] (GetOpt.ReqArg (Instr.Bool Instr.Checkontored . bool) "{on|off}")
     "enable ontological reduction for checking of symbols (def: off)"]
 
+bool :: [Char] -> Bool
 bool "yes" = True ; bool "on"  = True
 bool "no"  = False; bool "off" = False
 bool s     = errorWithoutStackTrace $ "Invalid boolean argument: " ++ quote s

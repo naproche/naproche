@@ -44,9 +44,12 @@ import Debug.Trace
 
 -- definitions and signature extensions
 
+defExtend :: Parser FState Formula
 defExtend = defPredicat -|- defNotion
+sigExtend :: Parser FState Formula
 sigExtend = sigPredicat -|- sigNotion
 
+defPredicat :: Parser FState Formula
 defPredicat = do
   (f, g) <- wellFormedCheck prdVars defn
   return $ Iff (Tag HeadTerm f) g
@@ -54,6 +57,7 @@ defPredicat = do
     defn = do f <- newPredicat; equiv; g <- statement; return (f,g)
     equiv = iff <|> symbol "<=>"
 
+defNotion :: Parser FState Formula
 defNotion = do
   ((n,h),u) <- wellFormedCheck (ntnVars . fst) defn; uDecl <- makeDecl u
   return $ dAll uDecl $ Iff (Tag HeadTerm n) h
@@ -70,6 +74,7 @@ defNotion = do
 
 
 
+sigPredicat :: Parser FState Formula
 sigPredicat = do
   (f,g) <- wellFormedCheck prdVars sig
   return $ Imp (Tag HeadTerm f) g
@@ -79,6 +84,7 @@ sigPredicat = do
     noInfo = art >> wdTokenOf ["atom", "relation"] >> return Top
 
 
+sigNotion :: Parser FState Formula
 sigNotion = do
   ((n,h),u) <- wellFormedCheck (ntnVars . fst) sig; uDecl <- makeDecl u
   return $ dAll uDecl $ Imp (Tag HeadTerm n) h
@@ -93,8 +99,10 @@ sigNotion = do
       art >> wdTokenOf ["notion", "constant"] >> return (id,Top)
     trm Trm {trName = "=", trArgs = [_,t]} = t; trm t = t
 
+newPredicat :: Parser FState Formula
 newPredicat = do n <- newPrdPattern nvr; MS.get >>= addExpr n n True
 
+newNotion :: Parser FState (Formula, (String, SourcePos))
 newNotion = do
   (n, u) <- newNtnPattern nvr;
   f <- MS.get >>= addExpr n n True
@@ -128,6 +136,7 @@ prdVars (f, d) | not flat  = return $ "compound expression: " ++ show f
     flat      = isTrm f && allDistinctVars (trArgs f)
 
 
+allDistinctVars :: [Formula] -> Bool
 allDistinctVars = disVs []
   where
     disVs ls (Var {trName = v@('h':_)} : vs) = notElem v ls && disVs (v:ls) vs
@@ -183,6 +192,7 @@ introduceMacro = do
       standFor; (q, f) <- anotion; (_, pos2) <- dot
       h <- fmap q $ dig f [pVar u]; return (pos2, (n, h))
 
+ignoreNames :: Formula -> Formula
 ignoreNames (All dcl f) = All dcl {Decl.name = ""} $ ignoreNames f
 ignoreNames (Exi dcl f) = Exi dcl {Decl.name = ""} $ ignoreNames f
 ignoreNames f@Trm{}   = f

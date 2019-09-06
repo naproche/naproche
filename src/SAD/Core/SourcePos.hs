@@ -49,8 +49,11 @@ startPos = filePos ""
 
 -- advance position
 
+advanceLine :: (Ord a, Num a) => a -> Char -> a
 advanceLine line c = if line <= 0 || c /= '\n' then line else line + 1
+advanceColumn :: (Ord a, Num a) => a -> Char -> a
 advanceColumn column c = if column <= 0 then column else if c == '\n' then 1 else column + 1
+advanceOffset :: (Ord a, Num a) => a -> p -> a
 advanceOffset offset c = if offset <= 0 then offset else offset + 1
 
 advancePos :: SourcePos -> Char -> SourcePos

@@ -139,6 +139,7 @@ instance Show Block where
     where
       showBody = foldr ((.) . showsPrec (succ p)) id body
 
+showForm :: Int -> Block -> String -> String
 showForm p block@Block {formula = formula, name = name} =
   showIndent p . sform (isTopLevel block) (needsProof block) . dot
   where
@@ -169,6 +170,7 @@ textToCheck old new
            in  dive newAcc checked root old new
       else setChildren root (reverse acc ++ (n:new))
 
+isRoot :: Text -> Bool
 isRoot (TextRoot _) = True; isRoot _ = False
 
 isChecked :: Text -> Bool

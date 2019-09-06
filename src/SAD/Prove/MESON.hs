@@ -121,6 +121,7 @@ rename fs = insertU
     myMaximum ls = maximum ls
 
 {-iterative deepening -}
+deepen :: (MonadPlus m, Num t) => (t -> m a) -> t -> m a
 deepen f n = f n `mplus` deepen f (n + 1)
 
 {- checks whether the first formula is more general than the second in the

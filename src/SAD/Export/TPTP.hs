@@ -56,4 +56,5 @@ tptpTerm d = dive
     binder f  = showChar '[' . tptpTerm (succ d) (Ind 0 undefined)
               . showString "] : " . tptpTerm (succ d) f
 
+showTrName :: Formula -> ShowS
 showTrName = showString . filter (/= ':') . trName

@@ -26,6 +26,7 @@ data Prover = Prover {
 
 data Format = TPTP | DFG
 
+initPrv :: String -> Prover
 initPrv l = Prover l "Prover" "" [] TPTP [] [] []
 
 

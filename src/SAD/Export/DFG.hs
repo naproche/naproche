@@ -64,6 +64,7 @@ dfgTerm d = dive
     binder f  = showChar '[' . dfgTerm (succ d) (Ind 0 undefined)
               . showString "]," . dfgTerm (succ d) f
 
+showTrName :: Formula -> ShowS
 showTrName = showString . filter (/= ':') . trName
 
 

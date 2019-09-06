@@ -31,14 +31,21 @@ data Message
   | WfMsg {message :: [String]} -- Well-formedness message
   | Unknown deriving Show
 
+isUnknownMsg :: Message -> Bool
 isUnknownMsg Unknown     = True; isUnknownMsg _ = False
+isExpectMsg :: Message -> Bool
 isExpectMsg  ExpectMsg{} = True; isExpectMsg  _ = False
+isWfMsg :: Message -> Bool
 isWfMsg      WfMsg{}     = True; isWfMsg      _ = False
 
+newMessage :: String -> Message
 newMessage  msg = ExpectMsg {unExpect = "" , expect = []   , message = [msg]}
+newUnExpect :: String -> Message
 newUnExpect tok = ExpectMsg {unExpect = tok, expect = []   , message = []   }
+newExpect :: String -> Message
 newExpect   msg = ExpectMsg {unExpect = "" , expect = [msg], message = []   }
 
+newWfMsg :: [String] -> Message
 newWfMsg msgs = WfMsg msgs
 
 instance Enum Message where
@@ -110,9 +117,11 @@ firstSetMerge e1@(ParseError pos1 msg1) e2@(ParseError pos2 msg2) =
        | isExpectMsg msg2 -> e2
        | otherwise        -> e1 {peMsg = mergeMessage msg1 msg2}
 
+(<+>) :: ParseError -> ParseError -> ParseError
 (<+>) = firstSetMerge
 
 
+(<++>) :: ParseError -> ParseError -> ParseError
 (<++>) = mostImportantMerge
 
 setExpectMessage :: String -> ParseError -> ParseError

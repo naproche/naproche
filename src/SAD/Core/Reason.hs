@@ -62,6 +62,8 @@ withContext :: VM a -> [Context] -> VM a
 withContext action context = local (\vState -> 
   vState { currentContext = context }) action
 
+thesis :: ReaderT VState SAD.Core.Base.CRM Context
+context :: ReaderT VState SAD.Core.Base.CRM [Context]
 thesis = asks currentThesis; context = asks currentContext
 
 
@@ -292,6 +294,9 @@ unfoldConservative toUnfold
     isDeclaration = (==) LowDefinition . Block.kind . Context.head
 
 {- unfold an atomic formula f occuring with polarity sign -}
+unfoldAtomic :: (W.MonadWriter w m, MonadTrans t,
+                 MonadReader UnfoldState (t m), Num w) =>
+                Bool -> Formula -> t m Formula
 unfoldAtomic sign f = do
   nbs <- localProperties f >>= return . foldr (if sign then And else Or ) marked
   subtermLocalProperties f >>= return . foldr (if sign then And else Imp) nbs
@@ -371,13 +376,17 @@ unfoldAtomic sign f = do
     unfGuard unfoldSetting action =
       asks unfoldSetting >>= \p -> if p then action else return []
 
+hasDMK :: Formula -> Bool
 hasDMK (Tag GenericMark _ ) = True
 hasDMK _ = False
 
+setType :: Formula -> Bool
 setType f | hasInfo f = any (infoTwins ThisT $ zSet ThisT) $ trInfo f
 setType _ = False
 
+funType :: Formula -> Bool
 funType f | hasInfo f = any (infoTwins ThisT $ zFun ThisT) $ trInfo f
 funType _ = False
 
+hasInfo :: Formula -> Bool
 hasInfo f = isTrm f || isVar f

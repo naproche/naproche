@@ -11,6 +11,7 @@ import SAD.Data.Definition (DefEntry(DE), Definitions, Guards, isGuard)
 import qualified SAD.Data.Definition as Definition
 import SAD.Core.Base
 import SAD.Prove.Normalize
+import SAD.Data.Structures.DisTree (DisTree)
 
 import Data.IntMap.Strict (IntMap)
 import qualified Data.IntMap.Strict as IM
@@ -32,6 +33,11 @@ type Position = [Int]
 the path we take at a binary operator. Unary operators (Not, All, Exi) are not reflected
 in the position.-}
 
+ontoReduce :: IntMap DefEntry
+              -> DisTree Bool
+              -> Int
+              -> Formula
+              -> (Formula, Int)
 ontoReduce dfs grds skolem f =
   let (conjuncts, newSkolem) = ontoPrep skolem f
       reducedConjuncts = map (boolSimp . ontoRed dfs grds) conjuncts

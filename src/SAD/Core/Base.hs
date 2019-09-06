@@ -9,7 +9,7 @@ Verifier state monad and common functions.
 
 
 module SAD.Core.Base (
-  RState (..), RM,
+  RState (..), RM, CRM,
   askRS, updateRS,
   justIO,
   (<|>),
@@ -165,27 +165,43 @@ justIO m = lift $ CRM $ \ _ _ k -> m >>= k
 
 -- State management from inside the verification monad
 
+askRS :: (RState -> b) -> ReaderT VState CRM b
 askRS f     = justRS >>= (justIO . fmap f . readIORef)
+updateRS :: (RState -> RState) -> ReaderT VState CRM ()
 updateRS f  = justRS >>= (justIO . flip modifyIORef f)
 
+askInstructionInt :: MonadReader VState f =>
+                     Instr.Int -> Int -> f Int
 askInstructionInt instr _default =
   fmap (Instr.askInt instr _default) $ asks instructions
+askInstructionBool :: MonadReader VState f =>
+                      Instr.Bool -> Bool -> f Bool
 askInstructionBool instr _default =
   fmap (Instr.askBool instr _default) $ asks instructions
+askInstructionString :: MonadReader VState f =>
+                        Instr.String -> String -> f String
 askInstructionString instr _default =
   fmap (Instr.askString instr _default) $ asks instructions
 
+addInstruction :: MonadReader VState m => Instr -> m a -> m a
 addInstruction instr =
   local $ \vs -> vs { instructions = instr : instructions vs }
+dropInstruction :: MonadReader VState m => Instr.Drop -> m a -> m a
 dropInstruction instr =
   local $ \vs -> vs { instructions = Instr.drop instr $ instructions vs }
+addTimeCounter :: TimeCounter
+                  -> NominalDiffTime -> ReaderT VState CRM ()
 addTimeCounter counter time =
   updateRS $ \rs -> rs { counters = TimeCounter counter time : counters rs }
+addIntCounter :: IntCounter -> Int -> ReaderT VState CRM ()
 addIntCounter  counter time =
   updateRS $ \rs -> rs { counters = IntCounter  counter time : counters rs }
+incrementIntCounter :: IntCounter -> ReaderT VState CRM ()
 incrementIntCounter counter = addIntCounter counter 1
 
 -- time proof tasks
+timer :: TimeCounter
+         -> ReaderT VState CRM b -> ReaderT VState CRM b
 timer counter task = do
   begin  <- justIO $ getCurrentTime
   result <- task
@@ -193,38 +209,56 @@ timer counter task = do
   addTimeCounter counter $ diffUTCTime end begin
   return result
 
+guardInstruction :: (MonadReader VState m, App.Alternative m) =>
+                    Instr.Bool -> Bool -> m ()
 guardInstruction instr _default =
   askInstructionBool instr _default >>= guard
+guardNotInstruction :: (MonadReader VState m, App.Alternative m) =>
+                       Instr.Bool -> Bool -> m ()
 guardNotInstruction instr _default =
   askInstructionBool instr _default >>= guard . not
+whenInstruction :: MonadReader VState m =>
+                   Instr.Bool -> Bool -> m () -> m ()
 whenInstruction instr _default action =
   askInstructionBool instr _default >>= \b -> when b action
 
 -- explicit failure management
 
+setFailed :: ReaderT VState CRM ()
 setFailed = updateRS (\st -> st {failed = True})
+checkFailed :: ReaderT VState CRM b
+               -> ReaderT VState CRM b -> ReaderT VState CRM b
 checkFailed alt1 alt2 = do
   failed <- askRS failed
   if failed then alt1 else alt2 
 
 -- local checking support
 
+setChecked :: ReaderT VState CRM ()
 setChecked = updateRS (\st -> st {alreadyChecked = True})
+unsetChecked :: ReaderT VState CRM ()
 unsetChecked = updateRS (\st -> st {alreadyChecked = False})
 
 -- Counter management
 
+fetchIntCounter :: [Counter] -> IntCounter -> [Int]
 fetchIntCounter  counterList counter =
   [ value | IntCounter  kind value <- counterList, counter == kind ]
+fetchTimeCounter :: [Counter] -> TimeCounter -> [NominalDiffTime]
 fetchTimeCounter counterList counter =
   [ value | TimeCounter kind value <- counterList, counter == kind ]
 
+accumulateIntCounter :: [Counter] -> Int -> IntCounter -> Int
 accumulateIntCounter  counterList startValue =
   foldr (+) startValue . fetchIntCounter counterList
+accumulateTimeCounter :: [Counter]
+                         -> UTCTime -> TimeCounter -> UTCTime
 accumulateTimeCounter counterList startValue =
   foldr addUTCTime startValue . fetchTimeCounter counterList
+maximalTimeCounter :: [Counter] -> TimeCounter -> NominalDiffTime
 maximalTimeCounter counterList = foldr max 0 . fetchTimeCounter counterList
 
+showTimeDiff :: RealFrac a => a -> [Char]
 showTimeDiff t
   | hours == 0 =
       format minutes ++ ':' : format restSeconds ++ '.' : format restCentis
@@ -255,6 +289,7 @@ translateLog kind pos = justIO . Message.outputTranslate kind pos
 
 
 
+retrieveContext :: Set.Set String -> ReaderT VState CRM [Context]
 retrieveContext names = do
   globalContext <- asks currentContext
   let (context, unfoundSections) = runState (retrieve globalContext) names
@@ -278,6 +313,7 @@ retrieveContext names = do
 -- Definition management
 
 -- initial definitions
+initialDefinitions :: IM.IntMap DefEntry
 initialDefinitions = IM.fromList [
   (-1,  equality),
   (-2,  less),
@@ -288,21 +324,30 @@ initialDefinitions = IM.fromList [
   (-8,  elementOf),
   (-10, pair) ]
 
+equality :: DefEntry
 equality  = DE [] Top Signature (zEqu (zVar "?0") (zVar "?1")) [] []
+less :: DefEntry
 less      = DE [] Top Signature (zLess (zVar "?0") (zVar "?1")) [] []
+set :: DefEntry
 set       = DE [] Top Signature (zSet $ zVar "?0") [] []
+elementOf :: DefEntry
 elementOf = DE [zSet $ zVar "?1"] Top Signature
   (zElem (zVar "?0") (zVar "?1")) [] [[zSet $ zVar "?1"]]
+function :: DefEntry
 function  = DE [] Top Signature (zFun $ zVar "?0") [] []
+domain :: DefEntry
 domain    = DE [zFun $ zVar "?0"] (zSet ThisT) Signature
   (zDom $ zVar "?0") [zSet ThisT] [[zFun $ zVar "?0"]]
+pair :: DefEntry
 pair      = DE [] Top Signature (zPair (zVar "?0") (zVar "?1")) [] []
+functionApplication :: DefEntry
 functionApplication =
   DE [zFun $ zVar "?0", zElem (zVar $ "?1") $ zDom $ zVar "?0"] Top Signature
     (zApp (zVar "?0") (zVar "?1")) []
     [[zFun $ zVar "?0"],[zElem (zVar $ "?1") $ zDom $ zVar "?0"]]
 
 
+initialGuards :: DT.DisTree Bool
 initialGuards = foldr (\f -> DT.insert f True) (DT.empty) [
   zSet $ zVar "?1",
   zFun $ zVar "?0",

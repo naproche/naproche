@@ -35,6 +35,7 @@ data Token =
     tokenProper :: Bool} |
   EOF {tokenPos :: SourcePos}
 
+makeToken :: String -> SourcePos -> Bool -> Bool -> Token
 makeToken s pos ws proper =
   Token s (rangePos (pos, advancesPos pos s)) ws proper
 

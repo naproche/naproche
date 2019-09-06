@@ -187,52 +187,91 @@ zTrm tId t ts = Trm t ts [] tId
 
 -- creation of predefined functions and notions
 
+zEqu :: Formula -> Formula -> Formula
 zEqu t s  = zTrm equalityId "=" [t,s]
+zLess :: Formula -> Formula -> Formula
 zLess t s = zTrm lessId "iLess" [t,s]
+zThesis :: Formula
 zThesis   = zTrm thesisId "#TH#" []
+zFun :: Formula -> Formula
 zFun      = zTrm functionId "aFunction" . pure
+zApp :: Formula -> Formula -> Formula
 zApp f v  = zTrm applicationId "sdtlbdtrb" [f , v]
+zDom :: Formula -> Formula
 zDom      = zTrm domainId "szDzozmlpdtrp" . pure
+zSet :: Formula -> Formula
 zSet      = zTrm setId "aSet" . pure
+zElem :: Formula -> Formula -> Formula
 zElem x m = zTrm elementId "aElementOf" [x,m]
+zProd :: Formula -> Formula -> Formula
 zProd m n = zTrm productId "szPzrzozdlpdtcmdtrp" [m, n]
+zPair :: Formula -> Formula -> Formula
 zPair x y = zTrm pairId "slpdtcmdtrp" [x,y]
+zObj :: Formula -> Formula
 zObj      = zTrm objectId "aObj" . pure -- this is a dummy for parsing purposes
 
 
 -- predefined identifier
 
+equalityId :: Int
 equalityId    =  -1 :: Int
+lessId :: Int
 lessId        =  -2 :: Int
+thesisId :: Int
 thesisId      =  -3 :: Int
+functionId :: Int
 functionId    =  -4 :: Int
+applicationId :: Int
 applicationId =  -5 :: Int
+domainId :: Int
 domainId      =  -6 :: Int
+setId :: Int
 setId         =  -7 :: Int
+elementId :: Int
 elementId     =  -8 :: Int
+productId :: Int
 productId     =  -9 :: Int
+pairId :: Int
 pairId        = -10 :: Int
+objectId :: Int
 objectId      = -11 :: Int
+newId :: Int
 newId         = -15 :: Int -- temporary id given to newly introduced symbols
 
 
 -- quick checks of syntactic properties
 
+isApplication :: Formula -> Bool
 isApplication Trm {trId = -5} = True; isApplication _ = False
+isTop :: Formula -> Bool
 isTop Top = True; isTop _ = False
+isBot :: Formula -> Bool
 isBot Bot = True; isBot _ = False
+isIff :: Formula -> Bool
 isIff (Iff _ _) = True; isIff _ = False
+isInd :: Formula -> Bool
 isInd Ind{} = True; isInd _ = False
+isVar :: Formula -> Bool
 isVar Var{} = True; isVar _ = False
+isTrm :: Formula -> Bool
 isTrm Trm{} = True; isTrm _ = False
+isEquality :: Formula -> Bool
 isEquality t@Trm{} = trId t == equalityId; isEquality _ = False
+isThesis :: Formula -> Bool
 isThesis t@Trm{} = trId t == thesisId; isThesis _ = False
+hasDEC :: Formula -> Bool
 hasDEC (Tag EqualityChain _) = True; hasDEC _ = False
+isExi :: Formula -> Bool
 isExi (Exi _ _) = True; isExi _ = False
+isAll :: Formula -> Bool
 isAll (All _ _) = True; isAll _ = False
+isConst :: Formula -> Bool
 isConst t@Trm{} = null $ trArgs t; isConst Var{} = True; isConst _ = False
+isNot :: Formula -> Bool
 isNot (Not _) = True; isNot _ = False
+isNotion :: Formula -> Bool
 isNotion Trm {trName = 'a':_} = True; isNotion _ = False
+isElem :: Formula -> Bool
 isElem t = isTrm t && trId t == elementId
 
 -- Holes and slots

@@ -125,6 +125,8 @@ extractRewriteRule c =
 
 -- Evaluation for functions and sets
 
+addEvaluation :: DT.DisTree Evaluation
+                 -> Formula -> DT.DisTree Evaluation
 addEvaluation evaluations f =
   foldr (\eval -> DT.insert (Evaluation.term eval) eval) evaluations $
   extractEvaluation evaluations f
@@ -138,8 +140,14 @@ extractEvaluation dt = flip runReaderT (0, dt) . dive
     dive (Imp f g) = dive g
     dive f = extractEv id [] f
 
+extractEv :: (Formula -> Formula)
+             -> [Formula]
+             -> Formula
+             -> ReaderT (Int, DT.DisTree Evaluation) [] Evaluation
 extractEv c gs f = extractFunctionEval c gs f `mplus` extractSetEval c gs f
 
+freshV :: (MonadReader (a, b1) m, Enum a, Show a) =>
+          (Formula -> m b2) -> Formula -> m b2
 freshV fn f = do -- generate fresh variables
   n <- asks fst; local (\(m,dt) -> (succ m, dt)) $ fn $ inst ('?':show n) f
 
@@ -179,6 +187,8 @@ extractSetEval c gs (All _ (Iff g@Trm{trArgs = [_,t]} f )) | isElem g = do
 extractSetEval _ _ f = mzero
 
 
+simplifyElementCondition :: DT.DisTree Evaluation
+                            -> Formula -> Formula
 simplifyElementCondition evals = dive
   where
     dive f@Trm {trArgs = [x,t]} | isElem f = fromMaybe f $ simp f
@@ -191,6 +201,7 @@ simplifyElementCondition evals = dive
 
     single [x] = return x; single l = mzero
 
+mkPos :: Formula -> Formula
 mkPos = dive
   where
     dive (Exi x f)   = All x $ dive f
@@ -198,4 +209,5 @@ mkPos = dive
     dive (And f g) = Imp f $ dive g
 
 
+instWith :: Formula -> Formula -> Formula
 instWith t = subst t "" . inst ""

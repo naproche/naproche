@@ -133,6 +133,7 @@ describe (And f g) = describe f `Or` describe g
 describe (Tag Condition (Imp f g)) = And f $ deExi g
 describe f = deExi f
 
+deExi :: Formula -> Formula
 deExi (Exi dcl (And f g)) = let x = Decl.name dcl in 
   dec $ And (inst x f) (deExi $ inst x g)
 deExi f = f
@@ -143,6 +144,7 @@ describe_exi (And f g) = describe_exi f `Or` describe_exi g
 describe_exi (Tag Condition (Imp f g)) = Imp f $ impExi g
 describe_exi f = impExi f
 
+impExi :: Formula -> Formula
 impExi (Exi dcl (And f g)) = let x = Decl.name dcl in
   dec $ Imp (inst x f) (impExi $ inst x g)
 impExi f = f

@@ -69,12 +69,14 @@ readInstr =
     readInstrString = liftM2 Instr.String (readKeywords Instr.keywordsString) readString
     readInstrStrings = liftM2 Instr.Strings (readKeywords Instr.keywordsStrings) readWords
 
+readInt :: Parser st Int
 readInt = try $ readString >>= intCheck
   where
     intCheck s = case reads s of
       ((n,[]):_) | n >= 0 -> return n
       _                   -> mzero
 
+readBool :: Parser st Bool
 readBool = try $ readString >>= boolCheck
   where
     boolCheck "yes" = return True
@@ -83,14 +85,17 @@ readBool = try $ readString >>= boolCheck
     boolCheck "off" = return False
     boolCheck _     = mzero
 
+readString :: Parser st [Char]
 readString = fmap concat readStrings
 
 
+readStrings :: Parser st [String]
 readStrings = chainLL1 notClosingBrk
   where
     notClosingBrk = tokenPrim notCl
     notCl t = let tk = showToken t in guard (tk /= "]") >> return tk
 
+readWords :: Parser st [String]
 readWords = shortHand </> chainLL1 word
   where
   shortHand = do

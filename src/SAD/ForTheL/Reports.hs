@@ -115,15 +115,27 @@ addMacroReport pos = addReports $ const [(pos, Markup.expression "macro definiti
 
 -- specific markup
 
+synonymLet :: Markup.T
 synonymLet = Markup.keyword3
+macroLet :: Markup.T
 macroLet = Markup.keyword3
+topsectionHeader :: Markup.T
 topsectionHeader = Markup.keyword1
+lowlevelHeader :: Markup.T
 lowlevelHeader = Markup.keyword2
+proofStart :: Markup.T
 proofStart = Markup.keyword3
+proofEnd :: Markup.T
 proofEnd = Markup.keyword3
+byAnnotation :: Markup.T
 byAnnotation = Markup.keyword2
+ifThen :: Markup.T
 ifThen = Markup.keyword2
+conjunctiveAnd :: Markup.T
 conjunctiveAnd = Markup.keyword2 -- as opposed to listing "and"
+neitherNor :: Markup.T
 neitherNor = Markup.keyword2
+whenWhere :: Markup.T
 whenWhere = Markup.keyword2
+or :: Markup.T
 or = Markup.keyword2
