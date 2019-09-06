@@ -37,10 +37,10 @@ data Token =
 
 makeToken :: String -> SourcePos -> Bool -> Bool -> Token
 makeToken s pos ws proper =
-  Token s (rangePos (pos, advancesPos pos s)) ws proper
+  Token s (rangePos (SourceRange pos (advanceAlong pos s))) ws proper
 
 tokenEndPos :: Token -> SourcePos
-tokenEndPos tok@Token{} = advancesPos (tokenPos tok) (tokenText tok)
+tokenEndPos tok@Token{} = advanceAlong (tokenPos tok) (tokenText tok)
 tokenEndPos tok@EOF {} = tokenPos tok
 
 tokensRange :: [Token] -> SourceRange
@@ -67,15 +67,15 @@ tokenize start = posToken start False
   where
     posToken pos ws s
       | not (null lexem) =
-          makeToken lexem pos ws True : posToken (advancesPos pos lexem) False rest
+          makeToken lexem pos ws True : posToken (advanceAlong pos lexem) False rest
       where (lexem, rest) = span isLexem s
 
     posToken pos _ s
-      | not (null white) = posToken (advancesPos pos white) True rest
+      | not (null white) = posToken (advanceAlong pos white) True rest
       where (white, rest) = span isSpace s
 
     posToken pos ws s@('#':_) =
-      makeToken comment pos False False : posToken (advancesPos pos comment) ws rest
+      makeToken comment pos False False : posToken (advanceAlong pos comment) ws rest
       where (comment, rest) = break (== '\n') s
 
     posToken pos ws (c:cs) =

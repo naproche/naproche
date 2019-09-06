@@ -9,7 +9,7 @@ module SAD.Data.Instr where
 import Prelude hiding (Int, Bool, String, drop)
 import qualified Prelude
 import Control.Monad
-import SAD.Core.SourcePos (SourcePos, SourceRange)
+import SAD.Core.SourcePos (SourcePos, SourceRange(..))
 import qualified SAD.Core.SourcePos as SourcePos
 
 
@@ -18,7 +18,7 @@ import qualified SAD.Core.SourcePos as SourcePos
 data Pos = Pos {start :: SourcePos, stop :: SourcePos, range :: SourceRange}
 
 position :: Pos -> SourcePos
-position = fst . range
+position p = let SourceRange a b = range p in a
 
 noPos :: Pos
 noPos = Pos SourcePos.noPos SourcePos.noPos SourcePos.noRange

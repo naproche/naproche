@@ -6,13 +6,13 @@ Token source positions: counting Unicode codepoints.
 
 module SAD.Core.SourcePos
   ( SourcePos (sourceFile, sourceLine, sourceColumn, sourceOffset, sourceEndOffset),
-    SourceRange,
+    SourceRange(SourceRange),
     noPos,
     fileOnlyPos,
     filePos,
     startPos,
     advancePos,
-    advancesPos,
+    advanceAlong,
     noRangePos,
     rangePos,
     makeRange,
@@ -20,15 +20,13 @@ module SAD.Core.SourcePos
   where
 
 import qualified Data.List as List
-import Isabelle.Library
 
-
--- positions
-
+-- | A 'SourcePos' is either a position or a range in the 'sourceFile'.
+-- Integer values <= 0 signify 'not given'.
 data SourcePos =
   SourcePos {
-    sourceFile :: String,
-    sourceLine :: Int,
+    sourceFile :: FilePath,
+    sourceLine :: Int, 
     sourceColumn :: Int,
     sourceOffset :: Int,
     sourceEndOffset :: Int }
@@ -64,46 +62,33 @@ advancePos (SourcePos file line column offset endOffset) c =
     (advanceOffset offset c)
     endOffset
 
-advancesPos :: SourcePos -> String -> SourcePos
-advancesPos (SourcePos file line column offset endOffset) s =
-  SourcePos file
-    (foldl advanceLine line s)
-    (foldl advanceColumn column s)
-    (foldl advanceOffset offset s)
-    endOffset
+advanceAlong :: SourcePos -> String -> SourcePos
+advanceAlong = List.foldl' advancePos
 
-
--- ranges: explicit end position
-
-type SourceRange = (SourcePos, SourcePos)
+data SourceRange = SourceRange SourcePos SourcePos
+  deriving (Eq, Show)
 
 noRangePos :: SourcePos -> SourcePos
 noRangePos (SourcePos file line column offset _) =
   SourcePos file line column offset 0
 
 rangePos :: SourceRange -> SourcePos
-rangePos (SourcePos file line column offset _, SourcePos _ _ _ offset' _) =
+rangePos (SourceRange (SourcePos file line column offset _) ( SourcePos _ _ _ offset' _)) =
   SourcePos file line column offset offset'
 
 makeRange :: (SourcePos, SourcePos) -> SourceRange
-makeRange (pos, pos') = (rangePos (pos, pos'), noRangePos pos')
+makeRange (pos, pos') = SourceRange (rangePos (SourceRange pos pos')) (noRangePos pos')
 
 noRange :: SourceRange
-noRange = (noPos, noPos)
-
-
--- human-readable output
+noRange = SourceRange noPos noPos
 
 instance Show SourcePos where
-  show (SourcePos file line column _ _) =
-    if null showName then showDetails
-    else if null showDetails then showName
-    else showName ++ " " ++ showDetails
+  show (SourcePos file line column _ _) = List.intercalate " " $ filter (not . null) [quotedFilePath, listOfDetails]
     where
       detail a i = if i <= 0 then "" else a ++ " " ++ show i
       details = [detail "line" line, detail "column" column]
-      showDetails =
+      listOfDetails =
         case filter (not . null) details of
           [] -> ""
-          ds -> "(" ++ commas ds ++ ")"
-      showName = if null file then "" else "\"" ++ file ++ "\""
+          ds -> "(" ++ List.intercalate ", " ds ++ ")"
+      quotedFilePath = if null file then "" else "\"" ++ file ++ "\""
