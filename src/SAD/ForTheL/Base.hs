@@ -57,7 +57,6 @@ data FState = FState {
   reports :: [Message.Report], pide :: Maybe PIDE }
 
 
-
 initFS :: Maybe PIDE -> FState
 initFS = FState
   eq [] nt sn
@@ -227,15 +226,17 @@ primSnt p  = noError $ varlist >>= getExpr sntExpr . snt
 
 
 data Patt = Wd [String] | Sm String | Vr | Nm deriving (Eq, Show)
- -- I added the deriving Show
 
+-- | DANGER: Not symmetric on `Wd`
 samePat :: [Patt] -> [Patt] -> Bool
 samePat [] [] = True
-samePat (Wd ls : rst1) (Wd rs : rst2) =
-  all (`elem` rs) ls && samePat rst1 rst2
-samePat (Vr : rst1) (Vr : rst2) = samePat rst1 rst2
-samePat (Nm : rst1) (Nm : rst2) = samePat rst1 rst2
-samePat (Sm s : rst1) (Sm t : rst2) = s == t && samePat rst1 rst2
+samePat (x:xs) (y:ys) = samePat1 x y && samePat xs ys
+  where
+    samePat1 (Wd ls) (Wd rs) = all (`elem` rs) ls
+    samePat1 Vr Vr = True
+    samePat1 Nm Nm = True
+    samePat1 (Sm s) (Sm t) = s == t
+    samePat1 _ _ = False
 samePat _ _ = False
 
 
@@ -245,10 +246,9 @@ patternWdTokenOf l = label ("a word of " ++ show l) $ wdTokenOf l
 patternSmTokenOf :: [Char] -> Parser st ()
 patternSmTokenOf l = label ("the symbol " ++ show l) $ smTokenOf l
 
--- most basic pattern parser: simply follow the pattern anf parse terms with p
+-- most basic pattern parser: simply follow the pattern and parse terms with p
 -- at variable places
-wdPatt :: Parser st (b -> b, a)
-          -> [Patt] -> Parser st (b -> b, [a])
+wdPatt :: Parser st (b -> b, a) -> [Patt] -> Parser st (b-> b, [a])
 wdPatt p (Wd l : ls) = patternWdTokenOf l >> wdPatt p ls
 wdPatt p (Vr : ls) = do
   (r, t) <- p
@@ -268,8 +268,7 @@ smPatt _ _ = mzero
 -- right before the first variable. Then check that all "and" tokens have been
 -- consumed. Example pattern: [Wd ["commute","commutes"], Wd ["with"], Vr]. Then
 -- we can parse "a commutes with c and d" as well as "a and b commute".
-mlPatt :: Parser st (b -> b, a)
-          -> [Patt] -> Parser st (b -> b, [a])
+mlPatt :: Parser st (b -> b, a) -> [Patt] -> Parser st (b -> b, [a])
 mlPatt p (Wd l :_: Vr : ls) = patternWdTokenOf l >> naPatt p ls
 mlPatt p (Wd l : ls) = patternWdTokenOf l >> mlPatt p ls
 mlPatt _ _ = mzero
@@ -297,7 +296,7 @@ ofPatt p (Nm : Wd l : Vr : ls) = do
   return (q, vs, ts)
 ofPatt _ _ = mzero
 
--- parse a "common"-notion: basically like the above. We use the special parser
+-- | parse a "common"-notion: basically like the above. We use the special parser
 -- s for the first variable place after the "of" since we expect multiple terms
 -- here. Example: A common *divisor of m and n*.
 cmPatt :: Parser FState (b -> b, a1)
@@ -313,7 +312,7 @@ cmPatt p s (Nm : Wd l : Vr : ls) = do
   return (r . q, vs, as, ts)
 cmPatt _ _ _ = mzero
 
--- an auxiliary pattern parser that checks that we are not dealing wiht an "and"
+-- an auxiliary pattern parser that checks that we are not dealing with an "and"
 -- wdToken and then continues to follow the pattern
 naPatt :: Parser st (b -> b, a)
           -> [Patt] -> Parser st (b -> b, [a])
@@ -324,25 +323,25 @@ naPatt p ls = wdPatt p ls
 
 -- Variables
 
-namlist :: Parser FState [([Char], SourcePos)]
+namlist :: Parser FState [(String, SourcePos)]
 namlist = varlist -|- fmap (:[]) hidden
 
-varlist :: Parser st [([Char], SourcePos)]
+varlist :: Parser st [(String, SourcePos)]
 varlist = do
   vs <- var `sepBy` wdToken ","
   nodups $ map fst vs ; return vs
 
-nodups :: Monad f => [String] -> f ()
+nodups :: [String] -> Parser st ()
 nodups vs = unless ((null :: [b] -> Bool) $ duplicateNames vs) $
   fail $ "duplicate names: " ++ show vs
 
-hidden :: Parser FState ([Char], SourcePos)
+hidden :: Parser FState (String, SourcePos)
 hidden = do
   n <- MS.gets hiddenCount
   MS.modify $ \st -> st {hiddenCount = succ n}
   return ('h':show n, noPos)
 
-var :: Parser st ([Char], SourcePos)
+var :: Parser st (String, SourcePos)
 var = do
   pos <- getPos
   v <- satisfy (\s -> all isAlphaNum s && isAlpha (head s))
