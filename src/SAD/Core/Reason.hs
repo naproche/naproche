@@ -119,8 +119,12 @@ launchProver iteration = do
   let callATP = justIO $ 
         export reductionSetting iteration proverList instrList context goal
   callATP >>= timer ProofTime . justIO >>= guard
-  TimeCounter _ time <- fmap head $ askRS counters
-  addTimeCounter SuccessTime time ; incrementIntCounter SuccessfulGoals
+  res <- fmap head $ askRS counters
+  case res of
+    TimeCounter _ time -> do
+      addTimeCounter SuccessTime time
+      incrementIntCounter SuccessfulGoals
+    _ -> error "No matching case in launchProver"
   where
     printTask reductionSetting = do
       let getFormula = if reductionSetting then Context.reducedFormula else Context.formula

@@ -6,6 +6,7 @@ Parser datatype and monad instance.
 {-# LANGUAGE PolymorphicComponents #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE CPP #-}
 module SAD.Parser.Base
   ( Parser(..),
     State (..),
@@ -19,6 +20,9 @@ module SAD.Parser.Base
   where
 
 import Control.Monad
+#if MIN_VERSION_base(4,9,0)
+import qualified Control.Monad.Fail as Fail
+#endif
 import qualified Control.Applicative as Applicative
 import Control.Monad.State.Class
 
@@ -85,9 +89,16 @@ instance Monad (Parser st) where
         pcerr = cerr
         peerr = eerr
     in runParser p st pok pcerr peerr
-
+#if !MIN_VERSION_base(4,9,0)
   fail s = Parser $ \st _ _ eerr ->
     eerr $ newErrorMessage (newMessage s) (stPosition st)
+#else
+  fail = Fail.fail
+
+instance Fail.MonadFail (Parser st) where
+  fail s = Parser $ \st _ _ eerr ->
+    eerr $ newErrorMessage (newMessage s) (stPosition st)
+#endif
 
 
 -- The reverses are just for debugging to force an intuitive order,
