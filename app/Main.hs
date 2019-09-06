@@ -62,11 +62,11 @@ main  = do
 
   oldTextRef <- newIORef $ TextRoot []
 
-  if Instr.askBool Instr.Help False opts0 then
+  if Instr.askFlag Instr.Help False opts0 then
     putStr (GetOpt.usageInfo usageHeader options)
   else -- main body with explicit error handling, notably for PIDE
     Exception.catch
-      (if Instr.askBool Instr.Server False opts0 then
+      (if Instr.askFlag Instr.Server False opts0 then
         Server.server (Server.publish_stdout "Naproche-SAD") (serverConnection oldTextRef args0)
       else do Message.consoleThread; mainBody oldTextRef (opts0, text0))
       (\err -> do
@@ -85,7 +85,7 @@ mainBody oldTextRef (opts0, text0) = do
 
 
   -- if -T / --onlytranslate is passed as an option, only print the translated text
-  if Instr.askBool Instr.OnlyTranslate False opts0 then
+  if Instr.askFlag Instr.OnlyTranslate False opts0 then
     do
       let timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)
           TextRoot txts = text1
@@ -210,8 +210,8 @@ readArgs args = do
   return (revInitialOpts, initialText)
 
 wellformed :: Instr -> Bool
-wellformed (Instr.Bool _ v) = v == v
-wellformed (Instr.Int _ v) = v == v
+wellformed (Instr.SetFlag _ v) = v == v
+wellformed (Instr.LimitBy _ v) = v == v
 wellformed _            = True
 
 usageHeader :: [Char]
@@ -220,14 +220,14 @@ usageHeader =
 
 options :: [GetOpt.OptDescr Instr]
 options = [
-  GetOpt.Option "h" ["help"] (GetOpt.NoArg (Instr.Bool Instr.Help True)) "show command-line help",
+  GetOpt.Option "h" ["help"] (GetOpt.NoArg (Instr.SetFlag Instr.Help True)) "show command-line help",
   GetOpt.Option ""  ["init"] (GetOpt.ReqArg (Instr.String Instr.Init) "FILE")
     "init file, empty to skip (def: init.opt)",
-  GetOpt.Option "T" ["onlytranslate"] (GetOpt.NoArg (Instr.Bool Instr.OnlyTranslate True))
+  GetOpt.Option "T" ["onlytranslate"] (GetOpt.NoArg (Instr.SetFlag Instr.OnlyTranslate True))
     "translate input text and exit",
-  GetOpt.Option "" ["translate"] (GetOpt.ReqArg (Instr.Bool Instr.Translation . bool) "{on|off}")
+  GetOpt.Option "" ["translate"] (GetOpt.ReqArg (Instr.SetFlag Instr.Translation . bool) "{on|off}")
     "print first-order translation of sentences",
-  GetOpt.Option "" ["server"] (GetOpt.NoArg (Instr.Bool Instr.Server True))
+  GetOpt.Option "" ["server"] (GetOpt.NoArg (Instr.SetFlag Instr.Server True))
     "run in server mode",
   GetOpt.Option ""  ["library"] (GetOpt.ReqArg (Instr.String Instr.Library) "DIR")
     "place to look for library texts (def: .)",
@@ -235,67 +235,67 @@ options = [
     "index of provers (def: provers.dat)",
   GetOpt.Option "P" ["prover"] (GetOpt.ReqArg (Instr.String Instr.Prover) "NAME")
     "use prover NAME (def: first listed)",
-  GetOpt.Option "t" ["timelimit"] (GetOpt.ReqArg (Instr.Int Instr.Timelimit . int) "N")
+  GetOpt.Option "t" ["timelimit"] (GetOpt.ReqArg (Instr.LimitBy Instr.Timelimit . int) "N")
     "N seconds per prover call (def: 3)",
-  GetOpt.Option ""  ["depthlimit"] (GetOpt.ReqArg (Instr.Int Instr.Depthlimit . int) "N")
+  GetOpt.Option ""  ["depthlimit"] (GetOpt.ReqArg (Instr.LimitBy Instr.Depthlimit . int) "N")
     "N reasoner loops per goal (def: 7)",
-  GetOpt.Option ""  ["checktime"] (GetOpt.ReqArg (Instr.Int Instr.Checktime . int) "N")
+  GetOpt.Option ""  ["checktime"] (GetOpt.ReqArg (Instr.LimitBy Instr.Checktime . int) "N")
     "timelimit for checker's tasks (def: 1)",
-  GetOpt.Option ""  ["checkdepth"] (GetOpt.ReqArg (Instr.Int Instr.Checkdepth . int) "N")
+  GetOpt.Option ""  ["checkdepth"] (GetOpt.ReqArg (Instr.LimitBy Instr.Checkdepth . int) "N")
     "depthlimit for checker's tasks (def: 3)",
-  GetOpt.Option "n" [] (GetOpt.NoArg (Instr.Bool Instr.Prove False))
+  GetOpt.Option "n" [] (GetOpt.NoArg (Instr.SetFlag Instr.Prove False))
     "cursory mode (equivalent to --prove off)",
-  GetOpt.Option "r" [] (GetOpt.NoArg (Instr.Bool Instr.Check False))
+  GetOpt.Option "r" [] (GetOpt.NoArg (Instr.SetFlag Instr.Check False))
     "raw mode (equivalent to --check off)",
-  GetOpt.Option "" ["prove"] (GetOpt.ReqArg (Instr.Bool Instr.Prove . bool) "{on|off}")
+  GetOpt.Option "" ["prove"] (GetOpt.ReqArg (Instr.SetFlag Instr.Prove . bool) "{on|off}")
     "prove goals in the text (def: on)",
-  GetOpt.Option "" ["check"] (GetOpt.ReqArg (Instr.Bool Instr.Check . bool) "{on|off}")
+  GetOpt.Option "" ["check"] (GetOpt.ReqArg (Instr.SetFlag Instr.Check . bool) "{on|off}")
     "check symbols for definedness (def: on)",
-  GetOpt.Option "" ["symsign"] (GetOpt.ReqArg (Instr.Bool Instr.Symsign . bool) "{on|off}")
+  GetOpt.Option "" ["symsign"] (GetOpt.ReqArg (Instr.SetFlag Instr.Symsign . bool) "{on|off}")
     "prevent ill-typed unification (def: on)",
-  GetOpt.Option "" ["info"] (GetOpt.ReqArg (Instr.Bool Instr.Info . bool) "{on|off}")
+  GetOpt.Option "" ["info"] (GetOpt.ReqArg (Instr.SetFlag Instr.Info . bool) "{on|off}")
     "collect \"evidence\" literals (def: on)",
-  GetOpt.Option "" ["thesis"] (GetOpt.ReqArg (Instr.Bool Instr.Thesis . bool) "{on|off}")
+  GetOpt.Option "" ["thesis"] (GetOpt.ReqArg (Instr.SetFlag Instr.Thesis . bool) "{on|off}")
     "maintain current thesis (def: on)",
-  GetOpt.Option "" ["filter"] (GetOpt.ReqArg (Instr.Bool Instr.Filter . bool) "{on|off}")
+  GetOpt.Option "" ["filter"] (GetOpt.ReqArg (Instr.SetFlag Instr.Filter . bool) "{on|off}")
     "filter prover tasks (def: on)",
-  GetOpt.Option "" ["skipfail"] (GetOpt.ReqArg (Instr.Bool Instr.Skipfail . bool) "{on|off}")
+  GetOpt.Option "" ["skipfail"] (GetOpt.ReqArg (Instr.SetFlag Instr.Skipfail . bool) "{on|off}")
     "ignore failed goals (def: off)",
-  GetOpt.Option "" ["flat"] (GetOpt.ReqArg (Instr.Bool Instr.Flat . bool) "{on|off}")
+  GetOpt.Option "" ["flat"] (GetOpt.ReqArg (Instr.SetFlag Instr.Flat . bool) "{on|off}")
     "do not read proofs (def: off)",
-  GetOpt.Option "q" [] (GetOpt.NoArg (Instr.Bool Instr.Verbose False))
+  GetOpt.Option "q" [] (GetOpt.NoArg (Instr.SetFlag Instr.Verbose False))
     "print no details",
-  GetOpt.Option "v" [] (GetOpt.NoArg (Instr.Bool Instr.Verbose True))
+  GetOpt.Option "v" [] (GetOpt.NoArg (Instr.SetFlag Instr.Verbose True))
     "print more details (-vv, -vvv, etc)",
-  GetOpt.Option "" ["printgoal"] (GetOpt.ReqArg (Instr.Bool Instr.Printgoal . bool) "{on|off}")
+  GetOpt.Option "" ["printgoal"] (GetOpt.ReqArg (Instr.SetFlag Instr.Printgoal . bool) "{on|off}")
     "print current goal (def: on)",
-  GetOpt.Option "" ["printreason"] (GetOpt.ReqArg (Instr.Bool Instr.Printreason . bool) "{on|off}")
+  GetOpt.Option "" ["printreason"] (GetOpt.ReqArg (Instr.SetFlag Instr.Printreason . bool) "{on|off}")
     "print reasoner's messages (def: off)",
-  GetOpt.Option "" ["printsection"] (GetOpt.ReqArg (Instr.Bool Instr.Printsection . bool) "{on|off}")
+  GetOpt.Option "" ["printsection"] (GetOpt.ReqArg (Instr.SetFlag Instr.Printsection . bool) "{on|off}")
     "print sentence translations (def: off)",
-  GetOpt.Option "" ["printcheck"] (GetOpt.ReqArg (Instr.Bool Instr.Printcheck . bool) "{on|off}")
+  GetOpt.Option "" ["printcheck"] (GetOpt.ReqArg (Instr.SetFlag Instr.Printcheck . bool) "{on|off}")
     "print checker's messages (def: off)",
-  GetOpt.Option "" ["printprover"] (GetOpt.ReqArg (Instr.Bool Instr.Printprover . bool) "{on|off}")
+  GetOpt.Option "" ["printprover"] (GetOpt.ReqArg (Instr.SetFlag Instr.Printprover . bool) "{on|off}")
     "print prover's messages (def: off)",
-  GetOpt.Option "" ["printunfold"] (GetOpt.ReqArg (Instr.Bool Instr.Printunfold . bool) "{on|off}")
+  GetOpt.Option "" ["printunfold"] (GetOpt.ReqArg (Instr.SetFlag Instr.Printunfold . bool) "{on|off}")
     "print definition unfoldings (def: off)",
-  GetOpt.Option "" ["printfulltask"] (GetOpt.ReqArg (Instr.Bool Instr.Printfulltask . bool) "{on|off}")
+  GetOpt.Option "" ["printfulltask"] (GetOpt.ReqArg (Instr.SetFlag Instr.Printfulltask . bool) "{on|off}")
     "print full prover tasks (def: off)",
-  GetOpt.Option "" ["printsimp"] (GetOpt.ReqArg (Instr.Bool Instr.Printsimp . bool) "{on|off}")
+  GetOpt.Option "" ["printsimp"] (GetOpt.ReqArg (Instr.SetFlag Instr.Printsimp . bool) "{on|off}")
     "print simplification process (def: off)",
-  GetOpt.Option "" ["printthesis"] (GetOpt.ReqArg (Instr.Bool Instr.Printthesis . bool) "{on|off}")
+  GetOpt.Option "" ["printthesis"] (GetOpt.ReqArg (Instr.SetFlag Instr.Printthesis . bool) "{on|off}")
     "print thesis development (def: off)",
-  GetOpt.Option "" ["ontored"] (GetOpt.ReqArg (Instr.Bool Instr.Ontored . bool) "{on|off}")
+  GetOpt.Option "" ["ontored"] (GetOpt.ReqArg (Instr.SetFlag Instr.Ontored . bool) "{on|off}")
     "enable ontological reduction (def: off)",
-  GetOpt.Option "" ["unfoldlow"] (GetOpt.ReqArg (Instr.Bool Instr.Unfoldlow . bool) "{on|off}")
+  GetOpt.Option "" ["unfoldlow"] (GetOpt.ReqArg (Instr.SetFlag Instr.Unfoldlow . bool) "{on|off}")
     "enable unfolding of definitions in the whole low level context (def: on)",
-  GetOpt.Option "" ["unfold"] (GetOpt.ReqArg (Instr.Bool Instr.Unfold . bool) "{on|off}")
+  GetOpt.Option "" ["unfold"] (GetOpt.ReqArg (Instr.SetFlag Instr.Unfold . bool) "{on|off}")
     "enable unfolding of definitions (def: on)",
-  GetOpt.Option "" ["unfoldsf"] (GetOpt.ReqArg (Instr.Bool Instr.Unfoldsf . bool) "{on|off}")
+  GetOpt.Option "" ["unfoldsf"] (GetOpt.ReqArg (Instr.SetFlag Instr.Unfoldsf . bool) "{on|off}")
     "enable unfolding of set conditions and function evaluations (def: on)",
-  GetOpt.Option "" ["unfoldlowsf"] (GetOpt.ReqArg (Instr.Bool Instr.Unfoldlowsf . bool) "{on|off}")
+  GetOpt.Option "" ["unfoldlowsf"] (GetOpt.ReqArg (Instr.SetFlag Instr.Unfoldlowsf . bool) "{on|off}")
     "enable unfolding of set and function conditions in general (def: off)",
-  GetOpt.Option "" ["checkontored"] (GetOpt.ReqArg (Instr.Bool Instr.Checkontored . bool) "{on|off}")
+  GetOpt.Option "" ["checkontored"] (GetOpt.ReqArg (Instr.SetFlag Instr.Checkontored . bool) "{on|off}")
     "enable ontological reduction for checking of symbols (def: off)"]
 
 bool :: [Char] -> Bool

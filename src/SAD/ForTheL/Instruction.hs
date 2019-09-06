@@ -61,11 +61,11 @@ instrDrop = instrPos addInstrReport (wdToken "/" >> readInstrDrop)
 
 readInstr :: FTL Instr
 readInstr =
-  readInstrCommand -|- readInstrInt -|- readInstrBool -|- readInstrString -|- readInstrStrings
+  readInstrCommand -|- readInstrLimit -|- readInstrBool -|- readInstrString -|- readInstrStrings
   where
     readInstrCommand = fmap Instr.Command (readKeywords Instr.keywordsCommand)
-    readInstrInt = liftM2 Instr.Int (readKeywords Instr.keywordsInt) readInt
-    readInstrBool = liftM2 Instr.Bool (readKeywords Instr.keywordsBool) readBool
+    readInstrLimit = liftM2 Instr.LimitBy (readKeywords Instr.keywordsLimit) readInt
+    readInstrBool = liftM2 Instr.SetFlag (readKeywords Instr.keywordsFlag) readBool
     readInstrString = liftM2 Instr.String (readKeywords Instr.keywordsString) readString
     readInstrStrings = liftM2 Instr.Strings (readKeywords Instr.keywordsStrings) readWords
 
@@ -105,11 +105,11 @@ readWords = shortHand </> chainLL1 word
   variant w = smTokenOf "-" >> fmap (w ++) word
 
 readInstrDrop :: FTL Instr.Drop
-readInstrDrop = readInstrCommand -|- readInstrInt -|- readInstrBool
+readInstrDrop = readInstrCommand -|- readInstrLimit -|- readInstrBool
   where
     readInstrCommand = fmap Instr.DropCommand (readKeywords Instr.keywordsCommand)
-    readInstrInt = fmap Instr.DropInt (readKeywords Instr.keywordsInt)
-    readInstrBool = fmap Instr.DropBool (readKeywords Instr.keywordsBool)
+    readInstrLimit = fmap Instr.DropLimit (readKeywords Instr.keywordsLimit)
+    readInstrBool = fmap Instr.DropFlag (readKeywords Instr.keywordsFlag)
 
 
 readKeywords :: [(a, String)] -> Parser st a

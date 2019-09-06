@@ -171,13 +171,13 @@ updateRS :: (RState -> RState) -> ReaderT VState CRM ()
 updateRS f  = justRS >>= (justIO . flip modifyIORef f)
 
 askInstructionInt :: MonadReader VState f =>
-                     Instr.Int -> Int -> f Int
+                     Instr.Limit -> Int -> f Int
 askInstructionInt instr _default =
-  fmap (Instr.askInt instr _default) $ asks instructions
+  fmap (Instr.askLimit instr _default) $ asks instructions
 askInstructionBool :: MonadReader VState f =>
-                      Instr.Bool -> Bool -> f Bool
+                      Instr.Flag -> Bool -> f Bool
 askInstructionBool instr _default =
-  fmap (Instr.askBool instr _default) $ asks instructions
+  fmap (Instr.askFlag instr _default) $ asks instructions
 askInstructionString :: MonadReader VState f =>
                         Instr.String -> String -> f String
 askInstructionString instr _default =
@@ -210,15 +210,15 @@ timer counter task = do
   return result
 
 guardInstruction :: (MonadReader VState m, App.Alternative m) =>
-                    Instr.Bool -> Bool -> m ()
+                    Instr.Flag -> Bool -> m ()
 guardInstruction instr _default =
   askInstructionBool instr _default >>= guard
 guardNotInstruction :: (MonadReader VState m, App.Alternative m) =>
-                       Instr.Bool -> Bool -> m ()
+                       Instr.Flag -> Bool -> m ()
 guardNotInstruction instr _default =
   askInstructionBool instr _default >>= guard . not
 whenInstruction :: MonadReader VState m =>
-                   Instr.Bool -> Bool -> m () -> m ()
+                   Instr.Flag -> Bool -> m () -> m ()
 whenInstruction instr _default action =
   askInstructionBool instr _default >>= \b -> when b action
 

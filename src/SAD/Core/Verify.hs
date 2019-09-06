@@ -224,14 +224,14 @@ verificationLoop st@VS {
 verificationLoop state@ VS {restText = TextChecked txt : rest} =
   let newTxt = Block.setChildren txt (Block.children txt ++ newInstructions)
       newInstructions = [NonTextStoredInstr $
-        Instr.Bool Instr.Prove False :
-        Instr.Bool Instr.Printgoal False :
-        Instr.Bool Instr.Printreason False :
-        Instr.Bool Instr.Printsection False :
-        Instr.Bool Instr.Printcheck False :
-        Instr.Bool Instr.Printprover False :
-        Instr.Bool Instr.Printunfold False :
-        Instr.Bool Instr.Printfulltask False :
+        Instr.SetFlag Instr.Prove False :
+        Instr.SetFlag Instr.Printgoal False :
+        Instr.SetFlag Instr.Printreason False :
+        Instr.SetFlag Instr.Printsection False :
+        Instr.SetFlag Instr.Printcheck False :
+        Instr.SetFlag Instr.Printprover False :
+        Instr.SetFlag Instr.Printunfold False :
+        Instr.SetFlag Instr.Printfulltask False :
         instructions state]
   in  setChecked >> verificationLoop state {restText = newTxt : rest}
 
@@ -341,22 +341,22 @@ procTextInstr = flip proc $ ask >>= verificationLoop
 
     proc (Instr.Command _) = (>>) $ reasonLog Message.WRITELN noPos "unsupported instruction"
 
-    proc (Instr.Bool Instr.Verbose False) =
-      addInstruction (Instr.Bool Instr.Printgoal False) .
-      addInstruction (Instr.Bool Instr.Printreason False) .
-      addInstruction (Instr.Bool Instr.Printsection False) .
-      addInstruction (Instr.Bool Instr.Printcheck False) .
-      addInstruction (Instr.Bool Instr.Printprover False) .
-      addInstruction (Instr.Bool Instr.Printunfold False) .
-      addInstruction (Instr.Bool Instr.Printfulltask False)
+    proc (Instr.SetFlag Instr.Verbose False) =
+      addInstruction (Instr.SetFlag Instr.Printgoal False) .
+      addInstruction (Instr.SetFlag Instr.Printreason False) .
+      addInstruction (Instr.SetFlag Instr.Printsection False) .
+      addInstruction (Instr.SetFlag Instr.Printcheck False) .
+      addInstruction (Instr.SetFlag Instr.Printprover False) .
+      addInstruction (Instr.SetFlag Instr.Printunfold False) .
+      addInstruction (Instr.SetFlag Instr.Printfulltask False)
 
-    proc (Instr.Bool Instr.Verbose True) =
-      addInstruction (Instr.Bool Instr.Printgoal True) .
-      addInstruction (Instr.Bool Instr.Printreason True) .
-      addInstruction (Instr.Bool Instr.Printcheck True) .
-      addInstruction (Instr.Bool Instr.Printprover True) .
-      addInstruction (Instr.Bool Instr.Printunfold True) .
-      addInstruction (Instr.Bool Instr.Printfulltask True)
+    proc (Instr.SetFlag Instr.Verbose True) =
+      addInstruction (Instr.SetFlag Instr.Printgoal True) .
+      addInstruction (Instr.SetFlag Instr.Printreason True) .
+      addInstruction (Instr.SetFlag Instr.Printcheck True) .
+      addInstruction (Instr.SetFlag Instr.Printprover True) .
+      addInstruction (Instr.SetFlag Instr.Printunfold True) .
+      addInstruction (Instr.SetFlag Instr.Printfulltask True)
 
     proc i 
       | isParserInstruction i = id

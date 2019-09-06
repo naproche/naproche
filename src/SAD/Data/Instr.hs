@@ -28,16 +28,16 @@ noPos = Pos SourcePos.noPos SourcePos.noPos SourcePos.noRange
 
 data Instr =
     Command Command
-  | Int Int Prelude.Int
-  | Bool Bool Prelude.Bool
+  | LimitBy Limit Prelude.Int
+  | SetFlag Flag Prelude.Bool
   | String String Prelude.String
   | Strings Strings [Prelude.String]
   deriving (Show, Eq)
 
 data Drop =
     DropCommand Command
-  | DropInt Int
-  | DropBool Bool
+  | DropLimit Limit
+  | DropFlag Flag
   | DropString String
   deriving (Show, Eq)
 
@@ -53,14 +53,14 @@ data Command =
   | RULES
   deriving (Eq,Show)
 
-data Int =
+data Limit =
     Timelimit   -- time limit per prover launch  (3 sec)
   | Depthlimit  -- number of reasoner iterations (7)
   | Checktime   -- time limit for checker's tasks (1 sec)
   | Checkdepth  -- depth limit for checker's tasks (3)
   deriving (Eq,Show)
 
-data Bool =
+data Flag =
     Prove          --  prove goals (yes)
   | Check          --  look for applicable definitions (yes)
   | Symsign        --  rename symbols with diverging defs (yes)
@@ -108,11 +108,11 @@ data Strings =
 
 -- Ask
 
-askInt :: Int -> Prelude.Int -> [Instr] -> Prelude.Int
-askInt i d is  = head $ [ v | Int j v <- is, i == j ] ++ [d]
+askLimit :: Limit -> Prelude.Int -> [Instr] -> Prelude.Int
+askLimit i d is  = head $ [ v | LimitBy j v <- is, i == j ] ++ [d]
 
-askBool :: Bool -> Prelude.Bool -> [Instr] -> Prelude.Bool
-askBool i d is  = head $ [ v | Bool j v <- is, i == j ] ++ [d]
+askFlag :: Flag -> Prelude.Bool -> [Instr] -> Prelude.Bool
+askFlag i d is  = head $ [ v | SetFlag j v <- is, i == j ] ++ [d]
 
 askString :: String -> Prelude.String -> [Instr] -> Prelude.String
 askString i d is  = head $ [ v | String j v <- is, i == j ] ++ [d]
@@ -122,8 +122,8 @@ askString i d is  = head $ [ v | String j v <- is, i == j ] ++ [d]
 
 drop :: Drop -> [Instr] -> [Instr]
 drop (DropCommand m) (Command n : rs) | n == m = rs
-drop (DropInt m) (Int n _ : rs) | n == m = rs
-drop (DropBool m) (Bool n _ : rs) | n == m = rs
+drop (DropLimit m) (LimitBy n _ : rs) | n == m = rs
+drop (DropFlag m) (SetFlag n _ : rs) | n == m = rs
 drop (DropString m) (String n _ : rs) | n == m = rs
 drop i (r : rs)  = r : drop i rs
 drop _ _ = []
@@ -140,15 +140,15 @@ keywordsCommand =
   (FILTER, "filter"),
   (RULES, "rules")]
 
-keywordsInt :: [(Int, Prelude.String)]
-keywordsInt =
+keywordsLimit :: [(Limit, Prelude.String)]
+keywordsLimit =
  [(Timelimit, "timelimit"),
   (Depthlimit, "depthlimit"),
   (Checktime, "checktime"),
   (Checkdepth, "checkdepth")]
 
-keywordsBool :: [(Bool, Prelude.String)]
-keywordsBool =
+keywordsFlag :: [(Flag, Prelude.String)]
+keywordsFlag =
  [(Prove, "prove"),
   (Check, "check"),
   (Symsign, "symsign"),

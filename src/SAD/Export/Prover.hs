@@ -41,7 +41,7 @@ export reduced depth provers instrs context goal = do
   when (null proversNamed) $ Message.errorExport noPos $ "No prover named " ++ quote proverName
 
   let prover@(Prover _ label path args fmt yes nos uns) = head proversNamed
-      timeLimit = Instr.askInt Instr.Timelimit 3 instrs
+      timeLimit = Instr.askLimit Instr.Timelimit 3 instrs
       proc =
         (Process.proc path (map (setTimeLimit timeLimit) args))
           {Process.std_in = Process.CreatePipe,
@@ -56,7 +56,7 @@ export reduced depth provers instrs context goal = do
   let output = case fmt of TPTP -> TPTP.output; DFG -> DFG.output
       task = output reduced prover timeLimit context goal
 
-  when (Instr.askBool Instr.Dump False instrs) $ Message.output "" Message.WRITELN noPos task
+  when (Instr.askFlag Instr.Dump False instrs) $ Message.output "" Message.WRITELN noPos task
 
   seq (length task) $ return $
     do
@@ -86,7 +86,7 @@ export reduced depth provers instrs context goal = do
             out = map (("[" ++ label ++ "] ") ++) lns
 
         when (null lns) $ Message.errorExport noPos "No prover response"
-        when (Instr.askBool Instr.Printprover False instrs) $
+        when (Instr.askFlag Instr.Printprover False instrs) $
             mapM_ (Message.output "" Message.WRITELN noPos) out
 
         let positive = any (\l -> any (`isPrefixOf` l) yes) lns

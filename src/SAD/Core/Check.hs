@@ -124,9 +124,9 @@ testDef context term (guards, fortifiedTerm) = do
     
     setup :: VM a -> VM a
     setup action = do
-      timelimit <- Instr.Int Instr.Timelimit <$> askInstructionInt Instr.Checktime 1
-      depthlimit <- Instr.Int Instr.Depthlimit <$> askInstructionInt Instr.Checkdepth 3
-      ontored <- Instr.Bool Instr.Ontored <$> askInstructionBool Instr.Checkontored False
+      timelimit <- Instr.LimitBy Instr.Timelimit <$> askInstructionInt Instr.Checktime 1
+      depthlimit <- Instr.LimitBy Instr.Depthlimit <$> askInstructionInt Instr.Checkdepth 3
+      ontored <- Instr.SetFlag Instr.Ontored <$> askInstructionBool Instr.Checkontored False
       addInstruction timelimit $ addInstruction depthlimit $ addInstruction ontored action
 
     wipeLink context =
