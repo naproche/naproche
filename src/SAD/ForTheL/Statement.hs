@@ -28,6 +28,7 @@ import qualified Control.Monad.State.Class as MS
 import Data.Function ((&))
 
 
+import Control.Applicative
 import Control.Monad
 
 

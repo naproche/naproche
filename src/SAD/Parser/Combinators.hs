@@ -15,6 +15,7 @@ import SAD.Parser.Primitives
 import Data.Char
 import Data.List
 
+import Control.Applicative
 import Control.Monad
 import Data.Maybe (isJust, fromJust)
 import Debug.Trace
@@ -26,11 +27,7 @@ import Debug.Trace
 ---- unambiguous choice
 
 ------  Choose in LL1 fashion
-infixr 2 <|>
-{-# INLINE (<|>) #-}
-(<|>) :: Parser st a -> Parser st a -> Parser st a
-(<|>) = mplus
-
+-- use '<|>' in "Control.Applicative"
 
 ------ Choose with lookahead
 {-# INLINE (</>) #-}

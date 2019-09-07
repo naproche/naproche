@@ -11,6 +11,7 @@ module SAD.ForTheL.Structure (forthel) where
 import Data.List
 import Data.Maybe
 import Data.Char (isAlphaNum)
+import Control.Applicative
 import Control.Monad
 import qualified Data.Char as Char
 import Data.Set (Set)

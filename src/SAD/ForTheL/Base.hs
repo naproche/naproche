@@ -9,6 +9,7 @@ variables and macro expressions.
 
 module SAD.ForTheL.Base where
 
+import Control.Applicative
 import Control.Monad
 import qualified Control.Monad.State.Class as MS
 import Data.Char

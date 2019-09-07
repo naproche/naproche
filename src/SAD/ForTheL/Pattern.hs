@@ -23,6 +23,7 @@ import SAD.Data.Formula
 
 import Data.List
 import Data.Char
+import Control.Applicative
 import Control.Monad
 
 

@@ -32,6 +32,7 @@ import qualified SAD.Data.Text.Decl as Decl
 import SAD.Core.SourcePos (SourceRange(..))
 
 
+import Control.Applicative
 import Control.Monad
 import Data.Maybe (isNothing, fromJust)
 import qualified Control.Monad.State.Class as MS
