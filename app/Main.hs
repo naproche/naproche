@@ -187,7 +187,7 @@ readArgs args = do
   let (instrs, files, errs) = GetOpt.getOpt GetOpt.Permute options args
 
   let fail msgs = errorWithoutStackTrace (unlines (map trimLine msgs))
-  unless (all wellformed instrs && null errs) $ fail errs
+  unless (null errs) $ fail errs
   when (length files > 1) $ fail ["More than one file argument\n"]
   let commandLine = case files of [file] -> instrs ++ [GetArgument File file]; _ -> instrs
 
@@ -204,11 +204,6 @@ readArgs args = do
     trimLine "\r" = ""
     trimLine "\r\n" = ""
     trimLine (x:xs) = x : trimLine xs
-
-wellformed :: Instr -> Bool
-wellformed (SetFlag _ v) = v == v
-wellformed (LimitBy _ v) = v == v
-wellformed _            = True
 
 usageHeader :: [Char]
 usageHeader =
