@@ -11,8 +11,10 @@ module SAD.Data.Text.Decl (
 
 import SAD.Core.SourcePos
 
+-- | >0, with 0 as undefined
 type Serial = Int
 
+-- | A variable declaration.
 data Decl = Decl {
   name :: String,
   position :: SourcePos,
