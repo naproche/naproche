@@ -13,6 +13,7 @@ for Isabelle Prover IDE.
 
   * The E Theorem Prover as executable "eprover" in the shell PATH (e.g. the
     multi-platform version provided by Isabelle: "isabelle getenv -b E_HOME")
+    This software has been tested and works well with version 2.0 Turzum.
 
   * Optional (for development): Haskell IDE within VSCode:
     https://github.com/haskell/haskell-ide-engine
@@ -111,4 +112,5 @@ Reference versions for multi-platform executables (x86_64):
 ## Reference ##
 
 This program is based on the System for Automated Deduction (SAD) by
-Andrei Paskevich, see https://github.com/tertium/SAD
+Andrei Paskevich, see https://github.com/tertium/SAD.
+You can find more resources in our [CONTRIBUTING.md](CONTRIBUTING.md).
