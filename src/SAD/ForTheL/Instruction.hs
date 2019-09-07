@@ -36,7 +36,7 @@ instr :: FTL (Instr.Pos, Instr)
 instr =
   instrPos addDropReport $ readInstr >>=
     (\case
-      Instr.String Instr.Read _ -> fail "'read' not allowed here"
+      Instr.GetArgument Instr.Read _ -> fail "'read' not allowed here"
       Instr.Command Instr.EXIT -> fail "'exit' not allowed here"
       Instr.Command Instr.QUIT -> fail "'quit' not allowed here"
       i -> return i)
@@ -45,7 +45,7 @@ instr =
 instrRead :: FTL (Instr.Pos, Instr)
 instrRead =
   instrPos addInstrReport $ readInstr >>=
-    (\case { i@(Instr.String Instr.Read _) -> return i; _ -> mzero })
+    (\case { i@(Instr.GetArgument Instr.Read _) -> return i; _ -> mzero })
 
 instrExit :: FTL (Instr.Pos, Instr)
 instrExit =
@@ -66,8 +66,8 @@ readInstr =
     readInstrCommand = fmap Instr.Command (readKeywords Instr.keywordsCommand)
     readInstrLimit = liftM2 Instr.LimitBy (readKeywords Instr.keywordsLimit) readInt
     readInstrBool = liftM2 Instr.SetFlag (readKeywords Instr.keywordsFlag) readBool
-    readInstrString = liftM2 Instr.String (readKeywords Instr.keywordsString) readString
-    readInstrStrings = liftM2 Instr.Strings (readKeywords Instr.keywordsStrings) readWords
+    readInstrString = liftM2 Instr.GetArgument (readKeywords Instr.keywordsArgument) readString
+    readInstrStrings = liftM2 Instr.GetArguments (readKeywords Instr.keywordsArguments) readWords
 
 readInt :: Parser st Int
 readInt = try $ readString >>= intCheck

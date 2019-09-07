@@ -63,7 +63,7 @@ properToken t@(Token _ _ _) = case tokenType t of
 properToken EOF {} = True
 
 noTokens :: [Token]
-noTokens = [EOF noPos]
+noTokens = [EOF noSourcePos]
 
 tokenize :: SourcePos -> String -> [Token]
 tokenize start = posToken start False

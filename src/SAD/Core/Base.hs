@@ -179,9 +179,9 @@ askInstructionBool :: MonadReader VState f =>
 askInstructionBool instr _default =
   fmap (Instr.askFlag instr _default) $ asks instructions
 askInstructionString :: MonadReader VState f =>
-                        Instr.String -> String -> f String
+                        Instr.Argument -> String -> f String
 askInstructionString instr _default =
-  fmap (Instr.askString instr _default) $ asks instructions
+  fmap (Instr.askArgument instr _default) $ asks instructions
 
 addInstruction :: MonadReader VState m => Instr -> m a -> m a
 addInstruction instr =
@@ -295,7 +295,7 @@ retrieveContext names = do
   let (context, unfoundSections) = runState (retrieve globalContext) names
   -- warn the user if some sections could not be found
   unless (Set.null unfoundSections) $
-    reasonLog Message.WARNING noPos $
+    reasonLog Message.WARNING noSourcePos $
       "Could not find sections " ++ unwords (map show $ Set.elems unfoundSections)
   return context
   where

@@ -136,10 +136,10 @@ generateConditions verbositySetting rules w l r =
 
     -- logging and user communication
     log leftNormalForm rightNormalForm = when verbositySetting $ do
-      simpLog Message.WRITELN noPos "no matching normal forms found"
+      simpLog Message.WRITELN noSourcePos "no matching normal forms found"
       showPath leftNormalForm; showPath rightNormalForm
     showPath ((t,_):rest) = when verbositySetting $
-      simpLog Message.WRITELN noPos (show t) >> mapM_ (simpLog Message.WRITELN noPos . format) rest
+      simpLog Message.WRITELN noSourcePos (show t) >> mapM_ (simpLog Message.WRITELN noSourcePos . format) rest
     -- formatting of paths
     format (t, simpInfo) = " --> " ++ show t ++ conditions simpInfo
     conditions (conditions, name) =
@@ -151,7 +151,7 @@ generateConditions verbositySetting rules w l r =
 {- applies computational reasoning to an equality chain -}
 equalityReasoning :: Context -> VM ()
 equalityReasoning thesis
-  | body = whenInstruction Instr.Printreason False $ reasonLog Message.WRITELN noPos "eqchain concluded"
+  | body = whenInstruction Instr.Printreason False $ reasonLog Message.WRITELN noSourcePos "eqchain concluded"
   | (not . null) link = getLinkedRules link >>= rewrite equation
   | otherwise = rules >>= rewrite equation -- if no link is given -> all rules
   where
@@ -169,7 +169,7 @@ getLinkedRules link = do
   return linkedRules
   where
     warn st =
-      simpLog Message.WARNING noPos $
+      simpLog Message.WARNING noSourcePos $
         "Could not find rules " ++ unwords (map show $ Set.elems st)
 
     retrieve _ [] = return []

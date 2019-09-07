@@ -33,12 +33,12 @@ export :: Bool -> Int -> [Prover] -> [Instr] -> [Context] -> Context -> IO (IO B
 export reduced depth provers instrs context goal = do
   Standard_Thread.expose_stopped
 
-  when (null provers) $ Message.errorExport noPos "No provers"
+  when (null provers) $ Message.errorExport noSourcePos "No provers"
 
-  let proverName = Instr.askString Instr.Prover (name $ head provers) instrs
+  let proverName = Instr.askArgument Instr.Prover (name $ head provers) instrs
       proversNamed = filter ((==) proverName . name) provers
 
-  when (null proversNamed) $ Message.errorExport noPos $ "No prover named " ++ quote proverName
+  when (null proversNamed) $ Message.errorExport noSourcePos $ "No prover named " ++ quote proverName
 
   let prover@(Prover _ label path args fmt yes nos uns) = head proversNamed
       timeLimit = Instr.askLimit Instr.Timelimit 3 instrs
@@ -56,13 +56,13 @@ export reduced depth provers instrs context goal = do
   let output = case fmt of TPTP -> TPTP.output; DFG -> DFG.output
       task = output reduced prover timeLimit context goal
 
-  when (Instr.askFlag Instr.Dump False instrs) $ Message.output "" Message.WRITELN noPos task
+  when (Instr.askFlag Instr.Dump False instrs) $ Message.output "" Message.WRITELN noSourcePos task
 
   seq (length task) $ return $
     do
       (prvin, prvout, prverr, prv) <-
         Exception.catch process
-          (\e -> Message.errorExport noPos $
+          (\e -> Message.errorExport noSourcePos $
             "Failed to run " ++ quote path ++ ": " ++ ioeGetErrorString e)
 
       File.setup prvin
@@ -85,16 +85,16 @@ export reduced depth provers instrs context goal = do
         let lns = filter (not . null) $ lines $ output ++ errors
             out = map (("[" ++ label ++ "] ") ++) lns
 
-        when (null lns) $ Message.errorExport noPos "No prover response"
+        when (null lns) $ Message.errorExport noSourcePos "No prover response"
         when (Instr.askFlag Instr.Printprover False instrs) $
-            mapM_ (Message.output "" Message.WRITELN noPos) out
+            mapM_ (Message.output "" Message.WRITELN noSourcePos) out
 
         let positive = any (\l -> any (`isPrefixOf` l) yes) lns
             negative = any (\l -> any (`isPrefixOf` l) nos) lns
             inconclusive = any (\l -> any (`isPrefixOf` l) uns) lns
 
         unless (positive || negative || inconclusive) $
-            Message.errorExport noPos $ cat_lines ("Bad prover response:" : lns)
+            Message.errorExport noSourcePos $ cat_lines ("Bad prover response:" : lns)
 
         hClose prverr
         Process.waitForProcess prv

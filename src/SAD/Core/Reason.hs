@@ -91,11 +91,11 @@ sequenceGoals reasoningDepth iteration (goal:restGoals) = do
 
     depthExceedMessage =
       whenInstruction Instr.Printreason False $
-        reasonLog Message.WARNING noPos "reasoning depth exceeded"
+        reasonLog Message.WARNING noSourcePos "reasoning depth exceeded"
 
     updateTrivialStatistics = 
       unless (isTop goal) $ whenInstruction Instr.Printreason False $
-         reasonLog Message.WRITELN noPos ("trivial: " ++ show goal)
+         reasonLog Message.WRITELN noSourcePos ("trivial: " ++ show goal)
       >> incrementIntCounter TrivialGoals
 
 sequenceGoals  _ _ _ = return ()
@@ -132,7 +132,7 @@ launchProver iteration = do
       let getFormula = if reductionSetting then Context.reducedFormula else Context.formula
       contextFormulas <- asks $ map getFormula . reverse . currentContext
       concl <- thesis
-      reasonLog Message.WRITELN noPos $ "prover task:\n" ++
+      reasonLog Message.WRITELN noSourcePos $ "prover task:\n" ++
         concatMap (\form -> "  " ++ show form ++ "\n") contextFormulas ++
         "  |- " ++ show (Context.formula concl) ++ "\n"
 
@@ -268,9 +268,9 @@ unfold = do
   return $ newLowLevelContext ++ topLevelContext
   where
     nothingToUnfold =
-      whenInstruction Instr.Printunfold False $ reasonLog Message.WRITELN noPos "nothing to unfold"
+      whenInstruction Instr.Printunfold False $ reasonLog Message.WRITELN noSourcePos "nothing to unfold"
     unfoldLog (goal:lowLevelContext) =
-      whenInstruction Instr.Printunfold False $ reasonLog Message.WRITELN noPos $ "unfold to:\n"
+      whenInstruction Instr.Printunfold False $ reasonLog Message.WRITELN noSourcePos $ "unfold to:\n"
         ++ unlines (reverse $ map ((++) "  " . show . Context.formula) lowLevelContext)
         ++ "  |- " ++ show (neg $ Context.formula goal)
     neg (Not f) = f; neg f = f

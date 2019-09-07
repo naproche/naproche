@@ -271,7 +271,7 @@ errorTrace label shw p = Parser $ \st ok cerr eerr ->
 notEof :: Parser st ()
 notEof = Parser $ \st ok _ eerr ->
   case uncons $ stInput st of
-    Nothing -> eerr $ unexpectError "" noPos
+    Nothing -> eerr $ unexpectError "" noSourcePos
     Just (t, ts) ->
       if isEOF t
       then eerr $ unexpectError (showToken t) (tokenPos t)

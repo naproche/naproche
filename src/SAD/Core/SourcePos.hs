@@ -7,7 +7,7 @@ Token source positions: counting Unicode codepoints.
 module SAD.Core.SourcePos
   ( SourcePos (sourceFile, sourceLine, sourceColumn, sourceOffset, sourceEndOffset),
     SourceRange(SourceRange),
-    noPos,
+    noSourcePos,
     fileOnlyPos,
     filePos,
     startPos,
@@ -32,8 +32,8 @@ data SourcePos =
     sourceEndOffset :: Int }
   deriving (Eq, Ord)
 
-noPos :: SourcePos
-noPos = SourcePos "" 0 0 0 0
+noSourcePos :: SourcePos
+noSourcePos = SourcePos "" 0 0 0 0
 
 fileOnlyPos :: String -> SourcePos
 fileOnlyPos file = SourcePos file 0 0 0 0
@@ -80,7 +80,7 @@ makeRange :: (SourcePos, SourcePos) -> SourceRange
 makeRange (pos, pos') = SourceRange (rangePos (SourceRange pos pos')) (noRangePos pos')
 
 noRange :: SourceRange
-noRange = SourceRange noPos noPos
+noRange = SourceRange noSourcePos noSourcePos
 
 instance Show SourcePos where
   show (SourcePos file line column _ _) = List.intercalate " " $ filter (not . null) [quotedFilePath, listOfDetails]

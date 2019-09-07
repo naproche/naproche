@@ -23,7 +23,7 @@ data Decl = Decl {
 
 {- a declaration that has no representation in the input text -}
 nonText :: String -> Decl
-nonText v = Decl v noPos 0
+nonText v = Decl v noSourcePos 0
 
 {- a declaration that has a representation in the input text but has not been
 generated during parsing -}

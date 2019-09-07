@@ -58,10 +58,10 @@ bracketExpression = topInstruction >>= procParseInstruction
 
 procParseInstruction :: Text -> Parser FState [Text]
 procParseInstruction text = case text of
-  TextInstr _ (Instr.String Instr.Read _) -> return [text]
+  TextInstr _ (Instr.GetArgument Instr.Read _) -> return [text]
   TextInstr _ (Instr.Command Instr.EXIT) -> return []
   TextInstr _ (Instr.Command Instr.QUIT) -> return []
-  TextInstr _ (Instr.Strings Instr.Synonym syms) -> addSynonym syms >> fmap ((:) text) forthel
+  TextInstr _ (Instr.GetArguments Instr.Synonym syms) -> addSynonym syms >> fmap ((:) text) forthel
   _ -> fmap ((:) text) forthel
   where
     addSynonym :: [String] -> FTL ()

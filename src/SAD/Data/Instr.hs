@@ -9,8 +9,8 @@ module SAD.Data.Instr where
 import Prelude hiding (Int, Bool, String, drop)
 import qualified Prelude
 import Control.Monad
-import SAD.Core.SourcePos (SourcePos, SourceRange(..))
-import qualified SAD.Core.SourcePos as SourcePos
+import SAD.Core.SourcePos (SourcePos, SourceRange(..), noSourcePos, noRange)
+import SAD.Core.SourcePos
 
 
 -- Position information
@@ -21,7 +21,7 @@ position :: Pos -> SourcePos
 position p = let SourceRange a b = range p in a
 
 noPos :: Pos
-noPos = Pos SourcePos.noPos SourcePos.noPos SourcePos.noRange
+noPos = Pos noSourcePos noSourcePos noRange
 
 
 -- Instruction types
@@ -30,15 +30,15 @@ data Instr =
     Command Command
   | LimitBy Limit Prelude.Int
   | SetFlag Flag Prelude.Bool
-  | String String Prelude.String
-  | Strings Strings [Prelude.String]
+  | GetArgument Argument Prelude.String
+  | GetArguments Arguments [Prelude.String]
   deriving (Show, Eq)
 
 data Drop =
     DropCommand Command
   | DropLimit Limit
   | DropFlag Flag
-  | DropString String
+  | DropArgument Argument
   deriving (Show, Eq)
 
 
@@ -92,7 +92,7 @@ data Flag =
   | Translation    --  print first-order translation of sentences
   deriving (Eq,Show)
 
-data String =
+data Argument =
     Init     --  init file (init.opt)
   | Text     --  literal text
   | File     --  read file
@@ -102,7 +102,7 @@ data String =
   | Prover   --  current prover
   deriving (Eq,Show)
 
-data Strings =
+data Arguments =
   Synonym
   deriving (Eq,Show)
 
@@ -114,8 +114,8 @@ askLimit i d is  = head $ [ v | LimitBy j v <- is, i == j ] ++ [d]
 askFlag :: Flag -> Prelude.Bool -> [Instr] -> Prelude.Bool
 askFlag i d is  = head $ [ v | SetFlag j v <- is, i == j ] ++ [d]
 
-askString :: String -> Prelude.String -> [Instr] -> Prelude.String
-askString i d is  = head $ [ v | String j v <- is, i == j ] ++ [d]
+askArgument :: Argument -> Prelude.String -> [Instr] -> Prelude.String
+askArgument i d is  = head $ [ v | GetArgument j v <- is, i == j ] ++ [d]
 
 
 -- Drop
@@ -124,7 +124,7 @@ drop :: Drop -> [Instr] -> [Instr]
 drop (DropCommand m) (Command n : rs) | n == m = rs
 drop (DropLimit m) (LimitBy n _ : rs) | n == m = rs
 drop (DropFlag m) (SetFlag n _ : rs) | n == m = rs
-drop (DropString m) (String n _ : rs) | n == m = rs
+drop (DropArgument m) (GetArgument n _ : rs) | n == m = rs
 drop i (r : rs)  = r : drop i rs
 drop _ _ = []
 
@@ -175,20 +175,20 @@ keywordsFlag =
   (Checkontored, "checkontored"),
   (Translation, "translation")]
 
-keywordsString :: [(String, Prelude.String)]
-keywordsString =
+keywordsArgument :: [(Argument, Prelude.String)]
+keywordsArgument =
  [(Read, "read"),
   (Library, "library"),
   (Provers, "provers"),
   (Prover, "prover")]
 
-keywordsStrings :: [(Strings, Prelude.String)]
-keywordsStrings =
+keywordsArguments :: [(Arguments, Prelude.String)]
+keywordsArguments =
   [(Synonym, "synonym")]
 
 -- distiguish between parser and verifier instructions 
 
 isParserInstruction :: Instr -> Prelude.Bool
 isParserInstruction i = case i of
-  Command EXIT -> True; Command QUIT -> True; String Read _ -> True;
-  Strings Synonym _ -> True; _ -> False
+  Command EXIT -> True; Command QUIT -> True; GetArgument Read _ -> True;
+  GetArguments Synonym _ -> True; _ -> False

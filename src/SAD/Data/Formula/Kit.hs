@@ -176,7 +176,7 @@ zOr (Not f) g = Imp f g
 zOr f g       = Or  f g
 
 zVar :: String -> Formula
-zVar v = pVar (v, noPos)
+zVar v = pVar (v, noSourcePos)
 
 pVar :: (String, SourcePos) -> Formula
 pVar (v, pos) = Var v [] pos

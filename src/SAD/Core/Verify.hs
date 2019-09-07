@@ -49,7 +49,7 @@ import qualified Isabelle.Markup as Markup
 -- | Main verification loop
 verify :: String -> [Prover] -> IORef RState -> Text -> IO (Maybe Text)
 verify fileName provers reasonerState (TextRoot text) = do
-  let text' = TextInstr Instr.noPos (Instr.String Instr.File fileName) : text
+  let text' = TextInstr Instr.noPos (Instr.GetArgument Instr.File fileName) : text
   Message.outputReasoner Message.TRACING (fileOnlyPos fileName) "verification started"
 
   let verificationState =
@@ -321,24 +321,24 @@ procTextInstr = flip proc $ ask >>= verificationLoop
   where
     proc (Instr.Command Instr.RULES) = (>>) $ do
       rules <- asks rewriteRules
-      reasonLog Message.WRITELN noPos $
+      reasonLog Message.WRITELN noSourcePos $
         "current ruleset: " ++ "\n" ++ Rule.printrules (reverse rules)
     proc (Instr.Command Instr.THESIS) = (>>) $ do
       motivated <- asks thesisMotivated; thesis <- asks currentThesis
       let motivation = if motivated then "(motivated): " else "(not motivated): "
-      reasonLog Message.WRITELN noPos $
+      reasonLog Message.WRITELN noSourcePos $
         "current thesis " ++ motivation ++ show (Context.formula thesis)
     proc (Instr.Command Instr.CONTEXT) = (>>) $ do
       context <- asks currentContext
-      reasonLog Message.WRITELN noPos $ "current context:\n" ++
+      reasonLog Message.WRITELN noSourcePos $ "current context:\n" ++
         concatMap (\form -> "  " ++ show form ++ "\n") (reverse context)
     proc (Instr.Command Instr.FILTER) = (>>) $ do
       context <- asks currentContext
       let topLevelContext = filter Context.isTopLevel context
-      reasonLog Message.WRITELN noPos $ "current filtered top-level context:\n" ++
+      reasonLog Message.WRITELN noSourcePos $ "current filtered top-level context:\n" ++
         concatMap (\form -> "  " ++ show form ++ "\n") (reverse topLevelContext)
 
-    proc (Instr.Command _) = (>>) $ reasonLog Message.WRITELN noPos "unsupported instruction"
+    proc (Instr.Command _) = (>>) $ reasonLog Message.WRITELN noSourcePos "unsupported instruction"
 
     proc (Instr.SetFlag Instr.Verbose False) =
       addInstruction (Instr.SetFlag Instr.Printgoal False) .

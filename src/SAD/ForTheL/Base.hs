@@ -340,7 +340,7 @@ hidden :: Parser FState (String, SourcePos)
 hidden = do
   n <- MS.gets hiddenCount
   MS.modify $ \st -> st {hiddenCount = succ n}
-  return ('h':show n, noPos)
+  return ('h':show n, noSourcePos)
 
 var :: Parser st (String, SourcePos)
 var = do

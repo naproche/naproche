@@ -24,7 +24,7 @@ import Control.Monad (void, guard)
 tokenPrim :: (Token -> Maybe a) -> Parser st a
 tokenPrim test = Parser $ \(State st input _) ok _ eerr ->
   case input of
-    []     -> eerr $ unexpectError "" noPos
+    []     -> eerr $ unexpectError "" noSourcePos
     (t:ts) -> case guard (not $ isEOF t) >> test t of
       Just x  ->
         let newstate = State st ts (tokenPos t)
@@ -36,7 +36,7 @@ tokenPrim test = Parser $ \(State st input _) ok _ eerr ->
 eof :: Parser st ()
 eof = Parser $ \(State st input _) ok _ eerr ->
   case input of
-    [] -> eerr $ unexpectError "" noPos
+    [] -> eerr $ unexpectError "" noSourcePos
     (t:ts) ->
       if isEOF t
       then

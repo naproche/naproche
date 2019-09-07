@@ -26,6 +26,17 @@ library:
   source-dirs:
     - src
     - Isabelle/src
+  exposed-modules:
+    - Isabelle.File
+    - Isabelle.Server
+    - Isabelle.Byte_Message
+    - Isabelle.Properties
+    - Isabelle.XML
+    - Isabelle.YXML
+    - Isabelle.UUID
+    - Isabelle.Standard_Thread
+    - Isabelle.Naproche
+    - SAD.API
 
 executables:
   Naproche-SAD:

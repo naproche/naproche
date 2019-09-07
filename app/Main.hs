@@ -20,7 +20,6 @@ import qualified Control.Exception as Exception
 import System.IO (IO)
 import qualified System.IO as IO
 
-import Isabelle.Library
 import qualified Isabelle.File as File
 import qualified Isabelle.Server as Server
 import qualified Isabelle.Byte_Message as Byte_Message
@@ -35,17 +34,7 @@ import qualified Data.ByteString.Char8 as Char8
 import qualified Data.ByteString as ByteString
 import Network.Socket (Socket)
 
-import SAD.Core.Base
-import qualified SAD.Core.Message as Message
-import SAD.Core.SourcePos
-import SAD.Core.Verify
-import SAD.Data.Instr (Instr)
-import qualified SAD.Data.Instr as Instr
-import SAD.Data.Text.Block
-import SAD.Export.Base
-import SAD.Import.Reader
-import SAD.Parser.Error
-
+import SAD.API
 
 main :: IO ()
 main  = do
@@ -62,15 +51,15 @@ main  = do
 
   oldTextRef <- newIORef $ TextRoot []
 
-  if Instr.askFlag Instr.Help False opts0 then
+  if askFlag Help False opts0 then
     putStr (GetOpt.usageInfo usageHeader options)
   else -- main body with explicit error handling, notably for PIDE
     Exception.catch
-      (if Instr.askFlag Instr.Server False opts0 then
+      (if askFlag Server False opts0 then
         Server.server (Server.publish_stdout "Naproche-SAD") (serverConnection oldTextRef args0)
-      else do Message.consoleThread; mainBody oldTextRef (opts0, text0))
+      else do consoleThread; mainBody oldTextRef (opts0, text0))
       (\err -> do
-        Message.exitThread
+        exitThread
         let msg = Exception.displayException (err :: Exception.SomeException)
         IO.hPutStrLn IO.stderr msg
         Exit.exitFailure)
@@ -81,11 +70,11 @@ mainBody oldTextRef (opts0, text0) = do
 
   oldText <- readIORef oldTextRef
   -- parse input text
-  text1 <- fmap TextRoot $ readText (Instr.askString Instr.Library "." opts0) text0
+  text1 <- fmap TextRoot $ readText (askArgument Library "." opts0) text0
 
 
   -- if -T / --onlytranslate is passed as an option, only print the translated text
-  if Instr.askFlag Instr.OnlyTranslate False opts0 then
+  if askFlag OnlyTranslate False opts0 then
     do
       let timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)
           TextRoot txts = text1
@@ -93,11 +82,11 @@ mainBody oldTextRef (opts0, text0) = do
 
       -- print statistics
       finishTime <- getCurrentTime
-      Message.outputMain Message.TRACING noPos $ "total " ++ timeDifference finishTime
+      outputMain TRACING noSourcePos $ "total " ++ timeDifference finishTime
   else
     do
       -- read provers.dat
-      provers <- readProverDatabase (Instr.askString Instr.Provers "provers.dat" opts0)
+      provers <- readProverDatabase (askArgument Provers "provers.dat" opts0)
       -- initialize reasoner state
       reasonerState <- newIORef (RState [] False False)
       
@@ -106,11 +95,11 @@ mainBody oldTextRef (opts0, text0) = do
       case findParseError text1 of
         Nothing -> do 
           let text = textToCheck oldText text1
-          newText <- verify (Instr.askString Instr.File "" opts0) provers reasonerState text
+          newText <- verify (askArgument File "" opts0) provers reasonerState text
           case newText of
             Just txt -> writeIORef oldTextRef txt
             _ -> return ()
-        Just err -> Message.errorParser (errorPos err) (show err)
+        Just err -> errorParser (errorPos err) (show err)
 
       finishTime <- getCurrentTime
       finalReasonerState <- readIORef reasonerState
@@ -119,7 +108,7 @@ mainBody oldTextRef (opts0, text0) = do
           accumulate  = accumulateIntCounter counterList 0
 
       -- print statistics
-      Message.outputMain Message.TRACING noPos $
+      outputMain TRACING noSourcePos $
         "sections "       ++ show (accumulate Sections)
         ++ " - goals "    ++ show (accumulate Goals)
         ++ (let ignoredFails = accumulate FailedGoals
@@ -136,7 +125,7 @@ mainBody oldTextRef (opts0, text0) = do
 
       let trivialChecks = accumulate TrivialChecks
 
-      Message.outputMain Message.TRACING noPos $
+      outputMain TRACING noSourcePos $
         "symbols "        ++ show (accumulate Symbols)
         ++ " - checks "   ++ show
           (accumulateIntCounter counterList trivialChecks HardChecks)
@@ -148,13 +137,13 @@ mainBody oldTextRef (opts0, text0) = do
           proverTime     = accumulateTime proveStart ProofTime
           simplifyTime   = accumulateTime proverTime SimplifyTime
 
-      Message.outputMain Message.TRACING noPos $
+      outputMain TRACING noSourcePos $
         "parser "           ++ showTimeDiff (diffUTCTime proveStart startTime)
         ++ " - reasoner "   ++ showTimeDiff (diffUTCTime finishTime simplifyTime)
         ++ " - simplifier " ++ showTimeDiff (diffUTCTime simplifyTime proverTime)
         ++ " - prover "     ++ showTimeDiff (diffUTCTime proverTime proveStart)
         ++ "/" ++ showTimeDiff (maximalTimeCounter counterList SuccessTime)
-      Message.outputMain Message.TRACING noPos $
+      outputMain TRACING noSourcePos $
         "total "
         ++ showTimeDiff (diffUTCTime finishTime startTime)
 
@@ -170,12 +159,12 @@ serverConnection oldTextRef args0 connection = do
       mapM_ Standard_Thread.stop_uuid (UUID.parse_string (XML.content_of body))
 
     Just (XML.Elem ((command, props), body)) | command == Naproche.forthel_command ->
-      Exception.bracket_ (Message.initThread props (Byte_Message.write connection))
-        Message.exitThread
+      Exception.bracket_ (initThread props (Byte_Message.write connection))
+        exitThread
         (do
-          let args1 = split_lines (the_default "" (Properties.get props Naproche.command_args))
+          let args1 = lines (fromMaybe "" (Properties.get props Naproche.command_args))
           (opts1, text0) <- readArgs (args0 ++ args1)
-          let text1 = text0 ++ [TextInstr Instr.noPos (Instr.String Instr.Text (XML.content_of body))]
+          let text1 = text0 ++ [TextInstr noPos (GetArgument Text (XML.content_of body))]
 
           Exception.catch (mainBody oldTextRef (opts1, text1))
             (\err -> do
@@ -183,7 +172,7 @@ serverConnection oldTextRef args0 connection = do
               Exception.catch
                 (if YXML.detect msg then
                   Byte_Message.write connection [UTF8.fromString msg]
-                 else Message.outputMain Message.ERROR noPos msg)
+                 else outputMain ERROR noSourcePos msg)
                 (\err2 -> do
                   let e = err2 :: Exception.IOException
                   return ())))
@@ -197,21 +186,28 @@ readArgs :: [String] -> IO ([Instr], [Text])
 readArgs args = do
   let (instrs, files, errs) = GetOpt.getOpt GetOpt.Permute options args
 
-  let fail msgs = errorWithoutStackTrace (cat_lines (map trim_line msgs))
+  let fail msgs = errorWithoutStackTrace (unlines (map trimLine msgs))
   unless (all wellformed instrs && null errs) $ fail errs
   when (length files > 1) $ fail ["More than one file argument\n"]
-  let commandLine = case files of [file] -> instrs ++ [Instr.String Instr.File file]; _ -> instrs
+  let commandLine = case files of [file] -> instrs ++ [GetArgument File file]; _ -> instrs
 
-  initFile <- readInit (Instr.askString Instr.Init "init.opt" commandLine)
-  let initialOpts = initFile ++ map (Instr.noPos,) commandLine
+  initFile <- readInit (askArgument Init "init.opt" commandLine)
+  let initialOpts = initFile ++ map (noPos,) commandLine
 
   let revInitialOpts = map snd $ reverse initialOpts
   let initialText = map (uncurry TextInstr) initialOpts
   return (revInitialOpts, initialText)
 
+  where
+    trimLine "" = ""
+    trimLine "\n" = ""
+    trimLine "\r" = ""
+    trimLine "\r\n" = ""
+    trimLine (x:xs) = x : trimLine xs
+
 wellformed :: Instr -> Bool
-wellformed (Instr.SetFlag _ v) = v == v
-wellformed (Instr.LimitBy _ v) = v == v
+wellformed (SetFlag _ v) = v == v
+wellformed (LimitBy _ v) = v == v
 wellformed _            = True
 
 usageHeader :: [Char]
@@ -220,90 +216,90 @@ usageHeader =
 
 options :: [GetOpt.OptDescr Instr]
 options = [
-  GetOpt.Option "h" ["help"] (GetOpt.NoArg (Instr.SetFlag Instr.Help True)) "show command-line help",
-  GetOpt.Option ""  ["init"] (GetOpt.ReqArg (Instr.String Instr.Init) "FILE")
+  GetOpt.Option "h" ["help"] (GetOpt.NoArg (SetFlag Help True)) "show command-line help",
+  GetOpt.Option ""  ["init"] (GetOpt.ReqArg (GetArgument Init) "FILE")
     "init file, empty to skip (def: init.opt)",
-  GetOpt.Option "T" ["onlytranslate"] (GetOpt.NoArg (Instr.SetFlag Instr.OnlyTranslate True))
+  GetOpt.Option "T" ["onlytranslate"] (GetOpt.NoArg (SetFlag OnlyTranslate True))
     "translate input text and exit",
-  GetOpt.Option "" ["translate"] (GetOpt.ReqArg (Instr.SetFlag Instr.Translation . bool) "{on|off}")
+  GetOpt.Option "" ["translate"] (GetOpt.ReqArg (SetFlag Translation . bool) "{on|off}")
     "print first-order translation of sentences",
-  GetOpt.Option "" ["server"] (GetOpt.NoArg (Instr.SetFlag Instr.Server True))
+  GetOpt.Option "" ["server"] (GetOpt.NoArg (SetFlag Server True))
     "run in server mode",
-  GetOpt.Option ""  ["library"] (GetOpt.ReqArg (Instr.String Instr.Library) "DIR")
+  GetOpt.Option ""  ["library"] (GetOpt.ReqArg (GetArgument Library) "DIR")
     "place to look for library texts (def: .)",
-  GetOpt.Option ""  ["provers"] (GetOpt.ReqArg (Instr.String Instr.Provers) "FILE")
+  GetOpt.Option ""  ["provers"] (GetOpt.ReqArg (GetArgument Provers) "FILE")
     "index of provers (def: provers.dat)",
-  GetOpt.Option "P" ["prover"] (GetOpt.ReqArg (Instr.String Instr.Prover) "NAME")
+  GetOpt.Option "P" ["prover"] (GetOpt.ReqArg (GetArgument Prover) "NAME")
     "use prover NAME (def: first listed)",
-  GetOpt.Option "t" ["timelimit"] (GetOpt.ReqArg (Instr.LimitBy Instr.Timelimit . int) "N")
+  GetOpt.Option "t" ["timelimit"] (GetOpt.ReqArg (LimitBy Timelimit . int) "N")
     "N seconds per prover call (def: 3)",
-  GetOpt.Option ""  ["depthlimit"] (GetOpt.ReqArg (Instr.LimitBy Instr.Depthlimit . int) "N")
+  GetOpt.Option ""  ["depthlimit"] (GetOpt.ReqArg (LimitBy Depthlimit . int) "N")
     "N reasoner loops per goal (def: 7)",
-  GetOpt.Option ""  ["checktime"] (GetOpt.ReqArg (Instr.LimitBy Instr.Checktime . int) "N")
+  GetOpt.Option ""  ["checktime"] (GetOpt.ReqArg (LimitBy Checktime . int) "N")
     "timelimit for checker's tasks (def: 1)",
-  GetOpt.Option ""  ["checkdepth"] (GetOpt.ReqArg (Instr.LimitBy Instr.Checkdepth . int) "N")
+  GetOpt.Option ""  ["checkdepth"] (GetOpt.ReqArg (LimitBy Checkdepth . int) "N")
     "depthlimit for checker's tasks (def: 3)",
-  GetOpt.Option "n" [] (GetOpt.NoArg (Instr.SetFlag Instr.Prove False))
+  GetOpt.Option "n" [] (GetOpt.NoArg (SetFlag Prove False))
     "cursory mode (equivalent to --prove off)",
-  GetOpt.Option "r" [] (GetOpt.NoArg (Instr.SetFlag Instr.Check False))
+  GetOpt.Option "r" [] (GetOpt.NoArg (SetFlag Check False))
     "raw mode (equivalent to --check off)",
-  GetOpt.Option "" ["prove"] (GetOpt.ReqArg (Instr.SetFlag Instr.Prove . bool) "{on|off}")
+  GetOpt.Option "" ["prove"] (GetOpt.ReqArg (SetFlag Prove . bool) "{on|off}")
     "prove goals in the text (def: on)",
-  GetOpt.Option "" ["check"] (GetOpt.ReqArg (Instr.SetFlag Instr.Check . bool) "{on|off}")
+  GetOpt.Option "" ["check"] (GetOpt.ReqArg (SetFlag Check . bool) "{on|off}")
     "check symbols for definedness (def: on)",
-  GetOpt.Option "" ["symsign"] (GetOpt.ReqArg (Instr.SetFlag Instr.Symsign . bool) "{on|off}")
+  GetOpt.Option "" ["symsign"] (GetOpt.ReqArg (SetFlag Symsign . bool) "{on|off}")
     "prevent ill-typed unification (def: on)",
-  GetOpt.Option "" ["info"] (GetOpt.ReqArg (Instr.SetFlag Instr.Info . bool) "{on|off}")
+  GetOpt.Option "" ["info"] (GetOpt.ReqArg (SetFlag Info . bool) "{on|off}")
     "collect \"evidence\" literals (def: on)",
-  GetOpt.Option "" ["thesis"] (GetOpt.ReqArg (Instr.SetFlag Instr.Thesis . bool) "{on|off}")
+  GetOpt.Option "" ["thesis"] (GetOpt.ReqArg (SetFlag Thesis . bool) "{on|off}")
     "maintain current thesis (def: on)",
-  GetOpt.Option "" ["filter"] (GetOpt.ReqArg (Instr.SetFlag Instr.Filter . bool) "{on|off}")
+  GetOpt.Option "" ["filter"] (GetOpt.ReqArg (SetFlag Filter . bool) "{on|off}")
     "filter prover tasks (def: on)",
-  GetOpt.Option "" ["skipfail"] (GetOpt.ReqArg (Instr.SetFlag Instr.Skipfail . bool) "{on|off}")
+  GetOpt.Option "" ["skipfail"] (GetOpt.ReqArg (SetFlag Skipfail . bool) "{on|off}")
     "ignore failed goals (def: off)",
-  GetOpt.Option "" ["flat"] (GetOpt.ReqArg (Instr.SetFlag Instr.Flat . bool) "{on|off}")
+  GetOpt.Option "" ["flat"] (GetOpt.ReqArg (SetFlag Flat . bool) "{on|off}")
     "do not read proofs (def: off)",
-  GetOpt.Option "q" [] (GetOpt.NoArg (Instr.SetFlag Instr.Verbose False))
+  GetOpt.Option "q" [] (GetOpt.NoArg (SetFlag Verbose False))
     "print no details",
-  GetOpt.Option "v" [] (GetOpt.NoArg (Instr.SetFlag Instr.Verbose True))
+  GetOpt.Option "v" [] (GetOpt.NoArg (SetFlag Verbose True))
     "print more details (-vv, -vvv, etc)",
-  GetOpt.Option "" ["printgoal"] (GetOpt.ReqArg (Instr.SetFlag Instr.Printgoal . bool) "{on|off}")
+  GetOpt.Option "" ["printgoal"] (GetOpt.ReqArg (SetFlag Printgoal . bool) "{on|off}")
     "print current goal (def: on)",
-  GetOpt.Option "" ["printreason"] (GetOpt.ReqArg (Instr.SetFlag Instr.Printreason . bool) "{on|off}")
+  GetOpt.Option "" ["printreason"] (GetOpt.ReqArg (SetFlag Printreason . bool) "{on|off}")
     "print reasoner's messages (def: off)",
-  GetOpt.Option "" ["printsection"] (GetOpt.ReqArg (Instr.SetFlag Instr.Printsection . bool) "{on|off}")
+  GetOpt.Option "" ["printsection"] (GetOpt.ReqArg (SetFlag Printsection . bool) "{on|off}")
     "print sentence translations (def: off)",
-  GetOpt.Option "" ["printcheck"] (GetOpt.ReqArg (Instr.SetFlag Instr.Printcheck . bool) "{on|off}")
+  GetOpt.Option "" ["printcheck"] (GetOpt.ReqArg (SetFlag Printcheck . bool) "{on|off}")
     "print checker's messages (def: off)",
-  GetOpt.Option "" ["printprover"] (GetOpt.ReqArg (Instr.SetFlag Instr.Printprover . bool) "{on|off}")
+  GetOpt.Option "" ["printprover"] (GetOpt.ReqArg (SetFlag Printprover . bool) "{on|off}")
     "print prover's messages (def: off)",
-  GetOpt.Option "" ["printunfold"] (GetOpt.ReqArg (Instr.SetFlag Instr.Printunfold . bool) "{on|off}")
+  GetOpt.Option "" ["printunfold"] (GetOpt.ReqArg (SetFlag Printunfold . bool) "{on|off}")
     "print definition unfoldings (def: off)",
-  GetOpt.Option "" ["printfulltask"] (GetOpt.ReqArg (Instr.SetFlag Instr.Printfulltask . bool) "{on|off}")
+  GetOpt.Option "" ["printfulltask"] (GetOpt.ReqArg (SetFlag Printfulltask . bool) "{on|off}")
     "print full prover tasks (def: off)",
-  GetOpt.Option "" ["printsimp"] (GetOpt.ReqArg (Instr.SetFlag Instr.Printsimp . bool) "{on|off}")
+  GetOpt.Option "" ["printsimp"] (GetOpt.ReqArg (SetFlag Printsimp . bool) "{on|off}")
     "print simplification process (def: off)",
-  GetOpt.Option "" ["printthesis"] (GetOpt.ReqArg (Instr.SetFlag Instr.Printthesis . bool) "{on|off}")
+  GetOpt.Option "" ["printthesis"] (GetOpt.ReqArg (SetFlag Printthesis . bool) "{on|off}")
     "print thesis development (def: off)",
-  GetOpt.Option "" ["ontored"] (GetOpt.ReqArg (Instr.SetFlag Instr.Ontored . bool) "{on|off}")
+  GetOpt.Option "" ["ontored"] (GetOpt.ReqArg (SetFlag Ontored . bool) "{on|off}")
     "enable ontological reduction (def: off)",
-  GetOpt.Option "" ["unfoldlow"] (GetOpt.ReqArg (Instr.SetFlag Instr.Unfoldlow . bool) "{on|off}")
+  GetOpt.Option "" ["unfoldlow"] (GetOpt.ReqArg (SetFlag Unfoldlow . bool) "{on|off}")
     "enable unfolding of definitions in the whole low level context (def: on)",
-  GetOpt.Option "" ["unfold"] (GetOpt.ReqArg (Instr.SetFlag Instr.Unfold . bool) "{on|off}")
+  GetOpt.Option "" ["unfold"] (GetOpt.ReqArg (SetFlag Unfold . bool) "{on|off}")
     "enable unfolding of definitions (def: on)",
-  GetOpt.Option "" ["unfoldsf"] (GetOpt.ReqArg (Instr.SetFlag Instr.Unfoldsf . bool) "{on|off}")
+  GetOpt.Option "" ["unfoldsf"] (GetOpt.ReqArg (SetFlag Unfoldsf . bool) "{on|off}")
     "enable unfolding of set conditions and function evaluations (def: on)",
-  GetOpt.Option "" ["unfoldlowsf"] (GetOpt.ReqArg (Instr.SetFlag Instr.Unfoldlowsf . bool) "{on|off}")
+  GetOpt.Option "" ["unfoldlowsf"] (GetOpt.ReqArg (SetFlag Unfoldlowsf . bool) "{on|off}")
     "enable unfolding of set and function conditions in general (def: off)",
-  GetOpt.Option "" ["checkontored"] (GetOpt.ReqArg (Instr.SetFlag Instr.Checkontored . bool) "{on|off}")
+  GetOpt.Option "" ["checkontored"] (GetOpt.ReqArg (SetFlag Checkontored . bool) "{on|off}")
     "enable ontological reduction for checking of symbols (def: off)"]
 
 bool :: [Char] -> Bool
 bool "yes" = True ; bool "on"  = True
 bool "no"  = False; bool "off" = False
-bool s     = errorWithoutStackTrace $ "Invalid boolean argument: " ++ quote s
+bool s     = errorWithoutStackTrace $ "Invalid boolean argument: \"" ++  s ++ "\""
 
 int :: String -> Int
 int s = case reads s of
   ((n,[]):_) | n >= 0 -> n
-  _ -> errorWithoutStackTrace $ "Invalid integer argument: " ++ quote s
+  _ -> errorWithoutStackTrace $ "Invalid integer argument: \"" ++ s ++ "\""
