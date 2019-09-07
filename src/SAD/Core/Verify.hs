@@ -46,8 +46,7 @@ import SAD.Export.Base (Prover)
 
 import qualified Isabelle.Markup as Markup
 
--- Main verification loop
-
+-- | Main verification loop
 verify :: String -> [Prover] -> IORef RState -> Text -> IO (Maybe Text)
 verify fileName provers reasonerState (TextRoot text) = do
   let text' = TextInstr Instr.noPos (Instr.String Instr.File fileName) : text

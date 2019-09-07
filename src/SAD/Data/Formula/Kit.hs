@@ -19,7 +19,7 @@ import qualified SAD.Data.Text.Decl as Decl
 
 -- Alpha-beta normalization
 
-{- gets rid of top level negation, implication and equivalence -}
+-- | gets rid of top level negation, implication and equivalence
 albet :: Formula -> Formula
 albet (Iff f g)       = zIff f g
 albet (Imp f g)       = Or (Not f) g
@@ -35,20 +35,20 @@ albet (Not Bot)       = Top
 albet (Tag t f)       = Tag t $ albet f
 albet f               = f
 
-{- split a formula into its conjucts -}
-deAnd :: Formula -> [Formula]
-deAnd = spl . albet
+-- | Split a formula @Not (a \/ b) /\ c /\ ..@ into its conjuncts @[a,b,c,..]@
+splitConjuncts :: Formula -> [Formula]
+splitConjuncts = go . albet
   where
-    spl (And f g) = deAnd f ++ deAnd g
-    spl f = [f]
+    go (And f g) = splitConjuncts f ++ splitConjuncts g
+    go f = [f]
 
-{- remove all tags from a formula -}
+-- | remove all tags from a formula
+
 deTag :: Formula -> Formula
 deTag (Tag _ f) = deTag f
 deTag f = mapF deTag f
 
--- Boolean simplification
-
+-- | Boolean simplification
 bool :: Formula -> Formula
 bool (All _ Top) = Top
 bool (All _ Bot) = Bot
@@ -76,7 +76,7 @@ bool (Not Top)   = Bot
 bool (Not Bot)   = Top
 bool f           = f
 
-{- perform boolean simplification through the whole formula -}
+-- | perform boolean simplification through the whole formula
 boolSimp :: Formula -> Formula
 boolSimp f = bool $ mapF boolSimp f
 

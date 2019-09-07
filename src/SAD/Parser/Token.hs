@@ -36,8 +36,8 @@ data Token =
   EOF {tokenPos :: SourcePos}
 
 makeToken :: String -> SourcePos -> Bool -> Bool -> Token
-makeToken s pos ws proper =
-  Token s (rangePos (SourceRange pos (advanceAlong pos s))) ws proper
+makeToken s pos whitespaceBefore proper =
+  Token s (rangePos (SourceRange pos (advanceAlong pos s))) whitespaceBefore proper
 
 tokenEndPos :: Token -> SourcePos
 tokenEndPos tok@Token{} = advanceAlong (tokenPos tok) (tokenText tok)
@@ -65,21 +65,21 @@ noTokens = [EOF noPos]
 tokenize :: SourcePos -> String -> [Token]
 tokenize start = posToken start False
   where
-    posToken pos ws s
+    posToken pos whitespaceBefore s
       | not (null lexem) =
-          makeToken lexem pos ws True : posToken (advanceAlong pos lexem) False rest
+          makeToken lexem pos whitespaceBefore True : posToken (advanceAlong pos lexem) False rest
       where (lexem, rest) = span isLexem s
 
     posToken pos _ s
       | not (null white) = posToken (advanceAlong pos white) True rest
       where (white, rest) = span isSpace s
 
-    posToken pos ws s@('#':_) =
-      makeToken comment pos False False : posToken (advanceAlong pos comment) ws rest
+    posToken pos whitespaceBefore s@('#':_) =
+      makeToken comment pos False False : posToken (advanceAlong pos comment) whitespaceBefore rest
       where (comment, rest) = break (== '\n') s
 
-    posToken pos ws (c:cs) =
-      makeToken [c] pos ws True : posToken (advancePos pos c) False cs
+    posToken pos whitespaceBefore (c:cs) =
+      makeToken [c] pos whitespaceBefore True : posToken (advancePos pos c) False cs
 
     posToken pos _ _ = [EOF pos]
 
@@ -101,8 +101,8 @@ tokenReports _ = []
 composeTokens :: [Token] -> String
 composeTokens [] = ""
 composeTokens (t:ts) =
-  let ws = if tokenWhiteSpace t then " " else ""
-  in  ws ++ showToken t ++ composeTokens ts
+  let whitespaceBefore = if tokenWhiteSpace t then " " else ""
+  in  whitespaceBefore ++ showToken t ++ composeTokens ts
 
 isEOF :: Token -> Bool
 isEOF EOF{} = True; isEOF _ = False

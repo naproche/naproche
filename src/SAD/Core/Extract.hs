@@ -68,7 +68,7 @@ extractDefinition defs =
 
     -- make a universal quant matchable
     dive guards n (All _ f) = dive guards (succ n) $ inst ('?':show n) f
-    dive guards n (Imp g f) = dive (guards ++ deAnd g) n f
+    dive guards n (Imp g f) = dive (guards ++ splitConjuncts g) n f
     makeDefinition (guards, formula, kind, term) = DE {
       Definition.guards = guards, Definition.formula = formula,
       Definition.kind = kind, Definition.term = term,
@@ -79,7 +79,7 @@ extractDefinition defs =
 {- get evidence for a defined term from a definitional formula -}
 extractEvidences :: Formula -> Formula -> [Formula]
 extractEvidences t =
-  filter (isJust . find (twins ThisT) . ltArgs) . filter isLiteral . deAnd .
+  filter (isJust . find (twins ThisT) . ltArgs) . filter isLiteral . splitConjuncts .
     if   isNotion t -- notion evidence concerns the first argument.
     then replace ThisT (head $ trArgs t)
     else id
@@ -113,7 +113,7 @@ extractRewriteRule c =
       dive n gs $ subst t "" $ inst "" f
     -- make universal quantifier matchable
     dive n gs (All _ f) = let nn = '?' : show n in dive (succ n) gs $ inst nn f
-    dive n gs (Imp f g) = dive n (deAnd f ++ gs) g -- record conditions
+    dive n gs (Imp f g) = dive n (splitConjuncts f ++ gs) g -- record conditions
     dive n gs (Tag _ f) = dive n gs f -- ignore tags
     dive n gs (And f g) = dive n gs f ++ dive n gs g
     -- we do not allow rules where the left side is a variable

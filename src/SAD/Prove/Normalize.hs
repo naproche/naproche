@@ -231,9 +231,9 @@ subsumptionCheck = subs []
 -- assumption normal form
 
 assm_nf :: Formula -> [[Formula]]
-assm_nf = map (imptolist . boolSimp . specCh 'i' 0) . deAnd . impl
+assm_nf = map (imptolist . boolSimp . specCh 'i' 0) . splitConjuncts . impl
   where
-    imptolist (Imp f g) = map ltNeg (deAnd f) ++ imptolist g
+    imptolist (Imp f g) = map ltNeg (splitConjuncts f) ++ imptolist g
     imptolist f = [f]
 
 
