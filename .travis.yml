@@ -30,6 +30,7 @@ before_install:
 - ./configure --bindir=$HOME/.local/bin:$PATH
 - make
 - make install
+- cd ..
 
 install:
 # Build dependencies
