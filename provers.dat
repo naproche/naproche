@@ -5,6 +5,7 @@ LEprover
 Ftptp
 Ceprover --auto -s --cpu-limit=%d
 Y# SZS status Theorem
+Y# SZS status ContradictoryAxioms
 N# SZS status CounterSatisfiable
 U# SZS status ResourceOut
 U# SZS status GaveUp
