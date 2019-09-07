@@ -8,9 +8,7 @@ module SAD.Data.Instr where
 
 import Prelude hiding (Int, Bool, String, drop)
 import qualified Prelude
-import Control.Monad
 import SAD.Core.SourcePos (SourcePos, SourceRange(..), noSourcePos, noRange)
-import SAD.Core.SourcePos
 
 
 -- Position information

@@ -11,10 +11,9 @@ import Data.Maybe
 import qualified Data.Monoid as Monoid
 
 import SAD.Data.Tag (Tag)
-import SAD.Core.SourcePos (SourcePos, noSourcePos)
+import SAD.Core.SourcePos (SourcePos)
 
 import SAD.Data.Text.Decl (Decl)
-import qualified SAD.Data.Text.Decl as Decl
 
 
 data Formula =

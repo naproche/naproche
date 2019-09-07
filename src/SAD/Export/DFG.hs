@@ -7,7 +7,6 @@ Print proof task in DFG syntax.
 module SAD.Export.DFG (output) where
 
 import Data.List
-import qualified Data.IntMap.Strict as IM
 
 import SAD.Data.Formula
 import SAD.Data.Text.Block (Block(Block))

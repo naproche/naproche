@@ -7,7 +7,6 @@ Construct prover database.
 module SAD.Export.Base (Prover(..),Format(..),readProverDatabase) where
 
 import qualified Data.Char as Char
-import System.IO
 import System.IO.Error
 import Control.Exception
 import qualified SAD.Core.Message as Message

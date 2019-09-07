@@ -7,15 +7,11 @@ Print proof task in TPTP syntax.
 module SAD.Export.TPTP (output) where
 
 
-import qualified Data.IntMap.Strict as IM
-
 import SAD.Data.Formula
 import SAD.Data.Text.Block (Block(Block))
 import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Text.Context (Context(..))
 import SAD.Export.Base
-
-import Debug.Trace
 
 output :: Bool -> Prover -> Int -> [Context] -> Context -> String
 output red _ _ cn gl = (axs . cnj) ""

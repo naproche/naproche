@@ -13,7 +13,6 @@ import SAD.Parser.Error
 import SAD.Parser.Token
 import SAD.Core.SourcePos
 
-import Data.List (uncons)
 import Data.Char (isAlpha, toLower)
 import Control.Monad (void, guard)
 

@@ -21,8 +21,6 @@ import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
 
-import Debug.Trace
-import SAD.Parser.Token
 import SAD.Core.SourcePos
 
 import SAD.Data.Text.Decl (Decl(Decl))
@@ -30,8 +28,6 @@ import qualified SAD.Data.Text.Decl as Decl
 
 import SAD.Core.Message (PIDE)
 import qualified SAD.Core.Message as Message
-
-import qualified Isabelle.Markup as Markup
 
 type FTL = Parser FState
 

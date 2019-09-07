@@ -9,20 +9,10 @@ module SAD.Core.ProofTask (generateProofTask) where
 
 import SAD.Data.Formula
 import SAD.Data.Text.Block (Section(..))
-import qualified SAD.Data.Text.Block as Block (position)
-import SAD.Data.Text.Context (Context)
-import qualified SAD.Data.Text.Context as Context
 import SAD.Prove.Normalize
-import SAD.Core.Base
-import qualified SAD.Core.Message as Message
 
-import qualified Control.Monad.Writer as W
-import Data.List
 import Control.Monad
 import Data.Maybe
-import Debug.Trace
-import Control.Monad.State
-import Control.Monad.Trans.Reader
 
 import qualified SAD.Data.Text.Decl as Decl
 

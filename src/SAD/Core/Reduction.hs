@@ -7,9 +7,8 @@ Ontological reduction.
 module SAD.Core.Reduction (ontoReduce) where
 
 import SAD.Data.Formula
-import SAD.Data.Definition (DefEntry(DE), Definitions, Guards, isGuard)
+import SAD.Data.Definition (DefEntry, Definitions, Guards, isGuard)
 import qualified SAD.Data.Definition as Definition
-import SAD.Core.Base
 import SAD.Prove.Normalize
 import SAD.Data.Structures.DisTree (DisTree)
 
@@ -19,11 +18,8 @@ import Data.Set (Set)
 import qualified Data.Set as Set
 import Data.Map (Map)
 import qualified Data.Map as Map
-import Data.List
 import Data.Maybe
-import Control.Monad.Trans.Class
 import Control.Monad.State
-import Control.Monad.Trans.Maybe
 
 {- the names used in this implementation direclty correspond to the concepts
 occuring in the description and correctness proof of the algorithm. -}

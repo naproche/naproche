@@ -17,13 +17,11 @@ module SAD.ForTheL.Extension (
 
 import SAD.Core.SourcePos
 import SAD.Data.Formula
-import qualified SAD.Data.Instr as Instr
-import SAD.Data.Text.Block (Block, Text (..))
+import SAD.Data.Text.Block (Text (..))
 
 import SAD.ForTheL.Base
 import SAD.ForTheL.Statement
 import SAD.ForTheL.Pattern
-import SAD.ForTheL.Instruction (instrPos)
 import SAD.ForTheL.Reports
 import SAD.Parser.Primitives
 import SAD.Parser.Base
@@ -33,8 +31,6 @@ import SAD.Core.SourcePos (SourceRange(..))
 
 
 import Control.Applicative
-import Control.Monad
-import Data.Maybe (isNothing, fromJust)
 import qualified Control.Monad.State.Class as MS
 
 

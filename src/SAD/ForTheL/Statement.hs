@@ -18,13 +18,10 @@ import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
 
-import SAD.Parser.Token
-
 import SAD.Data.Formula
 import SAD.Core.SourcePos
 import qualified SAD.Data.Text.Decl as Decl
 
-import qualified Control.Monad.State.Class as MS
 import Data.Function ((&))
 
 

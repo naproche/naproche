@@ -22,8 +22,7 @@ module SAD.Parser.Error
     
 import SAD.Core.SourcePos
 
-import Data.List (nub, sort)
-import Debug.Trace
+import Data.List (nub)
 
 
 data Message

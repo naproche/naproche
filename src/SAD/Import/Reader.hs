@@ -9,7 +9,6 @@ module SAD.Import.Reader (readInit, readText) where
 import Data.List
 import Data.Maybe
 import Control.Monad
-import System.IO
 import System.IO.Error
 import Control.Exception
 
@@ -27,7 +26,6 @@ import SAD.Parser.Token
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
 import SAD.Parser.Error
-import SAD.Core.Message (PIDE)
 import qualified SAD.Core.Message as Message
 import qualified Isabelle.File as File
 

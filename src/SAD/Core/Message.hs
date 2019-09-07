@@ -18,7 +18,6 @@ module SAD.Core.Message (
 ) where
 
 import Prelude hiding (error)
-import qualified Prelude (error)
 import System.Environment
 import Control.Monad
 import Data.Maybe
@@ -32,7 +31,6 @@ import qualified Data.ByteString.Char8 as Char8
 import qualified Data.ByteString.UTF8 as UTF8
 import Control.Concurrent (ThreadId)
 import qualified Control.Concurrent as Concurrent
-import Network.Socket (Socket)
 
 import SAD.Core.SourcePos (SourcePos)
 import qualified SAD.Core.SourcePos as SourcePos

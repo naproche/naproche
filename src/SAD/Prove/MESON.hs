@@ -18,9 +18,6 @@ import SAD.Prove.Normalize
 import SAD.Data.Text.Context (Context, MRule(MR, conclusion))
 import qualified SAD.Data.Text.Context as Context
 import qualified SAD.Data.Structures.DisTree as DT
-import SAD.Core.Reduction
-
-import Debug.Trace
 import Data.Maybe
 
 -- generate MESON rules

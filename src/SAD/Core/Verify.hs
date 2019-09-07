@@ -7,17 +7,10 @@ Main verification loop.
 module SAD.Core.Verify (verify) where
 
 import Control.Monad
-import Control.Monad.Trans.Class
 import Control.Applicative hiding ((<|>))
 import Data.IORef
 import Data.Maybe
-import qualified Data.IntMap.Strict as IM
-import Data.List
-import qualified Data.Set as Set
-import Control.Monad.State
-import qualified Control.Monad.Writer as W
 import Control.Monad.Reader
-import Data.Function
 
 import SAD.Core.SourcePos
 import SAD.Core.Base
@@ -33,9 +26,7 @@ import SAD.Data.Text.Block (Block(Block), Text(..), Section(..))
 import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Text.Context (Context(Context))
 import qualified SAD.Data.Text.Context as Context
-import SAD.Data.Rules (Rule)
 import qualified SAD.Data.Rules as Rule
-import SAD.Prove.Normalize
 import SAD.Prove.MESON
 import SAD.Core.Reduction
 import SAD.Core.ProofTask

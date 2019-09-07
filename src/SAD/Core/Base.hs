@@ -39,12 +39,10 @@ module SAD.Core.Base (
 
 import Control.Monad
 import Data.IORef
-import Data.List
 import Data.Time
 import qualified Control.Applicative as App
 import qualified Data.IntMap.Strict as IM
 import Data.Maybe
-import qualified Data.Map as M
 import qualified Data.Set as Set
 import Control.Monad.State
 import Control.Monad.Reader

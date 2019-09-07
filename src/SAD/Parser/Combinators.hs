@@ -12,7 +12,6 @@ import SAD.Parser.Token
 import SAD.Parser.Error
 import SAD.Parser.Primitives
 
-import Data.Char
 import Data.List
 
 import Control.Applicative

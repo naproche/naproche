@@ -9,10 +9,6 @@ module SAD.Core.Check (fillDef) where
 import Control.Monad
 import Data.Maybe
 import Data.Either (lefts,rights, isRight)
-import Data.List
-import qualified Data.IntMap.Strict as IM
-import Control.Monad.State
-import Control.Monad.Trans.Class
 import Control.Monad.Reader
 
 import SAD.Data.Formula
@@ -24,11 +20,6 @@ import qualified SAD.Data.Definition as Definition
 import SAD.Core.Base
 import qualified SAD.Core.Message as Message
 import SAD.Core.Reason
-import SAD.Prove.Normalize
-import SAD.Prove.MESON
-import SAD.Core.Reduction
-import SAD.Core.ProofTask
-import qualified SAD.Data.Structures.DisTree as DT
 
 {- check definitions and fortify terms with evidences in a formula -}
 fillDef :: Bool -> Context -> VM Formula

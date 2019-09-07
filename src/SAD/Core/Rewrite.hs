@@ -18,17 +18,13 @@ import qualified SAD.Data.Text.Block as Block (body, link, position)
 import SAD.Core.Base
 import qualified SAD.Core.Message as Message
 import qualified SAD.Data.Instr as Instr
-import SAD.Core.Thesis
 import SAD.Core.Reason
 
 import Data.List
-import Data.Maybe
-import qualified Data.IntMap.Strict as IM
 import qualified Data.Set as Set
 import Control.Monad.State
 import Data.Either
 import Control.Monad.Reader
-import Control.Monad
 
 
 -- Lexicographic path ordering

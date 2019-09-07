@@ -8,7 +8,6 @@ Tokenization of input.
 
 module SAD.Parser.Token
   ( Token (tokenPos, tokenText),
-    tokenEndPos,
     tokensRange,
     showToken,
     properToken,
@@ -20,7 +19,6 @@ module SAD.Parser.Token
   where
 
 import Data.Char
-import Data.List
 
 import SAD.Core.SourcePos
 import qualified SAD.Core.Message as Message

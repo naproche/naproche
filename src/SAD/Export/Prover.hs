@@ -9,7 +9,6 @@ module SAD.Export.Prover where
 import Control.Monad (when, unless)
 import Data.Maybe
 import Data.List
-import Data.Char
 import System.IO
 import System.IO.Error
 import qualified System.Process as Process

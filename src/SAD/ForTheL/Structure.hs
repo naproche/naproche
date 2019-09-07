@@ -13,9 +13,6 @@ import Data.Maybe
 import Data.Char (isAlphaNum)
 import Control.Applicative
 import Control.Monad
-import qualified Data.Char as Char
-import Data.Set (Set)
-import qualified Data.Set as Set
 import qualified Control.Monad.State.Class as MS
 
 import SAD.ForTheL.Base
@@ -28,8 +25,6 @@ import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Parser.Token
 import SAD.Parser.Primitives
-
-import SAD.Core.SourcePos
 
 import qualified SAD.Data.Instr as Instr
 import SAD.Data.Text.Block (Block(Block), Text(..), Section(..))

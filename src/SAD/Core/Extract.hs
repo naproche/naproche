@@ -21,8 +21,6 @@ import SAD.Data.Text.Context (Context)
 import qualified SAD.Data.Text.Context as Context (formula, name)
 import SAD.Data.Rules (Rule(Rule))
 import qualified SAD.Data.Rules as Rule
-import SAD.Core.Base
-import SAD.Core.Reduction
 import SAD.Prove.Normalize
 import qualified SAD.Data.Structures.DisTree as DT
 import qualified SAD.Data.Text.Decl as Decl
@@ -32,8 +30,6 @@ import Data.List
 import Data.Maybe
 import Control.Monad.State
 import Control.Monad.Reader
-
-import Debug.Trace
 
 
 -- Definition extraction

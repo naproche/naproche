@@ -9,12 +9,9 @@ Unification of literals.
 module SAD.Prove.Unify (unify) where
 
 import Control.Monad
-import Control.Monad.Trans.Writer
-
 import SAD.Data.Formula
 
 
-import Debug.Trace
 
 
 {- given two literals we check whether they are eligible for unification

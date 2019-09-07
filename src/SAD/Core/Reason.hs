@@ -15,8 +15,6 @@ module SAD.Core.Reason (
 -- FIXME reconcept some functions so that this module does not need to export
 --       the small fries anymore
 import Control.Monad
-import Data.Char
-import Data.List
 import Data.Maybe
 import System.Timeout
 import Control.Exception
@@ -24,7 +22,6 @@ import Data.Monoid (Sum, getSum)
 import qualified Data.IntMap.Strict as IM
 import qualified Control.Monad.Writer as W
 import qualified Data.Set as Set
-import qualified Data.Map as M
 import Control.Monad.State
 import Control.Monad.Reader
 import qualified Isabelle.Standard_Thread as Standard_Thread
@@ -33,18 +30,16 @@ import SAD.Core.SourcePos
 import SAD.Core.Base
 import qualified SAD.Core.Message as Message
 import SAD.Data.Formula
-import SAD.Data.Instr (Instr)
 import qualified SAD.Data.Instr as Instr
 import SAD.Data.Text.Context (Context(Context))
 import qualified SAD.Data.Text.Context as Context
-import SAD.Data.Text.Block (Block, Section(..))
+import SAD.Data.Text.Block (Section(..))
 import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Definition (Definitions)
 import qualified SAD.Data.Definition as Definition
 import SAD.Data.Evaluation (Evaluation)
 import qualified SAD.Data.Evaluation as Evaluation
 import SAD.Export.Prover
-import SAD.ForTheL.Base
 import SAD.Prove.MESON
 import qualified SAD.Data.Structures.DisTree as DT
 import qualified SAD.Data.Text.Decl as Decl

@@ -8,7 +8,6 @@ PIDE markup reports for ForTheL text elements.
 
 module SAD.ForTheL.Reports where
 
-import Control.Monad
 import qualified Control.Monad.State.Class as MS
 import Data.List
 
@@ -17,7 +16,7 @@ import qualified SAD.Core.Message as Message
 import SAD.Core.SourcePos
 import SAD.ForTheL.Base
 
-import SAD.Data.Text.Block (Text(..), Block)
+import SAD.Data.Text.Block (Block)
 import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Text.Decl (Decl)
 import qualified SAD.Data.Text.Decl as Decl

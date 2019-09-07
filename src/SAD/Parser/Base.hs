@@ -32,10 +32,7 @@ import SAD.Parser.Token
 import SAD.Parser.Error
 import SAD.Core.SourcePos
 
-import Data.Char
 import Data.List
-
-import Debug.Trace
 
 -- Parser state
 data State st = State {
