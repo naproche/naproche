@@ -34,8 +34,8 @@ import qualified Control.Concurrent as Concurrent
 
 import SAD.Core.SourcePos (SourcePos)
 import qualified SAD.Core.SourcePos as SourcePos
+import SAD.Helpers
 
-import Isabelle.Library as Isabelle
 import qualified Isabelle.Properties as Properties
 import qualified Isabelle.Value as Value
 import qualified Isabelle.Markup as Markup
@@ -92,7 +92,7 @@ pideActive = isJust <$> pideContext
 initThread :: Properties.T -> Channel -> IO ()
 initThread props channel = do
   let property parse = Properties.get_value parse props
-  let pideProperty = property proper_string Naproche.naproche_pide
+  let pideProperty = property (\x -> guard (not $ null x) >> pure x) Naproche.naproche_pide
   let fileProperty = property Just Naproche.naproche_pos_file
   let shiftProperty = property Value.parse_int Naproche.naproche_pos_shift
   let
@@ -201,7 +201,7 @@ report pos markup = reports [(pos, markup)]
 -- output
 
 trimText :: String -> String
-trimText = Isabelle.trim_line
+trimText = trimLine
 
 messageBytes :: Maybe PIDE -> String -> Kind -> SourcePos -> String -> [ByteString]
 messageBytes pide origin kind pos msg =

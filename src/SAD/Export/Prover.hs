@@ -14,7 +14,6 @@ import System.IO.Error
 import qualified System.Process as Process
 import qualified Control.Exception as Exception
 
-import Isabelle.Library
 import qualified Isabelle.File as File
 import qualified Isabelle.Standard_Thread as Standard_Thread
 
@@ -37,7 +36,7 @@ export reduced depth provers instrs context goal = do
   let proverName = Instr.askArgument Instr.Prover (name $ head provers) instrs
       proversNamed = filter ((==) proverName . name) provers
 
-  when (null proversNamed) $ Message.errorExport noSourcePos $ "No prover named " ++ quote proverName
+  when (null proversNamed) $ Message.errorExport noSourcePos $ "No prover named " ++ show proverName
 
   let prover@(Prover _ label path args fmt yes nos uns) = head proversNamed
       timeLimit = Instr.askLimit Instr.Timelimit 3 instrs
@@ -62,7 +61,7 @@ export reduced depth provers instrs context goal = do
       (prvin, prvout, prverr, prv) <-
         Exception.catch process
           (\e -> Message.errorExport noSourcePos $
-            "Failed to run " ++ quote path ++ ": " ++ ioeGetErrorString e)
+            "Failed to run " ++ show path ++ ": " ++ ioeGetErrorString e)
 
       File.setup prvin
       File.setup prvout
@@ -93,7 +92,7 @@ export reduced depth provers instrs context goal = do
             inconclusive = any (\l -> any (`isPrefixOf` l) uns) lns
 
         unless (positive || negative || inconclusive) $
-            Message.errorExport noSourcePos $ cat_lines ("Bad prover response:" : lns)
+            Message.errorExport noSourcePos $ unlines ("Bad prover response:" : lns)
 
         hClose prverr
         Process.waitForProcess prv

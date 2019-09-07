@@ -12,8 +12,6 @@ import Control.Monad
 import System.IO.Error
 import Control.Exception
 
-import Isabelle.Library (quote)
-
 import SAD.Data.Text.Block
 import SAD.Data.Instr (Instr)
 import qualified SAD.Data.Instr as Instr
@@ -55,7 +53,7 @@ readText pathToLibrary text0 = do
 reader :: String -> [String] -> [State FState] -> [Text] -> IO ([Text], [Message.Report])
 
 reader _ _ _ [TextInstr pos (Instr.GetArgument Instr.Read file)] | isInfixOf ".." file =
-  Message.errorParser (Instr.position pos) ("Illegal \"..\" in file name: " ++ quote file)
+  Message.errorParser (Instr.position pos) ("Illegal \"..\" in file name: " ++ show file)
 
 reader pathToLibrary doneFiles stateList [TextInstr pos (Instr.GetArgument Instr.Read file)] =
   reader pathToLibrary doneFiles stateList
@@ -64,7 +62,7 @@ reader pathToLibrary doneFiles stateList [TextInstr pos (Instr.GetArgument Instr
 reader pathToLibrary doneFiles (pState:states) [TextInstr pos (Instr.GetArgument Instr.File file)]
   | file `elem` doneFiles = do
       Message.outputMain Message.WARNING (Instr.position pos)
-        ("Skipping already read file: " ++ quote file)
+        ("Skipping already read file: " ++ show file)
       (newText, newState) <- launchParser forthel pState
       reader pathToLibrary doneFiles (newState:states) newText
 
