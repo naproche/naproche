@@ -27,47 +27,53 @@ import qualified SAD.Core.Message as Message
 import qualified Isabelle.Markup as Markup
 
 
-data Token =
-  Token {
-    tokenText :: String,
-    tokenPos :: SourcePos,
-    tokenWhiteSpace :: Bool,
-    tokenProper :: Bool} |
-  EOF {tokenPos :: SourcePos}
+data Token = Token 
+  { tokenText :: String
+  , tokenPos :: SourcePos
+  , tokenType :: TokenType 
+  } | EOF { tokenPos :: SourcePos }
+  deriving (Eq, Ord)
 
-makeToken :: String -> SourcePos -> Bool -> Bool -> Token
-makeToken s pos whitespaceBefore proper =
-  Token s (rangePos (SourceRange pos (advanceAlong pos s))) whitespaceBefore proper
+instance Show Token where
+  show (Token p s _) = show s ++ show p
+  show (EOF _) = "EOF"
+
+data TokenType = NoWhiteSpaceBefore | WhiteSpaceBefore | Comment deriving (Eq, Ord, Show)
+
+makeToken :: String -> SourcePos -> TokenType -> Token
+makeToken s pos = Token s (rangePos (SourceRange pos (advanceAlong pos s)))
 
 tokenEndPos :: Token -> SourcePos
-tokenEndPos tok@Token{} = advanceAlong (tokenPos tok) (tokenText tok)
+tokenEndPos tok@Token{} = tokenPos tok `advanceAlong` tokenText tok
 tokenEndPos tok@EOF {} = tokenPos tok
 
 tokensRange :: [Token] -> SourceRange
-tokensRange toks =
-  if null toks then noRange
-  else makeRange (tokenPos $ head toks, tokenEndPos $ last toks)
+tokensRange [] = noRange
+tokensRange toks = makeRange (tokenPos $ head toks, tokenEndPos $ last toks)
 
 showToken :: Token -> String
 showToken t@Token{} = tokenText t
 showToken EOF{} = "end of input"
 
 properToken :: Token -> Bool
-properToken Token {tokenProper} = tokenProper
+properToken t@(Token _ _ _) = case tokenType t of
+  NoWhiteSpaceBefore -> True
+  WhiteSpaceBefore -> True
+  Comment -> False
 properToken EOF {} = True
 
 noTokens :: [Token]
 noTokens = [EOF noPos]
 
-
--- tokenize
-
 tokenize :: SourcePos -> String -> [Token]
 tokenize start = posToken start False
   where
+    typeWhitespace :: Bool -> TokenType
+    typeWhitespace ws = if ws then WhiteSpaceBefore else NoWhiteSpaceBefore
+
     posToken pos whitespaceBefore s
       | not (null lexem) =
-          makeToken lexem pos whitespaceBefore True : posToken (advanceAlong pos lexem) False rest
+          makeToken lexem pos (typeWhitespace whitespaceBefore) : posToken (advanceAlong pos lexem) False rest
       where (lexem, rest) = span isLexem s
 
     posToken pos _ s
@@ -75,43 +81,28 @@ tokenize start = posToken start False
       where (white, rest) = span isSpace s
 
     posToken pos whitespaceBefore s@('#':_) =
-      makeToken comment pos False False : posToken (advanceAlong pos comment) whitespaceBefore rest
+      makeToken comment pos Comment : posToken (advanceAlong pos comment) whitespaceBefore rest
       where (comment, rest) = break (== '\n') s
 
     posToken pos whitespaceBefore (c:cs) =
-      makeToken [c] pos whitespaceBefore True : posToken (advancePos pos c) False cs
+      makeToken [c] pos (typeWhitespace whitespaceBefore) : posToken (advancePos pos c) False cs
 
     posToken pos _ _ = [EOF pos]
 
 isLexem :: Char -> Bool
 isLexem c = (isAscii c && isAlphaNum c) || c == '_'
 
-
--- markup reports
-
 tokenReports :: Token -> [Message.Report]
-tokenReports Token {tokenPos = pos, tokenProper} =
-  if tokenProper then []
-  else [(pos, Markup.comment1)]
-tokenReports _ = []
-
-
--- useful functions
+tokenReports t@(Token _ _ _)
+  | properToken t = []
+  | otherwise = [(tokenPos t, Markup.comment1)]
+tokenReports (EOF _) = []
 
 composeTokens :: [Token] -> String
 composeTokens [] = ""
 composeTokens (t:ts) =
-  let whitespaceBefore = if tokenWhiteSpace t then " " else ""
+  let whitespaceBefore = if tokenType t == WhiteSpaceBefore then " " else ""
   in  whitespaceBefore ++ showToken t ++ composeTokens ts
 
 isEOF :: Token -> Bool
 isEOF EOF{} = True; isEOF _ = False
-
-
-
-
--- Show instances
-
-instance Show Token where
-  showsPrec _ (Token s p _ _) = showString s . shows p
-  showsPrec _ _ = showString ""
