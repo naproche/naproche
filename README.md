@@ -1,5 +1,7 @@
 # Naproche-SAD
 
+[![Build Status](https://travis-ci.com/anfelor/Naproche-SAD.svg?branch=master)](https://travis-ci.com/anfelor/Naproche-SAD)
+
 Proof Checking of Natural Mathematical Documents, with optional support
 for Isabelle Prover IDE.
 
