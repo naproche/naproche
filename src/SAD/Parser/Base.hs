@@ -7,6 +7,7 @@ Parser datatype and monad instance.
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE MultiWayIf #-}
 module SAD.Parser.Base
   ( Parser(..),
     State (..),
@@ -111,11 +112,11 @@ tryParses f ok consumedFail emptyFail err emptyOk consumedOk = go err [] [] [] [
     go accErr accEmptyOk accConsumedOk accConsumedFails accEmptyFails emptyOk consumedOk = case (emptyOk, consumedOk) of
 
       -- If we have no further input: exit based on the accumulated results
-      ([],[]) -> case (accEmptyOk, accConsumedOk) of
-        ([], []) -> error "tryParses: parser has empty result"
-        ([], _ ) -> consumedFail $ foldl' (<++>) err $ accConsumedFails
-        (_ , []) -> emptyFail    $ foldl' (<++>) err $ accEmptyFails ++ accConsumedFails
-        (_ , _ ) -> ok accErr (reverse accEmptyOk) (reverse accConsumedOk)
+      ([],[]) -> if
+        | (not $ null $ accEmptyOk ++ accConsumedOk) -> ok accErr (reverse accEmptyOk) (reverse accConsumedOk)
+        | (not $ null accEmptyFails)    -> emptyFail    $ foldl' (<++>) err $ accEmptyFails ++ accConsumedFails
+        | (not $ null accConsumedFails) -> consumedFail $ foldl' (<++>) err $ accConsumedFails
+        | otherwise -> error "tryParses: parser has empty result"
 
       -- If we have further input first work on the 'emptyOk' results
       ((PR a st'):rs, ys) ->
