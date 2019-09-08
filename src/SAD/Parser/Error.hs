@@ -22,8 +22,7 @@ module SAD.Parser.Error
     
 import SAD.Core.SourcePos
 
-import Data.List (nub)
-
+import SAD.Helpers (nubOrd)
 
 data Message
   = ExpectMsg {unExpect :: String, expect :: [String], message :: [String]}
@@ -180,4 +179,4 @@ showErrorMessage msgOr msgUnknown msgExpecting msgUnExpected msg
     separate   _ [m]    = m
     separate sep (m:ms) = m ++ sep ++ separate sep ms
 
-    clean = nub . filter (not . null)
+    clean = nubOrd . filter (not . null)

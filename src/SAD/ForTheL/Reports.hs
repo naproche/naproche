@@ -10,6 +10,7 @@ module SAD.ForTheL.Reports where
 
 import qualified Control.Monad.State.Class as MS
 import Data.List
+import SAD.Helpers (nubOrd)
 
 import SAD.Core.Message (PIDE)
 import qualified SAD.Core.Message as Message
@@ -56,7 +57,7 @@ variableReport pide def decl pos =
     _ -> []
 
 formulaReports :: PIDE -> [Decl] -> Formula -> [Message.Report]
-formulaReports pide decls = nub . dive
+formulaReports pide decls = nubOrd . dive
   where
     dive Var {trName = name, trPosition = pos} =
       (pos, Markup.free) : entity

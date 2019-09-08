@@ -10,16 +10,19 @@ import Control.Monad
 import Data.Maybe
 import qualified Data.Map as M
 import Data.List
+import Data.Function (on)
 
 import SAD.Data.Formula.Base
 import SAD.Data.Tag
 import SAD.Core.SourcePos
 import SAD.Data.Text.Decl (Decl)
 import qualified SAD.Data.Text.Decl as Decl
+import SAD.Helpers
 
 -- Alpha-beta normalization
 
--- | gets rid of top level negation, implication and equivalence
+-- | gets rid of top level negation, implication and equivalence if possible.
+-- @albet (Not (Ind ..)) == Not (Ind ..)@
 albet :: Formula -> Formula
 albet (Iff f g)       = zIff f g
 albet (Imp f g)       = Or (Not f) g
@@ -213,29 +216,17 @@ zObj      = zTrm objectId "aObj" . pure -- this is a dummy for parsing purposes
 
 -- predefined identifier
 
-equalityId :: Int
 equalityId    =  -1 :: Int
-lessId :: Int
 lessId        =  -2 :: Int
-thesisId :: Int
 thesisId      =  -3 :: Int
-functionId :: Int
 functionId    =  -4 :: Int
-applicationId :: Int
 applicationId =  -5 :: Int
-domainId :: Int
 domainId      =  -6 :: Int
-setId :: Int
 setId         =  -7 :: Int
-elementId :: Int
 elementId     =  -8 :: Int
-productId :: Int
 productId     =  -9 :: Int
-pairId :: Int
 pairId        = -10 :: Int
-objectId :: Int
 objectId      = -11 :: Int
-newId :: Int
 newId         = -15 :: Int -- temporary id given to newly introduced symbols
 
 
@@ -366,7 +357,7 @@ match _ _ = mzero
 
 -- Misc stuff
 
-{- strip away a Tag on top level or after neation -}
+{- strip away a Tag on top level or after negation -}
 strip :: Formula -> Formula
 strip (Tag _ f) = strip f
 strip (Not f)   = Not $ strip f
@@ -393,7 +384,7 @@ tryToGetID _ = mzero
 {- return free user named variables in a formula (without duplicateNames),
 except those in vs -}
 freePositions :: [String] -> Formula -> [(String, SourcePos)]
-freePositions vs = nubBy (\a b -> fst a == fst b) . dive
+freePositions vs = nubOrdBy (compare `on` fst) . dive
   where
     dive f@Var {trName = u@('x':_)} = 
       (guard (u `notElem` vs) >> return (u, trPosition f)) ++ foldF dive f
@@ -405,7 +396,7 @@ free vs = map fst . freePositions vs
 {- return all free variables in a formula (without duplicateNames),
 except those in vs -}
 allFree :: [String] -> Formula -> [String]
-allFree vs = nub . dive
+allFree vs = nubOrd . dive
   where
     dive f@Var {trName = u} = guardNotElem vs u ++ foldF dive f
     dive f = foldF dive f

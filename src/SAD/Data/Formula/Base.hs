@@ -26,6 +26,7 @@ data Formula =
         trInfo :: [Formula], trId   :: Int}         |
   Var { trName :: String   , trInfo :: [Formula], trPosition :: SourcePos } |
   Ind { trIndx :: Int, trPosition :: SourcePos }   | ThisT
+  deriving (Eq, Ord)
 
 
 -- Traversing functions
@@ -135,13 +136,13 @@ foldF fn (Not f) = fn f
 foldF fn t@Trm{} = Monoid.mconcat $ map fn $ trArgs t
 foldF _ _ = Monoid.mempty
 
-{- tests whether a predicate holds for all formulas on the next structure level
-   of a formula -}
+{- | tests whether a predicate holds for all formulas on the next structure level
+   of a formula. Returns 'True' if there is none. -}
 allF :: (Formula -> Bool) -> Formula -> Bool
 allF predicate = Monoid.getAll . foldF (Monoid.All . predicate)
 
-{- tests whether a predicate holds for any formula on the next structure level
-   of a formula -}
+{- | tests whether a predicate holds for any formula on the next structure level
+   of a formula. Returns 'False' if there is none. -}
 anyF :: (Formula -> Bool) -> Formula -> Bool
 anyF predicate = Monoid.getAny . foldF (Monoid.Any . predicate)
 
@@ -178,7 +179,7 @@ closed  = dive 0
     dive n Ind {trIndx = v} = v < n
     dive n f = allF (dive n) f
 
-{- checks whether the formula t occurs anywhere in the formula f -}
+{- checks whether the non-compound formula t occurs anywhere in the formula f -}
 occurs :: Formula -> Formula -> Bool
 occurs t f = twins t f || anyF (occurs t) f
 

@@ -13,6 +13,7 @@ import SAD.Data.Text.Block (Block(Block))
 import  qualified SAD.Data.Text.Block as Block
 import SAD.Data.Text.Context as Context (Context(..))
 import SAD.Export.Base
+import SAD.Helpers
 
 output :: Bool -> Prover -> Int -> [Context] -> Context -> String
 output red _ _ cn gl = (hdr . sym . axm . cnj . eop) ""
@@ -81,7 +82,7 @@ dfgSLS tsk  = sls "functions" fns . sls "predicates" pds
 
     pds = [ (s, a) | (True,  s, a) <- sms ]
     fns = [ (s, a) | (False, s, a) <- sms ]
-    sms = foldr (union . nub . dfgSyms True . Context.formula) [] tsk
+    sms = foldr (union . nubOrd . dfgSyms True . Context.formula) [] tsk
 
 dfgSyms :: Bool -> Formula -> [(Bool, String, Int)]
 dfgSyms s f | isEquality f   = concatMap (dfgSyms False) $ trArgs f

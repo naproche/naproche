@@ -7,7 +7,7 @@ data Tag =
   GenericMark | Evaluation | Condition | Defined | Domain | Replacement |
   -- Tags to mark parts in function proof tasks
   DomainTask | ExistenceTask | UniquenessTask | ChoiceTask
-  deriving (Eq, Show)
+  deriving (Eq, Ord, Show)
 
 {- whether a Tag marks a part in a function proof task -}
 fnTag :: Tag -> Bool

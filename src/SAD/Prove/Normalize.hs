@@ -195,6 +195,7 @@ distrib :: [[Formula]] -> [[Formula]] -> [[Formula]]
 distrib ls rs = nubBy listEq $ allpairs (unionBy ltTwins) ls rs
 
 
+{-| Does every formula from the first list have an 'ltTwins' in the second? -}
 listEq :: [Formula] -> [Formula] -> Bool
 listEq [] [] = True
 listEq (l:ls) rs = case helper [] l rs of
@@ -204,7 +205,6 @@ listEq (l:ls) rs = case helper [] l rs of
     helper _ _ [] = Nothing
     helper dmp l (r:rs) = if ltTwins l r then return $ dmp ++ rs
                           else helper (r:dmp) l rs
-listEq _ _ = False
 
 trivial :: [Formula] -> Bool
 trivial [] = False

@@ -1,4 +1,10 @@
-module SAD.Helpers where
+module SAD.Helpers
+  ( trimLine
+  , nubOrd, nubOrdBy, nubOrdOn
+  ) where
+
+import Control.Arrow
+import Data.Function
 
 -- | Remove a trailing line break from a string.
 trimLine :: String -> String
@@ -7,3 +13,69 @@ trimLine "\n" = ""
 trimLine "\r" = ""
 trimLine "\r\n" = ""
 trimLine (x:xs) = x : trimLine xs
+
+-- | /O(n log n)/. The 'nubOrd' function removes duplicate elements from a list.
+-- In particular, it keeps only the first occurrence of each element.
+-- Unlike the standard 'nub' operator, this version requires an 'Ord' instance
+-- and consequently runs asymptotically faster.
+--
+-- > nubOrd "this is a test" == "this ae"
+-- > nubOrd (take 4 ("this" ++ undefined)) == "this"
+-- > \xs -> nubOrd xs == nub xs
+nubOrd :: Ord a => [a] -> [a]
+nubOrd = nubOrdBy compare
+
+-- | A version of 'nubOrd' which operates on a portion of the value.
+--
+-- > nubOrdOn length ["a","test","of","this"] == ["a","test","of"]
+nubOrdOn :: Ord b => (a -> b) -> [a] -> [a]
+nubOrdOn f = map snd . nubOrdBy (compare `on` fst) . map (f &&& id)
+
+-- | A version of 'nubOrd' with a custom predicate.
+--
+-- > nubOrdBy (compare `on` length) ["a","test","of","this"] == ["a","test","of"]
+nubOrdBy :: (a -> a -> Ordering) -> [a] -> [a]
+nubOrdBy cmp xs = f E xs
+    where f seen [] = []
+          f seen (x:xs) | memberRB cmp x seen = f seen xs
+                        | otherwise = x : f (insertRB cmp x seen) xs
+
+---------------------------------------------------------------------
+-- OKASAKI RED BLACK TREE
+-- Taken from https://www.cs.kent.ac.uk/people/staff/smk/redblack/Untyped.hs
+
+data Color = R | B deriving Show
+data RB a = E | T Color (RB a) a (RB a) deriving Show
+
+{- Insertion and membership test as by Okasaki -}
+insertRB :: (a -> a -> Ordering) -> a -> RB a -> RB a
+insertRB cmp x s =
+    T B a z b
+    where
+    T _ a z b = ins s
+    ins E = T R E x E
+    ins s@(T B a y b) = case cmp x y of
+        LT -> balance (ins a) y b
+        GT -> balance a y (ins b)
+        EQ -> s
+    ins s@(T R a y b) = case cmp x y of
+        LT -> T R (ins a) y b
+        GT -> T R a y (ins b)
+        EQ -> s
+
+memberRB :: (a -> a -> Ordering) -> a -> RB a -> Bool
+memberRB cmp x E = False
+memberRB cmp x (T _ a y b) = case cmp x y of
+    LT -> memberRB cmp x a
+    GT -> memberRB cmp x b
+    EQ -> True
+
+{- balance: first equation is new,
+   to make it work with a weaker invariant -}
+balance :: RB a -> a -> RB a -> RB a
+balance (T R a x b) y (T R c z d) = T R (T B a x b) y (T B c z d)
+balance (T R (T R a x b) y c) z d = T R (T B a x b) y (T B c z d)
+balance (T R a x (T R b y c)) z d = T R (T B a x b) y (T B c z d)
+balance a x (T R b y (T R c z d)) = T R (T B a x b) y (T B c z d)
+balance a x (T R (T R b y c) z d) = T R (T B a x b) y (T B c z d)
+balance a x b = T B a x b

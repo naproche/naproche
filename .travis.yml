@@ -2,6 +2,8 @@
 # of eprover and Isabelle. It is based on the simple stack configuration, see:
 #
 # https://docs.haskellstack.org/en/stable/travis_ci/
+#
+# TODO: This returns success even if some (or all) of the verifications failed!
 
 # Choose a build environment
 dist: xenial

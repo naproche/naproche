@@ -19,7 +19,7 @@ data Decl = Decl {
   name :: String,
   position :: SourcePos,
   serial :: Serial
-}
+} deriving (Eq, Ord)
 
 {- a declaration that has no representation in the input text -}
 nonText :: String -> Decl
