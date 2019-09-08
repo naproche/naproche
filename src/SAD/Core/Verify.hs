@@ -38,7 +38,7 @@ import SAD.Export.Base (Prover)
 import qualified Isabelle.Markup as Markup
 
 -- | Main verification loop
-verify :: String -> [Prover] -> IORef RState -> Text -> IO (Maybe Text)
+verify :: String -> [Prover] -> IORef RState -> Text -> IO (Bool, Maybe Text)
 verify fileName provers reasonerState (TextRoot text) = do
   let text' = TextInstr Instr.noPos (Instr.GetArgument Instr.File fileName) : text
   Message.outputReasoner Message.TRACING (fileOnlyPos fileName) "verification started"
@@ -54,7 +54,7 @@ verify fileName provers reasonerState (TextRoot text) = do
   let success = isJust result && ignoredFails == 0
   Message.outputReasoner Message.TRACING (fileOnlyPos fileName) $
     "verification " ++ (if success then "successful" else "failed")
-  return $ fmap (TextRoot . tail . snd) result
+  return (success, fmap (TextRoot . tail . snd) result)
 
 verificationLoop :: VState -> VM ([Text], [Text])
 verificationLoop state@VS {

@@ -92,14 +92,15 @@ mainBody oldTextRef (opts0, text0) = do
       
       proveStart <- getCurrentTime
 
-      case findParseError text1 of
+      success <- case findParseError text1 of
         Nothing -> do 
           let text = textToCheck oldText text1
-          newText <- verify (askArgument File "" opts0) provers reasonerState text
+          (success, newText) <- verify (askArgument File "" opts0) provers reasonerState text
           case newText of
             Just txt -> writeIORef oldTextRef txt
             _ -> return ()
-        Just err -> errorParser (errorPos err) (show err)
+          pure success
+        Just err -> do errorParser (errorPos err) (show err); pure False
 
       finishTime <- getCurrentTime
       finalReasonerState <- readIORef reasonerState
@@ -146,6 +147,7 @@ mainBody oldTextRef (opts0, text0) = do
       outputMain TRACING noSourcePos $
         "total "
         ++ showTimeDiff (diffUTCTime finishTime startTime)
+      when (not success) Exit.exitFailure
 
 
 serverConnection :: IORef Text -> [String] -> Socket -> IO ()
