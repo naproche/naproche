@@ -30,11 +30,7 @@ for Isabelle Prover IDE.
 
 ### Test
 
-    for FILE in examples/*.ftl
-    do
-      stack exec Naproche-SAD -- "$FILE"
-    done
-
+    stack test
 
 ## Isabelle Prover IDE (Isabelle/jEdit)
 
