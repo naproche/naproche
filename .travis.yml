@@ -3,6 +3,9 @@
 #
 # https://docs.haskellstack.org/en/stable/travis_ci/
 
+# Use new container infrastructure to enable caching
+sudo: false
+
 # Choose a build environment
 dist: xenial
 
@@ -13,6 +16,7 @@ language: generic
 cache:
   directories:
   - $HOME/.stack
+  - $HOME/.eprover
 
 # Ensure necessary system libraries are present
 addons:
@@ -20,17 +24,59 @@ addons:
     packages:
       - libgmp-dev
 
+matrix:
+  include:
+  - env: EVER=2.3
+    compiler: ": #stack default"
+  #- env: EVER=2.2
+    #compiler: ": #stack default"
+  #- env: EVER=2.1
+    #compiler: ": #stack default"
+  #- env: EVER=2.0
+    #compiler: ": #stack default"
+  #- env: EVER=1.9.1
+    #compiler: ": #stack default"
+  #- env: EVER=1.9
+    #compiler: ": #stack default"
+  #- env: EVER=1.8 
+    #compiler: ": #stack default"
+
+  # - env: EVER=2.3
+    # compiler: ": #stack default"
+    # os: osx
+  # - env: EVER=2.2
+    # compiler: ": #stack default"
+    # os: osx
+  # - env: EVER=2.1
+    # compiler: ": #stack default"
+    # os: osx
+  # - env: EVER=2.0
+    # compiler: ": #stack default"
+    # os: osx
+  # - env: EVER=1.9.1
+    # compiler: ": #stack default"
+    # os: osx
+  # - env: EVER=1.9
+    # compiler: ": #stack default"
+    # os: osx
+  # - env: EVER=1.8 
+    # compiler: ": #stack default"
+    # os: osx
+
 before_install:
 # Download and unpack the stack and eprover executables
 - mkdir -p ~/.local/bin
-- export PATH=$HOME/.local/bin:$PATH
+- mkdir -p ~/.eprover
+- export PATH=$HOME/.local/bin:$HOME/.eprover:$PATH
 - travis_retry curl -L https://get.haskellstack.org/stable/linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
-- travis_retry curl -L http://wwwlehre.dhbw-stuttgart.de/~sschulz/WORK/E_DOWNLOAD/V_2.3/E.tgz | tar xz
-- cd E
-- ./configure --bindir=$HOME/.local/bin
-- make
-- make install
-- cd ..
+- if [[ !-f "~/.eprover/eprover" ]]; then
+  travis_retry curl -L http://wwwlehre.dhbw-stuttgart.de/~sschulz/WORK/E_DOWNLOAD/V_$EVER/E.tgz | tar xz
+  cd E
+  ./configure --bindir=$HOME/.eprover
+  make
+  make install
+  cd ..
+  fi
 
 install:
 # Build dependencies
