@@ -32,38 +32,38 @@ matrix:
   - env: EVER=2.3
     compiler: ": eprover 2.3"
   - env: EVER=2.2
-    compiler: ": #stack default"
+    compiler: ": eprover 2.2"
   - env: EVER=2.1
-    compiler: ": #stack default"
+    compiler: ": eprover 2.1"
   - env: EVER=2.0
-    compiler: ": #stack default"
+    compiler: ": eprover 2.0"
   - env: EVER=1.9.1
-    compiler: ": #stack default"
+    compiler: ": eprover 1.9.1"
   - env: EVER=1.9
-    compiler: ": #stack default"
-  - env: EVER=1.8 
-    compiler: ": #stack default"
+    compiler: ": eprover 1.9"
+  - env: EVER=1.8
+    compiler: ": eprover 1.8"
 
   - env: EVER=2.3
-    compiler: ": #stack default"
+    compiler: ": eprover 2.3"
     os: osx
   - env: EVER=2.2
-    compiler: ": #stack default"
+    compiler: ": eprover 2.2"
     os: osx
   - env: EVER=2.1
-    compiler: ": #stack default"
+    compiler: ": eprover 2.1"
     os: osx
   - env: EVER=2.0
-    compiler: ": #stack default"
+    compiler: ": eprover 2.0"
     os: osx
   - env: EVER=1.9.1
-    compiler: ": #stack default"
+    compiler: ": eprover 1.9.1"
     os: osx
   - env: EVER=1.9
-    compiler: ": #stack default"
+    compiler: ": eprover 1.9"
     os: osx
-  - env: EVER=1.8 
-    compiler: ": #stack default"
+  - env: EVER=1.8
+    compiler: ": eprover 1.8"
     os: osx
 
 before_install:
