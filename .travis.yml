@@ -44,27 +44,27 @@ matrix:
   - env: EVER=1.8 
     compiler: ": #stack default"
 
-   - env: EVER=2.3
-     compiler: ": #stack default"
-     os: osx
-   - env: EVER=2.2
-     compiler: ": #stack default"
-     os: osx
-   - env: EVER=2.1
-     compiler: ": #stack default"
-     os: osx
-   - env: EVER=2.0
-     compiler: ": #stack default"
-     os: osx
-   - env: EVER=1.9.1
-     compiler: ": #stack default"
-     os: osx
-   - env: EVER=1.9
-     compiler: ": #stack default"
-     os: osx
-   - env: EVER=1.8 
-     compiler: ": #stack default"
-     os: osx
+  - env: EVER=2.3
+    compiler: ": #stack default"
+    os: osx
+  - env: EVER=2.2
+    compiler: ": #stack default"
+    os: osx
+  - env: EVER=2.1
+    compiler: ": #stack default"
+    os: osx
+  - env: EVER=2.0
+    compiler: ": #stack default"
+    os: osx
+  - env: EVER=1.9.1
+    compiler: ": #stack default"
+    os: osx
+  - env: EVER=1.9
+    compiler: ": #stack default"
+    os: osx
+  - env: EVER=1.8 
+    compiler: ": #stack default"
+    os: osx
 
 before_install:
 # Download and unpack the stack and eprover executables
