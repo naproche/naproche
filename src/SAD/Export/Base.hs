@@ -6,6 +6,7 @@ Construct prover database.
 
 module SAD.Export.Base (Prover(..),Format(..),readProverDatabase) where
 
+import Control.Applicative (liftA2)
 import qualified Data.Char as Char
 import System.IO.Error
 import Control.Exception
@@ -54,7 +55,7 @@ readProvers n _ ([_]:_)        = Left $ show n ++ ": empty value"
 readProvers n Nothing (('P':l):ls)
   = readProvers (succ n) (Just $ initPrv l) ls
 readProvers n (Just pr) (('P':l):ls)
-  = fmap2 (:) (validate pr) $ readProvers (succ n) (Just $ initPrv l) ls
+  = liftA2 (:) (validate pr) $ readProvers (succ n) (Just $ initPrv l) ls
 readProvers n (Just pr) (('L':l):ls)
   = readProvers (succ n) (Just pr { label = l }) ls
 readProvers n (Just pr) (('Y':l):ls)
@@ -75,7 +76,7 @@ readProvers n (Just pr) (('F':l):ls)
 readProvers n (Just _)  ((c:_):_)  = Left $ show n ++ ": invalid tag: "   ++ [c]
 readProvers n Nothing ((c:_):_)    = Left $ show n ++ ": misplaced tag: " ++ [c]
 
-readProvers _ (Just pr) [] = fmap1 (:[]) $ validate pr
+readProvers _ (Just pr) [] = (:[]) `fmap` validate pr
 readProvers _ Nothing []   = Right []
 
 
@@ -87,15 +88,3 @@ validate Prover { name = n, successMessage = [] }
 validate Prover { name = n, failureMessage = [], unknownMessage = [] }
   = Left $ " prover '" ++ n ++ "' has no failure responses"
 validate r = Right r
-
-
--- Service stuff
-
-fmap1 :: (a -> b) -> Either e a -> Either e b
-fmap1 f (Right a) = Right (f a)
-fmap1 _ (Left e)  = Left e
-
-fmap2 :: (a -> b -> c) -> Either e a -> Either e b -> Either e c
-fmap2 _ (Left e) _          = Left e
-fmap2 _ _ (Left e)          = Left e
-fmap2 f (Right a) (Right b) = Right (f a b)
