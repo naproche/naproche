@@ -16,9 +16,9 @@ data DefEntry = DE {
   typeLikes :: [[Formula]]  -- type-likes of the definition
   } deriving Show
 
-{- yields information as to what can be unfolded -}
+-- | Yields information as to what can be unfolded.
 isDefinition :: DefEntry -> Bool
-isDefinition = (==) Definition . kind
+isDefinition entry = kind entry == Definition
 
 {- storage of definitions by term id -}
 type Definitions = IntMap DefEntry
