@@ -26,10 +26,10 @@ import SAD.Parser.Token
 
 instrPos :: (Instr.Pos -> FTL ()) -> FTL a -> FTL (Instr.Pos, a)
 instrPos report p = do
-  ((pos1, pos2), x) <- enclosed bg en p
-  let pos = Instr.Pos pos1 pos2 (makeRange (pos1, pos2 `advanceAlong` en))
+  ((pos1, pos2), x) <- enclosed begin end p
+  let pos = Instr.Pos pos1 pos2 (makeRange (pos1, pos2 `advanceAlong` end))
   report pos; return (pos, x)
-  where bg = "["; en = "]"
+  where begin = "["; end = "]"
 
 
 instr :: FTL (Instr.Pos, Instr)
