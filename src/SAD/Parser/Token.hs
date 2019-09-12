@@ -25,10 +25,10 @@ import qualified SAD.Core.Message as Message
 import qualified Isabelle.Markup as Markup
 
 
-data Token = Token 
+data Token = Token
   { tokenText :: String
   , tokenPos :: SourcePos
-  , tokenType :: TokenType 
+  , tokenType :: TokenType
   } | EOF { tokenPos :: SourcePos }
   deriving (Eq, Ord)
 
@@ -85,7 +85,7 @@ tokenize start = posToken start False
     posToken pos whitespaceBefore (c:cs) =
       makeToken [c] pos (typeWhitespace whitespaceBefore) : posToken (advancePos pos c) False cs
 
-    posToken pos _ _ = [EOF pos]
+    posToken pos _ [] = [EOF pos]
 
 isLexem :: Char -> Bool
 isLexem c = (isAscii c && isAlphaNum c) || c == '_'
