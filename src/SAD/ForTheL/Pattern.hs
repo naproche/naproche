@@ -173,7 +173,7 @@ extractSymbPattern t@Trm {trName = s, trArgs = vs} f = (pt, nf)
 -- New patterns
 
 
-newPrdPattern :: Parser FState Formula -> Parser FState Formula
+newPrdPattern :: FTL Formula -> FTL Formula
 newPrdPattern tvr = multi </> unary </> newSymbPattern tvr
   where
     unary = do
@@ -189,8 +189,8 @@ newPrdPattern tvr = multi </> unary </> newSymbPattern tvr
     unaryVerb = do (t, vs) <- ptHead wlexem tvr; return ("do " ++ t, vs)
     multiVerb = do (t, vs) <- ptHead wlexem tvr; return ("mdo " ++ t, vs)
 
-newNtnPattern :: Parser FState Formula
-                 -> Parser FState (Formula, (String, SourcePos))
+newNtnPattern :: FTL Formula
+                 -> FTL (Formula, (String, SourcePos))
 newNtnPattern tvr = (ntn <|> fun) </> unnamedNotion tvr
   where
     ntn = do
@@ -200,8 +200,8 @@ newNtnPattern tvr = (ntn <|> fun) </> unnamedNotion tvr
       the; (t, v:vs) <- ptName wlexem tvr
       return (zEqu v $ zTrm newId ("a " ++ t) vs, (trName v, trPosition v))
 
-unnamedNotion :: Parser FState Formula
-                 -> Parser FState (Formula, (String, SourcePos))
+unnamedNotion :: FTL Formula
+                 -> FTL (Formula, (String, SourcePos))
 unnamedNotion tvr = (ntn <|> fun) </> (newSymbPattern tvr >>= equ)
   where
     ntn = do
@@ -213,7 +213,7 @@ unnamedNotion tvr = (ntn <|> fun) </> (newSymbPattern tvr >>= equ)
     equ t = do v <- hidden; return (zEqu (pVar v) t, v)
 
 
-newSymbPattern :: Parser FState Formula -> Parser FState Formula
+newSymbPattern :: FTL Formula -> FTL Formula
 newSymbPattern tvr = left -|- right
   where
     left = do
@@ -229,7 +229,7 @@ newSymbPattern tvr = left -|- right
 
 
 ptHead :: Parser st String
-          -> Parser st a -> Parser st ([Char], [a])
+          -> Parser st a -> Parser st (String, [a])
 ptHead lxm tvr = do
   l <- unwords <$> chain lxm
   (ls, vs) <- opt ([], []) $ ptTail lxm tvr
@@ -237,23 +237,23 @@ ptHead lxm tvr = do
 
 
 ptTail :: Parser st String
-          -> Parser st a -> Parser st ([Char], [a])
+          -> Parser st a -> Parser st (String, [a])
 ptTail lxm tvr = do
   v <- tvr
   (ls, vs) <- opt ([], []) $ ptHead lxm tvr
   return ("# " ++ ls, v:vs)
 
 
-ptName :: Parser FState String
-          -> Parser FState Formula -> Parser FState ([Char], [Formula])
+ptName :: FTL String
+          -> FTL Formula -> FTL (String, [Formula])
 ptName lxm tvr = do
   l <- unwords <$> chain lxm; n <- nam
   (ls, vs) <- opt ([], []) $ ptHead lxm tvr
   return (l ++ " . " ++ ls, n:vs)
 
 
-ptNoName :: Parser FState String
-            -> Parser FState Formula -> Parser FState ([Char], [Formula])
+ptNoName :: FTL String
+            -> FTL Formula -> FTL (String, [Formula])
 ptNoName lxm tvr = do
   l <- unwords <$> chain lxm; n <- hid
   (ls, vs) <- opt ([], []) $ ptShort lxm tvr
@@ -269,13 +269,13 @@ ptNoName lxm tvr = do
 
 -- In-pattern lexemes and variables
 
-wlexem :: Parser FState [Char]
+wlexem :: FTL String
 wlexem = do
   l <- wlx
   guard $ all isAlpha l
   return $ map toLower l
 
-slexem :: Parser FState String
+slexem :: FTL String
 slexem = slex -|- wlx
   where
     slex = tokenPrim isSymb
@@ -285,7 +285,7 @@ slexem = slex -|- wlx
             [c] -> guard (c `elem` symChars) >> return tk
             _   -> Nothing
 
-wlx :: Parser FState String
+wlx :: FTL String
 wlx = failing nvr >> tokenPrim isWord
   where
     isWord t =
@@ -293,7 +293,7 @@ wlx = failing nvr >> tokenPrim isWord
       in guard (all isAlphaNum tk && ltk `notElem` keylist) >> return tk
     keylist = ["a","an","the","is","are","be"]
 
-nvr :: Parser FState Formula
+nvr :: FTL Formula
 nvr = do
   v <- var; dvs <- getDecl; tvs <- MS.gets tvrExpr
   guard $ fst v `elem` dvs || any (elem (fst v) . fst) tvs
@@ -304,10 +304,10 @@ avr = do
   v <- var; guard $ null $ tail $ tail $ fst v
   return $ pVar v
 
-nam :: Parser FState Formula
+nam :: FTL Formula
 nam = do
   n <- fmap (const Top) nvr </> avr
   guard $ isVar n ; return n
 
-hid :: Parser FState Formula
+hid :: FTL Formula
 hid = fmap pVar hidden

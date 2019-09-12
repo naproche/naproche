@@ -228,7 +228,7 @@ checkFailed :: ReaderT VState CRM b
                -> ReaderT VState CRM b -> ReaderT VState CRM b
 checkFailed alt1 alt2 = do
   failed <- askRS failed
-  if failed then alt1 else alt2 
+  if failed then alt1 else alt2
 
 -- local checking support
 
@@ -256,7 +256,7 @@ accumulateTimeCounter counterList startValue =
 maximalTimeCounter :: [Counter] -> TimeCounter -> NominalDiffTime
 maximalTimeCounter counterList = foldr max 0 . fetchTimeCounter counterList
 
-showTimeDiff :: RealFrac a => a -> [Char]
+showTimeDiff :: RealFrac a => a -> String
 showTimeDiff t
   | hours == 0 =
       format minutes ++ ':' : format restSeconds ++ '.' : format restCentis

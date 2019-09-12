@@ -42,12 +42,12 @@ import Debug.Trace
 
 -- definitions and signature extensions
 
-defExtend :: Parser FState Formula
+defExtend :: FTL Formula
 defExtend = defPredicat -|- defNotion
-sigExtend :: Parser FState Formula
+sigExtend :: FTL Formula
 sigExtend = sigPredicat -|- sigNotion
 
-defPredicat :: Parser FState Formula
+defPredicat :: FTL Formula
 defPredicat = do
   (f, g) <- wellFormedCheck prdVars defn
   return $ Iff (Tag HeadTerm f) g
@@ -55,7 +55,7 @@ defPredicat = do
     defn = do f <- newPredicat; equiv; g <- statement; return (f,g)
     equiv = iff <|> symbol "<=>"
 
-defNotion :: Parser FState Formula
+defNotion :: FTL Formula
 defNotion = do
   ((n,h),u) <- wellFormedCheck (ntnVars . fst) defn; uDecl <- makeDecl u
   return $ dAll uDecl $ Iff (Tag HeadTerm n) h
@@ -72,7 +72,7 @@ defNotion = do
 
 
 
-sigPredicat :: Parser FState Formula
+sigPredicat :: FTL Formula
 sigPredicat = do
   (f,g) <- wellFormedCheck prdVars sig
   return $ Imp (Tag HeadTerm f) g
@@ -82,7 +82,7 @@ sigPredicat = do
     noInfo = art >> wdTokenOf ["atom", "relation"] >> return Top
 
 
-sigNotion :: Parser FState Formula
+sigNotion :: FTL Formula
 sigNotion = do
   ((n,h),u) <- wellFormedCheck (ntnVars . fst) sig; uDecl <- makeDecl u
   return $ dAll uDecl $ Imp (Tag HeadTerm n) h
@@ -97,10 +97,10 @@ sigNotion = do
       art >> wdTokenOf ["notion", "constant"] >> return (id,Top)
     trm Trm {trName = "=", trArgs = [_,t]} = t; trm t = t
 
-newPredicat :: Parser FState Formula
+newPredicat :: FTL Formula
 newPredicat = do n <- newPrdPattern nvr; MS.get >>= addExpr n n True
 
-newNotion :: Parser FState (Formula, (String, SourcePos))
+newNotion :: FTL (Formula, (String, SourcePos))
 newNotion = do
   (n, u) <- newNtnPattern nvr;
   f <- MS.get >>= addExpr n n True
@@ -147,11 +147,11 @@ allDistinctVars = disVs []
 --- introduce synonyms
 
 
-nonLogicalLanguageExt :: Parser FState Text
+nonLogicalLanguageExt :: FTL Text
 nonLogicalLanguageExt = pretypeVariable </> introduceMacro
 
 
-pretypeVariable :: Parser FState Text
+pretypeVariable :: FTL Text
 pretypeVariable = do
   (pos, tv) <- narrow typeVar
   MS.modify $ upd tv
@@ -161,7 +161,7 @@ pretypeVariable = do
       pos1 <- getPos; markupToken synonymLet "let"; vs@(_:_) <- varlist; standFor;
       (g, pos2) <- wellFormedCheck (overfree [] . fst) holedNotion
       let pos = rangePos $ SourceRange pos1 pos2
-      addPretypingReport pos $ map snd vs; 
+      addPretypingReport pos $ map snd vs;
       return (pos, (vs, ignoreNames g))
 
     holedNotion = do
@@ -173,7 +173,7 @@ pretypeVariable = do
     upd (vs, ntn) st = st { tvrExpr = (map fst vs, ntn) : tvrExpr st }
 
 
-introduceMacro :: Parser FState Text
+introduceMacro :: FTL Text
 introduceMacro = do
   pos1 <- getPos; markupToken macroLet "let"
   (pos2, (f, g)) <- narrow (prd -|- ntn)

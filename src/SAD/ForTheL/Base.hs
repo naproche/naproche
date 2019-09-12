@@ -65,7 +65,7 @@ initFS = FState
     eq = [
       ([Wd ["equal"], Wd ["to"], Vr], zTrm (-1) "="),
       ([Wd ["nonequal"], Wd ["to"], Vr], Not . zTrm (-1) "=") ]
-    sp = [ 
+    sp = [
       ([Sm "="], zTrm (-1) "="),
       ([Sm "!", Sm "="], Not . zTrm (-1) "="),
       ([Sm "-", Sm "<", Sm "-"], zTrm (-2) "iLess"),
@@ -124,7 +124,7 @@ primUnAdj = getExpr (filter (unary . fst) . adjExpr) . primPrd
 
 primPrd :: Parser st (b1 -> b1, Formula)
            -> ([Patt], [Formula] -> b2) -> Parser st (b1 -> b1, b2)
-primPrd p (pt, fm) = do 
+primPrd p (pt, fm) = do
   (q, ts) <- wdPatt p pt
   return (q, fm $ zHole:ts)
 
@@ -183,23 +183,23 @@ primFun  = (>>= fun) . primNtn
 
 -- Symbolic primitives
 
-primCpr :: Parser FState Formula -> FTL Formula
+primCpr :: FTL Formula -> FTL Formula
 primCpr = getExpr cprExpr . primCsm
-primRpr :: Parser FState Formula -> FTL (Formula -> Formula)
+primRpr :: FTL Formula -> FTL (Formula -> Formula)
 primRpr = getExpr rprExpr . primRsm
-primLpr :: Parser FState Formula -> FTL (Formula -> Formula)
+primLpr :: FTL Formula -> FTL (Formula -> Formula)
 primLpr = getExpr lprExpr . primLsm
-primIpr :: Parser FState Formula
+primIpr :: FTL Formula
            -> FTL (Formula -> Formula -> Formula)
 primIpr = getExpr iprExpr . primIsm
 
-primCfn :: Parser FState Formula -> FTL Formula
+primCfn :: FTL Formula -> FTL Formula
 primCfn = getExpr cfnExpr . primCsm
-primRfn :: Parser FState Formula -> FTL (Formula -> Formula)
+primRfn :: FTL Formula -> FTL (Formula -> Formula)
 primRfn = getExpr rfnExpr . primRsm
-primLfn :: Parser FState Formula -> FTL (Formula -> Formula)
+primLfn :: FTL Formula -> FTL (Formula -> Formula)
 primLfn = getExpr lfnExpr . primLsm
-primIfn :: Parser FState Formula
+primIfn :: FTL Formula
            -> FTL (Formula -> Formula -> Formula)
 primIfn = getExpr ifnExpr . primIsm
 
@@ -240,7 +240,7 @@ samePat _ _ = False
 -- adding error reporting to pattern parsing
 patternWdTokenOf :: [String] -> Parser st ()
 patternWdTokenOf l = label ("a word of " ++ show l) $ wdTokenOf l
-patternSmTokenOf :: [Char] -> Parser st ()
+patternSmTokenOf :: String -> Parser st ()
 patternSmTokenOf l = label ("the symbol " ++ show l) $ smTokenOf l
 
 -- most basic pattern parser: simply follow the pattern and parse terms with p
@@ -273,8 +273,8 @@ mlPatt _ _ = mzero
 
 -- parses a notion: follow the pattern to the name place, record names,
 -- then keep following the pattern
-ntPatt :: Parser FState (b -> b, a)
-          -> [Patt] -> Parser FState (b -> b, [([Char], SourcePos)], [a])
+ntPatt :: FTL (b -> b, a)
+          -> [Patt] -> FTL (b -> b, [(String, SourcePos)], [a])
 ntPatt p (Wd l : ls) = patternWdTokenOf l >> ntPatt p ls
 ntPatt p (Nm : ls) = do
   vs <- namlist
@@ -284,8 +284,8 @@ ntPatt _ _ = mzero
 
 -- parse an "of"-notion: follow the pattern to the notion name, then check that
 -- "of" follows the name followed by a variable that is not followed by "and"
-ofPatt :: Parser FState (b -> b, a)
-          -> [Patt] -> Parser FState (b -> b, [([Char], SourcePos)], [a])
+ofPatt :: FTL (b -> b, a)
+          -> [Patt] -> FTL (b -> b, [(String, SourcePos)], [a])
 ofPatt p (Wd l : ls) = patternWdTokenOf l >> ofPatt p ls
 ofPatt p (Nm : Wd l : Vr : ls) = do
   guard $ elem "of" l; vs <- namlist
@@ -296,10 +296,10 @@ ofPatt _ _ = mzero
 -- | parse a "common"-notion: basically like the above. We use the special parser
 -- s for the first variable place after the "of" since we expect multiple terms
 -- here. Example: A common *divisor of m and n*.
-cmPatt :: Parser FState (b -> b, a1)
-          -> Parser FState (b -> c, [a2])
+cmPatt :: FTL (b -> b, a1)
+          -> FTL (b -> c, [a2])
           -> [Patt]
-          -> Parser FState (b -> c, [([Char], SourcePos)], [a2], [a1])
+          -> FTL (b -> c, [(String, SourcePos)], [a2], [a1])
 cmPatt p s (Wd l:ls) = patternWdTokenOf l >> cmPatt p s ls
 cmPatt p s (Nm : Wd l : Vr : ls) = do
   guard $ elem "of" l; vs <- namlist; patternWdTokenOf l
@@ -320,7 +320,7 @@ naPatt p ls = wdPatt p ls
 
 -- Variables
 
-namlist :: Parser FState [(String, SourcePos)]
+namlist :: FTL [(String, SourcePos)]
 namlist = varlist -|- fmap (:[]) hidden
 
 varlist :: Parser st [(String, SourcePos)]
@@ -332,7 +332,7 @@ nodups :: [String] -> Parser st ()
 nodups vs = unless ((null :: [b] -> Bool) $ duplicateNames vs) $
   fail $ "duplicate names: " ++ show vs
 
-hidden :: Parser FState (String, SourcePos)
+hidden :: FTL (String, SourcePos)
 hidden = do
   n <- MS.gets hiddenCount
   MS.modify $ \st -> st {hiddenCount = succ n}
@@ -358,9 +358,9 @@ primTvr = getExpr tvrExpr tvr
 
 -- free
 
-freeVars :: Formula -> Parser FState [String]
+freeVars :: Formula -> FTL [String]
 freeVars f = do dvs <- getDecl; return $ free dvs f
-freeVarPositions :: Formula -> Parser FState [(String, SourcePos)]
+freeVarPositions :: Formula -> FTL [(String, SourcePos)]
 freeVarPositions f = do dvs <- getDecl; return $ freePositions dvs f
 
 --- decl
@@ -455,6 +455,6 @@ such = wdTokenOf ["such", "so"]
 
 --just for now:
 
-showVar :: [Char] -> [Char]
+showVar :: String -> String
 showVar ('x':nm) = nm
 showVar nm = nm

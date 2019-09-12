@@ -85,7 +85,7 @@ readBool = try $ readString >>= boolCheck
     boolCheck "off" = return False
     boolCheck _     = mzero
 
-readString :: Parser st [Char]
+readString :: Parser st String
 readString = fmap concat readStrings
 
 

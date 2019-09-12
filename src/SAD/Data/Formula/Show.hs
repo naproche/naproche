@@ -112,7 +112,7 @@ decode s (t:ts) p d = dec s
 
 
     ambig Trm {trName = 's':'d':'t':cs} = not $ funpatt cs
-    ambig Trm {trName = t} = 
+    ambig Trm {trName = t} =
       head t == 's' && snd (splitAt (length t - 2) t) == "dt"
     ambig _ = False
 
@@ -123,7 +123,7 @@ decode s (t:ts) p d = dec s
 
 -- Symbolic names
 
-symChars :: [Char]
+symChars :: String
 symChars = "`~!@$%^&*()-+=[]{}:'\"<>/?\\|;,"
 
 symEncode :: String -> String
