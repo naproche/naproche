@@ -398,22 +398,24 @@ bindings vs = mapM makeDecl . decl vs
 
 overfree :: [String] -> Formula -> Maybe String
 overfree vs f
-    | occurs zSlot f = Just $ "too few subjects for an m-predicate " ++ inf
-    | not (null sbs) = Just $ "free undeclared variables: "   ++ sbs ++ inf
-    | not (null ovl) = Just $ "overlapped variables: "        ++ ovl ++ inf
+    | occurs zSlot f = Just $ "too few subjects for an m-predicate " ++ info
+    | not (null sbs) = Just $ "free undeclared variables: "   ++ sbs ++ info
+    | not (null ovl) = Just $ "overlapped variables: "        ++ ovl ++ info
     | otherwise      = Nothing
   where
     sbs = unwords $ map showVar $ free vs f
     ovl = unwords $ map showVar $ over vs f
-    inf = "\n in translation: " ++ show f
+    info = "\n in translation: " ++ show f
 
-    over vs (All v f) = bvrs vs (Decl.name v) f
-    over vs (Exi v f) = bvrs vs (Decl.name v) f
+    over :: [String] -> Formula -> [String]
+    over vs (All v f) = boundVars vs (Decl.name v) f
+    over vs (Exi v f) = boundVars vs (Decl.name v) f
     over vs f = foldF (over vs) f
 
-    bvrs vs v f
-      | elem v vs = [v]
-      | null v    = over vs f
+    boundVars :: [String] -> String -> Formula -> [String]
+    boundVars vs v f
+      | v `elem` vs = [v]
+      | null v = over vs f
       | otherwise = over (v:vs) f
 
 
