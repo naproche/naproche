@@ -551,23 +551,31 @@ dig :: Monad m => Formula -> [Formula] -> m Formula
 dig f [_] | occursS f = fail "too few subjects for an m-predicate"
 dig f ts = return (dive f)
   where
+    dive :: Formula -> Formula
     dive (Tag Dig f) = down digS f
     dive (Tag DigMultiSubject f) = down (digM $ zip ts $ tail ts) f
     dive (Tag DigMultiPairwise f) = down (digM $ pairMP ts) f
     dive f | isTrm f = f
     dive f = mapF dive f
 
+    down :: (Formula -> [Formula]) -> Formula -> Formula
     down fn (And f g) = And (down fn f) (down fn g)
     down fn f = foldl1 And (fn f)
 
+    digS :: Formula -> [Formula]
     digS f
       | occursH f = map ( `substHole` f) ts
       | otherwise = [f]
 
+    digM :: [(Formula, Formula)] -> Formula -> [Formula]
     digM ps f
       | not (occursS f) = digS f
       | not (occursH f) = map ( `substSlot` f) $ tail ts
       | otherwise = map (\ (x,y) -> substSlot y $ substHole x f) ps
 
-    pairMP (t:ts) = [ (t, s) | s <- ts ] ++ pairMP ts
-    pairMP _ = []
+-- Example:
+-- pairMP [1,2,3,4]
+-- [(1,2),(1,3),(1,4),(2,3),(2,4),(3,4)]
+pairMP :: [a] -> [(a, a)]
+pairMP (t:ts) = [ (t, s) | s <- ts ] ++ pairMP ts
+pairMP _ = []
