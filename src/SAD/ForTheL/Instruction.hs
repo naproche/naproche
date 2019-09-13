@@ -56,7 +56,7 @@ instrExit =
       _ -> mzero)
 
 instrDrop :: FTL (Instr.Pos, Instr.Drop)
-instrDrop = instrPos addInstrReport (wdToken "/" >> readInstrDrop)
+instrDrop = instrPos addInstrReport (token' "/" >> readInstrDrop)
 
 
 readInstr :: FTL Instr
@@ -99,10 +99,10 @@ readWords :: Parser st [String]
 readWords = shortHand </> chainLL1 word
   where
   shortHand = do
-    w <- word ; root <- optLL1 w $ variant w; smTokenOf "/"
-    syms <- (fmap (map toLower) word -|- variant w) `sepByLL1` smTokenOf "/"
+    w <- word ; root <- optLL1 w $ variant w; token "/"
+    syms <- (fmap (map toLower) word -|- variant w) `sepByLL1` token "/"
     return $ root : syms
-  variant w = smTokenOf "-" >> fmap (w ++) word
+  variant w = token "-" >> fmap (w ++) word
 
 readInstrDrop :: FTL Instr.Drop
 readInstrDrop = readInstrCommand -|- readInstrLimit -|- readInstrBool

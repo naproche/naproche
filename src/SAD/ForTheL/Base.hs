@@ -238,15 +238,15 @@ samePat _ _ = False
 
 
 -- adding error reporting to pattern parsing
-patternWdTokenOf :: [String] -> Parser st ()
-patternWdTokenOf l = label ("a word of " ++ show l) $ wdTokenOf l
+patternTokenOf' :: [String] -> Parser st ()
+patternTokenOf' l = label ("a word of " ++ show l) $ tokenOf' l
 patternSmTokenOf :: String -> Parser st ()
-patternSmTokenOf l = label ("the symbol " ++ show l) $ smTokenOf l
+patternSmTokenOf l = label ("the symbol " ++ show l) $ token l
 
 -- most basic pattern parser: simply follow the pattern and parse terms with p
 -- at variable places
 wdPatt :: Parser st (b -> b, a) -> [Patt] -> Parser st (b-> b, [a])
-wdPatt p (Wd l : ls) = patternWdTokenOf l >> wdPatt p ls
+wdPatt p (Wd l : ls) = patternTokenOf' l >> wdPatt p ls
 wdPatt p (Vr : ls) = do
   (r, t) <- p
   (q, ts) <- wdPatt p ls
@@ -261,13 +261,13 @@ smPatt p (Sm s : ls) = patternSmTokenOf s >> smPatt p ls
 smPatt _ [] = return []
 smPatt _ _ = mzero
 
--- parses a multi-subject pattern: follow the pattern, but ignore the wdToken
+-- parses a multi-subject pattern: follow the pattern, but ignore the token'
 -- right before the first variable. Then check that all "and" tokens have been
 -- consumed. Example pattern: [Wd ["commute","commutes"], Wd ["with"], Vr]. Then
 -- we can parse "a commutes with c and d" as well as "a and b commute".
 mlPatt :: Parser st (b -> b, a) -> [Patt] -> Parser st (b -> b, [a])
-mlPatt p (Wd l :_: Vr : ls) = patternWdTokenOf l >> naPatt p ls
-mlPatt p (Wd l : ls) = patternWdTokenOf l >> mlPatt p ls
+mlPatt p (Wd l :_: Vr : ls) = patternTokenOf' l >> naPatt p ls
+mlPatt p (Wd l : ls) = patternTokenOf' l >> mlPatt p ls
 mlPatt _ _ = mzero
 
 
@@ -275,7 +275,7 @@ mlPatt _ _ = mzero
 -- then keep following the pattern
 ntPatt :: FTL (b -> b, a)
           -> [Patt] -> FTL (b -> b, [(String, SourcePos)], [a])
-ntPatt p (Wd l : ls) = patternWdTokenOf l >> ntPatt p ls
+ntPatt p (Wd l : ls) = patternTokenOf' l >> ntPatt p ls
 ntPatt p (Nm : ls) = do
   vs <- namlist
   (q, ts) <- wdPatt p ls
@@ -286,7 +286,7 @@ ntPatt _ _ = mzero
 -- "of" follows the name followed by a variable that is not followed by "and"
 ofPatt :: FTL (b -> b, a)
           -> [Patt] -> FTL (b -> b, [(String, SourcePos)], [a])
-ofPatt p (Wd l : ls) = patternWdTokenOf l >> ofPatt p ls
+ofPatt p (Wd l : ls) = patternTokenOf' l >> ofPatt p ls
 ofPatt p (Nm : Wd l : Vr : ls) = do
   guard $ elem "of" l; vs <- namlist
   (q, ts) <- naPatt p ls
@@ -300,9 +300,9 @@ cmPatt :: FTL (b -> b, a1)
           -> FTL (b -> c, [a2])
           -> [Patt]
           -> FTL (b -> c, [(String, SourcePos)], [a2], [a1])
-cmPatt p s (Wd l:ls) = patternWdTokenOf l >> cmPatt p s ls
+cmPatt p s (Wd l:ls) = patternTokenOf' l >> cmPatt p s ls
 cmPatt p s (Nm : Wd l : Vr : ls) = do
-  guard $ elem "of" l; vs <- namlist; patternWdTokenOf l
+  guard $ elem "of" l; vs <- namlist; patternTokenOf' l
   (r, as) <- s
   when (null $ tail as) $ fail "several objects expected for `common'"
   (q, ts) <- naPatt p ls
@@ -310,10 +310,10 @@ cmPatt p s (Nm : Wd l : Vr : ls) = do
 cmPatt _ _ _ = mzero
 
 -- an auxiliary pattern parser that checks that we are not dealing with an "and"
--- wdToken and then continues to follow the pattern
+-- token' and then continues to follow the pattern
 naPatt :: Parser st (b -> b, a)
           -> [Patt] -> Parser st (b -> b, [a])
-naPatt p (Wd l : ls) = guard (notElem "and" l) >> patternWdTokenOf l >> wdPatt p ls
+naPatt p (Wd l : ls) = guard (notElem "and" l) >> patternTokenOf' l >> wdPatt p ls
 naPatt p ls = wdPatt p ls
 
 
@@ -325,7 +325,7 @@ namlist = varlist -|- fmap (:[]) hidden
 
 varlist :: Parser st [(String, SourcePos)]
 varlist = do
-  vs <- var `sepBy` wdToken ","
+  vs <- var `sepBy` token' ","
   nodups $ map fst vs ; return vs
 
 nodups :: [String] -> Parser st ()
@@ -423,33 +423,33 @@ overfree vs f
 
 
 comma :: Parser st ()
-comma = wdTokenOf [",", "and"]
+comma = tokenOf' [",", "and"]
 is :: Parser st ()
-is = wdTokenOf ["is", "be", "are"]
+is = tokenOf' ["is", "be", "are"]
 art :: Parser st ()
-art = opt () $ wdTokenOf ["a","an","the"]
+art = opt () $ tokenOf' ["a","an","the"]
 an :: Parser st ()
-an = wdTokenOf ["a", "an"]
+an = tokenOf' ["a", "an"]
 the :: Parser st ()
-the = wdToken "the"
+the = token' "the"
 iff :: Parser st ()
-iff = wdToken "iff" <|> mapM_ wdToken ["if", "and", "only", "if"]
+iff = token' "iff" <|> mapM_ token' ["if", "and", "only", "if"]
 that :: Parser st ()
-that = wdToken "that"
+that = token' "that"
 standFor :: Parser st ()
-standFor = wdToken "denote" <|> (wdToken "stand" >> wdToken "for")
+standFor = token' "denote" <|> (token' "stand" >> token' "for")
 arrow :: Parser st ()
 arrow = symbol "->"
 there :: Parser st ()
-there = wdToken "there" >> wdTokenOf ["is","exist","exists"]
+there = token' "there" >> tokenOf' ["is","exist","exists"]
 does :: Parser st ()
-does = opt () $ wdTokenOf ["does", "do"]
+does = opt () $ tokenOf' ["does", "do"]
 has :: Parser st ()
-has = wdTokenOf ["has" , "have"]
+has = tokenOf' ["has" , "have"]
 with :: Parser st ()
-with = wdTokenOf ["with", "of", "having"]
+with = tokenOf' ["with", "of", "having"]
 such :: Parser st ()
-such = wdTokenOf ["such", "so"]
+such = tokenOf' ["such", "so"]
 
 
 

@@ -99,9 +99,9 @@ after a b = a >>= ((b >>) . return)
 ---- enclosed body (with range)
 enclosed :: String -> String -> Parser st a -> Parser st ((SourcePos, SourcePos), a)
 enclosed bg en p = do
-  pos1 <- wdTokenPos bg
+  pos1 <- tokenPos' bg
   x <- p
-  pos2 <- wdTokenPos en
+  pos2 <- tokenPos' en
   return ((pos1, pos2), x)
 
 -- mandatory parentheses, brackets, braces etc.
@@ -118,7 +118,7 @@ paren p = p -|- expar p
 ---- dot keyword
 dot :: Parser st SourceRange
 dot = do
-  pos1 <- wdTokenPos "." <?> "a dot"
+  pos1 <- tokenPos' "." <?> "a dot"
   return $ makeRange (pos1, advancePos pos1 '.')
 
 ---- mandatory finishing dot
@@ -266,7 +266,7 @@ errorTrace label shw p = Parser $ \st ok cerr eerr ->
     where
       tabString = unlines . map ((++) "   ") . lines
 
-      
+
 notEof :: Parser st ()
 notEof = Parser $ \st ok _ eerr ->
   case uncons $ stInput st of

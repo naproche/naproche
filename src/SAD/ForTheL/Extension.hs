@@ -66,8 +66,8 @@ defNotion = do
       h <- (fn . q) <$> dig f [v]
       return ((n,h),u)
 
-    isOrEq = wdToken "=" <|> isEq
-    isEq   = is >> optLL1 () (wdToken "equal" >> wdToken "to")
+    isOrEq = token' "=" <|> isEq
+    isEq   = is >> optLL1 () (token' "equal" >> token' "to")
     trm Trm {trName = "=", trArgs = [_,t]} = t; trm t = t
 
 
@@ -78,8 +78,8 @@ sigPredicat = do
   return $ Imp (Tag HeadTerm f) g
   where
     sig    = do f <- newPredicat; imp; g <- statement </> noInfo; return (f,g)
-    imp    = wdToken "is" <|> wdToken "implies" <|> symbol "=>"
-    noInfo = art >> wdTokenOf ["atom", "relation"] >> return Top
+    imp    = token' "is" <|> token' "implies" <|> symbol "=>"
+    noInfo = art >> tokenOf' ["atom", "relation"] >> return Top
 
 
 sigNotion :: FTL Formula
@@ -94,7 +94,7 @@ sigNotion = do
       return ((n,h),u)
 
     noInfo =
-      art >> wdTokenOf ["notion", "constant"] >> return (id,Top)
+      art >> tokenOf' ["notion", "constant"] >> return (id,Top)
     trm Trm {trName = "=", trArgs = [_,t]} = t; trm t = t
 
 newPredicat :: FTL Formula

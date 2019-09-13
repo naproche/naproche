@@ -40,7 +40,7 @@ headed = quStatem <|> ifThenStatem <|> wrongStatem
       (markupToken Reports.ifThen "if" >> statement)
       (markupToken Reports.ifThen "then" >> statement)
     wrongStatem =
-      mapM_ wdToken ["it", "is", "wrong", "that"] >> fmap Not statement
+      mapM_ token' ["it", "is", "wrong", "that"] >> fmap Not statement
 
 
 
@@ -51,7 +51,7 @@ chained = label "chained statement" $ andOr <|> neitherNor >>= chainEnd
     andChain f =
       fmap (foldl And f) $ and >> atomic `sepBy` and
     -- we take sepBy here instead of sepByLLx since we do not  know if the
-    -- and/or wdToken binds to this statement or to an ambient one
+    -- and/or token' binds to this statement or to an ambient one
     orChain f = fmap (foldl Or f) $ or >> atomic `sepBy`or
     and = markupToken Reports.conjunctiveAnd "and"
     or = markupToken Reports.or "or"
@@ -78,20 +78,20 @@ atomic :: FTL Formula
 atomic = label "atomic statement"
   thereIs <|> (simple </> (wehve >> smForm <|> thesis))
   where
-    wehve = optLL1 () $ wdToken "we" >> wdToken "have"
+    wehve = optLL1 () $ token' "we" >> token' "have"
 
 thesis :: Parser st Formula
 thesis = art >> (thes <|> contrary <|> contradiction)
   where
-    thes = wdToken "thesis" >> return zThesis
-    contrary = wdToken "contrary" >> return (Not zThesis)
-    contradiction = wdToken "contradiction" >> return Bot
+    thes = token' "thesis" >> return zThesis
+    contrary = token' "contrary" >> return (Not zThesis)
+    contradiction = token' "contradiction" >> return Bot
 
 thereIs :: FTL Formula
 thereIs = label "there-is statement" $ there >> (noNotion -|- notions)
   where
     noNotion = label "no-notion" $ do
-      wdToken "no"; (q, f, vs) <- declared notion;
+      token' "no"; (q, f, vs) <- declared notion;
       return $ Not $ foldr mbdExi (q f) vs
     notions = fmap multExi $ art >> declared notion `sepBy` comma
 
@@ -137,7 +137,7 @@ isAPredicat = label "isA predicate" $ notNtn <|> ntn
   where
     ntn = fmap (uncurry ($)) anotion
     notNtn = do
-      wdToken "not"; (q, f) <- anotion; let unfinished = dig f [zHole]
+      token' "not"; (q, f) <- anotion; let unfinished = dig f [zHole]
       optLLx (q $ Not f) $ fmap (q. Tag Dig . Not) unfinished
 
 hasPredicate :: FTL Formula
@@ -145,15 +145,15 @@ hasPredicate = label "has predicate" $ noPossessive <|> possessive
   where
     possessive = art >> common <|> unary
     unary = fmap (Tag Dig . multExi) $ declared possess `sepBy` (comma >> art)
-    common = wdToken "common" >>
+    common = token' "common" >>
       fmap multExi (fmap digadd (declared possess) `sepBy` comma)
 
     noPossessive = nUnary -|- nCommon
     nUnary = do
-      wdToken "no"; (q, f, v) <- declared possess;
+      token' "no"; (q, f, v) <- declared possess;
       return $ q . Tag Dig . Not $ foldr mbdExi f v
     nCommon = do
-      wdToken "no"; wdToken "common"; (q, f, v) <- declared possess
+      token' "no"; token' "common"; (q, f, v) <- declared possess
       return $ q . Not $ foldr mbdExi (Tag Dig f) v
       -- take a closer look at this later.. why is (Tag Dig) *inside* important?
 
@@ -161,20 +161,20 @@ hasPredicate = label "has predicate" $ noPossessive <|> possessive
 --- predicate parsing
 
 predicate :: (FTL UTerm -> FTL UTerm) -> FTL Formula
-predicate p = (wdToken "not" >> negative) <|> positive
+predicate p = (token' "not" >> negative) <|> positive
   where
     positive = do (q, f) <- p term; return $ q . Tag Dig $ f
     negative = do (q, f) <- p term; return $ q . Tag Dig . Not $ f
 
 mPredicate :: (FTL UTerm -> FTL UTerm) -> FTL Formula
-mPredicate p = (wdToken "not" >> mNegative) <|> mPositive
+mPredicate p = (token' "not" >> mNegative) <|> mPositive
   where
-    mPositive = (wdToken "pairwise" >> pPositive) <|> sPositive
+    mPositive = (token' "pairwise" >> pPositive) <|> sPositive
     -- we distinguish between *separate* and *pairwise*
     sPositive = do (q, f) <- p term; return $ q . Tag DigMultiSubject $ f
     pPositive = do (q, f) <- p term; return $ q . Tag DigMultiPairwise $ f
 
-    mNegative = (wdToken "pairwise" >> pNegative) <|> sNegative
+    mNegative = (token' "pairwise" >> pNegative) <|> sNegative
     sNegative = do (q, f) <- p term; return $ q . Tag DigMultiSubject . Not $ f
     pNegative = do (q, f) <- p term; return $ q . Tag DigMultiPairwise . Not $ f
 
@@ -187,7 +187,7 @@ basentn :: Parser
              FState (Formula -> Formula, Formula, [(String, SourcePos)])
 basentn = fmap digadd $ cm <|> symEqnt <|> (set </> primNtn term)
   where
-    cm = wdToken "common" >> primCmNtn term terms
+    cm = token' "common" >> primCmNtn term terms
     symEqnt = do
       t <- lexicalCheck isTrm sTerm
       v <- hidden; return (id, zEqu zHole t, [v])
@@ -268,17 +268,17 @@ quNotion = label "quantified notion" $
   paren (fa <|> ex <|> no)
   where
     fa = do
-      wdTokenOf ["every", "each", "all", "any"]; (q, f, v) <- notion
+      tokenOf' ["every", "each", "all", "any"]; (q, f, v) <- notion
       vDecl <- mapM makeDecl v
       return (q . flip (foldr dAll) vDecl . blImp f, map pVar v)
 
     ex = do
-      wdToken "some"; (q, f, v) <- notion
+      token' "some"; (q, f, v) <- notion
       vDecl <- mapM makeDecl v
       return (q . flip (foldr dExi) vDecl . blAnd f, map pVar v)
 
     no = do
-      wdToken "no"; (q, f, v) <- notion
+      token' "no"; (q, f, v) <- notion
       vDecl<- mapM makeDecl v
       return (q . flip (foldr dAll) vDecl . blImp f . Not, map pVar v)
 
@@ -308,10 +308,10 @@ sForm  = sIff
     sDis = sCon >>= binF Or  (symbol "\\/" >> sDis)
     sCon = sUna >>= binF And (symbol "/\\" >> sCon)
     sUna = sAll -|- sExi -|- sNot -|- sDot -|- sAtm
-    sAll = liftM2 (quaF dAll Imp) (wdToken "forall" >> declared symNotion) sUna
-    sExi = liftM2 (quaF dExi And) (wdToken "exists" >> declared symNotion) sUna
-    sNot = fmap Not $ wdToken "not" >> sUna
-    sDot = wdToken ":" >> sForm
+    sAll = liftM2 (quaF dAll Imp) (token' "forall" >> declared symNotion) sUna
+    sExi = liftM2 (quaF dExi And) (token' "exists" >> declared symNotion) sUna
+    sNot = fmap Not $ token' "not" >> sUna
+    sDot = token' ":" >> sForm
     sAtm = sAtom
 
     quaF qu op (_, f, v) = flip (foldr qu) v . op f
@@ -337,7 +337,7 @@ sAtom = sRelation -|- expar statement
       fmap (liftM2 pr ls rs :) $ opt [] $ sTl rs
     rTl ls = do pr <- primRpr sTerm; return [map pr ls]
 
-    sTs = sTerm `sepBy` wdToken ","
+    sTs = sTerm `sepBy` token' ","
 
 
 sTerm :: FTL Formula
@@ -362,7 +362,7 @@ classEq :: FTL Formula
 classEq = twoClassTerms </> oneClassTerm
   where
     twoClassTerms = do
-      cnd1 <- fmap stripSet symbSetNotation; smTokenOf "="
+      cnd1 <- fmap stripSet symbSetNotation; token "="
       cnd2 <- fmap stripSet symbSetNotation; h <- hidden
       hDecl <- makeDecl h
       return $ dAll hDecl $ Iff (cnd1 $ pVar h) (cnd2 $ pVar h)
@@ -370,11 +370,11 @@ classEq = twoClassTerms </> oneClassTerm
 
     oneClassTerm = left </> right
     left = do
-      cnd <- fmap stripSet symbSetNotation; smTokenOf "="
+      cnd <- fmap stripSet symbSetNotation; token "="
       t <- sTerm; h <- hidden; hDecl <- makeDecl h; let hv = pVar h
       return $ All hDecl $ Iff (cnd hv) (zElem hv t)
     right = do
-      t <- sTerm; smTokenOf "="; h <- hidden; hDecl <- makeDecl h
+      t <- sTerm; token "="; h <- hidden; hDecl <- makeDecl h
       let hv = pVar h
       cnd <- fmap stripSet symbSetNotation
       return $ dAll hDecl $ Iff (zElem hv t) (cnd hv)
@@ -397,14 +397,14 @@ selection = fmap (foldl1 And) $ (art >> takeLongest namedNotion) `sepByLL1` comm
 -- -- sets
 setNotion :: FTL Formula
 setNotion = do
-  v <- after var (smTokenOf "="); (_, f, _) <- set
+  v <- after var (token "="); (_, f, _) <- set
   dig (Tag Dig f) [pVar v]
 
 set :: FTL MNotion
 set = label "set definition" $ symbSet <|> setOf
   where
     setOf = do
-      wdTokenOf ["set", "sets"]; nm <- var -|- hidden; wdToken "of";
+      tokenOf' ["set", "sets"]; nm <- var -|- hidden; token' "of";
       (q, f, u) <- notion >>= single; vnm <- hidden
       vnmDecl <- makeDecl vnm;
       return (id, setForm vnmDecl $ subst (pVar vnm) (fst u) $ q f, [nm])
@@ -421,10 +421,10 @@ symbSetNotation :: Parser
 symbSetNotation = cndSet </> finSet
   where
     finSet = exbrc $ do
-      ts <- sTerm `sepByLL1` smTokenOf ","; h <- hidden
+      ts <- sTerm `sepByLL1` token ","; h <- hidden
       return (\tr -> foldr1 Or $ map (zEqu tr) ts, h)
     cndSet = exbrc $ do
-      (tag, c, t) <- sepFrom; st <- smTokenOf "|" >> statement;
+      (tag, c, t) <- sepFrom; st <- token "|" >> statement;
       vs <- freeVarPositions t; vsDecl <- mapM makeDecl vs;
       nm <- if isVar t then return $ (trName t, trPosition t) else hidden
       return (\tr -> tag $ c tr `blAnd` mbEqu vsDecl tr t st, nm)
@@ -441,7 +441,7 @@ sepFrom = ntnSep -|- setSep -|- noSep
       (q, f, v) <- notion >>= single; guard (not . isEquality $ f)
       return (Tag Replacement, \tr -> subst tr (fst v) $ q f, pVar v)
     setSep = do
-      t <- sTerm; cnd <- wdToken "in" >> elementCnd
+      t <- sTerm; cnd <- token' "in" >> elementCnd
       return (id, cnd, t)
     noSep  = do
       t <- sTerm; return (Tag Replacement, const Top, t)
@@ -454,11 +454,11 @@ elementCnd = setTerm </> fmap fst symbSetNotation
 -- -- functions
 
 functionNotion :: FTL Formula
-functionNotion = liftM2 (&) sVar $ wordFun <|> (smTokenOf "=" >> lambda)
+functionNotion = liftM2 (&) sVar $ wordFun <|> (token "=" >> lambda)
   where
   wordFun = do
-    smTokenOf "["; t <- pair; smTokenOf "]"; smTokenOf "="; vs <- freeVarPositions t
-    def <- addDecl (map fst vs) lambdaBody; (_, _, dom) <- wdToken "for" >> lambdaIn;
+    token "["; t <- pair; token "]"; token "="; vs <- freeVarPositions t
+    def <- addDecl (map fst vs) lambdaBody; (_, _, dom) <- token' "for" >> lambdaIn;
     vsDecl <- mapM makeDecl vs
     let body f = foldr dAll (Imp (t `zElem` zDom f) $ def $ zApp f t) vsDecl
     return $ \f -> zFun f `And` Tag Domain (dom f) `And` body f
@@ -468,24 +468,24 @@ lambdaBody = label "function definition" $ paren $ cases <|> chooseInTerm
 
 cases :: FTL (Formula -> Formula)
 cases = do
-  cas <- ld_case `sepByLL1` smTokenOf ","
+  cas <- ld_case `sepByLL1` token ","
   return $ \fx -> foldr1 And $ map ((&) fx) cas
   where
     ld_case = do
-      optLL1 () $ wdToken "case"; condition <- statement; arrow
+      optLL1 () $ token' "case"; condition <- statement; arrow
       fmap ((.) $ Tag Condition . Imp condition) chooseInTerm
 
 chooseInTerm :: FTL (Formula -> Formula)
 chooseInTerm = do
-  chs <- optLL1 [] $ after (ld_choice `sepByLL1` smTokenOf ",") (wdToken "in")
+  chs <- optLL1 [] $ after (ld_choice `sepByLL1` token ",") (token' "in")
   f   <- term -|- defTerm; return $ flip (foldr ($)) chs . f
   where
     ld_choice = chc <|> def
     chc = do
-      wdToken "choose"; (q, f, vs) <- declared $ art >> notion
+      token' "choose"; (q, f, vs) <- declared $ art >> notion
       return $ flip (foldr dExi) vs . And (q f)
     def = do
-      wdToken "define"; x <- var; xDecl <- makeDecl x; smTokenOf "="
+      token' "define"; x <- var; xDecl <- makeDecl x; token "="
       ap <- ld_set <|> lambda
       return $ dExi xDecl . And (Tag Defined $ ap $ pVar x)
 
@@ -504,7 +504,7 @@ lambda = do
   (t, df_head, dom) <- ld_head; vs <- freeVars t; df <- addDecl vs lambdaBody
   return $ \f -> zFun f `And` Tag Domain (dom f) `And` (df_head f $ df $ zApp f t)
   where
-    ld_head = finish $ smTokenOf "\\" >> lambdaIn
+    ld_head = finish $ token "\\" >> lambdaIn
 
 pair :: Parser st Formula
 pair = sVar </> pr
@@ -516,7 +516,7 @@ lambdaIn :: Parser
               FState (Formula, Formula -> Formula -> Formula, Formula -> Formula)
 lambdaIn = do
   t <- pair; vs <- freeVarPositions t; vsDecl <- mapM makeDecl vs
-  wdToken "in"; dom <- ld_dom;
+  token' "in"; dom <- ld_dom;
   let df_head f = foldr ((.) . dAll) (Imp (t `zElem` zDom f)) vsDecl
   return (t, df_head, \f -> dom f t vsDecl)
   where
@@ -535,10 +535,10 @@ multExi ((q, f, vs):ns) = foldr mbdExi (q f `blAnd` multExi ns) vs
 multExi [] = Top
 
 conjChain :: Parser st Formula -> Parser st Formula
-conjChain = fmap (foldl1 And) . flip sepBy (wdToken "and")
+conjChain = fmap (foldl1 And) . flip sepBy (token' "and")
 
 quChain :: FTL (Formula -> Formula)
-quChain = fmap (foldl fld id) $ wdToken "for" >> quNotion `sepByLL1` comma
+quChain = fmap (foldl fld id) $ token' "for" >> quNotion `sepByLL1` comma
 -- we can use LL1 here, since there must always follow a parser belonging to the
 -- same non-terminal
   where

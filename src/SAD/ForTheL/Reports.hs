@@ -40,11 +40,11 @@ addReports rep = MS.modify (\st -> case pide st of
 
 markupToken :: Markup.T -> String -> FTL ()
 markupToken markup s = do
-  pos <- getPos; wdToken s; addReports $ const [(pos, markup)]
+  pos <- getPos; token' s; addReports $ const [(pos, markup)]
 
 markupTokenOf :: Markup.T -> [String] -> FTL ()
 markupTokenOf markup ss = do
-  pos <- getPos; wdTokenOf ss; addReports $ const [(pos, markup)]
+  pos <- getPos; tokenOf' ss; addReports $ const [(pos, markup)]
 
 
 -- formula and variable reports

@@ -76,32 +76,36 @@ satisfy pr = tokenPrim prTest
 word :: Parser st String
 word = satisfy $ \tk -> all isAlpha tk
 
----- check if the current token is equal to s after mapping to lowercase
-{-# INLINE wdToken #-}
-wdToken :: String -> Parser st ()
-wdToken s = void $ satisfy $ \tk -> s == map toLower tk
+-- | Succeeds iff the current token is equal to @tk@. Consumes the token.
+{-# INLINE token #-}
+token :: String -> Parser st ()
+token tk = void $ satisfy $ \tk' -> tk == tk'
 
-wdTokenPos :: String -> Parser st SourcePos
-wdTokenPos s = do
+-- | Case-insensitive version of @token@.
+{-# INLINE token' #-}
+token' :: String -> Parser st ()
+token' s = void $ satisfy $ \tk -> s == map toLower tk
+
+-- | @token'@ that return the position of the token instead of @()@.
+tokenPos' :: String -> Parser st SourcePos
+tokenPos' s = do
   pos <- getPos
-  () <- wdToken s
+  token' s
   return pos
 
----- check if the current token is equal to some element of ls after
----- mapping to lowercase
-{-# INLINE wdTokenOf #-}
-wdTokenOf :: [String] -> Parser st ()
-wdTokenOf ls = void $ satisfy $ \tk -> map toLower tk `elem` ls
+-- | Succeeds iff the current token is an element of @tks@. Consumes the token.
+tokenOf :: [String] -> Parser st ()
+tokenOf tks = void $ satisfy $ \tk -> tk `elem` tks
 
----- check if the current token is equal to s respecting case
-{-# INLINE smTokenOf #-}
-smTokenOf :: String -> Parser st ()
-smTokenOf s = void $ satisfy $ \tk -> s == tk
+-- | Case-insensitive version of @tokenOf@.
+{-# INLINE tokenOf' #-}
+tokenOf' :: [String] -> Parser st ()
+tokenOf' tks = void $ satisfy $ \tk -> map toLower tk `elem` tks
 
 ---- check if the next tokens form a given symbol
 symbol :: String -> Parser st ()
 symbol []     = return ()
-symbol (c:cs) = smTokenOf [c] >> symbol cs
+symbol (c:cs) = token [c] >> symbol cs
 
 ---- always succeed and pass on the string of the token
 anyToken :: Parser st String

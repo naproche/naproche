@@ -152,7 +152,7 @@ noLink :: Parser st [a]
 noLink = finish $ return []
 
 eqLink :: Parser st [String]
-eqLink = optLL1 [] $ expar $ wdToken "by" >> identifiers
+eqLink = optLL1 [] $ expar $ token' "by" >> identifiers
   where
     identifiers = topIdentifier `sepByLL1` comma
 
@@ -193,7 +193,7 @@ pretype p = p `pretypeBefore` return []
 
 -- low-level header
 hence :: Parser st ()
-hence = optLL1 () $ wdTokenOf ["then", "hence", "thus", "therefore"]
+hence = optLL1 () $ tokenOf' ["then", "hence", "thus", "therefore"]
 letUs :: FTL ()
 letUs = optLL1 () $ (mu "let" >> mu "us") <|> (mu "we" >> mu "can")
   where
@@ -298,9 +298,9 @@ postMethod = optLL1 None $ short <|> explicit
 method :: FTL Scheme
 method = optLL1 Raw $ markupToken byAnnotation "by" >> (contradict <|> cases <|> induction)
   where
-    contradict = wdToken "contradiction" >> return Raw
-    cases = wdToken "case" >> wdToken "analysis" >> return Raw
-    induction = wdToken "induction" >> optLL1 InS (wdToken "on" >> fmap InT sTerm)
+    contradict = token' "contradiction" >> return Raw
+    cases = token' "case" >> token' "analysis" >> return Raw
+    induction = token' "induction" >> optLL1 InS (token' "on" >> fmap InT sTerm)
 
 
 --- creation of induction thesis
@@ -408,7 +408,7 @@ eqChain = do
 
 
 eqTail :: Formula -> FTL [Block]
-eqTail t = nextTerm t </> (smTokenOf "." >> return [])
+eqTail t = nextTerm t </> (token "." >> return [])
 
 nextTerm :: Formula -> FTL [Block]
 nextTerm t = do
