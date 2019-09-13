@@ -21,9 +21,7 @@ module SAD.Parser.Base
   where
 
 import Control.Monad
-#if MIN_VERSION_base(4,9,0)
 import qualified Control.Monad.Fail as Fail
-#endif
 import qualified Control.Applicative as Applicative
 import Control.Monad.State.Class
 
@@ -82,16 +80,12 @@ instance Monad (Parser st) where
   p >>= f = Parser $ \st ok consumedFail emptyFail ->
     let pok = tryParses f ok consumedFail emptyFail
     in  runParser p st pok consumedFail emptyFail
-#if !MIN_VERSION_base(4,9,0)
-  fail s = Parser $ \st _ _ emptyFail ->
-    emptyFail $ newErrorMessage (newMessage s) (stPosition st)
-#else
+
   fail = Fail.fail
 
 instance Fail.MonadFail (Parser st) where
   fail s = Parser $ \st _ _ emptyFail ->
     emptyFail $ newErrorMessage (newMessage s) (stPosition st)
-#endif
 
 
 -- The reverses are just for debugging to force an intuitive order,
