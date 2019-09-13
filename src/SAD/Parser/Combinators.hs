@@ -4,6 +4,8 @@ Authors: Steffen Frerix (2017 - 2018)
 Parser combinators.
 -}
 
+{-# OPTIONS_GHC -Wall -fno-warn-unused-do-bind #-}
+
 module SAD.Parser.Combinators where
 
 import SAD.Core.SourcePos
@@ -161,7 +163,7 @@ takeLongest p = Parser $ \st ok cerr eerr ->
 ---- fail if p succeeds
 failing :: Parser st a -> Parser st ()
 failing p = Parser $ \st ok cerr eerr ->
-  let pok err eok _ =
+  let pok _err eok _ =
         if   null eok
         then cerr $ unexpectError (showCurrentToken st) (stPosition st)
         else eerr $ unexpectError (showCurrentToken st) (stPosition st)
@@ -170,7 +172,7 @@ failing p = Parser $ \st ok cerr eerr ->
   in  runParser p st pok pcerr peerr
   where
     showCurrentToken st = case stInput st of
-      (t:ts) -> showToken t
+      (t:_ts) -> showToken t
       _      -> "end of input"
 
 
@@ -206,9 +208,9 @@ failWF msg = Parser $ \st _ _ eerr ->
 ---- do not produce an error message
 noError :: Parser st a -> Parser st a
 noError p = Parser $ \st ok cerr eerr ->
-  let pok   err = ok   $ newErrorUnknown (stPosition st)
-      pcerr err = cerr $ newErrorUnknown (stPosition st)
-      peerr err = eerr $ newErrorUnknown (stPosition st)
+  let pok   _err = ok   $ newErrorUnknown (stPosition st)
+      pcerr _err = cerr $ newErrorUnknown (stPosition st)
+      peerr _err = eerr $ newErrorUnknown (stPosition st)
   in  runParser p st pok pcerr peerr
 
 
@@ -221,7 +223,7 @@ wellFormedCheck check p = Parser $ \st ok cerr eerr ->
         in  if   null $ wfEok ++ wfCok
             then notWf err eok cok
             else ok err wfEok wfCok
-      notWf err eok cok =
+      notWf _err eok cok =
         eerr $ newErrorMessage (newWfMsg $ nwf $ eok ++ cok) pos
   in  runParser p st pok cerr eerr
   where
@@ -255,13 +257,13 @@ lexicalCheck check p = Parser $ \st ok cerr eerr ->
 ---- and should only be used for debugging purposes.
 errorTrace ::
   String -> (ParseResult st a -> String) -> Parser st a -> Parser st a
-errorTrace label shw p = Parser $ \st ok cerr eerr ->
-    let nok err eok cok = trace (  "error trace (success) : " ++ label ++ "\n"
+errorTrace lbl shw p = Parser $ \st ok cerr eerr ->
+    let nok err eok cok = trace (  "error trace (success) : " ++ lbl ++ "\n"
           ++ tabString ("results (e):\n" ++ tabString (unlines (map shw eok)) )
           ++ tabString ("results (c):\n" ++ tabString (unlines (map shw cok)))
           ++ tabString ("error:\n" ++ tabString (show err))) $ ok err eok cok
-        ncerr err = trace ("error trace (consumed): " ++ label ++ "\n" ++  tabString (show err)) $ cerr err
-        neerr err = trace ("error trace (empty)   : " ++ label ++ "\n" ++  tabString (show err)) $ eerr err
+        ncerr err = trace ("error trace (consumed): " ++ lbl ++ "\n" ++  tabString (show err)) $ cerr err
+        neerr err = trace ("error trace (empty)   : " ++ lbl ++ "\n" ++  tabString (show err)) $ eerr err
     in  runParser p st nok ncerr neerr
     where
       tabString = unlines . map ((++) "   ") . lines
@@ -271,7 +273,7 @@ notEof :: Parser st ()
 notEof = Parser $ \st ok _ eerr ->
   case uncons $ stInput st of
     Nothing -> eerr $ unexpectError "" noSourcePos
-    Just (t, ts) ->
+    Just (t, _ts) ->
       if isEOF t
       then eerr $ unexpectError (showToken t) (tokenPos t)
       else ok (newErrorUnknown (tokenPos t)) [] . pure $ PR () st
