@@ -4,9 +4,10 @@ Authors: Steffen Frerix (2017 - 2018)
 Message and Parse Error data type and core functions.
 -}
 
+{-# OPTIONS_GHC -Wall -fno-warn-unused-do-bind #-}
 
 module SAD.Parser.Error
-  ( ParseError,
+  ( ParseError(..),
     errorPos,
     newErrorMessage,
     newErrorUnknown,
@@ -121,10 +122,10 @@ firstSetMerge e1@(ParseError pos1 msg1) e2@(ParseError pos2 msg2) =
 (<++>) = mostImportantMerge
 
 setExpectMessage :: String -> ParseError -> ParseError
-setExpectMessage exp pe@(ParseError pos msg)
-  | isUnknownMsg msg = ParseError pos $ newExpect exp
+setExpectMessage expe pe@(ParseError pos msg)
+  | isUnknownMsg msg = ParseError pos $ newExpect expe
   | isWfMsg      msg = pe
-  | otherwise        = ParseError pos $ msg {expect = [exp]}
+  | otherwise        = ParseError pos $ msg {expect = [expe]}
 
 unexpectError :: String -> SourcePos -> ParseError
 unexpectError uex pos = newErrorMessage (newUnExpect uex) pos
