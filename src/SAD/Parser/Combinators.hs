@@ -5,6 +5,7 @@ Parser combinators.
 -}
 
 {-# OPTIONS_GHC -Wall -fno-warn-unused-do-bind #-}
+{-# OPTIONS_GHC -fno-warn-partial-type-signatures #-}
 
 module SAD.Parser.Combinators where
 
@@ -37,30 +38,35 @@ import Debug.Trace
 
 
 try :: Parser st a -> Parser st a
-try p = Parser $ \st ok _ eerr -> runParser p st ok eerr eerr
+try p = Parser $ \st ok _cerr eerr -> runParser p st ok eerr eerr
 
 
----- ambiguous choice
-
+-- | Ambiguous choice.
 infixr 2 -|-
-(-|-) :: Parser st a -> Parser st a -> Parser st a
-(-|-) m n = Parser $ \st ok cerr eerr ->
-  let mok err eok cok =
-        let nok err' eok' cok' = ok (err <+> err') (eok ++ eok') (cok ++ cok')
-            ncerr err'         = ok (err <+> err') eok cok
-            neerr err'         = ok (err <+> err') eok cok
-        in  runParser n st nok ncerr neerr
-      mcerr err =
-        let nok err'      = ok   $ err <+>  err'
-            ncerr err'    = cerr $ err <++> err'
-            neerr err'    = eerr $ err <++> err'
-        in  runParser n st nok ncerr neerr
-      meerr err =
-        let nok err'      = ok   $ err <+>  err'
-            neerr err'    = eerr $ err <++> err'
-            ncerr err'    = eerr $ err <++> err'
-        in  runParser n st nok ncerr neerr
-  in  runParser m st mok mcerr meerr
+(-|-) :: forall st a. Parser st a -> Parser st a -> Parser st a
+p1 -|- p2 = Parser $ \st ok cerr eerr ->
+  -- The partial type signatures are due to the existential type in the
+  -- definition of @Parser@. The types of the @...2@ functions is the same
+  -- as their @...1@ counterparts.
+  let ok1 :: Continuation st a _
+      ok1 err eok cok =
+        let ok2 err' eok' cok' = ok (err <+> err') (eok ++ eok') (cok ++ cok')
+            cerr2 err'         = ok (err <+> err') eok cok
+            eerr2 err'         = ok (err <+> err') eok cok
+        in  runParser p2 st ok2 cerr2 eerr2
+      cerr1 :: ConsumedFail _
+      cerr1 err =
+        let ok2 err'      = ok   (err <+>  err')
+            cerr2 err'    = cerr (err <++> err')
+            eerr2 err'    = eerr (err <++> err')
+        in  runParser p2 st ok2 cerr2 eerr2
+      eerr1 :: EmptyFail _
+      eerr1 err =
+        let ok2 err'      = ok   (err <+>  err')
+            eerr2 err'    = eerr (err <++> err')
+            cerr2 err'    = eerr (err <++> err')
+        in  runParser p2 st ok2 cerr2 eerr2
+  in  runParser p1 st ok1 cerr1 eerr1
 
 -- chain parsing combinators
 

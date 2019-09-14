@@ -10,6 +10,9 @@ Parser datatype and monad instance.
 {-# LANGUAGE MultiWayIf #-}
 module SAD.Parser.Base
   ( Parser(..),
+    Continuation,
+    EmptyFail,
+    ConsumedFail,
     State (..),
     stPosition,
     ParseResult (..),
