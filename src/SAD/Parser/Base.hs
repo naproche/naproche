@@ -6,7 +6,6 @@ Parser datatype and monad instance.
 {-# LANGUAGE PolymorphicComponents #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE CPP #-}
 {-# LANGUAGE MultiWayIf #-}
 module SAD.Parser.Base
   ( Parser(..),
