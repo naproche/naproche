@@ -320,7 +320,7 @@ sForm  = sIff
 
 
 sAtom :: FTL Formula
-sAtom = sRelation -|- expar statement
+sAtom = sRelation -|- parenthesised statement
   where
     sRelation = sChain </> primCpr sTerm
 
@@ -351,7 +351,7 @@ sTerm = iTerm
     rTerm = cTerm >>= rTl
     rTl t = opt t $ (primRfn sTerm `ap` return t) >>= rTl
 
-    cTerm = label "symbolic term" $ sVar -|- expar sTerm -|- primCfn sTerm
+    cTerm = label "symbolic term" $ sVar -|- parenthesised sTerm -|- primCfn sTerm
 
 sVar :: Parser st Formula
 sVar = fmap pVar var
@@ -420,10 +420,10 @@ symbSetNotation :: Parser
                      FState (Formula -> Formula, (String, SourcePos))
 symbSetNotation = cndSet </> finSet
   where
-    finSet = exbrc $ do
+    finSet = braced $ do
       ts <- sTerm `sepByLL1` token ","; h <- hidden
       return (\tr -> foldr1 Or $ map (zEqu tr) ts, h)
-    cndSet = exbrc $ do
+    cndSet = braced $ do
       (tag, c, t) <- sepFrom; st <- token "|" >> statement;
       vs <- freeVarPositions t; vsDecl <- mapM makeDecl vs;
       nm <- if isVar t then return $ (trName t, trPosition t) else hidden

@@ -107,24 +107,25 @@ after p end = do
   end
   return result
 
----- enclosed body (with range)
+-- | @enclosed begin end p@ parses @begin@, followed by @p@, followed by @end@,
+-- returning the result of @p@ and two positions indicating the range of the parse.
 enclosed :: String -> String -> Parser st a -> Parser st ((SourcePos, SourcePos), a)
-enclosed bg en p = do
-  pos1 <- tokenPos' bg
-  x <- p
-  pos2 <- tokenPos' en
-  return ((pos1, pos2), x)
+enclosed begin end p = do
+  beginPos <- tokenPos' begin
+  result <- p
+  endPos <- tokenPos' end
+  return ((beginPos, endPos), result)
 
--- mandatory parentheses, brackets, braces etc.
-expar, exbrk, exbrc :: Parser st a -> Parser st a
-expar p = snd <$> enclosed "(" ")" p
-exbrk p = snd <$> enclosed "[" "]" p
-exbrc p = snd <$> enclosed "{" "}" p
+-- | Mandatory surrounding parentheses, brackets, and braces.
+parenthesised, bracketed, braced :: Parser st a -> Parser st a
+parenthesised p = snd <$> enclosed "(" ")" p
+bracketed p     = snd <$> enclosed "[" "]" p
+braced p        = snd <$> enclosed "{" "}" p
 
 
 ---- optional parentheses
 paren :: Parser st a -> Parser st a
-paren p = p -|- expar p
+paren p = p -|- parenthesised p
 
 ---- dot keyword
 dot :: Parser st SourceRange

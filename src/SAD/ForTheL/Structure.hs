@@ -146,13 +146,13 @@ topIdentifier = tokenPrim notSymb
       tk -> return tk
 
 lowIdentifier :: Parser st String
-lowIdentifier = expar topIdentifier
+lowIdentifier = parenthesised topIdentifier
 
 noLink :: Parser st [a]
 noLink = finish $ return []
 
 eqLink :: Parser st [String]
-eqLink = optLL1 [] $ expar $ token' "by" >> identifiers
+eqLink = optLL1 [] $ parenthesised $ token' "by" >> identifiers
   where
     identifiers = topIdentifier `sepByLL1` comma
 
