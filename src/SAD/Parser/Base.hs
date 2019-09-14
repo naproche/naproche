@@ -3,10 +3,14 @@ Authors: Steffen Frerix (2017 - 2018)
 
 Parser datatype and monad instance.
 -}
+
 {-# LANGUAGE PolymorphicComponents #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE MultiWayIf #-}
+
+{-# OPTIONS_GHC -Wall -fno-warn-unused-do-bind #-}
+
 module SAD.Parser.Base
   ( Parser(..),
     Continuation,
@@ -42,7 +46,7 @@ data State st = State {
 
 
 stPosition :: State st -> SourcePos
-stPosition (State _ (t:ts) _) = tokenPos t
+stPosition (State _ (t:_ts) _) = tokenPos t
 stPosition (State _ _ pos) = pos
 
 -- intermediate parse results
@@ -100,7 +104,7 @@ tryParses :: (a -> Parser st b)
           -> Continuation st a c
 tryParses f ok consumedFail emptyFail err emptyOk consumedOk = go err [] [] [] [] emptyOk consumedOk
   where
-    go accErr accEmptyOk accConsumedOk accConsumedFails accEmptyFails emptyOk consumedOk = case (emptyOk, consumedOk) of
+    go accErr accEmptyOk accConsumedOk accConsumedFails accEmptyFails emptyOk' consumedOk' = case (emptyOk', consumedOk') of
 
       -- If we have no further input: exit based on the accumulated results
       ([],[]) -> if
@@ -163,7 +167,7 @@ runP p st = runParser p st ok consumedFail emptyFail
 instance MonadState st (Parser st) where
   get   = Parser $ \st ok _ _ ->
     ok (newErrorUnknown (stPosition st)) [PR (stUser st) st] []
-  put s = Parser $ \st ok consumedFail emptyFail ->
+  put s = Parser $ \st ok _consumedFail _emptyFail ->
     ok (newErrorUnknown (stPosition st)) [PR () st {stUser = s}] []
 
 
