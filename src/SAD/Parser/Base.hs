@@ -94,9 +94,10 @@ instance Fail.MonadFail (Parser st) where
 -- but are not necessary at all.
 -- This function is simple, but unfriendly to read because of all the
 -- accumulators involved. A clearer definition would be welcome.
-tryParses :: (a -> Parser st b) -> Continuation st b c -> ConsumedFail c
-          -> EmptyFail c -> ParseError -> [ParseResult st a]
-          -> [ParseResult st a] ->  c
+tryParses :: (a -> Parser st b)
+          -> Continuation st b c
+          -> ConsumedFail c -> EmptyFail c
+          -> Continuation st a c
 tryParses f ok consumedFail emptyFail err emptyOk consumedOk = go err [] [] [] [] emptyOk consumedOk
   where
     go accErr accEmptyOk accConsumedOk accConsumedFails accEmptyFails emptyOk consumedOk = case (emptyOk, consumedOk) of
