@@ -31,7 +31,7 @@ import Debug.Trace
 ------  Choose in LL1 fashion
 -- use '<|>' in "Control.Applicative"
 
------- Choose with lookahead
+-- | Choose with lookahead.
 {-# INLINE (</>) #-}
 (</>) :: Parser st a -> Parser st a -> Parser st a
 (</>) f g = try f <|> g
