@@ -99,10 +99,13 @@ chainLL1 p = liftM2 (:) p $ optLL1 [] $ chainLL1 p
 
 
 
--- before and after parses: parentheses, brackets, braces, dots
-
+-- | @after p end@ parses @p@ followed by @end@ and returns the result
+-- of @p@. We have @after == (<*)@.
 after :: Parser st a -> Parser st b -> Parser st a
-after a b = a >>= ((b >>) . return)
+after p end = do
+  result <- p
+  end
+  return result
 
 ---- enclosed body (with range)
 enclosed :: String -> String -> Parser st a -> Parser st ((SourcePos, SourcePos), a)
