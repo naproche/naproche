@@ -22,6 +22,13 @@ dependencies:
 - uuid
 - threads
 
+default-extensions:
+  - GeneralizedNewtypeDeriving
+  - InstanceSigs
+  - LambdaCase
+  - PartialTypeSignatures
+  - ScopedTypeVariables
+
 library:
   source-dirs:
     - src

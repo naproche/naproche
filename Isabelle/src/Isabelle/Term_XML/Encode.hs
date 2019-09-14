@@ -9,8 +9,6 @@ XML data representation of lambda terms.
 See also "$ISABELLE_HOME/src/Pure/term_xml.ML".
 -}
 
-{-# LANGUAGE LambdaCase #-}
-
 module Isabelle.Term_XML.Encode (sort, typ, term)
 where
 

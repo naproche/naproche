@@ -4,8 +4,6 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018), Makarius 
 Syntax of ForThel Instructions.
 -}
 
-{-# LANGUAGE LambdaCase #-}
-
 module SAD.ForTheL.Instruction where
 
 import Control.Monad

@@ -5,7 +5,6 @@ Main application entry point: console or server mode.
 -}
 
 {-# LANGUAGE TupleSections #-}
-{-# LANGUAGE LambdaCase #-}
 
 module Main where
 
@@ -89,11 +88,11 @@ mainBody oldTextRef (opts0, text0) = do
       provers <- readProverDatabase (askArgument Provers "provers.dat" opts0)
       -- initialize reasoner state
       reasonerState <- newIORef (RState [] False False)
-      
+
       proveStart <- getCurrentTime
 
       success <- case findParseError text1 of
-        Nothing -> do 
+        Nothing -> do
           let text = textToCheck oldText text1
           (success, newText) <- verify (askArgument File "" opts0) provers reasonerState text
           case newText of
@@ -178,7 +177,7 @@ serverConnection oldTextRef args0 connection = do
                 (\err2 -> do
                   let e = err2 :: Exception.IOException
                   return ())))
-      
+
     _ -> return ()
 
 
