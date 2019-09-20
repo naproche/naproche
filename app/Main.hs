@@ -300,5 +300,5 @@ bool "no"  = False; bool "off" = False
 bool s     = errorWithoutStackTrace $ "Invalid boolean argument: " ++ quote s
 
 int s = case reads s of
-  ((n,[]):_) | n >= 0 -> n
+  ((n, []) : _) | n >= 0 -> n
   _ -> errorWithoutStackTrace $ "Invalid integer argument: " ++ quote s
