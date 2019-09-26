@@ -21,7 +21,7 @@ import SAD.Core.Thesis
 import SAD.Data.Formula
 import qualified SAD.Data.Tag as Tag
 import SAD.Data.Instr (Instr, isParserInstruction)
-import qualified SAD.Data.Instr as Instr
+import SAD.Data.Instr
 import SAD.Data.Text.Block (Block(Block), Text(..), Section(..))
 import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Text.Context (Context(Context))
@@ -40,7 +40,7 @@ import qualified Isabelle.Markup as Markup
 -- | Main verification loop
 verify :: String -> [Prover] -> IORef RState -> Text -> IO (Bool, Maybe Text)
 verify fileName provers reasonerState (TextRoot text) = do
-  let text' = TextInstr Instr.noPos (Instr.GetArgument Instr.File fileName) : text
+  let text' = TextInstr noPos (GetArgument File fileName) : text
   Message.outputReasoner Message.TRACING (fileOnlyPos fileName) "verification started"
 
   let verificationState =
@@ -74,12 +74,12 @@ verificationLoop state@VS {
 
   -- statistics and user communication
   unless alreadyChecked $ incrementIntCounter Sections
-  whenInstruction Instr.Printsection False $ justIO $
+  whenInstruction Printsection False $ justIO $
     Message.outputForTheL Message.WRITELN (Block.position block) $
     Message.trimText (Block.showForm 0 block "")
   let newBranch = block : branch; contextBlock = Context f newBranch [] f
   
-  whenInstruction Instr.Translation False $
+  whenInstruction Translation False $
     unless (Block.isTopLevel block) $ translateLog Message.WRITELN (Block.position block) $ show f
 
   fortifiedFormula <-
@@ -94,10 +94,10 @@ verificationLoop state@VS {
     let proofTask = generateProofTask kind (Block.declaredNames block) fortifiedFormula
         freshThesis = Context proofTask newBranch [] proofTask
         toBeProved = (Block.needsProof block) && not (Block.isTopLevel block)
-    proofBody <- askInstructionBool Instr.Flat False >>= \p ->
+    proofBody <- askInstructionBool Flat False >>= \p ->
       if p then return [] else return body
 
-    whenInstruction Instr.Printthesis False $ when (
+    whenInstruction Printthesis False $ when (
       toBeProved && (not . null) proofBody &&
       not (hasDEC $ Context.formula freshThesis)) $
         thesisLog Message.WRITELN (Block.position block) (length branch - 1) $
@@ -115,7 +115,7 @@ verificationLoop state@VS {
 
     -- in what follows we prepare the current block to contribute to the context,
     -- extract rules, definitions and compute the new thesis
-    thesisSetting <- askInstructionBool Instr.Thesis True
+    thesisSetting <- askInstructionBool Thesis True
     let newBlock = block {
           Block.formula = deleteInductionOrCase fortifiedFormula,
           Block.body = fortifiedProof }
@@ -146,7 +146,7 @@ verificationLoop state@VS {
             then inferNewThesis defs newContext thesis
             else (Block.needsProof block, False, thesis)
 
-      whenInstruction Instr.Printthesis False $ when (
+      whenInstruction Printthesis False $ when (
         hasChanged && motivated && newMotivation &&
         (not $ hasDEC $ Block.formula $ head branch) ) $
           thesisLog Message.WRITELN (Block.position block) (length branch - 2) $
@@ -190,38 +190,38 @@ verificationLoop st@VS {
   currentThesis   = thesis,
   currentContext  = context,
   restText        = [] }
-  = local (const st) $ whenInstruction Instr.Prove True prove >> return ([], [])
+  = local (const st) $ whenInstruction Prove True prove >> return ([], [])
   where
     prove =
       if hasDEC (Context.formula thesis) --computational reasoning
       then do
         let logAction = reasonLog Message.TRACING (Block.position block) $ "goal: " ++ text
             block = Context.head thesis ; text = Block.text block
-        incrementIntCounter Equations ; whenInstruction Instr.Printgoal True logAction
+        incrementIntCounter Equations ; whenInstruction Printgoal True logAction
         timer SimplifyTime (equalityReasoning thesis) <|> (
           reasonLog Message.WARNING (Block.position block) "equation failed" >> setFailed >>
-          guardInstruction Instr.Skipfail False >> incrementIntCounter FailedEquations)
+          guardInstruction Skipfail False >> incrementIntCounter FailedEquations)
       else do
         let logAction = reasonLog Message.TRACING (Block.position block) $ "goal: " ++ text
             block = Context.head thesis ; text = Block.text block
         unless (isTop . Context.formula $ thesis) $ incrementIntCounter Goals
-        whenInstruction Instr.Printgoal True logAction
+        whenInstruction Printgoal True logAction
         proveThesis <|> (
           reasonLog Message.WARNING (Block.position block) "goal failed" >> setFailed >>
-          --guardInstruction Instr.Skipfail False >>
+          --guardInstruction Skipfail False >>
           incrementIntCounter FailedGoals)
 
 verificationLoop state@ VS {restText = TextChecked txt : rest} =
   let newTxt = Block.setChildren txt (Block.children txt ++ newInstructions)
       newInstructions = [NonTextStoredInstr $
-        Instr.SetFlag Instr.Prove False :
-        Instr.SetFlag Instr.Printgoal False :
-        Instr.SetFlag Instr.Printreason False :
-        Instr.SetFlag Instr.Printsection False :
-        Instr.SetFlag Instr.Printcheck False :
-        Instr.SetFlag Instr.Printprover False :
-        Instr.SetFlag Instr.Printunfold False :
-        Instr.SetFlag Instr.Printfulltask False :
+        SetFlag Prove False :
+        SetFlag Printgoal False :
+        SetFlag Printreason False :
+        SetFlag Printsection False :
+        SetFlag Printcheck False :
+        SetFlag Printprover False :
+        SetFlag Printunfold False :
+        SetFlag Printfulltask False :
         instructions state]
   in  setChecked >> verificationLoop state {restText = newTxt : rest}
 
@@ -275,7 +275,7 @@ verifyProof state@VS {
       let newRules = extractRewriteRule (head newContext) ++ rules
           (_, _, newThesis) =
             inferNewThesis (definitions state) newContext $ Context.setForm thesis f
-      whenInstruction Instr.Printthesis False $ when (
+      whenInstruction Printthesis False $ when (
         noInductionOrCase (Context.formula newThesis) && not (null $ restText state)) $
           thesisLog Message.WRITELN
           (Block.position $ head $ Context.branch $ head context) (length branch - 2) $
@@ -310,48 +310,48 @@ deleteInductionOrCase = dive id
 procTextInstr :: Instr -> VM ([Text], [Text])
 procTextInstr = flip proc $ ask >>= verificationLoop
   where
-    proc (Instr.Command Instr.RULES) = (>>) $ do
+    proc (Command RULES) = (>>) $ do
       rules <- asks rewriteRules
       reasonLog Message.WRITELN noSourcePos $
         "current ruleset: " ++ "\n" ++ Rule.printrules (reverse rules)
-    proc (Instr.Command Instr.THESIS) = (>>) $ do
+    proc (Command THESIS) = (>>) $ do
       motivated <- asks thesisMotivated; thesis <- asks currentThesis
       let motivation = if motivated then "(motivated): " else "(not motivated): "
       reasonLog Message.WRITELN noSourcePos $
         "current thesis " ++ motivation ++ show (Context.formula thesis)
-    proc (Instr.Command Instr.CONTEXT) = (>>) $ do
+    proc (Command CONTEXT) = (>>) $ do
       context <- asks currentContext
       reasonLog Message.WRITELN noSourcePos $ "current context:\n" ++
         concatMap (\form -> "  " ++ show form ++ "\n") (reverse context)
-    proc (Instr.Command Instr.FILTER) = (>>) $ do
+    proc (Command FILTER) = (>>) $ do
       context <- asks currentContext
       let topLevelContext = filter Context.isTopLevel context
       reasonLog Message.WRITELN noSourcePos $ "current filtered top-level context:\n" ++
         concatMap (\form -> "  " ++ show form ++ "\n") (reverse topLevelContext)
 
-    proc (Instr.Command _) = (>>) $ reasonLog Message.WRITELN noSourcePos "unsupported instruction"
+    proc (Command _) = (>>) $ reasonLog Message.WRITELN noSourcePos "unsupported instruction"
 
-    proc (Instr.SetFlag Instr.Verbose False) =
-      addInstruction (Instr.SetFlag Instr.Printgoal False) .
-      addInstruction (Instr.SetFlag Instr.Printreason False) .
-      addInstruction (Instr.SetFlag Instr.Printsection False) .
-      addInstruction (Instr.SetFlag Instr.Printcheck False) .
-      addInstruction (Instr.SetFlag Instr.Printprover False) .
-      addInstruction (Instr.SetFlag Instr.Printunfold False) .
-      addInstruction (Instr.SetFlag Instr.Printfulltask False)
+    proc (SetFlag Verbose False) =
+      addInstruction (SetFlag Printgoal False) .
+      addInstruction (SetFlag Printreason False) .
+      addInstruction (SetFlag Printsection False) .
+      addInstruction (SetFlag Printcheck False) .
+      addInstruction (SetFlag Printprover False) .
+      addInstruction (SetFlag Printunfold False) .
+      addInstruction (SetFlag Printfulltask False)
 
-    proc (Instr.SetFlag Instr.Verbose True) =
-      addInstruction (Instr.SetFlag Instr.Printgoal True) .
-      addInstruction (Instr.SetFlag Instr.Printreason True) .
-      addInstruction (Instr.SetFlag Instr.Printcheck True) .
-      addInstruction (Instr.SetFlag Instr.Printprover True) .
-      addInstruction (Instr.SetFlag Instr.Printunfold True) .
-      addInstruction (Instr.SetFlag Instr.Printfulltask True)
+    proc (SetFlag Verbose True) =
+      addInstruction (SetFlag Printgoal True) .
+      addInstruction (SetFlag Printreason True) .
+      addInstruction (SetFlag Printcheck True) .
+      addInstruction (SetFlag Printprover True) .
+      addInstruction (SetFlag Printunfold True) .
+      addInstruction (SetFlag Printfulltask True)
 
     proc i 
       | isParserInstruction i = id
       | otherwise = addInstruction i
 
 {- drop an instruction from the state -}
-procTextDrop :: Instr.Drop -> VM ([Text], [Text])
+procTextDrop :: Drop -> VM ([Text], [Text])
 procTextDrop = flip dropInstruction $ ask >>= verificationLoop

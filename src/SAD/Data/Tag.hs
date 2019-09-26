@@ -9,7 +9,7 @@ data Tag =
   DomainTask | ExistenceTask | UniquenessTask | ChoiceTask
   deriving (Eq, Ord, Show)
 
-{- whether a Tag marks a part in a function proof task -}
+-- | whether a Tag marks a part in a function proof task
 fnTag :: Tag -> Bool
 fnTag DomainTask    = True; fnTag ChoiceTask     = True
 fnTag ExistenceTask = True; fnTag UniquenessTask = True

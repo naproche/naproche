@@ -17,7 +17,7 @@ import qualified SAD.Data.Text.Context as Context
 import qualified SAD.Data.Text.Block as Block (body, link, position)
 import SAD.Core.Base
 import qualified SAD.Core.Message as Message
-import qualified SAD.Data.Instr as Instr
+import SAD.Data.Instr
 import SAD.Core.Reason
 
 import Data.List
@@ -147,7 +147,7 @@ generateConditions verbositySetting rules w l r =
 {- applies computational reasoning to an equality chain -}
 equalityReasoning :: Context -> VM ()
 equalityReasoning thesis
-  | body = whenInstruction Instr.Printreason False $ reasonLog Message.WRITELN noSourcePos "eqchain concluded"
+  | body = whenInstruction Printreason False $ reasonLog Message.WRITELN noSourcePos "eqchain concluded"
   | (not . null) link = getLinkedRules link >>= rewrite equation
   | otherwise = rules >>= rewrite equation -- if no link is given -> all rules
   where
@@ -184,7 +184,7 @@ rules = asks rewriteRules
 and compares the resulting normal forms -}
 rewrite :: Formula -> [Rule] -> VM ()
 rewrite Trm {trName = "=", trArgs = [l,r]} rules = do
-  verbositySetting <- askInstructionBool Instr.Printsimp False
+  verbositySetting <- askInstructionBool Printsimp False
   conditions <- generateConditions verbositySetting rules (>) l r;
   mapM_ (dischargeConditions verbositySetting . fst) conditions
 rewrite _ _ = error "SAD.Core.Rewrite.rewrite: non-equation argument"
@@ -208,9 +208,9 @@ dischargeConditions verbositySetting conditions =
 
     setup :: VM a -> VM a
     setup action = do
-      timelimit <- Instr.LimitBy Instr.Timelimit <$> askInstructionInt Instr.Checktime 1
-      depthlimit <- Instr.LimitBy Instr.Depthlimit <$> askInstructionInt Instr.Checkdepth 3
-      ontored <- Instr.SetFlag Instr.Ontored <$> askInstructionBool Instr.Checkontored False
+      timelimit <- LimitBy Timelimit <$> askInstructionInt Checktime 1
+      depthlimit <- LimitBy Depthlimit <$> askInstructionInt Checkdepth 3
+      ontored <- SetFlag Ontored <$> askInstructionBool Checkontored False
       addInstruction timelimit $ addInstruction depthlimit $ addInstruction ontored action
 
     header select conditions = "condition: " ++ format (select conditions)

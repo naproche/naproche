@@ -28,7 +28,7 @@ module SAD.Parser.Base
 
 import Control.Monad
 import qualified Control.Monad.Fail as Fail
-import qualified Control.Applicative as Applicative
+import Control.Applicative
 import Control.Monad.State.Class
 
 
@@ -38,24 +38,27 @@ import SAD.Core.SourcePos
 
 import Data.List
 
--- Parser state
-data State st = State {
-  stUser  :: st,
-  stInput :: [Token],
-  lastPosition :: SourcePos}
+-- | Parser state
+data State st = State
+  { stUser  :: st
+  , stInput :: [Token]
+  , lastPosition :: SourcePos
+  } deriving (Eq, Ord, Show)
 
-
+-- | Get the current position of the parser
 stPosition :: State st -> SourcePos
 stPosition (State _ (t:_ts) _) = tokenPos t
 stPosition (State _ _ pos) = pos
 
--- intermediate parse results
+-- | Intermediate parse results
 data ParseResult st a = PR { prResult :: a, prState :: State st }
+  deriving (Eq, Ord, Show)
 
 instance Functor (ParseResult st) where
   fmap f pr = pr { prResult = f $ prResult pr }
 
--- Continutation passing style ambiguity parser
+-- | Continutation passing style ambiguity parser
+-- In practice: @st@ = @FState@, @b@ = @ParseResult FState a@
 type Continuation st a b =
   ParseError -> [ParseResult st a] -> [ParseResult st a] -> b
 type EmptyFail    b = ParseError -> b
@@ -75,7 +78,7 @@ instance Functor (Parser st) where
     where
       new ok err emptyOk consumedOk = ok err (map (fmap f) emptyOk) (map (fmap f) consumedOk)
 
-instance Applicative.Applicative (Parser st) where
+instance Applicative (Parser st) where
   pure = return
   (<*>) = ap
 
@@ -130,7 +133,7 @@ tryParses f ok consumedFail emptyFail err emptyOk consumedOk = go err [] [] [] [
         in  runParser (f a) st' fok fcerr feerr
 
 
-instance Applicative.Alternative (Parser st) where
+instance Alternative (Parser st) where
   empty = mzero
   (<|>) = mplus
 
@@ -149,11 +152,11 @@ instance MonadPlus (Parser st) where
 
 -- Escaping the parser
 
----- Reply type
+-- | Reply type
 data Reply a = Ok [a] | Error ParseError
   deriving (Eq, Ord, Show)
 
----- running the parser
+-- | Running the parser
 runP :: Parser st a -> State st -> Reply (ParseResult st a)
 runP p st = runParser p st ok consumedFail emptyFail
   where
@@ -170,17 +173,19 @@ instance MonadState st (Parser st) where
   put s = Parser $ \st ok _consumedFail _emptyFail ->
     ok (newErrorUnknown (stPosition st)) [PR () st {stUser = s}] []
 
-
+-- | Get the @stInput@ as a @ParseResult@.
 getInput :: Parser st [Token]
 getInput = Parser $ \st ok _ _ ->
   ok (newErrorUnknown (stPosition st)) [PR (stInput st) st] []
 
+-- | Get the @stPosition@ as a @ParseResult@.
 getPos :: Parser st SourcePos
 getPos = Parser $ \st ok _ _ ->
   ok (newErrorUnknown (stPosition st)) [PR (stPosition st) st] []
 
+-- | Get the tokens before the current @stPosition@ as a @ParseResult@.
 getTokens :: [Token] -> Parser st [Token]
 getTokens inp = Parser $ \st ok _ _ ->
   let pos = stPosition st
-      toks = takeWhile ( (>) pos . tokenPos ) inp
+      toks = takeWhile ( (>) pos . tokenPos ) inp -- TODO: Don't use the default Ord instance
   in  ok (newErrorUnknown (stPosition st)) [PR toks st] []

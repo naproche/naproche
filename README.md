@@ -15,7 +15,7 @@ for Isabelle Prover IDE.
 
   * The E Theorem Prover as executable "eprover" in the shell PATH (e.g. the
     multi-platform version provided by Isabelle: "isabelle getenv -b E_HOME")
-    This software has been tested and works well with version 2.0 Turzum.
+    Supported versions: 2.0 to 2.3
 
   * Optional (for development): Haskell IDE within VSCode:
     https://github.com/haskell/haskell-ide-engine
@@ -27,6 +27,11 @@ for Isabelle Prover IDE.
 
     stack build
 
+### Check proof files
+
+    stack exec Naproche-SAD -- FILE
+
+  It may be necessary to allow the E Prover more time by appending "-t SECONDS"
 
 ### Test
 

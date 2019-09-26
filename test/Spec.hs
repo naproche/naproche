@@ -1,5 +1,3 @@
-{-# LANGUAGE TupleSections #-}
-
 module Main where
 
 import Data.List
@@ -44,7 +42,7 @@ output xs = do
 
 main :: IO ()
 main = do
-  (code, failed) <- output =<< mapM (sequence . (second gather)) =<< mapM (sequence . (id &&& compileFile)) files
+  (code, failed) <- output . zip files =<< mapM gather =<< mapM compileFile files
   when (not $ null failed) $ do
     putStrLn $ "Failed to compile: " ++ unwords failed
   exitWith code

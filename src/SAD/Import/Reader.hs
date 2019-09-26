@@ -13,8 +13,7 @@ import System.IO.Error
 import Control.Exception
 
 import SAD.Data.Text.Block
-import SAD.Data.Instr (Instr)
-import qualified SAD.Data.Instr as Instr
+import SAD.Data.Instr as Instr
 import SAD.ForTheL.Base
 import SAD.ForTheL.Structure
 import SAD.Parser.Base
@@ -29,7 +28,7 @@ import qualified Isabelle.File as File
 
 -- Init file parsing
 
-readInit :: String -> IO [(Instr.Pos, Instr)]
+readInit :: String -> IO [(Pos, Instr)]
 readInit "" = return []
 readInit file = do
   input <- catch (File.read file) $ Message.errorParser (fileOnlyPos file) . ioeGetErrorString
@@ -37,7 +36,7 @@ readInit file = do
       initialParserState = State (initFS Nothing) tokens noSourcePos
   fst <$> launchParser instructionFile initialParserState
 
-instructionFile :: FTL [(Instr.Pos, Instr)]
+instructionFile :: FTL [(Pos, Instr)]
 instructionFile = after (optLL1 [] $ chainLL1 instr) eof
 
 
@@ -52,28 +51,28 @@ readText pathToLibrary text0 = do
 
 reader :: String -> [String] -> [State FState] -> [Text] -> IO ([Text], [Message.Report])
 
-reader _ _ _ [TextInstr pos (Instr.GetArgument Instr.Read file)] | isInfixOf ".." file =
+reader _ _ _ [TextInstr pos (GetArgument Read file)] | isInfixOf ".." file =
   Message.errorParser (Instr.position pos) ("Illegal \"..\" in file name: " ++ show file)
 
-reader pathToLibrary doneFiles stateList [TextInstr pos (Instr.GetArgument Instr.Read file)] =
+reader pathToLibrary doneFiles stateList [TextInstr pos (GetArgument Read file)] =
   reader pathToLibrary doneFiles stateList
-    [TextInstr pos $ Instr.GetArgument Instr.File $ pathToLibrary ++ '/' : file]
+    [TextInstr pos $ GetArgument File $ pathToLibrary ++ '/' : file]
 
-reader pathToLibrary doneFiles (pState:states) [TextInstr pos (Instr.GetArgument Instr.File file)]
+reader pathToLibrary doneFiles (pState:states) [TextInstr pos (GetArgument File file)]
   | file `elem` doneFiles = do
       Message.outputMain Message.WARNING (Instr.position pos)
         ("Skipping already read file: " ++ show file)
       (newText, newState) <- launchParser forthel pState
       reader pathToLibrary doneFiles (newState:states) newText
 
-reader pathToLibrary doneFiles (pState:states) [TextInstr _ (Instr.GetArgument Instr.File file)] = do
+reader pathToLibrary doneFiles (pState:states) [TextInstr _ (GetArgument File file)] = do
   text <-
     catch (if null file then getContents else File.read file)
       (Message.errorParser (fileOnlyPos file) . ioeGetErrorString)
   (newText, newState) <- reader0 (filePos file) text pState
   reader pathToLibrary (file:doneFiles) (newState:pState:states) newText
 
-reader pathToLibrary doneFiles (pState:states) [TextInstr _ (Instr.GetArgument Instr.Text text)] = do
+reader pathToLibrary doneFiles (pState:states) [TextInstr _ (GetArgument Text text)] = do
   (newText, newState) <- reader0 startPos text pState
   reader pathToLibrary doneFiles (newState:pState:states) newText
 
@@ -95,7 +94,7 @@ reader _ _ (state:_) [] = return ([], reports $ stUser state)
 reader0 :: SourcePos -> String -> State FState -> IO ([Text], State FState)
 reader0 pos text pState = do
   let tokens0 = tokenize pos text
-  Message.reports $ concatMap tokenReports tokens0
+  Message.reports $ concatMap (maybeToList . reportComments) tokens0
   let tokens = filter properToken tokens0
       st = State ((stUser pState) { tvrExpr = [] }) tokens noSourcePos
   launchParser forthel st

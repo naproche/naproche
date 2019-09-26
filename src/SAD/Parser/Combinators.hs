@@ -15,11 +15,10 @@ import SAD.Parser.Token
 import SAD.Parser.Error
 import SAD.Parser.Primitives
 
-import Data.List
-
 import Control.Applicative
 import Control.Monad
-import Data.Maybe (isJust, fromJust)
+import Data.Ord (comparing)
+import Data.Maybe (isNothing, catMaybes)
 import Debug.Trace
 
 
@@ -36,12 +35,11 @@ import Debug.Trace
 (</>) :: Parser st a -> Parser st a -> Parser st a
 (</>) f g = try f <|> g
 
-
+-- | Try a parser with lookahead.
 try :: Parser st a -> Parser st a
 try p = Parser $ \st ok _cerr eerr -> runParser p st ok eerr eerr
 
-
--- | Ambiguous choice.
+-- | Ambiguous choice. Run both parsers and combine the errors and results. 
 infixr 2 -|-
 (-|-) :: forall st a. Parser st a -> Parser st a -> Parser st a
 p1 -|- p2 = Parser $ \st ok cerr eerr ->
@@ -70,12 +68,19 @@ p1 -|- p2 = Parser $ \st ok cerr eerr ->
 
 -- chain parsing combinators
 
+-- | Parse @a@s interleaved by @sep@s keeping all intermediary results.
 sepBy :: Parser st a -> Parser st sep -> Parser st [a]
-sepBy p sep = liftM2 (:) p $ opt [] $ sep >> sepBy p sep
+sepBy p sep = do
+  a <- p
+  as <- opt [] $ sep >> sepBy p sep
+  pure $ a:as
 
-
+-- | Same as @sepBy@ but keep only the largest result.
 sepByLL1 :: Parser st a -> Parser st sep -> Parser st [a]
-sepByLL1 p sep = liftM2 (:) p $ optLL1 [] $ sep >> sepByLL1 p sep
+sepByLL1 p sep = do
+  a <- p
+  as <- optLL1 [] $ sep >> sepByLL1 p sep
+  pure $ a:as
 
 
 opt :: a -> Parser st a -> Parser st a
@@ -89,15 +94,15 @@ optLL1 x p = p <|> return x
 optLLx :: a -> Parser st a -> Parser st a
 optLLx x p = p </> return x
 
-
+-- | Run the parser as often as possible keeping all
+-- intermediary results.
 chain :: Parser st a -> Parser st [a]
 chain p = liftM2 (:) p $ opt [] $ chain p
 
-
+-- | Run the parser as often as possible keeping
+-- only the longest result.
 chainLL1 :: Parser st a -> Parser st [a]
 chainLL1 p = liftM2 (:) p $ optLL1 [] $ chainLL1 p
-
-
 
 -- | @after p end@ parses @p@ followed by @end@ and returns the result
 -- of @p@. We have @after == (<*)@.
@@ -123,33 +128,33 @@ bracketed p     = snd <$> enclosed "[" "]" p
 braced p        = snd <$> enclosed "{" "}" p
 
 
----- optional parentheses
+-- | Optional parentheses
 paren :: Parser st a -> Parser st a
 paren p = p -|- parenthesised p
 
----- dot keyword
+-- | Dot keyword
 dot :: Parser st SourceRange
 dot = do
   pos1 <- tokenPos' "." <?> "a dot"
   return $ makeRange (pos1, advancePos pos1 '.')
 
----- mandatory finishing dot
+-- | mandatory finishing dot
 finish :: Parser st a -> Parser st a
 finish p = after p dot
 
 
 -- Control ambiguity
 
----- if p is ambiguos, fail and report a well-formedness error
+-- | If p is ambiguous, fail and report a well-formedness error
 narrow :: Show a => Parser st a -> Parser st a
 narrow p = Parser $ \st ok cerr eerr ->
   let pok err eok cok = case eok ++ cok of
         [_] -> ok err eok cok
-        ls  ->  eerr $ newErrorMessage (newWfMsg ["ambiguity error" ++ show (map prResult ls)]) (stPosition st)
+        ls  ->  eerr $ newErrorMessage (newWellFormednessMessage ["ambiguity error" ++ show (map prResult ls)]) (stPosition st)
   in  runParser p st pok cerr eerr
 
 
----- only take the longest possible parse, discard all others
+-- | Only take the longest possible parses (by @SourcePos@), discard all others
 takeLongest :: Parser st a -> Parser st a
 takeLongest p = Parser $ \st ok cerr eerr ->
   let pok err eok cok
@@ -157,11 +162,12 @@ takeLongest p = Parser $ \st ok cerr eerr ->
         | otherwise = ok err [] (longest cok)
   in  runParser p st pok cerr eerr
   where
+    longest :: [ParseResult st a] -> [ParseResult st a]
     longest = lng []
     lng ls []          = reverse ls
     lng [] (c:cs)      = lng [c] cs
     lng (l:ls) (c:cs) =
-      case compare (stPosition . prState $ l) (stPosition . prState $ c) of
+      case comparing (stPosition . prState) l c of
         GT -> lng (l:ls) cs
         LT -> lng [c] cs
         EQ -> lng (c:l:ls) cs
@@ -170,7 +176,7 @@ takeLongest p = Parser $ \st ok cerr eerr ->
 
 -- Deny parses
 
----- fail if p succeeds
+-- | Fail if p succeeds
 failing :: Parser st a -> Parser st ()
 failing p = Parser $ \st ok cerr eerr ->
   let pok _err eok _ =
@@ -181,14 +187,11 @@ failing p = Parser $ \st ok cerr eerr ->
       pcerr _ = ok (newErrorUnknown (stPosition st)) [PR () st] []
   in  runParser p st pok pcerr peerr
   where
-    showCurrentToken st = case stInput st of
-      (t:_ts) -> showToken t
-      _      -> "end of input"
+    showCurrentToken st = showToken $ head $ stInput st ++ noTokens
 
 
 
--- labeling of production rules
-
+-- | Labeling of production rules for better error messages
 infix 0 <?>
 (<?>) :: Parser st a -> String -> Parser st a
 p <?> msg = Parser $ \st ok cerr eerr ->
@@ -202,6 +205,7 @@ p <?> msg = Parser $ \st ok cerr eerr ->
       then err
       else setExpectMessage msg err
 
+-- | Labeling of production rules for better error messages
 label :: String -> Parser st a -> Parser st a
 label msg p = p <?> msg
 
@@ -209,10 +213,10 @@ label msg p = p <?> msg
 
 -- Control error messages
 
----- fail with a well-formedness error
+-- | Fail with a well-formedness error
 failWF :: String -> Parser st a
 failWF msg = Parser $ \st _ _ eerr ->
-  eerr $ newErrorMessage (newWfMsg [msg]) (stPosition st)
+  eerr $ newErrorMessage (newWellFormednessMessage [msg]) (stPosition st)
 
 
 ---- do not produce an error message
@@ -224,7 +228,8 @@ noError p = Parser $ \st ok cerr eerr ->
   in  runParser p st pok pcerr peerr
 
 
----- parse and perform a well-formedness check on the result
+-- | Parse and keep only results well-formed according to the supplied check;
+-- fail if there are none. Here @Just str@ signifies an error.
 wellFormedCheck :: (a -> Maybe String) -> Parser st a -> Parser st a
 wellFormedCheck check p = Parser $ \st ok cerr eerr ->
   let pos = stPosition st
@@ -234,16 +239,15 @@ wellFormedCheck check p = Parser $ \st ok cerr eerr ->
             then notWf err eok cok
             else ok err wfEok wfCok
       notWf _err eok cok =
-        eerr $ newErrorMessage (newWfMsg $ nwf $ eok ++ cok) pos
+        eerr $ newErrorMessage (newWellFormednessMessage $ nwf $ eok ++ cok) pos
   in  runParser p st pok cerr eerr
   where
-    wf  = filter (not . isJust . check . prResult)
-    nwf = map fromJust . filter isJust . map (check . prResult)
+    wf  = filter (isNothing . check . prResult)
+    nwf = catMaybes . map (check . prResult)
 
-
-
----- parse and perform a check on the result; report errors as normal errors
----- and not as well-formedness errors
+-- | Parse and keep only results well-formed according to the supplied check; 
+-- fail if there are none with a normal error (and not a well-formedness one).
+-- Here @True@ means well-formed.
 lexicalCheck :: (a -> Bool) -> Parser st a -> Parser st a
 lexicalCheck check p = Parser $ \st ok cerr eerr ->
   let pok err eok cok =
@@ -257,6 +261,7 @@ lexicalCheck check p = Parser $ \st ok cerr eerr ->
     unit err =
       let pos = errorPos err
       in  unwords . map showToken . takeWhile ((>=) pos . tokenPos) . filter (not . isEOF) . stInput
+        -- TODO: Don't use the default Ord SourcePos instance.
 
 
 -- Debugging
@@ -279,11 +284,11 @@ errorTrace lbl shw p = Parser $ \st ok cerr eerr ->
       tabString = unlines . map ((++) "   ") . lines
 
 
+-- | Return @()@ if the next token isn't @EOF@ discarding the rest of the input.
 notEof :: Parser st ()
 notEof = Parser $ \st ok _ eerr ->
-  case uncons $ stInput st of
-    Nothing -> eerr $ unexpectError "" noSourcePos
-    Just (t, _ts) ->
-      if isEOF t
-      then eerr $ unexpectError (showToken t) (tokenPos t)
-      else ok (newErrorUnknown (tokenPos t)) [] . pure $ PR () st
+  case stInput st of
+    [] -> eerr $ unexpectError "" noSourcePos
+    (t:_) -> case isEOF t of
+      True  -> eerr $ unexpectError (showToken t) (tokenPos t)
+      False -> ok (newErrorUnknown (tokenPos t)) [] [PR () st]

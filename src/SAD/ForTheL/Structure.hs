@@ -26,7 +26,7 @@ import SAD.Parser.Combinators
 import SAD.Parser.Token
 import SAD.Parser.Primitives
 
-import qualified SAD.Data.Instr as Instr
+import SAD.Data.Instr
 import SAD.Data.Text.Block (Block(Block), Text(..), Section(..))
 import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Formula
@@ -53,10 +53,10 @@ bracketExpression = topInstruction >>= procParseInstruction
 
 procParseInstruction :: Text -> FTL [Text]
 procParseInstruction text = case text of
-  TextInstr _ (Instr.GetArgument Instr.Read _) -> return [text]
-  TextInstr _ (Instr.Command Instr.EXIT) -> return []
-  TextInstr _ (Instr.Command Instr.QUIT) -> return []
-  TextInstr _ (Instr.GetArguments Instr.Synonym syms) -> addSynonym syms >> fmap ((:) text) forthel
+  TextInstr _ (GetArgument Read _) -> return [text]
+  TextInstr _ (Command EXIT) -> return []
+  TextInstr _ (Command QUIT) -> return []
+  TextInstr _ (GetArguments Synonym syms) -> addSynonym syms >> fmap ((:) text) forthel
   _ -> fmap ((:) text) forthel
   where
     addSynonym :: [String] -> FTL ()
@@ -406,7 +406,6 @@ eqChain = do
   where
     chainVars dvs = affirmVars dvs . foldl1 And . map Block.formula
 
-
 eqTail :: Formula -> FTL [Block]
 eqTail t = nextTerm t </> (token "." >> return [])
 
@@ -417,16 +416,20 @@ nextTerm t = do
   ((:) $ Block.makeBlock (Tag EqualityChain $ zEqu t s)
     [] Affirmation "__" ln pos toks) <$> eqTail s
 
--- error handling
-
+-- | Fail if @p@ failed with no or only @EOF@ input remaining
+-- or continue with a @TextError@ as a @ParseResult@.
 unfailing :: FTL Text -> FTL Text
-unfailing p =
-  inspectError p >>= either guardEOF return
-  where
-    guardEOF err = notEof >> jumpToNextUnit (return $ TextError err)
+unfailing p = do
+  res <- inspectError p
+  case res of
+    Right pr -> pure pr
+    Left err -> do
+      notEof -- QUESTION: This discards the rest of input: Why do we need to call 'jumpToNextUnit'?
+      jumpToNextUnit (pure $ TextError err)
 
+-- | Skip input until we encounter @EOF@ (keep) or a dot not followed by '=' (discard the dot).
 jumpToNextUnit :: FTL a -> FTL a
-jumpToNextUnit = jumpWith nextUnit
+jumpToNextUnit = mapInput nextUnit
   where
     nextUnit (t:tks)
       | isEOF t = [t]

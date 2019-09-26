@@ -12,7 +12,7 @@ import Data.Either (lefts,rights, isRight)
 import Control.Monad.Reader
 
 import SAD.Data.Formula
-import qualified SAD.Data.Instr as Instr
+import SAD.Data.Instr
 import SAD.Data.Text.Context (Context)
 import qualified SAD.Data.Text.Context as Context
 import qualified SAD.Data.Text.Block as Block (link, position)
@@ -32,13 +32,13 @@ fillDef alreadyChecked context = fill True False [] (Just True) 0 $ Context.form
           fmap (Tag tag) $ fill isPredicat isNewWord localContext sign n f
     fill _ _ _ _ _ t  | isThesis t = thesis >>= return . Context.formula
     fill _ _ localContext _ _ v | isVar v = do
-      userInfoSetting <- askInstructionBool Instr.Info True
+      userInfoSetting <- askInstructionBool Info True
       newContext      <- cnRaise context localContext
       collectInfo userInfoSetting v `withContext` newContext -- fortify the term
     fill isPredicat isNewWord localContext sign n 
          term@Trm {trName = t, trArgs = tArgs, trInfo = infos, trId = tId} =
       if alreadyChecked then return term else do
-            userInfoSetting <- askInstructionBool Instr.Info True
+            userInfoSetting <- askInstructionBool Info True
             fortifiedArgs   <- mapM (fill False isNewWord localContext sign n) tArgs
             newContext      <- cnRaise context localContext
             fortifiedTerm   <- setDef isNewWord context term {trArgs = fortifiedArgs} 
@@ -62,9 +62,9 @@ cnRaise thisBlock local = asks currentContext >>=
 setDef :: Bool -> Context -> Formula -> VM Formula
 setDef isNewWord context term@Trm{trName = t, trId = tId} = 
   incrementIntCounter Symbols >>
-    (    guard isNewWord >> return term -- do not check new word
-    <|>  findDef term >>= testDef context term -- check term's definition
-    <|>  out >> mzero ) -- failure message
+    (    (guard isNewWord >> return term) -- do not check new word
+    <|>  (findDef term >>= testDef context term) -- check term's definition
+    <|>  (out >> mzero )) -- failure message
   where
     out =
       reasonLog Message.ERROR (Block.position (Context.head context)) $
@@ -97,7 +97,7 @@ a task to an ATP.
 
 testDef :: Context -> Formula -> DefDuo -> VM Formula
 testDef context term (guards, fortifiedTerm) = do
-  userCheckSetting <- askInstructionBool Instr.Check True
+  userCheckSetting <- askInstructionBool Check True
   if   userCheckSetting
   then setup $ easyCheck >>= hardCheck >> return fortifiedTerm 
   else return fortifiedTerm
@@ -115,9 +115,9 @@ testDef context term (guards, fortifiedTerm) = do
     
     setup :: VM a -> VM a
     setup action = do
-      timelimit <- Instr.LimitBy Instr.Timelimit <$> askInstructionInt Instr.Checktime 1
-      depthlimit <- Instr.LimitBy Instr.Depthlimit <$> askInstructionInt Instr.Checkdepth 3
-      ontored <- Instr.SetFlag Instr.Ontored <$> askInstructionBool Instr.Checkontored False
+      timelimit <- LimitBy Timelimit <$> askInstructionInt Checktime 1
+      depthlimit <- LimitBy Depthlimit <$> askInstructionInt Checkdepth 3
+      ontored <- SetFlag Ontored <$> askInstructionBool Checkontored False
       addInstruction timelimit $ addInstruction depthlimit $ addInstruction ontored action
 
     wipeLink context =
@@ -130,7 +130,7 @@ testDef context term (guards, fortifiedTerm) = do
     thead [] = ""; thead guards = "(trivial: " ++ format guards ++ ")"
     format guards = if null guards then " - " else unwords . map show $ guards
     defLog =
-      whenInstruction Instr.Printcheck False .
+      whenInstruction Printcheck False .
         reasonLog Message.WRITELN (Block.position (head $ Context.branch context))
 
 

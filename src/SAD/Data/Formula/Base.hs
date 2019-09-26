@@ -9,6 +9,8 @@ module SAD.Data.Formula.Base where
 import Control.Monad
 import Data.Maybe
 import qualified Data.Monoid as Monoid
+import Control.Monad.Identity
+import Control.Applicative
 
 import SAD.Data.Tag (Tag)
 import SAD.Core.SourcePos (SourcePos)
@@ -31,34 +33,22 @@ data Formula =
 
 -- Traversing functions
 
-{- map a function over the next structure level of a formula -}
+-- | Map a function over the next structure level of a formula
 mapF :: (Formula -> Formula) -> Formula -> Formula
-mapF fn (All v f) = All v (fn f)
-mapF fn (Exi v f) = Exi v (fn f)
-mapF fn (Iff f g) = Iff (fn f) (fn g)
-mapF fn (Imp f g) = Imp (fn f) (fn g)
-mapF fn (Or f g) = Or (fn f) (fn g)
-mapF fn (And f g) = And (fn f) (fn g)
-mapF fn (Tag a f) = Tag a (fn f)
-mapF fn (Not f) = Not (fn f)
-mapF fn t@Trm{} = t {trArgs = map fn $ trArgs t}
-mapF _ f = f
+mapF fn = runIdentity . mapFM (Identity . fn)
 
-{- map a monadic action over the next structure level of a formula -}
-mapFM :: (Monad m) => (Formula -> m Formula) -> Formula -> m Formula
+-- | Map a monadic action over the next structure level of a formula
+mapFM :: (Applicative m) => (Formula -> m Formula) -> Formula -> m Formula
 mapFM fn (All v f) = All v <$> fn f
 mapFM fn (Exi v f) = Exi v <$> fn f
-mapFM fn (Iff f g) = liftM2 Iff (fn f) (fn g)
-mapFM fn (Imp f g) = liftM2 Imp (fn f) (fn g)
-mapFM fn (Or f g) = liftM2 Or (fn f) (fn g)
-mapFM fn (And f g) = liftM2 And (fn f) (fn g)
+mapFM fn (Iff f g) = liftA2 Iff (fn f) (fn g)
+mapFM fn (Imp f g) = liftA2 Imp (fn f) (fn g)
+mapFM fn (Or f g) = liftA2 Or (fn f) (fn g)
+mapFM fn (And f g) = liftA2 And (fn f) (fn g)
 mapFM fn (Tag a f) = Tag a <$> fn f
 mapFM fn (Not f) = Not <$> fn f
-mapFM fn t@Trm{} = do
-  newArgs <- mapM fn $ trArgs t; return t {trArgs = newArgs}
-mapFM _ f = return f
-
-
+mapFM fn t@Trm{} = (\args -> t {trArgs = args}) <$> (traverse fn $ trArgs t)
+mapFM _ f = pure f
 
 -- Logical traversing
 {- same as roundFM but without the monadic action. -}

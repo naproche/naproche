@@ -9,7 +9,7 @@ Verifier state monad and common functions.
 
 
 module SAD.Core.Base (
-  RState (..), RM, CRM,
+  RState (..), CRM,
   askRS, updateRS,
   justIO,
   (<|>),
@@ -40,7 +40,7 @@ module SAD.Core.Base (
 import Control.Monad
 import Data.IORef
 import Data.Time
-import qualified Control.Applicative as App
+import Control.Applicative
 import qualified Data.IntMap.Strict as IM
 import Data.Maybe
 import qualified Data.Set as Set
@@ -49,7 +49,7 @@ import Control.Monad.Reader
 
 import SAD.Data.Formula
 import SAD.Data.Instr (Instr)
-import qualified SAD.Data.Instr as Instr
+import SAD.Data.Instr
 import SAD.Data.Text.Block (Block, Text)
 import SAD.Data.Text.Context (Context, MRule(..))
 import qualified SAD.Data.Text.Context as Context (name)
@@ -63,25 +63,25 @@ import SAD.Core.SourcePos
 import qualified SAD.Core.Message as Message
 
 
--- Reasoner state
+-- | Reasoner state
+data RState = RState 
+  { counters       :: [Counter]
+  , failed         :: Bool
+  , alreadyChecked :: Bool
+  } deriving (Eq, Ord, Show)
 
-data RState = RState {
-  counters     :: [Counter],
-  failed :: Bool,
-  alreadyChecked :: Bool
-  }
 
--- All of these counters are for gathering statistics to print out later
-
+-- | All of these counters are for gathering statistics to print out later
 data Counter  =
     TimeCounter TimeCounter NominalDiffTime
   | IntCounter IntCounter Int
+  deriving (Eq, Ord, Show)
 
 data TimeCounter  =
     ProofTime
-  | SuccessTime  -- succesful prove time
+  | SuccessTime  -- successful prove time
   | SimplifyTime
-  deriving Eq
+  deriving (Eq, Ord, Show)
 
 data IntCounter  =
     Sections
@@ -96,18 +96,17 @@ data IntCounter  =
   | Unfolds
   | Equations
   | FailedEquations
-  deriving Eq
+  deriving (Eq, Ord, Show)
 
 
--- CPS IO Maybe monad
-
-type CRMC a b = IORef RState -> IO a -> (b -> IO a) -> IO a
-newtype CRM b = CRM { runCRM :: forall a . CRMC a b }
+-- | CPS IO Maybe monad
+newtype CRM b = CRM 
+  { runCRM :: forall a . IORef RState -> IO a -> (b -> IO a) -> IO a }
 
 instance Functor CRM where
   fmap = liftM
 
-instance App.Applicative CRM where
+instance Applicative CRM where
   pure = return
   (<*>) = ap
 
@@ -115,7 +114,7 @@ instance Monad CRM where
   return r  = CRM $ \ _ _ k -> k r
   m >>= n   = CRM $ \ s z k -> runCRM m s z (\ r -> runCRM (n r) s z k)
 
-instance App.Alternative CRM where
+instance Alternative CRM where
   empty = mzero
   (<|>) = mplus
 
@@ -124,18 +123,9 @@ instance MonadPlus CRM where
   mplus m n = CRM $ \ s z k -> runCRM m s (runCRM n s z k) k
 
 
-
-
-
-type RM = CRM
-runRM :: RM a -> IORef RState -> IO (Maybe a)
+-- | @runCRM@ with defaults.
+runRM :: CRM a -> IORef RState -> IO (Maybe a)
 runRM m s = runCRM m s (return Nothing) (return . Just)
-
-infixl 0 <|>
-{-# INLINE (<|>) #-}
-(<|>) :: (MonadPlus m) => m a -> m a -> m a
-(<|>) = mplus
-
 
 data VState = VS {
   thesisMotivated :: Bool,
@@ -165,35 +155,41 @@ justIO m = lift $ CRM $ \ _ _ k -> m >>= k
 
 askRS :: (RState -> b) -> ReaderT VState CRM b
 askRS f     = justRS >>= (justIO . fmap f . readIORef)
+
 updateRS :: (RState -> RState) -> ReaderT VState CRM ()
 updateRS f  = justRS >>= (justIO . flip modifyIORef f)
 
-askInstructionInt :: MonadReader VState f =>
-                     Instr.Limit -> Int -> f Int
+askInstructionInt :: MonadReader VState f => Limit -> Int -> f Int
 askInstructionInt instr _default =
-  fmap (Instr.askLimit instr _default) $ asks instructions
+  fmap (askLimit instr _default) $ asks instructions
+
 askInstructionBool :: MonadReader VState f =>
-                      Instr.Flag -> Bool -> f Bool
+                      Flag -> Bool -> f Bool
 askInstructionBool instr _default =
-  fmap (Instr.askFlag instr _default) $ asks instructions
+  fmap (askFlag instr _default) $ asks instructions
+
 askInstructionString :: MonadReader VState f =>
-                        Instr.Argument -> String -> f String
+                        Argument -> String -> f String
 askInstructionString instr _default =
-  fmap (Instr.askArgument instr _default) $ asks instructions
+  fmap (askArgument instr _default) $ asks instructions
 
 addInstruction :: MonadReader VState m => Instr -> m a -> m a
 addInstruction instr =
   local $ \vs -> vs { instructions = instr : instructions vs }
-dropInstruction :: MonadReader VState m => Instr.Drop -> m a -> m a
+
+dropInstruction :: MonadReader VState m => Drop -> m a -> m a
 dropInstruction instr =
-  local $ \vs -> vs { instructions = Instr.drop instr $ instructions vs }
+  local $ \vs -> vs { instructions = dropInstr instr $ instructions vs }
+
 addTimeCounter :: TimeCounter
                   -> NominalDiffTime -> ReaderT VState CRM ()
 addTimeCounter counter time =
   updateRS $ \rs -> rs { counters = TimeCounter counter time : counters rs }
+
 addIntCounter :: IntCounter -> Int -> ReaderT VState CRM ()
 addIntCounter  counter time =
   updateRS $ \rs -> rs { counters = IntCounter  counter time : counters rs }
+
 incrementIntCounter :: IntCounter -> ReaderT VState CRM ()
 incrementIntCounter counter = addIntCounter counter 1
 
@@ -207,16 +203,18 @@ timer counter task = do
   addTimeCounter counter $ diffUTCTime end begin
   return result
 
-guardInstruction :: (MonadReader VState m, App.Alternative m) =>
-                    Instr.Flag -> Bool -> m ()
+guardInstruction :: (MonadReader VState m, Alternative m) =>
+                    Flag -> Bool -> m ()
 guardInstruction instr _default =
   askInstructionBool instr _default >>= guard
-guardNotInstruction :: (MonadReader VState m, App.Alternative m) =>
-                       Instr.Flag -> Bool -> m ()
+
+guardNotInstruction :: (MonadReader VState m, Alternative m) =>
+                       Flag -> Bool -> m ()
 guardNotInstruction instr _default =
   askInstructionBool instr _default >>= guard . not
+
 whenInstruction :: MonadReader VState m =>
-                   Instr.Flag -> Bool -> m () -> m ()
+                   Flag -> Bool -> m () -> m ()
 whenInstruction instr _default action =
   askInstructionBool instr _default >>= \b -> when b action
 

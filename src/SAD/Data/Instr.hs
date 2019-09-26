@@ -6,8 +6,6 @@ Instruction datatype and core functions.
 
 module SAD.Data.Instr where
 
-import Prelude hiding (Int, Bool, String, drop)
-import qualified Prelude
 import SAD.Core.SourcePos (SourcePos, SourceRange(..), noSourcePos, noRange)
 
 
@@ -26,10 +24,10 @@ noPos = Pos noSourcePos noSourcePos noRange
 
 data Instr =
     Command Command
-  | LimitBy Limit Prelude.Int
-  | SetFlag Flag Prelude.Bool
-  | GetArgument Argument Prelude.String
-  | GetArguments Arguments [Prelude.String]
+  | LimitBy Limit Int
+  | SetFlag Flag Bool
+  | GetArgument Argument String
+  | GetArguments Arguments [String]
   deriving (Show, Eq)
 
 data Drop =
@@ -106,30 +104,31 @@ data Arguments =
 
 -- Ask
 
-askLimit :: Limit -> Prelude.Int -> [Instr] -> Prelude.Int
+askLimit :: Limit -> Int -> [Instr] -> Int
 askLimit i d is  = head $ [ v | LimitBy j v <- is, i == j ] ++ [d]
 
-askFlag :: Flag -> Prelude.Bool -> [Instr] -> Prelude.Bool
+askFlag :: Flag -> Bool -> [Instr] -> Bool
 askFlag i d is  = head $ [ v | SetFlag j v <- is, i == j ] ++ [d]
 
-askArgument :: Argument -> Prelude.String -> [Instr] -> Prelude.String
+askArgument :: Argument -> String -> [Instr] -> String
 askArgument i d is  = head $ [ v | GetArgument j v <- is, i == j ] ++ [d]
 
 
 -- Drop
 
-drop :: Drop -> [Instr] -> [Instr]
-drop (DropCommand m) (Command n : rs) | n == m = rs
-drop (DropLimit m) (LimitBy n _ : rs) | n == m = rs
-drop (DropFlag m) (SetFlag n _ : rs) | n == m = rs
-drop (DropArgument m) (GetArgument n _ : rs) | n == m = rs
-drop i (r : rs)  = r : drop i rs
-drop _ _ = []
+-- | Drop an @Instr@ from the @[Instr]@ (assuming the latter doesn't contain duplicates)
+dropInstr :: Drop -> [Instr] -> [Instr]
+dropInstr (DropCommand m) (Command n : rs) | n == m = rs
+dropInstr (DropLimit m) (LimitBy n _ : rs) | n == m = rs
+dropInstr (DropFlag m) (SetFlag n _ : rs) | n == m = rs
+dropInstr (DropArgument m) (GetArgument n _ : rs) | n == m = rs
+dropInstr i (r : rs)  = r : dropInstr i rs
+dropInstr _ _ = []
 
 
 -- Keywords
 
-keywordsCommand :: [(Command, Prelude.String)]
+keywordsCommand :: [(Command, String)]
 keywordsCommand =
  [(EXIT, "exit"),
   (QUIT, "quit"),
@@ -138,14 +137,14 @@ keywordsCommand =
   (FILTER, "filter"),
   (RULES, "rules")]
 
-keywordsLimit :: [(Limit, Prelude.String)]
+keywordsLimit :: [(Limit, String)]
 keywordsLimit =
  [(Timelimit, "timelimit"),
   (Depthlimit, "depthlimit"),
   (Checktime, "checktime"),
   (Checkdepth, "checkdepth")]
 
-keywordsFlag :: [(Flag, Prelude.String)]
+keywordsFlag :: [(Flag, String)]
 keywordsFlag =
  [(Prove, "prove"),
   (Check, "check"),
@@ -173,20 +172,20 @@ keywordsFlag =
   (Checkontored, "checkontored"),
   (Translation, "translation")]
 
-keywordsArgument :: [(Argument, Prelude.String)]
+keywordsArgument :: [(Argument, String)]
 keywordsArgument =
  [(Read, "read"),
   (Library, "library"),
   (Provers, "provers"),
   (Prover, "prover")]
 
-keywordsArguments :: [(Arguments, Prelude.String)]
+keywordsArguments :: [(Arguments, String)]
 keywordsArguments =
   [(Synonym, "synonym")]
 
 -- distiguish between parser and verifier instructions 
 
-isParserInstruction :: Instr -> Prelude.Bool
+isParserInstruction :: Instr -> Bool
 isParserInstruction i = case i of
   Command EXIT -> True; Command QUIT -> True; GetArgument Read _ -> True;
   GetArguments Synonym _ -> True; _ -> False

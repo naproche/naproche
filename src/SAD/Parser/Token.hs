@@ -14,7 +14,7 @@ module SAD.Parser.Token
     showToken,
     properToken,
     tokenize,
-    tokenReports,
+    reportComments,
     composeTokens,
     isEOF,
     noTokens)
@@ -40,17 +40,20 @@ instance Show Token where
 
 data TokenType = NoWhiteSpaceBefore | WhiteSpaceBefore | Comment deriving (Eq, Ord, Show)
 
+-- | Make a token with @s@ as @tokenText@ and the range from @p@ to the end of @s@.
 makeToken :: String -> SourcePos -> TokenType -> Token
-makeToken s pos = Token s (rangePos (SourceRange pos (advanceAlong pos s)))
+makeToken s pos = Token s (rangePos (SourceRange pos (pos `advanceAlong` s)))
 
 tokenEndPos :: Token -> SourcePos
 tokenEndPos tok@Token{} = tokenPos tok `advanceAlong` tokenText tok
 tokenEndPos tok@EOF {} = tokenPos tok
 
+-- | The range in which the tokens lie.
 tokensRange :: [Token] -> SourceRange
 tokensRange [] = noRange
 tokensRange toks = makeRange (tokenPos $ head toks, tokenEndPos $ last toks)
 
+-- | Return the @tokenText@ or "end of input" if the token is @EOF@.
 showToken :: Token -> String
 showToken t@Token{} = tokenText t
 showToken EOF{} = "end of input"
@@ -65,6 +68,7 @@ properToken EOF {} = True
 noTokens :: [Token]
 noTokens = [EOF noSourcePos]
 
+-- | Turn the string into a stream of tokens.
 tokenize :: SourcePos -> String -> [Token]
 tokenize start = posToken start False
   where
@@ -92,12 +96,14 @@ tokenize start = posToken start False
 isLexem :: Char -> Bool
 isLexem c = (isAscii c && isAlphaNum c) || c == '_'
 
-tokenReports :: Token -> [Message.Report]
-tokenReports t@(Token _ _ _)
-  | properToken t = []
-  | otherwise = [(tokenPos t, Markup.comment1)]
-tokenReports (EOF _) = []
+reportComments :: Token -> Maybe Message.Report
+reportComments t@(Token _ _ _)
+  | properToken t = Nothing
+  | otherwise = Just (tokenPos t, Markup.comment1)
+reportComments (EOF _) = Nothing
 
+-- | Append tokens seperated by a single space if they were seperated
+-- by whitespace before.
 composeTokens :: [Token] -> String
 composeTokens [] = ""
 composeTokens (t:ts) =

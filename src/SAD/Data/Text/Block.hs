@@ -22,7 +22,7 @@ module SAD.Data.Text.Block (
 
 import SAD.Data.Formula
 import SAD.Core.SourcePos
-import SAD.Data.Instr (Instr)
+import SAD.Data.Instr hiding (position)
 import qualified SAD.Data.Instr as Instr
 import SAD.Parser.Token
 import SAD.Data.Text.Decl (Decl)
@@ -35,9 +35,9 @@ import Control.Monad
 
 data Text =
     TextBlock Block
-  | TextInstr Instr.Pos Instr
+  | TextInstr Pos Instr
   | NonTextStoredInstr [Instr] -- a way to restore instructions during verification
-  | TextDrop Instr.Pos Instr.Drop
+  | TextDrop Pos Drop
   | TextSynonym SourcePos
   | TextPretyping SourcePos [VarName]
   | TextMacro SourcePos

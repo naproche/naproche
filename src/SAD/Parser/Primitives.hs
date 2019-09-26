@@ -19,7 +19,8 @@ import Control.Monad (void, guard)
 
 -- primitive Token operations
 
----- parse the current token
+-- | Parse the current token or return an @EmptyFail@
+-- if the input is empty, eof or the supplied test functions returns @Nothing@.
 tokenPrim :: (Token -> Maybe a) -> Parser st a
 tokenPrim test = Parser $ \(State st input _) ok _ eerr ->
   case input of
@@ -31,7 +32,7 @@ tokenPrim test = Parser $ \(State st input _) ok _ eerr ->
         in  ok newerr [] [PR x newstate]
       Nothing -> eerr $ unexpectError (showToken t) (tokenPos t)
 
----- parse end of input
+-- | Parse the end of input 
 eof :: Parser st ()
 eof = Parser $ \(State st input _) ok _ eerr ->
   case input of
@@ -45,34 +46,35 @@ eof = Parser $ \(State st input _) ok _ eerr ->
       else eerr $ unexpectError (showToken t) (tokenPos t)
 
 
--- error handling outside of the monad
-
+-- | Turn @ParseError@s into valid @ParseResult@s.
 catchError :: (ParseError -> a) -> Parser st a -> Parser st a
 catchError catch p = Parser $ \st ok _cerr _eerr ->
   let pcerr err = ok (newErrorUnknown $ stPosition st) [] [PR (catch err) st]
       peerr err = ok (newErrorUnknown $ stPosition st) [PR (catch err) st] []
   in  runParser p st ok pcerr peerr
 
+-- | Lift possible parse errors into the @ParseResult@ using @catchError@.
 inspectError :: Parser st a -> Parser st (Either ParseError a)
 inspectError = catchError Left . fmap Right
 
-jumpWith :: ([Token] -> [Token]) -> Parser st a -> Parser st a
-jumpWith jump p = Parser $ \st ok cerr err ->
+-- | Map a function over the input in the Parser @State@.
+mapInput :: ([Token] -> [Token]) -> Parser st a -> Parser st a
+mapInput jump p = Parser $ \st ok cerr err ->
   let newInput = jump $ stInput st
   in  runParser p st{stInput = newInput} ok cerr err
 
 -- useful macros
 
----- check if the current token satisfies a predicate; if not fail
+-- | Check if the current token satisfies a predicate; if not fail
 satisfy :: (String -> Bool) -> Parser st String
 satisfy pr = tokenPrim prTest
   where
     prTest :: Token -> Maybe String
-    prTest tk = let s = showToken tk in case (pr s) of
+    prTest tk = let s = showToken tk in case pr s of
       True  -> Just s
       False -> Nothing
 
----- check if the current token is a word
+-- | Check if the current token is a word
 word :: Parser st String
 word = satisfy $ \tk -> all isAlpha tk
 
@@ -81,7 +83,7 @@ word = satisfy $ \tk -> all isAlpha tk
 token :: String -> Parser st ()
 token tk = void $ satisfy $ \tk' -> tk == tk'
 
--- | Case-insensitive version of @token@.
+-- | Case-insensitive version of @token@. Assumes argument is lower-case.
 {-# INLINE token' #-}
 token' :: String -> Parser st ()
 token' s = void $ satisfy $ \tk -> s == map toLower tk
@@ -97,16 +99,17 @@ tokenPos' s = do
 tokenOf :: [String] -> Parser st ()
 tokenOf tks = void $ satisfy $ \tk -> tk `elem` tks
 
--- | Case-insensitive version of @tokenOf@.
+-- | Case-insensitive version of @tokenOf@. Assumes all argument strings are lower-case.
 {-# INLINE tokenOf' #-}
 tokenOf' :: [String] -> Parser st ()
 tokenOf' tks = void $ satisfy $ \tk -> map toLower tk `elem` tks
 
----- check if the next tokens form a given symbol
+-- | Check if the next tokens are the (case-sensitive) characters
+-- of the input string. Useful for parsing symbols.
 symbol :: String -> Parser st ()
 symbol []     = return ()
 symbol (c:cs) = token [c] >> symbol cs
 
----- always succeed and pass on the string of the token
+-- | Always succeed and pass on the string of the token
 anyToken :: Parser st String
 anyToken = tokenPrim (Just . showToken)

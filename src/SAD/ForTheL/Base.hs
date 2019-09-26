@@ -338,6 +338,8 @@ hidden = do
   MS.modify $ \st -> st {hiddenCount = succ n}
   return ('h':show n, noSourcePos)
 
+-- | Parse the next token as a variable (a sequence of alpha-num chars beginning with an alpha)
+-- and return ('x' + the sequence) with the current position.
 var :: Parser st (String, SourcePos)
 var = do
   pos <- getPos

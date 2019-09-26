@@ -19,7 +19,7 @@ import qualified Isabelle.Standard_Thread as Standard_Thread
 
 import qualified SAD.Core.Message as Message
 import SAD.Core.SourcePos
-import SAD.Data.Instr (Instr)
+import SAD.Data.Instr hiding (Prover)
 import qualified SAD.Data.Instr as Instr
 import SAD.Data.Text.Context (Context)
 import SAD.Export.Base
@@ -33,13 +33,13 @@ export reduced depth provers instrs context goal = do
 
   when (null provers) $ Message.errorExport noSourcePos "No provers"
 
-  let proverName = Instr.askArgument Instr.Prover (name $ head provers) instrs
+  let proverName = askArgument Instr.Prover (name $ head provers) instrs
       proversNamed = filter ((==) proverName . name) provers
 
   when (null proversNamed) $ Message.errorExport noSourcePos $ "No prover named " ++ show proverName
 
   let prover@(Prover _ label path args fmt yes nos uns) = head proversNamed
-      timeLimit = Instr.askLimit Instr.Timelimit 3 instrs
+      timeLimit = askLimit Timelimit 3 instrs
       proc =
         (Process.proc path (map (setTimeLimit timeLimit) args))
           {Process.std_in = Process.CreatePipe,
@@ -54,7 +54,7 @@ export reduced depth provers instrs context goal = do
   let output = case fmt of TPTP -> TPTP.output; DFG -> DFG.output
       task = output reduced prover timeLimit context goal
 
-  when (Instr.askFlag Instr.Dump False instrs) $ Message.output "" Message.WRITELN noSourcePos task
+  when (askFlag Dump False instrs) $ Message.output "" Message.WRITELN noSourcePos task
 
   seq (length task) $ return $
     do
@@ -84,7 +84,7 @@ export reduced depth provers instrs context goal = do
             out = map (("[" ++ label ++ "] ") ++) lns
 
         when (null lns) $ Message.errorExport noSourcePos "No prover response"
-        when (Instr.askFlag Instr.Printprover False instrs) $
+        when (askFlag Printprover False instrs) $
             mapM_ (Message.output "" Message.WRITELN noSourcePos) out
 
         let positive = any (\l -> any (`isPrefixOf` l) yes) lns

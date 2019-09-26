@@ -22,7 +22,7 @@ import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Text.Decl (Decl)
 import qualified SAD.Data.Text.Decl as Decl
 import SAD.Data.Formula
-import qualified SAD.Data.Instr as Instr
+import SAD.Data.Instr
 
 import SAD.Parser.Base
 import SAD.Parser.Primitives
@@ -93,17 +93,17 @@ addBlockReports bl = addReports $ \pide -> let decls = Block.declaredVariables b
   formulaReports pide decls (Block.formula bl) ++
   concatMap (\decl -> variableReport pide True decl $ Decl.position decl) decls
 
-addInstrReport :: Instr.Pos -> FTL ()
+addInstrReport :: Pos -> FTL ()
 addInstrReport pos = addReports $ const $
-  map (Instr.position pos,) [Markup.comment2, Markup.expression "text instruction"]
+  map (position pos,) [Markup.comment2, Markup.expression "text instruction"]
 
-addDropReport :: Instr.Pos -> FTL ()
+addDropReport :: Pos -> FTL ()
 addDropReport pos = addReports $ const $
-  map (Instr.position pos,) [Markup.comment2, Markup.expression "drop text instruction"]
+  map (position pos,) [Markup.comment2, Markup.expression "drop text instruction"]
 
-addSynonymReport :: Instr.Pos -> FTL ()
+addSynonymReport :: Pos -> FTL ()
 addSynonymReport pos = addReports $ const $
-  map (Instr.position pos,) [Markup.comment3, Markup.expression "text synonyms"]
+  map (position pos,) [Markup.comment3, Markup.expression "text synonyms"]
 
 addPretypingReport :: SourcePos -> [SourcePos] -> FTL ()
 addPretypingReport pos ps = addReports $ const $
