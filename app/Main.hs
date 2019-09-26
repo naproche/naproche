@@ -290,5 +290,5 @@ parseConsent s     = errorWithoutStackTrace $ "Invalid boolean argument: \"" ++ 
 
 getLeadingPositiveInt :: String -> Int
 getLeadingPositiveInt s = case reads s of
-  ((n,[]):_) | n >= 0 -> n
+  ((n, []) : _) | n >= 0 -> n
   _ -> errorWithoutStackTrace $ "Invalid integer argument: \"" ++ s ++ "\""
