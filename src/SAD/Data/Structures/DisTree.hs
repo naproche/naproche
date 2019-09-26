@@ -20,6 +20,7 @@ import Prelude hiding (lookup, head)
 import qualified Data.List as L hiding (lookup)
 import Control.Monad
 import Data.Maybe
+import SAD.Data.TermId (TermId)
 
 data DTree a =
   Node {struct :: Struct, children :: [DTree a]} |
@@ -35,7 +36,7 @@ empty = DT []
 arity or a generalized constant (i.e. non-matchable free variable) -}
 data Struct =
   Variable |
-  Function {symbolId :: Int, symbolArity :: Int} |
+  Function {symbolId :: TermId, symbolArity :: Int} |
   GeneralizedConstant String
   deriving Show
 

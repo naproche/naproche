@@ -18,6 +18,7 @@ import SAD.Core.SourcePos
 import SAD.Data.Text.Decl (Decl)
 import qualified SAD.Data.Text.Decl as Decl
 import SAD.Helpers
+import SAD.Data.TermId
 
 -- Alpha-beta normalization
 
@@ -86,14 +87,20 @@ boolSimp f = bool $ mapF boolSimp f
 
 -- Maybe quantification
 
-{- maybe quantification handles quantification more efficiently in that it
-possibly already simplifies formulas. Prototype example:
-       "exists x (x = t /\ P(x))" is replaced by "P(t)"
-       "forall x (x = t => P(x))" is replaced by "P(t)" -}
-
+-- | Maybe quantification handles quantification more efficiently in that it
+-- possibly already simplifies formulas. Prototype example:
+--     "exists x (x = t /\ P(x))" is replaced by "P(t)"
+--     "forall x (x = t => P(x))" is replaced by "P(t)" 
+--
+-- In code:
+-- @(mbExi "x" (And (Trm "=" [Var "x" [] noSourcePos, Var "t" [] noSourcePos] [] 0) (Var "x" [] noSourcePos))) == Just (Var "t" [] noSourcePos)@
+-- Danger: We ignore the fact that @=@ is symmetric.
+--
+-- Arguments: the variable to look for (e.g. "x"), whether we are in an "existance" or an "all" case and the formula.
 mbBind :: String -> Bool -> Formula -> Maybe Formula
 mbBind v  = dive id
   where
+    dive :: (Formula -> Formula) -> Bool -> Formula -> Maybe Formula
     dive c s (All u f) = dive (c . bool . All u) s f
     dive c s (Exi u f) = dive (c . bool . Exi u) s f
     dive c s (Tag a f) = dive (c . bool . Tag a) s f
@@ -134,13 +141,6 @@ blImp _ Top = Top; blImp _ (Tag _ Top) = Top
 blImp Top f = f; blImp (Tag _ Top) f = f
 blImp f g = Imp f g
 
-blAll, blExi :: String -> Formula -> Formula
-blAll _ Top = Top
-blAll v f = All (Decl.nonText v) f
-
-blExi _ Top = Top
-blExi v f = Exi (Decl.nonText v) f
-
 pBlAll, pBlExi :: (String, SourcePos) -> Formula -> Formula
 pBlAll _ Top = Top
 pBlAll v f = All (Decl.nonParser v) f
@@ -148,29 +148,18 @@ pBlAll v f = All (Decl.nonParser v) f
 pBlExi _ Top = Top
 pBlExi v f = Exi (Decl.nonParser v) f
 
-dBlAll, dBlExi :: Decl -> Formula -> Formula
-dBlAll _ Top = Top
-dBlAll v f = All v f
-
-dBlExi _ Top = Top
-dBlExi v f = Exi v f
-
-blNot :: Formula -> Formula
-blNot (Not f) = f
-blNot f = Not f
-
 -- creation of formulas
 zAll, zExi :: String -> Formula -> Formula
-zAll v = blAll v . bind v
-zExi v = blExi v . bind v
+zAll v = bool . All (Decl.nonText v) . bind v
+zExi v = bool . Exi (Decl.nonText v) . bind v
 
 pAll, pExi :: (String, SourcePos) -> Formula -> Formula
 pAll nm@(v, _) = pBlAll nm . bind v
 pExi nm@(v, _) = pBlExi nm . bind v
 
 dAll, dExi :: Decl -> Formula -> Formula
-dAll dcl = dBlAll dcl . bind (Decl.name dcl)
-dExi dcl = dBlExi dcl . bind (Decl.name dcl)
+dAll dcl = bool . All dcl . bind (Decl.name dcl)
+dExi dcl = bool . Exi dcl . bind (Decl.name dcl)
 
 zIff, zOr :: Formula -> Formula -> Formula
 zIff f g = And (Imp f g) (Imp g f)
@@ -184,56 +173,40 @@ zVar v = pVar (v, noSourcePos)
 pVar :: (String, SourcePos) -> Formula
 pVar (v, pos) = Var v [] pos
 
-zTrm :: Int -> String -> [Formula] -> Formula
+zTrm :: TermId -> String -> [Formula] -> Formula
 zTrm tId t ts = Trm t ts [] tId
 
 
 -- creation of predefined functions and notions
 
 zEqu :: Formula -> Formula -> Formula
-zEqu t s  = zTrm equalityId "=" [t,s]
+zEqu t s  = zTrm EqualityId "=" [t,s]
 zLess :: Formula -> Formula -> Formula
-zLess t s = zTrm lessId "iLess" [t,s]
+zLess t s = zTrm LessId "iLess" [t,s]
 zThesis :: Formula
-zThesis   = zTrm thesisId "#TH#" []
+zThesis   = zTrm ThesisId "#TH#" []
 zFun :: Formula -> Formula
-zFun      = zTrm functionId "aFunction" . pure
+zFun      = zTrm FunctionId "aFunction" . pure
 zApp :: Formula -> Formula -> Formula
-zApp f v  = zTrm applicationId "sdtlbdtrb" [f , v]
+zApp f v  = zTrm ApplicationId "sdtlbdtrb" [f , v]
 zDom :: Formula -> Formula
-zDom      = zTrm domainId "szDzozmlpdtrp" . pure
+zDom      = zTrm DomainId "szDzozmlpdtrp" . pure
 zSet :: Formula -> Formula
-zSet      = zTrm setId "aSet" . pure
+zSet      = zTrm SetId "aSet" . pure
 zElem :: Formula -> Formula -> Formula
-zElem x m = zTrm elementId "aElementOf" [x,m]
+zElem x m = zTrm ElementId "aElementOf" [x,m]
 zProd :: Formula -> Formula -> Formula
-zProd m n = zTrm productId "szPzrzozdlpdtcmdtrp" [m, n]
+zProd m n = zTrm ProductId "szPzrzozdlpdtcmdtrp" [m, n]
 zPair :: Formula -> Formula -> Formula
-zPair x y = zTrm pairId "slpdtcmdtrp" [x,y]
+zPair x y = zTrm PairId "slpdtcmdtrp" [x,y]
 zObj :: Formula -> Formula
-zObj      = zTrm objectId "aObj" . pure -- this is a dummy for parsing purposes
-
-
--- predefined identifier
-
-equalityId    =  -1 :: Int
-lessId        =  -2 :: Int
-thesisId      =  -3 :: Int
-functionId    =  -4 :: Int
-applicationId =  -5 :: Int
-domainId      =  -6 :: Int
-setId         =  -7 :: Int
-elementId     =  -8 :: Int
-productId     =  -9 :: Int
-pairId        = -10 :: Int
-objectId      = -11 :: Int
-newId         = -15 :: Int -- temporary id given to newly introduced symbols
+zObj      = zTrm ObjectId "aObj" . pure -- this is a dummy for parsing purposes
 
 
 -- quick checks of syntactic properties
 
 isApplication :: Formula -> Bool
-isApplication Trm {trId = -5} = True; isApplication _ = False
+isApplication Trm {trId = ApplicationId} = True; isApplication _ = False
 isTop :: Formula -> Bool
 isTop Top = True; isTop _ = False
 isBot :: Formula -> Bool
@@ -247,9 +220,9 @@ isVar Var{} = True; isVar _ = False
 isTrm :: Formula -> Bool
 isTrm Trm{} = True; isTrm _ = False
 isEquality :: Formula -> Bool
-isEquality t@Trm{} = trId t == equalityId; isEquality _ = False
+isEquality t@Trm{} = trId t == EqualityId; isEquality _ = False
 isThesis :: Formula -> Bool
-isThesis t@Trm{} = trId t == thesisId; isThesis _ = False
+isThesis t@Trm{} = trId t == ThesisId; isThesis _ = False
 hasDEC :: Formula -> Bool
 hasDEC (Tag EqualityChain _) = True; hasDEC _ = False
 isExi :: Formula -> Bool
@@ -263,7 +236,7 @@ isNot (Not _) = True; isNot _ = False
 isNotion :: Formula -> Bool
 isNotion Trm {trName = 'a':_} = True; isNotion _ = False
 isElem :: Formula -> Bool
-isElem t = isTrm t && trId t == elementId
+isElem t = isTrm t && trId t == ElementId
 
 -- Holes and slots
 
@@ -287,13 +260,13 @@ occursH = occurs zHole; occursS = occurs zSlot
 
 removeObject :: Formula -> Formula
 removeObject t@Trm {trId = tId}
-  | tId == objectId = Top
+  | tId == ObjectId = Top
   | otherwise = t
 removeObject f = mapF removeObject f
 
 -- functions for operating on literals
 isLiteral :: Formula -> Bool
-isLiteral t@Trm{} = trId t /= equalityId
+isLiteral t@Trm{} = trId t /= EqualityId
 isLiteral (Not t) = isTrm t
 isLiteral _ = False
 
@@ -305,7 +278,7 @@ ltArgs, ltInfo :: Formula -> [Formula]
 ltArgs = trArgs . ltAtomic
 ltInfo = trInfo . ltAtomic
 
-ltId :: Formula -> Int
+ltId :: Formula -> TermId
 ltId   = trId   . ltAtomic
 
 mbNot :: Formula -> Formula -> Formula
@@ -376,7 +349,7 @@ duplicateNames (v:vs) = guardElem vs v `mplus` duplicateNames vs
 duplicateNames _      = mzero
 
 {- safe identifier extraction -}
-tryToGetID :: Formula -> Maybe Int
+tryToGetID :: Formula -> Maybe TermId
 tryToGetID Trm {trId = n} = return n
 tryToGetID _ = mzero
 

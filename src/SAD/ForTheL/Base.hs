@@ -16,6 +16,7 @@ import Data.Char
 import Data.List
 
 import SAD.Data.Formula
+import SAD.Data.TermId
 
 import SAD.Parser.Base
 import SAD.Parser.Combinators
@@ -63,15 +64,15 @@ initFS = FState
   0 0 0 []
   where
     eq = [
-      ([Wd ["equal"], Wd ["to"], Vr], zTrm (-1) "="),
-      ([Wd ["nonequal"], Wd ["to"], Vr], Not . zTrm (-1) "=") ]
+      ([Wd ["equal"], Wd ["to"], Vr], zTrm EqualityId "="),
+      ([Wd ["nonequal"], Wd ["to"], Vr], Not . zTrm EqualityId "=") ]
     sp = [
-      ([Sm "="], zTrm (-1) "="),
-      ([Sm "!", Sm "="], Not . zTrm (-1) "="),
-      ([Sm "-", Sm "<", Sm "-"], zTrm (-2) "iLess"),
+      ([Sm "="], zTrm EqualityId "="),
+      ([Sm "!", Sm "="], Not . zTrm EqualityId "="),
+      ([Sm "-", Sm "<", Sm "-"], zTrm LessId "iLess"),
       ([Sm "-~-"], \(m:n:_) -> zAll "" $
         Iff (zElem (zVar "") m) (zElem (zVar "") n)) ]
-    sn = [ ([Sm "=", Vr], zTrm (-1) "=") ]
+    sn = [ ([Sm "=", Vr], zTrm EqualityId "=") ]
     nt = [
       ([Wd ["function","functions"], Nm], zFun . head),
       ([Wd ["set","sets"], Nm], zSet . head),

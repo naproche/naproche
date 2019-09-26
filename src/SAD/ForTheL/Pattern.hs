@@ -20,6 +20,7 @@ import SAD.Parser.Primitives
 import SAD.Core.SourcePos (SourcePos)
 
 import SAD.Data.Formula
+import SAD.Data.TermId
 
 import Data.List
 import Data.Char
@@ -32,7 +33,8 @@ import Debug.Trace
 
 
 giveId :: Bool -> Int -> Formula -> Formula
-giveId p n t = t {trId = if p then n else (trId t)}
+giveId p n t = t {trId = if p then specialId n else (trId t)}
+
 incId :: Enum p => Bool -> p -> p
 incId p n = if p then succ n else n
 
@@ -140,7 +142,7 @@ extractWordPattern st t@Trm {trName = s, trArgs = vs} f = (pt, nf)
   where
     pt = map getPatt ws
     nt = t {trName = pr ++ getName pt}
-    nf = replace nt t {trId = newId} f
+    nf = replace nt t {trId = NewId} f
     (pr:ws) = words s
     dict = strSyms st
 
@@ -158,7 +160,7 @@ extractSymbPattern t@Trm {trName = s, trArgs = vs} f = (pt, nf)
   where
     pt = map getPatt (words s)
     nt = t {trName ='s' : getName pt}
-    nf = replace nt t {trId = newId} f
+    nf = replace nt t {trId = NewId} f
 
     getPatt "#" = Vr
     getPatt w = Sm w
@@ -178,11 +180,11 @@ newPrdPattern tvr = multi </> unary </> newSymbPattern tvr
   where
     unary = do
       v <- tvr; (t, vs) <- unaryAdj -|- unaryVerb
-      return $ zTrm newId t (v:vs)
+      return $ zTrm NewId t (v:vs)
     multi = do
       (u,v) <- liftM2 (,) tvr (comma >> tvr);
       (t, vs) <- multiAdj -|- multiVerb
-      return $ zTrm newId t (u:v:vs)
+      return $ zTrm NewId t (u:v:vs)
 
     unaryAdj = do is; (t, vs) <- ptHead wlexem tvr; return ("is " ++ t, vs)
     multiAdj = do is; (t, vs) <- ptHead wlexem tvr; return ("mis " ++ t, vs)
@@ -195,10 +197,10 @@ newNtnPattern tvr = (ntn <|> fun) </> unnamedNotion tvr
   where
     ntn = do
       an; (t, v:vs) <- ptName wlexem tvr
-      return (zTrm newId ("a " ++ t) (v:vs), (trName v, trPosition v))
+      return (zTrm NewId ("a " ++ t) (v:vs), (trName v, trPosition v))
     fun = do
       the; (t, v:vs) <- ptName wlexem tvr
-      return (zEqu v $ zTrm newId ("a " ++ t) vs, (trName v, trPosition v))
+      return (zEqu v $ zTrm NewId ("a " ++ t) vs, (trName v, trPosition v))
 
 unnamedNotion :: FTL Formula
                  -> FTL (Formula, (String, SourcePos))
@@ -206,10 +208,10 @@ unnamedNotion tvr = (ntn <|> fun) </> (newSymbPattern tvr >>= equ)
   where
     ntn = do
       an; (t, v:vs) <- ptNoName wlexem tvr
-      return (zTrm newId ("a " ++ t) (v:vs), (trName v, trPosition v))
+      return (zTrm NewId ("a " ++ t) (v:vs), (trName v, trPosition v))
     fun = do
       the; (t, v:vs) <- ptNoName wlexem tvr
-      return (zEqu v $ zTrm newId ("a " ++ t) vs, (trName v, trPosition v))
+      return (zEqu v $ zTrm NewId ("a " ++ t) vs, (trName v, trPosition v))
     equ t = do v <- hidden; return (zEqu (pVar v) t, v)
 
 
@@ -218,11 +220,11 @@ newSymbPattern tvr = left -|- right
   where
     left = do
       (t, vs) <- ptHead slexem tvr
-      return $ zTrm newId t vs
+      return $ zTrm NewId t vs
     right = do
       (t, vs) <- ptTail slexem tvr
       guard $ not $ null $ tail $ words t
-      return $ zTrm newId t vs
+      return $ zTrm NewId t vs
 
 
 -- pattern parsing

@@ -14,9 +14,9 @@ import Control.Applicative
 
 import SAD.Data.Tag (Tag)
 import SAD.Core.SourcePos (SourcePos)
+import SAD.Data.TermId
 
 import SAD.Data.Text.Decl (Decl)
-
 
 data Formula =
   All Decl Formula        | Exi Decl Formula |
@@ -25,7 +25,7 @@ data Formula =
   Tag Tag Formula         | Not Formula             |
   Top                     | Bot                     |
   Trm { trName :: String   , trArgs :: [Formula],
-        trInfo :: [Formula], trId   :: Int}         |
+        trInfo :: [Formula], trId   :: TermId}         |
   Var { trName :: String   , trInfo :: [Formula], trPosition :: SourcePos } |
   Ind { trIndx :: Int, trPosition :: SourcePos }   | ThisT
   deriving (Eq, Ord)
@@ -51,33 +51,10 @@ mapFM fn t@Trm{} = (\args -> t {trArgs = args}) <$> (traverse fn $ trArgs t)
 mapFM _ f = pure f
 
 -- Logical traversing
-{- same as roundFM but without the monadic action. -}
+-- | Same as roundFM but without the monadic action.
 roundF :: Char -> ([Formula] -> Maybe Bool -> Int -> Formula -> Formula)
                -> [Formula] -> Maybe Bool -> Int -> Formula -> Formula
-roundF char traversalFunction localContext polarity n = dive
-  where
-    dive (All u f) =
-      let function = traversalFunction localContext polarity (succ n)
-          nn = char:show n
-      in  All u $ bind nn $ function $ inst nn f
-    dive (Exi u f) =
-      let function = traversalFunction localContext polarity (succ n)
-          nn = char:show n
-      in  Exi u $ bind nn $ function $ inst nn f
-    dive (Iff f g) =
-      let nf = traversalFunction localContext Nothing n f
-      in  Iff nf $ traversalFunction localContext Nothing n g
-    dive (Imp f g) =
-      let nf = traversalFunction localContext (not <$> polarity) n f
-      in  Imp nf $ traversalFunction (nf:localContext) polarity n g
-    dive (Or f g) =
-      let nf = traversalFunction localContext polarity n f
-      in  Or nf $ traversalFunction (Not nf:localContext) polarity n g
-    dive (And f g) =
-      let nf = traversalFunction localContext polarity n f
-      in  And nf $ traversalFunction (nf:localContext) polarity n g
-    dive (Not f) = Not $ traversalFunction localContext (not <$> polarity) n f
-    dive f = mapF (traversalFunction localContext polarity n) f
+roundF c fn l p n f = runIdentity $ roundFM c (\w x y z -> Identity $ fn w x y z) l p n f
 
 {- traverse the structure of a formula with a monadic action all while keeping 
 track of local premises, polarity and quantification depth. A unique identifying
@@ -110,21 +87,9 @@ roundFM char traversalAction localContext polarity n = dive
     dive (Not f) = Not <$> traversalAction localContext (not <$> polarity) n f
     dive f = mapFM (traversalAction localContext polarity n) f
 
-
--- Folding
-
-{- map a collection function over the next structure level of a formula -}
+-- | Map a collection function over the next structure level of a formula
 foldF :: (Monoid.Monoid a) => (Formula -> a) -> Formula -> a
-foldF fn (All _ f) = fn f
-foldF fn (Exi _ f) = fn f
-foldF fn (Iff f g) = Monoid.mappend (fn f) (fn g)
-foldF fn (Imp f g) = Monoid.mappend (fn f) (fn g)
-foldF fn (Or f g) = Monoid.mappend (fn f) (fn g)
-foldF fn (And f g) = Monoid.mappend (fn f) (fn g)
-foldF fn (Tag _ f) = fn f
-foldF fn (Not f) = fn f
-foldF fn t@Trm{} = Monoid.mconcat $ map fn $ trArgs t
-foldF _ _ = Monoid.mempty
+foldF fn = runIdentity . foldFM (Identity . fn)
 
 {- | tests whether a predicate holds for all formulas on the next structure level
    of a formula. Returns 'True' if there is none. -}
@@ -142,17 +107,17 @@ sumF fn = Monoid.getSum . foldF (Monoid.Sum . fn)
 
 
 {- map a monadic collection over the next structure level of a formula -}
-foldFM :: (Monoid.Monoid a, Monad m) => (Formula -> m a) -> Formula -> m a
+foldFM :: (Monoid.Monoid a, Applicative m) => (Formula -> m a) -> Formula -> m a
 foldFM fn (All _ f) = fn f
 foldFM fn (Exi _ f) = fn f
-foldFM fn (Iff f g) = liftM2 Monoid.mappend (fn f) (fn g)
-foldFM fn (Imp f g) = liftM2 Monoid.mappend (fn f) (fn g)
-foldFM fn (And f g) = liftM2 Monoid.mappend (fn f) (fn g)
-foldFM fn (Or f g) = liftM2 Monoid.mappend (fn f) (fn g)
+foldFM fn (Iff f g) = liftA2 Monoid.mappend (fn f) (fn g)
+foldFM fn (Imp f g) = liftA2 Monoid.mappend (fn f) (fn g)
+foldFM fn (And f g) = liftA2 Monoid.mappend (fn f) (fn g)
+foldFM fn (Or f g) = liftA2 Monoid.mappend (fn f) (fn g)
 foldFM fn (Tag _ f) = fn f
 foldFM fn (Not f) = fn f
-foldFM fn t@Trm{} = fmap Monoid.mconcat $ mapM fn $ trArgs t
-foldFM _ _ = return Monoid.mempty
+foldFM fn t@Trm{} = fmap Monoid.mconcat $ traverse fn $ trArgs t
+foldFM _ _ = pure Monoid.mempty
 
 
 -- Bind, inst, subst
@@ -173,8 +138,8 @@ closed  = dive 0
 occurs :: Formula -> Formula -> Bool
 occurs t f = twins t f || anyF (occurs t) f
 
-{- bind a variable with name v in a formula.
-This also affects any info stored. -}
+-- | Bind a variable with name v in a formula.
+-- This also affects any info stored.
 bind :: String -> Formula -> Formula
 bind v = dive 0
   where
@@ -188,8 +153,8 @@ bind v = dive 0
     dive _ i@Ind{} = i
     dive n f = mapF (dive n) f
 
-{- instantiate a formula with a variable with name v.
-This also affects any info stored. -}
+-- | Instantiate a formula with a variable with name v.
+-- This also affects any info stored.
 inst :: String -> Formula -> Formula
 inst x = dive 0
   where

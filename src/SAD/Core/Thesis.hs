@@ -8,6 +8,7 @@ module SAD.Core.Thesis (inferNewThesis) where
 
 
 import SAD.Data.Formula
+import SAD.Data.TermId
 import SAD.Data.Definition (Definitions)
 import SAD.Data.Text.Context (Context)
 import qualified SAD.Data.Text.Context as Context 
@@ -236,7 +237,7 @@ generateVariations definitions = pass [] (Just True) 0
 
 {- mark symbols that are recursively defined in their defining formula, so that
    the definition is not infinitely expanded -}
-markRecursive :: Int -> Formula -> Formula
+markRecursive :: TermId -> Formula -> Formula
 markRecursive n t@Trm{trId = m} 
   | n == m = Tag GenericMark t
   | otherwise = t

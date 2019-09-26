@@ -8,6 +8,7 @@ Generation of proof tasks.
 module SAD.Core.ProofTask (generateProofTask) where
 
 import SAD.Data.Formula
+import SAD.Data.TermId
 import SAD.Data.Text.Block (Section(..))
 import SAD.Prove.Normalize
 
@@ -28,9 +29,9 @@ generateProofTask _ _ f = f
 
 {- Check whether a formula is a set or function defintion -}
 funDcl, setDcl :: Formula -> Bool
-funDcl (And (And f _) _) = trId f == functionId
+funDcl (And (And f _) _) = trId f == FunctionId
 funDcl _ = False
-setDcl (And f _) = trId f == setId
+setDcl (And f _) = trId f == SetId
 setDcl _ = error "SAD.Core.ProofTask.setDcl: misformed definition"
 
 setTask :: Formula -> Formula
@@ -87,9 +88,9 @@ choices = Tag ChoiceTask . dive
     dive (Exi dcl (And (Tag Defined f) g)) = let x = Decl.name dcl in 
       (generateProofTask LowDefinition [] $ dec $ inst x $ f) `blAnd`
       (dec $ inst x $ f `blImp` dive g)
-    dive (All x f) = dBlAll x $ dive f
+    dive (All x f) = bool $ All x $ dive f
     dive (Imp f g) = f `blImp` dive g
-    dive (Exi x f) = dBlExi x $ dive f
+    dive (Exi x f) = bool $ Exi x $ dive f
     dive (And f g) = dive f `blAnd` dive g
     dive f = f
 
@@ -150,12 +151,12 @@ domainCondition :: Formula -> Formula -> Formula
 domainCondition (Tag _ (All _ (Iff Trm {trArgs = [_,dm]} g))) = dive
   where
     dive Trm {trId = tId, trArgs = [x,d]}
-      | tId == elementId && twins d dm = subst x "" $ inst "" g
+      | tId == ElementId && twins d dm = subst x "" $ inst "" g
     dive f = mapF dive f
 domainCondition (Tag _ Trm {trName = "=", trArgs = [dm,g]}) = dive
   where
     dive Trm {trId = tId, trArgs = [x,d]}
-      | tId == elementId && twins d dm = zElem x g
+      | tId == ElementId && twins d dm = zElem x g
     dive f = mapF dive f
 domainCondition _ =
   error "SAD.Core.ProofTask.domainCondition: misformed argument"

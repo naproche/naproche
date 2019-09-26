@@ -17,7 +17,7 @@ module SAD.Prove.Normalize  (
   ) where
 
 import SAD.Data.Formula
-
+import SAD.Data.TermId
 
 import Data.List
 import Control.Monad.State
@@ -153,7 +153,7 @@ instSk skolemCnt dependencyCnt = dive 0
     dive d Ind {trIndx = m} | d == m = skolemFunction d
     dive d f = mapF (dive d) f
 
-    skolemFunction = zTrm skolemId skolemName . skolemArguments
+    skolemFunction = zTrm (specialId skolemId) skolemName . skolemArguments
 
 
     skolemArguments d = [Ind (i + d) undefined | i <- [1..dependencyCnt] ]

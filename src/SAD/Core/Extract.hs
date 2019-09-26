@@ -26,6 +26,7 @@ import qualified SAD.Data.Structures.DisTree as DT
 import qualified SAD.Data.Text.Decl as Decl
 
 import qualified Data.IntMap as IM
+import qualified Data.Map as Map
 import Data.List
 import Data.Maybe
 import Control.Monad.State
@@ -40,7 +41,7 @@ addDefinition :: (Definitions, Guards) -> Formula -> (Definitions, Guards)
 addDefinition (defs, grds) f = let newDef = extractDefinition defs f in
   (addD newDef defs, addG newDef grds)
   where
-    addD df@DE {Definition.term = t} = IM.insert (trId t) df
+    addD df@DE {Definition.term = t} = Map.insert (trId t) df
     addG df@DE {Definition.guards = grd} grds = foldr add grds $ filter isTrm grd
 
     add guard grds =
@@ -89,7 +90,7 @@ closeEvidence dfs def@DE{Definition.evidence = evidence} = def { Definition.evid
   where
     newEvidence = nubBy twins $ evidence ++ concatMap defEvidence evidence
     defEvidence t@Trm {trId = n} =
-      let def = fromJust $ IM.lookup n dfs
+      let def = fromJust $ Map.lookup n dfs
           sb  = fromJust $ match (Definition.term def) $ fromTo '?' 'u' t
       in  map (fromTo 'u' '?' . sb) $ Definition.evidence def
     defEvidence _ = []

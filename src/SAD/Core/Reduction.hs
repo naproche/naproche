@@ -29,7 +29,7 @@ type Position = [Int]
 the path we take at a binary operator. Unary operators (Not, All, Exi) are not reflected
 in the position.-}
 
-ontoReduce :: IntMap DefEntry
+ontoReduce :: Definitions
               -> DisTree Bool
               -> Int
               -> Formula
@@ -101,28 +101,28 @@ ontoRed dfs grds f = dive [] f
     allGuards h
       | isSkolem h = []
       | otherwise =
-          let def = fromJust $ IM.lookup (trId h) dfs
+          let def = fromJust $ Map.lookup (trId h) dfs
               sb  = fromJust $ match (Definition.term def) h
           in  map sb $ Definition.guards def
     
     generalGuards h
       | isSkolem h = []
       | otherwise =
-          let def = fromJust $ IM.lookup (trId h) dfs
+          let def = fromJust $ Map.lookup (trId h) dfs
               zipped = zip (allGuards h) (Definition.guards def)
           in  map fst $ filter (uncurry hasSameSyntacticStructureAs) zipped
 
     allPositionGuards pos h
       | isSkolem h = []
       | otherwise =
-          let def = fromJust $ IM.lookup (trId h) dfs
+          let def = fromJust $ Map.lookup (trId h) dfs
               posName = trName $ ((trArgs $ Definition.term def)!!pos)
           in  filter (Set.member posName . freeVars) $ Definition.guards def
 
     generalPositionGuards pos h
       | isSkolem h = []
       | otherwise =
-          let def = fromJust $ IM.lookup (trId h) dfs
+          let def = fromJust $ Map.lookup (trId h) dfs
               positionGuards = allPositionGuards pos h
               sb = fromJust $ match (Definition.term def) h
               zipped = zip (map sb positionGuards) positionGuards

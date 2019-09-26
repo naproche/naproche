@@ -22,6 +22,7 @@ import Data.Monoid (Sum, getSum)
 import qualified Data.IntMap.Strict as IM
 import qualified Control.Monad.Writer as W
 import qualified Data.Set as Set
+import qualified Data.Map as Map
 import Control.Monad.State
 import Control.Monad.Reader
 import qualified Isabelle.Standard_Thread as Standard_Thread
@@ -322,7 +323,7 @@ unfoldAtomic sign f = do
     definitionalProperties f g = do
       definitions <- asks defs
       let definingFormula = maybeToList $ do
-            id <- tryToGetID f; def <- IM.lookup id definitions;
+            id <- tryToGetID f; def <- Map.lookup id definitions;
             -- only unfold a definitions or (a sigext in a positive position)
             guard (sign || Definition.isDefinition def)
             sb <- match (Definition.term def) f

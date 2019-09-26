@@ -44,10 +44,12 @@ import Control.Applicative
 import qualified Data.IntMap.Strict as IM
 import Data.Maybe
 import qualified Data.Set as Set
+import qualified Data.Map as Map
 import Control.Monad.State
 import Control.Monad.Reader
 
 import SAD.Data.Formula
+import SAD.Data.TermId
 import SAD.Data.Instr (Instr)
 import SAD.Data.Instr
 import SAD.Data.Text.Block (Block, Text)
@@ -309,16 +311,16 @@ retrieveContext names = do
 -- Definition management
 
 -- initial definitions
-initialDefinitions :: IM.IntMap DefEntry
-initialDefinitions = IM.fromList [
-  (-1,  equality),
-  (-2,  less),
-  (-4,  function),
-  (-5,  functionApplication),
-  (-6,  domain),
-  (-7,  set),
-  (-8,  elementOf),
-  (-10, pair) ]
+initialDefinitions :: Definitions
+initialDefinitions = Map.fromList [
+  (EqualityId,  equality),
+  (LessId,  less),
+  (FunctionId,  function),
+  (ApplicationId,  functionApplication),
+  (DomainId,  domain),
+  (SetId,  set),
+  (ElementId,  elementOf),
+  (PairId, pair) ]
 
 equality :: DefEntry
 equality  = DE [] Top Signature (zEqu (zVar "?0") (zVar "?1")) [] []
@@ -350,9 +352,9 @@ initialGuards = foldr (\f -> DT.insert f True) (DT.empty) [
   zElem (zVar $ "?1") $ zDom $ zVar "?0"]
 
 -- retrieve definitional formula of a term
-defForm :: IM.IntMap DefEntry -> Formula -> Maybe Formula
+defForm :: Definitions -> Formula -> Maybe Formula
 defForm definitions term = do
-  def <- IM.lookup (trId term) definitions
+  def <- Map.lookup (trId term) definitions
   guard $ Definition.isDefinition def
   sb <- match (Definition.term def) term
   return $ sb $ Definition.formula def
@@ -362,6 +364,6 @@ defForm definitions term = do
 getDef :: Formula -> VM DefEntry
 getDef term = do
   defs <- asks definitions
-  let mbDef = IM.lookup (trId term) defs
+  let mbDef = Map.lookup (trId term) defs
   guard $ isJust mbDef
   return $ fromJust mbDef
