@@ -76,7 +76,7 @@ extractDefinition defs =
 {- get evidence for a defined term from a definitional formula -}
 extractEvidences :: Formula -> Formula -> [Formula]
 extractEvidences t =
-  filter (isJust . find (twins ThisT) . ltArgs) . filter isLiteral . splitConjuncts .
+  filter (isJust . find (twins ThisT) . trArgs . ltAtomic) . filter isLiteral . splitConjuncts .
     if   isNotion t -- notion evidence concerns the first argument.
     then replace ThisT (head $ trArgs t)
     else id

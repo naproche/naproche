@@ -29,8 +29,6 @@ import qualified Isabelle.UUID as UUID
 import qualified Isabelle.Standard_Thread as Standard_Thread
 import qualified Isabelle.Naproche as Naproche
 import qualified Data.ByteString.UTF8 as UTF8
-import qualified Data.ByteString.Char8 as Char8
-import qualified Data.ByteString as ByteString
 import Network.Socket (Socket)
 
 import SAD.API

@@ -1,6 +1,6 @@
 module SAD.Data.Formula.Show (
   showArgumentsWith,
-  showTailWith,
+  commaSeparated,
   symEncode,
   symChars
   -- also exports show instance for Formula
@@ -56,12 +56,13 @@ showFormula p d = dive
 
 
 showArgumentsWith :: (a -> ShowS) -> [a] -> ShowS
-showArgumentsWith showTerm (t:ts) =
-  showParen True $ showTerm t . showTailWith showTerm ts
-showArgumentsWith _ _ = id
+showArgumentsWith _ [] = id
+showArgumentsWith showTerm ls = showParen True $ commaSeparated showTerm ls
 
-showTailWith :: (a -> ShowS) -> [a] -> ShowS
-showTailWith showTerm = foldr ((.) . ((showChar ',' .) . showTerm)) id
+commaSeparated :: (a -> ShowS) -> [a] -> ShowS
+commaSeparated showTerm [] = id
+commaSeparated showTerm [t] = showTerm t
+commaSeparated showTerm (t:ts) = showTerm t . showChar ',' . commaSeparated showTerm ts
 
 isSymbolicTerm, isUserVariable :: Formula -> Bool
 isSymbolicTerm Trm {trName = 's':_} = True; isSymbolicTerm _ = False

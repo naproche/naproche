@@ -73,9 +73,8 @@ showTrName = showString . filter (/= ':') . trName
 dfgSLS :: [Context] -> ShowS
 dfgSLS tsk  = sls "functions" fns . sls "predicates" pds
   where
-    sls s (hd:tl) = showString s . showChar '[' . shs hd
-                  . showTailWith shs tl . showString "].\n"
-    sls _ _ = id
+    sls _ [] = id
+    sls s ls = showString s . showChar '[' . commaSeparated shs ls . showString "].\n"
 
     shs (s, a)  = showParen True $ stn s . showChar ',' . shows a
     stn = showString . filter (/= ':')

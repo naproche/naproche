@@ -313,7 +313,7 @@ procTextInstr = flip proc $ ask >>= verificationLoop
     proc (Command RULES) = (>>) $ do
       rules <- asks rewriteRules
       reasonLog Message.WRITELN noSourcePos $
-        "current ruleset: " ++ "\n" ++ Rule.printrules (reverse rules)
+        "current ruleset: " ++ "\n" ++ unlines (map show (reverse rules))
     proc (Command THESIS) = (>>) $ do
       motivated <- asks thesisMotivated; thesis <- asks currentThesis
       let motivation = if motivated then "(motivated): " else "(not motivated): "

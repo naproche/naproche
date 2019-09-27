@@ -424,7 +424,7 @@ unfailing p = do
   case res of
     Right pr -> pure pr
     Left err -> do
-      notEof -- QUESTION: This discards the rest of input: Why do we need to call 'jumpToNextUnit'?
+      notEof
       jumpToNextUnit (pure $ TextError err)
 
 -- | Skip input until we encounter @EOF@ (keep) or a dot not followed by '=' (discard the dot).

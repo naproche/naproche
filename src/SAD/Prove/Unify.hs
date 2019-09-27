@@ -10,7 +10,7 @@ module SAD.Prove.Unify (unify) where
 
 import Control.Monad
 import SAD.Data.Formula
-
+import Data.Function (on)
 
 
 
@@ -26,7 +26,7 @@ unify _ Bot = mzero
 unify Top Top = return id
 unify Top _ = mzero
 unify _ Top = mzero
-unify l r = guard (ltId l == ltId r) >> unif (zip (ltArgs l) (ltArgs r))
+unify l r = guard (((==) `on` trId . ltAtomic) l r) >> unif (zip (trArgs . ltAtomic $ l) (trArgs . ltAtomic $ r))
 
 {- implementation of a standard unification algorithm -}
 unif :: MonadPlus m => [(Formula, Formula)] -> m (Formula -> Formula)

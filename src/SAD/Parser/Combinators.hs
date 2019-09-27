@@ -284,7 +284,7 @@ errorTrace lbl shw p = Parser $ \st ok cerr eerr ->
       tabString = unlines . map ((++) "   ") . lines
 
 
--- | Return @()@ if the next token isn't @EOF@ discarding the rest of the input.
+-- | Return @()@ if the next token isn't @EOF@.
 notEof :: Parser st ()
 notEof = Parser $ \st ok _ eerr ->
   case stInput st of

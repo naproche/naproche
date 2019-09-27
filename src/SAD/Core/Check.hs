@@ -152,7 +152,7 @@ typings (context:restContext) term =
   where
     albetDive = dive . albet
     -- when we encouter a literal, compare its arguments with term
-    dive f | isLiteral f = compare [] $ ltArgs f 
+    dive f | isLiteral f = compare [] $ trArgs $ ltAtomic f 
       where
         compare _ [] = mzero
         compare ls (arg:rs) = -- try to match argument, else compare with rest

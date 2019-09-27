@@ -256,8 +256,8 @@ occursH, occursS :: Formula -> Bool
 occursH = occurs zHole; occursS = occurs zSlot
 
 
+-- | Replace @ObjectId@ Terms with @Top@
 -- pseudotyping with "object"
-
 removeObject :: Formula -> Formula
 removeObject t@Trm {trId = tId}
   | tId == ObjectId = Top
@@ -265,6 +265,7 @@ removeObject t@Trm {trId = tId}
 removeObject f = mapF removeObject f
 
 -- functions for operating on literals
+-- QUESTION: Why do we handle @Not t@ different from @t@?
 isLiteral :: Formula -> Bool
 isLiteral t@Trm{} = trId t /= EqualityId
 isLiteral (Not t) = isTrm t
@@ -274,15 +275,9 @@ isLiteral _ = False
 ltAtomic :: Formula -> Formula
 ltAtomic (Not t) = t; ltAtomic t = t
 
-ltArgs, ltInfo :: Formula -> [Formula]
-ltArgs = trArgs . ltAtomic
-ltInfo = trInfo . ltAtomic
-
-ltId :: Formula -> TermId
-ltId   = trId   . ltAtomic
-
 mbNot :: Formula -> Formula -> Formula
-mbNot l = if isNot l then Not else id
+mbNot (Not _) = Not
+mbNot _ = id
 
 ltNeg :: Formula -> Formula
 ltNeg (Not t) = t
