@@ -6,7 +6,6 @@ Core functions on formulas.
 
 module SAD.Data.Formula.Base where
 
-import Control.Monad
 import Data.Maybe
 import qualified Data.Monoid as Monoid
 import Control.Monad.Identity

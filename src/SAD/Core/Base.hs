@@ -41,7 +41,6 @@ import Control.Monad
 import Data.IORef
 import Data.Time
 import Control.Applicative
-import qualified Data.IntMap.Strict as IM
 import Data.Maybe
 import qualified Data.Set as Set
 import qualified Data.Map as Map
@@ -264,7 +263,7 @@ showTimeDiff t
       format hours   ++ ':' : format restMinutes ++ ':' : format restSeconds
   where
     format n = if n < 10 then '0':show n else show n
-    centiseconds = truncate $ t * 100
+    centiseconds = (truncate $ t * 100) :: Int
     (seconds, restCentis)  = divMod centiseconds 100
     (minutes, restSeconds) = divMod seconds 60
     (hours  , restMinutes) = divMod minutes 60

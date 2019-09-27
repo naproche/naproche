@@ -29,6 +29,13 @@ default-extensions:
   - PartialTypeSignatures
   - ScopedTypeVariables
 
+ghc-options:
+  - -O2
+  - -Wall
+  - -fno-warn-unused-do-bind
+  - -fno-warn-unused-matches
+  - -fno-warn-name-shadowing
+
 library:
   source-dirs:
     - src

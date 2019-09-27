@@ -14,7 +14,7 @@ import SAD.Core.SourcePos (SourcePos, SourceRange(..), noSourcePos, noRange)
 data Pos = Pos {start :: SourcePos, stop :: SourcePos, range :: SourceRange}
 
 position :: Pos -> SourcePos
-position p = let SourceRange a b = range p in a
+position p = let SourceRange a _ = range p in a
 
 noPos :: Pos
 noPos = Pos noSourcePos noSourcePos noRange

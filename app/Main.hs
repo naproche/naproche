@@ -172,9 +172,7 @@ serverConnection oldTextRef args0 connection = do
                 (if YXML.detect msg then
                   Byte_Message.write connection [UTF8.fromString msg]
                  else outputMain ERROR noSourcePos msg)
-                (\err2 -> do
-                  let e = err2 :: Exception.IOException
-                  return ())))
+                (\(err2 :: Exception.IOException) -> pure ())))
 
     _ -> return ()
 

@@ -4,8 +4,6 @@ Authors: Steffen Frerix (2017 - 2018)
 Primitive parsers.
 -}
 
-{-# OPTIONS_GHC -Wall -fno-warn-unused-do-bind #-}
-
 module SAD.Parser.Primitives where
 
 import SAD.Parser.Base

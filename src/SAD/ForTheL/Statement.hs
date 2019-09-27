@@ -9,7 +9,7 @@ Syntax of ForThel statements.
 module SAD.ForTheL.Statement (
   statement,
   var, sVar, sTerm,
-  anotion, dig, selection, setNotion, functionNotion) where
+  anotion, dig, selection, setNotion, functionNotion, plainTerm) where
 
 import SAD.ForTheL.Base
 import SAD.ForTheL.Reports (markupToken, markupTokenOf)

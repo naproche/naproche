@@ -9,7 +9,6 @@ module SAD.Data.Formula.Kit where
 import Control.Monad
 import Data.Maybe
 import qualified Data.Map as M
-import Data.List
 import Data.Function (on)
 
 import SAD.Data.Formula.Base

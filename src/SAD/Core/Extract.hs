@@ -4,6 +4,8 @@ Authors: Steffen Frerix (2017 - 2018)
 Extraction of various information from formulas: definitions,
 function evaluations, elementhood conditions for sets
 -}
+
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 {-# LANGUAGE FlexibleContexts #-}
 
 module SAD.Core.Extract (
@@ -25,7 +27,6 @@ import SAD.Prove.Normalize
 import qualified SAD.Data.Structures.DisTree as DT
 import qualified SAD.Data.Text.Decl as Decl
 
-import qualified Data.IntMap as IM
 import qualified Data.Map as Map
 import Data.List
 import Data.Maybe
@@ -54,6 +55,7 @@ extractDefinition :: Definitions -> Formula -> DefEntry
 extractDefinition defs =
   closeEvidence defs . makeDefinition . dive [] 0
   where
+    dive :: [Formula] -> Int -> Formula -> ([Formula], Formula, DefType, Formula)
     dive guards _ (All _ (Iff (Tag HeadTerm Trm {trName = "=", trArgs = [_, t]}) f))
       = (guards, instWith ThisT f, Definition, t) -- function definition
     dive guards _ (All _ (Imp (Tag HeadTerm Trm {trName = "=", trArgs = [_, t]}) f))
@@ -103,6 +105,7 @@ extractRewriteRule :: Context -> [Rule]
 extractRewriteRule c =
   map (\rl -> rl {Rule.label = Context.name c}) $ dive 0 [] $ Context.formula c
   where
+    dive :: Int -> [Formula] -> Formula -> [Rule]
     -- if HeadTerm is reached, discard all collected conditions
     dive n gs (All _ (Iff (Tag HeadTerm Trm {trName = "=", trArgs = [_,t]}) f )) =
       dive n gs $ subst t "" $ inst "" f
@@ -169,8 +172,6 @@ extractFunctionEval c gs f = dive c gs f
     dive c gs (Exi x (And f g)) =
       dive (c . dExi x . And f) gs $ inst (Decl.name x) g
     dive _ _ _ = mzero
-
-    deConj (And f g) = deConj f ++ deConj g; deConj f = [f]
 
 extractSetEval :: (Formula -> Formula) -> [Formula]-> Formula
   -> ReaderT (Int, DT.DisTree Evaluation) [] Evaluation

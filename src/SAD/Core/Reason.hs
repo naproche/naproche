@@ -3,6 +3,7 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
 
 Reasoning methods and export to an external prover.
 -}
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 {-# LANGUAGE FlexibleContexts #-}
 module SAD.Core.Reason (
   reason,
@@ -19,7 +20,6 @@ import Data.Maybe
 import System.Timeout
 import Control.Exception
 import Data.Monoid (Sum, getSum)
-import qualified Data.IntMap.Strict as IM
 import qualified Control.Monad.Writer as W
 import qualified Data.Set as Set
 import qualified Data.Map as Map
@@ -144,7 +144,7 @@ launchReasoning = do
       -- (usually not necessary as max proof depth is limited)
       callOwn = do
         Standard_Thread.expose_stopped
-        timeout (10^4) $ evaluate $ proveGoal
+        timeout (1000) $ evaluate $ proveGoal
   justIO callOwn >>= guard . (==) (Just True)
 
 
@@ -178,6 +178,7 @@ isSignature  = (==) Signature  . Block.kind . Context.head
 replaceHeadTerm :: Context -> Context
 replaceHeadTerm c = Context.setForm c $ dive 0 $ Context.formula c
   where
+    dive :: Int -> Formula -> Formula
     dive n (All _ (Imp (Tag HeadTerm Trm {trName = "=", trArgs = [_, t]}) f)) =
       subst t "" $ inst "" f
     dive n (All _ (Iff (Tag HeadTerm eq@Trm {trName = "=", trArgs = [_, t]}) f))
@@ -213,8 +214,7 @@ lookFor :: Formula -> Formula -> Maybe Formula
 lookFor _ Ind{} = Nothing -- bound variables have no evidence
 lookFor literal (Tag _ t) = lookFor literal t -- ignore tags
 lookFor literal t =
-  let tId = trId (ltAtomic literal)
-      negatedLiteral = albet $ Not literal
+  let negatedLiteral = albet $ Not literal
   in  checkFor literal negatedLiteral $ trInfo t
   where
     checkFor literal negatedLiteral [] = Nothing
@@ -234,7 +234,7 @@ data UnfoldState = UF {
 
 
 -- FIXME the reader monad transformer used here is completely superfluous
-unfold :: VM [Context]
+unfold :: ReaderT VState CRM [Context]
 unfold = do  
   thesis <- thesis; context <- context
   let task = Context.setForm thesis (Not $ Context.formula thesis) : context

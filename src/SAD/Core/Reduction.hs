@@ -4,16 +4,16 @@ Authors: Steffen Frerix (2017 - 2018)
 Ontological reduction.
 -}
 
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+
 module SAD.Core.Reduction (ontoReduce) where
 
 import SAD.Data.Formula
-import SAD.Data.Definition (DefEntry, Definitions, Guards, isGuard)
+import SAD.Data.Definition (Definitions, Guards, isGuard)
 import qualified SAD.Data.Definition as Definition
 import SAD.Prove.Normalize
 import SAD.Data.Structures.DisTree (DisTree)
 
-import Data.IntMap.Strict (IntMap)
-import qualified Data.IntMap.Strict as IM
 import Data.Set (Set)
 import qualified Data.Set as Set
 import Data.Map (Map)

@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -fno-warn-orphans #-}
+
 module SAD.Data.Formula.Show (
   showArgumentsWith,
   commaSeparated,

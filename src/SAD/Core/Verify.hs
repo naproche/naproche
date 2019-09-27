@@ -4,10 +4,11 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
 Main verification loop.
 -}
 
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+
 module SAD.Core.Verify (verify) where
 
 import Control.Monad
-import Control.Applicative hiding ((<|>))
 import Data.IORef
 import Data.Maybe
 import Control.Monad.Reader
@@ -26,7 +27,6 @@ import SAD.Data.Text.Block (Block(Block), Text(..), Section(..))
 import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Text.Context (Context(Context))
 import qualified SAD.Data.Text.Context as Context
-import qualified SAD.Data.Rules as Rule
 import SAD.Prove.MESON
 import SAD.Core.Reduction
 import SAD.Core.ProofTask

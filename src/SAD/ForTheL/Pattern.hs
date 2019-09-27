@@ -4,7 +4,7 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
 Pattern parsing and pattern state management.
 -}
 
-
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 
 module SAD.ForTheL.Pattern where
 
@@ -28,9 +28,7 @@ import Control.Applicative
 import Control.Monad
 
 
-import Debug.Trace
 -- add expressions to the state of ForTheL
-
 
 giveId :: Bool -> Int -> Formula -> Formula
 giveId p n t = t {trId = if p then specialId n else (trId t)}
@@ -282,7 +280,7 @@ slexem = slex -|- wlx
   where
     slex = tokenPrim isSymb
     isSymb t =
-      let tk = showToken t; ltk = map toLower tk
+      let tk = showToken t
       in  case tk of
             [c] -> guard (c `elem` symChars) >> return tk
             _   -> Nothing

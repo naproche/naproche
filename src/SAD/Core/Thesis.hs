@@ -4,6 +4,8 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
 Maintain the current thesis.
 -}
 
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+
 module SAD.Core.Thesis (inferNewThesis) where
 
 
@@ -75,6 +77,7 @@ syntactic equality modulo alpha-beta normalization -}
 equivalentTo :: Formula -> Formula -> Bool
 equivalentTo = normalizedCheck 0
   where
+    normalizedCheck :: Int -> Formula -> Formula -> Bool
     normalizedCheck n f g = check n (albet f) (albet g)
     check n (All _ a) (All _ b) = let freshVariable = show n in
       normalizedCheck (succ n) (inst freshVariable a) (inst freshVariable b)
@@ -95,10 +98,6 @@ can be patched together from the hs. Important to be able to reduce an
 existential thesis. -}
 hasInstantiationIn:: Formula -> [Formula] -> Bool
 hasInstantiationIn (Exi _ f) = not . null . listOfInstantiations f
-hasInstantiation :: p1 -> p2 -> a
-hasInstantiation _ _ =
-  error "SAD.Core.Thesis.hasInstantiationIn:\
-    \non-existentially quantified argument"
 
 type Instantiation = Map.Map String Formula
 {- the actual process of finding an instantiation. -}
@@ -108,8 +107,7 @@ listOfInstantiations f = instantiations 1 Map.empty (albet $ inst "i0" f)
 {- worker function for SAD.Core.Thesis.listOfInstantiations -}
 -- FIXME This functions needs a better way to generate free variables. The 
 --       explicit parameter passing is inadequate.
-instantiations :: (Enum t, Show t) =>
-                  t -> Instantiation -> Formula -> [Formula] -> [Instantiation]
+instantiations :: Int -> Instantiation -> Formula -> [Formula] -> [Instantiation]
 instantiations n currentInst f hs =
   [ newInst | h <- hs, newInst <- extendInstantiation currentInst f h ] ++ 
   patchTogether (albet f)
@@ -133,6 +131,7 @@ Result is returned within the list monad. -}
 extendInstantiation :: Instantiation -> Formula -> Formula -> [Instantiation]
 extendInstantiation sb f g = snd <$> runStateT (normalizedDive 0 f g) sb
   where
+    normalizedDive :: Int -> Formula -> Formula -> StateT (Map.Map String Formula) [] ()
     normalizedDive n f g = dive n (albet f) (albet g)
     dive n (All _ f) (All _ g)
       = let nn = show n in normalizedDive (succ n) (inst nn f) (inst nn g)
@@ -306,9 +305,6 @@ reduceFunctionTask (Tag tg _) = fmap boolSimp . dive
   where
     dive (Tag tg' _) | tg' == tg = changed Top
     dive f = mapFM dive f
-reduceFuntionTask :: p -> a
-reduceFuntionTask _ = error "SAD.Core.Thesis.reduceFunctionTask:\
-  \argument is not a function task"
 
 -- Change Monad
 

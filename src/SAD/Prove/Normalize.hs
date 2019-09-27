@@ -5,6 +5,7 @@ Normalization of formulas.
 -}
 
 
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 {-# LANGUAGE FlexibleContexts #-}
 
 module SAD.Prove.Normalize  (

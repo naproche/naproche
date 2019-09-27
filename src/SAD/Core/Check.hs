@@ -4,6 +4,8 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
 Well-definedness check and evidence collection.
 -}
 
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+
 module SAD.Core.Check (fillDef) where
 
 import Control.Monad

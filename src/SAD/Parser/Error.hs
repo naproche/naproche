@@ -4,8 +4,6 @@ Authors: Steffen Frerix (2017 - 2018)
 Message and Parse Error data type and core functions.
 -}
 
-{-# OPTIONS_GHC -Wall -fno-warn-unused-do-bind #-}
-
 module SAD.Parser.Error
   ( ParseError(..),
     newErrorMessage,

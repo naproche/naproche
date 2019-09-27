@@ -33,13 +33,6 @@ import SAD.Core.SourcePos (SourceRange(..))
 import Control.Applicative
 import qualified Control.Monad.State.Class as MS
 
-
-
--- for tests
-import SAD.Parser.Token
-import Debug.Trace
-
-
 -- definitions and signature extensions
 
 defExtend :: FTL Formula
@@ -142,13 +135,6 @@ allDistinctVars = disVs []
     disVs _ [] = True
     disVs _ _ = False
 
-
-
---- introduce synonyms
-
-
-nonLogicalLanguageExt :: FTL Text
-nonLogicalLanguageExt = pretypeVariable </> introduceMacro
 
 
 pretypeVariable :: FTL Text

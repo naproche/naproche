@@ -9,8 +9,6 @@ Parser datatype and monad instance.
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE MultiWayIf #-}
 
-{-# OPTIONS_GHC -Wall -fno-warn-unused-do-bind #-}
-
 module SAD.Parser.Base
   ( Parser(..),
     Continuation,

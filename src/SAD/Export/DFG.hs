@@ -4,6 +4,8 @@ Authors: Andrei Paskevich (2001 - 2008)
 Print proof task in DFG syntax.
 -}
 
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+
 module SAD.Export.DFG (output) where
 
 import Data.List

@@ -4,12 +4,15 @@ Authors: Steffen Frerix (2017 - 2018)
 Discrimination tree data structure.
 -}
 
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+
 module SAD.Data.Structures.DisTree (
   DisTree,
   empty,
   insert, insertBy,
   lookup,
-  find
+  find,
+  showTree
   ) where
 
 -- Discrimination tree for unification
@@ -71,12 +74,6 @@ retrieveMatch :: Formula -> Struct -> Bool
 retrieveMatch _ Variable = True
 retrieveMatch f g = structMatch f g
 
-{- compute the structure of a formula -}
-toStruct :: Formula -> Struct
-toStruct Var {trName = '?':_ } = Variable
-toStruct Var {trName = 'x':nm} = GeneralizedConstant nm
-toStruct Trm {trId = m, trArgs = ts} = Function m (length ts)
-
 {- arguments generalized for variables -}
 args :: Formula -> [Formula]
 args Ind{} = []
@@ -105,6 +102,12 @@ buildTree keys value = dtree keys
   where
     dtree (k:ks) = [Node (toStruct k) (dtree $ args k ++ ks)]
     dtree []     = [Leaf [value]]
+
+    {- compute the structure of a formula -}
+    toStruct :: Formula -> Struct
+    toStruct Var {trName = '?':_ } = Variable
+    toStruct Var {trName = 'x':nm} = GeneralizedConstant nm
+    toStruct Trm {trId = m, trArgs = ts} = Function m (length ts)
 
 {- lookup values in a tree. The key for the lookup is the structure of
 the given formula. Multiple leafs may match the key. lookup returns all of

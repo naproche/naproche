@@ -23,7 +23,6 @@ module SAD.Data.Text.Block (
 import SAD.Data.Formula
 import SAD.Core.SourcePos
 import SAD.Data.Instr hiding (position)
-import qualified SAD.Data.Instr as Instr
 import SAD.Parser.Token
 import SAD.Data.Text.Decl (Decl)
 import qualified SAD.Data.Text.Decl as Decl

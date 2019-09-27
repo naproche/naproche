@@ -1,6 +1,5 @@
 module SAD.Data.TermId where
 
-import Data.Map (Map)
 import Debug.Trace
 
 data TermId 

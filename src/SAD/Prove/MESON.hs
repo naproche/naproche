@@ -11,7 +11,7 @@ import Control.Monad
 import Control.Monad.Reader
 import Data.List
 
-import SAD.Core.Base hiding (retrieve)
+import SAD.Core.Base
 import SAD.Data.Formula
 import SAD.Prove.Unify
 import SAD.Prove.Normalize
@@ -114,12 +114,9 @@ rename fs = insertU
     maxU = myMaximum $ concatMap (foldF getU) fs
     getU Var {trName = 'u':m} = [read m]; getU f = foldF getU f
 
+    myMaximum :: [Int] -> Int
     myMaximum [] = -1
     myMaximum ls = maximum ls
-
-{-iterative deepening -}
-deepen :: (MonadPlus m, Num t) => (t -> m a) -> t -> m a
-deepen f n = f n `mplus` deepen f (n + 1)
 
 {- checks whether the first formula is more general than the second in the
   context of MESON this is exactly the same as match, just with 'u':_

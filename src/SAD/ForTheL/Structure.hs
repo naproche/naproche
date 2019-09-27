@@ -34,8 +34,6 @@ import qualified SAD.Data.Tag as Tag
 import SAD.Data.Text.Decl (Decl(Decl))
 import qualified SAD.Data.Text.Decl as Decl
 
-import Debug.Trace
-
 forthel :: FTL [Text]
 forthel = section <|> macroOrPretype <|> bracketExpression <|> endOfFile
   where
@@ -135,8 +133,6 @@ llDefn = sentence LowDefinition(ldfH >> setNotion </> functionNotion) llDefnVars
 -- Links and Identifiers
 link :: Parser st [String]
 link = finish eqLink
-  where
-    identifiers = topIdentifier `sepByLL1` comma
 
 topIdentifier :: Parser st String
 topIdentifier = tokenPrim notSymb

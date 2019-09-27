@@ -3,8 +3,9 @@ Authors: Steffen Frerix (2017 - 2018)
 
 Term rewriting: extraction of rules and proof of equlities.
 -}
-{-# LANGUAGE FlexibleContexts #-}
 
+{-# LANGUAGE FlexibleContexts #-}
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 
 module SAD.Core.Rewrite (equalityReasoning) where
 
