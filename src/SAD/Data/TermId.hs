@@ -1,6 +1,7 @@
 module SAD.Data.TermId where
 
 import Data.Map (Map)
+import Debug.Trace
 
 data TermId 
   = EqualityId
@@ -19,17 +20,19 @@ data TermId
   deriving (Eq, Ord, Show)
 
 specialId :: Int -> TermId
-specialId n = case n of
-  ( -1) -> EqualityId
-  ( -2) -> LessId
-  ( -3) -> ThesisId
-  ( -4) -> FunctionId
-  ( -5) -> ApplicationId
-  ( -6) -> DomainId
-  ( -7) -> SetId
-  ( -8) -> ElementId
-  ( -9) -> ProductId
-  (-10) -> PairId
-  (-11) -> ObjectId
-  (-15) -> NewId
+specialId n = 
+  let msg =  "TermId: If you see this message, please file an issue."
+  in case n of
+  ( -1) -> trace msg $ EqualityId
+  ( -2) -> trace msg $ LessId
+  ( -3) -> trace msg $ ThesisId
+  ( -4) -> trace msg $ FunctionId
+  ( -5) -> trace msg $ ApplicationId
+  ( -6) -> trace msg $ DomainId
+  ( -7) -> trace msg $ SetId
+  ( -8) -> trace msg $ ElementId
+  ( -9) -> trace msg $ ProductId
+  (-10) -> trace msg $ PairId
+  (-11) -> trace msg $ ObjectId
+  (-15) -> trace msg $ NewId
   n -> SpecialId n
