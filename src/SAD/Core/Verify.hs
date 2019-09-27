@@ -85,7 +85,7 @@ verificationLoop state@VS {
   fortifiedFormula <-
     if   Block.isTopLevel block
     then return f
-    else fillDef alreadyChecked contextBlock <|> (setFailed >> return f) -- check definitions and fortify terms
+    else (fillDef alreadyChecked contextBlock) <|> (setFailed >> return f) -- check definitions and fortify terms
   
   unsetChecked
 

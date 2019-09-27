@@ -138,7 +138,7 @@ testDef context term (guards, fortifiedTerm) = do
     trivialityCheck g = 
       if   trivialByEvidence g
       then return $ Right g  -- triviality check
-      else launchReasoning `withGoal` g >> return (Right g) <|> return (Left g)
+      else (launchReasoning `withGoal` g >> return (Right g)) <|> return (Left g)
 
 
 -- Info heuristic
