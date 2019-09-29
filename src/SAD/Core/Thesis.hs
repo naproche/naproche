@@ -59,9 +59,10 @@ inferNewThesis definitions wholeContext@(context:_) thesis
 
 {- contraction in view of a set of formulae -}
 reductionInViewOf :: Formula -> Formula -> ChangeInfo Formula
-reductionInViewOf = reduce . externalConjuncts
+reductionInViewOf g = reduce
   where
-    reduce hs f
+    hs = externalConjuncts g
+    reduce f
       | isTop f = return Top
       | isBot f = return Bot
       | any (equivalentTo f) hs = changed Top
@@ -69,8 +70,8 @@ reductionInViewOf = reduce . externalConjuncts
       | isExi f && f `hasInstantiationIn` hs = changed Top
       | isAll f && (albet $ Not f) `hasInstantiationIn` hs = changed Bot
       | isTrm f = return f
-      | isIff f = reduce hs $ albet f
-      | otherwise = bool <$> mapFM (reduce hs) f
+      | isIff f = reduce $ albet f
+      | otherwise = bool <$> mapFM reduce f
 
 {- the equivalence test used here is quite crude, but cheap:
 syntactic equality modulo alpha-beta normalization -}

@@ -58,15 +58,14 @@ withContext :: VM a -> [Context] -> VM a
 withContext action context = local (\vState -> 
   vState { currentContext = context }) action
 
-thesis :: ReaderT VState SAD.Core.Base.CRM Context
-context :: ReaderT VState SAD.Core.Base.CRM [Context]
-thesis = asks currentThesis; context = asks currentContext
+thesis :: Monad a => ReaderT VState a Context
+thesis = asks currentThesis
 
 
 proveThesis :: VM ()
 proveThesis = do
   reasoningDepth <- askInstructionInt Depthlimit 3;  guard $ reasoningDepth > 0
-  context >>= filterContext (splitGoal >>= sequenceGoals reasoningDepth 0)
+  asks currentContext >>= filterContext (splitGoal >>= sequenceGoals reasoningDepth 0)
 
 sequenceGoals :: Int -> Int -> [Formula] -> VM ()
 sequenceGoals reasoningDepth iteration (goal:restGoals) = do
@@ -113,7 +112,7 @@ launchProver iteration = do
   reductionSetting <- askInstructionBool Ontored False
   whenInstruction Printfulltask False (printTask reductionSetting)
   proverList <- asks provers ; instrList <- asks instructions
-  goal <- thesis; context <- context
+  goal <- thesis; context <- asks currentContext
   let callATP = justIO $ 
         export reductionSetting iteration proverList instrList context goal
   callATP >>= timer ProofTime . justIO >>= guard
@@ -135,7 +134,7 @@ launchProver iteration = do
 
 launchReasoning :: VM ()
 launchReasoning = do
-  goal <- thesis; context <- context
+  goal <- thesis; context <- asks currentContext
   skolemInt <- asks skolemCounter
   (mesonPos, mesonNeg) <- asks mesonRules
   let lowlevelContext = takeWhile Context.isLowLevel context
@@ -151,10 +150,10 @@ launchReasoning = do
 
 -- Context filtering
 
-{- if an explicit list of theorems is given, we set the context to that 
+{- if an explicit list of theorems is given, we set the asks currentContextto that 
   plus all definitions/sigexts (as they usually import type information that
   is easily forgotten) and the low level context. Otherwise the whole 
-  context is selected. -}
+  asks currentContextis selected. -}
 filterContext :: VM a -> [Context] -> VM a
 filterContext action context = do
   link <- asks (Set.fromList . Context.link . currentThesis);
@@ -236,7 +235,7 @@ data UnfoldState = UF {
 -- FIXME the reader monad transformer used here is completely superfluous
 unfold :: ReaderT VState CRM [Context]
 unfold = do  
-  thesis <- thesis; context <- context
+  thesis <- asks currentThesis; context <- asks currentContext
   let task = Context.setForm thesis (Not $ Context.formula thesis) : context
   definitions <- asks definitions; evaluations <- asks evaluations
   generalUnfoldSetting <- askInstructionBool Unfold True
@@ -246,10 +245,10 @@ unfold = do
   guard (generalUnfoldSetting || generalSetUnfoldSetting)
   let ((goal:toUnfold), topLevelContext) = span Context.isLowLevel task
       unfoldState = UF
-        definitions 
-        evaluations
-        (generalUnfoldSetting    && lowlevelUnfoldSetting)
-        (generalSetUnfoldSetting && lowlevelSetUnfoldSetting)
+        { defs = definitions 
+        , evals = evaluations
+        , unfoldSetting = (generalUnfoldSetting    && lowlevelUnfoldSetting)
+        , unfoldSetSetting = (generalSetUnfoldSetting && lowlevelSetUnfoldSetting) }
       (newLowLevelContext, numberOfUnfolds) = 
         W.runWriter $ flip runReaderT unfoldState $
           liftM2 (:) 
@@ -273,13 +272,12 @@ unfold = do
 
 
 {- conservative unfolding of local properties -}
-unfoldConservative :: Context
-  -> ReaderT UnfoldState (W.Writer (Sum Int)) Context
+unfoldConservative :: Context -> ReaderT UnfoldState (W.Writer (Sum Int)) Context
 unfoldConservative toUnfold 
-  | isDeclaration toUnfold = return toUnfold
-  | otherwise =
-      fmap (Context.setForm toUnfold) $ fill [] (Just True) 0 $ Context.formula toUnfold
+  | isDeclaration toUnfold = pure toUnfold
+  | otherwise = fmap (Context.setForm toUnfold) $ fill [] (Just True) 0 $ Context.formula toUnfold
   where
+    fill :: [Formula] -> Maybe Bool -> Int -> Formula -> ReaderT UnfoldState (W.Writer (Sum Int)) Formula
     fill localContext sign n f 
       | hasDMK f = return f -- check if f has been unfolded already
       | isTrm f  =  fmap reduceWithEvidence $ unfoldAtomic (fromJust sign) f
@@ -287,6 +285,7 @@ unfoldConservative toUnfold
     fill localContext sign n (Iff f g) = fill localContext sign n $ zIff f g
     fill localContext sign n f = roundFM 'u' fill localContext sign n f
 
+    isDeclaration :: Context -> Bool
     isDeclaration = (==) LowDefinition . Block.kind . Context.head
 
 {- unfold an atomic formula f occuring with polarity sign -}
