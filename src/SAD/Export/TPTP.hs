@@ -44,15 +44,12 @@ tptpTerm d = dive
     dive (Not f)    = showParen True $ showString " ~ " . dive f
     dive Top        = showString "$true"
     dive Bot        = showString "$false"
-    dive t| isEquality t = let [l, r] = trArgs t in sinfix " = " l r
-          | isTrm t = showTrName t . showArgumentsWith dive (trArgs t)
+    dive t| isEquality t = let [l, r] = trmArgs t in sinfix " = " l r
+          | isTrm t = showTrName t . showArgumentsWith dive (trmArgs t)
           | isVar t = showTrName t
-          | isInd t = showChar 'W' . shows (d - 1 - trIndx t)
+          | isInd t = showChar 'W' . shows (d - 1 - indIndex t)
 
     sinfix o f g  = showParen True $ dive f . showString o . dive g
 
     binder f  = showChar '[' . tptpTerm (succ d) (Ind 0 undefined)
               . showString "] : " . tptpTerm (succ d) f
-
-showTrName :: Formula -> ShowS
-showTrName = showString . filter (/= ':') . trName

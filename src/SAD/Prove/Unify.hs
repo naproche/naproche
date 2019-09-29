@@ -26,7 +26,7 @@ unify _ Bot = mzero
 unify Top Top = return id
 unify Top _ = mzero
 unify _ Top = mzero
-unify l r = guard (((==) `on` trId . ltAtomic) l r) >> unif (zip (trArgs . ltAtomic $ l) (trArgs . ltAtomic $ r))
+unify l r = guard (((==) `on` trmId . ltAtomic) l r) >> unif (zip (trmArgs . ltAtomic $ l) (trmArgs . ltAtomic $ r))
 
 {- implementation of a standard unification algorithm -}
 unif :: MonadPlus m => [(Formula, Formula)] -> m (Formula -> Formula)
@@ -43,24 +43,24 @@ unif = fmap mkSubst . dive [] -- we keep a list of already assigned variables
     dive assigned _ = return assigned
 
     --------------------- auxiliary functions
-    ufSub x t (l,r) = let sb = subst t (trName x) in (sb l, sb r)
+    ufSub x t (l,r) = let sb = subst t (varName x) in (sb l, sb r)
 
-    newTasks Trm {trArgs = tArgs} Trm {trArgs = sArgs} = zip tArgs sArgs
+    newTasks Trm {trmArgs = tArgs} Trm {trmArgs = sArgs} = zip tArgs sArgs
     newTasks _ _ = []
 
     -- update earlier assignments with later ones
     mkSubst ((x,t):rst) =
-      let sb = subst t (trName x)
+      let sb = subst t (varName x)
       in  sb . mkSubst (map (\(x',t') -> (x', sb t')) rst)
     mkSubst [] = id
 
 
 
-    clash Trm {trId = tId} Trm {trId = sId} = tId /= sId
-    clash Var {trName = x} Var {trName = y} = x /= y
+    clash Trm {trmId = tId} Trm {trmId = sId} = tId /= sId
+    clash Var {varName = x} Var {varName = y} = x /= y
     clash _ _ = True
 
     -- all other vars are treated as constants
-    functionSymb Var {trName = '?':_} = False
-    functionSymb Var {trName = 'u':_} = False
+    functionSymb Var {varName = '?':_} = False
+    functionSymb Var {varName = 'u':_} = False
     functionSymb _ = True

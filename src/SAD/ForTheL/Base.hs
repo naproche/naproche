@@ -177,7 +177,7 @@ primCmNtn p s = getExpr ntnExpr ntn
 primFun :: FTL UTerm -> FTL UTerm
 primFun  = (>>= fun) . primNtn
   where
-    fun (q, Trm {trName = "=", trArgs = [_, t]}, _)
+    fun (q, Trm {trmName = "=", trmArgs = [_, t]}, _)
       | not (occursH t) = return (q, t)
     fun _ = mzero
 
@@ -378,12 +378,12 @@ decl vs = dive
     dive (Tag _ f) = dive f
     dive (Imp f g) = filter (noc f) (dive g)
     dive (And f g) = dive f `varNameUnion` filter (noc f) (dive g)
-    dive Trm {trName = 'a':_, trArgs = v@Var{trName = u@('x':_)}:ts}
+    dive Trm {trmName = 'a':_, trmArgs = v@Var{varName = u@('x':_)}:ts}
       | all (not . occurs v) ts =
-          guard (u `notElem` vs) >> return (u, trPosition v)
-    dive Trm{trName = "=", trArgs = [v@Var{trName = u@('x':_)}, t]}
+          guard (u `notElem` vs) >> return (u, varPosition v)
+    dive Trm{trmName = "=", trmArgs = [v@Var{varName = u@('x':_)}, t]}
       | isTrm t && not (occurs v t) =
-          guard (u `notElem` vs) >> return (u, trPosition v)
+          guard (u `notElem` vs) >> return (u, varPosition v)
     dive _ = []
 
     noc f v = not $ occurs (pVar v) f

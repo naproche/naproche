@@ -59,9 +59,9 @@ pushdown (Not Bot)       = Top
 pushdown (Not Top)       = Bot
 pushdown (Tag _ f) = pushdown f
 pushdown (Not (Tag _ f)) = pushdown (Not f)
-pushdown (All _ (Imp (Tag HeadTerm Trm {trName = "=", trArgs = [_,t]} ) f)) =
+pushdown (All _ (Imp (Tag HeadTerm Trm {trmName = "=", trmArgs = [_,t]} ) f)) =
   pushdown $ dec $ indSubst t "" $ inst "" f
-pushdown (All _ (Iff (Tag HeadTerm eq@Trm {trName = "=", trArgs = [_,t]}) f)) =
+pushdown (All _ (Iff (Tag HeadTerm eq@Trm {trmName = "=", trmArgs = [_,t]}) f)) =
   And (All (Decl.nonText "") (Or eq (Not f))) $ dec $ indSubst t "" $ inst "" f
 pushdown f = f
 
@@ -95,7 +95,7 @@ prenex f = f
 inc :: Formula -> Formula
 inc = increment 0
   where
-    increment n v@Ind {trIndx = i} = v {trIndx = if n <= i then succ i else i}
+    increment n v@Ind {indIndex = i} = v {indIndex = if n <= i then succ i else i}
     increment n (All x f)  = All x $ increment (succ n) f
     increment n (Exi x f)  = Exi x $ increment (succ n) f
     increment n f = mapF (increment n) f
@@ -104,7 +104,7 @@ inc = increment 0
 dec :: Formula -> Formula
 dec = decrement 0
   where
-    decrement n v@Ind {trIndx = i} = v {trIndx = if n <= i then pred i else i}
+    decrement n v@Ind {indIndex = i} = v {indIndex = if n <= i then pred i else i}
     decrement n (All x f)  = All x $ decrement (succ n) f
     decrement n (Exi x f)  = Exi x $ decrement (succ n) f
     decrement n f = mapF (decrement n) f
@@ -115,7 +115,7 @@ indSubst t v = dive t
   where
     dive t (All x f) = All x $ dive (inc t) f
     dive t (Exi x f) = Exi x $ dive (inc t) f
-    dive t Var {trName = u} | u == v = t
+    dive t Var {varName = u} | u == v = t
     dive t f = mapF (dive t) f
 
 -- skolemization
@@ -151,7 +151,7 @@ instSk skolemCnt dependencyCnt = dive 0
   where
     dive d (All x f) = All x $ dive (succ d) f
     dive d (Exi x f) = Exi x $ dive (succ d) f
-    dive d Ind {trIndx = m} | d == m = skolemFunction d
+    dive d Ind {indIndex = m} | d == m = skolemFunction d
     dive d f = mapF (dive d) f
 
     skolemFunction = zTrm (specialId skolemId) skolemName . skolemArguments
@@ -265,5 +265,5 @@ ontoPrep sk f =
 -- testing for skolem function
 
 isSkolem :: Formula -> Bool
-isSkolem Trm {trName = 't':'s':'k':_} = True
+isSkolem Trm {trmName = 't':'s':'k':_} = True
 isSkolem _ = False

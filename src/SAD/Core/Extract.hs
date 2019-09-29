@@ -42,7 +42,7 @@ addDefinition :: (Definitions, Guards) -> Formula -> (Definitions, Guards)
 addDefinition (defs, grds) f = let newDef = extractDefinition defs f in
   (addD newDef defs, addG newDef grds)
   where
-    addD df@DE {Definition.term = t} = Map.insert (trId t) df
+    addD df@DE {Definition.term = t} = Map.insert (trmId t) df
     addG df@DE {Definition.guards = grd} grds = foldr add grds $ filter isTrm grd
 
     add guard grds =
@@ -56,9 +56,9 @@ extractDefinition defs =
   closeEvidence defs . makeDefinition . dive [] 0
   where
     dive :: [Formula] -> Int -> Formula -> ([Formula], Formula, DefType, Formula)
-    dive guards _ (All _ (Iff (Tag HeadTerm Trm {trName = "=", trArgs = [_, t]}) f))
+    dive guards _ (All _ (Iff (Tag HeadTerm Trm {trmName = "=", trmArgs = [_, t]}) f))
       = (guards, instWith ThisT f, Definition, t) -- function definition
-    dive guards _ (All _ (Imp (Tag HeadTerm Trm {trName = "=", trArgs = [_, t]}) f))
+    dive guards _ (All _ (Imp (Tag HeadTerm Trm {trmName = "=", trmArgs = [_, t]}) f))
       = (guards, instWith ThisT f, Signature, t)  -- function sigext
     dive guards _ (Iff (Tag HeadTerm t) f)
       = (guards, f, Definition, t)                -- predicate definition
@@ -78,9 +78,9 @@ extractDefinition defs =
 {- get evidence for a defined term from a definitional formula -}
 extractEvidences :: Formula -> Formula -> [Formula]
 extractEvidences t =
-  filter (isJust . find (twins ThisT) . trArgs . ltAtomic) . filter isLiteral . splitConjuncts .
+  filter (isJust . find (twins ThisT) . trmArgs . ltAtomic) . filter isLiteral . splitConjuncts .
     if   isNotion t -- notion evidence concerns the first argument.
-    then replace ThisT (head $ trArgs t)
+    then replace ThisT (head $ trmArgs t)
     else id
 
 
@@ -91,7 +91,7 @@ closeEvidence :: Definitions -> DefEntry -> DefEntry
 closeEvidence dfs def@DE{Definition.evidence = evidence} = def { Definition.evidence = newEvidence }
   where
     newEvidence = nubBy twins $ evidence ++ concatMap defEvidence evidence
-    defEvidence t@Trm {trId = n} =
+    defEvidence t@Trm {trmId = n} =
       let def = fromJust $ Map.lookup n dfs
           sb  = fromJust $ match (Definition.term def) $ fromTo '?' 'u' t
       in  map (fromTo 'u' '?' . sb) $ Definition.evidence def
@@ -107,9 +107,9 @@ extractRewriteRule c =
   where
     dive :: Int -> [Formula] -> Formula -> [Rule]
     -- if HeadTerm is reached, discard all collected conditions
-    dive n gs (All _ (Iff (Tag HeadTerm Trm {trName = "=", trArgs = [_,t]}) f )) =
+    dive n gs (All _ (Iff (Tag HeadTerm Trm {trmName = "=", trmArgs = [_,t]}) f )) =
       dive n gs $ subst t "" $ inst "" f
-    dive n gs (All _ (Imp (Tag HeadTerm Trm {trName = "=", trArgs = [_, t]}) f)) =
+    dive n gs (All _ (Imp (Tag HeadTerm Trm {trmName = "=", trmArgs = [_, t]}) f)) =
       dive n gs $ subst t "" $ inst "" f
     -- make universal quantifier matchable
     dive n gs (All _ f) = let nn = '?' : show n in dive (succ n) gs $ inst nn f
@@ -117,7 +117,9 @@ extractRewriteRule c =
     dive n gs (Tag _ f) = dive n gs f -- ignore tags
     dive n gs (And f g) = dive n gs f ++ dive n gs g
     -- we do not allow rules where the left side is a variable
-    dive n gs Trm {trName = "=", trArgs = [l,r]} | head (trName l) /= '?'
+    dive n gs Trm {trmName = "=", trmArgs = [l@Var{},r]} | head (varName l) /= '?'
+      = return $ Rule l r gs undefined -- the name is filled in later
+    dive n gs Trm {trmName = "=", trmArgs = [l@Trm{},r]} | head (trmName l) /= '?'
       = return $ Rule l r gs undefined -- the name is filled in later
     dive n gs (Not Trm{}) = mzero
     dive n gs f | isNot f = dive n gs $ albet f -- pushdown negation
@@ -134,7 +136,7 @@ addEvaluation evaluations f =
 extractEvaluation :: DT.DisTree Evaluation -> Formula -> [Evaluation]
 extractEvaluation dt = flip runReaderT (0, dt) . dive
   where
-    dive (All _ (Iff (Tag HeadTerm Trm {trName = "=", trArgs = [_, t]}) f))
+    dive (All _ (Iff (Tag HeadTerm Trm {trmName = "=", trmArgs = [_, t]}) f))
       = extractEv id [] $ instWith t f
     dive (All _ f) = freshV dive f
     dive (Imp f g) = dive g
@@ -163,11 +165,11 @@ extractFunctionEval c gs f = dive c gs f
     dive c gs (Tag Condition (Imp f g)) = dive c (f:gs) g --but add case distinctions
     dive c gs (All _ f) = freshV (dive c gs) f
     dive c gs (And f g) = dive c gs f `mplus` dive c gs g
-    dive c gs (Tag Evaluation f@Trm{ trName = "=", trArgs = [tr,vl]} ) =
-      let nf = c f {trArgs = [ThisT, vl] }
+    dive c gs (Tag Evaluation f@Trm{ trmName = "=", trmArgs = [tr,vl]} ) =
+      let nf = c f {trmArgs = [ThisT, vl] }
       in  return $ EV tr nf nf gs
     dive c gs (Exi x (And (Tag Defined f)
-      (Tag Evaluation Trm {trName = "=", trArgs = [tr, Ind {trIndx = n}]})))
+      (Tag Evaluation Trm {trmName = "=", trmArgs = [tr, Ind {indIndex = n}]})))
         | n == 0 = extractEv c gs $ dec $ instWith tr f
     dive c gs (Exi x (And f g)) =
       dive (c . dExi x . And f) gs $ inst (Decl.name x) g
@@ -178,7 +180,7 @@ extractSetEval :: (Formula -> Formula) -> [Formula]-> Formula
 extractSetEval c gs (And f g) =
   extractSetEval c gs f `mplus` extractSetEval c gs g
 extractSetEval c gs (Tag _ f) = extractSetEval c gs f
-extractSetEval c gs (All _ (Iff g@Trm{trArgs = [_,t]} f )) | isElem g = do
+extractSetEval c gs (All _ (Iff g@Trm{trmArgs = [_,t]} f )) | isElem g = do
   (n, evals) <- ask
   let nm = '?':show n; nf = simplifyElementCondition evals $ strip $ inst nm f
   return $ EV (zElem (zVar nm) t) (mkPos $ c $ Tag Evaluation nf)(c nf) gs
@@ -189,7 +191,7 @@ simplifyElementCondition :: DT.DisTree Evaluation
                             -> Formula -> Formula
 simplifyElementCondition evals = dive
   where
-    dive f@Trm {trArgs = [x,t]} | isElem f = fromMaybe f $ simp f
+    dive f@Trm {trmArgs = [x,t]} | isElem f = fromMaybe f $ simp f
     dive f@Trm{} = f
     dive f = mapF dive f
 

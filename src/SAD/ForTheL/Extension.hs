@@ -61,7 +61,7 @@ defNotion = do
 
     isOrEq = token' "=" <|> isEq
     isEq   = is >> optLL1 () (token' "equal" >> token' "to")
-    trm Trm {trName = "=", trArgs = [_,t]} = t; trm t = t
+    trm Trm {trmName = "=", trmArgs = [_,t]} = t; trm t = t
 
 
 
@@ -88,7 +88,7 @@ sigNotion = do
 
     noInfo =
       art >> tokenOf' ["notion", "constant"] >> return (id,Top)
-    trm Trm {trName = "=", trArgs = [_,t]} = t; trm t = t
+    trm Trm {trmName = "=", trmArgs = [_,t]} = t; trm t = t
 
 newPredicat :: FTL Formula
 newPredicat = do n <- newPrdPattern nvr; MS.get >>= addExpr n n True
@@ -105,33 +105,33 @@ funVars, ntnVars, prdVars :: (Formula, Formula) -> Maybe String
 
 funVars (f, d) | not ifq   = prdVars (f, d)
                | not idq   = Just $ "illegal function alias: " ++ show d
-               | otherwise = prdVars (t {trArgs = v:trArgs t}, d)
+               | otherwise = prdVars (t {trmArgs = v:trmArgs t}, d)
   where
     ifq = isEquality f && isTrm t
     idq = isEquality d && not (occurs u p)
-    Trm {trName = "=", trArgs = [v, t]} = f
-    Trm {trName = "=", trArgs = [u, p]} = d
+    Trm {trmName = "=", trmArgs = [v, t]} = f
+    Trm {trmName = "=", trmArgs = [u, p]} = d
 
 
 ntnVars (f, d) | not isFunction = prdVars (f, d)
-               | otherwise      = prdVars (t {trArgs = v:vs}, d)
+               | otherwise      = prdVars (t {trmArgs = v:vs}, d)
   where
     isFunction = isEquality f && isTrm t
-    Trm {trName = "=", trArgs =  [v,t]} = f
-    Trm {trArgs = vs} = t
+    Trm {trmName = "=", trmArgs =  [v,t]} = f
+    Trm {trmArgs = vs} = t
 
 
 prdVars (f, d) | not flat  = return $ "compound expression: " ++ show f
                | otherwise = overfree (free [] f) d
   where
-    flat      = isTrm f && allDistinctVars (trArgs f)
+    flat      = isTrm f && allDistinctVars (trmArgs f)
 
 
 allDistinctVars :: [Formula] -> Bool
 allDistinctVars = disVs []
   where
-    disVs ls (Var {trName = v@('h':_)} : vs) = notElem v ls && disVs (v:ls) vs
-    disVs ls (Var {trName = v@('x':_)} : vs) = notElem v ls && disVs (v:ls) vs
+    disVs ls (Var {varName = v@('h':_)} : vs) = notElem v ls && disVs (v:ls) vs
+    disVs ls (Var {varName = v@('x':_)} : vs) = notElem v ls && disVs (v:ls) vs
     disVs _ [] = True
     disVs _ _ = False
 

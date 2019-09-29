@@ -395,8 +395,8 @@ eqChain = do
   dvs <- getDecl; nm <- opt "__" lowIdentifier; pos <- getPos; inp <- getInput
   body <- wellFormedCheck (chainVars dvs) $ sTerm >>= nextTerm
   toks <- getTokens inp
-  let Tag EqualityChain Trm{trArgs = [t,_]} = Block.formula $ head body
-      Tag EqualityChain Trm{trArgs = [_,s]} = Block.formula $ last body
+  let Tag EqualityChain Trm{trmArgs = [t,_]} = Block.formula $ head body
+      Tag EqualityChain Trm{trmArgs = [_,s]} = Block.formula $ last body
       fr = Tag EqualityChain $ zEqu t s; tBody = map TextBlock body
   return $ Block.makeBlock fr tBody Affirmation nm [] pos toks
   where

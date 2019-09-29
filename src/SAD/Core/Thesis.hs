@@ -123,7 +123,7 @@ instantiations n currentInst f hs =
 
     subInfo sb n = 
       let sub = applySb sb $ zVar $ 'i':show n
-      in  map (replace sub ThisT) $ trInfo $ sub
+      in  map (replace sub ThisT) $ varInfo $ sub
 
 
 {- finds an instantiation to make a formula equal to a second formula. 
@@ -143,9 +143,9 @@ extendInstantiation sb f g = snd <$> runStateT (normalizedDive 0 f g) sb
     dive n (Or  f1 g1) (Or  f2 g2) =
       normalizedDive n f1 f2 >> normalizedDive n g1 g2
     dive n (Not f) (Not g) = dive n f g
-    dive n Trm {trId = t1, trArgs = ts1} Trm {trId = t2, trArgs = ts2}
+    dive n Trm {trmId = t1, trmArgs = ts1} Trm {trmId = t2, trmArgs = ts2}
       = lift (guard $ t1 == t2) >> mapM_ (uncurry $ dive n) (zip ts1 ts2)
-    dive _ v@Var {trName = s@('i':_)} t = do 
+    dive _ v@Var {varName = s@('i':_)} t = do 
       mp <- get; case Map.lookup s mp of
         Nothing -> modify (Map.insert s t)
         Just t' -> lift $ guard (twins t t')
@@ -233,12 +233,12 @@ generateVariations definitions = pass [] (Just True) 0
         liberateVariableIn f = generateInstantiations f >>= dive
         roundThrough = roundFM 'z' pass localContext sign n
         lookBehindDefinition t = msum . map (dive . reduceWithEvidence .
-          markRecursive  (trId t)) . maybeToList . defForm definitions $ t
+          markRecursive  (trmId t)) . maybeToList . defForm definitions $ t
 
 {- mark symbols that are recursively defined in their defining formula, so that
    the definition is not infinitely expanded -}
 markRecursive :: TermId -> Formula -> Formula
-markRecursive n t@Trm{trId = m} 
+markRecursive n t@Trm{trmId = m} 
   | n == m = Tag GenericMark t
   | otherwise = t
 markRecursive n f = mapF (markRecursive n) f

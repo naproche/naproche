@@ -353,7 +353,7 @@ initialGuards = foldr (\f -> DT.insert f True) (DT.empty) [
 -- retrieve definitional formula of a term
 defForm :: Definitions -> Formula -> Maybe Formula
 defForm definitions term = do
-  def <- Map.lookup (trId term) definitions
+  def <- Map.lookup (trmId term) definitions
   guard $ Definition.isDefinition def
   sb <- match (Definition.term def) term
   return $ sb $ Definition.formula def
@@ -363,6 +363,6 @@ defForm definitions term = do
 getDef :: Formula -> VM DefEntry
 getDef term = do
   defs <- asks definitions
-  let mbDef = Map.lookup (trId term) defs
+  let mbDef = Map.lookup (trmId term) defs
   guard $ isJust mbDef
   return $ fromJust mbDef

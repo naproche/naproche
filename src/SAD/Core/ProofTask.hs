@@ -29,9 +29,9 @@ generateProofTask _ _ f = f
 
 {- Check whether a formula is a set or function defintion -}
 funDcl, setDcl :: Formula -> Bool
-funDcl (And (And f _) _) = trId f == FunctionId
+funDcl (And (And f _) _) = trmId f == FunctionId
 funDcl _ = False
-setDcl (And f _) = trId f == SetId
+setDcl (And f _) = trmId f == SetId
 setDcl _ = error "SAD.Core.ProofTask.setDcl: misformed definition"
 
 setTask :: Formula -> Formula
@@ -43,7 +43,7 @@ setTask _ = error "SAD.Core.ProofTask.setTask: misformed definition"
 {- generate separation proof task -}
 separation :: Formula -> Formula
 separation (And f g) = separation f
-separation t | isElem t = dec $ zSet $ last $ trArgs t
+separation t | isElem t = dec $ zSet $ last $ trmArgs t
 separation _ = error "SAD.Core.ProofTask.separation: misformed argument"
 
 {- generate replacement proof task -}
@@ -75,7 +75,7 @@ funTask _ = error "SAD.Core.ProofTask.funTask: misformed definition"
 
 domain :: Formula -> Formula
 domain (Tag Domain (All _ (Iff _ f))) = Tag DomainTask $ separation f
-domain (Tag Domain Trm{trName = "=", trArgs = [_,t]}) = Tag DomainTask $ zSet t
+domain (Tag Domain Trm{trmName = "=", trmArgs = [_,t]}) = Tag DomainTask $ zSet t
 domain _ = error "SAD.Core.ProofTask.domain: misformed definition"
 
 
@@ -143,20 +143,20 @@ impExi f = f
 
 {- a certain normalization of the term marked with Evaluation -}
 devReplace :: Formula -> Formula -> Formula
-devReplace y (Tag Evaluation eq@Trm {trName = "=", trArgs = [_, t]}) =
-  eq {trArgs = [y,t]}
+devReplace y (Tag Evaluation eq@Trm {trmName = "=", trmArgs = [_, t]}) =
+  eq {trmArgs = [y,t]}
 devReplace y f = mapF (devReplace y) f
 
 {- compute domain conditions of functions -}
 domainCondition :: Formula -> Formula -> Formula
-domainCondition (Tag _ (All _ (Iff Trm {trArgs = [_,dm]} g))) = dive
+domainCondition (Tag _ (All _ (Iff Trm {trmArgs = [_,dm]} g))) = dive
   where
-    dive Trm {trId = tId, trArgs = [x,d]}
+    dive Trm {trmId = tId, trmArgs = [x,d]}
       | tId == ElementId && twins d dm = subst x "" $ inst "" g
     dive f = mapF dive f
-domainCondition (Tag _ Trm {trName = "=", trArgs = [dm,g]}) = dive
+domainCondition (Tag _ Trm {trmName = "=", trmArgs = [dm,g]}) = dive
   where
-    dive Trm {trId = tId, trArgs = [x,d]}
+    dive Trm {trmId = tId, trmArgs = [x,d]}
       | tId == ElementId && twins d dm = zElem x g
     dive f = mapF dive f
 domainCondition _ =

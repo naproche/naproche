@@ -31,70 +31,70 @@ import Control.Monad
 -- add expressions to the state of ForTheL
 
 giveId :: Bool -> Int -> Formula -> Formula
-giveId p n t = t {trId = if p then specialId n else (trId t)}
+giveId p n t = t {trmId = if p then specialId n else (trmId t)}
 
 incId :: Enum p => Bool -> p -> p
 incId p n = if p then succ n else n
 
 addExpr :: Formula -> Formula -> Bool -> FState -> FTL Formula
 
-addExpr t@Trm {trName = 'i':'s':' ':_, trArgs = vs} f p st =
+addExpr t@Trm {trmName = 'i':'s':' ':_, trmArgs = vs} f p st =
   MS.put ns >> return nf
   where
     n = idCount st;
     (pt, nf) = extractWordPattern st (giveId p n t) f
-    fm  = substs nf $ map trName vs
+    fm  = substs nf $ map varName vs
     ns  = st { adjExpr = (pt, fm) : adjExpr st, idCount = incId p n}
 
-addExpr t@Trm {trName = 'd':'o':' ':_, trArgs = vs} f p st =
+addExpr t@Trm {trmName = 'd':'o':' ':_, trmArgs = vs} f p st =
   MS.put ns >> return nf
   where
     n = idCount st;
     (pt, nf) = extractWordPattern st (giveId p n t) f
-    fm = substs nf $ map trName vs
+    fm = substs nf $ map varName vs
     ns = st {verExpr = (pt, fm) : verExpr st, idCount = incId p n}
 
-addExpr t@Trm {trName = 'm':'i':'s':' ':_, trArgs = vs} f p st =
+addExpr t@Trm {trmName = 'm':'i':'s':' ':_, trmArgs = vs} f p st =
   MS.put ns >> return nf
   where
     n = idCount st;
     ((hp:tp), nf) = extractWordPattern st (giveId p n t) f
     pt = hp : Wd [] : Vr : tp
-    fm = substs nf $ map trName vs
+    fm = substs nf $ map varName vs
     ns = st {adjExpr = (pt, fm) : adjExpr st, idCount = incId p n}
 
-addExpr t@Trm {trName = 'm':'d':'o':' ':_, trArgs = vs} f p st =
+addExpr t@Trm {trmName = 'm':'d':'o':' ':_, trmArgs = vs} f p st =
   MS.put ns >> return nf
   where
     n = idCount st;
     ((hp:tp), nf) = extractWordPattern st (giveId p n t) f
     pt = hp : Wd [] : Vr : tp
-    fm = substs nf $ map trName vs
+    fm = substs nf $ map varName vs
     ns = st {verExpr = (pt, fm) : verExpr st, idCount = incId p n}
 
-addExpr t@Trm {trName = 'a':' ':_, trArgs = vs} f p st =
+addExpr t@Trm {trmName = 'a':' ':_, trmArgs = vs} f p st =
   MS.put ns >> return nf
   where
     n = idCount st;
     (pt, nf) = extractWordPattern st (giveId p n t) f
-    fm = substs nf $ map trName vs
+    fm = substs nf $ map varName vs
     ns = st {ntnExpr = (pt, fm) : ntnExpr st, idCount = incId p n}
 
-addExpr Trm {trName= "=", trArgs = [v, t@Trm {trName = 'a':' ':rs}]} f p st =
+addExpr Trm {trmName= "=", trmArgs = [v, t@Trm {trmName = 'a':' ':rs}]} f p st =
   MS.put ns >> return nf
   where
-    n = idCount st; vs = trArgs t
-    (pt, nf) = extractWordPattern st (giveId p n t {trName = "tthe " ++ rs}) f
-    fm = substs nf $ map trName (v:vs)
+    n = idCount st; vs = trmArgs t
+    (pt, nf) = extractWordPattern st (giveId p n t {trmName = "tthe " ++ rs}) f
+    fm = substs nf $ map varName (v:vs)
     ns = st {ntnExpr = (pt, fm) : ntnExpr st, idCount = incId p n}
 
-addExpr Trm {trName = "=", trArgs = [_, t]} eq@Trm {trName = "="} p st =
+addExpr Trm {trmName = "=", trmArgs = [_, t]} eq@Trm {trmName = "="} p st =
   MS.put nn >> return (zEqu v nf)
   where
-    [v, f] = trArgs eq; vs = trArgs t
+    [v, f] = trmArgs eq; vs = trmArgs t
     n = idCount st
     (pt, nf) = extractSymbPattern (giveId p n t) f
-    fm = substs nf $ map trName vs
+    fm = substs nf $ map varName vs
     -- classification of pattern
     csm = lsm && rsm; lsm = notVr (head pt); rsm = notVr (last pt)
     notVr Vr = False; notVr _ = True
@@ -107,12 +107,12 @@ addExpr Trm {trName = "=", trArgs = [_, t]} eq@Trm {trName = "="} p st =
     nn = ns {idCount = incId p n}
 
 
-addExpr t@Trm {trName = s, trArgs = vs} f p st =
+addExpr t@Trm {trmName = s, trmArgs = vs} f p st =
   MS.put nn >> return nf
   where
     n = idCount st
     (pt, nf) = extractSymbPattern (giveId p n t) f
-    fm = substs nf $ map trName vs
+    fm = substs nf $ map varName vs
     -- classification of pattern
     csm = lsm && rsm; lsm = notVr (head pt); rsm = notVr (last pt)
     notVr Vr = False; notVr _ = True
@@ -122,7 +122,7 @@ addExpr t@Trm {trName = s, trArgs = vs} f p st =
        | rsm = st {rprExpr = (tail pt, fm) : rprExpr st}
        | otherwise = st {iprExpr = (init (tail pt), fm) : iprExpr st}
     -- check if pattern is a symbolic notion
-    snt = not lsm && elem (trName $ head vs) (declNames [] nf)
+    snt = not lsm && elem (varName $ head vs) (declNames [] nf)
     -- and add it there as well if so (and increment id counter)
     nn | snt = ns {sntExpr = (tail pt,fm) : sntExpr st, idCount = incId p n}
        | otherwise = ns {idCount = incId p n}
@@ -136,11 +136,11 @@ addExpr t@Trm {trName = s, trArgs = vs} f p st =
 
 extractWordPattern :: FState
                       -> Formula -> Formula -> ([Patt], Formula)
-extractWordPattern st t@Trm {trName = s, trArgs = vs} f = (pt, nf)
+extractWordPattern st t@Trm {trmName = s, trmArgs = vs} f = (pt, nf)
   where
     pt = map getPatt ws
-    nt = t {trName = pr ++ getName pt}
-    nf = replace nt t {trId = NewId} f
+    nt = t {trmName = pr ++ getName pt}
+    nf = replace nt t {trmId = NewId} f
     (pr:ws) = words s
     dict = strSyms st
 
@@ -154,11 +154,11 @@ extractWordPattern st t@Trm {trName = s, trArgs = vs} f = (pt, nf)
 
 
 extractSymbPattern :: Formula -> Formula -> ([Patt], Formula)
-extractSymbPattern t@Trm {trName = s, trArgs = vs} f = (pt, nf)
+extractSymbPattern t@Trm {trmName = s, trmArgs = vs} f = (pt, nf)
   where
     pt = map getPatt (words s)
-    nt = t {trName ='s' : getName pt}
-    nf = replace nt t {trId = NewId} f
+    nt = t {trmName ='s' : getName pt}
+    nf = replace nt t {trmId = NewId} f
 
     getPatt "#" = Vr
     getPatt w = Sm w
@@ -195,10 +195,10 @@ newNtnPattern tvr = (ntn <|> fun) </> unnamedNotion tvr
   where
     ntn = do
       an; (t, v:vs) <- ptName wlexem tvr
-      return (zTrm NewId ("a " ++ t) (v:vs), (trName v, trPosition v))
+      return (zTrm NewId ("a " ++ t) (v:vs), (varName v, varPosition v))
     fun = do
       the; (t, v:vs) <- ptName wlexem tvr
-      return (zEqu v $ zTrm NewId ("a " ++ t) vs, (trName v, trPosition v))
+      return (zEqu v $ zTrm NewId ("a " ++ t) vs, (varName v, varPosition v))
 
 unnamedNotion :: FTL Formula
                  -> FTL (Formula, (String, SourcePos))
@@ -206,10 +206,10 @@ unnamedNotion tvr = (ntn <|> fun) </> (newSymbPattern tvr >>= equ)
   where
     ntn = do
       an; (t, v:vs) <- ptNoName wlexem tvr
-      return (zTrm NewId ("a " ++ t) (v:vs), (trName v, trPosition v))
+      return (zTrm NewId ("a " ++ t) (v:vs), (varName v, varPosition v))
     fun = do
       the; (t, v:vs) <- ptNoName wlexem tvr
-      return (zEqu v $ zTrm NewId ("a " ++ t) vs, (trName v, trPosition v))
+      return (zEqu v $ zTrm NewId ("a " ++ t) vs, (varName v, varPosition v))
     equ t = do v <- hidden; return (zEqu (pVar v) t, v)
 
 

@@ -59,7 +59,7 @@ variableReport pide def decl pos =
 formulaReports :: PIDE -> [Decl] -> Formula -> [Message.Report]
 formulaReports pide decls = nubOrd . dive
   where
-    dive Var {trName = name, trPosition = pos} =
+    dive Var {varName = name, varPosition = pos} =
       (pos, Markup.free) : entity
       where
         entity =
@@ -80,7 +80,7 @@ boundReports pide decl = dive 0
   where
     dive n (All _ f) = dive (succ n) f
     dive n (Exi _ f) = dive (succ n) f
-    dive n Ind {trIndx = i, trPosition = pos} | i == n =
+    dive n Ind {indIndex = i, indPosition = pos} | i == n =
       (pos, Markup.bound) : variableReport pide False decl pos
     dive n f = foldF (dive n) f
 

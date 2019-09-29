@@ -178,9 +178,9 @@ replaceHeadTerm :: Context -> Context
 replaceHeadTerm c = Context.setForm c $ dive 0 $ Context.formula c
   where
     dive :: Int -> Formula -> Formula
-    dive n (All _ (Imp (Tag HeadTerm Trm {trName = "=", trArgs = [_, t]}) f)) =
+    dive n (All _ (Imp (Tag HeadTerm Trm {trmName = "=", trmArgs = [_, t]}) f)) =
       subst t "" $ inst "" f
-    dive n (All _ (Iff (Tag HeadTerm eq@Trm {trName = "=", trArgs = [_, t]}) f))
+    dive n (All _ (Iff (Tag HeadTerm eq@Trm {trmName = "=", trmArgs = [_, t]}) f))
       = And (subst t "" $ inst "" f) (All (Decl.nonText "") $ Imp f eq)
     dive n (All _ (Imp (Tag HeadTerm Trm{}) Top)) = Top
     dive n (All v f) =
@@ -202,9 +202,9 @@ trivialByEvidence :: Formula -> Bool
 trivialByEvidence f = isTop $ reduceWithEvidence f
 
 reduceWithEvidence :: Formula -> Formula
-reduceWithEvidence t@Trm{trName = "="} = t -- leave equality untouched
+reduceWithEvidence t@Trm{trmName = "="} = t -- leave equality untouched
 reduceWithEvidence l | isLiteral l = -- try to reduce literals
-  fromMaybe l $ msum $ map (lookFor l) (trArgs $ ltAtomic l)
+  fromMaybe l $ msum $ map (lookFor l) (trmArgs $ ltAtomic l)
 reduceWithEvidence f = bool $ mapF reduceWithEvidence $ bool f 
 
 
@@ -305,7 +305,7 @@ unfoldAtomic sign f = do
     termLocalProperties h = 
       liftM2 (++) (subtermLocalProperties h) (localProperties h)
     localProperties (Tag GenericMark _) = return []
-    localProperties Trm {trName = "=", trArgs = [l,r]} =
+    localProperties Trm {trmName = "=", trmArgs = [l,r]} =
       liftM3 (\a b c -> a ++ b ++ c) 
              (definitionalProperties l r)
              (definitionalProperties r l) 
@@ -376,12 +376,11 @@ hasDMK (Tag GenericMark _ ) = True
 hasDMK _ = False
 
 setType :: Formula -> Bool
-setType f | hasInfo f = any (infoTwins ThisT $ zSet ThisT) $ trInfo f
+setType Var {varInfo = info} = any (infoTwins ThisT $ zSet ThisT) info
+setType Trm {trmInfo = info} = any (infoTwins ThisT $ zSet ThisT) info
 setType _ = False
 
 funType :: Formula -> Bool
-funType f | hasInfo f = any (infoTwins ThisT $ zFun ThisT) $ trInfo f
+funType Var {varInfo = info} = any (infoTwins ThisT $ zFun ThisT) info
+funType Trm {trmInfo = info} = any (infoTwins ThisT $ zFun ThisT) info
 funType _ = False
-
-hasInfo :: Formula -> Bool
-hasInfo f = isTrm f || isVar f

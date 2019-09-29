@@ -23,12 +23,21 @@ data Formula =
   Or  Formula Formula     | And Formula Formula     |
   Tag Tag Formula         | Not Formula             |
   Top                     | Bot                     |
-  Trm { trName :: String   , trArgs :: [Formula],
-        trInfo :: [Formula], trId   :: TermId}         |
-  Var { trName :: String   , trInfo :: [Formula], trPosition :: SourcePos } |
-  Ind { trIndx :: Int, trPosition :: SourcePos }   | ThisT
+  Trm { trmName :: String   , trmArgs :: [Formula],
+        trmInfo :: [Formula], trmId   :: TermId}         |
+  Var { varName :: String, varInfo :: [Formula], varPosition :: SourcePos } |
+  Ind { indIndex :: Int, indPosition :: SourcePos }   | ThisT
   deriving (Eq, Ord)
 
+trInfo :: Formula -> [Formula]
+trInfo Trm {trmInfo = xs} = xs
+trInfo Var {varInfo = xs} = xs
+trInfo _ = error "Formula.Base.trInfo: Partial function"
+
+showTrName :: Formula -> ShowS
+showTrName (Trm {trmName = s}) = showString $ filter (/= ':') s
+showTrName (Var {varName = s}) = showString $ filter (/= ':') s
+showTrName _ = id
 
 -- Traversing functions
 
@@ -46,7 +55,7 @@ mapFM fn (Or f g) = liftA2 Or (fn f) (fn g)
 mapFM fn (And f g) = liftA2 And (fn f) (fn g)
 mapFM fn (Tag a f) = Tag a <$> fn f
 mapFM fn (Not f) = Not <$> fn f
-mapFM fn t@Trm{} = (\args -> t {trArgs = args}) <$> (traverse fn $ trArgs t)
+mapFM fn t@Trm{} = (\args -> t {trmArgs = args}) <$> (traverse fn $ trmArgs t)
 mapFM _ f = pure f
 
 -- Logical traversing
@@ -115,7 +124,7 @@ foldFM fn (And f g) = liftA2 Monoid.mappend (fn f) (fn g)
 foldFM fn (Or f g) = liftA2 Monoid.mappend (fn f) (fn g)
 foldFM fn (Tag _ f) = fn f
 foldFM fn (Not f) = fn f
-foldFM fn t@Trm{} = fmap Monoid.mconcat $ traverse fn $ trArgs t
+foldFM fn t@Trm{} = fmap Monoid.mconcat $ traverse fn $ trmArgs t
 foldFM _ _ = pure Monoid.mempty
 
 
@@ -128,9 +137,9 @@ closed  = dive 0
   where
     dive n (All _ g) = dive (succ n) g
     dive n (Exi _ g) = dive (succ n) g
-    dive n t@Trm{} = all (dive n) $ trArgs t
+    dive n t@Trm{} = all (dive n) $ trmArgs t
     dive _ Var{} = True
-    dive n Ind {trIndx = v} = v < n
+    dive n Ind {indIndex = v} = v < n
     dive n f = allF (dive n) f
 
 {- checks whether the non-compound formula t occurs anywhere in the formula f -}
@@ -144,11 +153,11 @@ bind v = dive 0
   where
     dive n (All u g) = All u $ dive (succ n) g
     dive n (Exi u g) = Exi u $ dive (succ n) g
-    dive n Var {trName = u, trPosition = pos}
+    dive n Var {varName = u, varPosition = pos}
       | u == v = Ind n pos
     dive n t@Trm{} = t {
-      trArgs = map (dive n) $ trArgs t,
-      trInfo = map (dive n) $ trInfo t}
+      trmArgs = map (dive n) $ trmArgs t,
+      trmInfo = map (dive n) $ trmInfo t}
     dive _ i@Ind{} = i
     dive n f = mapF (dive n) f
 
@@ -159,26 +168,26 @@ inst x = dive 0
   where
     dive n (All u g) = All u $ dive (succ n) g
     dive n (Exi u g) = Exi u $ dive (succ n) g
-    dive n Ind {trIndx = m, trPosition = pos}
+    dive n Ind {indIndex = m, indPosition = pos}
       | m == n = Var x [] pos
     dive n t@Trm{} = t {
-      trArgs = map (dive n) $ trArgs t,
-      trInfo = map (dive n) $ trInfo t }
-    dive n v@Var{} = v {trInfo = map (dive n) $ trInfo v}
+      trmArgs = map (dive n) $ trmArgs t,
+      trmInfo = map (dive n) $ trmInfo t }
+    dive n v@Var{} = v {varInfo = map (dive n) $ varInfo v}
     dive n f = mapF (dive n) f
 
 {- substitute a formula t for a variable with name v. Does not affect info. -}
 subst :: Formula -> String -> Formula -> Formula
 subst t v = dive
   where
-    dive Var {trName = u} | u == v = t
+    dive Var {varName = u} | u == v = t
     dive f = mapF dive f
 
 {- multiple substitutions at the same time. Does not affect info. -}
 substs :: Formula -> [String] -> [Formula] -> Formula
 substs f vs ts = dive f
   where
-    dive v@Var {trName = u, trInfo = ss} = fromMaybe v (lookup u zvt)
+    dive v@Var {varName = u, varInfo = ss} = fromMaybe v (lookup u zvt)
     dive f = mapF dive f
     zvt = zip vs ts
 
@@ -189,10 +198,10 @@ substs f vs ts = dive f
 {- check for syntactic equality of terms/atomic formulas. Always yields False
 for compound formulas. -}
 twins :: Formula -> Formula -> Bool
-twins u@Ind{} v@Ind{} = trIndx u == trIndx v
-twins Var {trName = u} Var {trName = v} = u == v
+twins u@Ind{} v@Ind{} = indIndex u == indIndex v
+twins Var {varName = u} Var {varName = v} = u == v
 twins t@Trm{} s@Trm{}
-  | trId t == trId s = pairs (trArgs t) (trArgs s)
+  | trmId t == trmId s = pairs (trmArgs t) (trmArgs s)
   where
     pairs (p:ps) (q:qs) = twins p q && pairs ps qs
     pairs [] [] = True
@@ -210,7 +219,7 @@ replace t s = dive
     dive f
       | twins s f = t
       | otherwise = dive_aux f
-    dive_aux t@Trm{} = t {trArgs = map dive $ trArgs t}
+    dive_aux t@Trm{} = t {trmArgs = map dive $ trmArgs t}
     dive_aux v@Var{} = v
     dive_aux i@Ind{} = i
     dive_aux f = mapF dive f
@@ -230,5 +239,5 @@ syntacticEquality = dive
     dive Bot Bot = True
     dive ThisT ThisT = True
     dive t1@Trm{} t2@Trm{} = twins t1 t2
-    dive Var {trName = v1} Var {trName = v2} = v1 == v2
+    dive Var {varName = v1} Var {varName = v2} = v1 == v2
     dive _ _ = False

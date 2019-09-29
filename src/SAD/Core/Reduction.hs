@@ -101,28 +101,28 @@ ontoRed dfs grds f = dive [] f
     allGuards h
       | isSkolem h = []
       | otherwise =
-          let def = fromJust $ Map.lookup (trId h) dfs
+          let def = fromJust $ Map.lookup (trmId h) dfs
               sb  = fromJust $ match (Definition.term def) h
           in  map sb $ Definition.guards def
     
     generalGuards h
       | isSkolem h = []
       | otherwise =
-          let def = fromJust $ Map.lookup (trId h) dfs
+          let def = fromJust $ Map.lookup (trmId h) dfs
               zipped = zip (allGuards h) (Definition.guards def)
           in  map fst $ filter (uncurry hasSameSyntacticStructureAs) zipped
 
     allPositionGuards pos h
       | isSkolem h = []
       | otherwise =
-          let def = fromJust $ Map.lookup (trId h) dfs
-              posName = trName $ ((trArgs $ Definition.term def)!!pos)
+          let def = fromJust $ Map.lookup (trmId h) dfs
+              posName = case ((trmArgs $ Definition.term def)!!pos) of Trm {trmName = s} -> s; Var {varName = s} -> s
           in  filter (Set.member posName . freeVars) $ Definition.guards def
 
     generalPositionGuards pos h
       | isSkolem h = []
       | otherwise =
-          let def = fromJust $ Map.lookup (trId h) dfs
+          let def = fromJust $ Map.lookup (trmId h) dfs
               positionGuards = allPositionGuards pos h
               sb = fromJust $ match (Definition.term def) h
               zipped = zip (map sb positionGuards) positionGuards
@@ -148,7 +148,7 @@ directArgumentPositions = dive 0 . arguments
   where
     dive _ [] = []
     dive pos (x:xs) = case x of
-      Var{trName = name} -> (pos, name) : dive (succ pos) xs
+      Var{varName = name} -> (pos, name) : dive (succ pos) xs
       _ -> dive (succ pos) xs
   
 dereference :: Formula -> Position -> Formula
@@ -174,7 +174,7 @@ subParticles = filter isTrm . arguments
 
 
 freeVars :: Formula -> Set String
-freeVars Var {trName = name} = Set.singleton name
+freeVars Var {varName = name} = Set.singleton name
 freeVars f = foldF freeVars f
 
 atoms :: Formula -> [Formula]
@@ -185,14 +185,14 @@ hasSameSyntacticStructureAs :: Formula -> Formula -> Bool
 hasSameSyntacticStructureAs f g = evalState (dive f g) Map.empty
   where
     dive :: Formula -> Formula -> State (Map String String) Bool
-    dive Var{trName = name1} Var{trName = name2} = do
+    dive Var{varName = name1} Var{varName = name2} = do
       value <- gets $ Map.lookup name1
       case value of
         Nothing -> do
           isInjective <- gets $ notElem name2 . map snd . Map.assocs
           modify (Map.insert name1 name2) >> return isInjective
         Just name -> if name == name2 then return True else return False
-    dive Trm{trId = id1, trArgs = args1} Trm{trId = id2, trArgs = args2}
+    dive Trm{trmId = id1, trmArgs = args1} Trm{trmId = id2, trmArgs = args2}
       | id1 == id2 = pairs args1 args2
     dive _ _ = return False
     pairs [] [] = return True
@@ -209,4 +209,4 @@ isElemOf g (h:hs) = g `twins` h || isElemOf g hs
 
 arguments :: Formula -> [Formula]
 arguments Top = []; arguments Bot = []
-arguments f = trArgs f 
+arguments f = trmArgs f 

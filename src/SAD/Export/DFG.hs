@@ -58,17 +58,13 @@ dfgTerm d = dive
     dive (Not f)    = showString "not" . showArgumentsWith dive [f]
     dive Top        = showString "true"
     dive Bot        = showString "false"
-    dive t| isEquality t = showString "equal" . showArgumentsWith dive (trArgs t)
-          | isTrm t = showTrName t . showArgumentsWith dive (trArgs t)
+    dive t| isEquality t = showString "equal" . showArgumentsWith dive (trmArgs t)
+          | isTrm t = showTrName t . showArgumentsWith dive (trmArgs t)
           | isVar t = showTrName t
-          | isInd t = showChar 'W' . shows (d - 1 - trIndx t)
+          | isInd t = showChar 'W' . shows (d - 1 - indIndex t)
 
     binder f  = showChar '[' . dfgTerm (succ d) (Ind 0 undefined)
               . showString "]," . dfgTerm (succ d) f
-
-showTrName :: Formula -> ShowS
-showTrName = showString . filter (/= ':') . trName
-
 
 -- Symbol count
 
@@ -86,8 +82,8 @@ dfgSLS tsk  = sls "functions" fns . sls "predicates" pds
     sms = foldr (union . nubOrd . dfgSyms True . Context.formula) [] tsk
 
 dfgSyms :: Bool -> Formula -> [(Bool, String, Int)]
-dfgSyms s f | isEquality f   = concatMap (dfgSyms False) $ trArgs f
-dfgSyms s Trm {trName = t, trArgs = ts} = (s, t, length ts) : concatMap (dfgSyms False) ts
-dfgSyms s Var {trName = v}     = [(s, v, 0)]
+dfgSyms s f | isEquality f   = concatMap (dfgSyms False) $ trmArgs f
+dfgSyms s Trm {trmName = t, trmArgs = ts} = (s, t, length ts) : concatMap (dfgSyms False) ts
+dfgSyms s Var {varName = v}     = [(s, v, 0)]
 dfgSyms s Ind{}     = []
 dfgSyms s f             = foldF (dfgSyms s) f

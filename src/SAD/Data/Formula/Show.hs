@@ -32,17 +32,17 @@ showFormula p d = dive
     dive Bot       = showString "contradiction"
     dive ThisT     = showString "ThisT"
 
-    dive t@Trm{trName = tName, trArgs = tArgs}
+    dive t@Trm{trmName = tName, trmArgs = tArgs}
       | isThesis t = showString "thesis"
-      | isEquality t = let [l,r] = trArgs t in showInfix " = " l r
+      | isEquality t = let [l,r] = trmArgs t in showInfix " = " l r
       | isSymbolicTerm t = decode (tail tName) tArgs p d
       | not (null tName) && head tName == 't' =
           showString (tail tName) . showArguments tArgs
       | otherwise = showString tName . showArguments tArgs
-    dive v@Var{trName = vName}
+    dive v@Var{varName = vName}
       | isUserVariable v = showString $ tail vName
       | otherwise = showString vName
-    dive Ind {trIndx = i }
+    dive Ind {indIndex = i }
       | i < d = showChar 'v' . shows (d - i - 1)
       | otherwise = showChar 'v' . showChar '?' . showString (show i)
 
@@ -67,8 +67,8 @@ commaSeparated showTerm [t] = showTerm t
 commaSeparated showTerm (t:ts) = showTerm t . showChar ',' . commaSeparated showTerm ts
 
 isSymbolicTerm, isUserVariable :: Formula -> Bool
-isSymbolicTerm Trm {trName = 's':_} = True; isSymbolicTerm _ = False
-isUserVariable Var {trName = 'x':_} = True; isUserVariable _ = False
+isSymbolicTerm Trm {trmName = 's':_} = True; isSymbolicTerm _ = False
+isUserVariable Var {varName = 'x':_} = True; isUserVariable _ = False
 
 -- decoding of symbolic names
 
@@ -114,8 +114,8 @@ decode s (t:ts) p d = dec s
     dec _            = showString s
 
 
-    ambig Trm {trName = 's':'d':'t':cs} = not $ funpatt cs
-    ambig Trm {trName = t} =
+    ambig Trm {trmName = 's':'d':'t':cs} = not $ funpatt cs
+    ambig Trm {trmName = t} =
       head t == 's' && snd (splitAt (length t - 2) t) == "dt"
     ambig _ = False
 

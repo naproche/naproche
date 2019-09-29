@@ -40,16 +40,16 @@ lpoGe w t s = twins t s || lpoGt w t s
 
 
 lpoGt :: Weighting -> Formula -> Formula -> Bool
-lpoGt w tr@Trm {trName = t, trArgs = ts} sr@Trm {trName = s, trArgs = ss} =
+lpoGt w tr@Trm {trmName = t, trmArgs = ts} sr@Trm {trmName = s, trmArgs = ss} =
    any (\ti -> lpoGe w ti sr) ts
     || (all (lpoGt w tr) ss
     && ((t == s && lexord (lpoGt w) ts ss)
     || w t s))
-lpoGt w Trm { trName = t, trArgs = ts} v@Var {trName = x} =
+lpoGt w Trm { trmName = t, trmArgs = ts} v@Var {varName = x} =
   w t x || any (\ti -> lpoGe w ti v) ts
-lpoGt w v@Var {trName = x} Trm {trName = t, trArgs = ts} =
+lpoGt w v@Var {varName = x} Trm {trmName = t, trmArgs = ts} =
   w x t && all (lpoGt w v) ts
-lpoGt w Var{trName = x} Var {trName = y} = w x y
+lpoGt w Var{varName = x} Var {varName = y} = w x y
 lpoGt _ _ _ = False
 
 
@@ -71,8 +71,8 @@ leftmost-bottommost fashion with respect to the term structure -}
 simpstep :: [Rule] -> Weighting -> Formula -> [(Formula, SimpInfo)]
 simpstep rules w = flip runStateT undefined . dive
   where
-    dive t@Trm {trName = tName, trArgs = tArgs} =
-      (do newArgs <- try tArgs; return t {trArgs = newArgs}) `mplus` applyRule t
+    dive t@Trm {trmName = tName, trmArgs = tArgs} =
+      (do newArgs <- try tArgs; return t {trmArgs = newArgs}) `mplus` applyRule t
     dive v@Var{} = applyRule v
 
     try [] = mzero
@@ -95,7 +95,7 @@ simpstep rules w = flip runStateT undefined . dive
       guard $ full nr && lpoGt w (sbs l) nr -- simplified term must be lighter
       return (sbs r, map sbs $ Rule.condition rule, rule)
 
-    full Var {trName = '?':_} = False; full f = allF full f
+    full Var {varName = '?':_} = False; full f = allF full f
 
 
 {- finds ALL normalforms and their corresponding simplification paths -}
@@ -184,7 +184,7 @@ rules = asks rewriteRules
 {- applies rewriting to both sides of an equation 
 and compares the resulting normal forms -}
 rewrite :: Formula -> [Rule] -> VM ()
-rewrite Trm {trName = "=", trArgs = [l,r]} rules = do
+rewrite Trm {trmName = "=", trmArgs = [l,r]} rules = do
   verbositySetting <- askInstructionBool Printsimp False
   conditions <- generateConditions verbositySetting rules (>) l r;
   mapM_ (dischargeConditions verbositySetting . fst) conditions

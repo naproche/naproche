@@ -38,12 +38,12 @@ fillDef alreadyChecked context = fill True False [] (Just True) 0 $ Context.form
       newContext      <- cnRaise context localContext
       collectInfo userInfoSetting v `withContext` newContext -- fortify the term
     fill isPredicat isNewWord localContext sign n 
-         term@Trm {trName = t, trArgs = tArgs, trInfo = infos, trId = tId} =
+         term@Trm {trmName = t, trmArgs = tArgs, trmInfo = infos, trmId = tId} =
       if alreadyChecked then return term else do
             userInfoSetting <- askInstructionBool Info True
             fortifiedArgs   <- mapM (fill False isNewWord localContext sign n) tArgs
             newContext      <- cnRaise context localContext
-            fortifiedTerm   <- setDef isNewWord context term {trArgs = fortifiedArgs} 
+            fortifiedTerm   <- setDef isNewWord context term {trmArgs = fortifiedArgs} 
               `withContext` newContext
             collectInfo (not isPredicat && userInfoSetting) fortifiedTerm 
               `withContext` newContext        -- fortify term
@@ -62,7 +62,7 @@ cnRaise thisBlock local = asks currentContext >>=
 
 
 setDef :: Bool -> Context -> Formula -> VM Formula
-setDef isNewWord context term@Trm{trName = t, trId = tId} = 
+setDef isNewWord context term@Trm{trmName = t, trmId = tId} = 
   incrementIntCounter Symbols >>
     (    (guard isNewWord >> return term) -- do not check new word
     <|>  (findDef term >>= testDef context term) -- check term's definition
@@ -80,12 +80,12 @@ type DefDuo = (Guards, FortifiedTerm)
 
 
 findDef :: Formula -> VM DefDuo
-findDef term@Trm{trArgs = tArgs} = do
+findDef term@Trm{trmArgs = tArgs} = do
   def <- getDef term
   sb  <- match (Definition.term def) term
   let guards   = map (infoSub sb) $ Definition.guards def -- definition's guards
       evidence = map sb $ Definition.evidence def -- definitional evidence
-      newTerm  = term { trInfo = evidence } -- fortified term
+      newTerm  = term { trmInfo = evidence } -- fortified term
   return (guards, newTerm)
 
 {-
@@ -154,7 +154,7 @@ typings (context:restContext) term =
   where
     albetDive = dive . albet
     -- when we encouter a literal, compare its arguments with term
-    dive f | isLiteral f = compare [] $ trArgs $ ltAtomic f 
+    dive f | isLiteral f = compare [] $ trmArgs $ ltAtomic f 
       where
         compare _ [] = mzero
         compare ls (arg:rs) = -- try to match argument, else compare with rest
@@ -163,10 +163,10 @@ typings (context:restContext) term =
         matchThisArgument ls arg rs = 
           let sign = mbNot f; predicate = ltAtomic f in do 
             match term arg
-            let newInfo = sign predicate {trArgs = reverse ls ++ (ThisT : rs)}
+            let newInfo = sign predicate {trmArgs = reverse ls ++ (ThisT : rs)}
             return $ newInfo : notionEvidence ls predicate ++ trInfo arg
 
-    dive e@Trm {trName = "=", trArgs = [l,r]} = 
+    dive e@Trm {trmName = "=", trmArgs = [l,r]} = 
       if   twins l term
       then return $ joinEvidences (trInfo l) (trInfo r)
       else if   twins r term
@@ -189,4 +189,6 @@ setInfo t = do
   context <- asks currentContext
   let lowlevelContext  = takeWhile Context.isLowLevel context
       lowlevelEvidence = fromMaybe [] $ typings lowlevelContext t
-  return $ t {trInfo = trInfo t ++ lowlevelEvidence}
+  case t of
+    t@Trm {} -> pure $ t {trmInfo = trmInfo t ++ lowlevelEvidence}
+    v@Var {} -> pure $ v {varInfo = varInfo v ++ lowlevelEvidence}

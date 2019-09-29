@@ -426,10 +426,10 @@ symbSetNotation = cndSet </> finSet
     cndSet = braced $ do
       (tag, c, t) <- sepFrom; st <- token "|" >> statement;
       vs <- freeVarPositions t; vsDecl <- mapM makeDecl vs;
-      nm <- if isVar t then return $ (trName t, trPosition t) else hidden
+      nm <- if isVar t then return $ (varName t, varPosition t) else hidden
       return (\tr -> tag $ c tr `blAnd` mbEqu vsDecl tr t st, nm)
 
-    mbEqu _ tr Var{trName = v} = subst tr v
+    mbEqu _ tr Var{varName = v} = subst tr v
     mbEqu vs tr t = \st -> foldr mbdExi (st `And` zEqu tr t) vs
 
 

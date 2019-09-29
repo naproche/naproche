@@ -113,7 +113,7 @@ mbBind v  = dive id
     dive c True (And f g) = 
       dive (c . bool . (`And` g)) True f `mplus`
       dive (c . bool . (f `And`)) True g
-    dive c True Trm {trName = "=", trArgs = [l@Var {trName = u}, t]}
+    dive c True Trm {trmName = "=", trmArgs = [l@Var {varName = u}, t]}
       | u == v && not (occurs l t) && closed t = return $ subst t u (c Top)
     dive _ _ _ = mzero
 
@@ -205,7 +205,7 @@ zObj      = zTrm ObjectId "aObj" . pure -- this is a dummy for parsing purposes
 -- quick checks of syntactic properties
 
 isApplication :: Formula -> Bool
-isApplication Trm {trId = ApplicationId} = True; isApplication _ = False
+isApplication Trm {trmId = ApplicationId} = True; isApplication _ = False
 isTop :: Formula -> Bool
 isTop Top = True; isTop _ = False
 isBot :: Formula -> Bool
@@ -219,9 +219,9 @@ isVar Var{} = True; isVar _ = False
 isTrm :: Formula -> Bool
 isTrm Trm{} = True; isTrm _ = False
 isEquality :: Formula -> Bool
-isEquality t@Trm{} = trId t == EqualityId; isEquality _ = False
+isEquality t@Trm{} = trmId t == EqualityId; isEquality _ = False
 isThesis :: Formula -> Bool
-isThesis t@Trm{} = trId t == ThesisId; isThesis _ = False
+isThesis t@Trm{} = trmId t == ThesisId; isThesis _ = False
 hasDEC :: Formula -> Bool
 hasDEC (Tag EqualityChain _) = True; hasDEC _ = False
 isExi :: Formula -> Bool
@@ -229,13 +229,13 @@ isExi (Exi _ _) = True; isExi _ = False
 isAll :: Formula -> Bool
 isAll (All _ _) = True; isAll _ = False
 isConst :: Formula -> Bool
-isConst t@Trm{} = null $ trArgs t; isConst Var{} = True; isConst _ = False
+isConst t@Trm{} = null $ trmArgs t; isConst Var{} = True; isConst _ = False
 isNot :: Formula -> Bool
 isNot (Not _) = True; isNot _ = False
 isNotion :: Formula -> Bool
-isNotion Trm {trName = 'a':_} = True; isNotion _ = False
+isNotion Trm {trmName = 'a':_} = True; isNotion _ = False
 isElem :: Formula -> Bool
-isElem t = isTrm t && trId t == ElementId
+isElem t = isTrm t && trmId t == ElementId
 
 -- Holes and slots
 
@@ -245,8 +245,8 @@ zHole, zSlot ::  Formula
 zHole = zVar "?"; zSlot = zVar "!"
 
 isHole, isSlot :: Formula -> Bool
-isHole Var {trName = "?"} = True; isHole _ = False
-isSlot Var {trName = "!"} = True; isSlot _ = False
+isHole Var {varName = "?"} = True; isHole _ = False
+isSlot Var {varName = "!"} = True; isSlot _ = False
 
 substHole, substSlot :: Formula -> Formula -> Formula
 substHole t = subst t "?"; substSlot t = subst t "!"
@@ -258,7 +258,7 @@ occursH = occurs zHole; occursS = occurs zSlot
 -- | Replace @ObjectId@ Terms with @Top@
 -- pseudotyping with "object"
 removeObject :: Formula -> Formula
-removeObject t@Trm {trId = tId}
+removeObject t@Trm {trmId = tId}
   | tId == ObjectId = Top
   | otherwise = t
 removeObject f = mapF removeObject f
@@ -266,7 +266,7 @@ removeObject f = mapF removeObject f
 -- functions for operating on literals
 -- QUESTION: Why do we handle @Not t@ different from @t@?
 isLiteral :: Formula -> Bool
-isLiteral t@Trm{} = trId t /= EqualityId
+isLiteral t@Trm{} = trmId t /= EqualityId
 isLiteral (Not t) = isTrm t
 isLiteral _ = False
 
@@ -294,7 +294,7 @@ infoTwins :: Formula -> Formula -> Formula -> Bool
 infoTwins t = dive
   where
     dive (Not f) (Not g) = dive f g
-    dive t@Trm{} s@Trm{} | trId t == trId s = pairs (trArgs t) (trArgs s)
+    dive t@Trm{} s@Trm{} | trmId t == trmId s = pairs (trmArgs t) (trmArgs s)
     dive _ _ = False
 
     pairs (tr:ts) (sr:ss) = case (tr,sr) of
@@ -310,9 +310,9 @@ infoTwins t = dive
 Only variables whose name begins with a '?' are considered matchable. 
 All others are treated like constants. -}
 match :: (MonadPlus m) => Formula -> Formula -> m (Formula -> Formula)
-match Var {trName = x@('?':_)} t = return $ subst t x
-match Var {trName = x} Var {trName = y} | x == y = return id
-match t@Trm{} s@Trm{} | trId t == trId s = pairs (trArgs t) (trArgs s)
+match Var {varName = x@('?':_)} t = return $ subst t x
+match Var {varName = x} Var {varName = y} | x == y = return id
+match t@Trm{} s@Trm{} | trmId t == trmId s = pairs (trmArgs t) (trmArgs s)
   where
     pairs (p:ps) (q:qs) = do
       sb <- pairs ps qs
@@ -344,7 +344,7 @@ duplicateNames _      = mzero
 
 {- safe identifier extraction -}
 tryToGetID :: Formula -> Maybe TermId
-tryToGetID Trm {trId = n} = return n
+tryToGetID Trm {trmId = n} = return n
 tryToGetID _ = mzero
 
 
@@ -353,8 +353,8 @@ except those in vs -}
 freePositions :: [String] -> Formula -> [(String, SourcePos)]
 freePositions vs = nubOrdBy (compare `on` fst) . dive
   where
-    dive f@Var {trName = u@('x':_)} = 
-      (guard (u `notElem` vs) >> return (u, trPosition f)) ++ foldF dive f
+    dive f@Var {varName = u@('x':_)} = 
+      (guard (u `notElem` vs) >> return (u, varPosition f)) ++ foldF dive f
     dive f = foldF dive f
 
 free :: [String] -> Formula -> [String]
@@ -365,7 +365,7 @@ except those in vs -}
 allFree :: [String] -> Formula -> [String]
 allFree vs = nubOrd . dive
   where
-    dive f@Var {trName = u} = guardNotElem vs u ++ foldF dive f
+    dive f@Var {varName = u} = guardNotElem vs u ++ foldF dive f
     dive f = foldF dive f
 
 
@@ -378,7 +378,7 @@ uClose ls f = let vs = allFree ls f in foldr zAll f vs
 
 {- apply a substitution that is represented as a finite partial map -}
 applySb :: M.Map String Formula -> Formula -> Formula
-applySb mp vr@Var {trName = v} = case M.lookup v mp of 
+applySb mp vr@Var {varName = v} = case M.lookup v mp of 
   Just t  -> t
   Nothing -> vr
 applySb mp t = mapF (applySb mp) t
@@ -386,8 +386,8 @@ applySb mp t = mapF (applySb mp) t
 {- subsitution is also applied to the evidence for a term -}
 infoSub :: (Formula -> Formula) -> Formula -> Formula
 infoSub sb t@Trm{} = t {
-  trArgs = map (infoSub sb) $ trArgs t, 
-  trInfo = map sb $ trInfo t}
+  trmArgs = map (infoSub sb) $ trmArgs t, 
+  trmInfo = map sb $ trmInfo t}
 infoSub sb v@Var{} = sb v
 infoSub sb f = mapF (infoSub sb) f
 
@@ -395,5 +395,5 @@ infoSub sb f = mapF (infoSub sb) f
 
 {- changes the prefix of a variable name -}
 fromTo :: Char -> Char -> Formula -> Formula
-fromTo c1 c2 v@Var {trName = c':rst} | c' == c1 = v {trName = c2:rst}
+fromTo c1 c2 v@Var {varName = c':rst} | c' == c1 = v {varName = c2:rst}
 fromTo c1 c2 f = mapF (fromTo c1 c2) f

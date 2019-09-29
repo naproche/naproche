@@ -64,9 +64,9 @@ jump (Node struct children) = concatMap (jmp (arity struct)) children
 
 {- test whether a given formula matches a given structure -}
 structMatch :: Formula -> Struct -> Bool
-structMatch Var{trName = '?':_} Variable = True
-structMatch Var{trName = 'x':nm} (GeneralizedConstant s) = nm == s
-structMatch Trm{trId = m} (Function n _) = n == m
+structMatch Var{varName = '?':_} Variable = True
+structMatch Var{varName = 'x':nm} (GeneralizedConstant s) = nm == s
+structMatch Trm{trmId = m} (Function n _) = n == m
 structMatch _ _ = False
 
 {- during retrieval everything matches a variable -}
@@ -78,7 +78,7 @@ retrieveMatch f g = structMatch f g
 args :: Formula -> [Formula]
 args Ind{} = []
 args Var{} = []
-args Trm{trArgs = ts} = ts
+args Trm{trmArgs = ts} = ts
 
 {- insert an element into the tree -}
 insert :: Formula -> a -> DisTree a -> DisTree a
@@ -105,9 +105,9 @@ buildTree keys value = dtree keys
 
     {- compute the structure of a formula -}
     toStruct :: Formula -> Struct
-    toStruct Var {trName = '?':_ } = Variable
-    toStruct Var {trName = 'x':nm} = GeneralizedConstant nm
-    toStruct Trm {trId = m, trArgs = ts} = Function m (length ts)
+    toStruct Var {varName = '?':_ } = Variable
+    toStruct Var {varName = 'x':nm} = GeneralizedConstant nm
+    toStruct Trm {trmId = m, trmArgs = ts} = Function m (length ts)
 
 {- lookup values in a tree. The key for the lookup is the structure of
 the given formula. Multiple leafs may match the key. lookup returns all of
@@ -115,7 +115,7 @@ their values. -}
 lookup :: Formula -> DisTree a -> Maybe [a]
 lookup key (DT nodes) = mbConcat $ dive nodes [key]
   where
-    dive nodes (Var{trName = '?':_}:ks)
+    dive nodes (Var{varName = '?':_}:ks)
       = let (leafs, newNodes) = L.partition isLeaf $ concatMap jump nodes
          in map stored leafs `mplus` dive newNodes ks
     dive nodes keylist@(k:ks) =
