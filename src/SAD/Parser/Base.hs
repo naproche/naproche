@@ -8,6 +8,7 @@ Parser datatype and monad instance.
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE MultiWayIf #-}
+{-# LANGUAGE DeriveFunctor #-}
 
 module SAD.Parser.Base
   ( Parser(..),
@@ -50,10 +51,7 @@ stPosition (State _ _ pos) = pos
 
 -- | Intermediate parse results
 data ParseResult st a = PR { prResult :: a, prState :: State st }
-  deriving (Eq, Ord, Show)
-
-instance Functor (ParseResult st) where
-  fmap f pr = pr { prResult = f $ prResult pr }
+  deriving (Eq, Ord, Show, Functor)
 
 -- | Continutation passing style ambiguity parser
 -- In practice: @st@ = @FState@, @r@ = @ParseResult FState a@
