@@ -44,10 +44,10 @@ data State st = State
   , lastPosition :: SourcePos
   } deriving (Eq, Ord, Show)
 
--- | Get the current position of the parser
+-- | Get the current position of the parser.
 stPosition :: State st -> SourcePos
-stPosition (State _ (t:_ts) _) = tokenPos t
-stPosition (State _ _ pos) = pos
+stPosition State{ stInput = t:_ } = tokenPos t
+stPosition State{ lastPosition = pos } = pos
 
 -- | Intermediate parse results
 data ParseResult st a = PR { prResult :: a, prState :: State st }
@@ -102,7 +102,7 @@ tryParses :: forall r a b st. (a -> Parser st b)
   -> ConsumedFail r
   -> EmptyFail r
   -> Continuation r st a
-tryParses f ok consumedFail emptyFail err emptyOk consumedOk = go err [] [] [] [] emptyOk consumedOk
+tryParses f ok consumedFail emptyFail err = go err [] [] [] []
   where
     -- The reverses are just for debugging to force an intuitive order.
     -- They are not necessary.
@@ -114,7 +114,8 @@ tryParses f ok consumedFail emptyFail err emptyOk consumedOk = go err [] [] [] [
       -> [ParseResult st a]
       -> [ParseResult st a]
       -> r
-    go accErr accEmptyOk accConsumedOk accConsumedFails accEmptyFails emptyOks consumedOks = case (emptyOks, consumedOks) of
+    go accErr accEmptyOk accConsumedOk accConsumedFails accEmptyFails emptyOks consumedOks =
+      case (emptyOks, consumedOks) of
 
       -- If we have no further input: exit based on the accumulated results
       ([],[]) -> if
@@ -175,10 +176,15 @@ runP p st = runParser p st ok consumedFail emptyFail
 -- parser state management
 
 instance MonadState st (Parser st) where
+
+  get :: Parser st st
   get   = Parser $ \st ok _ _ ->
     ok (newErrorUnknown (stPosition st)) [PR (stUser st) st] []
+
+  put :: st -> Parser st ()
   put s = Parser $ \st ok _consumedFail _emptyFail ->
     ok (newErrorUnknown (stPosition st)) [PR () st {stUser = s}] []
+
 
 -- | Get the @stInput@ as a @ParseResult@.
 getInput :: Parser st [Token]
