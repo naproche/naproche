@@ -57,18 +57,19 @@ instance Functor (ParseResult st) where
 
 -- | Continutation passing style ambiguity parser
 -- In practice: @st@ = @FState@, @b@ = @ParseResult FState a@
-type Continuation st a b =
-  ParseError -> [ParseResult st a] -> [ParseResult st a] -> b
-type EmptyFail    b = ParseError -> b
-type ConsumedFail b = ParseError -> b
+
+type Continuation r st a =
+  ParseError -> [ParseResult st a] -> [ParseResult st a] -> r
+type EmptyFail    r = ParseError -> r
+type ConsumedFail r = ParseError -> r
 
 
-newtype Parser st a = Parser {runParser :: forall b .
+newtype Parser st a = Parser {runParser :: forall r .
      State st
-  -> Continuation st a b
-  -> ConsumedFail b
-  -> EmptyFail b
-  -> b }
+  -> Continuation r st a
+  -> ConsumedFail r
+  -> EmptyFail r
+  -> r }
 
 instance Functor (Parser st) where
   fmap f p = Parser $ \ st ok consumedFail err ->
@@ -100,9 +101,9 @@ instance Fail.MonadFail (Parser st) where
 -- This function is simple, but unfriendly to read because of all the
 -- accumulators involved. A clearer definition would be welcome.
 tryParses :: (a -> Parser st b)
-          -> Continuation st b c
-          -> ConsumedFail c -> EmptyFail c
-          -> Continuation st a c
+          -> Continuation r st b
+          -> ConsumedFail r -> EmptyFail r
+          -> Continuation r st a
 tryParses f ok consumedFail emptyFail err emptyOk consumedOk = go err [] [] [] [] emptyOk consumedOk
   where
     go accErr accEmptyOk accConsumedOk accConsumedFails accEmptyFails emptyOk' consumedOk' = case (emptyOk', consumedOk') of
