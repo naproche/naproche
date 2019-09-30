@@ -17,14 +17,17 @@ import qualified Control.Exception as Exception
 import qualified Isabelle.File as File
 import qualified Isabelle.Standard_Thread as Standard_Thread
 
-import qualified SAD.Core.Message as Message
 import SAD.Core.SourcePos
 import SAD.Data.Instr hiding (Prover)
-import qualified SAD.Data.Instr as Instr
 import SAD.Data.Text.Context (Context)
 import SAD.Export.Base
-import qualified SAD.Export.TPTP as TPTP
+import SAD.Helpers (notNull)
+
+import qualified SAD.Core.Message as Message
+import qualified SAD.Data.Instr as Instr
 import qualified SAD.Export.DFG as DFG
+import qualified SAD.Export.TPTP as TPTP
+
 
 
 export :: Bool -> Int -> [Prover] -> [Instr] -> [Context] -> Context -> IO (IO Bool)
@@ -80,7 +83,7 @@ export reduced depth provers instrs context goal = do
       Standard_Thread.bracket_resource terminate $ do
         output <- hGetContents prvout
         errors <- hGetContents prverr
-        let lns = filter (not . null) $ lines $ output ++ errors
+        let lns = filter notNull $ lines $ output ++ errors
             out = map (("[" ++ label ++ "] ") ++) lns
 
         when (null lns) $ Message.errorExport noSourcePos "No prover response"

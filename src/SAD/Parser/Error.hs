@@ -9,7 +9,6 @@ module SAD.Parser.Error
     newErrorMessage,
     newErrorUnknown,
     (<+>),
-    (<++>),
     setExpectMessage,
     unexpectError,
     newMessage,
@@ -19,13 +18,13 @@ module SAD.Parser.Error
   where
 
 import SAD.Core.SourcePos
-import SAD.Helpers (nubOrd)
+import SAD.Helpers (notNull, nubOrd)
 import Data.List
 
 data Message
   = ExpectMsg {unExpect :: String, expect :: [String], message :: [String]}
   | WellFormednessMessage {message :: [String]}
-  | Unknown 
+  | Unknown
   deriving (Eq, Ord, Show)
 
 isUnknownMsg, isExpectMsg, isWellFormednessMessage :: Message -> Bool
@@ -45,7 +44,7 @@ newWellFormednessMessage :: [String] -> Message
 newWellFormednessMessage msgs = WellFormednessMessage msgs
 
 compareImportance :: Message -> Message -> Ordering
-compareImportance msg1 msg2 = 
+compareImportance msg1 msg2 =
     case compare (numerate msg1) (numerate msg2) of
       GT -> GT
       LT -> LT
@@ -83,6 +82,10 @@ instance Ord ParseError where
     | isWellFormednessMessage msg2 = if isWellFormednessMessage msg1 then compare pos1 pos2 else LT
     | otherwise    = compare pos1 pos2
 
+-- | @ParserError@ is a 'Semigroup' under left-biased importance merge.
+instance Semigroup ParseError where
+  (<>) :: ParseError -> ParseError -> ParseError
+  (<>) = (<++>)
 
 newErrorMessage :: Message -> SourcePos -> ParseError
 newErrorMessage msg pos = ParseError pos msg
@@ -144,4 +147,4 @@ showErrorMessage msg = case msg of
     commasOr ms  = intercalate ", " (init ms) ++ " or " ++ last ms
 
     clean :: [String] -> [String]
-    clean = nubOrd . filter (not . null)
+    clean = nubOrd . filter notNull

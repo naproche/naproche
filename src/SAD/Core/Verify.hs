@@ -13,27 +13,29 @@ import Data.IORef
 import Data.Maybe
 import Control.Monad.Reader
 
-import SAD.Core.SourcePos
 import SAD.Core.Base
 import SAD.Core.Check
-import qualified SAD.Core.Message as Message
+import SAD.Core.Extract
+import SAD.Core.ProofTask
 import SAD.Core.Reason
+import SAD.Core.Reduction
+import SAD.Core.Rewrite
+import SAD.Core.SourcePos
 import SAD.Core.Thesis
 import SAD.Data.Formula
-import qualified SAD.Data.Tag as Tag
-import SAD.Data.Instr (Instr, isParserInstruction)
 import SAD.Data.Instr
+import SAD.Data.Instr (Instr, isParserInstruction)
 import SAD.Data.Text.Block (Block(Block), Text(..), Section(..))
-import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Text.Context (Context(Context))
-import qualified SAD.Data.Text.Context as Context
-import SAD.Prove.MESON
-import SAD.Core.Reduction
-import SAD.Core.ProofTask
-import SAD.Core.Extract
-import qualified SAD.Data.Structures.DisTree as DT
-import SAD.Core.Rewrite
 import SAD.Export.Base (Prover)
+import SAD.Helpers (notNull)
+import SAD.Prove.MESON
+
+import qualified SAD.Core.Message as Message
+import qualified SAD.Data.Structures.DisTree as DT
+import qualified SAD.Data.Tag as Tag
+import qualified SAD.Data.Text.Block as Block
+import qualified SAD.Data.Text.Context as Context
 
 import qualified Isabelle.Markup as Markup
 
@@ -44,7 +46,7 @@ verify fileName provers reasonerState (TextRoot text) = do
   Message.outputReasoner Message.TRACING (fileOnlyPos fileName) "verification started"
 
   let verificationState =
-        VS False [] DT.empty (Context Bot [] [] Bot) [] [] (DT.empty, DT.empty) 
+        VS False [] DT.empty (Context Bot [] [] Bot) [] [] (DT.empty, DT.empty)
           initialDefinitions initialGuards 0 [] provers text'
   result <- flip runRM reasonerState $
     runReaderT (verificationLoop verificationState) verificationState
@@ -78,7 +80,7 @@ verificationLoop state@VS {
     Message.outputForTheL Message.WRITELN (Block.position block) $
     Message.trimText (Block.showForm 0 block "")
   let newBranch = block : branch; contextBlock = Context f newBranch [] f
-  
+
   whenInstruction Translation False $
     unless (Block.isTopLevel block) $ translateLog Message.WRITELN (Block.position block) $ show f
 
@@ -86,7 +88,7 @@ verificationLoop state@VS {
     if   Block.isTopLevel block
     then return f
     else (fillDef alreadyChecked contextBlock) <|> (setFailed >> return f) -- check definitions and fortify terms
-  
+
   unsetChecked
 
   checkFailed (return (restText state, restText state)) $ do
@@ -98,7 +100,7 @@ verificationLoop state@VS {
       if p then return [] else return body
 
     whenInstruction Printthesis False $ when (
-      toBeProved && (not . null) proofBody &&
+      toBeProved && notNull proofBody &&
       not (hasDEC $ Context.formula freshThesis)) $
         thesisLog Message.WRITELN (Block.position block) (length branch - 1) $
         "thesis: " ++ show (Context.formula freshThesis)
@@ -121,7 +123,7 @@ verificationLoop state@VS {
           Block.body = fortifiedProof }
         formulaImage = Block.formulate newBlock
         markedBlock = block {Block.body = markedProof}
-    
+
     checkFailed (return (TextBlock newBlock : blocks, TextBlock markedBlock : blocks)) $ do
 
       (mesonRules, intermediateSkolem) <- contras $ deTag formulaImage
@@ -169,12 +171,12 @@ verificationLoop state@VS {
         currentThesis = newThesis, currentContext = newContext,
         mesonRules = newRules, definitions = newDefinitions,
         skolemCounter = newSkolem, restText = blocks }
-        
+
       -- if this block made the thesis unmotivated, we must discharge a composite
       -- (and possibly quite difficult) prove task
       let finalThesis = Imp (Block.compose $ TextBlock newBlock : newBlocks) (Context.formula thesis)
 
-      -- notice that the following is only really executed if 
+      -- notice that the following is only really executed if
       -- motivated && not newMotivated == True
       verifyProof state {
         thesisMotivated = motivated && not newMotivation,
@@ -348,7 +350,7 @@ procTextInstr = flip proc $ ask >>= verificationLoop
       addInstruction (SetFlag Printunfold True) .
       addInstruction (SetFlag Printfulltask True)
 
-    proc i 
+    proc i
       | isParserInstruction i = id
       | otherwise = addInstruction i
 

@@ -9,20 +9,21 @@ Maintain the current thesis.
 module SAD.Core.Thesis (inferNewThesis) where
 
 
-import SAD.Data.Formula
-import SAD.Data.TermId
-import SAD.Data.Definition (Definitions)
-import SAD.Data.Text.Context (Context)
-import qualified SAD.Data.Text.Context as Context 
 import SAD.Core.Base
 import SAD.Core.Reason
+import SAD.Data.Definition (Definitions)
+import SAD.Data.Formula
+import SAD.Data.TermId
+import SAD.Data.Text.Context (Context)
+import SAD.Helpers (notNull)
+import qualified SAD.Data.Text.Context as Context
 
+import Control.Applicative
 import Control.Monad
+import Control.Monad.Trans.Class
+import Control.Monad.Trans.State
 import Data.List
 import Data.Maybe
-import Control.Applicative
-import Control.Monad.Trans.State
-import Control.Monad.Trans.Class
 import qualified Data.Map as Map
 
 
@@ -82,7 +83,7 @@ equivalentTo = normalizedCheck 0
     normalizedCheck n f g = check n (albet f) (albet g)
     check n (All _ a) (All _ b) = let freshVariable = show n in
       normalizedCheck (succ n) (inst freshVariable a) (inst freshVariable b)
-    check n (Exi _ a) (Exi _ b) = let freshVariable = show n in 
+    check n (Exi _ a) (Exi _ b) = let freshVariable = show n in
       normalizedCheck (succ n) (inst freshVariable a) (inst freshVariable b)
     check n (And a b) (And c d) = normalizedCheck n a c && normalizedCheck n b d
     check n (Or a b) (Or c d)   = normalizedCheck n a c && normalizedCheck n b d
@@ -98,7 +99,7 @@ equivalentTo = normalizedCheck 0
 can be patched together from the hs. Important to be able to reduce an
 existential thesis. -}
 hasInstantiationIn:: Formula -> [Formula] -> Bool
-hasInstantiationIn (Exi _ f) = not . null . listOfInstantiations f
+hasInstantiationIn (Exi _ f) = notNull . listOfInstantiations f
 
 type Instantiation = Map.Map String Formula
 {- the actual process of finding an instantiation. -}
@@ -106,27 +107,27 @@ listOfInstantiations :: Formula -> [Formula] -> [Instantiation]
 listOfInstantiations f = instantiations 1 Map.empty (albet $ inst "i0" f)
 
 {- worker function for SAD.Core.Thesis.listOfInstantiations -}
--- FIXME This functions needs a better way to generate free variables. The 
+-- FIXME This functions needs a better way to generate free variables. The
 --       explicit parameter passing is inadequate.
 instantiations :: Int -> Instantiation -> Formula -> [Formula] -> [Instantiation]
 instantiations n currentInst f hs =
-  [ newInst | h <- hs, newInst <- extendInstantiation currentInst f h ] ++ 
+  [ newInst | h <- hs, newInst <- extendInstantiation currentInst f h ] ++
   patchTogether (albet f)
   where
     patchTogether (And f g) = -- find instantiation of g then extend them to f
       [ fInst | gInst <- instantiations n currentInst (albet g) hs,
-                fInst <- instantiations n gInst (albet f) $ 
+                fInst <- instantiations n gInst (albet f) $
                   subInfo gInst (pred n) ++ hs ]--add collected local properties
     patchTogether (Exi _ f) =
       instantiations (succ n) currentInst (albet $ inst ('i':show n) f) hs
     patchTogether _ = []
 
-    subInfo sb n = 
+    subInfo sb n =
       let sub = applySb sb $ zVar $ 'i':show n
       in  map (replace sub ThisT) $ varInfo $ sub
 
 
-{- finds an instantiation to make a formula equal to a second formula. 
+{- finds an instantiation to make a formula equal to a second formula.
 An initial instantiation is given which is then tried to be extended.
 Result is returned within the list monad. -}
 extendInstantiation :: Instantiation -> Formula -> Formula -> [Instantiation]
@@ -145,7 +146,7 @@ extendInstantiation sb f g = snd <$> runStateT (normalizedDive 0 f g) sb
     dive n (Not f) (Not g) = dive n f g
     dive n Trm {trmId = t1, trmArgs = ts1} Trm {trmId = t2, trmArgs = ts2}
       = lift (guard $ t1 == t2) >> mapM_ (uncurry $ dive n) (zip ts1 ts2)
-    dive _ v@Var {varName = s@('i':_)} t = do 
+    dive _ v@Var {varName = s@('i':_)} t = do
       mp <- get; case Map.lookup s mp of
         Nothing -> modify (Map.insert s t)
         Just t' -> lift $ guard (twins t t')
@@ -175,7 +176,7 @@ findUsefulVariation definitions (assumption:restContext) thesis =
       runVM (generateVariations definitions thesis) $ Context.declaredNames assumption
     useful variation = isTop $ getObj $
       reductionInViewOf (Not variation) $ Context.formula assumption
-findUsefulVariation _ _ _ = 
+findUsefulVariation _ _ _ =
   error "SAD.Core.Thesis.findUsefulVariation: empty context"
 
 --- improved reduction
@@ -183,7 +184,7 @@ findUsefulVariation _ _ _ =
 {- reduce the thesis and possibly look behind symbol definitions. Only one
 layer of definition can be stripped away. -}
 reduceThesis :: Definitions -> Formula -> Formula -> ChangeInfo Formula
-reduceThesis definitions affirmation thesis = 
+reduceThesis definitions affirmation thesis =
   let reducedThesis = reductionInViewOf affirmation thesis
       expandedThesis = expandSymbols thesis
       reducedExpandedThesis =
@@ -238,7 +239,7 @@ generateVariations definitions = pass [] (Just True) 0
 {- mark symbols that are recursively defined in their defining formula, so that
    the definition is not infinitely expanded -}
 markRecursive :: TermId -> Formula -> Formula
-markRecursive n t@Trm{trmId = m} 
+markRecursive n t@Trm{trmId = m}
   | n == m = Tag GenericMark t
   | otherwise = t
 markRecursive n f = mapF (markRecursive n) f

@@ -1,5 +1,6 @@
 module SAD.Helpers
   ( trimLine
+  , notNull
   , nubOrd, nubOrdBy, nubOrdOn
   ) where
 
@@ -13,6 +14,11 @@ trimLine "\n" = ""
 trimLine "\r" = ""
 trimLine "\r\n" = ""
 trimLine (x:xs) = x : trimLine xs
+
+-- | Returns @False@ if the list is empty and @True@ otherwise.
+notNull :: [a] -> Bool
+notNull [] = False
+notNull _  = True
 
 -- | /O(n log n)/. The 'nubOrd' function removes duplicate elements from a list.
 -- In particular, it keeps only the first occurrence of each element.
