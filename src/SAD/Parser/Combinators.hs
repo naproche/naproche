@@ -36,7 +36,7 @@ import Debug.Trace
 try :: Parser st a -> Parser st a
 try p = Parser $ \st ok _cerr eerr -> runParser p st ok eerr eerr
 
--- | Ambiguous choice. Run both parsers and combine the errors and results. 
+-- | Ambiguous choice. Run both parsers and combine the errors and results.
 infixr 2 -|-
 (-|-) :: forall st a. Parser st a -> Parser st a -> Parser st a
 p1 -|- p2 = Parser $ \st ok cerr eerr ->
@@ -47,13 +47,13 @@ p1 -|- p2 = Parser $ \st ok cerr eerr ->
         in  runParser p2 st ok2 cerr2 eerr2
       cerr1 err =
         let ok2 err'      = ok   (err <+>  err')
-            cerr2 err'    = cerr (err <++> err')
-            eerr2 err'    = eerr (err <++> err')
+            cerr2 err'    = cerr (err <> err')
+            eerr2 err'    = eerr (err <> err')
         in  runParser p2 st ok2 cerr2 eerr2
       eerr1 err =
         let ok2 err'      = ok   (err <+>  err')
-            eerr2 err'    = eerr (err <++> err')
-            cerr2 err'    = eerr (err <++> err')
+            eerr2 err'    = eerr (err <> err')
+            cerr2 err'    = eerr (err <> err')
         in  runParser p2 st ok2 cerr2 eerr2
   in  runParser p1 st ok1 cerr1 eerr1
 
@@ -236,7 +236,7 @@ wellFormedCheck check p = Parser $ \st ok cerr eerr ->
     wf  = filter (isNothing . check . prResult)
     nwf = catMaybes . map (check . prResult)
 
--- | Parse and keep only results well-formed according to the supplied check; 
+-- | Parse and keep only results well-formed according to the supplied check;
 -- fail if there are none with a normal error (and not a well-formedness one).
 -- Here @True@ means well-formed.
 lexicalCheck :: (a -> Bool) -> Parser st a -> Parser st a

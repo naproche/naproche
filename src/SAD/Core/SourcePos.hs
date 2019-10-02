@@ -19,6 +19,8 @@ module SAD.Core.SourcePos
     noRange)
   where
 
+import SAD.Helpers (notNull)
+
 import qualified Data.List as List
 
 -- | A 'SourcePos' is either a position or a range in the 'sourceFile'.
@@ -26,7 +28,7 @@ import qualified Data.List as List
 data SourcePos =
   SourcePos {
     sourceFile :: FilePath,
-    sourceLine :: Int, 
+    sourceLine :: Int,
     sourceColumn :: Int,
     sourceOffset :: Int,
     sourceEndOffset :: Int }
@@ -83,12 +85,12 @@ noRange :: SourceRange
 noRange = SourceRange noSourcePos noSourcePos
 
 instance Show SourcePos where
-  show (SourcePos file line column _ _) = List.intercalate " " $ filter (not . null) [quotedFilePath, listOfDetails]
+  show (SourcePos file line column _ _) = List.intercalate " " $ filter notNull [quotedFilePath, listOfDetails]
     where
       detail a i = if i <= 0 then "" else a ++ " " ++ show i
       details = [detail "line" line, detail "column" column]
       listOfDetails =
-        case filter (not . null) details of
+        case filter notNull details of
           [] -> ""
           ds -> "(" ++ List.intercalate ", " ds ++ ")"
       quotedFilePath = if null file then "" else "\"" ++ file ++ "\""

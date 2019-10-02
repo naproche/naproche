@@ -9,17 +9,19 @@ Term rewriting: extraction of rules and proof of equlities.
 
 module SAD.Core.Rewrite (equalityReasoning) where
 
+import SAD.Core.Base
+import SAD.Core.Reason
 import SAD.Core.SourcePos
 import SAD.Data.Formula
-import SAD.Data.Rules (Rule)
-import qualified SAD.Data.Rules as Rule
-import SAD.Data.Text.Context (Context)
-import qualified SAD.Data.Text.Context as Context
-import qualified SAD.Data.Text.Block as Block (body, link, position)
-import SAD.Core.Base
-import qualified SAD.Core.Message as Message
 import SAD.Data.Instr
-import SAD.Core.Reason
+import SAD.Data.Rules (Rule)
+import SAD.Data.Text.Context (Context)
+import SAD.Helpers (notNull)
+
+import qualified SAD.Core.Message as Message
+import qualified SAD.Data.Rules as Rule
+import qualified SAD.Data.Text.Block as Block (body, link, position)
+import qualified SAD.Data.Text.Context as Context
 
 import Data.List
 import qualified Data.Set as Set
@@ -66,7 +68,7 @@ lexord _ _ _ = False
 type SimpInfo = ([Formula], String)
 
 
-{- performs one simplification step. We always try to simplify in a 
+{- performs one simplification step. We always try to simplify in a
 leftmost-bottommost fashion with respect to the term structure -}
 simpstep :: [Rule] -> Weighting -> Formula -> [(Formula, SimpInfo)]
 simpstep rules w = flip runStateT undefined . dive
@@ -110,7 +112,7 @@ findNormalform rules w t = map (reverse . (:) (t, trivialSimpInfo)) $ dive t
         (:) (simplifiedTerm, simpInfo) <$> dive simplifiedTerm
 
 
-{- finds two matching normalforms and outputs all conditions accumulated 
+{- finds two matching normalforms and outputs all conditions accumulated
 during their rewriting -}
 generateConditions ::
   Bool -> [Rule] -> Weighting -> Formula -> Formula -> VM [SimpInfo]
@@ -149,13 +151,13 @@ generateConditions verbositySetting rules w l r =
 equalityReasoning :: Context -> VM ()
 equalityReasoning thesis
   | body = whenInstruction Printreason False $ reasonLog Message.WRITELN noSourcePos "eqchain concluded"
-  | (not . null) link = getLinkedRules link >>= rewrite equation
+  | notNull link = getLinkedRules link >>= rewrite equation
   | otherwise = rules >>= rewrite equation -- if no link is given -> all rules
   where
     equation = strip $ Context.formula thesis
     link = Context.link thesis
     -- body is true for the EC section containing the equlity chain
-    body = (not . null) $ Block.body . head . Context.branch $ thesis
+    body = notNull $ Block.body . head . Context.branch $ thesis
 
 
 getLinkedRules :: [String] -> VM [Rule]
@@ -181,7 +183,7 @@ rules :: VM [Rule]
 rules = asks rewriteRules
 
 
-{- applies rewriting to both sides of an equation 
+{- applies rewriting to both sides of an equation
 and compares the resulting normal forms -}
 rewrite :: Formula -> [Rule] -> VM ()
 rewrite Trm {trmName = "=", trmArgs = [l,r]} rules = do

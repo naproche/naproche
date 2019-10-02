@@ -55,7 +55,7 @@ withGoal action goal = local (\vState ->
   vState { currentThesis = Context.setForm (currentThesis vState) goal}) action
 
 withContext :: VM a -> [Context] -> VM a
-withContext action context = local (\vState -> 
+withContext action context = local (\vState ->
   vState { currentContext = context }) action
 
 thesis :: Monad a => ReaderT VState a Context
@@ -76,9 +76,9 @@ sequenceGoals reasoningDepth iteration (goal:restGoals) = do
     trivial = guard (isTop reducedGoal) >> updateTrivialStatistics
     proofByATP = launchProver iteration
 
-    reason 
+    reason
       | reasoningDepth == 1 = depthExceedMessage >> mzero
-      | otherwise = do  
+      | otherwise = do
           newTask <- unfold
           let Context {Context.formula = Not newGoal} : newContext = newTask
           sequenceGoals (pred reasoningDepth) (succ iteration) [newGoal]
@@ -88,7 +88,7 @@ sequenceGoals reasoningDepth iteration (goal:restGoals) = do
       whenInstruction Printreason False $
         reasonLog Message.WARNING noSourcePos "reasoning depth exceeded"
 
-    updateTrivialStatistics = 
+    updateTrivialStatistics =
       unless (isTop goal) $ whenInstruction Printreason False $
          reasonLog Message.WRITELN noSourcePos ("trivial: " ++ show goal)
       >> incrementIntCounter TrivialGoals
@@ -113,7 +113,7 @@ launchProver iteration = do
   whenInstruction Printfulltask False (printTask reductionSetting)
   proverList <- asks provers ; instrList <- asks instructions
   goal <- thesis; context <- asks currentContext
-  let callATP = justIO $ 
+  let callATP = justIO $
         export reductionSetting iteration proverList instrList context goal
   callATP >>= timer ProofTime . justIO >>= guard
   res <- fmap head $ askRS counters
@@ -139,7 +139,7 @@ launchReasoning = do
   (mesonPos, mesonNeg) <- asks mesonRules
   let lowlevelContext = takeWhile Context.isLowLevel context
       proveGoal = prove skolemInt lowlevelContext mesonPos mesonNeg goal
-      -- set timelimit to 10^4 
+      -- set timelimit to 10^4
       -- (usually not necessary as max proof depth is limited)
       callOwn = do
         Standard_Thread.expose_stopped
@@ -150,23 +150,23 @@ launchReasoning = do
 
 -- Context filtering
 
-{- if an explicit list of theorems is given, we set the asks currentContextto that 
+{- if an explicit list of theorems is given, we set the asks context that
   plus all definitions/sigexts (as they usually import type information that
-  is easily forgotten) and the low level context. Otherwise the whole 
-  asks currentContextis selected. -}
+  is easily forgotten) and the low level context. Otherwise the whole
+  context is selected. -}
 filterContext :: VM a -> [Context] -> VM a
 filterContext action context = do
   link <- asks (Set.fromList . Context.link . currentThesis);
-  if Set.null link 
-    then action `withContext` 
+  if Set.null link
+    then action `withContext`
          (map replaceSignHead $ filter (not . isTop . Context.formula) context)
     else do
-         linkedContext <- retrieveContext link 
+         linkedContext <- retrieveContext link
          action `withContext` (lowlevelContext ++ linkedContext ++ defsAndSigs)
   where
     (lowlevelContext, toplevelContext) = span Context.isLowLevel context
-    defsAndSigs = 
-      let defOrSig c = (not . isTop . Context.reducedFormula $ c) 
+    defsAndSigs =
+      let defOrSig c = (not . isTop . Context.reducedFormula $ c)
                     && (isDefinition c || isSignature c)
       in  map replaceHeadTerm $ filter defOrSig toplevelContext
 
@@ -205,7 +205,7 @@ reduceWithEvidence :: Formula -> Formula
 reduceWithEvidence t@Trm{trmName = "="} = t -- leave equality untouched
 reduceWithEvidence l | isLiteral l = -- try to reduce literals
   fromMaybe l $ msum $ map (lookFor l) (trmArgs $ ltAtomic l)
-reduceWithEvidence f = bool $ mapF reduceWithEvidence $ bool f 
+reduceWithEvidence f = bool $ mapF reduceWithEvidence $ bool f
 
 
 {- lookFor the right evidence -}
@@ -217,7 +217,7 @@ lookFor literal t =
   in  checkFor literal negatedLiteral $ trInfo t
   where
     checkFor literal negatedLiteral [] = Nothing
-    checkFor literal negatedLiteral (atomic:rest) 
+    checkFor literal negatedLiteral (atomic:rest)
       | ltTwins literal (replace t ThisT atomic)        = Just Top
       | ltTwins negatedLiteral (replace t ThisT atomic) = Just Bot
       | otherwise = checkFor literal negatedLiteral rest
@@ -226,7 +226,7 @@ lookFor literal t =
 -- unfolding of local properties
 
 data UnfoldState = UF {
-  defs             :: Definitions, 
+  defs             :: Definitions,
   evals            :: DT.DisTree Evaluation,
   unfoldSetting    :: Bool, -- user parameters that control what is unfolded
   unfoldSetSetting :: Bool }
@@ -234,7 +234,7 @@ data UnfoldState = UF {
 
 -- FIXME the reader monad transformer used here is completely superfluous
 unfold :: ReaderT VState CRM [Context]
-unfold = do  
+unfold = do
   thesis <- asks currentThesis; context <- asks currentContext
   let task = Context.setForm thesis (Not $ Context.formula thesis) : context
   definitions <- asks definitions; evaluations <- asks evaluations
@@ -245,18 +245,18 @@ unfold = do
   guard (generalUnfoldSetting || generalSetUnfoldSetting)
   let ((goal:toUnfold), topLevelContext) = span Context.isLowLevel task
       unfoldState = UF
-        { defs = definitions 
+        { defs = definitions
         , evals = evaluations
         , unfoldSetting = (generalUnfoldSetting    && lowlevelUnfoldSetting)
         , unfoldSetSetting = (generalSetUnfoldSetting && lowlevelSetUnfoldSetting) }
-      (newLowLevelContext, numberOfUnfolds) = 
+      (newLowLevelContext, numberOfUnfolds) =
         W.runWriter $ flip runReaderT unfoldState $
-          liftM2 (:) 
+          liftM2 (:)
             (let localState st = st { -- unfold goal with general settings
                   unfoldSetting    = generalUnfoldSetting,
                   unfoldSetSetting = generalSetUnfoldSetting}
              in  local localState $ unfoldConservative goal)
-            (mapM unfoldConservative toUnfold) 
+            (mapM unfoldConservative toUnfold)
   unfoldLog newLowLevelContext
   when (numberOfUnfolds == 0) $ nothingToUnfold >> mzero
   addIntCounter Unfolds (getSum numberOfUnfolds)
@@ -273,12 +273,12 @@ unfold = do
 
 {- conservative unfolding of local properties -}
 unfoldConservative :: Context -> ReaderT UnfoldState (W.Writer (Sum Int)) Context
-unfoldConservative toUnfold 
+unfoldConservative toUnfold
   | isDeclaration toUnfold = pure toUnfold
   | otherwise = fmap (Context.setForm toUnfold) $ fill [] (Just True) 0 $ Context.formula toUnfold
   where
     fill :: [Formula] -> Maybe Bool -> Int -> Formula -> ReaderT UnfoldState (W.Writer (Sum Int)) Formula
-    fill localContext sign n f 
+    fill localContext sign n f
       | hasDMK f = return f -- check if f has been unfolded already
       | isTrm f  =  fmap reduceWithEvidence $ unfoldAtomic (fromJust sign) f
     -- Iff is changed to double implication -> every position has a polarity
@@ -296,28 +296,28 @@ unfoldAtomic sign f = do
   nbs <- localProperties f >>= return . foldr (if sign then And else Or ) marked
   subtermLocalProperties f >>= return . foldr (if sign then And else Imp) nbs
   where
-    -- we mark the term so that it does not get 
+    -- we mark the term so that it does not get
     -- unfolded again in subsequent iterations
     marked = Tag GenericMark f
 
     subtermLocalProperties (Tag GenericMark _) = return [] -- do not expand marked terms
     subtermLocalProperties h = foldFM termLocalProperties h
-    termLocalProperties h = 
+    termLocalProperties h =
       liftM2 (++) (subtermLocalProperties h) (localProperties h)
     localProperties (Tag GenericMark _) = return []
     localProperties Trm {trmName = "=", trmArgs = [l,r]} =
-      liftM3 (\a b c -> a ++ b ++ c) 
+      liftM3 (\a b c -> a ++ b ++ c)
              (definitionalProperties l r)
-             (definitionalProperties r l) 
+             (definitionalProperties r l)
              (extensionalities l r)
   -- we combine definitional information for l, for r and if
   -- we have set equality we also throw in extensionality for sets and if
   -- we have functions we throw in function extensionality
 
-    localProperties t 
+    localProperties t
       | isApplication t || isElem t = setFunDefinitionalProperties t
       | otherwise = definitionalProperties t t
-    
+
     -- return definitional property of f instantiated with g
     definitionalProperties f g = do
       definitions <- asks defs
@@ -346,26 +346,26 @@ unfoldAtomic sign f = do
       let v = zVar "" in zAll "" $ Iff (zElem v f) (zElem v g)
     funExtensionality f g =
       let v = zVar ""
-      in (domainEquality (zDom f) (zDom g)) `And` 
+      in (domainEquality (zDom f) (zDom g)) `And`
          zAll "" (Imp (zElem v $ zDom f) $ zEqu (zApp f v) (zApp g v))
-    
-    -- depending on the sign we choose the more convenient form of set equality
-    domainEquality = 
-      let v = zVar ""; sEqu x y = zAll "" (Iff (zElem v x) (zElem v y))
-      in  if sign then zEqu else sEqu 
 
-    setFunDefinitionalProperties t = do 
+    -- depending on the sign we choose the more convenient form of set equality
+    domainEquality =
+      let v = zVar ""; sEqu x y = zAll "" (Iff (zElem v x) (zElem v y))
+      in  if sign then zEqu else sEqu
+
+    setFunDefinitionalProperties t = do
       evaluations <- asks evals
       let evaluationFormula = maybeToList $
             DT.lookup t evaluations >>= msum . map findev
       unfGuard unfoldSetSetting $
-        unless (null evaluationFormula) (lift $ W.tell 1) >> 
+        unless (null evaluationFormula) (lift $ W.tell 1) >>
         return evaluationFormula
       where
         findev ev = do
           sb <- match (Evaluation.term ev) t
           guard (all trivialByEvidence $ map sb $ Evaluation.conditions ev)
-          return $ replace (Tag GenericMark t) ThisT $ sb $ 
+          return $ replace (Tag GenericMark t) ThisT $ sb $
             if sign then Evaluation.positives ev else Evaluation.negatives ev
 
     unfGuard unfoldSetting action =
