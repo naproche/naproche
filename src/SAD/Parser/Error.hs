@@ -19,7 +19,10 @@ module SAD.Parser.Error
 
 import SAD.Core.SourcePos (SourcePos)
 import SAD.Helpers (notNull, nubOrd)
+
 import Data.List (intercalate)
+import Data.Ord (comparing)
+
 
 data Message
   = ExpectMsg {unexpect :: String, expect :: [String], message :: [String]}
@@ -45,11 +48,11 @@ newWellFormednessMessage msgs = WellFormednessMessage msgs
 
 compareImportance :: Message -> Message -> Ordering
 compareImportance msg1 msg2 =
-  case compare (importance msg1) (importance msg2) of
+  case comparing importance msg1 msg2 of
     GT -> GT
     LT -> LT
     EQ -> case msg1 of
-      ExpectMsg{} -> compare (unexpect msg1) (unexpect msg2)
+      ExpectMsg{} -> comparing unexpect msg1 msg2
       _           -> EQ
   where
     importance :: Message -> Int
