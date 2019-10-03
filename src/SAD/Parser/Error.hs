@@ -71,15 +71,12 @@ mergeMessage msg1 msg2 =
 
 
 data ParseError = ParseError {errorPos :: SourcePos, peMsg :: Message}
+    deriving (Eq)
 
--- TODO: There are ParseErrors p1, p2 with p1 == p2, but compare p1 p2 /= EQ
-instance Eq ParseError where
-  (ParseError p1 m1) == (ParseError p2 m2) = p1 == p2 && compareImportance m1 m2 == EQ
-
-instance Ord ParseError where
-  compare (ParseError pos1 msg1) (ParseError pos2 msg2)
-    | isWellFormednessMessage msg1 = if isWellFormednessMessage msg2 then compare pos1 pos2 else GT
-    | isWellFormednessMessage msg2 = if isWellFormednessMessage msg1 then compare pos1 pos2 else LT
+urgency :: ParseError -> ParseError -> Ordering
+urgency (ParseError pos1 msg1) (ParseError pos2 msg2)
+    | isWellFormednessMessage msg1 && not (isWellFormednessMessage msg2) = GT
+    | isWellFormednessMessage msg2 && not (isWellFormednessMessage msg1) = LT
     | otherwise    = compare pos1 pos2
 
 -- | @ParserError@ is a 'Semigroup' under left-biased importance merge.
@@ -107,7 +104,7 @@ newErrorUnknown pos = ParseError pos Unknown
 
 -- | Left-biased merge based on importance.
 (<++>) :: ParseError -> ParseError -> ParseError
-e1 <++> e2 = case compare e1 e2 of
+e1 <++> e2 = case urgency e1 e2 of
        EQ -> e1 {peMsg = mergeMessage (peMsg e1) (peMsg e2)}
        GT -> e1
        LT -> e2

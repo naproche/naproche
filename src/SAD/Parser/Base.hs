@@ -162,8 +162,11 @@ instance MonadPlus (Parser st) where
 -- Escaping the parser
 
 -- | Reply type
-data Reply a = Ok [a] | Error ParseError
-  deriving (Eq, Ord, Show)
+data Reply a
+  = Ok [a]
+  | Error ParseError
+  deriving (Eq, Show)
+
 
 -- | Running the parser
 runP :: Parser st a -> State st -> Reply (ParseResult st a)
