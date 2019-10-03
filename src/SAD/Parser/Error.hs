@@ -12,17 +12,17 @@ module SAD.Parser.Error
     setExpectMessage,
     unexpectError,
     newMessage,
-    newUnExpect,
+    newUnexpect,
     newExpect,
     newWellFormednessMessage )
   where
 
-import SAD.Core.SourcePos
+import SAD.Core.SourcePos (SourcePos)
 import SAD.Helpers (notNull, nubOrd)
-import Data.List
+import Data.List (intercalate)
 
 data Message
-  = ExpectMsg {unExpect :: String, expect :: [String], message :: [String]}
+  = ExpectMsg {unexpect :: String, expect :: [String], message :: [String]}
   | WellFormednessMessage {message :: [String]}
   | Unknown
   deriving (Eq, Ord, Show)
@@ -35,39 +35,43 @@ isExpectMsg _ = False
 isWellFormednessMessage WellFormednessMessage{} = True
 isWellFormednessMessage _ = False
 
-newMessage, newUnExpect, newExpect :: String -> Message
-newMessage  msg = ExpectMsg {unExpect = "" , expect = []   , message = [msg]}
-newUnExpect tok = ExpectMsg {unExpect = tok, expect = []   , message = []   }
-newExpect   msg = ExpectMsg {unExpect = "" , expect = [msg], message = []   }
+newMessage, newUnexpect, newExpect :: String -> Message
+newMessage  msg = ExpectMsg {unexpect = "" , expect = []   , message = [msg]}
+newUnexpect tok = ExpectMsg {unexpect = tok, expect = []   , message = []   }
+newExpect   msg = ExpectMsg {unexpect = "" , expect = [msg], message = []   }
 
 newWellFormednessMessage :: [String] -> Message
 newWellFormednessMessage msgs = WellFormednessMessage msgs
 
 compareImportance :: Message -> Message -> Ordering
 compareImportance msg1 msg2 =
-    case compare (numerate msg1) (numerate msg2) of
-      GT -> GT
-      LT -> LT
-      EQ -> case msg1 of
-              ExpectMsg{} -> compare (unExpect msg1) (unExpect msg2)
-              _           -> EQ
-    where
-      numerate :: Message -> Int
-      numerate Unknown     = 0
-      numerate ExpectMsg{} = 1
-      numerate WellFormednessMessage{}     = 2
-
-mergeMessage :: Message -> Message -> Message
-mergeMessage msg1 msg2 =
-  case compareImportance msg1 msg2 of
-    GT -> msg1
-    LT -> msg2
-    EQ -> mergeM msg1
+  case compare (importance msg1) (importance msg2) of
+    GT -> GT
+    LT -> LT
+    EQ -> case msg1 of
+      ExpectMsg{} -> compare (unexpect msg1) (unexpect msg2)
+      _           -> EQ
   where
-    mergeM ExpectMsg{} = msg1 {expect  = expect  msg1 ++ expect  msg2,
-                               message = message msg1 ++ message msg2}
-    mergeM WellFormednessMessage{}     = msg1 {message = message msg1 ++ message msg2}
-    mergeM _           = msg1
+    importance :: Message -> Int
+    importance Unknown     = 0
+    importance ExpectMsg{} = 1
+    importance WellFormednessMessage{}     = 2
+
+-- | Messages are a 'Semigroup' under importance-biased merging.
+instance Semigroup Message where
+  (<>) :: Message -> Message -> Message
+  msg1 <> msg2 =
+    case compareImportance msg1 msg2 of
+      GT -> msg1
+      LT -> msg2
+      EQ -> msg
+    where
+      msg = case msg1 of
+        ExpectMsg{}
+          -> msg1 {expect = expect msg1 ++ expect msg2, message = message msg1 ++ message msg2}
+        WellFormednessMessage{}
+          -> msg1 {message = message msg1 ++ message msg2}
+        Unknown -> msg1
 
 
 data ParseError = ParseError {errorPos :: SourcePos, peMsg :: Message}
@@ -75,14 +79,17 @@ data ParseError = ParseError {errorPos :: SourcePos, peMsg :: Message}
 
 urgency :: ParseError -> ParseError -> Ordering
 urgency (ParseError pos1 msg1) (ParseError pos2 msg2)
-    | isWellFormednessMessage msg1 && not (isWellFormednessMessage msg2) = GT
-    | isWellFormednessMessage msg2 && not (isWellFormednessMessage msg1) = LT
-    | otherwise    = compare pos1 pos2
+  | isWellFormednessMessage msg1 && not (isWellFormednessMessage msg2) = GT
+  | isWellFormednessMessage msg2 && not (isWellFormednessMessage msg1) = LT
+  | otherwise    = compare pos1 pos2
 
 -- | @ParserError@ is a 'Semigroup' under left-biased importance merge.
 instance Semigroup ParseError where
   (<>) :: ParseError -> ParseError -> ParseError
-  (<>) = (<++>)
+  e1 <> e2 = case urgency e1 e2 of
+    EQ -> e1 {peMsg = peMsg e1 <> peMsg e2}
+    GT -> e1
+    LT -> e2
 
 newErrorMessage :: Message -> SourcePos -> ParseError
 newErrorMessage msg pos = ParseError pos msg
@@ -97,17 +104,10 @@ newErrorUnknown pos = ParseError pos Unknown
     GT -> e1
     LT -> e2
     EQ | isExpectMsg msg1 -> if   isExpectMsg msg2
-                             then e1 {peMsg = mergeMessage msg1 msg2}
+                             then e1 {peMsg = msg1 <> msg2}
                              else e1
        | isExpectMsg msg2 -> e2
-       | otherwise        -> e1 {peMsg = mergeMessage msg1 msg2}
-
--- | Left-biased merge based on importance.
-(<++>) :: ParseError -> ParseError -> ParseError
-e1 <++> e2 = case urgency e1 e2 of
-       EQ -> e1 {peMsg = mergeMessage (peMsg e1) (peMsg e2)}
-       GT -> e1
-       LT -> e2
+       | otherwise        -> e1 {peMsg = msg1 <> msg2}
 
 setExpectMessage :: String -> ParseError -> ParseError
 setExpectMessage expe pe@(ParseError pos msg)
@@ -116,7 +116,7 @@ setExpectMessage expe pe@(ParseError pos msg)
   | otherwise        = ParseError pos $ msg {expect = [expe]}
 
 unexpectError :: String -> SourcePos -> ParseError
-unexpectError uex pos = newErrorMessage (newUnExpect uex) pos
+unexpectError uex pos = newErrorMessage (newUnexpect uex) pos
 
 errorMessage :: ParseError -> Message
 errorMessage (ParseError _ msg) = msg
@@ -129,8 +129,8 @@ showErrorMessage :: Message -> String
 showErrorMessage msg = case msg of
   Unknown -> "unknown parse error"
   WellFormednessMessage m -> commasOr $ clean m
-  ExpectMsg unExpected expected msgs -> case clean msgs of
-    [] -> unlines $ clean $ ["unexpected " ++ unExpected, showMany "expecting" (clean expected)]
+  ExpectMsg unexpected expected msgs -> case clean msgs of
+    [] -> unlines $ clean $ ["unexpected " ++ unexpected, showMany "expecting" (clean expected)]
     messages -> commasOr messages
   where
     showMany :: String -> [String] -> String
