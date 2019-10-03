@@ -9,7 +9,7 @@ import Control.Monad
 import Control.Concurrent
 
 compileFile :: FilePath -> IO (Handle, ProcessHandle)
-compileFile f = do 
+compileFile f = do
   (_, Just hout, _, ph) <- createProcess (proc "stack" ["exec", "Naproche-SAD", "--", f, "-t", "20"])
     { std_out = CreatePipe }
   pure (hout, ph)

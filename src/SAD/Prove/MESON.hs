@@ -90,7 +90,7 @@ solve n localRules positives negatives ancestors goal =
       fmap (sbs . ) $ solveGoals m newAncestors $ map sbs goals
 
 
-{- find out which part of a substitution is actually relevant for the 
+{- find out which part of a substitution is actually relevant for the
 current goal-}
 relevantSbs :: Formula -> (Formula -> Formula) -> (Formula -> Formula)
 relevantSbs f sb =

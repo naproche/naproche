@@ -7,13 +7,13 @@ import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Formula (Formula)
 import SAD.Data.Text.Decl (Decl)
 
-data Context = Context { 
+data Context = Context {
   formula        :: Formula,  -- formula of the context
   branch         :: [Block.Block],  -- branch of the context
   mesonRules     :: [MRule],  -- MESON rules extracted from the formula
   reducedFormula :: Formula } -- ontologically reduced formula
 
-data MRule = MR { 
+data MRule = MR {
   assumption :: [Formula], -- assumptions of the rule
   conclusion :: Formula } -- conclusion of the rule
   deriving Show

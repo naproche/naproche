@@ -89,7 +89,7 @@ boolSimp f = bool $ mapF boolSimp f
 -- | Maybe quantification handles quantification more efficiently in that it
 -- possibly already simplifies formulas. Prototype example:
 --     "exists x (x = t /\ P(x))" is replaced by "P(t)"
---     "forall x (x = t => P(x))" is replaced by "P(t)" 
+--     "forall x (x = t => P(x))" is replaced by "P(t)"
 --
 -- In code:
 -- @(mbExi "x" (And (Trm "=" [Var "x" [] noSourcePos, Var "t" [] noSourcePos] [] 0) (Var "x" [] noSourcePos))) == Just (Var "t" [] noSourcePos)@
@@ -105,12 +105,12 @@ mbBind v  = dive id
     dive c s (Tag a f) = dive (c . bool . Tag a) s f
     dive c s (Not f)   = dive (c . bool . Not) (not s) f
     dive c False (Imp f g) =
-      dive (c . bool . (`Imp` g)) True f `mplus` 
+      dive (c . bool . (`Imp` g)) True f `mplus`
       dive (c . bool . (f `Imp`)) False g
-    dive c False (Or f g) = 
+    dive c False (Or f g) =
       dive (c . bool . (`Or` g)) False f `mplus`
       dive (c . bool . (f `Or`)) False g
-    dive c True (And f g) = 
+    dive c True (And f g) =
       dive (c . bool . (`And` g)) True f `mplus`
       dive (c . bool . (f `And`)) True g
     dive c True Trm {trmName = "=", trmArgs = [l@Var {varName = u}, t]}
@@ -307,7 +307,7 @@ infoTwins t = dive
 
 
 {- match a formula with another formula and return the substitution.
-Only variables whose name begins with a '?' are considered matchable. 
+Only variables whose name begins with a '?' are considered matchable.
 All others are treated like constants. -}
 match :: (MonadPlus m) => Formula -> Formula -> m (Formula -> Formula)
 match Var {varName = x@('?':_)} t = return $ subst t x
@@ -353,7 +353,7 @@ except those in vs -}
 freePositions :: [String] -> Formula -> [(String, SourcePos)]
 freePositions vs = nubOrdBy (compare `on` fst) . dive
   where
-    dive f@Var {varName = u@('x':_)} = 
+    dive f@Var {varName = u@('x':_)} =
       (guard (u `notElem` vs) >> return (u, varPosition f)) ++ foldF dive f
     dive f = foldF dive f
 
@@ -378,7 +378,7 @@ uClose ls f = let vs = allFree ls f in foldr zAll f vs
 
 {- apply a substitution that is represented as a finite partial map -}
 applySb :: M.Map String Formula -> Formula -> Formula
-applySb mp vr@Var {varName = v} = case M.lookup v mp of 
+applySb mp vr@Var {varName = v} = case M.lookup v mp of
   Just t  -> t
   Nothing -> vr
 applySb mp t = mapF (applySb mp) t
@@ -386,7 +386,7 @@ applySb mp t = mapF (applySb mp) t
 {- subsitution is also applied to the evidence for a term -}
 infoSub :: (Formula -> Formula) -> Formula -> Formula
 infoSub sb t@Trm{} = t {
-  trmArgs = map (infoSub sb) $ trmArgs t, 
+  trmArgs = map (infoSub sb) $ trmArgs t,
   trmInfo = map sb $ trmInfo t}
 infoSub sb v@Var{} = sb v
 infoSub sb f = mapF (infoSub sb) f

@@ -54,7 +54,7 @@ ontoRed dfs grds f = dive [] f
     dive position (Not t@Trm{})
       | isGuard t grds = Not $ tryEliminating t position
     dive _ f = f
-    
+
     tryEliminating t position
       | t `isEliminableAt` reverse position = Top
       | otherwise = t
@@ -104,7 +104,7 @@ ontoRed dfs grds f = dive [] f
           let def = fromJust $ Map.lookup (trmId h) dfs
               sb  = fromJust $ match (Definition.term def) h
           in  map sb $ Definition.guards def
-    
+
     generalGuards h
       | isSkolem h = []
       | otherwise =
@@ -150,7 +150,7 @@ directArgumentPositions = dive 0 . arguments
     dive pos (x:xs) = case x of
       Var{varName = name} -> (pos, name) : dive (succ pos) xs
       _ -> dive (succ pos) xs
-  
+
 dereference :: Formula -> Position -> Formula
 dereference = dive
   where
@@ -209,4 +209,4 @@ isElemOf g (h:hs) = g `twins` h || isElemOf g hs
 
 arguments :: Formula -> [Formula]
 arguments Top = []; arguments Bot = []
-arguments f = trmArgs f 
+arguments f = trmArgs f

@@ -88,7 +88,7 @@ before_deploy:
     echo "init_component \"~/Naproche-SAD\"" > .isabelle/etc/settings
     cd isabelle
     ./bin/isabelle components -I
-  else 
+  else
     cd isabelle
     hg pull -u
   fi
@@ -107,7 +107,7 @@ deploy:
   provider: releases
   api_key:
     secure: vwvsiVTLG4SV8ncVUqHANkD/6/Dh4d7PD1AT+fTTPgJoqfy/0KwH2MYLh4u3vjOtEyepDmis0HJDpd/cVNy8eEkppSiu+NTuUpNxJkImtAfONxJnvQYhEn6pmxeaMw/t3VYYCrC3v1ojLXKieH2fTUSQs8FAHqkbXhEpHOX/bzuzf5p4VBeQNn6qY+b9vYttOIuoPS5CbzRmQJ5OjDkN4BaPGJbLXRx1GcbWOL18G0szqlBk9Pmv1Z7Yzs4Q4Wgm5Y9D9Op5SJTahKYGSnR8dzRrtqtW+0qNWfURaFkvbSnst+XdCo1qXeEo1e1KuPcrUIu32LMpG6RcHfS03FdHkebCYeBGf2MeMWl0hTqTPRbC1/yLfbiP2rqP6oYYBj4nTUfmxDnwmBX7cwS0ZT5dvFQYd4tep0Ma1sIw7OBArJI+/jjj+GUBt1fmbjyhHEO0HxHIA5mE+KdYrK5Oohqm2PQDBGfBrZoPmKcliV1AXokN3ycMN8Trh/au/6IfolKVLFNmUPRE4AIirS3laPNt/jP6+m5T9n/H9+86Ga1y/uAk727qFnjykWVDYuLEogdO2XLdOFoY6A5af4du5dWAqNbNLMDJhWB9cMXMpiRjOSp/z4vl0lleKhZhGN8GPNElM0nBwfj30/Itqgz3UKoCJeY1W6LoZzU0uIZVC6vjFOw=
-  file: dist-Isabelle_Naproche/Isabelle_Naproche.tar.gz 
+  file: dist-Isabelle_Naproche/Isabelle_Naproche.tar.gz
   on:
     repo: anfelor/Naproche-SAD
   draft: true

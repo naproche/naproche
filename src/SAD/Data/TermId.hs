@@ -2,7 +2,7 @@ module SAD.Data.TermId where
 
 import Debug.Trace
 
-data TermId 
+data TermId
   = EqualityId
   | LessId
   | ThesisId
@@ -19,7 +19,7 @@ data TermId
   deriving (Eq, Ord, Show)
 
 specialId :: Int -> TermId
-specialId n = 
+specialId n =
   let msg =  "TermId: If you see this message, please file an issue."
   in case n of
   ( -1) -> trace msg $ EqualityId

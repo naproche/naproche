@@ -1,7 +1,7 @@
 module SAD.Data.Tag where
 
 data Tag =
-  Dig | DigMultiSubject | DigMultiPairwise | HeadTerm | 
+  Dig | DigMultiSubject | DigMultiPairwise | HeadTerm |
   InductionHypothesis | CaseHypothesis | EqualityChain |
   -- Tags to mark certain parts of function definitions
   GenericMark | Evaluation | Condition | Defined | Domain | Replacement |

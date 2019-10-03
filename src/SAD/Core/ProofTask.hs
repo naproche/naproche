@@ -85,7 +85,7 @@ choices = Tag ChoiceTask . dive
   where
     dive (Tag Evaluation _) = Top
     dive (Tag _ f) = dive f
-    dive (Exi dcl (And (Tag Defined f) g)) = let x = Decl.name dcl in 
+    dive (Exi dcl (And (Tag Defined f) g)) = let x = Decl.name dcl in
       (generateProofTask LowDefinition [] $ dec $ inst x $ f) `blAnd`
       (dec $ inst x $ f `blImp` dive g)
     dive (All x f) = bool $ All x $ dive f
@@ -116,7 +116,7 @@ uniqueness = Tag UniquenessTask . dive
           yf = devReplace y df; cyf = devReplace cy df
       in  zAll "y" $ zAll "cy" $ inc $ inc $ Imp (yf `And` cyf) $ zEqu y cy
 
-{- output a description of a function in the form 
+{- output a description of a function in the form
   (condition_1 /\ evaluation_1) \/ ... \/ (condition_n /\ evaluation_n)
   choices are expressed by choice operator rather than throuth an existentially
   quantified formula -}
@@ -126,7 +126,7 @@ describe (Tag Condition (Imp f g)) = And f $ deExi g
 describe f = deExi f
 
 deExi :: Formula -> Formula
-deExi (Exi dcl (And f g)) = let x = Decl.name dcl in 
+deExi (Exi dcl (And f g)) = let x = Decl.name dcl in
   dec $ And (inst x f) (deExi $ inst x g)
 deExi f = f
 

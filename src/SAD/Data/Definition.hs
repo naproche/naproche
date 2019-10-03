@@ -7,7 +7,7 @@ import qualified SAD.Data.Structures.DisTree as DT
 import Data.Map (Map)
 import Data.Maybe
 
-data DefType = Signature | Definition 
+data DefType = Signature | Definition
   deriving (Eq, Show)
 
 data DefEntry = DE

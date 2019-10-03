@@ -183,7 +183,7 @@ keywordsArguments :: [(Arguments, String)]
 keywordsArguments =
   [(Synonym, "synonym")]
 
--- distiguish between parser and verifier instructions 
+-- distiguish between parser and verifier instructions
 
 isParserInstruction :: Instr -> Bool
 isParserInstruction i = case i of

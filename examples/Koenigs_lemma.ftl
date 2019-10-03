@@ -65,7 +65,7 @@ A sequence of cardinals on D is a function f such that Dom(f) = D and f[x] is a 
 element x of D.
 
 Signature.
-Let kappa be a sequence of cardinals on D. SumSet(kappa,D) is a set. 
+Let kappa be a sequence of cardinals on D. SumSet(kappa,D) is a set.
 
 Axiom Sum_Def.
 Let kappa be a sequence of cardinals on D.
@@ -90,7 +90,7 @@ Lemma Choice. Let lambda be a sequence  of cardinals on D. Assume that lambda[i]
 for every element i of D.  ProdSet(lambda, D) has an element.
 Proof.
 Define f[i] = Choose an element v of lambda[i] in v for i in D.
-Then f is an element of ProdSet(lambda,D). qed. 
+Then f is an element of ProdSet(lambda,D). qed.
 
 ### Koenig's lemma
 

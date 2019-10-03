@@ -98,7 +98,7 @@ Reference versions for multi-platform executables (x86_64):
         isabelle/bin/isabelle jedit -b
 
     optional tests, notably of LaTeX packages:
-    
+
         isabelle/bin/isabelle build Pure
         isabelle/bin/isabelle build -g doc -R -b
         isabelle/bin/isabelle build -g doc -o document=pdf

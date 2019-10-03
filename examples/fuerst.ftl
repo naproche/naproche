@@ -150,7 +150,7 @@ Proof.
  Let x << \-/ S. Take a set M such that( M is an element of S and x << M). Take q such that ArSeq(x,q) [= M.
  Then ArSeq(x,q) [= \-/ S.
  qed.
- 
+
 Lemma InterOpen.    Let A,B be open subsets of INT. Then A /-\ B is a subset of INT and
                     A /-\ B is open.
 Proof.

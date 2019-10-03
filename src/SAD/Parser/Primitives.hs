@@ -30,7 +30,7 @@ tokenPrim test = Parser $ \(State st input _) ok _ eerr ->
         in  ok newerr [] [PR x newstate]
       Nothing -> eerr $ unexpectError (showToken t) (tokenPos t)
 
--- | Parse the end of input 
+-- | Parse the end of input
 eof :: Parser st ()
 eof = Parser $ \(State st input _) ok _ eerr ->
   case input of

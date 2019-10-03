@@ -57,7 +57,7 @@ defaultChannel = Char8.putStrLn . ByteString.concat
 defaultContext :: Context
 defaultContext = Context Nothing defaultChannel
 
-  
+
 -- global state
 
 type Threads = Map ThreadId Context

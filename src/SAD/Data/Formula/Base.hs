@@ -64,7 +64,7 @@ roundF :: Char -> ([Formula] -> Maybe Bool -> Int -> Formula -> Formula)
                -> [Formula] -> Maybe Bool -> Int -> Formula -> Formula
 roundF c fn l p n f = runIdentity $ roundFM c (\w x y z -> Identity $ fn w x y z) l p n f
 
-{- traverse the structure of a formula with a monadic action all while keeping 
+{- traverse the structure of a formula with a monadic action all while keeping
 track of local premises, polarity and quantification depth. A unique identifying
 char is provided to shape the instantiations.-}
 roundFM :: (Monad m) =>

@@ -9,6 +9,6 @@ data Rule = Rule {
   label     :: String }   -- label
 
 instance Show Rule where
-  show rl = 
+  show rl =
     show (left rl) ++ " = " ++ show (right rl) ++
     ", Cond: " ++ show (condition rl) ++ ", Label: " ++ show (label rl)

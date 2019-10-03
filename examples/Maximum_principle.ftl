@@ -61,7 +61,7 @@ Axiom. Assume f is holomorphic and Ball(eps,z) is a subset of the domain of f. I
 Signature.
 A region is an open set.
 
-Axiom Identity_Theorem. 
+Axiom Identity_Theorem.
 Assume f is holomorphic and the domain of f is a region. Assume that Ball(eps,z) is a subset of the domain of f. If f is constant on Ball(eps,z) then f is constant.
 
 

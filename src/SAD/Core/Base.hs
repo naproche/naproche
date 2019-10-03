@@ -65,7 +65,7 @@ import qualified SAD.Core.Message as Message
 
 
 -- | Reasoner state
-data RState = RState 
+data RState = RState
   { counters       :: [Counter]
   , failed         :: Bool
   , alreadyChecked :: Bool
@@ -101,7 +101,7 @@ data IntCounter  =
 
 
 -- | CPS IO Maybe monad
-newtype CRM b = CRM 
+newtype CRM b = CRM
   { runCRM :: forall a . IORef RState -> IO a -> (b -> IO a) -> IO a }
 
 instance Functor CRM where
