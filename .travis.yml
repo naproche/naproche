@@ -103,7 +103,7 @@ script:
   fi
 # Build the project
 - cd ~/build/$GITHUB_USER/Naproche-SAD
-- ~/isabelle/.bin/isabelle build -e -d Isabelle Naproche-Build
+- ~/isabelle/bin/isabelle build -e -d Isabelle Naproche-Build
 - stack build
 
 # Bundle
