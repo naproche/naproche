@@ -80,7 +80,7 @@ before_deploy:
 - export RELEASE=ad2d84c42380 # hg commit of isabelle to build
 # Abort on all but one worker:
 - | 
-  if [ "$EENV" != "2.3" ] || [ `uname` != "Darwin" ]
+  if [ "$EVER" != "2.3" ] || [ `uname` = "Darwin" ]
   then
     travis_terminate 0
   fi
