@@ -80,7 +80,7 @@ before_deploy:
 - export RELEASE=ad2d84c42380
 - cd ~
 - |
-  if [ ! -d "isabelle" ]
+  if [[ ! -d "isabelle" ]]
   then
     hg clone https://isabelle.in.tum.de/repos/isabelle
     mkdir -p .isabelle/etc
