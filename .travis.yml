@@ -77,10 +77,17 @@ script:
 
 before_deploy:
 - export GITHUB_USER=anfelor
-- export RELEASE=ad2d84c42380
+- export RELEASE=ad2d84c42380 # hg commit of isabelle to build
+# Abort on all but one worker:
+- | 
+  if [ "$EENV" != "2.3" ] || [ `uname` != "Darwin" ]
+  then
+    travis_terminate 0
+  fi
+# Build isabelle
 - cd ~
 - |
-  if [[ ! -d "isabelle" ]]
+  if [ ! -d "isabelle" ]
   then
     hg clone https://isabelle.in.tum.de/repos/isabelle
     mkdir -p .isabelle/etc
