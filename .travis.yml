@@ -74,16 +74,14 @@ install:
 script:
 # Build the package, its tests, and its docs and run the tests
 - stack --no-terminal test
-
-before_deploy:
-- export GITHUB_USER=anfelor
-- export RELEASE=ad2d84c42380 # hg commit of isabelle to build
 # Abort on all but one worker:
 - | 
   if [ "$EVER" != "2.3" ] || [ `uname` = "Darwin" ]
   then
     travis_terminate 0
   fi
+- export GITHUB_USER=anfelor
+- export RELEASE=ad2d84c42380 # hg commit of isabelle to build
 # Build isabelle
 - cd ~
 - |
@@ -93,7 +91,7 @@ before_deploy:
     cd isabelle
     ./bin/isabelle components -I
     ./bin/isabelle components -a
-    ./bin/isabelle build -o system_heaps -b HOL
+    travis_wait 30 ./bin/isabelle build -o system_heaps -b HOL
     mkdir -p ~/.isabelle/etc
     touch ~/.isabelle/etc/settings
     echo "init_component \"$HOME/build/$GITHUB_USER/Naproche-SAD\"" > ~/.isabelle/etc/settings
@@ -104,12 +102,14 @@ before_deploy:
     ./bin/isabelle build -o system_heaps -b HOL
   fi
 # Build the project
-- cd ../build/$GITHUB_USER/Naproche-SAD
-- ../../../.bin/isabelle build -e -d Isabelle Naproche-Build
+- cd ~/build/$GITHUB_USER/Naproche-SAD
+- ~/isabelle/.bin/isabelle build -e -d Isabelle Naproche-Build
 - stack build
-- cd ../../..
+
 # Bundle
-- tar -zcvf naproche.tar.gz $GITHUB_USER/Naproche-SAD
+before_deploy:
+- cd ~
+- tar -zcvf naproche.tar.gz build/$GITHUB_USER/Naproche-SAD
 - isabelle/Admin/build_release -r ad2d84c42380 -c naproche.tar.gz -b Pure -R Isabelle_Naproche .
 
 deploy:
