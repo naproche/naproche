@@ -87,7 +87,7 @@ before_deploy:
 # Build isabelle
 - cd ~
 - |
-  if [ ! -d "isabelle" ]
+  if [ ! -d "isabelle/.hg" ]
   then
     hg clone https://isabelle.in.tum.de/repos/isabelle
     mkdir -p .isabelle/etc
