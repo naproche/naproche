@@ -90,22 +90,24 @@ before_deploy:
   if [ ! -d "isabelle/.hg" ]
   then
     hg clone https://isabelle.in.tum.de/repos/isabelle
-    mkdir -p .isabelle/etc
-    touch .isabelle/etc/settings
-    echo "init_component \"$HOME/$GITHUB_USER/Naproche-SAD\"" > .isabelle/etc/settings
     cd isabelle
     ./bin/isabelle components -I
+    ./bin/isabelle components -a
+    ./bin/isabelle build -o system_heaps -b HOL
+    mkdir -p ~/.isabelle/etc
+    touch ~/.isabelle/etc/settings
+    echo "init_component \"$HOME/build/$GITHUB_USER/Naproche-SAD\"" > ~/.isabelle/etc/settings
   else
     cd isabelle
     hg pull -u
+    ./bin/isabelle components -a
+    ./bin/isabelle build -o system_heaps -b HOL
   fi
-- ./bin/isabelle components -a
-- ./bin/isabelle build -o system_heaps -b HOL
 # Build the project
-- cd ../$GITHUB_USER/Naproche-SAD
-- ../../.bin/isabelle build -e -d Isabelle Naproche-Build
+- cd ../build/$GITHUB_USER/Naproche-SAD
+- ../../../.bin/isabelle build -e -d Isabelle Naproche-Build
 - stack build
-- cd ../..
+- cd ../../..
 # Bundle
 - tar -zcvf naproche.tar.gz $GITHUB_USER/Naproche-SAD
 - isabelle/Admin/build_release -r ad2d84c42380 -c naproche.tar.gz -b Pure -R Isabelle_Naproche .
