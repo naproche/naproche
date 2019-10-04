@@ -92,7 +92,7 @@ before_deploy:
     hg clone https://isabelle.in.tum.de/repos/isabelle
     mkdir -p .isabelle/etc
     touch .isabelle/etc/settings
-    echo "init_component \"~/Naproche-SAD\"" > .isabelle/etc/settings
+    echo "init_component \"$HOME/$GITHUB_USER/Naproche-SAD\"" > .isabelle/etc/settings
     cd isabelle
     ./bin/isabelle components -I
   else
