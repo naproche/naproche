@@ -262,10 +262,10 @@ verifyProof state@VS {
   = dive id context $ Context.formula thesis
   where
     dive construct context (Imp (Tag InductionHypothesis f) g)
-      | closed f =
+      | isClosed f =
           process (Context.setForm thesis f : context) (construct g)
     dive construct context (Imp (Tag Tag.CaseHypothesis f) g)
-      | closed f =
+      | isClosed f =
           process (thesis {Context.formula = f, Context.reducedFormula = f} : context) (construct g)
     dive construct context (Imp f g)   = dive (construct . Imp f) context g
     dive construct context (All v f)   = dive (construct . All v) context f

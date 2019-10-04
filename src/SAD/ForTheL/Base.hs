@@ -379,14 +379,14 @@ decl vs = dive
     dive (Imp f g) = filter (noc f) (dive g)
     dive (And f g) = dive f `varNameUnion` filter (noc f) (dive g)
     dive Trm {trmName = 'a':_, trmArgs = v@Var{varName = u@('x':_)}:ts}
-      | all (not . occurs v) ts =
+      | all (\t -> not (v `occursIn` t)) ts =
           guard (u `notElem` vs) >> return (u, varPosition v)
     dive Trm{trmName = "=", trmArgs = [v@Var{varName = u@('x':_)}, t]}
-      | isTrm t && not (occurs v t) =
+      | isTrm t && not (v `occursIn` t) =
           guard (u `notElem` vs) >> return (u, varPosition v)
     dive _ = []
 
-    noc f v = not $ occurs (pVar v) f
+    noc f v = not (pVar v `occursIn` f)
     varNameUnion = unionBy $ \a b -> fst a == fst b
 
 {- produce variable names declared by a formula -}
@@ -401,7 +401,7 @@ bindings vs = mapM makeDecl . decl vs
 
 overfree :: [String] -> Formula -> Maybe String
 overfree vs f
-    | occurs zSlot f = Just $ "too few subjects for an m-predicate " ++ info
+    | zSlot `occursIn` f = Just $ "too few subjects for an m-predicate " ++ info
     | not (null sbs) = Just $ "free undeclared variables: "   ++ sbs ++ info
     | not (null ovl) = Just $ "overlapped variables: "        ++ ovl ++ info
     | otherwise      = Nothing

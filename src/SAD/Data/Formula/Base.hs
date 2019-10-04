@@ -127,8 +127,8 @@ foldFM _ _ = pure Monoid.mempty
 
 {- check for closedness in the sense that the formula contains no non-bound
    de Bruijn index. -}
-closed :: Formula -> Bool
-closed  = dive 0
+isClosed :: Formula -> Bool
+isClosed  = dive 0
   where
     dive n (All _ g) = dive (succ n) g
     dive n (Exi _ g) = dive (succ n) g
@@ -138,8 +138,8 @@ closed  = dive 0
     dive n f = allF (dive n) f
 
 {- checks whether the non-compound formula t occurs anywhere in the formula f -}
-occurs :: Formula -> Formula -> Bool
-occurs t f = twins t f || anyF (occurs t) f
+occursIn :: Formula -> Formula -> Bool
+t `occursIn` f = twins t f || anyF (t `occursIn`) f
 
 -- | Bind a variable with name v in a formula.
 -- This also affects any info stored.
@@ -220,19 +220,19 @@ replace t s = dive
     dive_aux f = mapF dive f
 
 syntacticEquality :: Formula -> Formula -> Bool
-syntacticEquality = dive
+syntacticEquality = eq
   where
-    dive (And f1 g1) (And f2 g2) = dive f1 f2 && dive g1 g2
-    dive (Or f1 g1) (Or f2 g2) = dive f1 f2 && dive g1 g2
-    dive (Imp f1 g1) (Imp f2 g2) = dive f1 f2 && dive g1 g2
-    dive (Iff f1 g1) (Iff f2 g2) = dive f1 f2 && dive g1 g2
-    dive (All _ f) (All _ g) = dive f g
-    dive (Exi _ f) (Exi _ g) = dive f g
-    dive (Tag t1 f) (Tag t2 g) = t1 == t2 && dive f g
-    dive (Not f) (Not g) = dive f g
-    dive Top Top = True
-    dive Bot Bot = True
-    dive ThisT ThisT = True
-    dive t1@Trm{} t2@Trm{} = twins t1 t2
-    dive Var {varName = v1} Var {varName = v2} = v1 == v2
-    dive _ _ = False
+    And f1 g1 `eq` And f2 g2 = f1 `eq` f2 && g1 `eq` g2
+    Or  f1 g1 `eq` Or  f2 g2 = f1 `eq` f2 && g1 `eq` g2
+    Imp f1 g1 `eq` Imp f2 g2 = f1 `eq` f2 && g1 `eq` g2
+    Iff f1 g1 `eq` Iff f2 g2 = f1 `eq` f2 && g1 `eq` g2
+    All _ f `eq` All _ g = f `eq` g
+    Exi _ f `eq` Exi _ g = f `eq` g
+    Tag t1 f `eq` Tag t2 g = t1 == t2 && f `eq` g
+    Not f `eq` Not g = f `eq` g
+    Top `eq` Top = True
+    Bot `eq` Bot = True
+    ThisT `eq` ThisT = True
+    t1@Trm{} `eq` t2@Trm{} = twins t1 t2
+    Var {varName = v1} `eq` Var {varName = v2} = v1 == v2
+    _ `eq` _ = False

@@ -37,7 +37,7 @@ unif = fmap mkSubst . dive [] -- we keep a list of already assigned variables
           = if clash l r then mzero else dive assigned (newTasks l r ++ rest)
       | functionSymb l = dive assigned $ (r, l) : rest
       | otherwise
-          = if occurs l r then mzero  -- occurs check
+          = if l `occursIn` r then mzero  -- occurs check
           -- save the assignment and unify the rest under this assignment
             else dive (task:assigned) $ map (ufSub l r) rest
     dive assigned _ = return assigned
