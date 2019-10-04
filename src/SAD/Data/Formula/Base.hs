@@ -109,11 +109,6 @@ allF predicate = Monoid.getAll . foldF (Monoid.All . predicate)
 anyF :: (Formula -> Bool) -> Formula -> Bool
 anyF predicate = Monoid.getAny . foldF (Monoid.Any . predicate)
 
-{- sums up a numeric function over the next structure level of a formula -}
-sumF :: (Num a) => (Formula -> a) -> Formula -> a
-sumF fn = Monoid.getSum . foldF (Monoid.Sum . fn)
-
-
 {- map a monadic collection over the next structure level of a formula -}
 foldFM :: (Monoid.Monoid a, Applicative m) => (Formula -> m a) -> Formula -> m a
 foldFM fn (All _ f) = fn f
