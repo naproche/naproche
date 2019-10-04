@@ -4,9 +4,7 @@ import Data.List
 import System.Process
 import System.Exit
 import GHC.IO.Handle
-import Control.Arrow
 import Control.Monad
-import Control.Concurrent
 
 compileFile :: FilePath -> IO (Handle, ProcessHandle)
 compileFile f = do
