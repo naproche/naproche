@@ -76,7 +76,7 @@ script:
 - stack --no-terminal test
 # Abort on all but one worker:
 - | 
-  if [ "$EVER" != "2.3" ] || [ `uname` = "Darwin" ]
+  if [ "$EVER" != "2.3" ] || [ `uname` = "Darwin" ] || [ 0 != 1 ]
   then
     travis_terminate 0
   fi
