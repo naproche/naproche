@@ -46,7 +46,7 @@ addDefinition (defs, grds) f = let newDef = extractDefinition defs f in
     addG df@DE {Definition.guards = grd} grds = foldr add grds $ filter isTrm grd
 
     add guard grds =
-      if   head $ fromMaybe [False] $ DT.lookup guard grds
+      if   case DT.find guard grds of [] -> False; (x:_) -> x
       then grds
       else DT.insert guard True grds
 

@@ -5,7 +5,6 @@ import SAD.Data.TermId
 import qualified SAD.Data.Structures.DisTree as DT
 
 import Data.Map (Map)
-import Data.Maybe
 
 data DefType = Signature | Definition
   deriving (Eq, Show)
@@ -29,4 +28,4 @@ isDefinition entry = kind entry == Definition
 type Guards = DT.DisTree Bool
 
 isGuard :: Formula -> Guards -> Bool
-isGuard f = head . fromMaybe [False] . DT.lookup f
+isGuard f g = case DT.find f g of [] -> False; (x:_) -> x
