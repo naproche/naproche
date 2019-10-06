@@ -178,16 +178,13 @@ inst x = dive 0
 
 {- substitute a formula t for a variable with name v. Does not affect info. -}
 subst :: Formula -> String -> Formula -> Formula
-subst t v = dive
-  where
-    dive Var {varName = u} | u == v = t
-    dive f = mapF dive f
+subst t v f = substs f [v] [t]
 
 {- multiple substitutions at the same time. Does not affect info. -}
 substs :: Formula -> [String] -> [Formula] -> Formula
 substs f vs ts = dive f
   where
-    dive v@Var {varName = u, varInfo = ss} = fromMaybe v (lookup u zvt)
+    dive v@Var {varName = u} = fromMaybe v (lookup u zvt)
     dive f = mapF dive f
     zvt = zip vs ts
 
