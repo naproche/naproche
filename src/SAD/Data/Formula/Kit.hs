@@ -371,16 +371,14 @@ allFree vs = nubOrd . dive
 
 {- universal closure of a formula -}
 uClose :: [String] -> Formula -> Formula
-uClose ls f = let vs = allFree ls f in foldr zAll f vs
+uClose ls f = foldr zAll f $ allFree ls f
 
 
 -- substitutions as maps
 
 {- apply a substitution that is represented as a finite partial map -}
 applySb :: M.Map String Formula -> Formula -> Formula
-applySb mp vr@Var {varName = v} = case M.lookup v mp of
-  Just t  -> t
-  Nothing -> vr
+applySb mp vr@Var {varName = v} = fromMaybe vr $ M.lookup v mp 
 applySb mp t = mapF (applySb mp) t
 
 {- subsitution is also applied to the evidence for a term -}
