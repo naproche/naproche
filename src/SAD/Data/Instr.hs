@@ -12,6 +12,7 @@ import SAD.Core.SourcePos (SourcePos, SourceRange(..), noSourcePos, noRange)
 -- Position information
 
 data Pos = Pos {start :: SourcePos, stop :: SourcePos, range :: SourceRange}
+  deriving (Eq, Ord, Show)
 
 position :: Pos -> SourcePos
 position p = let SourceRange a _ = range p in a
@@ -28,14 +29,14 @@ data Instr =
   | SetFlag Flag Bool
   | GetArgument Argument String
   | GetArguments Arguments [String]
-  deriving (Show, Eq)
+  deriving (Eq, Ord, Show)
 
 data Drop =
     DropCommand Command
   | DropLimit Limit
   | DropFlag Flag
   | DropArgument Argument
-  deriving (Show, Eq)
+  deriving (Eq, Ord, Show)
 
 
 -- Instructions
@@ -47,14 +48,14 @@ data Command =
   | CONTEXT  -- print current context
   | FILTER   -- print simplified top-level context
   | RULES
-  deriving (Eq,Show)
+  deriving (Eq, Ord, Show)
 
 data Limit =
     Timelimit   -- time limit per prover launch  (3 sec)
   | Depthlimit  -- number of reasoner iterations (7)
   | Checktime   -- time limit for checker's tasks (1 sec)
   | Checkdepth  -- depth limit for checker's tasks (3)
-  deriving (Eq,Show)
+  deriving (Eq, Ord, Show)
 
 data Flag =
     Prove          --  prove goals (yes)
@@ -86,7 +87,7 @@ data Flag =
   | Unfoldlowsf    --  unfold set and function conditions in low level (no)
   | Checkontored   --  enable ontological reduction for checks (off)
   | Translation    --  print first-order translation of sentences
-  deriving (Eq,Show)
+  deriving (Eq, Ord, Show)
 
 data Argument =
     Init     --  init file (init.opt)
@@ -96,11 +97,11 @@ data Argument =
   | Library  --  library directory
   | Provers  --  prover database
   | Prover   --  current prover
-  deriving (Eq,Show)
+  deriving (Eq, Ord, Show)
 
 data Arguments =
   Synonym
-  deriving (Eq,Show)
+  deriving (Eq, Ord, Show)
 
 -- Ask
 

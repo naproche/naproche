@@ -43,6 +43,7 @@ data Text =
   | TextError ParseError
   | TextChecked Text
   | TextRoot [Text]
+  deriving (Eq, Ord)
 
 data Block  = Block {
   formula           :: Formula,
@@ -53,6 +54,7 @@ data Block  = Block {
   link              :: [String],
   position          :: SourcePos,
   tokens            :: [Token] }
+  deriving (Eq, Ord)
 
 makeBlock :: Formula -> [Text] -> Section -> String -> [String] -> SourcePos -> [Token] -> Block
 makeBlock form body kind name link pos toks =
@@ -65,7 +67,7 @@ text Block {tokens} = composeTokens tokens
 data Section =
   Definition | Signature | Axiom       | Theorem | CaseHypothesis  |
   Assumption | Selection | Affirmation | Posit   | LowDefinition
-  deriving Eq
+  deriving (Eq, Ord, Show)
 
 -- Composition
 

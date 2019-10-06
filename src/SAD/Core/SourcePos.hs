@@ -68,7 +68,7 @@ advanceAlong :: SourcePos -> String -> SourcePos
 advanceAlong = List.foldl' advancePos
 
 data SourceRange = SourceRange SourcePos SourcePos
-  deriving (Eq, Show)
+  deriving (Eq, Ord, Show)
 
 noRangePos :: SourcePos -> SourcePos
 noRangePos (SourcePos file line column offset _) =

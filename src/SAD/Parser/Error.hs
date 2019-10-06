@@ -78,7 +78,7 @@ instance Semigroup Message where
 
 
 data ParseError = ParseError {errorPos :: SourcePos, peMsg :: Message}
-    deriving (Eq)
+    deriving (Eq, Ord)
 
 urgency :: ParseError -> ParseError -> Ordering
 urgency (ParseError pos1 msg1) (ParseError pos2 msg2)

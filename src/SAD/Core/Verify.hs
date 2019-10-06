@@ -324,12 +324,12 @@ procTextInstr = flip proc $ ask >>= verificationLoop
     proc (Command CONTEXT) = (>>) $ do
       context <- asks currentContext
       reasonLog Message.WRITELN noSourcePos $ "current context:\n" ++
-        concatMap (\form -> "  " ++ show form ++ "\n") (reverse context)
+        concatMap (\form -> "  " ++ show (Context.formula form) ++ "\n") (reverse context)
     proc (Command FILTER) = (>>) $ do
       context <- asks currentContext
       let topLevelContext = filter Context.isTopLevel context
       reasonLog Message.WRITELN noSourcePos $ "current filtered top-level context:\n" ++
-        concatMap (\form -> "  " ++ show form ++ "\n") (reverse topLevelContext)
+        concatMap (\form -> "  " ++ show (Context.formula form) ++ "\n") (reverse topLevelContext)
 
     proc (Command _) = (>>) $ reasonLog Message.WRITELN noSourcePos "unsupported instruction"
 
