@@ -199,6 +199,7 @@ textCompare (TextPretyping _ _) (TextPretyping _ _) = True
 textCompare (TextMacro _) (TextMacro _) = True
 textCompare (TextError _) (TextError _) = True
 textCompare (TextChecked txt) text = textCompare txt text
+textCompare text (TextChecked txt) = textCompare text txt
 textCompare (TextRoot _) (TextRoot _) = True
 textCompare (TextBlock bl1) (TextBlock bl2) =
   syntacticEquality (formulate bl1) (formulate bl2)
@@ -208,6 +209,7 @@ textCompare _ _ = False
 
 
 findParseError :: MonadPlus m => Text -> m ParseError
+findParseError (TextError err) = pure err
 findParseError txt = dive $ children txt
   where
     dive [] = mzero
