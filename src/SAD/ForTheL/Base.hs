@@ -393,7 +393,7 @@ decl vs = dive
 declNames :: [String] -> Formula -> [String]
 declNames vs = map fst . decl vs
 
-{- produce the bindings in a formula in a Decl data type ant take care of
+{- produce the bindings in a formula in a Decl data type and take care of
 the serial counter. -}
 bindings :: [String] -> Formula -> FTL [Decl]
 bindings vs = mapM makeDecl . decl vs
