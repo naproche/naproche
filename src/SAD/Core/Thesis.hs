@@ -161,8 +161,8 @@ externalConjuncts = normalizedDive
   where
     normalizedDive = dive . albet
     dive h@(And f g) = h : (normalizedDive f ++ normalizedDive g)
-    dive h@(Exi _ f) = h : filter closed (normalizedDive f)
-    dive h@(All _ f) = h : filter closed (normalizedDive f)
+    dive h@(Exi _ f) = h : filter isClosed (normalizedDive f)
+    dive h@(All _ f) = h : filter isClosed (normalizedDive f)
     dive (Tag _ f)   = normalizedDive f
     dive f           = [f]
 

@@ -114,7 +114,7 @@ mbBind v  = dive id
       dive (c . bool . (`And` g)) True f `mplus`
       dive (c . bool . (f `And`)) True g
     dive c True Trm {trmName = "=", trmArgs = [l@Var {varName = u}, t]}
-      | u == v && not (occurs l t) && closed t = return $ subst t u (c Top)
+      | u == v && not (l `occursIn` t) && isClosed t = return $ subst t u (c Top)
     dive _ _ _ = mzero
 
 
@@ -252,7 +252,8 @@ substHole, substSlot :: Formula -> Formula -> Formula
 substHole t = subst t "?"; substSlot t = subst t "!"
 
 occursH, occursS :: Formula -> Bool
-occursH = occurs zHole; occursS = occurs zSlot
+occursH = (zHole `occursIn`)
+occursS = (zSlot `occursIn`)
 
 
 -- | Replace @ObjectId@ Terms with @Top@

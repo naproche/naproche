@@ -108,7 +108,7 @@ funVars (f, d) | not ifq   = prdVars (f, d)
                | otherwise = prdVars (t {trmArgs = v:trmArgs t}, d)
   where
     ifq = isEquality f && isTrm t
-    idq = isEquality d && not (occurs u p)
+    idq = isEquality d && not (u `occursIn` p)
     Trm {trmName = "=", trmArgs = [v, t]} = f
     Trm {trmName = "=", trmArgs = [u, p]} = d
 
