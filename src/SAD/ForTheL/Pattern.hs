@@ -21,12 +21,12 @@ import SAD.Core.SourcePos (SourcePos)
 
 import SAD.Data.Formula
 import SAD.Data.TermId
+import SAD.Data.VarName
 
 import Data.List
 import Data.Char
 import Control.Applicative
 import Control.Monad
-
 
 -- add expressions to the state of ForTheL
 
@@ -190,7 +190,7 @@ newPrdPattern tvr = multi </> unary </> newSymbPattern tvr
     multiVerb = do (t, vs) <- ptHead wlexem tvr; return ("mdo " ++ t, vs)
 
 newNtnPattern :: FTL Formula
-                 -> FTL (Formula, (String, SourcePos))
+                 -> FTL (Formula, (VariableName, SourcePos))
 newNtnPattern tvr = (ntn <|> fun) </> unnamedNotion tvr
   where
     ntn = do
@@ -201,7 +201,7 @@ newNtnPattern tvr = (ntn <|> fun) </> unnamedNotion tvr
       return (zEqu v $ zTrm NewId ("a " ++ t) vs, (varName v, varPosition v))
 
 unnamedNotion :: FTL Formula
-                 -> FTL (Formula, (String, SourcePos))
+                 -> FTL (Formula, (VariableName, SourcePos))
 unnamedNotion tvr = (ntn <|> fun) </> (newSymbPattern tvr >>= equ)
   where
     ntn = do
@@ -301,8 +301,12 @@ nvr = do
 
 avr :: Parser st Formula
 avr = do
-  v <- var; guard $ null $ tail $ tail $ fst v
+  v <- var; 
+  guard $ null $ tail $ deVar $ fst v
   return $ pVar v
+  where
+    deVar (VarConstant s) = s
+    deVar _ = error "SAD.ForTheL.Pattern.avr: other variable"
 
 nam :: FTL Formula
 nam = do

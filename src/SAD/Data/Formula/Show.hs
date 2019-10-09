@@ -10,6 +10,7 @@ module SAD.Data.Formula.Show (
 
 import SAD.Data.Formula.Base
 import SAD.Data.Formula.Kit
+import SAD.Data.VarName
 
 
 -- show instances
@@ -39,9 +40,8 @@ showFormula p d = dive
       | not (null tName) && head tName == 't' =
           showString (tail tName) . showArguments tArgs
       | otherwise = showString tName . showArguments tArgs
-    dive v@Var{varName = vName}
-      | isUserVariable v = showString $ tail vName
-      | otherwise = showString vName
+    dive v@Var{varName = VarConstant s} = showString s
+    dive v@Var{varName = vName} = showString $ show vName
     dive Ind {indIndex = i }
       | i < d = showChar 'v' . shows (d - i - 1)
       | otherwise = showChar 'v' . showChar '?' . showString (show i)
@@ -66,9 +66,8 @@ commaSeparated showTerm [] = id
 commaSeparated showTerm [t] = showTerm t
 commaSeparated showTerm (t:ts) = showTerm t . showChar ',' . commaSeparated showTerm ts
 
-isSymbolicTerm, isUserVariable :: Formula -> Bool
+isSymbolicTerm :: Formula -> Bool
 isSymbolicTerm Trm {trmName = 's':_} = True; isSymbolicTerm _ = False
-isUserVariable Var {varName = 'x':_} = True; isUserVariable _ = False
 
 -- decoding of symbolic names
 

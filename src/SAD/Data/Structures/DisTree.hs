@@ -23,6 +23,7 @@ import Prelude hiding (lookup, head)
 import qualified Data.List as L
 import Data.Maybe
 import SAD.Data.TermId (TermId)
+import SAD.Data.VarName
 
 data DTree a =
   Node {struct :: Struct, children :: [DTree a]} |
@@ -57,8 +58,8 @@ jump (Node struct children) = children >>= jmp (arity struct)
 
 {- test whether a given formula matches a given structure -}
 structMatch :: Formula -> Struct -> Bool
-structMatch Var{varName = '?':_} Variable = True
-structMatch Var{varName = 'x':nm} (GeneralizedConstant s) = nm == s
+structMatch Var{varName = VarHole _} Variable = True
+structMatch Var{varName = VarConstant nm} (GeneralizedConstant s) = nm == s
 structMatch Trm{trmId = m} (Function n _) = n == m
 structMatch _ _ = False
 
@@ -99,8 +100,8 @@ buildTree keys value = [dtree keys]
     dtree (k:ks) = Node (toStruct k) [dtree $ args k ++ ks]
     dtree []     = Leaf [value]
 
-    toStruct Var {varName = '?':_ } = Variable
-    toStruct Var {varName = 'x':nm} = GeneralizedConstant nm
+    toStruct Var {varName = VarHole _} = Variable
+    toStruct Var {varName = VarConstant nm} = GeneralizedConstant nm
     toStruct Trm {trmId = m, trmArgs = ts} = Function m (length ts)
     toStruct _ = error "DisTree: Formula has no representation."
 
@@ -111,7 +112,7 @@ lookup :: Formula -> DisTree a -> Maybe [a]
 lookup key (DT nodes) = mbConcat $ dive nodes [key]
   where
     dive :: [DTree [a]] -> [Formula] -> [[a]]
-    dive nodes (Var{varName = '?':_}:ks)
+    dive nodes (Var{varName = VarHole _}:ks)
       = let (leafs, newNodes) = L.partition isLeaf $ concatMap jump nodes
          in map stored leafs ++ dive newNodes ks
     dive nodes keylist@(k:ks) =

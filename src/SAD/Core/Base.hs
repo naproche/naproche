@@ -62,6 +62,7 @@ import SAD.Export.Base
 import qualified SAD.Data.Structures.DisTree as DT
 import SAD.Core.SourcePos
 import qualified SAD.Core.Message as Message
+import SAD.Data.VarName
 
 
 -- | Reasoner state
@@ -321,34 +322,47 @@ initialDefinitions = Map.fromList [
   (ElementId,  elementOf),
   (PairId, pair) ]
 
+hole0 :: VariableName
+hole0 = VarHole "0"
+
+hole1 :: VariableName
+hole1 = VarHole "1"
+
 equality :: DefEntry
-equality  = DE [] Top Signature (zEqu (zVar "?0") (zVar "?1")) [] []
+equality  = DE [] Top Signature (zEqu (zVar hole0) (zVar hole1)) [] []
+
 less :: DefEntry
-less      = DE [] Top Signature (zLess (zVar "?0") (zVar "?1")) [] []
+less      = DE [] Top Signature (zLess (zVar hole0) (zVar hole1)) [] []
+
 set :: DefEntry
-set       = DE [] Top Signature (zSet $ zVar "?0") [] []
+set       = DE [] Top Signature (zSet $ zVar hole0) [] []
+
 elementOf :: DefEntry
-elementOf = DE [zSet $ zVar "?1"] Top Signature
-  (zElem (zVar "?0") (zVar "?1")) [] [[zSet $ zVar "?1"]]
+elementOf = DE [zSet $ zVar hole1] Top Signature
+  (zElem (zVar hole0) (zVar hole1)) [] [[zSet $ zVar hole1]]
+
 function :: DefEntry
-function  = DE [] Top Signature (zFun $ zVar "?0") [] []
+function  = DE [] Top Signature (zFun $ zVar hole0) [] []
+
 domain :: DefEntry
-domain    = DE [zFun $ zVar "?0"] (zSet ThisT) Signature
-  (zDom $ zVar "?0") [zSet ThisT] [[zFun $ zVar "?0"]]
+domain    = DE [zFun $ zVar hole0] (zSet ThisT) Signature
+  (zDom $ zVar hole0) [zSet ThisT] [[zFun $ zVar hole0]]
+
 pair :: DefEntry
-pair      = DE [] Top Signature (zPair (zVar "?0") (zVar "?1")) [] []
+pair      = DE [] Top Signature (zPair (zVar hole0) (zVar hole1)) [] []
+
 functionApplication :: DefEntry
 functionApplication =
-  DE [zFun $ zVar "?0", zElem (zVar $ "?1") $ zDom $ zVar "?0"] Top Signature
-    (zApp (zVar "?0") (zVar "?1")) []
-    [[zFun $ zVar "?0"],[zElem (zVar $ "?1") $ zDom $ zVar "?0"]]
+  DE [zFun $ zVar hole0, zElem (zVar $ hole1) $ zDom $ zVar hole0] Top Signature
+    (zApp (zVar hole0) (zVar hole1)) []
+    [[zFun $ zVar hole0],[zElem (zVar $ hole1) $ zDom $ zVar hole0]]
 
 
 initialGuards :: DT.DisTree Bool
 initialGuards = foldr (\f -> DT.insert f True) (DT.empty) [
-  zSet $ zVar "?1",
-  zFun $ zVar "?0",
-  zElem (zVar $ "?1") $ zDom $ zVar "?0"]
+  zSet $ zVar hole1,
+  zFun $ zVar hole0,
+  zElem (zVar $ hole1) $ zDom $ zVar hole0]
 
 -- retrieve definitional formula of a term
 defForm :: Definitions -> Formula -> Maybe Formula

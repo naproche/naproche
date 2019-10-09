@@ -16,6 +16,7 @@ import SAD.Core.SourcePos (SourcePos)
 import SAD.Data.TermId
 
 import SAD.Data.Text.Decl (Decl)
+import SAD.Data.VarName
 
 data Formula =
   All Decl Formula        | Exi Decl Formula |
@@ -25,7 +26,7 @@ data Formula =
   Top                     | Bot                     |
   Trm { trmName :: String   , trmArgs :: [Formula],
         trmInfo :: [Formula], trmId   :: TermId}         |
-  Var { varName :: String, varInfo :: [Formula], varPosition :: SourcePos } |
+  Var { varName :: VariableName, varInfo :: [Formula], varPosition :: SourcePos } |
   Ind { indIndex :: Int, indPosition :: SourcePos }   | ThisT
   deriving (Eq, Ord)
 
@@ -36,7 +37,7 @@ trInfo _ = error "Formula.Base.trInfo: Partial function"
 
 showTrName :: Formula -> ShowS
 showTrName (Trm {trmName = s}) = showString $ filter (/= ':') s
-showTrName (Var {varName = s}) = showString $ filter (/= ':') s
+showTrName (Var {varName = s}) = showString $ filter (/= ':') $ show s
 showTrName _ = id
 
 -- Traversing functions
@@ -60,7 +61,7 @@ mapFM _ f = pure f
 
 -- Logical traversing
 -- | Same as roundFM but without the monadic action.
-roundF :: Char -> ([Formula] -> Maybe Bool -> Int -> Formula -> Formula)
+roundF :: (String -> VariableName) -> ([Formula] -> Maybe Bool -> Int -> Formula -> Formula)
                -> [Formula] -> Maybe Bool -> Int -> Formula -> Formula
 roundF c fn l p n f = runIdentity $ roundFM c (\w x y z -> Identity $ fn w x y z) l p n f
 
@@ -68,17 +69,17 @@ roundF c fn l p n f = runIdentity $ roundFM c (\w x y z -> Identity $ fn w x y z
 track of local premises, polarity and quantification depth. A unique identifying
 char is provided to shape the instantiations.-}
 roundFM :: (Monad m) =>
-          Char -> ([Formula] -> Maybe Bool -> Int -> Formula -> m Formula)
+          (String -> VariableName) -> ([Formula] -> Maybe Bool -> Int -> Formula -> m Formula)
                -> [Formula] -> Maybe Bool -> Int -> Formula -> m Formula
-roundFM char traversalAction localContext polarity n = dive
+roundFM mkVar traversalAction localContext polarity n = dive
   where
     dive (All u f) = do
       let action = traversalAction localContext polarity (succ n)
-          nn = char:show n
+          nn = mkVar $ show n
       All u . bind nn <$> (action $ inst nn f)
     dive (Exi u f) = do
       let action = traversalAction localContext polarity (succ n)
-          nn = char:show n
+          nn = mkVar $ show n
       Exi u . bind nn <$> (action $ inst nn f)
     dive (Iff f g) = do
       nf <- traversalAction localContext Nothing n f
@@ -143,7 +144,7 @@ t `occursIn` f = twins t f || anyF (t `occursIn`) f
 
 -- | Bind a variable with name v in a formula.
 -- This also affects any info stored.
-bind :: String -> Formula -> Formula
+bind :: VariableName -> Formula -> Formula
 bind v = dive 0
   where
     dive n (All u g) = All u $ dive (succ n) g
@@ -158,7 +159,7 @@ bind v = dive 0
 
 -- | Instantiate a formula with a variable with name v.
 -- This also affects any info stored.
-inst :: String -> Formula -> Formula
+inst :: VariableName -> Formula -> Formula
 inst x = dive 0
   where
     dive n (All u g) = All u $ dive (succ n) g
@@ -172,11 +173,11 @@ inst x = dive 0
     dive n f = mapF (dive n) f
 
 {- substitute a formula t for a variable with name v. Does not affect info. -}
-subst :: Formula -> String -> Formula -> Formula
+subst :: Formula -> VariableName -> Formula -> Formula
 subst t v f = substs f [v] [t]
 
 {- multiple substitutions at the same time. Does not affect info. -}
-substs :: Formula -> [String] -> [Formula] -> Formula
+substs :: Formula -> [VariableName] -> [Formula] -> Formula
 substs f vs ts = dive f
   where
     dive v@Var {varName = u} = fromMaybe v (lookup u zvt)

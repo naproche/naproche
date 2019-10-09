@@ -23,6 +23,7 @@ import SAD.Data.TermId
 import Data.List
 import Control.Monad.State
 import qualified SAD.Data.Text.Decl as Decl
+import SAD.Data.VarName
 
 
 
@@ -60,9 +61,9 @@ pushdown (Not Top)       = Bot
 pushdown (Tag _ f) = pushdown f
 pushdown (Not (Tag _ f)) = pushdown (Not f)
 pushdown (All _ (Imp (Tag HeadTerm Trm {trmName = "=", trmArgs = [_,t]} ) f)) =
-  pushdown $ dec $ indSubst t "" $ inst "" f
+  pushdown $ dec $ indSubst t VarEmpty $ inst VarEmpty f
 pushdown (All _ (Iff (Tag HeadTerm eq@Trm {trmName = "=", trmArgs = [_,t]}) f)) =
-  And (All (Decl.nonText "") (Or eq (Not f))) $ dec $ indSubst t "" $ inst "" f
+  And (All (Decl.nonText VarEmpty) (Or eq (Not f))) $ dec $ indSubst t VarEmpty $ inst VarEmpty f
 pushdown f = f
 
 
@@ -110,7 +111,7 @@ dec = decrement 0
     decrement n f = mapF (decrement n) f
 
 
-indSubst :: Formula -> String -> Formula -> Formula
+indSubst :: Formula -> VariableName -> Formula -> Formula
 indSubst t v = dive t
   where
     dive t (All x f) = All x $ dive (inc t) f
@@ -167,12 +168,12 @@ instSk skolemCnt dependencyCnt = dive 0
 -- specialization of formula: get rid of universal quantifiers
 
 specialize :: Formula -> Formula
-specialize = specCh '?' 0
+specialize = specCh VarHole 0
 
-specCh :: Char -> Int -> Formula -> Formula
-specCh c = dive
+specCh :: (String -> VariableName) -> Int -> Formula -> Formula
+specCh mkVar = dive
   where
-    dive n (All _ f) = dive (succ n) $ inst (c:show n) f
+    dive n (All _ f) = dive (succ n) $ inst (mkVar $ show n) f
     dive n f = f
 
 
@@ -231,7 +232,7 @@ subsumptionCheck = subs []
 -- assumption normal form
 
 assm_nf :: Formula -> [[Formula]]
-assm_nf = map (imptolist . boolSimp . specCh 'i' 0) . splitConjuncts . impl
+assm_nf = map (imptolist . boolSimp . specCh VarAssume 0) . splitConjuncts . impl
   where
     imptolist (Imp f g) = map ltNeg (splitConjuncts f) ++ imptolist g
     imptolist f = [f]
@@ -253,7 +254,7 @@ pullimp f = f
 ontoPrep :: Int -> Formula -> ([Formula], Int)
 ontoPrep sk f =
   let (nf, nsk) = skolemize sk $ simplify f
-      specializedF = specCh 'o' 0 . prenex $ nf
+      specializedF = specCh VarSkolem 0 . prenex $ nf
       conjuncts = leftDistribute specializedF
   in  (conjuncts, nsk)
   where

@@ -25,6 +25,7 @@ import Control.Monad.Trans.State
 import Data.List
 import Data.Maybe
 import qualified Data.Map as Map
+import SAD.Data.VarName
 
 
 
@@ -81,9 +82,9 @@ equivalentTo = normalizedCheck 0
   where
     normalizedCheck :: Int -> Formula -> Formula -> Bool
     normalizedCheck n f g = check n (albet f) (albet g)
-    check n (All _ a) (All _ b) = let freshVariable = show n in
+    check n (All _ a) (All _ b) = let freshVariable = VarDefault $ show n in
       normalizedCheck (succ n) (inst freshVariable a) (inst freshVariable b)
-    check n (Exi _ a) (Exi _ b) = let freshVariable = show n in
+    check n (Exi _ a) (Exi _ b) = let freshVariable = VarDefault $ show n in
       normalizedCheck (succ n) (inst freshVariable a) (inst freshVariable b)
     check n (And a b) (And c d) = normalizedCheck n a c && normalizedCheck n b d
     check n (Or a b) (Or c d)   = normalizedCheck n a c && normalizedCheck n b d
@@ -101,10 +102,10 @@ existential thesis. -}
 hasInstantiationIn:: Formula -> [Formula] -> Bool
 hasInstantiationIn (Exi _ f) = notNull . listOfInstantiations f
 
-type Instantiation = Map.Map String Formula
+type Instantiation = Map.Map VariableName Formula
 {- the actual process of finding an instantiation. -}
 listOfInstantiations :: Formula -> [Formula] -> [Instantiation]
-listOfInstantiations f = instantiations 1 Map.empty (albet $ inst "i0" f)
+listOfInstantiations f = instantiations 1 Map.empty (albet $ inst (VarAssume "0") f)
 
 {- worker function for SAD.Core.Thesis.listOfInstantiations -}
 -- FIXME This functions needs a better way to generate free variables. The
@@ -119,11 +120,11 @@ instantiations n currentInst f hs =
                 fInst <- instantiations n gInst (albet f) $
                   subInfo gInst (pred n) ++ hs ]--add collected local properties
     patchTogether (Exi _ f) =
-      instantiations (succ n) currentInst (albet $ inst ('i':show n) f) hs
+      instantiations (succ n) currentInst (albet $ inst (VarAssume $ show n) f) hs
     patchTogether _ = []
 
     subInfo sb n =
-      let sub = applySb sb $ zVar $ 'i':show n
+      let sub = applySb sb $ zVar $ VarAssume $ show n
       in  map (replace sub ThisT) $ varInfo $ sub
 
 
@@ -133,12 +134,12 @@ Result is returned within the list monad. -}
 extendInstantiation :: Instantiation -> Formula -> Formula -> [Instantiation]
 extendInstantiation sb f g = snd <$> runStateT (normalizedDive 0 f g) sb
   where
-    normalizedDive :: Int -> Formula -> Formula -> StateT (Map.Map String Formula) [] ()
+    normalizedDive :: Int -> Formula -> Formula -> StateT (Map.Map VariableName Formula) [] ()
     normalizedDive n f g = dive n (albet f) (albet g)
     dive n (All _ f) (All _ g)
-      = let nn = show n in normalizedDive (succ n) (inst nn f) (inst nn g)
+      = let nn = VarDefault $ show n in normalizedDive (succ n) (inst nn f) (inst nn g)
     dive n (Exi _ f) (Exi _ g)
-      = let nn = show n in normalizedDive (succ n) (inst nn f) (inst nn g)
+      = let nn = VarDefault $ show n in normalizedDive (succ n) (inst nn f) (inst nn g)
     dive n (And f1 g1) (And f2 g2) =
       normalizedDive n f1 f2 >> normalizedDive n g1 g2
     dive n (Or  f1 g1) (Or  f2 g2) =
@@ -146,7 +147,7 @@ extendInstantiation sb f g = snd <$> runStateT (normalizedDive 0 f g) sb
     dive n (Not f) (Not g) = dive n f g
     dive n Trm {trmId = t1, trmArgs = ts1} Trm {trmId = t2, trmArgs = ts2}
       = lift (guard $ t1 == t2) >> mapM_ (uncurry $ dive n) (zip ts1 ts2)
-    dive _ v@Var {varName = s@('i':_)} t = do
+    dive _ v@Var {varName = s@(VarAssume _)} t = do
       mp <- get; case Map.lookup s mp of
         Nothing -> modify (Map.insert s t)
         Just t' -> lift $ guard (twins t t')
@@ -232,7 +233,7 @@ generateVariations definitions = pass [] (Just True) 0
         dive h           = roundThrough h
 
         liberateVariableIn f = generateInstantiations f >>= dive
-        roundThrough = roundFM 'z' pass localContext sign n
+        roundThrough = roundFM VarZ pass localContext sign n
         lookBehindDefinition t = msum . map (dive . reduceWithEvidence .
           markRecursive  (trmId t)) . maybeToList . defForm definitions $ t
 
@@ -258,7 +259,7 @@ generateInstantiations f = VM (tryAllVars [])
 {- monad to do bookkeeping during the search for a variation, i.e. keep track
 of which variables have already been used for an instantiation -}
 newtype VariationMonad res =
-  VM { runVM :: [String] -> [([String], res)] }
+  VM { runVM :: [VariableName] -> [([VariableName], res)] }
 
 instance Functor VariationMonad where
   fmap = liftM

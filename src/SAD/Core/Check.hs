@@ -22,6 +22,7 @@ import qualified SAD.Data.Definition as Definition
 import SAD.Core.Base
 import qualified SAD.Core.Message as Message
 import SAD.Core.Reason
+import SAD.Data.VarName
 
 {- check definitions and fortify terms with evidences in a formula -}
 fillDef :: Bool -> Context -> VM Formula
@@ -48,7 +49,7 @@ fillDef alreadyChecked context = fill True False [] (Just True) 0 $ Context.form
             collectInfo (not isPredicat && userInfoSetting) fortifiedTerm
               `withContext` newContext        -- fortify term
     fill isPredicat isNewWord localContext sign n f = -- round throuth formula
-      roundFM 'w' (fill isPredicat isNewWord) localContext sign n f
+      roundFM VarW (fill isPredicat isNewWord) localContext sign n f
 
     collectInfo infoSetting term
       | infoSetting = setInfo term

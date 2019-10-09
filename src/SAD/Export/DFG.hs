@@ -12,7 +12,7 @@ import Data.List
 
 import SAD.Data.Formula
 import SAD.Data.Text.Block (Block(Block))
-import  qualified SAD.Data.Text.Block as Block
+import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Text.Context as Context (Context(..))
 import SAD.Export.Base
 import SAD.Helpers
@@ -84,6 +84,6 @@ dfgSLS tsk  = sls "functions" fns . sls "predicates" pds
 dfgSyms :: Bool -> Formula -> [(Bool, String, Int)]
 dfgSyms s f | isEquality f   = concatMap (dfgSyms False) $ trmArgs f
 dfgSyms s Trm {trmName = t, trmArgs = ts} = (s, t, length ts) : concatMap (dfgSyms False) ts
-dfgSyms s Var {varName = v}     = [(s, v, 0)]
+dfgSyms s Var {varName = v}     = [(s, show v, 0)]
 dfgSyms s Ind{}     = []
 dfgSyms s f             = foldF (dfgSyms s) f

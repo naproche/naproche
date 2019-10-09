@@ -26,6 +26,7 @@ import qualified SAD.Data.Rules as Rule
 import SAD.Prove.Normalize
 import qualified SAD.Data.Structures.DisTree as DT
 import qualified SAD.Data.Text.Decl as Decl
+import SAD.Data.VarName
 
 import qualified Data.Map as Map
 import Data.List
@@ -66,7 +67,7 @@ extractDefinition defs =
       = (guards, f, Signature,t)                  -- predicate sigext
 
     -- make a universal quant matchable
-    dive guards n (All _ f) = dive guards (succ n) $ inst ('?':show n) f
+    dive guards n (All _ f) = dive guards (succ n) $ inst (VarHole $ show n) f
     dive guards n (Imp g f) = dive (guards ++ splitConjuncts g) n f
     makeDefinition (guards, formula, kind, term) = DE {
       Definition.guards = guards, Definition.formula = formula,
@@ -93,9 +94,21 @@ closeEvidence dfs def@DE{Definition.evidence = evidence} = def { Definition.evid
     newEvidence = nubBy twins $ evidence ++ concatMap defEvidence evidence
     defEvidence t@Trm {trmId = n} =
       let def = fromJust $ Map.lookup n dfs
-          sb  = fromJust $ match (Definition.term def) $ fromTo '?' 'u' t
-      in  map (fromTo 'u' '?' . sb) $ Definition.evidence def
+          sb  = fromJust $ match (Definition.term def) $ fromTo makeU t
+      in  map (fromTo fromU . sb) $ Definition.evidence def
     defEvidence _ = []
+
+    fromTo :: (VariableName -> VariableName) -> Formula -> Formula
+    fromTo fn v@Var {varName = vn} = v {varName = fn vn}
+    fromTo fn f = mapF (fromTo fn) f
+
+    makeU :: VariableName -> VariableName
+    makeU (VarHole nm) = VarU nm
+    makeU v = v
+    
+    fromU :: VariableName -> VariableName
+    fromU (VarU nm) = VarHole nm
+    fromU v = v
 
 
 -- Extraction of Rewrite Rules
@@ -108,16 +121,16 @@ extractRewriteRule c =
     dive :: Int -> [Formula] -> Formula -> [Rule]
     -- if HeadTerm is reached, discard all collected conditions
     dive n gs (All _ (Iff (Tag HeadTerm Trm {trmName = "=", trmArgs = [_,t]}) f )) =
-      dive n gs $ subst t "" $ inst "" f
+      dive n gs $ subst t VarEmpty $ inst VarEmpty f
     dive n gs (All _ (Imp (Tag HeadTerm Trm {trmName = "=", trmArgs = [_, t]}) f)) =
-      dive n gs $ subst t "" $ inst "" f
+      dive n gs $ subst t VarEmpty $ inst VarEmpty f
     -- make universal quantifier matchable
-    dive n gs (All _ f) = let nn = '?' : show n in dive (succ n) gs $ inst nn f
+    dive n gs (All _ f) = let nn = VarHole $ show n in dive (succ n) gs $ inst nn f
     dive n gs (Imp f g) = dive n (splitConjuncts f ++ gs) g -- record conditions
     dive n gs (Tag _ f) = dive n gs f -- ignore tags
     dive n gs (And f g) = dive n gs f ++ dive n gs g
     -- we do not allow rules where the left side is a variable
-    dive n gs Trm {trmName = "=", trmArgs = [l@Var{},r]} | head (varName l) /= '?'
+    dive n gs Trm {trmName = "=", trmArgs = [l@Var{},r]} | not (isHole (varName l))
       = return $ Rule l r gs undefined -- the name is filled in later
     dive n gs Trm {trmName = "=", trmArgs = [l@Trm{},r]} | head (trmName l) /= '?'
       = return $ Rule l r gs undefined -- the name is filled in later
@@ -151,7 +164,7 @@ extractEv c gs f = extractFunctionEval c gs f `mplus` extractSetEval c gs f
 freshV :: (MonadReader (a, b1) m, Enum a, Show a) =>
           (Formula -> m b2) -> Formula -> m b2
 freshV fn f = do -- generate fresh variables
-  n <- asks fst; local (\(m,dt) -> (succ m, dt)) $ fn $ inst ('?':show n) f
+  n <- asks fst; local (\(m,dt) -> (succ m, dt)) $ fn $ inst (VarHole $ show n) f
 
 
 extractFunctionEval :: (Formula -> Formula) -> [Formula] -> Formula
@@ -182,7 +195,7 @@ extractSetEval c gs (And f g) =
 extractSetEval c gs (Tag _ f) = extractSetEval c gs f
 extractSetEval c gs (All _ (Iff g@Trm{trmArgs = [_,t]} f )) | isElem g = do
   (n, evals) <- ask
-  let nm = '?':show n; nf = simplifyElementCondition evals $ strip $ inst nm f
+  let nm = VarHole $ show n; nf = simplifyElementCondition evals $ strip $ inst nm f
   return $ EV (zElem (zVar nm) t) (mkPos $ c $ Tag Evaluation nf)(c nf) gs
 extractSetEval _ _ f = mzero
 
@@ -210,4 +223,4 @@ mkPos = dive
 
 
 instWith :: Formula -> Formula -> Formula
-instWith t = subst t "" . inst ""
+instWith t = subst t VarEmpty . inst VarEmpty

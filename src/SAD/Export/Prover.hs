@@ -28,9 +28,7 @@ import qualified SAD.Data.Instr as Instr
 import qualified SAD.Export.DFG as DFG
 import qualified SAD.Export.TPTP as TPTP
 
-
-
-export :: Bool -> Int -> [Prover] -> [Instr] -> [Context] -> Context -> IO (IO Bool)
+export :: Bool -> Int -> [Prover] -> [Instr] -> [Context] -> Context -> IO Bool
 export reduced depth provers instrs context goal = do
   Standard_Thread.expose_stopped
 
@@ -59,48 +57,46 @@ export reduced depth provers instrs context goal = do
 
   when (askFlag Dump False instrs) $ Message.output "" Message.WRITELN noSourcePos task
 
-  seq (length task) $ return $
-    do
-      (prvin, prvout, prverr, prv) <-
-        Exception.catch process
-          (\e -> Message.errorExport noSourcePos $
-            "Failed to run " ++ show path ++ ": " ++ ioeGetErrorString e)
+  (prvin, prvout, prverr, prv) <-
+    Exception.catch process
+      (\e -> Message.errorExport noSourcePos $
+        "Failed to run " ++ show path ++ ": " ++ ioeGetErrorString e)
 
-      File.setup prvin
-      File.setup prvout
-      File.setup prverr
+  File.setup prvin
+  File.setup prvout
+  File.setup prverr
 
-      hPutStrLn prvin task
-      hClose prvin
+  hPutStrLn prvin task
+  hClose prvin
 
-      let
-        terminate =
-          do
-            Process.interruptProcessGroupOf prv
-            Process.waitForProcess prv
-            return ()
-
-      Standard_Thread.bracket_resource terminate $ do
-        output <- hGetContents prvout
-        errors <- hGetContents prverr
-        let lns = filter notNull $ lines $ output ++ errors
-            out = map (("[" ++ label ++ "] ") ++) lns
-
-        when (null lns) $ Message.errorExport noSourcePos "No prover response"
-        when (askFlag Printprover False instrs) $
-            mapM_ (Message.output "" Message.WRITELN noSourcePos) out
-
-        let positive = any (\l -> any (`isPrefixOf` l) yes) lns
-            negative = any (\l -> any (`isPrefixOf` l) nos) lns
-            inconclusive = any (\l -> any (`isPrefixOf` l) uns) lns
-
-        unless (positive || negative || inconclusive) $
-            Message.errorExport noSourcePos $ unlines ("Bad prover response:" : lns)
-
-        hClose prverr
+  let
+    terminate =
+      do
+        Process.interruptProcessGroupOf prv
         Process.waitForProcess prv
+        return ()
 
-        return positive
+  Standard_Thread.bracket_resource terminate $ do
+    output <- hGetContents prvout
+    errors <- hGetContents prverr
+    let lns = filter notNull $ lines $ output ++ errors
+        out = map (("[" ++ label ++ "] ") ++) lns
+
+    when (null lns) $ Message.errorExport noSourcePos "No prover response"
+    when (askFlag Printprover False instrs) $
+        mapM_ (Message.output "" Message.WRITELN noSourcePos) out
+
+    let positive = any (\l -> any (`isPrefixOf` l) yes) lns
+        negative = any (\l -> any (`isPrefixOf` l) nos) lns
+        inconclusive = any (\l -> any (`isPrefixOf` l) uns) lns
+
+    unless (positive || negative || inconclusive) $
+        Message.errorExport noSourcePos $ unlines ("Bad prover response:" : lns)
+
+    hClose prverr
+    Process.waitForProcess prv
+
+    return positive
 
 
 setTimeLimit :: Int -> String -> String

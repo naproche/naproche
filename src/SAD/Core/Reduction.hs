@@ -13,6 +13,7 @@ import SAD.Data.Definition (Definitions, Guards, isGuard)
 import qualified SAD.Data.Definition as Definition
 import SAD.Prove.Normalize
 import SAD.Data.Structures.DisTree (DisTree)
+import SAD.Data.VarName
 
 import Data.Set (Set)
 import qualified Data.Set as Set
@@ -116,7 +117,9 @@ ontoRed dfs grds f = dive [] f
       | isSkolem h = []
       | otherwise =
           let def = fromJust $ Map.lookup (trmId h) dfs
-              posName = case ((trmArgs $ Definition.term def)!!pos) of Trm {trmName = s} -> s; Var {varName = s} -> s
+              posName = case ((trmArgs $ Definition.term def)!!pos) of 
+                Trm {trmName = s} -> error "SAD.Core.Reduction: Terms don't hold variables"; 
+                Var {varName = s} -> s
           in  filter (Set.member posName . freeVars) $ Definition.guards def
 
     generalPositionGuards pos h
@@ -143,7 +146,7 @@ atomicPos = map reverse . dive []
     dive pos Bot = [pos]
     dive pos f = foldF (dive pos) f
 
-directArgumentPositions :: Formula -> [(Int, String)]
+directArgumentPositions :: Formula -> [(Int, VariableName)]
 directArgumentPositions = dive 0 . arguments
   where
     dive _ [] = []
@@ -173,7 +176,7 @@ subParticles :: Formula -> [Formula]
 subParticles = filter isTrm . arguments
 
 
-freeVars :: Formula -> Set String
+freeVars :: Formula -> Set VariableName
 freeVars Var {varName = name} = Set.singleton name
 freeVars f = foldF freeVars f
 
@@ -184,7 +187,7 @@ atoms f = foldF atoms f
 hasSameSyntacticStructureAs :: Formula -> Formula -> Bool
 hasSameSyntacticStructureAs f g = evalState (dive f g) Map.empty
   where
-    dive :: Formula -> Formula -> State (Map String String) Bool
+    dive :: Formula -> Formula -> State (Map VariableName VariableName) Bool
     dive Var{varName = name1} Var{varName = name2} = do
       value <- gets $ Map.lookup name1
       case value of

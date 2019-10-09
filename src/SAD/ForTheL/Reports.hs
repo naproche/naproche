@@ -26,6 +26,7 @@ import SAD.Data.Instr
 
 import SAD.Parser.Base
 import SAD.Parser.Primitives
+import SAD.Data.VarName
 
 import qualified Isabelle.Markup as Markup
 
@@ -52,7 +53,7 @@ markupTokenOf markup ss = do
 variableReport :: PIDE -> Bool -> Decl -> SourcePos -> [Message.Report]
 variableReport pide def decl pos =
   case Decl.name decl of
-    'x' : name ->
+    VarConstant name ->
       [(pos, Message.entityMarkup pide "variable" name def (Decl.serial decl) (Decl.position decl))]
     _ -> []
 

@@ -28,6 +28,7 @@ import SAD.Parser.Base
 import SAD.Parser.Combinators
 import qualified SAD.Data.Text.Decl as Decl
 import SAD.Core.SourcePos (SourceRange(..))
+import SAD.Data.VarName
 
 
 import Control.Applicative
@@ -93,7 +94,7 @@ sigNotion = do
 newPredicat :: FTL Formula
 newPredicat = do n <- newPrdPattern nvr; MS.get >>= addExpr n n True
 
-newNotion :: FTL (Formula, (String, SourcePos))
+newNotion :: FTL (Formula, (VariableName, SourcePos))
 newNotion = do
   (n, u) <- newNtnPattern nvr;
   f <- MS.get >>= addExpr n n True
@@ -130,8 +131,8 @@ prdVars (f, d) | not flat  = return $ "compound expression: " ++ show f
 allDistinctVars :: [Formula] -> Bool
 allDistinctVars = disVs []
   where
-    disVs ls (Var {varName = v@('h':_)} : vs) = notElem v ls && disVs (v:ls) vs
-    disVs ls (Var {varName = v@('x':_)} : vs) = notElem v ls && disVs (v:ls) vs
+    disVs ls (Var {varName = v@(VarHidden _)} : vs) = notElem v ls && disVs (v:ls) vs
+    disVs ls (Var {varName = v@(VarConstant _)} : vs) = notElem v ls && disVs (v:ls) vs
     disVs _ [] = True
     disVs _ _ = False
 
@@ -152,7 +153,7 @@ pretypeVariable = do
 
     holedNotion = do
       (q, f) <- anotion
-      g <- q <$> dig f [zHole]
+      g <- q <$> dig f [(zVar (VarHole ""))]
       SourceRange _ pos2 <- dot
       return (g, pos2)
 
@@ -177,7 +178,7 @@ introduceMacro = do
       h <- fmap q $ dig f [pVar u]; return (pos2, (n, h))
 
 ignoreNames :: Formula -> Formula
-ignoreNames (All dcl f) = All dcl {Decl.name = ""} $ ignoreNames f
-ignoreNames (Exi dcl f) = Exi dcl {Decl.name = ""} $ ignoreNames f
+ignoreNames (All dcl f) = All dcl {Decl.name = VarEmpty} $ ignoreNames f
+ignoreNames (Exi dcl f) = Exi dcl {Decl.name = VarEmpty} $ ignoreNames f
 ignoreNames f@Trm{}   = f
 ignoreNames f         = mapF ignoreNames f

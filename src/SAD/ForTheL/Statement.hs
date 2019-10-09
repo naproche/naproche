@@ -21,6 +21,7 @@ import SAD.Parser.Primitives
 import SAD.Data.Formula
 import SAD.Core.SourcePos
 import qualified SAD.Data.Text.Decl as Decl
+import SAD.Data.VarName
 
 import Data.Function ((&))
 
@@ -137,7 +138,7 @@ isAPredicat = label "isA predicate" $ notNtn <|> ntn
   where
     ntn = fmap (uncurry ($)) anotion
     notNtn = do
-      token' "not"; (q, f) <- anotion; let unfinished = dig f [zHole]
+      token' "not"; (q, f) <- anotion; let unfinished = dig f [(zVar (VarHole ""))]
       optLLx (q $ Not f) $ fmap (q. Tag Dig . Not) unfinished
 
 hasPredicate :: FTL Formula
@@ -184,24 +185,24 @@ mPredicate p = (token' "not" >> mNegative) <|> mPositive
 --- notions
 
 basentn :: Parser
-             FState (Formula -> Formula, Formula, [(String, SourcePos)])
+             FState (Formula -> Formula, Formula, [(VariableName, SourcePos)])
 basentn = fmap digadd $ cm <|> symEqnt <|> (set </> primNtn term)
   where
     cm = token' "common" >> primCmNtn term terms
     symEqnt = do
       t <- lexicalCheck isTrm sTerm
-      v <- hidden; return (id, zEqu zHole t, [v])
+      v <- hidden; return (id, zEqu (zVar (VarHole "")) t, [v])
 
 symNotion :: Parser
-               FState (Formula -> Formula, Formula, [(String, SourcePos)])
+               FState (Formula -> Formula, Formula, [(VariableName, SourcePos)])
 symNotion = (paren (primSnt sTerm) </> primTvr) >>= (digntn . digadd)
 
 
 gnotion :: Parser
-             FState (Formula -> Formula, Formula, [(String, SourcePos)])
+             FState (Formula -> Formula, Formula, [(VariableName, SourcePos)])
            -> FTL Formula
            -> Parser
-                FState (Formula -> Formula, Formula, [(String, SourcePos)])
+                FState (Formula -> Formula, Formula, [(VariableName, SourcePos)])
 gnotion nt ra = do
   ls <- fmap reverse la; (q, f, vs) <- nt;
   rs <- opt [] $ fmap (:[]) $ ra <|> rc
@@ -218,15 +219,13 @@ anotion :: FTL (Formula -> Formula, Formula)
 anotion = label "notion (at most one name)" $
   art >> gnotion basentn rat >>= single >>= hol
   where
-    hol (q, f, v) = return (q, subst zHole (fst v) f)
+    hol (q, f, v) = return (q, subst (zVar (VarHole "")) (fst v) f)
     rat = fmap (Tag Dig) stattr
 
-notion :: Parser
-            FState (Formula -> Formula, Formula, [(String, SourcePos)])
+notion :: Parser FState (Formula -> Formula, Formula, [(VariableName, SourcePos)])
 notion = label "notion" $ gnotion (basentn </> symNotion) stattr >>= digntn
 
-possess :: Parser
-             FState (Formula -> Formula, Formula, [(String, SourcePos)])
+possess :: Parser FState (Formula -> Formula, Formula, [(VariableName, SourcePos)])
 possess = label "possesive notion" $ gnotion (primOfNtn term) stattr >>= digntn
 
 
@@ -237,8 +236,8 @@ digadd :: (a, Formula, c) -> (a, Formula, c)
 digadd (q, f, v) = (q, Tag Dig f, v)
 
 digntn :: Monad m =>
-          (a, Formula, [(String, SourcePos)])
-          -> m (a, Formula, [(String, SourcePos)])
+          (a, Formula, [(VariableName, SourcePos)])
+          -> m (a, Formula, [(VariableName, SourcePos)])
 digntn (q, f, v) = dig f (map pVar v) >>= \ g -> return (q, g, v)
 
 single :: Monad m => (a, b, [c]) -> m (a, b, c)
@@ -389,7 +388,7 @@ selection = fmap (foldl1 And) $ (art >> takeLongest namedNotion) `sepByLL1` comm
   where
     namedNotion = label "named notion" $ do
       (q, f, vs) <- notion; guard (all isExplicitName $ map fst vs); return $ q f
-    isExplicitName ('x':_) = True; isExplicitName _ = False
+    isExplicitName (VarConstant _) = True; isExplicitName _ = False
 
 
 -- function and set syntax
@@ -413,11 +412,11 @@ set = label "set definition" $ symbSet <|> setOf
       nmDecl <- makeDecl nm
       return (id, setForm nmDecl $ cnd $ pVar nm, [h])
     setForm dcl = let nm = (Decl.name dcl, Decl.position dcl) in
-      And (zSet zHole) . dAll dcl . Iff (zElem (pVar nm) zHole)
+      And (zSet (zVar (VarHole ""))) . dAll dcl . Iff (zElem (pVar nm) (zVar (VarHole "")))
 
 
 symbSetNotation :: Parser
-                     FState (Formula -> Formula, (String, SourcePos))
+                     FState (Formula -> Formula, (VariableName, SourcePos))
 symbSetNotation = cndSet </> finSet
   where
     finSet = braced $ do
@@ -496,7 +495,7 @@ chooseInTerm = do
       return $ \fx -> dExi hDecl $
         And (Tag Defined $ ap hv) (Tag Evaluation $ zEqu fx hv)
 
-    ld_set = do (_, t, _) <- set; return $ flip substHole t
+    ld_set = do (_, t, _) <- set; return $ (\f -> subst f (VarHole "") t)
 
 
 lambda :: FTL (Formula -> Formula)
@@ -564,14 +563,14 @@ dig f ts = return (dive f)
 
     digS :: Formula -> [Formula]
     digS f
-      | occursH f = map ( `substHole` f) ts
+      | occursH f = map (\t -> subst t (VarHole "") f) ts
       | otherwise = [f]
 
     digM :: [(Formula, Formula)] -> Formula -> [Formula]
     digM ps f
       | not (occursS f) = digS f
-      | not (occursH f) = map ( `substSlot` f) $ tail ts
-      | otherwise = map (\ (x,y) -> substSlot y $ substHole x f) ps
+      | not (occursH f) = map (\t -> subst t VarSlot f) $ tail ts
+      | otherwise = map (\ (x,y) -> subst y VarSlot $ subst x (VarHole "") f) ps
 
 -- Example:
 -- pairMP [1,2,3,4]

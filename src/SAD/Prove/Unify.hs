@@ -11,6 +11,7 @@ module SAD.Prove.Unify (unify) where
 import Control.Monad
 import SAD.Data.Formula
 import Data.Function (on)
+import SAD.Data.VarName
 
 
 
@@ -61,6 +62,6 @@ unif = fmap mkSubst . dive [] -- we keep a list of already assigned variables
     clash _ _ = True
 
     -- all other vars are treated as constants
-    functionSymb Var {varName = '?':_} = False
-    functionSymb Var {varName = 'u':_} = False
+    functionSymb Var {varName = VarHole _ } = False
+    functionSymb Var {varName = VarU _ } = False
     functionSymb _ = True

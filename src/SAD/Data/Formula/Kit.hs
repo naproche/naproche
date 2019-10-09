@@ -18,6 +18,7 @@ import SAD.Data.Text.Decl (Decl)
 import qualified SAD.Data.Text.Decl as Decl
 import SAD.Helpers
 import SAD.Data.TermId
+import SAD.Data.VarName
 
 -- Alpha-beta normalization
 
@@ -96,7 +97,7 @@ boolSimp f = bool $ mapF boolSimp f
 -- Danger: We ignore the fact that @=@ is symmetric.
 --
 -- Arguments: the variable to look for (e.g. "x"), whether we are in an "existance" or an "all" case and the formula.
-mbBind :: String -> Bool -> Formula -> Maybe Formula
+mbBind :: VariableName -> Bool -> Formula -> Maybe Formula
 mbBind v  = dive id
   where
     dive :: (Formula -> Formula) -> Bool -> Formula -> Maybe Formula
@@ -118,11 +119,11 @@ mbBind v  = dive id
     dive _ _ _ = mzero
 
 
-mbExi, mbAll :: String -> Formula -> Formula
+mbExi, mbAll :: VariableName -> Formula -> Formula
 mbExi v f = fromMaybe (zExi v f) (mbBind v True f)
 mbAll v f = fromMaybe (zAll v f) (mbBind v False f)
 
-mbpExi, mbpAll :: (String, SourcePos) -> Formula -> Formula
+mbpExi, mbpAll :: (VariableName, SourcePos) -> Formula -> Formula
 mbpExi v f = fromMaybe (pExi v f) (mbBind (fst v) True f)
 mbpAll v f = fromMaybe (pAll v f) (mbBind (fst v) False f)
 
@@ -140,7 +141,7 @@ blImp _ Top = Top; blImp _ (Tag _ Top) = Top
 blImp Top f = f; blImp (Tag _ Top) f = f
 blImp f g = Imp f g
 
-pBlAll, pBlExi :: (String, SourcePos) -> Formula -> Formula
+pBlAll, pBlExi :: (VariableName, SourcePos) -> Formula -> Formula
 pBlAll _ Top = Top
 pBlAll v f = All (Decl.nonParser v) f
 
@@ -148,11 +149,11 @@ pBlExi _ Top = Top
 pBlExi v f = Exi (Decl.nonParser v) f
 
 -- creation of formulas
-zAll, zExi :: String -> Formula -> Formula
+zAll, zExi :: VariableName -> Formula -> Formula
 zAll v = bool . All (Decl.nonText v) . bind v
 zExi v = bool . Exi (Decl.nonText v) . bind v
 
-pAll, pExi :: (String, SourcePos) -> Formula -> Formula
+pAll, pExi :: (VariableName, SourcePos) -> Formula -> Formula
 pAll nm@(v, _) = pBlAll nm . bind v
 pExi nm@(v, _) = pBlExi nm . bind v
 
@@ -166,10 +167,10 @@ zIff f g = And (Imp f g) (Imp g f)
 zOr (Not f) g = Imp f g
 zOr f g       = Or  f g
 
-zVar :: String -> Formula
+zVar :: VariableName -> Formula
 zVar v = pVar (v, noSourcePos)
 
-pVar :: (String, SourcePos) -> Formula
+pVar :: (VariableName, SourcePos) -> Formula
 pVar (v, pos) = Var v [] pos
 
 zTrm :: TermId -> String -> [Formula] -> Formula
@@ -239,21 +240,9 @@ isElem t = isTrm t && trmId t == ElementId
 
 -- Holes and slots
 
-{- holes and slots act as placeholders during parsing, but do not appear
-during the main verification procedure. -}
-zHole, zSlot ::  Formula
-zHole = zVar "?"; zSlot = zVar "!"
-
-isHole, isSlot :: Formula -> Bool
-isHole Var {varName = "?"} = True; isHole _ = False
-isSlot Var {varName = "!"} = True; isSlot _ = False
-
-substHole, substSlot :: Formula -> Formula -> Formula
-substHole t = subst t "?"; substSlot t = subst t "!"
-
 occursH, occursS :: Formula -> Bool
-occursH = (zHole `occursIn`)
-occursS = (zSlot `occursIn`)
+occursH = ((zVar (VarHole "")) `occursIn`)
+occursS = ((zVar VarSlot) `occursIn`)
 
 
 -- | Replace @ObjectId@ Terms with @Top@
@@ -311,7 +300,7 @@ infoTwins t = dive
 Only variables whose name begins with a '?' are considered matchable.
 All others are treated like constants. -}
 match :: (MonadPlus m) => Formula -> Formula -> m (Formula -> Formula)
-match Var {varName = x@('?':_)} t = return $ subst t x
+match Var {varName = x@(VarHole _)} t = return $ subst t x
 match Var {varName = x} Var {varName = y} | x == y = return id
 match t@Trm{} s@Trm{} | trmId t == trmId s = pairs (trmArgs t) (trmArgs s)
   where
@@ -332,16 +321,16 @@ strip (Not f)   = Not $ strip f
 strip f         = f
 
 
-guardElem :: [String] -> String -> [String]
+guardElem :: Eq a => [a] -> a -> [a]
 guardElem vs v    = guard (v `elem` vs) >> return v
 
-guardNotElem :: [String] -> String -> [String]
+guardNotElem :: Eq a => [a] -> a -> [a]
 guardNotElem vs v = guard (v `notElem` vs) >> return v
 
 {- extracts all duplicateNames (with multiplicity) from a list -}
-duplicateNames :: [String] -> [String]
-duplicateNames (v:vs) = guardElem vs v `mplus` duplicateNames vs
-duplicateNames _      = mzero
+duplicateNames :: Eq a => [a] -> [a]
+duplicateNames (v:vs) = guardElem vs v ++ duplicateNames vs
+duplicateNames _      = []
 
 {- safe identifier extraction -}
 tryToGetID :: Formula -> Maybe TermId
@@ -351,19 +340,19 @@ tryToGetID _ = mzero
 
 {- return free user named variables in a formula (without duplicateNames),
 except those in vs -}
-freePositions :: [String] -> Formula -> [(String, SourcePos)]
+freePositions :: [VariableName] -> Formula -> [(VariableName, SourcePos)]
 freePositions vs = nubOrdBy (compare `on` fst) . dive
   where
-    dive f@Var {varName = u@('x':_)} =
+    dive f@Var {varName = u@(VarConstant _)} =
       (guard (u `notElem` vs) >> return (u, varPosition f)) ++ foldF dive f
     dive f = foldF dive f
 
-free :: [String] -> Formula -> [String]
+free :: [VariableName] -> Formula -> [VariableName]
 free vs = map fst . freePositions vs
 
 {- return all free variables in a formula (without duplicateNames),
 except those in vs -}
-allFree :: [String] -> Formula -> [String]
+allFree :: [VariableName] -> Formula -> [VariableName]
 allFree vs = nubOrd . dive
   where
     dive f@Var {varName = u} = guardNotElem vs u ++ foldF dive f
@@ -371,14 +360,14 @@ allFree vs = nubOrd . dive
 
 
 {- universal closure of a formula -}
-uClose :: [String] -> Formula -> Formula
+uClose :: [VariableName] -> Formula -> Formula
 uClose ls f = foldr zAll f $ allFree ls f
 
 
 -- substitutions as maps
 
 {- apply a substitution that is represented as a finite partial map -}
-applySb :: M.Map String Formula -> Formula -> Formula
+applySb :: M.Map VariableName Formula -> Formula -> Formula
 applySb mp vr@Var {varName = v} = fromMaybe vr $ M.lookup v mp 
 applySb mp t = mapF (applySb mp) t
 
@@ -391,8 +380,3 @@ infoSub sb v@Var{} = sb v
 infoSub sb f = mapF (infoSub sb) f
 
 -- control variable names
-
-{- changes the prefix of a variable name -}
-fromTo :: Char -> Char -> Formula -> Formula
-fromTo c1 c2 v@Var {varName = c':rst} | c' == c1 = v {varName = c2:rst}
-fromTo c1 c2 f = mapF (fromTo c1 c2) f

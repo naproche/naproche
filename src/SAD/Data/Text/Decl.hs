@@ -10,22 +10,23 @@ module SAD.Data.Text.Decl (
   ) where
 
 import SAD.Core.SourcePos
+import SAD.Data.VarName
 
 -- | >0, with 0 as undefined
 type Serial = Int
 
 -- | A variable declaration.
 data Decl = Decl {
-  name :: String,
+  name :: VariableName,
   position :: SourcePos,
   serial :: Serial
 } deriving (Eq, Ord)
 
 {- a declaration that has no representation in the input text -}
-nonText :: String -> Decl
+nonText :: VariableName -> Decl
 nonText v = Decl v noSourcePos 0
 
 {- a declaration that has a representation in the input text but has not been
 generated during parsing -}
-nonParser :: (String, SourcePos) -> Decl
+nonParser :: (VariableName, SourcePos) -> Decl
 nonParser (nm, pos) = Decl nm pos 0

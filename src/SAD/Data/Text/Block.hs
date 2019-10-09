@@ -28,6 +28,7 @@ import SAD.Data.Text.Decl (Decl)
 import qualified SAD.Data.Text.Decl as Decl
 import SAD.ForTheL.Base (VarName)
 import SAD.Parser.Error (ParseError)
+import SAD.Data.VarName
 
 import Control.Monad
 
@@ -108,7 +109,10 @@ canDeclare LowDefinition = True; canDeclare _ = False
 
 
 isTopLevel :: Block -> Bool
-isTopLevel  = isHole . formula
+isTopLevel  = isHole' . formula
+  where
+    isHole' Var {varName = VarHole _} = True
+    isHole' _ = False
 
 noBody :: Block -> Bool
 noBody  = null . body
@@ -117,7 +121,7 @@ file :: Block -> String
 file = sourceFile . position
 
 
-declaredNames :: Block -> [String]
+declaredNames :: Block -> [VariableName]
 declaredNames = map Decl.name . declaredVariables
 
 -- Show instances

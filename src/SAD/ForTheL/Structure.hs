@@ -33,6 +33,7 @@ import SAD.Data.Formula
 import qualified SAD.Data.Tag as Tag
 import SAD.Data.Text.Decl (Decl(Decl))
 import qualified SAD.Data.Text.Decl as Decl
+import SAD.Data.VarName
 
 forthel :: FTL [Text]
 forthel = section <|> macroOrPretype <|> bracketExpression <|> endOfFile
@@ -63,7 +64,7 @@ procParseInstruction text = case text of
       | otherwise = MS.modify $ \st -> st {strSyms = syms : strSyms st}
 
 topsection :: FTL Block
-topsection = signature <|> definition <|> axiom <|> theorem
+topsection = signature' <|> definition <|> axiom <|> theorem
 
 --- generic topsection parsing
 
@@ -74,7 +75,7 @@ genericTopsection :: Section
 genericTopsection kind header endparser = do
   pos <- getPos; inp <- getInput; nm <- header;
   toks <- getTokens inp; bs <- body
-  let bl = Block.makeBlock zHole bs kind nm [] pos toks
+  let bl = Block.makeBlock (zVar (VarHole "")) bs kind nm [] pos toks
   addBlockReports bl; return bl
   where
     body = assumption <|> endparser
@@ -89,8 +90,8 @@ header titles = finish $ markupTokenOf topsectionHeader titles >> optLL1 "" topI
 
 -- topsections
 
-signature :: FTL Block
-signature =
+signature' :: FTL Block
+signature' =
   let sigext = pretype $ pretypeSentence Posit sigExtend defVars noLink
   in  genericTopsection Signature sigH sigext
 definition :: FTL Block
@@ -164,7 +165,7 @@ pretyping :: Block -> FTL Block
 pretyping bl = do
   dvs <- getDecl; tvs <- getPretyped; pret dvs tvs bl
 
-pret :: [String] -> [TVar] -> Block -> FTL Block
+pret :: [VariableName] -> [TVar] -> Block -> FTL Block
 pret dvs tvs bl = do
   untyped <- mapM makeDecl $ freePositions (blockVars ++ dvs) (Block.formula bl)
   let typing =
@@ -175,7 +176,7 @@ pret dvs tvs bl = do
   where
     blockVars = Block.declaredNames bl
     assumeBlock = bl {Block.body = [], Block.kind = Assumption, Block.link = []}
-    typeWith v = substHole (zVar v) . snd . fromJust . find (elem v . fst)
+    typeWith v = subst (zVar v) (VarHole "") . snd . fromJust . find (elem v . fst)
 
 pretypeBefore :: FTL Block -> FTL [Text] -> FTL [Text]
 pretypeBefore blp p = do
@@ -223,7 +224,7 @@ statementBlock kind p mbLink = do
 
 pretypeSentence :: Section
                    -> FTL Formula
-                   -> ([String] -> Formula -> Maybe String)
+                   -> ([VariableName] -> Formula -> Maybe String)
                    -> FTL [String]
                    -> FTL Block
 pretypeSentence kind p wfVars mbLink = narrow $ do
@@ -239,7 +240,7 @@ pretypeSentence kind p wfVars mbLink = narrow $ do
 
 sentence :: Section
             -> FTL Formula
-            -> ([String] -> Formula -> Maybe String)
+            -> ([VariableName] -> Formula -> Maybe String)
             -> FTL [String]
             -> FTL Block
 sentence kind p wfVars mbLink = do
@@ -251,7 +252,7 @@ sentence kind p wfVars mbLink = do
 
 -- variable well-formedness checks
 
-defVars, assumeVars, affirmVars :: [String] -> Formula -> Maybe String
+defVars, assumeVars, affirmVars :: [VariableName] -> Formula -> Maybe String
 
 defVars dvs f
   | null unusedVars = affirmVars dvs f
@@ -261,7 +262,7 @@ defVars dvs f
     errorMsg = "extra variables in the guard: " ++ varString
     varString = concatMap ((' ' :) . showVar) unusedVars
 
-llDefnVars :: [String] -> Formula -> Maybe String
+llDefnVars :: [VariableName] -> Formula -> Maybe String
 llDefnVars dvs f
   | x `elem` dvs = Just $ "Defined variable is already in use: " ++ showVar x
   | otherwise = affirmVars (x : dvs) f
@@ -323,7 +324,7 @@ indThesis fr pre post = do
     indStatem [] f = return (`Imp` f)
     indStatem _ _ = failWF $ "invalid induction thesis " ++ show fr
 
-    insertIndTerm it cn = cn $ Tag InductionHypothesis $ substHole it $ cn $ zLess it zHole
+    insertIndTerm it cn = cn $ Tag InductionHypothesis $ subst it (VarHole "") $ cn $ zLess it (zVar (VarHole ""))
 
     deleteDecl Decl{Decl.name, Decl.position} = deleteBy (\a b -> fst a == fst b) (name, position)
 

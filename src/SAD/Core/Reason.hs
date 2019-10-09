@@ -28,6 +28,7 @@ import Control.Monad.Reader
 import qualified Isabelle.Standard_Thread as Standard_Thread
 
 import SAD.Core.SourcePos
+import SAD.Data.VarName
 import SAD.Core.Base
 import qualified SAD.Core.Message as Message
 import SAD.Data.Formula
@@ -113,7 +114,7 @@ launchProver iteration = do
   whenInstruction Printfulltask False (printTask reductionSetting)
   proverList <- asks provers ; instrList <- asks instructions
   goal <- thesis; context <- asks currentContext
-  let callATP = justIO $
+  let callATP = justIO $ pure $
         export reductionSetting iteration proverList instrList context goal
   callATP >>= timer ProofTime . justIO >>= guard
   res <- fmap head $ askRS counters
@@ -179,12 +180,12 @@ replaceHeadTerm c = Context.setForm c $ dive 0 $ Context.formula c
   where
     dive :: Int -> Formula -> Formula
     dive n (All _ (Imp (Tag HeadTerm Trm {trmName = "=", trmArgs = [_, t]}) f)) =
-      subst t "" $ inst "" f
+      subst t VarEmpty $ inst VarEmpty f
     dive n (All _ (Iff (Tag HeadTerm eq@Trm {trmName = "=", trmArgs = [_, t]}) f))
-      = And (subst t "" $ inst "" f) (All (Decl.nonText "") $ Imp f eq)
+      = And (subst t VarEmpty $ inst VarEmpty f) (All (Decl.nonText VarEmpty) $ Imp f eq)
     dive n (All _ (Imp (Tag HeadTerm Trm{}) Top)) = Top
     dive n (All v f) =
-      bool $ All v $ bind (show n) $ dive (succ n) $ inst (show n) f
+      bool $ All v $ bind (VarDefault $ show n) $ dive (succ n) $ inst (VarDefault $ show n) f
     dive n (Imp f g) = bool $ Imp f $ dive n g
     dive _ f = f
 
@@ -283,7 +284,7 @@ unfoldConservative toUnfold
       | isTrm f  =  fmap reduceWithEvidence $ unfoldAtomic (fromJust sign) f
     -- Iff is changed to double implication -> every position has a polarity
     fill localContext sign n (Iff f g) = fill localContext sign n $ zIff f g
-    fill localContext sign n f = roundFM 'u' fill localContext sign n f
+    fill localContext sign n f = roundFM VarU fill localContext sign n f
 
     isDeclaration :: Context -> Bool
     isDeclaration = (==) LowDefinition . Block.kind . Context.head
@@ -343,15 +344,15 @@ unfoldAtomic sign f = do
       in  lift (W.tell 1) >> return extensionalityFormula
 
     setExtensionality f g =
-      let v = zVar "" in zAll "" $ Iff (zElem v f) (zElem v g)
+      let v = zVar VarEmpty in zAll VarEmpty $ Iff (zElem v f) (zElem v g)
     funExtensionality f g =
-      let v = zVar ""
+      let v = zVar VarEmpty
       in (domainEquality (zDom f) (zDom g)) `And`
-         zAll "" (Imp (zElem v $ zDom f) $ zEqu (zApp f v) (zApp g v))
+         zAll VarEmpty (Imp (zElem v $ zDom f) $ zEqu (zApp f v) (zApp g v))
 
     -- depending on the sign we choose the more convenient form of set equality
     domainEquality =
-      let v = zVar ""; sEqu x y = zAll "" (Iff (zElem v x) (zElem v y))
+      let v = zVar VarEmpty; sEqu x y = zAll VarEmpty (Iff (zElem v x) (zElem v y))
       in  if sign then zEqu else sEqu
 
     setFunDefinitionalProperties t = do

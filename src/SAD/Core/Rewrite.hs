@@ -17,6 +17,7 @@ import SAD.Data.Instr
 import SAD.Data.Rules (Rule)
 import SAD.Data.Text.Context (Context)
 import SAD.Helpers (notNull)
+import SAD.Data.VarName
 
 import qualified SAD.Core.Message as Message
 import qualified SAD.Data.Rules as Rule
@@ -48,10 +49,10 @@ lpoGt w tr@Trm {trmName = t, trmArgs = ts} sr@Trm {trmName = s, trmArgs = ss} =
     && ((t == s && lexord (lpoGt w) ts ss)
     || w t s))
 lpoGt w Trm { trmName = t, trmArgs = ts} v@Var {varName = x} =
-  w t x || any (\ti -> lpoGe w ti v) ts
+  w t (show x) || any (\ti -> lpoGe w ti v) ts
 lpoGt w v@Var {varName = x} Trm {trmName = t, trmArgs = ts} =
-  w x t && all (lpoGt w v) ts
-lpoGt w Var{varName = x} Var {varName = y} = w x y
+  w (show x) t && all (lpoGt w v) ts
+lpoGt w Var{varName = x} Var {varName = y} = w (show x) (show y)
 lpoGt _ _ _ = False
 
 
@@ -97,7 +98,7 @@ simpstep rules w = flip runStateT undefined . dive
       guard $ full nr && lpoGt w (sbs l) nr -- simplified term must be lighter
       return (sbs r, map sbs $ Rule.condition rule, rule)
 
-    full Var {varName = '?':_} = False; full f = allF full f
+    full Var {varName = VarHole _} = False; full f = allF full f
 
 
 {- finds ALL normalforms and their corresponding simplification paths -}

@@ -29,6 +29,7 @@ import qualified SAD.Data.Text.Decl as Decl
 
 import SAD.Core.Message (PIDE)
 import qualified SAD.Core.Message as Message
+import SAD.Data.VarName
 
 type FTL = Parser FState
 
@@ -42,7 +43,7 @@ type MNotion = (Formula -> Formula, Formula, [VarName])
 
 type Prim    = ([Patt], [Formula] -> Formula)
 
-type VarName = (String, SourcePos)
+type VarName = (VariableName, SourcePos)
 
 
 data FState = FState {
@@ -50,7 +51,7 @@ data FState = FState {
   cfnExpr, rfnExpr, lfnExpr, ifnExpr :: [Prim],
   cprExpr, rprExpr, lprExpr, iprExpr :: [Prim],
 
-  tvrExpr :: [TVar], strSyms :: [[String]], varDecl :: [String],
+  tvrExpr :: [TVar], strSyms :: [[String]], varDecl :: [VariableName],
   idCount :: Int, hiddenCount :: Int, serialCounter :: Int,
   reports :: [Message.Report], pide :: Maybe PIDE }
 
@@ -70,8 +71,8 @@ initFS = FState
       ([Sm "="], zTrm EqualityId "="),
       ([Sm "!", Sm "="], Not . zTrm EqualityId "="),
       ([Sm "-", Sm "<", Sm "-"], zTrm LessId "iLess"),
-      ([Sm "-~-"], \(m:n:_) -> zAll "" $
-        Iff (zElem (zVar "") m) (zElem (zVar "") n)) ]
+      ([Sm "-~-"], \(m:n:_) -> zAll VarEmpty $
+        Iff (zElem (zVar VarEmpty) m) (zElem (zVar VarEmpty) n)) ]
     sn = [ ([Sm "=", Vr], zTrm EqualityId "=") ]
     nt = [
       ([Wd ["function","functions"], Nm], zFun . head),
@@ -90,10 +91,10 @@ getExpr :: (FState -> [a]) -> (a -> FTL b) -> FTL b
 getExpr e p = MS.gets e >>=  foldr ((-|-) . try . p ) mzero
 
 
-getDecl :: FTL [String]
+getDecl :: FTL [VariableName]
 getDecl = MS.gets varDecl
 
-addDecl :: [String] -> FTL a -> FTL a
+addDecl :: [VariableName] -> FTL a -> FTL a
 addDecl vs p = do
   dcl <- MS.gets varDecl; MS.modify adv;
   after p $ MS.modify $ sbv dcl
@@ -127,7 +128,7 @@ primPrd :: Parser st (b1 -> b1, Formula)
            -> ([Patt], [Formula] -> b2) -> Parser st (b1 -> b1, b2)
 primPrd p (pt, fm) = do
   (q, ts) <- wdPatt p pt
-  return (q, fm $ zHole:ts)
+  return (q, fm $ (zVar (VarHole "")):ts)
 
 
 -- Multi-subject predicates: [a,b are] equal
@@ -146,7 +147,7 @@ prim_ml_prd :: Parser st (b1 -> b1, Formula)
                -> ([Patt], [Formula] -> b2) -> Parser st (b1 -> b1, b2)
 prim_ml_prd p (pt, fm) = do
   (q, ts) <- mlPatt p pt
-  return (q, fm $ zHole:zSlot:ts)
+  return (q, fm $ (zVar (VarHole "")):(zVar VarSlot):ts)
 
 
 -- Notions and functions
@@ -157,13 +158,13 @@ primNtn p  = getExpr ntnExpr ntn
   where
     ntn (pt, fm) = do
       (q, vs, ts) <- ntPatt p pt
-      return (q, fm $ zHole:ts, vs)
+      return (q, fm $ (zVar (VarHole "")):ts, vs)
 
 primOfNtn p = getExpr ntnExpr ntn
   where
     ntn (pt, fm) = do
       (q, vs, ts) <- ofPatt p pt
-      let fn v = fm $ (pVar v):zHole:ts
+      let fn v = fm $ (pVar v):(zVar (VarHole "")):ts
       return (q, foldr1 And $ map fn vs, vs)
 
 primCmNtn :: FTL UTerm -> FTL MTerm -> FTL MNotion
@@ -171,7 +172,7 @@ primCmNtn p s = getExpr ntnExpr ntn
   where
     ntn (pt, fm) = do
       (q, vs, as, ts) <- cmPatt p s pt
-      let fn v = fm $ zHole:v:ts
+      let fn v = fm $ (zVar (VarHole "")):v:ts
       return (q, foldr1 And $ map fn as, vs)
 
 primFun :: FTL UTerm -> FTL UTerm
@@ -218,7 +219,7 @@ primIsm p (pt, fm) = smPatt p pt >>= \l -> return $ \t s -> fm $ t:l++[s]
 primSnt :: FTL Formula -> FTL MNotion
 primSnt p  = noError $ varlist >>= getExpr sntExpr . snt
   where
-    snt vs (pt, fm) = smPatt p pt >>= \l -> return (id, fm $ zHole:l, vs)
+    snt vs (pt, fm) = smPatt p pt >>= \l -> return (id, fm $ (zVar (VarHole "")):l, vs)
 
 
 
@@ -275,7 +276,7 @@ mlPatt _ _ = mzero
 -- parses a notion: follow the pattern to the name place, record names,
 -- then keep following the pattern
 ntPatt :: FTL (b -> b, a)
-          -> [Patt] -> FTL (b -> b, [(String, SourcePos)], [a])
+          -> [Patt] -> FTL (b -> b, [(VariableName, SourcePos)], [a])
 ntPatt p (Wd l : ls) = patternTokenOf' l >> ntPatt p ls
 ntPatt p (Nm : ls) = do
   vs <- namlist
@@ -286,7 +287,7 @@ ntPatt _ _ = mzero
 -- parse an "of"-notion: follow the pattern to the notion name, then check that
 -- "of" follows the name followed by a variable that is not followed by "and"
 ofPatt :: FTL (b -> b, a)
-          -> [Patt] -> FTL (b -> b, [(String, SourcePos)], [a])
+          -> [Patt] -> FTL (b -> b, [(VariableName, SourcePos)], [a])
 ofPatt p (Wd l : ls) = patternTokenOf' l >> ofPatt p ls
 ofPatt p (Nm : Wd l : Vr : ls) = do
   guard $ elem "of" l; vs <- namlist
@@ -300,7 +301,7 @@ ofPatt _ _ = mzero
 cmPatt :: FTL (b -> b, a1)
           -> FTL (b -> c, [a2])
           -> [Patt]
-          -> FTL (b -> c, [(String, SourcePos)], [a2], [a1])
+          -> FTL (b -> c, [(VariableName, SourcePos)], [a2], [a1])
 cmPatt p s (Wd l:ls) = patternTokenOf' l >> cmPatt p s ls
 cmPatt p s (Nm : Wd l : Vr : ls) = do
   guard $ elem "of" l; vs <- namlist; patternTokenOf' l
@@ -321,35 +322,35 @@ naPatt p ls = wdPatt p ls
 
 -- Variables
 
-namlist :: FTL [(String, SourcePos)]
+namlist :: FTL [(VariableName, SourcePos)]
 namlist = varlist -|- fmap (:[]) hidden
 
-varlist :: Parser st [(String, SourcePos)]
+varlist :: Parser st [(VariableName, SourcePos)]
 varlist = do
   vs <- var `sepBy` token' ","
   nodups $ map fst vs ; return vs
 
-nodups :: [String] -> Parser st ()
+nodups :: [VariableName] -> Parser st ()
 nodups vs = unless ((null :: [b] -> Bool) $ duplicateNames vs) $
-  fail $ "duplicate names: " ++ show vs
+  fail $ "duplicate names: " ++ (show $ map show vs)
 
-hidden :: FTL (String, SourcePos)
+hidden :: FTL (VariableName, SourcePos)
 hidden = do
   n <- MS.gets hiddenCount
   MS.modify $ \st -> st {hiddenCount = succ n}
-  return ('h':show n, noSourcePos)
+  return (VarHidden $ show n, noSourcePos)
 
 -- | Parse the next token as a variable (a sequence of alpha-num chars beginning with an alpha)
 -- and return ('x' + the sequence) with the current position.
-var :: Parser st (String, SourcePos)
+var :: Parser st (VariableName, SourcePos)
 var = do
   pos <- getPos
   v <- satisfy (\s -> all isAlphaNum s && isAlpha (head s))
-  return ('x':v, pos)
+  return (VarConstant v, pos)
 
 --- pretyped Variables
 
-type TVar = ([String], Formula)
+type TVar = ([VariableName], Formula)
 
 primTvr :: FTL MNotion
 primTvr = getExpr tvrExpr tvr
@@ -361,16 +362,17 @@ primTvr = getExpr tvrExpr tvr
 
 -- free
 
-freeVars :: Formula -> FTL [String]
+freeVars :: Formula -> FTL [VariableName]
 freeVars f = do dvs <- getDecl; return $ free dvs f
-freeVarPositions :: Formula -> FTL [(String, SourcePos)]
+
+freeVarPositions :: Formula -> FTL [(VariableName, SourcePos)]
 freeVarPositions f = do dvs <- getDecl; return $ freePositions dvs f
 
 --- decl
 
-{- produce the variables delcared by a formula together with their positions. As
+{- produce the variables declared by a formula together with their positions. As
 parameter we pass the already known variables-}
-decl :: [String] -> Formula -> [VarName]
+decl :: [VariableName] -> Formula -> [VarName]
 decl vs = dive
   where
     dive (All _ f) = dive f
@@ -378,10 +380,10 @@ decl vs = dive
     dive (Tag _ f) = dive f
     dive (Imp f g) = filter (noc f) (dive g)
     dive (And f g) = dive f `varNameUnion` filter (noc f) (dive g)
-    dive Trm {trmName = 'a':_, trmArgs = v@Var{varName = u@('x':_)}:ts}
+    dive Trm {trmName = 'a':_, trmArgs = v@Var{varName = u@(VarConstant _)}:ts}
       | all (\t -> not (v `occursIn` t)) ts =
           guard (u `notElem` vs) >> return (u, varPosition v)
-    dive Trm{trmName = "=", trmArgs = [v@Var{varName = u@('x':_)}, t]}
+    dive Trm{trmName = "=", trmArgs = [v@Var{varName = u@(VarConstant _)}, t]}
       | isTrm t && not (v `occursIn` t) =
           guard (u `notElem` vs) >> return (u, varPosition v)
     dive _ = []
@@ -390,18 +392,18 @@ decl vs = dive
     varNameUnion = unionBy $ \a b -> fst a == fst b
 
 {- produce variable names declared by a formula -}
-declNames :: [String] -> Formula -> [String]
+declNames :: [VariableName] -> Formula -> [VariableName]
 declNames vs = map fst . decl vs
 
 {- produce the bindings in a formula in a Decl data type and take care of
 the serial counter. -}
-bindings :: [String] -> Formula -> FTL [Decl]
+bindings :: [VariableName] -> Formula -> FTL [Decl]
 bindings vs = mapM makeDecl . decl vs
 
 
-overfree :: [String] -> Formula -> Maybe String
+overfree :: [VariableName] -> Formula -> Maybe String
 overfree vs f
-    | zSlot `occursIn` f = Just $ "too few subjects for an m-predicate " ++ info
+    | (zVar VarSlot) `occursIn` f = Just $ "too few subjects for an m-predicate " ++ info
     | not (null sbs) = Just $ "free undeclared variables: "   ++ sbs ++ info
     | not (null ovl) = Just $ "overlapped variables: "        ++ ovl ++ info
     | otherwise      = Nothing
@@ -410,15 +412,15 @@ overfree vs f
     ovl = unwords $ map showVar $ over vs f
     info = "\n in translation: " ++ show f
 
-    over :: [String] -> Formula -> [String]
+    over :: [VariableName] -> Formula -> [VariableName]
     over vs (All v f) = boundVars vs (Decl.name v) f
     over vs (Exi v f) = boundVars vs (Decl.name v) f
     over vs f = foldF (over vs) f
 
-    boundVars :: [String] -> String -> Formula -> [String]
+    boundVars :: [VariableName] -> VariableName -> Formula -> [VariableName]
     boundVars vs v f
       | v `elem` vs = [v]
-      | null v = over vs f
+      | v == VarEmpty = over vs f
       | otherwise = over (v:vs) f
 
 
@@ -458,6 +460,6 @@ such = tokenOf' ["such", "so"]
 
 --just for now:
 
-showVar :: String -> String
-showVar ('x':nm) = nm
-showVar nm = nm
+showVar :: VariableName -> String
+showVar (VarConstant nm) = nm
+showVar nm = show nm
