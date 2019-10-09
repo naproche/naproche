@@ -37,7 +37,7 @@ dummyT = Type ("dummy", [])
 
 
 data Term =
-    Const (String, Typ)
+    Const (String, [Typ])
   | Free (String, Typ)
   | Var (Indexname, Typ)
   | Bound Int

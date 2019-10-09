@@ -42,7 +42,7 @@ naproche_pos_shift = \<open>Naproche.NAPROCHE_POS_SHIFT\<close>
 -- message origin
 
 origin, origin_main, origin_export, origin_forthel, origin_parser,
-  origin_reasoner, origin_simplifier, origin_thesis :: String
+  origin_reasoner, origin_simplifier, origin_thesis, origin_translate :: String
 origin = \<open>Naproche.origin\<close>
 origin_main = \<open>Naproche.origin_main\<close>
 origin_export = \<open>Naproche.origin_export\<close>

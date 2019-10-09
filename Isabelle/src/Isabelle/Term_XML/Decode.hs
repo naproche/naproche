@@ -13,7 +13,6 @@ module Isabelle.Term_XML.Decode (sort, typ, term)
 where
 
 import Isabelle.Library
-import qualified Isabelle.XML as XML
 import Isabelle.XML.Decode
 import Isabelle.Term
 
@@ -31,7 +30,7 @@ typ ty =
 term :: T Term
 term t =
   t |> variant
-   [\([a], b) -> Const (a, typ b),
+   [\([a], b) -> Const (a, list typ b),
     \([a], b) -> Free (a, typ b),
     \([a, b], c) -> Var ((a, int_atom b), typ c),
     \([a], []) -> Bound (int_atom a),

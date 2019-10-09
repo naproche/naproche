@@ -44,10 +44,13 @@ unit_atom () = ""
 
 -- structural nodes
 
+node :: XML.Body -> XML.Tree
 node ts = XML.Elem ((":", []), ts)
 
+vector :: [b] -> [(String, b)]
 vector = map_index (\(i, x) -> (int_atom i, x))
 
+tagged :: (Int, ([String], XML.Body)) -> XML.Tree
 tagged (tag, (xs, ts)) = XML.Elem ((int_atom tag, vector xs), ts)
 
 

@@ -28,7 +28,7 @@ naproche_pos_shift = "NAPROCHE_POS_SHIFT"
 -- message origin
 
 origin, origin_main, origin_export, origin_forthel, origin_parser,
-  origin_reasoner, origin_simplifier, origin_thesis :: String
+  origin_reasoner, origin_simplifier, origin_thesis, origin_translate :: String
 origin = "origin"
 origin_main = "Main"
 origin_export = "Export"

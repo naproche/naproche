@@ -45,6 +45,7 @@ for Isabelle Prover IDE.
 
   * "Quick start in 30min" according to README_REPOSITORY
     (https://isabelle.in.tum.de/repos/isabelle/raw-file/tip/README_REPOSITORY)
+    You should append the `-r Isabelle2019` option to `hg clone`.
 
   * Use Isabelle/jEdit to edit $ISABELLE_HOME_USER/etc/settings to include
     the Naproche-SAD directory as Isabelle component. E.g. like this:

@@ -12,8 +12,6 @@ See also "$ISABELLE_HOME/src/Pure/PIDE/xml.ML".
 module Isabelle.XML (Attributes, Body, Tree(..), wrap_elem, unwrap_elem, content_of)
 where
 
-import qualified Data.List as List
-
 import Isabelle.Library
 import qualified Isabelle.Properties as Properties
 import qualified Isabelle.Markup as Markup
@@ -57,6 +55,7 @@ content_of body = Buffer.empty |> fold add_content body |> Buffer.content
 
 {- string representation -}
 
+encode :: Char -> String
 encode '<' = "&lt;"
 encode '>' = "&gt;"
 encode '&' = "&amp;"

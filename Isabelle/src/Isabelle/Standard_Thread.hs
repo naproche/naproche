@@ -23,7 +23,6 @@ module Isabelle.Standard_Thread (
 where
 
 import Data.Unique
-import Data.Maybe
 import Data.IORef
 import System.IO.Unsafe
 

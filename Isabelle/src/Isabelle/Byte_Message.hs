@@ -23,11 +23,8 @@ import Data.Maybe
 import Data.ByteString (ByteString)
 import qualified Data.ByteString as ByteString
 import qualified Data.ByteString.UTF8 as UTF8
-import Data.Word (Word8)
 
-import Control.Monad (when)
 import Network.Socket (Socket)
-import qualified Network.Socket as Socket
 import qualified Network.Socket.ByteString as ByteString
 
 import Isabelle.Library hiding (trim_line)
@@ -88,6 +85,7 @@ read_line socket = read_body []
           case ByteString.head s of
             10 -> return (Just (result bs))
             b -> read_body (b : bs)
+        _ -> return Nothing -- this can't happen, though
 
 
 {- messages with multiple chunks (arbitrary content) -}

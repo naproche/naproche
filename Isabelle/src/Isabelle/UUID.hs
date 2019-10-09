@@ -18,7 +18,6 @@ module Isabelle.UUID (
 where
 
 import Data.ByteString (ByteString)
-import qualified Data.ByteString
 import Data.UUID (UUID)
 import qualified Data.UUID as UUID
 import Data.UUID.V4 (nextRandom)

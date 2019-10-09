@@ -15,7 +15,6 @@ module Isabelle.Term_XML.Encode (sort, typ, term)
 where
 
 import Isabelle.Library
-import qualified Isabelle.XML as XML
 import Isabelle.XML.Encode
 import Isabelle.Term
 
@@ -33,7 +32,7 @@ typ ty =
 term :: T Term
 term t =
   t |> variant
-   [\case { Const (a, b) -> Just ([a], typ b); _ -> Nothing },
+   [\case { Const (a, b) -> Just ([a], list typ b); _ -> Nothing },
     \case { Free (a, b) -> Just ([a], typ b); _ -> Nothing },
     \case { Var ((a, b), c) -> Just ([a, int_atom b], typ c); _ -> Nothing },
     \case { Bound a -> Just ([int_atom a], []); _ -> Nothing },
