@@ -18,6 +18,8 @@ import SAD.Data.TermId
 import SAD.Data.Text.Decl (Decl)
 import SAD.Data.VarName
 
+import qualified Data.Map as Map
+
 data Formula =
   All Decl Formula        | Exi Decl Formula |
   Iff Formula Formula     | Imp Formula Formula     |
@@ -180,9 +182,9 @@ subst t v f = substs f [v] [t]
 substs :: Formula -> [VariableName] -> [Formula] -> Formula
 substs f vs ts = dive f
   where
-    dive v@Var {varName = u} = fromMaybe v (lookup u zvt)
+    dive v@Var {varName = u} = fromMaybe v (Map.lookup u zvt)
     dive f = mapF dive f
-    zvt = zip vs ts
+    zvt = Map.fromList $ zip vs ts
 
 
 

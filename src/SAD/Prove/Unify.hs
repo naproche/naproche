@@ -10,10 +10,7 @@ module SAD.Prove.Unify (unify) where
 
 import Control.Monad
 import SAD.Data.Formula
-import Data.Function (on)
 import SAD.Data.VarName
-
-
 
 {- given two literals we check whether they are eligible for unification
 (sign and symbol are the same) and then try to unify their arguments-}
@@ -27,11 +24,14 @@ unify _ Bot = mzero
 unify Top Top = return id
 unify Top _ = mzero
 unify _ Top = mzero
-unify l r = guard (((==) `on` trmId . ltAtomic) l r) >> unif (zip (trmArgs . ltAtomic $ l) (trmArgs . ltAtomic $ r))
+unify l r = do 
+  let la = ltAtomic l; ra = ltAtomic r
+  guard (trmId la == trmId ra) 
+  unif $ zip (trmArgs la) (trmArgs ra)
 
 {- implementation of a standard unification algorithm -}
 unif :: MonadPlus m => [(Formula, Formula)] -> m (Formula -> Formula)
-unif = fmap mkSubst . dive [] -- we keep a list of already assigned variables
+unif = fmap (mkSubst . updateSubst) . dive [] -- we keep a list of already assigned variables
   where
     dive assigned (task@(l,r):rest)
       | functionSymb l && functionSymb r -- if both sides have a function symbol
@@ -50,12 +50,10 @@ unif = fmap mkSubst . dive [] -- we keep a list of already assigned variables
     newTasks _ _ = []
 
     -- update earlier assignments with later ones
-    mkSubst ((x,t):rst) =
-      let sb = subst t (varName x)
-      in  sb . mkSubst (map (\(x',t') -> (x', sb t')) rst)
-    mkSubst [] = id
+    updateSubst ((x,t):rest) = (x,t) : updateSubst (map (fmap (subst t (varName x))) rest)
+    updateSubst [] = []
 
-
+    mkSubst assigned f = substs f (map (varName . fst) assigned) (map snd assigned)
 
     clash Trm {trmId = tId} Trm {trmId = sId} = tId /= sId
     clash Var {varName = x} Var {varName = y} = x /= y
