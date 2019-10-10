@@ -15,7 +15,8 @@ data TermId
   | PairId
   | ObjectId
   | NewId -- ^ temporary id given to newly introduced symbols
-  | SpecialId Int -- TODO: This seems unnecessary..
+  | SkolemId Int
+  | SpecialId Int
   deriving (Eq, Ord, Show)
 
 specialId :: Int -> TermId

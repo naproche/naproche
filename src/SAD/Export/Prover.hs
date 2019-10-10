@@ -39,7 +39,7 @@ export reduced depth provers instrs context goal = do
 
   when (null proversNamed) $ Message.errorExport noSourcePos $ "No prover named " ++ show proverName
 
-  let prover@(Prover _ label path args fmt yes nos uns) = head proversNamed
+  let Prover _ label path args fmt yes nos uns = head proversNamed
       timeLimit = askLimit Timelimit 3 instrs
       proc =
         (Process.proc path (map (setTimeLimit timeLimit) args))
@@ -53,7 +53,7 @@ export reduced depth provers instrs context goal = do
         return (fromJust pin, fromJust pout, fromJust perr, p)
 
   let output = case fmt of TPTP -> TPTP.output; DFG -> DFG.output
-      task = output reduced prover timeLimit context goal
+      task = output reduced context goal
 
   when (askFlag Dump False instrs) $ Message.output "" Message.WRITELN noSourcePos task
 

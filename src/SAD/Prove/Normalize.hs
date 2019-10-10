@@ -6,7 +6,6 @@ Normalization of formulas.
 
 
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
-{-# LANGUAGE FlexibleContexts #-}
 
 module SAD.Prove.Normalize  (
   simplify,
@@ -19,9 +18,9 @@ module SAD.Prove.Normalize  (
 
 import SAD.Data.Formula
 import SAD.Data.TermId
+import SAD.Core.SourcePos
 
 import Data.List
-import Control.Monad.State
 import qualified SAD.Data.Text.Decl as Decl
 import SAD.Data.VarName
 
@@ -119,33 +118,18 @@ indSubst t v = dive t
     dive t Var {varName = u} | u == v = t
     dive t f = mapF (dive t) f
 
--- skolemization
-
-
-data SkState = SK { skolemCounter :: Int, dependencyCounter :: Int}
-
+-- | Skolemization
 skolemize :: Int -> Formula -> (Formula, Int)
-skolemize n f =
-  let (skf, SK {skolemCounter = nsk}) = runState (skolem f) $ SK n 0
-  in  (skf, nsk)
+skolemize n f = let (sc, _, fs) = dive (n, 0, id) f in (fs, sc)
   where
-    skolem (All x f) = fmap (All x) $ increaseDependency >> skolem f
-    skolem (Exi _ f) = instSkolem f >>= skolem . dec
-    skolem (Or  f g) = do
-      st <- get; liftM2 Or  (skolem f) (resetDependency st >> skolem g)
-    skolem (And f g) = do
-      st <- get; liftM2 And (skolem f) (resetDependency st >> skolem g)
-    skolem f = return f
-
-    increaseDependency =
-      modify (\st -> st {dependencyCounter = succ (dependencyCounter st)})
-    resetDependency st =
-      modify (\ost -> ost { dependencyCounter = dependencyCounter st})
-
-instSkolem :: Formula -> State SkState Formula
-instSkolem f = do
-  st <- get; let nf = instSk (skolemCounter st) (dependencyCounter st) f
-  put $ st { skolemCounter = succ (skolemCounter st) }; return nf
+    -- sc: skolemCounter, dc: dependencyCounter, fs: Formula visited so far
+    dive (sc, dc, fs) (All x f) = dive (sc, succ dc, fs . All x) f
+    dive (sc, dc, fs) (Exi _ f) = dive (succ sc, dc, fs) (dec $ instSk sc dc f)
+    dive (sc, dc, fs) (Or  f g) = 
+      let (sc', _, fs') = dive (sc, dc, id) f in dive (sc', dc, fs . Or  fs') g
+    dive (sc, dc, fs) (And f g) =
+      let (sc', _, fs') = dive (sc, dc, id) f in dive (sc', dc, fs . And fs') g
+    dive (sc, dc, fs) f = (sc, dc, fs f)
 
 instSk :: Int -> Int -> Formula -> Formula
 instSk skolemCnt dependencyCnt = dive 0
@@ -155,10 +139,10 @@ instSk skolemCnt dependencyCnt = dive 0
     dive d Ind {indIndex = m} | d == m = skolemFunction d
     dive d f = mapF (dive d) f
 
-    skolemFunction = zTrm (specialId skolemId) skolemName . skolemArguments
+    skolemFunction = zTrm (SkolemId skolemId) skolemName . skolemArguments
 
 
-    skolemArguments d = [Ind (i + d) undefined | i <- [1..dependencyCnt] ]
+    skolemArguments d = [Ind (i + d) noSourcePos | i <- [1..dependencyCnt] ]
 
     skolemId = -20 - skolemCnt
     skolemName = "tsk" ++ show skolemCnt
@@ -266,5 +250,5 @@ ontoPrep sk f =
 -- testing for skolem function
 
 isSkolem :: Formula -> Bool
-isSkolem Trm {trmName = 't':'s':'k':_} = True
+isSkolem Trm {trmId = SkolemId _} = True
 isSkolem _ = False

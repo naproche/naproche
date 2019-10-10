@@ -4,8 +4,6 @@ Authors: Andrei Paskevich (2001 - 2008)
 Print proof task in DFG syntax.
 -}
 
-{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
-
 module SAD.Export.DFG (output) where
 
 import Data.List
@@ -14,39 +12,40 @@ import SAD.Data.Formula
 import SAD.Data.Text.Block (Block(Block))
 import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Text.Context as Context (Context(..))
-import SAD.Export.Base
 import SAD.Helpers
+import SAD.Data.TermId
 
-output :: Bool -> Prover -> Int -> [Context] -> Context -> String
-output red _ _ cn gl = (hdr . sym . axm . cnj . eop) ""
+output :: Bool -> [Context] -> Context -> String
+output red contexts goal = concat
+  [ "begin_problem(A).list_of_descriptions.name({*EA*})."
+  , "author({*EA*}).status(unknown).description({*EA*})."
+  , endOfList
+  , "list_of_symbols.\n"
+  , dfgSLS (goal:contexts)
+  , endOfList
+  , "list_of_formulae(axioms).\n"
+  , concatMap (formatContext red) $ reverse $ contexts
+  , endOfList
+  , "list_of_formulae(conjectures).\n"
+  , formatContext red goal
+  , endOfList
+  , "end_problem.\n"
+  ]
   where
-    hdr = showString "begin_problem(A).list_of_descriptions.name({*EA*})."
-        . showString "author({*EA*}).status(unknown).description({*EA*})."
-        . eol
-
-    sym = showString "list_of_symbols.\n" . dfgSLS (gl:cn) . eol
-
-    axm = showString "list_of_formulae(axioms).\n" . axs . eol
-    cnj = showString "list_of_formulae(conjectures).\n" . gll . eol
-
-    eol = showString "end_of_list.\n"
-    eop = showString "end_problem.\n"
-
-    axs = foldr (flip (.) . dfgForm red) id cn
-    gll = dfgForm red gl
-
+    endOfList = "end_of_list.\n"
 
 -- Formula print
 
-dfgForm :: Bool -> Context -> ShowS
-dfgForm red (Context fr (Block { Block.name = m } : _) _ g)
-        = let f = if red then g else fr in
-          showString "formula(" . dfgTerm 0 f .
-          (if null m || m == "__" then id else showChar ',' . showString m) .
-          showString ").\n"
+formatContext :: Bool -> Context -> String
+formatContext red (Context fr (Block { Block.name = m } : _) _ g) = concat
+  [ "formula(" ++ formatFormula 0 (if red then g else fr) ""
+  , if null m || m == "__" then "" else "," ++ m
+  , ").\n" 
+  ]
+formatContext _ _ = ""
 
-dfgTerm :: Int -> Formula -> ShowS
-dfgTerm d = dive
+formatFormula :: Int -> Formula -> ShowS
+formatFormula d = dive
   where
     dive (All _ f)  = showString "forall" . showParen True (binder f)
     dive (Exi _ f)  = showString "exists" . showParen True (binder f)
@@ -55,35 +54,37 @@ dfgTerm d = dive
     dive (Or  f g)  = showString "or" . showArgumentsWith dive [f,g]
     dive (And f g)  = showString "and" . showArgumentsWith dive [f,g]
     dive (Tag _ f)  = dive f
-    dive (Not f)    = showString "not" . showArgumentsWith dive [f]
+    dive (Not f)    = showString "not" . showParen True (dive f)
     dive Top        = showString "true"
     dive Bot        = showString "false"
-    dive t| isEquality t = showString "equal" . showArgumentsWith dive (trmArgs t)
-          | isTrm t = showTrName t . showArgumentsWith dive (trmArgs t)
-          | isVar t = showTrName t
-          | isInd t = showChar 'W' . shows (d - 1 - indIndex t)
+    dive t@Trm {} | isEquality t = showString "equal" . showArgumentsWith dive (trmArgs t)
+    dive t@Trm {}   = showTrName t
+    dive v@Var {}   = showTrName v
+    dive i@Ind {}   = showChar 'W' . shows (d - 1 - indIndex i)
+    dive ThisT      = error "SAD.Export.DFG: Didn't expect ThisT here"
 
-    binder f  = showChar '[' . dfgTerm (succ d) (Ind 0 undefined)
-              . showString "]," . dfgTerm (succ d) f
+    binder f  = showChar '[' . formatFormula (succ d) (Ind 0 undefined)
+              . showString "]," . formatFormula (succ d) f
 
--- Symbol count
-
-dfgSLS :: [Context] -> ShowS
-dfgSLS tsk  = sls "functions" fns . sls "predicates" pds
+-- | Symbol count
+dfgSLS :: [Context] -> String
+dfgSLS tasks  = sls "functions" functions ++ sls "predicates" predicates
   where
-    sls _ [] = id
-    sls s ls = showString s . showChar '[' . commaSeparated shs ls . showString "].\n"
+    sls _ [] = ""
+    sls s ls = s ++ "[" ++ (commaSeparated shs ls) "" ++ "].\n"
 
     shs (s, a)  = showParen True $ stn s . showChar ',' . shows a
     stn = showString . filter (/= ':')
 
-    pds = [ (s, a) | (True,  s, a) <- sms ]
-    fns = [ (s, a) | (False, s, a) <- sms ]
-    sms = foldr (union . nubOrd . dfgSyms True . Context.formula) [] tsk
+    predicates = [ (s, a) | (True,  s, a) <- sms ]
+    functions = [ (s, a) | (False, s, a) <- sms ]
+    sms = foldr (union . nubOrd . findSymbols True . Context.formula) [] tasks
 
-dfgSyms :: Bool -> Formula -> [(Bool, String, Int)]
-dfgSyms s f | isEquality f   = concatMap (dfgSyms False) $ trmArgs f
-dfgSyms s Trm {trmName = t, trmArgs = ts} = (s, t, length ts) : concatMap (dfgSyms False) ts
-dfgSyms s Var {varName = v}     = [(s, show v, 0)]
-dfgSyms s Ind{}     = []
-dfgSyms s f             = foldF (dfgSyms s) f
+
+-- | Find symbols returning Name, Arity and whether it is top-level.
+findSymbols :: Bool -> Formula -> [(Bool, String, Int)]
+findSymbols s t@Trm {trmId = EqualityId}      = concatMap (findSymbols False) $ trmArgs t
+findSymbols s Trm {trmName = t, trmArgs = ts} = (s, t, length ts) : concatMap (findSymbols False) ts
+findSymbols s Var {varName = v}               = [(s, show v, 0)]
+findSymbols s Ind{}                           = []
+findSymbols s f                               = foldF (findSymbols s) f
