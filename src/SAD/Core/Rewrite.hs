@@ -7,7 +7,7 @@ Term rewriting: extraction of rules and proof of equlities.
 {-# LANGUAGE FlexibleContexts #-}
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 
-module SAD.Core.Rewrite (equalityReasoning) where
+module SAD.Core.Rewrite (equalityReasoning, lpoGe) where
 
 import SAD.Core.Base
 import SAD.Core.Reason
