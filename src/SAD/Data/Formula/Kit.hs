@@ -16,7 +16,7 @@ import SAD.Data.Formula.Base
 import SAD.Data.Tag
 import SAD.Core.SourcePos
 import SAD.Data.Text.Decl (Decl)
-import qualified SAD.Data.Text.Decl as Decl
+import SAD.Data.Text.Decl
 import SAD.Helpers
 import SAD.Data.TermId
 import SAD.Data.VarName
@@ -133,8 +133,8 @@ mbpExi v f = fromMaybe (pExi v f) (mbBind (fst v) True f)
 mbpAll v f = fromMaybe (pAll v f) (mbBind (fst v) False f)
 
 mbdExi, mbdAll :: Decl -> Formula -> Formula
-mbdExi v f = fromMaybe (dExi v f) (mbBind (Decl.name v) True f)
-mbdAll v f = fromMaybe (dAll v f) (mbBind (Decl.name v) False f)
+mbdExi v f = fromMaybe (dExi v f) (mbBind (declName v) True f)
+mbdAll v f = fromMaybe (dAll v f) (mbBind (declName v) False f)
 
 
 blAnd, blImp :: Formula -> Formula -> Formula
@@ -148,23 +148,23 @@ blImp f g = Imp f g
 
 pBlAll, pBlExi :: (VariableName, SourcePos) -> Formula -> Formula
 pBlAll _ Top = Top
-pBlAll v f = All (Decl.nonParser v) f
+pBlAll v f = All (positionedDecl v) f
 
 pBlExi _ Top = Top
-pBlExi v f = Exi (Decl.nonParser v) f
+pBlExi v f = Exi (positionedDecl v) f
 
 -- creation of formulas
 zAll, zExi :: VariableName -> Formula -> Formula
-zAll v = bool . All (Decl.nonText v) . bind v
-zExi v = bool . Exi (Decl.nonText v) . bind v
+zAll v = bool . All (newDecl v) . bind v
+zExi v = bool . Exi (newDecl v) . bind v
 
 pAll, pExi :: (VariableName, SourcePos) -> Formula -> Formula
 pAll nm@(v, _) = pBlAll nm . bind v
 pExi nm@(v, _) = pBlExi nm . bind v
 
 dAll, dExi :: Decl -> Formula -> Formula
-dAll dcl = bool . All dcl . bind (Decl.name dcl)
-dExi dcl = bool . Exi dcl . bind (Decl.name dcl)
+dAll dcl = bool . All dcl . bind (declName dcl)
+dExi dcl = bool . Exi dcl . bind (declName dcl)
 
 zIff, zOr :: Formula -> Formula -> Formula
 zIff f g = And (Imp f g) (Imp g f)

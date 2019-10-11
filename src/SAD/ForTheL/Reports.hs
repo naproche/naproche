@@ -20,7 +20,7 @@ import SAD.ForTheL.Base
 import SAD.Data.Text.Block (Block)
 import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Text.Decl (Decl)
-import qualified SAD.Data.Text.Decl as Decl
+import SAD.Data.Text.Decl
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 import SAD.Data.Formula
@@ -54,9 +54,9 @@ markupTokenOf markup ss = do
 
 variableReport :: PIDE -> Bool -> Decl -> SourcePos -> [Message.Report]
 variableReport pide def decl pos =
-  case Decl.name decl of
+  case declName decl of
     VarConstant name ->
-      [(pos, Message.entityMarkup pide "variable" (Text.unpack name) def (Decl.serial decl) (Decl.position decl))]
+      [(pos, Message.entityMarkup pide "variable" (Text.unpack name) def (declSerial decl) (declPosition decl))]
     _ -> []
 
 formulaReports :: PIDE -> [Decl] -> Formula -> [Message.Report]
@@ -66,14 +66,14 @@ formulaReports pide decls = nubOrd . dive
       (pos, Markup.free) : entity
       where
         entity =
-          case find (\decl -> Decl.name decl == name) decls of
+          case find (\decl -> declName decl == name) decls of
             Nothing -> []
             Just decl -> variableReport pide False decl pos
     dive (All decl f) = quantDive decl f
     dive (Exi decl f) = quantDive decl f
     dive f = foldF dive f
 
-    quantDive decl f = let pos = Decl.position decl in
+    quantDive decl f = let pos = declPosition decl in
       (pos, Markup.bound) : variableReport pide True decl pos ++
       boundReports pide decl f ++
       dive f
@@ -94,7 +94,7 @@ addBlockReports :: Block -> FTL ()
 addBlockReports bl = addReports $ \pide -> let decls = Block.declaredVariables bl in
   (Block.position bl, Markup.expression "text block") :
   formulaReports pide decls (Block.formula bl) ++
-  concatMap (\decl -> variableReport pide True decl $ Decl.position decl) decls
+  concatMap (\decl -> variableReport pide True decl $ declPosition decl) decls
 
 addInstrReport :: Pos -> FTL ()
 addInstrReport pos = addReports $ const $

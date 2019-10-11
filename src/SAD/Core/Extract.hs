@@ -26,7 +26,7 @@ import SAD.Data.Rules (Rule(Rule))
 import qualified SAD.Data.Rules as Rule
 import SAD.Prove.Normalize
 import qualified SAD.Data.Structures.DisTree as DT
-import qualified SAD.Data.Text.Decl as Decl
+import SAD.Data.Text.Decl
 import SAD.Data.VarName
 
 import qualified Data.Map as Map
@@ -185,7 +185,7 @@ extractFunctionEval c gs f = dive c gs f
       (Tag Evaluation Trm {trmName = "=", trmArgs = [tr, Ind {indIndex = n}]})))
         | n == 0 = extractEv c gs $ dec $ instWith tr f
     dive c gs (Exi x (And f g)) =
-      dive (c . dExi x . And f) gs $ inst (Decl.name x) g
+      dive (c . dExi x . And f) gs $ inst (declName x) g
     dive _ _ _ = mzero
 
 extractSetEval :: (Formula -> Formula) -> [Formula]-> Formula

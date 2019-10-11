@@ -6,7 +6,7 @@ Variable declarations.
 
 module SAD.Data.Text.Decl (
   Decl(..), Serial,
-  nonText, nonParser
+  newDecl, positionedDecl
   ) where
 
 import SAD.Core.SourcePos
@@ -17,16 +17,16 @@ type Serial = Int
 
 -- | A variable declaration.
 data Decl = Decl {
-  name :: VariableName,
-  position :: SourcePos,
-  serial :: Serial
-} deriving (Eq, Ord)
+  declName :: VariableName,
+  declPosition :: SourcePos,
+  declSerial :: Serial
+} deriving (Eq, Ord, Show)
 
 {- a declaration that has no representation in the input text -}
-nonText :: VariableName -> Decl
-nonText v = Decl v noSourcePos 0
+newDecl :: VariableName -> Decl
+newDecl v = Decl v noSourcePos 0
 
 {- a declaration that has a representation in the input text but has not been
 generated during parsing -}
-nonParser :: (VariableName, SourcePos) -> Decl
-nonParser (nm, pos) = Decl nm pos 0
+positionedDecl :: (VariableName, SourcePos) -> Decl
+positionedDecl (nm, pos) = Decl nm pos 0

@@ -22,7 +22,7 @@ import SAD.Core.SourcePos
 
 import Data.List
 import qualified Data.Text.Lazy as Text
-import qualified SAD.Data.Text.Decl as Decl
+import SAD.Data.Text.Decl
 import SAD.Data.VarName
 
 
@@ -63,7 +63,7 @@ pushdown (Not (Tag _ f)) = pushdown (Not f)
 pushdown (All _ (Imp (Tag HeadTerm Trm {trmName = "=", trmArgs = [_,t]} ) f)) =
   pushdown $ dec $ indSubst t VarEmpty $ inst VarEmpty f
 pushdown (All _ (Iff (Tag HeadTerm eq@Trm {trmName = "=", trmArgs = [_,t]}) f)) =
-  And (All (Decl.nonText VarEmpty) (Or eq (Not f))) $ dec $ indSubst t VarEmpty $ inst VarEmpty f
+  And (All (newDecl VarEmpty) (Or eq (Not f))) $ dec $ indSubst t VarEmpty $ inst VarEmpty f
 pushdown f = f
 
 

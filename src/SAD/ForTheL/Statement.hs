@@ -20,7 +20,7 @@ import SAD.Parser.Primitives
 
 import SAD.Data.Formula
 import SAD.Core.SourcePos
-import qualified SAD.Data.Text.Decl as Decl
+import SAD.Data.Text.Decl
 import SAD.Data.VarName
 
 import Data.Function ((&))
@@ -409,7 +409,7 @@ set = label "set definition" $ symbSet <|> setOf
       (cnd, nm) <- symbSetNotation; h <- hidden
       nmDecl <- makeDecl nm
       return (id, setForm nmDecl $ cnd $ pVar nm, [h])
-    setForm dcl = let nm = (Decl.name dcl, Decl.position dcl) in
+    setForm dcl = let nm = (declName dcl, declPosition dcl) in
       And (zSet (zVar (VarHole ""))) . dAll dcl . Iff (zElem (pVar nm) (zVar (VarHole "")))
 
 
@@ -527,7 +527,7 @@ lambdaIn = do
 ---- chain tools
 
 multExi :: Foldable t1 =>
-           [(t2 -> Formula, t2, t1 Decl.Decl)] -> Formula
+           [(t2 -> Formula, t2, t1 Decl)] -> Formula
 multExi ((q, f, vs):ns) = foldr mbdExi (q f `blAnd` multExi ns) vs
 multExi [] = Top
 

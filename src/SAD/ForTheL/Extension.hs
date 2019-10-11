@@ -26,7 +26,7 @@ import SAD.ForTheL.Reports
 import SAD.Parser.Primitives
 import SAD.Parser.Base
 import SAD.Parser.Combinators
-import qualified SAD.Data.Text.Decl as Decl
+import SAD.Data.Text.Decl
 import SAD.Core.SourcePos (SourceRange(..))
 import SAD.Data.VarName
 
@@ -180,7 +180,7 @@ introduceMacro = do
       h <- fmap q $ dig f [pVar u]; return (pos2, (n, h))
 
 ignoreNames :: Formula -> Formula
-ignoreNames (All dcl f) = All dcl {Decl.name = VarEmpty} $ ignoreNames f
-ignoreNames (Exi dcl f) = Exi dcl {Decl.name = VarEmpty} $ ignoreNames f
+ignoreNames (All dcl f) = All dcl {declName = VarEmpty} $ ignoreNames f
+ignoreNames (Exi dcl f) = Exi dcl {declName = VarEmpty} $ ignoreNames f
 ignoreNames f@Trm{}   = f
 ignoreNames f         = mapF ignoreNames f

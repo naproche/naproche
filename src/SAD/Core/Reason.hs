@@ -48,7 +48,7 @@ import qualified SAD.Data.Evaluation as Evaluation
 import SAD.Export.Prover
 import SAD.Prove.MESON
 import qualified SAD.Data.Structures.DisTree as DT
-import qualified SAD.Data.Text.Decl as Decl
+import SAD.Data.Text.Decl
 
 -- Reasoner
 
@@ -186,7 +186,7 @@ replaceHeadTerm c = Context.setForm c $ dive 0 $ Context.formula c
     dive n (All _ (Imp (Tag HeadTerm Trm {trmName = "=", trmArgs = [_, t]}) f)) =
       subst t VarEmpty $ inst VarEmpty f
     dive n (All _ (Iff (Tag HeadTerm eq@Trm {trmName = "=", trmArgs = [_, t]}) f))
-      = And (subst t VarEmpty $ inst VarEmpty f) (All (Decl.nonText VarEmpty) $ Imp f eq)
+      = And (subst t VarEmpty $ inst VarEmpty f) (All (newDecl VarEmpty) $ Imp f eq)
     dive n (All _ (Imp (Tag HeadTerm Trm{}) Top)) = Top
     dive n (All v f) =
       bool $ All v $ bind (VarDefault $ Text.pack $ show n) $ dive (succ n) $ inst (VarDefault $ Text.pack $ show n) f

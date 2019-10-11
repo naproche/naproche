@@ -25,7 +25,7 @@ import SAD.Core.SourcePos
 import SAD.Data.Instr hiding (position)
 import SAD.Parser.Token
 import SAD.Data.Text.Decl (Decl)
-import qualified SAD.Data.Text.Decl as Decl
+import SAD.Data.Text.Decl
 import SAD.ForTheL.Base (VarName)
 import SAD.Parser.Error (ParseError)
 import SAD.Data.VarName
@@ -85,8 +85,8 @@ compose = foldr comp Top
   where
     comp (ProofTextBlock block@Block{ declaredVariables = dvs }) f
       | needsProof block || kind block == Posit =
-          foldr zExi (blAnd (formulate block) f) $ map Decl.name dvs
-      | otherwise = foldr zAll (blImp (formulate block) f) $ map Decl.name dvs
+          foldr zExi (blAnd (formulate block) f) $ map declName dvs
+      | otherwise = foldr zAll (blImp (formulate block) f) $ map declName dvs
     comp (ProofTextChecked txt) f = comp txt f
     comp _ fb = fb
 
@@ -124,7 +124,7 @@ file = sourceFile . position
 
 
 declaredNames :: Block -> [VariableName]
-declaredNames = map Decl.name . declaredVariables
+declaredNames = map declName . declaredVariables
 
 -- Show instances
 

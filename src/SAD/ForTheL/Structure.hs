@@ -35,7 +35,7 @@ import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Formula
 import qualified SAD.Data.Tag as Tag
 import SAD.Data.Text.Decl (Decl(Decl))
-import qualified SAD.Data.Text.Decl as Decl
+import SAD.Data.Text.Decl
 import SAD.Data.VarName
 
 forthel :: FTL [ProofText]
@@ -97,15 +97,18 @@ signature' :: FTL Block
 signature' =
   let sigext = pretype $ pretypeSentence Posit sigExtend defVars noLink
   in  genericTopsection Signature sigH sigext
+
 definition :: FTL Block
 definition =
   let define = pretype $ pretypeSentence Posit defExtend defVars noLink
   in  genericTopsection Definition defH define
+
 axiom :: FTL Block
 axiom =
   let posit = pretype $
         pretypeSentence Posit (affH >> statement) affirmVars noLink
   in  genericTopsection Axiom axmH posit
+
 theorem :: FTL Block
 theorem =
   let topAffirm = pretypeSentence Affirmation (affH >> statement) affirmVars link
@@ -174,7 +177,7 @@ pret dvs tvs bl = do
   let typing =
         if null untyped
         then Top
-        else foldl1 And $ map (`typeWith` tvs) $ map Decl.name untyped
+        else foldl1 And $ map (`typeWith` tvs) $ map declName untyped
   return $ assumeBlock {Block.formula = typing, Block.declaredVariables = untyped}
   where
     blockVars = Block.declaredNames bl
@@ -218,7 +221,7 @@ ldfH = markupToken lowlevelHeader "define"
 statementBlock :: Section
                   -> Parser st Formula -> Parser st [Text] -> Parser st Block
 statementBlock kind p mbLink = do
-  nm <- opt "__" lowIdentifier;
+  nm <- optLLx "__" lowIdentifier;
   pos <- getPos; inp <- getInput;
   fr <- p; link <- mbLink;
   toks <- getTokens inp;
@@ -315,7 +318,7 @@ indThesis fr pre post = do
     indScheme InS _ = return InS; indScheme _ m = return m
 
     indTerm _ (InT t) = return t
-    indTerm (All v _) InS = return $ pVar (Decl.name v, Decl.position v)
+    indTerm (All v _) InS = return $ pVar (declName v, declPosition v)
     indTerm _ InS = failWF "invalid induction thesis"
     indTerm _ _ = return Top
 
@@ -329,7 +332,7 @@ indThesis fr pre post = do
 
     insertIndTerm it cn = cn $ Tag InductionHypothesis $ subst it (VarHole "") $ cn $ zLess it (zVar (VarHole ""))
 
-    deleteDecl Decl{Decl.name, Decl.position} = deleteBy (\a b -> fst a == fst b) (name, position)
+    deleteDecl Decl{declName, declPosition} = deleteBy (\a b -> fst a == fst b) (name, position)
 
 
 

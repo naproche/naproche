@@ -17,7 +17,7 @@ import qualified Data.Text.Lazy as Text
 
 import Data.Maybe
 
-import qualified SAD.Data.Text.Decl as Decl
+import SAD.Data.Text.Decl
 
 
 {- generate proof task associated with a block -}
@@ -38,7 +38,7 @@ setDcl _ = error "SAD.Core.ProofTask.setDcl: misformed definition"
 
 setTask :: Formula -> Formula
 setTask (And _ (All x (Iff _ (Tag Replacement f)))) =
-  replacement (Decl.name x) f
+  replacement (declName x) f
 setTask (And _ (All _ (Iff _ f))) = separation f
 setTask _ = error "SAD.Core.ProofTask.setTask: misformed definition"
 
@@ -52,7 +52,7 @@ separation _ = error "SAD.Core.ProofTask.separation: misformed argument"
 replacement :: VariableName -> Formula -> Formula
 replacement x f = fromMaybe _default $ dive [] f
   where
-    dive vs (Exi x f) = dive (Decl.name x:vs) f
+    dive vs (Exi x f) = dive (declName x:vs) f
     dive vs (And f g) | not $ null vs =
       let vsAlt  = map VarTask vs
           startF = sets vsAlt `blAnd` foldr mbAll (f `blImp` elements vs vsAlt) vs
@@ -86,7 +86,7 @@ choices = Tag ChoiceTask . dive
   where
     dive (Tag Evaluation _) = Top
     dive (Tag _ f) = dive f
-    dive (Exi dcl (And (Tag Defined f) g)) = let x = Decl.name dcl in
+    dive (Exi dcl (And (Tag Defined f) g)) = let x = declName dcl in
       (generateProofTask LowDefinition [] $ dec $ inst x $ f) `blAnd`
       (dec $ inst x $ f `blImp` dive g)
     dive (All x f) = bool $ All x $ dive f
@@ -127,7 +127,7 @@ describe (Tag Condition (Imp f g)) = And f $ deExi g
 describe f = deExi f
 
 deExi :: Formula -> Formula
-deExi (Exi dcl (And f g)) = let x = Decl.name dcl in
+deExi (Exi dcl (And f g)) = let x = declName dcl in
   dec $ And (inst x f) (deExi $ inst x g)
 deExi f = f
 
@@ -138,7 +138,7 @@ describe_exi (Tag Condition (Imp f g)) = Imp f $ impExi g
 describe_exi f = impExi f
 
 impExi :: Formula -> Formula
-impExi (Exi dcl (And f g)) = let x = Decl.name dcl in
+impExi (Exi dcl (And f g)) = let x = declName dcl in
   dec $ Imp (inst x f) (impExi $ inst x g)
 impExi f = f
 

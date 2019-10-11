@@ -27,7 +27,7 @@ import SAD.Parser.Primitives
 import SAD.Core.SourcePos
 
 import SAD.Data.Text.Decl (Decl(Decl))
-import qualified SAD.Data.Text.Decl as Decl
+import SAD.Data.Text.Decl
 
 import SAD.Core.Message (PIDE)
 import qualified SAD.Core.Message as Message
@@ -416,8 +416,8 @@ overfree vs f
     info = "\n in translation: " <> (Text.pack $ show f)
 
     over :: [VariableName] -> Formula -> [VariableName]
-    over vs (All v f) = boundVars vs (Decl.name v) f
-    over vs (Exi v f) = boundVars vs (Decl.name v) f
+    over vs (All v f) = boundVars vs (declName v) f
+    over vs (Exi v f) = boundVars vs (declName v) f
     over vs f = foldF (over vs) f
 
     boundVars :: [VariableName] -> VariableName -> Formula -> [VariableName]
