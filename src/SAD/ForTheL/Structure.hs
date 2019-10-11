@@ -332,7 +332,7 @@ indThesis fr pre post = do
 
     insertIndTerm it cn = cn $ Tag InductionHypothesis $ subst it (VarHole "") $ cn $ zLess it (zVar (VarHole ""))
 
-    deleteDecl Decl{declName, declPosition} = deleteBy (\a b -> fst a == fst b) (name, position)
+    deleteDecl Decl{declName, declPosition} = deleteBy (\a b -> fst a == fst b) (declName, declPosition)
 
 
 
