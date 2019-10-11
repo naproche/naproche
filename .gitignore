@@ -3,3 +3,9 @@
 *.swp
 *~
 Naproche-SAD.cabal
+
+# Ignore profiling output
+*.aux
+*.hp
+*.prof
+*.ps
