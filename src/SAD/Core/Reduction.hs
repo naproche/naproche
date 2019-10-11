@@ -38,7 +38,7 @@ ontoReduce :: Definitions
 ontoReduce dfs grds skolem f =
   let (conjuncts, newSkolem) = ontoPrep skolem f
       reducedConjuncts = map (boolSimp . ontoRed dfs grds) conjuncts
-      reducedFormula = uClose [] $ foldr blAnd Top reducedConjuncts
+      reducedFormula = universialClosure [] $ foldr blAnd Top reducedConjuncts
   in (reducedFormula, newSkolem)
 
 {- Ontologically reduces a given formula f. Notice that by virtue of preparation with

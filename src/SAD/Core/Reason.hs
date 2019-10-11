@@ -323,7 +323,8 @@ unfoldAtomic sign f = do
     definitionalProperties f g = do
       definitions <- asks defs
       let definingFormula = maybeToList $ do
-            id <- tryToGetID f; def <- Map.lookup id definitions;
+            id <- guard (isTrm f) >> pure (trmId f)
+            def <- Map.lookup id definitions;
             -- only unfold a definitions or (a sigext in a positive position)
             guard (sign || Definition.isDefinition def)
             sb <- match (Definition.term def) f

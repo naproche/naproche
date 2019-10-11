@@ -20,6 +20,8 @@ import SAD.Helpers
 import SAD.Data.TermId
 import SAD.Data.VarName
 
+import qualified Data.Map as Map
+
 -- Alpha-beta normalization
 
 -- | gets rid of top level negation, implication and equivalence if possible.
@@ -320,23 +322,10 @@ strip (Tag _ f) = strip f
 strip (Not f)   = Not $ strip f
 strip f         = f
 
-
-guardElem :: Eq a => [a] -> a -> [a]
-guardElem vs v    = guard (v `elem` vs) >> return v
-
-guardNotElem :: Eq a => [a] -> a -> [a]
-guardNotElem vs v = guard (v `notElem` vs) >> return v
-
 {- extracts all duplicateNames (with multiplicity) from a list -}
-duplicateNames :: Eq a => [a] -> [a]
-duplicateNames (v:vs) = guardElem vs v ++ duplicateNames vs
-duplicateNames _      = []
-
-{- safe identifier extraction -}
-tryToGetID :: Formula -> Maybe TermId
-tryToGetID Trm {trmId = n} = return n
-tryToGetID _ = mzero
-
+duplicateNames :: Ord a => [a] -> [a]
+duplicateNames ls = concatMap (\(k,a) -> replicate (a-1) k) 
+                  $ Map.toList $ Map.fromListWith (+) $ zip ls $ repeat (1::Int)
 
 {- return free user named variables in a formula (without duplicateNames),
 except those in vs -}
@@ -352,16 +341,16 @@ free vs = map fst . freePositions vs
 
 {- return all free variables in a formula (without duplicateNames),
 except those in vs -}
-allFree :: [VariableName] -> Formula -> [VariableName]
-allFree vs = nubOrd . dive
+allFree :: FreeVarStrategy f => [VariableName] -> Formula -> f
+allFree vs f = foldr bindVar (dive f) vs
   where
-    dive f@Var {varName = u} = guardNotElem vs u ++ foldF dive f
+    dive f@Var {varName = u} = unitFV u <> foldF dive f
     dive f = foldF dive f
 
 
 {- universal closure of a formula -}
-uClose :: [VariableName] -> Formula -> Formula
-uClose ls f = foldr zAll f $ allFree ls f
+universialClosure :: [VariableName] -> Formula -> Formula
+universialClosure ls f = foldr zAll f $ fvToVarList $ allFree ls f
 
 
 -- substitutions as maps
