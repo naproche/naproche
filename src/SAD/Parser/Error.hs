@@ -4,6 +4,8 @@ Authors: Steffen Frerix (2017 - 2018)
 Message and Parse Error data type and core functions.
 -}
 
+{-# LANGUAGE OverloadedStrings #-}
+
 module SAD.Parser.Error
   ( ParseError(..),
     newErrorMessage,
@@ -19,14 +21,16 @@ module SAD.Parser.Error
 
 import SAD.Core.SourcePos (SourcePos)
 import SAD.Helpers (notNull, nubOrd)
+import Data.Text.Lazy (Text)
+import qualified Data.Text.Lazy as Text
 
 import Data.List (intercalate)
 import Data.Ord (comparing)
 
 
 data Message
-  = ExpectMsg {unexpect :: String, expect :: [String], message :: [String]}
-  | WellFormednessMessage {message :: [String]}
+  = ExpectMsg {unexpect :: Text, expect :: [Text], message :: [Text]}
+  | WellFormednessMessage {message :: [Text]}
   | Unknown
   deriving (Eq, Ord, Show)
 
@@ -38,12 +42,12 @@ isExpectMsg _ = False
 isWellFormednessMessage WellFormednessMessage{} = True
 isWellFormednessMessage _ = False
 
-newMessage, newUnexpect, newExpect :: String -> Message
+newMessage, newUnexpect, newExpect :: Text -> Message
 newMessage  msg = ExpectMsg {unexpect = "" , expect = []   , message = [msg]}
 newUnexpect tok = ExpectMsg {unexpect = tok, expect = []   , message = []   }
 newExpect   msg = ExpectMsg {unexpect = "" , expect = [msg], message = []   }
 
-newWellFormednessMessage :: [String] -> Message
+newWellFormednessMessage :: [Text] -> Message
 newWellFormednessMessage msgs = WellFormednessMessage msgs
 
 compareImportance :: Message -> Message -> Ordering
@@ -112,13 +116,13 @@ newErrorUnknown pos = ParseError pos Unknown
        | isExpectMsg msg2 -> e2
        | otherwise        -> e1 {peMsg = msg1 <> msg2}
 
-setExpectMessage :: String -> ParseError -> ParseError
+setExpectMessage :: Text -> ParseError -> ParseError
 setExpectMessage expe pe@(ParseError pos msg)
   | isUnknownMsg msg = ParseError pos $ newExpect expe
   | isWellFormednessMessage      msg = pe
   | otherwise        = ParseError pos $ msg {expect = [expe]}
 
-unexpectError :: String -> SourcePos -> ParseError
+unexpectError :: Text -> SourcePos -> ParseError
 unexpectError uex pos = newErrorMessage (newUnexpect uex) pos
 
 errorMessage :: ParseError -> Message
@@ -131,9 +135,9 @@ instance Show ParseError where
 showErrorMessage :: Message -> String
 showErrorMessage msg = case msg of
   Unknown -> "unknown parse error"
-  WellFormednessMessage m -> commasOr $ clean m
-  ExpectMsg unexpected expected msgs -> case clean msgs of
-    [] -> unlines $ clean $ ["unexpected " ++ unexpected, showMany "expecting" (clean expected)]
+  WellFormednessMessage m -> commasOr $ clean $ map Text.unpack m
+  ExpectMsg unexpected expected msgs -> case clean $ map Text.unpack msgs of
+    [] -> unlines $ clean $ ["unexpected " ++ Text.unpack unexpected, showMany "expecting" (clean $ map Text.unpack expected)]
     messages -> commasOr messages
   where
     showMany :: String -> [String] -> String

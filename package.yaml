@@ -18,6 +18,7 @@ dependencies:
 - transformers
 - bytestring
 - utf8-string
+- text
 - network
 - split
 - uuid
@@ -50,6 +51,7 @@ library:
     - Isabelle.YXML
     - Isabelle.UUID
     - Isabelle.Standard_Thread
+    - Isabelle.Library
     - Isabelle.Naproche
     - SAD.API
 

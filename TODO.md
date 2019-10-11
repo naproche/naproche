@@ -15,7 +15,7 @@
 
 * instructions: completion on errors -- more robust syntax for synonyms!?
 
-* more robust parsing: recover from errors (e.g. via TextError construction)
+* more robust parsing: recover from errors (e.g. via ProofTextError construction)
 
 
 # Admin #

@@ -21,6 +21,8 @@ import SAD.Data.Text.Block (Block)
 import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Text.Decl (Decl)
 import qualified SAD.Data.Text.Decl as Decl
+import Data.Text.Lazy (Text)
+import qualified Data.Text.Lazy as Text
 import SAD.Data.Formula
 import SAD.Data.Instr
 
@@ -39,11 +41,11 @@ addReports rep = MS.modify (\st -> case pide st of
 
 -- markup tokens while parsing
 
-markupToken :: Markup.T -> String -> FTL ()
+markupToken :: Markup.T -> Text -> FTL ()
 markupToken markup s = do
   pos <- getPos; token' s; addReports $ const [(pos, markup)]
 
-markupTokenOf :: Markup.T -> [String] -> FTL ()
+markupTokenOf :: Markup.T -> [Text] -> FTL ()
 markupTokenOf markup ss = do
   pos <- getPos; tokenOf' ss; addReports $ const [(pos, markup)]
 
@@ -54,7 +56,7 @@ variableReport :: PIDE -> Bool -> Decl -> SourcePos -> [Message.Report]
 variableReport pide def decl pos =
   case Decl.name decl of
     VarConstant name ->
-      [(pos, Message.entityMarkup pide "variable" name def (Decl.serial decl) (Decl.position decl))]
+      [(pos, Message.entityMarkup pide "variable" (Text.unpack name) def (Decl.serial decl) (Decl.position decl))]
     _ -> []
 
 formulaReports :: PIDE -> [Decl] -> Formula -> [Message.Report]

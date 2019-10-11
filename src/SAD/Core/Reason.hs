@@ -3,8 +3,11 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
 
 Reasoning methods and export to an external prover.
 -}
+
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE OverloadedStrings #-}
+
 module SAD.Core.Reason (
   reason,
   withGoal, withContext,
@@ -26,6 +29,7 @@ import qualified Data.Map as Map
 import Control.Monad.State
 import Control.Monad.Reader
 import qualified Isabelle.Standard_Thread as Standard_Thread
+import qualified Data.Text.Lazy as Text
 
 import SAD.Core.SourcePos
 import SAD.Data.VarName
@@ -91,7 +95,7 @@ sequenceGoals reasoningDepth iteration (goal:restGoals) = do
 
     updateTrivialStatistics =
       unless (isTop goal) $ whenInstruction Printreason False $
-         reasonLog Message.WRITELN noSourcePos ("trivial: " ++ show goal)
+         reasonLog Message.WRITELN noSourcePos ("trivial: " <> (Text.pack $ show goal))
       >> incrementIntCounter TrivialGoals
 
 sequenceGoals  _ _ _ = return ()
@@ -128,9 +132,9 @@ launchProver iteration = do
       let getFormula = if reductionSetting then Context.reducedFormula else Context.formula
       contextFormulas <- asks $ map getFormula . reverse . currentContext
       concl <- thesis
-      reasonLog Message.WRITELN noSourcePos $ "prover task:\n" ++
-        concatMap (\form -> "  " ++ show form ++ "\n") contextFormulas ++
-        "  |- " ++ show (Context.formula concl) ++ "\n"
+      reasonLog Message.WRITELN noSourcePos $ "prover task:\n" <>
+        Text.concat (map (\form -> "  " <> Text.pack (show form) <> "\n") contextFormulas) <>
+        "  |- " <> (Text.pack (show (Context.formula concl))) <> "\n"
 
 
 launchReasoning :: VM ()
@@ -185,7 +189,7 @@ replaceHeadTerm c = Context.setForm c $ dive 0 $ Context.formula c
       = And (subst t VarEmpty $ inst VarEmpty f) (All (Decl.nonText VarEmpty) $ Imp f eq)
     dive n (All _ (Imp (Tag HeadTerm Trm{}) Top)) = Top
     dive n (All v f) =
-      bool $ All v $ bind (VarDefault $ show n) $ dive (succ n) $ inst (VarDefault $ show n) f
+      bool $ All v $ bind (VarDefault $ Text.pack $ show n) $ dive (succ n) $ inst (VarDefault $ Text.pack $ show n) f
     dive n (Imp f g) = bool $ Imp f $ dive n g
     dive _ f = f
 
@@ -267,8 +271,8 @@ unfold = do
       whenInstruction Printunfold False $ reasonLog Message.WRITELN noSourcePos "nothing to unfold"
     unfoldLog (goal:lowLevelContext) =
       whenInstruction Printunfold False $ reasonLog Message.WRITELN noSourcePos $ "unfold to:\n"
-        ++ unlines (reverse $ map ((++) "  " . show . Context.formula) lowLevelContext)
-        ++ "  |- " ++ show (neg $ Context.formula goal)
+        <> Text.unlines (reverse $ map ((<>) "  " . Text.pack . show . Context.formula) lowLevelContext)
+        <> "  |- " <> Text.pack (show (neg $ Context.formula goal))
     neg (Not f) = f; neg f = f
 
 

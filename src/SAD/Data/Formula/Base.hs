@@ -17,6 +17,9 @@ import SAD.Data.TermId
 
 import SAD.Data.Text.Decl (Decl)
 import SAD.Data.VarName
+import Data.Text.Lazy (Text)
+import qualified Data.Text.Lazy as Text
+import SAD.Export.Representation
 
 import qualified Data.Map as Map
 
@@ -26,7 +29,7 @@ data Formula =
   Or  Formula Formula     | And Formula Formula     |
   Tag Tag Formula         | Not Formula             |
   Top                     | Bot                     |
-  Trm { trmName :: String   , trmArgs :: [Formula],
+  Trm { trmName :: Text   , trmArgs :: [Formula],
         trmInfo :: [Formula], trmId   :: TermId}         |
   Var { varName :: VariableName, varInfo :: [Formula], varPosition :: SourcePos } |
   Ind { indIndex :: Int, indPosition :: SourcePos }   | ThisT
@@ -37,10 +40,10 @@ trInfo Trm {trmInfo = xs} = xs
 trInfo Var {varInfo = xs} = xs
 trInfo _ = error "Formula.Base.trInfo: Partial function"
 
-showTrName :: Formula -> ShowS
-showTrName (Trm {trmName = s}) = showString $ filter (/= ':') s
-showTrName (Var {varName = s}) = showString $ filter (/= ':') $ show s
-showTrName _ = id
+showTrName :: Formula -> Text
+showTrName (Trm {trmName = s}) = Text.filter (/= ':') s
+showTrName (Var {varName = s}) = Text.filter (/= ':') $ forceBuilder $ represent s
+showTrName _ = Text.empty
 
 -- Traversing functions
 
@@ -63,7 +66,7 @@ mapFM _ f = pure f
 
 -- Logical traversing
 -- | Same as roundFM but without the monadic action.
-roundF :: (String -> VariableName) -> ([Formula] -> Maybe Bool -> Int -> Formula -> Formula)
+roundF :: (Text -> VariableName) -> ([Formula] -> Maybe Bool -> Int -> Formula -> Formula)
                -> [Formula] -> Maybe Bool -> Int -> Formula -> Formula
 roundF c fn l p n f = runIdentity $ roundFM c (\w x y z -> Identity $ fn w x y z) l p n f
 
@@ -71,17 +74,17 @@ roundF c fn l p n f = runIdentity $ roundFM c (\w x y z -> Identity $ fn w x y z
 track of local premises, polarity and quantification depth. A unique identifying
 char is provided to shape the instantiations.-}
 roundFM :: (Monad m) =>
-          (String -> VariableName) -> ([Formula] -> Maybe Bool -> Int -> Formula -> m Formula)
+          (Text -> VariableName) -> ([Formula] -> Maybe Bool -> Int -> Formula -> m Formula)
                -> [Formula] -> Maybe Bool -> Int -> Formula -> m Formula
 roundFM mkVar traversalAction localContext polarity n = dive
   where
     dive (All u f) = do
       let action = traversalAction localContext polarity (succ n)
-          nn = mkVar $ show n
+          nn = mkVar $ Text.pack $ show n
       All u . bind nn <$> (action $ inst nn f)
     dive (Exi u f) = do
       let action = traversalAction localContext polarity (succ n)
-          nn = mkVar $ show n
+          nn = mkVar $ Text.pack $ show n
       Exi u . bind nn <$> (action $ inst nn f)
     dive (Iff f g) = do
       nf <- traversalAction localContext Nothing n f

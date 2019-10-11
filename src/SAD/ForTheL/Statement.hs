@@ -4,7 +4,7 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
 Syntax of ForThel statements.
 -}
 
-
+{-# LANGUAGE OverloadedStrings #-}
 
 module SAD.ForTheL.Statement (
   statement,
@@ -24,8 +24,6 @@ import qualified SAD.Data.Text.Decl as Decl
 import SAD.Data.VarName
 
 import Data.Function ((&))
-
-
 import Control.Applicative
 import Control.Monad
 

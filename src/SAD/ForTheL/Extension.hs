@@ -5,7 +5,7 @@ Extending the language: definitions, signature extensions, pretypings,
 macros and synonyms.
 -}
 
-
+{-# LANGUAGE OverloadedStrings #-}
 
 module SAD.ForTheL.Extension (
   pretypeVariable,
@@ -17,7 +17,7 @@ module SAD.ForTheL.Extension (
 
 import SAD.Core.SourcePos
 import SAD.Data.Formula
-import SAD.Data.Text.Block (Text (..))
+import SAD.Data.Text.Block (ProofText (..))
 
 import SAD.ForTheL.Base
 import SAD.ForTheL.Statement
@@ -33,6 +33,8 @@ import SAD.Data.VarName
 
 import Control.Applicative
 import qualified Control.Monad.State.Class as MS
+import Data.Text.Lazy (Text)
+import qualified Data.Text.Lazy as Text
 
 -- definitions and signature extensions
 
@@ -102,10 +104,10 @@ newNotion = do
 
 -- well-formedness check
 
-funVars, ntnVars, prdVars :: (Formula, Formula) -> Maybe String
+funVars, ntnVars, prdVars :: (Formula, Formula) -> Maybe Text
 
 funVars (f, d) | not ifq   = prdVars (f, d)
-               | not idq   = Just $ "illegal function alias: " ++ show d
+               | not idq   = Just $ Text.pack $ "illegal function alias: " ++ show d
                | otherwise = prdVars (t {trmArgs = v:trmArgs t}, d)
   where
     ifq = isEquality f && isTrm t
@@ -122,7 +124,7 @@ ntnVars (f, d) | not isFunction = prdVars (f, d)
     Trm {trmArgs = vs} = t
 
 
-prdVars (f, d) | not flat  = return $ "compound expression: " ++ show f
+prdVars (f, d) | not flat  = Just $ Text.pack $ "compound expression: " ++ show f
                | otherwise = overfree (free [] f) d
   where
     flat      = isTrm f && allDistinctVars (trmArgs f)
@@ -138,11 +140,11 @@ allDistinctVars = disVs []
 
 
 
-pretypeVariable :: FTL Text
+pretypeVariable :: FTL ProofText
 pretypeVariable = do
   (pos, tv) <- narrow typeVar
   MS.modify $ upd tv
-  return $ TextPretyping pos (fst tv)
+  return $ ProofTextPretyping pos (fst tv)
   where
     typeVar = do
       pos1 <- getPos; markupToken synonymLet "let"; vs@(_:_) <- varlist; standFor;
@@ -160,14 +162,14 @@ pretypeVariable = do
     upd (vs, ntn) st = st { tvrExpr = (map fst vs, ntn) : tvrExpr st }
 
 
-introduceMacro :: FTL Text
+introduceMacro :: FTL ProofText
 introduceMacro = do
   pos1 <- getPos; markupToken macroLet "let"
   (pos2, (f, g)) <- narrow (prd -|- ntn)
   let pos = rangePos $ SourceRange pos1 pos2
   addMacroReport pos
   MS.get >>= addExpr f (ignoreNames g) False
-  return $ TextMacro pos
+  return $ ProofTextMacro pos
   where
     prd = wellFormedCheck (prdVars . snd) $ do
       f <- newPrdPattern avr

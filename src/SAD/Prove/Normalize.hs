@@ -4,7 +4,7 @@ Authors: Steffen Frerix (2017 - 2018)
 Normalization of formulas.
 -}
 
-
+{-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 
 module SAD.Prove.Normalize  (
@@ -21,6 +21,7 @@ import SAD.Data.TermId
 import SAD.Core.SourcePos
 
 import Data.List
+import qualified Data.Text.Lazy as Text
 import qualified SAD.Data.Text.Decl as Decl
 import SAD.Data.VarName
 
@@ -145,19 +146,19 @@ instSk skolemCnt dependencyCnt = dive 0
     skolemArguments d = [Ind (i + d) noSourcePos | i <- [1..dependencyCnt] ]
 
     skolemId = -20 - skolemCnt
-    skolemName = "tsk" ++ show skolemCnt
+    skolemName = Text.pack $ "tsk" ++ show skolemCnt
 
 
 
 -- specialization of formula: get rid of universal quantifiers
 
 specialize :: Formula -> Formula
-specialize = specCh VarHole 0
+specialize = specCh (VarHole . Text.pack . show) 0
 
-specCh :: (String -> VariableName) -> Int -> Formula -> Formula
+specCh :: (Int -> VariableName) -> Int -> Formula -> Formula
 specCh mkVar = dive
   where
-    dive n (All _ f) = dive (succ n) $ inst (mkVar $ show n) f
+    dive n (All _ f) = dive (succ n) $ inst (mkVar n) f
     dive n f = f
 
 

@@ -4,11 +4,12 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
 Various functions on formulas.
 -}
 
+{-# LANGUAGE OverloadedStrings #-}
+
 module SAD.Data.Formula.Kit where
 
 import Control.Monad
 import Data.Maybe
-import qualified Data.Map as M
 import Data.Function (on)
 
 import SAD.Data.Formula.Base
@@ -21,6 +22,8 @@ import SAD.Data.TermId
 import SAD.Data.VarName
 
 import qualified Data.Map as Map
+import Data.Text.Lazy (Text)
+import qualified Data.Text.Lazy as Text
 
 -- Alpha-beta normalization
 
@@ -175,7 +178,7 @@ zVar v = pVar (v, noSourcePos)
 pVar :: (VariableName, SourcePos) -> Formula
 pVar (v, pos) = Var v [] pos
 
-zTrm :: TermId -> String -> [Formula] -> Formula
+zTrm :: TermId -> Text -> [Formula] -> Formula
 zTrm tId t ts = Trm t ts [] tId
 
 
@@ -235,8 +238,13 @@ isConst :: Formula -> Bool
 isConst t@Trm{} = null $ trmArgs t; isConst Var{} = True; isConst _ = False
 isNot :: Formula -> Bool
 isNot (Not _) = True; isNot _ = False
+
 isNotion :: Formula -> Bool
-isNotion Trm {trmName = 'a':_} = True; isNotion _ = False
+isNotion Trm {trmName = tn} = case Text.uncons tn of
+  Just ('a', _) -> True
+  _ -> False
+isNotion _ = False
+
 isElem :: Formula -> Bool
 isElem t = isTrm t && trmId t == ElementId
 
@@ -356,8 +364,8 @@ universialClosure ls f = foldr zAll f $ fvToVarList $ allFree ls f
 -- substitutions as maps
 
 {- apply a substitution that is represented as a finite partial map -}
-applySb :: M.Map VariableName Formula -> Formula -> Formula
-applySb mp vr@Var {varName = v} = fromMaybe vr $ M.lookup v mp 
+applySb :: Map.Map VariableName Formula -> Formula -> Formula
+applySb mp vr@Var {varName = v} = fromMaybe vr $ Map.lookup v mp 
 applySb mp t = mapF (applySb mp) t
 
 {- subsitution is also applied to the evidence for a term -}

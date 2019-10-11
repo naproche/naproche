@@ -5,6 +5,7 @@ Well-definedness check and evidence collection.
 -}
 
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Core.Check (fillDef) where
 
@@ -23,6 +24,7 @@ import SAD.Core.Base
 import qualified SAD.Core.Message as Message
 import SAD.Core.Reason
 import SAD.Data.VarName
+import qualified Data.Text.Lazy as Text
 
 {- check definitions and fortify terms with evidences in a formula -}
 fillDef :: Bool -> Context -> VM Formula
@@ -71,7 +73,7 @@ setDef isNewWord context term@Trm{trmName = t, trmId = tId} =
   where
     out =
       reasonLog Message.ERROR (Block.position (Context.head context)) $
-        "unrecognized: " ++ showsPrec 2 term ""
+        "unrecognized: " <> (Text.pack $ showsPrec 2 term "")
 
 
 -- Find relevant definitions and test them
@@ -96,8 +98,6 @@ check it. setup and cleanup take care of the special proof times that we allow
 an ontological check. easyCheck are inbuild reasoning methods, hardCheck passes
 a task to an ATP.
 -}
-
-
 testDef :: Context -> Formula -> DefDuo -> VM Formula
 testDef context term (guards, fortifiedTerm) = do
   userCheckSetting <- askInstructionBool Check True
@@ -109,10 +109,10 @@ testDef context term (guards, fortifiedTerm) = do
     hardCheck hardGuards
       | all isRight hardGuards =
           incrementIntCounter TrivialChecks >>
-          defLog ("trivial " ++ header rights hardGuards)
+          defLog ("trivial " <> header rights hardGuards)
       | otherwise =
           incrementIntCounter HardChecks >>
-          defLog (header lefts hardGuards ++ thead (rights hardGuards)) >>
+          defLog (header lefts hardGuards <> thead (rights hardGuards)) >>
           mapM_ (reason . Context.setForm (wipeLink context)) (lefts hardGuards) >>
           incrementIntCounter SuccessfulChecks
 
@@ -129,9 +129,9 @@ testDef context term (guards, fortifiedTerm) = do
 
 
     header select guards =
-      "check: " ++ showsPrec 2 term " vs " ++ format (select guards)
-    thead [] = ""; thead guards = "(trivial: " ++ format guards ++ ")"
-    format guards = if null guards then " - " else unwords . map show $ guards
+      "check: " <> (Text.pack $ showsPrec 2 term " vs ") <> format (select guards)
+    thead [] = ""; thead guards = "(trivial: " <> format guards <> ")"
+    format guards = if null guards then " - " else Text.unwords . map (Text.pack . show) $ guards
     defLog =
       whenInstruction Printcheck False .
         reasonLog Message.WRITELN (Block.position (head $ Context.branch context))

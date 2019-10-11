@@ -13,6 +13,8 @@ import System.IO
 import System.IO.Error
 import qualified System.Process as Process
 import qualified Control.Exception as Exception
+import qualified Data.Text.Lazy as Text
+import qualified Data.Text.Lazy.IO as TIO
 
 import qualified Isabelle.File as File
 import qualified Isabelle.Standard_Thread as Standard_Thread
@@ -34,10 +36,11 @@ export reduced depth provers instrs context goal = do
 
   when (null provers) $ Message.errorExport noSourcePos "No provers"
 
-  let proverName = askArgument Instr.Prover (name $ head provers) instrs
+  let proverName = Text.unpack $ askArgument Instr.Prover (Text.pack $ name $ head provers) instrs
       proversNamed = filter ((==) proverName . name) provers
 
-  when (null proversNamed) $ Message.errorExport noSourcePos $ "No prover named " ++ show proverName
+  when (null proversNamed) $ 
+    Message.errorExport noSourcePos $ "No prover named " ++ show proverName
 
   let Prover _ label path args fmt yes nos uns = head proversNamed
       timeLimit = askLimit Timelimit 3 instrs
@@ -55,7 +58,8 @@ export reduced depth provers instrs context goal = do
   let output = case fmt of TPTP -> TPTP.output; DFG -> DFG.output
       task = output reduced context goal
 
-  when (askFlag Dump False instrs) $ Message.output "" Message.WRITELN noSourcePos task
+  when (askFlag Dump False instrs) $ 
+    Message.output "" Message.WRITELN noSourcePos (Text.unpack task)
 
   (prvin, prvout, prverr, prv) <-
     Exception.catch process
@@ -66,7 +70,7 @@ export reduced depth provers instrs context goal = do
   File.setup prvout
   File.setup prverr
 
-  hPutStrLn prvin task
+  TIO.hPutStrLn prvin task
   hClose prvin
 
   let

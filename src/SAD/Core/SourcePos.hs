@@ -20,6 +20,8 @@ module SAD.Core.SourcePos
   where
 
 import SAD.Helpers (notNull)
+import Data.Text.Lazy (Text)
+import qualified Data.Text.Lazy as Text
 
 import qualified Data.List as List
 
@@ -27,7 +29,7 @@ import qualified Data.List as List
 -- Integer values <= 0 signify 'not given'.
 data SourcePos =
   SourcePos {
-    sourceFile :: FilePath,
+    sourceFile :: Text,
     sourceLine :: Int,
     sourceColumn :: Int,
     sourceOffset :: Int,
@@ -35,16 +37,16 @@ data SourcePos =
   deriving (Eq, Ord)
 
 noSourcePos :: SourcePos
-noSourcePos = SourcePos "" 0 0 0 0
+noSourcePos = SourcePos Text.empty 0 0 0 0
 
-fileOnlyPos :: String -> SourcePos
+fileOnlyPos :: Text -> SourcePos
 fileOnlyPos file = SourcePos file 0 0 0 0
 
-filePos :: String -> SourcePos
+filePos :: Text -> SourcePos
 filePos file = SourcePos file 1 1 1 0
 
 startPos :: SourcePos
-startPos = filePos ""
+startPos = filePos Text.empty
 
 
 -- advance position
@@ -64,8 +66,8 @@ advancePos (SourcePos file line column offset endOffset) c =
     (advanceOffset offset c)
     endOffset
 
-advanceAlong :: SourcePos -> String -> SourcePos
-advanceAlong = List.foldl' advancePos
+advanceAlong :: SourcePos -> Text -> SourcePos
+advanceAlong = Text.foldl' advancePos
 
 data SourceRange = SourceRange SourcePos SourcePos
   deriving (Eq, Ord, Show)
@@ -93,4 +95,4 @@ instance Show SourcePos where
         case filter notNull details of
           [] -> ""
           ds -> "(" ++ List.intercalate ", " ds ++ ")"
-      quotedFilePath = if null file then "" else "\"" ++ file ++ "\""
+      quotedFilePath = if Text.null file then "" else "\"" ++ Text.unpack file ++ "\""

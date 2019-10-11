@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Data.Formula.Show (
   showArgumentsWith,
@@ -11,7 +12,9 @@ module SAD.Data.Formula.Show (
 import SAD.Data.Formula.Base
 import SAD.Data.Formula.Kit
 import SAD.Data.VarName
+import SAD.Export.Representation (forceBuilder, represent)
 
+import qualified Data.Text.Lazy as Text
 
 -- show instances
 
@@ -36,12 +39,12 @@ showFormula p d = dive
     dive t@Trm{trmName = tName, trmArgs = tArgs}
       | isThesis t = showString "thesis"
       | isEquality t = let [l,r] = trmArgs t in showInfix " = " l r
-      | isSymbolicTerm t = decode (tail tName) tArgs p d
-      | not (null tName) && head tName == 't' =
-          showString (tail tName) . showArguments tArgs
-      | otherwise = showString tName . showArguments tArgs
-    dive v@Var{varName = VarConstant s} = showString s
-    dive v@Var{varName = vName} = showString $ show vName
+      | isSymbolicTerm t = decode (Text.unpack $ Text.tail tName) tArgs p d
+      | not (Text.null tName) && Text.head tName == 't' =
+          showString (Text.unpack $ Text.tail tName) . showArguments tArgs
+      | otherwise = showString (Text.unpack tName) . showArguments tArgs
+    dive v@Var{varName = VarConstant s} = showString (Text.unpack s)
+    dive v@Var{varName = vName} = showString $ Text.unpack $ forceBuilder $ represent vName
     dive Ind {indIndex = i }
       | i < d = showChar 'v' . shows (d - i - 1)
       | otherwise = showChar 'v' . showChar '?' . showString (show i)
@@ -67,7 +70,8 @@ commaSeparated showTerm [t] = showTerm t
 commaSeparated showTerm (t:ts) = showTerm t . showChar ',' . commaSeparated showTerm ts
 
 isSymbolicTerm :: Formula -> Bool
-isSymbolicTerm Trm {trmName = 's':_} = True; isSymbolicTerm _ = False
+isSymbolicTerm Trm {trmName = tName} | Text.head tName == 's' = True; 
+isSymbolicTerm _ = False
 
 -- decoding of symbolic names
 
@@ -113,9 +117,9 @@ decode s (t:ts) p d = dec s
     dec _            = showString s
 
 
-    ambig Trm {trmName = 's':'d':'t':cs} = not $ funpatt cs
+    ambig Trm {trmName = tName} | "sdt" `Text.isPrefixOf` tName = not $ funpatt (Text.drop 3 tName)
     ambig Trm {trmName = t} =
-      head t == 's' && snd (splitAt (length t - 2) t) == "dt"
+      Text.head t == 's' && snd (Text.splitAt (Text.length t - 2) t) == "dt"
     ambig _ = False
 
     funpatt "lbdtrb" = True

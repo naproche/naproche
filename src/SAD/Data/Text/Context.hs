@@ -17,6 +17,7 @@ import SAD.Data.Text.Block (Section(..))
 import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Formula (Formula)
 import SAD.Data.VarName
+import Data.Text.Lazy (Text)
 
 data Context = Context {
   formula        :: Formula,  -- formula of the context
@@ -49,10 +50,10 @@ isLowLevel  = not  . isTopLevel
 declaredNames :: Context -> [VariableName]
 declaredNames = Block.declaredNames . head
 
-name :: Context -> String
+name :: Context -> Text
 name  = Block.name . head
 
-link :: Context -> [String]
+link :: Context -> [Text]
 link  = Block.link . head
 
 isAssumption :: Context -> Bool

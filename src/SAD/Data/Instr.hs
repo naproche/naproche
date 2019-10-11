@@ -4,9 +4,12 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018), Makarius 
 Instruction datatype and core functions.
 -}
 
+{-# LANGUAGE OverloadedStrings #-}
+
 module SAD.Data.Instr where
 
 import SAD.Core.SourcePos (SourcePos, SourceRange(..), noSourcePos, noRange)
+import Data.Text.Lazy (Text)
 
 
 -- Position information
@@ -27,8 +30,8 @@ data Instr =
     Command Command
   | LimitBy Limit Int
   | SetFlag Flag Bool
-  | GetArgument Argument String
-  | GetArguments Arguments [String]
+  | GetArgument Argument Text
+  | GetArguments Arguments [Text]
   deriving (Eq, Ord, Show)
 
 data Drop =
@@ -91,7 +94,7 @@ data Flag =
 
 data Argument =
     Init     --  init file (init.opt)
-  | Text     --  literal text
+  | ProofText     --  literal text
   | File     --  read file
   | Read     --  read library file
   | Library  --  library directory
@@ -111,7 +114,7 @@ askLimit i d is  = head $ [ v | LimitBy j v <- is, i == j ] ++ [d]
 askFlag :: Flag -> Bool -> [Instr] -> Bool
 askFlag i d is  = head $ [ v | SetFlag j v <- is, i == j ] ++ [d]
 
-askArgument :: Argument -> String -> [Instr] -> String
+askArgument :: Argument -> Text -> [Instr] -> Text
 askArgument i d is  = head $ [ v | GetArgument j v <- is, i == j ] ++ [d]
 
 
@@ -129,7 +132,7 @@ dropInstr _ _ = []
 
 -- Keywords
 
-keywordsCommand :: [(Command, String)]
+keywordsCommand :: [(Command, Text)]
 keywordsCommand =
  [(EXIT, "exit"),
   (QUIT, "quit"),
@@ -138,14 +141,14 @@ keywordsCommand =
   (FILTER, "filter"),
   (RULES, "rules")]
 
-keywordsLimit :: [(Limit, String)]
+keywordsLimit :: [(Limit, Text)]
 keywordsLimit =
  [(Timelimit, "timelimit"),
   (Depthlimit, "depthlimit"),
   (Checktime, "checktime"),
   (Checkdepth, "checkdepth")]
 
-keywordsFlag :: [(Flag, String)]
+keywordsFlag :: [(Flag, Text)]
 keywordsFlag =
  [(Prove, "prove"),
   (Check, "check"),
@@ -173,14 +176,14 @@ keywordsFlag =
   (Checkontored, "checkontored"),
   (Translation, "translation")]
 
-keywordsArgument :: [(Argument, String)]
+keywordsArgument :: [(Argument, Text)]
 keywordsArgument =
  [(Read, "read"),
   (Library, "library"),
   (Provers, "provers"),
   (Prover, "prover")]
 
-keywordsArguments :: [(Arguments, String)]
+keywordsArguments :: [(Arguments, Text)]
 keywordsArguments =
   [(Synonym, "synonym")]
 

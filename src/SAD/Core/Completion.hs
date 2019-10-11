@@ -4,6 +4,8 @@ Author: Annika Hennes (2019)
 Executes Knuth-Bendix completion on a term rewriting system
 -}
 
+{-# LANGUAGE OverloadedStrings #-}
+
 module SAD.Core.Completion 
   (Equation(..), toFormula, completeAndSimplify, isConfluent, rewriter
   , allCriticalPairs
@@ -20,6 +22,8 @@ import Data.List
 import Data.Maybe
 import Data.Function (on)
 import qualified Data.Map as Map
+import Data.Text.Lazy (Text)
+import qualified Data.Text.Lazy as Text
 
 data Equation = Equation Formula Formula
   deriving (Eq, Ord)
@@ -88,7 +92,7 @@ interreduce = dive []
 
 
 {-gets a list of strings as weights (descending weights) and completes and interreduces a term rewriting system-}
-completeAndSimplify :: [String] -> [Equation] -> [Equation]
+completeAndSimplify :: [Text] -> [Equation] -> [Equation]
 completeAndSimplify wts eqs = (interreduce . (complete ord)) (eqs',[], allCriticalPairs eqs')
   where
     ord = lpoGe (weight wts)
@@ -194,7 +198,7 @@ renamepair (Equation l1 r1) (Equation l2 r2) =
   let freeVars1 = fvToVarList $ allFree [] l1 <> allFree [] r1
       freeVars2 = fvToVarList $ allFree [] l2 <> allFree [] r2
       (nms1,nms2) = splitAt (length freeVars1) 
-        $ map (\n -> zVar (VarHole $ 'a' : show n)) 
+        $ map (\n -> zVar (VarHole $ Text.pack $ 'a' : show n)) 
           [0..(length freeVars1 + length freeVars2 - 1)] 
       l1' = substs l1 freeVars1 nms1
       r1' = substs r1 freeVars1 nms1

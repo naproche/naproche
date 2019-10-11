@@ -11,6 +11,7 @@ import Control.Monad
 import Control.Monad.Reader
 import Data.List
 import Data.Maybe
+import qualified Data.Text.Lazy as Text
 
 import SAD.Core.Base
 import SAD.Data.Formula
@@ -109,11 +110,11 @@ rename :: [Formula] -> (Formula -> Formula)
 rename fs = insertU
   where
     -- find the maximal 'u'-index and convert the '?'-names to 'u'
-    insertU v@Var {varName = VarHole m} = v{varName = VarU $ show(maxU + read m + 1)}
+    insertU v@Var {varName = VarHole m} = v{varName = VarU $ Text.pack $ show(maxU + read (Text.unpack m) + 1)}
     insertU f = mapF insertU f
 
     maxU = myMaximum $ concatMap (foldF getU) fs
-    getU Var {varName = VarU m} = [read m]; getU f = foldF getU f
+    getU Var {varName = VarU m} = [read $ Text.unpack m]; getU f = foldF getU f
 
     myMaximum :: [Int] -> Int
     myMaximum [] = -1

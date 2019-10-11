@@ -4,6 +4,8 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
 Construct prover database.
 -}
 
+{-# LANGUAGE OverloadedStrings #-}
+
 module SAD.Export.Base (Prover(..),Format(..),readProverDatabase) where
 
 import Control.Applicative (liftA2)
@@ -12,6 +14,7 @@ import System.IO.Error
 import Control.Exception
 import qualified SAD.Core.Message as Message
 import SAD.Core.SourcePos
+import qualified Data.Text.Lazy as Text
 import qualified Isabelle.File as File
 
 data Prover = Prover {
@@ -33,7 +36,7 @@ initPrv l = Prover l "Prover" "" [] TPTP [] [] []
 -- Database reader
 
 {- parse the prover database in provers.dat -}
-readProverDatabase :: String -> IO [Prover]
+readProverDatabase :: FilePath -> IO [Prover]
 readProverDatabase file = do
   input <- catch (File.read file) $ err . ioeGetErrorString
   let dropWS = dropWhile Char.isSpace
@@ -43,7 +46,7 @@ readProverDatabase file = do
     Left e  ->  err e
     Right d ->  return d
   where
-    err = Message.errorExport (fileOnlyPos file)
+    err = Message.errorExport (fileOnlyPos $ Text.pack file)
 
 
 readProvers :: Int -> Maybe Prover -> [String] -> Either String [Prover]

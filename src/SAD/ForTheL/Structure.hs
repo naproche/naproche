@@ -5,6 +5,7 @@ Syntax of ForTheL sections.
 -}
 
 {-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module SAD.ForTheL.Structure (forthel) where
 
@@ -14,6 +15,8 @@ import Data.Char (isAlphaNum)
 import Control.Applicative
 import Control.Monad
 import qualified Control.Monad.State.Class as MS
+import Data.Text.Lazy (Text)
+import qualified Data.Text.Lazy as Text
 
 import SAD.ForTheL.Base
 import SAD.ForTheL.Statement
@@ -27,7 +30,7 @@ import SAD.Parser.Token
 import SAD.Parser.Primitives
 
 import SAD.Data.Instr
-import SAD.Data.Text.Block (Block(Block), Text(..), Section(..))
+import SAD.Data.Text.Block (Block(Block), ProofText(..), Section(..))
 import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Formula
 import qualified SAD.Data.Tag as Tag
@@ -35,30 +38,30 @@ import SAD.Data.Text.Decl (Decl(Decl))
 import qualified SAD.Data.Text.Decl as Decl
 import SAD.Data.VarName
 
-forthel :: FTL [Text]
+forthel :: FTL [ProofText]
 forthel = section <|> macroOrPretype <|> bracketExpression <|> endOfFile
   where
-    section = liftM2 ((:) . TextBlock) topsection forthel
+    section = liftM2 ((:) . ProofTextBlock) topsection forthel
     macroOrPretype = liftM2 (:) (introduceMacro </> pretypeVariable) forthel
     endOfFile = eof >> return []
 
 
-bracketExpression :: FTL [Text]
+bracketExpression :: FTL [ProofText]
 bracketExpression = topInstruction >>= procParseInstruction
   where
     topInstruction =
-      fmap (uncurry TextDrop) instrDrop </>
-      fmap (uncurry TextInstr) (instr </> instrExit </> instrRead)
+      fmap (uncurry ProofTextDrop) instrDrop </>
+      fmap (uncurry ProofTextInstr) (instr </> instrExit </> instrRead)
 
-procParseInstruction :: Text -> FTL [Text]
+procParseInstruction :: ProofText -> FTL [ProofText]
 procParseInstruction text = case text of
-  TextInstr _ (GetArgument Read _) -> return [text]
-  TextInstr _ (Command EXIT) -> return []
-  TextInstr _ (Command QUIT) -> return []
-  TextInstr _ (GetArguments Synonym syms) -> addSynonym syms >> fmap ((:) text) forthel
+  ProofTextInstr _ (GetArgument Read _) -> return [text]
+  ProofTextInstr _ (Command EXIT) -> return []
+  ProofTextInstr _ (Command QUIT) -> return []
+  ProofTextInstr _ (GetArguments Synonym syms) -> addSynonym syms >> fmap ((:) text) forthel
   _ -> fmap ((:) text) forthel
   where
-    addSynonym :: [String] -> FTL ()
+    addSynonym :: [Text] -> FTL ()
     addSynonym syms
       | null syms || null (tail syms) = return ()
       | otherwise = MS.modify $ \st -> st {strSyms = syms : strSyms st}
@@ -69,8 +72,8 @@ topsection = signature' <|> definition <|> axiom <|> theorem
 --- generic topsection parsing
 
 genericTopsection :: Section
-                     -> FTL String
-                     -> FTL [Text]
+                     -> FTL Text
+                     -> FTL [ProofText]
                      -> FTL Block
 genericTopsection kind header endparser = do
   pos <- getPos; inp <- getInput; nm <- header;
@@ -84,7 +87,7 @@ genericTopsection kind header endparser = do
 
 --- generic header parser
 
-header :: [String] -> FTL String
+header :: [Text] -> FTL Text
 header titles = finish $ markupTokenOf topsectionHeader titles >> optLL1 "" topIdentifier
 
 
@@ -109,13 +112,13 @@ theorem =
   in  genericTopsection Theorem thmH (topProof topAffirm)
 
 
-sigH :: FTL String
+sigH :: FTL Text
 sigH = header ["signature"]
-defH :: FTL String
+defH :: FTL Text
 defH = header ["definition"]
-axmH :: FTL String
+axmH :: FTL Text
 axmH = header ["axiom"]
-thmH :: FTL String
+thmH :: FTL Text
 thmH = header ["theorem", "lemma", "corollary", "proposition"]
 
 
@@ -132,33 +135,33 @@ llDefn :: FTL Block
 llDefn = sentence LowDefinition(ldfH >> setNotion </> functionNotion) llDefnVars noLink
 
 -- Links and Identifiers
-link :: Parser st [String]
+link :: Parser st [Text]
 link = finish eqLink
 
-topIdentifier :: Parser st String
+topIdentifier :: Parser st Text
 topIdentifier = tokenPrim notSymb
   where
-    notSymb t = case showToken t of
-      [c] -> guard (isAlphaNum c) >> return [c]
-      tk -> return tk
+    notSymb t = case Text.uncons (showToken t) of
+      Just (c, "") -> guard (isAlphaNum c) >> return (Text.singleton c)
+      _ -> return (showToken t)
 
-lowIdentifier :: Parser st String
+lowIdentifier :: Parser st Text
 lowIdentifier = parenthesised topIdentifier
 
 noLink :: Parser st [a]
 noLink = finish $ return []
 
-eqLink :: Parser st [String]
+eqLink :: Parser st [Text]
 eqLink = optLL1 [] $ parenthesised $ token' "by" >> identifiers
   where
     identifiers = topIdentifier `sepByLL1` comma
 
 -- declaration management, typings and pretypings
 
-updateDeclbefore :: FTL Text -> FTL [Text] -> FTL [Text]
+updateDeclbefore :: FTL ProofText -> FTL [ProofText] -> FTL [ProofText]
 updateDeclbefore blp p = do
   txt <- blp; case txt of
-    TextBlock bl -> addDecl (Block.declaredNames bl) $ fmap (txt : ) p
+    ProofTextBlock bl -> addDecl (Block.declaredNames bl) $ fmap (txt : ) p
     _ -> fmap (txt :) p
 
 pretyping :: Block -> FTL Block
@@ -178,13 +181,13 @@ pret dvs tvs bl = do
     assumeBlock = bl {Block.body = [], Block.kind = Assumption, Block.link = []}
     typeWith v = subst (zVar v) (VarHole "") . snd . fromJust . find (elem v . fst)
 
-pretypeBefore :: FTL Block -> FTL [Text] -> FTL [Text]
+pretypeBefore :: FTL Block -> FTL [ProofText] -> FTL [ProofText]
 pretypeBefore blp p = do
   bl <- blp; typeBlock <- pretyping bl; let pretyped = Block.declaredNames typeBlock
-  pResult   <- addDecl (pretyped ++ Block.declaredNames bl) $ fmap (TextBlock bl : ) p
-  return $ if null pretyped then pResult else TextBlock typeBlock : pResult
+  pResult   <- addDecl (pretyped ++ Block.declaredNames bl) $ fmap (ProofTextBlock bl : ) p
+  return $ if null pretyped then pResult else ProofTextBlock typeBlock : pResult
 
-pretype :: FTL Block -> FTL [Text]
+pretype :: FTL Block -> FTL [ProofText]
 pretype p = p `pretypeBefore` return []
 
 
@@ -213,7 +216,7 @@ ldfH = markupToken lowlevelHeader "define"
 -- generic sentence parser
 
 statementBlock :: Section
-                  -> Parser st Formula -> Parser st [String] -> Parser st Block
+                  -> Parser st Formula -> Parser st [Text] -> Parser st Block
 statementBlock kind p mbLink = do
   nm <- opt "__" lowIdentifier;
   pos <- getPos; inp <- getInput;
@@ -224,8 +227,8 @@ statementBlock kind p mbLink = do
 
 pretypeSentence :: Section
                    -> FTL Formula
-                   -> ([VariableName] -> Formula -> Maybe String)
-                   -> FTL [String]
+                   -> ([VariableName] -> Formula -> Maybe Text)
+                   -> FTL [Text]
                    -> FTL Block
 pretypeSentence kind p wfVars mbLink = narrow $ do
   dvs <- getDecl; tvr <- fmap (concatMap fst) getPretyped
@@ -240,8 +243,8 @@ pretypeSentence kind p wfVars mbLink = narrow $ do
 
 sentence :: Section
             -> FTL Formula
-            -> ([VariableName] -> Formula -> Maybe String)
-            -> FTL [String]
+            -> ([VariableName] -> Formula -> Maybe Text)
+            -> FTL [Text]
             -> FTL Block
 sentence kind p wfVars mbLink = do
   dvs <- getDecl;
@@ -252,19 +255,19 @@ sentence kind p wfVars mbLink = do
 
 -- variable well-formedness checks
 
-defVars, assumeVars, affirmVars :: [VariableName] -> Formula -> Maybe String
+defVars, assumeVars, affirmVars :: [VariableName] -> Formula -> Maybe Text
 
 defVars dvs f
   | null unusedVars = affirmVars dvs f
-  | otherwise = return errorMsg
+  | otherwise = pure errorMsg
   where
     unusedVars = let fvs = free [] f in filter (`notElem` fvs) dvs
-    errorMsg = "extra variables in the guard: " ++ varString
-    varString = concatMap ((' ' :) . showVar) unusedVars
+    errorMsg = "extra variables in the guard: " <> varText
+    varText = Text.concat $ map (Text.cons ' ' . showVar) unusedVars
 
-llDefnVars :: [VariableName] -> Formula -> Maybe String
+llDefnVars :: [VariableName] -> Formula -> Maybe Text
 llDefnVars dvs f
-  | x `elem` dvs = Just $ "Defined variable is already in use: " ++ showVar x
+  | x `elem` dvs = Just $ "Defined variable is already in use: " <> showVar x
   | otherwise = affirmVars (x : dvs) f
   where
     [x] = declNames [] f
@@ -322,7 +325,7 @@ indThesis fr pre post = do
     indStatem vs (Imp g f) = (Imp g .) <$> indStatem vs f
     indStatem vs (All v f) = (dAll v .) <$> indStatem (deleteDecl v vs) f
     indStatem [] f = return (`Imp` f)
-    indStatem _ _ = failWF $ "invalid induction thesis " ++ show fr
+    indStatem _ _ = failWF $ "invalid induction thesis " <> (Text.pack $ show fr)
 
     insertIndTerm it cn = cn $ Tag InductionHypothesis $ subst it (VarHole "") $ cn $ zLess it (zVar (VarHole ""))
 
@@ -340,14 +343,14 @@ proof p = do
 
 
 
-topProof :: FTL Block -> FTL [Text]
+topProof :: FTL Block -> FTL [ProofText]
 topProof p = do
   pre <- preMethod; bl <- p; post <- postMethod; typeBlock <- pretyping bl;
   let pretyped = Block.declaredNames typeBlock
-  nbl <- addDecl pretyped $ fmap TextBlock $ do
+  nbl <- addDecl pretyped $ fmap ProofTextBlock $ do
     nf <- indThesis (Block.formula bl) pre post
     addBody pre post $ bl {Block.formula = nf}
-  return $ if null pretyped then [nbl] else [TextBlock typeBlock, nbl]
+  return $ if null pretyped then [nbl] else [ProofTextBlock typeBlock, nbl]
 
 addBody :: Scheme -> Scheme -> Block -> FTL Block
 addBody None None = return -- no proof was given
@@ -361,17 +364,17 @@ addBody _ _ = proofBody    -- a full proof was given
 proofSentence :: Block -> FTL Block
 proofSentence bl = do
   pbl <- narrow assume </> proof (narrow $ affirm </> choose) </> narrow llDefn
-  return bl {Block.body = [TextBlock pbl]}
+  return bl {Block.body = [ProofTextBlock pbl]}
 
 proofBody :: Block -> FTL Block
 proofBody bl = do
-  bs <- proofText; ls <- link
+  bs <- proofProofText; ls <- link
   return bl {Block.body = bs, Block.link = ls ++ Block.link bl}
 
-proofText :: FTL [Text]
-proofText =
+proofProofText :: FTL [ProofText]
+proofProofText =
   qed <|>
-  (unfailing (fmap TextBlock lowtext <|> instruction) `updateDeclbefore` proofText)
+  (unfailing (fmap ProofTextBlock lowtext <|> instruction) `updateDeclbefore` proofProofText)
   where
     lowtext =
       narrow assume </>
@@ -379,8 +382,8 @@ proofText =
       caseDestinction
     qed = label "qed" $ markupTokenOf proofEnd ["qed", "end", "trivial", "obvious"] >> return []
     instruction =
-      fmap (uncurry TextDrop) instrDrop </>
-      fmap (uncurry TextInstr) instr
+      fmap (uncurry ProofTextDrop) instrDrop </>
+      fmap (uncurry ProofTextInstr) instr
 
 caseDestinction :: FTL Block
 caseDestinction = do
@@ -398,7 +401,7 @@ eqChain = do
   toks <- getTokens inp
   let Tag EqualityChain Trm{trmArgs = [t,_]} = Block.formula $ head body
       Tag EqualityChain Trm{trmArgs = [_,s]} = Block.formula $ last body
-      fr = Tag EqualityChain $ zEqu t s; tBody = map TextBlock body
+      fr = Tag EqualityChain $ zEqu t s; tBody = map ProofTextBlock body
   return $ Block.makeBlock fr tBody Affirmation nm [] pos toks
   where
     chainVars dvs = affirmVars dvs . foldl1 And . map Block.formula
@@ -414,15 +417,15 @@ nextTerm t = do
     [] Affirmation "__" ln pos toks) <$> eqTail s
 
 -- | Fail if @p@ failed with no or only @EOF@ input remaining
--- or continue with a @TextError@ as a @ParseResult@.
-unfailing :: FTL Text -> FTL Text
+-- or continue with a @ProofTextError@ as a @ParseResult@.
+unfailing :: FTL ProofText -> FTL ProofText
 unfailing p = do
   res <- inspectError p
   case res of
     Right pr -> pure pr
     Left err -> do
       notEof
-      jumpToNextUnit (pure $ TextError err)
+      jumpToNextUnit (pure $ ProofTextError err)
 
 -- | Skip input until we encounter @EOF@ (keep) or a dot not followed by '=' (discard the dot).
 jumpToNextUnit :: FTL a -> FTL a
@@ -430,6 +433,6 @@ jumpToNextUnit = mapInput nextUnit
   where
     nextUnit (t:tks)
       | isEOF t = [t]
-      | tokenText t == "." && (null tks || isEOF (head tks) || tokenText (head tks) /= "=") = tks
+      | tokenProofText t == "." && (null tks || isEOF (head tks) || tokenProofText (head tks) /= "=") = tks
       | otherwise = nextUnit tks
     nextUnit [] = []

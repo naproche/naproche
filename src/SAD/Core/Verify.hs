@@ -5,6 +5,7 @@ Main verification loop.
 -}
 
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Core.Verify (verify) where
 
@@ -12,6 +13,8 @@ import Control.Monad
 import Data.IORef
 import Data.Maybe
 import Control.Monad.Reader
+import Data.Text.Lazy (Text)
+import qualified Data.Text.Lazy as Text
 
 import SAD.Core.Base
 import SAD.Core.Check
@@ -25,7 +28,7 @@ import SAD.Core.Thesis
 import SAD.Data.Formula
 import SAD.Data.Instr
 import SAD.Data.Instr (Instr, isParserInstruction)
-import SAD.Data.Text.Block (Block(Block), Text(..), Section(..))
+import SAD.Data.Text.Block (Block(Block), ProofText(..), Section(..))
 import SAD.Data.Text.Context (Context(Context))
 import SAD.Export.Base (Prover)
 import SAD.Helpers (notNull)
@@ -40,9 +43,9 @@ import qualified SAD.Data.Text.Context as Context
 import qualified Isabelle.Markup as Markup
 
 -- | Main verification loop
-verify :: String -> [Prover] -> IORef RState -> Text -> IO (Bool, Maybe Text)
-verify fileName provers reasonerState (TextRoot text) = do
-  let text' = TextInstr noPos (GetArgument File fileName) : text
+verify :: Text -> [Prover] -> IORef RState -> ProofText -> IO (Bool, Maybe ProofText)
+verify fileName provers reasonerState (ProofTextRoot text) = do
+  let text' = ProofTextInstr noPos (GetArgument File fileName) : text
   Message.outputReasoner Message.TRACING (fileOnlyPos fileName) "verification started"
 
   let verificationState =
@@ -56,9 +59,9 @@ verify fileName provers reasonerState (TextRoot text) = do
   let success = isJust result && ignoredFails == 0
   Message.outputReasoner Message.TRACING (fileOnlyPos fileName) $
     "verification " ++ (if success then "successful" else "failed")
-  return (success, fmap (TextRoot . tail . snd) result)
+  return (success, fmap (ProofTextRoot . tail . snd) result)
 
-verificationLoop :: VState -> VM ([Text], [Text])
+verificationLoop :: VState -> VM ([ProofText], [ProofText])
 verificationLoop state@VS {
   thesisMotivated = motivated,
   rewriteRules    = rules,
@@ -68,7 +71,7 @@ verificationLoop state@VS {
   mesonRules      = mRules,
   definitions     = defs,
   guards          = grds,
-  restText = TextBlock block@(Block f body kind declaredVariables _ _ _ _):blocks,
+  restProofText = ProofTextBlock block@(Block f body kind declaredVariables _ _ _ _):blocks,
   evaluations     = evaluations }
     = local (const state) $ do
   justIO $ Message.report (Block.position block) Markup.running
@@ -78,11 +81,12 @@ verificationLoop state@VS {
   unless alreadyChecked $ incrementIntCounter Sections
   whenInstruction Printsection False $ justIO $
     Message.outputForTheL Message.WRITELN (Block.position block) $
-    Message.trimText (Block.showForm 0 block "")
+    Message.trimString (Block.showForm 0 block "")
   let newBranch = block : branch; contextBlock = Context f newBranch [] f
 
   whenInstruction Translation False $
-    unless (Block.isTopLevel block) $ translateLog Message.WRITELN (Block.position block) $ show f
+    unless (Block.isTopLevel block) $ 
+      translateLog Message.WRITELN (Block.position block) $ Text.pack $ show f
 
   fortifiedFormula <-
     if   Block.isTopLevel block
@@ -91,7 +95,7 @@ verificationLoop state@VS {
 
   unsetChecked
 
-  checkFailed (return (restText state, restText state)) $ do
+  checkFailed (return (restProofText state, restProofText state)) $ do
 
     let proofTask = generateProofTask kind (Block.declaredNames block) fortifiedFormula
         freshThesis = Context proofTask newBranch [] proofTask
@@ -103,17 +107,17 @@ verificationLoop state@VS {
       toBeProved && notNull proofBody &&
       not (hasDEC $ Context.formula freshThesis)) $
         thesisLog Message.WRITELN (Block.position block) (length branch - 1) $
-        "thesis: " ++ show (Context.formula freshThesis)
+        "thesis: " <> Text.pack (show (Context.formula freshThesis))
 
 
     (fortifiedProof, markedProof) <-
       if   toBeProved
       then verifyProof state {
         thesisMotivated = True, currentThesis = freshThesis,
-        currentBranch = newBranch, restText = proofBody }
+        currentBranch = newBranch, restProofText = proofBody }
       else verifyProof state {
         thesisMotivated = False, currentThesis = freshThesis,
-        currentBranch = newBranch, restText = body }
+        currentBranch = newBranch, restProofText = body }
 
     -- in what follows we prepare the current block to contribute to the context,
     -- extract rules, definitions and compute the new thesis
@@ -124,7 +128,7 @@ verificationLoop state@VS {
         formulaImage = Block.formulate newBlock
         markedBlock = block {Block.body = markedProof}
 
-    checkFailed (return (TextBlock newBlock : blocks, TextBlock markedBlock : blocks)) $ do
+    checkFailed (return (ProofTextBlock newBlock : blocks, ProofTextBlock markedBlock : blocks)) $ do
 
       (mesonRules, intermediateSkolem) <- contras $ deTag formulaImage
       let (newDefinitions, newGuards) =
@@ -152,7 +156,7 @@ verificationLoop state@VS {
         hasChanged && motivated && newMotivation &&
         (not $ hasDEC $ Block.formula $ head branch) ) $
           thesisLog Message.WRITELN (Block.position block) (length branch - 2) $
-          "new thesis: " ++ show (Context.formula newThesis)
+          "new thesis: " <> Text.pack (show (Context.formula newThesis))
 
       when (not newMotivation && motivated) $
         thesisLog Message.WARNING (Block.position block) (length branch - 2) "unmotivated assumption"
@@ -170,20 +174,20 @@ verificationLoop state@VS {
         rewriteRules = newRewriteRules, evaluations = newEvaluations,
         currentThesis = newThesis, currentContext = newContext,
         mesonRules = newRules, definitions = newDefinitions,
-        skolemCounter = newSkolem, restText = blocks }
+        skolemCounter = newSkolem, restProofText = blocks }
 
       -- if this block made the thesis unmotivated, we must discharge a composite
       -- (and possibly quite difficult) prove task
-      let finalThesis = Imp (Block.compose $ TextBlock newBlock : newBlocks) (Context.formula thesis)
+      let finalThesis = Imp (Block.compose $ ProofTextBlock newBlock : newBlocks) (Context.formula thesis)
 
       -- notice that the following is only really executed if
       -- motivated && not newMotivated == True
       verifyProof state {
         thesisMotivated = motivated && not newMotivation,
-        currentThesis = Context.setForm thesis finalThesis, restText = [] }
+        currentThesis = Context.setForm thesis finalThesis, restProofText = [] }
       -- put everything together
-      let checkMark = if Block.isTopLevel block then id else TextChecked
-      return (TextBlock newBlock : newBlocks, checkMark (TextBlock markedBlock) : markedBlocks)
+      let checkMark = if Block.isTopLevel block then id else ProofTextChecked
+      return (ProofTextBlock newBlock : newBlocks, checkMark (ProofTextBlock markedBlock) : markedBlocks)
 
 -- if there is no text to be read in a branch it means we must call the prover
 verificationLoop st@VS {
@@ -191,20 +195,20 @@ verificationLoop st@VS {
   rewriteRules    = rules,
   currentThesis   = thesis,
   currentContext  = context,
-  restText        = [] }
+  restProofText        = [] }
   = local (const st) $ whenInstruction Prove True prove >> return ([], [])
   where
     prove =
       if hasDEC (Context.formula thesis) --computational reasoning
       then do
-        let logAction = reasonLog Message.TRACING (Block.position block) $ "goal: " ++ text
+        let logAction = reasonLog Message.TRACING (Block.position block) $ "goal: " <> text
             block = Context.head thesis ; text = Block.text block
         incrementIntCounter Equations ; whenInstruction Printgoal True logAction
         timer SimplifyTime (equalityReasoning thesis) <|> (
           reasonLog Message.WARNING (Block.position block) "equation failed" >> setFailed >>
           guardInstruction Skipfail False >> incrementIntCounter FailedEquations)
       else do
-        let logAction = reasonLog Message.TRACING (Block.position block) $ "goal: " ++ text
+        let logAction = reasonLog Message.TRACING (Block.position block) $ "goal: " <> text
             block = Context.head thesis ; text = Block.text block
         unless (isTop . Context.formula $ thesis) $ incrementIntCounter Goals
         whenInstruction Printgoal True logAction
@@ -213,9 +217,9 @@ verificationLoop st@VS {
           --guardInstruction Skipfail False >>
           incrementIntCounter FailedGoals)
 
-verificationLoop state@ VS {restText = TextChecked txt : rest} =
+verificationLoop state@ VS {restProofText = ProofTextChecked txt : rest} =
   let newTxt = Block.setChildren txt (Block.children txt ++ newInstructions)
-      newInstructions = [NonTextStoredInstr $
+      newInstructions = [NonProofTextStoredInstr $
         SetFlag Prove False :
         SetFlag Printgoal False :
         SetFlag Printreason False :
@@ -225,35 +229,35 @@ verificationLoop state@ VS {restText = TextChecked txt : rest} =
         SetFlag Printunfold False :
         SetFlag Printfulltask False :
         instructions state]
-  in  setChecked >> verificationLoop state {restText = newTxt : rest}
+  in  setChecked >> verificationLoop state {restProofText = newTxt : rest}
 
-verificationLoop state@ VS {restText = NonTextStoredInstr ins : rest} =
-  verificationLoop state {restText = rest, instructions = ins}
+verificationLoop state@ VS {restProofText = NonProofTextStoredInstr ins : rest} =
+  verificationLoop state {restProofText = rest, instructions = ins}
 
 -- process instructions. we distinguish between those that influence the
 -- verification state and those that influence (at most) the global state
-verificationLoop state@VS {restText = i@(TextInstr _ instr) : blocks} =
-  fmap (\(as,bs) -> (as, i:bs)) $ local (const state {restText = blocks}) $ procTextInstr instr
+verificationLoop state@VS {restProofText = i@(ProofTextInstr _ instr) : blocks} =
+  fmap (\(as,bs) -> (as, i:bs)) $ local (const state {restProofText = blocks}) $ procProofTextInstr instr
 
 {- process a command to drop an instruction, i.e. [/prove], [/ontored], etc.-}
-verificationLoop state@VS {restText = (i@(TextDrop _ instr) : blocks)} =
-  fmap (\(as,bs) -> (as, i:bs)) $ local (const state {restText = blocks}) $ procTextDrop instr
+verificationLoop state@VS {restProofText = (i@(ProofTextDrop _ instr) : blocks)} =
+  fmap (\(as,bs) -> (as, i:bs)) $ local (const state {restProofText = blocks}) $ procProofTextDrop instr
 
-verificationLoop st@VS {restText = (i@TextSynonym{} : blocks)} =
-  fmap (\(as,bs) -> (as, i:bs)) $ verificationLoop st {restText = blocks}
-verificationLoop st@VS {restText = (i@TextPretyping{} : blocks)} =
-  fmap (\(as,bs) -> (as, i:bs)) $ verificationLoop st {restText = blocks}
-verificationLoop st@VS {restText = (i@TextMacro{} : blocks)} =
-  fmap (\(as,bs) -> (as, i:bs)) $ verificationLoop st {restText = blocks}
+verificationLoop st@VS {restProofText = (i@ProofTextSynonym{} : blocks)} =
+  fmap (\(as,bs) -> (as, i:bs)) $ verificationLoop st {restProofText = blocks}
+verificationLoop st@VS {restProofText = (i@ProofTextPretyping{} : blocks)} =
+  fmap (\(as,bs) -> (as, i:bs)) $ verificationLoop st {restProofText = blocks}
+verificationLoop st@VS {restProofText = (i@ProofTextMacro{} : blocks)} =
+  fmap (\(as,bs) -> (as, i:bs)) $ verificationLoop st {restProofText = blocks}
 
-verificationLoop VS {restText = []} = return ([], [])
+verificationLoop VS {restProofText = []} = return ([], [])
 
 {- some automated processing steps: add induction hypothesis and case hypothesis
 at the right point in the context; extract rewriteRules from them and further
 refine the currentThesis. Then move on with the verification loop.
 If neither inductive nor case hypothesis is present this is the same as
 verificationLoop state -}
-verifyProof :: VState -> VM ([Text], [Text])
+verifyProof :: VState -> VM ([ProofText], [ProofText])
 verifyProof state@VS {
   rewriteRules   = rules,
   currentThesis  = thesis,
@@ -278,10 +282,10 @@ verifyProof state@VS {
           (_, _, newThesis) =
             inferNewThesis (definitions state) newContext $ Context.setForm thesis f
       whenInstruction Printthesis False $ when (
-        noInductionOrCase (Context.formula newThesis) && not (null $ restText state)) $
+        noInductionOrCase (Context.formula newThesis) && not (null $ restProofText state)) $
           thesisLog Message.WRITELN
           (Block.position $ head $ Context.branch $ head context) (length branch - 2) $
-          "new thesis " ++ show (Context.formula newThesis)
+          "new thesis " <> Text.pack (show (Context.formula newThesis))
       verifyProof state {
         rewriteRules = newRules, currentThesis = newThesis,
         currentContext = newContext}
@@ -309,27 +313,27 @@ deleteInductionOrCase = dive id
 -- Instruction handling
 
 {- execute an instruction or add an instruction parameter to the state -}
-procTextInstr :: Instr -> VM ([Text], [Text])
-procTextInstr = flip proc $ ask >>= verificationLoop
+procProofTextInstr :: Instr -> VM ([ProofText], [ProofText])
+procProofTextInstr = flip proc $ ask >>= verificationLoop
   where
     proc (Command RULES) = (>>) $ do
       rules <- asks rewriteRules
       reasonLog Message.WRITELN noSourcePos $
-        "current ruleset: " ++ "\n" ++ unlines (map show (reverse rules))
+        "current ruleset: " <> "\n" <> Text.unlines (map (Text.pack . show) (reverse rules))
     proc (Command THESIS) = (>>) $ do
       motivated <- asks thesisMotivated; thesis <- asks currentThesis
       let motivation = if motivated then "(motivated): " else "(not motivated): "
       reasonLog Message.WRITELN noSourcePos $
-        "current thesis " ++ motivation ++ show (Context.formula thesis)
+        "current thesis " <> motivation <> Text.pack (show (Context.formula thesis))
     proc (Command CONTEXT) = (>>) $ do
       context <- asks currentContext
-      reasonLog Message.WRITELN noSourcePos $ "current context:\n" ++
-        concatMap (\form -> "  " ++ show (Context.formula form) ++ "\n") (reverse context)
+      reasonLog Message.WRITELN noSourcePos $ "current context:\n" <>
+        Text.concat (map (\form -> "  " <> Text.pack (show (Context.formula form)) <> "\n") (reverse context))
     proc (Command FILTER) = (>>) $ do
       context <- asks currentContext
       let topLevelContext = filter Context.isTopLevel context
-      reasonLog Message.WRITELN noSourcePos $ "current filtered top-level context:\n" ++
-        concatMap (\form -> "  " ++ show (Context.formula form) ++ "\n") (reverse topLevelContext)
+      reasonLog Message.WRITELN noSourcePos $ "current filtered top-level context:\n" <>
+        Text.concat (map (\form -> "  " <> Text.pack (show (Context.formula form)) <> "\n") (reverse topLevelContext))
 
     proc (Command _) = (>>) $ reasonLog Message.WRITELN noSourcePos "unsupported instruction"
 
@@ -355,5 +359,5 @@ procTextInstr = flip proc $ ask >>= verificationLoop
       | otherwise = addInstruction i
 
 {- drop an instruction from the state -}
-procTextDrop :: Drop -> VM ([Text], [Text])
-procTextDrop = flip dropInstruction $ ask >>= verificationLoop
+procProofTextDrop :: Drop -> VM ([ProofText], [ProofText])
+procProofTextDrop = flip dropInstruction $ ask >>= verificationLoop

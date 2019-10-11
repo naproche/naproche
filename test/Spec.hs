@@ -5,6 +5,9 @@ import System.Process
 import System.Exit
 import GHC.IO.Handle
 import Control.Monad
+import Data.Text.Lazy (Text)
+import qualified Data.Text.Lazy as Text
+import qualified Data.Text.Lazy.IO as TIO
 
 compileFile :: FilePath -> IO (Handle, ProcessHandle)
 compileFile f = do
@@ -12,10 +15,10 @@ compileFile f = do
     { std_out = CreatePipe }
   pure (hout, ph)
 
-gather :: (Handle, ProcessHandle) -> IO (ExitCode, String)
+gather :: (Handle, ProcessHandle) -> IO (ExitCode, Text)
 gather (hout, ph) = do
   code <- waitForProcess ph
-  cont <- hGetContents hout
+  cont <- TIO.hGetContents hout
   pure (code, cont)
 
 files :: [FilePath]
@@ -31,9 +34,9 @@ files = map ("examples/"++) $
   , "tarski.ftl"
   ]
 
-output :: [(FilePath, (ExitCode, String))] -> IO (ExitCode, [FilePath])
+output :: [(FilePath, (ExitCode, Text))] -> IO (ExitCode, [FilePath])
 output xs = do
-  mapM_ (putStrLn . snd . snd) xs
+  mapM_ (TIO.putStrLn . snd . snd) xs
   let code = foldl' max ExitSuccess $ map (fst . snd) xs
   let failed = map fst $ filter ((/=ExitSuccess) . fst . snd) xs
   pure (code, failed)

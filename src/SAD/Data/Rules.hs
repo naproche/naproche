@@ -1,12 +1,14 @@
 module SAD.Data.Rules where
 
 import SAD.Data.Formula (Formula)
+import Data.Text.Lazy (Text)
+
 
 data Rule = Rule {
   left      :: Formula,   -- left side
   right     :: Formula,   -- right side
   condition :: [Formula], -- conditions
-  label     :: String }   -- label
+  label     :: Text }   -- label
 
 instance Show Rule where
   show rl =

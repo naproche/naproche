@@ -4,6 +4,7 @@ Authors: Steffen Frerix (2017 - 2018)
 Generation of proof tasks.
 -}
 
+{-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Core.ProofTask (generateProofTask) where
 
@@ -12,6 +13,7 @@ import SAD.Data.TermId
 import SAD.Data.Text.Block (Section(..))
 import SAD.Prove.Normalize
 import SAD.Data.VarName
+import qualified Data.Text.Lazy as Text
 
 import Data.Maybe
 
@@ -98,7 +100,7 @@ existence :: Formula -> Formula
 existence  = Tag ExistenceTask . dive 0
   where
     dive :: Int -> Formula -> Formula
-    dive n (All x f) = let nn = VarTask $ VarDefault $ show n in zAll nn $ dive (n + 1) $ inst nn f
+    dive n (All x f) = let nn = VarTask $ VarDefault $ Text.pack $ show n in zAll nn $ dive (n + 1) $ inst nn f
     dive n (Imp f g) = blImp f $ dive n g
     dive _ f = let y = zVar (VarDefault "y") in zExi (VarDefault "y") $ devReplace y $ describe_exi f
 

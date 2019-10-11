@@ -6,6 +6,7 @@ Term rewriting: extraction of rules and proof of equlities.
 
 {-# LANGUAGE FlexibleContexts #-}
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Core.Rewrite (equalityReasoning, lpoGe) where
 
@@ -18,6 +19,7 @@ import SAD.Data.Rules (Rule)
 import SAD.Data.Text.Context (Context)
 import SAD.Helpers (notNull)
 import SAD.Data.VarName
+import SAD.Export.Representation
 
 import qualified SAD.Core.Message as Message
 import qualified SAD.Data.Rules as Rule
@@ -29,12 +31,14 @@ import qualified Data.Set as Set
 import Control.Monad.State
 import Data.Either
 import Control.Monad.Reader
+import Data.Text.Lazy (Text)
+import qualified Data.Text.Lazy as Text
 
 
 -- Lexicographic path ordering
 
 {- a weighting to parametrize the LPO -}
-type Weighting = String -> String -> Bool
+type Weighting = Text -> Text -> Bool
 
 
 {- standard implementation of LPO -}
@@ -49,10 +53,10 @@ lpoGt w tr@Trm {trmName = t, trmArgs = ts} sr@Trm {trmName = s, trmArgs = ss} =
     && ((t == s && lexord (lpoGt w) ts ss)
     || w t s))
 lpoGt w Trm { trmName = t, trmArgs = ts} v@Var {varName = x} =
-  w t (show x) || any (\ti -> lpoGe w ti v) ts
+  w t (forceBuilder $ represent x) || any (\ti -> lpoGe w ti v) ts
 lpoGt w v@Var {varName = x} Trm {trmName = t, trmArgs = ts} =
-  w (show x) t && all (lpoGt w v) ts
-lpoGt w Var{varName = x} Var {varName = y} = w (show x) (show y)
+  w (forceBuilder $ represent x) t && all (lpoGt w v) ts
+lpoGt w Var{varName = x} Var {varName = y} = w (forceBuilder $ represent x) (forceBuilder $ represent y)
 lpoGt _ _ _ = False
 
 
@@ -66,7 +70,7 @@ lexord _ _ _ = False
 -- simplification
 
 {- type to record conditions and intermediate steps during simplification -}
-type SimpInfo = ([Formula], String)
+type SimpInfo = ([Formula], Text)
 
 
 {- performs one simplification step. We always try to simplify in a
@@ -138,14 +142,15 @@ generateConditions verbositySetting rules w l r =
     log leftNormalForm rightNormalForm = when verbositySetting $ do
       simpLog Message.WRITELN noSourcePos "no matching normal forms found"
       showPath leftNormalForm; showPath rightNormalForm
-    showPath ((t,_):rest) = when verbositySetting $
-      simpLog Message.WRITELN noSourcePos (show t) >> mapM_ (simpLog Message.WRITELN noSourcePos . format) rest
+    showPath ((t,_):rest) = when verbositySetting $ do
+      simpLog Message.WRITELN noSourcePos (Text.pack $ show t)
+      mapM_ (simpLog Message.WRITELN noSourcePos . format) rest
     -- formatting of paths
-    format (t, simpInfo) = " --> " ++ show t ++ conditions simpInfo
+    format (t, simpInfo) = " --> " <> Text.pack (show t) <> conditions simpInfo
     conditions (conditions, name) =
-      (if null name then "" else " by " ++ name ++ ",") ++
-      (if null conditions then "" else " conditions: " ++
-        unwords (intersperse "," $ map show conditions))
+      (if Text.null name then "" else " by " <> name <> ",") <>
+      (if null conditions then "" else " conditions: " <>
+        Text.unwords (intersperse "," $ map (Text.pack . show) conditions))
 
 
 {- applies computational reasoning to an equality chain -}
@@ -161,7 +166,7 @@ equalityReasoning thesis
     body = notNull $ Block.body . head . Context.branch $ thesis
 
 
-getLinkedRules :: [String] -> VM [Rule]
+getLinkedRules :: [Text] -> VM [Rule]
 getLinkedRules link = do
   rules <- rules; let setLink = Set.fromList link
   let (linkedRules, unfoundRules) = runState (retrieve setLink rules) setLink
@@ -170,7 +175,7 @@ getLinkedRules link = do
   where
     warn st =
       simpLog Message.WARNING noSourcePos $
-        "Could not find rules " ++ unwords (map show $ Set.elems st)
+        "Could not find rules " <> Text.unwords (map (Text.pack . show) $ Set.elems st)
 
     retrieve _ [] = return []
     retrieve s (c:cnt) = let nm = Rule.label c in
@@ -204,9 +209,9 @@ dischargeConditions verbositySetting conditions =
       | all isRight hardConditions =
           if all isTop $ rights hardConditions
           then return ()
-          else log $ "trivial " ++ header rights hardConditions
+          else log $ "trivial " <> header rights hardConditions
       | otherwise = do
-          log (header lefts hardConditions ++ thead (rights hardConditions))
+          log (header lefts hardConditions <> thead (rights hardConditions))
           thesis <- thesis
           mapM_ (reason . Context.setForm (wipeLink thesis)) (lefts hardConditions)
 
@@ -217,12 +222,12 @@ dischargeConditions verbositySetting conditions =
       ontored <- SetFlag Ontored <$> askInstructionBool Checkontored False
       addInstruction timelimit $ addInstruction depthlimit $ addInstruction ontored action
 
-    header select conditions = "condition: " ++ format (select conditions)
-    thead [] = ""; thead conditions = "(trivial: " ++ format conditions ++ ")"
+    header select conditions = "condition: " <> format (select conditions)
+    thead [] = ""; thead conditions = "(trivial: " <> format conditions <> ")"
     format conditions =
       if   null conditions
       then " - "
-      else unwords . intersperse "," . map show $ reverse conditions
+      else Text.unwords . intersperse "," . map (Text.pack . show) $ reverse conditions
     log msg =
       when verbositySetting $ thesis >>=
         flip (simpLog Message.WRITELN . Block.position . Context.head) msg

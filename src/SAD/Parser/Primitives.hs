@@ -4,6 +4,8 @@ Authors: Steffen Frerix (2017 - 2018)
 Primitive parsers.
 -}
 
+{-# LANGUAGE OverloadedStrings #-}
+
 module SAD.Parser.Primitives where
 
 import SAD.Parser.Base
@@ -11,8 +13,10 @@ import SAD.Parser.Error
 import SAD.Parser.Token
 import SAD.Core.SourcePos
 
-import Data.Char (isAlpha, toLower)
+import Data.Char (isAlpha)
 import Control.Monad (void, guard)
+import Data.Text.Lazy (Text)
+import qualified Data.Text.Lazy as Text
 
 
 -- primitive Token operations
@@ -64,50 +68,49 @@ mapInput jump p = Parser $ \st ok cerr err ->
 -- useful macros
 
 -- | Check if the current token satisfies a predicate; if not fail
-satisfy :: (String -> Bool) -> Parser st String
+satisfy :: (Text -> Bool) -> Parser st Text
 satisfy pr = tokenPrim prTest
   where
-    prTest :: Token -> Maybe String
+    prTest :: Token -> Maybe Text
     prTest tk = let s = showToken tk in case pr s of
       True  -> Just s
       False -> Nothing
 
 -- | Check if the current token is a word
-word :: Parser st String
-word = satisfy $ \tk -> all isAlpha tk
+word :: Parser st Text
+word = satisfy $ \tk -> Text.all isAlpha tk
 
 -- | Succeeds iff the current token is equal to @tk@. Consumes the token.
 {-# INLINE token #-}
-token :: String -> Parser st ()
+token :: Text -> Parser st ()
 token tk = void $ satisfy $ \tk' -> tk == tk'
 
 -- | Case-insensitive version of @token@. Assumes argument is lower-case.
 {-# INLINE token' #-}
-token' :: String -> Parser st ()
-token' s = void $ satisfy $ \tk -> s == map toLower tk
+token' :: Text -> Parser st ()
+token' s = void $ satisfy $ \tk -> s == Text.toCaseFold tk
 
 -- | @token'@ that return the position of the token instead of @()@.
-tokenPos' :: String -> Parser st SourcePos
+tokenPos' :: Text -> Parser st SourcePos
 tokenPos' s = do
   pos <- getPos
   token' s
   return pos
 
 -- | Succeeds iff the current token is an element of @tks@. Consumes the token.
-tokenOf :: [String] -> Parser st ()
+tokenOf :: [Text] -> Parser st ()
 tokenOf tks = void $ satisfy $ \tk -> tk `elem` tks
 
 -- | Case-insensitive version of @tokenOf@. Assumes all argument strings are lower-case.
 {-# INLINE tokenOf' #-}
-tokenOf' :: [String] -> Parser st ()
-tokenOf' tks = void $ satisfy $ \tk -> map toLower tk `elem` tks
+tokenOf' :: [Text] -> Parser st ()
+tokenOf' tks = void $ satisfy $ \tk -> Text.toCaseFold tk `elem` tks
 
 -- | Check if the next tokens are the (case-sensitive) characters
 -- of the input string. Useful for parsing symbols.
-symbol :: String -> Parser st ()
-symbol []     = return ()
-symbol (c:cs) = token [c] >> symbol cs
+symbol :: Text -> Parser st ()
+symbol = mapM_ (token . Text.singleton) . Text.unpack
 
 -- | Always succeed and pass on the string of the token
-anyToken :: Parser st String
+anyToken :: Parser st Text
 anyToken = tokenPrim (Just . showToken)

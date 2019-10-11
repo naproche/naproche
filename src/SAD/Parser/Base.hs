@@ -37,6 +37,7 @@ import SAD.Parser.Error
 import SAD.Core.SourcePos
 
 import Data.List
+import qualified Data.Text.Lazy as Text
 
 -- | Parser state
 data State st = State
@@ -92,7 +93,7 @@ instance Monad (Parser st) where
 
 instance Fail.MonadFail (Parser st) where
   fail s = Parser \st _ _ emptyFail ->
-    emptyFail $ newErrorMessage (newMessage s) (stPosition st)
+    emptyFail $ newErrorMessage (newMessage (Text.pack s)) (stPosition st)
 
 
 

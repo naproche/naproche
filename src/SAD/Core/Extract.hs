@@ -7,6 +7,7 @@ function evaluations, elementhood conditions for sets
 
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Core.Extract (
   addDefinition,
@@ -33,10 +34,9 @@ import Data.List
 import Data.Maybe
 import Control.Monad.State
 import Control.Monad.Reader
-
+import qualified Data.Text.Lazy as Text
 
 -- Definition extraction
-
 
 {- extract definition from f and add it to the global state -}
 addDefinition :: (Definitions, Guards) -> Formula -> (Definitions, Guards)
@@ -67,7 +67,7 @@ extractDefinition defs =
       = (guards, f, Signature,t)                  -- predicate sigext
 
     -- make a universal quant matchable
-    dive guards n (All _ f) = dive guards (succ n) $ inst (VarHole $ show n) f
+    dive guards n (All _ f) = dive guards (succ n) $ inst (VarHole $ Text.pack $ show n) f
     dive guards n (Imp g f) = dive (guards ++ splitConjuncts g) n f
     makeDefinition (guards, formula, kind, term) = DE {
       Definition.guards = guards, Definition.formula = formula,
@@ -125,14 +125,14 @@ extractRewriteRule c =
     dive n gs (All _ (Imp (Tag HeadTerm Trm {trmName = "=", trmArgs = [_, t]}) f)) =
       dive n gs $ subst t VarEmpty $ inst VarEmpty f
     -- make universal quantifier matchable
-    dive n gs (All _ f) = let nn = VarHole $ show n in dive (succ n) gs $ inst nn f
+    dive n gs (All _ f) = let nn = VarHole $ Text.pack $ show n in dive (succ n) gs $ inst nn f
     dive n gs (Imp f g) = dive n (splitConjuncts f ++ gs) g -- record conditions
     dive n gs (Tag _ f) = dive n gs f -- ignore tags
     dive n gs (And f g) = dive n gs f ++ dive n gs g
     -- we do not allow rules where the left side is a variable
     dive n gs Trm {trmName = "=", trmArgs = [l@Var{},r]} | not (isHole (varName l))
       = return $ Rule l r gs undefined -- the name is filled in later
-    dive n gs Trm {trmName = "=", trmArgs = [l@Trm{},r]} | head (trmName l) /= '?'
+    dive n gs Trm {trmName = "=", trmArgs = [l@Trm{},r]} | Text.head (trmName l) /= '?'
       = return $ Rule l r gs undefined -- the name is filled in later
     dive n gs (Not Trm{}) = mzero
     dive n gs f | isNot f = dive n gs $ albet f -- pushdown negation
@@ -164,7 +164,7 @@ extractEv c gs f = extractFunctionEval c gs f `mplus` extractSetEval c gs f
 freshV :: (MonadReader (a, b1) m, Enum a, Show a) =>
           (Formula -> m b2) -> Formula -> m b2
 freshV fn f = do -- generate fresh variables
-  n <- asks fst; local (\(m,dt) -> (succ m, dt)) $ fn $ inst (VarHole $ show n) f
+  n <- asks fst; local (\(m,dt) -> (succ m, dt)) $ fn $ inst (VarHole $ Text.pack $ show n) f
 
 
 extractFunctionEval :: (Formula -> Formula) -> [Formula] -> Formula
@@ -195,7 +195,7 @@ extractSetEval c gs (And f g) =
 extractSetEval c gs (Tag _ f) = extractSetEval c gs f
 extractSetEval c gs (All _ (Iff g@Trm{trmArgs = [_,t]} f )) | isElem g = do
   (n, evals) <- ask
-  let nm = VarHole $ show n; nf = simplifyElementCondition evals $ strip $ inst nm f
+  let nm = VarHole $ Text.pack $ show n; nf = simplifyElementCondition evals $ strip $ inst nm f
   return $ EV (zElem (zVar nm) t) (mkPos $ c $ Tag Evaluation nf)(c nf) gs
 extractSetEval _ _ f = mzero
 

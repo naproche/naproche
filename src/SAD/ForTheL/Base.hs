@@ -5,7 +5,7 @@ FoTheL state and state management, parsing of primitives, operations on
 variables and macro expressions.
 -}
 
-
+{-# LANGUAGE OverloadedStrings #-}
 
 module SAD.ForTheL.Base where
 
@@ -14,6 +14,8 @@ import Control.Monad
 import qualified Control.Monad.State.Class as MS
 import Data.Char
 import Data.List
+import Data.Text.Lazy (Text)
+import qualified Data.Text.Lazy as Text
 
 import SAD.Data.Formula
 import SAD.Data.TermId
@@ -30,6 +32,7 @@ import qualified SAD.Data.Text.Decl as Decl
 import SAD.Core.Message (PIDE)
 import qualified SAD.Core.Message as Message
 import SAD.Data.VarName
+import SAD.Export.Representation (represent, forceBuilder)
 
 type FTL = Parser FState
 
@@ -51,7 +54,7 @@ data FState = FState {
   cfnExpr, rfnExpr, lfnExpr, ifnExpr :: [Prim],
   cprExpr, rprExpr, lprExpr, iprExpr :: [Prim],
 
-  tvrExpr :: [TVar], strSyms :: [[String]], varDecl :: [VariableName],
+  tvrExpr :: [TVar], strSyms :: [[Text]], varDecl :: [VariableName],
   idCount :: Int, hiddenCount :: Int, serialCounter :: Int,
   reports :: [Message.Report], pide :: Maybe PIDE }
 
@@ -224,7 +227,7 @@ primSnt p  = noError $ varlist >>= getExpr sntExpr . snt
 
 
 
-data Patt = Wd [String] | Sm String | Vr | Nm deriving (Eq, Show)
+data Patt = Wd [Text] | Sm Text | Vr | Nm deriving (Eq, Show)
 
 -- | DANGER: Not symmetric on `Wd`
 samePat :: [Patt] -> [Patt] -> Bool
@@ -240,10 +243,10 @@ samePat _ _ = False
 
 
 -- adding error reporting to pattern parsing
-patternTokenOf' :: [String] -> Parser st ()
-patternTokenOf' l = label ("a word of " ++ show l) $ tokenOf' l
-patternSmTokenOf :: String -> Parser st ()
-patternSmTokenOf l = label ("the symbol " ++ show l) $ token l
+patternTokenOf' :: [Text] -> Parser st ()
+patternTokenOf' l = label ("a word of " <> Text.pack (show l)) $ tokenOf' l
+patternSmTokenOf :: Text -> Parser st ()
+patternSmTokenOf l = label ("the symbol " <> Text.pack (show l)) $ token l
 
 -- most basic pattern parser: simply follow the pattern and parse terms with p
 -- at variable places
@@ -332,20 +335,20 @@ varlist = do
 
 nodups :: [VariableName] -> Parser st ()
 nodups vs = unless ((null :: [b] -> Bool) $ duplicateNames vs) $
-  fail $ "duplicate names: " ++ (show $ map show vs)
+  fail $ "duplicate names: " ++ (show $ map (Text.unpack . forceBuilder . represent) vs)
 
 hidden :: FTL (VariableName, SourcePos)
 hidden = do
   n <- MS.gets hiddenCount
   MS.modify $ \st -> st {hiddenCount = succ n}
-  return (VarHidden $ show n, noSourcePos)
+  return (VarHidden $ Text.pack $ show n, noSourcePos)
 
 -- | Parse the next token as a variable (a sequence of alpha-num chars beginning with an alpha)
 -- and return ('x' + the sequence) with the current position.
 var :: Parser st (VariableName, SourcePos)
 var = do
   pos <- getPos
-  v <- satisfy (\s -> all isAlphaNum s && isAlpha (head s))
+  v <- satisfy (\s -> Text.all isAlphaNum s && isAlpha (Text.head s))
   return (VarConstant v, pos)
 
 --- pretyped Variables
@@ -380,8 +383,8 @@ decl vs = dive
     dive (Tag _ f) = dive f
     dive (Imp f g) = filter (noc f) (dive g)
     dive (And f g) = dive f `varNameUnion` filter (noc f) (dive g)
-    dive Trm {trmName = 'a':_, trmArgs = v@Var{varName = u@(VarConstant _)}:ts}
-      | all (\t -> not (v `occursIn` t)) ts =
+    dive Trm {trmName = tName, trmArgs = v@Var{varName = u@(VarConstant _)}:ts}
+      | Text.head tName == 'a' && all (\t -> not (v `occursIn` t)) ts =
           guard (u `notElem` vs) >> return (u, varPosition v)
     dive Trm{trmName = "=", trmArgs = [v@Var{varName = u@(VarConstant _)}, t]}
       | isTrm t && not (v `occursIn` t) =
@@ -401,16 +404,16 @@ bindings :: [VariableName] -> Formula -> FTL [Decl]
 bindings vs = mapM makeDecl . decl vs
 
 
-overfree :: [VariableName] -> Formula -> Maybe String
+overfree :: [VariableName] -> Formula -> Maybe Text
 overfree vs f
-    | (zVar VarSlot) `occursIn` f = Just $ "too few subjects for an m-predicate " ++ info
-    | not (null sbs) = Just $ "free undeclared variables: "   ++ sbs ++ info
-    | not (null ovl) = Just $ "overlapped variables: "        ++ ovl ++ info
+    | (zVar VarSlot) `occursIn` f = Just $ "too few subjects for an m-predicate " <> info
+    | not (Text.null sbs) = Just $ "free undeclared variables: "   <> sbs <> info
+    | not (Text.null ovl) = Just $ "overlapped variables: "        <> ovl <> info
     | otherwise      = Nothing
   where
-    sbs = unwords $ map showVar $ free vs f
-    ovl = unwords $ map showVar $ over vs f
-    info = "\n in translation: " ++ show f
+    sbs = Text.unwords $ map (showVar) $ free vs f
+    ovl = Text.unwords $ map (showVar) $ over vs f
+    info = "\n in translation: " <> (Text.pack $ show f)
 
     over :: [VariableName] -> Formula -> [VariableName]
     over vs (All v f) = boundVars vs (Decl.name v) f
@@ -460,6 +463,6 @@ such = tokenOf' ["such", "so"]
 
 --just for now:
 
-showVar :: VariableName -> String
+showVar :: VariableName -> Text
 showVar (VarConstant nm) = nm
-showVar nm = show nm
+showVar nm = forceBuilder $ represent nm

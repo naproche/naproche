@@ -16,6 +16,7 @@ import SAD.Data.Formula
 import SAD.Data.TermId
 import SAD.Data.Text.Context (Context)
 import SAD.Helpers (notNull)
+import qualified Data.Text.Lazy as Text
 import qualified SAD.Data.Text.Context as Context
 
 import Control.Applicative
@@ -82,9 +83,9 @@ equivalentTo = normalizedCheck 0
   where
     normalizedCheck :: Int -> Formula -> Formula -> Bool
     normalizedCheck n f g = check n (albet f) (albet g)
-    check n (All _ a) (All _ b) = let freshVariable = VarDefault $ show n in
+    check n (All _ a) (All _ b) = let freshVariable = VarDefault $ Text.pack $ show n in
       normalizedCheck (succ n) (inst freshVariable a) (inst freshVariable b)
-    check n (Exi _ a) (Exi _ b) = let freshVariable = VarDefault $ show n in
+    check n (Exi _ a) (Exi _ b) = let freshVariable = VarDefault $ Text.pack $ show n in
       normalizedCheck (succ n) (inst freshVariable a) (inst freshVariable b)
     check n (And a b) (And c d) = normalizedCheck n a c && normalizedCheck n b d
     check n (Or a b) (Or c d)   = normalizedCheck n a c && normalizedCheck n b d
@@ -105,7 +106,7 @@ hasInstantiationIn (Exi _ f) = notNull . listOfInstantiations f
 type Instantiation = Map.Map VariableName Formula
 {- the actual process of finding an instantiation. -}
 listOfInstantiations :: Formula -> [Formula] -> [Instantiation]
-listOfInstantiations f = instantiations 1 Map.empty (albet $ inst (VarAssume "0") f)
+listOfInstantiations f = instantiations 1 Map.empty (albet $ inst (VarAssume 0) f)
 
 {- worker function for SAD.Core.Thesis.listOfInstantiations -}
 -- FIXME This functions needs a better way to generate free variables. The
@@ -120,11 +121,11 @@ instantiations n currentInst f hs =
                 fInst <- instantiations n gInst (albet f) $
                   subInfo gInst (pred n) ++ hs ]--add collected local properties
     patchTogether (Exi _ f) =
-      instantiations (succ n) currentInst (albet $ inst (VarAssume $ show n) f) hs
+      instantiations (succ n) currentInst (albet $ inst (VarAssume n) f) hs
     patchTogether _ = []
 
     subInfo sb n =
-      let sub = applySb sb $ zVar $ VarAssume $ show n
+      let sub = applySb sb $ zVar $ VarAssume n
       in  map (replace sub ThisT) $ varInfo $ sub
 
 
@@ -137,9 +138,9 @@ extendInstantiation sb f g = snd <$> runStateT (normalizedDive 0 f g) sb
     normalizedDive :: Int -> Formula -> Formula -> StateT (Map.Map VariableName Formula) [] ()
     normalizedDive n f g = dive n (albet f) (albet g)
     dive n (All _ f) (All _ g)
-      = let nn = VarDefault $ show n in normalizedDive (succ n) (inst nn f) (inst nn g)
+      = let nn = VarDefault $ Text.pack $ show n in normalizedDive (succ n) (inst nn f) (inst nn g)
     dive n (Exi _ f) (Exi _ g)
-      = let nn = VarDefault $ show n in normalizedDive (succ n) (inst nn f) (inst nn g)
+      = let nn = VarDefault $ Text.pack $ show n in normalizedDive (succ n) (inst nn f) (inst nn g)
     dive n (And f1 g1) (And f2 g2) =
       normalizedDive n f1 f2 >> normalizedDive n g1 g2
     dive n (Or  f1 g1) (Or  f2 g2) =

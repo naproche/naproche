@@ -4,6 +4,8 @@ Authors: Steffen Frerix (2017 - 2018)
 Parser combinators.
 -}
 
+{-# LANGUAGE OverloadedStrings #-}
+
 module SAD.Parser.Combinators where
 
 import SAD.Core.SourcePos
@@ -17,6 +19,8 @@ import Control.Monad
 import Data.Ord (comparing)
 import Data.Maybe (isNothing, catMaybes)
 import Debug.Trace
+import Data.Text.Lazy (Text)
+import qualified Data.Text.Lazy as Text
 
 
 
@@ -105,7 +109,7 @@ after p end = do
 
 -- | @enclosed begin end p@ parses @begin@, followed by @p@, followed by @end@,
 -- returning the result of @p@ and two positions indicating the range of the parse.
-enclosed :: String -> String -> Parser st a -> Parser st ((SourcePos, SourcePos), a)
+enclosed :: Text -> Text -> Parser st a -> Parser st ((SourcePos, SourcePos), a)
 enclosed begin end p = do
   beginPos <- tokenPos' begin
   result <- p
@@ -141,7 +145,7 @@ narrow :: Show a => Parser st a -> Parser st a
 narrow p = Parser $ \st ok cerr eerr ->
   let pok err eok cok = case eok ++ cok of
         [_] -> ok err eok cok
-        ls  ->  eerr $ newErrorMessage (newWellFormednessMessage ["ambiguity error" ++ show (map prResult ls)]) (stPosition st)
+        ls  ->  eerr $ newErrorMessage (newWellFormednessMessage ["ambiguity error" <> Text.pack (show (map prResult ls))]) (stPosition st)
   in  runParser p st pok cerr eerr
 
 
@@ -184,7 +188,7 @@ failing p = Parser $ \st ok cerr eerr ->
 
 -- | Labeling of production rules for better error messages
 infix 0 <?>
-(<?>) :: Parser st a -> String -> Parser st a
+(<?>) :: Parser st a -> Text -> Parser st a
 p <?> msg = Parser $ \st ok cerr eerr ->
   let pok err   = ok   $ setError (stPosition st) err
       pcerr     = cerr
@@ -197,7 +201,7 @@ p <?> msg = Parser $ \st ok cerr eerr ->
       else setExpectMessage msg err
 
 -- | Labeling of production rules for better error messages
-label :: String -> Parser st a -> Parser st a
+label :: Text -> Parser st a -> Parser st a
 label msg p = p <?> msg
 
 
@@ -205,7 +209,7 @@ label msg p = p <?> msg
 -- Control error messages
 
 -- | Fail with a well-formedness error
-failWF :: String -> Parser st a
+failWF :: Text -> Parser st a
 failWF msg = Parser $ \st _ _ eerr ->
   eerr $ newErrorMessage (newWellFormednessMessage [msg]) (stPosition st)
 
@@ -221,7 +225,7 @@ noError p = Parser $ \st ok cerr eerr ->
 
 -- | Parse and keep only results well-formed according to the supplied check;
 -- fail if there are none. Here @Just str@ signifies an error.
-wellFormedCheck :: (a -> Maybe String) -> Parser st a -> Parser st a
+wellFormedCheck :: (a -> Maybe Text) -> Parser st a -> Parser st a
 wellFormedCheck check p = Parser $ \st ok cerr eerr ->
   let pos = stPosition st
       pok err eok cok =
@@ -251,7 +255,7 @@ lexicalCheck check p = Parser $ \st ok cerr eerr ->
   where
     unit err =
       let pos = errorPos err
-      in  unwords . map showToken . takeWhile ((>=) pos . tokenPos) . filter (not . isEOF) . stInput
+      in  Text.unwords . map showToken . takeWhile ((>=) pos . tokenPos) . filter (not . isEOF) . stInput
         -- TODO: Don't use the default Ord SourcePos instance.
 
 
@@ -262,17 +266,17 @@ lexicalCheck check p = Parser $ \st ok cerr eerr ->
 ---- This function is implemented using the impure function Debug.Trace.trace
 ---- and should only be used for debugging purposes.
 errorTrace ::
-  String -> (ParseResult st a -> String) -> Parser st a -> Parser st a
+  Text -> (ParseResult st a -> Text) -> Parser st a -> Parser st a
 errorTrace lbl shw p = Parser $ \st ok cerr eerr ->
-    let nok err eok cok = trace (  "error trace (success) : " ++ lbl ++ "\n"
-          ++ tabString ("results (e):\n" ++ tabString (unlines (map shw eok)) )
-          ++ tabString ("results (c):\n" ++ tabString (unlines (map shw cok)))
-          ++ tabString ("error:\n" ++ tabString (show err))) $ ok err eok cok
-        ncerr err = trace ("error trace (consumed): " ++ lbl ++ "\n" ++  tabString (show err)) $ cerr err
-        neerr err = trace ("error trace (empty)   : " ++ lbl ++ "\n" ++  tabString (show err)) $ eerr err
+    let nok err eok cok = trace (  "error trace (success) : " ++ Text.unpack lbl ++ "\n"
+          ++ tabText ("results (e):\n" ++ tabText (unlines (map (Text.unpack . shw) eok)) )
+          ++ tabText ("results (c):\n" ++ tabText (unlines (map (Text.unpack . shw) cok)))
+          ++ tabText ("error:\n" ++ tabText (show err))) $ ok err eok cok
+        ncerr err = trace ("error trace (consumed): " ++ Text.unpack lbl ++ "\n" ++  tabText (show err)) $ cerr err
+        neerr err = trace ("error trace (empty)   : " ++ Text.unpack lbl ++ "\n" ++  tabText (show err)) $ eerr err
     in  runParser p st nok ncerr neerr
     where
-      tabString = unlines . map ((++) "   ") . lines
+      tabText = unlines . map ((++) "   ") . lines
 
 
 -- | Return @()@ if the next token isn't @EOF@.

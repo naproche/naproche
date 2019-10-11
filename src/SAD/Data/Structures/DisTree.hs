@@ -24,6 +24,7 @@ import qualified Data.List as L
 import Data.Maybe
 import SAD.Data.TermId (TermId)
 import SAD.Data.VarName
+import Data.Text.Lazy (Text)
 
 data DTree a =
   Node {struct :: Struct, children :: [DTree a]} |
@@ -40,7 +41,7 @@ arity or a generalized constant (i.e. non-matchable free variable) -}
 data Struct =
   Variable |
   Function {symbolId :: TermId, symbolArity :: Int} |
-  GeneralizedConstant String
+  GeneralizedConstant Text
   deriving Show
 
 {- move to the next argument by jumping the arity of the current argument -}

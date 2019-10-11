@@ -6,14 +6,19 @@ module SAD.Helpers
 
 import Control.Arrow
 import Data.Function
+import Data.Text.Lazy (Text)
+import qualified Data.Text.Lazy as Text
 
 -- | Remove a trailing line break from a string.
-trimLine :: String -> String
-trimLine "" = ""
-trimLine "\n" = ""
-trimLine "\r" = ""
-trimLine "\r\n" = ""
-trimLine (x:xs) = x : trimLine xs
+trimLine :: Text -> Text
+trimLine t = case Text.unsnoc t of
+    Nothing -> t
+    Just (t', c) -> case c of
+        '\r' -> t'
+        '\n' -> case Text.unsnoc t' of
+            Just (t'', '\r') -> t''
+            _ -> t'
+        _ -> t 
 
 -- | Returns @False@ if the list is empty and @True@ otherwise.
 notNull :: [a] -> Bool

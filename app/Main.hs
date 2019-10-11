@@ -5,6 +5,7 @@ Main application entry point: console or server mode.
 -}
 
 {-# LANGUAGE TupleSections #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Main where
 
@@ -18,6 +19,7 @@ import qualified System.Exit as Exit
 import qualified Control.Exception as Exception
 import System.IO (IO)
 import qualified System.IO as IO
+import qualified Data.Text.Lazy as Text
 
 import qualified Isabelle.File as File
 import qualified Isabelle.Server as Server
@@ -28,6 +30,7 @@ import qualified Isabelle.YXML as YXML
 import qualified Isabelle.UUID as UUID
 import qualified Isabelle.Standard_Thread as Standard_Thread
 import qualified Isabelle.Naproche as Naproche
+import Isabelle.Library (trim_line)
 import qualified Data.ByteString.UTF8 as UTF8
 import Network.Socket (Socket)
 
@@ -46,44 +49,44 @@ main  = do
   args0 <- Environment.getArgs
   (opts0, text0) <- readArgs args0
 
-  oldTextRef <- newIORef $ TextRoot []
+  oldProofTextRef <- newIORef $ ProofTextRoot []
 
   if askFlag Help False opts0 then
     putStr (GetOpt.usageInfo usageHeader options)
   else -- main body with explicit error handling, notably for PIDE
     Exception.catch
       (if askFlag Server False opts0 then
-        Server.server (Server.publish_stdout "Naproche-SAD") (serverConnection oldTextRef args0)
-      else do consoleThread; mainBody oldTextRef (opts0, text0))
+        Server.server (Server.publish_stdout "Naproche-SAD") (serverConnection oldProofTextRef args0)
+      else do consoleThread; mainBody oldProofTextRef (opts0, text0))
       (\err -> do
         exitThread
         let msg = Exception.displayException (err :: Exception.SomeException)
         IO.hPutStrLn IO.stderr msg
         Exit.exitFailure)
 
-mainBody :: IORef Text -> ([Instr], [Text]) -> IO ()
-mainBody oldTextRef (opts0, text0) = do
+mainBody :: IORef ProofText -> ([Instr], [ProofText]) -> IO ()
+mainBody oldProofTextRef (opts0, text0) = do
   startTime <- getCurrentTime
 
-  oldText <- readIORef oldTextRef
+  oldProofText <- readIORef oldProofTextRef
   -- parse input text
-  text1 <- fmap TextRoot $ readText (askArgument Library "." opts0) text0
+  text1 <- fmap ProofTextRoot $ readProofText (askArgument Library "." opts0) text0
 
 
   -- if -T / --onlytranslate is passed as an option, only print the translated text
   if askFlag OnlyTranslate False opts0 then
     do
       let timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)
-          TextRoot txts = text1
-      mapM_ (\case TextBlock bl -> print bl; _ -> return ()) txts
+          ProofTextRoot txts = text1
+      mapM_ (\case ProofTextBlock bl -> print bl; _ -> return ()) txts
 
       -- print statistics
       finishTime <- getCurrentTime
-      outputMain TRACING noSourcePos $ "total " ++ timeDifference finishTime
+      outputMain TRACING noSourcePos $ Text.unpack $ "total " <> timeDifference finishTime
   else
     do
       -- read provers.dat
-      provers <- readProverDatabase (askArgument Provers "provers.dat" opts0)
+      provers <- readProverDatabase $ Text.unpack (askArgument Provers "provers.dat" opts0)
       -- initialize reasoner state
       reasonerState <- newIORef (RState [] False False)
 
@@ -91,10 +94,10 @@ mainBody oldTextRef (opts0, text0) = do
 
       success <- case findParseError text1 of
         Nothing -> do
-          let text = textToCheck oldText text1
-          (success, newText) <- verify (askArgument File "" opts0) provers reasonerState text
-          case newText of
-            Just txt -> writeIORef oldTextRef txt
+          let text = textToCheck oldProofText text1
+          (success, newProofText) <- verify (askArgument File "" opts0) provers reasonerState text
+          case newProofText of
+            Just txt -> writeIORef oldProofTextRef txt
             _ -> return ()
           pure success
         Just err -> do errorParser (errorPos err) (show err); pure False
@@ -135,20 +138,19 @@ mainBody oldTextRef (opts0, text0) = do
           proverTime     = accumulateTime proveStart ProofTime
           simplifyTime   = accumulateTime proverTime SimplifyTime
 
-      outputMain TRACING noSourcePos $
-        "parser "           ++ showTimeDiff (diffUTCTime proveStart startTime)
-        ++ " - reasoner "   ++ showTimeDiff (diffUTCTime finishTime simplifyTime)
-        ++ " - simplifier " ++ showTimeDiff (diffUTCTime simplifyTime proverTime)
-        ++ " - prover "     ++ showTimeDiff (diffUTCTime proverTime proveStart)
-        ++ "/" ++ showTimeDiff (maximalTimeCounter counterList SuccessTime)
-      outputMain TRACING noSourcePos $
-        "total "
-        ++ showTimeDiff (diffUTCTime finishTime startTime)
+      outputMain TRACING noSourcePos $ Text.unpack $
+        "parser "           <> showTimeDiff (diffUTCTime proveStart startTime)
+        <> " - reasoner "   <> showTimeDiff (diffUTCTime finishTime simplifyTime)
+        <> " - simplifier " <> showTimeDiff (diffUTCTime simplifyTime proverTime)
+        <> " - prover "     <> showTimeDiff (diffUTCTime proverTime proveStart)
+        <> "/" <> showTimeDiff (maximalTimeCounter counterList SuccessTime)
+      outputMain TRACING noSourcePos $ Text.unpack $
+        "total " <> showTimeDiff (diffUTCTime finishTime startTime)
       when (not success) Exit.exitFailure
 
 
-serverConnection :: IORef Text -> [String] -> Socket -> IO ()
-serverConnection oldTextRef args0 connection = do
+serverConnection :: IORef ProofText -> [String] -> Socket -> IO ()
+serverConnection oldProofTextRef args0 connection = do
   thread_uuid <- Standard_Thread.my_uuid
   mapM_ (Byte_Message.write_line_message connection . UUID.bytes) thread_uuid
 
@@ -163,9 +165,9 @@ serverConnection oldTextRef args0 connection = do
         (do
           let args1 = lines (fromMaybe "" (Properties.get props Naproche.command_args))
           (opts1, text0) <- readArgs (args0 ++ args1)
-          let text1 = text0 ++ [TextInstr noPos (GetArgument Text (XML.content_of body))]
+          let text1 = text0 ++ [ProofTextInstr noPos (GetArgument ProofText (Text.pack $ XML.content_of body))]
 
-          Exception.catch (mainBody oldTextRef (opts1, text1))
+          Exception.catch (mainBody oldProofTextRef (opts1, text1))
             (\err -> do
               let msg = Exception.displayException (err :: Exception.SomeException)
               Exception.catch
@@ -179,30 +181,30 @@ serverConnection oldTextRef args0 connection = do
 
 -- Command line parsing
 
-readArgs :: [String] -> IO ([Instr], [Text])
+readArgs :: [String] -> IO ([Instr], [ProofText])
 readArgs args = do
   let (instrs, files, errs) = GetOpt.getOpt GetOpt.Permute options args
 
-  let fail msgs = errorWithoutStackTrace (unlines (map trimLine msgs))
+  let fail msgs = errorWithoutStackTrace (unlines (map trim_line msgs))
   unless (null errs) $ fail errs
   when (length files > 1) $ fail ["More than one file argument\n"]
-  let commandLine = case files of [file] -> instrs ++ [GetArgument File file]; _ -> instrs
+  let commandLine = case files of [file] -> instrs ++ [GetArgument File (Text.pack file)]; _ -> instrs
 
   initFile <- readInit (askArgument Init "init.opt" commandLine)
   let initialOpts = initFile ++ map (noPos,) commandLine
 
   let revInitialOpts = map snd $ reverse initialOpts
-  let initialText = map (uncurry TextInstr) initialOpts
-  return (revInitialOpts, initialText)
+  let initialProofText = map (uncurry ProofTextInstr) initialOpts
+  return (revInitialOpts, initialProofText)
 
-usageHeader :: [Char]
+usageHeader :: String
 usageHeader =
   "\nUsage: Naproche-SAD <options...> <file...>\n\n  At most one file argument may be given; \"\" refers to stdin.\n\n  Options are:\n"
 
 options :: [GetOpt.OptDescr Instr]
 options = [
   GetOpt.Option "h" ["help"] (GetOpt.NoArg (SetFlag Help True)) "show command-line help",
-  GetOpt.Option ""  ["init"] (GetOpt.ReqArg (GetArgument Init) "FILE")
+  GetOpt.Option ""  ["init"] (GetOpt.ReqArg (GetArgument Init . Text.pack) "FILE")
     "init file, empty to skip (def: init.opt)",
   GetOpt.Option "T" ["onlytranslate"] (GetOpt.NoArg (SetFlag OnlyTranslate True))
     "translate input text and exit",
@@ -210,11 +212,11 @@ options = [
     "print first-order translation of sentences",
   GetOpt.Option "" ["server"] (GetOpt.NoArg (SetFlag Server True))
     "run in server mode",
-  GetOpt.Option ""  ["library"] (GetOpt.ReqArg (GetArgument Library) "DIR")
+  GetOpt.Option ""  ["library"] (GetOpt.ReqArg (GetArgument Library . Text.pack) "DIR")
     "place to look for library texts (def: .)",
-  GetOpt.Option ""  ["provers"] (GetOpt.ReqArg (GetArgument Provers) "FILE")
+  GetOpt.Option ""  ["provers"] (GetOpt.ReqArg (GetArgument Provers . Text.pack) "FILE")
     "index of provers (def: provers.dat)",
-  GetOpt.Option "P" ["prover"] (GetOpt.ReqArg (GetArgument Prover) "NAME")
+  GetOpt.Option "P" ["prover"] (GetOpt.ReqArg (GetArgument Prover . Text.pack) "NAME")
     "use prover NAME (def: first listed)",
   GetOpt.Option "t" ["timelimit"] (GetOpt.ReqArg (LimitBy Timelimit . getLeadingPositiveInt) "N")
     "N seconds per prover call (def: 3)",
@@ -282,7 +284,7 @@ options = [
 parseConsent :: String -> Bool
 parseConsent "yes" = True ; parseConsent "on"  = True
 parseConsent "no"  = False; parseConsent "off" = False
-parseConsent s     = errorWithoutStackTrace $ "Invalid boolean argument: \"" ++  s ++ "\""
+parseConsent s     = errorWithoutStackTrace $ "Invalid boolean argument: \"" ++ s ++ "\""
 
 getLeadingPositiveInt :: String -> Int
 getLeadingPositiveInt s = case reads s of

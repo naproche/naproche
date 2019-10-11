@@ -4,19 +4,27 @@ Authors: Andrei Paskevich (2001 - 2008)
 Print proof task in DFG syntax.
 -}
 
+{-# LANGUAGE OverloadedStrings #-}
+
 module SAD.Export.DFG (output) where
 
 import Data.List
 
-import SAD.Data.Formula
+import SAD.Data.Formula hiding (commaSeparated)
 import SAD.Data.Text.Block (Block(Block))
 import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Text.Context as Context (Context(..))
 import SAD.Helpers
 import SAD.Data.TermId
+import Data.Text.Lazy (Text)
+import SAD.Core.SourcePos (noSourcePos)
+import qualified Data.Text.Lazy as Text
+import Data.Text.Lazy.Builder (Builder)
+import qualified Data.Text.Lazy.Builder as Builder
+import SAD.Export.Representation
 
-output :: Bool -> [Context] -> Context -> String
-output red contexts goal = concat
+output :: Bool -> [Context] -> Context -> Text
+output red contexts goal = forceBuilder $ mconcat $
   [ "begin_problem(A).list_of_descriptions.name({*EA*})."
   , "author({*EA*}).status(unknown).description({*EA*})."
   , endOfList
@@ -24,8 +32,8 @@ output red contexts goal = concat
   , dfgSLS (goal:contexts)
   , endOfList
   , "list_of_formulae(axioms).\n"
-  , concatMap (formatContext red) $ reverse $ contexts
-  , endOfList
+  ] ++ (map (formatContext red) $ reverse $ contexts) ++
+  [ endOfList
   , "list_of_formulae(conjectures).\n"
   , formatContext red goal
   , endOfList
@@ -34,47 +42,44 @@ output red contexts goal = concat
   where
     endOfList = "end_of_list.\n"
 
--- Formula print
-
-formatContext :: Bool -> Context -> String
-formatContext red (Context fr (Block { Block.name = m } : _) _ g) = concat
-  [ "formula(" ++ formatFormula 0 (if red then g else fr) ""
-  , if null m || m == "__" then "" else "," ++ m
+formatContext :: Bool -> Context -> Builder
+formatContext red (Context fr (Block { Block.name = m } : _) _ g) = mconcat
+  [ "formula(", formatFormula 0 (if red then g else fr)
+  , if Text.null m || m == "__" then "" else "," <> (Builder.fromLazyText m)
   , ").\n" 
   ]
 formatContext _ _ = ""
 
-formatFormula :: Int -> Formula -> ShowS
+formatFormula :: Int -> Formula -> Builder
 formatFormula d = dive
   where
-    dive (All _ f)  = showString "forall" . showParen True (binder f)
-    dive (Exi _ f)  = showString "exists" . showParen True (binder f)
-    dive (Iff f g)  = showString "equiv" . showArgumentsWith dive [f,g]
-    dive (Imp f g)  = showString "implies" . showArgumentsWith dive [f,g]
-    dive (Or  f g)  = showString "or" . showArgumentsWith dive [f,g]
-    dive (And f g)  = showString "and" . showArgumentsWith dive [f,g]
+    dive :: Formula -> Builder
+    dive (All _ f)  = "forall"  <> buildParens (binder f)
+    dive (Exi _ f)  = "exists"  <> buildParens (binder f)
+    dive (Iff f g)  = "equiv"   <> buildArgumentsWith dive [f,g]
+    dive (Imp f g)  = "implies" <> buildArgumentsWith dive [f,g]
+    dive (Or  f g)  = "or"      <> buildArgumentsWith dive [f,g]
+    dive (And f g)  = "and"     <> buildArgumentsWith dive [f,g]
     dive (Tag _ f)  = dive f
-    dive (Not f)    = showString "not" . showParen True (dive f)
-    dive Top        = showString "true"
-    dive Bot        = showString "false"
-    dive t@Trm {} | isEquality t = showString "equal" . showArgumentsWith dive (trmArgs t)
-    dive t@Trm {}   = showTrName t
-    dive v@Var {}   = showTrName v
-    dive i@Ind {}   = showChar 'W' . shows (d - 1 - indIndex i)
+    dive (Not f)    = "not"     <> buildParens (dive f)
+    dive Top        = "true"
+    dive Bot        = "false"
+    dive t@Trm {} | isEquality t = "equal" <> buildArgumentsWith dive (trmArgs t)
+    dive t@Trm {}   = Builder.fromLazyText $ showTrName t
+    dive v@Var {}   = Builder.fromLazyText $ showTrName v
+    dive i@Ind {}   = "W" <> (Builder.fromString $ show (d - 1 - indIndex i))
     dive ThisT      = error "SAD.Export.DFG: Didn't expect ThisT here"
 
-    binder f  = showChar '[' . formatFormula (succ d) (Ind 0 undefined)
-              . showString "]," . formatFormula (succ d) f
+    binder f = "[" <> formatFormula (succ d) (Ind 0 noSourcePos) <> "]," <> formatFormula (succ d) f
 
 -- | Symbol count
-dfgSLS :: [Context] -> String
-dfgSLS tasks  = sls "functions" functions ++ sls "predicates" predicates
+dfgSLS :: [Context] -> Builder
+dfgSLS tasks  = sls "functions" functions <> sls "predicates" predicates
   where
     sls _ [] = ""
-    sls s ls = s ++ "[" ++ (commaSeparated shs ls) "" ++ "].\n"
+    sls s ls = s <> "[" <> (commaSeparated shs ls) <> "].\n"
 
-    shs (s, a)  = showParen True $ stn s . showChar ',' . shows a
-    stn = showString . filter (/= ':')
+    shs (s, a)  = buildParens $ (Builder.fromLazyText $ Text.filter (/= ':') $ forceBuilder s) <> "," <> (Builder.fromString (show a))
 
     predicates = [ (s, a) | (True,  s, a) <- sms ]
     functions = [ (s, a) | (False, s, a) <- sms ]
@@ -82,9 +87,9 @@ dfgSLS tasks  = sls "functions" functions ++ sls "predicates" predicates
 
 
 -- | Find symbols returning Name, Arity and whether it is top-level.
-findSymbols :: Bool -> Formula -> [(Bool, String, Int)]
+findSymbols :: Bool -> Formula -> [(Bool, Builder, Int)]
 findSymbols s t@Trm {trmId = EqualityId}      = concatMap (findSymbols False) $ trmArgs t
-findSymbols s Trm {trmName = t, trmArgs = ts} = (s, t, length ts) : concatMap (findSymbols False) ts
-findSymbols s Var {varName = v}               = [(s, show v, 0)]
+findSymbols s Trm {trmName = t, trmArgs = ts} = (s, Builder.fromLazyText t, length ts) : concatMap (findSymbols False) ts
+findSymbols s Var {varName = v}               = [(s, represent v, 0)]
 findSymbols s Ind{}                           = []
 findSymbols s f                               = foldF (findSymbols s) f

@@ -6,6 +6,7 @@ Verifier state monad and common functions.
 
 {-# LANGUAGE PolymorphicComponents #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 
 module SAD.Core.Base (
@@ -29,7 +30,7 @@ module SAD.Core.Base (
   showTimeDiff,
   timer,
 
-  askInstructionInt, askInstructionBool, askInstructionString,
+  askInstructionInt, askInstructionBool, askInstructionText,
   addInstruction, dropInstruction,
   addTimeCounter, addIntCounter, incrementIntCounter,
   guardInstruction, guardNotInstruction, whenInstruction,
@@ -46,12 +47,14 @@ import qualified Data.Set as Set
 import qualified Data.Map as Map
 import Control.Monad.State
 import Control.Monad.Reader
+import Data.Text.Lazy (Text)
+import qualified Data.Text.Lazy as Text
 
 import SAD.Data.Formula
 import SAD.Data.TermId
 import SAD.Data.Instr (Instr)
 import SAD.Data.Instr
-import SAD.Data.Text.Block (Block, Text)
+import SAD.Data.Text.Block (Block, ProofText)
 import SAD.Data.Text.Context (Context, MRule(..))
 import qualified SAD.Data.Text.Context as Context (name)
 import SAD.Data.Definition (Definitions, DefEntry(DE), DefType(..), Guards)
@@ -142,7 +145,7 @@ data VState = VS {
   skolemCounter   :: Int,
   instructions    :: [Instr],
   provers         :: [Prover],
-  restText        :: [Text] }
+  restProofText        :: [ProofText] }
 
 type VM = ReaderT VState CRM
 
@@ -170,9 +173,9 @@ askInstructionBool :: MonadReader VState f =>
 askInstructionBool instr _default =
   fmap (askFlag instr _default) $ asks instructions
 
-askInstructionString :: MonadReader VState f =>
-                        Argument -> String -> f String
-askInstructionString instr _default =
+askInstructionText :: MonadReader VState f =>
+                        Argument -> Text -> f Text
+askInstructionText instr _default =
   fmap (askArgument instr _default) $ asks instructions
 
 addInstruction :: MonadReader VState m => Instr -> m a -> m a
@@ -256,14 +259,14 @@ accumulateTimeCounter counterList startValue =
 maximalTimeCounter :: [Counter] -> TimeCounter -> NominalDiffTime
 maximalTimeCounter counterList = foldr max 0 . fetchTimeCounter counterList
 
-showTimeDiff :: RealFrac a => a -> String
+showTimeDiff :: RealFrac a => a -> Text
 showTimeDiff t
   | hours == 0 =
-      format minutes ++ ':' : format restSeconds ++ '.' : format restCentis
+      format minutes <> ":" <> format restSeconds <> "." <> format restCentis
   | True    =
-      format hours   ++ ':' : format restMinutes ++ ':' : format restSeconds
+      format hours   <> ":" <> format restMinutes <> ":" <> format restSeconds
   where
-    format n = if n < 10 then '0':show n else show n
+    format n = Text.pack $ if n < 10 then '0':show n else show n
     centiseconds = (truncate $ t * 100) :: Int
     (seconds, restCentis)  = divMod centiseconds 100
     (minutes, restSeconds) = divMod seconds 60
@@ -272,29 +275,29 @@ showTimeDiff t
 
 -- common messages
 
-reasonLog :: Message.Kind -> SourcePos -> String -> VM ()
-reasonLog kind pos = justIO . Message.outputReasoner kind pos
+reasonLog :: Message.Kind -> SourcePos -> Text -> VM ()
+reasonLog kind pos = justIO . Message.outputReasoner kind pos . Text.unpack
 
-thesisLog :: Message.Kind -> SourcePos -> Int -> String -> VM ()
+thesisLog :: Message.Kind -> SourcePos -> Int -> Text -> VM ()
 thesisLog kind pos indent msg =
-  justIO (Message.outputThesis kind pos (replicate (3 * indent) ' ' ++ msg))
+  justIO (Message.outputThesis kind pos (replicate (3 * indent) ' ' ++ Text.unpack msg))
 
-simpLog :: Message.Kind -> SourcePos -> String -> VM ()
-simpLog kind pos = justIO . Message.outputSimplifier kind pos
+simpLog :: Message.Kind -> SourcePos -> Text -> VM ()
+simpLog kind pos = justIO . Message.outputSimplifier kind pos . Text.unpack
 
-translateLog :: Message.Kind -> SourcePos -> String -> VM ()
-translateLog kind pos = justIO . Message.outputTranslate kind pos
+translateLog :: Message.Kind -> SourcePos -> Text -> VM ()
+translateLog kind pos = justIO . Message.outputTranslate kind pos . Text.unpack
 
 
 
-retrieveContext :: Set.Set String -> ReaderT VState CRM [Context]
+retrieveContext :: Set.Set Text -> ReaderT VState CRM [Context]
 retrieveContext names = do
   globalContext <- asks currentContext
   let (context, unfoundSections) = runState (retrieve globalContext) names
   -- warn the user if some sections could not be found
   unless (Set.null unfoundSections) $
     reasonLog Message.WARNING noSourcePos $
-      "Could not find sections " ++ unwords (map show $ Set.elems unfoundSections)
+      "Could not find sections " <> Text.unwords (map (Text.pack . show) $ Set.elems unfoundSections)
   return context
   where
     retrieve [] = return []

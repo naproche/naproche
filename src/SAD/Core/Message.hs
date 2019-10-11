@@ -11,8 +11,8 @@ module SAD.Core.Message (
   PIDE, pideContext, pideActive,
   initThread, exitThread, consoleThread,
   Kind (..), entityMarkup,
-  Report, ReportText, reportsText, reportText, reports, report,
-  trimText, output, error, outputMain, outputExport, outputForTheL,
+  Report, ReportString, reportsString, reportString, reports, report,
+  trimString, output, error, outputMain, outputExport, outputForTheL,
   outputParser, outputReasoner, outputThesis, outputSimplifier, outputTranslate,
   errorExport, errorParser
 ) where
@@ -34,7 +34,8 @@ import qualified Control.Concurrent as Concurrent
 
 import SAD.Core.SourcePos (SourcePos)
 import qualified SAD.Core.SourcePos as SourcePos
-import SAD.Helpers
+import qualified Data.Text.Lazy as Text
+
 
 import qualified Isabelle.Properties as Properties
 import qualified Isabelle.Value as Value
@@ -43,6 +44,7 @@ import qualified Isabelle.XML as XML
 import qualified Isabelle.YXML as YXML
 import qualified Isabelle.Byte_Message as Byte_Message
 import qualified Isabelle.Naproche as Naproche
+import qualified Isabelle.Library as Library
 
 
 -- PIDE thread context
@@ -139,10 +141,7 @@ posProperties PIDE{pideID, pideFile, pideShift} pos =
   (if offset <= 0 then [] else [(Markup.offsetN, Value.print_int offset)]) ++
   (if endOffset <= 0 then [] else [(Markup.end_offsetN, Value.print_int endOffset)])
   where
-    file =
-      case SourcePos.sourceFile pos of
-        "" -> pideFile
-        file -> file
+    file = if Text.null $ SourcePos.sourceFile pos then pideFile else Text.unpack $ SourcePos.sourceFile pos
     line = if null file then 0 else SourcePos.sourceLine pos
     shift i = if i <= 0 then i else i + pideShift
     offset = shift $ SourcePos.sourceOffset pos
@@ -174,10 +173,10 @@ pideMessage = Byte_Message.make_line_message . UTF8.fromString
 -- PIDE markup reports
 
 type Report = (SourcePos, Markup.T)
-type ReportText = (Report, String)
+type ReportString = (Report, String)
 
-reportsText :: [ReportText] -> IO ()
-reportsText args = do
+reportsString :: [ReportString] -> IO ()
+reportsString args = do
   context <- getContext
   when (isJust (pide context) && not (null args)) $
     channel context $ pideMessage $ YXML.string_of $
@@ -188,11 +187,11 @@ reportsText args = do
             body = if null txt then [] else [XML.Text txt]
           in XML.Elem (markup', body)) args)
 
-reportText :: SourcePos -> Markup.T -> String -> IO ()
-reportText pos markup txt = reportsText [((pos, markup), txt)]
+reportString :: SourcePos -> Markup.T -> String -> IO ()
+reportString pos markup txt = reportsString [((pos, markup), txt)]
 
 reports :: [Report] -> IO ()
-reports = reportsText . map (, "")
+reports = reportsString . map (, "")
 
 report :: SourcePos -> Markup.T -> IO ()
 report pos markup = reports [(pos, markup)]
@@ -200,8 +199,8 @@ report pos markup = reports [(pos, markup)]
 
 -- output
 
-trimText :: String -> String
-trimText = trimLine
+trimString :: String -> String
+trimString = Library.trim_line
 
 messageBytes :: Maybe PIDE -> String -> Kind -> SourcePos -> String -> [ByteString]
 messageBytes pide origin kind pos msg =

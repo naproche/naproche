@@ -4,10 +4,13 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018), Makarius 
 Syntax of ForThel Instructions.
 -}
 
+{-# LANGUAGE OverloadedStrings #-}
+
 module SAD.ForTheL.Instruction where
 
 import Control.Monad
-import Data.Char
+import Data.Text.Lazy (Text)
+import qualified Data.Text.Lazy as Text
 
 import SAD.Core.SourcePos
 import SAD.Data.Instr (Instr)
@@ -59,23 +62,23 @@ instrDrop = instrPos addInstrReport (token' "/" >> readInstrDrop)
 
 readInstr :: FTL Instr
 readInstr =
-  readInstrCommand -|- readInstrLimit -|- readInstrBool -|- readInstrString -|- readInstrStrings
+  readInstrCommand -|- readInstrLimit -|- readInstrBool -|- readInstrText -|- readInstrTexts
   where
     readInstrCommand = fmap Command (readKeywords keywordsCommand)
     readInstrLimit = liftM2 LimitBy (readKeywords keywordsLimit) readInt
     readInstrBool = liftM2 SetFlag (readKeywords keywordsFlag) readBool
-    readInstrString = liftM2 GetArgument (readKeywords keywordsArgument) readString
-    readInstrStrings = liftM2 GetArguments (readKeywords keywordsArguments) readWords
+    readInstrText = liftM2 GetArgument (readKeywords keywordsArgument) readText
+    readInstrTexts = liftM2 GetArguments (readKeywords keywordsArguments) readWords
 
 readInt :: Parser st Int
-readInt = try $ readString >>= intCheck
+readInt = try $ readText >>= intCheck
   where
-    intCheck s = case reads s of
+    intCheck s = case reads $ Text.unpack s of
       ((n,[]):_) | n >= 0 -> return n
       _                   -> mzero
 
 readBool :: Parser st Bool
-readBool = try $ readString >>= boolCheck
+readBool = try $ readText >>= boolCheck
   where
     boolCheck "yes" = return True
     boolCheck "on"  = return True
@@ -83,24 +86,24 @@ readBool = try $ readString >>= boolCheck
     boolCheck "off" = return False
     boolCheck _     = mzero
 
-readString :: Parser st String
-readString = fmap concat readStrings
+readText :: Parser st Text
+readText = fmap Text.concat readTexts
 
 
-readStrings :: Parser st [String]
-readStrings = chainLL1 notClosingBrk
+readTexts :: Parser st [Text]
+readTexts = chainLL1 notClosingBrk
   where
     notClosingBrk = tokenPrim notCl
     notCl t = let tk = showToken t in guard (tk /= "]") >> return tk
 
-readWords :: Parser st [String]
+readWords :: Parser st [Text]
 readWords = shortHand </> chainLL1 word
   where
   shortHand = do
     w <- word ; root <- optLL1 w $ variant w; token "/"
-    syms <- (fmap (map toLower) word -|- variant w) `sepByLL1` token "/"
+    syms <- (fmap (Text.toCaseFold) word -|- variant w) `sepByLL1` token "/"
     return $ root : syms
-  variant w = token "-" >> fmap (w ++) word
+  variant w = token "-" >> fmap (w <>) word
 
 readInstrDrop :: FTL Drop
 readInstrDrop = readInstrCommand -|- readInstrLimit -|- readInstrBool
@@ -111,7 +114,7 @@ readInstrDrop = readInstrCommand -|- readInstrLimit -|- readInstrBool
 
 -- | Try to parse the next token as one of the supplied keyword strings
 -- and return the corresponding @a@ on success.
-readKeywords :: [(a, String)] -> Parser st a
+readKeywords :: [(a, Text)] -> Parser st a
 readKeywords keywords = try $ do
   s <- anyToken
   msum $ map (pure . fst) $ filter ((== s) . snd) keywords
