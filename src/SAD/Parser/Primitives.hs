@@ -26,13 +26,25 @@ import qualified Data.Text.Lazy as Text
 tokenPrim :: (Token -> Maybe a) -> Parser st a
 tokenPrim test = Parser $ \(State st input _) ok _ eerr ->
   case input of
-    []     -> eerr $ unexpectError "" noSourcePos
-    (t:ts) -> case guard (not $ isEOF t) >> test t of
+    []   -> eerr $ unexpectError "" noSourcePos
+    t:ts -> case guard (not $ isEOF t) >> test t of
       Just x  ->
         let newstate = State st ts (tokenPos t)
             newerr   = newErrorUnknown $ tokenPos t
         in  ok newerr [] [PR x newstate]
       Nothing -> eerr $ unexpectError (showToken t) (tokenPos t)
+
+
+-- | @tokenGuard test p@ parses the current token using @p@ only if the token passes
+-- the predicate @test@. Does not produce particularly useful error messages.
+tokenGuard :: (Token -> Bool) -> Parser st a -> Parser st a
+tokenGuard test p = Parser $ \st@(State _ input _) ok cerr eerr ->
+  case input of
+    []   -> eerr $ unexpectError "" noSourcePos
+    t:ts -> if test t
+      then runParser p st ok cerr eerr
+      else eerr $ unexpectError (showToken t) (tokenPos t)
+
 
 -- | Parse the end of input
 eof :: Parser st ()
