@@ -275,7 +275,8 @@ options = [
   GetOpt.Option "" ["unfoldsf"] (GetOpt.ReqArg (SetFlag Unfoldsf . parseConsent) "{on|off}")
     "enable unfolding of set conditions and function evaluations (def: on)",
   GetOpt.Option "" ["unfoldlowsf"] (GetOpt.ReqArg (SetFlag Unfoldlowsf . parseConsent) "{on|off}")
-    "enable unfolding of set and function conditions in general (def: off)",
+    "enable unfolding of set and function conditions in general (def: off)"
+  ]
 
 parseConsent :: String -> Bool
 parseConsent "yes" = True ; parseConsent "on"  = True
