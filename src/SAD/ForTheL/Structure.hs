@@ -14,7 +14,7 @@ import Data.Maybe
 import Data.Char (isAlphaNum)
 import Control.Applicative
 import Control.Monad
-import qualified Control.Monad.State.Class as MS
+import Control.Monad.State.Class (modify)
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 
@@ -64,7 +64,7 @@ procParseInstruction text = case text of
     addSynonym :: [Text] -> FTL ()
     addSynonym syms
       | null syms || null (tail syms) = return ()
-      | otherwise = MS.modify $ \st -> st {strSyms = syms : strSyms st}
+      | otherwise = modify $ \st -> st {strSyms = syms : strSyms st}
 
 topsection :: FTL Block
 topsection = signature' <|> definition <|> axiom <|> theorem

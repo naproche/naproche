@@ -32,7 +32,7 @@ import SAD.Core.SourcePos (SourceRange(..))
 
 
 import Control.Applicative
-import qualified Control.Monad.State.Class as MS
+import Control.Monad.State.Class (get, modify)
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 
@@ -94,12 +94,12 @@ sigNotion = do
     trm Trm {trmName = TermEquality, trmArgs = [_,t]} = t; trm t = t
 
 newPredicat :: FTL Formula
-newPredicat = do n <- newPrdPattern nvr; MS.get >>= addExpr n n True
+newPredicat = do n <- newPrdPattern nvr; get >>= addExpr n n True
 
 newNotion :: FTL (Formula, (VariableName, SourcePos))
 newNotion = do
   (n, u) <- newNotionPattern nvr;
-  f <- MS.get >>= addExpr n n True
+  f <- get >>= addExpr n n True
   return (f, u)
 
 -- well-formedness check
@@ -143,7 +143,7 @@ allDistinctVars = disVs []
 pretypeVariable :: FTL ProofText
 pretypeVariable = do
   (pos, tv) <- narrow typeVar
-  MS.modify $ upd tv
+  modify $ upd tv
   return $ ProofTextPretyping pos (fst tv)
   where
     typeVar = do
@@ -168,7 +168,7 @@ introduceMacro = do
   (pos2, (f, g)) <- narrow (prd -|- notion)
   let pos = rangePos $ SourceRange pos1 pos2
   addMacroReport pos
-  MS.get >>= addExpr f (ignoreNames g) False
+  get >>= addExpr f (ignoreNames g) False
   return $ ProofTextMacro pos
   where
     prd = wellFormedCheck (prdVars . snd) $ do

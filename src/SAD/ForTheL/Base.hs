@@ -11,7 +11,7 @@ module SAD.ForTheL.Base where
 
 import Control.Applicative
 import Control.Monad
-import qualified Control.Monad.State.Class as MS
+import Control.Monad.State.Class (gets, modify)
 import Data.Char (isAlpha, isAlphaNum)
 import Data.List (unionBy)
 import Data.Text.Lazy (Text)
@@ -89,27 +89,27 @@ initFS = FState
 
 
 getExpr :: (FState -> [a]) -> (a -> FTL b) -> FTL b
-getExpr e p = MS.gets e >>=  foldr ((-|-) . try . p ) mzero
+getExpr e p = gets e >>=  foldr ((-|-) . try . p ) mzero
 
 
 getDecl :: FTL [VariableName]
-getDecl = MS.gets varDecl
+getDecl = gets varDecl
 
 addDecl :: [VariableName] -> FTL a -> FTL a
 addDecl vs p = do
-  dcl <- MS.gets varDecl; MS.modify adv;
-  after p $ MS.modify $ sbv dcl
+  dcl <- gets varDecl; modify adv;
+  after p $ modify $ sbv dcl
   where
     adv s = s { varDecl = vs ++ varDecl s }
     sbv vs s = s { varDecl = vs }
 
 getPretyped :: FTL [TVar]
-getPretyped = MS.gets tvrExpr
+getPretyped = gets tvrExpr
 
 makeDecl :: VarName -> FTL Decl
 makeDecl (nm, pos) = do
-  serial <- MS.gets serialCounter
-  MS.modify (\st -> st {serialCounter = serial + 1})
+  serial <- gets serialCounter
+  modify (\st -> st {serialCounter = serial + 1})
   return $ Decl nm pos (serial + 1)
 
 declared :: FTL MNotion -> FTL (Formula -> Formula, Formula, [Decl])
@@ -337,8 +337,8 @@ nodups vs = unless ((null :: [b] -> Bool) $ duplicateNames vs) $
 
 hidden :: FTL (VariableName, SourcePos)
 hidden = do
-  n <- MS.gets hiddenCount
-  MS.modify $ \st -> st {hiddenCount = succ n}
+  n <- gets hiddenCount
+  modify $ \st -> st {hiddenCount = succ n}
   return (VarHidden n, noSourcePos)
 
 -- | Parse the next token as a variable (a sequence of alpha-num chars beginning with an alpha)

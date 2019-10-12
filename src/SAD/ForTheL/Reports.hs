@@ -6,7 +6,7 @@ PIDE markup reports for ForTheL text elements.
 
 {-# LANGUAGE TupleSections #-}
 
-module SAD.ForTheL.Reports 
+module SAD.ForTheL.Reports
   ( markupToken
   , markupTokenOf
   , or
@@ -29,7 +29,7 @@ module SAD.ForTheL.Reports
   ) where
 
 import Prelude hiding (or)
-import qualified Control.Monad.State.Class as MS
+import Control.Monad.State.Class (modify)
 import Data.List hiding (or)
 import SAD.Helpers (nubOrd)
 
@@ -54,7 +54,7 @@ import SAD.Parser.Primitives
 import qualified Isabelle.Markup as Markup
 
 addReports :: (PIDE -> [Message.Report]) -> FTL ()
-addReports rep = MS.modify (\st -> case pide st of
+addReports rep = modify (\st -> case pide st of
   Just pide -> let newRep = rep pide
                in  seq newRep $ st {reports = newRep ++ reports st}
   Nothing -> st)
