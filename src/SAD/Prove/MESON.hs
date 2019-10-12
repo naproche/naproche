@@ -20,7 +20,7 @@ import SAD.Prove.Normalize
 import SAD.Data.Text.Context (Context, MRule(MR, conclusion))
 import qualified SAD.Data.Text.Context as Context
 import qualified SAD.Data.Structures.DisTree as DT
-import SAD.Data.VarName
+
 
 -- generate MESON rules
 contrapositives :: [Formula] -> [MRule]
@@ -171,5 +171,5 @@ prove n lowLevelContext positives negatives goal =
       in  (concatMap contrapositives . transformToCNF) skf ++
           makeContrapositives nm fs
     start t
-      | isLiteral t || isEquality t = pure $ MR [ltNeg t] Bot
+      | isLiteral t || (isTrm t && trmName t == TermEquality) = pure $ MR [ltNeg t] Bot
       | otherwise = []

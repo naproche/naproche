@@ -18,7 +18,7 @@ import SAD.Data.Instr
 import SAD.Data.Rules (Rule)
 import SAD.Data.Text.Context (Context)
 import SAD.Helpers (notNull)
-import SAD.Data.VarName
+
 import SAD.Export.Representation
 
 import qualified SAD.Core.Message as Message
@@ -51,12 +51,12 @@ lpoGt w tr@Trm {trmName = t, trmArgs = ts} sr@Trm {trmName = s, trmArgs = ss} =
    any (\ti -> lpoGe w ti sr) ts
     || (all (lpoGt w tr) ss
     && ((t == s && lexord (lpoGt w) ts ss)
-    || w t s))
+    || w (toLazyText $ represent t) (toLazyText $ represent s)))
 lpoGt w Trm { trmName = t, trmArgs = ts} v@Var {varName = x} =
-  w t (forceBuilder $ represent x) || any (\ti -> lpoGe w ti v) ts
+  w (toLazyText $ represent t) (toLazyText $ represent x) || any (\ti -> lpoGe w ti v) ts
 lpoGt w v@Var {varName = x} Trm {trmName = t, trmArgs = ts} =
-  w (forceBuilder $ represent x) t && all (lpoGt w v) ts
-lpoGt w Var{varName = x} Var {varName = y} = w (forceBuilder $ represent x) (forceBuilder $ represent y)
+  w (toLazyText $ represent x) (toLazyText $ represent t) && all (lpoGt w v) ts
+lpoGt w Var{varName = x} Var {varName = y} = w (toLazyText $ represent x) (toLazyText $ represent y)
 lpoGt _ _ _ = False
 
 
@@ -192,7 +192,7 @@ rules = asks rewriteRules
 {- applies rewriting to both sides of an equation
 and compares the resulting normal forms -}
 rewrite :: Formula -> [Rule] -> VM ()
-rewrite Trm {trmName = "=", trmArgs = [l,r]} rules = do
+rewrite Trm {trmName = TermEquality, trmArgs = [l,r]} rules = do
   verbositySetting <- askInstructionBool Printsimp False
   conditions <- generateConditions verbositySetting rules (>) l r;
   mapM_ (dischargeConditions verbositySetting . fst) conditions

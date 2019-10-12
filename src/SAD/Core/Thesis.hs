@@ -13,7 +13,7 @@ import SAD.Core.Base
 import SAD.Core.Reason
 import SAD.Data.Definition (Definitions)
 import SAD.Data.Formula
-import SAD.Data.TermId
+
 import SAD.Data.Text.Context (Context)
 import SAD.Helpers (notNull)
 import qualified Data.Text.Lazy as Text
@@ -26,7 +26,7 @@ import Control.Monad.Trans.State
 import Data.List
 import Data.Maybe
 import qualified Data.Map as Map
-import SAD.Data.VarName
+
 
 
 

@@ -14,8 +14,8 @@ module SAD.Core.Completion
 import SAD.Data.Formula
 import SAD.Core.Rewrite
 import SAD.Prove.Unify
-import SAD.Data.VarName
-import SAD.Data.TermId
+
+
 import SAD.Helpers
 
 import Data.List
@@ -32,7 +32,7 @@ instance Show Equation where
     show (Equation l r) = show l ++ " = " ++ show r
 
 toFormula :: Equation -> Formula
-toFormula (Equation lhs rhs) = Trm "=" [lhs, rhs] [] EqualityId
+toFormula (Equation lhs rhs) = Trm TermEquality [lhs, rhs] [] EqualityId
 
 
 {-adding rules respecting a given ordering-}
@@ -238,7 +238,7 @@ criticalPairs fma fmb = map fromFormula $
     then crit1 fm1 fm2
     else union (crit1 fm1 fm2) (crit1 fm2 fm1)
   where
-    fromFormula (Trm "=" [l,r] _ EqualityId) = Equation l r
+    fromFormula (Trm TermEquality [l,r] _ EqualityId) = Equation l r
     fromFormula _ = error "fromFormula: cannot happen"
 
 

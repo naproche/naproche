@@ -21,7 +21,7 @@ import SAD.Parser.Primitives
 import SAD.Data.Formula
 import SAD.Core.SourcePos
 import SAD.Data.Text.Decl
-import SAD.Data.VarName
+
 
 import Data.Function ((&))
 import Control.Applicative
@@ -130,12 +130,12 @@ isPredicate = label "is predicate" $
 
 
 isAPredicat :: FTL Formula
-isAPredicat = label "isA predicate" $ notNtn <|> ntn
+isAPredicat = label "isA predicate" $ notNotion <|> notion
   -- Unlike the langugae description, we distinguish positive and negative
   -- rather than notions and fixed terms
   where
-    ntn = fmap (uncurry ($)) anotion
-    notNtn = do
+    notion = fmap (uncurry ($)) anotion
+    notNotion = do
       token' "not"; (q, f) <- anotion; let unfinished = dig f [(zVar (VarHole ""))]
       optLLx (q $ Not f) $ fmap (q. Tag Dig . Not) unfinished
 
@@ -182,18 +182,18 @@ mPredicate p = (token' "not" >> mNegative) <|> mPositive
 
 --- notions
 
-basentn :: Parser
+basenotion :: Parser
              FState (Formula -> Formula, Formula, [(VariableName, SourcePos)])
-basentn = fmap digadd $ cm <|> symEqnt <|> (set </> primNtn term)
+basenotion = fmap digadd $ cm <|> symEqnt <|> (set </> primNotion term)
   where
-    cm = token' "common" >> primCmNtn term terms
+    cm = token' "common" >> primCmNotion term terms
     symEqnt = do
       t <- lexicalCheck isTrm sTerm
       v <- hidden; return (id, zEqu (zVar (VarHole "")) t, [v])
 
 symNotion :: Parser
                FState (Formula -> Formula, Formula, [(VariableName, SourcePos)])
-symNotion = (paren (primSnt sTerm) </> primTvr) >>= (digntn . digadd)
+symNotion = (paren (primSnt sTerm) </> primTvr) >>= (dignotion . digadd)
 
 
 gnotion :: Parser
@@ -215,16 +215,16 @@ gnotion nt ra = do
 
 anotion :: FTL (Formula -> Formula, Formula)
 anotion = label "notion (at most one name)" $
-  art >> gnotion basentn rat >>= single >>= hol
+  art >> gnotion basenotion rat >>= single >>= hol
   where
     hol (q, f, v) = return (q, subst (zVar (VarHole "")) (fst v) f)
     rat = fmap (Tag Dig) stattr
 
 notion :: Parser FState (Formula -> Formula, Formula, [(VariableName, SourcePos)])
-notion = label "notion" $ gnotion (basentn </> symNotion) stattr >>= digntn
+notion = label "notion" $ gnotion (basenotion </> symNotion) stattr >>= dignotion
 
 possess :: Parser FState (Formula -> Formula, Formula, [(VariableName, SourcePos)])
-possess = label "possesive notion" $ gnotion (primOfNtn term) stattr >>= digntn
+possess = label "possesive notion" $ gnotion (primOfNotion term) stattr >>= dignotion
 
 
 stattr :: FTL Formula
@@ -233,10 +233,10 @@ stattr = label "such-that attribute" $ such >> that >> statement
 digadd :: (a, Formula, c) -> (a, Formula, c)
 digadd (q, f, v) = (q, Tag Dig f, v)
 
-digntn :: Monad m =>
+dignotion :: Monad m =>
           (a, Formula, [(VariableName, SourcePos)])
           -> m (a, Formula, [(VariableName, SourcePos)])
-digntn (q, f, v) = dig f (map pVar v) >>= \ g -> return (q, g, v)
+dignotion (q, f, v) = dig f (map pVar v) >>= \ g -> return (q, g, v)
 
 single :: Monad m => (a, b, [c]) -> m (a, b, c)
 single (q, f, [v]) = return (q, f, v)
@@ -432,10 +432,10 @@ symbSetNotation = cndSet </> finSet
 
 sepFrom :: Parser
              FState (Formula -> Formula, Formula -> Formula, Formula)
-sepFrom = ntnSep -|- setSep -|- noSep
+sepFrom = notionSep -|- setSep -|- noSep
   where
-    ntnSep = do
-      (q, f, v) <- notion >>= single; guard (not . isEquality $ f)
+    notionSep = do
+      (q, f, v) <- notion >>= single; guard (not . (==) TermEquality . trmName $ f)
       return (Tag Replacement, \tr -> subst tr (fst v) $ q f, pVar v)
     setSep = do
       t <- sTerm; cnd <- token' "in" >> elementCnd
@@ -506,8 +506,8 @@ lambda = do
 pair :: Parser st Formula
 pair = sVar </> pr
   where
-    pr = do [l,r] <- smPatt pair pairPattern; return $ zPair l r
-    pairPattern = [Sm "(", Vr, Sm ",", Vr, Sm ")"]
+    pr = do [l,r] <- smPattern pair pairPattern; return $ zPair l r
+    pairPattern = [Symbol "(", Vr, Symbol ",", Vr, Symbol ")"]
 
 lambdaIn :: Parser
               FState (Formula, Formula -> Formula -> Formula, Formula -> Formula)

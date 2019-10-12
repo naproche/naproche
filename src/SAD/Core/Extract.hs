@@ -17,9 +17,7 @@ module SAD.Core.Extract (
 
 import SAD.Data.Formula
 import SAD.Data.Definition (DefEntry(DE), Definitions, DefType(..), Guards)
-import qualified SAD.Data.Definition as Definition
-import SAD.Data.Evaluation (Evaluation(EV))
-import qualified SAD.Data.Evaluation as Evaluation
+import SAD.Data.Definition
 import SAD.Data.Text.Context (Context)
 import qualified SAD.Data.Text.Context as Context (formula, name)
 import SAD.Data.Rules (Rule(Rule))
@@ -27,7 +25,7 @@ import qualified SAD.Data.Rules as Rule
 import SAD.Prove.Normalize
 import qualified SAD.Data.Structures.DisTree as DT
 import SAD.Data.Text.Decl
-import SAD.Data.VarName
+
 
 import qualified Data.Map as Map
 import Data.List
@@ -43,8 +41,8 @@ addDefinition :: (Definitions, Guards) -> Formula -> (Definitions, Guards)
 addDefinition (defs, grds) f = let newDef = extractDefinition defs f in
   (addD newDef defs, addG newDef grds)
   where
-    addD df@DE {Definition.term = t} = Map.insert (trmId t) df
-    addG df@DE {Definition.guards = grd} grds = foldr add grds $ filter isTrm grd
+    addD df@DE {defTerm = t} = Map.insert (trmId t) df
+    addG df@DE {defGuards = grd} grds = foldr add grds $ filter isTrm grd
 
     add guard grds =
       if   case DT.find guard grds of [] -> False; (x:_) -> x
@@ -57,9 +55,9 @@ extractDefinition defs =
   closeEvidence defs . makeDefinition . dive [] 0
   where
     dive :: [Formula] -> Int -> Formula -> ([Formula], Formula, DefType, Formula)
-    dive guards _ (All _ (Iff (Tag HeadTerm Trm {trmName = "=", trmArgs = [_, t]}) f))
+    dive guards _ (All _ (Iff (Tag HeadTerm Trm {trmName = TermEquality, trmArgs = [_, t]}) f))
       = (guards, instWith ThisT f, Definition, t) -- function definition
-    dive guards _ (All _ (Imp (Tag HeadTerm Trm {trmName = "=", trmArgs = [_, t]}) f))
+    dive guards _ (All _ (Imp (Tag HeadTerm Trm {trmName = TermEquality, trmArgs = [_, t]}) f))
       = (guards, instWith ThisT f, Signature, t)  -- function sigext
     dive guards _ (Iff (Tag HeadTerm t) f)
       = (guards, f, Definition, t)                -- predicate definition
@@ -70,10 +68,10 @@ extractDefinition defs =
     dive guards n (All _ f) = dive guards (succ n) $ inst (VarHole $ Text.pack $ show n) f
     dive guards n (Imp g f) = dive (guards ++ splitConjuncts g) n f
     makeDefinition (guards, formula, kind, term) = DE {
-      Definition.guards = guards, Definition.formula = formula,
-      Definition.kind = kind, Definition.term = term,
-      Definition.evidence = extractEvidences term formula,
-      Definition.typeLikes = []}
+      defGuards = guards, defFormula = formula,
+      defKind = kind, defTerm = term,
+      defEvidence = extractEvidences term formula,
+      defTypeLikes = []}
 
 
 {- get evidence for a defined term from a definitional formula -}
@@ -89,14 +87,14 @@ extractEvidences t =
 if we have "natural c= rational c= real" then we do not only know that
 a natural number is rational, but also add the info that it is real.-}
 closeEvidence :: Definitions -> DefEntry -> DefEntry
-closeEvidence dfs def@DE{Definition.evidence = evidence} = def { Definition.evidence = newEvidence }
+closeEvidence dfs def@DE{defEvidence = evidence} = def { defEvidence = newEvidence }
   where
-    newEvidence = nubBy twins $ evidence ++ concatMap defEvidence evidence
-    defEvidence t@Trm {trmId = n} =
+    newEvidence = nubBy twins $ evidence ++ concatMap definitionalEvidence evidence
+    definitionalEvidence t@Trm {trmId = n} =
       let def = fromJust $ Map.lookup n dfs
-          sb  = fromJust $ match (Definition.term def) $ fromTo makeU t
-      in  map (fromTo fromU . sb) $ Definition.evidence def
-    defEvidence _ = []
+          sb  = fromJust $ match (defTerm def) $ fromTo makeU t
+      in  map (fromTo fromU . sb) $ defEvidence def
+    definitionalEvidence _ = []
 
     fromTo :: (VariableName -> VariableName) -> Formula -> Formula
     fromTo fn v@Var {varName = vn} = v {varName = fn vn}
@@ -120,9 +118,9 @@ extractRewriteRule c =
   where
     dive :: Int -> [Formula] -> Formula -> [Rule]
     -- if HeadTerm is reached, discard all collected conditions
-    dive n gs (All _ (Iff (Tag HeadTerm Trm {trmName = "=", trmArgs = [_,t]}) f )) =
+    dive n gs (All _ (Iff (Tag HeadTerm Trm {trmName = TermEquality, trmArgs = [_,t]}) f )) =
       dive n gs $ subst t VarEmpty $ inst VarEmpty f
-    dive n gs (All _ (Imp (Tag HeadTerm Trm {trmName = "=", trmArgs = [_, t]}) f)) =
+    dive n gs (All _ (Imp (Tag HeadTerm Trm {trmName = TermEquality, trmArgs = [_, t]}) f)) =
       dive n gs $ subst t VarEmpty $ inst VarEmpty f
     -- make universal quantifier matchable
     dive n gs (All _ f) = let nn = VarHole $ Text.pack $ show n in dive (succ n) gs $ inst nn f
@@ -130,9 +128,9 @@ extractRewriteRule c =
     dive n gs (Tag _ f) = dive n gs f -- ignore tags
     dive n gs (And f g) = dive n gs f ++ dive n gs g
     -- we do not allow rules where the left side is a variable
-    dive n gs Trm {trmName = "=", trmArgs = [l@Var{},r]} | not (isHole (varName l))
+    dive n gs Trm {trmName = TermEquality, trmArgs = [l@Var{},r]} | not (isHole (varName l))
       = return $ Rule l r gs undefined -- the name is filled in later
-    dive n gs Trm {trmName = "=", trmArgs = [l@Trm{},r]} | Text.head (trmName l) /= '?'
+    dive n gs Trm {trmName = TermEquality, trmArgs = [l@Trm{},r]}
       = return $ Rule l r gs undefined -- the name is filled in later
     dive n gs (Not Trm{}) = mzero
     dive n gs f | isNot f = dive n gs $ albet f -- pushdown negation
@@ -143,13 +141,13 @@ extractRewriteRule c =
 addEvaluation :: DT.DisTree Evaluation
                  -> Formula -> DT.DisTree Evaluation
 addEvaluation evaluations f =
-  foldr (\eval -> DT.insert (Evaluation.term eval) eval) evaluations $
+  foldr (\eval -> DT.insert (evaluationTerm eval) eval) evaluations $
   extractEvaluation evaluations f
 
 extractEvaluation :: DT.DisTree Evaluation -> Formula -> [Evaluation]
 extractEvaluation dt = flip runReaderT (0, dt) . dive
   where
-    dive (All _ (Iff (Tag HeadTerm Trm {trmName = "=", trmArgs = [_, t]}) f))
+    dive (All _ (Iff (Tag HeadTerm Trm {trmName = TermEquality, trmArgs = [_, t]}) f))
       = extractEv id [] $ instWith t f
     dive (All _ f) = freshV dive f
     dive (Imp f g) = dive g
@@ -178,11 +176,11 @@ extractFunctionEval c gs f = dive c gs f
     dive c gs (Tag Condition (Imp f g)) = dive c (f:gs) g --but add case distinctions
     dive c gs (All _ f) = freshV (dive c gs) f
     dive c gs (And f g) = dive c gs f `mplus` dive c gs g
-    dive c gs (Tag Evaluation f@Trm{ trmName = "=", trmArgs = [tr,vl]} ) =
+    dive c gs (Tag Evaluation f@Trm{ trmName = TermEquality, trmArgs = [tr,vl]} ) =
       let nf = c f {trmArgs = [ThisT, vl] }
       in  return $ EV tr nf nf gs
     dive c gs (Exi x (And (Tag Defined f)
-      (Tag Evaluation Trm {trmName = "=", trmArgs = [tr, Ind {indIndex = n}]})))
+      (Tag Evaluation Trm {trmName = TermEquality, trmArgs = [tr, Ind {indIndex = n}]})))
         | n == 0 = extractEv c gs $ dec $ instWith tr f
     dive c gs (Exi x (And f g)) =
       dive (c . dExi x . And f) gs $ inst (declName x) g
@@ -209,8 +207,8 @@ simplifyElementCondition evals = dive
     dive f = mapF dive f
 
     simp f = do
-      ev <- DT.lookup f evals >>= single; guard (null $ Evaluation.conditions ev)
-      sb <- match (Evaluation.term ev) f; return $ sb $ Evaluation.negatives ev
+      ev <- DT.lookup f evals >>= single; guard (null $ evaluationConditions ev)
+      sb <- match (evaluationTerm ev) f; return $ sb $ evaluationNegatives ev
 
     single [x] = return x; single l = mzero
 

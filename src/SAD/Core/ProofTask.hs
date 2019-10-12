@@ -9,10 +9,10 @@ Generation of proof tasks.
 module SAD.Core.ProofTask (generateProofTask) where
 
 import SAD.Data.Formula
-import SAD.Data.TermId
+
 import SAD.Data.Text.Block (Section(..))
 import SAD.Prove.Normalize
-import SAD.Data.VarName
+
 import qualified Data.Text.Lazy as Text
 
 import Data.Maybe
@@ -76,7 +76,7 @@ funTask _ = error "SAD.Core.ProofTask.funTask: misformed definition"
 
 domain :: Formula -> Formula
 domain (Tag Domain (All _ (Iff _ f))) = Tag DomainTask $ separation f
-domain (Tag Domain Trm{trmName = "=", trmArgs = [_,t]}) = Tag DomainTask $ zSet t
+domain (Tag Domain Trm{trmName = TermEquality, trmArgs = [_,t]}) = Tag DomainTask $ zSet t
 domain _ = error "SAD.Core.ProofTask.domain: misformed definition"
 
 
@@ -144,7 +144,7 @@ impExi f = f
 
 {- a certain normalization of the term marked with Evaluation -}
 devReplace :: Formula -> Formula -> Formula
-devReplace y (Tag Evaluation eq@Trm {trmName = "=", trmArgs = [_, t]}) =
+devReplace y (Tag Evaluation eq@Trm {trmName = TermEquality, trmArgs = [_, t]}) =
   eq {trmArgs = [y,t]}
 devReplace y f = mapF (devReplace y) f
 
@@ -155,7 +155,7 @@ domainCondition (Tag _ (All _ (Iff Trm {trmArgs = [_,dm]} g))) = dive
     dive Trm {trmId = tId, trmArgs = [x,d]}
       | tId == ElementId && twins d dm = subst x VarEmpty $ inst VarEmpty g
     dive f = mapF dive f
-domainCondition (Tag _ Trm {trmName = "=", trmArgs = [dm,g]}) = dive
+domainCondition (Tag _ Trm {trmName = TermEquality, trmArgs = [dm,g]}) = dive
   where
     dive Trm {trmId = tId, trmArgs = [x,d]}
       | tId == ElementId && twins d dm = zElem x g

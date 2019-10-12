@@ -6,10 +6,31 @@ PIDE markup reports for ForTheL text elements.
 
 {-# LANGUAGE TupleSections #-}
 
-module SAD.ForTheL.Reports where
+module SAD.ForTheL.Reports 
+  ( markupToken
+  , markupTokenOf
+  , or
+  , neitherNor
+  , conjunctiveAnd
+  , whenWhere
+  , ifThen
+  , macroLet
+  , synonymLet
+  , addDropReport
+  , addInstrReport
+  , addPretypingReport
+  , addMacroReport
+  , addBlockReports
+  , topsectionHeader
+  , lowlevelHeader
+  , proofStart
+  , byAnnotation
+  , proofEnd
+  ) where
 
+import Prelude hiding (or)
 import qualified Control.Monad.State.Class as MS
-import Data.List
+import Data.List hiding (or)
 import SAD.Helpers (nubOrd)
 
 import SAD.Core.Message (PIDE)
@@ -28,7 +49,7 @@ import SAD.Data.Instr
 
 import SAD.Parser.Base
 import SAD.Parser.Primitives
-import SAD.Data.VarName
+
 
 import qualified Isabelle.Markup as Markup
 
@@ -103,10 +124,6 @@ addInstrReport pos = addReports $ const $
 addDropReport :: Pos -> FTL ()
 addDropReport pos = addReports $ const $
   map (position pos,) [Markup.comment2, Markup.expression "drop text instruction"]
-
-addSynonymReport :: Pos -> FTL ()
-addSynonymReport pos = addReports $ const $
-  map (position pos,) [Markup.comment3, Markup.expression "text synonyms"]
 
 addPretypingReport :: SourcePos -> [SourcePos] -> FTL ()
 addPretypingReport pos ps = addReports $ const $

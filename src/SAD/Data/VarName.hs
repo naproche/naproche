@@ -17,7 +17,7 @@ data VariableName
   | VarNumHole Int     -- ^ previously starting with ?
   | VarSlot            -- ^ previously !
   | VarU Text          -- ^ previously starting with u
-  | VarHidden Text     -- ^ previously starting with h
+  | VarHidden Int      -- ^ previously starting with h
   | VarAssume Int      -- ^ previously starting with i
   | VarSkolem Int      -- ^ previously starting with o
   | VarTask VariableName -- ^ previously starting with c
@@ -32,7 +32,7 @@ isHole (VarHole _) = True
 isHole _ = False
 
 instance Show VariableName where
-  show = Text.unpack . forceBuilder . represent
+  show = Text.unpack . toLazyText . represent
 
 instance Representation VariableName where
   represent (VarConstant s) = "x" <> (Builder.fromLazyText s)
@@ -40,9 +40,9 @@ instance Representation VariableName where
   represent (VarNumHole s) = "?" <> (Builder.fromString (show s))
   represent (VarSlot) = "!"
   represent (VarU s) = "u" <> (Builder.fromLazyText s)
-  represent (VarHidden s) = "h" <> (Builder.fromLazyText s)
-  represent (VarAssume s) = "i" <> (Builder.fromString (show s))
-  represent (VarSkolem s) = "o" <> (Builder.fromString (show s))
+  represent (VarHidden n) = "h" <> (Builder.fromString (show n))
+  represent (VarAssume n) = "i" <> (Builder.fromString (show n))
+  represent (VarSkolem n) = "o" <> (Builder.fromString (show n))
   represent (VarTask s) = "c" <> represent s
   represent (VarZ s) = "z" <> (Builder.fromLazyText s)
   represent (VarW s) = "w" <> (Builder.fromLazyText s)

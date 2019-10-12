@@ -13,8 +13,7 @@ import Control.Applicative
 
 import SAD.Data.Tag (Tag)
 import SAD.Core.SourcePos (SourcePos)
-import SAD.Data.TermId
-
+import SAD.Data.Terms
 import SAD.Data.Text.Decl (Decl)
 import SAD.Data.VarName
 import Data.Text.Lazy (Text)
@@ -29,7 +28,7 @@ data Formula =
   Or  Formula Formula     | And Formula Formula     |
   Tag Tag Formula         | Not Formula             |
   Top                     | Bot                     |
-  Trm { trmName :: Text   , trmArgs :: [Formula],
+  Trm { trmName :: TermName, trmArgs :: [Formula],
         trmInfo :: [Formula], trmId   :: TermId}         |
   Var { varName :: VariableName, varInfo :: [Formula], varPosition :: SourcePos } |
   Ind { indIndex :: Int, indPosition :: SourcePos }   | ThisT
@@ -41,8 +40,8 @@ trInfo Var {varInfo = xs} = xs
 trInfo _ = error "Formula.Base.trInfo: Partial function"
 
 showTrName :: Formula -> Text
-showTrName (Trm {trmName = s}) = Text.filter (/= ':') s
-showTrName (Var {varName = s}) = Text.filter (/= ':') $ forceBuilder $ represent s
+showTrName (Trm {trmName = s}) = Text.filter (/= ':') $ toLazyText $ represent s
+showTrName (Var {varName = s}) = Text.filter (/= ':') $ toLazyText $ represent s
 showTrName _ = Text.empty
 
 -- Traversing functions

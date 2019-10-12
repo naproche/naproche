@@ -10,9 +10,9 @@ module SAD.Data.Formula.Show (
   )where
 
 import SAD.Data.Formula.Base
-import SAD.Data.Formula.Kit
 import SAD.Data.VarName
-import SAD.Export.Representation (forceBuilder, represent)
+import SAD.Data.Terms
+import SAD.Export.Representation (toLazyText, represent)
 
 import qualified Data.Text.Lazy as Text
 
@@ -36,15 +36,14 @@ showFormula p d = dive
     dive Bot       = showString "contradiction"
     dive ThisT     = showString "ThisT"
 
-    dive t@Trm{trmName = tName, trmArgs = tArgs}
-      | isThesis t = showString "thesis"
-      | isEquality t = let [l,r] = trmArgs t in showInfix " = " l r
-      | isSymbolicTerm t = decode (Text.unpack $ Text.tail tName) tArgs p d
-      | not (Text.null tName) && Text.head tName == 't' =
-          showString (Text.unpack $ Text.tail tName) . showArguments tArgs
-      | otherwise = showString (Text.unpack tName) . showArguments tArgs
+    dive t@Trm{trmName = TermThesis} = showString "thesis"
+    dive t@Trm{trmName = TermEquality, trmArgs = [l,r]} = showInfix " = " l r
+    dive t@Trm{trmName = TermSymbolic tName, trmArgs = tArgs} = decode (Text.unpack tName) tArgs p d
+    dive t@Trm{trmName = TermThe tName, trmArgs = tArgs} =
+          showString ("the" <> Text.unpack tName) . showArguments tArgs
+    dive t@Trm{trmName = tName, trmArgs = tArgs} = showString (Text.unpack $ toLazyText $ represent tName) . showArguments tArgs
     dive v@Var{varName = VarConstant s} = showString (Text.unpack s)
-    dive v@Var{varName = vName} = showString $ Text.unpack $ forceBuilder $ represent vName
+    dive v@Var{varName = vName} = showString $ Text.unpack $ toLazyText $ represent vName
     dive Ind {indIndex = i }
       | i < d = showChar 'v' . shows (d - i - 1)
       | otherwise = showChar 'v' . showChar '?' . showString (show i)
@@ -68,10 +67,6 @@ commaSeparated :: (a -> ShowS) -> [a] -> ShowS
 commaSeparated showTerm [] = id
 commaSeparated showTerm [t] = showTerm t
 commaSeparated showTerm (t:ts) = showTerm t . showChar ',' . commaSeparated showTerm ts
-
-isSymbolicTerm :: Formula -> Bool
-isSymbolicTerm Trm {trmName = tName} | Text.head tName == 's' = True; 
-isSymbolicTerm _ = False
 
 -- decoding of symbolic names
 
@@ -117,9 +112,9 @@ decode s (t:ts) p d = dec s
     dec _            = showString s
 
 
-    ambig Trm {trmName = tName} | "sdt" `Text.isPrefixOf` tName = not $ funpatt (Text.drop 3 tName)
-    ambig Trm {trmName = t} =
-      Text.head t == 's' && snd (Text.splitAt (Text.length t - 2) t) == "dt"
+    ambig Trm {trmName = TermSymbolic tName} | "dt" `Text.isPrefixOf` tName = not $ funpatt (Text.drop 3 tName)
+    ambig Trm {trmName = TermSymbolic tName} =
+      snd (Text.splitAt (Text.length tName - 2) tName) == "dt"
     ambig _ = False
 
     funpatt "lbdtrb" = True

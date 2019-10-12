@@ -18,12 +18,10 @@ import SAD.Core.SourcePos
 import SAD.Data.Text.Decl (Decl)
 import SAD.Data.Text.Decl
 import SAD.Helpers
-import SAD.Data.TermId
+import SAD.Data.Terms
 import SAD.Data.VarName
 
 import qualified Data.Map as Map
-import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
 
 -- Alpha-beta normalization
 
@@ -98,7 +96,7 @@ boolSimp f = bool $ mapF boolSimp f
 --     "forall x (x = t => P(x))" is replaced by "P(t)"
 --
 -- In code:
--- @(mbExi "x" (And (Trm "=" [Var "x" [] noSourcePos, Var "t" [] noSourcePos] [] 0) (Var "x" [] noSourcePos))) == Just (Var "t" [] noSourcePos)@
+-- @(mbExi "x" (And (Trm TermEquality [Var "x" [] noSourcePos, Var "t" [] noSourcePos] [] 0) (Var "x" [] noSourcePos))) == Just (Var "t" [] noSourcePos)@
 -- Danger: We ignore the fact that @=@ is symmetric.
 --
 -- Arguments: the variable to look for (e.g. "x"), whether we are in an "existance" or an "all" case and the formula.
@@ -119,7 +117,7 @@ mbBind v  = dive id
     dive c True (And f g) =
       dive (c . bool . (`And` g)) True f `mplus`
       dive (c . bool . (f `And`)) True g
-    dive c True Trm {trmName = "=", trmArgs = [l@Var {varName = u}, t]}
+    dive c True Trm {trmName = TermEquality, trmArgs = [l@Var {varName = u}, t]}
       | u == v && not (l `occursIn` t) && isClosed t = return $ subst t u (c Top)
     dive _ _ _ = mzero
 
@@ -178,34 +176,34 @@ zVar v = pVar (v, noSourcePos)
 pVar :: (VariableName, SourcePos) -> Formula
 pVar (v, pos) = Var v [] pos
 
-zTrm :: TermId -> Text -> [Formula] -> Formula
+zTrm :: TermId -> TermName -> [Formula] -> Formula
 zTrm tId t ts = Trm t ts [] tId
 
 
 -- creation of predefined functions and notions
 
 zEqu :: Formula -> Formula -> Formula
-zEqu t s  = zTrm EqualityId "=" [t,s]
+zEqu t s  = zTrm EqualityId TermEquality [t,s]
 zLess :: Formula -> Formula -> Formula
-zLess t s = zTrm LessId "iLess" [t,s]
+zLess t s = zTrm LessId TermLess [t,s]
 zThesis :: Formula
-zThesis   = zTrm ThesisId "#TH#" []
+zThesis   = zTrm ThesisId TermThesis []
 zFun :: Formula -> Formula
-zFun      = zTrm FunctionId "aFunction" . pure
+zFun      = zTrm FunctionId termFunction . pure
 zApp :: Formula -> Formula -> Formula
-zApp f v  = zTrm ApplicationId "sdtlbdtrb" [f , v]
+zApp f v  = zTrm ApplicationId termApplication [f , v]
 zDom :: Formula -> Formula
-zDom      = zTrm DomainId "szDzozmlpdtrp" . pure
+zDom      = zTrm DomainId termDomain . pure
 zSet :: Formula -> Formula
-zSet      = zTrm SetId "aSet" . pure
+zSet      = zTrm SetId termSet . pure
 zElem :: Formula -> Formula -> Formula
-zElem x m = zTrm ElementId "aElementOf" [x,m]
+zElem x m = zTrm ElementId termElement [x,m]
 zProd :: Formula -> Formula -> Formula
-zProd m n = zTrm ProductId "szPzrzozdlpdtcmdtrp" [m, n]
+zProd m n = zTrm ProductId termProduct [m, n]
 zPair :: Formula -> Formula -> Formula
-zPair x y = zTrm PairId "slpdtcmdtrp" [x,y]
+zPair x y = zTrm PairId termPair [x,y]
 zObj :: Formula -> Formula
-zObj      = zTrm ObjectId "aObj" . pure -- this is a dummy for parsing purposes
+zObj      = zTrm ObjectId termObject . pure -- this is a dummy for parsing purposes
 
 
 -- quick checks of syntactic properties
@@ -224,10 +222,6 @@ isVar :: Formula -> Bool
 isVar Var{} = True; isVar _ = False
 isTrm :: Formula -> Bool
 isTrm Trm{} = True; isTrm _ = False
-isEquality :: Formula -> Bool
-isEquality t@Trm{} = trmId t == EqualityId; isEquality _ = False
-isThesis :: Formula -> Bool
-isThesis t@Trm{} = trmId t == ThesisId; isThesis _ = False
 hasDEC :: Formula -> Bool
 hasDEC (Tag EqualityChain _) = True; hasDEC _ = False
 isExi :: Formula -> Bool
@@ -240,9 +234,7 @@ isNot :: Formula -> Bool
 isNot (Not _) = True; isNot _ = False
 
 isNotion :: Formula -> Bool
-isNotion Trm {trmName = tn} = case Text.uncons tn of
-  Just ('a', _) -> True
-  _ -> False
+isNotion Trm {trmName = TermNotion _} = True
 isNotion _ = False
 
 isElem :: Formula -> Bool

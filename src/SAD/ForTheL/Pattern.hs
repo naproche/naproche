@@ -7,7 +7,14 @@ Pattern parsing and pattern state management.
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 
-module SAD.ForTheL.Pattern where
+module SAD.ForTheL.Pattern 
+  ( nvr
+  , newPrdPattern
+  , addExpr
+  , unnamedNotion
+  , avr
+  , newNotionPattern
+  ) where
 
 
 import qualified Control.Monad.State.Class as MS
@@ -21,8 +28,8 @@ import SAD.Parser.Primitives
 import SAD.Core.SourcePos (SourcePos)
 
 import SAD.Data.Formula
-import SAD.Data.TermId
-import SAD.Data.VarName
+
+
 
 import Data.List
 import Data.Char
@@ -41,64 +48,57 @@ incId p n = if p then succ n else n
 
 addExpr :: Formula -> Formula -> Bool -> FState -> FTL Formula
 
-addExpr t@Trm {trmName = tn, trmArgs = vs} f p st
-  | "is " `Text.isPrefixOf` tn =
-  MS.put ns >> return nf
+addExpr t@Trm {trmName = TermUnaryAdjective _, trmArgs = vs} f p st
+  = MS.put ns >> return nf
   where
     n = idCount st;
     (pt, nf) = extractWordPattern st (giveId p n t) f
     fm  = substs nf $ map varName vs
-    ns  = st { adjExpr = (pt, fm) : adjExpr st, idCount = incId p n}
+    ns  = st { adjectiveExpr = (pt, fm) : adjectiveExpr st, idCount = incId p n}
 
-addExpr t@Trm {trmName = tn, trmArgs = vs} f p st
-  | "do " `Text.isPrefixOf` tn =
-  MS.put ns >> return nf
+addExpr t@Trm {trmName = TermUnaryVerb _, trmArgs = vs} f p st
+  = MS.put ns >> return nf
   where
     n = idCount st;
     (pt, nf) = extractWordPattern st (giveId p n t) f
     fm = substs nf $ map varName vs
     ns = st {verExpr = (pt, fm) : verExpr st, idCount = incId p n}
 
-addExpr t@Trm {trmName = tn, trmArgs = vs} f p st
-  | "mis " `Text.isPrefixOf` tn =
-  MS.put ns >> return nf
+addExpr t@Trm {trmName = TermMultiAdjective _, trmArgs = vs} f p st
+  = MS.put ns >> return nf
   where
     n = idCount st;
     ((hp:tp), nf) = extractWordPattern st (giveId p n t) f
-    pt = hp : Wd [] : Vr : tp
+    pt = hp : Word [] : Vr : tp
     fm = substs nf $ map varName vs
-    ns = st {adjExpr = (pt, fm) : adjExpr st, idCount = incId p n}
+    ns = st {adjectiveExpr = (pt, fm) : adjectiveExpr st, idCount = incId p n}
 
-addExpr t@Trm {trmName = tn, trmArgs = vs} f p st
-  | "mdo " `Text.isPrefixOf` tn =
-  MS.put ns >> return nf
+addExpr t@Trm {trmName = TermMultiVerb _, trmArgs = vs} f p st
+  = MS.put ns >> return nf
   where
     n = idCount st;
     ((hp:tp), nf) = extractWordPattern st (giveId p n t) f
-    pt = hp : Wd [] : Vr : tp
+    pt = hp : Word [] : Vr : tp
     fm = substs nf $ map varName vs
     ns = st {verExpr = (pt, fm) : verExpr st, idCount = incId p n}
 
-addExpr t@Trm {trmName = tn, trmArgs = vs} f p st
-  | "a " `Text.isPrefixOf` tn =
-  MS.put ns >> return nf
+addExpr t@Trm {trmName = TermNotion _, trmArgs = vs} f p st
+  = MS.put ns >> return nf
   where
     n = idCount st;
     (pt, nf) = extractWordPattern st (giveId p n t) f
     fm = substs nf $ map varName vs
-    ns = st {ntnExpr = (pt, fm) : ntnExpr st, idCount = incId p n}
+    ns = st {notionExpr = (pt, fm) : notionExpr st, idCount = incId p n}
 
-addExpr Trm {trmName= "=", trmArgs = [v, t@Trm {trmName = tn}]} f p st
-  | "a " `Text.isPrefixOf` tn =
-  MS.put ns >> return nf
+addExpr Trm {trmName= TermEquality, trmArgs = [v, t@Trm {trmName = TermNotion rs}]} f p st
+  = MS.put ns >> return nf
   where
-    rs = Text.drop 2 tn
     n = idCount st; vs = trmArgs t
-    (pt, nf) = extractWordPattern st (giveId p n t {trmName = "tthe " <> rs}) f
+    (pt, nf) = extractWordPattern st (giveId p n t {trmName = TermThe rs}) f
     fm = substs nf $ map varName (v:vs)
-    ns = st {ntnExpr = (pt, fm) : ntnExpr st, idCount = incId p n}
+    ns = st {notionExpr = (pt, fm) : notionExpr st, idCount = incId p n}
 
-addExpr Trm {trmName = "=", trmArgs = [_, t]} eq@Trm {trmName = "="} p st =
+addExpr Trm {trmName = TermEquality, trmArgs = [_, t]} eq@Trm {trmName = TermEquality} p st =
   MS.put nn >> return (zEqu v nf)
   where
     [v, f] = trmArgs eq; vs = trmArgs t
@@ -144,37 +144,37 @@ addExpr t@Trm {trmName = s, trmArgs = vs} f p st =
 
 -- pattern extraction
 
-extractWordPattern :: FState -> Formula -> Formula -> ([Patt], Formula)
+extractWordPattern :: FState -> Formula -> Formula -> ([Pattern], Formula)
 extractWordPattern st t@Trm {trmName = s, trmArgs = vs} f = (pt, nf)
   where
-    pt = map getPatt ws
-    nt = t {trmName = pr <> getName pt}
+    pt = map getPattern ws
+    nt = t {trmName = pr $ getName pt}
     nf = replace nt t {trmId = NewId} f
-    (pr:ws) = Text.words s
+    (pr, ws) = fmap Text.words $ termSplit s
     dict = strSyms st
 
-    getPatt "." = Nm
-    getPatt "#" = Vr
-    getPatt w = Wd $ foldl' union [w] $ filter (elem w) dict
+    getPattern "." = Nm
+    getPattern "#" = Vr
+    getPattern w = Word $ foldl' union [w] $ filter (elem w) dict
 
-    getName (Wd (t:_):ls) = case Text.uncons t of
+    getName (Word (t:_):ls) = case Text.uncons t of
       Just (c, cs) -> Text.cons (toUpper c) cs <> getName ls
       Nothing -> getName ls
     getName (_:ls) = getName ls
     getName [] = ""
 
 
-extractSymbPattern :: Formula -> Formula -> ([Patt], Formula)
-extractSymbPattern t@Trm {trmName = s, trmArgs = vs} f = (pt, nf)
+extractSymbPattern :: Formula -> Formula -> ([Pattern], Formula)
+extractSymbPattern t@Trm {trmName = TermName s, trmArgs = vs} f = (pt, nf)
   where
-    pt = map getPatt (Text.words s)
-    nt = t {trmName = "s" <> getName pt}
+    pt = map getPattern (Text.words s)
+    nt = t {trmName = TermSymbolic $ getName pt}
     nf = replace nt t {trmId = NewId} f
 
-    getPatt "#" = Vr
-    getPatt w = Sm w
+    getPattern "#" = Vr
+    getPattern w = Symbol w
 
-    getName (Sm s:ls) = Text.pack (symEncode (Text.unpack s)) <> getName ls
+    getName (Symbol s:ls) = Text.pack (symEncode (Text.unpack s)) <> getName ls
     getName (Vr:ls) = Text.pack (symEncode ".") <> getName ls
     getName [] = ""
 
@@ -195,32 +195,32 @@ newPrdPattern tvr = multi </> unary </> newSymbPattern tvr
       (t, vs) <- multiAdj -|- multiVerb
       return $ zTrm NewId t (u:v:vs)
 
-    unaryAdj = do is; (t, vs) <- ptHead wlexem tvr; return ("is " <> t, vs)
-    multiAdj = do is; (t, vs) <- ptHead wlexem tvr; return ("mis " <> t, vs)
-    unaryVerb = do (t, vs) <- ptHead wlexem tvr; return ("do " <> t, vs)
-    multiVerb = do (t, vs) <- ptHead wlexem tvr; return ("mdo " <> t, vs)
+    unaryAdj = do is; (t, vs) <- ptHead wlexem tvr; return (TermUnaryAdjective t, vs)
+    multiAdj = do is; (t, vs) <- ptHead wlexem tvr; return (TermMultiAdjective t, vs)
+    unaryVerb = do (t, vs) <- ptHead wlexem tvr; return (TermUnaryVerb t, vs)
+    multiVerb = do (t, vs) <- ptHead wlexem tvr; return (TermMultiVerb t, vs)
 
-newNtnPattern :: FTL Formula
+newNotionPattern :: FTL Formula
                  -> FTL (Formula, (VariableName, SourcePos))
-newNtnPattern tvr = (ntn <|> fun) </> unnamedNotion tvr
+newNotionPattern tvr = (notion <|> fun) </> unnamedNotion tvr
   where
-    ntn = do
+    notion = do
       an; (t, v:vs) <- ptName wlexem tvr
-      return (zTrm NewId ("a " <> t) (v:vs), (varName v, varPosition v))
+      return (zTrm NewId (TermNotion t) (v:vs), (varName v, varPosition v))
     fun = do
       the; (t, v:vs) <- ptName wlexem tvr
-      return (zEqu v $ zTrm NewId ("a " <> t) vs, (varName v, varPosition v))
+      return (zEqu v $ zTrm NewId (TermNotion t) vs, (varName v, varPosition v))
 
 unnamedNotion :: FTL Formula
                  -> FTL (Formula, (VariableName, SourcePos))
-unnamedNotion tvr = (ntn <|> fun) </> (newSymbPattern tvr >>= equ)
+unnamedNotion tvr = (notion <|> fun) </> (newSymbPattern tvr >>= equ)
   where
-    ntn = do
+    notion = do
       an; (t, v:vs) <- ptNoName wlexem tvr
-      return (zTrm NewId ("a " <> t) (v:vs), (varName v, varPosition v))
+      return (zTrm NewId (TermNotion t) (v:vs), (varName v, varPosition v))
     fun = do
       the; (t, v:vs) <- ptNoName wlexem tvr
-      return (zEqu v $ zTrm NewId ("a " <> t) vs, (varName v, varPosition v))
+      return (zEqu v $ zTrm NewId (TermNotion t) vs, (varName v, varPosition v))
     equ t = do v <- hidden; return (zEqu (pVar v) t, v)
 
 
@@ -229,11 +229,11 @@ newSymbPattern tvr = left -|- right
   where
     left = do
       (t, vs) <- ptHead slexem tvr
-      return $ zTrm NewId t vs
+      return $ zTrm NewId (TermName t) vs
     right = do
       (t, vs) <- ptTail slexem tvr
       guard $ not $ null $ tail $ Text.words t
-      return $ zTrm NewId t vs
+      return $ zTrm NewId (TermName t) vs
 
 
 -- pattern parsing
@@ -244,7 +244,7 @@ ptHead :: Parser st Text
 ptHead lxm tvr = do
   l <- Text.unwords <$> chain lxm
   (ls, vs) <- opt ("", []) $ ptTail lxm tvr
-  return (l <> (' ' `Text.cons` ls), vs)
+  return (l <> " " <> ls, vs)
 
 
 ptTail :: Parser st Text
@@ -258,15 +258,22 @@ ptTail lxm tvr = do
 ptName :: FTL Text
           -> FTL Formula -> FTL (Text, [Formula])
 ptName lxm tvr = do
-  l <- Text.unwords <$> chain lxm; n <- nam
+  l <- Text.unwords <$> chain lxm
+  n <- nam
   (ls, vs) <- opt ("", []) $ ptHead lxm tvr
   return (l <> " . " <> ls, n:vs)
+  where
+    nam :: FTL Formula
+    nam = do
+      n <- fmap (const Top) nvr </> avr
+      guard $ isVar n; 
+      return n
 
 
 ptNoName :: FTL Text
             -> FTL Formula -> FTL (Text, [Formula])
 ptNoName lxm tvr = do
-  l <- Text.unwords <$> chain lxm; n <- hid
+  l <- Text.unwords <$> chain lxm; n <- fmap pVar hidden
   (ls, vs) <- opt ("", []) $ ptShort lxm tvr
   return (l <> " . " <> ls, n:vs)
   where
@@ -306,7 +313,9 @@ wlx = failing nvr >> tokenPrim isWord
 
 nvr :: FTL Formula
 nvr = do
-  v <- var; dvs <- getDecl; tvs <- MS.gets tvrExpr
+  v <- var
+  dvs <- getDecl
+  tvs <- MS.gets tvrExpr
   guard $ fst v `elem` dvs || any (elem (fst v) . fst) tvs
   return $ pVar v
 
@@ -318,11 +327,3 @@ avr = do
   where
     deVar (VarConstant s) = s
     deVar _ = error "SAD.ForTheL.Pattern.avr: other variable"
-
-nam :: FTL Formula
-nam = do
-  n <- fmap (const Top) nvr </> avr
-  guard $ isVar n ; return n
-
-hid :: FTL Formula
-hid = fmap pVar hidden

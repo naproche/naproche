@@ -26,9 +26,8 @@ import SAD.Data.Instr hiding (position)
 import SAD.Parser.Token
 import SAD.Data.Text.Decl (Decl)
 import SAD.Data.Text.Decl
-import SAD.ForTheL.Base (VarName)
 import SAD.Parser.Error (ParseError)
-import SAD.Data.VarName
+
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 
@@ -41,7 +40,7 @@ data ProofText =
   | NonProofTextStoredInstr [Instr] -- a way to restore instructions during verification
   | ProofTextDrop Pos Drop
   | ProofTextSynonym SourcePos
-  | ProofTextPretyping SourcePos [VarName]
+  | ProofTextPretyping SourcePos [(VariableName, SourcePos)]
   | ProofTextMacro SourcePos
   | ProofTextError ParseError
   | ProofTextChecked ProofText

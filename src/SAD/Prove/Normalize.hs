@@ -17,13 +17,12 @@ module SAD.Prove.Normalize  (
   ) where
 
 import SAD.Data.Formula
-import SAD.Data.TermId
 import SAD.Core.SourcePos
 
 import Data.List
 import qualified Data.Text.Lazy as Text
 import SAD.Data.Text.Decl
-import SAD.Data.VarName
+
 
 
 
@@ -60,9 +59,9 @@ pushdown (Not Bot)       = Top
 pushdown (Not Top)       = Bot
 pushdown (Tag _ f) = pushdown f
 pushdown (Not (Tag _ f)) = pushdown (Not f)
-pushdown (All _ (Imp (Tag HeadTerm Trm {trmName = "=", trmArgs = [_,t]} ) f)) =
+pushdown (All _ (Imp (Tag HeadTerm Trm {trmName = TermEquality, trmArgs = [_,t]} ) f)) =
   pushdown $ dec $ indSubst t VarEmpty $ inst VarEmpty f
-pushdown (All _ (Iff (Tag HeadTerm eq@Trm {trmName = "=", trmArgs = [_,t]}) f)) =
+pushdown (All _ (Iff (Tag HeadTerm eq@Trm {trmName = TermEquality, trmArgs = [_,t]}) f)) =
   And (All (newDecl VarEmpty) (Or eq (Not f))) $ dec $ indSubst t VarEmpty $ inst VarEmpty f
 pushdown f = f
 
@@ -140,14 +139,8 @@ instSk skolemCnt dependencyCnt = dive 0
     dive d Ind {indIndex = m} | d == m = skolemFunction d
     dive d f = mapF (dive d) f
 
-    skolemFunction = zTrm (SkolemId skolemId) skolemName . skolemArguments
-
-
+    skolemFunction = zTrm (SkolemId (skolemCnt)) (TermTask skolemCnt) . skolemArguments
     skolemArguments d = [Ind (i + d) noSourcePos | i <- [1..dependencyCnt] ]
-
-    skolemId = -20 - skolemCnt
-    skolemName = Text.pack $ "tsk" ++ show skolemCnt
-
 
 
 -- specialization of formula: get rid of universal quantifiers

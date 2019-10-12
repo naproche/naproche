@@ -22,7 +22,7 @@ import SAD.Data.Formula (Formula(..))
 import Prelude hiding (lookup, head)
 import qualified Data.List as L
 import Data.Maybe
-import SAD.Data.TermId (TermId)
+import SAD.Data.Terms (TermId)
 import SAD.Data.VarName
 import Data.Text.Lazy (Text)
 

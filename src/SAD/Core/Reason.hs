@@ -32,7 +32,7 @@ import qualified Isabelle.Standard_Thread as Standard_Thread
 import qualified Data.Text.Lazy as Text
 
 import SAD.Core.SourcePos
-import SAD.Data.VarName
+
 import SAD.Core.Base
 import qualified SAD.Core.Message as Message
 import SAD.Data.Formula
@@ -41,10 +41,9 @@ import SAD.Data.Text.Context (Context(Context))
 import qualified SAD.Data.Text.Context as Context
 import SAD.Data.Text.Block (Section(..))
 import qualified SAD.Data.Text.Block as Block
-import SAD.Data.Definition (Definitions)
+import SAD.Data.Definition hiding (isDefinition, DefType(..), Guards)
 import qualified SAD.Data.Definition as Definition
-import SAD.Data.Evaluation (Evaluation)
-import qualified SAD.Data.Evaluation as Evaluation
+
 import SAD.Export.Prover
 import SAD.Prove.MESON
 import qualified SAD.Data.Structures.DisTree as DT
@@ -180,9 +179,9 @@ replaceHeadTerm :: Context -> Context
 replaceHeadTerm c = Context.setForm c $ dive 0 $ Context.formula c
   where
     dive :: Int -> Formula -> Formula
-    dive n (All _ (Imp (Tag HeadTerm Trm {trmName = "=", trmArgs = [_, t]}) f)) =
+    dive n (All _ (Imp (Tag HeadTerm Trm {trmName = TermEquality, trmArgs = [_, t]}) f)) =
       subst t VarEmpty $ inst VarEmpty f
-    dive n (All _ (Iff (Tag HeadTerm eq@Trm {trmName = "=", trmArgs = [_, t]}) f))
+    dive n (All _ (Iff (Tag HeadTerm eq@Trm {trmName = TermEquality, trmArgs = [_, t]}) f))
       = And (subst t VarEmpty $ inst VarEmpty f) (All (newDecl VarEmpty) $ Imp f eq)
     dive n (All _ (Imp (Tag HeadTerm Trm{}) Top)) = Top
     dive n (All v f) =
@@ -204,7 +203,7 @@ trivialByEvidence :: Formula -> Bool
 trivialByEvidence f = isTop $ reduceWithEvidence f
 
 reduceWithEvidence :: Formula -> Formula
-reduceWithEvidence t@Trm{trmName = "="} = t -- leave equality untouched
+reduceWithEvidence t@Trm{trmName = TermEquality} = t -- leave equality untouched
 reduceWithEvidence l | isLiteral l = -- try to reduce literals
   fromMaybe l $ msum $ map (lookFor l) (trmArgs $ ltAtomic l)
 reduceWithEvidence f = bool $ mapF reduceWithEvidence $ bool f
@@ -307,7 +306,7 @@ unfoldAtomic sign f = do
     termLocalProperties h =
       liftM2 (++) (subtermLocalProperties h) (localProperties h)
     localProperties (Tag GenericMark _) = return []
-    localProperties Trm {trmName = "=", trmArgs = [l,r]} =
+    localProperties Trm {trmName = TermEquality, trmArgs = [l,r]} =
       liftM3 (\a b c -> a ++ b ++ c)
              (definitionalProperties l r)
              (definitionalProperties r l)
@@ -328,8 +327,8 @@ unfoldAtomic sign f = do
             def <- Map.lookup id definitions;
             -- only unfold a definitions or (a sigext in a positive position)
             guard (sign || Definition.isDefinition def)
-            sb <- match (Definition.term def) f
-            let definingFormula = replace (Tag GenericMark g) ThisT $ sb $ Definition.formula def
+            sb <- match (defTerm def) f
+            let definingFormula = replace (Tag GenericMark g) ThisT $ sb $ defFormula def
         -- substitute the (marked) term
             guard (not . isTop $ definingFormula)
             return definingFormula
@@ -366,10 +365,10 @@ unfoldAtomic sign f = do
         return evaluationFormula
       where
         findev ev = do
-          sb <- match (Evaluation.term ev) t
-          guard (all trivialByEvidence $ map sb $ Evaluation.conditions ev)
+          sb <- match (evaluationTerm ev) t
+          guard (all trivialByEvidence $ map sb $ evaluationConditions ev)
           return $ replace (Tag GenericMark t) ThisT $ sb $
-            if sign then Evaluation.positives ev else Evaluation.negatives ev
+            if sign then evaluationPositives ev else evaluationNegatives ev
 
     unfGuard unfoldSetting action =
       asks unfoldSetting >>= \p -> if p then action else return []

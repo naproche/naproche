@@ -6,7 +6,12 @@ Syntax of ForThel Instructions.
 
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.ForTheL.Instruction where
+module SAD.ForTheL.Instruction 
+  ( instr
+  , instrDrop
+  , instrExit
+  , instrRead
+  ) where
 
 import Control.Monad
 import Data.Text.Lazy (Text)

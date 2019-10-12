@@ -19,11 +19,11 @@ import SAD.Data.Instr
 import SAD.Data.Text.Context (Context)
 import qualified SAD.Data.Text.Context as Context
 import qualified SAD.Data.Text.Block as Block (link, position)
-import qualified SAD.Data.Definition as Definition
+import SAD.Data.Definition hiding (Guards)
 import SAD.Core.Base
 import qualified SAD.Core.Message as Message
 import SAD.Core.Reason
-import SAD.Data.VarName
+
 import qualified Data.Text.Lazy as Text
 
 {- check definitions and fortify terms with evidences in a formula -}
@@ -35,7 +35,7 @@ fillDef alreadyChecked context = fill True False [] (Just True) 0 $ Context.form
           fmap (Tag HeadTerm) $ fill isPredicat True localContext sign n f
       | otherwise  =  -- ignore every other tag
           fmap (Tag tag) $ fill isPredicat isNewWord localContext sign n f
-    fill _ _ _ _ _ t  | isThesis t = thesis >>= return . Context.formula
+    fill _ _ _ _ _ Trm {trmName = TermThesis} = thesis >>= return . Context.formula
     fill _ _ localContext _ _ v | isVar v = do
       userInfoSetting <- askInstructionBool Info True
       newContext      <- cnRaise context localContext
@@ -85,9 +85,9 @@ type DefDuo = (Guards, FortifiedTerm)
 findDef :: Formula -> VM DefDuo
 findDef term@Trm{trmArgs = tArgs} = do
   def <- getDef term
-  sb  <- match (Definition.term def) term
-  let guards   = map (infoSub sb) $ Definition.guards def -- definition's guards
-      evidence = map sb $ Definition.evidence def -- definitional evidence
+  sb  <- match (defTerm def) term
+  let guards   = map (infoSub sb) $ defGuards def -- definition's guards
+      evidence = map sb $ defEvidence def -- definitional evidence
       newTerm  = term { trmInfo = evidence } -- fortified term
   return (guards, newTerm)
 
@@ -166,7 +166,7 @@ typings (context:restContext) term =
             let newInfo = sign predicate {trmArgs = reverse ls ++ (ThisT : rs)}
             return $ newInfo : notionEvidence ls predicate ++ trInfo arg
 
-    dive e@Trm {trmName = "=", trmArgs = [l,r]} =
+    dive e@Trm {trmName = TermEquality, trmArgs = [l,r]} =
       if   twins l term
       then return $ joinEvidences (trInfo l) (trInfo r)
       else if   twins r term

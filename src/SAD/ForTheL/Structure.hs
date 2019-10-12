@@ -36,7 +36,7 @@ import SAD.Data.Formula
 import qualified SAD.Data.Tag as Tag
 import SAD.Data.Text.Decl (Decl(Decl))
 import SAD.Data.Text.Decl
-import SAD.Data.VarName
+
 
 forthel :: FTL [ProofText]
 forthel = section <|> macroOrPretype <|> bracketExpression <|> endOfFile

@@ -1,16 +1,18 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.Export.Representation where
+module SAD.Export.Representation
+  ( Representation(..)
+  , buildParens
+  , buildArgumentsWith
+  , commaSeparated
+  , Builder.toLazyText
+  )where
 
-import Data.Text.Lazy (Text)
 import Data.Text.Lazy.Builder (Builder)
 import qualified Data.Text.Lazy.Builder as Builder
 
 class Representation a where
   represent :: a -> Builder
-
-forceBuilder :: Builder -> Text
-forceBuilder = Builder.toLazyText 
 
 buildParens :: Builder -> Builder
 buildParens xs = "(" <> xs <> ")"

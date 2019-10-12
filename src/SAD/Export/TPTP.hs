@@ -8,7 +8,7 @@ Print proof task in TPTP syntax.
 
 module SAD.Export.TPTP (output) where
 
-import SAD.Data.Formula (Formula(..), isEquality, showTrName)
+import SAD.Data.Formula (Formula(..), showTrName, TermName(..))
 import SAD.Data.Text.Block (Block(Block))
 import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Text.Context (Context(..))
@@ -19,7 +19,7 @@ import qualified Data.Text.Lazy.Builder as Builder
 import SAD.Export.Representation
 
 output :: [Context] -> Context -> Text
-output contexts goal = forceBuilder $
+output contexts goal = toLazyText $
   mconcat (map (tptpForm ",hypothesis,") $ reverse contexts)
   <> tptpForm ",conjecture," goal
 
@@ -44,7 +44,7 @@ tptpTerm d = dive
     dive (Not f)    = buildParens $ " ~ " <> dive f
     dive Top        = "$true"
     dive Bot        = "$false"
-    dive t@Trm {} | isEquality t = let [l, r] = trmArgs t in sinfix " = " l r
+    dive t@Trm {trmName = TermEquality} = let [l, r] = trmArgs t in sinfix " = " l r
     dive t@Trm {}   = Builder.fromLazyText (showTrName t) <> buildArgumentsWith dive (trmArgs t)
     dive v@Var {}   = Builder.fromLazyText (showTrName v)
     dive i@Ind {}   = "W" <> (Builder.fromString (show (d - 1 - indIndex i)))

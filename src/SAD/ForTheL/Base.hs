@@ -18,7 +18,6 @@ import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 
 import SAD.Data.Formula
-import SAD.Data.TermId
 
 import SAD.Parser.Base
 import SAD.Parser.Combinators
@@ -31,8 +30,7 @@ import SAD.Data.Text.Decl
 
 import SAD.Core.Message (PIDE)
 import qualified SAD.Core.Message as Message
-import SAD.Data.VarName
-import SAD.Export.Representation (represent, forceBuilder)
+import SAD.Export.Representation (represent, toLazyText)
 
 type FTL = Parser FState
 
@@ -44,13 +42,13 @@ type UNotion = (Formula -> Formula, Formula, VarName)
 type MTerm   = (Formula -> Formula, [Formula])
 type MNotion = (Formula -> Formula, Formula, [VarName])
 
-type Prim    = ([Patt], [Formula] -> Formula)
+type Prim    = ([Pattern], [Formula] -> Formula)
 
 type VarName = (VariableName, SourcePos)
 
 
 data FState = FState {
-  adjExpr, verExpr, ntnExpr, sntExpr :: [Prim],
+  adjectiveExpr, verExpr, notionExpr, sntExpr :: [Prim],
   cfnExpr, rfnExpr, lfnExpr, ifnExpr :: [Prim],
   cprExpr, rprExpr, lprExpr, iprExpr :: [Prim],
 
@@ -68,24 +66,24 @@ initFS = FState
   0 0 0 []
   where
     eq = [
-      ([Wd ["equal"], Wd ["to"], Vr], zTrm EqualityId "="),
-      ([Wd ["nonequal"], Wd ["to"], Vr], Not . zTrm EqualityId "=") ]
+      ([Word ["equal"], Word ["to"], Vr], zTrm EqualityId TermEquality),
+      ([Word ["nonequal"], Word ["to"], Vr], Not . zTrm EqualityId TermEquality) ]
     sp = [
-      ([Sm "="], zTrm EqualityId "="),
-      ([Sm "!", Sm "="], Not . zTrm EqualityId "="),
-      ([Sm "-", Sm "<", Sm "-"], zTrm LessId "iLess"),
-      ([Sm "-~-"], \(m:n:_) -> zAll VarEmpty $
+      ([Symbol "="], zTrm EqualityId TermEquality),
+      ([Symbol "!", Symbol "="], Not . zTrm EqualityId TermEquality),
+      ([Symbol "-", Symbol "<", Symbol "-"], zTrm LessId TermLess),
+      ([Symbol "-~-"], \(m:n:_) -> zAll VarEmpty $
         Iff (zElem (zVar VarEmpty) m) (zElem (zVar VarEmpty) n)) ]
-    sn = [ ([Sm "=", Vr], zTrm EqualityId "=") ]
+    sn = [ ([Symbol "=", Vr], zTrm EqualityId TermEquality) ]
     nt = [
-      ([Wd ["function","functions"], Nm], zFun . head),
-      ([Wd ["set","sets"], Nm], zSet . head),
-      ([Wd ["element", "elements"], Nm, Wd ["of"], Vr], \(x:m:_) -> zElem x m),
-      ([Wd ["object", "objects"], Nm], zObj . head)]
-    rf = [ ([Sm "[", Vr, Sm "]"], \(f:x:_) -> zApp f x)]
+      ([Word ["function","functions"], Nm], zFun . head),
+      ([Word ["set","sets"], Nm], zSet . head),
+      ([Word ["element", "elements"], Nm, Word ["of"], Vr], \(x:m:_) -> zElem x m),
+      ([Word ["object", "objects"], Nm], zObj . head)]
+    rf = [ ([Symbol "[", Vr, Symbol "]"], \(f:x:_) -> zApp f x)]
     cf = [
-      ([Sm "Dom", Sm "(",Vr,Sm ")"], zDom . head),
-      ([Sm "(", Vr, Sm ",", Vr, Sm ")"], \(x:y:_) -> zPair x y) ]
+      ([Symbol "Dom", Symbol "(",Vr,Symbol ")"], zDom . head),
+      ([Symbol "(", Vr, Symbol ",", Vr, Symbol ")"], \(x:y:_) -> zPair x y) ]
 
 
 
@@ -117,20 +115,20 @@ makeDecl (nm, pos) = do
 declared :: FTL MNotion -> FTL (Formula -> Formula, Formula, [Decl])
 declared p = do (q, f, v) <- p; nv <- mapM makeDecl v; return (q, f, nv)
 
--- Predicates: verbs and adjectives
+-- Predicates: verbs and adjectiveectives
 
 primVer, primAdj, primUnAdj :: FTL UTerm -> FTL UTerm
 
 primVer = getExpr verExpr . primPrd
-primAdj = getExpr adjExpr . primPrd
-primUnAdj = getExpr (filter (unary . fst) . adjExpr) . primPrd
+primAdj = getExpr adjectiveExpr . primPrd
+primUnAdj = getExpr (filter (unary . fst) . adjectiveExpr) . primPrd
   where
     unary pt = Vr `notElem` pt
 
 primPrd :: Parser st (b1 -> b1, Formula)
-           -> ([Patt], [Formula] -> b2) -> Parser st (b1 -> b1, b2)
+           -> ([Pattern], [Formula] -> b2) -> Parser st (b1 -> b1, b2)
 primPrd p (pt, fm) = do
-  (q, ts) <- wdPatt p pt
+  (q, ts) <- wdPattern p pt
   return (q, fm $ (zVar (VarHole "")):ts)
 
 
@@ -139,49 +137,49 @@ primPrd p (pt, fm) = do
 primMultiVer, primMultiAdj, primMultiUnAdj :: FTL UTerm -> FTL UTerm
 
 primMultiVer = getExpr verExpr . prim_ml_prd
-primMultiAdj = getExpr adjExpr . prim_ml_prd
-primMultiUnAdj = getExpr (filter (unary . fst) . adjExpr) . prim_ml_prd
+primMultiAdj = getExpr adjectiveExpr . prim_ml_prd
+primMultiUnAdj = getExpr (filter (unary . fst) . adjectiveExpr) . prim_ml_prd
   where
     unary (Vr : pt) = Vr `notElem` pt
     unary (_  : pt) = unary pt
     unary _ = True
 
 prim_ml_prd :: Parser st (b1 -> b1, Formula)
-               -> ([Patt], [Formula] -> b2) -> Parser st (b1 -> b1, b2)
+               -> ([Pattern], [Formula] -> b2) -> Parser st (b1 -> b1, b2)
 prim_ml_prd p (pt, fm) = do
-  (q, ts) <- mlPatt p pt
+  (q, ts) <- mlPattern p pt
   return (q, fm $ (zVar (VarHole "")):(zVar VarSlot):ts)
 
 
 -- Notions and functions
 
-primNtn, primOfNtn :: FTL UTerm -> FTL MNotion
+primNotion, primOfNotion :: FTL UTerm -> FTL MNotion
 
-primNtn p  = getExpr ntnExpr ntn
+primNotion p  = getExpr notionExpr notion
   where
-    ntn (pt, fm) = do
-      (q, vs, ts) <- ntPatt p pt
+    notion (pt, fm) = do
+      (q, vs, ts) <- ntPattern p pt
       return (q, fm $ (zVar (VarHole "")):ts, vs)
 
-primOfNtn p = getExpr ntnExpr ntn
+primOfNotion p = getExpr notionExpr notion
   where
-    ntn (pt, fm) = do
-      (q, vs, ts) <- ofPatt p pt
+    notion (pt, fm) = do
+      (q, vs, ts) <- ofPattern p pt
       let fn v = fm $ (pVar v):(zVar (VarHole "")):ts
       return (q, foldr1 And $ map fn vs, vs)
 
-primCmNtn :: FTL UTerm -> FTL MTerm -> FTL MNotion
-primCmNtn p s = getExpr ntnExpr ntn
+primCmNotion :: FTL UTerm -> FTL MTerm -> FTL MNotion
+primCmNotion p s = getExpr notionExpr notion
   where
-    ntn (pt, fm) = do
-      (q, vs, as, ts) <- cmPatt p s pt
+    notion (pt, fm) = do
+      (q, vs, as, ts) <- cmPattern p s pt
       let fn v = fm $ (zVar (VarHole "")):v:ts
       return (q, foldr1 And $ map fn as, vs)
 
 primFun :: FTL UTerm -> FTL UTerm
-primFun  = (>>= fun) . primNtn
+primFun  = (>>= fun) . primNotion
   where
-    fun (q, Trm {trmName = "=", trmArgs = [_, t]}, _)
+    fun (q, Trm {trmName = TermEquality, trmArgs = [_, t]}, _)
       | not (occursH t) = return (q, t)
     fun _ = mzero
 
@@ -208,36 +206,36 @@ primIfn :: FTL Formula
            -> FTL (Formula -> Formula -> Formula)
 primIfn = getExpr ifnExpr . primIsm
 
-primCsm :: Parser st a -> ([Patt], [a] -> b) -> Parser st b
-primCsm p (pt, fm) = smPatt p pt >>= \l -> return $ fm l
-primRsm :: Parser st a -> ([Patt], [a] -> t) -> Parser st (a -> t)
-primRsm p (pt, fm) = smPatt p pt >>= \l -> return $ \t -> fm $ t:l
-primLsm :: Parser st a -> ([Patt], [a] -> t) -> Parser st (a -> t)
-primLsm p (pt, fm) = smPatt p pt >>= \l -> return $ \s -> fm $ l++[s]
+primCsm :: Parser st a -> ([Pattern], [a] -> b) -> Parser st b
+primCsm p (pt, fm) = smPattern p pt >>= \l -> return $ fm l
+primRsm :: Parser st a -> ([Pattern], [a] -> t) -> Parser st (a -> t)
+primRsm p (pt, fm) = smPattern p pt >>= \l -> return $ \t -> fm $ t:l
+primLsm :: Parser st a -> ([Pattern], [a] -> t) -> Parser st (a -> t)
+primLsm p (pt, fm) = smPattern p pt >>= \l -> return $ \s -> fm $ l++[s]
 primIsm :: Parser st a
-           -> ([Patt], [a] -> t) -> Parser st (a -> a -> t)
-primIsm p (pt, fm) = smPatt p pt >>= \l -> return $ \t s -> fm $ t:l++[s]
+           -> ([Pattern], [a] -> t) -> Parser st (a -> a -> t)
+primIsm p (pt, fm) = smPattern p pt >>= \l -> return $ \t s -> fm $ t:l++[s]
 
 
 primSnt :: FTL Formula -> FTL MNotion
 primSnt p  = noError $ varlist >>= getExpr sntExpr . snt
   where
-    snt vs (pt, fm) = smPatt p pt >>= \l -> return (id, fm $ (zVar (VarHole "")):l, vs)
+    snt vs (pt, fm) = smPattern p pt >>= \l -> return (id, fm $ (zVar (VarHole "")):l, vs)
 
 
 
 
-data Patt = Wd [Text] | Sm Text | Vr | Nm deriving (Eq, Show)
+data Pattern = Word [Text] | Symbol Text | Vr | Nm deriving (Eq, Show)
 
--- | DANGER: Not symmetric on `Wd`
-samePat :: [Patt] -> [Patt] -> Bool
+-- | DANGER: Not symmetric on `Word`
+samePat :: [Pattern] -> [Pattern] -> Bool
 samePat [] [] = True
 samePat (x:xs) (y:ys) = samePat1 x y && samePat xs ys
   where
-    samePat1 (Wd ls) (Wd rs) = all (`elem` rs) ls
+    samePat1 (Word ls) (Word rs) = all (`elem` rs) ls
     samePat1 Vr Vr = True
     samePat1 Nm Nm = True
-    samePat1 (Sm s) (Sm t) = s == t
+    samePat1 (Symbol s) (Symbol t) = s == t
     samePat1 _ _ = False
 samePat _ _ = False
 
@@ -245,81 +243,81 @@ samePat _ _ = False
 -- adding error reporting to pattern parsing
 patternTokenOf' :: [Text] -> Parser st ()
 patternTokenOf' l = label ("a word of " <> Text.pack (show l)) $ tokenOf' l
-patternSmTokenOf :: Text -> Parser st ()
-patternSmTokenOf l = label ("the symbol " <> Text.pack (show l)) $ token l
+patternSymbolTokenOf :: Text -> Parser st ()
+patternSymbolTokenOf l = label ("the symbol " <> Text.pack (show l)) $ token l
 
 -- most basic pattern parser: simply follow the pattern and parse terms with p
 -- at variable places
-wdPatt :: Parser st (b -> b, a) -> [Patt] -> Parser st (b-> b, [a])
-wdPatt p (Wd l : ls) = patternTokenOf' l >> wdPatt p ls
-wdPatt p (Vr : ls) = do
+wdPattern :: Parser st (b -> b, a) -> [Pattern] -> Parser st (b-> b, [a])
+wdPattern p (Word l : ls) = patternTokenOf' l >> wdPattern p ls
+wdPattern p (Vr : ls) = do
   (r, t) <- p
-  (q, ts) <- wdPatt p ls
+  (q, ts) <- wdPattern p ls
   return (r . q, t:ts)
-wdPatt _ [] = return (id, [])
-wdPatt _ _ = mzero
+wdPattern _ [] = return (id, [])
+wdPattern _ _ = mzero
 
 -- parses a symbolic pattern
-smPatt :: Parser st a -> [Patt] -> Parser st [a]
-smPatt p (Vr : ls) = liftM2 (:) p $ smPatt p ls
-smPatt p (Sm s : ls) = patternSmTokenOf s >> smPatt p ls
-smPatt _ [] = return []
-smPatt _ _ = mzero
+smPattern :: Parser st a -> [Pattern] -> Parser st [a]
+smPattern p (Vr : ls) = liftM2 (:) p $ smPattern p ls
+smPattern p (Symbol s : ls) = patternSymbolTokenOf s >> smPattern p ls
+smPattern _ [] = return []
+smPattern _ _ = mzero
 
 -- parses a multi-subject pattern: follow the pattern, but ignore the token'
 -- right before the first variable. Then check that all "and" tokens have been
--- consumed. Example pattern: [Wd ["commute","commutes"], Wd ["with"], Vr]. Then
+-- consumed. Example pattern: [Word ["commute","commutes"], Word ["with"], Vr]. Then
 -- we can parse "a commutes with c and d" as well as "a and b commute".
-mlPatt :: Parser st (b -> b, a) -> [Patt] -> Parser st (b -> b, [a])
-mlPatt p (Wd l :_: Vr : ls) = patternTokenOf' l >> naPatt p ls
-mlPatt p (Wd l : ls) = patternTokenOf' l >> mlPatt p ls
-mlPatt _ _ = mzero
+mlPattern :: Parser st (b -> b, a) -> [Pattern] -> Parser st (b -> b, [a])
+mlPattern p (Word l :_: Vr : ls) = patternTokenOf' l >> naPattern p ls
+mlPattern p (Word l : ls) = patternTokenOf' l >> mlPattern p ls
+mlPattern _ _ = mzero
 
 
 -- parses a notion: follow the pattern to the name place, record names,
 -- then keep following the pattern
-ntPatt :: FTL (b -> b, a)
-          -> [Patt] -> FTL (b -> b, [(VariableName, SourcePos)], [a])
-ntPatt p (Wd l : ls) = patternTokenOf' l >> ntPatt p ls
-ntPatt p (Nm : ls) = do
+ntPattern :: FTL (b -> b, a)
+          -> [Pattern] -> FTL (b -> b, [(VariableName, SourcePos)], [a])
+ntPattern p (Word l : ls) = patternTokenOf' l >> ntPattern p ls
+ntPattern p (Nm : ls) = do
   vs <- namlist
-  (q, ts) <- wdPatt p ls
+  (q, ts) <- wdPattern p ls
   return (q, vs, ts)
-ntPatt _ _ = mzero
+ntPattern _ _ = mzero
 
 -- parse an "of"-notion: follow the pattern to the notion name, then check that
 -- "of" follows the name followed by a variable that is not followed by "and"
-ofPatt :: FTL (b -> b, a)
-          -> [Patt] -> FTL (b -> b, [(VariableName, SourcePos)], [a])
-ofPatt p (Wd l : ls) = patternTokenOf' l >> ofPatt p ls
-ofPatt p (Nm : Wd l : Vr : ls) = do
+ofPattern :: FTL (b -> b, a)
+          -> [Pattern] -> FTL (b -> b, [(VariableName, SourcePos)], [a])
+ofPattern p (Word l : ls) = patternTokenOf' l >> ofPattern p ls
+ofPattern p (Nm : Word l : Vr : ls) = do
   guard $ elem "of" l; vs <- namlist
-  (q, ts) <- naPatt p ls
+  (q, ts) <- naPattern p ls
   return (q, vs, ts)
-ofPatt _ _ = mzero
+ofPattern _ _ = mzero
 
 -- | parse a "common"-notion: basically like the above. We use the special parser
 -- s for the first variable place after the "of" since we expect multiple terms
 -- here. Example: A common *divisor of m and n*.
-cmPatt :: FTL (b -> b, a1)
+cmPattern :: FTL (b -> b, a1)
           -> FTL (b -> c, [a2])
-          -> [Patt]
+          -> [Pattern]
           -> FTL (b -> c, [(VariableName, SourcePos)], [a2], [a1])
-cmPatt p s (Wd l:ls) = patternTokenOf' l >> cmPatt p s ls
-cmPatt p s (Nm : Wd l : Vr : ls) = do
+cmPattern p s (Word l:ls) = patternTokenOf' l >> cmPattern p s ls
+cmPattern p s (Nm : Word l : Vr : ls) = do
   guard $ elem "of" l; vs <- namlist; patternTokenOf' l
   (r, as) <- s
   when (null $ tail as) $ fail "several objects expected for `common'"
-  (q, ts) <- naPatt p ls
+  (q, ts) <- naPattern p ls
   return (r . q, vs, as, ts)
-cmPatt _ _ _ = mzero
+cmPattern _ _ _ = mzero
 
 -- an auxiliary pattern parser that checks that we are not dealing with an "and"
 -- token' and then continues to follow the pattern
-naPatt :: Parser st (b -> b, a)
-          -> [Patt] -> Parser st (b -> b, [a])
-naPatt p (Wd l : ls) = guard (notElem "and" l) >> patternTokenOf' l >> wdPatt p ls
-naPatt p ls = wdPatt p ls
+naPattern :: Parser st (b -> b, a)
+          -> [Pattern] -> Parser st (b -> b, [a])
+naPattern p (Word l : ls) = guard (notElem "and" l) >> patternTokenOf' l >> wdPattern p ls
+naPattern p ls = wdPattern p ls
 
 
 
@@ -335,13 +333,13 @@ varlist = do
 
 nodups :: [VariableName] -> Parser st ()
 nodups vs = unless ((null :: [b] -> Bool) $ duplicateNames vs) $
-  fail $ "duplicate names: " ++ (show $ map (Text.unpack . forceBuilder . represent) vs)
+  fail $ "duplicate names: " ++ (show $ map (Text.unpack . toLazyText . represent) vs)
 
 hidden :: FTL (VariableName, SourcePos)
 hidden = do
   n <- MS.gets hiddenCount
   MS.modify $ \st -> st {hiddenCount = succ n}
-  return (VarHidden $ Text.pack $ show n, noSourcePos)
+  return (VarHidden n, noSourcePos)
 
 -- | Parse the next token as a variable (a sequence of alpha-num chars beginning with an alpha)
 -- and return ('x' + the sequence) with the current position.
@@ -383,10 +381,9 @@ decl vs = dive
     dive (Tag _ f) = dive f
     dive (Imp f g) = filter (noc f) (dive g)
     dive (And f g) = dive f `varNameUnion` filter (noc f) (dive g)
-    dive Trm {trmName = tName, trmArgs = v@Var{varName = u@(VarConstant _)}:ts}
-      | Text.head tName == 'a' && all (\t -> not (v `occursIn` t)) ts =
-          guard (u `notElem` vs) >> return (u, varPosition v)
-    dive Trm{trmName = "=", trmArgs = [v@Var{varName = u@(VarConstant _)}, t]}
+    dive t@Trm {trmArgs = v@Var{varName = u@(VarConstant _)}:ts}
+      | isNotion t && all (\t -> not (v `occursIn` t)) ts = guard (u `notElem` vs) >> return (u, varPosition v)
+    dive Trm{trmName = TermEquality, trmArgs = [v@Var{varName = u@(VarConstant _)}, t]}
       | isTrm t && not (v `occursIn` t) =
           guard (u `notElem` vs) >> return (u, varPosition v)
     dive _ = []
@@ -465,4 +462,4 @@ such = tokenOf' ["such", "so"]
 
 showVar :: VariableName -> Text
 showVar (VarConstant nm) = nm
-showVar nm = forceBuilder $ represent nm
+showVar nm = toLazyText $ represent nm

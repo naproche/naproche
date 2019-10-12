@@ -10,7 +10,7 @@ module SAD.Prove.Unify (unify) where
 
 import Control.Monad
 import SAD.Data.Formula
-import SAD.Data.VarName
+
 
 {- given two literals we check whether they are eligible for unification
 (sign and symbol are the same) and then try to unify their arguments-}

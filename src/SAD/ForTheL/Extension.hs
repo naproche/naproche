@@ -28,7 +28,7 @@ import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Data.Text.Decl
 import SAD.Core.SourcePos (SourceRange(..))
-import SAD.Data.VarName
+
 
 
 import Control.Applicative
@@ -53,7 +53,7 @@ defPredicat = do
 
 defNotion :: FTL Formula
 defNotion = do
-  ((n,h),u) <- wellFormedCheck (ntnVars . fst) defn; uDecl <- makeDecl u
+  ((n,h),u) <- wellFormedCheck (notionVars . fst) defn; uDecl <- makeDecl u
   return $ dAll uDecl $ Iff (Tag HeadTerm n) h
   where
     defn = do
@@ -64,7 +64,7 @@ defNotion = do
 
     isOrEq = token' "=" <|> isEq
     isEq   = is >> optLL1 () (token' "equal" >> token' "to")
-    trm Trm {trmName = "=", trmArgs = [_,t]} = t; trm t = t
+    trm Trm {trmName = TermEquality, trmArgs = [_,t]} = t; trm t = t
 
 
 
@@ -80,7 +80,7 @@ sigPredicat = do
 
 sigNotion :: FTL Formula
 sigNotion = do
-  ((n,h),u) <- wellFormedCheck (ntnVars . fst) sig; uDecl <- makeDecl u
+  ((n,h),u) <- wellFormedCheck (notionVars . fst) sig; uDecl <- makeDecl u
   return $ dAll uDecl $ Imp (Tag HeadTerm n) h
   where
     sig = do
@@ -91,36 +91,36 @@ sigNotion = do
 
     noInfo =
       art >> tokenOf' ["notion", "constant"] >> return (id,Top)
-    trm Trm {trmName = "=", trmArgs = [_,t]} = t; trm t = t
+    trm Trm {trmName = TermEquality, trmArgs = [_,t]} = t; trm t = t
 
 newPredicat :: FTL Formula
 newPredicat = do n <- newPrdPattern nvr; MS.get >>= addExpr n n True
 
 newNotion :: FTL (Formula, (VariableName, SourcePos))
 newNotion = do
-  (n, u) <- newNtnPattern nvr;
+  (n, u) <- newNotionPattern nvr;
   f <- MS.get >>= addExpr n n True
   return (f, u)
 
 -- well-formedness check
 
-funVars, ntnVars, prdVars :: (Formula, Formula) -> Maybe Text
+funVars, notionVars, prdVars :: (Formula, Formula) -> Maybe Text
 
 funVars (f, d) | not ifq   = prdVars (f, d)
                | not idq   = Just $ Text.pack $ "illegal function alias: " ++ show d
                | otherwise = prdVars (t {trmArgs = v:trmArgs t}, d)
   where
-    ifq = isEquality f && isTrm t
-    idq = isEquality d && not (u `occursIn` p)
-    Trm {trmName = "=", trmArgs = [v, t]} = f
-    Trm {trmName = "=", trmArgs = [u, p]} = d
+    ifq = isTrm f && trmName f == TermEquality && isTrm t
+    idq = isTrm d && trmName d == TermEquality && not (u `occursIn` p)
+    Trm {trmName = TermEquality, trmArgs = [v, t]} = f
+    Trm {trmName = TermEquality, trmArgs = [u, p]} = d
 
 
-ntnVars (f, d) | not isFunction = prdVars (f, d)
+notionVars (f, d) | not isFunction = prdVars (f, d)
                | otherwise      = prdVars (t {trmArgs = v:vs}, d)
   where
-    isFunction = isEquality f && isTrm t
-    Trm {trmName = "=", trmArgs =  [v,t]} = f
+    isFunction = isTrm f && trmName f == TermEquality && isTrm t
+    Trm {trmName = TermEquality, trmArgs =  [v,t]} = f
     Trm {trmArgs = vs} = t
 
 
@@ -159,13 +159,13 @@ pretypeVariable = do
       SourceRange _ pos2 <- dot
       return (g, pos2)
 
-    upd (vs, ntn) st = st { tvrExpr = (map fst vs, ntn) : tvrExpr st }
+    upd (vs, notion) st = st { tvrExpr = (map fst vs, notion) : tvrExpr st }
 
 
 introduceMacro :: FTL ProofText
 introduceMacro = do
   pos1 <- getPos; markupToken macroLet "let"
-  (pos2, (f, g)) <- narrow (prd -|- ntn)
+  (pos2, (f, g)) <- narrow (prd -|- notion)
   let pos = rangePos $ SourceRange pos1 pos2
   addMacroReport pos
   MS.get >>= addExpr f (ignoreNames g) False
@@ -174,7 +174,7 @@ introduceMacro = do
     prd = wellFormedCheck (prdVars . snd) $ do
       f <- newPrdPattern avr
       standFor; g <- statement; SourceRange _ pos2 <- dot; return (pos2, (f, g))
-    ntn = wellFormedCheck (funVars . snd) $ do
+    notion = wellFormedCheck (funVars . snd) $ do
       (n, u) <- unnamedNotion avr
       standFor; (q, f) <- anotion; SourceRange _ pos2 <- dot
       h <- fmap q $ dig f [pVar u]; return (pos2, (n, h))

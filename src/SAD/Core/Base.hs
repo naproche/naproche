@@ -51,21 +51,21 @@ import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 
 import SAD.Data.Formula
-import SAD.Data.TermId
+
 import SAD.Data.Instr (Instr)
 import SAD.Data.Instr
 import SAD.Data.Text.Block (Block, ProofText)
 import SAD.Data.Text.Context (Context, MRule(..))
 import qualified SAD.Data.Text.Context as Context (name)
 import SAD.Data.Definition (Definitions, DefEntry(DE), DefType(..), Guards)
-import qualified SAD.Data.Definition as Definition
+import SAD.Data.Definition
 import SAD.Data.Rules (Rule)
-import SAD.Data.Evaluation (Evaluation)
+
 import SAD.Export.Base
 import qualified SAD.Data.Structures.DisTree as DT
 import SAD.Core.SourcePos
 import qualified SAD.Core.Message as Message
-import SAD.Data.VarName
+
 
 
 -- | Reasoner state
@@ -371,9 +371,9 @@ initialGuards = foldr (\f -> DT.insert f True) (DT.empty) [
 defForm :: Definitions -> Formula -> Maybe Formula
 defForm definitions term = do
   def <- Map.lookup (trmId term) definitions
-  guard $ Definition.isDefinition def
-  sb <- match (Definition.term def) term
-  return $ sb $ Definition.formula def
+  guard $ isDefinition def
+  sb <- match (defTerm def) term
+  return $ sb $ defFormula def
 
 
 -- retrieve definition of a symbol (monadic)
