@@ -85,8 +85,8 @@ mainBody oldProofTextRef (opts0, text0) = do
       outputMain TRACING noSourcePos $ Text.unpack $ "total " <> timeDifference finishTime
   else
     do
-      -- read provers.dat
-      provers <- readProverDatabase $ Text.unpack (askArgument Provers "provers.dat" opts0)
+      -- read provers.yaml
+      provers <- readProverDatabase $ Text.unpack (askArgument Provers "provers.yaml" opts0)
       -- initialize reasoner state
       reasonerState <- newIORef (RState [] False False)
 
@@ -215,7 +215,7 @@ options = [
   GetOpt.Option ""  ["library"] (GetOpt.ReqArg (GetArgument Library . Text.pack) "DIR")
     "place to look for library texts (def: .)",
   GetOpt.Option ""  ["provers"] (GetOpt.ReqArg (GetArgument Provers . Text.pack) "FILE")
-    "index of provers (def: provers.dat)",
+    "index of provers (def: provers.yaml)",
   GetOpt.Option "P" ["prover"] (GetOpt.ReqArg (GetArgument Prover . Text.pack) "NAME")
     "use prover NAME (def: first listed)",
   GetOpt.Option "t" ["timelimit"] (GetOpt.ReqArg (LimitBy Timelimit . getLeadingPositiveInt) "N")

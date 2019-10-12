@@ -1,0 +1,58 @@
+---
+## Naproche-SAD's provers
+
+- name: "eprover"
+  label: "eprover"
+  path: "eprover"
+  arguments: 
+    - "--auto"
+    - "-s"
+    - "--cpu-limit=%d"
+  successMessage:
+    - "# SZS status Theorem"
+    - "# SZS status ContradictoryAxioms"
+  failureMessage:
+    - "# SZS status CounterSatisfiable"
+  unknownMessage:
+    - "# SZS status ResourceOut"
+    - "# SZS status GaveUp"
+
+# Verbose provers
+
+- name: "eproververb"
+  label: "eproververb"
+  path: "eprover"
+  arguments: 
+    - "-xAuto"
+    - "-tAuto"
+    - "-mAuto"
+    - "--tstp-in"
+    - "-l"
+    - "2"
+    - "--cpu-limit=%d"
+  successMessage:
+    - "# SZS status Theorem"
+    - "# SZS status ContradictoryAxioms"
+  failureMessage:
+    - "# SZS status CounterSatisfiable"
+  unknownMessage:
+    - "# SZS status ResourceOut"
+    - "# SZS status GaveUp"
+
+- name: "spass"
+  label: "SPASS"
+  path: "SPASS"
+  arguments:
+    - "-TPTP"
+    - "-CNFOptSkolem=0"
+    - "-PProblem=0"
+    - "-PGiven=0"
+    - "-Stdin"
+    - "-TimeLimit=%d"
+  successMessage:
+    - "SPASS beiseite: Proof found."
+  failureMessage:
+    - "SPASS beiseite: Completion found."
+  unknownMessage:
+    - "SPASS beiseite: Ran out of time."
+#   - "SPASS beiseite: Maximal number of loops exceeded."

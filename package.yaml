@@ -23,6 +23,7 @@ dependencies:
 - split
 - uuid
 - threads
+- yaml
 
 default-extensions:
   - GeneralizedNewtypeDeriving
