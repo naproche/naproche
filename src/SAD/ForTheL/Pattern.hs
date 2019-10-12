@@ -321,7 +321,7 @@ nvr = do
 
 avr :: Parser st Formula
 avr = do
-  v <- var; 
+  v <- var;
   guard $ Text.null $ Text.tail $ deVar $ fst v
   return $ pVar v
   where

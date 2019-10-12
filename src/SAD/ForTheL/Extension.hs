@@ -147,7 +147,7 @@ pretypeVariable = do
   return $ ProofTextPretyping pos (fst tv)
   where
     typeVar = do
-      pos1 <- getPos; markupToken synonymLet "let"; vs@(_:_) <- varlist; standFor;
+      pos1 <- getPos; markupToken synonymLet "let"; vs@(_:_) <- varList; standFor;
       (g, pos2) <- wellFormedCheck (overfree [] . fst) holedNotion
       let pos = rangePos $ SourceRange pos1 pos2
       addPretypingReport pos $ map snd vs;

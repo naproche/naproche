@@ -12,8 +12,8 @@ module SAD.ForTheL.Base where
 import Control.Applicative
 import Control.Monad
 import qualified Control.Monad.State.Class as MS
-import Data.Char
-import Data.List
+import Data.Char (isAlpha, isAlphaNum)
+import Data.List (unionBy)
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 
@@ -23,7 +23,7 @@ import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
 
-import SAD.Core.SourcePos
+import SAD.Core.SourcePos (SourcePos, noSourcePos)
 
 import SAD.Data.Text.Decl (Decl(Decl))
 import SAD.Data.Text.Decl
@@ -136,18 +136,18 @@ primPrd p (pt, fm) = do
 
 primMultiVer, primMultiAdj, primMultiUnAdj :: FTL UTerm -> FTL UTerm
 
-primMultiVer = getExpr verExpr . prim_ml_prd
-primMultiAdj = getExpr adjectiveExpr . prim_ml_prd
-primMultiUnAdj = getExpr (filter (unary . fst) . adjectiveExpr) . prim_ml_prd
+primMultiVer = getExpr verExpr . primMultiPredicate
+primMultiAdj = getExpr adjectiveExpr . primMultiPredicate
+primMultiUnAdj = getExpr (filter (unary . fst) . adjectiveExpr) . primMultiPredicate
   where
     unary (Vr : pt) = Vr `notElem` pt
     unary (_  : pt) = unary pt
-    unary _ = True
+    unary [] = True
 
-prim_ml_prd :: Parser st (b1 -> b1, Formula)
+primMultiPredicate :: Parser st (b1 -> b1, Formula)
                -> ([Pattern], [Formula] -> b2) -> Parser st (b1 -> b1, b2)
-prim_ml_prd p (pt, fm) = do
-  (q, ts) <- mlPattern p pt
+primMultiPredicate p (pt, fm) = do
+  (q, ts) <- multiPattern p pt
   return (q, fm $ (zVar (VarHole "")):(zVar VarSlot):ts)
 
 
@@ -158,7 +158,7 @@ primNotion, primOfNotion :: FTL UTerm -> FTL MNotion
 primNotion p  = getExpr notionExpr notion
   where
     notion (pt, fm) = do
-      (q, vs, ts) <- ntPattern p pt
+      (q, vs, ts) <- notionPattern p pt
       return (q, fm $ (zVar (VarHole "")):ts, vs)
 
 primOfNotion p = getExpr notionExpr notion
@@ -172,7 +172,7 @@ primCmNotion :: FTL UTerm -> FTL MTerm -> FTL MNotion
 primCmNotion p s = getExpr notionExpr notion
   where
     notion (pt, fm) = do
-      (q, vs, as, ts) <- cmPattern p s pt
+      (q, vs, as, ts) <- commonPattern p s pt
       let fn v = fm $ (zVar (VarHole "")):v:ts
       return (q, foldr1 And $ map fn as, vs)
 
@@ -207,20 +207,20 @@ primIfn :: FTL Formula
 primIfn = getExpr ifnExpr . primIsm
 
 primCsm :: Parser st a -> ([Pattern], [a] -> b) -> Parser st b
-primCsm p (pt, fm) = smPattern p pt >>= \l -> return $ fm l
+primCsm p (pt, fm) = symbolPattern p pt >>= \l -> return $ fm l
 primRsm :: Parser st a -> ([Pattern], [a] -> t) -> Parser st (a -> t)
-primRsm p (pt, fm) = smPattern p pt >>= \l -> return $ \t -> fm $ t:l
+primRsm p (pt, fm) = symbolPattern p pt >>= \l -> return $ \t -> fm $ t:l
 primLsm :: Parser st a -> ([Pattern], [a] -> t) -> Parser st (a -> t)
-primLsm p (pt, fm) = smPattern p pt >>= \l -> return $ \s -> fm $ l++[s]
+primLsm p (pt, fm) = symbolPattern p pt >>= \l -> return $ \s -> fm $ l++[s]
 primIsm :: Parser st a
            -> ([Pattern], [a] -> t) -> Parser st (a -> a -> t)
-primIsm p (pt, fm) = smPattern p pt >>= \l -> return $ \t s -> fm $ t:l++[s]
+primIsm p (pt, fm) = symbolPattern p pt >>= \l -> return $ \t s -> fm $ t:l++[s]
 
 
 primSnt :: FTL Formula -> FTL MNotion
-primSnt p  = noError $ varlist >>= getExpr sntExpr . snt
+primSnt p  = noError $ varList >>= getExpr sntExpr . snt
   where
-    snt vs (pt, fm) = smPattern p pt >>= \l -> return (id, fm $ (zVar (VarHole "")):l, vs)
+    snt vs (pt, fm) = symbolPattern p pt >>= \l -> return (id, fm $ (zVar (VarHole "")):l, vs)
 
 
 
@@ -258,32 +258,32 @@ wdPattern _ [] = return (id, [])
 wdPattern _ _ = mzero
 
 -- parses a symbolic pattern
-smPattern :: Parser st a -> [Pattern] -> Parser st [a]
-smPattern p (Vr : ls) = liftM2 (:) p $ smPattern p ls
-smPattern p (Symbol s : ls) = patternSymbolTokenOf s >> smPattern p ls
-smPattern _ [] = return []
-smPattern _ _ = mzero
+symbolPattern :: Parser st a -> [Pattern] -> Parser st [a]
+symbolPattern p (Vr : ls) = liftM2 (:) p $ symbolPattern p ls
+symbolPattern p (Symbol s : ls) = patternSymbolTokenOf s >> symbolPattern p ls
+symbolPattern _ [] = return []
+symbolPattern _ _ = mzero
 
 -- parses a multi-subject pattern: follow the pattern, but ignore the token'
 -- right before the first variable. Then check that all "and" tokens have been
 -- consumed. Example pattern: [Word ["commute","commutes"], Word ["with"], Vr]. Then
 -- we can parse "a commutes with c and d" as well as "a and b commute".
-mlPattern :: Parser st (b -> b, a) -> [Pattern] -> Parser st (b -> b, [a])
-mlPattern p (Word l :_: Vr : ls) = patternTokenOf' l >> naPattern p ls
-mlPattern p (Word l : ls) = patternTokenOf' l >> mlPattern p ls
-mlPattern _ _ = mzero
+multiPattern :: Parser st (b -> b, a) -> [Pattern] -> Parser st (b -> b, [a])
+multiPattern p (Word l :_: Vr : ls) = patternTokenOf' l >> naPattern p ls
+multiPattern p (Word l : ls) = patternTokenOf' l >> multiPattern p ls
+multiPattern _ _ = mzero
 
 
 -- parses a notion: follow the pattern to the name place, record names,
 -- then keep following the pattern
-ntPattern :: FTL (b -> b, a)
+notionPattern :: FTL (b -> b, a)
           -> [Pattern] -> FTL (b -> b, [(VariableName, SourcePos)], [a])
-ntPattern p (Word l : ls) = patternTokenOf' l >> ntPattern p ls
-ntPattern p (Nm : ls) = do
-  vs <- namlist
+notionPattern p (Word l : ls) = patternTokenOf' l >> notionPattern p ls
+notionPattern p (Nm : ls) = do
+  vs <- nameList
   (q, ts) <- wdPattern p ls
   return (q, vs, ts)
-ntPattern _ _ = mzero
+notionPattern _ _ = mzero
 
 -- parse an "of"-notion: follow the pattern to the notion name, then check that
 -- "of" follows the name followed by a variable that is not followed by "and"
@@ -291,7 +291,7 @@ ofPattern :: FTL (b -> b, a)
           -> [Pattern] -> FTL (b -> b, [(VariableName, SourcePos)], [a])
 ofPattern p (Word l : ls) = patternTokenOf' l >> ofPattern p ls
 ofPattern p (Nm : Word l : Vr : ls) = do
-  guard $ elem "of" l; vs <- namlist
+  guard $ elem "of" l; vs <- nameList
   (q, ts) <- naPattern p ls
   return (q, vs, ts)
 ofPattern _ _ = mzero
@@ -299,18 +299,18 @@ ofPattern _ _ = mzero
 -- | parse a "common"-notion: basically like the above. We use the special parser
 -- s for the first variable place after the "of" since we expect multiple terms
 -- here. Example: A common *divisor of m and n*.
-cmPattern :: FTL (b -> b, a1)
+commonPattern :: FTL (b -> b, a1)
           -> FTL (b -> c, [a2])
           -> [Pattern]
           -> FTL (b -> c, [(VariableName, SourcePos)], [a2], [a1])
-cmPattern p s (Word l:ls) = patternTokenOf' l >> cmPattern p s ls
-cmPattern p s (Nm : Word l : Vr : ls) = do
-  guard $ elem "of" l; vs <- namlist; patternTokenOf' l
+commonPattern p s (Word l:ls) = patternTokenOf' l >> commonPattern p s ls
+commonPattern p s (Nm : Word l : Vr : ls) = do
+  guard $ elem "of" l; vs <- nameList; patternTokenOf' l
   (r, as) <- s
   when (null $ tail as) $ fail "several objects expected for `common'"
   (q, ts) <- naPattern p ls
   return (r . q, vs, as, ts)
-cmPattern _ _ _ = mzero
+commonPattern _ _ _ = mzero
 
 -- an auxiliary pattern parser that checks that we are not dealing with an "and"
 -- token' and then continues to follow the pattern
@@ -323,11 +323,11 @@ naPattern p ls = wdPattern p ls
 
 -- Variables
 
-namlist :: FTL [(VariableName, SourcePos)]
-namlist = varlist -|- fmap (:[]) hidden
+nameList :: FTL [(VariableName, SourcePos)]
+nameList = varList -|- fmap (:[]) hidden
 
-varlist :: Parser st [(VariableName, SourcePos)]
-varlist = do
+varList :: Parser st [(VariableName, SourcePos)]
+varList = do
   vs <- var `sepBy` token' ","
   nodups $ map fst vs ; return vs
 
@@ -353,11 +353,11 @@ var = do
 
 type TVar = ([VariableName], Formula)
 
-primTvr :: FTL MNotion
-primTvr = getExpr tvrExpr tvr
+primTypedVar :: FTL MNotion
+primTypedVar = getExpr tvrExpr tvr
   where
     tvr (vr, nt) = do
-      vs <- varlist
+      vs <- varList
       guard $ all (`elem` vr) $ map fst vs
       return (id, nt, vs)
 

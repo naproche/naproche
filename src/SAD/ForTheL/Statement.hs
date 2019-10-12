@@ -191,16 +191,15 @@ basenotion = fmap digadd $ cm <|> symEqnt <|> (set </> primNotion term)
       t <- lexicalCheck isTrm sTerm
       v <- hidden; return (id, zEqu (zVar (VarHole "")) t, [v])
 
-symNotion :: Parser
-               FState (Formula -> Formula, Formula, [(VariableName, SourcePos)])
-symNotion = (paren (primSnt sTerm) </> primTvr) >>= (dignotion . digadd)
+symNotion :: FTL (Formula -> Formula, Formula, [(VariableName, SourcePos)])
+symNotion = do
+  x <- paren (primSnt sTerm) </> primTypedVar
+  dignotion (digadd x)
 
 
-gnotion :: Parser
-             FState (Formula -> Formula, Formula, [(VariableName, SourcePos)])
-           -> FTL Formula
-           -> Parser
-                FState (Formula -> Formula, Formula, [(VariableName, SourcePos)])
+gnotion :: FTL (Formula -> Formula, Formula, [(VariableName, SourcePos)])
+  -> FTL Formula
+  -> FTL (Formula -> Formula, Formula, [(VariableName, SourcePos)])
 gnotion nt ra = do
   ls <- fmap reverse la; (q, f, vs) <- nt;
   rs <- opt [] $ fmap (:[]) $ ra <|> rc
@@ -506,7 +505,7 @@ lambda = do
 pair :: Parser st Formula
 pair = sVar </> pr
   where
-    pr = do [l,r] <- smPattern pair pairPattern; return $ zPair l r
+    pr = do [l,r] <- symbolPattern pair pairPattern; return $ zPair l r
     pairPattern = [Symbol "(", Vr, Symbol ",", Vr, Symbol ")"]
 
 lambdaIn :: Parser
