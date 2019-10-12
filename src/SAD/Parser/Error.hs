@@ -60,9 +60,9 @@ compareImportance msg1 msg2 =
       _           -> EQ
   where
     importance :: Message -> Int
-    importance Unknown     = 0
+    importance Unknown = 0
     importance ExpectMsg{} = 1
-    importance WellFormednessMessage{}     = 2
+    importance WellFormednessMessage{} = 2
 
 -- | Messages are a 'Semigroup' under importance-biased merging.
 instance Semigroup Message where
@@ -74,10 +74,10 @@ instance Semigroup Message where
       EQ -> msg
     where
       msg = case msg1 of
-        ExpectMsg{}
-          -> msg1 {expect = expect msg1 ++ expect msg2, message = message msg1 ++ message msg2}
-        WellFormednessMessage{}
-          -> msg1 {message = message msg1 ++ message msg2}
+        ExpectMsg{} ->
+          msg1 {expect = expect msg1 ++ expect msg2, message = message msg1 ++ message msg2}
+        WellFormednessMessage{} ->
+          msg1 {message = message msg1 ++ message msg2}
         Unknown -> msg1
 
 
@@ -88,7 +88,7 @@ urgency :: ParseError -> ParseError -> Ordering
 urgency (ParseError pos1 msg1) (ParseError pos2 msg2)
   | isWellFormednessMessage msg1 && not (isWellFormednessMessage msg2) = GT
   | isWellFormednessMessage msg2 && not (isWellFormednessMessage msg1) = LT
-  | otherwise    = compare pos1 pos2
+  | otherwise = compare pos1 pos2
 
 -- | @ParserError@ is a 'Semigroup' under left-biased importance merge.
 instance Semigroup ParseError where
@@ -129,8 +129,8 @@ errorMessage :: ParseError -> Message
 errorMessage (ParseError _ msg) = msg
 
 instance Show ParseError where
-    show err = show (errorPos err) ++ ":\n"
-            ++ showErrorMessage (errorMessage err)
+  show err = show (errorPos err) ++ ":\n"
+          ++ showErrorMessage (errorMessage err)
 
 showErrorMessage :: Message -> String
 showErrorMessage msg = case msg of
@@ -141,7 +141,7 @@ showErrorMessage msg = case msg of
     messages -> commasOr messages
   where
     showMany :: String -> [String] -> String
-    showMany [] msgs = commasOr msgs
+    showMany "" msgs = commasOr msgs
     showMany _ [] = ""
     showMany pre msgs = pre ++ " " ++ commasOr msgs
 

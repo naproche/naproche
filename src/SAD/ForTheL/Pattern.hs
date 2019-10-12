@@ -312,7 +312,7 @@ nvr = do
 
 avr :: Parser st Formula
 avr = do
-  v <- var; 
+  v <- var;
   guard $ Text.null $ Text.tail $ deVar $ fst v
   return $ pVar v
   where
@@ -322,7 +322,8 @@ avr = do
 nam :: FTL Formula
 nam = do
   n <- fmap (const Top) nvr </> avr
-  guard $ isVar n ; return n
+  guard (isVar n)
+  return n
 
 hid :: FTL Formula
 hid = fmap pVar hidden

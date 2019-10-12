@@ -182,8 +182,7 @@ mPredicate p = (token' "not" >> mNegative) <|> mPositive
 
 --- notions
 
-basentn :: Parser
-             FState (Formula -> Formula, Formula, [(VariableName, SourcePos)])
+basentn :: FTL (Formula -> Formula, Formula, [(VariableName, SourcePos)])
 basentn = fmap digadd $ cm <|> symEqnt <|> (set </> primNtn term)
   where
     cm = token' "common" >> primCmNtn term terms
@@ -191,16 +190,15 @@ basentn = fmap digadd $ cm <|> symEqnt <|> (set </> primNtn term)
       t <- lexicalCheck isTrm sTerm
       v <- hidden; return (id, zEqu (zVar (VarHole "")) t, [v])
 
-symNotion :: Parser
-               FState (Formula -> Formula, Formula, [(VariableName, SourcePos)])
-symNotion = (paren (primSnt sTerm) </> primTvr) >>= (digntn . digadd)
+symNotion :: FTL (Formula -> Formula, Formula, [(VariableName, SourcePos)])
+symNotion = do
+  x <- paren (primSnt sTerm) </> primTypedVar
+  digntn (digadd x)
 
 
-gnotion :: Parser
-             FState (Formula -> Formula, Formula, [(VariableName, SourcePos)])
-           -> FTL Formula
-           -> Parser
-                FState (Formula -> Formula, Formula, [(VariableName, SourcePos)])
+gnotion :: FTL (Formula -> Formula, Formula, [(VariableName, SourcePos)])
+  -> FTL Formula
+  -> FTL (Formula -> Formula, Formula, [(VariableName, SourcePos)])
 gnotion nt ra = do
   ls <- fmap reverse la; (q, f, vs) <- nt;
   rs <- opt [] $ fmap (:[]) $ ra <|> rc
@@ -506,7 +504,7 @@ lambda = do
 pair :: Parser st Formula
 pair = sVar </> pr
   where
-    pr = do [l,r] <- smPatt pair pairPattern; return $ zPair l r
+    pr = do [l,r] <- symbPatt pair pairPattern; return $ zPair l r
     pairPattern = [Sm "(", Vr, Sm ",", Vr, Sm ")"]
 
 lambdaIn :: Parser
