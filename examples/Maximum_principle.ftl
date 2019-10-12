@@ -1,5 +1,4 @@
 [synonym number/-s]
-[ontored on][checkontored on]
 
 Let the domain of f stand for Dom(f).
 Let z is in M stand for z is an element of M.

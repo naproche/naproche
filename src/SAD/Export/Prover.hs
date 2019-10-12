@@ -27,11 +27,10 @@ import SAD.Helpers (notNull)
 
 import qualified SAD.Core.Message as Message
 import qualified SAD.Data.Instr as Instr
-import qualified SAD.Export.DFG as DFG
 import qualified SAD.Export.TPTP as TPTP
 
-export :: Bool -> Int -> [Prover] -> [Instr] -> [Context] -> Context -> IO Bool
-export reduced depth provers instrs context goal = do
+export :: Int -> [Prover] -> [Instr] -> [Context] -> Context -> IO Bool
+export depth provers instrs context goal = do
   Standard_Thread.expose_stopped
 
   when (null provers) $ Message.errorExport noSourcePos "No provers"
@@ -42,7 +41,7 @@ export reduced depth provers instrs context goal = do
   when (null proversNamed) $ 
     Message.errorExport noSourcePos $ "No prover named " ++ show proverName
 
-  let Prover _ label path args fmt yes nos uns = head proversNamed
+  let Prover _ label path args yes nos uns = head proversNamed
       timeLimit = askLimit Timelimit 3 instrs
       proc =
         (Process.proc path (map (setTimeLimit timeLimit) args))
@@ -55,8 +54,7 @@ export reduced depth provers instrs context goal = do
         (pin, pout, perr, p) <- Process.createProcess proc
         return (fromJust pin, fromJust pout, fromJust perr, p)
 
-  let output = case fmt of TPTP -> TPTP.output; DFG -> DFG.output
-      task = output reduced context goal
+  let task = TPTP.output context goal
 
   when (askFlag Dump False instrs) $ 
     Message.output "" Message.WRITELN noSourcePos (Text.unpack task)

@@ -6,7 +6,6 @@ import System.Exit
 import GHC.IO.Handle
 import Control.Monad
 import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
 import qualified Data.Text.Lazy.IO as TIO
 
 compileFile :: FilePath -> IO (Handle, ProcessHandle)

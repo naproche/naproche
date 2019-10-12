@@ -120,8 +120,7 @@ testDef context term (guards, fortifiedTerm) = do
     setup action = do
       timelimit <- LimitBy Timelimit <$> askInstructionInt Checktime 1
       depthlimit <- LimitBy Depthlimit <$> askInstructionInt Checkdepth 3
-      ontored <- SetFlag Ontored <$> askInstructionBool Checkontored False
-      addInstruction timelimit $ addInstruction depthlimit $ addInstruction ontored action
+      addInstruction timelimit $ addInstruction depthlimit action
 
     wipeLink context =
       let block:restBranch = Context.branch context

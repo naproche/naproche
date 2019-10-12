@@ -22,8 +22,7 @@ import Data.Text.Lazy (Text)
 data Context = Context {
   formula        :: Formula,  -- formula of the context
   branch         :: [Block.Block],  -- branch of the context
-  mesonRules     :: [MRule],  -- MESON rules extracted from the formula
-  reducedFormula :: Formula } -- ontologically reduced formula
+  mesonRules     :: [MRule]}  -- MESON rules extracted from the formula
   deriving (Eq, Ord, Show)
 
 data MRule = MR 

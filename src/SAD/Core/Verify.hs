@@ -21,7 +21,6 @@ import SAD.Core.Check
 import SAD.Core.Extract
 import SAD.Core.ProofTask
 import SAD.Core.Reason
-import SAD.Core.Reduction
 import SAD.Core.Rewrite
 import SAD.Core.SourcePos
 import SAD.Core.Thesis
@@ -49,7 +48,7 @@ verify fileName provers reasonerState (ProofTextRoot text) = do
   Message.outputReasoner Message.TRACING (fileOnlyPos fileName) "verification started"
 
   let verificationState =
-        VS False [] DT.empty (Context Bot [] [] Bot) [] [] (DT.empty, DT.empty)
+        VS False [] DT.empty (Context Bot [] []) [] [] (DT.empty, DT.empty)
           initialDefinitions initialGuards 0 [] provers text'
   result <- flip runRM reasonerState $
     runReaderT (verificationLoop verificationState) verificationState
@@ -82,7 +81,7 @@ verificationLoop state@VS {
   whenInstruction Printsection False $ justIO $
     Message.outputForTheL Message.WRITELN (Block.position block) $
     Message.trimString (Block.showForm 0 block "")
-  let newBranch = block : branch; contextBlock = Context f newBranch [] f
+  let newBranch = block : branch; contextBlock = Context f newBranch []
 
   whenInstruction Translation False $
     unless (Block.isTopLevel block) $ 
@@ -98,7 +97,7 @@ verificationLoop state@VS {
   checkFailed (return (restProofText state, restProofText state)) $ do
 
     let proofTask = generateProofTask kind (Block.declaredNames block) fortifiedFormula
-        freshThesis = Context proofTask newBranch [] proofTask
+        freshThesis = Context proofTask newBranch []
         toBeProved = (Block.needsProof block) && not (Block.isTopLevel block)
     proofBody <- askInstructionBool Flat False >>= \p ->
       if p then return [] else return body
@@ -135,12 +134,8 @@ verificationLoop state@VS {
             if   kind == Definition || kind == Signature
             then addDefinition (defs, grds) formulaImage
             else (defs, grds)
-          (ontoReduction, newSkolem) =
-            if Block.isTopLevel block
-            then ontoReduce newDefinitions newGuards intermediateSkolem formulaImage
-            else (formulaImage, intermediateSkolem)
           newContextBlock =
-            Context formulaImage newBranch (uncurry (++) mesonRules) ontoReduction
+            Context formulaImage newBranch (uncurry (++) mesonRules)
           newContext = newContextBlock : context
           newRules =
             if   Block.isTopLevel block
@@ -174,7 +169,7 @@ verificationLoop state@VS {
         rewriteRules = newRewriteRules, evaluations = newEvaluations,
         currentThesis = newThesis, currentContext = newContext,
         mesonRules = newRules, definitions = newDefinitions,
-        skolemCounter = newSkolem, restProofText = blocks }
+        skolemCounter = intermediateSkolem, restProofText = blocks }
 
       -- if this block made the thesis unmotivated, we must discharge a composite
       -- (and possibly quite difficult) prove task
@@ -239,7 +234,7 @@ verificationLoop state@ VS {restProofText = NonProofTextStoredInstr ins : rest} 
 verificationLoop state@VS {restProofText = i@(ProofTextInstr _ instr) : blocks} =
   fmap (\(as,bs) -> (as, i:bs)) $ local (const state {restProofText = blocks}) $ procProofTextInstr instr
 
-{- process a command to drop an instruction, i.e. [/prove], [/ontored], etc.-}
+{- process a command to drop an instruction, i.e. [/prove], etc.-}
 verificationLoop state@VS {restProofText = (i@(ProofTextDrop _ instr) : blocks)} =
   fmap (\(as,bs) -> (as, i:bs)) $ local (const state {restProofText = blocks}) $ procProofTextDrop instr
 
@@ -270,7 +265,7 @@ verifyProof state@VS {
           process (Context.setForm thesis f : context) (construct g)
     dive construct context (Imp (Tag Tag.CaseHypothesis f) g)
       | isClosed f =
-          process (thesis {Context.formula = f, Context.reducedFormula = f} : context) (construct g)
+          process (thesis {Context.formula = f} : context) (construct g)
     dive construct context (Imp f g)   = dive (construct . Imp f) context g
     dive construct context (All v f)   = dive (construct . All v) context f
     dive construct context (Tag tag f) = dive (construct . Tag tag) context f

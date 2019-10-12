@@ -18,18 +18,18 @@ import Data.Text.Lazy.Builder (Builder)
 import qualified Data.Text.Lazy.Builder as Builder
 import SAD.Export.Representation
 
-output :: Bool -> [Context] -> Context -> Text
-output red contexts goal = forceBuilder $
-  mconcat (map (tptpForm red ",hypothesis,") $ reverse contexts)
-  <> tptpForm red ",conjecture," goal
+output :: [Context] -> Context -> Text
+output contexts goal = forceBuilder $
+  mconcat (map (tptpForm ",hypothesis,") $ reverse contexts)
+  <> tptpForm ",conjecture," goal
 
 -- Formula print
-tptpForm :: Bool -> Builder -> Context -> Builder
-tptpForm red s (Context fr (Block { Block.name = m } : _) _ g) =
+tptpForm :: Builder -> Context -> Builder
+tptpForm s (Context fr (Block { Block.name = m } : _) _) =
   "fof(m"
   <> (if Text.null m then "_" else Builder.fromLazyText m)
   <> s <> tptpTerm 0 fr <> ").\n"
-tptpForm _ _ _ = ""
+tptpForm _ _ = ""
 
 tptpTerm :: Int -> Formula -> Builder
 tptpTerm d = dive

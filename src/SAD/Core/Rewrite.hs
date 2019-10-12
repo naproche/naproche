@@ -219,8 +219,7 @@ dischargeConditions verbositySetting conditions =
     setup action = do
       timelimit <- LimitBy Timelimit <$> askInstructionInt Checktime 1
       depthlimit <- LimitBy Depthlimit <$> askInstructionInt Checkdepth 3
-      ontored <- SetFlag Ontored <$> askInstructionBool Checkontored False
-      addInstruction timelimit $ addInstruction depthlimit $ addInstruction ontored action
+      addInstruction timelimit $ addInstruction depthlimit action
 
     header select conditions = "condition: " <> format (select conditions)
     thead [] = ""; thead conditions = "(trivial: " <> format conditions <> ")"

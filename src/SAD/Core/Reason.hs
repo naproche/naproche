@@ -114,12 +114,11 @@ splitGoal = asks (normalizedSplit . strip . Context.formula . currentThesis)
 
 launchProver :: Int -> VM ()
 launchProver iteration = do
-  reductionSetting <- askInstructionBool Ontored False
-  whenInstruction Printfulltask False (printTask reductionSetting)
+  whenInstruction Printfulltask False printTask
   proverList <- asks provers ; instrList <- asks instructions
   goal <- thesis; context <- asks currentContext
   let callATP = justIO $ pure $
-        export reductionSetting iteration proverList instrList context goal
+        export iteration proverList instrList context goal
   callATP >>= timer ProofTime . justIO >>= guard
   res <- fmap head $ askRS counters
   case res of
@@ -128,9 +127,8 @@ launchProver iteration = do
       incrementIntCounter SuccessfulGoals
     _ -> error "No matching case in launchProver"
   where
-    printTask reductionSetting = do
-      let getFormula = if reductionSetting then Context.reducedFormula else Context.formula
-      contextFormulas <- asks $ map getFormula . reverse . currentContext
+    printTask = do
+      contextFormulas <- asks $ map Context.formula . reverse . currentContext
       concl <- thesis
       reasonLog Message.WRITELN noSourcePos $ "prover task:\n" <>
         Text.concat (map (\form -> "  " <> Text.pack (show form) <> "\n") contextFormulas) <>
@@ -171,8 +169,7 @@ filterContext action context = do
   where
     (lowlevelContext, toplevelContext) = span Context.isLowLevel context
     defsAndSigs =
-      let defOrSig c = (not . isTop . Context.reducedFormula $ c)
-                    && (isDefinition c || isSignature c)
+      let defOrSig c = (isDefinition c || isSignature c)
       in  map replaceHeadTerm $ filter defOrSig toplevelContext
 
 isDefinition, isSignature :: Context -> Bool

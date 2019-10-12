@@ -1,4 +1,3 @@
-[ontored on]
 [synonym cardinal/-s][synonym sequence/-s]
 Let the domain of f stand for Dom(f).
 
@@ -104,7 +103,7 @@ of G.
   Indeed ProdSet(lambda, D) has an element.
 Define Diag[i] = { G[(n,i)][i] | n is an element of kappa[i] } for i in D.
 For every element i of D card(Diag[i]) < lambda[i]. Proof.
-  Let i be an element of D. Define F[n] = G[(n,i)][i] for n in kappa[i].[ontored off]
+  Let i be an element of D. Define F[n] = G[(n,i)][i] for n in kappa[i].
   Then F^[kappa[i]] = Diag[i].qed.
 Define f[i] = Choose an element v of lambda[i] \ Diag[i] in v for i in D.
 Then f is an element of ProdSet(lambda,D).

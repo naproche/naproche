@@ -48,7 +48,7 @@ Let a | b stand for a is a divisor of b.
 Definition EquMod.  a = b (mod q) iff q | a-b.
 
 Lemma EquModRef.    a = a (mod q).
-[ontored on]
+
 Lemma EquModSym.    a = b (mod q) => b = a (mod q).
 Proof.
     Assume that a = b (mod q).
@@ -56,7 +56,7 @@ Proof.
     q * -n .= (-1) * (q * n) (by MulMinOne, MulAsso,MulComm,MulBubble)
                    .= (-1) * (a - b) (by 1).
 qed.
-[/ontored]
+
 Lemma EquModTrn.    a = b (mod q) /\ b = c (mod q) => a = c (mod q).
 Proof.
     Assume that a = b (mod q) /\ b = c (mod q).

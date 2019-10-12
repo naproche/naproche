@@ -83,12 +83,10 @@ data Flag =
   | Server         --  server mode (comline only)
   | Printsimp      --  print simplifier log (no)
   | Printthesis    --  print thesis development (no)
-  | Ontored        --  use ontological reduction (no)
   | Unfold         --  general unfolding (on)
   | Unfoldsf       --  general unfolding of sets and functions
   | Unfoldlow      --  unfold the whole low level context (yes)
   | Unfoldlowsf    --  unfold set and function conditions in low level (no)
-  | Checkontored   --  enable ontological reduction for checks (off)
   | Translation    --  print first-order translation of sentences
   deriving (Eq, Ord, Show)
 
@@ -168,12 +166,10 @@ keywordsFlag =
   (Dump, "dump"),
   (Printsimp, "printsimp"),
   (Printthesis, "printthesis"),
-  (Ontored, "ontored"),
   (Unfold, "unfold"),
   (Unfoldsf, "unfoldsf"),
   (Unfoldlow, "unfoldlow"),
   (Unfoldlowsf, "unfoldlowsf"),
-  (Checkontored, "checkontored"),
   (Translation, "translation")]
 
 keywordsArgument :: [(Argument, Text)]

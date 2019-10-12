@@ -268,8 +268,6 @@ options = [
     "print simplification process (def: off)",
   GetOpt.Option "" ["printthesis"] (GetOpt.ReqArg (SetFlag Printthesis . parseConsent) "{on|off}")
     "print thesis development (def: off)",
-  GetOpt.Option "" ["ontored"] (GetOpt.ReqArg (SetFlag Ontored . parseConsent) "{on|off}")
-    "enable ontological reduction (def: off)",
   GetOpt.Option "" ["unfoldlow"] (GetOpt.ReqArg (SetFlag Unfoldlow . parseConsent) "{on|off}")
     "enable unfolding of definitions in the whole low level context (def: on)",
   GetOpt.Option "" ["unfold"] (GetOpt.ReqArg (SetFlag Unfold . parseConsent) "{on|off}")
@@ -278,8 +276,6 @@ options = [
     "enable unfolding of set conditions and function evaluations (def: on)",
   GetOpt.Option "" ["unfoldlowsf"] (GetOpt.ReqArg (SetFlag Unfoldlowsf . parseConsent) "{on|off}")
     "enable unfolding of set and function conditions in general (def: off)",
-  GetOpt.Option "" ["checkontored"] (GetOpt.ReqArg (SetFlag Checkontored . parseConsent) "{on|off}")
-    "enable ontological reduction for checking of symbols (def: off)"]
 
 parseConsent :: String -> Bool
 parseConsent "yes" = True ; parseConsent "on"  = True

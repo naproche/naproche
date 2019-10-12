@@ -6,7 +6,7 @@ Construct prover database.
 
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.Export.Base (Prover(..),Format(..),readProverDatabase) where
+module SAD.Export.Base (Prover(..),readProverDatabase) where
 
 import Control.Applicative (liftA2)
 import qualified Data.Char as Char
@@ -22,15 +22,12 @@ data Prover = Prover {
   label          :: String,
   path           :: String,
   arguments      :: [String],
-  format         :: Format,
   successMessage :: [String],
   failureMessage :: [String],
   unknownMessage :: [String] }
 
-data Format = TPTP | DFG
-
 initPrv :: String -> Prover
-initPrv l = Prover l "Prover" "" [] TPTP [] [] []
+initPrv l = Prover l "Prover" "" [] [] [] []
 
 
 -- Database reader
@@ -70,11 +67,6 @@ readProvers n (Just pr) (('U':l):ls)
 readProvers n (Just pr) (('C':l):ls)
   = let (p:a) = if null l then ("":[]) else words l
     in  readProvers (succ n) (Just pr { path = p, arguments = a }) ls
-readProvers n (Just pr) (('F':l):ls)
-  = case l of
-      "tptp" ->  readProvers (succ n) (Just pr { format = TPTP }) ls
-      "dfg"  ->  readProvers (succ n) (Just pr { format = DFG  }) ls
-      _      ->  Left $ show n ++ ": unknown format: " ++ l
 
 readProvers n (Just _)  ((c:_):_)  = Left $ show n ++ ": invalid tag: "   ++ [c]
 readProvers n Nothing ((c:_):_)    = Left $ show n ++ ": misplaced tag: " ++ [c]
