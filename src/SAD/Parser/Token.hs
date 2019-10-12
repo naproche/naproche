@@ -7,46 +7,50 @@ Tokenization of input.
 {-# LANGUAGE NamedFieldPuns #-}
 
 module SAD.Parser.Token
-  ( Token (tokenPos, tokenProofText),
-    tokensRange,
-    showToken,
-    properToken,
-    tokenize,
-    reportComments,
-    composeTokens,
-    isEOF,
-    noTokens)
-  where
-
-import Data.Char
+  ( Token (tokenPos, tokenProofText)
+  , tokensRange
+  , showToken
+  , properToken
+  , tokenize
+  , reportComments
+  , composeTokens
+  , isEOF
+  , isMathToken
+  , isTextToken
+  , noTokens
+  ) where
 
 import SAD.Core.SourcePos
+import qualified Isabelle.Markup as Markup
+import qualified SAD.Core.Message as Message
+
+import Data.Char
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
-import qualified SAD.Core.Message as Message
-import qualified Isabelle.Markup as Markup
 
 
 data Token = Token
   { tokenProofText :: Text
   , tokenPos :: SourcePos
   , tokenType :: TokenType
+  , tokenMode :: TokenMode
   } | EOF { tokenPos :: SourcePos }
   deriving (Eq, Ord)
 
 instance Show Token where
-  show (Token p s _) = show s ++ show p
-  show (EOF _) = "EOF"
+  show Token{tokenProofText = p, tokenPos = s} = show s ++ show p
+  show EOF{} = "EOF"
 
 data TokenType = NoWhiteSpaceBefore | WhiteSpaceBefore | Comment deriving (Eq, Ord, Show)
+data TokenMode = TextMode | MathMode deriving (Eq, Show, Ord)
 
 -- | Make a token with @s@ as @tokenProofText@ and the range from @p@ to the end of @s@.
-makeToken :: Text -> SourcePos -> TokenType -> Token
+makeToken :: Text -> SourcePos -> TokenType -> TokenMode -> Token
 makeToken s pos = Token s (rangePos (SourceRange pos (pos `advanceAlong` s)))
 
 tokenEndPos :: Token -> SourcePos
 tokenEndPos tok@Token{} = tokenPos tok `advanceAlong` tokenProofText tok
-tokenEndPos tok@EOF {} = tokenPos tok
+tokenEndPos tok@EOF{} = tokenPos tok
 
 -- | The range in which the tokens lie.
 tokensRange :: [Token] -> SourceRange
@@ -59,46 +63,56 @@ showToken t@Token{} = tokenProofText t
 showToken EOF{} = Text.pack "end of input"
 
 properToken :: Token -> Bool
-properToken t@(Token _ _ _) = case tokenType t of
+properToken t@Token{} = case tokenType t of
   NoWhiteSpaceBefore -> True
   WhiteSpaceBefore -> True
   Comment -> False
-properToken EOF {} = True
+properToken EOF{} = True
 
 noTokens :: [Token]
 noTokens = [EOF noSourcePos]
 
 -- | Turn the string into a stream of tokens.
 tokenize :: SourcePos -> Text -> [Token]
-tokenize start = posToken start False
+tokenize start = posToken start NoWhiteSpaceBefore TextMode
   where
-    typeWhitespace :: Bool -> TokenType
-    typeWhitespace ws = if ws then WhiteSpaceBefore else NoWhiteSpaceBefore
-
-    posToken :: SourcePos -> Bool -> Text -> [Token]
-    posToken pos whitespaceBefore s
-      | not (Text.null lexem) =
-          makeToken lexem pos (typeWhitespace whitespaceBefore) : posToken (advanceAlong pos lexem) False rest
-      where (lexem, rest) = Text.span isLexem s
-
-    posToken pos _ s
-      | not (Text.null white) = posToken (advanceAlong pos white) True rest
-      where (white, rest) = Text.span isSpace s
-
-    posToken pos whitespaceBefore s = case Text.uncons s of
+    posToken :: SourcePos -> TokenType -> TokenMode -> Text -> [Token]
+    posToken pos whitespaceBefore mode s | not (Text.null lexem) = tok:toks
+      where
+        (lexem, rest) = Text.span isLexem s
+        tok  = makeToken lexem pos whitespaceBefore mode
+        toks = posToken (advanceAlong pos lexem) NoWhiteSpaceBefore mode rest
+    posToken pos _ mode s | not (Text.null white) = toks
+      where
+        (white, rest) = Text.span isSpace s
+        toks = posToken (advanceAlong pos white) WhiteSpaceBefore mode rest
+    posToken pos whitespaceBefore mode s = case Text.uncons s of
       Nothing -> [EOF pos]
-      Just ('#', _) -> makeToken comment pos Comment : posToken (advanceAlong pos comment) whitespaceBefore rest
-        where (comment, rest) = Text.break (== '\n') s
-      Just (c, cs) -> makeToken (Text.singleton c) pos (typeWhitespace whitespaceBefore) : posToken (advancePos pos c) False cs
+      Just ('$', rest) -> toks
+        where
+          toks = posToken (advancePos pos '$') NoWhiteSpaceBefore (switchMode mode) rest
+          switchMode :: TokenMode -> TokenMode
+          switchMode TextMode = MathMode
+          switchMode MathMode = TextMode
+      Just ('#', _) -> tok:toks
+        where
+          (comment, rest) = Text.break (== '\n') s
+          tok  = makeToken comment pos Comment mode
+          toks = posToken (advanceAlong pos comment) whitespaceBefore mode rest
+      Just (c, cs) -> tok:toks
+        where
+          tok  = makeToken (Text.singleton c) pos whitespaceBefore mode
+          toks = posToken (advancePos pos c) NoWhiteSpaceBefore mode cs
+
 
 isLexem :: Char -> Bool
 isLexem c = (isAscii c && isAlphaNum c) || c == '_'
 
 reportComments :: Token -> Maybe Message.Report
-reportComments t@(Token _ _ _)
+reportComments t@Token{}
   | properToken t = Nothing
   | otherwise = Just (tokenPos t, Markup.comment1)
-reportComments (EOF _) = Nothing
+reportComments EOF{} = Nothing
 
 -- | Append tokens seperated by a single space if they were seperated
 -- by whitespace before.
@@ -106,9 +120,16 @@ composeTokens :: [Token] -> Text
 composeTokens = Text.concat . dive
   where
     dive [] = []
-    dive (t:ts) = 
+    dive (t:ts) =
       let whitespaceBefore = if tokenType t == WhiteSpaceBefore then Text.singleton ' ' else Text.empty
       in  whitespaceBefore : showToken t : dive ts
 
 isEOF :: Token -> Bool
-isEOF EOF{} = True; isEOF _ = False
+isEOF EOF{} = True
+isEOF _ = False
+
+isMathToken, isTextToken :: Token -> Bool
+isMathToken Token{tokenMode = MathMode} = True
+isMathToken _tok = False
+isTextToken Token{tokenMode = TextMode} = True
+isTextToken _tok = False
