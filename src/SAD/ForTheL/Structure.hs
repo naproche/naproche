@@ -277,7 +277,7 @@ llDefnVars dvs f
 
 assumeVars dvs f = affirmVars (declNames dvs f ++ dvs) f
 
-affirmVars = overfree
+affirmVars = freeOrOverlapping
 
 
 -- proofs

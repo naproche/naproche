@@ -401,27 +401,28 @@ bindings :: [VariableName] -> Formula -> FTL [Decl]
 bindings vs = mapM makeDecl . decl vs
 
 
-overfree :: [VariableName] -> Formula -> Maybe Text
-overfree vs f
-    | (zVar VarSlot) `occursIn` f = Just $ "too few subjects for an m-predicate " <> info
-    | not (Text.null sbs) = Just $ "free undeclared variables: "   <> sbs <> info
-    | not (Text.null ovl) = Just $ "overlapped variables: "        <> ovl <> info
-    | otherwise      = Nothing
+freeOrOverlapping :: [VariableName] -> Formula -> Maybe Text
+freeOrOverlapping vs f
+  | zVar VarSlot `occursIn` f = Just $ "too few subjects for an m-predicate " <> info
+  | not (Text.null undeclared) = Just $ "free undeclared variables: " <> undeclared <> info
+  | not (Text.null overlapped) = Just $ "overlapping variables: " <> overlapped <> info
+  | otherwise = Nothing
   where
-    sbs = Text.unwords $ map (showVar) $ free vs f
-    ovl = Text.unwords $ map (showVar) $ over vs f
+    undeclared, overlapped, info :: Text
+    undeclared = Text.unwords $ map (showVar) $ free vs f
+    overlapped = Text.unwords $ map (showVar) $ overlapping vs f
     info = "\n in translation: " <> (Text.pack $ show f)
 
-    over :: [VariableName] -> Formula -> [VariableName]
-    over vs (All v f) = boundVars vs (declName v) f
-    over vs (Exi v f) = boundVars vs (declName v) f
-    over vs f = foldF (over vs) f
+    overlapping :: [VariableName] -> Formula -> [VariableName]
+    overlapping vs (All v f) = boundVars vs (declName v) f
+    overlapping vs (Exi v f) = boundVars vs (declName v) f
+    overlapping vs f = foldF (overlapping vs) f
 
     boundVars :: [VariableName] -> VariableName -> Formula -> [VariableName]
     boundVars vs v f
       | v `elem` vs = [v]
-      | v == VarEmpty = over vs f
-      | otherwise = over (v:vs) f
+      | v == VarEmpty = overlapping vs f
+      | otherwise = overlapping (v:vs) f
 
 
 --- macro expressions

@@ -125,7 +125,7 @@ notionVars (f, d) | not isFunction = prdVars (f, d)
 
 
 prdVars (f, d) | not flat  = Just $ Text.pack $ "compound expression: " ++ show f
-               | otherwise = overfree (free [] f) d
+               | otherwise = freeOrOverlapping (free [] f) d
   where
     flat      = isTrm f && allDistinctVars (trmArgs f)
 
@@ -148,7 +148,7 @@ pretypeVariable = do
   where
     typeVar = do
       pos1 <- getPos; markupToken synonymLet "let"; vs@(_:_) <- varList; standFor;
-      (g, pos2) <- wellFormedCheck (overfree [] . fst) holedNotion
+      (g, pos2) <- wellFormedCheck (freeOrOverlapping [] . fst) holedNotion
       let pos = rangePos $ SourceRange pos1 pos2
       addPretypingReport pos $ map snd vs;
       return (pos, (vs, ignoreNames g))
