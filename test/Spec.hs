@@ -10,7 +10,7 @@ import qualified Data.Text.Lazy.IO as TIO
 
 compileFile :: FilePath -> IO (Handle, ProcessHandle)
 compileFile f = do
-  (_, Just hout, _, ph) <- createProcess (proc "stack" ["exec", "Naproche-SAD", "--", f, "-t", "20"])
+  (_, Just hout, _, ph) <- createProcess (proc "stack" ["exec", "Naproche-SAD", "--", f, "-t", "16"])
     { std_out = CreatePipe }
   pure (hout, ph)
 
