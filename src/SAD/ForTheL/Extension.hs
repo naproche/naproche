@@ -164,20 +164,29 @@ pretypeVariable = do
 
 introduceMacro :: FTL ProofText
 introduceMacro = do
-  pos1 <- getPos; markupToken macroLet "let"
+  pos1 <- getPos
+  markupToken macroLet "let"
   (pos2, (f, g)) <- narrow (prd -|- notion)
   let pos = rangePos $ SourceRange pos1 pos2
   addMacroReport pos
-  get >>= addExpr f (ignoreNames g) False
+  st <- get
+  addExpr f (ignoreNames g) False st
   return $ ProofTextMacro pos
   where
+    prd, notion :: FTL (SourcePos, (Formula, Formula))
     prd = wellFormedCheck (prdVars . snd) $ do
       f <- newPrdPattern avr
-      standFor; g <- statement; SourceRange _ pos2 <- dot; return (pos2, (f, g))
+      standFor
+      g <- statement
+      SourceRange _ pos2 <- dot
+      return (pos2, (f, g))
     notion = wellFormedCheck (funVars . snd) $ do
       (n, u) <- unnamedNotion avr
-      standFor; (q, f) <- anotion; SourceRange _ pos2 <- dot
-      h <- fmap q $ dig f [pVar u]; return (pos2, (n, h))
+      standFor
+      (q, f) <- anotion
+      SourceRange _ pos2 <- dot
+      h <- q <$> dig f [pVar u]
+      return (pos2, (n, h))
 
 ignoreNames :: Formula -> Formula
 ignoreNames (All dcl f) = All dcl {declName = VarEmpty} $ ignoreNames f

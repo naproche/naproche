@@ -48,60 +48,62 @@ incId p n = if p then succ n else n
 
 addExpr :: Formula -> Formula -> Bool -> FState -> FTL Formula
 
-addExpr t@Trm {trmName = TermUnaryAdjective _, trmArgs = vs} f p st
+addExpr t@Trm{trmName = TermUnaryAdjective _, trmArgs = vs} f p st
   = put ns >> return nf
   where
-    n = idCount st;
+    n = idCount st
     (pt, nf) = extractWordPattern st (giveId p n t) f
     fm  = substs nf $ map varName vs
     ns  = st { adjectiveExpr = (pt, fm) : adjectiveExpr st, idCount = incId p n}
 
-addExpr t@Trm {trmName = TermUnaryVerb _, trmArgs = vs} f p st
+addExpr t@Trm{trmName = TermUnaryVerb _, trmArgs = vs} f p st
   = put ns >> return nf
   where
-    n = idCount st;
+    n = idCount st
     (pt, nf) = extractWordPattern st (giveId p n t) f
     fm = substs nf $ map varName vs
     ns = st {verExpr = (pt, fm) : verExpr st, idCount = incId p n}
 
-addExpr t@Trm {trmName = TermMultiAdjective _, trmArgs = vs} f p st
+addExpr t@Trm{trmName = TermMultiAdjective _, trmArgs = vs} f p st
   = put ns >> return nf
   where
-    n = idCount st;
+    n = idCount st
     ((hp:tp), nf) = extractWordPattern st (giveId p n t) f
     pt = hp : Word [] : Vr : tp
     fm = substs nf $ map varName vs
     ns = st {adjectiveExpr = (pt, fm) : adjectiveExpr st, idCount = incId p n}
 
-addExpr t@Trm {trmName = TermMultiVerb _, trmArgs = vs} f p st
+addExpr t@Trm{trmName = TermMultiVerb _, trmArgs = vs} f p st
   = put ns >> return nf
   where
-    n = idCount st;
+    n = idCount st
     ((hp:tp), nf) = extractWordPattern st (giveId p n t) f
     pt = hp : Word [] : Vr : tp
     fm = substs nf $ map varName vs
     ns = st {verExpr = (pt, fm) : verExpr st, idCount = incId p n}
 
-addExpr t@Trm {trmName = TermNotion _, trmArgs = vs} f p st
+addExpr t@Trm{trmName = TermNotion _, trmArgs = vs} f p st
   = put ns >> return nf
   where
-    n = idCount st;
+    n = idCount st
     (pt, nf) = extractWordPattern st (giveId p n t) f
     fm = substs nf $ map varName vs
     ns = st {notionExpr = (pt, fm) : notionExpr st, idCount = incId p n}
 
-addExpr Trm {trmName= TermEquality, trmArgs = [v, t@Trm {trmName = TermNotion rs}]} f p st
+addExpr Trm{trmName= TermEquality, trmArgs = [v, t@Trm {trmName = TermNotion rs}]} f p st
   = put ns >> return nf
   where
-    n = idCount st; vs = trmArgs t
+    n = idCount st
+    vs = trmArgs t
     (pt, nf) = extractWordPattern st (giveId p n t {trmName = TermThe rs}) f
     fm = substs nf $ map varName (v:vs)
     ns = st {notionExpr = (pt, fm) : notionExpr st, idCount = incId p n}
 
-addExpr Trm {trmName = TermEquality, trmArgs = [_, t]} eq@Trm {trmName = TermEquality} p st =
+addExpr Trm{trmName = TermEquality, trmArgs = [_, t]} eq@Trm {trmName = TermEquality} p st =
   put nn >> return (zEqu v nf)
   where
-    [v, f] = trmArgs eq; vs = trmArgs t
+    [v, f] = trmArgs eq
+    vs = trmArgs t
     n = idCount st
     (pt, nf) = extractSymbPattern (giveId p n t) f
     fm = substs nf $ map varName vs
@@ -116,8 +118,7 @@ addExpr Trm {trmName = TermEquality, trmArgs = [_, t]} eq@Trm {trmName = TermEqu
     -- increment id counter
     nn = ns {idCount = incId p n}
 
-
-addExpr t@Trm {trmName = s, trmArgs = vs} f p st =
+addExpr t@Trm{trmName = s, trmArgs = vs} f p st =
   put nn >> return nf
   where
     n = idCount st
