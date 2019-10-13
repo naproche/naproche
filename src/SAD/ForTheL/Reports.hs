@@ -32,7 +32,7 @@ import Prelude hiding (or)
 import Control.Monad.State.Class (modify)
 import Data.List hiding (or)
 import SAD.Helpers (nubOrd)
-
+import Data.Set (Set)
 import SAD.Core.Message (PIDE)
 import qualified SAD.Core.Message as Message
 import SAD.Core.SourcePos
@@ -80,7 +80,7 @@ variableReport pide def decl pos =
       [(pos, Message.entityMarkup pide "variable" (Text.unpack name) def (declSerial decl) (declPosition decl))]
     _ -> []
 
-formulaReports :: PIDE -> [Decl] -> Formula -> [Message.Report]
+formulaReports :: PIDE -> Set Decl -> Formula -> [Message.Report]
 formulaReports pide decls = nubOrd . dive
   where
     dive Var {varName = name, varPosition = pos} =

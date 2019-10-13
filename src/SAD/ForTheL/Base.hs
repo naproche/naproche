@@ -13,9 +13,10 @@ import Control.Applicative
 import Control.Monad
 import Control.Monad.State.Class (gets, modify)
 import Data.Char (isAlpha, isAlphaNum)
-import Data.List (unionBy)
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
+import Data.Set (Set)
+import qualified Data.Set as Set
 
 import SAD.Data.Formula
 
@@ -23,7 +24,7 @@ import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
 
-import SAD.Core.SourcePos (SourcePos, noSourcePos)
+import SAD.Core.SourcePos (noSourcePos)
 
 import SAD.Data.Text.Decl (Decl(Decl))
 import SAD.Data.Text.Decl
@@ -37,14 +38,12 @@ type FTL = Parser FState
 
 type UTerm   = (Formula -> Formula, Formula)
 
-type UNotion = (Formula -> Formula, Formula, VarName)
+type UNotion = (Formula -> Formula, Formula, PosVar)
 
 type MTerm   = (Formula -> Formula, [Formula])
-type MNotion = (Formula -> Formula, Formula, [VarName])
+type MNotion = (Formula -> Formula, Formula, Set PosVar)
 
 type Prim    = ([Pattern], [Formula] -> Formula)
-
-type VarName = (VariableName, SourcePos)
 
 
 data FState = FState {
@@ -52,7 +51,7 @@ data FState = FState {
   cfnExpr, rfnExpr, lfnExpr, ifnExpr :: [Prim],
   cprExpr, rprExpr, lprExpr, iprExpr :: [Prim],
 
-  tvrExpr :: [TVar], strSyms :: [[Text]], varDecl :: [VariableName],
+  tvrExpr :: [TVar], strSyms :: [[Text]], varDecl :: Set VariableName,
   idCount :: Int, hiddenCount :: Int, serialCounter :: Int,
   reports :: [Message.Report], pide :: Maybe PIDE }
 
@@ -62,7 +61,7 @@ initFS = FState
   eq [] nt sn
   cf rf [] []
   [] [] [] sp
-  [] [] []
+  [] [] mempty
   0 0 0 []
   where
     eq = [
@@ -92,28 +91,31 @@ getExpr :: (FState -> [a]) -> (a -> FTL b) -> FTL b
 getExpr e p = gets e >>=  foldr ((-|-) . try . p ) mzero
 
 
-getDecl :: FTL [VariableName]
+getDecl :: FTL (Set VariableName)
 getDecl = gets varDecl
 
-addDecl :: [VariableName] -> FTL a -> FTL a
+addDecl :: Set VariableName -> FTL a -> FTL a
 addDecl vs p = do
   dcl <- gets varDecl; modify adv;
   after p $ modify $ sbv dcl
   where
-    adv s = s { varDecl = vs ++ varDecl s }
+    adv s = s { varDecl = vs <> varDecl s }
     sbv vs s = s { varDecl = vs }
 
 getPretyped :: FTL [TVar]
 getPretyped = gets tvrExpr
 
-makeDecl :: VarName -> FTL Decl
-makeDecl (nm, pos) = do
+makeDecl :: PosVar -> FTL Decl
+makeDecl (PosVar nm pos) = do
   serial <- gets serialCounter
   modify (\st -> st {serialCounter = serial + 1})
   return $ Decl nm pos (serial + 1)
 
-declared :: FTL MNotion -> FTL (Formula -> Formula, Formula, [Decl])
-declared p = do (q, f, v) <- p; nv <- mapM makeDecl v; return (q, f, nv)
+makeDecls :: Set PosVar -> FTL (Set Decl)
+makeDecls = Set.foldr (\v f -> makeDecl v >>= \d -> Set.insert d <$> f) (pure mempty)
+
+declared :: FTL MNotion -> FTL (Formula -> Formula, Formula, Set Decl)
+declared p = do (q, f, v) <- p; nv <- makeDecls v; return (q, f, nv)
 
 -- Predicates: verbs and adjectiveectives
 
@@ -166,7 +168,7 @@ primOfNotion p = getExpr notionExpr notion
     notion (pt, fm) = do
       (q, vs, ts) <- ofPattern p pt
       let fn v = fm $ (pVar v):(zVar (VarHole "")):ts
-      return (q, foldr1 And $ map fn vs, vs)
+      return (q, foldr1 And $ map fn $ Set.toList vs, vs)
 
 primCmNotion :: FTL UTerm -> FTL MTerm -> FTL MNotion
 primCmNotion p s = getExpr notionExpr notion
@@ -277,7 +279,7 @@ multiPattern _ _ = mzero
 -- parses a notion: follow the pattern to the name place, record names,
 -- then keep following the pattern
 notionPattern :: FTL (b -> b, a)
-          -> [Pattern] -> FTL (b -> b, [(VariableName, SourcePos)], [a])
+          -> [Pattern] -> FTL (b -> b, Set PosVar, [a])
 notionPattern p (Word l : ls) = patternTokenOf' l >> notionPattern p ls
 notionPattern p (Nm : ls) = do
   vs <- nameList
@@ -288,7 +290,7 @@ notionPattern _ _ = mzero
 -- parse an "of"-notion: follow the pattern to the notion name, then check that
 -- "of" follows the name followed by a variable that is not followed by "and"
 ofPattern :: FTL (b -> b, a)
-          -> [Pattern] -> FTL (b -> b, [(VariableName, SourcePos)], [a])
+          -> [Pattern] -> FTL (b -> b, Set PosVar, [a])
 ofPattern p (Word l : ls) = patternTokenOf' l >> ofPattern p ls
 ofPattern p (Nm : Word l : Vr : ls) = do
   guard $ elem "of" l; vs <- nameList
@@ -302,7 +304,7 @@ ofPattern _ _ = mzero
 commonPattern :: FTL (b -> b, a1)
           -> FTL (b -> c, [a2])
           -> [Pattern]
-          -> FTL (b -> c, [(VariableName, SourcePos)], [a2], [a1])
+          -> FTL (b -> c, Set PosVar, [a2], [a1])
 commonPattern p s (Word l:ls) = patternTokenOf' l >> commonPattern p s ls
 commonPattern p s (Nm : Word l : Vr : ls) = do
   guard $ elem "of" l; vs <- nameList; patternTokenOf' l
@@ -323,106 +325,98 @@ naPattern p ls = wdPattern p ls
 
 -- Variables
 
-nameList :: FTL [(VariableName, SourcePos)]
-nameList = varList -|- fmap (:[]) hidden
+nameList :: FTL (Set PosVar)
+nameList = varList -|- fmap Set.singleton hidden
 
-varList :: Parser st [(VariableName, SourcePos)]
-varList = do
-  vs <- var `sepBy` token' ","
-  nodups $ map fst vs ; return vs
+varList :: Parser st (Set PosVar)
+varList = var `sepBy` token' "," >>= nodups
 
-nodups :: [VariableName] -> Parser st ()
-nodups vs = unless ((null :: [b] -> Bool) $ duplicateNames vs) $
-  fail $ "duplicate names: " ++ (show $ map (Text.unpack . toLazyText . represent) vs)
+nodups :: IsVar a => [a] -> Parser st (Set a)
+nodups vs = do
+  unless ((null :: [b] -> Bool) $ duplicateNames vs) $
+    fail $ "duplicate names: " ++ (show $ map (Text.unpack . toLazyText . represent) vs)
+  pure $ Set.fromList vs
 
-hidden :: FTL (VariableName, SourcePos)
+hidden :: FTL PosVar
 hidden = do
   n <- gets hiddenCount
   modify $ \st -> st {hiddenCount = succ n}
-  return (VarHidden n, noSourcePos)
+  return (PosVar (VarHidden n) noSourcePos)
 
 -- | Parse the next token as a variable (a sequence of alpha-num chars beginning with an alpha)
 -- and return ('x' + the sequence) with the current position.
-var :: Parser st (VariableName, SourcePos)
+var :: Parser st PosVar
 var = do
   pos <- getPos
   v <- satisfy (\s -> Text.all isAlphaNum s && isAlpha (Text.head s))
-  return (VarConstant v, pos)
+  return (PosVar (VarConstant v) pos)
 
 --- pretyped Variables
 
-type TVar = ([VariableName], Formula)
+type TVar = (Set VariableName, Formula)
 
 primTypedVar :: FTL MNotion
 primTypedVar = getExpr tvrExpr tvr
   where
     tvr (vr, nt) = do
       vs <- varList
-      guard $ all (`elem` vr) $ map fst vs
+      guard $ Set.foldr (\v b -> b && v `Set.member` vr) True $ Set.map posVarName vs
       return (id, nt, vs)
 
 -- free
 
-freeVars :: Formula -> FTL [VariableName]
-freeVars f = do dvs <- getDecl; return $ free dvs f
-
-freeVarPositions :: Formula -> FTL [(VariableName, SourcePos)]
-freeVarPositions f = do dvs <- getDecl; return $ freePositions dvs f
+freeVars :: IsVar a => Formula -> FTL (FV a)
+freeVars f = excludeSet (free f) <$> getDecl
 
 --- decl
 
 {- produce the variables declared by a formula together with their positions. As
 parameter we pass the already known variables-}
-decl :: [VariableName] -> Formula -> [VarName]
-decl vs = dive
+decl :: IsVar a => Formula -> FV a
+decl = dive
   where
     dive (All _ f) = dive f
     dive (Exi _ f) = dive f
     dive (Tag _ f) = dive f
-    dive (Imp f g) = filter (noc f) (dive g)
-    dive (And f g) = dive f `varNameUnion` filter (noc f) (dive g)
+    dive (Imp f g) = excludeVars (allFree f) (dive g)
+    dive (And f g) = dive f <> excludeVars (allFree f) (dive g)
     dive t@Trm {trmArgs = v@Var{varName = u@(VarConstant _)}:ts}
-      | isNotion t && all (\t -> not (v `occursIn` t)) ts = guard (u `notElem` vs) >> return (u, varPosition v)
+      | isNotion t && all (\t -> not (v `occursIn` t)) ts = unitFV u (varPosition v)
     dive Trm{trmName = TermEquality, trmArgs = [v@Var{varName = u@(VarConstant _)}, t]}
-      | isTrm t && not (v `occursIn` t) =
-          guard (u `notElem` vs) >> return (u, varPosition v)
-    dive _ = []
-
-    noc f v = not (pVar v `occursIn` f)
-    varNameUnion = unionBy $ \a b -> fst a == fst b
+      | isTrm t && not (v `occursIn` t) = unitFV u (varPosition v)
+    dive _ = mempty
 
 {- produce variable names declared by a formula -}
-declNames :: [VariableName] -> Formula -> [VariableName]
-declNames vs = map fst . decl vs
+declNames :: Set VariableName -> Formula -> Set VariableName
+declNames vs f = fvToVarSet $ excludeSet (decl f) vs
 
 {- produce the bindings in a formula in a Decl data type and take care of
 the serial counter. -}
-bindings :: [VariableName] -> Formula -> FTL [Decl]
-bindings vs = mapM makeDecl . decl vs
+bindings :: Set VariableName -> Formula -> FTL (Set Decl)
+bindings vs f = makeDecls $ fvToVarSet $ excludeSet (decl f) vs
 
 
-freeOrOverlapping :: [VariableName] -> Formula -> Maybe Text
+freeOrOverlapping :: Set VariableName -> Formula -> Maybe Text
 freeOrOverlapping vs f
-  | zVar VarSlot `occursIn` f = Just $ "too few subjects for an m-predicate " <> info
-  | not (Text.null undeclared) = Just $ "free undeclared variables: " <> undeclared <> info
-  | not (Text.null overlapped) = Just $ "overlapping variables: " <> overlapped <> info
-  | otherwise = Nothing
+    | (zVar VarSlot) `occursIn` f = Just $ "too few subjects for an m-predicate " <> info
+    | not (Text.null sbs) = Just $ "free undeclared variables: "   <> sbs <> info
+    | not (Text.null ovl) = Just $ "overlapped variables: "        <> ovl <> info
+    | otherwise      = Nothing
   where
-    undeclared, overlapped, info :: Text
-    undeclared = Text.unwords $ map (showVar) $ free vs f
-    overlapped = Text.unwords $ map (showVar) $ overlapping vs f
+    sbs = Text.unwords $ map (showVar) $ Set.toList $ fvToVarSet $ excludeSet (free f) vs
+    ovl = Text.unwords $ map (showVar) $ Set.toList $ over vs f
     info = "\n in translation: " <> (Text.pack $ show f)
 
-    overlapping :: [VariableName] -> Formula -> [VariableName]
-    overlapping vs (All v f) = boundVars vs (declName v) f
-    overlapping vs (Exi v f) = boundVars vs (declName v) f
-    overlapping vs f = foldF (overlapping vs) f
+    over :: Set VariableName -> Formula -> Set VariableName
+    over vs (All v f) = boundVars vs (declName v) f
+    over vs (Exi v f) = boundVars vs (declName v) f
+    over vs f = foldF (over vs) f
 
-    boundVars :: [VariableName] -> VariableName -> Formula -> [VariableName]
+    boundVars :: Set VariableName -> VariableName -> Formula -> Set VariableName
     boundVars vs v f
-      | v `elem` vs = [v]
-      | v == VarEmpty = overlapping vs f
-      | otherwise = overlapping (v:vs) f
+      | v `Set.member` vs = Set.singleton v
+      | v == VarEmpty = over vs f
+      | otherwise = over (Set.insert v vs) f
 
 
 --- macro expressions

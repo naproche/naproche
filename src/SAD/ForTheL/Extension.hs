@@ -29,8 +29,8 @@ import SAD.Parser.Combinators
 import SAD.Data.Text.Decl
 import SAD.Core.SourcePos (SourceRange(..))
 
-
-
+import Control.Monad
+import qualified Data.Set as Set
 import Control.Applicative
 import Control.Monad.State.Class (get, modify)
 import Data.Text.Lazy (Text)
@@ -96,7 +96,7 @@ sigNotion = do
 newPredicat :: FTL Formula
 newPredicat = do n <- newPrdPattern nvr; get >>= addExpr n n True
 
-newNotion :: FTL (Formula, (VariableName, SourcePos))
+newNotion :: FTL (Formula, PosVar)
 newNotion = do
   (n, u) <- newNotionPattern nvr;
   f <- get >>= addExpr n n True
@@ -125,7 +125,7 @@ notionVars (f, d) | not isFunction = prdVars (f, d)
 
 
 prdVars (f, d) | not flat  = Just $ Text.pack $ "compound expression: " ++ show f
-               | otherwise = freeOrOverlapping (free [] f) d
+               | otherwise = freeOrOverlapping (fvToVarSet $ free f) d
   where
     flat      = isTrm f && allDistinctVars (trmArgs f)
 
@@ -147,10 +147,11 @@ pretypeVariable = do
   return $ ProofTextPretyping pos (fst tv)
   where
     typeVar = do
-      pos1 <- getPos; markupToken synonymLet "let"; vs@(_:_) <- varList; standFor;
-      (g, pos2) <- wellFormedCheck (freeOrOverlapping [] . fst) holedNotion
+      pos1 <- getPos; markupToken synonymLet "let"; vs <- varList; standFor
+      when (Set.size vs == 0) $ fail "empty variable list in let binding"
+      (g, pos2) <- wellFormedCheck (freeOrOverlapping mempty . fst) holedNotion
       let pos = rangePos $ SourceRange pos1 pos2
-      addPretypingReport pos $ map snd vs;
+      addPretypingReport pos $ map posVarPosition $ Set.toList vs;
       return (pos, (vs, ignoreNames g))
 
     holedNotion = do
@@ -159,7 +160,7 @@ pretypeVariable = do
       SourceRange _ pos2 <- dot
       return (g, pos2)
 
-    upd (vs, notion) st = st { tvrExpr = (map fst vs, notion) : tvrExpr st }
+    upd (vs, notion) st = st { tvrExpr = (Set.map posVarName vs, notion) : tvrExpr st }
 
 
 introduceMacro :: FTL ProofText

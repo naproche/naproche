@@ -25,11 +25,10 @@ import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Parser.Token
 import SAD.Parser.Primitives
-import SAD.Core.SourcePos (SourcePos)
 
 import SAD.Data.Formula
 
-
+import qualified Data.Set as Set
 
 import Data.List
 import Data.Char
@@ -133,7 +132,7 @@ addExpr t@Trm{trmName = s, trmArgs = vs} f p st =
        | rsm = st {rprExpr = (tail pt, fm) : rprExpr st}
        | otherwise = st {iprExpr = (init (tail pt), fm) : iprExpr st}
     -- check if pattern is a symbolic notion
-    snt = not lsm && elem (varName $ head vs) (declNames [] nf)
+    snt = not lsm && elem (varName $ head vs) (declNames mempty nf)
     -- and add it there as well if so (and increment id counter)
     nn | snt = ns {sntExpr = (tail pt,fm) : sntExpr st, idCount = incId p n}
        | otherwise = ns {idCount = incId p n}
@@ -175,8 +174,8 @@ extractSymbPattern t@Trm {trmName = TermName s, trmArgs = vs} f = (pt, nf)
     getPattern "#" = Vr
     getPattern w = Symbol w
 
-    getName (Symbol s:ls) = Text.pack (symEncode (Text.unpack s)) <> getName ls
-    getName (Vr:ls) = Text.pack (symEncode ".") <> getName ls
+    getName (Symbol s:ls) = symEncode s <> getName ls
+    getName (Vr:ls) = symEncode "." <> getName ls
     getName [] = ""
 
 
@@ -202,26 +201,26 @@ newPrdPattern tvr = multi </> unary </> newSymbPattern tvr
     multiVerb = do (t, vs) <- ptHead wlexem tvr; return (TermMultiVerb t, vs)
 
 newNotionPattern :: FTL Formula
-                 -> FTL (Formula, (VariableName, SourcePos))
+                 -> FTL (Formula, PosVar)
 newNotionPattern tvr = (notion <|> fun) </> unnamedNotion tvr
   where
     notion = do
       an; (t, v:vs) <- ptName wlexem tvr
-      return (zTrm NewId (TermNotion t) (v:vs), (varName v, varPosition v))
+      return (zTrm NewId (TermNotion t) (v:vs), PosVar (varName v) (varPosition v))
     fun = do
       the; (t, v:vs) <- ptName wlexem tvr
-      return (zEqu v $ zTrm NewId (TermNotion t) vs, (varName v, varPosition v))
+      return (zEqu v $ zTrm NewId (TermNotion t) vs, PosVar (varName v) (varPosition v))
 
 unnamedNotion :: FTL Formula
-                 -> FTL (Formula, (VariableName, SourcePos))
+                 -> FTL (Formula, PosVar)
 unnamedNotion tvr = (notion <|> fun) </> (newSymbPattern tvr >>= equ)
   where
     notion = do
       an; (t, v:vs) <- ptNoName wlexem tvr
-      return (zTrm NewId (TermNotion t) (v:vs), (varName v, varPosition v))
+      return (zTrm NewId (TermNotion t) (v:vs), PosVar (varName v) (varPosition v))
     fun = do
       the; (t, v:vs) <- ptNoName wlexem tvr
-      return (zEqu v $ zTrm NewId (TermNotion t) vs, (varName v, varPosition v))
+      return (zEqu v $ zTrm NewId (TermNotion t) vs, PosVar (varName v) (varPosition v))
     equ t = do v <- hidden; return (zEqu (pVar v) t, v)
 
 
@@ -309,21 +308,21 @@ wlx = failing nvr >> tokenPrim isWord
   where
     isWord t =
       let tk = showToken t; ltk = Text.toCaseFold tk
-      in guard (Text.all isAlphaNum tk && ltk `notElem` keylist) >> return tk
-    keylist = ["a","an","the","is","are","be"]
+      in guard (Text.all isAlphaNum tk && ltk `Set.notMember` keylist) >> return tk
+    keylist = Set.fromList ["a","an","the","is","are","be"]
 
 nvr :: FTL Formula
 nvr = do
   v <- var
   dvs <- getDecl
   tvs <- gets tvrExpr
-  guard $ fst v `elem` dvs || any (elem (fst v) . fst) tvs
+  guard $ posVarName v `elem` dvs || any (elem (posVarName v) . fst) tvs
   return $ pVar v
 
 avr :: Parser st Formula
 avr = do
   v <- var;
-  guard $ Text.null $ Text.tail $ deVar $ fst v
+  guard $ Text.null $ Text.tail $ deVar $ posVarName v
   return $ pVar v
   where
     deVar (VarConstant s) = s

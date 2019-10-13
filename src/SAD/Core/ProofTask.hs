@@ -12,7 +12,7 @@ import SAD.Data.Formula
 
 import SAD.Data.Text.Block (Section(..))
 import SAD.Prove.Normalize
-
+import Data.Set (Set)
 import qualified Data.Text.Lazy as Text
 
 import Data.Maybe
@@ -22,7 +22,7 @@ import SAD.Data.Text.Decl
 
 {- generate proof task associated with a block -}
 
-generateProofTask :: Section -> [VariableName] -> Formula -> Formula
+generateProofTask :: Section -> Set VariableName -> Formula -> Formula
 generateProofTask Selection vs f = foldr mbExi f vs
 generateProofTask LowDefinition _ f
   | funDcl f = funTask f
@@ -87,7 +87,7 @@ choices = Tag ChoiceTask . dive
     dive (Tag Evaluation _) = Top
     dive (Tag _ f) = dive f
     dive (Exi dcl (And (Tag Defined f) g)) = let x = declName dcl in
-      (generateProofTask LowDefinition [] $ dec $ inst x $ f) `blAnd`
+      (generateProofTask LowDefinition mempty $ dec $ inst x $ f) `blAnd`
       (dec $ inst x $ f `blImp` dive g)
     dive (All x f) = bool $ All x $ dive f
     dive (Imp f g) = f `blImp` dive g

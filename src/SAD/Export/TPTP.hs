@@ -17,6 +17,7 @@ import qualified Data.Text.Lazy as Text
 import Data.Text.Lazy.Builder (Builder)
 import qualified Data.Text.Lazy.Builder as Builder
 import SAD.Export.Representation
+import SAD.Core.SourcePos (noSourcePos)
 
 output :: [Context] -> Context -> Text
 output contexts goal = toLazyText $
@@ -52,4 +53,4 @@ tptpTerm d = dive
 
     sinfix o f g  = buildParens $ dive f <> o <> dive g
 
-    binder f  = "[" <> tptpTerm (succ d) (Ind 0 undefined) <> "] : " <> tptpTerm (succ d) f
+    binder f  = "[" <> tptpTerm (succ d) (Ind 0 noSourcePos) <> "] : " <> tptpTerm (succ d) f

@@ -93,16 +93,16 @@ pideActive = isJust <$> pideContext
 
 initThread :: Properties.T -> Channel -> IO ()
 initThread props channel = do
-  let property parse = Properties.get_value parse props
-  let pideProperty = property (\x -> guard (not $ null x) >> pure x) Naproche.naproche_pide
-  let fileProperty = property Just Naproche.naproche_pos_file
-  let shiftProperty = property Value.parse_int Naproche.naproche_pos_shift
-  let
+  updateState (\id -> Map.insert id (Context pideContext channel))
+  where
+    property parse = Properties.get_value parse props
+    pideProperty = property (\x -> guard (not $ null x) >> pure x) Naproche.naproche_pide
+    fileProperty = property Just Naproche.naproche_pos_file
+    shiftProperty = property Value.parse_int Naproche.naproche_pos_shift
     pideContext =
       case (pideProperty, fileProperty, shiftProperty) of
         (Just pide, Just file, Just shift) -> Just (PIDE pide file shift)
         _ -> Nothing
-  updateState (\id -> Map.insert id (Context pideContext channel))
 
 exitThread :: IO ()
 exitThread = updateState Map.delete

@@ -13,7 +13,9 @@ import SAD.Data.Formula.Base
 import SAD.Data.VarName
 import SAD.Data.Terms
 import SAD.Export.Representation (toLazyText, represent)
+import SAD.Core.SourcePos (noSourcePos)
 
+import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 
 -- show instances
@@ -53,7 +55,7 @@ showFormula p d = dive
       let showTerm = showFormula (pred p) d
       in  showArgumentsWith showTerm ts
 
-    showBinder f = showFormula p (succ d) (Ind 0 undefined) . showChar ' ' .
+    showBinder f = showFormula p (succ d) (Ind 0 noSourcePos) . showChar ' ' .
       showFormula p (succ d) f
 
     showInfix operator f g = dive f . showString operator . dive g
@@ -127,20 +129,21 @@ decode s (t:ts) p d = dec s
 symChars :: String
 symChars = "`~!@$%^&*()-+=[]{}:'\"<>/?\\|;,"
 
-symEncode :: String -> String
-symEncode = concatMap chc
+symEncode :: Text -> Text
+symEncode = Text.concat . map chc . Text.chunksOf 1
   where
-    chc '`' = "bq" ; chc '~'  = "tl" ; chc '!' = "ex"
-    chc '@' = "at" ; chc '$'  = "dl" ; chc '%' = "pc"
-    chc '^' = "cf" ; chc '&'  = "et" ; chc '*' = "as"
-    chc '(' = "lp" ; chc ')'  = "rp" ; chc '-' = "mn"
-    chc '+' = "pl" ; chc '='  = "eq" ; chc '[' = "lb"
-    chc ']' = "rb" ; chc '{'  = "lc" ; chc '}' = "rc"
-    chc ':' = "cl" ; chc '\'' = "qt" ; chc '"' = "dq"
-    chc '<' = "ls" ; chc '>'  = "gt" ; chc '/' = "sl"
-    chc '?' = "qu" ; chc '\\' = "bs" ; chc '|' = "br"
-    chc ';' = "sc" ; chc ','  = "cm" ; chc '.' = "dt"
-    chc c   = ['z', c]
+    chc :: Text -> Text
+    chc "`" = "bq" ; chc "~"  = "tl" ; chc "!" = "ex"
+    chc "@" = "at" ; chc "$"  = "dl" ; chc "%" = "pc"
+    chc "^" = "cf" ; chc "&"  = "et" ; chc "*" = "as"
+    chc "(" = "lp" ; chc ")"  = "rp" ; chc "-" = "mn"
+    chc "+" = "pl" ; chc "="  = "eq" ; chc "[" = "lb"
+    chc "]" = "rb" ; chc "{"  = "lc" ; chc "}" = "rc"
+    chc ":" = "cl" ; chc "\'" = "qt" ; chc "\"" = "dq"
+    chc "<" = "ls" ; chc ">"  = "gt" ; chc "/" = "sl"
+    chc "?" = "qu" ; chc "\\" = "bs" ; chc "|" = "br"
+    chc ";" = "sc" ; chc ","  = "cm" ; chc "." = "dt"
+    chc c   = Text.cons 'z' c
 
 symDecode :: String -> String
 symDecode s = sname [] s

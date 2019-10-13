@@ -26,9 +26,8 @@ import Control.Monad.Trans.State
 import Data.List
 import Data.Maybe
 import qualified Data.Map as Map
-
-
-
+import Data.Set (Set)
+import qualified Data.Set as Set
 
 
 -- Infer new thesis
@@ -210,7 +209,7 @@ reduceThesis definitions affirmation thesis =
 
 {- Generate all possible variations-}
 generateVariations :: Definitions -> Formula -> VariationMonad Formula
-generateVariations definitions = pass [] (Just True) 0
+generateVariations definitions = pass [] (Just True) (0 :: Int)
   where
     pass localContext sign n = dive
       where
@@ -235,9 +234,9 @@ generateVariations definitions = pass [] (Just True) 0
 
         liberateVariableIn f = generateInstantiations f >>= dive
         roundThrough = roundFM VarZ pass localContext sign n
-        lookBehindDefinition t = msum . map (dive . reduceWithEvidence .
+        lookBehindDefinition t = mconcat . map (dive . reduceWithEvidence .
           markRecursive  (trmId t)) . maybeToList . defForm definitions $ t
-
+        
 {- mark symbols that are recursively defined in their defining formula, so that
    the definition is not infinitely expanded -}
 markRecursive :: TermId -> Formula -> Formula
@@ -248,11 +247,11 @@ markRecursive n f = mapF (markRecursive n) f
 
 {- generate all instantiations with as of yet unused variables -}
 generateInstantiations :: Formula -> VariationMonad Formula
-generateInstantiations f = VM (tryAllVars [])
+generateInstantiations f = VM tryAllVars
   where
-    tryAllVars accumulator (v:vs) =
-      (accumulator ++ vs, inst v f) : tryAllVars (v:accumulator) vs
-    tryAllVars _ [] = []
+    tryAllVars vs = map go $ Set.elems vs
+      where
+        go v = (Set.delete v vs, inst v f)
 
 -- Variation monad
 
@@ -260,7 +259,13 @@ generateInstantiations f = VM (tryAllVars [])
 {- monad to do bookkeeping during the search for a variation, i.e. keep track
 of which variables have already been used for an instantiation -}
 newtype VariationMonad res =
-  VM { runVM :: [VariableName] -> [([VariableName], res)] }
+  VM { runVM :: Set VariableName -> [(Set VariableName, res)] }
+
+instance Ord a => Semigroup (VariationMonad a) where
+  a <> b = VM $ \s -> runVM a s <> runVM b s
+
+instance Ord a => Monoid (VariationMonad a) where
+  mempty = VM $ \s -> []
 
 instance Functor VariationMonad where
   fmap = liftM
@@ -281,12 +286,6 @@ instance Alternative VariationMonad where
 instance MonadPlus VariationMonad where
   mzero     = VM $ \ _ -> []
   mplus m k = VM $ \ s -> runVM m s ++ runVM k s
-
-
-
-
-
-
 
 -- special reduction of function thesis
 

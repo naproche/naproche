@@ -17,6 +17,8 @@ import Control.Monad
 import Control.Monad.State.Class (modify)
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
+import qualified Data.Set as Set
+import Data.Set (Set)
 
 import SAD.ForTheL.Base
 import SAD.ForTheL.Statement
@@ -171,13 +173,13 @@ pretyping :: Block -> FTL Block
 pretyping bl = do
   dvs <- getDecl; tvs <- getPretyped; pret dvs tvs bl
 
-pret :: [VariableName] -> [TVar] -> Block -> FTL Block
+pret :: Set VariableName -> [TVar] -> Block -> FTL Block
 pret dvs tvs bl = do
-  untyped <- mapM makeDecl $ freePositions (blockVars ++ dvs) (Block.formula bl)
+  untyped <- makeDecls $ fvToVarSet $ excludeSet (allFree (Block.formula bl)) (blockVars <> dvs)
   let typing =
         if null untyped
         then Top
-        else foldl1 And $ map (`typeWith` tvs) $ map declName untyped
+        else foldl1 And $ map (`typeWith` tvs) $ map declName $ Set.toList untyped
   return $ assumeBlock {Block.formula = typing, Block.declaredVariables = untyped}
   where
     blockVars = Block.declaredNames bl
@@ -187,7 +189,7 @@ pret dvs tvs bl = do
 pretypeBefore :: FTL Block -> FTL [ProofText] -> FTL [ProofText]
 pretypeBefore blp p = do
   bl <- blp; typeBlock <- pretyping bl; let pretyped = Block.declaredNames typeBlock
-  pResult   <- addDecl (pretyped ++ Block.declaredNames bl) $ fmap (ProofTextBlock bl : ) p
+  pResult   <- addDecl (pretyped <> Block.declaredNames bl) $ fmap (ProofTextBlock bl : ) p
   return $ if null pretyped then pResult else ProofTextBlock typeBlock : pResult
 
 pretype :: FTL Block -> FTL [ProofText]
@@ -230,23 +232,23 @@ statementBlock kind p mbLink = do
 
 pretypeSentence :: Section
                    -> FTL Formula
-                   -> ([VariableName] -> Formula -> Maybe Text)
+                   -> (Set VariableName -> Formula -> Maybe Text)
                    -> FTL [Text]
                    -> FTL Block
 pretypeSentence kind p wfVars mbLink = narrow $ do
-  dvs <- getDecl; tvr <- fmap (concatMap fst) getPretyped
+  dvs <- getDecl; tvr <- fmap (Set.unions . map fst) getPretyped
   bl <- wellFormedCheck (wf dvs tvr) $ statementBlock kind p mbLink
   newDecl <- bindings dvs $ Block.formula bl
   let nbl = if Block.canDeclare kind then bl {Block.declaredVariables = newDecl} else bl
   addBlockReports nbl; return nbl {Block.formula = removeObject $ Block.formula bl}
   where
     wf dvs tvr bl =
-      let fr = Block.formula bl; nvs = intersect tvr $ free dvs fr
-      in  wfVars (nvs ++ dvs) fr
+      let fr = Block.formula bl; nvs = Set.intersection tvr $ fvToVarSet $ excludeSet (free fr) dvs
+      in  wfVars (nvs <> dvs) fr
 
 sentence :: Section
             -> FTL Formula
-            -> ([VariableName] -> Formula -> Maybe Text)
+            -> (Set VariableName -> Formula -> Maybe Text)
             -> FTL [Text]
             -> FTL Block
 sentence kind p wfVars mbLink = do
@@ -258,24 +260,24 @@ sentence kind p wfVars mbLink = do
 
 -- variable well-formedness checks
 
-defVars, assumeVars, affirmVars :: [VariableName] -> Formula -> Maybe Text
+defVars, assumeVars, affirmVars :: Set VariableName -> Formula -> Maybe Text
 
 defVars dvs f
   | null unusedVars = affirmVars dvs f
   | otherwise = pure errorMsg
   where
-    unusedVars = let fvs = free [] f in filter (`notElem` fvs) dvs
+    unusedVars = let fvs = fvToVarSet $ free f in dvs `Set.difference` fvs
     errorMsg = "extra variables in the guard: " <> varText
-    varText = Text.concat $ map (Text.cons ' ' . showVar) unusedVars
+    varText = Text.concat $ map (Text.cons ' ' . showVar) $ Set.toList unusedVars
 
-llDefnVars :: [VariableName] -> Formula -> Maybe Text
+llDefnVars :: Set VariableName -> Formula -> Maybe Text
 llDefnVars dvs f
   | x `elem` dvs = Just $ "Defined variable is already in use: " <> showVar x
-  | otherwise = affirmVars (x : dvs) f
+  | otherwise = affirmVars (Set.insert x dvs) f
   where
-    [x] = declNames [] f
+    [x] = Set.elems $ declNames mempty f
 
-assumeVars dvs f = affirmVars (declNames dvs f ++ dvs) f
+assumeVars dvs f = affirmVars (declNames dvs f <> dvs) f
 
 affirmVars = freeOrOverlapping
 
@@ -311,14 +313,14 @@ method = optLL1 Raw $ markupToken byAnnotation "by" >> (contradict <|> cases <|>
 indThesis :: Formula -> Scheme -> Scheme -> FTL Formula
 indThesis fr pre post = do
   it <- indScheme pre post >>= indTerm fr; dvs <- getDecl
-  indFormula (freePositions dvs it) it fr
+  indFormula (fvToVarSet $ excludeSet (free it) dvs) it fr
   where
     indScheme (InT _) (InT _) = failWF "conflicting induction schemes"
     indScheme m@(InT _) _ = return m; indScheme _ m@(InT _) = return m
     indScheme InS _ = return InS; indScheme _ m = return m
 
     indTerm _ (InT t) = return t
-    indTerm (All v _) InS = return $ pVar (declName v, declPosition v)
+    indTerm (All v _) InS = return $ pVar $ PosVar (declName v) (declPosition v)
     indTerm _ InS = failWF "invalid induction thesis"
     indTerm _ _ = return Top
 
@@ -327,12 +329,12 @@ indThesis fr pre post = do
 
     indStatem vs (Imp g f) = (Imp g .) <$> indStatem vs f
     indStatem vs (All v f) = (dAll v .) <$> indStatem (deleteDecl v vs) f
-    indStatem [] f = return (`Imp` f)
+    indStatem vs f | Set.null vs = pure (`Imp` f)
     indStatem _ _ = failWF $ "invalid induction thesis " <> (Text.pack $ show fr)
 
     insertIndTerm it cn = cn $ Tag InductionHypothesis $ subst it (VarHole "") $ cn $ zLess it (zVar (VarHole ""))
 
-    deleteDecl Decl{declName, declPosition} = deleteBy (\a b -> fst a == fst b) (declName, declPosition)
+    deleteDecl Decl{declName, declPosition} = Set.delete (PosVar declName declPosition)
 
 
 
