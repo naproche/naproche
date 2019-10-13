@@ -28,6 +28,8 @@ import SAD.Data.Text.Decl (Decl)
 import SAD.Data.Text.Decl
 import SAD.Parser.Error (ParseError)
 
+import Data.Set (Set)
+import qualified Data.Set as Set
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 
@@ -40,7 +42,7 @@ data ProofText =
   | NonProofTextStoredInstr [Instr] -- a way to restore instructions during verification
   | ProofTextDrop Pos Drop
   | ProofTextSynonym SourcePos
-  | ProofTextPretyping SourcePos [(VariableName, SourcePos)]
+  | ProofTextPretyping SourcePos (Set PosVar)
   | ProofTextMacro SourcePos
   | ProofTextError ParseError
   | ProofTextChecked ProofText
@@ -51,7 +53,7 @@ data Block  = Block {
   formula           :: Formula,
   body              :: [ProofText],
   kind              :: Section,
-  declaredVariables :: [Decl],
+  declaredVariables :: Set Decl,
   name              :: Text,
   link              :: [Text],
   position          :: SourcePos,
@@ -60,7 +62,7 @@ data Block  = Block {
 
 makeBlock :: Formula -> [ProofText] -> Section -> Text -> [Text] -> SourcePos -> [Token] -> Block
 makeBlock form body kind name link pos toks =
-  Block form body kind [] name link (rangePos (tokensRange toks)) toks
+  Block form body kind mempty name link (rangePos (tokensRange toks)) toks
 
 text :: Block -> Text
 text Block {tokens} = composeTokens tokens
@@ -84,8 +86,8 @@ compose = foldr comp Top
   where
     comp (ProofTextBlock block@Block{ declaredVariables = dvs }) f
       | needsProof block || kind block == Posit =
-          foldr zExi (blAnd (formulate block) f) $ map declName dvs
-      | otherwise = foldr zAll (blImp (formulate block) f) $ map declName dvs
+          Set.foldr zExi (blAnd (formulate block) f) $ Set.map declName dvs
+      | otherwise = Set.foldr zAll (blImp (formulate block) f) $ Set.map declName dvs
     comp (ProofTextChecked txt) f = comp txt f
     comp _ fb = fb
 
@@ -122,8 +124,8 @@ file :: Block -> Text
 file = sourceFile . position
 
 
-declaredNames :: Block -> [VariableName]
-declaredNames = map declName . declaredVariables
+declaredNames :: Block -> Set VariableName
+declaredNames = Set.map declName . declaredVariables
 
 -- Show instances
 

@@ -19,10 +19,10 @@ import SAD.Parser.Combinators
 import SAD.Parser.Primitives
 
 import SAD.Data.Formula
-import SAD.Core.SourcePos
 import SAD.Data.Text.Decl
 
-
+import Data.Set (Set)
+import qualified Data.Set as Set
 import Data.Function ((&))
 import Control.Applicative
 import Control.Monad
@@ -70,7 +70,7 @@ chainEnd f = optLL1 f $ and_st <|> or_st <|> iff_st <|> where_st
     iff_st = fmap (Iff f) $ iff >> statement
     where_st = do
       markupTokenOf Reports.whenWhere ["when", "where"]; y <- statement
-      return $ foldr zAll (Imp y f) (declNames [] y)
+      return $ foldr zAll (Imp y f) (declNames mempty y)
 
 
 atomic :: FTL Formula
@@ -183,23 +183,24 @@ mPredicate p = (token' "not" >> mNegative) <|> mPositive
 --- notions
 
 basenotion :: Parser
-             FState (Formula -> Formula, Formula, [(VariableName, SourcePos)])
+             FState (Formula -> Formula, Formula, Set PosVar)
 basenotion = fmap digadd $ cm <|> symEqnt <|> (set </> primNotion term)
   where
     cm = token' "common" >> primCmNotion term terms
     symEqnt = do
       t <- lexicalCheck isTrm sTerm
-      v <- hidden; return (id, zEqu (zVar (VarHole "")) t, [v])
+      v <- hidden; 
+      pure (id, zEqu (zVar (VarHole "")) t, Set.singleton v)
 
-symNotion :: FTL (Formula -> Formula, Formula, [(VariableName, SourcePos)])
+symNotion :: FTL (Formula -> Formula, Formula, Set PosVar)
 symNotion = do
   x <- paren (primSnt sTerm) </> primTypedVar
   dignotion (digadd x)
 
 
-gnotion :: FTL (Formula -> Formula, Formula, [(VariableName, SourcePos)])
+gnotion :: FTL (Formula -> Formula, Formula, Set PosVar)
   -> FTL Formula
-  -> FTL (Formula -> Formula, Formula, [(VariableName, SourcePos)])
+  -> FTL (Formula -> Formula, Formula, Set PosVar)
 gnotion nt ra = do
   ls <- fmap reverse la; (q, f, vs) <- nt;
   rs <- opt [] $ fmap (:[]) $ ra <|> rc
@@ -216,13 +217,13 @@ anotion :: FTL (Formula -> Formula, Formula)
 anotion = label "notion (at most one name)" $
   art >> gnotion basenotion rat >>= single >>= hol
   where
-    hol (q, f, v) = return (q, subst (zVar (VarHole "")) (fst v) f)
+    hol (q, f, v) = return (q, subst (zVar (VarHole "")) (posVarName v) f)
     rat = fmap (Tag Dig) stattr
 
-notion :: Parser FState (Formula -> Formula, Formula, [(VariableName, SourcePos)])
+notion :: FTL (Formula -> Formula, Formula, Set PosVar)
 notion = label "notion" $ gnotion (basenotion </> symNotion) stattr >>= dignotion
 
-possess :: Parser FState (Formula -> Formula, Formula, [(VariableName, SourcePos)])
+possess :: FTL (Formula -> Formula, Formula, Set PosVar)
 possess = label "possesive notion" $ gnotion (primOfNotion term) stattr >>= dignotion
 
 
@@ -233,13 +234,14 @@ digadd :: (a, Formula, c) -> (a, Formula, c)
 digadd (q, f, v) = (q, Tag Dig f, v)
 
 dignotion :: Monad m =>
-          (a, Formula, [(VariableName, SourcePos)])
-          -> m (a, Formula, [(VariableName, SourcePos)])
-dignotion (q, f, v) = dig f (map pVar v) >>= \ g -> return (q, g, v)
+          (a, Formula, Set PosVar)
+          -> m (a, Formula, Set PosVar)
+dignotion (q, f, v) = dig f (map pVar $ Set.toList v) >>= \ g -> return (q, g, v)
 
-single :: Monad m => (a, b, [c]) -> m (a, b, c)
-single (q, f, [v]) = return (q, f, v)
-single _ = fail "inadmissible multinamed notion"
+single :: Monad m => (a, b, Set c) -> m (a, b, c)
+single (q, f, vs) = case Set.elems vs of
+  [v] -> pure $ (q, f, v)
+  _ -> fail "inadmissible multinamed notion"
 
 --- terms
 
@@ -265,18 +267,18 @@ quNotion = label "quantified notion" $
   where
     fa = do
       tokenOf' ["every", "each", "all", "any"]; (q, f, v) <- notion
-      vDecl <- mapM makeDecl v
-      return (q . flip (foldr dAll) vDecl . blImp f, map pVar v)
+      vDecl <- makeDecls v
+      return (q . flip (foldr dAll) vDecl . blImp f, map pVar $ Set.toList v)
 
     ex = do
       token' "some"; (q, f, v) <- notion
-      vDecl <- mapM makeDecl v
-      return (q . flip (foldr dExi) vDecl . blAnd f, map pVar v)
+      vDecl <- makeDecls v
+      return (q . flip (foldr dExi) vDecl . blAnd f, map pVar $ Set.toList v)
 
     no = do
       token' "no"; (q, f, v) <- notion
-      vDecl<- mapM makeDecl v
-      return (q . flip (foldr dAll) vDecl . blImp f . Not, map pVar v)
+      vDecl<- makeDecls v
+      return (q . flip (foldr dAll) vDecl . blImp f . Not, map pVar $ Set.toList v)
 
 
 definiteTerm :: FTL (Formula -> Formula, Formula)
@@ -384,7 +386,7 @@ selection :: FTL Formula
 selection = fmap (foldl1 And) $ (art >> takeLongest namedNotion) `sepByLL1` comma
   where
     namedNotion = label "named notion" $ do
-      (q, f, vs) <- notion; guard (all isExplicitName $ map fst vs); return $ q f
+      (q, f, vs) <- notion; guard (all isExplicitName $ map posVarName $ Set.toList vs); return $ q f
     isExplicitName (VarConstant _) = True; isExplicitName _ = False
 
 
@@ -403,27 +405,29 @@ set = label "set definition" $ symbSet <|> setOf
       tokenOf' ["set", "sets"]; nm <- var -|- hidden; token' "of";
       (q, f, u) <- notion >>= single; vnm <- hidden
       vnmDecl <- makeDecl vnm;
-      return (id, setForm vnmDecl $ subst (pVar vnm) (fst u) $ q f, [nm])
+      return (id, setForm vnmDecl $ subst (pVar vnm) (posVarName u) $ q f, Set.singleton nm)
     symbSet = do
       (cnd, nm) <- symbSetNotation; h <- hidden
       nmDecl <- makeDecl nm
-      return (id, setForm nmDecl $ cnd $ pVar nm, [h])
-    setForm dcl = let nm = (declName dcl, declPosition dcl) in
+      return (id, setForm nmDecl $ cnd $ pVar nm, Set.singleton h)
+    setForm dcl = let nm = PosVar (declName dcl) (declPosition dcl) in
       And (zSet (zVar (VarHole ""))) . dAll dcl . Iff (zElem (pVar nm) (zVar (VarHole "")))
 
 
-symbSetNotation :: Parser
-                     FState (Formula -> Formula, (VariableName, SourcePos))
+symbSetNotation :: FTL (Formula -> Formula, PosVar)
 symbSetNotation = cndSet </> finSet
   where
     finSet = braced $ do
-      ts <- sTerm `sepByLL1` token ","; h <- hidden
-      return (\tr -> foldr1 Or $ map (zEqu tr) ts, h)
+      ts <- sTerm `sepByLL1` token ","
+      h <- hidden
+      pure (\tr -> foldr1 Or $ map (zEqu tr) ts, h)
     cndSet = braced $ do
-      (tag, c, t) <- sepFrom; st <- token "|" >> statement;
-      vs <- freeVarPositions t; vsDecl <- mapM makeDecl vs;
-      nm <- if isVar t then return $ (varName t, varPosition t) else hidden
-      return (\tr -> tag $ c tr `blAnd` mbEqu vsDecl tr t st, nm)
+      (tag, c, t) <- sepFrom
+      st <- token "|" >> statement;
+      vs <- freeVars t
+      vsDecl <- makeDecls $ fvToVarSet vs;
+      nm <- if isVar t then pure $ PosVar (varName t) (varPosition t) else hidden
+      pure (\tr -> tag $ c tr `blAnd` mbEqu vsDecl tr t st, nm)
 
     mbEqu _ tr Var{varName = v} = subst tr v
     mbEqu vs tr t = \st -> foldr mbdExi (st `And` zEqu tr t) vs
@@ -435,7 +439,7 @@ sepFrom = notionSep -|- setSep -|- noSep
   where
     notionSep = do
       (q, f, v) <- notion >>= single; guard (not . (==) TermEquality . trmName $ f)
-      return (Tag Replacement, \tr -> subst tr (fst v) $ q f, pVar v)
+      return (Tag Replacement, \tr -> subst tr (posVarName v) $ q f, pVar v)
     setSep = do
       t <- sTerm; cnd <- token' "in" >> elementCnd
       return (id, cnd, t)
@@ -453,9 +457,12 @@ functionNotion :: FTL Formula
 functionNotion = liftM2 (&) sVar $ wordFun <|> (token "=" >> lambda)
   where
   wordFun = do
-    token "["; t <- pair; token "]"; token "="; vs <- freeVarPositions t
-    def <- addDecl (map fst vs) lambdaBody; (_, _, dom) <- token' "for" >> lambdaIn;
-    vsDecl <- mapM makeDecl vs
+    token "["; t <- pair; token "]"
+    token "="
+    vs <- fvToVarSet <$> freeVars t
+    def <- addDecl (Set.map posVarName vs) lambdaBody
+    (_, _, dom) <- token' "for" >> lambdaIn;
+    vsDecl <- makeDecls vs
     let body f = foldr dAll (Imp (t `zElem` zDom f) $ def $ zApp f t) vsDecl
     return $ \f -> zFun f `And` Tag Domain (dom f) `And` body f
 
@@ -497,7 +504,9 @@ chooseInTerm = do
 
 lambda :: FTL (Formula -> Formula)
 lambda = do
-  (t, df_head, dom) <- ld_head; vs <- freeVars t; df <- addDecl vs lambdaBody
+  (t, df_head, dom) <- ld_head
+  vs <- fvToVarSet <$> freeVars t
+  df <- addDecl vs lambdaBody
   return $ \f -> zFun f `And` Tag Domain (dom f) `And` (df_head f $ df $ zApp f t)
   where
     ld_head = finish $ token "\\" >> lambdaIn
@@ -511,7 +520,9 @@ pair = sVar </> pr
 lambdaIn :: Parser
               FState (Formula, Formula -> Formula -> Formula, Formula -> Formula)
 lambdaIn = do
-  t <- pair; vs <- freeVarPositions t; vsDecl <- mapM makeDecl vs
+  t <- pair
+  vs <- fvToVarSet <$> freeVars t
+  vsDecl <- makeDecls vs
   token' "in"; dom <- ld_dom;
   let df_head f = foldr ((.) . dAll) (Imp (t `zElem` zDom f)) vsDecl
   return (t, df_head, \f -> dom f t vsDecl)

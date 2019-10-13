@@ -15,7 +15,6 @@ import SAD.Data.Formula
 import SAD.Core.Rewrite
 import SAD.Prove.Unify
 
-
 import SAD.Helpers
 
 import Data.List
@@ -24,6 +23,7 @@ import Data.Function (on)
 import qualified Data.Map as Map
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
+import qualified Data.Set as Set
 
 data Equation = Equation Formula Formula
   deriving (Eq, Ord)
@@ -195,8 +195,8 @@ rewriter eqs tm = case rewrite1 eqs tm of
 {-rename variables occurring in two terms such that they have no free variables in common-}
 renamepair :: Equation -> Equation -> (Equation, Equation)
 renamepair (Equation l1 r1) (Equation l2 r2) =
-  let freeVars1 = fvToVarList $ allFree [] l1 <> allFree [] r1
-      freeVars2 = fvToVarList $ allFree [] l2 <> allFree [] r2
+  let freeVars1 = Set.toList $ fvToVarSet $ allFree l1 <> allFree r1
+      freeVars2 = Set.toList $ fvToVarSet $ allFree l2 <> allFree r2
       (nms1,nms2) = splitAt (length freeVars1)
         $ map (\n -> zVar (VarHole $ Text.pack $ 'a' : show n))
           [0..(length freeVars1 + length freeVars2 - 1)]

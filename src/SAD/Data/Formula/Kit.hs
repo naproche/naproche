@@ -10,14 +10,14 @@ module SAD.Data.Formula.Kit where
 
 import Control.Monad
 import Data.Maybe
-import Data.Function (on)
+import Data.Set (Set)
+import qualified Data.Set as Set
 
 import SAD.Data.Formula.Base
 import SAD.Data.Tag
 import SAD.Core.SourcePos
 import SAD.Data.Text.Decl (Decl)
 import SAD.Data.Text.Decl
-import SAD.Helpers
 import SAD.Data.Terms
 import SAD.Data.VarName
 
@@ -126,9 +126,9 @@ mbExi, mbAll :: VariableName -> Formula -> Formula
 mbExi v f = fromMaybe (zExi v f) (mbBind v True f)
 mbAll v f = fromMaybe (zAll v f) (mbBind v False f)
 
-mbpExi, mbpAll :: (VariableName, SourcePos) -> Formula -> Formula
-mbpExi v f = fromMaybe (pExi v f) (mbBind (fst v) True f)
-mbpAll v f = fromMaybe (pAll v f) (mbBind (fst v) False f)
+mbpExi, mbpAll :: PosVar -> Formula -> Formula
+mbpExi v f = fromMaybe (pExi v f) (mbBind (posVarName v) True f)
+mbpAll v f = fromMaybe (pAll v f) (mbBind (posVarName v) False f)
 
 mbdExi, mbdAll :: Decl -> Formula -> Formula
 mbdExi v f = fromMaybe (dExi v f) (mbBind (declName v) True f)
@@ -144,7 +144,7 @@ blImp _ Top = Top; blImp _ (Tag _ Top) = Top
 blImp Top f = f; blImp (Tag _ Top) f = f
 blImp f g = Imp f g
 
-pBlAll, pBlExi :: (VariableName, SourcePos) -> Formula -> Formula
+pBlAll, pBlExi :: PosVar -> Formula -> Formula
 pBlAll _ Top = Top
 pBlAll v f = All (positionedDecl v) f
 
@@ -156,9 +156,9 @@ zAll, zExi :: VariableName -> Formula -> Formula
 zAll v = bool . All (newDecl v) . bind v
 zExi v = bool . Exi (newDecl v) . bind v
 
-pAll, pExi :: (VariableName, SourcePos) -> Formula -> Formula
-pAll nm@(v, _) = pBlAll nm . bind v
-pExi nm@(v, _) = pBlExi nm . bind v
+pAll, pExi :: PosVar -> Formula -> Formula
+pAll nm@(PosVar v _) = pBlAll nm . bind v
+pExi nm@(PosVar v _) = pBlExi nm . bind v
 
 dAll, dExi :: Decl -> Formula -> Formula
 dAll dcl = bool . All dcl . bind (declName dcl)
@@ -171,10 +171,10 @@ zOr (Not f) g = Imp f g
 zOr f g       = Or  f g
 
 zVar :: VariableName -> Formula
-zVar v = pVar (v, noSourcePos)
+zVar v = pVar $ PosVar v noSourcePos
 
-pVar :: (VariableName, SourcePos) -> Formula
-pVar (v, pos) = Var v [] pos
+pVar :: PosVar -> Formula
+pVar (PosVar v pos) = Var v [] pos
 
 zTrm :: TermId -> TermName -> [Formula] -> Formula
 zTrm tId t ts = Trm t ts [] tId
@@ -327,30 +327,21 @@ duplicateNames :: Ord a => [a] -> [a]
 duplicateNames ls = concatMap (\(k,a) -> replicate (a-1) k) 
                   $ Map.toList $ Map.fromListWith (+) $ zip ls $ repeat (1::Int)
 
-{- return free user named variables in a formula (without duplicateNames),
-except those in vs -}
-freePositions :: [VariableName] -> Formula -> [(VariableName, SourcePos)]
-freePositions vs = nubOrdBy (compare `on` fst) . dive
-  where
-    dive f@Var {varName = u@(VarConstant _)} =
-      (guard (u `notElem` vs) >> return (u, varPosition f)) ++ foldF dive f
-    dive f = foldF dive f
-
-free :: [VariableName] -> Formula -> [VariableName]
-free vs = map fst . freePositions vs
+free :: IsVar a => Formula -> FV a
+free f@Var {varName = u@(VarConstant _)} = unitFV u (varPosition f) <> foldF free f
+free f = foldF free f
 
 {- return all free variables in a formula (without duplicateNames),
 except those in vs -}
-allFree :: FreeVarStrategy f => [VariableName] -> Formula -> f
-allFree vs f = foldr bindVar (dive f) vs
-  where
-    dive f@Var {varName = u} = unitFV u <> foldF dive f
-    dive f = foldF dive f
+allFree :: IsVar a => Formula -> FV a
+allFree f@Var {varName = u} = unitFV u (varPosition f) <> foldF allFree f
+allFree f = foldF allFree f
 
 
 {- universal closure of a formula -}
-universialClosure :: [VariableName] -> Formula -> Formula
-universialClosure ls f = foldr zAll f $ fvToVarList $ allFree ls f
+universialClosure :: Set VariableName -> Formula -> Formula
+universialClosure ls f = foldr zAll f $ Set.toList $ fvToVarSet
+  $ excludeSet (allFree f) ls
 
 
 -- substitutions as maps

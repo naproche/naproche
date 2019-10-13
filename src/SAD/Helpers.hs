@@ -25,6 +25,8 @@ notNull :: [a] -> Bool
 notNull [] = False
 notNull _  = True
 
+-- nubOrds taken from the 'extra' package.
+
 -- | /O(n log n)/. The 'nubOrd' function removes duplicate elements from a list.
 -- In particular, it keeps only the first occurrence of each element.
 -- Unlike the standard 'nub' operator, this version requires an 'Ord' instance
