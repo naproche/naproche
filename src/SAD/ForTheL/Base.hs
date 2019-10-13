@@ -11,7 +11,7 @@ module SAD.ForTheL.Base where
 
 import Control.Applicative
 import Control.Monad
-import qualified Control.Monad.State.Class as MS
+import Control.Monad.State.Class (gets, modify)
 import Data.Char (isAlpha, isAlphaNum)
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
@@ -88,27 +88,27 @@ initFS = FState
 
 
 getExpr :: (FState -> [a]) -> (a -> FTL b) -> FTL b
-getExpr e p = MS.gets e >>=  foldr ((-|-) . try . p ) mzero
+getExpr e p = gets e >>=  foldr ((-|-) . try . p ) mzero
 
 
 getDecl :: FTL (Set VariableName)
-getDecl = MS.gets varDecl
+getDecl = gets varDecl
 
 addDecl :: Set VariableName -> FTL a -> FTL a
 addDecl vs p = do
-  dcl <- MS.gets varDecl; MS.modify adv;
-  after p $ MS.modify $ sbv dcl
+  dcl <- gets varDecl; modify adv;
+  after p $ modify $ sbv dcl
   where
     adv s = s { varDecl = vs <> varDecl s }
     sbv vs s = s { varDecl = vs }
 
 getPretyped :: FTL [TVar]
-getPretyped = MS.gets tvrExpr
+getPretyped = gets tvrExpr
 
 makeDecl :: PosVar -> FTL Decl
 makeDecl (PosVar nm pos) = do
-  serial <- MS.gets serialCounter
-  MS.modify (\st -> st {serialCounter = serial + 1})
+  serial <- gets serialCounter
+  modify (\st -> st {serialCounter = serial + 1})
   return $ Decl nm pos (serial + 1)
 
 makeDecls :: Set PosVar -> FTL (Set Decl)
@@ -339,8 +339,8 @@ nodups vs = do
 
 hidden :: FTL PosVar
 hidden = do
-  n <- MS.gets hiddenCount
-  MS.modify $ \st -> st {hiddenCount = succ n}
+  n <- gets hiddenCount
+  modify $ \st -> st {hiddenCount = succ n}
   return (PosVar (VarHidden n) noSourcePos)
 
 -- | Parse the next token as a variable (a sequence of alpha-num chars beginning with an alpha)
@@ -396,8 +396,8 @@ bindings :: Set VariableName -> Formula -> FTL (Set Decl)
 bindings vs f = makeDecls $ fvToVarSet $ excludeSet (decl f) vs
 
 
-overfree :: Set VariableName -> Formula -> Maybe Text
-overfree vs f
+freeOrOverlapping :: Set VariableName -> Formula -> Maybe Text
+freeOrOverlapping vs f
     | (zVar VarSlot) `occursIn` f = Just $ "too few subjects for an m-predicate " <> info
     | not (Text.null sbs) = Just $ "free undeclared variables: "   <> sbs <> info
     | not (Text.null ovl) = Just $ "overlapped variables: "        <> ovl <> info

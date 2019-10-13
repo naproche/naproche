@@ -29,7 +29,7 @@ module SAD.Parser.Base
 import Control.Monad
 import qualified Control.Monad.Fail as Fail
 import Control.Applicative
-import Control.Monad.State.Class
+import Control.Monad.State.Class (MonadState(put, get))
 import SAD.Helpers (notNull)
 
 import SAD.Parser.Token

@@ -32,7 +32,7 @@ import SAD.Core.SourcePos (SourceRange(..))
 import Control.Monad
 import qualified Data.Set as Set
 import Control.Applicative
-import qualified Control.Monad.State.Class as MS
+import Control.Monad.State.Class (get, modify)
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 
@@ -94,12 +94,12 @@ sigNotion = do
     trm Trm {trmName = TermEquality, trmArgs = [_,t]} = t; trm t = t
 
 newPredicat :: FTL Formula
-newPredicat = do n <- newPrdPattern nvr; MS.get >>= addExpr n n True
+newPredicat = do n <- newPrdPattern nvr; get >>= addExpr n n True
 
 newNotion :: FTL (Formula, PosVar)
 newNotion = do
   (n, u) <- newNotionPattern nvr;
-  f <- MS.get >>= addExpr n n True
+  f <- get >>= addExpr n n True
   return (f, u)
 
 -- well-formedness check
@@ -125,7 +125,7 @@ notionVars (f, d) | not isFunction = prdVars (f, d)
 
 
 prdVars (f, d) | not flat  = Just $ Text.pack $ "compound expression: " ++ show f
-               | otherwise = overfree (fvToVarSet $ free f) d
+               | otherwise = freeOrOverlapping (fvToVarSet $ free f) d
   where
     flat      = isTrm f && allDistinctVars (trmArgs f)
 
@@ -143,13 +143,13 @@ allDistinctVars = disVs []
 pretypeVariable :: FTL ProofText
 pretypeVariable = do
   (pos, tv) <- narrow typeVar
-  MS.modify $ upd tv
+  modify $ upd tv
   return $ ProofTextPretyping pos (fst tv)
   where
     typeVar = do
       pos1 <- getPos; markupToken synonymLet "let"; vs <- varList; standFor
       when (Set.size vs == 0) $ fail "empty variable list in let binding"
-      (g, pos2) <- wellFormedCheck (overfree mempty . fst) holedNotion
+      (g, pos2) <- wellFormedCheck (freeOrOverlapping mempty . fst) holedNotion
       let pos = rangePos $ SourceRange pos1 pos2
       addPretypingReport pos $ map posVarPosition $ Set.toList vs;
       return (pos, (vs, ignoreNames g))
@@ -169,7 +169,7 @@ introduceMacro = do
   (pos2, (f, g)) <- narrow (prd -|- notion)
   let pos = rangePos $ SourceRange pos1 pos2
   addMacroReport pos
-  MS.get >>= addExpr f (ignoreNames g) False
+  get >>= addExpr f (ignoreNames g) False
   return $ ProofTextMacro pos
   where
     prd = wellFormedCheck (prdVars . snd) $ do
