@@ -3,6 +3,7 @@
 *.swp
 *~
 Naproche-SAD.cabal
+stack.yaml.lock
 
 # Ignore profiling output
 *.aux
