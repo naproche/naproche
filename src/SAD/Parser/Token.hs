@@ -88,6 +88,12 @@ tokenize start = posToken start NoWhiteSpaceBefore TextMode
         toks = posToken (advanceAlong pos white) WhiteSpaceBefore mode rest
     posToken pos whitespaceBefore mode s = case Text.uncons s of
       Nothing -> [EOF pos]
+      Just ('\\', rest) -> tok:toks
+        where
+          (name, rest') = Text.span isAlpha rest
+          cmd = (Text.cons '\\' name)
+          tok = makeToken cmd pos whitespaceBefore mode
+          toks = posToken (advanceAlong pos cmd) WhiteSpaceBefore mode rest'
       Just ('$', rest) -> toks
         where
           toks = posToken (advancePos pos '$') NoWhiteSpaceBefore (switchMode mode) rest

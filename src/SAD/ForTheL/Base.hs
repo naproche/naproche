@@ -455,16 +455,14 @@ such = tokenOf' ["such", "so"]
 
 texBegin, texEnd :: Text -> Parser st Text
 texBegin env = do
-  symbol "\\"
-  token "begin"
+  token "\\begin"
   symbol "{"
   token env
   symbol "}"
   return env
 
 texEnd env = do
-  symbol "\\"
-  token "end"
+  token "\\end"
   symbol "{"
   token env
   symbol "}"
