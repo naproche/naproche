@@ -69,23 +69,41 @@ procParseInstruction text = case text of
       | otherwise = modify $ \st -> st {strSyms = syms : strSyms st}
 
 topsection :: FTL Block
-topsection = signature' <|> definition <|> axiom <|> theorem
+topsection = texSig <|> signature' <|> definition <|> axiom <|> theorem
 
 --- generic topsection parsing
 
-genericTopsection :: Section
-                     -> FTL Text
-                     -> FTL [ProofText]
-                     -> FTL Block
-genericTopsection kind header endparser = do
-  pos <- getPos; inp <- getInput; nm <- header;
-  toks <- getTokens inp; bs <- body
-  let bl = Block.makeBlock (zVar (VarHole "")) bs kind nm [] pos toks
-  addBlockReports bl; return bl
+genericTopsection :: Section -> FTL Text -> FTL [ProofText] -> FTL Block
+genericTopsection kind header end = do
+  pos <- getPos
+  inp <- getInput
+  h <- header
+  toks <- getTokens inp
+  bs <- body
+  let block = Block.makeBlock (zVar (VarHole "")) bs kind h [] pos toks
+  addBlockReports block
+  return block
   where
-    body = assumption <|> endparser
+    body = assumption <|> end
     assumption = topAssume `pretypeBefore` body
     topAssume = pretypeSentence Assumption (asmH >> statement) assumeVars noLink
+
+texTopsection :: Section -> Text -> FTL [ProofText] -> FTL Block
+texTopsection kind env end = do
+  pos <- getPos
+  inp <- getInput
+  h <- texBegin env
+  toks <- getTokens inp
+  bs <- body
+  texEnd env
+  let block = Block.makeBlock (zVar (VarHole "")) bs kind h [] pos toks
+  addBlockReports block
+  return block
+  where
+    body = assumption <|> end
+    assumption = topAssume `pretypeBefore` body
+    topAssume = pretypeSentence Assumption (asmH >> statement) assumeVars noLink
+
 
 --- generic header parser
 
@@ -97,8 +115,13 @@ header titles = finish $ markupTokenOf topsectionHeader titles >> optLL1 "" topI
 
 signature' :: FTL Block
 signature' =
-  let sigext = pretype $ pretypeSentence Posit sigExtend defVars noLink
-  in  genericTopsection Signature sigH sigext
+  let sigExt = pretype $ pretypeSentence Posit sigExtend defVars noLink
+  in  genericTopsection Signature sigH sigExt
+
+texSig :: FTL Block
+texSig =
+  let sigExt = pretype $ pretypeSentence Posit sigExtend defVars noLink
+  in  texTopsection Signature "signature" sigExt
 
 definition :: FTL Block
 definition =

@@ -453,6 +453,24 @@ such = tokenOf' ["such", "so"]
 
 
 
+texBegin, texEnd :: Text -> Parser st Text
+texBegin env = do
+  symbol "\\"
+  token "begin"
+  symbol "{"
+  token env
+  symbol "}"
+  return env
+
+texEnd env = do
+  symbol "\\"
+  token "end"
+  symbol "{"
+  token env
+  symbol "}"
+  return env
+
+
 --just for now:
 
 showVar :: VariableName -> Text

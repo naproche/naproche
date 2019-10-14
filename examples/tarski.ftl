@@ -1,6 +1,8 @@
 [synonym set/-s] [synonym subset/-s] [synonym element/-s] [synonym belong/-s]
 
-Signature ElmSort. An element is a notion.
+\begin{signature}
+  An element is a notion.
+\end{signature}
 
 Let S,T denote sets.
 Let x,y,z,u,v,w denote elements.
