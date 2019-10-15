@@ -69,13 +69,16 @@ procParseInstruction text = case text of
       | otherwise = modify $ \st -> st {strSyms = syms : strSyms st}
 
 topsection :: FTL Block
-topsection = texSig </> texAxiom </> texDefinition
+topsection =
+  -- We use backtracking alternative (</>) here since these environments
+  -- all start with the same begin token.
+  texSig </> texAxiom </> texDefinition
   <|> signature' <|> definition <|> axiom <|> theorem
 
 --- generic topsection parsing
 
 genericTopsection :: Section -> FTL Text -> FTL [ProofText] -> FTL Block
-genericTopsection kind header end = do
+genericTopsection kind header content = do
   pos <- getPos
   inp <- getInput
   h <- header
@@ -85,12 +88,14 @@ genericTopsection kind header end = do
   addBlockReports block
   return block
   where
-    body = assumption <|> end
+    body = assumption <|> content
     assumption = topAssume `pretypeBefore` body
-    topAssume = pretypeSentence Assumption (asmH >> statement) assumeVars noLink
+    topAssume = pretypeSentence Assumption (beginAsm >> statement) assumeVars noLink
 
+-- | @texTopsection kind env content@ parses an environment with the name @env@, followed by content
+-- parsed by the specified @content@ parser. The result is combined into a block of kind @kind@.
 texTopsection :: Section -> Text -> FTL [ProofText] -> FTL Block
-texTopsection kind env end = do
+texTopsection kind env content = do
   pos <- getPos
   inp <- getInput
   h <- texBegin env
@@ -101,9 +106,9 @@ texTopsection kind env end = do
   addBlockReports block
   return block
   where
-    body = assumption <|> end
+    body = assumption <|> content
     assumption = topAssume `pretypeBefore` body
-    topAssume = pretypeSentence Assumption (asmH >> statement) assumeVars noLink
+    topAssume = pretypeSentence Assumption (beginAsm >> statement) assumeVars noLink
 
 
 --- generic header parser
@@ -137,17 +142,17 @@ texDefinition =
 axiom :: FTL Block
 axiom =
   let posit = pretype $
-        pretypeSentence Posit (affH >> statement) affirmVars noLink
+        pretypeSentence Posit (beginAff >> statement) affirmVars noLink
   in  genericTopsection Axiom axmH posit
 
 texAxiom :: FTL Block
 texAxiom =
-  let posit = pretype $ pretypeSentence Posit (affH >> statement) affirmVars noLink
+  let posit = pretype $ pretypeSentence Posit (beginAff >> statement) affirmVars noLink
   in  texTopsection Axiom "axiom" posit
 
 theorem :: FTL Block
 theorem =
-  let topAffirm = pretypeSentence Affirmation (affH >> statement) affirmVars link
+  let topAffirm = pretypeSentence Affirmation (beginAff >> statement) affirmVars link
   in  genericTopsection Theorem thmH (topProof topAffirm)
 
 
@@ -163,15 +168,15 @@ thmH = header ["theorem", "lemma", "corollary", "proposition"]
 
 -- low-level
 choose :: FTL Block
-choose = sentence Selection (chsH >> selection) assumeVars link
+choose = sentence Selection (beginChoice >> selection) assumeVars link
 caseHypo :: FTL Block
-caseHypo = sentence Block.CaseHypothesis (casH >> statement) affirmVars link
+caseHypo = sentence Block.CaseHypothesis (beginCase >> statement) affirmVars link
 affirm :: FTL Block
-affirm = sentence Affirmation (affH >> statement) affirmVars link </> eqChain
+affirm = sentence Affirmation (beginAff >> statement) affirmVars link </> eqChain
 assume :: FTL Block
-assume = sentence Assumption (asmH >> statement) assumeVars noLink
+assume = sentence Assumption (beginAsm >> statement) assumeVars noLink
 llDefn :: FTL Block
-llDefn = sentence LowDefinition(ldfH >> setNotion </> functionNotion) llDefnVars noLink
+llDefn = sentence LowDefinition(beginDef >> setNotion </> functionNotion) llDefnVars noLink
 
 -- Links and Identifiers
 link :: Parser st [Text]
@@ -238,18 +243,18 @@ letUs = optLL1 () $ (mu "let" >> mu "us") <|> (mu "we" >> mu "can")
   where
     mu = markupToken lowlevelHeader
 
-chsH :: FTL ()
-chsH = hence >> letUs >> markupTokenOf lowlevelHeader ["choose", "take", "consider"]
-casH :: FTL ()
-casH = markupToken lowlevelHeader "case"
-affH :: Parser st ()
-affH = hence
-asmH :: FTL ()
-asmH = lus </> markupToken lowlevelHeader "let"
+beginChoice :: FTL ()
+beginChoice = hence >> letUs >> markupTokenOf lowlevelHeader ["choose", "take", "consider"]
+beginCase :: FTL ()
+beginCase = markupToken lowlevelHeader "case"
+beginAff :: Parser st ()
+beginAff = hence
+beginAsm :: FTL ()
+beginAsm = lus </> markupToken lowlevelHeader "let"
   where
     lus = letUs >> markupTokenOf lowlevelHeader ["assume", "presume", "suppose"] >> optLL1 () that
-ldfH :: FTL ()
-ldfH = markupToken lowlevelHeader "define"
+beginDef :: FTL ()
+beginDef = markupToken lowlevelHeader "define"
 
 
 -- generic sentence parser
