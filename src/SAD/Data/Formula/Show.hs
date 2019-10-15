@@ -114,13 +114,13 @@ decode s (t:ts) p d = dec s
     dec _            = showString s
 
 
-    ambig Trm {trmName = TermSymbolic tName} | "dt" `Text.isPrefixOf` tName = not $ funpatt (Text.drop 3 tName)
+    ambig Trm {trmName = TermSymbolic tName} | "dt" `Text.isPrefixOf` tName = not $ funPat (Text.drop 3 tName)
     ambig Trm {trmName = TermSymbolic tName} =
       snd (Text.splitAt (Text.length tName - 2) tName) == "dt"
     ambig _ = False
 
-    funpatt "lbdtrb" = True
-    funpatt _ = False
+    funPat "lbdtrb" = True
+    funPat _ = False
 
 
 

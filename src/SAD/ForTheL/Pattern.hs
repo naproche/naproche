@@ -195,20 +195,20 @@ newPrdPattern tvr = multi </> unary </> newSymbPattern tvr
       (t, vs) <- multiAdj -|- multiVerb
       return $ zTrm NewId t (u:v:vs)
 
-    unaryAdj = do is; (t, vs) <- ptHead wlexem tvr; return (TermUnaryAdjective t, vs)
-    multiAdj = do is; (t, vs) <- ptHead wlexem tvr; return (TermMultiAdjective t, vs)
-    unaryVerb = do (t, vs) <- ptHead wlexem tvr; return (TermUnaryVerb t, vs)
-    multiVerb = do (t, vs) <- ptHead wlexem tvr; return (TermMultiVerb t, vs)
+    unaryAdj = do is; (t, vs) <- patHead wlexem tvr; return (TermUnaryAdjective t, vs)
+    multiAdj = do is; (t, vs) <- patHead wlexem tvr; return (TermMultiAdjective t, vs)
+    unaryVerb = do (t, vs) <- patHead wlexem tvr; return (TermUnaryVerb t, vs)
+    multiVerb = do (t, vs) <- patHead wlexem tvr; return (TermMultiVerb t, vs)
 
 newNotionPattern :: FTL Formula
                  -> FTL (Formula, PosVar)
 newNotionPattern tvr = (notion <|> fun) </> unnamedNotion tvr
   where
     notion = do
-      an; (t, v:vs) <- ptName wlexem tvr
+      an; (t, v:vs) <- patName wlexem tvr
       return (zTrm NewId (TermNotion t) (v:vs), PosVar (varName v) (varPosition v))
     fun = do
-      the; (t, v:vs) <- ptName wlexem tvr
+      the; (t, v:vs) <- patName wlexem tvr
       return (zEqu v $ zTrm NewId (TermNotion t) vs, PosVar (varName v) (varPosition v))
 
 unnamedNotion :: FTL Formula
@@ -216,10 +216,10 @@ unnamedNotion :: FTL Formula
 unnamedNotion tvr = (notion <|> fun) </> (newSymbPattern tvr >>= equ)
   where
     notion = do
-      an; (t, v:vs) <- ptNoName wlexem tvr
+      an; (t, v:vs) <- patNoName wlexem tvr
       return (zTrm NewId (TermNotion t) (v:vs), PosVar (varName v) (varPosition v))
     fun = do
-      the; (t, v:vs) <- ptNoName wlexem tvr
+      the; (t, v:vs) <- patNoName wlexem tvr
       return (zEqu v $ zTrm NewId (TermNotion t) vs, PosVar (varName v) (varPosition v))
     equ t = do v <- hidden; return (zEqu (pVar v) t, v)
 
@@ -228,10 +228,10 @@ newSymbPattern :: FTL Formula -> FTL Formula
 newSymbPattern tvr = left -|- right
   where
     left = do
-      (t, vs) <- ptHead slexem tvr
+      (t, vs) <- patHead slexem tvr
       return $ zTrm NewId (TermName t) vs
     right = do
-      (t, vs) <- ptTail slexem tvr
+      (t, vs) <- patTail slexem tvr
       guard $ not $ null $ tail $ Text.words t
       return $ zTrm NewId (TermName t) vs
 
@@ -239,28 +239,28 @@ newSymbPattern tvr = left -|- right
 -- pattern parsing
 
 
-ptHead :: Parser st Text
+patHead :: Parser st Text
           -> Parser st a -> Parser st (Text, [a])
-ptHead lxm tvr = do
+patHead lxm tvr = do
   l <- Text.unwords <$> chain lxm
-  (ls, vs) <- opt ("", []) $ ptTail lxm tvr
+  (ls, vs) <- opt ("", []) $ patTail lxm tvr
   return (l <> " " <> ls, vs)
 
 
-ptTail :: Parser st Text
+patTail :: Parser st Text
           -> Parser st a -> Parser st (Text, [a])
-ptTail lxm tvr = do
+patTail lxm tvr = do
   v <- tvr
-  (ls, vs) <- opt ("", []) $ ptHead lxm tvr
+  (ls, vs) <- opt ("", []) $ patHead lxm tvr
   return ("# " <> ls, v:vs)
 
 
-ptName :: FTL Text
+patName :: FTL Text
           -> FTL Formula -> FTL (Text, [Formula])
-ptName lxm tvr = do
+patName lxm tvr = do
   l <- Text.unwords <$> chain lxm
   n <- nam
-  (ls, vs) <- opt ("", []) $ ptHead lxm tvr
+  (ls, vs) <- opt ("", []) $ patHead lxm tvr
   return (l <> " . " <> ls, n:vs)
   where
     nam :: FTL Formula
@@ -270,17 +270,17 @@ ptName lxm tvr = do
       return n
 
 
-ptNoName :: FTL Text
+patNoName :: FTL Text
             -> FTL Formula -> FTL (Text, [Formula])
-ptNoName lxm tvr = do
+patNoName lxm tvr = do
   l <- Text.unwords <$> chain lxm; n <- fmap pVar hidden
-  (ls, vs) <- opt ("", []) $ ptShort lxm tvr
+  (ls, vs) <- opt ("", []) $ patShort lxm tvr
   return (l <> " . " <> ls, n:vs)
   where
-    --ptShort is a kind of buffer that ensures that a variable does not directly
+    --patShort is a kind of buffer that ensures that a variable does not directly
     --follow the name of the notion
-    ptShort lxm tvr = do
-      l <- lxm; (ls, vs) <- ptTail lxm tvr
+    patShort lxm tvr = do
+      l <- lxm; (ls, vs) <- patTail lxm tvr
       return (l <> " " <> ls, vs)
 
 
