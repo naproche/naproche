@@ -125,7 +125,7 @@ skolemize n f = let (sc, _, fs) = dive (n, 0, id) f in (fs, sc)
     -- sc: skolemCounter, dc: dependencyCounter, fs: Formula visited so far
     dive (sc, dc, fs) (All x f) = dive (sc, succ dc, fs . All x) f
     dive (sc, dc, fs) (Exi _ f) = dive (succ sc, dc, fs) (dec $ instSk sc dc f)
-    dive (sc, dc, fs) (Or  f g) = 
+    dive (sc, dc, fs) (Or  f g) =
       let (sc', _, fs') = dive (sc, dc, id) f in dive (sc', dc, fs . Or  fs') g
     dive (sc, dc, fs) (And f g) =
       let (sc', _, fs') = dive (sc, dc, id) f in dive (sc', dc, fs . And fs') g
@@ -163,7 +163,11 @@ transformToCNF = simpCNF . specialize . prenex
 simpCNF :: Formula -> [[Formula]]
 simpCNF Top = [[]]
 simpCNF Bot = []
-simpCNF f = subsumptionCheck $ filter (not . trivial) $ pureCNF f
+simpCNF f = subsumptionCheck $ filter (not . isTrivial) $ pureCNF f
+  where
+    isTrivial :: [Formula] -> Bool
+    isTrivial [] = False
+    isTrivial (l:ls) = isTop l || any (ltTwins $ ltNeg l) ls || isTrivial ls
 
 pureCNF :: Formula -> [[Formula]]
 pureCNF (And f g) = unionBy listEq (pureCNF f) (pureCNF g)
@@ -185,10 +189,6 @@ listEq (l:ls) rs = case helper [] l rs of
     helper _ _ [] = Nothing
     helper dmp l (r:rs) = if ltTwins l r then return $ dmp ++ rs
                           else helper (r:dmp) l rs
-
-trivial :: [Formula] -> Bool
-trivial [] = False
-trivial (l:ls) = isTop l || any (ltTwins $ ltNeg l) ls || trivial ls
 
 allpairs :: (a -> b -> c) -> [a] -> [b] -> [c]
 allpairs f [] _ = []

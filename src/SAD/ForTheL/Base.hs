@@ -47,7 +47,7 @@ type Prim    = ([Pattern], [Formula] -> Formula)
 
 
 data FState = FState {
-  adjectiveExpr, verExpr, notionExpr, sntExpr :: [Prim],
+  adjectiveExpr, verExpr, notionExpr, symbNotionExpr :: [Prim],
   cfnExpr, rfnExpr, lfnExpr, ifnExpr :: [Prim],
   cprExpr, rprExpr, lprExpr, iprExpr :: [Prim],
 
@@ -220,7 +220,7 @@ primIsm p (pt, fm) = symbolPattern p pt >>= \l -> return $ \t s -> fm $ t:l++[s]
 
 
 primSnt :: FTL Formula -> FTL MNotion
-primSnt p  = noError $ varList >>= getExpr sntExpr . snt
+primSnt p  = noError $ varList >>= getExpr symbNotionExpr . snt
   where
     snt vs (pt, fm) = symbolPattern p pt >>= \l -> return (id, fm $ (zVar (VarHole "")):l, vs)
 

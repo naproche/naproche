@@ -134,7 +134,7 @@ addExpr t@Trm{trmName = s, trmArgs = vs} f p st =
     -- check if pattern is a symbolic notion
     snt = not lsm && elem (varName $ head vs) (declNames mempty nf)
     -- and add it there as well if so (and increment id counter)
-    nn | snt = ns {sntExpr = (tail pt,fm) : sntExpr st, idCount = incId p n}
+    nn | snt = ns {symbNotionExpr = (tail pt,fm) : symbNotionExpr st, idCount = incId p n}
        | otherwise = ns {idCount = incId p n}
 
 

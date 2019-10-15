@@ -10,7 +10,7 @@ module SAD.Parser.Token
   ( Token (tokenPos, tokenProofText)
   , tokensRange
   , showToken
-  , properToken
+  , isProperToken
   , tokenize
   , reportComments
   , composeTokens
@@ -62,12 +62,12 @@ showToken :: Token -> Text
 showToken t@Token{} = tokenProofText t
 showToken EOF{} = Text.pack "end of input"
 
-properToken :: Token -> Bool
-properToken t@Token{} = case tokenType t of
+isProperToken :: Token -> Bool
+isProperToken t@Token{} = case tokenType t of
   NoWhiteSpaceBefore -> True
   WhiteSpaceBefore -> True
   Comment -> False
-properToken EOF{} = True
+isProperToken EOF{} = True
 
 noTokens :: [Token]
 noTokens = [EOF noSourcePos]
@@ -116,7 +116,7 @@ isLexem c = (isAscii c && isAlphaNum c) || c == '_'
 
 reportComments :: Token -> Maybe Message.Report
 reportComments t@Token{}
-  | properToken t = Nothing
+  | isProperToken t = Nothing
   | otherwise = Just (tokenPos t, Markup.comment1)
 reportComments EOF{} = Nothing
 

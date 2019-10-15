@@ -36,7 +36,7 @@ readInit :: Text -> IO [(Pos, Instr)]
 readInit "" = return []
 readInit file = do
   input <- catch (File.read (Text.unpack file)) $ Message.errorParser (fileOnlyPos file) . ioeGetErrorString
-  let tokens = filter properToken $ tokenize (filePos file) $ Text.pack input
+  let tokens = filter isProperToken $ tokenize (filePos file) $ Text.pack input
       initialParserState = State (initFS Nothing) tokens noSourcePos
   fst <$> launchParser instructionFile initialParserState
 
@@ -99,7 +99,7 @@ reader0 :: SourcePos -> Text -> State FState -> IO ([ProofText], State FState)
 reader0 pos text pState = do
   let tokens0 = tokenize pos text
   Message.reports $ concatMap (maybeToList . reportComments) tokens0
-  let tokens = filter properToken tokens0
+  let tokens = filter isProperToken tokens0
       st = State ((stUser pState) { tvrExpr = [] }) tokens noSourcePos
   launchParser forthel st
 

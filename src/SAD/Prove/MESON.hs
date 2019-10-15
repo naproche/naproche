@@ -18,6 +18,7 @@ import SAD.Data.Formula
 import SAD.Prove.Unify
 import SAD.Prove.Normalize
 import SAD.Data.Text.Context (Context, MRule(MR, conclusion))
+import SAD.Helpers (notNull)
 import qualified SAD.Data.Text.Context as Context
 import qualified SAD.Data.Structures.DisTree as DT
 
@@ -162,7 +163,7 @@ prove n lowLevelContext positives negatives goal =
         startingRule ++
         localRules   ++
         concatMap Context.mesonRules proofContext
-  in  not . (null :: [a] -> Bool) $
+  in  (notNull :: [a] -> Bool) $
       solve 6 lowLevelRules positives negatives [] Bot
   where
     makeContrapositives _ [] = []
