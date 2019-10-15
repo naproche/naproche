@@ -69,7 +69,8 @@ procParseInstruction text = case text of
       | otherwise = modify $ \st -> st {strSyms = syms : strSyms st}
 
 topsection :: FTL Block
-topsection = texSig <|> signature' <|> definition <|> axiom <|> theorem
+topsection = texSig </> texAxiom </> texDefinition
+  <|> signature' <|> definition <|> axiom <|> theorem
 
 --- generic topsection parsing
 
@@ -128,11 +129,21 @@ definition =
   let define = pretype $ pretypeSentence Posit defExtend defVars noLink
   in  genericTopsection Definition defH define
 
+texDefinition :: FTL Block
+texDefinition =
+  let define = pretype $ pretypeSentence Posit defExtend defVars noLink
+  in  texTopsection Definition "definition" define
+
 axiom :: FTL Block
 axiom =
   let posit = pretype $
         pretypeSentence Posit (affH >> statement) affirmVars noLink
   in  genericTopsection Axiom axmH posit
+
+texAxiom :: FTL Block
+texAxiom =
+  let posit = pretype $ pretypeSentence Posit (affH >> statement) affirmVars noLink
+  in  texTopsection Axiom "axiom" posit
 
 theorem :: FTL Block
 theorem =

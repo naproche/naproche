@@ -7,7 +7,9 @@
 Let S,T denote sets.
 Let x,y,z,u,v,w denote elements.
 
-Axiom EOfElem. Every element of S is an element.
+\begin{axiom}
+  Every element of S is an element.
+\end{axiom}
 
 Let x << S denote (x is an element of S).
 Let x belongs to S denote (x is an element of S).
