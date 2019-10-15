@@ -10,3 +10,23 @@
    In-depth paper on the ForTheL language.
  - **[Méthodes de formalisation des connaissances et des raisonnements mathématiques: aspects appliqués et théoriques](http://tertium.org/papers/thesis-07.fr.pdf)**:
    Andrei Paskevich's PhD thesis on this topic (in French)
+
+
+## Abbreviations
+
+Using these abbreviations is encouraged when writing/rewriting code, especially for local variables.
+
+Abbrev | Meaning
+------ | ---------
+adj    | adjective
+cont   | continuation
+decl   | declaration
+eps    | epsilon
+eq     | equal/equality
+err    | error
+expr   | expression
+fun    | function
+predi  | predicate
+prim   | primitive
+st     | state
+symb   | symbol/symbolic
