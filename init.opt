@@ -1,4 +1,3 @@
-# init options
 [library examples]
 [provers provers.yaml]
 [prover eprover]

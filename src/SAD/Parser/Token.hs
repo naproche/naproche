@@ -100,7 +100,7 @@ tokenize start = posToken start NoWhiteSpaceBefore TextMode
           switchMode :: TokenMode -> TokenMode
           switchMode TextMode = MathMode
           switchMode MathMode = TextMode
-      Just ('#', _) -> tok:toks
+      Just ('%', _) -> tok:toks
         where
           (comment, rest) = Text.break (== '\n') s
           tok  = makeToken comment pos Comment mode
