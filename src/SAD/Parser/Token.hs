@@ -7,7 +7,7 @@ Tokenization of input.
 {-# LANGUAGE NamedFieldPuns #-}
 
 module SAD.Parser.Token
-  ( Token (tokenPos, tokenProofText)
+  ( Token (tokenPos, tokenText)
   , tokensRange
   , showToken
   , isProperToken
@@ -30,7 +30,7 @@ import qualified Data.Text.Lazy as Text
 
 
 data Token = Token
-  { tokenProofText :: Text
+  { tokenText :: Text
   , tokenPos :: SourcePos
   , tokenType :: TokenType
   , tokenMode :: TokenMode
@@ -38,18 +38,18 @@ data Token = Token
   deriving (Eq, Ord)
 
 instance Show Token where
-  show Token{tokenProofText = p, tokenPos = s} = show s ++ show p
+  show Token{tokenText = p, tokenPos = s} = show s ++ show p
   show EOF{} = "EOF"
 
 data TokenType = NoWhiteSpaceBefore | WhiteSpaceBefore | Comment deriving (Eq, Ord, Show)
 data TokenMode = TextMode | MathMode deriving (Eq, Show, Ord)
 
--- | Make a token with @s@ as @tokenProofText@ and the range from @p@ to the end of @s@.
+-- | Make a token with @s@ as @tokenText@ and the range from @p@ to the end of @s@.
 makeToken :: Text -> SourcePos -> TokenType -> TokenMode -> Token
 makeToken s pos = Token s (rangePos (SourceRange pos (pos `advanceAlong` s)))
 
 tokenEndPos :: Token -> SourcePos
-tokenEndPos tok@Token{} = tokenPos tok `advanceAlong` tokenProofText tok
+tokenEndPos tok@Token{} = tokenPos tok `advanceAlong` tokenText tok
 tokenEndPos tok@EOF{} = tokenPos tok
 
 -- | The range in which the tokens lie.
@@ -57,9 +57,9 @@ tokensRange :: [Token] -> SourceRange
 tokensRange [] = noRange
 tokensRange toks = makeRange (tokenPos $ head toks, tokenEndPos $ last toks)
 
--- | Return the @tokenProofText@ or "end of input" if the token is @EOF@.
+-- | Return the @tokenText@ or "end of input" if the token is @EOF@.
 showToken :: Token -> Text
-showToken t@Token{} = tokenProofText t
+showToken t@Token{} = tokenText t
 showToken EOF{} = Text.pack "end of input"
 
 isProperToken :: Token -> Bool

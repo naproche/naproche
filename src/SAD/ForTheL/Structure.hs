@@ -477,6 +477,6 @@ jumpToNextUnit = mapInput nextUnit
   where
     nextUnit (t:tks)
       | isEOF t = [t]
-      | tokenProofText t == "." && (null tks || isEOF (head tks) || tokenProofText (head tks) /= "=") = tks
+      | tokenText t == "." && (null tks || isEOF (head tks) || tokenText (head tks) /= "=") = tks
       | otherwise = nextUnit tks
     nextUnit [] = []

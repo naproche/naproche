@@ -8,11 +8,11 @@ Pattern parsing and pattern state management.
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 
 module SAD.ForTheL.Pattern
-  ( nvr
+  ( knownVariable
   , newPrdPattern
   , addExpr
   , unnamedNotion
-  , avr
+  , singleLetterVariable
   , newNotionPattern
   ) where
 
@@ -195,20 +195,20 @@ newPrdPattern tvr = multi </> unary </> newSymbPattern tvr
       (t, vs) <- multiAdj -|- multiVerb
       return $ zTrm NewId t (u:v:vs)
 
-    unaryAdj = do is; (t, vs) <- patHead wlexem tvr; return (TermUnaryAdjective t, vs)
-    multiAdj = do is; (t, vs) <- patHead wlexem tvr; return (TermMultiAdjective t, vs)
-    unaryVerb = do (t, vs) <- patHead wlexem tvr; return (TermUnaryVerb t, vs)
-    multiVerb = do (t, vs) <- patHead wlexem tvr; return (TermMultiVerb t, vs)
+    unaryAdj = do is; (t, vs) <- patHead unknownAlpha tvr; return (TermUnaryAdjective t, vs)
+    multiAdj = do is; (t, vs) <- patHead unknownAlpha tvr; return (TermMultiAdjective t, vs)
+    unaryVerb = do (t, vs) <- patHead unknownAlpha tvr; return (TermUnaryVerb t, vs)
+    multiVerb = do (t, vs) <- patHead unknownAlpha tvr; return (TermMultiVerb t, vs)
 
 newNotionPattern :: FTL Formula
                  -> FTL (Formula, PosVar)
 newNotionPattern tvr = (notion <|> fun) </> unnamedNotion tvr
   where
     notion = do
-      an; (t, v:vs) <- patName wlexem tvr
+      an; (t, v:vs) <- patName unknownAlpha tvr
       return (zTrm NewId (TermNotion t) (v:vs), PosVar (varName v) (varPosition v))
     fun = do
-      the; (t, v:vs) <- patName wlexem tvr
+      the; (t, v:vs) <- patName unknownAlpha tvr
       return (zEqu v $ zTrm NewId (TermNotion t) vs, PosVar (varName v) (varPosition v))
 
 unnamedNotion :: FTL Formula
@@ -216,10 +216,10 @@ unnamedNotion :: FTL Formula
 unnamedNotion tvr = (notion <|> fun) </> (newSymbPattern tvr >>= equ)
   where
     notion = do
-      an; (t, v:vs) <- patNoName wlexem tvr
+      an; (t, v:vs) <- patNoName unknownAlpha tvr
       return (zTrm NewId (TermNotion t) (v:vs), PosVar (varName v) (varPosition v))
     fun = do
-      the; (t, v:vs) <- patNoName wlexem tvr
+      the; (t, v:vs) <- patNoName unknownAlpha tvr
       return (zEqu v $ zTrm NewId (TermNotion t) vs, PosVar (varName v) (varPosition v))
     equ t = do v <- hidden; return (zEqu (pVar v) t, v)
 
@@ -265,7 +265,7 @@ patName lxm tvr = do
   where
     nam :: FTL Formula
     nam = do
-      n <- fmap (const Top) nvr </> avr
+      n <- fmap (const Top) knownVariable </> singleLetterVariable
       guard $ isVar n;
       return n
 
@@ -287,14 +287,14 @@ patNoName lxm tvr = do
 
 -- In-pattern lexemes and variables
 
-wlexem :: FTL Text
-wlexem = do
-  l <- wlx
+unknownAlpha :: FTL Text
+unknownAlpha = do
+  l <- unknownAlphaNum
   guard $ Text.all isAlpha l
   return $ Text.toCaseFold l
 
 slexem :: FTL Text
-slexem = slex -|- wlx
+slexem = slex -|- unknownAlphaNum
   where
     slex = tokenPrim isSymb
     isSymb t =
@@ -303,27 +303,27 @@ slexem = slex -|- wlx
         Just (c, "") -> guard (c `elem` symChars) >> return tk
         _ -> Nothing
 
-wlx :: FTL Text
-wlx = failing nvr >> tokenPrim isWord
+unknownAlphaNum :: FTL Text
+unknownAlphaNum = failing knownVariable >> tokenPrim isWord
   where
     isWord t =
       let tk = showToken t; ltk = Text.toCaseFold tk
       in guard (Text.all isAlphaNum tk && ltk `Set.notMember` keylist) >> return tk
     keylist = Set.fromList ["a","an","the","is","are","be"]
 
-nvr :: FTL Formula
-nvr = do
+knownVariable :: FTL Formula
+knownVariable = do
   v <- var
   dvs <- getDecl
   tvs <- gets tvrExpr
   guard $ posVarName v `elem` dvs || any (elem (posVarName v) . fst) tvs
   return $ pVar v
 
-avr :: Parser st Formula
-avr = do
+singleLetterVariable :: Parser st Formula
+singleLetterVariable = do
   v <- var;
   guard $ Text.null $ Text.tail $ deVar $ posVarName v
   return $ pVar v
   where
     deVar (VarConstant s) = s
-    deVar _ = error "SAD.ForTheL.Pattern.avr: other variable"
+    deVar _ = error "SAD.ForTheL.Pattern.singleLetterVariable: other variable"
