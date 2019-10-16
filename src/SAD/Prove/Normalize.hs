@@ -66,48 +66,50 @@ pushdown (All _ (Iff (Tag HeadTerm eq@Trm {trmName = TermEquality, trmArgs = [_,
 pushdown f = f
 
 
--- prenex normal form
-
-pullquants :: Formula -> Formula
-pullquants (And (All x f) (All y g)) = All x (pullquants $ And f g)
-pullquants (Or  (Exi x f) (Exi y g)) = Exi x (pullquants $ Or  f g)
-pullquants (And (All x f) g) = All x (pullquants $ And f $ inc g)
-pullquants (And f (All y g)) = All y (pullquants $ And (inc f) g)
-pullquants (Or  (All x f) g) = All x (pullquants $ Or  f $ inc g)
-pullquants (Or  f (All y g)) = All y (pullquants $ Or  (inc f) g)
-pullquants (And (Exi x f) g) = Exi x (pullquants $ And f $ inc g)
-pullquants (And f (Exi y g)) = Exi y (pullquants $ And (inc f) g)
-pullquants (Or  (Exi x f) g) = Exi x (pullquants $ Or  f $ inc g)
-pullquants (Or  f (Exi y g)) = Exi y (pullquants $ Or  (inc f) g)
-pullquants f = f
-
+-- | Prenex normal form of a formula.
 prenex :: Formula -> Formula
-prenex (All x f) = All x $ prenex f
-prenex (Exi x f) = Exi x $ prenex f
-prenex (And f g) = pullquants $ And (prenex f) (prenex g)
-prenex (Or  f g) = pullquants $ Or  (prenex f) (prenex g)
-prenex f = f
-
+prenex = \case
+  All x f -> All x (prenex f)
+  Exi x f -> Exi x (prenex f)
+  f `And` g -> pullQuantifiers (prenex f `And` prenex g)
+  f `Or` g  -> pullQuantifiers (prenex f `Or`  prenex g)
+  f -> f
+  where
+    pullQuantifiers :: Formula -> Formula
+    pullQuantifiers = \case
+      All x f `And` All y g -> All x (pullQuantifiers (f     `And` g))
+      Exi x f `Or`  Exi y g -> Exi x (pullQuantifiers (f     `Or` g))
+      All x f `And` g       -> All x (pullQuantifiers (f     `And` inc g))
+      f       `And` All y g -> All y (pullQuantifiers (inc f `And` g))
+      All x f `Or` g        -> All x (pullQuantifiers (f     `Or` inc g))
+      f       `Or` All y g  -> All y (pullQuantifiers (inc f `Or` g))
+      Exi x f `And` g       -> Exi x (pullQuantifiers (f     `And` inc g))
+      f       `And` Exi y g -> Exi y (pullQuantifiers (inc f `And` g))
+      Exi x f `Or` g        -> Exi x (pullQuantifiers (f     `Or` inc g))
+      f       `Or` Exi y g  -> Exi y (pullQuantifiers (inc f `Or` g))
+      f                     -> f
 
 -- Index manangement
 
-{- increase all de Bruijn indices -}
+-- | Increment all de Bruijn indices by one.
 inc :: Formula -> Formula
-inc = increment 0
+inc = incAbove 0
   where
-    increment n v@Ind {indIndex = i} = v {indIndex = if n <= i then succ i else i}
-    increment n (All x f)  = All x $ increment (succ n) f
-    increment n (Exi x f)  = Exi x $ increment (succ n) f
-    increment n f = mapF (increment n) f
+    incAbove n = \case
+      v@Ind{indIndex = i} -> v{indIndex = if n <= i then succ i else i}
+      All x f -> All x $ incAbove (succ n) f
+      Exi x f -> Exi x $ incAbove (succ n) f
+      f -> mapF (incAbove n) f
 
-{- decrease de Bruijn indices -}
+-- | Decrement all de Bruijn indices by one.
 dec :: Formula -> Formula
-dec = decrement 0
+dec = decAbove 0
   where
-    decrement n v@Ind {indIndex = i} = v {indIndex = if n <= i then pred i else i}
-    decrement n (All x f)  = All x $ decrement (succ n) f
-    decrement n (Exi x f)  = Exi x $ decrement (succ n) f
-    decrement n f = mapF (decrement n) f
+    decAbove n = \case
+      v@Ind{indIndex = i} -> v{indIndex = if n <= i then pred i else i}
+      All x f -> All x $ decAbove (succ n) f
+      Exi x f -> Exi x $ decAbove (succ n) f
+      f -> mapF (decAbove n) f
 
 
 indSubst :: Formula -> VariableName -> Formula -> Formula
