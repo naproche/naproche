@@ -6,12 +6,29 @@ Primitive parsers.
 
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.Parser.Primitives where
+module SAD.Parser.Primitives
+  ( tokenPrim
+  , tokenGuard
+  , mapInput
+  , inspectError
+  , satisfy
+  , eof
+  , word
+  , symb
+  , anyToken
+  , symbol
+  , token
+  , token'
+  , tokenPos'
+  , tokenOf
+  , tokenOf'
+  ) where
 
 import SAD.Parser.Base
 import SAD.Parser.Error
 import SAD.Parser.Token
 import SAD.Core.SourcePos
+import SAD.Data.Formula.Show (symChars)
 
 import Data.Char (isAlpha)
 import Control.Monad (void, guard)
@@ -88,41 +105,50 @@ satisfy pr = tokenPrim prTest
       True  -> Just s
       False -> Nothing
 
--- | Check if the current token is a word
+
+-- | Always succeed and pass on the string of the token
+anyToken :: Parser st Text
+anyToken = tokenPrim (Just . showToken)
+
+-- | Parses a token that is a word (i.e. consists of only alphabetic characters).
 word :: Parser st Text
 word = satisfy $ \tk -> Text.all isAlpha tk
 
--- | Succeeds iff the current token is equal to @tk@. Consumes the token.
+symb :: Parser st Text
+symb = tokenPrim $ \tok ->
+  let t = showToken tok
+  in case Text.uncons t of
+    Just (c, "") -> guard (c `elem` symChars) >> return t
+    _ -> Nothing
+
+
+-- | @token tok@ succeeds iff the current token is equal to @tok@. Consumes the token.
 {-# INLINE token #-}
 token :: Text -> Parser st ()
-token tk = void $ satisfy $ \tk' -> tk == tk'
+token tok = void $ satisfy $ \tok' -> tok == tok'
 
--- | Case-insensitive version of @token@. Assumes argument is lower-case.
+-- | Case-insensitive version of @token@. The argument is assumed to be in folded case.
 {-# INLINE token' #-}
 token' :: Text -> Parser st ()
-token' s = void $ satisfy $ \tk -> s == Text.toCaseFold tk
+token' tok = void $ satisfy $ \tok' -> tok == Text.toCaseFold tok'
 
--- | @token'@ that return the position of the token instead of @()@.
+-- | A version of @token'@ that returns the position of the token instead of @()@.
 tokenPos' :: Text -> Parser st SourcePos
 tokenPos' s = do
   pos <- getPos
   token' s
   return pos
 
--- | Succeeds iff the current token is an element of @tks@. Consumes the token.
+-- | @tokenOf toks@ succeeds iff the current token is an element of @toks@. Consumes the token.
 tokenOf :: [Text] -> Parser st ()
-tokenOf tks = void $ satisfy $ \tk -> tk `elem` tks
+tokenOf toks = void $ satisfy $ \tok -> tok `elem` toks
 
--- | Case-insensitive version of @tokenOf@. Assumes all argument strings are lower-case.
+-- | Case-insensitive version of @tokenOf@. All arguments are assumed to be in folded case.
 {-# INLINE tokenOf' #-}
 tokenOf' :: [Text] -> Parser st ()
-tokenOf' tks = void $ satisfy $ \tk -> Text.toCaseFold tk `elem` tks
+tokenOf' toks = void $ satisfy $ \tok -> Text.toCaseFold tok `elem` toks
 
 -- | Check if the next tokens are the (case-sensitive) characters
 -- of the input string. Useful for parsing symbols.
 symbol :: Text -> Parser st ()
 symbol = mapM_ (token . Text.singleton) . Text.unpack
-
--- | Always succeed and pass on the string of the token
-anyToken :: Parser st Text
-anyToken = tokenPrim (Just . showToken)

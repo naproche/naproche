@@ -294,15 +294,10 @@ unknownAlpha = do
   return $ Text.toCaseFold l
 
 slexem :: FTL Text
-slexem = slex -|- unknownAlphaNum
-  where
-    slex = tokenPrim isSymb
-    isSymb t =
-      let tk = showToken t
-      in case Text.uncons tk of
-        Just (c, "") -> guard (c `elem` symChars) >> return tk
-        _ -> Nothing
+slexem = symb -|- unknownAlphaNum
 
+-- | TODO: Remove reliance on tokenPrim and then make tokenPrim private in Parser.Primitives.
+-- | TODO: This should check that the variable is in math mode instead of checking against a blacklist of short words.
 unknownAlphaNum :: FTL Text
 unknownAlphaNum = failing knownVariable >> tokenPrim isWord
   where
