@@ -324,7 +324,7 @@ strip f         = f
 
 {- extracts all duplicateNames (with multiplicity) from a list -}
 duplicateNames :: Ord a => [a] -> [a]
-duplicateNames ls = concatMap (\(k,a) -> replicate (a-1) k) 
+duplicateNames ls = concatMap (\(k,a) -> replicate (a-1) k)
                   $ Map.toList $ Map.fromListWith (+) $ zip ls $ repeat (1::Int)
 
 free :: IsVar a => Formula -> FV a
@@ -344,19 +344,18 @@ universialClosure ls f = foldr zAll f $ Set.toList $ fvToVarSet
   $ excludeSet (allFree f) ls
 
 
--- substitutions as maps
+-- Substitution with substitution maps
 
-{- apply a substitution that is represented as a finite partial map -}
-applySb :: Map.Map VariableName Formula -> Formula -> Formula
-applySb mp vr@Var {varName = v} = fromMaybe vr $ Map.lookup v mp 
-applySb mp t = mapF (applySb mp) t
+-- | Apply a substitution that is represented as a finite partial map.
+applySub :: Map.Map VariableName Formula -> Formula -> Formula
+-- TODO: Should @applySub sub@ be @id@ when the variable lookup fails?
+applySub sub vr@Var{varName = v} = fromMaybe vr $ Map.lookup v sub
+applySub sub t = mapF (applySub sub) t
 
-{- subsitution is also applied to the evidence for a term -}
+-- | Subsitution is also applied to the evidence for a term
 infoSub :: (Formula -> Formula) -> Formula -> Formula
 infoSub sb t@Trm{} = t {
   trmArgs = map (infoSub sb) $ trmArgs t,
   trmInfo = map sb $ trmInfo t}
 infoSub sb v@Var{} = sb v
 infoSub sb f = mapF (infoSub sb) f
-
--- control variable names

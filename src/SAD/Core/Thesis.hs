@@ -115,6 +115,7 @@ instantiations n currentInst f hs =
   [ newInst | h <- hs, newInst <- extendInstantiation currentInst f h ] ++
   patchTogether (albet f)
   where
+    patchTogether :: Formula -> [Instantiation]
     patchTogether (And f g) = -- find instantiation of g then extend them to f
       [ fInst | gInst <- instantiations n currentInst (albet g) hs,
                 fInst <- instantiations n gInst (albet f) $
@@ -123,9 +124,10 @@ instantiations n currentInst f hs =
       instantiations (succ n) currentInst (albet $ inst (VarAssume n) f) hs
     patchTogether _ = []
 
-    subInfo sb n =
-      let sub = applySb sb $ zVar $ VarAssume n
-      in  map (replace sub ThisT) $ varInfo $ sub
+    subInfo :: Instantiation -> Int -> [Formula]
+    subInfo sub n =
+      let sub' = applySub sub $ zVar $ VarAssume n
+      in  map (replace sub' ThisT) $ varInfo $ sub'
 
 
 {- finds an instantiation to make a formula equal to a second formula.
@@ -236,7 +238,7 @@ generateVariations definitions = pass [] (Just True) (0 :: Int)
         roundThrough = roundFM VarZ pass localContext sign n
         lookBehindDefinition t = mconcat . map (dive . reduceWithEvidence .
           markRecursive  (trmId t)) . maybeToList . defForm definitions $ t
-        
+
 {- mark symbols that are recursively defined in their defining formula, so that
    the definition is not infinitely expanded -}
 markRecursive :: TermId -> Formula -> Formula
