@@ -94,11 +94,11 @@ sigNotion = do
     trm Trm {trmName = TermEquality, trmArgs = [_,t]} = t; trm t = t
 
 newPredicat :: FTL Formula
-newPredicat = do n <- newPrdPattern nvr; get >>= addExpr n n True
+newPredicat = do n <- newPrdPattern knownVariable; get >>= addExpr n n True
 
 newNotion :: FTL (Formula, PosVar)
 newNotion = do
-  (n, u) <- newNotionPattern nvr;
+  (n, u) <- newNotionPattern knownVariable;
   f <- get >>= addExpr n n True
   return (f, u)
 
@@ -176,13 +176,13 @@ introduceMacro = do
   where
     prd, notion :: FTL (SourcePos, (Formula, Formula))
     prd = wellFormedCheck (prdVars . snd) $ do
-      f <- newPrdPattern avr
+      f <- newPrdPattern singleLetterVariable
       standFor
       g <- statement
       SourceRange _ pos2 <- dot
       return (pos2, (f, g))
     notion = wellFormedCheck (funVars . snd) $ do
-      (n, u) <- unnamedNotion avr
+      (n, u) <- unnamedNotion singleLetterVariable
       standFor
       (q, f) <- anotion
       SourceRange _ pos2 <- dot
