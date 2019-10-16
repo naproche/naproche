@@ -17,11 +17,12 @@
 Using these abbreviations is encouraged when writing/rewriting code, especially for local variables.
 
 Abbrev | Meaning
------- | ---------
+------ | -----------------------------
 adj    | adjective
 aff    | affirm/affirmation
 asm    | assume/assumption
 cont   | continuation
+dec    | decrement
 decl   | declaration
 def    | definition
 eps    | epsilon
@@ -30,10 +31,13 @@ err    | error
 expr   | expression
 fun    | function
 hypo   | hypothesis
+inc    | increment
 instr  | instruction
 pat    | pattern
 predi  | predicate
 prim   | primitive
 sig    | signature
 st     | state
+sub    | substitution/substitute
 symb   | symbol/symbolic
+var    | variable
