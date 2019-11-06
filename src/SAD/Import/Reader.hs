@@ -29,6 +29,7 @@ import SAD.Parser.Primitives
 import SAD.Parser.Error
 import qualified SAD.Core.Message as Message
 import qualified Isabelle.File as File
+import SAD.Data.Formula (Formula)
 
 -- Init file parsing
 
@@ -46,14 +47,14 @@ instructionFile = after (optLL1 [] $ chainLL1 instr) eof
 
 -- Reader loop
 
-readProofText :: Text -> [ProofText] -> IO [ProofText]
+readProofText :: Text -> [ProofText Formula] -> IO [ProofText Formula]
 readProofText pathToLibrary text0 = do
   pide <- Message.pideContext
   (text, reports) <- reader pathToLibrary [] [State (initFS pide) noTokens noSourcePos] text0
   when (isJust pide) $ Message.reports reports
   return text
 
-reader :: Text -> [Text] -> [State FState] -> [ProofText] -> IO ([ProofText], [Message.Report])
+reader :: Text -> [Text] -> [State FState] -> [ProofText Formula] -> IO ([ProofText Formula], [Message.Report])
 
 reader _ _ _ [ProofTextInstr pos (GetArgument Read file)] | ".." `Text.isInfixOf` file =
   Message.errorParser (Instr.position pos) ("Illegal \"..\" in file name: " ++ show file)
@@ -76,7 +77,7 @@ reader pathToLibrary doneFiles (pState:states) [ProofTextInstr _ (GetArgument Fi
   (newProofText, newState) <- reader0 (filePos file) (Text.pack text) pState
   reader pathToLibrary (file:doneFiles) (newState:pState:states) newProofText
 
-reader pathToLibrary doneFiles (pState:states) [ProofTextInstr _ (GetArgument ProofText text)] = do
+reader pathToLibrary doneFiles (pState:states) [ProofTextInstr _ (GetArgument Text text)] = do
   (newProofText, newState) <- reader0 startPos text pState
   reader pathToLibrary doneFiles (newState:pState:states) newProofText
 
@@ -95,7 +96,7 @@ reader pathToLibrary doneFiles (pState:oldState:rest) [] = do
 
 reader _ _ (state:_) [] = return ([], reports $ stUser state)
 
-reader0 :: SourcePos -> Text -> State FState -> IO ([ProofText], State FState)
+reader0 :: SourcePos -> Text -> State FState -> IO ([ProofText Formula], State FState)
 reader0 pos text pState = do
   let tokens0 = tokenize pos text
   Message.reports $ concatMap (maybeToList . reportComments) tokens0

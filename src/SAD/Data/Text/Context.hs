@@ -21,7 +21,7 @@ import Data.Set (Set)
 
 data Context = Context {
   formula        :: Formula,  -- formula of the context
-  branch         :: [Block.Block],  -- branch of the context
+  branch         :: [Block.Block Formula],  -- branch of the context
   mesonRules     :: [MRule]}  -- MESON rules extracted from the formula
   deriving (Eq, Ord, Show)
 
@@ -34,10 +34,10 @@ data MRule = MR
 
 -- Context utilities
 
-head :: Context -> Block.Block
+head :: Context -> Block.Block Formula
 head  = Prelude.head . branch
 
-tail :: Context -> [Block.Block]
+tail :: Context -> [Block.Block Formula]
 tail  = Prelude.tail . branch
 
 isTopLevel :: Context -> Bool

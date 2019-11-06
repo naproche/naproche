@@ -14,6 +14,7 @@ module SAD.API
   , module SAD.Import.Reader
   , module SAD.Parser.Error
   , module SAD.Helpers
+  , module SAD.Data.Formula
   ) where
 
 import SAD.Core.Base (showTimeDiff, RState(..), accumulateIntCounter, IntCounter(..), accumulateTimeCounter, TimeCounter(..), maximalTimeCounter)
@@ -26,3 +27,4 @@ import SAD.Export.Base (readProverDatabase)
 import SAD.Import.Reader (readInit, readProofText)
 import SAD.Parser.Error (errorPos)
 import SAD.Helpers (trimLine)
+import SAD.Data.Formula (Formula)

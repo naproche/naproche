@@ -64,7 +64,7 @@ main  = do
         IO.hPutStrLn IO.stderr msg
         Exit.exitFailure)
 
-mainBody :: IORef ProofText -> ([Instr], [ProofText]) -> IO ()
+mainBody :: IORef (ProofText Formula) -> ([Instr], [ProofText Formula]) -> IO ()
 mainBody oldProofTextRef (opts0, text0) = do
   startTime <- getCurrentTime
 
@@ -149,7 +149,7 @@ mainBody oldProofTextRef (opts0, text0) = do
       when (not success) Exit.exitFailure
 
 
-serverConnection :: IORef ProofText -> [String] -> Socket -> IO ()
+serverConnection :: IORef (ProofText Formula) -> [String] -> Socket -> IO ()
 serverConnection oldProofTextRef args0 connection = do
   thread_uuid <- Standard_Thread.my_uuid
   mapM_ (Byte_Message.write_line_message connection . UUID.bytes) thread_uuid
@@ -165,7 +165,7 @@ serverConnection oldProofTextRef args0 connection = do
         (do
           let args1 = lines (fromMaybe "" (Properties.get props Naproche.command_args))
           (opts1, text0) <- readArgs (args0 ++ args1)
-          let text1 = text0 ++ [ProofTextInstr noPos (GetArgument ProofText (Text.pack $ XML.content_of body))]
+          let text1 = text0 ++ [ProofTextInstr noPos (GetArgument Text (Text.pack $ XML.content_of body))]
 
           Exception.catch (mainBody oldProofTextRef (opts1, text1))
             (\err -> do
@@ -181,7 +181,7 @@ serverConnection oldProofTextRef args0 connection = do
 
 -- Command line parsing
 
-readArgs :: [String] -> IO ([Instr], [ProofText])
+readArgs :: [String] -> IO ([Instr], [ProofText Formula])
 readArgs args = do
   let (instrs, files, errs) = GetOpt.getOpt GetOpt.Permute options args
 

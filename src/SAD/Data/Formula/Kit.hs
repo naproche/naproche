@@ -341,7 +341,7 @@ allFree f = foldF allFree f
 {- universal closure of a formula -}
 universialClosure :: Set VariableName -> Formula -> Formula
 universialClosure ls f = foldr zAll f $ Set.toList $ fvToVarSet
-  $ excludeSet (allFree f) ls
+  $ allFree f `excludeSet` ls
 
 
 -- Substitution with substitution maps

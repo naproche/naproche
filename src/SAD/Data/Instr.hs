@@ -92,7 +92,7 @@ data Flag =
 
 data Argument =
     Init     --  init file (init.opt)
-  | ProofText     --  literal text
+  | Text     --  literal text
   | File     --  read file
   | Read     --  read library file
   | Library  --  library directory

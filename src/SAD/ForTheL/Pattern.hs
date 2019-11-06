@@ -184,56 +184,54 @@ extractSymbPattern t@Trm {trmName = TermName s, trmArgs = vs} f = (pt, nf)
 -- New patterns
 
 
-newPrdPattern :: FTL Formula -> FTL Formula
+newPrdPattern :: FTL PosVar -> FTL Formula
 newPrdPattern tvr = multi </> unary </> newSymbPattern tvr
   where
     unary = do
       v <- tvr; (t, vs) <- unaryAdj -|- unaryVerb
-      return $ zTrm NewId t (v:vs)
+      return $ zTrm NewId t $ map pVar (v:vs)
     multi = do
       (u,v) <- liftM2 (,) tvr (comma >> tvr);
       (t, vs) <- multiAdj -|- multiVerb
-      return $ zTrm NewId t (u:v:vs)
+      return $ zTrm NewId t $ map pVar (u:v:vs)
 
     unaryAdj = do is; (t, vs) <- patHead unknownAlpha tvr; return (TermUnaryAdjective t, vs)
     multiAdj = do is; (t, vs) <- patHead unknownAlpha tvr; return (TermMultiAdjective t, vs)
     unaryVerb = do (t, vs) <- patHead unknownAlpha tvr; return (TermUnaryVerb t, vs)
     multiVerb = do (t, vs) <- patHead unknownAlpha tvr; return (TermMultiVerb t, vs)
 
-newNotionPattern :: FTL Formula
-                 -> FTL (Formula, PosVar)
+newNotionPattern :: FTL PosVar -> FTL (Formula, PosVar)
 newNotionPattern tvr = (notion <|> fun) </> unnamedNotion tvr
   where
     notion = do
       an; (t, v:vs) <- patName unknownAlpha tvr
-      return (zTrm NewId (TermNotion t) (v:vs), PosVar (varName v) (varPosition v))
+      return (zTrm NewId (TermNotion t) $ map pVar (v:vs), v)
     fun = do
       the; (t, v:vs) <- patName unknownAlpha tvr
-      return (zEqu v $ zTrm NewId (TermNotion t) vs, PosVar (varName v) (varPosition v))
+      return (zEqu (pVar v) $ zTrm NewId (TermNotion t) $ map pVar vs, v)
 
-unnamedNotion :: FTL Formula
-                 -> FTL (Formula, PosVar)
+unnamedNotion :: FTL PosVar -> FTL (Formula, PosVar)
 unnamedNotion tvr = (notion <|> fun) </> (newSymbPattern tvr >>= equ)
   where
     notion = do
       an; (t, v:vs) <- patNoName unknownAlpha tvr
-      return (zTrm NewId (TermNotion t) (v:vs), PosVar (varName v) (varPosition v))
+      return (zTrm NewId (TermNotion t) $ map pVar (v:vs), v)
     fun = do
       the; (t, v:vs) <- patNoName unknownAlpha tvr
-      return (zEqu v $ zTrm NewId (TermNotion t) vs, PosVar (varName v) (varPosition v))
+      return (zEqu (pVar v) $ zTrm NewId (TermNotion t) $ map pVar vs, v)
     equ t = do v <- hidden; return (zEqu (pVar v) t, v)
 
 
-newSymbPattern :: FTL Formula -> FTL Formula
+newSymbPattern :: FTL PosVar -> FTL Formula
 newSymbPattern tvr = left -|- right
   where
     left = do
       (t, vs) <- patHead slexem tvr
-      return $ zTrm NewId (TermName t) vs
+      return $ zTrm NewId (TermName t) $ map pVar vs
     right = do
       (t, vs) <- patTail slexem tvr
       guard $ not $ null $ tail $ Text.words t
-      return $ zTrm NewId (TermName t) vs
+      return $ zTrm NewId (TermName t) $ map pVar vs
 
 
 -- pattern parsing
@@ -255,25 +253,24 @@ patTail lxm tvr = do
   return ("# " <> ls, v:vs)
 
 
-patName :: FTL Text
-          -> FTL Formula -> FTL (Text, [Formula])
+patName :: FTL Text -> FTL PosVar -> FTL (Text, [PosVar])
 patName lxm tvr = do
   l <- Text.unwords <$> chain lxm
   n <- nam
   (ls, vs) <- opt ("", []) $ patHead lxm tvr
   return (l <> " . " <> ls, n:vs)
   where
-    nam :: FTL Formula
+    nam :: FTL PosVar
     nam = do
-      n <- fmap (const Top) knownVariable </> singleLetterVariable
-      guard $ isVar n;
-      return n
+      n <- fmap (const Nothing) knownVariable </> fmap Just singleLetterVariable
+      case n of
+        Nothing -> fail "ForTheL.Pattern.patName: name already exists"
+        Just a -> pure a
 
 
-patNoName :: FTL Text
-            -> FTL Formula -> FTL (Text, [Formula])
+patNoName :: FTL Text -> FTL PosVar -> FTL (Text, [PosVar])
 patNoName lxm tvr = do
-  l <- Text.unwords <$> chain lxm; n <- fmap pVar hidden
+  l <- Text.unwords <$> chain lxm; n <- hidden
   (ls, vs) <- opt ("", []) $ patShort lxm tvr
   return (l <> " . " <> ls, n:vs)
   where
@@ -306,19 +303,19 @@ unknownAlphaNum = failing knownVariable >> tokenPrim isWord
       in guard (Text.all isAlphaNum tk && ltk `Set.notMember` keylist) >> return tk
     keylist = Set.fromList ["a","an","the","is","are","be"]
 
-knownVariable :: FTL Formula
+knownVariable :: FTL PosVar
 knownVariable = do
   v <- var
   dvs <- getDecl
   tvs <- gets tvrExpr
   guard $ posVarName v `elem` dvs || any (elem (posVarName v) . fst) tvs
-  return $ pVar v
+  return v
 
-singleLetterVariable :: Parser st Formula
+singleLetterVariable :: FTL PosVar
 singleLetterVariable = do
   v <- var;
   guard $ Text.null $ Text.tail $ deVar $ posVarName v
-  return $ pVar v
+  return v
   where
     deVar (VarConstant s) = s
     deVar _ = error "SAD.ForTheL.Pattern.singleLetterVariable: other variable"
