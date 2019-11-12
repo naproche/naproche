@@ -10,6 +10,7 @@
     - "--cpu-limit=%d"
   successMessage:
     - "# SZS status Theorem"
+  contradictionMessage:
     - "# SZS status ContradictoryAxioms"
   failureMessage:
     - "# SZS status CounterSatisfiable"
@@ -32,6 +33,7 @@
     - "--cpu-limit=%d"
   successMessage:
     - "# SZS status Theorem"
+  contradictionMessage:
     - "# SZS status ContradictoryAxioms"
   failureMessage:
     - "# SZS status CounterSatisfiable"
@@ -51,6 +53,7 @@
     - "-TimeLimit=%d"
   successMessage:
     - "SPASS beiseite: Proof found."
+  contradictionMessage: []
   failureMessage:
     - "SPASS beiseite: Completion found."
   unknownMessage:

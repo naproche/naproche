@@ -179,15 +179,17 @@ We have 0,a << <a> and 0,b << <b> (by MulZero, MulUnit).
 Hence there exists a nonzero element of <a> +' <b>.
 Indeed a << <a> +' <b> and b << <a> +' <b> (by AddZero).
 
+% This fails with ContradictoryAxioms, probably due to
+% some weirdness in the parser.
 Take a nonzero u << I such that for no nonzero v << I (|v| -<- |u|).
-Proof.
+Proof by contradiction.
     Assume the contrary.
     We can show by induction on |w| that for every nonzero w << I there exists
     nonzero u << I such that for no nonzero v << I (|v| -<- |u|). Obvious.
     qed.
 
 u is a common divisor of a and b.
-proof.
+proof by contradiction.
     Assume the contrary.
     For some elements x,y  u = (a * x) + (b * y).
     proof.

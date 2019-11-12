@@ -118,7 +118,7 @@ launchProver iteration = do
   goal <- thesis; context <- asks currentContext
   let callATP = justIO $ pure $
         export iteration proverList instrList context goal
-  callATP >>= timer ProofTime . justIO >>= guard
+  callATP >>= timer ProofTime . justIO >>= guard . (==Success)
   res <- fmap head $ askRS counters
   case res of
     TimeCounter _ time -> do

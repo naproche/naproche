@@ -32,7 +32,7 @@ Axiom. There exist coprime m,n such that m * q = n.
 Let q^2 stand for q * q.
 
 Proposition. p = q^2 for no rational number q.
-Proof.
+Proof by contradiction.
 Assume the contrary. Take a rational number q such that p = q^2.
 Take coprime m,n such that m * q = n. Then p * m^2 = n^2.
 Therefore p divides n. Take a natural number k such that n = k * p.

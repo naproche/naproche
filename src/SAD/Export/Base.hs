@@ -22,6 +22,7 @@ data Prover = Prover {
   path           :: String,
   arguments      :: [String],
   successMessage :: [String],
+  contradictionMessage :: [String],
   failureMessage :: [String],
   unknownMessage :: [String] }
   deriving (Eq, Ord, Show, Generic)

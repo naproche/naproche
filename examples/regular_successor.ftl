@@ -114,7 +114,7 @@ Let 0^M stand for the constant zero on M.
 
 Theorem.
 Succ(A) is regular.
-Proof.
+Proof by contradiction.
 Assume the contrary.
 Take a cofinal subset x of Succ(A) such that card(x) != Succ(A).
 Then card(x) =< A.

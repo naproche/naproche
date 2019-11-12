@@ -34,7 +34,7 @@ f surjects onto M iff every element of M is equal to the value of f at some elem
 
 Proposition.
 No function that is defined on M surjects onto the powerset of M.
-Proof.
+Proof by contradiction.
 Assume the contrary. Take a function f that is defined on M and surjects onto the powerset of M.
 Define N = { x in M | x is not an element of f[x] }.
 Then N is not equal to the value of f at any element of M.

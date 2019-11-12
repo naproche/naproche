@@ -171,7 +171,7 @@ Axiom UnionSClosed. Let S be a finite family of integer sets such that
                     \-/ S is closed.
 
 Lemma ArSeqClosed.  ArSeq(a,q) is a closed subset of INT.
-Proof.
+Proof by contradiction.
 ArSeq (a,q) is a subset of INT.
 Let b << ~ArSeq (a,q). Let us show that ArSeq(b,q) [= ~ArSeq(a,q).
   Let c << ArSeq(b,q). Assume not c << ~ArSeq(a,q). Then c = b (mod q) and a = c (mod q).
@@ -180,7 +180,7 @@ qed.
 
 Theorem Fuerstenberg.   Let S = { ArSeq(0,r) | r is a prime }.
                         S is infinite.
-Proof.
+Proof by contradiction.
     S is a family of integer sets.
     We have ~ \-/ S = {1, -1}.
     proof.

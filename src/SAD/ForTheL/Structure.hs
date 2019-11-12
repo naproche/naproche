@@ -325,7 +325,7 @@ affirmVars = freeOrOverlapping
 
 -- proof methods
 
-data Scheme = None | Short | Raw | InS | InT Formula deriving Show
+data Scheme = None | Short | Raw | Contradiction | InS | InT Formula deriving (Eq, Ord, Show)
 
 preMethod :: FTL Scheme
 preMethod = optLLx None $ letUs >> dem >> after method that
@@ -342,7 +342,7 @@ postMethod = optLL1 None $ short <|> explicit
 method :: FTL Scheme
 method = optLL1 Raw $ markupToken byAnnotation "by" >> (contradict <|> cases <|> induction)
   where
-    contradict = token' "contradiction" >> return Raw
+    contradict = token' "contradiction" >> return Contradiction
     cases = token' "case" >> token' "analysis" >> return Raw
     induction = token' "induction" >> optLL1 InS (token' "on" >> fmap InT sTerm)
 
@@ -397,9 +397,10 @@ topProof p = do
   return $ if null pretyped then [nbl] else [ProofTextBlock typeBlock, nbl]
 
 addBody :: Scheme -> Scheme -> (Block Formula) -> FTL (Block Formula)
-addBody None None = return -- no proof was given
-addBody _ Short = proofSentence    -- a short proof was given
-addBody _ _ = proofBody    -- a full proof was given
+addBody None None b = return b -- no proof was given
+addBody _ Short b = proofSentence b   -- a short proof was given
+addBody pre post b = proofBody $ b {Block.kind = kind}  -- a full proof was given
+  where kind = if pre == Contradiction || post == Contradiction then ProofByContradiction else Block.kind b
 
 
 
@@ -412,13 +413,13 @@ proofSentence bl = do
 
 proofBody :: (Block Formula) -> FTL (Block Formula)
 proofBody bl = do
-  bs <- proofProofText; ls <- link
+  bs <- proofText; ls <- link
   return bl {Block.body = bs, Block.link = ls ++ Block.link bl}
 
-proofProofText :: FTL [ProofText Formula]
-proofProofText =
+proofText :: FTL [ProofText Formula]
+proofText =
   qed <|>
-  (unfailing (fmap ProofTextBlock lowtext <|> instruction) `updateDeclbefore` proofProofText)
+  (unfailing (fmap ProofTextBlock lowtext <|> instruction) `updateDeclbefore` proofText)
   where
     lowtext =
       narrow assume </>

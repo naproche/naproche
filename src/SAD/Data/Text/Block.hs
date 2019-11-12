@@ -71,7 +71,8 @@ text Block {tokens} = composeTokens tokens
 {- All possible types that a ForThel block can have. -}
 data Section =
   Definition | Signature | Axiom       | Theorem | CaseHypothesis  |
-  Assumption | Selection | Affirmation | Posit   | LowDefinition
+  Assumption | Selection | Affirmation | Posit   | LowDefinition   |
+  ProofByContradiction
   deriving (Eq, Ord, Show)
 
 -- Composition

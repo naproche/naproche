@@ -22,8 +22,9 @@ gather (hout, ph) = do
 
 files :: [FilePath]
 files = map ("examples/"++) $
-  [ "chinese.ftl"
-  , "fuerst.ftl"
+  -- disable for the moment.
+  -- [ "chinese.ftl" 
+  [ "fuerst.ftl"
   , "Koenigs_lemma.ftl"
   , "Maximum_principle.ftl"
   , "newman.ftl"

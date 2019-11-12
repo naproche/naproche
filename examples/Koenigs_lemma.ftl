@@ -96,7 +96,7 @@ Then f is an element of ProdSet(lambda,D). qed.
 Theorem Koenig.
 Let kappa, lambda be sequences of cardinals on D. Assume that for every element i of D
 kappa[i] < lambda[i]. Then Sum(kappa,D) < Prod (lambda,D).
-Proof.
+Proof by contradiction.
 Assume the contrary. Then Prod (lambda,D) =< Sum(kappa,D).
 Take a function G such that SumSet(kappa,D) is the domain of G and ProdSet(lambda,D) is the image
 of G.

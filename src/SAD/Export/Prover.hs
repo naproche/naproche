@@ -1,3 +1,4 @@
+{-# LANGUAGE MultiWayIf #-}
 {-
 Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018), Makarius Wenzel (2018)
 
@@ -22,7 +23,8 @@ import qualified Isabelle.Standard_Thread as Standard_Thread
 
 import SAD.Core.SourcePos
 import SAD.Data.Instr hiding (Prover)
-import SAD.Data.Text.Context (Context)
+import SAD.Data.Text.Context (Context, branch)
+import qualified SAD.Data.Text.Block as Block
 import SAD.Export.Base
 import SAD.Helpers (notNull)
 
@@ -30,7 +32,7 @@ import qualified SAD.Core.Message as Message
 import qualified SAD.Data.Instr as Instr
 import qualified SAD.Export.TPTP as TPTP
 
-export :: Int -> [Prover] -> [Instr] -> [Context] -> Context -> IO Bool
+export :: Int -> [Prover] -> [Instr] -> [Context] -> Context -> IO Result
 export depth provers instrs context goal = do
   Standard_Thread.expose_stopped
 
@@ -45,22 +47,31 @@ export depth provers instrs context goal = do
   let printProver = askFlag Printprover False instrs
   let timeLimit = askLimit Timelimit 3 instrs
   let task = TPTP.output context goal
+  let isByContradiction = any (==Block.ProofByContradiction)
+        (map Block.kind (head (branch goal) : concatMap branch context))
 
   when (askFlag Dump False instrs) $ 
     Message.output "" Message.WRITELN noSourcePos (Text.unpack task)
 
-  runProver (head proversNamed) printProver task timeLimit
+  runUntilSuccess timeLimit $ runProver (head proversNamed) printProver task isByContradiction
 
-runUntilSuccess :: Int -> (Int -> IO Bool) -> IO Bool
-runUntilSuccess timeLimit f = go $ takeWhile (<=timeLimit) $ map (4^) [(0::Int)..]
+data Result = Success | Failure | TooLittleTime | ContradictoryAxioms
+  deriving (Eq, Ord, Show)
+
+-- | Prover heuristics are not always optimal.
+-- We can give a different heuristic if needed.
+runUntilSuccess :: Int -> (Int -> IO Result) -> IO Result
+runUntilSuccess timeLimit f = go [timeLimit] -- go $ takeWhile (<=timeLimit) $ 1:5:10:20:50:(map (*100)[1,2])
   where
-    go [] = pure False
+    go [] = pure TooLittleTime
     go (x:xs) = do
       b <- f x
-      if b then pure True else go xs
+      case b of 
+        TooLittleTime -> go xs
+        r -> pure r
 
-runProver :: Prover -> Bool -> Text -> Int -> IO Bool
-runProver (Prover _ label path args yes nos uns) printProver task timeLimit = do
+runProver :: Prover -> Bool -> Text -> Bool -> Int -> IO Result
+runProver (Prover _ label path args yes con nos uns) printProver task isByContradiction timeLimit = do
   let proc = (Process.proc path (map (setTimeLimit timeLimit) args))
         { Process.std_in = Process.CreatePipe
         ,  Process.std_out = Process.CreatePipe
@@ -97,17 +108,21 @@ runProver (Prover _ label path args yes nos uns) printProver task timeLimit = do
     when printProver $
         mapM_ (Message.output "" Message.WRITELN noSourcePos) out
 
-    let positive = any (\l -> any (`isPrefixOf` l) yes) lns
+    let contradictions = any (\l -> any (`isPrefixOf` l) con) lns
+        positive = any (\l -> any (`isPrefixOf` l) yes) lns
         negative = any (\l -> any (`isPrefixOf` l) nos) lns
         inconclusive = any (\l -> any (`isPrefixOf` l) uns) lns
 
-    unless (positive || negative || inconclusive) $
+    unless (positive || contradictions || negative || inconclusive) $
         Message.errorExport noSourcePos $ unlines ("Bad prover response:" : lns)
 
     hClose prverr
     Process.waitForProcess prv
 
-    return positive
+    if | positive || (isByContradiction && contradictions) -> pure Success
+       | negative -> pure Failure
+       | not isByContradiction && contradictions -> pure ContradictoryAxioms
+       | otherwise -> pure TooLittleTime
 
 setTimeLimit :: Int -> String -> String
 setTimeLimit timeLimit ('%':'d':rs) = show timeLimit ++ rs
