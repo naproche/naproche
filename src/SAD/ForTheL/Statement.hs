@@ -14,7 +14,6 @@ module SAD.ForTheL.Statement (
 import SAD.ForTheL.Base
 import SAD.ForTheL.Reports (markupToken, markupTokenOf)
 import qualified SAD.ForTheL.Reports as Reports
-import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
 
@@ -79,7 +78,7 @@ atomic = label "atomic statement"
   where
     wehve = optLL1 () $ token' "we" >> token' "have"
 
-thesis :: Parser st Formula
+thesis :: FTL Formula
 thesis = art >> (thes <|> contrary <|> contradiction)
   where
     thes = token' "thesis" >> return zThesis
@@ -90,9 +89,9 @@ thereIs :: FTL Formula
 thereIs = label "there-is statement" $ there >> (noNotion -|- notions)
   where
     noNotion = label "no-notion" $ do
-      token' "no"; (q, f, vs) <- declared notion;
+      token' "no"; (q, f, vs) <- declared =<< notion;
       return $ Not $ foldr mbdExi (q f) vs
-    notions = fmap multExi $ art >> declared notion `sepBy` comma
+    notions = fmap multExi $ art >> (declared =<< notion) `sepBy` comma
 
 
 
@@ -143,16 +142,16 @@ hasPredicate :: FTL Formula
 hasPredicate = label "has predicate" $ noPossessive <|> possessive
   where
     possessive = art >> common <|> unary
-    unary = fmap (Tag Dig . multExi) $ declared possess `sepBy` (comma >> art)
+    unary = fmap (Tag Dig . multExi) $ (declared =<< possess) `sepBy` (comma >> art)
     common = token' "common" >>
-      fmap multExi (fmap digadd (declared possess) `sepBy` comma)
+      fmap multExi (fmap digadd (declared =<< possess) `sepBy` comma)
 
     noPossessive = nUnary -|- nCommon
     nUnary = do
-      token' "no"; (q, f, v) <- declared possess;
+      token' "no"; (q, f, v) <- declared =<< possess;
       return $ q . Tag Dig . Not $ foldr mbdExi f v
     nCommon = do
-      token' "no"; token' "common"; (q, f, v) <- declared possess
+      token' "no"; token' "common"; (q, f, v) <- declared =<< possess
       return $ q . Not $ foldr mbdExi (Tag Dig f) v
       -- take a closer look at this later.. why is (Tag Dig) *inside* important?
 
@@ -182,8 +181,7 @@ mPredicate p = (token' "not" >> mNegative) <|> mPositive
 
 --- notions
 
-basenotion :: Parser
-             FState (Formula -> Formula, Formula, Set PosVar)
+basenotion :: FTL (Formula -> Formula, Formula, Set PosVar)
 basenotion = fmap digadd $ cm <|> symEqnt <|> (set </> primNotion term)
   where
     cm = token' "common" >> primCmNotion term terms
@@ -233,12 +231,10 @@ stattr = label "such-that attribute" $ such >> that >> statement
 digadd :: (a, Formula, c) -> (a, Formula, c)
 digadd (q, f, v) = (q, Tag Dig f, v)
 
-dignotion :: Monad m =>
-          (a, Formula, Set PosVar)
-          -> m (a, Formula, Set PosVar)
+dignotion :: (a, Formula, Set PosVar) -> FTL (a, Formula, Set PosVar)
 dignotion (q, f, v) = dig f (map pVar $ Set.toList v) >>= \ g -> return (q, g, v)
 
-single :: Monad m => (a, b, Set c) -> m (a, b, c)
+single :: (a, b, Set c) -> FTL (a, b, c)
 single (q, f, vs) = case Set.elems vs of
   [v] -> pure $ (q, f, v)
   _ -> fail "inadmissible multinamed notion"
@@ -306,8 +302,8 @@ sForm  = sIff
     sDis = sCon >>= binF Or  (symbol "\\/" >> sDis)
     sCon = sUna >>= binF And (symbol "/\\" >> sCon)
     sUna = sAll -|- sExi -|- sNot -|- sDot -|- sAtm
-    sAll = liftM2 (quaF dAll Imp) (token' "forall" >> declared symNotion) sUna
-    sExi = liftM2 (quaF dExi And) (token' "exists" >> declared symNotion) sUna
+    sAll = liftM2 (quaF dAll Imp) (token' "forall" >> symNotion >>= declared) sUna
+    sExi = liftM2 (quaF dExi And) (token' "exists" >> symNotion >>= declared) sUna
     sNot = fmap Not $ token' "not" >> sUna
     sDot = token' ":" >> sForm
     sAtm = sAtom
@@ -351,7 +347,7 @@ sTerm = iTerm
 
     cTerm = label "symbolic term" $ sVar -|- parenthesised sTerm -|- primCfn sTerm
 
-sVar :: Parser st Formula
+sVar :: FTL Formula
 sVar = fmap pVar var
 
 -- class term equations
@@ -433,8 +429,7 @@ symbSetNotation = cndSet </> finSet
     mbEqu vs tr t = \st -> foldr mbdExi (st `And` zEqu tr t) vs
 
 
-sepFrom :: Parser
-             FState (Formula -> Formula, Formula -> Formula, Formula)
+sepFrom :: FTL (Formula -> Formula, Formula -> Formula, Formula)
 sepFrom = notionSep -|- setSep -|- noSep
   where
     notionSep = do
@@ -485,7 +480,7 @@ chooseInTerm = do
   where
     ld_choice = chc <|> def
     chc = do
-      token' "choose"; (q, f, vs) <- declared $ art >> notion
+      token' "choose"; (q, f, vs) <- art >> notion >>= declared
       return $ flip (foldr dExi) vs . And (q f)
     def = do
       token' "define"; x <- var; xDecl <- makeDecl x; token "="
@@ -511,14 +506,13 @@ lambda = do
   where
     ld_head = finish $ token "\\" >> lambdaIn
 
-pair :: Parser st Formula
+pair :: FTL Formula
 pair = sVar </> pr
   where
     pr = do [l,r] <- symbolPattern pair pairPattern; return $ zPair l r
     pairPattern = [Symbol "(", Vr, Symbol ",", Vr, Symbol ")"]
 
-lambdaIn :: Parser
-              FState (Formula, Formula -> Formula -> Formula, Formula -> Formula)
+lambdaIn :: FTL (Formula, Formula -> Formula -> Formula, Formula -> Formula)
 lambdaIn = do
   t <- pair
   vs <- fvToVarSet <$> freeVars t
@@ -541,7 +535,7 @@ multExi :: Foldable t1 =>
 multExi ((q, f, vs):ns) = foldr mbdExi (q f `blAnd` multExi ns) vs
 multExi [] = Top
 
-conjChain :: Parser st Formula -> Parser st Formula
+conjChain :: FTL Formula -> FTL Formula
 conjChain = fmap (foldl1 And) . flip sepBy (token' "and")
 
 quChain :: FTL (Formula -> Formula)
@@ -554,7 +548,7 @@ quChain = fmap (foldl fld id) $ token' "for" >> quNotion `sepByLL1` comma
 
 -- Digger
 
-dig :: Monad m => Formula -> [Formula] -> m Formula
+dig :: Formula -> [Formula] -> FTL Formula
 dig f [_] | occursS f = fail "too few subjects for an m-predicate"
 dig f ts = return (dive f)
   where

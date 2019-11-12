@@ -179,23 +179,23 @@ llDefn :: FTL (Block Formula)
 llDefn = sentence LowDefinition(beginDef >> setNotion </> functionNotion) llDefnVars noLink
 
 -- Links and Identifiers
-link :: Parser st [Text]
+link :: FTL [Text]
 link = finish eqLink
 
-topIdentifier :: Parser st Text
+topIdentifier :: FTL Text
 topIdentifier = tokenPrim notSymb
   where
     notSymb t = case Text.uncons (showToken t) of
       Just (c, "") -> guard (isAlphaNum c) >> return (Text.singleton c)
       _ -> return (showToken t)
 
-lowIdentifier :: Parser st Text
+lowIdentifier :: FTL Text
 lowIdentifier = parenthesised topIdentifier
 
-noLink :: Parser st [a]
+noLink :: FTL [a]
 noLink = finish $ return []
 
-eqLink :: Parser st [Text]
+eqLink :: FTL [Text]
 eqLink = optLL1 [] $ parenthesised $ token' "by" >> identifiers
   where
     identifiers = topIdentifier `sepByLL1` comma
@@ -236,7 +236,7 @@ pretype p = p `pretypeBefore` return []
 
 
 -- low-level header
-hence :: Parser st ()
+hence :: FTL ()
 hence = optLL1 () $ tokenOf' ["then", "hence", "thus", "therefore"]
 letUs :: FTL ()
 letUs = optLL1 () $ (mu "let" >> mu "us") <|> (mu "we" >> mu "can")
@@ -247,7 +247,7 @@ beginChoice :: FTL ()
 beginChoice = hence >> letUs >> markupTokenOf lowlevelHeader ["choose", "take", "consider"]
 beginCase :: FTL ()
 beginCase = markupToken lowlevelHeader "case"
-beginAff :: Parser st ()
+beginAff :: FTL ()
 beginAff = hence
 beginAsm :: FTL ()
 beginAsm = lus </> markupToken lowlevelHeader "let"
@@ -260,7 +260,7 @@ beginDef = markupToken lowlevelHeader "define"
 -- generic sentence parser
 
 statementBlock :: Section
-                  -> Parser st Formula -> Parser st [Text] -> Parser st (Block Formula)
+                  -> FTL Formula -> FTL [Text] -> FTL (Block Formula)
 statementBlock kind p mbLink = do
   nm <- optLLx "__" lowIdentifier;
   pos <- getPos; inp <- getInput;
