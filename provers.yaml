@@ -59,3 +59,20 @@
   unknownMessage:
     - "SPASS beiseite: Ran out of time."
 #   - "SPASS beiseite: Maximal number of loops exceeded."
+
+- name: "vampire"
+  label: "vampire"
+  path: "vampire4.2.2"
+  arguments:
+    - "--mode"
+    - "casc"
+      #  - "-t %d"
+  successMessage:
+    - "% SZS output end Proof for"
+  contradictionMessage: []
+    # guessed this one
+    #  - "% SZS status ContradictoryAxioms for"
+  failureMessage:
+    - "% SZS status CounterSatisfiable for"
+  unknownMessage:
+    - "% SZS status Timeout for"
