@@ -191,6 +191,7 @@ listEq (l:ls) rs = case helper [] l rs of
     helper _ _ [] = Nothing
     helper dmp l (r:rs) = if ltTwins l r then return $ dmp ++ rs
                           else helper (r:dmp) l rs
+listEq _ _ = False
 
 allpairs :: (a -> b -> c) -> [a] -> [b] -> [c]
 allpairs f [] _ = []
