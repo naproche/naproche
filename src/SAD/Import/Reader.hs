@@ -55,46 +55,45 @@ readProofText pathToLibrary text0 = do
   return text
 
 reader :: Text -> [Text] -> [State FState] -> [ProofText Formula] -> IO ([ProofText Formula], [Message.Report])
+reader pathToLibrary doneFiles = go
+  where
+    go stateList [ProofTextInstr pos (GetArgument Read file)] = if ".." `Text.isInfixOf` file
+      then Message.errorParser (Instr.position pos) ("Illegal \"..\" in file name: " ++ show file)
+      else go stateList [ProofTextInstr pos $ GetArgument File $ pathToLibrary <> "/" <> file]
 
-reader _ _ _ [ProofTextInstr pos (GetArgument Read file)] | ".." `Text.isInfixOf` file =
-  Message.errorParser (Instr.position pos) ("Illegal \"..\" in file name: " ++ show file)
+    go (pState:states) [ProofTextInstr pos (GetArgument File file)]
+      | file `elem` doneFiles = do
+          Message.outputMain Message.WARNING (Instr.position pos)
+            ("Skipping already read file: " ++ show file)
+          (newProofText, newState) <- launchParser forthel pState
+          go (newState:states) newProofText
 
-reader pathToLibrary doneFiles stateList [ProofTextInstr pos (GetArgument Read file)] =
-  reader pathToLibrary doneFiles stateList
-    [ProofTextInstr pos $ GetArgument File $ pathToLibrary <> "/" <> file]
+    go (pState:states) [ProofTextInstr _ (GetArgument File file)] = do
+      text <-
+        catch (if Text.null file then getContents else File.read $ Text.unpack file)
+          (Message.errorParser (fileOnlyPos file) . ioeGetErrorString)
+      (newProofText, newState) <- reader0 (filePos file) (Text.pack text) pState
+      reader pathToLibrary (file:doneFiles) (newState:pState:states) newProofText
 
-reader pathToLibrary doneFiles (pState:states) [ProofTextInstr pos (GetArgument File file)]
-  | file `elem` doneFiles = do
-      Message.outputMain Message.WARNING (Instr.position pos)
-        ("Skipping already read file: " ++ show file)
-      (newProofText, newState) <- launchParser forthel pState
-      reader pathToLibrary doneFiles (newState:states) newProofText
+    go (pState:states) [ProofTextInstr _ (GetArgument Text text)] = do
+      (newProofText, newState) <- reader0 startPos text pState
+      go (newState:pState:states) newProofText
 
-reader pathToLibrary doneFiles (pState:states) [ProofTextInstr _ (GetArgument File file)] = do
-  text <-
-    catch (if Text.null file then getContents else File.read $ Text.unpack file)
-      (Message.errorParser (fileOnlyPos file) . ioeGetErrorString)
-  (newProofText, newState) <- reader0 (filePos file) (Text.pack text) pState
-  reader pathToLibrary (file:doneFiles) (newState:pState:states) newProofText
+    -- this happens when t is not a suitable instruction
+    -- e.g. all the time, since we feed every parsed ProofText through this loop
+    go stateList (t:restProofText) = do
+      (ts, ls) <- go stateList restProofText
+      return (t:ts, ls)
 
-reader pathToLibrary doneFiles (pState:states) [ProofTextInstr _ (GetArgument Text text)] = do
-  (newProofText, newState) <- reader0 startPos text pState
-  reader pathToLibrary doneFiles (newState:pState:states) newProofText
+    go (pState:oldState:rest) [] = do
+      Message.outputParser Message.TRACING
+        (if null doneFiles then noSourcePos else fileOnlyPos $ head doneFiles) "parsing successful"
+      let resetState = oldState {
+            stUser = (stUser pState) {tvrExpr = tvrExpr $ stUser oldState}}
+      (newProofText, newState) <- launchParser forthel resetState
+      go (newState:rest) newProofText
 
--- this happens when t is not a suitable instruction
-reader pathToLibrary doneFiles stateList (t:restProofText) = do
-  (ts, ls) <- reader pathToLibrary doneFiles stateList restProofText
-  return (t:ts, ls)
-
-reader pathToLibrary doneFiles (pState:oldState:rest) [] = do
-  Message.outputParser Message.TRACING
-    (if null doneFiles then noSourcePos else fileOnlyPos $ head doneFiles) "parsing successful"
-  let resetState = oldState {
-        stUser = (stUser pState) {tvrExpr = tvrExpr $ stUser oldState}}
-  (newProofText, newState) <- launchParser forthel resetState
-  reader pathToLibrary doneFiles (newState:rest) newProofText
-
-reader _ _ (state:_) [] = return ([], reports $ stUser state)
+    go (state:_) [] = return ([], reports $ stUser state)
 
 reader0 :: SourcePos -> Text -> State FState -> IO ([ProofText Formula], State FState)
 reader0 pos text pState = do
