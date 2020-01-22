@@ -229,18 +229,6 @@ primSnt p  = noError $ varList >>= getExpr symbNotionExpr . snt
 
 data Pattern = Word [Text] | Symbol Text | Vr | Nm deriving (Eq, Show)
 
--- | DANGER: Not symmetric on `Word`
-samePat :: [Pattern] -> [Pattern] -> Bool
-samePat [] [] = True
-samePat (x:xs) (y:ys) = samePat1 x y && samePat xs ys
-  where
-    samePat1 (Word ls) (Word rs) = all (`elem` rs) ls
-    samePat1 Vr Vr = True
-    samePat1 Nm Nm = True
-    samePat1 (Symbol s) (Symbol t) = s == t
-    samePat1 _ _ = False
-samePat _ _ = False
-
 
 -- adding error reporting to pattern parsing
 patternTokenOf' :: [Text] -> Parser st ()
