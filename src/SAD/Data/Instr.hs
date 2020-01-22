@@ -26,12 +26,16 @@ noPos = Pos noSourcePos noSourcePos noRange
 
 -- Instruction types
 
+data UnderlyingTheory = FirstOrderLogic | CiC | Lean
+  deriving (Eq, Ord, Show)
+
 data Instr =
     Command Command
   | LimitBy Limit Int
   | SetFlag Flag Bool
   | GetArgument Argument Text
   | GetArguments Arguments [Text]
+  | Theory UnderlyingTheory
   deriving (Eq, Ord, Show)
 
 data Drop =
@@ -115,6 +119,8 @@ askFlag i d is  = head $ [ v | SetFlag j v <- is, i == j ] ++ [d]
 askArgument :: Argument -> Text -> [Instr] -> Text
 askArgument i d is  = head $ [ v | GetArgument j v <- is, i == j ] ++ [d]
 
+askTheory :: UnderlyingTheory -> [Instr] -> UnderlyingTheory
+askTheory d is = head $ [ t | Theory t <- is] ++ [d]
 
 -- Drop
 

@@ -98,9 +98,9 @@ thereIs :: FTL Formula
 thereIs = label "there-is statement" $ there >> (noNotion -|- notions)
   where
     noNotion = label "no-notion" $ do
-      token' "no"; (q, f, vs) <- declared notion;
+      token' "no"; (q, f, vs) <- declared =<< notion;
       return $ Not $ foldr mbdExi (q f) vs
-    notions = fmap multExi $ art >> declared notion `sepBy` comma
+    notions = fmap multExi $ art >> (declared =<< notion) `sepBy` comma
 
 
 simple :: FTL Formula
@@ -168,16 +168,16 @@ hasPredicate :: FTL Formula
 hasPredicate = label "has predicate" $ noPossessive <|> possessive
   where
     possessive = art >> common <|> nonbinary
-    nonbinary = fmap (Tag Dig . multExi) $ declared possess `sepBy` (comma >> art)
+    nonbinary = fmap (Tag Dig . multExi) $ (declared =<< possess) `sepBy` (comma >> art)
     common = token' "common" >>
-      fmap multExi (fmap digadd (declared possess) `sepBy` comma)
+      fmap multExi (fmap digadd (declared =<< possess) `sepBy` comma)
 
     noPossessive = nUnary -|- nCommon
     nUnary = do
-      token' "no"; (q, f, v) <- declared possess;
+      token' "no"; (q, f, v) <- declared =<< possess;
       return $ q . Tag Dig . Not $ foldr mbdExi f v
     nCommon = do
-      token' "no"; token' "common"; (q, f, v) <- declared possess
+      token' "no"; token' "common"; (q, f, v) <- declared =<< possess
       return $ q . Not $ foldr mbdExi (Tag Dig f) v
       -- take a closer look at this later.. why is (Tag Dig) *inside* important?
 
@@ -259,7 +259,7 @@ digadd (q, f, v) = (q, Tag Dig f, v)
 digNotion :: (a, Formula, Set PosVar) -> FTL (a, Formula, Set PosVar)
 digNotion (q, f, v) = dig f (map pVar $ Set.toList v) >>= \ g -> return (q, g, v)
 
-single :: Monad m => (a, b, Set c) -> m (a, b, c)
+single :: (a, b, Set c) -> FTL (a, b, c)
 single (q, f, vs) = case Set.elems vs of
   [v] -> pure $ (q, f, v)
   _ -> fail "inadmissible multinamed notion"
@@ -326,8 +326,8 @@ symbolicFormula  = biimplication
     implication   = disjunction >>= binary Imp (symbol "=>"  >> implication)
     disjunction   = conjunction >>= binary Or  (symbol "\\/" >> disjunction)
     conjunction   = nonbinary   >>= binary And (symbol "/\\" >> conjunction)
-    universal     = liftA2 (quantified dAll Imp) (token' "forall" >> declared symNotion) nonbinary
-    existential   = liftA2 (quantified dExi And) (token' "exists" >> declared symNotion) nonbinary
+    universal     = liftA2 (quantified dAll Imp) (token' "forall" >> (declared =<< symNotion)) nonbinary
+    existential   = liftA2 (quantified dExi And) (token' "exists" >> (declared =<<symNotion)) nonbinary
     nonbinary     = universal -|- existential -|- negation -|- separated -|- atomic
     negation      = Not <$> (token' "not" >> nonbinary)
     separated     = token' ":" >> symbolicFormula
@@ -511,7 +511,7 @@ chooseInTerm = do
   where
     ld_choice = chc <|> def
     chc = do
-      token' "choose"; (q, f, vs) <- declared $ art >> notion
+      token' "choose"; (q, f, vs) <- art >> notion >>= declared
       return $ flip (foldr dExi) vs . And (q f)
     def = do
       token' "define"; x <- var; xDecl <- makeDecl x; token "="
@@ -579,7 +579,7 @@ quantifierChain = fmap (foldl fld id) $ token' "for" >> quantifiedNotion `sepByL
 
 -- Digger
 
-dig :: Monad m => Formula -> [Formula] -> m Formula
+dig :: Formula -> [Formula] -> FTL Formula
 dig f [_] | occursS f = fail "too few subjects for an m-predicate"
 dig f ts = return (dive f)
   where

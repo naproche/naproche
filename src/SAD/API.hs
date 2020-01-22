@@ -21,7 +21,8 @@ import SAD.Core.Base (showTimeDiff, RState(..), accumulateIntCounter, IntCounter
 import SAD.Core.Message (consoleThread, exitThread, errorParser, outputMain, initThread, Kind(..))
 import SAD.Core.SourcePos (noSourcePos)
 import SAD.Core.Verify (verify)
-import SAD.Data.Instr (Instr(..), Flag(..), askFlag, Limit(..), askLimit, Argument(..), askArgument, Arguments(..), noPos)
+import SAD.Data.Instr (Instr(..), Flag(..), askFlag, Limit(..), askLimit, Argument(..), askArgument, Arguments(..), noPos
+  , UnderlyingTheory(..), askTheory)
 import SAD.Data.Text.Block (ProofText(..), textToCheck, findParseError)
 import SAD.Export.Base (readProverDatabase)
 import SAD.Import.Reader (readInit, readProofText)

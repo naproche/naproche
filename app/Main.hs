@@ -12,6 +12,7 @@ module Main where
 import Data.Maybe
 import Data.IORef
 import Data.Time
+import Data.Char
 import Control.Monad (when, unless)
 import qualified System.Console.GetOpt as GetOpt
 import qualified System.Environment as Environment
@@ -70,84 +71,91 @@ mainBody oldProofTextRef (opts0, text0) = do
 
   oldProofText <- readIORef oldProofTextRef
   -- parse input text
-  text1 <- fmap ProofTextRoot $ readProofText (askArgument Library "." opts0) text0
+  txts <- readProofText (askArgument Library "." opts0) text0
+  let text1 = ProofTextRoot txts
 
+  case askTheory FirstOrderLogic opts0 of
+    FirstOrderLogic -> do
+      -- if -T / --onlytranslate is passed as an option, only print the translated text
+      if askFlag OnlyTranslate False opts0
+        then showTranslation txts startTime
+        else do proveFOL text1 opts0 oldProofText oldProofTextRef startTime
+    CiC -> return ()
+    Lean -> return ()
 
-  -- if -T / --onlytranslate is passed as an option, only print the translated text
-  if askFlag OnlyTranslate False opts0 then
-    do
-      let timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)
-          ProofTextRoot txts = text1
-      mapM_ (\case ProofTextBlock bl -> print bl; _ -> return ()) txts
+showTranslation :: [ProofText Formula] -> UTCTime -> IO ()
+showTranslation txts startTime = do
+  let timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)
+  mapM_ (\case ProofTextBlock bl -> print bl; _ -> return ()) txts
 
-      -- print statistics
-      finishTime <- getCurrentTime
-      outputMain TRACING noSourcePos $ Text.unpack $ "total " <> timeDifference finishTime
-  else
-    do
-      -- read provers.yaml
-      provers <- readProverDatabase $ Text.unpack (askArgument Provers "provers.yaml" opts0)
-      -- initialize reasoner state
-      reasonerState <- newIORef (RState [] False False)
+  -- print statistics
+  finishTime <- getCurrentTime
+  outputMain TRACING noSourcePos $ Text.unpack $ "total " <> timeDifference finishTime
 
-      proveStart <- getCurrentTime
+proveFOL :: ProofText Formula -> [Instr] -> ProofText Formula -> (IORef (ProofText Formula)) -> UTCTime -> IO ()
+proveFOL text1 opts0 oldProofText oldProofTextRef startTime = do
+  -- read provers.yaml
+  provers <- readProverDatabase $ Text.unpack (askArgument Provers "provers.yaml" opts0)
+  -- initialize reasoner state
+  reasonerState <- newIORef (RState [] False False)
 
-      success <- case findParseError text1 of
-        Nothing -> do
-          let text = textToCheck oldProofText text1
-          (success, newProofText) <- verify (askArgument File "" opts0) provers reasonerState text
-          case newProofText of
-            Just txt -> writeIORef oldProofTextRef txt
-            _ -> return ()
-          pure success
-        Just err -> do errorParser (errorPos err) (show err); pure False
+  proveStart <- getCurrentTime
 
-      finishTime <- getCurrentTime
-      finalReasonerState <- readIORef reasonerState
+  success <- case findParseError text1 of
+    Nothing -> do
+      let text = textToCheck oldProofText text1
+      (success, newProofText) <- verify (askArgument File "" opts0) provers reasonerState text
+      case newProofText of
+        Just txt -> writeIORef oldProofTextRef txt
+        _ -> return ()
+      pure success
+    Just err -> do errorParser (errorPos err) (show err); pure False
 
-      let counterList = counters finalReasonerState
-          accumulate  = accumulateIntCounter counterList 0
+  finishTime <- getCurrentTime
+  finalReasonerState <- readIORef reasonerState
 
-      -- print statistics
-      outputMain TRACING noSourcePos $
-        "sections "       ++ show (accumulate Sections)
-        ++ " - goals "    ++ show (accumulate Goals)
-        ++ (let ignoredFails = accumulate FailedGoals
-            in  if   ignoredFails == 0
-                then ""
-                else " - failed "   ++ show ignoredFails)
-        ++ " - trivial "   ++ show (accumulate TrivialGoals)
-        ++ " - proved "    ++ show (accumulate SuccessfulGoals)
-        ++ " - equations " ++ show (accumulate Equations)
-        ++ (let failedEquations = accumulate FailedEquations
-            in  if   failedEquations == 0
-                then ""
-                else " - failed " ++ show failedEquations)
+  let counterList = counters finalReasonerState
+      accumulate  = accumulateIntCounter counterList 0
 
-      let trivialChecks = accumulate TrivialChecks
+  -- print statistics
+  outputMain TRACING noSourcePos $
+    "sections "       ++ show (accumulate Sections)
+    ++ " - goals "    ++ show (accumulate Goals)
+    ++ (let ignoredFails = accumulate FailedGoals
+        in  if   ignoredFails == 0
+            then ""
+            else " - failed "   ++ show ignoredFails)
+    ++ " - trivial "   ++ show (accumulate TrivialGoals)
+    ++ " - proved "    ++ show (accumulate SuccessfulGoals)
+    ++ " - equations " ++ show (accumulate Equations)
+    ++ (let failedEquations = accumulate FailedEquations
+        in  if   failedEquations == 0
+            then ""
+            else " - failed " ++ show failedEquations)
 
-      outputMain TRACING noSourcePos $
-        "symbols "        ++ show (accumulate Symbols)
-        ++ " - checks "   ++ show
-          (accumulateIntCounter counterList trivialChecks HardChecks)
-        ++ " - trivial "  ++ show trivialChecks
-        ++ " - proved "   ++ show (accumulate SuccessfulChecks)
-        ++ " - unfolds "  ++ show (accumulate Unfolds)
+  let trivialChecks = accumulate TrivialChecks
 
-      let accumulateTime = accumulateTimeCounter counterList
-          proverTime     = accumulateTime proveStart ProofTime
-          simplifyTime   = accumulateTime proverTime SimplifyTime
+  outputMain TRACING noSourcePos $
+    "symbols "        ++ show (accumulate Symbols)
+    ++ " - checks "   ++ show
+      (accumulateIntCounter counterList trivialChecks HardChecks)
+    ++ " - trivial "  ++ show trivialChecks
+    ++ " - proved "   ++ show (accumulate SuccessfulChecks)
+    ++ " - unfolds "  ++ show (accumulate Unfolds)
 
-      outputMain TRACING noSourcePos $ Text.unpack $
-        "parser "           <> showTimeDiff (diffUTCTime proveStart startTime)
-        <> " - reasoner "   <> showTimeDiff (diffUTCTime finishTime simplifyTime)
-        <> " - simplifier " <> showTimeDiff (diffUTCTime simplifyTime proverTime)
-        <> " - prover "     <> showTimeDiff (diffUTCTime proverTime proveStart)
-        <> "/" <> showTimeDiff (maximalTimeCounter counterList SuccessTime)
-      outputMain TRACING noSourcePos $ Text.unpack $
-        "total " <> showTimeDiff (diffUTCTime finishTime startTime)
-      when (not success) Exit.exitFailure
+  let accumulateTime = accumulateTimeCounter counterList
+      proverTime     = accumulateTime proveStart ProofTime
+      simplifyTime   = accumulateTime proverTime SimplifyTime
 
+  outputMain TRACING noSourcePos $ Text.unpack $
+    "parser "           <> showTimeDiff (diffUTCTime proveStart startTime)
+    <> " - reasoner "   <> showTimeDiff (diffUTCTime finishTime simplifyTime)
+    <> " - simplifier " <> showTimeDiff (diffUTCTime simplifyTime proverTime)
+    <> " - prover "     <> showTimeDiff (diffUTCTime proverTime proveStart)
+    <> "/" <> showTimeDiff (maximalTimeCounter counterList SuccessTime)
+  outputMain TRACING noSourcePos $ Text.unpack $
+    "total " <> showTimeDiff (diffUTCTime finishTime startTime)
+  when (not success) Exit.exitFailure
 
 serverConnection :: IORef (ProofText Formula) -> [String] -> Socket -> IO ()
 serverConnection oldProofTextRef args0 connection = do
@@ -232,6 +240,8 @@ options = [
     "raw mode (equivalent to --check off)",
   GetOpt.Option "" ["prove"] (GetOpt.ReqArg (SetFlag Prove . parseConsent) "{on|off}")
     "prove goals in the text (def: on)",
+  GetOpt.Option "" ["theory"] (GetOpt.ReqArg (Theory . parseTheory) "{fol|lean|cic}")
+    "Choose the underlying theory (First-Order-Logic, Lean Prover, Calculus of inductive Constructions) (def: fol)",
   GetOpt.Option "" ["check"] (GetOpt.ReqArg (SetFlag Check . parseConsent) "{on|off}")
     "check symbols for definedness (def: on)",
   GetOpt.Option "" ["symsign"] (GetOpt.ReqArg (SetFlag Symsign . parseConsent) "{on|off}")
@@ -282,6 +292,14 @@ parseConsent :: String -> Bool
 parseConsent "yes" = True ; parseConsent "on"  = True
 parseConsent "no"  = False; parseConsent "off" = False
 parseConsent s     = errorWithoutStackTrace $ "Invalid boolean argument: \"" ++ s ++ "\""
+
+parseTheory :: String -> UnderlyingTheory
+parseTheory s = go (map toLower s)
+  where
+    go "fol" = FirstOrderLogic
+    go "cic" = CiC
+    go "lean" = Lean
+    go s = errorWithoutStackTrace $ "Invalid theory: \"" ++ s ++ "\""
 
 getLeadingPositiveInt :: String -> Int
 getLeadingPositiveInt s = case reads s of

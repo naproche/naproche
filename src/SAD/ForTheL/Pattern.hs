@@ -21,7 +21,6 @@ import Control.Monad.State.Class (put, gets)
 
 import SAD.ForTheL.Base
 
-import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Parser.Token
 import SAD.Parser.Primitives
@@ -237,16 +236,14 @@ newSymbPattern tvr = left -|- right
 -- pattern parsing
 
 
-patHead :: Parser st Text
-          -> Parser st a -> Parser st (Text, [a])
+patHead :: FTL Text -> FTL a -> FTL (Text, [a])
 patHead lxm tvr = do
   l <- Text.unwords <$> chain lxm
   (ls, vs) <- opt ("", []) $ patTail lxm tvr
   return (l <> " " <> ls, vs)
 
 
-patTail :: Parser st Text
-          -> Parser st a -> Parser st (Text, [a])
+patTail :: FTL Text -> FTL a -> FTL (Text, [a])
 patTail lxm tvr = do
   v <- tvr
   (ls, vs) <- opt ("", []) $ patHead lxm tvr

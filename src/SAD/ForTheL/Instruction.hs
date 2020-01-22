@@ -23,7 +23,6 @@ import SAD.Data.Instr
 
 import SAD.ForTheL.Base
 
-import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
 import SAD.ForTheL.Reports
@@ -75,14 +74,14 @@ readInstr =
     readInstrText = liftM2 GetArgument (readKeywords keywordsArgument) readText
     readInstrTexts = liftM2 GetArguments (readKeywords keywordsArguments) readWords
 
-readInt :: Parser st Int
+readInt :: FTL Int
 readInt = try $ readText >>= intCheck
   where
     intCheck s = case reads $ Text.unpack s of
       ((n,[]):_) | n >= 0 -> return n
       _                   -> mzero
 
-readBool :: Parser st Bool
+readBool :: FTL Bool
 readBool = try $ readText >>= boolCheck
   where
     boolCheck "yes" = return True
@@ -91,17 +90,17 @@ readBool = try $ readText >>= boolCheck
     boolCheck "off" = return False
     boolCheck _     = mzero
 
-readText :: Parser st Text
+readText :: FTL Text
 readText = fmap Text.concat readTexts
 
 
-readTexts :: Parser st [Text]
+readTexts :: FTL [Text]
 readTexts = chainLL1 notClosingBrk
   where
     notClosingBrk = tokenPrim notCl
     notCl t = let tk = showToken t in guard (tk /= "]") >> return tk
 
-readWords :: Parser st [Text]
+readWords :: FTL [Text]
 readWords = shortHand </> chainLL1 word
   where
   shortHand = do
@@ -119,7 +118,7 @@ readInstrDrop = readInstrCommand -|- readInstrLimit -|- readInstrBool
 
 -- | Try to parse the next token as one of the supplied keyword strings
 -- and return the corresponding @a@ on success.
-readKeywords :: [(a, Text)] -> Parser st a
+readKeywords :: [(a, Text)] -> FTL a
 readKeywords keywords = try $ do
   s <- anyToken
   msum $ map (pure . fst) $ filter ((== s) . snd) keywords

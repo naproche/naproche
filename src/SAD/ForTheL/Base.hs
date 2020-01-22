@@ -113,8 +113,8 @@ makeDecl (PosVar nm pos) = do
 makeDecls :: Set PosVar -> FTL (Set Decl)
 makeDecls = Set.foldr (\v f -> makeDecl v >>= \d -> Set.insert d <$> f) (pure mempty)
 
-declared :: FTL MNotion -> FTL (Formula -> Formula, Formula, Set Decl)
-declared p = do (q, f, v) <- p; nv <- makeDecls v; return (q, f, nv)
+declared :: MNotion -> FTL (Formula -> Formula, Formula, Set Decl)
+declared (q, f, v) = do nv <- makeDecls v; return (q, f, nv)
 
 -- Predicates: verbs and adjectiveectives
 
@@ -126,8 +126,8 @@ primUnAdj = getExpr (filter (unary . fst) . adjectiveExpr) . primPrd
   where
     unary pt = Vr `notElem` pt
 
-primPrd :: Parser st (b1 -> b1, Formula)
-           -> ([Pattern], [Formula] -> b2) -> Parser st (b1 -> b1, b2)
+primPrd :: FTL (b1 -> b1, Formula)
+           -> ([Pattern], [Formula] -> b2) -> FTL (b1 -> b1, b2)
 primPrd p (pt, fm) = do
   (q, ts) <- wdPattern p pt
   return (q, fm $ (mkVar (VarHole "")):ts)
@@ -145,8 +145,8 @@ primMultiUnAdj = getExpr (filter (unary . fst) . adjectiveExpr) . primMultiPredi
     unary (_  : pt) = unary pt
     unary [] = True
 
-primMultiPredicate :: Parser st (b1 -> b1, Formula)
-               -> ([Pattern], [Formula] -> b2) -> Parser st (b1 -> b1, b2)
+primMultiPredicate :: FTL (b1 -> b1, Formula)
+               -> ([Pattern], [Formula] -> b2) -> FTL (b1 -> b1, b2)
 primMultiPredicate p (pt, fm) = do
   (q, ts) <- multiPattern p pt
   return (q, fm $ (mkVar (VarHole "")):(mkVar VarSlot):ts)
@@ -208,14 +208,14 @@ primIfn :: FTL Formula
            -> FTL (Formula -> Formula -> Formula)
 primIfn = getExpr ifnExpr . primIsm
 
-primCsm :: Parser st a -> ([Pattern], [a] -> b) -> Parser st b
+primCsm :: FTL a -> ([Pattern], [a] -> b) -> FTL b
 primCsm p (pt, fm) = symbolPattern p pt >>= \l -> return $ fm l
-primRsm :: Parser st a -> ([Pattern], [a] -> t) -> Parser st (a -> t)
+primRsm :: FTL a -> ([Pattern], [a] -> t) -> FTL (a -> t)
 primRsm p (pt, fm) = symbolPattern p pt >>= \l -> return $ \t -> fm $ t:l
-primLsm :: Parser st a -> ([Pattern], [a] -> t) -> Parser st (a -> t)
+primLsm :: FTL a -> ([Pattern], [a] -> t) -> FTL (a -> t)
 primLsm p (pt, fm) = symbolPattern p pt >>= \l -> return $ \s -> fm $ l++[s]
-primIsm :: Parser st a
-           -> ([Pattern], [a] -> t) -> Parser st (a -> a -> t)
+primIsm :: FTL a
+           -> ([Pattern], [a] -> t) -> FTL (a -> a -> t)
 primIsm p (pt, fm) = symbolPattern p pt >>= \l -> return $ \t s -> fm $ t:l++[s]
 
 
@@ -231,15 +231,15 @@ data Pattern = Word [Text] | Symbol Text | Vr | Nm deriving (Eq, Show)
 
 
 -- adding error reporting to pattern parsing
-patternTokenOf' :: [Text] -> Parser st ()
+patternTokenOf' :: [Text] -> FTL ()
 patternTokenOf' l = label ("a word of " <> Text.pack (show l)) $ tokenOf' l
 
-patternSymbolTokenOf :: Text -> Parser st ()
+patternSymbolTokenOf :: Text -> FTL ()
 patternSymbolTokenOf l = label ("the symbol " <> Text.pack (show l)) $ token l
 
 -- most basic pattern parser: simply follow the pattern and parse terms with p
 -- at variable places
-wdPattern :: Parser st (b -> b, a) -> [Pattern] -> Parser st (b-> b, [a])
+wdPattern :: FTL (b -> b, a) -> [Pattern] -> FTL (b-> b, [a])
 wdPattern p (Word l : ls) = patternTokenOf' l >> wdPattern p ls
 wdPattern p (Vr : ls) = do
   (r, t) <- p
@@ -249,7 +249,7 @@ wdPattern _ [] = return (id, [])
 wdPattern _ _ = mzero
 
 -- parses a symbolic pattern
-symbolPattern :: Parser st a -> [Pattern] -> Parser st [a]
+symbolPattern :: FTL a -> [Pattern] -> FTL [a]
 symbolPattern p (Vr : ls) = liftM2 (:) p $ symbolPattern p ls
 symbolPattern p (Symbol s : ls) = patternSymbolTokenOf s >> symbolPattern p ls
 symbolPattern _ [] = return []
@@ -259,7 +259,7 @@ symbolPattern _ _ = mzero
 -- right before the first variable. Then check that all "and" tokens have been
 -- consumed. Example pattern: [Word ["commute","commutes"], Word ["with"], Vr]. Then
 -- we can parse "a commutes with c and d" as well as "a and b commute".
-multiPattern :: Parser st (b -> b, a) -> [Pattern] -> Parser st (b -> b, [a])
+multiPattern :: FTL (b -> b, a) -> [Pattern] -> FTL (b -> b, [a])
 multiPattern p (Word l :_: Vr : ls) = patternTokenOf' l >> naPattern p ls
 multiPattern p (Word l : ls) = patternTokenOf' l >> multiPattern p ls
 multiPattern _ _ = mzero
@@ -305,8 +305,8 @@ commonPattern _ _ _ = mzero
 
 -- an auxiliary pattern parser that checks that we are not dealing with an "and"
 -- token' and then continues to follow the pattern
-naPattern :: Parser st (b -> b, a)
-          -> [Pattern] -> Parser st (b -> b, [a])
+naPattern :: FTL (b -> b, a)
+          -> [Pattern] -> FTL (b -> b, [a])
 naPattern p (Word l : ls) = guard (notElem "and" l) >> patternTokenOf' l >> wdPattern p ls
 naPattern p ls = wdPattern p ls
 
@@ -317,10 +317,10 @@ naPattern p ls = wdPattern p ls
 nameList :: FTL (Set PosVar)
 nameList = varList -|- fmap Set.singleton hidden
 
-varList :: Parser st (Set PosVar)
+varList :: FTL (Set PosVar)
 varList = var `sepBy` token' "," >>= nodups
 
-nodups :: IsVar a => [a] -> Parser st (Set a)
+nodups :: IsVar a => [a] -> FTL (Set a)
 nodups vs = do
   unless ((null :: [b] -> Bool) $ duplicateNames vs) $
     fail $ "duplicate names: " ++ (show $ map (Text.unpack . toLazyText . represent) vs)
@@ -334,7 +334,7 @@ hidden = do
 
 -- | Parse the next token as a variable (a sequence of alpha-num chars beginning with an alpha)
 -- and return ('x' + the sequence) with the current position.
-var :: Parser st PosVar
+var :: FTL PosVar
 var = do
   pos <- getPos
   v <- satisfy (\s -> Text.all isAlphaNum s && isAlpha (Text.head s))
@@ -411,38 +411,38 @@ freeOrOverlapping vs f
 --- macro expressions
 
 
-comma :: Parser st ()
+comma :: FTL ()
 comma = tokenOf' [",", "and"]
-is :: Parser st ()
+is :: FTL ()
 is = tokenOf' ["is", "be", "are"]
-art :: Parser st ()
+art :: FTL ()
 art = opt () $ tokenOf' ["a","an","the"]
-an :: Parser st ()
+an :: FTL ()
 an = tokenOf' ["a", "an"]
-the :: Parser st ()
+the :: FTL ()
 the = token' "the"
-iff :: Parser st ()
+iff :: FTL ()
 iff = token' "iff" <|> mapM_ token' ["if", "and", "only", "if"]
-that :: Parser st ()
+that :: FTL ()
 that = token' "that"
-standFor :: Parser st ()
+standFor :: FTL ()
 standFor = token' "denote" <|> (token' "stand" >> token' "for")
-arrow :: Parser st ()
+arrow :: FTL ()
 arrow = symbol "->"
-there :: Parser st ()
+there :: FTL ()
 there = token' "there" >> tokenOf' ["is","exist","exists"]
-does :: Parser st ()
+does :: FTL ()
 does = opt () $ tokenOf' ["does", "do"]
-has :: Parser st ()
+has :: FTL ()
 has = tokenOf' ["has" , "have"]
-with :: Parser st ()
+with :: FTL ()
 with = tokenOf' ["with", "of", "having"]
-such :: Parser st ()
+such :: FTL ()
 such = tokenOf' ["such", "so"]
 
 
 
-texBegin, texEnd :: Text -> Parser st Text
+texBegin, texEnd :: Text -> FTL Text
 texBegin env = do
   token "\\begin"
   symbol "{"

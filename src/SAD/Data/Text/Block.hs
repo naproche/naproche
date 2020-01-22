@@ -52,7 +52,7 @@ data ProofText a =
 
 data Block a = Block {
   formula           :: a,
-  body              :: [ProofText Formula],
+  body              :: [ProofText a],
   kind              :: Section,
   declaredVariables :: Set Decl,
   name              :: Text,

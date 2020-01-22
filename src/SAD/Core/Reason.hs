@@ -116,8 +116,7 @@ launchProver iteration = do
   whenInstruction Printfulltask False printTask
   proverList <- asks provers ; instrList <- asks instructions
   goal <- thesis; context <- asks currentContext
-  let callATP = justIO $ pure $
-        export iteration proverList instrList context goal
+  let callATP = justIO $ pure $ export iteration proverList instrList context goal
   callATP >>= timer ProofTime . justIO >>= guard . (==Success)
   res <- fmap head $ askRS counters
   case res of
