@@ -81,9 +81,9 @@ chainEnd f = optLL1 f $ and_st <|> or_st <|> iff_st <|> where_st
 
 atomic :: FTL Formula
 atomic = label "atomic statement"
-  thereIs <|> (simple </> (wehve >> smForm <|> thesis))
+  thereIs <|> (simple </> (weHave >> symbolicStatement <|> thesis))
   where
-    wehve = optLL1 () $ token' "we" >> token' "have"
+    weHave = optLL1 () $ token' "we" >> token' "have"
 
 
 thesis :: FTL Formula
@@ -111,8 +111,14 @@ simple = label "simple statement" $ do
   -- example: x = y *for every real number x*.
   q . q' <$> dig p ts
 
-smForm :: FTL Formula
-smForm = (sForm -|- classEq) <**> optLL1 id quantifierChain
+-- |
+-- A symbolic statement is either a symbolic formula or the assertion that two class
+-- terms are equal, followed by optional later quantifiers. If no quantifiers are present
+-- the statement is returned as-is, otherwise the quantifiers are applied to the statement.
+--
+symbolicStatement :: FTL Formula
+symbolicStatement = (symbolicFormula -|- classEquality) <**> optLL1 id quantifierChain
+
 
 --- predicates
 
@@ -148,8 +154,8 @@ isAPredicate = label "isA predicate" $ notNotion <|> notion
 hasPredicate :: FTL Formula
 hasPredicate = label "has predicate" $ noPossessive <|> possessive
   where
-    possessive = art >> common <|> unary
-    unary = fmap (Tag Dig . multExi) $ declared possess `sepBy` (comma >> art)
+    possessive = art >> common <|> nonbinary
+    nonbinary = fmap (Tag Dig . multExi) $ declared possess `sepBy` (comma >> art)
     common = token' "common" >>
       fmap multExi (fmap digadd (declared possess) `sepBy` comma)
 
@@ -300,44 +306,50 @@ symbolicTerm = fmap ((,) id) sTerm
 --- symbolic notation
 
 
-sForm :: FTL Formula
-sForm  = sIff
+symbolicFormula :: FTL Formula
+symbolicFormula  = biimplication
   where
-    sIff = sImp >>= binF Iff (symbol "<=>" >> sImp)
-    sImp = sDis >>= binF Imp (symbol "=>"  >> sImp)
-    sDis = sCon >>= binF Or  (symbol "\\/" >> sDis)
-    sCon = sUna >>= binF And (symbol "/\\" >> sCon)
-    sUna = sAll -|- sExi -|- sNot -|- sDot -|- sAtm
-    sAll = liftA2 (quaF dAll Imp) (token' "forall" >> declared symNotion) sUna
-    sExi = liftA2 (quaF dExi And) (token' "exists" >> declared symNotion) sUna
-    sNot = fmap Not $ token' "not" >> sUna
-    sDot = token' ":" >> sForm
-    sAtm = sAtom
+    biimplication = implication >>= binary Iff (symbol "<=>" >> implication)
+    implication   = disjunction >>= binary Imp (symbol "=>"  >> implication)
+    disjunction   = conjunction >>= binary Or  (symbol "\\/" >> disjunction)
+    conjunction   = nonbinary   >>= binary And (symbol "/\\" >> conjunction)
+    universal     = liftA2 (quantified dAll Imp) (token' "forall" >> declared symNotion) nonbinary
+    existential   = liftA2 (quantified dExi And) (token' "exists" >> declared symNotion) nonbinary
+    nonbinary     = universal -|- existential -|- negation -|- separated -|- atomic
+    negation      = Not <$> (token' "not" >> nonbinary)
+    separated     = token' ":" >> symbolicFormula
 
-    quaF qu op (_, f, v) = flip (foldr qu) v . op f
+    quantified quant op (_, f, v) = flip (foldr quant) v . op f
 
-    binF op p f = optLL1 f $ fmap (op f) p
+    binary op p f = optLL1 f $ fmap (op f) p
 
+    atomic = relation -|- parenthesised statement
+      where
+        relation = sChain </> primCpr sTerm
 
-sAtom :: FTL Formula
-sAtom = sRelation -|- parenthesised statement
-  where
-    sRelation = sChain </> primCpr sTerm
+        sChain = fmap (foldl1 And . concat) sHd
 
-    sChain = fmap (foldl1 And . concat) sHd
+        -- TODO: Rename with slightly more obvious names.
+        -- First guess at the meaning of the naming:
+        -- s = symbolic
+        -- Hd = head
+        -- l = left
+        -- i = infix
+        -- r = right
 
-    sHd = lHd -|- (sTs >>= sTl)
-    lHd = do
-      pr <- primLpr sTerm; rs <- sTs
-      fmap (map pr rs :) $ opt [] $ sTl rs
+        sHd = lHd -|- (termChain >>= sTl)
+        lHd = do
+          pr <- primLpr sTerm
+          rs <- termChain
+          fmap (map pr rs :) $ opt [] $ sTl rs
 
-    sTl ls = iTl ls -|- rTl ls
-    iTl ls = do
-      pr <- primIpr sTerm; rs <- sTs
-      fmap (liftA2 pr ls rs :) $ opt [] $ sTl rs
-    rTl ls = do pr <- primRpr sTerm; return [map pr ls]
+        sTl ls = iTl ls -|- rTl ls
+        iTl ls = do
+          pr <- primIpr sTerm; rs <- termChain
+          fmap (liftA2 pr ls rs :) $ opt [] $ sTl rs
+        rTl ls = do pr <- primRpr sTerm; return [map pr ls]
 
-    sTs = sTerm `sepBy` token' ","
+        termChain = sTerm `sepBy` token' ","
 
 
 sTerm :: FTL Formula
@@ -358,8 +370,8 @@ sVar = fmap pVar var
 
 -- class term equations
 
-classEq :: FTL Formula
-classEq = twoClassTerms </> oneClassTerm
+classEquality :: FTL Formula
+classEquality = twoClassTerms </> oneClassTerm
   where
     twoClassTerms = do
       cnd1 <- fmap stripSet symbSetNotation; token "="
