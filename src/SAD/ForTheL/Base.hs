@@ -47,7 +47,7 @@ type Prim    = ([Pattern], [Formula] -> Formula)
 
 
 data FState = FState {
-  adjectiveExpr, verExpr, notionExpr, symbNotionExpr :: [Prim],
+  adjectiveExpr, verbExpr, notionExpr, symbNotionExpr :: [Prim],
   cfnExpr, rfnExpr, lfnExpr, ifnExpr :: [Prim],
   cprExpr, rprExpr, lprExpr, iprExpr :: [Prim],
 
@@ -58,33 +58,32 @@ data FState = FState {
 
 initFS :: Maybe PIDE -> FState
 initFS = FState
-  eq [] nt sn
+  primAdjs [] primNotions primSymbNotions
   cf rf [] []
-  [] [] [] sp
+  [] [] [] primInfixPredicates
   [] [] mempty
-  0 0 0 []
+  0 0 0
+  []
   where
-    eq = [
-      ([Word ["equal"], Word ["to"], Vr], zTrm EqualityId TermEquality),
-      ([Word ["nonequal"], Word ["to"], Vr], Not . zTrm EqualityId TermEquality) ]
-    sp = [
-      ([Symbol "="], zTrm EqualityId TermEquality),
-      ([Symbol "!", Symbol "="], Not . zTrm EqualityId TermEquality),
-      ([Symbol "-", Symbol "<", Symbol "-"], zTrm LessId TermLess),
-      ([Symbol "-~-"], \(m:n:_) -> zAll VarEmpty $
-        Iff (zElem (zVar VarEmpty) m) (zElem (zVar VarEmpty) n)) ]
-    sn = [ ([Symbol "=", Vr], zTrm EqualityId TermEquality) ]
-    nt = [
-      ([Word ["function","functions"], Nm], zFun . head),
-      ([Word ["set","sets"], Nm], zSet . head),
-      ([Word ["element", "elements"], Nm, Word ["of"], Vr], \(x:m:_) -> zElem x m),
-      ([Word ["object", "objects"], Nm], zObj . head)]
-    rf = [ ([Symbol "[", Vr, Symbol "]"], \(f:x:_) -> zApp f x)]
+    primAdjs = [
+      ([Word ["equal"], Word ["to"], Vr], mkTrm EqualityId TermEquality),
+      ([Word ["nonequal"], Word ["to"], Vr], Not . mkTrm EqualityId TermEquality) ]
+    primNotions = [
+      ([Word ["function","functions"], Nm], mkFun . head),
+      ([Word ["set","sets"], Nm], mkSet . head),
+      ([Word ["element", "elements"], Nm, Word ["of"], Vr], \(x:m:_) -> mkElem x m),
+      ([Word ["object", "objects"], Nm], mkObj . head)]
+    primSymbNotions = [ ([Symbol "=", Vr], mkTrm EqualityId TermEquality) ]
+    primInfixPredicates = [
+      ([Symbol "="], mkTrm EqualityId TermEquality),
+      ([Symbol "!", Symbol "="], Not . mkTrm EqualityId TermEquality),
+      ([Symbol "-", Symbol "<", Symbol "-"], mkTrm LessId TermLess),
+      ([Symbol "-~-"], \(m:n:_) -> mkAll VarEmpty $
+        Iff (mkElem (mkVar VarEmpty) m) (mkElem (mkVar VarEmpty) n)) ]
     cf = [
-      ([Symbol "Dom", Symbol "(",Vr,Symbol ")"], zDom . head),
-      ([Symbol "(", Vr, Symbol ",", Vr, Symbol ")"], \(x:y:_) -> zPair x y) ]
-
-
+      ([Symbol "Dom", Symbol "(",Vr,Symbol ")"], mkDom . head),
+      ([Symbol "(", Vr, Symbol ",", Vr, Symbol ")"], \(x:y:_) -> mkPair x y) ]
+    rf = [ ([Symbol "[", Vr, Symbol "]"], \(f:x:_) -> mkApp f x)]
 
 
 getExpr :: (FState -> [a]) -> (a -> FTL b) -> FTL b
@@ -121,7 +120,7 @@ declared p = do (q, f, v) <- p; nv <- makeDecls v; return (q, f, nv)
 
 primVer, primAdj, primUnAdj :: FTL UTerm -> FTL UTerm
 
-primVer = getExpr verExpr . primPrd
+primVer = getExpr verbExpr . primPrd
 primAdj = getExpr adjectiveExpr . primPrd
 primUnAdj = getExpr (filter (unary . fst) . adjectiveExpr) . primPrd
   where
@@ -131,14 +130,14 @@ primPrd :: Parser st (b1 -> b1, Formula)
            -> ([Pattern], [Formula] -> b2) -> Parser st (b1 -> b1, b2)
 primPrd p (pt, fm) = do
   (q, ts) <- wdPattern p pt
-  return (q, fm $ (zVar (VarHole "")):ts)
+  return (q, fm $ (mkVar (VarHole "")):ts)
 
 
 -- Multi-subject predicates: [a,b are] equal
 
 primMultiVer, primMultiAdj, primMultiUnAdj :: FTL UTerm -> FTL UTerm
 
-primMultiVer = getExpr verExpr . primMultiPredicate
+primMultiVer = getExpr verbExpr . primMultiPredicate
 primMultiAdj = getExpr adjectiveExpr . primMultiPredicate
 primMultiUnAdj = getExpr (filter (unary . fst) . adjectiveExpr) . primMultiPredicate
   where
@@ -150,24 +149,25 @@ primMultiPredicate :: Parser st (b1 -> b1, Formula)
                -> ([Pattern], [Formula] -> b2) -> Parser st (b1 -> b1, b2)
 primMultiPredicate p (pt, fm) = do
   (q, ts) <- multiPattern p pt
-  return (q, fm $ (zVar (VarHole "")):(zVar VarSlot):ts)
+  return (q, fm $ (mkVar (VarHole "")):(mkVar VarSlot):ts)
 
 
 -- Notions and functions
 
-primNotion, primOfNotion :: FTL UTerm -> FTL MNotion
 
+primNotion :: FTL UTerm -> FTL MNotion
 primNotion p  = getExpr notionExpr notion
   where
     notion (pt, fm) = do
       (q, vs, ts) <- notionPattern p pt
-      return (q, fm $ (zVar (VarHole "")):ts, vs)
+      return (q, fm $ (mkVar (VarHole "")):ts, vs)
 
+primOfNotion :: FTL UTerm -> FTL MNotion
 primOfNotion p = getExpr notionExpr notion
   where
     notion (pt, fm) = do
       (q, vs, ts) <- ofPattern p pt
-      let fn v = fm $ (pVar v):(zVar (VarHole "")):ts
+      let fn v = fm $ (pVar v):(mkVar (VarHole "")):ts
       return (q, foldr1 And $ map fn $ Set.toList vs, vs)
 
 primCmNotion :: FTL UTerm -> FTL MTerm -> FTL MNotion
@@ -175,7 +175,7 @@ primCmNotion p s = getExpr notionExpr notion
   where
     notion (pt, fm) = do
       (q, vs, as, ts) <- commonPattern p s pt
-      let fn v = fm $ (zVar (VarHole "")):v:ts
+      let fn v = fm $ (mkVar (VarHole "")):v:ts
       return (q, foldr1 And $ map fn as, vs)
 
 primFun :: FTL UTerm -> FTL UTerm
@@ -222,7 +222,7 @@ primIsm p (pt, fm) = symbolPattern p pt >>= \l -> return $ \t s -> fm $ t:l++[s]
 primSnt :: FTL Formula -> FTL MNotion
 primSnt p  = noError $ varList >>= getExpr symbNotionExpr . snt
   where
-    snt vs (pt, fm) = symbolPattern p pt >>= \l -> return (id, fm $ (zVar (VarHole "")):l, vs)
+    snt vs (pt, fm) = symbolPattern p pt >>= \l -> return (id, fm $ (mkVar (VarHole "")):l, vs)
 
 
 
@@ -233,6 +233,7 @@ data Pattern = Word [Text] | Symbol Text | Vr | Nm deriving (Eq, Show)
 -- adding error reporting to pattern parsing
 patternTokenOf' :: [Text] -> Parser st ()
 patternTokenOf' l = label ("a word of " <> Text.pack (show l)) $ tokenOf' l
+
 patternSymbolTokenOf :: Text -> Parser st ()
 patternSymbolTokenOf l = label ("the symbol " <> Text.pack (show l)) $ token l
 
@@ -386,7 +387,7 @@ bindings vs f = makeDecls $ fvToVarSet $ excludeSet (decl f) vs
 
 freeOrOverlapping :: Set VariableName -> Formula -> Maybe Text
 freeOrOverlapping vs f
-    | (zVar VarSlot) `occursIn` f = Just $ "too few subjects for an m-predicate " <> info
+    | (mkVar VarSlot) `occursIn` f = Just $ "too few subjects for an m-predicate " <> info
     | not (Text.null sbs) = Just $ "free undeclared variables: "   <> sbs <> info
     | not (Text.null ovl) = Just $ "overlapped variables: "        <> ovl <> info
     | otherwise      = Nothing

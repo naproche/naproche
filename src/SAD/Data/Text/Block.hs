@@ -88,8 +88,8 @@ compose = foldr comp Top
   where
     comp (ProofTextBlock block@Block{ declaredVariables = dvs }) f
       | needsProof block || kind block == Posit =
-          Set.foldr zExi (blAnd (formulate block) f) $ Set.map declName dvs
-      | otherwise = Set.foldr zAll (blImp (formulate block) f) $ Set.map declName dvs
+          Set.foldr mkExi (blAnd (formulate block) f) $ Set.map declName dvs
+      | otherwise = Set.foldr mkAll (blImp (formulate block) f) $ Set.map declName dvs
     comp (ProofTextChecked txt) f = comp txt f
     comp _ fb = fb
 

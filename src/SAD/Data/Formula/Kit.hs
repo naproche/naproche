@@ -123,8 +123,8 @@ mbBind v  = dive id
 
 
 mbExi, mbAll :: VariableName -> Formula -> Formula
-mbExi v f = fromMaybe (zExi v f) (mbBind v True f)
-mbAll v f = fromMaybe (zAll v f) (mbBind v False f)
+mbExi v f = fromMaybe (mkExi v f) (mbBind v True f)
+mbAll v f = fromMaybe (mkAll v f) (mbBind v False f)
 
 mbpExi, mbpAll :: PosVar -> Formula -> Formula
 mbpExi v f = fromMaybe (pExi v f) (mbBind (posVarName v) True f)
@@ -152,9 +152,9 @@ pBlExi _ Top = Top
 pBlExi v f = Exi (positionedDecl v) f
 
 -- creation of formulas
-zAll, zExi :: VariableName -> Formula -> Formula
-zAll v = bool . All (newDecl v) . bind v
-zExi v = bool . Exi (newDecl v) . bind v
+mkAll, mkExi :: VariableName -> Formula -> Formula
+mkAll v = bool . All (newDecl v) . bind v
+mkExi v = bool . Exi (newDecl v) . bind v
 
 pAll, pExi :: PosVar -> Formula -> Formula
 pAll nm@(PosVar v _) = pBlAll nm . bind v
@@ -170,40 +170,40 @@ zIff f g = And (Imp f g) (Imp g f)
 zOr (Not f) g = Imp f g
 zOr f g       = Or  f g
 
-zVar :: VariableName -> Formula
-zVar v = pVar $ PosVar v noSourcePos
+mkVar :: VariableName -> Formula
+mkVar v = pVar $ PosVar v noSourcePos
 
 pVar :: PosVar -> Formula
 pVar (PosVar v pos) = Var v [] pos
 
-zTrm :: TermId -> TermName -> [Formula] -> Formula
-zTrm tId t ts = Trm t ts [] tId
+mkTrm :: TermId -> TermName -> [Formula] -> Formula
+mkTrm tId t ts = Trm t ts [] tId
 
 
 -- creation of predefined functions and notions
 
-zEqu :: Formula -> Formula -> Formula
-zEqu t s  = zTrm EqualityId TermEquality [t,s]
-zLess :: Formula -> Formula -> Formula
-zLess t s = zTrm LessId TermLess [t,s]
-zThesis :: Formula
-zThesis   = zTrm ThesisId TermThesis []
-zFun :: Formula -> Formula
-zFun      = zTrm FunctionId termFunction . pure
-zApp :: Formula -> Formula -> Formula
-zApp f v  = zTrm ApplicationId termApplication [f , v]
-zDom :: Formula -> Formula
-zDom      = zTrm DomainId termDomain . pure
-zSet :: Formula -> Formula
-zSet      = zTrm SetId termSet . pure
-zElem :: Formula -> Formula -> Formula
-zElem x m = zTrm ElementId termElement [x,m]
-zProd :: Formula -> Formula -> Formula
-zProd m n = zTrm ProductId termProduct [m, n]
-zPair :: Formula -> Formula -> Formula
-zPair x y = zTrm PairId termPair [x,y]
-zObj :: Formula -> Formula
-zObj      = zTrm ObjectId termObject . pure -- this is a dummy for parsing purposes
+mkEquality :: Formula -> Formula -> Formula
+mkEquality t s  = mkTrm EqualityId TermEquality [t,s]
+mkLess :: Formula -> Formula -> Formula
+mkLess t s = mkTrm LessId TermLess [t,s]
+mkThesis :: Formula
+mkThesis   = mkTrm ThesisId TermThesis []
+mkFun :: Formula -> Formula
+mkFun      = mkTrm FunctionId termFunction . pure
+mkApp :: Formula -> Formula -> Formula
+mkApp f v  = mkTrm ApplicationId termApplication [f , v]
+mkDom :: Formula -> Formula
+mkDom      = mkTrm DomainId termDomain . pure
+mkSet :: Formula -> Formula
+mkSet      = mkTrm SetId termSet . pure
+mkElem :: Formula -> Formula -> Formula
+mkElem x m = mkTrm ElementId termElement [x,m]
+mkProd :: Formula -> Formula -> Formula
+mkProd m n = mkTrm ProductId termProduct [m, n]
+mkPair :: Formula -> Formula -> Formula
+mkPair x y = mkTrm PairId termPair [x,y]
+mkObj :: Formula -> Formula
+mkObj      = mkTrm ObjectId termObject . pure -- this is a dummy for parsing purposes
 
 
 -- quick checks of syntactic properties
@@ -243,8 +243,8 @@ isElem t = isTrm t && trmId t == ElementId
 -- Holes and slots
 
 occursH, occursS :: Formula -> Bool
-occursH = ((zVar (VarHole "")) `occursIn`)
-occursS = ((zVar VarSlot) `occursIn`)
+occursH = ((mkVar (VarHole "")) `occursIn`)
+occursS = ((mkVar VarSlot) `occursIn`)
 
 
 -- | Replace @ObjectId@ Terms with @Top@
@@ -340,7 +340,7 @@ allFree f = foldF allFree f
 
 {- universal closure of a formula -}
 universialClosure :: Set VariableName -> Formula -> Formula
-universialClosure ls f = foldr zAll f $ Set.toList $ fvToVarSet
+universialClosure ls f = foldr mkAll f $ Set.toList $ fvToVarSet
   $ allFree f `excludeSet` ls
 
 

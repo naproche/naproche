@@ -141,7 +141,7 @@ instSk skolemCnt dependencyCnt = dive 0
     dive d Ind {indIndex = m} | d == m = skolemFunction d
     dive d f = mapF (dive d) f
 
-    skolemFunction = zTrm (SkolemId (skolemCnt)) (TermTask skolemCnt) . skolemArguments
+    skolemFunction = mkTrm (SkolemId (skolemCnt)) (TermTask skolemCnt) . skolemArguments
     skolemArguments d = [Ind (i + d) noSourcePos | i <- [1..dependencyCnt] ]
 
 

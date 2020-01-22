@@ -164,7 +164,7 @@ tsubst sfn tm =
            Just sub -> sub
            _-> tm
     Trm {trmName = f, trmArgs = args, trmId = n}
-      -> zTrm n f (map (tsubst sfn) args)
+      -> mkTrm n f (map (tsubst sfn) args)
     _ -> error "tsubst: input is not a term"
 
 
@@ -187,7 +187,7 @@ rewriter eqs tm = case rewrite1 eqs tm of
     Nothing -> case tm of
         Trm {trmName = f, trmArgs = args, trmId = n} ->
             let newArgs = map (rewriter eqs) args
-                tm' = zTrm n f newArgs
+                tm' = mkTrm n f newArgs
             in if tm' == tm then tm else rewriter eqs tm'
         _ -> tm
 
@@ -198,7 +198,7 @@ renamepair (Equation l1 r1) (Equation l2 r2) =
   let freeVars1 = Set.toList $ fvToVarSet $ allFree l1 <> allFree r1
       freeVars2 = Set.toList $ fvToVarSet $ allFree l2 <> allFree r2
       (nms1,nms2) = splitAt (length freeVars1)
-        $ map (\n -> zVar (VarHole $ Text.pack $ 'a' : show n))
+        $ map (\n -> mkVar (VarHole $ Text.pack $ 'a' : show n))
           [0..(length freeVars1 + length freeVars2 - 1)]
       l1' = substs l1 freeVars1 nms1
       r1' = substs r1 freeVars1 nms1
@@ -227,7 +227,7 @@ overlaps (l,r) = dive
 
 crit1 :: Equation -> Equation -> [Formula]
 crit1 (Equation l1 r1) (Equation l2 r2) =
-  overlaps (l1,r1) l2 (\ unifct t ->  unifct <*> pure (zEqu t r2))
+  overlaps (l1,r1) l2 (\ unifct t ->  unifct <*> pure (mkEquality t r2))
 
 
 {-computes all critical pairs of two formulas-}

@@ -332,40 +332,40 @@ hole1 :: VariableName
 hole1 = VarHole "1"
 
 equality :: DefEntry
-equality  = DE [] Top Signature (zEqu (zVar hole0) (zVar hole1)) [] []
+equality  = DE [] Top Signature (mkEquality (mkVar hole0) (mkVar hole1)) [] []
 
 less :: DefEntry
-less      = DE [] Top Signature (zLess (zVar hole0) (zVar hole1)) [] []
+less      = DE [] Top Signature (mkLess (mkVar hole0) (mkVar hole1)) [] []
 
 set :: DefEntry
-set       = DE [] Top Signature (zSet $ zVar hole0) [] []
+set       = DE [] Top Signature (mkSet $ mkVar hole0) [] []
 
 elementOf :: DefEntry
-elementOf = DE [zSet $ zVar hole1] Top Signature
-  (zElem (zVar hole0) (zVar hole1)) [] [[zSet $ zVar hole1]]
+elementOf = DE [mkSet $ mkVar hole1] Top Signature
+  (mkElem (mkVar hole0) (mkVar hole1)) [] [[mkSet $ mkVar hole1]]
 
 function :: DefEntry
-function  = DE [] Top Signature (zFun $ zVar hole0) [] []
+function  = DE [] Top Signature (mkFun $ mkVar hole0) [] []
 
 domain :: DefEntry
-domain    = DE [zFun $ zVar hole0] (zSet ThisT) Signature
-  (zDom $ zVar hole0) [zSet ThisT] [[zFun $ zVar hole0]]
+domain    = DE [mkFun $ mkVar hole0] (mkSet ThisT) Signature
+  (mkDom $ mkVar hole0) [mkSet ThisT] [[mkFun $ mkVar hole0]]
 
 pair :: DefEntry
-pair      = DE [] Top Signature (zPair (zVar hole0) (zVar hole1)) [] []
+pair      = DE [] Top Signature (mkPair (mkVar hole0) (mkVar hole1)) [] []
 
 functionApplication :: DefEntry
 functionApplication =
-  DE [zFun $ zVar hole0, zElem (zVar $ hole1) $ zDom $ zVar hole0] Top Signature
-    (zApp (zVar hole0) (zVar hole1)) []
-    [[zFun $ zVar hole0],[zElem (zVar $ hole1) $ zDom $ zVar hole0]]
+  DE [mkFun $ mkVar hole0, mkElem (mkVar $ hole1) $ mkDom $ mkVar hole0] Top Signature
+    (mkApp (mkVar hole0) (mkVar hole1)) []
+    [[mkFun $ mkVar hole0],[mkElem (mkVar $ hole1) $ mkDom $ mkVar hole0]]
 
 
 initialGuards :: DT.DisTree Bool
 initialGuards = foldr (\f -> DT.insert f True) (DT.empty) [
-  zSet $ zVar hole1,
-  zFun $ zVar hole0,
-  zElem (zVar $ hole1) $ zDom $ zVar hole0]
+  mkSet $ mkVar hole1,
+  mkFun $ mkVar hole0,
+  mkElem (mkVar $ hole1) $ mkDom $ mkVar hole0]
 
 -- retrieve definitional formula of a term
 defForm :: Definitions -> Formula -> Maybe Formula

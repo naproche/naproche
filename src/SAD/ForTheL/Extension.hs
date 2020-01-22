@@ -156,7 +156,7 @@ pretypeVariable = do
 
     holedNotion = do
       (q, f) <- anotion
-      g <- q <$> dig f [(zVar (VarHole ""))]
+      g <- q <$> dig f [(mkVar (VarHole ""))]
       SourceRange _ pos2 <- dot
       return (g, pos2)
 

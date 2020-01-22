@@ -84,7 +84,7 @@ genericTopsection kind header content = do
   h <- header
   toks <- getTokens inp
   bs <- body
-  let block = Block.makeBlock (zVar (VarHole "")) bs kind h [] pos toks
+  let block = Block.makeBlock (mkVar (VarHole "")) bs kind h [] pos toks
   addBlockReports block
   return block
   where
@@ -102,7 +102,7 @@ texTopsection kind env content = do
   toks <- getTokens inp
   bs <- body
   texEnd env
-  let block = Block.makeBlock (zVar (VarHole "")) bs kind h [] pos toks
+  let block = Block.makeBlock (mkVar (VarHole "")) bs kind h [] pos toks
   addBlockReports block
   return block
   where
@@ -223,7 +223,7 @@ pret dvs tvs bl = do
   where
     blockVars = Block.declaredNames bl
     assumeBlock = bl {Block.body = [], Block.kind = Assumption, Block.link = []}
-    typeWith v = subst (zVar v) (VarHole "") . snd . fromJust . find (elem v . fst)
+    typeWith v = subst (mkVar v) (VarHole "") . snd . fromJust . find (elem v . fst)
 
 pretypeBefore :: FTL (Block Formula) -> FTL [ProofText Formula] -> FTL [ProofText Formula]
 pretypeBefore blp p = do
@@ -371,7 +371,7 @@ indThesis fr pre post = do
     indStatem vs f | Set.null vs = pure (`Imp` f)
     indStatem _ _ = failWF $ "invalid induction thesis " <> (Text.pack $ show fr)
 
-    insertIndTerm it cn = cn $ Tag InductionHypothesis $ subst it (VarHole "") $ cn $ zLess it (zVar (VarHole ""))
+    insertIndTerm it cn = cn $ Tag InductionHypothesis $ subst it (VarHole "") $ cn $ mkLess it (mkVar (VarHole ""))
 
     deleteDecl Decl{declName, declPosition} = Set.delete (PosVar declName declPosition)
 
@@ -434,7 +434,7 @@ caseDestinction :: FTL (Block Formula)
 caseDestinction = do
   bl@Block { Block.formula = fr } <- narrow caseHypo
   proofBody $ bl {
-  Block.formula = Imp (Tag Tag.CaseHypothesis fr) zThesis}
+  Block.formula = Imp (Tag Tag.CaseHypothesis fr) mkThesis}
 
 
 -- equality Chain
@@ -446,7 +446,7 @@ eqChain = do
   toks <- getTokens inp
   let Tag EqualityChain Trm{trmArgs = [t,_]} = Block.formula $ head body
       Tag EqualityChain Trm{trmArgs = [_,s]} = Block.formula $ last body
-      fr = Tag EqualityChain $ zEqu t s; tBody = map ProofTextBlock body
+      fr = Tag EqualityChain $ mkEquality t s; tBody = map ProofTextBlock body
   return $ Block.makeBlock fr tBody Affirmation nm [] pos toks
   where
     chainVars dvs = affirmVars dvs . foldl1 And . map Block.formula
@@ -458,7 +458,7 @@ nextTerm :: Formula -> FTL [Block Formula]
 nextTerm t = do
   pos <- getPos; inp <- getInput
   symbol ".="; s <- sTerm; ln <- eqLink; toks <- getTokens inp
-  ((:) $ Block.makeBlock (Tag EqualityChain $ zEqu t s)
+  ((:) $ Block.makeBlock (Tag EqualityChain $ mkEquality t s)
     [] Affirmation "__" ln pos toks) <$> eqTail s
 
 -- | Fail if @p@ failed with no or only @EOF@ input remaining
