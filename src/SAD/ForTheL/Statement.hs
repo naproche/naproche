@@ -105,10 +105,16 @@ thereIs = label "there-is statement" $ there >> (noNotion -|- notions)
 
 simple :: FTL Formula
 simple = label "simple statement" $ do
-  (q, ts) <- terms; p <- conjChain doesPredicate;
-  q' <- optLL1 id quantifierChain;
-  -- this part is not in the language description
-  -- example: x = y *for every real number x*.
+  (q, ts) <- terms
+  p  <- conjChain doesPredicate
+  q' <- lateQuantifiers
+  --    ^^^^^^^^^^^^^^^
+  --
+  --    Late quantification is not part of language description from 2007.
+  --
+  --    Example: x = y for every real number x.
+  --                   ^^^^^^^^^^^^^^^^^^^^^^^
+  --
   q . q' <$> dig p ts
 
 -- |
@@ -117,7 +123,14 @@ simple = label "simple statement" $ do
 -- the statement is returned as-is, otherwise the quantifiers are applied to the statement.
 --
 symbolicStatement :: FTL Formula
-symbolicStatement = (symbolicFormula -|- classEquality) <**> optLL1 id quantifierChain
+symbolicStatement = (symbolicFormula -|- classEquality) <**> lateQuantifiers
+
+-- |
+-- Parse late quantifiers yielding a quantifying function.
+-- Defaults to @id@ when there are no quantifiers.
+--
+lateQuantifiers :: FTL (Formula -> Formula)
+lateQuantifiers = optLL1 id quantifierChain
 
 
 --- predicates
