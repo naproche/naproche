@@ -349,6 +349,9 @@ symbolicFormula  = biimplication
         -- l = left
         -- i = infix
         -- r = right
+        --
+        -- Combining of the two sides could probably be made
+        -- clearer by using list comprehensions.
 
         sHd = lHd -|- (termChain >>= sTl)
         lHd = do
