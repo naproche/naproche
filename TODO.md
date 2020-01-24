@@ -8,6 +8,9 @@
 * more robust (less redundant) specification of options with their defaults:
   avoid duplicate information in Haskell sources, comments, init.opt
 
+* Disambiguate chains of existential quantifications: currently writing something
+  along the line of `there exist x,y,z such that ...` results in an ambiguity error.
+
 
 # PIDE markup reports #
 
