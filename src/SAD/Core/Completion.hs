@@ -195,7 +195,8 @@ rewriter eqs tm = case rewrite1 eqs tm of
 {-rename variables occurring in two terms such that they have no free variables in common-}
 renamepair :: Equation -> Equation -> (Equation, Equation)
 renamepair (Equation l1 r1) (Equation l2 r2) =
-  let freeVars1 = Set.toList $ fvToVarSet $ allFree l1 <> allFree r1
+  let freeVars1, freeVars2 :: [VariableName]
+      freeVars1 = Set.toList $ fvToVarSet $ allFree l1 <> allFree r1
       freeVars2 = Set.toList $ fvToVarSet $ allFree l2 <> allFree r2
       (nms1,nms2) = splitAt (length freeVars1)
         $ map (\n -> mkVar (VarHole $ Text.pack $ 'a' : show n))
