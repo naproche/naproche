@@ -39,13 +39,13 @@ statement :: FTL Formula
 statement = headed <|> chained
 
 headed :: FTL Formula
-headed = quantifiedStatement <|> ifThenStatem <|> wrongStatem
+headed = quantifiedStatement <|> ifThenStatement <|> wrongStatement
   where
     quantifiedStatement = quantifierChain <*> statement
-    ifThenStatem = liftA2 Imp
+    ifThenStatement = liftA2 Imp
       (markupToken Reports.ifThen "if" >> statement)
       (markupToken Reports.ifThen "then" >> statement)
-    wrongStatem =
+    wrongStatement =
       mapM_ token' ["it", "is", "wrong", "that"] >> fmap Not statement
 
 
@@ -156,12 +156,13 @@ isPredicate = label "is predicate" $
 
 isAPredicate :: FTL Formula
 isAPredicate = label "isA predicate" $ notNotion <|> notion
-  -- Unlike the langugae description, we distinguish positive and negative
-  -- rather than notions and fixed terms
+  -- Unlike the language description, we distinguish positive and negative
+  -- rather than notions and fixed terms.
   where
     notion = fmap (uncurry ($)) anotion
     notNotion = do
-      token' "not"; (q, f) <- anotion; let unfinished = dig f [(mkVar (VarHole ""))]
+      token' "not"; (q, f) <- anotion
+      let unfinished = dig f [(mkVar (VarHole ""))]
       optLLx (q $ Not f) $ fmap (q. Tag Dig . Not) unfinished
 
 hasPredicate :: FTL Formula
@@ -210,7 +211,7 @@ multiPredicate p = (token' "not" >> mNegative) <|> mPositive
 baseNotion :: FTL (Formula -> Formula, Formula, Set PosVar)
 baseNotion = fmap digadd $ cm <|> symEqnt <|> (set </> primNotion term)
   where
-    cm = token' "common" >> primCmNotion term terms
+    cm = token' "common" >> primCommonNotion term terms
     symEqnt = do
       t <- lexicalCheck isTrm sTerm
       v <- hidden;
@@ -261,27 +262,26 @@ digNotion (q, f, v) = dig f (map pVar $ Set.toList v) >>= \ g -> return (q, g, v
 
 single :: (a, b, Set c) -> FTL (a, b, c)
 single (q, f, vs) = case Set.elems vs of
-  [v] -> pure $ (q, f, v)
-  _ -> fail "inadmissible multinamed notion"
+  [v] -> return (q, f, v)
+  _   -> fail "inadmissible multinamed notion"
 
 --- terms
 
 terms :: FTL (Formula -> Formula, [Formula])
 terms = label "terms" $
-  fmap (foldl1 fld) $ m_term `sepBy` comma
+  foldl1 alg <$> (subTerm `sepBy` comma)
   where
-    m_term = quantifiedNotion -|- fmap s2m definiteTerm
-    s2m (q, t) = (q, [t])
-
-    fld (q, ts) (r, ss) = (q . r, ts ++ ss)
+    subTerm = quantifiedNotion -|- fmap toMulti definiteTerm
+    toMulti (q, t) = (q, [t])
+    alg (q, ts) (r, ss) = (q . r, ts ++ ss)
 
 term :: FTL UTerm
-term = label "a term" $ (quantifiedNotion >>= m2s) -|- definiteTerm
+term = label "a term" $ (quantifiedNotion >>= toSing) -|- definiteTerm
   where
-    m2s (q, [t]) = return (q, t)
-    m2s _ = fail "inadmissible multinamed notion"
+    toSing (q, [t]) = return (q, t)
+    toSing _ = fail "inadmissible multinamed notion"
 
-
+-- Returns a quantifying function and a list of variables as expression
 quantifiedNotion :: FTL (Formula -> Formula, [Formula])
 quantifiedNotion = label "quantified notion" $
   paren (universal <|> existential <|> no)
@@ -289,17 +289,17 @@ quantifiedNotion = label "quantified notion" $
     universal = do
       tokenOf' ["every", "each", "all", "any"]; (q, f, v) <- notion
       vDecl <- makeDecls v
-      return (q . flip (foldr dAll) vDecl . blImp f, map pVar $ Set.toList v)
+      return (q . flip (foldr dAll) vDecl . blImp f, pVar <$> Set.toList v)
 
     existential = do
       token' "some"; (q, f, v) <- notion
       vDecl <- makeDecls v
-      return (q . flip (foldr dExi) vDecl . blAnd f, map pVar $ Set.toList v)
+      return (q . flip (foldr dExi) vDecl . blAnd f, pVar <$> Set.toList v)
 
     no = do
       token' "no"; (q, f, v) <- notion
       vDecl<- makeDecls v
-      return (q . flip (foldr dAll) vDecl . blImp f . Not, map pVar $ Set.toList v)
+      return (q . flip (foldr dAll) vDecl . blImp f . Not, pVar <$> Set.toList v)
 
 
 definiteTerm :: FTL (Formula -> Formula, Formula)
@@ -589,7 +589,7 @@ dig f ts = return (dive f)
     dive :: Formula -> Formula
     dive (Tag Dig f) = down digS f
     dive (Tag DigMultiSubject f) = down (digM $ zip ts $ tail ts) f
-    dive (Tag DigMultiPairwise f) = down (digM $ pairMP ts) f
+    dive (Tag DigMultiPairwise f) = down (digM $ pairs ts) f
     dive f | isTrm f = f
     dive f = mapF dive f
 
@@ -609,8 +609,8 @@ dig f ts = return (dive f)
       | otherwise = map (\ (x,y) -> subst y VarSlot $ subst x (VarHole "") f) ps
 
 -- Example:
--- pairMP [1,2,3,4]
+-- pairs [1,2,3,4]
 -- [(1,2),(1,3),(1,4),(2,3),(2,4),(3,4)]
-pairMP :: [a] -> [(a, a)]
-pairMP (t:ts) = [ (t, s) | s <- ts ] ++ pairMP ts
-pairMP _ = []
+pairs :: [a] -> [(a, a)]
+pairs (t:ts) = [ (t, s) | s <- ts ] ++ pairs ts
+pairs _ = []

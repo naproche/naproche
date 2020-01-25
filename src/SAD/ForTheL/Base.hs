@@ -35,11 +35,11 @@ import SAD.Export.Representation (represent, toLazyText)
 
 type FTL = Parser FState
 
-
+-- Unary terms and notions.
 type UTerm   = (Formula -> Formula, Formula)
-
 type UNotion = (Formula -> Formula, Formula, PosVar)
 
+-- Multi-terms and -notions.
 type MTerm   = (Formula -> Formula, [Formula])
 type MNotion = (Formula -> Formula, Formula, Set PosVar)
 
@@ -170,8 +170,8 @@ primOfNotion p = getExpr notionExpr notion
       let fn v = fm $ (pVar v):(mkVar (VarHole "")):ts
       return (q, foldr1 And $ map fn $ Set.toList vs, vs)
 
-primCmNotion :: FTL UTerm -> FTL MTerm -> FTL MNotion
-primCmNotion p s = getExpr notionExpr notion
+primCommonNotion :: FTL UTerm -> FTL MTerm -> FTL MNotion
+primCommonNotion p s = getExpr notionExpr notion
   where
     notion (pt, fm) = do
       (q, vs, as, ts) <- commonPattern p s pt
