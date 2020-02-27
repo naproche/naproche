@@ -10,11 +10,11 @@ See also "$ISABELLE_HOME/src/Pure/PIDE/xml.ML".
 -}
 
 module Isabelle.XML.Encode (
-  A, T, V,
+  A, T, V, P,
 
   int_atom, bool_atom, unit_atom,
 
-  tree, properties, string, int, bool, unit, pair, triple, list, variant
+  tree, properties, string, int, bool, unit, pair, triple, list, option, variant
 )
 where
 
@@ -27,6 +27,7 @@ import qualified Isabelle.XML as XML
 type A a = a -> String
 type T a = a -> XML.Body
 type V a = a -> Maybe ([String], XML.Body)
+type P a = a -> [String]
 
 
 -- atomic values
@@ -80,6 +81,10 @@ triple f g h (x, y, z) = [node (f x), node (g y), node (h z)]
 
 list :: T a -> T [a]
 list f xs = map (node . f) xs
+
+option :: T a -> T (Maybe a)
+option _ Nothing = []
+option f (Just x) = [node (f x)]
 
 variant :: [V a] -> T a
 variant fs x = [tagged (the (get_index (\f -> f x) fs))]

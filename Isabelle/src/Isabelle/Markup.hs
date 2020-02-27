@@ -24,7 +24,7 @@ module Isabelle.Markup (
 
   citationN, citation,
 
-  pathN, urlN, docN,
+  pathN, path, urlN, url, docN, doc,
 
   markupN, consistentN, unbreakableN, indentN, widthN,
   blockN, block, breakN, break, fbreakN, fbreak, itemN, item,
@@ -46,7 +46,7 @@ module Isabelle.Markup (
   verbatimN, verbatim, cartoucheN, cartouche, commentN, comment, comment1N, comment1,
   comment2N, comment2, comment3N, comment3,
 
-  acceptedN, accepted, forkedN, forked, joinedN, joined, runningN, running, finishedN, finished,
+  forkedN, forked, joinedN, joined, runningN, running, finishedN, finished,
   failedN, failed, canceledN, canceled, initializedN, initialized, finalizedN, finalized,
   consolidatedN, consolidated,
 
@@ -331,11 +331,10 @@ comment3N :: String; comment3 :: T
 
 {- command status -}
 
-acceptedN, forkedN, joinedN, runningN, finishedN, failedN, canceledN,
+forkedN, joinedN, runningN, finishedN, failedN, canceledN,
   initializedN, finalizedN, consolidatedN :: String
-accepted, forked, joined, running, finished, failed, canceled,
+forked, joined, running, finished, failed, canceled,
   initialized, finalized, consolidated :: T
-(acceptedN, accepted) = markup_elem "accepted"
 (forkedN, forked) = markup_elem "forked"
 (joinedN, joined) = markup_elem "joined"
 (runningN, running) = markup_elem "running"
