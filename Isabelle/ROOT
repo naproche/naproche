@@ -9,14 +9,14 @@ session "Naproche-Build" = Haskell +
   export_files (in src) [1] "*:**.hs"
   export_files (in ".") [1] "*:**.jar"
 
-session "Naproche" = Pure +
+session "Naproche" in "Main" = Pure +
   description "Isabelle Prover IDE support for NaProChe / ForTheL."
   sessions
     Haskell
   theories [condition = NAPROCHE_HOME]
     Naproche
 
-session "Naproche-Test" = Naproche +
+session "Naproche-Test" in "Test" = Naproche +
   description "Some Isabelle/Naproche examples for testing."
   theories [condition = NAPROCHE_HOME]
     Test

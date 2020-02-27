@@ -7,7 +7,7 @@ Some Isabelle/Naproche examples for testing.
 section \<open>Naproche-SAD texts within the Isabelle context\<close>
 
 theory Test
-  imports Naproche
+  imports Naproche.Naproche
 begin
 
 subsection \<open>Inlined text\<close>
@@ -47,7 +47,7 @@ subsection \<open>External text file\<close>
 context notes [[naproche_prove = false]]
 begin
 
-forthel_file \<open>../examples/tarski.ftl\<close>
+forthel_file \<open>../../examples/tarski.ftl\<close>
 
 end
 

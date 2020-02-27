@@ -5,7 +5,7 @@ Build Isabelle/Naproche modules.
 *)
 
 theory Build
-  imports Pure Haskell.Haskell Naproche
+  imports Pure Haskell.Haskell Naproche.Naproche
 begin
 
 section \<open>Isabelle/Haskell modules\<close>
