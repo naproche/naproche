@@ -105,7 +105,7 @@ Reference versions for multi-platform executables (x86_64):
 
   * Application bundling, e.g. Isabelle/61882acca79b + naproche-20200303:
 
-        isabelle/Admin/build_release -r 61882acca79b -c naproche-20200303.tar.gz -b Pure -R Isabelle_naproche-20200303 -O -W dist/website dist
+        isabelle/Admin/build_release -r 61882acca79b -c naproche-20200303.tar.gz -b Pure -R Isabelle_Naproche-20200303 -O -W dist/website dist
 
 
 ## Reference ##
