@@ -81,23 +81,23 @@ script:
     travis_terminate 0
   fi
 - export GITHUB_USER=anfelor
-- export RELEASE=ad2d84c42380 # hg commit of isabelle to build
+- export RELEASE=83774d669b51 #  ad2d84c42380 # hg commit of isabelle to build
 # Build isabelle
 - cd ~
 - |
   if [ ! -d "isabelle/.hg" ]
   then
-    hg clone https://isabelle.in.tum.de/repos/isabelle
+    hg clone -r $RELEASE https://isabelle.in.tum.de/repos/isabelle
     cd isabelle
     ./bin/isabelle components -I
     ./bin/isabelle components -a
-    travis_wait 30 ./bin/isabelle build -o system_heaps -b HOL
+    ./bin/isabelle jedit -b
     mkdir -p ~/.isabelle/etc
     touch ~/.isabelle/etc/settings
-    echo "init_component \"$HOME/build/$GITHUB_USER/Naproche-SAD\"" > ~/.isabelle/etc/settings
+    echo "init_component \"$HOME/build/$GITHUB_USER/Naproche-SAD\"" >> ~/.isabelle/etc/settings
   else
     cd isabelle
-    hg pull -u
+    hg update -r $RELEASE
     ./bin/isabelle components -a
     ./bin/isabelle build -o system_heaps -b HOL
   fi
@@ -106,11 +106,17 @@ script:
 - ~/isabelle/bin/isabelle build -e -d Isabelle Naproche-Build
 - stack build
 
+# TODO: Do this for macosx and windows too
+- md x86_64-linux
+- cp .stack-work/dist/x86_64-linux-tinfo6/Cabal-2.4.0.1/build/Naproche-SAD/Naproche-SAD x86_64-linux
+
 # Bundle
 before_deploy:
 - cd ~
-- tar -zcvf naproche.tar.gz build/$GITHUB_USER/Naproche-SAD
-- isabelle/Admin/build_release -r ad2d84c42380 -c naproche.tar.gz -b Pure -R Isabelle_Naproche .
+- tar -zcvf Naproche-SAD.tar.gz build/$GITHUB_USER/Naproche-SAD
+  # - isabelle/Admin/build_release -r ad2d84c42380 -c naproche.tar.gz -b Pure -R Isabelle_Naproche .
+  # - isabelle/Admin/build_release -r Isabelle2019 -c Naproche-SAD.tar.gz -R Isabelle_Naproche .
+- isabelle/Admin/build_release -r $RELEASE -c Naproche-SAD.tar.gz -O -R Isabelle_Naproche .
 
 deploy:
   provider: releases
