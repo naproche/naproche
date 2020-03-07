@@ -15,6 +15,7 @@ module SAD.API
   , module SAD.Parser.Error
   , module SAD.Helpers
   , module SAD.Data.Formula
+  , module SAD.Structures.StructureTree
   ) where
 
 import SAD.Core.Base (showTimeDiff, RState(..), accumulateIntCounter, IntCounter(..), accumulateTimeCounter, TimeCounter(..), maximalTimeCounter)
@@ -29,3 +30,4 @@ import SAD.Import.Reader (readInit, readProofText)
 import SAD.Parser.Error (errorPos)
 import SAD.Helpers (trimLine)
 import SAD.Data.Formula (Formula)
+import SAD.Structures.StructureTree

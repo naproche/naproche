@@ -81,7 +81,7 @@ mainBody oldProofTextRef (opts0, text0) = do
         then showTranslation txts startTime
         else do proveFOL text1 opts0 oldProofText oldProofTextRef startTime
     CiC -> return ()
-    Lean -> return ()
+    Lean -> exportLean text1
 
 showTranslation :: [ProofText Formula] -> UTCTime -> IO ()
 showTranslation txts startTime = do
@@ -91,6 +91,20 @@ showTranslation txts startTime = do
   -- print statistics
   finishTime <- getCurrentTime
   outputMain TRACING noSourcePos $ Text.unpack $ "total " <> timeDifference finishTime
+
+exportCiC :: ProofText Formula -> IO ()
+exportCiC pt = do
+  case fmap (unlines . map ppForthelExpr) $ mapM toStatement $ extractBlocks pt of
+    Left t -> putStrLn $ Text.unpack t
+    Right s -> putStrLn s
+  return ()
+
+exportLean :: ProofText Formula -> IO ()
+exportLean pt = do
+  case fmap toLeanCode $ mapM toStatement $ extractBlocks pt of
+    Left t -> putStrLn $ Text.unpack t
+    Right t -> putStrLn $ Text.unpack t
+  return ()
 
 proveFOL :: ProofText Formula -> [Instr] -> ProofText Formula -> (IORef (ProofText Formula)) -> UTCTime -> IO ()
 proveFOL text1 opts0 oldProofText oldProofTextRef startTime = do

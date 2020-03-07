@@ -14,16 +14,16 @@ Let n,m,k denote natural numbers.
 
 Axiom. n * m is a natural number.
 
-Definition. n | m iff there exists k such that k * n = m.
+Definition. n | q iff there exists k such that k * n = q.
 
 Let n divides m stand for n | m.
 Let a divisor of m stand for a natural number that divides m.
 
 Definition. n and m are coprime iff n and m have no common divisor.
 
-Signature. n is prime is an atom.
+Signature. A prime number is a natural number.
 
-Let p denote a prime natural number.
+Let p denote a prime number.
 
 Axiom. p | n * m => p | n \/ p | m.
 
@@ -31,7 +31,7 @@ Axiom. There exist coprime m,n such that m * q = n.
 
 Let q^2 stand for q * q.
 
-Proposition. p = q^2 for no rational number q.
+Proposition. q^2 = p for no rational number q.
 Proof by contradiction.
 Assume the contrary. Take a rational number q such that p = q^2.
 Take coprime m,n such that m * q = n. Then p * m^2 = n^2.

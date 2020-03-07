@@ -119,9 +119,6 @@ isTopLevel  = isHole' . formula
     isHole' Var {varName = VarHole _} = True
     isHole' _ = False
 
-noBody :: Block Formula -> Bool
-noBody  = null . body
-
 file :: Block a -> Text
 file = sourceFile . position
 
@@ -141,7 +138,7 @@ instance (Show a, a ~ Formula) => Show (ProofText a) where
 
 instance (Show a, a ~ Formula) => Show (Block a) where
   showsPrec p block@Block {body = body}
-    | noBody block = showForm p block
+    | null body = showForm p block
     | isTopLevel block = showForm p block . showBody
     | otherwise = showForm p block .
         showIndent p . showString "proof.\n" . showBody .

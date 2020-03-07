@@ -34,6 +34,8 @@ Lemma MulMinOne.    -1 * a = -a = a * -1.
 
 Axiom ZeroDiv.      a != 0 /\ b != 0 => a * b != 0.
 
+Lemma. --a is an integer.
+
 Let a is nonzero stand for a != 0.
 Let p,q stand for nonzero integers.
 

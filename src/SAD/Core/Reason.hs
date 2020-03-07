@@ -117,7 +117,7 @@ launchProver iteration = do
   proverList <- asks provers ; instrList <- asks instructions
   goal <- thesis; context <- asks currentContext
   let callATP = justIO $ pure $ export iteration proverList instrList context goal
-  callATP >>= timer ProofTime . justIO >>= guard . (==Success)
+  callATP >>= timer ProofTime . justIO >>= guardResult
   res <- fmap head $ askRS counters
   case res of
     TimeCounter _ time -> do
@@ -131,6 +131,12 @@ launchProver iteration = do
       reasonLog Message.WRITELN noSourcePos $ "prover task:\n" <>
         Text.concat (map (\form -> "  " <> Text.pack (show form) <> "\n") contextFormulas) <>
         "  |- " <> (Text.pack (show (Context.formula concl))) <> "\n"
+
+    guardResult Success = pure ()
+    guardResult ContradictoryAxioms = do
+      reasonLog Message.WRITELN noSourcePos $ "Found contradictory axioms. Make sure you are in a proof by contradiction!"
+      mzero
+    guardResult _ = mzero
 
 
 launchReasoning :: VM ()
