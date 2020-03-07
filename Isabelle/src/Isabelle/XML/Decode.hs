@@ -10,11 +10,11 @@ See also "$ISABELLE_HOME/src/Pure/PIDE/xml.ML".
 -}
 
 module Isabelle.XML.Decode (
-  A, T, V,
+  A, T, V, P,
 
   int_atom, bool_atom, unit_atom,
 
-  tree, properties, string, int, bool, unit, pair, triple, list, variant, option
+  tree, properties, string, int, bool, unit, pair, triple, list, option, variant
 )
 where
 
@@ -29,6 +29,7 @@ import qualified Isabelle.XML as XML
 type A a = String -> a
 type T a = XML.Body -> a
 type V a = ([String], XML.Body) -> a
+type P a = [String] -> a
 
 err_atom, err_body :: a
 err_atom = error "Malformed XML atom"

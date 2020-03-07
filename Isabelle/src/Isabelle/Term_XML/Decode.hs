@@ -9,13 +9,17 @@ XML data representation of lambda terms.
 See also "$ISABELLE_HOME/src/Pure/term_xml.ML".
 -}
 
-module Isabelle.Term_XML.Decode (sort, typ, term)
+module Isabelle.Term_XML.Decode (indexname, sort, typ, typ_body, term)
 where
 
 import Isabelle.Library
 import Isabelle.XML.Decode
 import Isabelle.Term
 
+
+indexname :: P Indexname
+indexname [a] = (a, 0)
+indexname [a, b] = (a, int_atom b)
 
 sort :: T Sort
 sort = list string
@@ -25,14 +29,18 @@ typ ty =
   ty |> variant
   [\([a], b) -> Type (a, list typ b),
    \([a], b) -> TFree (a, sort b),
-   \([a, b], c) -> TVar ((a, int_atom b), sort c)]
+   \(a, b) -> TVar (indexname a, sort b)]
+
+typ_body :: T Typ
+typ_body [] = dummyT
+typ_body body = typ body
 
 term :: T Term
 term t =
   t |> variant
    [\([a], b) -> Const (a, list typ b),
-    \([a], b) -> Free (a, typ b),
-    \([a, b], c) -> Var ((a, int_atom b), typ c),
-    \([a], []) -> Bound (int_atom a),
+    \([a], b) -> Free (a, typ_body b),
+    \(a, b) -> Var (indexname a, typ_body b),
+    \([], a) -> Bound (int a),
     \([a], b) -> let (c, d) = pair typ term b in Abs (a, c, d),
     \([], a) -> App (pair term term a)]

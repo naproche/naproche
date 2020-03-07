@@ -24,7 +24,7 @@ module Isabelle.Markup (
 
   citationN, citation,
 
-  pathN, urlN, docN,
+  pathN, path, urlN, url, docN, doc,
 
   markupN, consistentN, unbreakableN, indentN, widthN,
   blockN, block, breakN, break, fbreakN, fbreak, itemN, item,
@@ -166,14 +166,14 @@ citationN :: String; citation :: String -> T
 
 {- external resources -}
 
-pathN :: String; _path :: String -> T
-(pathN, _path) = markup_string "path" nameN
+pathN :: String; path :: String -> T
+(pathN, path) = markup_string "path" nameN
 
-urlN :: String; _url :: String -> T
-(urlN, _url) = markup_string "url" nameN
+urlN :: String; url :: String -> T
+(urlN, url) = markup_string "url" nameN
 
-docN :: String; _doc :: String -> T
-(docN, _doc) = markup_string "doc" nameN
+docN :: String; doc :: String -> T
+(docN, doc) = markup_string "doc" nameN
 
 
 {- pretty printing -}

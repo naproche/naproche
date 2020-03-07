@@ -14,7 +14,7 @@ module Isabelle.Term (
 
   Sort, dummyS,
 
-  Typ(..), dummyT, Term(..))
+  Typ(..), dummyT, is_dummyT, Term(..))
 where
 
 type Indexname = (String, Int)
@@ -34,6 +34,10 @@ data Typ =
 
 dummyT :: Typ
 dummyT = Type ("dummy", [])
+
+is_dummyT :: Typ -> Bool
+is_dummyT (Type ("dummy", [])) = True
+is_dummyT _ = False
 
 
 data Term =
