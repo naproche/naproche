@@ -60,7 +60,7 @@ addExpr t@Trm{trmName = TermUnaryVerb _, trmArgs = vs} f p st
     n = idCount st
     (pt, nf) = extractWordPattern st (giveId p n t) f
     fm = substs nf $ map varName vs
-    ns = st {verExpr = (pt, fm) : verExpr st, idCount = incId p n}
+    ns = st {verbExpr = (pt, fm) : verbExpr st, idCount = incId p n}
 
 addExpr t@Trm{trmName = TermMultiAdjective _, trmArgs = vs} f p st
   = put ns >> return nf
@@ -78,7 +78,7 @@ addExpr t@Trm{trmName = TermMultiVerb _, trmArgs = vs} f p st
     ((hp:tp), nf) = extractWordPattern st (giveId p n t) f
     pt = hp : Word [] : Vr : tp
     fm = substs nf $ map varName vs
-    ns = st {verExpr = (pt, fm) : verExpr st, idCount = incId p n}
+    ns = st {verbExpr = (pt, fm) : verbExpr st, idCount = incId p n}
 
 addExpr t@Trm{trmName = TermNotion _, trmArgs = vs} f p st
   = put ns >> return nf
@@ -98,7 +98,7 @@ addExpr Trm{trmName= TermEquality, trmArgs = [v, t@Trm {trmName = TermNotion rs}
     ns = st {notionExpr = (pt, fm) : notionExpr st, idCount = incId p n}
 
 addExpr Trm{trmName = TermEquality, trmArgs = [_, t]} eq@Trm {trmName = TermEquality} p st =
-  put nn >> return (zEqu v nf)
+  put nn >> return (mkEquality v nf)
   where
     [v, f] = trmArgs eq
     vs = trmArgs t
@@ -188,11 +188,11 @@ newPrdPattern tvr = multi </> unary </> newSymbPattern tvr
   where
     unary = do
       v <- tvr; (t, vs) <- unaryAdj -|- unaryVerb
-      return $ zTrm NewId t $ map pVar (v:vs)
+      return $ mkTrm NewId t $ map pVar (v:vs)
     multi = do
       (u,v) <- liftM2 (,) tvr (comma >> tvr);
       (t, vs) <- multiAdj -|- multiVerb
-      return $ zTrm NewId t $ map pVar (u:v:vs)
+      return $ mkTrm NewId t $ map pVar (u:v:vs)
 
     unaryAdj = do is; (t, vs) <- patHead unknownAlpha tvr; return (TermUnaryAdjective t, vs)
     multiAdj = do is; (t, vs) <- patHead unknownAlpha tvr; return (TermMultiAdjective t, vs)
@@ -204,21 +204,21 @@ newNotionPattern tvr = (notion <|> fun) </> unnamedNotion tvr
   where
     notion = do
       an; (t, v:vs) <- patName unknownAlpha tvr
-      return (zTrm NewId (TermNotion t) $ map pVar (v:vs), v)
+      return (mkTrm NewId (TermNotion t) $ map pVar (v:vs), v)
     fun = do
       the; (t, v:vs) <- patName unknownAlpha tvr
-      return (zEqu (pVar v) $ zTrm NewId (TermNotion t) $ map pVar vs, v)
+      return (mkEquality (pVar v) $ mkTrm NewId (TermNotion t) $ map pVar vs, v)
 
 unnamedNotion :: FTL PosVar -> FTL (Formula, PosVar)
 unnamedNotion tvr = (notion <|> fun) </> (newSymbPattern tvr >>= equ)
   where
     notion = do
       an; (t, v:vs) <- patNoName unknownAlpha tvr
-      return (zTrm NewId (TermNotion t) $ map pVar (v:vs), v)
+      return (mkTrm NewId (TermNotion t) $ map pVar (v:vs), v)
     fun = do
       the; (t, v:vs) <- patNoName unknownAlpha tvr
-      return (zEqu (pVar v) $ zTrm NewId (TermNotion t) $ map pVar vs, v)
-    equ t = do v <- hidden; return (zEqu (pVar v) t, v)
+      return (mkEquality (pVar v) $ mkTrm NewId (TermNotion t) $ map pVar vs, v)
+    equ t = do v <- hidden; return (mkEquality (pVar v) t, v)
 
 
 newSymbPattern :: FTL PosVar -> FTL Formula
@@ -226,11 +226,11 @@ newSymbPattern tvr = left -|- right
   where
     left = do
       (t, vs) <- patHead slexem tvr
-      return $ zTrm NewId (TermName t) $ map pVar vs
+      return $ mkTrm NewId (TermName t) $ map pVar vs
     right = do
       (t, vs) <- patTail slexem tvr
       guard $ not $ null $ tail $ Text.words t
-      return $ zTrm NewId (TermName t) $ map pVar vs
+      return $ mkTrm NewId (TermName t) $ map pVar vs
 
 
 -- pattern parsing

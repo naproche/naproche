@@ -126,7 +126,7 @@ instantiations n currentInst f hs =
 
     subInfo :: Instantiation -> Int -> [Formula]
     subInfo sub n =
-      let sub' = applySub sub $ zVar $ VarAssume n
+      let sub' = applySub sub $ mkVar $ VarAssume n
       in  map (replace sub' ThisT) $ varInfo $ sub'
 
 
@@ -333,5 +333,3 @@ instance Monad ChangeInfo where
 
 changed :: a -> ChangeInfo a -- declare a change to an object
 changed a = Change a True
-
-

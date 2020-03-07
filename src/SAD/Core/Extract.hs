@@ -103,7 +103,7 @@ closeEvidence dfs def@DE{defEvidence = evidence} = def { defEvidence = newEviden
     makeU :: VariableName -> VariableName
     makeU (VarHole nm) = VarU nm
     makeU v = v
-    
+
     fromU :: VariableName -> VariableName
     fromU (VarU nm) = VarHole nm
     fromU v = v
@@ -194,7 +194,7 @@ extractSetEval c gs (Tag _ f) = extractSetEval c gs f
 extractSetEval c gs (All _ (Iff g@Trm{trmArgs = [_,t]} f )) | isElem g = do
   (n, evals) <- ask
   let nm = VarHole $ Text.pack $ show n; nf = simplifyElementCondition evals $ strip $ inst nm f
-  return $ EV (zElem (zVar nm) t) (mkPos $ c $ Tag Evaluation nf)(c nf) gs
+  return $ EV (mkElem (mkVar nm) t) (mkPos $ c $ Tag Evaluation nf)(c nf) gs
 extractSetEval _ _ f = mzero
 
 

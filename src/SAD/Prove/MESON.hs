@@ -98,7 +98,7 @@ current goal-}
 relevantSbs :: Formula -> (Formula -> Formula) -> (Formula -> Formula)
 relevantSbs f sb =
   let relevant = gatherUs [] $ ltAtomic f
-  in  foldr (.) id $ map (\u -> subst (sb (zVar u)) u) relevant
+  in  foldr (.) id $ map (\u -> subst (sb (mkVar u)) u) relevant
   where
     gatherUs ls Var {varName = x@(VarU _)} | x `notElem` ls = x : ls
     gatherUs ls t@Trm {trmArgs = tArgs} = foldl gatherUs ls tArgs

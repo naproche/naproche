@@ -344,16 +344,16 @@ unfoldAtomic sign f = do
       in  lift (W.tell 1) >> return extensionalityFormula
 
     setExtensionality f g =
-      let v = zVar VarEmpty in zAll VarEmpty $ Iff (zElem v f) (zElem v g)
+      let v = mkVar VarEmpty in mkAll VarEmpty $ Iff (mkElem v f) (mkElem v g)
     funExtensionality f g =
-      let v = zVar VarEmpty
-      in (domainEquality (zDom f) (zDom g)) `And`
-         zAll VarEmpty (Imp (zElem v $ zDom f) $ zEqu (zApp f v) (zApp g v))
+      let v = mkVar VarEmpty
+      in (domainEquality (mkDom f) (mkDom g)) `And`
+         mkAll VarEmpty (Imp (mkElem v $ mkDom f) $ mkEquality (mkApp f v) (mkApp g v))
 
     -- depending on the sign we choose the more convenient form of set equality
     domainEquality =
-      let v = zVar VarEmpty; sEqu x y = zAll VarEmpty (Iff (zElem v x) (zElem v y))
-      in  if sign then zEqu else sEqu
+      let v = mkVar VarEmpty; sEqu x y = mkAll VarEmpty (Iff (mkElem v x) (mkElem v y))
+      in  if sign then mkEquality else sEqu
 
     setFunDefinitionalProperties t = do
       evaluations <- asks evals
@@ -377,11 +377,11 @@ hasDMK (Tag GenericMark _ ) = True
 hasDMK _ = False
 
 setType :: Formula -> Bool
-setType Var {varInfo = info} = any (infoTwins ThisT $ zSet ThisT) info
-setType Trm {trmInfo = info} = any (infoTwins ThisT $ zSet ThisT) info
+setType Var {varInfo = info} = any (infoTwins ThisT $ mkSet ThisT) info
+setType Trm {trmInfo = info} = any (infoTwins ThisT $ mkSet ThisT) info
 setType _ = False
 
 funType :: Formula -> Bool
-funType Var {varInfo = info} = any (infoTwins ThisT $ zFun ThisT) info
-funType Trm {trmInfo = info} = any (infoTwins ThisT $ zFun ThisT) info
+funType Var {varInfo = info} = any (infoTwins ThisT $ mkFun ThisT) info
+funType Trm {trmInfo = info} = any (infoTwins ThisT $ mkFun ThisT) info
 funType _ = False

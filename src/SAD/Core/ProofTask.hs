@@ -45,7 +45,7 @@ setTask _ = error "SAD.Core.ProofTask.setTask: misformed definition"
 {- generate separation proof task -}
 separation :: Formula -> Formula
 separation (And f g) = separation f
-separation t | isElem t = dec $ zSet $ last $ trmArgs t
+separation t | isElem t = dec $ mkSet $ last $ trmArgs t
 separation _ = error "SAD.Core.ProofTask.separation: misformed argument"
 
 {- generate replacement proof task -}
@@ -59,12 +59,12 @@ replacement x f = fromMaybe _default $ dive [] f
       in  Just $ foldr mbExi startF vsAlt
     dive _ _ = Nothing
     _default =
-      let x2 = VarTask x; xv = zVar x; x2v = zVar x2
-      in  zAll x $ Imp f $ zExi x2 $ zSet x2v `And` (xv `zElem` x2v)
+      let x2 = VarTask x; xv = mkVar x; x2v = mkVar x2
+      in  mkAll x $ Imp f $ mkExi x2 $ mkSet x2v `And` (xv `mkElem` x2v)
 
-    sets = foldr blAnd Top . map (zSet . zVar)
+    sets = foldr blAnd Top . map (mkSet . mkVar)
     elements (v1:vs) (v2:vs2) =
-      zElem (zVar v1) (zVar v2) `blAnd` elements vs vs2
+      mkElem (mkVar v1) (mkVar v2) `blAnd` elements vs vs2
     elements _ _ = Top
 
 
@@ -76,7 +76,7 @@ funTask _ = error "SAD.Core.ProofTask.funTask: misformed definition"
 
 domain :: Formula -> Formula
 domain (Tag Domain (All _ (Iff _ f))) = Tag DomainTask $ separation f
-domain (Tag Domain Trm{trmName = TermEquality, trmArgs = [_,t]}) = Tag DomainTask $ zSet t
+domain (Tag Domain Trm{trmName = TermEquality, trmArgs = [_,t]}) = Tag DomainTask $ mkSet t
 domain _ = error "SAD.Core.ProofTask.domain: misformed definition"
 
 
@@ -100,9 +100,9 @@ existence :: Formula -> Formula
 existence  = Tag ExistenceTask . dive 0
   where
     dive :: Int -> Formula -> Formula
-    dive n (All x f) = let nn = VarTask $ VarDefault $ Text.pack $ show n in zAll nn $ dive (n + 1) $ inst nn f
+    dive n (All x f) = let nn = VarTask $ VarDefault $ Text.pack $ show n in mkAll nn $ dive (n + 1) $ inst nn f
     dive n (Imp f g) = blImp f $ dive n g
-    dive _ f = let y = zVar (VarDefault "y") in zExi (VarDefault "y") $ devReplace y $ describe_exi f
+    dive _ f = let y = mkVar (VarDefault "y") in mkExi (VarDefault "y") $ devReplace y $ describe_exi f
 
 
 
@@ -113,9 +113,9 @@ uniqueness = Tag UniquenessTask . dive
     dive (All x f) = All x $ dive f
     dive (Imp f g) = f `blImp` dive g
     dive f =
-      let y = zVar $ VarDefault "y"; cy = zVar $ VarTask $ VarDefault "y"; df = describe f
+      let y = mkVar $ VarDefault "y"; cy = mkVar $ VarTask $ VarDefault "y"; df = describe f
           yf = devReplace y df; cyf = devReplace cy df
-      in  zAll (VarDefault "y") $ zAll (VarTask $ VarDefault "y") $ inc $ inc $ Imp (yf `And` cyf) $ zEqu y cy
+      in  mkAll (VarDefault "y") $ mkAll (VarTask $ VarDefault "y") $ inc $ inc $ Imp (yf `And` cyf) $ mkEquality y cy
 
 {- output a description of a function in the form
   (condition_1 /\ evaluation_1) \/ ... \/ (condition_n /\ evaluation_n)
@@ -158,7 +158,7 @@ domainCondition (Tag _ (All _ (Iff Trm {trmArgs = [_,dm]} g))) = dive
 domainCondition (Tag _ Trm {trmName = TermEquality, trmArgs = [dm,g]}) = dive
   where
     dive Trm {trmId = tId, trmArgs = [x,d]}
-      | tId == ElementId && twins d dm = zElem x g
+      | tId == ElementId && twins d dm = mkElem x g
     dive f = mapF dive f
 domainCondition _ =
   error "SAD.Core.ProofTask.domainCondition: misformed argument"

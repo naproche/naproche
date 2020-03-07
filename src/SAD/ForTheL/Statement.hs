@@ -6,44 +6,51 @@ Syntax of ForThel statements.
 
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.ForTheL.Statement (
-  statement,
-  var, sVar, sTerm,
-  anotion, dig, selection, setNotion, functionNotion, plainTerm) where
+module SAD.ForTheL.Statement
+  ( statement
+  , sTerm
+  , anotion
+  , dig
+  , selection
+  , setNotion
+  , functionNotion
+  , plainTerm -- TODO: This seems unused?
+  ) where
 
-import SAD.ForTheL.Base
-import SAD.ForTheL.Reports (markupToken, markupTokenOf)
-import qualified SAD.ForTheL.Reports as Reports
-import SAD.Parser.Combinators
-import SAD.Parser.Primitives
 
 import SAD.Data.Formula
 import SAD.Data.Text.Decl
+import SAD.ForTheL.Base
+import SAD.ForTheL.Reports (markupToken, markupTokenOf)
+import SAD.Parser.Combinators
+import SAD.Parser.Primitives (token, token', symbol, tokenOf')
+
+import qualified SAD.ForTheL.Reports as Reports
 
 import Data.Set (Set)
-import qualified Data.Set as Set
 import Data.Function ((&))
-import Control.Applicative
-import Control.Monad
+import Control.Applicative (liftA2, (<**>), Alternative(..))
+import Control.Monad (guard)
+
+import qualified Data.Set as Set
 
 
 statement :: FTL Formula
 statement = headed <|> chained
 
 headed :: FTL Formula
-headed = quStatem <|> ifThenStatem <|> wrongStatem
+headed = quantifiedStatement <|> ifThenStatement <|> wrongStatement
   where
-    quStatem = liftM2 ($) quChain statement
-    ifThenStatem = liftM2 Imp
+    quantifiedStatement = quantifierChain <*> statement
+    ifThenStatement = liftA2 Imp
       (markupToken Reports.ifThen "if" >> statement)
       (markupToken Reports.ifThen "then" >> statement)
-    wrongStatem =
+    wrongStatement =
       mapM_ token' ["it", "is", "wrong", "that"] >> fmap Not statement
 
 
-
 chained :: FTL Formula
-chained = label "chained statement" $ andOr <|> neitherNor >>= chainEnd
+chained = label "chained statement" $ (andOr <|> neitherNor) >>= chainEnd
   where
     andOr = atomic >>= \f -> opt f (andChain f <|> orChain f)
     andChain f =
@@ -69,21 +76,23 @@ chainEnd f = optLL1 f $ and_st <|> or_st <|> iff_st <|> where_st
     iff_st = fmap (Iff f) $ iff >> statement
     where_st = do
       markupTokenOf Reports.whenWhere ["when", "where"]; y <- statement
-      return $ foldr zAll (Imp y f) (declNames mempty y)
+      return $ foldr mkAll (Imp y f) (declNames mempty y)
 
 
 atomic :: FTL Formula
 atomic = label "atomic statement"
-  thereIs <|> (simple </> (wehve >> smForm <|> thesis))
+  thereIs <|> (simple </> (weHave >> symbolicStatement <|> thesis))
   where
-    wehve = optLL1 () $ token' "we" >> token' "have"
+    weHave = optLL1 () $ token' "we" >> token' "have"
+
 
 thesis :: FTL Formula
 thesis = art >> (thes <|> contrary <|> contradiction)
   where
-    thes = token' "thesis" >> return zThesis
-    contrary = token' "contrary" >> return (Not zThesis)
+    thes = token' "thesis" >> return mkThesis
+    contrary = token' "contrary" >> return (Not mkThesis)
     contradiction = token' "contradiction" >> return Bot
+
 
 thereIs :: FTL Formula
 thereIs = label "there-is statement" $ there >> (noNotion -|- notions)
@@ -94,18 +103,35 @@ thereIs = label "there-is statement" $ there >> (noNotion -|- notions)
     notions = fmap multExi $ art >> (declared =<< notion) `sepBy` comma
 
 
-
-
 simple :: FTL Formula
 simple = label "simple statement" $ do
-  (q, ts) <- terms; p <- conjChain doesPredicate;
-  q' <- optLL1 id quChain;
-  -- this part is not in the language description
-  -- example: x = y *for every real number x*.
+  (q, ts) <- terms
+  p  <- conjChain doesPredicate
+  q' <- lateQuantifiers
+  --    ^^^^^^^^^^^^^^^
+  --
+  --    Late quantification is not part of language description from 2007.
+  --
+  --    Example: x = y for every real number x.
+  --                   ^^^^^^^^^^^^^^^^^^^^^^^
+  --
   q . q' <$> dig p ts
 
-smForm :: FTL Formula
-smForm = liftM2 (flip ($)) (sForm -|- classEq) $ optLL1 id quChain
+-- |
+-- A symbolic statement is either a symbolic formula or the assertion that two class
+-- terms are equal, followed by optional later quantifiers. If no quantifiers are present
+-- the statement is returned as-is, otherwise the quantifiers are applied to the statement.
+--
+symbolicStatement :: FTL Formula
+symbolicStatement = (symbolicFormula -|- classEquality) <**> lateQuantifiers
+
+-- |
+-- Parse late quantifiers yielding a quantifying function.
+-- Defaults to @id@ when there are no quantifiers.
+--
+lateQuantifiers :: FTL (Formula -> Formula)
+lateQuantifiers = optLL1 id quantifierChain
+
 
 --- predicates
 
@@ -115,9 +141,9 @@ doesPredicate = label "does predicate" $
   (does >> (doP -|- multiDoP)) <|> hasP <|> isChain
   where
     doP = predicate primVer
-    multiDoP = mPredicate primMultiVer
+    multiDoP = multiPredicate primMultiVer
     hasP = has >> hasPredicate
-    isChain = is  >> conjChain (isAPredicat -|- isPredicate)
+    isChain = is  >> conjChain (isAPredicate -|- isPredicate)
 
 
 isPredicate :: FTL Formula
@@ -125,24 +151,25 @@ isPredicate = label "is predicate" $
   pAdj -|- pMultiAdj -|- (with >> hasPredicate)
   where
     pAdj = predicate primAdj
-    pMultiAdj = mPredicate primMultiAdj
+    pMultiAdj = multiPredicate primMultiAdj
 
 
-isAPredicat :: FTL Formula
-isAPredicat = label "isA predicate" $ notNotion <|> notion
-  -- Unlike the langugae description, we distinguish positive and negative
-  -- rather than notions and fixed terms
+isAPredicate :: FTL Formula
+isAPredicate = label "isA predicate" $ notNotion <|> notion
+  -- Unlike the language description, we distinguish positive and negative
+  -- rather than notions and fixed terms.
   where
     notion = fmap (uncurry ($)) anotion
     notNotion = do
-      token' "not"; (q, f) <- anotion; let unfinished = dig f [(zVar (VarHole ""))]
+      token' "not"; (q, f) <- anotion
+      let unfinished = dig f [(mkVar (VarHole ""))]
       optLLx (q $ Not f) $ fmap (q. Tag Dig . Not) unfinished
 
 hasPredicate :: FTL Formula
 hasPredicate = label "has predicate" $ noPossessive <|> possessive
   where
-    possessive = art >> common <|> unary
-    unary = fmap (Tag Dig . multExi) $ (declared =<< possess) `sepBy` (comma >> art)
+    possessive = art >> common <|> nonbinary
+    nonbinary = fmap (Tag Dig . multExi) $ (declared =<< possess) `sepBy` (comma >> art)
     common = token' "common" >>
       fmap multExi (fmap digadd (declared =<< possess) `sepBy` comma)
 
@@ -164,8 +191,8 @@ predicate p = (token' "not" >> negative) <|> positive
     positive = do (q, f) <- p term; return $ q . Tag Dig $ f
     negative = do (q, f) <- p term; return $ q . Tag Dig . Not $ f
 
-mPredicate :: (FTL UTerm -> FTL UTerm) -> FTL Formula
-mPredicate p = (token' "not" >> mNegative) <|> mPositive
+multiPredicate :: (FTL UTerm -> FTL UTerm) -> FTL Formula
+multiPredicate p = (token' "not" >> mNegative) <|> mPositive
   where
     mPositive = (token' "pairwise" >> pPositive) <|> sPositive
     -- we distinguish between *separate* and *pairwise*
@@ -179,102 +206,100 @@ mPredicate p = (token' "not" >> mNegative) <|> mPositive
 
 
 
---- notions
+--- Notions
 
-basenotion :: FTL (Formula -> Formula, Formula, Set PosVar)
-basenotion = fmap digadd $ cm <|> symEqnt <|> (set </> primNotion term)
+baseNotion :: FTL (Formula -> Formula, Formula, Set PosVar)
+baseNotion = fmap digadd $ cm <|> symEqnt <|> (set </> primNotion term)
   where
-    cm = token' "common" >> primCmNotion term terms
+    cm = token' "common" >> primCommonNotion term terms
     symEqnt = do
       t <- lexicalCheck isTrm sTerm
-      v <- hidden; 
-      pure (id, zEqu (zVar (VarHole "")) t, Set.singleton v)
+      v <- hidden;
+      pure (id, mkEquality (mkVar (VarHole "")) t, Set.singleton v)
 
 symNotion :: FTL (Formula -> Formula, Formula, Set PosVar)
 symNotion = do
   x <- paren (primSnt sTerm) </> primTypedVar
-  dignotion (digadd x)
+  digNotion (digadd x)
 
 
 gnotion :: FTL (Formula -> Formula, Formula, Set PosVar)
-  -> FTL Formula
-  -> FTL (Formula -> Formula, Formula, Set PosVar)
+  -> FTL Formula -> FTL (Formula -> Formula, Formula, Set PosVar)
 gnotion nt ra = do
   ls <- fmap reverse la; (q, f, vs) <- nt;
   rs <- opt [] $ fmap (:[]) $ ra <|> rc
   -- we can use <|> here because every ra in use begins with "such"
   return (q, foldr1 And $ f : ls ++ rs, vs)
   where
-    la = opt [] $ liftM2 (:) lc la
-    lc = predicate primUnAdj </> mPredicate primMultiUnAdj
+    la = opt [] $ liftA2 (:) lc la
+    lc = predicate primUnAdj </> multiPredicate primMultiUnAdj
     rc = (that >> conjChain doesPredicate <?> "that clause") <|>
       conjChain isPredicate
 
 
 anotion :: FTL (Formula -> Formula, Formula)
 anotion = label "notion (at most one name)" $
-  art >> gnotion basenotion rat >>= single >>= hol
+  art >> gnotion baseNotion rat >>= single >>= hole
   where
-    hol (q, f, v) = return (q, subst (zVar (VarHole "")) (posVarName v) f)
-    rat = fmap (Tag Dig) stattr
+    hole (q, f, v) = return (q, subst (mkVar (VarHole "")) (posVarName v) f)
+    rat = fmap (Tag Dig) suchThatAttr
 
 notion :: FTL (Formula -> Formula, Formula, Set PosVar)
-notion = label "notion" $ gnotion (basenotion </> symNotion) stattr >>= dignotion
+notion = label "notion" $ gnotion (baseNotion </> symNotion) suchThatAttr >>= digNotion
 
 possess :: FTL (Formula -> Formula, Formula, Set PosVar)
-possess = label "possesive notion" $ gnotion (primOfNotion term) stattr >>= dignotion
+possess = label "possesive notion" $ gnotion (primOfNotion term) suchThatAttr >>= digNotion
 
 
-stattr :: FTL Formula
-stattr = label "such-that attribute" $ such >> that >> statement
+suchThatAttr :: FTL Formula
+suchThatAttr = label "such-that attribute" $ such >> that >> statement
 
 digadd :: (a, Formula, c) -> (a, Formula, c)
 digadd (q, f, v) = (q, Tag Dig f, v)
 
-dignotion :: (a, Formula, Set PosVar) -> FTL (a, Formula, Set PosVar)
-dignotion (q, f, v) = dig f (map pVar $ Set.toList v) >>= \ g -> return (q, g, v)
+digNotion :: (a, Formula, Set PosVar) -> FTL (a, Formula, Set PosVar)
+digNotion (q, f, v) = dig f (map pVar $ Set.toList v) >>= \ g -> return (q, g, v)
 
 single :: (a, b, Set c) -> FTL (a, b, c)
 single (q, f, vs) = case Set.elems vs of
-  [v] -> pure $ (q, f, v)
-  _ -> fail "inadmissible multinamed notion"
+  [v] -> return (q, f, v)
+  _   -> fail "inadmissible multinamed notion"
 
 --- terms
 
 terms :: FTL (Formula -> Formula, [Formula])
 terms = label "terms" $
-  fmap (foldl1 fld) $ m_term `sepBy` comma
+  foldl1 alg <$> (subTerm `sepBy` comma)
   where
-    m_term = quNotion -|- fmap s2m definiteTerm
-    s2m (q, t) = (q, [t])
-
-    fld (q, ts) (r, ss) = (q . r, ts ++ ss)
+    subTerm = quantifiedNotion -|- fmap toMulti definiteTerm
+    toMulti (q, t) = (q, [t])
+    alg (q, ts) (r, ss) = (q . r, ts ++ ss)
 
 term :: FTL UTerm
-term = label "a term" $ (quNotion >>= m2s) -|- definiteTerm
+term = label "a term" $ (quantifiedNotion >>= toSing) -|- definiteTerm
   where
-    m2s (q, [t]) = return (q, t)
-    m2s _ = fail "inadmissible multinamed notion"
+    toSing (q, [t]) = return (q, t)
+    toSing _ = fail "inadmissible multinamed notion"
 
-
-quNotion :: FTL (Formula -> Formula, [Formula])
-quNotion = label "quantified notion" $
-  paren (fa <|> ex <|> no)
+-- Returns a quantifying function and a list of variables as expression
+quantifiedNotion :: FTL (Formula -> Formula, [Formula])
+quantifiedNotion = label "quantified notion" $
+  paren (universal <|> existential <|> no)
   where
-    fa = do
+    universal = do
       tokenOf' ["every", "each", "all", "any"]; (q, f, v) <- notion
       vDecl <- makeDecls v
-      return (q . flip (foldr dAll) vDecl . blImp f, map pVar $ Set.toList v)
+      return (q . flip (foldr dAll) vDecl . blImp f, pVar <$> Set.toList v)
 
-    ex = do
+    existential = do
       token' "some"; (q, f, v) <- notion
       vDecl <- makeDecls v
-      return (q . flip (foldr dExi) vDecl . blAnd f, map pVar $ Set.toList v)
+      return (q . flip (foldr dExi) vDecl . blAnd f, pVar <$> Set.toList v)
 
     no = do
       token' "no"; (q, f, v) <- notion
       vDecl<- makeDecls v
-      return (q . flip (foldr dAll) vDecl . blImp f . Not, map pVar $ Set.toList v)
+      return (q . flip (foldr dAll) vDecl . blImp f . Not, pVar <$> Set.toList v)
 
 
 definiteTerm :: FTL (Formula -> Formula, Formula)
@@ -294,56 +319,65 @@ symbolicTerm = fmap ((,) id) sTerm
 --- symbolic notation
 
 
-sForm :: FTL Formula
-sForm  = sIff
+symbolicFormula :: FTL Formula
+symbolicFormula  = biimplication
   where
-    sIff = sImp >>= binF Iff (symbol "<=>" >> sImp)
-    sImp = sDis >>= binF Imp (symbol "=>"  >> sImp)
-    sDis = sCon >>= binF Or  (symbol "\\/" >> sDis)
-    sCon = sUna >>= binF And (symbol "/\\" >> sCon)
-    sUna = sAll -|- sExi -|- sNot -|- sDot -|- sAtm
-    sAll = liftM2 (quaF dAll Imp) (token' "forall" >> symNotion >>= declared) sUna
-    sExi = liftM2 (quaF dExi And) (token' "exists" >> symNotion >>= declared) sUna
-    sNot = fmap Not $ token' "not" >> sUna
-    sDot = token' ":" >> sForm
-    sAtm = sAtom
+    biimplication = implication >>= binary Iff (symbol "<=>" >> implication)
+    implication   = disjunction >>= binary Imp (symbol "=>"  >> implication)
+    disjunction   = conjunction >>= binary Or  (symbol "\\/" >> disjunction)
+    conjunction   = nonbinary   >>= binary And (symbol "/\\" >> conjunction)
+    universal     = liftA2 (quantified dAll Imp) (token' "forall" >> (declared =<< symNotion)) nonbinary
+    existential   = liftA2 (quantified dExi And) (token' "exists" >> (declared =<<symNotion)) nonbinary
+    nonbinary     = universal -|- existential -|- negation -|- separated -|- atomic
+    negation      = Not <$> (token' "not" >> nonbinary)
+    separated     = token' ":" >> symbolicFormula
 
-    quaF qu op (_, f, v) = flip (foldr qu) v . op f
+    quantified quant op (_, f, v) = flip (foldr quant) v . op f
 
-    binF op p f = optLL1 f $ fmap (op f) p
+    binary op p f = optLL1 f $ fmap (op f) p
 
+    atomic = relation -|- parenthesised statement
+      where
+        relation = sChain </> primCpr sTerm
 
-sAtom :: FTL Formula
-sAtom = sRelation -|- parenthesised statement
-  where
-    sRelation = sChain </> primCpr sTerm
+        sChain = fmap (foldl1 And . concat) sHd
 
-    sChain = fmap (foldl1 And . concat) sHd
+        -- TODO: Rename with slightly more obvious names.
+        -- First guess at the meaning of the naming:
+        -- s = symbolic
+        -- Hd = head
+        -- l = left
+        -- i = infix
+        -- r = right
+        --
+        -- Combining of the two sides could probably be made
+        -- clearer by using list comprehensions.
 
-    sHd = lHd -|- (sTs >>= sTl)
-    lHd = do
-      pr <- primLpr sTerm; rs <- sTs
-      fmap (map pr rs :) $ opt [] $ sTl rs
+        sHd = lHd -|- (termChain >>= sTl)
+        lHd = do
+          pr <- primLpr sTerm
+          rs <- termChain
+          fmap (map pr rs :) $ opt [] $ sTl rs
 
-    sTl ls = iTl ls -|- rTl ls
-    iTl ls = do
-      pr <- primIpr sTerm; rs <- sTs
-      fmap (liftM2 pr ls rs :) $ opt [] $ sTl rs
-    rTl ls = do pr <- primRpr sTerm; return [map pr ls]
+        sTl ls = iTl ls -|- rTl ls
+        iTl ls = do
+          pr <- primIpr sTerm; rs <- termChain
+          fmap (liftA2 pr ls rs :) $ opt [] $ sTl rs
+        rTl ls = do pr <- primRpr sTerm; return [map pr ls]
 
-    sTs = sTerm `sepBy` token' ","
+        termChain = sTerm `sepBy` token' ","
 
 
 sTerm :: FTL Formula
 sTerm = iTerm
   where
     iTerm = lTerm >>= iTl
-    iTl t = opt t $ (primIfn sTerm `ap` return t `ap` iTerm) >>= iTl
+    iTl t = opt t $ (primIfn sTerm <*> return t <*> iTerm) >>= iTl
 
-    lTerm = rTerm -|- label "symbolic term" (primLfn sTerm `ap` lTerm)
+    lTerm = rTerm -|- label "symbolic term" (primLfn sTerm <*> lTerm)
 
     rTerm = cTerm >>= rTl
-    rTl t = opt t $ (primRfn sTerm `ap` return t) >>= rTl
+    rTl t = opt t $ (primRfn sTerm <*> return t) >>= rTl
 
     cTerm = label "symbolic term" $ sVar -|- parenthesised sTerm -|- primCfn sTerm
 
@@ -352,8 +386,8 @@ sVar = fmap pVar var
 
 -- class term equations
 
-classEq :: FTL Formula
-classEq = twoClassTerms </> oneClassTerm
+classEquality :: FTL Formula
+classEquality = twoClassTerms </> oneClassTerm
   where
     twoClassTerms = do
       cnd1 <- fmap stripSet symbSetNotation; token "="
@@ -366,12 +400,12 @@ classEq = twoClassTerms </> oneClassTerm
     left = do
       cnd <- fmap stripSet symbSetNotation; token "="
       t <- sTerm; h <- hidden; hDecl <- makeDecl h; let hv = pVar h
-      return $ All hDecl $ Iff (cnd hv) (zElem hv t)
+      return $ All hDecl $ Iff (cnd hv) (mkElem hv t)
     right = do
       t <- sTerm; token "="; h <- hidden; hDecl <- makeDecl h
       let hv = pVar h
       cnd <- fmap stripSet symbSetNotation
-      return $ dAll hDecl $ Iff (zElem hv t) (cnd hv)
+      return $ dAll hDecl $ Iff (mkElem hv t) (cnd hv)
 
 
 
@@ -407,7 +441,7 @@ set = label "set definition" $ symbSet <|> setOf
       nmDecl <- makeDecl nm
       return (id, setForm nmDecl $ cnd $ pVar nm, Set.singleton h)
     setForm dcl = let nm = PosVar (declName dcl) (declPosition dcl) in
-      And (zSet (zVar (VarHole ""))) . dAll dcl . Iff (zElem (pVar nm) (zVar (VarHole "")))
+      And (mkSet (mkVar (VarHole ""))) . dAll dcl . Iff (mkElem (pVar nm) (mkVar (VarHole "")))
 
 
 symbSetNotation :: FTL (Formula -> Formula, PosVar)
@@ -416,7 +450,7 @@ symbSetNotation = cndSet </> finSet
     finSet = braced $ do
       ts <- sTerm `sepByLL1` token ","
       h <- hidden
-      pure (\tr -> foldr1 Or $ map (zEqu tr) ts, h)
+      pure (\tr -> foldr1 Or $ map (mkEquality tr) ts, h)
     cndSet = braced $ do
       (tag, c, t) <- sepFrom
       st <- token "|" >> statement;
@@ -426,7 +460,7 @@ symbSetNotation = cndSet </> finSet
       pure (\tr -> tag $ c tr `blAnd` mbEqu vsDecl tr t st, nm)
 
     mbEqu _ tr Var{varName = v} = subst tr v
-    mbEqu vs tr t = \st -> foldr mbdExi (st `And` zEqu tr t) vs
+    mbEqu vs tr t = \st -> foldr mbdExi (st `And` mkEquality tr t) vs
 
 
 sepFrom :: FTL (Formula -> Formula, Formula -> Formula, Formula)
@@ -444,12 +478,12 @@ sepFrom = notionSep -|- setSep -|- noSep
 elementCnd :: FTL (Formula -> Formula)
 elementCnd = setTerm </> fmap fst symbSetNotation
   where
-    setTerm = sTerm >>= return . flip zElem
+    setTerm = sTerm >>= return . flip mkElem
 
 -- -- functions
 
 functionNotion :: FTL Formula
-functionNotion = liftM2 (&) sVar $ wordFun <|> (token "=" >> lambda)
+functionNotion = sVar <**> (wordFun <|> (token "=" >> lambda))
   where
   wordFun = do
     token "["; t <- pair; token "]"
@@ -458,8 +492,8 @@ functionNotion = liftM2 (&) sVar $ wordFun <|> (token "=" >> lambda)
     def <- addDecl (Set.map posVarName vs) lambdaBody
     (_, _, dom) <- token' "for" >> lambdaIn;
     vsDecl <- makeDecls vs
-    let body f = foldr dAll (Imp (t `zElem` zDom f) $ def $ zApp f t) vsDecl
-    return $ \f -> zFun f `And` Tag Domain (dom f) `And` body f
+    let body f = foldr dAll (Imp (t `mkElem` mkDom f) $ def $ mkApp f t) vsDecl
+    return $ \f -> mkFun f `And` Tag Domain (dom f) `And` body f
 
 lambdaBody :: FTL (Formula -> Formula)
 lambdaBody = label "function definition" $ paren $ cases <|> chooseInTerm
@@ -487,12 +521,12 @@ chooseInTerm = do
       ap <- ld_set <|> lambda
       return $ dExi xDecl . And (Tag Defined $ ap $ pVar x)
 
-    term = fmap ((.) (Tag Evaluation) . flip zEqu) sTerm
+    term = fmap ((.) (Tag Evaluation) . flip mkEquality) sTerm
     defTerm = do
       ap <- ld_set <|> lambda; h <- hidden; let hv = pVar h
       hDecl <- makeDecl h;
       return $ \fx -> dExi hDecl $
-        And (Tag Defined $ ap hv) (Tag Evaluation $ zEqu fx hv)
+        And (Tag Defined $ ap hv) (Tag Evaluation $ mkEquality fx hv)
 
     ld_set = do (_, t, _) <- set; return $ (\f -> subst f (VarHole "") t)
 
@@ -502,14 +536,14 @@ lambda = do
   (t, df_head, dom) <- ld_head
   vs <- fvToVarSet <$> freeVars t
   df <- addDecl vs lambdaBody
-  return $ \f -> zFun f `And` Tag Domain (dom f) `And` (df_head f $ df $ zApp f t)
+  return $ \f -> mkFun f `And` Tag Domain (dom f) `And` (df_head f $ df $ mkApp f t)
   where
     ld_head = finish $ token "\\" >> lambdaIn
 
 pair :: FTL Formula
 pair = sVar </> pr
   where
-    pr = do [l,r] <- symbolPattern pair pairPattern; return $ zPair l r
+    pr = do [l,r] <- symbolPattern pair pairPattern; return $ mkPair l r
     pairPattern = [Symbol "(", Vr, Symbol ",", Vr, Symbol ")"]
 
 lambdaIn :: FTL (Formula, Formula -> Formula -> Formula, Formula -> Formula)
@@ -518,15 +552,15 @@ lambdaIn = do
   vs <- fvToVarSet <$> freeVars t
   vsDecl <- makeDecls vs
   token' "in"; dom <- ld_dom;
-  let df_head f = foldr ((.) . dAll) (Imp (t `zElem` zDom f)) vsDecl
+  let df_head f = foldr ((.) . dAll) (Imp (t `mkElem` mkDom f)) vsDecl
   return (t, df_head, \f -> dom f t vsDecl)
   where
     ld_dom = trm <|> setTrm
     trm = do
-      t <- sTerm; return $ \f _ _ -> zDom f `zEqu` t
+      t <- sTerm; return $ \f _ _ -> mkDom f `mkEquality` t
     setTrm = do
       (ap, _) <- symbSetNotation
-      return $ \f t -> foldr dAll (Iff (t `zElem` zDom f) (ap t))
+      return $ \f t -> foldr dAll (Iff (t `mkElem` mkDom f) (ap t))
 
 ---- chain tools
 
@@ -538,8 +572,8 @@ multExi [] = Top
 conjChain :: FTL Formula -> FTL Formula
 conjChain = fmap (foldl1 And) . flip sepBy (token' "and")
 
-quChain :: FTL (Formula -> Formula)
-quChain = fmap (foldl fld id) $ token' "for" >> quNotion `sepByLL1` comma
+quantifierChain :: FTL (Formula -> Formula)
+quantifierChain = fmap (foldl fld id) $ token' "for" >> quantifiedNotion `sepByLL1` comma
 -- we can use LL1 here, since there must always follow a parser belonging to the
 -- same non-terminal
   where
@@ -555,7 +589,7 @@ dig f ts = return (dive f)
     dive :: Formula -> Formula
     dive (Tag Dig f) = down digS f
     dive (Tag DigMultiSubject f) = down (digM $ zip ts $ tail ts) f
-    dive (Tag DigMultiPairwise f) = down (digM $ pairMP ts) f
+    dive (Tag DigMultiPairwise f) = down (digM $ pairs ts) f
     dive f | isTrm f = f
     dive f = mapF dive f
 
@@ -575,8 +609,8 @@ dig f ts = return (dive f)
       | otherwise = map (\ (x,y) -> subst y VarSlot $ subst x (VarHole "") f) ps
 
 -- Example:
--- pairMP [1,2,3,4]
+-- pairs [1,2,3,4]
 -- [(1,2),(1,3),(1,4),(2,3),(2,4),(3,4)]
-pairMP :: [a] -> [(a, a)]
-pairMP (t:ts) = [ (t, s) | s <- ts ] ++ pairMP ts
-pairMP _ = []
+pairs :: [a] -> [(a, a)]
+pairs (t:ts) = [ (t, s) | s <- ts ] ++ pairs ts
+pairs _ = []
