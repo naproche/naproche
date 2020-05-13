@@ -37,8 +37,8 @@ import qualified Data.Text.Lazy as Text
 import Control.Monad
 
 
-data ProofText a =
-    ProofTextBlock (Block a)
+data ProofText =
+    ProofTextBlock Block
   | ProofTextInstr Pos Instr
   | NonProofTextStoredInstr [Instr] -- a way to restore instructions during verification
   | ProofTextDrop Pos Drop
@@ -46,13 +46,13 @@ data ProofText a =
   | ProofTextPretyping SourcePos (Set PosVar)
   | ProofTextMacro SourcePos
   | ProofTextError ParseError
-  | ProofTextChecked (ProofText Formula)
-  | ProofTextRoot [ProofText Formula]
+  | ProofTextChecked (ProofText)
+  | ProofTextRoot [ProofText]
   deriving (Eq, Ord)
 
-data Block a = Block {
-  formula           :: a,
-  body              :: [ProofText a],
+data Block = Block {
+  formula           :: Formula,
+  body              :: [ProofText],
   kind              :: Section,
   declaredVariables :: Set Decl,
   name              :: Text,
@@ -61,11 +61,11 @@ data Block a = Block {
   tokens            :: [Token] }
   deriving (Eq, Ord)
 
-makeBlock :: Formula -> [ProofText Formula] -> Section -> Text -> [Text] -> SourcePos -> [Token] -> (Block Formula)
+makeBlock :: Formula -> [ProofText] -> Section -> Text -> [Text] -> SourcePos -> [Token] -> (Block)
 makeBlock form body kind name link pos toks =
   Block form body kind mempty name link (rangePos (tokensRange toks)) toks
 
-text :: Block Formula -> Text
+text :: Block -> Text
 text Block {tokens} = composeTokens tokens
 
 {- All possible types that a ForThel block can have. -}
@@ -78,12 +78,12 @@ data Section =
 -- Composition
 
 {- form the formula image of a whole block -}
-formulate :: Block Formula -> Formula
+formulate :: Block -> Formula
 formulate block
   | isTopLevel block = compose $ body block
   | otherwise = formula block
 
-compose :: [ProofText Formula] -> Formula
+compose :: [ProofText] -> Formula
 compose = foldr comp Top
   where
     comp (ProofTextBlock block@Block{ declaredVariables = dvs }) f
@@ -96,7 +96,7 @@ compose = foldr comp Top
 
 
 {- necessity of proof as derived from the block type -}
-needsProof :: Block Formula -> Bool
+needsProof :: Block -> Bool
 needsProof block = sign $ kind block
   where
     sign Definition = False
@@ -113,22 +113,22 @@ canDeclare Assumption = True; canDeclare Selection = True
 canDeclare LowDefinition = True; canDeclare _ = False
 
 
-isTopLevel :: Block Formula -> Bool
+isTopLevel :: Block -> Bool
 isTopLevel  = isHole' . formula
   where
     isHole' Var {varName = VarHole _} = True
     isHole' _ = False
 
-file :: Block a -> Text
+file :: Block-> Text
 file = sourceFile . position
 
 
-declaredNames :: Block a -> Set VariableName
+declaredNames :: Block -> Set VariableName
 declaredNames = Set.map declName . declaredVariables
 
 -- Show instances
 
-instance (Show a, a ~ Formula) => Show (ProofText a) where
+instance Show ProofText where
   showsPrec p (ProofTextBlock block) = showsPrec p block
   showsPrec 0 (ProofTextInstr _ instr) = shows instr . showChar '\n'
   showsPrec 0 (ProofTextDrop _ instr) = shows instr . showChar '\n'
@@ -136,7 +136,7 @@ instance (Show a, a ~ Formula) => Show (ProofText a) where
   showsPrec 0 (ProofTextRoot txt ) = shows txt
   showsPrec _ _ = id
 
-instance (Show a, a ~ Formula) => Show (Block a) where
+instance Show Block where
   showsPrec p block@Block {body = body}
     | null body = showForm p block
     | isTopLevel block = showForm p block . showBody
@@ -146,7 +146,7 @@ instance (Show a, a ~ Formula) => Show (Block a) where
     where
       showBody = foldr ((.) . showsPrec (succ p)) id body
 
-showForm :: Int -> Block Formula -> String -> String
+showForm :: Int -> Block -> String -> String
 showForm p block@Block {formula = formula, name = name} =
   showIndent p . sform (isTopLevel block) (needsProof block) . dot
   where
@@ -164,7 +164,7 @@ showIndent n = showString $ replicate (n * 2) ' '
 
 --- comparison of text trees, computation of parts that need checking
 
-textToCheck :: ProofText Formula -> ProofText Formula -> ProofText Formula
+textToCheck :: ProofText -> ProofText -> ProofText
 textToCheck old new
   | isRoot old && isRoot new = dive [] (isChecked old) new (children old) (children new)
   | otherwise = new
@@ -178,27 +178,27 @@ textToCheck old new
            in  dive newAcc checked root old new
       else setChildren root (reverse acc ++ (n:new))
 
-isRoot :: ProofText Formula -> Bool
+isRoot :: ProofText -> Bool
 isRoot (ProofTextRoot _) = True; isRoot _ = False
 
-isChecked :: ProofText Formula -> Bool
+isChecked :: ProofText -> Bool
 isChecked (ProofTextChecked _) = True; isChecked _ = False
 
-children :: ProofText Formula -> [ProofText Formula]
+children :: ProofText -> [ProofText]
 children (ProofTextRoot texts) = texts
 children (ProofTextChecked text) = children text
 children (ProofTextBlock bl) = body bl
 children _ = []
 
-setChecked :: Bool -> ProofText Formula -> ProofText Formula
+setChecked :: Bool -> ProofText -> ProofText
 setChecked p = if p then ProofTextChecked else id
 
-setChildren :: ProofText Formula -> [ProofText Formula] -> ProofText Formula
+setChildren :: ProofText -> [ProofText] -> ProofText
 setChildren (ProofTextRoot _) children = ProofTextRoot children
 setChildren (ProofTextBlock bl) children = ProofTextBlock bl {body = children}
 setChildren txt _ = txt
 
-textCompare :: ProofText Formula -> ProofText Formula -> Bool
+textCompare :: ProofText -> ProofText -> Bool
 textCompare (ProofTextInstr _ i1) (ProofTextInstr _ i2) = i1 == i2
 textCompare (ProofTextDrop _ d1) (ProofTextDrop _ d2) = d1 == d2
 textCompare (ProofTextSynonym _) (ProofTextSynonym _) = True
@@ -215,7 +215,7 @@ textCompare _ _ = False
 -- parse correctness of a structure tree
 
 
-findParseError :: MonadPlus m => ProofText Formula -> m ParseError
+findParseError :: MonadPlus m => ProofText -> m ParseError
 findParseError (ProofTextError err) = pure err
 findParseError txt = dive $ children txt
   where

@@ -29,7 +29,6 @@ import SAD.Parser.Primitives
 import SAD.Parser.Error
 import qualified SAD.Core.Message as Message
 import qualified Isabelle.File as File
-import SAD.Data.Formula (Formula)
 
 -- Init file parsing
 
@@ -47,14 +46,14 @@ instructionFile = after (optLL1 [] $ chainLL1 instr) eof
 
 -- Reader loop
 
-readProofText :: Text -> [ProofText Formula] -> IO [ProofText Formula]
+readProofText :: Text -> [ProofText] -> IO [ProofText]
 readProofText pathToLibrary text0 = do
   pide <- Message.pideContext
   (text, reports) <- reader pathToLibrary [] [State (initFS pide) noTokens noSourcePos] text0
   when (isJust pide) $ Message.reports reports
   return text
 
-reader :: Text -> [Text] -> [State FState] -> [ProofText Formula] -> IO ([ProofText Formula], [Message.Report])
+reader :: Text -> [Text] -> [State FState] -> [ProofText] -> IO ([ProofText], [Message.Report])
 reader pathToLibrary doneFiles = go
   where
     go stateList [ProofTextInstr pos (GetArgument Read file)] = if ".." `Text.isInfixOf` file
@@ -95,7 +94,7 @@ reader pathToLibrary doneFiles = go
 
     go (state:_) [] = return ([], reports $ stUser state)
 
-reader0 :: SourcePos -> Text -> State FState -> IO ([ProofText Formula], State FState)
+reader0 :: SourcePos -> Text -> State FState -> IO ([ProofText], State FState)
 reader0 pos text pState = do
   let tokens0 = tokenize pos text
   Message.reports $ concatMap (maybeToList . reportComments) tokens0

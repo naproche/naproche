@@ -65,7 +65,7 @@ main  = do
         IO.hPutStrLn IO.stderr msg
         Exit.exitFailure)
 
-mainBody :: IORef (ProofText Formula) -> ([Instr], [ProofText Formula]) -> IO ()
+mainBody :: IORef (ProofText) -> ([Instr], [ProofText]) -> IO ()
 mainBody oldProofTextRef (opts0, text0) = do
   startTime <- getCurrentTime
 
@@ -83,7 +83,7 @@ mainBody oldProofTextRef (opts0, text0) = do
     CiC -> return ()
     Lean -> exportLean text1
 
-showTranslation :: [ProofText Formula] -> UTCTime -> IO ()
+showTranslation :: [ProofText] -> UTCTime -> IO ()
 showTranslation txts startTime = do
   let timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)
   mapM_ (\case ProofTextBlock bl -> print bl; _ -> return ()) txts
@@ -92,21 +92,21 @@ showTranslation txts startTime = do
   finishTime <- getCurrentTime
   outputMain TRACING noSourcePos $ Text.unpack $ "total " <> timeDifference finishTime
 
-exportCiC :: ProofText Formula -> IO ()
+exportCiC :: ProofText -> IO ()
 exportCiC pt = do
   case fmap (unlines . map ppForthelExpr) $ mapM toStatement $ extractBlocks pt of
     Left t -> putStrLn $ Text.unpack t
     Right s -> putStrLn s
   return ()
 
-exportLean :: ProofText Formula -> IO ()
+exportLean :: ProofText -> IO ()
 exportLean pt = do
   case fmap toLeanCode $ mapM toStatement $ extractBlocks pt of
     Left t -> putStrLn $ Text.unpack t
     Right t -> putStrLn $ Text.unpack t
   return ()
 
-proveFOL :: ProofText Formula -> [Instr] -> ProofText Formula -> (IORef (ProofText Formula)) -> UTCTime -> IO ()
+proveFOL :: ProofText -> [Instr] -> ProofText -> (IORef (ProofText)) -> UTCTime -> IO ()
 proveFOL text1 opts0 oldProofText oldProofTextRef startTime = do
   -- read provers.yaml
   provers <- readProverDatabase $ Text.unpack (askArgument Provers "provers.yaml" opts0)
@@ -171,7 +171,7 @@ proveFOL text1 opts0 oldProofText oldProofTextRef startTime = do
     "total " <> showTimeDiff (diffUTCTime finishTime startTime)
   when (not success) Exit.exitFailure
 
-serverConnection :: IORef (ProofText Formula) -> [String] -> Socket -> IO ()
+serverConnection :: IORef (ProofText) -> [String] -> Socket -> IO ()
 serverConnection oldProofTextRef args0 connection = do
   thread_uuid <- Standard_Thread.my_uuid
   mapM_ (Byte_Message.write_line_message connection . UUID.bytes) thread_uuid
@@ -203,7 +203,7 @@ serverConnection oldProofTextRef args0 connection = do
 
 -- Command line parsing
 
-readArgs :: [String] -> IO ([Instr], [ProofText Formula])
+readArgs :: [String] -> IO ([Instr], [ProofText])
 readArgs args = do
   let (instrs, files, errs) = GetOpt.getOpt GetOpt.Permute options args
 

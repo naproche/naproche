@@ -40,7 +40,7 @@ import SAD.Data.Text.Decl (Decl(Decl))
 import SAD.Data.Text.Decl
 
 
-forthel :: FTL [ProofText Formula]
+forthel :: FTL [ProofText]
 forthel = section <|> macroOrPretype <|> bracketExpression <|> endOfFile
   where
     section = liftM2 ((:) . ProofTextBlock) topsection forthel
@@ -48,14 +48,14 @@ forthel = section <|> macroOrPretype <|> bracketExpression <|> endOfFile
     endOfFile = eof >> return []
 
 
-bracketExpression :: FTL [ProofText Formula]
+bracketExpression :: FTL [ProofText]
 bracketExpression = topInstruction >>= procParseInstruction
   where
     topInstruction =
       fmap (uncurry ProofTextDrop) instrDrop </>
       fmap (uncurry ProofTextInstr) (instr </> instrExit </> instrRead)
 
-procParseInstruction :: ProofText Formula -> FTL [ProofText Formula]
+procParseInstruction :: ProofText -> FTL [ProofText]
 procParseInstruction text = case text of
   ProofTextInstr _ (GetArgument Read _) -> return [text]
   ProofTextInstr _ (Command EXIT) -> return []
@@ -68,7 +68,7 @@ procParseInstruction text = case text of
       | null syms || null (tail syms) = return ()
       | otherwise = modify $ \st -> st {strSyms = syms : strSyms st}
 
-topsection :: FTL (Block Formula)
+topsection :: FTL (Block)
 topsection =
   -- We use backtracking alternative (</>) here since these environments
   -- all start with the same begin token.
@@ -77,7 +77,7 @@ topsection =
 
 --- generic topsection parsing
 
-genericTopsection :: Section -> FTL Text -> FTL [ProofText Formula] -> FTL (Block Formula)
+genericTopsection :: Section -> FTL Text -> FTL [ProofText] -> FTL (Block)
 genericTopsection kind header content = do
   pos <- getPos
   inp <- getInput
@@ -94,7 +94,7 @@ genericTopsection kind header content = do
 
 -- | @texTopsection kind env content@ parses an environment with the name @env@, followed by content
 -- parsed by the specified @content@ parser. The result is combined into a block of kind @kind@.
-texTopsection :: Section -> Text -> FTL [ProofText Formula] -> FTL (Block Formula)
+texTopsection :: Section -> Text -> FTL [ProofText] -> FTL (Block)
 texTopsection kind env content = do
   pos <- getPos
   inp <- getInput
@@ -119,38 +119,38 @@ header titles = finish $ markupTokenOf topsectionHeader titles >> optLL1 "" topI
 
 -- topsections
 
-signature' :: FTL (Block Formula)
+signature' :: FTL (Block)
 signature' =
   let sigExt = pretype $ pretypeSentence Posit sigExtend defVars noLink
   in  genericTopsection Signature sigH sigExt
 
-texSig :: FTL (Block Formula)
+texSig :: FTL (Block)
 texSig =
   let sigExt = pretype $ pretypeSentence Posit sigExtend defVars noLink
   in  texTopsection Signature "signature" sigExt
 
-definition :: FTL (Block Formula)
+definition :: FTL (Block)
 definition =
   let define = pretype $ pretypeSentence Posit defExtend defVars noLink
   in  genericTopsection Definition defH define
 
-texDefinition :: FTL (Block Formula)
+texDefinition :: FTL (Block)
 texDefinition =
   let define = pretype $ pretypeSentence Posit defExtend defVars noLink
   in  texTopsection Definition "definition" define
 
-axiom :: FTL (Block Formula)
+axiom :: FTL (Block)
 axiom =
   let posit = pretype $
         pretypeSentence Posit (beginAff >> statement) affirmVars noLink
   in  genericTopsection Axiom axmH posit
 
-texAxiom :: FTL (Block Formula)
+texAxiom :: FTL (Block)
 texAxiom =
   let posit = pretype $ pretypeSentence Posit (beginAff >> statement) affirmVars noLink
   in  texTopsection Axiom "axiom" posit
 
-theorem :: FTL (Block Formula)
+theorem :: FTL (Block)
 theorem =
   let topAffirm = pretypeSentence Affirmation (beginAff >> statement) affirmVars link
   in  genericTopsection Theorem thmH (topProof topAffirm)
@@ -167,15 +167,15 @@ thmH = header ["theorem", "lemma", "corollary", "proposition"]
 
 
 -- low-level
-choose :: FTL (Block Formula)
+choose :: FTL (Block)
 choose = sentence Selection (beginChoice >> selection) assumeVars link
-caseHypo :: FTL (Block Formula)
+caseHypo :: FTL (Block)
 caseHypo = sentence Block.CaseHypothesis (beginCase >> statement) affirmVars link
-affirm :: FTL (Block Formula)
+affirm :: FTL (Block)
 affirm = sentence Affirmation (beginAff >> statement) affirmVars link </> eqChain
-assume :: FTL (Block Formula)
+assume :: FTL (Block)
 assume = sentence Assumption (beginAsm >> statement) assumeVars noLink
-llDefn :: FTL (Block Formula)
+llDefn :: FTL (Block)
 llDefn = sentence LowDefinition(beginDef >> setNotion </> functionNotion) llDefnVars noLink
 
 -- Links and Identifiers
@@ -202,17 +202,17 @@ eqLink = optLL1 [] $ parenthesised $ token' "by" >> identifiers
 
 -- declaration management, typings and pretypings
 
-updateDeclbefore :: FTL (ProofText Formula) -> FTL [ProofText Formula] -> FTL [ProofText Formula]
+updateDeclbefore :: FTL (ProofText) -> FTL [ProofText] -> FTL [ProofText]
 updateDeclbefore blp p = do
   txt <- blp; case txt of
     ProofTextBlock bl -> addDecl (Block.declaredNames bl) $ fmap (txt : ) p
     _ -> fmap (txt :) p
 
-pretyping :: (Block Formula) -> FTL (Block Formula)
+pretyping :: (Block) -> FTL (Block)
 pretyping bl = do
   dvs <- getDecl; tvs <- getPretyped; pret dvs tvs bl
 
-pret :: Set VariableName -> [TVar] -> (Block Formula) -> FTL (Block Formula)
+pret :: Set VariableName -> [TVar] -> (Block) -> FTL (Block)
 pret dvs tvs bl = do
   untyped <- makeDecls $ fvToVarSet $ excludeSet (allFree (Block.formula bl)) (blockVars <> dvs)
   let typing =
@@ -225,13 +225,13 @@ pret dvs tvs bl = do
     assumeBlock = bl {Block.body = [], Block.kind = Assumption, Block.link = []}
     typeWith v = subst (mkVar v) (VarHole "") . snd . fromJust . find (elem v . fst)
 
-pretypeBefore :: FTL (Block Formula) -> FTL [ProofText Formula] -> FTL [ProofText Formula]
+pretypeBefore :: FTL (Block) -> FTL [ProofText] -> FTL [ProofText]
 pretypeBefore blp p = do
   bl <- blp; typeBlock <- pretyping bl; let pretyped = Block.declaredNames typeBlock
   pResult   <- addDecl (pretyped <> Block.declaredNames bl) $ fmap (ProofTextBlock bl : ) p
   return $ if null pretyped then pResult else ProofTextBlock typeBlock : pResult
 
-pretype :: FTL (Block Formula) -> FTL [ProofText Formula]
+pretype :: FTL (Block) -> FTL [ProofText]
 pretype p = p `pretypeBefore` return []
 
 
@@ -260,7 +260,7 @@ beginDef = markupToken lowlevelHeader "define"
 -- generic sentence parser
 
 statementBlock :: Section
-                  -> FTL Formula -> FTL [Text] -> FTL (Block Formula)
+                  -> FTL Formula -> FTL [Text] -> FTL (Block)
 statementBlock kind p mbLink = do
   nm <- optLLx "__" lowIdentifier;
   pos <- getPos; inp <- getInput;
@@ -273,7 +273,7 @@ pretypeSentence :: Section
                    -> FTL Formula
                    -> (Set VariableName -> Formula -> Maybe Text)
                    -> FTL [Text]
-                   -> FTL (Block Formula)
+                   -> FTL (Block)
 pretypeSentence kind p wfVars mbLink = narrow $ do
   dvs <- getDecl; tvr <- fmap (Set.unions . map fst) getPretyped
   bl <- wellFormedCheck (wf dvs tvr) $ statementBlock kind p mbLink
@@ -289,7 +289,7 @@ sentence :: Section
             -> FTL Formula
             -> (Set VariableName -> Formula -> Maybe Text)
             -> FTL [Text]
-            -> FTL (Block Formula)
+            -> FTL (Block)
 sentence kind p wfVars mbLink = do
   dvs <- getDecl;
   bl <- wellFormedCheck (wfVars dvs . Block.formula) $ statementBlock kind p mbLink
@@ -379,7 +379,7 @@ indThesis fr pre post = do
 
 -- proof initiation
 
-proof :: FTL (Block Formula) -> FTL (Block Formula)
+proof :: FTL (Block) -> FTL (Block)
 proof p = do
   pre <- preMethod; bl <- p; post <- postMethod;
   nf <- indThesis (Block.formula bl) pre post
@@ -387,7 +387,7 @@ proof p = do
 
 
 
-topProof :: FTL (Block Formula) -> FTL [ProofText Formula]
+topProof :: FTL (Block) -> FTL [ProofText]
 topProof p = do
   pre <- preMethod; bl <- p; post <- postMethod; typeBlock <- pretyping bl;
   let pretyped = Block.declaredNames typeBlock
@@ -396,7 +396,7 @@ topProof p = do
     addBody pre post $ bl {Block.formula = nf}
   return $ if null pretyped then [nbl] else [ProofTextBlock typeBlock, nbl]
 
-addBody :: Scheme -> Scheme -> (Block Formula) -> FTL (Block Formula)
+addBody :: Scheme -> Scheme -> (Block) -> FTL (Block)
 addBody None None b = return b -- no proof was given
 addBody _ Short b = proofSentence b   -- a short proof was given
 addBody pre post b = proofBody $ b {Block.kind = kind}  -- a full proof was given
@@ -406,17 +406,17 @@ addBody pre post b = proofBody $ b {Block.kind = kind}  -- a full proof was give
 
 -- proof texts
 
-proofSentence :: (Block Formula) -> FTL (Block Formula)
+proofSentence :: (Block) -> FTL (Block)
 proofSentence bl = do
   pbl <- narrow assume </> proof (narrow $ affirm </> choose) </> narrow llDefn
   return bl {Block.body = [ProofTextBlock pbl]}
 
-proofBody :: (Block Formula) -> FTL (Block Formula)
+proofBody :: (Block) -> FTL (Block)
 proofBody bl = do
   bs <- proofText; ls <- link
   return bl {Block.body = bs, Block.link = ls ++ Block.link bl}
 
-proofText :: FTL [ProofText Formula]
+proofText :: FTL [ProofText]
 proofText =
   qed <|>
   (unfailing (fmap ProofTextBlock lowtext <|> instruction) `updateDeclbefore` proofText)
@@ -430,7 +430,7 @@ proofText =
       fmap (uncurry ProofTextDrop) instrDrop </>
       fmap (uncurry ProofTextInstr) instr
 
-caseDestinction :: FTL (Block Formula)
+caseDestinction :: FTL (Block)
 caseDestinction = do
   bl@Block { Block.formula = fr } <- narrow caseHypo
   proofBody $ bl {
@@ -439,7 +439,7 @@ caseDestinction = do
 
 -- equality Chain
 
-eqChain :: FTL (Block Formula)
+eqChain :: FTL (Block)
 eqChain = do
   dvs <- getDecl; nm <- opt "__" lowIdentifier; pos <- getPos; inp <- getInput
   body <- wellFormedCheck (chainVars dvs) $ sTerm >>= nextTerm
@@ -451,10 +451,10 @@ eqChain = do
   where
     chainVars dvs = affirmVars dvs . foldl1 And . map Block.formula
 
-eqTail :: Formula -> FTL [Block Formula]
+eqTail :: Formula -> FTL [Block]
 eqTail t = nextTerm t </> (token "." >> return [])
 
-nextTerm :: Formula -> FTL [Block Formula]
+nextTerm :: Formula -> FTL [Block]
 nextTerm t = do
   pos <- getPos; inp <- getInput
   symbol ".="; s <- sTerm; ln <- eqLink; toks <- getTokens inp
@@ -462,8 +462,8 @@ nextTerm t = do
     [] Affirmation "__" ln pos toks) <$> eqTail s
 
 -- | Fail if @p@ failed with no or only @EOF@ input remaining
--- or continue with a @ProofText FormulaError@ as a @ParseResult@.
-unfailing :: FTL (ProofText Formula) -> FTL (ProofText Formula)
+-- or continue with a @ProofTextError@ as a @ParseResult@.
+unfailing :: FTL (ProofText) -> FTL (ProofText)
 unfailing p = do
   res <- inspectError p
   case res of

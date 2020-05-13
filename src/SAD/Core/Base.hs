@@ -137,7 +137,7 @@ data VState = VS {
   rewriteRules    :: [Rule],
   evaluations     :: DT.DisTree Evaluation, -- (low level) evaluation rules
   currentThesis   :: Context,
-  currentBranch   :: [Block Formula],         -- branch of the current block
+  currentBranch   :: [Block],         -- branch of the current block
   currentContext  :: [Context],
   mesonRules      :: (DT.DisTree MRule, DT.DisTree MRule),
   definitions     :: Definitions,
@@ -145,7 +145,7 @@ data VState = VS {
   skolemCounter   :: Int,
   instructions    :: [Instr],
   provers         :: [Prover],
-  restProofText   :: [ProofText Formula] }
+  restProofText   :: [ProofText] }
 
 type VM = ReaderT VState CRM
 

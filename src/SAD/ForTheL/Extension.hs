@@ -140,7 +140,7 @@ allDistinctVars = disVs []
 
 
 
-pretypeVariable :: FTL (ProofText Formula)
+pretypeVariable :: FTL (ProofText)
 pretypeVariable = do
   (pos, tv) <- narrow typeVar
   modify $ upd tv
@@ -163,7 +163,7 @@ pretypeVariable = do
     upd (vs, notion) st = st { tvrExpr = (Set.map posVarName vs, notion) : tvrExpr st }
 
 
-introduceMacro :: FTL (ProofText Formula)
+introduceMacro :: FTL (ProofText)
 introduceMacro = do
   pos1 <- getPos
   markupToken macroLet "let"

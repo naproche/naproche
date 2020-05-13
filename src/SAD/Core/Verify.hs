@@ -42,7 +42,7 @@ import qualified SAD.Data.Text.Context as Context
 import qualified Isabelle.Markup as Markup
 
 -- | Main verification loop
-verify :: Text -> [Prover] -> IORef RState -> ProofText Formula -> IO (Bool, Maybe (ProofText Formula))
+verify :: Text -> [Prover] -> IORef RState -> ProofText -> IO (Bool, Maybe (ProofText))
 verify fileName provers reasonerState (ProofTextRoot text) = do
   let text' = ProofTextInstr noPos (GetArgument File fileName) : text
   Message.outputReasoner Message.TRACING (fileOnlyPos fileName) "verification started"
@@ -60,7 +60,7 @@ verify fileName provers reasonerState (ProofTextRoot text) = do
     "verification " ++ (if success then "successful" else "failed")
   return (success, fmap (ProofTextRoot . tail . snd) result)
 
-verificationLoop :: VState -> VM ([ProofText Formula], [ProofText Formula])
+verificationLoop :: VState -> VM ([ProofText], [ProofText])
 verificationLoop state@VS {
   thesisMotivated = motivated,
   rewriteRules    = rules,
@@ -252,7 +252,7 @@ at the right point in the context; extract rewriteRules from them and further
 refine the currentThesis. Then move on with the verification loop.
 If neither inductive nor case hypothesis is present this is the same as
 verificationLoop state -}
-verifyProof :: VState -> VM ([ProofText Formula], [ProofText Formula])
+verifyProof :: VState -> VM ([ProofText], [ProofText])
 verifyProof state@VS {
   rewriteRules   = rules,
   currentThesis  = thesis,
@@ -308,7 +308,7 @@ deleteInductionOrCase = dive id
 -- Instruction handling
 
 {- execute an instruction or add an instruction parameter to the state -}
-procProofTextInstr :: Instr -> VM ([ProofText Formula], [ProofText Formula])
+procProofTextInstr :: Instr -> VM ([ProofText], [ProofText])
 procProofTextInstr = flip proc $ ask >>= verificationLoop
   where
     proc (Command RULES) = (>>) $ do
@@ -354,5 +354,5 @@ procProofTextInstr = flip proc $ ask >>= verificationLoop
       | otherwise = addInstruction i
 
 {- drop an instruction from the state -}
-procProofTextDrop :: Drop -> VM ([ProofText Formula], [ProofText Formula])
+procProofTextDrop :: Drop -> VM ([ProofText], [ProofText])
 procProofTextDrop = flip dropInstruction $ ask >>= verificationLoop

@@ -111,7 +111,7 @@ boundReports pide decl = dive 0
 
 -- add reports during parsing
 
-addBlockReports :: Block Formula -> FTL ()
+addBlockReports :: Block -> FTL ()
 addBlockReports bl = addReports $ \pide -> let decls = Block.declaredVariables bl in
   (Block.position bl, Markup.expression "text block") :
   formulaReports pide decls (Block.formula bl) ++
