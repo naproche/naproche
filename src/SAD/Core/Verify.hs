@@ -84,7 +84,7 @@ verificationLoop state@VS {
   let newBranch = block : branch; contextBlock = Context f newBranch []
 
   whenInstruction Translation False $
-    unless (Block.isTopLevel block) $ 
+    unless (Block.isTopLevel block) $
       translateLog Message.WRITELN (Block.position block) $ Text.pack $ show f
 
   fortifiedFormula <-
@@ -179,7 +179,7 @@ verificationLoop state@VS {
       -- motivated && not newMotivated == True
       verifyProof state {
         thesisMotivated = motivated && not newMotivation,
-        currentThesis = Context.setForm thesis finalThesis, restProofText = [] }
+        currentThesis = Context.setFormula thesis finalThesis, restProofText = [] }
       -- put everything together
       let checkMark = if Block.isTopLevel block then id else ProofTextChecked
       return (ProofTextBlock newBlock : newBlocks, checkMark (ProofTextBlock markedBlock) : markedBlocks)
@@ -262,7 +262,7 @@ verifyProof state@VS {
   where
     dive construct context (Imp (Tag InductionHypothesis f) g)
       | isClosed f =
-          process (Context.setForm thesis f : context) (construct g)
+          process (Context.setFormula thesis f : context) (construct g)
     dive construct context (Imp (Tag Tag.CaseHypothesis f) g)
       | isClosed f =
           process (thesis {Context.formula = f} : context) (construct g)
@@ -275,7 +275,7 @@ verifyProof state@VS {
     process newContext f = do
       let newRules = extractRewriteRule (head newContext) ++ rules
           (_, _, newThesis) =
-            inferNewThesis (definitions state) newContext $ Context.setForm thesis f
+            inferNewThesis (definitions state) newContext $ Context.setFormula thesis f
       whenInstruction Printthesis False $ when (
         noInductionOrCase (Context.formula newThesis) && not (null $ restProofText state)) $
           thesisLog Message.WRITELN

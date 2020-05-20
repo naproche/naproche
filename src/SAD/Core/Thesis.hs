@@ -42,7 +42,7 @@ inferNewThesis definitions wholeContext@(context:_) thesis
   where
     -- a thesis can only become unmotivated through an assumption
     motivated = notAnAssumption || isJust usefulVariation
-    newThesis = Context.setForm thesis $ reduceWithEvidence $ getObj postReductionThesis
+    newThesis = Context.setFormula thesis $ reduceWithEvidence $ getObj postReductionThesis
     changed = hasChanged postReductionThesis
     postReductionThesis
       | notAnAssumption = -- enable destruction of defined symbols in this case
@@ -300,7 +300,7 @@ isFunctionMacro = isMacro . Context.formula
 functionTaskThesis :: Context -> Context -> (Bool, Bool, Context)
 functionTaskThesis context thesis = (True, changed, newThesis)
   where
-    newThesis = Context.setForm thesis $ getObj reducedThesis
+    newThesis = Context.setFormula thesis $ getObj reducedThesis
     changed = hasChanged reducedThesis
     thesisFormula = Context.formula thesis
     reducedThesis = reduceFunctionTask (Context.formula context) thesisFormula

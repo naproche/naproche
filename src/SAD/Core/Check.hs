@@ -59,7 +59,7 @@ fillDef alreadyChecked context = fill True False [] (Just True) 0 $ Context.form
 
 cnRaise :: Context -> [Formula] -> VM [Context]
 cnRaise thisBlock local = asks currentContext >>=
-  return . flip (foldr $ (:) . Context.setForm thisBlock) local
+  return . flip (foldr $ (:) . Context.setFormula thisBlock) local
 
 
 
@@ -113,7 +113,7 @@ testDef context term (guards, fortifiedTerm) = do
       | otherwise =
           incrementIntCounter HardChecks >>
           defLog (header lefts hardGuards <> thead (rights hardGuards)) >>
-          mapM_ (reason . Context.setForm (wipeLink context)) (lefts hardGuards) >>
+          mapM_ (reason . Context.setFormula (wipeLink context)) (lefts hardGuards) >>
           incrementIntCounter SuccessfulChecks
 
     setup :: VM a -> VM a

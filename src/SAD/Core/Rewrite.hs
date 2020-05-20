@@ -213,7 +213,7 @@ dischargeConditions verbositySetting conditions =
       | otherwise = do
           log (header lefts hardConditions <> thead (rights hardConditions))
           thesis <- thesis
-          mapM_ (reason . Context.setForm (wipeLink thesis)) (lefts hardConditions)
+          mapM_ (reason . Context.setFormula (wipeLink thesis)) (lefts hardConditions)
 
     setup :: VM a -> VM a
     setup action = do

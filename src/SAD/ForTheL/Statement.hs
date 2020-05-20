@@ -435,12 +435,12 @@ set = label "set definition" $ symbSet <|> setOf
       tokenOf' ["set", "sets"]; nm <- var -|- hidden; token' "of";
       (q, f, u) <- notion >>= single; vnm <- hidden
       vnmDecl <- makeDecl vnm;
-      return (id, setForm vnmDecl $ subst (pVar vnm) (posVarName u) $ q f, Set.singleton nm)
+      return (id, setFormula vnmDecl $ subst (pVar vnm) (posVarName u) $ q f, Set.singleton nm)
     symbSet = do
       (cnd, nm) <- symbSetNotation; h <- hidden
       nmDecl <- makeDecl nm
-      return (id, setForm nmDecl $ cnd $ pVar nm, Set.singleton h)
-    setForm dcl = let nm = PosVar (declName dcl) (declPosition dcl) in
+      return (id, setFormula nmDecl $ cnd $ pVar nm, Set.singleton h)
+    setFormula dcl = let nm = PosVar (declName dcl) (declPosition dcl) in
       And (mkSet (mkVar (VarHole ""))) . dAll dcl . Iff (mkElem (pVar nm) (mkVar (VarHole "")))
 
 

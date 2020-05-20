@@ -1,8 +1,8 @@
-module SAD.Data.Text.Context 
+module SAD.Data.Text.Context
   ( Context(..)
   , MRule(..)
   , name
-  , setForm
+  , setFormula
   , isLowLevel
   , link
   , head
@@ -25,7 +25,7 @@ data Context = Context {
   mesonRules     :: [MRule]}  -- MESON rules extracted from the formula
   deriving (Eq, Ord, Show)
 
-data MRule = MR 
+data MRule = MR
   { assumption :: [Formula] -- assumptions of the rule
   , conclusion :: Formula   -- conclusion of the rule
   } deriving (Eq, Ord, Show)
@@ -58,5 +58,5 @@ link  = Block.link . head
 isAssumption :: Context -> Bool
 isAssumption = (==) Assumption . Block.kind . head
 
-setForm :: Context -> Formula -> Context
-setForm context f = context { formula = f }
+setFormula :: Context -> Formula -> Context
+setFormula context f = context { formula = f }

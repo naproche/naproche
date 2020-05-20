@@ -57,7 +57,7 @@ reason tc = local (\st -> st {currentThesis = tc}) proveThesis
 
 withGoal :: VM a -> Formula -> VM a
 withGoal action goal = local (\vState ->
-  vState { currentThesis = Context.setForm (currentThesis vState) goal}) action
+  vState { currentThesis = Context.setFormula (currentThesis vState) goal}) action
 
 withContext :: VM a -> [Context] -> VM a
 withContext action context = local (\vState ->
@@ -188,7 +188,7 @@ isDefinitionBlock ctx = Block.Definition == Block.kind (Context.head ctx)
 isSignatureBlock  ctx = Block.Signature  == Block.kind (Context.head ctx)
 
 replaceHeadTerm :: Context -> Context
-replaceHeadTerm c = Context.setForm c $ dive 0 $ Context.formula c
+replaceHeadTerm c = Context.setFormula c $ dive 0 $ Context.formula c
   where
     dive :: Int -> Formula -> Formula
     dive n (All _ (Imp (Tag HeadTerm Trm {trmName = TermEquality, trmArgs = [_, t]}) f)) =
@@ -250,7 +250,7 @@ unfold :: ReaderT VState CRM [Context]
 unfold = do
   thesis <- asks currentThesis
   context <- asks currentContext
-  let task = Context.setForm thesis (Not $ Context.formula thesis) : context
+  let task = Context.setFormula thesis (Not $ Context.formula thesis) : context
   definitions <- asks definitions
   evaluations <- asks evaluations
   generalUnfoldSetting <- askInstructionBool Unfold True
@@ -293,7 +293,7 @@ unfold = do
 unfoldConservative :: Context -> ReaderT UnfoldState (W.Writer (Sum Int)) Context
 unfoldConservative toUnfold
   | isDeclaration toUnfold = pure toUnfold
-  | otherwise = fmap (Context.setForm toUnfold) $ fill [] (Just True) 0 $ Context.formula toUnfold
+  | otherwise = fmap (Context.setFormula toUnfold) $ fill [] (Just True) 0 $ Context.formula toUnfold
   where
     fill :: [Formula] -> Maybe Bool -> Int -> Formula -> ReaderT UnfoldState (W.Writer (Sum Int)) Formula
     fill localContext sign n f
