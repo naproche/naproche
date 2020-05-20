@@ -18,36 +18,37 @@ module SAD.Core.Reason (
   ) where
 -- FIXME reconcept some functions so that this module does not need to export
 --       the small fries anymore
-import Control.Monad
-import Data.Maybe
-import System.Timeout
-import Control.Exception
-import Data.Monoid (Sum, getSum)
-import qualified Control.Monad.Writer as W
-import qualified Data.Set as Set
-import qualified Data.Map as Map
-import Control.Monad.State
-import Control.Monad.Reader
-import qualified Isabelle.Standard_Thread as Standard_Thread
-import qualified Data.Text.Lazy as Text
 
-import SAD.Core.SourcePos
+
+import Control.Exception (evaluate)
+import Control.Monad.Reader
+import Data.Maybe (fromJust, fromMaybe, maybeToList)
+import Data.Monoid (Sum, getSum)
+import System.Timeout (timeout)
+
+import qualified Control.Monad.Writer as W
+import qualified Data.Map as Map
+import qualified Data.Set as Set
+import qualified Data.Text.Lazy as Text
+import qualified Isabelle.Standard_Thread as Standard_Thread
 
 import SAD.Core.Base
-import qualified SAD.Core.Message as Message
+import SAD.Core.SourcePos (noSourcePos)
+import SAD.Data.Definition
 import SAD.Data.Formula
-import SAD.Data.Instr
+import SAD.Data.Instr (Limit(..), Flag(..))
 import SAD.Data.Text.Context (Context(Context))
-import qualified SAD.Data.Text.Context as Context
-import SAD.Data.Text.Block (Section(..))
-import qualified SAD.Data.Text.Block as Block
-import SAD.Data.Definition hiding (isDefinition, DefType(..), Guards)
-import qualified SAD.Data.Definition as Definition
+import SAD.Data.Text.Decl (newDecl)
+import SAD.Export.Prover (export, Result(..))
+import SAD.Prove.MESON (prove)
 
-import SAD.Export.Prover
-import SAD.Prove.MESON
+import qualified SAD.Core.Message as Message
+import qualified SAD.Data.Definition as Definition
 import qualified SAD.Data.Structures.DisTree as DT
-import SAD.Data.Text.Decl
+import qualified SAD.Data.Text.Block as Block
+import qualified SAD.Data.Text.Context as Context
+
+
 
 -- Reasoner
 
@@ -68,8 +69,11 @@ thesis = asks currentThesis
 
 proveThesis :: VM ()
 proveThesis = do
-  reasoningDepth <- askInstructionInt Depthlimit 3;  guard $ reasoningDepth > 0
-  asks currentContext >>= filterContext (splitGoal >>= sequenceGoals reasoningDepth 0)
+  reasoningDepth <- askInstructionInt Depthlimit 3
+  guard (reasoningDepth > 0) -- fall back to default value of the underlying CPS Maybe monad.
+  ctx <- asks currentContext
+  goals <- splitGoal
+  filterContext (sequenceGoals reasoningDepth 0 goals) ctx
 
 sequenceGoals :: Int -> Int -> [Formula] -> VM ()
 sequenceGoals reasoningDepth iteration (goal:restGoals) = do
@@ -114,8 +118,10 @@ splitGoal = asks (normalizedSplit . strip . Context.formula . currentThesis)
 launchProver :: Int -> VM ()
 launchProver iteration = do
   whenInstruction Printfulltask False printTask
-  proverList <- asks provers ; instrList <- asks instructions
-  goal <- thesis; context <- asks currentContext
+  proverList <- asks provers
+  instrList <- asks instructions
+  goal <- thesis
+  context <- asks currentContext
   let callATP = justIO $ pure $ export iteration proverList instrList context goal
   callATP >>= timer ProofTime . justIO >>= guardResult
   res <- fmap head $ askRS counters
@@ -141,7 +147,8 @@ launchProver iteration = do
 
 launchReasoning :: VM ()
 launchReasoning = do
-  goal <- thesis; context <- asks currentContext
+  goal <- thesis
+  context <- asks currentContext
   skolemInt <- asks skolemCounter
   (mesonPos, mesonNeg) <- asks mesonRules
   let lowlevelContext = takeWhile Context.isLowLevel context
@@ -163,7 +170,7 @@ launchReasoning = do
   context is selected. -}
 filterContext :: VM a -> [Context] -> VM a
 filterContext action context = do
-  link <- asks (Set.fromList . Context.link . currentThesis);
+  link <- asks (Set.fromList . Context.link . currentThesis)
   if Set.null link
     then action `withContext`
          (map replaceSignHead $ filter (not . isTop . Context.formula) context)
@@ -173,12 +180,12 @@ filterContext action context = do
   where
     (lowlevelContext, toplevelContext) = span Context.isLowLevel context
     defsAndSigs =
-      let defOrSig c = (isDefinition c || isSignature c)
+      let defOrSig c = (isDefinitionBlock c || isSignatureBlock c)
       in  map replaceHeadTerm $ filter defOrSig toplevelContext
 
-isDefinition, isSignature :: Context -> Bool
-isDefinition = (==) Definition . Block.kind . Context.head
-isSignature  = (==) Signature  . Block.kind . Context.head
+isDefinitionBlock, isSignatureBlock :: Context -> Bool
+isDefinitionBlock ctx = Block.Definition == Block.kind (Context.head ctx)
+isSignatureBlock  ctx = Block.Signature  == Block.kind (Context.head ctx)
 
 replaceHeadTerm :: Context -> Context
 replaceHeadTerm c = Context.setForm c $ dive 0 $ Context.formula c
@@ -198,7 +205,7 @@ replaceHeadTerm c = Context.setForm c $ dive 0 $ Context.formula c
 some work by only diving into signature extensions and definitions-}
 replaceSignHead :: Context -> Context
 replaceSignHead c
-  | isDefinition c || isSignature c = replaceHeadTerm c
+  | isDefinitionBlock c || isSignatureBlock c = replaceHeadTerm c
   | otherwise = c
 
 
@@ -241,9 +248,11 @@ data UnfoldState = UF {
 -- FIXME the reader monad transformer used here is completely superfluous
 unfold :: ReaderT VState CRM [Context]
 unfold = do
-  thesis <- asks currentThesis; context <- asks currentContext
+  thesis <- asks currentThesis
+  context <- asks currentContext
   let task = Context.setForm thesis (Not $ Context.formula thesis) : context
-  definitions <- asks definitions; evaluations <- asks evaluations
+  definitions <- asks definitions
+  evaluations <- asks evaluations
   generalUnfoldSetting <- askInstructionBool Unfold True
   lowlevelUnfoldSetting <- askInstructionBool Unfoldlow True
   generalSetUnfoldSetting <- askInstructionBool Unfoldsf True
@@ -270,11 +279,14 @@ unfold = do
   where
     nothingToUnfold =
       whenInstruction Printunfold False $ reasonLog Message.WRITELN noSourcePos "nothing to unfold"
+
     unfoldLog (goal:lowLevelContext) =
       whenInstruction Printunfold False $ reasonLog Message.WRITELN noSourcePos $ "unfold to:\n"
         <> Text.unlines (reverse $ map ((<>) "  " . Text.pack . show . Context.formula) lowLevelContext)
         <> "  |- " <> Text.pack (show (neg $ Context.formula goal))
-    neg (Not f) = f; neg f = f
+
+    neg (Not f) = f
+    neg f = f
 
 
 {- conservative unfolding of local properties -}
@@ -292,7 +304,7 @@ unfoldConservative toUnfold
     fill localContext sign n f = roundFM VarU fill localContext sign n f
 
     isDeclaration :: Context -> Bool
-    isDeclaration = (==) LowDefinition . Block.kind . Context.head
+    isDeclaration = (==) Block.LowDefinition . Block.kind . Context.head
 
 {- unfold an atomic formula f occuring with polarity sign -}
 unfoldAtomic :: (W.MonadWriter w m, MonadTrans t,
