@@ -66,7 +66,7 @@ cnRaise thisBlock local = asks currentContext >>=
 
 setDef :: Bool -> Context -> Formula -> VM Formula
 setDef isNewWord context term@Trm{trmName = t, trmId = tId} =
-  incrementIntCounter Symbols >>
+  incrementCounter Symbols >>
     (    (guard isNewWord >> return term) -- do not check new word
     <|>  (findDef term >>= testDef context term) -- check term's definition
     <|>  (out >> mzero )) -- failure message
@@ -79,10 +79,9 @@ setDef isNewWord context term@Trm{trmName = t, trmId = tId} =
 -- Find relevant definitions and test them
 type Guards = [Formula]
 type FortifiedTerm = Formula
-type DefDuo = (Guards, FortifiedTerm)
 
 
-findDef :: Formula -> VM DefDuo
+findDef :: Formula -> VM (Guards, FortifiedTerm)
 findDef term@Trm{trmArgs = tArgs} = do
   def <- getDef term
   sb  <- match (defTerm def) term
@@ -98,7 +97,7 @@ check it. setup and cleanup take care of the special proof times that we allow
 an ontological check. easyCheck are inbuild reasoning methods, hardCheck passes
 a task to an ATP.
 -}
-testDef :: Context -> Formula -> DefDuo -> VM Formula
+testDef :: Context -> Formula -> (Guards, FortifiedTerm) -> VM Formula
 testDef context term (guards, fortifiedTerm) = do
   userCheckSetting <- askInstructionBool Check True
   if   userCheckSetting
@@ -108,13 +107,13 @@ testDef context term (guards, fortifiedTerm) = do
     easyCheck = mapM trivialityCheck guards
     hardCheck hardGuards
       | all isRight hardGuards =
-          incrementIntCounter TrivialChecks >>
+          incrementCounter TrivialChecks >>
           defLog ("trivial " <> header rights hardGuards)
       | otherwise =
-          incrementIntCounter HardChecks >>
+          incrementCounter HardChecks >>
           defLog (header lefts hardGuards <> thead (rights hardGuards)) >>
           mapM_ (reason . Context.setFormula (wipeLink context)) (lefts hardGuards) >>
-          incrementIntCounter SuccessfulChecks
+          incrementCounter SuccessfulChecks
 
     setup :: VM a -> VM a
     setup action = do

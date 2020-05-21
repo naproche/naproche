@@ -13,7 +13,7 @@ import Control.Monad (when, unless)
 import Data.Char (toLower)
 import Data.IORef
 import Data.Maybe (fromMaybe)
-import Data.Time (UTCTime, getCurrentTime, diffUTCTime)
+import Data.Time (UTCTime, addUTCTime, getCurrentTime, diffUTCTime)
 
 import qualified Control.Exception as Exception
 import qualified Data.Text.Lazy as Text
@@ -128,8 +128,8 @@ proveFOL text1 opts0 oldProofText oldProofTextRef startTime = do
   finishTime <- getCurrentTime
   finalReasonerState <- readIORef reasonerState
 
-  let counterList = counters finalReasonerState
-      accumulate  = accumulateIntCounter counterList 0
+  let trackerList = trackers finalReasonerState
+  let accumulate  = sumCounter trackerList
 
   -- print statistics
   outputMain TRACING noSourcePos $
@@ -152,23 +152,26 @@ proveFOL text1 opts0 oldProofText oldProofTextRef startTime = do
   outputMain TRACING noSourcePos $
     "symbols "        ++ show (accumulate Symbols)
     ++ " - checks "   ++ show
-      (accumulateIntCounter counterList trivialChecks HardChecks)
+      (sumCounter trackerList HardChecks + trivialChecks)
     ++ " - trivial "  ++ show trivialChecks
     ++ " - proved "   ++ show (accumulate SuccessfulChecks)
     ++ " - unfolds "  ++ show (accumulate Unfolds)
 
-  let accumulateTime = accumulateTimeCounter counterList
-      proverTime     = accumulateTime proveStart ProofTime
-      simplifyTime   = accumulateTime proverTime SimplifyTime
+  let proverTime     = sumTimer trackerList ProofTimer
+  let simplifyTime   = sumTimer trackerList SimplifyTimer
+  let proveFinish    = addUTCTime proverTime proveStart
+  let simplifyFinish = addUTCTime simplifyTime proveFinish
 
   outputMain TRACING noSourcePos $ Text.unpack $
     "parser "           <> showTimeDiff (diffUTCTime proveStart startTime)
-    <> " - reasoner "   <> showTimeDiff (diffUTCTime finishTime simplifyTime)
-    <> " - simplifier " <> showTimeDiff (diffUTCTime simplifyTime proverTime)
-    <> " - prover "     <> showTimeDiff (diffUTCTime proverTime proveStart)
-    <> "/" <> showTimeDiff (maximalTimeCounter counterList SuccessTime)
+    <> " - reasoner "   <> showTimeDiff (diffUTCTime finishTime simplifyFinish)
+    <> " - simplifier " <> showTimeDiff simplifyTime
+    <> " - prover "     <> showTimeDiff proverTime
+    <> "/" <> showTimeDiff (maximalTimer trackerList SuccessTimer)
+
   outputMain TRACING noSourcePos $ Text.unpack $
     "total " <> showTimeDiff (diffUTCTime finishTime startTime)
+
   when (not success) Exit.exitFailure
 
 serverConnection :: IORef (ProofText) -> [String] -> Socket -> IO ()

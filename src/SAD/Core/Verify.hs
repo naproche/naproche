@@ -43,12 +43,13 @@ import qualified Isabelle.Markup as Markup
 verify :: Text -> [Prover] -> IORef RState -> ProofText -> IO (Bool, Maybe (ProofText))
 verify fileName provers reasonerState (ProofTextRoot text) = do
   let text' = ProofTextInstr noPos (GetArgument File fileName) : text
+  let verificationState = makeInitialVState provers text'
   Message.outputReasoner Message.TRACING (fileOnlyPos fileName) "verification started"
 
-  let verificationState = makeInitialVState provers text'
   result <- flip runRM reasonerState $
     runReaderT (verificationLoop verificationState) verificationState
-  ignoredFails <- (\st -> accumulateIntCounter (counters st) 0 FailedGoals) <$>
+
+  ignoredFails <- (\st -> sumCounter (trackers st) FailedGoals) <$>
     readIORef reasonerState
 
   let success = isJust result && ignoredFails == 0
@@ -73,7 +74,7 @@ verificationLoop state@VS {
   alreadyChecked <- askRS alreadyChecked
 
   -- statistics and user communication
-  unless alreadyChecked $ incrementIntCounter Sections
+  unless alreadyChecked $ incrementCounter Sections
   whenInstruction Printsection False $ justIO $
     Message.outputForTheL Message.WRITELN (Block.position block) $
     Message.trimString (Block.showForm 0 block "")
@@ -87,12 +88,12 @@ verificationLoop state@VS {
   fortifiedFormula <-
     if Block.isTopLevel block
       then return f
-      -- For low-level blocks we check definitions and fortify terms.
+      -- For low-level blocks we check definitions and fortify terms (by supplying evidence).
       else (fillDef alreadyChecked contextBlock) <|> (setFailed >> return f)
 
   unsetChecked
 
-  checkFailed (return (restProofText state, restProofText state)) $ do
+  ifAskFailed (return (restProofText state, restProofText state)) $ do
     let proofTask = generateProofTask kind (Block.declaredNames block) fortifiedFormula
     let freshThesis = Context proofTask newBranch []
     let toBeProved = (Block.needsProof block) && not (Block.isTopLevel block)
@@ -127,7 +128,7 @@ verificationLoop state@VS {
     let formulaImage = Block.formulate newBlock
     let markedBlock = block {Block.body = markedProof}
 
-    checkFailed (return (ProofTextBlock newBlock : blocks, ProofTextBlock markedBlock : blocks)) $ do
+    ifAskFailed (return (ProofTextBlock newBlock : blocks, ProofTextBlock markedBlock : blocks)) $ do
 
       (mesonRules, intermediateSkolem) <- MESON.contras $ deTag formulaImage
       let (newDefinitions, newGuards) =
@@ -196,19 +197,19 @@ verificationLoop st@VS {
       then do
         let logAction = reasonLog Message.TRACING (Block.position block) $ "goal: " <> text
             block = Context.head thesis ; text = Block.text block
-        incrementIntCounter Equations ; whenInstruction Printgoal True logAction
-        timer SimplifyTime (equalityReasoning thesis) <|> (
+        incrementCounter Equations ; whenInstruction Printgoal True logAction
+        timeWith SimplifyTimer (equalityReasoning thesis) <|> (
           reasonLog Message.WARNING (Block.position block) "equation failed" >> setFailed >>
-          guardInstruction Skipfail False >> incrementIntCounter FailedEquations)
+          guardInstruction Skipfail False >> incrementCounter FailedEquations)
       else do
         let logAction = reasonLog Message.TRACING (Block.position block) $ "goal: " <> text
             block = Context.head thesis ; text = Block.text block
-        unless (isTop . Context.formula $ thesis) $ incrementIntCounter Goals
+        unless (isTop . Context.formula $ thesis) $ incrementCounter Goals
         whenInstruction Printgoal True logAction
         proveThesis <|> (
           reasonLog Message.WARNING (Block.position block) "goal failed" >> setFailed >>
           --guardInstruction Skipfail False >>
-          incrementIntCounter FailedGoals)
+          incrementCounter FailedGoals)
 
 verificationLoop state@ VS {restProofText = ProofTextChecked txt : rest} =
   let newTxt = Block.setChildren txt (Block.children txt ++ newInstructions)

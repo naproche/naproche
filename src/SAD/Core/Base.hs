@@ -10,7 +10,7 @@ Verifier state monad and common functions.
 
 
 module SAD.Core.Base
-  ( RState (..), CRM
+  ( RState(..), CRM
   , askRS
   , updateRS
   , justIO
@@ -23,20 +23,22 @@ module SAD.Core.Base
   , getDef
 
   , setFailed
-  , checkFailed
+  , ifAskFailed
   , unsetChecked
   , setChecked
 
-  , VState (..), VM
+  , VState(..), VM
 
-  , Counter (..), TimeCounter (..), IntCounter (..)
-  , accumulateIntCounter, accumulateTimeCounter, maximalTimeCounter
+  , Tracker(..), Timer(..), Counter(..)
+  , sumCounter
+  , sumTimer
+  , maximalTimer
   , showTimeDiff
-  , timer
+  , timeWith
 
   , askInstructionInt, askInstructionBool, askInstructionText
   , addInstruction, dropInstruction
-  , addTimeCounter, addIntCounter, incrementIntCounter
+  , addToTimer, addToCounter, incrementCounter
   , guardInstruction, guardNotInstruction, whenInstruction
 
   , reasonLog, simpLog, thesisLog, translateLog
@@ -74,25 +76,26 @@ import qualified SAD.Core.Message as Message
 
 -- | Reasoner state
 data RState = RState
-  { counters       :: [Counter]
+  { trackers       :: [Tracker]
   , failed         :: Bool
   , alreadyChecked :: Bool
   } deriving (Eq, Ord, Show)
 
 
 -- | All of these counters are for gathering statistics to print out later
+data Tracker
+  = Timer Timer NominalDiffTime
+  | Counter Counter Int
+  deriving (Eq, Ord, Show)
+
+data Timer
+  = ProofTimer
+  | SuccessTimer  -- successful prove time
+  | SimplifyTimer
+  deriving (Eq, Ord, Show)
+
 data Counter
-  = TimeCounter TimeCounter NominalDiffTime
-  | IntCounter IntCounter Int
-  deriving (Eq, Ord, Show)
-
-data TimeCounter
-  = ProofTime
-  | SuccessTime  -- successful prove time
-  | SimplifyTime
-  deriving (Eq, Ord, Show)
-
-data IntCounter
+-- TODO append 'Counter' to each of these?
   = Sections
   | Goals
   | FailedGoals
@@ -180,7 +183,7 @@ justIO m = lift $ CRM $ \ _ _ k -> m >>= k
 
 -- State management from inside the verification monad
 
-askRS :: (RState -> b) -> VM b
+askRS :: (RState -> a) -> VM a
 askRS f = justRS >>= (justIO . fmap f . readIORef)
 
 updateRS :: (RState -> RState) -> VM ()
@@ -206,25 +209,59 @@ dropInstruction :: Drop -> VM a -> VM a
 dropInstruction instr =
   local $ \vs -> vs { instructions = dropInstr instr $ instructions vs }
 
-addTimeCounter :: TimeCounter -> NominalDiffTime -> VM ()
-addTimeCounter counter time =
-  updateRS $ \rs -> rs { counters = TimeCounter counter time : counters rs }
 
-addIntCounter :: IntCounter -> Int -> VM ()
-addIntCounter  counter time =
-  updateRS $ \rs -> rs { counters = IntCounter  counter time : counters rs }
+-- Trackers
 
-incrementIntCounter :: IntCounter -> VM ()
-incrementIntCounter counter = addIntCounter counter 1
+addToTimer :: Timer -> NominalDiffTime -> VM ()
+addToTimer timer time =
+  updateRS $ \rs -> rs{trackers = Timer timer time : trackers rs}
 
--- time proof tasks
-timer :: TimeCounter -> VM b -> VM b
-timer counter task = do
-  begin  <- justIO $ getCurrentTime
+addToCounter :: Counter -> Int -> VM ()
+addToCounter counter increment =
+  updateRS $ \rs -> rs{trackers = Counter counter increment : trackers rs}
+
+incrementCounter :: Counter -> VM ()
+incrementCounter counter = addToCounter counter 1
+
+-- Time proof tasks.
+timeWith :: Timer -> VM a -> VM a
+timeWith timer task = do
+  begin  <- justIO getCurrentTime
   result <- task
-  end    <- justIO $ getCurrentTime
-  addTimeCounter counter $ diffUTCTime end begin
+  end    <- justIO getCurrentTime
+  addToTimer timer (diffUTCTime end begin)
   return result
+
+projectCounter :: [Tracker] -> Counter -> [Int]
+projectCounter trackers counter =
+  [ value | Counter counter' value <- trackers, counter == counter' ]
+
+projectTimer :: [Tracker] -> Timer -> [NominalDiffTime]
+projectTimer trackers timer =
+  [ time | Timer timer' time <- trackers, timer == timer' ]
+
+
+sumCounter :: [Tracker] -> Counter -> Int
+sumCounter trackers counter = sum (projectCounter trackers counter)
+
+sumTimer :: [Tracker] -> Timer -> NominalDiffTime
+sumTimer trackers timer = sum (projectTimer trackers timer)
+
+maximalTimer :: [Tracker] -> Timer -> NominalDiffTime
+maximalTimer trackers timer = foldr max 0 (projectTimer trackers timer)
+
+showTimeDiff :: NominalDiffTime -> Text
+showTimeDiff t =
+  if hours == 0
+    then format minutes <> ":" <> format restSeconds <> "." <> format restCentis
+    else format hours   <> ":" <> format restMinutes <> ":" <> format restSeconds
+  where
+    format n = Text.pack $ if n < 10 then '0':show n else show n
+    centiseconds = (truncate $ t * 100) :: Int
+    (seconds, restCentis)  = divMod centiseconds 100
+    (minutes, restSeconds) = divMod seconds 60
+    (hours,   restMinutes) = divMod minutes 60
+
 
 guardInstruction :: Flag -> Bool -> VM ()
 guardInstruction instr _default =
@@ -243,8 +280,8 @@ whenInstruction instr _default action =
 setFailed :: VM ()
 setFailed = updateRS (\st -> st {failed = True})
 
-checkFailed :: VM b -> VM b -> VM b
-checkFailed alt1 alt2 = do
+ifAskFailed :: VM a -> VM a -> VM a
+ifAskFailed alt1 alt2 = do
   failed <- askRS failed
   if failed then alt1 else alt2
 
@@ -253,40 +290,6 @@ checkFailed alt1 alt2 = do
 setChecked, unsetChecked :: VM ()
 setChecked = updateRS (\st -> st {alreadyChecked = True})
 unsetChecked = updateRS (\st -> st {alreadyChecked = False})
-
--- Counter management
-
-fetchIntCounter :: [Counter] -> IntCounter -> [Int]
-fetchIntCounter  counterList counter =
-  [ value | IntCounter  kind value <- counterList, counter == kind ]
-
-fetchTimeCounter :: [Counter] -> TimeCounter -> [NominalDiffTime]
-fetchTimeCounter counterList counter =
-  [ value | TimeCounter kind value <- counterList, counter == kind ]
-
-accumulateIntCounter :: [Counter] -> Int -> IntCounter -> Int
-accumulateIntCounter  counterList startValue =
-  foldr (+) startValue . fetchIntCounter counterList
-
-accumulateTimeCounter :: [Counter] -> UTCTime -> TimeCounter -> UTCTime
-accumulateTimeCounter counterList startValue =
-  foldr addUTCTime startValue . fetchTimeCounter counterList
-
-maximalTimeCounter :: [Counter] -> TimeCounter -> NominalDiffTime
-maximalTimeCounter counterList = foldr max 0 . fetchTimeCounter counterList
-
-showTimeDiff :: RealFrac a => a -> Text
-showTimeDiff t
-  | hours == 0 =
-      format minutes <> ":" <> format restSeconds <> "." <> format restCentis
-  | True    =
-      format hours   <> ":" <> format restMinutes <> ":" <> format restSeconds
-  where
-    format n = Text.pack $ if n < 10 then '0':show n else show n
-    centiseconds = (truncate $ t * 100) :: Int
-    (seconds, restCentis)  = divMod centiseconds 100
-    (minutes, restSeconds) = divMod seconds 60
-    (hours  , restMinutes) = divMod minutes 60
 
 
 -- common messages

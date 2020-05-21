@@ -99,7 +99,7 @@ sequenceGoals reasoningDepth iteration (goal:restGoals) = do
     updateTrivialStatistics =
       unless (isTop goal) $ whenInstruction Printreason False $ do
         reasonLog Message.WRITELN noSourcePos ("trivial: " <> (Text.pack $ show goal))
-        incrementIntCounter TrivialGoals
+        incrementCounter TrivialGoals
 
 sequenceGoals _ _ [] = return ()
 
@@ -123,12 +123,12 @@ launchProver iteration = do
   goal <- thesis
   context <- asks currentContext
   let callATP = justIO $ pure $ export iteration proverList instrList context goal
-  callATP >>= timer ProofTime . justIO >>= guardResult
-  res <- fmap head $ askRS counters
+  callATP >>= timeWith ProofTimer . justIO >>= guardResult
+  res <- fmap head $ askRS trackers
   case res of
-    TimeCounter _ time -> do
-      addTimeCounter SuccessTime time
-      incrementIntCounter SuccessfulGoals
+    Timer _ time -> do
+      addToTimer SuccessTimer time
+      incrementCounter SuccessfulGoals
     _ -> error "No matching case in launchProver"
   where
     printTask = do
@@ -274,7 +274,7 @@ unfold = do
             (mapM unfoldConservative toUnfold)
   unfoldLog newLowLevelContext
   when (numberOfUnfolds == 0) $ nothingToUnfold >> mzero
-  addIntCounter Unfolds (getSum numberOfUnfolds)
+  addToCounter Unfolds (getSum numberOfUnfolds)
   return $ newLowLevelContext ++ topLevelContext
   where
     nothingToUnfold =
