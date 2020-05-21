@@ -186,25 +186,23 @@ askRS f     = justRS >>= (justIO . fmap f . readIORef)
 updateRS :: (RState -> RState) -> ReaderT VState CRM ()
 updateRS f  = justRS >>= (justIO . flip modifyIORef f)
 
-askInstructionInt :: MonadReader VState f => Limit -> Int -> f Int
+askInstructionInt :: Limit -> Int -> VM Int
 askInstructionInt instr _default =
   fmap (askLimit instr _default) $ asks instructions
 
-askInstructionBool :: MonadReader VState f =>
-                      Flag -> Bool -> f Bool
+askInstructionBool :: Flag -> Bool -> VM Bool
 askInstructionBool instr _default =
   fmap (askFlag instr _default) $ asks instructions
 
-askInstructionText :: MonadReader VState f =>
-                        Argument -> Text -> f Text
+askInstructionText :: Argument -> Text -> VM Text
 askInstructionText instr _default =
   fmap (askArgument instr _default) $ asks instructions
 
-addInstruction :: MonadReader VState m => Instr -> m a -> m a
+addInstruction :: Instr -> VM a -> VM a
 addInstruction instr =
   local $ \vs -> vs { instructions = instr : instructions vs }
 
-dropInstruction :: MonadReader VState m => Drop -> m a -> m a
+dropInstruction :: Drop -> VM a -> VM a
 dropInstruction instr =
   local $ \vs -> vs { instructions = dropInstr instr $ instructions vs }
 
@@ -230,18 +228,15 @@ timer counter task = do
   addTimeCounter counter $ diffUTCTime end begin
   return result
 
-guardInstruction :: (MonadReader VState m, Alternative m) =>
-                    Flag -> Bool -> m ()
+guardInstruction :: Flag -> Bool -> VM ()
 guardInstruction instr _default =
   askInstructionBool instr _default >>= guard
 
-guardNotInstruction :: (MonadReader VState m, Alternative m) =>
-                       Flag -> Bool -> m ()
+guardNotInstruction :: Flag -> Bool -> VM ()
 guardNotInstruction instr _default =
   askInstructionBool instr _default >>= guard . not
 
-whenInstruction :: MonadReader VState m =>
-                   Flag -> Bool -> m () -> m ()
+whenInstruction :: Flag -> Bool -> VM () -> VM ()
 whenInstruction instr _default action =
   askInstructionBool instr _default >>= \b -> when b action
 
