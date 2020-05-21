@@ -70,7 +70,7 @@ thesis = asks currentThesis
 proveThesis :: VM ()
 proveThesis = do
   reasoningDepth <- askInstructionInt Depthlimit 3
-  guard (reasoningDepth > 0) -- fall back to default value of the underlying CPS Maybe monad.
+  guard (reasoningDepth > 0) -- Fallback to defaulting of the underlying CPS Maybe monad.
   ctx <- asks currentContext
   goals <- splitGoal
   filterContext (sequenceGoals reasoningDepth 0 goals) ctx
@@ -84,24 +84,24 @@ sequenceGoals reasoningDepth iteration (goal:restGoals) = do
     trivial = guard (isTop reducedGoal) >> updateTrivialStatistics
     proofByATP = launchProver iteration
 
-    reason
-      | reasoningDepth == 1 = depthExceedMessage >> mzero
-      | otherwise = do
-          newTask <- unfold
-          let Context {Context.formula = Not newGoal} : newContext = newTask
-          sequenceGoals (pred reasoningDepth) (succ iteration) [newGoal]
-            `withContext` newContext
+    reason = if reasoningDepth == 1
+      then warnDepthExceeded >> mzero
+      else do
+        newTask <- unfold
+        let Context {Context.formula = Not newGoal} : newContext = newTask
+        sequenceGoals (pred reasoningDepth) (succ iteration) [newGoal]
+          `withContext` newContext
 
-    depthExceedMessage =
+    warnDepthExceeded =
       whenInstruction Printreason False $
         reasonLog Message.WARNING noSourcePos "reasoning depth exceeded"
 
     updateTrivialStatistics =
-      unless (isTop goal) $ whenInstruction Printreason False $
-         reasonLog Message.WRITELN noSourcePos ("trivial: " <> (Text.pack $ show goal))
-      >> incrementIntCounter TrivialGoals
+      unless (isTop goal) $ whenInstruction Printreason False $ do
+        reasonLog Message.WRITELN noSourcePos ("trivial: " <> (Text.pack $ show goal))
+        incrementIntCounter TrivialGoals
 
-sequenceGoals  _ _ _ = return ()
+sequenceGoals _ _ [] = return ()
 
 splitGoal :: VM [Formula]
 splitGoal = asks (normalizedSplit . strip . Context.formula . currentThesis)
@@ -306,7 +306,7 @@ unfoldConservative toUnfold
     isDeclaration :: Context -> Bool
     isDeclaration = (==) Block.LowDefinition . Block.kind . Context.head
 
-{- unfold an atomic formula f occuring with polarity sign -}
+{- unfold an atomic formula f occurring with polarity sign -}
 unfoldAtomic :: (W.MonadWriter w m, MonadTrans t,
                  MonadReader UnfoldState (t m), Num w) =>
                 Bool -> Formula -> t m Formula
