@@ -81,19 +81,19 @@ data RState = RState
 
 
 -- | All of these counters are for gathering statistics to print out later
-data Counter  =
-    TimeCounter TimeCounter NominalDiffTime
+data Counter
+  = TimeCounter TimeCounter NominalDiffTime
   | IntCounter IntCounter Int
   deriving (Eq, Ord, Show)
 
-data TimeCounter  =
-    ProofTime
+data TimeCounter
+  = ProofTime
   | SuccessTime  -- successful prove time
   | SimplifyTime
   deriving (Eq, Ord, Show)
 
-data IntCounter  =
-    Sections
+data IntCounter
+  = Sections
   | Goals
   | FailedGoals
   | TrivialGoals
@@ -180,11 +180,11 @@ justIO m = lift $ CRM $ \ _ _ k -> m >>= k
 
 -- State management from inside the verification monad
 
-askRS :: (RState -> b) -> ReaderT VState CRM b
-askRS f     = justRS >>= (justIO . fmap f . readIORef)
+askRS :: (RState -> b) -> VM b
+askRS f = justRS >>= (justIO . fmap f . readIORef)
 
-updateRS :: (RState -> RState) -> ReaderT VState CRM ()
-updateRS f  = justRS >>= (justIO . flip modifyIORef f)
+updateRS :: (RState -> RState) -> VM ()
+updateRS f = justRS >>= (justIO . flip modifyIORef f)
 
 askInstructionInt :: Limit -> Int -> VM Int
 askInstructionInt instr _default =
@@ -206,21 +206,19 @@ dropInstruction :: Drop -> VM a -> VM a
 dropInstruction instr =
   local $ \vs -> vs { instructions = dropInstr instr $ instructions vs }
 
-addTimeCounter :: TimeCounter
-                  -> NominalDiffTime -> ReaderT VState CRM ()
+addTimeCounter :: TimeCounter -> NominalDiffTime -> VM ()
 addTimeCounter counter time =
   updateRS $ \rs -> rs { counters = TimeCounter counter time : counters rs }
 
-addIntCounter :: IntCounter -> Int -> ReaderT VState CRM ()
+addIntCounter :: IntCounter -> Int -> VM ()
 addIntCounter  counter time =
   updateRS $ \rs -> rs { counters = IntCounter  counter time : counters rs }
 
-incrementIntCounter :: IntCounter -> ReaderT VState CRM ()
+incrementIntCounter :: IntCounter -> VM ()
 incrementIntCounter counter = addIntCounter counter 1
 
 -- time proof tasks
-timer :: TimeCounter
-         -> ReaderT VState CRM b -> ReaderT VState CRM b
+timer :: TimeCounter -> VM b -> VM b
 timer counter task = do
   begin  <- justIO $ getCurrentTime
   result <- task
@@ -242,19 +240,18 @@ whenInstruction instr _default action =
 
 -- explicit failure management
 
-setFailed :: ReaderT VState CRM ()
+setFailed :: VM ()
 setFailed = updateRS (\st -> st {failed = True})
-checkFailed :: ReaderT VState CRM b
-               -> ReaderT VState CRM b -> ReaderT VState CRM b
+
+checkFailed :: VM b -> VM b -> VM b
 checkFailed alt1 alt2 = do
   failed <- askRS failed
   if failed then alt1 else alt2
 
 -- local checking support
 
-setChecked :: ReaderT VState CRM ()
+setChecked, unsetChecked :: VM ()
 setChecked = updateRS (\st -> st {alreadyChecked = True})
-unsetChecked :: ReaderT VState CRM ()
 unsetChecked = updateRS (\st -> st {alreadyChecked = False})
 
 -- Counter management
@@ -262,6 +259,7 @@ unsetChecked = updateRS (\st -> st {alreadyChecked = False})
 fetchIntCounter :: [Counter] -> IntCounter -> [Int]
 fetchIntCounter  counterList counter =
   [ value | IntCounter  kind value <- counterList, counter == kind ]
+
 fetchTimeCounter :: [Counter] -> TimeCounter -> [NominalDiffTime]
 fetchTimeCounter counterList counter =
   [ value | TimeCounter kind value <- counterList, counter == kind ]
@@ -269,10 +267,11 @@ fetchTimeCounter counterList counter =
 accumulateIntCounter :: [Counter] -> Int -> IntCounter -> Int
 accumulateIntCounter  counterList startValue =
   foldr (+) startValue . fetchIntCounter counterList
-accumulateTimeCounter :: [Counter]
-                         -> UTCTime -> TimeCounter -> UTCTime
+
+accumulateTimeCounter :: [Counter] -> UTCTime -> TimeCounter -> UTCTime
 accumulateTimeCounter counterList startValue =
   foldr addUTCTime startValue . fetchTimeCounter counterList
+
 maximalTimeCounter :: [Counter] -> TimeCounter -> NominalDiffTime
 maximalTimeCounter counterList = foldr max 0 . fetchTimeCounter counterList
 
@@ -307,11 +306,11 @@ translateLog kind pos = justIO . Message.outputTranslate kind pos . Text.unpack
 
 
 
-retrieveContext :: Set.Set Text -> ReaderT VState CRM [Context]
+retrieveContext :: Set.Set Text -> VM [Context]
 retrieveContext names = do
   globalContext <- asks currentContext
   let (context, unfoundSections) = runState (retrieve globalContext) names
-  -- warn the user if some sections could not be found
+
   unless (Set.null unfoundSections) $
     reasonLog Message.WARNING noSourcePos $
       "Could not find sections " <> Text.unwords (map (Text.pack . show) $ Set.elems unfoundSections)
@@ -342,20 +341,18 @@ initialDefinitions = Map.fromList [
   (ElementId,  elementOf),
   (PairId, pair) ]
 
-hole0 :: VariableName
+hole0, hole1 :: VariableName
 hole0 = VarHole "0"
-
-hole1 :: VariableName
 hole1 = VarHole "1"
 
 equality :: DefEntry
 equality  = DE [] Top Signature (mkEquality (mkVar hole0) (mkVar hole1)) [] []
 
 less :: DefEntry
-less      = DE [] Top Signature (mkLess (mkVar hole0) (mkVar hole1)) [] []
+less = DE [] Top Signature (mkLess (mkVar hole0) (mkVar hole1)) [] []
 
 set :: DefEntry
-set       = DE [] Top Signature (mkSet $ mkVar hole0) [] []
+set = DE [] Top Signature (mkSet $ mkVar hole0) [] []
 
 elementOf :: DefEntry
 elementOf = DE [mkSet $ mkVar hole1] Top Signature
@@ -365,11 +362,11 @@ function :: DefEntry
 function  = DE [] Top Signature (mkFun $ mkVar hole0) [] []
 
 domain :: DefEntry
-domain    = DE [mkFun $ mkVar hole0] (mkSet ThisT) Signature
+domain = DE [mkFun $ mkVar hole0] (mkSet ThisT) Signature
   (mkDom $ mkVar hole0) [mkSet ThisT] [[mkFun $ mkVar hole0]]
 
 pair :: DefEntry
-pair      = DE [] Top Signature (mkPair (mkVar hole0) (mkVar hole1)) [] []
+pair = DE [] Top Signature (mkPair (mkVar hole0) (mkVar hole1)) [] []
 
 functionApplication :: DefEntry
 functionApplication =

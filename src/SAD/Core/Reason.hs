@@ -63,7 +63,7 @@ withContext :: VM a -> [Context] -> VM a
 withContext action context = local (\vState ->
   vState { currentContext = context }) action
 
-thesis :: Monad a => ReaderT VState a Context
+thesis :: VM Context
 thesis = asks currentThesis
 
 
@@ -246,7 +246,7 @@ data UnfoldState = UF {
 
 
 -- FIXME the reader monad transformer used here is completely superfluous
-unfold :: ReaderT VState CRM [Context]
+unfold :: VM [Context]
 unfold = do
   thesis <- asks currentThesis
   context <- asks currentContext
