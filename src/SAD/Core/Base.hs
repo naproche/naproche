@@ -9,34 +9,38 @@ Verifier state monad and common functions.
 {-# LANGUAGE OverloadedStrings #-}
 
 
-module SAD.Core.Base (
-  RState (..), CRM,
-  askRS, updateRS,
-  justIO,
-  (<|>),
-  runRM,
+module SAD.Core.Base
+  ( RState (..), CRM
+  , askRS
+  , updateRS
+  , justIO
+  , (<|>)
+  , runRM
 
-  retrieveContext,
-  initialDefinitions, initialGuards,
-  defForm, getDef,
+  , retrieveContext
+  , makeInitialVState
+  , defForm
+  , getDef
 
-  setFailed, checkFailed,
-  unsetChecked, setChecked,
+  , setFailed
+  , checkFailed
+  , unsetChecked
+  , setChecked
 
-  VState (..), VM,
+  , VState (..), VM
 
-  Counter (..), TimeCounter (..), IntCounter (..),
-  accumulateIntCounter, accumulateTimeCounter, maximalTimeCounter,
-  showTimeDiff,
-  timer,
+  , Counter (..), TimeCounter (..), IntCounter (..)
+  , accumulateIntCounter, accumulateTimeCounter, maximalTimeCounter
+  , showTimeDiff
+  , timer
 
-  askInstructionInt, askInstructionBool, askInstructionText,
-  addInstruction, dropInstruction,
-  addTimeCounter, addIntCounter, incrementIntCounter,
-  guardInstruction, guardNotInstruction, whenInstruction,
+  , askInstructionInt, askInstructionBool, askInstructionText
+  , addInstruction, dropInstruction
+  , addTimeCounter, addIntCounter, incrementIntCounter
+  , guardInstruction, guardNotInstruction, whenInstruction
 
-  reasonLog, simpLog, thesisLog, translateLog
-) where
+  , reasonLog, simpLog, thesisLog, translateLog
+  ) where
 
 import Control.Monad
 import Data.IORef
@@ -55,7 +59,7 @@ import SAD.Data.Formula
 import SAD.Data.Instr (Instr)
 import SAD.Data.Instr
 import SAD.Data.Text.Block (Block, ProofText)
-import SAD.Data.Text.Context (Context, MRule(..))
+import SAD.Data.Text.Context (Context(Context), MRule(..))
 import qualified SAD.Data.Text.Context as Context (name)
 import SAD.Data.Definition (Definitions, DefEntry(DE), DefType(..), Guards)
 import SAD.Data.Definition
@@ -132,20 +136,38 @@ instance MonadPlus CRM where
 runRM :: CRM a -> IORef RState -> IO (Maybe a)
 runRM m s = runCRM m s (return Nothing) (return . Just)
 
-data VState = VS {
-  thesisMotivated :: Bool,
-  rewriteRules    :: [Rule],
-  evaluations     :: DT.DisTree Evaluation, -- (low level) evaluation rules
-  currentThesis   :: Context,
-  currentBranch   :: [Block],         -- branch of the current block
-  currentContext  :: [Context],
-  mesonRules      :: (DT.DisTree MRule, DT.DisTree MRule),
-  definitions     :: Definitions,
-  guards          :: Guards, -- record which atomic formulas appear as guard
-  skolemCounter   :: Int,
-  instructions    :: [Instr],
-  provers         :: [Prover],
-  restProofText   :: [ProofText] }
+data VState = VS
+  { thesisMotivated :: Bool
+  , rewriteRules    :: [Rule]
+  , evaluations     :: DT.DisTree Evaluation -- (low level) evaluation rules
+  , currentThesis   :: Context
+  , currentBranch   :: [Block] -- branch of the current block
+  , currentContext  :: [Context]
+  , mesonRules      :: (DT.DisTree MRule, DT.DisTree MRule)
+  , definitions     :: Definitions
+  , guards          :: Guards -- tracks which atomic formulas appear as guard
+  , skolemCounter   :: Int
+  , instructions    :: [Instr]
+  , provers         :: [Prover]
+  , restProofText   :: [ProofText]
+  }
+
+makeInitialVState :: [Prover] -> [ProofText] -> VState
+makeInitialVState provers text = VS
+  { thesisMotivated = False
+  , rewriteRules    = []
+  , evaluations     = DT.empty
+  , currentThesis   = Context Bot [] []
+  , currentBranch   = []
+  , currentContext  = []
+  , mesonRules      = (DT.empty, DT.empty)
+  , definitions     = initialDefinitions
+  , guards          = initialGuards
+  , skolemCounter   = 0
+  , instructions    = []
+  , provers         = provers
+  , restProofText   = text
+  }
 
 type VM = ReaderT VState CRM
 

@@ -9,30 +9,30 @@ Main application entry point: console or server mode.
 
 module Main where
 
-import Data.Maybe
-import Data.IORef
-import Data.Time
-import Data.Char
 import Control.Monad (when, unless)
+import Data.Char (toLower)
+import Data.IORef
+import Data.Maybe (fromMaybe)
+import Data.Time (UTCTime, getCurrentTime, diffUTCTime)
+
+import qualified Control.Exception as Exception
+import qualified Data.Text.Lazy as Text
 import qualified System.Console.GetOpt as GetOpt
 import qualified System.Environment as Environment
 import qualified System.Exit as Exit
-import qualified Control.Exception as Exception
-import System.IO (IO)
 import qualified System.IO as IO
-import qualified Data.Text.Lazy as Text
 
-import qualified Isabelle.File as File
-import qualified Isabelle.Server as Server
-import qualified Isabelle.Byte_Message as Byte_Message
-import qualified Isabelle.Properties as Properties
-import qualified Isabelle.XML as XML
-import qualified Isabelle.YXML as YXML
-import qualified Isabelle.UUID as UUID
-import qualified Isabelle.Standard_Thread as Standard_Thread
-import qualified Isabelle.Naproche as Naproche
 import Isabelle.Library (trim_line)
 import qualified Data.ByteString.UTF8 as UTF8
+import qualified Isabelle.Byte_Message as Byte_Message
+import qualified Isabelle.File as File
+import qualified Isabelle.Naproche as Naproche
+import qualified Isabelle.Properties as Properties
+import qualified Isabelle.Server as Server
+import qualified Isabelle.Standard_Thread as Standard_Thread
+import qualified Isabelle.UUID as UUID
+import qualified Isabelle.XML as XML
+import qualified Isabelle.YXML as YXML
 import Network.Socket (Socket)
 
 import SAD.API
