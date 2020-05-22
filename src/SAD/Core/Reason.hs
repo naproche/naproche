@@ -1,7 +1,11 @@
 {-
 Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
 
-Reasoning methods and export to an external prover.
+The reasoner handles proof tasks.
+
+Trivial proof tasks can be discharged quickly without calling an external prover.
+Non-trivial proof tasks are exported to an external prover. If the direct proof
+by an external prover fails, the reasoner expands some definitions and tries again.
 -}
 
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
