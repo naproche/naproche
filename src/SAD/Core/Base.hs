@@ -44,33 +44,30 @@ module SAD.Core.Base
   , reasonLog, simpLog, thesisLog, translateLog
   ) where
 
-import Control.Monad
+import Control.Applicative (Alternative(..))
+import Control.Monad.Reader
+import Control.Monad.State
 import Data.IORef
-import Data.Time
-import Control.Applicative
-import Data.Maybe
+import Data.Maybe (isJust, fromJust)
+import Data.Text.Lazy (Text)
+import Data.Time (NominalDiffTime, getCurrentTime, diffUTCTime)
+
 import qualified Data.Set as Set
 import qualified Data.Map as Map
-import Control.Monad.State
-import Control.Monad.Reader
-import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 
+import SAD.Core.SourcePos
+import SAD.Data.Definition
 import SAD.Data.Formula
-
-import SAD.Data.Instr (Instr)
 import SAD.Data.Instr
+import SAD.Data.Rules (Rule)
 import SAD.Data.Text.Block (Block, ProofText)
 import SAD.Data.Text.Context (Context(Context), MRule(..))
-import qualified SAD.Data.Text.Context as Context (name)
-import SAD.Data.Definition (Definitions, DefEntry(DE), DefType(..), Guards)
-import SAD.Data.Definition
-import SAD.Data.Rules (Rule)
-
 import SAD.Export.Base
-import qualified SAD.Data.Structures.DisTree as DT
-import SAD.Core.SourcePos
+
 import qualified SAD.Core.Message as Message
+import qualified SAD.Data.Structures.DisTree as DT
+import qualified SAD.Data.Text.Context as Context (name)
 
 
 
