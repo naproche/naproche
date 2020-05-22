@@ -9,57 +9,67 @@ Well-definedness check and evidence collection.
 
 module SAD.Core.Check (fillDef) where
 
-import Control.Monad
-import Data.Maybe
+import Data.Maybe (fromMaybe)
 import Data.Either (lefts,rights, isRight)
 import Control.Monad.Reader
 
+import qualified Data.Text.Lazy as Text
+
+import SAD.Core.Base
+import SAD.Core.Reason as Reason
+import SAD.Data.Definition hiding (Guards)
 import SAD.Data.Formula
 import SAD.Data.Instr
 import SAD.Data.Text.Context (Context)
-import qualified SAD.Data.Text.Context as Context
-import qualified SAD.Data.Text.Block as Block (link, position)
-import SAD.Data.Definition hiding (Guards)
-import SAD.Core.Base
-import qualified SAD.Core.Message as Message
-import SAD.Core.Reason
 
-import qualified Data.Text.Lazy as Text
+import qualified SAD.Core.Message as Message
+import qualified SAD.Data.Text.Block as Block (link, position)
+import qualified SAD.Data.Text.Context as Context
+
+
 
 {- check definitions and fortify terms with evidences in a formula -}
 fillDef :: Bool -> Context -> VM Formula
-fillDef alreadyChecked context = fill True False [] (Just True) 0 $ Context.formula context
+fillDef alreadyChecked context = fill True False [] (Just True) 0 (Context.formula context)
   where
-    fill isPredicat isNewWord localContext sign n (Tag tag f)
-      | tag == HeadTerm = -- newly introduced symbol
-          fmap (Tag HeadTerm) $ fill isPredicat True localContext sign n f
-      | otherwise  =  -- ignore every other tag
-          fmap (Tag tag) $ fill isPredicat isNewWord localContext sign n f
-    fill _ _ _ _ _ Trm {trmName = TermThesis} = thesis >>= return . Context.formula
-    fill _ _ localContext _ _ v | isVar v = do
-      userInfoSetting <- askInstructionBool Info True
-      newContext      <- cnRaise context localContext
-      collectInfo userInfoSetting v `withContext` newContext -- fortify the term
-    fill isPredicat isNewWord localContext sign n
-         term@Trm {trmName = t, trmArgs = tArgs, trmInfo = infos, trmId = tId} =
-      if alreadyChecked then return term else do
+    fill :: Bool -> Bool -> [Formula] -> Maybe Bool -> Int -> Formula -> VM Formula
+    fill isPredicate isNewWord localContext sign n = \case
+      Tag HeadTerm f' -> fmap (Tag HeadTerm) $ fill isPredicate True localContext sign n f'
+
+      Tag tag f' -> fmap (Tag tag) $ fill isPredicate isNewWord localContext sign n f'
+
+      Trm{trmName = TermThesis} -> do
+        context' <- thesis
+        return (Context.formula context')
+
+      v@Var{} -> do
+        userInfoSetting <- askInstructionBool Info True
+        newContext      <- cnRaise context localContext
+        collectInfo userInfoSetting v `withContext` newContext -- fortify the term
+
+      term@Trm{trmName = t, trmArgs = tArgs, trmInfo = infos, trmId = tId} ->
+        if alreadyChecked
+          then return term
+          else do
             userInfoSetting <- askInstructionBool Info True
             fortifiedArgs   <- mapM (fill False isNewWord localContext sign n) tArgs
             newContext      <- cnRaise context localContext
-            fortifiedTerm   <- setDef isNewWord context term {trmArgs = fortifiedArgs}
-              `withContext` newContext
-            collectInfo (not isPredicat && userInfoSetting) fortifiedTerm
-              `withContext` newContext        -- fortify term
-    fill isPredicat isNewWord localContext sign n f = -- round throuth formula
-      roundFM VarW (fill isPredicat isNewWord) localContext sign n f
+            fortifiedTerm   <- setDef isNewWord context term{trmArgs = fortifiedArgs} `withContext` newContext
+            collectInfo (not isPredicate && userInfoSetting) fortifiedTerm `withContext` newContext -- fortify term
 
-    collectInfo infoSetting term
-      | infoSetting = setInfo term
-      | True        = return  term
+      f -> roundFM VarW (fill isPredicate isNewWord) localContext sign n f
+
+
+    collectInfo :: Bool -> Formula -> VM Formula
+    collectInfo infoSetting term = if infoSetting
+      then setInfo term
+      else return term
+
 
 cnRaise :: Context -> [Formula] -> VM [Context]
-cnRaise thisBlock local = asks currentContext >>=
-  return . flip (foldr $ (:) . Context.setFormula thisBlock) local
+cnRaise thisBlock local = do
+  context <- asks currentContext
+  return ((foldr $ (:) . Context.setFormula thisBlock) context local)
 
 
 
