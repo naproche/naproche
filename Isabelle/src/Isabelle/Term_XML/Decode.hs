@@ -20,6 +20,7 @@ import Isabelle.Term
 indexname :: P Indexname
 indexname [a] = (a, 0)
 indexname [a, b] = (a, int_atom b)
+indexname _ = error "won't happen"
 
 sort :: T Sort
 sort = list string

@@ -55,6 +55,7 @@ library:
     - Isabelle.Library
     - Isabelle.Naproche
     - SAD.API
+    - SAD.Main
 
 executables:
   Naproche-SAD:
