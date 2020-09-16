@@ -7,7 +7,7 @@ Construct prover database.
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.Export.Base (Prover(..),readProverDatabase) where
+module SAD.Export.Base (Prover(..),readProverFile, readProverDatabase) where
 
 import Data.Yaml
 import qualified SAD.Core.Message as Message
@@ -15,6 +15,7 @@ import SAD.Core.SourcePos
 import qualified Data.Text.Lazy as Text
 import GHC.Generics
 import Data.Bifunctor
+import qualified Data.ByteString as B
 
 data Prover = Prover {
   name           :: String,
@@ -30,14 +31,17 @@ data Prover = Prover {
 instance FromJSON Prover
 
 {- parse the prover database in provers.yaml -}
-readProverDatabase :: FilePath -> IO [Prover]
-readProverDatabase file = do
-  yamlEither <- first prettyPrintParseException <$> decodeFileEither file
+readProverFile :: FilePath -> IO [Prover]
+readProverFile file = readProverDatabase file =<< B.readFile file
+
+readProverDatabase :: FilePath -> B.ByteString -> IO [Prover]
+readProverDatabase path txt = do
+  let yamlEither = first prettyPrintParseException $ decodeEither' txt
   case yamlEither >>= mapM validate of
     Right r -> pure r
-    Left l -> err $ l
+    Left l -> err l
   where
-    err = Message.errorExport (fileOnlyPos $ Text.pack file)
+    err = Message.errorExport (fileOnlyPos $ Text.pack path)
 
 validate :: Prover -> Either String Prover
 validate Prover { name = n, path = "" }

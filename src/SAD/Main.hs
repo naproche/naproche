@@ -14,6 +14,7 @@ import Data.Char (toLower)
 import Data.IORef
 import Data.Maybe (fromMaybe)
 import Data.Time (UTCTime, addUTCTime, getCurrentTime, diffUTCTime)
+import Data.ByteString (ByteString)
 
 import qualified Control.Exception as Exception
 import qualified Data.Text.Lazy as Text
@@ -58,15 +59,15 @@ main  = do
     Exception.catch
       (if askFlag Server False opts0 then
         Server.server (Server.publish_stdout "Naproche-SAD") (serverConnection oldProofTextRef args0)
-      else do consoleThread; mainBody oldProofTextRef (opts0, text0))
+      else do consoleThread; mainBody Nothing oldProofTextRef (opts0, text0))
       (\err -> do
         exitThread
         let msg = Exception.displayException (err :: Exception.SomeException)
         IO.hPutStrLn IO.stderr msg
         Exit.exitFailure)
 
-mainBody :: IORef (ProofText) -> ([Instr], [ProofText]) -> IO ()
-mainBody oldProofTextRef (opts0, text0) = do
+mainBody :: Maybe ByteString -> IORef (ProofText) -> ([Instr], [ProofText]) -> IO ()
+mainBody proversYaml oldProofTextRef (opts0, text0) = do
   startTime <- getCurrentTime
 
   oldProofText <- readIORef oldProofTextRef
@@ -79,7 +80,7 @@ mainBody oldProofTextRef (opts0, text0) = do
       -- if -T / --onlytranslate is passed as an option, only print the translated text
       if askFlag OnlyTranslate False opts0
         then showTranslation txts startTime
-        else do proveFOL text1 opts0 oldProofText oldProofTextRef startTime
+        else do proveFOL proversYaml text1 opts0 oldProofText oldProofTextRef startTime
     CiC -> return ()
     Lean -> exportLean text1
 
@@ -106,10 +107,12 @@ exportLean pt = do
     Right t -> putStrLn $ Text.unpack t
   return ()
 
-proveFOL :: ProofText -> [Instr] -> ProofText -> (IORef (ProofText)) -> UTCTime -> IO ()
-proveFOL text1 opts0 oldProofText oldProofTextRef startTime = do
+proveFOL :: Maybe ByteString -> ProofText -> [Instr] -> ProofText -> (IORef (ProofText)) -> UTCTime -> IO ()
+proveFOL proversYaml text1 opts0 oldProofText oldProofTextRef startTime = do
   -- read provers.yaml
-  provers <- readProverDatabase $ Text.unpack (askArgument Provers "provers.yaml" opts0)
+  provers <- case proversYaml of
+    Nothing -> readProverFile $ Text.unpack (askArgument Provers "provers.yaml" opts0)
+    Just txt -> readProverDatabase "" txt
   -- initialize reasoner state
   reasonerState <- newIORef (RState [] False False)
 
@@ -192,7 +195,7 @@ serverConnection oldProofTextRef args0 connection = do
           (opts1, text0) <- readArgs (args0 ++ args1)
           let text1 = text0 ++ [ProofTextInstr noPos (GetArgument Text (Text.pack $ XML.content_of body))]
 
-          Exception.catch (mainBody oldProofTextRef (opts1, text1))
+          Exception.catch (mainBody Nothing oldProofTextRef (opts1, text1))
             (\err -> do
               let msg = Exception.displayException (err :: Exception.SomeException)
               Exception.catch
