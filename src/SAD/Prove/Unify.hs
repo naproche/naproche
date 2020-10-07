@@ -26,7 +26,7 @@ unify Top _ = mzero
 unify _ Top = mzero
 unify l r = do 
   let la = ltAtomic l; ra = ltAtomic r
-  guard (trmId la == trmId ra) 
+  guard (isTrm la && isTrm ra && trmId la == trmId ra) 
   unif $ zip (trmArgs la) (trmArgs ra)
 
 {- implementation of a standard unification algorithm -}
