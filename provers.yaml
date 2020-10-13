@@ -5,8 +5,9 @@
   label: "eprover"
   path: "eprover"
   arguments: 
-    - "--auto"
+    - "--auto-schedule"
     - "-s"
+    - "--memory-limit=6144"
     - "--cpu-limit=%d"
   successMessage:
     - "# SZS status Theorem"
