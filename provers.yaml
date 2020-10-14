@@ -5,7 +5,7 @@
   label: "eprover"
   path: "eprover"
   arguments: 
-    - "--auto-schedule"
+    - "--auto"
     - "-s"
     - "--memory-limit=6144"
     - "--cpu-limit=%d"
