@@ -22,7 +22,6 @@ import SAD.Data.Text.Context (Context)
 import qualified SAD.Data.Text.Context as Context (formula, name)
 import SAD.Data.Rules (Rule(Rule))
 import qualified SAD.Data.Rules as Rule
-import SAD.Prove.Normalize
 import qualified SAD.Data.Structures.DisTree as DT
 import SAD.Data.Text.Decl
 

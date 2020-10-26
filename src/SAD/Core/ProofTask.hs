@@ -11,7 +11,6 @@ module SAD.Core.ProofTask (generateProofTask) where
 import SAD.Data.Formula
 
 import SAD.Data.Text.Block (Section(..))
-import SAD.Prove.Normalize
 import Data.Set (Set)
 import qualified Data.Text.Lazy as Text
 

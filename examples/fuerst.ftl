@@ -55,7 +55,7 @@ Lemma EquModSym.    a = b (mod q) => b = a (mod q).
 Proof.
     Assume that a = b (mod q).
     (1) Take n such that q * n = a - b.
-    q * -n .= (-1) * (q * n) (by MulMinOne, MulAsso,MulComm,MulBubble)
+    q * -n .= (-1) * (q * n) (by MulMinOne, MulAsso,MulComm)
                    .= (-1) * (a - b) (by 1).
 qed.
 

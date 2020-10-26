@@ -75,14 +75,10 @@ mainBody proversYaml oldProofTextRef (opts0, text0) = do
   txts <- readProofText (askArgument Library "." opts0) text0
   let text1 = ProofTextRoot txts
 
-  case askTheory FirstOrderLogic opts0 of
-    FirstOrderLogic -> do
-      -- if -T / --onlytranslate is passed as an option, only print the translated text
-      if askFlag OnlyTranslate False opts0
-        then showTranslation txts startTime
-        else do proveFOL proversYaml text1 opts0 oldProofText oldProofTextRef startTime
-    CiC -> return ()
-    Lean -> exportLean text1
+  -- if -T / --onlytranslate is passed as an option, only print the translated text
+  if askFlag OnlyTranslate False opts0
+    then showTranslation txts startTime
+    else do proveFOL proversYaml text1 opts0 oldProofText oldProofTextRef startTime
 
 showTranslation :: [ProofText] -> UTCTime -> IO ()
 showTranslation txts startTime = do
@@ -92,20 +88,6 @@ showTranslation txts startTime = do
   -- print statistics
   finishTime <- getCurrentTime
   outputMain TRACING noSourcePos $ Text.unpack $ "total " <> timeDifference finishTime
-
-exportCiC :: ProofText -> IO ()
-exportCiC pt = do
-  case fmap (unlines . map ppForthelExpr) $ mapM toStatement $ extractBlocks pt of
-    Left t -> putStrLn $ Text.unpack t
-    Right s -> putStrLn s
-  return ()
-
-exportLean :: ProofText -> IO ()
-exportLean pt = do
-  case fmap toLeanCode $ mapM toStatement $ extractBlocks pt of
-    Left t -> putStrLn $ Text.unpack t
-    Right t -> putStrLn $ Text.unpack t
-  return ()
 
 proveFOL :: Maybe ByteString -> ProofText -> [Instr] -> ProofText -> (IORef (ProofText)) -> UTCTime -> IO ()
 proveFOL proversYaml text1 opts0 oldProofText oldProofTextRef startTime = do
@@ -260,8 +242,6 @@ options = [
     "raw mode (equivalent to --check off)",
   GetOpt.Option "" ["prove"] (GetOpt.ReqArg (SetFlag Prove . parseConsent) "{on|off}")
     "prove goals in the text (def: on)",
-  GetOpt.Option "" ["theory"] (GetOpt.ReqArg (Theory . parseTheory) "{fol|lean|cic}")
-    "Choose the underlying theory (First-Order-Logic, Lean Prover, Calculus of inductive Constructions) (def: fol)",
   GetOpt.Option "" ["check"] (GetOpt.ReqArg (SetFlag Check . parseConsent) "{on|off}")
     "check symbols for definedness (def: on)",
   GetOpt.Option "" ["symsign"] (GetOpt.ReqArg (SetFlag Symsign . parseConsent) "{on|off}")

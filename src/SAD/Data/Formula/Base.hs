@@ -32,7 +32,7 @@ data Formula =
         trmInfo :: [Formula], trmId   :: TermId}         |
   Var { varName :: VariableName, varInfo :: [Formula], varPosition :: SourcePos } |
   Ind { indIndex :: Int, indPosition :: SourcePos }   | ThisT
-  deriving (Eq, Ord)
+  deriving (Eq, Ord, Show)
 
 trInfo :: Formula -> [Formula]
 trInfo Trm {trmInfo = xs} = xs

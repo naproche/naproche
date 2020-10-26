@@ -369,7 +369,7 @@ indThesis fr pre post = do
     indStatem vs (Imp g f) = (Imp g .) <$> indStatem vs f
     indStatem vs (All v f) = (dAll v .) <$> indStatem (deleteDecl v vs) f
     indStatem vs f | Set.null vs = pure (`Imp` f)
-    indStatem _ _ = failWF $ "invalid induction thesis " <> (Text.pack $ show fr)
+    indStatem _ _ = failWF $ "invalid induction thesis " <> (Text.pack $ showFormula fr)
 
     insertIndTerm it cn = cn $ Tag InductionHypothesis $ subst it (VarHole "") $ cn $ mkLess it (mkVar (VarHole ""))
 

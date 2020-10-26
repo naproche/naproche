@@ -107,7 +107,7 @@ newNotion = do
 funVars, notionVars, prdVars :: (Formula, Formula) -> Maybe Text
 
 funVars (f, d) | not ifq   = prdVars (f, d)
-               | not idq   = Just $ Text.pack $ "illegal function alias: " ++ show d
+               | not idq   = Just $ Text.pack $ "illegal function alias: " ++ showFormula d
                | otherwise = prdVars (t {trmArgs = v:trmArgs t}, d)
   where
     ifq = isTrm f && trmName f == TermEquality && isTrm t
@@ -124,7 +124,7 @@ notionVars (f, d) | not isFunction = prdVars (f, d)
     Trm {trmArgs = vs} = t
 
 
-prdVars (f, d) | not flat  = Just $ Text.pack $ "compound expression: " ++ show f
+prdVars (f, d) | not flat  = Just $ Text.pack $ "compound expression: " ++ showFormula f
                | otherwise = freeOrOverlapping (fvToVarSet $ free f) d
   where
     flat      = isTrm f && allDistinctVars (trmArgs f)

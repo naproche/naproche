@@ -5,7 +5,9 @@ module SAD.Data.Formula.Show (
   showArgumentsWith,
   commaSeparated,
   symEncode,
-  symChars
+  symChars,
+  showFormula,
+  showsPrecFormula
   -- also exports show instance for Formula
   )where
 
@@ -18,13 +20,14 @@ import SAD.Core.SourcePos (noSourcePos)
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 
--- show instances
+showFormula :: Formula -> String
+showFormula f = showsPrecFormula 0 f ""
 
-instance Show Formula where
-  showsPrec p = showFormula p 0
+showsPrecFormula :: Int -> Formula -> ShowS
+showsPrecFormula p = goShowFormula p 0
 
-showFormula :: Int -> Int -> Formula -> ShowS
-showFormula p d = dive
+goShowFormula :: Int -> Int -> Formula -> ShowS
+goShowFormula p d = dive
   where
     dive (All _ f) = showString "forall " . showBinder f
     dive (Exi _ f) = showString "exists " . showBinder f
@@ -52,11 +55,11 @@ showFormula p d = dive
 
     showArguments _ | p == 1 = showString "(...)"
     showArguments ts =
-      let showTerm = showFormula (pred p) d
+      let showTerm = goShowFormula (pred p) d
       in  showArgumentsWith showTerm ts
 
-    showBinder f = showFormula p (succ d) (Ind 0 noSourcePos) . showChar ' ' .
-      showFormula p (succ d) f
+    showBinder f = goShowFormula p (succ d) (Ind 0 noSourcePos) . showChar ' ' .
+      goShowFormula p (succ d) f
 
     showInfix operator f g = dive f . showString operator . dive g
 
@@ -106,7 +109,7 @@ decode s (t:ts) p d = dec s
     dec ('s':'c':cs) = showChar ';' . dec cs
     dec ('c':'m':cs) = showChar ',' . dec cs
     dec ('d':'t':cs) =
-      showParen (ambig t) (showFormula p d t) . decode cs ts p d
+      showParen (ambig t) (goShowFormula p d t) . decode cs ts p d
     dec ('z':c:cs@('d':'t':_)) = showChar c . showChar ' ' . dec cs
     dec ('z':c:cs)   = showChar c . dec cs
     dec cs@(':':_)   = showString cs

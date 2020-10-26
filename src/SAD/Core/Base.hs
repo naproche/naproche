@@ -62,7 +62,7 @@ import SAD.Data.Formula
 import SAD.Data.Instr
 import SAD.Data.Rules (Rule)
 import SAD.Data.Text.Block (Block, ProofText)
-import SAD.Data.Text.Context (Context(Context), MRule(..))
+import SAD.Data.Text.Context (Context(Context))
 import SAD.Export.Base
 
 import qualified SAD.Core.Message as Message
@@ -143,10 +143,8 @@ data VState = VS
   , currentThesis   :: Context
   , currentBranch   :: [Block] -- branch of the current block
   , currentContext  :: [Context]
-  , mesonRules      :: (DT.DisTree MRule, DT.DisTree MRule)
   , definitions     :: Definitions
   , guards          :: Guards -- tracks which atomic formulas appear as guard
-  , skolemCounter   :: Int
   , instructions    :: [Instr]
   , provers         :: [Prover]
   , restProofText   :: [ProofText]
@@ -157,13 +155,11 @@ makeInitialVState provers text = VS
   { thesisMotivated = False
   , rewriteRules    = []
   , evaluations     = DT.empty
-  , currentThesis   = Context Bot [] []
+  , currentThesis   = Context Bot []
   , currentBranch   = []
   , currentContext  = []
-  , mesonRules      = (DT.empty, DT.empty)
   , definitions     = initialDefinitions
   , guards          = initialGuards
-  , skolemCounter   = 0
   , instructions    = []
   , provers         = provers
   , restProofText   = text

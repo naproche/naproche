@@ -7,7 +7,7 @@ Main text reading functions.
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.Import.Reader (readInit, readProofText) where
+module SAD.Core.Reader (readInit, readProofText) where
 
 import Data.Maybe
 import Control.Monad

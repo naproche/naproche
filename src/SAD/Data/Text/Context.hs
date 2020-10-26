@@ -1,6 +1,5 @@
 module SAD.Data.Text.Context
   ( Context(..)
-  , MRule(..)
   , name
   , setFormula
   , isLowLevel
@@ -21,16 +20,8 @@ import Data.Set (Set)
 
 data Context = Context {
   formula        :: Formula,  -- formula of the context
-  branch         :: [Block.Block],  -- branch of the context
-  mesonRules     :: [MRule]}  -- MESON rules extracted from the formula
+  branch         :: [Block.Block]}  -- branch of the context
   deriving (Eq, Ord, Show)
-
-data MRule = MR
-  { assumption :: [Formula] -- assumptions of the rule
-  , conclusion :: Formula   -- conclusion of the rule
-  } deriving (Eq, Ord, Show)
-
-
 
 -- Context utilities
 

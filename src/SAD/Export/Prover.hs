@@ -1,4 +1,5 @@
 {-# LANGUAGE MultiWayIf #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-
 Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018), Makarius Wenzel (2018)
 
@@ -27,13 +28,16 @@ import SAD.Data.Text.Context (Context, branch)
 import qualified SAD.Data.Text.Block as Block
 import SAD.Export.Base
 import SAD.Helpers (notNull)
+import SAD.Data.Text.Block (Block(Block))
+import SAD.Data.Text.Context (Context(..))
+import SAD.Data.Formula (Formula(..))
 
 import qualified SAD.Core.Message as Message
 import qualified SAD.Data.Instr as Instr
 import qualified SAD.Export.TPTP as TPTP
 
 export :: Int -> [Prover] -> [Instr] -> [Context] -> Context -> IO Result
-export depth provers instrs context goal = do
+export _ provers instrs context goal = do
   Standard_Thread.expose_stopped
 
   when (null provers) $ Message.errorExport noSourcePos "No provers"
@@ -46,7 +50,7 @@ export depth provers instrs context goal = do
   
   let printProver = askFlag Printprover False instrs
   let timeLimit = askLimit Timelimit 3 instrs
-  let task = TPTP.output context goal
+  let task = TPTP.output (map fromContext context) (fromContext goal)
   let isByContradiction = any (==Block.ProofByContradiction)
         (map Block.kind (head (branch goal) : concatMap branch context))
 
@@ -57,6 +61,10 @@ export depth provers instrs context goal = do
 
 data Result = Success | Failure | TooLittleTime | ContradictoryAxioms
   deriving (Eq, Ord, Show)
+
+fromContext :: Context -> (Text, Formula)
+fromContext (Context fr (Block {Block.name = m} : _)) = (m, fr)
+fromContext (Context fr []) = ("", fr)
 
 -- | Prover heuristics are not always optimal.
 -- We can give a different heuristic if needed.

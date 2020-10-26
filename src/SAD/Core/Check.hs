@@ -83,7 +83,7 @@ setDef isNewWord context term@Trm{trmName = t, trmId = tId} =
   where
     out =
       reasonLog Message.ERROR (Block.position (Context.head context)) $
-        "unrecognized: " <> (Text.pack $ showsPrec 2 term "")
+        "unrecognized: " <> (Text.pack $ showsPrecFormula 2 term "")
 
 
 -- Find relevant definitions and test them
@@ -137,9 +137,9 @@ testDef context term (guards, fortifiedTerm) = do
 
 
     header select guards =
-      "check: " <> (Text.pack $ showsPrec 2 term " vs ") <> format (select guards)
+      "check: " <> (Text.pack $ showsPrecFormula 2 term " vs ") <> format (select guards)
     thead [] = ""; thead guards = "(trivial: " <> format guards <> ")"
-    format guards = if null guards then " - " else Text.unwords . map (Text.pack . show) $ guards
+    format guards = if null guards then " - " else Text.unwords . map (Text.pack . showFormula) $ guards
     defLog =
       whenInstruction Printcheck False .
         reasonLog Message.WRITELN (Block.position (head $ Context.branch context))

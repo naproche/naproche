@@ -9,9 +9,6 @@ Print proof task in TPTP syntax.
 module SAD.Export.TPTP (output) where
 
 import SAD.Data.Formula (Formula(..), showTrName, TermName(..))
-import SAD.Data.Text.Block (Block(Block))
-import qualified SAD.Data.Text.Block as Block
-import SAD.Data.Text.Context (Context(..))
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 import Data.Text.Lazy.Builder (Builder)
@@ -19,18 +16,17 @@ import qualified Data.Text.Lazy.Builder as Builder
 import SAD.Export.Representation
 import SAD.Core.SourcePos (noSourcePos)
 
-output :: [Context] -> Context -> Text
+output :: [(Text, Formula)] -> (Text, Formula) -> Text
 output contexts goal = toLazyText $
   mconcat (map (tptpForm ",hypothesis,") $ reverse contexts)
   <> tptpForm ",conjecture," goal
 
 -- Formula print
-tptpForm :: Builder -> Context -> Builder
-tptpForm s (Context fr (Block { Block.name = m } : _) _) =
+tptpForm :: Builder -> (Text, Formula) -> Builder
+tptpForm s (name, fr) =
   "fof(m"
-  <> (if Text.null m then "_" else Builder.fromLazyText m)
+  <> (if Text.null name then "_" else Builder.fromLazyText name)
   <> s <> tptpTerm 0 fr <> ").\n"
-tptpForm _ _ = ""
 
 tptpTerm :: Int -> Formula -> Builder
 tptpTerm d = dive

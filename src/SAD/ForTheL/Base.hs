@@ -394,7 +394,7 @@ freeOrOverlapping vs f
   where
     sbs = Text.unwords $ map (showVar) $ Set.toList $ fvToVarSet $ excludeSet (free f) vs
     ovl = Text.unwords $ map (showVar) $ Set.toList $ over vs f
-    info = "\n in translation: " <> (Text.pack $ show f)
+    info = "\n in translation: " <> (Text.pack $ showFormula f)
 
     over :: Set VariableName -> Formula -> Set VariableName
     over vs (All v f) = boundVars vs (declName v) f

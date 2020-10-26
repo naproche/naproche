@@ -8,7 +8,7 @@ Term rewriting: extraction of rules and proof of equlities.
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.Core.Rewrite (equalityReasoning, lpoGe) where
+module SAD.Core.Rewrite (equalityReasoning) where
 
 import SAD.Core.Base
 import SAD.Core.Reason
@@ -143,14 +143,14 @@ generateConditions verbositySetting rules w l r =
       simpLog Message.WRITELN noSourcePos "no matching normal forms found"
       showPath leftNormalForm; showPath rightNormalForm
     showPath ((t,_):rest) = when verbositySetting $ do
-      simpLog Message.WRITELN noSourcePos (Text.pack $ show t)
+      simpLog Message.WRITELN noSourcePos (Text.pack $ showFormula t)
       mapM_ (simpLog Message.WRITELN noSourcePos . format) rest
     -- formatting of paths
-    format (t, simpInfo) = " --> " <> Text.pack (show t) <> conditions simpInfo
+    format (t, simpInfo) = " --> " <> Text.pack (showFormula t) <> conditions simpInfo
     conditions (conditions, name) =
       (if Text.null name then "" else " by " <> name <> ",") <>
       (if null conditions then "" else " conditions: " <>
-        Text.unwords (intersperse "," $ map (Text.pack . show) conditions))
+        Text.unwords (intersperse "," $ map (Text.pack . showFormula) conditions))
 
 
 {- applies computational reasoning to an equality chain -}
@@ -226,7 +226,7 @@ dischargeConditions verbositySetting conditions =
     format conditions =
       if   null conditions
       then " - "
-      else Text.unwords . intersperse "," . map (Text.pack . show) $ reverse conditions
+      else Text.unwords . intersperse "," . map (Text.pack . showFormula) $ reverse conditions
     log msg =
       when verbositySetting $ thesis >>=
         flip (simpLog Message.WRITELN . Block.position . Context.head) msg

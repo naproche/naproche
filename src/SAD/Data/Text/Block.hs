@@ -152,8 +152,8 @@ showForm p block@Block {formula = formula, name = name} =
   where
     sform True  True  = showString $ "conjecture" ++ addName
     sform True  False = showString $ "hypothesis" ++ addName
-    sform False False = showString "assume " . shows formula
-    sform False True  = shows formula
+    sform False False = showString "assume " . showsPrecFormula 0 formula
+    sform False True  = showsPrecFormula 0 formula
 
     name' = Text.unpack name
     addName = if null name' then "" else ' ':name'

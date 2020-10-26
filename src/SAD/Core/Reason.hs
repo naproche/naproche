@@ -24,17 +24,14 @@ module SAD.Core.Reason (
 --       the small fries anymore
 
 
-import Control.Exception (evaluate)
 import Control.Monad.Reader
 import Data.Maybe (fromJust, fromMaybe, maybeToList)
 import Data.Monoid (Sum, getSum)
-import System.Timeout (timeout)
 
 import qualified Control.Monad.Writer as W
 import qualified Data.Map as Map
 import qualified Data.Set as Set
 import qualified Data.Text.Lazy as Text
-import qualified Isabelle.Standard_Thread as Standard_Thread
 
 import SAD.Core.Base
 import SAD.Core.SourcePos (noSourcePos)
@@ -44,7 +41,6 @@ import SAD.Data.Instr (Limit(..), Flag(..))
 import SAD.Data.Text.Context (Context(Context))
 import SAD.Data.Text.Decl (newDecl)
 import SAD.Export.Prover (export, Result(..))
-import SAD.Prove.MESON (prove)
 
 import qualified SAD.Core.Message as Message
 import qualified SAD.Data.Definition as Definition
@@ -102,7 +98,7 @@ sequenceGoals reasoningDepth iteration (goal:restGoals) = do
 
     updateTrivialStatistics =
       unless (isTop goal) $ whenInstruction Printreason False $ do
-        reasonLog Message.WRITELN noSourcePos ("trivial: " <> (Text.pack $ show goal))
+        reasonLog Message.WRITELN noSourcePos ("trivial: " <> (Text.pack $ showFormula goal))
         incrementCounter TrivialGoals
 
 sequenceGoals _ _ [] = return ()
@@ -139,8 +135,8 @@ launchProver iteration = do
       contextFormulas <- asks $ map Context.formula . reverse . currentContext
       concl <- thesis
       reasonLog Message.WRITELN noSourcePos $ "prover task:\n" <>
-        Text.concat (map (\form -> "  " <> Text.pack (show form) <> "\n") contextFormulas) <>
-        "  |- " <> (Text.pack (show (Context.formula concl))) <> "\n"
+        Text.concat (map (\form -> "  " <> Text.pack (showFormula form) <> "\n") contextFormulas) <>
+        "  |- " <> (Text.pack (showFormula (Context.formula concl))) <> "\n"
 
     guardResult Success = pure ()
     guardResult ContradictoryAxioms = do
@@ -150,20 +146,7 @@ launchProver iteration = do
 
 
 launchReasoning :: VM ()
-launchReasoning = do
-  goal <- thesis
-  context <- asks currentContext
-  skolemInt <- asks skolemCounter
-  (mesonPos, mesonNeg) <- asks mesonRules
-  let lowlevelContext = takeWhile Context.isLowLevel context
-      proveGoal = prove skolemInt lowlevelContext mesonPos mesonNeg goal
-      -- set timelimit to 10^4
-      -- (usually not necessary as max proof depth is limited)
-      callOwn = do
-        Standard_Thread.expose_stopped
-        timeout (1000) $ evaluate $ proveGoal
-  justIO callOwn >>= guard . (==) (Just True)
-
+launchReasoning = guard False 
 
 
 -- Context filtering
@@ -286,8 +269,8 @@ unfold = do
 
     unfoldLog (goal:lowLevelContext) =
       whenInstruction Printunfold False $ reasonLog Message.WRITELN noSourcePos $ "unfold to:\n"
-        <> Text.unlines (reverse $ map ((<>) "  " . Text.pack . show . Context.formula) lowLevelContext)
-        <> "  |- " <> Text.pack (show (neg $ Context.formula goal))
+        <> Text.unlines (reverse $ map ((<>) "  " . Text.pack . showFormula . Context.formula) lowLevelContext)
+        <> "  |- " <> Text.pack (showFormula (neg $ Context.formula goal))
 
     neg (Not f) = f
     neg f = f
