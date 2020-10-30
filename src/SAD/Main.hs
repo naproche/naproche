@@ -17,7 +17,7 @@ import Data.Time (UTCTime, addUTCTime, getCurrentTime, diffUTCTime)
 import Data.ByteString (ByteString)
 
 import qualified Control.Exception as Exception
-import qualified Data.Text.Lazy as Text
+import qualified Data.Text as Text
 import qualified System.Console.GetOpt as GetOpt
 import qualified System.Environment as Environment
 import qualified System.Exit as Exit

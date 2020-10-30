@@ -1,7 +1,7 @@
 module SAD.Data.Pattern where
 
-import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text (Text)
+import qualified Data.Text as Text
 
 numHoles :: [Pattern] -> Int
 numHoles ps = length (filter (==Vr) ps)

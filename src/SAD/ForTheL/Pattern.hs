@@ -33,8 +33,8 @@ import Data.List
 import Data.Char
 import Control.Applicative
 import Control.Monad
-import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text (Text)
+import qualified Data.Text as Text
 
 -- add expressions to the state of ForTheL
 

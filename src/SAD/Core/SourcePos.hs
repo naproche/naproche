@@ -20,8 +20,8 @@ module SAD.Core.SourcePos
   where
 
 import SAD.Helpers (notNull)
-import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text (Text)
+import qualified Data.Text as Text
 
 import qualified Data.List as List
 

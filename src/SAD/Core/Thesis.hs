@@ -16,7 +16,7 @@ import SAD.Data.Formula
 
 import SAD.Data.Text.Context (Context)
 import SAD.Helpers (notNull)
-import qualified Data.Text.Lazy as Text
+import qualified Data.Text as Text
 import qualified SAD.Data.Text.Context as Context
 
 import Control.Applicative
@@ -269,7 +269,7 @@ instance Ord a => Semigroup (VariationMonad a) where
   a <> b = VM $ \s -> runVM a s <> runVM b s
 
 instance Ord a => Monoid (VariationMonad a) where
-  mempty = VM $ \s -> []
+  mempty = VM $ pure []
 
 instance Functor VariationMonad where
   fmap = liftM
@@ -280,7 +280,7 @@ instance Applicative VariationMonad where
 
 instance Monad VariationMonad where
   return r = VM $ \ s -> [(s, r)]
-  m >>= k  = VM $ \ s -> concatMap apply (runVM m s)
+  m >>= k  = VM $ concatMap apply . runVM m
     where apply (s, r) = runVM (k r) s
 
 instance Alternative VariationMonad where

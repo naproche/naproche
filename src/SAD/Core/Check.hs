@@ -13,7 +13,7 @@ import Data.Maybe (fromMaybe)
 import Data.Either (lefts,rights, isRight)
 import Control.Monad.Reader
 
-import qualified Data.Text.Lazy as Text
+import qualified Data.Text as Text
 
 import SAD.Core.Base
 import SAD.Core.Reason as Reason
@@ -135,7 +135,6 @@ testDef context term (guards, fortifiedTerm) = do
       let block:restBranch = Context.branch context
       in  context {Context.branch = block {Block.link = []} : restBranch}
 
-
     header select guards =
       "check: " <> (Text.pack $ showsPrecFormula 2 term " vs ") <> format (select guards)
     thead [] = ""; thead guards = "(trivial: " <> format guards <> ")"
@@ -144,12 +143,8 @@ testDef context term (guards, fortifiedTerm) = do
       whenInstruction Printcheck False .
         reasonLog Message.WRITELN (Block.position (head $ Context.branch context))
 
-
-
-    trivialityCheck g =
-      if   trivialByEvidence g
-      then return $ Right g  -- triviality check
-      else (launchReasoning `withGoal` g >> return (Right g)) <|> return (Left g)
+    trivialityCheck g = pure $
+      if trivialByEvidence g then Right g else Left g
 
 
 -- Info heuristic

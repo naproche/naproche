@@ -49,12 +49,12 @@ import Control.Monad.Reader
 import Control.Monad.State
 import Data.IORef
 import Data.Maybe (isJust, fromJust)
-import Data.Text.Lazy (Text)
+import Data.Text (Text)
 import Data.Time (NominalDiffTime, getCurrentTime, diffUTCTime)
 
 import qualified Data.Set as Set
 import qualified Data.Map as Map
-import qualified Data.Text.Lazy as Text
+import qualified Data.Text as Text
 
 import SAD.Core.SourcePos
 import SAD.Data.Definition

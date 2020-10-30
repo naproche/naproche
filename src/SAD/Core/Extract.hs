@@ -31,7 +31,7 @@ import Data.List
 import Data.Maybe
 import Control.Monad.State
 import Control.Monad.Reader
-import qualified Data.Text.Lazy as Text
+import qualified Data.Text as Text
 
 -- Definition extraction
 

@@ -1,7 +1,7 @@
 module SAD.Data.Rules where
 
 import SAD.Data.Formula (Formula)
-import Data.Text.Lazy (Text)
+import Data.Text (Text)
 
 
 data Rule = Rule {

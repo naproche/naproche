@@ -6,8 +6,8 @@ module SAD.Helpers
 
 import Control.Arrow
 import Data.Function
-import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text (Text)
+import qualified Data.Text as Text
 
 -- | Remove a trailing line break from a string.
 trimLine :: Text -> Text

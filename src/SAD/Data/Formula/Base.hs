@@ -11,13 +11,12 @@ import qualified Data.Monoid as Monoid
 import Control.Monad.Identity
 import Control.Applicative
 
-import SAD.Data.Tag (Tag)
 import SAD.Core.SourcePos (SourcePos)
 import SAD.Data.Terms
 import SAD.Data.Text.Decl (Decl)
 import SAD.Data.VarName
-import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text (Text)
+import qualified Data.Text as Text
 import SAD.Export.Representation
 
 import qualified Data.Map as Map
@@ -34,14 +33,29 @@ data Formula =
   Ind { indIndex :: Int, indPosition :: SourcePos }   | ThisT
   deriving (Eq, Ord, Show)
 
+data Tag =
+  Dig | DigMultiSubject | DigMultiPairwise | HeadTerm |
+  InductionHypothesis | CaseHypothesisTag | EqualityChain |
+  -- Tags to mark certain parts of function definitions
+  GenericMark | Evaluation | Condition | Defined | Domain | Replacement |
+  -- Tags to mark parts in function proof tasks
+  DomainTask | ExistenceTask | UniquenessTask | ChoiceTask
+  deriving (Eq, Ord, Show)
+
+-- | whether a Tag marks a part in a function proof task
+fnTag :: Tag -> Bool
+fnTag DomainTask    = True; fnTag ChoiceTask     = True
+fnTag ExistenceTask = True; fnTag UniquenessTask = True
+fnTag _   = False
+
 trInfo :: Formula -> [Formula]
 trInfo Trm {trmInfo = xs} = xs
 trInfo Var {varInfo = xs} = xs
 trInfo _ = error "Formula.Base.trInfo: Partial function"
 
 showTrName :: Formula -> Text
-showTrName (Trm {trmName = s}) = Text.filter (/= ':') $ toLazyText $ represent s
-showTrName (Var {varName = s}) = Text.filter (/= ':') $ toLazyText $ represent s
+showTrName (Trm {trmName = s}) = Text.filter (/= ':') $ represent s
+showTrName (Var {varName = s}) = Text.filter (/= ':') $ represent s
 showTrName _ = Text.empty
 
 -- Traversing functions

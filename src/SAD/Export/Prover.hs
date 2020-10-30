@@ -15,9 +15,9 @@ import System.IO
 import System.IO.Error
 import qualified System.Process as Process
 import qualified Control.Exception as Exception
-import qualified Data.Text.Lazy as Text
-import qualified Data.Text.Lazy.IO as TIO
-import Data.Text.Lazy (Text)
+import qualified Data.Text as Text
+import qualified Data.Text.IO as TIO
+import Data.Text (Text)
 
 import qualified Isabelle.File as File
 import qualified Isabelle.Standard_Thread as Standard_Thread

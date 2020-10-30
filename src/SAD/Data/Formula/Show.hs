@@ -14,11 +14,11 @@ module SAD.Data.Formula.Show (
 import SAD.Data.Formula.Base
 import SAD.Data.VarName
 import SAD.Data.Terms
-import SAD.Export.Representation (toLazyText, represent)
+import SAD.Export.Representation (represent)
 import SAD.Core.SourcePos (noSourcePos)
 
-import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text (Text)
+import qualified Data.Text as Text
 
 showFormula :: Formula -> String
 showFormula f = showsPrecFormula 0 f ""
@@ -46,9 +46,9 @@ goShowFormula p d = dive
     dive t@Trm{trmName = TermSymbolic tName, trmArgs = tArgs} = decode (Text.unpack tName) tArgs p d
     dive t@Trm{trmName = TermThe tName, trmArgs = tArgs} =
           showString ("the" <> Text.unpack tName) . showArguments tArgs
-    dive t@Trm{trmName = tName, trmArgs = tArgs} = showString (Text.unpack $ toLazyText $ represent tName) . showArguments tArgs
+    dive t@Trm{trmName = tName, trmArgs = tArgs} = showString (Text.unpack $  represent tName) . showArguments tArgs
     dive v@Var{varName = VarConstant s} = showString (Text.unpack s)
-    dive v@Var{varName = vName} = showString $ Text.unpack $ toLazyText $ represent vName
+    dive v@Var{varName = vName} = showString $ Text.unpack $  represent vName
     dive Ind {indIndex = i }
       | i < d = showChar 'v' . shows (d - i - 1)
       | otherwise = showChar 'v' . showChar '?' . showString (show i)

@@ -12,7 +12,7 @@ import SAD.Data.Formula
 
 import SAD.Data.Text.Block (Section(..))
 import Data.Set (Set)
-import qualified Data.Text.Lazy as Text
+import qualified Data.Text as Text
 
 import Data.Maybe
 

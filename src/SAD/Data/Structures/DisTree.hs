@@ -24,7 +24,7 @@ import qualified Data.List as L
 import Data.Maybe
 import SAD.Data.Terms (TermId)
 import SAD.Data.VarName
-import Data.Text.Lazy (Text)
+import Data.Text (Text)
 
 data DTree a =
   Node {struct :: Struct, children :: [DTree a]} |

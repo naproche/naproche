@@ -21,8 +21,8 @@ module SAD.Parser.Error
 
 import SAD.Core.SourcePos (SourcePos)
 import SAD.Helpers (notNull, nubOrd)
-import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text (Text)
+import qualified Data.Text as Text
 
 import Data.List (intercalate)
 import Data.Ord (comparing)

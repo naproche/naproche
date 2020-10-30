@@ -34,7 +34,7 @@ import qualified Control.Concurrent as Concurrent
 
 import SAD.Core.SourcePos (SourcePos)
 import qualified SAD.Core.SourcePos as SourcePos
-import qualified Data.Text.Lazy as Text
+import qualified Data.Text as Text
 
 
 import qualified Isabelle.Properties as Properties

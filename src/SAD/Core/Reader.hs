@@ -13,8 +13,8 @@ import Data.Maybe
 import Control.Monad
 import System.IO.Error
 import Control.Exception
-import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text (Text)
+import qualified Data.Text as Text
 
 import SAD.Data.Text.Block
 import SAD.Data.Instr as Instr

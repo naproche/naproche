@@ -13,8 +13,8 @@ import Control.Applicative
 import Control.Monad
 import Control.Monad.State.Class (gets, modify)
 import Data.Char (isAlpha, isAlphaNum)
-import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text (Text)
+import qualified Data.Text as Text
 import Data.Set (Set)
 import qualified Data.Set as Set
 
@@ -31,7 +31,7 @@ import SAD.Data.Text.Decl
 
 import SAD.Core.Message (PIDE)
 import qualified SAD.Core.Message as Message
-import SAD.Export.Representation (represent, toLazyText)
+import SAD.Export.Representation (represent)
 
 type FTL = Parser FState
 
@@ -323,7 +323,7 @@ varList = var `sepBy` token' "," >>= nodups
 nodups :: IsVar a => [a] -> FTL (Set a)
 nodups vs = do
   unless ((null :: [b] -> Bool) $ duplicateNames vs) $
-    fail $ "duplicate names: " ++ (show $ map (Text.unpack . toLazyText . represent) vs)
+    fail $ "duplicate names: " ++ (show $ map (Text.unpack . represent) vs)
   pure $ Set.fromList vs
 
 hidden :: FTL PosVar
@@ -462,4 +462,4 @@ texEnd env = do
 
 showVar :: VariableName -> Text
 showVar (VarConstant nm) = nm
-showVar nm = toLazyText $ represent nm
+showVar nm =  represent nm

@@ -15,7 +15,7 @@ import qualified Prelude as Prelude (head, tail)
 import SAD.Data.Text.Block (Section(..))
 import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Formula (Formula, VariableName)
-import Data.Text.Lazy (Text)
+import Data.Text (Text)
 import Data.Set (Set)
 
 data Context = Context {

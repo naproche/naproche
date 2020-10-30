@@ -31,8 +31,8 @@ import SAD.Parser.Error (ParseError)
 
 import Data.Set (Set)
 import qualified Data.Set as Set
-import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text (Text)
+import qualified Data.Text as Text
 
 import Control.Monad
 

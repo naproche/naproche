@@ -19,8 +19,8 @@ import Control.Monad
 import Data.Ord (comparing)
 import Data.Maybe (isNothing, catMaybes)
 import Debug.Trace
-import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text (Text)
+import qualified Data.Text as Text
 
 
 

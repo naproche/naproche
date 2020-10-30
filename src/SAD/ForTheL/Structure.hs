@@ -15,8 +15,8 @@ import Data.Char (isAlphaNum)
 import Control.Applicative
 import Control.Monad
 import Control.Monad.State.Class (modify)
-import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text (Text)
+import qualified Data.Text as Text
 import qualified Data.Set as Set
 import Data.Set (Set)
 
@@ -35,7 +35,6 @@ import SAD.Data.Instr
 import SAD.Data.Text.Block (Block(Block), ProofText(..), Section(..))
 import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Formula
-import qualified SAD.Data.Tag as Tag
 import SAD.Data.Text.Decl (Decl(Decl))
 import SAD.Data.Text.Decl
 
@@ -434,7 +433,7 @@ caseDestinction :: FTL (Block)
 caseDestinction = do
   bl@Block { Block.formula = fr } <- narrow caseHypo
   proofBody $ bl {
-  Block.formula = Imp (Tag Tag.CaseHypothesis fr) mkThesis}
+  Block.formula = Imp (Tag CaseHypothesisTag fr) mkThesis}
 
 
 -- equality Chain

@@ -6,8 +6,8 @@ import System.Exit
 import System.IO
 import Data.IORef
 import Control.Monad
-import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy.IO as TIO
+import Data.Text (Text)
+import qualified Data.Text.IO as TIO
 
 compileFile :: FilePath -> IO (Handle, Handle, ProcessHandle)
 compileFile f = do

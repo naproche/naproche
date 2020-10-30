@@ -14,8 +14,8 @@ module SAD.ForTheL.Instruction
   ) where
 
 import Control.Monad
-import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text (Text)
+import qualified Data.Text as Text
 
 import SAD.Core.SourcePos
 import SAD.Data.Instr (Instr)

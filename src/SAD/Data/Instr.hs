@@ -9,7 +9,7 @@ Instruction datatype and core functions.
 module SAD.Data.Instr where
 
 import SAD.Core.SourcePos (SourcePos, SourceRange(..), noSourcePos, noRange)
-import Data.Text.Lazy (Text)
+import Data.Text (Text)
 
 
 -- Position information

@@ -33,8 +33,8 @@ import Control.Monad
 import qualified Data.Set as Set
 import Control.Applicative
 import Control.Monad.State.Class (get, modify)
-import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text (Text)
+import qualified Data.Text as Text
 
 -- definitions and signature extensions
 

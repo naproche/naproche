@@ -3,8 +3,8 @@
 module SAD.Data.Terms where
 
 import Debug.Trace
-import Data.Text.Lazy (Text)
-import Data.Text.Lazy.Builder (fromLazyText, fromString)
+import Data.Text (Text)
+import qualified Data.Text as Text
 import SAD.Export.Representation
 
 data TermName 
@@ -57,15 +57,15 @@ termSplit (TermMultiVerb t) = (TermMultiVerb, t)
 termSplit _ = error "wont happen"
 
 instance Representation TermName where
-  represent (TermName t) = fromLazyText t
-  represent (TermSymbolic t) = "s" <> fromLazyText t
-  represent (TermNotion t) = "a" <> fromLazyText t
-  represent (TermThe t) = "the" <> fromLazyText t
-  represent (TermUnaryAdjective t) = "is" <> fromLazyText t
-  represent (TermMultiAdjective t) = "mis" <> fromLazyText t
-  represent (TermUnaryVerb t) = "do" <> fromLazyText t
-  represent (TermMultiVerb t) = "mdo" <> fromLazyText t
-  represent (TermTask n) = "tsk " <> fromString (show n)
+  represent (TermName t) =  t
+  represent (TermSymbolic t) = "s" <>  t
+  represent (TermNotion t) = "a" <>  t
+  represent (TermThe t) = "the" <>  t
+  represent (TermUnaryAdjective t) = "is" <>  t
+  represent (TermMultiAdjective t) = "mis" <>  t
+  represent (TermUnaryVerb t) = "do" <>  t
+  represent (TermMultiVerb t) = "mdo" <>  t
+  represent (TermTask n) = "tsk " <> Text.pack (show n)
   represent TermEquality = "="
   represent TermLess  = "iLess"
   represent TermThesis = "#TH#"

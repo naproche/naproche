@@ -31,8 +31,8 @@ import qualified Data.Set as Set
 import Control.Monad.State
 import Data.Either
 import Control.Monad.Reader
-import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text (Text)
+import qualified Data.Text as Text
 
 
 -- Lexicographic path ordering
@@ -51,12 +51,12 @@ lpoGt w tr@Trm {trmName = t, trmArgs = ts} sr@Trm {trmName = s, trmArgs = ss} =
    any (\ti -> lpoGe w ti sr) ts
     || (all (lpoGt w tr) ss
     && ((t == s && lexord (lpoGt w) ts ss)
-    || w (toLazyText $ represent t) (toLazyText $ represent s)))
+    || w ( represent t) ( represent s)))
 lpoGt w Trm { trmName = t, trmArgs = ts} v@Var {varName = x} =
-  w (toLazyText $ represent t) (toLazyText $ represent x) || any (\ti -> lpoGe w ti v) ts
+  w ( represent t) ( represent x) || any (\ti -> lpoGe w ti v) ts
 lpoGt w v@Var {varName = x} Trm {trmName = t, trmArgs = ts} =
-  w (toLazyText $ represent x) (toLazyText $ represent t) && all (lpoGt w v) ts
-lpoGt w Var{varName = x} Var {varName = y} = w (toLazyText $ represent x) (toLazyText $ represent y)
+  w ( represent x) ( represent t) && all (lpoGt w v) ts
+lpoGt w Var{varName = x} Var {varName = y} = w ( represent x) ( represent y)
 lpoGt _ _ _ = False
 
 
@@ -238,4 +238,4 @@ dischargeConditions verbositySetting conditions =
     trivialityCheck g =
       if   trivialByEvidence g
       then return $ Right g  -- triviality check
-      else (launchReasoning `withGoal` g >> return (Right g)) <|> return (Left g)
+      else return $ Left g

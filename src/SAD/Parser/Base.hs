@@ -37,7 +37,7 @@ import SAD.Parser.Error
 import SAD.Core.SourcePos
 
 import Data.List
-import qualified Data.Text.Lazy as Text
+import qualified Data.Text as Text
 
 -- | Parser state
 data State st = State

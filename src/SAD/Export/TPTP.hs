@@ -9,26 +9,24 @@ Print proof task in TPTP syntax.
 module SAD.Export.TPTP (output) where
 
 import SAD.Data.Formula (Formula(..), showTrName, TermName(..))
-import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
-import Data.Text.Lazy.Builder (Builder)
-import qualified Data.Text.Lazy.Builder as Builder
+import Data.Text (Text)
+import qualified Data.Text as Text
 import SAD.Export.Representation
 import SAD.Core.SourcePos (noSourcePos)
 
 output :: [(Text, Formula)] -> (Text, Formula) -> Text
-output contexts goal = toLazyText $
+output contexts goal = 
   mconcat (map (tptpForm ",hypothesis,") $ reverse contexts)
   <> tptpForm ",conjecture," goal
 
 -- Formula print
-tptpForm :: Builder -> (Text, Formula) -> Builder
+tptpForm :: Text -> (Text, Formula) -> Text
 tptpForm s (name, fr) =
   "fof(m"
-  <> (if Text.null name then "_" else Builder.fromLazyText name)
+  <> (if Text.null name then "_" else  name)
   <> s <> tptpTerm 0 fr <> ").\n"
 
-tptpTerm :: Int -> Formula -> Builder
+tptpTerm :: Int -> Formula -> Text
 tptpTerm d = dive
   where
     dive (All _ f)  = buildParens $ " ! " <> binder f
@@ -42,9 +40,9 @@ tptpTerm d = dive
     dive Top        = "$true"
     dive Bot        = "$false"
     dive t@Trm {trmName = TermEquality} = let [l, r] = trmArgs t in sinfix " = " l r
-    dive t@Trm {}   = Builder.fromLazyText (showTrName t) <> buildArgumentsWith dive (trmArgs t)
-    dive v@Var {}   = Builder.fromLazyText (showTrName v)
-    dive i@Ind {}   = "W" <> (Builder.fromString (show (d - 1 - indIndex i)))
+    dive t@Trm {}   =  (showTrName t) <> buildArgumentsWith dive (trmArgs t)
+    dive v@Var {}   =  (showTrName v)
+    dive i@Ind {}   = "W" <> (Text.pack (show (d - 1 - indIndex i)))
     dive ThisT      = error "SAD.Export.TPTP: Didn't expect ThisT here"
 
     sinfix o f g  = buildParens $ dive f <> o <> dive g

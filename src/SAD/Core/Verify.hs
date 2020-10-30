@@ -12,9 +12,9 @@ module SAD.Core.Verify (verify) where
 import Data.IORef (IORef, readIORef)
 import Data.Maybe (isJust)
 import Control.Monad.Reader
-import Data.Text.Lazy (Text)
+import Data.Text (Text)
 
-import qualified Data.Text.Lazy as Text
+import qualified Data.Text as Text
 
 import SAD.Core.Base
 import SAD.Core.Check (fillDef)
@@ -32,7 +32,6 @@ import SAD.Export.Base (Prover)
 import SAD.Helpers (notNull)
 
 import qualified SAD.Core.Message as Message
-import qualified SAD.Data.Tag as Tag
 import qualified SAD.Data.Text.Block as Block
 import qualified SAD.Data.Text.Context as Context
 
@@ -253,7 +252,7 @@ verifyProof state@VS {
     dive construct context (Imp (Tag InductionHypothesis f) g)
       | isClosed f =
           process (Context.setFormula thesis f : context) (construct g)
-    dive construct context (Imp (Tag Tag.CaseHypothesis f) g)
+    dive construct context (Imp (Tag CaseHypothesisTag f) g)
       | isClosed f =
           process (thesis {Context.formula = f} : context) (construct g)
     dive construct context (Imp f g)   = dive (construct . Imp f) context g
@@ -278,7 +277,7 @@ verifyProof state@VS {
 {- checks that a formula containt neither induction nor case hyothesis -}
 noInductionOrCase :: Formula -> Bool
 noInductionOrCase (Tag InductionHypothesis _) = False
-noInductionOrCase (Tag Tag.CaseHypothesis _) = False
+noInductionOrCase (Tag CaseHypothesisTag _) = False
 noInductionOrCase f = allF noInductionOrCase f
 
 
@@ -287,7 +286,7 @@ deleteInductionOrCase :: Formula -> Formula
 deleteInductionOrCase = dive id
   where
     dive c (Imp (Tag InductionHypothesis _) f) = c f
-    dive c (Imp (Tag Tag.CaseHypothesis f) _) = c $ Not f
+    dive c (Imp (Tag CaseHypothesisTag f) _) = c $ Not f
     dive c (Imp f g) = dive (c . Imp f) g
     dive c (All v f) = dive (c . All v) f
     dive c f = c f

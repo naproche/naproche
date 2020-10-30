@@ -32,8 +32,8 @@ import SAD.Data.Formula.Show (symChars)
 
 import Data.Char (isAlpha)
 import Control.Monad (void, guard)
-import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text (Text)
+import qualified Data.Text as Text
 
 
 -- primitive Token operations

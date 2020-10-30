@@ -12,7 +12,7 @@ module SAD.Export.Base (Prover(..),readProverFile, readProverDatabase) where
 import Data.Yaml
 import qualified SAD.Core.Message as Message
 import SAD.Core.SourcePos
-import qualified Data.Text.Lazy as Text
+import qualified Data.Text as Text
 import GHC.Generics
 import Data.Bifunctor
 import qualified Data.ByteString as B

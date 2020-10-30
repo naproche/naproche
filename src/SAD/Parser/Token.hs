@@ -25,8 +25,8 @@ import qualified Isabelle.Markup as Markup
 import qualified SAD.Core.Message as Message
 
 import Data.Char
-import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text (Text)
+import qualified Data.Text as Text
 
 
 data Token = Token

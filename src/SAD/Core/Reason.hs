@@ -17,12 +17,10 @@ module SAD.Core.Reason (
   withGoal, withContext,
   proveThesis,
   reduceWithEvidence, trivialByEvidence,
-  launchReasoning,
   thesis
   ) where
 -- FIXME reconcept some functions so that this module does not need to export
 --       the small fries anymore
-
 
 import Control.Monad.Reader
 import Data.Maybe (fromJust, fromMaybe, maybeToList)
@@ -31,7 +29,7 @@ import Data.Monoid (Sum, getSum)
 import qualified Control.Monad.Writer as W
 import qualified Data.Map as Map
 import qualified Data.Set as Set
-import qualified Data.Text.Lazy as Text
+import qualified Data.Text as Text
 
 import SAD.Core.Base
 import SAD.Core.SourcePos (noSourcePos)
@@ -77,11 +75,10 @@ proveThesis = do
 
 sequenceGoals :: Int -> Int -> [Formula] -> VM ()
 sequenceGoals reasoningDepth iteration (goal:restGoals) = do
-  (trivial <|> proofByATP <|> reason) `withGoal` reducedGoal
+  (proofByATP <|> reason) `withGoal` reducedGoal
   sequenceGoals reasoningDepth iteration restGoals
   where
     reducedGoal = reduceWithEvidence goal
-    trivial = guard (isTop reducedGoal) >> updateTrivialStatistics
     proofByATP = launchProver iteration
 
     reason = if reasoningDepth == 1
@@ -95,11 +92,6 @@ sequenceGoals reasoningDepth iteration (goal:restGoals) = do
     warnDepthExceeded =
       whenInstruction Printreason False $
         reasonLog Message.WARNING noSourcePos "reasoning depth exceeded"
-
-    updateTrivialStatistics =
-      unless (isTop goal) $ whenInstruction Printreason False $ do
-        reasonLog Message.WRITELN noSourcePos ("trivial: " <> (Text.pack $ showFormula goal))
-        incrementCounter TrivialGoals
 
 sequenceGoals _ _ [] = return ()
 
@@ -143,11 +135,6 @@ launchProver iteration = do
       reasonLog Message.WRITELN noSourcePos $ "Found contradictory axioms. Make sure you are in a proof by contradiction!"
       mzero
     guardResult _ = mzero
-
-
-launchReasoning :: VM ()
-launchReasoning = guard False 
-
 
 -- Context filtering
 

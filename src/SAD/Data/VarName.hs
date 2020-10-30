@@ -16,9 +16,8 @@ module SAD.Data.VarName
 import Data.Set (Set)
 import qualified Data.Set as Set
 import GHC.Magic (oneShot)
-import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
-import qualified Data.Text.Lazy.Builder as Builder
+import Data.Text (Text)
+import qualified Data.Text as Text
 import SAD.Export.Representation
 import SAD.Core.SourcePos
 import Data.Function (on)
@@ -44,21 +43,21 @@ isHole (VarHole _) = True
 isHole _ = False
 
 instance Show VariableName where
-  show = Text.unpack . toLazyText . represent
+  show = Text.unpack . represent
 
 instance Representation VariableName where
-  represent (VarConstant s) = "x" <> (Builder.fromLazyText s)
-  represent (VarHole s) = "?" <> (Builder.fromLazyText s)
+  represent (VarConstant s) = "x" <> ( s)
+  represent (VarHole s) = "?" <> ( s)
   represent (VarSlot) = "!"
-  represent (VarU s) = "u" <> (Builder.fromLazyText s)
-  represent (VarHidden n) = "h" <> (Builder.fromString (show n))
-  represent (VarAssume n) = "i" <> (Builder.fromString (show n))
-  represent (VarSkolem n) = "o" <> (Builder.fromString (show n))
+  represent (VarU s) = "u" <> ( s)
+  represent (VarHidden n) = "h" <> (Text.pack (show n))
+  represent (VarAssume n) = "i" <> (Text.pack (show n))
+  represent (VarSkolem n) = "o" <> (Text.pack (show n))
   represent (VarTask s) = "c" <> represent s
-  represent (VarZ s) = "z" <> (Builder.fromLazyText s)
-  represent (VarW s) = "w" <> (Builder.fromLazyText s)
+  represent (VarZ s) = "z" <> ( s)
+  represent (VarW s) = "w" <> ( s)
   represent (VarEmpty) = ""
-  represent (VarDefault s) = Builder.fromLazyText s
+  represent (VarDefault s) =  s
 
 data PosVar = PosVar
   { posVarName :: VariableName
@@ -72,7 +71,7 @@ instance Ord PosVar where
   compare = compare `on` posVarName
 
 instance Representation PosVar where
-  represent (PosVar v p) = "(" <> represent v <> ", " <> Builder.fromString (show p) <> ")"
+  represent (PosVar v p) = "(" <> represent v <> ", " <> Text.pack (show p) <> ")"
 
 class (Ord a, Representation a) => IsVar a where
   buildVar :: VariableName -> SourcePos -> a
