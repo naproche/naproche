@@ -99,7 +99,7 @@ boolSimp f = bool $ mapF boolSimp f
 -- Danger: We ignore the fact that @=@ is symmetric.
 --
 -- Arguments: the variable to look for (e.g. "x"), whether we are in an "existance" or an "all" case and the formula.
-mbBind :: VariableName -> Bool -> Formula -> Maybe Formula
+mbBind :: VarName -> Bool -> Formula -> Maybe Formula
 mbBind v  = dive id
   where
     dive :: (Formula -> Formula) -> Bool -> Formula -> Maybe Formula
@@ -121,7 +121,7 @@ mbBind v  = dive id
     dive _ _ _ = mzero
 
 
-mbExi, mbAll :: VariableName -> Formula -> Formula
+mbExi, mbAll :: VarName -> Formula -> Formula
 mbExi v f = fromMaybe (mkExi v f) (mbBind v True f)
 mbAll v f = fromMaybe (mkAll v f) (mbBind v False f)
 
@@ -151,7 +151,7 @@ pBlExi _ Top = Top
 pBlExi v f = Exi (positionedDecl v) f
 
 -- creation of formulas
-mkAll, mkExi :: VariableName -> Formula -> Formula
+mkAll, mkExi :: VarName -> Formula -> Formula
 mkAll v = bool . All (newDecl v) . bind v
 mkExi v = bool . Exi (newDecl v) . bind v
 
@@ -169,7 +169,7 @@ zIff f g = And (Imp f g) (Imp g f)
 zOr (Not f) g = Imp f g
 zOr f g       = Or  f g
 
-mkVar :: VariableName -> Formula
+mkVar :: VarName -> Formula
 mkVar v = pVar $ PosVar v noSourcePos
 
 pVar :: PosVar -> Formula
@@ -338,7 +338,7 @@ allFree f = foldF allFree f
 
 
 {- universal closure of a formula -}
-universialClosure :: Set VariableName -> Formula -> Formula
+universialClosure :: Set VarName -> Formula -> Formula
 universialClosure ls f = foldr mkAll f $ Set.toList $ fvToVarSet
   $ allFree f `excludeSet` ls
 
@@ -346,7 +346,7 @@ universialClosure ls f = foldr mkAll f $ Set.toList $ fvToVarSet
 -- Substitution with substitution maps
 
 -- | Apply a substitution that is represented as a finite partial map.
-applySub :: Map.Map VariableName Formula -> Formula -> Formula
+applySub :: Map.Map VarName Formula -> Formula -> Formula
 -- TODO: Should @applySub sub@ be @id@ when the variable lookup fails?
 applySub sub vr@Var{varName = v} = fromMaybe vr $ Map.lookup v sub
 applySub sub t = mapF (applySub sub) t

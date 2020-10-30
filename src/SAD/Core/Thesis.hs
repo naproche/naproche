@@ -102,7 +102,7 @@ existential thesis. -}
 hasInstantiationIn:: Formula -> [Formula] -> Bool
 hasInstantiationIn (Exi _ f) = notNull . listOfInstantiations f
 
-type Instantiation = Map.Map VariableName Formula
+type Instantiation = Map.Map VarName Formula
 {- the actual process of finding an instantiation. -}
 listOfInstantiations :: Formula -> [Formula] -> [Instantiation]
 listOfInstantiations f = instantiations 1 Map.empty (albet $ inst (VarAssume 0) f)
@@ -138,7 +138,7 @@ Result is returned within the list monad. -}
 extendInstantiation :: Instantiation -> Formula -> Formula -> [Instantiation]
 extendInstantiation sb f g = snd <$> runStateT (normalizedDive 0 f g) sb
   where
-    normalizedDive :: Int -> Formula -> Formula -> StateT (Map.Map VariableName Formula) [] ()
+    normalizedDive :: Int -> Formula -> Formula -> StateT (Map.Map VarName Formula) [] ()
     normalizedDive n f g = dive n (albet f) (albet g)
     dive n (All _ f) (All _ g)
       = let nn = VarDefault $ Text.pack $ show n in normalizedDive (succ n) (inst nn f) (inst nn g)
@@ -263,7 +263,7 @@ generateInstantiations f = VM tryAllVars
 {- monad to do bookkeeping during the search for a variation, i.e. keep track
 of which variables have already been used for an instantiation -}
 newtype VariationMonad res =
-  VM { runVM :: Set VariableName -> [(Set VariableName, res)] }
+  VM { runVM :: Set VarName -> [(Set VarName, res)] }
 
 instance Ord a => Semigroup (VariationMonad a) where
   a <> b = VM $ \s -> runVM a s <> runVM b s

@@ -51,26 +51,23 @@ main  = do
   args0 <- Environment.getArgs
   (opts0, text0) <- readArgs args0
 
-  oldProofTextRef <- newIORef $ ProofTextRoot []
-
   if askFlag Help False opts0 then
     putStr (GetOpt.usageInfo usageHeader options)
   else -- main body with explicit error handling, notably for PIDE
     Exception.catch
       (if askFlag Server False opts0 then
-        Server.server (Server.publish_stdout "Naproche-SAD") (serverConnection oldProofTextRef args0)
-      else do consoleThread; mainBody Nothing oldProofTextRef (opts0, text0))
+        Server.server (Server.publish_stdout "Naproche-SAD") (serverConnection args0)
+      else do consoleThread; mainBody Nothing (opts0, text0))
       (\err -> do
         exitThread
         let msg = Exception.displayException (err :: Exception.SomeException)
         IO.hPutStrLn IO.stderr msg
         Exit.exitFailure)
 
-mainBody :: Maybe ByteString -> IORef (ProofText) -> ([Instr], [ProofText]) -> IO ()
-mainBody proversYaml oldProofTextRef (opts0, text0) = do
+mainBody :: Maybe ByteString -> ([Instr], [ProofText]) -> IO ()
+mainBody proversYaml (opts0, text0) = do
   startTime <- getCurrentTime
 
-  oldProofText <- readIORef oldProofTextRef
   -- parse input text
   txts <- readProofText (askArgument Library "." opts0) text0
   let text1 = ProofTextRoot txts
@@ -78,7 +75,7 @@ mainBody proversYaml oldProofTextRef (opts0, text0) = do
   -- if -T / --onlytranslate is passed as an option, only print the translated text
   if askFlag OnlyTranslate False opts0
     then showTranslation txts startTime
-    else do proveFOL proversYaml text1 opts0 oldProofText oldProofTextRef startTime
+    else do proveFOL proversYaml text1 opts0 startTime
 
 showTranslation :: [ProofText] -> UTCTime -> IO ()
 showTranslation txts startTime = do
@@ -89,8 +86,8 @@ showTranslation txts startTime = do
   finishTime <- getCurrentTime
   outputMain TRACING noSourcePos $ Text.unpack $ "total " <> timeDifference finishTime
 
-proveFOL :: Maybe ByteString -> ProofText -> [Instr] -> ProofText -> (IORef (ProofText)) -> UTCTime -> IO ()
-proveFOL proversYaml text1 opts0 oldProofText oldProofTextRef startTime = do
+proveFOL :: Maybe ByteString -> ProofText -> [Instr] -> UTCTime -> IO ()
+proveFOL proversYaml text1 opts0 startTime = do
   -- read provers.yaml
   provers <- case proversYaml of
     Nothing -> readProverFile $ Text.unpack (askArgument Provers "provers.yaml" opts0)
@@ -102,11 +99,8 @@ proveFOL proversYaml text1 opts0 oldProofText oldProofTextRef startTime = do
 
   success <- case findParseError text1 of
     Nothing -> do
-      let text = textToCheck oldProofText text1
-      (success, newProofText) <- verify (askArgument File "" opts0) provers reasonerState text
-      case newProofText of
-        Just txt -> writeIORef oldProofTextRef txt
-        _ -> return ()
+      let text = text1
+      success <- verify (askArgument File "" opts0) provers reasonerState text
       pure success
     Just err -> do errorParser (errorPos err) (show err); pure False
 
@@ -159,8 +153,8 @@ proveFOL proversYaml text1 opts0 oldProofText oldProofTextRef startTime = do
 
   when (not success) Exit.exitFailure
 
-serverConnection :: IORef (ProofText) -> [String] -> Socket -> IO ()
-serverConnection oldProofTextRef args0 connection = do
+serverConnection :: [String] -> Socket -> IO ()
+serverConnection args0 connection = do
   thread_uuid <- Standard_Thread.my_uuid
   mapM_ (Byte_Message.write_line_message connection . UUID.bytes) thread_uuid
 
@@ -177,7 +171,7 @@ serverConnection oldProofTextRef args0 connection = do
           (opts1, text0) <- readArgs (args0 ++ args1)
           let text1 = text0 ++ [ProofTextInstr noPos (GetArgument Text (Text.pack $ XML.content_of body))]
 
-          Exception.catch (mainBody Nothing oldProofTextRef (opts1, text1))
+          Exception.catch (mainBody Nothing (opts1, text1))
             (\err -> do
               let msg = Exception.displayException (err :: Exception.SomeException)
               Exception.catch

@@ -17,13 +17,13 @@ type Serial = Int
 
 -- | A variable declaration.
 data Decl = Decl {
-  declName :: VariableName,
+  declName :: VarName,
   declPosition :: SourcePos,
   declSerial :: Serial
 } deriving (Eq, Ord, Show)
 
 {- a declaration that has no representation in the input text -}
-newDecl :: VariableName -> Decl
+newDecl :: VarName -> Decl
 newDecl v = Decl v noSourcePos 0
 
 {- a declaration that has a representation in the input text but has not been

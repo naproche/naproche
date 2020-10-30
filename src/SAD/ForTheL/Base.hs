@@ -51,7 +51,7 @@ data FState = FState {
   cfnExpr, rfnExpr, lfnExpr, ifnExpr :: [Prim],
   cprExpr, rprExpr, lprExpr, iprExpr :: [Prim],
 
-  tvrExpr :: [TVar], strSyms :: [[Text]], varDecl :: Set VariableName,
+  tvrExpr :: [TVar], strSyms :: [[Text]], varDecl :: Set VarName,
   idCount :: Int, hiddenCount :: Int, serialCounter :: Int,
   reports :: [Message.Report], pide :: Maybe PIDE }
 
@@ -90,10 +90,10 @@ getExpr :: (FState -> [a]) -> (a -> FTL b) -> FTL b
 getExpr e p = gets e >>=  foldr ((-|-) . try . p ) mzero
 
 
-getDecl :: FTL (Set VariableName)
+getDecl :: FTL (Set VarName)
 getDecl = gets varDecl
 
-addDecl :: Set VariableName -> FTL a -> FTL a
+addDecl :: Set VarName -> FTL a -> FTL a
 addDecl vs p = do
   dcl <- gets varDecl; modify adv;
   after p $ modify $ sbv dcl
@@ -342,7 +342,7 @@ var = do
 
 --- pretyped Variables
 
-type TVar = (Set VariableName, Formula)
+type TVar = (Set VarName, Formula)
 
 primTypedVar :: FTL MNotion
 primTypedVar = getExpr tvrExpr tvr
@@ -376,16 +376,16 @@ decl = dive
     dive _ = mempty
 
 {- produce variable names declared by a formula -}
-declNames :: Set VariableName -> Formula -> Set VariableName
+declNames :: Set VarName -> Formula -> Set VarName
 declNames vs f = fvToVarSet $ excludeSet (decl f) vs
 
 {- produce the bindings in a formula in a Decl data type and take care of
 the serial counter. -}
-bindings :: Set VariableName -> Formula -> FTL (Set Decl)
+bindings :: Set VarName -> Formula -> FTL (Set Decl)
 bindings vs f = makeDecls $ fvToVarSet $ excludeSet (decl f) vs
 
 
-freeOrOverlapping :: Set VariableName -> Formula -> Maybe Text
+freeOrOverlapping :: Set VarName -> Formula -> Maybe Text
 freeOrOverlapping vs f
     | (mkVar VarSlot) `occursIn` f = Just $ "too few subjects for an m-predicate " <> info
     | not (Text.null sbs) = Just $ "free undeclared variables: "   <> sbs <> info
@@ -396,12 +396,12 @@ freeOrOverlapping vs f
     ovl = Text.unwords $ map (showVar) $ Set.toList $ over vs f
     info = "\n in translation: " <> (Text.pack $ showFormula f)
 
-    over :: Set VariableName -> Formula -> Set VariableName
+    over :: Set VarName -> Formula -> Set VarName
     over vs (All v f) = boundVars vs (declName v) f
     over vs (Exi v f) = boundVars vs (declName v) f
     over vs f = foldF (over vs) f
 
-    boundVars :: Set VariableName -> VariableName -> Formula -> Set VariableName
+    boundVars :: Set VarName -> VarName -> Formula -> Set VarName
     boundVars vs v f
       | v `Set.member` vs = Set.singleton v
       | v == VarEmpty = over vs f
@@ -460,6 +460,6 @@ texEnd env = do
 
 --just for now:
 
-showVar :: VariableName -> Text
+showVar :: VarName -> Text
 showVar (VarConstant nm) = nm
 showVar nm =  represent nm

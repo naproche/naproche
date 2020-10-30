@@ -24,7 +24,7 @@ import SAD.Core.SourcePos (noSourcePos)
 import SAD.Core.Verify (verify)
 import SAD.Data.Instr (Instr(..), Flag(..), askFlag, Limit(..), askLimit, Argument(..), askArgument, Arguments(..), noPos
   , UnderlyingTheory(..), askTheory)
-import SAD.Data.Text.Block (ProofText(..), textToCheck, findParseError)
+import SAD.Data.Text.Block (ProofText(..), findParseError)
 import SAD.Export.Base (readProverFile, readProverDatabase)
 import SAD.Parser.Error (errorPos)
 import SAD.Helpers (trimLine)

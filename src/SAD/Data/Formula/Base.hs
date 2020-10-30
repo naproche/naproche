@@ -29,7 +29,7 @@ data Formula =
   Top                     | Bot                     |
   Trm { trmName :: TermName, trmArgs :: [Formula],
         trmInfo :: [Formula], trmId   :: TermId}         |
-  Var { varName :: VariableName, varInfo :: [Formula], varPosition :: SourcePos } |
+  Var { varName :: VarName, varInfo :: [Formula], varPosition :: SourcePos } |
   Ind { indIndex :: Int, indPosition :: SourcePos }   | ThisT
   deriving (Eq, Ord, Show)
 
@@ -79,7 +79,7 @@ mapFM _ f = pure f
 
 -- Logical traversing
 -- | Same as roundFM but without the monadic action.
-roundF :: (Text -> VariableName) -> ([Formula] -> Maybe Bool -> Int -> Formula -> Formula)
+roundF :: (Text -> VarName) -> ([Formula] -> Maybe Bool -> Int -> Formula -> Formula)
                -> [Formula] -> Maybe Bool -> Int -> Formula -> Formula
 roundF c fn l p n f = runIdentity $ roundFM c (\w x y z -> Identity $ fn w x y z) l p n f
 
@@ -87,7 +87,7 @@ roundF c fn l p n f = runIdentity $ roundFM c (\w x y z -> Identity $ fn w x y z
 track of local premises, polarity and quantification depth. A unique identifying
 char is provided to shape the instantiations.-}
 roundFM :: (Monad m) =>
-          (Text -> VariableName) -> ([Formula] -> Maybe Bool -> Int -> Formula -> m Formula)
+          (Text -> VarName) -> ([Formula] -> Maybe Bool -> Int -> Formula -> m Formula)
                -> [Formula] -> Maybe Bool -> Int -> Formula -> m Formula
 roundFM mkVar traversalAction localContext polarity n = dive
   where
@@ -162,7 +162,7 @@ t `occursIn` f = twins t f || anyF (t `occursIn`) f
 
 -- | Bind a variable with name v in a formula.
 -- This also affects any info stored.
-bind :: VariableName -> Formula -> Formula
+bind :: VarName -> Formula -> Formula
 bind v = dive 0
   where
     dive n (All u g) = All u $ dive (succ n) g
@@ -177,7 +177,7 @@ bind v = dive 0
 
 -- | Instantiate a formula with a variable with name v.
 -- This also affects any info stored.
-inst :: VariableName -> Formula -> Formula
+inst :: VarName -> Formula -> Formula
 inst x = dive 0
   where
     dive n (All u g) = All u $ dive (succ n) g
@@ -191,11 +191,11 @@ inst x = dive 0
     dive n f = mapF (dive n) f
 
 {- substitute a formula t for a variable with name v. Does not affect info. -}
-subst :: Formula -> VariableName -> Formula -> Formula
+subst :: Formula -> VarName -> Formula -> Formula
 subst t v f = substs f [v] [t]
 
 {- multiple substitutions at the same time. Does not affect info. -}
-substs :: Formula -> [VariableName] -> [Formula] -> Formula
+substs :: Formula -> [VarName] -> [Formula] -> Formula
 substs f vs ts = dive f
   where
     dive v@Var {varName = u} = fromMaybe v (Map.lookup u zvt)

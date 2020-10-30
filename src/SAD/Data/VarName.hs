@@ -3,7 +3,7 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 
 module SAD.Data.VarName
-  ( VariableName(..)
+  ( VarName(..)
   , FV, unitFV, bindVar, excludeVars
   , excludeSet
   , IsVar(..)
@@ -23,7 +23,7 @@ import SAD.Core.SourcePos
 import Data.Function (on)
 
 -- These names may not reflect what the constructors are used for..
-data VariableName 
+data VarName 
   = VarConstant Text   -- ^ previously starting with x
   | VarHole Text       -- ^ previously starting with ?
   | VarSlot            -- ^ previously !
@@ -31,21 +31,18 @@ data VariableName
   | VarHidden Int      -- ^ previously starting with h
   | VarAssume Int      -- ^ previously starting with i
   | VarSkolem Int      -- ^ previously starting with o
-  | VarTask VariableName -- ^ previously starting with c
+  | VarTask VarName -- ^ previously starting with c
   | VarZ Text          -- ^ previously starting with z
   | VarW Text          -- ^ previously starting with w
   | VarEmpty             -- ^ previously ""
   | VarDefault Text    -- ^ everything else
-  deriving (Eq, Ord)
+  deriving (Eq, Ord, Show, Read)
 
-isHole :: VariableName -> Bool
+isHole :: VarName -> Bool
 isHole (VarHole _) = True
 isHole _ = False
 
-instance Show VariableName where
-  show = Text.unpack . represent
-
-instance Representation VariableName where
+instance Representation VarName where
   represent (VarConstant s) = "x" <> ( s)
   represent (VarHole s) = "?" <> ( s)
   represent (VarSlot) = "!"
@@ -60,7 +57,7 @@ instance Representation VariableName where
   represent (VarDefault s) =  s
 
 data PosVar = PosVar
-  { posVarName :: VariableName
+  { posVarName :: VarName
   , posVarPosition :: SourcePos
   } deriving (Show)
 
@@ -74,9 +71,9 @@ instance Representation PosVar where
   represent (PosVar v p) = "(" <> represent v <> ", " <> Text.pack (show p) <> ")"
 
 class (Ord a, Representation a) => IsVar a where
-  buildVar :: VariableName -> SourcePos -> a
+  buildVar :: VarName -> SourcePos -> a
 
-instance IsVar VariableName where
+instance IsVar VarName where
   buildVar = const
 
 instance IsVar PosVar where
@@ -87,7 +84,7 @@ instance IsVar PosVar where
 -- for explanation
 
 newtype FV a = FV
-  { runFV :: Set VariableName  -- bound variable set
+  { runFV :: Set VarName  -- bound variable set
           -> Set a  -- the accumulator
           -> Set a  -- the result
   }
@@ -99,21 +96,21 @@ instance Semigroup (FV a) where
   fv1 <> fv2 = FV $ oneShot $ \boundVars -> oneShot $ \acc ->
     runFV fv1 boundVars (runFV fv2 boundVars acc)
 
-unitFV :: IsVar a => VariableName -> SourcePos -> FV a
+unitFV :: IsVar a => VarName -> SourcePos -> FV a
 unitFV v s = FV $ oneShot $ \boundVars -> oneShot $ \acc ->
   if Set.member v boundVars
   then acc
   else Set.insert (buildVar v s) acc
 
-bindVar :: Ord a => VariableName -> FV a -> FV a
+bindVar :: Ord a => VarName -> FV a -> FV a
 bindVar v fv = FV $ oneShot $ \boundVars -> oneShot $ \acc ->
   runFV fv (Set.insert v boundVars) acc
 
-excludeVars :: Ord a => FV VariableName -> FV a -> FV a
+excludeVars :: Ord a => FV VarName -> FV a -> FV a
 excludeVars fv1 fv2 = FV $ oneShot $ \boundVars -> oneShot $ \acc ->
   runFV fv2 (runFV fv1 mempty boundVars) acc
 
-excludeSet :: IsVar a => FV a -> Set VariableName -> FV a
+excludeSet :: IsVar a => FV a -> Set VarName -> FV a
 excludeSet fs vs = excludeVars (fvFromVarSet vs) fs
 
 fvFromVarSet :: Ord a => Set a -> FV a

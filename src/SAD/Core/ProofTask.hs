@@ -21,7 +21,7 @@ import SAD.Data.Text.Decl
 
 {- generate proof task associated with a block -}
 
-generateProofTask :: Section -> Set VariableName -> Formula -> Formula
+generateProofTask :: Section -> Set VarName -> Formula -> Formula
 generateProofTask Selection vs f = foldr mbExi f vs
 generateProofTask LowDefinition _ f
   | funDcl f = funTask f
@@ -48,7 +48,7 @@ separation t | isElem t = dec $ mkSet $ last $ trmArgs t
 separation _ = error "SAD.Core.ProofTask.separation: misformed argument"
 
 {- generate replacement proof task -}
-replacement :: VariableName -> Formula -> Formula
+replacement :: VarName -> Formula -> Formula
 replacement x f = fromMaybe _default $ dive [] f
   where
     dive vs (Exi x f) = dive (declName x:vs) f

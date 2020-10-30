@@ -21,7 +21,7 @@ data TermName
   | TermLess
   | TermThesis
   | TermEmpty
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Ord, Show, Read)
 
 termFunction :: TermName
 termFunction = TermNotion "Function"

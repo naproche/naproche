@@ -211,7 +211,7 @@ pretyping :: (Block) -> FTL (Block)
 pretyping bl = do
   dvs <- getDecl; tvs <- getPretyped; pret dvs tvs bl
 
-pret :: Set VariableName -> [TVar] -> (Block) -> FTL (Block)
+pret :: Set VarName -> [TVar] -> (Block) -> FTL (Block)
 pret dvs tvs bl = do
   untyped <- makeDecls $ fvToVarSet $ excludeSet (allFree (Block.formula bl)) (blockVars <> dvs)
   let typing =
@@ -270,7 +270,7 @@ statementBlock kind p mbLink = do
 
 pretypeSentence :: Section
                    -> FTL Formula
-                   -> (Set VariableName -> Formula -> Maybe Text)
+                   -> (Set VarName -> Formula -> Maybe Text)
                    -> FTL [Text]
                    -> FTL (Block)
 pretypeSentence kind p wfVars mbLink = narrow $ do
@@ -286,7 +286,7 @@ pretypeSentence kind p wfVars mbLink = narrow $ do
 
 sentence :: Section
             -> FTL Formula
-            -> (Set VariableName -> Formula -> Maybe Text)
+            -> (Set VarName -> Formula -> Maybe Text)
             -> FTL [Text]
             -> FTL (Block)
 sentence kind p wfVars mbLink = do
@@ -298,7 +298,7 @@ sentence kind p wfVars mbLink = do
 
 -- variable well-formedness checks
 
-defVars, assumeVars, affirmVars :: Set VariableName -> Formula -> Maybe Text
+defVars, assumeVars, affirmVars :: Set VarName -> Formula -> Maybe Text
 
 defVars dvs f
   | null unusedVars = affirmVars dvs f
@@ -308,7 +308,7 @@ defVars dvs f
     errorMsg = "extra variables in the guard: " <> varText
     varText = Text.concat $ map (Text.cons ' ' . showVar) $ Set.toList unusedVars
 
-llDefnVars :: Set VariableName -> Formula -> Maybe Text
+llDefnVars :: Set VarName -> Formula -> Maybe Text
 llDefnVars dvs f
   | x `elem` dvs = Just $ "Defined variable is already in use: " <> showVar x
   | otherwise = affirmVars (Set.insert x dvs) f

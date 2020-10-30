@@ -38,7 +38,7 @@ import qualified SAD.Data.Text.Context as Context
 import qualified Isabelle.Markup as Markup
 
 -- | Main verification loop
-verify :: Text -> [Prover] -> IORef RState -> ProofText -> IO (Bool, Maybe (ProofText))
+verify :: Text -> [Prover] -> IORef RState -> ProofText -> IO Bool
 verify fileName provers reasonerState (ProofTextRoot text) = do
   let text' = ProofTextInstr noPos (GetArgument File fileName) : text
   let verificationState = makeInitialVState provers text'
@@ -53,7 +53,7 @@ verify fileName provers reasonerState (ProofTextRoot text) = do
   let success = isJust result && ignoredFails == 0
   Message.outputReasoner Message.TRACING (fileOnlyPos fileName) $
     "verification " ++ (if success then "successful" else "failed")
-  return (success, fmap (ProofTextRoot . tail . snd) result)
+  return success
 
 verificationLoop :: VState -> VM ([ProofText], [ProofText])
 verificationLoop state@VS {
@@ -172,8 +172,7 @@ verificationLoop state@VS {
         thesisMotivated = motivated && not newMotivation,
         currentThesis = Context.setFormula thesis finalThesis, restProofText = [] }
       -- put everything together
-      let checkMark = if Block.isTopLevel block then id else ProofTextChecked
-      return (ProofTextBlock newBlock : newBlocks, checkMark (ProofTextBlock markedBlock) : markedBlocks)
+      return (ProofTextBlock newBlock : newBlocks, (ProofTextBlock markedBlock) : markedBlocks)
 
 -- if there is no text to be read in a branch it means we must call the prover
 verificationLoop st@VS {
@@ -200,20 +199,6 @@ verificationLoop st@VS {
           reasonLog Message.WARNING (Block.position block) "goal failed" >> setFailed >>
           --guardInstruction Skipfail False >>
           incrementCounter FailedGoals)
-
-verificationLoop state@ VS {restProofText = ProofTextChecked txt : rest} =
-  let newTxt = Block.setChildren txt (Block.children txt ++ newInstructions)
-      newInstructions = [NonProofTextStoredInstr $
-        SetFlag Prove False :
-        SetFlag Printgoal False :
-        SetFlag Printreason False :
-        SetFlag Printsection False :
-        SetFlag Printcheck False :
-        SetFlag Printprover False :
-        SetFlag Printunfold False :
-        SetFlag Printfulltask False :
-        instructions state]
-  in  setChecked >> verificationLoop state {restProofText = newTxt : rest}
 
 verificationLoop state@ VS {restProofText = NonProofTextStoredInstr ins : rest} =
   verificationLoop state {restProofText = rest, instructions = ins}

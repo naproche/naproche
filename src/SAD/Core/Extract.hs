@@ -95,15 +95,15 @@ closeEvidence dfs def@DE{defEvidence = evidence} = def { defEvidence = newEviden
       in  map (fromTo fromU . sb) $ defEvidence def
     definitionalEvidence _ = []
 
-    fromTo :: (VariableName -> VariableName) -> Formula -> Formula
+    fromTo :: (VarName -> VarName) -> Formula -> Formula
     fromTo fn v@Var {varName = vn} = v {varName = fn vn}
     fromTo fn f = mapF (fromTo fn) f
 
-    makeU :: VariableName -> VariableName
+    makeU :: VarName -> VarName
     makeU (VarHole nm) = VarU nm
     makeU v = v
 
-    fromU :: VariableName -> VariableName
+    fromU :: VarName -> VarName
     fromU (VarU nm) = VarHole nm
     fromU v = v
 

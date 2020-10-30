@@ -14,7 +14,7 @@ import Prelude hiding (head, tail)
 import qualified Prelude as Prelude (head, tail)
 import SAD.Data.Text.Block (Section(..))
 import qualified SAD.Data.Text.Block as Block
-import SAD.Data.Formula (Formula, VariableName)
+import SAD.Data.Formula (Formula, VarName)
 import Data.Text (Text)
 import Data.Set (Set)
 
@@ -37,7 +37,7 @@ isTopLevel  = null . tail
 isLowLevel :: Context -> Bool
 isLowLevel  = not  . isTopLevel
 
-declaredNames :: Context -> Set VariableName
+declaredNames :: Context -> Set VarName
 declaredNames = Block.declaredNames . head
 
 name :: Context -> Text

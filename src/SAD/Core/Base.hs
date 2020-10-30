@@ -337,7 +337,7 @@ initialDefinitions = Map.fromList [
   (ElementId,  elementOf),
   (PairId, pair) ]
 
-hole0, hole1 :: VariableName
+hole0, hole1 :: VarName
 hole0 = VarHole "0"
 hole1 = VarHole "1"
 
