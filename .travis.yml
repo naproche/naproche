@@ -38,11 +38,8 @@ addons:
 
 os:
 - linux
-- osx
 env:
-- EVER=2.3
-- EVER=2.2
-- EVER=2.1
+- EVER=2.5
 - EVER=2.0
 
 before_install:
