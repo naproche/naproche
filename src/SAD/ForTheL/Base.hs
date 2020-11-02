@@ -31,7 +31,7 @@ import SAD.Data.Text.Decl
 
 import SAD.Core.Message (PIDE)
 import qualified SAD.Core.Message as Message
-import SAD.Export.Representation (represent)
+import SAD.Core.Pretty (pretty)
 
 type FTL = Parser FState
 
@@ -323,7 +323,7 @@ varList = var `sepBy` token' "," >>= nodups
 nodups :: IsVar a => [a] -> FTL (Set a)
 nodups vs = do
   unless ((null :: [b] -> Bool) $ duplicateNames vs) $
-    fail $ "duplicate names: " ++ (show $ map (Text.unpack . represent) vs)
+    fail $ "duplicate names: " ++ (show $ map (Text.unpack . pretty) vs)
   pure $ Set.fromList vs
 
 hidden :: FTL PosVar
@@ -462,4 +462,4 @@ texEnd env = do
 
 showVar :: VarName -> Text
 showVar (VarConstant nm) = nm
-showVar nm =  represent nm
+showVar nm =  pretty nm

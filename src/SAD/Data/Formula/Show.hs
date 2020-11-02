@@ -11,7 +11,7 @@ module SAD.Data.Formula.Show (
 
 import SAD.Data.Formula.Base
 import SAD.Data.Terms
-import SAD.Export.Representation (represent)
+import SAD.Core.Pretty (pretty)
 import SAD.Core.SourcePos (noSourcePos)
 
 import qualified Data.Text as Text
@@ -43,8 +43,8 @@ goShowFormula p d = dive
       decode tName (map (\t -> Text.pack $ showParen (ambig t) (goShowFormula p d t) "") tArgs)
     dive t@Trm{trmName = TermThe tName, trmArgs = tArgs} =
           showString ("the" <> Text.unpack tName) . showArguments tArgs
-    dive t@Trm{trmName = tName, trmArgs = tArgs} = showString (Text.unpack $  represent tName) . showArguments tArgs
-    dive v@Var{varName = vName} = showString $ Text.unpack $  represent vName
+    dive t@Trm{trmName = tName, trmArgs = tArgs} = showString (Text.unpack $  pretty tName) . showArguments tArgs
+    dive v@Var{varName = vName} = showString $ Text.unpack $  pretty vName
     dive Ind {indIndex = i }
       | i < d = showChar 'v' . shows (d - i - 1)
       | otherwise = showChar 'v' . showChar '?' . showString (show i)

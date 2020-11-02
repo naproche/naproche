@@ -7,7 +7,7 @@ Construct prover database.
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.Export.Base (Prover(..),readProverFile, readProverDatabase) where
+module SAD.Core.Provers (Prover(..),readProverFile, readProverDatabase) where
 
 import Data.Yaml
 import qualified SAD.Core.Message as Message

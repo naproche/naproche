@@ -17,7 +17,7 @@ import SAD.Data.Text.Decl (Decl)
 import SAD.Data.VarName
 import Data.Text (Text)
 import qualified Data.Text as Text
-import SAD.Export.Representation
+import SAD.Core.Pretty
 
 import qualified Data.Map as Map
 
@@ -54,8 +54,8 @@ trInfo Var {varInfo = xs} = xs
 trInfo _ = error "Formula.Base.trInfo: Partial function"
 
 showTrName :: Formula -> Text
-showTrName (Trm {trmName = s}) = Text.filter (/= ':') $ represent s
-showTrName (Var {varName = s}) = Text.filter (/= ':') $ represent s
+showTrName (Trm {trmName = s}) = Text.filter (/= ':') $ pretty s
+showTrName (Var {varName = s}) = Text.filter (/= ':') $ pretty s
 showTrName _ = Text.empty
 
 -- Traversing functions

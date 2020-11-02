@@ -5,7 +5,7 @@ module SAD.Data.Terms where
 import Debug.Trace
 import Data.Text (Text)
 import qualified Data.Text as Text
-import SAD.Export.Representation
+import SAD.Core.Pretty
 
 data TermName 
   = TermName Text
@@ -56,20 +56,20 @@ termSplit (TermUnaryVerb t) = (TermUnaryVerb, t)
 termSplit (TermMultiVerb t) = (TermMultiVerb, t)
 termSplit _ = error "wont happen"
 
-instance Representation TermName where
-  represent (TermName t) =  t
-  represent (TermSymbolic t) = decode t (repeat ".")
-  represent (TermNotion t) = "a" <>  t
-  represent (TermThe t) = "the" <>  t
-  represent (TermUnaryAdjective t) = "is" <>  t
-  represent (TermMultiAdjective t) = "mis" <>  t
-  represent (TermUnaryVerb t) = "do" <>  t
-  represent (TermMultiVerb t) = "mdo" <>  t
-  represent (TermTask n) = "tsk " <> Text.pack (show n)
-  represent TermEquality = "="
-  represent TermLess  = "iLess"
-  represent TermThesis = "#TH#"
-  represent TermEmpty = ""
+instance Pretty TermName where
+  pretty (TermName t) =  t
+  pretty (TermSymbolic t) = decode t (repeat ".")
+  pretty (TermNotion t) = "a" <>  t
+  pretty (TermThe t) = "the" <>  t
+  pretty (TermUnaryAdjective t) = "is" <>  t
+  pretty (TermMultiAdjective t) = "mis" <>  t
+  pretty (TermUnaryVerb t) = "do" <>  t
+  pretty (TermMultiVerb t) = "mdo" <>  t
+  pretty (TermTask n) = "tsk " <> Text.pack (show n)
+  pretty TermEquality = "="
+  pretty TermLess  = "iLess"
+  pretty TermThesis = "#TH#"
+  pretty TermEmpty = ""
 
 -- | Decode a TermSymbolic s with arguments ts
 decode :: Text -> [Text] -> Text

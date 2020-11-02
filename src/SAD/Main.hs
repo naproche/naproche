@@ -10,8 +10,6 @@ Main application entry point: console or server mode.
 module SAD.Main where
 
 import Control.Monad (when, unless)
-import Data.Char (toLower)
-import Data.IORef
 import Data.Maybe (fromMaybe)
 import Data.Time (UTCTime, addUTCTime, getCurrentTime, diffUTCTime)
 import Data.ByteString (ByteString)
@@ -36,7 +34,7 @@ import qualified Isabelle.XML as XML
 import qualified Isabelle.YXML as YXML
 import Network.Socket (Socket)
 
-import SAD.Export.Representation (represent)
+import SAD.Core.Pretty (pretty)
 import SAD.API
 
 main :: IO ()
@@ -71,43 +69,43 @@ mainBody proversYaml (opts0, text0) = do
 
   -- parse input text
   txts <- readProofText (askArgument Library "." opts0) text0
-  let text1 = ProofTextRoot txts
 
   -- if -T / --onlytranslate is passed as an option, only print the translated text
   if askFlag OnlyTranslate False opts0
     then showTranslation txts startTime
-    else do proveFOL proversYaml text1 opts0 startTime
+    else do proveFOL proversYaml txts opts0 startTime
 
 showTranslation :: [ProofText] -> UTCTime -> IO ()
 showTranslation txts startTime = do
   let timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)
   mapM_ (\case ProofTextBlock bl -> print bl; _ -> return ()) txts
-  mapM_ (putStrLn . Text.unpack . represent) (convert txts)
+  mapM_ (putStrLn . Text.unpack . pretty) (convert txts)
 
   -- print statistics
   finishTime <- getCurrentTime
   outputMain TRACING noSourcePos $ Text.unpack $ "total " <> timeDifference finishTime
 
-proveFOL :: Maybe ByteString -> ProofText -> [Instr] -> UTCTime -> IO ()
-proveFOL proversYaml text1 opts0 startTime = do
+proveFOL :: Maybe ByteString -> [ProofText] -> [Instr] -> UTCTime -> IO ()
+proveFOL proversYaml txts opts0 startTime = do
   -- read provers.yaml
   provers <- case proversYaml of
-    Nothing -> readProverFile $ Text.unpack (askArgument Provers "provers.yaml" opts0)
+    Nothing -> readProverFile 
+      $ Text.unpack (askArgument Provers "provers.yaml" opts0)
     Just txt -> readProverDatabase "" txt
-  -- initialize reasoner state
-  reasonerState <- newIORef (RState [] False False)
 
+  let reasonerState = RState [] False False
   proveStart <- getCurrentTime
 
-  success <- case findParseError text1 of
+  (success, finalReasonerState) <- case findParseError (ProofTextRoot txts) of
     Nothing -> do
-      let text = text1
-      success <- verify (askArgument File "" opts0) provers reasonerState text
-      pure success
-    Just err -> do errorParser (errorPos err) (show err); pure False
+      let typed = convert txts
+      pure (False, reasonerState) 
+      -- verify provers reasonerState typed
+    Just err -> do 
+      errorParser (errorPos err) (show err)
+      pure (False, reasonerState)
 
   finishTime <- getCurrentTime
-  finalReasonerState <- readIORef reasonerState
 
   let trackerList = trackers finalReasonerState
   let accumulate  = sumCounter trackerList
@@ -240,48 +238,28 @@ options = [
     "prove goals in the text (def: on)",
   GetOpt.Option "" ["check"] (GetOpt.ReqArg (SetFlag Check . parseConsent) "{on|off}")
     "check symbols for definedness (def: on)",
-  GetOpt.Option "" ["symsign"] (GetOpt.ReqArg (SetFlag Symsign . parseConsent) "{on|off}")
-    "prevent ill-typed unification (def: on)",
-  GetOpt.Option "" ["info"] (GetOpt.ReqArg (SetFlag Info . parseConsent) "{on|off}")
-    "collect \"evidence\" literals (def: on)",
-  GetOpt.Option "" ["thesis"] (GetOpt.ReqArg (SetFlag Thesis . parseConsent) "{on|off}")
-    "maintain current thesis (def: on)",
   GetOpt.Option "" ["filter"] (GetOpt.ReqArg (SetFlag Filter . parseConsent) "{on|off}")
     "filter prover tasks (def: on)",
   GetOpt.Option "" ["skipfail"] (GetOpt.ReqArg (SetFlag Skipfail . parseConsent) "{on|off}")
     "ignore failed goals (def: off)",
-  GetOpt.Option "" ["flat"] (GetOpt.ReqArg (SetFlag Flat . parseConsent) "{on|off}")
-    "do not read proofs (def: off)",
   GetOpt.Option "q" [] (GetOpt.NoArg (SetFlag Verbose False))
     "print no details",
   GetOpt.Option "v" [] (GetOpt.NoArg (SetFlag Verbose True))
     "print more details (-vv, -vvv, etc)",
   GetOpt.Option "" ["printgoal"] (GetOpt.ReqArg (SetFlag Printgoal . parseConsent) "{on|off}")
     "print current goal (def: on)",
-  GetOpt.Option "" ["printreason"] (GetOpt.ReqArg (SetFlag Printreason . parseConsent) "{on|off}")
-    "print reasoner's messages (def: off)",
   GetOpt.Option "" ["printsection"] (GetOpt.ReqArg (SetFlag Printsection . parseConsent) "{on|off}")
     "print sentence translations (def: off)",
   GetOpt.Option "" ["printcheck"] (GetOpt.ReqArg (SetFlag Printcheck . parseConsent) "{on|off}")
     "print checker's messages (def: off)",
   GetOpt.Option "" ["printprover"] (GetOpt.ReqArg (SetFlag Printprover . parseConsent) "{on|off}")
     "print prover's messages (def: off)",
-  GetOpt.Option "" ["printunfold"] (GetOpt.ReqArg (SetFlag Printunfold . parseConsent) "{on|off}")
-    "print definition unfoldings (def: off)",
   GetOpt.Option "" ["printfulltask"] (GetOpt.ReqArg (SetFlag Printfulltask . parseConsent) "{on|off}")
     "print full prover tasks (def: off)",
   GetOpt.Option "" ["printsimp"] (GetOpt.ReqArg (SetFlag Printsimp . parseConsent) "{on|off}")
     "print simplification process (def: off)",
   GetOpt.Option "" ["printthesis"] (GetOpt.ReqArg (SetFlag Printthesis . parseConsent) "{on|off}")
     "print thesis development (def: off)",
-  GetOpt.Option "" ["unfoldlow"] (GetOpt.ReqArg (SetFlag Unfoldlow . parseConsent) "{on|off}")
-    "enable unfolding of definitions in the whole low level context (def: on)",
-  GetOpt.Option "" ["unfold"] (GetOpt.ReqArg (SetFlag Unfold . parseConsent) "{on|off}")
-    "enable unfolding of definitions (def: on)",
-  GetOpt.Option "" ["unfoldsf"] (GetOpt.ReqArg (SetFlag Unfoldsf . parseConsent) "{on|off}")
-    "enable unfolding of set conditions and function evaluations (def: on)",
-  GetOpt.Option "" ["unfoldlowsf"] (GetOpt.ReqArg (SetFlag Unfoldlowsf . parseConsent) "{on|off}")
-    "enable unfolding of set and function conditions in general (def: off)",
   GetOpt.Option "" ["dump"]
     (GetOpt.ReqArg (SetFlag Dump . parseConsent) "{on|off}")
     "print tasks in prover's syntax (def: off)"
@@ -291,14 +269,6 @@ parseConsent :: String -> Bool
 parseConsent "yes" = True ; parseConsent "on"  = True
 parseConsent "no"  = False; parseConsent "off" = False
 parseConsent s     = errorWithoutStackTrace $ "Invalid boolean argument: \"" ++ s ++ "\""
-
-parseTheory :: String -> UnderlyingTheory
-parseTheory s = go (map toLower s)
-  where
-    go "fol" = FirstOrderLogic
-    go "cic" = CiC
-    go "lean" = Lean
-    go s = errorWithoutStackTrace $ "Invalid theory: \"" ++ s ++ "\""
 
 getLeadingPositiveInt :: String -> Int
 getLeadingPositiveInt s = case reads s of

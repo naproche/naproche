@@ -18,7 +18,7 @@ import qualified Data.Set as Set
 import GHC.Magic (oneShot)
 import Data.Text (Text)
 import qualified Data.Text as Text
-import SAD.Export.Representation
+import SAD.Core.Pretty
 import SAD.Core.SourcePos
 import Data.Function (on)
 
@@ -43,20 +43,20 @@ isHole :: VarName -> Bool
 isHole (VarHole _) = True
 isHole _ = False
 
-instance Representation VarName where
-  represent (VarConstant s) = s
-  represent (VarHole s) = "?" <> ( s)
-  represent (VarSlot) = "!"
-  represent (VarU s) = "u" <> ( s)
-  represent (VarHidden n) = "h" <> (Text.pack (show n))
-  represent (VarAssume n) = "i" <> (Text.pack (show n))
-  represent (VarSkolem n) = "o" <> (Text.pack (show n))
-  represent (VarTask s) = "c" <> represent s
-  represent (VarZ s) = "z" <> ( s)
-  represent (VarW s) = "w" <> ( s)
-  represent (VarF s) = "out_" <> (Text.pack (show s))
-  represent (VarEmpty) = ""
-  represent (VarDefault s) =  s
+instance Pretty VarName where
+  pretty (VarConstant s) = s
+  pretty (VarHole s) = "?" <> ( s)
+  pretty (VarSlot) = "!"
+  pretty (VarU s) = "u" <> ( s)
+  pretty (VarHidden n) = "h" <> (Text.pack (show n))
+  pretty (VarAssume n) = "i" <> (Text.pack (show n))
+  pretty (VarSkolem n) = "o" <> (Text.pack (show n))
+  pretty (VarTask s) = "c" <> pretty s
+  pretty (VarZ s) = "z" <> ( s)
+  pretty (VarW s) = "w" <> ( s)
+  pretty (VarF s) = "out_" <> (Text.pack (show s))
+  pretty (VarEmpty) = ""
+  pretty (VarDefault s) =  s
 
 data PosVar = PosVar
   { posVarName :: VarName
@@ -69,10 +69,10 @@ instance Eq PosVar where
 instance Ord PosVar where
   compare = compare `on` posVarName
 
-instance Representation PosVar where
-  represent (PosVar v p) = "(" <> represent v <> ", " <> Text.pack (show p) <> ")"
+instance Pretty PosVar where
+  pretty (PosVar v p) = "(" <> pretty v <> ", " <> Text.pack (show p) <> ")"
 
-class (Ord a, Representation a) => IsVar a where
+class (Ord a, Pretty a) => IsVar a where
   buildVar :: VarName -> SourcePos -> a
 
 instance IsVar VarName where

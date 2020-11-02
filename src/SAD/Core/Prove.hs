@@ -6,7 +6,7 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018), Makarius 
 Prover interface: export a proof task to an external prover.
 -}
 
-module SAD.Export.Prover where
+module SAD.Core.Prove where
 
 import Control.Monad (when, unless)
 import Data.Maybe
@@ -26,7 +26,7 @@ import SAD.Core.SourcePos
 import SAD.Data.Instr hiding (Prover)
 import SAD.Data.Text.Context (Context, branch)
 import qualified SAD.Data.Text.Block as Block
-import SAD.Export.Base
+import SAD.Core.Provers
 import SAD.Helpers (notNull)
 import SAD.Data.Text.Block (Block(Block))
 import SAD.Data.Text.Context (Context(..))
@@ -34,7 +34,6 @@ import SAD.Data.Formula (Formula(..))
 
 import qualified SAD.Core.Message as Message
 import qualified SAD.Data.Instr as Instr
-import qualified SAD.Export.TPTP as TPTP
 
 export :: Int -> [Prover] -> [Instr] -> [Context] -> Context -> IO Result
 export _ provers instrs context goal = do
@@ -50,7 +49,7 @@ export _ provers instrs context goal = do
   
   let printProver = askFlag Printprover False instrs
   let timeLimit = askLimit Timelimit 3 instrs
-  let task = TPTP.output (map fromContext context) (fromContext goal)
+  let task = undefined
   let isByContradiction = any (==Block.ProofByContradiction)
         (map Block.kind (head (branch goal) : concatMap branch context))
 

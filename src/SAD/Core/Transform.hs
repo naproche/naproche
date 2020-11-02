@@ -34,14 +34,14 @@ import SAD.Data.Terms
 import SAD.Core.SourcePos (SourcePos, noSourcePos)
 import SAD.Data.Text.Block (ProofText(..), Block(..))
 import qualified SAD.Data.Text.Block as Block
-import SAD.Export.Representation (Representation(..))
+import SAD.Core.Pretty (Pretty(..))
 
 import Debug.Trace
 
 -- | If you encounter a weird error, this may help
 -- with debugging it. You need to import Debug.Trace
-traceReprId :: Representation a => a -> a
-traceReprId a = a -- trace (Text.unpack (represent a)) a
+traceReprId :: Pretty a => a -> a
+traceReprId a = a -- trace (Text.unpack (pretty a)) a
 
 -- | Types that can be used as input in a TFF declaration 
 data InType 
@@ -128,19 +128,19 @@ deriving instance (Show (f InType), Show t) => Show (Prf f t)
 
 type Proof = Located (Prf Identity ())
 
-instance Representation InType where
-  represent (Signature t) = represent t
-  represent t = Text.pack $ show t
+instance Pretty InType where
+  pretty (Signature t) = pretty t
+  pretty t = Text.pack $ show t
 
-instance Representation OutType where
-  represent (InType t) = represent t
-  represent Prop = "Prop"
+instance Pretty OutType where
+  pretty (InType t) = pretty t
+  pretty Prop = "Prop"
 
-instance Representation Type where
-  represent Sort = "Sort"
-  represent (Pred [] t) = represent t
-  represent (Pred is t) = 
-    Text.intercalate " → " (map represent is) <> " → " <> represent t
+instance Pretty Type where
+  pretty Sort = "Sort"
+  pretty (Pred [] t) = pretty t
+  pretty (Pred is t) = 
+    Text.intercalate " → " (map pretty is) <> " → " <> pretty t
 
 inParens :: [Text] -> Text
 inParens [] = ""
@@ -151,57 +151,57 @@ renderLines :: [Text] -> Text
 renderLines [] = ""
 renderLines xs = Text.unlines ("":map ("  " <>) xs)
 
-instance (Representation (f InType), Show t, Show (f InType)) 
-  => Representation (Term f t) where
-  represent (Forall v t tr) = "∀[" <> represent v <> " : " 
-    <> represent t <> "] " <> represent tr
-  represent (Exists v t tr) = "∃[" <> represent v <> " : " 
-    <> represent t <> "] " <> represent tr
-  represent (App And [a, b]) = "(" <> represent a <> " and " <> represent b <> ")"
-  represent (App Or  [a, b]) = "(" <> represent a <> " or " <> represent b <> ")"
-  represent (App Iff [a, b]) = "(" <> represent a <> " iff " <> represent b <> ")"
-  represent (App Imp [a, b]) = "(" <> represent a <> " implies " <> represent b <> ")"
-  represent (App Eq  [a, b]) = "(" <> represent a <> " = " <> represent b <> ")"
-  represent (App Not [a]) = "(not " <> represent a <> ")"
-  represent (App Top []) = "true"
-  represent (App Bot []) = "false"
-  represent (App (OpTrm (TermSymbolic s)) args) = 
+instance (Pretty (f InType), Show t, Show (f InType)) 
+  => Pretty (Term f t) where
+  pretty (Forall v t tr) = "∀[" <> pretty v <> " : " 
+    <> pretty t <> "] " <> pretty tr
+  pretty (Exists v t tr) = "∃[" <> pretty v <> " : " 
+    <> pretty t <> "] " <> pretty tr
+  pretty (App And [a, b]) = "(" <> pretty a <> " and " <> pretty b <> ")"
+  pretty (App Or  [a, b]) = "(" <> pretty a <> " or " <> pretty b <> ")"
+  pretty (App Iff [a, b]) = "(" <> pretty a <> " iff " <> pretty b <> ")"
+  pretty (App Imp [a, b]) = "(" <> pretty a <> " implies " <> pretty b <> ")"
+  pretty (App Eq  [a, b]) = "(" <> pretty a <> " = " <> pretty b <> ")"
+  pretty (App Not [a]) = "(not " <> pretty a <> ")"
+  pretty (App Top []) = "true"
+  pretty (App Bot []) = "false"
+  pretty (App (OpTrm (TermSymbolic s)) args) = 
     decode s $ flip map args $ \a -> case a of
-      App (OpTrm (TermSymbolic _)) _ -> "(" <> represent a <> ")"
-      _ -> represent a
-  represent (App (OpTrm op) args) = represent op  <> inParens (map represent args) 
-  represent (Var v) = represent v
-  represent (Tag t tr) = "(" <> Text.pack (show t) <> " :: " <> represent tr <> ")"
-  represent t = error $ "Malformed term: " ++ show t
+      App (OpTrm (TermSymbolic _)) _ -> "(" <> pretty a <> ")"
+      _ -> pretty a
+  pretty (App (OpTrm op) args) = pretty op  <> inParens (map pretty args) 
+  pretty (Var v) = pretty v
+  pretty (Tag t tr) = "(" <> Text.pack (show t) <> " :: " <> pretty tr <> ")"
+  pretty t = error $ "Malformed term: " ++ show t
 
-instance (Representation (f InType), Show t, Show (f InType)) 
-  => Representation (Stmt f t) where
-  represent (IntroSort tm) = "Sort: " <> represent tm
-  represent (Predicate tm [] t) = represent tm <> " : " <> represent t
-  represent (Predicate tm ts t) = represent tm <> " : "
-    <> Text.intercalate " → " (map represent ts) <> " → " <> represent t
-  represent (Axiom t) = "Axiom: " <> represent t
-  represent (Claim t ls prfs) = "Claim: " <> represent t <> " "
-    <> inParens ls <> renderLines (map (represent . located) prfs)
-  represent (Coercion from to) = "Coercion: " <> represent from 
-    <> " to " <> represent to
+instance (Pretty (f InType), Show t, Show (f InType)) 
+  => Pretty (Stmt f t) where
+  pretty (IntroSort tm) = "Sort: " <> pretty tm
+  pretty (Predicate tm [] t) = pretty tm <> " : " <> pretty t
+  pretty (Predicate tm ts t) = pretty tm <> " : "
+    <> Text.intercalate " → " (map pretty ts) <> " → " <> pretty t
+  pretty (Axiom t) = "Axiom: " <> pretty t
+  pretty (Claim t ls prfs) = "Claim: " <> pretty t <> " "
+    <> inParens ls <> renderLines (map (pretty . located) prfs)
+  pretty (Coercion from to) = "Coercion: " <> pretty from 
+    <> " to " <> pretty to
 
-instance (Representation (f InType), Show t, Show (f InType))
-  => Representation (Prf f t) where
-  represent (Subclaim t ls prfs) = represent t <> " "
-    <> inParens ls <> renderLines (map (represent . located) prfs)
-  represent (Intro vs t) = "Let: [" <> Text.intercalate ", " 
-    (map (\(v, t) -> represent v <> " : " <> represent t) vs) <> 
-    "] such that " <> represent t
-  represent (Use t) = "Use: " <> t
-  represent (Cases cs) = Text.concat $
-    map (\(t, p) -> "Case: " <> represent t <> renderLines (represent <$> p)) cs
+instance (Pretty (f InType), Show t, Show (f InType))
+  => Pretty (Prf f t) where
+  pretty (Subclaim t ls prfs) = pretty t <> " "
+    <> inParens ls <> renderLines (map (pretty . located) prfs)
+  pretty (Intro vs t) = "Let: [" <> Text.intercalate ", " 
+    (map (\(v, t) -> pretty v <> " : " <> pretty t) vs) <> 
+    "] such that " <> pretty t
+  pretty (Use t) = "Use: " <> t
+  pretty (Cases cs) = Text.concat $
+    map (\(t, p) -> "Case: " <> pretty t <> renderLines (pretty <$> p)) cs
 
-instance Representation a => Representation (Located a) where
-  represent (Located t p a) = "[" <> t  <> "] " 
-    <> Text.pack (show p) <> "\n" <> represent a <> "\n"
+instance Pretty a => Pretty (Located a) where
+  pretty (Located t p a) = "[" <> t  <> "] " 
+    <> Text.pack (show p) <> "\n" <> pretty a <> "\n"
 
--- | Simplify a formula at the head for nicer pretty-printing.
+-- | Simplify a formula at the head for nicer pretty -printing.
 simp :: Term f t -> Term f t
 simp = \case
   Forall v t tr -> case simp tr of
