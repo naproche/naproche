@@ -8,7 +8,7 @@ Verifier state monad and common functions.
 module SAD.Core.Base
   ( RState(..)
 
-  , Timer(..), Counter(..)
+  , Timer(..), Counter(..), Tracker(..)
   , sumCounter
   , sumTimer
   , maximalTimer
@@ -46,15 +46,7 @@ data Counter
   = Sections
   | Goals
   | FailedGoals
-  | TrivialGoals
   | SuccessfulGoals
-  | Symbols
-  | TrivialChecks
-  | HardChecks
-  | SuccessfulChecks
-  | Unfolds
-  | Equations
-  | FailedEquations
   deriving (Eq, Ord, Show)
 
 projectCounter :: [Tracker] -> Counter -> [Int]

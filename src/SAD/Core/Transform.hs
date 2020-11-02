@@ -36,8 +36,6 @@ import SAD.Data.Text.Block (ProofText(..), Block(..))
 import qualified SAD.Data.Text.Block as Block
 import SAD.Core.Pretty (Pretty(..))
 
-import Debug.Trace
-
 -- | If you encounter a weird error, this may help
 -- with debugging it. You need to import Debug.Trace
 traceReprId :: Pretty a => a -> a
@@ -122,6 +120,7 @@ data Prf f t
   | Intro [(VarName, InType)] (Term f t)
   | Use Text
   | Cases [(Term f t, [Proof])]
+  | ByContradiction (Term f t) [Proof]
 deriving instance (Eq (f InType), Eq t) => Eq (Prf f t)
 deriving instance (Ord (f InType), Ord t) => Ord (Prf f t)
 deriving instance (Show (f InType), Show t) => Show (Prf f t)
@@ -196,6 +195,8 @@ instance (Pretty (f InType), Show t, Show (f InType))
   pretty (Use t) = "Use: " <> t
   pretty (Cases cs) = Text.concat $
     map (\(t, p) -> "Case: " <> pretty t <> renderLines (pretty <$> p)) cs
+  pretty (ByContradiction t prfs) = pretty t <> " "
+    <> renderLines (map (pretty . located) prfs)
 
 instance Pretty a => Pretty (Located a) where
   pretty (Located t p a) = "[" <> t  <> "] " 
@@ -519,7 +520,7 @@ convertBlock idents bl@(Block f b _ _ n l p _) = Located n p <$>
           else [Claim (noTags mainT) l (convertProof idents (body main))] -- TODO
         False -> case defs of
           (x:y:_) -> error $ "Multiple definitions: " ++ show [x, y]
-          _ -> defs ++ [Axiom (noTags mainT)]
+          _ -> defs ++ if mainT == App Top [] then [] else [Axiom (noTags mainT)]
     _ -> error "convertBlock should not be applied to proofs!"
 
 convert :: [ProofText] -> [Statement]

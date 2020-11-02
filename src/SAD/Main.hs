@@ -99,8 +99,7 @@ proveFOL proversYaml txts opts0 startTime = do
   (success, finalReasonerState) <- case findParseError (ProofTextRoot txts) of
     Nothing -> do
       let typed = convert txts
-      pure (False, reasonerState) 
-      -- verify provers reasonerState typed
+      verify provers opts0 reasonerState typed
     Just err -> do 
       errorParser (errorPos err) (show err)
       pure (False, reasonerState)
@@ -118,23 +117,7 @@ proveFOL proversYaml txts opts0 startTime = do
         in  if   ignoredFails == 0
             then ""
             else " - failed "   ++ show ignoredFails)
-    ++ " - trivial "   ++ show (accumulate TrivialGoals)
     ++ " - proved "    ++ show (accumulate SuccessfulGoals)
-    ++ " - equations " ++ show (accumulate Equations)
-    ++ (let failedEquations = accumulate FailedEquations
-        in  if   failedEquations == 0
-            then ""
-            else " - failed " ++ show failedEquations)
-
-  let trivialChecks = accumulate TrivialChecks
-
-  outputMain TRACING noSourcePos $
-    "symbols "        ++ show (accumulate Symbols)
-    ++ " - checks "   ++ show
-      (sumCounter trackerList HardChecks + trivialChecks)
-    ++ " - trivial "  ++ show trivialChecks
-    ++ " - proved "   ++ show (accumulate SuccessfulChecks)
-    ++ " - unfolds "  ++ show (accumulate Unfolds)
 
   let proverTime     = sumTimer trackerList ProofTimer
   let simplifyTime   = sumTimer trackerList SimplifyTimer

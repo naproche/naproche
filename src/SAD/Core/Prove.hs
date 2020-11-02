@@ -24,19 +24,44 @@ import qualified Isabelle.Standard_Thread as Standard_Thread
 
 import SAD.Core.SourcePos
 import SAD.Data.Instr hiding (Prover)
-import SAD.Data.Text.Context (Context, branch)
 import qualified SAD.Data.Text.Block as Block
 import SAD.Core.Provers
 import SAD.Helpers (notNull)
 import SAD.Data.Text.Block (Block(Block))
 import SAD.Data.Text.Context (Context(..))
 import SAD.Data.Formula (Formula(..))
+import SAD.Core.Base
+import SAD.Core.Task (Task(..), generateTasks)
+import SAD.Core.Transform
+import SAD.Core.Pretty
 
 import qualified SAD.Core.Message as Message
 import qualified SAD.Data.Instr as Instr
+import SAD.Core.TPTP (tptp)
 
-export :: Int -> [Prover] -> [Instr] -> [Context] -> Context -> IO Result
-export _ provers instrs context goal = do
+verify :: [Prover] -> [Instr] -> RState -> [Statement] -> IO (Bool, RState)
+verify provers instrs rstate stmts = go rstate tsks
+  where
+    tsks = generateTasks stmts
+
+    addCounter c n s = s { trackers = trackers s ++ [Counter c n] }
+
+    go rstate [] = pure (True, addCounter Sections (length stmts) 
+      $ addCounter Goals (length tsks) rstate)
+    go rstate (t:ts) = do
+      TIO.putStrLn $ "[" <> (taskName t) <> "]" <> pretty (conjecture t)
+      res <- export provers instrs t
+      case res of
+        Success -> go (addCounter SuccessfulGoals 1 rstate) ts
+        Failure -> go (addCounter FailedGoals 1 rstate) ts
+        TooLittleTime -> go (addCounter FailedGoals 1 rstate) ts
+        ContradictoryAxioms -> error $ "\nFound a contradiction in the axioms! "
+          <> "\nThis either means that you have introduced some axioms that are "
+          <> "inconsistent or that you are in a proof by contradiction"
+          <> "\n(and you should make sure to actually write 'Proof by contradiction.')"
+
+export :: [Prover] -> [Instr] -> Task -> IO Result
+export provers instrs tsk = do
   Standard_Thread.expose_stopped
 
   when (null provers) $ Message.errorExport noSourcePos "No provers"
@@ -49,14 +74,11 @@ export _ provers instrs context goal = do
   
   let printProver = askFlag Printprover False instrs
   let timeLimit = askLimit Timelimit 3 instrs
-  let task = undefined
-  let isByContradiction = any (==Block.ProofByContradiction)
-        (map Block.kind (head (branch goal) : concatMap branch context))
-
+  let task = tptp tsk
   when (askFlag Dump False instrs) $ 
     Message.output "" Message.WRITELN noSourcePos (Text.unpack task)
 
-  runUntilSuccess timeLimit $ runProver (head proversNamed) printProver task isByContradiction
+  runProver (head proversNamed) printProver task (byContradiction tsk) timeLimit
 
 data Result = Success | Failure | TooLittleTime | ContradictoryAxioms
   deriving (Eq, Ord, Show)
@@ -64,18 +86,6 @@ data Result = Success | Failure | TooLittleTime | ContradictoryAxioms
 fromContext :: Context -> (Text, Formula)
 fromContext (Context fr (Block {Block.name = m} : _)) = (m, fr)
 fromContext (Context fr []) = ("", fr)
-
--- | Prover heuristics are not always optimal.
--- We can give a different heuristic if needed.
-runUntilSuccess :: Int -> (Int -> IO Result) -> IO Result
-runUntilSuccess timeLimit f = go [timeLimit] -- go $ takeWhile (<=timeLimit) $ 1:5:10:20:50:(map (*100)[1,2])
-  where
-    go [] = pure TooLittleTime
-    go (x:xs) = do
-      b <- f x
-      case b of 
-        TooLittleTime -> go xs
-        r -> pure r
 
 runProver :: Prover -> Bool -> Text -> Bool -> Int -> IO Result
 runProver (Prover _ label path args yes con nos uns) printProver task isByContradiction timeLimit = do
