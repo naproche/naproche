@@ -11,6 +11,7 @@ description:         <https://github.com/Naproche/Naproche-SAD>
 dependencies:
 - base >= 4.7 && < 5
 - containers
+- deepseq
 - process
 - ghc-prim
 - time

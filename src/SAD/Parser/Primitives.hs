@@ -28,7 +28,7 @@ import SAD.Parser.Base
 import SAD.Parser.Error
 import SAD.Parser.Token
 import SAD.Core.SourcePos
-import SAD.Data.Formula.Show (symChars)
+import SAD.Data.Terms (symChars)
 
 import Data.Char (isAlpha)
 import Control.Monad (void, guard)

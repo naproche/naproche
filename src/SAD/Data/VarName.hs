@@ -31,10 +31,11 @@ data VarName
   | VarHidden Int      -- ^ previously starting with h
   | VarAssume Int      -- ^ previously starting with i
   | VarSkolem Int      -- ^ previously starting with o
-  | VarTask VarName -- ^ previously starting with c
+  | VarTask VarName    -- ^ previously starting with c
   | VarZ Text          -- ^ previously starting with z
   | VarW Text          -- ^ previously starting with w
-  | VarEmpty             -- ^ previously ""
+  | VarF Int           -- ^ for function outputs
+  | VarEmpty           -- ^ previously ""
   | VarDefault Text    -- ^ everything else
   deriving (Eq, Ord, Show, Read)
 
@@ -43,7 +44,7 @@ isHole (VarHole _) = True
 isHole _ = False
 
 instance Representation VarName where
-  represent (VarConstant s) = "x" <> ( s)
+  represent (VarConstant s) = s
   represent (VarHole s) = "?" <> ( s)
   represent (VarSlot) = "!"
   represent (VarU s) = "u" <> ( s)
@@ -53,6 +54,7 @@ instance Representation VarName where
   represent (VarTask s) = "c" <> represent s
   represent (VarZ s) = "z" <> ( s)
   represent (VarW s) = "w" <> ( s)
+  represent (VarF s) = "out_" <> (Text.pack (show s))
   represent (VarEmpty) = ""
   represent (VarDefault s) =  s
 
@@ -111,11 +113,11 @@ excludeVars fv1 fv2 = FV $ oneShot $ \boundVars -> oneShot $ \acc ->
   runFV fv2 (runFV fv1 mempty boundVars) acc
 
 excludeSet :: IsVar a => FV a -> Set VarName -> FV a
-excludeSet fs vs = excludeVars (fvFromVarSet vs) fs
+excludeSet fs vs = excludeVars (fvFromVarSet id vs) fs
 
-fvFromVarSet :: Ord a => Set a -> FV a
-fvFromVarSet vs = FV $ oneShot $ \boundVars -> oneShot $ \acc ->
-  acc `Set.union` vs
+fvFromVarSet :: Ord a => (a -> VarName) -> Set a -> FV a
+fvFromVarSet f vs = FV $ oneShot $ \boundVars -> oneShot $ \acc ->
+  acc `Set.union` (Set.filter (\a -> Set.notMember (f a) boundVars) vs)
 
 fvToVarSet :: Ord a => FV a -> Set a
 fvToVarSet fv = runFV fv mempty mempty

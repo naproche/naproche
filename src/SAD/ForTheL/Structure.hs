@@ -71,8 +71,8 @@ topsection :: FTL (Block)
 topsection =
   -- We use backtracking alternative (</>) here since these environments
   -- all start with the same begin token.
-  texSig </> texAxiom </> texDefinition
-  <|> signature' <|> definition <|> axiom <|> theorem
+  texSig </> texCoe </> texAxiom </> texDefinition
+  <|> signature' <|> coercion' <|> definition <|> axiom <|> theorem
 
 --- generic topsection parsing
 
@@ -128,6 +128,16 @@ texSig =
   let sigExt = pretype $ pretypeSentence Posit sigExtend defVars noLink
   in  texTopsection Signature "signature" sigExt
 
+coercion' :: FTL (Block)
+coercion' =
+  let coeExt = pretype $ pretypeSentence Posit sigExtend defVars noLink
+  in  genericTopsection Coercion coeH coeExt
+
+texCoe :: FTL (Block)
+texCoe =
+  let coeExt = pretype $ pretypeSentence Posit sigExtend defVars noLink
+  in  texTopsection Coercion "coercion" coeExt
+
 definition :: FTL (Block)
 definition =
   let define = pretype $ pretypeSentence Posit defExtend defVars noLink
@@ -157,6 +167,8 @@ theorem =
 
 sigH :: FTL Text
 sigH = header ["signature"]
+coeH :: FTL Text
+coeH = header ["coercion"]
 defH :: FTL Text
 defH = header ["definition"]
 axmH :: FTL Text

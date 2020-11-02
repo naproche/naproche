@@ -27,6 +27,7 @@ files = map ("examples/"++) $
   -- This file does check, but it often fails when limited to reasonable time
   -- [ "chinese.ftl"
   [ "fuerst.ftl"
+  , "geom.ftl"
   , "Koenigs_lemma.ftl"
   , "Maximum_principle.ftl"
   , "newman.ftl"

@@ -69,7 +69,7 @@ text Block {tokens} = composeTokens tokens
 data Section =
   Definition | Signature | Axiom       | Theorem | CaseHypothesis  |
   Assumption | Selection | Affirmation | Posit   | LowDefinition   |
-  ProofByContradiction
+  ProofByContradiction | Coercion
   deriving (Eq, Ord, Show)
 
 -- Composition
@@ -100,6 +100,7 @@ needsProof block = sign $ kind block
     sign Axiom      = False
     sign Assumption = False
     sign Posit      = False
+    sign Coercion   = False
     sign _          = True
 
 

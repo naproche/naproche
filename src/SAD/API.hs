@@ -15,6 +15,7 @@ module SAD.API
   , module SAD.Parser.Error
   , module SAD.Helpers
   , module SAD.Data.Formula
+  , module SAD.Core.Transform
   ) where
 
 import SAD.Core.Base (showTimeDiff, RState(..), sumCounter, Counter(..), sumTimer, Timer(..), maximalTimer)
@@ -29,3 +30,4 @@ import SAD.Export.Base (readProverFile, readProverDatabase)
 import SAD.Parser.Error (errorPos)
 import SAD.Helpers (trimLine)
 import SAD.Data.Formula (Formula)
+import SAD.Core.Transform (convert, convertBlock)

@@ -296,7 +296,8 @@ Proof.
 	Then IFS(z,u,p,r,z,u,p,q).
 	Then u-z : u-p.
 	Then u-r : u-q.
-	Assume z != p. Then z != q.
+	Case z != p. 
+		Then z != q.
 		Take v such that p-z-v and z-v : z-q.
 		Take h such that q-z-h and z-h : z-u.
 		Take w such that v-h-w and h-w : h-v.
@@ -307,7 +308,8 @@ Proof.
 		Then z-v : z-w. z != q. Col(z,q,s). Therefore s-v : s-w.
 		Then y != s.
 		Then q = r.
-	Assume z = p.
+	end.
+	Case z = p. end.
 qed.
 
 Lemma D5_1. Assume x != y and x-y-z and x-y-r. Then x-z-r or x-r-z.

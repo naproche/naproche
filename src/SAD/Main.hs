@@ -36,6 +36,7 @@ import qualified Isabelle.XML as XML
 import qualified Isabelle.YXML as YXML
 import Network.Socket (Socket)
 
+import SAD.Export.Representation (represent)
 import SAD.API
 
 main :: IO ()
@@ -81,6 +82,7 @@ showTranslation :: [ProofText] -> UTCTime -> IO ()
 showTranslation txts startTime = do
   let timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)
   mapM_ (\case ProofTextBlock bl -> print bl; _ -> return ()) txts
+  mapM_ (putStrLn . Text.unpack . represent) (convert txts)
 
   -- print statistics
   finishTime <- getCurrentTime
