@@ -29,12 +29,12 @@ data Task = Task
 
 generateFromProof :: Task -> [Proof] -> [Task]
 generateFromProof tsk [] = [tsk]
-generateFromProof (Task hypo conj [] name contra) prf 
+generateFromProof (Task hypo conj conjHints name contra) prf 
   = concat $ finalize $ mapAccumL go hypo prf
   where
     -- TODO: This should bind let-introduced variables
     -- with forall quantifiers in h'
-    finalize (h', ts) = ts ++ [[Task h' conj [] name contra]]
+    finalize (h', ts) = ts ++ [[Task h' conj conjHints name contra]]
     
     go hypo (Located n _ p) = case p of
       Subclaim t hints prf -> ((Given n t):hypo, 
@@ -47,11 +47,9 @@ generateFromProof (Task hypo conj [] name contra) prf
         in (hypo, cases ++ [Task hypo final [] n contra])
       ByContradiction t prf -> ((Given n t):hypo,
         generateFromProof (Task (Given n (App Not [t]):hypo) (App Bot []) [] n True) prf)
+      Choose vs t hints prf -> ((Given n t):hypo,
+        generateFromProof (Task hypo t hints n contra) prf)
       t -> error $ "Not implemented tactic: " ++ show t
-generateFromProof (Task _ _ hints@(_:_) name _) (_:_) 
-  = error $ "Task " ++ Text.unpack name
-  ++ " has both hints (by " ++ intercalate ", " (map Text.unpack hints)
-  ++ ") and a proof block. You have to choose one." 
 
 generateTasks :: [Statement] -> [Task]
 generateTasks = concat . snd . mapAccumL go []

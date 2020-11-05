@@ -168,7 +168,8 @@ Definition L4_4. x-y-z : u-v-w iff x-y : u-v and x-z : u-w and y-z : v-w.
 
 Lemma L4_5. Assume x-y-z and x-z : r-w. Then there exists v such that (r-v-w and x-y-z : r-v-w).
 Proof.
-	Take u such that w-r-u and r != u. Then Take v such that u-r-v and r-v : x-y. Take g such that u-v-g and v-g : y-z. Then x-z : r-w. Therefore g = w.
+  Consider u such that w-r-u and r != u. Then Take v such that u-r-v and r-v : x-y. 
+  Choose g such that u-v-g and v-g : y-z. Then x-z : r-w. Therefore g = w.
 qed.
 
 Lemma L4_6. Assume x-y-z and x-y-z : r-v-w. Then r-v-w.

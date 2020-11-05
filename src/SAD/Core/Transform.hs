@@ -117,7 +117,8 @@ type Statement = Located (Stmt Identity ())
 -- and a number of tactics.
 data Prf f t
   = Subclaim (Term f t) [Text] [Proof]
-  | Intro [(VarName, InType)] (Term f t)
+  | Intro [(VarName, InType)] (Term f t) [Proof]
+  | Choose [VarName] (Term f t) [Text] [Proof]
   | Use Text
   | Cases [(Term f t, [Proof])]
   | ByContradiction (Term f t) [Proof]
@@ -189,9 +190,12 @@ instance (Pretty (f InType), Show t, Show (f InType))
   => Pretty (Prf f t) where
   pretty (Subclaim t ls prfs) = pretty t <> " "
     <> inParens ls <> renderLines (map (pretty . located) prfs)
-  pretty (Intro vs t) = "Let: [" <> Text.intercalate ", " 
+  pretty (Intro vs t prfs) = "Let: [" <> Text.intercalate ", " 
     (map (\(v, t) -> pretty v <> " : " <> pretty t) vs) <> 
-    "] such that " <> pretty t
+    "] such that " <> pretty t <> "\n" <> Text.unlines (pretty <$> prfs)
+  pretty (Choose vs t ls prfs) = "Choose: " <> Text.intercalate ", " 
+    (map pretty vs) <> " " <> inParens ls <>
+    " such that " <> pretty t <> "\n" <> Text.unlines (pretty <$> prfs)
   pretty (Use t) = "Use: " <> t
   pretty (Cases cs) = Text.concat $
     map (\(t, p) -> "Case: " <> pretty t <> renderLines (pretty <$> p)) cs
@@ -263,11 +267,11 @@ parseFormula = go []
 
     addVar v vars = v:vars
 
-bindFree :: (VarName -> Term (Const ()) t -> Term (Const ()) t)
-  -> Term (Const ()) t -> Term (Const ()) t
-bindFree bindV t = bind (Set.toList $ fvToVarSet $ free t) t
+-- | Bind free variables by forall quantifiers.
+bindFree :: Term (Const ()) t -> Term (Const ()) t
+bindFree t = bind (Set.toList $ fvToVarSet $ free t) t
   where
-    bind vars tr = foldr (\v t -> bindV v t) tr vars
+    bind vars tr = foldr (\v t -> Forall v (Const ()) t) tr vars
 
     free = \case
       Forall v (Const ()) t -> bindVar v $ free t
@@ -276,13 +280,9 @@ bindFree bindV t = bind (Set.toList $ fvToVarSet $ free t) t
       Tag _ t -> free t
       Var v -> unitFV v noSourcePos
 
--- | Bind free variables by forall quantifiers.
-bindFreeForall :: Term (Const ()) t -> Term (Const ()) t
-bindFreeForall = bindFree (\v t -> Forall v (Const ()) t)
-
 -- | Bind free variables by exists quantifiers.
-bindFreeExists :: Term (Const ()) t -> Term (Const ()) t
-bindFreeExists = bindFree (\v t -> Forall v (Const ()) t)
+bindExists :: [VarName] -> Term (Const ()) t -> Term (Const ()) t
+bindExists vs tr = foldr (\v -> Exists v (Const ())) tr vs
 
 -- | Given a list of defined sorts and a TermName,
 -- decide if this is a sort.
@@ -467,14 +467,33 @@ typecheck idents
   . traceReprId . extractGivenTypes idents 
 
 -- | Convert a single line of a proof.
-convertProofBlock :: Map TermName Type -> Block -> Proof
-convertProofBlock idents (Block f b _ _ n l p _) = Located n p $
+subClaim :: Map TermName Type -> Block -> Proof
+subClaim idents (Block f b _ _ n l p _) = Located n p $
   let mainF = typecheck idents $ parseFormula f 
-  in case mainF of
-    _ -> Subclaim (noTags $ mainF) l (convertProof idents b)
+  in Subclaim (noTags $ mainF) l (convertProof idents b)
 
-gatherCases :: Map TermName Type -> [Block] -> [Either Proof Block]
-gatherCases idents = go Nothing
+subClaims :: Map TermName Type -> [Either Proof Block] -> [Proof]
+subClaims idents xs = flip map xs $ \case
+  Left p -> p
+  Right b -> subClaim idents b
+
+chooses :: Map TermName Type -> [Either Proof Block] -> [Either Proof Block]
+chooses idents = go
+  where
+    go [] = []
+    go (Left p:bs) = Left p : go bs
+    go (Right b:bs) = case kind b of
+      Block.Selection ->
+        let p = subClaims idents $ chooses idents bs
+            l = position b; n = name b
+            vs = Set.map declName $ declaredVariables b
+            f = noTags $ typecheck idents $ bindFree 
+              $ bindExists (Set.toList vs) $ parseFormula (formula b)
+        in [Left $ Located n l $ Choose (Set.toList vs) f (link b) p]
+      _ -> Right b : go bs
+
+cases :: Map TermName Type -> [Block] -> [Either Proof Block]
+cases idents = go Nothing
   where
     go _ [] = []
     go m (b:bs) = case formula b of
@@ -491,12 +510,9 @@ gatherCases idents = go Nothing
 
 -- | Convert a Proof. ... end. part to a proof.
 convertProof :: Map TermName Type -> [ProofText] -> [Proof]
-convertProof idents = map go . gatherCases idents
+convertProof idents = subClaims idents . chooses idents
+  . cases idents
   . concatMap (\case ProofTextBlock b -> [b]; _ -> [])
-  where
-    go = \case
-      Left p -> p
-      Right b -> convertProofBlock idents b
 
 -- | Get the blocks in a Prooftext.
 getBlocks :: ProofText -> [Block]
@@ -513,7 +529,7 @@ convertBlock idents bl@(Block f b _ _ n l p _) = Located n p <$>
       let (main:assms) = reverse $ concatMap getBlocks b
           mainF = foldr (F.Imp) (formula main) (formula <$> assms)
           (defs, mainT) = traceReprId $ extractDefinitions 
-            $ typecheck idents $ bindFreeForall $ parseFormula mainF
+            $ typecheck idents $ bindFree $ parseFormula mainF
       in case Block.needsProof bl of
         True -> if not (null defs)
           then error $ "Definitions in claim!"

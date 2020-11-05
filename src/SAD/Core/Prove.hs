@@ -49,7 +49,7 @@ verify provers instrs rstate stmts = go rstate tsks
     go rstate [] = pure (True, addCounter Sections (length stmts) 
       $ addCounter Goals (length tsks) rstate)
     go rstate (t:ts) = do
-      TIO.putStrLn $ "[" <> (taskName t) <> "]" <> pretty (conjecture t)
+      TIO.putStrLn $ "[" <> (taskName t) <> "] " <> pretty (conjecture t)
       res <- export provers instrs t
       case res of
         Success -> go (addCounter SuccessfulGoals 1 rstate) ts
