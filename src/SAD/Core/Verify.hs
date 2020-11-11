@@ -67,7 +67,7 @@ verificationLoop state@VS {
   mesonRules      = mRules,
   definitions     = defs,
   guards          = grds,
-  restProofText = ProofTextBlock block@(Block f body kind declaredVariables _ _ _ _):blocks,
+  restProofText = ProofTextBlock block@(Block f body kind declaredVariables _ _ _):blocks,
   evaluations     = evaluations }
     = local (const state) $ do
   justIO $ Message.report (Block.position block) Markup.running

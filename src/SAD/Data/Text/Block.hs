@@ -5,6 +5,7 @@ module SAD.Data.Text.Block (
   ProofText(..),
   Block(..),
   makeBlock,
+  position,
   declaredNames,
   text,
   Section(..),
@@ -57,18 +58,20 @@ data Block = Block {
   declaredVariables :: Set Decl,
   name              :: Text,
   link              :: [Text],
-  position          :: SourcePos,
   tokens            :: [Token] }
   deriving (Eq, Ord)
 
-makeBlock :: Formula -> [ProofText] -> Section -> Text -> [Text] -> SourcePos -> [Token] -> (Block)
-makeBlock form body kind name link pos toks =
-  Block form body kind mempty name link (rangePos (tokensRange toks)) toks
+makeBlock :: Formula -> [ProofText] -> Section -> Text -> [Text] -> [Token] -> Block
+makeBlock form body kind name link toks =
+  Block form body kind mempty name link toks
+
+position :: Block -> SourcePos
+position = rangePos . tokensRange . tokens
 
 text :: Block -> Text
 text Block {tokens} = composeTokens tokens
 
-{- All possible types that a ForThel block can have. -}
+{- All possible types that a ForTheL block can have. -}
 data Section =
   Definition | Signature | Axiom       | Theorem | CaseHypothesis  |
   Assumption | Selection | Affirmation | Posit   | LowDefinition   |
