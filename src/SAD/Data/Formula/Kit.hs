@@ -99,7 +99,7 @@ boolSimp f = bool $ mapF boolSimp f
 -- @(mbExi "x" (And (Trm TermEquality [Var "x" [] noSourcePos, Var "t" [] noSourcePos] [] 0) (Var "x" [] noSourcePos))) == Just (Var "t" [] noSourcePos)@
 -- Danger: We ignore the fact that @=@ is symmetric.
 --
--- Arguments: the variable to look for (e.g. "x"), whether we are in an "existance" or an "all" case and the formula.
+-- Arguments: the variable to look for (e.g. "x"), whether we are in an "existence" or an "all" case and the formula.
 mbBind :: VariableName -> Bool -> Formula -> Maybe Formula
 mbBind v  = dive id
   where
@@ -173,6 +173,8 @@ zOr f g       = Or  f g
 mkVar :: VariableName -> Formula
 mkVar v = pVar $ PosVar v noSourcePos
 
+-- | Given a variable name with position data, creates a formula consisting of just
+-- a that variable.
 pVar :: PosVar -> Formula
 pVar (PosVar v pos) = Var v [] pos
 

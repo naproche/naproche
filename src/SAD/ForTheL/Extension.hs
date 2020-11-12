@@ -80,13 +80,16 @@ sigPredicat = do
 
 sigNotion :: FTL Formula
 sigNotion = do
-  ((n,h),u) <- wellFormedCheck (notionVars . fst) sig; uDecl <- makeDecl u
+  ((n,h),u) <- wellFormedCheck (notionVars . fst) sig
+  uDecl <- makeDecl u
   return $ dAll uDecl $ Imp (Tag HeadTerm n) h
   where
     sig = do
-      (n, u) <- newNotion; is; (q, f) <- anotion -|- noInfo
-      let v = pVar u; fn = replace v (trm n)
-      h <- fmap (fn . q) $ dig f [v]
+      (n, u) <- newNotion
+      is
+      (q, f) <- anotion -|- noInfo
+      let v = pVar u
+      h <- (replace v (trm n) . q) <$> dig f [v]
       return ((n,h),u)
 
     noInfo =

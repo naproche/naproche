@@ -30,8 +30,13 @@ data Formula =
   Top                     | Bot                     |
   Trm { trmName :: TermName, trmArgs :: [Formula],
         trmInfo :: [Formula], trmId   :: TermId}         |
+  -- | Free variables 'Var'.
   Var { varName :: VariableName, varInfo :: [Formula], varPosition :: SourcePos } |
-  Ind { indIndex :: Int, indPosition :: SourcePos }   | ThisT
+  -- | This is used for representing bound variables through de Brujin indices.
+  -- @Ind n indPosition@ tells us that the variable corresponding
+  -- to this index has been quantified over at the @n@th quantifier one meets if one
+  -- traverses the formula from the inside to the outside.
+  Ind { indIndex :: Int, indPosition :: SourcePos } | ThisT
   deriving (Eq, Ord)
 
 trInfo :: Formula -> [Formula]
@@ -130,8 +135,8 @@ foldFM _ _ = pure Monoid.mempty
 
 -- Bind, inst, subst
 
-{- check for closedness in the sense that the formula contains no non-bound
-   de Bruijn index. -}
+-- | check for closedness in the sense that the formula contains no non-bound
+-- de Bruijn index.
 isClosed :: Formula -> Bool
 isClosed  = dive 0
   where
@@ -146,8 +151,9 @@ isClosed  = dive 0
 occursIn :: Formula -> Formula -> Bool
 t `occursIn` f = twins t f || anyF (t `occursIn`) f
 
--- | Bind a variable with name v in a formula.
--- This also affects any info stored.
+-- | @bind v f@ bind the variable @v@ in the formula @f@. This means that the variable gets
+-- replaced by a corresponding de Brujin index. To ensure the term is closed, one
+-- needs to quantify over it after calling this function. This also affects any info stored.
 bind :: VariableName -> Formula -> Formula
 bind v = dive 0
   where
@@ -176,11 +182,11 @@ inst x = dive 0
     dive n v@Var{} = v {varInfo = map (dive n) $ varInfo v}
     dive n f = mapF (dive n) f
 
-{- substitute a formula t for a variable with name v. Does not affect info. -}
+-- | @subst t v f@ substitutes all occurrences of the free variable @v@ inside the formula @f@ by the formula @t@. Does not affect info.
 subst :: Formula -> VariableName -> Formula -> Formula
 subst t v f = substs f [v] [t]
 
-{- multiple substitutions at the same time. Does not affect info. -}
+-- | @substs f v ts@ substitutes all occurrences of the free variables @vs@ inside the formula @f@ by the corresponding formulas @ts@. Does not affect info.
 substs :: Formula -> [VariableName] -> [Formula] -> Formula
 substs f vs ts = dive f
   where

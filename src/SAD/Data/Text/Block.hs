@@ -90,8 +90,10 @@ compose :: [ProofText] -> Formula
 compose = foldr comp Top
   where
     comp (ProofTextBlock block@Block{ declaredVariables = dvs }) f
+      -- In this case, we give the formula 'exists x_1,...,x_n . (formulate block) ^ f'.
       | needsProof block || kind block == Posit =
           Set.foldr mkExi (blAnd (formulate block) f) $ Set.map declName dvs
+      -- Otherwise, we give the formula 'forall x_1,...,x_n . (formulate block) => f'.
       | otherwise = Set.foldr mkAll (blImp (formulate block) f) $ Set.map declName dvs
     comp (ProofTextChecked txt) f = comp txt f
     comp _ fb = fb
