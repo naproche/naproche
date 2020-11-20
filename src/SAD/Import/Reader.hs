@@ -19,7 +19,7 @@ import qualified Data.Text.Lazy as Text
 import SAD.Data.Text.Block
 import SAD.Data.Instr as Instr
 import SAD.ForTheL.Base
-import SAD.ForTheL.Structure
+import SAD.ForTheL.Structure ( forthel, texForthel )
 import SAD.Parser.Base
 import SAD.ForTheL.Instruction
 import SAD.Core.SourcePos
@@ -29,6 +29,10 @@ import SAD.Parser.Primitives
 import SAD.Parser.Error
 import qualified SAD.Core.Message as Message
 import qualified Isabelle.File as File
+
+
+parser :: FTL [ProofText]
+parser = texForthel
 
 -- Init file parsing
 
@@ -64,7 +68,7 @@ reader pathToLibrary doneFiles = go
       | file `elem` doneFiles = do
           Message.outputMain Message.WARNING (Instr.position pos)
             ("Skipping already read file: " ++ show file)
-          (newProofText, newState) <- launchParser forthel pState
+          (newProofText, newState) <- launchParser parser pState
           go (newState:states) newProofText
 
     go (pState:states) [ProofTextInstr _ (GetArgument File file)] = do
@@ -89,7 +93,7 @@ reader pathToLibrary doneFiles = go
         (if null doneFiles then noSourcePos else fileOnlyPos $ head doneFiles) "parsing successful"
       let resetState = oldState {
             stUser = (stUser pState) {tvrExpr = tvrExpr $ stUser oldState}}
-      (newProofText, newState) <- launchParser forthel resetState
+      (newProofText, newState) <- launchParser parser resetState
       go (newState:rest) newProofText
 
     go (state:_) [] = return ([], reports $ stUser state)
@@ -100,7 +104,7 @@ reader0 pos text pState = do
   Message.reports $ concatMap (maybeToList . reportComments) tokens0
   let tokens = filter isProperToken tokens0
       st = State ((stUser pState) { tvrExpr = [] }) tokens noSourcePos
-  launchParser forthel st
+  launchParser parser st
 
 
 -- launch a parser in the IO monad

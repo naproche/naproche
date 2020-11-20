@@ -12,6 +12,7 @@ module SAD.Parser.Primitives
   , mapInput
   , inspectError
   , satisfy
+  , element
   , eof
   , word
   , symb
@@ -105,6 +106,9 @@ satisfy pr = tokenPrim prTest
       True  -> Just s
       False -> Nothing
 
+-- | Check if current token lies inside list; if not fail
+element :: [Text] -> Parser st Text
+element = satisfy . flip elem
 
 -- | Always succeed and pass on the string of the token
 anyToken :: Parser st Text

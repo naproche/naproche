@@ -7,7 +7,7 @@ Syntax of ForTheL sections.
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.ForTheL.Structure (forthel) where
+module SAD.ForTheL.Structure (forthel, texForthel) where
 
 import Data.List
 import Data.Maybe
@@ -41,127 +41,166 @@ import SAD.Data.Text.Decl
 
 
 forthel :: FTL [ProofText]
-forthel = section <|> macroOrPretype <|> bracketExpression <|> endOfFile
-  where
-    section = liftM2 ((:) . ProofTextBlock) topsection forthel
-    macroOrPretype = liftM2 (:) (introduceMacro </> pretypeVariable) forthel
-    endOfFile = eof >> return []
+forthel = repeatM $
+  continue <$> (topsection <|> (introduceMacro </> pretypeVariable))
+  <|> bracketExpression
+  <|> (eof >> return abort)
 
+texForthel :: FTL [ProofText]
+texForthel = repeatM $
+  (continue <$> (texTopsection </> texIntroduceMacro </> texPretypeVariable))
+  </> texBracketExpression
+  </> (eof >> return abort)
+  </> consumeToken
 
-bracketExpression :: FTL [ProofText]
+consumeToken :: FTL (StepStatus a)
+consumeToken = anyToken >> return (Continue [])
+
+bracketExpression :: FTL (StepStatus ProofText)
 bracketExpression = topInstruction >>= procParseInstruction
   where
     topInstruction =
       fmap (uncurry ProofTextDrop) instrDrop </>
       fmap (uncurry ProofTextInstr) (instr </> instrExit </> instrRead)
 
-procParseInstruction :: ProofText -> FTL [ProofText]
+procParseInstruction :: ProofText -> FTL (StepStatus ProofText)
 procParseInstruction text = case text of
-  ProofTextInstr _ (GetArgument Read _) -> return [text]
-  ProofTextInstr _ (Command EXIT) -> return []
-  ProofTextInstr _ (Command QUIT) -> return []
-  ProofTextInstr _ (GetArguments Synonym syms) -> addSynonym syms >> fmap ((:) text) forthel
-  _ -> fmap ((:) text) forthel
+  ProofTextInstr _ (GetArgument Read _) -> return (Abort [text])
+  ProofTextInstr _ (Command EXIT) -> return abort
+  ProofTextInstr _ (Command QUIT) -> return abort
+  ProofTextInstr _ (GetArguments Synonym syms) -> addSynonym syms >> return (continue text)
+  _ -> return (continue text)
   where
     addSynonym :: [Text] -> FTL ()
     addSynonym syms
       | null syms || null (tail syms) = return ()
       | otherwise = modify $ \st -> st {strSyms = syms : strSyms st}
 
-topsection :: FTL Block
-topsection =
-  -- We use backtracking alternative (</>) here since these environments
-  -- all start with the same begin token.
-  texSig </> texAxiom </> texDefinition
-  <|> signature' <|> definition <|> axiom <|> theorem
+topsection :: FTL ProofText
+topsection = addHeader (header signatureTags) signature'
+  <|> addHeader (header definitionTags) definition
+  <|> addHeader (header axiomTags) axiom
+  <|> addHeader (header theoremTags) theorem
 
---- generic topsection parsing
+texTopsection :: FTL ProofText
+texTopsection = texEnv (element signatureTags) signature'
+  </> texEnv (element definitionTags) definition
+  </> texEnv (element axiomTags) axiom
+  </> texEnv (element theoremTags) theorem
 
-genericTopsection :: Section -> FTL Text -> FTL [ProofText] -> FTL Block
-genericTopsection kind header content = do
+texIntroduceMacro :: FTL ProofText
+texIntroduceMacro = texEnv' (element macroTags) introduceMacro
+
+texPretypeVariable :: FTL ProofText
+texPretypeVariable = texEnv' (element pretypeTags) pretypeVariable
+
+texBracketExpression :: FTL (StepStatus ProofText)
+texBracketExpression = texEnv' (element parserInstrTags) bracketExpression
+
+
+-- Helpers for constructing environments and adding headers.
+
+-- | @texEnv parseContent@ takes a function @parseContent@ that takes some metadata and parses
+-- what is inside the env. This metadata consists of the environment type in which the parser
+-- gets run and moreover the whole set of tokens of the environment.
+texEnv :: FTL Text -> (Text -> [Token] -> FTL a) -> FTL a
+texEnv envType parseContent = do
   inp <- getInput
-  h <- header
-  toks <- getTokens inp
+  envType' <- texBegin envType
+  tokens <- getTokens inp
+  content <- parseContent envType' tokens
+  texEnd envType
+  return content
+
+-- | Version of @texEnv@ were @parseContent@ takes no metadata.
+texEnv' :: FTL Text -> FTL a -> FTL a
+texEnv' envType = texEnv envType . const . const
+
+-- | Just like @texEnv@ wraps a (parameterized) parser into a latex environment, here we wrap
+-- a header and a (parameterized) parser into one parser.
+addHeader :: FTL Text -> (Text -> [Token] -> FTL ProofText) -> FTL ProofText
+addHeader header parseContent = do
+  inp <- getInput
+  header' <- header
+  tokens <- getTokens inp
+  parseContent header' tokens
+
+
+-- Iterating parser usage
+
+-- | Tells @repeatM@ whether to continue iterating. The lists in
+-- @Abort ls@ and @Continue ls@ will get aggregated into a big list.
+data StepStatus a = Abort [a] | Continue [a]
+
+continue :: a -> StepStatus a
+continue x = Continue [x]
+
+abort :: StepStatus a
+abort = Abort []
+
+-- | Repeat a monadic action until @Abort@ is returned, aggregating results. This makes it
+-- possible to write composable code that only deals with one recursion step at the time.
+repeatM :: Monad m => m (StepStatus a) -> m [a]
+repeatM step = do
+  result <- step
+  case result of
+    Abort l -> return l
+    Continue l -> (l ++) <$> repeatM step
+
+
+-- generic topsection parsing
+
+genericTopsection :: Section -> FTL [ProofText] -> Text -> [Token] -> FTL ProofText
+genericTopsection kind content header tokens = do
   bs <- body
-  let block = Block.makeBlock (mkVar (VarHole "")) bs kind h [] toks
+  let block = Block.makeBlock (mkVar (VarHole "")) bs kind header [] tokens
   addBlockReports block
-  return block
+  return $ ProofTextBlock block
   where
     body = assumption <|> content
     assumption = topAssume `pretypeBefore` body
     topAssume = pretypeSentence Assumption (beginAsm >> statement) assumeVars noLink
 
--- | @texTopsection kind env content@ parses an environment with the name @env@, followed by content
--- parsed by the specified @content@ parser. The result is combined into a block of kind @kind@.
-texTopsection :: Section -> Text -> FTL [ProofText] -> FTL Block
-texTopsection kind env content = do
-  inp <- getInput
-  h <- texBegin env
-  toks <- getTokens inp
-  bs <- body
-  texEnd env
-  let block = Block.makeBlock (mkVar (VarHole "")) bs kind h [] toks
-  addBlockReports block
-  return block
-  where
-    body = assumption <|> content
-    assumption = topAssume `pretypeBefore` body
-    topAssume = pretypeSentence Assumption (beginAsm >> statement) assumeVars noLink
 
-
---- generic header parser
+-- generic header parser
 
 header :: [Text] -> FTL Text
 header titles = finish $ markupTokenOf topsectionHeader titles >> optLL1 "" topIdentifier
 
 
--- topsections
+-- Topsections. These are all parameterized by some metadata that gets embedded
+-- into the block. The first piece of metadata is the kind of 
 
-signature' :: FTL Block
+signature' :: Text -> [Token] -> FTL ProofText
 signature' =
   let sigExt = pretype $ pretypeSentence Posit sigExtend defVars noLink
-  in  genericTopsection Signature sigH sigExt
+  in  genericTopsection Signature sigExt
 
-texSig :: FTL Block
-texSig =
-  let sigExt = pretype $ pretypeSentence Posit sigExtend defVars noLink
-  in  texTopsection Signature "signature" sigExt
-
-definition :: FTL Block
+definition :: Text -> [Token] -> FTL ProofText
 definition =
   let define = pretype $ pretypeSentence Posit defExtend defVars noLink
-  in  genericTopsection Definition defH define
+  in  genericTopsection Definition define
 
-texDefinition :: FTL Block
-texDefinition =
-  let define = pretype $ pretypeSentence Posit defExtend defVars noLink
-  in  texTopsection Definition "definition" define
-
-axiom :: FTL Block
+axiom :: Text -> [Token] -> FTL ProofText
 axiom =
   let posit = pretype $
         pretypeSentence Posit (beginAff >> statement) affirmVars noLink
-  in  genericTopsection Axiom axmH posit
+  in  genericTopsection Axiom posit
 
-texAxiom :: FTL Block
-texAxiom =
-  let posit = pretype $ pretypeSentence Posit (beginAff >> statement) affirmVars noLink
-  in  texTopsection Axiom "axiom" posit
-
-theorem :: FTL Block
+theorem :: Text -> [Token] -> FTL ProofText
 theorem =
   let topAffirm = pretypeSentence Affirmation (beginAff >> statement) affirmVars link
-  in  genericTopsection Theorem thmH (topProof topAffirm)
+  in  genericTopsection Theorem (topProof topAffirm)
 
+signatureTags, definitionTags, axiomTags, theoremTags, macroTags, pretypeTags, parserInstrTags :: [Text]
 
-sigH :: FTL Text
-sigH = header ["signature"]
-defH :: FTL Text
-defH = header ["definition"]
-axmH :: FTL Text
-axmH = header ["axiom"]
-thmH :: FTL Text
-thmH = header ["theorem", "lemma", "corollary", "proposition"]
+signatureTags = ["signature"]
+definitionTags = ["definition"]
+axiomTags = ["axiom"]
+theoremTags = ["theorem", "lemma", "corollary", "proposition"]
+macroTags = ["macro"]
+pretypeTags = ["pretype"]
+parserInstrTags = ["parser"]
 
 
 -- low-level
@@ -216,7 +255,7 @@ pret dvs tvs bl = do
   let typing =
         if null untyped
         then Top
-        else foldl1 And $ map (`typeWith` tvs) $ map declName $ Set.toList untyped
+        else foldl1 And $ fmap ((`typeWith` tvs) . declName) (Set.toList untyped)
   return $ assumeBlock {Block.formula = typing, Block.declaredVariables = untyped}
   where
     blockVars = Block.declaredNames bl
@@ -368,7 +407,7 @@ indThesis fr pre post = do
     indStatem vs (Imp g f) = (Imp g .) <$> indStatem vs f
     indStatem vs (All v f) = (dAll v .) <$> indStatem (deleteDecl v vs) f
     indStatem vs f | Set.null vs = pure (`Imp` f)
-    indStatem _ _ = failWF $ "invalid induction thesis " <> (Text.pack $ show fr)
+    indStatem _ _ = failWF $ "invalid induction thesis " <> Text.pack (show fr)
 
     insertIndTerm it cn = cn $ Tag InductionHypothesis $ subst it (VarHole "") $ cn $ mkLess it (mkVar (VarHole ""))
 
@@ -460,7 +499,7 @@ nextTerm t = do
   s <- sTerm
   ln <- eqLink
   toks <- getTokens inp
-  ((:) $ Block.makeBlock (Tag EqualityChain $ mkEquality t s)
+  (:) (Block.makeBlock (Tag EqualityChain $ mkEquality t s)
     [] Affirmation "__" ln toks) <$> eqTail s
 
 -- | Fail if @p@ failed with no or only @EOF@ input remaining

@@ -392,8 +392,8 @@ freeOrOverlapping vs f
     | not (Text.null ovl) = Just $ "overlapped variables: "        <> ovl <> info
     | otherwise      = Nothing
   where
-    sbs = Text.unwords $ map (showVar) $ Set.toList $ fvToVarSet $ excludeSet (free f) vs
-    ovl = Text.unwords $ map (showVar) $ Set.toList $ over vs f
+    sbs = Text.unwords $ map showVar $ Set.toList $ fvToVarSet $ excludeSet (free f) vs
+    ovl = Text.unwords $ map showVar $ Set.toList $ over vs f
     info = "\n in translation: " <> (Text.pack $ show f)
 
     over :: Set VariableName -> Formula -> Set VariableName
@@ -441,21 +441,21 @@ such :: FTL ()
 such = tokenOf' ["such", "so"]
 
 
-
-texBegin, texEnd :: Text -> FTL Text
+-- TODO: Add possibility for labels with [label].
+texBegin, texEnd :: FTL Text -> FTL Text
 texBegin env = do
   token "\\begin"
   symbol "{"
-  token env
+  env' <- env
   symbol "}"
-  return env
+  return env'
 
 texEnd env = do
   token "\\end"
   symbol "{"
-  token env
+  env' <- env
   symbol "}"
-  return env
+  return env'
 
 
 --just for now:
