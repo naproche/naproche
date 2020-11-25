@@ -30,6 +30,7 @@ import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Parser.Token
 import SAD.Parser.Primitives
+import SAD.Parser.Error
 
 import SAD.Data.Instr
 import SAD.Data.Text.Block (Block(Block), ProofText(..), Section(..))
@@ -48,10 +49,10 @@ forthel = repeatM $
 
 texForthel :: FTL [ProofText]
 texForthel = repeatM $
-  (continue <$> (texTopsection </> texIntroduceMacro </> texPretypeVariable))
-  </> texBracketExpression
-  </> (eof >> return abort)
-  </> consumeToken
+  (continue <$> (texTopsection <|> texIntroduceMacro <|> texPretypeVariable))
+  <|> texBracketExpression
+  <|> (eof >> return abort)
+  <|> consumeToken
 
 consumeToken :: FTL (StepStatus a)
 consumeToken = anyToken >> return (Continue [])
@@ -84,9 +85,9 @@ topsection = addHeader (header signatureTags) signature'
 
 texTopsection :: FTL ProofText
 texTopsection = texEnv (element signatureTags) signature'
-  </> texEnv (element definitionTags) definition
-  </> texEnv (element axiomTags) axiom
-  </> texEnv (element theoremTags) theorem
+  <|> texEnv (element definitionTags) definition
+  <|> texEnv (element axiomTags) axiom
+  <|> texEnv (element theoremTags) theorem
 
 texIntroduceMacro :: FTL ProofText
 texIntroduceMacro = texEnv' (element macroTags) introduceMacro
@@ -106,11 +107,16 @@ texBracketExpression = texEnv' (element parserInstrTags) bracketExpression
 texEnv :: FTL Text -> (Text -> [Token] -> FTL a) -> FTL a
 texEnv envType parseContent = do
   inp <- getInput
-  envType' <- texBegin envType
-  tokens <- getTokens inp
-  content <- parseContent envType' tokens
-  texEnd envType
-  return content
+  -- We use optLLx to backtrack if parsing the environment declaration fails.
+  result <- optLLx Nothing (Just <$> texBegin envType)
+  pos <- getPos
+  case result of
+    Nothing -> Parser $ \_ _ _ err -> err $ unexpectError "expected a different environment type" pos
+    Just envType' -> do
+      tokens <- getTokens inp
+      content <- parseContent envType' tokens
+      texEnd envType
+      return content
 
 -- | Version of @texEnv@ were @parseContent@ takes no metadata.
 texEnv' :: FTL Text -> FTL a -> FTL a

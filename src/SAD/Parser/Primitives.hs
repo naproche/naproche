@@ -129,12 +129,12 @@ symb = tokenPrim $ \tok ->
 -- | @token tok@ succeeds iff the current token is equal to @tok@. Consumes the token.
 {-# INLINE token #-}
 token :: Text -> Parser st ()
-token tok = void $ satisfy $ \tok' -> tok == tok'
+token tok = void $ satisfy (tok ==)
 
 -- | Case-insensitive version of @token@. The argument is assumed to be in folded case.
 {-# INLINE token' #-}
 token' :: Text -> Parser st ()
-token' tok = void $ satisfy $ \tok' -> tok == Text.toCaseFold tok'
+token' tok = void $ satisfy $ (tok ==) . Text.toCaseFold
 
 -- | A version of @token'@ that returns the position of the token instead of @()@.
 tokenPos' :: Text -> Parser st SourcePos
@@ -145,7 +145,7 @@ tokenPos' s = do
 
 -- | @tokenOf toks@ succeeds iff the current token is an element of @toks@. Consumes the token.
 tokenOf :: [Text] -> Parser st ()
-tokenOf toks = void $ satisfy $ \tok -> tok `elem` toks
+tokenOf toks = void $ element toks
 
 -- | Case-insensitive version of @tokenOf@. All arguments are assumed to be in folded case.
 {-# INLINE tokenOf' #-}
