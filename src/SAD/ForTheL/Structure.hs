@@ -43,13 +43,13 @@ import SAD.Data.Text.Decl
 
 forthel :: FTL [ProofText]
 forthel = repeatM $
-  continue <$> (topsection <|> (introduceMacro </> pretypeVariable))
+  continue <$> (topsection <|> introduceMacro </> pretypeVariable)
   <|> bracketExpression
   <|> (eof >> return abort)
 
 texForthel :: FTL [ProofText]
 texForthel = repeatM $
-  (continue <$> (texTopsection <|> texIntroduceMacro <|> texPretypeVariable))
+  (continue <$> (texTopsection <|> texIntroduceMacro </> texPretypeVariable))
   <|> texBracketExpression
   <|> (eof >> return abort)
   <|> consumeToken
@@ -85,15 +85,15 @@ topsection = addHeader (header signatureTags) signature'
 
 texTopsection :: FTL ProofText
 texTopsection = texEnv (element signatureTags) signature'
-  <|> texEnv (element definitionTags) definition
-  <|> texEnv (element axiomTags) axiom
-  <|> texEnv (element theoremTags) theorem
+  <|> texEnv (element $ ("ftl" <>) <$> definitionTags) definition
+  <|> texEnv (element $ ("ftl" <>) <$> axiomTags) axiom
+  <|> texEnv (element $ ("ftl" <>) <$> theoremTags) theorem
 
 texIntroduceMacro :: FTL ProofText
-texIntroduceMacro = texEnv' (element macroTags) introduceMacro
+texIntroduceMacro = texEnv' (element notationTags) introduceMacro
 
 texPretypeVariable :: FTL ProofText
-texPretypeVariable = texEnv' (element pretypeTags) pretypeVariable
+texPretypeVariable = texEnv' (element notationTags) pretypeVariable
 
 texBracketExpression :: FTL (StepStatus ProofText)
 texBracketExpression = texEnv' (element parserInstrTags) bracketExpression
@@ -104,6 +104,7 @@ texBracketExpression = texEnv' (element parserInstrTags) bracketExpression
 -- | @texEnv parseContent@ takes a function @parseContent@ that takes some metadata and parses
 -- what is inside the env. This metadata consists of the environment type in which the parser
 -- gets run and moreover the whole set of tokens of the environment.
+-- Backtracks if parsing the latex begin declaration fails.
 texEnv :: FTL Text -> (Text -> [Token] -> FTL a) -> FTL a
 texEnv envType parseContent = do
   inp <- getInput
@@ -198,14 +199,13 @@ theorem =
   let topAffirm = pretypeSentence Affirmation (beginAff >> statement) affirmVars link
   in  genericTopsection Theorem (topProof topAffirm)
 
-signatureTags, definitionTags, axiomTags, theoremTags, macroTags, pretypeTags, parserInstrTags :: [Text]
+signatureTags, definitionTags, axiomTags, theoremTags, notationTags, parserInstrTags :: [Text]
 
 signatureTags = ["signature"]
 definitionTags = ["definition"]
 axiomTags = ["axiom"]
 theoremTags = ["theorem", "lemma", "corollary", "proposition"]
-macroTags = ["macro"]
-pretypeTags = ["pretype"]
+notationTags = ["notation"]
 parserInstrTags = ["parser"]
 
 

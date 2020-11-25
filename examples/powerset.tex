@@ -4,17 +4,30 @@
 \date{}
 \begin{document}
 
+\theoremstyle{plain}
+ \newtheorem{ftltheorem}{Theorem}[section]
+ \newtheorem{theorem}{Theorem}[section]
+ \newtheorem{ftlproposition}{Proposition}[section]
+ \newtheorem{ftllemma}{Lemma}[section]
+ \newtheorem{ftlcorollary}{Corollary}[section]
+\theoremstyle{definition}
+ \newtheorem{example}{Example}[section]
+ \newtheorem{ftldefinition}{Definition}[section]
+\theoremstyle{remark}
+ \newtheorem{remark}{Remark}[section]
+ \newtheorem{notation}{Notation}[section]
+\theoremstyle{axiom}
+ \newtheorem{ftlaxiom}{Axiom}[section]
+ \numberwithin{equation}{section}
 
 \newenvironment{parser}{}{}
-\newenvironment{pretype}{}{}
-\newenvironment{macro}{}{}
-\newenvironment{axiom}{}{}
-\newenvironment{definition}{}{}
-\newenvironment{proposition}{}{}
-\newenvironment{theorem}{}{}
 
 \maketitle 
 \section{First and only section}
+
+\begin{theorem}
+The following holds: $1 + 1 = 2$. This is not parsed by forthel.
+\end{theorem}
 
 \begin{parser}
 [synonym subset/-s]
@@ -24,54 +37,54 @@
 [synonym surject/-s]
 \end{parser}
 
-\begin{pretype}
+\begin{notation}
 Let M denote a set.
-\end{pretype}
+\end{notation}
 
-\begin{pretype}
+\begin{notation}
 Let f denote a function.
-\end{pretype}
+\end{notation}
 
-\begin{macro}
+\begin{notation}
 Let the value of f at x stand for f[x].
-\end{macro}
+\end{notation}
 
-\begin{macro}
+\begin{notation}
 Let f is defined on M stand for Dom(f) = M.
-\end{macro}
+\end{notation}
 
-\begin{macro}
+\begin{notation}
 Let the domain of f stand for Dom(f).
-\end{macro}
+\end{notation}
 
 
-\begin{axiom}
+\begin{ftlaxiom}
 The value of f at any element of the domain of f is a set.
-\end{axiom}
+\end{ftlaxiom}
 
-\begin{definition}
+\begin{ftldefinition}
 A subset of M is a set N such that every element of N is an element of M.
-\end{definition}
+\end{ftldefinition}
 
-\begin{definition}
+\begin{ftldefinition}
 The powerset of M is the set of subsets of M.
-\end{definition}
+\end{ftldefinition}
 
-\begin{definition}
+\begin{ftldefinition}
 f surjects onto M iff every element of M is equal to the value of f at some element of the domain of f.
-\end{definition}
+\end{ftldefinition}
 
-\begin{proposition}
+\begin{ftlproposition}
 No function that is defined on M surjects onto the powerset of M.
 Proof by contradiction.
 Assume the contrary. Take a function f that is defined on M and surjects onto the powerset of M.
 Define N = { x in M | x is not an element of f[x] }.
 Then N is not equal to the value of f at any element of M.
 Contradiction. qed.
-\end{proposition}
+\end{ftlproposition}
 
-\begin{theorem}
+\begin{ftltheorem}
 The value of f at any element of the domain of f is a set.
-\end{theorem}
+\end{ftltheorem}
 
 \end{document}
