@@ -102,20 +102,21 @@ texBracketExpression = texEnv' (element parserInstrTags) bracketExpression
 -- Helpers for constructing environments and adding headers.
 
 -- | @texEnv parseContent@ takes a function @parseContent@ that takes some metadata and parses
--- what is inside the env. This metadata consists of the environment type in which the parser
--- gets run and moreover the whole set of tokens of the environment.
+-- what is inside the env. This metadata consists of the label of the environment in which the
+-- parser gets run and moreover the whole set of tokens of the environment.
 -- Backtracks if parsing the latex begin declaration fails.
 texEnv :: FTL Text -> (Text -> [Token] -> FTL a) -> FTL a
 texEnv envType parseContent = do
   inp <- getInput
   -- We use optLLx to backtrack if parsing the environment declaration fails.
-  result <- optLLx Nothing (Just <$> texBegin envType)
+  result <- optLLx Nothing (Just <$> texBeginLabel envType)
   pos <- getPos
   case result of
     Nothing -> Parser $ \_ _ _ err -> err $ unexpectError "expected a different environment type" pos
-    Just envType' -> do
+    Just envLabel -> do
       tokens <- getTokens inp
-      content <- parseContent envType' tokens
+      -- For some weird reason, if no label is present we must represent it as the empty string.
+      content <- parseContent (fromMaybe "" envLabel) tokens
       texEnd envType
       return content
 
@@ -128,9 +129,9 @@ texEnv' envType = texEnv envType . const . const
 addHeader :: FTL Text -> (Text -> [Token] -> FTL ProofText) -> FTL ProofText
 addHeader header parseContent = do
   inp <- getInput
-  header' <- header
+  label <- header
   tokens <- getTokens inp
-  parseContent header' tokens
+  parseContent label tokens
 
 
 -- Iterating parser usage

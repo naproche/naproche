@@ -441,21 +441,32 @@ such :: FTL ()
 such = tokenOf' ["such", "so"]
 
 
--- TODO: Add possibility for labels with [label].
-texBegin, texEnd :: FTL Text -> FTL Text
+-- | Parses '\begin{env}'. Takes a parser for parsing 'env'.
+texBegin :: FTL Text -> FTL ()
 texBegin env = do
   token "\\begin"
   symbol "{"
-  env' <- env
+  env
   symbol "}"
-  return env'
 
+envLabel :: FTL Text
+envLabel = do
+  symbol "["
+  label <- anyToken
+  symbol "]"
+  return label
+
+-- | Parses '\begin{env}[label]'. Takes a parser for parsing 'env' and returns
+-- the label, if a label declaration existed.
+texBeginLabel :: FTL Text -> FTL (Maybe Text)
+texBeginLabel env = texBegin env >> optLLx Nothing (Just <$> envLabel)
+
+texEnd :: FTL Text -> FTL ()
 texEnd env = do
   token "\\end"
   symbol "{"
-  env' <- env
+  env
   symbol "}"
-  return env'
 
 
 --just for now:
