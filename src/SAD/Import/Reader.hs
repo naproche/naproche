@@ -19,7 +19,7 @@ import qualified Data.Text.Lazy as Text
 import SAD.Data.Text.Block
 import SAD.Data.Instr as Instr
 import SAD.ForTheL.Base
-import SAD.ForTheL.Structure ( forthel, texForthel )
+import SAD.ForTheL.Structure
 import SAD.Parser.Base
 import SAD.ForTheL.Instruction
 import SAD.Core.SourcePos
