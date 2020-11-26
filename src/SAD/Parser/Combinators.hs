@@ -138,6 +138,29 @@ finish :: Parser st a -> Parser st a
 finish p = after p dot
 
 
+-- Iterating parser usage
+
+-- | Tells @repeatM@ whether to continue iterating. The lists in
+-- @Abort ls@ and @Continue ls@ will get aggregated into a big list.
+data StepStatus a = Abort a | Continue a
+
+abort :: Monoid a => StepStatus a
+abort = Abort mempty
+
+-- | When the monoid happens to be a list, we often want to automatically make singletons.
+continue :: a -> StepStatus [a]
+continue x = Continue [x]
+
+-- | Repeat a monadic action until @Abort@ is returned, aggregating results. This makes it
+-- possible to write composable code that only deals with one recursion step at the time.
+repeatM :: (Monad m, Monoid a) => m (StepStatus a) -> m a
+repeatM step = do
+  result <- step
+  case result of
+    Abort l -> return l
+    Continue l -> (l <>) <$> repeatM step
+
+
 -- Control ambiguity
 
 -- | If p is ambiguous, fail and report a well-formedness error

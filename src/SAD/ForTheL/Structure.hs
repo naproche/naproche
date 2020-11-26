@@ -30,41 +30,45 @@ import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Parser.Token
 import SAD.Parser.Primitives
-import SAD.Parser.Error
 
 import SAD.Data.Instr
 import SAD.Data.Text.Block (Block(Block), ProofText(..), Section(..))
 import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Formula
 import qualified SAD.Data.Tag as Tag
-import SAD.Data.Text.Decl (Decl(Decl))
 import SAD.Data.Text.Decl
 
 
+-- | The old .ftl file parser.
 forthel :: FTL [ProofText]
 forthel = repeatM $
   continue <$> (topsection <|> introduceMacro </> pretypeVariable)
   <|> bracketExpression
   <|> (eof >> return abort)
 
+-- | Parses tex files.
 texForthel :: FTL [ProofText]
 texForthel = repeatM $
-  (continue <$> (texTopsection <|> texIntroduceMacro </> texPretypeVariable))
-  <|> texBracketExpression
+  Continue <$> repeatInTexEnv' (token "forthel") forthelStep
   <|> (eof >> return abort)
   <|> consumeToken
+  where
+    consumeToken = anyToken >> return (Continue mempty)
 
-consumeToken :: FTL (StepStatus a)
-consumeToken = anyToken >> return (Continue [])
+-- | Parses one forthel construct with tex syntax for topsection.
+forthelStep :: FTL (StepStatus [ProofText])
+forthelStep = 
+  (continue <$> (texTopsection <|> introduceMacro </> pretypeVariable))
+  <|> bracketExpression
 
-bracketExpression :: FTL (StepStatus ProofText)
+bracketExpression :: FTL (StepStatus [ProofText])
 bracketExpression = topInstruction >>= procParseInstruction
   where
     topInstruction =
       fmap (uncurry ProofTextDrop) instrDrop </>
       fmap (uncurry ProofTextInstr) (instr </> instrExit </> instrRead)
 
-procParseInstruction :: ProofText -> FTL (StepStatus ProofText)
+procParseInstruction :: ProofText -> FTL (StepStatus [ProofText])
 procParseInstruction text = case text of
   ProofTextInstr _ (GetArgument Read _) -> return (Abort [text])
   ProofTextInstr _ (Command EXIT) -> return abort
@@ -83,85 +87,68 @@ topsection = addHeader (header signatureTags) signature'
   <|> addHeader (header axiomTags) axiom
   <|> addHeader (header theoremTags) theorem
 
+-- | The topsection parsers have a parameter that tells them which tokens to specify when creating
+-- a block. In the case of tex environments, we will just read the tokens before applying the parser.
+giveTokens :: ([Token] -> t -> FTL b) -> t -> FTL b
+giveTokens parser label = do
+  inp <- getInput
+  tokens <- getTokens inp
+  parser tokens label
+
 texTopsection :: FTL ProofText
-texTopsection = texEnv (element signatureTags) signature'
-  <|> texEnv (element $ ("ftl" <>) <$> definitionTags) definition
-  <|> texEnv (element $ ("ftl" <>) <$> axiomTags) axiom
-  <|> texEnv (element $ ("ftl" <>) <$> theoremTags) theorem
-
-texIntroduceMacro :: FTL ProofText
-texIntroduceMacro = texEnv' (element notationTags) introduceMacro
-
-texPretypeVariable :: FTL ProofText
-texPretypeVariable = texEnv' (element notationTags) pretypeVariable
-
-texBracketExpression :: FTL (StepStatus ProofText)
-texBracketExpression = texEnv' (element parserInstrTags) bracketExpression
+texTopsection = texEnv (tokenOf signatureTags) optionalEnvLabel (giveTokens signature')
+  <|> texEnv (tokenOf definitionTags) optionalEnvLabel (giveTokens definition)
+  <|> texEnv (tokenOf axiomTags) optionalEnvLabel (giveTokens axiom)
+  <|> texEnv (tokenOf theoremTags) optionalEnvLabel (giveTokens theorem)
 
 
 -- Helpers for constructing environments and adding headers.
 
--- | @texEnv parseContent@ takes a function @parseContent@ that takes some metadata and parses
--- what is inside the env. This metadata consists of the label of the environment in which the
--- parser gets run and moreover the whole set of tokens of the environment.
--- Backtracks if parsing the latex begin declaration fails.
-texEnv :: FTL Text -> (Text -> [Token] -> FTL a) -> FTL a
-texEnv envType parseContent = do
-  inp <- getInput
-  -- We use optLLx to backtrack if parsing the environment declaration fails.
-  result <- optLLx Nothing (Just <$> texBeginLabel envType)
-  pos <- getPos
-  case result of
-    Nothing -> Parser $ \_ _ _ err -> err $ unexpectError "expected a different environment type" pos
-    Just envLabel -> do
-      tokens <- getTokens inp
-      -- For some weird reason, if no label is present we must represent it as the empty string.
-      content <- parseContent (fromMaybe "" envLabel) tokens
-      texEnd envType
-      return content
+-- | @texEnv envType labelParser parseContent@ parses a tex environment. @envType@ parses
+-- then environment type specified in the environment declaration. @labelParser@ parses a
+-- label declaration such as '[label]'. @content@ parses the insides of the environment,
+-- while optionally being able to use the label information.
+texEnv :: FTL () -> LabelParser label -> (label -> FTL content) -> FTL content
+texEnv envType labelParser content = do
+  -- We use 'try' to backtrack if parsing the environment declaration fails.
+  try $ texBegin envType
+  envLabel <- labelParser
+  after (content envLabel) (texEnd envType)
 
--- | Version of @texEnv@ were @parseContent@ takes no metadata.
-texEnv' :: FTL Text -> FTL a -> FTL a
-texEnv' envType = texEnv envType . const . const
+-- | Repeats a parser until the end parser succeeds or the content parser aborts.
+untilEnd :: Monoid a => Parser st (StepStatus a) -> Parser st () -> Parser st a
+untilEnd content end = repeatM $ (end >> return (Abort mempty)) <|> content
 
--- | Just like @texEnv@ wraps a (parameterized) parser into a latex environment, here we wrap
--- a header and a (parameterized) parser into one parser.
-addHeader :: FTL Text -> (Text -> [Token] -> FTL ProofText) -> FTL ProofText
-addHeader header parseContent = do
+repeatInTexEnv :: Monoid content => FTL () -> LabelParser label -> (label -> FTL (StepStatus content)) -> FTL content
+repeatInTexEnv envType labelParser content = do
+  try $ texBegin envType
+  envLabel <- labelParser
+  untilEnd (content envLabel) (texEnd envType)
+
+-- | Version of @repeatInTexEnv@ without label data.
+repeatInTexEnv' :: Monoid content => FTL () -> FTL (StepStatus content) -> FTL content
+repeatInTexEnv' envType = repeatInTexEnv envType noEnvLabel . const
+
+
+-- | @addHeader header parseContent@ constructs a forthel topsection construct in the old
+-- .ftl file format. @header@ parses the header and @parseContent@ parses the main body of
+-- the construct. @parseContent@ is parameterized by a whole set of tokens included in the
+-- construct(including the header) and moreover by an optional label.
+addHeader :: FTL (Maybe Text) -> ([Token] -> Maybe Text -> FTL ProofText) -> FTL ProofText
+addHeader header content = do
   inp <- getInput
   label <- header
   tokens <- getTokens inp
-  parseContent label tokens
-
-
--- Iterating parser usage
-
--- | Tells @repeatM@ whether to continue iterating. The lists in
--- @Abort ls@ and @Continue ls@ will get aggregated into a big list.
-data StepStatus a = Abort [a] | Continue [a]
-
-continue :: a -> StepStatus a
-continue x = Continue [x]
-
-abort :: StepStatus a
-abort = Abort []
-
--- | Repeat a monadic action until @Abort@ is returned, aggregating results. This makes it
--- possible to write composable code that only deals with one recursion step at the time.
-repeatM :: Monad m => m (StepStatus a) -> m [a]
-repeatM step = do
-  result <- step
-  case result of
-    Abort l -> return l
-    Continue l -> (l ++) <$> repeatM step
+  content tokens label
 
 
 -- generic topsection parsing
 
-genericTopsection :: Section -> FTL [ProofText] -> Text -> [Token] -> FTL ProofText
-genericTopsection kind content header tokens = do
+genericTopsection :: Section -> FTL [ProofText] -> [Token] -> Maybe Text -> FTL ProofText
+genericTopsection kind content tokens header = do
   bs <- body
-  let block = Block.makeBlock (mkVar (VarHole "")) bs kind header [] tokens
+  -- For some weird reason, if no label is present we must represent it as the empty string.
+  let block = Block.makeBlock (mkVar (VarHole "")) bs kind (fromMaybe "" header) [] tokens
   addBlockReports block
   return $ ProofTextBlock block
   where
@@ -172,42 +159,40 @@ genericTopsection kind content header tokens = do
 
 -- generic header parser
 
-header :: [Text] -> FTL Text
-header titles = finish $ markupTokenOf topsectionHeader titles >> optLL1 "" topIdentifier
+header :: [Text] -> FTL (Maybe Text)
+header titles = finish $ markupTokenOf topsectionHeader titles >> optLL1 Nothing (Just <$> topIdentifier)
 
 
 -- Topsections. These are all parameterized by some metadata that gets embedded
 -- into the block. The first piece of metadata is the kind of 
 
-signature' :: Text -> [Token] -> FTL ProofText
+signature' :: [Token] -> Maybe Text -> FTL ProofText
 signature' =
   let sigExt = pretype $ pretypeSentence Posit sigExtend defVars noLink
   in  genericTopsection Signature sigExt
 
-definition :: Text -> [Token] -> FTL ProofText
+definition :: [Token] -> Maybe Text -> FTL ProofText
 definition =
   let define = pretype $ pretypeSentence Posit defExtend defVars noLink
   in  genericTopsection Definition define
 
-axiom :: Text -> [Token] -> FTL ProofText
+axiom :: [Token] -> Maybe Text -> FTL ProofText
 axiom =
   let posit = pretype $
         pretypeSentence Posit (beginAff >> statement) affirmVars noLink
   in  genericTopsection Axiom posit
 
-theorem :: Text -> [Token] -> FTL ProofText
+theorem :: [Token] -> Maybe Text -> FTL ProofText
 theorem =
   let topAffirm = pretypeSentence Affirmation (beginAff >> statement) affirmVars link
   in  genericTopsection Theorem (topProof topAffirm)
 
-signatureTags, definitionTags, axiomTags, theoremTags, notationTags, parserInstrTags :: [Text]
+signatureTags, definitionTags, axiomTags, theoremTags :: [Text]
 
 signatureTags = ["signature"]
 definitionTags = ["definition"]
 axiomTags = ["axiom"]
 theoremTags = ["theorem", "lemma", "corollary", "proposition"]
-notationTags = ["notation"]
-parserInstrTags = ["parser"]
 
 
 -- low-level

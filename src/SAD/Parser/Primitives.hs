@@ -12,7 +12,6 @@ module SAD.Parser.Primitives
   , mapInput
   , inspectError
   , satisfy
-  , element
   , eof
   , word
   , symb
@@ -106,10 +105,6 @@ satisfy pr = tokenPrim prTest
       True  -> Just s
       False -> Nothing
 
--- | Check if current token lies inside list; if not fail
-element :: [Text] -> Parser st Text
-element = satisfy . flip elem
-
 -- | Always succeed and pass on the string of the token
 anyToken :: Parser st Text
 anyToken = tokenPrim (Just . showToken)
@@ -145,7 +140,7 @@ tokenPos' s = do
 
 -- | @tokenOf toks@ succeeds iff the current token is an element of @toks@. Consumes the token.
 tokenOf :: [Text] -> Parser st ()
-tokenOf toks = void $ element toks
+tokenOf = void . satisfy . flip elem
 
 -- | Case-insensitive version of @tokenOf@. All arguments are assumed to be in folded case.
 {-# INLINE tokenOf' #-}

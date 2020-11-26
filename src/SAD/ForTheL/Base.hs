@@ -442,31 +442,37 @@ such = tokenOf' ["such", "so"]
 
 
 -- | Parses '\begin{env}'. Takes a parser for parsing 'env'.
-texBegin :: FTL Text -> FTL ()
+texBegin :: FTL () -> FTL ()
 texBegin env = do
   token "\\begin"
   symbol "{"
   env
   symbol "}"
 
-envLabel :: FTL Text
+-- | Parses '\end{env}'. Takes a parser for parsing 'env'.
+texEnd :: FTL () -> FTL ()
+texEnd env = do
+  token "\\end"
+  symbol "{"
+  env
+  symbol "}"
+
+-- | This is used for controlling the different options for parsing labels. For instance,
+-- in '\begin{env}[lbl]', 'lbl' would be the label.
+type LabelParser a = FTL a
+
+envLabel :: LabelParser Text
 envLabel = do
   symbol "["
   label <- anyToken
   symbol "]"
   return label
 
--- | Parses '\begin{env}[label]'. Takes a parser for parsing 'env' and returns
--- the label, if a label declaration existed.
-texBeginLabel :: FTL Text -> FTL (Maybe Text)
-texBeginLabel env = texBegin env >> optLLx Nothing (Just <$> envLabel)
+noEnvLabel :: LabelParser ()
+noEnvLabel = return ()
 
-texEnd :: FTL Text -> FTL ()
-texEnd env = do
-  token "\\end"
-  symbol "{"
-  env
-  symbol "}"
+optionalEnvLabel :: LabelParser (Maybe Text)
+optionalEnvLabel = optLLx Nothing (Just <$> envLabel)
 
 
 --just for now:
