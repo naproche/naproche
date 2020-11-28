@@ -5,38 +5,33 @@
 \begin{document}
 
 \theoremstyle{plain}
- \newtheorem{ftltheorem}{Theorem}[section]
  \newtheorem{theorem}{Theorem}[section]
- \newtheorem{ftlproposition}{Proposition}[section]
- \newtheorem{ftllemma}{Lemma}[section]
- \newtheorem{ftlcorollary}{Corollary}[section]
+ \newtheorem{lemma}{Theorem}[section]
+ \newtheorem{proposition}{Theorem}[section]
 \theoremstyle{definition}
  \newtheorem{example}{Example}[section]
- \newtheorem{ftldefinition}{Definition}[section]
+ \newtheorem{definition}{Definition}[section]
  \newtheorem{signature}{Signature}[section]
 \theoremstyle{remark}
  \newtheorem{remark}{Remark}[section]
  \newtheorem{notation}{Notation}[section]
 \theoremstyle{axiom}
- \newtheorem{ftlaxiom}{Axiom}[section]
+ \newtheorem{axiom}{Axiom}[section]
  \numberwithin{equation}{section}
 
-\newenvironment{parser}{}{}
+\newenvironment{forthel}{}{}
 \maketitle
 
-CURRENTLY BROKEN, NEEDS TO BE FIXED
+This file only contains the beginning of 'chinese.ftl', but in tex format. The point of this file is testing whether labels given to environments are properly parsed.
 
-This file only contains the beginning of 'chinese.ftl' in a latex format. The point of this file is to test whether labels given to environments are properly parsed.
-
-\begin{parser}[synonym element/-s]\end{parser}
+\begin{forthel}
+[synonym element/-s]
 
 \begin{signature}[ElmSort]
 An element is a notion.
 \end{signature}
 
-\begin{notation}
 Let a,b,c,x,y,z,u,v,w denote elements.
-\end{notation}
 
 \begin{signature}[SortsC]
 0 is an element.
@@ -58,55 +53,55 @@ x + y is an element.
 x * y is an element.
 \end{signature}
 
-\begin{ftlaxiom}[AddComm]
+\begin{axiom}[AddComm]
 x + y = y + x.
-\end{ftlaxiom}
+\end{axiom}
 
-\begin{ftlaxiom}[AddAsso]
+\begin{axiom}[AddAsso]
 (x + y) + z = x + (y + z).
-\end{ftlaxiom}
+\end{axiom}
 
-\begin{ftlaxiom}[AddBubble]
+\begin{axiom}[AddBubble]
 x + (y + z) = y + (x + z).
-\end{ftlaxiom}
+\end{axiom}
 
-\begin{ftlaxiom}[AddZero]
+\begin{axiom}[AddZero]
 x + 0 = x = 0 + x.
-\end{ftlaxiom}
+\end{axiom}
 
-\begin{ftlaxiom}[AddInvr]
+\begin{axiom}[AddInvr]
 x + -x = 0 = -x + x.
-\end{ftlaxiom}
+\end{axiom}
 
-\begin{ftlaxiom}[MulComm]
+\begin{axiom}[MulComm]
 x * y = y * x.
-\end{ftlaxiom}
+\end{axiom}
 
-\begin{ftlaxiom}[MulAsso]
+\begin{axiom}[MulAsso]
 (x * y) * z = x * (y * z).
-\end{ftlaxiom}
+\end{axiom}
 
-\begin{ftlaxiom}[MulBubble]
+\begin{axiom}[MulBubble]
 x * (y * z) = y * (x * z).
-\end{ftlaxiom}
+\end{axiom}
 
-\begin{ftlaxiom}[MulUnit]
+\begin{axiom}[MulUnit]
 x * 1 = x = 1 * x.
-\end{ftlaxiom}
+\end{axiom}
 
-\begin{ftlaxiom}[AMDistr1]
+\begin{axiom}[AMDistr1]
 x * (y + z) = (x * y) + (x * z).
-\end{ftlaxiom}
+\end{axiom}
 
-\begin{ftlaxiom}[AMDistr2]
+\begin{axiom}[AMDistr2]
 (y + z) * x = (y * x) + (z * x).
-\end{ftlaxiom}
+\end{axiom}
 
-\begin{ftlaxiom}[MulMnOne]
+\begin{axiom}[MulMnOne]
 1 * x = -x = x * -1.
-\end{ftlaxiom}
+\end{axiom}
 
-\begin{ftllemma}[MulZero]
+\begin{lemma}[MulZero]
 x * 0 = 0 = 0 * x.
 Proof.
     Let us show that x * 0 = 0.
@@ -116,6 +111,7 @@ Proof.
     0 * x .= (0 + 0) * x (by AddZero) .= (0 * x) + (0 * x) (by AMDistr2).
     end.
 qed.
-\end{ftllemma}
+\end{lemma}
+\end{forthel}
 
 \end{document}
