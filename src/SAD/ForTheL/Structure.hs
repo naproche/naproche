@@ -96,10 +96,12 @@ giveTokens parser label = do
   parser tokens label
 
 texTopsection :: FTL ProofText
-texTopsection = texEnv (tokenOf signatureTags) optionalEnvLabel (giveTokens signature')
-  <|> texEnv (tokenOf definitionTags) optionalEnvLabel (giveTokens definition)
-  <|> texEnv (tokenOf axiomTags) optionalEnvLabel (giveTokens axiom)
-  <|> texEnv (tokenOf theoremTags) optionalEnvLabel (giveTokens theorem)
+texTopsection = texEnv (labelParser signatureTags) optionalEnvLabel (giveTokens signature')
+  <|> texEnv (labelParser definitionTags) optionalEnvLabel (giveTokens definition)
+  <|> texEnv (labelParser axiomTags) optionalEnvLabel (giveTokens axiom)
+  <|> texEnv (labelParser theoremTags) optionalEnvLabel (giveTokens theorem)
+  where
+    labelParser = markupTokenOf' topsectionHeader . tokenOf
 
 
 -- Helpers for constructing environments and adding headers.
@@ -116,9 +118,10 @@ texEnv envType labelParser content = do
   after (content envLabel) (texEnd envType)
 
 -- | Repeats a parser until the end parser succeeds or the content parser aborts.
-untilEnd :: Monoid a => Parser st (StepStatus a) -> Parser st () -> Parser st a
+untilEnd :: Monoid a => FTL (StepStatus a) -> FTL () -> FTL a
 untilEnd content end = repeatM $ (end >> return (Abort mempty)) <|> content
 
+-- | Parses tex environment while iterating a parser inside it until '\end{...}' is parsed.
 repeatInTexEnv :: Monoid content => FTL () -> LabelParser label -> (label -> FTL (StepStatus content)) -> FTL content
 repeatInTexEnv envType labelParser content = do
   try $ texBegin envType
@@ -164,7 +167,7 @@ header titles = finish $ markupTokenOf topsectionHeader titles >> optLL1 Nothing
 
 
 -- Topsections. These are all parameterized by some metadata that gets embedded
--- into the block. The first piece of metadata is the kind of 
+-- into the block.
 
 signature' :: [Token] -> Maybe Text -> FTL ProofText
 signature' =

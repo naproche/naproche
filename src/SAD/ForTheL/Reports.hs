@@ -9,6 +9,7 @@ PIDE markup reports for ForTheL text elements.
 module SAD.ForTheL.Reports
   ( markupToken
   , markupTokenOf
+  , markupTokenOf'
   , or
   , neitherNor
   , conjunctiveAnd
@@ -66,9 +67,12 @@ markupToken :: Markup.T -> Text -> FTL ()
 markupToken markup s = do
   pos <- getPos; token' s; addReports $ const [(pos, markup)]
 
+markupTokenOf' :: Markup.T -> FTL () -> FTL ()
+markupTokenOf' markup parser = do
+  pos <- getPos; parser; addReports $ const [(pos, markup)]
+
 markupTokenOf :: Markup.T -> [Text] -> FTL ()
-markupTokenOf markup ss = do
-  pos <- getPos; tokenOf' ss; addReports $ const [(pos, markup)]
+markupTokenOf markup ss = markupTokenOf' markup $ tokenOf' ss
 
 
 -- formula and variable reports
