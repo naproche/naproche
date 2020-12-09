@@ -62,8 +62,7 @@ data Block = Block {
   deriving (Eq, Ord)
 
 makeBlock :: Formula -> [ProofText] -> Section -> Text -> [Text] -> [Token] -> Block
-makeBlock form body kind name link toks =
-  Block form body kind mempty name link toks
+makeBlock form body kind = Block form body kind mempty
 
 position :: Block -> SourcePos
 position = rangePos . tokensRange . tokens

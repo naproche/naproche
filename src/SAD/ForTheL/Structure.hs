@@ -87,14 +87,6 @@ topsection = addHeader (header signatureTags) signature'
   <|> addHeader (header axiomTags) axiom
   <|> addHeader (header theoremTags) theorem
 
--- | The topsection parsers have a parameter that tells them which tokens to specify when creating
--- a block. In the case of tex environments, we will just read the tokens before applying the parser.
-giveTokens :: ([Token] -> t -> FTL b) -> t -> FTL b
-giveTokens parser label = do
-  inp <- getInput
-  tokens <- getTokens inp
-  parser tokens label
-
 texTopsection :: FTL ProofText
 texTopsection = texEnv (labelParser signatureTags) optionalEnvLabel (giveTokens signature')
   <|> texEnv (labelParser definitionTags) optionalEnvLabel (giveTokens definition)
@@ -102,6 +94,12 @@ texTopsection = texEnv (labelParser signatureTags) optionalEnvLabel (giveTokens 
   <|> texEnv (labelParser theoremTags) optionalEnvLabel (giveTokens theorem)
   where
     labelParser = markupTokenOf' topsectionHeader . tokenOf
+    -- The topsection parsers have a parameter that tells them which tokens to specify when creating
+    -- a block. In the case of tex environments, we will just read the tokens before applying the parser.
+    giveTokens parser label = do
+      inp <- getInput
+      tokens <- getTokens inp
+      parser tokens label
 
 
 -- Helpers for constructing environments and adding headers.
@@ -121,7 +119,8 @@ texEnv envType labelParser content = do
 untilEnd :: Monoid a => FTL (StepStatus a) -> FTL () -> FTL a
 untilEnd content end = repeatM $ (end >> return (Abort mempty)) <|> content
 
--- | Parses tex environment while iterating a parser inside it until '\end{...}' is parsed.
+-- | Parses tex environment while iterating a parser inside it until '\end{...}' is parsed or abort instruction
+-- is passed.
 repeatInTexEnv :: Monoid content => FTL () -> LabelParser label -> (label -> FTL (StepStatus content)) -> FTL content
 repeatInTexEnv envType labelParser content = do
   try $ texBegin envType
