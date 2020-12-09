@@ -7,9 +7,9 @@ PIDE markup reports for ForTheL text elements.
 {-# LANGUAGE TupleSections #-}
 
 module SAD.ForTheL.Reports
-  ( markupToken
+  ( addMarkup
+  , markupToken
   , markupTokenOf
-  , markupTokenOf'
   , or
   , neitherNor
   , conjunctiveAnd
@@ -22,7 +22,7 @@ module SAD.ForTheL.Reports
   , addPretypingReport
   , addMacroReport
   , addBlockReports
-  , topsectionHeader
+  , sectionHeader
   , lowlevelHeader
   , proofStart
   , byAnnotation
@@ -41,7 +41,6 @@ import SAD.ForTheL.Base
 
 import SAD.Data.Text.Block (Block)
 import qualified SAD.Data.Text.Block as Block
-import SAD.Data.Text.Decl (Decl)
 import SAD.Data.Text.Decl
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
@@ -63,16 +62,19 @@ addReports rep = modify (\st -> case pide st of
 
 -- markup tokens while parsing
 
-markupToken :: Markup.T -> Text -> FTL ()
-markupToken markup s = do
-  pos <- getPos; token' s; addReports $ const [(pos, markup)]
+-- | Adds markup to a parser.
+addMarkup :: Markup.T -> FTL a -> FTL a
+addMarkup markup parser = do
+  pos <- getPos
+  content <- parser
+  addReports $ const [(pos, markup)]
+  return content
 
-markupTokenOf' :: Markup.T -> FTL () -> FTL ()
-markupTokenOf' markup parser = do
-  pos <- getPos; parser; addReports $ const [(pos, markup)]
+markupToken :: Markup.T -> Text -> FTL ()
+markupToken markup = addMarkup markup . token'
 
 markupTokenOf :: Markup.T -> [Text] -> FTL ()
-markupTokenOf markup ss = markupTokenOf' markup $ tokenOf' ss
+markupTokenOf markup = addMarkup markup . tokenOf'
 
 
 -- formula and variable reports
@@ -143,8 +145,8 @@ synonymLet :: Markup.T
 synonymLet = Markup.keyword3
 macroLet :: Markup.T
 macroLet = Markup.keyword3
-topsectionHeader :: Markup.T
-topsectionHeader = Markup.keyword1
+sectionHeader :: Markup.T
+sectionHeader = Markup.keyword1
 lowlevelHeader :: Markup.T
 lowlevelHeader = Markup.keyword2
 proofStart :: Markup.T

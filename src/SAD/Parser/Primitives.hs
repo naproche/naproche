@@ -22,6 +22,8 @@ module SAD.Parser.Primitives
   , tokenPos'
   , tokenOf
   , tokenOf'
+  , getTokenOf
+  , getTokenOf'
   ) where
 
 import SAD.Parser.Base
@@ -140,12 +142,20 @@ tokenPos' s = do
 
 -- | @tokenOf toks@ succeeds iff the current token is an element of @toks@. Consumes the token.
 tokenOf :: [Text] -> Parser st ()
-tokenOf = void . satisfy . flip elem
+tokenOf = void . getTokenOf
 
 -- | Case-insensitive version of @tokenOf@. All arguments are assumed to be in folded case.
 {-# INLINE tokenOf' #-}
 tokenOf' :: [Text] -> Parser st ()
-tokenOf' toks = void $ satisfy $ \tok -> Text.toCaseFold tok `elem` toks
+tokenOf' = void . getTokenOf'
+
+-- | @tokenOf toks@ succeeds iff the current token is an element of @toks@. Returns the parsed token.
+getTokenOf :: [Text] -> Parser st Text
+getTokenOf = satisfy . flip elem
+
+-- | Case-insensitive version of @getTokenOf@. All arguments are assumed to be in folded case.
+getTokenOf' :: [Text] -> Parser st Text
+getTokenOf' toks = satisfy $ \tok -> Text.toCaseFold tok `elem` toks
 
 -- | Check if the next tokens are the (case-sensitive) characters
 -- of the input string. Useful for parsing symbols.

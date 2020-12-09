@@ -30,6 +30,7 @@ import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Parser.Token
 import SAD.Parser.Primitives
+import SAD.Parser.Tex
 
 import SAD.Data.Instr
 import SAD.Data.Text.Block (Block(Block), ProofText(..), Section(..))
@@ -42,23 +43,35 @@ import SAD.Data.Text.Decl
 -- | The old .ftl file parser.
 forthel :: FTL [ProofText]
 forthel = repeatM $
-  continue <$> (topsection <|> introduceMacro </> pretypeVariable)
+  continue <$> (
+    addSectionHeader Signature signatureTags signature'
+    <|> addSectionHeader Definition definitionTags definition
+    <|> addSectionHeader Axiom axiomTags axiom
+    <|> addSectionHeader Theorem theoremTags theorem
+    <|> introduceMacro
+    </> pretypeVariable)
   <|> bracketExpression
   <|> (eof >> return abort)
 
 -- | Parses tex files.
 texForthel :: FTL [ProofText]
 texForthel = repeatM $
-  Continue <$> repeatInTexEnv' (token "forthel") forthelStep
+  Continue . fst <$> repeatInTexEnv (token "forthel") noEnvLabel forthelStep
   <|> (eof >> return abort)
   <|> consumeToken
   where
     consumeToken = anyToken >> return (Continue mempty)
 
--- | Parses one forthel construct with tex syntax for topsection.
+-- | Parses one forthel construct with tex syntax for forthel sections.
 forthelStep :: FTL (StepStatus [ProofText])
 forthelStep = 
-  (continue <$> (texTopsection <|> introduceMacro </> pretypeVariable))
+  continue <$> (
+    makeSectionTexEnv Signature signatureTags signature'
+    <|> makeSectionTexEnv Definition definitionTags definition
+    <|> makeSectionTexEnv Axiom axiomTags axiom
+    <|> makeSectionTexEnv Theorem theoremTags theorem
+    <|> introduceMacro
+    </> pretypeVariable)
   <|> bracketExpression
 
 bracketExpression :: FTL (StepStatus [ProofText])
@@ -81,114 +94,60 @@ procParseInstruction text = case text of
       | null syms || null (tail syms) = return ()
       | otherwise = modify $ \st -> st {strSyms = syms : strSyms st}
 
-topsection :: FTL ProofText
-topsection = addHeader (header signatureTags) signature'
-  <|> addHeader (header definitionTags) definition
-  <|> addHeader (header axiomTags) axiom
-  <|> addHeader (header theoremTags) theorem
-
-texTopsection :: FTL ProofText
-texTopsection = texEnv (labelParser signatureTags) optionalEnvLabel (giveTokens signature')
-  <|> texEnv (labelParser definitionTags) optionalEnvLabel (giveTokens definition)
-  <|> texEnv (labelParser axiomTags) optionalEnvLabel (giveTokens axiom)
-  <|> texEnv (labelParser theoremTags) optionalEnvLabel (giveTokens theorem)
-  where
-    labelParser = markupTokenOf' topsectionHeader . tokenOf
-    -- The topsection parsers have a parameter that tells them which tokens to specify when creating
-    -- a block. In the case of tex environments, we will just read the tokens before applying the parser.
-    giveTokens parser label = do
-      inp <- getInput
-      tokens <- getTokens inp
-      parser tokens label
-
-
--- Helpers for constructing environments and adding headers.
-
--- | @texEnv envType labelParser parseContent@ parses a tex environment. @envType@ parses
--- then environment type specified in the environment declaration. @labelParser@ parses a
--- label declaration such as '[label]'. @content@ parses the insides of the environment,
--- while optionally being able to use the label information.
-texEnv :: FTL () -> LabelParser label -> (label -> FTL content) -> FTL content
-texEnv envType labelParser content = do
-  -- We use 'try' to backtrack if parsing the environment declaration fails.
-  try $ texBegin envType
-  envLabel <- labelParser
-  after (content envLabel) (texEnd envType)
-
--- | Repeats a parser until the end parser succeeds or the content parser aborts.
-untilEnd :: Monoid a => FTL (StepStatus a) -> FTL () -> FTL a
-untilEnd content end = repeatM $ (end >> return (Abort mempty)) <|> content
-
--- | Parses tex environment while iterating a parser inside it until '\end{...}' is parsed or abort instruction
--- is passed.
-repeatInTexEnv :: Monoid content => FTL () -> LabelParser label -> (label -> FTL (StepStatus content)) -> FTL content
-repeatInTexEnv envType labelParser content = do
-  try $ texBegin envType
-  envLabel <- labelParser
-  untilEnd (content envLabel) (texEnd envType)
-
--- | Version of @repeatInTexEnv@ without label data.
-repeatInTexEnv' :: Monoid content => FTL () -> FTL (StepStatus content) -> FTL content
-repeatInTexEnv' envType = repeatInTexEnv envType noEnvLabel . const
-
-
--- | @addHeader header parseContent@ constructs a forthel topsection construct in the old
--- .ftl file format. @header@ parses the header and @parseContent@ parses the main body of
--- the construct. @parseContent@ is parameterized by a whole set of tokens included in the
--- construct(including the header) and moreover by an optional label.
-addHeader :: FTL (Maybe Text) -> ([Token] -> Maybe Text -> FTL ProofText) -> FTL ProofText
-addHeader header content = do
+-- | Creates a full forthel section parser with its header included.
+addSectionHeader :: Section -> [Text] -> FTL [ProofText] -> FTL ProofText
+addSectionHeader kind titles content = do
   inp <- getInput
-  label <- header
+  label <- header $ markupTokenOf sectionHeader titles
+  content' <- content
   tokens <- getTokens inp
-  content tokens label
+  addMetadata kind tokens label content'
+  where
+    header :: FTL () -> FTL (Maybe Text)
+    header title = finish $ title >> optLL1 Nothing (Just <$> topIdentifier)
 
+-- | Creates a full forthel section parser for parsing tex envs.
+makeSectionTexEnv :: Section -> [Text] -> FTL [ProofText] -> FTL ProofText
+makeSectionTexEnv kind envType content = do
+  inp <- getInput
+  (content', label) <- texEnv (addMarkup sectionHeader $ getTokenOf envType) optionalEnvLabel content
+  tokens <- getTokens inp
+  addMetadata kind tokens label content'
 
--- generic topsection parsing
-
-genericTopsection :: Section -> FTL [ProofText] -> [Token] -> Maybe Text -> FTL ProofText
-genericTopsection kind content tokens header = do
-  bs <- body
+-- | This is the last step when creating a proof text from a topsection. We take some metadata
+-- and use it to wrap a lists of `ProofTexts`s into a `ProofText`.
+addMetadata :: Section -> [Token] -> Maybe Text -> [ProofText] -> FTL ProofText
+addMetadata kind tokens header content = do
   -- For some weird reason, if no label is present we must represent it as the empty string.
-  let block = Block.makeBlock (mkVar (VarHole "")) bs kind (fromMaybe "" header) [] tokens
+  let block = Block.makeBlock (mkVar (VarHole "")) content kind (fromMaybe "" header) [] tokens
   addBlockReports block
   return $ ProofTextBlock block
+
+
+-- Core parsers for the bodies of the forthel sections.
+
+signature' :: FTL [ProofText]
+signature' = addAssumptions $ pretype $ pretypeSentence Posit sigExtend defVars noLink
+
+definition :: FTL [ProofText]
+definition = addAssumptions $ pretype $ pretypeSentence Posit defExtend defVars noLink
+
+axiom :: FTL [ProofText]
+axiom = addAssumptions $ pretype $ pretypeSentence Posit (beginAff >> statement) affirmVars noLink
+
+theorem :: FTL [ProofText]
+theorem = addAssumptions $ topProof $ pretypeSentence Affirmation (beginAff >> statement) affirmVars link
+
+-- | Adds parser for parsing any number of assumtions before the passed content parser.
+addAssumptions :: FTL [ProofText] -> FTL [ProofText]
+addAssumptions content = body
   where
     body = assumption <|> content
     assumption = topAssume `pretypeBefore` body
     topAssume = pretypeSentence Assumption (beginAsm >> statement) assumeVars noLink
 
-
--- generic header parser
-
-header :: [Text] -> FTL (Maybe Text)
-header titles = finish $ markupTokenOf topsectionHeader titles >> optLL1 Nothing (Just <$> topIdentifier)
-
-
--- Topsections. These are all parameterized by some metadata that gets embedded
--- into the block.
-
-signature' :: [Token] -> Maybe Text -> FTL ProofText
-signature' =
-  let sigExt = pretype $ pretypeSentence Posit sigExtend defVars noLink
-  in  genericTopsection Signature sigExt
-
-definition :: [Token] -> Maybe Text -> FTL ProofText
-definition =
-  let define = pretype $ pretypeSentence Posit defExtend defVars noLink
-  in  genericTopsection Definition define
-
-axiom :: [Token] -> Maybe Text -> FTL ProofText
-axiom =
-  let posit = pretype $
-        pretypeSentence Posit (beginAff >> statement) affirmVars noLink
-  in  genericTopsection Axiom posit
-
-theorem :: [Token] -> Maybe Text -> FTL ProofText
-theorem =
-  let topAffirm = pretypeSentence Affirmation (beginAff >> statement) affirmVars link
-  in  genericTopsection Theorem (topProof topAffirm)
-
+-- These are given in text format and not as a parser, because we want to later decide
+-- whether they are parsed in a case-sensitive manner.
 signatureTags, definitionTags, axiomTags, theoremTags :: [Text]
 
 signatureTags = ["signature"]
