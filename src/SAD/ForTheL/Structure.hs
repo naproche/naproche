@@ -7,7 +7,7 @@ Syntax of ForTheL sections.
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.ForTheL.Structure (forthel, texForthel) where
+module SAD.ForTheL.Structure (forthel) where
 
 import Data.List
 import Data.Maybe
@@ -40,21 +40,9 @@ import qualified SAD.Data.Tag as Tag
 import SAD.Data.Text.Decl
 
 
--- | The old .ftl file parser.
-forthel :: FTL [ProofText]
-forthel = repeatUntil (pure <$> (
-    addSectionHeader Signature signatureTags signature'
-    <|> addSectionHeader Definition definitionTags definition
-    <|> addSectionHeader Axiom axiomTags axiom
-    <|> addSectionHeader Theorem theoremTags theorem
-    <|> (bracketExpression >>= addSynonym)
-    <|> try introduceMacro
-    <|> pretypeVariable))
-  (try (bracketExpression >>= exitInstruction) <|> (eof >> return []))
-
 -- | Parses tex files.
-texForthel :: FTL [ProofText]
-texForthel = repeatUntil (forthelEnv <|> consumeToken) (eof >> return [])
+forthel :: FTL [ProofText]
+forthel = repeatUntil (forthelEnv <|> consumeToken) (eof >> return [])
     where
       consumeToken = anyToken >> return []
 
@@ -70,7 +58,7 @@ forthelStep =
     makeSectionTexEnv Signature signatureTags signature'
     <|> makeSectionTexEnv Definition definitionTags definition
     <|> makeSectionTexEnv Axiom axiomTags axiom
-    <|> makeSectionTexEnv Theorem theoremTags theorem
+    <|> addMetadata Theorem texTheorem
     <|> (bracketExpression >>= addSynonym)
     <|> try introduceMacro
     <|> pretypeVariable
@@ -102,32 +90,21 @@ exitInstruction text = case text of
   _ -> failing (return ()) >> return [] -- Not sure how to properly throw an error.
 
 
--- | Creates a full forthel section parser with its header included.
-addSectionHeader :: Section -> [Text] -> FTL [ProofText] -> FTL ProofText
-addSectionHeader kind titles content = do
-  inp <- getInput
-  label <- header $ markupTokenOf sectionHeader titles
-  content' <- content
-  tokens <- getTokens inp
-  addMetadata kind tokens label content'
-  where
-    header :: FTL () -> FTL (Maybe Text)
-    header title = finish $ title >> optLL1 Nothing (Just <$> topIdentifier)
-
 -- | Creates a full forthel section parser for parsing tex envs.
 makeSectionTexEnv :: Section -> [Text] -> FTL [ProofText] -> FTL ProofText
-makeSectionTexEnv kind envType content = do
-  inp <- getInput
-  (content', label) <- texEnv (addMarkup sectionHeader $ getTokenOf envType) optionalEnvLabel content
-  tokens <- getTokens inp
-  addMetadata kind tokens label content'
+makeSectionTexEnv kind envType content =
+  addMetadata kind $ texEnv (addMarkup sectionHeader $ getTokenOf envType) optionalEnvLabel content
 
 -- | This is the last step when creating a proof text from a topsection. We take some metadata
--- and use it to wrap a lists of `ProofTexts`s into a `ProofText`.
-addMetadata :: Section -> [Token] -> Maybe Text -> [ProofText] -> FTL ProofText
-addMetadata kind tokens header content = do
+-- and moreover read some metadata from the state and use it to make a `ProofText` out
+-- of a parser that returns @ProofText@s and optional label information.
+addMetadata :: Section -> FTL ([ProofText], Maybe Text) -> FTL ProofText
+addMetadata kind content = do
+  inp <- getInput
+  (content', label) <- content
+  tokens <- getTokens inp
   -- For some weird reason, if no label is present we must represent it as the empty string.
-  let block = Block.makeBlock (mkVar (VarHole "")) content kind (fromMaybe "" header) [] tokens
+  let block = Block.makeBlock (mkVar (VarHole "")) content' kind (fromMaybe "" label) [] tokens
   addBlockReports block
   return $ ProofTextBlock block
 
@@ -143,12 +120,16 @@ definition = addAssumptions $ pretype $ pretypeSentence Posit defExtend defVars 
 axiom :: FTL [ProofText]
 axiom = addAssumptions $ pretype $ pretypeSentence Posit (beginAff >> statement) affirmVars noLink
 
-theorem :: FTL [ProofText]
-theorem = addAssumptions $ topProof $ pretypeSentence Affirmation (beginAff >> statement) affirmVars link
-
--- | A theorem statement consists of a list of @Block@s representing assumptions and
--- moreover a block that is the actual statement of the theorem.
--- theoremStatement :: FTL ([Block], Block)
+-- | Parsing tex theorems has the additional difficulty over other environments, that it could consist of
+-- two tex envs, a theorem env and a proof env.
+texTheorem :: FTL ([ProofText], Maybe Text)
+texTheorem = do
+  envType <- try . texBegin . addMarkup sectionHeader $ getTokenOf theoremTags
+  label <- optionalEnvLabel
+  text <- addAssumptions $ topProof $
+            pretypeSentence Affirmation (beginAff >> statement) affirmVars link <* texEnd (token envType)
+  return (text, label)
+  
 
 -- | Adds parser for parsing any number of assumptions before the passed content parser.
 addAssumptions :: FTL [ProofText] -> FTL [ProofText]
@@ -232,12 +213,15 @@ pret dvs tvs bl = do
 
 pretypeBefore :: FTL Block -> FTL [ProofText] -> FTL [ProofText]
 pretypeBefore blp p = do
-  bl <- blp
-  typeBlock <- pretyping bl
+  bl <- blp -- Runs ASSUMPTION BLOCK!!!
+  typeBlock <- pretyping bl -- (not always) used block containing variable declarations for the assumption.
   let pretyped = Block.declaredNames typeBlock
-  pResult <- addDecl (pretyped <> Block.declaredNames bl) $ fmap (ProofTextBlock bl : ) p
+  pResult <- addDecl (pretyped <> Block.declaredNames bl) $ fmap (ProofTextBlock bl : ) p -- runs p, in our case CONTENT!!
   return $ if null pretyped then pResult else ProofTextBlock typeBlock : pResult
 
+-- | @pretype p@ prepends a @ProofText@ to @p@ that explicitly declares the pretypings and the variable
+-- declarations contained in the parser state before running @p@. Moreover the this pretyping information
+-- is also added as a @ProofText@.
 pretype :: FTL Block -> FTL [ProofText]
 pretype p = p `pretypeBefore` return []
 

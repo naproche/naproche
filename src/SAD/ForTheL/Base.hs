@@ -93,9 +93,12 @@ getExpr e p = gets e >>=  foldr ((-|-) . try . p ) mzero
 getDecl :: FTL (Set VariableName)
 getDecl = gets varDecl
 
+-- | @addDecl vs p@ temporarily modifies the variable declarations to include @vs@ while running
+-- the parser @p@.
 addDecl :: Set VariableName -> FTL a -> FTL a
 addDecl vs p = do
-  dcl <- gets varDecl; modify adv;
+  dcl <- gets varDecl
+  modify adv
   after p $ modify $ sbv dcl
   where
     adv s = s { varDecl = vs <> varDecl s }

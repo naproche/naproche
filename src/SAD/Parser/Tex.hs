@@ -23,7 +23,7 @@ texEnv envType labelParser content = do
   -- We use 'try' to backtrack if parsing the environment declaration fails.
   envType' <- try $ texBegin envType
   envLabel <- labelParser
-  (, envLabel) <$> after content (texEnd $ token envType')
+  (, envLabel) <$> (content <* texEnd (token envType'))
 
 -- | Parses tex environment while iterating a parser inside it until '\end{...}' is parsed or the end parser succeeds.
 -- is passed.
