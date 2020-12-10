@@ -4,6 +4,7 @@ Authors: Steffen Frerix (2017 - 2018)
 Parser combinators.
 -}
 
+{-# LANGUAGE TupleSections #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Parser.Combinators where
@@ -140,26 +141,15 @@ finish p = after p dot
 
 -- Iterating parser usage
 
--- | Tells @repeatM@ whether to continue iterating. The lists in
--- @Abort ls@ and @Continue ls@ will get aggregated into a big list.
-data StepStatus a = Abort a | Continue a
+-- | @repeatUntil step end@ repeats a monadic action @step@ until @end@ succeeds.
+repeatUntil' :: (MonadPlus m, Monoid a) => m a -> m b -> m (a, b)
+repeatUntil' step end =
+  fmap (mempty,) end
+  <|> liftA2 (\next (acc,last) -> (next <> acc, last)) step (repeatUntil' step end)
 
-abort :: Monoid a => StepStatus a
-abort = Abort mempty
-
--- | When the monoid happens to be a list, we often want to automatically make singletons.
-continue :: a -> StepStatus [a]
-continue x = Continue [x]
-
--- | Repeat a monadic action until @Abort@ is returned, aggregating results. This makes it
--- possible to write composable code that only deals with one recursion step at the time.
-repeatM :: (Monad m, Monoid a) => m (StepStatus a) -> m a
-repeatM step = do
-  result <- step
-  case result of
-    Abort l -> return l
-    Continue l -> (l <>) <$> repeatM step
-
+-- | Like @repeatUntil'@, but aggregates the results with the monoid operation.
+repeatUntil :: (MonadPlus m, Monoid a) => m a -> m a -> m a
+repeatUntil step = fmap (uncurry (<>)) . repeatUntil' step
 
 -- Control ambiguity
 

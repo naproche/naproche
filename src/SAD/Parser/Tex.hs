@@ -1,6 +1,6 @@
-{-# LANGUAGE TupleSections #-}
 -- This module contains primitives for tex parsing.
 
+{-# LANGUAGE TupleSections #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Parser.Tex where
@@ -18,24 +18,20 @@ import SAD.Parser.Combinators
 -- @envType@ parses the environment type specified in the environment declaration.
 -- @labelParser@ parses a label declaration such as '[label]'.
 -- @content@ parses the insides of the environment.
-texEnv :: FTL Text -> LabelOptions label -> FTL content -> FTL (content, label)
+texEnv :: FTL Text -> LabelOptions b -> FTL a -> FTL (a, b)
 texEnv envType labelParser content = do
   -- We use 'try' to backtrack if parsing the environment declaration fails.
   envType' <- try $ texBegin envType
   envLabel <- labelParser
   (, envLabel) <$> after content (texEnd $ token envType')
 
--- | Parses tex environment while iterating a parser inside it until '\end{...}' is parsed or abort instruction
+-- | Parses tex environment while iterating a parser inside it until '\end{...}' is parsed or the end parser succeeds.
 -- is passed.
-repeatInTexEnv :: Monoid content => FTL () -> LabelOptions label -> FTL (StepStatus content) -> FTL (content, label)
-repeatInTexEnv envType labelParser content = do
-  try $ texBegin envType
+repeatInTexEnv :: Monoid a => FTL Text -> LabelOptions b -> FTL a -> FTL a -> FTL (a, b)
+repeatInTexEnv envType labelParser content end = do
+  envType' <- try $ texBegin envType
   envLabel <- labelParser
-  (, envLabel) <$> untilEnd content (texEnd envType)
-  where
-    -- Repeats a parser until the end parser succeeds or the content parser aborts.
-    untilEnd :: Monoid a => FTL (StepStatus a) -> FTL () -> FTL a
-    untilEnd content end = repeatM $ (end >> return (Abort mempty)) <|> content
+  (, envLabel) <$> repeatUntil content (texEnd (token envType') >> return mempty <|> end)
 
 
 -- | Parses '\begin{env}'. Takes a parser for parsing 'env'.

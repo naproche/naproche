@@ -42,57 +42,65 @@ import SAD.Data.Text.Decl
 
 -- | The old .ftl file parser.
 forthel :: FTL [ProofText]
-forthel = repeatM $
-  continue <$> (
+forthel = repeatUntil (pure <$> (
     addSectionHeader Signature signatureTags signature'
     <|> addSectionHeader Definition definitionTags definition
     <|> addSectionHeader Axiom axiomTags axiom
     <|> addSectionHeader Theorem theoremTags theorem
-    <|> introduceMacro
-    </> pretypeVariable)
-  <|> bracketExpression
-  <|> (eof >> return abort)
+    <|> (bracketExpression >>= addSynonym)
+    <|> try introduceMacro
+    <|> pretypeVariable))
+  (try (bracketExpression >>= exitInstruction) <|> (eof >> return []))
 
 -- | Parses tex files.
 texForthel :: FTL [ProofText]
-texForthel = repeatM $
-  Continue . fst <$> repeatInTexEnv (token "forthel") noEnvLabel forthelStep
-  <|> (eof >> return abort)
-  <|> consumeToken
-  where
-    consumeToken = anyToken >> return (Continue mempty)
+texForthel = repeatUntil (forthelEnv <|> consumeToken) (eof >> return [])
+    where
+      consumeToken = anyToken >> return []
+
+-- | Parses one latex environment of type forthel.
+forthelEnv :: FTL [ProofText]
+forthelEnv = fst <$> repeatInTexEnv
+      (getTokenOf ["forthel"]) noEnvLabel (pure <$> forthelStep)
+      (try (bracketExpression >>= exitInstruction))
 
 -- | Parses one forthel construct with tex syntax for forthel sections.
-forthelStep :: FTL (StepStatus [ProofText])
+forthelStep :: FTL ProofText
 forthelStep = 
-  continue <$> (
     makeSectionTexEnv Signature signatureTags signature'
     <|> makeSectionTexEnv Definition definitionTags definition
     <|> makeSectionTexEnv Axiom axiomTags axiom
     <|> makeSectionTexEnv Theorem theoremTags theorem
-    <|> introduceMacro
-    </> pretypeVariable)
-  <|> bracketExpression
+    <|> (bracketExpression >>= addSynonym)
+    <|> try introduceMacro
+    <|> pretypeVariable
 
-bracketExpression :: FTL (StepStatus [ProofText])
-bracketExpression = topInstruction >>= procParseInstruction
-  where
-    topInstruction =
-      fmap (uncurry ProofTextDrop) instrDrop </>
-      fmap (uncurry ProofTextInstr) (instr </> instrExit </> instrRead)
 
-procParseInstruction :: ProofText -> FTL (StepStatus [ProofText])
-procParseInstruction text = case text of
-  ProofTextInstr _ (GetArgument Read _) -> return (Abort [text])
-  ProofTextInstr _ (Command EXIT) -> return abort
-  ProofTextInstr _ (Command QUIT) -> return abort
-  ProofTextInstr _ (GetArguments Synonym syms) -> addSynonym syms >> return (continue text)
-  _ -> return (continue text)
+-- | Parses a bracket expression without evaluating it.
+bracketExpression :: FTL ProofText
+bracketExpression = 
+  fmap (uncurry ProofTextDrop) instrDrop
+  </> fmap (uncurry ProofTextInstr) (instr </> instrExit </> instrRead)
+
+-- | If ProofText has synonym instruction, it gets added.
+addSynonym :: ProofText -> FTL ProofText
+addSynonym text = case text of
+  ProofTextInstr _ (GetArguments Synonym syms) -> addSynonym' syms >> return text
+  _ -> return text
   where
-    addSynonym :: [Text] -> FTL ()
-    addSynonym syms
+    addSynonym' :: [Text] -> FTL ()
+    addSynonym' syms
       | null syms || null (tail syms) = return ()
       | otherwise = modify $ \st -> st {strSyms = syms : strSyms st}
+
+-- | Succeeds if the ProofText consists of an exit instruction.
+exitInstruction :: ProofText -> FTL [ProofText]
+exitInstruction text = case text of
+  ProofTextInstr _ (GetArgument Read _) -> return [text]
+  ProofTextInstr _ (Command EXIT) -> return []
+  ProofTextInstr _ (Command QUIT) -> return []
+  _ -> failing (return ()) >> return [] -- Not sure how to properly throw an error.
+
 
 -- | Creates a full forthel section parser with its header included.
 addSectionHeader :: Section -> [Text] -> FTL [ProofText] -> FTL ProofText
@@ -138,7 +146,11 @@ axiom = addAssumptions $ pretype $ pretypeSentence Posit (beginAff >> statement)
 theorem :: FTL [ProofText]
 theorem = addAssumptions $ topProof $ pretypeSentence Affirmation (beginAff >> statement) affirmVars link
 
--- | Adds parser for parsing any number of assumtions before the passed content parser.
+-- | A theorem statement consists of a list of @Block@s representing assumptions and
+-- moreover a block that is the actual statement of the theorem.
+-- theoremStatement :: FTL ([Block], Block)
+
+-- | Adds parser for parsing any number of assumptions before the passed content parser.
 addAssumptions :: FTL [ProofText] -> FTL [ProofText]
 addAssumptions content = body
   where
@@ -194,13 +206,16 @@ eqLink = optLL1 [] $ parenthesised $ token' "by" >> identifiers
 
 updateDeclbefore :: FTL ProofText -> FTL [ProofText] -> FTL [ProofText]
 updateDeclbefore blp p = do
-  txt <- blp; case txt of
+  txt <- blp
+  case txt of
     ProofTextBlock bl -> addDecl (Block.declaredNames bl) $ fmap (txt : ) p
     _ -> fmap (txt :) p
 
 pretyping :: Block -> FTL Block
 pretyping bl = do
-  dvs <- getDecl; tvs <- getPretyped; pret dvs tvs bl
+  dvs <- getDecl
+  tvs <- getPretyped
+  pret dvs tvs bl
 
 pret :: Set VariableName -> [TVar] -> Block -> FTL Block
 pret dvs tvs bl = do
@@ -217,8 +232,10 @@ pret dvs tvs bl = do
 
 pretypeBefore :: FTL Block -> FTL [ProofText] -> FTL [ProofText]
 pretypeBefore blp p = do
-  bl <- blp; typeBlock <- pretyping bl; let pretyped = Block.declaredNames typeBlock
-  pResult   <- addDecl (pretyped <> Block.declaredNames bl) $ fmap (ProofTextBlock bl : ) p
+  bl <- blp
+  typeBlock <- pretyping bl
+  let pretyped = Block.declaredNames typeBlock
+  pResult <- addDecl (pretyped <> Block.declaredNames bl) $ fmap (ProofTextBlock bl : ) p
   return $ if null pretyped then pResult else ProofTextBlock typeBlock : pResult
 
 pretype :: FTL Block -> FTL [ProofText]
@@ -266,7 +283,8 @@ pretypeSentence :: Section
                    -> FTL [Text]
                    -> FTL Block
 pretypeSentence kind p wfVars mbLink = narrow $ do
-  dvs <- getDecl; tvr <- fmap (Set.unions . map fst) getPretyped
+  dvs <- getDecl
+  tvr <- fmap (Set.unions . map fst) getPretyped
   bl <- wellFormedCheck (wf dvs tvr) $ statementBlock kind p mbLink
   newDecl <- bindings dvs $ Block.formula bl
   let nbl = if Block.canDeclare kind then bl {Block.declaredVariables = newDecl} else bl
@@ -372,7 +390,9 @@ indThesis fr pre post = do
 
 proof :: FTL Block -> FTL Block
 proof p = do
-  pre <- preMethod; bl <- p; post <- postMethod;
+  pre <- preMethod
+  bl <- p
+  post <- postMethod
   nf <- indThesis (Block.formula bl) pre post
   addBody pre post $ bl {Block.formula = nf}
 
@@ -380,7 +400,10 @@ proof p = do
 
 topProof :: FTL Block -> FTL [ProofText]
 topProof p = do
-  pre <- preMethod; bl <- p; post <- postMethod; typeBlock <- pretyping bl;
+  pre <- preMethod
+  bl <- p
+  post <- postMethod
+  typeBlock <- pretyping bl
   let pretyped = Block.declaredNames typeBlock
   nbl <- addDecl pretyped $ fmap ProofTextBlock $ do
     nf <- indThesis (Block.formula bl) pre post
