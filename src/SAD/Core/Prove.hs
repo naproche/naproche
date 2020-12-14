@@ -32,7 +32,7 @@ import SAD.Data.Text.Context (Context(..))
 import SAD.Data.Formula (Formula(..))
 import SAD.Core.Base
 import SAD.Core.Task (Task(..), generateTasks)
-import SAD.Core.Transform
+import SAD.Core.Typed
 import SAD.Core.Pretty
 
 import qualified SAD.Core.Message as Message

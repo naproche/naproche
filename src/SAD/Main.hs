@@ -197,6 +197,8 @@ options = [
     "translate input text and exit",
   GetOpt.Option "" ["translate"] (GetOpt.ReqArg (SetFlag Translation . parseConsent) "{on|off}")
     "print first-order translation of sentences",
+  GetOpt.Option "" ["new-parser"] (GetOpt.ReqArg (SetFlag NewParser . parseConsent) "{on|off}")
+    "use latex parsing",
   GetOpt.Option "" ["server"] (GetOpt.NoArg (SetFlag Server True))
     "run in server mode",
   GetOpt.Option ""  ["library"] (GetOpt.ReqArg (GetArgument Library . Text.pack) "DIR")

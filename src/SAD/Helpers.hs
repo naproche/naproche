@@ -1,5 +1,7 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module SAD.Helpers
-  ( trimLine
+  ( trimLine, inParens
   , notNull
   , nubOrd, nubOrdBy, nubOrdOn
   ) where
@@ -8,6 +10,10 @@ import Control.Arrow
 import Data.Function
 import Data.Text (Text)
 import qualified Data.Text as Text
+
+inParens :: [Text] -> Text
+inParens [] = ""
+inParens xs = "(" <> Text.intercalate ", " xs <> ")"
 
 -- | Remove a trailing line break from a string.
 trimLine :: Text -> Text

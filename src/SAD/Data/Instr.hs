@@ -92,6 +92,7 @@ data Flag =
   | Unfoldlow      --  unfold the whole low level context (yes)
   | Unfoldlowsf    --  unfold set and function conditions in low level (no)
   | Translation    --  print first-order translation of sentences
+  | NewParser
   deriving (Eq, Ord, Show)
 
 data Argument =
@@ -176,7 +177,8 @@ keywordsFlag =
   (Unfoldsf, "unfoldsf"),
   (Unfoldlow, "unfoldlow"),
   (Unfoldlowsf, "unfoldlowsf"),
-  (Translation, "translation")]
+  (Translation, "translation"),
+  (NewParser, "new-parser")]
 
 keywordsArgument :: [(Argument, Text)]
 keywordsArgument =

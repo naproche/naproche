@@ -89,8 +89,6 @@ instance Monad (Parser st) where
     let pok = tryParses f ok consumedFail emptyFail
     in  runParser p st pok consumedFail emptyFail
 
-  fail = Fail.fail
-
 instance Fail.MonadFail (Parser st) where
   fail s = Parser \st _ _ emptyFail ->
     emptyFail $ newErrorMessage (newMessage (Text.pack s)) (stPosition st)

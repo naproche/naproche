@@ -6,6 +6,8 @@ import Debug.Trace
 import Data.Text (Text)
 import qualified Data.Text as Text
 import SAD.Core.Pretty
+import Data.Set (Set)
+import qualified Data.Set as Set
 
 data TermName 
   = TermName Text
@@ -22,6 +24,16 @@ data TermName
   | TermThesis
   | TermEmpty
   deriving (Eq, Ord, Show, Read)
+
+newName :: TermName -> Maybe (Set TermName) -> TermName
+newName n Nothing = n
+newName n (Just taken) =
+  let (c, n') = case n of
+        (TermName t) -> (TermName, t)
+        (TermSymbolic t) -> (TermSymbolic, t)
+        (TermNotion t) -> (TermNotion, t)
+        _ -> error "Not implemented"
+  in head $ filter (`Set.notMember` taken) $ map (\x -> c $ n' <> Text.pack (show x)) [2::Int ..]
 
 termFunction :: TermName
 termFunction = TermNotion "Function"

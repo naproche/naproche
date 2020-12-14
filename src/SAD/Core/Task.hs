@@ -9,9 +9,8 @@ module SAD.Core.Task where
 import Data.List
 import Data.Functor.Identity
 import Data.Text (Text)
-import qualified Data.Text as Text
 
-import SAD.Core.Transform
+import SAD.Core.Typed
 import SAD.Data.Terms
 
 data Hypothesis
@@ -60,4 +59,4 @@ generateTasks = concat . snd . mapAccumL go []
       Axiom t -> ((Given n t):hypo, [])
       Claim t hints prf -> ((Given n t):hypo, 
         generateFromProof (Task hypo t hints n False) prf)
-      Coercion _ _ -> (hypo, [])
+      Coercion n f t -> ((Typing n (Pred [Signature f] (InType (Signature t)))):hypo, [])

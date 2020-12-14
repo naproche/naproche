@@ -14,8 +14,9 @@ import Data.Char
 import SAD.Data.Terms
 import SAD.Data.VarName
 import SAD.Core.Pretty
-import SAD.Core.Transform
+import SAD.Core.Typed
 import SAD.Core.Task
+import SAD.Helpers (inParens)
 
 class TPTP a where
   tptp :: a -> Text
@@ -32,9 +33,9 @@ instance TPTP VarName where
 instance TPTP InType where
   tptp = \case
     Object -> "$i"
-    Int -> "$int"
-    Rat -> "$rat"
-    Real -> "$real"
+    Signature (TermNotion "Int") -> "$int"
+    Signature (TermNotion "Rat") -> "$rat"
+    Signature (TermNotion "Real") -> "$real"
     Signature t -> tptp t
 
 instance TPTP OutType where

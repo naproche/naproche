@@ -16,9 +16,26 @@ of the variables `a,b` during definition and check that they match the types of 
 Here, we allow *coercions* that were defined before like `Every natural number is a rational number`.
 Furthermore, every variable can be coerced to type `object`. 
 While you can completely eliminate type checking by using objects
-throughout it helps to be specific since this reduces the search space for the ATP.
+throughout, it helps to be specific since this reduces the search space for the ATP.
 Advanced coersions that depend on several conditions to hold (e.g. `Every integer that is non-negative is a natural number`)
 can not be inferred automatically (though this may change in the future).
+
+It is also possible to define functions with the same name several times, but this can quickly
+lead to ambiguities: For two functions `X : a -> b -> d` and `X : c -> a -> d` and coercions
+`a -> c` and `a -> b` it is not possible to find the correct coercions. Thus we require that
+whenever for two tuples of coercions `c_1, c_2` such that `type(X \circ c_1) = type(X \circ c_2)` we have
+that either `c_1` xor `c_2` consists only of identity functions (that is, one function is strictly
+more general than the other and they don't have the same type).
+
+## Set Theory
+
+Naproche uses von Neumann-Bernays-Gödel set theory, which you can access by including `nbg.ftl`.
+The axiom of class comprehension is built-in: Any use of the syntax `z = { x | f(x) }` will be 
+translated as `∀x in(x, z) iff f(x)`.
+Crucially this is also used for induction in the new version. While Naproche had a primitve for
+induction built-in for a long time, this version instead champions an approach based on classes:
+For example, the induction principle over the natural numbers looks like this:
+`∀ [c : class] 0 \in c and (∀ [n : nat] n \in c implies (n + 1) \in c) \implies (∀ [n : nat] n \in c)`.
 
 ## Proofs
 
@@ -42,5 +59,11 @@ If the goal is of the form `y` and there is a theorem `thm: x => y` you can writ
 into `x`. A typical application of this is to assume an induction principle `induction` and `Use induction.`.
 
 If the goal is a conjunction of terms (e.g.`x and (y => z)`) you can write `Case x.` and a bit later `Case y.` 
-to focus on each case seperately. This is often used after an `Use` statement.
-If you want to use a case distinction between `p` and `not p`, you can write `Use ExcludedMiddle.`. (TODO: That might require higher order forms)
+to focus on each case seperately.
+
+## Proof objects
+
+Naproche can emit proof objects for each named lemma in a file if you add the `-p` option.
+This is in tstp format and can be checked with external tools.
+To improve the quality of these objects (and also the translation output) you can give
+names to symbols, for example: `[translate_as add_nat]` before a definition of `+ : Nat -> Nat -> Nat`.
