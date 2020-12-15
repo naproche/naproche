@@ -15,9 +15,8 @@ import Data.Functor.Identity
 import SAD.Data.VarName
 import SAD.Data.Terms
 import SAD.Core.Pretty (Pretty(..))
-import PIDE.SourcePos (SourcePos)
+import SAD.Core.SourcePos (SourcePos)
 import SAD.Helpers (inParens)
-import SAD.Data.Instr
 
 -- | Types that can be used as input in a TFF declaration 
 data InType 
@@ -107,11 +106,6 @@ deriving instance (Ord (f InType), Ord t) => Ord (Prf f t)
 deriving instance (Show (f InType), Show t) => Show (Prf f t)
 
 type Proof = Located (Prf Identity ())
-
-data Block
-  = StatementBlock Statement
-  | InstrBlock (Located Instr)
-  deriving (Eq, Ord, Show)
 
 -- | Simplify a formula at the head for nicer pretty-printing.
 simp :: Term f t -> Term f t

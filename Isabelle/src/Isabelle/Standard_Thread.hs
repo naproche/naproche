@@ -30,6 +30,7 @@ import qualified Data.List as List
 import Control.Monad (when, forM_)
 import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
+import Control.Exception.Base (SomeException)
 import Control.Exception as Exception
 import Control.Concurrent (ThreadId)
 import qualified Control.Concurrent as Concurrent

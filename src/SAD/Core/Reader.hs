@@ -22,20 +22,20 @@ import SAD.ForTheL.Base
 import SAD.ForTheL.Structure
 import SAD.Parser.Base
 import SAD.ForTheL.Instruction
-import PIDE.SourcePos
+import SAD.Core.SourcePos
 import SAD.Parser.Token
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
 import SAD.Parser.Error
-
-import qualified PIDE
+import qualified SAD.Core.Message as Message
+import qualified Isabelle.File as File
 
 -- Init file parsing
 
 readInit :: Text -> IO [(Pos, Instr)]
 readInit "" = return []
 readInit file = do
-  input <- catch (PIDE.read (Text.unpack file)) $ PIDE.errorParser (fileOnlyPos file) . ioeGetErrorString
+  input <- catch (File.read (Text.unpack file)) $ Message.errorParser (fileOnlyPos file) . ioeGetErrorString
   let tokens = filter isProperToken $ tokenize (filePos file) $ Text.pack input
       initialParserState = State (initFS Nothing) tokens noSourcePos
   fst <$> launchParser instructionFile initialParserState
@@ -48,29 +48,29 @@ instructionFile = after (optLL1 [] $ chainLL1 instr) eof
 
 readProofText :: Text -> [ProofText] -> IO [ProofText]
 readProofText pathToLibrary text0 = do
-  pide <- PIDE.pideContext
+  pide <- Message.pideContext
   (text, reports) <- reader pathToLibrary [] [State (initFS pide) noTokens noSourcePos] text0
-  when (isJust pide) $ PIDE.reports reports
+  when (isJust pide) $ Message.reports reports
   return text
 
-reader :: Text -> [Text] -> [State FState] -> [ProofText] -> IO ([ProofText], [PIDE.Report])
+reader :: Text -> [Text] -> [State FState] -> [ProofText] -> IO ([ProofText], [Message.Report])
 reader pathToLibrary doneFiles = go
   where
     go stateList [ProofTextInstr pos (GetArgument Read file)] = if ".." `Text.isInfixOf` file
-      then PIDE.errorParser (Instr.position pos) ("Illegal \"..\" in file name: " ++ show file)
+      then Message.errorParser (Instr.position pos) ("Illegal \"..\" in file name: " ++ show file)
       else go stateList [ProofTextInstr pos $ GetArgument File $ pathToLibrary <> "/" <> file]
 
     go (pState:states) [ProofTextInstr pos (GetArgument File file)]
       | file `elem` doneFiles = do
-          PIDE.outputMain PIDE.WARNING (Instr.position pos)
+          Message.outputMain Message.WARNING (Instr.position pos)
             ("Skipping already read file: " ++ show file)
           (newProofText, newState) <- launchParser forthel pState
           go (newState:states) newProofText
 
     go (pState:states) [ProofTextInstr _ (GetArgument File file)] = do
       text <-
-        catch (if Text.null file then getContents else PIDE.read $ Text.unpack file)
-          (PIDE.errorParser (fileOnlyPos file) . ioeGetErrorString)
+        catch (if Text.null file then getContents else File.read $ Text.unpack file)
+          (Message.errorParser (fileOnlyPos file) . ioeGetErrorString)
       (newProofText, newState) <- reader0 (filePos file) (Text.pack text) pState
       reader pathToLibrary (file:doneFiles) (newState:pState:states) newProofText
 
@@ -85,7 +85,7 @@ reader pathToLibrary doneFiles = go
       return (t:ts, ls)
 
     go (pState:oldState:rest) [] = do
-      PIDE.outputParser PIDE.TRACING
+      Message.outputParser Message.TRACING
         (if null doneFiles then noSourcePos else fileOnlyPos $ head doneFiles) "parsing successful"
       let resetState = oldState {
             stUser = (stUser pState) {tvrExpr = tvrExpr $ stUser oldState}}
@@ -97,7 +97,7 @@ reader pathToLibrary doneFiles = go
 reader0 :: SourcePos -> Text -> State FState -> IO ([ProofText], State FState)
 reader0 pos text pState = do
   let tokens0 = tokenize pos text
-  PIDE.reports $ concatMap (maybeToList . reportComments) tokens0
+  Message.reports $ concatMap (maybeToList . reportComments) tokens0
   let tokens = filter isProperToken tokens0
       st = State ((stUser pState) { tvrExpr = [] }) tokens noSourcePos
   launchParser forthel st
@@ -107,5 +107,5 @@ reader0 pos text pState = do
 launchParser :: Parser st a -> State st -> IO (a, State st)
 launchParser parser state =
   case runP parser state of
-    Error err -> PIDE.errorParser (errorPos err) (show err)
+    Error err -> Message.errorParser (errorPos err) (show err)
     Ok [PR a st] -> return (a, st)

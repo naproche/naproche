@@ -21,8 +21,18 @@ import qualified System.Environment as Environment
 import qualified System.Exit as Exit
 import qualified System.IO as IO
 
-import qualified PIDE
-import PIDE.SourcePos
+import Isabelle.Library (trim_line)
+import qualified Data.ByteString.UTF8 as UTF8
+import qualified Isabelle.Byte_Message as Byte_Message
+import qualified Isabelle.File as File
+import qualified Isabelle.Naproche as Naproche
+import qualified Isabelle.Properties as Properties
+import qualified Isabelle.Server as Server
+import qualified Isabelle.Standard_Thread as Standard_Thread
+import qualified Isabelle.UUID as UUID
+import qualified Isabelle.XML as XML
+import qualified Isabelle.YXML as YXML
+import Network.Socket (Socket)
 
 import SAD.Core.Pretty (pretty)
 import SAD.API
@@ -30,9 +40,9 @@ import SAD.API
 main :: IO ()
 main  = do
   -- setup stdin/stdout
-  PIDE.setup IO.stdin
-  PIDE.setup IO.stdout
-  PIDE.setup IO.stderr
+  File.setup IO.stdin
+  File.setup IO.stdout
+  File.setup IO.stderr
   IO.hSetBuffering IO.stdout IO.LineBuffering
   IO.hSetBuffering IO.stderr IO.LineBuffering
 
@@ -45,16 +55,10 @@ main  = do
   else -- main body with explicit error handling, notably for PIDE
     Exception.catch
       (if askFlag Server False opts0 then
-        PIDE.server (PIDE.publish_stdout "Naproche-SAD")
-          (PIDE.serverConnection $ \props -> \body -> do
-            let args1 = lines (fromMaybe "" props)
-            (opts1, text0) <- readArgs (args0 ++ args1)
-            let text1 = text0 ++ [ProofTextInstr noPos (GetArgument Text (Text.pack body))]
-            mainBody Nothing (opts1, text1)
-          )
-      else do PIDE.consoleThread; mainBody Nothing (opts0, text0))
+        Server.server (Server.publish_stdout "Naproche-SAD") (serverConnection args0)
+      else do consoleThread; mainBody Nothing (opts0, text0))
       (\err -> do
-        PIDE.exitThread
+        exitThread
         let msg = Exception.displayException (err :: Exception.SomeException)
         IO.hPutStrLn IO.stderr msg
         Exit.exitFailure)
@@ -79,7 +83,7 @@ showTranslation txts startTime = do
 
   -- print statistics
   finishTime <- getCurrentTime
-  PIDE.outputMain PIDE.TRACING noSourcePos $ Text.unpack $ "total " <> timeDifference finishTime
+  outputMain TRACING noSourcePos $ Text.unpack $ "total " <> timeDifference finishTime
 
 proveFOL :: Maybe ByteString -> [ProofText] -> [Instr] -> UTCTime -> IO ()
 proveFOL proversYaml txts opts0 startTime = do
@@ -97,7 +101,7 @@ proveFOL proversYaml txts opts0 startTime = do
       let typed = convert txts
       verify provers opts0 reasonerState typed
     Just err -> do 
-      PIDE.errorParser (errorPos err) (show err)
+      errorParser (errorPos err) (show err)
       pure (False, reasonerState)
 
   finishTime <- getCurrentTime
@@ -106,7 +110,7 @@ proveFOL proversYaml txts opts0 startTime = do
   let accumulate  = sumCounter trackerList
 
   -- print statistics
-  PIDE.outputMain PIDE.TRACING noSourcePos $
+  outputMain TRACING noSourcePos $
     "sections "       ++ show (accumulate Sections)
     ++ " - goals "    ++ show (accumulate Goals)
     ++ (let ignoredFails = accumulate FailedGoals
@@ -120,17 +124,47 @@ proveFOL proversYaml txts opts0 startTime = do
   let proveFinish    = addUTCTime proverTime proveStart
   let simplifyFinish = addUTCTime simplifyTime proveFinish
 
-  PIDE.outputMain PIDE.TRACING noSourcePos $ Text.unpack $
+  outputMain TRACING noSourcePos $ Text.unpack $
     "parser "           <> showTimeDiff (diffUTCTime proveStart startTime)
     <> " - reasoner "   <> showTimeDiff (diffUTCTime finishTime simplifyFinish)
     <> " - simplifier " <> showTimeDiff simplifyTime
     <> " - prover "     <> showTimeDiff proverTime
     <> "/" <> showTimeDiff (maximalTimer trackerList SuccessTimer)
 
-  PIDE.outputMain PIDE.TRACING noSourcePos $ Text.unpack $
+  outputMain TRACING noSourcePos $ Text.unpack $
     "total " <> showTimeDiff (diffUTCTime finishTime startTime)
 
   when (not success) Exit.exitFailure
+
+serverConnection :: [String] -> Socket -> IO ()
+serverConnection args0 connection = do
+  thread_uuid <- Standard_Thread.my_uuid
+  mapM_ (Byte_Message.write_line_message connection . UUID.bytes) thread_uuid
+
+  res <- Byte_Message.read_line_message connection
+  case fmap (YXML.parse . UTF8.toString) res of
+    Just (XML.Elem ((command, _), body)) | command == Naproche.cancel_command ->
+      mapM_ Standard_Thread.stop_uuid (UUID.parse_string (XML.content_of body))
+
+    Just (XML.Elem ((command, props), body)) | command == Naproche.forthel_command ->
+      Exception.bracket_ (initThread props (Byte_Message.write connection))
+        exitThread
+        (do
+          let args1 = lines (fromMaybe "" (Properties.get props Naproche.command_args))
+          (opts1, text0) <- readArgs (args0 ++ args1)
+          let text1 = text0 ++ [ProofTextInstr noPos (GetArgument Text (Text.pack $ XML.content_of body))]
+
+          Exception.catch (mainBody Nothing (opts1, text1))
+            (\err -> do
+              let msg = Exception.displayException (err :: Exception.SomeException)
+              Exception.catch
+                (if YXML.detect msg then
+                  Byte_Message.write connection [UTF8.fromString msg]
+                 else outputMain ERROR noSourcePos msg)
+                (\(err2 :: Exception.IOException) -> pure ())))
+
+    _ -> return ()
+
 
 -- Command line parsing
 
@@ -138,7 +172,7 @@ readArgs :: [String] -> IO ([Instr], [ProofText])
 readArgs args = do
   let (instrs, files, errs) = GetOpt.getOpt GetOpt.Permute options args
 
-  let fail msgs = errorWithoutStackTrace (unlines (map PIDE.trim_line msgs))
+  let fail msgs = errorWithoutStackTrace (unlines (map trim_line msgs))
   unless (null errs) $ fail errs
   when (length files > 1) $ fail ["More than one file argument\n"]
   let commandLine = case files of [file] -> instrs ++ [GetArgument File (Text.pack file)]; _ -> instrs

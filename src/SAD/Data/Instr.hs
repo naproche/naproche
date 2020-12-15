@@ -8,7 +8,7 @@ Instruction datatype and core functions.
 
 module SAD.Data.Instr where
 
-import PIDE.SourcePos (SourcePos, SourceRange(..), noSourcePos, noRange)
+import SAD.Core.SourcePos (SourcePos, SourceRange(..), noSourcePos, noRange)
 import Data.Text (Text)
 
 

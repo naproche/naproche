@@ -7,7 +7,7 @@ Formal output messages, with PIDE (Prover IDE) support.
 {-# LANGUAGE TupleSections #-}
 {-# LANGUAGE NamedFieldPuns #-}
 
-module PIDE.Message (
+module SAD.Core.Message (
   PIDE, pideContext, pideActive,
   initThread, exitThread, consoleThread,
   Kind (..), entityMarkup,
@@ -32,8 +32,8 @@ import qualified Data.ByteString.UTF8 as UTF8
 import Control.Concurrent (ThreadId)
 import qualified Control.Concurrent as Concurrent
 
-import PIDE.SourcePos (SourcePos)
-import qualified PIDE.SourcePos as SourcePos
+import SAD.Core.SourcePos (SourcePos)
+import qualified SAD.Core.SourcePos as SourcePos
 import qualified Data.Text as Text
 
 

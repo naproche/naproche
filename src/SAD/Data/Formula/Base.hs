@@ -11,7 +11,7 @@ import qualified Data.Monoid as Monoid
 import Control.Monad.Identity
 import Control.Applicative
 
-import PIDE.SourcePos (SourcePos)
+import SAD.Core.SourcePos (SourcePos)
 import SAD.Data.Terms
 import SAD.Data.Text.Decl (Decl)
 import SAD.Data.VarName

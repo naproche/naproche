@@ -4,7 +4,7 @@ Authors: Steffen Frerix (2017 - 2018), Makarius Wenzel (2018)
 Token source positions: counting Unicode codepoints.
 -}
 
-module PIDE.SourcePos
+module SAD.Core.SourcePos
   ( SourcePos (sourceFile, sourceLine, sourceColumn, sourceOffset, sourceEndOffset),
     SourceRange(SourceRange),
     noSourcePos,
@@ -19,6 +19,7 @@ module PIDE.SourcePos
     noRange)
   where
 
+import SAD.Helpers (notNull)
 import Data.Text (Text)
 import qualified Data.Text as Text
 
@@ -86,13 +87,12 @@ noRange :: SourceRange
 noRange = SourceRange noSourcePos noSourcePos
 
 instance Show SourcePos where
-  show (SourcePos file line column _ _) = List.intercalate " " 
-    $ filter (not . null) [quotedFilePath, listOfDetails]
+  show (SourcePos file line column _ _) = List.intercalate " " $ filter notNull [quotedFilePath, listOfDetails]
     where
       detail a i = if i <= 0 then "" else a ++ " " ++ show i
       details = [detail "line" line, detail "column" column]
       listOfDetails =
-        case filter (not . null) details of
+        case filter notNull details of
           [] -> ""
           ds -> "(" ++ List.intercalate ", " ds ++ ")"
       quotedFilePath = if Text.null file then "" else "\"" ++ Text.unpack file ++ "\""

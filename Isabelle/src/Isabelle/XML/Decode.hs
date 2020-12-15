@@ -18,6 +18,8 @@ module Isabelle.XML.Decode (
 )
 where
 
+import Data.List ((!!))
+
 import Isabelle.Library
 import qualified Isabelle.Value as Value
 import qualified Isabelle.Properties as Properties

@@ -34,7 +34,7 @@ import SAD.Helpers (notNull)
 
 import SAD.Parser.Token
 import SAD.Parser.Error
-import PIDE.SourcePos
+import SAD.Core.SourcePos
 
 import Data.List
 import qualified Data.Text as Text

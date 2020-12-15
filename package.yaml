@@ -8,13 +8,25 @@ extra-source-files:
 
 description:         <https://github.com/Naproche/Naproche-SAD>
 
-ghc-options:
-  - -O2
-  - -Wall
-  - -fno-warn-unused-do-bind
-  - -fno-warn-unused-matches
-  - -fno-warn-name-shadowing
-  
+dependencies:
+- base >= 4.7 && < 5
+- containers
+- deepseq
+- process
+- ghc-prim
+- hashable
+- time
+- mtl
+- transformers
+- bytestring
+- utf8-string
+- text
+- network
+- split
+- uuid
+- threads
+- yaml
+
 default-extensions:
   - GeneralizedNewtypeDeriving
   - InstanceSigs
@@ -22,28 +34,30 @@ default-extensions:
   - PartialTypeSignatures
   - ScopedTypeVariables
 
+ghc-options:
+  - -O2
+  - -Wall
+  - -fno-warn-unused-do-bind
+  - -fno-warn-unused-matches
+  - -fno-warn-name-shadowing
+
 library:
   source-dirs:
     - src
+    - Isabelle/src
   exposed-modules:
+    - Isabelle.File
+    - Isabelle.Server
+    - Isabelle.Byte_Message
+    - Isabelle.Properties
+    - Isabelle.XML
+    - Isabelle.YXML
+    - Isabelle.UUID
+    - Isabelle.Standard_Thread
+    - Isabelle.Library
+    - Isabelle.Naproche
     - SAD.API
     - SAD.Main
-  when:
-    - condition: true
-      dependencies:
-        - pide-hs
-  dependencies:
-    - base >= 4.7 && < 5
-    - containers
-    - process
-    - ghc-prim
-    - hashable
-    - time
-    - mtl
-    - transformers
-    - bytestring
-    - text
-    - yaml
 
 executables:
   Naproche-SAD:
@@ -55,7 +69,6 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - Naproche-SAD
-    - base >= 4.7 && < 5
 
 tests:
   Naproche-SAD-test:
@@ -67,7 +80,3 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - Naproche-SAD
-    - base >= 4.7 && < 5
-    - containers
-    - process
-    - text

@@ -10,8 +10,8 @@ Construct prover database.
 module SAD.Core.Provers (Prover(..), readProverFile, readProverDatabase) where
 
 import Data.Yaml
-import qualified PIDE
-import PIDE.SourcePos
+import qualified SAD.Core.Message as Message
+import SAD.Core.SourcePos
 import qualified Data.Text as Text
 import GHC.Generics
 import Data.Bifunctor
@@ -41,7 +41,7 @@ readProverDatabase path txt = do
     Right r -> pure r
     Left l -> err l
   where
-    err = PIDE.errorExport (fileOnlyPos $ Text.pack path)
+    err = Message.errorExport (fileOnlyPos $ Text.pack path)
 
 validate :: Prover -> Either String Prover
 validate Prover { name = n, path = "" }

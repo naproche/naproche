@@ -12,7 +12,7 @@ module SAD.Data.Formula.Show (
 import SAD.Data.Formula.Base
 import SAD.Data.Terms
 import SAD.Core.Pretty (pretty)
-import PIDE.SourcePos (noSourcePos)
+import SAD.Core.SourcePos (noSourcePos)
 
 import qualified Data.Text as Text
 

@@ -8,7 +8,7 @@ Parser combinators.
 
 module SAD.Parser.Combinators where
 
-import PIDE.SourcePos
+import SAD.Core.SourcePos
 import SAD.Parser.Base
 import SAD.Parser.Token
 import SAD.Parser.Error
