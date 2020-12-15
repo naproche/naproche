@@ -10,7 +10,7 @@ module PIDE
   where
 
 import PIDE.Server (serverConnection)
-import PIDE.Message (output, Kind(..), errorExport, PIDE, Report, entityMarkup, outputMain, errorParser, pideContext, reports, outputParser, exitThread, consoleThread)
+import PIDE.Message (output, Kind(..), errorExport, PIDE, Report, entityMarkup, outputMain, errorParser, pideContext, reports, outputParser, exitThread, consoleThread, initThread)
 import Isabelle.Library (trim_line)
 import Isabelle.Server (server, publish_stdout)
 import Isabelle.File (setup, read)
