@@ -15,7 +15,7 @@ module SAD.ForTheL.Extension (
   where
 
 
-import SAD.Core.SourcePos
+import PIDE.SourcePos
 import SAD.Data.Formula
 import SAD.Data.Text.Block (ProofText (..))
 
@@ -27,7 +27,6 @@ import SAD.Parser.Primitives
 import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Data.Text.Decl
-import SAD.Core.SourcePos (SourceRange(..))
 
 import Control.Monad
 import qualified Data.Set as Set

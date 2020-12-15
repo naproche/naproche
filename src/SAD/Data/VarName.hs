@@ -19,7 +19,7 @@ import GHC.Magic (oneShot)
 import Data.Text (Text)
 import qualified Data.Text as Text
 import SAD.Core.Pretty
-import SAD.Core.SourcePos
+import PIDE.SourcePos
 import Data.Function (on)
 
 -- These names may not reflect what the constructors are used for..

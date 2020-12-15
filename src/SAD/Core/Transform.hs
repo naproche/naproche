@@ -32,7 +32,7 @@ import qualified SAD.Data.Formula as F
 import SAD.Data.VarName
 import SAD.Data.Text.Decl
 import SAD.Data.Terms
-import SAD.Core.SourcePos (noSourcePos)
+import PIDE.SourcePos (noSourcePos)
 import SAD.Data.Text.Block (ProofText(..), Block(..))
 import qualified SAD.Data.Text.Block as Block
 import SAD.Core.Pretty (Pretty(..))

@@ -19,10 +19,9 @@ import qualified Data.Text as Text
 import qualified Data.Text.IO as TIO
 import Data.Text (Text)
 
-import qualified Isabelle.File as File
-import qualified Isabelle.Standard_Thread as Standard_Thread
+import qualified PIDE
+import PIDE.SourcePos
 
-import SAD.Core.SourcePos
 import SAD.Data.Instr hiding (Prover)
 import qualified SAD.Data.Text.Block as Block
 import SAD.Core.Provers
@@ -35,7 +34,6 @@ import SAD.Core.Task (Task(..), generateTasks)
 import SAD.Core.Typed
 import SAD.Core.Pretty
 
-import qualified SAD.Core.Message as Message
 import qualified SAD.Data.Instr as Instr
 import SAD.Core.TPTP (tptp)
 
@@ -62,21 +60,21 @@ verify provers instrs rstate stmts = go rstate tsks
 
 export :: [Prover] -> [Instr] -> Task -> IO Result
 export provers instrs tsk = do
-  Standard_Thread.expose_stopped
+  PIDE.expose_stopped
 
-  when (null provers) $ Message.errorExport noSourcePos "No provers"
+  when (null provers) $ PIDE.errorExport noSourcePos "No provers"
 
   let proverName = Text.unpack $ askArgument Instr.Prover (Text.pack $ name $ head provers) instrs
       proversNamed = filter ((==) proverName . name) provers
 
   when (null proversNamed) $ 
-    Message.errorExport noSourcePos $ "No prover named " ++ show proverName
+    PIDE.errorExport noSourcePos $ "No prover named " ++ show proverName
   
   let printProver = askFlag Printprover False instrs
   let timeLimit = askLimit Timelimit 3 instrs
   let task = tptp tsk
   when (askFlag Dump False instrs) $ 
-    Message.output "" Message.WRITELN noSourcePos (Text.unpack task)
+    PIDE.output "" PIDE.WRITELN noSourcePos (Text.unpack task)
 
   runProver (head proversNamed) printProver task (byContradiction tsk) timeLimit
 
@@ -100,12 +98,12 @@ runProver (Prover _ label path args yes con nos uns) printProver task isByContra
         return (fromJust pin, fromJust pout, fromJust perr, p)
 
   (prvin, prvout, prverr, prv) <- Exception.catch process
-      (\e -> Message.errorExport noSourcePos $
+      (\e -> PIDE.errorExport noSourcePos $
         "Failed to run " ++ show path ++ ": " ++ ioeGetErrorString e)
 
-  File.setup prvin
-  File.setup prvout
-  File.setup prverr
+  PIDE.setup prvin
+  PIDE.setup prvout
+  PIDE.setup prverr
 
   TIO.hPutStrLn prvin task
   hClose prvin
@@ -115,15 +113,15 @@ runProver (Prover _ label path args yes con nos uns) printProver task isByContra
         Process.waitForProcess prv
         return ()
 
-  Standard_Thread.bracket_resource terminate $ do
+  PIDE.bracket_resource terminate $ do
     output <- hGetContents prvout
     errors <- hGetContents prverr
     let lns = filter notNull $ lines $ output ++ errors
         out = map (("[" ++ label ++ "] ") ++) lns
 
-    when (null lns) $ Message.errorExport noSourcePos "No prover response"
+    when (null lns) $ PIDE.errorExport noSourcePos "No prover response"
     when printProver $
-        mapM_ (Message.output "" Message.WRITELN noSourcePos) out
+        mapM_ (PIDE.output "" PIDE.WRITELN noSourcePos) out
 
     let contradictions = any (\l -> any (`isPrefixOf` l) con) lns
         positive = any (\l -> any (`isPrefixOf` l) yes) lns
@@ -131,7 +129,7 @@ runProver (Prover _ label path args yes con nos uns) printProver task isByContra
         inconclusive = any (\l -> any (`isPrefixOf` l) uns) lns
 
     unless (positive || contradictions || negative || inconclusive) $
-        Message.errorExport noSourcePos $ unlines ("Bad prover response:" : lns)
+        PIDE.errorExport noSourcePos $ unlines ("Bad prover response:" : lns)
 
     hClose prverr
     Process.waitForProcess prv

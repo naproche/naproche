@@ -1,0 +1,67 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.33.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: b86eec9386755c72233952772f4b20d31acb316bc2fd0e5d3224a687ff58fb66
+
+name:           pide-hs
+version:        0.1.0.0
+description:    <https://github.com/Naproche/Naproche-SAD>
+homepage:       https://github.com/Naproche/Naproche-SAD#readme
+bug-reports:    https://github.com/Naproche/Naproche-SAD/issues
+license:        GPL-3
+build-type:     Simple
+
+source-repository head
+  type: git
+  location: https://github.com/Naproche/Naproche-SAD
+
+library
+  exposed-modules:
+      PIDE
+      PIDE.SourcePos
+  other-modules:
+      Isabelle.Buffer
+      Isabelle.Byte_Message
+      Isabelle.Completion
+      Isabelle.File
+      Isabelle.Library
+      Isabelle.Markup
+      Isabelle.Naproche
+      Isabelle.Pretty
+      Isabelle.Properties
+      Isabelle.Server
+      Isabelle.Standard_Thread
+      Isabelle.Symbol
+      Isabelle.Term
+      Isabelle.Term_XML.Decode
+      Isabelle.Term_XML.Encode
+      Isabelle.UUID
+      Isabelle.Value
+      Isabelle.XML
+      Isabelle.XML.Decode
+      Isabelle.XML.Encode
+      Isabelle.YXML
+      PIDE.Message
+      PIDE.Server
+      Paths_pide_hs
+  hs-source-dirs:
+      src
+  default-extensions: ScopedTypeVariables
+  ghc-options: -O2 -Wall -fno-warn-unused-do-bind -fno-warn-unused-matches -fno-warn-name-shadowing
+  build-depends:
+      base >=4.7 && <5
+    , bytestring
+    , containers
+    , ghc-prim
+    , network
+    , process
+    , split
+    , text
+    , threads
+    , time
+    , utf8-string
+    , uuid
+  default-language: Haskell2010

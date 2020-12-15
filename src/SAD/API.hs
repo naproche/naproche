@@ -5,8 +5,6 @@
 
 module SAD.API
   ( module SAD.Core.Base
-  , module SAD.Core.Message
-  , module SAD.Core.SourcePos
   , module SAD.Data.Instr
   , module SAD.Data.Text.Block
   , module SAD.Core.Provers
@@ -19,11 +17,9 @@ module SAD.API
   ) where
 
 import SAD.Core.Base (showTimeDiff, RState(..), sumCounter, Counter(..), sumTimer, Timer(..), maximalTimer)
-import SAD.Core.Message (consoleThread, exitThread, errorParser, outputMain, initThread, Kind(..))
 import SAD.Core.Provers (readProverFile, readProverDatabase)
 import SAD.Core.Prove (verify)
 import SAD.Core.Reader (readInit, readProofText)
-import SAD.Core.SourcePos (noSourcePos)
 import SAD.Data.Instr (Instr(..), Flag(..), askFlag, Limit(..), askLimit, Argument(..), askArgument, Arguments(..), noPos)
 import SAD.Data.Text.Block (ProofText(..), findParseError)
 import SAD.Parser.Error (errorPos)

@@ -35,7 +35,6 @@ import SAD.Data.Instr
 import SAD.Data.Text.Block (Block(Block), ProofText(..), Section(..))
 import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Formula
-import SAD.Data.Text.Decl (Decl(Decl))
 import SAD.Data.Text.Decl
 
 

@@ -1,0 +1,10 @@
+cradle:
+  stack:
+    - path: "./src"
+      component: "Naproche-SAD:lib"
+    - path: "./app"
+      component: "Naproche-SAD:exe:Naproche-SAD"
+    - path: "./Isabelle/src"
+      component: "pide-hs:lib"
+    - path: "./test"
+      component: "Naproche-SAD:test:Naproche-SAD-test"

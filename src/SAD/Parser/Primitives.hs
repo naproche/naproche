@@ -27,7 +27,7 @@ module SAD.Parser.Primitives
 import SAD.Parser.Base
 import SAD.Parser.Error
 import SAD.Parser.Token
-import SAD.Core.SourcePos
+import PIDE.SourcePos
 import SAD.Data.Terms (symChars)
 
 import Data.Char (isAlpha)

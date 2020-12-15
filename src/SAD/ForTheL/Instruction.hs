@@ -17,8 +17,7 @@ import Control.Monad
 import Data.Text (Text)
 import qualified Data.Text as Text
 
-import SAD.Core.SourcePos
-import SAD.Data.Instr (Instr)
+import PIDE.SourcePos
 import SAD.Data.Instr
 
 import SAD.ForTheL.Base

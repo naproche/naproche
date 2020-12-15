@@ -9,7 +9,7 @@ module SAD.Data.Text.Decl (
   newDecl, positionedDecl
   ) where
 
-import SAD.Core.SourcePos
+import PIDE.SourcePos
 import SAD.Data.VarName
 
 -- | >0, with 0 as undefined

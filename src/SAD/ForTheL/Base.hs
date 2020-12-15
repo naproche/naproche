@@ -24,13 +24,12 @@ import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
 
-import SAD.Core.SourcePos (noSourcePos)
+import PIDE.SourcePos (noSourcePos)
 
-import SAD.Data.Text.Decl (Decl(Decl))
 import SAD.Data.Text.Decl
 
-import SAD.Core.Message (PIDE)
-import qualified SAD.Core.Message as Message
+import PIDE (PIDE)
+import qualified PIDE
 import SAD.Core.Pretty (pretty)
 
 type FTL = Parser FState
@@ -53,7 +52,7 @@ data FState = FState {
 
   tvrExpr :: [TVar], strSyms :: [[Text]], varDecl :: Set VarName,
   idCount :: Int, hiddenCount :: Int, serialCounter :: Int,
-  reports :: [Message.Report], pide :: Maybe PIDE }
+  reports :: [PIDE.Report], pide :: Maybe PIDE }
 
 
 initFS :: Maybe PIDE -> FState

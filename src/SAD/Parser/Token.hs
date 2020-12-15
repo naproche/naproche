@@ -20,9 +20,8 @@ module SAD.Parser.Token
   , noTokens
   ) where
 
-import SAD.Core.SourcePos
-import qualified Isabelle.Markup as Markup
-import qualified SAD.Core.Message as Message
+import qualified PIDE
+import PIDE.SourcePos
 
 import Data.Char
 import Data.Text (Text)
@@ -119,10 +118,10 @@ tokenize start = posToken start NoWhiteSpaceBefore TextMode
 isLexem :: Char -> Bool
 isLexem c = (isAscii c && isAlphaNum c) || c == '_'
 
-reportComments :: Token -> Maybe Message.Report
+reportComments :: Token -> Maybe PIDE.Report
 reportComments t@Token{}
   | isProperToken t = Nothing
-  | otherwise = Just (tokenPos t, Markup.comment1)
+  | otherwise = Just (tokenPos t, PIDE.comment1)
 reportComments EOF{} = Nothing
 
 -- | Append tokens seperated by a single space if they were seperated
