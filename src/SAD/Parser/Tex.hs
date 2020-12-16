@@ -51,8 +51,5 @@ envLabel = do
   symbol "]"
   return label
 
-noEnvLabel :: LabelOptions ()
-noEnvLabel = return ()
-
 optionalEnvLabel :: LabelOptions (Maybe Text)
 optionalEnvLabel = optLLx Nothing (Just <$> envLabel)

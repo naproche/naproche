@@ -62,7 +62,7 @@ forthel = repeatUntil (forthelEnv <|> consumeToken) (eof >> return [])
 -- | Parses one latex environment of type forthel.
 forthelEnv :: FTL [ProofText]
 forthelEnv = fst <$> repeatInTexEnv
-      (getTokenOf ["forthel"]) noEnvLabel (pure <$> forthelStep)
+      (getTokenOf ["forthel"]) (return ()) (pure <$> forthelStep)
       (try (bracketExpression >>= exitInstruction))
 
 -- | Parses one forthel construct with tex syntax for forthel sections.
@@ -157,7 +157,7 @@ axiom :: FTL [ProofText]
 axiom = addAssumptions $ pretype $ pretypeSentence Posit (beginAff >> statement) affirmVars noLink
 
 theorem :: FTL [ProofText]
-theorem = addAssumptions $ topProof $ pretypeSentence Affirmation (beginAff >> statement) affirmVars link
+theorem = addAssumptions $ topProof postMethod qed link $ pretypeSentence Affirmation (beginAff >> statement) affirmVars link
 
 -- | Parsing tex theorems has the additional difficulty over other environments, that it could consist of
 -- two tex envs, a theorem env and a proof env.
@@ -165,10 +165,10 @@ texTheorem :: FTL ([ProofText], Maybe Text)
 texTheorem = do
   envType <- try . texBegin . addMarkup sectionHeader $ getTokenOf theoremTags
   label <- optionalEnvLabel
-  text <- addAssumptions . topProof $
+  text <- addAssumptions . topProof texPostMethod texQed (return []) $
             pretypeSentence Affirmation (beginAff >> statement) affirmVars link <* texEnd (markupToken sectionHeader envType)
   return (text, label)
-  
+
 
 -- | Adds parser for parsing any number of assumptions before the passed content parser.
 addAssumptions :: FTL [ProofText] -> FTL [ProofText]
@@ -432,24 +432,23 @@ proof p = do
 
 
 
-topProof :: FTL Block -> FTL [ProofText]
-topProof p = do
+topProof :: FTL Scheme -> FTL () -> FTL [Text] -> FTL Block -> FTL [ProofText]
+topProof postMethod qed link p = do
   pre <- preMethod
   bl <- p
-  -- TODO: Decide on how to do markup!!!
-  post <- texPostMethod
+  post <- postMethod
   typeBlock <- pretyping bl
   let pretyped = Block.declaredNames typeBlock
   nbl <- addDecl pretyped $ fmap ProofTextBlock $ do
     nf <- indThesis (Block.formula bl) pre post
-    addBody texQed (return []) pre post $ bl {Block.formula = nf}
+    addBody qed link pre post $ bl {Block.formula = nf}
   return $ if null pretyped then [nbl] else [ProofTextBlock typeBlock, nbl]
 
 -- Takes proof end parser @qed@ and the link @link@ to insert after the proof body as parameters.
 addBody :: FTL () -> FTL [Text] -> Scheme -> Scheme -> Block -> FTL Block
 addBody _ _ None None b = return b -- no proof was given
 addBody _ _ _ Short b = proofSentence b   -- a short proof was given
-addBody qed link' pre post b = proofBody qed link' $ b {Block.kind = kind}  -- a full proof was given
+addBody qed link pre post b = proofBody qed link $ b {Block.kind = kind}  -- a full proof was given
   where kind = if pre == Contradiction || post == Contradiction then ProofByContradiction else Block.kind b
 
 
@@ -463,9 +462,9 @@ proofSentence bl = do
 
 -- Takes proof end parser @qed@ and the link @link@ to insert after the proof body as parameters.
 proofBody :: FTL () -> FTL [Text] -> Block -> FTL Block
-proofBody qed link' bl = do
+proofBody qed link bl = do
   bs <- proofText qed
-  ls <- link'
+  ls <- link
   return bl {Block.body = bs, Block.link = ls ++ Block.link bl}
 
 -- Takes the proof end parser @qed@ as parameter.
