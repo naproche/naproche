@@ -103,15 +103,15 @@ x * (y + z) = (x * y) + (x * z).
 
 \begin{lemma}[MulZero]
 x * 0 = 0 = 0 * x.
-Proof.
-    Let us show that x * 0 = 0.
-    x * 0 .= x * (0 + 0) (by AddZero) .= (x * 0) + (x * 0) (by AMDistr1).
-    end.
-    Let us show that 0 * x = 0.
-    0 * x .= (0 + 0) * x (by AddZero) .= (0 * x) + (0 * x) (by AMDistr2).
-    end.
-qed.
 \end{lemma}
+\begin{proof}
+Let us show that x * 0 = 0.
+x * 0 .= x * (0 + 0) (by AddZero) .= (x * 0) + (x * 0) (by AMDistr1).
+end.
+Let us show that 0 * x = 0.
+0 * x .= (0 + 0) * x (by AddZero) .= (0 * x) + (0 * x) (by AMDistr2).
+end.
+\end{proof}
 \end{forthel}
 
 \end{document}

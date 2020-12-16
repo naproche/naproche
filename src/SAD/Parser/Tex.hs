@@ -14,17 +14,6 @@ import SAD.Parser.Primitives
 import SAD.Parser.Combinators
 
 
--- | @texEnv envType labelParser parseContent@ is a general purpose tex environment parser.
--- @envType@ parses the environment type specified in the environment declaration.
--- @labelParser@ parses a label declaration such as '[label]'.
--- @content@ parses the insides of the environment.
-texEnv :: FTL Text -> LabelOptions b -> FTL a -> FTL (a, b)
-texEnv envType labelParser content = do
-  -- We use 'try' to backtrack if parsing the environment declaration fails.
-  envType' <- try $ texBegin envType
-  envLabel <- labelParser
-  (, envLabel) <$> (content <* texEnd (token envType'))
-
 -- | Parses tex environment while iterating a parser inside it until '\end{...}' is parsed or the end parser succeeds.
 -- is passed.
 repeatInTexEnv :: Monoid a => FTL Text -> LabelOptions b -> FTL a -> FTL a -> FTL (a, b)
