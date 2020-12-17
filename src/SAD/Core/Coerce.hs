@@ -8,6 +8,7 @@ import qualified Data.Map as Map
 import Data.Set (Set)
 import qualified Data.Set as Set
 import qualified Data.List as List
+import GHC.Stack
 
 -- | We store a dynamic transitive closure of the graph of coercions.
 -- For n types and m coercions we can construct the data-structure in
@@ -31,7 +32,7 @@ insert :: Ord a => (a, a) -> Arborescence a -> Arborescence a
 insert (u, v) (Arb m) = Arb $ Map.insertWith (<>) v mempty 
   $ Map.adjust (Set.insert v) u m
 
-childrenIn :: Ord a => a -> Arborescence a -> Set a
+childrenIn :: (HasCallStack, Ord a) => a -> Arborescence a -> Set a
 childrenIn a (Arb m) = m Map.! a
 
 data Transitive a = Transitive
@@ -67,13 +68,13 @@ addEdge (i, j) c
       a = Map.insertWith (<>) i (fromRoot i) $ Map.insertWith (<>) j (fromRoot j) a,
       v = Set.insert i $ Set.insert j v }
 
-meld :: Ord a => a -> a -> a -> a -> Transitive a -> Transitive a
+meld :: (HasCallStack, Ord a) => a -> a -> a -> a -> Transitive a -> Transitive a
 meld x j u v (Transitive m a v') =
   let c = Transitive (Map.insert (x, v) u m) 
                     (Map.adjust (insert (u, v)) x a) 
                     v'
   in Set.foldr' (\w -> meld x j v w) c
-     $ Set.filter (\w -> (x, w) `member` c) $ v `childrenIn` (a Map.! j)
+     $ Set.filter (\w -> (x, w) `notMember` c) $ v `childrenIn` (a Map.! j)
 
 data Coercions a c = Coercions
   { transitive :: Transitive a
@@ -96,9 +97,11 @@ add ij c (Coercions tr coe) = Coercions
   }
 
 coercibleTo :: Ord a => a -> a -> Coercions a c -> Bool
-coercibleTo i j = member (i, j) . transitive
+coercibleTo i j coe
+  | i == j = True
+  | otherwise = member (i, j) $ transitive coe
 
-coerce :: Ord a => (a, a) -> Coercions a c -> [c]
+coerce :: (HasCallStack, Ord a) => (a, a) -> Coercions a c -> [c]
 coerce (i, j) (Coercions tr coe) = map (coe Map.!)
   $ List.unfoldr (\b -> case pred (i, b) tr of
     Nothing -> Nothing

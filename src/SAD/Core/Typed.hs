@@ -97,10 +97,9 @@ type Statement = Located (Stmt Identity ())
 data Prf f t
   = Subclaim (Term f t) [Text] [Proof]
   | Intro [(VarName, InType)] (Term f t) [Proof]
-  | Choose [VarName] (Term f t) [Text] [Proof]
-  | Use Text
+  | Choose [(VarName, InType)] (Term f t) [Text] [Proof]
   | Cases [(Term f t, [Proof])]
-  | ByContradiction (Term f t) [Proof]
+  | ByContradiction [Proof]
 deriving instance (Eq (f InType), Eq t) => Eq (Prf f t)
 deriving instance (Ord (f InType), Ord t) => Ord (Prf f t)
 deriving instance (Show (f InType), Show t) => Show (Prf f t)
@@ -198,14 +197,13 @@ instance (Pretty (f InType), Show t, Show (f InType))
     <> inParens ls <> renderLines (map (pretty . located) prfs)
   pretty (Intro vs t prfs) = "Let: [" <> Text.intercalate ", " 
     (map (\(v, t) -> pretty v <> " : " <> pretty t) vs) <> 
-    "] such that " <> pretty t <> "\n" <> Text.unlines (pretty <$> prfs)
+    "] such that " <> pretty t <> renderLines ((pretty . located) <$> prfs)
   pretty (Choose vs t ls prfs) = "Choose: " <> Text.intercalate ", " 
     (map pretty vs) <> " " <> inParens ls <>
-    " such that " <> pretty t <> "\n" <> Text.unlines (pretty <$> prfs)
-  pretty (Use t) = "Use: " <> t
+    " such that " <> pretty t <> renderLines ((pretty . located) <$> prfs)
   pretty (Cases cs) = Text.concat $
-    map (\(t, p) -> "Case: " <> pretty t <> renderLines (pretty <$> p)) cs
-  pretty (ByContradiction t prfs) = pretty t <> " "
+    map (\(t, p) -> "Case: " <> pretty t <> renderLines ((pretty . located) <$> p)) cs
+  pretty (ByContradiction prfs) = "Assume not."
     <> renderLines (map (pretty . located) prfs)
 
 instance Pretty a => Pretty (Located a) where

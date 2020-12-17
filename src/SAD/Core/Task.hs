@@ -44,8 +44,8 @@ generateFromProof (Task hypo conj conjHints name contra) prf
               $ mapAccumL go (Given "case" c:hypo) p) cs
             final = foldl1 (\a b -> App Or [a, b]) (map fst cs)
         in (hypo, cases ++ [Task hypo final [] n contra])
-      ByContradiction t prf -> ((Given n t):hypo,
-        generateFromProof (Task (Given n (App Not [t]):hypo) (App Bot []) [] n True) prf)
+      ByContradiction prf -> ((Given n conj):hypo,
+        generateFromProof (Task (Given n (App Not [conj]):hypo) (App Bot []) [] n True) prf)
       Choose vs t hints prf -> ((Given n t):hypo,
         generateFromProof (Task hypo t hints n contra) prf)
       t -> error $ "Not implemented tactic: " ++ show t
