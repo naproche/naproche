@@ -331,7 +331,7 @@ chooses ctx (b:bs) = case kind b of
               | v `Set.member` vs -> Just ([(v, typ)], t)
               | otherwise -> Just ([], t)
             _ -> Nothing
-        p = convertProof (preBind boundVs ctx) (map ProofTextBlock bs) -- TOOD: add variables to context
+        p = convertProof (preBind boundVs ctx) (map ProofTextBlock bs)
     in Just $ (Located n l $ Choose (Map.toList boundVs) f (link b) p, [])
   _ -> Nothing
 
