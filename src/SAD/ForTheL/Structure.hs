@@ -8,7 +8,7 @@ Syntax of ForTheL sections.
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.ForTheL.Structure (forthel) where
+module SAD.ForTheL.Structure (forthel, texForthel) where
 
 import Data.List
 import Data.Maybe
@@ -41,8 +41,8 @@ import SAD.Data.Text.Decl
 
 
 -- | The old .ftl file parser.
-forthel' :: FTL [ProofText]
-forthel' = repeatUntil (pure <$> (
+forthel :: FTL [ProofText]
+forthel = repeatUntil (pure <$> (
     makeFtlSection Signature signatureTags signature'
     <|> makeFtlSection Definition definitionTags definition
     <|> makeFtlSection Axiom axiomTags axiom
@@ -53,18 +53,8 @@ forthel' = repeatUntil (pure <$> (
   (try (bracketExpression >>= exitInstruction) <|> (eof >> return []))
 
 -- | Parses tex files.
-forthel :: FTL [ProofText]
-forthel = repeatUntil (forthelEnv <|> consumeToken) (eof >> return [])
-    where
-      consumeToken = anyToken >> return []
-
--- | Parses one latex environment of type forthel.
-forthelEnv :: FTL [ProofText]
-forthelEnv = do
-  envType' <- try $ texBegin $ getTokenOf ["forthel"]
-  repeatUntil
-    (pure <$> forthelStep)
-    (texEnd (token envType') >> return [] <|> try (bracketExpression >>= exitInstruction))
+texForthel :: FTL [ProofText]
+texForthel = repeatUntil (pure <$> forthelStep) (try (bracketExpression >>= exitInstruction) <|> (eof >> return []))
 
 -- | Parses one forthel construct with tex syntax for forthel sections.
 forthelStep :: FTL ProofText
