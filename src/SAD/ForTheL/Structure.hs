@@ -31,7 +31,6 @@ import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Parser.Token
 import SAD.Parser.Primitives
-import SAD.Parser.Tex
 
 import SAD.Data.Instr
 import SAD.Data.Text.Block (Block(Block), ProofText(..), Section(..))
@@ -61,9 +60,11 @@ forthel = repeatUntil (forthelEnv <|> consumeToken) (eof >> return [])
 
 -- | Parses one latex environment of type forthel.
 forthelEnv :: FTL [ProofText]
-forthelEnv = fst <$> repeatInTexEnv
-      (getTokenOf ["forthel"]) (return ()) (pure <$> forthelStep)
-      (try (bracketExpression >>= exitInstruction))
+forthelEnv = do
+  envType' <- try $ texBegin $ getTokenOf ["forthel"]
+  repeatUntil
+    (pure <$> forthelStep)
+    (texEnd (token envType') >> return [] <|> try (bracketExpression >>= exitInstruction))
 
 -- | Parses one forthel construct with tex syntax for forthel sections.
 forthelStep :: FTL ProofText

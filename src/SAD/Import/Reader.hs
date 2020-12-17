@@ -98,7 +98,7 @@ reader pathToLibrary doneFiles = go
 reader0 :: SourcePos -> Text -> State FState -> IO ([ProofText], State FState)
 reader0 pos text pState = do
   let tokens0 = tokenize ['#','%'] pos text
-  Message.reports $ concatMap (maybeToList . reportComments) tokens0
+  Message.reports $ mapMaybe reportComments tokens0
   let tokens = filter isProperToken tokens0
       st = State ((stUser pState) { tvrExpr = [] }) tokens noSourcePos
   launchParser forthel st

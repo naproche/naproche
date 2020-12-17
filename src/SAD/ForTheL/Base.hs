@@ -449,3 +449,30 @@ such = tokenOf' ["such", "so"]
 showVar :: VariableName -> Text
 showVar (VarConstant nm) = nm
 showVar nm = toLazyText $ represent nm
+
+-- | Parses '\begin{env}'. Takes a parser for parsing 'env'.
+texBegin :: FTL a -> FTL a
+texBegin envType = do
+  token "\\begin"
+  symbol "{"
+  envType' <- envType
+  symbol "}"
+  return envType'
+
+-- | Parses '\end{env}'. Takes a parser for parsing 'env'.
+texEnd :: FTL () -> FTL ()
+texEnd envType = do
+  token "\\end"
+  symbol "{"
+  envType
+  symbol "}"
+
+envLabel :: FTL Text
+envLabel = do
+  symbol "["
+  label <- anyToken
+  symbol "]"
+  return label
+
+optionalEnvLabel :: FTL (Maybe Text)
+optionalEnvLabel = optLLx Nothing (Just <$> envLabel)
