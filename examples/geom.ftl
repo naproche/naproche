@@ -128,7 +128,7 @@ Lemma L3_6b. Assume x-y-z and x-z-r. Then x-y-r.
 
 Lemma L3_7a. Assume x-y-z and y-z-r and y != z. Then x-z-r.
 Proof.
-	Take v such that x-z-v and z-v : z-r.
+	Take a point v such that x-z-v and z-v : z-r.
 	Then y-z-v and z-v : z-r. Hence v = r.
 qed.
 

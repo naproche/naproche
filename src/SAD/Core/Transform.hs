@@ -338,7 +338,8 @@ chooses ctx (b:bs) = case kind b of
 cases :: Context -> [Block] -> Maybe (Proof, [Block])
 cases ctx = go Nothing
   where
-    go _ [] = Nothing
+    go Nothing [] = Nothing
+    go (Just (l, ms)) [] = Just (Located "Cases" l $ Cases ms, [])
     go m (b:bs) = case formula b of
       F.Imp (F.Tag CaseHypothesisTag c) (F.Trm TermThesis [] _ _) ->
         let c' = noTags $ typecheck ctx $ parseFormula c
@@ -355,7 +356,7 @@ cases ctx = go Nothing
 convertProof :: Context -> [ProofText] -> [Proof]
 convertProof ctx = go . concatMap (\case ProofTextBlock b -> [b]; _ -> [])
   where
-    go bs = flip List.unfoldr bs $ \bs -> 
+    go bs = flip List.unfoldr bs $ \bs ->
       cases ctx bs <|> chooses ctx bs 
       <|> byContradiction ctx bs <|> subClaims ctx bs
 
@@ -382,9 +383,8 @@ convertBlock ctx bl@(Block f b _ _ n l p _) = Located n p <$>
         True -> if not (null defs)
           then error $ "Definitions in claim!"
           else [Claim (noTags mainT) l (convertProof (preBind boundVars ctx) (body main))]
-        False -> case defs of
-          -- (x:y:_) -> error $ "Multiple definitions: " ++ show [x, y]
-          _ -> defs ++ if mainT == App Top [] then [] else [Axiom (noTags mainT)]
+        False -> defs ++ 
+          if mainT == App Top [] then [] else [Axiom (noTags mainT)]
     _ -> error "convertBlock should not be applied to proofs!"
 
 convert :: [ProofText] -> [Statement]
