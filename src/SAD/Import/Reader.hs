@@ -18,6 +18,10 @@ import qualified Data.Text.Lazy as Text
 
 import SAD.Data.Text.Block
 import SAD.Data.Instr as Instr
+    ( Argument(Text, ReadTex, File, Read),
+      Instr(GetArgument),
+      Pos,
+      position )
 import SAD.ForTheL.Base
 import SAD.ForTheL.Structure
 import SAD.Parser.Base
@@ -37,8 +41,8 @@ readInit :: Text -> IO [(Pos, Instr)]
 readInit "" = return []
 readInit file = do
   input <- catch (File.read (Text.unpack file)) $ Message.errorParser (fileOnlyPos file) . ioeGetErrorString
-  let tokens = filter isProperToken $ tokenize (filePos file) TexDisabled $ Text.pack input
-      initialParserState = State (initFS Nothing) tokens noSourcePos
+  let tokens = filter isProperToken $ tokenize TexDisabled (filePos file) $ Text.pack input
+      initialParserState = State (initFS Nothing) tokens NonTex noSourcePos
   fst <$> launchParser instructionFile initialParserState
 
 instructionFile :: FTL [(Pos, Instr)]
@@ -47,62 +51,84 @@ instructionFile = after (optLL1 [] $ chainLL1 instr) eof
 
 -- Reader loop
 
-readProofText :: Text -> [ProofText] -> IO [ProofText]
-readProofText pathToLibrary text0 = do
+-- | @readProofText startWithTex pathToLibrary text0@ takes:
+-- @startWithTex@, a boolean indicating whether to execute the next file instruction using the tex parser,
+-- @pathToLibrary@, a path to where the read instruction should look for files,
+-- @text0@, containing some configuration.
+readProofText :: Bool -> Text -> [ProofText] -> IO [ProofText]
+readProofText startWithTex pathToLibrary text0 = do
   pide <- Message.pideContext
-  (text, reports) <- reader pathToLibrary [] [State (initFS pide) noTokens noSourcePos] text0
+  let initialParserKind = if startWithTex then Tex else NonTex
+  (text, reports) <- reader pathToLibrary [] [State (initFS pide) noTokens NonTex noSourcePos] text0 (Just initialParserKind)
   when (isJust pide) $ Message.reports reports
   return text
 
-reader :: Text -> [Text] -> [State FState] -> [ProofText] -> IO ([ProofText], [Message.Report])
+reader :: Text -> [Text] -> [State FState] -> [ProofText] -> Maybe ParserKind -> IO ([ProofText], [Message.Report])
 reader pathToLibrary doneFiles = go
   where
-    go stateList [ProofTextInstr pos (GetArgument Read file)] = if ".." `Text.isInfixOf` file
+    go stateList [ProofTextInstr pos (GetArgument Read file)] _ = if ".." `Text.isInfixOf` file
       then Message.errorParser (Instr.position pos) ("Illegal \"..\" in file name: " ++ show file)
-      else go stateList [ProofTextInstr pos $ GetArgument File $ pathToLibrary <> "/" <> file]
+      else go stateList [ProofTextInstr pos $ GetArgument File $ pathToLibrary <> "/" <> file] (Just NonTex)
+    
+    go stateList [ProofTextInstr pos (GetArgument ReadTex file)] _ = if ".." `Text.isInfixOf` file
+      then Message.errorParser (Instr.position pos) ("Illegal \"..\" in file name: " ++ show file)
+      else go stateList [ProofTextInstr pos $ GetArgument File $ pathToLibrary <> "/" <> file] (Just Tex)
 
-    go (pState:states) [ProofTextInstr pos (GetArgument File file)]
+    go (pState:states) [ProofTextInstr pos (GetArgument File file)] parserKind'
       | file `elem` doneFiles = do
+          when (Just (parserKind pState) /= parserKind')
+            (Message.errorParser (Instr.position pos) "Trying to read a file once in Tex format and once in NonTex format.")
           Message.outputMain Message.WARNING (Instr.position pos)
             ("Skipping already read file: " ++ show file)
-          (newProofText, newState) <- launchParser texForthel pState
-          go (newState:states) newProofText
+          (newProofText, newState) <- chooseParser pState
+          go (newState:states) newProofText Nothing
 
-    go (pState:states) [ProofTextInstr _ (GetArgument File file)] = do
+    go (pState:states) [ProofTextInstr _ (GetArgument File file)] parserKind = do
       text <-
         catch (if Text.null file then getContents else File.read $ Text.unpack file)
           (Message.errorParser (fileOnlyPos file) . ioeGetErrorString)
-      (newProofText, newState) <- reader0 (filePos file) (Text.pack text) pState
-      reader pathToLibrary (file:doneFiles) (newState:pState:states) newProofText
+      let parserKind' = fromMaybe (error "this shouldn't ever happen") parserKind
+      (newProofText, newState) <- reader0 (filePos file) (Text.pack text) (pState {parserKind = parserKind'})
+      -- state from before reading is still here!!
+      reader pathToLibrary (file:doneFiles) (newState:pState:states) newProofText parserKind
 
-    go (pState:states) [ProofTextInstr _ (GetArgument Text text)] = do
-      (newProofText, newState) <- reader0 startPos text pState
-      go (newState:pState:states) newProofText
+    -- We read text instructions with NonTex parser!!!
+    go (pState:states) [ProofTextInstr _ (GetArgument Text text)] _ = do
+      (newProofText, newState) <- reader0 startPos text (pState {parserKind = NonTex})
+      go (newState:pState:states) newProofText Nothing -- state from before reading is still here!!
 
-    -- this happens when t is not a suitable instruction
-    -- e.g. all the time, since we feed every parsed ProofText through this loop
-    go stateList (t:restProofText) = do
-      (ts, ls) <- go stateList restProofText
+    -- This sais that we are only really processing the last instruction in a [ProofText].
+    go stateList (t:restProofText) parserKind = do
+      (ts, ls) <- go stateList restProofText parserKind
       return (t:ts, ls)
 
-    go (pState:oldState:rest) [] = do
+    go (pState:oldState:rest) [] _ = do
       Message.outputParser Message.TRACING
         (if null doneFiles then noSourcePos else fileOnlyPos $ head doneFiles) "parsing successful"
       let resetState = oldState {
             stUser = (stUser pState) {tvrExpr = tvrExpr $ stUser oldState}}
-      (newProofText, newState) <- launchParser texForthel resetState
-      go (newState:rest) newProofText
+      -- Continue running a parser after eg. a read instruction was evaluated.
+      (newProofText, newState) <- chooseParser resetState
+      go (newState:rest) newProofText Nothing
 
-    go (state:_) [] = return ([], reports $ stUser state)
+    go (state:_) [] _ = return ([], reports $ stUser state)
 
 reader0 :: SourcePos -> Text -> State FState -> IO ([ProofText], State FState)
 reader0 pos text pState = do
-  let tokens0 = tokenize pos OutsideForthelEnv text
+  let tokens0 = chooseTokenizer pState pos text
   Message.reports $ mapMaybe reportComments tokens0
   let tokens = filter isProperToken tokens0
-      st = State ((stUser pState) { tvrExpr = [] }) tokens noSourcePos
-  launchParser texForthel st
+      st = State ((stUser pState) { tvrExpr = [] }) tokens (parserKind pState) noSourcePos
+  chooseParser st
 
+
+chooseParser :: State FState -> IO ([ProofText], State FState)
+chooseParser st | parserKind st == Tex = launchParser texForthel st
+chooseParser st | parserKind st == NonTex = launchParser forthel  st
+
+chooseTokenizer :: State FState -> SourcePos -> Text -> [Token]
+chooseTokenizer st | parserKind st == Tex = tokenize OutsideForthelEnv
+chooseTokenizer st | parserKind st == NonTex = tokenize TexDisabled
 
 -- launch a parser in the IO monad
 launchParser :: Parser st a -> State st -> IO (a, State st)

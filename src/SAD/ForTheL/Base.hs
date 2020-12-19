@@ -26,7 +26,6 @@ import SAD.Parser.Primitives
 
 import SAD.Core.SourcePos (noSourcePos)
 
-import SAD.Data.Text.Decl (Decl(Decl))
 import SAD.Data.Text.Decl
 
 import SAD.Core.Message (PIDE)
@@ -152,7 +151,7 @@ primMultiPredicate :: FTL (b1 -> b1, Formula)
                -> ([Pattern], [Formula] -> b2) -> FTL (b1 -> b1, b2)
 primMultiPredicate p (pt, fm) = do
   (q, ts) <- multiPattern p pt
-  return (q, fm $ (mkVar (VarHole "")):(mkVar VarSlot):ts)
+  return (q, fm $ mkVar (VarHole "") : mkVar VarSlot : ts)
 
 
 -- Notions and functions
@@ -163,14 +162,14 @@ primNotion p  = getExpr notionExpr notion
   where
     notion (pt, fm) = do
       (q, vs, ts) <- notionPattern p pt
-      return (q, fm $ (mkVar (VarHole "")):ts, vs)
+      return (q, fm $ mkVar (VarHole "") : ts, vs)
 
 primOfNotion :: FTL UTerm -> FTL MNotion
 primOfNotion p = getExpr notionExpr notion
   where
     notion (pt, fm) = do
       (q, vs, ts) <- ofPattern p pt
-      let fn v = fm $ (pVar v):(mkVar (VarHole "")):ts
+      let fn v = fm $ pVar v : mkVar (VarHole "") : ts
       return (q, foldr1 And $ map fn $ Set.toList vs, vs)
 
 primCommonNotion :: FTL UTerm -> FTL MTerm -> FTL MNotion
@@ -178,7 +177,7 @@ primCommonNotion p s = getExpr notionExpr notion
   where
     notion (pt, fm) = do
       (q, vs, as, ts) <- commonPattern p s pt
-      let fn v = fm $ (mkVar (VarHole "")):v:ts
+      let fn v = fm $ mkVar (VarHole "") : v : ts
       return (q, foldr1 And $ map fn as, vs)
 
 primFun :: FTL UTerm -> FTL UTerm
@@ -225,7 +224,7 @@ primIsm p (pt, fm) = symbolPattern p pt >>= \l -> return $ \t s -> fm $ t:l++[s]
 primSnt :: FTL Formula -> FTL MNotion
 primSnt p  = noError $ varList >>= getExpr symbNotionExpr . snt
   where
-    snt vs (pt, fm) = symbolPattern p pt >>= \l -> return (id, fm $ (mkVar (VarHole "")):l, vs)
+    snt vs (pt, fm) = symbolPattern p pt >>= \l -> return (id, fm $ mkVar (VarHole ""):l, vs)
 
 
 

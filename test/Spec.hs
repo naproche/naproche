@@ -11,6 +11,7 @@ import qualified Data.Text.Lazy.IO as TIO
 
 compileFile :: FilePath -> IO (Handle, Handle, ProcessHandle)
 compileFile f = do
+  -- TODO: Add tex file examples!!
   (_, Just hout, Just herr, ph) <- createProcess (proc "stack" ["exec", "Naproche-SAD", "--", f, "-t", "25"])
     { std_out = CreatePipe, std_err = CreatePipe }
   pure (hout, herr, ph)
@@ -23,7 +24,7 @@ gather (hout, herr, ph) = do
   pure (code, cont)
 
 files :: [FilePath]
-files = map ("examples/"++) $
+files = fmap ("examples/"++)
   -- This file does check, but it often fails when limited to reasonable time
   -- [ "chinese.ftl"
   [ "fuerst.ftl"

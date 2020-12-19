@@ -6,7 +6,7 @@ Let M,N denote a set.
 
 Let f denote a function.
 
-%%% Some preliminary set theory
+### Some preliminary set theory
 
 Definition.
 A subset of M is a set N such that every element of N is an element of M.
@@ -18,7 +18,7 @@ Definition.
 Assume M is a subset of the domain of f. f^[M] = { f[x] | x is an element of M }. Let the image of
 f stand for f^[Dom(f)].
 
-%%% Cardinals and Cardinality
+### Cardinals and Cardinality
 
 Signature.
 A cardinal is a set.
@@ -55,7 +55,7 @@ domain of f and M is the image of f.
 Axiom.
 card(A) = A.
 
-%%% Product and Sum of cardinals
+### Product and Sum of cardinals
 
 Let D denote a set.
 
@@ -91,7 +91,7 @@ Proof.
 Define f[i] = Choose an element v of lambda[i] in v for i in D.
 Then f is an element of ProdSet(lambda,D). qed.
 
-%%% Koenig's lemma
+### Koenig's lemma
 
 Theorem Koenig.
 Let kappa, lambda be sequences of cardinals on D. Assume that for every element i of D

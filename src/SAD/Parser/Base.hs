@@ -12,7 +12,8 @@ Parser datatype and monad instance.
 {-# LANGUAGE BlockArguments #-}
 
 module SAD.Parser.Base
-  ( Parser(..),
+  ( ParserKind(Tex, NonTex),
+    Parser(..),
     Continuation,
     EmptyFail,
     ConsumedFail,
@@ -39,10 +40,16 @@ import SAD.Core.SourcePos
 import Data.List
 import qualified Data.Text.Lazy as Text
 
+
+-- | Indicate which of the parsers is currently used. This is must be recorded in the State
+-- for read instruction to work properly.
+data ParserKind = NonTex | Tex deriving (Eq, Ord, Show)
+
 -- | Parser state
 data State st = State
   { stUser  :: st
   , stInput :: [Token]
+  , parserKind :: ParserKind
   , lastPosition :: SourcePos
   } deriving (Eq, Ord, Show)
 

@@ -89,6 +89,7 @@ addSynonym text = case text of
 exitInstruction :: ProofText -> FTL [ProofText]
 exitInstruction text = case text of
   ProofTextInstr _ (GetArgument Read _) -> return [text]
+  ProofTextInstr _ (GetArgument ReadTex _) -> return [text]
   ProofTextInstr _ (Command EXIT) -> return []
   ProofTextInstr _ (Command QUIT) -> return []
   _ -> failing (return ()) >> return [] -- Not sure how to properly throw an error.
@@ -150,7 +151,7 @@ axiom = addAssumptions $ pretype $ pretypeSentence Posit (beginAff >> statement)
 theorem :: FTL [ProofText]
 theorem = addAssumptions $ topProof postMethod qed link $ pretypeSentence Affirmation (beginAff >> statement) affirmVars link
 
--- | Parsing tex theorems has the additional difficulty over other environments, that it could consist of
+-- Parsing tex theorems has the additional difficulty over other environments, that it could consist of
 -- two tex envs, a theorem env and a proof env.
 texTheorem :: FTL ([ProofText], Maybe Text)
 texTheorem = do

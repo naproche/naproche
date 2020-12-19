@@ -92,6 +92,7 @@ data Flag =
   | Unfoldlow      --  unfold the whole low level context (yes)
   | Unfoldlowsf    --  unfold set and function conditions in low level (no)
   | Translation    --  print first-order translation of sentences
+  | Tex            --  whether to use tex parser for the file passed in the CLI
   deriving (Eq, Ord, Show)
 
 data Argument =
@@ -99,6 +100,7 @@ data Argument =
   | Text     --  literal text
   | File     --  read file
   | Read     --  read library file
+  | ReadTex  --  read library file with tex parser
   | Library  --  library directory
   | Provers  --  prover database
   | Prover   --  current prover
@@ -176,11 +178,13 @@ keywordsFlag =
   (Unfoldsf, "unfoldsf"),
   (Unfoldlow, "unfoldlow"),
   (Unfoldlowsf, "unfoldlowsf"),
-  (Translation, "translation")]
+  (Translation, "translation"),
+  (Tex, "tex")]
 
 keywordsArgument :: [(Argument, Text)]
 keywordsArgument =
  [(Read, "read"),
+  (ReadTex, "readtex"),
   (Library, "library"),
   (Provers, "provers"),
   (Prover, "prover")]
@@ -189,9 +193,13 @@ keywordsArguments :: [(Arguments, Text)]
 keywordsArguments =
   [(Synonym, "synonym")]
 
--- distiguish between parser and verifier instructions
+-- distinguish between parser and verifier instructions
 
 isParserInstruction :: Instr -> Bool
 isParserInstruction i = case i of
-  Command EXIT -> True; Command QUIT -> True; GetArgument Read _ -> True;
-  GetArguments Synonym _ -> True; _ -> False
+  Command EXIT -> True
+  Command QUIT -> True
+  GetArgument Read _ -> True
+  GetArgument ReadTex _ -> True
+  GetArguments Synonym _ -> True
+  _ -> False

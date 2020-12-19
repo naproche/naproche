@@ -82,54 +82,54 @@ noTokens = [EOF noSourcePos]
 -- | @tokenize commentChars start text@ takes a list of characters @commentChars@ to use
 -- for comments when used as first character in the line and a @text@ that gets tokenized
 -- starting from the @start@ position.
-tokenize :: SourcePos -> TexState -> Text -> [Token]
-tokenize start = posToken start NoWhiteSpaceBefore
+tokenize :: TexState -> SourcePos -> Text -> [Token]
+tokenize texState start = posToken texState start NoWhiteSpaceBefore
   where
     -- Activate the tokenizer when '\begin{forthel}' appears.
-    posToken :: SourcePos -> TokenType -> TexState -> Text -> [Token]
-    posToken pos _ OutsideForthelEnv s = toks
+    posToken :: TexState -> SourcePos -> TokenType -> Text -> [Token]
+    posToken OutsideForthelEnv pos _ s = toks
       where
         (ignoredText, rest) = Text.breakOn "\\begin{forthel}" s
         newPos = advanceAlong pos (ignoredText <> "\\begin{forthel}")
-        toks = posToken newPos WhiteSpaceBefore InsideForthelEnv (Text.drop 15 rest)
+        toks = posToken InsideForthelEnv newPos WhiteSpaceBefore (Text.drop 15 rest)
     
     -- Deactivate the tokenizer when '\end{forthel}' appears.
-    posToken pos _ InsideForthelEnv s | start == "\\end{forthel}" = toks
+    posToken InsideForthelEnv pos _ s | start == "\\end{forthel}" = toks
       where
         (start,rest) = Text.splitAt 13 s
-        toks = posToken (advanceAlong pos start) WhiteSpaceBefore OutsideForthelEnv rest
+        toks = posToken OutsideForthelEnv (advanceAlong pos start) WhiteSpaceBefore rest
         
     -- Make alphanumeric tokens that don't start with whitespace.
-    posToken pos whitespaceBefore texState s | not (Text.null lexeme) = tok:toks
+    posToken texState pos whitespaceBefore s | not (Text.null lexeme) = tok:toks
       where
         (lexeme, rest) = Text.span isLexeme s
         tok  = makeToken lexeme pos whitespaceBefore
-        toks = posToken (advanceAlong pos lexeme) NoWhiteSpaceBefore texState rest
+        toks = posToken texState (advanceAlong pos lexeme) NoWhiteSpaceBefore rest
     
     -- Process whitespace.
-    posToken pos _ texState s | not (Text.null white) = toks
+    posToken texState pos _ s | not (Text.null white) = toks
       where
         (white, rest) = Text.span isSpace s
-        toks = posToken (advanceAlong pos white) WhiteSpaceBefore texState rest
+        toks = posToken texState (advanceAlong pos white) WhiteSpaceBefore rest
     
     -- Process non-alphanumeric symbol or EOF.
-    posToken pos whitespaceBefore texState s = case Text.uncons s of
+    posToken texState pos whitespaceBefore s = case Text.uncons s of
       Nothing -> [EOF pos]
       Just ('\\', rest) -> tok:toks
         where
           (name, rest') = Text.span isAlpha rest
           cmd = Text.cons '\\' name
           tok = makeToken cmd pos whitespaceBefore
-          toks = posToken (advanceAlong pos cmd) WhiteSpaceBefore texState rest'
-      Just (c, _) | if usingTexParser texState then c == '%' else c == '#' -> tok:toks
+          toks = posToken texState (advanceAlong pos cmd) WhiteSpaceBefore rest'
+      Just (c, _) | if usingTexParser texState then c == '%' else c `elem` ['%','#'] -> tok:toks
         where
           (comment, rest) = Text.break (== '\n') s
           tok  = makeToken comment pos Comment
-          toks = posToken (advanceAlong pos comment) whitespaceBefore texState rest
+          toks = posToken texState (advanceAlong pos comment) whitespaceBefore rest
       Just (c, cs) -> tok:toks
         where
           tok  = makeToken (Text.singleton c) pos whitespaceBefore
-          toks = posToken (advancePos pos c) NoWhiteSpaceBefore texState cs
+          toks = posToken texState (advancePos pos c) NoWhiteSpaceBefore cs
 
 
 isLexeme :: Char -> Bool
@@ -141,7 +141,7 @@ reportComments t@Token{}
   | otherwise = Just (tokenPos t, Markup.comment1)
 reportComments EOF{} = Nothing
 
--- | Append tokens seperated by a single space if they were seperated
+-- | Append tokens separated by a single space if they were separated
 -- by whitespace before.
 composeTokens :: [Token] -> Text
 composeTokens = Text.concat . dive

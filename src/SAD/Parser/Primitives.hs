@@ -43,12 +43,12 @@ import qualified Data.Text.Lazy as Text
 -- | Parse the current token or return an @EmptyFail@
 -- if the input is empty, eof or the supplied test functions returns @Nothing@.
 tokenPrim :: (Token -> Maybe a) -> Parser st a
-tokenPrim test = Parser $ \(State st input _) ok _ eerr ->
+tokenPrim test = Parser $ \(State st input parserKind _) ok _ eerr ->
   case input of
     []   -> eerr $ unexpectError "" noSourcePos
     t:ts -> case guard (not $ isEOF t) >> test t of
       Just x  ->
-        let newstate = State st ts (tokenPos t)
+        let newstate = State st ts parserKind (tokenPos t)
             newerr   = newErrorUnknown $ tokenPos t
         in  ok newerr [] [PR x newstate]
       Nothing -> eerr $ unexpectError (showToken t) (tokenPos t)
@@ -57,7 +57,7 @@ tokenPrim test = Parser $ \(State st input _) ok _ eerr ->
 -- | @tokenGuard test p@ parses the current token using @p@ only if the token passes
 -- the predicate @test@. Does not produce particularly useful error messages.
 tokenGuard :: (Token -> Bool) -> Parser st a -> Parser st a
-tokenGuard test p = Parser $ \st@(State _ input _) ok cerr eerr ->
+tokenGuard test p = Parser $ \st@(State _ input  _ _) ok cerr eerr ->
   case input of
     []   -> eerr $ unexpectError "" noSourcePos
     t:ts -> if test t
@@ -67,13 +67,13 @@ tokenGuard test p = Parser $ \st@(State _ input _) ok cerr eerr ->
 
 -- | Parse the end of input
 eof :: Parser st ()
-eof = Parser $ \(State st input _) ok _ eerr ->
+eof = Parser $ \(State st input parserKind _) ok _ eerr ->
   case input of
     [] -> eerr $ unexpectError "" noSourcePos
     (t:ts) ->
       if isEOF t
       then
-        let newstate = State st ts (tokenPos t)
+        let newstate = State st ts parserKind (tokenPos t)
             newerr   = newErrorUnknown $ tokenPos t
         in  ok newerr [] [PR () newstate]
       else eerr $ unexpectError (showToken t) (tokenPos t)

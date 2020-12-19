@@ -9,7 +9,7 @@ Main application entry point: console or server mode.
 
 module SAD.Main where
 
-import Control.Monad (when, unless)
+import Control.Monad (unless)
 import Data.Char (toLower)
 import Data.IORef
 import Data.Maybe (fromMaybe)
@@ -66,13 +66,13 @@ main  = do
         IO.hPutStrLn IO.stderr msg
         Exit.exitFailure)
 
-mainBody :: Maybe ByteString -> IORef (ProofText) -> ([Instr], [ProofText]) -> IO ()
+mainBody :: Maybe ByteString -> IORef ProofText -> ([Instr], [ProofText]) -> IO ()
 mainBody proversYaml oldProofTextRef (opts0, text0) = do
   startTime <- getCurrentTime
 
   oldProofText <- readIORef oldProofTextRef
   -- parse input text
-  txts <- readProofText (askArgument Library "." opts0) text0
+  txts <- readProofText (askFlag Tex False opts0) (askArgument Library "." opts0) text0
   let text1 = ProofTextRoot txts
 
   case askTheory FirstOrderLogic opts0 of
@@ -107,7 +107,7 @@ exportLean pt = do
     Right t -> putStrLn $ Text.unpack t
   return ()
 
-proveFOL :: Maybe ByteString -> ProofText -> [Instr] -> ProofText -> (IORef (ProofText)) -> UTCTime -> IO ()
+proveFOL :: Maybe ByteString -> ProofText -> [Instr] -> ProofText -> IORef ProofText -> UTCTime -> IO ()
 proveFOL proversYaml text1 opts0 oldProofText oldProofTextRef startTime = do
   -- read provers.yaml
   provers <- case proversYaml of
@@ -122,9 +122,7 @@ proveFOL proversYaml text1 opts0 oldProofText oldProofTextRef startTime = do
     Nothing -> do
       let text = textToCheck oldProofText text1
       (success, newProofText) <- verify (askArgument File "" opts0) provers reasonerState text
-      case newProofText of
-        Just txt -> writeIORef oldProofTextRef txt
-        _ -> return ()
+      mapM_ (writeIORef oldProofTextRef) newProofText
       pure success
     Just err -> do errorParser (errorPos err) (show err); pure False
 
@@ -175,9 +173,9 @@ proveFOL proversYaml text1 opts0 oldProofText oldProofTextRef startTime = do
   outputMain TRACING noSourcePos $ Text.unpack $
     "total " <> showTimeDiff (diffUTCTime finishTime startTime)
 
-  when (not success) Exit.exitFailure
+  unless success Exit.exitFailure
 
-serverConnection :: IORef (ProofText) -> [String] -> Socket -> IO ()
+serverConnection :: IORef ProofText -> [String] -> Socket -> IO ()
 serverConnection oldProofTextRef args0 connection = do
   thread_uuid <- Standard_Thread.my_uuid
   mapM_ (Byte_Message.write_line_message connection . UUID.bytes) thread_uuid
@@ -215,8 +213,10 @@ readArgs args = do
 
   let fail msgs = errorWithoutStackTrace (unlines (map trim_line msgs))
   unless (null errs) $ fail errs
-  when (length files > 1) $ fail ["More than one file argument\n"]
-  let commandLine = case files of [file] -> instrs ++ [GetArgument File (Text.pack file)]; _ -> instrs
+  commandLine <- case files of
+                  [file] -> return $ instrs ++ [GetArgument File (Text.pack file)]
+                  [] -> return instrs
+                  _ -> fail ["More than one file argument\n"]
 
   initFile <- readInit (askArgument Init "init.opt" commandLine)
   let initialOpts = initFile ++ map (noPos,) commandLine
@@ -308,7 +308,10 @@ options = [
     "enable unfolding of set and function conditions in general (def: off)",
   GetOpt.Option "" ["dump"]
     (GetOpt.ReqArg (SetFlag Dump . parseConsent) "{on|off}")
-    "print tasks in prover's syntax (def: off)"
+    "print tasks in prover's syntax (def: off)",
+  GetOpt.Option "" ["tex"]
+    (GetOpt.ReqArg (SetFlag Tex . parseConsent) "{on|off}")
+    "parse passed file with forthel tex parser (def: off)"
   ]
 
 parseConsent :: String -> Bool
