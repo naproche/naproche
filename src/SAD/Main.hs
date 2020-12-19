@@ -79,7 +79,7 @@ showTranslation :: [ProofText] -> UTCTime -> IO ()
 showTranslation txts startTime = do
   let timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)
   mapM_ (\case ProofTextBlock bl -> print bl; _ -> return ()) txts
-  mapM_ (putStrLn . Text.unpack . pretty) (convert txts)
+  mapM_ (putStr . (++"\n\n") . Text.unpack . pretty . located) (convert txts)
 
   -- print statistics
   finishTime <- getCurrentTime

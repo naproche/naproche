@@ -26,7 +26,6 @@ import SAD.Parser.Primitives
 
 import SAD.Core.SourcePos (noSourcePos)
 
-import SAD.Data.Text.Decl (Decl(Decl))
 import SAD.Data.Text.Decl
 
 import SAD.Core.Message (PIDE)
@@ -68,22 +67,13 @@ initFS = FState
     primAdjs = [
       ([Word ["equal"], Word ["to"], Vr], mkTrm EqualityId TermEquality),
       ([Word ["nonequal"], Word ["to"], Vr], Not . mkTrm EqualityId TermEquality) ]
-    primNotions = [
-      ([Word ["function","functions"], Nm], mkFun . head),
-      ([Word ["set","sets"], Nm], mkSet . head),
-      ([Word ["element", "elements"], Nm, Word ["of"], Vr], \(x:m:_) -> mkElem x m),
-      ([Word ["object", "objects"], Nm], mkObj . head)]
+    primNotions = []
     primSymbNotions = [ ([Symbol "=", Vr], mkTrm EqualityId TermEquality) ]
     primInfixPredicates = [
       ([Symbol "="], mkTrm EqualityId TermEquality),
-      ([Symbol "!", Symbol "="], Not . mkTrm EqualityId TermEquality),
-      ([Symbol "-", Symbol "<", Symbol "-"], mkTrm LessId TermLess),
-      ([Symbol "-~-"], \(m:n:_) -> mkAll VarEmpty $
-        Iff (mkElem (mkVar VarEmpty) m) (mkElem (mkVar VarEmpty) n)) ]
-    cf = [
-      ([Symbol "Dom", Symbol "(",Vr,Symbol ")"], mkDom . head),
-      ([Symbol "(", Vr, Symbol ",", Vr, Symbol ")"], \(x:y:_) -> mkPair x y) ]
-    rf = [ ([Symbol "[", Vr, Symbol "]"], \(f:x:_) -> mkApp f x)]
+      ([Symbol "!", Symbol "="], Not . mkTrm EqualityId TermEquality)]
+    cf = []
+    rf = [] 
 
 
 getExpr :: (FState -> [a]) -> (a -> FTL b) -> FTL b

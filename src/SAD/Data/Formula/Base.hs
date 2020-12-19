@@ -23,14 +23,15 @@ import qualified Data.Map as Map
 
 data Formula =
   All Decl Formula        | Exi Decl Formula |
+  Class Decl Formula      |
   Iff Formula Formula     | Imp Formula Formula     |
   Or  Formula Formula     | And Formula Formula     |
   Tag Tag Formula         | Not Formula             |
   Top                     | Bot                     |
   Trm { trmName :: TermName, trmArgs :: [Formula],
-        trmInfo :: [Formula], trmId   :: TermId}         |
+        trmInfo :: [Formula], trmId   :: TermId}    |
   Var { varName :: VarName, varInfo :: [Formula], varPosition :: SourcePos } |
-  Ind { indIndex :: Int, indPosition :: SourcePos }   | ThisT
+  Ind { indIndex :: Int, indPosition :: SourcePos } | ThisT
   deriving (Eq, Ord, Show)
 
 data Tag =
@@ -39,7 +40,7 @@ data Tag =
   -- Tags to mark certain parts of function definitions
   GenericMark | Evaluation | Condition | Defined | Domain | Replacement |
   -- Tags to mark parts in function proof tasks
-  DomainTask | ExistenceTask | UniquenessTask | ChoiceTask
+  DomainTask | ExistenceTask | UniquenessTask | ChoiceTask | CoercionTag
   deriving (Eq, Ord, Show)
 
 -- | whether a Tag marks a part in a function proof task
@@ -190,11 +191,11 @@ inst x = dive 0
     dive n v@Var{} = v {varInfo = map (dive n) $ varInfo v}
     dive n f = mapF (dive n) f
 
-{- substitute a formula t for a variable with name v. Does not affect info. -}
+-- | substitute a formula t for a variable with name v. Does not affect info.
 subst :: Formula -> VarName -> Formula -> Formula
 subst t v f = substs f [v] [t]
 
-{- multiple substitutions at the same time. Does not affect info. -}
+-- | multiple substitutions at the same time. Does not affect info.
 substs :: Formula -> [VarName] -> [Formula] -> Formula
 substs f vs ts = dive f
   where
@@ -223,7 +224,7 @@ twins _ _ = False
 -- made these change to occurs because it should be a syntactical check and have
 -- nothing to do with info
 
-{- replace the term s by the term t. Does not affect info. -}
+-- | @replace t s f@ replace the term @s@ by the term @t@ in @f@. Does not affect info.
 replace :: Formula -> Formula -> Formula -> Formula
 replace t s = dive
   where

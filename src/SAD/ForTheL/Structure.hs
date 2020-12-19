@@ -35,7 +35,6 @@ import SAD.Data.Instr
 import SAD.Data.Text.Block (Block(Block), ProofText(..), Section(..))
 import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Formula
-import SAD.Data.Text.Decl (Decl(Decl))
 import SAD.Data.Text.Decl
 
 
@@ -187,7 +186,7 @@ affirm = sentence Affirmation (beginAff >> statement) affirmVars link </> eqChai
 assume :: FTL (Block)
 assume = sentence Assumption (beginAsm >> statement) assumeVars noLink
 llDefn :: FTL (Block)
-llDefn = sentence LowDefinition(beginDef >> setNotion </> functionNotion) llDefnVars noLink
+llDefn = sentence LowDefinition(beginDef >> classNotion </> functionNotion) llDefnVars noLink
 
 -- Links and Identifiers
 link :: FTL [Text]

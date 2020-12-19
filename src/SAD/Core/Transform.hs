@@ -1,5 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE ViewPatterns #-}
 
 -- | Transform the blocks from a parsed text to TFF form.
 -- This code is a bit fragile since it was written mainly
@@ -80,6 +82,7 @@ parseFormula = go []
     go vars = \case
       F.All (Decl v _ _) f -> Forall v (Const ()) $ go (addVar v vars) f
       F.Exi (Decl v _ _) f -> Exists v (Const ()) $ go (addVar v vars) f
+      F.Class (Decl v _ _) f -> Class v (Const ()) $ go (addVar v vars) f
       F.Iff f1 f2 -> App Iff [go vars f1, go vars f2]
       F.Imp f1 f2 -> App Imp [go vars f1, go vars f2]
       F.And f1 f2 -> App And [go vars f1, go vars f2]
@@ -109,6 +112,7 @@ bindFree t = bind (Set.toList $ fvToVarSet $ free t) t
     free = \case
       Forall v (Const ()) t -> bindVar v $ free t
       Exists v (Const ()) t -> bindVar v $ free t
+      Class v (Const ()) tr -> bindVar v $ free tr
       App _ args -> mconcat $ free <$> args
       Tag _ t -> free t
       Var v -> unitFV v noSourcePos
@@ -121,7 +125,7 @@ bindExists vs tr = foldr (\v -> Exists v (Const ())) tr vs
 -- decide if this is a sort.
 parseType :: Context -> TermName -> Maybe InType
 parseType ctx = \case 
-  (TermNotion "Object") -> Just Object
+  (TermNotion "Obj") -> Just Object
   t@(TermNotion _) -> case Map.lookup t (typings ctx) of
     Just Sort -> Just $ Signature t
     _ -> Nothing
@@ -132,13 +136,17 @@ parseType ctx = \case
 -- the type predicates need to be deleted from the terms
 -- and it is not allowed for a variable to have more than
 -- one sort (which we check here).
-extractGivenTypes :: Context -> Term (Const ()) t -> Term Identity t
+extractGivenTypes :: Context -> Term (Const ()) Tag -> Term Identity Tag
 extractGivenTypes ctx = snd . go
   where
-    duplicateType a b = error $ 
-      "A variable has been defined with multiple types: " ++ show a ++ " and " ++ show b
+    -- TODO: This is not always evaluated to WHNF
+    -- and so the error is sometimes not reported.
+    duplicateType a b =
+      if coercibleInto' a b (coercions ctx) then a else
+      if coercibleInto' b a (coercions ctx) then b else
+      error $ "A variable has been defined with multiple types: " ++ show a ++ " and " ++ show b
 
-    go :: Term (Const ()) t -> (Map VarName InType, Term Identity t)
+    go :: Term (Const ()) Tag -> (Map VarName InType, Term Identity Tag)
     go = \case
       Forall v (Const ()) t ->
         let (typings, t') = go t
@@ -146,8 +154,15 @@ extractGivenTypes ctx = snd . go
       Exists v (Const ()) t ->
         let (typings, t') = go t
         in (typings, Exists v (Identity $ Map.findWithDefault Object v typings) t')
+      Class v (Const ()) t ->
+        let (typings, t') = go t
+        in (typings, Class v (Identity $ Map.findWithDefault Object v typings) t')
+      -- this hack allows for new coercions in a lemma or axiom
+      -- if it is of the form "Let s be a from. Then s is a to."
+      App Imp [App (OpTrm (parseType ctx -> Just from)) [Var v0], App (OpTrm name@(parseType ctx -> Just _)) [Var v1]]
+        | v0 == v1 -> (Map.singleton v0 from, Tag CoercionTag $ App (OpTrm name) [Var v0])
       App (OpTrm name) [Var v] -> case parseType ctx name of
-        Just t -> (Map.insert v t mempty, App Top [])
+        Just t -> (Map.singleton v t, App Top [])
         Nothing -> (mempty, App (OpTrm name) [Var v])
       App op args ->
         let res = map go args
@@ -213,11 +228,14 @@ gatherTypes c = snd . go Prop (preBoundVars c) 0
       Exists v (Identity m) t -> case context of
         Prop -> Exists v (Identity m) <$> go Prop (Map.insert v m typings) d t
         _ -> error $ "Found an exists term where an object was expected"
+      Class v (Identity m) t -> case context of
+        InType _ -> (InType $ Signature (TermNotion "Class"), Class v (Identity m) 
+          $ snd $ go Prop (Map.insert v m typings) d t)
+        Prop -> error $ "Found a class where a proposition was expected."
       -- If we use a sort as a predicate aSort(x), we instead use ∃[v : aSort] v = x
       -- and add the coercion later.
       App (OpTrm name@(TermNotion _)) [arg] -> go Prop typings (d+1) 
         (Exists (VarF d) (Identity $ Signature name) (App Eq [Var (VarF d), arg]))
-      App (OpTrm (TermNotion _)) _ -> error $ "Internal: we don't support THF yet."
       App (OpTrm name) args ->
         let (argtypes, args') = unzip $ map (go (InType Object) typings d) args
             argintypes = flip map argtypes $ \t -> case t of
@@ -261,8 +279,13 @@ extractDefinitions = go mempty
     go types = \case
       Forall v (Identity m) t -> simp <$> Forall v (Identity m) <$> go (Map.insert v m types) t
       Exists v (Identity m) t -> simp <$> Exists v (Identity m) <$> go (Map.insert v m types) t
+      Class v (Identity m) t -> simp <$> Class v (Identity m) <$> go (Map.insert v m types) t
       App op args -> let res = map (go types) args
         in (concatMap fst res, simp $ App op $ map snd res)
+      -- coercion definitions
+      Tag CoercionTag trm@(Exists _ (Identity (Signature to)) (App Eq [_, Var v0])) -> case Map.lookup v0 types of
+        (Just (Signature from)) -> ([Coercion (coercionName from to) from to], App Top [])
+        _ -> ([], trm)
       -- sorts and predicate definitions
       Tag HeadTerm trm@(App (OpTrm name) args) -> case (name, args) of
         (TermNotion _, [Var v]) -> let t = case Map.lookup v types of
@@ -285,7 +308,9 @@ noTags = go
     go = \case
       Forall v m t -> Forall v m (go t)
       Exists v m t -> Exists v m (go t)
+      Class v m t -> Class v m (go t)
       App op args -> App op (go <$> args)
+      Tag Replacement t -> go t
       Tag EqualityChain t -> go t
       Tag tag _ -> error $ "Remaining tag: " ++ show tag
       Var v -> Var v

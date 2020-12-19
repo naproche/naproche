@@ -25,8 +25,9 @@ showsPrecFormula p = goShowFormula p 0
 goShowFormula :: Int -> Int -> Formula -> ShowS
 goShowFormula p d = dive
   where
-    dive (All _ f) = showString "forall " . showBinder f
-    dive (Exi _ f) = showString "exists " . showBinder f
+    dive (All _ f) = showString "forall " . showBinder " " f
+    dive (Exi _ f) = showString "exists " . showBinder " " f
+    dive (Class _ f) = showString "{ " . showBinder " | " f . showString " }"
     dive (Iff f g) = showParen True $ showInfix " iff "     f g
     dive (Imp f g) = showParen True $ showInfix " implies " f g
     dive (Or  f g) = showParen True $ showInfix " or "      f g
@@ -62,7 +63,7 @@ goShowFormula p d = dive
       let showTerm = goShowFormula (pred p) d
       in  showArgumentsWith showTerm ts
 
-    showBinder f = goShowFormula p (succ d) (Ind 0 noSourcePos) . showChar ' ' .
+    showBinder sep f = goShowFormula p (succ d) (Ind 0 noSourcePos) . showString sep .
       goShowFormula p (succ d) f
 
     showInfix operator f g = dive f . showString operator . dive g

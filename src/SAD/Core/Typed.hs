@@ -30,6 +30,9 @@ data OutType = Prop | InType InType
   deriving (Eq, Ord, Show, Read)
 
 -- | A type for a term in TFF.
+-- Sorts and ClassSorts are sorts in TFF,
+-- but we assume that the elements of sorts
+-- are of set sized for our NBG implementation.
 data Type = Sort | Pred [InType] OutType
   deriving (Eq, Ord, Show, Read)
 
@@ -53,6 +56,7 @@ data Operator
 data Term f t
   = Forall VarName (f InType) (Term f t)
   | Exists VarName (f InType) (Term f t)
+  | Class VarName (f InType) (Term f t)
   | App Operator [Term f t]
   | Tag t (Term f t)
   | Var VarName
@@ -106,7 +110,7 @@ deriving instance (Show (f InType), Show t) => Show (Prf f t)
 
 type Proof = Located (Prf Identity ())
 
--- | Simplify a formula at the head for nicer pretty-printing.
+-- | Simplify a formula for nicer pretty-printing.
 simp :: Term f t -> Term f t
 simp = \case
   Forall v t tr -> case simp tr of
@@ -117,20 +121,21 @@ simp = \case
     App Top [] -> App Top []
     App Bot [] -> App Bot []
     tr' -> Exists v t tr'
-  App And [App Top [], b] -> b
-  App And [a, App Top []] -> a
+  Class v m tr -> Class v m (simp tr)
+  App And [App Top [], b] -> simp b
+  App And [a, App Top []] -> simp a
   App And [App Bot [], _] -> App Bot []
   App And [_, App Bot []] -> App Bot []
   App Or  [App Top [], _] -> App Top []
   App Or  [_, App Top []] -> App Top []
-  App Or  [App Bot [], b] -> b
-  App Or  [a, App Bot []] -> a
-  App Imp [App Top [], b] -> b
+  App Or  [App Bot [], b] -> simp b
+  App Or  [a, App Bot []] -> simp a
+  App Imp [App Top [], b] -> simp b
   App Imp [_, App Top []] -> App Top []
   App Imp [App Bot [], _] -> App Top []
   App Imp [a, App Bot []] -> simp $ App Not [a]
-  App Iff [App Top [], b] -> b
-  App Iff [a, App Top []] -> a
+  App Iff [App Top [], b] -> simp b
+  App Iff [a, App Top []] -> simp a
   App Iff [App Bot [], b] -> simp $ App Not [b]
   App Iff [a, App Bot []] -> simp $ App Not [a]
   App Not [App Not [a]] -> a
@@ -162,6 +167,8 @@ instance (Pretty (f InType), Show t, Show (f InType))
     <> pretty t <> "] " <> pretty tr
   pretty (Exists v t tr) = "∃[" <> pretty v <> " : " 
     <> pretty t <> "] " <> pretty tr
+  pretty (Class v t tr) = "{ " <> pretty v <> " : "
+    <> pretty t <> " | " <> pretty tr <> " }"
   pretty (App And [a, b]) = "(" <> pretty a <> " and " <> pretty b <> ")"
   pretty (App Or  [a, b]) = "(" <> pretty a <> " or " <> pretty b <> ")"
   pretty (App Iff [a, b]) = "(" <> pretty a <> " iff " <> pretty b <> ")"
