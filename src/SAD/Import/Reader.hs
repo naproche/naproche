@@ -53,7 +53,7 @@ instructionFile = after (optLL1 [] $ chainLL1 instr) eof
 
 -- | @readProofText startWithTex pathToLibrary text0@ takes:
 -- @startWithTex@, a boolean indicating whether to execute the next file instruction using the tex parser,
--- @pathToLibrary@, a path to where the read instruction should look for files,
+-- @pathToLibrary@, a path to where the read instruction should look for files and
 -- @text0@, containing some configuration.
 readProofText :: Bool -> Text -> [ProofText] -> IO [ProofText]
 readProofText startWithTex pathToLibrary text0 = do

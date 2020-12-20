@@ -64,7 +64,7 @@ The cardinality of M is a cardinal.
 Let card(M) stand for the cardinality of M.
 
 
-Axiom Surj_Exi.
+Axiom SurjExi.
 Assume M has an element. card(M) =< card(N) iff there exists a function f such
 that Dom(f) = N and f^[N] = M.
 
@@ -118,7 +118,7 @@ Proof by contradiction.
 Assume the contrary.
 Take a cofinal subset x of Succ(A) such that card(x) != Succ(A).
 Then card(x) =< A.
-Take a function f that is surjective from A onto x (by Surj_Exi).
+Take a function f that is surjective from A onto x (by SurjExi).
 Indeed x has an element and card(A) = A.
 Define g[i] =
 	Case i has an element -> Choose a function h that is surjective from A onto i in h,
