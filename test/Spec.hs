@@ -25,8 +25,8 @@ gather (hout, herr, ph) = do
 files :: [FilePath]
 files = fmap ("examples/"++)
   -- This file does check, but it often fails when limited to reasonable time
-  [ "chinese.ftl"
-  , "fuerst.ftl"
+  -- [ "chinese.ftl"
+  [ "fuerst.ftl"
   , "Koenigs_lemma.ftl"
   , "Maximum_principle.ftl"
   , "newman.ftl"
@@ -58,8 +58,8 @@ output xs = do
 
 main :: IO ()
 main = do
-  compiled <- mapM (compileFile ["-t", "30", "--tex=off"]) files
-  compiledTex <- mapM (compileFile ["-t", "30", "--tex=on"]) texFiles
+  compiled <- mapM (compileFile ["-t", "25", "--tex=off"]) files
+  compiledTex <- mapM (compileFile ["-t", "25", "--tex=on"]) texFiles
 
   failed <- output . zip files =<< mapM gather (compiled ++ compiledTex)
   let shouldntHaveFailed = filter (\f -> snd f `notElem` shouldFailFiles) failed
