@@ -121,7 +121,7 @@ tokenize texState start = posToken texState start NoWhiteSpaceBefore
           cmd = Text.cons '\\' name
           tok = makeToken cmd pos whitespaceBefore
           toks = posToken texState (advanceAlong pos cmd) WhiteSpaceBefore rest'
-      Just (c, _) | if usingTexParser texState then c == '%' else c `elem` ['%','#'] -> tok:toks
+      Just (c, _) | if usingTexParser texState then c == '%' else c == '#' -> tok:toks
         where
           (comment, rest) = Text.break (== '\n') s
           tok  = makeToken comment pos Comment
