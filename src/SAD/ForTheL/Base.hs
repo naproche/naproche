@@ -465,13 +465,3 @@ texEnd envType = do
   symbol "{"
   envType
   symbol "}"
-
-envLabel :: FTL Text
-envLabel = do
-  symbol "["
-  label <- anyToken
-  symbol "]"
-  return label
-
-optionalEnvLabel :: FTL (Maybe Text)
-optionalEnvLabel = optLLx Nothing (Just <$> envLabel)

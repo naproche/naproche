@@ -192,6 +192,18 @@ assume = sentence Assumption (beginAsm >> statement) assumeVars noLink
 llDefn :: FTL Block
 llDefn = sentence LowDefinition(beginDef >> setNotion </> functionNotion) llDefnVars noLink
 
+
+-- Tex labels
+envLabel :: FTL Text
+envLabel = do
+  symbol "["
+  label <- topIdentifier
+  symbol "]"
+  return label
+
+optionalEnvLabel :: FTL (Maybe Text)
+optionalEnvLabel = optLLx Nothing (Just <$> envLabel)
+
 -- Links and Identifiers
 link :: FTL [Text]
 link = finish eqLink
