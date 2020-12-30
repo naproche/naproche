@@ -123,8 +123,9 @@ reader0 pos text pState = do
 
 
 chooseParser :: State FState -> IO ([ProofText], State FState)
-chooseParser st | parserKind st == Tex = launchParser texForthel st
-chooseParser st | parserKind st == NonTex = launchParser forthel  st
+chooseParser st = case parserKind st of
+  Tex -> launchParser texForthel st
+  NonTex -> launchParser forthel st
 
 chooseTokenizer :: State FState -> SourcePos -> Text -> [Token]
 chooseTokenizer st | parserKind st == Tex = tokenize OutsideForthelEnv
