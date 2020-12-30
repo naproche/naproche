@@ -64,7 +64,7 @@ Axiom Identity_Theorem.
 Assume f is holomorphic and the domain of f is a region. Assume that Ball(eps,z) is a subset of the domain of f. If f is constant on Ball(eps,z) then f is constant.
 
 
-Proposition Maximum_Principle.
+Proposition Maximum_principle.
 Assume f is holomorphic and the domain of f is a region. If f has a local maximal point then f is constant.
 Proof.
 Let z be a local maximal point of f. Take eps such that Ball(eps,z) is a subset of Dom(f) and |f[w]| =< |f[z]| for every element w of Ball(eps,z).
