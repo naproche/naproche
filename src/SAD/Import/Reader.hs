@@ -131,8 +131,9 @@ chooseParser st = case parserKind st of
   NonTex -> launchParser forthel st
 
 chooseTokenizer :: State FState -> SourcePos -> Text -> [Token]
-chooseTokenizer st | parserKind st == Tex = tokenize OutsideForthelEnv
-chooseTokenizer st | parserKind st == NonTex = tokenize TexDisabled
+chooseTokenizer st = case parserKind st of
+  Tex -> tokenize OutsideForthelEnv
+  NonTex -> tokenize TexDisabled
 
 -- launch a parser in the IO monad
 launchParser :: Parser st a -> State st -> IO (a, State st)
