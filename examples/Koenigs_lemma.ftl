@@ -43,12 +43,12 @@ The cardinality of M is a cardinal.
 
 Let card(M) denote the cardinality of M.
 
-Axiom ImageCard. Assume M is a subset of Dom(f). card(f^[M]) =< card(M).
+Axiom Image_Card. Assume M is a subset of Dom(f). card(f^[M]) =< card(M).
 
 Axiom.
 Assume the cardinality of N is less than the cardinality of M. Then M \ N has an element.
 
-Axiom SurjExi.
+Axiom Surj_Exi.
 Assume card(M) =< card(N). Assume M has an element. There exists a function f such that N is the
 domain of f and M is the image of f.
 
@@ -66,7 +66,7 @@ element x of D.
 Signature.
 Let kappa be a sequence of cardinals on D. SumSet(kappa,D) is a set.
 
-Axiom SumDef.
+Axiom Sum_Def.
 Let kappa be a sequence of cardinals on D.
 SumSet(kappa,D) =
   { (n,i) | i is an element of D and n is an element of kappa[i] }.
@@ -77,7 +77,7 @@ Let kappa be a sequence of cardinals on D. Sum(kappa,D) = card(SumSet(kappa,D)).
 Signature.
 Let kappa be a sequence of cardinals on D. ProdSet(kappa,D) is a set.
 
-Axiom ProdDef.
+Axiom Prod_Def.
 let kappa be a sequence of cardinals on D.
 ProdSet(kappa,D) =
   { function f | Dom(f) = D /\ (f[i] is an element of kappa[i] for every element i of D) }.

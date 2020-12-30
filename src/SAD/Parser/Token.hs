@@ -133,7 +133,7 @@ tokenize texState start = posToken texState start NoWhiteSpaceBefore
 
 
 isLexeme :: Char -> Bool
-isLexeme c = isAscii c && isAlphaNum c
+isLexeme c = (isAscii c && isAlphaNum c) || c == '_'
 
 reportComments :: Token -> Maybe Message.Report
 reportComments t@Token{}
