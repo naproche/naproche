@@ -76,8 +76,11 @@ reader pathToLibrary doneFiles = go
 
     go (pState:states) [ProofTextInstr pos (GetArgument File file)] parserKind'
       | file `elem` doneFiles = do
+          -- The parserKind of the state of the parser indicates whether the file was originally read with the .tex
+          -- or the .ftl parser. Now if, for example, we originally read the file with the .ftl format and now we
+          -- are reading the file again with the .tex format(by eg using '[readtex myfile.ftl]'), we want to throw an error.
           when (Just (parserKind pState) /= parserKind')
-            (Message.errorParser (Instr.position pos) "Trying to read a file once in Tex format and once in NonTex format.")
+            (Message.errorParser (Instr.position pos) "Trying to read the same file once in Tex format and once in NonTex format.")
           Message.outputMain Message.WARNING (Instr.position pos)
             ("Skipping already read file: " ++ show file)
           (newProofText, newState) <- chooseParser pState
