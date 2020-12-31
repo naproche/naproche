@@ -42,7 +42,7 @@ import qualified Isabelle.Markup as Markup
 -- | Main verification loop
 verify :: Text -> [Prover] -> IORef RState -> ProofText -> IO (Bool, Maybe ProofText)
 verify fileName provers reasonerState (ProofTextRoot text) = do
-  let text' = ProofTextInstr noPos (GetArgument File fileName) : text
+  let text' = ProofTextInstr noPos (GetArgument (File NonTex) fileName) : text
   let verificationState = makeInitialVState provers text'
   Message.outputReasoner Message.TRACING (fileOnlyPos fileName) "verification started"
 

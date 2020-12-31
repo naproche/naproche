@@ -18,7 +18,8 @@ import qualified Data.Text.Lazy as Text
 
 import SAD.Data.Text.Block
 import SAD.Data.Instr as Instr
-    ( Argument(Text, File, FileTex, Read, ReadTex),
+    ( Argument(Text, File, Read),
+      ParserKind(Tex, NonTex),
       Instr(GetArgument),
       Pos,
       position )
@@ -65,11 +66,11 @@ readProofText pathToLibrary text0 = do
 reader :: Text -> [Text] -> [State FState] -> [ProofText] -> IO ([ProofText], [Message.Report])
 reader pathToLibrary doneFiles = go
   where
-    parseRead fileType stateList pos file = if ".." `Text.isInfixOf` file
+    go stateList [ProofTextInstr pos (GetArgument (Read pk) file)] = if ".." `Text.isInfixOf` file
       then Message.errorParser (Instr.position pos) ("Illegal \"..\" in file name: " ++ show file)
-      else go stateList [ProofTextInstr pos $ GetArgument fileType $ pathToLibrary <> "/" <> file]
+      else go stateList [ProofTextInstr pos $ GetArgument (File pk) $ pathToLibrary <> "/" <> file]
 
-    parseFile parserKind' pState states pos file
+    go (pState:states) [ProofTextInstr pos (GetArgument (File parserKind') file)]
       | file `elem` doneFiles = do
           -- The parserKind of the state of the parser indicates whether the file was originally read with the .tex
           -- or the .ftl parser. Now if, for example, we originally read the file with the .ftl format and now we
@@ -87,18 +88,9 @@ reader pathToLibrary doneFiles = go
           (newProofText, newState) <- reader0 (filePos file) (Text.pack text) (pState {parserKind = parserKind'})
           -- state from before reading is still here
           reader pathToLibrary (file:doneFiles) (newState:pState:states) newProofText
-    
-    go stateList [ProofTextInstr pos (GetArgument Read file)] = parseRead File stateList pos file
-    go stateList [ProofTextInstr pos (GetArgument ReadTex file)] = parseRead FileTex stateList pos file
 
-    go (pState:states) [ProofTextInstr pos (GetArgument File file)]
-      = parseFile NonTex pState states pos file
-    go (pState:states) [ProofTextInstr pos (GetArgument FileTex file)]
-      = parseFile Tex pState states pos file
-
-    -- We read text instructions with NonTex parser
-    go (pState:states) [ProofTextInstr _ (GetArgument Text text)] = do
-      (newProofText, newState) <- reader0 startPos text (pState {parserKind = NonTex})
+    go (pState:states) [ProofTextInstr _ (GetArgument (Text pk) text)] = do
+      (newProofText, newState) <- reader0 startPos text (pState {parserKind = pk})
       go (newState:pState:states) newProofText -- state from before reading is still here
 
     -- This says that we are only really processing the last instruction in a [ProofText].

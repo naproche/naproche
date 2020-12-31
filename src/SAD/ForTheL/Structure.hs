@@ -88,8 +88,7 @@ addSynonym text = case text of
 -- | Succeeds if the ProofText consists of an exit instruction.
 exitInstruction :: ProofText -> FTL [ProofText]
 exitInstruction text = case text of
-  ProofTextInstr _ (GetArgument Read _) -> return [text]
-  ProofTextInstr _ (GetArgument ReadTex _) -> return [text]
+  ProofTextInstr _ (GetArgument (Read _) _) -> return [text]
   ProofTextInstr _ (Command EXIT) -> return []
   ProofTextInstr _ (Command QUIT) -> return []
   _ -> failing (return ()) >> return [] -- Not sure how to properly throw an error.

@@ -23,7 +23,7 @@ import SAD.Core.Message (consoleThread, exitThread, errorParser, outputMain, ini
 import SAD.Core.SourcePos (noSourcePos)
 import SAD.Core.Verify (verify)
 import SAD.Data.Instr (Instr(..), Flag(..), askFlag, Limit(..), askLimit, Argument(..), askArgument, Arguments(..), noPos
-  , UnderlyingTheory(..), askTheory)
+  , UnderlyingTheory(..), askTheory, ParserKind(..), Pos)
 import SAD.Data.Text.Block (ProofText(..), textToCheck, findParseError)
 import SAD.Export.Base (readProverFile, readProverDatabase)
 import SAD.Import.Reader (readInit, readProofText)
