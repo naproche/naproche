@@ -72,7 +72,7 @@ mainBody proversYaml oldProofTextRef (opts0, text0) = do
 
   oldProofText <- readIORef oldProofTextRef
   -- parse input text
-  txts <- readProofText (askFlag Tex False opts0) (askArgument Library "." opts0) text0
+  txts <- readProofText (askArgument Library "." opts0) text0
   let text1 = ProofTextRoot txts
 
   case askTheory FirstOrderLogic opts0 of
@@ -213,16 +213,17 @@ readArgs args = do
 
   let fail msgs = errorWithoutStackTrace (unlines (map trim_line msgs))
   unless (null errs) $ fail errs
-  commandLine <- case files of
-                  [file] -> return $ instrs ++ [GetArgument File (Text.pack file)]
-                  [] -> return instrs
-                  _ -> fail ["More than one file argument\n"]
 
-  initFile <- readInit (askArgument Init "init.opt" commandLine)
-  let initialOpts = initFile ++ map (noPos,) commandLine
+  initFile <- readInit (askArgument Init "init.opt" instrs)
+  let initialOpts = initFile ++ map (noPos,) instrs
 
   let revInitialOpts = map snd $ reverse initialOpts
-  let initialProofText = map (uncurry ProofTextInstr) initialOpts
+  let useTex = askFlag Tex False revInitialOpts
+  let fileArgs = case files of
+                  [file] -> [(noPos, GetArgument (if useTex then FileTex else File) (Text.pack file))]
+                  [] -> []
+                  _ -> fail ["More than one file argument\n"]
+  let initialProofText = map (uncurry ProofTextInstr) $ initialOpts ++ fileArgs
   return (revInitialOpts, initialProofText)
 
 usageHeader :: String

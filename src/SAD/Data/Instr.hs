@@ -99,6 +99,7 @@ data Argument =
     Init     --  init file (init.opt)
   | Text     --  literal text
   | File     --  read file
+  | FileTex  --  read file with tex parser
   | Read     --  read library file
   | ReadTex  --  read library file with tex parser
   | Library  --  library directory
