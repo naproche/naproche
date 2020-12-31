@@ -375,7 +375,7 @@ postMethod = optLL1 None $ short <|> explicit
     explicit = finish $ markupToken proofStart "proof" >> optLL1 Raw method
 
 texPostMethod :: FTL Scheme
-texPostMethod = optLL1 None $ texBegin (markupToken proofStart "proof") >> (short <|> explicit)
+texPostMethod = optLLx None $ texBegin (markupToken proofStart "proof") >> (short <|> explicit)
   where
     short = markupToken proofStart "indeed" >> return Short
     explicit = optLL1 Raw . finish $ markupToken byAnnotation "proof" >> method
