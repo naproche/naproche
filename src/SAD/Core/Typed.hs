@@ -4,6 +4,7 @@
 module SAD.Core.Typed
  ( InType(..), OutType(..), Type(..)
  , Term(..), Proof, Located(..), Prf(..)
+ , PrfBlock(..), ProofBlock
  , Statement, Stmt(..), Operator(..)
  , simp
  ) where
@@ -76,16 +77,14 @@ data Located a = Located
 -- The declaration of a notion, a predicate, axiom or claim.
 -- For example, defining 'p(x) iff q' will yield a predicate (p : x -> Prop)
 -- and an axiom 'p(x) iff q'.
--- In a future version, coercions between sorts will be added.
+-- Note that we don't check the term of the claim but only the proof block.
 data Stmt f t
   = IntroSort TermName
   | Predicate TermName 
     [InType] -- ^ the types of the arguments
     OutType -- ^ the return type
   | Axiom (Term f t)
-  | Claim (Term f t) 
-    [Text] -- ^ links: theorems that may be useful for proving this claim
-    [Located (Prf f t)] -- ^ the proof
+  | Claim (Term f t) (PrfBlock f t)
   | Coercion 
     TermName -- ^ name of coercion
     TermName -- ^ from notion
@@ -96,18 +95,37 @@ deriving instance (Show (f InType), Show t) => Show (Stmt f t)
 
 type Statement = Located (Stmt Identity ())
 
+-- | A proof block with the last claim that is to be proven
+-- under the tactics given in the list of proofs (the "goal").
+-- This will either be a reduction of the claim it belongs to
+-- or 'Bot' if we are in a proof by contradiction.
+data PrfBlock f t
+  = Proving [Located (Prf f t)] (Term f t) 
+    [Text] -- ^ links: theorems that may be useful for proving this claim
+deriving instance (Eq (f InType), Eq t) => Eq (PrfBlock f t)
+deriving instance (Ord (f InType), Ord t) => Ord (PrfBlock f t)
+deriving instance (Show (f InType), Show t) => Show (PrfBlock f t)
+
 -- | A proof consists of sub-claims that will be given directly to the ATP
 -- and a number of tactics.
+-- Danger: If the proof of the subclaim is not empty we will not check
+-- the subclaim seperately but assume that the proof contains the subclaim 
+-- as its last subclaim (similarly to how we handle claims).
+-- Intro, assume and ByContradiction are special, because the modify
+-- the goal without needing to be proven.
 data Prf f t
-  = Subclaim (Term f t) [Text] [Proof]
-  | Intro [(VarName, InType)] (Term f t) [Proof]
-  | Choose [(VarName, InType)] (Term f t) [Text] [Proof]
-  | Cases [(Term f t, [Proof])]
-  | ByContradiction [Proof]
+  = Subclaim (Term f t) (PrfBlock f t)
+  | Intro VarName InType
+  | Assume (Term f t)
+  | Choose [(VarName, InType)] (Term f t) (PrfBlock f t)
+  | Cases [(Term f t, PrfBlock f t)]
+  | TerminalCases [(Term f t, PrfBlock f t)]
+  | ByContradiction (Term f t) -- ^ contradict the current goal
 deriving instance (Eq (f InType), Eq t) => Eq (Prf f t)
 deriving instance (Ord (f InType), Ord t) => Ord (Prf f t)
 deriving instance (Show (f InType), Show t) => Show (Prf f t)
 
+type ProofBlock = PrfBlock Identity ()
 type Proof = Located (Prf Identity ())
 
 -- | Simplify a formula for nicer pretty-printing.
@@ -193,25 +211,30 @@ instance (Pretty (f InType), Show t, Show (f InType))
   pretty (Predicate tm ts t) = pretty tm <> " : "
     <> Text.intercalate " → " (map pretty ts) <> " → " <> pretty t
   pretty (Axiom t) = "Axiom: " <> pretty t
-  pretty (Claim t ls prfs) = "Claim: " <> pretty t <> " "
-    <> inParens ls <> renderLines (map (pretty . located) prfs)
+  pretty (Claim t prf) = "Claim: " <> pretty t <> " " <> pretty prf
   pretty (Coercion name from to) = "Coercion: " <> pretty name <> " : " 
     <> pretty from <> " → " <> pretty to
 
 instance (Pretty (f InType), Show t, Show (f InType))
+  => Pretty (PrfBlock f t) where
+  pretty (Proving [] _ ls) = inParens ls
+  pretty (Proving prfs c ls) =
+    renderLines (map (pretty . located) prfs) 
+    <> "\n" <> pretty c <> inParens ls
+
+instance (Pretty (f InType), Show t, Show (f InType))
   => Pretty (Prf f t) where
-  pretty (Subclaim t ls prfs) = pretty t <> " "
-    <> inParens ls <> renderLines (map (pretty . located) prfs)
-  pretty (Intro vs t prfs) = "Let: [" <> Text.intercalate ", " 
-    (map (\(v, t) -> pretty v <> " : " <> pretty t) vs) <> 
-    "] such that " <> pretty t <> renderLines ((pretty . located) <$> prfs)
-  pretty (Choose vs t ls prfs) = "Choose: " <> Text.intercalate ", " 
-    (map pretty vs) <> " " <> inParens ls <>
-    " such that " <> pretty t <> renderLines ((pretty . located) <$> prfs)
+  pretty (Subclaim t prfs) = pretty t <> " " <> pretty prfs
+  pretty (Intro v t) = "Let " <> pretty v <> " : " <> pretty t 
+  pretty (Assume a) = "Assume " <> pretty a
+  pretty (Choose vs t prfs) = "Choose: " <> Text.intercalate ", " 
+    (map pretty vs) <> " such that " <> pretty t <> pretty prfs
   pretty (Cases cs) = Text.concat $
-    map (\(t, p) -> "Case: " <> pretty t <> renderLines ((pretty . located) <$> p)) cs
-  pretty (ByContradiction prfs) = "Assume not."
-    <> renderLines (map (pretty . located) prfs)
+    map (\(t, p) -> "Case: " <> pretty t <> pretty p) cs
+  pretty (TerminalCases cs) = Text.concat $
+    map (\(t, p) -> "Case: " <> pretty t <> pretty p) cs
+  pretty (ByContradiction goal) = "Assume the contrary: " 
+    <> pretty (simp (App Not [goal]))
 
 instance Pretty a => Pretty (Located a) where
   pretty (Located t p a) = "[" <> t  <> "] " 

@@ -98,9 +98,9 @@ Lemma L2_11. Assume x-y-z and r-v-w and x-y : r-v and y-z : v-w. Then x-z : r-w.
 % The following proof follows the proof from SST and works, but can be omitted entirely.
 %
 Proof.
-  OFS(x,y,z,x,r,v,w,r).     % By previous results and assumption.
-  Assume x = y. Then r = v. % Axiom A3 gives this implication.
-  Assume x != y.            % Axiom A5 completes the proof.
+  OFS(x,y,z,x,r,v,w,r).        % By previous results and assumption.
+  Case x = y. Then r = v. end. % Axiom A3 gives this implication.
+  Case x != y. end.            % Axiom A5 completes the proof.
 qed.
 
 % Uniqueness for Axiom A4.
@@ -212,8 +212,8 @@ Lemma L4_18. Assume x != y and Col(x,y,z) and x-z : x-p and y-z : y-p. Then z = 
 
 Lemma L4_19. Assume x-z-y and x-z : x-p and y-z : y-p. Then z = p.
 Proof.
-  Assume x = y. Then x = z and x = p. Hence z = p.
-  Assume x != y.
+  Case x = y. Then x = z and x = p. Hence z = p. end.
+  Case x != y. end.
 qed.
 
 % The 11th axiom of Tarski's axiomatic system says that if x-y-w and x-z-w then
@@ -272,7 +272,7 @@ Proof.
 	OFS(q,z,h,v,v,z,u,q). Hence h-v : u-q. Hence h-w : u-r. % TODO: this step is slow.
 	Therefore OFS(q,u,r,z,v,h,w,z). Hence q-r : v-w.
 	If q != u then z-w : z-r. If q = u then q = r. % TODO: this step is slow.
-	Then v = w. Therefore z-w : z-r.
+	If q = u then v = w. Therefore z-w : z-r.
 	Hence z-v : z-w.
 qed.
 
@@ -293,7 +293,7 @@ Proof.
 	Then OFS(y,z,q,p,s,p,r,z).
 	Then p-q : z-r.
 	Take u such that z-u-p and r-u-q (by C5_1n).
-	Then IFS(r,u,q,z,r,u,q,p).
+	Then IFS(r,u,q,z,r,u,q,p). % TODO: This is a contradiction??
 	Then IFS(z,u,p,r,z,u,p,q).
 	Then u-z : u-p.
 	Then u-r : u-q.

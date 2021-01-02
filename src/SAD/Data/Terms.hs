@@ -8,6 +8,7 @@ import qualified Data.Text as Text
 import SAD.Core.Pretty
 import Data.Set (Set)
 import qualified Data.Set as Set
+import SAD.Data.VarName
 
 data TermName 
   = TermName Text
@@ -23,6 +24,7 @@ data TermName
   | TermLess
   | TermThesis
   | TermEmpty
+  | TermVar VarName
   deriving (Eq, Ord, Show, Read)
 
 newName :: TermName -> Maybe (Set TermName) -> TermName
@@ -82,6 +84,7 @@ instance Pretty TermName where
   pretty TermLess  = "iLess"
   pretty TermThesis = "#TH#"
   pretty TermEmpty = ""
+  pretty (TermVar v) = pretty v
 
 -- | Decode a TermSymbolic s with arguments ts
 decode :: Text -> [Text] -> Text

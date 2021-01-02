@@ -4,7 +4,7 @@
 -- This will evaluate tactics and create the necessary
 -- statements for the prover.
 
-module SAD.Core.Task where
+module SAD.Core.Task (Hypothesis(..), Task(..), generateTasks) where
 
 import Data.List
 import Data.Functor.Identity
@@ -12,6 +12,9 @@ import Data.Text (Text)
 
 import SAD.Core.Typed
 import SAD.Data.Terms
+import SAD.Core.Pretty
+import qualified Data.Text as Text
+import SAD.Helpers (inParens)
 
 data Hypothesis
   = Given Text (Term Identity ())
@@ -23,32 +26,61 @@ data Task = Task
   , conjecture :: (Term Identity ())
   , hints :: [Text] -- ^ helpful lemmata
   , taskName :: Text
-  , byContradiction :: Bool
+  , byContradiction :: Bool -- ^ eprover can detect contradictory axioms
+    -- and so we store whether we are in a proof by contradiction (where contradictory axioms are fine).
   } deriving (Eq, Ord, Show)
 
-generateFromProof :: Task -> [Proof] -> [Task]
-generateFromProof tsk [] = [tsk]
-generateFromProof (Task hypo conj conjHints name contra) prf 
-  = concat $ finalize $ mapAccumL go hypo prf
+instance Pretty Hypothesis where
+  pretty (Given n t) = n <> " : " <> pretty t
+  pretty (Typing n t) = pretty n <> " : " <> pretty t
+
+instance Pretty Task where
+  pretty (Task hypo c h n bc) = 
+    "Goal \"" <> n <> "\": " <> pretty c <> " " <> inParens h 
+    <> (if bc then " by contradiction" else "") <> "\n"
+    <> Text.unlines (pretty <$> hypo)
+
+-- | Generate tasks from the given proofs under the hypothesis that were assumed at this point.
+-- When handling subclaims we forget if we are in a proof by contradiction and assume we aren't.
+-- That seems consistent with normal mathematical practice.
+generateFromProof :: Text -> [Hypothesis] -> ProofBlock -> [Task]
+generateFromProof topname hypo (Proving prf topclaim tophints)
+  = concat $ finalize $ mapAccumL go (hypo, False) prf
   where
-    -- TODO: This should bind let-introduced variables
-    -- with forall quantifiers in h'
-    finalize (h', ts) = ts ++ [[Task h' conj conjHints name contra]]
-    
-    go hypo (Located n _ p) = case p of
-      Subclaim t hints prf -> ((Given n t):hypo, 
-        generateFromProof (Task hypo t hints n contra) prf)
-      Cases [] -> (hypo, [])
+    finalize ((h', isContra), ts) = ts ++ [[Task h' topclaim tophints topname isContra]]
+
+    go (hypo, isContra) (Located n _ p) = case p of
+      Intro v typ -> (((Typing (TermVar v) (Pred [] (InType typ))):hypo, isContra), [])
+      Assume t -> (((Given n t):hypo, isContra), [])
+      Subclaim t prf -> (((Given n t):hypo, isContra), generateFromProof n hypo prf)
+      Cases [] -> ((hypo, isContra), [])
       Cases cs ->
-        let cases = concatMap (\(c, p) -> concat $ snd 
-              $ mapAccumL go (Given "case" c:hypo) p) cs
+        let cases = concatMap (\(c, p) -> generateFromProof "case" (Given "case" c:hypo) p) cs
+            claim = foldl1 (\a b -> App Or [a, b]) $ map (\(c, p) -> App Imp [c, asTerm p]) cs
+        in (((Given n claim):hypo, isContra), cases)
+      TerminalCases [] -> ((hypo, isContra), [])
+      TerminalCases cs ->
+        let cases = concatMap (\(c, p) -> generateFromProof "case" (Given "case" c:hypo) p) cs
             final = foldl1 (\a b -> App Or [a, b]) (map fst cs)
-        in (hypo, cases ++ [Task hypo final [] n contra])
-      ByContradiction prf -> ((Given n conj):hypo,
-        generateFromProof (Task (Given n (App Not [conj]):hypo) (App Bot []) [] n True) prf)
-      Choose vs t hints prf -> ((Given n t):hypo,
-        generateFromProof (Task hypo t hints n contra) prf)
-      t -> error $ "Not implemented tactic: " ++ show t
+        in ((hypo, isContra), cases ++ [Task hypo final [] n isContra])
+      ByContradiction goal -> (((Given n (simp $ App Not [goal])):hypo, True), [])
+      Choose vs t prf ->
+        let ts = map (\(v, typ) -> Typing (TermVar v) (Pred [] (InType typ))) vs
+        in (((Given n t) : ts ++ hypo, isContra), generateFromProof n hypo prf)
+
+-- | Turn a proof block back into a term by unrolling all chooses, intros and assumptions.
+-- This might bind variables that are unused in the term and a future implementation should
+-- make sure we don't add junk.
+-- Danger: This function should not be used in the presence of the ByContradiction tactic.
+asTerm :: PrfBlock Identity () -> Term Identity ()
+asTerm (Proving prfs trm _) = case prfs of
+  [] -> trm
+  ((Located _ _ (Intro v typ)):ps) -> Forall v (Identity typ) $ asTerm (Proving ps trm [])
+  ((Located _ _ (Assume a)):ps) -> App Imp [a, asTerm (Proving ps trm [])]
+  ((Located _ _ (Choose vs hypo _)):ps) -> foldr (\(v, typ) t -> Exists v (Identity typ) t)
+    (App Imp [hypo, asTerm (Proving ps trm [])]) vs
+  ((Located _ _ (ByContradiction goal)):_) -> goal
+  (_:ps) -> asTerm (Proving ps trm [])
 
 generateTasks :: [Statement] -> [Task]
 generateTasks = concat . snd . mapAccumL go []
@@ -57,6 +89,5 @@ generateTasks = concat . snd . mapAccumL go []
       IntroSort t -> ((Typing t Sort):hypo, [])
       Predicate n ts t -> ((Typing n (Pred ts t)):hypo, [])
       Axiom t -> ((Given n t):hypo, [])
-      Claim t hints prf -> ((Given n t):hypo, 
-        generateFromProof (Task hypo t hints n False) prf)
+      Claim t prf -> ((Given n t):hypo, generateFromProof n hypo prf)
       Coercion n f t -> ((Typing n (Pred [Signature f] (InType (Signature t)))):hypo, [])

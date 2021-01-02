@@ -29,6 +29,7 @@ import Data.Functor.Identity
 import qualified Data.List as List
 import Data.Maybe (fromMaybe)
 import Control.Applicative
+import Data.Bifunctor (bimap)
 
 import SAD.Data.Formula (Formula, Tag(..))
 import qualified SAD.Data.Formula as F
@@ -103,19 +104,28 @@ parseFormula = go []
 
     addVar v vars = v:vars
 
--- | Bind free variables by forall quantifiers.
-bindFree :: Term (Const ()) t -> Term (Const ()) t
-bindFree t = bind (Set.toList $ fvToVarSet $ free t) t
+-- | Bind free variables by forall quantifiers
+-- and turn all bound variables into 'TermVar's.
+bindFree :: Set VarName -> Term (Const ()) t -> Term (Const ()) t
+bindFree bound t = bind $ findFree bound t
   where
-    bind vars tr = foldr (\v t -> Forall v (Const ()) t) tr vars
+    bind (vars, tr) = foldr (\v t -> Forall v (Const ()) t) tr $ Set.toList $ fvToVarSet $ vars
 
+termify :: Set VarName -> Term f t -> Term f t
+termify bound = snd . findFree bound
+
+findFree :: Set VarName -> Term f t -> (FV VarName, Term f t)
+findFree bound = free
+  where
     free = \case
-      Forall v (Const ()) t -> bindVar v $ free t
-      Exists v (Const ()) t -> bindVar v $ free t
-      Class v (Const ()) tr -> bindVar v $ free tr
-      App _ args -> mconcat $ free <$> args
-      Tag _ t -> free t
-      Var v -> unitFV v noSourcePos
+      Forall v f t -> bimap (bindVar v) (Forall v f) $ free t
+      Exists v f t -> bimap (bindVar v) (Exists v f) $ free t
+      Class  v f t -> bimap (bindVar v) (Class  v f) $ free t
+      App op args -> bimap mconcat (App op) $ unzip $ free <$> args
+      Tag tag t -> Tag tag <$> free t
+      Var v -> if v `Set.member` bound 
+        then (mempty, App (OpTrm (TermVar v)) [])
+        else (unitFV v noSourcePos, Var v)
 
 -- | Bind free variables by exists quantifiers.
 bindExists :: [VarName] -> Term (Const ()) t -> Term (Const ()) t
@@ -236,6 +246,10 @@ gatherTypes c = snd . go Prop (preBoundVars c) 0
       -- and add the coercion later.
       App (OpTrm name@(TermNotion _)) [arg] -> go Prop typings (d+1) 
         (Exists (VarF d) (Identity $ Signature name) (App Eq [Var (VarF d), arg]))
+      App (OpTrm name@(TermVar v)) args -> case (Map.lookup v typings, args) of
+        (Nothing, _) -> error "Internal: Variable bound as term in a proof was not registered."
+        (_, (_:_)) -> error "Internal: Variable bound as term can't be applied."
+        (Just t, []) -> (InType t, App (OpTrm name) [])
       App (OpTrm name) args ->
         let (argtypes, args') = unzip $ map (go (InType Object) typings d) args
             argintypes = flip map argtypes $ \t -> case t of
@@ -321,34 +335,46 @@ typecheck ctx
   = traceReprId . gatherTypes ctx 
   . traceReprId . extractGivenTypes ctx 
 
--- | Convert a single line of a proof.
-subClaim :: Context -> Block -> Proof
-subClaim ctx (Block f b _ _ n l p _) = Located n p $
-  let mainF = typecheck ctx $ parseFormula f 
-  in Subclaim (noTags $ mainF) l (convertProof ctx b)
-
-subClaims :: Context -> [Block] -> Maybe (Proof, [Block])
-subClaims _ [] = Nothing
-subClaims ctx (b:bs) = Just (subClaim ctx b, bs)
-
-byContradiction :: Context -> [Block] -> Maybe (Proof, [Block])
-byContradiction _ [] = Nothing
-byContradiction ctx (b:bs) = case formula b of
-  F.Not (F.Trm TermThesis [] _ _) ->
-    let p = convertProof ctx (map ProofTextBlock bs)
-    in Just (Located (name b) (position b) $ ByContradiction p, [])
-  _ -> Nothing
+-- | A tactic takes the goal, the current context and a number of proof lines (Block)
+-- and may translate some lines and give a new goal.
+type Tactic = (Term Identity (), Context, [Block]) -> Maybe (Proof, (Term Identity (), Context, [Block]))
 
 preBind :: Map VarName InType -> Context -> Context
 preBind vs ctx = ctx { preBoundVars = vs <> preBoundVars ctx }
 
-chooses :: Context -> [Block] -> Maybe (Proof, [Block])
-chooses _ [] = Nothing
-chooses ctx (b:bs) = case kind b of
+-- | Introduce top-level forall-bound variables in the term
+-- and the conditions of if-terms as a tactic.
+autoIntroAssume :: Tactic
+autoIntroAssume (_, _, []) = Nothing
+autoIntroAssume (goal, ctx, (b:bs)) = case goal of
+    Forall v (Identity typ) t -> Just ((Located "intro" (position b) (Intro v typ)), (t, preBind (Map.singleton v typ) ctx, b:bs))
+    App Imp [ass, goal'] -> Just ((Located "intro" (position b) (Assume $ termify (Map.keysSet $ preBoundVars ctx) ass)), (goal', ctx, b:bs))
+    _ -> Nothing
+
+-- | Convert a single line of a proof.
+subClaim :: Context -> Block -> Proof
+subClaim ctx (Block f b _ _ n l p _) = Located n p $
+  let mainF = noTags $ typecheck ctx $ bindFree (Map.keysSet $ preBoundVars ctx) $ parseFormula f
+  in Subclaim mainF (convertProof mainF l ctx b)
+
+subClaims :: Tactic
+subClaims (_, _, []) = Nothing
+subClaims (goal, ctx, (b:bs)) = Just (subClaim ctx b, (goal, ctx, bs))
+
+byContradiction :: Tactic
+byContradiction (_, _, []) = Nothing
+byContradiction (goal, ctx, (b:bs)) = case formula b of
+  F.Not (F.Trm TermThesis [] _ _) ->
+    Just (Located (name b) (position b) (ByContradiction goal), (App Bot [], ctx, bs))
+  _ -> Nothing
+
+chooses :: Tactic
+chooses (_, _, []) = Nothing
+chooses (goal, ctx, (b:bs)) = case kind b of
   Block.Selection ->
     let l = position b; n = name b
         vs = Set.map declName $ declaredVariables b
-        f = noTags $ typecheck ctx
+        f = noTags $ typecheck ctx $ bindFree (Map.keysSet $ preBoundVars ctx)
           $ bindExists (Set.toList vs) $ parseFormula (formula b)
         boundVs = Map.fromList $ concat $ flip List.unfoldr f $ \case
             Forall _ (Identity _) t -> Just ([], t)
@@ -356,34 +382,45 @@ chooses ctx (b:bs) = case kind b of
               | v `Set.member` vs -> Just ([(v, typ)], t)
               | otherwise -> Just ([], t)
             _ -> Nothing
-        p = convertProof (preBind boundVs ctx) (map ProofTextBlock bs)
-    in Just $ (Located n l $ Choose (Map.toList boundVs) f (link b) p, [])
+        p = convertProof f (link b) ctx (body b)
+        ctx' = preBind boundVs ctx
+    in Just $ (Located n l $ Choose (Map.toList boundVs) f p, (goal, ctx', bs))
   _ -> Nothing
 
-cases :: Context -> [Block] -> Maybe (Proof, [Block])
-cases ctx = go Nothing
+cases :: Tactic
+cases (goal, ctx, bs) = go Nothing bs
   where
+    parseCase c b =
+      let c' = noTags $ typecheck ctx $ bindFree (Map.keysSet $ preBoundVars ctx) $ parseFormula c
+          p' = convertProof goal (link b) ctx (body b)
+          l' = (position b)
+      in (l', (c', p'))
+
     go Nothing [] = Nothing
-    go (Just (l, ms)) [] = Just (Located "Cases" l $ Cases ms, [])
+    go (Just (l, ms)) [] = Just (Located "Cases" l $ TerminalCases ms, (goal, ctx, []))
     go m (b:bs) = case formula b of
       F.Imp (F.Tag CaseHypothesisTag c) (F.Trm TermThesis [] _ _) ->
-        let c' = noTags $ typecheck ctx $ parseFormula c
-            p' = convertProof ctx (body b)
-            l' = (position b)
+        let (l', (c', p')) = parseCase c b
         in case m of
           Nothing -> go (Just (l', [(c', p')])) bs
           Just (l, ms) -> go (Just (l, (c', p'):ms)) bs
       _ -> case m of
         Nothing -> Nothing
-        Just (l, ms) -> Just (Located "Cases" l $ Cases ms, b:bs)
+        Just (l, ms) -> Just (Located "Cases" l $ Cases ms, (goal, ctx, b:bs))
 
 -- | Convert a Proof. ... end. part
-convertProof :: Context -> [ProofText] -> [Proof]
-convertProof ctx = go . concatMap (\case ProofTextBlock b -> [b]; _ -> [])
+convertProof :: Term Identity () -> [Text] -> Context -> [ProofText] -> ProofBlock
+convertProof goal links ctx pts =
+  let ((goal', ctx', _), ps) = go $ concatMap (\case ProofTextBlock b -> [b]; _ -> []) pts
+  in Proving ps (termify (Map.keysSet $ preBoundVars ctx') goal') links
   where
-    go bs = flip List.unfoldr bs $ \bs ->
-      cases ctx bs <|> chooses ctx bs 
-      <|> byContradiction ctx bs <|> subClaims ctx bs
+    go bs = unfold (goal, ctx, bs) $ \st ->
+      autoIntroAssume st <|> cases st <|> chooses st
+      <|> byContradiction st <|> subClaims st
+
+    unfold b f = case f b of
+      Just (a, b') -> (a:) <$> unfold b' f
+      Nothing -> (b, [])
 
 -- | Get the blocks in a Prooftext.
 getBlocks :: ProofText -> [Block]
@@ -400,14 +437,12 @@ convertBlock ctx bl@(Block f b _ _ n l p _) = Located n p <$>
       let (main:assms) = reverse $ concatMap getBlocks b
           mainF = foldr (F.Imp) (formula main) (formula <$> assms)
           (defs, mainT) = traceReprId $ extractDefinitions 
-            $ typecheck ctx $ bindFree $ parseFormula mainF
-          boundVars = Map.fromList $ flip List.unfoldr mainT $ \case
-              Forall v (Identity typ) t -> Just ((v, typ), t)
-              _ -> Nothing
+            $ typecheck ctx $ bindFree mempty $ parseFormula mainF
+          mainT' = noTags $ mainT
       in case Block.needsProof bl of
         True -> if not (null defs)
           then error $ "Definitions in claim!"
-          else [Claim (noTags mainT) l (convertProof (preBind boundVars ctx) (body main))]
+          else [Claim mainT' $ (convertProof mainT' l ctx (body main))]
         False -> defs ++ 
           if mainT == App Top [] then [] else [Axiom (noTags mainT)]
     _ -> error "convertBlock should not be applied to proofs!"

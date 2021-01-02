@@ -18,6 +18,8 @@ import SAD.Core.Typed
 import SAD.Core.Task
 import SAD.Helpers (inParens)
 
+import Debug.Trace
+
 class TPTP a where
   tptp :: a -> Text
 
@@ -68,6 +70,7 @@ instance (f ~ Identity, t ~ ()) => TPTP (Term f t) where
     a@(App _ _) -> error $ "Mismatched arguments in tptp generation: " ++ show a
     Tag () t -> tptp t
     Var v -> tptp v
+    Class _ _ _ -> error "Class left in TPTP!"
 
 tffStatement :: Text -> Text -> Text -> Text
 tffStatement n typ inside =
@@ -81,5 +84,5 @@ instance TPTP Hypothesis where
     Typing name t -> tffStatement (tptp name) "type" (tptp name <> ": " <> tptp t)
 
 instance TPTP Task where
-  tptp (Task hypo conj _ name _) =
+  tptp t@(Task hypo conj _ name _) = trace (Text.unpack $ pretty t) $
     Text.unlines (map tptp (reverse hypo) ++ [tffStatement name "conjecture" (tptp conj)])
