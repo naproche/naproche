@@ -118,6 +118,7 @@ proveFOL proversYaml txts opts0 startTime = do
             then ""
             else " - failed "   ++ show ignoredFails)
     ++ " - proved "    ++ show (accumulate SuccessfulGoals)
+    ++ " - cached "    ++ show (accumulate CachedCounter)
 
   let proverTime     = sumTimer trackerList ProofTimer
   let simplifyTime   = sumTimer trackerList SimplifyTimer

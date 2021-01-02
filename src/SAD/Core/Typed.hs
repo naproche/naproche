@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE DeriveGeneric #-}
 
 module SAD.Core.Typed
  ( InType(..), OutType(..), Type(..)
@@ -12,6 +13,8 @@ module SAD.Core.Typed
 import Data.Text (Text)
 import qualified Data.Text as Text
 import Data.Functor.Identity
+import GHC.Generics (Generic)
+import Data.Hashable (Hashable)
 
 import SAD.Data.VarName
 import SAD.Data.Terms
@@ -23,19 +26,22 @@ import SAD.Helpers (inParens)
 data InType 
   = Object -- ^ the base type of un-typed objects
   | Signature TermName -- ^ introduced by signature
-  deriving (Eq, Ord, Show, Read)
+  deriving (Eq, Ord, Show, Read, Generic)
+instance Hashable InType
 
 -- | Types that can be used as output in a TFF declaration
 -- except $tType since Sorts are handled seperately.
 data OutType = Prop | InType InType
-  deriving (Eq, Ord, Show, Read)
+  deriving (Eq, Ord, Show, Read, Generic)
+instance Hashable OutType
 
 -- | A type for a term in TFF.
 -- Sorts and ClassSorts are sorts in TFF,
 -- but we assume that the elements of sorts
 -- are of set sized for our NBG implementation.
 data Type = Sort | Pred [InType] OutType
-  deriving (Eq, Ord, Show, Read)
+  deriving (Eq, Ord, Show, Read, Generic)
+instance Hashable Type
 
 -- | Operators, both built-in and user-defined.
 -- This does not yet include numerical operators with special support
@@ -46,7 +52,8 @@ data Type = Sort | Pred [InType] OutType
 data Operator
   = And | Or | Not | Imp | Iff | Top | Bot | Eq
   | OpTrm TermName
-  deriving (Eq, Ord, Show, Read)
+  deriving (Eq, Ord, Show, Read, Generic)
+instance Hashable Operator
 
 -- | An AST of typed first order form.
 -- During the first parse we will have f = Const (),
@@ -65,6 +72,8 @@ deriving instance (Eq (f InType), Eq t) => Eq (Term f t)
 deriving instance (Ord (f InType), Ord t) => Ord (Term f t)
 deriving instance (Show (f InType), Show t) => Show (Term f t)
 deriving instance (Read (f InType), Read t) => Read (Term f t)
+deriving instance (Generic (f InType), Generic t) => Generic (Term f t)
+instance (Generic (f InType), Generic t, Hashable (f InType), Hashable t) => Hashable (Term f t)
 
 -- | Information for the user: Name of a lemma/axiom/sort/.. and position.
 data Located a = Located

@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE DeriveGeneric #-}
 
 -- | Create proof tasks from statements.
 -- This will evaluate tactics and create the necessary
@@ -9,6 +10,8 @@ module SAD.Core.Task (Hypothesis(..), Task(..), generateTasks) where
 import Data.List
 import Data.Functor.Identity
 import Data.Text (Text)
+import GHC.Generics (Generic)
+import Data.Hashable (Hashable)
 
 import SAD.Core.Typed
 import SAD.Data.Terms
@@ -19,7 +22,8 @@ import SAD.Helpers (inParens)
 data Hypothesis
   = Given Text (Term Identity ())
   | Typing TermName Type
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Ord, Show, Read, Generic)
+instance Hashable Hypothesis
 
 data Task = Task 
   { hypothesis :: [Hypothesis] -- ^ from newest to oldest
@@ -28,7 +32,8 @@ data Task = Task
   , taskName :: Text
   , byContradiction :: Bool -- ^ eprover can detect contradictory axioms
     -- and so we store whether we are in a proof by contradiction (where contradictory axioms are fine).
-  } deriving (Eq, Ord, Show)
+  } deriving (Eq, Ord, Show, Read, Generic)
+instance Hashable Task
 
 instance Pretty Hypothesis where
   pretty (Given n t) = n <> " : " <> pretty t

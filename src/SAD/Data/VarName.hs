@@ -1,6 +1,7 @@
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE DeriveGeneric #-}
 
 module SAD.Data.VarName
   ( VarName(..)
@@ -21,6 +22,8 @@ import qualified Data.Text as Text
 import SAD.Core.Pretty
 import SAD.Core.SourcePos
 import Data.Function (on)
+import GHC.Generics (Generic)
+import Data.Hashable (Hashable)
 
 -- These names may not reflect what the constructors are used for..
 data VarName 
@@ -37,7 +40,8 @@ data VarName
   | VarF Int           -- ^ for function outputs
   | VarEmpty           -- ^ previously ""
   | VarDefault Text    -- ^ everything else
-  deriving (Eq, Ord, Show, Read)
+  deriving (Eq, Ord, Show, Read, Generic)
+instance Hashable VarName
 
 isHole :: VarName -> Bool
 isHole (VarHole _) = True

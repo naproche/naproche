@@ -38,27 +38,39 @@ import SAD.Core.Pretty
 import qualified SAD.Core.Message as Message
 import qualified SAD.Data.Instr as Instr
 import SAD.Core.TPTP (tptp)
+import SAD.Core.Cache
 
 verify :: [Prover] -> [Instr] -> RState -> [Statement] -> IO (Bool, RState)
-verify provers instrs rstate stmts = go rstate tsks
+verify provers instrs rstate stmts = do
+  c <- readCache
+  (c, res) <- go c rstate tsks
+  writeCache $ cleanup c
+  pure res
   where
     tsks = generateTasks stmts
 
     addCounter c n s = s { trackers = trackers s ++ [Counter c n] }
 
-    go rstate [] = pure (True, addCounter Sections (length stmts) 
-      $ addCounter Goals (length tsks) rstate)
-    go rstate (t:ts) = do
-      TIO.putStrLn $ "[" <> (taskName t) <> "] " <> pretty (conjecture t)
-      res <- export provers instrs t
-      case res of
-        Success -> go (addCounter SuccessfulGoals 1 rstate) ts
-        Failure -> go (addCounter FailedGoals 1 rstate) ts
-        TooLittleTime -> go (addCounter FailedGoals 1 rstate) ts
-        ContradictoryAxioms -> error $ "\nFound a contradiction in the axioms! "
-          <> "\nThis either means that you have introduced some axioms that are "
-          <> "inconsistent or that you are in a proof by contradiction"
-          <> "\n(and you should make sure to actually write 'Proof by contradiction.')"
+    go c rstate [] = pure (c, (True, addCounter Sections (length stmts)
+      $ addCounter Goals (length tsks) rstate))
+    go c rstate (t:ts) = do
+      if isCached t c then do
+        TIO.putStrLn $ "Cached: [" <> (taskName t) <> "] " <> pretty (conjecture t)
+        go (cache t c) (addCounter CachedCounter 1 rstate) ts
+      else do 
+        TIO.putStrLn $ "[" <> (taskName t) <> "] " <> pretty (conjecture t)
+        res <- export provers instrs t
+        case res of
+          Success -> go (cache t c) (addCounter SuccessfulGoals 1 rstate) ts
+          Failure -> go c (addCounter FailedGoals 1 rstate) ts
+          TooLittleTime -> go c (addCounter FailedGoals 1 rstate) ts
+          ContradictoryAxioms -> do 
+            Message.outputMain Message.WARNING noSourcePos 
+              $ "\nFound a contradiction in the axioms! "
+              <> "\nThis either means that you have introduced some axioms that are "
+              <> "inconsistent or that you are in a proof by contradiction"
+              <> "\n(and you should make sure to actually write 'Proof by contradiction.')"
+            go c (addCounter FailedGoals 1 rstate) ts
 
 export :: [Prover] -> [Instr] -> Task -> IO Result
 export provers instrs tsk = do

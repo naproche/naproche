@@ -20,7 +20,6 @@ import Data.Time (NominalDiffTime)
 import qualified Data.Text as Text
 
 
-
 -- | Reasoner state
 data RState = RState
   { trackers       :: [Tracker]
@@ -47,6 +46,7 @@ data Counter
   | Goals
   | FailedGoals
   | SuccessfulGoals
+  | CachedCounter
   deriving (Eq, Ord, Show)
 
 projectCounter :: [Tracker] -> Counter -> [Int]

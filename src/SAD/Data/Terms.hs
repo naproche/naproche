@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE DeriveGeneric #-}
 
 module SAD.Data.Terms where
 
@@ -9,6 +10,8 @@ import SAD.Core.Pretty
 import Data.Set (Set)
 import qualified Data.Set as Set
 import SAD.Data.VarName
+import GHC.Generics (Generic)
+import Data.Hashable (Hashable)
 
 data TermName 
   = TermName Text
@@ -25,7 +28,8 @@ data TermName
   | TermThesis
   | TermEmpty
   | TermVar VarName
-  deriving (Eq, Ord, Show, Read)
+  deriving (Eq, Ord, Show, Read, Generic)
+instance Hashable TermName
 
 newName :: TermName -> Maybe (Set TermName) -> TermName
 newName n Nothing = n
