@@ -141,7 +141,3 @@ Let us show that h is surjective from Prod(A,A) onto Succ(A).
 	end.
 	Therefore Succ(A) =< A. Contradiction.
 qed.
-
-
-
-
