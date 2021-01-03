@@ -251,7 +251,7 @@ options = [
   GetOpt.Option "" ["server"] (GetOpt.NoArg (SetFlag Server True))
     "run in server mode",
   GetOpt.Option ""  ["library"] (GetOpt.ReqArg (GetArgument Library . Text.pack) "DIR")
-    "place to look for library texts (def: .)",
+    "place to look for library texts (def: examples)",
   GetOpt.Option ""  ["provers"] (GetOpt.ReqArg (GetArgument Provers . Text.pack) "FILE")
     "index of provers (def: provers.yaml)",
   GetOpt.Option "P" ["prover"] (GetOpt.ReqArg (GetArgument Prover . Text.pack) "NAME")
