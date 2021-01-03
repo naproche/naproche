@@ -12,6 +12,7 @@ import qualified Data.Set as Set
 import SAD.Data.VarName
 import GHC.Generics (Generic)
 import Data.Hashable (Hashable)
+import Data.Binary (Binary)
 
 data TermName 
   = TermName Text
@@ -30,6 +31,7 @@ data TermName
   | TermVar VarName
   deriving (Eq, Ord, Show, Read, Generic)
 instance Hashable TermName
+instance Binary TermName
 
 newName :: TermName -> Maybe (Set TermName) -> TermName
 newName n Nothing = n

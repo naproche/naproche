@@ -16,6 +16,7 @@ dependencies:
 - process
 - filepath
 - directory
+- binary
 - ghc-prim
 - hashable
 - time

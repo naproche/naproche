@@ -15,6 +15,7 @@ import qualified Data.Text as Text
 import Data.Functor.Identity
 import GHC.Generics (Generic)
 import Data.Hashable (Hashable)
+import Data.Binary (Binary)
 
 import SAD.Data.VarName
 import SAD.Data.Terms
@@ -28,12 +29,14 @@ data InType
   | Signature TermName -- ^ introduced by signature
   deriving (Eq, Ord, Show, Read, Generic)
 instance Hashable InType
+instance Binary InType
 
 -- | Types that can be used as output in a TFF declaration
 -- except $tType since Sorts are handled seperately.
 data OutType = Prop | InType InType
   deriving (Eq, Ord, Show, Read, Generic)
 instance Hashable OutType
+instance Binary OutType
 
 -- | A type for a term in TFF.
 -- Sorts and ClassSorts are sorts in TFF,
@@ -42,6 +45,7 @@ instance Hashable OutType
 data Type = Sort | Pred [InType] OutType
   deriving (Eq, Ord, Show, Read, Generic)
 instance Hashable Type
+instance Binary Type
 
 -- | Operators, both built-in and user-defined.
 -- This does not yet include numerical operators with special support
@@ -54,6 +58,7 @@ data Operator
   | OpTrm TermName
   deriving (Eq, Ord, Show, Read, Generic)
 instance Hashable Operator
+instance Binary Operator
 
 -- | An AST of typed first order form.
 -- During the first parse we will have f = Const (),
@@ -74,6 +79,7 @@ deriving instance (Show (f InType), Show t) => Show (Term f t)
 deriving instance (Read (f InType), Read t) => Read (Term f t)
 deriving instance (Generic (f InType), Generic t) => Generic (Term f t)
 instance (Generic (f InType), Generic t, Hashable (f InType), Hashable t) => Hashable (Term f t)
+instance (Generic (f InType), Generic t, Binary (f InType), Binary t) => Binary (Term f t)
 
 -- | Information for the user: Name of a lemma/axiom/sort/.. and position.
 data Located a = Located

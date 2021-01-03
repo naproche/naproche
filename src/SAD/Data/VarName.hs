@@ -24,6 +24,7 @@ import SAD.Core.SourcePos
 import Data.Function (on)
 import GHC.Generics (Generic)
 import Data.Hashable (Hashable)
+import Data.Binary (Binary)
 
 -- These names may not reflect what the constructors are used for..
 data VarName 
@@ -42,6 +43,7 @@ data VarName
   | VarDefault Text    -- ^ everything else
   deriving (Eq, Ord, Show, Read, Generic)
 instance Hashable VarName
+instance Binary VarName
 
 isHole :: VarName -> Bool
 isHole (VarHole _) = True

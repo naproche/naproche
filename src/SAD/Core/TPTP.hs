@@ -84,5 +84,5 @@ instance TPTP Hypothesis where
     Typing name t -> tffStatement (tptp name) "type" (tptp name <> ": " <> tptp t)
 
 instance TPTP Task where
-  tptp t@(Task hypo conj _ name _) = trace (Text.unpack $ pretty t) $
+  tptp t@(Task hypo conj _ name _ _) = trace (Text.unpack $ pretty t) $
     Text.unlines (map tptp (reverse hypo) ++ [tffStatement name "conjecture" (tptp conj)])
