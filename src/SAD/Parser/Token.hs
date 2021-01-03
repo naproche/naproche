@@ -4,10 +4,11 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
 Tokenization of input.
 -}
 
-{-# LANGUAGE NamedFieldPuns #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Parser.Token
   ( Token (tokenPos, tokenText)
+  , TexState (InsideForthelEnv, OutsideForthelEnv, TexDisabled)
   , tokensRange
   , showToken
   , isProperToken
@@ -15,8 +16,6 @@ module SAD.Parser.Token
   , reportComments
   , composeTokens
   , isEOF
-  , isMathToken
-  , isTextToken
   , noTokens
   ) where
 
@@ -33,7 +32,6 @@ data Token = Token
   { tokenText :: Text
   , tokenPos :: SourcePos
   , tokenType :: TokenType
-  , tokenMode :: TokenMode
   } | EOF { tokenPos :: SourcePos }
   deriving (Eq, Ord)
 
@@ -42,10 +40,19 @@ instance Show Token where
   show EOF{} = "EOF"
 
 data TokenType = NoWhiteSpaceBefore | WhiteSpaceBefore | Comment deriving (Eq, Ord, Show)
-data TokenMode = TextMode | MathMode deriving (Eq, Show, Ord)
+
+-- If at some point one uses a more powerful parser for tokenizing, this should be much
+-- less messy.
+-- | Indicates whether the tokenizer is currently inside a forthel env.
+data TexState = InsideForthelEnv | OutsideForthelEnv | TexDisabled
+
+usingTexParser :: TexState -> Bool
+usingTexParser InsideForthelEnv = True
+usingTexParser OutsideForthelEnv = True
+usingTexParser TexDisabled = False
 
 -- | Make a token with @s@ as @tokenText@ and the range from @p@ to the end of @s@.
-makeToken :: Text -> SourcePos -> TokenType -> TokenMode -> Token
+makeToken :: Text -> SourcePos -> TokenType -> Token
 makeToken s pos = Token s (rangePos (SourceRange pos (pos `advanceAlong` s)))
 
 tokenEndPos :: Token -> SourcePos
@@ -72,52 +79,61 @@ isProperToken EOF{} = True
 noTokens :: [Token]
 noTokens = [EOF noSourcePos]
 
--- | Turn the string into a stream of tokens.
-tokenize :: SourcePos -> Text -> [Token]
-tokenize start = posToken start NoWhiteSpaceBefore TextMode
+-- | @tokenize commentChars start text@ takes a list of characters @commentChars@ to use
+-- for comments when used as first character in the line and a @text@ that gets tokenized
+-- starting from the @start@ position.
+tokenize :: TexState -> SourcePos -> Text -> [Token]
+tokenize texState start = posToken texState start NoWhiteSpaceBefore
   where
-    posToken :: SourcePos -> TokenType -> TokenMode -> Text -> [Token]
-    posToken pos whitespaceBefore mode s | not (Text.null lexem) = tok:toks
+    -- Activate the tokenizer when '\begin{forthel}' appears.
+    posToken :: TexState -> SourcePos -> TokenType -> Text -> [Token]
+    posToken OutsideForthelEnv pos _ s = toks
       where
-        (lexem, rest) = Text.span isLexem s
-        tok  = makeToken lexem pos whitespaceBefore mode
-        toks = posToken (advanceAlong pos lexem) NoWhiteSpaceBefore mode rest
-    posToken pos _ mode s | not (Text.null white) = toks
+        (ignoredText, rest) = Text.breakOn "\\begin{forthel}" s
+        newPos = advanceAlong pos (ignoredText <> "\\begin{forthel}")
+        toks = posToken InsideForthelEnv newPos WhiteSpaceBefore (Text.drop 15 rest)
+    
+    -- Deactivate the tokenizer when '\end{forthel}' appears.
+    posToken InsideForthelEnv pos _ s | start == "\\end{forthel}" = toks
+      where
+        (start,rest) = Text.splitAt 13 s
+        toks = posToken OutsideForthelEnv (advanceAlong pos start) WhiteSpaceBefore rest
+        
+    -- Make alphanumeric tokens that don't start with whitespace.
+    posToken texState pos whitespaceBefore s | not (Text.null lexeme) = tok:toks
+      where
+        (lexeme, rest) = Text.span isLexeme s
+        tok  = makeToken lexeme pos whitespaceBefore
+        toks = posToken texState (advanceAlong pos lexeme) NoWhiteSpaceBefore rest
+    
+    -- Process whitespace.
+    posToken texState pos _ s | not (Text.null white) = toks
       where
         (white, rest) = Text.span isSpace s
-        toks = posToken (advanceAlong pos white) WhiteSpaceBefore mode rest
-    posToken pos whitespaceBefore mode s = case Text.uncons s of
+        toks = posToken texState (advanceAlong pos white) WhiteSpaceBefore rest
+    
+    -- Process non-alphanumeric symbol or EOF.
+    posToken texState pos whitespaceBefore s = case Text.uncons s of
       Nothing -> [EOF pos]
       Just ('\\', rest) -> tok:toks
         where
           (name, rest') = Text.span isAlpha rest
-          cmd = (Text.cons '\\' name)
-          tok = makeToken cmd pos whitespaceBefore mode
-          toks = posToken (advanceAlong pos cmd) WhiteSpaceBefore mode rest'
-      Just ('$', rest) -> toks
-        where
-          toks = posToken (advancePos pos '$') NoWhiteSpaceBefore (switchMode mode) rest
-          switchMode :: TokenMode -> TokenMode
-          switchMode TextMode = MathMode
-          switchMode MathMode = TextMode
-      Just ('#', _) -> tok:toks
+          cmd = Text.cons '\\' name
+          tok = makeToken cmd pos whitespaceBefore
+          toks = posToken texState (advanceAlong pos cmd) WhiteSpaceBefore rest'
+      Just (c, _) | if usingTexParser texState then c == '%' else c == '#' -> tok:toks
         where
           (comment, rest) = Text.break (== '\n') s
-          tok  = makeToken comment pos Comment mode
-          toks = posToken (advanceAlong pos comment) whitespaceBefore mode rest
-      Just ('%', _) -> tok:toks
-        where
-          (comment, rest) = Text.break (== '\n') s
-          tok  = makeToken comment pos Comment mode
-          toks = posToken (advanceAlong pos comment) whitespaceBefore mode rest
+          tok  = makeToken comment pos Comment
+          toks = posToken texState (advanceAlong pos comment) whitespaceBefore rest
       Just (c, cs) -> tok:toks
         where
-          tok  = makeToken (Text.singleton c) pos whitespaceBefore mode
-          toks = posToken (advancePos pos c) NoWhiteSpaceBefore mode cs
+          tok  = makeToken (Text.singleton c) pos whitespaceBefore
+          toks = posToken texState (advancePos pos c) NoWhiteSpaceBefore cs
 
 
-isLexem :: Char -> Bool
-isLexem c = (isAscii c && isAlphaNum c) || c == '_'
+isLexeme :: Char -> Bool
+isLexeme c = (isAscii c && isAlphaNum c) || c == '_'
 
 reportComments :: Token -> Maybe Message.Report
 reportComments t@Token{}
@@ -125,7 +141,7 @@ reportComments t@Token{}
   | otherwise = Just (tokenPos t, Markup.comment1)
 reportComments EOF{} = Nothing
 
--- | Append tokens seperated by a single space if they were seperated
+-- | Append tokens separated by a single space if they were separated
 -- by whitespace before.
 composeTokens :: [Token] -> Text
 composeTokens = Text.concat . dive
@@ -138,9 +154,3 @@ composeTokens = Text.concat . dive
 isEOF :: Token -> Bool
 isEOF EOF{} = True
 isEOF _ = False
-
-isMathToken, isTextToken :: Token -> Bool
-isMathToken Token{tokenMode = MathMode} = True
-isMathToken _tok = False
-isTextToken Token{tokenMode = TextMode} = True
-isTextToken _tok = False

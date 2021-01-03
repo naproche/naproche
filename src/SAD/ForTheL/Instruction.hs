@@ -18,7 +18,6 @@ import Data.Text (Text)
 import qualified Data.Text as Text
 
 import SAD.Core.SourcePos
-import SAD.Data.Instr (Instr)
 import SAD.Data.Instr
 
 import SAD.ForTheL.Base
@@ -41,7 +40,7 @@ instr :: FTL (Pos, Instr)
 instr =
   instrPos addDropReport $ readInstr >>=
     (\case
-      GetArgument Read _ -> fail "'read' not allowed here"
+      GetArgument (Read _) _ -> fail "'read' and 'readtex' not allowed here"
       Command EXIT -> fail "'exit' not allowed here"
       Command QUIT -> fail "'quit' not allowed here"
       i -> return i)
@@ -50,7 +49,9 @@ instr =
 instrRead :: FTL (Pos, Instr)
 instrRead =
   instrPos addInstrReport $ readInstr >>=
-    (\case { i@(GetArgument Read _) -> return i; _ -> mzero })
+    (\case
+      i@(GetArgument (Read _) _) -> return i
+      _ -> mzero)
 
 instrExit :: FTL (Pos, Instr)
 instrExit =

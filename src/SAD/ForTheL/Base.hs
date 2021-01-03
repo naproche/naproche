@@ -83,9 +83,12 @@ getExpr e p = gets e >>=  foldr ((-|-) . try . p ) mzero
 getDecl :: FTL (Set VarName)
 getDecl = gets varDecl
 
+-- | @addDecl vs p@ temporarily modifies the variable declarations to include @vs@ while running
+-- the parser @p@.
 addDecl :: Set VarName -> FTL a -> FTL a
 addDecl vs p = do
-  dcl <- gets varDecl; modify adv;
+  dcl <- gets varDecl
+  modify adv
   after p $ modify $ sbv dcl
   where
     adv s = s { varDecl = vs <> varDecl s }
@@ -139,7 +142,7 @@ primMultiPredicate :: FTL (b1 -> b1, Formula)
                -> ([Pattern], [Formula] -> b2) -> FTL (b1 -> b1, b2)
 primMultiPredicate p (pt, fm) = do
   (q, ts) <- multiPattern p pt
-  return (q, fm $ (mkVar (VarHole "")):(mkVar VarSlot):ts)
+  return (q, fm $ mkVar (VarHole "") : mkVar VarSlot : ts)
 
 
 -- Notions and functions
@@ -150,14 +153,14 @@ primNotion p  = getExpr notionExpr notion
   where
     notion (pt, fm) = do
       (q, vs, ts) <- notionPattern p pt
-      return (q, fm $ (mkVar (VarHole "")):ts, vs)
+      return (q, fm $ mkVar (VarHole "") : ts, vs)
 
 primOfNotion :: FTL UTerm -> FTL MNotion
 primOfNotion p = getExpr notionExpr notion
   where
     notion (pt, fm) = do
       (q, vs, ts) <- ofPattern p pt
-      let fn v = fm $ (pVar v):(mkVar (VarHole "")):ts
+      let fn v = fm $ pVar v : mkVar (VarHole "") : ts
       return (q, foldr1 And $ map fn $ Set.toList vs, vs)
 
 primCommonNotion :: FTL UTerm -> FTL MTerm -> FTL MNotion
@@ -165,7 +168,7 @@ primCommonNotion p s = getExpr notionExpr notion
   where
     notion (pt, fm) = do
       (q, vs, as, ts) <- commonPattern p s pt
-      let fn v = fm $ (mkVar (VarHole "")):v:ts
+      let fn v = fm $ mkVar (VarHole "") : v : ts
       return (q, foldr1 And $ map fn as, vs)
 
 primFun :: FTL UTerm -> FTL UTerm
@@ -212,7 +215,7 @@ primIsm p (pt, fm) = symbolPattern p pt >>= \l -> return $ \t s -> fm $ t:l++[s]
 primSnt :: FTL Formula -> FTL MNotion
 primSnt p  = noError $ varList >>= getExpr symbNotionExpr . snt
   where
-    snt vs (pt, fm) = symbolPattern p pt >>= \l -> return (id, fm $ (mkVar (VarHole "")):l, vs)
+    snt vs (pt, fm) = symbolPattern p pt >>= \l -> return (id, fm $ mkVar (VarHole ""):l, vs)
 
 
 
@@ -382,8 +385,8 @@ freeOrOverlapping vs f
     | not (Text.null ovl) = Just $ "overlapped variables: "        <> ovl <> info
     | otherwise      = Nothing
   where
-    sbs = Text.unwords $ map (showVar) $ Set.toList $ fvToVarSet $ excludeSet (free f) vs
-    ovl = Text.unwords $ map (showVar) $ Set.toList $ over vs f
+    sbs = Text.unwords $ map showVar $ Set.toList $ fvToVarSet $ excludeSet (free f) vs
+    ovl = Text.unwords $ map showVar $ Set.toList $ over vs f
     info = "\n in translation: " <> (Text.pack $ showFormula f)
 
     over :: Set VarName -> Formula -> Set VarName
@@ -431,25 +434,25 @@ such :: FTL ()
 such = tokenOf' ["such", "so"]
 
 
-
-texBegin, texEnd :: Text -> FTL Text
-texBegin env = do
-  token "\\begin"
-  symbol "{"
-  token env
-  symbol "}"
-  return env
-
-texEnd env = do
-  token "\\end"
-  symbol "{"
-  token env
-  symbol "}"
-  return env
-
-
 --just for now:
 
 showVar :: VarName -> Text
 showVar (VarConstant nm) = nm
-showVar nm =  pretty nm
+showVar nm = pretty nm
+
+-- | Parses '\begin{env}'. Takes a parser for parsing 'env'.
+texBegin :: FTL a -> FTL a
+texBegin envType = do
+  token "\\begin"
+  symbol "{"
+  envType' <- envType
+  symbol "}"
+  return envType'
+
+-- | Parses '\end{env}'. Takes a parser for parsing 'env'.
+texEnd :: FTL () -> FTL ()
+texEnd envType = do
+  token "\\end"
+  symbol "{"
+  envType
+  symbol "}"

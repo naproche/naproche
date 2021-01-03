@@ -29,6 +29,10 @@ noPos = Pos noSourcePos noSourcePos noRange
 data UnderlyingTheory = FirstOrderLogic | CiC | Lean
   deriving (Eq, Ord, Show)
 
+-- | Indicate which of the parsers is currently used. This is must be recorded in the State
+-- for read instruction to work properly.
+data ParserKind = NonTex | Tex deriving (Eq, Ord, Show)
+
 data Instr =
     Command Command
   | LimitBy Limit Int
@@ -92,17 +96,17 @@ data Flag =
   | Unfoldlow      --  unfold the whole low level context (yes)
   | Unfoldlowsf    --  unfold set and function conditions in low level (no)
   | Translation    --  print first-order translation of sentences
-  | NewParser
+  | UseTex         --  whether to use tex parser for the file passed in the CLI
   deriving (Eq, Ord, Show)
 
 data Argument =
-    Init     --  init file (init.opt)
-  | Text     --  literal text
-  | File     --  read file
-  | Read     --  read library file
-  | Library  --  library directory
-  | Provers  --  prover database
-  | Prover   --  current prover
+    Init               --  init file (init.opt)
+  | Text ParserKind    --  literal text
+  | File ParserKind    --  read file
+  | Read ParserKind    --  read library file
+  | Library            --  library directory
+  | Provers            --  prover database
+  | Prover             --  current prover
   deriving (Eq, Ord, Show)
 
 data Arguments =
@@ -178,11 +182,12 @@ keywordsFlag =
   (Unfoldlow, "unfoldlow"),
   (Unfoldlowsf, "unfoldlowsf"),
   (Translation, "translation"),
-  (NewParser, "new-parser")]
+  (UseTex, "tex")]
 
 keywordsArgument :: [(Argument, Text)]
 keywordsArgument =
- [(Read, "read"),
+ [(Read NonTex, "read"),
+  (Read Tex, "readtex"),
   (Library, "library"),
   (Provers, "provers"),
   (Prover, "prover")]
@@ -191,9 +196,12 @@ keywordsArguments :: [(Arguments, Text)]
 keywordsArguments =
   [(Synonym, "synonym")]
 
--- distiguish between parser and verifier instructions
+-- distinguish between parser and verifier instructions
 
 isParserInstruction :: Instr -> Bool
 isParserInstruction i = case i of
-  Command EXIT -> True; Command QUIT -> True; GetArgument Read _ -> True;
-  GetArguments Synonym _ -> True; _ -> False
+  Command EXIT -> True
+  Command QUIT -> True
+  GetArgument (Read _) _ -> True
+  GetArguments Synonym _ -> True
+  _ -> False

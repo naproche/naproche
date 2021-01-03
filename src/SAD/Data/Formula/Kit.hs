@@ -171,6 +171,8 @@ zOr f g       = Or  f g
 mkVar :: VarName -> Formula
 mkVar v = pVar $ PosVar v noSourcePos
 
+-- | Given a variable name with position data, creates a formula consisting of just
+-- a that variable.
 pVar :: PosVar -> Formula
 pVar (PosVar v pos) = Var v [] pos
 

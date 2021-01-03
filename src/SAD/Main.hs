@@ -9,10 +9,11 @@ Main application entry point: console or server mode.
 
 module SAD.Main where
 
-import Control.Monad (when, unless)
+import Control.Monad (unless)
 import Data.Maybe (fromMaybe)
 import Data.Time (UTCTime, addUTCTime, getCurrentTime, diffUTCTime)
 import Data.ByteString (ByteString)
+import Data.List (isSuffixOf)
 
 import qualified Control.Exception as Exception
 import qualified Data.Text as Text
@@ -48,23 +49,30 @@ main  = do
 
   -- command line and init file
   args0 <- Environment.getArgs
-  (opts0, text0) <- readArgs args0
+  (opts0, pk, mFileName) <- readArgs args0
+  text0 <- (map (uncurry ProofTextInstr) (reverse opts0) ++) <$> case mFileName of
+    Nothing -> do
+      stdin <- getContents
+      pure $ [ProofTextInstr noPos $ GetArgument (Text pk) (Text.pack stdin)]
+    Just f -> do
+      pure $ [ProofTextInstr noPos $ GetArgument (File pk) (Text.pack f)]
+  let opts1 = map snd opts0
 
-  if askFlag Help False opts0 then
+  if askFlag Help False opts1 then
     putStr (GetOpt.usageInfo usageHeader options)
   else -- main body with explicit error handling, notably for PIDE
     Exception.catch
-      (if askFlag Server False opts0 then
+      (if askFlag Server False opts1 then
         Server.server (Server.publish_stdout "Naproche-SAD") (serverConnection args0)
-      else do consoleThread; mainBody Nothing (opts0, text0))
+      else do consoleThread; mainBody Nothing opts1 text0)
       (\err -> do
         exitThread
         let msg = Exception.displayException (err :: Exception.SomeException)
         IO.hPutStrLn IO.stderr msg
         Exit.exitFailure)
 
-mainBody :: Maybe ByteString -> ([Instr], [ProofText]) -> IO ()
-mainBody proversYaml (opts0, text0) = do
+mainBody :: Maybe ByteString -> [Instr] -> [ProofText] -> IO ()
+mainBody proversYaml opts0 text0 = do
   startTime <- getCurrentTime
 
   -- parse input text
@@ -96,7 +104,7 @@ proveFOL proversYaml txts opts0 startTime = do
   let reasonerState = RState [] False False
   proveStart <- getCurrentTime
 
-  (success, finalReasonerState) <- case findParseError (ProofTextRoot txts) of
+  (success, finalReasonerState) <- case findParseError $ ProofTextRoot txts of
     Nothing -> do
       let typed = convert txts
       verify provers opts0 reasonerState typed
@@ -135,7 +143,7 @@ proveFOL proversYaml txts opts0 startTime = do
   outputMain TRACING noSourcePos $ Text.unpack $
     "total " <> showTimeDiff (diffUTCTime finishTime startTime)
 
-  when (not success) Exit.exitFailure
+  unless success Exit.exitFailure
 
 serverConnection :: [String] -> Socket -> IO ()
 serverConnection args0 connection = do
@@ -152,10 +160,12 @@ serverConnection args0 connection = do
         exitThread
         (do
           let args1 = lines (fromMaybe "" (Properties.get props Naproche.command_args))
-          (opts1, text0) <- readArgs (args0 ++ args1)
-          let text1 = text0 ++ [ProofTextInstr noPos (GetArgument Text (Text.pack $ XML.content_of body))]
+          (opts0, pk, fileName) <- readArgs (args0 ++ args1)
+          let opts1 = map snd opts0
+          let text0 = map (uncurry ProofTextInstr) (reverse opts0)
+          let text1 = text0 ++ [ProofTextInstr noPos (GetArgument (Text pk) (Text.pack $ XML.content_of body))]
 
-          Exception.catch (mainBody Nothing (opts1, text1))
+          Exception.catch (mainBody Nothing opts1 text1)
             (\err -> do
               let msg = Exception.displayException (err :: Exception.SomeException)
               Exception.catch
@@ -166,24 +176,26 @@ serverConnection args0 connection = do
 
     _ -> return ()
 
-
 -- Command line parsing
 
-readArgs :: [String] -> IO ([Instr], [ProofText])
+readArgs :: [String] -> IO ([(Pos, Instr)], ParserKind, Maybe FilePath)
 readArgs args = do
   let (instrs, files, errs) = GetOpt.getOpt GetOpt.Permute options args
 
   let fail msgs = errorWithoutStackTrace (unlines (map trim_line msgs))
   unless (null errs) $ fail errs
-  when (length files > 1) $ fail ["More than one file argument\n"]
-  let commandLine = case files of [file] -> instrs ++ [GetArgument File (Text.pack file)]; _ -> instrs
 
-  initFile <- readInit (askArgument Init "init.opt" commandLine)
-  let initialOpts = initFile ++ map (noPos,) commandLine
+  initFile <- readInit (askArgument Init "init.opt" instrs)
+  let initialOpts = initFile ++ map (noPos,) instrs
 
-  let revInitialOpts = map snd $ reverse initialOpts
-  let initialProofText = map (uncurry ProofTextInstr) initialOpts
-  return (revInitialOpts, initialProofText)
+  let revInitialOpts = reverse initialOpts
+  let useTexArg = askFlag UseTex False $ map snd revInitialOpts
+  let fileName = case files of
+                  [file] -> Just file
+                  [] -> Nothing
+                  _ -> fail ["More than one file argument\n"]
+  let parserKind = if useTexArg || maybe False (".tex.ftl" `isSuffixOf`) fileName then Tex else NonTex
+  pure (revInitialOpts, parserKind, fileName)
 
 usageHeader :: String
 usageHeader =
@@ -198,8 +210,6 @@ options = [
     "translate input text and exit",
   GetOpt.Option "" ["translate"] (GetOpt.ReqArg (SetFlag Translation . parseConsent) "{on|off}")
     "print first-order translation of sentences",
-  GetOpt.Option "" ["new-parser"] (GetOpt.ReqArg (SetFlag NewParser . parseConsent) "{on|off}")
-    "use latex parsing",
   GetOpt.Option "" ["server"] (GetOpt.NoArg (SetFlag Server True))
     "run in server mode",
   GetOpt.Option ""  ["library"] (GetOpt.ReqArg (GetArgument Library . Text.pack) "DIR")
@@ -248,7 +258,10 @@ options = [
     "print thesis development (def: off)",
   GetOpt.Option "" ["dump"]
     (GetOpt.ReqArg (SetFlag Dump . parseConsent) "{on|off}")
-    "print tasks in prover's syntax (def: off)"
+    "print tasks in prover's syntax (def: off)",
+  GetOpt.Option "" ["tex"]
+    (GetOpt.ReqArg (SetFlag UseTex . parseConsent) "{on|off}")
+    "parse passed file with forthel tex parser (def: off)"
   ]
 
 parseConsent :: String -> Bool

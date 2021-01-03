@@ -4,6 +4,7 @@ Authors: Steffen Frerix (2017 - 2018)
 Parser combinators.
 -}
 
+{-# LANGUAGE TupleSections #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Parser.Combinators where
@@ -137,6 +138,18 @@ dot = do
 finish :: Parser st a -> Parser st a
 finish p = after p dot
 
+
+-- Iterating parser usage
+
+-- | @repeatUntil step end@ repeats a monadic action @step@ until @end@ succeeds.
+repeatUntil' :: (MonadPlus m, Monoid a) => m a -> m b -> m (a, b)
+repeatUntil' step end =
+  fmap (mempty,) end
+  <|> liftA2 (\next (acc,last) -> (next <> acc, last)) step (repeatUntil' step end)
+
+-- | Like @repeatUntil'@, but aggregates the results with the monoid operation.
+repeatUntil :: (MonadPlus m, Monoid a) => m a -> m a -> m a
+repeatUntil step = fmap (uncurry (<>)) . repeatUntil' step
 
 -- Control ambiguity
 

@@ -37,7 +37,7 @@ import SAD.Data.VarName
 import SAD.Data.Text.Decl
 import SAD.Data.Terms
 import SAD.Core.SourcePos (noSourcePos)
-import SAD.Data.Text.Block (ProofText(..), Block(..))
+import SAD.Data.Text.Block (ProofText(..), Block(..), position)
 import qualified SAD.Data.Text.Block as Block
 import SAD.Core.Pretty (Pretty(..))
 
@@ -353,7 +353,7 @@ autoIntroAssume (goal, ctx, (b:bs)) = case goal of
 
 -- | Convert a single line of a proof.
 subClaim :: Context -> Block -> Proof
-subClaim ctx (Block f b _ _ n l p _) = Located n p $
+subClaim ctx bl@(Block f b _ _ n l _) = Located n (position bl) $
   let mainF = noTags $ typecheck ctx $ bindFree (Map.keysSet $ preBoundVars ctx) $ parseFormula f
   in Subclaim mainF (convertProof mainF l ctx b)
 
@@ -430,7 +430,7 @@ getBlocks p = error $ "Internal error: getBlocks received: " ++ show p
 
 -- | Convert a block into a statement.
 convertBlock :: Context -> Block -> [Statement]
-convertBlock ctx bl@(Block f b _ _ n l p _) = Located n p <$>
+convertBlock ctx bl@(Block f b _ _ n l _) = Located n (position bl) <$>
   case f of
     -- top-level blocks:
     (F.Var (VarHole _) _ _) ->

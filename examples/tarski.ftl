@@ -1,15 +1,11 @@
 [synonym set/-s] [synonym subset/-s] [synonym element/-s] [synonym belong/-s]
 
-\begin{signature}
-  An element is a notion.
-\end{signature}
+Signature. An element is a notion.
 
 Let S,T denote sets.
 Let x,y,z,u,v,w denote elements.
 
-\begin{axiom}
-  Every element of S is an element.
-\end{axiom}
+Axiom. Every element of S is an element.
 
 Let x << S denote (x is an element of S).
 Let x belongs to S denote (x is an element of S).

@@ -1,6 +1,6 @@
-%
-% Integers
-%
+#
+# Integers
+#
 [unfoldlow on]
 [synonym integer/-s]
 
@@ -81,9 +81,9 @@ Let a prime stand for a prime nonzero integer.
 Axiom PrimeDivisor. n has a prime divisor iff n != 1 /\ n != -1.
 
 
-%
-% Generic sets
-%
+#
+# Generic sets
+#
 [synonym belong/-s] [synonym subset/-s]
 
 
@@ -102,9 +102,9 @@ Signature FinSet.   S is finite is an atom.
 Let x is infinite stand for x is not finite.
 
 
-%
-% Sets of integers
-%
+#
+# Sets of integers
+#
 Definition.
 INT is the set of integers.
 
@@ -132,9 +132,9 @@ Lemma.
  ~ A is a subset of INT.
 
 
-%
-% Introducing topology
-%
+#
+# Introducing topology
+#
 
 Definition ArSeq.   ArSeq(a,q) = { integer b | b = a (mod q) }.
 

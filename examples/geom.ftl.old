@@ -15,7 +15,7 @@ Let x-u-y stand for u is between x and y.
 Definition. Col(x,y,z) iff x-y-z or y-z-x or z-x-y.
 Let p is colinear with x and y stand for Col(p,x,y).
 
-%% SST, page 10.
+## SST, page 10.
 Axiom A1. x-y : y-x.
 
 Axiom A2. If x-y : z-u and x-y : v-w then z-u : v-w.
@@ -24,28 +24,28 @@ Axiom A3. If x-y : z-z then x = y.
 
 Axiom A4. There exists a point z such that x-y-z and y-z : p-q.
 
-% Five segments.
+# Five segments.
 Axiom A5. If not x = y and x-y-z and p-q-r and
       x-y : p-q and y-z : q-r and x-u : p-v and y-u : q-v then
       z-u : r-v.
 
 Axiom A6. If y is between x and x then x = y.
 
-% Inner Pasch.
+# Inner Pasch.
 Axiom A7. If x-u-z and y-v-z then there exists a point w
       such that u-w-y and v-w-x.
 
-% Lower dimension.
+# Lower dimension.
 Axiom A8. There exist points a,b,c such that not a-b-c and not b-c-a and not c-a-b.
 
-% Upper dimension.
+# Upper dimension.
 Axiom A9. If x-u : x-v and y-u : y-v and  z-u : z-v and not u = v then
 x-y-z and y-z-x and z-x-y.
 
-% Euclid.
+# Euclid.
 Axiom A10. If x-r-v and y-r-z and not x = r then there exist points s,t such that x-y-s and x-z-t and s-v-t.
 
-% Circle continuity axiom.
+# Circle continuity axiom.
 Axiom CA. Assume z-p-q and z-p-r and z-x : z-p and z-y : z-r. Then there exist w such that z-w : z-q and x-w-y.
 
 Definition B2_10. AFS(x,y,z,r,u,v,w,p) iff x-y-z and u-v-w and x-y : u-v and y-z : v-w and x-r : u-p and y-r : v-p.
@@ -165,19 +165,19 @@ Proof. Assume x = y. Then x = z and x = p. Hence z = p.
        Assume not x = y.
 qed.
 
-% The 11th axiom of Tarski's axiomatic System states that if x-y-w and x-z-w then either x-y-z or x-z-y. To show that it is
-% deductible from the first ten we first proof Lemma C5_1 from which we can easy dededuct the 11th axiom.
-% The Definitions, Lemmas and Axiom C5_1a - C5_1p are not part of the book "Metamathematische Methoden in der Geometrie.
-% We used them in this Text for different reasons like performance or readability.
+# The 11th axiom of Tarski's axiomatic System states that if x-y-w and x-z-w then either x-y-z or x-z-y. To show that it is
+# deductible from the first ten we first proof Lemma C5_1 from which we can easy dededuct the 11th axiom.
+# The Definitions, Lemmas and Axiom C5_1a - C5_1p are not part of the book "Metamathematische Methoden in der Geometrie.
+# We used them in this Text for different reasons like performance or readability.
 
 Definition C5_1a. Betw5(x,y,z,r,p) iff x-y-z and x-y-r and x-y-p and x-z-r and x-z-p and x-r-p and y-z-r and y-z-p and y-r-p and z-r-p.
 
 Let x~y~z~r~p stand for Betw5(x,y,z,r,p).
 
-% The following 4 predicates state the already proven statements for different positions in the proof. They are not defined
-% in t he book "Metamathematische Methoden in der Geometrie.
-% We use them because they seem to increase the performance of the proof assistant, when checked just before the next proving
-% step.
+# The following 4 predicates state the already proven statements for different positions in the proof. They are not defined
+# in t he book "Metamathematische Methoden in der Geometrie.
+# We use them because they seem to increase the performance of the proof assistant, when checked just before the next proving
+# step.
 
 Definition C5_1b. Th(x,y,z,r,p,q,g,h) iff (not x = y) and x-y-z and x-y-r and x-r-p and r-p : z-r and x-z-q and z-q : z-r and z-q-h and r-p-g.
 
@@ -187,8 +187,8 @@ Definition C5_1d. Th3(x,y,z,r,p,q,g,u) iff Th2(x,y,z,r,p,q,g) and AFS(y,z,q,p,g,
 
 Definition C5_1e. Th4(x,y,z,r,p,q,g,u,v,w,h) iff Th3(x,y,z,r,p,q,g,u) and not (z = p) and (not z = q) and p-z-v and z-v : z-q and q-z-h and z-h : z-u and v-h-w and h-w : h-v.
 
-% For the following 5 Statements we did not find a proof yet that gets checked positive by Naproche SAD
-% They are all used in the proof of Lemma C5_1p and Lemma C5_1.
+# For the following 5 Statements we did not find a proof yet that gets checked positive by Naproche SAD
+# They are all used in the proof of Lemma C5_1p and Lemma C5_1.
 
 Lemma C5_1f. Assume (not x = y) and x-y-z and x-y-r. Then there exist points a,b such that x-r-a and r-a : z-r and x-z-b and z-b : z-r.
 Proof.
@@ -223,10 +223,10 @@ Proof.
 	Hence z-v : z-w.
 qed.
 
-% The Idea to proof Lemma C5_1 is to extend the line x-z and x-r through two points p,q such that r-p : z-r and z-q : z-r.
-% Then one can easy see , that if either z = p or r = q, x-y-z or x-z-y must hold.
-% The following Lemma proofs that if there exist such points p and q then z = p or r = q must hold.
-% To see that such points exist one has to use Axiom A4 twice.
+# The Idea to proof Lemma C5_1 is to extend the line x-z and x-r through two points p,q such that r-p : z-r and z-q : z-r.
+# Then one can easy see , that if either z = p or r = q, x-y-z or x-z-y must hold.
+# The following Lemma proofs that if there exist such points p and q then z = p or r = q must hold.
+# To see that such points exist one has to use Axiom A4 twice.
 
 Lemma C5_1p. Assume (not x = y) and x-y-z and x-y-r and x-r-p and r-p : z-r and x-z-q and z-q : z-r. Then z = p or r = q.
 Proof.

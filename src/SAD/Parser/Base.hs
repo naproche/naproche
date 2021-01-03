@@ -35,14 +35,17 @@ import SAD.Helpers (notNull)
 import SAD.Parser.Token
 import SAD.Parser.Error
 import SAD.Core.SourcePos
+import SAD.Data.Instr (ParserKind)
 
 import Data.List
 import qualified Data.Text as Text
+
 
 -- | Parser state
 data State st = State
   { stUser  :: st
   , stInput :: [Token]
+  , parserKind :: ParserKind
   , lastPosition :: SourcePos
   } deriving (Eq, Ord, Show)
 

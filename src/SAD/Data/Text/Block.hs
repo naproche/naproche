@@ -5,6 +5,7 @@ module SAD.Data.Text.Block (
   ProofText(..),
   Block(..),
   makeBlock,
+  position,
   declaredNames,
   text,
   Section(..),
@@ -53,18 +54,19 @@ data Block = Block {
   declaredVariables :: Set Decl,
   name              :: Text,
   link              :: [Text],
-  position          :: SourcePos,
   tokens            :: [Token] }
   deriving (Eq, Ord)
 
-makeBlock :: Formula -> [ProofText] -> Section -> Text -> [Text] -> SourcePos -> [Token] -> (Block)
-makeBlock form body kind name link pos toks =
-  Block form body kind mempty name link (rangePos (tokensRange toks)) toks
+makeBlock :: Formula -> [ProofText] -> Section -> Text -> [Text] -> [Token] -> Block
+makeBlock form body kind = Block form body kind mempty
+
+position :: Block -> SourcePos
+position = rangePos . tokensRange . tokens
 
 text :: Block -> Text
 text Block {tokens} = composeTokens tokens
 
-{- All possible types that a ForThel block can have. -}
+{- All possible types that a ForTheL block can have. -}
 data Section =
   Definition | Signature | Axiom       | Theorem | CaseHypothesis  |
   Assumption | Selection | Affirmation | Posit   | LowDefinition   |
@@ -83,8 +85,10 @@ compose :: [ProofText] -> Formula
 compose = foldr comp Top
   where
     comp (ProofTextBlock block@Block{ declaredVariables = dvs }) f
+      -- In this case, we give the formula 'exists x_1,...,x_n . (formulate block) ^ f'.
       | needsProof block || kind block == Posit =
           Set.foldr mkExi (blAnd (formulate block) f) $ Set.map declName dvs
+      -- Otherwise, we give the formula 'forall x_1,...,x_n . (formulate block) => f'.
       | otherwise = Set.foldr mkAll (blImp (formulate block) f) $ Set.map declName dvs
     comp _ fb = fb
 

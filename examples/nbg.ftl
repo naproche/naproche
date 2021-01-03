@@ -1,16 +1,16 @@
-% This module implements the von Neumann-Bernays-Gödel set theory,
-% a conservative extension of ZFC. Any lemma that can be proven in ZFC
-% also can be proven in NBG, but unlike ZFC, NBG is finitely axiomatizable,
-% that is, we can describe it without using schemata over arbitrary formulas.
-% The axiom schema of class formation has been omitted in this presentation
-% because it is built into the compiler.
+# This module implements the von Neumann-Bernays-Gödel set theory,
+# a conservative extension of ZFC. Any lemma that can be proven in ZFC
+# also can be proven in NBG, but unlike ZFC, NBG is finitely axiomatizable,
+# that is, we can describe it without using schemata over arbitrary formulas.
+# The axiom schema of class formation has been omitted in this presentation
+# because it is built into the compiler.
 
-% NBG is usually stated using two kinds of basic types: classes and sets.
-% Since we want to write statements '2 is in Z' we split the concept of sets
-% into two types: sets and setobjects where a set is a collection (of setobjects)
-% and a setobject is an object which lives in a set. Thus every set is a setobject
-% and one can exhibit a coercion from any type to setobject by assuming as an
-% axiom that the class of all inhabitants of this type is a set.
+# NBG is usually stated using two kinds of basic types: classes and sets.
+# Since we want to write statements '2 is in Z' we split the concept of sets
+# into two types: sets and setobjects where a set is a collection (of setobjects)
+# and a setobject is an object which lives in a set. Thus every set is a setobject
+# and one can exhibit a coercion from any type to setobject by assuming as an
+# axiom that the class of all inhabitants of this type is a set.
 
 [synonym class/-es]
 [synonym set/-s]
@@ -28,9 +28,9 @@ Let B, C, D, E denote classes.
 Let b, c, d, e denote sets.
 Let w, x, y, z denote setobjects.
 
-% aElementOf is the variant of isIn which is not type-safe.
-% It can be used for deriving setobject-ness and to circum-
-% vent the type system.
+# aElementOf is the variant of isIn which is not type-safe.
+# It can be used for deriving setobject-ness and to circum-
+# vent the type system.
 Signature. An element of B is a notion.
 Definition. Let x be a setobject. 
   x is in B iff x is an element of B.
@@ -40,7 +40,7 @@ Axiom SetObjectIntro. Let o be an object
   and s be a set such that o is an element of s.
   Then o is a setobject.
 
-% This axiom is implicitly used in the compiler.
+# This axiom is implicitly used in the compiler.
 Axiom Ext. If x is an element of C iff x is an element of B then C = B.
 
 Signature. The empty set is a set.
