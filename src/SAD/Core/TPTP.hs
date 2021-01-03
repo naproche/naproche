@@ -18,8 +18,6 @@ import SAD.Core.Typed
 import SAD.Core.Task
 import SAD.Helpers (inParens)
 
-import Debug.Trace
-
 class TPTP a where
   tptp :: a -> Text
 
@@ -84,5 +82,5 @@ instance TPTP Hypothesis where
     Typing name t -> tffStatement (tptp name) "type" (tptp name <> ": " <> tptp t)
 
 instance TPTP Task where
-  tptp t@(Task hypo conj _ name _ _) = trace (Text.unpack $ pretty t) $
+  tptp (Task hypo conj _ name _ _) =
     Text.unlines (map tptp (reverse hypo) ++ [tffStatement name "conjecture" (tptp conj)])
