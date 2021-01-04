@@ -36,7 +36,18 @@ import qualified Isabelle.YXML as YXML
 import Network.Socket (Socket)
 
 import SAD.Core.Pretty (pretty)
-import SAD.API
+import SAD.Core.Logging (showTimeDiff, RState(..), sumCounter, Counter(..), sumTimer, Timer(..), maximalTimer)
+import SAD.Core.Message (consoleThread, exitThread, errorParser, outputMain, initThread, Kind(..))
+import SAD.Core.Provers (readProverFile, readProverDatabase)
+import SAD.Core.Prove (verify)
+import SAD.Core.Reader (readInit, readProofText)
+import SAD.Core.SourcePos (noSourcePos)
+import SAD.Data.Text.Block (ProofText(..), findParseError)
+import SAD.Data.Instr (Instr(..), Flag(..), askFlag, Limit(..), Argument(..), askArgument, noPos
+  , ParserKind(..), Pos)
+import SAD.Parser.Error (errorPos)
+import SAD.Core.Transform (convert)
+import SAD.Core.Typed (located)
 
 main :: IO ()
 main  = do

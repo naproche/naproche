@@ -11,20 +11,16 @@ module SAD.Data.Text.Block (
   Section(..),
   showForm,
   formulate,
-  compose,
   needsProof,
   isTopLevel,
-  file,
   findParseError,
-  children, setChildren,
-  canDeclare
+  canDeclare,
   )where
 
 import SAD.Data.Formula
 import SAD.Core.SourcePos
 import SAD.Data.Instr hiding (position)
 import SAD.Parser.Token
-import SAD.Data.Text.Decl
 import SAD.Parser.Error (ParseError)
 
 import Data.Set (Set)
@@ -38,7 +34,6 @@ import Control.Monad
 data ProofText =
     ProofTextBlock Block
   | ProofTextInstr Pos Instr
-  | NonProofTextStoredInstr [Instr] -- a way to restore instructions during verification
   | ProofTextDrop Pos Drop
   | ProofTextSynonym SourcePos
   | ProofTextPretyping SourcePos (Set PosVar)
@@ -119,10 +114,6 @@ isTopLevel  = isHole' . formula
     isHole' Var {varName = VarHole _} = True
     isHole' _ = False
 
-file :: Block-> Text
-file = sourceFile . position
-
-
 declaredNames :: Block -> Set VarName
 declaredNames = Set.map declName . declaredVariables
 
@@ -166,11 +157,6 @@ children :: ProofText -> [ProofText]
 children (ProofTextRoot texts) = texts
 children (ProofTextBlock bl) = body bl
 children _ = []
-
-setChildren :: ProofText -> [ProofText] -> ProofText
-setChildren (ProofTextRoot _) children = ProofTextRoot children
-setChildren (ProofTextBlock bl) children = ProofTextBlock bl {body = children}
-setChildren txt _ = txt
 
 -- parse correctness of a structure tree
 

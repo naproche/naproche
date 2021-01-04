@@ -24,11 +24,6 @@ noPos :: Pos
 noPos = Pos noSourcePos noSourcePos noRange
 
 
--- Instruction types
-
-data UnderlyingTheory = FirstOrderLogic | CiC | Lean
-  deriving (Eq, Ord, Show)
-
 -- | Indicate which of the parsers is currently used. This is must be recorded in the State
 -- for read instruction to work properly.
 data ParserKind = NonTex | Tex deriving (Eq, Ord, Show)
@@ -39,7 +34,6 @@ data Instr =
   | SetFlag Flag Bool
   | GetArgument Argument Text
   | GetArguments Arguments [Text]
-  | Theory UnderlyingTheory
   deriving (Eq, Ord, Show)
 
 data Drop =
@@ -123,9 +117,6 @@ askFlag i d is  = head $ [ v | SetFlag j v <- is, i == j ] ++ [d]
 
 askArgument :: Argument -> Text -> [Instr] -> Text
 askArgument i d is  = head $ [ v | GetArgument j v <- is, i == j ] ++ [d]
-
-askTheory :: UnderlyingTheory -> [Instr] -> UnderlyingTheory
-askTheory d is = head $ [ t | Theory t <- is] ++ [d]
 
 -- Drop
 

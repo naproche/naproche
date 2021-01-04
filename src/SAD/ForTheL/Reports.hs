@@ -41,7 +41,6 @@ import SAD.ForTheL.Base
 
 import SAD.Data.Text.Block (Block)
 import qualified SAD.Data.Text.Block as Block
-import SAD.Data.Text.Decl
 import Data.Text (Text)
 import qualified Data.Text as Text
 import SAD.Data.Formula

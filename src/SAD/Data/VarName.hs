@@ -31,13 +31,7 @@ data VarName
   = VarConstant Text   -- ^ previously starting with x
   | VarHole Text       -- ^ previously starting with ?
   | VarSlot            -- ^ previously !
-  | VarU Text          -- ^ previously starting with u
   | VarHidden Int      -- ^ previously starting with h
-  | VarAssume Int      -- ^ previously starting with i
-  | VarSkolem Int      -- ^ previously starting with o
-  | VarTask VarName    -- ^ previously starting with c
-  | VarZ Text          -- ^ previously starting with z
-  | VarW Text          -- ^ previously starting with w
   | VarF Int           -- ^ for function outputs
   | VarEmpty           -- ^ previously ""
   | VarDefault Text    -- ^ everything else
@@ -53,13 +47,7 @@ instance Pretty VarName where
   pretty (VarConstant s) = s
   pretty (VarHole s) = "?" <> ( s)
   pretty (VarSlot) = "!"
-  pretty (VarU s) = "u" <> ( s)
   pretty (VarHidden n) = "h" <> (Text.pack (show n))
-  pretty (VarAssume n) = "i" <> (Text.pack (show n))
-  pretty (VarSkolem n) = "o" <> (Text.pack (show n))
-  pretty (VarTask s) = "c" <> pretty s
-  pretty (VarZ s) = "z" <> ( s)
-  pretty (VarW s) = "w" <> ( s)
   pretty (VarF s) = "out_" <> (Text.pack (show s))
   pretty (VarEmpty) = ""
   pretty (VarDefault s) =  s

@@ -31,10 +31,9 @@ import Data.Maybe (fromMaybe)
 import Control.Applicative
 import Data.Bifunctor (bimap)
 
-import SAD.Data.Formula (Formula, Tag(..))
+import SAD.Data.Formula (Formula, Tag(..), Decl(..))
 import qualified SAD.Data.Formula as F
 import SAD.Data.VarName
-import SAD.Data.Text.Decl
 import SAD.Data.Terms
 import SAD.Core.SourcePos (noSourcePos)
 import SAD.Data.Text.Block (ProofText(..), Block(..), position)

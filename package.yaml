@@ -60,7 +60,6 @@ library:
     - Isabelle.Standard_Thread
     - Isabelle.Library
     - Isabelle.Naproche
-    - SAD.API
     - SAD.Main
 
 executables:

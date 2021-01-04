@@ -4,20 +4,20 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
 Core functions on formulas.
 -}
 
-module SAD.Data.Formula.Base where
+module SAD.Data.Formula.Base
+  ( Formula(..), Tag(..)
+  , occursIn, isClosed, subst, substs, bind, mapF, foldF, replace
+  , Decl(..), newDecl, positionedDecl
+  ) where
 
 import Data.Maybe
 import qualified Data.Monoid as Monoid
 import Control.Monad.Identity
 import Control.Applicative
 
-import SAD.Core.SourcePos (SourcePos)
+import SAD.Core.SourcePos (SourcePos, noSourcePos)
 import SAD.Data.Terms
-import SAD.Data.Text.Decl (Decl)
 import SAD.Data.VarName
-import Data.Text (Text)
-import qualified Data.Text as Text
-import SAD.Core.Pretty
 
 import qualified Data.Map as Map
 
@@ -48,21 +48,24 @@ data Tag =
   DomainTask | ExistenceTask | UniquenessTask | ChoiceTask | CoercionTag
   deriving (Eq, Ord, Show)
 
--- | whether a Tag marks a part in a function proof task
-fnTag :: Tag -> Bool
-fnTag DomainTask    = True; fnTag ChoiceTask     = True
-fnTag ExistenceTask = True; fnTag UniquenessTask = True
-fnTag _   = False
+-- | >0, with 0 as undefined
+type Serial = Int
 
-trInfo :: Formula -> [Formula]
-trInfo Trm {trmInfo = xs} = xs
-trInfo Var {varInfo = xs} = xs
-trInfo _ = error "Formula.Base.trInfo: Partial function"
+-- | A variable declaration.
+data Decl = Decl {
+  declName :: VarName,
+  declPosition :: SourcePos,
+  declSerial :: Serial
+} deriving (Eq, Ord, Show)
 
-showTrName :: Formula -> Text
-showTrName (Trm {trmName = s}) = Text.filter (/= ':') $ pretty s
-showTrName (Var {varName = s}) = Text.filter (/= ':') $ pretty s
-showTrName _ = Text.empty
+{- a declaration that has no representation in the input text -}
+newDecl :: VarName -> Decl
+newDecl v = Decl v noSourcePos 0
+
+{- a declaration that has a representation in the input text but has not been
+generated during parsing -}
+positionedDecl :: PosVar -> Decl
+positionedDecl (PosVar nm pos) = Decl nm pos 0
 
 -- Traversing functions
 
@@ -82,43 +85,6 @@ mapFM fn (Tag a f) = Tag a <$> fn f
 mapFM fn (Not f) = Not <$> fn f
 mapFM fn t@Trm{} = (\args -> t {trmArgs = args}) <$> (traverse fn $ trmArgs t)
 mapFM _ f = pure f
-
--- Logical traversing
--- | Same as roundFM but without the monadic action.
-roundF :: (Text -> VarName) -> ([Formula] -> Maybe Bool -> Int -> Formula -> Formula)
-               -> [Formula] -> Maybe Bool -> Int -> Formula -> Formula
-roundF c fn l p n f = runIdentity $ roundFM c (\w x y z -> Identity $ fn w x y z) l p n f
-
-{- traverse the structure of a formula with a monadic action all while keeping
-track of local premises, polarity and quantification depth. A unique identifying
-char is provided to shape the instantiations.-}
-roundFM :: (Monad m) =>
-          (Text -> VarName) -> ([Formula] -> Maybe Bool -> Int -> Formula -> m Formula)
-               -> [Formula] -> Maybe Bool -> Int -> Formula -> m Formula
-roundFM mkVar traversalAction localContext polarity n = dive
-  where
-    dive (All u f) = do
-      let action = traversalAction localContext polarity (succ n)
-          nn = mkVar $ Text.pack $ show n
-      All u . bind nn <$> (action $ inst nn f)
-    dive (Exi u f) = do
-      let action = traversalAction localContext polarity (succ n)
-          nn = mkVar $ Text.pack $ show n
-      Exi u . bind nn <$> (action $ inst nn f)
-    dive (Iff f g) = do
-      nf <- traversalAction localContext Nothing n f
-      Iff nf <$> traversalAction localContext Nothing n g
-    dive (Imp f g) = do
-      nf <- traversalAction localContext (not <$> polarity) n f
-      Imp nf <$> traversalAction (nf:localContext) polarity n g
-    dive (Or f g) = do
-      nf <- traversalAction localContext polarity n f
-      Or nf  <$> traversalAction (Not nf:localContext) polarity n g
-    dive (And f g) = do
-      nf <- traversalAction localContext polarity n f
-      And nf <$> traversalAction (nf:localContext) polarity n g
-    dive (Not f) = Not <$> traversalAction localContext (not <$> polarity) n f
-    dive f = mapFM (traversalAction localContext polarity n) f
 
 -- | Map a collection function over the next structure level of a formula
 foldF :: (Monoid.Monoid a) => (Formula -> a) -> Formula -> a
@@ -182,21 +148,6 @@ bind v = dive 0
     dive _ i@Ind{} = i
     dive n f = mapF (dive n) f
 
--- | Instantiate a formula with a variable with name v.
--- This also affects any info stored.
-inst :: VarName -> Formula -> Formula
-inst x = dive 0
-  where
-    dive n (All u g) = All u $ dive (succ n) g
-    dive n (Exi u g) = Exi u $ dive (succ n) g
-    dive n Ind {indIndex = m, indPosition = pos}
-      | m == n = Var x [] pos
-    dive n t@Trm{} = t {
-      trmArgs = map (dive n) $ trmArgs t,
-      trmInfo = map (dive n) $ trmInfo t }
-    dive n v@Var{} = v {varInfo = map (dive n) $ varInfo v}
-    dive n f = mapF (dive n) f
-
 -- | @subst t v f@ substitutes all occurrences of the free variable @v@ inside the formula @f@ by the formula @t@. Does not affect info.
 subst :: Formula -> VarName -> Formula -> Formula
 subst t v f = substs f [v] [t]
@@ -241,21 +192,3 @@ replace t s = dive
     dive_aux v@Var{} = v
     dive_aux i@Ind{} = i
     dive_aux f = mapF dive f
-
-syntacticEquality :: Formula -> Formula -> Bool
-syntacticEquality = eq
-  where
-    And f1 g1 `eq` And f2 g2 = f1 `eq` f2 && g1 `eq` g2
-    Or  f1 g1 `eq` Or  f2 g2 = f1 `eq` f2 && g1 `eq` g2
-    Imp f1 g1 `eq` Imp f2 g2 = f1 `eq` f2 && g1 `eq` g2
-    Iff f1 g1 `eq` Iff f2 g2 = f1 `eq` f2 && g1 `eq` g2
-    All _ f `eq` All _ g = f `eq` g
-    Exi _ f `eq` Exi _ g = f `eq` g
-    Tag t1 f `eq` Tag t2 g = t1 == t2 && f `eq` g
-    Not f `eq` Not g = f `eq` g
-    Top `eq` Top = True
-    Bot `eq` Bot = True
-    ThisT `eq` ThisT = True
-    t1@Trm{} `eq` t2@Trm{} = twins t1 t2
-    Var {varName = v1} `eq` Var {varName = v2} = v1 == v2
-    _ `eq` _ = False

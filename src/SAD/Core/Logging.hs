@@ -1,11 +1,11 @@
 {-
-Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
+Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018), Anton Lorenzen (2020 - 2021)
 
-Verifier state monad and common functions.
+Logging utilities.
 -}
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.Core.Base
+module SAD.Core.Logging
   ( RState(..)
 
   , Timer(..), Counter(..), Tracker(..)

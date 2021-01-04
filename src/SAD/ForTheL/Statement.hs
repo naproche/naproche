@@ -19,7 +19,6 @@ module SAD.ForTheL.Statement
 
 
 import SAD.Data.Formula
-import SAD.Data.Text.Decl
 import SAD.ForTheL.Base
 import SAD.ForTheL.Reports (markupToken, markupTokenOf)
 import SAD.Parser.Combinators

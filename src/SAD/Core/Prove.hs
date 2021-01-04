@@ -6,7 +6,7 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018), Makarius 
 Prover interface: export a proof task to an external prover.
 -}
 
-module SAD.Core.Prove where
+module SAD.Core.Prove (verify) where
 
 import Control.Monad (when, unless)
 import Data.Maybe
@@ -24,13 +24,9 @@ import qualified Isabelle.Standard_Thread as Standard_Thread
 
 import SAD.Core.SourcePos
 import SAD.Data.Instr hiding (Prover)
-import qualified SAD.Data.Text.Block as Block
 import SAD.Core.Provers
 import SAD.Helpers (notNull)
-import SAD.Data.Text.Block (Block(Block))
-import SAD.Data.Text.Context (Context(..))
-import SAD.Data.Formula (Formula(..))
-import SAD.Core.Base
+import SAD.Core.Logging
 import SAD.Core.Task (Task(..), generateTasks)
 import SAD.Core.Typed
 import SAD.Core.Pretty
@@ -94,10 +90,6 @@ export provers instrs tsk = do
 
 data Result = Success | Failure | TooLittleTime | ContradictoryAxioms
   deriving (Eq, Ord, Show)
-
-fromContext :: Context -> (Text, Formula)
-fromContext (Context fr (Block {Block.name = m} : _)) = (m, fr)
-fromContext (Context fr []) = ("", fr)
 
 runProver :: Prover -> Bool -> Text -> Bool -> Int -> IO Result
 runProver (Prover _ label path args yes con nos uns) printProver task isByContradiction timeLimit = do

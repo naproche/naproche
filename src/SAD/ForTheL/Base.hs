@@ -26,8 +26,6 @@ import SAD.Parser.Primitives
 
 import SAD.Core.SourcePos (noSourcePos)
 
-import SAD.Data.Text.Decl
-
 import SAD.Core.Message (PIDE)
 import qualified SAD.Core.Message as Message
 import SAD.Core.Pretty (pretty)
