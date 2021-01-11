@@ -5,6 +5,7 @@
 Proof Checking of Natural Mathematical Documents, with optional support
 for Isabelle Prover IDE.
 
+
 ## Command-line tool
 
 ### Prerequisites
@@ -27,15 +28,18 @@ for Isabelle Prover IDE.
 
     stack build
 
+
 ### Check proof files
 
     stack exec Naproche-SAD -- FILE
 
   It may be necessary to allow the E Prover more time by appending "-t SECONDS"
 
+
 ### Test
 
     stack test
+
 
 ## Isabelle Prover IDE (Isabelle/jEdit)
 
