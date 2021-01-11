@@ -16,7 +16,7 @@ for Isabelle Prover IDE.
 
   * The E Theorem Prover as executable "eprover" in the shell PATH (e.g. the
     multi-platform version provided by Isabelle: "isabelle getenv -b E_HOME")
-    Supported versions: 2.0 to 2.3
+    Supported versions: 2.0 to 2.5
 
   * Optional (for development): Haskell IDE within VSCode:
     https://github.com/haskell/haskell-ide-engine
