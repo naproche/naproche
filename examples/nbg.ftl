@@ -18,6 +18,7 @@
 [synonym function/-s]
 [synonym object/-s]
 [synonym setobject/-s]
+[synonym element/-s]
 
 Signature. A class is a notion.
 Signature. A set is a class.
@@ -45,16 +46,16 @@ Axiom Ext. If x is an element of C iff x is an element of B then C = B.
 
 Signature. The empty set is a set.
 Axiom Empty. x is not an element of the empty set.
-Lemma. The empty set is { u | u != u }.
+Lemma. The empty set is { setobject u | u != u }.
 
-Definition. b is nonempty iff there is a x such that x is in b.
-Lemma. If b is nonempty then b is not the empty set.
-Definition. b is empty iff b is not nonempty.
-Lemma. b is empty iff b is { u | u != u }.
+Definition. B is nonempty iff there is a x such that x is in B.
+Lemma. If B is nonempty then B is not the empty set.
+Definition. B is empty iff B is not nonempty.
+Lemma. B is empty iff B is { setobject u | u != u }.
 
 Signature. The pair of x and y is a set.
 Axiom Pair. x is in the pair of y and z iff x = y or x = z.
-Lemma. The pair of x and y is { u | u = x or u = y }.
+Lemma. The pair of x and y is { setobject u | u = x or u = y }.
 Definition. The singleton of x is the pair of x and x.
 
 Definition. The ordered pair of x and y is the pair of x and the pair of x and y.
@@ -79,28 +80,28 @@ Definition. The successor of b is the pair of b and the singleton of b.
 Axiom Inf. There is a set n such that the empty set is in n and for every b
   such that b is in n the successor of b is in n.
 
-Definition. The product of C and B is { (u, v) | u is in C and v is in B }.
+Definition. The product of C and B is { (u, v) | u is a setobject and v is a setobject and u is in C and v is in B }.
 Signature. A relation is a class.
 Axiom RelationIntro. C is a relation iff for every x such that x is in C
   there is a y such that there is a z such that x is the ordered pair of y and z.
 
 Let R, S denote relations.
-Definition. The domain of R is { u | there is a object v such that (u, v) is in R }.
-Definition. The range  of R is { v | there is a object u such that (u, v) is in R }.
-Definition. The field  of R is the union of the domain of R and the range of R.
-Definition. The restriction of R to B is { (u, v) | (u, v) is in R and u is in B }.
-Definition. The    image of B under R is { v | there is a object u such that u is in B and (u, v) is in R }.
-Definition. The preimage of B under R is { u | there is a object v such that v is in B and (u, v) is in R }.
-Definition. The composition of S and R is { (x, z) | there is a y such that (x, y) is in R and (y, z) is in S }.
-Definition. The inverse of R is { (y, x) | (x, y) is in R }.
-Definition. dom(R) is the domain of R.
-Definition. ran(R) is the range of R.
-Definition. field(R) is the field of R.
+Definition. The domain of R is { setobject u | there is a setobject v such that (u, v) is in R }.
+Definition. The Range  of R is { setobject v | there is a setobject u such that (u, v) is in R }.
+# Definition. The field  of R is the union of the domain of R and the Range of R.
+Definition. The restriction of R to B is { (u, v) | u is a setobject and v is a setobject and (u, v) is in R and u is in B }.
+Definition. The    image of B under R is { setobject v | there is a setobject u such that u is in B and (u, v) is in R }.
+Definition. The preimage of B under R is { setobject u | there is a setobject v such that v is in B and (u, v) is in R }.
+Definition. The composition of S and R is { (x, z) | x is a setobject and z is a set and there is a setobject y such that (x, y) is in R and (y, z) is in S }.
+Definition. The inverse of R is { (y, x) | x is a setobject and y is a setobject and (x, y) is in R }.
+Definition. Dom(R) is the domain of R.
+Definition. Ran(R) is the range of R.
+# Definition. field(R) is the field of R.
 Definition. R[B] is the image of B under R.
 Definition. R^{-1} is the inverse of R.
 
-Definition. R is reflexive iff for all x such that x is in the field of R (x, x) is in R.
-Definition. R is irreflexive iff for all x such that x is in the field of R (x, x) is not in R.
+# Definition. R is reflexive iff for all x such that x is in the field of R (x, x) is in R.
+# Definition. R is irreflexive iff for all x such that x is in the field of R (x, x) is not in R.
 Definition. R is symmetric iff for all x, y such that (x, y) is in R (y, x) is in R.
 Definition. R is antisymmetric iff for all x, y such that (x, y) is in R and (y, x) is in R x = y.
 Definition. R is transitive iff for all x, y, z such that (x, y) is in R and (y, z) is in R (x, z) is in R.
@@ -111,16 +112,16 @@ Signature. A function is a relation.
 Axiom FunctionIntro. R is a function iff for all x, y, z such that (x, y) is in R and (x, z) is in R y = z.
 
 Let F, G denote functions.
-Definition. F at x is an object y such that (x, y) is in F.
+Definition. F at x is a setobject y such that (x, y) is in F.
 Definition. F[x] is F at x.
 
 Axiom Choice. Let c be a set such that for all b such that b is in c b is nonempty.
-  There exists a function F such that dom(F) = c
-  and if b is in c then b is in F at b.
+  There exists a function F such that Dom(F) = c
+  and for all x such that x is in c there is a set d such that x is in d and d is F at x.
 
 Axiom Replacement. The restriction of F to c is a set.
 
-Definition. The intersection of B is { v | for every set u such that u is in B v is in u }.
+Definition. The intersection of B is { setobject v | for every set u such that u is in B v is in u }.
 Definition. The intersection of c and b is the intersection of the pair of c and b.
 Axiom Restriction. If c is nonempty then there is a b such that b is in c and
   (the intersection of c and b) is empty.

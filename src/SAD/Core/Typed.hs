@@ -7,7 +7,7 @@ module SAD.Core.Typed
  , Term(..), Proof, Located(..), Prf(..)
  , PrfBlock(..), ProofBlock
  , Statement, Stmt(..), Operator(..)
- , simp
+ , simp, bindFree, termify, bindExists, desugerClasses
  ) where
 
 import Data.Text (Text)
@@ -16,6 +16,13 @@ import Data.Functor.Identity
 import GHC.Generics (Generic)
 import Data.Hashable (Hashable)
 import Data.Binary (Binary)
+import qualified Data.List as L
+import Data.Set (Set)
+import qualified Data.Set as Set
+import qualified Data.Map as Map
+import Data.Functor.Const
+import Data.Bifunctor (bimap)
+import SAD.Core.SourcePos (noSourcePos)
 
 import SAD.Data.VarName
 import SAD.Data.Terms
@@ -174,6 +181,62 @@ simp = \case
   App Not [App Not [a]] -> a
   Tag t a -> Tag t $ simp a
   t -> t
+
+-- | Bind free variables by forall quantifiers
+-- and turn all bound variables into 'TermVar's.
+bindFree :: Set VarName -> Term (Const ()) t -> Term (Const ()) t
+bindFree bound t = bind $ findFree bound t
+  where
+    bind (vars, tr) = foldr (\v t -> Forall v (Const ()) t) tr $ Set.toList $ fvToVarSet $ vars
+
+-- | Make all the given variables terms.
+termify :: Set VarName -> Term f t -> Term f t
+termify bound = snd . findFree bound
+
+-- | Find free variables not bound in the given set
+-- and turn the bound variables into TermVars.
+findFree :: Set VarName -> Term f t -> (FV VarName, Term f t)
+findFree bound = free
+  where
+    free = \case
+      Forall v f t -> bimap (bindVar v) (Forall v f) $ free t
+      Exists v f t -> bimap (bindVar v) (Exists v f) $ free t
+      Class  v f t -> bimap (bindVar v) (Class  v f) $ free t
+      App op args -> bimap mconcat (App op) $ unzip $ free <$> args
+      Tag tag t -> Tag tag <$> free t
+      Var v -> if v `Set.member` bound 
+        then (mempty, App (OpTrm (TermVar v)) [])
+        else (unitFV v noSourcePos, Var v)
+
+-- | Bind free variables by exists quantifiers.
+bindExists :: [VarName] -> Term (Const ()) t -> Term (Const ()) t
+bindExists vs tr = foldr (\v -> Exists v (Const ())) tr vs
+
+-- | Given an infinite stream of TermNames,
+-- replace each class {x | c} by a new operator cls in a term t and return
+-- ((rest of the variables, [∀x x\in cls iff c]), t')
+-- If classes are nested, we will return the outermost first.
+desugerClasses :: [TermName] -> Term f t -> (([TermName], [(TermName, [f InType], Term f t)]), Term f t)
+desugerClasses = go mempty 
+  where 
+    go typings vars = \case
+      Forall v m t -> Forall v m <$> go (Map.insert v m typings) vars t 
+      Exists v m t -> Exists v m <$> go (Map.insert v m typings) vars t 
+      Class v m t -> 
+        let (cls:clss) = vars
+            ((clss', stmts), t') = go (Map.insert v m typings) clss t
+            free = Map.toList $ Map.fromSet (typings Map.!) $ fvToVarSet $ bindVar v $ fst $ findFree mempty t'
+            clsTrm = App (OpTrm cls) $ map (Var . fst) free
+            ext = Forall v m $ App Iff [App (OpTrm (TermName "in")) [Var v, clsTrm] , t' ]
+            ext' = foldr (\(v, m) -> Forall v m) ext free
+        in ((clss', (cls, map snd free, ext'):stmts), clsTrm)
+      App op ts ->
+        let (st, ts') = L.mapAccumL (\(v, ax) t -> 
+              let ((v', ax'), t') = go typings v t in ((v', ax ++ ax'), t'))
+              (vars, []) ts
+        in (st, App op ts')
+      Tag tag t -> Tag tag <$> go typings vars t 
+      Var v -> ((vars, []), Var v)
 
 instance Pretty InType where
   pretty (Signature t) = pretty t

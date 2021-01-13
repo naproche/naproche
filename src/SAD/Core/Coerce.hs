@@ -75,6 +75,13 @@ meld x j u v (Transitive m a v') =
   in Set.foldr' (\w -> meld x j v w) c
      $ Set.filter (\w -> (x, w) `notMember` c) $ v `childrenIn` (a Map.! j)
 
+-- | 'Coercions' stores a preorder on 'a' with edge labels given as 'c'.
+-- Once you added m relations for n elements, you can query in time O(log(n)) whether
+-- two elements are related and you can get the list of those P relations 
+-- that transitively relate this elements in O(P log(n)).
+-- Note that the path returned is the one first added
+-- and not necessarily the shortest.
+-- Total memory consumption is O(nm log(n))
 data Coercions a c = Coercions
   { transitive :: Transitive a
   , coercions :: Map (a, a) c
@@ -95,13 +102,18 @@ add ij c (Coercions tr coe) = Coercions
   , coercions = Map.insert ij c coe
   }
 
-coercibleTo :: Ord a => a -> a -> Coercions a c -> Bool
-coercibleTo i j coe
+coercibleTo :: Ord a => (a, a) -> Coercions a c -> Bool
+coercibleTo (i, j) coe
   | i == j = True
   | otherwise = member (i, j) $ transitive coe
 
-coerce :: Ord a => (a, a) -> Coercions a c -> [c]
-coerce (i, j) (Coercions tr coe) = map (coe Map.!)
-  $ List.unfoldr (\b -> case pred (i, b) tr of
-    Nothing -> Nothing
-    Just p -> if i == b then Nothing else Just ((p, b), p)) j
+-- | Get the list of coercions relating the elements. 
+-- for (i, j) it will be in reverse order: (b, j), (a, b), (i, a)
+coerce :: Ord a => (a, a) -> Coercions a c -> Maybe [c]
+coerce (i, j) (Coercions tr coe)
+  | i == j = Just []
+  | otherwise = emptyToNothing $ map (coe Map.!)
+    $ List.unfoldr (\b -> case pred (i, b) tr of
+      Nothing -> Nothing
+      Just p -> if i == b then Nothing else Just ((p, b), p)) j
+    where emptyToNothing xs = if null xs then Nothing else Just xs

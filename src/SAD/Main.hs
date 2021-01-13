@@ -97,7 +97,6 @@ mainBody proversYaml opts0 text0 = do
 showTranslation :: [ProofText] -> UTCTime -> IO ()
 showTranslation txts startTime = do
   let timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)
-  mapM_ (\case ProofTextBlock bl -> print bl; _ -> return ()) txts
   mapM_ (putStr . (++"\n\n") . Text.unpack . pretty . located) (convert txts)
 
   -- print statistics
@@ -115,13 +114,13 @@ proveFOL proversYaml txts opts0 startTime = do
   let reasonerState = RState [] False False
   proveStart <- getCurrentTime
 
-  (success, finalReasonerState) <- case findParseError $ ProofTextRoot txts of
+  finalReasonerState <- case findParseError $ ProofTextRoot txts of
+    Just err -> do 
+      errorParser (errorPos err) (show err)
+      Exit.exitFailure
     Nothing -> do
       let typed = convert txts
       verify provers opts0 reasonerState typed
-    Just err -> do 
-      errorParser (errorPos err) (show err)
-      pure (False, reasonerState)
 
   finishTime <- getCurrentTime
 
@@ -154,7 +153,7 @@ proveFOL proversYaml txts opts0 startTime = do
   outputMain TRACING noSourcePos $ Text.unpack $
     "total " <> showTimeDiff (diffUTCTime finishTime startTime)
 
-  unless success Exit.exitFailure
+  unless (0 == accumulate FailedGoals) Exit.exitFailure
 
 serverConnection :: [String] -> Socket -> IO ()
 serverConnection args0 connection = do

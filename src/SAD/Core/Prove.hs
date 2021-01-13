@@ -8,7 +8,7 @@ Prover interface: export a proof task to an external prover.
 
 module SAD.Core.Prove (verify) where
 
-import Control.Monad (when, unless)
+import Control.Monad (when, unless, foldM)
 import Data.Maybe
 import Data.List
 import System.IO
@@ -36,57 +36,52 @@ import qualified SAD.Data.Instr as Instr
 import SAD.Core.TPTP (tptp)
 import SAD.Core.Cache
 
-verify :: [Prover] -> [Instr] -> RState -> [Statement] -> IO (Bool, RState)
+verify :: [Prover] -> [Instr] -> RState -> [Statement] -> IO RState
 verify provers instrs rstate stmts = do
   c <- readCache
-  (c, res) <- go c rstate tsks
+  let tsks = generateTasks stmts
+  (c, res) <- foldM go (c, addCounter Sections (length stmts)
+      $ addCounter Goals (length tsks) rstate) tsks
   writeCache $ cleanup c
   pure res
   where
-    tsks = generateTasks stmts
-
     addCounter c n s = s { trackers = trackers s ++ [Counter c n] }
-
-    go c rstate [] = pure (c, (True, addCounter Sections (length stmts)
-      $ addCounter Goals (length tsks) rstate))
-    go c rstate (t:ts) = do
+    go (c, rstate) t = do
       if isCached t c then do
         TIO.putStrLn $ "Cached: [" <> (taskName t) <> "] " <> pretty (conjecture t)
-        go (cache t c) (addCounter CachedCounter 1 rstate) ts
+        pure (cache t c, addCounter CachedCounter 1 rstate)
       else do 
         TIO.putStrLn $ "[" <> (taskName t) <> "] " <> pretty (conjecture t)
         res <- export provers instrs t
         case res of
-          Success -> go (cache t c) (addCounter SuccessfulGoals 1 rstate) ts
-          Failure -> go c (addCounter FailedGoals 1 rstate) ts
-          TooLittleTime -> go c (addCounter FailedGoals 1 rstate) ts
+          Success -> pure (cache t c, addCounter SuccessfulGoals 1 rstate)
+          Failure -> pure (c, addCounter FailedGoals 1 rstate)
+          TooLittleTime -> pure (c, addCounter FailedGoals 1 rstate)
           ContradictoryAxioms -> do 
             Message.outputMain Message.WARNING noSourcePos 
               $ "\nFound a contradiction in the axioms! "
               <> "\nThis either means that you have introduced some axioms that are "
               <> "inconsistent or that you are in a proof by contradiction"
               <> "\n(and you should make sure to actually write 'Proof by contradiction.')"
-            go c (addCounter FailedGoals 1 rstate) ts
+            pure (c, addCounter FailedGoals 1 rstate)
 
 export :: [Prover] -> [Instr] -> Task -> IO Result
-export provers instrs tsk = do
+export [] _ _ = Message.errorExport noSourcePos "No provers"
+export provers@(defProver:_) instrs tsk = do
   Standard_Thread.expose_stopped
 
-  when (null provers) $ Message.errorExport noSourcePos "No provers"
-
-  let proverName = Text.unpack $ askArgument Instr.Prover (Text.pack $ name $ head provers) instrs
-      proversNamed = filter ((==) proverName . name) provers
-
-  when (null proversNamed) $ 
-    Message.errorExport noSourcePos $ "No prover named " ++ show proverName
+  let proverName = Text.unpack $ askArgument Instr.Prover (Text.pack $ name defProver) instrs
   
-  let printProver = askFlag Printprover False instrs
-  let timeLimit = askLimit Timelimit 3 instrs
-  let task = tptp tsk
-  when (askFlag Dump False instrs) $ 
-    Message.output "" Message.WRITELN noSourcePos (Text.unpack task)
+  case filter ((==) proverName . name) provers of
+    [] -> Message.errorExport noSourcePos $ "No prover named " ++ show proverName
+    (prover:_) -> do
+      let printProver = askFlag Printprover False instrs
+      let timeLimit = askLimit Timelimit 3 instrs
+      let task = tptp tsk
+      when (askFlag Dump False instrs) $ 
+        Message.output "" Message.WRITELN noSourcePos (Text.unpack task)
 
-  runProver (head proversNamed) printProver task (byContradiction tsk) timeLimit
+      runProver prover printProver task (byContradiction tsk) timeLimit
 
 data Result = Success | Failure | TooLittleTime | ContradictoryAxioms
   deriving (Eq, Ord, Show)

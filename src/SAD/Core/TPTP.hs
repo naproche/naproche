@@ -3,7 +3,7 @@
 
 -- | Export a task to TPTP syntax.
 
-module SAD.Core.TPTP where
+module SAD.Core.TPTP (tptp) where
 
 import Data.Text (Text)
 import qualified Data.Text as Text
@@ -33,6 +33,7 @@ instance TPTP VarName where
 instance TPTP InType where
   tptp = \case
     Object -> "$i"
+    Signature (TermNotion "Object") -> "$i"
     Signature (TermNotion "Int") -> "$int"
     Signature (TermNotion "Rat") -> "$rat"
     Signature (TermNotion "Real") -> "$real"
@@ -81,6 +82,22 @@ instance TPTP Hypothesis where
     Given name t -> tffStatement name "axiom" (tptp t)
     Typing name t -> tffStatement (tptp name) "type" (tptp name <> ": " <> tptp t)
 
+-- | Desuger all classes in the hypothesis and conjecture.
+-- We assume the hypothesis to be in reverse order.
+desugerClasses' :: [Hypothesis] -> Term Identity () -> ([Hypothesis], Term Identity ())
+desugerClasses' hs c =
+  let (Given "conj" c' : hs') = go [TermName ("cls" <> Text.pack (show i)) | i <- [1::Int ..]] (Given "conj" c : hs)
+  in (hs', c')
+  where
+    go _ [] = []
+    go vars (h:hs) = case h of
+      Given name t ->
+        let ((vars', axs), t') = desugerClasses vars t
+            clsType = InType (Signature (TermNotion "Class"))
+        in Given name t' : (concatMap (\(n, typ, t) -> [Given (name <> "_aux") t, Typing n (Pred (map runIdentity typ) clsType)]) axs) ++ go vars' hs
+      Typing name t -> Typing name t : go vars hs
+
 instance TPTP Task where
   tptp (Task hypo conj _ name _ _) =
-    Text.unlines (map tptp (reverse hypo) ++ [tffStatement name "conjecture" (tptp conj)])
+    let (hypo', conj') = desugerClasses' hypo conj
+    in Text.unlines (map tptp (reverse hypo') ++ [tffStatement name "conjecture" (tptp conj')])

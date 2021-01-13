@@ -98,7 +98,7 @@ thereIs = label "there-is statement" $ there >> (noNotion -|- notions)
   where
     noNotion = label "no-notion" $ do
       token' "no"; (q, f, vs) <- declared =<< notion;
-      return $ Not $ foldr mbdExi (q f) vs
+      return $ Not $ foldr dExi (q f) vs
     notions = fmap multExi $ art >> (declared =<< notion) `sepBy` comma
 
 
@@ -175,10 +175,10 @@ hasPredicate = label "has predicate" $ noPossessive <|> possessive
     noPossessive = nUnary -|- nCommon
     nUnary = do
       token' "no"; (q, f, v) <- declared =<< possess;
-      return $ q . Tag Dig . Not $ foldr mbdExi f v
+      return $ q . Tag Dig . Not $ foldr dExi f v
     nCommon = do
       token' "no"; token' "common"; (q, f, v) <- declared =<< possess
-      return $ q . Not $ foldr mbdExi (Tag Dig f) v
+      return $ q . Not $ foldr dExi (Tag Dig f) v
       -- take a closer look at this later.. why is (Tag Dig) *inside* important?
 
 
@@ -455,10 +455,14 @@ symbClassNotation = cndSet </> finSet
       let nmVar = pVar nm
       pure (Class nmDecl $ bind (declName nmDecl) $ c nmVar `blAnd` mbEqu vsDecl nmVar t st, nm)
 
+    -- | If we quantify over a variable v then vs = {v} and we can just substitute
+    -- the new variable 'nmVar' for 'v'. Else we quantify over a term (say (x, y))
+    -- and have to add exists quantifiers.
     mbEqu _ tr Var{varName = v} = subst tr v
-    mbEqu vs tr t = \st -> foldr mbdExi (st `And` mkEquality tr t) vs
+    mbEqu vs tr t = \st -> foldr dExi (st `And` mkEquality tr t) vs
 
-
+-- | Split into a constraint and a term.
+-- For example: '(x, y) in Z^2' becomes (_ in Z^2, (x, y))
 sepFrom :: FTL (Formula -> Formula, Formula)
 sepFrom = notionSep -|- classSep -|- noSep
   where
@@ -560,7 +564,7 @@ lambdaIn = do
 
 multExi :: Foldable t1 =>
            [(t2 -> Formula, t2, t1 Decl)] -> Formula
-multExi ((q, f, vs):ns) = foldr mbdExi (q f `blAnd` multExi ns) vs
+multExi ((q, f, vs):ns) = foldr dExi (q f `blAnd` multExi ns) vs
 multExi [] = Top
 
 conjChain :: FTL Formula -> FTL Formula

@@ -1,4 +1,7 @@
-module SAD.Core.Cache where
+module SAD.Core.Cache
+  ( readCache, writeCache
+  , Cache, isCached, cache, cleanup
+  ) where
 
 import Data.HashMap.Strict (HashMap)
 import qualified Data.HashMap.Strict as HashMap

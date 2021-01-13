@@ -1,9 +1,6 @@
-## TODO ##
+# TODO
 
-# Misc #
-
-* eliminate odd crash of --prover spass examples/Maximum_principle.ftl:
-  "Undefined symbol sdtcflbdtrb."
+## Misc
 
 * more robust (less redundant) specification of options with their defaults:
   avoid duplicate information in Haskell sources, comments, init.opt
@@ -12,7 +9,7 @@
   along the line of `there exist x,y,z such that ...` results in an ambiguity error.
 
 
-# PIDE markup reports #
+## PIDE markup reports
 
 * def/ref markup fact names
 
@@ -21,17 +18,13 @@
 * more robust parsing: recover from errors (e.g. via ProofTextError construction)
 
 
-# Admin #
-
-* systematic runs of "test" examples
+## Admin
 
 * semi-automated distribution builds for Linux, macOS, Windows
   (e.g. appveyor, travis)
 
 
-# General #
-
-* caching of old results from prefix of source, old versions etc.
+## General
 
 * support for multiple (simultaneous) input files (!?)
 

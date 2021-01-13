@@ -8,13 +8,10 @@ Various functions on formulas.
 
 module SAD.Data.Formula.Kit 
   ( blImp, blAnd
-  , free, pVar, occursH, occursS, allFree, duplicateNames, mbdExi, dAll, dExi, removeObject
+  , free, pVar, occursH, occursS, allFree, duplicateNames, dExi, dAll, removeObject
   , mkTrm, mkEquality, mkAll, mkVar, mkExi, mkThesis, mkElem, mkDom, mkApp, mkFun, mkLess, mkPair
   , isNotion, isTrm, isVar, 
   ) where
-
-import Control.Monad
-import Data.Maybe
 
 import SAD.Data.Formula.Base
 import SAD.Core.SourcePos
@@ -50,43 +47,6 @@ bool (Tag _ Bot) = Bot
 bool (Not Top)   = Bot
 bool (Not Bot)   = Top
 bool f           = f
-
--- Maybe quantification
-
--- | Maybe quantification handles quantification more efficiently in that it
--- possibly already simplifies formulas. Prototype example:
---     "exists x (x = t /\ P(x))" is replaced by "P(t)"
---     "forall x (x = t => P(x))" is replaced by "P(t)"
---
--- In code:
--- @(mbExi "x" (And (Trm TermEquality [Var "x" [] noSourcePos, Var "t" [] noSourcePos] [] 0) (Var "x" [] noSourcePos))) == Just (Var "t" [] noSourcePos)@
--- Danger: We ignore the fact that @=@ is symmetric.
---
--- Arguments: the variable to look for (e.g. "x"), whether we are in an "existance" or an "all" case and the formula.
-mbBind :: VarName -> Bool -> Formula -> Maybe Formula
-mbBind v  = dive id
-  where
-    dive :: (Formula -> Formula) -> Bool -> Formula -> Maybe Formula
-    dive c s (All u f) = dive (c . bool . All u) s f
-    dive c s (Exi u f) = dive (c . bool . Exi u) s f
-    dive c s (Tag a f) = dive (c . bool . Tag a) s f
-    dive c s (Not f)   = dive (c . bool . Not) (not s) f
-    dive c False (Imp f g) =
-      dive (c . bool . (`Imp` g)) True f `mplus`
-      dive (c . bool . (f `Imp`)) False g
-    dive c False (Or f g) =
-      dive (c . bool . (`Or` g)) False f `mplus`
-      dive (c . bool . (f `Or`)) False g
-    dive c True (And f g) =
-      dive (c . bool . (`And` g)) True f `mplus`
-      dive (c . bool . (f `And`)) True g
-    dive c True Trm {trmName = TermEquality, trmArgs = [l@Var {varName = u}, t]}
-      | u == v && not (l `occursIn` t) && isClosed t = return $ subst t u (c Top)
-    dive _ _ _ = mzero
-
-mbdExi :: Decl -> Formula -> Formula
-mbdExi v f = fromMaybe (dExi v f) (mbBind (declName v) True f)
-
 
 blAnd, blImp :: Formula -> Formula -> Formula
 blAnd Top f = f; blAnd (Tag _ Top) f = f
