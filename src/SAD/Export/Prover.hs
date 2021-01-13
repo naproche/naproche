@@ -19,7 +19,7 @@ import qualified Data.Text.Lazy.IO as TIO
 import Data.Text.Lazy (Text)
 
 import qualified Isabelle.File as File
-import qualified Isabelle.Standard_Thread as Standard_Thread
+import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
 
 import SAD.Core.SourcePos
 import SAD.Data.Instr hiding (Prover)
@@ -34,7 +34,7 @@ import qualified SAD.Export.TPTP as TPTP
 
 export :: Int -> [Prover] -> [Instr] -> [Context] -> Context -> IO Result
 export depth provers instrs context goal = do
-  Standard_Thread.expose_stopped
+  Isabelle_Thread.expose_stopped
 
   when (null provers) $ Message.errorExport noSourcePos "No provers"
 
@@ -98,7 +98,7 @@ runProver (Prover _ label path args yes con nos uns) printProver task isByContra
         Process.waitForProcess prv
         return ()
 
-  Standard_Thread.bracket_resource terminate $ do
+  Isabelle_Thread.bracket_resource terminate $ do
     output <- hGetContents prvout
     errors <- hGetContents prverr
     let lns = filter notNull $ lines $ output ++ errors

@@ -27,7 +27,7 @@ sig
   val command_args: string
   val forthel_command: string
   val cancel_command: string
-  val check_forthel: Proof.context -> string * Position.T -> unit
+  val check_forthel: Proof.context -> {tex: bool} -> string * Position.T -> unit
 end;
 
 structure Naproche: NAPROCHE =
@@ -121,11 +121,13 @@ val command_args = "command_args";
 val cancel_command = "cancel";
 val forthel_command = "forthel";
 
-fun check_forthel ctxt (text, pos) =
+fun check_forthel ctxt {tex} (text, pos) =
   let
-    fun bool_option config = if Config.get ctxt config then "on" else "off";
+    fun bool b = if b then "on" else "off";
+    val bool_option = bool o Config.get ctxt;
     val args =
-     ["--prove=" ^ bool_option naproche_prove,
+     ["--tex=" ^ bool tex,
+      "--prove=" ^ bool_option naproche_prove,
       "--check=" ^ bool_option naproche_check,
       "--skipfail=" ^ bool_option naproche_skipfail,
       "--printthesis=" ^ bool_option naproche_print_thesis,
@@ -188,16 +190,22 @@ end;
 
 val _ =
   Outer_Syntax.local_theory \<^command_keyword>\<open>forthel\<close> "check Naproche-SAD text"
-    (Parse.embedded_position >> (fn inp => fn lthy => (check_forthel lthy inp; lthy)));
+    (Parse.embedded_position >> (fn inp => fn lthy => (check_forthel lthy {tex = false} inp; lthy)));
 
 val _ =
-  Outer_Syntax.local_theory \<^command_keyword>\<open>forthel_file\<close> "check Naproche-SAD text file (.ftl)"
-    (Resources.parse_files "forthel_file" >> (fn files => fn lthy =>
+  Outer_Syntax.local_theory \<^command_keyword>\<open>forthel_tex\<close> "check Naproche-SAD text (TeX)"
+    (Parse.embedded_position >> (fn inp => fn lthy => (check_forthel lthy {tex = true} inp; lthy)));
+
+val _ =
+  Outer_Syntax.local_theory \<^command_keyword>\<open>forthel_file\<close> "check Naproche-SAD text file"
+    (Resources.parse_file >> (fn get_file => fn lthy =>
         let
-          val [file] = files (Proof_Context.theory_of lthy);
+          val {src_path, lines, digest, pos} = get_file (Proof_Context.theory_of lthy);
+          val file_name = Path.implode (Path.expand src_path);
+          val tex = String.isSuffix ".tex" file_name orelse String.isSuffix ".tex.ftl" file_name;
           val lthy' = lthy
-            |> Local_Theory.background_theory (Resources.provide (#src_path file, #digest file));
-          val _ = check_forthel lthy' (cat_lines (#lines file), #pos file);
+            |> Local_Theory.background_theory (Resources.provide (src_path, digest));
+          val _ = check_forthel lthy' {tex = tex} (cat_lines lines, pos);
         in lthy' end));
 
 end;

@@ -31,7 +31,7 @@ import qualified Isabelle.File as File
 import qualified Isabelle.Naproche as Naproche
 import qualified Isabelle.Properties as Properties
 import qualified Isabelle.Server as Server
-import qualified Isabelle.Standard_Thread as Standard_Thread
+import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
 import qualified Isabelle.UUID as UUID
 import qualified Isabelle.XML as XML
 import qualified Isabelle.YXML as YXML
@@ -185,13 +185,13 @@ proveFOL proversYaml text1 opts0 oldProofText oldProofTextRef startTime fileName
 
 serverConnection :: IORef ProofText -> [String] -> Socket -> IO ()
 serverConnection oldProofTextRef args0 connection = do
-  thread_uuid <- Standard_Thread.my_uuid
+  thread_uuid <- Isabelle_Thread.my_uuid
   mapM_ (Byte_Message.write_line_message connection . UUID.bytes) thread_uuid
 
   res <- Byte_Message.read_line_message connection
   case fmap (YXML.parse . UTF8.toString) res of
     Just (XML.Elem ((command, _), body)) | command == Naproche.cancel_command ->
-      mapM_ Standard_Thread.stop_uuid (UUID.parse_string (XML.content_of body))
+      mapM_ Isabelle_Thread.stop_uuid (UUID.parse_string (XML.content_of body))
 
     Just (XML.Elem ((command, props), body)) | command == Naproche.forthel_command ->
       Exception.bracket_ (initThread props (Byte_Message.write connection))

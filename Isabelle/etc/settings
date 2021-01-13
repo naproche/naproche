@@ -8,7 +8,7 @@ fi
 
 if [ -f "$NAPROCHE_HOME/Isabelle/naproche.jar" ]; then
   classpath "$NAPROCHE_HOME/Isabelle/naproche.jar"
-  isabelle_file_format "isabelle.naproche.File_Format"
+  isabelle_scala_service "isabelle.naproche.File_Format"
 else
   echo "### Missing $NAPROCHE_HOME/Isabelle/naproche.jar"
 fi

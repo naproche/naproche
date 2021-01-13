@@ -56,8 +56,8 @@ object File_Format
 
 class File_Format extends isabelle.File_Format
 {
-  val format_name: String = "forthel"
-  val file_ext: String = "ftl"
+  override def format_name: String = "forthel"
+  override def file_ext: String = "ftl"
 
   override def theory_suffix: String = "forthel_file"
   override def theory_content(name: String): String =

@@ -79,10 +79,7 @@ properties :: Properties.T -> T -> T
 properties more_props (elem, props) =
   (elem, fold_rev Properties.put more_props props)
 
-markup_elem :: String -> (String, T)
 markup_elem name = (name, (name, []) :: T)
-
-markup_string :: String -> String -> (String, String -> T)
 markup_string name prop = (name, \s -> (name, [(prop, s)]) :: T)
 
 

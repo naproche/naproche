@@ -23,7 +23,7 @@ import qualified System.IO as IO
 import Isabelle.Library
 import qualified Isabelle.UUID as UUID
 import qualified Isabelle.Byte_Message as Byte_Message
-import qualified Isabelle.Standard_Thread as Standard_Thread
+import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
 
 
 {- server address -}
@@ -64,7 +64,7 @@ server publish handle =
     loop :: Socket -> ByteString -> IO ()
     loop server_socket password = forever $ do
       (connection, _) <- Socket.accept server_socket
-      Standard_Thread.fork_finally
+      Isabelle_Thread.fork_finally
         (do
           line <- Byte_Message.read_line connection
           when (line == Just password) $ handle connection)
