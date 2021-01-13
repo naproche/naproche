@@ -75,7 +75,7 @@ pVar :: PosVar -> Formula
 pVar (PosVar v pos) = Var v [] pos
 
 mkTrm :: TermId -> TermName -> [Formula] -> Formula
-mkTrm tId t ts = Trm t ts [] tId
+mkTrm tId t ts = Trm t ts [] (AllEq tId)
 
 
 -- creation of predefined functions and notions
@@ -119,7 +119,7 @@ occursS = ((mkVar VarSlot) `occursIn`)
 -- | Replace @ObjectId@ Terms with @Top@
 -- pseudotyping with "object"
 removeObject :: Formula -> Formula
-removeObject t@Trm {trmId = tId}
+removeObject t@Trm {trmId = AllEq tId}
   | tId == ObjectId = Top
   | otherwise = t
 removeObject f = mapF removeObject f

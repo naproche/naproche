@@ -5,7 +5,7 @@ Core functions on formulas.
 -}
 
 module SAD.Data.Formula.Base
-  ( Formula(..), Tag(..)
+  ( Formula(..), Tag(..), AllEq(..)
   , occursIn, isClosed, subst, substs, bind, mapF, foldF, replace
   , Decl(..), newDecl, positionedDecl
   ) where
@@ -29,7 +29,7 @@ data Formula =
   Tag Tag Formula         | Not Formula             |
   Top                     | Bot                     |
   Trm { trmName :: TermName, trmArgs :: [Formula],
-        trmInfo :: [Formula], trmId   :: TermId}    |
+        trmInfo :: [Formula], trmId  :: AllEq TermId}    |
   -- | Free variables 'Var'.
   Var { varName :: VarName, varInfo :: [Formula], varPosition :: SourcePos } |
   -- | This is used for representing bound variables through de Brujin indices.
@@ -38,6 +38,12 @@ data Formula =
   -- traverses the formula from the inside to the outside.
   Ind { indIndex :: Int, indPosition :: SourcePos } | ThisT
   deriving (Eq, Ord, Show)
+
+data AllEq a = AllEq { fromAllEq :: a }
+  deriving (Show)
+
+instance Eq (AllEq a) where (==) _ _ = True
+instance Ord (AllEq a) where (<=) _ _ = True
 
 data Tag =
   Dig | DigMultiSubject | DigMultiPairwise | HeadTerm |
@@ -170,7 +176,7 @@ twins :: Formula -> Formula -> Bool
 twins u@Ind{} v@Ind{} = indIndex u == indIndex v
 twins Var {varName = u} Var {varName = v} = u == v
 twins t@Trm{} s@Trm{}
-  | trmId t == trmId s = pairs (trmArgs t) (trmArgs s)
+  | fromAllEq (trmId t) == fromAllEq (trmId s) = pairs (trmArgs t) (trmArgs s)
   where
     pairs (p:ps) (q:qs) = twins p q && pairs ps qs
     pairs [] [] = True

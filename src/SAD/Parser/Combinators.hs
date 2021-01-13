@@ -22,6 +22,7 @@ import Data.Maybe (isNothing, catMaybes)
 import Debug.Trace
 import Data.Text (Text)
 import qualified Data.Text as Text
+import SAD.Helpers (nubOrd)
 
 
 
@@ -154,11 +155,11 @@ repeatUntil step = fmap (uncurry (<>)) . repeatUntil' step
 -- Control ambiguity
 
 -- | If p is ambiguous, fail and report a well-formedness error
-narrow :: Show a => Parser st a -> Parser st a
+narrow :: (Ord a, Show a) => Parser st a -> Parser st a
 narrow p = Parser $ \st ok cerr eerr ->
-  let pok err eok cok = case eok ++ cok of
-        [_] -> ok err eok cok
-        ls  ->  eerr $ newErrorMessage (newWellFormednessMessage ["ambiguity error" <> Text.pack (show (map prResult ls))]) (stPosition st)
+  let pok err eok cok = case nubOrd $ map prResult $ eok ++ cok of
+        [_] -> ok err (take 1 eok) (take (1 - length eok) cok)
+        ls  -> eerr $ newErrorMessage (newWellFormednessMessage ["ambiguity error" <> Text.pack (show ls)]) (stPosition st)
   in  runParser p st pok cerr eerr
 
 

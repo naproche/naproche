@@ -200,7 +200,7 @@ resolve (Context idents res _ coe _) name typ =
     leastGeneral (x:y:xs) = if coercibleInto (snd x) (snd y) coe /= Nothing then leastGeneral (x:xs) else
       if coercibleInto (snd y) (snd x) coe /= Nothing then leastGeneral (y:xs) else
         error $ Text.unpack $ "Resolve ambigous: " <> pretty name <> " of type " <> pretty typ
-          <> " can be resolved as " <> pretty x <> " or " <> pretty y <> "\n"
+          <> " can be resolved as " <> pretty (snd x) <> " or " <> pretty (snd y) <> "\n"
           <> "and none of them is more general than the other."
 
 -- | Type check applications and insert coercions.
