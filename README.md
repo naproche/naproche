@@ -61,10 +61,7 @@ for Isabelle Prover IDE.
 
 ### Build
 
-    cd .../Naproche-SAD  #repository
-
-    isabelle build -e -d Isabelle Naproche-Build
-    stack build
+    isabelle naproche_build
 
 Reference versions for multi-platform executables (x86_64):
 
@@ -74,6 +71,8 @@ Reference versions for multi-platform executables (x86_64):
 
 
 ### Test
+
+      cd .../Naproche-SAD  #repository
 
 * Open ForTheL examples in Isabelle/jEdit, e.g.
 
