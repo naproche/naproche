@@ -100,4 +100,4 @@ generateTasks = concat . snd . mapAccumL go []
       Predicate n ts t -> ((Typing n (Pred ts t)):hypo, [])
       Axiom t -> ((Given n t):hypo, [])
       Claim t prf -> ((Given n t):hypo, generateFromProof n (sourceFile pos) hypo prf)
-      Coercion n f t -> ((Typing n (Pred [Signature f] (InType (Signature t)))):hypo, [])
+      Coercion n f t -> ((Typing n (Pred [Signature f] (InType t))):hypo, [])

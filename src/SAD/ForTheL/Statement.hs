@@ -86,10 +86,8 @@ atomic = label "atomic statement"
 
 
 thesis :: FTL Formula
-thesis = art >> (thes <|> contrary <|> contradiction)
+thesis = art >> contradiction
   where
-    thes = token' "thesis" >> return mkThesis
-    contrary = token' "contrary" >> return (Not mkThesis)
     contradiction = token' "contradiction" >> return Bot
 
 
@@ -435,7 +433,6 @@ clss = label "class definition" $ symbSet <|> classOf
       (clss, nm) <- symbClassNotation
       return (id, classFormula clss, Set.singleton nm)
     classFormula = mkEquality (mkVar (VarHole ""))
-
 
 symbClassNotation :: FTL (Formula, PosVar)
 symbClassNotation = cndSet </> finSet

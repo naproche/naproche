@@ -142,7 +142,7 @@ extractGivenTypes ctx = snd . go
         in (typings, Exists v (Identity $ Map.findWithDefault Object v typings) t')
       Class v (Const ()) t ->
         let (typings, t') = go t
-        in (typings, Class v (Identity $ Map.findWithDefault Object v typings) t')
+        in (typings, Class v (Identity $ Map.findWithDefault (Signature $ TermNotion "Setobject") v typings) t')
       -- this hack allows for new coercions in a lemma or axiom
       -- if it is of the form "Let s be a from. Then s is a to."
       App Imp [App (OpTrm (parseType ctx -> Just from)) [Var v0], App (OpTrm name@(parseType ctx -> Just _)) [Var v1]]
@@ -164,6 +164,11 @@ coercionsToTerm = go . reverse
     go [] = id
     go (x:xs) = go xs . App (OpTrm x) . (:[])
 
+-- | Like <> for maybe, but prefers Nothing
+(<+>) :: Semigroup a => Maybe a -> Maybe a -> Maybe a
+(<+>) (Just a) (Just b) = Just (a <> b)
+(<+>) _ _ = Nothing
+
 -- | Find the coercions for two 'Type's.
 -- If both are Sorts we return just the empty list and if both
 -- are predicates, we return the coercions for each argument in order.
@@ -177,7 +182,7 @@ coercibleInto smaller bigger coe = case (smaller, bigger) of
             const [] <$> coercibleInto' i' i coe -- contravariant
           _ -> Nothing
         inOk = sequence $ zipWith (\a b -> coercibleInto' a b coe) is is'
-    in if length is == length is' then inOk <> outOk else Nothing
+    in if length is == length is' then inOk <+> outOk else Nothing
   _ -> Nothing
 
 -- | Find the coercions for two 'InType's.
@@ -292,16 +297,16 @@ extractDefinitions = go mempty
         in (concatMap fst res, simp $ App op $ map snd res)
       -- coercion definitions
       Tag CoercionTag trm@(Exists _ (Identity (Signature to)) (App Eq [_, Var v0])) -> case Map.lookup v0 types of
-        (Just (Signature from)) -> ([Coercion (coercionName from to) from to], App Top [])
+        (Just (Signature from)) -> ([Coercion (coercionName from to) from (Signature to)], App Top [])
         _ -> ([], trm)
       -- sorts and predicate definitions
       Tag HeadTerm trm@(App (OpTrm name) args) -> case (name, args) of
         (TermNotion _, [Var v]) ->
           let t = case Map.lookup v types of
-                (Just (Signature t')) -> [Coercion (coercionName name t') name t']
+                (Just (Signature t')) -> [Coercion (coercionName name t') name (Signature t')]
                 _ -> []
               obj = TermNotion "Object"
-          in ([IntroSort name, Coercion (coercionName name obj) name obj] ++ t, App Top [])
+          in ([IntroSort name, Coercion (coercionName name obj) name Object] ++ t, App Top [])
         _ -> let ts = map (\case Var v -> types Map.! v; _ -> undefined) args
           in ([Predicate name ts Prop], simp $ trm)
       -- function definitions
@@ -462,5 +467,6 @@ convert = go mempty . concatMap (\case ProofTextBlock bl -> [bl]; _ -> [])
             res_n = Map.lookup n res
             res_n' = fromMaybe mempty res_n
         in Context (Map.insert n' (Pred is o) idents) (Map.insert n (Set.insert n' res_n') res) nn coe pbv
-      Coercion n from to -> Context idents res nn (add (from, to) n coe) pbv
+      Coercion _ _ Object -> Context idents res nn coe pbv
+      Coercion n from (Signature to) -> Context idents res nn (add (from, to) n coe) pbv
       _ -> Context idents res nn coe pbv

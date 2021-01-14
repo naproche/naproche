@@ -110,7 +110,7 @@ data Stmt f t
   | Coercion 
     TermName -- ^ name of coercion
     TermName -- ^ from notion
-    TermName -- ^ to notion
+    InType -- ^ to notion or object
 deriving instance (Eq (f InType), Eq t) => Eq (Stmt f t)
 deriving instance (Ord (f InType), Ord t) => Ord (Stmt f t)
 deriving instance (Show (f InType), Show t) => Show (Stmt f t)

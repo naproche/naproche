@@ -94,7 +94,7 @@ desugerClasses' hs c =
       Given name t ->
         let ((vars', axs), t') = desugerClasses vars t
             clsType = InType (Signature (TermNotion "Class"))
-        in Given name t' : (concatMap (\(n, typ, t) -> [Given (name <> "_aux") t, Typing n (Pred (map runIdentity typ) clsType)]) axs) ++ go vars' hs
+        in Given name t' : (concatMap (\(tn@(TermName n), typ, t) -> [Given (n <> "_aux") t, Typing tn (Pred (map runIdentity typ) clsType)]) axs) ++ go vars' hs
       Typing name t -> Typing name t : go vars hs
 
 instance TPTP Task where

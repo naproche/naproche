@@ -97,6 +97,7 @@ mainBody proversYaml opts0 text0 = do
 showTranslation :: [ProofText] -> UTCTime -> IO ()
 showTranslation txts startTime = do
   let timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)
+  mapM_ (\case (ProofTextBlock b) -> print b; _ -> pure ()) txts
   mapM_ (putStr . (++"\n\n") . Text.unpack . pretty . located) (convert txts)
 
   -- print statistics

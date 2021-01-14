@@ -29,7 +29,7 @@ instance CacheStorage IO where
     c <- if ex then decode <$> BS.readFile (dir </> dirname) 
       else pure (Cache mempty 0)
     pure $ c { lastRun = 1 + lastRun c }
-  
+
   writeCache c = do
     dir <- getAppUserDataDirectory "naproche-sad"
     createDirectoryIfMissing True dir
