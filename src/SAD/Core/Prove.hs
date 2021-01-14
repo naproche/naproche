@@ -38,15 +38,15 @@ import SAD.Core.Cache
 
 verify :: [Prover] -> [Instr] -> RState -> [Statement] -> IO RState
 verify provers instrs rstate stmts = do
-  c <- readCache
   let tsks = generateTasks stmts
-  (c, res) <- foldM go (c, addCounter Sections (length stmts)
+  (c, res) <- foldM go (mempty, addCounter Sections (length stmts)
       $ addCounter Goals (length tsks) rstate) tsks
-  writeCache $ cleanup c
+  store c
   pure res
   where
     addCounter c n s = s { trackers = trackers s ++ [Counter c n] }
     go (c, rstate) t = do
+      c <- loadFile (taskFile t) c
       if isCached t c then do
         TIO.putStrLn $ "Cached: [" <> (taskName t) <> "] " <> pretty (conjecture t)
         pure (cache t c, addCounter CachedCounter 1 rstate)

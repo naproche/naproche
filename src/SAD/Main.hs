@@ -171,7 +171,7 @@ serverConnection args0 connection = do
         exitThread
         (do
           let args1 = lines (fromMaybe "" (Properties.get props Naproche.command_args))
-          (opts0, pk, fileName) <- readArgs (args0 ++ args1)
+          (opts0, pk, _) <- readArgs (args0 ++ args1)
           let opts1 = map snd opts0
           let text0 = map (uncurry ProofTextInstr) (reverse opts0)
           let text1 = text0 ++ [ProofTextInstr noPos (GetArgument (Text pk) (Text.pack $ XML.content_of body))]
@@ -183,7 +183,7 @@ serverConnection args0 connection = do
                 (if YXML.detect msg then
                   Byte_Message.write connection [UTF8.fromString msg]
                  else outputMain ERROR noSourcePos msg)
-                (\(err2 :: Exception.IOException) -> pure ())))
+                (\(_ :: Exception.IOException) -> pure ())))
 
     _ -> return ()
 
@@ -196,7 +196,7 @@ readArgs args = do
   let fail msgs = errorWithoutStackTrace (unlines (map trim_line msgs))
   unless (null errs) $ fail errs
 
-  initFile <- readInit (askArgument Init "init.opt" instrs)
+  initFile <- readInit (Text.unpack $ askArgument Init "init.opt" instrs)
   let initialOpts = initFile ++ map (noPos,) instrs
 
   let revInitialOpts = reverse initialOpts

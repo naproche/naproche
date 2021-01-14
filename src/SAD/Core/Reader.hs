@@ -38,10 +38,10 @@ import qualified Isabelle.File as File
 
 -- Init file parsing
 
-readInit :: Text -> IO [(Pos, Instr)]
+readInit :: FilePath -> IO [(Pos, Instr)]
 readInit "" = return []
 readInit file = do
-  input <- catch (File.read (Text.unpack file)) $ Message.errorParser (fileOnlyPos file) . ioeGetErrorString
+  input <- catch (File.read file) $ Message.errorParser (fileOnlyPos file) . ioeGetErrorString
   let tokens = filter isProperToken $ tokenize TexDisabled (filePos file) $ Text.pack input
       initialParserState = State (initFS Nothing) tokens NonTex noSourcePos
   fst <$> launchParser instructionFile initialParserState
@@ -63,7 +63,7 @@ readProofText pathToLibrary text0 = do
   when (isJust pide) $ Message.reports reports
   return text
 
-reader :: Text -> [Text] -> [State FState] -> [ProofText] -> IO ([ProofText], [Message.Report])
+reader :: Text -> [FilePath] -> [State FState] -> [ProofText] -> IO ([ProofText], [Message.Report])
 reader pathToLibrary doneFiles = go
   where
     go stateList [ProofTextInstr pos (GetArgument (Read pk) file)] = if ".." `Text.isInfixOf` file
@@ -71,7 +71,7 @@ reader pathToLibrary doneFiles = go
       else go stateList [ProofTextInstr pos $ GetArgument (File pk) $ pathToLibrary <> "/" <> file]
 
     go (pState:states) [ProofTextInstr pos (GetArgument (File parserKind') file)]
-      | file `elem` doneFiles = do
+      | (Text.unpack file) `elem` doneFiles = do
           -- The parserKind of the state of the parser indicates whether the file was originally read with the .tex
           -- or the .ftl parser. Now if, for example, we originally read the file with the .ftl format and now we
           -- are reading the file again with the .tex format(by eg using '[readtex myfile.ftl]'), we want to throw an error.
@@ -82,12 +82,13 @@ reader pathToLibrary doneFiles = go
           (newProofText, newState) <- chooseParser pState
           go (newState:states) newProofText
       | otherwise = do
+          let file' = Text.unpack file
           text <-
-            catch (if Text.null file then getContents else File.read $ Text.unpack file)
-              (Message.errorParser (fileOnlyPos file) . ioeGetErrorString)
-          (newProofText, newState) <- reader0 (filePos file) (Text.pack text) (pState {parserKind = parserKind'})
+            catch (if null file' then getContents else File.read file')
+              (Message.errorParser (fileOnlyPos file') . ioeGetErrorString)
+          (newProofText, newState) <- reader0 (filePos file') (Text.pack text) (pState {parserKind = parserKind'})
           -- state from before reading is still here
-          reader pathToLibrary (file:doneFiles) (newState:pState:states) newProofText
+          reader pathToLibrary (file':doneFiles) (newState:pState:states) newProofText
 
     go (pState:states) [ProofTextInstr _ (GetArgument (Text pk) text)] = do
       (newProofText, newState) <- reader0 startPos text (pState {parserKind = pk})

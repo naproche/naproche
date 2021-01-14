@@ -29,7 +29,7 @@ import qualified Data.List as List
 -- Integer values <= 0 signify 'not given'.
 data SourcePos =
   SourcePos {
-    sourceFile :: Text,
+    sourceFile :: FilePath,
     sourceLine :: Int,
     sourceColumn :: Int,
     sourceOffset :: Int,
@@ -37,16 +37,16 @@ data SourcePos =
   deriving (Eq, Ord)
 
 noSourcePos :: SourcePos
-noSourcePos = SourcePos Text.empty 0 0 0 0
+noSourcePos = SourcePos "" 0 0 0 0
 
-fileOnlyPos :: Text -> SourcePos
+fileOnlyPos :: FilePath -> SourcePos
 fileOnlyPos file = SourcePos file 0 0 0 0
 
-filePos :: Text -> SourcePos
+filePos :: FilePath -> SourcePos
 filePos file = SourcePos file 1 1 1 0
 
 startPos :: SourcePos
-startPos = filePos Text.empty
+startPos = filePos ""
 
 
 -- advance position
@@ -56,7 +56,7 @@ advanceLine line c = if line <= 0 || c /= '\n' then line else line + 1
 advanceColumn :: (Ord a, Num a) => a -> Char -> a
 advanceColumn column c = if column <= 0 then column else if c == '\n' then 1 else column + 1
 advanceOffset :: (Ord a, Num a) => a -> p -> a
-advanceOffset offset c = if offset <= 0 then offset else offset + 1
+advanceOffset offset _ = if offset <= 0 then offset else offset + 1
 
 advancePos :: SourcePos -> Char -> SourcePos
 advancePos (SourcePos file line column offset endOffset) c =
@@ -95,4 +95,4 @@ instance Show SourcePos where
         case filter notNull details of
           [] -> ""
           ds -> "(" ++ List.intercalate ", " ds ++ ")"
-      quotedFilePath = if Text.null file then "" else "\"" ++ Text.unpack file ++ "\""
+      quotedFilePath = if null file then "" else "\"" ++ file ++ "\""

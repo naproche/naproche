@@ -33,7 +33,7 @@ data Task = Task
   , conjecture :: (Term Identity ())
   , hints :: [Text] -- ^ helpful lemmata
   , taskName :: Text
-  , taskFile :: Text -- ^ the file where the task was defined
+  , taskFile :: FilePath -- ^ the file where the task was defined
   , byContradiction :: Bool -- ^ eprover can detect contradictory axioms
     -- and so we store whether we are in a proof by contradiction (where contradictory axioms are fine).
   } deriving (Eq, Ord, Show, Read, Generic)
@@ -53,7 +53,7 @@ instance Pretty Task where
 -- | Generate tasks from the given proofs under the hypothesis that were assumed at this point.
 -- When handling subclaims we forget if we are in a proof by contradiction and assume we aren't.
 -- That seems consistent with normal mathematical practice.
-generateFromProof :: Text -> Text -> [Hypothesis] -> ProofBlock -> [Task]
+generateFromProof :: Text -> FilePath -> [Hypothesis] -> ProofBlock -> [Task]
 generateFromProof topname topfile hypo (Proving prf topclaim tophints)
   = concat $ finalize $ mapAccumL go (hypo, False) prf
   where

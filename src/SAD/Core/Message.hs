@@ -34,8 +34,6 @@ import qualified Control.Concurrent as Concurrent
 
 import SAD.Core.SourcePos (SourcePos)
 import qualified SAD.Core.SourcePos as SourcePos
-import qualified Data.Text as Text
-
 
 import qualified Isabelle.Properties as Properties
 import qualified Isabelle.Value as Value
@@ -141,7 +139,7 @@ posProperties PIDE{pideID, pideFile, pideShift} pos =
   (if offset <= 0 then [] else [(Markup.offsetN, Value.print_int offset)]) ++
   (if endOffset <= 0 then [] else [(Markup.end_offsetN, Value.print_int endOffset)])
   where
-    file = if Text.null $ SourcePos.sourceFile pos then pideFile else Text.unpack $ SourcePos.sourceFile pos
+    file = if null $ SourcePos.sourceFile pos then pideFile else SourcePos.sourceFile pos
     line = if null file then 0 else SourcePos.sourceLine pos
     shift i = if i <= 0 then i else i + pideShift
     offset = shift $ SourcePos.sourceOffset pos
