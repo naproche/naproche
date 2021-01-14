@@ -12,7 +12,7 @@ module SAD.Core.Message (
   initThread, exitThread, consoleThread,
   Kind (..), entityMarkup,
   Report, ReportString, reportsString, reportString, reports, report,
-  trimString, output, error, outputMain, outputExport, outputForTheL,
+  trimString, Comm(..), outputMain, outputExport, outputForTheL,
   outputParser, outputReasoner, outputThesis, outputSimplifier, outputTranslate,
   errorExport, errorParser
 ) where
@@ -33,6 +33,7 @@ import Control.Concurrent (ThreadId)
 import qualified Control.Concurrent as Concurrent
 
 import SAD.Core.SourcePos (SourcePos)
+import Control.Monad.State (StateT, lift)
 import qualified SAD.Core.SourcePos as SourcePos
 
 import qualified Isabelle.Properties as Properties
@@ -210,22 +211,29 @@ messageBytes pide origin kind pos msg =
        (case show kind of "" -> "" ; s -> s ++ ": ") ++
        (case show pos of "" -> ""; s -> s ++ "\n") ++ msg)]
 
-output :: String -> Kind -> SourcePos -> String -> IO ()
-output origin kind pos msg = do
-  context <- getContext
-  channel context $ messageBytes (pide context) origin kind pos msg
+class Monad m => Comm m where
+  output :: String -> Kind -> SourcePos -> String -> m ()
+  error :: String -> SourcePos -> String -> m a
 
-error :: String -> SourcePos -> String -> IO a
-error origin pos msg = do
-  pide <- pideContext
-  errorWithoutStackTrace $
-    UTF8.toString $ ByteString.concat $ messageBytes pide origin ERROR pos msg
+instance Comm m => Comm (StateT s m) where
+  output a b c d = lift $ output a b c d
+  error a b c = lift $ error a b c
+
+instance Comm IO where
+  output origin kind pos msg = do
+    context <- getContext
+    channel context $ messageBytes (pide context) origin kind pos msg
+
+  error origin pos msg = do
+    pide <- pideContext
+    errorWithoutStackTrace $
+      UTF8.toString $ ByteString.concat $ messageBytes pide origin ERROR pos msg
 
 
 -- specific messages
 
 outputMain, outputExport, outputForTheL, outputParser, outputReasoner,
-  outputSimplifier, outputThesis :: Kind -> SourcePos -> String -> IO ()
+  outputSimplifier, outputThesis :: Comm m => Kind -> SourcePos -> String -> m ()
 outputMain = output Naproche.origin_main
 outputExport = output Naproche.origin_export
 outputForTheL = output Naproche.origin_forthel
@@ -234,11 +242,11 @@ outputReasoner = output Naproche.origin_reasoner
 outputSimplifier = output Naproche.origin_simplifier
 outputThesis = output Naproche.origin_thesis
 
-outputTranslate :: Kind -> SourcePos -> String -> IO ()
+outputTranslate :: Comm m => Kind -> SourcePos -> String -> m ()
 outputTranslate = output Naproche.origin_translate
 
-errorExport :: SourcePos -> String -> IO a
+errorExport :: Comm m => SourcePos -> String -> m a
 errorExport = error Naproche.origin_export
 
-errorParser :: SourcePos -> String -> IO a
+errorParser :: Comm m => SourcePos -> String -> m a
 errorParser = error Naproche.origin_parser

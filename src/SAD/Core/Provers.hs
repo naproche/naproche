@@ -7,7 +7,7 @@ Construct prover database.
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.Core.Provers (Prover(..), readProverFile, readProverDatabase) where
+module SAD.Core.Provers (Prover(..), readProverDatabase) where
 
 import Data.Yaml
 import qualified SAD.Core.Message as Message
@@ -29,11 +29,7 @@ data Prover = Prover {
 
 instance FromJSON Prover
 
-{- parse the prover database in provers.yaml -}
-readProverFile :: FilePath -> IO [Prover]
-readProverFile file = readProverDatabase file =<< B.readFile file
-
-readProverDatabase :: FilePath -> B.ByteString -> IO [Prover]
+readProverDatabase :: Message.Comm m => FilePath -> B.ByteString -> m [Prover]
 readProverDatabase path txt = do
   let yamlEither = first prettyPrintParseException $ decodeEither' txt
   case yamlEither >>= mapM validate of

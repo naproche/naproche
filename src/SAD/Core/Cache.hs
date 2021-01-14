@@ -13,6 +13,7 @@ import qualified Data.ByteString.Lazy as BS
 import System.FilePath
 import System.Directory
 import Control.Exception
+import Control.Monad.State (StateT, lift)
 
 import SAD.Core.Task
 
@@ -24,6 +25,10 @@ dirname = ".ftlcache"
 class Monad m => CacheStorage m where
   readFileCache :: FilePath -> m FileCache
   writeFileCache :: FilePath -> FileCache -> m ()
+
+instance CacheStorage m => CacheStorage (StateT s m) where
+  readFileCache f = lift $ readFileCache f
+  writeFileCache f c = lift $ writeFileCache f c
 
 instance CacheStorage IO where
   readFileCache f = do
