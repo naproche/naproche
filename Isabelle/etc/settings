@@ -1,6 +1,6 @@
 # -*- shell-script -*- :mode=shellscript:
 
-if [ -d "$ISABELLE_HOME/Admin" ]; then
+if [ -d "$NAPROCHE_HOME/Isabelle/Admin_Tools" ]; then
   ISABELLE_TOOLS="$ISABELLE_TOOLS:$NAPROCHE_HOME/Isabelle/Admin_Tools"
 fi
 
