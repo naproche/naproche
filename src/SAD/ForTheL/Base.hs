@@ -424,7 +424,7 @@ an = tokenOf' ["a", "an"]
 the :: FTL ()
 the = token' "the"
 iff :: FTL ()
-iff = token' "iff" <|> mapM_ token' ["if", "and", "only", "if"]
+iff = token' "iff" <|> mapM_ token' ["if", "and", "only", "if"] <|> mapM_ token' ["when", "and", "only", "when"]
 that :: FTL ()
 that = token' "that"
 standFor :: FTL ()

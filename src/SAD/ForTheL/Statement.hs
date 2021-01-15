@@ -453,7 +453,7 @@ symbSetNotation = cndSet </> finSet
       pure (\tr -> foldr1 Or $ map (mkEquality tr) ts, h)
     cndSet = braced $ do
       (tag, c, t) <- sepFrom
-      st <- token "|" >> statement;
+      st <- (token "|" <|> token ":") >> statement
       vs <- freeVars t
       vsDecl <- makeDecls $ fvToVarSet vs;
       nm <- if isVar t then pure $ PosVar (varName t) (varPosition t) else hidden
