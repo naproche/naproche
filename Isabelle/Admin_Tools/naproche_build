@@ -6,13 +6,13 @@ set -e
 
 cd "$NAPROCHE_HOME"
 
+echo
+echo "Building Isabelle/Scala module: $NAPROCHE_JAR"
+isabelle build -e -D Isabelle
+
 echo "Building executable program: $NAPROCHE_EXE"
 isabelle ghc_stack build
 
 mkdir -p "$NAPROCHE_EXE_DIR"
 cp "$(standard_path "$(isabelle ghc_stack path --local-install-root)/bin/Naproche-SAD")" \
   "$NAPROCHE_EXE_DIR"
-
-echo
-echo "Building Isabelle/Scala module: $NAPROCHE_JAR"
-isabelle build -e -D Isabelle
