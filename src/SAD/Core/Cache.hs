@@ -14,6 +14,7 @@ import System.FilePath
 import System.Directory
 import Control.Exception
 import Control.Monad.State (StateT, lift)
+import Control.Monad.Reader (ReaderT)
 
 import SAD.Core.Task
 
@@ -27,6 +28,10 @@ class Monad m => CacheStorage m where
   writeFileCache :: FilePath -> FileCache -> m ()
 
 instance CacheStorage m => CacheStorage (StateT s m) where
+  readFileCache f = lift $ readFileCache f
+  writeFileCache f c = lift $ writeFileCache f c
+
+instance CacheStorage m => CacheStorage (ReaderT s m) where
   readFileCache f = lift $ readFileCache f
   writeFileCache f c = lift $ writeFileCache f c
 

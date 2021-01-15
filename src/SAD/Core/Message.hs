@@ -8,10 +8,10 @@ Formal output messages, with PIDE (Prover IDE) support.
 {-# LANGUAGE NamedFieldPuns #-}
 
 module SAD.Core.Message (
-  PIDE, pideContext, pideActive,
+  PIDE, pideActive,
   initThread, exitThread, consoleThread,
   Kind (..), entityMarkup,
-  Report, ReportString, reportsString, reportString, reports, report,
+  Report, ReportString, reportString, reports, report,
   trimString, Comm(..), outputMain, outputExport, outputForTheL,
   outputParser, outputReasoner, outputThesis, outputSimplifier, outputTranslate,
   errorExport, errorParser
@@ -34,6 +34,7 @@ import qualified Control.Concurrent as Concurrent
 
 import SAD.Core.SourcePos (SourcePos)
 import Control.Monad.State (StateT, lift)
+import Control.Monad.Reader (ReaderT)
 import qualified SAD.Core.SourcePos as SourcePos
 
 import qualified Isabelle.Properties as Properties
@@ -78,16 +79,6 @@ updateState f = do
   id <- Concurrent.myThreadId
   atomicModifyIORef' globalState (\threads -> (f id threads, ()))
 
-
--- PIDE context
-
-pideContext :: IO (Maybe PIDE)
-pideContext = pide <$> getContext
-
-pideActive :: IO Bool
-pideActive = isJust <$> pideContext
-
-
 -- init/exit thread context
 
 initThread :: Properties.T -> Channel -> IO ()
@@ -122,6 +113,51 @@ instance Show Kind where
   show LEGACY = "Legacy feature"
   show ERROR = "Error"
   show _ = ""
+
+class Monad m => Comm m where
+  output :: String -> Kind -> SourcePos -> String -> m ()
+  error :: String -> SourcePos -> String -> m a
+  reportsString :: [ReportString] -> m ()
+  pideContext :: m (Maybe PIDE)
+
+instance Comm m => Comm (StateT s m) where
+  output a b c d = lift $ output a b c d
+  error a b c = lift $ error a b c
+  reportsString = lift . reportsString
+  pideContext = lift pideContext
+
+instance Comm m => Comm (ReaderT s m) where
+  output a b c d = lift $ output a b c d
+  error a b c = lift $ error a b c
+  reportsString = lift . reportsString
+  pideContext = lift pideContext
+
+instance Comm IO where
+  output origin kind pos msg = do
+    context <- getContext
+    channel context $ messageBytes (pide context) origin kind pos msg
+
+  error origin pos msg = do
+    pide <- pideContext
+    errorWithoutStackTrace $
+      UTF8.toString $ ByteString.concat $ messageBytes pide origin ERROR pos msg
+
+  reportsString args = do
+    context <- getContext
+    when (isJust (pide context) && not (null args)) $
+      channel context $ pideMessage $ YXML.string_of $
+        XML.Elem (Markup.report,
+          map (\((pos, markup), txt) ->
+            let
+              markup' = Markup.properties (posProperties (fromJust (pide context)) pos) markup
+              body = if null txt then [] else [XML.Text txt]
+            in XML.Elem (markup', body)) args)
+
+  pideContext = pide <$> getContext
+
+
+pideActive :: Comm m => m Bool
+pideActive = isJust <$> pideContext
 
 kindXML :: Kind -> String
 kindXML STATE = Markup.stateN
@@ -174,25 +210,13 @@ pideMessage = Byte_Message.make_line_message . UTF8.fromString
 type Report = (SourcePos, Markup.T)
 type ReportString = (Report, String)
 
-reportsString :: [ReportString] -> IO ()
-reportsString args = do
-  context <- getContext
-  when (isJust (pide context) && not (null args)) $
-    channel context $ pideMessage $ YXML.string_of $
-      XML.Elem (Markup.report,
-        map (\((pos, markup), txt) ->
-          let
-            markup' = Markup.properties (posProperties (fromJust (pide context)) pos) markup
-            body = if null txt then [] else [XML.Text txt]
-          in XML.Elem (markup', body)) args)
-
-reportString :: SourcePos -> Markup.T -> String -> IO ()
+reportString :: Comm m => SourcePos -> Markup.T -> String -> m ()
 reportString pos markup txt = reportsString [((pos, markup), txt)]
 
-reports :: [Report] -> IO ()
+reports :: Comm m => [Report] -> m ()
 reports = reportsString . map (, "")
 
-report :: SourcePos -> Markup.T -> IO ()
+report :: Comm m => SourcePos -> Markup.T -> m ()
 report pos markup = reports [(pos, markup)]
 
 
@@ -210,25 +234,6 @@ messageBytes pide origin kind pos msg =
       ((if null origin then "" else "[" ++ origin ++ "] ") ++
        (case show kind of "" -> "" ; s -> s ++ ": ") ++
        (case show pos of "" -> ""; s -> s ++ "\n") ++ msg)]
-
-class Monad m => Comm m where
-  output :: String -> Kind -> SourcePos -> String -> m ()
-  error :: String -> SourcePos -> String -> m a
-
-instance Comm m => Comm (StateT s m) where
-  output a b c d = lift $ output a b c d
-  error a b c = lift $ error a b c
-
-instance Comm IO where
-  output origin kind pos msg = do
-    context <- getContext
-    channel context $ messageBytes (pide context) origin kind pos msg
-
-  error origin pos msg = do
-    pide <- pideContext
-    errorWithoutStackTrace $
-      UTF8.toString $ ByteString.concat $ messageBytes pide origin ERROR pos msg
-
 
 -- specific messages
 
