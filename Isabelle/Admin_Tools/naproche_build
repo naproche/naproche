@@ -6,7 +6,8 @@ set -e
 
 cd "$NAPROCHE_HOME"
 
-echo
+isabelle jedit -b
+
 echo "Building Isabelle/Scala module: $NAPROCHE_JAR"
 isabelle build -e -D Isabelle
 
