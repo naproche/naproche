@@ -135,6 +135,8 @@ Let us show that h is surjective from Prod(A,A) onto Succ(A).
 	Every element of h^[Prod(A,A)] is an element of Succ(A).
 		proof.
 			Let n be an element of h^[Prod(A,A)]. We can take elements a,b of A such that n = h[(a,b)].
+
+      [prover vampire]
 			Case f[a] has an element. Obvious (by Transitivity).
 			Case f[a] has no element. Obvious (by Transitivity).
 		end.

@@ -42,6 +42,9 @@
       x * y is an element.
     \end{signature}
 
+    Let x is nonzero stand for x != 0.
+    Let x - y stand for x + -y.
+
     \begin{axiom}[AddComm]
       x + y = y + x.
     \end{axiom}
@@ -290,6 +293,8 @@
       We can show by induction on |w| that for every nonzero w << I there
         exists nonzero u << I such that for no nonzero v << I (|v| -<- |u|).
       Obvious.
+
+      [prover vampire]
     qed.
 
     u is a common divisor of a and b.

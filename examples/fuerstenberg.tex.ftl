@@ -87,6 +87,9 @@
     \begin{lemma}[MulMinOne]
       -1 * a = -a = a * -1.
     \end{lemma}
+    \begin{proof}
+      (-1 * a) + a = 0.
+    \end{proof}
 
     \begin{axiom}[ZeroDiv]
       a != 0 /\ b != 0 => a * b != 0.
