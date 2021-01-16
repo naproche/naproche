@@ -1,4 +1,4 @@
-# This won't compile; we ensure that in the testsuite.
+% This won't compile; we ensure that in the testsuite.
 
 \begin{forthel}
   \begin{definition}
