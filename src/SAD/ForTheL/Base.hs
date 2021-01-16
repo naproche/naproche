@@ -424,7 +424,7 @@ an = tokenOf' ["a", "an"]
 the :: FTL ()
 the = token' "the"
 iff :: FTL ()
-iff = token' "iff" <|> mapM_ token' ["if", "and", "only", "if"]
+iff = token' "iff" <|> mapM_ token' ["if", "and", "only", "if"] <|> mapM_ token' ["when", "and", "only", "when"]
 that :: FTL ()
 that = token' "that"
 standFor :: FTL ()
@@ -452,7 +452,7 @@ showVar nm = toLazyText $ represent nm
 -- | Parses '\begin{env}'. Takes a parser for parsing 'env'.
 texBegin :: FTL a -> FTL a
 texBegin envType = do
-  token "\\begin"
+  token "begin"
   symbol "{"
   envType' <- envType
   symbol "}"
@@ -461,7 +461,7 @@ texBegin envType = do
 -- | Parses '\end{env}'. Takes a parser for parsing 'env'.
 texEnd :: FTL () -> FTL ()
 texEnd envType = do
-  token "\\end"
+  token "end"
   symbol "{"
   envType
   symbol "}"
