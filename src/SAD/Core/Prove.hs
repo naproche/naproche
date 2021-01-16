@@ -23,7 +23,7 @@ import Control.Monad.State (StateT, lift)
 import Control.Monad.Reader (ReaderT)
 
 import qualified Isabelle.File as File
-import qualified Isabelle.Standard_Thread as Standard_Thread
+import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
 
 import SAD.Core.SourcePos
 import SAD.Data.Instr hiding (Prover)
@@ -50,7 +50,7 @@ instance RunProver m => RunProver (ReaderT s m) where
 
 instance RunProver IO where
   runProver (Prover _ label path args yes con nos uns) printProver task isByContradiction timeLimit = do
-    Standard_Thread.expose_stopped
+    Isabelle_Thread.expose_stopped
 
     let proc = (Process.proc path (map (setTimeLimit timeLimit) args))
           { Process.std_in = Process.CreatePipe
@@ -78,7 +78,7 @@ instance RunProver IO where
           Process.waitForProcess prv
           return ()
 
-    Standard_Thread.bracket_resource terminate $ do
+    Isabelle_Thread.bracket_resource terminate $ do
       output <- hGetContents prvout
       errors <- hGetContents prverr
       let lns = filter notNull $ lines $ output ++ errors

@@ -444,7 +444,7 @@ symbClassNotation = cndSet </> finSet
       pure (Class hDecl $ foldr1 Or $ map (mkEquality $ pVar h) ts, h)
     cndSet = braced $ do
       (c, t) <- sepFrom
-      st <- token "|" >> statement;
+      st <- (token "|" <|> token ":") >> statement;
       vs <- freeVars t
       vsDecl <- makeDecls $ fvToVarSet vs;
       nm <- if isVar t then pure $ PosVar (varName t) (varPosition t) else hidden

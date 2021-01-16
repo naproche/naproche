@@ -267,7 +267,7 @@ pretype p = p `pretypeBefore` return []
 
 -- low-level header
 hence :: FTL ()
-hence = optLL1 () $ tokenOf' ["then", "hence", "thus", "therefore"]
+hence = optLL1 () $ tokenOf' ["then", "hence", "thus", "therefore", "consequently"]
 letUs :: FTL ()
 letUs = optLL1 () $ (mu "let" >> mu "us") <|> (mu "we" >> mu "can")
   where

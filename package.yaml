@@ -57,7 +57,7 @@ library:
     - Isabelle.XML
     - Isabelle.YXML
     - Isabelle.UUID
-    - Isabelle.Standard_Thread
+    - Isabelle.Isabelle_Thread
     - Isabelle.Library
     - Isabelle.Naproche
     - SAD.Main

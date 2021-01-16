@@ -44,12 +44,7 @@ data TokenType = NoWhiteSpaceBefore | WhiteSpaceBefore | Comment deriving (Eq, O
 -- If at some point one uses a more powerful parser for tokenizing, this should be much
 -- less messy.
 -- | Indicates whether the tokenizer is currently inside a forthel env.
-data TexState = InsideForthelEnv | OutsideForthelEnv | TexDisabled
-
-usingTexParser :: TexState -> Bool
-usingTexParser InsideForthelEnv = True
-usingTexParser OutsideForthelEnv = True
-usingTexParser TexDisabled = False
+data TexState = InsideForthelEnv | OutsideForthelEnv | TexDisabled deriving (Eq)
 
 -- | Make a token with @s@ as @tokenText@ and the range from @p@ to the end of @s@.
 makeToken :: Text -> SourcePos -> TokenType -> Token
@@ -85,6 +80,7 @@ noTokens = [EOF noSourcePos]
 tokenize :: TexState -> SourcePos -> Text -> [Token]
 tokenize texState start = posToken texState start NoWhiteSpaceBefore
   where
+    useTex = texState /= TexDisabled
     -- Activate the tokenizer when '\begin{forthel}' appears.
     posToken :: TexState -> SourcePos -> TokenType -> Text -> [Token]
     posToken OutsideForthelEnv pos _ s = toks
@@ -115,13 +111,26 @@ tokenize texState start = posToken texState start NoWhiteSpaceBefore
     -- Process non-alphanumeric symbol or EOF.
     posToken texState pos whitespaceBefore s = case Text.uncons s of
       Nothing -> [EOF pos]
-      Just ('\\', rest) -> tok:toks
+      -- We only want to tokenize away '\\' if the next character is not a symbol.
+      -- Like this, writing 'and' as '/\' is still possible.
+      Just ('\\', rest) | isAlpha (Text.head rest) && texState /= TexDisabled -> tok : toks
         where
           (name, rest') = Text.span isAlpha rest
           cmd = Text.cons '\\' name
-          tok = makeToken cmd pos whitespaceBefore
+          tok = makeToken name pos whitespaceBefore
           toks = posToken texState (advanceAlong pos cmd) WhiteSpaceBefore rest'
-      Just (c, _) | if usingTexParser texState then c == '%' else c == '#' -> tok:toks
+      
+      -- Moreover, we want to remove backslashes before set notation brackets in order to be able to use set
+      -- notation in math mode.
+      Just ('\\', rest) | (Text.head rest) `elem` ['{','}'] && useTex ->
+            posToken texState (advanceAlong pos "\\") WhiteSpaceBefore rest
+      Just ('$', rest) | useTex -> posToken texState (advanceAlong pos "$") WhiteSpaceBefore rest
+      
+      -- We also tokenize away quotation marks, because they are intended to be used by the user
+      -- as a way to write regular text in math mode. Of course, one needs to appropriately remap
+      -- quotation marks in the tex file, see examples/powerset.tex on how to do this.
+      Just ('"', rest) | useTex -> posToken texState (advanceAlong pos "\"") WhiteSpaceBefore rest
+      Just (c, _) | if useTex then c == '%' else c == '#' -> tok:toks
         where
           (comment, rest) = Text.break (== '\n') s
           tok  = makeToken comment pos Comment

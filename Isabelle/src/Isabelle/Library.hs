@@ -20,6 +20,7 @@ module Isabelle.Library (
   space_explode, split_lines, trim_line, clean_name)
 where
 
+import Data.Maybe
 import qualified Data.List as List
 import qualified Data.List.Split as Split
 import qualified Isabelle.Symbol as Symbol

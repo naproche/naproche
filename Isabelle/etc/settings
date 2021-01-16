@@ -1,17 +1,19 @@
 # -*- shell-script -*- :mode=shellscript:
 
-NAPROCHE_EXE="$NAPROCHE_HOME/${ISABELLE_WINDOWS_PLATFORM64:-$ISABELLE_PLATFORM64}/Naproche-SAD"
-
-if [ ! -e "$NAPROCHE_EXE" ]; then
-  NAPROCHE_EXE="$(cd "$NAPROCHE_HOME"; standard_path "$(stack path --local-install-root)/bin/Naproche-SAD")"
+if [ -d "$ISABELLE_HOME/Admin" ]; then
+  ISABELLE_TOOLS="$ISABELLE_TOOLS:$NAPROCHE_HOME/Isabelle/Admin_Tools"
 fi
 
-if [ -f "$NAPROCHE_HOME/Isabelle/naproche.jar" ]; then
-  classpath "$NAPROCHE_HOME/Isabelle/naproche.jar"
-  isabelle_file_format "isabelle.naproche.File_Format"
+NAPROCHE_EXE_DIR="$NAPROCHE_HOME/${ISABELLE_WINDOWS_PLATFORM64:-$ISABELLE_PLATFORM64}"
+NAPROCHE_EXE="$NAPROCHE_EXE_DIR/Naproche-SAD"
+if [ ! -f "$NAPROCHE_EXE" ]; then
+  echo "### Missing executable program: $NAPROCHE_EXE"
+fi
+
+NAPROCHE_JAR="$NAPROCHE_HOME/Isabelle/naproche.jar"
+if [ -f "$NAPROCHE_JAR" ]; then
+  classpath "$NAPROCHE_JAR"
+  isabelle_scala_service "isabelle.naproche.File_Format"
 else
-  echo "### Missing $NAPROCHE_HOME/Isabelle/naproche.jar"
+  echo "### Missing Isabelle/Scala module: $NAPROCHE_JAR"
 fi
-
-ISABELLE_LOGIC="Pure"
-ISABELLE_DOCS_EXAMPLES='$NAPROCHE_HOME/examples/Maximum_principle.ftl:$NAPROCHE_HOME/examples/powerset.ftl:$NAPROCHE_HOME/examples/newman.ftl:$NAPROCHE_HOME/examples/chinese.ftl'

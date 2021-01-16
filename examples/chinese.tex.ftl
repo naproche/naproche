@@ -105,6 +105,7 @@ x * (y + z) = (x * y) + (x * z).
 x * 0 = 0 = 0 * x.
 \end{lemma}
 \begin{proof}
+% If you actually compile this file with tex, this section will be very messy.
 Let us show that x * 0 = 0.
 x * 0 .= x * (0 + 0) (by AddZero) .= (x * 0) + (x * 0) (by AMDistr1).
 end.

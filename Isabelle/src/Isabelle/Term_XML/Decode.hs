@@ -13,6 +13,7 @@ module Isabelle.Term_XML.Decode (indexname, sort, typ, typ_body, term)
 where
 
 import Isabelle.Library
+import qualified Isabelle.XML as XML
 import Isabelle.XML.Decode
 import Isabelle.Term
 
@@ -20,7 +21,6 @@ import Isabelle.Term
 indexname :: P Indexname
 indexname [a] = (a, 0)
 indexname [a, b] = (a, int_atom b)
-indexname _ = error "won't happen"
 
 sort :: T Sort
 sort = list string

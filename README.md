@@ -5,6 +5,7 @@
 Proof Checking of Natural Mathematical Documents, with optional support
 for Isabelle Prover IDE.
 
+
 ## Command-line tool
 
 ### Prerequisites
@@ -15,7 +16,7 @@ for Isabelle Prover IDE.
 
   * The E Theorem Prover as executable "eprover" in the shell PATH (e.g. the
     multi-platform version provided by Isabelle: "isabelle getenv -b E_HOME")
-    Supported versions: 2.0 to 2.3
+    Supported versions: 2.0 to 2.5
 
   * Optional (for development): Haskell IDE within VSCode:
     https://github.com/haskell/haskell-ide-engine
@@ -27,15 +28,18 @@ for Isabelle Prover IDE.
 
     stack build
 
+
 ### Check proof files
 
     stack exec Naproche-SAD -- FILE
 
   It may be necessary to allow the E Prover more time by appending "-t SECONDS"
 
+
 ### Test
 
     stack test
+
 
 ## Isabelle Prover IDE (Isabelle/jEdit)
 
@@ -45,7 +49,7 @@ for Isabelle Prover IDE.
 
   * "Quick start in 30min" according to README_REPOSITORY
     (https://isabelle.in.tum.de/repos/isabelle/raw-file/tip/README_REPOSITORY)
-    You should append the `-r Isabelle2019` option to `hg clone`.
+    You should append the `-r Isabelle2021-RC2` option to `hg clone`.
 
   * Use Isabelle/jEdit to edit $ISABELLE_HOME_USER/etc/settings to include
     the Naproche-SAD directory as Isabelle component. E.g. like this:
@@ -57,19 +61,18 @@ for Isabelle Prover IDE.
 
 ### Build
 
-    cd .../Naproche-SAD  #repository
-
-    isabelle build -e -d Isabelle Naproche-Build
-    stack build
+    isabelle naproche_build
 
 Reference versions for multi-platform executables (x86_64):
 
-  * Linux: Ubuntu 14.04 LTS
-  * macOS: Mac OS X 10.10 Yosemite
+  * Linux: Ubuntu 16.04 LTS
+  * macOS: Mac OS X 10.13 Yosemite
   * Windows: Windows 10
 
 
 ### Test
+
+      cd .../Naproche-SAD  #repository
 
 * Open ForTheL examples in Isabelle/jEdit, e.g.
 
