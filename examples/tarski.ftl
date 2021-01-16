@@ -1,4 +1,5 @@
 [synonym set/-s] [synonym subset/-s] [synonym element/-s] [synonym belong/-s]
+[read nbg.ftl]
 
 Signature. An element is a notion.
 

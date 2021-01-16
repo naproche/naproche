@@ -3,6 +3,7 @@
 #
 [unfoldlow on]
 [synonym integer/-s]
+[read nbg.ftl]
 
 Signature Integers. An integer is a notion.
 
@@ -105,8 +106,7 @@ Let x is infinite stand for x is not finite.
 #
 # Sets of integers
 #
-Definition.
-INT is the set of integers.
+Definition. INT is { integer i | i = i }.
 
 Let A,B,C,D stand for subsets of INT.
 

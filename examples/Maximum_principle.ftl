@@ -1,31 +1,25 @@
 [synonym number/-s]
+[read nbg.ftl]
 
-Let the domain of f stand for Dom(f).
-Let z is in M stand for z is an element of M.
+Let M denote a set.
+
 Let M contains z stand for z is in M.
 Let z << M stand for z is in M.
 
 Let f denote a function.
 Let M denote a set.
 
-Definition.
-A subset of M is a set N such that every element of N is an element of M.
-
-Definition.
-Assume M is a subset of the domain of f. f^[M] = { f[x] | x << M }.
+Definition. A subset of M is a set N such that every element of N is an element of M.
 
 Signature. A complex number is a notion.
 
 Let z,w denote complex numbers.
 
-Axiom.
-Every element of Dom(f) is a complex number and for every element z of Dom(f) f[z] is a complex number.
+Axiom. Every element of Dom(f) is a complex number and for every element z of Dom(f) f[z] is a complex number.
 
-Axiom.
-Every element of M is a complex number.
+Axiom. Every element of M is a complex number.
 
-Signature.
-A real number is a notion.
+Signature. A real number is a notion.
 Let x, y denote real numbers.
 
 Signature. |z| is a real number.
@@ -55,7 +49,7 @@ Definition. Let U be a subset of the domain of f. f is constant on U iff there e
 Let f is constant stand for f is constant on the domain of f.
 
 
-Axiom. Assume f is holomorphic and Ball(eps,z) is a subset of the domain of f. If f is not constant on Ball(eps,z) then f^[Ball(eps,z)] is open.
+Axiom. Assume f is holomorphic and Ball(eps,z) is a subset of the domain of f. If f is not constant on Ball(eps,z) then f[Ball(eps,z)] is open.
 
 Signature.
 A region is an open set.

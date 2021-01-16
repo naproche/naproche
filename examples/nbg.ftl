@@ -46,16 +46,16 @@ Axiom Ext. If x is an element of C iff x is an element of B then C = B.
 
 Signature. The empty set is a set.
 Axiom Empty. x is not an element of the empty set.
-Lemma. The empty set is { setobject u | u != u }.
+Lemma. The empty set is { u | u != u }.
 
 Definition. B is nonempty iff there is a x such that x is in B.
 Lemma. If B is nonempty then B is not the empty set.
 Definition. B is empty iff B is not nonempty.
-Lemma. B is empty iff B is { setobject u | u != u }.
+Lemma. B is empty iff B is { u | u != u }.
 
 Signature. The pair of x and y is a set.
 Axiom Pair. x is in the pair of y and z iff x = y or x = z.
-Lemma. The pair of x and y is { setobject u | u = x or u = y }.
+Lemma. The pair of x and y is { u | u = x or u = y }.
 Definition. The singleton of x is the pair of x and x.
 
 Definition. The ordered pair of x and y is the pair of x and the pair of x and y.
@@ -86,12 +86,12 @@ Axiom RelationIntro. C is a relation iff for every x such that x is in C
   there is a y such that there is a z such that x is the ordered pair of y and z.
 
 Let R, S denote relations.
-Definition. The domain of R is { setobject u | there is a setobject v such that (u, v) is in R }.
-Definition. The Range  of R is { setobject v | there is a setobject u such that (u, v) is in R }.
+Definition. The domain of R is { u | there is a setobject v such that (u, v) is in R }.
+Definition. The Range  of R is { v | there is a setobject u such that (u, v) is in R }.
 # Definition. The field  of R is the union of the domain of R and the Range of R.
 Definition. The restriction of R to B is { (u, v) | u is a setobject and v is a setobject and (u, v) is in R and u is in B }.
-Definition. The    image of B under R is { setobject v | there is a setobject u such that u is in B and (u, v) is in R }.
-Definition. The preimage of B under R is { setobject u | there is a setobject v such that v is in B and (u, v) is in R }.
+Definition. The    image of B under R is { v | there is a setobject u such that u is in B and (u, v) is in R }.
+Definition. The preimage of B under R is { u | there is a setobject v such that v is in B and (u, v) is in R }.
 Definition. The composition of S and R is { (x, z) | x is a setobject and z is a set and there is a setobject y such that (x, y) is in R and (y, z) is in S }.
 Definition. The inverse of R is { (y, x) | x is a setobject and y is a setobject and (x, y) is in R }.
 Definition. Dom(R) is the domain of R.
@@ -121,7 +121,7 @@ Axiom Choice. Let c be a set such that for all b such that b is in c b is nonemp
 
 Axiom Replacement. The restriction of F to c is a set.
 
-Definition. The intersection of B is { setobject v | for every set u such that u is in B v is in u }.
+Definition. The intersection of B is { v | for every set u such that u is in B v is in u }.
 Definition. The intersection of c and b is the intersection of the pair of c and b.
 Axiom Restriction. If c is nonempty then there is a b such that b is in c and
   (the intersection of c and b) is empty.

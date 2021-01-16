@@ -1,6 +1,5 @@
 [synonym cardinal/-s][synonym sequence/-s]
-Let the domain of f stand for Dom(f).
-
+[read nbg.ftl]
 
 Let M,N denote a set.
 
@@ -14,9 +13,7 @@ A subset of M is a set N such that every element of N is an element of M.
 Definition.
 M \ N = { x in M | x is not an element of N }.
 
-Definition.
-Assume M is a subset of the domain of f. f^[M] = { f[x] | x is an element of M }. Let the image of
-f stand for f^[Dom(f)].
+Let the image of f stand for f[Dom(f)].
 
 ### Cardinals and Cardinality
 
@@ -43,7 +40,7 @@ The cardinality of M is a cardinal.
 
 Let card(M) denote the cardinality of M.
 
-Axiom Image_Card. Assume M is a subset of Dom(f). card(f^[M]) =< card(M).
+Axiom Image_Card. Assume M is a subset of Dom(f). card(f[M]) =< card(M).
 
 Axiom.
 Assume the cardinality of N is less than the cardinality of M. Then M \ N has an element.

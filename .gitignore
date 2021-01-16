@@ -10,3 +10,10 @@ stack.yaml.lock
 *.hp
 *.prof
 *.ps
+
+.vscode
+dist-newstyle
+
+examples/added
+examples/Formalizations
+examples/.ftlcache

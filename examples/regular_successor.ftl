@@ -1,5 +1,5 @@
 [synonym cardinal/-s][synonym ordinal/-s]
-
+[read nbg.ftl]
 
 
 Let M,N denote sets.
