@@ -37,7 +37,7 @@ data Formula =
   -- to this index has been quantified over at the @n@th quantifier one meets if one
   -- traverses the formula from the inside to the outside.
   Ind { indIndex :: Int, indPosition :: SourcePos } | ThisT
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Ord)
 
 data AllEq a = AllEq { fromAllEq :: a }
   deriving (Show)

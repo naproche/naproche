@@ -15,16 +15,17 @@ import SAD.Core.SourcePos
 import GHC.Generics
 import Data.Bifunctor
 import qualified Data.ByteString as B
+import Data.Text (Text)
 
 data Prover = Prover {
   name           :: String,
-  label          :: String,
+  label          :: Text,
   path           :: String,
   arguments      :: [String],
-  successMessage :: [String],
-  contradictionMessage :: [String],
-  failureMessage :: [String],
-  unknownMessage :: [String] }
+  successMessage :: [Text],
+  contradictionMessage :: [Text],
+  failureMessage :: [Text],
+  unknownMessage :: [Text] }
   deriving (Eq, Ord, Show, Generic)
 
 instance FromJSON Prover

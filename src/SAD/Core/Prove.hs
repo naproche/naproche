@@ -11,7 +11,6 @@ module SAD.Core.Prove (RunProver(..), verify) where
 
 import Control.Monad (when, unless, foldM)
 import Data.Maybe
-import Data.List
 import System.IO
 import System.IO.Error
 import qualified System.Process as Process
@@ -28,7 +27,6 @@ import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
 import SAD.Core.SourcePos
 import SAD.Data.Instr hiding (Prover)
 import SAD.Core.Provers
-import SAD.Helpers (notNull)
 import SAD.Core.Logging
 import SAD.Core.Task (Task(..), generateTasks)
 import SAD.Core.Typed
@@ -40,18 +38,16 @@ import SAD.Core.TPTP (tptp)
 import SAD.Core.Cache
 
 class Monad m => RunProver m where
-  -- | Given a prover and a tptp text get a result.
-  runProver :: Prover -> Bool -> Text -> Bool -> Int -> m Result
+  -- | Given a prover, a timelimit and a tptp text get a prover output.
+  runProver :: Prover -> Int -> Text -> m Text
 
 instance RunProver m => RunProver (StateT s m) where
-  runProver a b c d e = lift $ runProver a b c d e
+  runProver a b c = lift $ runProver a b c
 instance RunProver m => RunProver (ReaderT s m) where
-  runProver a b c d e = lift $ runProver a b c d e
+  runProver a b c = lift $ runProver a b c
 
 instance RunProver IO where
-  runProver (Prover _ label path args yes con nos uns) printProver task isByContradiction timeLimit = do
-    Isabelle_Thread.expose_stopped
-
+  runProver (Prover _ _ path args _ _ _ _) timeLimit task = do
     let proc = (Process.proc path (map (setTimeLimit timeLimit) args))
           { Process.std_in = Process.CreatePipe
           ,  Process.std_out = Process.CreatePipe
@@ -62,6 +58,7 @@ instance RunProver IO where
           (pin, pout, perr, p) <- Process.createProcess proc
           return (fromJust pin, fromJust pout, fromJust perr, p)
 
+    Isabelle_Thread.expose_stopped
     (prvin, prvout, prverr, prv) <- Exception.catch process
         (\e -> Message.errorExport noSourcePos $
           "Failed to run " ++ show path ++ ": " ++ ioeGetErrorString e)
@@ -79,30 +76,34 @@ instance RunProver IO where
           return ()
 
     Isabelle_Thread.bracket_resource terminate $ do
-      output <- hGetContents prvout
-      errors <- hGetContents prverr
-      let lns = filter notNull $ lines $ output ++ errors
-          out = map (("[" ++ label ++ "] ") ++) lns
-
-      when (null lns) $ Message.errorExport noSourcePos "No prover response"
-      when printProver $
-          mapM_ (Message.output "" Message.WRITELN noSourcePos) out
-
-      let contradictions = any (\l -> any (`isPrefixOf` l) con) lns
-          positive = any (\l -> any (`isPrefixOf` l) yes) lns
-          negative = any (\l -> any (`isPrefixOf` l) nos) lns
-          inconclusive = any (\l -> any (`isPrefixOf` l) uns) lns
-
-      unless (positive || contradictions || negative || inconclusive) $
-          Message.errorExport noSourcePos $ unlines ("Bad prover response:" : lns)
-
+      output <- TIO.hGetContents prvout
+      errors <- TIO.hGetContents prverr
       hClose prverr
       Process.waitForProcess prv
+      pure $ output <> errors
 
-      if | positive || (isByContradiction && contradictions) -> pure Success
-         | negative -> pure Failure
-         | not isByContradiction && contradictions -> pure ContradictoryAxioms
-         | otherwise -> pure TooLittleTime
+
+parseProverOutput :: Message.Comm m => Prover -> Bool -> Bool -> Text -> m Result
+parseProverOutput (Prover _ label _ _ yes con nos uns) printProver isByContradiction output = do
+  let lns = filter (not . Text.null) $ Text.lines $ output
+      out = map (("[" <> label <> "] ") <>) lns
+
+  when (null lns) $ Message.errorExport noSourcePos "No prover response"
+  when printProver $
+      mapM_ (Message.output "" Message.WRITELN noSourcePos) $ map Text.unpack out
+
+  let contradictions = any (\l -> any (`Text.isPrefixOf` l) con) lns
+      positive = any (\l -> any (`Text.isPrefixOf` l) yes) lns
+      negative = any (\l -> any (`Text.isPrefixOf` l) nos) lns
+      inconclusive = any (\l -> any (`Text.isPrefixOf` l) uns) lns
+
+  unless (positive || contradictions || negative || inconclusive) $
+      Message.errorExport noSourcePos $ unlines ("Bad prover response:" : map Text.unpack lns)
+
+  if | positive || (isByContradiction && contradictions) -> pure Success
+     | negative -> pure Failure
+     | not isByContradiction && contradictions -> pure ContradictoryAxioms
+     | otherwise -> pure TooLittleTime
 
 verify :: (RunProver m, Message.Comm m, CacheStorage m) => 
   [Prover] -> [Instr] -> RState -> [Statement] -> m RState
@@ -150,7 +151,8 @@ export provers@(defProver:_) instrs tsk = do
       when (askFlag Dump False instrs) $ 
         Message.output "" Message.WRITELN noSourcePos (Text.unpack task)
 
-      runProver prover printProver task (byContradiction tsk) timeLimit
+      out <- runProver prover timeLimit task
+      parseProverOutput prover printProver (byContradiction tsk) out
 
 data Result = Success | Failure | TooLittleTime | ContradictoryAxioms
   deriving (Eq, Ord, Show)
