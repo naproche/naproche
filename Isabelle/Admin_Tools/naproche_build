@@ -8,10 +8,10 @@ cd "$NAPROCHE_HOME"
 
 isabelle jedit -b
 
-echo "Building Isabelle/Scala module: $NAPROCHE_JAR"
+echo "### Building Isabelle/Scala module: $NAPROCHE_JAR"
 isabelle build -e -D Isabelle
 
-echo "Building executable program: $NAPROCHE_EXE"
+echo "### Building executable program: $NAPROCHE_EXE"
 isabelle ghc_stack build
 
 mkdir -p "$NAPROCHE_EXE_DIR"
