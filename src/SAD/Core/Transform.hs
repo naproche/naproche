@@ -12,7 +12,8 @@
 
 -- TODO: Introduce an error monad for errors that are strictly
 -- user errors and not a fault of the translation like duplicate 
--- variables, etc.
+-- variables, etc. This also allows us to bubble up errors without
+-- evaluating the entire generated proof text.
 
 module SAD.Core.Transform
  ( convert, convertBlock

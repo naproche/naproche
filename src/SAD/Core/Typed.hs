@@ -22,6 +22,7 @@ import qualified Data.Set as Set
 import qualified Data.Map as Map
 import Data.Functor.Const
 import Data.Bifunctor (bimap)
+import Control.DeepSeq (NFData)
 import SAD.Core.SourcePos (noSourcePos)
 
 import SAD.Data.VarName
@@ -35,6 +36,7 @@ data InType
   = Object -- ^ the base type of un-typed objects
   | Signature TermName -- ^ introduced by signature
   deriving (Eq, Ord, Show, Read, Generic)
+instance NFData InType
 instance Hashable InType
 instance Binary InType
 
@@ -42,6 +44,7 @@ instance Binary InType
 -- except $tType since Sorts are handled seperately.
 data OutType = Prop | InType InType
   deriving (Eq, Ord, Show, Read, Generic)
+instance NFData OutType
 instance Hashable OutType
 instance Binary OutType
 
@@ -51,6 +54,7 @@ instance Binary OutType
 -- are of set sized for our NBG implementation.
 data Type = Sort | Pred [InType] OutType
   deriving (Eq, Ord, Show, Read, Generic)
+instance NFData Type
 instance Hashable Type
 instance Binary Type
 
@@ -64,6 +68,7 @@ data Operator
   = And | Or | Not | Imp | Iff | Top | Bot | Eq
   | OpTrm TermName
   deriving (Eq, Ord, Show, Read, Generic)
+instance NFData Operator
 instance Hashable Operator
 instance Binary Operator
 
@@ -87,13 +92,15 @@ deriving instance (Read (f InType), Read t) => Read (Term f t)
 deriving instance (Generic (f InType), Generic t) => Generic (Term f t)
 instance (Generic (f InType), Generic t, Hashable (f InType), Hashable t) => Hashable (Term f t)
 instance (Generic (f InType), Generic t, Binary (f InType), Binary t) => Binary (Term f t)
+instance (Generic (f InType), Generic t, NFData (f InType), NFData t) => NFData (Term f t)
 
 -- | Information for the user: Name of a lemma/axiom/sort/.. and position.
 data Located a = Located
   { locName :: Text
   , locPos :: SourcePos
   , located :: a
-  } deriving (Eq, Ord, Show)
+  } deriving (Eq, Ord, Show, Generic)
+instance NFData a => NFData (Located a)
 
 -- | A block in Naproche text can contain several statements:
 -- The declaration of a notion, a predicate, axiom or claim.
@@ -114,6 +121,8 @@ data Stmt f t
 deriving instance (Eq (f InType), Eq t) => Eq (Stmt f t)
 deriving instance (Ord (f InType), Ord t) => Ord (Stmt f t)
 deriving instance (Show (f InType), Show t) => Show (Stmt f t)
+deriving instance (Generic (f InType), Generic t) => Generic (Stmt f t)
+instance (Generic (f InType), Generic t, NFData (f InType), NFData t) => NFData (Stmt f t)
 
 type Statement = Located (Stmt Identity ())
 
@@ -127,6 +136,8 @@ data PrfBlock f t
 deriving instance (Eq (f InType), Eq t) => Eq (PrfBlock f t)
 deriving instance (Ord (f InType), Ord t) => Ord (PrfBlock f t)
 deriving instance (Show (f InType), Show t) => Show (PrfBlock f t)
+deriving instance (Generic (f InType), Generic t) => Generic (PrfBlock f t)
+instance (Generic (f InType), Generic t, NFData (f InType), NFData t) => NFData (PrfBlock f t)
 
 -- | A proof consists of sub-claims that will be given directly to the ATP
 -- and a number of tactics.
@@ -146,6 +157,8 @@ data Prf f t
 deriving instance (Eq (f InType), Eq t) => Eq (Prf f t)
 deriving instance (Ord (f InType), Ord t) => Ord (Prf f t)
 deriving instance (Show (f InType), Show t) => Show (Prf f t)
+deriving instance (Generic (f InType), Generic t) => Generic (Prf f t)
+instance (Generic (f InType), Generic t, NFData (f InType), NFData t) => NFData (Prf f t)
 
 type ProofBlock = PrfBlock Identity ()
 type Proof = Located (Prf Identity ())

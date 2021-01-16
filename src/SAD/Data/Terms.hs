@@ -13,6 +13,7 @@ import SAD.Data.VarName
 import GHC.Generics (Generic)
 import Data.Hashable (Hashable)
 import Data.Binary (Binary)
+import Control.DeepSeq (NFData)
 
 data TermName 
   = TermName Text
@@ -30,6 +31,7 @@ data TermName
   | TermEmpty
   | TermVar VarName
   deriving (Eq, Ord, Show, Read, Generic)
+instance NFData TermName
 instance Hashable TermName
 instance Binary TermName
 
@@ -40,7 +42,7 @@ newName n (Just taken) =
         (TermName t) -> (TermName, t)
         (TermSymbolic t) -> (TermSymbolic, t)
         (TermNotion t) -> (TermNotion, t)
-        _ -> error "Not implemented"
+        x -> error $ "Not implemented: New name for " ++ show x
   in head $ filter (`Set.notMember` taken) $ map (\x -> c $ n' <> Text.pack (show x)) [2::Int ..]
 
 termFunction :: TermName

@@ -96,8 +96,7 @@ data Flag =
 data Argument =
     Init               --  init file (init.opt)
   | Text ParserKind    --  literal text
-  | File ParserKind    --  read file
-  | Read ParserKind    --  read library file
+  | Read ParserKind    --  read file
   | Library            --  library directory
   | Provers            --  prover database
   | Prover             --  current prover

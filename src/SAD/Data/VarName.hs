@@ -25,6 +25,7 @@ import Data.Function (on)
 import GHC.Generics (Generic)
 import Data.Hashable (Hashable)
 import Data.Binary (Binary)
+import Control.DeepSeq (NFData)
 
 -- These names may not reflect what the constructors are used for..
 data VarName 
@@ -36,6 +37,7 @@ data VarName
   | VarEmpty           -- ^ previously ""
   | VarDefault Text    -- ^ everything else
   deriving (Eq, Ord, Show, Read, Generic)
+instance NFData VarName
 instance Hashable VarName
 instance Binary VarName
 

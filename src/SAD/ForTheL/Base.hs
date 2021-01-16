@@ -29,6 +29,7 @@ import SAD.Core.SourcePos (noSourcePos)
 import SAD.Core.Message (PIDE)
 import qualified SAD.Core.Message as Message
 import SAD.Core.Pretty (pretty)
+import SAD.Helpers (nubOrdOn)
 
 type FTL = Parser FState
 
@@ -52,6 +53,34 @@ data FState = FState {
   idCount :: Int, hiddenCount :: Int, serialCounter :: Int,
   reports :: [Message.Report], pide :: Maybe PIDE }
 
+-- | Append the first fstate to the second.
+-- This adds definitions to the second, but keeps
+-- the vars / tvars / reports / etc of the second.
+appendTo :: FState -> FState -> FState
+appendTo f1 f2 = FState
+    (nubOrdOn fst $ adjectiveExpr f2 <> adjectiveExpr f1)
+    (nubOrdOn fst $ verbExpr f2 <> verbExpr f1)
+    (nubOrdOn fst $ notionExpr f2 <> notionExpr f1)
+    (nubOrdOn fst $ symbNotionExpr f2 <> symbNotionExpr f1)
+    
+    (nubOrdOn fst $ cfnExpr f2 <> cfnExpr f1)
+    (nubOrdOn fst $ rfnExpr f2 <> rfnExpr f1)
+    (nubOrdOn fst $ lfnExpr f2 <> lfnExpr f1)
+    (nubOrdOn fst $ ifnExpr f2 <> ifnExpr f1)
+    
+    (nubOrdOn fst $ cprExpr f2 <> cprExpr f1)
+    (nubOrdOn fst $ rprExpr f2 <> rprExpr f1)
+    (nubOrdOn fst $ lprExpr f2 <> lprExpr f1)
+    (nubOrdOn fst $ iprExpr f2 <> iprExpr f1)
+
+    (tvrExpr f2)
+    (strSyms f1 <> strSyms f2)
+    (varDecl f2)
+    (idCount f2)
+    (hiddenCount f2)
+    (serialCounter f2)
+    (reports f2)
+    (pide f2)
 
 initFS :: Maybe PIDE -> FState
 initFS = FState
@@ -218,7 +247,8 @@ primSnt p  = noError $ varList >>= getExpr symbNotionExpr . snt
 
 
 
-data Pattern = Word [Text] | Symbol Text | Vr | Nm deriving (Eq, Show)
+data Pattern = Word [Text] | Symbol Text | Vr | Nm
+  deriving (Eq, Ord, Show)
 
 
 -- adding error reporting to pattern parsing

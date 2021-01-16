@@ -52,6 +52,7 @@ import SAD.Parser.Error (errorPos)
 import SAD.Core.Transform (convert)
 import SAD.Core.Typed (located)
 import SAD.Core.Cache (CacheStorage)
+import Control.DeepSeq (force)
 
 main :: IO ()
 main  = do
@@ -70,7 +71,7 @@ main  = do
       stdin <- getContents
       pure $ [ProofTextInstr noPos $ GetArgument (Text pk) (Text.pack stdin)]
     Just f -> do
-      pure $ [ProofTextInstr noPos $ GetArgument (File pk) (Text.pack f)]
+      pure $ [ProofTextInstr noPos $ GetArgument (Read pk) (Text.pack f)]
   let opts1 = map snd opts0
 
   if askFlag Help False opts1 then
@@ -125,7 +126,7 @@ consoleMainBody opts0 text0 = do
   exit <- withLibrary library $ runTimedIO (mainBody provers opts0 text0)
   Exit.exitWith exit
 
-data TimedSection = ParsingTime | ProvingTime
+data TimedSection = ParsingTime | ProvingTime | CheckTime
   deriving (Eq, Ord, Show)
 
 class Monad m => TimeStatistics m where
@@ -189,8 +190,10 @@ proveFOL provers txts opts0 = do
       pure $ Exit.ExitFailure 1
     Nothing -> do
       endTimedSection ParsingTime 
+      let typed = force $ convert txts
+      beginTimedSection CheckTime
+      typed `seq` endTimedSection CheckTime
       beginTimedSection ProvingTime
-      let typed = convert txts
       finalReasonerState <- verify provers opts0 (RState [] False False) typed
       endTimedSection ProvingTime
 
@@ -211,6 +214,7 @@ proveFOL provers txts opts0 = do
       times <- getTimes
       outputMain TRACING noSourcePos $ Text.unpack $
         "parser "           <> showTimeDiff (times Map.! ParsingTime)
+        <> " - checker "     <> showTimeDiff (times Map.! CheckTime)
         <> " - prover "     <> showTimeDiff (times Map.! ProvingTime)
 
       outputMain TRACING noSourcePos $ Text.unpack $

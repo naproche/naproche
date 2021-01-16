@@ -4,6 +4,8 @@ Authors: Steffen Frerix (2017 - 2018), Makarius Wenzel (2018)
 Token source positions: counting Unicode codepoints.
 -}
 
+{-# LANGUAGE DeriveGeneric #-}
+
 module SAD.Core.SourcePos
   ( SourcePos (sourceFile, sourceLine, sourceColumn, sourceOffset, sourceEndOffset),
     SourceRange(SourceRange),
@@ -22,6 +24,8 @@ module SAD.Core.SourcePos
 import SAD.Helpers (notNull)
 import Data.Text (Text)
 import qualified Data.Text as Text
+import Control.DeepSeq (NFData)
+import GHC.Generics (Generic)
 
 import qualified Data.List as List
 
@@ -34,7 +38,8 @@ data SourcePos =
     sourceColumn :: Int,
     sourceOffset :: Int,
     sourceEndOffset :: Int }
-  deriving (Eq, Ord)
+  deriving (Eq, Ord, Generic)
+instance NFData SourcePos
 
 noSourcePos :: SourcePos
 noSourcePos = SourcePos "" 0 0 0 0
