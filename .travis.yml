@@ -79,7 +79,7 @@ script:
   fi
 - export GITHUB_USER=anfelor
 - export ISABELLE_REPOS="https://isabelle.sketis.net/repos/isabelle-release"
-- export ISABELLE_VERSION=8a8ffe78eee7
+- export ISABELLE_VERSION=d0c8e8ca3505
 # Build isabelle
 - cd ~
 - |

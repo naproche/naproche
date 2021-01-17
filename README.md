@@ -96,7 +96,10 @@ Reference versions for multi-platform executables (x86_64):
 
   * Standard Isabelle repository clone:
 
-        hg clone https://isabelle.in.tum.de/repos/isabelle
+        hg clone https://isabelle.sketis.net/repos/isabelle-release
+
+        hg update --clean -r d0c8e8ca3505
+
         isabelle/bin/isabelle components -I
         isabelle/bin/isabelle components -a
         isabelle/bin/isabelle jedit -b
