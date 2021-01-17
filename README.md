@@ -45,29 +45,34 @@ for Isabelle Prover IDE.
 
 ### Prerequisites
 
-  * Isabelle repository clone from https://isabelle.in.tum.de/repos/isabelle
+  * Isabelle repository clone from https://isabelle.sketis.net/repos/isabelle-release
+    (see also README_REPOSITORY)
 
-  * "Quick start in 30min" according to README_REPOSITORY
-    (https://isabelle.in.tum.de/repos/isabelle/raw-file/tip/README_REPOSITORY)
-    You should append the `-r Isabelle2021-RC2` option to `hg clone`.
+  * Initialize fresh clone:
+
+        hg clone https://isabelle.sketis.net/repos/isabelle-release
+        hg update -r d0c8e8ca3505
+        isabelle/bin/isabelle components -I
+        isabelle/bin/isabelle components -a
+        isabelle/bin/isabelle jedit -b
+
+  * Update existing clone:
+
+        hg pull
+        hg update -r d0c8e8ca3505
+        isabelle/bin/isabelle components -a
 
   * Use Isabelle/jEdit to edit $ISABELLE_HOME_USER/etc/settings to include
     the Naproche-SAD directory as Isabelle component. E.g. like this:
 
         init_component "$USER_HOME/Naproche-SAD"
 
-  * Shutdown Isabelle/jEdit before building Isabelle/Naproche as follows.
-
 
 ### Build
 
-    isabelle naproche_build
+  * Shutdown Isabelle/jEdit before building Isabelle/Naproche as follows:
 
-Reference versions for multi-platform executables (x86_64):
-
-  * Linux: Ubuntu 16.04 LTS
-  * macOS: Mac OS X 10.13 Yosemite
-  * Windows: Windows 10
+        isabelle naproche_build
 
 
 ### Test
@@ -81,6 +86,13 @@ Reference versions for multi-platform executables (x86_64):
 * Open Isabelle development environment with ForTheL examples, e.g.
 
       isabelle jedit -l Pure Isabelle/Test.thy
+
+
+### Reference versions for multi-platform executables (x86_64):
+
+  * Linux: Ubuntu 16.04 LTS
+  * macOS: Mac OS X 10.13 Yosemite
+  * Windows: Windows 10
 
 
 ### Multi-platform application bundling (with Isabelle)
@@ -97,9 +109,7 @@ Reference versions for multi-platform executables (x86_64):
   * Standard Isabelle repository clone:
 
         hg clone https://isabelle.sketis.net/repos/isabelle-release
-
-        hg update --clean -r d0c8e8ca3505
-
+        hg update -r d0c8e8ca3505
         isabelle/bin/isabelle components -I
         isabelle/bin/isabelle components -a
         isabelle/bin/isabelle jedit -b
