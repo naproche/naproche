@@ -6,12 +6,34 @@ set -e
 
 cd "$NAPROCHE_HOME"
 
-isabelle jedit -b
 
 echo "### Building Isabelle/Scala module: $NAPROCHE_JAR"
+
+rm -f "$NAPROCHE_JAR" 
+
+isabelle jedit -b
+
+(
+  cd Isabelle
+
+  rm -rf classes && mkdir classes
+  isabelle scalac -d classes file_format.scala prover_server.scala
+
+  cd classes
+  isabelle_jdk jar cf "$NAPROCHE_JAR" *
+
+  cd ..
+  rm -rf classes
+)
+
+
+echo "### Building Isabelle/Naproche Haskell modules"
+
 isabelle build -e -D Isabelle
 
+
 echo "### Building executable program: $NAPROCHE_EXE"
+
 isabelle ghc_stack build
 
 mkdir -p "$NAPROCHE_EXE_DIR"
