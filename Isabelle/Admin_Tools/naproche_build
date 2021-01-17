@@ -29,7 +29,7 @@ isabelle jedit -b
 
 echo "### Building Isabelle/Naproche Haskell modules"
 
-isabelle build -e -D Isabelle
+isabelle build -e -d Isabelle Naproche-Build
 
 
 echo "### Building executable program: $NAPROCHE_EXE"
