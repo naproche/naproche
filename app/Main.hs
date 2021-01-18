@@ -3,30 +3,18 @@
 
 module Main where
 
-import Control.Exception
 import Control.Monad.IO.Class
 import Control.Monad.Reader
-import Control.Monad.State
-import Data.Binary (decode, encode)
-import Data.Either (isRight)
 import Data.Maybe
-import Data.Time (UTCTime, NominalDiffTime, getCurrentTime, diffUTCTime)
 import Network.Socket (Socket)
-import System.Directory
-import System.FilePath
-import System.IO
 import System.IO.Error
 
 import qualified Control.Exception as Exception
 import qualified Data.ByteString as B
-import qualified Data.ByteString.Lazy as BS
 import qualified Data.ByteString.UTF8 as UTF8
-import qualified Data.Map as Map
 import qualified Data.Text as Text
-import qualified Data.Text.IO as TIO
 import qualified System.Console.GetOpt as GetOpt
 import qualified System.Environment as Environment
-import qualified System.Process as Process
 import qualified System.Exit as Exit
 import qualified System.IO as IO
 
@@ -41,17 +29,16 @@ import qualified Isabelle.XML as XML
 import qualified Isabelle.YXML as YXML
 import Isabelle.Library (trim_line)
 
-import SAD.Core.Cache (CacheStorage(..), FileCache(..))
-import SAD.Core.Message (Comm, errorParser, errorExport, outputMain, Kind(..))
-import SAD.Core.Provers (readProverDatabase, Prover(..))
-import SAD.Core.Prove (RunProver(..))
-import SAD.Core.Reader (HasLibrary(..), parseInit)
+import SAD.Core.Message (Comm, errorParser, outputMain, Kind(..))
+import SAD.Core.Provers (readProverDatabase)
+import SAD.Core.Reader (parseInit)
 import SAD.Core.SourcePos (noSourcePos, fileOnlyPos)
 import SAD.Data.Instr (Instr(..), Flag(..), askFlag, Argument(..), askArgument, noPos, Pos, ParserKind)
 import SAD.Data.Text.Block (ProofText(..))
 
 import SAD.Main
-import PIDE
+import PIDE (consoleThread, exitThread, initThread)
+import CommandLine
 
 main :: IO ()
 main  = do
@@ -64,7 +51,7 @@ main  = do
 
   -- command line and init file
   args0 <- Environment.getArgs
-  (opts0, pk, mFileName) <- readArgs' args0
+  (opts0, pk, mFileName) <- runCommandLine "" $ readArgs' args0
   text0 <- (map (uncurry ProofTextInstr) (reverse opts0) ++) <$> case mFileName of
     Nothing -> do
       stdin <- getContents
@@ -101,7 +88,7 @@ serverConnection args0 connection = do
         exitThread
         (do
           let args1 = lines (fromMaybe "" (Properties.get props Naproche.command_args))
-          (opts0, pk, _) <- readArgs' (args0 ++ args1)
+          (opts0, pk, _) <- runCommandLine "" $ readArgs' (args0 ++ args1)
           let opts1 = map snd opts0
           let text0 = map (uncurry ProofTextInstr) (reverse opts0)
           let text1 = text0 ++ [ProofTextInstr noPos (GetArgument (Text pk) (Text.pack $ XML.content_of body))]
@@ -112,18 +99,10 @@ serverConnection args0 connection = do
               Exception.catch
                 (if YXML.detect msg then
                   Byte_Message.write connection [UTF8.fromString msg]
-                 else outputMain ERROR noSourcePos msg)
+                 else runCommandLine "" $ outputMain ERROR noSourcePos msg)
                 (\(_ :: Exception.IOException) -> pure ())))
 
     _ -> return ()
-
-consoleMainBody :: [Instr] -> [ProofText] -> IO ()
-consoleMainBody opts0 text0 = do
-  let proversFile = Text.unpack (askArgument Provers "provers.yaml" opts0)
-  provers <- readProverDatabase proversFile =<< liftIO (B.readFile proversFile)
-  let library = Text.unpack $ askArgument Library "." opts0
-  exit <- withLibrary library $ runTimedIO (mainBody provers opts0 text0)
-  Exit.exitWith exit
 
 readArgs' :: (MonadIO m, Comm m) => [String] -> m ([(Pos, Instr)], ParserKind, Maybe FilePath)
 readArgs' args = do
@@ -132,129 +111,17 @@ readArgs' args = do
 
   let initFilePath = Text.unpack $ askArgument Init "init.opt" instrs
   initFileContent <- liftIO $ File.read initFilePath 
-    `Exception.catch` (errorParser (fileOnlyPos initFilePath) . ioeGetErrorString)
-  initFile <- liftIO $ parseInit initFilePath $ Text.pack initFileContent
+    `Exception.catch` (runCommandLine "" . errorParser (fileOnlyPos initFilePath) . ioeGetErrorString)
+  initFile <- parseInit initFilePath $ Text.pack initFileContent
 
   let initialOpts = initFile ++ map (noPos,) instrs
   readArgs initialOpts files
 
-
-newtype Timed m a = Timed
-  { fromTimed :: StateT (Map.Map TimedSection (Either UTCTime NominalDiffTime)) m a }
-  deriving (Functor, Applicative, Monad, MonadIO
-    , MonadState (Map.Map TimedSection (Either UTCTime NominalDiffTime))
-    , RunProver, Comm, CacheStorage, HasLibrary)
-
-runTimedIO :: MonadIO m => Timed m a -> m a
-runTimedIO = fmap fst . flip runStateT mempty . fromTimed
-
-instance MonadIO m => TimeStatistics (Timed m) where
-  beginTimedSection t = do
-    time <- liftIO $ getCurrentTime
-    modify $ Map.insert t (Left time)
-  endTimedSection t = do
-    time <- liftIO $ getCurrentTime
-    modify $ \m -> case Map.lookup t m of
-      Just (Left begin) -> Map.insert t (Right $ diffUTCTime time begin) m
-      _ -> m
-  getTimes = takeRights <$> get
-    where takeRights = Map.map (\(Right r) -> r) . Map.filter isRight
-
-instance CacheStorage m => CacheStorage (StateT s m) where
-  readFileCache f = lift $ readFileCache f
-  writeFileCache f c = lift $ writeFileCache f c
-
-instance CacheStorage m => CacheStorage (ReaderT s m) where
-  readFileCache f = lift $ readFileCache f
-  writeFileCache f c = lift $ writeFileCache f c
-
-dirname :: FilePath
-dirname = ".ftlcache"
-
-instance CacheStorage IO where
-  readFileCache f = do
-    let (fdir, fname) = splitFileName f
-    let dir = fdir </> dirname
-    createDirectoryIfMissing True dir
-    c <- (decode <$> BS.readFile (dir </> fname))
-      `catch` (\(_ :: SomeException) -> pure mempty)
-    pure $ c { lastRun = 1 + lastRun c }
-
-  writeFileCache f c = do
-    let (fdir, fname) = splitFileName f
-    let dir = fdir </> dirname
-    createDirectoryIfMissing True dir
-    BS.writeFile (dir </> fname) (encode c)
-
-newtype WithLibrary a = WithLibrary { fromWithLibrary :: ReaderT FilePath IO a }
-  deriving (Functor, Applicative, Monad, MonadReader FilePath, MonadIO, Comm, RunProver, CacheStorage)
-
-instance HasLibrary m => HasLibrary (StateT s m) where
-  readLibrary = lift . readLibrary
-
-instance HasLibrary WithLibrary where
-  readLibrary f
-    --- This an be used for protection against attacks:
-    --- | ".." `isInfixOf` f = 
-    ---   Message.errorParser (fileOnlyPos f) ("Illegal \"..\" in file name: " ++ show f)
-    | otherwise = do
-      library <- ask
-      ex_f <- liftIO $ doesFileExist f
-      ex_lf <- liftIO $ doesFileExist $ library </> f
-      file <- case (ex_f, ex_lf) of
-        (True, _) -> pure f
-        (_, True) -> pure $ library </> f
-        _ -> errorParser (fileOnlyPos f) $ "File not found! Neither " ++ f ++ " nor " ++ (library </> f)
-          ++ " is a valid file path!"
-      content <- liftIO $ fmap Text.pack $ catch (if null file then getContents else File.read file)
-        (errorParser (fileOnlyPos file) . ioeGetErrorString)
-      pure (file, content)
-
-withLibrary :: FilePath -> WithLibrary a -> IO a
-withLibrary f = flip runReaderT f . fromWithLibrary
-
-setTimeLimit :: Int -> String -> String
-setTimeLimit timeLimit ('%':'d':rs) = show timeLimit ++ rs
-setTimeLimit timeLimit (s:rs) = s : setTimeLimit timeLimit rs
-setTimeLimit _ _ = []
-
-instance RunProver m => RunProver (StateT s m) where
-  runProver a b c = lift $ runProver a b c
-instance RunProver m => RunProver (ReaderT s m) where
-  runProver a b c = lift $ runProver a b c
-
-instance RunProver IO where
-  runProver (Prover _ _ path args _ _ _ _) timeLimit task = do
-    let proc = (Process.proc path (map (setTimeLimit timeLimit) args))
-          { Process.std_in = Process.CreatePipe
-          ,  Process.std_out = Process.CreatePipe
-          ,  Process.std_err = Process.CreatePipe
-          ,  Process.create_group = True
-          ,  Process.new_session = True}
-    let process = do
-          (pin, pout, perr, p) <- Process.createProcess proc
-          return (fromJust pin, fromJust pout, fromJust perr, p)
-
-    Isabelle_Thread.expose_stopped
-    (prvin, prvout, prverr, prv) <- Exception.catch process
-        (\e -> errorExport noSourcePos $
-          "Failed to run " ++ show path ++ ": " ++ ioeGetErrorString e)
-
-    File.setup prvin
-    File.setup prvout
-    File.setup prverr
-
-    TIO.hPutStrLn prvin task
-    hClose prvin
-
-    let terminate = do
-          Process.interruptProcessGroupOf prv
-          Process.waitForProcess prv
-          return ()
-
-    Isabelle_Thread.bracket_resource terminate $ do
-      output <- TIO.hGetContents prvout
-      errors <- TIO.hGetContents prverr
-      hClose prverr
-      Process.waitForProcess prv
-      pure $ output <> errors
+consoleMainBody :: [Instr] -> [ProofText] -> IO ()
+consoleMainBody opts0 text0 = do
+  let library = Text.unpack $ askArgument Library "." opts0
+  let proversFile = Text.unpack (askArgument Provers "provers.yaml" opts0)
+  exit <- runCommandLine library $ do
+    provers <- readProverDatabase proversFile =<< liftIO (B.readFile proversFile)
+    mainBody provers opts0 text0
+  Exit.exitWith exit
