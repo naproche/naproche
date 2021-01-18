@@ -1,5 +1,5 @@
 module SAD.Core.Cache
-  ( CacheStorage(..), FileCache
+  ( CacheStorage(..), FileCache(..)
   , Cache, reloadFile, loadFile, isCached, cache, store
   ) where
 
@@ -9,46 +9,14 @@ import qualified Data.HashMap.Strict as HashMap
 import Data.Map (Map)
 import qualified Data.Map as Map
 import Data.Binary
-import qualified Data.ByteString.Lazy as BS
-import System.FilePath
-import System.Directory
-import Control.Exception
-import Control.Monad.State (StateT, lift)
-import Control.Monad.Reader (ReaderT)
 
 import SAD.Core.Task
-
-dirname :: FilePath
-dirname = ".ftlcache"
 
 -- | We allow other monads except IO to be able to use
 -- this as a library in a non-IO context (for example a webinterface).
 class Monad m => CacheStorage m where
   readFileCache :: FilePath -> m FileCache
   writeFileCache :: FilePath -> FileCache -> m ()
-
-instance CacheStorage m => CacheStorage (StateT s m) where
-  readFileCache f = lift $ readFileCache f
-  writeFileCache f c = lift $ writeFileCache f c
-
-instance CacheStorage m => CacheStorage (ReaderT s m) where
-  readFileCache f = lift $ readFileCache f
-  writeFileCache f c = lift $ writeFileCache f c
-
-instance CacheStorage IO where
-  readFileCache f = do
-    let (fdir, fname) = splitFileName f
-    let dir = fdir </> dirname
-    createDirectoryIfMissing True dir
-    c <- (decode <$> BS.readFile (dir </> fname))
-      `catch` (\(_ :: SomeException) -> pure mempty)
-    pure $ c { lastRun = 1 + lastRun c }
-
-  writeFileCache f c = do
-    let (fdir, fname) = splitFileName f
-    let dir = fdir </> dirname
-    createDirectoryIfMissing True dir
-    BS.writeFile (dir </> fname) (encode c)
 
 data Cache = Cache
   { perFile :: Map FilePath FileCache

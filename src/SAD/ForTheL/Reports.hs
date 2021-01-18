@@ -34,8 +34,7 @@ import Control.Monad.State.Class (modify)
 import Data.List hiding (or)
 import SAD.Helpers (nubOrd)
 import Data.Set (Set)
-import SAD.Core.Message (PIDE)
-import qualified SAD.Core.Message as Message
+import SAD.Core.Message (PIDE, Report, entityMarkup)
 import SAD.Core.SourcePos
 import SAD.ForTheL.Base
 
@@ -52,7 +51,7 @@ import SAD.Parser.Primitives
 
 import qualified Isabelle.Markup as Markup
 
-addReports :: (PIDE -> [Message.Report]) -> FTL ()
+addReports :: (PIDE -> [Report]) -> FTL ()
 addReports rep = modify (\st -> case pide st of
   Just pide -> let newRep = rep pide
                in  seq newRep $ st {reports = newRep ++ reports st}
@@ -78,14 +77,14 @@ markupTokenOf markup = addMarkup markup . tokenOf'
 
 -- formula and variable reports
 
-variableReport :: PIDE -> Bool -> Decl -> SourcePos -> [Message.Report]
+variableReport :: PIDE -> Bool -> Decl -> SourcePos -> [Report]
 variableReport pide def decl pos =
   case declName decl of
     VarConstant name ->
-      [(pos, Message.entityMarkup pide "variable" (Text.unpack name) def (declSerial decl) (declPosition decl))]
+      [(pos, entityMarkup pide "variable" (Text.unpack name) def (declSerial decl) (declPosition decl))]
     _ -> []
 
-formulaReports :: PIDE -> Set Decl -> Formula -> [Message.Report]
+formulaReports :: PIDE -> Set Decl -> Formula -> [Report]
 formulaReports pide decls = nubOrd . dive
   where
     dive Var {varName = name, varPosition = pos} =
@@ -104,7 +103,7 @@ formulaReports pide decls = nubOrd . dive
       boundReports pide decl f ++
       dive f
 
-boundReports :: PIDE -> Decl -> Formula -> [Message.Report]
+boundReports :: PIDE -> Decl -> Formula -> [Report]
 boundReports pide decl = dive 0
   where
     dive n (All _ f) = dive (succ n) f

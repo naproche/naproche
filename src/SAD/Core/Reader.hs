@@ -8,16 +8,12 @@ Main text reading functions.
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.Core.Reader (HasLibrary(..), withLibrary, parseInit, readProofText) where
+module SAD.Core.Reader (HasLibrary(..), parseInit, readProofText) where
 
 import Data.Maybe
 import Control.Monad
-import System.IO.Error
-import Control.Exception
 import Data.Text (Text)
 import qualified Data.Text as Text
-import Control.Monad.Reader
-import Control.Monad.State (StateT)
 import Data.Map (Map)
 import qualified Data.Map as Map
 
@@ -36,47 +32,15 @@ import SAD.Parser.Token
 import SAD.Parser.Combinators (after, optLL1, chainLL1)
 import SAD.Parser.Primitives
 import SAD.Parser.Error
-import qualified SAD.Core.Message as Message
-import qualified Isabelle.File as File
-import System.FilePath
-import System.Directory
-import SAD.Core.Prove (RunProver)
-import SAD.Core.Cache (CacheStorage)
+import SAD.Core.Message (Comm, PIDE, Report, pideContext, errorParser, outputParser, Kind(..), reportMeta)
 
 class Monad m => HasLibrary m where
   -- | Read a relative filepath in the current paths
   -- and return its content and the matched filepath.
   readLibrary :: FilePath -> m (FilePath, Text)
 
-newtype WithLibrary a = WithLibrary { fromWithLibrary :: ReaderT FilePath IO a }
-  deriving (Functor, Applicative, Monad, MonadReader FilePath, MonadIO, Message.Comm, RunProver, CacheStorage)
-
-instance HasLibrary m => HasLibrary (StateT s m) where
-  readLibrary = lift . readLibrary
-
-instance HasLibrary WithLibrary where
-  readLibrary f
-    --- This an be used for protection against attacks:
-    --- | ".." `isInfixOf` f = 
-    ---   Message.errorParser (fileOnlyPos f) ("Illegal \"..\" in file name: " ++ show f)
-    | otherwise = do
-      library <- ask
-      ex_f <- liftIO $ doesFileExist f
-      ex_lf <- liftIO $ doesFileExist $ library </> f
-      file <- case (ex_f, ex_lf) of
-        (True, _) -> pure f
-        (_, True) -> pure $ library </> f
-        _ -> Message.errorParser (fileOnlyPos f) $ "File not found! Neither " ++ f ++ " nor " ++ (library </> f)
-          ++ " is a valid file path!"
-      content <- liftIO $ fmap Text.pack $ catch (if null file then getContents else File.read file)
-        (Message.errorParser (fileOnlyPos file) . ioeGetErrorString)
-      pure (file, content)
-
-withLibrary :: FilePath -> WithLibrary a -> IO a
-withLibrary f = flip runReaderT f . fromWithLibrary
-
 -- | Parse the content of an "init.opt" file
-parseInit :: Message.Comm m => FilePath -> Text -> m [(Pos, Instr)]
+parseInit :: Comm m => FilePath -> Text -> m [(Pos, Instr)]
 parseInit file input = do
   let tokens = filter isProperToken $ tokenize TexDisabled (filePos file) input
       initialParserState = State (initFS Nothing) tokens NonTex noSourcePos
@@ -98,34 +62,34 @@ getReadInstr ps =
     splitLast (x:xs) = (x:) <$> splitLast xs
 
 -- | Resolve the last instruction if it is a Read or Text instruction.
-readProofText :: (Message.Comm m, HasLibrary m) => [ProofText] -> m [ProofText]
+readProofText :: (Comm m, HasLibrary m) => [ProofText] -> m [ProofText]
 readProofText text0 = do
   let (mReadInstr, rest) = getReadInstr text0
   case mReadInstr of
     Nothing -> pure $ rest
     Just (pk, pos, eft) -> do
-      pide <- Message.pideContext
-      (_, (text, reports)) <- readFtlFile pide pk mempty pos eft
-      when (isJust pide) $ Message.reports reports
+      pide <- pideContext
+      (_, (text, rs)) <- readFtlFile pide pk mempty pos eft
+      when (isJust pide) $ reportMeta rs
       pure $ rest ++ text
 
 -- | Resolve a single Read or Text instruction.
-readFtlFile :: (HasLibrary m, Message.Comm m) => Maybe Message.PIDE -> ParserKind 
-  -> Map FilePath (State FState, ([ProofText], [Message.Report])) 
-  -> Pos -> Either FilePath Text -> m (State FState, ([ProofText], [Message.Report]))
+readFtlFile :: (HasLibrary m, Comm m) => Maybe PIDE -> ParserKind 
+  -> Map FilePath (State FState, ([ProofText], [Report])) 
+  -> Pos -> Either FilePath Text -> m (State FState, ([ProofText], [Report]))
 readFtlFile pide pk doneFiles pos = \case
   (Left file) -> case Map.lookup file doneFiles of
     Just (state', res) -> do
         -- If, for example, we originally read the file with the .ftl format and now we
         -- are reading the file again with the .tex format(by eg using '[readtex myfile.ftl]'), we want to throw an error.
       when (parserKind state' /= pk)
-        (Message.errorParser (Instr.position pos) "Trying to read the same file once in Tex format and once in NonTex format.")
+        (errorParser (Instr.position pos) "Trying to read the same file once in Tex format and once in NonTex format.")
       pure (state', ([], []))
     Nothing -> do
       (file', text) <- readLibrary file
       (newProofText, newState) <- beginParsing (filePos file') text initState 
       res <- cont doneFiles newState (filePos file') newProofText
-      Message.outputParser Message.TRACING (fileOnlyPos file') "parsing successful"
+      outputParser TRACING (fileOnlyPos file') "parsing successful"
       pure res
   (Right text) -> do
     (newProofText, newState) <- beginParsing startPos text initState 
@@ -148,25 +112,25 @@ readFtlFile pide pk doneFiles pos = \case
 
 -- | Given an fstate and a source position for tokenizing, parse the given text
 -- until (including) the first read instruction or the end of the file.
-beginParsing :: Message.Comm m => SourcePos -> Text -> State FState -> m ([ProofText], State FState)
+beginParsing :: Comm m => SourcePos -> Text -> State FState -> m ([ProofText], State FState)
 beginParsing pos text pState = do
   let tokens0 = case parserKind pState of
           Tex -> tokenize OutsideForthelEnv pos text
           NonTex -> tokenize TexDisabled pos text
-  Message.reports $ mapMaybe reportComments tokens0
+  reportMeta $ mapMaybe reportComments tokens0
   let tokens = filter isProperToken tokens0
       st = State ((stUser pState) { tvrExpr = [] }) tokens (parserKind pState) pos
   continueParsing st
 
 -- | Continue parsing after the parsing was suspended by a read instruction.
-continueParsing :: Message.Comm m => State FState -> m ([ProofText], State FState)
+continueParsing :: Comm m => State FState -> m ([ProofText], State FState)
 continueParsing st = case parserKind st of
   Tex -> launchParser texForthel st
   NonTex -> launchParser forthel st
 
 -- | Run a given parser
-launchParser :: Message.Comm m => Parser st a -> State st -> m (a, State st)
+launchParser :: Comm m => Parser st a -> State st -> m (a, State st)
 launchParser parser state =
   case runP parser state of
-    Error err -> Message.errorParser (errorPos err) (show err)
+    Error err -> errorParser (errorPos err) (show err)
     Ok [PR a st] -> return (a, st)

@@ -1,5 +1,6 @@
 {-
-Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018), Makarius Wenzel (2018)
+Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018), Makarius Wenzel (2018),
+  Anton Lorenzen (2019 - 2021)
 
 Main application entry point: console or server mode.
 -}
@@ -9,122 +10,30 @@ Main application entry point: console or server mode.
 
 module SAD.Main where
 
-import Data.Maybe (fromMaybe)
-import Data.Time (UTCTime, NominalDiffTime, getCurrentTime, diffUTCTime)
-import qualified Data.ByteString as B
 import Data.List (isSuffixOf)
-import Data.Either (isRight)
 
-import qualified Control.Exception as Exception
 import qualified Data.Text as Text
 import qualified System.Console.GetOpt as GetOpt
-import qualified System.Environment as Environment
 import qualified System.Exit as Exit
-import qualified System.IO as IO
 import qualified Data.Map as Map
 import Control.Monad.State
-
-import Isabelle.Library (trim_line)
-import qualified Data.ByteString.UTF8 as UTF8
-import qualified Isabelle.Byte_Message as Byte_Message
-import qualified Isabelle.File as File
-import qualified Isabelle.Naproche as Naproche
-import qualified Isabelle.Properties as Properties
-import qualified Isabelle.Server as Server
-import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
-import qualified Isabelle.UUID as UUID
-import qualified Isabelle.XML as XML
-import qualified Isabelle.YXML as YXML
-import Network.Socket (Socket)
-import System.IO.Error (ioeGetErrorString)
+import Data.Time (NominalDiffTime)
 
 import SAD.Core.Pretty (pretty)
-import SAD.Core.Logging (showTimeDiff, RState(..), sumCounter, Counter(..))
-import SAD.Core.Message (Comm, consoleThread, exitThread, errorParser, outputMain, initThread, Kind(..))
-import SAD.Core.Provers (readProverDatabase, Prover)
+import SAD.Core.Logging (showTimeDiff, RState(..), sumCounter, Counter(..), Tracker(..))
+import SAD.Core.Message (Comm, errorParser, outputMain, Kind(..))
+import SAD.Core.Provers (Prover)
 import SAD.Core.Prove (RunProver(..), verify)
-import SAD.Core.Reader (parseInit, readProofText, HasLibrary(..), withLibrary)
+import SAD.Core.Reader (readProofText, HasLibrary(..))
 import SAD.Core.SourcePos (noSourcePos, fileOnlyPos)
 import SAD.Data.Text.Block (ProofText(..), findParseError)
-import SAD.Data.Instr (Instr(..), Flag(..), askFlag, Limit(..), Argument(..), askArgument, noPos
-  , ParserKind(..), Pos)
+import SAD.Data.Instr (Instr(..), Flag(..), askFlag, Limit(..), Argument(..), ParserKind(..), Pos)
 import SAD.Parser.Error (errorPos)
 import SAD.Core.Transform (convert)
 import SAD.Core.Typed (located)
 import SAD.Core.Cache (CacheStorage)
 import Control.DeepSeq (force)
-
-main :: IO ()
-main  = do
-  -- setup stdin/stdout
-  File.setup IO.stdin
-  File.setup IO.stdout
-  File.setup IO.stderr
-  IO.hSetBuffering IO.stdout IO.LineBuffering
-  IO.hSetBuffering IO.stderr IO.LineBuffering
-
-  -- command line and init file
-  args0 <- Environment.getArgs
-  (opts0, pk, mFileName) <- readArgs args0
-  text0 <- (map (uncurry ProofTextInstr) (reverse opts0) ++) <$> case mFileName of
-    Nothing -> do
-      stdin <- getContents
-      pure $ [ProofTextInstr noPos $ GetArgument (Text pk) (Text.pack stdin)]
-    Just f -> do
-      pure $ [ProofTextInstr noPos $ GetArgument (Read pk) (Text.pack f)]
-  let opts1 = map snd opts0
-
-  if askFlag Help False opts1 then
-    putStr (GetOpt.usageInfo usageHeader options)
-  else -- main body with explicit error handling, notably for PIDE
-    Exception.catch
-      (if askFlag Server False opts1 then
-        Server.server (Server.publish_stdout "Naproche-SAD") (serverConnection args0)
-      else do consoleThread; consoleMainBody opts1 text0)
-      (\err -> do
-        exitThread
-        let msg = Exception.displayException (err :: Exception.SomeException)
-        IO.hPutStrLn IO.stderr msg
-        Exit.exitFailure)
-
-serverConnection :: [String] -> Socket -> IO ()
-serverConnection args0 connection = do
-  thread_uuid <- Isabelle_Thread.my_uuid
-  mapM_ (Byte_Message.write_line_message connection . UUID.bytes) thread_uuid
-
-  res <- Byte_Message.read_line_message connection
-  case fmap (YXML.parse . UTF8.toString) res of
-    Just (XML.Elem ((command, _), body)) | command == Naproche.cancel_command ->
-      mapM_ Isabelle_Thread.stop_uuid (UUID.parse_string (XML.content_of body))
-
-    Just (XML.Elem ((command, props), body)) | command == Naproche.forthel_command ->
-      Exception.bracket_ (initThread props (Byte_Message.write connection))
-        exitThread
-        (do
-          let args1 = lines (fromMaybe "" (Properties.get props Naproche.command_args))
-          (opts0, pk, _) <- readArgs (args0 ++ args1)
-          let opts1 = map snd opts0
-          let text0 = map (uncurry ProofTextInstr) (reverse opts0)
-          let text1 = text0 ++ [ProofTextInstr noPos (GetArgument (Text pk) (Text.pack $ XML.content_of body))]
-
-          Exception.catch (consoleMainBody opts1 text1)
-            (\err -> do
-              let msg = Exception.displayException (err :: Exception.SomeException)
-              Exception.catch
-                (if YXML.detect msg then
-                  Byte_Message.write connection [UTF8.fromString msg]
-                 else outputMain ERROR noSourcePos msg)
-                (\(_ :: Exception.IOException) -> pure ())))
-
-    _ -> return ()
-
-consoleMainBody :: [Instr] -> [ProofText] -> IO ()
-consoleMainBody opts0 text0 = do
-  let proversFile = Text.unpack (askArgument Provers "provers.yaml" opts0)
-  provers <- readProverDatabase proversFile =<< liftIO (B.readFile proversFile)
-  let library = Text.unpack $ askArgument Library "." opts0
-  exit <- withLibrary library $ runTimedIO (mainBody provers opts0 text0)
-  Exit.exitWith exit
+import SAD.Core.Task (generateTasks)
 
 data TimedSection = ParsingTime | ProvingTime | CheckTime
   deriving (Eq, Ord, Show)
@@ -133,27 +42,6 @@ class Monad m => TimeStatistics m where
   beginTimedSection :: TimedSection -> m ()
   endTimedSection :: TimedSection -> m ()
   getTimes :: m (Map.Map TimedSection NominalDiffTime)
-
-newtype Timed m a = Timed
-  { fromTimed :: StateT (Map.Map TimedSection (Either UTCTime NominalDiffTime)) m a }
-  deriving (Functor, Applicative, Monad, MonadIO
-    , MonadState (Map.Map TimedSection (Either UTCTime NominalDiffTime))
-    , RunProver, Comm, CacheStorage, HasLibrary)
-
-runTimedIO :: MonadIO m => Timed m a -> m a
-runTimedIO = fmap fst . flip runStateT mempty . fromTimed
-
-instance MonadIO m => TimeStatistics (Timed m) where
-  beginTimedSection t = do
-    time <- liftIO $ getCurrentTime
-    modify $ Map.insert t (Left time)
-  endTimedSection t = do
-    time <- liftIO $ getCurrentTime
-    modify $ \m -> case Map.lookup t m of
-      Just (Left begin) -> Map.insert t (Right $ diffUTCTime time begin) m
-      _ -> m
-  getTimes = takeRights <$> get
-    where takeRights = Map.map (\(Right r) -> r) . Map.filter isRight
 
 mainBody :: (TimeStatistics m, RunProver m, Comm m, CacheStorage m, HasLibrary m)
   => [Prover] -> [Instr] -> [ProofText] -> m Exit.ExitCode
@@ -191,10 +79,12 @@ proveFOL provers txts opts0 = do
     Nothing -> do
       endTimedSection ParsingTime 
       let typed = force $ convert txts
+      let tasks = generateTasks typed
+      let rstate = RState [Counter Sections (length typed)] False False
       beginTimedSection CheckTime
       typed `seq` endTimedSection CheckTime
       beginTimedSection ProvingTime
-      finalReasonerState <- verify provers opts0 (RState [] False False) typed
+      finalReasonerState <- verify provers opts0 rstate tasks
       endTimedSection ProvingTime
 
       let trackerList = trackers finalReasonerState
@@ -222,26 +112,18 @@ proveFOL provers txts opts0 = do
 
       pure $ if accumulate FailedGoals == 0 then Exit.ExitSuccess else Exit.ExitFailure 1
 
+parseArgs :: [String] -> ([Instr], [String], [String])
+parseArgs = GetOpt.getOpt GetOpt.Permute options
+
 -- | Command line parsing
-readArgs :: MonadIO m => [String] -> m ([(Pos, Instr)], ParserKind, Maybe FilePath)
-readArgs args = do
-  let (instrs, files, errs) = GetOpt.getOpt GetOpt.Permute options args
-
-  let initFilePath = Text.unpack $ askArgument Init "init.opt" instrs
-  initFileContent <- liftIO $ File.read initFilePath 
-    `Exception.catch` (errorParser (fileOnlyPos initFilePath) . ioeGetErrorString)
-  initFile <- liftIO $ parseInit initFilePath $ Text.pack initFileContent
-  let fail msgs = errorWithoutStackTrace (unlines (map trim_line msgs))
-  unless (null errs) $ fail errs
-
-  let initialOpts = initFile ++ map (noPos,) instrs
-
+readArgs :: (Comm m, MonadIO m) => [(Pos, Instr)] -> [String] -> m ([(Pos, Instr)], ParserKind, Maybe FilePath)
+readArgs initialOpts files = do
   let revInitialOpts = reverse initialOpts
   let useTexArg = askFlag UseTex False $ map snd revInitialOpts
   let fileName = case files of
                   [file] -> Just file
                   [] -> Nothing
-                  _ -> fail ["More than one file argument\n"]
+                  _ -> errorWithoutStackTrace "More than one file argument\n"
   let parserKind = if useTexArg || maybe False (".ftl.tex" `isSuffixOf`) fileName then Tex else NonTex
   pure (revInitialOpts, parserKind, fileName)
 
@@ -264,7 +146,7 @@ options = [
     "place to look for library texts (def: .)",
   GetOpt.Option ""  ["provers"] (GetOpt.ReqArg (GetArgument Provers . Text.pack) "FILE")
     "index of provers (def: provers.yaml)",
-  GetOpt.Option "P" ["prover"] (GetOpt.ReqArg (GetArgument Prover . Text.pack) "NAME")
+  GetOpt.Option "P" ["prover"] (GetOpt.ReqArg (GetArgument UseProver . Text.pack) "NAME")
     "use prover NAME (def: first listed)",
   GetOpt.Option "t" ["timelimit"] (GetOpt.ReqArg (LimitBy Timelimit . getLeadingPositiveInt) "N")
     "N seconds per prover call (def: 3)",

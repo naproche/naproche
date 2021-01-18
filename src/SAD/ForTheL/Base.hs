@@ -26,8 +26,7 @@ import SAD.Parser.Primitives
 
 import SAD.Core.SourcePos (noSourcePos)
 
-import SAD.Core.Message (PIDE)
-import qualified SAD.Core.Message as Message
+import SAD.Core.Message (PIDE, Report)
 import SAD.Core.Pretty (pretty)
 import SAD.Helpers (nubOrdOn)
 
@@ -51,7 +50,7 @@ data FState = FState {
 
   tvrExpr :: [TVar], strSyms :: [[Text]], varDecl :: Set VarName,
   idCount :: Int, hiddenCount :: Int, serialCounter :: Int,
-  reports :: [Message.Report], pide :: Maybe PIDE }
+  reports :: [Report], pide :: Maybe PIDE }
 
 -- | Append the first fstate to the second.
 -- This adds definitions to the second, but keeps

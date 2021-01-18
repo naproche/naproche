@@ -1,0 +1,56 @@
+name:                Isabelle
+version:             0.1.0.0
+github:              "Naproche/Naproche-SAD"
+license:             GPL-3
+
+description:         <https://github.com/Naproche/Naproche-SAD>
+
+dependencies:
+- base >= 4.7 && < 5
+- containers
+- unordered-containers
+- deepseq
+- process
+- filepath
+- directory
+- binary
+- ghc-prim
+- hashable
+- time
+- mtl
+- transformers
+- bytestring
+- utf8-string
+- text
+- network
+- split
+- uuid
+- threads
+- yaml
+
+default-extensions:
+  - GeneralizedNewtypeDeriving
+  - InstanceSigs
+  - LambdaCase
+  - PartialTypeSignatures
+  - ScopedTypeVariables
+
+ghc-options:
+  - -O2
+
+library:
+  source-dirs:
+    - src
+  exposed-modules:
+    - Isabelle.Byte_Message
+    - Isabelle.File
+    - Isabelle.Naproche
+    - Isabelle.Properties
+    - Isabelle.Server
+    - Isabelle.Isabelle_Thread
+    - Isabelle.UUID
+    - Isabelle.XML
+    - Isabelle.YXML
+    - Isabelle.Library
+    - Isabelle.Markup
+    - Isabelle.Value

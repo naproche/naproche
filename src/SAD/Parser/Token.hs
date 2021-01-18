@@ -21,7 +21,7 @@ module SAD.Parser.Token
 
 import SAD.Core.SourcePos
 import qualified Isabelle.Markup as Markup
-import qualified SAD.Core.Message as Message
+import SAD.Core.Message (Report)
 
 import Data.Char
 import Data.Text (Text)
@@ -144,7 +144,7 @@ tokenize texState start = posToken texState start NoWhiteSpaceBefore
 isLexeme :: Char -> Bool
 isLexeme c = (isAscii c && isAlphaNum c) || c == '_'
 
-reportComments :: Token -> Maybe Message.Report
+reportComments :: Token -> Maybe Report
 reportComments t@Token{}
   | isProperToken t = Nothing
   | otherwise = Just (tokenPos t, Markup.comment1)

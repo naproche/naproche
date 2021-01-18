@@ -99,7 +99,7 @@ data Argument =
   | Read ParserKind    --  read file
   | Library            --  library directory
   | Provers            --  prover database
-  | Prover             --  current prover
+  | UseProver          --  current prover
   deriving (Eq, Ord, Show)
 
 data Arguments =
@@ -180,7 +180,7 @@ keywordsArgument =
   (Read Tex, "readtex"),
   (Library, "library"),
   (Provers, "provers"),
-  (Prover, "prover")]
+  (UseProver, "prover")]
 
 keywordsArguments :: [(Arguments, Text)]
 keywordsArguments =
