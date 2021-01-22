@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+#
+# DESCRIPTION: test Naproche
+
+set -e
+
+cd "$NAPROCHE_HOME"
+
+isabelle ghc_stack test
