@@ -47,7 +47,8 @@ subsection \<open>External text file\<close>
 context notes [[naproche_prove = false]]
 begin
 
-forthel_file \<open>../../examples/tarski.ftl\<close>
+forthel_file \<open>../../examples/powerset.ftl\<close>
+forthel_file \<open>../../examples/powerset.ftl.tex\<close>
 
 end
 

@@ -57,11 +57,15 @@ object File_Format
 class File_Format extends isabelle.File_Format
 {
   override def format_name: String = "forthel"
-  override def file_ext: String = "ftl"
+
+  val file_ext = ""
+  def detect_tex(name: String): Boolean = name.endsWith(".ftl.tex")
+  override def detect(name: String): Boolean = name.endsWith(".ftl") || detect_tex(name)
 
   override def theory_suffix: String = "forthel_file"
   override def theory_content(name: String): String =
-    """theory "ftl" imports Naproche.Naproche begin forthel_file """ + quote(name) + """ end"""
+    "theory " + quote(if (detect_tex(name)) "tex" else "ftl") +
+    " imports Naproche.Naproche begin forthel_file " + quote(name) + " end"
 
   override def start(session: Session): isabelle.File_Format.Agent =
     if (session.session_options.bool("naproche_server")) {

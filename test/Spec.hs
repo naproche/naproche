@@ -45,9 +45,9 @@ shouldFailFiles = fmap ("examples/"++)
 
 texFiles :: [FilePath]
 texFiles = fmap ("examples/"++)
-  [ "powerset.tex"
+  [ "powerset.ftl.tex"
   , "chinese.ftl.tex"
-  , "read_test.tex"
+  , "read_test.ftl.tex"
   ]
 
 output :: [(FilePath, (ExitCode, Text))] -> IO [(ExitCode, FilePath)]

@@ -202,7 +202,7 @@ val _ =
         let
           val {src_path, lines, digest, pos} = get_file (Proof_Context.theory_of lthy);
           val file_name = Path.implode (Path.expand src_path);
-          val tex = String.isSuffix ".tex" file_name orelse String.isSuffix ".tex.ftl" file_name;
+          val tex = String.isSuffix ".ftl.tex" file_name;
           val lthy' = lthy
             |> Local_Theory.background_theory (Resources.provide (src_path, digest));
           val _ = check_forthel lthy' {tex = tex} (cat_lines lines, pos);
