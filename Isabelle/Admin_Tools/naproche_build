@@ -20,7 +20,7 @@ isabelle jedit -b
   isabelle scalac -d classes file_format.scala prover_server.scala
 
   cd classes
-  isabelle_jdk jar cf "$NAPROCHE_JAR" *
+  isabelle_jdk jar cf "$(platform_path "$NAPROCHE_JAR")" *
 
   cd ..
   rm -rf classes
