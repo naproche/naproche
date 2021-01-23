@@ -50,11 +50,11 @@ startPos = filePos Text.empty
 
 -- advance position
 
-advanceLine :: (Ord a, Num a) => a -> Char -> a
+advanceLine :: Int -> Char -> Int
 advanceLine line c = if line <= 0 || c /= '\n' then line else line + 1
-advanceColumn :: (Ord a, Num a) => a -> Char -> a
+advanceColumn :: Int -> Char -> Int
 advanceColumn column c = if column <= 0 || c == '\r' then column else if c == '\n' then 1 else column + 1
-advanceOffset :: (Ord a, Num a) => a -> Char -> a
+advanceOffset :: Int -> Char -> Int
 advanceOffset offset c = if offset <= 0 || c == '\r' then offset else offset + 1
 
 advancePos1 :: SourcePos -> Char -> SourcePos
