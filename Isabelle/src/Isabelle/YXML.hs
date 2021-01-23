@@ -10,6 +10,8 @@ inlining into plain text.
 See also "$ISABELLE_HOME/src/Pure/PIDE/yxml.ML".
 -}
 
+{-# OPTIONS_GHC -fno-warn-missing-signatures -fno-warn-incomplete-patterns #-}
+
 module Isabelle.YXML (charX, charY, strX, strY, detect, output_markup,
   buffer_body, buffer, string_of_body, string_of, parse_body, parse)
 where

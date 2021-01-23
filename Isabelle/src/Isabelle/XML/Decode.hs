@@ -9,6 +9,8 @@ XML as data representation language.
 See also "$ISABELLE_HOME/src/Pure/PIDE/xml.ML".
 -}
 
+{-# OPTIONS_GHC -fno-warn-missing-signatures #-}
+
 module Isabelle.XML.Decode (
   A, T, V, P,
 
@@ -17,8 +19,6 @@ module Isabelle.XML.Decode (
   tree, properties, string, int, bool, unit, pair, triple, list, option, variant
 )
 where
-
-import Data.List ((!!))
 
 import Isabelle.Library
 import qualified Isabelle.Value as Value

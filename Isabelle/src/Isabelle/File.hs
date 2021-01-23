@@ -12,7 +12,6 @@ See also "$ISABELLE_HOME/src/Pure/General/file.ML".
 module Isabelle.File (setup, read, write, append) where
 
 import Prelude hiding (read)
-import System.IO (IO)
 import qualified System.IO as IO
 
 setup :: IO.Handle -> IO ()

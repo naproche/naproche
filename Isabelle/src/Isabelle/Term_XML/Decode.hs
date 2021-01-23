@@ -9,11 +9,12 @@ XML data representation of lambda terms.
 See also "$ISABELLE_HOME/src/Pure/term_xml.ML".
 -}
 
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+
 module Isabelle.Term_XML.Decode (indexname, sort, typ, typ_body, term)
 where
 
 import Isabelle.Library
-import qualified Isabelle.XML as XML
 import Isabelle.XML.Decode
 import Isabelle.Term
 

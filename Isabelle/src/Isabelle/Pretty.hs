@@ -9,6 +9,8 @@ Generic pretty printing module.
 See also "$ISABELLE_HOME/src/Pure/General/pretty.ML".
 -}
 
+{-# OPTIONS_GHC -fno-warn-missing-signatures #-}
+
 module Isabelle.Pretty (
   T, symbolic, formatted, unformatted,
 

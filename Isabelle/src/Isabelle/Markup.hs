@@ -9,6 +9,8 @@ Quasi-abstract markup elements.
 See also "$ISABELLE_HOME/src/Pure/PIDE/markup.ML".
 -}
 
+{-# OPTIONS_GHC -fno-warn-missing-signatures #-}
+
 module Isabelle.Markup (
   T, empty, is_empty, properties,
 

@@ -10,6 +10,8 @@ See "$ISABELLE_HOME/src/Pure/PIDE/byte_message.ML"
 and "$ISABELLE_HOME/src/Pure/PIDE/byte_message.scala".
 -}
 
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+
 module Isabelle.Byte_Message (
     write, write_line,
     read, read_block, trim_line, read_line,
@@ -23,11 +25,8 @@ import Data.Maybe
 import Data.ByteString (ByteString)
 import qualified Data.ByteString as ByteString
 import qualified Data.ByteString.UTF8 as UTF8
-import Data.Word (Word8)
 
-import Control.Monad (when)
 import Network.Socket (Socket)
-import qualified Network.Socket as Socket
 import qualified Network.Socket.ByteString as ByteString
 
 import Isabelle.Library hiding (trim_line)

@@ -9,6 +9,8 @@ XML as data representation language.
 See also "$ISABELLE_HOME/src/Pure/PIDE/xml.ML".
 -}
 
+{-# OPTIONS_GHC -fno-warn-missing-signatures #-}
+
 module Isabelle.XML.Encode (
   A, T, V, P,
 

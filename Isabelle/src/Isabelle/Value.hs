@@ -13,7 +13,6 @@ module Isabelle.Value
   (print_bool, parse_bool, parse_nat, print_int, parse_int, print_real, parse_real)
 where
 
-import Data.Maybe
 import qualified Data.List as List
 import qualified Text.Read as Read
 
