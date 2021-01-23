@@ -27,7 +27,6 @@ import SAD.Parser.Primitives
 import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Data.Text.Decl
-import SAD.Core.SourcePos (SourceRange(..))
 
 import Control.Monad
 import qualified Data.Set as Set

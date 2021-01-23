@@ -16,7 +16,6 @@ import qualified Data.Set as Set
 import SAD.Data.Formula.Base
 import SAD.Data.Tag
 import SAD.Core.SourcePos
-import SAD.Data.Text.Decl (Decl)
 import SAD.Data.Text.Decl
 import SAD.Data.Terms
 import SAD.Data.VarName

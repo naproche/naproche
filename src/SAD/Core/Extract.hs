@@ -16,7 +16,6 @@ module SAD.Core.Extract (
 ) where
 
 import SAD.Data.Formula
-import SAD.Data.Definition (DefEntry(DE), Definitions, DefType(..), Guards)
 import SAD.Data.Definition
 import SAD.Data.Text.Context (Context)
 import qualified SAD.Data.Text.Context as Context (formula, name)

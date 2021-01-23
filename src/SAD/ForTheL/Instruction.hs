@@ -18,7 +18,6 @@ import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 
 import SAD.Core.SourcePos
-import SAD.Data.Instr (Instr)
 import SAD.Data.Instr
 
 import SAD.ForTheL.Base
