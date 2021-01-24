@@ -5,8 +5,8 @@
 \usepackage{forthel}
 
 \title{König's Theorem}
-\author{}
-\date{}
+\author{Steffen Frerix}
+\date{2018}
 
 \begin{document}
   \pagenumbering{gobble}
@@ -17,11 +17,11 @@
     [synonym cardinal/-s]
     [synonym sequence/-s]
 
-    Let the domain of f stand for Dom(f).
+    Let the domain of $f$ stand for $Dom(f)$.
 
-    Let M,N denote a set.
+    Let $M,N$ denote a set.
 
-    Let f denote a function.
+    Let $f$ denote a function.
   \end{forthel}
 
 
@@ -29,19 +29,18 @@
 
   \begin{forthel}
     \begin{definition}
-      A subset of M is a set N such that every element of N is an element of M.
+      A subset of $M$ is a set $N$ such that every element of $N$ is an element of $M$.
     \end{definition}
 
     \begin{definition}
-      M \ N = {x in M | x is not an element of N}.
+      $M \ N = {x "in" M | x "is not an element of" N}$.
     \end{definition}
 
     \begin{definition}
-      Assume M is a subset of the domain of f. f^[M] = {f[x] | x is an element
-      of M}.
+      Assume $M$ is a subset of the domain of $f$. $f^[M] = {f[x] | x "is an element of" M}$.
     \end{definition}
 
-    Let the image of f stand for f^[Dom(f)].
+    Let the image of $f$ stand for $f^[Dom(f)]$.
   \end{forthel}
 
 
@@ -52,46 +51,45 @@
       A cardinal is a set.
     \end{signature}
 
-    Let A,B,C denote cardinals.
+    Let $A,B,C$ denote cardinals.
 
     \begin{signature}
-      A < B is an atom.
+      $A < B$ is an atom.
     \end{signature}
 
-    Let A =< B stand for A = B or A < B.
+    Let $A =< B$ stand for $A = B$ or $A < B$.
 
     \begin{axiom}
-      A < B < C => A < C.
+      $A < B < C => A < C$.
     \end{axiom}
 
     \begin{axiom}
-      A < B or B < A or B = A.
+      $A < B$ or $B < A$ or $B = A$.
     \end{axiom}
 
-    Let A is less than B stand for A < B.
+    Let $A$ is less than $B$ stand for $A < B$.
 
     \begin{signature}
-      The cardinality of M is a cardinal.
+      The cardinality of $M$ is a cardinal.
     \end{signature}
 
-    Let card(M) denote the cardinality of M.
+    Let $card(M)$ denote the cardinality of $M$.
 
     \begin{axiom}[Image_Card]
-      Assume M is a subset of Dom(f). card(f^[M]) =< card(M).
+      Assume $M$ is a subset of $Dom(f)$. $card(f^[M]) =< card(M)$.
     \end{axiom}
 
     \begin{axiom}
-      Assume the cardinality of N is less than the cardinality of M. Then M \ N
-      has an element.
+      Assume the cardinality of $N$ is less than the cardinality of $M$. Then $M \ N$ has an element.
     \end{axiom}
 
     \begin{axiom}[Surj_Exi]
-      Assume card(M) =< card(N). Assume M has an element. There exists a
-      function f such that N is the domain of f and M is the image of f.
+      Assume $card(M) =< card(N)$. Assume $M$ has an element. There exists a
+      function $f$ such that $N$ is the domain of $f$ and $M$ is the image of $f$.
     \end{axiom}
 
     \begin{axiom}
-      card(A) = A.
+      $card(A) = A$.
     \end{axiom}
   \end{forthel}
 
@@ -99,49 +97,43 @@
   \section*{Product and Sum of cardinals}
 
   \begin{forthel}
-    Let D denote a set.
+    Let $D$ denote a set.
 
-    \begin{definition}A sequence of cardinals on D is a function f such that
-      Dom(f) = D and f[x] is a cardinal for every element x of D.
+    \begin{definition}
+      A sequence of cardinals on $D$ is a function $f$ such that $Dom(f) = D$ and $f[x]$ is a cardinal for every element $x$ of $D$.
     \end{definition}
 
     \begin{signature}
-      Let kappa be a sequence of cardinals on D. SumSet(kappa,D) is a set.
+      Let $kappa$ be a sequence of cardinals on $D$. $SumSet(kappa,D)$ is a set.
     \end{signature}
 
     \begin{axiom}[Sum_Def]
-      Let kappa be a sequence of cardinals on D. SumSet(kappa,D) = {(n,i) | i is
-      an element of D and n is an element of kappa[i]}.
+      Let $kappa$ be a sequence of cardinals on $D$. $SumSet(kappa,D) = {(n,i) | i "is an element of" D "and" n "is an element of" kappa[i]}$.
     \end{axiom}
 
     \begin{definition}
-      Let kappa be a sequence of cardinals on D. Sum(kappa,D) =
-      card(SumSet(kappa,D)).
+      Let $kappa$ be a sequence of cardinals on $D$. $Sum(kappa,D) = card(SumSet(kappa,D))$.
     \end{definition}
 
     \begin{signature}
-      Let kappa be a sequence of cardinals on D. ProdSet(kappa,D) is a set.
+      Let $kappa$ be a sequence of cardinals on $D$. $ProdSet(kappa,D)$ is a set.
     \end{signature}
 
     \begin{axiom}[Prod_Def]
-      Let kappa be a sequence of cardinals on D. ProdSet(kappa,D) =
-      {function f | Dom(f) = D /\ (f[i] is an element of kappa[i] for every
-      element i of D)}.
+      Let $kappa$ be a sequence of cardinals on $D$. $ProdSet(kappa,D) = {"function" f | Dom(f) = D /\ (f[i] "is an element of" kappa[i] "for every
+      element" i "of" D)}$.
     \end{axiom}
 
     \begin{definition}
-      Let kappa be a sequence of cardinals on D. Prod(kappa,D) =
-      card(ProdSet(kappa,D)).
+      Let $kappa$ be a sequence of cardinals on $D$. $Prod(kappa,D) = card(ProdSet(kappa,D))$.
     \end{definition}
 
 
     \begin{lemma}[Choice]
-      Let lambda be a sequence of cardinals on D. Assume that lambda[i] has an
-      element for every element i of D. ProdSet(lambda, D) has an element.
+      Let $lambda$ be a sequence of cardinals on $D$. Assume that $lambda[i]$ has an element for every element $i$ of $D$. $ProdSet(lambda, D)$ has an element.
     \end{lemma}
     \begin{proof}
-      Define f[i] = Choose an element v of lambda[i] in v for i in D. Then f is
-      an element of ProdSet(lambda,D).
+      Define $f[i] =$ Choose an element $v$ of $lambda[i]$ in $v$ for $i$ in $D$. Then $f$ is an element of $ProdSet(lambda,D)$.
     \end{proof}
   \end{forthel}
 
@@ -150,26 +142,18 @@
 
   \begin{forthel}
     \begin{theorem}[Koenig]
-      Let kappa, lambda be sequences of cardinals on D. Assume that for every
-      element i of D kappa[i] < lambda[i]. Then Sum(kappa,D) < Prod(lambda,D).
+      Let $kappa, lambda$ be sequences of cardinals on $D$. Assume that for every element $i$ of $D$ $kappa[i] < lambda[i]$. Then $Sum(kappa,D) < Prod(lambda,D)$.
     \end{theorem}
     \begin{proof}
-      Proof by contradiction. Assume the contrary. Then Prod(lambda,D) =<
-      Sum(kappa,D). Take a function G such that SumSet(kappa,D) is the domain of
-      G and ProdSet(lambda,D) is the image of G. Indeed ProdSet(lambda, D) has
-      an element. Define Diag[i] = {G[(n,i)][i] | n is an element of kappa[i]}
-      for i in D.
+      Proof by contradiction. Assume the contrary. Then $Prod(lambda,D) =<
+      Sum(kappa,D)$. Take a function $G$ such that $SumSet(kappa,D)$ is the domain of $G$ and $ProdSet(lambda,D)$ is the image of $G$. Indeed $ProdSet(lambda, D)$ has an element. Define $Diag[i] = {G[(n,i)][i] | n "is an element of" kappa[i]}$ for $i$ in $D$.
 
-      For every element i of D card(Diag[i]) < lambda[i].
+      For every element $i$ of $D$ $card(Diag[i]) < lambda[i]$.
       proof.
-        Let i be an element of D. Define F[n] = G[(n,i)][i] for n in kappa[i].
-        Then F^[kappa[i]] = Diag[i].
+        Let $i$ be an element of $D$. Define $F[n] = G[(n,i)][i]$ for $n$ in $kappa[i]$. Then $F^[kappa[i]] = Diag[i]$.
       end.
 
-      Define f[i] = Choose an element v of lambda[i] \ Diag[i] in v for i in D.
-      Then f is an element of ProdSet(lambda,D). Take an element j of D and an
-      element m of kappa[j] such that G[(m,j)] = f. G[(m,j)][j] is an element of
-      Diag[j] and f[j] is not an element of Diag[j]. Contradiction.
+      Define $f[i] =$ Choose an element $v$ of $lambda[i] \ Diag[i]$ in $v$ for $i$ in $D$. Then $f$ is an element of $ProdSet(lambda,D)$. Take an element $j$ of $D$ and an element $m$ of $kappa[j]$ such that $G[(m,j)] = f$. $G[(m,j)][j]$ is an element of $Diag[j]$ and $f[j]$ is not an element of $Diag[j]$. Contradiction.
     \end{proof}
   \end{forthel}
 

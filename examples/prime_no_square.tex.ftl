@@ -21,71 +21,66 @@
       A rational number is a notion.
     \end{signature}
 
-    Let s,r,q stand for rational numbers.
+    Let $s,r,q$ stand for rational numbers.
 
     \begin{signature}
-      r * q is a rational number.
+      $r * q$ is a rational number.
     \end{signature}
 
     \begin{axiom}
-      r * q = q * r.
+      $r * q = q * r$.
     \end{axiom}
 
     \begin{axiom}
-      r * (q * s) = (r * q) * s.
+      $r * (q * s) = (r * q) * s$.
     \end{axiom}
 
     \begin{axiom}
-      q * s = q * r => s = r.
+      $q * s = q * r => s = r$.
     \end{axiom}
 
     \begin{signature}
       A natural number is a rational number.
     \end{signature}
 
-    Let n,m,k denote natural numbers.
+    Let $n,m,k$ denote natural numbers.
 
     \begin{axiom}
-      n * m is a natural number.
+      $n * m$ is a natural number.
     \end{axiom}
 
     \begin{definition}
-      n | q iff there exists k such that k * n = q.
+      $n | q$ iff there exists $k$ such that $k * n = q$.
     \end{definition}
 
-    Let n divides m stand for n | m.
-    Let a divisor of m stand for a natural number that divides m.
+    Let $n$ divides $m$ stand for $n | m$. Let a divisor of $m$ stand for a natural number that divides $m$.
 
     \begin{definition}
-      n and m are coprime iff n and m have no common divisor.
+      $n$ and $m$ are coprime iff $n$ and $m$ have no common divisor.
     \end{definition}
 
     \begin{signature}
       A prime number is a natural number.
     \end{signature}
 
-    Let p denote a prime number.
+    Let $p$ denote a prime number.
 
     \begin{axiom}
-      p | n * m => p | n \/ p | m.
+      $p | n * m => p | n \/ p | m$.
     \end{axiom}
 
     \begin{axiom}
-      There exist coprime m,n such that m * q = n.
+      There exist coprime $m,n$ such that $m * q = n$.
     \end{axiom}
 
-    Let q^2 stand for q * q.
+    Let $q^{2}$ stand for $q * q$.
 
 
     \begin{proposition}
-      q^2 = p for no rational number q.
+      $q^{2} = p$ for no rational number $q$.
     \end{proposition}
     \begin{proof}
-      Proof by contradiction. Assume the contrary. Take a rational number q such
-      that p = q^2. Take coprime m,n such that m * q = n. Then p * m^2 = n^2.
-      Therefore p divides n. Take a natural number k such that n = k * p. Then
-      p * m^2 = p * (k * n). Therefore m * m is equal to p * k^2. Hence p
-      divides m. Contradiction.
+      Proof by contradiction. Assume the contrary. Take a rational number $q$ such that $p = q^{2}$. Take coprime $m,n$ such that $m * q = n$. Then $p * m^{2} = n^{2}$. Therefore $p$ divides $n$. Take a natural number $k$ such that $n = k * p$. Then $p * m^{2} = p * (k * n)$. Therefore $m * m$ is equal to $p * k^{2}$. Hence $p$ divides $m$. Contradiction.
     \end{proof}
   \end{forthel}
 

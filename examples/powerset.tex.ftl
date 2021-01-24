@@ -16,45 +16,39 @@
   In this document we prove Cantor's Theorem:
 
   \begin{theorem}
-    There is no surjection defined on a set $M$ that surjects onto the powerset
-    of $M$.
+    There is no surjection defined on a set $M$ that surjects onto the powerset of $M$.
   \end{theorem}
 
   \begin{forthel}
     [synonym subset/-s]
     [synonym surject/-s]
 
-    Let M denote a set. Let f denote a function.
+    Let $M$ denote a set. Let $f$ denote a function.
 
-    Let the value of f at x stand for f[x]. Let f is defined on M stand for
-    Dom(f) = M. Let the domain of f stand for Dom(f).
+    Let the value of $f$ at $x$ stand for $f[x]$. Let $f$ is defined on $M$ stand for $Dom(f) = M$. Let the domain of $f$ stand for $Dom(f)$.
 
 
     \begin{axiom}
-      The value of f at any element of the domain of f is a set.
+      The value of $f$ at any element of the domain of $f$ is a set.
     \end{axiom}
 
     \begin{definition}[subset]
-      A subset of M is a set N such that every element of N is an element of M.
+      A subset of $M$ is a set $N$ such that every element of $N$ is an element of $M$.
     \end{definition}
 
     \begin{definition}
-      The powerset of M is the set of subsets of M.
+      The powerset of $M$ is the set of subsets of $M$.
     \end{definition}
 
     \begin{definition}
-      f surjects onto M iff every element of M is equal to the value of f at
-      some element of the domain of f.
+      $f$ surjects onto $M$ iff every element of $M$ is equal to the value of $f$ at some element of the domain of $f$.
     \end{definition}
 
     \begin{proposition}
-      No function that is defined on M surjects onto the powerset of M.
+      No function that is defined on $M$ surjects onto the powerset of $M$.
     \end{proposition}
     \begin{proof}
-      Proof by contradiction. Assume the contrary. Take a function f that is
-      defined on M and surjects  onto the powerset of M. Define N = {x in M |
-      x is not an element of f[x]}. Then N is not equal to the value of f at any
-      element of M. Contradiction.
+      Proof by contradiction. Assume the contrary. Take a function $f$ that is defined on $M$ and surjects onto the powerset of $M$. Define $N = {x "in" M | x "is not an element of" f[x]}$. Then $N$ is not equal to the value of $f$ at any element of $M$. Contradiction.
     \end{proof}
 
   \end{forthel}
