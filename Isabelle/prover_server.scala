@@ -44,11 +44,19 @@ object Prover_Server
       "SPASS" -> Path.explode("$SPASS_HOME/SPASS"),
       "vampire" -> Path.explode("$VAMPIRE_HOME/vampire"))
 
-  def apply(port: Int = 0, provers: Map[String, Path] = default_provers): Prover_Server =
-    new Prover_Server(port, provers)
+  def start(
+    port: Int = 0,
+    provers: Map[String, Path] = default_provers,
+    debugging: => Boolean = false): Prover_Server =
+  {
+    val server = new Prover_Server(port, provers, debugging)
+    server.start
+    server
+  }
 }
 
-class Prover_Server private(port: Int, provers: Map[String, Path]) extends Server.Handler(port)
+class Prover_Server private(port: Int, provers: Map[String, Path], debugging: => Boolean)
+  extends Server.Handler(port)
 {
   server =>
 
@@ -72,8 +80,12 @@ class Prover_Server private(port: Int, provers: Map[String, Path]) extends Serve
     def return_failure(output: String): Unit =
       return_result(return_code = 2, output = output)
 
-    def start_prover(uuid: UUID.T, exe: Path, args: List[String], timeout: Time, input: String)
+    def start_prover(name: String, uuid: UUID.T, exe: Path, args: List[String], timeout: Time, input: String)
     {
+      if (debugging) {
+        Output.writeln("run " + quote(name) + " (uuid=" + uuid + ", timeout=" + timeout.seconds + ")")
+      }
+
       val process_start =
         Exn.capture {
           val tmp_dir = Isabelle_System.tmp_dir("prover")
@@ -106,6 +118,11 @@ class Prover_Server private(port: Int, provers: Map[String, Path]) extends Serve
               case Exn.Res(res) =>
                 val rc = if (!res.ok && was_timeout) Process_Result.timeout_rc else res.rc
                 val output = cat_lines(res.out_lines ::: res.err_lines)
+
+                if (debugging) {
+                  Output.writeln("end " + quote(name) + " (uuid=" + uuid + ", return_code=" + rc + ")")
+                }
+
                 return_result(rc, timing = res.timing, output = output)
             }
 
@@ -121,7 +138,7 @@ class Prover_Server private(port: Int, provers: Map[String, Path]) extends Serve
         YXML.parse_body(text) match {
           case List(XML.Elem(Markup(Prover_Server.PROVER, props), body)) =>
             val name = Markup.Name.unapply(props).getOrElse("")
-            val args = split_lines(Prover_Server.Command_Args.unapply(props).getOrElse(""))
+            val args = Library.trim_split_lines(Prover_Server.Command_Args.unapply(props).getOrElse(""))
             val timeout = Time.seconds(Prover_Server.Timeout.unapply(props).getOrElse(0))
 
             val uuid = UUID.random()
@@ -129,12 +146,13 @@ class Prover_Server private(port: Int, provers: Map[String, Path]) extends Serve
 
             provers.get(name) match {
               case None => return_failure("Unknown prover: " + quote(name))
-              case Some(exe) => start_prover(uuid, exe, args, timeout, XML.content(body))
+              case Some(exe) => start_prover(name, uuid, exe, args, timeout, XML.content(body))
             }
 
             connection.await_close()
 
           case List(XML.Elem(Markup(Prover_Server.KILL, _), UUID(uuid))) =>
+            if (debugging) Output.writeln("kill " + uuid)
             _provers.value.get(uuid).foreach(_.terminate)
 
           case _ =>

@@ -15,7 +15,9 @@ object File_Format
   {
     private def debugging: Boolean = session_options.bool("naproche_server_debugging")
 
-    private val process =
+    private val prover_server: Prover_Server = Prover_Server.start(debugging = debugging)
+
+    private val process: Bash.Process =
       Bash.process("""export PATH="$E_HOME:$SPASS_HOME:$PATH"; exec "$NAPROCHE_EXE" --server""",
         cwd = Path.explode("$NAPROCHE_HOME").file)
 
@@ -44,11 +46,14 @@ object File_Format
     override def prover_options(options: Options): Options =
       options +
         ("naproche_server_address", server_info.get.address) +
-        ("naproche_server_password", server_info.get.password)
+        ("naproche_server_password", server_info.get.password) +
+        ("naproche_prover_server_port", prover_server.port.toString) +
+        ("naproche_prover_server_password", prover_server.password)
 
     override def stop
     {
       process.terminate
+      prover_server.stop
       process_result.join
     }
   }

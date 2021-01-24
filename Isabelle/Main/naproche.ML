@@ -125,13 +125,21 @@ fun check_forthel ctxt {tex} (text, pos) =
   let
     fun bool b = if b then "on" else "off";
     val bool_option = bool o Config.get ctxt;
+
+    val (prover_server_port, prover_server_password) =
+      if Options.default_bool \<^system_option>\<open>naproche_prover_server\<close> then
+        (Options.default_string \<^system_option>\<open>naproche_prover_server_port\<close>,
+         Options.default_string \<^system_option>\<open>naproche_prover_server_password\<close>)
+      else ("", "");
     val args =
      ["--tex=" ^ bool tex,
       "--prove=" ^ bool_option naproche_prove,
       "--check=" ^ bool_option naproche_check,
       "--skipfail=" ^ bool_option naproche_skipfail,
       "--printthesis=" ^ bool_option naproche_print_thesis,
-      "--translate=" ^ bool_option naproche_translate];
+      "--translate=" ^ bool_option naproche_translate,
+      "--prover-server-port=" ^ prover_server_port,
+      "--prover-server-password=" ^ prover_server_password];
 
     val server_address = Options.default_string \<^system_option>\<open>naproche_server_address\<close>;
     val server_password = Options.default_string \<^system_option>\<open>naproche_server_password\<close>;
