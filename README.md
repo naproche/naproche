@@ -51,7 +51,7 @@ for Isabelle Prover IDE.
   * Initialize fresh clone:
 
         hg clone https://isabelle.sketis.net/repos/isabelle-release
-        hg update -r d0c8e8ca3505
+        hg update -r Isabelle2021-RC3
         isabelle/bin/isabelle components -I
         isabelle/bin/isabelle components -a
         isabelle/bin/isabelle jedit -b
@@ -59,7 +59,7 @@ for Isabelle Prover IDE.
   * Update existing clone:
 
         hg pull
-        hg update -r d0c8e8ca3505
+        hg update -r Isabelle2021-RC3
         isabelle/bin/isabelle components -a
 
   * Use Isabelle/jEdit to edit $ISABELLE_HOME_USER/etc/settings to include
@@ -109,7 +109,7 @@ for Isabelle Prover IDE.
   * Standard Isabelle repository clone:
 
         hg clone https://isabelle.sketis.net/repos/isabelle-release
-        hg update -r d0c8e8ca3505
+        hg update -r Isabelle2021-RC3
         isabelle/bin/isabelle components -I
         isabelle/bin/isabelle components -a
         isabelle/bin/isabelle jedit -b
