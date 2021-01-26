@@ -111,19 +111,13 @@ tokenize texState start = posToken texState start NoWhiteSpaceBefore
     -- Process non-alphanumeric symbol or EOF.
     posToken texState pos whitespaceBefore s = case Text.uncons s of
       Nothing -> [EOF pos]
-      -- We only want to tokenize away '\\' if the next character is not a symbol.
-      -- Like this, writing 'and' as '/\' is still possible.
-      Just ('\\', rest) | isAlpha (Text.head rest) && texState /= TexDisabled -> tok : toks
+      Just ('\\', rest) -> tok : toks
         where
           (name, rest') = Text.span isAlpha rest
           cmd = Text.cons '\\' name
-          tok = makeToken name pos whitespaceBefore
+          tok = makeToken cmd pos whitespaceBefore
           toks = posToken texState (advancePos pos cmd) WhiteSpaceBefore rest'
       
-      -- Moreover, we want to remove backslashes before set notation brackets in order to be able to use set
-      -- notation in math mode.
-      Just ('\\', rest) | (Text.head rest) `elem` ['{','}'] && useTex ->
-            posToken texState (advancePos pos "\\") WhiteSpaceBefore rest
       Just ('$', rest) | useTex -> posToken texState (advancePos pos "$") WhiteSpaceBefore rest
       
       -- We also tokenize away quotation marks, because they are intended to be used by the user

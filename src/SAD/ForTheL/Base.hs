@@ -452,7 +452,7 @@ showVar nm = toLazyText $ represent nm
 -- | Parses '\begin{env}'. Takes a parser for parsing 'env'.
 texBegin :: FTL a -> FTL a
 texBegin envType = do
-  token "begin"
+  token "\\begin"
   symbol "{"
   envType' <- envType
   symbol "}"
@@ -461,7 +461,7 @@ texBegin envType = do
 -- | Parses '\end{env}'. Takes a parser for parsing 'env'.
 texEnd :: FTL () -> FTL ()
 texEnd envType = do
-  token "end"
+  token "\\end"
   symbol "{"
   envType
   symbol "}"
