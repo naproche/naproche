@@ -86,7 +86,7 @@ initFS = FState
       ([Symbol "Dom", Symbol "(",Vr,Symbol ")"], mkDom . head),
       ([Symbol "(", Vr, Symbol ",", Vr, Symbol ")"], \(x:y:_) -> mkPair x y),
       ([Symbol "\\dom", Symbol "(",Vr,Symbol ")"], mkDom . head) ]
-    rf = [ ([Symbol "[", Vr, Symbol "]"], \(f:x:_) -> mkApp f x)]
+    rf = [ ([Symbol "(", Vr, Symbol ")"], \(f:x:_) -> mkApp f x)]
 
 
 getExpr :: (FState -> [a]) -> (a -> FTL b) -> FTL b
