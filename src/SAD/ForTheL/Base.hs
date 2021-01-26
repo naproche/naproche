@@ -80,6 +80,7 @@ initFS = FState
       ([Symbol "-~-"], \(m:n:_) -> mkAll VarEmpty $
         Iff (mkElem (mkVar VarEmpty) m) (mkElem (mkVar VarEmpty) n)),
       ([Symbol "\\in"], \(x:m:_) -> mkElem x m),
+      ([Symbol "\\notin"], \(x:m:_) -> Not $ mkElem x m),
       ([Symbol "\\neq"], Not . mkTrm EqualityId TermEquality),
       ([Symbol "\\proc"], mkTrm LessId TermLess) ]
     cf = [
