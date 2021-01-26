@@ -78,10 +78,14 @@ initFS = FState
       ([Symbol "!", Symbol "="], Not . mkTrm EqualityId TermEquality),
       ([Symbol "-", Symbol "<", Symbol "-"], mkTrm LessId TermLess),
       ([Symbol "-~-"], \(m:n:_) -> mkAll VarEmpty $
-        Iff (mkElem (mkVar VarEmpty) m) (mkElem (mkVar VarEmpty) n)) ]
+        Iff (mkElem (mkVar VarEmpty) m) (mkElem (mkVar VarEmpty) n)),
+      ([Symbol "\\in"], \(x:m:_) -> mkElem x m),
+      ([Symbol "\\neq"], Not . mkTrm EqualityId TermEquality),
+      ([Symbol "\\proc"], mkTrm LessId TermLess) ]
     cf = [
       ([Symbol "Dom", Symbol "(",Vr,Symbol ")"], mkDom . head),
-      ([Symbol "(", Vr, Symbol ",", Vr, Symbol ")"], \(x:y:_) -> mkPair x y) ]
+      ([Symbol "(", Vr, Symbol ",", Vr, Symbol ")"], \(x:y:_) -> mkPair x y),
+      ([Symbol "\\dom", Symbol "(",Vr,Symbol ")"], mkDom . head) ]
     rf = [ ([Symbol "[", Vr, Symbol "]"], \(f:x:_) -> mkApp f x)]
 
 
