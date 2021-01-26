@@ -1,5 +1,21 @@
 # -*- shell-script -*- :mode=shellscript:
-# Isabelle environment settings
 
 NAPROCHE_HOME="$COMPONENT"
-init_component "$COMPONENT/Isabelle"
+
+if [ -d "$NAPROCHE_HOME/Isabelle/Admin_Tools" ]; then
+  ISABELLE_TOOLS="$ISABELLE_TOOLS:$NAPROCHE_HOME/Isabelle/Admin_Tools"
+fi
+
+NAPROCHE_EXE_DIR="$NAPROCHE_HOME/${ISABELLE_WINDOWS_PLATFORM64:-$ISABELLE_PLATFORM64}"
+NAPROCHE_EXE="$NAPROCHE_EXE_DIR/Naproche-SAD"
+if [ ! -f "$NAPROCHE_EXE" ]; then
+  echo >&2 "### Missing executable program: $NAPROCHE_EXE"
+fi
+
+NAPROCHE_JAR="$NAPROCHE_HOME/Isabelle/naproche.jar"
+if [ -f "$NAPROCHE_JAR" ]; then
+  classpath "$NAPROCHE_JAR"
+  isabelle_scala_service "isabelle.naproche.File_Format"
+else
+  echo >&2 "### Missing Isabelle/Scala module: $NAPROCHE_JAR"
+fi

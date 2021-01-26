@@ -9,6 +9,8 @@ XML data representation of lambda terms.
 See also "$ISABELLE_HOME/src/Pure/term_xml.ML".
 -}
 
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+
 module Isabelle.Term_XML.Decode (indexname, sort, typ, typ_body, term)
 where
 
@@ -20,7 +22,6 @@ import Isabelle.Term
 indexname :: P Indexname
 indexname [a] = (a, 0)
 indexname [a, b] = (a, int_atom b)
-indexname _ = error "won't happen"
 
 sort :: T Sort
 sort = list string

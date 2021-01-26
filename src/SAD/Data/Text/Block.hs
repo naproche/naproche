@@ -26,7 +26,6 @@ import SAD.Data.Formula
 import SAD.Core.SourcePos
 import SAD.Data.Instr hiding (position)
 import SAD.Parser.Token
-import SAD.Data.Text.Decl (Decl)
 import SAD.Data.Text.Decl
 import SAD.Parser.Error (ParseError)
 

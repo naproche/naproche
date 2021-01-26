@@ -9,6 +9,8 @@ Quasi-abstract markup elements.
 See also "$ISABELLE_HOME/src/Pure/PIDE/markup.ML".
 -}
 
+{-# OPTIONS_GHC -fno-warn-missing-signatures #-}
+
 module Isabelle.Markup (
   T, empty, is_empty, properties,
 
@@ -79,10 +81,7 @@ properties :: Properties.T -> T -> T
 properties more_props (elem, props) =
   (elem, fold_rev Properties.put more_props props)
 
-markup_elem :: String -> (String, T)
 markup_elem name = (name, (name, []) :: T)
-
-markup_string :: String -> String -> (String, String -> T)
 markup_string name prop = (name, \s -> (name, [(prop, s)]) :: T)
 
 

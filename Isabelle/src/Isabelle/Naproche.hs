@@ -41,6 +41,8 @@ origin_translate = "Translation"
 
 
 -- server commands
+-- (see "$NAPROCHE_HOME/src/SAD/Main.hs")
+-- (see "$NAPROCHE_HOME/Isabelle/prover_server.scala")
 
 command_args :: String
 command_args = "command_args"
@@ -50,3 +52,22 @@ cancel_command = "cancel"
 
 forthel_command :: String
 forthel_command = "forthel"
+
+
+prover_command :: String
+prover_command = "prover"
+
+prover_name :: String
+prover_name = "name"
+
+prover_timeout :: String
+prover_timeout = "timeout"
+
+prover_result :: String
+prover_result = "result"
+
+prover_return_code :: String
+prover_return_code = "return_code"
+
+kill_command :: String
+kill_command = "kill"

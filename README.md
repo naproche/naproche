@@ -5,6 +5,7 @@
 Proof Checking of Natural Mathematical Documents, with optional support
 for Isabelle Prover IDE.
 
+
 ## Command-line tool
 
 ### Prerequisites
@@ -15,7 +16,7 @@ for Isabelle Prover IDE.
 
   * The E Theorem Prover as executable "eprover" in the shell PATH (e.g. the
     multi-platform version provided by Isabelle: "isabelle getenv -b E_HOME")
-    Supported versions: 2.0 to 2.3
+    Supported versions: 2.0 to 2.5
 
   * Optional (for development): Haskell IDE within VSCode:
     https://github.com/haskell/haskell-ide-engine
@@ -27,49 +28,56 @@ for Isabelle Prover IDE.
 
     stack build
 
+
 ### Check proof files
 
     stack exec Naproche-SAD -- FILE
 
   It may be necessary to allow the E Prover more time by appending "-t SECONDS"
 
+
 ### Test
 
     stack test
+
 
 ## Isabelle Prover IDE (Isabelle/jEdit)
 
 ### Prerequisites
 
-  * Isabelle repository clone from https://isabelle.in.tum.de/repos/isabelle
+  * Isabelle repository clone from https://isabelle.sketis.net/repos/isabelle-release
+    (see also README_REPOSITORY)
 
-  * "Quick start in 30min" according to README_REPOSITORY
-    (https://isabelle.in.tum.de/repos/isabelle/raw-file/tip/README_REPOSITORY)
-    You should append the `-r Isabelle2019` option to `hg clone`.
+  * Initialize fresh clone:
+
+        hg clone https://isabelle.sketis.net/repos/isabelle-release
+        hg update -r Isabelle2021-RC3
+        isabelle/bin/isabelle components -I
+        isabelle/bin/isabelle components -a
+        isabelle/bin/isabelle jedit -b
+
+  * Update existing clone:
+
+        hg pull
+        hg update -r Isabelle2021-RC3
+        isabelle/bin/isabelle components -a
 
   * Use Isabelle/jEdit to edit $ISABELLE_HOME_USER/etc/settings to include
     the Naproche-SAD directory as Isabelle component. E.g. like this:
 
         init_component "$USER_HOME/Naproche-SAD"
 
-  * Shutdown Isabelle/jEdit before building Isabelle/Naproche as follows.
-
 
 ### Build
 
-    cd .../Naproche-SAD  #repository
+  * Shutdown Isabelle/jEdit before building Isabelle/Naproche as follows:
 
-    isabelle build -e -d Isabelle Naproche-Build
-    stack build
-
-Reference versions for multi-platform executables (x86_64):
-
-  * Linux: Ubuntu 14.04 LTS
-  * macOS: Mac OS X 10.10 Yosemite
-  * Windows: Windows 10
+        isabelle naproche_build
 
 
 ### Test
+
+      cd .../Naproche-SAD  #repository
 
 * Open ForTheL examples in Isabelle/jEdit, e.g.
 
@@ -78,6 +86,13 @@ Reference versions for multi-platform executables (x86_64):
 * Open Isabelle development environment with ForTheL examples, e.g.
 
       isabelle jedit -l Pure Isabelle/Test.thy
+
+
+### Reference versions for multi-platform executables (x86_64):
+
+  * Linux: Ubuntu 16.04 LTS
+  * macOS: Mac OS X 10.13 Yosemite
+  * Windows: Windows 10
 
 
 ### Multi-platform application bundling (with Isabelle)
@@ -93,7 +108,8 @@ Reference versions for multi-platform executables (x86_64):
 
   * Standard Isabelle repository clone:
 
-        hg clone https://isabelle.in.tum.de/repos/isabelle
+        hg clone https://isabelle.sketis.net/repos/isabelle-release
+        hg update -r Isabelle2021-RC3
         isabelle/bin/isabelle components -I
         isabelle/bin/isabelle components -a
         isabelle/bin/isabelle jedit -b

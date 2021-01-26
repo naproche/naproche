@@ -9,6 +9,8 @@ Untyped XML trees and representation of ML values.
 See also "$ISABELLE_HOME/src/Pure/PIDE/xml.ML".
 -}
 
+{-# OPTIONS_GHC -fno-warn-missing-signatures #-}
+
 module Isabelle.XML (Attributes, Body, Tree(..), wrap_elem, unwrap_elem, content_of)
 where
 
@@ -55,7 +57,6 @@ content_of body = Buffer.empty |> fold add_content body |> Buffer.content
 
 {- string representation -}
 
-encode :: Char -> String
 encode '<' = "&lt;"
 encode '>' = "&gt;"
 encode '&' = "&amp;"

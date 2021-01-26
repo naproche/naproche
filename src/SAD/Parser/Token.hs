@@ -44,19 +44,14 @@ data TokenType = NoWhiteSpaceBefore | WhiteSpaceBefore | Comment deriving (Eq, O
 -- If at some point one uses a more powerful parser for tokenizing, this should be much
 -- less messy.
 -- | Indicates whether the tokenizer is currently inside a forthel env.
-data TexState = InsideForthelEnv | OutsideForthelEnv | TexDisabled
-
-usingTexParser :: TexState -> Bool
-usingTexParser InsideForthelEnv = True
-usingTexParser OutsideForthelEnv = True
-usingTexParser TexDisabled = False
+data TexState = InsideForthelEnv | OutsideForthelEnv | TexDisabled deriving (Eq)
 
 -- | Make a token with @s@ as @tokenText@ and the range from @p@ to the end of @s@.
 makeToken :: Text -> SourcePos -> TokenType -> Token
-makeToken s pos = Token s (rangePos (SourceRange pos (pos `advanceAlong` s)))
+makeToken s pos = Token s (rangePos (SourceRange pos (pos `advancePos` s)))
 
 tokenEndPos :: Token -> SourcePos
-tokenEndPos tok@Token{} = tokenPos tok `advanceAlong` tokenText tok
+tokenEndPos tok@Token{} = tokenPos tok `advancePos` tokenText tok
 tokenEndPos tok@EOF{} = tokenPos tok
 
 -- | The range in which the tokens lie.
@@ -85,51 +80,66 @@ noTokens = [EOF noSourcePos]
 tokenize :: TexState -> SourcePos -> Text -> [Token]
 tokenize texState start = posToken texState start NoWhiteSpaceBefore
   where
+    useTex = texState /= TexDisabled
     -- Activate the tokenizer when '\begin{forthel}' appears.
     posToken :: TexState -> SourcePos -> TokenType -> Text -> [Token]
     posToken OutsideForthelEnv pos _ s = toks
       where
         (ignoredText, rest) = Text.breakOn "\\begin{forthel}" s
-        newPos = advanceAlong pos (ignoredText <> "\\begin{forthel}")
+        newPos = advancePos pos (ignoredText <> "\\begin{forthel}")
         toks = posToken InsideForthelEnv newPos WhiteSpaceBefore (Text.drop 15 rest)
     
     -- Deactivate the tokenizer when '\end{forthel}' appears.
     posToken InsideForthelEnv pos _ s | start == "\\end{forthel}" = toks
       where
         (start,rest) = Text.splitAt 13 s
-        toks = posToken OutsideForthelEnv (advanceAlong pos start) WhiteSpaceBefore rest
+        toks = posToken OutsideForthelEnv (advancePos pos start) WhiteSpaceBefore rest
         
     -- Make alphanumeric tokens that don't start with whitespace.
     posToken texState pos whitespaceBefore s | not (Text.null lexeme) = tok:toks
       where
         (lexeme, rest) = Text.span isLexeme s
         tok  = makeToken lexeme pos whitespaceBefore
-        toks = posToken texState (advanceAlong pos lexeme) NoWhiteSpaceBefore rest
+        toks = posToken texState (advancePos pos lexeme) NoWhiteSpaceBefore rest
     
     -- Process whitespace.
     posToken texState pos _ s | not (Text.null white) = toks
       where
         (white, rest) = Text.span isSpace s
-        toks = posToken texState (advanceAlong pos white) WhiteSpaceBefore rest
+        toks = posToken texState (advancePos pos white) WhiteSpaceBefore rest
     
     -- Process non-alphanumeric symbol or EOF.
     posToken texState pos whitespaceBefore s = case Text.uncons s of
       Nothing -> [EOF pos]
-      Just ('\\', rest) -> tok:toks
+      -- We only want to tokenize away '\\' if the next character is not a symbol.
+      -- Like this, writing 'and' as '/\' is still possible.
+      Just ('\\', rest) | isAlpha (Text.head rest) && texState /= TexDisabled -> tok : toks
         where
           (name, rest') = Text.span isAlpha rest
           cmd = Text.cons '\\' name
-          tok = makeToken cmd pos whitespaceBefore
-          toks = posToken texState (advanceAlong pos cmd) WhiteSpaceBefore rest'
-      Just (c, _) | if usingTexParser texState then c == '%' else c == '#' -> tok:toks
+          tok = makeToken name pos whitespaceBefore
+          toks = posToken texState (advancePos pos cmd) WhiteSpaceBefore rest'
+      
+      -- Moreover, we want to remove backslashes before set notation brackets in order to be able to use set
+      -- notation in math mode.
+      Just ('\\', rest) | (Text.head rest) `elem` ['{','}'] && useTex ->
+            posToken texState (advancePos pos "\\") WhiteSpaceBefore rest
+      Just ('$', rest) | useTex -> posToken texState (advancePos pos "$") WhiteSpaceBefore rest
+      
+      -- We also tokenize away quotation marks, because they are intended to be used by the user
+      -- as a way to write regular text in math mode. Of course, one needs to appropriately remap
+      -- quotation marks in the tex file, see examples/powerset.ftl.tex on how to do this.
+      Just ('"', rest) | useTex -> posToken texState (advancePos pos "\"") WhiteSpaceBefore rest
+      Just (c, _) | if useTex then c == '%' else c == '#' -> tok:toks
         where
           (comment, rest) = Text.break (== '\n') s
           tok  = makeToken comment pos Comment
-          toks = posToken texState (advanceAlong pos comment) whitespaceBefore rest
+          toks = posToken texState (advancePos pos comment) whitespaceBefore rest
       Just (c, cs) -> tok:toks
         where
-          tok  = makeToken (Text.singleton c) pos whitespaceBefore
-          toks = posToken texState (advancePos pos c) NoWhiteSpaceBefore cs
+          text = Text.singleton c
+          tok  = makeToken text pos whitespaceBefore
+          toks = posToken texState (advancePos pos text) NoWhiteSpaceBefore cs
 
 
 isLexeme :: Char -> Bool

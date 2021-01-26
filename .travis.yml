@@ -78,13 +78,14 @@ script:
     travis_terminate 0
   fi
 - export GITHUB_USER=anfelor
-- export RELEASE=83774d669b51 #  ad2d84c42380 # hg commit of isabelle to build
+- export ISABELLE_REPOS="https://isabelle.sketis.net/repos/isabelle-release"
+- export ISABELLE_VERSION=d0c8e8ca3505
 # Build isabelle
 - cd ~
 - |
   if [ ! -d "isabelle/.hg" ]
   then
-    hg clone -r $RELEASE https://isabelle.in.tum.de/repos/isabelle
+    hg clone -r "$ISABELLE_VERSION" "$ISABELLE_REPOS" isabelle
     cd isabelle
     ./bin/isabelle components -I
     ./bin/isabelle components -a
@@ -94,7 +95,8 @@ script:
     echo "init_component \"$HOME/build/$GITHUB_USER/Naproche-SAD\"" >> ~/.isabelle/etc/settings
   else
     cd isabelle
-    hg update -r $RELEASE
+    hg pull "$ISABELLE_REPOS"
+    hg update --clean -r "$ISABELLE_VERSION"
     ./bin/isabelle components -a
     ./bin/isabelle build -o system_heaps -b HOL
   fi
@@ -113,7 +115,7 @@ before_deploy:
 - tar -zcvf Naproche-SAD.tar.gz build/$GITHUB_USER/Naproche-SAD
   # - isabelle/Admin/build_release -r ad2d84c42380 -c naproche.tar.gz -b Pure -R Isabelle_Naproche .
   # - isabelle/Admin/build_release -r Isabelle2019 -c Naproche-SAD.tar.gz -R Isabelle_Naproche .
-- isabelle/Admin/build_release -r $RELEASE -c Naproche-SAD.tar.gz -O -R Isabelle_Naproche .
+- isabelle/Admin/build_release -r "$ISABELLE_VERSION" -c Naproche-SAD.tar.gz -O -R Isabelle_Naproche .
 
 deploy:
   provider: releases

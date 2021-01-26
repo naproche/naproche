@@ -132,7 +132,7 @@ paren p = p -|- parenthesised p
 dot :: Parser st SourceRange
 dot = do
   pos1 <- tokenPos' "." <?> "a dot"
-  return $ makeRange (pos1, advancePos pos1 '.')
+  return $ makeRange (pos1, pos1 `advancePos` ".")
 
 -- | mandatory finishing dot
 finish :: Parser st a -> Parser st a

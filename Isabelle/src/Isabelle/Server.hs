@@ -9,7 +9,7 @@ TCP server on localhost.
 
 module Isabelle.Server (
   localhost_name, localhost, publish_text, publish_stdout,
-  server
+  server, connection
 )
 where
 
@@ -23,7 +23,8 @@ import qualified System.IO as IO
 import Isabelle.Library
 import qualified Isabelle.UUID as UUID
 import qualified Isabelle.Byte_Message as Byte_Message
-import qualified Isabelle.Standard_Thread as Standard_Thread
+import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
+import qualified Data.ByteString.UTF8 as UTF8
 
 
 {- server address -}
@@ -64,7 +65,7 @@ server publish handle =
     loop :: Socket -> ByteString -> IO ()
     loop server_socket password = forever $ do
       (connection, _) <- Socket.accept server_socket
-      Standard_Thread.fork_finally
+      Isabelle_Thread.fork_finally
         (do
           line <- Byte_Message.read_line connection
           when (line == Just password) $ handle connection)
@@ -74,3 +75,29 @@ server publish handle =
             Left exn -> IO.hPutStrLn IO.stderr $ Exception.displayException exn
             Right () -> return ())
       return ()
+
+
+{- client connection -}
+
+connection :: String -> String -> (Socket -> IO a) -> IO a
+connection port password client =
+  Socket.withSocketsDo $ do
+    addr <- resolve
+    Exception.bracket (open addr) Socket.close body
+  where
+    resolve = do
+      let hints =
+            Socket.defaultHints {
+              Socket.addrFlags = [Socket.AI_NUMERICHOST, Socket.AI_NUMERICSERV],
+              Socket.addrSocketType = Socket.Stream }
+      head <$> Socket.getAddrInfo (Just hints) (Just "127.0.0.1") (Just port)
+
+    open addr = do
+      socket <- Socket.socket (Socket.addrFamily addr) (Socket.addrSocketType addr)
+                  (Socket.addrProtocol addr)
+      Socket.connect socket $ Socket.addrAddress addr
+      return socket
+
+    body socket = do
+      Byte_Message.write_line socket (UTF8.fromString password)
+      client socket

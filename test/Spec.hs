@@ -45,17 +45,17 @@ shouldFailFiles = fmap ("examples/"++)
 
 texFiles :: [FilePath]
 texFiles = fmap ("examples/"++)
-  [ "chinese.tex.ftl"
-  , "fuerstenberg.tex.ftl"
-  , "Koenigs_lemma.tex.ftl"
-  , "Maximum_principle.tex.ftl"
-  , "newman.tex.ftl"
-  , "powerset.tex.ftl"
-  , "prime_no_square.tex.ftl"
-  , "inconsistency.tex.ftl"
-  , "read_test.tex.ftl"
-  , "regular_successor.tex.ftl"
-  , "tarski.tex.ftl"
+  [ "chinese.ftl.tex"
+  , "fuerstenberg.ftl.tex"
+  , "Koenigs_lemma.ftl.tex"
+  , "Maximum_principle.ftl.tex"
+  , "newman.ftl.tex"
+  , "powerset.ftl.tex"
+  , "prime_no_square.ftl.tex"
+  , "inconsistency.ftl.tex"
+  , "read_test.ftl.tex"
+  , "regular_successor.ftl.tex"
+  , "tarski.ftl.tex"
   ]
 
 output :: [(FilePath, (ExitCode, Text))] -> IO [(ExitCode, FilePath)]

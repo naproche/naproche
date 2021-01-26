@@ -10,7 +10,7 @@ inlining into plain text.
 See also "$ISABELLE_HOME/src/Pure/PIDE/yxml.ML".
 -}
 
-{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
+{-# OPTIONS_GHC -fno-warn-missing-signatures -fno-warn-incomplete-patterns #-}
 
 module Isabelle.YXML (charX, charY, strX, strY, detect, output_markup,
   buffer_body, buffer, string_of_body, string_of, parse_body, parse)
@@ -23,7 +23,6 @@ import Isabelle.Library
 import qualified Isabelle.Markup as Markup
 import qualified Isabelle.XML as XML
 import qualified Isabelle.Buffer as Buffer
-import qualified Isabelle.Properties
 
 
 {- markers -}
@@ -49,7 +48,6 @@ output_markup markup@(name, atts) =
   if Markup.is_empty markup then Markup.no_output
   else (strXY ++ name ++ concatMap (\(a, x) -> strY ++ a ++ "=" ++ x) atts ++ strX, strXYX)
 
-buffer_attrib :: (String, String) -> Buffer.T -> Buffer.T
 buffer_attrib (a, x) =
   Buffer.add strY #> Buffer.add a #> Buffer.add "=" #> Buffer.add x
 
@@ -87,8 +85,6 @@ split fields sep str = splitting str
 
 -- structural errors
 
-err, err_unbalanced :: String -> a
-err_attribute, err_element :: a
 err msg = error ("Malformed YXML: " ++ msg)
 err_attribute = err "bad attribute"
 err_element = err "bad element"
@@ -98,30 +94,22 @@ err_unbalanced name = err ("unbalanced element " ++ quote name)
 
 -- stack operations
 
-add :: a -> [(b, [a])] -> [(b, [a])]
 add x ((elem, body) : pending) = (elem, x : body) : pending
 
-push :: String -> a -> [((String, a), [b])] -> [((String, a), [b])]
 push "" _ _ = err_element
 push name atts pending = ((name, atts), []) : pending
 
-
-pop :: [(([Char], Isabelle.Properties.T), [XML.Tree])]
-    -> [(([Char], Isabelle.Properties.T), [XML.Tree])]
 pop ((("", _), _) : _) = err_unbalanced ""
 pop ((markup, body) : pending) = add (XML.Elem (markup, reverse body)) pending
 
 
 -- parsing
 
-parse_attrib :: String -> (String, String)
 parse_attrib s =
   case List.elemIndex '=' s of
     Just i | i > 0 -> (take i s, drop (i + 1) s)
     _ -> err_attribute
 
-parse_chunk :: [String] -> [((String, Isabelle.Properties.T), [XML.Tree])]
-                        -> [((String, Isabelle.Properties.T), [XML.Tree])]
 parse_chunk ["", ""] = pop
 parse_chunk ("" : name : atts) = push name (map parse_attrib atts)
 parse_chunk txts = fold (add . XML.Text) txts

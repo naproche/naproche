@@ -15,7 +15,9 @@ object File_Format
   {
     private def debugging: Boolean = session_options.bool("naproche_server_debugging")
 
-    private val process =
+    private val prover_server: Prover_Server = Prover_Server.start(debugging = debugging)
+
+    private val process: Bash.Process =
       Bash.process("""export PATH="$E_HOME:$SPASS_HOME:$PATH"; exec "$NAPROCHE_EXE" --server""",
         cwd = Path.explode("$NAPROCHE_HOME").file)
 
@@ -44,11 +46,14 @@ object File_Format
     override def prover_options(options: Options): Options =
       options +
         ("naproche_server_address", server_info.get.address) +
-        ("naproche_server_password", server_info.get.password)
+        ("naproche_server_password", server_info.get.password) +
+        ("naproche_prover_server_port", prover_server.port.toString) +
+        ("naproche_prover_server_password", prover_server.password)
 
     override def stop
     {
       process.terminate
+      prover_server.stop
       process_result.join
     }
   }
@@ -56,12 +61,16 @@ object File_Format
 
 class File_Format extends isabelle.File_Format
 {
-  val format_name: String = "forthel"
-  val file_ext: String = "ftl"
+  override def format_name: String = "forthel"
+
+  val file_ext = ""
+  def detect_tex(name: String): Boolean = name.endsWith(".ftl.tex")
+  override def detect(name: String): Boolean = name.endsWith(".ftl") || detect_tex(name)
 
   override def theory_suffix: String = "forthel_file"
   override def theory_content(name: String): String =
-    """theory "ftl" imports Naproche.Naproche begin forthel_file """ + quote(name) + """ end"""
+    "theory " + quote(if (detect_tex(name)) "tex" else "ftl") +
+    " imports Naproche.Naproche begin forthel_file " + quote(name) + " end"
 
   override def start(session: Session): isabelle.File_Format.Agent =
     if (session.session_options.bool("naproche_server")) {

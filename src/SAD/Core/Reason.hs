@@ -34,7 +34,7 @@ import qualified Control.Monad.Writer as W
 import qualified Data.Map as Map
 import qualified Data.Set as Set
 import qualified Data.Text.Lazy as Text
-import qualified Isabelle.Standard_Thread as Standard_Thread
+import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
 
 import SAD.Core.Base
 import SAD.Core.SourcePos (noSourcePos)
@@ -160,7 +160,7 @@ launchReasoning = do
       -- set timelimit to 10^4
       -- (usually not necessary as max proof depth is limited)
       callOwn = do
-        Standard_Thread.expose_stopped
+        Isabelle_Thread.expose_stopped
         timeout (1000) $ evaluate $ proveGoal
   justIO callOwn >>= guard . (==) (Just True)
 

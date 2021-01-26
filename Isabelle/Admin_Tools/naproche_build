@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+#
+# DESCRIPTION: build Isabelle/Naproche jar and executable
+
+set -e
+
+cd "$NAPROCHE_HOME"
+
+
+echo "### Building Isabelle/Scala module: $NAPROCHE_JAR"
+
+rm -f "$NAPROCHE_JAR" 
+
+isabelle jedit -b
+
+(
+  cd Isabelle
+
+  rm -rf classes && mkdir classes
+  isabelle scalac -d classes file_format.scala prover_server.scala
+
+  cd classes
+  isabelle_jdk jar cf "$(platform_path "$NAPROCHE_JAR")" *
+
+  cd ..
+  rm -rf classes
+)
+
+
+echo "### Building Isabelle/Naproche Haskell modules"
+
+isabelle build -e -d. Naproche-Build
+
+
+echo "### Building executable program: $NAPROCHE_EXE"
+
+isabelle ghc_stack build
+
+mkdir -p "$NAPROCHE_EXE_DIR"
+cp "$(standard_path "$(isabelle ghc_stack path --local-install-root)/bin/Naproche-SAD")" \
+  "$NAPROCHE_EXE_DIR"

@@ -9,6 +9,8 @@ Generic pretty printing module.
 See also "$ISABELLE_HOME/src/Pure/General/pretty.ML".
 -}
 
+{-# OPTIONS_GHC -fno-warn-missing-signatures #-}
+
 module Isabelle.Pretty (
   T, symbolic, formatted, unformatted,
 
@@ -33,14 +35,11 @@ data T =
 
 {- output -}
 
-output_spaces :: Int -> String
 output_spaces n = replicate n ' '
 
-symbolic_text :: String -> [XML.Tree]
 symbolic_text "" = []
 symbolic_text s = [XML.Text s]
 
-symbolic_markup :: Markup.T -> [XML.Tree] -> [XML.Tree]
 symbolic_markup markup body =
   if Markup.is_empty markup then body
   else [XML.Elem (markup, body)]
@@ -69,7 +68,6 @@ unformatted prt = Buffer.empty |> out prt |> Buffer.content
 
 {- derived operations to create formatting expressions -}
 
-force_nat :: Int -> Int
 force_nat n | n < 0 = 0
 force_nat n = n
 

@@ -12,7 +12,6 @@ module SAD.Core.SourcePos
     filePos,
     startPos,
     advancePos,
-    advanceAlong,
     noRangePos,
     rangePos,
     makeRange,
@@ -51,23 +50,23 @@ startPos = filePos Text.empty
 
 -- advance position
 
-advanceLine :: (Ord a, Num a) => a -> Char -> a
+advanceLine :: Int -> Char -> Int
 advanceLine line c = if line <= 0 || c /= '\n' then line else line + 1
-advanceColumn :: (Ord a, Num a) => a -> Char -> a
-advanceColumn column c = if column <= 0 then column else if c == '\n' then 1 else column + 1
-advanceOffset :: (Ord a, Num a) => a -> p -> a
-advanceOffset offset c = if offset <= 0 then offset else offset + 1
+advanceColumn :: Int -> Char -> Int
+advanceColumn column c = if column <= 0 || c == '\r' then column else if c == '\n' then 1 else column + 1
+advanceOffset :: Int -> Char -> Int
+advanceOffset offset c = if offset <= 0 || c == '\r' then offset else offset + 1
 
-advancePos :: SourcePos -> Char -> SourcePos
-advancePos (SourcePos file line column offset endOffset) c =
+advancePos1 :: SourcePos -> Char -> SourcePos
+advancePos1 (SourcePos file line column offset endOffset) c =
   SourcePos file
     (advanceLine line c)
     (advanceColumn column c)
     (advanceOffset offset c)
     endOffset
 
-advanceAlong :: SourcePos -> Text -> SourcePos
-advanceAlong = Text.foldl' advancePos
+advancePos :: SourcePos -> Text -> SourcePos
+advancePos = Text.foldl' advancePos1
 
 data SourceRange = SourceRange SourcePos SourcePos
   deriving (Eq, Ord, Show)
