@@ -12,6 +12,7 @@ import Data.Maybe
 import Data.List
 import System.IO
 import System.IO.Error
+import System.Exit (ExitCode(..))
 import qualified System.Process as Process
 import qualified Control.Exception as Exception
 import qualified Data.ByteString as ByteString
@@ -25,6 +26,7 @@ import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
 import qualified Isabelle.Server as Server
 import qualified Isabelle.XML as XML
 import qualified Isabelle.Byte_Message as Byte_Message
+import qualified Isabelle.Value as Value
 import qualified Isabelle.Naproche as Naproche
 
 
@@ -89,12 +91,15 @@ runUntilSuccess timeLimit f = go [timeLimit] -- go $ takeWhile (<=timeLimit) $ 1
 runProver :: Prover -> Maybe (String, String) -> Bool -> Text -> Bool -> Int -> IO Result
 runProver (Prover _ label path args yes con nos uns) proverServer printProver task isByContradiction timeLimit =
   let
-    proverResult output =
+    proverResult :: Int -> String -> IO Result
+    proverResult rc output =
       do
-        let lns = filter notNull (lines output)
+        let lns = if rc == 0 then filter notNull (lines output) else []
         let out = map (("[" ++ label ++ "] ") ++) lns
 
-        when (null lns) $ Message.errorExport noSourcePos "No prover response"
+        when (null lns) $
+          Message.errorExport noSourcePos
+            ("No prover response" ++ (if rc == 142 then " (TIMEOUT)" else ""))
         when printProver $
             mapM_ (Message.output "" Message.WRITELN noSourcePos) out
 
@@ -142,9 +147,14 @@ runProver (Prover _ label path args yes con nos uns) proverServer printProver ta
         Isabelle_Thread.bracket_resource terminate $ do
           output <- ByteString.hGetContents prvout
           errors <- ByteString.hGetContents prverr
-          Process.waitForProcess prv
+          exitCode <- Process.waitForProcess prv
+          let rc =
+                case exitCode of
+                  ExitSuccess -> 0
+                  ExitFailure rc | rc >= 0 -> rc
+                  ExitFailure rc -> 128 - rc
 
-          proverResult (UTF8.toString output ++ UTF8.toString errors)
+          proverResult rc (UTF8.toString output ++ UTF8.toString errors)
 
       Just (port, password) ->
         Server.connection port password
@@ -160,7 +170,7 @@ runProver (Prover _ label path args yes con nos uns) proverServer printProver ta
               reply <- Byte_Message.read_line_message prover
 
               case reply of
-                Nothing -> proverResult ""
+                Nothing -> proverResult 0 ""
                 Just uuid ->
                   do
                     let kill_prover = do
@@ -168,16 +178,20 @@ runProver (Prover _ label path args yes con nos uns) proverServer printProver ta
                             Byte_Message.write_yxml prover_kill
                               [XML.Elem ((Naproche.kill_command, []),
                                 [XML.Text (UTF8.toString uuid)])])
-                    output <-
+                    (rc, output) <-
                       Isabelle_Thread.bracket_resource kill_prover $ do
                         result <- Byte_Message.read_yxml prover
                         return $
                           case result of
-                            Just [XML.Elem ((elem, _), body)] | elem == Naproche.prover_result ->
-                              XML.content_of body
-                            _ -> ""
+                            Just [XML.Elem ((elem, (a, b) : _), body)] |
+                              elem == Naproche.prover_result &&
+                              a == Naproche.prover_return_code ->
+                                case Value.parse_int b of
+                                  Just rc -> (rc, XML.content_of body)
+                                  Nothing -> (2, "")
+                            _ -> (2, "")
 
-                    proverResult output)
+                    proverResult rc output)
 
 
 setTimeLimit :: Int -> String -> String
