@@ -69,7 +69,7 @@ The subsequent explanations are for **development** of the tool, not for end-use
 
   * update reference to Naproche-SAD repository as component like this:
 
-      isabelle components -u .../Naproche-SAD
+        isabelle components -u .../Naproche-SAD
 
 ### Isabelle build and test
 
@@ -82,15 +82,15 @@ The subsequent explanations are for **development** of the tool, not for end-use
 
 ### Use Isabelle Prover IDE
 
-      cd .../Naproche-SAD  #repository
+        cd .../Naproche-SAD  #repository
 
 * Open ForTheL examples in Isabelle/jEdit, e.g.
 
-      isabelle jedit examples/powerset.ftl
+        isabelle jedit examples/powerset.ftl
 
 * Open Isabelle development environment with ForTheL examples, e.g.
 
-      isabelle jedit -l Pure Isabelle/Test.thy
+        isabelle jedit -l Pure Isabelle/Test.thy
 
 
 ### Reference versions for multi-platform executables (x86_64):
