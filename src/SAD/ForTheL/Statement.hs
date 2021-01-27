@@ -487,7 +487,9 @@ functionNotion :: FTL Formula
 functionNotion = sVar <**> (wordFun <|> (token "=" >> lambda))
   where
   wordFun = do
-    token "["; t <- pair; token "]"
+    token "("
+    t <- pair
+    token ")"
     token "="
     vs <- fvToVarSet <$> freeVars t
     def <- addDecl (Set.map posVarName vs) lambdaBody
