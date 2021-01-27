@@ -6,6 +6,8 @@ Proof Checking of Natural Mathematical Documents, with optional support
 for Isabelle Prover IDE.
 
 
+The subsequent explanations are for **development** of the tool, not for end-users!
+
 ## Command-line tool
 
 ### Prerequisites
@@ -22,28 +24,25 @@ for Isabelle Prover IDE.
     https://github.com/haskell/haskell-ide-engine
 
 
-### Build
+### Build and test
 
     cd .../Naproche-SAD  #repository
 
+    stack clean
+
     stack build
 
+    stack test
 
-### Check proof files
+### Manual checking of proof files
 
-    stack exec Naproche-SAD -- FILE
+    stack exec Naproche-SAD -- OPTIONS FILE
 
   It may be necessary to allow the E Prover more time by appending "-t SECONDS"
 
 
-### Test
-
-    stack test
-
-
 ## Isabelle Prover IDE (Isabelle/jEdit)
-
-### Prerequisites
+### Isabelle repository setup
 
   * Isabelle repository clone from https://isabelle.sketis.net/repos/isabelle-release
     (see also README_REPOSITORY)
@@ -62,11 +61,15 @@ for Isabelle Prover IDE.
         hg update -r Isabelle2021-RC3
         isabelle/bin/isabelle components -a
 
-  * Use Isabelle/jEdit to edit $ISABELLE_HOME_USER/etc/settings to include
-    the Naproche-SAD directory as Isabelle component. E.g. like this:
 
-        init_component "$USER_HOME/Naproche-SAD"
+### Isabelle component setup
 
+  * remove existing components: ensure that $ISABELLE_HOME_USER/etc/settings
+    and $ISABELLE_HOME/etc/components do *not* refer to Naproche-SAD
+
+  * update reference to Naproche-SAD repository as component like this:
+
+      isabelle components -u .../Naproche-SAD
 
 ### Isabelle build and test
 
