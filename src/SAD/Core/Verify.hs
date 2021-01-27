@@ -192,25 +192,23 @@ verificationLoop st@VS {
   restProofText        = [] }
   = local (const st) $ whenInstruction Prove True prove >> return ([], [])
   where
-    prove =
+    prove = do
+      let block = Context.head thesis
+      let text = Block.text block
+      let pos = Block.position block
+      whenInstruction Printgoal True $ reasonLog Message.TRACING pos $ "goal: " <> text
       if hasDEC (Context.formula thesis) --computational reasoning
       then do
-        let logAction = reasonLog Message.TRACING (Block.position block) $ "goal: " <> text
-            block = Context.head thesis ; text = Block.text block
-        incrementCounter Equations ; whenInstruction Printgoal True logAction
+        incrementCounter Equations
         timeWith SimplifyTimer (equalityReasoning thesis) <|> (
-          reasonLog Message.WARNING (Block.position block) "equation failed" >> setFailed >>
+          reasonLog Message.WARNING pos "equation failed" >> setFailed >>
           guardInstruction Skipfail False >> incrementCounter FailedEquations)
       else do
-        let logAction = reasonLog Message.TRACING (Block.position block) $ "goal: " <> text
-            block = Context.head thesis ; text = Block.text block
         unless (isTop . Context.formula $ thesis) $ incrementCounter Goals
-        whenInstruction Printgoal True logAction
         proveThesis <|> (
-          reasonLog Message.WARNING (Block.position block) "goal failed" >> setFailed >>
+          reasonLog Message.WARNING pos "goal failed" >> setFailed >>
           --guardInstruction Skipfail False >>
           incrementCounter FailedGoals)
-
 verificationLoop state@ VS {restProofText = ProofTextChecked txt : rest} =
   let newTxt = Block.setChildren txt (Block.children txt ++ newInstructions)
       newInstructions = [NonProofTextStoredInstr $
