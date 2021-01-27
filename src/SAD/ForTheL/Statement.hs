@@ -470,7 +470,8 @@ sepFrom = notionSep -|- setSep -|- noSep
       (q, f, v) <- notion >>= single; guard (not . (==) TermEquality . trmName $ f)
       return (Tag Replacement, \tr -> subst tr (posVarName v) $ q f, pVar v)
     setSep = do
-      t <- sTerm; cnd <- token' "in" >> elementCnd
+      t <- sTerm
+      cnd <- elementOf >> elementCnd
       return (id, cnd, t)
     noSep  = do
       t <- sTerm; return (Tag Replacement, const Top, t)
@@ -509,7 +510,7 @@ cases = do
 
 chooseInTerm :: FTL (Formula -> Formula)
 chooseInTerm = do
-  chs <- optLL1 [] $ after (ld_choice `sepByLL1` token ",") (token' "in")
+  chs <- optLL1 [] $ after (ld_choice `sepByLL1` token ",") elementOf
   f   <- term -|- defTerm; return $ flip (foldr ($)) chs . f
   where
     ld_choice = chc <|> def
@@ -551,7 +552,8 @@ lambdaIn = do
   t <- pair
   vs <- fvToVarSet <$> freeVars t
   vsDecl <- makeDecls vs
-  token' "in"; dom <- ld_dom;
+  elementOf
+  dom <- ld_dom
   let df_head f = foldr ((.) . dAll) (Imp (t `mkElem` mkDom f)) vsDecl
   return (t, df_head, \f -> dom f t vsDecl)
   where
