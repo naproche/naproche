@@ -30,7 +30,7 @@ Axiom Distrib.      a * (b + c) = (a*b) + (a*c) and
                     (a + b) * c = (a*c) + (b*c).
 
 Lemma MulZero.      a * 0 = 0 = 0 * a.
-Lemma MulMinOne.    -1 * a = -a = a * -1.
+Lemma MulMinOne.    -1 * a = -a = a * -1. Indeed (-1 * a) + a = 0.
 
 Axiom ZeroDiv.      a != 0 /\ b != 0 => a * b != 0.
 
