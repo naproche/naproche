@@ -40,7 +40,7 @@ files = fmap ("examples/"++)
 shouldFailFiles :: [FilePath]
 shouldFailFiles = fmap ("examples/"++)
   [ "inconsistency.ftl"
-  , "inconsistency.tex.ftl"
+  , "inconsistency.ftl.tex"
   ]
 
 texFiles :: [FilePath]
