@@ -94,12 +94,11 @@ runProver (Prover _ label path args yes con nos uns) proverServer printProver ta
     proverResult :: Int -> String -> IO Result
     proverResult rc output =
       do
-        let lns = if rc == 0 then filter notNull (lines output) else []
+        let timeout = rc == 142
+        let lns = filter notNull (lines output)
         let out = map (("[" ++ label ++ "] ") ++) lns
 
-        when (null lns) $
-          Message.errorExport noSourcePos
-            ("No prover response" ++ (if rc == 142 then " (TIMEOUT)" else ""))
+        when (not timeout && null lns) $ Message.errorExport noSourcePos "No prover response"
         when printProver $
             mapM_ (Message.output "" Message.WRITELN noSourcePos) out
 
@@ -108,7 +107,7 @@ runProver (Prover _ label path args yes con nos uns) proverServer printProver ta
             negative = any (\l -> any (`isPrefixOf` l) nos) lns
             inconclusive = any (\l -> any (`isPrefixOf` l) uns) lns
 
-        unless (positive || contradictions || negative || inconclusive) $
+        unless (timeout || positive || contradictions || negative || inconclusive) $
             Message.errorExport noSourcePos $ unlines ("Bad prover response:" : lns)
 
         if | positive || (isByContradiction && contradictions) -> pure Success
