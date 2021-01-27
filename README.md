@@ -58,7 +58,7 @@ for Isabelle Prover IDE.
 
   * Update existing clone:
 
-        hg pull
+        hg pull https://isabelle.sketis.net/repos/isabelle-release
         hg update -r Isabelle2021-RC3
         isabelle/bin/isabelle components -a
 
@@ -68,14 +68,16 @@ for Isabelle Prover IDE.
         init_component "$USER_HOME/Naproche-SAD"
 
 
-### Build
+### Isabelle build and test
 
   * Shutdown Isabelle/jEdit before building Isabelle/Naproche as follows:
 
         isabelle naproche_build
 
+        isabelle naproche_test
 
-### Test
+
+### Use Isabelle Prover IDE
 
       cd .../Naproche-SAD  #repository
 
