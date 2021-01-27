@@ -48,6 +48,7 @@ texFiles = fmap ("examples/"++)
   [ "powerset.ftl.tex"
   , "chinese.ftl.tex"
   , "read_test.ftl.tex"
+  , "lambda_term_test.ftl.tex"
   ]
 
 output :: [(FilePath, (ExitCode, Text))] -> IO [(ExitCode, FilePath)]
