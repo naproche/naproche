@@ -37,12 +37,6 @@ files = fmap ("examples/"++)
   , "tarski.ftl"
   ]
 
-shouldFailFiles :: [FilePath]
-shouldFailFiles = fmap ("examples/"++)
-  [ "inconsistency.ftl"
-  , "inconsistency.ftl.tex"
-  ]
-
 texFiles :: [FilePath]
 texFiles = fmap ("examples/"++)
   [ "chinese.ftl.tex"
@@ -58,6 +52,12 @@ texFiles = fmap ("examples/"++)
   , "tarski.ftl.tex"
   ]
 
+shouldFailFiles :: [FilePath]
+shouldFailFiles = fmap ("examples/"++)
+  [ "inconsistency.ftl"
+  , "inconsistency.ftl.tex"
+  ]
+
 output :: [(FilePath, (ExitCode, Text))] -> IO [(ExitCode, FilePath)]
 output xs = do
   mapM_ (TIO.putStrLn . snd . snd) xs
@@ -69,7 +69,7 @@ main = do
   compiled <- mapM (compileFile ["--tex=off"]) files
   compiledTex <- mapM (compileFile ["--tex=on"]) texFiles
 
-  failed <- output . zip files =<< mapM gather (compiled ++ compiledTex)
+  failed <- output . zip (files ++ texFiles) =<< mapM gather (compiled ++ compiledTex)
   let shouldntHaveFailed = filter (\f -> snd f `notElem` shouldFailFiles) failed
   let shouldHaveFailed = shouldFailFiles \\ map snd failed
   code <- newIORef ExitSuccess
