@@ -73,7 +73,7 @@ export depth provers instrs context goal = do
   runUntilSuccess timeLimit $
     runProver (head proversNamed) proverServer printProver task isByContradiction
 
-data Result = Success | Failure | TooLittleTime | ContradictoryAxioms
+data Result = Success | Failure | ContradictoryAxioms | Unknown | Error
   deriving (Eq, Ord, Show)
 
 -- | Prover heuristics are not always optimal.
@@ -81,11 +81,11 @@ data Result = Success | Failure | TooLittleTime | ContradictoryAxioms
 runUntilSuccess :: Int -> (Int -> IO Result) -> IO Result
 runUntilSuccess timeLimit f = go [timeLimit] -- go $ takeWhile (<=timeLimit) $ 1:5:10:20:50:(map (*100)[1,2])
   where
-    go [] = pure TooLittleTime
+    go [] = pure Unknown
     go (x:xs) = do
       b <- f x
       case b of
-        TooLittleTime -> go xs
+        Unknown -> go xs
         r -> pure r
 
 runProver :: Prover -> Maybe (String, String) -> Bool -> Text -> Bool -> Int -> IO Result
@@ -113,7 +113,8 @@ runProver (Prover _ label path args yes con nos uns) proverServer printProver ta
         if | positive || (isByContradiction && contradictions) -> pure Success
            | negative -> pure Failure
            | not isByContradiction && contradictions -> pure ContradictoryAxioms
-           | otherwise -> pure TooLittleTime
+           | timeout -> pure Unknown
+           | otherwise -> pure Error
   in
     case proverServer of
       Nothing -> do
