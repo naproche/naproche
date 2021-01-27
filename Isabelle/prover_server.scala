@@ -42,7 +42,7 @@ object Prover_Server
   val default_provers: Map[String, Path] =
     Map("eprover" -> Path.explode("$E_HOME/eprover"),
       "SPASS" -> Path.explode("$SPASS_HOME/SPASS"),
-      "vampire" -> Path.explode("$VAMPIRE_HOME/vampire"))
+      "vampire4.2.2" -> Path.explode("$VAMPIRE_HOME/vampire"))
 
   def start(
     port: Int = 0,
