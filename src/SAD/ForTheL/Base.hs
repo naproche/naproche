@@ -77,8 +77,6 @@ initFS = FState
       ([Symbol "="], mkTrm EqualityId TermEquality),
       ([Symbol "!", Symbol "="], Not . mkTrm EqualityId TermEquality),
       ([Symbol "-", Symbol "<", Symbol "-"], mkTrm LessId TermLess),
-      ([Symbol "-~-"], \(m:n:_) -> mkAll VarEmpty $
-        Iff (mkElem (mkVar VarEmpty) m) (mkElem (mkVar VarEmpty) n)),
       ([Symbol "\\in"], \(x:m:_) -> mkElem x m),
       ([Symbol "\\notin"], \(x:m:_) -> Not $ mkElem x m),
       ([Symbol "\\neq"], Not . mkTrm EqualityId TermEquality),
