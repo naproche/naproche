@@ -17,7 +17,7 @@ public option naproche_server : bool = true
 public option naproche_server_debugging : bool = false
   -- "console debugging for Naproche-SAD server"
 
-public option naproche_prover_server : bool = false
+public option naproche_prover_server : bool = true
   -- "prefer Naproche-SAD prover server over batch process (change requires restart)"
 
 public option naproche_print_thesis : bool = true
