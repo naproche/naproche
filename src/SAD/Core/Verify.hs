@@ -22,7 +22,7 @@ import SAD.Core.Extract (addDefinition, addEvaluation, extractRewriteRule)
 import SAD.Core.ProofTask (generateProofTask)
 import SAD.Core.Reason (proveThesis)
 import SAD.Core.Rewrite (equalityReasoning)
-import SAD.Core.SourcePos (noSourcePos, fileOnlyPos)
+import SAD.Core.SourcePos (SourcePos, noSourcePos, fileOnlyPos)
 import SAD.Core.Thesis (inferNewThesis)
 import SAD.Data.Formula
 import SAD.Data.Instr
@@ -57,6 +57,13 @@ verify fileName provers reasonerState (ProofTextRoot text) = do
     "verification " ++ (if success then "successful" else "failed")
   return (success, fmap (ProofTextRoot . tail . snd) result)
 
+reportBracket :: SourcePos -> VM a -> VM a
+reportBracket pos body = do
+  justIO $ Message.report pos Markup.running
+  res <- body
+  justIO $ Message.report pos Markup.finished
+  return res
+
 verificationLoop :: VState -> VM ([ProofText], [ProofText])
 verificationLoop state@VS {
   thesisMotivated = motivated,
@@ -70,7 +77,6 @@ verificationLoop state@VS {
   restProofText = ProofTextBlock block@(Block f body kind declaredVariables _ _ _):blocks,
   evaluations     = evaluations }
     = local (const state) $ do
-  justIO $ Message.report (Block.position block) Markup.running
   alreadyChecked <- askRS alreadyChecked
 
   -- statistics and user communication
@@ -89,7 +95,9 @@ verificationLoop state@VS {
     if Block.isTopLevel block
       then return f
       -- For low-level blocks we check definitions and fortify terms (by supplying evidence).
-      else (fillDef alreadyChecked contextBlock) <|> (setFailed >> return f)
+      else
+        reportBracket (Block.position block) (fillDef alreadyChecked contextBlock)
+        <|> (setFailed >> return f)
 
   unsetChecked
 
@@ -161,7 +169,6 @@ verificationLoop state@VS {
             if   kind `elem` [LowDefinition, Definition]
             then addEvaluation evaluations formulaImage
             else evaluations-- extract evaluations
-      justIO $ Message.report (Block.position block) Markup.finished
       -- Now we are done with the block. Move on and verify the rest.
       (newBlocks, markedBlocks) <- verifyProof state {
         thesisMotivated = motivated && newMotivation, guards = newGuards,
@@ -197,18 +204,19 @@ verificationLoop st@VS {
       let text = Block.text block
       let pos = Block.position block
       whenInstruction Printgoal True $ reasonLog Message.TRACING pos $ "goal: " <> text
-      if hasDEC (Context.formula thesis) --computational reasoning
-      then do
-        incrementCounter Equations
-        timeWith SimplifyTimer (equalityReasoning thesis) <|> (
-          reasonLog Message.WARNING pos "equation failed" >> setFailed >>
-          guardInstruction Skipfail False >> incrementCounter FailedEquations)
-      else do
-        unless (isTop . Context.formula $ thesis) $ incrementCounter Goals
-        proveThesis <|> (
-          reasonLog Message.WARNING pos "goal failed" >> setFailed >>
-          --guardInstruction Skipfail False >>
-          incrementCounter FailedGoals)
+      reportBracket pos
+        (if hasDEC (Context.formula thesis) --computational reasoning
+          then do
+            incrementCounter Equations
+            timeWith SimplifyTimer (equalityReasoning thesis) <|> (
+              reasonLog Message.WARNING pos "equation failed" >> setFailed >>
+              guardInstruction Skipfail False >> incrementCounter FailedEquations)
+          else do
+            unless (isTop . Context.formula $ thesis) $ incrementCounter Goals
+            proveThesis <|> (
+              reasonLog Message.WARNING pos "goal failed" >> setFailed >>
+              --guardInstruction Skipfail False >>
+              incrementCounter FailedGoals))
 verificationLoop state@ VS {restProofText = ProofTextChecked txt : rest} =
   let newTxt = Block.setChildren txt (Block.children txt ++ newInstructions)
       newInstructions = [NonProofTextStoredInstr $
