@@ -187,6 +187,8 @@ mkEquality :: Formula -> Formula -> Formula
 mkEquality t s  = mkTrm EqualityId TermEquality [t,s]
 mkLess :: Formula -> Formula -> Formula
 mkLess t s = mkTrm LessId TermLess [t,s]
+mkSmall :: Formula -> Formula
+mkSmall s = mkTrm SmallId TermSmall [s]
 mkThesis :: Formula
 mkThesis   = mkTrm ThesisId TermThesis []
 mkFun :: Formula -> Formula
@@ -197,6 +199,8 @@ mkDom :: Formula -> Formula
 mkDom      = mkTrm DomainId termDomain . pure
 mkSet :: Formula -> Formula
 mkSet      = mkTrm SetId termSet . pure
+mkClass :: Formula -> Formula
+mkClass      = mkTrm ClassId termClass . pure
 mkElem :: Formula -> Formula -> Formula
 mkElem x m = mkTrm ElementId termElement [x,m]
 mkProd :: Formula -> Formula -> Formula
@@ -205,7 +209,6 @@ mkPair :: Formula -> Formula -> Formula
 mkPair x y = mkTrm PairId termPair [x,y]
 mkObj :: Formula -> Formula
 mkObj      = mkTrm ObjectId termObject . pure -- this is a dummy for parsing purposes
-
 
 -- quick checks of syntactic properties
 

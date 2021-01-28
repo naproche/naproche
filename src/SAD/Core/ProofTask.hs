@@ -33,20 +33,20 @@ generateProofTask _ _ f = f
 funDcl, setDcl :: Formula -> Bool
 funDcl (And (And f _) _) = trmId f == FunctionId
 funDcl _ = False
-setDcl (And f _) = trmId f == SetId
-setDcl _ = error "SAD.Core.ProofTask.setDcl: misformed definition"
+setDcl (And f _) = trmId f == SetId || trmId f == ClassId
+setDcl f = error $ "SAD.Core.ProofTask.setDcl: misformed definition: " ++ show f
 
 setTask :: Formula -> Formula
 setTask (And _ (All x (Iff _ (Tag Replacement f)))) =
   replacement (declName x) f
 setTask (And _ (All _ (Iff _ f))) = separation f
-setTask _ = error "SAD.Core.ProofTask.setTask: misformed definition"
+setTask f = error $ "SAD.Core.ProofTask.setTask: misformed definition: " ++ show f
 
 {- generate separation proof task -}
 separation :: Formula -> Formula
 separation (And f g) = separation f
 separation t | isElem t = dec $ mkSet $ last $ trmArgs t
-separation _ = error "SAD.Core.ProofTask.separation: misformed argument"
+separation f = error $ "SAD.Core.ProofTask.separation: misformed argument: " ++ show f
 
 {- generate replacement proof task -}
 replacement :: VariableName -> Formula -> Formula

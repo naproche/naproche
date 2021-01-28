@@ -334,10 +334,12 @@ initialDefinitions :: Definitions
 initialDefinitions = Map.fromList [
   (EqualityId,  equality),
   (LessId,  less),
+  (SmallId, isSmall),
   (FunctionId,  function),
   (ApplicationId,  functionApplication),
   (DomainId,  domain),
   (SetId,  set),
+  (ClassId,  clss),
   (ElementId,  elementOf),
   (PairId, pair) ]
 
@@ -351,12 +353,18 @@ equality  = DE [] Top Signature (mkEquality (mkVar hole0) (mkVar hole1)) [] []
 less :: DefEntry
 less = DE [] Top Signature (mkLess (mkVar hole0) (mkVar hole1)) [] []
 
+isSmall :: DefEntry
+isSmall = DE [] Top Signature (mkSmall (mkVar hole0)) [] []
+
 set :: DefEntry
 set = DE [] Top Signature (mkSet $ mkVar hole0) [] []
 
+clss :: DefEntry
+clss = DE [] Top Signature (mkClass $ mkVar hole0) [] []
+
 elementOf :: DefEntry
-elementOf = DE [mkSet $ mkVar hole1] Top Signature
-  (mkElem (mkVar hole0) (mkVar hole1)) [] [[mkSet $ mkVar hole1]]
+elementOf = DE [mkClass (mkVar hole1) `Or` mkSet (mkVar hole1)] Top Signature
+  (mkElem (mkVar hole0) (mkVar hole1)) [] [[mkClass (mkVar hole1) `Or` mkSet (mkVar hole1)]]
 
 function :: DefEntry
 function  = DE [] Top Signature (mkFun $ mkVar hole0) [] []

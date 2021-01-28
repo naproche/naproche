@@ -33,7 +33,6 @@ files = fmap ("examples/"++)
   , "prime_no_square.ftl"
   , "inconsistency.ftl"
   , "read_test.ftl"
-  , "regular_successor.ftl"
   , "tarski.ftl"
   ]
 
@@ -48,7 +47,6 @@ texFiles = fmap ("examples/"++)
   , "prime_no_square.ftl.tex"
   , "inconsistency.ftl.tex"
   , "read_test.ftl.tex"
-  , "regular_successor.ftl.tex"
   , "tarski.ftl.tex"
   ]
 

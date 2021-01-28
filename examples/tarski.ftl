@@ -4,6 +4,8 @@ Signature. An element is a notion.
 
 Let S,T denote sets.
 Let x,y,z,u,v,w denote elements.
+Axiom. S is setsized.
+Axiom. x is setsized.
 
 Axiom. Every element of S is an element.
 
@@ -80,7 +82,7 @@ Definition DefMonot.
 
 Theorem Tarski.
     Let U be a complete lattice and f be an monotone function on U.
-    Let S be the set of fixed points of f.
+    Let S be the class of fixed points of f.
     S is a complete lattice.
 Proof.
     Let T be a subset of S.

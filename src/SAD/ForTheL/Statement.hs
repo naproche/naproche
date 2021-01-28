@@ -429,51 +429,51 @@ setNotion = do
   dig (Tag Dig f) [pVar v]
 
 set :: FTL MNotion
-set = label "set definition" $ symbSet <|> setOf
+set = label "set definition" $ symbSet <|> classOf
   where
-    setOf = do
-      tokenOf' ["set", "sets"]; nm <- var -|- hidden; token' "of";
+    classOf = do
+      tokenOf' ["class", "classes"]; nm <- var -|- hidden; token' "of";
       (q, f, u) <- notion >>= single; vnm <- hidden
       vnmDecl <- makeDecl vnm;
-      return (id, setFormula vnmDecl $ subst (pVar vnm) (posVarName u) $ q f, Set.singleton nm)
+      return (id, setFormula mkSet vnmDecl $ (subst (pVar vnm) (posVarName u) $ q f) `blAnd` mkSmall (pVar vnm) , Set.singleton nm)
     symbSet = do
-      (cnd, nm) <- symbSetNotation; h <- hidden
+      (cnd, (nm, mkColl)) <- symbSetNotation; h <- hidden
       nmDecl <- makeDecl nm
-      return (id, setFormula nmDecl $ cnd $ pVar nm, Set.singleton h)
-    setFormula dcl = let nm = PosVar (declName dcl) (declPosition dcl) in
-      And (mkSet (mkVar (VarHole ""))) . dAll dcl . Iff (mkElem (pVar nm) (mkVar (VarHole "")))
+      return (id, setFormula mkColl nmDecl $ cnd $ pVar nm, Set.singleton h)
+    setFormula mkColl dcl = let nm = PosVar (declName dcl) (declPosition dcl) in
+      And (mkColl (mkVar (VarHole ""))) . dAll dcl . Iff (mkElem (pVar nm) (mkVar (VarHole "")))
 
 
-symbSetNotation :: FTL (Formula -> Formula, PosVar)
+symbSetNotation :: FTL (Formula -> Formula, (PosVar, Formula -> Formula))
 symbSetNotation = cndSet </> finSet
   where
     finSet = braced $ do
       ts <- sTerm `sepByLL1` token ","
       h <- hidden
-      pure (\tr -> foldr1 Or $ map (mkEquality tr) ts, h)
+      pure (\tr -> foldr1 Or $ map (mkEquality tr) ts, (h, mkSet))
     cndSet = braced $ do
-      (tag, c, t) <- sepFrom
+      (tag, c, t, mkColl) <- sepFrom
       st <- (token "|" <|> token ":") >> statement
       vs <- freeVars t
       vsDecl <- makeDecls $ fvToVarSet vs;
       nm <- if isVar t then pure $ PosVar (varName t) (varPosition t) else hidden
-      pure (\tr -> tag $ c tr `blAnd` mbEqu vsDecl tr t st, nm)
+      pure (\tr -> tag $ c tr `blAnd` mbEqu vsDecl tr t st `blAnd` mkSmall tr, (nm, mkColl))
 
     mbEqu _ tr Var{varName = v} = subst tr v
     mbEqu vs tr t = \st -> foldr mbdExi (st `And` mkEquality tr t) vs
 
 
-sepFrom :: FTL (Formula -> Formula, Formula -> Formula, Formula)
+sepFrom :: FTL (Formula -> Formula, Formula -> Formula, Formula, Formula -> Formula)
 sepFrom = notionSep -|- setSep -|- noSep
   where
     notionSep = do
       (q, f, v) <- notion >>= single; guard (not . (==) TermEquality . trmName $ f)
-      return (Tag Replacement, \tr -> subst tr (posVarName v) $ q f, pVar v)
+      return (Tag Replacement, \tr -> subst tr (posVarName v) $ q f, pVar v, mkClass) 
     setSep = do
       t <- sTerm; cnd <- token' "in" >> elementCnd
-      return (id, cnd, t)
+      return (id, cnd, t, mkSet)
     noSep  = do
-      t <- sTerm; return (Tag Replacement, const Top, t)
+      t <- sTerm; return (Tag Replacement, const Top, t, mkClass)
 
 elementCnd :: FTL (Formula -> Formula)
 elementCnd = setTerm </> fmap fst symbSetNotation

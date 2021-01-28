@@ -232,7 +232,8 @@ readArgs args = do
                   [file] -> Just file
                   [] -> Nothing
                   _ -> fail ["More than one file argument\n"]
-  let parserKind = if useTexArg || maybe False (".ftl.tex" `isSuffixOf`) fileName then Tex else NonTex
+  let parserKind = if useTexArg || maybe False (\f -> ".tex.ftl" `isSuffixOf` f || ".ftl.tex" `isSuffixOf` f) fileName 
+      then Tex else NonTex
   pure (revInitialOpts, parserKind, fileName)
 
 usageHeader :: String

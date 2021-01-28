@@ -8,8 +8,16 @@ Let M,N denote sets.
 Axiom.
 For any objects a,b,c,d if (a,b) = (c,d) then a = c and b = d.
 
+Axiom. Let x be an element of M. x is setsized.
+Axiom. Let x,y be setsized objects. (x, y) is setsized.
+Axiom. Let f be a function. Let M be a set. Assume Dom(f) = M.
+  Let x be an element of M. Then f[x] is setsized.
+
 Definition.
 Prod(M,N) = {(x,y) | x is an element of M and y is an element of N}.
+
+Axiom.
+Prod(M, N) is a set.
 
 Lemma.
 Let x,y be objects.
@@ -25,6 +33,8 @@ A subset of M is a set N such that every element of N is an element of M.
 
 Definition.
 Assume M is a subset of Dom(f). f^[M] = { f[x] | x is an element of M }.
+
+Axiom. Assume M is a subset of Dom(f). Then f^[M] is a set.
 
 
 Let f is surjective from M onto N stand for Dom(f) = M and f^[M] = N.
@@ -134,9 +144,9 @@ Let us show that h is surjective from Prod(A,A) onto Succ(A).
 		end.
 	Every element of h^[Prod(A,A)] is an element of Succ(A).
 		proof.
-			Let n be an element of h^[Prod(A,A)]. We can take elements a,b of A such that n = h[(a,b)].
+			Let n be an element of h^[Prod(A,A)].
+			We can take elements a,b of A such that n = h[(a,b)].
 
-      [prover vampire]
 			Case f[a] has an element. Obvious (by Transitivity).
 			Case f[a] has no element. Obvious (by Transitivity).
 		end.
