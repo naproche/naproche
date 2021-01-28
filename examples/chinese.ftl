@@ -183,8 +183,7 @@ Hence there exists a nonzero element of <a> +' <b>.
 Indeed a << <a> +' <b> and b << <a> +' <b> (by AddZero).
 
 Take a nonzero u << I such that for no nonzero v << I (|v| -<- |u|).
-Proof by contradiction.
-    Assume the contrary.
+Proof.
     We can show by induction on |w| that for every nonzero w << I there exists
     nonzero u << I such that for no nonzero v << I (|v| -<- |u|). Obvious.
     qed.
