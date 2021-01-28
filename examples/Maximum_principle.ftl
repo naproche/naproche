@@ -15,7 +15,7 @@ Definition.
 Assume M is a subset of the domain of f. f^(M) = { f(x) | x << M }.
 
 Axiom.
-Assume M is a subset of the domain of f. Then f^[M] is a set.
+Assume M is a subset of the domain of f. Then f^(M) is a set.
 
 Signature. A complex number is a notion.
 
