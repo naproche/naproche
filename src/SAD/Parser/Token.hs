@@ -117,10 +117,10 @@ tokenize texState start = posToken texState start NoWhiteSpaceBefore
             posToken texState (advancePos pos "\\") WhiteSpaceBefore rest
 
       -- We expand alphanumeric tex commands here
-      Just ('\\', rest) | useTex -> new_toks ++ toks
+      Just ('\\', rest) | useTex -> newToks ++ toks
         where
           (name, rest') = Text.span isAlpha rest
-          new_toks = expandTexCmd name pos whitespaceBefore
+          newToks = expandTexCmd name pos whitespaceBefore
           toks = posToken texState (advancePos pos (Text.cons '\\' name)) WhiteSpaceBefore rest'
       
       Just ('$', rest) | useTex -> posToken texState (advancePos pos "$") WhiteSpaceBefore rest
