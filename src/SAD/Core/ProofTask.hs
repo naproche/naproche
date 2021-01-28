@@ -33,20 +33,22 @@ generateProofTask _ _ f = f
 funDcl, setDcl :: Formula -> Bool
 funDcl (And (And f _) _) = trmId f == FunctionId
 funDcl _ = False
-setDcl (And f _) = trmId f == SetId
-setDcl _ = error "SAD.Core.ProofTask.setDcl: misformed definition"
+
+setDcl (And (Trm _ _ _ id) _) = id == SetId || id == ClassId
+setDcl (And f _) = setDcl f
+setDcl f = error $ "SAD.Core.ProofTask.setDcl: misformed definition: " ++ show f
 
 setTask :: Formula -> Formula
 setTask (And _ (All x (Iff _ (Tag Replacement f)))) =
   replacement (declName x) f
 setTask (And _ (All _ (Iff _ f))) = separation f
-setTask _ = error "SAD.Core.ProofTask.setTask: misformed definition"
+setTask f = error $ "SAD.Core.ProofTask.setTask: misformed definition: " ++ show f
 
 {- generate separation proof task -}
 separation :: Formula -> Formula
 separation (And f g) = separation f
 separation t | isElem t = dec $ mkSet $ last $ trmArgs t
-separation _ = error "SAD.Core.ProofTask.separation: misformed argument"
+separation f = error $ "SAD.Core.ProofTask.separation: misformed argument: " ++ show f
 
 {- generate replacement proof task -}
 replacement :: VariableName -> Formula -> Formula
@@ -152,12 +154,12 @@ devReplace y f = mapF (devReplace y) f
 domainCondition :: Formula -> Formula -> Formula
 domainCondition (Tag _ (All _ (Iff Trm {trmArgs = [_,dm]} g))) = dive
   where
-    dive Trm {trmId = tId, trmArgs = [x,d]}
+    dive Trm {trId = tId, trmArgs = [x,d]}
       | tId == ElementId && twins d dm = subst x VarEmpty $ inst VarEmpty g
     dive f = mapF dive f
 domainCondition (Tag _ Trm {trmName = TermEquality, trmArgs = [dm,g]}) = dive
   where
-    dive Trm {trmId = tId, trmArgs = [x,d]}
+    dive Trm {trId = tId, trmArgs = [x,d]}
       | tId == ElementId && twins d dm = mkElem x g
     dive f = mapF dive f
 domainCondition _ =

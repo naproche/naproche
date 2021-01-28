@@ -14,6 +14,9 @@ A subset of M is a set N such that every element of N is an element of M.
 Definition.
 Assume M is a subset of the domain of f. f^(M) = { f(x) | x << M }.
 
+Axiom.
+Assume M is a subset of the domain of f. Then f^[M] is a set.
+
 Signature. A complex number is a notion.
 
 Let z,w denote complex numbers.
@@ -27,6 +30,7 @@ Every element of M is a complex number.
 Signature.
 A real number is a notion.
 Let x, y denote real numbers.
+Axiom. x is setsized.
 
 Signature. |z| is a real number.
 
@@ -41,6 +45,8 @@ Axiom. x < y => not y < x.
 Signature. f is holomorphic is an atom.
 
 Signature. Ball(eps,z) is a set that contains z.
+Axiom. Assume x is element of Ball(eps, z). Then x is a real number.
+Lemma. Assume x is an element of Ball(eps, z). Then x is setsized.
 
 Axiom. |z| < |w| for some element w of Ball(eps,z).
 

@@ -89,7 +89,7 @@ closeEvidence :: Definitions -> DefEntry -> DefEntry
 closeEvidence dfs def@DE{defEvidence = evidence} = def { defEvidence = newEvidence }
   where
     newEvidence = nubBy twins $ evidence ++ concatMap definitionalEvidence evidence
-    definitionalEvidence t@Trm {trmId = n} =
+    definitionalEvidence t@Trm {trId = n} =
       let def = fromJust $ Map.lookup n dfs
           sb  = fromJust $ match (defTerm def) $ fromTo makeU t
       in  map (fromTo fromU . sb) $ defEvidence def

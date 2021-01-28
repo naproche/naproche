@@ -24,31 +24,37 @@ gather (hout, herr, ph) = do
 
 files :: [FilePath]
 files = fmap ("examples/"++)
-  -- This file does check, but it often fails when limited to reasonable time
-  -- [ "chinese.ftl"
-  [ "fuerst.ftl"
+  [ "chinese.ftl"
+  , "fuerstenberg.ftl"
   , "Koenigs_lemma.ftl"
   , "Maximum_principle.ftl"
   , "newman.ftl"
   , "powerset.ftl"
   , "prime_no_square.ftl"
-  , "regular_successor.ftl"
-  , "tarski.ftl"
   , "inconsistency.ftl"
   , "read_test.ftl"
-  ]
-
-shouldFailFiles :: [FilePath]
-shouldFailFiles = fmap ("examples/"++)
-  [ "inconsistency.ftl" 
+  , "tarski.ftl"
   ]
 
 texFiles :: [FilePath]
 texFiles = fmap ("examples/"++)
-  [ "powerset.ftl.tex"
-  , "chinese.ftl.tex"
+  [ "chinese.ftl.tex"
+  , "fuerstenberg.ftl.tex"
+  , "Koenigs_lemma.ftl.tex"
+  , "Maximum_principle.ftl.tex"
+  , "newman.ftl.tex"
+  , "powerset.ftl.tex"
+  , "prime_no_square.ftl.tex"
+  , "inconsistency.ftl.tex"
   , "read_test.ftl.tex"
   , "lambda_term_test.ftl.tex"
+  , "tarski.ftl.tex"
+  ]
+
+shouldFailFiles :: [FilePath]
+shouldFailFiles = fmap ("examples/"++)
+  [ "inconsistency.ftl"
+  , "inconsistency.ftl.tex"
   ]
 
 output :: [(FilePath, (ExitCode, Text))] -> IO [(ExitCode, FilePath)]
@@ -59,10 +65,10 @@ output xs = do
 
 main :: IO ()
 main = do
-  compiled <- mapM (compileFile ["-t", "25", "--tex=off"]) files
-  compiledTex <- mapM (compileFile ["-t", "25", "--tex=on"]) texFiles
+  compiled <- mapM (compileFile ["--tex=off"]) files
+  compiledTex <- mapM (compileFile ["--tex=on"]) texFiles
 
-  failed <- output . zip files =<< mapM gather (compiled ++ compiledTex)
+  failed <- output . zip (files ++ texFiles) =<< mapM gather (compiled ++ compiledTex)
   let shouldntHaveFailed = filter (\f -> snd f `notElem` shouldFailFiles) failed
   let shouldHaveFailed = shouldFailFiles \\ map snd failed
   code <- newIORef ExitSuccess

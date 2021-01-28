@@ -1,0 +1,148 @@
+\documentclass{document}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{forthel}
+
+\title{Maximum modulus principle}
+\author{Steffen Frerix}
+\date{2018}
+
+\begin{document}
+  \pagenumbering{gobble}
+
+  \maketitle
+
+  \begin{forthel}
+    [synonym number/-s]
+
+    Let the domain of $f$ stand for $Dom(f)$.
+    Let $z$ is in $M$ stand for $z$ is an element of $M$.
+    Let $M$ contains $z$ stand for $z$ is in $M$.
+    Let $z << M$ stand for $z$ is in $M$.
+
+    Let $f$ denote a function.
+    Let $M$ denote a set.
+
+    \begin{definition}
+      A subset of $M$ is a set $N$ such that every element of $N$ is an element of $M$.
+    \end{definition}
+
+    \begin{definition}
+      Assume $M$ is a subset of the domain of $f$. $f^[M] = { f[x] | x << M }$.
+    \end{definition}
+
+    \begin{axiom}
+      Assume $M$ is a subset of the domain of $f$. $f^[M]$ is a set.
+    \end{axiom}
+
+    \begin{signature}
+      A complex number is a notion.
+    \end{signature}
+
+    Let $z,w$ denote complex numbers.
+
+    \begin{axiom}
+      Every element of $Dom(f)$ is a complex number and for every element $z$ of $Dom(f)$ $f[z]$ is a complex number.
+    \end{axiom}
+
+    \begin{axiom}
+      Every element of $M$ is a complex number.
+    \end{axiom}
+
+    \begin{signature}
+      A real number is a notion.
+    \end{signature}
+
+    Let $x,y$ denote real numbers.
+
+    \begin{axiom}
+      $x$ is setsized.
+    \end{axiom}
+
+    \begin{signature}
+      $|z|$ is a real number.
+    \end{signature}
+
+    \begin{signature}
+      $x$ is positive is an atom.
+    \end{signature}
+
+    Let $eps, delta$ denote positive real numbers.
+
+    \begin{signature}
+      $x < y$ is an atom.
+    \end{signature}
+
+    Let $x =< y$ stand for $x = y$ or $x < y$.
+
+    \begin{axiom}
+      $x < y =>$ not $y < x$.
+    \end{axiom}
+
+    \begin{signature}
+      $f$ is holomorphic is an atom.
+    \end{signature}
+
+    \begin{signature}
+      $Ball(eps,z)$ is a set that contains $z$.
+    \end{signature}
+
+    \begin{axiom}
+      Assume $x$ is element of $Ball(eps, z)$. Then $x$ is a real number.
+    \end{axiom}
+    
+    \begin{lemma}
+      Assume $x$ is an element of $Ball(eps, z)$. Then $x$ is setsized.
+    \end{lemma}
+
+    \begin{axiom}
+      $|z| < |w|$ for some element $w$ of $Ball(eps,z)$.
+    \end{axiom}
+
+    \begin{definition}
+      $M$ is open iff for every element $z$ of $M$ there exists $eps$ such that $Ball(eps,z)$ is a subset of $M$.
+    \end{definition}
+
+    \begin{axiom}
+      $Ball(eps,z)$ is open.
+    \end{axiom}
+
+    \begin{definition}
+      A local maximal point of $f$ is an element $z$ of the domain of $f$ such that there exists $eps$ such that $Ball(eps,z)$ is a subset of the domain of $f$ and $|f[w]| =< |f[z]|$ for every element $w$ of $Ball(eps,z)$.
+    \end{definition}
+
+    \begin{definition}
+      Let $U$ be a subset of the domain of $f$. $f$ is constant on $U$ iff there exists $z$ such that $f[w] = z$ for every element $w$ of $U$.
+    \end{definition}
+
+    Let $f$ is constant stand for $f$ is constant on the domain of $f$.
+
+    \begin{axiom}
+      Assume $f$ is holomorphic and $Ball(eps,z)$ is a subset of the domain of $f$. If $f$ is not constant on $Ball(eps,z)$ then $f^[Ball(eps,z)]$ is open.
+    \end{axiom}
+
+    \begin{signature}
+      A region is an open set.
+    \end{signature}
+
+    \begin{axiom}[Identity_Theorem]
+      Assume $f$ is holomorphic and the domain of $f$ is a region. Assume that $Ball(eps,z)$ is a subset of the domain of $f$. If $f$ is constant on $Ball(eps,z)$ then $f$ is constant.
+    \end{axiom}
+
+    \begin{proposition}[Maximum_principle]
+      Assume $f$ is holomorphic and the domain of $f$ is a region. If $f$ has a local maximal point then $f$ is constant.
+    \end{proposition}
+    \begin{proof}
+      Let $z$ be a local maximal point of $f$. Take $eps$ such that $Ball(eps,z)$ is a subset of $Dom(f)$ and $|f[w]| =< |f[z]|$ for every element $w$ of $Ball(eps,z)$.
+
+      Let us show that $f$ is constant on $Ball(eps,z)$.
+      proof by contradiction.
+        Assume the contrary. Then $f^[Ball(eps,z)]$ is open. We can take delta such that $Ball(delta, f[z])$ is a subset of $f^[Ball(eps,z)]$. Therefore there exists an element $w$ of $Ball(eps,z)$ such that $|f[z]| < |f[w]|$. Contradiction.
+    	end.
+
+      Hence $f$ is constant.
+    \end{proof}
+  \end{forthel}
+
+\end{document}

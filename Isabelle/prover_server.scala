@@ -42,7 +42,7 @@ object Prover_Server
   val default_provers: Map[String, Path] =
     Map("eprover" -> Path.explode("$E_HOME/eprover"),
       "SPASS" -> Path.explode("$SPASS_HOME/SPASS"),
-      "vampire" -> Path.explode("$VAMPIRE_HOME/vampire"))
+      "vampire4.2.2" -> Path.explode("$VAMPIRE_HOME/vampire"))
 
   def start(
     port: Int = 0,
@@ -80,10 +80,12 @@ class Prover_Server private(port: Int, provers: Map[String, Path], debugging: =>
     def return_failure(output: String): Unit =
       return_result(return_code = 2, output = output)
 
-    def start_prover(name: String, uuid: UUID.T, exe: Path, args: List[String], timeout: Time, input: String)
+    def start_prover(
+      name: String, uuid: UUID.T, exe: Path, args: List[String], timeout: Time, input: String)
     {
       if (debugging) {
-        Output.writeln("run " + quote(name) + " (uuid=" + uuid + ", timeout=" + timeout.seconds + ")")
+        Output.writeln(
+          "run " + quote(name) + " (uuid=" + uuid + ", timeout=" + timeout.seconds + ")")
       }
 
       val process_start =
@@ -120,7 +122,8 @@ class Prover_Server private(port: Int, provers: Map[String, Path], debugging: =>
                 val output = cat_lines(res.out_lines ::: res.err_lines)
 
                 if (debugging) {
-                  Output.writeln("end " + quote(name) + " (uuid=" + uuid + ", return_code=" + rc + ")")
+                  Output.writeln(
+                    "end " + quote(name) + " (uuid=" + uuid + ", return_code=" + rc + ")")
                 }
 
                 return_result(rc, timing = res.timing, output = output)
@@ -138,7 +141,8 @@ class Prover_Server private(port: Int, provers: Map[String, Path], debugging: =>
         YXML.parse_body(text) match {
           case List(XML.Elem(Markup(Prover_Server.PROVER, props), body)) =>
             val name = Markup.Name.unapply(props).getOrElse("")
-            val args = Library.trim_split_lines(Prover_Server.Command_Args.unapply(props).getOrElse(""))
+            val args =
+              Library.trim_split_lines(Prover_Server.Command_Args.unapply(props).getOrElse(""))
             val timeout = Time.seconds(Prover_Server.Timeout.unapply(props).getOrElse(0))
 
             val uuid = UUID.random()

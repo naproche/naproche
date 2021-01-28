@@ -19,6 +19,7 @@ data TermName
   | TermTask Int
   | TermEquality
   | TermLess
+  | TermSmall -- ^ predicate for set sized objects
   | TermThesis
   | TermEmpty
   deriving (Eq, Ord, Show)
@@ -34,6 +35,9 @@ termDomain = TermSymbolic "zDzozmlpdtrp"
 
 termSet :: TermName
 termSet = TermNotion "Set"
+
+termClass :: TermName
+termClass = TermNotion "Class"
 
 termElement :: TermName
 termElement = TermNotion "ElementOf"
@@ -68,17 +72,20 @@ instance Representation TermName where
   represent (TermTask n) = "tsk " <> fromString (show n)
   represent TermEquality = "="
   represent TermLess  = "iLess"
+  represent TermSmall = "isSetSized"
   represent TermThesis = "#TH#"
   represent TermEmpty = ""
 
 data TermId
   = EqualityId
   | LessId
+  | SmallId
   | ThesisId
   | FunctionId
   | ApplicationId
   | DomainId
   | SetId
+  | ClassId
   | ElementId
   | ProductId
   | PairId

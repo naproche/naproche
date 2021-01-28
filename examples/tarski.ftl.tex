@@ -1,0 +1,146 @@
+\documentclass{document}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{forthel}
+
+\title{Knaster-Tarski fixed point theorem}
+\author{Andrei Paskevich}
+\date{}
+
+\begin{document}'
+  \pagenumbering{gobble}
+
+  \maketitle
+
+  \begin{forthel}
+    [synonym set/-s] [synonym subset/-s] [synonym element/-s]
+    [synonym belong/-s]
+
+    \begin{signature}
+      An element is a notion.
+    \end{signature}
+
+    Let $S,T$ denote sets.
+    Let $x,y,z,u,v,w$ denote elements.
+
+    \begin{axiom}
+      $S$ is setsized.
+    \end{axiom}
+    
+    \begin{axiom}
+      $x$ is setsized.
+    \end{axiom}
+
+    \begin{axiom}
+      Every element of $S$ is an element.
+    \end{axiom}
+
+    Let $x << S$ denote ($x$ is an element of $S$).
+    Let $x$ belongs to $S$ denote ($x$ is an element of $S$).
+
+    \begin{definition}[DefEmpty]
+      $S$ is empty iff $S$ has no elements.
+    \end{definition}
+
+    \begin{definition}[DefSub]
+      A subset of $S$ is a set $T$ such that every ($x << T$) belongs to $S$.
+    \end{definition}
+
+    Let $S [= T$ denote $S$ is a subset of $T$.
+
+    \begin{signature}[LessRel]
+      $x <= y$ is an atom.
+    \end{signature}
+
+    \begin{axiom}[ARefl]
+      $x <= x$.
+    \end{axiom}
+
+    \begin{axiom}[ASymm]
+      $x <= y <= x => x = y$.
+    \end{axiom}
+
+    \begin{axiom}[Trans]
+      $x <= y <= z => x <= z$.
+    \end{axiom}
+
+    [synonym bound/-s] [synonym supremum/-s] [synonym infimum/-s]
+    [synonym lattice/-s]
+
+    \begin{definition}[DefLB]
+      Let $S$ be a subset of $T$. A lower bound of $S$ in $T$ is an element $u$ of $T$ such that for every ($x << S$) $u <= x$.
+    \end{definition}
+
+    \begin{definition}[DefUB]
+      Let $S$ be a subset of $T$. An upper bound of $S$ in $T$ is an element $u$ of $T$ such that for every ($x << S$) $x <= u$.
+    \end{definition}
+
+    \begin{definition}[DefInf]
+      Let $S$ be a subset of $T$. An infimum of $S$ in $T$ is an element $u$ of $T$ such that $u$ is a lower bound of $S$ in $T$ and for every lower bound $v$ of $S$ in $T$ we have $v <= u$.
+    \end{definition}
+
+    \begin{definition}[DefSup]
+      Let $S$ be a subset of $T$. A supremum of $S$ in $T$ is an element $u$ of $T$ such that $u$ is a upper bound of $S$ in $T$ and for every upper bound $v$ of $S$ in $T$ we have $u <= v$.
+    \end{definition}
+
+    \begin{lemma}[SupUn]
+      Let $S$ be a subset of $T$. Let $u,v$ be supremums of $S$ in $T$. Then $u = v$.
+    \end{lemma}
+
+    \begin{lemma}[InfUn]
+      Let $S$ be a subset of $T$. Let $u,v$ be infimums of $S$ in $T$. Then $u = v$.
+    \end{lemma}
+
+    \begin{definition}[DefCLat]
+      A complete lattice is a set $S$ such that every subset of $S$ has an infimum in $S$ and a supremum in $S$.
+    \end{definition}
+
+
+    [synonym function/-s] [synonym point/-s]
+
+
+    Let $f$ stand for a function.
+
+    \begin{axiom}
+      $Dom(f)$ is a set.
+    \end{axiom}
+
+    \begin{signature}[RanSort]
+      $Ran(f)$ is a set.
+    \end{signature}
+
+    \begin{definition}[DefDom]
+      $f$ is on $S$ iff $Dom(f) = Ran(f) = S$.
+    \end{definition}
+
+    \begin{axiom}[ImgSort]
+      Let $x$ belong to $Dom(f)$. $f(x)$ is an element of $Ran(f)$.
+    \end{axiom}
+
+    \begin{definition}[DefFix]
+      A fixed point of $f$ is an element $x$ of $Dom(f)$ such that $f(x) = x$.
+    \end{definition}
+
+    \begin{definition}[DefMonot]
+      $f$ is monotone iff for all $x,y << Dom(f)$ $x <= y => f(x) <= f(y)$.
+    \end{definition}
+
+
+    \begin{theorem}[Tarski]
+      Let $U$ be a complete lattice and $f$ be an monotone function on $U$. Let $S$ be the class of fixed points of $f$. $S$ is a complete lattice.
+    \end{theorem}
+    \begin{proof}
+      Let $T$ be a subset of $S$.
+
+      Let us show that $T$ has a supremum in $S$.
+        Define $P = {x "in" U | f(x) <= x "and" x "is an upper bound of" T "in" U}$. Take an infimum $p$ of $P$ in $U$. $f(p)$ is a lower bound of $P$ in $U$ and an upper bound of $T$ in $U$. Hence $p$ is a fixed point of $f$ and a supremum of $T$ in $S$.
+      end.
+
+      Let us show that $T$ has an infimum in $S$.
+        Define $Q = {x "in" U | x <= f(x) "and" x "is a lower bound of" T "in" U}$. Take a supremum $q$ of $Q$ in $U$. $f(q)$ is an upper bound of $Q$ in $U$ and a lower bound of $T$ in $U$. Hence $q$ is a fixed point of $f$ and an infimum of $T$ in $S$.
+      end.
+    \end{proof}
+  \end{forthel}
+
+\end{document}
