@@ -463,22 +463,20 @@ symbSetNotation = cndSet </> finSet
     mbEqu vs tr t = \st -> foldr mbdExi (st `And` mkEquality tr t) vs
 
 
-sepFrom :: FTL (Formula -> Formula, Formula -> Formula, Formula, Formula -> Formula)
-sepFrom = notionSep -|- setSep -|- noSep
-  where
+    sepFrom :: FTL (Formula -> Formula, Formula -> Formula, Formula, Formula -> Formula)
+    sepFrom = notionSep -|- setSep -|- noSep
+    
     notionSep = do
       (q, f, v) <- notion >>= single; guard (not . (==) TermEquality . trmName $ f)
       return (Tag Replacement, \tr -> subst tr (posVarName v) $ q f, pVar v, mkClass) 
     setSep = do
-      t <- sTerm; cnd <- token' "in" >> elementCnd
-      return (id, cnd, t, mkSet)
+      t <- sTerm; token' "in"
+      clssTrm <- (Left <$> sTerm) </> (Right <$> symbSetNotation)
+      case clssTrm of
+        Left s -> pure (id, flip mkElem s, t, \v -> mkClass v `And` (mkSet s `Imp` mkSet v))
+        Right (cls, (_, mkColl)) -> pure (id, cls, t, mkColl)
     noSep  = do
       t <- sTerm; return (Tag Replacement, const Top, t, mkClass)
-
-elementCnd :: FTL (Formula -> Formula)
-elementCnd = setTerm </> fmap fst symbSetNotation
-  where
-    setTerm = sTerm >>= return . flip mkElem
 
 -- -- functions
 

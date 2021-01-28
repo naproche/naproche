@@ -33,7 +33,9 @@ generateProofTask _ _ f = f
 funDcl, setDcl :: Formula -> Bool
 funDcl (And (And f _) _) = trmId f == FunctionId
 funDcl _ = False
-setDcl (And f _) = trmId f == SetId || trmId f == ClassId
+
+setDcl (And (Trm _ _ _ id) _) = id == SetId || id == ClassId
+setDcl (And f _) = setDcl f
 setDcl f = error $ "SAD.Core.ProofTask.setDcl: misformed definition: " ++ show f
 
 setTask :: Formula -> Formula
@@ -152,12 +154,12 @@ devReplace y f = mapF (devReplace y) f
 domainCondition :: Formula -> Formula -> Formula
 domainCondition (Tag _ (All _ (Iff Trm {trmArgs = [_,dm]} g))) = dive
   where
-    dive Trm {trmId = tId, trmArgs = [x,d]}
+    dive Trm {trId = tId, trmArgs = [x,d]}
       | tId == ElementId && twins d dm = subst x VarEmpty $ inst VarEmpty g
     dive f = mapF dive f
 domainCondition (Tag _ Trm {trmName = TermEquality, trmArgs = [dm,g]}) = dive
   where
-    dive Trm {trmId = tId, trmArgs = [x,d]}
+    dive Trm {trId = tId, trmArgs = [x,d]}
       | tId == ElementId && twins d dm = mkElem x g
     dive f = mapF dive f
 domainCondition _ =

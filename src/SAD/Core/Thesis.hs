@@ -147,7 +147,7 @@ extendInstantiation sb f g = snd <$> runStateT (normalizedDive 0 f g) sb
     dive n (Or  f1 g1) (Or  f2 g2) =
       normalizedDive n f1 f2 >> normalizedDive n g1 g2
     dive n (Not f) (Not g) = dive n f g
-    dive n Trm {trmId = t1, trmArgs = ts1} Trm {trmId = t2, trmArgs = ts2}
+    dive n Trm {trId = t1, trmArgs = ts1} Trm {trId = t2, trmArgs = ts2}
       = lift (guard $ t1 == t2) >> mapM_ (uncurry $ dive n) (zip ts1 ts2)
     dive _ v@Var {varName = s@(VarAssume _)} t = do
       mp <- get; case Map.lookup s mp of
@@ -242,7 +242,7 @@ generateVariations definitions = pass [] (Just True) (0 :: Int)
 {- mark symbols that are recursively defined in their defining formula, so that
    the definition is not infinitely expanded -}
 markRecursive :: TermId -> Formula -> Formula
-markRecursive n t@Trm{trmId = m}
+markRecursive n t@Trm{trId = m}
   | n == m = Tag GenericMark t
   | otherwise = t
 markRecursive n f = mapF (markRecursive n) f

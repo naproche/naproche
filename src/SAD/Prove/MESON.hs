@@ -127,7 +127,7 @@ rename fs = insertU
 umatch :: (MonadPlus m) => Formula -> Formula -> m (Formula -> Formula)
 umatch Var {varName = v@(VarU _)} t = return  $ subst t v
 umatch Var {varName = u} Var {varName = v} | u == v  = return id
-umatch Trm {trmArgs = ps, trmId = n} Trm {trmArgs = qs, trmId = m}
+umatch Trm {trmArgs = ps, trId = n} Trm {trmArgs = qs, trId = m}
   | n == m = pairs ps qs
   where
     pairs (p:ps) (q:qs) = do

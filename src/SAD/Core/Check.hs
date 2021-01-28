@@ -47,7 +47,7 @@ fillDef alreadyChecked context = fill True False [] (Just True) 0 (Context.formu
         newContext      <- cnRaise context localContext
         collectInfo userInfoSetting v `withContext` newContext -- fortify the term
 
-      term@Trm{trmName = t, trmArgs = tArgs, trmInfo = infos, trmId = tId} ->
+      term@Trm{trmName = t, trmArgs = tArgs, trmInfo = infos, trId = tId} ->
         if alreadyChecked
           then return term
           else do
@@ -75,7 +75,7 @@ cnRaise thisBlock local = do
 
 
 setDef :: Bool -> Context -> Formula -> VM Formula
-setDef isNewWord context term@Trm{trmName = t, trmId = tId} =
+setDef isNewWord context term@Trm{trmName = t, trId = tId} =
   incrementCounter Symbols >>
     (    (guard isNewWord >> return term) -- do not check new word
     <|>  (findDef term >>= testDef context term) -- check term's definition

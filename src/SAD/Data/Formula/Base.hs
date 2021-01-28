@@ -29,7 +29,7 @@ data Formula =
   Tag Tag Formula         | Not Formula             |
   Top                     | Bot                     |
   Trm { trmName :: TermName, trmArgs :: [Formula],
-        trmInfo :: [Formula], trmId   :: TermId}         |
+        trmInfo :: [Formula], trId   :: TermId}         |
   -- | Free variables 'Var'.
   Var { varName :: VariableName, varInfo :: [Formula], varPosition :: SourcePos } |
   -- | This is used for representing bound variables through de Brujin indices.
@@ -38,6 +38,10 @@ data Formula =
   -- traverses the formula from the inside to the outside.
   Ind { indIndex :: Int, indPosition :: SourcePos } | ThisT
   deriving (Eq, Ord)
+
+trmId :: Formula -> TermId
+trmId (Trm _ _ _ a) = a
+trmId f = error $ "trmId called no term" 
 
 trInfo :: Formula -> [Formula]
 trInfo Trm {trmInfo = xs} = xs

@@ -213,7 +213,7 @@ mkObj      = mkTrm ObjectId termObject . pure -- this is a dummy for parsing pur
 -- quick checks of syntactic properties
 
 isApplication :: Formula -> Bool
-isApplication Trm {trmId = ApplicationId} = True; isApplication _ = False
+isApplication Trm {trId = ApplicationId} = True; isApplication _ = False
 isTop :: Formula -> Bool
 isTop Top = True; isTop _ = False
 isBot :: Formula -> Bool
@@ -254,7 +254,7 @@ occursS = ((mkVar VarSlot) `occursIn`)
 -- | Replace @ObjectId@ Terms with @Top@
 -- pseudotyping with "object"
 removeObject :: Formula -> Formula
-removeObject t@Trm {trmId = tId}
+removeObject t@Trm {trId = tId}
   | tId == ObjectId = Top
   | otherwise = t
 removeObject f = mapF removeObject f
