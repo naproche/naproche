@@ -112,7 +112,7 @@ tokenize texState start = posToken texState start NoWhiteSpaceBefore
     posToken texState pos whitespaceBefore s = case Text.uncons s of
       Nothing -> [EOF pos]
 
-      -- We exapand the `\{` and `\}` tex commands here
+      -- We expand the `\{` and `\}` tex commands here
       Just ('\\', rest) | (Text.head rest) `elem` ['{','}'] && useTex ->
             posToken texState (advancePos pos "\\{") WhiteSpaceBefore rest
 
