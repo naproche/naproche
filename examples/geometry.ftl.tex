@@ -164,7 +164,7 @@
   \paragraph{Reflexivity of congruence}
 
   \begin{forthel}
-    \begin{lemma}[L2_1]
+    \begin{lemma}[L2o1]
       $x-y : x-y$.
     \end{lemma}
   \end{forthel}
@@ -173,7 +173,7 @@
   \paragraph{Symmetry of congruence}
 
   \begin{forthel}
-    \begin{lemma}[L2_2]
+    \begin{lemma}[L2o2]
       Assume $x-y : v-w$. Then $v-w : x-y$.
     \end{lemma}
   \end{forthel}
@@ -182,7 +182,7 @@
   \paragraph{Transitivity of congruence}
 
   \begin{forthel}
-    \begin{lemma}[L2_3]
+    \begin{lemma}[L2o3]
       Assume $x-y : v-w$ and $v-w : p-q$. Then $x-y : p-q$.
     \end{lemma}
   \end{forthel}
@@ -191,11 +191,11 @@
   \paragraph{Cong is independent of the order of the pairs}
 
   \begin{forthel}
-    \begin{lemma}[L2_4]
+    \begin{lemma}[L2o4]
       Assume $x-y : v-w$. Then $y-x : v-w$.
     \end{lemma}
 
-    \begin{lemma}[L2_5]
+    \begin{lemma}[L2o5]
       Assume $x-y : v-w$. Then $x-y : w-v$.
     \end{lemma}
   \end{forthel}
@@ -204,7 +204,7 @@
   \paragraph{Zero-length segments are congruent}
 
   \begin{forthel}
-    \begin{lemma}[L2_8]
+    \begin{lemma}[L2o8]
       $x-x : y-y$.
     \end{lemma}
   \end{forthel}
@@ -213,7 +213,7 @@
   \paragraph{Concatenation of segments}
 
   \begin{forthel}
-    \begin{lemma}[L2_11]
+    \begin{lemma}[L2o11]
       Assume $x-y-z$ and $r-v-w$ and $x-y : r-v$ and $y-z : v-w$. Then $x-z : r-w$.
     \end{lemma}
 
@@ -231,7 +231,7 @@
   \paragraph{Uniqueness for Axiom A4}
 
   \begin{forthel}
-    \begin{lemma}[L2_12]
+    \begin{lemma}[L2o12]
       Assume $q != x$. Suppose $q-x-y$ and $x-y : v-w$ and $q-x-r$ and $x-r : v-w$. Then $y = r$.
     \end{lemma}
   \end{forthel}
@@ -240,7 +240,7 @@
   \paragraph{Right-betweenness}
 
   \begin{forthel}
-    \begin{lemma}[L3_1]
+    \begin{lemma}[L3o1]
       $x-y-y$.
     \end{lemma}
   \end{forthel}
@@ -249,7 +249,7 @@
   \paragraph{Symmetry of betweenness}
 
   \begin{forthel}
-    \begin{lemma}[L3_2]
+    \begin{lemma}[L3o2]
       Assume $x-y-z$. Then $z-y-x$.
     \end{lemma}
   \end{forthel}
@@ -258,38 +258,38 @@
   \paragraph{Left-betweenness}
 
   \begin{forthel}
-    \begin{lemma}[L3_3]
+    \begin{lemma}[L3o3]
       $x-x-y$.
     \end{lemma}
 
-    \begin{lemma}[L3_4]
+    \begin{lemma}[L3o4]
       Assume $x-y-z$ and $y-x-z$. Then $x = y$.
     \end{lemma}
 
-    \begin{lemma}[L3_5a]
+    \begin{lemma}[L3o5a]
       Assume $x-y-v$ and $y-z-v$. Then $x-y-z$.
     \end{lemma}
 
-    \begin{lemma}[L3_5b]
+    \begin{lemma}[L3o5b]
       Assume $x-y-v$ and $y-z-v$. Then $x-y-v$.
     \end{lemma}
 
-    \begin{lemma}[L3_6a]
+    \begin{lemma}[L3o6a]
       Assume $x-y-z$ and $x-z-r$. Then $y-z-r$.
     \end{lemma}
 
-    \begin{lemma}[L3_6b]
+    \begin{lemma}[L3o6b]
       Assume $x-y-z$ and $x-z-r$. Then $x-y-r$.
     \end{lemma}
 
-    \begin{lemma}[L3_7a]
+    \begin{lemma}[L3o7a]
       Assume $x-y-z$ and $y-z-r$ and $y != z$. Then $x-z-r$.
     \end{lemma}
     \begin{proof}
     	Take $v$ such that $x-z-v$ and $z-v : z-r$.	Then $y-z-v$ and $z-v : z-r$. Hence $v = r$.
     \end{proof}
 
-    \begin{lemma}[L3_7b]
+    \begin{lemma}[L3o7b]
       Assume $x-y-z$ and $y-z-r$ and $y != z$. Then $x-y-r$.
     \end{lemma}
   \end{forthel}
@@ -297,15 +297,15 @@
   Existence of at least two points follows from A8. (All other axioms also hold in a one-point space.)
 
   \begin{forthel}
-    \begin{lemma}[L3_13]
+    \begin{lemma}[L3o13]
       $x != y$ for some $x, y$.
     \end{lemma}
 
-    \begin{lemma}[L3_14]
+    \begin{lemma}[L3o14]
       There exist $z$ such that $x-y-z$ and $y != z$.
     \end{lemma}
 
-    \begin{lemma}[L3_17]
+    \begin{lemma}[L3o17]
       Assume $x-y-z$ and $u-v-z$ and $x-p-u$. Then there exist $q$ such that ($p-q-z$ and $y-q-v$).
     \end{lemma}
     \begin{proof}
@@ -327,7 +327,7 @@
   We can swap x,y and v,w.
 
   \begin{forthel}
-    \begin{axiom}[L4_2]
+    \begin{axiom}[L4o2]
       Assume $IFS(x,y,z,r,v,w,p,q)$. Then $y-r : w-q$.
     \end{axiom}
   \end{forthel}
@@ -339,82 +339,82 @@
   %
 
   \begin{forthel}
-    \begin{axiom}[L4_3]
+    \begin{axiom}[L4o3]
       Assume $x-y-z$ and $r-v-w$ and $x-z : r-w$ and $y-z : v-w$. Then $x-y : r-v$.
     \end{axiom}
 
-    \begin{definition}[L4_4]
+    \begin{definition}[L4o4]
       $x-y-z : u-v-w$ iff $x-y : u-v$ and $x-z : u-w$ and $y-z : v-w$.
     \end{definition}
 
-    \begin{lemma}[L4_5]
+    \begin{lemma}[L4o5]
       Assume $x-y-z$ and $x-z : r-w$. Then there exists $v$ such that ($r-v-w$ and $x-y-z : r-v-w$).
     \end{lemma}
     \begin{proof}
     	Take $u$ such that $w-r-u$ and $r != u$. Then take $v$ such that $u-r-v$ and $r-v : x-y$. Take $g$ such that $u-v-g$ and $v-g : y-z$. Then $x-z : r-w$. Therefore$ g = w$.
     \end{proof}
 
-    \begin{lemma}[L4_6]
+    \begin{lemma}[L4o6]
       Assume $x-y-z$ and $x-y-z : r-v-w$. Then $r-v-w$.
     \end{lemma}
     \begin{proof}
     	Take $u$ such that $r-u-w$ and $x-y-z : r-u-w$.	Then $r-u-w : r-v-w$ and $IFS(r,u,w,u,r,u,w,v)$.	Then $u-u : u-v$. Hence $u = v$. Hence $r-v-w$.
     \end{proof}
 
-    \begin{lemma}[L4_11a]
+    \begin{lemma}[L4o11a]
       Assume $Col(x,y,z)$. Then $Col(y,z,x)$.
     \end{lemma}
 
-    \begin{lemma}[L4_11b]
+    \begin{lemma}[L4o11b]
       Assume $Col(x,y,z)$. Then $Col(z,x,y)$.
     \end{lemma}
 
-    \begin{lemma}[L4_11c]
+    \begin{lemma}[L4o11c]
       Assume $Col(x,y,z)$. Then $Col(z,y,x)$.
     \end{lemma}
 
-    \begin{lemma}[L4_11d]
+    \begin{lemma}[L4o11d]
       Assume $Col(x,y,z)$. Then $Col(y,x,z)$.
     \end{lemma}
 
-    \begin{lemma}[L4_11e]
+    \begin{lemma}[L4o11e]
       Assume $Col(x,y,z)$. Then $Col(x,z,y)$.
     \end{lemma}
 
-    \begin{lemma}[L4_12]
+    \begin{lemma}[L4o12]
       $Col(x,x,y)$.
     \end{lemma}
 
-    \begin{lemma}[L4_13]
+    \begin{lemma}[L4o13]
       Assume $Col(x,y,z)$ and $x-z : r-w$ and $r-v-w$. Then $Col(r,v,w)$.
     \end{lemma}
 
-    \begin{lemma}[L4_14_1]
+    \begin{lemma}[L4o14o1]
       $x-y-z : u-v-w$ iff $y-x-z : v-u-w$.
     \end{lemma}
 
-    \begin{lemma}[L4_14_2]
+    \begin{lemma}[L4o14o2]
       $x-y-z : u-v-w$ iff $z-y-x : w-v-u$.
     \end{lemma}
 
-    \begin{lemma}[L4_14_3]
+    \begin{lemma}[L4o14o3]
       $x-y-z : u-v-w$ iff $x-z-y : u-w-v$.
     \end{lemma}
 
-    \begin{axiom}[L4_14]
+    \begin{axiom}[L4o14]
       Assume $Col(x,y,z)$ and $x-y : r-v$. Then there exists $w$ such that $x-y-z : r-v-w$.
     \end{axiom}
 
-    \begin{definition}[L4_15]
+    \begin{definition}[L4o15]
       $FS(x,y,z,r,v,w,p,q)$ iff $Col(x,y,z)$ and $x-y-z : v-w-p$ and $x-r : v-q$ and $y-r : w-q$.
     \end{definition}
 
-    \begin{axiom}[L4_16]
+    \begin{axiom}[L4o16]
       Assume $FS(x,y,z,r,v,w,p,q)$ and $x != y$. Then $z-r : p-q$.
     \end{axiom}
 
 
-    \begin{lemma}[L4_17]
+    \begin{lemma}[L4o17]
       Assume $x != y$ and $Col(x,y,z)$ and $x-p : x-q$ and $y-p : y-q$. Then $z-p : z-q$.
     \end{lemma}
     \begin{proof}
@@ -422,11 +422,11 @@
     \end{proof}
 
 
-    \begin{lemma}[L4_18]
+    \begin{lemma}[L4o18]
       Assume $x != y$ and $Col(x,y,z)$ and $x-z : x-p$ and $y-z : y-p$. Then $z = p$.
     \end{lemma}
 
-    \begin{lemma}[L4_19]
+    \begin{lemma}[L4o19]
       Assume $x-z-y$ and $x-z : x-p$ and $y-z : y-p$. Then $z = p$.
     \end{lemma}
     \begin{proof}
@@ -434,12 +434,12 @@
     \end{proof}
   \end{forthel}
 
-  The 11th axiom of Tarski's axiomatic system says that if $x-y-w$ and $x-z-w$ then either $x-y-z$ or $x-z-y$. To show that it follows from the first ten axioms we first prove Lemma C5_1 from which we can easy deduce the 11th axiom.
+  The 11th axiom of Tarski's axiomatic system says that if $x-y-w$ and $x-z-w$ then either $x-y-z$ or $x-z-y$. To show that it follows from the first ten axioms we first prove Lemma C5o1 from which we can easy deduce the 11th axiom.
 
-  The definitions, lemmata and axioms C5_1a - C5_1p are not part of SST. We have opted for adding them to improve proof-checking speed and readability of the text.
+  The definitions, lemmata and axioms C5o1a - C5o1p are not part of SST. We have opted for adding them to improve proof-checking speed and readability of the text.
 
   \begin{forthel}
-    \begin{definition}[C5_1a]
+    \begin{definition}[C5o1a]
       $Betw5(x,y,z,r,p)$ iff $x-y-z$ and $x-y-r$ and $x-y-p$ and $x-z-r$ and $x-z-p$ and $x-r-p$ and $y-z-r$ and $y-z-p$ and $y-r-p$ and $z-r-p$.
     \end{definition}
 
@@ -449,68 +449,68 @@
   The following 4 predicates state the already proven statements for different positions in the proof. They are not defined in the book "Metamathematische Methoden in der Geometrie. We use them because they seem to increase the performance of the proof assistant, when checked just before the next proving step.
 
   \begin{forthel}
-    \begin{definition}[C5_1b]
+    \begin{definition}[C5o1b]
       $Th(x,y,z,r,p,q,g,h)$ iff $x != y$ and $x-y-z$ and $x-y-r$ and $x-r-p$ and $r-p : z-r$ and $x-z-q$ and $z-q : z-r$ and $z-q-h$ and $r-p-g$.
     \end{definition}
 
-    \begin{definition}[C5_1c]
+    \begin{definition}[C5o1c]
       $Th2(x,y,z,r,p,q,g)$ iff $x != y$ and $x~y~z~q~g$ and $x~y~r~p~g$ and $r-p : z-r$ and $z-q : z-r$ and $y-p : g-z$ and $y-g : g-y$.
     \end{definition}
 
-    \begin{definition}[C5_1d]
+    \begin{definition}[C5o1d]
       $Th3(x,y,z,r,p,q,g,u)$ iff $Th2(x,y,z,r,p,q,g)$ and $OFS(y,z,q,p,g,p,r,z)$ and $p-q : z-r$ and $z-u-p$ and $r-u-q$ and $IFS(r,u,q,z,r,u,q,p)$ and $IFS(z,u,p,r,z,u,p,q)$ and $u-r : u-q$.
     \end{definition}
 
-    \begin{definition}[C5_1e]
+    \begin{definition}[C5o1e]
       $Th4(x,y,z,r,p,q,g,u,v,w,h)$ iff $Th3(x,y,z,r,p,q,g,u)$ and $z != p$ and $z != q$ and $p-z-v$ and $z-v : z-q$ and $q-z-h$ and $z-h : z-u$ and $v-h-w$ and $h-w : h-v$.
     \end{definition}
   \end{forthel}
 
-  For the following 5 Statements we did not find a proof yet that gets checked positive by Naproche SAD. They are all used in the proof of Lemma C5_1p and Lemma C5_1.
+  For the following 5 Statements we did not find a proof yet that gets checked positive by Naproche SAD. They are all used in the proof of Lemma C5o1p and Lemma C5o1.
 
   \begin{forthel}
-    \begin{lemma}[C5_1f]
+    \begin{lemma}[C5o1f]
       Assume $x != y$ and $x-y-z$ and $x-y-r$. Then there exist points $a,b$ such that $x-r-a$ and $r-a : z-r$ and $x-z-b$ and $z-b : z-r$.
     \end{lemma}
     \begin{proof}
     	Take point $a$ such that $x-r-a$ and $r-a : z-r$ (by A4).	Take point $b$ such that $x-z-b$ and $z-b : z-r$ (by A4).
     \end{proof}
 
-    \begin{axiom}[C5_1g]
+    \begin{axiom}[C5o1g]
       If $Th(x,y,z,r,p,q,g,h)$ then $x~y~z~q~h$ and $x~y~r~p~g$.
     \end{axiom}
 
-    \begin{axiom}[C5_1h]
+    \begin{axiom}[C5o1h]
       Assume $Th(x,y,z,r,p,q,g,h)$ and $x~y~z~q~h$ and $x~y~r~p~g$. Then $y-p : h-z$.
     \end{axiom}
 
-    \begin{axiom}[C5_1i]
+    \begin{axiom}[C5o1i]
       Assume $Th2(x,y,z,r,p,q,g)$ and $OFS(y,z,q,p,g,p,r,z)$. Then $p-q : z-r$.
     \end{axiom}
 
-    \begin{axiom}[C5_1j]
+    \begin{axiom}[C5o1j]
       Assume $Th(x,y,z,r,p,q,g,h)$ and $x~y~z~q~h$ and $x~y~r~p~g$ and $y-p : h-z$. Then $y-g : h-y$.
     \end{axiom}
 
 
 
-    \begin{lemma}[C5_1k]
+    \begin{lemma}[C5o1k]
       Assume $x != y$ and $x-y-z$ and $x-y-r$ and $x-r-p$ and $r-p : z-r$ and $x-z-q$ and $z-q : z-r$ and ($z = p$ or $r = q$). Then $x-z-r$ or $x-r-z$.
     \end{lemma}
 
-    \begin{lemma}[C5_1l]
+    \begin{lemma}[C5o1l]
       Assume $x != y$ and $x-y-z$ and $x-y-r$ and $x-r-p$ and $r-p : z-r$ and $x-z-q$ and $z-q : z-r$. Then there exist points $s,t$ such that $z-q-t$ and $r-p-s$.
     \end{lemma}
 
-    \begin{lemma}[C5_1m]
+    \begin{lemma}[C5o1m]
       Assume $Th2(x,y,z,r,p,q,g)$. Then $OFS(y,z,q,p,g,p,r,z)$.
     \end{lemma}
 
-    \begin{lemma}[C5_1n]
+    \begin{lemma}[C5o1n]
       Assume $Th2(x,y,z,r,p,q,g)$ and $OFS(y,z,q,p,g,p,r,z)$ and $p-q : z-r$. Then there exist $u$ such that $z-u-p$ and $r-u-q$.
     \end{lemma}
 
-    \begin{lemma}[C5_1o]
+    \begin{lemma}[C5o1o]
       Assume $Th4(x,y,z,r,p,q,g,u,v,w,h)$. Then $OFS(q,z,h,v,v,z,u,q)$ and $h-v : u-q$ and $h-w : u-r$ and $OFS(q,u,r,z,v,h,w,z)$ and $q-r : v-w$ and $z-w : z-r$ and $z-v : z-w$.
     \end{lemma}
     \begin{proof}
@@ -522,10 +522,10 @@
     \end{proof}
   \end{forthel}
 
-  The Idea to proof Lemma C5_1 is to extend the line $x-z$ and $x-r$ through two points $p,q$ such that $r-p : z-r$ and $z-q : z-r$. Then one can easy see that if either $z = p$ or $r = q$, $x-y-z$ or $x-z-y$ must hold. The following Lemma proofs that if there exist such points $p$ and $q$ then $z = p$ or $r = q$ must hold. To see that such points exist one has to use Axiom A4 twice.
+  The Idea to proof Lemma C5o1 is to extend the line $x-z$ and $x-r$ through two points $p,q$ such that $r-p : z-r$ and $z-q : z-r$. Then one can easy see that if either $z = p$ or $r = q$, $x-y-z$ or $x-z-y$ must hold. The following Lemma proofs that if there exist such points $p$ and $q$ then $z = p$ or $r = q$ must hold. To see that such points exist one has to use Axiom A4 twice.
 
   \begin{forthel}
-    \begin{lemma}[C5_1p]
+    \begin{lemma}[C5o1p]
       Assume $x != y$ and $x-y-z$ and $x-y-r$ and $x-r-p$ and $r-p : z-r$ and $x-z-q$ and $z-q : z-r$. Then $z = p$ or $r = q$.
     \end{lemma}
     \begin{proof}
@@ -538,7 +538,7 @@
     	Then $Th2(x,y,z,r,p,q,s)$.
     	Then $OFS(y,z,q,p,s,p,r,z)$.
     	Then $p-q : z-r$.
-    	Take $u$ such that $z-u-p$ and $r-u-q$ (by C5_1n).
+    	Take $u$ such that $z-u-p$ and $r-u-q$ (by C5o1n).
     	Then $IFS(r,u,q,z,r,u,q,p)$.
     	Then $IFS(z,u,p,r,z,u,p,q)$.
     	Then $u-z : u-p$.
@@ -547,7 +547,7 @@
     		Take $v$ such that $p-z-v$ and $z-v : z-q$.
     		Take $h$ such that $q-z-h$ and $z-h : z-u$.
     		Take $w$ such that $v-h-w$ and $h-w : h-v$.
-    		Then $OFS(q,z,h,v,v,z,u,q)$ and $h-v : u-q$ and $h-w : u-r$ and $OFS(q,u,r,z,v,h,w,z)$ and $q-r : v-w$ and $z-w : z-r$ and $z-v : z-w$ (by C5_1o).
+    		Then $OFS(q,z,h,v,v,z,u,q)$ and $h-v : u-q$ and $h-w : u-r$ and $OFS(q,u,r,z,v,h,w,z)$ and $q-r : v-w$ and $z-w : z-r$ and $z-v : z-w$ (by C5o1o).
     		Then $h-v : h-w$. $z != p$. Hence $h != z$. $Col(h,z,q)$. Therefore $q-v : q-w$.
     		Then $z-v : z-w$. $z != q$. $Col(z,q,y)$. Therefore $y-v : y-w$.
     		Then $z-v : z-w$. $z != q$. $Col(z,q,s)$. Therefore $s-v : s-w$.
@@ -556,18 +556,18 @@
     	Assume $z = p$.
     \end{proof}
 
-    \begin{lemma}[D5_1]
+    \begin{lemma}[D5o1]
       Assume $x != y$ and $x-y-z$ and $x-y-r$. Then $x-z-r$ or $x-r-z$.
     \end{lemma}
     \begin{proof}
-    	Take $p,q$ such that $x-r-p$ and $r-p : z-r$ and $x-z-q$ and $z-q : z-r$. Then $z = p$ or $r = q$ (by C5_1p). Therefore $x-z-r$ or $x-r-z$ (by C5_1k).
+    	Take $p,q$ such that $x-r-p$ and $r-p : z-r$ and $x-z-q$ and $z-q : z-r$. Then $z = p$ or $r = q$ (by C5o1p). Therefore $x-z-r$ or $x-r-z$ (by C5o1k).
     \end{proof}
 
-    \begin{lemma}[D5_2]
+    \begin{lemma}[D5o2]
       Assume $x != y$ and $x-y-z$ and $x-y-r$. Then $y-z-r$ or $y-r-z$.
     \end{lemma}
 
-    \begin{theorem}[D5_3]
+    \begin{theorem}[D5o3]
       If $x-y-w$ and $x-z-w$ then $x-y-z$ or $x-z-y$.
     \end{theorem}
   \end{forthel}
