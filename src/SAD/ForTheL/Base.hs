@@ -83,7 +83,7 @@ initFS = FState
       ([Symbol "\\in"], \(x:m:_) -> mkElem x m),
       ([Symbol "\\notin"], \(x:m:_) -> Not $ mkElem x m),
       ([Symbol "\\neq"], Not . mkTrm EqualityId TermEquality),
-      ([Symbol "\\proc"], mkTrm LessId TermLess) ]
+      ([Symbol "\\prec"], mkTrm LessId TermLess) ]
     cf = [
       ([Symbol "Dom", Symbol "(",Vr,Symbol ")"], mkDom . head),
       ([Symbol "(", Vr, Symbol ",", Vr, Symbol ")"], \(x:y:_) -> mkPair x y),
