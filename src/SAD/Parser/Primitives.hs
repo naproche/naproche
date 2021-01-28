@@ -119,6 +119,7 @@ symb :: Parser st Text
 symb = tokenPrim $ \tok ->
   let t = showToken tok
   in case Text.uncons t of
+    Just ('\\', rest) | Text.all isAlpha rest -> Just ("\\" <> rest)
     Just (c, "") -> guard (c `elem` symChars) >> return t
     _ -> Nothing
 
