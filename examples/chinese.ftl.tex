@@ -1,8 +1,8 @@
-\documentclass{document}
+\documentclass{article}
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage{forthel}
+\usepackage{../lib/tex/forthel}
 
 \title{Chinese remainder theorem}
 \author{Andrei Paskevich}
@@ -21,7 +21,7 @@
     \end{signature}
 
     Let $a,b,c,x,y,z,u,v,w$ denote elements.
-    
+
     \begin{axiom}
       $a$ is setsized.
     \end{axiom}
@@ -137,7 +137,7 @@
       If every element of $X$ belongs to $Y$ and every element of $Y$ belongs to $X$ then $X = Y$.
     \end{axiom}
 
-    \begin{definition}[DefSSum]
+    \begin{definition}[DefSum]
       $X +' Y$ is a set such that for every element $z$ ($z << X +' Y$) iff there exist $x << X, y << Y$ such that $z = x + y$.
     \end{definition}
 
@@ -184,7 +184,7 @@
 
 
     \begin{lemma}[IdeInt]
-      $I ** J$ is an ideal (by Definition).
+      $I ** J$ is an ideal (by DefIdeal).
     \end{lemma}
 
     \begin{definition}[DefMod]
@@ -291,8 +291,7 @@
     Take an ideal $I$ equal to $<a> +' <b>$. We have $0,a << <a>$ and $0,b << <b>$ (by MulZero, MulUnit). Hence there exists a nonzero element of $<a> +' <b>$. Indeed $a << <a> +' <b>$ and $b << <a> +' <b>$ (by AddZero).
 
     Take a nonzero $u << I$ such that for no nonzero $v << I$ $(|v| -<- |u|)$.
-    Proof by contradiction.
-      Assume the contrary.
+    Proof.
 
       We can show by induction on $|w|$ that for every nonzero $w << I$ there
         exists nonzero $u << I$ such that for no nonzero $v << I$ $(|v| -<- |u|)$.

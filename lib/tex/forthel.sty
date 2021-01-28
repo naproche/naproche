@@ -1,0 +1,135 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{forthel}[2021/01/28 Typesetting of ForTheL texts]
+
+\RequirePackage{amsmath}
+\RequirePackage{amsfonts}
+\RequirePackage{framed}   % required for forthel environment
+\RequirePackage{xifthen}  % required for optional naming of top-level sections
+
+
+% Naproche-SAD logo
+
+\newcommand{\Naproche}{\ifmmode{\mathbb{N}\text{aproche}}\else{$\mathbb{N}\text{aproche}$}\fi}
+
+\newcommand{\NaprocheSAD}{\ifmmode{\mathbb{N}\text{aproche-SAD}}\else{$\mathbb{N}\text{aproche-SAD}$}\fi}
+
+
+% Predefined notions
+
+\newcommand{\dom}{\textrm{dom}}
+
+
+% Section names
+
+\newcommand{\sectionname}[1]
+{%
+  \ifthenelse{\isempty{#1}}%
+  {}%
+  { (#1)}%
+}
+
+
+% ForTheL specific environments
+
+\newenvironment{forthel}
+{%
+  \begin{leftbar}%
+}
+{%
+  \end{leftbar}%
+}
+
+\newenvironment{theorem}[1][]
+{%
+  \textbf{Theorem}%
+  \sectionname{#1}%
+  \textbf{.} %
+}
+{}
+
+\newenvironment{lemma}[1][]
+{%
+  \textbf{Lemma}%
+  \sectionname{#1}%
+  \textbf{.} %
+}
+{}
+
+\newenvironment{proposition}[1][]
+{%
+  \textbf{Proposition}%
+  \sectionname{#1}%
+  \textbf{.} %
+}
+{}
+
+\newenvironment{corollary}[1][]
+{%
+  \textbf{Corollary}%
+  \sectionname{#1}%
+  \textbf{.} %
+}
+{}
+
+\newenvironment{definition}[1][]
+{%
+  \textbf{Definition}%
+  \sectionname{#1}%
+  \textbf{.} %
+}
+{}
+
+\newenvironment{signature}[1][]
+{%
+  \textbf{Signature}%
+  \sectionname{#1}%
+  \textbf{.} %
+}
+{}
+
+\newenvironment{axiom}[1][]
+{%
+  \textbf{Axiom}%
+  \sectionname{#1}%
+  \textbf{.} %
+}
+{}
+
+\newenvironment{proof}[1][]
+{%
+  \par%
+  \textbf{Proof.} %
+}
+{%
+  \begin{flushright}%
+    $\square$%
+  \end{flushright}%
+}
+
+
+% Paragraph settings
+
+\setlength{\parindent}{0cm}
+\setlength{\parskip}{0.5em}
+
+
+% Let "..." behave similar to \textrm{...} in math mode
+
+\let\ftlquotationmark"
+
+\catcode`\"=\active
+
+\def"#1"
+{%
+  \ifmmode\mathrel
+  {%
+    \textrm{#1}%
+  }
+  \else
+  {%
+    \ftlquotationmark%
+    { #1}%
+    \ftlquotationmark%
+  }
+  \fi%
+}

@@ -1,8 +1,8 @@
-\documentclass{document}
+\documentclass{article}
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage{forthel}
+\usepackage{../lib/tex/forthel}
 
 \title{König's Theorem}
 \author{Steffen Frerix}
@@ -83,7 +83,7 @@
 
     Let $card(M)$ denote the cardinality of $M$.
 
-    \begin{axiom}[Image_Card]
+    \begin{axiom}[ImageCard]
       Assume $M$ is a subset of $Dom(f)$. $card(f^[M]) =< card(M)$.
     \end{axiom}
 
@@ -91,7 +91,7 @@
       Assume the cardinality of $N$ is less than the cardinality of $M$. Then $M \ N$ has an element.
     \end{axiom}
 
-    \begin{axiom}[Surj_Exi]
+    \begin{axiom}[SurjExi]
       Assume $card(M) =< card(N)$. Assume $M$ has an element. There exists a
       function $f$ such that $N$ is the domain of $f$ and $M$ is the image of $f$.
     \end{axiom}
@@ -115,7 +115,7 @@
       Let $kappa$ be a sequence of cardinals on $D$. $SumSet(kappa,D)$ is a set.
     \end{signature}
 
-    \begin{axiom}[Sum_Def]
+    \begin{axiom}[SumDef]
       Let $kappa$ be a sequence of cardinals on $D$. $SumSet(kappa,D) = {(n,i) | i "is an element of" D "and" n "is an element of" kappa[i]}$.
     \end{axiom}
 
@@ -131,7 +131,7 @@
       Let $kappa$ be a sequence of cardinals on $D$. $ProdSet(kappa,D)$ is a set.
     \end{signature}
 
-    \begin{axiom}[Prod_Def]
+    \begin{axiom}[ProdDef]
       Let $kappa$ be a sequence of cardinals on $D$. $ProdSet(kappa,D) = {"function" f | Dom(f) = D /\ (f[i] "is an element of" kappa[i] "for every
       element" i "of" D)}$.
     \end{axiom}
@@ -162,12 +162,10 @@
     \end{theorem}
     \begin{proof}
       Proof by contradiction. Assume the contrary. Then $Prod(lambda,D) =<
-      Sum(kappa,D)$. Take a function $G$ such that $SumSet(kappa,D)$ is the domain of $G$ and $ProdSet(lambda,D)$ is the image of $G$. Indeed $ProdSet(lambda, D)$ has an element. Define $Diag[i] = {G[(n,i)][i] | n "is an element of" kappa[i]}$ for $i$ in $D$.
+      Sum(kappa,D)$. Take a function $G$ such that $SumSet(kappa,D)$ is the domain of $G$ and $ProdSet(lambda,D)$ is the image of $G$. Indeed $ProdSet(lambda, D)$ has an element. Indeed lambda and D have an element. Define $Diag[i] = {G[(n,i)][i] | n "is an element of" kappa[i]}$ for $i$ in $D$.
 
-      For every element $f$ of $ProdSet(lambda, D)$ for every element $i$ of $D$ $f[i]$ is an element of $lambda[i]$.
-      For every element $i$ of $D$ $lambda[i]$ is a set.
-      For every element $i$ of $D$ for every element $d$ of $Diag[i]$ $d$ is an element of $lambda[i]$.
-      For every element $i$ of $D$ $Diag[i]$ is a set.
+      For every element $f$ of $ProdSet(lambda, D)$ for every element $i$ of $D$ $f[i]$ is an element of $lambda[i]$. For every element $i$ of $D$ $lambda[i]$ is a set. For every element $i$ of $D$ for every element $d$ of $Diag[i]$ $d$ is an element of $lambda[i]$. For every element $i$ of $D$ $Diag[i]$ is a set.
+      
       For every element $i$ of $D$ $card(Diag[i]) < lambda[i]$.
       proof.
         Let $i$ be an element of $D$. Define $F[n] = G[(n,i)][i]$ for $n$ in $kappa[i]$. Then $F^[kappa[i]] = Diag[i]$.

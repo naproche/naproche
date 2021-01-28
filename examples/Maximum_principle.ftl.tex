@@ -1,8 +1,8 @@
-\documentclass{document}
+\documentclass{article}
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage{forthel}
+\usepackage{../lib/tex/forthel}
 
 \title{Maximum modulus principle}
 \author{Steffen Frerix}
@@ -91,7 +91,7 @@
     \begin{axiom}
       Assume $x$ is element of $Ball(eps, z)$. Then $x$ is a real number.
     \end{axiom}
-    
+
     \begin{lemma}
       Assume $x$ is an element of $Ball(eps, z)$. Then $x$ is setsized.
     \end{lemma}
@@ -126,11 +126,11 @@
       A region is an open set.
     \end{signature}
 
-    \begin{axiom}[Identity_Theorem]
+    \begin{axiom}[IdentityTheorem]
       Assume $f$ is holomorphic and the domain of $f$ is a region. Assume that $Ball(eps,z)$ is a subset of the domain of $f$. If $f$ is constant on $Ball(eps,z)$ then $f$ is constant.
     \end{axiom}
 
-    \begin{proposition}[Maximum_principle]
+    \begin{proposition}[Maximumprinciple]
       Assume $f$ is holomorphic and the domain of $f$ is a region. If $f$ has a local maximal point then $f$ is constant.
     \end{proposition}
     \begin{proof}

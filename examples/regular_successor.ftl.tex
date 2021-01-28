@@ -1,8 +1,8 @@
-\documentclass{document}
+\documentclass{article}
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage{forthel}
+\usepackage{../lib/tex/forthel}
 
 \title{Regularity of successor cardinals}
 \author{Steffen Frerix}
@@ -33,7 +33,7 @@
 
     \begin{axiom}
       Let $f$ be a function. Let $M$ be a set. Assume $Dom(f) = M$.
-        Let $x$ be an element of $M$. Then $f[x]$ is setsized.
+      Let $x$ be an element of $M$. Then $f[x]$ is setsized.
     \end{axiom}
 
     \begin{definition}
@@ -57,7 +57,7 @@
     \begin{definition}
       Assume $M$ is a subset of $Dom(f)$. $f^[M] = {f[x] | x "is an element of" M}$.
     \end{definition}
-    
+
     \begin{axiom}
       Assume $M$ is a subset of $Dom(f)$. $f^[M]$ is a set.
     \end{axiom}
@@ -102,7 +102,7 @@
 
     Let $card(M)$ stand for the cardinality of $M$.
 
-    \begin{axiom}[Surj_Exi]
+    \begin{axiom}[SurjExi]
       Assume $M$ has an element. $card(M) =< card(N)$ iff there exists a function $f$ such that $Dom(f) = N$ and $f^[N] = M$.
     \end{axiom}
 
@@ -165,7 +165,7 @@
     \end{theorem}
     \begin{proof}
       Proof by contradiction. Assume the contrary. Take a cofinal subset $x$ of
-      $Succ(A)$ such that $card(x) != Succ(A)$. Then $card(x) =< A$. Take a function $f$ that is surjective from $A$ onto $x$ (by Surj_Exi). Indeed $x$ has an element and $card(A) = A$.
+      $Succ(A)$ such that $card(x) != Succ(A)$. Then $card(x) =< A$. Take a function $f$ that is surjective from $A$ onto $x$ (by SurjExi). Indeed $x$ has an element and $card(A) = A$.
 
       Define $g[i] =$
         Case $i$ has an element -> Choose a function $h$ that is surjective from $A$ onto $i$ in $h$,
@@ -183,8 +183,7 @@
 
         Every element of $h^[Prod(A,A)]$ is an element of $Succ(A)$.
         proof.
-          Let $n$ be an element of $h^[Prod(A,A)]$.
-          We can take elements $a,b$ of $A$ such that $n = h[(a,b)]$.
+          Let $n$ be an element of $h^[Prod(A,A)]$. We can take elements $a,b$ of $A$ such that $n = h[(a,b)]$. Then $n = g[f[a]][b]$. $f[a]$ is an element of $Succ(A)$.
 
           Case $f[a]$ has an element. Obvious (by Transitivity).
 

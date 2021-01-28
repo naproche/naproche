@@ -58,7 +58,7 @@ Axiom SetEq.
 If every element of X belongs to Y and every element of Y belongs to X
 then X = Y.
 
-Definition DefSSum.
+Definition DefSum.
 X +' Y is a set such that for every element z (z << X +' Y) iff there exist
 x << X, y << Y such that z = x + y.
 
@@ -97,7 +97,7 @@ proof.
 qed.
 
 
-Lemma IdeInt.  I ** J is an ideal (by Definition).
+Lemma IdeInt.  I ** J is an ideal (by DefIdeal).
 
 Definition DefMod.  x = y (mod I)  iff  x - y << I.
 
@@ -183,8 +183,7 @@ Hence there exists a nonzero element of <a> +' <b>.
 Indeed a << <a> +' <b> and b << <a> +' <b> (by AddZero).
 
 Take a nonzero u << I such that for no nonzero v << I (|v| -<- |u|).
-Proof by contradiction.
-    Assume the contrary.
+Proof.
     We can show by induction on |w| that for every nonzero w << I there exists
     nonzero u << I such that for no nonzero v << I (|v| -<- |u|). Obvious.
     qed.
