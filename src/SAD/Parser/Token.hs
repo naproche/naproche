@@ -114,7 +114,7 @@ tokenize texState start = posToken texState start NoWhiteSpaceBefore
 
       -- We expand the `\{` and `\}` tex commands here
       Just ('\\', rest) | (Text.head rest) `elem` ['{','}'] && useTex ->
-            posToken texState (advancePos pos "\\{") WhiteSpaceBefore rest
+            posToken texState (advancePos pos "\\") WhiteSpaceBefore rest
 
       -- We expand alphanumeric tex commands here
       Just ('\\', rest) | useTex -> new_toks ++ toks
