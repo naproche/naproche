@@ -55,7 +55,7 @@ unif = fmap (mkSubst . updateSubst) . dive [] -- we keep a list of already assig
 
     mkSubst assigned f = substs f (map (varName . fst) assigned) (map snd assigned)
 
-    clash Trm {trmId = tId} Trm {trmId = sId} = tId /= sId
+    clash Trm {trId = tId} Trm {trId = sId} = tId /= sId
     clash Var {varName = x} Var {varName = y} = x /= y
     clash _ _ = True
 

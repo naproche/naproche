@@ -21,6 +21,10 @@
     \end{signature}
 
     Let $a,b,c,x,y,z,u,v,w$ denote elements.
+    
+    \begin{axiom}
+      $a$ is setsized.
+    \end{axiom}
 
     \begin{signature}[SortsC]
       $0$ is an element.
@@ -119,6 +123,10 @@
     Let $X,Y,Z,U,V,W$ denote sets.
 
     \begin{axiom}
+      $X$ is setsized.
+    \end{axiom}
+
+    \begin{axiom}
       Every element of $X$ is an element.
     \end{axiom}
 
@@ -210,6 +218,10 @@
       A natural number is a notion.
     \end{signature}
 
+    \begin{axiom}
+      Let $n$ be a natural number. Then n is setsized.
+    \end{axiom}
+
     \begin{signature}[EucSort]
       Let $x$ be a nonzero element. $|x|$ is a natural number.
     \end{signature}
@@ -278,8 +290,6 @@
   \begin{proof}
     Take an ideal $I$ equal to $<a> +' <b>$. We have $0,a << <a>$ and $0,b << <b>$ (by MulZero, MulUnit). Hence there exists a nonzero element of $<a> +' <b>$. Indeed $a << <a> +' <b>$ and $b << <a> +' <b>$ (by AddZero).
 
-    % This fails with ContradictoryAxioms, probably due to
-    %some weirdness in the parser.
     Take a nonzero $u << I$ such that for no nonzero $v << I$ $(|v| -<- |u|)$.
     Proof by contradiction.
       Assume the contrary.
@@ -287,8 +297,6 @@
       We can show by induction on $|w|$ that for every nonzero $w << I$ there
         exists nonzero $u << I$ such that for no nonzero $v << I$ $(|v| -<- |u|)$.
       Obvious.
-
-      [prover vampire]
     qed.
 
     $u$ is a common divisor of $a$ and $b$.

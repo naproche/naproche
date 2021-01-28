@@ -247,5 +247,5 @@ ontoPrep sk f =
 -- testing for skolem function
 
 isSkolem :: Formula -> Bool
-isSkolem Trm {trmId = SkolemId _} = True
+isSkolem Trm {trId = SkolemId _} = True
 isSkolem _ = False

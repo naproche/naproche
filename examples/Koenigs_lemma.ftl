@@ -1,10 +1,11 @@
 [synonym cardinal/-s][synonym sequence/-s]
+[read ZFC.ftl]
 Let the domain of f stand for Dom(f).
-
 
 Let M,N denote a set.
 
 Let f denote a function.
+Axiom. f is setsized.
 
 ### Some preliminary set theory
 
@@ -15,8 +16,12 @@ Definition.
 M \ N = { x in M | x is not an element of N }.
 
 Definition.
-Assume M is a subset of the domain of f. f^[M] = { f[x] | x is an element of M }. Let the image of
-f stand for f^[Dom(f)].
+Assume M is a subset of the domain of f. f^[M] = { f[x] | x is an element of M }.
+
+Axiom.
+Assume M is a subset of the domain of f. f^[M] is a set.
+
+Let the image of f stand for f^[Dom(f)].
 
 ### Cardinals and Cardinality
 
@@ -70,6 +75,7 @@ Axiom Sum_Def.
 Let kappa be a sequence of cardinals on D.
 SumSet(kappa,D) =
   { (n,i) | i is an element of D and n is an element of kappa[i] }.
+Axiom. Let kappa be a sequence of cardinals on D. Then SumSet(kappa, D) is a set.
 
 Definition.
 Let kappa be a sequence of cardinals on D. Sum(kappa,D) = card(SumSet(kappa,D)).
@@ -81,6 +87,7 @@ Axiom Prod_Def.
 let kappa be a sequence of cardinals on D.
 ProdSet(kappa,D) =
   { function f | Dom(f) = D /\ (f[i] is an element of kappa[i] for every element i of D) }.
+Axiom. Let kappa be a sequence of cardinals on D. Then ProdSet(kappa, D) is a set.
 
 Definition.
 Let kappa be a sequence of cardinals on D. Prod(kappa,D) = card(ProdSet(kappa,D)).
@@ -102,6 +109,10 @@ Take a function G such that SumSet(kappa,D) is the domain of G and ProdSet(lambd
 of G.
   Indeed ProdSet(lambda, D) has an element.
 Define Diag[i] = { G[(n,i)][i] | n is an element of kappa[i] } for i in D.
+For every element f of ProdSet(lambda, D) for every element i of D f[i] is an element of lambda[i].
+For every element i of D lambda[i] is a set.
+For every element i of D for every element d of Diag[i] d is an element of lambda[i].
+For every element i of D Diag[i] is a set.
 For every element i of D card(Diag[i]) < lambda[i]. Proof.
   Let i be an element of D. Define F[n] = G[(n,i)][i] for n in kappa[i].
   Then F^[kappa[i]] = Diag[i].qed.

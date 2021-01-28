@@ -7,6 +7,7 @@
 Signature Integers. An integer is a notion.
 
 Let a,b,c,d,i,j,k,l,m,n stand for integers.
+Axiom. a is setsized.
 
 Signature IntZero.  0 is an integer.
 Signature IntOne.   1 is an integer.
@@ -55,7 +56,7 @@ Lemma EquModSym.    a = b (mod q) => b = a (mod q).
 Proof.
     Assume that a = b (mod q).
     (1) Take n such that q * n = a - b.
-    q * -n .= (-1) * (q * n) (by MulMinOne, MulAsso,MulComm,MulBubble)
+    q * -n .= (-1) * (q * n) (by MulMinOne, MulAsso,MulComm)
                    .= (-1) * (a - b) (by 1).
 qed.
 
@@ -85,6 +86,7 @@ Axiom PrimeDivisor. n has a prime divisor iff n != 1 /\ n != -1.
 # Generic sets
 #
 [synonym belong/-s] [synonym subset/-s]
+[read ZFC.ftl]
 
 
 Let S,T stand for sets.
@@ -105,8 +107,8 @@ Let x is infinite stand for x is not finite.
 #
 # Sets of integers
 #
-Definition.
-INT is the set of integers.
+Definition. INT is the class of integers.
+Axiom. INT is a set.
 
 Let A,B,C,D stand for subsets of INT.
 
@@ -137,6 +139,7 @@ Lemma.
 #
 
 Definition ArSeq.   ArSeq(a,q) = { integer b | b = a (mod q) }.
+Lemma. ArSeq(a, q) is a set.
 
 Definition Open.    A is open iff for any a << A
                         there exists q such that ArSeq(a,q) [= A.
@@ -190,6 +193,7 @@ Proof by contradiction.
         If n has a prime divisor then n belongs to \-/ S.
         proof.
         Assume n has a prime divisor. Take a prime divisor p of n.
+        ArSeq(0,p) is setsized.
         ArSeq(0,p) << S. n << ArSeq(0,p). end.
         If n belongs to \-/ S then n has a prime divisor.
         proof.
@@ -204,6 +208,7 @@ Proof by contradiction.
     Take p such that ArSeq(1,p) [= ~ \-/ S.
     ArSeq(1,p) has an element x such that neither x = 1 nor x = -1.
     proof.
+        1 + p and 1 - p are integers.
         1 + p and 1 - p belong to ArSeq(1,p).
         1 + p !=  1 /\ 1 - p !=  1.
         1 + p != -1 \/ 1 - p != -1.

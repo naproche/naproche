@@ -24,6 +24,7 @@ dependencies:
 - uuid
 - threads
 - yaml
+- haskell-stack-trace-plugin
 
 default-extensions:
   - GeneralizedNewtypeDeriving
@@ -38,6 +39,7 @@ ghc-options:
   - -fno-warn-unused-do-bind
   - -fno-warn-unused-matches
   - -fno-warn-name-shadowing
+  - -fplugin=StackTrace.Plugin
 
 library:
   source-dirs:

@@ -25,6 +25,10 @@
 
     Let $a,b,c,d,i,j,k,l,m,n$ stand for integers.
 
+    \begin{axiom}
+      $a$ is setsized.
+    \end{axiom}
+
     \begin{signature}[IntZero]
       $0$ is an integer.
     \end{signature}
@@ -126,7 +130,7 @@
 
       (1) Take $n$ such that $q * n = a - b$.
 
-      $q * -n .= (-1) * (q * n)$ (by MulMinOne, MulAsso,MulComm,MulBubble) $.= (-1) * (a - b)$ (by 1).
+      $q * -n .= (-1) * (q * n)$ (by MulMinOne, MulAsso,MulComm) $.= (-1) * (a - b)$ (by 1).
     \end{proof}
 
     \begin{lemma}[EquModTrn]
@@ -159,6 +163,7 @@
 
   \begin{forthel}
     [synonym belong/-s] [synonym subset/-s]
+    [read ZFC.ftl]
 
     Let $S,T$ stand for sets.
 
@@ -183,8 +188,12 @@
 
   \begin{forthel}
     \begin{definition}
-      $INT$ is the set of integers.
+      $INT$ is the class of integers.
     \end{definition}
+
+    \begin{axiom}
+      $INT$ is a set.
+    \end{axiom}
 
     Let $A,B,C,D$ stand for subsets of $INT$.
 
@@ -225,6 +234,10 @@
     \begin{definition}[ArSeq]
       $ArSeq(a,q) = { "integer" b | b = a (mod q) }$.
     \end{definition}
+
+    \begin{lemma}
+      $ArSeq(a,q)$ is a set.
+    \end{lemma}
 
     \begin{definition}[Open]
       $A$ is open iff for any $a << A$ there exists $q$ such that $ArSeq(a,q) [= A$.
@@ -298,7 +311,7 @@
 
           If $n$ has a prime divisor then $n$ belongs to $\-/ S$.
           proof.
-            Assume $n$ has a prime divisor. Take a prime divisor $p$ of $n$. $ArSeq(0,p) << S$. $n << ArSeq(0,p)$.
+            Assume $n$ has a prime divisor. Take a prime divisor $p$ of $n$. $ArSeq(0,p)$ is setsized. $ArSeq(0,p) << S$. $n << ArSeq(0,p)$.
           end.
 
           If $n$ belongs to $\-/ S$ then $n$ has a prime divisor.
@@ -314,6 +327,7 @@
 
       $ArSeq(1,p)$ has an element $x$ such that neither $x = 1$ nor $x = -1$.
       proof.
+        $1 + p$ and $1 - p$ are integers.
         $1 + p$ and $1 - p$ belong to $ArSeq(1,p)$. $1 + p !=  1 /\ 1 - p !=  1$. $1 + p != -1 \/ 1 - p != -1$.
       end.
 

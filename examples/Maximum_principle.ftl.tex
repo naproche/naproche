@@ -32,6 +32,10 @@
       Assume $M$ is a subset of the domain of $f$. $f^[M] = { f[x] | x << M }$.
     \end{definition}
 
+    \begin{axiom}
+      Assume $M$ is a subset of the domain of $f$. $f^[M]$ is a set.
+    \end{axiom}
+
     \begin{signature}
       A complex number is a notion.
     \end{signature}
@@ -51,6 +55,10 @@
     \end{signature}
 
     Let $x,y$ denote real numbers.
+
+    \begin{axiom}
+      $x$ is setsized.
+    \end{axiom}
 
     \begin{signature}
       $|z|$ is a real number.
@@ -79,6 +87,14 @@
     \begin{signature}
       $Ball(eps,z)$ is a set that contains $z$.
     \end{signature}
+
+    \begin{axiom}
+      Assume $x$ is element of $Ball(eps, z)$. Then $x$ is a real number.
+    \end{axiom}
+    
+    \begin{lemma}
+      Assume $x$ is an element of $Ball(eps, z)$. Then $x$ is setsized.
+    \end{lemma}
 
     \begin{axiom}
       $|z| < |w|$ for some element $w$ of $Ball(eps,z)$.

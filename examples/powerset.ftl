@@ -1,18 +1,20 @@
 [synonym subset/-s] [synonym surject/-s]
 
 Let M denote a set.
+Axiom. M is setsized.
 Let f denote a function.
 Let the value of f at x stand for f[x].
 Let f is defined on M stand for Dom(f) = M.
 Let the domain of f stand for Dom(f).
 
+Axiom. Let x be an element of M. x is setsized.
 Axiom. The value of f at any element of the domain of f is a set.
 
 Definition.
 A subset of M is a set N such that every element of N is an element of M.
 
 Definition.
-The powerset of M is the set of subsets of M.
+The powerset of M is the class of subsets of M.
 
 Definition.
 f surjects onto M iff every element of M is equal to the value of f at some element of the domain of f.

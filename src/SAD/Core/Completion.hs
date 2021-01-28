@@ -163,7 +163,7 @@ tsubst sfn tm =
       -> case sfn tm of
            Just sub -> sub
            _-> tm
-    Trm {trmName = f, trmArgs = args, trmId = n}
+    Trm {trmName = f, trmArgs = args, trId = n}
       -> mkTrm n f (map (tsubst sfn) args)
     _ -> error "tsubst: input is not a term"
 
@@ -185,7 +185,7 @@ rewriter :: [Equation] -> Formula -> Formula
 rewriter eqs tm = case rewrite1 eqs tm of
     Just r -> rewriter eqs r
     Nothing -> case tm of
-        Trm {trmName = f, trmArgs = args, trmId = n} ->
+        Trm {trmName = f, trmArgs = args, trId = n} ->
             let newArgs = map (rewriter eqs) args
                 tm' = mkTrm n f newArgs
             in if tm' == tm then tm else rewriter eqs tm'

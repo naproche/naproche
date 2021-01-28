@@ -61,7 +61,7 @@ jump (Node struct children) = children >>= jmp (arity struct)
 structMatch :: Formula -> Struct -> Bool
 structMatch Var{varName = VarHole _} Variable = True
 structMatch Var{varName = VarConstant nm} (GeneralizedConstant s) = nm == s
-structMatch Trm{trmId = m} (Function n _) = n == m
+structMatch Trm{trId = m} (Function n _) = n == m
 structMatch _ _ = False
 
 {- during retrieval everything matches a variable -}
@@ -103,7 +103,7 @@ buildTree keys value = [dtree keys]
 
     toStruct Var {varName = VarHole _} = Variable
     toStruct Var {varName = VarConstant nm} = GeneralizedConstant nm
-    toStruct Trm {trmId = m, trmArgs = ts} = Function m (length ts)
+    toStruct Trm {trId = m, trmArgs = ts} = Function m (length ts)
     toStruct _ = error "DisTree: Formula has no representation."
 
 {- lookup values in a tree. The key for the lookup is the structure of

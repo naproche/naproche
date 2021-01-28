@@ -232,7 +232,8 @@ readArgs args = do
                   [file] -> Just file
                   [] -> Nothing
                   _ -> fail ["More than one file argument\n"]
-  let parserKind = if useTexArg || maybe False (".ftl.tex" `isSuffixOf`) fileName then Tex else NonTex
+  let parserKind = if useTexArg || maybe False (\f -> ".tex.ftl" `isSuffixOf` f || ".ftl.tex" `isSuffixOf` f) fileName 
+      then Tex else NonTex
   pure (revInitialOpts, parserKind, fileName)
 
 usageHeader :: String
@@ -251,7 +252,7 @@ options = [
   GetOpt.Option "" ["server"] (GetOpt.NoArg (SetFlag Server True))
     "run in server mode",
   GetOpt.Option ""  ["library"] (GetOpt.ReqArg (GetArgument Library . Text.pack) "DIR")
-    "place to look for library texts (def: .)",
+    "place to look for library texts (def: examples)",
   GetOpt.Option ""  ["provers"] (GetOpt.ReqArg (GetArgument Provers . Text.pack) "FILE")
     "index of provers (def: provers.yaml)",
   GetOpt.Option "P" ["prover"] (GetOpt.ReqArg (GetArgument Prover . Text.pack) "NAME")
