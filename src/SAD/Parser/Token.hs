@@ -81,6 +81,7 @@ tokenize :: TexState -> SourcePos -> Text -> [Token]
 tokenize texState start = posToken texState start NoWhiteSpaceBefore
   where
     useTex = texState /= TexDisabled
+    isLexeme c = if useTex then isAscii c && isAlphaNum c else (isAscii c && isAlphaNum c) || c == '_'
     -- Activate the tokenizer when '\begin{forthel}' appears.
     posToken :: TexState -> SourcePos -> TokenType -> Text -> [Token]
     posToken OutsideForthelEnv pos _ s = toks
@@ -141,9 +142,6 @@ tokenize texState start = posToken texState start NoWhiteSpaceBefore
           tok  = makeToken text pos whitespaceBefore
           toks = posToken texState (advancePos pos text) NoWhiteSpaceBefore cs
 
-
-isLexeme :: Char -> Bool
-isLexeme c = (isAscii c && isAlphaNum c) || c == '_'
 
 reportComments :: Token -> Maybe Message.Report
 reportComments t@Token{}
