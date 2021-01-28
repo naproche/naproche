@@ -108,6 +108,12 @@ tokenize texState start = posToken texState start NoWhiteSpaceBefore
         (white, rest) = Text.span isSpace s
         toks = posToken texState (advancePos pos white) WhiteSpaceBefore rest
     
+    -- Process tex whitespace.
+    posToken texState pos _ s | useTex && hd == "\\\\" = toks
+      where
+        (hd, rest) = Text.splitAt 2 s
+        toks = posToken texState (advancePos pos "\\\\") WhiteSpaceBefore rest
+
     -- Process non-alphanumeric symbol or EOF.
     posToken texState pos whitespaceBefore s = case Text.uncons s of
       Nothing -> [EOF pos]
