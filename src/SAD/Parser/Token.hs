@@ -146,6 +146,7 @@ expandTexCmd :: Text -> SourcePos -> TokenType -> [Token]
 expandTexCmd "wedge" pos whiteSpaceBefore = makeSymbolTokens ["/","\\"] pos whiteSpaceBefore
 expandTexCmd "vee" pos whiteSpaceBefore = makeSymbolTokens ["\\","/"] pos whiteSpaceBefore
 expandTexCmd "implies" pos whiteSpaceBefore = makeSymbolTokens ["=",">"] pos whiteSpaceBefore
+expandTexCmd "iff" pos whiteSpaceBefore = makeSymbolTokens ["<", "=",">"] pos whiteSpaceBefore
 expandTexCmd "forall" pos whiteSpaceBefore = [makeToken "forall" pos whiteSpaceBefore]
 expandTexCmd "exists" pos whiteSpaceBefore = [makeToken "exists" pos whiteSpaceBefore]
 -- Special commands
