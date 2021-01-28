@@ -50,7 +50,7 @@ The subsequent explanations are for **development** of the tool, not for end-use
   * Initialize fresh clone:
 
         hg clone https://isabelle.sketis.net/repos/isabelle-release
-        hg update -r Isabelle2021-RC3
+        hg update -r d300574cee4e
         isabelle/bin/isabelle components -I
         isabelle/bin/isabelle components -a
         isabelle/bin/isabelle jedit -b
@@ -58,7 +58,7 @@ The subsequent explanations are for **development** of the tool, not for end-use
   * Update existing clone:
 
         hg pull https://isabelle.sketis.net/repos/isabelle-release
-        hg update -r Isabelle2021-RC3
+        hg update -r d300574cee4e
         isabelle/bin/isabelle components -a
 
 
@@ -114,7 +114,7 @@ The subsequent explanations are for **development** of the tool, not for end-use
   * Standard Isabelle repository clone:
 
         hg clone https://isabelle.sketis.net/repos/isabelle-release
-        hg update -r Isabelle2021-RC3
+        hg update -r d300574cee4e
         isabelle/bin/isabelle components -I
         isabelle/bin/isabelle components -a
         isabelle/bin/isabelle jedit -b
