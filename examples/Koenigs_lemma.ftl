@@ -107,7 +107,7 @@ Proof by contradiction.
 Assume the contrary. Then Prod (lambda,D) =< Sum(kappa,D).
 Take a function G such that SumSet(kappa,D) is the domain of G and ProdSet(lambda,D) is the image
 of G.
-  Indeed ProdSet(lambda, D) has an element.
+  Indeed ProdSet(lambda, D) has an element. Indeed lambda and D have an element.
 Define Diag[i] = { G[(n,i)][i] | n is an element of kappa[i] } for i in D.
 For every element f of ProdSet(lambda, D) for every element i of D f[i] is an element of lambda[i].
 For every element i of D lambda[i] is a set.
