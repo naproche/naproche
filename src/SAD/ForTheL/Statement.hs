@@ -470,7 +470,8 @@ symbSetNotation = cndSet </> finSet
       (q, f, v) <- notion >>= single; guard (not . (==) TermEquality . trmName $ f)
       return (Tag Replacement, \tr -> subst tr (posVarName v) $ q f, pVar v, mkClass) 
     setSep = do
-      t <- sTerm; token' "in"
+      t <- sTerm
+      elementOf
       clssTrm <- (Left <$> sTerm) </> (Right <$> symbSetNotation)
       case clssTrm of
         Left s -> pure (id, flip mkElem s, t, \v -> mkClass v `And` (mkSet s `Imp` mkSet v))
@@ -484,7 +485,9 @@ functionNotion :: FTL Formula
 functionNotion = sVar <**> (wordFun <|> (token "=" >> lambda))
   where
   wordFun = do
-    token "["; t <- pair; token "]"
+    token "("
+    t <- pair
+    token ")"
     token "="
     vs <- fvToVarSet <$> freeVars t
     def <- addDecl (Set.map posVarName vs) lambdaBody
@@ -507,7 +510,7 @@ cases = do
 
 chooseInTerm :: FTL (Formula -> Formula)
 chooseInTerm = do
-  chs <- optLL1 [] $ after (ld_choice `sepByLL1` token ",") (token' "in")
+  chs <- optLL1 [] $ after (ld_choice `sepByLL1` token ",") elementOf
   f   <- term -|- defTerm; return $ flip (foldr ($)) chs . f
   where
     ld_choice = chc <|> def
@@ -549,7 +552,8 @@ lambdaIn = do
   t <- pair
   vs <- fvToVarSet <$> freeVars t
   vsDecl <- makeDecls vs
-  token' "in"; dom <- ld_dom;
+  elementOf
+  dom <- ld_dom
   let df_head f = foldr ((.) . dAll) (Imp (t `mkElem` mkDom f)) vsDecl
   return (t, df_head, \f -> dom f t vsDecl)
   where

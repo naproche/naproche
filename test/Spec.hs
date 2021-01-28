@@ -47,6 +47,7 @@ texFiles = fmap ("examples/"++)
   , "prime_no_square.ftl.tex"
   , "inconsistency.ftl.tex"
   , "read_test.ftl.tex"
+  , "lambda_term_test.ftl.tex"
   , "tarski.ftl.tex"
   ]
 

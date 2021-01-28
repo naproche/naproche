@@ -1,0 +1,10 @@
+Lambda terms in tex mode don't support the old `\x` syntax for abstraction. You actually have to use a `\lambda`.
+
+\begin{forthel}
+  \begin{lemma}
+    Let x be a set. x = x.
+  \end{lemma}
+  \begin{proof}
+    Define f(u) = \lambda v \in x. u for u \in x.
+  \end{proof}
+\end{forthel}

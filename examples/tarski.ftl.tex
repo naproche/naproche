@@ -115,15 +115,15 @@
     \end{definition}
 
     \begin{axiom}[ImgSort]
-      Let $x$ belong to $Dom(f)$. $f[x]$ is an element of $Ran(f)$.
+      Let $x$ belong to $Dom(f)$. $f(x)$ is an element of $Ran(f)$.
     \end{axiom}
 
     \begin{definition}[DefFix]
-      A fixed point of $f$ is an element $x$ of $Dom(f)$ such that $f[x] = x$.
+      A fixed point of $f$ is an element $x$ of $Dom(f)$ such that $f(x) = x$.
     \end{definition}
 
     \begin{definition}[DefMonot]
-      $f$ is monotone iff for all $x,y << Dom(f)$ $x <= y => f[x] <= f[y]$.
+      $f$ is monotone iff for all $x,y << Dom(f)$ $x <= y => f(x) <= f(y)$.
     \end{definition}
 
 
@@ -134,11 +134,11 @@
       Let $T$ be a subset of $S$.
 
       Let us show that $T$ has a supremum in $S$.
-        Define $P = {x "in" U | f[x] <= x "and" x "is an upper bound of" T "in" U}$. Take an infimum $p$ of $P$ in $U$. $f[p]$ is a lower bound of $P$ in $U$ and an upper bound of $T$ in $U$. Hence $p$ is a fixed point of $f$ and a supremum of $T$ in $S$.
+        Define $P = {x "in" U | f(x) <= x "and" x "is an upper bound of" T "in" U}$. Take an infimum $p$ of $P$ in $U$. $f(p)$ is a lower bound of $P$ in $U$ and an upper bound of $T$ in $U$. Hence $p$ is a fixed point of $f$ and a supremum of $T$ in $S$.
       end.
 
       Let us show that $T$ has an infimum in $S$.
-        Define $Q = {x "in" U | x <= f[x] "and" x "is a lower bound of" T "in" U}$. Take a supremum $q$ of $Q$ in $U$. $f[q]$ is an upper bound of $Q$ in $U$ and a lower bound of $T$ in $U$. Hence $q$ is a fixed point of $f$ and an infimum of $T$ in $S$.
+        Define $Q = {x "in" U | x <= f(x) "and" x "is a lower bound of" T "in" U}$. Take a supremum $q$ of $Q$ in $U$. $f(q)$ is an upper bound of $Q$ in $U$ and a lower bound of $T$ in $U$. Hence $q$ is a fixed point of $f$ and an infimum of $T$ in $S$.
       end.
     \end{proof}
   \end{forthel}

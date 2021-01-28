@@ -10,4 +10,4 @@ Axiom SubclassOfSet. Assume for any object x such that x is an element of A
 Axiom Pair. Let x,y be setsized objects. (x, y) is setsized.
 
 Axiom Replacement. Let f be a function. Let M be a set. Assume Dom(f) = M.
-  Let x be an element of M. Then f[x] is setsized.
+  Let x be an element of M. Then f(x) is setsized.

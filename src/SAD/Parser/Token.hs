@@ -109,22 +109,27 @@ tokenize texState start = posToken texState start NoWhiteSpaceBefore
         (white, rest) = Text.span isSpace s
         toks = posToken texState (advancePos pos white) WhiteSpaceBefore rest
     
+    -- Process tex whitespace.
+    posToken texState pos _ s | useTex && hd == "\\\\" = toks
+      where
+        (hd, rest) = Text.splitAt 2 s
+        toks = posToken texState (advancePos pos "\\\\") WhiteSpaceBefore rest
+
     -- Process non-alphanumeric symbol or EOF.
     posToken texState pos whitespaceBefore s = case Text.uncons s of
       Nothing -> [EOF pos]
-      -- We only want to tokenize away '\\' if the next character is not a symbol.
-      -- Like this, writing 'and' as '/\' is still possible.
-      Just ('\\', rest) | isAlpha (Text.head rest) && texState /= TexDisabled -> tok : toks
-        where
-          (name, rest') = Text.span isAlpha rest
-          cmd = Text.cons '\\' name
-          tok = makeToken name pos whitespaceBefore
-          toks = posToken texState (advancePos pos cmd) WhiteSpaceBefore rest'
-      
-      -- Moreover, we want to remove backslashes before set notation brackets in order to be able to use set
-      -- notation in math mode.
+
+      -- We expand the `\{` and `\}` tex commands here
       Just ('\\', rest) | (Text.head rest) `elem` ['{','}'] && useTex ->
             posToken texState (advancePos pos "\\") WhiteSpaceBefore rest
+
+      -- We expand alphanumeric tex commands here
+      Just ('\\', rest) | useTex -> newToks ++ toks
+        where
+          (name, rest') = Text.span isAlpha rest
+          newToks = expandTexCmd name pos whitespaceBefore
+          toks = posToken texState (advancePos pos (Text.cons '\\' name)) WhiteSpaceBefore rest'
+      
       Just ('$', rest) | useTex -> posToken texState (advancePos pos "$") WhiteSpaceBefore rest
       
       -- We also tokenize away quotation marks, because they are intended to be used by the user
@@ -142,6 +147,28 @@ tokenize texState start = posToken texState start NoWhiteSpaceBefore
           tok  = makeToken text pos whitespaceBefore
           toks = posToken texState (advancePos pos text) NoWhiteSpaceBefore cs
 
+
+expandTexCmd :: Text -> SourcePos -> TokenType -> [Token]
+-- Logical symbols
+expandTexCmd "wedge" pos whiteSpaceBefore = makeSymbolTokens ["/","\\"] pos whiteSpaceBefore
+expandTexCmd "vee" pos whiteSpaceBefore = makeSymbolTokens ["\\","/"] pos whiteSpaceBefore
+expandTexCmd "implies" pos whiteSpaceBefore = makeSymbolTokens ["=",">"] pos whiteSpaceBefore
+expandTexCmd "iff" pos whiteSpaceBefore = makeSymbolTokens ["<", "=",">"] pos whiteSpaceBefore
+expandTexCmd "forall" pos whiteSpaceBefore = [makeToken "forall" pos whiteSpaceBefore]
+expandTexCmd "exists" pos whiteSpaceBefore = [makeToken "exists" pos whiteSpaceBefore]
+-- Special commands
+expandTexCmd "mid" pos whiteSpaceBefore = [makeToken "|" pos whiteSpaceBefore]
+expandTexCmd "rightarrow" pos whiteSpaceBefore = makeSymbolTokens ["-",">"] pos whiteSpaceBefore
+expandTexCmd "lambda" pos whiteSpaceBefore = [makeToken "\\" pos whiteSpaceBefore]
+-- If this is not a predefined command to be expanded, just leave the backslash.
+expandTexCmd s pos whiteSpaceBefore = [makeToken (Text.cons '\\' s) pos whiteSpaceBefore]
+
+-- This is only used in `expandTexCmd` and used to apply `makeToken` multiple times, while appropriately
+-- advancing the position.
+makeSymbolTokens :: [Text] -> SourcePos -> TokenType -> [Token]
+makeSymbolTokens (s:symbols) pos whiteSpaceBefore =
+  makeToken s pos whiteSpaceBefore : makeSymbolTokens symbols (advancePos pos s) NoWhiteSpaceBefore
+makeSymbolTokens [] _ _ = []
 
 reportComments :: Token -> Maybe Message.Report
 reportComments t@Token{}

@@ -29,11 +29,11 @@
     \end{definition}
 
     \begin{definition}
-      Assume $M$ is a subset of the domain of $f$. $f^[M] = { f[x] | x << M }$.
+      Assume $M$ is a subset of the domain of $f$. $f^(M) = { f(x) | x << M }$.
     \end{definition}
 
     \begin{axiom}
-      Assume $M$ is a subset of the domain of $f$. $f^[M]$ is a set.
+      Assume $M$ is a subset of the domain of $f$. $f^(M)$ is a set.
     \end{axiom}
 
     \begin{signature}
@@ -43,7 +43,7 @@
     Let $z,w$ denote complex numbers.
 
     \begin{axiom}
-      Every element of $Dom(f)$ is a complex number and for every element $z$ of $Dom(f)$ $f[z]$ is a complex number.
+      Every element of $Dom(f)$ is a complex number and for every element $z$ of $Dom(f)$ $f(z)$ is a complex number.
     \end{axiom}
 
     \begin{axiom}
@@ -109,17 +109,17 @@
     \end{axiom}
 
     \begin{definition}
-      A local maximal point of $f$ is an element $z$ of the domain of $f$ such that there exists $eps$ such that $Ball(eps,z)$ is a subset of the domain of $f$ and $|f[w]| =< |f[z]|$ for every element $w$ of $Ball(eps,z)$.
+      A local maximal point of $f$ is an element $z$ of the domain of $f$ such that there exists $eps$ such that $Ball(eps,z)$ is a subset of the domain of $f$ and $|f(w)| =< |f(z)|$ for every element $w$ of $Ball(eps,z)$.
     \end{definition}
 
     \begin{definition}
-      Let $U$ be a subset of the domain of $f$. $f$ is constant on $U$ iff there exists $z$ such that $f[w] = z$ for every element $w$ of $U$.
+      Let $U$ be a subset of the domain of $f$. $f$ is constant on $U$ iff there exists $z$ such that $f(w) = z$ for every element $w$ of $U$.
     \end{definition}
 
     Let $f$ is constant stand for $f$ is constant on the domain of $f$.
 
     \begin{axiom}
-      Assume $f$ is holomorphic and $Ball(eps,z)$ is a subset of the domain of $f$. If $f$ is not constant on $Ball(eps,z)$ then $f^[Ball(eps,z)]$ is open.
+      Assume $f$ is holomorphic and $Ball(eps,z)$ is a subset of the domain of $f$. If $f$ is not constant on $Ball(eps,z)$ then $f^(Ball(eps,z))$ is open.
     \end{axiom}
 
     \begin{signature}
@@ -134,11 +134,11 @@
       Assume $f$ is holomorphic and the domain of $f$ is a region. If $f$ has a local maximal point then $f$ is constant.
     \end{proposition}
     \begin{proof}
-      Let $z$ be a local maximal point of $f$. Take $eps$ such that $Ball(eps,z)$ is a subset of $Dom(f)$ and $|f[w]| =< |f[z]|$ for every element $w$ of $Ball(eps,z)$.
+      Let $z$ be a local maximal point of $f$. Take $eps$ such that $Ball(eps,z)$ is a subset of $Dom(f)$ and $|f(w)| =< |f(z)|$ for every element $w$ of $Ball(eps,z)$.
 
       Let us show that $f$ is constant on $Ball(eps,z)$.
       proof by contradiction.
-        Assume the contrary. Then $f^[Ball(eps,z)]$ is open. We can take delta such that $Ball(delta, f[z])$ is a subset of $f^[Ball(eps,z)]$. Therefore there exists an element $w$ of $Ball(eps,z)$ such that $|f[z]| < |f[w]|$. Contradiction.
+        Assume the contrary. Then $f^(Ball(eps,z))$ is open. We can take delta such that $Ball(delta, f(z))$ is a subset of $f^(Ball(eps,z))$. Therefore there exists an element $w$ of $Ball(eps,z)$ such that $|f(z)| < |f(w)|$. Contradiction.
     	end.
 
       Hence $f$ is constant.

@@ -21,6 +21,7 @@ import qualified Data.Set as Set
 import SAD.Data.Formula
 
 import SAD.Parser.Base
+import SAD.Parser.Token
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
 
@@ -80,12 +81,15 @@ initFS = FState
       ([Symbol "="], mkTrm EqualityId TermEquality),
       ([Symbol "!", Symbol "="], Not . mkTrm EqualityId TermEquality),
       ([Symbol "-", Symbol "<", Symbol "-"], mkTrm LessId TermLess),
-      ([Symbol "-~-"], \(m:n:_) -> mkAll VarEmpty $
-        Iff (mkElem (mkVar VarEmpty) m) (mkElem (mkVar VarEmpty) n)) ]
+      ([Symbol "\\in"], \(x:m:_) -> mkElem x m),
+      ([Symbol "\\notin"], \(x:m:_) -> Not $ mkElem x m),
+      ([Symbol "\\neq"], Not . mkTrm EqualityId TermEquality),
+      ([Symbol "\\prec"], mkTrm LessId TermLess) ]
     cf = [
       ([Symbol "Dom", Symbol "(",Vr,Symbol ")"], mkDom . head),
-      ([Symbol "(", Vr, Symbol ",", Vr, Symbol ")"], \(x:y:_) -> mkPair x y) ]
-    rf = [ ([Symbol "[", Vr, Symbol "]"], \(f:x:_) -> mkApp f x)]
+      ([Symbol "(", Vr, Symbol ",", Vr, Symbol ")"], \(x:y:_) -> mkPair x y),
+      ([Symbol "\\dom", Symbol "(",Vr,Symbol ")"], mkDom . head) ]
+    rf = [ ([Symbol "(", Vr, Symbol ")"], \(f:x:_) -> mkApp f x)]
 
 
 getExpr :: (FState -> [a]) -> (a -> FTL b) -> FTL b
@@ -338,12 +342,19 @@ hidden = do
   return (PosVar (VarHidden n) noSourcePos)
 
 -- | Parse the next token as a variable (a sequence of alpha-num chars beginning with an alpha)
--- and return ('x' + the sequence) with the current position.
+-- and return ('x' + the sequence) with the current position. Additionally, we also allow variables
+-- to be able to begin with `\` and continue with alphanumeric characters in order to have tex support.
 var :: FTL PosVar
 var = do
   pos <- getPos
-  v <- satisfy (\s -> Text.all isAlphaNum s && isAlpha (Text.head s))
+  v <- satisfy isVariable <|> tokenPrim getTexVariable
   return (PosVar (VarConstant v) pos)
+  where
+    isVariable s = Text.all isAlphaNum s && isAlpha (Text.head s)
+    getTexVariable t = case Text.uncons (showToken t) of
+      Nothing -> Nothing
+      Just ('\\', rest) | Text.all isAlpha rest -> Just ("tex_" <> rest)
+      Just _ -> Nothing
 
 --- pretyped Variables
 
@@ -445,6 +456,9 @@ with = tokenOf' ["with", "of", "having"]
 such :: FTL ()
 such = tokenOf' ["such", "so"]
 
+-- `in` or `\in` is used for various set notations
+elementOf :: FTL ()
+elementOf = token' "in" <|> token "\\in"
 
 --just for now:
 
@@ -455,7 +469,7 @@ showVar nm = toLazyText $ represent nm
 -- | Parses '\begin{env}'. Takes a parser for parsing 'env'.
 texBegin :: FTL a -> FTL a
 texBegin envType = do
-  token "begin"
+  token "\\begin"
   symbol "{"
   envType' <- envType
   symbol "}"
@@ -464,7 +478,7 @@ texBegin envType = do
 -- | Parses '\end{env}'. Takes a parser for parsing 'env'.
 texEnd :: FTL () -> FTL ()
 texEnd envType = do
-  token "end"
+  token "\\end"
   symbol "{"
   envType
   symbol "}"
