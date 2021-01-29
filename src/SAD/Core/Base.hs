@@ -211,7 +211,7 @@ dropInstruction instr =
   local $ \vs -> vs { instructions = dropInstr instr $ instructions vs }
 
 
--- Markup reports (with exception handling)
+-- Markup reports
 
 reportBracketIO :: SourcePos -> IO a -> IO a
 reportBracketIO pos body = do
@@ -226,12 +226,23 @@ reportBracketIO pos body = do
       Message.report pos Markup.finished
       return x
 
-reportBracket :: SourcePos -> VM a -> VM a
-reportBracket pos body = do
+-- with exception handling
+reportBracket1 :: SourcePos -> VM a -> VM a
+reportBracket1 pos body = do
   v <- ask
   let run = runReaderT body v
   let bracket = reportBracketIO pos
   lift $ CRM $ \s z k -> runCRM run s (bracket z) (bracket . k)
+
+-- without exception handling
+reportBracket2 :: SourcePos -> VM a -> VM a
+reportBracket2 pos body = do
+  justIO $ Message.report pos Markup.running
+  res <- body
+  justIO $ Message.report pos Markup.finished
+  return res
+
+reportBracket = reportBracket1
 
 
 -- Trackers
