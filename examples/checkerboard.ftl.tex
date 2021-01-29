@@ -188,8 +188,8 @@ have the same cardinality iff there is a bijection between them.
     \begin{definition}
         $F : A \leftrightarrow B$ iff $F : A \to B$ and there exists $G$ such that
         $G : B \to A$ and
-        (for all elements x of A G(F(x))=x) and
-        (for all elements y of B F(G(y))=y).
+        (for all elements $x$ of $A$ we have $G(F(x)) = x$) and
+        (for all elements $y$ of $B$ we have $F(G(y)) = y$).
     \end{definition}
 \end{forthel}
 
@@ -205,20 +205,22 @@ have the same cardinality iff there is a bijection between them.
         Assume that A is equinumerous with B. Then B is equinumerous with A.
     \end{lemma}
 
-    % TODO prettify proof
+    % TODO prettify proof (try to allow for subscripts in variables?)
+    % Use symbolic quantifiers to avoid uncanny valley of parenthesized natural language text?
+    %
     \begin{lemma}
         Assume that A is equinumerous with B and B is equinumerous with C.
         Then A is equinumerous with C.
     \end{lemma}
     \begin{proof}
-        Take a function $F1$ such that $F1 : A \leftrightarrow B$.
-        Take a function $G1$ such that $G1 : B \to A$ and (for all elements $x$ of $A$ $G1(F1(x))=x$) and
-        (for all elements $y$ of $B$ $F1(G1(y))=y$).
-        Take a function $F2$ such that $F2 : B \leftrightarrow C$.
-        Take a function $G2$ such that $G2 : C \to B$ and (for all elements $x$ of $B$ $G2(F2(x))=x$) and
-        (for all elements $y$ of $C$ $F2(G2(y))=y$).
-        Define $F(x) = F2(F1(x))$ for $x$ in $A$.
-        $F : A \leftrightarrow C$. Indeed define $G(y) = G1(G2(y))$ for $y$ in $C$.
+        Take a function $F$ such that $F : A \leftrightarrow B$.
+        Take a function $G$ such that $G : B \to A$ and (for all elements $x$ of $A$ we have $G(F(x)) = x$) and
+        (for all elements $y$ of $B$ we have $F(G(y))=y$).
+        Take a function $H$ such that $H : B \leftrightarrow C$.
+        Take a function $I$ such that $I : C \to B$ and (for all elements $x$ of $B$ we have $I(H(x)) = x$) and
+        (for all elements $y$ of $C$ we have $H(I(y))=y$).
+        Define $J(x) = H(F(x))$ for $x$ in $A$.
+        $J : A \leftrightarrow C$. Indeed define $K(y) = G(I(y))$ for $y$ in $C$.
     \end{proof}
 \end{forthel}
 
@@ -456,8 +458,8 @@ Using $\Swap$ we can define a witness of $\Black \leftrightarrow \White$.
         Define $F(x) = \Swap{x}$ for $x$ in $\Black$.
         Define $G(x) = \Swap{x}$ for $x$ in $\White$.
         Then $F : \Black \to \White$ and $G : \White \to \Black$.
-        For all elements $x$ of $\Black$ $G(F(x)) = x$.
-        For all elements $x$ of $\White$ $F(G(x)) = x$.
+        For all elements $x$ of $\Black$ we have $G(F(x)) = x$.
+        For all elements $x$ of $\White$ we have $F(G(x)) = x$.
         $F : \Black \leftrightarrow \White$.
     \end{proof}
 \end{forthel}
@@ -525,8 +527,8 @@ Swapping dominoes is also an involution.
         Define $G(x) = \Sw(T,A,x)$ for $x$ in $A \cap \White$.
         Then $F: A \cap \Black \to A \cap \White$ and
         $G: A \cap \White \to A \cap \Black$.
-        For all elements $x$ of $A \cap \Black$ $G(F(x))=x$.
-        For all elements $x$ of $A \cap \White$ $F(G(x))=x$.
+        For all elements $x$ of $A \cap \Black$ we have $G(F(x))=x$.
+        For all elements $x$ of $A \cap \White$ we have $F(G(x))=x$.
         $F : A \cap \Black \leftrightarrow A \cap \White$.
     \end{proof}
 \end{forthel}
