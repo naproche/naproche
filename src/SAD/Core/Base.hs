@@ -14,6 +14,7 @@ module SAD.Core.Base
   , askRS
   , updateRS
   , justIO
+  , reportBracket
   , (<|>)
   , runRM
 
@@ -55,6 +56,8 @@ import Data.Time (NominalDiffTime, getCurrentTime, diffUTCTime)
 import qualified Data.Set as Set
 import qualified Data.Map as Map
 import qualified Data.Text.Lazy as Text
+
+import qualified Isabelle.Markup as Markup
 
 import SAD.Core.SourcePos
 import SAD.Data.Definition
@@ -174,9 +177,9 @@ type VM = ReaderT VState CRM
 justRS :: VM (IORef RState)
 justRS = lift $ CRM $ \ s _ k -> k s
 
-
 justIO :: IO a -> VM a
 justIO m = lift $ CRM $ \ _ _ k -> m >>= k
+
 
 -- State management from inside the verification monad
 
@@ -205,6 +208,16 @@ addInstruction instr =
 dropInstruction :: Drop -> VM a -> VM a
 dropInstruction instr =
   local $ \vs -> vs { instructions = dropInstr instr $ instructions vs }
+
+
+-- Markup reports
+
+reportBracket :: SourcePos -> VM a -> VM a
+reportBracket pos body = do
+  justIO $ Message.report pos Markup.running
+  res <- body
+  justIO $ Message.report pos Markup.finished
+  return res
 
 
 -- Trackers

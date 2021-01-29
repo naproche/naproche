@@ -22,7 +22,7 @@ import SAD.Core.Extract (addDefinition, addEvaluation, extractRewriteRule)
 import SAD.Core.ProofTask (generateProofTask)
 import SAD.Core.Reason (proveThesis)
 import SAD.Core.Rewrite (equalityReasoning)
-import SAD.Core.SourcePos (SourcePos, noSourcePos, fileOnlyPos)
+import SAD.Core.SourcePos (noSourcePos, fileOnlyPos)
 import SAD.Core.Thesis (inferNewThesis)
 import SAD.Data.Formula
 import SAD.Data.Instr
@@ -37,7 +37,6 @@ import qualified SAD.Data.Text.Block as Block
 import qualified SAD.Data.Text.Context as Context
 import qualified SAD.Prove.MESON as MESON
 
-import qualified Isabelle.Markup as Markup
 
 -- | Main verification loop
 verify :: Text -> [Prover] -> IORef RState -> ProofText -> IO (Bool, Maybe ProofText)
@@ -56,13 +55,6 @@ verify fileName provers reasonerState (ProofTextRoot text) = do
   Message.outputReasoner Message.TRACING (fileOnlyPos fileName) $
     "verification " ++ (if success then "successful" else "failed")
   return (success, fmap (ProofTextRoot . tail . snd) result)
-
-reportBracket :: SourcePos -> VM a -> VM a
-reportBracket pos body = do
-  justIO $ Message.report pos Markup.running
-  res <- body
-  justIO $ Message.report pos Markup.finished
-  return res
 
 verificationLoop :: VState -> VM ([ProofText], [ProofText])
 verificationLoop state@VS {
