@@ -76,7 +76,9 @@ initFS = FState
       ([Word ["class","classes"], Nm], mkClass . head),
       ([Word ["element", "elements"], Nm, Word ["of"], Vr], \(x:m:_) -> mkElem x m),
       ([Word ["object", "objects"], Nm], mkObj . head)]
-    primSymbNotions = [ ([Symbol "=", Vr], mkTrm EqualityId TermEquality) ]
+    primSymbNotions = [
+      ([Symbol "=", Vr], mkTrm EqualityId TermEquality),
+      ([Symbol "\\in", Vr], \(x:m:_) -> mkElem x m) ]
     primInfixPredicates = [
       ([Symbol "="], mkTrm EqualityId TermEquality),
       ([Symbol "!", Symbol "="], Not . mkTrm EqualityId TermEquality),
