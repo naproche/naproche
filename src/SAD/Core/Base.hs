@@ -48,6 +48,7 @@ module SAD.Core.Base
 import Control.Applicative (Alternative(..))
 import Control.Monad.Reader
 import Control.Monad.State
+import Control.Exception (onException)
 import Data.IORef
 import Data.Maybe (isJust, fromJust)
 import Data.Text.Lazy (Text)
@@ -210,14 +211,21 @@ dropInstruction instr =
   local $ \vs -> vs { instructions = dropInstr instr $ instructions vs }
 
 
--- Markup reports
+-- Markup reports (with exception handling)
+
+reportBracketIO :: SourcePos -> IO a -> IO a
+reportBracketIO pos body = do
+  Message.report pos Markup.running
+  res <- body `onException` Message.report pos Markup.failed
+  Message.report pos Markup.finished
+  return res
 
 reportBracket :: SourcePos -> VM a -> VM a
 reportBracket pos body = do
-  justIO $ Message.report pos Markup.running
-  res <- body
-  justIO $ Message.report pos Markup.finished
-  return res
+  v <- ask
+  let run = runReaderT body v
+  let bracket = reportBracketIO pos
+  lift $ CRM $ \s z k -> runCRM run s (bracket z) (bracket . k)
 
 
 -- Trackers
