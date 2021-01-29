@@ -196,19 +196,18 @@ verificationLoop st@VS {
       let text = Block.text block
       let pos = Block.position block
       whenInstruction Printgoal True $ reasonLog Message.TRACING pos $ "goal: " <> text
-      reportBracket pos
-        (if hasDEC (Context.formula thesis) --computational reasoning
-          then do
-            incrementCounter Equations
-            timeWith SimplifyTimer (equalityReasoning thesis) <|> (
-              reasonLog Message.WARNING pos "equation failed" >> setFailed >>
-              guardInstruction Skipfail False >> incrementCounter FailedEquations)
-          else do
-            unless (isTop . Context.formula $ thesis) $ incrementCounter Goals
-            proveThesis <|> (
-              reasonLog Message.WARNING pos "goal failed" >> setFailed >>
-              --guardInstruction Skipfail False >>
-              incrementCounter FailedGoals))
+      if hasDEC (Context.formula thesis) --computational reasoning
+        then do
+          incrementCounter Equations
+          timeWith SimplifyTimer (reportBracket pos (equalityReasoning thesis)) <|> (
+            reasonLog Message.WARNING pos "equation failed" >> setFailed >>
+            guardInstruction Skipfail False >> incrementCounter FailedEquations)
+        else do
+          unless (isTop . Context.formula $ thesis) $ incrementCounter Goals
+          reportBracket pos proveThesis <|> (
+            reasonLog Message.WARNING pos "goal failed" >> setFailed >>
+            --guardInstruction Skipfail False >>
+            incrementCounter FailedGoals)
 verificationLoop state@ VS {restProofText = ProofTextChecked txt : rest} =
   let newTxt = Block.setChildren txt (Block.children txt ++ newInstructions)
       newInstructions = [NonProofTextStoredInstr $
