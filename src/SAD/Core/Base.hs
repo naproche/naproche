@@ -48,7 +48,7 @@ module SAD.Core.Base
 import Control.Applicative (Alternative(..))
 import Control.Monad.Reader
 import Control.Monad.State
-import Control.Exception (onException)
+import Control.Exception (SomeException, try, throw)
 import Data.IORef
 import Data.Maybe (isJust, fromJust)
 import Data.Text.Lazy (Text)
@@ -216,9 +216,15 @@ dropInstruction instr =
 reportBracketIO :: SourcePos -> IO a -> IO a
 reportBracketIO pos body = do
   Message.report pos Markup.running
-  res <- body `onException` Message.report pos Markup.failed
-  Message.report pos Markup.finished
-  return res
+  (res :: Either SomeException a) <- try body
+  case res of
+    Left e -> do
+      Message.report pos Markup.failed
+      Message.report pos Markup.finished
+      throw e
+    Right x -> do
+      Message.report pos Markup.finished
+      return x
 
 reportBracket :: SourcePos -> VM a -> VM a
 reportBracket pos body = do
