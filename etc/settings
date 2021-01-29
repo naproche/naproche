@@ -19,3 +19,5 @@ if [ -f "$NAPROCHE_JAR" ]; then
 else
   echo >&2 "### Missing Isabelle/Scala module: $NAPROCHE_JAR"
 fi
+
+ISABELLE_DOCS_EXAMPLES="$ISABELLE_DOCS_EXAMPLES:\$NAPROCHE_HOME/Isabelle/Ex.thy"
