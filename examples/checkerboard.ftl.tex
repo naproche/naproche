@@ -1,4 +1,4 @@
-\section{The Mutilated Checkerboard Problem Formalized in \Naproche{}}
+\section{The Mutilated Checkerboard Problem Formalized in \Naproche{}}\label{sec:formalization}
 
 
 
@@ -44,11 +44,10 @@ as a Cartesian product of ranks $1, 2, \ldots, 8$ and files $\fileA, \fileB, \ld
 
 
 
-\subsection{Setting up the checkerboard $\Checkerboard$}
+\subsection{Setting up the checkerboard}
 
 \begin{forthel}
     [read ZFC.ftl]
-
     [synonym rank/ranks]
     \begin{signature} A rank is a notion. \end{signature}
     Let $r, s$ denote ranks.
@@ -64,7 +63,7 @@ as a Cartesian product of ranks $1, 2, \ldots, 8$ and files $\fileA, \fileB, \ld
     \begin{signature} $7$ is a rank. \end{signature}
     \begin{signature} $8$ is a rank. \end{signature}
 
-    \begin{definition} $\Rank = {1,2,3,4,5,6,7,8}$. \end{definition}
+    \begin{definition} $\Rank = \{1,2,3,4,5,6,7,8\}$. \end{definition}
 
     [synonym file/files]
     \begin{signature} A file is a notion. \end{signature}
@@ -82,7 +81,7 @@ as a Cartesian product of ranks $1, 2, \ldots, 8$ and files $\fileA, \fileB, \ld
     \begin{signature} $\fileH$ is a file. \end{signature}
 
     \begin{definition}
-        $\File = {\fileA,\fileB,\fileC,\fileD,\fileE,\fileF,\fileG,\fileH}$.
+        $\File = \{\fileA,\fileB,\fileC,\fileD,\fileE,\fileF,\fileG,\fileH\}$.
     \end{definition}
 
     [synonym square/squares]
@@ -253,7 +252,7 @@ of two adjacent squares.
 
 
 
-\subsection{dominoes}
+\subsection{Dominoes}
 
 \begin{forthel}
     \begin{signature}
@@ -378,12 +377,12 @@ subsets of the checkerboard and dominoes.
 \end{forthel}
 
 
-\subsection{Counting Colors on Checkerboards}
+\subsection{Counting Colours on Checkerboards}
 
 The original checkerboard has an equal number of black and white squares.
 Since our setup does not include numbers for counting, we rather work with
 equinumerosity. The following argument formalizes that we can invert the
-colours of a checkerboard by swapping the files $\fileA$ and $fileB$, $fileC$ and $\fileD$, etc..
+colours of a checkerboard by swapping the files $\fileA$ and $\fileB$, $\fileC$ and $\fileD$, etc..
 We formalize swapping by a first-order function symbol $\Swap{}$.
 
 \begin{forthel}
