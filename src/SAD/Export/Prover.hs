@@ -46,13 +46,13 @@ export :: SourcePos -> Int -> [Prover] -> [Instr] -> [Context] -> Context -> IO 
 export pos depth provers instrs context goal = do
   Isabelle_Thread.expose_stopped
 
-  when (null provers) $ Message.errorExport noSourcePos "No provers"
+  when (null provers) $ Message.errorExport pos "No provers"
 
   let proverName = Text.unpack $ askArgument Instr.Prover (Text.pack $ name $ head provers) instrs
       proversNamed = filter ((==) proverName . name) provers
 
   when (null proversNamed) $
-    Message.errorExport noSourcePos $ "No prover named " ++ show proverName
+    Message.errorExport pos $ "No prover named " ++ show proverName
 
   let printProver = askFlag Printprover False instrs
   let timeLimit = askLimit Timelimit 3 instrs
@@ -69,11 +69,11 @@ export pos depth provers instrs context goal = do
         (map Block.kind (head (branch goal) : concatMap branch context))
 
   when (askFlag Dump False instrs) $
-    Message.output "" Message.WRITELN noSourcePos (Text.unpack task)
+    Message.output "" Message.WRITELN pos (Text.unpack task)
 
   reportBracketIO pos $
     runUntilSuccess timeLimit $
-      runProver (head proversNamed) proverServer printProver task isByContradiction
+      runProver pos (head proversNamed) proverServer printProver task isByContradiction
 
 data Result = Success | Failure | ContradictoryAxioms | Unknown | Error
   deriving (Eq, Ord, Show)
@@ -90,8 +90,8 @@ runUntilSuccess timeLimit f = go [timeLimit] -- go $ takeWhile (<=timeLimit) $ 1
         Unknown -> go xs
         r -> pure r
 
-runProver :: Prover -> Maybe (String, String) -> Bool -> Text -> Bool -> Int -> IO Result
-runProver (Prover _ label path args yes con nos uns) proverServer printProver task isByContradiction timeLimit =
+runProver :: SourcePos -> Prover -> Maybe (String, String) -> Bool -> Text -> Bool -> Int -> IO Result
+runProver pos (Prover _ label path args yes con nos uns) proverServer printProver task isByContradiction timeLimit =
   let
     proverResult :: Int -> String -> IO Result
     proverResult rc output =
@@ -100,9 +100,8 @@ runProver (Prover _ label path args yes con nos uns) proverServer printProver ta
         let lns = filter notNull (lines output)
         let out = map (("[" ++ label ++ "] ") ++) lns
 
-        when (not timeout && null lns) $ Message.errorExport noSourcePos "No prover response"
-        when printProver $
-            mapM_ (Message.output "" Message.WRITELN noSourcePos) out
+        when (not timeout && null lns) $ Message.errorExport pos "No prover response"
+        when printProver $ mapM_ (Message.output "" Message.WRITELN pos) out
 
         let contradictions = any (\l -> any (`isPrefixOf` l) con) lns
             positive = any (\l -> any (`isPrefixOf` l) yes) lns
@@ -110,7 +109,7 @@ runProver (Prover _ label path args yes con nos uns) proverServer printProver ta
             inconclusive = any (\l -> any (`isPrefixOf` l) uns) lns
 
         unless (timeout || positive || contradictions || negative || inconclusive) $
-            Message.errorExport noSourcePos $ unlines ("Bad prover response:" : lns)
+            Message.errorExport pos $ unlines ("Bad prover response:" : lns)
 
         if | positive || (isByContradiction && contradictions) -> pure Success
            | negative -> pure Failure
@@ -131,7 +130,7 @@ runProver (Prover _ label path args yes con nos uns) proverServer printProver ta
               return (fromJust pin, fromJust pout, fromJust perr, p)
 
         (prvin, prvout, prverr, prv) <- Exception.catch process
-            (\e -> Message.errorExport noSourcePos $
+            (\e -> Message.errorExport pos $
               "Failed to run " ++ show path ++ ": " ++ ioeGetErrorString e)
 
         File.setup prvin

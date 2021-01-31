@@ -120,8 +120,8 @@ findNormalform rules w t = map (reverse . (:) (t, trivialSimpInfo)) $ dive t
 {- finds two matching normalforms and outputs all conditions accumulated
 during their rewriting -}
 generateConditions ::
-  Bool -> [Rule] -> Weighting -> Formula -> Formula -> VM [SimpInfo]
-generateConditions verbositySetting rules w l r =
+  SourcePos -> Bool -> [Rule] -> Weighting -> Formula -> Formula -> VM [SimpInfo]
+generateConditions pos verbositySetting rules w l r =
   let leftNormalForms  = findNormalform rules w l
       rightNormalForms = findNormalform rules w r
       paths = simpPaths leftNormalForms rightNormalForms
@@ -140,11 +140,11 @@ generateConditions verbositySetting rules w l r =
 
     -- logging and user communication
     log leftNormalForm rightNormalForm = when verbositySetting $ do
-      simpLog Message.WRITELN noSourcePos "no matching normal forms found"
+      simpLog Message.WRITELN pos "no matching normal forms found"
       showPath leftNormalForm; showPath rightNormalForm
     showPath ((t,_):rest) = when verbositySetting $ do
-      simpLog Message.WRITELN noSourcePos (Text.pack $ show t)
-      mapM_ (simpLog Message.WRITELN noSourcePos . format) rest
+      simpLog Message.WRITELN pos (Text.pack $ show t)
+      mapM_ (simpLog Message.WRITELN pos . format) rest
     -- formatting of paths
     format (t, simpInfo) = " --> " <> Text.pack (show t) <> conditions simpInfo
     conditions (conditions, name) =
@@ -156,8 +156,8 @@ generateConditions verbositySetting rules w l r =
 {- applies computational reasoning to an equality chain -}
 equalityReasoning :: SourcePos -> Context -> VM ()
 equalityReasoning pos thesis
-  | body = whenInstruction Printreason False $ reasonLog Message.WRITELN noSourcePos "eqchain concluded"
-  | notNull link = getLinkedRules link >>= rewrite pos equation
+  | body = whenInstruction Printreason False $ reasonLog Message.WRITELN pos "eqchain concluded"
+  | notNull link = getLinkedRules pos link >>= rewrite pos equation
   | otherwise = rules >>= rewrite pos equation -- if no link is given -> all rules
   where
     equation = strip $ Context.formula thesis
@@ -166,15 +166,15 @@ equalityReasoning pos thesis
     body = notNull $ Block.body . head . Context.branch $ thesis
 
 
-getLinkedRules :: [Text] -> VM [Rule]
-getLinkedRules link = do
+getLinkedRules :: SourcePos -> [Text] -> VM [Rule]
+getLinkedRules pos link = do
   rules <- rules; let setLink = Set.fromList link
   let (linkedRules, unfoundRules) = runState (retrieve setLink rules) setLink
   unless (Set.null unfoundRules) $ warn unfoundRules
   return linkedRules
   where
     warn st =
-      simpLog Message.WARNING noSourcePos $
+      simpLog Message.WARNING pos $
         "Could not find rules " <> Text.unwords (map (Text.pack . show) $ Set.elems st)
 
     retrieve _ [] = return []
@@ -194,7 +194,7 @@ and compares the resulting normal forms -}
 rewrite :: SourcePos -> Formula -> [Rule] -> VM ()
 rewrite pos Trm {trmName = TermEquality, trmArgs = [l,r]} rules = do
   verbositySetting <- askInstructionBool Printsimp False
-  conditions <- generateConditions verbositySetting rules (>) l r;
+  conditions <- generateConditions pos verbositySetting rules (>) l r;
   mapM_ (dischargeConditions pos verbositySetting . fst) conditions
 rewrite _ _ _ = error "SAD.Core.Rewrite.rewrite: non-equation argument"
 

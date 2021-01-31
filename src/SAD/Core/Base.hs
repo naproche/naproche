@@ -326,13 +326,13 @@ translateLog kind pos = justIO . Message.outputTranslate kind pos . Text.unpack
 
 
 
-retrieveContext :: Set.Set Text -> VM [Context]
-retrieveContext names = do
+retrieveContext :: SourcePos -> Set.Set Text -> VM [Context]
+retrieveContext pos names = do
   globalContext <- asks currentContext
   let (context, unfoundSections) = runState (retrieve globalContext) names
 
   unless (Set.null unfoundSections) $
-    reasonLog Message.WARNING noSourcePos $
+    reasonLog Message.WARNING pos $
       "Could not find sections " <> Text.unwords (map (Text.pack . show) $ Set.elems unfoundSections)
   return context
   where
