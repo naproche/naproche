@@ -31,9 +31,9 @@ files = fmap ("examples/"++)
   , "newman.ftl"
   , "powerset.ftl"
   , "prime_no_square.ftl"
-  , "inconsistency.ftl"
-  , "read_test.ftl"
   , "tarski.ftl"
+  , "test/inconsistency.ftl"
+  , "test/read_test.ftl"
   ]
 
 texFiles :: [FilePath]
@@ -45,10 +45,10 @@ texFiles = fmap ("examples/"++)
   , "newman.ftl.tex"
   , "powerset.ftl.tex"
   , "prime_no_square.ftl.tex"
-  , "inconsistency.ftl.tex"
-  , "read_test.ftl.tex"
-  , "lambda_term_test.ftl.tex"
   , "tarski.ftl.tex"
+  , "test/inconsistency.ftl.tex"
+  , "test/read_test.ftl.tex"
+  , "test/lambda_term_test.ftl.tex"
   ]
 
 shouldFailFiles :: [FilePath]
