@@ -8,6 +8,23 @@ extra-source-files:
 
 description:         <https://github.com/Naproche/Naproche-SAD>
 
+flags:
+  debug:
+    description: "Enable special debugging support"
+    manual: true
+    default: false
+  
+
+when:
+  - condition: flag(debug)
+    then:
+      ghc-options:
+        - -fplugin=StackTrace.Plugin
+        - -Weverything
+      dependencies:
+        - haskell-stack-trace-plugin
+    else: {}
+
 dependencies:
 - base >= 4.7 && < 5
 - containers
@@ -24,7 +41,6 @@ dependencies:
 - uuid
 - threads
 - yaml
-- haskell-stack-trace-plugin
 
 default-extensions:
   - GeneralizedNewtypeDeriving
@@ -39,7 +55,6 @@ ghc-options:
   - -fno-warn-unused-do-bind
   - -fno-warn-unused-matches
   - -fno-warn-name-shadowing
-  - -fplugin=StackTrace.Plugin
 
 library:
   source-dirs:
