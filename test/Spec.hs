@@ -53,8 +53,8 @@ texFiles = fmap ("examples/"++)
 
 shouldFailFiles :: [FilePath]
 shouldFailFiles = fmap ("examples/"++)
-  [ "inconsistency.ftl"
-  , "inconsistency.ftl.tex"
+  [ "test/inconsistency.ftl"
+  , "test/inconsistency.ftl.tex"
   ]
 
 output :: [(FilePath, (ExitCode, Text))] -> IO [(ExitCode, FilePath)]
