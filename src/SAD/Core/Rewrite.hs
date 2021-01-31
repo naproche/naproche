@@ -154,11 +154,11 @@ generateConditions verbositySetting rules w l r =
 
 
 {- applies computational reasoning to an equality chain -}
-equalityReasoning :: Context -> VM ()
-equalityReasoning thesis
+equalityReasoning :: SourcePos -> Context -> VM ()
+equalityReasoning pos thesis
   | body = whenInstruction Printreason False $ reasonLog Message.WRITELN noSourcePos "eqchain concluded"
-  | notNull link = getLinkedRules link >>= rewrite equation
-  | otherwise = rules >>= rewrite equation -- if no link is given -> all rules
+  | notNull link = getLinkedRules link >>= rewrite pos equation
+  | otherwise = rules >>= rewrite pos equation -- if no link is given -> all rules
   where
     equation = strip $ Context.formula thesis
     link = Context.link thesis
@@ -191,17 +191,17 @@ rules = asks rewriteRules
 
 {- applies rewriting to both sides of an equation
 and compares the resulting normal forms -}
-rewrite :: Formula -> [Rule] -> VM ()
-rewrite Trm {trmName = TermEquality, trmArgs = [l,r]} rules = do
+rewrite :: SourcePos -> Formula -> [Rule] -> VM ()
+rewrite pos Trm {trmName = TermEquality, trmArgs = [l,r]} rules = do
   verbositySetting <- askInstructionBool Printsimp False
   conditions <- generateConditions verbositySetting rules (>) l r;
-  mapM_ (dischargeConditions verbositySetting . fst) conditions
-rewrite _ _ = error "SAD.Core.Rewrite.rewrite: non-equation argument"
+  mapM_ (dischargeConditions pos verbositySetting . fst) conditions
+rewrite _ _ _ = error "SAD.Core.Rewrite.rewrite: non-equation argument"
 
 
 {- dischargeConditions accumulated during rewriting -}
-dischargeConditions :: Bool -> [Formula] -> VM ()
-dischargeConditions verbositySetting conditions =
+dischargeConditions :: SourcePos -> Bool -> [Formula] -> VM ()
+dischargeConditions pos verbositySetting conditions =
   setup $ easy >>= hard
   where
     easy = mapM trivialityCheck conditions
@@ -213,7 +213,7 @@ dischargeConditions verbositySetting conditions =
       | otherwise = do
           log (header lefts hardConditions <> thead (rights hardConditions))
           thesis <- thesis
-          mapM_ (reason . Context.setFormula (wipeLink thesis)) (lefts hardConditions)
+          mapM_ (reason pos . Context.setFormula (wipeLink thesis)) (lefts hardConditions)
 
     setup :: VM a -> VM a
     setup action = do

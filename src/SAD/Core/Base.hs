@@ -14,7 +14,7 @@ module SAD.Core.Base
   , askRS
   , updateRS
   , justIO
-  , reportBracket
+  , reportBracketIO
   , (<|>)
   , runRM
 
@@ -211,7 +211,7 @@ dropInstruction instr =
   local $ \vs -> vs { instructions = dropInstr instr $ instructions vs }
 
 
--- Markup reports
+-- Markup reports (with exception handling)
 
 reportBracketIO :: SourcePos -> IO a -> IO a
 reportBracketIO pos body = do
@@ -225,24 +225,6 @@ reportBracketIO pos body = do
     Right x -> do
       Message.report pos Markup.finished
       return x
-
--- with exception handling
-reportBracket1 :: SourcePos -> VM a -> VM a
-reportBracket1 pos body = do
-  v <- ask
-  let run = runReaderT body v
-  let bracket = reportBracketIO pos
-  lift $ CRM $ \s z k -> runCRM run s (bracket z) (bracket . k)
-
--- without exception handling
-reportBracket2 :: SourcePos -> VM a -> VM a
-reportBracket2 pos body = do
-  justIO $ Message.report pos Markup.running
-  res <- body
-  justIO $ Message.report pos Markup.finished
-  return res
-
-reportBracket = reportBracket1
 
 
 -- Trackers

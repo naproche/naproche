@@ -88,8 +88,8 @@ verificationLoop state@VS {
       then return f
       -- For low-level blocks we check definitions and fortify terms (by supplying evidence).
       else
-        reportBracket (Block.position block) (fillDef alreadyChecked contextBlock)
-        <|> (setFailed >> return f)
+        fillDef (Block.position block) alreadyChecked contextBlock
+          <|> (setFailed >> return f)
 
   unsetChecked
 
@@ -199,12 +199,12 @@ verificationLoop st@VS {
       if hasDEC (Context.formula thesis) --computational reasoning
         then do
           incrementCounter Equations
-          timeWith SimplifyTimer (reportBracket pos (equalityReasoning thesis)) <|> (
+          timeWith SimplifyTimer (equalityReasoning pos thesis) <|> (
             reasonLog Message.WARNING pos "equation failed" >> setFailed >>
             guardInstruction Skipfail False >> incrementCounter FailedEquations)
         else do
           unless (isTop . Context.formula $ thesis) $ incrementCounter Goals
-          reportBracket pos proveThesis <|> (
+          proveThesis pos <|> (
             reasonLog Message.WARNING pos "goal failed" >> setFailed >>
             --guardInstruction Skipfail False >>
             incrementCounter FailedGoals)

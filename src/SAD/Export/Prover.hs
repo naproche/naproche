@@ -31,6 +31,7 @@ import qualified Isabelle.Naproche as Naproche
 
 
 import SAD.Core.SourcePos
+import SAD.Core.Base (reportBracketIO)
 import SAD.Data.Instr hiding (Prover)
 import SAD.Data.Text.Context (Context, branch)
 import qualified SAD.Data.Text.Block as Block
@@ -41,8 +42,8 @@ import qualified SAD.Core.Message as Message
 import qualified SAD.Data.Instr as Instr
 import qualified SAD.Export.TPTP as TPTP
 
-export :: Int -> [Prover] -> [Instr] -> [Context] -> Context -> IO Result
-export depth provers instrs context goal = do
+export :: SourcePos -> Int -> [Prover] -> [Instr] -> [Context] -> Context -> IO Result
+export pos depth provers instrs context goal = do
   Isabelle_Thread.expose_stopped
 
   when (null provers) $ Message.errorExport noSourcePos "No provers"
@@ -70,8 +71,9 @@ export depth provers instrs context goal = do
   when (askFlag Dump False instrs) $
     Message.output "" Message.WRITELN noSourcePos (Text.unpack task)
 
-  runUntilSuccess timeLimit $
-    runProver (head proversNamed) proverServer printProver task isByContradiction
+  reportBracketIO pos $
+    runUntilSuccess timeLimit $
+      runProver (head proversNamed) proverServer printProver task isByContradiction
 
 data Result = Success | Failure | ContradictoryAxioms | Unknown | Error
   deriving (Eq, Ord, Show)

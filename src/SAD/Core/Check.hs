@@ -16,6 +16,7 @@ import Control.Monad.Reader
 import qualified Data.Text.Lazy as Text
 
 import SAD.Core.Base
+import SAD.Core.SourcePos
 import SAD.Core.Reason as Reason
 import SAD.Data.Definition hiding (Guards)
 import SAD.Data.Formula
@@ -29,8 +30,8 @@ import qualified SAD.Data.Text.Context as Context
 
 
 {- check definitions and fortify terms with evidences in a formula -}
-fillDef :: Bool -> Context -> VM Formula
-fillDef alreadyChecked context = fill True False [] (Just True) 0 (Context.formula context)
+fillDef :: SourcePos -> Bool -> Context -> VM Formula
+fillDef pos alreadyChecked context = fill True False [] (Just True) 0 (Context.formula context)
   where
     fill :: Bool -> Bool -> [Formula] -> Maybe Bool -> Int -> Formula -> VM Formula
     fill isPredicate isNewWord localContext sign n = \case
@@ -54,7 +55,7 @@ fillDef alreadyChecked context = fill True False [] (Just True) 0 (Context.formu
             userInfoSetting <- askInstructionBool Info True
             fortifiedArgs   <- mapM (fill False isNewWord localContext sign n) tArgs
             newContext      <- cnRaise context localContext
-            fortifiedTerm   <- setDef isNewWord context term{trmArgs = fortifiedArgs} `withContext` newContext
+            fortifiedTerm   <- setDef pos isNewWord context term{trmArgs = fortifiedArgs} `withContext` newContext
             collectInfo (not isPredicate && userInfoSetting) fortifiedTerm `withContext` newContext -- fortify term
 
       f -> roundFM VarW (fill isPredicate isNewWord) localContext sign n f
@@ -74,11 +75,11 @@ cnRaise thisBlock local = do
 
 
 
-setDef :: Bool -> Context -> Formula -> VM Formula
-setDef isNewWord context term@Trm{trmName = t, trId = tId} =
+setDef :: SourcePos -> Bool -> Context -> Formula -> VM Formula
+setDef pos isNewWord context term@Trm{trmName = t, trId = tId} =
   incrementCounter Symbols >>
     (    (guard isNewWord >> return term) -- do not check new word
-    <|>  (findDef term >>= testDef context term) -- check term's definition
+    <|>  (findDef term >>= testDef pos context term) -- check term's definition
     <|>  (out >> mzero )) -- failure message
   where
     out =
@@ -107,8 +108,8 @@ check it. setup and cleanup take care of the special proof times that we allow
 an ontological check. easyCheck are inbuild reasoning methods, hardCheck passes
 a task to an ATP.
 -}
-testDef :: Context -> Formula -> (Guards, FortifiedTerm) -> VM Formula
-testDef context term (guards, fortifiedTerm) = do
+testDef :: SourcePos -> Context -> Formula -> (Guards, FortifiedTerm) -> VM Formula
+testDef pos context term (guards, fortifiedTerm) = do
   userCheckSetting <- askInstructionBool Check True
   if   userCheckSetting
   then setup $ easyCheck >>= hardCheck >> return fortifiedTerm
@@ -122,7 +123,7 @@ testDef context term (guards, fortifiedTerm) = do
       | otherwise =
           incrementCounter HardChecks >>
           defLog (header lefts hardGuards <> thead (rights hardGuards)) >>
-          mapM_ (reason . Context.setFormula (wipeLink context)) (lefts hardGuards) >>
+          mapM_ (reason pos . Context.setFormula (wipeLink context)) (lefts hardGuards) >>
           incrementCounter SuccessfulChecks
 
     setup :: VM a -> VM a
