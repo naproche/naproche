@@ -7,8 +7,8 @@
   arguments: 
     - "--auto"
     - "-s"
-    - "--memory-limit=6144"
-    - "--cpu-limit=%d"
+    - "--memory-limit=%m"
+    - "--cpu-limit=%t"
   successMessage:
     - "# SZS status Theorem"
   contradictionMessage:
@@ -31,7 +31,8 @@
     - "--tstp-in"
     - "-l"
     - "2"
-    - "--cpu-limit=%d"
+    - "--cpu-limit=%t"
+    - "--memory-limit=%m"
   successMessage:
     - "# SZS status Theorem"
   contradictionMessage:
@@ -51,7 +52,7 @@
     - "-PProblem=0"
     - "-PGiven=0"
     - "-Stdin"
-    - "-TimeLimit=%d"
+    - "-TimeLimit=%t"
   successMessage:
     - "SPASS beiseite: Proof found."
   contradictionMessage: []
@@ -67,7 +68,7 @@
   arguments:
     - "--mode"
     - "casc"
-      #  - "-t %d"
+      #  - "-t %t"
   successMessage:
     - "% SZS output end Proof for"
   contradictionMessage: []

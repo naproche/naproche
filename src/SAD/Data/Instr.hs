@@ -63,6 +63,7 @@ data Command =
 
 data Limit =
     Timelimit   -- time limit per prover launch  (3 sec)
+  | Memorylimit -- memory limit per prover launch  (2048 MiB)
   | Depthlimit  -- number of reasoner iterations (7)
   | Checktime   -- time limit for checker's tasks (1 sec)
   | Checkdepth  -- depth limit for checker's tasks (3)
@@ -155,6 +156,7 @@ keywordsCommand =
 keywordsLimit :: [(Limit, Text)]
 keywordsLimit =
  [(Timelimit, "timelimit"),
+  (Memorylimit, "memorylimit"),
   (Depthlimit, "depthlimit"),
   (Checktime, "checktime"),
   (Checkdepth, "checkdepth")]

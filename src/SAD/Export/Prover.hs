@@ -55,6 +55,7 @@ export depth provers instrs context goal = do
 
   let printProver = askFlag Printprover False instrs
   let timeLimit = askLimit Timelimit 3 instrs
+  let memoryLimit = askLimit Memorylimit 2048 instrs
 
   let proverServerPort = askArgument ProverServerPort Text.empty instrs
   let proverServerPassword = askArgument ProverServerPassword Text.empty instrs
@@ -70,26 +71,13 @@ export depth provers instrs context goal = do
   when (askFlag Dump False instrs) $
     Message.output "" Message.WRITELN noSourcePos (Text.unpack task)
 
-  runUntilSuccess timeLimit $
-    runProver (head proversNamed) proverServer printProver task isByContradiction
+  runProver (head proversNamed) proverServer printProver task isByContradiction timeLimit memoryLimit
 
 data Result = Success | Failure | ContradictoryAxioms | Unknown | Error
   deriving (Eq, Ord, Show)
 
--- | Prover heuristics are not always optimal.
--- We can give a different heuristic if needed.
-runUntilSuccess :: Int -> (Int -> IO Result) -> IO Result
-runUntilSuccess timeLimit f = go [timeLimit] -- go $ takeWhile (<=timeLimit) $ 1:5:10:20:50:(map (*100)[1,2])
-  where
-    go [] = pure Unknown
-    go (x:xs) = do
-      b <- f x
-      case b of
-        Unknown -> go xs
-        r -> pure r
-
-runProver :: Prover -> Maybe (String, String) -> Bool -> Text -> Bool -> Int -> IO Result
-runProver (Prover _ label path args yes con nos uns) proverServer printProver task isByContradiction timeLimit =
+runProver :: Prover -> Maybe (String, String) -> Bool -> Text -> Bool -> Int -> Int -> IO Result
+runProver (Prover _ label path args yes con nos uns) proverServer printProver task isByContradiction timeLimit memoryLimit =
   let
     proverResult :: Int -> String -> IO Result
     proverResult rc output =
@@ -118,7 +106,7 @@ runProver (Prover _ label path args yes con nos uns) proverServer printProver ta
   in
     case proverServer of
       Nothing -> do
-        let proc = (Process.proc path (map (setTimeLimit timeLimit) args))
+        let proc = (Process.proc path (map (setLimits timeLimit memoryLimit) args))
               { Process.std_in = Process.CreatePipe
               ,  Process.std_out = Process.CreatePipe
               ,  Process.std_err = Process.CreatePipe
@@ -163,7 +151,7 @@ runProver (Prover _ label path args yes con nos uns) proverServer printProver ta
               Byte_Message.write_yxml prover
                 [XML.Elem ((Naproche.prover_command,
                     [(Naproche.prover_name, path),
-                     (Naproche.command_args, unlines (map (setTimeLimit 300) args)),
+                     (Naproche.command_args, unlines (map (setLimits 300 2048) args)),
                      (Naproche.prover_timeout, show timeLimit)]),
                   [XML.Text (Text.unpack task)])]
 
@@ -194,7 +182,10 @@ runProver (Prover _ label path args yes con nos uns) proverServer printProver ta
                     proverResult rc output)
 
 
-setTimeLimit :: Int -> String -> String
-setTimeLimit timeLimit ('%':'d':rs) = show timeLimit ++ rs
-setTimeLimit timeLimit (s:rs) = s : setTimeLimit timeLimit rs
-setTimeLimit _ _ = []
+setLimits :: Int -> Int -> String -> String
+setLimits timeLimit memoryLimit = go
+  where
+    go ('%':'t':rs) = show timeLimit ++ go rs
+    go ('%':'m':rs) = show memoryLimit ++ go rs
+    go (s:rs) = s : go rs
+    go [] = []

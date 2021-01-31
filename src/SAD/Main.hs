@@ -263,6 +263,8 @@ options = [
     "prover server password",
   GetOpt.Option "t" ["timelimit"] (GetOpt.ReqArg (LimitBy Timelimit . getLeadingPositiveInt) "N")
     "N seconds per prover call (def: 3)",
+  GetOpt.Option "m" ["memorylimit"] (GetOpt.ReqArg (LimitBy Memorylimit . getLeadingPositiveInt) "N")
+    "maximum N MiB of memory usage per prover call (def: 2048)",
   GetOpt.Option ""  ["depthlimit"] (GetOpt.ReqArg (LimitBy Depthlimit . getLeadingPositiveInt) "N")
     "N reasoner loops per goal (def: 7)",
   GetOpt.Option ""  ["checktime"] (GetOpt.ReqArg (LimitBy Checktime . getLeadingPositiveInt) "N")
