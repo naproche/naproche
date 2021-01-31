@@ -145,6 +145,11 @@ Note that there are many degrees of freedom in picking an axiomatic setting.
 Observe the notion \textsf{object}\footnote{\todo{whether we use
 objects or not should perhaps depend on the version of \Naproche{}}}:
 this is the built-in \textit{largest notion} which contains all others.
+%
+Also note that the proof of the lemma below really is omitted and not merely hidden:
+with the help of automated theorem provers such as \textsf{E}, \Naproche{}
+can accept some theorems without any additional argumentation.
+
 
 \begin{forthel}
     \begin{lemma}
@@ -320,17 +325,17 @@ of two adjacent squares.
 
 
 
-\subsection{Tilings with dominoes}
+\subsection{Domino Tilings}
 
 \begin{forthel}
     \begin{definition}
-        A tiling with dominoes is a pairwise disjoint class of dominoes.
+        A domino tiling is a pairwise disjoint class of dominoes.
     \end{definition}
 
     Let $A$ denote a subset of $\Checkerboard$.
 
     \begin{definition}
-        A tiling of $A$ with dominoes is a tiling with dominoes $T$
+        A domino tiling of $A$ is a domino tiling $T$
         such that for every square $x$
         $x$ is an element of $A$ iff
         $x$ is an element of some element of $T$.
@@ -340,7 +345,7 @@ of two adjacent squares.
 We shall prove:
 
 \begin{theorem}
-    There is no tiling of $\Mutilated$ with dominoes.
+    There is no domino tiling of $\Mutilated$.
 \end{theorem}
 
 
@@ -427,7 +432,7 @@ $\Swap{}$ is an involution:
 \begin{forthel}
     \begin{lemma}
         Let $x$ be an element of $\Checkerboard$.
-        $\Swap{\Swap{x}} = x$.
+        $\Swap{(\Swap{x})} = x$.
     \end{lemma}
     \begin{proof}
         Take $f, r$ such that $x = (f,r)$. $r$ is an element of $\Rank$.
@@ -463,19 +468,19 @@ Using $\Swap$ we can define a witness of $\Black \leftrightarrow \White$.
     \end{proof}
 \end{forthel}
 
-Given a tiling with dominoes one can also swap the squares of each dominoes,
+Given a domino tiling one can also swap the squares of each dominoes,
 leading to similar properties.
 
 \begin{forthel}
     \begin{signature}
-        Assume that $T$ is a tiling of $A$ with dominoes.
+        Assume that $T$ is a domino tiling of $A$.
         Let $x$ be an element of $A$.
         $\Sw(T,A,x)$ is a square $y$ such that there is an element $D$ of $T$
         such that $D = {x,y}$.
     \end{signature}
 
     \begin{lemma}
-        Assume that $T$ is a tiling of $A$ with dominoes.
+        Assume that $T$ is a domino tiling of $A$.
         Let $x$ be an element of $A$.
         Then $\Sw(T,A,x)$ is an element of $A$.
     \end{lemma}
@@ -490,7 +495,7 @@ Swapping dominoes is also an involution.
 
 \begin{forthel}
     \begin{lemma}
-        Assume that $T$ is a tiling of $A$ with dominoes. Let $x$ be an element of $A$.
+        Assume that $T$ is a domino tiling of $A$. Let $x$ be an element of $A$.
         Then $\Sw(T,A,\Sw(T,A,x)) = x$.
     \end{lemma}
     \begin{proof}
@@ -502,7 +507,7 @@ Swapping dominoes is also an involution.
     \end{proof}
 
     \begin{lemma}
-        Assume that $T$ is a tiling of $A$ with dominoes.
+        Assume that $T$ is a domino tiling of $A$.
         Let $x$ be a black element of $A$.
         Then $\Sw(T,A,x)$ is white.
     \end{lemma}
@@ -514,11 +519,11 @@ Swapping dominoes is also an involution.
 
 \subsection{The Theorem}
 
-\noindent We can easily show that a tiling with dominoes involves as many black as white squares.
+\noindent We can easily show that a domino tiling involves as many black as white squares.
 
 \begin{forthel}
     \begin{lemma}
-        Let $T$ be a tiling of $A$ with dominoes. Then $A \cap \Black$ is
+        Let $T$ be a domino tiling of $A$. Then $A \cap \Black$ is
         equinumerous with $A \cap \White$.
     \end{lemma}
     \begin{proof}
@@ -553,11 +558,11 @@ Swapping dominoes is also an involution.
 
 \begin{forthel}
     \begin{theorem}
-        There is no tiling of $\Mutilated$ with dominoes.
+        There is no domino tiling of $\Mutilated$.
     \end{theorem}
     \begin{proof}
         Proof by contradiction.
-        Assume $T$ is a tiling of $\Mutilated$ with dominoes.
+        Assume $T$ is a domino tiling of $\Mutilated$.
         $\Mutilated \cap \Black$ is equinumerous with $\Mutilated \cap \White$.
         $\Mutilated \cap \Black$ is equinumerous with $\White$.
         $\Mutilated \cap \Black$ is equinumerous with $\Black$.
