@@ -22,7 +22,7 @@ import SAD.Core.Extract (addDefinition, addEvaluation, extractRewriteRule)
 import SAD.Core.ProofTask (generateProofTask)
 import SAD.Core.Reason (proveThesis)
 import SAD.Core.Rewrite (equalityReasoning)
-import SAD.Core.SourcePos (noSourcePos, fileOnlyPos)
+import SAD.Core.SourcePos (SourcePos, fileOnlyPos)
 import SAD.Core.Thesis (inferNewThesis)
 import SAD.Data.Formula
 import SAD.Data.Instr
@@ -88,8 +88,8 @@ verificationLoop state@VS {
       then return f
       -- For low-level blocks we check definitions and fortify terms (by supplying evidence).
       else
-        reportBracket (Block.position block) (fillDef alreadyChecked contextBlock)
-        <|> (setFailed >> return f)
+        fillDef (Block.position block) alreadyChecked contextBlock
+          <|> (setFailed >> return f)
 
   unsetChecked
 
@@ -196,19 +196,18 @@ verificationLoop st@VS {
       let text = Block.text block
       let pos = Block.position block
       whenInstruction Printgoal True $ reasonLog Message.TRACING pos $ "goal: " <> text
-      reportBracket pos
-        (if hasDEC (Context.formula thesis) --computational reasoning
-          then do
-            incrementCounter Equations
-            timeWith SimplifyTimer (equalityReasoning thesis) <|> (
-              reasonLog Message.WARNING pos "equation failed" >> setFailed >>
-              guardInstruction Skipfail False >> incrementCounter FailedEquations)
-          else do
-            unless (isTop . Context.formula $ thesis) $ incrementCounter Goals
-            proveThesis <|> (
-              reasonLog Message.WARNING pos "goal failed" >> setFailed >>
-              --guardInstruction Skipfail False >>
-              incrementCounter FailedGoals))
+      if hasDEC (Context.formula thesis) --computational reasoning
+        then do
+          incrementCounter Equations
+          timeWith SimplifyTimer (equalityReasoning pos thesis) <|> (
+            reasonLog Message.WARNING pos "equation failed" >> setFailed >>
+            guardInstruction Skipfail False >> incrementCounter FailedEquations)
+        else do
+          unless (isTop . Context.formula $ thesis) $ incrementCounter Goals
+          proveThesis pos <|> (
+            reasonLog Message.WARNING pos "goal failed" >> setFailed >>
+            --guardInstruction Skipfail False >>
+            incrementCounter FailedGoals)
 verificationLoop state@ VS {restProofText = ProofTextChecked txt : rest} =
   let newTxt = Block.setChildren txt (Block.children txt ++ newInstructions)
       newInstructions = [NonProofTextStoredInstr $
@@ -228,12 +227,14 @@ verificationLoop state@ VS {restProofText = NonProofTextStoredInstr ins : rest} 
 
 -- process instructions. we distinguish between those that influence the
 -- verification state and those that influence (at most) the global state
-verificationLoop state@VS {restProofText = i@(ProofTextInstr _ instr) : blocks} =
-  fmap (\(as,bs) -> (as, i:bs)) $ local (const state {restProofText = blocks}) $ procProofTextInstr instr
+verificationLoop state@VS {restProofText = i@(ProofTextInstr pos instr) : blocks} =
+  fmap (\(as,bs) -> (as, i:bs)) $
+    local (const state {restProofText = blocks}) $ procProofTextInstr (start pos) instr
 
 {- process a command to drop an instruction, i.e. [/prove], etc.-}
 verificationLoop state@VS {restProofText = (i@(ProofTextDrop _ instr) : blocks)} =
-  fmap (\(as,bs) -> (as, i:bs)) $ local (const state {restProofText = blocks}) $ procProofTextDrop instr
+  fmap (\(as,bs) -> (as, i:bs)) $
+    local (const state {restProofText = blocks}) $ procProofTextDrop instr
 
 verificationLoop st@VS {restProofText = (i@ProofTextSynonym{} : blocks)} =
   fmap (\(as,bs) -> (as, i:bs)) $ verificationLoop st {restProofText = blocks}
@@ -305,29 +306,29 @@ deleteInductionOrCase = dive id
 -- Instruction handling
 
 {- execute an instruction or add an instruction parameter to the state -}
-procProofTextInstr :: Instr -> VM ([ProofText], [ProofText])
-procProofTextInstr = flip proc $ ask >>= verificationLoop
+procProofTextInstr :: SourcePos -> Instr -> VM ([ProofText], [ProofText])
+procProofTextInstr pos = flip proc $ ask >>= verificationLoop
   where
     proc (Command RULES) = (>>) $ do
       rules <- asks rewriteRules
-      reasonLog Message.WRITELN noSourcePos $
+      reasonLog Message.WRITELN pos $
         "current ruleset: " <> "\n" <> Text.unlines (map (Text.pack . show) (reverse rules))
     proc (Command THESIS) = (>>) $ do
       motivated <- asks thesisMotivated; thesis <- asks currentThesis
       let motivation = if motivated then "(motivated): " else "(not motivated): "
-      reasonLog Message.WRITELN noSourcePos $
+      reasonLog Message.WRITELN pos $
         "current thesis " <> motivation <> Text.pack (show (Context.formula thesis))
     proc (Command CONTEXT) = (>>) $ do
       context <- asks currentContext
-      reasonLog Message.WRITELN noSourcePos $ "current context:\n" <>
+      reasonLog Message.WRITELN pos $ "current context:\n" <>
         Text.concat (map (\form -> "  " <> Text.pack (show (Context.formula form)) <> "\n") (reverse context))
     proc (Command FILTER) = (>>) $ do
       context <- asks currentContext
       let topLevelContext = filter Context.isTopLevel context
-      reasonLog Message.WRITELN noSourcePos $ "current filtered top-level context:\n" <>
+      reasonLog Message.WRITELN pos $ "current filtered top-level context:\n" <>
         Text.concat (map (\form -> "  " <> Text.pack (show (Context.formula form)) <> "\n") (reverse topLevelContext))
 
-    proc (Command _) = (>>) $ reasonLog Message.WRITELN noSourcePos "unsupported instruction"
+    proc (Command _) = (>>) $ reasonLog Message.WRITELN pos "unsupported instruction"
 
     proc (SetFlag Verbose False) =
       addInstruction (SetFlag Printgoal False) .

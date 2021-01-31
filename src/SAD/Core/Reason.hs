@@ -37,7 +37,7 @@ import qualified Data.Text.Lazy as Text
 import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
 
 import SAD.Core.Base
-import SAD.Core.SourcePos (noSourcePos)
+import SAD.Core.SourcePos
 import SAD.Data.Definition
 import SAD.Data.Formula
 import SAD.Data.Instr (Limit(..), Flag(..))
@@ -56,8 +56,8 @@ import qualified SAD.Data.Text.Context as Context
 
 -- Reasoner
 
-reason :: Context -> VM ()
-reason tc = local (\st -> st {currentThesis = tc}) proveThesis
+reason :: SourcePos -> Context -> VM ()
+reason pos tc = local (\st -> st {currentThesis = tc}) $ proveThesis pos
 
 withGoal :: VM a -> Formula -> VM a
 withGoal action goal = local (\vState ->
@@ -71,41 +71,41 @@ thesis :: VM Context
 thesis = asks currentThesis
 
 
-proveThesis :: VM ()
-proveThesis = do
+proveThesis :: SourcePos -> VM ()
+proveThesis pos = do
   reasoningDepth <- askInstructionInt Depthlimit 3
   guard (reasoningDepth > 0) -- Fallback to defaulting of the underlying CPS Maybe monad.
   ctx <- asks currentContext
   goals <- splitGoal
-  filterContext (sequenceGoals reasoningDepth 0 goals) ctx
+  filterContext pos (sequenceGoals pos reasoningDepth 0 goals) ctx
 
-sequenceGoals :: Int -> Int -> [Formula] -> VM ()
-sequenceGoals reasoningDepth iteration (goal:restGoals) = do
+sequenceGoals :: SourcePos -> Int -> Int -> [Formula] -> VM ()
+sequenceGoals pos reasoningDepth iteration (goal:restGoals) = do
   (trivial <|> proofByATP <|> reason) `withGoal` reducedGoal
-  sequenceGoals reasoningDepth iteration restGoals
+  sequenceGoals pos reasoningDepth iteration restGoals
   where
     reducedGoal = reduceWithEvidence goal
     trivial = guard (isTop reducedGoal) >> updateTrivialStatistics
-    proofByATP = launchProver iteration
+    proofByATP = launchProver pos iteration
 
     reason = if reasoningDepth == 1
       then warnDepthExceeded >> mzero
       else do
-        newTask <- unfold
+        newTask <- unfold pos
         let Context {Context.formula = Not newGoal} : newContext = newTask
-        sequenceGoals (pred reasoningDepth) (succ iteration) [newGoal]
+        sequenceGoals pos (pred reasoningDepth) (succ iteration) [newGoal]
           `withContext` newContext
 
     warnDepthExceeded =
       whenInstruction Printreason False $
-        reasonLog Message.WARNING noSourcePos "reasoning depth exceeded"
+        reasonLog Message.WARNING pos "reasoning depth exceeded"
 
     updateTrivialStatistics =
       unless (isTop goal) $ whenInstruction Printreason False $ do
-        reasonLog Message.WRITELN noSourcePos ("trivial: " <> (Text.pack $ show goal))
+        reasonLog Message.WRITELN pos ("trivial: " <> (Text.pack $ show goal))
         incrementCounter TrivialGoals
 
-sequenceGoals _ _ [] = return ()
+sequenceGoals _ _ _ [] = return ()
 
 splitGoal :: VM [Formula]
 splitGoal = asks (normalizedSplit . strip . Context.formula . currentThesis)
@@ -119,14 +119,14 @@ splitGoal = asks (normalizedSplit . strip . Context.formula . currentThesis)
 
 -- Call prover
 
-launchProver :: Int -> VM ()
-launchProver iteration = do
+launchProver :: SourcePos -> Int -> VM ()
+launchProver pos iteration = do
   whenInstruction Printfulltask False printTask
   proverList <- asks provers
   instrList <- asks instructions
   goal <- thesis
   context <- asks currentContext
-  let callATP = justIO $ pure $ export iteration proverList instrList context goal
+  let callATP = justIO $ pure $ export pos iteration proverList instrList context goal
   callATP >>= timeWith ProofTimer . justIO >>= guardResult
   res <- fmap head $ askRS trackers
   case res of
@@ -138,13 +138,13 @@ launchProver iteration = do
     printTask = do
       contextFormulas <- asks $ map Context.formula . reverse . currentContext
       concl <- thesis
-      reasonLog Message.WRITELN noSourcePos $ "prover task:\n" <>
+      reasonLog Message.WRITELN pos $ "prover task:\n" <>
         Text.concat (map (\form -> "  " <> Text.pack (show form) <> "\n") contextFormulas) <>
         "  |- " <> (Text.pack (show (Context.formula concl))) <> "\n"
 
     guardResult Success = pure ()
     guardResult ContradictoryAxioms = do
-      reasonLog Message.WRITELN noSourcePos $ "Found contradictory axioms. Make sure you are in a proof by contradiction!"
+      reasonLog Message.WRITELN pos $ "Found contradictory axioms. Make sure you are in a proof by contradiction!"
       mzero
     guardResult _ = mzero
 
@@ -172,14 +172,14 @@ launchReasoning = do
   plus all definitions/sigexts (as they usually import type information that
   is easily forgotten) and the low level context. Otherwise the whole
   context is selected. -}
-filterContext :: VM a -> [Context] -> VM a
-filterContext action context = do
+filterContext :: SourcePos -> VM a -> [Context] -> VM a
+filterContext pos action context = do
   link <- asks (Set.fromList . Context.link . currentThesis)
   if Set.null link
     then action `withContext`
          (map replaceSignHead $ filter (not . isTop . Context.formula) context)
     else do
-         linkedContext <- retrieveContext link
+         linkedContext <- retrieveContext pos link
          action `withContext` (lowlevelContext ++ linkedContext ++ defsAndSigs)
   where
     (lowlevelContext, toplevelContext) = span Context.isLowLevel context
@@ -250,8 +250,8 @@ data UnfoldState = UF {
 
 
 -- FIXME the reader monad transformer used here is completely superfluous
-unfold :: VM [Context]
-unfold = do
+unfold :: SourcePos -> VM [Context]
+unfold pos = do
   thesis <- asks currentThesis
   context <- asks currentContext
   let task = Context.setFormula thesis (Not $ Context.formula thesis) : context
@@ -282,10 +282,10 @@ unfold = do
   return $ newLowLevelContext ++ topLevelContext
   where
     nothingToUnfold =
-      whenInstruction Printunfold False $ reasonLog Message.WRITELN noSourcePos "nothing to unfold"
+      whenInstruction Printunfold False $ reasonLog Message.WRITELN pos "nothing to unfold"
 
     unfoldLog (goal:lowLevelContext) =
-      whenInstruction Printunfold False $ reasonLog Message.WRITELN noSourcePos $ "unfold to:\n"
+      whenInstruction Printunfold False $ reasonLog Message.WRITELN pos $ "unfold to:\n"
         <> Text.unlines (reverse $ map ((<>) "  " . Text.pack . show . Context.formula) lowLevelContext)
         <> "  |- " <> Text.pack (show (neg $ Context.formula goal))
 

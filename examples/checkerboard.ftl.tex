@@ -1,0 +1,571 @@
+\section{The Mutilated Checkerboard Problem Formalized in \Naproche{}}\label{sec:formalization}
+
+
+
+\subsection{Introduction}
+
+The famous {\emph{Mutilated Checkerboard Problem}} asks
+
+\begin{quotation}
+  Suppose a standard 8$\times$8 chessboard has two diagonally opposite corners
+  removed, leaving 62 squares. Is it possible to place 31 dominoes of size
+  2$\times$1 so as to cover all of these squares?
+\end{quotation}
+
+\begin{center}
+  {\includegraphics{checker08-1.eps}}
+\end{center}
+
+\
+Max Black proposed this problem in his book
+\textit{Critical Thinking} (1946).
+%
+It was later discussed by Martin Gardner in his
+\textit{Scientific American} column, \textit{Mathematical Games}.
+%
+John McCarthy, one of the
+founders of Artificial Intelligence described it as a
+\textit{Tough Nut for Proof Procedures}
+and discussed fully automatic or interactive proofs of the solution.
+
+There have been several formalization of the Checkerboard problem before. A
+survey article by Manfred Kerber and Martin Pollet called {\emph{A Tough Nut
+for Mathematical Knowledge Management}} list a couple of formalizations.
+
+Our formalization of the mutilated checkerboard problem is a logically
+self-contained document in the language ForTheL which introduces all the
+required mathematical notions and their axiomatic properties apart from those
+already built into \Naproche{}.
+
+% TODO
+\Naproche{} is based on weakly typed first order logic and basic set
+theory. We introduce types (``notions'') and constants to model checkerboards
+as a Cartesian product of ranks $1, 2, \ldots, 8$ and files $\fileA, \fileB, \ldots, \fileH$.
+
+
+
+\subsection{Setting up the checkerboard}
+
+\begin{forthel}
+    [read ZFC.ftl]
+    [synonym rank/ranks]
+    \begin{signature} A rank is a notion. \end{signature}
+    Let $r, s$ denote ranks.
+
+    \begin{axiom} $r$ is setsized. \end{axiom}
+
+    \begin{signature} $1$ is a rank. \end{signature}
+    \begin{signature} $2$ is a rank. \end{signature}
+    \begin{signature} $3$ is a rank. \end{signature}
+    \begin{signature} $4$ is a rank. \end{signature}
+    \begin{signature} $5$ is a rank. \end{signature}
+    \begin{signature} $6$ is a rank. \end{signature}
+    \begin{signature} $7$ is a rank. \end{signature}
+    \begin{signature} $8$ is a rank. \end{signature}
+
+    \begin{definition} $\Rank = \{1,2,3,4,5,6,7,8\}$. \end{definition}
+
+    [synonym file/files]
+    \begin{signature} A file is a notion. \end{signature}
+    Let f, g denote files.
+
+    \begin{axiom} f is setsized. \end{axiom}
+
+    \begin{signature} $\fileA$ is a file. \end{signature}
+    \begin{signature} $\fileB$ is a file. \end{signature}
+    \begin{signature} $\fileC$ is a file. \end{signature}
+    \begin{signature} $\fileD$ is a file. \end{signature}
+    \begin{signature} $\fileE$ is a file. \end{signature}
+    \begin{signature} $\fileF$ is a file. \end{signature}
+    \begin{signature} $\fileG$ is a file. \end{signature}
+    \begin{signature} $\fileH$ is a file. \end{signature}
+
+    \begin{definition}
+        $\File = \{\fileA,\fileB,\fileC,\fileD,\fileE,\fileF,\fileG,\fileH\}$.
+    \end{definition}
+
+    [synonym square/squares]
+    \begin{signature} A square is a notion. \end{signature}
+    \begin{axiom} $(f, r)$ is a square. \end{axiom}
+    Let $v, w, x, y, z$ denote squares.
+
+    \begin{definition}
+        $\Checkerboard$ is the class of squares $x$ such that $x = (f, r)$ for some
+        element $f$ of $\File$ and some element $r$ of $\Rank$.
+    \end{definition}
+
+    \begin{axiom} $\Checkerboard$ is a set. \end{axiom}
+\end{forthel}
+
+
+\subsection{Preliminaries about sets and functions}
+
+We enrich the small built-in set theory by further properties and axioms that
+will be used in the course of our argument. To keep the document fully
+self-contained we formulate the necessary definitions and axioms ourselves.
+Note that there are many degrees of freedom in picking an axiomatic setting.
+
+\begin{forthel}
+    Let $A,B,C$ denote sets.
+
+    \begin{definition}
+        A subset of $B$ is a set $A$ such that
+        every element of $A$ is an element of $B$.
+    \end{definition}
+
+    \begin{axiom}[Extensionality]
+        If $A$ is a subset of $B$ and
+        $B$ is a subset of $A$ then $A = B$.
+    \end{axiom}
+
+    \begin{definition}
+        A proper subset of $B$ is a subset $A$ of $B$ such that $A\neq B$.
+    \end{definition}
+
+    \begin{definition}
+        $A$ is disjoint from $B$ iff there is no element of $A$ that is an element of $B$.
+    \end{definition}
+
+    \begin{definition}
+        Assume that every element of $C$ is a set.
+        $C$ is pairwise disjoint iff $A$ and $B$ are disjoint for all nonequal
+        elements $A, B$ of $C$.
+    \end{definition}
+
+
+    \begin{definition}
+        $B \cap C = \{ x \in B | x \in C\}$.
+    \end{definition}
+
+    \begin{definition}
+        $B \setminus C = \{ x \in B | x \notin C\}$.
+    \end{definition}
+\end{forthel}
+
+Observe the notion \textsf{object}\footnote{\todo{whether we use
+objects or not should perhaps depend on the version of \Naproche{}}}:
+this is the built-in \textit{largest notion} which contains all others.
+%
+Also note that the proof of the lemma below really is omitted and not merely hidden:
+with the help of automated theorem provers such as \textsf{E}, \Naproche{}
+can accept some theorems without any additional argumentation.
+
+
+\begin{forthel}
+    \begin{lemma}
+        Every set is an object.
+    \end{lemma}
+\end{forthel}
+
+The built-in ordered pair {notation} that we already used in the first
+subsection does not include the universal property of ordered pairs.
+So we postulated it as an axiom.
+
+\begin{forthel}
+    \begin{axiom}
+        Let $\alpha, \beta, \gamma, \delta$ be objects.
+        If $(\alpha, \beta) = (\gamma, \delta)$
+        then $\alpha = \gamma$ and $\beta = \delta$.
+    \end{axiom}
+\end{forthel}
+
+(Unary) functions are built into \Naproche{}; $F(t)$ denotes the
+application of a function $F$ to an argument $t$ and
+$\dom(F)$ stands for the domain of $F$. In our exposition we shall
+use functions to compare cardinalities of black and white squares. As with
+sets, we introduce some further properties of functions.
+
+\begin{forthel}
+    Let $F,G$ denote functions.
+
+    \begin{definition}
+        $F : A \to B$ iff $\dom(F) = A$ and
+        $F(x)$ is an element of $B$ for all elements $x$ of $A$.
+    \end{definition}
+\end{forthel}
+
+Bijective functions are the basis of the modern theory of cardinalities; sets
+have the same cardinality iff there is a bijection between them.
+
+\begin{forthel}
+    % TODO remove parentheses of quantifiers.
+    \begin{definition}
+        $F : A \leftrightarrow B$ iff $F : A \to B$ and there exists $G$ such that
+        $G : B \to A$ and
+        (for all elements $x$ of $A$ we have $G(F(x)) = x$) and
+        (for all elements $y$ of $B$ we have $F(G(y)) = y$).
+    \end{definition}
+\end{forthel}
+
+
+\subsection{Cardinalities of Finite Sets}
+
+\begin{forthel}
+    \begin{definition}
+        $A$ is equinumerous with $B$ iff there is $F$ such that $F : A \leftrightarrow B$.
+    \end{definition}
+
+    \begin{lemma}
+        Assume that A is equinumerous with B. Then B is equinumerous with A.
+    \end{lemma}
+
+    % TODO prettify proof (try to allow for subscripts in variables?)
+    % Use symbolic quantifiers to avoid uncanny valley of parenthesized natural language text?
+    %
+    \begin{lemma}
+        Assume that A is equinumerous with B and B is equinumerous with C.
+        Then A is equinumerous with C.
+    \end{lemma}
+    \begin{proof}
+        Take a function $F$ such that $F : A \leftrightarrow B$.
+        Take a function $G$ such that $G : B \to A$ and (for all elements $x$ of $A$ we have $G(F(x)) = x$) and
+        (for all elements $y$ of $B$ we have $F(G(y))=y$).
+        Take a function $H$ such that $H : B \leftrightarrow C$.
+        Take a function $I$ such that $I : C \to B$ and (for all elements $x$ of $B$ we have $I(H(x)) = x$) and
+        (for all elements $y$ of $C$ we have $H(I(y))=y$).
+        Define $J(x) = H(F(x))$ for $x$ in $A$.
+        $J : A \leftrightarrow C$. Indeed define $K(y) = G(I(y))$ for $y$ in $C$.
+    \end{proof}
+\end{forthel}
+
+
+For the finite checkerboard problem we only need to consider finite sets.
+Intuitively we can thus assume that all sets considered are finite, and then
+we have the following finiteness axiom:
+
+\begin{forthel}
+    \begin{axiom}
+        If $A$ is a proper subset of $B$ then $A$ is not equinumerous with $B$.
+    \end{axiom}
+\end{forthel}
+
+
+\subsection{The Mutilated Checkerboard}
+
+In this subsection we define the mutilated checkerboard and dominoes consisting
+of two adjacent squares.
+
+\begin{forthel}
+    \begin{definition}
+        $\Corners = \{ (\fileA, 1), (\fileH, 8) \}$.
+    \end{definition}
+
+    \begin{definition}
+        $\Mutilated = \Checkerboard \setminus \Corners$.
+    \end{definition}
+\end{forthel}
+
+
+
+\subsection{Dominoes}
+
+\begin{forthel}
+    \begin{signature}
+        $r$ is vertically adjacent to $s$ is a relation.
+    \end{signature}
+    Let $r\vertadj s$ stand for $r$ is vertically adjacent to $s$.
+
+    \begin{axiom}
+        If $r\vertadj s$ then $s\vertadj r$.
+    \end{axiom}
+    \begin{axiom}
+        $1\vertadj 2\vertadj 3\vertadj 4\vertadj 5\vertadj 6\vertadj 7\vertadj 8$.
+    \end{axiom}
+
+    %\begin{axiom} $1\vertadj 2$. \end{axiom}
+    %\begin{axiom} $2\vertadj 3$. \end{axiom}
+    %\begin{axiom} $3\vertadj 4$. \end{axiom}
+    %\begin{axiom} $4\vertadj 5$. \end{axiom}
+    %\begin{axiom} $5\vertadj 6$. \end{axiom}
+    %\begin{axiom} $6\vertadj 7$. \end{axiom}
+    %\begin{axiom} $7\vertadj 8$. \end{axiom}
+
+    \begin{signature}
+        $f$ is horizontally adjacent to $g$ is a relation.
+    \end{signature}
+    Let $f\horizadj g$ stand for $f$ is horizontally adjacent to $g$.
+
+    \begin{axiom}
+        If $f$ is horizontally adjacent to $g$ then $g$ is horizontally adjacent to $f$.
+    \end{axiom}
+    \begin{axiom}
+        $\fileA \horizadj \fileB \horizadj \fileC \horizadj \fileD
+        \horizadj \fileE \horizadj \fileF \horizadj \fileG \horizadj \fileH$.
+    \end{axiom}
+
+    %\begin{axiom} $\fileA \horizadj \fileB$. \end{axiom}
+    %\begin{axiom} $\fileB \horizadj \fileC$. \end{axiom}
+    %\begin{axiom} $\fileC \horizadj \fileD$. \end{axiom}
+    %\begin{axiom} $\fileD \horizadj \fileE$. \end{axiom}
+    %\begin{axiom} $\fileE \horizadj \fileF$. \end{axiom}
+    %\begin{axiom} $\fileF \horizadj \fileG$. \end{axiom}
+    %\begin{axiom} $\fileG \horizadj \fileH$. \end{axiom}
+
+
+    % TODO REGRESSION: we're getting an ambiguity error
+    % with the direct bracketing of the nested existential.
+    % This does not change the -T output.
+    \begin{definition}[Adjacency]
+        $x$ is adjacent to $y$ iff
+        %there exist sets $f, r, g, s$ such that
+        there exists a file $f$ such that
+        there exists a rank $r$ such that
+        there exists a file $g$ such that
+        there exists a rank $s$ such that
+        ($x=(f,r)$ and $y=(g,s)$) and (($f=g$ and $r$ is vertically adjacent to $s$) or
+        ($r=s$ and $f$ is horizontally adjacent to $g$)).
+    \end{definition}
+
+    [synonym domino/dominoes]
+    \begin{definition}
+        A domino is a set $D$ such that $D = {x,y}$ for some
+        adjacent squares $x, y$.
+    \end{definition}
+\end{forthel}
+
+
+
+\subsection{Domino Tilings}
+
+\begin{forthel}
+    \begin{definition}
+        A domino tiling is a pairwise disjoint class of dominoes.
+    \end{definition}
+
+    Let $A$ denote a subset of $\Checkerboard$.
+
+    \begin{definition}
+        A domino tiling of $A$ is a domino tiling $T$
+        such that for every square $x$
+        $x$ is an element of $A$ iff
+        $x$ is an element of some element of $T$.
+    \end{definition}
+\end{forthel}
+
+We shall prove:
+
+\begin{theorem}
+    There is no domino tiling of $\Mutilated$.
+\end{theorem}
+
+
+
+\subsection{Colours}
+
+We shall solve the mutilated checkerboard problem by a cardinality argument.
+Squares on an actual checkerboard are coloured black and white and we can count
+colours on dominoes and on the mutilated checkerboard $\Mutilated$.
+
+The introduction of colours can be viewed as a creative move typical of
+mathematics: changing perspectives and introducing aspects that are not part
+of the original problem. The mutilated checkerboard was first discussed under
+a cognition-theoretic perspective: can one solve the problem {\emph{without}}
+inventing new concepts and completely stay within the realm of squares,
+subsets of the checkerboard and dominoes.
+
+
+\begin{forthel}
+    \begin{signature} $x$ is black is a relation. \end{signature}
+    \begin{signature} $x$ is white is a relation. \end{signature}
+
+    \begin{axiom} $x$ is black iff $x$ is not white. \end{axiom}
+    \begin{axiom} If $x$ is adjacent to $y$ then $x$ is black iff $y$ is white. \end{axiom}
+
+    \begin{axiom} $(\fileA,1)$ is black. \end{axiom}
+    \begin{axiom} $(\fileH,8)$ is black. \end{axiom}
+
+    \begin{definition} $\Black$ is the class of black elements of $\Checkerboard$. \end{definition}
+    \begin{definition} $\White$ is the class of white elements of $\Checkerboard$. \end{definition}
+
+    \begin{lemma} $\Black$ is a set. \end{lemma}
+    \begin{lemma} $\White$ is a set. \end{lemma}
+\end{forthel}
+
+
+\subsection{Counting Colours on Checkerboards}
+
+The original checkerboard has an equal number of black and white squares.
+Since our setup does not include numbers for counting, we rather work with
+equinumerosity. The following argument formalizes that we can invert the
+colours of a checkerboard by swapping the files $\fileA$ and $\fileB$, $\fileC$ and $\fileD$, etc..
+We formalize swapping by a first-order function symbol $\Swap{}$.
+
+\begin{forthel}
+    \begin{signature}
+        Let $x$ be an element of $\Checkerboard$.
+        $\Swap{x}$ is an element of $\Checkerboard$.
+    \end{signature}
+
+    Let $t$ denote an element of $\Rank$.
+
+    \begin{axiom} $\Swap{(\fileA, t)} = (\fileB, t)$. \end{axiom}
+    \begin{axiom} $\Swap{(\fileB, t)} = (\fileA, t)$. \end{axiom}
+
+    \begin{axiom} $\Swap{(\fileC, t)} = (\fileD, t)$. \end{axiom}
+    \begin{axiom} $\Swap{(\fileD, t)} = (\fileC, t)$. \end{axiom}
+
+    \begin{axiom} $\Swap{(\fileE, t)} = (\fileF, t)$. \end{axiom}
+    \begin{axiom} $\Swap{(\fileF, t)} = (\fileE, t)$. \end{axiom}
+
+    \begin{axiom} $\Swap{(\fileG, t)} = (\fileH, t)$. \end{axiom}
+    \begin{axiom} $\Swap{(\fileH, t)} = (\fileG, t)$. \end{axiom}
+
+    \begin{lemma}
+        Let $x$ be an element of $\Checkerboard$.
+        $\Swap{x}$ is adjacent to $x$.
+    \end{lemma}
+    \begin{proof}
+        Take $f$, $r$ such that $x = (f, r)$.
+        $r$ is an element of $\Rank$.
+        Case $f = \fileA$. End.
+        Case $f = \fileB$. End.
+        Case $f = \fileC$. End.
+        Case $f = \fileD$. End.
+        Case $f = \fileE$. End.
+        Case $f = \fileF$. End.
+        Case $f = \fileG$. End.
+    \end{proof}
+\end{forthel}
+
+$\Swap{}$ is an involution:
+
+\begin{forthel}
+    \begin{lemma}
+        Let $x$ be an element of $\Checkerboard$.
+        $\Swap{(\Swap{x})} = x$.
+    \end{lemma}
+    \begin{proof}
+        Take $f, r$ such that $x = (f,r)$. $r$ is an element of $\Rank$.
+        Case $f = \fileA$. End.
+        Case $f = \fileB$. End.
+        Case $f = \fileC$. End.
+        Case $f = \fileD$. End.
+        Case $f = \fileE$. End.
+        Case $f = \fileF$. End.
+        Case $f = \fileG$. End.
+    \end{proof}
+
+    \begin{lemma}
+        Let $x$ be an element of $\Checkerboard$.
+        $x$ is black iff $\Swap{x}$ is white.
+    \end{lemma}
+\end{forthel}
+
+%From Swap we can define a map which testifies that:
+Using $\Swap$ we can define a witness of $\Black \leftrightarrow \White$.
+
+\begin{forthel}
+    \begin{lemma}
+        $\Black$ is equinumerous with $\White$.
+    \end{lemma}
+    \begin{proof}
+        Define $F(x) = \Swap{x}$ for $x$ in $\Black$.
+        Define $G(x) = \Swap{x}$ for $x$ in $\White$.
+        Then $F : \Black \to \White$ and $G : \White \to \Black$.
+        For all elements $x$ of $\Black$ we have $G(F(x)) = x$.
+        For all elements $x$ of $\White$ we have $F(G(x)) = x$.
+        $F : \Black \leftrightarrow \White$.
+    \end{proof}
+\end{forthel}
+
+Given a domino tiling one can also swap the squares of each dominoes,
+leading to similar properties.
+
+\begin{forthel}
+    \begin{signature}
+        Assume that $T$ is a domino tiling of $A$.
+        Let $x$ be an element of $A$.
+        $\Sw(T,A,x)$ is a square $y$ such that there is an element $D$ of $T$
+        such that $D = {x,y}$.
+    \end{signature}
+
+    \begin{lemma}
+        Assume that $T$ is a domino tiling of $A$.
+        Let $x$ be an element of $A$.
+        Then $\Sw(T,A,x)$ is an element of $A$.
+    \end{lemma}
+    \begin{proof}
+        Let $y = \Sw(T,A,x)$.
+        Take an element $D$ of $T$ such that $D = {x,y}$.
+    \end{proof}
+\end{forthel}
+
+
+Swapping dominoes is also an involution.
+
+\begin{forthel}
+    \begin{lemma}
+        Assume that $T$ is a domino tiling of $A$. Let $x$ be an element of $A$.
+        Then $\Sw(T,A,\Sw(T,A,x)) = x$.
+    \end{lemma}
+    \begin{proof}
+        Let $y = \Sw(T,A,x)$.
+        Take an element $Y$ of $T$ such that $Y = {x,y}$.
+        Let $z = \Sw(T,A,y)$.
+        Take an element $Z$ of $T$ such that $Z = {y,z}$.
+        Then $x = z$.
+    \end{proof}
+
+    \begin{lemma}
+        Assume that $T$ is a domino tiling of $A$.
+        Let $x$ be a black element of $A$.
+        Then $\Sw(T,A,x)$ is white.
+    \end{lemma}
+    \begin{proof}
+        Let $y = \Sw(T,A,x)$.
+        Take an element $Y$ of $T$ such that $Y = {x,y}$.
+    \end{proof}
+\end{forthel}
+
+\subsection{The Theorem}
+
+\noindent We can easily show that a domino tiling involves as many black as white squares.
+
+\begin{forthel}
+    \begin{lemma}
+        Let $T$ be a domino tiling of $A$. Then $A \cap \Black$ is
+        equinumerous with $A \cap \White$.
+    \end{lemma}
+    \begin{proof}
+        Define $F(x) = \Sw(T,A,x)$ for $x$ in $A \cap \Black$.
+        Define $G(x) = \Sw(T,A,x)$ for $x$ in $A \cap \White$.
+        Then $F: A \cap \Black \to A \cap \White$ and
+        $G: A \cap \White \to A \cap \Black$.
+        For all elements $x$ of $A \cap \Black$ we have $G(F(x))=x$.
+        For all elements $x$ of $A \cap \White$ we have $F(G(x))=x$.
+        $F : A \cap \Black \leftrightarrow A \cap \White$.
+    \end{proof}
+\end{forthel}
+
+\noindent In mutilating the checkerboard, one only removes black squares
+
+\begin{forthel}
+    \begin{lemma}
+        $\Mutilated \cap \White = \White$.
+    \end{lemma}
+    \begin{proof}
+        $\Mutilated \cap \White$ is a subset of $\White$.
+        $\White$ is a subset of $\Mutilated$.
+        Proof.
+            Let $x$ be an element of $\White$.
+            $x \neq (\fileA, 1)$ and $x \neq (\fileH,8)$.
+            Indeed $(\fileH, 8)$ is black.
+        End.
+    \end{proof}
+\end{forthel}
+
+\noindent Now the theorem follows by putting together the previous cardinality properties.
+
+\begin{forthel}
+    \begin{theorem}
+        There is no domino tiling of $\Mutilated$.
+    \end{theorem}
+    \begin{proof}
+        Proof by contradiction.
+        Assume $T$ is a domino tiling of $\Mutilated$.
+        $\Mutilated \cap \Black$ is equinumerous with $\Mutilated \cap \White$.
+        $\Mutilated \cap \Black$ is equinumerous with $\White$.
+        $\Mutilated \cap \Black$ is equinumerous with $\Black$.
+        Contradiction. Indeed $\Mutilated \cap \Black$ is a proper subset of $\Black$.
+    \end{proof}
+\end{forthel}

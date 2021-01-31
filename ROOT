@@ -6,6 +6,7 @@ session "Naproche-Build" in "Isabelle" = Haskell +
     Naproche
   theories [condition = NAPROCHE_HOME]
     Build
+    Ex
   export_files (in src) [1] "*:**.hs"
   export_files (in ".") [1] "*:**.jar"
 

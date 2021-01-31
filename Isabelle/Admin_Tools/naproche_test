@@ -7,3 +7,5 @@ set -e
 cd "$NAPROCHE_HOME"
 
 isabelle ghc_stack test
+
+isabelle build -D.

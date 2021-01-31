@@ -13,3 +13,4 @@ x86_64-windows/
 *.hp
 *.prof
 *.ps
+.DS_Store

@@ -14,7 +14,7 @@ module SAD.Core.Base
   , askRS
   , updateRS
   , justIO
-  , reportBracket
+  , reportBracketIO
   , (<|>)
   , runRM
 
@@ -48,6 +48,7 @@ module SAD.Core.Base
 import Control.Applicative (Alternative(..))
 import Control.Monad.Reader
 import Control.Monad.State
+import Control.Exception (SomeException, try, throw)
 import Data.IORef
 import Data.Maybe (isJust, fromJust)
 import Data.Text.Lazy (Text)
@@ -210,14 +211,20 @@ dropInstruction instr =
   local $ \vs -> vs { instructions = dropInstr instr $ instructions vs }
 
 
--- Markup reports
+-- Markup reports (with exception handling)
 
-reportBracket :: SourcePos -> VM a -> VM a
-reportBracket pos body = do
-  justIO $ Message.report pos Markup.running
-  res <- body
-  justIO $ Message.report pos Markup.finished
-  return res
+reportBracketIO :: SourcePos -> IO a -> IO a
+reportBracketIO pos body = do
+  Message.report pos Markup.running
+  (res :: Either SomeException a) <- try body
+  case res of
+    Left e -> do
+      Message.report pos Markup.failed
+      Message.report pos Markup.finished
+      throw e
+    Right x -> do
+      Message.report pos Markup.finished
+      return x
 
 
 -- Trackers
@@ -319,13 +326,13 @@ translateLog kind pos = justIO . Message.outputTranslate kind pos . Text.unpack
 
 
 
-retrieveContext :: Set.Set Text -> VM [Context]
-retrieveContext names = do
+retrieveContext :: SourcePos -> Set.Set Text -> VM [Context]
+retrieveContext pos names = do
   globalContext <- asks currentContext
   let (context, unfoundSections) = runState (retrieve globalContext) names
 
   unless (Set.null unfoundSections) $
-    reasonLog Message.WARNING noSourcePos $
+    reasonLog Message.WARNING pos $
       "Could not find sections " <> Text.unwords (map (Text.pack . show) $ Set.elems unfoundSections)
   return context
   where

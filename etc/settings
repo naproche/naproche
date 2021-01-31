@@ -2,8 +2,10 @@
 
 NAPROCHE_HOME="$COMPONENT"
 
-if [ -d "$NAPROCHE_HOME/Isabelle/Admin_Tools" ]; then
-  ISABELLE_TOOLS="$ISABELLE_TOOLS:$NAPROCHE_HOME/Isabelle/Admin_Tools"
+ISABELLE_NAPROCHE="$NAPROCHE_HOME/Isabelle"
+
+if [ -d "$ISABELLE_NAPROCHE/Admin_Tools" ]; then
+  ISABELLE_TOOLS="$ISABELLE_TOOLS:$ISABELLE_NAPROCHE/Admin_Tools"
 fi
 
 NAPROCHE_EXE_DIR="$NAPROCHE_HOME/${ISABELLE_WINDOWS_PLATFORM64:-$ISABELLE_PLATFORM64}"
@@ -12,10 +14,12 @@ if [ ! -f "$NAPROCHE_EXE" ]; then
   echo >&2 "### Missing executable program: $NAPROCHE_EXE"
 fi
 
-NAPROCHE_JAR="$NAPROCHE_HOME/Isabelle/naproche.jar"
+NAPROCHE_JAR="$ISABELLE_NAPROCHE/naproche.jar"
 if [ -f "$NAPROCHE_JAR" ]; then
   classpath "$NAPROCHE_JAR"
   isabelle_scala_service "isabelle.naproche.File_Format"
 else
   echo >&2 "### Missing Isabelle/Scala module: $NAPROCHE_JAR"
 fi
+
+ISABELLE_DOCS_EXAMPLES="$ISABELLE_DOCS_EXAMPLES:\$ISABELLE_NAPROCHE/Ex.thy"
