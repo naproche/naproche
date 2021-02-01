@@ -471,7 +471,7 @@ symbSetNotation = cndSet </> finSet
       return (Tag Replacement, \tr -> subst tr (posVarName v) $ q f, pVar v, mkClass) 
     setSep = do
       t <- sTerm
-      elementOf
+      token' "in"
       clssTrm <- (Left <$> sTerm) </> (Right <$> symbSetNotation)
       case clssTrm of
         Left s -> pure (id, flip mkElem s, t, \v -> mkClass v `And` (mkSet s `Imp` mkSet v))
