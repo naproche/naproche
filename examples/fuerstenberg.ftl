@@ -210,6 +210,7 @@ Proof by contradiction.
     proof.
         1 + p and 1 - p are integers.
         1 + p and 1 - p belong to ArSeq(1,p).
+        Indeed 1 + p = 1 (mod p) and 1 - p = 1 (mod p).
         1 + p !=  1 /\ 1 - p !=  1.
         1 + p != -1 \/ 1 - p != -1.
     end.
