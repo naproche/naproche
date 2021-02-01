@@ -16,14 +16,12 @@ flags:
   
 
 when:
-  - condition: flag(debug)
-    then:
-      ghc-options:
-        - -fplugin=StackTrace.Plugin
-        - -Weverything
-      dependencies:
-        - haskell-stack-trace-plugin
-    else: {}
+  condition: flag(debug)
+  dependencies:
+  - haskell-stack-trace-plugin
+  ghc-options:
+  - -fplugin=StackTrace.Plugin
+  - -Weverything
 
 dependencies:
 - base >= 4.7 && < 5
