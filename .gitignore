@@ -14,3 +14,5 @@ x86_64-windows/
 *.prof
 *.ps
 .DS_Store
+
+isabelle-release/
