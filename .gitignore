@@ -21,3 +21,4 @@ x86_64-windows/
 *.ftl.pdf
 *.log
 *.fls
+*.synctex.gz
