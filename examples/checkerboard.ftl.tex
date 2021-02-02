@@ -3,17 +3,11 @@
 
 
 \subsection{Introduction}
-
-The famous {\emph{Mutilated Checkerboard Problem}} asks
-
-\begin{quotation}
-  Suppose a standard 8$\times$8 chessboard has two diagonally opposite corners
-  removed, leaving 62 squares. Is it possible to place 31 dominoes of size
-  2$\times$1 so as to cover all of these squares?
-\end{quotation}
-
+%
+%
 \begin{center}
-  {\includegraphics{checker08-1.eps}}
+  %{\includegraphics{checker08-1.eps}}
+  \includegraphics{mutil-check.pdf}
 \end{center}
 
 \
@@ -32,23 +26,30 @@ There have been several formalization of the Checkerboard problem before. A
 survey article by Manfred Kerber and Martin Pollet called {\emph{A Tough Nut
 for Mathematical Knowledge Management}} list a couple of formalizations.
 
-Our formalization of the mutilated checkerboard problem is a logically
-self-contained document in the language ForTheL which introduces all the
-required mathematical notions and their axiomatic properties apart from those
-already built into \Naproche{}.
-
 % TODO
-\Naproche{} is based on weakly typed first order logic and basic set
-theory. We introduce types (``notions'') and constants to model checkerboards
-as a Cartesian product of ranks $1, 2, \ldots, 8$ and files $\fileA, \fileB, \ldots, \fileH$.
+%\Naproche{} is based on weakly typed first order logic and basic set theory.
+%We introduce types (``notions'') and constants to model checkerboards
+%as a Cartesian product of ranks $1, 2, \ldots, 8$ and files $\fileA, \fileB, \ldots, \fileH$.
 
 
 
 \subsection{Setting up the checkerboard}
 
+% Hidden because we have not discussed it yet.
+% Maybe this can be mentioned as an area for improvement in the subsequent section?
+\begin{comment}
 \begin{forthel}
     [read ZFC.ftl]
-    [synonym rank/ranks]
+    [synonym rank/ranks] [synonym file/files] [synonym square/squares] [synonym domino/dominoes]
+\end{forthel}
+\end{comment}
+
+We introduce \textit{types} (or \textit{notions}) and constants
+to model checkerboards as a Cartesian product of
+ranks $1, 2, \ldots, 8$ and files $\fileA, \fileB, \ldots, \fileH$.
+
+
+\begin{forthel}
     \begin{signature} A rank is a notion. \end{signature}
     Let $r, s$ denote ranks.
 
@@ -65,7 +66,6 @@ as a Cartesian product of ranks $1, 2, \ldots, 8$ and files $\fileA, \fileB, \ld
 
     \begin{definition} $\Rank = \{1,2,3,4,5,6,7,8\}$. \end{definition}
 
-    [synonym file/files]
     \begin{signature} A file is a notion. \end{signature}
     Let f, g denote files.
 
@@ -84,7 +84,6 @@ as a Cartesian product of ranks $1, 2, \ldots, 8$ and files $\fileA, \fileB, \ld
         $\File = \{\fileA,\fileB,\fileC,\fileD,\fileE,\fileF,\fileG,\fileH\}$.
     \end{definition}
 
-    [synonym square/squares]
     \begin{signature} A square is a notion. \end{signature}
     \begin{axiom} $(f, r)$ is a square. \end{axiom}
     Let $v, w, x, y, z$ denote squares.
@@ -142,12 +141,11 @@ Note that there are many degrees of freedom in picking an axiomatic setting.
     \end{definition}
 \end{forthel}
 
-Observe the notion \textsf{object}\footnote{\todo{whether we use
-objects or not should perhaps depend on the version of \Naproche{}}}:
-this is the built-in \textit{largest notion} which contains all others.
+Observe the notion \textit{object}:
+this is the built-in \textit{largest notion}, containing all other notions.
 %
 Also note that the proof of the lemma below really is omitted and not merely hidden:
-with the help of automated theorem provers such as \textsf{E}, \Naproche{}
+with the help of automated theorem provers such as \textsf{E}\,\cite{eprover}, \Naproche{}
 can accept some theorems without any additional argumentation.
 
 
@@ -158,8 +156,8 @@ can accept some theorems without any additional argumentation.
 \end{forthel}
 
 The built-in ordered pair {notation} that we already used in the first
-subsection does not include the universal property of ordered pairs.
-So we postulated it as an axiom.
+subsection does not include the universal property of ordered pairs,
+so we postulated it as an axiom.
 
 \begin{forthel}
     \begin{axiom}
@@ -305,7 +303,7 @@ of two adjacent squares.
     % TODO REGRESSION: we're getting an ambiguity error
     % with the direct bracketing of the nested existential.
     % This does not change the -T output.
-    \begin{definition}[Adjacency]
+    \begin{definition}
         $x$ is adjacent to $y$ iff
         %there exist sets $f, r, g, s$ such that
         there exists a file $f$ such that
@@ -316,7 +314,6 @@ of two adjacent squares.
         ($r=s$ and $f$ is horizontally adjacent to $g$)).
     \end{definition}
 
-    [synonym domino/dominoes]
     \begin{definition}
         A domino is a set $D$ such that $D = {x,y}$ for some
         adjacent squares $x, y$.
@@ -398,17 +395,13 @@ We formalize swapping by a first-order function symbol $\Swap{}$.
 
     Let $t$ denote an element of $\Rank$.
 
-    \begin{axiom} $\Swap{(\fileA, t)} = (\fileB, t)$. \end{axiom}
-    \begin{axiom} $\Swap{(\fileB, t)} = (\fileA, t)$. \end{axiom}
+    \begin{axiom} $\Swap{(\fileA, t)} = (\fileB, t)$ and $\Swap{(\fileB, t)} = (\fileA, t)$. \end{axiom}
 
-    \begin{axiom} $\Swap{(\fileC, t)} = (\fileD, t)$. \end{axiom}
-    \begin{axiom} $\Swap{(\fileD, t)} = (\fileC, t)$. \end{axiom}
+    \begin{axiom} $\Swap{(\fileC, t)} = (\fileD, t)$ and $\Swap{(\fileD, t)} = (\fileC, t)$. \end{axiom}
 
-    \begin{axiom} $\Swap{(\fileE, t)} = (\fileF, t)$. \end{axiom}
-    \begin{axiom} $\Swap{(\fileF, t)} = (\fileE, t)$. \end{axiom}
+    \begin{axiom} $\Swap{(\fileE, t)} = (\fileF, t)$ and$\Swap{(\fileF, t)} = (\fileE, t)$. \end{axiom}
 
-    \begin{axiom} $\Swap{(\fileG, t)} = (\fileH, t)$. \end{axiom}
-    \begin{axiom} $\Swap{(\fileH, t)} = (\fileG, t)$. \end{axiom}
+    \begin{axiom} $\Swap{(\fileG, t)} = (\fileH, t)$ and $\Swap{(\fileH, t)} = (\fileG, t)$. \end{axiom}
 
     \begin{lemma}
         Let $x$ be an element of $\Checkerboard$.
@@ -555,10 +548,11 @@ Swapping dominoes is also an involution.
 \end{forthel}
 
 \noindent Now the theorem follows by putting together the previous cardinality properties.
+Note that the phrasing \textit{[...]\,has no domino tiling} in the theorem is automatically derived from the definition of \textit{a domino tiling of\,[...]}.
 
 \begin{forthel}
     \begin{theorem}
-        There is no domino tiling of $\Mutilated$.
+        $\Mutilated$ has no domino tiling.
     \end{theorem}
     \begin{proof}
         Proof by contradiction.
