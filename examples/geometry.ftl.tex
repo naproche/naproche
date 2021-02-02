@@ -5,7 +5,9 @@
 \usepackage{../lib/tex/forthel}
 
 \newcommand{\Cong}[4]{#1 #2 \equiv #3 #4}
-\newcommand{\Betw}[3]{#1 {\sim} #2 {\sim} #3}
+%\newcommand{\Betw}[3]{#1 {\sim} #2 {\sim} #3}
+\newcommand{\Betw}[3]{#1 #2 #3}
+\newcommand{\NotBetw}[3]{\lnot #1 #2 #3}
 \newcommand{\Col}[3]{\operatorname{Col}(#1, #2, #3)}
 
 \newcommand{\OFS}[8]{\operatorname{OFS}
@@ -29,6 +31,7 @@
   mainly following the outline of \textit{Metamathematische Methoden in der Geometrie} by
   Schwabhäuser, Szmielew and Tarski.
   We refer to this book as \textit{SST} in later comments.
+
 
   \section{The language of Tarskian geometry}
 
@@ -63,11 +66,11 @@
 
     Let $u$ is between $x$ and $y$ stand for $\Betw{x}{u}{y}$.
     Let $x-u-y$ stand for $u$ is between $x$ and $y$.
-    Let $!x-u-y$ stand for $u$ is not between $x$ and $y$.
+    Let $\NotBetw{x}{u}{y}$ stand for $u$ is not between $x$ and $y$.
 
 
     \begin{definition}
-      $\Col{x}{y}{z}$ iff $x-y-z$ or $y-z-x$ or $z-x-y$.
+      $\Col{x}{y}{z}$ iff $\Betw{x}{y}{z}$ or $\Betw{y}{z}{x}$ or $\Betw{z}{x}{y}$.
     \end{definition}
 
     Let $p$ is colinear with $x$ and $y$ stand for $\Col{p}{x}{y}$.
@@ -80,7 +83,7 @@
 
   \begin{forthel}
     \begin{axiom}[A1]
-      $x-y : y-x$.
+      We have $\Cong{x}{y}{y}{x}$.
     \end{axiom}
   \end{forthel}
 
@@ -89,7 +92,7 @@
 
   \begin{forthel}
     \begin{axiom}[A2]
-      If $x-y : z-u$ and $x-y : v-w$ then $z-u : v-w$.
+      If $\Cong{x}{y}{z}{u}$ and $\Cong{x}{y}{v}{w}$ then $\Cong{z}{u}{v}{w}$.
     \end{axiom}
   \end{forthel}
 
@@ -98,26 +101,38 @@
 
   \begin{forthel}
     \begin{axiom}[A3]
-      If $x-y : z-z$ then $x = y$.
+      If $\Cong{x}{y}{z}{z}$ then $x = y$.
     \end{axiom}
   \end{forthel}
 
 
-  \paragraph{Segment construction}
+  \paragraph{Segment construction} allows us to extend a segment $xy$
+  by a length specified by another segment $pq$.
 
   \begin{forthel}
     \begin{axiom}[A4]
-      There exists a point $z$ such that $x-y-z$ and $y-z : p-q$.
+      There exists a point $z$ such that $\Betw{x}{y}{z}$ and $\Cong{y}{z}{p}{q}$.
     \end{axiom}
   \end{forthel}
 
 
   \paragraph{Five segments}
+  We say that the points $x,y,z,r,u,v,w,p$ are in an \textit{outer five-segment-configuration}
+  whenever $\OFS{x}{y}{z}{r}{u}{v}{w}{p}$.
+
+  %This is definition 2.10 in \textit{SST}.
+  \begin{forthel}
+    \begin{definition}[OFS]
+      $\OFS{x}{y}{z}{r}{u}{v}{w}{p}$ iff $x-y-z$ and $u-v-w$ and $x-y : u-v$ and $y-z : v-w$ and $x-r : u-p$ and $y-r : v-p$.
+    \end{definition}
+  \end{forthel}
+
+  Using the concept of an outer five-segment-configuration we can state axiom A5 in a more concise form.
 
   \begin{forthel}
-    \begin{axiom}[A5]
-      If $x \neq y$ and $x-y-z$ and $p-q-r$ and $x-y : p-q$ and $y-z : q-r$ and $x-u : p-v$ and $y-u : q-v$ then $z-u : r-v$.
-    \end{axiom}
+  \begin{axiom}[A5]
+    If $\OFS{x}{y}{z}{r}{u}{v}{w}{p}$ and $x \neq y$ then $z-r : w-p$.
+  \end{axiom}
   \end{forthel}
 
 
@@ -143,7 +158,8 @@
 
   \begin{forthel}
     \begin{axiom}[A8]
-      There exist points $a,b,c$ such that $!a-b-c$ and $!b-c-a$ and $!c-a-b$.
+      There exist points $a,b,c$ such that
+      $\NotBetw{a}{b}{c}$ and $\NotBetw{b}{c}{a}$ and $\NotBetw{c}{a}{b}$.
     \end{axiom}
   \end{forthel}
 
@@ -175,22 +191,7 @@
   \end{forthel}
 
 
-  This is definition 2.10 in \textit{SST}.
-  We say that the points $x,y,z,r,u,v,w,p$ are in an \textit{outer five-segment-configuration} whenever $\OFS{x}{y}{z}{r}{u}{v}{w}{p}$.
 
-  \begin{forthel}
-    \begin{definition}[OFS]
-      $\OFS{x}{y}{z}{r}{u}{v}{w}{p}$ iff $x-y-z$ and $u-v-w$ and $x-y : u-v$ and $y-z : v-w$ and $x-r : u-p$ and $y-r : v-p$.
-    \end{definition}
-  \end{forthel}
-
-  Using the concept of an outer five-segment-configuration we can restate axiom A5 in the following manner:
-
-  \begin{forthel}
-  \begin{axiom}[Alt5]
-    If $\OFS{x}{y}{z}{r}{u}{v}{w}{p}$ and $x \neq y$ then $z-r : w-p$.
-  \end{axiom}
-  \end{forthel}
 
 
 
