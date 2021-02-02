@@ -319,24 +319,38 @@
       $\Betw{y}{w}{y}$ and $\Betw{z}{w}{x}$.
     \end{proof}
 
-    \begin{lemma} % Satz 3.5 (second part)
-      Assume $x-y-v$ and $y-z-v$. Then $x-y-v$.
-    \end{lemma}
-
-    \begin{lemma}[L3o6a]
-      Assume $x-y-z$ and $x-z-r$. Then $y-z-r$.
-    \end{lemma}
-
-    \begin{lemma}[L3o6b]
-      Assume $x-y-z$ and $x-z-r$. Then $x-y-r$.
-    \end{lemma}
-
     \begin{lemma}[L3o7a]
       Assume $x-y-z$ and $y-z-r$ and $y \neq z$. Then $x-z-r$.
     \end{lemma}
     \begin{proof}
     	Take $v$ such that $x-z-v$ and $z-v : z-r$.	Then $y-z-v$ and $z-v : z-r$. Hence $v = r$.
     \end{proof}
+
+    \begin{lemma}[S35b] % Satz 3.5 (second part)
+      Assume $x-y-v$ and $y-z-v$. Then $x-z-v$.
+    \end{lemma}
+    \begin{proof}
+      If $y = z$ then $\Betw{x}{z}{v}$.
+      Assume $y \neq z$.
+      We have $\Betw{x}{y}{z}$.
+    \end{proof}
+
+    \begin{lemma}[L3o6a]
+      Assume $x-y-z$ and $x-z-r$. Then $y-z-r$.
+    \end{lemma}
+
+    \begin{lemma} % Satz 3.6 (second part)
+      Assume $x-y-z$ and $x-z-r$. Then $x-y-r$.
+    \end{lemma}
+    \begin{proof}
+      We have $\Betw{r}{z}{x}$.
+      We have $\Betw{z}{y}{x}$.
+      Thus $\Betw{r}{y}{x}$ (by S35b).
+      Thus $\Betw{x}{y}{z}$.
+      % We have $\Betw{z}{y}{r}$.
+    \end{proof}
+
+
 
     \begin{lemma}[L3o7b]
       Assume $x-y-z$ and $y-z-r$ and $y \neq z$. Then $x-y-r$.
