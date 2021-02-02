@@ -199,11 +199,15 @@
   \end{forthel}
 
 
-  \paragraph{Circle continuity axiom} This axiom is equivalent to the the following statement: A line that has a point within a circle intersects that circle (i.e. shares a point with that circle.).
+  \paragraph{Circle continuity axiom}
+  This axiom is equivalent to the the statement
+  \textit{a~line that has a point within a circle intersects that circle}.
 
   \begin{forthel}
     \begin{axiom}[CA]
-      Assume $z-p-q$ and $z-p-r$ and $z-x : z-p$ and $z-y : z-r$. Then there exists $w$ such that $z-w : z-q$ and $x-w-y$.
+      Assume $\Betw{z}{p}{q}$ and $\Betw{z}{p}{r}$.
+      Assume $\Cong{z}{x}{z}{p}$ and $\Cong{z}{y}{z}{r}$.
+      Then there exists $w$ such that $\Cong{z}{w}{z}{q}$ and $\Betw{x}{w}{y}$.
     \end{axiom}
   \end{forthel}
 
@@ -217,7 +221,7 @@
 
   \begin{forthel}
     \begin{lemma} % Satz 2.1
-      $x-y : x-y$.
+      For all points $x, y$ we have $\Cong{x}{y}{x}{y}$.
     \end{lemma}
   \end{forthel}
 
@@ -226,7 +230,8 @@
 
   \begin{forthel}
     \begin{lemma} % Satz 2.2
-      Assume $x-y : v-w$. Then $v-w : x-y$.
+      If $\Cong{x}{y}{v}{w}$
+      then $\Cong{v}{w}{x}{y}$.
     \end{lemma}
   \end{forthel}
 
@@ -235,7 +240,8 @@
 
   \begin{forthel}
     \begin{lemma} % Satz 2.3
-      Assume $x-y : v-w$ and $v-w : p-q$. Then $x-y : p-q$.
+      If $\Cong{x}{y}{v}{w}$ and $\Cong{v}{w}{p}{q}$
+      then $\Cong{x}{y}{p}{q}$.
     \end{lemma}
   \end{forthel}
 
@@ -244,11 +250,13 @@
 
   \begin{forthel}
     \begin{lemma} % Satz 2.4
-      Assume $x-y : v-w$. Then $y-x : v-w$.
+      If $\Cong{x}{y}{v}{w}$
+      then $\Cong{y}{x}{v}{w}$.
     \end{lemma}
 
     \begin{lemma} % Satz 2.5
-      Assume $x-y : v-w$. Then $x-y : w-v$.
+      If $\Cong{x}{y}{v}{w}$
+      then $\Cong{x}{y}{w}{v}$.
     \end{lemma}
   \end{forthel}
 
@@ -257,7 +265,7 @@
 
   \begin{forthel}
     \begin{lemma} % Satz 2.8
-      $x-x : y-y$.
+      For all point $x, y$ we have $\Cong{x}{x}{y}{y}$.
     \end{lemma}
   \end{forthel}
 
@@ -382,24 +390,31 @@
     \end{lemma}
   \end{forthel}
 
-  Existence of at least two points follows from A8. (All other axioms also hold in a one-point space.)
+  Existence of at least two points follows from axiom A8.
+  All other axioms also hold in a one-point space.
 
   \begin{forthel}
-    \begin{lemma}[L3o13]
-      $x \neq y$ for some $x, y$.
+    \begin{lemma} % Satz 3.13
+      We have $x \neq y$ for some $x, y$.
+      %There exist nonequal points $x,y$.
     \end{lemma}
 
-    \begin{lemma}[L3o14]
-      There exist $z$ such that $x-y-z$ and $y \neq z$.
+    \begin{lemma} % Satz 3.14
+      There exist $z$ such that $\Betw{x}{y}{z}$ and $y \neq z$.
     \end{lemma}
+  \end{forthel}
 
-    \begin{lemma}[L3o17]
-      Assume $x-y-z$ and $u-v-z$ and $x-p-u$. Then there exist $q$ such that ($p-q-z$ and $y-q-v$).
+  The following follows from invoking A7 (Pasch) twice.
+
+  \begin{forthel}
+    \begin{lemma} % Satz 3.17
+      Assume $\Betw{x}{y}{z}$ and $\Betw{u}{v}{z}$ and $\Betw{x}{p}{u}$.
+      Then there exist $q$ such that $\Betw{p}{q}{z}$ and $\Betw{y}{q}{v}$.
     \end{lemma}
     \begin{proof}
-      $x-p-u$ and $z-v-u$.
-    	Take $r$ such that $v-r-x$ and $p-r-z$. % A7 (Pasch).
-    	Take $q$ such that $r-q-z$ and $v-q-y$. % A7 (Pasch).
+      We have $\Betw{x}{p}{u}$ and $\Betw{z}{v}{u}$.
+    	Take $r$ such that $\Betw{v}{r}{x}$ and $\Betw{p}{r}{z}$. % A7 (Pasch).
+    	Take $q$ such that $\Betw{r}{q}{z}$ and $\Betw{v}{q}{y}$. % A7 (Pasch).
     \end{proof}
   \end{forthel}
 
@@ -411,7 +426,7 @@
 
   \begin{forthel}
     \begin{definition}[IFS]
-      $IFS(x,y,z,r,v,w,p,q)$ iff ($x-y-z$ and $v-w-p$ and $x-z : v-p$ and $y-z : w-p$ and $x-r : v-q$ and $z-r : p-q$).
+      $IFS(x,y,z,r,v,w,p,q)$ iff $x-y-z$ and $v-w-p$ and $x-z : v-p$ and $y-z : w-p$ and $x-r : v-q$ and $z-r : p-q$.
     \end{definition}
   \end{forthel}
 
