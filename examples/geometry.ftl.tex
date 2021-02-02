@@ -28,8 +28,9 @@
   \maketitle
 
   This is a formalization of the beginnings of Tarskian geometry,
-  mainly following the outline of \textit{Metamathematische Methoden in der Geometrie} by
-  Schwabhäuser, Szmielew and Tarski.
+  mainly following the book
+  \textit{Metamathematische Methoden in der Geometrie}
+  by Schwabhäuser, Szmielew and Tarski.
   We refer to this book as \textit{SST} in later comments.
 
 
@@ -41,6 +42,7 @@
   and the ternary \textit{betweenness} $\Betw{(-)}{(-)}{(-)}$.
   Intuitively, congruence expresses that the distance between the first two points is equal to the distance of the last two points, and betweenness expresses that
   the second point lies on the between the other two on a shared line.
+  Informally we will also talk about segments, denoted by concatenation $(-)(-)$ of points.
 
 
   \begin{forthel}
@@ -79,7 +81,7 @@
 
 
 
-  \paragraph{Reflexivity of congruence}
+  \paragraph{Reflexivity of congruence}\
 
   \begin{forthel}
     \begin{axiom}[A1]
@@ -88,7 +90,7 @@
   \end{forthel}
 
 
-  \paragraph{Transitivity of congruence}
+  \paragraph{Transitivity of congruence}\
 
   \begin{forthel}
     \begin{axiom}[A2]
@@ -97,7 +99,7 @@
   \end{forthel}
 
 
-  \paragraph{Identity of congruence}
+  \paragraph{Identity of congruence}\
 
   \begin{forthel}
     \begin{axiom}[A3]
@@ -116,14 +118,16 @@
   \end{forthel}
 
 
-  \paragraph{Five segments}
+  \paragraph{Five segments}\
   We say that the points $x,y,z,r,u,v,w,p$ are in an \textit{outer five-segment-configuration}
   whenever $\OFS{x}{y}{z}{r}{u}{v}{w}{p}$.
 
   %This is definition 2.10 in \textit{SST}.
   \begin{forthel}
     \begin{definition}[OFS]
-      $\OFS{x}{y}{z}{r}{u}{v}{w}{p}$ iff $x-y-z$ and $u-v-w$ and $x-y : u-v$ and $y-z : v-w$ and $x-r : u-p$ and $y-r : v-p$.
+      $\OFS{x}{y}{z}{r}{u}{v}{w}{p}$ iff
+      $\Betw{x}{y}{z}$ and $\Betw{u}{v}{w}$ and $\Cong{x}{y}{u}{v}$
+      and $\Cong{y}{z}{v}{w}$ and $\Cong{x}{r}{u}{p}$ and $\Cong{y}{r}{v}{p}$.
     \end{definition}
   \end{forthel}
 
@@ -131,12 +135,12 @@
 
   \begin{forthel}
   \begin{axiom}[A5]
-    If $\OFS{x}{y}{z}{r}{u}{v}{w}{p}$ and $x \neq y$ then $z-r : w-p$.
+    If $\OFS{x}{y}{z}{r}{u}{v}{w}{p}$ and $x \neq y$ then $\Cong{z}{r}{w}{p}$.
   \end{axiom}
   \end{forthel}
 
 
-  \paragraph{Identity of betweenness}
+  \paragraph{Identity of betweenness}\
 
   \begin{forthel}
     \begin{axiom}[A6]
@@ -145,7 +149,7 @@
   \end{forthel}
 
 
-  \paragraph{Inner Pasch}
+  \paragraph{Inner Pasch}\
 
   \begin{forthel}
     \begin{axiom}[A7]
@@ -154,7 +158,7 @@
   \end{forthel}
 
 
-  \paragraph{Lower dimension}
+  \paragraph{Lower dimension}\
 
   \begin{forthel}
     \begin{axiom}[A8]
@@ -173,7 +177,7 @@
   \end{forthel}
 
 
-  \paragraph{Euclid}
+  \paragraph{Euclid}\
 
   \begin{forthel}
     \begin{axiom}[A10]
@@ -196,56 +200,56 @@
 
 
 
-  \paragraph{Reflexivity of congruence}
+  \paragraph{Reflexivity of congruence}\
 
   \begin{forthel}
-    \begin{lemma}[L2o1]
+    \begin{lemma} % Satz 2.1
       $x-y : x-y$.
     \end{lemma}
   \end{forthel}
 
 
-  \paragraph{Symmetry of congruence}
+  \paragraph{Symmetry of congruence}\
 
   \begin{forthel}
-    \begin{lemma}[L2o2]
+    \begin{lemma} % Satz 2.2
       Assume $x-y : v-w$. Then $v-w : x-y$.
     \end{lemma}
   \end{forthel}
 
 
-  \paragraph{Transitivity of congruence}
+  \paragraph{Transitivity of congruence}\
 
   \begin{forthel}
-    \begin{lemma}[L2o3]
+    \begin{lemma} % Satz 2.3
       Assume $x-y : v-w$ and $v-w : p-q$. Then $x-y : p-q$.
     \end{lemma}
   \end{forthel}
 
 
-  \paragraph{Congruence is independent of the order of the pairs}
+  \paragraph{Congruence is independent of the order of the pairs}\
 
   \begin{forthel}
-    \begin{lemma}[L2o4]
+    \begin{lemma} % Satz 2.4
       Assume $x-y : v-w$. Then $y-x : v-w$.
     \end{lemma}
 
-    \begin{lemma}[L2o5]
+    \begin{lemma} % Satz 2.5
       Assume $x-y : v-w$. Then $x-y : w-v$.
     \end{lemma}
   \end{forthel}
 
 
-  \paragraph{Zero-length segments are congruent}
+  \paragraph{Zero-length segments are congruent}\
 
   \begin{forthel}
-    \begin{lemma}[L2o8]
+    \begin{lemma} % Satz 2.8
       $x-x : y-y$.
     \end{lemma}
   \end{forthel}
 
 
-  \paragraph{Concatenation of segments}
+  \paragraph{Concatenation of segments}\
 
   \begin{forthel}
     \begin{lemma} % Satz 2.11
@@ -261,12 +265,13 @@
   \end{forthel}
 
 
-  \paragraph{Uniqueness for axiom A4}
+  \paragraph{Uniqueness for axiom A4}\
 
   \begin{forthel}
     \begin{lemma} % Satz 2.12
       Assume $q \neq x$.
-      Suppose $q-x-y$ and $x-y : v-w$ and $q-x-z$ and $x-z : v-w$.
+      Suppose $\Betw{q}{x}{y}$ and $\Cong{x}{y}{v}{w}$.
+      Suppose $\Betw{q}{x}{z}$ and $\Cong{x}{z}{v}{w}$.
       Then $y = z$.
     \end{lemma}
     \begin{proof}
@@ -278,31 +283,33 @@
   \end{forthel}
 
 
-  \paragraph{Right-betweenness}
+  \paragraph{Right-betweenness}\
 
   \begin{forthel}
     \begin{lemma} % Satz 3.1
-      $x-y-y$.
+      For all points $x, y$ we have $\Betw{x}{y}{y}$.
+    \end{lemma}
+  \end{forthel}
+
+  \paragraph{Symmetry of betweenness}\
+
+  \begin{forthel}
+    \begin{lemma} % Satz 3.2
+      Assume $\Betw{x}{y}{z}$. Then $\Betw{z}{y}{x}$.
+    \end{lemma}
+  \end{forthel}
+
+  \paragraph{Left-betweenness} follows directly
+  from right-betweenness and symmetry of betweenness.
+  %
+  \begin{forthel}
+    \begin{lemma} % Satz 3.3
+      For all points $x, y$ we have  $\Betw{x}{x}{y}$.
     \end{lemma}
   \end{forthel}
 
 
-  \paragraph{Symmetry of betweenness}
-
   \begin{forthel}
-    \begin{lemma}[SymmetryBetweenness] % Satz 3.2
-      Assume $x-y-z$. Then $z-y-x$.
-    \end{lemma}
-  \end{forthel}
-
-
-  \paragraph{Left-betweenness}
-
-  \begin{forthel}
-    \begin{lemma}[L3o3]
-      $x-x-y$.
-    \end{lemma}
-
     \begin{lemma} % Satz 3.4
       Assume $\Betw{x}{y}{z}$ and $\Betw{y}{x}{z}$.
       Then $x = y$.
@@ -314,22 +321,27 @@
     \end{proof}
 
     \begin{lemma} % Satz 3.5 (first part)
-      Assume $x-y-v$ and $y-z-v$. Then $x-y-z$.
+      Assume $\Betw{x}{y}{v}$ and $\Betw{y}{z}{v}$.
+      Then $\Betw{x}{y}{z}$.
     \end{lemma}
     \begin{proof}
       Take a point $w$ such that
       $\Betw{y}{w}{y}$ and $\Betw{z}{w}{x}$.
     \end{proof}
 
-    \begin{lemma}[L3o7a]
-      Assume $x-y-z$ and $y-z-r$ and $y \neq z$. Then $x-z-r$.
+    \begin{lemma} % Satz 3.7 (first part)
+      Assume $\Betw{x}{y}{z}$ and $\Betw{y}{z}{r}$ and $y \neq z$.
+      Then $\Betw{x}{z}{r}$.
     \end{lemma}
     \begin{proof}
-    	Take $v$ such that $x-z-v$ and $z-v : z-r$.	Then $y-z-v$ and $z-v : z-r$. Hence $v = r$.
+      Take $v$ such that $\Betw{x}{z}{v}$ and $\Cong{z}{v}{z}{r}$.
+      Then $\Betw{y}{z}{v}$ and $\Cong{z}{v}{z}{r}$.
+      Hence $v = r$.
     \end{proof}
 
-    \begin{lemma}[S35b] % Satz 3.5 (second part)
-      Assume $x-y-v$ and $y-z-v$. Then $x-z-v$.
+    \begin{lemma} % [S35b] % Satz 3.5 (second part)
+      Assume $\Betw{x}{y}{v}$ and $\Betw{y}{z}{v}$.
+      Then $\Betw{x}{z}{v}$.
     \end{lemma}
     \begin{proof}
       If $y = z$ then $\Betw{x}{z}{v}$.
@@ -337,24 +349,22 @@
       We have $\Betw{x}{y}{z}$.
     \end{proof}
 
-    \begin{lemma}[L3o6a]
-      Assume $x-y-z$ and $x-z-r$. Then $y-z-r$.
+    \begin{lemma} % Satz 3.6 (first part)
+      Assume $\Betw{x}{y}{z}$ and $\Betw{x}{z}{r}$. Then $\Betw{y}{z}{r}$.
     \end{lemma}
 
     \begin{lemma} % Satz 3.6 (second part)
-      Assume $x-y-z$ and $x-z-r$. Then $x-y-r$.
+      Assume $\Betw{x}{y}{z}$ and $\Betw{x}{z}{r}$. Then $\Betw{x}{y}{r}$.
     \end{lemma}
     \begin{proof}
       We have $\Betw{r}{z}{x}$.
       We have $\Betw{z}{y}{x}$.
-      Thus $\Betw{r}{y}{x}$ (by S35b).
+      Thus $\Betw{r}{y}{x}$. % (by S35b).
       Thus $\Betw{x}{y}{z}$.
       % We have $\Betw{z}{y}{r}$.
     \end{proof}
 
-
-
-    \begin{lemma}[L3o7b]
+    \begin{lemma} % Satz 3.7 (second part)
       Assume $x-y-z$ and $y-z-r$ and $y \neq z$. Then $x-y-r$.
     \end{lemma}
   \end{forthel}
