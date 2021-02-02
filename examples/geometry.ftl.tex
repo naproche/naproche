@@ -6,6 +6,7 @@
 
 \newcommand{\Cong}[4]{#1 #2 \equiv #3 #4}
 \newcommand{\Betw}[3]{#1 {\sim} #2 {\sim} #3}
+\newcommand{\Col}[3]{\operatorname{Col}(#1, #2, #3)}
 
 \newcommand{\OFS}[8]{\operatorname{OFS}
 \left(\begin{smallmatrix}%
@@ -66,10 +67,10 @@
 
 
     \begin{definition}
-      $Col(x,y,z)$ iff $x-y-z$ or $y-z-x$ or $z-x-y$.
+      $\Col{x}{y}{z}$ iff $x-y-z$ or $y-z-x$ or $z-x-y$.
     \end{definition}
 
-    Let $p$ is colinear with $x$ and $y$ stand for $Col(p,x,y)$.
+    Let $p$ is colinear with $x$ and $y$ stand for $\Col{p}{x}{y}$.
   \end{forthel}
 
 
@@ -428,31 +429,31 @@
     \end{proof}
 
     \begin{lemma}[L4o11a]
-      Assume $Col(x,y,z)$. Then $Col(y,z,x)$.
+      Assume $\Col{x}{y}{z}$. Then $\Col{y}{z}{x}$.
     \end{lemma}
 
     \begin{lemma}[L4o11b]
-      Assume $Col(x,y,z)$. Then $Col(z,x,y)$.
+      Assume $\Col{x}{y}{z}$. Then $\Col{z}{x}{y}$.
     \end{lemma}
 
     \begin{lemma}[L4o11c]
-      Assume $Col(x,y,z)$. Then $Col(z,y,x)$.
+      Assume $\Col{x}{y}{z}$. Then $\Col{z}{y}{x}$.
     \end{lemma}
 
     \begin{lemma}[L4o11d]
-      Assume $Col(x,y,z)$. Then $Col(y,x,z)$.
+      Assume $\Col{x}{y}{z}$. Then $\Col{y}{x}{z}$.
     \end{lemma}
 
     \begin{lemma}[L4o11e]
-      Assume $Col(x,y,z)$. Then $Col(x,z,y)$.
+      Assume $\Col{x}{y}{z}$. Then $\Col{x}{z}{y}$.
     \end{lemma}
 
     \begin{lemma}[L4o12]
-      $Col(x,x,y)$.
+      $\Col{x}{x}{y}$.
     \end{lemma}
 
     \begin{lemma}[L4o13]
-      Assume $Col(x,y,z)$ and $x-z : r-w$ and $r-v-w$. Then $Col(r,v,w)$.
+      Assume $\Col{x}{y}{z}$ and $x-z : r-w$ and $r-v-w$. Then $\Col{r}{v}{w}$.
     \end{lemma}
 
     \begin{lemma}[L4o14o1]
@@ -468,11 +469,11 @@
     \end{lemma}
 
     \begin{axiom}[L4o14]
-      Assume $Col(x,y,z)$ and $x-y : r-v$. Then there exists $w$ such that $x-y-z : r-v-w$.
+      Assume $\Col{x}{y}{z}$ and $x-y : r-v$. Then there exists $w$ such that $x-y-z : r-v-w$.
     \end{axiom}
 
     \begin{definition}[L4o15]
-      $FS(x,y,z,r,v,w,p,q)$ iff $Col(x,y,z)$ and $x-y-z : v-w-p$ and $x-r : v-q$ and $y-r : w-q$.
+      $FS(x,y,z,r,v,w,p,q)$ iff $\Col{x}{y}{z}$ and $x-y-z : v-w-p$ and $x-r : v-q$ and $y-r : w-q$.
     \end{definition}
 
     \begin{axiom}[L4o16]
@@ -481,7 +482,7 @@
 
 
     \begin{lemma}[L4o17]
-      Assume $x \neq y$ and $Col(x,y,z)$ and $x-p : x-q$ and $y-p : y-q$. Then $z-p : z-q$.
+      Assume $x \neq y$ and $\Col{x}{y}{z}$ and $x-p : x-q$ and $y-p : y-q$. Then $z-p : z-q$.
     \end{lemma}
     \begin{proof}
     	$FS(x,y,z,p,x,y,z,q)$.
@@ -489,7 +490,7 @@
 
 
     \begin{lemma}[L4o18]
-      Assume $x \neq y$ and $Col(x,y,z)$ and $x-z : x-p$ and $y-z : y-p$. Then $z = p$.
+      Assume $x \neq y$ and $\Col{x}{y}{z}$ and $x-z : x-p$ and $y-z : y-p$. Then $z = p$.
     \end{lemma}
 
     \begin{lemma}[L4o19]
@@ -620,9 +621,9 @@
         and $h-v : u-q$ and $h-w : u-r$
         and $\OFS{q}{u}{r}{z}{v}{h}{w}{z}$
         and $q-r : v-w$ and $z-w : z-r$ and $z-v : z-w$ (by C5o1o).
-    		Then $h-v : h-w$. $z \neq p$. Hence $h \neq z$. $Col(h,z,q)$. Therefore $q-v : q-w$.
-    		Then $z-v : z-w$. $z \neq q$. $Col(z,q,y)$. Therefore $y-v : y-w$.
-    		Then $z-v : z-w$. $z \neq q$. $Col(z,q,s)$. Therefore $s-v : s-w$.
+    		Then $h-v : h-w$. $z \neq p$. Hence $h \neq z$. $\Col{h}{z}{q}$. Therefore $q-v : q-w$.
+    		Then $z-v : z-w$. $z \neq q$. $\Col{z}{q}{y}$. Therefore $y-v : y-w$.
+    		Then $z-v : z-w$. $z \neq q$. $\Col{z}{q}{s}$. Therefore $s-v : s-w$.
     		Then $y \neq s$.
     		Then $q = r$.
     	Assume $z = p$.
