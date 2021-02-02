@@ -399,7 +399,7 @@ We formalize swapping by a first-order function symbol $\Swap{}$.
 
     \begin{axiom} $\Swap{(\fileC, t)} = (\fileD, t)$ and $\Swap{(\fileD, t)} = (\fileC, t)$. \end{axiom}
 
-    \begin{axiom} $\Swap{(\fileE, t)} = (\fileF, t)$ and$\Swap{(\fileF, t)} = (\fileE, t)$. \end{axiom}
+    \begin{axiom} $\Swap{(\fileE, t)} = (\fileF, t)$ and $\Swap{(\fileF, t)} = (\fileE, t)$. \end{axiom}
 
     \begin{axiom} $\Swap{(\fileG, t)} = (\fileH, t)$ and $\Swap{(\fileH, t)} = (\fileG, t)$. \end{axiom}
 
@@ -468,17 +468,17 @@ leading to similar properties.
     \begin{signature}
         Assume that $T$ is a domino tiling of $A$.
         Let $x$ be an element of $A$.
-        $\Sw(T,A,x)$ is a square $y$ such that there is an element $D$ of $T$
+        $\Sw{T}{A}{x}$ is a square $y$ such that there is an element $D$ of $T$
         such that $D = {x,y}$.
     \end{signature}
 
     \begin{lemma}
         Assume that $T$ is a domino tiling of $A$.
         Let $x$ be an element of $A$.
-        Then $\Sw(T,A,x)$ is an element of $A$.
+        Then $\Sw{T}{A}{x}$ is an element of $A$.
     \end{lemma}
     \begin{proof}
-        Let $y = \Sw(T,A,x)$.
+        Let $y = \Sw{T}{A}{x}$.
         Take an element $D$ of $T$ such that $D = {x,y}$.
     \end{proof}
 \end{forthel}
@@ -489,12 +489,12 @@ Swapping dominoes is also an involution.
 \begin{forthel}
     \begin{lemma}
         Assume that $T$ is a domino tiling of $A$. Let $x$ be an element of $A$.
-        Then $\Sw(T,A,\Sw(T,A,x)) = x$.
+        Then $\Sw{T}{A}{\Sw{T}{A}{x}} = x$.
     \end{lemma}
     \begin{proof}
-        Let $y = \Sw(T,A,x)$.
+        Let $y = \Sw{T}{A}{x}$.
         Take an element $Y$ of $T$ such that $Y = {x,y}$.
-        Let $z = \Sw(T,A,y)$.
+        Let $z = \Sw{T}{A}{y}$.
         Take an element $Z$ of $T$ such that $Z = {y,z}$.
         Then $x = z$.
     \end{proof}
@@ -502,10 +502,10 @@ Swapping dominoes is also an involution.
     \begin{lemma}
         Assume that $T$ is a domino tiling of $A$.
         Let $x$ be a black element of $A$.
-        Then $\Sw(T,A,x)$ is white.
+        Then $\Sw{T}{A}{x}$ is white.
     \end{lemma}
     \begin{proof}
-        Let $y = \Sw(T,A,x)$.
+        Let $y = \Sw{T}{A}{x}$.
         Take an element $Y$ of $T$ such that $Y = {x,y}$.
     \end{proof}
 \end{forthel}
@@ -520,8 +520,8 @@ Swapping dominoes is also an involution.
         equinumerous with $A \cap \White$.
     \end{lemma}
     \begin{proof}
-        Define $F(x) = \Sw(T,A,x)$ for $x$ in $A \cap \Black$.
-        Define $G(x) = \Sw(T,A,x)$ for $x$ in $A \cap \White$.
+        Define $F(x) = \Sw{T}{A}{x}$ for $x$ in $A \cap \Black$.
+        Define $G(x) = \Sw{T}{A}{x}$ for $x$ in $A \cap \White$.
         Then $F: A \cap \Black \to A \cap \White$ and
         $G: A \cap \White \to A \cap \Black$.
         For all elements $x$ of $A \cap \Black$ we have $G(F(x))=x$.
