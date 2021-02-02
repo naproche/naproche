@@ -246,35 +246,40 @@
   \paragraph{Concatenation of segments}
 
   \begin{forthel}
-    \begin{lemma}[L2o11]
-      Assume $x-y-z$ and $r-v-w$ and $x-y : r-v$ and $y-z : v-w$.
-      Then $x-z : r-w$.
+    \begin{lemma} % Satz 2.11
+      Assume $\Betw{x}{y}{z}$ and $\Betw{r}{v}{w}$.
+      Assume $\Cong{x}{y}{r}{v}$ and $\Cong{y}{z}{v}{w}$.
+      Then $\Cong{x}{z}{r}{w}$.
     \end{lemma}
     \begin{proof}
-      $\OFS{x}{y}{z}{x}{r}{v}{w}{r}$.         % By previous results and assumption.
-      Assume $x = y$. Then $r = v$.   % Axiom A3 gives this implication.
-      Assume $x \neq y$.              % Axiom A5 completes the proof.
+      We have $\OFS{x}{y}{z}{x}{r}{v}{w}{r}$. % By previous results and assumption.
+      If $x = y$ then $r = v$.                % Axiom A3 gives this implication.
+      If $x \neq y$ then $\Cong{x}{z}{r}{w}$. % Axiom A5 completes the proof.
     \end{proof}
-    % The following proof follows the proof from \textit{SST} and works, but can be
-    % omitted entirely.
   \end{forthel}
 
 
-  \paragraph{Uniqueness for Axiom A4}
+  \paragraph{Uniqueness for axiom A4}
 
   \begin{forthel}
-    \begin{lemma}[L2o12]
+    \begin{lemma} % Satz 2.12
       Assume $q \neq x$.
-      Suppose $q-x-y$ and $x-y : v-w$ and $q-x-r$ and $x-r : v-w$.
-      Then $y = r$.
+      Suppose $q-x-y$ and $x-y : v-w$ and $q-x-z$ and $x-z : v-w$.
+      Then $y = z$.
     \end{lemma}
+    \begin{proof}
+      We have $\Cong{q}{y}{q}{z}$.
+      Thus $\Cong{x}{y}{x}{z}$.
+      Thus $\OFS{q}{x}{y}{y}{q}{x}{z}{z}$.
+      Therefore $\Cong{y}{y}{z}{z}$.
+    \end{proof}
   \end{forthel}
 
 
   \paragraph{Right-betweenness}
 
   \begin{forthel}
-    \begin{lemma}[L3o1]
+    \begin{lemma} % Satz 3.1
       $x-y-y$.
     \end{lemma}
   \end{forthel}
@@ -283,7 +288,7 @@
   \paragraph{Symmetry of betweenness}
 
   \begin{forthel}
-    \begin{lemma}[L3o2]
+    \begin{lemma}[SymmetryBetweenness] % Satz 3.2
       Assume $x-y-z$. Then $z-y-x$.
     \end{lemma}
   \end{forthel}
@@ -296,15 +301,25 @@
       $x-x-y$.
     \end{lemma}
 
-    \begin{lemma}[L3o4]
-      Assume $x-y-z$ and $y-x-z$. Then $x = y$.
+    \begin{lemma} % Satz 3.4
+      Assume $\Betw{x}{y}{z}$ and $\Betw{y}{x}{z}$.
+      Then $x = y$.
     \end{lemma}
+    \begin{proof}
+      Take a point $w$ such that
+      $\Betw{y}{w}{y}$ and $\Betw{x}{w}{x}$.
+      Then $x = w = y$.
+    \end{proof}
 
-    \begin{lemma}[L3o5a]
+    \begin{lemma} % Satz 3.5 (first part)
       Assume $x-y-v$ and $y-z-v$. Then $x-y-z$.
     \end{lemma}
+    \begin{proof}
+      Take a point $w$ such that
+      $\Betw{y}{w}{y}$ and $\Betw{z}{w}{x}$.
+    \end{proof}
 
-    \begin{lemma}[L3o5b]
+    \begin{lemma} % Satz 3.5 (second part)
       Assume $x-y-v$ and $y-z-v$. Then $x-y-v$.
     \end{lemma}
 
