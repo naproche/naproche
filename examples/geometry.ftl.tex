@@ -7,7 +7,6 @@
 \newcommand{\Cong}[4]{#1 #2 \equiv #3 #4}
 %\newcommand{\Betw}[3]{#1 {\sim} #2 {\sim} #3}
 \newcommand{\Betw}[3]{#1 #2 #3}
-\newcommand{\NotBetw}[3]{\lnot #1 #2 #3}
 \newcommand{\Col}[3]{\operatorname{Col}(#1, #2, #3)}
 
 \newcommand{\OFS}[8]{\operatorname{OFS}
@@ -63,19 +62,24 @@
     Let $x-y : v-w$ stand for $x$ and $y$ are congruent to $v$ and $w$.
 
     \begin{signature}
-      $\Betw{x}{u}{y}$ is an atom.
+      $\Betw{x}{y}{z}$ is an atom.
     \end{signature}
 
-    Let $u$ is between $x$ and $y$ stand for $\Betw{x}{u}{y}$.
+    Let $y$ is between $x$ and $z$ stand for $\Betw{x}{y}{z}$.
     Let $x-u-y$ stand for $u$ is between $x$ and $y$.
-    Let $\NotBetw{x}{u}{y}$ stand for $u$ is not between $x$ and $y$.
+  \end{forthel}
 
+  Intuitively, points are \textit{collinear} when they lie on a single line.
+  We will later see that betweenness is symmetric
+  ($\Betw{x}{y}{z}$ implies $\Betw{z}{y}{x}$),
+  so we only need to consider three of the six permutations of three points in the definition of collinearity.
 
+  \begin{forthel}
     \begin{definition}
       $\Col{x}{y}{z}$ iff $\Betw{x}{y}{z}$ or $\Betw{y}{z}{x}$ or $\Betw{z}{x}{y}$.
     \end{definition}
 
-    Let $p$ is colinear with $x$ and $y$ stand for $\Col{p}{x}{y}$.
+    Let $p$ is collinear with $x$ and $y$ stand for $\Col{p}{x}{y}$.
   \end{forthel}
 
 
@@ -124,19 +128,25 @@
 
   %This is definition 2.10 in \textit{SST}.
   \begin{forthel}
-    \begin{definition}[OFS]
-      $\OFS{x}{y}{z}{r}{u}{v}{w}{p}$ iff
-      $\Betw{x}{y}{z}$ and $\Betw{u}{v}{w}$ and $\Cong{x}{y}{u}{v}$
-      and $\Cong{y}{z}{v}{w}$ and $\Cong{x}{r}{u}{p}$ and $\Cong{y}{r}{v}{p}$.
+    \begin{definition}
+      $\OFS{x}{y}{z}{r}{u}{v}{w}{p}$ if and only if
+      $\Betw{x}{y}{z}
+        \wedge \Betw{u}{v}{w}$
+      and we have
+      $\Cong{x}{y}{u}{v}
+        \wedge \Cong{y}{z}{v}{w}
+        \wedge \Cong{x}{r}{u}{p}
+        \wedge \Cong{y}{r}{v}{p}$.
     \end{definition}
   \end{forthel}
 
-  Using the concept of an outer five-segment-configuration we can state axiom A5 in a more concise form.
+  Using the concept of an outer five-segment-configuration,
+  we can state the five-segment axiom A5 in a concise form.
 
   \begin{forthel}
-  \begin{axiom}[A5]
-    If $\OFS{x}{y}{z}{r}{u}{v}{w}{p}$ and $x \neq y$ then $\Cong{z}{r}{w}{p}$.
-  \end{axiom}
+    \begin{axiom}[A5]
+      If $\OFS{x}{y}{z}{r}{u}{v}{w}{p}$ and $x \neq y$ then $\Cong{z}{r}{w}{p}$.
+    \end{axiom}
   \end{forthel}
 
 
@@ -144,7 +154,7 @@
 
   \begin{forthel}
     \begin{axiom}[A6]
-      If $y$ is between $x$ and $x$ then $x = y$.
+      If $\Betw{x}{y}{x}$ then $x = y$.
     \end{axiom}
   \end{forthel}
 
@@ -153,7 +163,8 @@
 
   \begin{forthel}
     \begin{axiom}[A7]
-      If $x-u-z$ and $y-v-z$ then there exists a point $w$ such that $u-w-y$ and $v-w-x$.
+      If $\Betw{x}{u}{z}$ and $\Betw{y}{v}{z}$ then there exists a point $w$
+      such that $\Betw{u}{w}{y}$ and $\Betw{v}{w}{x}$.
     \end{axiom}
   \end{forthel}
 
@@ -163,16 +174,18 @@
   \begin{forthel}
     \begin{axiom}[A8]
       There exist points $a,b,c$ such that
-      $\NotBetw{a}{b}{c}$ and $\NotBetw{b}{c}{a}$ and $\NotBetw{c}{a}{b}$.
+      $a$ is not collinear with $b$ and $c$.
     \end{axiom}
   \end{forthel}
 
 
-  \paragraph{Upper dimension}
+  \paragraph{Upper dimension}\
 
   \begin{forthel}
     \begin{axiom}[A9]
-      If $x-u : x-v$ and $y-u : y-v$ and $z-u : z-v$ and $u \neq v$ then $x-y-z$ and $y-z-x$ and $z-x-y$.
+      If $\Cong{x}{u}{x}{v}$ and $\Cong{y}{u}{y}{v}$
+      and $\Cong{z}{u}{z}{v}$ and $u \neq v$
+      then $x$ is collinear with $y$ and $z$.
     \end{axiom}
   \end{forthel}
 
@@ -270,15 +283,15 @@
   \begin{forthel}
     \begin{lemma} % Satz 2.12
       Assume $q \neq x$.
-      Suppose $\Betw{q}{x}{y}$ and $\Cong{x}{y}{v}{w}$.
-      Suppose $\Betw{q}{x}{z}$ and $\Cong{x}{z}{v}{w}$.
-      Then $y = z$.
+      Suppose $\Betw{q}{x}{v}$ and $\Cong{x}{v}{y}{z}$.
+      Suppose $\Betw{q}{x}{w}$ and $\Cong{x}{w}{y}{z}$.
+      Then $v = w$.
     \end{lemma}
     \begin{proof}
-      We have $\Cong{q}{y}{q}{z}$.
-      Thus $\Cong{x}{y}{x}{z}$.
-      Thus $\OFS{q}{x}{y}{y}{q}{x}{z}{z}$.
-      Therefore $\Cong{y}{y}{z}{z}$.
+      We have $\Cong{q}{v}{q}{w}$.
+      Thus $\Cong{x}{v}{x}{w}$.
+      Thus $\OFS{q}{x}{v}{v}{q}{x}{v}{w}$.
+      Therefore $\Cong{v}{v}{v}{w}$.
     \end{proof}
   \end{forthel}
 
@@ -547,8 +560,6 @@
     \end{definition}
   \end{forthel}
 
-  For the following 5 Statements we did not find a proof yet that gets checked positive by Naproche SAD. They are all used in the proof of Lemma C5o1p and Lemma C5o1.
-
   \begin{forthel}
     \begin{lemma}[C5o1f]
       Assume $x \neq y$ and $x-y-z$ and $x-y-r$. Then there exist points $a,b$ such that $x-r-a$ and $r-a : z-r$ and $x-z-b$ and $z-b : z-r$.
@@ -591,68 +602,75 @@
       Assume $Th2(x,y,z,r,p,q,g)$ and $\OFS{y}{z}{q}{p}{g}{p}{r}{z}$ and $p-q : z-r$. Then there exist $u$ such that $z-u-p$ and $r-u-q$.
     \end{lemma}
 
-    \begin{lemma}[C5o1o]
-      Assume $Th4(x,y,z,r,p,q,g,u,v,w,h)$. Then $\OFS{q}{z}{h}{v}{v}{z}{u}{q}$ and $h-v : u-q$ and $h-w : u-r$ and $\OFS{q}{u}{r}{z}{v}{h}{w}{z}$ and $q-r : v-w$ and $z-w : z-r$ and $z-v : z-w$.
-    \end{lemma}
-    \begin{proof}
-    	$\OFS{q}{z}{h}{v}{v}{z}{u}{q}$. Hence $h-v : u-q$.
-      Hence $h-w : u-r$. % TODO: this step is slow.
-    	Therefore $\OFS{q}{u}{r}{z}{v}{h}{w}{z}$. Hence $q-r : v-w$. If $q \neq u$ then $z-w : z-r$.
-      If $q = u$ then $q = r$. % TODO: this step is slow.
-    	Then $v = w$. Therefore $z-w : z-r$. Hence $z-v : z-w$.
-    \end{proof}
+    %\begin{lemma}[C5o1o]
+    %  Assume $Th4(x,y,z,r,p,q,g,u,v,w,h)$.
+    % Then $\OFS{q}{z}{h}{v}{v}{z}{u}{q}$ and $h-v : u-q$ and $h-w : u-r$
+    % and $\OFS{q}{u}{r}{z}{v}{h}{w}{z}$ and $q-r : v-w$ and $z-w : z-r$ and $z-v : z-w$.
+    %\end{lemma}
+    %\begin{proof}
+    %  $\OFS{q}{z}{h}{v}{v}{z}{u}{q}$. Hence $h-v : u-q$.
+    %  Hence $h-w : u-r$. % TODO: this step is slow.
+    %	Therefore $\OFS{q}{u}{r}{z}{v}{h}{w}{z}$. Hence $q-r : v-w$. If $q \neq u$ then $z-w : z-r$.
+    %  If $q = u$ then $q = r$. % TODO: this step is slow.
+    % 	Then $v = w$. Therefore $z-w : z-r$. Hence $z-v : z-w$.
+    % \end{proof}
   \end{forthel}
 
-  The Idea to proof Lemma C5o1 is to extend the line $x-z$ and $x-r$ through two points $p,q$ such that $r-p : z-r$ and $z-q : z-r$. Then one can easy see that if either $z = p$ or $r = q$, $x-y-z$ or $x-z-y$ must hold. The following Lemma proofs that if there exist such points $p$ and $q$ then $z = p$ or $r = q$ must hold. To see that such points exist one has to use Axiom A4 twice.
+  %The idea to proof Lemma C5o1 is to extend the line $x-z$ and $x-r$ through two points $p,q$ such that $r-p : %z-r$ and $z-q : z-r$. Then one can easy see that if either $z = p$ or $r = q$, $x-y-z$ or $x-z-y$ must hold. %The following Lemma proofs that if there exist such points $p$ and $q$ then $z = p$ or $r = q$ must hold. To %see that such points exist one has to use Axiom A4 twice.
 
   \begin{forthel}
-    \begin{lemma}[C5o1p]
-      Assume $x \neq y$ and $x-y-z$ and $x-y-r$ and $x-r-p$ and $r-p : z-r$ and $x-z-q$ and $z-q : z-r$. Then $z = p$ or $r = q$.
-    \end{lemma}
-    \begin{proof}
-    	Take points $s,t$ such that $z-q-t$ and $r-p-s$.
-    	Then $Th(x,y,z,r,p,q,s,t)$.
-    	Then $x~y~z~q~t$ and $x~y~r~p~s$.
-    	Then $y-p : t-z$.
-    	Then $y-t : t-y$.
-    	Then $s = t$.
-    	Then $Th2(x,y,z,r,p,q,s)$.
-    	Then $\OFS{y}{z}{q}{p}{s}{p}{r}{z}$.
-    	Then $p-q : z-r$.
-    	Take $u$ such that $z-u-p$ and $r-u-q$ (by C5o1n).
-    	Then $IFS(r,u,q,z,r,u,q,p)$.
-    	Then $IFS(z,u,p,r,z,u,p,q)$.
-    	Then $u-z : u-p$.
-    	Then $u-r : u-q$.
-    	Assume $z \neq p$. Then $z \neq q$.
-    		Take $v$ such that $p-z-v$ and $z-v : z-q$.
-    		Take $h$ such that $q-z-h$ and $z-h : z-u$.
-    		Take $w$ such that $v-h-w$ and $h-w : h-v$.
-        Then $\OFS{q}{z}{h}{v}{v}{z}{u}{q}$
-        and $h-v : u-q$ and $h-w : u-r$
-        and $\OFS{q}{u}{r}{z}{v}{h}{w}{z}$
-        and $q-r : v-w$ and $z-w : z-r$ and $z-v : z-w$ (by C5o1o).
-    		Then $h-v : h-w$. $z \neq p$. Hence $h \neq z$. $\Col{h}{z}{q}$. Therefore $q-v : q-w$.
-    		Then $z-v : z-w$. $z \neq q$. $\Col{z}{q}{y}$. Therefore $y-v : y-w$.
-    		Then $z-v : z-w$. $z \neq q$. $\Col{z}{q}{s}$. Therefore $s-v : s-w$.
-    		Then $y \neq s$.
-    		Then $q = r$.
-    	Assume $z = p$.
-    \end{proof}
+    %\begin{lemma}[C5o1p]
+    %  Assume $x \neq y$ and $x-y-z$ and $x-y-r$ and $x-r-p$ and $r-p : z-r$ and $x-z-q$ and $z-q : z-r$.
+    % Then $z = p$ or $r = q$.
+    %\end{lemma}
+    %\begin{proof}
+    %	Take points $s,t$ such that $z-q-t$ and $r-p-s$.
+    %	Then $Th(x,y,z,r,p,q,s,t)$.
+    %	Then $x~y~z~q~t$ and $x~y~r~p~s$.
+    %	Then $y-p : t-z$.
+    %	Then $y-t : t-y$.
+    %	Then $s = t$.
+    %	Then $Th2(x,y,z,r,p,q,s)$.
+    %	Then $\OFS{y}{z}{q}{p}{s}{p}{r}{z}$.
+    %	Then $p-q : z-r$.
+    %	Take $u$ such that $z-u-p$ and $r-u-q$ (by C5o1n).
+    %	Then $IFS(r,u,q,z,r,u,q,p)$.
+    %	Then $IFS(z,u,p,r,z,u,p,q)$.
+    %	Then $u-z : u-p$.
+    %	Then $u-r : u-q$.
+    %	Assume $z \neq p$. Then $z \neq q$.
+    %		Take $v$ such that $p-z-v$ and $z-v : z-q$.
+    %		Take $h$ such that $q-z-h$ and $z-h : z-u$.
+    %		Take $w$ such that $v-h-w$ and $h-w : h-v$.
+    %    Then $\OFS{q}{z}{h}{v}{v}{z}{u}{q}$
+    %    and $h-v : u-q$ and $h-w : u-r$
+    %    and $\OFS{q}{u}{r}{z}{v}{h}{w}{z}$
+    %    and $q-r : v-w$ and $z-w : z-r$ and $z-v : z-w$. %(by C5o1o).
+    %		Then $h-v : h-w$. $z \neq p$. Hence $h \neq z$. $\Col{h}{z}{q}$. Therefore $q-v : q-w$.
+    %		Then $z-v : z-w$. $z \neq q$. $\Col{z}{q}{y}$. Therefore $y-v : y-w$.
+    %		Then $z-v : z-w$. $z \neq q$. $\Col{z}{q}{s}$. Therefore $s-v : s-w$.
+    %		Then $y \neq s$.
+    %		Then $q = r$.
+    %	Assume $z = p$.
+    %\end{proof}
 
-    \begin{lemma}[D5o1]
-      Assume $x \neq y$ and $x-y-z$ and $x-y-r$. Then $x-z-r$ or $x-r-z$.
-    \end{lemma}
-    \begin{proof}
-    	Take $p,q$ such that $x-r-p$ and $r-p : z-r$ and $x-z-q$ and $z-q : z-r$. Then $z = p$ or $r = q$ (by C5o1p). Therefore $x-z-r$ or $x-r-z$ (by C5o1k).
-    \end{proof}
+    \begin{axiom} % Satz 5.1
+      Assume $x \neq y$.
+      If $\Betw{x}{y}{z}$ and $\Betw{x}{y}{r}$
+      then $\Betw{x}{z}{r}$ or $\Betw{x}{r}{z}$.
+    \end{axiom}
+    %\begin{proof}
+    %  Take $p,q$ such that $x-r-p$ and $r-p : z-r$ and $x-z-q$ and $z-q : z-r$.
+    %  Then $z = p$ or $r = q$. % (by C5o1p).
+    %  Therefore $x-z-r$ or $x-r-z$ (by C5o1k).
+    %\end{proof}
 
     \begin{lemma}[D5o2]
       Assume $x \neq y$ and $x-y-z$ and $x-y-r$. Then $y-z-r$ or $y-r-z$.
     \end{lemma}
 
     \begin{theorem}[D5o3]
-      If $x-y-w$ and $x-z-w$ then $x-y-z$ or $x-z-y$.
+      If $\Betw{x}{y}{w}$ and $\Betw{x}{z}{w}$ then $\Betw{x}{y}{z}$ or $\Betw{x}{z}{y}$.
     \end{theorem}
   \end{forthel}
 
