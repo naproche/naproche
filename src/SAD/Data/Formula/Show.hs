@@ -119,7 +119,8 @@ decode s (t:ts) p d = dec s
       snd (Text.splitAt (Text.length tName - 2) tName) == "dt"
     ambig _ = False
 
-    funPat "lbdtrb" = True
+    -- function pattern: "(.)"
+    funPat "lpdtrp" = True
     funPat _ = False
 
 
