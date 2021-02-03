@@ -300,25 +300,9 @@ As usual, chaining of relation symbols indicates a conjunction.
         \horizadj \fileE \horizadj \fileF \horizadj \fileG \horizadj \fileH$.
     \end{axiom}
 
-    %\begin{axiom} $\fileA \horizadj \fileB$. \end{axiom}
-    %\begin{axiom} $\fileB \horizadj \fileC$. \end{axiom}
-    %\begin{axiom} $\fileC \horizadj \fileD$. \end{axiom}
-    %\begin{axiom} $\fileD \horizadj \fileE$. \end{axiom}
-    %\begin{axiom} $\fileE \horizadj \fileF$. \end{axiom}
-    %\begin{axiom} $\fileF \horizadj \fileG$. \end{axiom}
-    %\begin{axiom} $\fileG \horizadj \fileH$. \end{axiom}
-
-
-    % TODO REGRESSION: we're getting an ambiguity error
-    % with the direct bracketing of the nested existential.
-    % This does not change the -T output.
     \begin{definition}
         $x$ is adjacent to $y$ iff
         there exist $f, r, g, s$ such that
-        %there exists a file $f$ such that
-        %there exists a rank $r$ such that
-        %there exists a file $g$ such that
-        %there exists a rank $s$ such that
         ($x=(f,r)$ and $y=(g,s)$) and (($f=g$ and $r$ is vertically adjacent to $s$) or
         ($r=s$ and $f$ is horizontally adjacent to $g$)).
     \end{definition}
