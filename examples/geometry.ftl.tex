@@ -8,6 +8,15 @@
 %\newcommand{\Betw}[3]{#1 {\sim} #2 {\sim} #3}
 \newcommand{\Betw}[3]{#1 #2 #3}
 \newcommand{\Col}[3]{\operatorname{Col}(#1, #2, #3)}
+\newcommand{\SenaryCong}[6]{#1 #2 #3 \equiv #4 #5 #6}
+
+\newcommand{\xprime}{x'}
+\newcommand{\yprime}{y'}
+\newcommand{\zprime}{z'}
+\newcommand{\tprime}{t'}
+\newcommand{\uprime}{u'}
+\newcommand{\vprime}{v'}
+\newcommand{\wprime}{w'}
 
 \newcommand{\OFS}[8]{\operatorname{OFS}
 \left(\begin{smallmatrix}%
@@ -15,7 +24,12 @@
 #5 & #6 & #7 & #8
 \end{smallmatrix}\right)%
 }
-
+\newcommand{\IFS}[8]{\operatorname{IFS}
+\left(\begin{smallmatrix}%
+#1 & #2 & #3 & #4 \\
+#5 & #6 & #7 & #8
+\end{smallmatrix}\right)%
+}
 
 \title{Tarski's axioms for Euclidian geometry}
 \author{Adrian De Lon, Daniel Kollert}
@@ -194,7 +208,10 @@
 
   \begin{forthel}
     \begin{axiom}[A10]
-      If $x-r-v$ and $y-r-z$ and $x \neq r$ then there exist points $s,t$ such that $x-y-s$ and $x-z-t$ and $s-v-t$.
+      Assume $x \neq r$.
+      If $\Betw{x}{r}{v}$ and $\Betw{y}{r}{z}$
+      then there exist points $s,t$ such that
+      $\Betw{x}{y}{s}$ and $\Betw{x}{z}{t}$ and $\Betw{s}{v}{t}$.
     \end{axiom}
   \end{forthel}
 
@@ -386,7 +403,9 @@
     \end{proof}
 
     \begin{lemma} % Satz 3.7 (second part)
-      Assume $x-y-z$ and $y-z-r$ and $y \neq z$. Then $x-y-r$.
+      Assume $y \neq z$.
+      If $\Betw{x}{y}{z}$ and $\Betw{y}{z}{r}$
+      then $\Betw{x}{y}{r}$.
     \end{lemma}
   \end{forthel}
 
@@ -422,34 +441,63 @@
   This is definition 4.1 in \textit{SST}.
   We say that the points $x,y,z,r,u,v,w,p$ are
   in an inner five-segment-configuration
-  whenever $IFS(x,y,z,r,u,v,w,p)$.
+  whenever $\IFS{x}{y}{z}{r}{u}{v}{w}{p}$.
 
   \begin{forthel}
-    \begin{definition}[IFS]
-      $IFS(x,y,z,r,v,w,p,q)$ iff $x-y-z$ and $v-w-p$ and $x-z : v-p$ and $y-z : w-p$ and $x-r : v-q$ and $z-r : p-q$.
+    \begin{definition}
+      $\IFS{x}{y}{z}{r}{v}{w}{p}{q}$ iff
+      $\Betw{x}{y}{z}$ and $\Betw{v}{w}{p}$
+      and $\Cong{x}{z}{v}{p}$ and $\Cong{y}{z}{w}{p}$
+      and $\Cong{x}{r}{v}{q}$ and $\Cong{z}{r}{p}{q}$.
     \end{definition}
   \end{forthel}
 
   We can swap $x, y$ with $v, w$.
 
   \begin{forthel}
-    \begin{axiom}[L4o2]
-      Assume $IFS(x,y,z,r,v,w,p,q)$. Then $y-r : w-q$.
-    \end{axiom}
+    \begin{lemma} % Satz 4.2
+      Assume $\IFS{x}{y}{z}{r}{v}{w}{p}{q}$.
+      Then $\Cong{y}{r}{w}{q}$.
+    \end{lemma}
+    \begin{proof}
+      Case $x \neq z$.
+        Take points $g,h$ such that
+        % We want to extend both figures.
+        %
+        % The disequality for the other side follows from the congruence of
+        % the two extensions.
+        %
+        $g \neq z$ and
+        $\Betw{x}{z}{g}$ and
+        $\Betw{v}{p}{h}$ and
+        $\Cong{p}{h}{z}{g}$.
+        %
+        Then $\OFS{x}{z}{g}{r}{v}{p}{h}{q}$.
+        Thus $\Cong{g}{r}{h}{q}$.
+        Thus $\OFS{g}{z}{y}{r}{h}{p}{w}{q}$.
+        Thus $\Cong{y}{r}{w}{q}$.
+      End.
+      %Case $x = z$.
+      %  Then $v = p$.
+      %  Thus $y = z$ and $w = p$.
+      %End.
+    \end{proof}
+
   \end{forthel}
 
   If we have two three-point segments, with the same total length and each with a segment of the same length, then the remaining segments must also have the same length.
 
-  %
-  % TODO: Write a proof for this.
-  %
-
   \begin{forthel}
-    \begin{axiom}[L4o3]
-      Assume $x-y-z$ and $r-v-w$ and $x-z : r-w$ and $y-z : v-w$. Then $x-y : r-v$.
+    \begin{axiom} % Satz 4.3 (TODO)
+      Assume
+      $\Betw{x}{y}{z}$ and
+      $\Betw{r}{v}{w}$ and
+      $\Cong{x}{z}{r}{w}$ and
+      $\Cong{y}{z}{v}{w}$.
+      Then $\Cong{x}{y}{r}{v}$.
     \end{axiom}
 
-    \begin{definition}[L4o4]
+    \begin{definition} % Definition 4.4, specialized to three points.
       $x-y-z : u-v-w$ iff $x-y : u-v$ and $x-z : u-w$ and $y-z : v-w$.
     \end{definition}
 
@@ -464,7 +512,11 @@
       Assume $x-y-z$ and $x-y-z : r-v-w$. Then $r-v-w$.
     \end{lemma}
     \begin{proof}
-    	Take $u$ such that $r-u-w$ and $x-y-z : r-u-w$.	Then $r-u-w : r-v-w$ and $IFS(r,u,w,u,r,u,w,v)$.	Then $u-u : u-v$. Hence $u = v$. Hence $r-v-w$.
+      Take $u$ such that $r-u-w$ and $x-y-z : r-u-w$.
+      Then $r-u-w : r-v-w$ and $\IFS{r}{u}{w}{u}{r}{u}{w}{v}$.
+      Then $u-u : u-v$.
+      Hence $u = v$.
+      Hence $r-v-w$.
     \end{proof}
 
     \begin{lemma}[L4o11a]
@@ -567,7 +619,11 @@
     \end{definition}
 
     \begin{definition}[C5o1d]
-      $Th3(x,y,z,r,p,q,g,u)$ iff $Th2(x,y,z,r,p,q,g)$ and $\OFS{y}{z}{q}{p}{g}{p}{r}{z}$ and $p-q : z-r$ and $z-u-p$ and $r-u-q$ and $IFS(r,u,q,z,r,u,q,p)$ and $IFS(z,u,p,r,z,u,p,q)$ and $u-r : u-q$.
+      $Th3(x,y,z,r,p,q,g,u)$ iff $Th2(x,y,z,r,p,q,g)$
+      and $\OFS{y}{z}{q}{p}{g}{p}{r}{z}$ and $p-q : z-r$ and $z-u-p$ and $r-u-q$
+      and $\IFS{r}{u}{q}{z}{r}{u}{q}{p}$
+      and $\IFS{z}{u}{p}{r}{z}{u}{p}{q}$
+      and $u-r : u-q$.
     \end{definition}
 
     \begin{definition}[C5o1e]
@@ -649,8 +705,8 @@
     %	Then $\OFS{y}{z}{q}{p}{s}{p}{r}{z}$.
     %	Then $p-q : z-r$.
     %	Take $u$ such that $z-u-p$ and $r-u-q$ (by C5o1n).
-    %	Then $IFS(r,u,q,z,r,u,q,p)$.
-    %	Then $IFS(z,u,p,r,z,u,p,q)$.
+    %	Then $\IFS{r}{u}{q}{z}{r}{u}{q}{p}$.
+    %	Then $\IFS{z}{u}{p}{r}{z}{u}{p}{q}$.
     %	Then $u-z : u-p$.
     %	Then $u-r : u-q$.
     %	Assume $z \neq p$. Then $z \neq q$.
