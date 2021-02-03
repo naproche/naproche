@@ -1,3 +1,4 @@
+% !TeX spellcheck = en_UK-oed
 \documentclass{article}
 
 \usepackage[utf8]{inputenc}
@@ -5,10 +6,14 @@
 \usepackage{../lib/tex/forthel}
 
 \newcommand{\Cong}[4]{#1 #2 \equiv #3 #4}
-%\newcommand{\Betw}[3]{#1 {\sim} #2 {\sim} #3}
+\newcommand{\NotCong}[4]{#1 #2 \not\equiv #3 #4}
 \newcommand{\Betw}[3]{#1 #2 #3}
 \newcommand{\Col}[3]{\operatorname{Col}(#1, #2, #3)}
 \newcommand{\SenaryCong}[6]{#1 #2 #3 \equiv #4 #5 #6}
+\newcommand{\Leq}[4]{#1 #2 \leq #3 #4}
+\newcommand{\Geq}[4]{#1 #2 \geq #3 #4}
+\newcommand{\Less}[4]{#1 #2 < #3 #4}
+\newcommand{\Greater}[4]{#1 #2 > #3 #4}
 
 \newcommand{\xprime}{x'}
 \newcommand{\yprime}{y'}
@@ -71,8 +76,8 @@
     \begin{signature}
       $\Cong{x}{y}{v}{w}$ is an atom.
     \end{signature}
-
     Let $x$ and $y$ are congruent to $v$ and $w$ stand for $\Cong{x}{y}{v}{w}$.
+    Let $\NotCong{x}{y}{v}{w}$ stand for $x$ and $y$ are not congruent to $v$ and $w$.
     Let $x-y : v-w$ stand for $x$ and $y$ are congruent to $v$ and $w$.
 
     \begin{signature}
@@ -303,7 +308,7 @@
   \end{forthel}
 
 
-  \paragraph{Uniqueness for axiom A4}\
+  \paragraph{Uniqueness for segment construction}\
 
   \begin{forthel}
     \begin{lemma} % Satz 2.12
@@ -485,17 +490,20 @@
 
   \end{forthel}
 
-  If we have two three-point segments, with the same total length and each with a segment of the same length, then the remaining segments must also have the same length.
+
 
   \begin{forthel}
-    \begin{axiom} % Satz 4.3 (TODO)
+    \begin{lemma}[OverlappingSegments] % Satz 4.3
       Assume
       $\Betw{x}{y}{z}$ and
       $\Betw{r}{v}{w}$ and
       $\Cong{x}{z}{r}{w}$ and
       $\Cong{y}{z}{v}{w}$.
       Then $\Cong{x}{y}{r}{v}$.
-    \end{axiom}
+    \end{lemma}
+    \begin{proof}
+      We have $\IFS{x}{y}{z}{x}{r}{v}{w}{r}$.
+    \end{proof}
 
     \begin{definition} % Definition 4.4, specialized to three points.
       $\SenaryCong{x}{y}{z}{u}{v}{w}$ iff
@@ -503,79 +511,128 @@
       $\Cong{x}{z}{u}{w}$ and
       $\Cong{y}{z}{v}{w}$.
     \end{definition}
+  \end{forthel}
 
-    \begin{lemma}[L4o5]
-      Assume $x-y-z$ and $x-z : r-w$. Then there exists $v$ such that ($r-v-w$ and $\SenaryCong{x}{y}{z}{r}{v}{w}$).
+  \begin{lemma}
+    $\SenaryCong{x}{y}{z}{u}{v}{w}$ iff $\SenaryCong{y}{x}{z}{v}{u}{w}$.
+  \end{lemma}
+
+  \begin{lemma}
+    $\SenaryCong{x}{y}{z}{u}{v}{w}$ iff $\SenaryCong{z}{y}{x}{w}{v}{u}$.
+  \end{lemma}
+
+  \begin{lemma}
+    $\SenaryCong{x}{y}{z}{u}{v}{w}$ iff $\SenaryCong{x}{z}{y}{u}{w}{v}$.
+  \end{lemma}
+
+  If we have two congruent segments, then an inner point of one segment
+  can be transferred congruently onto the other segment.
+
+  \begin{forthel}
+    \begin{lemma} % Satz 4.5
+      Assume $\Betw{x}{y}{z}$ and $\Cong{x}{z}{r}{w}$.
+      Then there exists $v$ such that $\Betw{r}{v}{w}$ and $\SenaryCong{x}{y}{z}{r}{v}{w}$.
     \end{lemma}
     \begin{proof}
-    	Take $u$ such that $w-r-u$ and $r \neq u$. Then take $v$ such that $u-r-v$ and $r-v : x-y$. Take $g$ such that $u-v-g$ and $v-g : y-z$. Then $x-z : r-w$. Therefore$ g = w$.
+      Take $u$ such that $\Betw{w}{r}{u}$ and $r \neq u$.
+      Then take $v$ such that $\Betw{u}{r}{v}$ and $\Cong{r}{v}{x}{y}$.
+      Take $g$ such that $\Betw{u}{v}{g}$ and $\Cong{v}{g}{y}{z}$.
+      Then $\Cong{x}{z}{r}{w}$.
+      Therefore $g = w$.
     \end{proof}
 
-    \begin{lemma}[L4o6]
-      Assume $x-y-z$ and $\SenaryCong{x}{y}{z}{r}{v}{w}$. Then $r-v-w$.
+    \begin{lemma} %[L4o6]
+      Assume $\Betw{x}{y}{z}$ and $\SenaryCong{x}{y}{z}{r}{v}{w}$.
+      Then $\Betw{r}{v}{w}$.
     \end{lemma}
     \begin{proof}
-      Take $u$ such that $r-u-w$ and $\SenaryCong{x}{y}{z}{r}{u}{w}$.
+      Take $u$ such that $\Betw{r}{u}{w}$ and $\SenaryCong{x}{y}{z}{r}{u}{w}$.
       Then $\SenaryCong{r}{u}{w}{r}{v}{w}$ and $\IFS{r}{u}{w}{u}{r}{u}{w}{v}$.
-      Then $u-u : u-v$.
+      Then $\Cong{u}{u}{u}{v}$.
       Hence $u = v$.
-      Hence $r-v-w$.
+      Hence $\Betw{r}{v}{w}$.
     \end{proof}
+  \end{forthel}
 
-    \begin{lemma}[L4o11a]
+  \subsection{Collinearity}
+
+  % SST: Satz 4.11
+  Until now we have only used the concept of collinearity to abbreviate some axioms.
+  We first make the straightforward observation that
+  collinearity is invariant under permutation of the arguments.
+
+  \begin{forthel}
+    \begin{lemma}
       Assume $\Col{x}{y}{z}$. Then $\Col{y}{z}{x}$.
     \end{lemma}
 
-    \begin{lemma}[L4o11b]
+    \begin{lemma}
       Assume $\Col{x}{y}{z}$. Then $\Col{z}{x}{y}$.
     \end{lemma}
 
-    \begin{lemma}[L4o11c]
+    \begin{lemma}
       Assume $\Col{x}{y}{z}$. Then $\Col{z}{y}{x}$.
     \end{lemma}
 
-    \begin{lemma}[L4o11d]
+    \begin{lemma}
       Assume $\Col{x}{y}{z}$. Then $\Col{y}{x}{z}$.
     \end{lemma}
 
-    \begin{lemma}[L4o11e]
+    \begin{lemma}
       Assume $\Col{x}{y}{z}$. Then $\Col{x}{z}{y}$.
     \end{lemma}
+  \end{forthel}
 
-    \begin{lemma}[L4o12]
+  Similarly, it is easy to find a common line between just two points instead of three.
+
+  \begin{forthel}
+    \begin{lemma} % Satz 4.12
       $\Col{x}{x}{y}$.
     \end{lemma}
 
-    \begin{lemma}[L4o13]
-      Assume $\Col{x}{y}{z}$ and $x-z : r-w$ and $r-v-w$. Then $\Col{r}{v}{w}$.
+    \begin{lemma} % Satz 4.13
+      Assume $\Col{x}{y}{z}$.
+      Assume $\Cong{x}{z}{r}{w}$ and $\Betw{r}{v}{w}$.
+      Then $\Col{r}{v}{w}$.
     \end{lemma}
 
-    \begin{lemma}[L4o14o1]
-      $\SenaryCong{x}{y}{z}{u}{v}{w}$ iff $\SenaryCong{y}{x}{z}{v}{u}{w}$.
-    \end{lemma}
-
-    \begin{lemma}[L4o14o2]
-      $\SenaryCong{x}{y}{z}{u}{v}{w}$ iff $\SenaryCong{z}{y}{x}{w}{v}{u}$.
-    \end{lemma}
-
-    \begin{lemma}[L4o14o3]
-      $\SenaryCong{x}{y}{z}{u}{v}{w}$ iff $\SenaryCong{x}{z}{y}{u}{w}{v}$.
-    \end{lemma}
-
-    \begin{axiom}[L4o14]
-      Assume $\Col{x}{y}{z}$ and $x-y : r-v$. Then there exists $w$ such that $\SenaryCong{x}{y}{z}{r}{v}{w}$.
+    \begin{axiom} % Satz 4.14 (TODO)
+      Assume $\Col{x}{y}{z}$ and $\Cong{x}{y}{r}{v}$.
+      Then there exists $w$ such that $\SenaryCong{x}{y}{z}{r}{v}{w}$.
     \end{axiom}
+  \end{forthel}
 
-    \begin{definition}[L4o15]
-      $FS(x,y,z,r,v,w,p,q)$ iff $\Col{x}{y}{z}$ and $\SenaryCong{x}{y}{z}{v}{w}{p}$ and $x-r : v-q$ and $y-r : w-q$.
+  % Does not work for now, potentially only because of a bug in Naproche.
+  \begin{proof}
+    Case $\Betw{x}{y}{z}$.
+    Take $w$ such that $\Betw{r}{v}{w}$ and $\Cong{v}{w}{y}{z}$.
+    End.
+    Case $\Betw{y}{x}{z}$.
+    Take $w$ such that $\Betw{v}{r}{w}$ and $\Cong{r}{w}{x}{z}$.
+    Then $\Cong{y}{z}{v}{w}$.
+    End.
+    Case $\Betw{x}{z}{y}$.
+    There exists $w$ such that $\Betw{r}{w}{v}$ and $\SenaryCong{x}{z}{y}{r}{w}{v}$.
+    End.
+  \end{proof}
+
+  \subsection{Five-segment configuration}
+
+  \begin{forthel}
+    \begin{definition} % Satz 4.15
+      $FS(x,y,z,r,v,w,p,q)$ iff $\Col{x}{y}{z}$ and
+      $\SenaryCong{x}{y}{z}{v}{w}{p}$ and
+      $\Cong{x}{r}{v}{q}$ and
+      $\Cong{y}{r}{w}{q}$.
     \end{definition}
 
-    \begin{axiom}[L4o16]
-      Assume $FS(x,y,z,r,v,w,p,q)$ and $x \neq y$. Then $z-r : p-q$.
+    \begin{axiom} %[L4o16] (TODO)
+      Assume $FS(x,y,z,r,v,w,p,q)$ and $x \neq y$.
+      Then $\Cong{z}{r}{p}{q}$.
     \end{axiom}
 
 
-    \begin{lemma}[L4o17]
+    \begin{lemma} %[L4o17]
       Assume $x \neq y$ and $\Col{x}{y}{z}$ and $x-p : x-q$ and $y-p : y-q$. Then $z-p : z-q$.
     \end{lemma}
     \begin{proof}
@@ -583,11 +640,11 @@
     \end{proof}
 
 
-    \begin{lemma}[L4o18]
+    \begin{lemma} %[L4o18]
       Assume $x \neq y$ and $\Col{x}{y}{z}$ and $x-z : x-p$ and $y-z : y-p$. Then $z = p$.
     \end{lemma}
 
-    \begin{lemma}[L4o19]
+    \begin{lemma} %[L4o19]
       Assume $x-z-y$ and $x-z : x-p$ and $y-z : y-p$. Then $z = p$.
     \end{lemma}
     \begin{proof}
@@ -595,84 +652,91 @@
     \end{proof}
   \end{forthel}
 
-  The 11th axiom of Tarski's axiomatic system says that if $x-y-w$ and $x-z-w$ then either $x-y-z$ or $x-z-y$. To show that it follows from the first ten axioms we first prove Lemma C5o1 from which we can easy deduce the 11th axiom.
+  The eleventh axiom of Tarski's original axiomatization says that
+  if $\Betw{x}{y}{w}$ and $\Betw{x}{z}{w}$
+  then $\Betw{x}{y}{z}$ or $\Betw{x}{z}{y}$.
+  %To show that it follows from the first ten axioms we first prove Lemma C5o1 from which we can easy deduce the 11th axiom.
 
-  The definitions, lemmas and axioms C5o1a - C5o1p are not part of \textit{SST}. We have opted for adding them to improve proof-checking speed and readability of the text.
+  %The definitions, lemmas and axioms C5o1a - C5o1p are not part of \textit{SST}.
+  %We have opted for adding them to improve proof-checking speed and readability of the text.
 
   \begin{forthel}
-    \begin{definition}[C5o1a]
+    \begin{definition} %[C5o1a]
       $Betw5(x,y,z,r,p)$ iff $x-y-z$ and $x-y-r$ and $x-y-p$ and $x-z-r$ and $x-z-p$ and $x-r-p$ and $y-z-r$ and $y-z-p$ and $y-r-p$ and $z-r-p$.
     \end{definition}
 
     Let $x~y~z~r~p$ stand for $Betw5(x,y,z,r,p)$.
   \end{forthel}
 
-  The following 4 predicates state the already proven statements for different positions in the proof.
-  They are not defined in the book \textit{Metamathematische Methoden in der Geometrie}.
+  The following predicates state the already proven statements for different positions in the proof.
+  They are not defined in \textit{SST}.
   We use them because they seem to increase the performance of the proof assistant,
   when checked just before the next proving step.
 
   \begin{forthel}
-    \begin{definition}[C5o1b]
+    \begin{definition} %[C5o1b]
       $Th(x,y,z,r,p,q,g,h)$ iff $x \neq y$ and $x-y-z$ and $x-y-r$ and $x-r-p$ and $r-p : z-r$ and $x-z-q$ and $z-q : z-r$ and $z-q-h$ and $r-p-g$.
     \end{definition}
 
-    \begin{definition}[C5o1c]
+    \begin{definition} %[C5o1c]
       $Th2(x,y,z,r,p,q,g)$ iff $x \neq y$ and $x~y~z~q~g$ and $x~y~r~p~g$ and $r-p : z-r$ and $z-q : z-r$ and $y-p : g-z$ and $y-g : g-y$.
     \end{definition}
 
-    \begin{definition}[C5o1d]
-      $Th3(x,y,z,r,p,q,g,u)$ iff $Th2(x,y,z,r,p,q,g)$
-      and $\OFS{y}{z}{q}{p}{g}{p}{r}{z}$ and $p-q : z-r$ and $z-u-p$ and $r-u-q$
-      and $\IFS{r}{u}{q}{z}{r}{u}{q}{p}$
-      and $\IFS{z}{u}{p}{r}{z}{u}{p}{q}$
-      and $u-r : u-q$.
-    \end{definition}
+    % \begin{definition}[C5o1d]
+    %   $Th3(x,y,z,r,p,q,g,u)$ iff $Th2(x,y,z,r,p,q,g)$
+    %   and $\OFS{y}{z}{q}{p}{g}{p}{r}{z}$ and $p-q : z-r$ and $z-u-p$ and $r-u-q$
+    %   and $\IFS{r}{u}{q}{z}{r}{u}{q}{p}$
+    %   and $\IFS{z}{u}{p}{r}{z}{u}{p}{q}$
+    %   and $u-r : u-q$.
+    % \end{definition}
 
-    \begin{definition}[C5o1e]
-      $Th4(x,y,z,r,p,q,g,u,v,w,h)$ iff $Th3(x,y,z,r,p,q,g,u)$ and $z \neq p$ and $z \neq q$ and $p-z-v$ and $z-v : z-q$ and $q-z-h$ and $z-h : z-u$ and $v-h-w$ and $h-w : h-v$.
-    \end{definition}
+    % \begin{definition}[C5o1e]
+    %   $Th4(x,y,z,r,p,q,g,u,v,w,h)$ iff
+    %   $Th3(x,y,z,r,p,q,g,u)$ and $z \neq p$ and $z \neq q$ and
+    %   $p-z-v$ and $z-v : z-q$ and $q-z-h$ and $z-h : z-u$ and $v-h-w$ and $h-w : h-v$.
+    % \end{definition}
   \end{forthel}
 
   \begin{forthel}
-    \begin{lemma}[C5o1f]
+    \begin{lemma} %[C5o1f]
       Assume $x \neq y$ and $x-y-z$ and $x-y-r$. Then there exist points $a,b$ such that $x-r-a$ and $r-a : z-r$ and $x-z-b$ and $z-b : z-r$.
     \end{lemma}
     \begin{proof}
-    	Take point $a$ such that $x-r-a$ and $r-a : z-r$ (by A4).	Take point $b$ such that $x-z-b$ and $z-b : z-r$ (by A4).
+      Take point $a$ such that $\Betw{x}{r}{a}$ and $\Cong{r}{a}{z}{r}$ (by A4).
+      Take point $b$ such that $\Betw{x}{z}{b}$ and $\Cong{z}{b}{z}{r}$ (by A4).
     \end{proof}
 
-    \begin{axiom}[C5o1g]
+    \begin{axiom} %[C5o1g] (TODO)
       If $Th(x,y,z,r,p,q,g,h)$ then $x~y~z~q~h$ and $x~y~r~p~g$.
     \end{axiom}
 
-    \begin{axiom}[C5o1h]
+    \begin{axiom} %[C5o1h] (TODO)
       Assume $Th(x,y,z,r,p,q,g,h)$ and $x~y~z~q~h$ and $x~y~r~p~g$. Then $y-p : h-z$.
     \end{axiom}
 
-    \begin{axiom}[C5o1i]
+    \begin{axiom} %[C5o1i] (TODO)
       Assume $Th2(x,y,z,r,p,q,g)$ and $\OFS{y}{z}{q}{p}{g}{p}{r}{z}$. Then $p-q : z-r$.
     \end{axiom}
 
-    \begin{axiom}[C5o1j]
+    \begin{axiom} %[C5o1j] (TODO)
       Assume $Th(x,y,z,r,p,q,g,h)$ and $x~y~z~q~h$ and $x~y~r~p~g$ and $y-p : h-z$. Then $y-g : h-y$.
     \end{axiom}
 
 
 
-    \begin{lemma}[C5o1k]
+    \begin{lemma} %[C5o1k]
       Assume $x \neq y$ and $x-y-z$ and $x-y-r$ and $x-r-p$ and $r-p : z-r$ and $x-z-q$ and $z-q : z-r$ and ($z = p$ or $r = q$). Then $x-z-r$ or $x-r-z$.
     \end{lemma}
 
-    \begin{lemma}[C5o1l]
+    \begin{lemma} %[C5o1l]
       Assume $x \neq y$ and $x-y-z$ and $x-y-r$ and $x-r-p$ and $r-p : z-r$ and $x-z-q$ and $z-q : z-r$. Then there exist points $s,t$ such that $z-q-t$ and $r-p-s$.
     \end{lemma}
 
-    \begin{lemma}[C5o1m]
+    \begin{lemma} %[C5o1m]
       Assume $Th2(x,y,z,r,p,q,g)$. Then $\OFS{y}{z}{q}{p}{g}{p}{r}{z}$.
     \end{lemma}
 
-    \begin{lemma}[C5o1n]
+    \begin{lemma} %[C5o1n]
       Assume $Th2(x,y,z,r,p,q,g)$ and $\OFS{y}{z}{q}{p}{g}{p}{r}{z}$ and $p-q : z-r$. Then there exist $u$ such that $z-u-p$ and $r-u-q$.
     \end{lemma}
 
@@ -690,7 +754,11 @@
     % \end{proof}
   \end{forthel}
 
-  %The idea to proof Lemma C5o1 is to extend the line $x-z$ and $x-r$ through two points $p,q$ such that $r-p : %z-r$ and $z-q : z-r$. Then one can easy see that if either $z = p$ or $r = q$, $x-y-z$ or $x-z-y$ must hold. %The following Lemma proofs that if there exist such points $p$ and $q$ then $z = p$ or $r = q$ must hold. To %see that such points exist one has to use Axiom A4 twice.
+  % The idea for proving lemma C5o1 is to extend the line $xz$ and $xr$
+  % through two points $p,q$ such that $r-p : %z-r$ and $z-q : z-r$.
+  % Then one can easy see that if one of $z = p$ or $r = q$, $x-y-z$ or $x-z-y$ must holds.
+  % The following lemma shows that if there exist such points $p$ and $q$ then $z = p$ or $r = q$ must hold.
+  % To see that such points exist one has to use axiom A4 twice.
 
   \begin{forthel}
     %\begin{lemma}[C5o1p]
@@ -728,7 +796,7 @@
     %	Assume $z = p$.
     %\end{proof}
 
-    \begin{axiom} % Satz 5.1
+    \begin{axiom} % Satz 5.1 (TODO)
       Assume $x \neq y$.
       If $\Betw{x}{y}{z}$ and $\Betw{x}{y}{r}$
       then $\Betw{x}{z}{r}$ or $\Betw{x}{r}{z}$.
@@ -739,13 +807,110 @@
     %  Therefore $x-z-r$ or $x-r-z$ (by C5o1k).
     %\end{proof}
 
-    \begin{lemma}[D5o2]
-      Assume $x \neq y$ and $x-y-z$ and $x-y-r$. Then $y-z-r$ or $y-r-z$.
+    \begin{lemma} %[D5o2]
+      Assume $x \neq y$.
+      If $\Betw{x}{y}{z}$ and $\Betw{x}{y}{r}$
+      then $\Betw{y}{z}{r}$ or $\Betw{y}{r}{z}$.
     \end{lemma}
 
-    \begin{theorem}[D5o3]
+    \begin{theorem} %[D5o3]
       If $\Betw{x}{y}{w}$ and $\Betw{x}{z}{w}$ then $\Betw{x}{y}{z}$ or $\Betw{x}{z}{y}$.
     \end{theorem}
+  \end{forthel}
+
+  \subsection{Comparing segments}
+
+  Intuitively, a segment $pq$ is larger than a segment $vw$ whenever we can find a subsegment
+  of $pq$ of the same length as $vw$.
+
+  \begin{forthel}
+    \begin{definition} % Definition 5.4 (first part)
+      $\Leq{v}{w}{p}{q}$ iff there exists $x$ such that $\Betw{p}{x}{q}$ and $\Cong{v}{w}{p}{x}$.
+    \end{definition}
+
+    \begin{definition} % Definition 5.4 (second part)
+      $\Geq{v}{w}{p}{q}$ iff $\Leq{p}{q}{v}{w}$.
+    \end{definition}
+  \end{forthel}
+
+  Conversely, we can say that a segment $vw$ is smaller than $pq$ whenever we can extend $vw$
+  to a segment of the length $pq$.
+
+    \begin{axiom} % Satz 5.5 (TODO)
+      $\Leq{v}{w}{p}{q}$ iff there exists $x$ such that $\Betw{v}{w}{x}$ and $\Cong{v}{x}{p}{q}$.
+    \end{axiom}
+
+  \begin{forthel}
+    % Takes a bit of time, but works without proof.
+    \begin{lemma}[LessCongLeft] % Satz 5.6 (first part)
+      If $\Leq{p}{q}{v}{w}$ and $\Cong{p}{q}{x}{y}$
+      then $\Leq{x}{y}{v}{w}$.
+    \end{lemma}
+
+    % Takes a bit of time, but works without proof.
+    \begin{lemma}[LessCongRight] % Satz 5.6 (second part)
+      If $\Leq{p}{q}{v}{w}$ and $\Cong{v}{w}{x}{y}$
+      then $\Leq{p}{q}{x}{y}$.
+    \end{lemma}
+
+    \begin{lemma}[LessReflexivity] % Satz 5.7
+      For all points $x, y$ we have $\Leq{x}{y}{x}{y}$.
+    \end{lemma}
+
+    % Takes a bit of time, but works without proof. SST has a proof sketch for this.
+    \begin{lemma}[LessTransitivity] % 5.8
+      If $\Leq{p}{q}{v}{w}$ and $\Leq{v}{w}{x}{y}$ then $\Leq{p}{q}{x}{y}$.
+    \end{lemma}
+
+    \begin{axiom}[LessClamp] % Satz 5.9 (TODO)
+      If $\Leq{p}{q}{x}{y}$ and $\Leq{x}{y}{p}{q}$ then $\Cong{p}{q}{x}{y}$.
+    \end{axiom}
+
+    \begin{axiom}[LessConnex] % Satz 5.10 (TODO)
+      For all points $p, q, x, y$ we have $\Leq{p}{q}{x}{y}$ or $\Leq{x}{y}{p}{q}$.
+    \end{axiom}
+
+    \begin{lemma} % Satz 5.11
+      For all points $x, y, z$ we have $\Leq{x}{x}{y}{z}$.
+    \end{lemma}
+
+    \begin{axiom} % Satz 5.12 (TODO)
+      Assume that $x$ is collinear with $y$ and $z$.
+      Then $\Betw{x}{y}{z}$ iff $\Leq{x}{y}{x}{z}$ or $\Leq{y}{z}{x}{z}$.
+    \end{axiom}
+  \end{forthel}
+
+
+  \begin{forthel}
+    \begin{definition}
+      $\Less{p}{q}{x}{y}$ iff $\Leq{p}{q}{x}{y}$ and $\NotCong{p}{q}{x}{y}$.
+    \end{definition}
+
+    \begin{definition}
+      $\Greater{p}{q}{x}{y}$ iff $\Less{x}{y}{p}{q}$.
+    \end{definition}
+  \end{forthel}
+
+
+
+  \section{Rays and lines}
+
+  \begin{forthel}
+    \begin{definition}
+      $x$ and $y$ lie on opposite sides of $u$ iff
+      $x, y, u$ are pairwise nonequal and $\Betw{x}{u}{y}$.
+    \end{definition}
+
+    \begin{definition}
+      $x$ and $y$ are equivalent with respect to $u$ iff $x\neq u \neq y$ and ($\Betw{u}{x}{y}$ or $\Betw{u}{y}{x}$).
+    \end{definition}
+
+    \begin{lemma}
+      Suppose $x,y,z \neq u$.
+      If $\Betw{x}{u}{z}$
+      then we have
+        ($\Betw{y}{u}{z}$ iff $x$ and $y$ are equivalent with respect to $u$).
+    \end{lemma}
   \end{forthel}
 
 \end{document}
