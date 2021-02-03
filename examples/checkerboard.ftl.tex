@@ -47,8 +47,10 @@ for Mathematical Knowledge Management}} list a couple of formalizations.
 We introduce \textit{types} (or \textit{notions}) and constants
 to model checkerboards as a Cartesian product of
 ranks $1, 2, \ldots, 8$ and files $\fileA, \fileB, \ldots, \fileH$.
+In future versions these declarations will be grouped together as a single declaration of an inductively defined set.
 
 
+\Naproche{} allows us to group elements into \textit{classes} and \textit{sets} as long as they are \textit{setsized} (informally also called \textit{small}).
 \begin{forthel}
     \begin{signature} A rank is a notion. \end{signature}
     Let $r, s$ denote ranks.
@@ -87,7 +89,14 @@ ranks $1, 2, \ldots, 8$ and files $\fileA, \fileB, \ldots, \fileH$.
     \begin{signature} A square is a notion. \end{signature}
     \begin{axiom} $(f, r)$ is a square. \end{axiom}
     Let $v, w, x, y, z$ denote squares.
+\end{forthel}
 
+Is there a set of all squares? This may not be true for an arbitrary notion,
+but it is true for squares, so we assume it as an axiom. Note that we can always
+form the class $C$ of all inhabitants of a notion as long as $x \in C$ can only be true
+for setsized $x$. This theory was formalized by Morse and Kelley \cite{Kelley1975,Morse1965}.
+
+\begin{forthel}
     \begin{definition}
         $\Checkerboard$ is the class of squares $x$ such that $x = (f, r)$ for some
         element $f$ of $\File$ and some element $r$ of $\Rank$.
@@ -133,11 +142,11 @@ Note that there are many degrees of freedom in picking an axiomatic setting.
 
 
     \begin{definition}
-        $B \cap C = \{ x \in B | x \in C\}$.
+        $B \cap C = \{ x \in B \mid x \in C\}$.
     \end{definition}
 
     \begin{definition}
-        $B \setminus C = \{ x \in B | x \notin C\}$.
+        $B \setminus C = \{ x \in B \mid x \notin C\}$.
     \end{definition}
 \end{forthel}
 
@@ -240,8 +249,10 @@ we have the following finiteness axiom:
 
 \subsection{The Mutilated Checkerboard}
 
-In this subsection we define the mutilated checkerboard and dominoes consisting
-of two adjacent squares.
+%In this subsection we define the mutilated checkerboard and dominoes consisting
+%of two adjacent squares.
+Defining the mutilated checkerboard is straightforward:
+we simply remove the two corners.
 
 \begin{forthel}
     \begin{definition}
@@ -259,6 +270,10 @@ of two adjacent squares.
 
 \subsection{Dominoes}
 
+To define dominoes,
+we introduce concepts of adjacency by first declaring new relations and then axiomatizing them.
+As usual, chaining of relation symbols indicates a conjunction.
+
 \begin{forthel}
     \begin{signature}
         $r$ is vertically adjacent to $s$ is a relation.
@@ -272,21 +287,13 @@ of two adjacent squares.
         $1\vertadj 2\vertadj 3\vertadj 4\vertadj 5\vertadj 6\vertadj 7\vertadj 8$.
     \end{axiom}
 
-    %\begin{axiom} $1\vertadj 2$. \end{axiom}
-    %\begin{axiom} $2\vertadj 3$. \end{axiom}
-    %\begin{axiom} $3\vertadj 4$. \end{axiom}
-    %\begin{axiom} $4\vertadj 5$. \end{axiom}
-    %\begin{axiom} $5\vertadj 6$. \end{axiom}
-    %\begin{axiom} $6\vertadj 7$. \end{axiom}
-    %\begin{axiom} $7\vertadj 8$. \end{axiom}
-
     \begin{signature}
         $f$ is horizontally adjacent to $g$ is a relation.
     \end{signature}
     Let $f\horizadj g$ stand for $f$ is horizontally adjacent to $g$.
 
     \begin{axiom}
-        If $f$ is horizontally adjacent to $g$ then $g$ is horizontally adjacent to $f$.
+        If $f \horizadj g$ then $g \horizadj f$.
     \end{axiom}
     \begin{axiom}
         $\fileA \horizadj \fileB \horizadj \fileC \horizadj \fileD
@@ -307,17 +314,17 @@ of two adjacent squares.
     % This does not change the -T output.
     \begin{definition}
         $x$ is adjacent to $y$ iff
-        %there exist sets $f, r, g, s$ such that
-        there exists a file $f$ such that
-        there exists a rank $r$ such that
-        there exists a file $g$ such that
-        there exists a rank $s$ such that
+        there exist $f, r, g, s$ such that
+        %there exists a file $f$ such that
+        %there exists a rank $r$ such that
+        %there exists a file $g$ such that
+        %there exists a rank $s$ such that
         ($x=(f,r)$ and $y=(g,s)$) and (($f=g$ and $r$ is vertically adjacent to $s$) or
         ($r=s$ and $f$ is horizontally adjacent to $g$)).
     \end{definition}
 
     \begin{definition}
-        A domino is a set $D$ such that $D = {x,y}$ for some
+        A domino is a set $D$ such that $D = \{x,y\}$ for some
         adjacent squares $x, y$.
     \end{definition}
 \end{forthel}
