@@ -5,11 +5,16 @@
 \usepackage[british]{babel}
 \usepackage{../lib/tex/naproche}
 
+
+\usepackage{stix2}
+
+
 \newcommand{\Cong}[4]{#1 #2 \equiv #3 #4}
 \newcommand{\NotCong}[4]{#1 #2 \not\equiv #3 #4}
 \newcommand{\Betw}[3]{#1 #2 #3}
 \newcommand{\Col}[3]{\operatorname{Col}(#1, #2, #3)}
 \newcommand{\SenaryCong}[6]{#1 #2 #3 \equiv #4 #5 #6}
+\newcommand{\BetwFive}[5]{#1 #2 #3 #4 #5}
 \newcommand{\Leq}[4]{#1 #2 \leq #3 #4}
 \newcommand{\Geq}[4]{#1 #2 \geq #3 #4}
 \newcommand{\Less}[4]{#1 #2 < #3 #4}
@@ -634,6 +639,9 @@
 
     \begin{lemma} %[L4o17]
       Assume $x \neq y$ and $\Col{x}{y}{z}$ and $x-p : x-q$ and $y-p : y-q$. Then $z-p : z-q$.
+      $\Cong{x}{p}{x}{q}$ and
+      $\Cong{y}{p}{y}{q}$. Then
+      $\Cong{z}{p}{z}{q}$.
     \end{lemma}
     \begin{proof}
     	$FS(x,y,z,p,x,y,z,q)$.
@@ -645,7 +653,8 @@
     \end{lemma}
 
     \begin{lemma} %[L4o19]
-      Assume $x-z-y$ and $x-z : x-p$ and $y-z : y-p$. Then $z = p$.
+      Assume $\Betw{x}{z}{y}$ and $\Cong{x}{z}{x}{p}$ and $\Cong{y}{z}{y}{p}$.
+      Then $z = p$.
     \end{lemma}
     \begin{proof}
       Assume $x = y$. Then $x = z$ and $x = p$. Hence $z = p$. Assume $x \neq y$.
@@ -662,10 +671,17 @@
 
   \begin{forthel}
     \begin{definition} %[C5o1a]
-      $Betw5(x,y,z,r,p)$ iff $x-y-z$ and $x-y-r$ and $x-y-p$ and $x-z-r$ and $x-z-p$ and $x-r-p$ and $y-z-r$ and $y-z-p$ and $y-r-p$ and $z-r-p$.
+      $\BetwFive{x}{y}{z}{r}{p}$ iff $\Betw{x}{y}{z}$ and
+      $\Betw{x}{y}{r}$ and
+      $\Betw{x}{y}{p}$ and
+      $\Betw{x}{z}{r}$ and
+      $\Betw{x}{z}{p}$ and
+      $\Betw{x}{r}{p}$ and
+      $\Betw{y}{z}{r}$ and
+      $\Betw{y}{z}{p}$ and
+      $\Betw{y}{r}{p}$ and
+      $\Betw{z}{r}{p}$.
     \end{definition}
-
-    Let $x~y~z~r~p$ stand for $Betw5(x,y,z,r,p)$.
   \end{forthel}
 
   The following predicates state the already proven statements for different positions in the proof.
@@ -679,7 +695,13 @@
     \end{definition}
 
     \begin{definition} %[C5o1c]
-      $Th2(x,y,z,r,p,q,g)$ iff $x \neq y$ and $x~y~z~q~g$ and $x~y~r~p~g$ and $r-p : z-r$ and $z-q : z-r$ and $y-p : g-z$ and $y-g : g-y$.
+      $Th2(x,y,z,r,p,q,g)$ iff $x \neq y$ and
+      $\BetwFive{x}{y}{z}{q}{g}$ and
+      $\BetwFive{x}{y}{r}{p}{g}$ and
+      $\Cong{r}{p}{z}{r}$ and
+      $\Cong{z}{q}{z}{r}$ and
+      $\Cong{y}{p}{g}{z}$ and
+      $\Cong{y}{g}{g}{y}$.
     \end{definition}
 
     % \begin{definition}[C5o1d]
@@ -707,11 +729,15 @@
     \end{proof}
 
     \begin{axiom} %[C5o1g] (TODO)
-      If $Th(x,y,z,r,p,q,g,h)$ then $x~y~z~q~h$ and $x~y~r~p~g$.
+      If $Th(x,y,z,r,p,q,g,h)$ then
+      $\BetwFive{x}{y}{z}{q}{h}$ and
+      $\BetwFive{x}{y}{r}{p}{g}$.
     \end{axiom}
 
     \begin{axiom} %[C5o1h] (TODO)
-      Assume $Th(x,y,z,r,p,q,g,h)$ and $x~y~z~q~h$ and $x~y~r~p~g$. Then $y-p : h-z$.
+      Assume $Th(x,y,z,r,p,q,g,h)$ and
+      $\BetwFive{x}{y}{z}{q}{h}$ and
+      $\BetwFive{x}{y}{r}{p}{g}$. Then $y-p : h-z$.
     \end{axiom}
 
     \begin{axiom} %[C5o1i] (TODO)
@@ -719,7 +745,9 @@
     \end{axiom}
 
     \begin{axiom} %[C5o1j] (TODO)
-      Assume $Th(x,y,z,r,p,q,g,h)$ and $x~y~z~q~h$ and $x~y~r~p~g$ and $y-p : h-z$. Then $y-g : h-y$.
+      Assume $Th(x,y,z,r,p,q,g,h)$ and
+      $\BetwFive{x}{y}{z}{q}{h}$ and
+      $\BetwFive{x}{y}{r}{p}{g}$ and $y-p : h-z$. Then $y-g : h-y$.
     \end{axiom}
 
 
@@ -768,7 +796,7 @@
     %\begin{proof}
     %	Take points $s,t$ such that $z-q-t$ and $r-p-s$.
     %	Then $Th(x,y,z,r,p,q,s,t)$.
-    %	Then $x~y~z~q~t$ and $x~y~r~p~s$.
+    %	Then $x}{y}{z}{q}{t$ and $x}{y}{r}{p}{s$.
     %	Then $y-p : t-z$.
     %	Then $y-t : t-y$.
     %	Then $s = t$.
