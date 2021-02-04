@@ -1,0 +1,93 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{naproche}[2021/02/04 Typesetting for Naproche formalizations]
+
+\RequirePackage{parskip}
+\RequirePackage{amsmath}
+\RequirePackage{amsthm}
+\RequirePackage{framed}   % required for forthel environment
+\RequirePackage{xifthen}  % required for optional naming of top-level sections
+
+
+
+\newtheoremstyle{formalized}% name of the style to be used
+    {4pt}% measure of space to leave above the theorem. E.g.: 3pt
+    {4pt}% measure of space to leave below the theorem. E.g.: 3pt
+    {\mdseries} % name of font to use in the body of the theorem
+    {0pt}% measure of space to indent
+    {\bfseries}% name of head font
+    {}% punctuation between head and body
+    { }% space after theorem head; " " = normal inter-word space
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}.}
+
+\theoremstyle{formalized}
+\newcounter{theoremcount}
+
+\newtheorem{axiom}[theoremcount]{Axiom}
+\newtheorem{definition}[theoremcount]{Definition}
+\newtheorem{fact}[theoremcount]{Fact}
+\newtheorem{lemma}[theoremcount]{Lemma}
+\newtheorem{proposition}[theoremcount]{Proposition}
+\newtheorem{remark}[theoremcount]{Remark}
+\newtheorem{signature}[theoremcount]{Signature}
+\newtheorem{theorem}[theoremcount]{Theorem}
+
+% Theorem environments without numbering.
+\newtheorem*{quotedaxiom}{Axiom}
+\newtheorem*{quoteddefinition}{Definition}
+\newtheorem*{quotedfact}{Fact}
+\newtheorem*{quotedlemma}{Lemma}
+\newtheorem*{quotedproposition}{Proposition}
+\newtheorem*{quotedremark}{Remark}
+\newtheorem*{quotedsignature}{Signature}
+\newtheorem*{quotedtheorem}{Theorem}
+
+
+
+\RequirePackage[most]{tcolorbox}
+\definecolor{block-gray}{gray}{0.95}
+\newtcolorbox{grayblock}{arc=0mm,colframe=block-gray,colback=block-gray,grow to right by=0mm,grow to left by=0mm,
+boxrule=0pt,boxsep=0pt,breakable}
+\newenvironment{forthel}{\begin{grayblock}\rmfamily}{\end{grayblock}\rmfamily}
+
+
+
+% Let "..." behave similar to \textrm{...} in math mode
+
+\let\ftlquotationmark"
+
+\catcode`\"=\active
+
+\def"#1"
+{%
+  \ifmmode\mathrel
+  {%
+    \textrm{#1}%
+  }
+  \else
+  {%
+    \ftlquotationmark%
+    { #1}%
+    \ftlquotationmark%
+  }
+  \fi%
+}
+
+
+
+
+% Options
+% =======
+
+% If the option 'nonumber' is activated, then all the theorem environment are left unnumbered.
+\DeclareOption{nonumber}{%
+    \renewcommand{\axiom}{\quotedaxiom}
+    \renewcommand{\definition}{\quoteddefinition}
+    \renewcommand{\fact}{\quotedfact}
+    \renewcommand{\lemma}{\quotedlemma}
+    \renewcommand{\proposition}{\quotedproposition}
+    \renewcommand{\remark}{\quotedremark}
+    \renewcommand{\signature}{\quotedsignature}
+    \renewcommand{\theorem}{\quotedtheorem}
+}
+\DeclareOption*{\PackageWarning{naproche}{Unknown ‘\CurrentOption’}}
+\ProcessOptions\relax
