@@ -4,24 +4,58 @@ theory Ex
   imports Naproche.Naproche
 begin
 
+section \<open>The Naproche project\<close>
+
 text \<open>
-  Naproche-SAD is a project managed by Prof. Peter Koepke, from the
-  Mathematical Institute, University of Bonn.
+  Naproche is a project managed by Prof. Peter Koepke, from the Mathematical
+  Institute, University of Bonn. The aim is to check mathematical texts,
+  written in controlled natural language.
 
-  The aim is to check mathematical texts, written in controlled natural
-  language. There are two input formats:
+  The source code repository is \<^url>\<open>https://github.com/anfelor/Naproche-SAD\<close>
+\<close>
 
-    \<^enum> The Formal Theory Language (ForTheL), e.g. see
-      \<^file>\<open>$NAPROCHE_HOME/examples/tarski.ftl\<close>
 
-    \<^enum> A variant of LaTeX that is structured like ForTheL, e.g. see
-      \<^file>\<open>$NAPROCHE_HOME/examples/tarski.ftl.tex\<close>
+section \<open>Examples\<close>
 
-  Further examples are available in the directory \<^dir>\<open>$NAPROCHE_HOME/examples\<close>.
+text \<open>
+  The directory \<^dir>\<open>$NAPROCHE_HOME/examples\<close> contains various examples, to be
+  checked in the Isabelle/jEdit Prover IDE: both \<^verbatim>\<open>.ftl\<close> and \<^verbatim>\<open>.ftl.tex\<close> are
+  supported.
 
-  The Isabelle/jEdit Prover IDE understands both \<^verbatim>\<open>.ftl\<close> and \<^verbatim>\<open>.ftl.tex\<close>
-  files, with spontaneous checking by the Naproche-SAD server process
-  running in the background.
+  Some notable entries are:
+
+    \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/tarski.ftl\<close>
+                     
+    \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/tarski.ftl.tex\<close>
+\<close>
+
+
+section \<open>Implementation and system integration\<close>
+
+text \<open>
+  Isabelle/Naproche integrates various tools and components as follows:
+
+    \<^item> \<^verbatim>\<open>Naproche-SAD\<close> as command-line tool and TCP server, written in
+    Haskell: \<^dir>\<open>$NAPROCHE_HOME/src/SAD\<close>
+
+    \<^item> Isabelle/Haskell modules to help connecting the main executable to the
+    Isabelle/PIDE framework: \<^file>\<open>~~/src/Tools/Haskell/Haskell.thy\<close> --- the
+    generated sources appear in \<^dir>\<open>$NAPROCHE_HOME/Isabelle/src/Isabelle\<close>
+
+    \<^item> Isabelle/ML definitions of Isar commands for checking the Formal Theory
+    Language (ForTheL): \<^file>\<open>$NAPROCHE_HOME/Isabelle/Main/naproche.ML\<close>
+
+    \<^item> Isabelle/Scala integration for the \<^verbatim>\<open>.ftl\<close> and \<^verbatim>\<open>.ftl.tex\<close>
+    file-formats: \<^file>\<open>$NAPROCHE_HOME/Isabelle/file_format.scala\<close>
+
+    \<^item> Isabelle/Scala integration for external provers managed by Isabelle
+    (with robust interrupts/timeouts for all platforms):
+    \<^file>\<open>$NAPROCHE_HOME/Isabelle/prover_server.scala\<close>
+
+    \<^item> Isabelle component settings to glue everything together:
+    \<^file>\<open>$NAPROCHE_HOME/etc/settings\<close>
 \<close>
 
 end
+
+(* :maxLineLen=78: *)

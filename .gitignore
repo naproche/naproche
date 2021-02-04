@@ -15,4 +15,10 @@ x86_64-windows/
 *.ps
 .DS_Store
 
-isabelle-release/
+# TEX-related files.
+*.fdb_latexmk
+*.aux
+*.ftl.pdf
+*.log
+*.fls
+*.synctex.gz
