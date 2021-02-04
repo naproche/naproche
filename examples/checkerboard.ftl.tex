@@ -22,12 +22,7 @@ and discussed fully automatic or interactive proofs of the solution.
 
 There have been several formalization of the Checkerboard problem before. A
 survey article by Manfred Kerber and Martin Pollet called {\emph{A Tough Nut
-for Mathematical Knowledge Management}} list a couple of formalizations.
-
-% TODO
-%\Naproche{} is based on weakly typed first order logic and basic set theory.
-%We introduce types (``notions'') and constants to model checkerboards
-%as a Cartesian product of ranks $1, 2, \ldots, 8$ and files $\fileA, \fileB, \ldots, \fileH$.
+for Mathematical Knowledge Management}} lists a couple of formalizations.
 
 
 
@@ -44,8 +39,8 @@ for Mathematical Knowledge Management}} list a couple of formalizations.
 
 We introduce \textit{types} (or \textit{notions}) and constants
 to model checkerboards as a Cartesian product of
-ranks $1, 2, \ldots, 8$ and files $\fileA, \fileB, \ldots, \fileH$.
-In future versions these declarations will be grouped together as a single declaration of an inductively defined set.
+\textit{ranks} $1, 2, \ldots, 8$ and \textit{files} $\fileA, \fileB, \ldots, \fileH$.
+In future versions these signature declarations will be grouped together as a single declaration of an inductively defined set.
 
 
 \Naproche{} allows us to group elements into \textit{classes} and \textit{sets} as long as they are \textit{setsized} (informally also called \textit{small}).
@@ -67,7 +62,7 @@ In future versions these declarations will be grouped together as a single decla
     \begin{definition} $\Rank = \{1,2,3,4,5,6,7,8\}$. \end{definition}
 
     \begin{signature} A file is a notion. \end{signature}
-    Let f, g denote files.
+    Let $f, g$ denote files.
 
     \begin{axiom} f is setsized. \end{axiom}
 
@@ -92,7 +87,8 @@ In future versions these declarations will be grouped together as a single decla
 Is there a set of all squares? This may not be true for an arbitrary notion,
 but it is true for squares, so we assume it as an axiom. Note that we can always
 form the class $C$ of all inhabitants of a notion as long as $x \in C$ can only be true
-for setsized $x$. This theory was formalized by Morse and Kelley \cite{Kelley1975,Morse1965}.
+for setsized $x$.
+Morse and Kelley \cite{Kelley1975,Morse1965} use the same approach in their axiomatization of set theory.
 
 \begin{forthel}
     \begin{definition}
@@ -148,11 +144,12 @@ Note that there are many degrees of freedom in picking an axiomatic setting.
     \end{definition}
 \end{forthel}
 
-Observe the notion \textit{object}:
-this is the built-in \textit{largest notion}, containing all other notions.
+The notion of \textit{object}
+is the built-in \textit{largest notion}, containing all other notions.
 %
 Also note that the proof of the lemma below really is omitted and not merely hidden:
-with the help of automated theorem provers such as \textsf{E}\,\cite{eprover}, \Naproche{}
+with the help of automated theorem provers
+such as the \textsf{E} theorem prover\,\cite{eprover}, \Naproche{}
 can accept some theorems without any additional argumentation.
 
 
@@ -164,7 +161,7 @@ can accept some theorems without any additional argumentation.
 
 The built-in ordered pair {notation} that we already used in the first
 subsection does not include the universal property of ordered pairs,
-so we postulated it as an axiom.
+so we postulate it as an axiom.
 
 \begin{forthel}
     \begin{axiom}
@@ -329,11 +326,12 @@ As usual, chaining of relation symbols indicates a conjunction.
     \end{definition}
 \end{forthel}
 
+\noindent
 We shall prove:
 
-\begin{theorem}
-    There is no domino tiling of $\Mutilated$.
-\end{theorem}
+\begin{quotedtheorem}
+    The mutilated checkerboard has no domino tiling.
+\end{quotedtheorem}
 
 
 
@@ -410,7 +408,8 @@ We formalize swapping by a first-order function symbol $\Swap{}$.
     \end{proof}
 \end{forthel}
 
-$\Swap{}$ is an involution:
+$\Swap{}$ is an involution.
+% TODO
 
 \begin{forthel}
     \begin{lemma}
