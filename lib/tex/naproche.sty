@@ -50,15 +50,34 @@ boxrule=0pt,boxsep=0pt,breakable}
 \newenvironment{forthel}{\begin{grayblock}\rmfamily}{\end{grayblock}\rmfamily}
 
 
+%% Space between paragraphs in proofs in ForTheL environments
+\newlength{\ftlparskip}
+\setlength{\ftlparskip}{1em}
+
+\newbool{forthel}
+
+\let\originalproof\proof
+\let\originalendproof\endproof
+
+% Set length of \parskip to \ftlparskip in proofs in ForTheL environments.
+%
+% NOTE: "\vspace*{-\parskip}" is necessary to avoid additional space between
+% theorem and proof
+\renewenvironment{proof}{%
+  \originalproof%
+  \ifbool{forthel}{\setlength{\parskip}{\ftlparskip}\vspace*{-\parskip}}%
+  \relax%
+}
+{%
+  \originalendproof%
+}
+
+
 
 % Predefined symbols
 % ==================
 
 \newcommand{\dom}{\operatorname{dom}}
-
-
-\newbool{forthel}
-
 
 
 % Options
@@ -82,18 +101,7 @@ boxrule=0pt,boxsep=0pt,breakable}
 \DeclareOption{numberswithinsubsection}{%
     \counterwithin{theoremcount}{subsection}
 }
-%\DeclareOption{quoteworkaround}{%
-    % Let "..." behave similar to \textrm{...} with automatic handling of
-    % leading and following whitespaces in math mode
 
-    \let\ftlquotationmark"
-    \catcode`\"=\active
 
-    \def"#1"{%
-    \ifbool{forthel}%
-        {\ifbool{mmode}{\mathrel{\textrm{#1}}}{#1}}%
-        {\ftlquotationmark{ #1}\ftlquotationmark}%
-    }
-%}
 \DeclareOption*{\PackageWarning{naproche}{Unknown ‘\CurrentOption’}}
 \ProcessOptions\relax
