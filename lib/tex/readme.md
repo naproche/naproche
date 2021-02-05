@@ -16,6 +16,8 @@ You may need to compile the latex files from the appropriate relative directory.
 `examples/tarski.ftl.tex` you may need to call `pdflatex` from within the `examples/` folder.
 
 
+Alternatively, you can [manually install](https://en.wikibooks.org/wiki/LaTeX/Installing_Extra_Packages#Manual_installation) the package and write `\usepackage{naproche}`.
+
 ## Suggested template
 
 
