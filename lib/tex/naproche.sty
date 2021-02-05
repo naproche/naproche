@@ -50,6 +50,12 @@ boxrule=0pt,boxsep=0pt,breakable}
 
 
 
+% Predefined symbols
+% ==================
+
+\newcommand{\dom}{\operatorname{dom}}
+
+
 
 % Options
 % =======
@@ -70,6 +76,28 @@ boxrule=0pt,boxsep=0pt,breakable}
 }
 \DeclareOption{numberswithinsubsection}{%
     \counterwithin{theoremcount}{subsection}
+}
+\DeclareOption{quoteworkaround}{%
+    % Let "..." behave similar to \textrm{...} in math mode
+
+    \let\ftlquotationmark"
+
+    \catcode`\"=\active
+
+    \def"#1"
+    {%
+    \ifmmode\mathrel
+    {%
+        \textrm{#1}%
+    }
+    \else
+    {%
+        \ftlquotationmark%
+        { #1}%
+        \ftlquotationmark%
+    }
+    \fi%
+    }
 }
 \DeclareOption*{\PackageWarning{naproche}{Unknown ‘\CurrentOption’}}
 \ProcessOptions\relax

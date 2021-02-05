@@ -19,16 +19,22 @@ to the preamble of your document.
 
 
 A basic starting template for a formalization could be the following.
+This uses the STIX fonts for better on-screen readability
+and licenses the document as `CC0`.
 
 ```TeX
 \documentclass{article}
 
 \usepackage[utf8]{inputenc}
 \usepackage[british]{babel}
-\usepackage{naproche}
+\usepackage{stix2}
+\usepackage[type={CC},modifier={zero},version={1.0},imagemodifier=-80x15]{doclicense}
+
+\usepackage[numberswithinsection]{naproche}
 
 \begin{document}
     ···
+    \doclicenseThis
 \end{document}
 ```
 
@@ -38,10 +44,14 @@ For XeTeX/LuaTex use
 
 \usepackage{polyglossia}
 \defaultlanguage[variant=british]{english}
-\usepackage{naproche}
+\usepackage{stix2}
+\usepackage[type={CC},modifier={zero},version={1.0},imagemodifier=-80x15]{doclicense}
+
+\usepackage[numberswithinsection]{naproche}
 
 \begin{document}
     ···
+    \doclicenseThis
 \end{document}
 ```
 instead.
@@ -61,3 +71,4 @@ Options can be enabled in the following form.
 | `nonumbers` | Turn off numbering for theorem-like environments. |
 | `numberswithinsection` | Reset theorem numbers for each section. |
 | `numberswithinsubsection` | Reset theorem numbers for each subsection. |
+| `quoteworkaround` | Workaround for quotation marks in comprehension terms. |
