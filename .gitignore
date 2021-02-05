@@ -22,3 +22,5 @@ x86_64-windows/
 *.log
 *.fls
 *.synctex.gz
+*.out
+*.toc

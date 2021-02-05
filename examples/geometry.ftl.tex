@@ -1,9 +1,9 @@
 % !TeX spellcheck = en_UK-oed
-\documentclass{article}
+\documentclass[10pt,a4paper,parskip=half,numbers=endperiod,headings=standardclasses]{scrbook}
 
 \usepackage[utf8]{inputenc}
 \usepackage[british]{babel}
-\usepackage{../lib/tex/naproche}
+\usepackage[numberswithinsection]{../lib/tex/naproche}
 
 
 \usepackage{stix2}
@@ -40,10 +40,16 @@
 #5 & #6 & #7 & #8
 \end{smallmatrix}\right)%
 }
+\newcommand{\FS}[8]{\operatorname{FS}
+\left(\begin{smallmatrix}%
+#1 & #2 & #3 & #4 \\
+#5 & #6 & #7 & #8
+\end{smallmatrix}\right)%
+}
 
-\title{Tarski's axioms for Euclidian geometry}
+\title{Tarskian geometry}
 \author{Adrian De Lon, Daniel Kollert}
-\date{2020}
+\date{2021-02-04}
 
 \begin{document}
   \pagenumbering{gobble}
@@ -56,6 +62,10 @@
   by Schwabhäuser, Szmielew and Tarski.
   We refer to this book as \textit{SST} in later comments.
 
+
+  \tableofcontents
+
+  \chapter{Beginnings of Tarskian geometry}
 
   \section{The language of Tarskian geometry}
 
@@ -625,34 +635,59 @@
 
   \begin{forthel}
     \begin{definition} % Satz 4.15
-      $FS(x,y,z,r,v,w,p,q)$ iff $\Col{x}{y}{z}$ and
+      $\FS{x}{y}{z}{r}{v}{w}{p}{q}$ iff
+      $x$ is collinear with $y$ and $z$ and
       $\SenaryCong{x}{y}{z}{v}{w}{p}$ and
       $\Cong{x}{r}{v}{q}$ and
       $\Cong{y}{r}{w}{q}$.
     \end{definition}
+  \end{forthel}
 
-    \begin{axiom} %[L4o16] (TODO)
-      Assume $FS(x,y,z,r,v,w,p,q)$ and $x \neq y$.
+    The following lemma summarizes previous statements
+    about $\operatorname{OFS}$ and $\operatorname{IFS}$.
+
+  \begin{forthel}
+    \begin{axiom} % Satz 4.16 (TODO)
+      Assume $\FS{x}{y}{z}{r}{v}{w}{p}{q}$ and $x \neq y$.
       Then $\Cong{z}{r}{p}{q}$.
     \end{axiom}
+  \end{forthel}
+    \begin{proof}
+      Case $\Betw{x}{y}{z}$.
+        We have $\SenaryCong{x}{y}{z}{v}{w}{p}$.
+        Thus $\Betw{v}{w}{p}$.
+        Thus $\OFS{x}{y}{z}{r}{v}{w}{p}{q}$.
+      End.
+      Case $\Betw{z}{x}{y}$.
+        We have $\SenaryCong{z}{x}{y}{p}{v}{w}$.
+        Thus $\Betw{p}{v}{w}$.
+        % TODO they should be in OFS or IFS configuration.
+      End.
+      Case $\Betw{y}{z}{x}$.
+        We have $\SenaryCong{y}{z}{x}{w}{p}{v}$.
+        Thus $\Betw{w}{p}{v}$.
+        % TODO they should be in OFS or IFS configuration.
+      End.
+    \end{proof}
 
 
-    \begin{lemma} %[L4o17]
+  \begin{forthel}
+    \begin{lemma} % Satz 4.17
       Assume $x \neq y$ and $\Col{x}{y}{z}$ and
       $\Cong{x}{p}{x}{q}$ and
       $\Cong{y}{p}{y}{q}$. Then
       $\Cong{z}{p}{z}{q}$.
     \end{lemma}
     \begin{proof}
-    	$FS(x,y,z,p,x,y,z,q)$.
+    	$\FS{x}{y}{z}{p}{x}{y}{z}{q}$.
     \end{proof}
 
 
-    \begin{lemma} %[L4o18]
+    \begin{lemma} % Satz 4.18
       Assume $x \neq y$ and $\Col{x}{y}{z}$ and $x-z : x-p$ and $y-z : y-p$. Then $z = p$.
     \end{lemma}
 
-    \begin{lemma} %[L4o19]
+    \begin{lemma} % Satz 4.19
       Assume $\Betw{x}{z}{y}$ and $\Cong{x}{z}{x}{p}$ and $\Cong{y}{z}{y}{p}$.
       Then $z = p$.
     \end{lemma}

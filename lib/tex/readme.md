@@ -58,4 +58,6 @@ Options can be enabled in the following form.
 
 | Option | Effect |
 | ----- | ------ |
-| `nonumber` | Turn off numbering for theorem-like environments. |
+| `nonumbers` | Turn off numbering for theorem-like environments. |
+| `numberswithinsection` | Reset theorem numbers for each section. |
+| `numberswithinsubsection` | Reset theorem numbers for each subsection. |

@@ -4,8 +4,7 @@
 \RequirePackage{parskip}
 \RequirePackage{amsmath}
 \RequirePackage{amsthm}
-\RequirePackage{framed}   % required for forthel environment
-\RequirePackage{xifthen}  % required for optional naming of top-level sections
+\RequirePackage{hyperref}
 
 
 
@@ -17,7 +16,7 @@
     {\bfseries}% name of head font
     {}% punctuation between head and body
     { }% space after theorem head; " " = normal inter-word space
-    {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}.}
+    {\thmname{#1}\thmnumber{ #2}. \thmnote{ (#3) }}
 
 \theoremstyle{formalized}
 \newcounter{theoremcount}
@@ -55,8 +54,8 @@ boxrule=0pt,boxsep=0pt,breakable}
 % Options
 % =======
 
-% If the option 'nonumber' is activated, then all the theorem environment are left unnumbered.
-\DeclareOption{nonumber}{%
+% If the option 'nonumbers' is activated, then all the theorem environment are left unnumbered.
+\DeclareOption{nonumbers}{%
     \renewcommand{\axiom}{\quotedaxiom}
     \renewcommand{\definition}{\quoteddefinition}
     \renewcommand{\fact}{\quotedfact}
@@ -65,6 +64,12 @@ boxrule=0pt,boxsep=0pt,breakable}
     \renewcommand{\remark}{\quotedremark}
     \renewcommand{\signature}{\quotedsignature}
     \renewcommand{\theorem}{\quotedtheorem}
+}
+\DeclareOption{numberswithinsection}{%
+    \counterwithin{theoremcount}{section}
+}
+\DeclareOption{numberswithinsubsection}{%
+    \counterwithin{theoremcount}{subsection}
 }
 \DeclareOption*{\PackageWarning{naproche}{Unknown ‘\CurrentOption’}}
 \ProcessOptions\relax
