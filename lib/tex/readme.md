@@ -8,11 +8,12 @@ The `naproche` package provides basic support for typesetting Naproche formaliza
 To use the package, add
 
 ```TeX
-\usepackage{naproche}
+\usepackage{../lib/tex/naproche}
 ```
 
 to the preamble of your document.
-
+You may need to compile the latex files from the appropriate relative directory. For instance, to compile
+`examples/tarski.ftl.tex` you may need to call `pdflatex` from within the `examples/` folder.
 
 
 ## Suggested template
@@ -30,7 +31,7 @@ and licenses the document as `CC0`.
 \usepackage{stix2}
 \usepackage[type={CC},modifier={zero},version={1.0},imagemodifier=-80x15]{doclicense}
 
-\usepackage[numberswithinsection]{naproche}
+\usepackage{../lib/tex/naproche}
 
 \begin{document}
     ···
@@ -47,7 +48,7 @@ For XeTeX/LuaTex use
 \usepackage{stix2}
 \usepackage[type={CC},modifier={zero},version={1.0},imagemodifier=-80x15]{doclicense}
 
-\usepackage[numberswithinsection]{naproche}
+\usepackage{../lib/tex/naproche}
 
 \begin{document}
     ···
@@ -56,6 +57,18 @@ For XeTeX/LuaTex use
 ```
 instead.
 
+
+
+
+## Features
+
+The `naproche` package defines all necessary top-level environments such as `axiom`, `definition`, `theorem`, and `proof`.
+Content within the `forthel` environment is marked with a grey background.
+The package also adjust the spacing in proofs for improved readability and includes a workaround for quoted terms in comprehensions, such as
+```TeX
+$R = \{ x \mid x " is not an element of " R \}$
+```
+to render the text properly.
 
 
 ## Additional options
