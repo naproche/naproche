@@ -2,7 +2,7 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage[quoteworkaround]{../lib/tex/naproche}
+\usepackage{../lib/tex/naproche}
 
 \title{Fürstenberg's proof of the infinitude of primes}
 \author{Andrei Paskevich}
@@ -199,11 +199,11 @@
     Let $A,B,C,D$ stand for subsets of $INT$.
 
     \begin{definition}[Union]
-      $A \cup B = { "integer" x | x << A \vee x << B }$.
+      $A \cup B = \{ "integer" x | x << A \vee x << B \}$.
     \end{definition}
 
     \begin{definition}[Intersection]
-      $A \cap B = { "integer" x | x << A \wedge x << B }$.
+      $A \cap B = \{ "integer" x | x << A \wedge x << B \}$.
     \end{definition}
 
     \begin{definition}[IntegerSets]
@@ -211,7 +211,8 @@
     \end{definition}
 
     \begin{definition}[UnionSet]
-      Let $S$ be a family of integer sets. $\cup S = { "integer" x | x "belongs to some element of" S }$.
+      Let $S$ be a family of integer sets.
+      $\cup S = \{ "integer" x | x "belongs to some element of" S \}$.
     \end{definition}
 
     \begin{lemma}

@@ -21,6 +21,7 @@
 \newcounter{theoremcount}
 
 \newtheorem{axiom}[theoremcount]{Axiom}
+\newtheorem{corollary}[theoremcount]{Corollary}
 \newtheorem{definition}[theoremcount]{Definition}
 \newtheorem{fact}[theoremcount]{Fact}
 \newtheorem{lemma}[theoremcount]{Lemma}
@@ -31,6 +32,7 @@
 
 % Theorem environments without numbering.
 \newtheorem*{quotedaxiom}{Axiom}
+\newtheorem*{quotedcorollary}{Corollary}
 \newtheorem*{quoteddefinition}{Definition}
 \newtheorem*{quotedfact}{Fact}
 \newtheorem*{quotedlemma}{Lemma}
@@ -65,6 +67,7 @@ boxrule=0pt,boxsep=0pt,breakable}
 % If the option 'nonumbers' is activated, then all the theorem environment are left unnumbered.
 \DeclareOption{nonumbers}{%
     \renewcommand{\axiom}{\quotedaxiom}
+    \renewcommand{\corollary}{\quotedcorollary}
     \renewcommand{\definition}{\quoteddefinition}
     \renewcommand{\fact}{\quotedfact}
     \renewcommand{\lemma}{\quotedlemma}
@@ -79,7 +82,7 @@ boxrule=0pt,boxsep=0pt,breakable}
 \DeclareOption{numberswithinsubsection}{%
     \counterwithin{theoremcount}{subsection}
 }
-\DeclareOption{quoteworkaround}{%
+%\DeclareOption{quoteworkaround}{%
     % Let "..." behave similar to \textrm{...} with automatic handling of
     % leading and following whitespaces in math mode
 
@@ -91,6 +94,6 @@ boxrule=0pt,boxsep=0pt,breakable}
         {\ifbool{mmode}{\mathrel{\textrm{#1}}}{#1}}%
         {\ftlquotationmark{ #1}\ftlquotationmark}%
     }
-}
+%}
 \DeclareOption*{\PackageWarning{naproche}{Unknown ‘\CurrentOption’}}
 \ProcessOptions\relax
