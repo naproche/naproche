@@ -66,7 +66,7 @@ The `naproche` package defines all necessary top-level environments such as `axi
 Content within the `forthel` environment is marked with a grey background.
 The package also adjust the spacing in proofs for improved readability and includes a workaround for quoted terms in comprehensions, such as
 ```TeX
-$R = \{ x \mid x " is not an element of " R \}$
+$R = \{ x \mid x " is not an element of " x \}$
 ```
 to render the text properly.
 
