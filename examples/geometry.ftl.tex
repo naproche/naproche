@@ -1,11 +1,13 @@
 % !TeX spellcheck = en_GB-oed
 \documentclass[10pt,a4paper,parskip=half,numbers=endperiod,headings=standardclasses,parskip]{scrbook}
 
+\usepackage{stix2}
+\usepackage{tkz-euclide}
+
 \usepackage[utf8]{inputenc}
 \usepackage[british]{babel}
-\usepackage[numberswithinsection,noquoteworkaround]{../lib/tex/naproche}
+\usepackage[numberswithinsection]{../lib/tex/naproche}
 
-\usepackage{stix2}
 
 \usepackage[type={CC},modifier={zero},version={1.0},imagemodifier=-80x15]{doclicense}
 
@@ -177,6 +179,35 @@
 
   Using the concept of an outer five-segment-configuration,
   we can state the five-segment axiom A5 in a concise form.
+
+  \begin{tikzpicture}
+    % Points
+    \tkzDefPoint (0,0){a}
+    \tkzDefPoint (2,0){b}
+    \tkzDefPoint (4,0){c}
+    \tkzDefPoint (3,2){d}
+    \tkzDefPoint (6,0){a'}
+    \tkzDefPoint (8,0){b'}
+    \tkzDefPoint (10,0){c'}
+    \tkzDefPoint (9,2){d'}
+    % Segments
+    \tkzDrawPolygon (a,b,d)
+    \tkzDrawSegment(b,c)
+    \tkzDrawSegment[dashed](c,d)
+    \tkzDrawPolygon (a',b',d')
+    \tkzDrawSegment(b',c')
+    \tkzDrawSegment[dashed](c',d')
+    % Mars
+    \tkzMarkSegments[mark=|](a,b a',b')
+    \tkzMarkSegments[mark=||](b,c b',c')
+    \tkzMarkSegments[mark=x](a,d a',d')
+    \tkzMarkSegments[mark=|||](b,d b',d')
+    \tkzMarkSegments[mark=o](c,d c',d')
+    % Labelling
+    \tkzLabelPoint[above](d){$d$}
+    \tkzLabelPoint[above](d'){$d'$}
+    \tkzLabelPoints(a,b,c,a',b',c')
+  \end{tikzpicture}
 
   \begin{forthel}
     \begin{axiom}[A5]
