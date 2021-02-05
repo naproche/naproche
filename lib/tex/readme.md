@@ -71,3 +71,4 @@ Options can be enabled in the following form.
 | `nonumbers` | Turn off numbering for theorem-like environments. |
 | `numberswithinsection` | Reset theorem numbers for each section. |
 | `numberswithinsubsection` | Reset theorem numbers for each subsection. |
+| `noquoteworkaround` | Sometimes the quote workaround breaks other packages. The workaround can be disabled with this option. |

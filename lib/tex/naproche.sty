@@ -47,12 +47,23 @@
 \definecolor{block-gray}{gray}{0.95}
 \newtcolorbox{grayblock}{arc=0mm,colframe=block-gray,colback=block-gray,grow to right by=0mm,grow to left by=0mm,
 boxrule=0pt,boxsep=0pt,breakable}
-\newenvironment{forthel}{\begin{grayblock}\rmfamily}{\end{grayblock}\rmfamily}
+\newenvironment{forthel}{%
+  \setbool{forthel}{true}%
+  \begin{grayblock}\rmfamily
+}{%
+  \end{grayblock}\rmfamily%
+  \setbool{forthel}{false}%
+}
 
 
 %% Space between paragraphs in proofs in ForTheL environments
 \newlength{\ftlparskip}
 \setlength{\ftlparskip}{1em}
+
+
+
+% More visible line breaks in proofs.
+% ===================================
 
 \newbool{forthel}
 
@@ -71,6 +82,17 @@ boxrule=0pt,boxsep=0pt,breakable}
 {%
   \originalendproof%
 }
+
+
+\let\ftlquotationmark"
+\catcode`\"=\active
+
+\def"#1"{%
+  \ifbool{forthel}%
+    {\ifbool{mmode}{\mathrel{\textrm{#1}}}{#1}}%
+    {\ftlquotationmark{ #1}\ftlquotationmark}%
+}
+
 
 
 
@@ -101,7 +123,8 @@ boxrule=0pt,boxsep=0pt,breakable}
 \DeclareOption{numberswithinsubsection}{%
     \counterwithin{theoremcount}{subsection}
 }
-
-
+\DeclareOption{noquoteworkaround}{%
+  \catcode`\"=12
+}
 \DeclareOption*{\PackageWarning{naproche}{Unknown ‘\CurrentOption’}}
 \ProcessOptions\relax
