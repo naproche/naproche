@@ -71,4 +71,3 @@ Options can be enabled in the following form.
 | `nonumbers` | Turn off numbering for theorem-like environments. |
 | `numberswithinsection` | Reset theorem numbers for each section. |
 | `numberswithinsubsection` | Reset theorem numbers for each subsection. |
-| `quoteworkaround` | Workaround for quotation marks in comprehension terms. |
