@@ -1,10 +1,9 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{naproche}[2021/02/04 Typesetting for Naproche formalizations]
 
-\RequirePackage{parskip}
 \RequirePackage{amsmath}
 \RequirePackage{amsthm}
-\RequirePackage{hyperref}
+\RequirePackage{etoolbox}
 
 
 
@@ -56,6 +55,9 @@ boxrule=0pt,boxsep=0pt,breakable}
 \newcommand{\dom}{\operatorname{dom}}
 
 
+\newbool{forthel}
+
+
 
 % Options
 % =======
@@ -78,25 +80,16 @@ boxrule=0pt,boxsep=0pt,breakable}
     \counterwithin{theoremcount}{subsection}
 }
 \DeclareOption{quoteworkaround}{%
-    % Let "..." behave similar to \textrm{...} in math mode
+    % Let "..." behave similar to \textrm{...} with automatic handling of
+    % leading and following whitespaces in math mode
 
     \let\ftlquotationmark"
-
     \catcode`\"=\active
 
-    \def"#1"
-    {%
-    \ifmmode\mathrel
-    {%
-        \textrm{#1}%
-    }
-    \else
-    {%
-        \ftlquotationmark%
-        { #1}%
-        \ftlquotationmark%
-    }
-    \fi%
+    \def"#1"{%
+    \ifbool{forthel}%
+        {\ifbool{mmode}{\mathrel{\textrm{#1}}}{#1}}%
+        {\ftlquotationmark{ #1}\ftlquotationmark}%
     }
 }
 \DeclareOption*{\PackageWarning{naproche}{Unknown ‘\CurrentOption’}}
