@@ -211,12 +211,9 @@
     \tkzDefPoint (10,0){c'}
     \tkzDefPoint (9,2){d'}
     % Segments
-    \tkzDrawPolygon (a,b,d)
-    \tkzDrawSegment(b,c)
-    \tkzDrawSegment[dashed](c,d)
-    \tkzDrawPolygon (a',b',d')
-    \tkzDrawSegment(b',c')
-    \tkzDrawSegment[dashed](c',d')
+    \tkzDrawPolySeg (b,a,d,b,c)
+    \tkzDrawPolySeg (b',a',d',b',c')
+    \tkzDrawSegments[dashed](c,d  c',d')
     % Marks
     \tkzMarkSegments[mark=|](a,b a',b')
     \tkzMarkSegments[mark=||](b,c b',c')
@@ -224,8 +221,7 @@
     \tkzMarkSegments[mark=|||](b,d b',d')
     \tkzMarkSegments[mark=o](c,d c',d')
     % Labels
-    \tkzLabelPoint[above](d){$d$}
-    \tkzLabelPoint[above](d'){$d'$}
+    \tkzLabelPoints[above](d,d')
     \tkzLabelPoints(a,b,c,a',b',c')
   \end{tikzpicture}
 
@@ -305,8 +301,7 @@
     % Drawing:
     \tkzDrawPoints(x,a,b,c,a',b',c')
     \tkzDrawCircle(x,b)
-    \tkzDrawSegment(x,c)
-    \tkzDrawSegment(a',c')
+    \tkzDrawSegments(x,c a',c')
     % Labels:
     \tkzLabelPoints(x,a,c,c')
     \tkzLabelPoints[below](b)
