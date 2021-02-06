@@ -7,7 +7,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage[british]{babel}
 \usepackage[numberswithinsection]{../lib/tex/naproche}
-
+\usepackage{auxhook} % Fixes auxhook (seems to be broken by etoolbox in naproche.sty)
+\usepackage{comment}
 
 \usepackage[type={CC},modifier={zero},version={1.0},imagemodifier=-80x15]{doclicense}
 
@@ -23,6 +24,15 @@
 \newcommand{\Less}[4]{#1 #2 < #3 #4}
 \newcommand{\Greater}[4]{#1 #2 > #3 #4}
 
+\newcommand{\vara}{a}
+\newcommand{\aprime}{a'}
+\newcommand{\bprime}{b'}
+\newcommand{\cprime}{c'}
+\def\dprime{d'}
+\newcommand{\eprime}{e'}
+\newcommand{\fprime}{f'}
+\newcommand{\gprime}{g'}
+\newcommand{\hprime}{h'}
 \newcommand{\xprime}{x'}
 \newcommand{\yprime}{y'}
 \newcommand{\zprime}{z'}
@@ -30,6 +40,13 @@
 \newcommand{\uprime}{u'}
 \newcommand{\vprime}{v'}
 \newcommand{\wprime}{w'}
+
+\newcommand{\bdoubleprime}{b''}
+
+
+\newcommand{\fresha}{a}
+\newcommand{\freshb}{b}
+\newcommand{\freshc}{c}
 
 \newcommand{\OFS}[8]{\operatorname{OFS}
 \left(\begin{smallmatrix}%
@@ -55,8 +72,6 @@
 \date{2021-02-04}
 
 \begin{document}
-  \pagenumbering{gobble}
-
   \maketitle
 
   This is a formalization of the beginnings of Tarskian geometry,
@@ -88,7 +103,12 @@
       A point is a notion.
     \end{signature}
 
-    Let $x, y, z, u, v, w, p, q, r, g, h$ denote points.
+    Let $\vara, a, b, c, d$ denote points.
+    Let $e, f, g, h$ denote points.
+    Let $\aprime, \bprime, \cprime, \dprime$ denote points.
+    Let $\eprime, \fprime, \gprime, \hprime$ denote points.
+    Let $\bdoubleprime$ denote a point.
+    Let $x, y, z, u, v, w, p, q, r$ denote points.
 
 
     \begin{signature}
@@ -197,13 +217,13 @@
     \tkzDrawPolygon (a',b',d')
     \tkzDrawSegment(b',c')
     \tkzDrawSegment[dashed](c',d')
-    % Mars
+    % Marks
     \tkzMarkSegments[mark=|](a,b a',b')
     \tkzMarkSegments[mark=||](b,c b',c')
     \tkzMarkSegments[mark=x](a,d a',d')
     \tkzMarkSegments[mark=|||](b,d b',d')
     \tkzMarkSegments[mark=o](c,d c',d')
-    % Labelling
+    % Labels
     \tkzLabelPoint[above](d){$d$}
     \tkzLabelPoint[above](d'){$d'$}
     \tkzLabelPoints(a,b,c,a',b',c')
@@ -211,7 +231,8 @@
 
   \begin{forthel}
     \begin{axiom}[A5]
-      If $\OFS{x}{y}{z}{r}{u}{v}{w}{p}$ and $x \neq y$ then $\Cong{z}{r}{w}{p}$.
+      If $\OFS{a}{b}{c}{d}{\aprime}{\bprime}{\cprime}{\dprime}$ and
+      $a \neq b$ then $\Cong{c}{d}{\cprime}{\dprime}$.
     \end{axiom}
   \end{forthel}
 
@@ -239,8 +260,8 @@
 
   \begin{forthel}
     \begin{axiom}[A8]
-      There exist points $a,b,c$ such that
-      $a$ is not collinear with $b$ and $c$.
+      There exist points $\fresha, \freshb, \freshc$ such that
+      $\fresha$ is not collinear with $\freshb$ and $\freshc$.
     \end{axiom}
   \end{forthel}
 
@@ -272,11 +293,33 @@
   This axiom is equivalent to the the statement
   \textit{a~line that has a point within a circle intersects that circle}.
 
+  \begin{tikzpicture}
+    % Definitions:
+    \tkzDefPoint(3,3){x} % Centre of the circle.
+    \tkzDefPoint(2,2){a}
+    \tkzDefPoint(1.5,1.5){b}
+    \tkzDefPoint(1,1){c}
+    \tkzDefPoint(2.83,4.5){a'}
+    \tkzDefPoint(5.83,2.2){c'}
+    \tkzInterLC(a',c')(x,b)\tkzGetPoints{b''}{b'}
+    % Drawing:
+    \tkzDrawPoints(x,a,b,c,a',b',c')
+    \tkzDrawCircle(x,b)
+    \tkzDrawSegment(x,c)
+    \tkzDrawSegment(a',c')
+    % Labels:
+    \tkzLabelPoints(x,a,c,c')
+    \tkzLabelPoints[below](b)
+    \tkzLabelPoints[above right](a',b')
+  \end{tikzpicture}
+
   \begin{forthel}
     \begin{axiom}[CA]
-      Assume $\Betw{z}{p}{q}$ and $\Betw{z}{p}{r}$.
-      Assume $\Cong{z}{x}{z}{p}$ and $\Cong{z}{y}{z}{r}$.
-      Then there exists $w$ such that $\Cong{z}{w}{z}{q}$ and $\Betw{x}{w}{y}$.
+      Assume $\Betw{x}{a}{b}$ and $\Betw{x}{b}{c}$.
+      Assume
+        $\Cong{x}{\aprime}{x}{a}$ and
+        $\Cong{x}{\cprime}{x}{c}$.
+      Then there exists $\bprime$ such that $\Cong{x}{\bprime}{x}{b}$ and $\Betw{\aprime}{\cprime}{\cprime}$.
     \end{axiom}
   \end{forthel}
 
@@ -728,9 +771,12 @@
     \end{proof}
   \end{forthel}
 
-  The eleventh axiom of Tarski's original axiomatization says that
-  if $\Betw{x}{y}{w}$ and $\Betw{x}{z}{w}$
-  then $\Betw{x}{y}{z}$ or $\Betw{x}{z}{y}$.
+  Tarski's original axiomatization featured the following axiom.
+  \begin{quotedaxiom}
+    if $\Betw{x}{y}{w}$ and $\Betw{x}{z}{w}$
+    then $\Betw{x}{y}{z}$ or $\Betw{x}{z}{y}$.
+  \end{quotedaxiom}
+
   %To show that it follows from the first ten axioms we first prove Lemma C5o1 from which we can easy deduce the 11th axiom.
 
   %The definitions, lemmas and axioms C5o1a - C5o1p are not part of \textit{SST}.
@@ -788,7 +834,8 @@
 
   \begin{forthel}
     \begin{lemma} %[C5o1f]
-      Assume $x \neq y$ and $x-y-z$ and $x-y-r$. Then there exist points $a,b$ such that $x-r-a$ and $r-a : z-r$ and $x-z-b$ and $z-b : z-r$.
+      Assume $x \neq y$ and $x-y-z$ and $x-y-r$. Then there exist points
+      $\fresha,\freshb$ such that $x-r-\fresha$ and $r-\fresha : z-r$ and $x-z-\freshb$ and $z-\freshb : z-r$.
     \end{lemma}
     \begin{proof}
       Take point $a$ such that $\Betw{x}{r}{a}$ and $\Cong{r}{a}{z}{r}$ (by A4).
@@ -835,11 +882,11 @@
       Assume $Th2(x,y,z,r,p,q,g)$ and $\OFS{y}{z}{q}{p}{g}{p}{r}{z}$ and $p-q : z-r$. Then there exist $u$ such that $z-u-p$ and $r-u-q$.
     \end{lemma}
 
-    %\begin{lemma}[C5o1o]
+    %\begin{axiom}[C5o1o]
     %  Assume $Th4(x,y,z,r,p,q,g,u,v,w,h)$.
-    % Then $\OFS{q}{z}{h}{v}{v}{z}{u}{q}$ and $h-v : u-q$ and $h-w : u-r$
-    % and $\OFS{q}{u}{r}{z}{v}{h}{w}{z}$ and $q-r : v-w$ and $z-w : z-r$ and $z-v : z-w$.
-    %\end{lemma}
+    %  Then $\OFS{q}{z}{h}{v}{v}{z}{u}{q}$ and $h-v : u-q$ and $h-w : u-r$
+    %  and $\OFS{q}{u}{r}{z}{v}{h}{w}{z}$ and $q-r : v-w$ and $z-w : z-r$ and $z-v : z-w$.
+    %\end{axiom}
     %\begin{proof}
     %  $\OFS{q}{z}{h}{v}{v}{z}{u}{q}$. Hence $h-v : u-q$.
     %  Hence $h-w : u-r$. % TODO: this step is slow.
@@ -863,7 +910,7 @@
     %\begin{proof}
     %	Take points $s,t$ such that $z-q-t$ and $r-p-s$.
     %	Then $Th(x,y,z,r,p,q,s,t)$.
-    %	Then $x}{y}{z}{q}{t$ and $x}{y}{r}{p}{s$.
+    %	Then $\BetwFive{x}{y}{z}{q}{t}$ and $\BetwFive{x}{y}{r}{p}{s}$.
     %	Then $y-p : t-z$.
     %	Then $y-t : t-y$.
     %	Then $s = t$.
@@ -892,20 +939,33 @@
     %\end{proof}
 
     \begin{axiom} % Satz 5.1 (TODO)
-      Assume $x \neq y$.
-      If $\Betw{x}{y}{z}$ and $\Betw{x}{y}{r}$
-      then $\Betw{x}{z}{r}$ or $\Betw{x}{r}{z}$.
+      Assume $a \neq b$.
+      If $\Betw{a}{b}{c}$ and $\Betw{a}{b}{d}$
+      then $\Betw{a}{c}{d}$ or $\Betw{a}{d}{c}$.
     \end{axiom}
-    %\begin{proof}
-    %  Take $p,q$ such that $x-r-p$ and $r-p : z-r$ and $x-z-q$ and $z-q : z-r$.
-    %  Then $z = p$ or $r = q$. % (by C5o1p).
-    %  Therefore $x-z-r$ or $x-r-z$ (by C5o1k).
-    %\end{proof}
+  \end{forthel}
 
+    \begin{proof}
+      Take $\cprime,\dprime$ such that
+      $\Betw{a}{d}{\cprime}$ and $\Cong{d}{\cprime}{c}{d}$ and
+      $\Betw{a}{c}{\dprime}$ and $\Cong{c}{\dprime}{c}{d}$.
+      Then $c = \cprime$ or $d = \dprime$. % (by C5o1p).
+      Proof.
+        Take points $\bprime,\bdoubleprime$ such that
+          $\Betw{c}{\dprime}{\bdoubleprime}$ and $\Betw{d}{\cprime}{\bprime}$.
+        % Then $Th(a,b,c,d,\cprime,\dprime,\bprime,\bdoubleprime)$.
+        Then
+          $\BetwFive{a}{b}{c}{\dprime}{\bdoubleprime}$ and
+          $\BetwFive{a}{b}{d}{\cprime}{\bprime}$.
+      End.
+      Therefore $\Betw{a}{c}{d}$ or $\Betw{a}{d}{c}$. %(by C5o1k).
+    \end{proof}
+
+  \begin{forthel}
     \begin{lemma} %[D5o2]
-      Assume $x \neq y$.
-      If $\Betw{x}{y}{z}$ and $\Betw{x}{y}{r}$
-      then $\Betw{y}{z}{r}$ or $\Betw{y}{r}{z}$.
+      Assume $a \neq b$.
+      If $\Betw{a}{b}{c}$ and $\Betw{a}{b}{d}$
+      then $\Betw{b}{c}{d}$ or $\Betw{b}{d}{c}$.
     \end{lemma}
 
     \begin{theorem} %[D5o3]
@@ -942,7 +1002,7 @@
       then $\Leq{x}{y}{v}{w}$.
     \end{lemma}
 
-    % Takes a bit of time, but works without proof.
+    % Takes a bit of time, but works without proof. (TODO might be a bit too unstable.)
     \begin{lemma}[LessCongRight] % Satz 5.6 (second part)
       If $\Leq{p}{q}{v}{w}$ and $\Cong{v}{w}{x}{y}$
       then $\Leq{p}{q}{x}{y}$.
@@ -1008,5 +1068,23 @@
     \end{lemma}
   \end{forthel}
 
-  \doclicenseThis
+  \appendix
+  \chapter*{Bibliography}
+
+  Michael Beeson, Larry Wos (2017)
+  \\ \textit{Finding proofs in Tarskian geometry}
+  \\ Journal of Automated Reasoning, vol.~58, p.~181--2007
+
+  Wolfram Schwabhäuser, Wanda Szmielew, Alfred Tarski (1983)
+  \\ \textit{Metamathematische Methoden in der Geometrie}
+  \\ Springer
+
+  Haragauri Naryan Gupta (1968)
+  \\ \textit{On some axioms in the foundations of Cartesian spaces}
+
+  Haragauri Naryan Gupta (1965)
+  \\ \textit{An axiomatization of finite-dimensional Cartesian spaces over arbitrary ordered fields}
+  \\ Bulletin of the Polish Academy of Sciences, vol.~13, p.~550--551
+
+  %\doclicenseThis
 \end{document}
