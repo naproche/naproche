@@ -902,6 +902,24 @@
   % The following lemma shows that if there exist such points $p$ and $q$ then $z = p$ or $r = q$ must hold.
   % To see that such points exist one has to use axiom A4 twice.
 
+  \begin{tikzpicture}
+    % Definitions:
+    \tkzDefPoint(0,1){a}
+    \tkzDefPoint(1,1){b}
+    \tkzDefPoint(2,1.5){c}
+    \tkzDefPoint(2,0.5){d}
+    \tkzDefPoint(3,1.5){d'}
+    \tkzDefPoint(3,0.5){c'}
+    \tkzDefPoint(4,1){b'}
+    \tkzDefPoint(4,1){b''}
+    % Drawing:
+    \tkzDrawPoints(a,b,c,d,c',d',b',b'')
+    \tkzDrawSegments(a,b b,c b,d c,d c,c' c,d' c,d' d,c' d,d' c',d' c',b' d',b')
+    % Labels:
+    \tkzLabelPoints(a,b,d,c',b')
+    \tkzLabelPoints[above right](c,d',b'')
+  \end{tikzpicture}
+
   \begin{forthel}
     %\begin{lemma}[C5o1p]
     %  Assume $x \neq y$ and $x-y-z$ and $x-y-r$ and $x-r-p$ and $r-p : z-r$ and $x-z-q$ and $z-q : z-r$.
@@ -938,7 +956,7 @@
     %	Assume $z = p$.
     %\end{proof}
 
-    \begin{axiom} % Satz 5.1 (TODO)
+    \begin{axiom}(Gupta) % Satz 5.1 (TODO)
       Assume $a \neq b$.
       If $\Betw{a}{b}{c}$ and $\Betw{a}{b}{d}$
       then $\Betw{a}{c}{d}$ or $\Betw{a}{d}{c}$.
