@@ -1012,7 +1012,42 @@
 
         Case $c \neq \cprime$.
           We have $c\neq \dprime$.
-          % (TODO)
+
+          Take a point $p$ such that
+            $\Betw{\cprime}{c}{p}$ and $\Cong{c}{p}{c}{\dprime}$.
+          Take a point $r$ such that
+            $\Betw{\dprime}{c}{r}$ and $\Cong{c}{r}{c}{e}$.
+          Take a point $q$ such that
+            $\Betw{p}{r}{q}$ and $\Cong{r}{q}{r}{p}$.
+
+          Then $\OFS{\dprime}{c}{r}{p}{p}{c}{e}{\dprime}$.
+          Thus $\Cong{r}{p}{e}{\dprime}$.
+          Thus $\Cong{r}{q}{e}{d}$.
+
+          Then $\OFS{\dprime}{e}{d}{c}{p}{r}{q}{c}$.
+          Thus $\Cong{\dprime}{d}{p}{q}$.
+          Thus $\Cong{c}{q}{c}{d}$.
+          Thus $\Cong{c}{p}{c}{q}$.
+
+          We have $\Cong{r}{p}{r}{q}$.
+          We have $r \neq c$.
+
+          Then $r$ is collinear with $c$ and $\dprime$.
+          Thus $\Cong{\dprime}{p}{\dprime}{q}$.
+
+          We have $c \neq \dprime$.
+          Then $c$ is collinear with $\dprime$ and $b$.
+          Then $c$ is collinear with $\dprime$ and $\bprime$.
+          Thus $\Cong{b}{p}{b}{q}$ and $\Cong{\bprime}{p}{\bprime}{q}$.
+
+          Thus $b \neq \bprime$.
+          Then $b$ is collinear with $\cprime$ and $\bprime$.
+          Thus $\Cong{\cprime}{p}{\cprime}{q}$.
+
+          $\cprime$ is collinear with $c$ and $p$.
+          Thus $\Cong{p}{p}{p}{q}$.
+          Thus $p = q$.
+          Thus $d = \dprime$.
         End.
       End.
       Therefore $\Betw{a}{c}{d}$ or $\Betw{a}{d}{c}$. %(by C5o1k).
