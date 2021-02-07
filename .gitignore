@@ -22,5 +22,5 @@ x86_64-windows/
 *.log
 *.fls
 *.synctex.gz
-
-isabelle-release/
+*.out
+*.toc

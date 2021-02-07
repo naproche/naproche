@@ -2,11 +2,12 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage{../lib/tex/forthel}
+\usepackage{../lib/tex/naproche}
 
 \title{Fürstenberg's proof of the infinitude of primes}
 \author{Andrei Paskevich}
 \date{}
+
 
 \begin{document}
   \pagenumbering{gobble}
@@ -198,11 +199,11 @@
     Let $A,B,C,D$ stand for subsets of $INT$.
 
     \begin{definition}[Union]
-      $A \-/ B = { "integer" x | x << A \/ x << B }$.
+      $A \cup B = \{ "integer" x | x << A \vee x << B \}$.
     \end{definition}
 
     \begin{definition}[Intersection]
-      $A /-\ B = { "integer" x | x << A /\ x << B }$.
+      $A \cap B = \{ "integer" x | x << A \wedge x << B \}$.
     \end{definition}
 
     \begin{definition}[IntegerSets]
@@ -210,11 +211,12 @@
     \end{definition}
 
     \begin{definition}[UnionSet]
-      Let $S$ be a family of integer sets. $\-/ S = { "integer" x | x "belongs to some element of" S }$.
+      Let $S$ be a family of integer sets.
+      $\cup S = \{ "integer" x | x "belongs to some element of" S \}$.
     \end{definition}
 
     \begin{lemma}
-      Let $S$ be a family of integer sets. $\-/S$ is a subset of $INT$.
+      Let $S$ be a family of integer sets. $\cup S$ is a subset of $INT$.
     \end{lemma}
 
     \begin{definition}[Complement]
@@ -252,19 +254,19 @@
     \end{definition}
 
     \begin{lemma}[UnionOpen]
-      Let $S$ be an open family. $\-/ S$ is open.
+      Let $S$ be an open family. $\cup S$ is open.
     \end{lemma}
     \begin{proof}
-      Let $x << \-/ S$. Take a set $M$ such that ($M$ is an element of $S$ and $x << M$). Take $q$ such that $ArSeq(x,q) [= M$. Then $ArSeq(x,q) [= \-/ S$.
+      Let $x << \cup S$. Take a set $M$ such that ($M$ is an element of $S$ and $x << M$). Take $q$ such that $ArSeq(x,q) [= M$. Then $ArSeq(x,q) [= \cup S$.
     \end{proof}
 
     \begin{lemma}[InterOpen]
-      Let $A,B$ be open subsets of $INT$. Then $A /-\ B$ is a subset of $INT$ and $A /-\ B$ is open.
+      Let $A,B$ be open subsets of $INT$. Then $A \cap B$ is a subset of $INT$ and $A \cap B$ is open.
     \end{lemma}
     \begin{proof}
-      $A /-\ B$ is a subset of $INT$. Let $x << A /-\ B$. Then $x$ is an integer. Take $q$ such that $ArSeq(x,q) [= A$. Take $p$ such that $ArSeq(x,p) [= B$.
+      $A \cap B$ is a subset of $INT$. Let $x << A \cap B$. Then $x$ is an integer. Take $q$ such that $ArSeq(x,q) [= A$. Take $p$ such that $ArSeq(x,p) [= B$.
 
-      Let us show that $p*q$ is a nonzero integer and $ArSeq(x, p * q) [= A /-\ B$.
+      Let us show that $p*q$ is a nonzero integer and $ArSeq(x, p * q) [= A \cap B$.
         $p*q$ is a nonzero integer. Let $a << ArSeq(x, p * q)$.
 
         $a << ArSeq (x, p)$ and $a << ArSeq (x, q)$.
@@ -272,19 +274,19 @@
           $x$ is an integer and $a = x (mod p * q)$. $a = x (mod p)$ and $a = x (mod q)$ (by EquModMul).
         end.
 
-        Therefore $a << A$ and $a << B$. Hence $a << A /-\ B$.
+        Therefore $a << A$ and $a << B$. Hence $a << A \cap B$.
       end.
     \end{proof}
 
     \begin{lemma}[UnionClosed]
-      Let $A,B$ be closed subsets of $INT$. $A \-/ B$ is closed.
+      Let $A,B$ be closed subsets of $INT$. $A \cup B$ is closed.
     \end{lemma}
     \begin{proof}
-      We have $~A,~B [= INT$. $~(A \-/ B) = ~A /-\ ~B$.
+      We have $~A,~B [= INT$. $~(A \cup B) = ~A \cap ~B$.
     \end{proof}
 
     \begin{axiom}[UnionSClosed]
-      Let $S$ be a finite family of integer sets such that all elements of $S$ are closed subsets of $INT$. $\-/ S$ is closed.
+      Let $S$ be a finite family of integer sets such that all elements of $S$ are closed subsets of $INT$. $\cup S$ is closed.
     \end{axiom}
 
     \begin{lemma}[ArSeqClosed]
@@ -304,26 +306,26 @@
     \begin{proof}
       Proof by contradiction. $S$ is a family of integer sets.
 
-      We have $~ \-/ S = {1, -1}$.
+      We have $~ \cup S = {1, -1}$.
       proof.
-        Let us show that for any integer $n$ $n$ belongs to $\-/ S$ iff $n$ has a prime divisor.
+        Let us show that for any integer $n$ $n$ belongs to $\cup S$ iff $n$ has a prime divisor.
           Let $n$ be an integer.
 
-          If $n$ has a prime divisor then $n$ belongs to $\-/ S$.
+          If $n$ has a prime divisor then $n$ belongs to $\cup S$.
           proof.
             Assume $n$ has a prime divisor. Take a prime divisor $p$ of $n$. $ArSeq(0,p)$ is setsized. $ArSeq(0,p) << S$. $n << ArSeq(0,p)$.
           end.
 
-          If $n$ belongs to $\-/ S$ then $n$ has a prime divisor.
+          If $n$ belongs to $\cup S$ then $n$ has a prime divisor.
           proof.
-            Assume $n$ belongs to $\-/S$. Take a prime $r$ such that $n << ArSeq(0,r)$. Then $r$ is a prime divisor of $n$.
+            Assume $n$ belongs to $\cup S$. Take a prime $r$ such that $n << ArSeq(0,r)$. Then $r$ is a prime divisor of $n$.
           end.
         end.
       end.
 
-      Assume that $S$ is finite. Then $\-/ S$ is closed and $~ \-/ S$ is open.
+      Assume that $S$ is finite. Then $\cup S$ is closed and $~ \cup S$ is open.
 
-      Take $p$ such that $ArSeq(1,p) [= ~ \-/ S$.
+      Take $p$ such that $ArSeq(1,p) [= ~ \cup S$.
 
       $ArSeq(1,p)$ has an element $x$ such that neither $x = 1$ nor $x = -1$.
       proof.
