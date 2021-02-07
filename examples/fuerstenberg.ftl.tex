@@ -18,7 +18,7 @@
 \begin{document}
   \maketitle
 
-  Fürstenberg's proof of the infinitude of primes is a topological proof of the fact that there are infinitely many primes. It was published 1955 while Fürstenberg was still an undergraduate student.
+  Fürstenberg's proof of the infinitude of primes is a topological proof of the fact that there are infinitely many primes. It was published 1955 while Fürstenberg was still an undergraduate student\footnote{Fürstenberg, Harry. “On the Infinitude of Primes.” The American Mathematical Monthly, vol. 62, no. 5, 1955, pp. 353–353}.
 
   \section{Integers}
 
@@ -61,7 +61,7 @@
     Let $a - b$ stand for $a + (-b)$.
   \end{forthel}
 
-  Moreover, we assume $(\Int, 0, +, -)$ to be a commutative group and $(\Int, 1, \cdot)$ to be a commutative monoid which satisfy the distribution laws.
+  Moreover, we assume $(\Int, 0, +, -)$ to be an abelian group and $(\Int, 1, \cdot)$ to be a commutative monoid which satisfy the distribution laws.
 
   \begin{forthel}
     \begin{axiom}[AddAsso]
@@ -108,9 +108,13 @@
     \end{proof}
   \end{forthel}
 
-  Furthermore we assume that there are no non-trivial zero divisors.
+  Furthermore we assume that our ring is not trivial and that there are no non-trivial zero divisors.
 
   \begin{forthel}
+    \begin{axiom}[NonTriv]
+      $0 \neq 1$.
+    \end{axiom}
+
     \begin{axiom}[ZeroDiv]
       $a \neq 0 \wedge b \neq 0 \implies a \cdot b \neq 0$.
     \end{axiom}
@@ -120,7 +124,7 @@
     \end{lemma}
   \end{forthel}
 
-Note that we did not state that the ring of integers is non-trivial, yet. Let us continue with the notion of divisors and congruency.
+  Let us continue with the notion of divisors and congruency.
 
   \begin{forthel}
     Let $a$ is nonzero stand for $a \neq 0$.
@@ -151,7 +155,7 @@ Note that we did not state that the ring of integers is non-trivial, yet. Let us
 
       (1) Take $n$ such that $q \cdot n = a - b$.
 
-      $q \cdot -n .= (-1) \cdot (q \cdot n)$ (by MulMinOne, MulAsso,MulComm) $.= (-1) \cdot (a - b)$ (by 1).
+      $q \cdot (-n) .= (-1) \cdot (q \cdot n)$ (by MulMinOne, MulAsso,MulComm) $.= (-1) \cdot (a - b)$ (by 1).
     \end{proof}
 
     \begin{lemma}[EquModTrn]
@@ -276,7 +280,7 @@ Note that we did not state that the ring of integers is non-trivial, yet. Let us
     \end{definition}
   \end{forthel}
 
-  Note that we have declared $q$ as a \textit{non-zero} integer. Otherwise every set $A$ would be open because then $0 \Int + a = \emptyset \subseteq A$ for every $a \in A$.
+  Note that we have declared $q$ as a \textit{non-zero} integer. Otherwise every set $A$ would be open because $0 \Int + a = \emptyset \subseteq A$ for every $a \in A$.
 
   \begin{forthel}
     \begin{definition}[Closed]
@@ -334,6 +338,8 @@ Note that we did not state that the ring of integers is non-trivial, yet. Let us
 
   This characterization allows us to prove that a family $S$ of closed sets is infinite by exploiting that the assumption that $S$ is finite yields that $\bigcup S$ is closed which eventually ends up in a contradiction. In Fürstenberg's proof we will use this method to show that the family $\{ r \Int \mid r \text{ is prime} \}$ is infinite. To use the above argument we thus have to prove that any $q \Int + a$ is closed.
 
+  \paragraph{} Note that it is crucial that we require our ring to be non-trivial. Otherwise let $S$ be the empty set. We claim that $\bigcup S$ is not closed. For if $\bigcup S = \emptyset$ would be closed then $\overline{\bigcup S} = \{ 0 \}$ would be open. Thus by \textit{Open} there would be a non-zero element $q$ such that $q \Int + 0 \subseteq \{ 0 \}$. But since our ring is trivial there is no non-zero element. So $\bigcup S$ is indeed not closed. Thus by \textit{UnionSClosed} $S$ must be infinite. But since $S$ is the empty set we have a serious contradiction to our general notion of infinity.
+
   \begin{forthel}
     \begin{lemma}[ArSeqClosed]
       $q \Int + a$ is a closed subset of $\Int$.
@@ -341,8 +347,8 @@ Note that we did not state that the ring of integers is non-trivial, yet. Let us
     \begin{proof}
       Proof by contradiction. $q \Int + a$ is a subset of $\Int$. Let $b \in \overline{q \Int + a}$.
 
-      Let us show that $q \Int + b \subseteq \overline{q \Int + a}$. Let $c \in q \Int + b$.
-        Assume not $c \in \overline{q \Int + a}$. Then $c = b ~(\mod q)$ and $a = c ~(\mod q)$. Hence $b = a ~(\mod q)$. Therefore $b \in q \Int + a$. Contradiction.
+      Let us show that $q \Int + b \subseteq \overline{q \Int + a}$.
+        Let $c \in q \Int + b$. Assume not $c \in \overline{q \Int + a}$. Then $c = b ~(\mod q)$ and $a = c ~(\mod q)$. Hence $b = a ~(\mod q)$. Therefore $b \in q \Int + a$. Contradiction.
       End.
     \end{proof}
   \end{forthel}
@@ -379,8 +385,7 @@ Note that we did not state that the ring of integers is non-trivial, yet. Let us
 
       $p \Int + 1$ has an element $x$ such that neither $x = 1$ nor $x = -1$. \\
       Proof.
-        $1 + p$ and $1 - p$ are integers.
-        $1 + p$ and $1 - p$ belong to $p \Int + 1$. $1 + p \neq  1 \wedge 1 - p \neq  1$. $1 + p \neq -1 \vee 1 - p \neq -1$. Indeed $1 + p = 1 ~(\mod p)$ and $1 - p = 1 ~(\mod p)$.
+        $1 + p$ and $1 - p$ are integers. $1 + p$ and $1 - p$ belong to $p \Int + 1$. Indeed $1 + p = 1 ~(\mod p)$ and $1 - p = 1 ~(\mod p)$. $1 + p \neq  1 \wedge 1 - p \neq  1$. $1 + p \neq -1 \vee 1 - p \neq -1$.
       Qed.
 
       We have a contradiction.
