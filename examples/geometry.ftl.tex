@@ -18,7 +18,9 @@
 \newcommand{\Betw}[3]{#1 #2 #3}
 \newcommand{\Col}[3]{\operatorname{Col}(#1, #2, #3)}
 \newcommand{\SenaryCong}[6]{#1 #2 #3 \equiv #4 #5 #6}
+\newcommand{\BetwFour}[4]{#1 #2 #3 #4}
 \newcommand{\BetwFive}[5]{#1 #2 #3 #4 #5}
+\newcommand{\BetwSix}[6]{#1 #2 #3 #4 #5 #6}
 \newcommand{\Leq}[4]{#1 #2 \leq #3 #4}
 \newcommand{\Geq}[4]{#1 #2 \geq #3 #4}
 \newcommand{\Less}[4]{#1 #2 < #3 #4}
@@ -766,6 +768,8 @@
     \end{proof}
   \end{forthel}
 
+  \chapter{Connexity of betweenness}
+
   Tarski's original axiomatization featured the following axiom.
   \begin{quotedaxiom}
     if $\Betw{x}{y}{w}$ and $\Betw{x}{z}{w}$
@@ -778,86 +782,80 @@
   %We have opted for adding them to improve proof-checking speed and readability of the text.
 
   \begin{forthel}
-    \begin{definition} %[C5o1a]
-      $\BetwFive{x}{y}{z}{r}{p}$ iff $\Betw{x}{y}{z}$ and
-      $\Betw{x}{y}{r}$ and
-      $\Betw{x}{y}{p}$ and
-      $\Betw{x}{z}{r}$ and
-      $\Betw{x}{z}{p}$ and
-      $\Betw{x}{r}{p}$ and
-      $\Betw{y}{z}{r}$ and
-      $\Betw{y}{z}{p}$ and
-      $\Betw{y}{r}{p}$ and
-      $\Betw{z}{r}{p}$.
+    \begin{definition}
+      $\BetwFour{a}{b}{c}{d}$ iff
+      $\Betw{a}{b}{c}$ and
+      $\Betw{a}{b}{d}$ and
+      $\Betw{a}{c}{d}$ and
+      $\Betw{b}{c}{d}$.
     \end{definition}
+
+    \begin{definition}
+      $\BetwFive{a}{b}{c}{d}{e}$ iff
+      $\Betw{a}{b}{c}$ and
+      $\Betw{a}{b}{d}$ and
+      $\Betw{a}{b}{e}$ and
+      $\Betw{a}{c}{d}$ and
+      $\Betw{a}{c}{e}$ and
+      $\Betw{a}{d}{e}$ and
+      $\Betw{b}{c}{d}$ and
+      $\Betw{b}{c}{e}$ and
+      $\Betw{b}{d}{e}$ and
+      $\Betw{c}{d}{e}$.
+    \end{definition}
+
+    \begin{lemma}[BetwThreeToFour] % Satz 3.12, specialized to $n = 3$ and $l = 1$.
+      If $\Betw{a}{b}{c}$ and $\Betw{a}{c}{d}$
+      then $\BetwFour{a}{b}{c}{d}$.
+    \end{lemma}
+
+    \begin{lemma}[BetwFourToFive] % Satz 3.12, specialized to $n = 4$ and $l = 1$.
+      If $\BetwFour{a}{b}{c}{d}$ and $\Betw{a}{d}{e}$
+      then $\BetwFive{a}{b}{c}{d}{e}$.
+    \end{lemma}
   \end{forthel}
 
-  The following predicates state the already proven statements for different positions in the proof.
-  They are not defined in \textit{SST}.
-  We use them because they seem to increase the performance of the proof assistant,
-  when checked just before the next proving step.
 
-  \begin{forthel}
-    \begin{definition} %[C5o1b]
-      $Th(x,y,z,r,p,q,g,h)$ iff $x \neq y$ and $x-y-z$ and $x-y-r$ and $x-r-p$ and $r-p : z-r$ and $x-z-q$ and $z-q : z-r$ and $z-q-h$ and $r-p-g$.
-    \end{definition}
+  % \begin{definition}
+  %   $\BetwSix{a}{b}{c}{d}{e}{f}$ iff
+  %   $\Betw{a}{b}{c}$ and
+  %   $\Betw{a}{b}{d}$ and
+  %   $\Betw{a}{b}{e}$ and
+  %   $\Betw{a}{b}{f}$ and
+  %   $\Betw{a}{c}{d}$ and
+  %   $\Betw{a}{c}{e}$ and
+  %   $\Betw{a}{c}{f}$ and
+  %   $\Betw{a}{d}{e}$ and
+  %   $\Betw{a}{d}{f}$ and
+  %   $\Betw{a}{e}{f}$ and
+  %   $\Betw{b}{c}{d}$ and
+  %   $\Betw{b}{c}{e}$ and
+  %   $\Betw{b}{c}{f}$ and
+  %   $\Betw{b}{d}{e}$ and
+  %   $\Betw{b}{d}{f}$ and
+  %   $\Betw{b}{e}{f}$ and
+  %   $\Betw{c}{d}{e}$ and
+  %   $\Betw{c}{d}{f}$ and
+  %   $\Betw{c}{e}{f}$ and
+  %   $\Betw{d}{e}{f}$.
+  % \end{definition}
+  %
+  % \begin{lemma}[BetwFiveToSix] % Satz 3.12, specialized to $n = 5$ and $l = 1$.
+  %   If $\BetwFive{a}{b}{c}{d}{e}$ and $\Betw{a}{e}{f}$
+  %   then $\BetwSix{a}{b}{c}{d}{e}{f}$. %and (if $a\neq e$ then $\BetwSix{a}{b}{c}{d}{e}{f}$).
+  % \end{lemma}
 
-    \begin{definition} %[C5o1c]
-      $Th2(x,y,z,r,p,q,g)$ iff $x \neq y$ and
-      $\BetwFive{x}{y}{z}{q}{g}$ and
-      $\BetwFive{x}{y}{r}{p}{g}$ and
-      $\Cong{r}{p}{z}{r}$ and
-      $\Cong{z}{q}{z}{r}$ and
-      $\Cong{y}{p}{g}{z}$ and
-      $\Cong{y}{g}{g}{y}$.
-    \end{definition}
 
-    % \begin{definition}[C5o1d]
-    %   $Th3(x,y,z,r,p,q,g,u)$ iff $Th2(x,y,z,r,p,q,g)$
-    %   and $\OFS{y}{z}{q}{p}{g}{p}{r}{z}$ and $p-q : z-r$ and $z-u-p$ and $r-u-q$
-    %   and $\IFS{r}{u}{q}{z}{r}{u}{q}{p}$
-    %   and $\IFS{z}{u}{p}{r}{z}{u}{p}{q}$
-    %   and $u-r : u-q$.
-    % \end{definition}
-
-    % \begin{definition}[C5o1e]
-    %   $Th4(x,y,z,r,p,q,g,u,v,w,h)$ iff
-    %   $Th3(x,y,z,r,p,q,g,u)$ and $z \neq p$ and $z \neq q$ and
-    %   $p-z-v$ and $z-v : z-q$ and $q-z-h$ and $z-h : z-u$ and $v-h-w$ and $h-w : h-v$.
-    % \end{definition}
-  \end{forthel}
 
   \begin{forthel}
     \begin{lemma} %[C5o1f]
-      Assume $x \neq y$ and $x-y-z$ and $x-y-r$. Then there exist points
-      $\fresha,\freshb$ such that $x-r-\fresha$ and $r-\fresha : z-r$ and $x-z-\freshb$ and $z-\freshb : z-r$.
+      Assume $x \neq y$ and $x-y-z$ and $x-y-r$.
+      Then there exist points $\fresha,\freshb$ such that $x-r-\fresha$ and $r-\fresha : z-r$ and $x-z-\freshb$ and $z-\freshb : z-r$.
     \end{lemma}
     \begin{proof}
       Take point $a$ such that $\Betw{x}{r}{a}$ and $\Cong{r}{a}{z}{r}$ (by A4).
       Take point $b$ such that $\Betw{x}{z}{b}$ and $\Cong{z}{b}{z}{r}$ (by A4).
     \end{proof}
-
-    \begin{axiom} %[C5o1g] (TODO)
-      If $Th(x,y,z,r,p,q,g,h)$ then
-      $\BetwFive{x}{y}{z}{q}{h}$ and
-      $\BetwFive{x}{y}{r}{p}{g}$.
-    \end{axiom}
-
-    \begin{axiom} %[C5o1h] (TODO)
-      Assume $Th(x,y,z,r,p,q,g,h)$ and
-      $\BetwFive{x}{y}{z}{q}{h}$ and
-      $\BetwFive{x}{y}{r}{p}{g}$. Then $y-p : h-z$.
-    \end{axiom}
-
-    \begin{axiom} %[C5o1i] (TODO)
-      Assume $Th2(x,y,z,r,p,q,g)$ and $\OFS{y}{z}{q}{p}{g}{p}{r}{z}$. Then $p-q : z-r$.
-    \end{axiom}
-
-    \begin{axiom} %[C5o1j] (TODO)
-      Assume $Th(x,y,z,r,p,q,g,h)$ and
-      $\BetwFive{x}{y}{z}{q}{h}$ and
-      $\BetwFive{x}{y}{r}{p}{g}$ and $y-p : h-z$. Then $y-g : h-y$.
-    \end{axiom}
 
 
 
@@ -869,13 +867,14 @@
       Assume $x \neq y$ and $x-y-z$ and $x-y-r$ and $x-r-p$ and $r-p : z-r$ and $x-z-q$ and $z-q : z-r$. Then there exist points $s,t$ such that $z-q-t$ and $r-p-s$.
     \end{lemma}
 
-    \begin{lemma} %[C5o1m]
-      Assume $Th2(x,y,z,r,p,q,g)$. Then $\OFS{y}{z}{q}{p}{g}{p}{r}{z}$.
-    \end{lemma}
+    %\begin{lemma} %[C5o1m]
+    %  Assume $Th2(x,y,z,r,p,q,g)$. Then $\OFS{y}{z}{q}{p}{g}{p}{r}{z}$.
+    %\end{lemma}
 
-    \begin{lemma} %[C5o1n]
-      Assume $Th2(x,y,z,r,p,q,g)$ and $\OFS{y}{z}{q}{p}{g}{p}{r}{z}$ and $p-q : z-r$. Then there exist $u$ such that $z-u-p$ and $r-u-q$.
-    \end{lemma}
+    %\begin{lemma} %[C5o1n]
+    %  Assume $Th2(x,y,z,r,p,q,g)$ and $\OFS{y}{z}{q}{p}{g}{p}{r}{z}$ and $p-q : z-r$.
+    %  Then there exist $u$ such that $z-u-p$ and $r-u-q$.
+    %\end{lemma}
 
     %\begin{axiom}[C5o1o]
     %  Assume $Th4(x,y,z,r,p,q,g,u,v,w,h)$.
@@ -951,28 +950,38 @@
     %	Assume $z = p$.
     %\end{proof}
 
-    \begin{axiom}(Gupta) % Satz 5.1 (TODO)
+    \begin{lemma}[Gupta] % Satz 5.1 (TODO)
       Assume $a \neq b$.
-      If $\Betw{a}{b}{c}$ and $\Betw{a}{b}{d}$
-      then $\Betw{a}{c}{d}$ or $\Betw{a}{d}{c}$.
-    \end{axiom}
-  \end{forthel}
+      Assume $\Betw{a}{b}{c}$ and $\Betw{a}{b}{d}$.
+      Then $\Betw{a}{c}{d}$ or $\Betw{a}{d}{c}$.
+    \end{lemma}
 
     \begin{proof}
-      Take $\cprime,\dprime$ such that
-      $\Betw{a}{d}{\cprime}$ and $\Cong{d}{\cprime}{c}{d}$ and
-      $\Betw{a}{c}{\dprime}$ and $\Cong{c}{\dprime}{c}{d}$.
+      Take a point $\cprime$ such that
+        $\Betw{a}{d}{\cprime}$ and $\Cong{d}{\cprime}{c}{d}$.
+      Take a point $\dprime$ such that
+        $\Betw{a}{c}{\dprime}$ and $\Cong{c}{\dprime}{c}{d}$.
       Then $c = \cprime$ or $d = \dprime$. % (by C5o1p).
       Proof.
-        Take points $\bprime,\bdoubleprime$ such that
-          $\Betw{c}{\dprime}{\bdoubleprime}$ and $\Betw{d}{\cprime}{\bprime}$.
-        % Then $Th(a,b,c,d,\cprime,\dprime,\bprime,\bdoubleprime)$.
-        Then
-          $\BetwFive{a}{b}{c}{\dprime}{\bdoubleprime}$ and
-          $\BetwFive{a}{b}{d}{\cprime}{\bprime}$.
+        We have $\BetwFour{a}{b}{c}{\dprime}$ (by BetwThreeToFour).
+        We have $\BetwFour{a}{b}{d}{\cprime}$ (by BetwThreeToFour).
+        %
+        Take a point $\bprime$ such that $\Betw{d}{\cprime}{\bprime}$ and $\Betw{a}{\cprime}{\bprime}$.
+        Take a point $\bdoubleprime$ such that $\Betw{c}{\dprime}{\bdoubleprime}$ and $\Betw{a}{\dprime}{\bdoubleprime}$.
+        %
+        Then $\Cong{d}{\cprime}{d}{c}$ and $\Cong{c}{\dprime}{c}{d}$.
+        %
+        Then $\BetwFive{a}{b}{c}{\dprime}{\bdoubleprime}$.
+        Then $\BetwFive{a}{b}{d}{\cprime}{\bprime}$.
+        %
+        % TODO: use Satz 2.11
+        %We have $\Cong{b}{\bdoubleprime}{\bdoubleprime}{b}$.
+        We have $\Cong{b}{\cprime}{\bdoubleprime}{b}$.
+        Thus $\bdoubleprime = b$.
       End.
       Therefore $\Betw{a}{c}{d}$ or $\Betw{a}{d}{c}$. %(by C5o1k).
     \end{proof}
+  \end{forthel}
 
   \begin{forthel}
     \begin{lemma} %[D5o2]
