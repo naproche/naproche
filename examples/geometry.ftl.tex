@@ -398,7 +398,7 @@
   \paragraph{Uniqueness for segment construction}\
 
   \begin{forthel}
-    \begin{lemma} % Satz 2.12
+    \begin{lemma}[UniqueConstruct] % Satz 2.12
       Assume $q \neq x$.
       Suppose $\Betw{q}{x}{v}$ and $\Cong{x}{v}{y}{z}$.
       Suppose $\Betw{q}{x}{w}$ and $\Cong{x}{w}{y}{z}$.
@@ -867,6 +867,13 @@
       Assume $x \neq y$ and $x-y-z$ and $x-y-r$ and $x-r-p$ and $r-p : z-r$ and $x-z-q$ and $z-q : z-r$. Then there exist points $s,t$ such that $z-q-t$ and $r-p-s$.
     \end{lemma}
 
+    % \begin{lemma}[SpecialUnqieConstruct]
+    %   Assum $a\neq b$.
+    %   Assume $\Betw{a}{b}{\bprime}$ and $\Betw{a}{b}{\bprime}$.
+    %   Assume $\Cong{b}{\bdoubleprime}{b}{\bprime}$.
+    %   Then $\bprime = \bdoubleprime$.
+    % \end{lemma}
+
     %\begin{lemma} %[C5o1m]
     %  Assume $Th2(x,y,z,r,p,q,g)$. Then $\OFS{y}{z}{q}{p}{g}{p}{r}{z}$.
     %\end{lemma}
@@ -962,22 +969,31 @@
       Take a point $\dprime$ such that
         $\Betw{a}{c}{\dprime}$ and $\Cong{c}{\dprime}{c}{d}$.
       Then $c = \cprime$ or $d = \dprime$. % (by C5o1p).
+
       Proof.
         We have $\BetwFour{a}{b}{c}{\dprime}$ (by BetwThreeToFour).
         We have $\BetwFour{a}{b}{d}{\cprime}$ (by BetwThreeToFour).
         %
-        Take a point $\bprime$ such that $\Betw{d}{\cprime}{\bprime}$ and $\Betw{a}{\cprime}{\bprime}$.
-        Take a point $\bdoubleprime$ such that $\Betw{c}{\dprime}{\bdoubleprime}$ and $\Betw{a}{\dprime}{\bdoubleprime}$.
-        %
-        Then $\Cong{d}{\cprime}{d}{c}$ and $\Cong{c}{\dprime}{c}{d}$.
+        Take a point $\bprime$ such that
+          %%% $\Betw{d}{\cprime}{\bprime}$ and  % No longer necessary.
+          $\Betw{a}{\cprime}{\bprime}$ and
+          $\Cong{\cprime}{\bprime}{c}{b}$ and
+          $\Cong{d}{\cprime}{\dprime}{c}$.
+        Take a point $\bdoubleprime$ such that
+          %%% $\Betw{c}{\dprime}{\bdoubleprime}$ and  % No longer necessary.
+          $\Betw{a}{\dprime}{\bdoubleprime}$ and
+          $\Cong{b}{d}{\dprime}{\bdoubleprime}$.
         %
         Then $\BetwFive{a}{b}{c}{\dprime}{\bdoubleprime}$.
         Then $\BetwFive{a}{b}{d}{\cprime}{\bprime}$.
+
         %
-        % TODO: use Satz 2.11
-        %We have $\Cong{b}{\bdoubleprime}{\bdoubleprime}{b}$.
-        We have $\Cong{b}{\cprime}{\bdoubleprime}{b}$.
-        Thus $\bdoubleprime = b$.
+        Thus $\Cong{b}{\cprime}{\bdoubleprime}{c}$.
+
+        Thus $\Cong{b}{\bprime}{\bdoubleprime}{b}$.
+
+        We have $\Betw{a}{b}{\bprime}$ and $\Betw{a}{b}{\bdoubleprime}$.
+        Thus $\bdoubleprime = \bprime$. % (by UniqueConstruct).
       End.
       Therefore $\Betw{a}{c}{d}$ or $\Betw{a}{d}{c}$. %(by C5o1k).
     \end{proof}
