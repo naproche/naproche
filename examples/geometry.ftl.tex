@@ -50,23 +50,29 @@
 \newcommand{\freshb}{b}
 \newcommand{\freshc}{c}
 
-\newcommand{\OFS}[8]{\operatorname{OFS}
-\left(\begin{smallmatrix}%
+\newcommand{\OFS}[8]{\operatorname{OFS}%
+\left(
+\begin{smallmatrix}%
 #1 & #2 & #3 & #4 \\
 #5 & #6 & #7 & #8
-\end{smallmatrix}\right)%
+\end{smallmatrix}%
+\right)%
 }
 \newcommand{\IFS}[8]{\operatorname{IFS}
-\left(\begin{smallmatrix}%
+\left(
+\begin{smallmatrix}%
 #1 & #2 & #3 & #4 \\
 #5 & #6 & #7 & #8
-\end{smallmatrix}\right)%
+\end{smallmatrix}
+\right)%
 }
 \newcommand{\FS}[8]{\operatorname{FS}
-\left(\begin{smallmatrix}%
+\left(
+  \begin{smallmatrix}%
 #1 & #2 & #3 & #4 \\
 #5 & #6 & #7 & #8
-\end{smallmatrix}\right)%
+\end{smallmatrix}
+\right)%
 }
 
 \title{Tarskian geometry}
@@ -968,7 +974,7 @@
         $\Betw{a}{d}{\cprime}$ and $\Cong{d}{\cprime}{c}{d}$.
       Take a point $\dprime$ such that
         $\Betw{a}{c}{\dprime}$ and $\Cong{c}{\dprime}{c}{d}$.
-      Then $c = \cprime$ or $d = \dprime$. % (by C5o1p).
+      Then $c = \cprime$ or $d = \dprime$.
 
       Proof.
         We have $\BetwFour{a}{b}{c}{\dprime}$ (by BetwThreeToFour).
@@ -994,6 +1000,20 @@
 
         We have $\Betw{a}{b}{\bprime}$ and $\Betw{a}{b}{\bdoubleprime}$.
         Thus $\bdoubleprime = \bprime$. % (by UniqueConstruct).
+
+        We have $\OFS{b}{c}{\dprime}{\cprime}{\bprime}{\cprime}{d}{c}$.
+        Thus $\Cong{\cprime}{\dprime}{c}{d}$.
+
+        Take a point $e$ such that
+          $\Betw{c}{e}{\cprime}$ and $\Betw{d}{e}{\dprime}$.
+        Then $\IFS{d}{e}{\dprime}{c}{d}{e}{\dprime}{\cprime}$
+        and $\IFS{c}{e}{\cprime}{d}{c}{e}{\cprime}{\dprime}$.
+        Thus $\Cong{e}{c}{e}{\cprime}$ and $\Cong{e}{d}{e}{\dprime}$.
+
+        Case $c \neq \cprime$.
+          We have $c\neq \dprime$.
+          % (TODO)
+        End.
       End.
       Therefore $\Betw{a}{c}{d}$ or $\Betw{a}{d}{c}$. %(by C5o1k).
     \end{proof}
