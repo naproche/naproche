@@ -63,7 +63,7 @@ X +' Y is a set such that for every element z (z << X +' Y) iff there exist
 x << X, y << Y such that z = x + y.
 
 Definition DefSInt.
-X ** Y is a set such that for every element z (z << X +' Y) iff z << X
+X ** Y is a set such that for every element z (z << X ** Y) iff z << X
 and z << Y.
 
 [synonym ideal/-s]
@@ -98,6 +98,11 @@ qed.
 
 
 Lemma IdeInt.  I ** J is an ideal (by DefIdeal).
+Proof.
+Let x belong to I ** J.
+forall y << (I ** J) (x + y) << (I ** J).
+For every element z (z * x) << (I** J).
+qed.
 
 Definition DefMod.  x = y (mod I)  iff  x - y << I.
 
@@ -112,11 +117,13 @@ Let us show that w = x (mod I) and w = y (mod J).
     proof.
         w - x = (y * a) + ((x * b) - x).
         x * (b - 1) belongs to I.
+        x * (b - 1) = (x * b) - x.
         end.
     w - y belongs to J.
     proof.
         w - y = (x * b) + ((y * a) - y).
         y * (a - 1) belongs to J.
+        y * (a - 1) = (y * a) - y.
         end.
     end.
 qed.
