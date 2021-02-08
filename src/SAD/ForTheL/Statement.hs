@@ -435,7 +435,7 @@ set = label "set definition" $ symbSet <|> classOf
       tokenOf' ["class", "classes"]; nm <- var -|- hidden; token' "of";
       (q, f, u) <- notion >>= single; vnm <- hidden
       vnmDecl <- makeDecl vnm;
-      return (id, setFormula mkSet vnmDecl $ (subst (pVar vnm) (posVarName u) $ q f) `blAnd` mkSmall (pVar vnm) , Set.singleton nm)
+      return (id, setFormula mkClass vnmDecl $ (subst (pVar vnm) (posVarName u) $ q f) `blAnd` mkSmall (pVar vnm) , Set.singleton nm)
     symbSet = do
       (cnd, (nm, mkColl)) <- symbSetNotation; h <- hidden
       nmDecl <- makeDecl nm
