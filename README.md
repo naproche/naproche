@@ -41,7 +41,7 @@ The subsequent explanations are for **development** of the tool, not for end-use
   It may be necessary to allow the E Prover more time by appending "-t SECONDS"
 
 
-## Isabelle Prover IDE (Isabelle/jEdit)
+## Isabelle/Naproche Prover IDE
 ### Isabelle repository setup
 
   * Isabelle repository clone from https://isabelle.sketis.net/repos/isabelle-release
@@ -50,7 +50,7 @@ The subsequent explanations are for **development** of the tool, not for end-use
   * Initialize fresh clone:
 
         hg clone https://isabelle.sketis.net/repos/isabelle-release
-        hg update -r d300574cee4e
+        hg update -r Isabelle2021-RC5
         isabelle/bin/isabelle components -I
         isabelle/bin/isabelle components -a
         isabelle/bin/isabelle jedit -b
@@ -58,7 +58,7 @@ The subsequent explanations are for **development** of the tool, not for end-use
   * Update existing clone:
 
         hg pull https://isabelle.sketis.net/repos/isabelle-release
-        hg update -r d300574cee4e
+        hg update -r Isabelle2021-RC5
         isabelle/bin/isabelle components -a
 
 
@@ -106,40 +106,6 @@ The subsequent explanations are for **development** of the tool, not for end-use
 * Open Isabelle development environment with ForTheL examples, e.g.
 
         isabelle jedit -l Pure Isabelle/Test.thy
-
-
-### Multi-platform application bundling (with Isabelle)
-
-  * Linux build host, e.g. Ubuntu 18.04 LTS with the following packages:
-      - curl
-      - mercurial
-      - p7zip-full
-      - texlive-fonts-extra
-      - texlive-font-utils
-      - texlive-latex-extra
-      - texlive-science
-
-  * Standard Isabelle repository clone:
-
-        hg clone https://isabelle.sketis.net/repos/isabelle-release
-        hg update -r d300574cee4e
-        isabelle/bin/isabelle components -I
-        isabelle/bin/isabelle components -a
-        isabelle/bin/isabelle jedit -b
-
-    optional tests, notably of LaTeX packages:
-
-        isabelle/bin/isabelle build Pure
-        isabelle/bin/isabelle build -g doc -R -b
-        isabelle/bin/isabelle build -g doc -o document=pdf
-
-  * Isabelle/Naproche component, e.g.:
-
-        curl -o naproche-20200303.tar.gz -L https://github.com/Naproche/Naproche-SAD/releases/download/20200303/naproche-20200303.tar.gz
-
-  * Application bundling, e.g. Isabelle/61882acca79b + naproche-20200303:
-
-        isabelle/Admin/build_release -r 61882acca79b -c naproche-20200303.tar.gz -b Pure -R Isabelle_Naproche-20200303 -O -W dist/website dist
 
 
 ## Reference ##
