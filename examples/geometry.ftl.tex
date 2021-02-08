@@ -901,7 +901,7 @@
   \end{tikzpicture}
 
   \begin{forthel}
-    \begin{lemma}[Gupta] % Satz 5.1 (TODO)
+    \begin{lemma}[Gupta] % Satz 5.1
       Assume $a \neq b$.
       Assume $\Betw{a}{b}{c}$ and $\Betw{a}{b}{d}$.
       Then $\Betw{a}{c}{d}$ or $\Betw{a}{d}{c}$.
@@ -1011,7 +1011,7 @@
 
   \begin{forthel}
     \begin{definition} % Definition 5.4 (first part)
-      $\Leq{v}{w}{p}{q}$ iff there exists $x$ such that $\Betw{p}{x}{q}$ and $\Cong{v}{w}{p}{x}$.
+      $\Leq{a}{b}{c}{d}$ iff there exists $x$ such that $\Betw{c}{x}{d}$ and $\Cong{a}{b}{c}{x}$.
     \end{definition}
 
     \begin{definition} % Definition 5.4 (second part)
@@ -1022,9 +1022,35 @@
   Conversely, we can say that a segment $vw$ is smaller than $pq$ whenever we can extend $vw$
   to a segment of the length $pq$.
 
-    \begin{axiom} % Satz 5.5 (TODO)
-      $\Leq{v}{w}{p}{q}$ iff there exists $x$ such that $\Betw{v}{w}{x}$ and $\Cong{v}{x}{p}{q}$.
+  \begin{forthel}
+    \begin{lemma} % Satz 5.5 (first part)
+      Assume $\Leq{a}{b}{c}{d}$.
+      Then there exists $x$ such that $\Betw{a}{b}{x}$ and $\Cong{a}{x}{c}{d}$.
+    \end{lemma}
+    \begin{proof}
+        Take $y$ such that $\Betw{c}{y}{d}$ and $\Cong{a}{b}{c}{y}$.
+        Take $x$ such that $\Betw{a}{b}{x}$ and $\Cong{b}{x}{y}{d}$.
+        Then $\Cong{a}{x}{c}{d}$.
+    \end{proof}
+
+    \begin{axiom} % TODO
+      Assume $\Betw{a}{b}{x}$.
+      Assume $\Cong{a}{x}{c}{d}$.
+      Then there exists $y$ such that $\Betw{c}{y}{d}$ and $\Cong{b}{x}{y}{d}$.
     \end{axiom}
+
+    \begin{lemma} % Satz 5.5 (second part)
+      Assume there exists $x$ such that $\Betw{a}{b}{x}$ and $\Cong{a}{x}{c}{d}$.
+      Then $\Leq{a}{b}{c}{d}$.
+    \end{lemma}
+    \begin{proof}
+      Take $x$ such that $\Betw{a}{b}{x}$ and $\Cong{a}{x}{c}{d}$.
+      Take $y$ such that $\Betw{c}{y}{d}$ and $\Cong{b}{x}{y}{d}$.
+      Then $\Cong{a}{b}{c}{y}$.
+    \end{proof}
+  \end{forthel}
+
+
 
   \begin{forthel}
     % TODO Takes a bit of time, but works without proof.
