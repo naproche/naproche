@@ -1006,8 +1006,23 @@
 
   \subsection{Comparing segments}
 
-  Intuitively, a segment $pq$ is larger than a segment $vw$ whenever we can find a subsegment
-  of $pq$ of the same length as $vw$.
+  Intuitively, a segment $ab$ is smaller than a segment $cd$ whenever we can find a subsegment $cx$
+  of $cd$ of the same length as $ab$.
+
+  \begin{tikzpicture}
+    % Points
+    \tkzDefPoint(0,1){a}
+    \tkzDefPoint(2,1){b}
+    \tkzDefPoint(2,0){x}
+    \tkzDefPoint(0,0){c}
+    \tkzDefPoint(3,0){d}
+    % Drawing
+    \tkzDrawPoints(a,b,x,c,d)
+    \tkzDrawSegments(a,b c,d)
+    \tkzDrawSegments[dashed](a,c b,x)
+    % Labels
+    \tkzLabelPoints[above right](a,b,c,d,x)
+  \end{tikzpicture}
 
   \begin{forthel}
     \begin{definition} % Definition 5.4 (first part)
@@ -1019,8 +1034,23 @@
     \end{definition}
   \end{forthel}
 
-  Conversely, we can say that a segment $vw$ is smaller than $pq$ whenever we can extend $vw$
-  to a segment of the length $pq$.
+  Alternatively, we can say that a segment $ab$ is smaller than $cd$ whenever we can extend $ab$
+  to a segment $ax$ of the length $cd$.
+
+  \begin{tikzpicture}
+    % Points
+    \tkzDefPoint(0,1){a}
+    \tkzDefPoint(2,1){b}
+    \tkzDefPoint(3,1){x}
+    \tkzDefPoint(0,0){c}
+    \tkzDefPoint(3,0){d}
+    % Drawing
+    \tkzDrawPoints(a,b,x,c,d)
+    \tkzDrawSegments(a,b c,d)
+    \tkzDrawSegments[dashed](a,c b,x d,x)
+    % Labels
+    \tkzLabelPoints[above right](a,b, c,d, x)
+  \end{tikzpicture}
 
   \begin{forthel}
     \begin{lemma} % Satz 5.5 (first part)
