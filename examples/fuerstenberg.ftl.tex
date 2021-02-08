@@ -22,7 +22,9 @@
 
   \section{Integers}
 
-  First we introduce the integers $\Int$ as an integral domain. We take two constants, $0$ and $1$, a unary operation $-$ and two binary operations $+$ and $\cdot$.
+  The central idea of Fürstenberg's proof is to define a certain topology on $\Int$ whose properties ensure that the set of primes is infinite. So first we have to introduce the ring $\Int$ of integers. In fact we do not need to give a full axiomatization of integer arithmetic; it suffices to assume that $\Int$ is an integral domain.
+
+  Let us start by introducing the signature the ring of integers.
 
   \begin{forthel}
     [unfoldlow on]
@@ -262,6 +264,8 @@
 
   \section{Introducing topology}
 
+  In our next step towards a suitable topology on $\Int$ let us define arithmetic sequences, i.e. sets of the form $q \Int + a$.
+
   \begin{forthel}
     \begin{definition}[ArSeq]
       $q \Int + a = \{ "integer" b \mid b = a ~(\mod q) \}$.
@@ -280,7 +284,7 @@
     \end{definition}
   \end{forthel}
 
-  Note that we have declared $q$ as a \textit{non-zero} integer. Otherwise every set $A$ would be open because $0 \Int + a = \emptyset \subseteq A$ for every $a \in A$.
+  Note that we have declared $q$ as a \textit{non-zero} integer. Otherwise every set $A$ would be open since $0 \Int + a = \emptyset \subseteq A$ for every $a \in A$.
 
   \begin{forthel}
     \begin{definition}[Closed]
