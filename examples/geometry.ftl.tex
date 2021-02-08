@@ -1,5 +1,5 @@
 % !TeX spellcheck = en_GB-oed
-\documentclass[10pt,a4paper,parskip=half,numbers=endperiod,headings=standardclasses,parskip]{scrbook}
+\documentclass[10pt,a4paper,parskip=half,numbers=endperiod,headings=standardclasses,parskip]{scrartcl}
 
 \usepackage{stix2}
 \usepackage{tkz-euclide}
@@ -82,18 +82,19 @@
 \begin{document}
   \maketitle
 
-  This is a formalization of the beginnings of Tarskian geometry,
-  mainly following the book
-  \textit{Metamathematische Methoden in der Geometrie}
-  by Schwabhäuser, Szmielew and Tarski.
-  We refer to this book as \textit{SST} in later comments.
+  \begin{abstract}
+    We present a formalization of the beginnings of Tarskian geometry,
+    mainly following %the book
+    \textit{Metamathematische Methoden in der Geometrie}
+    by Schwabhäuser, Szmielew, and Tarski (\textit{SST}).
+  \end{abstract}
 
 
   \tableofcontents
 
-  \chapter{Beginnings of Tarskian geometry}
+  \section{Beginnings of Tarskian geometry}
 
-  \section{The language of Tarskian geometry}
+  \subsection{The language of Tarskian geometry}
 
   The only objects under consideration are \textit{points}.
   They are subject to two primitive relations:
@@ -536,13 +537,12 @@
   \end{forthel}
 
 
-  This is definition 4.1 in \textit{SST}.
-  We say that the points $x,y,z,r,u,v,w,p$ are
+  We say that the points $a,b,c,d,a',b',c',d'$ are
   in an inner five-segment-configuration
-  whenever $\IFS{x}{y}{z}{r}{u}{v}{w}{p}$.
+  whenever $\IFS{a}{b}{c}{d}{a'}{b'}{c'}{d'}$.
 
   \begin{forthel}
-    \begin{definition}
+    \begin{definition} % Definition 4.1 in SST
       $\IFS{x}{y}{z}{r}{v}{w}{p}{q}$ iff
       $\Betw{x}{y}{z}$ and $\Betw{v}{w}{p}$
       and $\Cong{x}{z}{v}{p}$ and $\Cong{y}{z}{w}{p}$
@@ -774,7 +774,7 @@
     \end{proof}
   \end{forthel}
 
-  \chapter{Connexity of betweenness}
+  \section{Connexity of betweenness}
 
   Tarski's original axiomatization featured the following axiom.
   \begin{quotedaxiom}
@@ -864,50 +864,23 @@
     \end{proof}
 
 
-
-    \begin{lemma} %[C5o1k]
-      Assume $x \neq y$ and $x-y-z$ and $x-y-r$ and $x-r-p$ and $r-p : z-r$ and $x-z-q$ and $z-q : z-r$ and ($z = p$ or $r = q$). Then $x-z-r$ or $x-r-z$.
-    \end{lemma}
+    %\begin{lemma} %[C5o1k]
+    %   Assume $x \neq y$ and $x-y-z$ and $x-y-r$ and $x-r-p$ and $r-p : z-r$ and
+    %   $x-z-q$ and $z-q : z-r$ and ($z = p$ or $r = q$). Then $x-z-r$ or $x-r-z$.
+    % \end{lemma}
 
     \begin{lemma} %[C5o1l]
-      Assume $x \neq y$ and $x-y-z$ and $x-y-r$ and $x-r-p$ and $r-p : z-r$ and $x-z-q$ and $z-q : z-r$. Then there exist points $s,t$ such that $z-q-t$ and $r-p-s$.
+      Assume $x \neq y$ and $x-y-z$ and $x-y-r$ and $x-r-p$ and $r-p : z-r$ and
+      $x-z-q$ and $z-q : z-r$. Then there exist points $s,t$ such that $z-q-t$ and $r-p-s$.
     \end{lemma}
 
-    % \begin{lemma}[SpecialUnqieConstruct]
+    % \begin{lemma}[SpecialCaseUniqueConstruct]
     %   Assum $a\neq b$.
     %   Assume $\Betw{a}{b}{\bprime}$ and $\Betw{a}{b}{\bprime}$.
     %   Assume $\Cong{b}{\bdoubleprime}{b}{\bprime}$.
     %   Then $\bprime = \bdoubleprime$.
     % \end{lemma}
-
-    %\begin{lemma} %[C5o1m]
-    %  Assume $Th2(x,y,z,r,p,q,g)$. Then $\OFS{y}{z}{q}{p}{g}{p}{r}{z}$.
-    %\end{lemma}
-
-    %\begin{lemma} %[C5o1n]
-    %  Assume $Th2(x,y,z,r,p,q,g)$ and $\OFS{y}{z}{q}{p}{g}{p}{r}{z}$ and $p-q : z-r$.
-    %  Then there exist $u$ such that $z-u-p$ and $r-u-q$.
-    %\end{lemma}
-
-    %\begin{axiom}[C5o1o]
-    %  Assume $Th4(x,y,z,r,p,q,g,u,v,w,h)$.
-    %  Then $\OFS{q}{z}{h}{v}{v}{z}{u}{q}$ and $h-v : u-q$ and $h-w : u-r$
-    %  and $\OFS{q}{u}{r}{z}{v}{h}{w}{z}$ and $q-r : v-w$ and $z-w : z-r$ and $z-v : z-w$.
-    %\end{axiom}
-    %\begin{proof}
-    %  $\OFS{q}{z}{h}{v}{v}{z}{u}{q}$. Hence $h-v : u-q$.
-    %  Hence $h-w : u-r$. % TODO: this step is slow.
-    %	Therefore $\OFS{q}{u}{r}{z}{v}{h}{w}{z}$. Hence $q-r : v-w$. If $q \neq u$ then $z-w : z-r$.
-    %  If $q = u$ then $q = r$. % TODO: this step is slow.
-    % 	Then $v = w$. Therefore $z-w : z-r$. Hence $z-v : z-w$.
-    % \end{proof}
   \end{forthel}
-
-  % The idea for proving lemma C5o1 is to extend the line $xz$ and $xr$
-  % through two points $p,q$ such that $r-p : %z-r$ and $z-q : z-r$.
-  % Then one can easy see that if one of $z = p$ or $r = q$, $x-y-z$ or $x-z-y$ must holds.
-  % The following lemma shows that if there exist such points $p$ and $q$ then $z = p$ or $r = q$ must hold.
-  % To see that such points exist one has to use axiom A4 twice.
 
   \begin{tikzpicture}
     % Definitions:
@@ -928,41 +901,6 @@
   \end{tikzpicture}
 
   \begin{forthel}
-    %\begin{lemma}[C5o1p]
-    %  Assume $x \neq y$ and $x-y-z$ and $x-y-r$ and $x-r-p$ and $r-p : z-r$ and $x-z-q$ and $z-q : z-r$.
-    % Then $z = p$ or $r = q$.
-    %\end{lemma}
-    %\begin{proof}
-    %	Take points $s,t$ such that $z-q-t$ and $r-p-s$.
-    %	Then $Th(x,y,z,r,p,q,s,t)$.
-    %	Then $\BetwFive{x}{y}{z}{q}{t}$ and $\BetwFive{x}{y}{r}{p}{s}$.
-    %	Then $y-p : t-z$.
-    %	Then $y-t : t-y$.
-    %	Then $s = t$.
-    %	Then $Th2(x,y,z,r,p,q,s)$.
-    %	Then $\OFS{y}{z}{q}{p}{s}{p}{r}{z}$.
-    %	Then $p-q : z-r$.
-    %	Take $u$ such that $z-u-p$ and $r-u-q$ (by C5o1n).
-    %	Then $\IFS{r}{u}{q}{z}{r}{u}{q}{p}$.
-    %	Then $\IFS{z}{u}{p}{r}{z}{u}{p}{q}$.
-    %	Then $u-z : u-p$.
-    %	Then $u-r : u-q$.
-    %	Assume $z \neq p$. Then $z \neq q$.
-    %		Take $v$ such that $p-z-v$ and $z-v : z-q$.
-    %		Take $h$ such that $q-z-h$ and $z-h : z-u$.
-    %		Take $w$ such that $v-h-w$ and $h-w : h-v$.
-    %    Then $\OFS{q}{z}{h}{v}{v}{z}{u}{q}$
-    %    and $h-v : u-q$ and $h-w : u-r$
-    %    and $\OFS{q}{u}{r}{z}{v}{h}{w}{z}$
-    %    and $q-r : v-w$ and $z-w : z-r$ and $z-v : z-w$. %(by C5o1o).
-    %		Then $h-v : h-w$. $z \neq p$. Hence $h \neq z$. $\Col{h}{z}{q}$. Therefore $q-v : q-w$.
-    %		Then $z-v : z-w$. $z \neq q$. $\Col{z}{q}{y}$. Therefore $y-v : y-w$.
-    %		Then $z-v : z-w$. $z \neq q$. $\Col{z}{q}{s}$. Therefore $s-v : s-w$.
-    %		Then $y \neq s$.
-    %		Then $q = r$.
-    %	Assume $z = p$.
-    %\end{proof}
-
     \begin{lemma}[Gupta] % Satz 5.1 (TODO)
       Assume $a \neq b$.
       Assume $\Betw{a}{b}{c}$ and $\Betw{a}{b}{d}$.
@@ -1089,7 +1027,7 @@
     \end{axiom}
 
   \begin{forthel}
-    % Takes a bit of time, but works without proof.
+    % TODO Takes a bit of time, but works without proof.
     \begin{lemma}[LessCongLeft] % Satz 5.6 (first part)
       If $\Leq{p}{q}{v}{w}$ and $\Cong{p}{q}{x}{y}$
       then $\Leq{x}{y}{v}{w}$.
@@ -1141,7 +1079,7 @@
 
 
 
-  \section{Rays and lines}
+  \subsection{Rays and lines}
 
   \begin{forthel}
     \begin{definition}
@@ -1162,7 +1100,7 @@
   \end{forthel}
 
   \appendix
-  \chapter*{Bibliography}
+  \section*{Bibliography}
 
   Michael Beeson, Larry Wos (2017)
   \\ \textit{Finding proofs in Tarskian geometry}
