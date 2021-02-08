@@ -1083,43 +1083,65 @@
 
 
   \begin{forthel}
-    % TODO Takes a bit of time, but works without proof.
     \begin{lemma}[LessCongLeft] % Satz 5.6 (first part)
-      If $\Leq{p}{q}{v}{w}$ and $\Cong{p}{q}{x}{y}$
-      then $\Leq{x}{y}{v}{w}$.
+      Assume $\Leq{a}{b}{c}{d}$ and $\Cong{a}{b}{p}{q}$.
+      Then $\Leq{p}{q}{c}{d}$.
     \end{lemma}
+    \begin{proof}
+      Take $x$ such that $\Betw{c}{x}{d}$ and $\Cong{a}{b}{c}{x}$.
+    \end{proof}
 
-    % Takes a bit of time, but works without proof. (TODO might be a bit too unstable.)
     \begin{lemma}[LessCongRight] % Satz 5.6 (second part)
-      If $\Leq{p}{q}{v}{w}$ and $\Cong{v}{w}{x}{y}$
-      then $\Leq{p}{q}{x}{y}$.
+      Assume $\Leq{a}{b}{c}{d}$ and $\Cong{c}{d}{p}{q}$.
+      Then $\Leq{a}{b}{p}{q}$.
     \end{lemma}
+    \begin{proof}
+      Take $x$ such that $\Betw{a}{b}{x}$ and $\Cong{a}{x}{c}{d}$.
+    \end{proof}
 
     \begin{lemma}[LessReflexivity] % Satz 5.7
-      For all points $x, y$ we have $\Leq{x}{y}{x}{y}$.
+      For all points $a, b$ we have $\Leq{a}{b}{a}{b}$.
     \end{lemma}
 
-    % Takes a bit of time, but works without proof. SST has a proof sketch for this.
-    \begin{lemma}[LessTransitivity] % 5.8
-      If $\Leq{p}{q}{v}{w}$ and $\Leq{v}{w}{x}{y}$ then $\Leq{p}{q}{x}{y}$.
+    \begin{lemma}[LessTransitivity] % Satz 5.8
+      Assume $\Leq{a}{b}{c}{d}$ and $\Leq{c}{d}{e}{f}$.
+      Then $\Leq{a}{b}{c}{d}$.
     \end{lemma}
+    \begin{proof}
+      Take $x$ such that $\Betw{a}{b}{x}$ and $\Cong{a}{x}{c}{d}$.
+      Take $y$ such that $\Betw{c}{d}{y}$ and $\Cong{c}{y}{e}{f}$.
+    \end{proof}
 
-    \begin{axiom}[LessClamp] % Satz 5.9 (TODO)
-      If $\Leq{p}{q}{x}{y}$ and $\Leq{x}{y}{p}{q}$ then $\Cong{p}{q}{x}{y}$.
-    \end{axiom}
+    \begin{lemma}[LessClamp] % Satz 5.9
+      Assume $\Leq{a}{b}{c}{d}$ and $\Leq{c}{d}{a}{b}$.
+      Then $\Cong{a}{b}{c}{d}$.
+    \end{lemma}
+    \begin{proof}
+      Take $x$ such that $\Betw{c}{x}{d}$ and $\Cong{a}{b}{c}{x}$.
+      Take $y$ such that $\Betw{c}{d}{y}$ and $\Cong{a}{b}{c}{y}$.
+      Then $\Cong{c}{x}{c}{y}$. Thus $x = d = y$.
+    \end{proof}
 
     \begin{axiom}[LessConnex] % Satz 5.10 (TODO)
-      For all points $p, q, x, y$ we have $\Leq{p}{q}{x}{y}$ or $\Leq{x}{y}{p}{q}$.
+      Let $a, b, c, d$ be points.
+      Then $\Leq{a}{b}{c}{d}$ or $\Leq{c}{d}{a}{b}$.
     \end{axiom}
 
     \begin{lemma} % Satz 5.11
-      For all points $x, y, z$ we have $\Leq{x}{x}{y}{z}$.
+      For all points $a, b, c$ we have $\Leq{a}{a}{b}{c}$.
     \end{lemma}
 
-    \begin{axiom} % Satz 5.12 (TODO)
-      Assume that $x$ is collinear with $y$ and $z$.
-      Then $\Betw{x}{y}{z}$ iff $\Leq{x}{y}{x}{z}$ or $\Leq{y}{z}{x}{z}$.
-    \end{axiom}
+    \begin{lemma} % Satz 5.12 (first part) (MAYBE a bit slow)
+      Assume that $a$ is collinear with $b$ and $c$.
+      Assume $\Betw{a}{b}{c}$.
+      Then $\Leq{a}{b}{a}{c}$ and $\Leq{b}{c}{a}{c}$.
+    \end{lemma}
+
+    \begin{lemma} % Satz 5.12 (second part) (TODO)
+      Assume that $a$ is collinear with $b$ and $c$.
+      Assume $\Leq{a}{b}{a}{c}$ and $\Leq{b}{c}{a}{c}$.
+      Then $\Betw{a}{b}{c}$.
+    \end{lemma}
   \end{forthel}
 
 
