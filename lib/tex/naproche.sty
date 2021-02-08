@@ -10,7 +10,7 @@
 \newtheoremstyle{formalized}% name of the style to be used
     {4pt}% measure of space to leave above the theorem. E.g.: 3pt
     {4pt}% measure of space to leave below the theorem. E.g.: 3pt
-    {\mdseries} % name of font to use in the body of the theorem
+    {\normalfont} % name of font to use in the body of the theorem
     {0pt}% measure of space to indent
     {\bfseries}% name of head font
     {}% punctuation between head and body
@@ -125,6 +125,13 @@ boxrule=0pt,boxsep=0pt,breakable}
 }
 \DeclareOption{noquoteworkaround}{%
   \catcode`\"=12
+}
+\DeclareOption{unmarked}{%
+  \renewenvironment{forthel}{%
+    \setbool{forthel}{true}%
+  }{%
+    \setbool{forthel}{false}%
+  }
 }
 \DeclareOption*{\PackageWarning{naproche}{Unknown ‘\CurrentOption’}}
 \ProcessOptions\relax

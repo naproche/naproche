@@ -45,8 +45,7 @@ For XeTeX/LuaTex use
 ```TeX
 \documentclass{article}
 
-\usepackage{polyglossia}
-\defaultlanguage[variant=british]{english}
+\usepackage[british]{babel}
 \usepackage{stix2}
 \usepackage[type={CC},modifier={zero},version={1.0},imagemodifier=-80x15]{doclicense}
 
