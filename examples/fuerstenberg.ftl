@@ -142,7 +142,7 @@ Lemma.
 Definition ArSeq.   ArSeq(a,q) = { integer b | b = a (mod q) }.
 Lemma. ArSeq(a, q) is a set.
 
-Definition Open.    A is open iff for any a << A
+Definition Open.    A is open iff A = INT or for any a << A
                         there exists q such that ArSeq(a,q) [= A.
 
 Definition Closed.  A is closed iff ~A is open.

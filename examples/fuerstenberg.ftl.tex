@@ -276,7 +276,7 @@
 
   \begin{forthel}
     \begin{definition}[Open]
-      $A$ is open iff for any $a \in A$ there exists $q$ such that $q \Int + a \subseteq A$.
+      $A$ is open iff $A = \Int$ or for any $a \in A$ there exists $q$ such that $q \Int + a \subseteq A$.
     \end{definition}
   \end{forthel}
 
@@ -337,8 +337,6 @@
   \end{forthel}
 
   This characterization allows us to prove that a family $S$ of closed sets is infinite by exploiting that the assumption that $S$ is finite yields that $\bigcup S$ is closed which eventually ends up in a contradiction. In Fürstenberg's proof we will use this method to show that the family $\{ r \Int \mid r \text{ is prime} \}$ is infinite. To use the above argument we thus have to prove that any $q \Int + a$ is closed.
-
-  \paragraph{} Note that it is crucial that we require our ring to be non-trivial. Otherwise let $S$ be the empty set. We claim that $\bigcup S$ is not closed. For if $\bigcup S = \emptyset$ would be closed then $\overline{\bigcup S} = \{ 0 \}$ would be open. Thus by \textit{Open} there would be a non-zero element $q$ such that $q \Int + 0 \subseteq \{ 0 \}$. But since our ring is trivial there is no non-zero element. So $\bigcup S$ is indeed not closed. Thus by \textit{UnionSClosed} $S$ must be infinite. But since $S$ is the empty set we have a serious contradiction to our general notion of infinity.
 
   \begin{forthel}
     \begin{lemma}[ArSeqClosed]
