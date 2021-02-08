@@ -71,13 +71,28 @@ The subsequent explanations are for **development** of the tool, not for end-use
 
         isabelle components -u .../Naproche-SAD
 
-### Isabelle build and test
+### Isabelle build
 
   * Shutdown Isabelle/jEdit before building Isabelle/Naproche as follows:
 
         isabelle naproche_build
 
-        isabelle naproche_test
+  * Run some tests as follows:
+
+        isabelle naproche_build && isabelle naproche_test
+
+  * Package the Isabelle/Naproche component as follows:
+
+        isabelle naproche_build && isabelle naproche_component
+
+    The result is for the current repository version, and the underlying
+    HW + OS platform. The following reference platforms (x86_64) are
+    used for Isabelle2021:
+
+      - Linux: Ubuntu 16.04 LTS
+      - macOS: Mac OS X 10.13 Yosemite
+      - Windows: Windows 10
+
 
 
 ### Use Isabelle Prover IDE
@@ -91,13 +106,6 @@ The subsequent explanations are for **development** of the tool, not for end-use
 * Open Isabelle development environment with ForTheL examples, e.g.
 
         isabelle jedit -l Pure Isabelle/Test.thy
-
-
-### Reference versions for multi-platform executables (x86_64):
-
-  * Linux: Ubuntu 16.04 LTS
-  * macOS: Mac OS X 10.13 Yosemite
-  * Windows: Windows 10
 
 
 ### Multi-platform application bundling (with Isabelle)
