@@ -72,6 +72,7 @@ data Limit =
 data Flag =
     Prove          --  prove goals (yes)
   | Check          --  look for applicable definitions (yes)
+  | CheckConsistency --  check that no contradictory axioms occur (yes)
   | Symsign        --  rename symbols with diverging defs (yes)
   | Info           --  accumulate evidences (yes)
   | Thesis         --  modify thesis (yes)
@@ -165,6 +166,7 @@ keywordsFlag :: [(Flag, Text)]
 keywordsFlag =
  [(Prove, "prove"),
   (Check, "check"),
+  (CheckConsistency, "checkconsistency"),
   (Symsign, "symsign"),
   (Info, "info"),
   (Thesis, "thesis"),
