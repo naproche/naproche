@@ -15,7 +15,10 @@ Let x belongs to S denote (x is an element of S).
 Definition DefEmpty.    S is empty iff S has no elements.
 
 Definition DefSub.
-    A subset of S is a set T such that every (x << T) belongs to S.
+    A subset of S is a class T such that every (x << T) belongs to S.
+
+Axiom. Let C be a subset of T.
+  Then C is a set.
 
 Let S (= T denote S is a subset of T.
 
@@ -78,7 +81,6 @@ Definition DefFix.
 Definition DefMonot.
     f is monotone iff for all x,y << Dom(f)
         x <= y  =>  f(x) <= f(y).
-
 
 Theorem Tarski.
     Let U be a complete lattice and f be an monotone function on U.
