@@ -41,7 +41,7 @@ The subsequent explanations are for **development** of the tool, not for end-use
   It may be necessary to allow the E Prover more time by appending "-t SECONDS"
 
 
-## Isabelle Prover IDE (Isabelle/jEdit)
+## Isabelle/Naproche Prover IDE
 ### Isabelle repository setup
 
   * Isabelle repository clone from https://isabelle.sketis.net/repos/isabelle-release
@@ -49,17 +49,18 @@ The subsequent explanations are for **development** of the tool, not for end-use
 
   * Initialize fresh clone:
 
-        hg clone https://isabelle.sketis.net/repos/isabelle-release
-        hg update -r d300574cee4e
-        isabelle/bin/isabelle components -I
-        isabelle/bin/isabelle components -a
-        isabelle/bin/isabelle jedit -b
+        hg clone https://isabelle.sketis.net/repos/isabelle-release isabelle
+        cd isabelle
+        hg update -C -r Isabelle2021-RC5
+        bin/isabelle components -I
+        bin/isabelle components -a
 
   * Update existing clone:
 
+        cd isabelle
         hg pull https://isabelle.sketis.net/repos/isabelle-release
-        hg update -r d300574cee4e
-        isabelle/bin/isabelle components -a
+        hg update -C -r Isabelle2021-RC5
+        bin/isabelle components -a
 
 
 ### Isabelle component setup
@@ -71,13 +72,28 @@ The subsequent explanations are for **development** of the tool, not for end-use
 
         isabelle components -u .../Naproche-SAD
 
-### Isabelle build and test
+### Isabelle build
 
   * Shutdown Isabelle/jEdit before building Isabelle/Naproche as follows:
 
         isabelle naproche_build
 
-        isabelle naproche_test
+  * Run some tests as follows:
+
+        isabelle naproche_build && isabelle naproche_test
+
+  * Package the Isabelle/Naproche component as follows:
+
+        isabelle naproche_build && isabelle naproche_component
+
+    The result is for the current repository version, and the underlying
+    HW + OS platform. The following reference platforms (x86_64) are
+    used for Isabelle2021:
+
+      - Linux: Ubuntu 16.04 LTS
+      - macOS: Mac OS X 10.13 Yosemite
+      - Windows: Windows 10
+
 
 
 ### Use Isabelle Prover IDE
@@ -91,47 +107,6 @@ The subsequent explanations are for **development** of the tool, not for end-use
 * Open Isabelle development environment with ForTheL examples, e.g.
 
         isabelle jedit -l Pure Isabelle/Test.thy
-
-
-### Reference versions for multi-platform executables (x86_64):
-
-  * Linux: Ubuntu 16.04 LTS
-  * macOS: Mac OS X 10.13 Yosemite
-  * Windows: Windows 10
-
-
-### Multi-platform application bundling (with Isabelle)
-
-  * Linux build host, e.g. Ubuntu 18.04 LTS with the following packages:
-      - curl
-      - mercurial
-      - p7zip-full
-      - texlive-fonts-extra
-      - texlive-font-utils
-      - texlive-latex-extra
-      - texlive-science
-
-  * Standard Isabelle repository clone:
-
-        hg clone https://isabelle.sketis.net/repos/isabelle-release
-        hg update -r d300574cee4e
-        isabelle/bin/isabelle components -I
-        isabelle/bin/isabelle components -a
-        isabelle/bin/isabelle jedit -b
-
-    optional tests, notably of LaTeX packages:
-
-        isabelle/bin/isabelle build Pure
-        isabelle/bin/isabelle build -g doc -R -b
-        isabelle/bin/isabelle build -g doc -o document=pdf
-
-  * Isabelle/Naproche component, e.g.:
-
-        curl -o naproche-20200303.tar.gz -L https://github.com/Naproche/Naproche-SAD/releases/download/20200303/naproche-20200303.tar.gz
-
-  * Application bundling, e.g. Isabelle/61882acca79b + naproche-20200303:
-
-        isabelle/Admin/build_release -r 61882acca79b -c naproche-20200303.tar.gz -b Pure -R Isabelle_Naproche-20200303 -O -W dist/website dist
 
 
 ## Reference ##

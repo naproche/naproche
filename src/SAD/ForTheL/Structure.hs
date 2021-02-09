@@ -58,7 +58,7 @@ texForthel = repeatUntil (pure <$> forthelStep) (try (bracketExpression >>= exit
 
 -- | Parses one forthel construct with tex syntax for forthel sections.
 forthelStep :: FTL ProofText
-forthelStep = 
+forthelStep =
     makeSectionTexEnv Signature signatureTags signature'
     <|> makeSectionTexEnv Definition definitionTags definition
     <|> makeSectionTexEnv Axiom axiomTags axiom
@@ -70,7 +70,7 @@ forthelStep =
 
 -- | Parses a bracket expression without evaluating it.
 bracketExpression :: FTL ProofText
-bracketExpression = 
+bracketExpression =
   fmap (uncurry ProofTextDrop) instrDrop
   </> fmap (uncurry ProofTextInstr) (instr </> instrExit </> instrRead)
 
@@ -208,7 +208,7 @@ link :: FTL [Text]
 link = finish eqLink
 
 topIdentifier :: FTL Text
-topIdentifier = tokenPrim notSymb
+topIdentifier = Text.toCaseFold . Text.concat <$> many (tokenPrim notSymb)
   where
     notSymb t = case Text.uncons (showToken t) of
       Just (c, "") -> guard (isAlphaNum c) >> return (Text.singleton c)

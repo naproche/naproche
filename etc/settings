@@ -18,6 +18,9 @@ NAPROCHE_JAR="$ISABELLE_NAPROCHE/naproche.jar"
 if [ -f "$NAPROCHE_JAR" ]; then
   classpath "$NAPROCHE_JAR"
   isabelle_scala_service "isabelle.naproche.File_Format"
+  if [ -d "$ISABELLE_NAPROCHE/Admin_Tools" ]; then
+    isabelle_scala_service "isabelle.naproche.Admin_Tools"
+  fi
 else
   echo >&2 "### Missing Isabelle/Scala module: $NAPROCHE_JAR"
 fi

@@ -1,5 +1,5 @@
 % !TeX spellcheck = en_GB-oed
-\documentclass[10pt,a4paper,parskip=half,numbers=endperiod,headings=standardclasses,parskip]{scrbook}
+\documentclass[10pt,a4paper,parskip=half,numbers=endperiod,headings=standardclasses,parskip]{scrartcl}
 
 \usepackage{stix2}
 \usepackage{tkz-euclide}
@@ -50,23 +50,29 @@
 \newcommand{\freshb}{b}
 \newcommand{\freshc}{c}
 
-\newcommand{\OFS}[8]{\operatorname{OFS}
-\left(\begin{smallmatrix}%
+\newcommand{\OFS}[8]{\operatorname{OFS}%
+\left(
+\begin{smallmatrix}%
 #1 & #2 & #3 & #4 \\
 #5 & #6 & #7 & #8
-\end{smallmatrix}\right)%
+\end{smallmatrix}%
+\right)%
 }
 \newcommand{\IFS}[8]{\operatorname{IFS}
-\left(\begin{smallmatrix}%
+\left(
+\begin{smallmatrix}%
 #1 & #2 & #3 & #4 \\
 #5 & #6 & #7 & #8
-\end{smallmatrix}\right)%
+\end{smallmatrix}
+\right)%
 }
 \newcommand{\FS}[8]{\operatorname{FS}
-\left(\begin{smallmatrix}%
+\left(
+  \begin{smallmatrix}%
 #1 & #2 & #3 & #4 \\
 #5 & #6 & #7 & #8
-\end{smallmatrix}\right)%
+\end{smallmatrix}
+\right)%
 }
 
 \title{Tarskian geometry}
@@ -76,18 +82,19 @@
 \begin{document}
   \maketitle
 
-  This is a formalization of the beginnings of Tarskian geometry,
-  mainly following the book
-  \textit{Metamathematische Methoden in der Geometrie}
-  by Schwabhäuser, Szmielew and Tarski.
-  We refer to this book as \textit{SST} in later comments.
+  \begin{abstract}
+    We present a formalization of the beginnings of Tarskian geometry,
+    mainly following %the book
+    \textit{Metamathematische Methoden in der Geometrie}
+    by Schwabhäuser, Szmielew, and Tarski (\textit{SST}).
+  \end{abstract}
 
 
   \tableofcontents
 
-  \chapter{Beginnings of Tarskian geometry}
+  \section{Beginnings of Tarskian geometry}
 
-  \section{The language of Tarskian geometry}
+  \subsection{The language of Tarskian geometry}
 
   The only objects under consideration are \textit{points}.
   They are subject to two primitive relations:
@@ -398,7 +405,7 @@
   \paragraph{Uniqueness for segment construction}\
 
   \begin{forthel}
-    \begin{lemma} % Satz 2.12
+    \begin{lemma}[UniqueConstruct] % Satz 2.12
       Assume $q \neq x$.
       Suppose $\Betw{q}{x}{v}$ and $\Cong{x}{v}{y}{z}$.
       Suppose $\Betw{q}{x}{w}$ and $\Cong{x}{w}{y}{z}$.
@@ -530,13 +537,12 @@
   \end{forthel}
 
 
-  This is definition 4.1 in \textit{SST}.
-  We say that the points $x,y,z,r,u,v,w,p$ are
+  We say that the points $a,b,c,d,a',b',c',d'$ are
   in an inner five-segment-configuration
-  whenever $\IFS{x}{y}{z}{r}{u}{v}{w}{p}$.
+  whenever $\IFS{a}{b}{c}{d}{a'}{b'}{c'}{d'}$.
 
   \begin{forthel}
-    \begin{definition}
+    \begin{definition} % Definition 4.1 in SST
       $\IFS{x}{y}{z}{r}{v}{w}{p}{q}$ iff
       $\Betw{x}{y}{z}$ and $\Betw{v}{w}{p}$
       and $\Cong{x}{z}{v}{p}$ and $\Cong{y}{z}{w}{p}$
@@ -768,7 +774,7 @@
     \end{proof}
   \end{forthel}
 
-  \chapter{Connexity of betweenness}
+  \section{Connexity of betweenness}
 
   Tarski's original axiomatization featured the following axiom.
   \begin{quotedaxiom}
@@ -858,43 +864,23 @@
     \end{proof}
 
 
-
-    \begin{lemma} %[C5o1k]
-      Assume $x \neq y$ and $x-y-z$ and $x-y-r$ and $x-r-p$ and $r-p : z-r$ and $x-z-q$ and $z-q : z-r$ and ($z = p$ or $r = q$). Then $x-z-r$ or $x-r-z$.
-    \end{lemma}
+    %\begin{lemma} %[C5o1k]
+    %   Assume $x \neq y$ and $x-y-z$ and $x-y-r$ and $x-r-p$ and $r-p : z-r$ and
+    %   $x-z-q$ and $z-q : z-r$ and ($z = p$ or $r = q$). Then $x-z-r$ or $x-r-z$.
+    % \end{lemma}
 
     \begin{lemma} %[C5o1l]
-      Assume $x \neq y$ and $x-y-z$ and $x-y-r$ and $x-r-p$ and $r-p : z-r$ and $x-z-q$ and $z-q : z-r$. Then there exist points $s,t$ such that $z-q-t$ and $r-p-s$.
+      Assume $x \neq y$ and $x-y-z$ and $x-y-r$ and $x-r-p$ and $r-p : z-r$ and
+      $x-z-q$ and $z-q : z-r$. Then there exist points $s,t$ such that $z-q-t$ and $r-p-s$.
     \end{lemma}
 
-    %\begin{lemma} %[C5o1m]
-    %  Assume $Th2(x,y,z,r,p,q,g)$. Then $\OFS{y}{z}{q}{p}{g}{p}{r}{z}$.
-    %\end{lemma}
-
-    %\begin{lemma} %[C5o1n]
-    %  Assume $Th2(x,y,z,r,p,q,g)$ and $\OFS{y}{z}{q}{p}{g}{p}{r}{z}$ and $p-q : z-r$.
-    %  Then there exist $u$ such that $z-u-p$ and $r-u-q$.
-    %\end{lemma}
-
-    %\begin{axiom}[C5o1o]
-    %  Assume $Th4(x,y,z,r,p,q,g,u,v,w,h)$.
-    %  Then $\OFS{q}{z}{h}{v}{v}{z}{u}{q}$ and $h-v : u-q$ and $h-w : u-r$
-    %  and $\OFS{q}{u}{r}{z}{v}{h}{w}{z}$ and $q-r : v-w$ and $z-w : z-r$ and $z-v : z-w$.
-    %\end{axiom}
-    %\begin{proof}
-    %  $\OFS{q}{z}{h}{v}{v}{z}{u}{q}$. Hence $h-v : u-q$.
-    %  Hence $h-w : u-r$. % TODO: this step is slow.
-    %	Therefore $\OFS{q}{u}{r}{z}{v}{h}{w}{z}$. Hence $q-r : v-w$. If $q \neq u$ then $z-w : z-r$.
-    %  If $q = u$ then $q = r$. % TODO: this step is slow.
-    % 	Then $v = w$. Therefore $z-w : z-r$. Hence $z-v : z-w$.
-    % \end{proof}
+    % \begin{lemma}[SpecialCaseUniqueConstruct]
+    %   Assum $a\neq b$.
+    %   Assume $\Betw{a}{b}{\bprime}$ and $\Betw{a}{b}{\bprime}$.
+    %   Assume $\Cong{b}{\bdoubleprime}{b}{\bprime}$.
+    %   Then $\bprime = \bdoubleprime$.
+    % \end{lemma}
   \end{forthel}
-
-  % The idea for proving lemma C5o1 is to extend the line $xz$ and $xr$
-  % through two points $p,q$ such that $r-p : %z-r$ and $z-q : z-r$.
-  % Then one can easy see that if one of $z = p$ or $r = q$, $x-y-z$ or $x-z-y$ must holds.
-  % The following lemma shows that if there exist such points $p$ and $q$ then $z = p$ or $r = q$ must hold.
-  % To see that such points exist one has to use axiom A4 twice.
 
   \begin{tikzpicture}
     % Definitions:
@@ -915,42 +901,7 @@
   \end{tikzpicture}
 
   \begin{forthel}
-    %\begin{lemma}[C5o1p]
-    %  Assume $x \neq y$ and $x-y-z$ and $x-y-r$ and $x-r-p$ and $r-p : z-r$ and $x-z-q$ and $z-q : z-r$.
-    % Then $z = p$ or $r = q$.
-    %\end{lemma}
-    %\begin{proof}
-    %	Take points $s,t$ such that $z-q-t$ and $r-p-s$.
-    %	Then $Th(x,y,z,r,p,q,s,t)$.
-    %	Then $\BetwFive{x}{y}{z}{q}{t}$ and $\BetwFive{x}{y}{r}{p}{s}$.
-    %	Then $y-p : t-z$.
-    %	Then $y-t : t-y$.
-    %	Then $s = t$.
-    %	Then $Th2(x,y,z,r,p,q,s)$.
-    %	Then $\OFS{y}{z}{q}{p}{s}{p}{r}{z}$.
-    %	Then $p-q : z-r$.
-    %	Take $u$ such that $z-u-p$ and $r-u-q$ (by C5o1n).
-    %	Then $\IFS{r}{u}{q}{z}{r}{u}{q}{p}$.
-    %	Then $\IFS{z}{u}{p}{r}{z}{u}{p}{q}$.
-    %	Then $u-z : u-p$.
-    %	Then $u-r : u-q$.
-    %	Assume $z \neq p$. Then $z \neq q$.
-    %		Take $v$ such that $p-z-v$ and $z-v : z-q$.
-    %		Take $h$ such that $q-z-h$ and $z-h : z-u$.
-    %		Take $w$ such that $v-h-w$ and $h-w : h-v$.
-    %    Then $\OFS{q}{z}{h}{v}{v}{z}{u}{q}$
-    %    and $h-v : u-q$ and $h-w : u-r$
-    %    and $\OFS{q}{u}{r}{z}{v}{h}{w}{z}$
-    %    and $q-r : v-w$ and $z-w : z-r$ and $z-v : z-w$. %(by C5o1o).
-    %		Then $h-v : h-w$. $z \neq p$. Hence $h \neq z$. $\Col{h}{z}{q}$. Therefore $q-v : q-w$.
-    %		Then $z-v : z-w$. $z \neq q$. $\Col{z}{q}{y}$. Therefore $y-v : y-w$.
-    %		Then $z-v : z-w$. $z \neq q$. $\Col{z}{q}{s}$. Therefore $s-v : s-w$.
-    %		Then $y \neq s$.
-    %		Then $q = r$.
-    %	Assume $z = p$.
-    %\end{proof}
-
-    \begin{lemma}[Gupta] % Satz 5.1 (TODO)
+    \begin{lemma}[Gupta] % Satz 5.1
       Assume $a \neq b$.
       Assume $\Betw{a}{b}{c}$ and $\Betw{a}{b}{d}$.
       Then $\Betw{a}{c}{d}$ or $\Betw{a}{d}{c}$.
@@ -961,23 +912,81 @@
         $\Betw{a}{d}{\cprime}$ and $\Cong{d}{\cprime}{c}{d}$.
       Take a point $\dprime$ such that
         $\Betw{a}{c}{\dprime}$ and $\Cong{c}{\dprime}{c}{d}$.
-      Then $c = \cprime$ or $d = \dprime$. % (by C5o1p).
+      Then $c = \cprime$ or $d = \dprime$.
+
       Proof.
         We have $\BetwFour{a}{b}{c}{\dprime}$ (by BetwThreeToFour).
         We have $\BetwFour{a}{b}{d}{\cprime}$ (by BetwThreeToFour).
         %
-        Take a point $\bprime$ such that $\Betw{d}{\cprime}{\bprime}$ and $\Betw{a}{\cprime}{\bprime}$.
-        Take a point $\bdoubleprime$ such that $\Betw{c}{\dprime}{\bdoubleprime}$ and $\Betw{a}{\dprime}{\bdoubleprime}$.
-        %
-        Then $\Cong{d}{\cprime}{d}{c}$ and $\Cong{c}{\dprime}{c}{d}$.
+        Take a point $\bprime$ such that
+          %%% $\Betw{d}{\cprime}{\bprime}$ and  % No longer necessary.
+          $\Betw{a}{\cprime}{\bprime}$ and
+          $\Cong{\cprime}{\bprime}{c}{b}$ and
+          $\Cong{d}{\cprime}{\dprime}{c}$.
+        Take a point $\bdoubleprime$ such that
+          %%% $\Betw{c}{\dprime}{\bdoubleprime}$ and  % No longer necessary.
+          $\Betw{a}{\dprime}{\bdoubleprime}$ and
+          $\Cong{b}{d}{\dprime}{\bdoubleprime}$.
         %
         Then $\BetwFive{a}{b}{c}{\dprime}{\bdoubleprime}$.
         Then $\BetwFive{a}{b}{d}{\cprime}{\bprime}$.
+
         %
-        % TODO: use Satz 2.11
-        %We have $\Cong{b}{\bdoubleprime}{\bdoubleprime}{b}$.
-        We have $\Cong{b}{\cprime}{\bdoubleprime}{b}$.
-        Thus $\bdoubleprime = b$.
+        Thus $\Cong{b}{\cprime}{\bdoubleprime}{c}$.
+
+        Thus $\Cong{b}{\bprime}{\bdoubleprime}{b}$.
+
+        We have $\Betw{a}{b}{\bprime}$ and $\Betw{a}{b}{\bdoubleprime}$.
+        Thus $\bdoubleprime = \bprime$. % (by UniqueConstruct).
+
+        We have $\OFS{b}{c}{\dprime}{\cprime}{\bprime}{\cprime}{d}{c}$.
+        Thus $\Cong{\cprime}{\dprime}{c}{d}$.
+
+        Take a point $e$ such that
+          $\Betw{c}{e}{\cprime}$ and $\Betw{d}{e}{\dprime}$.
+        Then $\IFS{d}{e}{\dprime}{c}{d}{e}{\dprime}{\cprime}$
+        and $\IFS{c}{e}{\cprime}{d}{c}{e}{\cprime}{\dprime}$.
+        Thus $\Cong{e}{c}{e}{\cprime}$ and $\Cong{e}{d}{e}{\dprime}$.
+
+        Case $c \neq \cprime$.
+          We have $c\neq \dprime$.
+
+          Take a point $p$ such that
+            $\Betw{\cprime}{c}{p}$ and $\Cong{c}{p}{c}{\dprime}$.
+          Take a point $r$ such that
+            $\Betw{\dprime}{c}{r}$ and $\Cong{c}{r}{c}{e}$.
+          Take a point $q$ such that
+            $\Betw{p}{r}{q}$ and $\Cong{r}{q}{r}{p}$.
+
+          Then $\OFS{\dprime}{c}{r}{p}{p}{c}{e}{\dprime}$.
+          Thus $\Cong{r}{p}{e}{\dprime}$.
+          Thus $\Cong{r}{q}{e}{d}$.
+
+          Then $\OFS{\dprime}{e}{d}{c}{p}{r}{q}{c}$.
+          Thus $\Cong{\dprime}{d}{p}{q}$.
+          Thus $\Cong{c}{q}{c}{d}$.
+          Thus $\Cong{c}{p}{c}{q}$.
+
+          We have $\Cong{r}{p}{r}{q}$.
+          We have $r \neq c$.
+
+          Then $r$ is collinear with $c$ and $\dprime$.
+          Thus $\Cong{\dprime}{p}{\dprime}{q}$.
+
+          We have $c \neq \dprime$.
+          Then $c$ is collinear with $\dprime$ and $b$.
+          Then $c$ is collinear with $\dprime$ and $\bprime$.
+          Thus $\Cong{b}{p}{b}{q}$ and $\Cong{\bprime}{p}{\bprime}{q}$.
+
+          Thus $b \neq \bprime$.
+          Then $b$ is collinear with $\cprime$ and $\bprime$.
+          Thus $\Cong{\cprime}{p}{\cprime}{q}$.
+
+          $\cprime$ is collinear with $c$ and $p$.
+          Thus $\Cong{p}{p}{p}{q}$.
+          Thus $p = q$.
+          Thus $d = \dprime$.
+        End.
       End.
       Therefore $\Betw{a}{c}{d}$ or $\Betw{a}{d}{c}$. %(by C5o1k).
     \end{proof}
@@ -997,12 +1006,27 @@
 
   \subsection{Comparing segments}
 
-  Intuitively, a segment $pq$ is larger than a segment $vw$ whenever we can find a subsegment
-  of $pq$ of the same length as $vw$.
+  Intuitively, a segment $ab$ is smaller than a segment $cd$ whenever we can find a subsegment $cx$
+  of $cd$ of the same length as $ab$.
+
+  \begin{tikzpicture}
+    % Points
+    \tkzDefPoint(0,1){a}
+    \tkzDefPoint(2,1){b}
+    \tkzDefPoint(2,0){x}
+    \tkzDefPoint(0,0){c}
+    \tkzDefPoint(3,0){d}
+    % Drawing
+    \tkzDrawPoints(a,b,x,c,d)
+    \tkzDrawSegments(a,b c,d)
+    \tkzDrawSegments[dashed](a,c b,x)
+    % Labels
+    \tkzLabelPoints[above right](a,b,c,d,x)
+  \end{tikzpicture}
 
   \begin{forthel}
     \begin{definition} % Definition 5.4 (first part)
-      $\Leq{v}{w}{p}{q}$ iff there exists $x$ such that $\Betw{p}{x}{q}$ and $\Cong{v}{w}{p}{x}$.
+      $\Leq{a}{b}{c}{d}$ iff there exists $x$ such that $\Betw{c}{x}{d}$ and $\Cong{a}{b}{c}{x}$.
     \end{definition}
 
     \begin{definition} % Definition 5.4 (second part)
@@ -1010,51 +1034,114 @@
     \end{definition}
   \end{forthel}
 
-  Conversely, we can say that a segment $vw$ is smaller than $pq$ whenever we can extend $vw$
-  to a segment of the length $pq$.
+  Alternatively, we can say that a segment $ab$ is smaller than $cd$ whenever we can extend $ab$
+  to a segment $ax$ of the length $cd$.
 
-    \begin{axiom} % Satz 5.5 (TODO)
-      $\Leq{v}{w}{p}{q}$ iff there exists $x$ such that $\Betw{v}{w}{x}$ and $\Cong{v}{x}{p}{q}$.
-    \end{axiom}
+  \begin{tikzpicture}
+    % Points
+    \tkzDefPoint(0,1){a}
+    \tkzDefPoint(2,1){b}
+    \tkzDefPoint(3,1){x}
+    \tkzDefPoint(0,0){c}
+    \tkzDefPoint(3,0){d}
+    % Drawing
+    \tkzDrawPoints(a,b,x,c,d)
+    \tkzDrawSegments(a,b c,d)
+    \tkzDrawSegments[dashed](a,c b,x d,x)
+    % Labels
+    \tkzLabelPoints[above right](a,b, c,d, x)
+  \end{tikzpicture}
 
   \begin{forthel}
-    % Takes a bit of time, but works without proof.
-    \begin{lemma}[LessCongLeft] % Satz 5.6 (first part)
-      If $\Leq{p}{q}{v}{w}$ and $\Cong{p}{q}{x}{y}$
-      then $\Leq{x}{y}{v}{w}$.
+    \begin{lemma} % Satz 5.5 (first part)
+      Assume $\Leq{a}{b}{c}{d}$.
+      Then there exists $x$ such that $\Betw{a}{b}{x}$ and $\Cong{a}{x}{c}{d}$.
     \end{lemma}
+    \begin{proof}
+        Take $y$ such that $\Betw{c}{y}{d}$ and $\Cong{a}{b}{c}{y}$.
+        Take $x$ such that $\Betw{a}{b}{x}$ and $\Cong{b}{x}{y}{d}$.
+        Then $\Cong{a}{x}{c}{d}$.
+    \end{proof}
 
-    % Takes a bit of time, but works without proof. (TODO might be a bit too unstable.)
-    \begin{lemma}[LessCongRight] % Satz 5.6 (second part)
-      If $\Leq{p}{q}{v}{w}$ and $\Cong{v}{w}{x}{y}$
-      then $\Leq{p}{q}{x}{y}$.
-    \end{lemma}
-
-    \begin{lemma}[LessReflexivity] % Satz 5.7
-      For all points $x, y$ we have $\Leq{x}{y}{x}{y}$.
-    \end{lemma}
-
-    % Takes a bit of time, but works without proof. SST has a proof sketch for this.
-    \begin{lemma}[LessTransitivity] % 5.8
-      If $\Leq{p}{q}{v}{w}$ and $\Leq{v}{w}{x}{y}$ then $\Leq{p}{q}{x}{y}$.
-    \end{lemma}
-
-    \begin{axiom}[LessClamp] % Satz 5.9 (TODO)
-      If $\Leq{p}{q}{x}{y}$ and $\Leq{x}{y}{p}{q}$ then $\Cong{p}{q}{x}{y}$.
+    \begin{axiom} % TODO
+      Assume $\Betw{a}{b}{x}$.
+      Assume $\Cong{a}{x}{c}{d}$.
+      Then there exists $y$ such that $\Betw{c}{y}{d}$ and $\Cong{b}{x}{y}{d}$.
     \end{axiom}
 
+    \begin{lemma} % Satz 5.5 (second part)
+      Assume there exists $x$ such that $\Betw{a}{b}{x}$ and $\Cong{a}{x}{c}{d}$.
+      Then $\Leq{a}{b}{c}{d}$.
+    \end{lemma}
+    \begin{proof}
+      Take $x$ such that $\Betw{a}{b}{x}$ and $\Cong{a}{x}{c}{d}$.
+      Take $y$ such that $\Betw{c}{y}{d}$ and $\Cong{b}{x}{y}{d}$.
+      Then $\Cong{a}{b}{c}{y}$.
+    \end{proof}
+  \end{forthel}
+
+
+
+  \begin{forthel}
+    \begin{lemma}[LessCongLeft] % Satz 5.6 (first part)
+      Assume $\Leq{a}{b}{c}{d}$ and $\Cong{a}{b}{p}{q}$.
+      Then $\Leq{p}{q}{c}{d}$.
+    \end{lemma}
+    \begin{proof}
+      Take $x$ such that $\Betw{c}{x}{d}$ and $\Cong{a}{b}{c}{x}$.
+    \end{proof}
+
+    \begin{lemma}[LessCongRight] % Satz 5.6 (second part)
+      Assume $\Leq{a}{b}{c}{d}$ and $\Cong{c}{d}{p}{q}$.
+      Then $\Leq{a}{b}{p}{q}$.
+    \end{lemma}
+    \begin{proof}
+      Take $x$ such that $\Betw{a}{b}{x}$ and $\Cong{a}{x}{c}{d}$.
+    \end{proof}
+
+    \begin{lemma}[LessReflexivity] % Satz 5.7
+      For all points $a, b$ we have $\Leq{a}{b}{a}{b}$.
+    \end{lemma}
+
+    \begin{lemma}[LessTransitivity] % Satz 5.8
+      Assume $\Leq{a}{b}{c}{d}$ and $\Leq{c}{d}{e}{f}$.
+      Then $\Leq{a}{b}{c}{d}$.
+    \end{lemma}
+    \begin{proof}
+      Take $x$ such that $\Betw{a}{b}{x}$ and $\Cong{a}{x}{c}{d}$.
+      Take $y$ such that $\Betw{c}{d}{y}$ and $\Cong{c}{y}{e}{f}$.
+    \end{proof}
+
+    \begin{lemma}[LessClamp] % Satz 5.9
+      Assume $\Leq{a}{b}{c}{d}$ and $\Leq{c}{d}{a}{b}$.
+      Then $\Cong{a}{b}{c}{d}$.
+    \end{lemma}
+    \begin{proof}
+      Take $x$ such that $\Betw{c}{x}{d}$ and $\Cong{a}{b}{c}{x}$.
+      Take $y$ such that $\Betw{c}{d}{y}$ and $\Cong{a}{b}{c}{y}$.
+      Then $\Cong{c}{x}{c}{y}$. Thus $x = d = y$.
+    \end{proof}
+
     \begin{axiom}[LessConnex] % Satz 5.10 (TODO)
-      For all points $p, q, x, y$ we have $\Leq{p}{q}{x}{y}$ or $\Leq{x}{y}{p}{q}$.
+      Let $a, b, c, d$ be points.
+      Then $\Leq{a}{b}{c}{d}$ or $\Leq{c}{d}{a}{b}$.
     \end{axiom}
 
     \begin{lemma} % Satz 5.11
-      For all points $x, y, z$ we have $\Leq{x}{x}{y}{z}$.
+      For all points $a, b, c$ we have $\Leq{a}{a}{b}{c}$.
     \end{lemma}
 
-    \begin{axiom} % Satz 5.12 (TODO)
-      Assume that $x$ is collinear with $y$ and $z$.
-      Then $\Betw{x}{y}{z}$ iff $\Leq{x}{y}{x}{z}$ or $\Leq{y}{z}{x}{z}$.
-    \end{axiom}
+    \begin{lemma} % Satz 5.12 (first part) (MAYBE a bit slow)
+      Assume that $a$ is collinear with $b$ and $c$.
+      Assume $\Betw{a}{b}{c}$.
+      Then $\Leq{a}{b}{a}{c}$ and $\Leq{b}{c}{a}{c}$.
+    \end{lemma}
+
+    \begin{lemma} % Satz 5.12 (second part) (TODO)
+      Assume that $a$ is collinear with $b$ and $c$.
+      Assume $\Leq{a}{b}{a}{c}$ and $\Leq{b}{c}{a}{c}$.
+      Then $\Betw{a}{b}{c}$.
+    \end{lemma}
   \end{forthel}
 
 
@@ -1070,7 +1157,7 @@
 
 
 
-  \section{Rays and lines}
+  \subsection{Rays and lines}
 
   \begin{forthel}
     \begin{definition}
@@ -1091,7 +1178,7 @@
   \end{forthel}
 
   \appendix
-  \chapter*{Bibliography}
+  \section*{Bibliography}
 
   Michael Beeson, Larry Wos (2017)
   \\ \textit{Finding proofs in Tarskian geometry}
