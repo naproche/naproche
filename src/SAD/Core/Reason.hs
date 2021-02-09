@@ -144,8 +144,11 @@ launchProver pos iteration = do
 
     guardResult Success = pure ()
     guardResult ContradictoryAxioms = do
-      reasonLog Message.WRITELN pos $ "Found contradictory axioms. Make sure you are in a proof by contradiction!"
-      mzero
+      checkConsistency <- askInstructionBool CheckConsistency True
+      if checkConsistency then do
+        reasonLog Message.WRITELN pos $ "Found contradictory axioms. Make sure you are in a proof by contradiction!"
+        mzero
+      else pure ()
     guardResult _ = mzero
 
 

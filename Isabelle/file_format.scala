@@ -36,7 +36,7 @@ object File_Format
 
     if (server_info.isEmpty) {
       Thread.sleep(50)
-      process.terminate
+      process.terminate()
       val errs = process_result.join.err_lines
       error(cat_lines("Naproche-SAD server failure" :: errs))
     }
@@ -50,9 +50,9 @@ object File_Format
         ("naproche_prover_server_port", prover_server.port.toString) +
         ("naproche_prover_server_password", prover_server.password)
 
-    override def stop
+    override def stop: Unit =
     {
-      process.terminate
+      process.terminate()
       prover_server.stop
       process_result.join
     }

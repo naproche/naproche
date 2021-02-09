@@ -20,13 +20,15 @@ section \<open>Examples\<close>
 text \<open>
   The directory \<^dir>\<open>$NAPROCHE_HOME/examples\<close> contains various examples, to be
   checked in the Isabelle/jEdit Prover IDE: both \<^verbatim>\<open>.ftl\<close> and \<^verbatim>\<open>.ftl.tex\<close> are
-  supported.
+  supported; \<^verbatim>\<open>.pdf\<close> files have been produced by regular \<^verbatim>\<open>pdflatex\<close>.
 
-  Some notable entries are:
+  For example:
 
     \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/tarski.ftl\<close>
                      
     \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/tarski.ftl.tex\<close>
+
+    \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/tarski.ftl.pdf\<close>
 \<close>
 
 

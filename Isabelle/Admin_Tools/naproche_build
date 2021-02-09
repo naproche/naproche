@@ -9,6 +9,13 @@ cd "$NAPROCHE_HOME"
 
 echo "### Building Isabelle/Scala module: $NAPROCHE_JAR"
 
+declare -a SCALA_SOURCES=(
+  file_format.scala
+  naproche_component.scala
+  naproche_tools.scala
+  prover_server.scala
+)
+
 rm -f "$NAPROCHE_JAR" 
 
 isabelle jedit -b
@@ -17,7 +24,7 @@ isabelle jedit -b
   cd Isabelle
 
   rm -rf classes && mkdir classes
-  isabelle scalac -d classes file_format.scala prover_server.scala
+  isabelle scalac -d classes -deprecation "${SCALA_SOURCES[@]}"
 
   cd classes
   isabelle_jdk jar cf "$(platform_path "$NAPROCHE_JAR")" *
