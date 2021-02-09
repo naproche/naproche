@@ -160,8 +160,42 @@ expandTexCmd "exists" pos whiteSpaceBefore = [makeToken "exists" pos whiteSpaceB
 expandTexCmd "mid" pos whiteSpaceBefore = [makeToken "|" pos whiteSpaceBefore]
 expandTexCmd "rightarrow" pos whiteSpaceBefore = makeSymbolTokens ["-",">"] pos whiteSpaceBefore
 expandTexCmd "lambda" pos whiteSpaceBefore = [makeToken "\\" pos whiteSpaceBefore]
--- If this is not a predefined command to be expanded, just leave the backslash.
+
+-- All tokens starting with `\` are treated as symbols by the parser. But there are tex commands,
+-- that we don't want to treat as symbols in our patterns, for example greek letters. Thus we expand this fixed
+-- list of tex commands here so that they don't use `\`. Note that the fact that this is designed this way makes
+-- it conceptually impossible for the user to configure which tex commands are treated as words on the fly.
+
+-- Tex words
+expandTexCmd s pos whiteSpaceBefore | elem (Text.toLower s) texWords = [makeToken ("tex" <> s) pos whiteSpaceBefore]
+-- If this is not a predefined command to be expanded, just leave the backslash so that it gets treated as a symbol.
 expandTexCmd s pos whiteSpaceBefore = [makeToken (Text.cons '\\' s) pos whiteSpaceBefore]
+
+texWords :: [Text]
+texWords = [
+    "alpha"
+  , "beta"
+  , "gamma"
+  , "delta"
+  , "zeta"
+  , "eta"
+  , "theta"
+  , "iota"
+  , "kappa"
+  , "mu"
+  , "nu"
+  , "xi"
+  , "omicron"
+  , "pi"
+  , "rho"
+  , "sigma"
+  , "tau"
+  , "upsilon"
+  , "phi"
+  , "varphi"
+  , "chi"
+  , "psi"
+  , "omega"]
 
 -- This is only used in `expandTexCmd` and used to apply `makeToken` multiple times, while appropriately
 -- advancing the position.

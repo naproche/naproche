@@ -21,7 +21,6 @@ import qualified Data.Set as Set
 import SAD.Data.Formula
 
 import SAD.Parser.Base
-import SAD.Parser.Token
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
 
@@ -344,19 +343,12 @@ hidden = do
   return (PosVar (VarHidden n) noSourcePos)
 
 -- | Parse the next token as a variable (a sequence of alpha-num chars beginning with an alpha)
--- and return ('x' + the sequence) with the current position. Additionally, we also allow variables
--- to be able to begin with `\` and continue with alphanumeric characters in order to have tex support.
+-- and return ('x' + the sequence) with the current position.
 var :: FTL PosVar
 var = do
   pos <- getPos
-  v <- satisfy isVariable <|> tokenPrim getTexVariable
+  v <- satisfy (\s -> Text.all isAlphaNum s && isAlpha (Text.head s))
   return (PosVar (VarConstant v) pos)
-  where
-    isVariable s = Text.all isAlphaNum s && isAlpha (Text.head s)
-    getTexVariable t = case Text.uncons (showToken t) of
-      Nothing -> Nothing
-      Just ('\\', rest) | Text.all isAlpha rest -> Just ("tex_" <> rest)
-      Just _ -> Nothing
 
 --- pretyped Variables
 
@@ -458,7 +450,6 @@ with = tokenOf' ["with", "of", "having"]
 such :: FTL ()
 such = tokenOf' ["such", "so"]
 
--- `in` or `\in` is used for various set notations
 elementOf :: FTL ()
 elementOf = token' "in" <|> token "\\in"
 
