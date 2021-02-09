@@ -49,17 +49,18 @@ The subsequent explanations are for **development** of the tool, not for end-use
 
   * Initialize fresh clone:
 
-        hg clone https://isabelle.sketis.net/repos/isabelle-release
-        hg update -r Isabelle2021-RC5
-        isabelle/bin/isabelle components -I
-        isabelle/bin/isabelle components -a
-        isabelle/bin/isabelle jedit -b
+        hg clone https://isabelle.sketis.net/repos/isabelle-release isabelle
+        cd isabelle
+        hg update -c -r Isabelle2021-RC5
+        bin/isabelle components -I
+        bin/isabelle components -a
 
   * Update existing clone:
 
+        cd isabelle
         hg pull https://isabelle.sketis.net/repos/isabelle-release
-        hg update -r Isabelle2021-RC5
-        isabelle/bin/isabelle components -a
+        hg update -c -r Isabelle2021-RC5
+        bin/isabelle components -a
 
 
 ### Isabelle component setup
