@@ -51,7 +51,7 @@ The subsequent explanations are for **development** of the tool, not for end-use
 
         hg clone https://isabelle.sketis.net/repos/isabelle-release isabelle
         cd isabelle
-        hg update -c -r Isabelle2021-RC5
+        hg update -C -r Isabelle2021-RC5
         bin/isabelle components -I
         bin/isabelle components -a
 
@@ -59,7 +59,7 @@ The subsequent explanations are for **development** of the tool, not for end-use
 
         cd isabelle
         hg pull https://isabelle.sketis.net/repos/isabelle-release
-        hg update -c -r Isabelle2021-RC5
+        hg update -C -r Isabelle2021-RC5
         bin/isabelle components -a
 
 
