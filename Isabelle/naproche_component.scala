@@ -14,6 +14,7 @@ object Naproche_Component
   val naproche_home: Path = Path.explode("$NAPROCHE_HOME")
   val naproche_jar: Path = Path.explode("$NAPROCHE_JAR")
   val naproche_exe_dir: Path = Path.explode("$NAPROCHE_EXE_DIR")
+  def naproche_platform: String = naproche_exe_dir.expand.base.implode
 
   val cleanup_names: List[String] = List("_config.yml")
   val cleanup_trees: List[String] = List(".git", ".gitignore", ".travis.yml", "Isabelle/Admin_Tools")
@@ -78,7 +79,7 @@ object Naproche_Component
 
     /* component archive */
 
-    val component_archive = Path.explode(component + ".tar.gz")
+    val component_archive = Path.explode(component + "_" + naproche_platform + ".tar.gz")
 
     progress.echo("Component archive " + (target_dir + component_archive))
     progress.bash("tar -czf " + File.bash_path(component_archive) + " " + Bash.string(component),
