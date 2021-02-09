@@ -458,7 +458,6 @@ with = tokenOf' ["with", "of", "having"]
 such :: FTL ()
 such = tokenOf' ["such", "so"]
 
--- `in` or `\in` is used for various set notations
 elementOf :: FTL ()
 elementOf = token' "in" <|> token "\\in"
 
