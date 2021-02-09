@@ -24,7 +24,7 @@
 
   The central idea of Fürstenberg's proof is to define a certain topology on $\Int$ whose properties ensure that the set of primes is infinite. So first we have to introduce the ring $\Int$ of integers. In fact we do not need to give a full axiomatization of integer arithmetic; it suffices to assume that $\Int$ is an integral domain.
 
-  Let us start by introducing the signature the ring of integers.
+  Let us start by introducing the signature of the ring of integers.
 
   \begin{forthel}
     [unfoldlow on]
@@ -284,7 +284,7 @@
     \end{definition}
   \end{forthel}
 
-  Note that we have declared $q$ as a \textit{non-zero} integer. Otherwise every set $A$ would be open since $0 \Int + a = \emptyset \subseteq A$ for every $a \in A$.
+  Note that we have declared $q$ as a \textit{non-zero} integer. Otherwise every set $A$ would be open since $0 \Int + a = \{ a \} \subseteq A$ for every $a \in A$.
 
   \begin{forthel}
     \begin{definition}[Closed]
@@ -340,7 +340,7 @@
     \end{axiom}
   \end{forthel}
 
-  This characterization allows us to prove that a family $S$ of closed sets is infinite by exploiting that the assumption that $S$ is finite yields that $\bigcup S$ is closed which eventually ends up in a contradiction. In Fürstenberg's proof we will use this method to show that the family $\{ r \Int \mid r \text{ is prime} \}$ is infinite. To use the above argument we thus have to prove that any $q \Int + a$ is closed.
+This characterization allows us to prove that a family $S$ of closed sets is infinite by exploiting that the assumption that $S$ is finite yields that $\bigcup S$ is closed which eventually must end up in a contradiction. In Fürstenberg's proof we will use this method to show that the family $\{ r \Int \mid r \text{ is prime} \}$ is infinite. To use the above argument we thus have to prove that any $r \Int$ -- or more general any $q \Int + a$ -- is closed.
 
   \begin{forthel}
     \begin{lemma}[ArSeqClosed]
@@ -355,7 +355,7 @@
     \end{proof}
   \end{forthel}
 
-  To prove that there are infinitely many primes we identify a prime number $r$ with the set $r \Int$ and show that the set $S = \{r \Int \mid r \textrm{ is a prime} \}$ is infinite. It is easy to see that $\bigcup S = \{ \text{integer } n \mid n \text{ has a prime divisor} \} = \Int \setminus \{ 1, -1 \}$. So if $S$ is finite then $\bigcup S$ is closed (by \textit{UnionClosed}) and hence $\{ 1, -1 \}$ is open. But then some arithmetic sequence $p \Int + 1$ is contained in $\{ 1, -1 \}$ which obviously cannot be the case.
+  To prove that there are infinitely many primes we identify a prime number $r$ with the set $r \Int$ and show that the set $S = \{r \Int \mid r \textrm{ is a prime} \}$ is infinite. It is easy to see that $\bigcup S = \{ \text{integer } n \mid n \text{ has a prime divisor} \} = \Int \setminus \{ 1, -1 \}$. So if $S$ is finite then $\bigcup S$ is closed (by \textit{UnionClosed}) and hence $\{ 1, -1 \}$ is open. But then some arithmetic sequence $p \Int + 1$ (where $p$ is non-zero) is contained in $\{ 1, -1 \}$ which obviously cannot be the case.
 
   \begin{forthel}
     \begin{theorem}[Fuerstenberg]
@@ -394,7 +394,7 @@
     \end{proof}
   \end{forthel}
 
-  Note that we cannot define $q \Int$ as $q \Int + 0$ in our formalization since then any term of the form $q \Int + a$ would be ambigue: It could either be interpreted as $q \Int + a$ or as $(q \Int + 0) + a$. This is a result of some kind of overloading of the symbol $+$. We use $+$ on the one hand to denote integer addition and on the other hand it is part of the operator $- \Int + -$.
+  Note that we cannot define $q \Int$ as $q \Int + 0$ in our formalization since then any term of the form $q \Int + a$ would be ambigue: It could either be interpreted as $q \Int + a$ or as $(q \Int + 0) + a$. This is a result of some kind of overloading of the symbol $+$. We use $+$ on the one hand to denote integer addition and on the other hand it is part of the operator $\cdot ~ \Int + ~ \cdot$.
 
   \vfill\doclicenseThis
 \end{document}
