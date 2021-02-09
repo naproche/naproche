@@ -17,14 +17,16 @@ object Naproche_Component
   def naproche_platform: String = naproche_exe_dir.expand.base.implode
 
   val cleanup_names: List[String] = List("_config.yml")
-  val cleanup_trees: List[String] = List(".git", ".gitignore", ".travis.yml", "Isabelle/Admin_Tools")
+  val cleanup_trees: List[String] =
+    List(".git", ".gitignore", ".travis.yml", "Isabelle/Admin_Tools", "examples_pdf")
 
 
   /* build component */
 
   def build_component(
     progress: Progress = new Progress,
-    target_dir: Path = Path.current)
+    target_dir: Path = Path.current,
+    pdf_documents: Boolean = false)
   {
     Isabelle_System.require_command("git")
 
@@ -68,6 +70,28 @@ object Naproche_Component
     File.copy(naproche_jar, component_dir + Path.explode("Isabelle"))
 
 
+    /* PDF documents */
+
+    if (pdf_documents) {
+      val examples = component_dir + Path.explode("examples")
+      val examples_pdf = component_dir + Path.explode("examples_pdf")
+      Isabelle_System.copy_dir(examples, examples_pdf)
+      for {
+        name <- File.read_dir(examples)
+        base_name <- Library.try_unsuffix(".tex", name)
+        text = File.read(examples + Path.explode(name))
+        if text.containsSlice("\\documentclass")
+      } {
+        val pdf_name = Path.basic(base_name).pdf
+        progress.echo("Building " + pdf_name)
+        for (_ <- 1 to 2) {
+          Isabelle_System.bash("pdflatex " + Bash.string(name), cwd = examples_pdf.file).check
+        }
+        File.copy(examples_pdf + pdf_name, examples)
+      }
+    }
+
+
     /* cleanup */
 
     File.find_files(component_dir.absolute_file,
@@ -94,22 +118,25 @@ object Naproche_Component
       Scala_Project.here, args =>
     {
       var target_dir = Path.current
+      var pdf_documents = false
 
       val getopts = Getopts("""
 Usage: isabelle naproche_component [OPTIONS]
 
   Options are:
     -D DIR       target directory (default ".")
+    -P           produce PDF documents
 
   Build Isabelle/Naproche component from repository.
 """,
-        "D:" -> (arg => target_dir = Path.explode(arg)))
+        "D:" -> (arg => target_dir = Path.explode(arg)),
+        "P" -> (_ => pdf_documents = true))
 
       val more_args = getopts(args)
       if (more_args.nonEmpty) getopts.usage()
 
       val progress = new Console_Progress()
 
-      build_component(progress = progress, target_dir = target_dir)
+      build_component(progress = progress, target_dir = target_dir, pdf_documents = pdf_documents)
     })
 }
