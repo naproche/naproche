@@ -26,7 +26,7 @@ object Naproche_Component
   def build_component(
     progress: Progress = new Progress,
     target_dir: Path = Path.current,
-    pdf_documents: Boolean = false)
+    pdf_documents: Boolean = false): Unit =
   {
     Isabelle_System.require_command("git")
 
