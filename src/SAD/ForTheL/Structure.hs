@@ -208,7 +208,7 @@ link :: FTL [Text]
 link = finish eqLink
 
 topIdentifier :: FTL Text
-topIdentifier = Text.concat <$> many (tokenPrim notSymb)
+topIdentifier = Text.toCaseFold . Text.concat <$> many (tokenPrim notSymb)
   where
     notSymb t = case Text.uncons (showToken t) of
       Just (c, "") -> guard (isAlphaNum c) >> return (Text.singleton c)
