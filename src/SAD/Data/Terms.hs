@@ -7,7 +7,7 @@ import Data.Text.Lazy (Text)
 import Data.Text.Lazy.Builder (fromLazyText, fromString)
 import SAD.Export.Representation
 
-data TermName 
+data TermName
   = TermName Text
   | TermSymbolic Text
   | TermNotion Text
@@ -28,10 +28,10 @@ termFunction :: TermName
 termFunction = TermNotion "Function"
 
 termApplication :: TermName
-termApplication = TermSymbolic "sdlbdtrb"
+termApplication = TermSymbolic "dtlpdtrp" -- ".(.)"
 
 termDomain :: TermName
-termDomain = TermSymbolic "zDzozmlpdtrp"
+termDomain = TermSymbolic "zDzozmlpdtrp" -- "Dom(.)"
 
 termSet :: TermName
 termSet = TermNotion "Set"
@@ -43,10 +43,10 @@ termElement :: TermName
 termElement = TermNotion "ElementOf"
 
 termProduct :: TermName
-termProduct = TermSymbolic "zPzrzozdlpdtcmdtrp"
+termProduct = TermSymbolic "zPzrzozdlpdtcmdtrp" -- "Prod(.,.)"
 
 termPair :: TermName
-termPair = TermSymbolic "lpdtcmdtrp"
+termPair = TermSymbolic "lpdtcmdtrp" -- "(.,.)"
 
 termObject :: TermName
 termObject = TermNotion "Obj"
