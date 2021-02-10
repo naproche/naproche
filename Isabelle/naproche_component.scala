@@ -17,8 +17,7 @@ object Naproche_Component
   def naproche_platform: String = naproche_exe_dir.expand.base.implode
 
   val cleanup_names: List[String] = List("_config.yml")
-  val cleanup_trees: List[String] =
-    List(".git", ".gitignore", ".travis.yml", "Isabelle/Admin_Tools", "examples_pdf")
+  val cleanup_trees: List[String] = List(".git", ".gitignore", ".travis.yml", "examples_pdf")
 
 
   /* build component */
@@ -99,6 +98,8 @@ object Naproche_Component
 
     cleanup_trees.foreach(name =>
       Isabelle_System.rm_tree(component_dir + Path.explode(name)))
+
+    File.write(component_dir + Path.explode("etc/no_admin"), "")
 
 
     /* component archive */

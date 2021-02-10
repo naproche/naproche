@@ -4,7 +4,7 @@ NAPROCHE_HOME="$COMPONENT"
 
 ISABELLE_NAPROCHE="$NAPROCHE_HOME/Isabelle"
 
-if [ -d "$ISABELLE_NAPROCHE/Admin_Tools" ]; then
+if [ ! -e "$NAPROCHE_HOME/etc/no_admin" ]; then
   ISABELLE_TOOLS="$ISABELLE_TOOLS:$ISABELLE_NAPROCHE/Admin_Tools"
 fi
 
@@ -18,7 +18,7 @@ NAPROCHE_JAR="$ISABELLE_NAPROCHE/naproche.jar"
 if [ -f "$NAPROCHE_JAR" ]; then
   classpath "$NAPROCHE_JAR"
   isabelle_scala_service "isabelle.naproche.File_Format"
-  if [ -d "$ISABELLE_NAPROCHE/Admin_Tools" ]; then
+  if [ ! -e "$NAPROCHE_HOME/etc/no_admin" ]; then
     isabelle_scala_service "isabelle.naproche.Admin_Tools"
   fi
 else
