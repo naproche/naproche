@@ -22,7 +22,7 @@
 
   \section{Integers}
 
-  The central idea of Fürstenberg's proof is to define a certain topology on $\Int$ whose properties ensure that the set of primes is infinite. So first we have to introduce the ring $\Int$ of integers. In fact we do not need to give a full axiomatization of integer arithmetic; it suffices to assume that $\Int$ is an integral domain.
+  The central idea of Fürstenberg's proof is to define a certain topology on $\Int$ whose properties ensure that the set of primes is infinite. So first we have to introduce the ring $\Int$ of integers. In fact, we do not need to give a full axiomatization of integer arithmetic; it suffices to assume that $\Int$ is an integral domain.
 
   Let us start by introducing the signature of the ring of integers.
 
@@ -110,7 +110,7 @@
     \end{proof}
   \end{forthel}
 
-  Furthermore we assume that our ring is not trivial and that there are no non-trivial zero divisors.
+  Furthermore, we assume that our ring is not trivial and that there are no non-trivial zero divisors.
 
   \begin{forthel}
     \begin{axiom}[NonTriv]
@@ -175,7 +175,9 @@
     \end{proof}
   \end{forthel}
 
-  Now we introduce prime integers. All we need to know about them is that every integer $n$ has a prime divisor iff $n \neq 1$ and $n \neq -1$.
+  Note that up to now every finite field could be a model of our theory. But since we want to prove that there are \textit{infinitely} many primes we must eventually add some axiom which eliminates such models.
+
+  This is done by introducing the notion of prime integers. All we need to know about them for Fürstenberg's proof is that every integer $n$ has a prime divisor iff $n \neq 1$ and $n \neq -1$.
 
   \begin{forthel}
     \begin{signature}[Prime]
@@ -189,6 +191,13 @@
     \end{axiom}
   \end{forthel}
 
+  Let us assume that some finite field is a model of our current theory. Recall that in any finite field every non-zero element is a divisor of $1$. Let us reformulate axiom \textit{PrimeDivisor}:
+
+  \begin{center}
+    $n$ has no prime divisor iff $n = 1 \vee n = -1$.
+  \end{center}
+
+  Then we immediately see that $1$ has no prime divisor. But since every non-zero element is a divisor of $1$, no non-zero element is prime. Hence $0$ has also no prime divisor (recall that any divisor must be non-zero). But then, again by the axiom, we get $0 = 1 \vee 0 = -1$, a contradiction (by \textit{NonTriv}).
 
   \section{Generic sets}
 
@@ -284,7 +293,7 @@
     \end{definition}
   \end{forthel}
 
-  Note that we have declared $q$ as a \textit{non-zero} integer. Otherwise every set $A$ would be open since $0 \Int + a = \{ a \} \subseteq A$ for every $a \in A$.
+  Note that we have declared $q$ as a \textit{non-zero} integer. Otherwise, every set $A$ would be open since $0 \Int + a = \{ a \} \subseteq A$ for every $a \in A$.
 
   \begin{forthel}
     \begin{definition}[Closed]
@@ -296,7 +305,7 @@
     \end{definition}
   \end{forthel}
 
-  We can easisly check that the open sets really form a topology on $\Int$.
+  We can easily check that the open sets really form a topology on $\Int$.
 
   \begin{forthel}
     \begin{lemma}[UnionOpen]
@@ -394,7 +403,5 @@ This characterization allows us to prove that a family $S$ of closed sets is inf
     \end{proof}
   \end{forthel}
 
-  Note that we cannot define $q \Int$ as $q \Int + 0$ in our formalization since then any term of the form $q \Int + a$ would be ambigue: It could either be interpreted as $q \Int + a$ or as $(q \Int + 0) + a$. This is a result of some kind of overloading of the symbol $+$. We use $+$ on the one hand to denote integer addition and on the other hand it is part of the operator $\cdot ~ \Int + ~ \cdot$.
-
-  \vfill\doclicenseThis
+  Note that we cannot define $q \Int$ as $q \Int + 0$ in our formalization since then any term of the form $q \Int + a$ would be ambiguous: It could either be interpreted as $q \Int + a$ or as $(q \Int + 0) + a$. This is a result of some kind of overloading of the symbol $+$. We use $+$ on the one hand to denote integer addition and on the other hand it is part of the operator $\cdot ~ \Int + ~ \cdot$.
 \end{document}
