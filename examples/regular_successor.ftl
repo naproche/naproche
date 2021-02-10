@@ -31,6 +31,8 @@ Let f denote a function.
 Definition.
 A subset of M is a set N such that every element of N is an element of M.
 
+Axiom Ext. If M is a subset of N and N is a subset of M then M = N.
+
 Definition.
 Assume M is a subset of Dom(f). f^(M) = { f(x) | x is an element of M }.
 
@@ -136,7 +138,8 @@ Define g(i) =
 for i in Succ(A).
 Define h((xi,zeta)) = g(f(xi))(zeta) for (xi,zeta) in Prod(A,A).
 Let us show that h is surjective from Prod(A,A) onto Succ(A).
-	Dom(h) = Prod(A,A). Every element of Succ(A) is an element of h^(Prod(A,A)).
+	Dom(h) = Prod(A,A).
+	Every element of Succ(A) is an element of h^(Prod(A,A)).
 	proof.
 		Let n be an element of Succ(A). Take an element xi of A such that n < f(xi).
 		Take an element zeta of A such that g(f(xi))(zeta) = n.
