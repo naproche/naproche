@@ -27,7 +27,6 @@ files = fmap ("examples/"++)
   [ "checkerboard.ftl"
   , "chinese.ftl"
   , "fuerstenberg.ftl"
-  , "geometry.ftl"
   , "Koenigs_lemma.ftl"
   , "Maximum_principle.ftl"
   , "newman.ftl"
@@ -45,7 +44,6 @@ texFiles = fmap ("examples/"++)
   [ "checkerboard.ftl.tex"
   , "chinese.ftl.tex"
   , "fuerstenberg.ftl.tex"
-  , "geometry.ftl.tex"
   , "Koenigs_lemma.ftl.tex"
   , "Maximum_principle.ftl.tex"
   , "newman.ftl.tex"
@@ -56,6 +54,7 @@ texFiles = fmap ("examples/"++)
   , "test/inconsistency.ftl.tex"
   , "test/read_test.ftl.tex"
   , "test/lambda_term_test.ftl.tex"
+  , "test/varprime.ftl.tex"
   ]
 
 shouldFailFiles :: [FilePath]
