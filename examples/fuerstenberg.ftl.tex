@@ -22,7 +22,7 @@
 
   \section{Integers}
 
-  The central idea of Fürstenberg's proof is to define a certain topology on $\Int$ whose properties ensure that the set of primes is infinite. So first we have to introduce the ring $\Int$ of integers. In fact, we do not need to give a full axiomatization of integer arithmetic; it suffices to assume that $\Int$ is an integral domain.
+  The central idea of Fürstenberg's proof is to define a certain topology on $\Int$ from the properties of which we can deduce that the set of primes is infinite. So first we have to introduce the ring $\Int$ of integers. In fact, we do not need to give a full axiomatization of integer arithmetic; it suffices to assume that $\Int$ is an integral domain.
 
   Let us start by introducing the signature of the ring of integers.
 
@@ -191,7 +191,7 @@
     \end{axiom}
   \end{forthel}
 
-  Let us assume that some finite field is a model of our current theory. Recall that in any finite field every non-zero element is a divisor of $1$. Let us reformulate axiom \textit{PrimeDivisor}:
+  Let us assume that some finite field is a model of our current theory. Recall that in any finite field every non-zero element is a divisor of $1$. Let us rephrase axiom \textit{PrimeDivisor}:
 
   \begin{center}
     $n$ has no prime divisor iff $n = 1 \vee n = -1$.
@@ -349,7 +349,7 @@
     \end{axiom}
   \end{forthel}
 
-This characterization allows us to prove that a family $S$ of closed sets is infinite by exploiting that the assumption that $S$ is finite yields that $\bigcup S$ is closed which eventually must end up in a contradiction. In Fürstenberg's proof we will use this method to show that the family $\{ r \Int \mid r \text{ is prime} \}$ is infinite. To use the above argument we thus have to prove that any $r \Int$ -- or more general any $q \Int + a$ -- is closed.
+This characterization allows us to prove that a family $S$ of closed sets is infinite by assuming $S$ to be finite and deriving a contradiction from this assumption together with the statement that $\bigcup S$ is closed. In Fürstenberg's proof we will use this method to show that the family $\{ r \Int \mid r \text{ is prime} \}$ is infinite. To use the above argument we thus have to prove that any $r \Int$ -- or more general any $q \Int + a$ -- is closed.
 
   \begin{forthel}
     \begin{lemma}[ArSeqClosed]
@@ -364,7 +364,7 @@ This characterization allows us to prove that a family $S$ of closed sets is inf
     \end{proof}
   \end{forthel}
 
-  To prove that there are infinitely many primes we identify a prime number $r$ with the set $r \Int$ and show that the set $S = \{r \Int \mid r \textrm{ is a prime} \}$ is infinite. It is easy to see that $\bigcup S = \{ \text{integer } n \mid n \text{ has a prime divisor} \} = \Int \setminus \{ 1, -1 \}$. So if $S$ is finite then $\bigcup S$ is closed (by \textit{UnionClosed}) and hence $\{ 1, -1 \}$ is open. But then some arithmetic sequence $p \Int + 1$ (where $p$ is non-zero) is contained in $\{ 1, -1 \}$ which obviously cannot be the case.
+  To prove that there are infinitely many primes we identify a prime number $r$ with the set $r \Int$ and show that the set $S = \{r \Int \mid r \textrm{ is a prime} \}$ is infinite. It is easy to see that $\bigcup S = \{ \text{integer } n \mid n \text{ has a prime divisor} \} = \Int \setminus \{ 1, -1 \}$. So if $S$ is finite then $\bigcup S$ is closed (by \textit{UnionClosed}) and hence $\{ 1, -1 \}$ is open. But then some arithmetic sequence $p \Int + 1$ (where $p$ is non-zero) is contained in $\{ 1, -1 \}$ which obviously cannot be.
 
   \begin{forthel}
     \begin{theorem}[Fuerstenberg]
