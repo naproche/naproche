@@ -84,7 +84,7 @@ The subsequent explanations are for **development** of the tool, not for end-use
 
   * Package the Isabelle/Naproche component as follows:
 
-        isabelle naproche_build && isabelle naproche_component
+        isabelle naproche_build && isabelle naproche_component -P
 
     The result is for the current repository version, and the underlying
     HW + OS platform. The following reference platforms (x86_64) are
