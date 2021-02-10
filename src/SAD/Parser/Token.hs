@@ -89,26 +89,26 @@ tokenize texState start = posToken texState start NoWhiteSpaceBefore
         (ignoredText, rest) = Text.breakOn "\\begin{forthel}" s
         newPos = advancePos pos (ignoredText <> "\\begin{forthel}")
         toks = posToken InsideForthelEnv newPos WhiteSpaceBefore (Text.drop 15 rest)
-    
+
     -- Deactivate the tokenizer when '\end{forthel}' appears.
     posToken InsideForthelEnv pos _ s | start == "\\end{forthel}" = toks
       where
         (start,rest) = Text.splitAt 13 s
         toks = posToken OutsideForthelEnv (advancePos pos start) WhiteSpaceBefore rest
-        
+
     -- Make alphanumeric tokens that don't start with whitespace.
     posToken texState pos whitespaceBefore s | not (Text.null lexeme) = tok:toks
       where
         (lexeme, rest) = Text.span isLexeme s
         tok  = makeToken lexeme pos whitespaceBefore
         toks = posToken texState (advancePos pos lexeme) NoWhiteSpaceBefore rest
-    
+
     -- Process whitespace.
     posToken texState pos _ s | not (Text.null white) = toks
       where
         (white, rest) = Text.span isSpace s
         toks = posToken texState (advancePos pos white) WhiteSpaceBefore rest
-    
+
     -- Process tex whitespace.
     posToken texState pos _ s | useTex && hd == "\\\\" = toks
       where
@@ -120,7 +120,7 @@ tokenize texState start = posToken texState start NoWhiteSpaceBefore
       Nothing -> [EOF pos]
 
       -- We expand the `\{` and `\}` tex commands here
-      Just ('\\', rest) | (Text.head rest) `elem` ['{','}'] && useTex ->
+      Just ('\\', rest) | Text.head rest `elem` ['{','}'] && useTex ->
             posToken texState (advancePos pos "\\") WhiteSpaceBefore rest
 
       -- We expand alphanumeric tex commands here
@@ -129,9 +129,9 @@ tokenize texState start = posToken texState start NoWhiteSpaceBefore
           (name, rest') = Text.span isAlpha rest
           newToks = expandTexCmd name pos whitespaceBefore
           toks = posToken texState (advancePos pos (Text.cons '\\' name)) WhiteSpaceBefore rest'
-      
+
       Just ('$', rest) | useTex -> posToken texState (advancePos pos "$") WhiteSpaceBefore rest
-      
+
       -- We also tokenize away quotation marks, because they are intended to be used by the user
       -- as a way to write regular text in math mode. Of course, one needs to appropriately remap
       -- quotation marks in the tex file, see examples/powerset.ftl.tex on how to do this.
@@ -166,22 +166,27 @@ expandTexCmd "lambda" pos whiteSpaceBefore = [makeToken "\\" pos whiteSpaceBefor
 -- list of tex commands here so that they don't use `\`. Note that the fact that this is designed this way makes
 -- it conceptually impossible for the user to configure which tex commands are treated as words on the fly.
 
--- Tex words
-expandTexCmd s pos whiteSpaceBefore | elem (Text.toLower s) texWords = [makeToken ("tex" <> s) pos whiteSpaceBefore]
--- If this is not a predefined command to be expanded, just leave the backslash so that it gets treated as a symbol.
+-- Greek letters
+expandTexCmd s pos whiteSpaceBefore | s `elem` greek = [makeToken ("tex" <> s) pos whiteSpaceBefore]
+-- If this is not a greek letter to be expanded, just leave the backslash so that it gets treated as a symbol.
 expandTexCmd s pos whiteSpaceBefore = [makeToken (Text.cons '\\' s) pos whiteSpaceBefore]
 
-texWords :: [Text]
-texWords = [
+greek :: [Text]
+greek = lowerGreek ++ varGreek ++ upperGreek
+
+lowerGreek :: [Text]
+lowerGreek = [
     "alpha"
   , "beta"
   , "gamma"
   , "delta"
+  , "epsilon"
   , "zeta"
   , "eta"
   , "theta"
   , "iota"
   , "kappa"
+--  , "lambda"
   , "mu"
   , "nu"
   , "xi"
@@ -192,10 +197,39 @@ texWords = [
   , "tau"
   , "upsilon"
   , "phi"
-  , "varphi"
   , "chi"
   , "psi"
-  , "omega"]
+  , "omega"
+  ]
+
+varGreek :: [Text]
+varGreek = [
+    "varbeta"
+  , "varepsilon"
+  , "vartheta"
+  , "varkappa"
+  , "varpi"
+  , "varvarpi"
+  , "varrho"
+  , "varvarrho"
+  , "varsigma"
+  , "varphi"
+  ]
+
+upperGreek :: [Text]
+upperGreek = [
+    "Gamma"
+  , "Delta"
+  , "Theta"
+  , "Lambda"
+  , "Xi"
+  , "Pi"
+  , "Sigma"
+  , "Upsilon"
+  , "Phi"
+  , "Psi"
+  , "Omega"
+  ]
 
 -- This is only used in `expandTexCmd` and used to apply `makeToken` multiple times, while appropriately
 -- advancing the position.
