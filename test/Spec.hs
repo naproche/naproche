@@ -24,27 +24,34 @@ gather (hout, herr, ph) = do
 
 files :: [FilePath]
 files = fmap ("examples/"++)
-  [ "chinese.ftl"
+  [ "checkerboard.ftl"
+  , "chinese.ftl"
   , "fuerstenberg.ftl"
+  , "geometry.ftl"
   , "Koenigs_lemma.ftl"
   , "Maximum_principle.ftl"
   , "newman.ftl"
   , "powerset.ftl"
   , "prime_no_square.ftl"
+  , "regular_successor.ftl"
   , "tarski.ftl"
+  , "ZFC.ftl"
   , "test/inconsistency.ftl"
   , "test/read_test.ftl"
   ]
 
 texFiles :: [FilePath]
 texFiles = fmap ("examples/"++)
-  [ "chinese.ftl.tex"
+  [ "checkerboard.ftl.tex"
+  , "chinese.ftl.tex"
   , "fuerstenberg.ftl.tex"
+  , "geometry.ftl.tex"
   , "Koenigs_lemma.ftl.tex"
   , "Maximum_principle.ftl.tex"
   , "newman.ftl.tex"
   , "powerset.ftl.tex"
   , "prime_no_square.ftl.tex"
+  , "regular_successor.ftl.tex"
   , "tarski.ftl.tex"
   , "test/inconsistency.ftl.tex"
   , "test/read_test.ftl.tex"

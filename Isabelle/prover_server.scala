@@ -62,12 +62,12 @@ class Prover_Server private(port: Int, provers: Map[String, Path], debugging: =>
 
   private val _provers = Synchronized(Map.empty[UUID.T, Bash.Process])
 
-  override def handle(connection: Server.Connection)
+  override def handle(connection: Server.Connection): Unit =
   {
     def return_result(
       return_code: Int,
       timing: Timing = Timing.zero,
-      output: String = "")
+      output: String = ""): Unit =
     {
       val props =
         Markup.Return_Code(return_code) :::
@@ -81,7 +81,12 @@ class Prover_Server private(port: Int, provers: Map[String, Path], debugging: =>
       return_result(return_code = 2, output = output)
 
     def start_prover(
-      name: String, uuid: UUID.T, exe: Path, args: List[String], timeout: Time, input: String)
+      name: String,
+      uuid: UUID.T,
+      exe: Path,
+      args: List[String],
+      timeout: Time,
+      input: String): Unit =
     {
       if (debugging) {
         Output.writeln(
@@ -157,7 +162,7 @@ class Prover_Server private(port: Int, provers: Map[String, Path], debugging: =>
 
           case List(XML.Elem(Markup(Prover_Server.KILL, _), UUID(uuid))) =>
             if (debugging) Output.writeln("kill " + uuid)
-            _provers.value.get(uuid).foreach(_.terminate)
+            _provers.value.get(uuid).foreach(_.terminate())
 
           case _ =>
         }

@@ -24,7 +24,7 @@ isabelle jedit -b
   cd Isabelle
 
   rm -rf classes && mkdir classes
-  isabelle scalac -d classes "${SCALA_SOURCES[@]}"
+  isabelle scalac -d classes -deprecation "${SCALA_SOURCES[@]}"
 
   cd classes
   isabelle_jdk jar cf "$(platform_path "$NAPROCHE_JAR")" *
