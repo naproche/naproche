@@ -166,9 +166,9 @@ expandTexCmd "lambda" pos whiteSpaceBefore = [makeToken "\\" pos whiteSpaceBefor
 -- list of tex commands here so that they don't use `\`. Note that the fact that this is designed this way makes
 -- it conceptually impossible for the user to configure which tex commands are treated as words on the fly.
 
--- Greek letters
+-- Tex words
 expandTexCmd s pos whiteSpaceBefore | s `elem` greek = [makeToken ("tex" <> s) pos whiteSpaceBefore]
--- If this is not a greek letter to be expanded, just leave the backslash so that it gets treated as a symbol.
+-- If this is not a predefined command to be expanded, just leave the backslash so that it gets treated as a symbol.
 expandTexCmd s pos whiteSpaceBefore = [makeToken (Text.cons '\\' s) pos whiteSpaceBefore]
 
 greek :: [Text]
