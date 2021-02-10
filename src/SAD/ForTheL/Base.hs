@@ -348,7 +348,9 @@ var :: FTL PosVar
 var = do
   pos <- getPos
   v <- satisfy (\s -> Text.all isAlphaNum s && isAlpha (Text.head s))
-  return (PosVar (VarConstant v) pos)
+  primeCount <- (Text.concat . fmap (const "prime")) <$> many (symbol "'") -- Ugly hack.
+  let v' = v <> primeCount
+  return (PosVar (VarConstant v') pos)
 
 --- pretyped Variables
 
