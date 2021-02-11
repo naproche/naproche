@@ -12,6 +12,7 @@ echo "### Building Isabelle/Scala module: $NAPROCHE_JAR"
 declare -a SCALA_SOURCES=(
   file_format.scala
   naproche_component.scala
+  naproche_test.scala
   naproche_tools.scala
   prover_server.scala
 )

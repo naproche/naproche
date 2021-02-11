@@ -28,8 +28,7 @@ object Naproche_Component
   def build_component(
     progress: Progress = new Progress,
     target_dir: Path = Path.current,
-    pdf_documents: Boolean = false,
-    run_tests: Boolean = false): Unit =
+    pdf_documents: Boolean = false): Unit =
   {
     Isabelle_System.require_command("git")
 
@@ -75,9 +74,8 @@ object Naproche_Component
 
     /* PDF documents */
 
-    val examples = component_dir + Path.explode("examples")
-
     if (pdf_documents) {
+      val examples = component_dir + Path.explode("examples")
       val examples_pdf = component_dir + Path.explode("examples_pdf")
       Isabelle_System.copy_dir(examples, examples_pdf)
       for {
@@ -98,43 +96,6 @@ object Naproche_Component
         }
         File.copy(examples_pdf + pdf_name, examples)
       }
-    }
-
-
-    /* tests */
-
-    if (run_tests) {
-      val file_format = new isabelle.naproche.File_Format
-      val tests = File.find_files(examples.file, file => file_format.detect(file.getName))
-
-      var bad = List.empty[Path]
-      for (test <- tests) {
-        val path = File.path(test)
-        val text = File.read(path)
-
-        val test_failure = text.containsSlice("# test: FAILURE")
-        val test_ignore = text.containsSlice("# test: IGNORE")
-
-        if (test_ignore) {
-          progress.echo("Ignoring " + path.base)
-        }
-        else {
-          progress.echo("Checking " + path.base + " ...")
-          val start = Time.now()
-          val result = Isabelle_System.bash("\"$NAPROCHE_EXE\" -- " + File.bash_path(path))
-          val stop = Time.now()
-          val timing = stop - start
-
-          val expect_ok = !test_failure
-          progress.echo(
-            (if (result.ok) "OK" else "FAILURE") +
-              (if (result.ok == expect_ok) ""
-              else ", but expected " + (if (expect_ok) "OK" else "FAILURE")) +
-              (" (" + timing.message + " elapsed time)"))
-          if (result.ok != expect_ok) bad ::= path.base
-        }
-      }
-      if (bad.nonEmpty) error("Bad tests: " + bad.mkString(", "))
     }
 
 
@@ -167,7 +128,6 @@ object Naproche_Component
     {
       var target_dir = Path.current
       var pdf_documents = false
-      var run_tests = false
 
       val getopts = Getopts("""
 Usage: isabelle naproche_component [OPTIONS]
@@ -175,20 +135,17 @@ Usage: isabelle naproche_component [OPTIONS]
   Options are:
     -D DIR       target directory (default ".")
     -P           produce PDF documents
-    -T           run tests
 
   Build Isabelle/Naproche component from repository.
 """,
         "D:" -> (arg => target_dir = Path.explode(arg)),
-        "P" -> (_ => pdf_documents = true),
-        "T" -> (_ => run_tests = true))
+        "P" -> (_ => pdf_documents = true))
 
       val more_args = getopts(args)
       if (more_args.nonEmpty) getopts.usage()
 
       val progress = new Console_Progress()
 
-      build_component(progress = progress, target_dir = target_dir, pdf_documents = pdf_documents,
-        run_tests = run_tests)
+      build_component(progress = progress, target_dir = target_dir, pdf_documents = pdf_documents)
     })
 }
