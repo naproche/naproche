@@ -24,11 +24,11 @@
     [synonym system/-s]
     [synonym reduct/-s]
 
-    \begin{signature}[ElmSort]
+    \begin{signature}
       An element is a notion.
     \end{signature}
 
-    \begin{signature}[RelSort]
+    \begin{signature}
       A rewriting system is a notion.
     \end{signature}
 
@@ -69,7 +69,8 @@
     \end{definition}
 
     \begin{definition}
-      $R$ is locally confluent iff for all $a, b, c$ such that $a \reduces{R} b, c$
+      $R$ is locally confluent iff for all $a, b, c$ such that
+      $a \reduces{R} b, c$
       there exists $d$ such that $b, c \reducesTCR{R} d$.
     \end{definition}
 
@@ -79,11 +80,13 @@
     \end{definition}
 
     \begin{definition}
-      A normal form of $x$ in $R$ is an element $y$ such that $x \reducesTCR{R} y$ and $y$ has no reducts in $R$.
+      A normal form of $x$ in $R$ is an element $y$ such that
+      $x \reducesTCR{R} y$ and $y$ has no reducts in $R$.
     \end{definition}
 
     \begin{lemma}
-      Let $R$ be a terminating rewriting system. Every element $x$ has a normal form in $R$.
+      Let $R$ be a terminating rewriting system.
+      Every element $x$ has a normal form in $R$.
     \end{lemma}
     \begin{proof}
       Proof by induction.
@@ -91,7 +94,7 @@
 
 
     \begin{lemma}[Newman]
-      Any locally confluent terminating rewriting system is confluent.
+      Every locally confluent terminating rewriting system is confluent.
     \end{lemma}
     \begin{proof}
       Let $R$ be a rewriting system. Assume $R$ is locally confluent and
