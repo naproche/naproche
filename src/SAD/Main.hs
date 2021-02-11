@@ -71,8 +71,9 @@ main  = do
       (\err -> do
         exitThread
         let msg = Exception.displayException (err :: Exception.SomeException)
+        let rc = if msg == "user interrupt" then 130 else 1
         IO.hPutStrLn IO.stderr msg
-        Exit.exitFailure)
+        Exit.exitWith (Exit.ExitFailure rc))
 
 mainBody :: Maybe ByteString -> IORef ProofText -> [Instr] -> [ProofText] -> Maybe FilePath -> IO ()
 mainBody proversYaml oldProofTextRef opts0 text0 fileName = do
