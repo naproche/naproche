@@ -32,6 +32,17 @@ text \<open>
 \<close>
 
 
+section \<open>Tutorial\<close>
+
+text \<open>
+  See:
+
+    \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/TUTORIAL.ftl.tex\<close>
+
+    \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/TUTORIAL.ftl.pdf\<close>
+\<close>
+
+
 section \<open>Implementation and system integration\<close>
 
 text \<open>
