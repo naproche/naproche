@@ -1,3 +1,4 @@
-# This won't compile; we ensure that in the testsuite.
+# test: FAILURE
+
 Definition. R = { sets x | x is not an element of x}.
 Theorem. Contradiction.
