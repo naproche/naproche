@@ -71,10 +71,10 @@ output xs = do
 
 main :: IO ()
 main = do
-  compiled <- mapM (compileFile ["--tex=off"]) files
-  compiledTex <- mapM (compileFile ["--tex=on"]) texFiles
+  compiled <- mapM (\f -> gather =<< compileFile ["--tex=off"] f) files
+  compiledTex <- mapM (\f -> gather =<< compileFile ["--tex=on"] f) texFiles
 
-  failed <- output . zip (files ++ texFiles) =<< mapM gather (compiled ++ compiledTex)
+  failed <- output . zip (files ++ texFiles) $ (compiled ++ compiledTex)
   let shouldntHaveFailed = filter (\f -> snd f `notElem` shouldFailFiles) failed
   let shouldHaveFailed = shouldFailFiles \\ map snd failed
   code <- newIORef ExitSuccess

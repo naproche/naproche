@@ -21,7 +21,7 @@ The subsequent explanations are for **development** of the tool, not for end-use
     Supported versions: 2.0 to 2.5
 
   * Optional (for development): Haskell IDE within VSCode:
-    https://github.com/haskell/haskell-ide-engine
+    https://marketplace.visualstudio.com/items?itemName=haskell.haskell
 
 
 ### Build and test

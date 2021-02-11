@@ -311,8 +311,10 @@ knownVariable = do
 singleLetterVariable :: FTL PosVar
 singleLetterVariable = do
   v <- var;
-  guard $ Text.null $ Text.tail $ deVar $ posVarName v
+  guard $ isSingleLetter $ deVar $ posVarName v
   return v
   where
     deVar (VarConstant s) = s
     deVar _ = error "SAD.ForTheL.Pattern.singleLetterVariable: other variable"
+    isSingleLetter :: Text -> Bool
+    isSingleLetter x = Text.null (Text.tail x) || x `elem` fmap ("tex" <>) greek
