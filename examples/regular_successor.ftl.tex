@@ -5,6 +5,9 @@
 \usepackage{../lib/tex/naproche}
 
 \newcommand{\Prod}[2]{#1\times #2}
+\newcommand{\Succ}[1]{#1^{+}}
+\newcommand{\image}[2]{#1^{\to}[#2]}
+\newcommand{\card}[1]{\left|#1\right|}
 
 \title{Regularity of successor cardinals}
 \author{Steffen Frerix}
@@ -34,7 +37,7 @@
     \end{axiom}
 
     \begin{axiom}
-      Let $f$ be a function. Let $M$ be a set. Assume $Dom(f) = M$.
+      Let $f$ be a function. Let $M$ be a set. Assume $\dom(f) = M$.
       Let $x$ be an element of $M$. Then $f(x)$ is setsized.
     \end{axiom}
 
@@ -61,40 +64,42 @@
     \end{axiom}
 
     \begin{definition}
-      Assume $M$ is a subset of $Dom(f)$. $f^[M] = \{f(x) | x "is an element of" M\}$.
+      Assume $M$ is a subset of $\dom(f)$.
+      $\image{f}{M} = \{f(x) | x "is an element of" M\}$.
     \end{definition}
 
     \begin{axiom}
-      Assume $M$ is a subset of $Dom(f)$. $f^[M]$ is a set.
+      Assume $M$ is a subset of $\dom(f)$.
+      $\image{f}{M}$ is a set.
     \end{axiom}
 
-    Let $f$ is surjective from $M$ onto $N$ stand for $Dom(f) = M$ and $f^[M] = N$.
+    Let $f$ is surjective from $M$ onto $N$ stand for $\dom(f) = M$ and $\image{f}{M} = N$.
 
     \begin{signature}
       An ordinal is a set.
     \end{signature}
 
-    Let $alpha, beta$ denote ordinals.
+    Let $\alpha, \beta$ denote ordinals.
 
     \begin{axiom}
-      Every element of $alpha$ is an ordinal.
+      Every element of $\alpha$ is an ordinal.
     \end{axiom}
 
     \begin{signature}
       A cardinal is an ordinal.
     \end{signature}
 
-    Let $A,B,C$ denote cardinals.
+    Let $A,B,C,\kappa, \mu, \nu$ denote cardinals.
 
     \begin{signature}
-      $alpha < beta$ is an atom.
+      $\alpha < \beta$ is an atom.
     \end{signature}
 
     \begin{axiom}
-      If $alpha < beta$ then $alpha$ is an element of $beta$.
+      If $\alpha < \beta$ then $\alpha$ is an element of $\beta$.
     \end{axiom}
 
-    Let $a =< b$ stand for $a = b$ or $a < b$.
+    Let $a \leq b$ stand for $a = b$ or $a < b$.
 
     \begin{definition}
       Assume $M$ is a subset of $A$. $M$ is cofinal in $A$ iff for every element $x$ of $A$ there exists an element $y$ of $M$ such that $x < y$.
@@ -106,10 +111,11 @@
       The cardinality of $M$ is a cardinal.
     \end{signature}
 
-    Let $card(M)$ stand for the cardinality of $M$.
+    Let $\card{M}$ stand for the cardinality of $M$.
 
     \begin{axiom}[SurjExi]
-      Assume $M$ has an element. $card(M) =< card(N)$ iff there exists a function $f$ such that $Dom(f) = N$ and $f^[N] = M$.
+      Assume $M$ has an element.
+      $\card{M} \leq \card{N}$ iff there exists a function $f$ such that $\dom(f) = N$ and $\image{f}{N} = M$.
     \end{axiom}
 
     \begin{axiom}[Transitivity]
@@ -117,79 +123,87 @@
     \end{axiom}
 
     \begin{axiom}
-      $card(\Prod{M}{M}) = card(M)$.
+      $\card{\Prod{M}{M}} = \card{M}$.
     \end{axiom}
 
     \begin{axiom}
-      $card(A) = A$.
+      $\card{A} = A$.
     \end{axiom}
 
     \begin{axiom}
-      Let $N$ be a subset of $M$. $card(N) =< card(M)$.
+      Let $N$ be a subset of $M$. $\card{N} \leq \card{M}$.
     \end{axiom}
 
     \begin{definition}
-      $A$ is regular iff $card(M) = A$ for every cofinal subset $M$ of $A$.
+      $\kappa$ is regular iff $\card{M} = \kappa$ for every cofinal subset $M$ of $\kappa$.
     \end{definition}
 
     \begin{signature}
-      $Succ(A)$ is a cardinal.
+      $\Succ{\kappa}$ is a cardinal.
     \end{signature}
 
     \begin{axiom}
-      $alpha < beta$ or $beta < alpha$ or $beta = alpha$.
+      $\alpha < \beta$ or $\beta < \alpha$ or $\beta = \alpha$.
     \end{axiom}
 
     \begin{axiom}
-      $A < Succ(A)$.
+      $\kappa < \Succ{\kappa}$.
     \end{axiom}
 
     \begin{axiom}
-      $card(i) =< A$ for every element $i$ of $Succ(A)$.
+      $\card{\alpha} \leq \kappa$ for every element $\alpha$ of $\Succ{\kappa}$.
     \end{axiom}
 
     \begin{axiom}
-      For no cardinals $A,B$ we have $A < B$ and $B < A$.
+      For no cardinals $\mu, \nu$ we have $\mu < \nu$ and $\nu < \mu$.
     \end{axiom}
 
     \begin{axiom}
-      There is no cardinal $B$ such that $A < B < Succ(A)$.
+      There is no cardinal $\nu$ such that $\kappa < \nu < \Succ{\kappa}$.
     \end{axiom}
 
     \begin{definition}
-      The empty set is a cardinal $E$ such that $E$ is an element of (every ordinal that has an element).
+      The empty set is a cardinal $\eta$ such that $\eta$
+      is an element of (every ordinal that has an element).
     \end{definition}
 
     \begin{definition}
-      The constant zero on $M$ is a function $f$ such that $Dom(f) = M$ and $f(x)$ is the empty set for every element $x$ of $M$.
+      The constant zero on $M$ is a function $f$ such that $\dom(f) = M$ and $f(x)$ is the empty set for every element $x$ of $M$.
     \end{definition}
 
     Let $0^M$ stand for the constant zero on $M$.
 
     \begin{theorem}
-      $Succ(A)$ is regular.
+      $\Succ{A}$ is regular.
     \end{theorem}
     \begin{proof}
       Proof by contradiction. Assume the contrary. Take a cofinal subset $x$ of
-      $Succ(A)$ such that $card(x) != Succ(A)$. Then $card(x) =< A$. Take a function $f$ that is surjective from $A$ onto $x$ (by SurjExi). Indeed $x$ has an element and $card(A) = A$.
+      $\Succ{A}$ such that $\card{x} \neq \Succ{A}$. Then $\card{x} \leq A$. Take a function $f$ that is surjective from $A$ onto $x$ (by SurjExi). Indeed $x$ has an element and $\card{A} = A$.
 
       Define $g(i) =$
         Case $i$ has an element -> Choose a function $h$ that is surjective from $A$ onto $i$ in $h$,
         Case $i$ has no element -> $0^A$
-      for $i$ in $Succ(A)$.
+      for $i$ in $\Succ{A}$.
 
-      Define $h((xi,zeta)) = g(f(xi))(zeta)$ for $(xi,zeta)$ in $\Prod{A}{A}$.
+      Define $h((\xi,\zeta)) = g(f(\xi))(\zeta)$ for $(\xi,\zeta)$ in $\Prod{A}{A}$.
 
-      Let us show that $h$ is surjective from $\Prod{A}{A}$ onto $Succ(A)$. $Dom(h) = \Prod{A}{A}$.
+      Let us show that $h$ is surjective from $\Prod{A}{A}$ onto $\Succ{A}$. $\dom(h) = \Prod{A}{A}$.
 
-        Every element of $Succ(A)$ is an element of $h^[\Prod{A}{A}]$.
+        Every element of $\Succ{A}$ is an element of $\image{h}{\Prod{A}{A}}$.
         proof.
-          Let $n$ be an element of $Succ(A)$. Take an element $xi$ of $A$ such that $n < f(xi)$. Take an element $zeta$ of $A$ such that $g(f(xi))(zeta) = n$. Then $n = h((xi,zeta))$. Therefore the thesis. Indeed $(xi,zeta)$ is an element of $\Prod{A}{A}$.
+          Let $n$ be an element of $\Succ{A}$.
+          Take an element $\xi$ of $A$ such that $n < f(\xi)$.
+          Take an element $\zeta$ of $A$ such that $g(f(\xi))(\zeta) = n$.
+          Then $n = h((\xi,\zeta))$.
+          Therefore the thesis.
+          Indeed $(\xi,\zeta)$ is an element of $\Prod{A}{A}$.
         end.
 
-        Every element of $h^[\Prod{A}{A}]$ is an element of $Succ(A)$.
+        Every element of $\image{h}{\Prod{A}{A}}$ is an element of $\Succ{A}$.
         proof.
-          Let $n$ be an element of $h^[\Prod{A}{A}]$. We can take elements $a,b$ of $A$ such that $n = h((a,b))$. Then $n = g(f(a))(b)$. $f(a)$ is an element of $Succ(A)$.
+          Let $n$ be an element of $\image{h}{\Prod{A}{A}}$.
+          We can take elements $a,b$ of $A$ such that $n = h((a,b))$.
+          Then $n = g(f(a))(b)$. $f(a)$ is an element of $\Succ{A}$.
 
           Case $f(a)$ has an element. Obvious (by Transitivity).
 
@@ -197,7 +211,7 @@
         end.
       end.
 
-      Therefore $Succ(A) =< A$. Contradiction.
+      Therefore $\Succ{A} \leq A$. Contradiction.
     \end{proof}
   \end{forthel}
 
