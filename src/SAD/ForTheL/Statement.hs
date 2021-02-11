@@ -465,10 +465,10 @@ symbSetNotation = cndSet </> finSet
 
     sepFrom :: FTL (Formula -> Formula, Formula -> Formula, Formula, Formula -> Formula)
     sepFrom = notionSep -|- setSep -|- noSep
-    
+
     notionSep = do
       (q, f, v) <- notion >>= single; guard (not . (==) TermEquality . trmName $ f)
-      return (Tag Replacement, \tr -> subst tr (posVarName v) $ q f, pVar v, mkClass) 
+      return (Tag Replacement, \tr -> subst tr (posVarName v) $ q f, pVar v, mkClass)
     setSep = do
       t <- sTerm
       token' "in"
@@ -497,16 +497,37 @@ functionNotion = sVar <**> (wordFun <|> (token "=" >> lambda))
     return $ \f -> mkFun f `And` Tag Domain (dom f) `And` body f
 
 lambdaBody :: FTL (Formula -> Formula)
-lambdaBody = label "function definition" $ paren $ cases <|> chooseInTerm
+lambdaBody = label "function definition" $ paren $ cases <|> texCases <|> chooseInTerm
 
 cases :: FTL (Formula -> Formula)
 cases = do
   cas <- ld_case `sepByLL1` token ","
   return $ \fx -> foldr1 And $ map ((&) fx) cas
   where
+    ld_case :: FTL (Formula -> Formula)
     ld_case = do
-      optLL1 () $ token' "case"; condition <- statement; arrow
-      fmap ((.) $ Tag Condition . Imp condition) chooseInTerm
+      optLL1 () (token' "case")
+      condition <- statement
+      arrow
+      c <- chooseInTerm
+      return (Tag Condition . Imp condition . c)
+
+texCases  :: FTL (Formula -> Formula)
+texCases = do
+  texBegin (token "cases")
+  stanza <- many line -- `sepByLL1` (symbol "," *> symbol ",")
+  texEnd (token "cases")
+  return $ \fx -> foldr1 And $ map ((&) fx) stanza
+  where
+    optionallyInText :: FTL a -> FTL a
+    optionallyInText p = (token "\\text" *> symbol "{" *> p <* symbol "}") <|> p
+    line :: FTL (Formula -> Formula)
+    line = do
+      value <- optionallyInText chooseInTerm
+      symbol "&"
+      condition <- optionallyInText statement
+      return (Tag Condition . Imp condition . value)
+
 
 chooseInTerm :: FTL (Formula -> Formula)
 chooseInTerm = do
@@ -539,7 +560,7 @@ lambda = do
   df <- addDecl vs lambdaBody
   return $ \f -> mkFun f `And` Tag Domain (dom f) `And` (df_head f $ df $ mkApp f t)
   where
-    ld_head = finish $ token "\\" >> lambdaIn
+    ld_head = finish $ symbol "\\" >> lambdaIn
 
 pair :: FTL Formula
 pair = sVar </> pr

@@ -3,11 +3,13 @@
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{../lib/tex/naproche}
+\usepackage{amssymb}
 
 \newcommand{\Prod}[2]{#1\times #2}
 \newcommand{\Succ}[1]{#1^{+}}
 \newcommand{\image}[2]{#1^{\to}[#2]}
 \newcommand{\card}[1]{\left|#1\right|}
+\newcommand{\surjects}{\twoheadrightarrow}
 
 \title{Regularity of successor cardinals}
 \author{Steffen Frerix}
@@ -81,6 +83,8 @@
     \end{axiom}
 
     Let $f$ is surjective from $X$ onto $Y$ stand for $\dom(f) = X$ and $\image{f}{X} = Y$.
+
+    Let $f : X \surjects Y$ stand for $f$ is surjective from $X$ onto $Y$.
 
     \begin{signature}
       An ordinal is a set.
@@ -195,11 +199,19 @@
       Then $\card{x} \leq \kappa$.
       Take a function $f$ that is surjective from $\kappa$ onto $x$ (by existence of surjection).
       Indeed $x$ has an element and $\card{\kappa} = \kappa$.
-
-      Define $g(i) =$
-        Case $i$ has an element -> Choose a function $h$ that is surjective from $\kappa$ onto $i$ in $h$,
-        Case $i$ has no element -> $0^\kappa$
-      for $i$ in $\Succ{\kappa}$.
+      %
+      Define
+      $$
+        g(z) =
+          \begin{cases}
+            \text{choose a function $h$ such that $h : \kappa \surjects z$ in $h$}
+            & \text{$z$ has an element}
+            \\
+            \text{$0^\kappa$}
+            & \text{$z$ has no element}
+          \end{cases}
+      $$
+      for $z$ in $\Succ{\kappa}$.
 
       Define $h((\xi,\zeta)) = g(f(\xi))(\zeta)$ for $(\xi,\zeta)$ in $\Prod{\kappa}{\kappa}$.
 
