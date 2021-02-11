@@ -32,7 +32,7 @@ object Naproche_Test
       else {
         progress.echo("Checking " + path.base + " ...")
         val start = Time.now()
-        val result = Isabelle_System.bash("\"$NAPROCHE_EXE\" -- " + File.bash_path(path))
+        val result = progress.bash("\"$NAPROCHE_EXE\" -- " + File.bash_path(path))
         val stop = Time.now()
         val timing = stop - start
 

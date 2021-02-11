@@ -85,10 +85,10 @@ object Naproche_Component
         if text.containsSlice("\\documentclass")
       } {
         val pdf_name = Path.basic(base_name).pdf
+        progress.expose_interrupt()
         progress.echo("Building " + pdf_name)
         for (_ <- 1 to 2) {
-          val result =
-            Isabelle_System.bash("pdflatex " + Bash.string(name), cwd = examples_pdf.file)
+          val result = progress.bash("pdflatex " + Bash.string(name), cwd = examples_pdf.file)
           if (!result.ok) {
             error(cat_lines("LaTeX failed:"
               :: result.out_lines.drop(result.out_lines.length - output_tail max 0)))
