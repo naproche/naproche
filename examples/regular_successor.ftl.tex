@@ -37,12 +37,14 @@
     \end{axiom}
 
     \begin{axiom}
-      Let $f$ be a function. Let $M$ be a set. Assume $\dom(f) = M$.
+      Let $f$ be a function.
+      Let $M$ be a set.
+      Assume $\dom(f) = M$.
       Let $x$ be an element of $M$. Then $f(x)$ is setsized.
     \end{axiom}
 
     \begin{definition}
-      $\Prod{M}{N} = \{(x,y) | x "is an element of" M "and" y "is an element of" N\}$.
+      $\Prod{M}{N} = \{(x,y) \mid x \in M \wedge y \in N\}$.
     \end{definition}
 
     \begin{axiom}
@@ -50,7 +52,9 @@
     \end{axiom}
 
     \begin{lemma}
-      Let $x,y$ be objects. If $(x,y)$ is an element of $\Prod{M}{N}$ then $x$ is an element of $M$ and $y$ is an element of $N$.
+      Let $x,y$ be objects.
+      If $(x,y)$ is an element of $\Prod{M}{N}$
+      then $x$ is an element of $M$ and $y$ is an element of $N$.
     \end{lemma}
 
     Let $f$ denote a function.
@@ -59,17 +63,19 @@
       A subset of $M$ is a set $N$ such that every element of $N$ is an element of $M$.
     \end{definition}
 
+    Let $M\subseteq N$ stand for $M$ is a subset of $N$.
+
     \begin{axiom}[Extensionality]
-      If $M$ is a subset of $N$ and $N$ is a subset of $M$ then $M = N$.
+      If $M\subseteq N$ and $N\subseteq M$ then $M = N$.
     \end{axiom}
 
     \begin{definition}
-      Assume $M$ is a subset of $\dom(f)$.
-      $\image{f}{M} = \{f(x) | x "is an element of" M\}$.
+      Assume $M\subseteq \dom(f)$.
+      $\image{f}{M} = \{f(x) \mid x \in M\}$.
     \end{definition}
 
     \begin{axiom}
-      Assume $M$ is a subset of $\dom(f)$.
+      Assume $M\subseteq \dom(f)$.
       $\image{f}{M}$ is a set.
     \end{axiom}
 
@@ -102,7 +108,9 @@
     Let $a \leq b$ stand for $a = b$ or $a < b$.
 
     \begin{definition}
-      Assume $M$ is a subset of $A$. $M$ is cofinal in $A$ iff for every element $x$ of $A$ there exists an element $y$ of $M$ such that $x < y$.
+      Assume $M\subseteq \kappa$.
+      $M$ is cofinal in $\kappa$ iff
+        for every element $x$ of $\kappa$ there exists an element $y$ of $M$ such that $x < y$.
     \end{definition}
 
     Let a cofinal subset of $A$ stand for a subset of $A$ that is cofinal in $A$.
@@ -113,13 +121,13 @@
 
     Let $\card{M}$ stand for the cardinality of $M$.
 
-    \begin{axiom}[SurjExi]
+    \begin{axiom}[Existence of surjection]
       Assume $M$ has an element.
       $\card{M} \leq \card{N}$ iff there exists a function $f$ such that $\dom(f) = N$ and $\image{f}{N} = M$.
     \end{axiom}
 
     \begin{axiom}[Transitivity]
-      Let $M$ be an element of $A$. Assume $N$ is an element of $M$. $N$ is an element of $A$.
+      Let $M\in \kappa$. Assume $N$ is an element of $M$. $N$ is an element of $\kappa$.
     \end{axiom}
 
     \begin{axiom}
@@ -127,7 +135,7 @@
     \end{axiom}
 
     \begin{axiom}
-      $\card{A} = A$.
+      $\card{\kappa} = \kappa$.
     \end{axiom}
 
     \begin{axiom}
@@ -174,44 +182,48 @@
     Let $0^M$ stand for the constant zero on $M$.
 
     \begin{theorem}
-      $\Succ{A}$ is regular.
+      $\Succ{\kappa}$ is regular.
     \end{theorem}
     \begin{proof}
-      Proof by contradiction. Assume the contrary. Take a cofinal subset $x$ of
-      $\Succ{A}$ such that $\card{x} \neq \Succ{A}$. Then $\card{x} \leq A$. Take a function $f$ that is surjective from $A$ onto $x$ (by SurjExi). Indeed $x$ has an element and $\card{A} = A$.
+      Proof by contradiction. Assume the contrary.
+      Take a cofinal subset $x$ of $\Succ{\kappa}$ such that $\card{x} \neq \Succ{\kappa}$.
+      Then $\card{x} \leq \kappa$.
+      Take a function $f$ that is surjective from $\kappa$ onto $x$ (by existence of surjection).
+      Indeed $x$ has an element and $\card{\kappa} = \kappa$.
 
       Define $g(i) =$
-        Case $i$ has an element -> Choose a function $h$ that is surjective from $A$ onto $i$ in $h$,
-        Case $i$ has no element -> $0^A$
-      for $i$ in $\Succ{A}$.
+        Case $i$ has an element -> Choose a function $h$ that is surjective from $\kappa$ onto $i$ in $h$,
+        Case $i$ has no element -> $0^\kappa$
+      for $i$ in $\Succ{\kappa}$.
 
-      Define $h((\xi,\zeta)) = g(f(\xi))(\zeta)$ for $(\xi,\zeta)$ in $\Prod{A}{A}$.
+      Define $h((\xi,\zeta)) = g(f(\xi))(\zeta)$ for $(\xi,\zeta)$ in $\Prod{\kappa}{\kappa}$.
 
-      Let us show that $h$ is surjective from $\Prod{A}{A}$ onto $\Succ{A}$. $\dom(h) = \Prod{A}{A}$.
+      Let us show that $h$ is surjective from $\Prod{\kappa}{\kappa}$ onto $\Succ{\kappa}$.
+      $\dom(h) = \Prod{\kappa}{\kappa}$.
 
-        Every element of $\Succ{A}$ is an element of $\image{h}{\Prod{A}{A}}$.
+        Every element of $\Succ{\kappa}$ is an element of $\image{h}{\Prod{\kappa}{\kappa}}$.
         proof.
-          Let $n$ be an element of $\Succ{A}$.
-          Take an element $\xi$ of $A$ such that $n < f(\xi)$.
-          Take an element $\zeta$ of $A$ such that $g(f(\xi))(\zeta) = n$.
+          Let $n$ be an element of $\Succ{\kappa}$.
+          Take an element $\xi$ of $\kappa$ such that $n < f(\xi)$.
+          Take an element $\zeta$ of $\kappa$ such that $g(f(\xi))(\zeta) = n$.
           Then $n = h((\xi,\zeta))$.
           Therefore the thesis.
-          Indeed $(\xi,\zeta)$ is an element of $\Prod{A}{A}$.
+          Indeed $(\xi,\zeta)$ is an element of $\Prod{\kappa}{\kappa}$.
         end.
 
-        Every element of $\image{h}{\Prod{A}{A}}$ is an element of $\Succ{A}$.
+        Every element of $\image{h}{\Prod{\kappa}{\kappa}}$ is an element of $\Succ{\kappa}$.
         proof.
-          Let $n$ be an element of $\image{h}{\Prod{A}{A}}$.
-          We can take elements $a,b$ of $A$ such that $n = h((a,b))$.
-          Then $n = g(f(a))(b)$. $f(a)$ is an element of $\Succ{A}$.
+          Let $n$ be an element of $\image{h}{\Prod{\kappa}{\kappa}}$.
+          We can take elements $a,b$ of $\kappa$ such that $n = h((a,b))$.
+          Then $n = g(f(a))(b)$. $f(a)$ is an element of $\Succ{\kappa}$.
 
-          Case $f(a)$ has an element. Obvious (by Transitivity).
+          Case $f(a)$ has an element. Obvious (by transitivity).
 
-          Case $f(a)$ has no element. Obvious (by Transitivity).
+          Case $f(a)$ has no element. Obvious (by transitivity).
         end.
       end.
 
-      Therefore $\Succ{A} \leq A$. Contradiction.
+      Therefore $\Succ{\kappa} \leq \kappa$. Contradiction.
     \end{proof}
   \end{forthel}
 
