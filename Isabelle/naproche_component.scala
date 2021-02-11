@@ -17,7 +17,8 @@ object Naproche_Component
   def naproche_platform: String = naproche_exe_dir.expand.base.implode
 
   val cleanup_names: List[String] = List("_config.yml")
-  val cleanup_trees: List[String] = List(".git", ".gitignore", ".travis.yml", "examples_pdf")
+  val cleanup_trees: List[String] =
+    List(".git", ".gitignore", ".travis.yml", "examples_pdf", "examples/test")
 
   val output_tail = 20
 
@@ -100,33 +101,13 @@ object Naproche_Component
     }
 
 
-    /* cleanup */
-
-    File.find_files(component_dir.absolute_file,
-      pred = file => cleanup_names.contains(file.getName)).foreach(_.delete)
-
-    cleanup_trees.foreach(name =>
-      Isabelle_System.rm_tree(component_dir + Path.explode(name)))
-
-    File.write(component_dir + Path.explode("etc/no_admin"), "")
-
-
-    /* component archive */
-
-    val component_archive = Path.explode(component + "_" + naproche_platform + ".tar.gz")
-
-    progress.echo("Component archive " + (target_dir + component_archive))
-    progress.bash("tar -czf " + File.bash_path(component_archive) + " " + Bash.string(component),
-      cwd = target_dir.file).check
-
-
     /* tests */
 
     if (run_tests) {
       val file_format = new isabelle.naproche.File_Format
       val tests = File.find_files(examples.file, file => file_format.detect(file.getName))
 
-      var bad = false
+      var bad = List.empty[Path]
       for (test <- tests) {
         val path = File.path(test)
         val text = File.read(path)
@@ -150,11 +131,31 @@ object Naproche_Component
               (if (result.ok == expect_ok) ""
               else ", but expected " + (if (expect_ok) "OK" else "FAILURE")) +
               (" (" + timing.message + " elapsed time)"))
-          if (result.ok != expect_ok) bad = true
+          if (result.ok != expect_ok) bad ::= path
         }
       }
-      if (bad) error("Tests failed")
+      if (bad.nonEmpty) error("Bad tests: " + bad.mkString(", "))
     }
+
+
+    /* cleanup */
+
+    File.find_files(component_dir.absolute_file,
+      pred = file => cleanup_names.contains(file.getName)).foreach(_.delete)
+
+    cleanup_trees.foreach(name =>
+      Isabelle_System.rm_tree(component_dir + Path.explode(name)))
+
+    File.write(component_dir + Path.explode("etc/no_admin"), "")
+
+
+    /* component archive */
+
+    val component_archive = Path.explode(component + "_" + naproche_platform + ".tar.gz")
+
+    progress.echo("Component archive " + (target_dir + component_archive))
+    progress.bash("tar -czf " + File.bash_path(component_archive) + " " + Bash.string(component),
+      cwd = target_dir.file).check
   }
 
 
