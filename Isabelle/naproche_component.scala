@@ -131,7 +131,7 @@ object Naproche_Component
               (if (result.ok == expect_ok) ""
               else ", but expected " + (if (expect_ok) "OK" else "FAILURE")) +
               (" (" + timing.message + " elapsed time)"))
-          if (result.ok != expect_ok) bad ::= path
+          if (result.ok != expect_ok) bad ::= path.base
         }
       }
       if (bad.nonEmpty) error("Bad tests: " + bad.mkString(", "))
