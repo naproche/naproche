@@ -96,7 +96,7 @@
       A cardinal is an ordinal.
     \end{signature}
 
-    Let $A, \kappa, \mu, \nu$ denote cardinals.
+    Let $\kappa, \mu, \nu$ denote cardinals.
 
     \begin{signature}
       $\alpha < \beta$ is an atom.
@@ -110,10 +110,10 @@
 
     \begin{definition}[Cofinality]
       Let $\kappa$ be a cardinal.
-      Let $M$ be a subset of $\kappa$.
+      Let $Y$ be a subset of $\kappa$.
       %Assume $M\subseteq \kappa$.
-      $M$ is cofinal in $\kappa$ iff
-        for every element $x$ of $\kappa$ there exists an element $y$ of $M$ such that $x < y$.
+      $Y$ is cofinal in $\kappa$ iff
+        for every element $x$ of $\kappa$ there exists an element $y$ of $Y$ such that $x < y$.
     \end{definition}
 
     Let a cofinal subset of $\kappa$ stand for a subset of $\kappa$ that is cofinal in $\kappa$.
@@ -128,7 +128,11 @@
     \end{axiom}
 
     \begin{axiom}[Transitivity]
-      Let $M\in \kappa$. Assume $N$ is an element of $M$. $N$ is an element of $\kappa$.
+      %Let $M\in \kappa$.
+      %Let $N$ be an element of $M$.
+      %$N$ is an element of $\kappa$.
+      Let $x\in y\in \kappa$.
+      Then $x\in \kappa$.
     \end{axiom}
 
     \begin{axiom}
@@ -203,14 +207,14 @@
       $\dom(h) = \Prod{\kappa}{\kappa}$.
 
         Every element of $\Succ{\kappa}$ is an element of $\image{h}{\Prod{\kappa}{\kappa}}$.
-        proof.
+        Proof.
           Let $n$ be an element of $\Succ{\kappa}$.
           Take an element $\xi$ of $\kappa$ such that $n < f(\xi)$.
           Take an element $\zeta$ of $\kappa$ such that $g(f(\xi))(\zeta) = n$.
           Then $n = h((\xi,\zeta))$.
           Therefore the thesis.
           Indeed $(\xi,\zeta)$ is an element of $\Prod{\kappa}{\kappa}$.
-        end.
+        End.
 
         Every element of $\image{h}{\Prod{\kappa}{\kappa}}$ is an element of $\Succ{\kappa}$.
         proof.
@@ -218,9 +222,9 @@
           We can take elements $a,b$ of $\kappa$ such that $n = h((a,b))$.
           Then $n = g(f(a))(b)$. $f(a)$ is an element of $\Succ{\kappa}$.
 
-          Case $f(a)$ has an element. Obvious (by transitivity).
+          Case $f(a)$ has an element. Obvious.
 
-          Case $f(a)$ has no element. Obvious (by transitivity).
+          Case $f(a)$ has no element. Obvious.
         End.
       End.
 
