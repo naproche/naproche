@@ -66,6 +66,11 @@ Usage: isabelle naproche_test
 
       val progress = new Console_Progress()
 
+      val results =
+        Build.build(Options.init(), select_dirs = List(Path.explode("$NAPROCHE_HOME")),
+          progress = progress)
+      if (!results.ok) sys.exit(results.rc)
+
       run_tests(progress = progress)
     })
 }
