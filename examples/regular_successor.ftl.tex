@@ -4,6 +4,8 @@
 \usepackage[english]{babel}
 \usepackage{../lib/tex/naproche}
 
+\newcommand{\Prod}[2]{#1\times #2}
+
 \title{Regularity of successor cardinals}
 \author{Steffen Frerix}
 \date{2018}
@@ -37,15 +39,15 @@
     \end{axiom}
 
     \begin{definition}
-      $Prod(M,N) = \{(x,y) | x "is an element of" M "and" y "is an element of" N\}$.
+      $\Prod{M}{N} = \{(x,y) | x "is an element of" M "and" y "is an element of" N\}$.
     \end{definition}
 
     \begin{axiom}
-      $Prod(M, N)$ is a set.
+      $\Prod{M}{N}$ is a set.
     \end{axiom}
 
     \begin{lemma}
-      Let $x,y$ be objects. If $(x,y)$ is an element of $Prod(M,N)$ then $x$ is an element of $M$ and $y$ is an element of $N$.
+      Let $x,y$ be objects. If $(x,y)$ is an element of $\Prod{M}{N}$ then $x$ is an element of $M$ and $y$ is an element of $N$.
     \end{lemma}
 
     Let $f$ denote a function.
@@ -115,7 +117,7 @@
     \end{axiom}
 
     \begin{axiom}
-      $card(Prod(M,M)) = card(M)$.
+      $card(\Prod{M}{M}) = card(M)$.
     \end{axiom}
 
     \begin{axiom}
@@ -176,18 +178,18 @@
         Case $i$ has no element -> $0^A$
       for $i$ in $Succ(A)$.
 
-      Define $h((xi,zeta)) = g(f(xi))(zeta)$ for $(xi,zeta)$ in $Prod(A,A)$.
+      Define $h((xi,zeta)) = g(f(xi))(zeta)$ for $(xi,zeta)$ in $\Prod{A}{A}$.
 
-      Let us show that $h$ is surjective from $Prod(A,A)$ onto $Succ(A)$. $Dom(h) = Prod(A,A)$.
+      Let us show that $h$ is surjective from $\Prod{A}{A}$ onto $Succ(A)$. $Dom(h) = \Prod{A}{A}$.
 
-        Every element of $Succ(A)$ is an element of $h^[Prod(A,A)]$.
+        Every element of $Succ(A)$ is an element of $h^[\Prod{A}{A}]$.
         proof.
-          Let $n$ be an element of $Succ(A)$. Take an element $xi$ of $A$ such that $n < f(xi)$. Take an element $zeta$ of $A$ such that $g(f(xi))(zeta) = n$. Then $n = h((xi,zeta))$. Therefore the thesis. Indeed $(xi,zeta)$ is an element of $Prod(A,A)$.
+          Let $n$ be an element of $Succ(A)$. Take an element $xi$ of $A$ such that $n < f(xi)$. Take an element $zeta$ of $A$ such that $g(f(xi))(zeta) = n$. Then $n = h((xi,zeta))$. Therefore the thesis. Indeed $(xi,zeta)$ is an element of $\Prod{A}{A}$.
         end.
 
-        Every element of $h^[Prod(A,A)]$ is an element of $Succ(A)$.
+        Every element of $h^[\Prod{A}{A}]$ is an element of $Succ(A)$.
         proof.
-          Let $n$ be an element of $h^[Prod(A,A)]$. We can take elements $a,b$ of $A$ such that $n = h((a,b))$. Then $n = g(f(a))(b)$. $f(a)$ is an element of $Succ(A)$.
+          Let $n$ be an element of $h^[\Prod{A}{A}]$. We can take elements $a,b$ of $A$ such that $n = h((a,b))$. Then $n = g(f(a))(b)$. $f(a)$ is an element of $Succ(A)$.
 
           Case $f(a)$ has an element. Obvious (by Transitivity).
 
