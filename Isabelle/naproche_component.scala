@@ -19,6 +19,8 @@ object Naproche_Component
   val cleanup_names: List[String] = List("_config.yml")
   val cleanup_trees: List[String] = List(".git", ".gitignore", ".travis.yml", "examples_pdf")
 
+  val output_tail = 20
+
 
   /* build component */
 
@@ -84,7 +86,12 @@ object Naproche_Component
         val pdf_name = Path.basic(base_name).pdf
         progress.echo("Building " + pdf_name)
         for (_ <- 1 to 2) {
-          Isabelle_System.bash("pdflatex " + Bash.string(name), cwd = examples_pdf.file).check
+          val result =
+            Isabelle_System.bash("pdflatex " + Bash.string(name), cwd = examples_pdf.file)
+          if (!result.ok) {
+            error(cat_lines("LaTeX failed:"
+              :: result.out_lines.drop(result.out_lines.length - output_tail max 0)))
+          }
         }
         File.copy(examples_pdf + pdf_name, examples)
       }
