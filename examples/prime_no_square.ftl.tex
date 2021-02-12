@@ -2,16 +2,17 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage{../lib/tex/forthel}
+\usepackage{../lib/tex/naproche}
 
-\title{No prime is a square number}
+\title{Square roots of primes are irrational}
 \author{}
 \date{}
 
 \begin{document}
-  \pagenumbering{gobble}
 
   \maketitle
+
+  \section*{Rational numbers}
 
   \begin{forthel}
     [synonym number/-s]
@@ -24,21 +25,25 @@
     Let $s,r,q$ stand for rational numbers.
 
     \begin{signature}
-      $r * q$ is a rational number.
+      $r \cdot q$ is a rational number.
     \end{signature}
 
     \begin{axiom}
-      $r * q = q * r$.
+      $r \cdot q = q \cdot r$.
     \end{axiom}
 
     \begin{axiom}
-      $r * (q * s) = (r * q) * s$.
+      $r \cdot (q \cdot s) = (r \cdot q) \cdot s$.
     \end{axiom}
 
     \begin{axiom}
-      $q * s = q * r => s = r$.
+      $q \cdot s = q \cdot r \implies s = r$.
     \end{axiom}
+  \end{forthel}
 
+  \section*{Natural numbers}
+
+  \begin{forthel}
     \begin{signature}
       A natural number is a rational number.
     \end{signature}
@@ -46,19 +51,23 @@
     Let $n,m,k$ denote natural numbers.
 
     \begin{axiom}
-      $n * m$ is a natural number.
+      $n \cdot m$ is a natural number.
     \end{axiom}
 
     \begin{definition}
-      $n | q$ iff there exists $k$ such that $k * n = q$.
+      $n \mid q$ iff there exists $k$ such that $k \cdot n = q$.
     \end{definition}
 
-    Let $n$ divides $m$ stand for $n | m$. Let a divisor of $m$ stand for a natural number that divides $m$.
+    Let $n$ divides $m$ stand for $n \mid m$. Let a divisor of $m$ stand for a natural number that divides $m$.
 
     \begin{definition}
       $n$ and $m$ are coprime iff $n$ and $m$ have no common divisor.
     \end{definition}
+  \end{forthel}
 
+  \section*{Prime numbers}
+
+  \begin{forthel}
     \begin{signature}
       A prime number is a natural number.
     \end{signature}
@@ -66,21 +75,20 @@
     Let $p$ denote a prime number.
 
     \begin{axiom}
-      $p | n * m => p | n \/ p | m$.
+      $p \mid n \cdot m \implies p \mid n \vee p \mid m$.
     \end{axiom}
 
     \begin{axiom}
-      There exist coprime $m,n$ such that $m * q = n$.
+      There exist coprime $m,n$ such that $m \cdot q = n$.
     \end{axiom}
 
-    Let $q^{2}$ stand for $q * q$.
-
+    Let $q^{2}$ stand for $q \cdot q$.
 
     \begin{proposition}
       $q^{2} = p$ for no rational number $q$.
     \end{proposition}
     \begin{proof}
-      Proof by contradiction. Assume the contrary. Take a rational number $q$ such that $p = q^{2}$. Take coprime $m,n$ such that $m * q = n$. Then $p * m^{2} = n^{2}$. Therefore $p$ divides $n$. Take a natural number $k$ such that $n = k * p$. Then $p * m^{2} = p * (k * n)$. Therefore $m * m$ is equal to $p * k^{2}$. Hence $p$ divides $m$. Contradiction.
+      Proof by contradiction. Assume the contrary. Take a rational number $q$ such that $p = q^{2}$. Take coprime $m,n$ such that $m \cdot q = n$. Then $p \cdot m^{2} = n^{2}$. Therefore $p$ divides $n$. Take a natural number $k$ such that $n = k \cdot p$. Then $p \cdot m^{2} = p \cdot (k \cdot n)$. Therefore $m \cdot m$ is equal to $p \cdot k^{2}$. Hence $p$ divides $m$. Contradiction.
     \end{proof}
   \end{forthel}
 
