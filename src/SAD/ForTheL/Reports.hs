@@ -119,6 +119,7 @@ boundReports pide decl = dive 0
 
 addBlockReports :: Block -> FTL ()
 addBlockReports bl = addReports $ \pide -> let decls = Block.declaredVariables bl in
+  (Block.position bl, Markup.cartouche) :
   (Block.position bl, Markup.expression "text block") :
   formulaReports pide decls (Block.formula bl) ++
   concatMap (\decl -> variableReport pide True decl $ declPosition decl) decls
