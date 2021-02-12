@@ -60,6 +60,7 @@ object Naproche_Test
       })
     }
 
+    executor.shutdown()
     executor.awaitTermination(Long.MaxValue, TimeUnit.SECONDS)
 
     bad.value match {
