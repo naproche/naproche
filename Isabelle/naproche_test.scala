@@ -19,7 +19,8 @@ object Naproche_Test
 
   def run_tests(
     progress: Progress = new Progress,
-    max_jobs: Int = 1): Unit =
+    max_jobs: Int = 1,
+    timeout: Time = Time.zero): Unit =
   {
     val file_format = new isabelle.naproche.File_Format
     val tests = File.find_files(examples.file, file => file_format.detect(file.getName))
@@ -42,18 +43,29 @@ object Naproche_Test
             progress.echo("Ignoring " + base_name)
           }
           else {
+            progress.expose_interrupt()
             progress.echo("Checking " + base_name + " ...")
             val start = Time.now()
-            val result = progress.bash("\"$NAPROCHE_EXE\" -- " + File.bash_path(path))
+            @volatile var was_timeout: Boolean = false
+            def check_timeout: Boolean =
+              Time.now() > start + timeout && { was_timeout = true; true }
+            val result =
+              Isabelle_System.bash("\"$NAPROCHE_EXE\" -- " + File.bash_path(path), strict = false,
+                watchdog =
+                  if (timeout == Time.zero) None
+                  else Some((Time.seconds(0.1), _ => progress.stopped || check_timeout)))
             val stop = Time.now()
             val timing = stop - start
 
             val expect_ok = !test_failure
             progress.echo("Finished " + base_name + ": " +
-              (if (result.ok) "OK" else "FAILURE") +
-              (if (result.ok == expect_ok) ""
-              else ", but expected " + (if (expect_ok) "OK" else "FAILURE")) +
-              (" (" + timing.message + " elapsed time)"))
+              (if (was_timeout) "TIMEOUT"
+               else if (result.rc == 130) "INTERRUPT"
+               else
+                (if (result.ok) "OK" else "FAILURE") +
+                (if (result.ok == expect_ok) ""
+                else ", but expected " + (if (expect_ok) "OK" else "FAILURE"))) +
+                (" (" + timing.message + " elapsed time)"))
             if (result.ok != expect_ok) bad.change(base_name :: _)
           }
         }
@@ -77,16 +89,19 @@ object Naproche_Test
       Scala_Project.here, args =>
     {
       var max_jobs = 1
+      var timeout = Time.zero
 
       val getopts = Getopts("""
 Usage: isabelle naproche_test
 
   Options are:
     -j JOBS      maximum number of parallel jobs (default: 1)
+    -t SECONDS   timeout in seconds (default: 0, which means disabled)
 
   Run Naproche tests.
 """,
-        "j:" -> (arg => max_jobs = Value.Int.parse(arg)))
+        "j:" -> (arg => max_jobs = Value.Int.parse(arg)),
+        "t:" -> (arg => timeout = Time.seconds(Value.Double.parse(arg))))
 
       val more_args = getopts(args)
       if (more_args.nonEmpty) getopts.usage()
@@ -98,6 +113,6 @@ Usage: isabelle naproche_test
           progress = progress, max_jobs = max_jobs)
       if (!results.ok) sys.exit(results.rc)
 
-      run_tests(progress = progress, max_jobs = max_jobs)
+      run_tests(progress = progress, max_jobs = max_jobs, timeout = timeout)
     })
 }
