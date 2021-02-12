@@ -51,8 +51,8 @@ subsection \<open>External text file\<close>
 context notes [[naproche_prove = false]]
 begin
 
-forthel_file \<open>$NAPROCHE_HOME/examples/powerset.ftl\<close>
-forthel_file \<open>$NAPROCHE_HOME/examples/powerset.ftl.tex\<close>
+forthel_file \<open>$NAPROCHE_HOME/examples/cantor.ftl\<close>
+forthel_file \<open>$NAPROCHE_HOME/examples/cantor.ftl.tex\<close>
 
 end
 

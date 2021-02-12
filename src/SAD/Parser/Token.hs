@@ -135,7 +135,7 @@ tokenize texState start = posToken texState start NoWhiteSpaceBefore
 
       -- We also tokenize away quotation marks, because they are intended to be used by the user
       -- as a way to write regular text in math mode. Of course, one needs to appropriately remap
-      -- quotation marks in the tex file, see examples/powerset.ftl.tex on how to do this.
+      -- quotation marks in the tex file, see examples/cantor.ftl.tex on how to do this.
       Just ('"', rest) | useTex -> posToken texState (advancePos pos "\"") WhiteSpaceBefore rest
       Just (c, _) | if useTex then c == '%' else c == '#' -> tok:toks
         where

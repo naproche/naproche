@@ -104,7 +104,7 @@ The subsequent explanations are for **development** of the tool, not for end-use
 
 * Open ForTheL examples in Isabelle/jEdit, e.g.
 
-        isabelle jedit examples/powerset.ftl
+        isabelle jedit examples/cantor.ftl
 
 * Open Isabelle development environment with ForTheL examples, e.g.
 
