@@ -1,30 +1,36 @@
 \documentclass{article}
 
 \usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
-\usepackage{../lib/tex/forthel}
+\usepackage[british]{babel}
+\usepackage{amsfonts}
 
-\title{Chinese remainder theorem}
-\author{Andrei Paskevich}
-\date{}
+\usepackage{../lib/tex/naproche}
+
+\renewcommand{\mod}{\text{mod }}
+\newcommand{\Int}{\mathbb{Z}}
+
+\title{The Chinese remainder theorem}
+\author{Andrei Paskevich et. al.}
+\date{2007 - 2021}
 
 \begin{document}
-  \pagenumbering{gobble}
-
   \maketitle
+
+  The Chinese remainder theorem is a number theoretical result about the solution of simultaneous congruences in the case of coprime modules. The earliest known formulation of the theorem dates back to the Chinese mathematician Sun-tzu in the third century. In the following we present a formalization of a generalization of the theorem in terms of ideals in an integral domain.
+
+
+  \section{Integral domain axioms}
+
+  We assume that our universe is a fixed integral domain. We call elements of our universe simply ``elements``. In particular, we have two special elements, $0$ and $1$. Moreover, there is a unary operation, $-$, and two binary operations, $+$ and $\cdot$.
 
   \begin{forthel}
     [synonym element/-s]
 
     \begin{signature}[ElmSort]
-      An element is a notion.
+      An element is an setsized object.
     \end{signature}
 
     Let $a,b,c,x,y,z,u,v,w$ denote elements.
-
-    \begin{axiom}
-      $a$ is setsized.
-    \end{axiom}
 
     \begin{signature}[SortsC]
       $0$ is an element.
@@ -43,12 +49,16 @@
     \end{signature}
 
     \begin{signature}[SortsB]
-      $x * y$ is an element.
+      $x \cdot y$ is an element.
     \end{signature}
 
-    Let $x$ is nonzero stand for $x != 0$.
-    Let $x - y$ stand for $x + -y$.
+    Let $x$ is nonzero stand for $x \neq 0$.
+    Let $x - y$ stand for $x + (-y)$.
+  \end{forthel}
 
+  To ensure that our operations form a commutative ring we have to state the appropriate axioms. First we make sure that the addition yields an abelian group.
+
+  \begin{forthel}
     \begin{axiom}[AddComm]
       $x + y = y + x$.
     \end{axiom}
@@ -66,57 +76,115 @@
     \end{axiom}
 
     \begin{axiom}[AddInvr]
-      $x + -x = 0 = -x + x$.
+      $x + (-x) = 0 = -x + x$.
     \end{axiom}
+  \end{forthel}
 
+  In fact axiom \textit{AddBubble} is redundant. We can easily prove it from \textit{AddComm} and \textit{AddAsso}:
+
+  \[
+    x + (y + z) \overset{AddComm}{=} (y + z) + x \overset{AddAsso}{=} y + (z + x) \overset{AddComm}{=} y + (x + z).
+  \]
+
+  Let us continue with the axioms that ensure that the multiplication yields a commutative monoid.
+
+  \begin{forthel}
     \begin{axiom}[MulComm]
-      $x * y = y * x$.
+      $x \cdot y = y \cdot x$.
     \end{axiom}
 
     \begin{axiom}[MulAsso]
-      $(x * y) * z = x * (y * z)$.
+      $x \cdot (y \cdot z) = (x \cdot y) \cdot z$.
+
+      % NOTE: In the original ftl file the lhs and the rhs of the equation are
+      % swapped. But due to a bug in the parser the original version is not
+      % accepted by Naproche.
     \end{axiom}
 
     \begin{axiom}[MulBubble]
-      $x * (y * z) = y * (x * z)$.
+      $x \cdot (y \cdot z) = y \cdot (x \cdot z)$.
     \end{axiom}
 
     \begin{axiom}[MulUnit]
-      $x * 1 = x = 1 * x$.
+      $x \cdot 1 = x = 1 \cdot x$.
     \end{axiom}
+  \end{forthel}
 
+  As above we can prove \textit{MulBubble} from \textit{MulComm} and \textit{MulAsso}. Now we ensure that the distribution laws hold.
+
+  \begin{forthel}
     \begin{axiom}[AMDistr1]
-      $x * (y + z) = (x * y) + (x * z)$.
+      $x \cdot (y + z) = (x \cdot y) + (x \cdot z)$.
     \end{axiom}
 
     \begin{axiom}[AMDistr2]
-      $(y + z) * x = (y * x) + (z * x)$.
+      $(y + z) \cdot x = (y \cdot x) + (z \cdot x)$.
     \end{axiom}
+  \end{forthel}
 
+  The next two statements are some simple computation rules. The first one concerning multiplication with $-1$ can be derived from our previous laws together with \textit{MulZero}, even if we state it as an axiom here. We leave the proof of this claim as an exercise for the reader.
+
+  \begin{comment}
+    $$x + ((-1) \cdot x)
+    = (1 \cdot x) + ((-1) \cdot x)
+    = (1 + (-1)) \cdot x
+    = 0 \cdot x
+    = 0$$
+
+    $$\implies (-x) + (x + ((-1) \cdot x)) = (-x) + 0$$
+    $$\implies ((-x) + x) + ((-1) \cdot x) = -x$$
+    $$\implies 0 + ((-1) \cdot x) = -x$$
+    $$\implies ((-1) \cdot x) = -x$$
+
+    $$(x \cdot (-1)) + x
+    = (x \cdot (-1)) \cdot (x \cdot 1)
+    = x \cdot ((-1) + 1)
+    = x \cdot 0
+    = 0$$
+
+    $$\implies ((x \cdot (-1)) + x) - x = 0 - x$$
+    $$\implies (x \cdot (-1)) + (x - x) = -x$$
+    $$\implies (x \cdot (-1)) + 0 = -x$$
+    $$\implies (x \cdot (-1)) = -x$$
+  \end{comment}
+
+  \begin{forthel}
     \begin{axiom}[MulMnOne]
-      $1 * x = -x = x * -1$.
+      $(-1) \cdot x = -x = x \cdot (-1)$.
     \end{axiom}
 
     \begin{lemma}[MulZero]
-      $x * 0 = 0 = 0 * x$.
+      $x \cdot 0 = 0 = 0 \cdot x$.
     \end{lemma}
     \begin{proof}
-      Let us show that $x * 0 = 0$.
-        $x * 0 .= x * (0 + 0)$ (by AddZero) $.= (x * 0) + (x * 0)$ (by AMDistr1).
-      end.
+      Let us show that $x \cdot 0 = 0$.
+        $x \cdot 0 .= x \cdot (0 + 0)$ (by AddZero) $.= (x \cdot 0) + (x \cdot 0)$ (by AMDistr1).
+      End.
 
-      Let us show that $0 * x = 0$.
-        $0 * x .= (0 + 0) * x$ (by AddZero) $.= (0 * x) + (0 * x)$ (by AMDistr2).
-      end.
+      Let us show that $0 \cdot x = 0$.
+        $0 \cdot x .= (0 + 0) \cdot x$ (by AddZero) $.= (0 \cdot x) + (0 \cdot x)$ (by AMDistr2).
+      End.
     \end{proof}
+  \end{forthel}
 
+  There are two axioms remaining to ensure that our universe is not just a commutative ring but an integral domain: There must be no non-trivial zero-divisors and our ring must not be trivial.
+
+  \begin{forthel}
     \begin{axiom}[Cancel]
-      $x != 0 /\ y != 0 => x * y != 0$.
+      $x \neq 0 \wedge y \neq 0 \implies x \cdot y \neq 0$.
     \end{axiom}
 
     \begin{axiom}[UnNeZr]
-      $1 != 0$.
+      $1 \neq 0$.
     \end{axiom}
+  \end{forthel}
+
+
+  \section{Sets}
+
+  Next we consider subsets of our universe. To keep our notion of sets as easy as possible we state that \textit{every} set is a subset of our universe.
+
+  \begin{forthel}
 
     [synonym set/-s] [synonym belong/-s]
 
@@ -130,7 +198,6 @@
       Every element of $X$ is an element.
     \end{axiom}
 
-    Let $x << W$ denote $x$ is an element of $W$.
     Let $x$ belongs to $W$ denote $x$ is an element of $W$.
 
     \begin{axiom}[SetEq]
@@ -138,83 +205,101 @@
     \end{axiom}
 
     \begin{definition}[DefSum]
-      $X +' Y$ is a set such that for every element $z$ ($z << X +' Y$) iff there exist $x << X, y << Y$ such that $z = x + y$.
+      $X \oplus Y$ is a set such that for every element $z$ ($z \in X \oplus Y$) iff there exist $x \in X, y \in Y$ such that $z = x + y$.
     \end{definition}
 
     \begin{definition}[DefSInt]
-      $X ** Y$ is a set such that for every element $z$ ($z << X ** Y$) iff $z << X$ and $z << Y$.
+      $X \cap Y$ is a set such that for every element $z$ ($z \in X \cap Y$) iff $z \in X$ and $z \in Y$.
     \end{definition}
+  \end{forthel}
+
+
+  \section{Ideals and the Chinese Remainder Theorem}
+
+  Now we can define ideals as sets which are closed under certain operations.
+
+  \begin{forthel}
 
     [synonym ideal/-s]
 
     \begin{definition}[DefIdeal]
-      An ideal is a set $X$ such that for every $x << X$
-        $forall y << X (x + y) << X$ and
-        $forall z (z * x) << X$.
+      An ideal is a set $X$ such that for every $x \in X$ we have
+        $\forall y \in X (x + y \in X)$ and
+        $\forall z (z \cdot x \in X)$.
     \end{definition}
 
     Let $I,J$ denote ideals.
+  \end{forthel}
 
+  We can show that the sum and the intersection of two ideals is again an ideal.
+
+  \begin{forthel}
     \begin{lemma}[IdeSum]
-      $I +' J$ is an ideal.
+      $I \oplus J$ is an ideal.
     \end{lemma}
     \begin{proof}
-      Let $x$ belong to ($I +' J$).
+      Let $x$ belong to ($I \oplus J$).
 
-      $forall y << (I +' J) (x + y) << (I +' J)$.
-      proof.
-        Let $y << (I +' J)$.
-
-        (1) Take $k << I$ and $l << J$ such that $x = k + l$.
-
-        (2) Take $m << I$ and $n << J$ such that $y = m + n$.
-
+      $\forall y \in (I \oplus J) (x + y) \in (I \oplus J)$. \\
+      Proof.
+        Let $y \in (I \oplus J)$.
+        (1) Take $k \in I$ and $l \in J$ such that $x = k + l$.
+        (2) Take $m \in I$ and $n \in J$ such that $y = m + n$.
         $k + m$ belongs to $I$ and $l + n$ belongs to $J$. $x + y .= (k + m) + (l + n)$ (by 1, 2, AddComm,AddAsso,AddBubble). Therefore the thesis.
-      end.
+      Qed.
 
-      For every element $z$ $(z * x) << (I +' J)$.
-      proof.
+      For every element $z$ $(z \cdot x) \in (I \oplus J)$. \\
+      Proof.
         Let $z$ be an element.
-
-        (1) Take $k << I$ and $l << J$ such that $x = k + l$.
-
-        $z * k$ belongs to $I$ and $z * l$ belongs to $J$. $z * x .= (z * k) + (z * l)$ (by AMDistr1, 1). Therefore the thesis.
-      end.
+        (1) Take $k \in I$ and $l \in J$ such that $x = k + l$.
+        $z \cdot k$ belongs to $I$ and $z \cdot l$ belongs to $J$. $z \cdot x .= (z \cdot k) + (z \cdot l)$ (by AMDistr1, 1). Therefore the thesis.
+      Qed.
     \end{proof}
 
 
     \begin{lemma}[IdeInt]
-      $I ** J$ is an ideal (by DefIdeal).
+      $I \cap J$ is an ideal (by DefIdeal).
     \end{lemma}
     \begin{proof}
-      Let x belong to $I ** J$. $\forall y << (I ** J) (x + y) << (I ** J)$. For every element $z$ $(z * x) << (I** J)$.
+      Let x belong to $I \cap J$. $\forall y \in (I \cap J) (x + y) \in (I \cap J)$. For every element $z$ $(z \cdot x) \in (I \cap J)$.
     \end{proof}
+  \end{forthel}
 
+  Now we can state the Chinese remainder theorem in terms of congruence modulo some ideal.
+
+  \begin{forthel}
     \begin{definition}[DefMod]
-      $x = y (mod I)$ iff $x - y << I$.
+      $x = y ~(\mod I)$ iff $x - y \in I$.
     \end{definition}
 
     \begin{theorem}[ChineseRemainder]
-      Suppose that every element belongs to $I +' J$. Let $x, y$ be elements. There exists an element $w$ such that $w = x (mod I)$ and $w = y (mod J)$.
+      Suppose that every element belongs to $I \oplus J$. Let $x, y$ be elements. There exists an element $w$ such that $w = x ~(\mod I)$ and $w = y ~(\mod J)$.
     \end{theorem}
     \begin{proof}
-      Take $a << I$ and $b << J$ such that $a + b = 1$ (by DefSum).
+      Take $a \in I$ and $b \in J$ such that $a + b = 1$ (by DefSum).
+      (1) Take $w = (y \cdot a) + (x \cdot b)$.
 
-      (1) Take $w = (y * a) + (x * b)$.
-      Let us show that $w = x (mod I)$ and $w = y (mod J)$.
-        $w - x$ belongs to $I$.
-        proof.
-          $w - x = (y * a) + ((x * b) - x)$. $x * (b - 1)$ belongs to $I$. $x * (b - 1) = (x * b) - x$.
-        end.
+      Let us show that $w = x ~(\mod I)$ and $w = y ~(\mod J)$.
 
-        $w - y$ belongs to $J$.
-        proof.
-          $w - y = (x * b) + ((y * a) - y)$. $y * (a - 1)$ belongs to $J$. $y * (a - 1) = (y * a) - y$.
-        end.
-      end.
+        $w - x$ belongs to $I$. \\
+        Proof.
+          $w - x = (y \cdot a) + ((x \cdot b) - x)$. $x \cdot (b - 1)$ belongs to $I$. $x \cdot (b - 1) = (x \cdot b) - x$.
+        Qed.
+
+        $w - y$ belongs to $J$. \\
+        Proof.
+          $w - y = (x \cdot b) + ((y \cdot a) - y)$. $y \cdot (a - 1)$ belongs to $J$. $y \cdot (a - 1) = (y \cdot a) - y$.
+        Qed.
+      End.
     \end{proof}
+  \end{forthel}
 
 
+  \section{Greatest common divisors and principal ideals}
+
+  In this section we extend our integral domain to a Euclidean domain. To be able to do this we first have to establish a notion of natural numbers.
+
+  \begin{forthel}
     [synonym number/-s]
 
     \begin{signature}[NatSort]
@@ -224,24 +309,35 @@
     \begin{axiom}
       Let $n$ be a natural number. Then n is setsized.
     \end{axiom}
+  \end{forthel}
 
+  Now we can equip our domain with a Euclidean function $|\cdot|$.
+
+  \begin{forthel}
     \begin{signature}[EucSort]
       Let $x$ be a nonzero element. $|x|$ is a natural number.
     \end{signature}
 
     \begin{axiom}[Division]
-      Let $x,y$ be elements and $y != 0$. There exist elements $q,r$ such that $x = (q * y) + r$ and $(r != 0 => |r| -<- |y|)$.
+      Let $x,y$ be elements and $y \neq 0$. There exist elements $q,r$ such that $x = (q \cdot y) + r$ and $(r \neq 0 \implies |r| \prec |y|)$.
     \end{axiom}
+  \end{forthel}
 
+  The \textit{Division} axiom makes use of {$\mathbb{N}$aproche's} build-in induction scheme: For any statement $\varphi(x)$ (with one free variable $x$) and any element $r$ the following is true:
+  $$ (\forall r' (|r'| \prec |r| \rightarrow \varphi(r'))) \rightarrow \varphi(r)$$
+  This allows us to prove certain statements about $r$ by induction on $|r|$.
 
+  \paragraph{} Next let us have a look at the notion of \textit{divisors} and, in particular, \textit{greatest common divisors} (\textit{gcd}s).
+
+  \begin{forthel}
     [synonym divisor/-s] [synonym divide/-s]
 
     \begin{definition}[DefDiv]
-      $x$ divides $y$ iff for some $z$ $(x * z = y)$.
+      $x$ divides $y$ iff for some $z$ $(x \cdot z = y)$.
     \end{definition}
 
-    Let $x | y$ stand for $x$ divides $y$.
-    Let $x$ is divided by $y$ stand for $y | x$.
+    Let $x \mid y$ stand for $x$ divides $y$.
+    Let $x$ is divided by $y$ stand for $y \mid x$.
 
     \begin{definition}[DefDvs]
       A divisor of $x$ is an element that divides $x$.
@@ -254,78 +350,86 @@
     \begin{definition}[DefRel]
       $x,y$ are relatively prime iff $1$ is a gcd of $x$ and $y$.
     \end{definition}
+  \end{forthel}
 
+  If we have two elements, say $a$ and $b$, we will see that the ideal \textit{generated} by $a$ and $b$ also contains the gcd of $a$ and $b$ (as long as $a$ or $b$ is non-zero). An ideal which is generated by a single element, a so-called \textit{principal ideal}, is defined as follows.
 
+  \begin{forthel}
     \begin{definition}[DefPrIdeal]
-      $<c>$ is a set such that for every $z$ $z$ is an element of $<c>$ iff there exists an element $x$ such that $z = c * x$.
+      $\langle c \rangle$ is a set such that for every $z$ $z$ is an element of $\langle c \rangle$ iff there exists an element $x$ such that $z = c \cdot x$.
     \end{definition}
 
     \begin{lemma}[PrIdeal]
-      $<c>$ is an ideal.
+      $\langle c \rangle$ is an ideal.
     \end{lemma}
     \begin{proof}
-      Let $x$ belong to $<c>$.
+      Let $x$ belong to $\langle c \rangle$.
 
-      $forall y << <c> x + y << <c>$.
-      proof.
-        Let $y << <c>$.
+      $\forall y \in \langle c \rangle x + y \in \langle c \rangle$. \\
+      Proof.
+        Let $y \in \langle c \rangle$.
+        (1) Take an element $u$ such that $c \cdot u = x$.
+        (2) Take an element $v$ such that $c \cdot v = y$.
+        $x + y .= c \cdot (u + v)$ (by 1, 2, AMDistr1). Therefore the thesis.
+      Qed.
 
-        (1) Take an element $u$ such that $c * u = x$.
+      $\forall z z \cdot x \in \langle c \rangle$. \\
+      Proof.
+        Let $z$ be an element.
+        (1) Take an element $u$ such that $c \cdot u = x$.
+        $z \cdot x .= c \cdot (u \cdot z)$ (by 1,MulComm,MulAsso, MulBubble). Therefore the thesis.
+      Qed.
+    \end{proof}
+  \end{forthel}
 
-        (2) Take an element $v$ such that $c * v = y$.
+  The notion of a principal ideal allows us write the ideal which is generated by two elements $a$ and $b$ as $\langle a \rangle \oplus \langle b \rangle$. As mentioned before if not both $a$ and $b$ are zero, $\langle a \rangle \oplus \langle b \rangle$ contains the gcd of $a$ and $b$. That means that if $c$ is the gcd of $a$ and $b$ then $c$ is of the form $x \cdot a + y \cdot b$ for certain elements $x$ and $y$. For example if we take $\Int$ as our Euclidean domain we get \textit{Bézout's identity}: For two integers $n,m$ with a gcd $d$ there exist integers $x,y$ such that $d = x \cdot n + y \cdot m$. For instance
+  $$\gcd(8,14) = 2 = 2 \cdot 8 + (-1) \cdot 14$$
+  and
+  $$\gcd(9,25) = 1 = -11 \cdot 9 + 4 \cdot 25.$$
 
-        $x + y .= c * (u + v)$ (by 1, 2, AMDistr1). Therefore the thesis.
-      end.
+  \begin{forthel}
+    \begin{theorem}[GCDin]
+      Let $a,b$ be elements. Assume that $a$ is nonzero or $b$ is nonzero. Let $c$ be a gcd of $a$ and $b$. Then $c$ belongs to $\langle a \rangle \oplus \langle b \rangle$.
+    \end{theorem}
+    \begin{proof}
+      Take an ideal $I$ equal to $\langle a \rangle \oplus \langle b \rangle$. We have $0,a \in \langle a \rangle$ and $0,b \in \langle b \rangle$ (by MulZero, MulUnit). Hence there exists a nonzero element of $\langle a \rangle \oplus \langle b \rangle$. Indeed $a \in \langle a \rangle \oplus \langle b \rangle$ and $b \in \langle a \rangle \oplus \langle b \rangle$ (by AddZero).
 
-    $forall z z * x << <c>$.
-    proof.
-      Let $z$ be an element.
+      Take a nonzero $u \in I$ such that for no nonzero $v \in I$ $(|v| \prec |u|)$. \\
+      Proof.
+        We can show by induction on $|w|$ that for every nonzero $w \in I$ there
+          exists nonzero $u \in I$ such that for no nonzero $v \in I$ $(|v| \prec |u|)$.
+        Obvious.
+      Qed.
 
-      (1) Take an element $u$ such that $c * u = x$.
+      $u$ is a common divisor of $a$ and $b$. \\
+      Proof by contradiction.
+        Assume the contrary.
 
-      $z * x .= c * (u * z)$ (by 1,MulComm,MulAsso, MulBubble). Therefore the thesis.
-    end.
-  \end{proof}
+        For some elements $x,y$ $u = (a \cdot x) + (b \cdot y)$. \\
+        Proof.
+          Take $k \in \langle a \rangle$ and $l \in \langle b \rangle$ such that $u = k + l$. Take elements $x,y$ such that ($k = a \cdot x$ and $l = b \cdot y$). Hence the thesis.
+        Qed.
 
-  \begin{theorem}[GCDin]
-    Let $a,b$ be elements. Assume that $a$ is nonzero or $b$ is nonzero. Let $c$ be a gcd of $a$ and $b$. Then $c$ belongs to $<a> +' <b>$.
-  \end{theorem}
-  \begin{proof}
-    Take an ideal $I$ equal to $<a> +' <b>$. We have $0,a << <a>$ and $0,b << <b>$ (by MulZero, MulUnit). Hence there exists a nonzero element of $<a> +' <b>$. Indeed $a << <a> +' <b>$ and $b << <a> +' <b>$ (by AddZero).
+        Case $u$ does not divide $a$.
+          Take elements $q,r$ such that $a = (q \cdot u) + r$ and ($r = 0 \vee |r| \prec |u|$) (by Division). $r$ is nonzero. $- (q \cdot u)$ belongs to $I$. $a$ belongs to $I$ (by AddZero). $r = - (q \cdot u) + a$. Hence $r$ belongs to $I$ (by DefIdeal).
+        End.
 
-    Take a nonzero $u << I$ such that for no nonzero $v << I$ $(|v| -<- |u|)$.
-    Proof.
+        Case $u$ does not divide $b$.
+          Take elements $q,r$ such that $b = (q \cdot u) + r$ and ($r = 0 \vee |r| \prec |u|$) (by Division). $r$ is nonzero. $- (q \cdot u)$ belongs to $I$. $b$ belongs to $I$ (by AddZero). $r = - (q \cdot u) + b$. Hence $r$ belongs to $I$ (by DefIdeal).
+        End.
+      Qed.
 
-      We can show by induction on $|w|$ that for every nonzero $w << I$ there
-        exists nonzero $u << I$ such that for no nonzero $v << I$ $(|v| -<- |u|)$.
-      Obvious.
-    qed.
+      Hence $u$ divides $c$.
 
-    $u$ is a common divisor of $a$ and $b$.
-    proof by contradiction.
-      Assume the contrary.
+      Hence the thesis. \\
+      Proof.
+        Take an element $z$ such that $c = z \cdot u$. Then $c \in I$ (by DefIdeal).
+      Qed.
+    \end{proof}
+  \end{forthel}
 
-      For some elements $x,y$ $u = (a * x) + (b * y)$.
-      proof.
-        Take $k << <a>$ and $l << <b>$ such that $u = k + l$. Take elements $x,y$ such that ($k = a * x$ and $l = b * y$). Hence the thesis.
-      end.
-
-      Case $u$ does not divide $a$.
-        Take elements $q,r$ such that $a = (q * u) + r$ and ($r = 0 \/ |r| -<- |u|$) (by Division). $r$ is nonzero. $- (q * u)$ belongs to $I$. $a$ belongs to $I$ (by AddZero). $r = - (q * u) + a$. Hence $r$ belongs to $I$ (by DefIdeal).
-      end.
-
-      Case $u$ does not divide $b$.
-        Take elements $q,r$ such that $b = (q * u) + r$ and ($r = 0 \/ |r| -<- |u|$) (by Division). $r$ is nonzero. $- (q * u)$ belongs to $I$. $b$ belongs to $I$ (by AddZero). $r = - (q * u) + b$. Hence $r$ belongs to $I$ (by DefIdeal).
-      end.
-    end.
-
-    Hence $u$ divides $c$.
-
-    Hence the thesis.
-    proof.
-      Take an element $z$ such that $c = z * u$. Then $c << I$ (by DefIdeal).
-    end.
-  \end{proof}
-\end{forthel}
-
+  \textit{Bézout's identity} ensures that for any two coprime integers $n,m$ we have $n \Int \oplus m \Int = \Int$. Because we can take integers $x,y$ such that $x \cdot n + y \cdot m = 1$ and thus for every integer $z$ we have $zx \cdot n + zy \cdot m = z$, hence $z \in n \Int \oplus m \Int$. So as a special case of the Chinese remainder theorem if $n$ and $m$ are coprime then for all integers $x,y$ the simultaneous congruence
+  $$w = x ~(\mod n)$$
+  $$w = y ~(\mod m)$$
+  has a solution.
 \end{document}

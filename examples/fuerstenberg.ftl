@@ -33,6 +33,7 @@ Axiom Distrib.      a * (b + c) = (a*b) + (a*c) and
 Lemma MulZero.      a * 0 = 0 = 0 * a.
 Lemma MulMinOne.    -1 * a = -a = a * -1. Indeed (-1 * a) + a = 0.
 
+Axiom NonTriv.      0 != 1.
 Axiom ZeroDiv.      a != 0 /\ b != 0 => a * b != 0.
 
 Lemma. --a is an integer.
@@ -141,7 +142,7 @@ Lemma.
 Definition ArSeq.   ArSeq(a,q) = { integer b | b = a (mod q) }.
 Lemma. ArSeq(a, q) is a set.
 
-Definition Open.    A is open iff for any a << A
+Definition Open.    A is open iff A = INT or for any a << A
                         there exists q such that ArSeq(a,q) [= A.
 
 Definition Closed.  A is closed iff ~A is open.
