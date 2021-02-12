@@ -205,7 +205,7 @@ verificationLoop st@VS {
         else do
           unless (isTop . Context.formula $ thesis) $ incrementCounter Goals
           proveThesis pos <|> (
-            reasonLog Message.WARNING pos "goal failed" >> setFailed >>
+            reasonLog Message.ERROR pos "goal failed" >> setFailed >>
             --guardInstruction Skipfail False >>
             incrementCounter FailedGoals)
 verificationLoop state@ VS {restProofText = ProofTextChecked txt : rest} =
