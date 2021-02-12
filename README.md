@@ -82,7 +82,7 @@ The subsequent explanations are for **development** of the tool, not for end-use
 
   * Run some tests as follows:
 
-        isabelle naproche_build && isabelle naproche_test
+        isabelle naproche_build && isabelle naproche_test -j2
 
   * Package the Isabelle/Naproche component as follows:
 
