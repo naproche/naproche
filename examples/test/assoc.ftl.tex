@@ -1,0 +1,18 @@
+\begin{forthel}
+    [synonym number/-s]
+
+    \begin{signature}
+        A number is a notion.
+    \end{signature}
+
+    Let $x, y, z$ stand for numbers.
+
+    \begin{signature}
+        $x\cdot y$ is a number.
+    \end{signature}
+
+    % Bug: this fails, but swapping the lhs/rhs works.
+    \begin{axiom}[Associativity]
+        $(x\cdot y)\cdot z = x \cdot (y\cdot z)$.
+    \end{axiom}
+\end{forthel}
