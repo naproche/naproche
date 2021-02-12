@@ -6,6 +6,14 @@ set -e
 
 cd "$NAPROCHE_HOME"
 
+function fail()
+{
+  echo "$1" >&2
+  exit 2
+}
+
+[ "$#" -ne 0 ] && fail "Bad arguments: $@"
+
 
 echo "### Building Isabelle/Scala module: $NAPROCHE_JAR"
 
