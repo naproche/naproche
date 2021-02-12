@@ -24,7 +24,7 @@ object Naproche_Test
     val file_format = new isabelle.naproche.File_Format
     val tests = File.find_files(examples.file, file => file_format.detect(file.getName))
 
-    val bad = Synchronized(List.empty[Path])
+    val bad = Synchronized(List.empty[String])
     val executor = Executors.newFixedThreadPool(max_jobs max 1)
 
     for (test <- tests) {
@@ -37,23 +37,24 @@ object Naproche_Test
           val test_failure = text.containsSlice("# test: FAILURE")
           val test_ignore = text.containsSlice("# test: IGNORE")
 
+          val base_name = path.base.implode
           if (test_ignore) {
-            progress.echo("Ignoring " + path.base)
+            progress.echo("Ignoring " + base_name)
           }
           else {
-            progress.echo("Checking " + path.base + " ...")
+            progress.echo("Checking " + base_name + " ...")
             val start = Time.now()
             val result = progress.bash("\"$NAPROCHE_EXE\" -- " + File.bash_path(path))
             val stop = Time.now()
             val timing = stop - start
 
             val expect_ok = !test_failure
-            progress.echo("Finished " + path.base + ": " +
+            progress.echo("Finished " + base_name + ": " +
               (if (result.ok) "OK" else "FAILURE") +
               (if (result.ok == expect_ok) ""
               else ", but expected " + (if (expect_ok) "OK" else "FAILURE")) +
               (" (" + timing.message + " elapsed time)"))
-            if (result.ok != expect_ok) bad.change(path.base :: _)
+            if (result.ok != expect_ok) bad.change(base_name :: _)
           }
         }
       })
