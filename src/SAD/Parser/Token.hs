@@ -160,7 +160,7 @@ expandTexCmd "exists" pos whiteSpaceBefore = [makeToken "exists" pos whiteSpaceB
 -- Special commands
 expandTexCmd "mid" pos whiteSpaceBefore = [makeToken "|" pos whiteSpaceBefore]
 expandTexCmd "rightarrow" pos whiteSpaceBefore = makeSymbolTokens ["-",">"] pos whiteSpaceBefore
-expandTexCmd "lambda" pos whiteSpaceBefore = [makeToken "\\" pos whiteSpaceBefore]
+expandTexCmd "fun" pos whiteSpaceBefore = [makeToken "\\" pos whiteSpaceBefore]
 
 -- All tokens starting with `\` are treated as symbols by the parser. But there are tex commands,
 -- that we don't want to treat as symbols in our patterns, for example greek letters. Thus we expand this fixed
@@ -187,7 +187,7 @@ lowerGreek = [
   , "theta"
   , "iota"
   , "kappa"
---  , "lambda"
+  , "lambda"
   , "mu"
   , "nu"
   , "xi"
