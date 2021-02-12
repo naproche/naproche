@@ -1,12 +1,51 @@
-\section{The Mutilated Checkerboard Problem Formalized in \Naproche{}}\label{sec:formalization}
+\documentclass{article}
+
+\title{The mutilated checkerboard}
+\author{Adrian De Lon, Peter Koepke, Anton Lorenzen}
+\date{2021}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{../lib/tex/naproche}
+\usepackage{bbm}
+
+% For the ranks and files
+\newcommand{\Rank}{\mathbf{R}} % set of ranks.
+\newcommand{\File}{\mathbf{F}} % set of files.
+\newcommand{\fileA}{\mathrm{a}}
+\newcommand{\fileB}{\mathrm{b}}
+\newcommand{\fileC}{\mathrm{c}}
+\newcommand{\fileD}{\mathrm{d}}
+\newcommand{\fileE}{\mathrm{e}}
+\newcommand{\fileF}{\mathrm{f}}
+\newcommand{\fileG}{\mathrm{g}}
+\newcommand{\fileH}{\mathrm{h}}
+
+\newcommand{\vertadj}{\sim}
+\newcommand{\horizadj}{\sim'} % should be \wr
+
+\newcommand{\Checkerboard}{\mathbf{C}}
+\newcommand{\Corners}{\mathbf{C'}}
+\newcommand{\Mutilated}{\mathbf{M}}
+\newcommand{\Black}{\mathbf{B}}
+\newcommand{\White}{\mathbf{W}}
+
+\newcommand{\Swap}[1]{\operatorname{Swap}#1}
+\newcommand{\Sw}[3]{\operatorname{Swap}_{#1}^{#2}(#3)}
+
+\newcommand{\Naproche}{$\mathbbm{N}$aproche}
+
+
+\begin{document}
+
+\maketitle
 
 
 
-\subsection{Introduction}
-%
-\begin{center}
-  \includegraphics{mutil-check.pdf}
-\end{center}
+
+
+\section{Introduction}
+
 
 \
 Max Black proposed this problem in his book
@@ -26,7 +65,7 @@ for Mathematical Knowledge Management}} lists a couple of formalizations.
 
 
 
-\subsection{Setting up the checkerboard}
+\section{Setting up the checkerboard}
 
 % Hidden because we have not discussed it yet.
 % Maybe this can be mentioned as an area for improvement in the subsequent section?
@@ -100,7 +139,7 @@ Morse and Kelley \cite{Kelley1975,Morse1965} use the same approach in their axio
 \end{forthel}
 
 
-\subsection{Preliminaries about sets and functions}
+\section{Preliminaries about sets and functions}
 
 We enrich the small built-in set theory by further properties and axioms that
 will be used in the course of our argument. To keep the document fully
@@ -200,7 +239,7 @@ have the same cardinality iff there is a bijection between them.
 \end{forthel}
 
 
-\subsection{Cardinalities of Finite Sets}
+\section{Cardinalities of Finite Sets}
 
 \begin{forthel}
     \begin{definition}
@@ -242,7 +281,7 @@ we have the following finiteness axiom:
 \end{forthel}
 
 
-\subsection{The Mutilated Checkerboard}
+\section{The Mutilated Checkerboard}
 
 Defining the mutilated checkerboard is straightforward:
 we simply remove the two corners.
@@ -261,7 +300,7 @@ we simply remove the two corners.
 
 
 
-\subsection{Dominoes}
+\section{Dominoes}
 
 To define dominoes,
 we introduce concepts of adjacency by first declaring new relations and then axiomatizing them.
@@ -309,7 +348,7 @@ As usual, chaining of relation symbols indicates a conjunction.
 
 
 
-\subsection{Domino Tilings}
+\section{Domino Tilings}
 
 \begin{forthel}
     \begin{definition}
@@ -335,7 +374,7 @@ We shall prove:
 
 
 
-\subsection{Colours}
+\section{Colours}
 
 We shall solve the mutilated checkerboard problem by a cardinality argument.
 Squares on an actual checkerboard are coloured black and white and we can count
@@ -367,7 +406,7 @@ subsets of the checkerboard and dominoes.
 \end{forthel}
 
 
-\subsection{Counting Colours on Checkerboards}
+\section{Counting Colours on Checkerboards}
 
 The original checkerboard has an equal number of black and white squares.
 Since our setup does not include numbers for counting, we rather work with
@@ -499,7 +538,7 @@ Swapping dominoes is also an involution.
     \end{proof}
 \end{forthel}
 
-\subsection{The Theorem}
+\section{The Theorem}
 
 \noindent We can easily show that a domino tiling involves as many black as white squares.
 
@@ -552,3 +591,4 @@ Note that the phrasing \textit{[...]\,has no domino tiling} in the theorem is au
         Contradiction. Indeed $\Mutilated \cap \Black$ is a proper subset of $\Black$.
     \end{proof}
 \end{forthel}
+\end{document}
