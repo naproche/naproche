@@ -2,7 +2,7 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage{../lib/tex/forthel}
+\usepackage{../lib/tex/naproche}
 
 \title{Cantor's Theorem}
 \author{}
@@ -40,7 +40,7 @@
       The value of $f$ at any element of the domain of $f$ is a set.
     \end{axiom}
 
-    \begin{definition}[subset]
+    \begin{definition}[Subset]
       A subset of $M$ is a set $N$ such that every element of $N$ is an element of $M$.
     \end{definition}
 
@@ -60,7 +60,10 @@
       No function that is defined on $M$ surjects onto the powerset of $M$.
     \end{proposition}
     \begin{proof}
-      Proof by contradiction. Assume the contrary. Take a function $f$ that is defined on $M$ and surjects onto the powerset of $M$. Define $N = \{ x in M | x \notin f(x) \}$. Then $N$ is not equal to the value of $f$ at any element of $M$. Contradiction.
+      Proof by contradiction. Assume the contrary.
+      Take a function $f$ that is defined on $M$ and surjects onto the powerset of $M$.
+      Define $N = \{ x "in" M | x \notin f(x) \}$.
+      Then $N$ is not equal to the value of $f$ at any element of $M$. Contradiction.
     \end{proof}
 
   \end{forthel}
