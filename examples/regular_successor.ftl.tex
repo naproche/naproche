@@ -20,6 +20,8 @@
 
   \maketitle
 
+  \section{Preliminaries}
+
   \begin{forthel}
     [synonym cardinal/-s]
     [synonym ordinal/-s]
@@ -85,7 +87,11 @@
     Let $f$ is surjective from $X$ onto $Y$ stand for $\dom(f) = X$ and $\image{f}{X} = Y$.
 
     Let $f : X \surjects Y$ stand for $f$ is surjective from $X$ onto $Y$.
+  \end{forthel}
 
+\section{Ordinals}
+
+  \begin{forthel}
     \begin{signature}
       An ordinal is a set.
     \end{signature}
@@ -97,30 +103,41 @@
     \end{axiom}
 
     \begin{signature}
-      A cardinal is an ordinal.
-    \end{signature}
-
-    Let $\kappa, \mu, \nu$ denote cardinals.
-
-    \begin{signature}
       $\alpha < \beta$ is an atom.
     \end{signature}
+
+    \begin{axiom}
+      $\alpha < \beta$ or $\beta < \alpha$ or $\beta = \alpha$.
+    \end{axiom}
 
     \begin{axiom}
       If $\alpha < \beta$ then $\alpha$ is an element of $\beta$.
     \end{axiom}
 
     Let $a \leq b$ stand for $a = b$ or $a < b$.
+  \end{forthel}
 
-    \begin{definition}[Cofinality]
-      Let $\kappa$ be a cardinal.
-      Let $Y$ be a subset of $\kappa$.
-      %Assume $M\subseteq \kappa$.
-      $Y$ is cofinal in $\kappa$ iff
-        for every element $x$ of $\kappa$ there exists an element $y$ of $Y$ such that $x < y$.
-    \end{definition}
+  \section{Cardinals}
 
-    Let a cofinal subset of $\kappa$ stand for a subset of $\kappa$ that is cofinal in $\kappa$.
+  \begin{forthel}
+    \begin{signature}
+      A cardinal is an ordinal.
+    \end{signature}
+
+    Let $\kappa, \mu, \nu$ denote cardinals.
+  \end{forthel}
+
+  We only need transitivity for cardinals.
+  This limited transitivity axiom keeps the search space smaller for automated proof search.
+
+  \begin{forthel}
+    \begin{axiom}[Transitivity]
+      %Let $M\in \kappa$.
+      %Let $N$ be an element of $M$.
+      %$N$ is an element of $\kappa$.
+      Let $x\in y\in \kappa$.
+      Then $x\in \kappa$.
+    \end{axiom}
 
     \begin{signature}[Cardinality]
       $\card{X}$ is a cardinal.
@@ -129,14 +146,6 @@
     \begin{axiom}[Existence of surjection]
       Assume $M$ has an element.
       $\card{M} \leq \card{N}$ iff there exists a function $f$ such that $\dom(f) = N$ and $\image{f}{N} = M$.
-    \end{axiom}
-
-    \begin{axiom}[Transitivity]
-      %Let $M\in \kappa$.
-      %Let $N$ be an element of $M$.
-      %$N$ is an element of $\kappa$.
-      Let $x\in y\in \kappa$.
-      Then $x\in \kappa$.
     \end{axiom}
 
     \begin{axiom}
@@ -151,17 +160,9 @@
       Let $N$ be a subset of $M$. $\card{N} \leq \card{M}$.
     \end{axiom}
 
-    \begin{definition}
-      $\kappa$ is regular iff $\card{x} = \kappa$ for every cofinal subset $x$ of $\kappa$.
-    \end{definition}
-
     \begin{signature}
       $\Succ{\kappa}$ is a cardinal.
     \end{signature}
-
-    \begin{axiom}
-      $\alpha < \beta$ or $\beta < \alpha$ or $\beta = \alpha$.
-    \end{axiom}
 
     \begin{axiom}
       $\kappa < \Succ{\kappa}$.
@@ -189,8 +190,34 @@
     \end{definition}
 
     Let $0^M$ stand for the constant zero on $M$.
+  \end{forthel}
 
-    \begin{theorem}
+
+
+
+  \section{Cofinality and regular cardinals}
+
+  \begin{forthel}
+    \begin{definition}[Cofinality]
+      Let $\kappa$ be a cardinal.
+      Let $Y$ be a subset of $\kappa$.
+      %Assume $M\subseteq \kappa$.
+      $Y$ is cofinal in $\kappa$ iff
+        for every element $x$ of $\kappa$ there exists an element $y$ of $Y$ such that $x < y$.
+    \end{definition}
+
+    Let a cofinal subset of $\kappa$ stand for a subset of $\kappa$ that is cofinal in $\kappa$.
+
+
+    \begin{definition}
+      $\kappa$ is regular iff $\card{x} = \kappa$ for every cofinal subset $x$ of $\kappa$.
+    \end{definition}
+  \end{forthel}
+
+  \section{Hausdorff's theorem}
+
+  \begin{forthel}
+    \begin{theorem}[Hausdorff]
       $\Succ{\kappa}$ is regular.
     \end{theorem}
     \begin{proof}
