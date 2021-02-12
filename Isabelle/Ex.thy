@@ -1,5 +1,11 @@
 chapter \<open>Isabelle/Naproche Examples\<close>
 
+text \<open>
+  Note: Isabelle/jEdit allows to open hyperlinks (URLs, files, directories)
+  via CONTROL-mouse-click (Linux, Windows) or COMMAND-mouse-click (macOS).
+\<close>
+
+
 theory Ex
   imports Naproche.Naproche
 begin
@@ -18,9 +24,8 @@ text \<open>
 section \<open>Examples\<close>
 
 text \<open>
-  The directory \<^dir>\<open>$NAPROCHE_HOME/examples\<close> contains various examples, to be
-  checked in the Isabelle/jEdit Prover IDE: both \<^verbatim>\<open>.ftl\<close> and \<^verbatim>\<open>.ftl.tex\<close> are
-  supported; \<^verbatim>\<open>.pdf\<close> files have been produced by regular \<^verbatim>\<open>pdflatex\<close>.
+  The Isabelle/jEdit Prover IDE can check \<^verbatim>\<open>.ftl\<close> and \<^verbatim>\<open>.ftl.tex\<close> files;
+  corresponding \<^verbatim>\<open>.pdf\<close> files have been produced by regular \<^verbatim>\<open>pdflatex\<close>.
 
   For example:
 
@@ -29,6 +34,8 @@ text \<open>
     \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/tarski.ftl.tex\<close>
 
     \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/tarski.ftl.pdf\<close>
+
+  More examples: \<^dir>\<open>$NAPROCHE_HOME/examples\<close>
 \<close>
 
 

@@ -119,7 +119,7 @@ boundReports pide decl = dive 0
 
 addBlockReports :: Block -> FTL ()
 addBlockReports bl = addReports $ \pide -> let decls = Block.declaredVariables bl in
-  (Block.position bl, Markup.expression "text block") :
+  map (Block.position bl,) [Markup.cartouche, Markup.expression "text block"] ++
   formulaReports pide decls (Block.formula bl) ++
   concatMap (\decl -> variableReport pide True decl $ declPosition decl) decls
 
@@ -133,10 +133,12 @@ addDropReport pos = addReports $ const $
 
 addPretypingReport :: SourcePos -> [SourcePos] -> FTL ()
 addPretypingReport pos ps = addReports $ const $
-  (pos, Markup.expression "variable pretyping") : map (, Markup.free) ps
+  map (pos,) [Markup.cartouche, Markup.expression "variable pretyping"] ++
+  map (, Markup.free) ps
 
 addMacroReport :: SourcePos -> FTL ()
-addMacroReport pos = addReports $ const [(pos, Markup.expression "macro definition")]
+addMacroReport pos =
+  addReports $ const (map (pos,) [Markup.cartouche, Markup.expression "macro definition"])
 
 
 -- specific markup

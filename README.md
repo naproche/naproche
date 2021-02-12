@@ -65,10 +65,12 @@ The subsequent explanations are for **development** of the tool, not for end-use
 
 ### Isabelle component setup
 
-  * remove existing components: ensure that $ISABELLE_HOME_USER/etc/settings
-    and $ISABELLE_HOME/etc/components do *not* refer to Naproche-SAD
+  * remove existing components: ensure there is *no* reference to Naproche-SAD
+    in $ISABELLE_HOME_USER/etc/settings or various etc/components files
+    (e.g. Isabelle release)
 
-  * update reference to Naproche-SAD repository as component like this:
+  * update reference to Naproche-SAD repository in $ISABELLE_HOME_USER/etc/components
+    like this:
 
         isabelle components -u .../Naproche-SAD
 
@@ -80,7 +82,7 @@ The subsequent explanations are for **development** of the tool, not for end-use
 
   * Run some tests as follows:
 
-        isabelle naproche_build && isabelle naproche_test
+        isabelle naproche_build && isabelle naproche_test -j2
 
   * Package the Isabelle/Naproche component as follows:
 
