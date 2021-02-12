@@ -12,14 +12,15 @@ University of Bonn}
 \date{2018 - 2021}
 
 \newcommand{\val}[2]{#1_{#2}}
+\newcommand{\card}[1]{\operatorname{card}(#1)}
 \newcommand{\Naproche}{$\mathbb{N}$aproche}
 
 \begin{document}
 
   \maketitle
 
-König's Theorem is an important set-theoretical result about the 
-arithmetic of cardinals. It was proved by Julius König in 1905 
+König's Theorem is an important set-theoretical result about the
+arithmetic of cardinals. It was proved by Julius König in 1905
 (König, Julius: Zum Kontinuumsproblem, Mathematische Annalen 60 (1905), 177–180).
 The proof is reminiscent of Cantor's diagonal argument for
 proving that $\kappa < 2^\kappa$.
@@ -27,8 +28,8 @@ proving that $\kappa < 2^\kappa$.
 The formalization begins with a minimal axiomatic setup on sets, functions
 and cardinals, sufficient for the proof of the theorem.
 
-On an older laptop 
-with an Intel Pentium N3710 processor \Naproche{} takes 
+On an older laptop
+with an Intel Pentium N3710 processor \Naproche{} takes
 around 35 seconds to check this text.
 
 \section{ForTheL Setup}
@@ -41,12 +42,12 @@ around 35 seconds to check this text.
 
 
 \section{Sets and Functions}
-  
+
 \begin{forthel}
     Let $M,N$ denote sets.
-    
+
     \begin{definition}
-     A subset of $M$ is a set $N$ such that every element 
+     A subset of $M$ is a set $N$ such that every element
      of $N$ is an element of $M$.
     \end{definition}
 
@@ -58,14 +59,14 @@ around 35 seconds to check this text.
     Let the domain of $f$ stand for $\dom(f)$.
 
     \begin{definition}
-      Assume $M$ is a subset of the domain of $f$. 
+      Assume $M$ is a subset of the domain of $f$.
       $f[M] = \{f(x) | x$ is an element of $M\}$.
     \end{definition}
 
     Let the image of $f$ stand for $f[\dom(f)]$.
 
     \begin{axiom}
-      Assume $M$ is a subset of the domain of $f$. 
+      Assume $M$ is a subset of the domain of $f$.
       Then $f[M]$ is a set.
     \end{axiom}
 
@@ -85,7 +86,7 @@ around 35 seconds to check this text.
     \begin{signature}
       $A < B$ is an atom.
     \end{signature}
-    
+
     Let $A$ is less than $B$ stand for $A < B$.
     Let $A \leq B$ stand for $A = B$ or $A < B$.
 
@@ -101,23 +102,23 @@ around 35 seconds to check this text.
       The cardinality of $M$ is a cardinal.
     \end{signature}
 
-    Let $card(M)$ denote the cardinality of $M$.
+    Let $\card{M}$ denote the cardinality of $M$.
 
     \begin{axiom}
-      $card(A) = A$.
+      $\card{A} = A$.
     \end{axiom}
 
     \begin{axiom}[ImageCard]
-      Assume $M$ is a subset of $Dom(f)$. $card(f[M]) \leq card(M)$.
+      Assume $M$ is a subset of $Dom(f)$. $\card{f[M]} \leq \card{M}$.
     \end{axiom}
 
     \begin{axiom}
-      Assume the cardinality of $N$ is less than the cardinality of $M$. 
+      Assume the cardinality of $N$ is less than the cardinality of $M$.
 Then $M \setminus N$ has an element.
     \end{axiom}
 
     \begin{axiom}[SurjExi]
-      Assume $card(M) \leq card(N)$. Assume $M$ has an element. There exists a
+      Assume $\card{M} \leq \card{N}$. Assume $M$ has an element. There exists a
       function $f$ such that $N$ is the domain of $f$ and $M$ is the image of $f$.
     \end{axiom}
 
@@ -134,58 +135,58 @@ Then $M \setminus N$ has an element.
     Let $D$ denote a set.
 
     \begin{definition}
-      A sequence of cardinals on $D$ is a function $\kappa$ 
-      such that $\dom(\kappa) = D$ 
+      A sequence of cardinals on $D$ is a function $\kappa$
+      such that $\dom(\kappa) = D$
       and $\kappa(i)$ is a cardinal for every element $i$ of $D$.
     \end{definition}
 
 Let $\val{f}{i}$ stand for $f(i)$.
 
     \begin{signature}
-      Let $\kappa$ be a sequence of cardinals on $D$. 
+      Let $\kappa$ be a sequence of cardinals on $D$.
      $\SumSet{\kappa}{D}$ is a set.
     \end{signature}
 
     \begin{axiom}[SumDef]
-      Let $\kappa$ be a sequence of cardinals on $D$. $\SumSet{\kappa}{D} = 
-      \{(n,i) | i$ is an element of $D$ and $n$ is an element 
+      Let $\kappa$ be a sequence of cardinals on $D$. $\SumSet{\kappa}{D} =
+      \{(n,i) | i$ is an element of $D$ and $n$ is an element
       of $\val{\kappa}{i}\}$.
     \end{axiom}
 
     \begin{axiom}
-      Let $\kappa$ be a sequence of cardinals on $D$. 
+      Let $\kappa$ be a sequence of cardinals on $D$.
       Then $\SumSet{\kappa}{D}$ is a set.
     \end{axiom}
 
     \begin{definition}
-      Let $\kappa$ be a sequence of cardinals on $D$. 
-      $\Sum{\kappa}{D} = card(\SumSet{\kappa}{D})$.
+      Let $\kappa$ be a sequence of cardinals on $D$.
+      $\Sum{\kappa}{D} = \card{\SumSet{\kappa}{D}}$.
     \end{definition}
 
     \begin{signature}
-      Let $\kappa$ be a sequence of cardinals on $D$. 
+      Let $\kappa$ be a sequence of cardinals on $D$.
       $\ProdSet{\kappa}{D}$ is a set.
     \end{signature}
 
     \begin{axiom}[ProdDef]
-      Let $\kappa$ be a sequence of cardinals on $D$. $\ProdSet{\kappa}{D} = 
-      \{$ function $f | \dom(f) = D \wedge (f(i)$ is an element of 
+      Let $\kappa$ be a sequence of cardinals on $D$. $\ProdSet{\kappa}{D} =
+      \{$ function $f | \dom(f) = D \wedge (f(i)$ is an element of
       $\val{\kappa}{i}$ for every
       element $i$ of $D)\}$.
     \end{axiom}
 
     \begin{axiom}
-      Let $\kappa$ be a sequence of cardinals on $D$. 
+      Let $\kappa$ be a sequence of cardinals on $D$.
       Then $\ProdSet{\kappa}{D}$ is a set.
     \end{axiom}
 
     \begin{definition}
-      Let $\kappa$ be a sequence of cardinals on $D$. 
-      $\Prod{\kappa}{D} = card(\ProdSet{\kappa}{D})$.
+      Let $\kappa$ be a sequence of cardinals on $D$.
+      $\Prod{\kappa}{D} = \card{\ProdSet{\kappa}{D}}$.
     \end{definition}
 \end{forthel}
 
-König's Theorem requires some form of the axiom of choice. 
+König's Theorem requires some form of the axiom of choice.
 Currently choice is built into Naproche by the {\em choose}
 construct in function definitions.
 
@@ -195,14 +196,14 @@ of non-empty factors are themselves non-empty:
 \begin{forthel}
 
     \begin{lemma}[Choice]
-      Let $\lambda$ be a sequence of cardinals on $D$. 
-      Assume that $\val{\lambda}{i}$ 
-     has an element for every element $i$ of $D$. 
+      Let $\lambda$ be a sequence of cardinals on $D$.
+      Assume that $\val{\lambda}{i}$
+     has an element for every element $i$ of $D$.
      Then $\ProdSet{\lambda}{D}$ has an element.
     \end{lemma}
     \begin{proof}
-      Define $f(i) =$ choose an element $v$ of 
-      $\val{\lambda}{i}$ in $v$ for $i$ in $D$. 
+      Define $f(i) =$ choose an element $v$ of
+      $\val{\lambda}{i}$ in $v$ for $i$ in $D$.
      Then $f$ is an element of $\ProdSet{\lambda}{D}$.
     \end{proof}
 
@@ -213,50 +214,50 @@ of non-empty factors are themselves non-empty:
 
 \begin{forthel}
     \begin{theorem}
-      Let $\kappa, \lambda$ be sequences of cardinals on $D$. 
-     Assume that for every element $i$ of $D$ 
-     $\val{\kappa}{i} < \val{\lambda}{i}$. 
+      Let $\kappa, \lambda$ be sequences of cardinals on $D$.
+     Assume that for every element $i$ of $D$
+     $\val{\kappa}{i} < \val{\lambda}{i}$.
      Then $$\Sum{\kappa}{D} < \Prod{\lambda}{D}.$$
     \end{theorem}
     \begin{proof}
-      Proof by contradiction. Assume the contrary. 
+      Proof by contradiction. Assume the contrary.
       Then $$\Prod{\lambda}{D} \leq \Sum{\kappa}{D}.$$
-      Take a function $G$ such that $\SumSet{\kappa}{D}$ is the domain of $G$ 
+      Take a function $G$ such that $\SumSet{\kappa}{D}$ is the domain of $G$
       and $\ProdSet{\lambda}{D}$ is the image of $G$.
       Indeed $\ProdSet{\lambda}{D}$ has an element.
-      
+
       Define
 
-      $Diag(i) = 
+      $\Delta(i) =
      \{G((n,i))(i) | n$ is an element of $\val{\kappa}{i}\}$
- 
+
       for $i$ in $D$.
 
-      For every element $f$ of $\ProdSet{\lambda}{D}$ 
-      for every element $i$ of $D$ 
+      For every element $f$ of $\ProdSet{\lambda}{D}$
+      for every element $i$ of $D$
       $f(i)$ is an element of $\val{\lambda}{i}$.
       For every element $i$ of $D$ $\val{\lambda}{i}$ is a set.
-      For every element $i$ of $D$ for every element $d$ of $Diag(i)$ 
-      $d$ is an element of $\val{\lambda}{i}$.
-      For every element $i$ of $D$ $Diag(i)$ is a set.
-      
-     (1) For every element $i$ of $D$ 
-      $card(Diag(i)) < \val{\lambda}{i}$.
-      
+      For every element $i$ of $D$ for every element $d$ of $\Delta(i)$
+      we have $d\in \val{\lambda}{i}$.
+      For every element $i$ of $D$ $\Delta(i)$ is a set.
+
+     (1) For every element $i$ of $D$
+      $\card{\Delta(i)} < \val{\lambda}{i}$.
+
       Proof.
-        Let $i$ be an element of $D$. 
-        Define $F(n) = G((n,i))(i)$ for $n$ in $\val{\kappa}{i}$. 
-        Then $F[\kappa(i)] = Diag(i)$.
+        Let $i$ be an element of $D$.
+        Define $F(n) = G((n,i))(i)$ for $n$ in $\val{\kappa}{i}$.
+        Then $F[\kappa(i)] = \Delta(i)$.
       end.
 
-      Define 
-      $f(i) =$ choose an element $v$ of 
-      $\val{\lambda}{i} \setminus Diag(i)$ in 
-      $v$ for $i$ in $D$. Then $f$ is an element of 
-      $\ProdSet{\lambda}{D}$. Take an element $j$ of $D$ and an 
-      element $m$ of $\val{\kappa}{j}$ such that $G((m,j)) = f$. 
-      $G((m,j))(j)$ is an element of $Diag(j)$ and $f(j)$ 
-      is not an element of $Diag(j)$. Contradiction.
+      Define
+      $f(i) =$ choose an element $v$ of
+      $\val{\lambda}{i} \setminus \Delta(i)$ in
+      $v$ for $i$ in $D$. Then $f$ is an element of
+      $\ProdSet{\lambda}{D}$. Take an element $j$ of $D$ and an
+      element $m$ of $\val{\kappa}{j}$ such that $G((m,j)) = f$.
+      $G((m,j))(j)$ is an element of $\Delta(j)$ and $f(j)$
+      is not an element of $\Delta(j)$. Contradiction.
     \end{proof}
   \end{forthel}
 
