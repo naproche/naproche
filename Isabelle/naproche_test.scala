@@ -37,7 +37,7 @@ object Naproche_Test
         val timing = stop - start
 
         val expect_ok = !test_failure
-        progress.echo(
+        progress.echo("Finished " + path.base + ": " +
           (if (result.ok) "OK" else "FAILURE") +
             (if (result.ok == expect_ok) ""
             else ", but expected " + (if (expect_ok) "OK" else "FAILURE")) +
