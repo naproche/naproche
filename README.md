@@ -80,7 +80,7 @@ The subsequent explanations are for **development** of the tool, not for end-use
 
         isabelle naproche_build
 
-  * Run some tests as follows:
+  * Run some tests as follows (make sure that your current directory is the root of the Naproche repository):
 
         isabelle naproche_build && isabelle naproche_test -j2
 
