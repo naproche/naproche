@@ -12,7 +12,7 @@
 \newcommand{\surjects}{\twoheadrightarrow}
 
 \title{Regularity of successor cardinals}
-\author{Steffen Frerix (2018), Adrian De Lon (typesetting, 2021)}
+\author{Steffen Frerix (2018), Adrian De Lon (2021)}
 \date{2018}
 
 \begin{document}
@@ -26,7 +26,7 @@
     [synonym cardinal/-s]
     [synonym ordinal/-s]
 
-    Let $x, y, X, Y, M, N$ denote sets.
+    Let $x, y, X, Y$ denote sets.
 
     \begin{axiom}
       For any objects $x,y,x',y'$ if $(x, y) = (x', y')$ then $x' = x$ and $y' = y$.
@@ -65,13 +65,13 @@
     Let $f$ denote a function.
 
     \begin{definition}
-      A subset of $M$ is a set $N$ such that every element of $N$ is an element of $M$.
+      A subset of $X$ is a set $Y$ such that every element of $Y$ is an element of $X$.
     \end{definition}
 
-    Let $M\subseteq N$ stand for $M$ is a subset of $N$.
+    Let $Y\subseteq X$ stand for $Y$ is a subset of $X$.
 
     \begin{axiom}[Extensionality]
-      If $M\subseteq N$ and $N\subseteq M$ then $M = N$.
+      If $X\subseteq Y$ and $Y\subseteq X$ then $X = Y$.
     \end{axiom}
 
     \begin{definition}
@@ -102,6 +102,11 @@
       Every element of $\alpha$ is an ordinal.
     \end{axiom}
 
+    \begin{axiom}[Transitivity]
+      Let $x\in y\in \alpha$.
+      Then $x\in \alpha$.
+    \end{axiom}
+
     \begin{signature}
       $\alpha < \beta$ is an atom.
     \end{signature}
@@ -127,29 +132,20 @@
     Let $\kappa, \mu, \nu$ denote cardinals.
   \end{forthel}
 
-  We only need transitivity for cardinals.
-  This limited transitivity axiom keeps the search space smaller for automated proof search.
-
   \begin{forthel}
-    \begin{axiom}[Transitivity]
-      %Let $M\in \kappa$.
-      %Let $N$ be an element of $M$.
-      %$N$ is an element of $\kappa$.
-      Let $x\in y\in \kappa$.
-      Then $x\in \kappa$.
-    \end{axiom}
-
     \begin{signature}[Cardinality]
       $\card{X}$ is a cardinal.
     \end{signature}
 
     \begin{axiom}[Existence of surjection]
-      Assume $M$ has an element.
-      $\card{M} \leq \card{N}$ iff there exists a function $f$ such that $\dom(f) = N$ and $\image{f}{N} = M$.
+      Assume $X$ has an element.
+      $\card{X} \leq \card{Y}$ iff
+        there exists a function $f$ such that
+          $\dom(f) = Y$ and $\image{f}{Y} = X$.
     \end{axiom}
 
     \begin{axiom}
-      $\card{\Prod{M}{M}} = \card{M}$.
+      $\card{\Prod{X}{X}} = \card{X}$.
     \end{axiom}
 
     \begin{axiom}
@@ -157,7 +153,7 @@
     \end{axiom}
 
     \begin{axiom}
-      Let $N$ be a subset of $M$. $\card{N} \leq \card{M}$.
+      Let $Y$ be a subset of $X$. $\card{Y} \leq \card{X}$.
     \end{axiom}
 
     \begin{signature}
@@ -186,10 +182,10 @@
     \end{definition}
 
     \begin{definition}
-      The constant zero on $M$ is a function $f$ such that $\dom(f) = M$ and $f(x)$ is the empty set for every element $x$ of $M$.
+      The constant zero on $X$ is a function $f$ such that $\dom(f) = X$ and $f(x)$ is the empty set for every element $x$ of $X$.
     \end{definition}
 
-    Let $0^M$ stand for the constant zero on $M$.
+    Let $0^X$ stand for the constant zero on $X$.
   \end{forthel}
 
 
@@ -201,7 +197,6 @@
     \begin{definition}[Cofinality]
       Let $\kappa$ be a cardinal.
       Let $Y$ be a subset of $\kappa$.
-      %Assume $M\subseteq \kappa$.
       $Y$ is cofinal in $\kappa$ iff
         for every element $x$ of $\kappa$ there exists an element $y$ of $Y$ such that $x < y$.
     \end{definition}
@@ -259,8 +254,9 @@
         proof.
           Let $n$ be an element of $\image{h}{\Prod{\kappa}{\kappa}}$.
           We can take elements $a,b$ of $\kappa$ such that $n = h((a,b))$.
-          Then $n = g(f(a))(b)$. $f(a)$ is an element of $\Succ{\kappa}$. Every
-          element of $f(a)$ is an element of $\Succ{\kappa}$.
+          Then $n = g(f(a))(b)$.
+          $f(a)$ is an element of $\Succ{\kappa}$.
+          Every element of $f(a)$ is an element of $\Succ{\kappa}$.
 
           Case $f(a)$ has an element. Obvious.
 
