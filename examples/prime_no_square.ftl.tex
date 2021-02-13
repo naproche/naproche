@@ -16,7 +16,7 @@
 
   \begin{forthel}
     [synonym number/-s]
-    [synonym devide/-s]
+    [synonym divide/-s]
 
     \begin{signature}
       A rational number is a notion.
@@ -63,6 +63,10 @@
     \begin{definition}
       $n$ and $m$ are coprime iff $n$ and $m$ have no common divisor.
     \end{definition}
+
+    \begin{axiom}
+      There exist coprime $m,n$ such that $m \cdot q = n$.
+    \end{axiom}
   \end{forthel}
 
   \section*{Prime numbers}
@@ -75,11 +79,7 @@
     Let $p$ denote a prime number.
 
     \begin{axiom}
-      If $p \mid n \cdot m$ then $p \mid n \vee p \mid m$.
-    \end{axiom}
-
-    \begin{axiom}
-      There exist coprime $m,n$ such that $m \cdot q = n$.
+      If $p \mid n \cdot m$ then $p \mid n$ or $p \mid m$.
     \end{axiom}
 
     Let $q^{2}$ stand for $q \cdot q$.
