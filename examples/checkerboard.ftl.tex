@@ -169,11 +169,13 @@ Note that there are many degrees of freedom in picking an axiomatic setting.
     \end{definition}
 
     \begin{definition}
-        Assume that every element of $C$ is a set.
-        $C$ is pairwise disjoint iff $A$ and $B$ are disjoint for all nonequal
-        elements $A, B$ of $C$.
+        A family is a set $F$ such that every element of $F$ is a set.
     \end{definition}
 
+    \begin{definition}
+        A disjoint family is a family $F$ such that
+        $A$ is disjoint from $B$ for all nonequal elements $A, B$ of $F$.
+    \end{definition}
 
     \begin{definition}
         $B \cap C = \{ x \in B \mid x \in C\}$.
@@ -353,7 +355,7 @@ As usual, chaining of relation symbols indicates a conjunction.
 
 \begin{forthel}
     \begin{definition}
-        A domino tiling is a pairwise disjoint class of dominoes.
+        A domino tiling is a disjoint family $T$ such that every element of $T$ is a domino.
     \end{definition}
 
     Let $A$ denote a subset of $\Checkerboard$.
