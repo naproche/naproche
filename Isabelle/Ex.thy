@@ -19,7 +19,7 @@ text \<open>
   mathematical texts. The development of the Naproche proof checker is carried
   out at the University of Bonn, coordinated by Peter Koepke
   (koepke@math.uni-bonn.de). The source code repository is
-  \<^url>\<open>https://github.com/anfelor/Naproche-SAD\<close>
+  \<^url>\<open>https://github.com/naproche-community/naproche\<close>
 
   The Naproche system is part of the long-term Naproche (Natural Proof
   Checking) project with Bernhard Schröder, at the Universities of Bonn and
