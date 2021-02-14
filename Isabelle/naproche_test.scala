@@ -15,7 +15,8 @@ import java.util.concurrent.TimeUnit
 
 object Naproche_Test
 {
-  val examples: Path = Path.explode("$NAPROCHE_HOME/examples")
+  val naproche_home: Path = Path.explode("$NAPROCHE_HOME")
+  val examples: Path = naproche_home + Path.explode("examples")
 
   def run_tests(
     progress: Progress = new Progress,
@@ -50,7 +51,8 @@ object Naproche_Test
             def check_timeout: Boolean =
               Time.now() > start + timeout && { was_timeout = true; true }
             val result =
-              Isabelle_System.bash("\"$NAPROCHE_EXE\" -- " + File.bash_path(path), strict = false,
+              Isabelle_System.bash("\"$NAPROCHE_EXE\" -- " + File.bash_path(path),
+                strict = false,
                 watchdog =
                   if (timeout == Time.zero) None
                   else Some((Time.seconds(0.1), _ => progress.stopped || check_timeout)))
@@ -109,7 +111,7 @@ Usage: isabelle naproche_test
       val progress = new Console_Progress()
 
       val results =
-        Build.build(Options.init(), select_dirs = List(Path.explode("$NAPROCHE_HOME")),
+        Build.build(Options.init(), select_dirs = List(naproche_home),
           progress = progress, max_jobs = max_jobs)
       if (!results.ok) sys.exit(results.rc)
 
