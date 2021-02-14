@@ -51,7 +51,7 @@ The subsequent explanations are for **development** of the tool, not for end-use
 
         hg clone https://isabelle.sketis.net/repos/isabelle-release isabelle
         cd isabelle
-        hg update -C -r Isabelle2021-RC5
+        hg update -C -r Isabelle2021
         bin/isabelle components -I
         bin/isabelle components -a
 
@@ -59,7 +59,7 @@ The subsequent explanations are for **development** of the tool, not for end-use
 
         cd isabelle
         hg pull https://isabelle.sketis.net/repos/isabelle-release
-        hg update -C -r Isabelle2021-RC5
+        hg update -C -r Isabelle2021
         bin/isabelle components -a
 
 
@@ -82,7 +82,7 @@ The subsequent explanations are for **development** of the tool, not for end-use
 
   * Run some tests as follows (make sure that your current directory is the root of the Naproche repository):
 
-        isabelle naproche_build && isabelle naproche_test -j2
+        isabelle naproche_build && isabelle naproche_test -j1
 
   * Package the Isabelle/Naproche component as follows:
 
@@ -93,7 +93,7 @@ The subsequent explanations are for **development** of the tool, not for end-use
     used for Isabelle2021:
 
       - Linux: Ubuntu 16.04 LTS
-      - macOS: Mac OS X 10.13 Yosemite
+      - macOS: Mac OS X 10.13 High Sierra
       - Windows: Windows 10
 
 
