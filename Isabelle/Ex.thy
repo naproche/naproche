@@ -84,10 +84,11 @@ text \<open>
 \<close>
 
 
-section \<open>Implementation and system integration\<close>
+section \<open>Implementation\<close>
 
 text \<open>
-  Isabelle/Naproche integrates various tools and components as follows:
+  The Isabelle/Naproche implementation integrates various tools and components
+  as follows:
 
     \<^item> \<^verbatim>\<open>Naproche-SAD\<close> as command-line tool and TCP server, written in
       Haskell: \<^dir>\<open>$NAPROCHE_HOME/src/SAD\<close>
