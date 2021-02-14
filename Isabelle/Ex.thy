@@ -14,8 +14,8 @@ section \<open>Isabelle/Naproche\<close>
 text \<open>
   The Isabelle/Naproche system provides interactive editing and concurrent
   automatic checking of mathematical texts, written in the controlled natural
-  language ForTheL. ForTheL files in .ftl.tex format use LaTeX symbols and
-  constructs, and may be compiled to pdf files that resemble ordinary
+  language ForTheL. ForTheL files in \<^verbatim>\<open>.ftl.tex\<close> format use LaTeX symbols and
+  constructs, and may be turned into \<^verbatim>\<open>.pdf\<close> files that resemble ordinary
   mathematical texts. The development of the Naproche proof checker is carried
   out at the University of Bonn, coordinated by Peter Koepke
   (koepke@math.uni-bonn.de). The source code repository is
@@ -25,7 +25,7 @@ text \<open>
   Checking) project with Bernhard Schröder, at the Universities of Bonn and
   Duisburg-Essen (\<^url>\<open>http://naproche.net\<close>). Andrei Paskevich kindly let us
   take over his source code of SAD (System for Automated Deduction,
-  http://nevidal.org/sad.en.html) and gave essential advice. Program
+  \<^url>\<open>http://nevidal.org/sad.en.html\<close>) and gave essential advice. Program
   development was carried out by Steffen Frerix, Adrian De Lon and Anton
   Lorenzen. Adrian Marti and Marcel Schütz contributed to the present release.
 
@@ -47,11 +47,11 @@ text \<open>
 
     \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/TUTORIAL.ftl.tex\<close>.
 
-  Andrei Paskevich's "The syntax and semantics of the ForTheL language"
+  Andrei Paskevich's ``The syntax and semantics of the ForTheL language''
 
     \<^enum> \<^url>\<open>http://nevidal.org/download/forthel.pdf\<close> 
 
-  is recommended as a guide to the prinicples of ForTheL.
+  is recommended as a guide to the principles of ForTheL.
 \<close>
 
 
@@ -69,7 +69,7 @@ text \<open>
                      
     \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/tarski.ftl.tex\<close>
 
-    \<^enum> \<^file>\<open>~~/naproche-069986ef7f3a/examples/tarski.ftl.pdf\<close>
+    \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/tarski.ftl.pdf\<close>
   
   In LaTeX mode, only material in \begin{forthel} ... \end{forthel}
   environments is fed to the parser and proof checker. Putting comments
