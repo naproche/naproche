@@ -24,7 +24,8 @@ object Naproche_Test
     timeout: Time = Time.zero): Unit =
   {
     val file_format = new isabelle.naproche.File_Format
-    val tests = File.find_files(examples.file, file => file_format.detect(file.getName))
+    val tests =
+      File.find_files(examples.file, file => file_format.detect(file.getName)).sortBy(_.getName)
 
     val bad = Synchronized(List.empty[String])
     val executor = Executors.newFixedThreadPool(max_jobs max 1)
