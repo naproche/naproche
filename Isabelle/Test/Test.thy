@@ -31,6 +31,8 @@ A subset of M is a set N such that every element of N is an element of M.
 Definition.
 The powerset of M is the class of subsets of M.
 
+Axiom. The powerset of M is a set.
+
 Definition.
 f surjects onto M iff every element of M is equal to the value of f at some element of the domain of f.
 
