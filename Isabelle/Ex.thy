@@ -106,7 +106,7 @@ text \<open>
     \<^item> Isabelle/Scala integration for external provers managed by Isabelle
     (with robust interrupts/timeouts for all platforms):
     \<^file>\<open>$NAPROCHE_HOME/Isabelle/prover_server.scala\<close> to invoke e.g. E prover
-    from the Isabelle distribution (see \<^dir>\<open>$E_HOME\<close>).
+    from the Isabelle distribution (see \<^dir>\<open>$E_HOME/..\<close>).
 
     \<^item> Isabelle component settings to glue everything together:
       \<^file>\<open>$NAPROCHE_HOME/etc/settings\<close>
