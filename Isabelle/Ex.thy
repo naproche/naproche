@@ -14,7 +14,7 @@ section \<open>Isabelle/Naproche\<close>
 
 text \<open>
   The Isabelle/Naproche system provides interactive editing and
-  automatic checking of mathematical texts, written in the 
+  concurrent automatic checking of mathematical texts, written in the 
   controlled natural language ForTheL. ForTheL files in .ftl.tex format use 
   LaTeX symbols and constructs, and may be compiled to pdf. The development 
   of the Naproche proof checker is carried out at the University of Bonn,
@@ -23,14 +23,14 @@ text \<open>
   \<^url>\<open>https://github.com/anfelor/Naproche-SAD\<close>
 
   The Naproche system
-  is part of the longterm Naproche (Natural Proof Checking) project 
+  is part of the long-term Naproche (Natural Proof Checking) project 
   at the Universities of Bonn and Duisburg-Essen 
-  (\<^url>\<open>http://naproche.net\<close>). Andrei Paskevich kindly let us take over the
-  source code of his System for Automated Deduction 
-  (http://nevidal.org/sad.en.html) and gave essential advice. Program
+  (\<^url>\<open>http://naproche.net\<close>). Andrei Paskevich kindly let us take over his
+  source code of SAD (System for Automated Deduction, 
+  http://nevidal.org/sad.en.html) and gave essential advice. Program
   development was carried out by Steffen Frerix, Adrian De Lon
   and Anton Lorenzen. Adrian Marti and Marcel Schütz contributed to the 
-  present release. The Naproche system is experimental, research quality
+  present release. The Naproche system is research quality experimental
   software which may exhibit unexpected behaviour and bugs.  
 \<close>
 
@@ -51,15 +51,18 @@ text \<open>
 
     \<^enum> \<^url>\<open>http://nevidal.org/download/forthel.pdf\<close> 
 
-  is still the best in-depth guide to ForTheL.
+  is still the best guide to the prinicples of ForTheL.
 \<close>
 section \<open>Examples\<close>
 
 text \<open>The folder \<^dir>\<open>$NAPROCHE_HOME/examples\<close> contains a selection of
   formalizations intended to demonstrate the naturalness and
   coverage of formalizations in Naproche. Some of the examples
-  have been taken from SAD and rewritten in the LaTeX dialect of
-  ForTheL. The Isabelle/jEdit Prover IDE can check \<^verbatim>\<open>.ftl\<close> and 
+  have been taken over from SAD and are rewritten in the LaTeX dialect of
+  ForTheL.  \<^file>\<open>$NAPROCHE_HOME/examples/checkerboard.ftl.tex\<close> is a 
+  conference submission, proof-checked by Naproche.  
+
+The Isabelle/jEdit Prover IDE can check \<^verbatim>\<open>.ftl\<close> and
   \<^verbatim>\<open>.ftl.tex\<close> files; corresponding \<^verbatim>\<open>.pdf\<close> files have been produced 
   by regular \<^verbatim>\<open>pdflatex\<close>.
 
