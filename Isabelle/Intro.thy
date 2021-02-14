@@ -1,11 +1,11 @@
-chapter \<open>Isabelle/Naproche Examples\<close>
+chapter \<open>Introduction to Isabelle/Naproche\<close>
 
 text \<open>
   Note: Isabelle/jEdit allows to open hyperlinks (URLs, files, directories)
   via CONTROL-mouse-click (Linux, Windows) or COMMAND-mouse-click (macOS).
 \<close>
 
-theory Ex
+theory Intro
   imports Naproche.Naproche
 begin
 
