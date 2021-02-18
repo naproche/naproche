@@ -3,6 +3,8 @@ chapter \<open>Introduction to Isabelle/Naproche\<close>
 text \<open>
   Note: Isabelle/jEdit allows to open hyperlinks (URLs, files, directories)
   via CONTROL-mouse-click (Linux, Windows) or COMMAND-mouse-click (macOS).
+  Files in the Isabelle File Browser can opened via a 
+  right-mouse-click-menu and "Open in Desktop".
 \<close>
 
 theory Intro
@@ -51,7 +53,7 @@ text \<open>
 
     \<^enum> \<^url>\<open>http://nevidal.org/download/forthel.pdf\<close> 
 
-  is recommended as a guide to the principles of ForTheL.
+  is still recommended as a guide to the principles of ForTheL.
 \<close>
 
 
@@ -79,8 +81,8 @@ text \<open>
 
     \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/checkerboard.ftl.tex\<close> 
 
-  which is a conference submission on a proof-checked formalization 
-  of the Mutilated Checkerboard Problem in Naproche.
+  which is a chapter from a conference submission on a proof-checked 
+  formalization of the Mutilated Checkerboard Problem in Naproche.
 \<close>
 
 
