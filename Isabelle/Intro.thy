@@ -3,8 +3,9 @@ chapter \<open>Introduction to Isabelle/Naproche\<close>
 text \<open>
   Note: Isabelle/jEdit allows to open hyperlinks (URLs, files, directories)
   via CONTROL-mouse-click (Linux, Windows) or COMMAND-mouse-click (macOS).
-  Files in the Isabelle File Browser can opened via a 
-  right-mouse-click-menu and "Open in Desktop".
+  PDF files in the jEdit File Browser can opened via a right-mouse-click menu
+  and "Open in Desktop".
+
 \<close>
 
 theory Intro
