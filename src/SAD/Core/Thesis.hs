@@ -127,7 +127,7 @@ instantiations n currentInst f hs =
     subInfo :: Instantiation -> Int -> [Formula]
     subInfo sub n =
       let sub' = applySub sub $ mkVar $ VarAssume n
-      in  map (replace sub' ThisT) $ varInfo $ sub'
+      in  map (replace sub' ThisT) $ trInfo $ sub'
 
 
 {- finds an instantiation to make a formula equal to a second formula.

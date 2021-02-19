@@ -467,7 +467,8 @@ symbSetNotation = cndSet </> finSet
     sepFrom = notionSep -|- setSep -|- noSep
 
     notionSep = do
-      (q, f, v) <- notion >>= single; guard (not . (==) TermEquality . trmName $ f)
+      (q, f, v) <- notion >>= single;
+      guard (case f of Trm n _ _ _ -> n /= TermEquality; _ -> False)
       return (Tag Replacement, \tr -> subst tr (posVarName v) $ q f, pVar v, mkClass)
     setSep = do
       t <- sTerm

@@ -22,6 +22,8 @@ when:
   ghc-options:
   - -fplugin=StackTrace.Plugin
   - -Weverything
+  - -Wno-unsafe
+  - -Wno-implicit-prelude
 
 dependencies:
 - base >= 4.7 && < 5
