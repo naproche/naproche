@@ -3,9 +3,9 @@ chapter \<open>Introduction to Isabelle/Naproche\<close>
 text \<open>
   Note: Isabelle/jEdit allows to open hyperlinks (URLs, files, directories)
   via CONTROL-mouse-click (Linux, Windows) or COMMAND-mouse-click (macOS).
-  PDF files in the jEdit File Browser can be opened via a right-mouse-click menu
-  and "Open in Desktop".
 
+  PDF files in the jEdit File Browser can be opened via a right-mouse-click
+  menu and "Open in Desktop".
 \<close>
 
 theory Intro
@@ -107,9 +107,9 @@ text \<open>
       \<^file>\<open>$NAPROCHE_HOME/Isabelle/file_format.scala\<close>
 
     \<^item> Isabelle/Scala integration for external provers managed by Isabelle
-    (with robust interrupts/timeouts for all platforms):
-    \<^file>\<open>$NAPROCHE_HOME/Isabelle/prover_server.scala\<close> to invoke e.g. E prover
-    from the Isabelle distribution (see \<^dir>\<open>$E_HOME/..\<close>).
+      (with robust interrupts/timeouts for all platforms):
+      \<^file>\<open>$NAPROCHE_HOME/Isabelle/prover_server.scala\<close> to invoke e.g. E prover
+      from the Isabelle distribution (see \<^dir>\<open>$E_HOME/..\<close>).
 
     \<^item> Isabelle component settings to glue everything together:
       \<^file>\<open>$NAPROCHE_HOME/etc/settings\<close>
