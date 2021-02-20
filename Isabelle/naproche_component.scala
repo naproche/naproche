@@ -82,7 +82,7 @@ object Naproche_Component
       Isabelle_System.copy_dir(examples, examples_build)
 
       for {
-        file <- File.find_files(examples_build.file, _.getName.endsWith(".tex"))
+        file <- File.find_files(examples_build.file, _.getName.endsWith(".tex")).sortBy(_.getName)
         text = File.read(file)
         if text.containsSlice("\\documentclass")
       } {
