@@ -38,26 +38,6 @@ text \<open>
 \<close>
 
 
-section \<open>Tutorial\<close>
-
-text \<open>
-  A brief introduction to Naproche is contained in
-
-    \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/TUTORIAL.ftl.pdf\<close>.
-
-  Practical formalization experiments can carried out by playing with the
-  source code of the tutorial which itself is a proof-checked ForTheL text:
-
-    \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/TUTORIAL.ftl.tex\<close>.
-
-  Andrei Paskevich's ``The syntax and semantics of the ForTheL language''
-
-    \<^enum> \<^url>\<open>http://nevidal.org/download/forthel.pdf\<close> 
-
-  is still recommended as a guide to the principles of ForTheL.
-\<close>
-
-
 section \<open>Examples\<close>
 
 text \<open>
@@ -84,6 +64,26 @@ text \<open>
 
   which is a chapter from a conference submission on a proof-checked 
   formalization of the Mutilated Checkerboard Problem in Naproche.
+\<close>
+
+
+section \<open>Tutorial\<close>
+
+text \<open>
+  A brief introduction to Naproche is contained in
+
+    \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/TUTORIAL.ftl.pdf\<close>.
+
+  Practical formalization experiments can carried out by playing with the
+  source code of the tutorial which itself is a proof-checked ForTheL text:
+
+    \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/TUTORIAL.ftl.tex\<close>.
+
+  Andrei Paskevich's ``The syntax and semantics of the ForTheL language''
+
+    \<^enum> \<^url>\<open>http://nevidal.org/download/forthel.pdf\<close> 
+
+  is still recommended as a guide to the principles of ForTheL.
 \<close>
 
 
