@@ -75,26 +75,35 @@ object Naproche_Component
     /* PDF documents */
 
     if (pdf_documents) {
+      val TeX_Program = """^% +!TEX +program += +(\w+) *$""".r
+
       val examples = component_dir + Path.explode("examples")
       val examples_pdf = component_dir + Path.explode("examples_pdf")
       Isabelle_System.copy_dir(examples, examples_pdf)
+
       for {
-        name <- File.read_dir(examples)
-        base_name <- Library.try_unsuffix(".tex", name)
-        text = File.read(examples + Path.explode(name))
+        file <- File.find_files(examples.file, _.getName.endsWith(".tex"))
+        text = File.read(file)
         if text.containsSlice("\\documentclass")
       } {
-        val pdf_name = Path.basic(base_name).pdf
+        val tex_path = File.path(file)
+        val tex_name = tex_path.base.implode
+        val tex_program =
+          split_lines(text).collectFirst({ case TeX_Program(prg) => prg }).getOrElse("pdflatex")
+
+        val pdf_name = Path.basic(Library.try_unsuffix(".tex", tex_name).get).pdf
         progress.expose_interrupt()
-        progress.echo("Building " + pdf_name)
+        progress.echo("Building " + pdf_name + " with " + tex_program)
         for (_ <- 1 to 2) {
-          val result = progress.bash("pdflatex " + Bash.string(name), cwd = examples_pdf.file)
+          val result =
+            progress.bash(Bash.string(tex_program) + " " + Bash.string(tex_name),
+              cwd = tex_path.dir.file)
           if (!result.ok) {
             error(cat_lines("LaTeX failed:"
               :: result.out_lines.drop(result.out_lines.length - output_tail max 0)))
           }
         }
-        File.copy(examples_pdf + pdf_name, examples)
+        File.copy(tex_path.dir + pdf_name, examples)
       }
     }
 
