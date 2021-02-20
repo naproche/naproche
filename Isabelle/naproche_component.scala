@@ -78,11 +78,11 @@ object Naproche_Component
       val TeX_Program = """^% +!TEX +program += +(\w+) *$""".r
 
       val examples = component_dir + Path.explode("examples")
-      val examples_pdf = component_dir + Path.explode("examples_pdf")
-      Isabelle_System.copy_dir(examples, examples_pdf)
+      val examples_build = component_dir + Path.explode("examples_pdf")
+      Isabelle_System.copy_dir(examples, examples_build)
 
       for {
-        file <- File.find_files(examples.file, _.getName.endsWith(".tex"))
+        file <- File.find_files(examples_build.file, _.getName.endsWith(".tex"))
         text = File.read(file)
         if text.containsSlice("\\documentclass")
       } {
