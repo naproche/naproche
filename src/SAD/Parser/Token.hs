@@ -47,9 +47,11 @@ data TokenType = NoWhiteSpaceBefore | WhiteSpaceBefore | Comment deriving (Eq, O
 -- | Indicates whether the tokenizer is currently inside a forthel env.
 data TexState = InsideForthelEnv | OutsideForthelEnv | TexDisabled deriving (Eq)
 
--- | Make a token with @s@ as @tokenText@ and the range from @p@ to the end of @s@.
+makeTokenRange :: Text -> SourceRange -> TokenType -> Token
+makeTokenRange text range = Token text (rangePos range)
+
 makeToken :: Text -> SourcePos -> TokenType -> Token
-makeToken s pos = Token s (rangePos (SourceRange pos (pos `advancePos` s)))
+makeToken text pos = makeTokenRange text (SourceRange pos (pos `advancePos` text))
 
 tokenEndPos :: Token -> SourcePos
 tokenEndPos tok@Token{} = tokenPos tok `advancePos` tokenText tok
@@ -128,8 +130,9 @@ tokenize texState start = posToken texState start NoWhiteSpaceBefore
       Just ('\\', rest) | useTex -> newToks ++ toks
         where
           (name, rest') = Text.span isAlpha rest
-          newToks = expandTexCmd name pos whitespaceBefore
-          toks = posToken texState (advancePos pos (Text.cons '\\' name)) WhiteSpaceBefore rest'
+          pos' = advancePos pos (Text.cons '\\' name)
+          newToks = expandTexCmd name (SourceRange pos pos') whitespaceBefore
+          toks = posToken texState pos' WhiteSpaceBefore rest'
 
       Just ('$', rest) | useTex -> posToken texState (advancePos pos "$") WhiteSpaceBefore rest
 
@@ -149,18 +152,18 @@ tokenize texState start = posToken texState start NoWhiteSpaceBefore
           toks = posToken texState (advancePos pos text) NoWhiteSpaceBefore cs
 
 
-expandTexCmd :: Text -> SourcePos -> TokenType -> [Token]
+expandTexCmd :: Text -> SourceRange -> TokenType -> [Token]
 -- Logical symbols
-expandTexCmd "wedge" pos whiteSpaceBefore = makeSymbolTokens ["/","\\"] pos whiteSpaceBefore
-expandTexCmd "vee" pos whiteSpaceBefore = makeSymbolTokens ["\\","/"] pos whiteSpaceBefore
-expandTexCmd "implies" pos whiteSpaceBefore = makeSymbolTokens ["=",">"] pos whiteSpaceBefore
-expandTexCmd "iff" pos whiteSpaceBefore = makeSymbolTokens ["<", "=",">"] pos whiteSpaceBefore
-expandTexCmd "forall" pos whiteSpaceBefore = [makeToken "forall" pos whiteSpaceBefore]
-expandTexCmd "exists" pos whiteSpaceBefore = [makeToken "exists" pos whiteSpaceBefore]
+expandTexCmd "wedge" range whiteSpaceBefore = makeSymbolTokens ["/","\\"] range whiteSpaceBefore
+expandTexCmd "vee" range whiteSpaceBefore = makeSymbolTokens ["\\","/"] range whiteSpaceBefore
+expandTexCmd "implies" range whiteSpaceBefore = makeSymbolTokens ["=",">"] range whiteSpaceBefore
+expandTexCmd "iff" range whiteSpaceBefore = makeSymbolTokens ["<", "=",">"] range whiteSpaceBefore
+expandTexCmd "forall" range whiteSpaceBefore = [makeTokenRange "forall" range whiteSpaceBefore]
+expandTexCmd "exists" range whiteSpaceBefore = [makeTokenRange "exists" range whiteSpaceBefore]
 -- Special commands
-expandTexCmd "mid" pos whiteSpaceBefore = [makeToken "|" pos whiteSpaceBefore]
-expandTexCmd "rightarrow" pos whiteSpaceBefore = makeSymbolTokens ["-",">"] pos whiteSpaceBefore
-expandTexCmd "fun" pos whiteSpaceBefore = [makeToken "\\" pos whiteSpaceBefore]
+expandTexCmd "mid" range whiteSpaceBefore = [makeTokenRange "|" range whiteSpaceBefore]
+expandTexCmd "rightarrow" range whiteSpaceBefore = makeSymbolTokens ["-",">"] range whiteSpaceBefore
+expandTexCmd "fun" range whiteSpaceBefore = [makeTokenRange "\\" range whiteSpaceBefore]
 
 -- All tokens starting with `\` are treated as symbols by the parser. But there are tex commands,
 -- that we don't want to treat as symbols in our patterns, for example greek letters. Thus we expand this fixed
@@ -168,9 +171,9 @@ expandTexCmd "fun" pos whiteSpaceBefore = [makeToken "\\" pos whiteSpaceBefore]
 -- it conceptually impossible for the user to configure which tex commands are treated as words on the fly.
 
 -- Tex words
-expandTexCmd s pos whiteSpaceBefore | s `elem` greek = [makeToken ("tex" <> s) pos whiteSpaceBefore]
+expandTexCmd s range whiteSpaceBefore | s `elem` greek = [makeTokenRange ("tex" <> s) range whiteSpaceBefore]
 -- If this is not a predefined command to be expanded, just leave the backslash so that it gets treated as a symbol.
-expandTexCmd s pos whiteSpaceBefore = [makeToken (Text.cons '\\' s) pos whiteSpaceBefore]
+expandTexCmd s range whiteSpaceBefore = [makeTokenRange (Text.cons '\\' s) range whiteSpaceBefore]
 
 greek :: [Text]
 greek = lowerGreek ++ varGreek ++ upperGreek
@@ -232,11 +235,9 @@ upperGreek = [
   , "Omega"
   ]
 
--- This is only used in `expandTexCmd` and used to apply `makeToken` multiple times, while appropriately
--- advancing the position.
-makeSymbolTokens :: [Text] -> SourcePos -> TokenType -> [Token]
-makeSymbolTokens (s:symbols) pos whiteSpaceBefore =
-  makeToken s pos whiteSpaceBefore : makeSymbolTokens symbols (advancePos pos s) NoWhiteSpaceBefore
+makeSymbolTokens :: [Text] -> SourceRange -> TokenType -> [Token]
+makeSymbolTokens (s:symbols) range whiteSpaceBefore =
+  makeTokenRange s range whiteSpaceBefore : makeSymbolTokens symbols range NoWhiteSpaceBefore
 makeSymbolTokens [] _ _ = []
 
 reportComments :: Token -> Maybe Message.Report
