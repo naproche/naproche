@@ -86,24 +86,26 @@ object Naproche_Component
         text = File.read(file)
         if text.containsSlice("\\documentclass")
       } {
-        val tex_path = File.path(file)
+        val tex_path_absolute = File.path(file)
+        val tex_path = File.relative_path(examples_build, tex_path_absolute).get
         val tex_name = tex_path.base.implode
         val tex_program =
           split_lines(text).collectFirst({ case TeX_Program(prg) => prg }).getOrElse("pdflatex")
 
-        val pdf_name = Path.basic(Library.try_unsuffix(".tex", tex_name).get).pdf
+        val pdf_path = Path.explode(Library.try_unsuffix(".tex", tex_path.implode).get).pdf
+
         progress.expose_interrupt()
-        progress.echo("Building " + pdf_name + " with " + tex_program)
+        progress.echo("Building " + pdf_path + " with " + tex_program)
         for (_ <- 1 to 2) {
           val result =
             progress.bash(Bash.string(tex_program) + " " + Bash.string(tex_name),
-              cwd = tex_path.dir.file)
+              cwd = tex_path_absolute.dir.file)
           if (!result.ok) {
             error(cat_lines("LaTeX failed:"
               :: result.out_lines.drop(result.out_lines.length - output_tail max 0)))
           }
         }
-        File.copy(tex_path.dir + pdf_name, examples)
+        File.copy(examples_build + pdf_path, examples)
       }
     }
 
