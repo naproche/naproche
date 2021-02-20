@@ -105,7 +105,7 @@ object Naproche_Component
               :: result.out_lines.drop(result.out_lines.length - output_tail max 0)))
           }
         }
-        File.copy(examples_build + pdf_path, examples)
+        File.copy(examples_build + pdf_path, examples + pdf_path.dir)
       }
     }
 
