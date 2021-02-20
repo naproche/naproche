@@ -9,6 +9,7 @@ package isabelle.naproche
 import isabelle._
 
 
+import java.io.{File => JFile}
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -24,10 +25,13 @@ object Naproche_Test
     timeout: Time = Time.zero): Unit =
   {
     val file_format = new isabelle.naproche.File_Format
-    val tests =
-      File.find_files(examples.file, file => file_format.detect(file.getName)).sortBy(_.getName)
 
-    val bad = Synchronized(List.empty[String])
+    def relative(file: JFile): Path = File.relative_path(examples, File.path(file)).get
+    def relative_name(file: JFile): String = relative(file).implode
+    val tests =
+      File.find_files(examples.file, file => file_format.detect(file.getName)).sortBy(relative_name)
+
+    val bad = Synchronized(List.empty[Path])
     val executor = Executors.newFixedThreadPool(max_jobs max 1)
 
     for (test <- tests) {
@@ -40,13 +44,13 @@ object Naproche_Test
           val test_failure = text.containsSlice("# test: FAILURE")
           val test_ignore = text.containsSlice("# test: IGNORE")
 
-          val base_name = path.base.implode
+          val path_relative = relative(test)
           if (test_ignore) {
-            progress.echo("Ignoring " + base_name)
+            progress.echo("Ignoring " + path_relative)
           }
           else {
             progress.expose_interrupt()
-            progress.echo("Checking " + base_name + " ...")
+            progress.echo("Checking " + path_relative + " ...")
             val start = Time.now()
             @volatile var was_timeout: Boolean = false
             def check_timeout: Boolean =
@@ -64,7 +68,7 @@ object Naproche_Test
             val timing = stop - start
 
             val expect_ok = !test_failure
-            progress.echo("Finished " + base_name + ": " +
+            progress.echo("Finished " + path_relative + ": " +
               (if (was_timeout) "TIMEOUT"
                else if (result.rc == 130) "INTERRUPT"
                else
@@ -72,7 +76,7 @@ object Naproche_Test
                 (if (result.ok == expect_ok) ""
                 else ", but expected " + (if (expect_ok) "OK" else "FAILURE"))) +
                 (" (" + timing.message + " elapsed time)"))
-            if (result.ok != expect_ok) bad.change(base_name :: _)
+            if (result.ok != expect_ok) bad.change(path_relative :: _)
           }
         }
       })

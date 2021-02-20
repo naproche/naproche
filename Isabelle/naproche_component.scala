@@ -8,6 +8,8 @@ package isabelle.naproche
 
 import isabelle._
 
+import java.io.{File => JFile}
+
 
 object Naproche_Component
 {
@@ -81,13 +83,16 @@ object Naproche_Component
       val examples_build = component_dir + Path.explode("examples_pdf")
       Isabelle_System.copy_dir(examples, examples_build)
 
+      def relative(file: JFile): Path = File.relative_path(examples_build, File.path(file)).get
+      def relative_name(file: JFile): String = relative(file).implode
+
       for {
-        file <- File.find_files(examples_build.file, _.getName.endsWith(".tex")).sortBy(_.getName)
+        file <- File.find_files(examples_build.file, _.getName.endsWith(".tex")).sortBy(relative_name)
         text = File.read(file)
         if text.containsSlice("\\documentclass")
       } {
         val tex_path_absolute = File.path(file)
-        val tex_path = File.relative_path(examples_build, tex_path_absolute).get
+        val tex_path = relative(file)
         val tex_name = tex_path.base.implode
         val tex_program =
           split_lines(text).collectFirst({ case TeX_Program(prg) => prg }).getOrElse("pdflatex")
