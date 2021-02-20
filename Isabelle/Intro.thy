@@ -49,20 +49,20 @@ text \<open>
   dialect \<^verbatim>\<open>.ftl.tex\<close>. For example:
 
     \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/tarski.ftl\<close>
-                     
+
     \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/tarski.ftl.tex\<close>
 
     \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/tarski.ftl.pdf\<close>
-  
+
   In LaTeX mode, only material in \begin{forthel} ... \end{forthel}
   environments is fed to the parser and proof checker. Putting comments
   outside those environments allows a ``literate'' formalization style where
   forthel environments are accentuated in the pdf output by, e.g., a light
   gray background. See
 
-    \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/checkerboard.ftl.tex\<close> 
+    \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/checkerboard.ftl.tex\<close>
 
-  which is a chapter from a conference submission on a proof-checked 
+  which is a chapter from a conference submission on a proof-checked
   formalization of the Mutilated Checkerboard Problem in Naproche.
 \<close>
 
@@ -81,7 +81,7 @@ text \<open>
 
   Andrei Paskevich's ``The syntax and semantics of the ForTheL language''
 
-    \<^enum> \<^url>\<open>http://nevidal.org/download/forthel.pdf\<close> 
+    \<^enum> \<^url>\<open>http://nevidal.org/download/forthel.pdf\<close>
 
   is still recommended as a guide to the principles of ForTheL.
 \<close>
