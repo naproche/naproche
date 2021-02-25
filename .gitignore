@@ -1,3 +1,7 @@
+# OS specific files
+.DS_Store
+
+# Generated from builds
 .stack-work/
 *.jar
 *.swp
@@ -20,3 +24,11 @@ dist-newstyle
 examples/added
 examples/Formalizations
 examples/.ftlcache
+
+# TEX-related stuff
+*.pdf
+*.synctex.gz
+*.out
+*.log
+*.fls
+*.fdb_latexmk
