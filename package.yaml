@@ -8,6 +8,23 @@ extra-source-files:
 
 description:         <https://github.com/Naproche/Naproche-SAD>
 
+flags:
+  debug:
+    description: "Enable special debugging support"
+    manual: true
+    default: false
+  
+
+when:
+  condition: flag(debug)
+  dependencies:
+  - haskell-stack-trace-plugin
+  ghc-options:
+  - -fplugin=StackTrace.Plugin
+  - -Weverything
+  - -Wno-unsafe
+  - -Wno-implicit-prelude
+
 dependencies:
 - base >= 4.7 && < 5
 - containers
@@ -116,3 +133,4 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - Naproche-SAD
+    - process

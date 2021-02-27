@@ -1,0 +1,181 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{../lib/tex/naproche}
+
+\title{Knaster-Tarski fixed point theorem}
+\author{Andrei Paskevich et al.}
+\date{}
+
+\begin{document}
+  \pagenumbering{gobble}
+
+  \maketitle
+
+  The Knaster-Tarski theorem is a result from lattice theory about fixed points of monotone functions.
+  Bronis\l aw Knaster and Alfred Tarski established it in 1928 for the special case of power set lattices
+  (Knaster, B. with Tarski, A.: Un th\' eor\`eme sur les fonctions d'ensembles, Ann. Soc. Polon. Math.
+  vol. 6 (1928), 133-134). This more general result was stated by Tarski in 1955 (Tarski, A.: A lattice-theoretical
+  fixpoint theorem and its applications, Pacific Journal of Mathematics vol. 5 (1955), no. 2, 285-309).
+
+  The formulation and proof of the theorem require a minimal axiomatic setup on posets and functions.
+
+  \section{ForTheL Setup}
+
+  \begin{forthel}
+    [synonym set/-s] [synonym subset/-s] [synonym element/-s]
+
+    [synonym belong/-s] [synonym bound/-s] [synonym supremum/suprema] 
+
+    [synonym infimum/infima] [synonym lattice/-s] [synonym function/-s]
+
+    [synonym point/-s]
+  \end{forthel}
+
+  \section{Sets and Elements}
+
+  \begin{forthel}
+
+    \begin{signature}
+      An element is a notion.
+    \end{signature}
+
+    Let $S,T$ denote sets.
+    Let $x,y,z,u,v,w$ denote elements.
+
+    \begin{axiom}
+      $S$ is setsized.
+    \end{axiom}
+
+    \begin{axiom}
+      $x$ is setsized.
+    \end{axiom}
+
+    \begin{axiom}
+      Every element of $S$ is an element.
+    \end{axiom}
+
+    Let $x$ belongs to $S$ denote $x \in S$.
+
+    \begin{definition}[DefEmpty]
+      $S$ is empty iff $S$ has no elements.
+    \end{definition}
+
+    \begin{definition}[DefSub]
+      A subset of $S$ is a class $T$ such that every $x \in T$ belongs to $S$.
+    \end{definition}
+
+    \begin{axiom}
+      Let C be a subset of T. Then C is a set.
+    \end{axiom}
+  \end{forthel}
+
+  \section{Partial Order, Supremum and Infimum}
+
+  \begin{forthel}
+
+    \begin{signature}[LessRel]
+      $x \leq y$ is an atom.
+    \end{signature}
+
+    \begin{axiom}[ARefl]
+      $x \leq x$.
+    \end{axiom}
+
+    \begin{axiom}[ASymm]
+      $x \leq y \leq x \implies x = y$.
+    \end{axiom}
+
+    \begin{axiom}[ATrans]
+      $x \leq y \leq z \implies x \leq z$.
+    \end{axiom}
+
+    \begin{definition}[DefLB]
+      Let $S$ be a subset of $T$. A lower bound of $S$ in $T$ is an element $u$ of $T$ such that
+      $u \leq x$ for every $x \in S$.
+    \end{definition}
+
+    \begin{definition}[DefUB]
+      Let $S$ be a subset of $T$. An upper bound of $S$ in $T$ is an element $u$ of $T$ such that
+      $x \leq u$ for every $x \in S$.
+    \end{definition}
+
+    \begin{definition}[DefInf]
+      Let $S$ be a subset of $T$. An infimum of $S$ in $T$ is an element $u$ of $T$ such that
+      $u$ is a lower bound of $S$ in $T$ and for every lower bound $v$ of $S$ in $T$ we have $v \leq u$.
+    \end{definition}
+
+    \begin{definition}[DefSup]
+      Let $S$ be a subset of $T$. A supremum of $S$ in $T$ is an element $u$ of $T$ such that
+      $u$ is a upper bound of $S$ in $T$ and for every upper bound $v$ of $S$ in $T$ we have $u \leq v$.
+    \end{definition}
+
+    \begin{lemma}[SupUn]
+      Let $S$ be a subset of $T$. Let $u,v$ be suprema of $S$ in $T$. Then $u = v$.
+    \end{lemma}
+
+    \begin{lemma}[InfUn]
+      Let $S$ be a subset of $T$. Let $u,v$ be infima of $S$ in $T$. Then $u = v$.
+    \end{lemma}
+
+    \begin{definition}[DefCLat]
+      A complete lattice is a set $S$ such that every subset of $S$ has an infimum in $S$ and a supremum in $S$.
+    \end{definition}
+  \end{forthel}
+
+  \section{Functions}
+
+  \begin{forthel}
+
+    Let $f$ stand for a function.
+
+    \begin{axiom}
+      $Dom(f)$ is a set.
+    \end{axiom}
+
+    \begin{signature}[RanSort]
+      $Ran(f)$ is a set.
+    \end{signature}
+
+    \begin{definition}[DefDom]
+      $f$ is on $S$ iff $Dom(f) = Ran(f) = S$.
+    \end{definition}
+
+    \begin{axiom}[ImgSort]
+      Let $x$ belong to $Dom(f)$. $f(x)$ is an element of $Ran(f)$.
+    \end{axiom}
+
+    \begin{definition}[DefFix]
+      A fixed point of $f$ is an element $x$ of $Dom(f)$ such that $f(x) = x$.
+    \end{definition}
+
+    \begin{definition}[DefMonot]
+      $f$ is monotone iff for all $x,y \in Dom(f)$ $x \leq y \implies f(x) \leq f(y)$.
+    \end{definition}
+  \end{forthel}
+
+  \section{Knaster-Tarski theorem}
+
+  \begin{forthel}
+
+    \begin{theorem}[KnasterTarski]
+      Let $U$ be a complete lattice and $f$ be a monotone function on $U$.
+      Let $S$ be the class of fixed points of $f$. Then $S$ is a complete lattice.
+    \end{theorem}
+    \begin{proof}
+      Let $T$ be a subset of $S$.
+      Let us show that $T$ has a supremum in $S$. \\
+        Define $P = \{x "in" U | f(x) \leq x "and" x "is an upper bound of" T "in" U\}$.
+        Take an infimum $p$ of $P$ in $U$. $f(p)$ is a lower bound of $P$ in $U$ and an upper bound of $T$ in $U$.
+        Hence $p$ is a fixed point of $f$ and a supremum of $T$ in $S$.
+      end. \\
+      Let us show that $T$ has an infimum in $S$. \\
+        Define $Q = \{x "in" U | x \leq f(x) "and" x "is a lower bound of" T "in" U\}$.
+        Take a supremum $q$ of $Q$ in $U$. $f(q)$ is an upper bound of $Q$ in $U$ and a lower bound of $T$ in $U$.
+        Hence $q$ is a fixed point of $f$ and an infimum of $T$ in $S$.
+      end.
+    \end{proof}
+  \end{forthel}
+
+\end{document}

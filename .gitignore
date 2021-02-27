@@ -22,13 +22,16 @@ x86_64-windows/
 dist-newstyle
 
 examples/added
-examples/Formalizations
 examples/.ftlcache
 
 # TEX-related stuff
+*.aux
+*.fdb_latexmk
+*.fls
+*.ftl.pdf
+*.ftl.synctex(busy)
+*.log
+*.out
 *.pdf
 *.synctex.gz
-*.out
-*.log
-*.fls
-*.fdb_latexmk
+*.toc

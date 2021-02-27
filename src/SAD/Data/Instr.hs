@@ -57,6 +57,7 @@ data Command =
 
 data Limit =
     Timelimit   -- time limit per prover launch  (3 sec)
+  | Memorylimit -- memory limit per prover launch  (2048 MiB)
   | Depthlimit  -- number of reasoner iterations (7)
   | Checktime   -- time limit for checker's tasks (1 sec)
   | Checkdepth  -- depth limit for checker's tasks (3)
@@ -65,6 +66,7 @@ data Limit =
 data Flag =
     Prove          --  prove goals (yes)
   | Check          --  look for applicable definitions (yes)
+  | CheckConsistency --  check that no contradictory axioms occur (yes)
   | Symsign        --  rename symbols with diverging defs (yes)
   | Info           --  accumulate evidences (yes)
   | Thesis         --  modify thesis (yes)
@@ -99,7 +101,9 @@ data Argument =
   | Read ParserKind    --  read file
   | Library            --  library directory
   | Provers            --  prover database
-  | UseProver          --  current prover
+  | UseProver             --  current prover
+  | ProverServerPort   --  port for prover server (on localhost)
+  | ProverServerPassword  --  password for prover server
   deriving (Eq, Ord, Show)
 
 data Arguments =
@@ -143,6 +147,7 @@ keywordsCommand =
 keywordsLimit :: [(Limit, Text)]
 keywordsLimit =
  [(Timelimit, "timelimit"),
+  (Memorylimit, "memorylimit"),
   (Depthlimit, "depthlimit"),
   (Checktime, "checktime"),
   (Checkdepth, "checkdepth")]
@@ -151,6 +156,7 @@ keywordsFlag :: [(Flag, Text)]
 keywordsFlag =
  [(Prove, "prove"),
   (Check, "check"),
+  (CheckConsistency, "checkconsistency"),
   (Symsign, "symsign"),
   (Info, "info"),
   (Thesis, "thesis"),

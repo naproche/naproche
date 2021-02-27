@@ -1,0 +1,182 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{../lib/tex/naproche}
+
+\title{Maximum modulus principle}
+\author{Steffen Frerix (2018), Adrian De Lon (typesetting, 2021)}
+\date{}
+
+\newcommand{\Ball}[2]{B_{#1}(#2)}
+\newcommand{\image}[2]{#1^{\to}[#2]}
+
+\begin{document}
+  \pagenumbering{gobble}
+
+  \maketitle
+
+
+  \section{Preliminaries}
+
+  \begin{forthel}
+    [synonym number/-s]
+
+    Let the domain of $f$ stand for $\dom(f)$.
+    Let $z$ is in $M$ stand for $z$ is an element of $M$.
+    Let $M$ contains $z$ stand for $z$ is in $M$.
+
+    Let $f$ denote a function.
+    Let $M$ denote a set.
+
+    \begin{definition}
+      A subset of $M$ is a set $N$ such that
+      every element of $N$ is an element of $M$.
+    \end{definition}
+
+    \begin{definition}
+      Assume $M$ is a subset of the domain of $f$.
+      $\image{f}{M} = \{ f(x) | x\in M \}$.
+    \end{definition}
+
+    \begin{axiom}
+      Assume $M$ is a subset of the domain of $f$.
+      $\image{f}{M}$ is a set.
+    \end{axiom}
+  \end{forthel}
+
+    \section{Real and complex numbers}
+
+  \begin{forthel}
+    \begin{signature}
+      A complex number is a notion.
+    \end{signature}
+
+    Let $z, w$ denote complex numbers.
+
+    \begin{axiom}
+      Every element of $\dom(f)$ is a complex number and for every element $z$ of $\dom(f)$ $f(z)$ is a complex number.
+    \end{axiom}
+
+    \begin{axiom}
+      Every element of $M$ is a complex number.
+    \end{axiom}
+
+    \begin{signature}
+      A real number is a notion.
+    \end{signature}
+
+    Let $x,y$ denote real numbers.
+
+    \begin{axiom}
+      $x$ is setsized.
+    \end{axiom}
+
+    \begin{signature}
+      $|z|$ is a real number.
+    \end{signature}
+
+    \begin{signature}
+      $x$ is positive is an atom.
+    \end{signature}
+
+    Let $\varepsilon, \delta$ denote positive real numbers.
+
+    \begin{signature}
+      $x < y$ is an atom.
+    \end{signature}
+
+    Let $x \leq y$ stand for $x = y$ or $x < y$.
+
+    \begin{axiom}
+      If $x < y$ then not $y < x$.
+    \end{axiom}
+  \end{forthel}
+
+  \section{Properties of functions and open balls}
+
+  \begin{forthel}
+    \begin{signature}
+      $f$ is holomorphic is an atom.
+    \end{signature}
+
+    \begin{signature}
+      $\Ball{\varepsilon}{z}$ is a set that contains $z$.
+    \end{signature}
+
+    \begin{axiom}
+      Assume $x$ is element of $\Ball{\varepsilon}{z}$. Then $x$ is a real number.
+    \end{axiom}
+
+    \begin{lemma}
+      Assume $x$ is an element of $\Ball{\varepsilon}{z}$. Then $x$ is setsized.
+    \end{lemma}
+
+    \begin{axiom}
+      $|z| < |w|$ for some element $w$ of $\Ball{\varepsilon}{z}$.
+    \end{axiom}
+
+    \begin{definition}
+      $M$ is open iff for every element $z$ of $M$ there exists $\varepsilon$ such that
+        $\Ball{\varepsilon}{z}$ is a subset of $M$.
+    \end{definition}
+
+    \begin{axiom}
+      $\Ball{\varepsilon}{z}$ is open.
+    \end{axiom}
+
+    \begin{definition}
+      A local maximal point of $f$ is an element $z$ of the domain of $f$ such that there exists $\varepsilon$ such that $\Ball{\varepsilon}{z}$ is a subset of the domain of $f$ and $|f(w)| \leq |f(z)|$ for every element $w$ of $\Ball{\varepsilon}{z}$.
+    \end{definition}
+
+    \begin{definition}
+      Let $U$ be a subset of the domain of $f$. $f$ is constant on $U$ iff there exists $z$ such that $f(w) = z$ for every element $w$ of $U$.
+    \end{definition}
+
+    Let $f$ is constant stand for $f$ is constant on the domain of $f$.
+
+    \begin{axiom}
+      Assume $f$ is holomorphic and $\Ball{\varepsilon}{z}$ is a subset of the domain of $f$.
+      If $f$ is not constant on $\Ball{\varepsilon}{z}$
+        then $\image{f}{\Ball{\varepsilon}{z}}$ is open.
+    \end{axiom}
+  \end{forthel}
+
+    \section{Maximum modulus principle}
+
+  \begin{forthel}
+    \begin{signature}
+      A region is an open set.
+    \end{signature}
+
+    \begin{axiom}[Identity theorem]
+      Assume $f$ is holomorphic and the domain of $f$ is a region.
+      Assume that $\Ball{\varepsilon}{z}$ is a subset of the domain of $f$.
+      If $f$ is constant on $\Ball{\varepsilon}{z}$ then $f$ is constant.
+    \end{axiom}
+
+    \begin{proposition}[Maximum modulus principle]
+      Assume $f$ is holomorphic and the domain of $f$ is a region.
+      If $f$ has a local maximal point then $f$ is constant.
+    \end{proposition}
+    \begin{proof}
+      Let $z$ be a local maximal point of $f$.
+      Take $\varepsilon$ such that
+        $\Ball{\varepsilon}{z}$ is a subset of $\dom(f)$
+        and $|f(w)| \leq |f(z)|$ for every element $w$ of $\Ball{\varepsilon}{z}$.
+
+      Let us show that $f$ is constant on $\Ball{\varepsilon}{z}$.
+      Proof by contradiction.
+        Assume the contrary.
+        Then $\image{f}{\Ball{\varepsilon}{z}}$ is open.
+        We can take $\delta$ such that
+          $\Ball{\delta}{f(z)}$ is a subset of $\image{f}{\Ball{\varepsilon}{z}}$.
+        Therefore there exists an element $w$ of $\Ball{\varepsilon}{z}$ such that
+          $|f(z)| < |f(w)|$. Contradiction.
+    	End.
+
+      Hence $f$ is constant.
+    \end{proof}
+  \end{forthel}
+
+\end{document}

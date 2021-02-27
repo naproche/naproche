@@ -5,6 +5,8 @@ Signature. An element is a notion.
 
 Let S,T denote sets.
 Let x,y,z,u,v,w denote elements.
+Axiom. S is setsized.
+Axiom. x is setsized.
 
 Axiom. Every element of S is an element.
 
@@ -14,9 +16,12 @@ Let x belongs to S denote (x is an element of S).
 Definition DefEmpty.    S is empty iff S has no elements.
 
 Definition DefSub.
-    A subset of S is a set T such that every (x << T) belongs to S.
+    A subset of S is a class T such that every (x << T) belongs to S.
 
-Let S [= T denote S is a subset of T.
+Axiom. Let C be a subset of T.
+  Then C is a set.
+
+Let S (= T denote S is a subset of T.
 
 Signature LessRel.  x <= y is an atom.
 
@@ -68,35 +73,34 @@ Signature RanSort.  Ran(f) is a set.
 Definition DefDom.  f is on S iff Dom(f) = Ran(f) = S.
 
 Axiom ImgSort.  Let x belong to Dom(f).
-    f[x] is an element of Ran(f).
+    f(x) is an element of Ran(f).
 
 Definition DefFix.
     A fixed point of f is an element x of Dom(f)
-        such that f[x] = x.
+        such that f(x) = x.
 
 Definition DefMonot.
     f is monotone iff for all x,y << Dom(f)
-        x <= y  =>  f[x] <= f[y].
-
+        x <= y  =>  f(x) <= f(y).
 
 Theorem Tarski.
     Let U be a complete lattice and f be an monotone function on U.
-    Let S be the set of fixed points of f.
+    Let S be the class of fixed points of f.
     S is a complete lattice.
 Proof.
     Let T be a subset of S.
 
     Let us show that T has a supremum in S.
-        Define P = { x in U | f[x] <= x and x is an upper bound of T in U }.
+        Define P = { x in U | f(x) <= x and x is an upper bound of T in U }.
         Take an infimum p of P in U.
-        f[p] is a lower bound of P in U and an upper bound of T in U.
+        f(p) is a lower bound of P in U and an upper bound of T in U.
         Hence p is a fixed point of f and a supremum of T in S.
     end.
 
     Let us show that T has an infimum in S.
-        Define Q = { x in U | x <= f[x] and x is a lower bound of T in U }.
+        Define Q = { x in U | x <= f(x) and x is a lower bound of T in U }.
         Take a supremum q of Q in U.
-        f[q] is an upper bound of Q in U and a lower bound of T in U.
+        f(q) is an upper bound of Q in U and a lower bound of T in U.
         Hence q is a fixed point of f and an infimum of T in S.
     end.
 qed.

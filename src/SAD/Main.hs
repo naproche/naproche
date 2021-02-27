@@ -124,7 +124,8 @@ readArgs initialOpts files = do
                   [file] -> Just file
                   [] -> Nothing
                   _ -> errorWithoutStackTrace "More than one file argument\n"
-  let parserKind = if useTexArg || maybe False (".ftl.tex" `isSuffixOf`) fileName then Tex else NonTex
+  let parserKind = if useTexArg || maybe False (\f -> ".tex.ftl" `isSuffixOf` f || ".ftl.tex" `isSuffixOf` f) fileName 
+      then Tex else NonTex
   pure (revInitialOpts, parserKind, fileName)
 
 usageHeader :: String
@@ -143,13 +144,19 @@ options = [
   GetOpt.Option "" ["server"] (GetOpt.NoArg (SetFlag Server True))
     "run in server mode",
   GetOpt.Option ""  ["library"] (GetOpt.ReqArg (GetArgument Library . Text.pack) "DIR")
-    "place to look for library texts (def: .)",
+    "place to look for library texts (def: examples)",
   GetOpt.Option ""  ["provers"] (GetOpt.ReqArg (GetArgument Provers . Text.pack) "FILE")
     "index of provers (def: provers.yaml)",
   GetOpt.Option "P" ["prover"] (GetOpt.ReqArg (GetArgument UseProver . Text.pack) "NAME")
     "use prover NAME (def: first listed)",
+  GetOpt.Option "" ["prover-server-port"] (GetOpt.ReqArg (GetArgument ProverServerPort . Text.pack) "NAME")
+    "prover server port (on localhost)",
+  GetOpt.Option "" ["prover-server-password"] (GetOpt.ReqArg (GetArgument ProverServerPassword . Text.pack) "UUID")
+    "prover server password",
   GetOpt.Option "t" ["timelimit"] (GetOpt.ReqArg (LimitBy Timelimit . getLeadingPositiveInt) "N")
     "N seconds per prover call (def: 3)",
+  GetOpt.Option "m" ["memorylimit"] (GetOpt.ReqArg (LimitBy Memorylimit . getLeadingPositiveInt) "N")
+    "maximum N MiB of memory usage per prover call (def: 2048)",
   GetOpt.Option ""  ["depthlimit"] (GetOpt.ReqArg (LimitBy Depthlimit . getLeadingPositiveInt) "N")
     "N reasoner loops per goal (def: 7)",
   GetOpt.Option ""  ["checktime"] (GetOpt.ReqArg (LimitBy Checktime . getLeadingPositiveInt) "N")

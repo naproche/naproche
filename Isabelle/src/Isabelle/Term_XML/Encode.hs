@@ -15,7 +15,6 @@ module Isabelle.Term_XML.Encode (indexname, sort, typ, typ_body, term)
 where
 
 import Isabelle.Library
-import qualified Isabelle.XML as XML
 import Isabelle.XML.Encode
 import Isabelle.Term
 

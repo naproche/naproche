@@ -1,0 +1,138 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{naproche}[2021/02/04 Typesetting for Naproche formalizations]
+
+\RequirePackage{amsmath}
+\RequirePackage{amsthm}
+\RequirePackage{etoolbox}
+
+
+
+\newtheoremstyle{formalized}% name of the style to be used
+    {4pt}% measure of space to leave above the theorem. E.g.: 3pt
+    {4pt}% measure of space to leave below the theorem. E.g.: 3pt
+    {\normalfont} % name of font to use in the body of the theorem
+    {0pt}% measure of space to indent
+    {\bfseries}% name of head font
+    {}% punctuation between head and body
+    { }% space after theorem head; " " = normal inter-word space
+    {\thmname{#1}\thmnumber{ #2}. \thmnote{ (#3) }}
+
+\theoremstyle{formalized}
+\newcounter{theoremcount}
+
+\newtheorem{axiom}[theoremcount]{Axiom}
+\newtheorem{corollary}[theoremcount]{Corollary}
+\newtheorem{definition}[theoremcount]{Definition}
+\newtheorem{fact}[theoremcount]{Fact}
+\newtheorem{lemma}[theoremcount]{Lemma}
+\newtheorem{proposition}[theoremcount]{Proposition}
+\newtheorem{remark}[theoremcount]{Remark}
+\newtheorem{signature}[theoremcount]{Signature}
+\newtheorem{theorem}[theoremcount]{Theorem}
+
+% Theorem environments without numbering.
+\newtheorem*{quotedaxiom}{Axiom}
+\newtheorem*{quotedcorollary}{Corollary}
+\newtheorem*{quoteddefinition}{Definition}
+\newtheorem*{quotedfact}{Fact}
+\newtheorem*{quotedlemma}{Lemma}
+\newtheorem*{quotedproposition}{Proposition}
+\newtheorem*{quotedremark}{Remark}
+\newtheorem*{quotedsignature}{Signature}
+\newtheorem*{quotedtheorem}{Theorem}
+
+
+
+\RequirePackage[most]{tcolorbox}
+\definecolor{block-gray}{gray}{0.95}
+\newtcolorbox{grayblock}{arc=0mm,colframe=block-gray,colback=block-gray,grow to right by=0mm,grow to left by=0mm,
+boxrule=0pt,boxsep=0pt,breakable}
+\newenvironment{forthel}{%
+  \setbool{forthel}{true}%
+  \begin{grayblock}\rmfamily
+}{%
+  \end{grayblock}\rmfamily%
+  \setbool{forthel}{false}%
+}
+
+
+%% Space between paragraphs in proofs in ForTheL environments
+\newlength{\ftlparskip}
+\setlength{\ftlparskip}{0.5em}
+
+
+
+% More visible line breaks in proofs.
+% ===================================
+
+\newbool{forthel}
+
+\let\originalproof\proof
+\let\originalendproof\endproof
+
+% Set length of \parskip to \ftlparskip in proofs in ForTheL environments.
+%
+% NOTE: "\vspace*{-\parskip}" is necessary to avoid additional space between
+% theorem and proof
+\renewenvironment{proof}{%
+  \originalproof%
+  \ifbool{forthel}{\setlength{\parskip}{\ftlparskip}\vspace*{-\parskip}}%
+  \relax%
+}
+{%
+  \originalendproof%
+}
+
+
+\let\ftlquotationmark"
+\catcode`\"=\active
+
+\def"#1"{%
+  \ifbool{forthel}%
+    {\ifbool{mmode}{\mathrel{\textrm{#1}}}{#1}}%
+    {\ftlquotationmark{ #1}\ftlquotationmark}%
+}
+
+
+
+
+% Predefined symbols
+% ==================
+
+\newcommand{\dom}{\operatorname{dom}}
+\newcommand{\fun}{\mathrm{\lambda}}
+
+
+% Options
+% =======
+
+% If the option 'nonumbers' is activated, then all the theorem environment are left unnumbered.
+\DeclareOption{nonumbers}{%
+    \renewcommand{\axiom}{\quotedaxiom}
+    \renewcommand{\corollary}{\quotedcorollary}
+    \renewcommand{\definition}{\quoteddefinition}
+    \renewcommand{\fact}{\quotedfact}
+    \renewcommand{\lemma}{\quotedlemma}
+    \renewcommand{\proposition}{\quotedproposition}
+    \renewcommand{\remark}{\quotedremark}
+    \renewcommand{\signature}{\quotedsignature}
+    \renewcommand{\theorem}{\quotedtheorem}
+}
+\DeclareOption{numberswithinsection}{%
+    \counterwithin{theoremcount}{section}
+}
+\DeclareOption{numberswithinsubsection}{%
+    \counterwithin{theoremcount}{subsection}
+}
+\DeclareOption{noquoteworkaround}{%
+  \catcode`\"=12
+}
+\DeclareOption{unmarked}{%
+  \renewenvironment{forthel}{%
+    \setbool{forthel}{true}%
+  }{%
+    \setbool{forthel}{false}%
+  }
+}
+\DeclareOption*{\PackageWarning{naproche}{Unknown ‘\CurrentOption’}}
+\ProcessOptions\relax

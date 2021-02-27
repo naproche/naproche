@@ -24,18 +24,19 @@ import SAD.Core.Task (Task(..))
 import SAD.Core.Cache
 
 class Monad m => RunProver m where
-  -- | Given a prover, a timelimit and a tptp text get a prover output.
-  runProver :: Prover -> Int -> Text -> m Text
+  -- | Given a prover, a timelimit, a memorylimit and a tptp text get a prover output.
+  runProver :: SourcePos -> Prover -> Maybe (String, String) -> Int -> Int -> Text -> m (Int, Text)
 
-data Result = Success | Failure | TooLittleTime | ContradictoryAxioms
+data Result = Success | Failure | ContradictoryAxioms | Unknown | Error
   deriving (Eq, Ord, Show)
 
-parseProverOutput :: Comm m => Prover -> Bool -> Bool -> Text -> m Result
-parseProverOutput (Prover _ label _ _ yes con nos uns) printProver isByContradiction prvout = do
+parseProverOutput :: Comm m => Prover -> Int -> Bool -> Bool -> Text -> m Result
+parseProverOutput (Prover _ label _ _ yes con nos uns) rc printProver isByContradiction prvout = do
+  let timeout = rc == 142
   let lns = filter (not . Text.null) $ Text.lines $ prvout
       out = map (("[" <> label <> "] ") <>) lns
 
-  when (null lns) $ errorExport noSourcePos "No prover response"
+  when (not timeout && null lns) $ errorExport noSourcePos "No prover response"
   when printProver $
       mapM_ (output "" WRITELN noSourcePos) $ map Text.unpack out
 
@@ -50,7 +51,8 @@ parseProverOutput (Prover _ label _ _ yes con nos uns) printProver isByContradic
   if | positive || (isByContradiction && contradictions) -> pure Success
      | negative -> pure Failure
      | not isByContradiction && contradictions -> pure ContradictoryAxioms
-     | otherwise -> pure TooLittleTime
+     | timeout -> pure Unknown
+     | otherwise -> pure Error
 
 verify :: (RunProver m, Comm m, CacheStorage m) => 
   [Prover] -> [Instr] -> RState -> [Task] -> m RState
@@ -61,19 +63,18 @@ verify provers instrs rstate tsks = do
   where
     addCounter c n s = s { trackers = trackers s ++ [Counter c n] }
     go (c, rstate) t = do
-      c <- loadFile (taskFile t) c
+      c <- loadFile (sourceFile $ taskPos t) c
       if isCached t c then do
-        outputReasoner WRITELN noSourcePos $ Text.unpack 
+        outputReasoner WRITELN (taskPos t) $ Text.unpack 
           $ "Cached: [" <> (taskName t) <> "] " <> pretty (conjecture t)
         pure (cache t c, addCounter CachedCounter 1 rstate)
       else do 
-        outputReasoner WRITELN noSourcePos $ Text.unpack 
+        outputReasoner WRITELN (taskPos t) $ Text.unpack 
           $ "[" <> (taskName t) <> "] " <> pretty (conjecture t)
-        res <- export provers instrs t
+        res <- export (taskPos t) provers instrs t
         case res of
           Success -> pure (cache t c, addCounter SuccessfulGoals 1 rstate)
           Failure -> pure (c, addCounter FailedGoals 1 rstate)
-          TooLittleTime -> pure (c, addCounter FailedGoals 1 rstate)
           ContradictoryAxioms -> do 
             outputMain WARNING noSourcePos 
               $ "\nFound a contradiction in the axioms! "
@@ -81,10 +82,11 @@ verify provers instrs rstate tsks = do
               <> "inconsistent or that you are in a proof by contradiction"
               <> "\n(and you should make sure to actually write 'Proof by contradiction.')"
             pure (c, addCounter FailedGoals 1 rstate)
+          _ -> pure (c, addCounter FailedGoals 1 rstate)
 
-export :: (RunProver m, Comm m) => [Prover] -> [Instr] -> Task -> m Result
-export [] _ _ = errorExport noSourcePos "No provers"
-export provers@(defProver:_) instrs tsk = do
+export :: (RunProver m, Comm m) => SourcePos -> [Prover] -> [Instr] -> Task -> m Result
+export pos [] _ _ = errorExport pos "No provers"
+export pos provers@(defProver:_) instrs tsk = do
   let proverName = Text.unpack $ askArgument UseProver (Text.pack $ name defProver) instrs
   
   case filter ((==) proverName . name) provers of
@@ -92,9 +94,18 @@ export provers@(defProver:_) instrs tsk = do
     (prover:_) -> do
       let printProver = askFlag Printprover False instrs
       let timeLimit = askLimit Timelimit 3 instrs
+      let memoryLimit = askLimit Memorylimit 2048 instrs
+
+      let proverServerPort = askArgument ProverServerPort Text.empty instrs
+      let proverServerPassword = askArgument ProverServerPassword Text.empty instrs
+      let proverServer =
+            if Text.null proverServerPort || Text.null proverServerPassword then
+              Nothing
+            else Just (Text.unpack proverServerPort, Text.unpack proverServerPassword)
+
       let task = tptp tsk
       when (askFlag Dump False instrs) $ 
         output "" WRITELN noSourcePos (Text.unpack task)
 
-      out <- runProver prover timeLimit task
-      parseProverOutput prover printProver (byContradiction tsk) out
+      (rc, out) <- runProver pos prover proverServer timeLimit memoryLimit task
+      parseProverOutput prover rc printProver (byContradiction tsk) out

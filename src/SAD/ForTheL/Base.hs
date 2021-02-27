@@ -91,15 +91,32 @@ initFS = FState
   []
   where
     primAdjs = [
+      ([Word ["setsized"]], mkTrm SmallId TermSmall),
+      ([Word ["set"], Word ["sized"]], mkTrm SmallId TermSmall),
       ([Word ["equal"], Word ["to"], Vr], mkTrm EqualityId TermEquality),
       ([Word ["nonequal"], Word ["to"], Vr], Not . mkTrm EqualityId TermEquality) ]
-    primNotions = []
-    primSymbNotions = [ ([Symbol "=", Vr], mkTrm EqualityId TermEquality) ]
+    primNotions = [
+      ([Word ["function","functions"], Nm], mkFun . head),
+      ([Word ["set","sets"], Nm], mkSet . head),
+      ([Word ["class","classes"], Nm], mkClass . head),
+      ([Word ["element", "elements"], Nm, Word ["of"], Vr], \(x:m:_) -> mkElem x m),
+      ([Word ["object", "objects"], Nm], mkObj . head)]
+    primSymbNotions = [
+      ([Symbol "=", Vr], mkTrm EqualityId TermEquality),
+      ([Symbol "\\in", Vr], \(x:m:_) -> mkElem x m) ]
     primInfixPredicates = [
       ([Symbol "="], mkTrm EqualityId TermEquality),
-      ([Symbol "!", Symbol "="], Not . mkTrm EqualityId TermEquality)]
-    cf = []
-    rf = [] 
+      ([Symbol "!", Symbol "="], Not . mkTrm EqualityId TermEquality),
+      ([Symbol "-", Symbol "<", Symbol "-"], mkTrm LessId TermLess),
+      ([Symbol "\\in"], \(x:m:_) -> mkElem x m),
+      ([Symbol "\\notin"], \(x:m:_) -> Not $ mkElem x m),
+      ([Symbol "\\neq"], Not . mkTrm EqualityId TermEquality),
+      ([Symbol "\\prec"], mkTrm LessId TermLess) ]
+    cf = [
+      ([Symbol "Dom", Symbol "(",Vr,Symbol ")"], mkDom . head),
+      ([Symbol "(", Vr, Symbol ",", Vr, Symbol ")"], \(x:y:_) -> mkPair x y),
+      ([Symbol "\\dom", Symbol "(",Vr,Symbol ")"], mkDom . head) ]
+    rf = [ ([Symbol "(", Vr, Symbol ")"], \(f:x:_) -> mkApp f x)]
 
 
 getExpr :: (FState -> [a]) -> (a -> FTL b) -> FTL b
@@ -358,7 +375,9 @@ var :: FTL PosVar
 var = do
   pos <- getPos
   v <- satisfy (\s -> Text.all isAlphaNum s && isAlpha (Text.head s))
-  return (PosVar (VarConstant v) pos)
+  primeCount <- (Text.concat . fmap (const "prime")) <$> many (symbol "'") -- Ugly hack.
+  let v' = v <> primeCount
+  return (PosVar (VarConstant v') pos)
 
 --- pretyped Variables
 
@@ -460,6 +479,8 @@ with = tokenOf' ["with", "of", "having"]
 such :: FTL ()
 such = tokenOf' ["such", "so"]
 
+elementOf :: FTL ()
+elementOf = token' "in" <|> token "\\in"
 
 --just for now:
 
@@ -470,7 +491,7 @@ showVar nm = pretty nm
 -- | Parses '\begin{env}'. Takes a parser for parsing 'env'.
 texBegin :: FTL a -> FTL a
 texBegin envType = do
-  token "begin"
+  token "\\begin"
   symbol "{"
   envType' <- envType
   symbol "}"
@@ -479,7 +500,7 @@ texBegin envType = do
 -- | Parses '\end{env}'. Takes a parser for parsing 'env'.
 texEnd :: FTL () -> FTL ()
 texEnd envType = do
-  token "end"
+  token "\\end"
   symbol "{"
   envType
   symbol "}"

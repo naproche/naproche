@@ -1,0 +1,362 @@
+\documentclass[11pt]{article}
+\usepackage{amssymb}
+\usepackage{../lib/tex/naproche}
+
+\author{Andrei Paskevich and Peter Koepke\\
+   U Paris-Saclay and U Bonn}
+
+\title{Euclid's Proof 
+of the Infinitude of Primes, Formalized in \Naproche{}}
+
+\begin{document}
+
+\newcommand{\val}[2]{#1_{#2}}
+\newcommand{\Prod}[3]{#1_{#2} \cdots #1_{#3}}
+\newcommand{\Seq}[2]{\{#1,\dots,#2\}}
+\newcommand{\Set}[3]{\{#1_{#2},\dots,#1_{#3}\}}
+\newcommand{\Primes}{\mathbb{P}}
+\newcommand{\Naproche}{$\mathbb{N}$aproche}
+
+\maketitle
+
+This paper contains a standard proof of Euclid's theorem 
+that there are infinitely many prime numbers. We
+follow the first proof given in \emph{Proofs from THE BOOK}
+by Martin Aigner and Günter M. Ziegler, Springer Verlag.
+Before the proof we 
+set up a language and axioms for natural number arithmetic,
+define divisibility and prime numbers,
+introduce some set theoretic background and define
+finite sets, sequences and products.
+
+On an older laptop 
+with an Intel Pentium N3710 processor \Naproche{} takes 
+around 75 seconds to check this text.
+
+
+\section{\Naproche{} Settings and Notation}
+
+\begin{forthel}
+
+%\begin{lemma} Contradiction. \end{lemma}
+
+[printprover on][dump on]
+
+[synonym number/-s]
+[synonym divide/-s]
+[synonym set/-s] [synonym element/-s] 
+[synonym belong/-s] [synonym subset/-s]
+
+\end{forthel}
+
+
+\section{Natural Numbers}
+
+In order to be able to form classes and sets of natural numbers 
+natural numbers are introduced as ``small'' objects.
+ 
+\begin{forthel}
+
+Let $x$ is small stand for $x$ is setsized.
+
+\begin{signature}  A natural number is a small object.
+\end{signature}
+
+Let $i,k,l,m,n,p,q,r$ denote natural numbers.
+
+\begin{lemma} i is small. \end{lemma}
+
+\begin{signature} $0$ is a natural number.
+\end{signature}
+
+Let $x$ is nonzero stand for $x \neq 0$.
+
+\begin{signature} $1$ is a nonzero natural number.
+\end{signature}
+
+\begin{signature} $m + n$ is a natural number.
+\end{signature}
+
+\begin{signature} $m * n$ is a natural number.
+\end{signature}
+
+\begin{axiom} $m + n = n + m$.
+\end{axiom}
+
+\begin{axiom} $(m + n) + l = m + (n + l)$.
+\end{axiom}
+
+\begin{axiom}  $m + 0 = m = 0 + m$.
+\end{axiom}
+
+\begin{axiom} $m * n = n * m$.
+\end{axiom}
+
+\begin{axiom} $(m * n) * l = m * (n * l)$.
+\end{axiom}
+
+\begin{axiom} $m * 1 = m = 1 * m$.
+\end{axiom}
+
+\begin{axiom} $m * 0 = 0 = 0 * m$.
+\end{axiom}
+
+\begin{axiom} $m * (n + l) = (m * n) + (m * l)$ and
+                $(n + l) * m = (n * m) + (l * m)$.
+\end{axiom}
+
+\begin{axiom} If $l + m = l + n$ or $m + l = n + l$ 
+then $m = n$.
+\end{axiom}
+
+\begin{axiom} Assume that $l$ is nonzero.
+If $l * m = l * n$ or $m * l = n * l$ then $m = n$.
+\end{axiom}
+
+\begin{axiom} If $m + n = 0$ then $m = 0$ and $n = 0$.
+\end{axiom}
+
+\end{forthel}
+
+\section{The Natural Order}
+
+\begin{forthel}
+
+\begin{definition} $m \leq n$ iff 
+there exists a natural number $l$ such that  
+$m + l = n$.
+\end{definition}
+
+Let $m < n$ stand for $m \leq n$ and $m \neq n$.
+
+\begin{definition} Assume that $n \leq m$.
+$m - n$ is a natural number $l$ such that $n + l  = m$.
+\end{definition}
+
+\end{forthel}
+
+The following three lemmas show that $\leq$ is a partial order:
+
+\begin{forthel}
+
+\begin{lemma} $m \leq m$.
+\end{lemma}
+
+\begin{lemma} If $m \leq n \leq m$ 
+then $m = n$.
+\end{lemma}
+
+\begin{lemma} If $m \leq n \leq l$ 
+then  $m \leq l$.
+\end{lemma}
+
+\begin{axiom} $m \leq n$ or $n < m$.
+\end{axiom}
+
+\begin{lemma} Assume that $l < n$.
+  Then $m + l < m + n$ and $l + m < n + m$.
+\end{lemma}
+
+\begin{lemma} Assume that $m$ is nonzero and $l < n$.
+  Then $m * l < m * n$ and $l * m < n * m$.
+\end{lemma}
+
+\begin{axiom} $n = 0$ or $n = 1$ or $1 < n$.
+\end{axiom}
+
+\begin{lemma} If $m \neq 0$ then $n \leq n * m$.
+\end{lemma}
+\end{forthel}
+
+\section{Induction}
+
+\Naproche{} provides a special binary relation
+symbol $\prec$ for a universal inductive relation: if at any
+point $m$ property $P$ is inherited at $m$ provided all
+$\prec$-predecessors of $m$ satisfy $P$, then $P$ holds everywhere.
+Induction along $<$ is ensured by:
+
+\begin{forthel}
+\begin{axiom} If $n < m$ then $n \prec m$.
+\end{axiom}
+\end{forthel}
+
+\section{Division}
+
+\begin{forthel}
+
+\begin{definition}
+  $n$ divides $m$ iff for some $l$ $m = n * l$.
+\end{definition}
+
+Let $x | y$ denote $x$ divides $y$.
+Let a divisor of $x$ denote a natural number 
+that divides $x$.
+
+\begin{lemma} Let $l | m$ and $l | m + n$. Then $l | n$.
+\end{lemma}
+
+\begin{proof}
+Assume that $l$ is nonzero.
+Take $p$ such that $m = l * p$. 
+Take $q$ such that $m + n = l * q$.
+
+Let us show that 
+$p \leq q$.
+Proof by contradiction.
+Assume the contrary. Then $q < p$.
+$m+n = l * q < l * p = m$.
+Contradiction. qed.
+
+Take $r = q - p$.
+We have $(l * p) + (l * r) = l * q = m + n = (l * p) + n$.
+Hence $n = l * r$.
+\end{proof}
+
+\begin{lemma} Let $m | n \neq 0$. Then $m \leq n$.
+\end{lemma}
+
+\end{forthel}
+
+\section{Primes}
+
+\begin{forthel}
+
+Let $x$ is nontrivial stand for $x \neq 0$ and $x \neq 1$.
+
+\begin{definition}
+$n$ is prime iff $n$ is nontrivial and
+    for every divisor $m$ of $n$ $m = 1$ or $m = n$.
+\end{definition}
+
+\begin{lemma} Every nontrivial $k$ has a prime divisor.
+\end{lemma}
+\begin{proof} Proof by induction.
+\end{proof}
+
+\end{forthel}
+
+\section{Classes}
+
+\begin{forthel}
+
+Let $S,T$ stand for classes.
+Let $x$ belongs to $S$ stand 
+for $x$ is an element of $S$.
+
+\begin{definition} A subclass of $S$ is a class $T$ 
+such that every element of $T$ belongs to $S$.
+\end{definition}
+
+Let $T \subseteq S$ stand for $T$ is a subclass of $S$.
+\end{forthel}
+
+We extend the built-in ontology of \Naproche{}
+according to the following principles for elements and sets:
+\begin{forthel}
+
+\begin{axiom}
+Every element of every class is small.
+\end{axiom}
+
+\begin{axiom}
+Every set is a small class and every small class is a set.
+\end{axiom}
+
+\begin{definition} $\mathbb{N}$ is the 
+class of natural numbers.
+\end{definition}
+
+\end{forthel}
+
+\section{Finite Sequences and Products}
+
+\begin{forthel}
+\begin{definition} $\Seq{m}{n}$ is the class of
+natural numbers $i$ such that $m \leq i \leq n$.
+\end{definition}
+
+\begin{axiom} $\Seq{m}{n}$ is a set. \end{axiom}
+
+\begin{axiom}
+Assume $F$ is a function and $x \in Dom(F)$. Then $F(x)$ is small.
+\end{axiom}
+
+\begin{definition} A sequence of length $n$ is a
+function $F$ such that $Dom(F) = \Seq{1}{n}$.
+\end{definition}
+
+Let $\val{F}{i}$ stand for $F(i)$.
+
+\begin{definition} Let $F$ be a sequence of length $n$.
+$\Set{F}{1}{n} = \{ \val{F}{i} | i \in Dom(F)\}$.
+\end{definition}
+
+\begin{signature} Let $F$ be a sequence of length $n$
+such that $\Set{F}{1}{n} \subseteq \mathbb{N}$.
+$\Prod{F}{1}{n}$ is a natural number.
+\end{signature}
+
+\begin{axiom}[Factorproperty] Let $F$ be a sequence of length $n$
+such that $F(i)$ is a nonzero natural number for every $i \in Dom(F)$.
+Then $\Prod{F}{1}{n}$ is nonzero and 
+$F(i)$ divides $\Prod{F}{1}{n}$ for every $i \in Dom(F)$.
+\end{axiom}
+
+
+\end{forthel}
+
+\section{Finite and Infinite Sets}
+
+\begin{forthel}
+
+\begin{definition} $S$ is finite iff 
+$S = \Set{F}{1}{n}$ for some natural number $n$ and some function $F$ that is 
+a sequence of length $n$.
+\end{definition}
+
+\begin{definition} $S$ is infinite iff $S$ is not finite.
+\end{definition}
+
+\end{forthel}
+
+\section{Euclid's Theorem}
+
+\begin{forthel}
+
+\begin{signature} $\Primes$ is the class of prime natural numbers.
+\end{signature}
+
+% \begin{lemma} Contradiction. \end{lemma}
+
+
+\begin{theorem}[Euclid]
+$\Primes$ is infinite.
+\end{theorem}
+\begin{proof}
+Assume that $r$ is a natural number and 
+$p$ is a sequence of length $r$ and
+$\Set{p}{1}{r}$ is a subclass of $\Primes$.
+
+%$\val{p}{i}$ is a nonzero natural number for every $i \in Dom(p)$.
+(1) $\val{p}{i}$ is a nonzero natural number for every $i$ such
+that $1 \leq i \leq r$.
+
+Consider $n=\Prod{p}{1}{r}+1$.
+Take a prime divisor $q$ of $n$.
+
+Let us show that $q \neq \val{p}{i}$ for all $i$ such that 
+$1 \leq i \leq r$.
+
+Proof by contradiction.
+Assume that $q=\val{p}{i}$ for some natural number $i$ such that
+$1 \leq i \leq r$.
+$q$ is a divisor of $n$ and $q$ is a divisor of $\Prod{p}{1}{r}$
+(by Factorproperty, 1).
+Thus $q$ divides $1$. Contradiction. qed.
+
+Hence $\Set{p}{1}{r}$ is not the class of prime natural numbers.
+\end{proof}
+\end{forthel}
+
+\end{document}

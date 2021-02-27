@@ -6,6 +6,8 @@ Proof Checking of Natural Mathematical Documents, with optional support
 for Isabelle Prover IDE.
 
 
+The subsequent explanations are for **development** of the tool, not for end-users!
+
 ## Command-line tool
 
 ### Prerequisites
@@ -19,101 +21,94 @@ for Isabelle Prover IDE.
     Supported versions: 2.0 to 2.5
 
   * Optional (for development): Haskell IDE within VSCode:
-    https://github.com/haskell/haskell-ide-engine
+    https://marketplace.visualstudio.com/items?itemName=haskell.haskell
 
 
-### Build
+### Build and test
 
     cd .../Naproche-SAD  #repository
 
+    stack clean
+
     stack build
 
+    stack test
 
-### Check proof files
+### Manual checking of proof files
 
-    stack exec Naproche-SAD -- FILE
+    stack exec Naproche-SAD -- OPTIONS FILE
 
   It may be necessary to allow the E Prover more time by appending "-t SECONDS"
 
 
-### Test
+## Isabelle/Naproche Prover IDE
+### Isabelle repository setup
 
-    stack test
+  * Isabelle repository clone from https://isabelle.sketis.net/repos/isabelle-release
+    (see also README_REPOSITORY)
 
+  * Initialize fresh clone:
 
-## Isabelle Prover IDE (Isabelle/jEdit)
+        hg clone https://isabelle.sketis.net/repos/isabelle-release isabelle
+        cd isabelle
+        hg update -C -r Isabelle2021
+        bin/isabelle components -I
+        bin/isabelle components -a
 
-### Prerequisites
+  * Update existing clone:
 
-  * Isabelle repository clone from https://isabelle.in.tum.de/repos/isabelle
-
-  * "Quick start in 30min" according to README_REPOSITORY
-    (https://isabelle.in.tum.de/repos/isabelle/raw-file/tip/README_REPOSITORY)
-    You should append the `-r Isabelle2021-RC2` option to `hg clone`.
-
-  * Use Isabelle/jEdit to edit $ISABELLE_HOME_USER/etc/settings to include
-    the Naproche-SAD directory as Isabelle component. E.g. like this:
-
-        init_component "$USER_HOME/Naproche-SAD"
-
-  * Shutdown Isabelle/jEdit before building Isabelle/Naproche as follows.
-
-
-### Build
-
-    isabelle naproche_build
-
-Reference versions for multi-platform executables (x86_64):
-
-  * Linux: Ubuntu 16.04 LTS
-  * macOS: Mac OS X 10.13 Yosemite
-  * Windows: Windows 10
+        cd isabelle
+        hg pull https://isabelle.sketis.net/repos/isabelle-release
+        hg update -C -r Isabelle2021
+        bin/isabelle components -a
 
 
-### Test
+### Isabelle component setup
 
-      cd .../Naproche-SAD  #repository
+  * remove existing components: ensure there is *no* reference to Naproche-SAD
+    in $ISABELLE_HOME_USER/etc/settings or various etc/components files
+    (e.g. Isabelle release)
+
+  * update reference to Naproche-SAD repository in $ISABELLE_HOME_USER/etc/components
+    like this:
+
+        isabelle components -u .../Naproche-SAD
+
+### Isabelle build
+
+  * Shutdown Isabelle/jEdit before building Isabelle/Naproche as follows:
+
+        isabelle naproche_build
+
+  * Run some tests as follows (make sure that your current directory is the root of the Naproche repository):
+
+        isabelle naproche_build && isabelle naproche_test -j2
+
+  * Package the Isabelle/Naproche component as follows:
+
+        isabelle naproche_build && isabelle naproche_component -P
+
+    The result is for the current repository version, and the underlying
+    HW + OS platform. The following reference platforms (x86_64) are
+    used for Isabelle2021:
+
+      - Linux: Ubuntu 16.04 LTS
+      - macOS: Mac OS X 10.13 High Sierra
+      - Windows: Windows 10
+
+
+
+### Use Isabelle Prover IDE
+
+        cd .../Naproche-SAD  #repository
 
 * Open ForTheL examples in Isabelle/jEdit, e.g.
 
-      isabelle jedit examples/powerset.ftl
+        isabelle jedit examples/cantor.ftl
 
 * Open Isabelle development environment with ForTheL examples, e.g.
 
-      isabelle jedit -l Pure Isabelle/Test.thy
-
-
-### Multi-platform application bundling (with Isabelle)
-
-  * Linux build host, e.g. Ubuntu 18.04 LTS with the following packages:
-      - curl
-      - mercurial
-      - p7zip-full
-      - texlive-fonts-extra
-      - texlive-font-utils
-      - texlive-latex-extra
-      - texlive-science
-
-  * Standard Isabelle repository clone:
-
-        hg clone https://isabelle.in.tum.de/repos/isabelle
-        isabelle/bin/isabelle components -I
-        isabelle/bin/isabelle components -a
-        isabelle/bin/isabelle jedit -b
-
-    optional tests, notably of LaTeX packages:
-
-        isabelle/bin/isabelle build Pure
-        isabelle/bin/isabelle build -g doc -R -b
-        isabelle/bin/isabelle build -g doc -o document=pdf
-
-  * Isabelle/Naproche component, e.g.:
-
-        curl -o naproche-20200303.tar.gz -L https://github.com/Naproche/Naproche-SAD/releases/download/20200303/naproche-20200303.tar.gz
-
-  * Application bundling, e.g. Isabelle/61882acca79b + naproche-20200303:
-
-        isabelle/Admin/build_release -r 61882acca79b -c naproche-20200303.tar.gz -b Pure -R Isabelle_Naproche-20200303 -O -W dist/website dist
+        isabelle jedit -l Pure Isabelle/Test.thy
 
 
 ## Reference ##

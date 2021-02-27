@@ -10,11 +10,14 @@ See "$ISABELLE_HOME/src/Pure/PIDE/byte_message.ML"
 and "$ISABELLE_HOME/src/Pure/PIDE/byte_message.scala".
 -}
 
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+
 module Isabelle.Byte_Message (
     write, write_line,
     read, read_block, trim_line, read_line,
     make_message, write_message, read_message,
-    make_line_message, write_line_message, read_line_message
+    make_line_message, write_line_message, read_line_message,
+    read_yxml, write_yxml
   )
 where
 
@@ -23,11 +26,10 @@ import Data.Maybe
 import Data.ByteString (ByteString)
 import qualified Data.ByteString as ByteString
 import qualified Data.ByteString.UTF8 as UTF8
-import Data.Word (Word8)
+import qualified Isabelle.XML as XML
+import qualified Isabelle.YXML as YXML
 
-import Control.Monad (when)
 import Network.Socket (Socket)
-import qualified Network.Socket as Socket
 import qualified Network.Socket.ByteString as ByteString
 
 import Isabelle.Library hiding (trim_line)
@@ -159,3 +161,13 @@ read_line_message socket = do
       case Value.parse_nat (UTF8.toString line) of
         Nothing -> return $ Just line
         Just n -> fmap trim_line . fst <$> read_block socket n
+
+
+read_yxml :: Socket -> IO (Maybe XML.Body)
+read_yxml socket = do
+  res <- read_line_message socket
+  return (YXML.parse_body . UTF8.toString <$> res)
+
+write_yxml :: Socket -> XML.Body -> IO ()
+write_yxml socket body =
+  write_line_message socket (UTF8.fromString (YXML.string_of_body body))

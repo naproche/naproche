@@ -15,7 +15,7 @@ import Data.Hashable (Hashable)
 import Data.Binary (Binary)
 import Control.DeepSeq (NFData)
 
-data TermName 
+data TermName
   = TermName Text
   | TermSymbolic Text
   | TermNotion Text
@@ -27,6 +27,7 @@ data TermName
   | TermTask Int
   | TermEquality
   | TermLess
+  | TermSmall -- ^ predicate for set sized objects
   | TermThesis
   | TermEmpty
   | TermVar VarName
@@ -49,22 +50,25 @@ termFunction :: TermName
 termFunction = TermNotion "Function"
 
 termApplication :: TermName
-termApplication = TermSymbolic "sdlbdtrb"
+termApplication = TermSymbolic "dtlpdtrp" -- ".(.)"
 
 termDomain :: TermName
-termDomain = TermSymbolic "zDzozmlpdtrp"
+termDomain = TermSymbolic "zDzozmlpdtrp" -- "Dom(.)"
 
 termSet :: TermName
 termSet = TermNotion "Set"
+
+termClass :: TermName
+termClass = TermNotion "Class"
 
 termElement :: TermName
 termElement = TermNotion "ElementOf"
 
 termProduct :: TermName
-termProduct = TermSymbolic "zPzrzozdlpdtcmdtrp"
+termProduct = TermSymbolic "zPzrzozdlpdtcmdtrp" -- "Prod(.,.)"
 
 termPair :: TermName
-termPair = TermSymbolic "lpdtcmdtrp"
+termPair = TermSymbolic "lpdtcmdtrp" -- "(.,.)"
 
 termObject :: TermName
 termObject = TermNotion "Obj"
@@ -90,6 +94,7 @@ instance Pretty TermName where
   pretty (TermTask n) = "tsk " <> Text.pack (show n)
   pretty TermEquality = "="
   pretty TermLess  = "iLess"
+  pretty TermSmall = "isSetSized"
   pretty TermThesis = "#TH#"
   pretty TermEmpty = ""
   pretty (TermVar v) = pretty v
@@ -195,11 +200,13 @@ symDecode s = Text.pack $ sname [] (Text.unpack s)
 data TermId
   = EqualityId
   | LessId
+  | SmallId
   | ThesisId
   | FunctionId
   | ApplicationId
   | DomainId
   | SetId
+  | ClassId
   | ElementId
   | ProductId
   | PairId

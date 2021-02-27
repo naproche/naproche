@@ -1,0 +1,265 @@
+%!TEX root = formalization.ftl.tex
+
+\usepackage{comment}
+\usepackage{tkz-euclide}
+\usepackage[hidelinks]{hyperref}
+
+\usepackage{auxhook} % Fixes auxhook (seems to be broken by etoolbox in naproche.sty)
+
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{thmtools}
+\usepackage{fontspec}
+
+
+\usepackage{newpxtext,newpxmath}
+
+% Proza
+\setsansfont{ProzaLibre}[
+  Extension={.ttf},
+  Path=./fonts/proza/,
+  Scale=MatchLowercase,
+  UprightFont={*-Regular},
+  BoldFont={*-SemiBold},
+  ItalicFont={*-Italic},
+  BoldItalicFont={*-SemiBoldItalic}]
+
+\RequirePackage{etoolbox}
+
+
+
+% Sectioning
+\addtokomafont{section}{\normalsize}
+\RedeclareSectionCommand[
+  runin=false,
+  afterindent=false,
+  beforeskip=0.5\baselineskip,
+  afterskip=-0.5\baselineskip]{section}
+
+\addtokomafont{subsection}{\normalsize}
+\RedeclareSectionCommand[
+    runin=true,
+    afterindent=false,
+    beforeskip=0pt,
+    afterskip=0\baselineskip]{subsection}
+
+
+% Page number
+\usepackage{lastpage} % definiert `\pageref{LastPage}`
+\renewcommand\pagemark{\hfill{\usekomafont{pagenumber}\thepage\ / \pageref{LastPage}}}
+\addtokomafont{pagenumber}{\sffamily}
+
+
+% Main title and abstract
+
+\addtokomafont{title}{\large}
+\addtokomafont{author}{\normalsize}
+\addtokomafont{date}{\normalsize}
+
+\makeatletter
+\renewcommand*{\@maketitle}{%
+  \global\@topnum=\z@
+  \setparsizes{\z@}{\z@}{\z@\@plus 1fil}\par@updaterelative
+  \ifx\@titlehead\@empty \else
+    \begin{minipage}[t]{\textwidth}
+      \usekomafont{titlehead}{\@titlehead\par}%
+    \end{minipage}\par
+  \fi
+  \null
+  \vskip 2em%
+%  \begin{center}%
+    \ifx\@subject\@empty \else
+      {\usekomafont{subject}{\@subject \par}}%
+      \vskip 1.5em
+    \fi
+    {\usekomafont{title}{\@title \par}}%
+    \vskip .5em
+    {\ifx\@subtitle\@empty\else\usekomafont{subtitle}\@subtitle\par\fi}%
+    \vskip 1em
+    {%
+      \usekomafont{author}{%
+        \lineskip .5em%
+        \begin{tabular}[t]{@{}l}
+          \@author
+        \end{tabular}\par
+      }%
+    }%
+    \vskip 1em%
+    {\usekomafont{date}{\@date \par}}%
+    \vskip \z@ \@plus 1em
+    {\usekomafont{publishers}{\@publishers \par}}%
+    \ifx\@dedication\@empty \else
+      \vskip 2em
+      {\usekomafont{dedication}{\@dedication \par}}%
+    \fi
+%  \end{center}%
+  \par
+  \vskip 2em
+}%
+
+\renewenvironment{abstract}{%
+  \if@titlepage
+    \titlepage
+    \null\vfil
+    \@beginparpenalty\@lowpenalty
+    \if@abstrt
+      \begin{center}
+        \normalfont\sectfont\nobreak\abstractname
+        \@endparpenalty\@M
+      \end{center}
+    \fi
+  \else
+    \section*{Abstract}
+    \if@twocolumn\if@abstrt
+        \addsec*{\abstractname}
+      \fi
+    \else
+      \if@abstrt
+        \small
+        \begin{flushleft}
+          {\normalfont\sectfont\nobreak\abstractname
+            \vspace{-.5em}\vspace{\z@}}%
+        \end{flushleft}
+      \fi
+%      \quotation
+    \fi
+  \fi
+}{%
+  \if@titlepage
+    \par\vfil\null\endtitlepage
+  \else
+    \if@twocolumn\else
+%       \endquotation
+            \par
+    \fi
+  \fi
+}
+\makeatother
+
+
+
+%% Space between paragraphs in proofs in ForTheL environments
+\newlength{\ftlparskip}
+\setlength{\ftlparskip}{1em}
+
+\newenvironment{forthel}{%
+  \setbool{forthel}{true}%
+}{%
+  \setbool{forthel}{false}%
+}
+
+\newtheoremstyle{formalized}% name of the style to be used
+    {-0.5\baselineskip}% measure of space to leave above the theorem. E.g.: 3pt
+    {-0.5\baselineskip}% measure of space to leave below the theorem. E.g.: 3pt
+    {\normalfont} % name of font to use in the body of the theorem
+    {0pt}% measure of space to indent
+    %{\sffamily\itshape}% name of head font
+    {\sffamily\bfseries}% name of head font
+    {}% punctuation between head and body
+    { }% space after theorem head; " " = normal inter-word space
+    %{\thmname{#1}\thmnumber{ #2}. \thmnote{ (#3) }}
+    {{\upshape\thmnumber{#2}.} \thmname{#1}\thmnote{ (#3)}. }
+
+
+\theoremstyle{formalized}
+
+
+% Theorem environments without numbering.
+\newtheorem*{quotedaxiom}{Axiom}
+\newtheorem*{quotedcorollary}{Corollary}
+\newtheorem*{quoteddefinition}{Definition}
+\newtheorem*{quotedfact}{Fact}
+\newtheorem*{quotedlemma}{Lemma}
+\newtheorem*{quotedproposition}{Proposition}
+\newtheorem*{quotedremark}{Remark}
+\newtheorem*{quotedsignature}{Signature}
+\newtheorem*{quotedtheorem}{Theorem}
+
+
+
+\declaretheoremstyle[
+  headfont={},
+  headformat={\bfseries\sffamily\NUMBER.} {\mdseries\rmfamily\itshape\NAME}\NOTE,
+  numbered=yes,
+  bodyfont=\normalfont,
+  spaceabove=-0.5\baselineskip plus 0.05em minus 0.05em,
+  %prefoothook={\hfill{}---},
+  %prefoothook={\ ---},
+  spacebelow=-0.5\baselineskip plus 0.05em minus 0.05em,
+]{newformalized}
+
+
+\declaretheorem[numberwithin=section,style=newformalized,title=Axiom,refname={axiom,axioms},Refname={Axiom,Axioms}]{axiom}
+\declaretheorem[numberlike=axiom,style=newformalized,title=Signature,refname={signature,signatures},Refname={Signature,Signatures}]{signature}
+\declaretheorem[numberlike=axiom,style=newformalized,title=Convention,refname={convention,conventions},Refname={Convention,Conventions}]{convention}
+\declaretheorem[numberlike=axiom,style=newformalized,title=Theorem,refname={theorem,theorems},Refname={Theorem,Theorems}]{theorem}
+\declaretheorem[numberlike=axiom,style=newformalized,title=Definition,refname={definintion,definitions},Refname={Definition,Definitions}]{definition}
+\declaretheorem[numberlike=axiom,style=newformalized,title=Lemma,refname={lemma,lemmas},Refname={Lemma,Lemmas}]{lemma}
+
+
+% More visible line breaks in proofs.
+% ===================================
+
+\newbool{forthel}
+
+\let\originalproof\proof
+\let\originalendproof\endproof
+
+% Set length of \parskip to \ftlparskip in proofs in ForTheL environments.
+%
+% NOTE: "\vspace*{-\parskip}" is necessary to avoid additional space between
+% theorem and proof
+\renewenvironment{proof}{%
+  \originalproof%
+  \ifbool{forthel}{\setlength{\parskip}{\ftlparskip}\vspace*{-\parskip}}%
+  \relax%
+}
+{%
+  \originalendproof%
+}
+
+
+% Symbols
+% =======
+
+\newcommand{\Cong}[4]{#1 #2 \equiv #3 #4}
+\newcommand{\NotCong}[4]{#1 #2 \not\equiv #3 #4}
+\newcommand{\Betw}[3]{#1 #2 #3}
+\newcommand{\Col}[3]{\operatorname{Col}(#1, #2, #3)}
+\newcommand{\SenaryCong}[6]{#1 #2 #3 \equiv #4 #5 #6}
+\newcommand{\BetwFour}[4]{#1 #2 #3 #4}
+\newcommand{\BetwFive}[5]{#1 #2 #3 #4 #5}
+\newcommand{\BetwSix}[6]{#1 #2 #3 #4 #5 #6}
+\newcommand{\Leq}[4]{#1 #2 \leq #3 #4}
+\newcommand{\Geq}[4]{#1 #2 \geq #3 #4}
+\newcommand{\Less}[4]{#1 #2 < #3 #4}
+\newcommand{\Greater}[4]{#1 #2 > #3 #4}
+\newcommand{\RelEquiv}[3]{#1 \approx_{#3} #2}
+
+\newcommand{\Ray}[2]{\operatorname{Ray}(#1 #2)}
+
+\newcommand{\OFS}[8]{\operatorname{OFS}%
+\left(
+\begin{smallmatrix}%
+#1 & #2 & #3 & #4 \\
+#5 & #6 & #7 & #8
+\end{smallmatrix}%
+\right)%
+}
+\newcommand{\IFS}[8]{\operatorname{IFS}
+\left(
+\begin{smallmatrix}%
+#1 & #2 & #3 & #4 \\
+#5 & #6 & #7 & #8
+\end{smallmatrix}
+\right)%
+}
+\newcommand{\FS}[8]{\operatorname{FS}
+\left(
+  \begin{smallmatrix}%
+#1 & #2 & #3 & #4 \\
+#5 & #6 & #7 & #8
+\end{smallmatrix}
+\right)%
+}

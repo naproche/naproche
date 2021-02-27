@@ -1,0 +1,95 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{../lib/tex/naproche}
+
+\title{Square roots of primes are irrational}
+\author{}
+\date{}
+
+\begin{document}
+
+  \maketitle
+
+  \section*{Rational numbers}
+
+  \begin{forthel}
+    [synonym number/-s]
+    [synonym divide/-s]
+
+    \begin{signature}
+      A rational number is a notion.
+    \end{signature}
+
+    Let $s,r,q$ stand for rational numbers.
+
+    \begin{signature}
+      $r \cdot q$ is a rational number.
+    \end{signature}
+
+    \begin{axiom}
+      $r \cdot q = q \cdot r$.
+    \end{axiom}
+
+    \begin{axiom}
+      $r \cdot (q \cdot s) = (r \cdot q) \cdot s$.
+    \end{axiom}
+
+    \begin{axiom}
+      If $q \cdot s = q \cdot r$ then $s = r$.
+    \end{axiom}
+  \end{forthel}
+
+  \section*{Natural numbers}
+
+  \begin{forthel}
+    \begin{signature}
+      A natural number is a rational number.
+    \end{signature}
+
+    Let $n,m,k$ denote natural numbers.
+
+    \begin{axiom}
+      $n \cdot m$ is a natural number.
+    \end{axiom}
+
+    \begin{definition}
+      $n \mid q$ iff there exists $k$ such that $k \cdot n = q$.
+    \end{definition}
+
+    Let $n$ divides $m$ stand for $n \mid m$. Let a divisor of $m$ stand for a natural number that divides $m$.
+
+    \begin{definition}
+      $n$ and $m$ are coprime iff $n$ and $m$ have no common divisor.
+    \end{definition}
+
+    \begin{axiom}
+      There exist coprime $m,n$ such that $m \cdot q = n$.
+    \end{axiom}
+  \end{forthel}
+
+  \section*{Prime numbers}
+
+  \begin{forthel}
+    \begin{signature}
+      A prime number is a natural number.
+    \end{signature}
+
+    Let $p$ denote a prime number.
+
+    \begin{axiom}
+      If $p \mid n \cdot m$ then $p \mid n$ or $p \mid m$.
+    \end{axiom}
+
+    Let $q^{2}$ stand for $q \cdot q$.
+
+    \begin{proposition}
+      $q^{2} = p$ for no rational number $q$.
+    \end{proposition}
+    \begin{proof}
+      Proof by contradiction. Assume the contrary. Take a rational number $q$ such that $p = q^{2}$. Take coprime $m,n$ such that $m \cdot q = n$. Then $p \cdot m^{2} = n^{2}$. Therefore $p$ divides $n$. Take a natural number $k$ such that $n = k \cdot p$. Then $p \cdot m^{2} = p \cdot (k \cdot n)$. Therefore $m \cdot m$ is equal to $p \cdot k^{2}$. Hence $p$ divides $m$. Contradiction.
+    \end{proof}
+  \end{forthel}
+
+\end{document}

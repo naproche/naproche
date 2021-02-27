@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# OPTIONS_GHC -Wno-orphans #-}
 
 module CommandLine where
 
@@ -23,6 +24,7 @@ import System.Directory
 import System.FilePath
 import System.IO
 import System.IO.Error
+import System.Exit (ExitCode(..))
 
 import qualified Control.Exception as Exception
 import qualified Data.ByteString.Lazy as BS
@@ -33,6 +35,10 @@ import qualified System.Process as Process
 
 import qualified Isabelle.File as File
 import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
+import qualified Isabelle.Server as Server
+import qualified Isabelle.Byte_Message as Byte_Message
+import qualified Isabelle.Value as Value
+import qualified Isabelle.Naproche as Naproche
 
 import SAD.Core.Cache (CacheStorage(..), FileCache(..))
 import SAD.Core.Provers (Prover(..))
@@ -56,10 +62,10 @@ newtype CommandLine a = CommandLine
 runCommandLine :: String -> CommandLine a -> IO a
 runCommandLine libraryDir = flip evalStateT (CommandLineConfig ".ftlcache" mempty libraryDir) . fromCommandLine
 
-instance Comm CommandLine where
+instance Comm IO where
   output origin kind pos msg = do
-    context <- liftIO $ getContext
-    liftIO $ channel context $ messageBytes (pide context) origin kind pos msg
+    context <- getContext
+    channel context $ messageBytes (pide context) origin kind pos msg
 
   error origin pos msg = do
     pide <- pideContext
@@ -67,9 +73,9 @@ instance Comm CommandLine where
       UTF8.toString $ ByteString.concat $ messageBytes pide origin ERROR pos msg
 
   reportsString args = do
-    context <- liftIO $ getContext
+    context <- getContext
     when (isJust (pide context) && not (null args)) $
-      liftIO $ channel context $ pideMessage $ YXML.string_of $
+      channel context $ pideMessage $ YXML.string_of $
         XML.Elem (Markup.report,
           map (\((pos, markup), txt) ->
             let
@@ -77,7 +83,13 @@ instance Comm CommandLine where
               body = if null txt then [] else [XML.Text txt]
             in XML.Elem (markup', body)) args)
 
-  pideContext = pide <$> (liftIO getContext)
+  pideContext = pide <$> getContext 
+
+instance Comm CommandLine where
+  output o k p m = liftIO $ output o k p m
+  error o p m = liftIO $ error o p m
+  reportsString a = liftIO $ reportsString a
+  pideContext = liftIO pideContext
 
 instance TimeStatistics CommandLine where
   beginTimedSection t = do
@@ -126,43 +138,101 @@ instance HasLibrary CommandLine where
         (runCommandLine "" . errorParser (fileOnlyPos file) . ioeGetErrorString)
       pure (file, content)
 
+-- Markup reports (with exception handling)
+reportBracketIO :: SourcePos -> IO a -> IO a
+reportBracketIO pos body = do
+  report pos Markup.running
+  (res :: Either Exception.SomeException a) <- try body
+  case res of
+    Left e -> do
+      report pos Markup.failed
+      report pos Markup.finished
+      throw e
+    Right x -> do
+      report pos Markup.finished
+      return x
+
 instance RunProver CommandLine where
-  runProver (Prover _ _ path args _ _ _ _) timeLimit task = do
-    let proc = (Process.proc path (map (setTimeLimit timeLimit) args))
-          { Process.std_in = Process.CreatePipe
-          ,  Process.std_out = Process.CreatePipe
-          ,  Process.std_err = Process.CreatePipe
-          ,  Process.create_group = True
-          ,  Process.new_session = True}
-    let process = do
-          (pin, pout, perr, p) <- Process.createProcess proc
-          return (fromJust pin, fromJust pout, fromJust perr, p)
+  runProver pos (Prover _ label path args yes con nos uns) proverServer timeLimit memoryLimit task =
+    liftIO $ reportBracketIO pos $ case proverServer of
+      Nothing -> do
+        let proc = (Process.proc path (map (setLimits timeLimit memoryLimit) args))
+              { Process.std_in = Process.CreatePipe
+              ,  Process.std_out = Process.CreatePipe
+              ,  Process.std_err = Process.CreatePipe
+              ,  Process.create_group = True
+              ,  Process.new_session = True}
+        let process = do
+              (pin, pout, perr, p) <- Process.createProcess proc
+              return (fromJust pin, fromJust pout, fromJust perr, p)
 
-    liftIO $ Isabelle_Thread.expose_stopped
-    (prvin, prvout, prverr, prv) <- liftIO $ Exception.catch process
-        (\e -> runCommandLine "" . errorExport noSourcePos $
-          "Failed to run " ++ show path ++ ": " ++ ioeGetErrorString e)
+        (prvin, prvout, prverr, prv) <- Exception.catch process
+            (\e -> errorExport pos $
+              "Failed to run " ++ show path ++ ": " ++ ioeGetErrorString e)
 
-    liftIO $ File.setup prvin
-    liftIO $ File.setup prvout
-    liftIO $ File.setup prverr
+        File.setup prvin
+        File.setup prvout
+        File.setup prverr
 
-    liftIO $ TIO.hPutStrLn prvin task
-    liftIO $ hClose prvin
+        TIO.hPutStrLn prvin task
+        hClose prvin
 
-    let terminate = do
-          Process.interruptProcessGroupOf prv
-          Process.waitForProcess prv
-          return ()
+        let terminate = do
+              Process.interruptProcessGroupOf prv
+              Process.waitForProcess prv
+              return ()
 
-    liftIO $ Isabelle_Thread.bracket_resource terminate $ do
-      output <- TIO.hGetContents prvout
-      errors <- TIO.hGetContents prverr
-      hClose prverr
-      Process.waitForProcess prv
-      pure $ output <> errors
+        Isabelle_Thread.bracket_resource terminate $ do
+          output <- ByteString.hGetContents prvout
+          errors <- ByteString.hGetContents prverr
+          exitCode <- Process.waitForProcess prv
+          let rc =
+                case exitCode of
+                  ExitSuccess -> 0
+                  ExitFailure rc | rc >= 0 -> rc
+                  ExitFailure rc -> 128 - rc
 
-setTimeLimit :: Int -> String -> String
-setTimeLimit timeLimit ('%':'d':rs) = show timeLimit ++ rs
-setTimeLimit timeLimit (s:rs) = s : setTimeLimit timeLimit rs
-setTimeLimit _ _ = []
+          pure (rc, Text.pack $ UTF8.toString output ++ UTF8.toString errors)
+
+      Just (port, password) ->
+        Server.connection port password
+          (\prover ->
+            do
+              Byte_Message.write_yxml prover
+                [XML.Elem ((Naproche.prover_command,
+                    [(Naproche.prover_name, path),
+                    (Naproche.command_args, unlines (map (setLimits 300 2048) args)),
+                    (Naproche.prover_timeout, show timeLimit)]),
+                  [XML.Text (Text.unpack task)])]
+
+              reply <- Byte_Message.read_line_message prover
+
+              case reply of
+                Nothing -> pure (0, "")
+                Just uuid ->
+                  do
+                    let kill_prover = do
+                          Server.connection port password (\prover_kill ->
+                            Byte_Message.write_yxml prover_kill
+                              [XML.Elem ((Naproche.kill_command, []),
+                                [XML.Text (UTF8.toString uuid)])])
+                    Isabelle_Thread.bracket_resource kill_prover $ do
+                      result <- Byte_Message.read_yxml prover
+                      return $
+                        case result of
+                          Just [XML.Elem ((elem, (a, b) : _), body)] |
+                            elem == Naproche.prover_result &&
+                            a == Naproche.prover_return_code ->
+                              case Value.parse_int b of
+                                Just rc -> (rc, Text.pack $ XML.content_of body)
+                                Nothing -> (2, "")
+                          _ -> (2, ""))
+
+
+setLimits :: Int -> Int -> String -> String
+setLimits timeLimit memoryLimit = go
+  where
+    go ('%':'t':rs) = show timeLimit ++ go rs
+    go ('%':'m':rs) = show memoryLimit ++ go rs
+    go (s:rs) = s : go rs
+    go [] = []

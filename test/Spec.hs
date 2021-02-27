@@ -24,31 +24,42 @@ gather (hout, herr, ph) = do
 
 files :: [FilePath]
 files = fmap ("examples/"++)
-  -- This file does check, but it often fails when limited to reasonable time
-  -- [ "chinese.ftl"
-  [ "fuerst.ftl"
-  , "geom.ftl"
-  , "Koenigs_lemma.ftl"
-  , "Maximum_principle.ftl"
+  [ "chinese.ftl"
+  , "fuerstenberg.ftl"
+  , "koenig.ftl"
+  , "maximum_modulus.ftl"
   , "newman.ftl"
-  , "powerset.ftl"
+  , "cantor.ftl"
   , "prime_no_square.ftl"
   , "regular_successor.ftl"
   , "tarski.ftl"
-  , "inconsistency.ftl"
-  , "read_test.ftl"
-  ]
-
-shouldFailFiles :: [FilePath]
-shouldFailFiles = fmap ("examples/"++)
-  [ "inconsistency.ftl" 
+  , "ZFC.ftl"
+  , "test/inconsistency.ftl"
+  , "test/read_test.ftl"
   ]
 
 texFiles :: [FilePath]
 texFiles = fmap ("examples/"++)
-  [ "powerset.tex"
+  [ "checkerboard.ftl.tex"
   , "chinese.ftl.tex"
-  , "read_test.tex"
+  , "fuerstenberg.ftl.tex"
+  , "koenig.ftl.tex"
+  , "maximum_modulus.ftl.tex"
+  , "newman.ftl.tex"
+  , "cantor.ftl.tex"
+  , "prime_no_square.ftl.tex"
+  , "regular_successor.ftl.tex"
+  , "tarski.ftl.tex"
+  , "test/inconsistency.ftl.tex"
+  , "test/read_test.ftl.tex"
+  , "test/lambda_term_test.ftl.tex"
+  , "test/varprime.ftl.tex"
+  ]
+
+shouldFailFiles :: [FilePath]
+shouldFailFiles = fmap ("examples/"++)
+  [ "test/inconsistency.ftl"
+  , "test/inconsistency.ftl.tex"
   ]
 
 output :: [(FilePath, (ExitCode, Text))] -> IO [(ExitCode, FilePath)]
@@ -59,10 +70,10 @@ output xs = do
 
 main :: IO ()
 main = do
-  compiled <- mapM (compileFile ["-t", "25", "--tex=off"]) files
-  compiledTex <- mapM (compileFile ["-t", "25", "--tex=on"]) texFiles
+  compiled <- mapM (\f -> gather =<< compileFile ["--tex=off"] f) files
+  compiledTex <- mapM (\f -> gather =<< compileFile ["--tex=on"] f) texFiles
 
-  failed <- output . zip files =<< mapM gather (compiled ++ compiledTex)
+  failed <- output . zip (files ++ texFiles) $ (compiled ++ compiledTex)
   let shouldntHaveFailed = filter (\f -> snd f `notElem` shouldFailFiles) failed
   let shouldHaveFailed = shouldFailFiles \\ map snd failed
   code <- newIORef ExitSuccess

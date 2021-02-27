@@ -9,10 +9,10 @@ Untyped XML trees and representation of ML values.
 See also "$ISABELLE_HOME/src/Pure/PIDE/xml.ML".
 -}
 
+{-# OPTIONS_GHC -fno-warn-missing-signatures #-}
+
 module Isabelle.XML (Attributes, Body, Tree(..), wrap_elem, unwrap_elem, content_of)
 where
-
-import qualified Data.List as List
 
 import Isabelle.Library
 import qualified Isabelle.Properties as Properties

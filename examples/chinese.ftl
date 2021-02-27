@@ -6,6 +6,7 @@
 Signature ElmSort. An element is a notion.
 
 Let a,b,c,x,y,z,u,v,w denote elements.
+Axiom. a is setsized.
 
 Signature SortsC.  0 is an element.
 Signature SortsC.  1 is an element.
@@ -49,6 +50,7 @@ Axiom UnNeZr.  1 != 0.
 [synonym set/-s] [synonym belong/-s]
 
 Let X,Y,Z,U,V,W denote sets.
+Axiom. X is setsized.
 
 Axiom. Every element of X is an element.
 
@@ -59,12 +61,12 @@ Axiom SetEq.
 If every element of X belongs to Y and every element of Y belongs to X
 then X = Y.
 
-Definition DefSSum.
+Definition DefSum.
 X +' Y is a set such that for every element z (z << X +' Y) iff there exist
 x << X, y << Y such that z = x + y.
 
 Definition DefSInt.
-X ** Y is a set such that for every element z (z << X +' Y) iff z << X
+X ** Y is a set such that for every element z (z << X ** Y) iff z << X
 and z << Y.
 
 [synonym ideal/-s]
@@ -96,7 +98,12 @@ proof.
 qed.
 
 
-Lemma IdeInt.  I ** J is an ideal (by Definition).
+Lemma IdeInt.  I ** J is an ideal (by DefIdeal).
+Proof.
+Let x belong to I ** J.
+forall y << (I ** J) (x + y) << (I ** J).
+For every element z (z * x) << (I** J).
+qed.
 
 Definition DefMod.  x = y (mod I)  iff  x - y << I.
 
@@ -111,16 +118,22 @@ Let us show that w = x (mod I) and w = y (mod J).
     proof.
         w - x = (y * a) + ((x * b) - x).
         x * (b - 1) belongs to I.
+        x * (b - 1) = (x * b) - x.
         end.
     w - y belongs to J.
     proof.
         w - y = (x * b) + ((y * a) - y).
         y * (a - 1) belongs to J.
+        y * (a - 1) = (y * a) - y.
         end.
     end.
 qed.
 
 
+[synonym number/-s]
+
+Signature NatSort.  A natural number is a notion.
+Axiom. Let n be a natural number. Then n is setsized.
 
 Signature EucSort.  Let x be a nonzero element. |x| is a natural number.
 

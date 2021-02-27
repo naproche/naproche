@@ -5,7 +5,7 @@ Core functions on formulas.
 -}
 
 module SAD.Data.Formula.Base
-  ( Formula(..), Tag(..), AllEq(..)
+  ( Formula(..), Tag(..), AllEq(..), trmId
   , occursIn, isClosed, subst, substs, bind, mapF, foldF, replace
   , Decl(..), newDecl, positionedDecl
   ) where
@@ -29,7 +29,7 @@ data Formula =
   Tag Tag Formula         | Not Formula             |
   Top                     | Bot                     |
   Trm { trmName :: TermName, trmArgs :: [Formula],
-        trmInfo :: [Formula], trmId  :: AllEq TermId}    |
+        trmInfo :: [Formula], trId   :: AllEq TermId}         |
   -- | Free variables 'Var'.
   Var { varName :: VarName, varInfo :: [Formula], varPosition :: SourcePos } |
   -- | This is used for representing bound variables through de Brujin indices.
@@ -44,6 +44,15 @@ data AllEq a = AllEq { fromAllEq :: a }
 
 instance Eq (AllEq a) where (==) _ _ = True
 instance Ord (AllEq a) where (<=) _ _ = True
+
+trmId :: Formula -> AllEq TermId
+trmId (Trm _ _ _ a) = a
+trmId f = error $ "trmId called no term" 
+
+trInfo :: Formula -> [Formula]
+trInfo Trm {trmInfo = xs} = xs
+trInfo Var {varInfo = xs} = xs
+trInfo _ = error "Formula.Base.trInfo: Partial function"
 
 data Tag =
   Dig | DigMultiSubject | DigMultiPairwise | HeadTerm |

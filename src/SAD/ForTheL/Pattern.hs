@@ -39,7 +39,7 @@ import qualified Data.Text as Text
 -- add expressions to the state of ForTheL
 
 giveId :: Bool -> Int -> Formula -> Formula
-giveId p n t = t {trmId = if p then AllEq $ specialId n else (trmId t)}
+giveId p n t = t {trId = if p then AllEq $ specialId n else (trmId t)}
 
 incId :: Enum p => Bool -> p -> p
 incId p n = if p then succ n else n
@@ -148,7 +148,7 @@ extractWordPattern st t@Trm {trmName = s, trmArgs = vs} f = (pt, nf)
   where
     pt = map getPattern ws
     nt = t {trmName = pr $ getName pt}
-    nf = replace nt t {trmId = AllEq NewId} f
+    nf = replace nt t {trId = AllEq NewId} f
     (pr, ws) = fmap Text.words $ termSplit s
     dict = strSyms st
 
@@ -168,7 +168,7 @@ extractSymbPattern t@Trm {trmName = TermName s, trmArgs = vs} f = (pt, nf)
   where
     pt = map getPattern (Text.words s)
     nt = t {trmName = TermSymbolic $ getName pt}
-    nf = replace nt t {trmId = AllEq NewId} f
+    nf = replace nt t {trId = AllEq NewId} f
 
     getPattern "#" = Vr
     getPattern w = Symbol w
@@ -311,8 +311,10 @@ knownVariable = do
 singleLetterVariable :: FTL PosVar
 singleLetterVariable = do
   v <- var;
-  guard $ Text.null $ Text.tail $ deVar $ posVarName v
+  guard $ isSingleLetter $ deVar $ posVarName v
   return v
   where
     deVar (VarConstant s) = s
     deVar _ = error "SAD.ForTheL.Pattern.singleLetterVariable: other variable"
+    isSingleLetter :: Text -> Bool
+    isSingleLetter x = Text.null (Text.tail x) || x `elem` fmap ("tex" <>) greek

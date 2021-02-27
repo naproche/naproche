@@ -20,7 +20,7 @@ class Monad m => CacheStorage m where
 
 data Cache = Cache
   { perFile :: Map FilePath FileCache
-  } deriving (Eq, Ord, Show)
+  } deriving (Eq, Ord)
 
 instance Semigroup Cache where
   (Cache p1) <> (Cache p2) = Cache (Map.unionWith (<>) p1 p2)
@@ -34,7 +34,7 @@ instance Monoid Cache where
 data FileCache = FileCache 
   { tasks :: HashMap Task Int
   , lastRun :: !Int
-  } deriving (Eq, Ord, Show)
+  } deriving (Eq, Ord)
 
 instance Semigroup FileCache where
   (FileCache t1 r1) <> (FileCache t2 r2) = case compare r1 r2 of

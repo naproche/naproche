@@ -125,13 +125,21 @@ fun check_forthel ctxt {tex} (text, pos) =
   let
     fun bool b = if b then "on" else "off";
     val bool_option = bool o Config.get ctxt;
+
+    val (prover_server_port, prover_server_password) =
+      if Options.default_bool \<^system_option>\<open>naproche_prover_server\<close> then
+        (Options.default_string \<^system_option>\<open>naproche_prover_server_port\<close>,
+         Options.default_string \<^system_option>\<open>naproche_prover_server_password\<close>)
+      else ("", "");
     val args =
      ["--tex=" ^ bool tex,
       "--prove=" ^ bool_option naproche_prove,
       "--check=" ^ bool_option naproche_check,
       "--skipfail=" ^ bool_option naproche_skipfail,
       "--printthesis=" ^ bool_option naproche_print_thesis,
-      "--translate=" ^ bool_option naproche_translate];
+      "--translate=" ^ bool_option naproche_translate,
+      "--prover-server-port=" ^ prover_server_port,
+      "--prover-server-password=" ^ prover_server_password];
 
     val server_address = Options.default_string \<^system_option>\<open>naproche_server_address\<close>;
     val server_password = Options.default_string \<^system_option>\<open>naproche_server_password\<close>;
@@ -202,7 +210,7 @@ val _ =
         let
           val {src_path, lines, digest, pos} = get_file (Proof_Context.theory_of lthy);
           val file_name = Path.implode (Path.expand src_path);
-          val tex = String.isSuffix ".tex" file_name orelse String.isSuffix ".tex.ftl" file_name;
+          val tex = String.isSuffix ".ftl.tex" file_name;
           val lthy' = lthy
             |> Local_Theory.background_theory (Resources.provide (src_path, digest));
           val _ = check_forthel lthy' {tex = tex} (cat_lines lines, pos);
