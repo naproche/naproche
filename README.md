@@ -62,6 +62,10 @@ The subsequent explanations are for **development** of the tool, not for end-use
         hg update -C -r Isabelle2021
         bin/isabelle components -a
 
+  * Isabelle executable: there is no need to have bin/isabelle in the PATH,
+    but it is convenient to put it into a standard place once, e.g.:
+
+        bin/isabelle install "$HOME/bin"
 
 ### Isabelle component setup
 
@@ -83,6 +87,8 @@ The subsequent explanations are for **development** of the tool, not for end-use
   * Run some tests as follows (make sure that your current directory is the root of the Naproche repository):
 
         isabelle naproche_build && isabelle naproche_test -j2
+
+        isabelle naproche_test -o naproche_server_debugging
 
   * Package the Isabelle/Naproche component as follows:
 
