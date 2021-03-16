@@ -9,11 +9,10 @@ Construct prover database.
 
 module SAD.Core.Provers (Prover(..), readProverDatabase) where
 
-import Data.Yaml
+import Data.Aeson
 import SAD.Core.SourcePos
 import SAD.Core.Message (Comm, errorExport)
 import GHC.Generics
-import Data.Bifunctor
 import qualified Data.ByteString as B
 import Data.Text (Text)
 
@@ -32,8 +31,7 @@ instance FromJSON Prover
 
 readProverDatabase :: Comm m => FilePath -> B.ByteString -> m [Prover]
 readProverDatabase path txt = do
-  let yamlEither = first prettyPrintParseException $ decodeEither' txt
-  case yamlEither >>= mapM validate of
+  case eitherDecodeStrict txt >>= mapM validate of
     Right r -> pure r
     Left l -> err l
   where

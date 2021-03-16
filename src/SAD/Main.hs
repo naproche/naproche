@@ -146,7 +146,7 @@ options = [
   GetOpt.Option ""  ["library"] (GetOpt.ReqArg (GetArgument Library . Text.pack) "DIR")
     "place to look for library texts (def: examples)",
   GetOpt.Option ""  ["provers"] (GetOpt.ReqArg (GetArgument Provers . Text.pack) "FILE")
-    "index of provers (def: provers.yaml)",
+    "index of provers (def: provers.json)",
   GetOpt.Option "P" ["prover"] (GetOpt.ReqArg (GetArgument UseProver . Text.pack) "NAME")
     "use prover NAME (def: first listed)",
   GetOpt.Option "" ["prover-server-port"] (GetOpt.ReqArg (GetArgument ProverServerPort . Text.pack) "NAME")

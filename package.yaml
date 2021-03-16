@@ -40,7 +40,7 @@ dependencies:
 - bytestring
 - text
 - split
-- yaml
+- aeson
 
 default-extensions:
   - GeneralizedNewtypeDeriving

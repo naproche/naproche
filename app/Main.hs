@@ -120,7 +120,7 @@ readArgs' args = do
 consoleMainBody :: [Instr] -> [ProofText] -> IO ()
 consoleMainBody opts0 text0 = do
   let library = Text.unpack $ askArgument Library "." opts0
-  let proversFile = Text.unpack (askArgument Provers "provers.yaml" opts0)
+  let proversFile = Text.unpack (askArgument Provers "provers.json" opts0)
   exit <- runCommandLine library $ do
     provers <- readProverDatabase proversFile =<< liftIO (B.readFile proversFile)
     mainBody provers opts0 text0
