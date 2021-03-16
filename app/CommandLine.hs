@@ -5,7 +5,6 @@ module CommandLine where
 
 import Prelude hiding (error)
 import Data.Maybe
-import Data.Map.Strict (Map)
 import qualified Data.ByteString as ByteString
 import qualified Data.ByteString.UTF8 as UTF8
 import qualified Isabelle.YXML as YXML
@@ -18,8 +17,6 @@ import Control.Exception
 import Control.Monad.IO.Class
 import Control.Monad.State
 import Data.Binary (decode, encode)
-import Data.Either (isRight)
-import Data.Time (UTCTime, NominalDiffTime, getCurrentTime, diffUTCTime)
 import System.Directory
 import System.FilePath
 import System.IO
@@ -28,7 +25,6 @@ import System.Exit (ExitCode(..))
 
 import qualified Control.Exception as Exception
 import qualified Data.ByteString.Lazy as BS
-import qualified Data.Map as Map
 import qualified Data.Text as Text
 import qualified Data.Text.IO as TIO
 import qualified System.Process as Process
@@ -45,13 +41,10 @@ import SAD.Core.Provers (Prover(..))
 import SAD.Core.Prove (RunProver(..))
 import SAD.Core.Reader (HasLibrary(..))
 
-import SAD.Main
-
 import PIDE
 
 data CommandLineConfig = CommandLineConfig
   { cacheDir :: FilePath
-  , times :: Map TimedSection (Either UTCTime NominalDiffTime)
   , libraryDir :: FilePath
   } deriving (Eq, Ord, Show)
 
@@ -60,7 +53,7 @@ newtype CommandLine a = CommandLine
   } deriving (Functor, Applicative, Monad, MonadIO, MonadState CommandLineConfig)
 
 runCommandLine :: String -> CommandLine a -> IO a
-runCommandLine libraryDir = flip evalStateT (CommandLineConfig ".ftlcache" mempty libraryDir) . fromCommandLine
+runCommandLine libraryDir = flip evalStateT (CommandLineConfig ".ftlcache" libraryDir) . fromCommandLine
 
 instance Comm IO where
   output origin kind pos msg = do
@@ -90,18 +83,6 @@ instance Comm CommandLine where
   error o p m = liftIO $ error o p m
   reportsString a = liftIO $ reportsString a
   pideContext = liftIO pideContext
-
-instance TimeStatistics CommandLine where
-  beginTimedSection t = do
-    time <- liftIO $ getCurrentTime
-    modify $ \c -> c { times = Map.insert t (Left time) (times c) }
-  endTimedSection t = do
-    time <- liftIO $ getCurrentTime
-    modify $ \c -> case Map.lookup t (times c) of
-      Just (Left begin) -> c { times = Map.insert t (Right $ diffUTCTime time begin) (times c) }
-      _ -> c
-  getTimes = (takeRights . times) <$> get
-    where takeRights = Map.map (\(Right r) -> r) . Map.filter isRight
 
 instance CacheStorage CommandLine where
   readFileCache f = do

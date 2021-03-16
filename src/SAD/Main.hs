@@ -16,8 +16,10 @@ import qualified Data.Text as Text
 import qualified System.Console.GetOpt as GetOpt
 import qualified System.Exit as Exit
 import qualified Data.Map as Map
+import Data.Map (Map)
 import Control.Monad.State
-import Data.Time (NominalDiffTime)
+import Data.Either (isRight)
+import Data.Time (NominalDiffTime, UTCTime, getCurrentTime, diffUTCTime)
 
 import SAD.Core.Pretty (pretty)
 import SAD.Core.Logging (showTimeDiff, RState(..), sumCounter, Counter(..), Tracker(..))
@@ -38,60 +40,74 @@ import SAD.Core.Task (generateTasks)
 data TimedSection = ParsingTime | ProvingTime | CheckTime
   deriving (Eq, Ord, Show)
 
-class Monad m => TimeStatistics m where
-  beginTimedSection :: TimedSection -> m ()
-  endTimedSection :: TimedSection -> m ()
-  getTimes :: m (Map.Map TimedSection NominalDiffTime)
+newtype Times m a = Times { runTimes :: StateT (Map TimedSection (Either UTCTime NominalDiffTime)) m a }
+  deriving (Functor, Applicative, Monad, MonadTrans, MonadIO, MonadState (Map TimedSection (Either UTCTime NominalDiffTime)))
 
-mainBody :: (TimeStatistics m, RunProver m, Comm m, CacheStorage m, HasLibrary m)
+beginTimedSection :: MonadIO m => TimedSection -> Times m ()
+beginTimedSection t = do
+  time <- liftIO $ getCurrentTime
+  modify $ Map.insert t (Left time)
+
+endTimedSection :: MonadIO m => TimedSection -> Times m ()
+endTimedSection t = do
+  time <- liftIO $ getCurrentTime
+  times <- get
+  case Map.lookup t times of
+    Just (Left begin) -> modify $ Map.insert t (Right $ diffUTCTime time begin)
+    _ -> pure ()
+
+getTimes :: MonadIO m => Times m (Map TimedSection NominalDiffTime)
+getTimes = takeRights <$> get
+  where takeRights = Map.map (\(Right r) -> r) . Map.filter isRight
+
+mainBody :: (MonadIO m, RunProver m, Comm m, CacheStorage m, HasLibrary m)
   => [Prover] -> [Instr] -> [ProofText] -> m Exit.ExitCode
-mainBody provers opts0 text0 = do
-
+mainBody provers opts0 text0 = flip evalStateT mempty $ runTimes $ do
   beginTimedSection ParsingTime
   -- parse input text
-  txts <- readProofText text0
+  txts <- lift $ readProofText text0
 
   -- if -T / --onlytranslate is passed as an option, only print the translated text
   if askFlag OnlyTranslate False opts0
     then showTranslation txts
     else do proveFOL provers txts opts0
 
-showTranslation :: (TimeStatistics m, RunProver m, Comm m, CacheStorage m)
-  => [ProofText] -> m Exit.ExitCode
+showTranslation :: (MonadIO m, RunProver m, Comm m, CacheStorage m)
+  => [ProofText] -> Times m Exit.ExitCode
 showTranslation txts = do
   -- mapM_ (\case (ProofTextBlock b) -> print b; _ -> pure ()) txts
   let out = outputMain WRITELN (fileOnlyPos "")
-  mapM_ (out . (++"\n\n") . Text.unpack . pretty . located) (convert txts)
+  lift $ mapM_ (out . (++"\n\n") . Text.unpack . pretty . located) (convert txts)
 
   -- print statistics
   endTimedSection ParsingTime
   times <- getTimes
-  outputMain TRACING noSourcePos $ Text.unpack $ "total " <> showTimeDiff (times Map.! ParsingTime)
+  lift $ outputMain TRACING noSourcePos $ Text.unpack $ "total " <> showTimeDiff (times Map.! ParsingTime)
   pure $ Exit.ExitSuccess
 
-proveFOL :: (TimeStatistics m, RunProver m, Comm m, CacheStorage m) 
-  => [Prover] -> [ProofText] -> [Instr] -> m Exit.ExitCode
+proveFOL :: (MonadIO m, RunProver m, Comm m, CacheStorage m) 
+  => [Prover] -> [ProofText] -> [Instr] -> Times m Exit.ExitCode
 proveFOL provers txts opts0 = do
   case findParseError $ ProofTextRoot txts of
     Just err -> do 
-      errorParser (errorPos err) (show err)
+      lift $ errorParser (errorPos err) (show err)
       pure $ Exit.ExitFailure 1
     Nothing -> do
-      endTimedSection ParsingTime 
+      endTimedSection ParsingTime
       let typed = force $ convert txts
       let tasks = generateTasks typed
       let rstate = RState [Counter Sections (length typed)] False False
       beginTimedSection CheckTime
       typed `seq` endTimedSection CheckTime
       beginTimedSection ProvingTime
-      finalReasonerState <- verify provers opts0 rstate tasks
+      finalReasonerState <- lift $ verify provers opts0 rstate tasks
       endTimedSection ProvingTime
 
       let trackerList = trackers finalReasonerState
       let accumulate  = sumCounter trackerList
 
       -- print statistics
-      outputMain TRACING noSourcePos $
+      lift $ outputMain TRACING noSourcePos $
         "sections "       ++ show (accumulate Sections)
         ++ " - goals "    ++ show (accumulate Goals)
         ++ (let ignoredFails = accumulate FailedGoals
@@ -102,12 +118,12 @@ proveFOL provers txts opts0 = do
         ++ " - cached "    ++ show (accumulate CachedCounter)
 
       times <- getTimes
-      outputMain TRACING noSourcePos $ Text.unpack $
+      lift $ outputMain TRACING noSourcePos $ Text.unpack $
         "parser "           <> showTimeDiff (times Map.! ParsingTime)
         <> " - checker "     <> showTimeDiff (times Map.! CheckTime)
         <> " - prover "     <> showTimeDiff (times Map.! ProvingTime)
 
-      outputMain TRACING noSourcePos $ Text.unpack $
+      lift $ outputMain TRACING noSourcePos $ Text.unpack $
         "total " <> showTimeDiff ((times Map.! ParsingTime) + (times Map.! ProvingTime))
 
       pure $ if accumulate FailedGoals == 0 then Exit.ExitSuccess else Exit.ExitFailure 1
