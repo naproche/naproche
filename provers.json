@@ -60,7 +60,6 @@
          "-CNFOptSkolem=0",
          "-PProblem=0",
          "-PGiven=0",
-         "-Stdin",
          "-TimeLimit=%t"
       ],
       "successMessage": [
