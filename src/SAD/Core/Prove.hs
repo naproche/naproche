@@ -19,7 +19,7 @@ import SAD.Core.Pretty
 import Data.Text (Text)
 import qualified Data.Text as Text
 import SAD.Core.Message (Comm, output, errorExport, Kind(..), outputReasoner, outputMain)
-import SAD.Core.TPTP (tptp)
+import SAD.Core.TPTP (tptp, ExportLang(..))
 import SAD.Core.Task (Task(..))
 import SAD.Core.Cache
 
@@ -103,7 +103,8 @@ export pos provers@(defProver:_) instrs tsk = do
               Nothing
             else Just (Text.unpack proverServerPort, Text.unpack proverServerPassword)
 
-      let task = tptp tsk
+      let theory = if askFlag UseFOF False instrs then FOF else TF0
+      let task = tptp theory tsk
       when (askFlag Dump False instrs) $ 
         output "" WRITELN noSourcePos (Text.unpack task)
 

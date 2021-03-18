@@ -214,7 +214,10 @@ options = [
     "print tasks in prover's syntax (def: off)",
   GetOpt.Option "" ["tex"]
     (GetOpt.ReqArg (SetFlag UseTex . parseConsent) "{on|off}")
-    "parse passed file with forthel tex parser (def: off)"
+    "parse passed file with forthel tex parser (def: off)",
+  GetOpt.Option "" ["fof"]
+    (GetOpt.ReqArg (SetFlag UseFOF . parseConsent) "{on|off}")
+    "use FOF instead of TF0 as output. Should only be used when necessary for older provers (def: off)."
   ]
 
 parseConsent :: String -> Bool

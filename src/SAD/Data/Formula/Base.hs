@@ -49,11 +49,6 @@ trmId :: Formula -> AllEq TermId
 trmId (Trm _ _ _ a) = a
 trmId f = error $ "trmId called no term" 
 
-trInfo :: Formula -> [Formula]
-trInfo Trm {trmInfo = xs} = xs
-trInfo Var {varInfo = xs} = xs
-trInfo _ = error "Formula.Base.trInfo: Partial function"
-
 data Tag =
   Dig | DigMultiSubject | DigMultiPairwise | HeadTerm |
   InductionHypothesis | CaseHypothesisTag | EqualityChain |

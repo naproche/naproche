@@ -20,6 +20,7 @@ import SAD.Core.Pretty
 import qualified Data.Text as Text
 import SAD.Helpers (inParens)
 import SAD.Core.SourcePos (SourcePos, sourceFile)
+import qualified Data.Set as Set
 
 data Hypothesis
   = Given Text (Term Identity ())
@@ -77,7 +78,7 @@ generateFromProof topname topPos hypo (Proving prf topclaim tophints)
             final = foldl1 (\a b -> App Or [a, b]) (map fst cs)
         in ((hypo, isContra), cases ++ [Task hypo final [] n isContra topPos])
       ByContradiction goal -> (((Given n (simp $ App Not [goal])):hypo, True), [])
-      Choose vs t prf ->
+      Choose vs t prf -> -- TODO: Check if this is correct if the bound variable is a TermVar in the statement...
         let ts = map (\(v, typ) -> Typing (TermVar v) (Pred [] (InType typ))) vs
         in (((Given n t) : ts ++ hypo, isContra), generateFromProof n topPos hypo prf)
 
@@ -86,7 +87,7 @@ generateFromProof topname topPos hypo (Proving prf topclaim tophints)
 -- make sure we don't add junk.
 -- Danger: This function should not be used in the presence of the ByContradiction tactic.
 asTerm :: PrfBlock Identity () -> Term Identity ()
-asTerm (Proving prfs trm _) = case prfs of
+asTerm (Proving prfs trm _) = unrollTermVars $ case prfs of
   [] -> trm
   ((Located _ _ (Intro v typ)):ps) -> Forall v (Identity typ) $ asTerm (Proving ps trm [])
   ((Located _ _ (Assume a)):ps) -> App Imp [a, asTerm (Proving ps trm [])]
@@ -94,6 +95,18 @@ asTerm (Proving prfs trm _) = case prfs of
     (App Imp [hypo, asTerm (Proving ps trm [])]) vs
   ((Located _ _ (ByContradiction goal)):_) -> goal
   (_:ps) -> asTerm (Proving ps trm [])
+
+unrollTermVars :: Term Identity () -> Term Identity ()
+unrollTermVars = go mempty
+  where
+    go vars = \case
+      Forall v m t -> Forall v m (go (Set.insert v vars) t)
+      Exists v m t -> Exists v m (go (Set.insert v vars) t)
+      Class v m t -> Class v m (go (Set.insert v vars) t)
+      App (OpTrm (TermVar v)) [] | v `Set.member` vars -> Var v
+      App op as -> App op (go vars <$> as)
+      Tag () t -> Tag () $ go vars t
+      Var v -> Var v
 
 generateTasks :: [Statement] -> [Task]
 generateTasks = concat . snd . mapAccumL go []

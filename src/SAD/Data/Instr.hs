@@ -93,6 +93,7 @@ data Flag =
   | Unfoldlowsf    --  unfold set and function conditions in low level (no)
   | Translation    --  print first-order translation of sentences
   | UseTex         --  whether to use tex parser for the file passed in the CLI
+  | UseFOF         --  whether to use FOF output
   deriving (Eq, Ord, Show)
 
 data Argument =
@@ -178,7 +179,8 @@ keywordsFlag =
   (Unfoldlow, "unfoldlow"),
   (Unfoldlowsf, "unfoldlowsf"),
   (Translation, "translation"),
-  (UseTex, "tex")]
+  (UseTex, "tex"),
+  (UseFOF, "fof")]
 
 keywordsArgument :: [(Argument, Text)]
 keywordsArgument =

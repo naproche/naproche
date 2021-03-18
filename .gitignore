@@ -22,7 +22,7 @@ x86_64-windows/
 dist-newstyle
 
 examples/added
-examples/.ftlcache
+**/.ftlcache/**
 
 # TEX-related stuff
 *.aux
