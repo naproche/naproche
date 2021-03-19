@@ -1,0 +1,8 @@
+cradle:
+  stack:
+    - path: "./test/"
+      component: "Naproche-SAD:Naproche-SAD-test"
+    - path: "./src/"
+      component: "Naproche-SAD:lib"
+    - path: "./app"
+      component: "Naproche-SAD"
