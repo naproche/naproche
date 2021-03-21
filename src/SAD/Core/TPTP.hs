@@ -79,8 +79,8 @@ instance (f ~ Identity, t ~ ()) => TPTP (Term f t) where
 tffStatement :: ExportLang -> Text -> Text -> Text -> Text
 tffStatement ex n typ inside =
   let h = hash inside
+      name = if Text.null n || n == "__" then "m_" <> Text.pack (show (h * signum h)) else n
       prefix = case ex of TF0 -> "tff"; FOF -> "fof"
-      name = if Text.null n then "m_" <> Text.pack (show (h * signum h)) else n
   in prefix <> "(" <> name <> ", " <> typ <> ", (\n  " <> inside <> "))."
 
 instance TPTP Hypothesis where

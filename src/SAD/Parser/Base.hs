@@ -93,16 +93,14 @@ instance Monad (Parser st) where
     let pok = tryParses f ok consumedFail emptyFail
     in  runParser p st pok consumedFail emptyFail
 
-#if !MIN_VERSION_base(4,9,0)
-  fail s = Parser $ \st _ _ emptyFail ->
-    emptyFail $ newErrorMessage (newMessage (Text.pack s)) (stPosition st)
-#else
-instance Fail.MonadFail (Parser st) where
+#ifdef __GHCJS__
   fail s = Parser $ \st _ _ emptyFail ->
     emptyFail $ newErrorMessage (newMessage (Text.pack s)) (stPosition st)
 #endif
 
-
+instance Fail.MonadFail (Parser st) where
+  fail s = Parser $ \st _ _ emptyFail ->
+    emptyFail $ newErrorMessage (newMessage (Text.pack s)) (stPosition st)
 
 -- This function is simple, but unfriendly to read because of all the
 -- accumulators involved. A clearer definition would be welcome.
