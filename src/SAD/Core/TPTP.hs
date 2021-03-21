@@ -89,7 +89,9 @@ instance TPTP Hypothesis where
       Typing name t -> case ex of
         TF0 -> tffStatement ex (tptp ex name) "type" (tptp ex name <> ": " <> tptp ex t)
         FOF -> case t of
-          Pred [] (InType (Signature intype)) -> tffStatement ex (tptp ex name) "axiom" (tptp ex (App (OpTrm intype) [App (OpTrm name) []]))
+          Pred ts (InType (Signature intype)) -> tffStatement ex (tptp ex name) "axiom" $ tptp ex $
+            let vars = flip zip ts $ map (VarDefault . Text.pack . ('x':) . show) [1::Int ..]
+            in foldr (\(v, t) -> Forall v (Identity t)) (App (OpTrm intype) [App (OpTrm name) (map (Var . fst) vars)]) vars
           _ -> ""
 
 -- | Desuger all classes in the hypothesis and conjecture.

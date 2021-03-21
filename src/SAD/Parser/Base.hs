@@ -10,6 +10,7 @@ Parser datatype and monad instance.
 {-# LANGUAGE MultiWayIf #-}
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE BlockArguments #-}
+{-# LANGUAGE CPP #-}
 
 module SAD.Parser.Base
   ( Parser(..),
@@ -92,9 +93,14 @@ instance Monad (Parser st) where
     let pok = tryParses f ok consumedFail emptyFail
     in  runParser p st pok consumedFail emptyFail
 
-instance Fail.MonadFail (Parser st) where
-  fail s = Parser \st _ _ emptyFail ->
+#if !MIN_VERSION_base(4,9,0)
+  fail s = Parser $ \st _ _ emptyFail ->
     emptyFail $ newErrorMessage (newMessage (Text.pack s)) (stPosition st)
+#else
+instance Fail.MonadFail (Parser st) where
+  fail s = Parser $ \st _ _ emptyFail ->
+    emptyFail $ newErrorMessage (newMessage (Text.pack s)) (stPosition st)
+#endif
 
 
 

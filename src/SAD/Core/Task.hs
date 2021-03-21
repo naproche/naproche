@@ -55,7 +55,7 @@ instance Pretty Task where
     <> Text.unlines (pretty <$> hypo)
 
 -- | Generate tasks from the given proofs under the hypothesis that were assumed at this point.
--- When handling subclaims we forget if we are in a proof by contradiction and assume we aren't.
+-- When handling subclaims we assume we are not in a proof by contradiction.
 -- That seems consistent with normal mathematical practice.
 generateFromProof :: Text -> SourcePos -> [Hypothesis] -> ProofBlock -> [Task]
 generateFromProof topname topPos hypo (Proving prf topclaim tophints)
