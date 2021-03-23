@@ -118,6 +118,13 @@ tokenize texState start = posToken texState start NoWhiteSpaceBefore
         (hd, rest) = Text.splitAt 2 s
         toks = posToken texState (advancePos pos "\\\\") WhiteSpaceBefore rest
 
+    -- We reuse the pattern parsing for sentences in order to parse LaTeX. Thus we simply tokenize
+    -- away math-mode markers like '\[' and '\]'
+    posToken texState pos _ s | useTex && hd `elem` ["\\[","\\]"] = toks
+      where 
+        (hd, rest) = Text.splitAt 2 s
+        toks = posToken texState (advancePos pos hd) WhiteSpaceBefore rest
+
     -- Process non-alphanumeric symbol or EOF.
     posToken texState pos whitespaceBefore s = case Text.uncons s of
       Nothing -> [EOF pos]
@@ -134,6 +141,8 @@ tokenize texState start = posToken texState start NoWhiteSpaceBefore
           newToks = expandTexCmd name (SourceRange pos pos') whitespaceBefore
           toks = posToken texState pos' WhiteSpaceBefore rest'
 
+      -- We reuse the pattern parsing for sentences in order to parse LaTeX. Thus we simply tokenize
+      -- away math-mode markers like '$'
       Just ('$', rest) | useTex -> posToken texState (advancePos pos "$") WhiteSpaceBefore rest
 
       -- We also tokenize away quotation marks, because they are intended to be used by the user
