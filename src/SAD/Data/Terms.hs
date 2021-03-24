@@ -3,7 +3,6 @@
 
 module SAD.Data.Terms where
 
-import Debug.Trace
 import Data.Text (Text)
 import qualified Data.Text as Text
 import SAD.Core.Pretty
@@ -26,9 +25,8 @@ data TermName
   | TermMultiVerb Text
   | TermTask Int
   | TermEquality
-  | TermLess
-  | TermSmall -- ^ predicate for set sized objects
   | TermThesis
+  | TermNotKnown
   | TermEmpty
   | TermVar VarName
   deriving (Eq, Ord, Show, Read, Generic)
@@ -46,15 +44,6 @@ newName n (Just taken) =
         x -> error $ "Not implemented: New name for " ++ show x
   in head $ filter (`Set.notMember` taken) $ map (\x -> c $ n' <> Text.pack (show x)) [2::Int ..]
 
-termFunction :: TermName
-termFunction = TermNotion "Function"
-
-termApplication :: TermName
-termApplication = TermSymbolic "dtlpdtrp" -- ".(.)"
-
-termDomain :: TermName
-termDomain = TermSymbolic "zDzozmlpdtrp" -- "Dom(.)"
-
 termSet :: TermName
 termSet = TermNotion "Set"
 
@@ -64,14 +53,8 @@ termClass = TermNotion "Class"
 termElement :: TermName
 termElement = TermNotion "ElementOf"
 
-termProduct :: TermName
-termProduct = TermSymbolic "zPzrzozdlpdtcmdtrp" -- "Prod(.,.)"
-
-termPair :: TermName
-termPair = TermSymbolic "lpdtcmdtrp" -- "(.,.)"
-
 termObject :: TermName
-termObject = TermNotion "Obj"
+termObject = TermNotion "Object"
 
 termSplit :: TermName -> (Text -> TermName, Text)
 termSplit (TermNotion t) = (TermNotion, t)
@@ -93,9 +76,8 @@ instance Pretty TermName where
   pretty (TermMultiVerb t) = "mdo" <>  t
   pretty (TermTask n) = "tsk " <> Text.pack (show n)
   pretty TermEquality = "="
-  pretty TermLess  = "iLess"
-  pretty TermSmall = "isSetSized"
   pretty TermThesis = "#TH#"
+  pretty TermNotKnown = "[??]"
   pretty TermEmpty = ""
   pretty (TermVar v) = pretty v
 
@@ -199,37 +181,12 @@ symDecode s = Text.pack $ sname [] (Text.unpack s)
 
 data TermId
   = EqualityId
-  | LessId
-  | SmallId
   | ThesisId
-  | FunctionId
-  | ApplicationId
-  | DomainId
+  | ObjectId
   | SetId
   | ClassId
   | ElementId
-  | ProductId
-  | PairId
-  | ObjectId
   | NewId -- ^ temporary id given to newly introduced symbols
   | SkolemId Int
   | SpecialId Int
   deriving (Eq, Ord, Show)
-
-specialId :: Int -> TermId
-specialId n =
-  let msg =  "TermId: If you see this message, please file an issue."
-  in case n of
-  ( -1) -> trace msg $ EqualityId
-  ( -2) -> trace msg $ LessId
-  ( -3) -> trace msg $ ThesisId
-  ( -4) -> trace msg $ FunctionId
-  ( -5) -> trace msg $ ApplicationId
-  ( -6) -> trace msg $ DomainId
-  ( -7) -> trace msg $ SetId
-  ( -8) -> trace msg $ ElementId
-  ( -9) -> trace msg $ ProductId
-  (-10) -> trace msg $ PairId
-  (-11) -> trace msg $ ObjectId
-  (-15) -> trace msg $ NewId
-  n -> SpecialId n

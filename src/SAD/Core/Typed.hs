@@ -48,10 +48,7 @@ instance Hashable OutType
 instance Binary OutType
 
 -- | A type for a term in TFF.
--- Sorts and Objects are sorts in TFF,
--- but we assume that the elements of objects
--- are of set sized for our NBG implementation.
-data Type = Object | Sort | Pred [InType] OutType
+data Type = Sort | Pred [InType] OutType
   deriving (Eq, Ord, Show, Read, Generic)
 instance NFData Type
 instance Hashable Type
@@ -259,7 +256,6 @@ instance Pretty OutType where
 
 instance Pretty Type where
   pretty Sort = "Sort"
-  pretty Object = "Object"
   pretty (Pred [] t) = pretty t
   pretty (Pred is t) = 
     Text.intercalate " → " (map pretty is) <> " → " <> pretty t

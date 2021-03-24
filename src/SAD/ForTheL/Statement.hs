@@ -13,7 +13,6 @@ module SAD.ForTheL.Statement
   , dig
   , selection
   , classNotion
-  , functionNotion
   , plainTerm -- TODO: This seems unused?
   ) where
 
@@ -27,7 +26,6 @@ import SAD.Parser.Primitives (token, token', symbol, tokenOf')
 import qualified SAD.ForTheL.Reports as Reports
 
 import Data.Set (Set)
-import Data.Function ((&))
 import Control.Applicative (liftA2, (<**>), Alternative(..))
 import Control.Monad (guard)
 
@@ -437,7 +435,7 @@ set = label "set definition" $ symbSet <|> classOf
       tokenOf' ["class", "classes"]; nm <- var -|- hidden; token' "of";
       (q, f, u) <- notion >>= single; vnm <- hidden
       vnmDecl <- makeDecl vnm;
-      return (id, setFormula mkClass vnmDecl $ (subst (pVar vnm) (posVarName u) $ q f) `blAnd` mkSmall (pVar vnm) , Set.singleton nm)
+      return (id, setFormula mkClass vnmDecl $ (subst (pVar vnm) (posVarName u) $ q f) `blAnd` mkObject (pVar vnm) , Set.singleton nm)
     symbSet = do
       (cnd, (nm, mkColl)) <- symbSetNotation; h <- hidden
       nmDecl <- makeDecl nm
@@ -459,7 +457,7 @@ symbSetNotation = cndSet </> finSet
       vs <- freeVars t
       vsDecl <- makeDecls $ fvToVarSet vs;
       nm <- if isVar t then pure $ PosVar (varName t) (varPosition t) else hidden
-      pure (\tr -> tag $ c tr `blAnd` mbEqu vsDecl tr t st `blAnd` mkSmall tr, (nm, mkColl))
+      pure (\tr -> tag $ c tr `blAnd` mbEqu vsDecl tr t st `blAnd` mkObject tr, (nm, mkColl))
 
     -- | If we quantify over a variable v then vs = {v} and we can just substitute
     -- the new variable 'nmVar' for 'v'. Else we quantify over a term (say (x, y))
@@ -485,113 +483,6 @@ symbSetNotation = cndSet </> finSet
         Right (cls, (_, mkColl)) -> pure (id, cls, t, mkColl)
     noSep  = do
       t <- sTerm; return (Tag Replacement, const Top, t, mkClass)
-
--- -- functions
-
-functionNotion :: FTL Formula
-functionNotion = sVar <**> (wordFun <|> (token "=" >> lambda))
-  where
-  wordFun = do
-    token "("
-    t <- pair
-    token ")"
-    token "="
-    vs <- fvToVarSet <$> freeVars t
-    def <- addDecl (Set.map posVarName vs) lambdaBody
-    (_, _, dom) <- token' "for" >> lambdaIn;
-    vsDecl <- makeDecls vs
-    let body f = foldr dAll (Imp (t `mkElem` mkDom f) $ def $ mkApp f t) vsDecl
-    return $ \f -> mkFun f `And` Tag Domain (dom f) `And` body f
-
-lambdaBody :: FTL (Formula -> Formula)
-lambdaBody = label "function definition" $ paren $ cases <|> texCases <|> chooseInTerm
-
-cases :: FTL (Formula -> Formula)
-cases = do
-  cas <- ld_case `sepByLL1` token ","
-  return $ \fx -> foldr1 And $ map ((&) fx) cas
-  where
-    ld_case :: FTL (Formula -> Formula)
-    ld_case = do
-      optLL1 () (token' "case")
-      condition <- statement
-      arrow
-      c <- chooseInTerm
-      return (Tag Condition . Imp condition . c)
-
-texCases  :: FTL (Formula -> Formula)
-texCases = do
-  texBegin (token "cases")
-  stanza <- many line -- `sepByLL1` (symbol "," *> symbol ",")
-  texEnd (token "cases")
-  return $ \fx -> foldr1 And $ map ((&) fx) stanza
-  where
-    optionallyInText :: FTL a -> FTL a
-    optionallyInText p = (token "\\text" *> symbol "{" *> p <* symbol "}") <|> p
-    line :: FTL (Formula -> Formula)
-    line = do
-      value <- optionallyInText chooseInTerm
-      symbol "&"
-      condition <- optionallyInText statement
-      return (Tag Condition . Imp condition . value)
-
-
-chooseInTerm :: FTL (Formula -> Formula)
-chooseInTerm = do
-  chs <- optLL1 [] $ after (ld_choice `sepByLL1` token ",") elementOf
-  f   <- term -|- defTerm; return $ flip (foldr ($)) chs . f
-  where
-    ld_choice = chc <|> def
-    chc = do
-      token' "choose"; (q, f, vs) <- art >> notion >>= declared
-      return $ flip (foldr dExi) vs . And (q f)
-    def = do
-      token' "define"; x <- var; xDecl <- makeDecl x; token "="
-      ap <- ld_set <|> lambda
-      return $ dExi xDecl . And (Tag Defined $ ap $ pVar x)
-
-    term = fmap ((.) (Tag Evaluation) . flip mkEquality) sTerm
-    defTerm = do
-      ap <- ld_set <|> lambda; h <- hidden; let hv = pVar h
-      hDecl <- makeDecl h;
-      return $ \fx -> dExi hDecl $
-        And (Tag Defined $ ap hv) (Tag Evaluation $ mkEquality fx hv)
-
-    ld_set = do (_, t, _) <- set; return $ (\f -> subst f (VarHole "") t)
-
-
-lambda :: FTL (Formula -> Formula)
-lambda = do
-  (t, df_head, dom) <- ld_head
-  vs <- fvToVarSet <$> freeVars t
-  df <- addDecl vs lambdaBody
-  return $ \f -> mkFun f `And` Tag Domain (dom f) `And` (df_head f $ df $ mkApp f t)
-  where
-    ld_head = finish $ symbol "\\" >> lambdaIn
-
-pair :: FTL Formula
-pair = sVar </> pr
-  where
-    pr = do [l,r] <- symbolPattern pair pairPattern; return $ mkPair l r
-    pairPattern = [Symbol "(", Vr, Symbol ",", Vr, Symbol ")"]
-
-lambdaIn :: FTL (Formula, Formula -> Formula -> Formula, Formula -> Formula)
-lambdaIn = do
-  t <- pair
-  vs <- fvToVarSet <$> freeVars t
-  vsDecl <- makeDecls vs
-  elementOf
-  dom <- ld_dom
-  let df_head f = foldr ((.) . dAll) (Imp (t `mkElem` mkDom f)) vsDecl
-  return (t, df_head, \f -> dom f t vsDecl)
-  where
-    ld_dom = trm <|> setTrm
-    trm = do
-      t <- sTerm; return $ \f _ _ -> mkDom f `mkEquality` t
-    setTrm = do
-      (ap, _) <- symbSetNotation
-      return $ \f t -> foldr dAll (Iff (t `mkElem` mkDom f) (ap t))
-
 
 ---- chain tools
 

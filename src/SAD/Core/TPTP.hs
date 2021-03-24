@@ -49,7 +49,6 @@ instance TPTP OutType where
 instance TPTP Type where
   tptp ex = \case
     Sort -> "$tType"
-    Object -> "$tType"
     Pred [] t -> tptp ex t
     Pred ts t -> "(" <> Text.intercalate " * " (map (tptp ex) ts) <> ") > " <> tptp ex t
 

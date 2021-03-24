@@ -79,7 +79,7 @@ readFtlFile :: (HasLibrary m, Comm m) => Maybe PIDE -> ParserKind
   -> Pos -> Either FilePath Text -> m (State FState, ([ProofText], [Report]))
 readFtlFile pide pk doneFiles pos = \case
   (Left file) -> case Map.lookup file doneFiles of
-    Just (state', res) -> do
+    Just (state', _) -> do
         -- If, for example, we originally read the file with the .ftl format and now we
         -- are reading the file again with the .tex format(by eg using '[readtex myfile.ftl]'), we want to throw an error.
       when (parserKind state' /= pk)

@@ -186,7 +186,7 @@ affirm = sentence Affirmation (beginAff >> statement) affirmVars link </> eqChai
 assume :: FTL Block
 assume = sentence Assumption (beginAsm >> statement) assumeVars noLink
 llDefn :: FTL Block
-llDefn = sentence LowDefinition (beginDef >> classNotion </> functionNotion) llDefnVars noLink
+llDefn = sentence LowDefinition (beginDef >> classNotion) llDefnVars noLink
 
 
 -- Tex labels
@@ -311,7 +311,7 @@ pretypeSentence kind p wfVars mbLink = narrow $ do
   bl <- wellFormedCheck (wf dvs tvr) $ statementBlock kind p mbLink
   newDecl <- bindings dvs $ Block.formula bl
   let nbl = if Block.canDeclare kind then bl {Block.declaredVariables = newDecl} else bl
-  addBlockReports nbl; return nbl {Block.formula = removeObject $ Block.formula bl}
+  addBlockReports nbl; return nbl {Block.formula = Block.formula bl}
   where
     wf dvs tvr bl =
       let fr = Block.formula bl; nvs = Set.intersection tvr $ fvToVarSet $ excludeSet (free fr) dvs
@@ -327,7 +327,7 @@ sentence kind p wfVars mbLink = do
   bl <- wellFormedCheck (wfVars dvs . Block.formula) $ statementBlock kind p mbLink
   newDecl <- bindings dvs $ Block.formula bl
   let nbl = bl {Block.declaredVariables = newDecl}
-  addBlockReports nbl; return nbl {Block.formula = removeObject $ Block.formula bl}
+  addBlockReports nbl; return nbl {Block.formula = Block.formula bl}
 
 -- variable well-formedness checks
 
@@ -390,36 +390,6 @@ qed = label "qed" $ markupTokenOf proofEnd ["qed", "end", "trivial", "obvious"]
 texQed :: FTL ()
 texQed = label "qed" . texEnd $ markupToken proofEnd "proof"
 
---- creation of induction thesis
-
-indThesis :: Formula -> Scheme -> Scheme -> FTL Formula
-indThesis fr pre post = do
-  it <- indScheme pre post >>= indTerm fr; dvs <- getDecl
-  indFormula (fvToVarSet $ excludeSet (free it) dvs) it fr
-  where
-    indScheme (InT _) (InT _) = failWF "conflicting induction schemes"
-    indScheme m@(InT _) _ = return m; indScheme _ m@(InT _) = return m
-    indScheme InS _ = return InS; indScheme _ m = return m
-
-    indTerm _ (InT t) = return t
-    indTerm (All v _) InS = return $ pVar $ PosVar (declName v) (declPosition v)
-    indTerm _ InS = failWF "invalid induction thesis"
-    indTerm _ _ = return Top
-
-    indFormula _ Top fr = return fr
-    indFormula vs it fr = insertIndTerm it <$> indStatem vs fr
-
-    indStatem vs (Imp g f) = (Imp g .) <$> indStatem vs f
-    indStatem vs (All v f) = (dAll v .) <$> indStatem (deleteDecl v vs) f
-    indStatem vs f | Set.null vs = pure (`Imp` f)
-    indStatem _ _ = failWF $ "invalid induction thesis " <> (Text.pack $ showFormula fr)
-
-    insertIndTerm it cn = cn $ Tag InductionHypothesis $ subst it (VarHole "") $ cn $ mkLess it (mkVar (VarHole ""))
-
-    deleteDecl Decl{declName, declPosition} = Set.delete (PosVar declName declPosition)
-
-
-
 -- proof initiation
 
 proof :: FTL Block -> FTL Block
@@ -427,8 +397,7 @@ proof p = do
   pre <- preMethod
   bl <- p
   post <- postMethod
-  nf <- indThesis (Block.formula bl) pre post
-  addBody qed link pre post $ bl {Block.formula = nf}
+  addBody qed link pre post $ bl
 
 
 
@@ -440,8 +409,7 @@ topProof postMethod qed link p = do
   typeBlock <- pretyping bl
   let pretyped = Block.declaredNames typeBlock
   nbl <- addDecl pretyped $ fmap ProofTextBlock $ do
-    nf <- indThesis (Block.formula bl) pre post
-    addBody qed link pre post $ bl {Block.formula = nf}
+    addBody qed link pre post $ bl
   return $ if null pretyped then [nbl] else [ProofTextBlock typeBlock, nbl]
 
 -- Takes proof end parser @qed@ and the link @link@ to insert after the proof body as parameters.

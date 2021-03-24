@@ -16,7 +16,7 @@ import Control.Monad
 import Control.Exception
 import Control.Monad.IO.Class
 import Control.Monad.State
-import Data.Binary (decode, encode)
+import Data.Binary (Binary, decodeOrFail, encode)
 import System.Directory
 import System.FilePath
 import System.IO
@@ -84,15 +84,22 @@ instance Comm CommandLine where
   reportsString a = liftIO $ reportsString a
   pideContext = liftIO pideContext
 
+decode' :: Binary a => BS.ByteString -> Maybe a
+decode' b = case decodeOrFail b of
+  Right (_, _, a) -> Just a
+  Left _ -> Nothing
+
 instance CacheStorage CommandLine where
   readFileCache f = do
     let (fdir, fname) = splitFileName f
     dirname <- cacheDir <$> get
     let dir = fdir </> dirname
     liftIO $ createDirectoryIfMissing True dir
-    c <- liftIO $ (decode <$> BS.readFile (dir </> fname))
-      `catch` (\(_ :: SomeException) -> pure mempty)
-    pure $ c { lastRun = 1 + lastRun c }
+    c <- liftIO $ (decode' <$> BS.readFile (dir </> fname))
+      `catch` (\(_ :: SomeException) -> pure Nothing)
+    case c of
+      Just c' -> pure $ c' { lastRun = 1 + lastRun c' }
+      Nothing -> pure $ mempty
 
   writeFileCache f c = do
     let (fdir, fname) = splitFileName f

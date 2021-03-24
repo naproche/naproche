@@ -72,17 +72,30 @@ mainBody provers opts0 text0 = flip evalStateT mempty $ runTimes $ do
     then showTranslation txts
     else do proveFOL provers txts opts0
 
+showTimes :: (Comm m) => Map TimedSection NominalDiffTime -> m ()
+showTimes times = do
+  outputMain TRACING noSourcePos $ Text.unpack $
+    "parser "           <> showTimeDiff (times Map.! ParsingTime)
+    <> " - checker "     <> showTimeDiff (times Map.! CheckTime)
+    <> " - prover "     <> showTimeDiff (times Map.! ProvingTime)
+
+  outputMain TRACING noSourcePos $ Text.unpack $
+    "total " <> showTimeDiff ((times Map.! ParsingTime) + (times Map.! CheckTime) + (times Map.! ProvingTime))
+
 showTranslation :: (MonadIO m, RunProver m, Comm m, CacheStorage m)
   => [ProofText] -> Times m Exit.ExitCode
 showTranslation txts = do
   -- mapM_ (\case (ProofTextBlock b) -> print b; _ -> pure ()) txts
+  endTimedSection ParsingTime
+  beginTimedSection CheckTime
   let out = outputMain WRITELN (fileOnlyPos "")
   lift $ mapM_ (out . (++"\n\n") . Text.unpack . pretty . located) (convert txts)
+  endTimedSection CheckTime
+  beginTimedSection ProvingTime
+  endTimedSection ProvingTime
 
   -- print statistics
-  endTimedSection ParsingTime
-  times <- getTimes
-  lift $ outputMain TRACING noSourcePos $ Text.unpack $ "total " <> showTimeDiff (times Map.! ParsingTime)
+  getTimes >>= lift . showTimes
   pure $ Exit.ExitSuccess
 
 proveFOL :: (MonadIO m, RunProver m, Comm m, CacheStorage m) 
@@ -117,15 +130,7 @@ proveFOL provers txts opts0 = do
         ++ " - proved "    ++ show (accumulate SuccessfulGoals)
         ++ " - cached "    ++ show (accumulate CachedCounter)
 
-      times <- getTimes
-      lift $ outputMain TRACING noSourcePos $ Text.unpack $
-        "parser "           <> showTimeDiff (times Map.! ParsingTime)
-        <> " - checker "     <> showTimeDiff (times Map.! CheckTime)
-        <> " - prover "     <> showTimeDiff (times Map.! ProvingTime)
-
-      lift $ outputMain TRACING noSourcePos $ Text.unpack $
-        "total " <> showTimeDiff ((times Map.! ParsingTime) + (times Map.! ProvingTime))
-
+      getTimes >>= lift . showTimes
       pure $ if accumulate FailedGoals == 0 then Exit.ExitSuccess else Exit.ExitFailure 1
 
 parseArgs :: [String] -> ([Instr], [String], [String])

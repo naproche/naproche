@@ -39,7 +39,7 @@ import qualified Data.Text as Text
 -- add expressions to the state of ForTheL
 
 giveId :: Bool -> Int -> Formula -> Formula
-giveId p n t = t {trId = if p then AllEq $ specialId n else (trmId t)}
+giveId p n t = t {trId = if p then AllEq $ SpecialId n else (trmId t)}
 
 incId :: Enum p => Bool -> p -> p
 incId p n = if p then succ n else n

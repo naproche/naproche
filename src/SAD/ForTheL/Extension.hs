@@ -73,7 +73,7 @@ sigPredicat = do
   where
     sig    = do f <- newPredicat; imp; g <- statement </> noInfo; return (f,g)
     imp    = token' "is" <|> token' "implies" <|> symbol "=>"
-    noInfo = art >> tokenOf' ["atom", "relation"] >> return Top
+    noInfo = art >> tokenOf' ["atom"] >> return Top
 
 
 sigNotion :: FTL Formula

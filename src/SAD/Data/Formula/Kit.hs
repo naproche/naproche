@@ -8,9 +8,9 @@ Various functions on formulas.
 
 module SAD.Data.Formula.Kit 
   ( blImp, blAnd
-  , free, pVar, occursH, occursS, allFree, duplicateNames, dExi, dAll, removeObject
-  , mkTrm, mkEquality, mkAll, mkVar, mkExi, mkThesis, mkElem, mkDom, mkApp, mkFun, mkLess, mkPair
-  , isNotion, isTrm, isVar, mkSet, mkClass, mkObj, mkSmall 
+  , free, pVar, occursH, occursS, allFree, duplicateNames, dExi, dAll
+  , mkTrm, mkEquality, mkAll, mkVar, mkExi, mkThesis
+  , isNotion, isTrm, isVar, mkClass, mkObject, mkSet, mkElem
   ) where
 
 import SAD.Data.Formula.Base
@@ -82,28 +82,16 @@ mkTrm tId t ts = Trm t ts [] (AllEq tId)
 
 mkEquality :: Formula -> Formula -> Formula
 mkEquality t s  = mkTrm EqualityId TermEquality [t,s]
-mkLess :: Formula -> Formula -> Formula
-mkLess t s = mkTrm LessId TermLess [t,s]
-mkSmall :: Formula -> Formula
-mkSmall s = mkTrm SmallId TermSmall [s]
 mkThesis :: Formula
 mkThesis   = mkTrm ThesisId TermThesis []
-mkFun :: Formula -> Formula
-mkFun      = mkTrm FunctionId termFunction . pure
-mkApp :: Formula -> Formula -> Formula
-mkApp f v  = mkTrm ApplicationId termApplication [f , v]
-mkDom :: Formula -> Formula
-mkDom      = mkTrm DomainId termDomain . pure
 mkSet :: Formula -> Formula
 mkSet      = mkTrm SetId termSet . pure
 mkClass :: Formula -> Formula
 mkClass      = mkTrm ClassId termClass . pure
-mkObj :: Formula -> Formula
-mkObj      = mkTrm ObjectId termObject . pure -- this is a dummy for parsing purposes
+mkObject :: Formula -> Formula
+mkObject      = mkTrm ObjectId termObject . pure -- this is a dummy for parsing purposes
 mkElem :: Formula -> Formula -> Formula
 mkElem x m = mkTrm ElementId termElement [x,m]
-mkPair :: Formula -> Formula -> Formula
-mkPair x y = mkTrm PairId termPair [x,y]
 
 -- quick checks of syntactic properties
 
@@ -121,15 +109,6 @@ isNotion _ = False
 occursH, occursS :: Formula -> Bool
 occursH = ((mkVar (VarHole "")) `occursIn`)
 occursS = ((mkVar VarSlot) `occursIn`)
-
-
--- | Replace @ObjectId@ Terms with @Top@
--- pseudotyping with "object"
-removeObject :: Formula -> Formula
-removeObject t@Trm {trId = AllEq tId}
-  | tId == ObjectId = Top
-  | otherwise = t
-removeObject f = mapF removeObject f
 
 {- extracts all duplicateNames (with multiplicity) from a list -}
 duplicateNames :: Ord a => [a] -> [a]
