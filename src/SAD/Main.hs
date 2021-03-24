@@ -85,10 +85,10 @@ showTimes times = do
 showTranslation :: (MonadIO m, RunProver m, Comm m, CacheStorage m)
   => [ProofText] -> Times m Exit.ExitCode
 showTranslation txts = do
-  -- mapM_ (\case (ProofTextBlock b) -> print b; _ -> pure ()) txts
   endTimedSection ParsingTime
   beginTimedSection CheckTime
   let out = outputMain WRITELN (fileOnlyPos "")
+  -- lift $ mapM_ (\case (ProofTextBlock b) -> out $ show b; _ -> pure ()) txts
   lift $ mapM_ (out . (++"\n\n") . Text.unpack . pretty . located) (convert txts)
   endTimedSection CheckTime
   beginTimedSection ProvingTime

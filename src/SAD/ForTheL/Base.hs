@@ -416,25 +416,9 @@ bindings vs f = makeDecls $ fvToVarSet $ excludeSet (decl f) vs
 freeOrOverlapping :: Set VarName -> Formula -> Maybe Text
 freeOrOverlapping vs f
     | (mkVar VarSlot) `occursIn` f = Just $ "too few subjects for an m-predicate " <> info
-    | not (Text.null sbs) = Just $ "free undeclared variables: "   <> sbs <> info
-    | not (Text.null ovl) = Just $ "overlapped variables: "        <> ovl <> info
     | otherwise      = Nothing
   where
-    sbs = Text.unwords $ map showVar $ Set.toList $ fvToVarSet $ excludeSet (free f) vs
-    ovl = Text.unwords $ map showVar $ Set.toList $ over vs f
     info = "\n in translation: " <> (Text.pack $ showFormula f)
-
-    over :: Set VarName -> Formula -> Set VarName
-    over vs (All v f) = boundVars vs (declName v) f
-    over vs (Exi v f) = boundVars vs (declName v) f
-    over vs f = foldF (over vs) f
-
-    boundVars :: Set VarName -> VarName -> Formula -> Set VarName
-    boundVars vs v f
-      | v `Set.member` vs = Set.singleton v
-      | v == VarEmpty = over vs f
-      | otherwise = over (Set.insert v vs) f
-
 
 --- macro expressions
 

@@ -22,25 +22,10 @@ gather (hout, herr, ph) = do
   _ <- TIO.hGetContents herr
   pure (code, cont)
 
-files :: [FilePath]
-files = fmap ("examples/"++)
-  [ "chinese.ftl"
-  , "fuerstenberg.ftl"
-  , "koenig.ftl"
-  , "maximum_modulus.ftl"
-  , "newman.ftl"
-  , "cantor.ftl"
-  , "prime_no_square.ftl"
-  , "regular_successor.ftl"
-  , "tarski.ftl"
-  , "ZFC.ftl"
-  , "test/inconsistency.ftl"
-  , "test/read_test.ftl"
-  ]
-
 texFiles :: [FilePath]
 texFiles = fmap ("examples/"++)
-  [ "checkerboard.ftl.tex"
+  [ "cantor.ftl.tex"
+  , "checkerboard.ftl.tex"
   , "chinese.ftl.tex"
   , "fuerstenberg.ftl.tex"
   , "koenig.ftl.tex"
@@ -50,16 +35,6 @@ texFiles = fmap ("examples/"++)
   , "prime_no_square.ftl.tex"
   , "regular_successor.ftl.tex"
   , "tarski.ftl.tex"
-  , "test/inconsistency.ftl.tex"
-  , "test/read_test.ftl.tex"
-  , "test/lambda_term_test.ftl.tex"
-  , "test/varprime.ftl.tex"
-  ]
-
-shouldFailFiles :: [FilePath]
-shouldFailFiles = fmap ("examples/"++)
-  [ "test/inconsistency.ftl"
-  , "test/inconsistency.ftl.tex"
   ]
 
 output :: [(FilePath, (ExitCode, Text))] -> IO [(ExitCode, FilePath)]
@@ -70,17 +45,11 @@ output xs = do
 
 main :: IO ()
 main = do
-  compiled <- mapM (\f -> gather =<< compileFile ["--tex=off"] f) files
   compiledTex <- mapM (\f -> gather =<< compileFile ["--tex=on"] f) texFiles
 
-  failed <- output . zip (files ++ texFiles) $ (compiled ++ compiledTex)
-  let shouldntHaveFailed = filter (\f -> snd f `notElem` shouldFailFiles) failed
-  let shouldHaveFailed = shouldFailFiles \\ map snd failed
+  failed <- output $ zip texFiles compiledTex
   code <- newIORef ExitSuccess
-  unless (null shouldntHaveFailed) $ do
-    putStrLn $ "Failed to compile: " ++ unwords (map snd shouldntHaveFailed)
-    writeIORef code $ foldl' max ExitSuccess $ map fst shouldntHaveFailed
-  unless (null shouldHaveFailed) $ do
-    putStrLn $ "Compiled even though it shouldn't: " ++ unwords shouldHaveFailed
-    writeIORef code (ExitFailure 1)
+  unless (null failed) $ do
+    putStrLn $ "Failed to compile: " ++ unwords (map snd failed)
+    writeIORef code $ foldl' max ExitSuccess $ map fst failed
   readIORef code >>= exitWith

@@ -16,9 +16,6 @@ import SAD.Core.SourcePos (noSourcePos)
 
 import qualified Data.Text as Text
 
-instance Show Formula where
-  show = showFormula
-
 showFormula :: Formula -> String
 showFormula f = showsPrecFormula 0 f ""
 

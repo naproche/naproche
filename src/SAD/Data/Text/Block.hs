@@ -50,7 +50,13 @@ data Block = Block {
   name              :: Text,
   link              :: [Text],
   tokens            :: [Token] }
-  deriving (Eq, Ord)
+
+instance Eq Block where
+  b1 == b2 = b1 <= b2 && b2 <= b1
+
+instance Ord Block where
+  (<=) b1 b2 = formula b1 < formula b2 ||
+    (formula b1 == formula b2 && body b1 <= body b2)
 
 makeBlock :: Formula -> [ProofText] -> Section -> Text -> [Text] -> [Token] -> Block
 makeBlock form body kind = Block form body kind mempty

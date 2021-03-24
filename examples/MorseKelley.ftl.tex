@@ -1,0 +1,296 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{../lib/tex/naproche}
+
+\title{Morse Kelley set theory}
+\author{}
+\date{}
+
+\begin{document}
+  \pagenumbering{gobble}
+
+  \maketitle
+
+  This module implements the Morse-Kelley (MK) set theory,
+  an extension of ZFC. Any lemma that can be proven in ZFC
+  also can be proven in MK, but unlike ZFC, MK is finitely axiomatizable,
+  that is, we can describe it without using schemata over arbitrary formulas.
+  The axiom schema of class formation has been omitted in this presentation
+  because it is built into the compiler.
+
+  \begin{forthel}
+    [synonym relation/-s]
+    [synonym function/-s]
+    [synonym element/-s]
+
+    Let $B, C, D, E$ denote classes.
+    Let $b, c, d, e$ denote sets.
+    Let $w, x, y, z$ denote objects.
+
+    \begin{axiom}
+      $b$ is a class.
+    \end{axiom}
+    
+    \begin{axiom}
+      $B$ is an object.
+    \end{axiom}
+
+    \begin{definition}
+      $x$ is in $B$ iff $x$ is an element of $B$.
+    \end{definition}
+
+    \begin{definition}
+      $x \in B$ iff $x$ is in $B$.
+    \end{definition}
+
+    \begin{definition}
+      $x \notin B$ iff $x$ is not in $B$.
+    \end{definition}
+
+    %This axiom is implicitly used in the compiler.
+    \begin{axiom}[Ext]
+      If $x$ is an element of $C$ iff $x$ is an element of $B$ then $C = B$.
+    \end{axiom}
+
+    \begin{signature}
+      The empty set is a set.
+    \end{signature}
+
+    \begin{axiom}[Empty]
+      $x$ is not an element of the empty set.
+    \end{axiom}
+
+    \begin{lemma}
+      The empty set is $\{ u | u \neq u \}$.
+    \end{lemma}
+
+    \begin{definition}
+      B is nonempty iff there is a x such that x is in B.
+    \end{definition}
+
+    \begin{lemma}
+      If B is nonempty then B is not the empty set.
+    \end{lemma}
+
+    \begin{definition}
+      B is empty iff B is not nonempty.
+    \end{definition}
+
+    \begin{lemma}
+      B is empty iff B is { u | u != u }.
+    \end{lemma}
+
+    \begin{signature}
+      The pair of x and y is a set.
+    \end{signature}
+
+    \begin{axiom}[Pair]
+      x is in the pair of y and z iff x = y or x = z.
+    \end{axiom}
+
+    \begin{lemma}
+      The pair of x and y is { u | u = x or u = y }.
+    \end{lemma}
+
+    \begin{definition}
+      The singleton of x is the pair of x and x.
+    \end{definition}
+
+    \begin{definition}
+      The ordered pair of x and y is the pair of x and the pair of x and y.
+    \end{definition}
+
+    \begin{definition}
+      (x, y) is the ordered pair of x and y.
+    \end{definition}
+
+    \begin{lemma}[OrdPair]
+      If the ordered pair of x and y is equal to the ordered pair of z and w
+        then x = z and y = w.
+    \end{lemma}
+
+    \begin{definition}
+      The union of D is a class B such that (x is in B iff there is a C 
+        such that C is in D and x is in C).
+    \end{definition}
+
+    \begin{axiom}[Union]
+      The union of d is a set.
+    \end{axiom}
+
+    \begin{definition}
+      The union of D and B is a class C such that C is the union of the pair of D and B.
+    \end{definition}
+
+    \begin{definition}
+      \Union{D, B} is the union of D and B.
+    \end{definition}
+
+    \begin{lemma}
+      \Union{d, b} is a set.
+    \end{lemma}
+
+    \begin{definition}
+      A subclass of B is a class C such that
+        for all x if x is an element of C then x is an element of B.
+    \end{definition}
+
+    \begin{definition}
+      A subset of b is a set c 
+        such that c is a subclass of b.
+    \end{definition}
+
+    \begin{signature}
+      The powerset of b is a set.
+    \end{signature}
+
+    \begin{axiom}[PowerSet]
+      b is the powerset of d iff (c is in b iff c is a subclass of d).
+    \end{axiom}
+
+    \begin{definition}
+      The successor of b is the pair of b and the singleton of b.
+    \end{definition}
+
+    \begin{axiom}[Inf]
+      There is a set n such that the empty set is in n and for every b
+        such that b is in n the successor of b is in n.
+    \end{axiom}
+
+    \begin{definition}
+      The product of C and B is { (u, v) | u is a object and v is a object and u is in C and v is in B }.
+    \end{definition}
+
+    \begin{signature}
+      A relation is a class.
+    \end{signature}
+
+    \begin{axiom}[RelationIntro]
+      C is a relation iff for every x such that x is in C
+        there is a y such that there is a z such that x is the ordered pair of y and z.
+    \end{axiom}
+
+    Let R, S denote relations.
+
+    \begin{definition} 
+      The domain of R is { u | there is a object v such that (u, v) is in R }.
+    \end{definition}
+
+    \begin{definition} 
+      The range of R is { v | there is a object u such that (u, v) is in R }.
+    \end{definition}
+
+    \begin{definition} 
+      The restriction of R to B is { (u, v) | u is a object and v is a object and (u, v) is in R and u is in B }.
+    \end{definition}
+
+    \begin{definition} 
+      The image of B under R is { v | there is a object u such that u is in B and (u, v) is in R }.
+    \end{definition}
+
+    \begin{definition} 
+      The preimage of B under R is { u | there is a object v such that v is in B and (u, v) is in R }.
+    \end{definition}
+
+    \begin{definition} 
+      The composition of S and R is { (x, z) | x is a object and z is a set and there is a object y such that (x, y) is in R and (y, z) is in S }.
+    \end{definition}
+
+    \begin{definition} 
+      The inverse of R is { (y, x) | x is a object and y is a object and (x, y) is in R }.
+    \end{definition}
+
+    \begin{definition} 
+      \Dom{R} is the domain of R.
+    \end{definition}
+
+    \begin{definition} 
+      \Ran{R} is the range of R.
+    \end{definition}
+
+    \begin{definition}
+      The field of R is a class C such that C is \Union{\Dom{R}, \Ran{R}}.
+    \end{definition}
+
+    \begin{definition} 
+      \Field{R} is the field of R.
+    \end{definition}
+
+    \begin{definition} 
+      R[B] is the image of B under R.
+    \end{definition}
+
+    \begin{definition} 
+      R^{-1} is the inverse of R.
+    \end{definition}
+
+
+    \begin{definition}
+      R is reflexive iff for all x such that x is in the field of R (x, x) is in R.
+    \end{definition}
+
+    \begin{definition}
+      R is irreflexive iff for all x such that x is in the field of R (x, x) is not in R.
+    \end{definition}
+
+    \begin{definition}
+      R is symmetric iff for all x, y such that (x, y) is in R (y, x) is in R.
+    \end{definition}
+
+    \begin{definition}
+      R is antisymmetric iff for all x, y such that (x, y) is in R and (y, x) is in R x = y.
+    \end{definition}
+
+    \begin{definition}
+      R is transitive iff for all x, y, z such that (x, y) is in R and (y, z) is in R (x, z) is in R.
+    \end{definition}
+
+    \begin{definition}
+      R is connex iff for all x, y such that x,y are in R
+        (x, y) is in R or (y, x) is in R or x = y.
+    \end{definition}
+
+    \begin{signature}
+      A function is a relation.
+    \end{signature}
+
+    \begin{axiom}[FunctionIntro]
+      R is a function iff for all x, y, z such that (x, y) is in R and (x, z) is in R y = z.
+    \end{axiom}
+
+    Let $F, G$ denote functions.
+
+    \begin{definition}
+      The value of F at x is a object y such that (x, y) is in F.
+    \end{definition}
+
+    \begin{definition}
+      F(x) is the value of F at x.
+    \end{definition}
+
+    \begin{axiom}[Choice]
+      Let c be a set such that for all b such that b is in c b is nonempty.
+        There exists a function F such that \Dom{F} = c
+        and for all x such that x is in c there is a set d such that x is in d and $d = F(x)$.
+    \end{axiom}
+
+    \begin{axiom}[Replacement]
+      The restriction of F to c is a set.
+    \end{axiom}
+
+    \begin{definition}
+      The intersection of B is { v | for every set u such that u is in B v is in u }.
+    \end{definition}
+
+    \begin{definition}
+      The intersection of c and b is the intersection of the pair of c and b.
+    \end{definition}
+
+    \begin{axiom}[Restriction]
+      If c is nonempty then there is a b such that b is in c and
+        (the intersection of c and b) is empty.
+    \end{axiom}
+  \end{forthel}
+\end{document}

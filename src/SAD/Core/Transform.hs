@@ -336,6 +336,8 @@ extractDefinitions = go mempty
       App op args -> let res = map (go types) args
         in (concatMap fst res, simp $ App op $ map snd res)
       -- coercion definitions
+      -- TODO: This case does not match when the coercion already exists and thus an error
+      -- 'Remaining tag: CoercionTag' is thrown!
       Tag CoercionTag trm@(Exists _ (Just (Signature to)) (App Eq [_, Var v0])) -> case Map.lookup v0 types of
         (Just (Just (Signature from))) -> ([Coercion (coercionName from to) from (Signature to)], App Top [])
         _ -> ([], trm)
@@ -503,6 +505,7 @@ convertBlock ctx bl@(Block f b _ _ n l _) = Located n (position bl) <$>
           if mainT == App Top [] then [] else [Axiom mainT']
     _ -> error "convertBlock should not be applied to proofs!"
 
+-- TODO: There may be lazy parse errors in here and we sometimes do not force them.
 convert :: [ProofText] -> [Statement]
 convert = go mempty . concatMap (\case ProofTextBlock bl -> [bl]; _ -> [])
   where

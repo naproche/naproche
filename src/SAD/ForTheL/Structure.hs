@@ -143,10 +143,10 @@ definition :: FTL [ProofText]
 definition = addAssumptions $ pretype $ pretypeSentence Posit defExtend defVars noLink
 
 axiom :: FTL [ProofText]
-axiom = addAssumptions $ pretype $ pretypeSentence Posit (beginAff >> statement) affirmVars noLink
+axiom = addAssumptions $ pretype $ pretypeSentence Posit (beginAff >> statement) freeOrOverlapping noLink
 
 theorem :: FTL [ProofText]
-theorem = addAssumptions $ topProof postMethod qed link $ pretypeSentence Affirmation (beginAff >> statement) affirmVars link
+theorem = addAssumptions $ topProof postMethod qed link $ pretypeSentence Affirmation (beginAff >> statement) freeOrOverlapping link
 
 -- Parsing tex theorems has the additional difficulty over other environments, that it could consist of
 -- two tex envs, a theorem env and a proof env.
@@ -155,7 +155,7 @@ texTheorem = do
   envType <- try . texBegin . addMarkup sectionHeader $ getTokenOf theoremTags
   label <- optionalEnvLabel
   text <- addAssumptions . topProof texPostMethod texQed (return []) $
-            pretypeSentence Affirmation (beginAff >> statement) affirmVars link <* texEnd (markupToken sectionHeader envType)
+            pretypeSentence Affirmation (beginAff >> statement) freeOrOverlapping link <* texEnd (markupToken sectionHeader envType)
   return (text, label)
 
 
@@ -180,9 +180,9 @@ theoremTags = ["theorem", "lemma", "corollary", "proposition"]
 choose :: FTL Block
 choose = sentence Selection (beginChoice >> selection) assumeVars link
 caseHypo :: FTL Block
-caseHypo = sentence Block.CaseHypothesis (beginCase >> statement) affirmVars link
+caseHypo = sentence Block.CaseHypothesis (beginCase >> statement) freeOrOverlapping link
 affirm :: FTL Block
-affirm = sentence Affirmation (beginAff >> statement) affirmVars link </> eqChain
+affirm = sentence Affirmation (beginAff >> statement) freeOrOverlapping link </> eqChain
 assume :: FTL Block
 assume = sentence Assumption (beginAsm >> statement) assumeVars noLink
 llDefn :: FTL Block
@@ -267,7 +267,7 @@ pretype p = p `pretypeBefore` return []
 
 -- low-level header
 hence :: FTL ()
-hence = optLL1 () $ tokenOf' ["then", "hence", "thus", "therefore", "consequently"]
+hence = optLL1 () $ tokenOf' ["but", "then", "hence", "thus", "therefore", "consequently"]
 letUs :: FTL ()
 letUs = optLL1 () $ (mu "let" >> mu "us") <|> (mu "we" >> mu "can")
   where
@@ -331,10 +331,10 @@ sentence kind p wfVars mbLink = do
 
 -- variable well-formedness checks
 
-defVars, assumeVars, affirmVars :: Set VarName -> Formula -> Maybe Text
+defVars, assumeVars :: Set VarName -> Formula -> Maybe Text
 
 defVars dvs f
-  | null unusedVars = affirmVars dvs f
+  | null unusedVars = freeOrOverlapping dvs f
   | otherwise = pure errorMsg
   where
     unusedVars = let fvs = fvToVarSet $ free f in dvs `Set.difference` fvs
@@ -344,13 +344,11 @@ defVars dvs f
 llDefnVars :: Set VarName -> Formula -> Maybe Text
 llDefnVars dvs f
   | x `elem` dvs = Just $ "Defined variable is already in use: " <> showVar x
-  | otherwise = affirmVars (Set.insert x dvs) f
+  | otherwise = freeOrOverlapping (Set.insert x dvs) f
   where
     [x] = Set.elems $ declNames mempty f
 
-assumeVars dvs f = affirmVars (declNames dvs f <> dvs) f
-
-affirmVars = freeOrOverlapping
+assumeVars dvs f = freeOrOverlapping (declNames dvs f <> dvs) f
 
 
 -- proofs
@@ -468,7 +466,7 @@ eqChain = do
       fr = Tag EqualityChain $ mkEquality t s; tBody = map ProofTextBlock body
   return $ Block.makeBlock fr tBody Affirmation nm [] toks
   where
-    chainVars dvs = affirmVars dvs . foldl1 And . map Block.formula
+    chainVars dvs = freeOrOverlapping dvs . foldl1 And . map Block.formula
 
 eqTail :: Formula -> FTL [Block]
 eqTail t = nextTerm t </> (token "." >> return [])
