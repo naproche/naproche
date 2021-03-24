@@ -66,11 +66,16 @@ mainBody provers opts0 text0 = flip evalStateT mempty $ runTimes $ do
   beginTimedSection ParsingTime
   -- parse input text
   txts <- lift $ readProofText text0
-
-  -- if -T / --onlytranslate is passed as an option, only print the translated text
-  if askFlag OnlyTranslate False opts0
-    then showTranslation txts
-    else do proveFOL provers txts opts0
+  case findParseError $ ProofTextRoot txts of
+    Just err -> do 
+      lift $ errorParser (errorPos err) (show err)
+      pure $ Exit.ExitFailure 1
+    Nothing -> do
+      endTimedSection ParsingTime
+      -- if -T / --onlytranslate is passed as an option, only print the translated text
+      if askFlag OnlyTranslate False opts0
+        then showTranslation txts
+        else do proveFOL provers txts opts0
 
 showTimes :: (Comm m) => Map TimedSection NominalDiffTime -> m ()
 showTimes times = do
@@ -85,7 +90,6 @@ showTimes times = do
 showTranslation :: (MonadIO m, RunProver m, Comm m, CacheStorage m)
   => [ProofText] -> Times m Exit.ExitCode
 showTranslation txts = do
-  endTimedSection ParsingTime
   beginTimedSection CheckTime
   let out = outputMain WRITELN (fileOnlyPos "")
   -- lift $ mapM_ (\case (ProofTextBlock b) -> out $ show b; _ -> pure ()) txts
@@ -101,37 +105,31 @@ showTranslation txts = do
 proveFOL :: (MonadIO m, RunProver m, Comm m, CacheStorage m) 
   => [Prover] -> [ProofText] -> [Instr] -> Times m Exit.ExitCode
 proveFOL provers txts opts0 = do
-  case findParseError $ ProofTextRoot txts of
-    Just err -> do 
-      lift $ errorParser (errorPos err) (show err)
-      pure $ Exit.ExitFailure 1
-    Nothing -> do
-      endTimedSection ParsingTime
-      let typed = force $ convert txts
-      let tasks = generateTasks typed
-      let rstate = RState [Counter Sections (length typed)] False False
-      beginTimedSection CheckTime
-      typed `seq` endTimedSection CheckTime
-      beginTimedSection ProvingTime
-      finalReasonerState <- lift $ verify provers opts0 rstate tasks
-      endTimedSection ProvingTime
+  let typed = force $ convert txts
+  let tasks = generateTasks typed
+  let rstate = RState [Counter Sections (length typed)] False False
+  beginTimedSection CheckTime
+  typed `seq` endTimedSection CheckTime
+  beginTimedSection ProvingTime
+  finalReasonerState <- lift $ verify provers opts0 rstate tasks
+  endTimedSection ProvingTime
 
-      let trackerList = trackers finalReasonerState
-      let accumulate  = sumCounter trackerList
+  let trackerList = trackers finalReasonerState
+  let accumulate  = sumCounter trackerList
 
-      -- print statistics
-      lift $ outputMain TRACING noSourcePos $
-        "sections "       ++ show (accumulate Sections)
-        ++ " - goals "    ++ show (accumulate Goals)
-        ++ (let ignoredFails = accumulate FailedGoals
-            in  if   ignoredFails == 0
-                then ""
-                else " - failed "   ++ show ignoredFails)
-        ++ " - proved "    ++ show (accumulate SuccessfulGoals)
-        ++ " - cached "    ++ show (accumulate CachedCounter)
+  -- print statistics
+  lift $ outputMain TRACING noSourcePos $
+    "sections "       ++ show (accumulate Sections)
+    ++ " - goals "    ++ show (accumulate Goals)
+    ++ (let ignoredFails = accumulate FailedGoals
+        in  if   ignoredFails == 0
+            then ""
+            else " - failed "   ++ show ignoredFails)
+    ++ " - proved "    ++ show (accumulate SuccessfulGoals)
+    ++ " - cached "    ++ show (accumulate CachedCounter)
 
-      getTimes >>= lift . showTimes
-      pure $ if accumulate FailedGoals == 0 then Exit.ExitSuccess else Exit.ExitFailure 1
+  getTimes >>= lift . showTimes
+  pure $ if accumulate FailedGoals == 0 then Exit.ExitSuccess else Exit.ExitFailure 1
 
 parseArgs :: [String] -> ([Instr], [String], [String])
 parseArgs = GetOpt.getOpt GetOpt.Permute options
