@@ -110,7 +110,7 @@ proveFOL provers txts opts0 = do
   let tasks = generateTasks typed
   endTimedSection CheckTime
   beginTimedSection ProvingTime
-  let rstate = RState [Counter Sections (length typed)] False False
+  let rstate = RState [Counter SectionsCounter (length typed)] False False
   finalReasonerState <- lift $ verify provers opts0 rstate tasks
   endTimedSection ProvingTime
 
@@ -119,17 +119,17 @@ proveFOL provers txts opts0 = do
 
   -- print statistics
   lift $ outputMain TRACING noSourcePos $
-    "sections "       ++ show (accumulate Sections)
-    ++ " - goals "    ++ show (accumulate Goals)
-    ++ (let ignoredFails = accumulate FailedGoals
+    "sections "       ++ show (accumulate SectionsCounter)
+    ++ " - goals "    ++ show (accumulate GoalsCounter)
+    ++ (let ignoredFails = accumulate FailedGoalsCounter
         in  if   ignoredFails == 0
             then ""
             else " - failed "   ++ show ignoredFails)
-    ++ " - proved "    ++ show (accumulate SuccessfulGoals)
+    ++ " - proved "    ++ show (accumulate SuccessfulGoalsCounter)
     ++ " - cached "    ++ show (accumulate CachedCounter)
 
   getTimes >>= lift . showTimes
-  pure $ if accumulate FailedGoals == 0 then Exit.ExitSuccess else Exit.ExitFailure 1
+  pure $ if accumulate FailedGoalsCounter == 0 then Exit.ExitSuccess else Exit.ExitFailure 1
 
 parseArgs :: [String] -> ([Instr], [String], [String])
 parseArgs = GetOpt.getOpt GetOpt.Permute options

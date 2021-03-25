@@ -41,11 +41,10 @@ data Timer
   deriving (Eq, Ord, Show)
 
 data Counter
--- TODO append 'Counter' to each of these?
-  = Sections
-  | Goals
-  | FailedGoals
-  | SuccessfulGoals
+  = SectionsCounter
+  | GoalsCounter
+  | FailedGoalsCounter
+  | SuccessfulGoalsCounter
   | CachedCounter
   deriving (Eq, Ord, Show)
 

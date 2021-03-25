@@ -13,7 +13,6 @@ module SAD.ForTheL.Statement
   , dig
   , selection
   , classNotion
-  , plainTerm -- TODO: This seems unused?
   ) where
 
 
@@ -301,11 +300,6 @@ definiteTerm :: FTL (Formula -> Formula, Formula)
 definiteTerm = label "definiteTerm" $  symbolicTerm -|- definiteNoun
   where
     definiteNoun = label "definiteNoun" $ paren (art >> primFun term)
-
-plainTerm :: FTL (Formula -> Formula, Formula)
-plainTerm = symbolicTerm -|- plainDefiniteNoun
-  where
-    plainDefiniteNoun = paren (art >> primFun plainTerm)
 
 symbolicTerm :: FTL (a -> a, Formula)
 symbolicTerm = fmap ((,) id) sTerm

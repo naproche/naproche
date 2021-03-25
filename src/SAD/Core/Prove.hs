@@ -57,7 +57,7 @@ parseProverOutput (Prover _ label _ _ yes con nos uns) rc printProver isByContra
 verify :: (RunProver m, Comm m, CacheStorage m) => 
   [Prover] -> [Instr] -> RState -> [Task] -> m RState
 verify provers instrs rstate tsks = do
-  (c, res) <- foldM go (mempty, addCounter Goals (length tsks) rstate) tsks
+  (c, res) <- foldM go (mempty, addCounter GoalsCounter (length tsks) rstate) tsks
   store c
   pure res
   where
@@ -73,16 +73,16 @@ verify provers instrs rstate tsks = do
           $ "[" <> (taskName t) <> "] " <> pretty (conjecture t)
         res <- export (taskPos t) provers instrs t
         case res of
-          Success -> pure (cache t c, addCounter SuccessfulGoals 1 rstate)
-          Failure -> pure (c, addCounter FailedGoals 1 rstate)
+          Success -> pure (cache t c, addCounter SuccessfulGoalsCounter 1 rstate)
+          Failure -> pure (c, addCounter FailedGoalsCounter 1 rstate)
           ContradictoryAxioms -> do 
             outputMain WARNING noSourcePos 
               $ "\nFound a contradiction in the axioms! "
               <> "\nThis either means that you have introduced some axioms that are "
               <> "inconsistent or that you are in a proof by contradiction"
               <> "\n(and you should make sure to actually write 'Proof by contradiction.')"
-            pure (c, addCounter FailedGoals 1 rstate)
-          _ -> pure (c, addCounter FailedGoals 1 rstate)
+            pure (c, addCounter FailedGoalsCounter 1 rstate)
+          _ -> pure (c, addCounter FailedGoalsCounter 1 rstate)
 
 export :: (RunProver m, Comm m) => SourcePos -> [Prover] -> [Instr] -> Task -> m Result
 export pos [] _ _ = errorExport pos "No provers"

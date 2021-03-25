@@ -25,7 +25,6 @@ import Data.Functor.Const
 import Data.Functor.Identity
 import qualified Data.List as List
 import Data.Maybe (fromMaybe)
-import Control.Applicative
 import Control.Monad.State
 
 import SAD.Data.Formula (Formula, Tag(..), Decl(..), showFormula)
@@ -48,7 +47,7 @@ import Debug.Trace
 -- | If you encounter a weird error, this may help
 -- with debugging it. You need to import Debug.Trace
 traceReprId :: Pretty a => a -> a
-traceReprId a = trace (Text.unpack (pretty a)) a
+traceReprId a = a -- trace (Text.unpack (pretty a)) a
 
 data ErrorContext = ErrorContext
   { errorBlock :: Block
@@ -508,13 +507,22 @@ convertProof goal links ctx pts = do
   ((goal', ctx', _), ps) <- go $ concatMap (\case ProofTextBlock b -> [b]; _ -> []) pts
   pure $ Proving ps (termify (Map.keysSet $ preBoundVars ctx') goal') links
   where
-    go bs = unfoldM (goal, ctx, bs) $ \st -> do
-      t1 <- autoIntroAssume st
-      t2 <- cases st
-      t3 <- chooses st
-      t4 <- byContradiction st
-      t5 <- subClaims st
-      pure $ t1 <|> t2 <|> t3 <|> t4 <|> t5
+    go bs = unfoldM (goal, ctx, bs) $ \st ->
+      takeFirstSucceding
+        [ autoIntroAssume st
+        , cases st
+        , chooses st
+        , byContradiction st
+        , subClaims st
+        ]
+
+    takeFirstSucceding :: Monad m => [m (Maybe a)] -> m (Maybe a)
+    takeFirstSucceding [] = pure Nothing
+    takeFirstSucceding (x:xs) = do
+      m <- x
+      case m of
+        Just a -> pure $ Just a
+        Nothing -> takeFirstSucceding xs
 
     unfoldM :: Message.Comm m => b -> (b -> Err m (Maybe (a, b))) -> Err m (b, [a])
     unfoldM b f = do
