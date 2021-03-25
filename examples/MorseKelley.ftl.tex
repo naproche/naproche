@@ -34,7 +34,7 @@
     \end{axiom}
     
     \begin{axiom}
-      $B$ is an object.
+      $b$ is an object.
     \end{axiom}
 
     \begin{definition}
@@ -51,7 +51,7 @@
 
     %This axiom is implicitly used in the compiler.
     \begin{axiom}[Ext]
-      If $x$ is an element of $C$ iff $x$ is an element of $B$ then $C = B$.
+      If for every object $x$ $x$ is an element of $C$ iff $x$ is an element of $B$ then $C = B$.
     \end{axiom}
 
     \begin{signature}
@@ -112,8 +112,8 @@
     \end{lemma}
 
     \begin{definition}
-      The union of D is a class B such that (x is in B iff there is a C 
-        such that C is in D and x is in C).
+      The union of D is a class B such that (for every object $x$ x is in B iff there is a c 
+        such that c is in D and x is in c).
     \end{definition}
 
     \begin{axiom}[Union]
@@ -121,12 +121,17 @@
     \end{axiom}
 
     \begin{definition}
-      The union of D and B is a class C such that C is the union of the pair of D and B.
+      The union of D and B is a class C such that for every object $x$
+        $x$ is in C iff $x$ is in D or $x$ is in $B$.
     \end{definition}
 
     \begin{definition}
       \Union{D, B} is the union of D and B.
     \end{definition}
+
+    \begin{lemma}
+      \Union{d, b} is the union of the pair of d and b.
+    \end{lemma}
 
     \begin{lemma}
       \Union{d, b} is a set.
@@ -147,7 +152,7 @@
     \end{signature}
 
     \begin{axiom}[PowerSet]
-      b is the powerset of d iff (c is in b iff c is a subclass of d).
+      b is the powerset of d iff (for every set c c is in b iff c is a subclass of d).
     \end{axiom}
 
     \begin{definition}
@@ -226,7 +231,6 @@
       R^{-1} is the inverse of R.
     \end{definition}
 
-
     \begin{definition}
       R is reflexive iff for all x such that x is in the field of R (x, x) is in R.
     \end{definition}
@@ -263,6 +267,7 @@
     Let $F, G$ denote functions.
 
     \begin{definition}
+      Assume \Dom{F} is not empty.
       The value of F at x is a object y such that (x, y) is in F.
     \end{definition}
 

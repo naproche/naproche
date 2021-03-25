@@ -63,9 +63,9 @@ failWithMessage txt = do
   f <- errorFormula <$> get
   b <- errorBlock <$> get
   lift $ Message.error Naproche.origin_reasoner src
-    $  "\n\nWhile checking the block:\n\n" ++ show b
+    $  "\nWhile checking the block:\n\n" ++ show b
     ++ "\nmore specifically, the formula:\n\n" ++ showFormula f
-    ++ "\n\nI encountered the error: " ++ (Text.unpack txt)
+    ++ "\n\n" ++ (Text.unpack txt)
 
 data Context = Context
   { typings :: Map TermName (Maybe Type)
@@ -338,6 +338,16 @@ coercionName (TermNotion n1) (TermNotion n2) = pure $ TermName $ beginLower n1 <
           Nothing -> t
 coercionName _ _ = failWithMessage $ "Coercions only between notions"
 
+mkCoercion :: Message.Comm m => InType -> InType -> Err m [Stmt Identity ()]
+mkCoercion (Signature from) (Signature to) = do
+  name <- coercionName from to
+  let [x, y] = [VarDefault "x", VarDefault "y"]
+  let coe = coercionsToTerm [name]
+  let fromType = Identity $ Signature from
+  let inj = Forall x fromType $ Forall y fromType $ App Imp
+       [App Eq [coe (Var x), coe (Var y)], App Eq [Var x, Var y]]
+  pure [Coercion name from to, Axiom inj]
+
 -- | Extract definitions from a typed term.
 -- This will find HeadTerms and add them as definitions,
 -- as well as delete all HeadTerm Tags.
@@ -363,19 +373,17 @@ extractDefinitions = go mempty
       -- coercion definitions
       -- TODO: This case does not match when the coercion already exists and thus an error
       -- 'Remaining tag: CoercionTag' is thrown!
-      Tag CoercionTag trm@(Exists _ (Just (Signature to)) (App Eq [_, Var v0])) ->
+      Tag CoercionTag trm@(Exists _ (Just to) (App Eq [_, Var v0])) ->
         case Map.lookup v0 types of
-          (Just (Just (Signature from))) -> do
-            coename <- coercionName from to
-            pure ([Coercion coename from (Signature to)], App Top [])
+          (Just (Just from)) -> do
+            coe <- mkCoercion from to
+            pure (coe, App Top [])
           _ -> pure ([], trm)
       -- sorts and predicate definitions
       Tag HeadTerm trm@(App (OpTrm name) args) -> case (name, args) of
         (TermNotion _, [Var v]) -> do
           t <- case Map.lookup v types of
-                (Just (Just (Signature t'))) -> do
-                  coename <- coercionName name t'
-                  pure [Coercion coename name (Signature t')]
+                (Just (Just t')) -> mkCoercion (Signature name) t'
                 _ -> pure []
           pure ([IntroSort name] ++ t, App Top [])
         _ -> do
@@ -547,7 +555,7 @@ convertBlock ctx bl@(Block f b _ _ n l _) = map (Located n (position bl)) <$>
       case gottenBlocks of
         [] -> failWithMessage "Internal error: list of blocks is empty"
         (main:assms) -> do
-          let mainF = foldr (F.Imp) (formula main) (formula <$> assms)
+          let mainF = foldl (flip F.Imp) (formula main) (formula <$> assms)
           (defs, mainT) <- fmap traceReprId $ extractDefinitions 
                 =<< typecheck ctx =<< bindFree mempty <$> parseFormula mainF
           mainT' <- noTags =<< noUntypedBinds mainT
@@ -582,5 +590,5 @@ convert = flip evalStateT initErrors . go mempty . concatMap (\case ProofTextBlo
             res_n = Map.lookup n res
             res_n' = fromMaybe mempty res_n
         in Context (Map.insert n' (Just (Pred is o)) idents) (Map.insert n (Set.insert n' res_n') res) coe pbv
-      Coercion n from (Signature to) -> Context idents res (add (from, to) n coe) pbv
+      Coercion n from to -> Context idents res (add (from, to) n coe) pbv
       _ -> Context idents res coe pbv

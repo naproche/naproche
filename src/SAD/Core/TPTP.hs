@@ -35,7 +35,6 @@ instance TPTP VarName where
 
 instance TPTP InType where
   tptp ex = \case
-    Signature (TermNotion "Object") -> "$i"
     Signature (TermNotion "Int") -> "$int"
     Signature (TermNotion "Rat") -> "$rat"
     Signature (TermNotion "Real") -> "$real"
@@ -57,10 +56,10 @@ instance TPTP a => TPTP (Identity a) where
 
 instance (f ~ Identity, t ~ ()) => TPTP (Term f t) where
   tptp ex trm = case (ex, trm) of
-    (TF0, Forall v m t) -> "! [" <> tptp ex v <> ": " <> tptp ex m <> "] : " <> tptp ex t
-    (TF0, Exists v m t) -> "? [" <> tptp ex v <> ": " <> tptp ex m <> "] : " <> tptp ex t
-    (FOF, Forall v (Identity (Signature m)) t) -> "! [" <> tptp ex v <> "] : " <> tptp ex (App Imp [App (OpTrm m) [Var v], t])
-    (FOF, Exists v (Identity (Signature m)) t) -> "? [" <> tptp ex v <> "] : " <> tptp ex (App And [App (OpTrm m) [Var v], t])
+    (TF0, Forall v m t) -> "(! [" <> tptp ex v <> ": " <> tptp ex m <> "] : " <> tptp ex t <> ")"
+    (TF0, Exists v m t) -> "(? [" <> tptp ex v <> ": " <> tptp ex m <> "] : " <> tptp ex t <> ")"
+    (FOF, Forall v (Identity (Signature m)) t) -> "(! [" <> tptp ex v <> "] : " <> tptp ex (App Imp [App (OpTrm m) [Var v], t]) <> ")"
+    (FOF, Exists v (Identity (Signature m)) t) -> "(? [" <> tptp ex v <> "] : " <> tptp ex (App And [App (OpTrm m) [Var v], t]) <> ")"
     (_, App And [a, b]) -> "(" <> tptp ex a <> " & " <> tptp ex b <> ")"
     (_, App Or  [a, b]) -> "(" <> tptp ex a <> " | " <> tptp ex b <> ")"
     (_, App Imp [a, b]) -> "(" <> tptp ex a <> " => " <> tptp ex b <> ")"
