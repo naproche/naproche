@@ -10,11 +10,6 @@
 -- decision to add many calls to 'error'. This ensures that
 -- this transformation is indeed faithful to the Naproche text.
 
--- TODO: Introduce an error monad for errors that are strictly
--- user errors and not a fault of the translation like duplicate 
--- variables, etc. This also allows us to bubble up errors without
--- evaluating the entire generated proof text.
-
 module SAD.Core.Transform
  ( convert, convertBlock
  ) where
@@ -31,8 +26,9 @@ import Data.Functor.Identity
 import qualified Data.List as List
 import Data.Maybe (fromMaybe)
 import Control.Applicative
+import Control.Monad.State
 
-import SAD.Data.Formula (Formula, Tag(..), Decl(..))
+import SAD.Data.Formula (Formula, Tag(..), Decl(..), showFormula)
 import qualified SAD.Data.Formula as F
 import SAD.Data.VarName
 import SAD.Data.Terms
@@ -40,17 +36,37 @@ import SAD.Data.Text.Block (ProofText(..), Block(..), position)
 import qualified SAD.Data.Text.Block as Block
 import SAD.Core.Pretty (Pretty(..))
 import SAD.Helpers (setMapMaybe)
+import SAD.Core.SourcePos (SourcePos, noSourcePos)
+import qualified SAD.Core.Message as Message
+import qualified Isabelle.Naproche as Naproche
 
 import SAD.Core.Typed
 import SAD.Core.Coerce
 
-import GHC.Stack
 import Debug.Trace
 
 -- | If you encounter a weird error, this may help
 -- with debugging it. You need to import Debug.Trace
 traceReprId :: Pretty a => a -> a
-traceReprId a = a -- trace (Text.unpack (pretty a)) a
+traceReprId a = trace (Text.unpack (pretty a)) a
+
+data ErrorContext = ErrorContext
+  { errorBlock :: Block
+  , errorFormula :: Formula
+  , errorPosition :: SourcePos
+  } deriving (Eq, Ord, Show)
+
+type Err m a = StateT ErrorContext m a
+
+failWithMessage :: Message.Comm m => Text -> Err m a
+failWithMessage txt = do
+  src <- errorPosition <$> get
+  f <- errorFormula <$> get
+  b <- errorBlock <$> get
+  lift $ Message.error Naproche.origin_reasoner src
+    $  "\n\nWhile checking the block:\n\n" ++ show b
+    ++ "\nmore specifically, the formula:\n\n" ++ showFormula f
+    ++ "\n\nI encountered the error: " ++ (Text.unpack txt)
 
 data Context = Context
   { typings :: Map TermName (Maybe Type)
@@ -58,9 +74,6 @@ data Context = Context
   , resolved :: Map TermName (Set TermName)
     -- ^ resolve functions into names, e.g. + into add_nat 
     -- and and_rat if + was defined twice.
-  , nextName :: Maybe Text
-    -- ^ the resolved name of the next definition,
-    -- if given by an instruction
   , coercions :: Coercions TermName TermName
   , preBoundVars :: Map VarName InType
     -- ^ variables bound by a previous choose statement or in the claim.
@@ -68,7 +81,7 @@ data Context = Context
 
 -- | Danger: Costly in second argument due to coercions
 instance Semigroup Context where
-  (<>) (Context t1 r1 n1 c1 p1) (Context t2 r2 n2 c2 p2) = Context (t1 <> t2) (r1 <> r2) (n1 <> n2) (c1 <> c2) (p1 <> p2)
+  (<>) (Context t1 r1 c1 p1) (Context t2 r2 c2 p2) = Context (t1 <> t2) (r1 <> r2) (c1 <> c2) (p1 <> p2)
 
 -- | This should be kept in sync with SAD.ForTheL.Base.initFS
 predefinedTypes :: Map TermName (Maybe Type)
@@ -84,34 +97,34 @@ predefinedNames = Map.fromList
   [ (termElement, Set.singleton termElement) ]
 
 instance Monoid Context where
-  mempty = Context predefinedTypes predefinedNames mempty mempty mempty
+  mempty = Context predefinedTypes predefinedNames mempty mempty
 
 -- | Parse a formula into a term while ignoring all type information.
 -- This will only check that no variable overlap and that all de-bruijn
 -- indices have a binder. We will subsequently use the variable names at
 -- the binders instead of indices since this leads to nicer output.
-parseFormula :: Formula -> Term (Const ()) Tag
-parseFormula = go []
+parseFormula :: Message.Comm m => Formula -> Err m (Term (Const ()) Tag)
+parseFormula f = modify (\s -> s { errorFormula = f }) >> go [] f
   where 
     go vars = \case
-      F.All (Decl v _ _) f -> Forall v (Const ()) $ go (addVar v vars) f
-      F.Exi (Decl v _ _) f -> Exists v (Const ()) $ go (addVar v vars) f
-      F.Class (Decl v _ _) f -> Class v (Const ()) $ go (addVar v vars) f
-      F.Iff f1 f2 -> App Iff [go vars f1, go vars f2]
-      F.Imp f1 f2 -> App Imp [go vars f1, go vars f2]
-      F.And f1 f2 -> App And [go vars f1, go vars f2]
-      F.Or  f1 f2 -> App Or  [go vars f1, go vars f2]
-      F.Tag t f   -> Tag t $ go vars f
-      F.Not f -> App Not [go vars f]
-      F.Top -> App Top []
-      F.Bot -> App Bot []
-      F.Trm TermEquality [f1, f2] _ _ -> App Eq [go vars f1, go vars f2]
-      F.Trm name args _ _ -> App (OpTrm name) $ map (go vars) args
-      F.Var v _ _ -> Var v
+      F.All (Decl v _ _) f -> Forall v (Const ()) <$> go (addVar v vars) f
+      F.Exi (Decl v _ _) f -> Exists v (Const ()) <$> go (addVar v vars) f
+      F.Class (Decl v _ _) f -> Class v (Const ()) <$> go (addVar v vars) f
+      F.Iff f1 f2 -> App Iff <$> mapM (go vars) [f1, f2]
+      F.Imp f1 f2 -> App Imp <$> mapM (go vars) [f1, f2]
+      F.And f1 f2 -> App And <$> mapM (go vars) [f1, f2]
+      F.Or  f1 f2 -> App Or  <$> mapM (go vars) [f1, f2]
+      F.Tag t f   -> Tag t <$> go vars f
+      F.Not f -> App Not <$> mapM (go vars) [f]
+      F.Top -> pure $ App Top []
+      F.Bot -> pure $ App Bot []
+      F.Trm TermEquality [f1, f2] _ _ -> App Eq <$> mapM (go vars) [f1, f2]
+      F.Trm name args _ _ -> App (OpTrm name) <$> mapM (go vars) args
+      F.Var v _ _ -> pure $ Var v
       F.Ind i _ ->
-        if length vars > i then Var $ vars !! i
-        else error $ "Unbound index: " ++ show i
-      f -> error $  "Unexpected formula: " ++ show f
+        if length vars > i then pure $ Var $ vars !! i
+        else failWithMessage $ Text.pack $ "Unbound index: " ++ show i
+      f -> failWithMessage $ Text.pack $ "Unexpected formula: " ++ show f
 
     addVar v vars = v:vars
 
@@ -129,13 +142,13 @@ parseType ctx = \case
 -- the type predicates need to be deleted from the terms
 -- and it is not allowed for a variable to have more than
 -- one sort (which we check here).
-extractGivenTypes :: Context -> Term (Const ()) Tag -> Term Maybe Tag
-extractGivenTypes ctx = snd . go
+extractGivenTypes :: Message.Comm m => Context -> Term (Const ()) Tag -> Err m (Term Maybe Tag)
+extractGivenTypes ctx = \t -> snd <$> go t
   where
-    duplicateType a b =
-      if coercibleInto' a b (coercions ctx) /= Nothing then a else
-      if coercibleInto' b a (coercions ctx) /= Nothing then b else
-      error $ "A variable has been defined with multiple types: " ++ show a ++ " and " ++ show b
+    duplicateType ma mb = ma >>= \a -> mb >>= \b ->
+      if coercibleInto' a b (coercions ctx) /= Nothing then pure a else
+      if coercibleInto' b a (coercions ctx) /= Nothing then pure b else
+      failWithMessage $ "A variable has been defined with multiple types: " <> pretty a <> " and " <> pretty b
 
     -- TODO: The hack below is fragile. It would be better to do the following:
     -- We say a term is in negative position if it occurs negated in the DNF
@@ -143,34 +156,34 @@ extractGivenTypes ctx = snd . go
     -- Then we should use type predicates in negative position for types
     -- and in positive position for coercions.
     -- We need to split "x iff y" into two statements for this to work.
-    -- A statement like 'x is an A iff x is a B and P' should be translated to
+    -- A statement like 'x is an A iff x is a B and P(x)' should be translated to
     -- '(∀[x : A] ∃[y : B] x = y & P(x)) & (∀[x : B] P(x) => ∃[y : A] x = y)'
     -- (with coercions inserted later...)
-    go :: Term (Const ()) Tag -> (Map VarName InType, Term Maybe Tag)
+    go :: Message.Comm m => Term (Const ()) Tag -> Err m (Map VarName InType, Term Maybe Tag)
     go = \case
-      Forall v (Const ()) t ->
-        let (typings, t') = go t
-        in (typings, Forall v (Map.lookup v typings) t')
-      Exists v (Const ()) t ->
-        let (typings, t') = go t
-        in (typings, Exists v (Map.lookup v typings) t')
-      Class v (Const ()) t ->
-        let (typings, t') = go t
-        in (typings, Class v (Just $ Map.findWithDefault (Signature termObject) v typings) t')
+      Forall v (Const ()) t -> do
+        (typings, t') <- go t
+        pure (typings, Forall v (Map.lookup v typings) t')
+      Exists v (Const ()) t -> do
+        (typings, t') <- go t
+        pure (typings, Exists v (Map.lookup v typings) t')
+      Class v (Const ()) t -> do
+        (typings, t') <- go t
+        pure (typings, Class v (Just $ Map.findWithDefault (Signature termObject) v typings) t')
       -- this hack allows for new coercions in a lemma or axiom
       -- if it is of the form "Let s be a from. Then s is a to."
       App Imp [App (OpTrm (parseType ctx -> Just from)) [Var v0], App (OpTrm name@(parseType ctx -> Just _)) [Var v1]]
-        | v0 == v1 -> (Map.singleton v0 from, Tag CoercionTag $ App (OpTrm name) [Var v0])
+        | v0 == v1 -> pure $ (Map.singleton v0 from, Tag CoercionTag $ App (OpTrm name) [Var v0])
       App (OpTrm name) [Var v] -> case parseType ctx name of
-        Just t -> (Map.singleton v t, App Top [])
-        Nothing -> (mempty, App (OpTrm name) [Var v])
-      App op args ->
-        let res = map go args
-            typings = Map.unionsWith duplicateType $ map fst res
-            args' = map snd res
-        in (typings, App op args')
-      Tag tag t -> Tag tag <$> go t
-      Var v -> (mempty, Var v)
+        Just t -> pure $ (Map.singleton v t, App Top [])
+        Nothing -> pure $ (mempty, App (OpTrm name) [Var v])
+      App op args -> do
+        res <- mapM go args
+        typings <- sequence $ Map.unionsWith duplicateType $ map (Map.map pure . fst) res
+        let args' = map snd res
+        pure (typings, App op args')
+      Tag tag t -> fmap (Tag tag) <$> go t
+      Var v -> pure (mempty, Var v)
 
 coercionsToTerm :: [TermName] -> (Term f t -> Term f t)
 coercionsToTerm = go . reverse
@@ -208,8 +221,8 @@ coercibleInto' (Signature smaller) (Signature bigger) coe = coerce (smaller, big
 data ReturnValue = Value | Proposition
   deriving (Eq, Ord, Show)
 
-resolve :: HasCallStack => Context -> TermName -> [InType] -> ReturnValue -> ((TermName, [[TermName]]), Type)
-resolve (Context idents res _ coe _) name intypes ret =
+resolve :: Message.Comm m => Context -> TermName -> [InType] -> ReturnValue -> Err m ((TermName, [[TermName]]), Type)
+resolve (Context idents res coe _) name intypes ret =
   leastGeneral $ Set.toList feasibleNames
   where
     resolvedNames = setMapMaybe (\a -> (\b->(a,b)) <$> (idents Map.! a) ) $ res Map.! name
@@ -221,17 +234,20 @@ resolve (Context idents res _ coe _) name intypes ret =
       Proposition -> Pred intypes Prop
       Value -> Pred intypes $ InType $ Signature TermNotKnown
 
-    leastGeneral [] = error $ Text.unpack $ "Resolve failed: " <> pretty name <> " of type " <> pretty typ
-    leastGeneral [x] = x
+    -- TODO: Remember the smarter O(n) algo
+    leastGeneral [] = failWithMessage $ "Resolve failed: " <> pretty name <> " of type " <> pretty typ
+    leastGeneral [x] = pure x
     leastGeneral (x:y:xs) = if coercibleInto (snd x) (snd y) coe /= Nothing then leastGeneral (x:xs) else
       if coercibleInto (snd y) (snd x) coe /= Nothing then leastGeneral (y:xs) else
-        error $ Text.unpack $ "Resolve ambigous: " <> pretty name <> " of type " <> pretty typ
+        failWithMessage $ "Resolve ambigous: " <> pretty name <> " of type " <> pretty typ
           <> " can be resolved as " <> pretty (snd x) <> " or " <> pretty (snd y) <> "\n"
           <> "and none of them is more general than the other."
 
 -- | Type check applications and insert coercions.
-gatherTypes :: Context -> Term Maybe Tag -> Term Maybe Tag
-gatherTypes c = snd . go Proposition (Map.map Just $ preBoundVars c) 0
+-- Forward type-checking: We assume that the functions without arguments and variables are typed
+-- and infer the type/resolved name of functions with arguments from them.
+gatherTypes :: Message.Comm m => Context -> Term Maybe Tag -> Err m (Term Maybe Tag)
+gatherTypes c = \t -> snd <$> go Proposition (Map.map Just $ preBoundVars c) 0 t
   where
     -- The context is the type that the surrounding context expects.
     -- When we expect some InType, we use 'Signature "Object"'.
@@ -239,290 +255,324 @@ gatherTypes c = snd . go Proposition (Map.map Just $ preBoundVars c) 0
     -- numbered by d
     go context typings d = \case
       Forall v1 Nothing (App Iff [t1, App Eq [Var v2, t2]])
-        | v1 == v2 ->
-          let (InType tt2, t2') = go Value typings d t2
-              (_, t1') = go Proposition (Map.insert v1 (Just tt2) typings) d t1
-          in (Prop, Forall v1 (Just $ tt2) (App Iff [t1', App Eq [Var v2, t2']]))
+        | v1 == v2 -> do
+          (tt2, t2') <- go Value typings d t2
+          case tt2 of
+            Prop -> failWithMessage "Internal error: recursion malformed in 'gatherTypes'"
+            InType tt2 -> do
+              (_, t1') <- go Proposition (Map.insert v1 (Just tt2) typings) d t1
+              pure (Prop, Forall v1 (Just $ tt2) (App Iff [t1', App Eq [Var v2, t2']]))
       Forall v m t -> case context of
-        Proposition -> Forall v m <$> go Proposition (Map.insert v m typings) d t
-        _ -> error $ "Found a forall term where an object was expected"
+        Proposition -> fmap (Forall v m) <$> go Proposition (Map.insert v m typings) d t
+        _ -> failWithMessage $ "Found a forall term where an object was expected"
       Exists v m t -> case context of
-        Proposition -> Exists v m <$> go Proposition (Map.insert v m typings) d t
-        _ -> error $ "Found an exists term where an object was expected"
+        Proposition -> fmap (Exists v m) <$> go Proposition (Map.insert v m typings) d t
+        _ -> failWithMessage $ "Found an exists term where an object was expected"
       Class v m t -> case context of
-        Value -> (InType $ Signature (TermNotion "Class"), Class v m 
-          $ snd $ go Proposition (Map.insert v m typings) d t)
-        Proposition -> error $ "Found a class where a proposition was expected."
+        Value -> do
+           (_, inclass) <- go Proposition (Map.insert v m typings) d t
+           pure (InType $ Signature (TermNotion "Class"), Class v m inclass)
+        Proposition -> failWithMessage $ "Found a class where a proposition was expected."
       -- If we use a sort as a predicate aSort(x), we instead use ∃[v : aSort] v = x.
-      App (OpTrm name@(TermNotion _)) [arg] -> 
-        let (tb, arg') = go Value typings (d+1) arg
-            ia = Signature name
+      App (OpTrm name@(TermNotion _)) [arg] -> do
+        (tb, arg') <- go Value typings (d+1) arg
+        let ia = Signature name
             a = Var (VarF d)
-            eq = case tb of
-              InType ib -> case (coercibleInto' ia ib (coercions c), coercibleInto' ib ia (coercions c)) of
-                (Just ts, _) -> App Eq [coercionsToTerm ts a, arg']
-                (_, Just ts) -> App Eq [a, coercionsToTerm ts arg']
+        eq <- case tb of
+          InType ib -> case (coercibleInto' ia ib (coercions c), coercibleInto' ib ia (coercions c)) of
+            (Just ts, _) -> pure $ App Eq [coercionsToTerm ts a, arg']
+            (_, Just ts) -> pure $ App Eq [a, coercionsToTerm ts arg']
 
-                -- This may happen when a coercion is newly introduced.
-                -- When the coercion is not in a CoercionTag, this should
-                -- throw an error (because otherwise the prover will complain).
-                (Nothing, Nothing) -> App Eq [a, arg']
-              _ -> error $ "Proposition was used in coercion: " ++ show arg
-        in (Prop, (Exists (VarF d) (Just $ Signature name) eq))
+            -- This may happen when a coercion is newly introduced.
+            -- When the coercion is not in a CoercionTag, this should
+            -- throw an error (because otherwise the prover will complain).
+            (Nothing, Nothing) -> pure $ App Eq [a, arg']
+          _ -> failWithMessage $ "Proposition was used in coercion: " <> pretty arg
+        pure (Prop, (Exists (VarF d) (Just $ Signature name) eq))
       App (OpTrm name@(TermVar v)) args -> case (Map.lookup v typings, args) of
-        (Just (Just t), []) -> (InType t, App (OpTrm name) [])
-        (_, (_:_)) -> error "Internal: Variable bound as term can't be applied."
-        (_, _) -> error "Internal: Variable bound as term in a proof was not registered."
-      App (OpTrm name) args ->
-        let (argtypes, args') = unzip $ map (go Value typings d) args
-            argintypes = flip map argtypes $ \t -> case t of
-              Prop -> error "A truth value cannot be passed to a function!"
-              InType t' -> t'
-        in case resolve c name argintypes context of
+        (Just (Just t), []) -> pure (InType t, App (OpTrm name) [])
+        (_, (_:_)) -> failWithMessage "Internal: Variable bound as term can't be applied."
+        (_, _) -> failWithMessage "Internal: Variable bound as term in a proof was not registered."
+      App (OpTrm name) args -> do
+        (argtypes, args') <- unzip <$> mapM (go Value typings d) args
+        argintypes <- flip mapM argtypes $ \t -> case t of
+              Prop -> failWithMessage "A truth value cannot be passed to a function!"
+              InType t' -> pure t'
+        res <- resolve c name argintypes context
+        case res of
               ((name', _), Sort) -> 
-                error $ "Illegal use of sort as predicate: " ++ show (App (OpTrm name') args') 
-                  ++ " where a value was expected."
-              ((name', coe), Pred _ t) -> (t, App (OpTrm name') $ zipWith coercionsToTerm coe args')
-      App Eq [a, b] -> let [(ta, a'), (tb, b')] = map (go Value typings d) [a, b] 
-        in case (ta, tb) of
+                failWithMessage $ "Illegal use of sort as predicate: " <> pretty (App (OpTrm name') args') 
+                  <> " where a value was expected."
+              ((name', coe), Pred _ t) -> pure (t, App (OpTrm name') $ zipWith coercionsToTerm coe args')
+      App Eq [a, b] -> do
+        (ta, a') <- go Value typings d a
+        (tb, b') <- go Value typings d b
+        case (ta, tb) of
           (InType ia, InType ib) -> case (coercibleInto' ia ib (coercions c), coercibleInto' ib ia (coercions c)) of
-            (Just ts, _) -> (Prop, App Eq [coercionsToTerm ts a', b'])
-            (_, Just ts) -> (Prop, App Eq [a', coercionsToTerm ts b'])
-            (Nothing, Nothing) -> error $ "Can't coerce one side of equality into the other: " ++ show (App Eq [a', b']) 
-          _ -> error $ "Prop in equality: " ++ show (App Eq [a', b'])
-      App op args -> let res = map (go Proposition typings d) args
-        in (Prop, App op $ map snd res)
+            (Just ts, _) -> pure (Prop, App Eq [coercionsToTerm ts a', b'])
+            (_, Just ts) -> pure (Prop, App Eq [a', coercionsToTerm ts b'])
+            (Nothing, Nothing) -> failWithMessage $
+              "Can't coerce one side of equality into the other: " <> pretty (App Eq [a', b']) 
+          _ -> failWithMessage $ "Prop in equality: " <> pretty (App Eq [a', b'])
+      App op args -> do 
+        res <- mapM (go Proposition typings d) args
+        pure (Prop, App op $ map snd res)
       -- predicate defintions: check that all args are variables
-      Tag HeadTerm (App (OpTrm name) args) ->
-        (Prop, Tag HeadTerm $ App (OpTrm name) 
-          (map (\case Var v -> Var v; x -> error $ "Expected variable in definition but got: " ++ show x) args))
+      Tag HeadTerm (App (OpTrm name) args) -> do
+        vs <- mapM (\case Var v -> pure $ Var v; x -> failWithMessage $ "Expected variable in definition but got: " <> pretty x) args
+        pure (Prop, Tag HeadTerm $ App (OpTrm name) vs)
       -- function definitions; check that all args are variables
-      Tag HeadTerm (App Eq [Var v0, App (OpTrm name) args]) ->
-        (Prop, Tag HeadTerm $ App Eq [Var v0, App (OpTrm name) 
-          (map (\case Var v -> Var v; x -> error $ "Expected variable in definition but got: " ++ show x) args)])
-      Tag tag t -> Tag tag <$> go context typings d t
+      Tag HeadTerm (App Eq [Var v0, App (OpTrm name) args]) -> do
+        vs <- mapM (\case Var v -> pure $ Var v; x -> failWithMessage $ "Expected variable in definition but got: " <> pretty x) args
+        pure (Prop, Tag HeadTerm $ App Eq [Var v0, App (OpTrm name) vs])
+      Tag tag t -> fmap (Tag tag) <$> go context typings d t
       Var v -> case context of
-        Proposition -> error $ "A variable " ++ show v ++ " may not appear as a proposition."
+        Proposition -> failWithMessage $ "A variable " <> pretty v <> " may not appear as a proposition."
         Value -> case Map.lookup v typings of
-          Just (Just t) -> (InType t, Var v)
-          _ -> error $ "Unbound variable: " ++ show v
+          Just (Just t) -> pure (InType t, Var v)
+          _ -> failWithMessage $ "Unbound variable: " <> pretty v
 
-coercionName :: TermName -> TermName -> TermName
-coercionName (TermNotion n1) (TermNotion n2) = TermName $ beginLower n1 <> "To" <> n2
+coercionName :: Message.Comm m => TermName -> TermName -> Err m TermName
+coercionName (TermNotion n1) (TermNotion n2) = pure $ TermName $ beginLower n1 <> "To" <> n2
   where beginLower t = case Text.uncons t of
           Just (c, t') -> Text.cons (toLower c) t'
           Nothing -> t
-coercionName _ _ = error $ "Coercions only between notions"
+coercionName _ _ = failWithMessage $ "Coercions only between notions"
 
 -- | Extract definitions from a typed term.
 -- This will find HeadTerms and add them as definitions,
 -- as well as delete all HeadTerm Tags.
-extractDefinitions :: HasCallStack => Term Maybe Tag -> ([Stmt Identity ()], Term Maybe Tag)
+extractDefinitions :: Message.Comm m => Term Maybe Tag -> Err m ([Stmt Identity ()], Term Maybe Tag)
 extractDefinitions = go mempty
   where
-    extractType :: TermName -> Map VarName (Maybe p) -> Term Maybe Tag -> p
+    extractType :: Message.Comm m => TermName -> Map VarName (Maybe p) -> Term Maybe Tag -> Err m p
     extractType name types (Var v) = case Map.lookup v types of
-      Just (Just t) -> t
-      Just Nothing -> error $ Text.unpack $ "In a definition for " <> pretty name <> ", the type of variable "
+      Just (Just t) -> pure t
+      Just Nothing -> failWithMessage $ "In a definition for " <> pretty name <> ", the type of variable "
         <> pretty v <> " could not be guessed. Please provide its type."
-      Nothing -> error $ Text.unpack $ "In a definition for " <> pretty name <> ", the variable "
+      Nothing -> failWithMessage $ "In a definition for " <> pretty name <> ", the variable "
         <> pretty v <> " was found to be unbound."
-    extractType name _ e = error $ Text.unpack $ "In a definition for " <> pretty name <> ", I expected a variable, but got:\n" <> pretty e
+    extractType name _ e = failWithMessage $ "In a definition for " <> pretty name <> ", I expected a variable, but got:\n" <> pretty e
 
     go types = \case
-      Forall v m t -> simp <$> Forall v m <$> go (Map.insert v m types) t
-      Exists v m t -> simp <$> Exists v m <$> go (Map.insert v m types) t
-      Class v m t -> simp <$> Class v m <$> go (Map.insert v m types) t
-      App op args -> let res = map (go types) args
-        in (concatMap fst res, simp $ App op $ map snd res)
+      Forall v m t -> fmap (simp . Forall v m) <$> go (Map.insert v m types) t
+      Exists v m t -> fmap (simp . Exists v m) <$> go (Map.insert v m types) t
+      Class  v m t -> fmap (simp . Class  v m) <$> go (Map.insert v m types) t
+      App op args -> do
+        res <- mapM (go types) args
+        pure (concatMap fst res, simp $ App op $ map snd res)
       -- coercion definitions
       -- TODO: This case does not match when the coercion already exists and thus an error
       -- 'Remaining tag: CoercionTag' is thrown!
-      Tag CoercionTag trm@(Exists _ (Just (Signature to)) (App Eq [_, Var v0])) -> case Map.lookup v0 types of
-        (Just (Just (Signature from))) -> ([Coercion (coercionName from to) from (Signature to)], App Top [])
-        _ -> ([], trm)
+      Tag CoercionTag trm@(Exists _ (Just (Signature to)) (App Eq [_, Var v0])) ->
+        case Map.lookup v0 types of
+          (Just (Just (Signature from))) -> do
+            coename <- coercionName from to
+            pure ([Coercion coename from (Signature to)], App Top [])
+          _ -> pure ([], trm)
       -- sorts and predicate definitions
       Tag HeadTerm trm@(App (OpTrm name) args) -> case (name, args) of
-        (TermNotion _, [Var v]) ->
-          let t = case Map.lookup v types of
-                (Just (Just (Signature t'))) -> [Coercion (coercionName name t') name (Signature t')]
-                _ -> []
-          in ([IntroSort name] ++ t, App Top [])
-        _ -> let ts = map (extractType name types) args
-          in ([Predicate name ts Prop], simp $ trm)
+        (TermNotion _, [Var v]) -> do
+          t <- case Map.lookup v types of
+                (Just (Just (Signature t'))) -> do
+                  coename <- coercionName name t'
+                  pure [Coercion coename name (Signature t')]
+                _ -> pure []
+          pure ([IntroSort name] ++ t, App Top [])
+        _ -> do
+          ts <- mapM (extractType name types) args
+          pure ([Predicate name ts Prop], simp $ trm)
       -- function definitions
-      Tag HeadTerm trm@(App Eq [Var v0, App (OpTrm name) args]) ->
-        let ts = map (extractType name types) args
-        in ([Predicate name ts (InType $ extractType name types (Var v0))], trm)
-      Tag tag t -> Tag tag <$> simp <$> go types t
-      Var v -> ([], Var v)
+      Tag HeadTerm trm@(App Eq [Var v0, App (OpTrm name) args]) -> do
+        ts <- mapM (extractType name types) args
+        out <- extractType name types (Var v0)
+        pure ([Predicate name ts (InType out)], trm)
+      Tag tag t -> fmap (Tag tag . simp) <$> go types t
+      Var v -> pure ([], Var v)
 
 -- | Make sure that there are no tags left.
-noTags :: Term Identity Tag -> Term Identity ()
+noTags :: Message.Comm m => Term Identity Tag -> Err m (Term Identity ())
 noTags = go
   where
     go = \case
-      Forall v m t -> Forall v m (go t)
-      Exists v m t -> Exists v m (go t)
-      Class v m t -> Class v m (go t)
-      App op args -> App op (go <$> args)
+      Forall v m t -> Forall v m <$> go t
+      Exists v m t -> Exists v m <$> go t
+      Class v m t -> Class v m <$> go t
+      App op args -> App op <$> mapM go args
       Tag Replacement t -> go t
       Tag EqualityChain t -> go t
-      Tag tag _ -> error $ "Remaining tag: " ++ show tag
-      Var v -> Var v
+      Tag tag _ -> failWithMessage $ Text.pack $ "Remaining tag: " ++ show tag
+      Var v -> pure $ Var v
 
 -- | The full pipeline from formula to a terms.
-typecheck :: Context -> Term (Const ()) Tag -> Term Maybe Tag
-typecheck ctx
-  = traceReprId . gatherTypes ctx 
-  . traceReprId . extractGivenTypes ctx 
+typecheck :: Message.Comm m => Context -> Term (Const ()) Tag -> Err m (Term Maybe Tag)
+typecheck ctx trm = do
+  e <- traceReprId <$> extractGivenTypes ctx trm
+  g <- traceReprId <$> gatherTypes ctx e
+  pure g
 
 -- | Fail if the type of binds could not be inferred.
-noUntypedBinds :: Term Maybe t -> Term Identity t
+noUntypedBinds :: Message.Comm m => Term Maybe t -> Err m (Term Identity t)
 noUntypedBinds = \case
-  Forall v (Just m) t -> Forall v (Identity m) (noUntypedBinds t)
-  Exists v (Just m) t -> Exists v (Identity m) (noUntypedBinds t)
-  Class v (Just m) t -> Class v (Identity m) (noUntypedBinds t)
-  Forall v Nothing _ -> error $ "Untyped bind: " ++ show v
-  Exists v Nothing _ -> error $ "Untyped bind: " ++ show v
-  Class v Nothing _ -> error $ "Untyped bind: " ++ show v
-  App op args -> App op (noUntypedBinds <$> args)
-  Tag tag t -> Tag tag $ noUntypedBinds t
-  Var v -> Var v
+  Forall v (Just m) t -> Forall v (Identity m) <$> noUntypedBinds t
+  Exists v (Just m) t -> Exists v (Identity m) <$> noUntypedBinds t
+  Class v (Just m) t -> Class v (Identity m) <$> noUntypedBinds t
+  Forall v Nothing _ -> failWithMessage $ "Untyped bind: " <> pretty v
+  Exists v Nothing _ -> failWithMessage $ "Untyped bind: " <> pretty v
+  Class v Nothing _ -> failWithMessage $ "Untyped bind: " <> pretty v
+  App op args -> App op <$> mapM noUntypedBinds args
+  Tag tag t -> Tag tag <$> noUntypedBinds t
+  Var v -> pure $ Var v
 
 -- | A tactic takes the goal, the current context and a number of proof lines (Block)
 -- and may translate some lines and give a new goal.
-type Tactic = (Term Identity (), Context, [Block]) -> Maybe (Proof, (Term Identity (), Context, [Block]))
+type Tactic m = (Term Identity (), Context, [Block]) -> Err m (Maybe (Proof, (Term Identity (), Context, [Block])))
 
 preBind :: Map VarName InType -> Context -> Context
 preBind vs ctx = ctx { preBoundVars = vs <> preBoundVars ctx }
 
 -- | Introduce top-level forall-bound variables in the term
 -- and the conditions of if-terms as a tactic.
-autoIntroAssume :: Tactic
-autoIntroAssume (_, _, []) = Nothing
-autoIntroAssume (goal, ctx, (b:bs)) = case goal of
+autoIntroAssume :: Message.Comm m => Tactic m
+autoIntroAssume (_, _, []) = pure Nothing
+autoIntroAssume (goal, ctx, (b:bs)) = pure $ case goal of
     Forall v (Identity typ) t -> Just ((Located "intro" (position b) (Intro v typ)), (t, preBind (Map.singleton v typ) ctx, b:bs))
     App Imp [ass, goal'] -> Just ((Located "intro" (position b) (Assume $ termify (Map.keysSet $ preBoundVars ctx) ass)), (goal', ctx, b:bs))
     _ -> Nothing
 
 -- | Convert a single line of a proof.
-subClaim :: Context -> Block -> Proof
-subClaim ctx bl@(Block f b _ _ n l _) = Located n (position bl) $
-  let mainF = noTags $ noUntypedBinds
-        $ typecheck ctx $ bindFree (Map.keysSet $ preBoundVars ctx) $ parseFormula f
-  in Subclaim mainF (convertProof mainF l ctx b)
+subClaim :: Message.Comm m => Context -> Block -> Err m Proof
+subClaim ctx bl@(Block f b _ _ n l _) = Located n (position bl) <$> do
+  mainF <- noTags =<< noUntypedBinds
+        =<< typecheck ctx =<< bindFree (Map.keysSet $ preBoundVars ctx) <$> parseFormula f
+  Subclaim mainF <$> convertProof mainF l ctx b
 
-subClaims :: Tactic
-subClaims (_, _, []) = Nothing
-subClaims (goal, ctx, (b:bs)) = Just (subClaim ctx b, (goal, ctx, bs))
+subClaims :: Message.Comm m => Tactic m
+subClaims (_, _, []) = pure Nothing
+subClaims (goal, ctx, (b:bs)) = do
+  sc <- subClaim ctx b
+  pure $ Just (sc, (goal, ctx, bs))
 
-byContradiction :: Tactic
-byContradiction (_, _, []) = Nothing
-byContradiction (goal, ctx, (b:bs)) = case formula b of
+byContradiction :: Message.Comm m => Tactic m
+byContradiction (_, _, []) = pure Nothing
+byContradiction (goal, ctx, (b:bs)) = pure $ case formula b of
   F.Not (F.Trm TermThesis [] _ _) ->
     Just (Located (name b) (position b) (ByContradiction goal), (App Bot [], ctx, bs))
   _ -> Nothing
 
-chooses :: Tactic
-chooses (_, _, []) = Nothing
+chooses :: Message.Comm m => Tactic m
+chooses (_, _, []) = pure $ Nothing
 chooses (goal, ctx, (b:bs)) = case kind b of
-  Block.Selection ->
+  Block.Selection -> do
     let l = position b; n = name b
         vs = Set.map declName $ declaredVariables b
-        f = noTags $ noUntypedBinds
-          $ typecheck ctx $ bindFree (Map.keysSet $ preBoundVars ctx)
-          $ bindExists (Set.toList vs) $ parseFormula (formula b)
-        boundVs = Map.fromList $ concat $ flip List.unfoldr f $ \case
+    f <- noTags =<< noUntypedBinds
+          =<< typecheck ctx =<< bindFree (Map.keysSet $ preBoundVars ctx)
+          <$> bindExists (Set.toList vs) <$> parseFormula (formula b)
+    let boundVs = Map.fromList $ concat $ flip List.unfoldr f $ \case
             Forall _ (Identity _) t -> Just ([], t)
             Exists v (Identity typ) t
               | v `Set.member` vs -> Just ([(v, typ)], t)
               | otherwise -> Just ([], t)
             _ -> Nothing
-        p = convertProof f (link b) ctx (body b)
         ctx' = preBind boundVs ctx
-    in Just $ (Located n l $ Choose (Map.toList boundVs) f p, (goal, ctx', bs))
-  _ -> Nothing
+    p <- convertProof f (link b) ctx (body b)
+    pure $ Just $ (Located n l $ Choose (Map.toList boundVs) f p, (goal, ctx', bs))
+  _ -> pure $ Nothing
 
-cases :: Tactic
+cases :: Message.Comm m => Tactic m
 cases (goal, ctx, bs) = go Nothing bs
   where
-    parseCase c b =
-      let c' = noTags $ noUntypedBinds
-             $ typecheck ctx $ bindFree (Map.keysSet $ preBoundVars ctx) $ parseFormula c
-          p' = convertProof goal (link b) ctx (body b)
-          l' = (position b)
-      in (l', (c', p'))
+    parseCase c b = do
+      c' <- noTags =<< noUntypedBinds
+             =<< typecheck ctx =<< bindFree (Map.keysSet $ preBoundVars ctx) <$> parseFormula c
+      p' <- convertProof goal (link b) ctx (body b)
+      let l' = (position b)
+      pure (l', (c', p'))
 
-    go Nothing [] = Nothing
-    go (Just (l, ms)) [] = Just (Located "cases" l $ TerminalCases ms, (goal, ctx, []))
+    go Nothing [] = pure $ Nothing
+    go (Just (l, ms)) [] = pure $ Just (Located "cases" l $ TerminalCases ms, (goal, ctx, []))
     go m (b:bs) = case formula b of
-      F.Imp (F.Tag CaseHypothesisTag c) (F.Trm TermThesis [] _ _) ->
-        let (l', (c', p')) = parseCase c b
-        in case m of
+      F.Imp (F.Tag CaseHypothesisTag c) (F.Trm TermThesis [] _ _) -> do
+        (l', (c', p')) <- parseCase c b
+        case m of
           Nothing -> go (Just (l', [(c', p')])) bs
           Just (l, ms) -> go (Just (l, (c', p'):ms)) bs
-      _ -> case m of
+      _ -> pure $ case m of
         Nothing -> Nothing
         Just (l, ms) -> Just (Located "cases" l $ Cases ms, (goal, ctx, b:bs))
 
 -- | Convert a Proof. ... end. part
-convertProof :: Term Identity () -> [Text] -> Context -> [ProofText] -> ProofBlock
-convertProof goal links ctx pts =
-  let ((goal', ctx', _), ps) = go $ concatMap (\case ProofTextBlock b -> [b]; _ -> []) pts
-  in Proving ps (termify (Map.keysSet $ preBoundVars ctx') goal') links
+convertProof :: Message.Comm m => Term Identity () -> [Text] -> Context -> [ProofText] -> Err m ProofBlock
+convertProof goal links ctx pts = do
+  ((goal', ctx', _), ps) <- go $ concatMap (\case ProofTextBlock b -> [b]; _ -> []) pts
+  pure $ Proving ps (termify (Map.keysSet $ preBoundVars ctx') goal') links
   where
-    go bs = unfold (goal, ctx, bs) $ \st ->
-      autoIntroAssume st <|> cases st <|> chooses st
-      <|> byContradiction st <|> subClaims st
+    go bs = unfoldM (goal, ctx, bs) $ \st -> do
+      t1 <- autoIntroAssume st
+      t2 <- cases st
+      t3 <- chooses st
+      t4 <- byContradiction st
+      t5 <- subClaims st
+      pure $ t1 <|> t2 <|> t3 <|> t4 <|> t5
 
-    unfold b f = case f b of
-      Just (a, b') -> (a:) <$> unfold b' f
-      Nothing -> (b, [])
+    unfoldM :: Message.Comm m => b -> (b -> Err m (Maybe (a, b))) -> Err m (b, [a])
+    unfoldM b f = do
+      fb <- f b
+      case fb of
+        Just (a, b') -> fmap (a:) <$> unfoldM b' f
+        Nothing -> pure (b, [])
 
 -- | Get the blocks in a Prooftext.
-getBlocks :: ProofText -> [Block]
-getBlocks (ProofTextBlock b) = [b]
-getBlocks (ProofTextRoot ts) = concatMap getBlocks ts
-getBlocks p = error $ "Internal error: getBlocks received: " ++ show p
+getBlocks :: Message.Comm m => ProofText -> Err m [Block]
+getBlocks (ProofTextBlock b) = pure [b]
+getBlocks (ProofTextRoot ts) = concat <$> mapM getBlocks ts
+getBlocks p = failWithMessage $ Text.pack $ "Internal error: getBlocks received: " ++ show p
 
 -- | Convert a block into a statement.
-convertBlock :: Context -> Block -> [Statement]
-convertBlock ctx bl@(Block f b _ _ n l _) = Located n (position bl) <$>
+convertBlock :: Message.Comm m => Context -> Block -> Err m [Statement]
+convertBlock ctx bl@(Block f b _ _ n l _) = map (Located n (position bl)) <$>
   case f of
     -- top-level blocks:
-    (F.Var (VarHole _) _ _) ->
-      let (main:assms) = reverse $ concatMap getBlocks b
-          mainF = foldr (F.Imp) (formula main) (formula <$> assms)
-          (defs, mainT) = traceReprId $ extractDefinitions 
-            $ typecheck ctx $ bindFree mempty $ parseFormula mainF
-          mainT' = noTags $ noUntypedBinds mainT
-      in case Block.needsProof bl of
-        True -> if not (null defs)
-          then error $ "Definitions in claim!"
-          else [Claim mainT' $ (convertProof mainT' l ctx (body main))]
-        False -> defs ++ 
-          if mainT == App Top [] then [] else [Axiom mainT']
-    _ -> error "convertBlock should not be applied to proofs!"
+    (F.Var (VarHole _) _ _) -> do
+      gottenBlocks <- reverse <$> concat <$> mapM getBlocks b
+      case gottenBlocks of
+        [] -> failWithMessage "Internal error: list of blocks is empty"
+        (main:assms) -> do
+          let mainF = foldr (F.Imp) (formula main) (formula <$> assms)
+          (defs, mainT) <- fmap traceReprId $ extractDefinitions 
+                =<< typecheck ctx =<< bindFree mempty <$> parseFormula mainF
+          mainT' <- noTags =<< noUntypedBinds mainT
+          case Block.needsProof bl of
+            True -> if not (null defs)
+              then failWithMessage $ "Definitions in claim!"
+              else (:[]) <$> Claim mainT' <$> (convertProof mainT' l ctx (body main))
+            False -> pure $ defs ++ 
+              if mainT == App Top [] then [] else [Axiom mainT']
+    _ -> failWithMessage "Internal: convertBlock should not be applied to proofs!"
 
-convert :: [ProofText] -> [Statement]
-convert = go mempty . concatMap (\case ProofTextBlock bl -> [bl]; _ -> [])
+convert :: Message.Comm m => [ProofText] -> m [Statement]
+convert = flip evalStateT initErrors . go mempty . concatMap (\case ProofTextBlock bl -> [bl]; _ -> [])
   where
-    go _ [] = []
-    go c (b:bs) =
-      let stmts = convertBlock c b
-      in stmts ++ go (List.foldl' updateCtx c stmts) bs
+    initErrors = ErrorContext undefined F.Top noSourcePos
 
-    updateCtx (Context idents res nn coe pbv) (Located _ _ s) = case s of
+    go _ [] = pure []
+    go c (b:bs) = do
+      modify $ \s -> s { errorBlock = b }
+      modify $ \s -> s { errorPosition = position b }
+      stmts <- convertBlock c b
+      (stmts ++) <$> go (List.foldl' updateCtx c stmts) bs
+
+    updateCtx (Context idents res coe pbv) (Located _ _ s) = case s of
       IntroSort n ->
         let n' = newName n res_n 
             res_n = Map.lookup n res
             res_n' = fromMaybe mempty res_n
-        in Context (Map.insert n' (Just Sort) idents) (Map.insert n (Set.insert n' res_n') res) nn coe pbv
+        in Context (Map.insert n' (Just Sort) idents) (Map.insert n (Set.insert n' res_n') res) coe pbv
       Predicate n is o ->
         let n' = newName n res_n 
             res_n = Map.lookup n res
             res_n' = fromMaybe mempty res_n
-        in Context (Map.insert n' (Just (Pred is o)) idents) (Map.insert n (Set.insert n' res_n') res) nn coe pbv
-      Coercion n from (Signature to) -> Context idents res nn (add (from, to) n coe) pbv
-      _ -> Context idents res nn coe pbv
+        in Context (Map.insert n' (Just (Pred is o)) idents) (Map.insert n (Set.insert n' res_n') res) coe pbv
+      Coercion n from (Signature to) -> Context idents res (add (from, to) n coe) pbv
+      _ -> Context idents res coe pbv

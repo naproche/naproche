@@ -105,7 +105,7 @@ instance NFData a => NFData (Located a)
 -- Note that we don't check the term of the claim but only the proof block.
 data Stmt f t
   = IntroSort TermName
-  | Predicate TermName 
+  | Predicate TermName -- ^ symbol declaration
     [InType] -- ^ the types of the arguments
     OutType -- ^ the return type
   | Axiom (Term f t)

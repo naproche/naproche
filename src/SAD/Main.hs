@@ -34,7 +34,6 @@ import SAD.Parser.Error (errorPos)
 import SAD.Core.Transform (convert)
 import SAD.Core.Typed (located)
 import SAD.Core.Cache (CacheStorage)
-import Control.DeepSeq (force)
 import SAD.Core.Task (generateTasks)
 
 data TimedSection = ParsingTime | ProvingTime | CheckTime
@@ -93,7 +92,8 @@ showTranslation txts = do
   beginTimedSection CheckTime
   let out = outputMain WRITELN (fileOnlyPos "")
   -- lift $ mapM_ (\case (ProofTextBlock b) -> out $ show b; _ -> pure ()) txts
-  lift $ mapM_ (out . (++"\n\n") . Text.unpack . pretty . located) (convert txts)
+  converted <- lift $ convert txts
+  lift $ mapM_ (out . (++"\n\n") . Text.unpack . pretty . located) converted
   endTimedSection CheckTime
   beginTimedSection ProvingTime
   endTimedSection ProvingTime
@@ -105,12 +105,12 @@ showTranslation txts = do
 proveFOL :: (MonadIO m, RunProver m, Comm m, CacheStorage m) 
   => [Prover] -> [ProofText] -> [Instr] -> Times m Exit.ExitCode
 proveFOL provers txts opts0 = do
-  let typed = force $ convert txts
-  let tasks = generateTasks typed
-  let rstate = RState [Counter Sections (length typed)] False False
   beginTimedSection CheckTime
-  typed `seq` endTimedSection CheckTime
+  typed <- lift $ convert txts
+  let tasks = generateTasks typed
+  endTimedSection CheckTime
   beginTimedSection ProvingTime
+  let rstate = RState [Counter Sections (length typed)] False False
   finalReasonerState <- lift $ verify provers opts0 rstate tasks
   endTimedSection ProvingTime
 

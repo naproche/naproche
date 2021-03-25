@@ -41,6 +41,7 @@ newName n (Just taken) =
         (TermName t) -> (TermName, t)
         (TermSymbolic t) -> (TermSymbolic, t)
         (TermNotion t) -> (TermNotion, t)
+        (TermThe t) -> (TermThe, t)
         x -> error $ "Not implemented: New name for " ++ show x
   in head $ filter (`Set.notMember` taken) $ map (\x -> c $ n' <> Text.pack (show x)) [2::Int ..]
 
