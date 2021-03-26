@@ -99,7 +99,7 @@
     \end{definition}
 
     \begin{definition}
-      The ordered pair of x and y is the pair of x and the pair of x and y.
+      The ordered pair of x and y is the pair of (the singleton of x) and the pair of x and y.
     \end{definition}
 
     \begin{definition}
@@ -107,8 +107,7 @@
     \end{definition}
 
     \begin{lemma}[OrdPair]
-      If the ordered pair of x and y is equal to the ordered pair of z and w
-        then x = z and y = w.
+      If (x, y) = (z, w) then x = z and y = w.
     \end{lemma}
 
     \begin{definition}
@@ -132,6 +131,15 @@
     \begin{lemma}
       \Union{d, b} is the union of the pair of d and b.
     \end{lemma}
+    \begin{proof}
+      For every object $x$ if $x$ is an element of \Union{d, b}
+        then $x$ is an element of the union of the pair of d and b.
+      For every object $x$ if $x$ is an element of the union of the pair of d and b
+        then $x$ is an element of \Union{d, b}.
+      Proof.
+        Take a set $c$ such that $x$ is in $c$ and $c$ is in the pair of d and b.
+      end.
+    \end{proof}
 
     \begin{lemma}
       \Union{d, b} is a set.
