@@ -421,9 +421,8 @@ including Gupta's result that outer Pasch follows from inner Pasch.
       Then $\Betw{x}{z}{v}$.
     \end{lemma}
     \begin{proof}
-      If $y = z$ then $\Betw{x}{z}{v}$.
-      Assume $y \neq z$.
-      We have $\Betw{x}{y}{z}$.
+      Case $y = z$. $\Betw{x}{z}{v}$. end.
+      Case $y \neq z$. We have $\Betw{x}{y}{z}$. end.
     \end{proof}
 
     \begin{lemma} % Satz 3.6 (first part)
@@ -515,10 +514,10 @@ including Gupta's result that outer Pasch follows from inner Pasch.
         Thus $\OFS{g}{z}{y}{r}{h}{p}{w}{q}$.
         Thus $\Cong{y}{r}{w}{q}$.
       End.
-      %Case $x = z$.
-      %  Then $v = p$.
-      %  Thus $y = z$ and $w = p$.
-      %End.
+      Case $x = z$.
+        Then $v = p$.
+        Thus $y = z$ and $w = p$.
+      End.
     \end{proof}
 
   \end{forthel}
@@ -714,7 +713,8 @@ including Gupta's result that outer Pasch follows from inner Pasch.
       Then $z = p$.
     \end{lemma}
     \begin{proof}
-      Assume $x = y$. Then $x = z$ and $x = p$. Hence $z = p$. Assume $x \neq y$.
+      Case $x = y$. Then $x = z$ and $x = p$. Hence $z = p$. end.
+      Case $x \neq y$. Obvious.
     \end{proof}
   \end{forthel}
 
@@ -940,6 +940,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
           Thus $p = q$.
           Thus $d = d'$.
         End.
+        Case $c = c'$. Obvious.
       End.
       Therefore $\Betw{a}{c}{d}$ or $\Betw{a}{d}{c}$. %(by C5o1k).
     \end{proof}
@@ -1139,7 +1140,8 @@ including Gupta's result that outer Pasch follows from inner Pasch.
       Case $a \neq b$.
         Take $x$ such that
         ($\Betw{b}{a}{x}$ or $\Betw{b}{x}{a}$) and $\Cong{b}{x}{c}{d}$.
-      End.
+      end.
+      Case $a = b$. Obvious.
     \end{proof}
 
     \begin{lemma} % Satz 5.11
@@ -1242,26 +1244,17 @@ including Gupta's result that outer Pasch follows from inner Pasch.
       Assume $\RelEquiv{a}{b}{u}$ and $\RelEquiv{b}{c}{u}$.
       Then $\RelEquiv{a}{c}{u}$.
     \end{lemma}
-    \begin{proof} % Giving the case distinction speeds up the proof, but E also manages without.
-      Case $\Betw{u}{a}{b}$.
-      End.
-      %Then $\Betw{u}{b}{a}$.
-    \end{proof}
   \end{forthel}
 
-  % TODO: reasoner breaks on this definition ...
-  %
-  %\begin{definition} % SST 6.8 (first part)
-    %  $\Ray{u}{a} = \{ \beta \mid   \RelEquiv{\beta}{a}{u} \}$.
-    %\end{definition}
+  \begin{definition} % SST 6.8 (first part)
+    $\Ray{u}{a} = \{ \beta \mid   \RelEquiv{\beta}{a}{u} \}$.
+  \end{definition}
 
-  % TODO this also breaks the reasoner ...
-  %
-  %   \begin{definition} % SST 6.8 (second part)
-  %     A ray is an object $R$ such that there exist nonequal points $u,a$ such that
-  %       %$R = \Ray{u}{a}$.
-  %       $R = \{ \beta \mid   \RelEquiv{\beta}{a}{u} \}$.
-  %   \end{definition}
+  \begin{definition} % SST 6.8 (second part)
+    A ray is an object $R$ such that there exist nonequal points $u,a$ such that
+      %$R = \Ray{u}{a}$.
+      $R = \{ \beta \mid   \RelEquiv{\beta}{a}{u} \}$.
+  \end{definition}
 
   % TODO 6.9 (see how it is used first, a literal translation is a bit tedious)
 

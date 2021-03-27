@@ -449,22 +449,23 @@ symbClassNotation = cndSet </> finSet
     mbEqu _ tr Var{varName = v} = subst tr v
     mbEqu vs tr t = \st -> foldr dExi (st `And` mkEquality tr t) vs
 
--- | Split into a constraint and a term.
--- For example: '(x, y) in Z^2' becomes (_ in Z^2, (x, y))
-sepFrom :: FTL (Formula -> Formula, Formula)
-sepFrom = notionSep -|- classSep -|- noSep
-  where
-    notionSep = do
-      (q, f, v) <- notion >>= single; guard (not . (==) TermEquality . trmName $ f)
-      return (\tr -> subst tr (posVarName v) $ q f, pVar v)
-    classSep = do
-      t <- sTerm; cnd <- token' "in" >> elementCnd
-      return (cnd, t)
-    noSep  = do
-      t <- sTerm; return (const Top, t)
+    -- | Split into a constraint and a term.
+    -- For example: '(x, y) in Z^2' becomes (_ in Z^2, (x, y))
+    sepFrom :: FTL (Formula -> Formula, Formula)
+    sepFrom = notionSep -|- classSep -|- noSep
+      where
+        notionSep = do
+          (q, f, v) <- notion >>= single
+          guard (case f of Trm n _ _ _ -> n /= TermEquality; _ -> False)
+          return (\tr -> subst tr (posVarName v) $ q f, pVar v)
+        classSep = do
+          t <- sTerm; cnd <- token' "in" >> elementCnd
+          return (cnd, t)
+        noSep  = do
+          t <- sTerm; return (const Top, t)
 
-elementCnd :: FTL (Formula -> Formula)
-elementCnd = flip mkElem <$> (sTerm </> fmap fst symbClassNotation)
+    elementCnd :: FTL (Formula -> Formula)
+    elementCnd = flip mkElem <$> (sTerm </> fmap fst symbClassNotation)
 
 
 ---- chain tools
