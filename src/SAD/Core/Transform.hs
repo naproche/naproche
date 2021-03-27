@@ -484,8 +484,11 @@ chooses (goal, ctx, (b:bs)) = case kind b of
               | otherwise -> Just ([], t)
             _ -> Nothing
         ctx' = preBind boundVs ctx
+    fHypo <- noTags =<< noUntypedBinds
+          =<< typecheck ctx' =<< bindFree (Set.union vs $ Map.keysSet $ preBoundVars ctx)
+          <$> parseFormula (formula b)
     p <- convertProof f (link b) ctx (body b)
-    pure $ Just $ (Located n l $ Choose (Map.toList boundVs) f p, (goal, ctx', bs))
+    pure $ Just $ (Located n l $ Choose (Map.toList boundVs) fHypo p, (goal, ctx', bs))
   _ -> pure $ Nothing
 
 cases :: Message.Comm m => Tactic m
@@ -499,7 +502,7 @@ cases (goal, ctx, bs) = go Nothing bs
       pure (l', (c', p'))
 
     go Nothing [] = pure $ Nothing
-    go (Just (l, ms)) [] = pure $ Just (Located "cases" l $ TerminalCases ms, (goal, ctx, []))
+    go (Just (l, ms)) [] = pure $ Just (Located "cases" l $ TerminalCases (reverse ms), (goal, ctx, []))
     go m (b:bs) = case formula b of
       F.Imp (F.Tag CaseHypothesisTag c) (F.Trm TermThesis [] _ _) -> do
         (l', (c', p')) <- parseCase c b
@@ -508,7 +511,7 @@ cases (goal, ctx, bs) = go Nothing bs
           Just (l, ms) -> go (Just (l, (c', p'):ms)) bs
       _ -> pure $ case m of
         Nothing -> Nothing
-        Just (l, ms) -> Just (Located "cases" l $ Cases ms, (goal, ctx, b:bs))
+        Just (l, ms) -> Just (Located "cases" l $ Cases (reverse ms), (goal, ctx, b:bs))
 
 -- | Convert a Proof. ... end. part
 convertProof :: Message.Comm m => Term Identity () -> [Text] -> Context -> [ProofText] -> Err m ProofBlock

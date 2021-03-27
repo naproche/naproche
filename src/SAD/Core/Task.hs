@@ -76,7 +76,7 @@ generateFromProof topname topPos isContra hypo (Proving prf topclaim tophints)
             final = foldl1 (\a b -> App Or [a, b]) (map fst cs)
         in ((hypo, isContra), cases ++ [Task hypo final [] n isContra topPos])
       ByContradiction goal -> (((Given n (simp $ App Not [goal])):hypo, True), [])
-      Choose vs t prf -> -- TODO: Check if this is correct if the bound variable is a TermVar in the statement...
+      Choose vs t prf ->
         let ts = map (\(v, typ) -> Typing (TermVar v) (Pred [] (InType typ))) vs
         in (((Given n t) : ts ++ hypo, isContra), generateFromProof n topPos isContra hypo prf)
 
