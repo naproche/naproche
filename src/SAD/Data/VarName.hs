@@ -10,7 +10,7 @@ module SAD.Data.VarName
   , IsVar(..)
   , fvToVarSet
   , fvFromVarSet
-  , isHole
+  , varToText
   , PosVar(..)
   ) where
 
@@ -19,7 +19,7 @@ import qualified Data.Set as Set
 import GHC.Magic (oneShot)
 import Data.Text (Text)
 import qualified Data.Text as Text
-import SAD.Core.Pretty
+import Data.Text.Prettyprint.Doc
 import SAD.Core.SourcePos
 import Data.Function (on)
 import GHC.Generics (Generic)
@@ -41,18 +41,23 @@ instance NFData VarName
 instance Hashable VarName
 instance Binary VarName
 
-isHole :: VarName -> Bool
-isHole (VarHole _) = True
-isHole _ = False
+varToText :: VarName -> Text
+varToText (VarConstant s) = s
+varToText (VarHole s) = "?" <> ( s)
+varToText (VarSlot) = "!"
+varToText (VarHidden n) = "h" <> (Text.pack (show n))
+varToText (VarF s) = "out_" <> (Text.pack (show s))
+varToText (VarEmpty) = ""
+varToText (VarDefault s) =  s
 
 instance Pretty VarName where
-  pretty (VarConstant s) = s
-  pretty (VarHole s) = "?" <> ( s)
+  pretty (VarConstant s) = pretty s
+  pretty (VarHole s) = pretty $ "?" <> ( s)
   pretty (VarSlot) = "!"
-  pretty (VarHidden n) = "h" <> (Text.pack (show n))
-  pretty (VarF s) = "out_" <> (Text.pack (show s))
+  pretty (VarHidden n) = "h" <> pretty n
+  pretty (VarF s) = "out_" <> pretty s
   pretty (VarEmpty) = ""
-  pretty (VarDefault s) =  s
+  pretty (VarDefault s) = pretty s
 
 data PosVar = PosVar
   { posVarName :: VarName
@@ -66,7 +71,7 @@ instance Ord PosVar where
   compare = compare `on` posVarName
 
 instance Pretty PosVar where
-  pretty (PosVar v p) = "(" <> pretty v <> ", " <> Text.pack (show p) <> ")"
+  pretty (PosVar v p) = "(" <> pretty v <> ", " <> pretty (show p) <> ")"
 
 class (Ord a, Pretty a) => IsVar a where
   buildVar :: VarName -> SourcePos -> a

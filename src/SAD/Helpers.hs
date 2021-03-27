@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Helpers
-  ( trimLine, inParens
+  ( trimLine
   , notNull, setMapMaybe
   , nubOrd, nubOrdBy, nubOrdOn
   ) where
@@ -16,10 +16,6 @@ import Data.Maybe (mapMaybe)
 
 setMapMaybe :: (Ord a, Ord b) => (a -> Maybe b) -> Set a -> Set b
 setMapMaybe f = Set.fromList . mapMaybe f . Set.toList
-
-inParens :: [Text] -> Text
-inParens [] = ""
-inParens xs = "(" <> Text.intercalate ", " xs <> ")"
 
 -- | Remove a trailing line break from a string.
 trimLine :: Text -> Text

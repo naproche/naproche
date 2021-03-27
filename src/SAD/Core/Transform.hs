@@ -33,7 +33,8 @@ import SAD.Data.VarName
 import SAD.Data.Terms
 import SAD.Data.Text.Block (ProofText(..), Block(..), position)
 import qualified SAD.Data.Text.Block as Block
-import SAD.Core.Pretty (Pretty(..))
+import Data.Text.Prettyprint.Doc hiding ((<+>))
+import Data.Text.Prettyprint.Doc.Render.String (renderString)
 import SAD.Helpers (setMapMaybe)
 import SAD.Core.SourcePos (SourcePos, noSourcePos)
 import qualified SAD.Core.Message as Message
@@ -57,7 +58,7 @@ data ErrorContext = ErrorContext
 
 type Err m a = StateT ErrorContext m a
 
-failWithMessage :: Message.Comm m => Text -> Err m a
+failWithMessage :: Message.Comm m => Doc ann -> Err m a
 failWithMessage txt = do
   src <- errorPosition <$> get
   f <- errorFormula <$> get
@@ -65,7 +66,7 @@ failWithMessage txt = do
   lift $ Message.error Naproche.origin_reasoner src
     $  "\nWhile checking the block:\n\n" ++ show b
     ++ "\nmore specifically, the formula:\n\n" ++ showFormula f
-    ++ "\n\n" ++ (Text.unpack txt)
+    ++ "\n\n" ++ (renderString $ layoutCompact txt)
 
 data Context = Context
   { typings :: Map TermName (Maybe Type)
@@ -122,8 +123,8 @@ parseFormula f = modify (\s -> s { errorFormula = f }) >> go [] f
       F.Var v _ _ -> pure $ Var v
       F.Ind i _ ->
         if length vars > i then pure $ Var $ vars !! i
-        else failWithMessage $ Text.pack $ "Unbound index: " ++ show i
-      f -> failWithMessage $ Text.pack $ "Unexpected formula: " ++ show f
+        else failWithMessage $ pretty $ "Unbound index: " ++ show i
+      f -> failWithMessage $ pretty $ "Unexpected formula: " ++ show f
 
     addVar v vars = v:vars
 
@@ -408,7 +409,7 @@ noTags = go
       App op args -> App op <$> mapM go args
       Tag Replacement t -> go t
       Tag EqualityChain t -> go t
-      Tag tag _ -> failWithMessage $ Text.pack $ "Remaining tag: " ++ show tag
+      Tag tag _ -> failWithMessage $ pretty $ "Remaining tag: " ++ show tag
       Var v -> pure $ Var v
 
 -- | The full pipeline from formula to a terms.
@@ -547,7 +548,7 @@ convertProof goal links ctx pts = do
 getBlocks :: Message.Comm m => ProofText -> Err m [Block]
 getBlocks (ProofTextBlock b) = pure [b]
 getBlocks (ProofTextRoot ts) = concat <$> mapM getBlocks ts
-getBlocks p = failWithMessage $ Text.pack $ "Internal error: getBlocks received: " ++ show p
+getBlocks p = failWithMessage $ pretty $ "Internal error: getBlocks received: " ++ show p
 
 -- | Convert a block into a statement.
 convertBlock :: Message.Comm m => Context -> Block -> Err m [Statement]

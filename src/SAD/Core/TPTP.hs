@@ -13,10 +13,8 @@ import Data.Char
 
 import SAD.Data.Terms
 import SAD.Data.VarName
-import SAD.Core.Pretty
 import SAD.Core.Typed
 import SAD.Core.Task
-import SAD.Helpers (inParens)
 
 data ExportLang = TF0 | FOF
   deriving (Eq, Ord, Show)
@@ -26,10 +24,10 @@ class TPTP a where
 
 instance TPTP TermName where
   tptp _ (TermSymbolic t) = "s" <> t
-  tptp _ t = pretty t
+  tptp _ t = termToText t
 
 instance TPTP VarName where
-  tptp _ v = case Text.uncons (pretty v) of
+  tptp _ v = case Text.uncons (varToText v) of
     Nothing -> error $ "Empty variable!"
     Just (a, b) -> Text.cons (toUpper a) b
 
@@ -53,6 +51,10 @@ instance TPTP Type where
 
 instance TPTP a => TPTP (Identity a) where
   tptp ex (Identity a) = tptp ex a
+
+inParens :: [Text] -> Text
+inParens [] = ""
+inParens xs = "(" <> Text.intercalate ", " xs <> ")"
 
 instance (f ~ Identity, t ~ ()) => TPTP (Term f t) where
   tptp ex trm = case (ex, trm) of

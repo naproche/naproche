@@ -5,7 +5,7 @@ module SAD.Data.Terms where
 
 import Data.Text (Text)
 import qualified Data.Text as Text
-import SAD.Core.Pretty
+import Data.Text.Prettyprint.Doc
 import Data.Set (Set)
 import qualified Data.Set as Set
 import SAD.Data.VarName
@@ -67,65 +67,36 @@ termSplit (TermUnaryVerb t) = (TermUnaryVerb, t)
 termSplit (TermMultiVerb t) = (TermMultiVerb, t)
 termSplit _ = error "wont happen"
 
-instance Pretty TermName where
-  pretty (TermName t) =  t
-  pretty (TermSymbolic t) = decode t (repeat ".")
-  pretty (TermNotion t) = "a" <>  t
-  pretty (TermThe t) = "the" <>  t
-  pretty (TermUnaryAdjective t) = "is" <>  t
-  pretty (TermMultiAdjective t) = "mis" <>  t
-  pretty (TermUnaryVerb t) = "do" <>  t
-  pretty (TermMultiVerb t) = "mdo" <>  t
-  pretty (TermTask n) = "tsk " <> Text.pack (show n)
-  pretty TermEquality = "="
-  pretty TermThesis = "#TH#"
-  pretty TermNotKnown = "[??]"
-  pretty TermEmpty = ""
-  pretty (TermVar v) = let vp = pretty v
+
+termToText :: TermName -> Text
+termToText (TermName t) = t
+termToText (TermSymbolic t) =
+    let ds = decode t
+    in Text.concat $ zipWith (<>) ds (replicate (length ds - 1) "." ++ [""])
+termToText (TermNotion t) = "a" <>  t
+termToText (TermThe t) = "the" <>  t
+termToText (TermUnaryAdjective t) = "is" <>  t
+termToText (TermMultiAdjective t) = "mis" <>  t
+termToText (TermUnaryVerb t) = "do" <>  t
+termToText (TermMultiVerb t) = "mdo" <>  t
+termToText (TermTask n) = "tsk " <> Text.pack (show n)
+termToText TermEquality = "="
+termToText TermThesis = "#TH#"
+termToText TermNotKnown = "[??]"
+termToText TermEmpty = ""
+termToText (TermVar v) = let vp = varToText v
     in case Text.uncons vp of
       Nothing -> vp
       Just (h, t) -> Text.cons (toLower h) t
 
--- | Decode a TermSymbolic s with arguments ts
-decode :: Text -> [Text] -> Text
-decode s []     = symDecode s
-decode s (t:ts) = Text.pack $ dec (Text.unpack s) ""
-  where
-    dec ('b':'q':cs) = showChar '`' . dec cs
-    dec ('t':'l':cs) = showChar '~' . dec cs
-    dec ('e':'x':cs) = showChar '!' . dec cs
-    dec ('a':'t':cs) = showChar '@' . dec cs
-    dec ('d':'l':cs) = showChar '$' . dec cs
-    dec ('p':'c':cs) = showChar '%' . dec cs
-    dec ('c':'f':cs) = showChar '^' . dec cs
-    dec ('e':'t':cs) = showChar '&' . dec cs
-    dec ('a':'s':cs) = showChar '*' . dec cs
-    dec ('l':'p':cs) = showChar '(' . dec cs
-    dec ('r':'p':cs) = showChar ')' . dec cs
-    dec ('m':'n':cs) = showChar '-' . dec cs
-    dec ('p':'l':cs) = showChar '+' . dec cs
-    dec ('e':'q':cs) = showChar '=' . dec cs
-    dec ('l':'b':cs) = showChar '[' . dec cs
-    dec ('r':'b':cs) = showChar ']' . dec cs
-    dec ('l':'c':cs) = showChar '{' . dec cs
-    dec ('r':'c':cs) = showChar '}' . dec cs
-    dec ('c':'l':cs) = showChar ':' . dec cs
-    dec ('q':'t':cs) = showChar '\'' . dec cs
-    dec ('d':'q':cs) = showChar '"' . dec cs
-    dec ('l':'s':cs) = showChar '<' . dec cs
-    dec ('g':'t':cs) = showChar '>' . dec cs
-    dec ('s':'l':cs) = showChar '/' . dec cs
-    dec ('q':'u':cs) = showChar '?' . dec cs
-    dec ('b':'s':cs) = showChar '\\' . dec cs
-    dec ('b':'r':cs) = showChar '|' . dec cs
-    dec ('s':'c':cs) = showChar ';' . dec cs
-    dec ('c':'m':cs) = showChar ',' . dec cs
-    dec ('d':'t':cs) = showString (Text.unpack (t <> decode (Text.pack cs) ts))
-    dec ('z':c:cs@('d':'t':_)) = showChar c . showChar ' ' . dec cs
-    dec ('z':c:cs)   = showChar c . dec cs
-    dec cs@(':':_)   = showString cs
-    dec []           = showString ""
-    dec _            = showString (Text.unpack s)
+instance Pretty TermName where
+  pretty t = pretty $ termToText t
+
+-- | Decode a TermSymbolic s and return a list of fragments.
+-- You can render the symbol 's' with arguments 'args' as
+-- Text.concat $ zipWith (<>) (decode s) (args ++ [""])
+decode :: Text -> [Text]
+decode s = Text.split (=='.') $ symDecode s
 
 symChars :: String
 symChars = "`~!@$%^&*()-+=[]{}:'\"<>/?\\|;,"

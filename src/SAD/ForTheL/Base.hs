@@ -27,7 +27,7 @@ import SAD.Parser.Primitives
 import SAD.Core.SourcePos (noSourcePos)
 
 import SAD.Core.Message (PIDE, Report)
-import SAD.Core.Pretty (pretty)
+import Data.Text.Prettyprint.Doc (pretty)
 import SAD.Helpers (nubOrdOn)
 
 type FTL = Parser FState
@@ -348,7 +348,7 @@ varList = var `sepBy` token' "," >>= nodups
 nodups :: IsVar a => [a] -> FTL (Set a)
 nodups vs = do
   unless ((null :: [b] -> Bool) $ duplicateNames vs) $
-    fail $ "duplicate names: " ++ (show $ map (Text.unpack . pretty) vs)
+    fail $ "duplicate names: " ++ (show $ map (show . pretty) vs)
   pure $ Set.fromList vs
 
 hidden :: FTL PosVar
@@ -453,12 +453,6 @@ such = tokenOf' ["such", "so"]
 
 elementOf :: FTL ()
 elementOf = token' "in" <|> token "\\in"
-
---just for now:
-
-showVar :: VarName -> Text
-showVar (VarConstant nm) = nm
-showVar nm = pretty nm
 
 -- | Parses '\begin{env}'. Takes a parser for parsing 'env'.
 texBegin :: FTL a -> FTL a

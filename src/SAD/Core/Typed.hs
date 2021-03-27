@@ -8,10 +8,10 @@ module SAD.Core.Typed
  , PrfBlock(..), ProofBlock
  , Statement, Stmt(..), Operator(..)
  , simp, bindFree, termify, bindExists, desugerClasses
+ , prettyForalls
  ) where
 
 import Data.Text (Text)
-import qualified Data.Text as Text
 import Data.Functor.Identity
 import GHC.Generics (Generic)
 import Data.Hashable (Hashable)
@@ -27,9 +27,8 @@ import SAD.Core.SourcePos (noSourcePos)
 
 import SAD.Data.VarName
 import SAD.Data.Terms
-import SAD.Core.Pretty (Pretty(..))
+import Data.Text.Prettyprint.Doc
 import SAD.Core.SourcePos (SourcePos)
-import SAD.Helpers (inParens)
 
 -- | Types that can be used as input in a TFF declaration 
 newtype InType 
@@ -247,6 +246,10 @@ desugerClasses = go mempty
       Tag tag t -> Tag tag <$> go typings vars t 
       Var v -> ((vars, []), Var v)
 
+tupled' :: [Doc ann] -> Doc ann
+tupled' [] = ""
+tupled' xs = parens (hsep (punctuate comma xs))
+
 instance Pretty InType where
   pretty (Signature t) = pretty t
 
@@ -258,70 +261,89 @@ instance Pretty Type where
   pretty Sort = "Sort"
   pretty (Pred [] t) = pretty t
   pretty (Pred is t) = 
-    Text.intercalate " → " (map pretty is) <> " → " <> pretty t
-
--- | TODO: This approach is not nice for nested indentations.
-renderLines :: [Text] -> Text
-renderLines [] = ""
-renderLines xs = Text.unlines ("":map ("  " <>) xs)
+    encloseSep "" "" " → " (map pretty is ++ [pretty t])
 
 instance (Pretty (f InType), Show t, Show (f InType)) 
   => Pretty (Term f t) where
-  pretty (Forall v t tr) = "(∀[" <> pretty v <> " : " 
-    <> pretty t <> "] " <> pretty tr <> ")"
-  pretty (Exists v t tr) = "(∃[" <> pretty v <> " : " 
-    <> pretty t <> "] " <> pretty tr <> ")"
-  pretty (Class v t tr) = "{ " <> pretty v <> " : "
-    <> pretty t <> " | " <> pretty tr <> " }"
-  pretty (App And [a, b]) = "(" <> pretty a <> " and " <> pretty b <> ")"
-  pretty (App Or  [a, b]) = "(" <> pretty a <> " or " <> pretty b <> ")"
-  pretty (App Iff [a, b]) = "(" <> pretty a <> " iff " <> pretty b <> ")"
-  pretty (App Imp [a, b]) = "(" <> pretty a <> " implies " <> pretty b <> ")"
-  pretty (App Eq  [a, b]) = "(" <> pretty a <> " = " <> pretty b <> ")"
+  pretty (Forall v t tr) = "(∀[" <> pretty v <+> ":"
+    <+> pretty t <> "]" <> softline <> pretty tr <> ")"
+  pretty (Exists v t tr) = "(∃[" <> pretty v <+> ":"
+    <+> pretty t <> "]" <> softline <> pretty tr <> ")"
+  pretty (Class v t tr) = "{" <+> pretty v <+> ":"
+    <+> pretty t <> softline <> " | " <> pretty tr <> " }"
+  pretty (App And [a, b]) = "(" <> pretty a <> softline <> "and " <> pretty b <> ")"
+  pretty (App Or  [a, b]) = "(" <> pretty a <> softline <> "or " <> pretty b <> ")"
+  pretty (App Iff [a, b]) = "(" <> pretty a <> softline <> "iff " <> pretty b <> ")"
+  pretty (App Imp [a, b]) = "(" <> pretty a <> softline <> "implies " <> pretty b <> ")"
+  pretty (App Eq  [a, b]) = "(" <> pretty a <> softline <> "= " <> pretty b <> ")"
   pretty (App Not [a]) = "(not " <> pretty a <> ")"
   pretty (App Top []) = "true"
   pretty (App Bot []) = "false"
   pretty (App (OpTrm (TermSymbolic s)) args) = 
-    decode s $ flip map args $ \a -> case a of
-      App (OpTrm (TermSymbolic _)) _ -> "(" <> pretty a <> ")"
-      _ -> pretty a
-  pretty (App (OpTrm op) args) = pretty op  <> inParens (map pretty args) 
+    let args' = flip map args $ \a -> case a of
+          App (OpTrm (TermSymbolic _)) _ -> "(" <> pretty a <> ")"
+          _ -> pretty a
+    in concatWith (<>) $ zipWith (<>) (map pretty $ decode s) (args' ++ [""])
+  pretty (App (OpTrm op) []) = pretty op
+  pretty (App (OpTrm op) args) = pretty op <> tupled' (map pretty args) 
   pretty (Var v) = pretty v
-  pretty (Tag t tr) = "(" <> Text.pack (show t) <> " :: " <> pretty tr <> ")"
+  pretty (Tag t tr) = "(" <> pretty (show t) <> " :: " <> pretty tr <> ")"
   pretty t = error $ "Malformed term: " ++ show t
+
+-- | Split the all leading forall binds from a formula
+splitForalls :: Term f t -> ([(VarName, f InType)], Term f t)
+splitForalls (Forall v m t) =
+  let (vs, t') = splitForalls t
+  in ((v, m):vs, t')
+splitForalls t = ([], t)
+
+prettyForalls :: (Pretty (f InType), Show (f InType), Show t) => Term f t -> Doc ann
+prettyForalls t = 
+  let (vs, t') = splitForalls t
+  in case vs of
+    [] -> pretty t
+    _ -> "∀[" <> hsep (punctuate ("," <> softline) (map (\(v, m) -> pretty v <+> ":" <+> pretty m) vs)) <> "]: " <> nest 2 (line <> pretty t')
 
 instance (Pretty (f InType), Show t, Show (f InType)) 
   => Pretty (Stmt f t) where
   pretty (IntroSort tm) = "Sort: " <> pretty tm
   pretty (Predicate tm [] t) = pretty tm <> " : " <> pretty t
-  pretty (Predicate tm ts t) = pretty tm <> " : "
-    <> Text.intercalate " → " (map pretty ts) <> " → " <> pretty t
-  pretty (Axiom t) = "Axiom: " <> pretty t
-  pretty (Claim t prf) = "Claim: " <> pretty t <> " " <> pretty prf
+  pretty (Predicate tm ts t) = pretty tm <> " : " <>
+    encloseSep "" "" " → " (map pretty ts ++ [pretty t])
+  pretty (Axiom t) = "Axiom: " <> prettyForalls t
+  pretty (Claim t prf) = "Claim: " <> prettyForalls t <> pretty prf
   pretty (Coercion name from to) = "Coercion: " <> pretty name <> " : " 
     <> pretty from <> " → " <> pretty to
 
+-- | DANGER: We remove Intro/Assume from translate output as they are
+-- inserted automatically at the moment. Once the user may insert them
+-- they should be printed.
+noIntroAssume :: Prf f t -> Bool
+noIntroAssume (Intro _ _) = False
+noIntroAssume (Assume _) = False
+noIntroAssume _ = True
+
 instance (Pretty (f InType), Show t, Show (f InType))
   => Pretty (PrfBlock f t) where
-  pretty (Proving [] _ ls) = inParens ls
-  pretty (Proving prfs c ls) =
-    renderLines (map (pretty . located) prfs) 
-    <> "\n" <> pretty c <> inParens ls
+  pretty (Proving [] _ ls) = tupled' $ map pretty ls
+  pretty (Proving prfs c ls) = nest 4 $ line <>
+    vsep (map (pretty . located) (filter (noIntroAssume . located) prfs)
+         ++ [pretty c <> tupled' (map pretty ls)]) 
 
 instance (Pretty (f InType), Show t, Show (f InType))
   => Pretty (Prf f t) where
-  pretty (Subclaim t prfs) = pretty t <> " " <> pretty prfs
+  pretty (Subclaim t prfs) = nest 2 (pretty t) <> " " <> pretty prfs
   pretty (Intro v t) = "Let " <> pretty v <> " : " <> pretty t 
   pretty (Assume a) = "Assume " <> pretty a
-  pretty (Choose vs t prfs) = "Choose: " <> Text.intercalate ", " 
-    (map pretty vs) <> " such that " <> pretty t <> pretty prfs
-  pretty (Cases cs) = Text.concat $
-    map (\(t, p) -> "Case: " <> pretty t <> pretty p) cs
-  pretty (TerminalCases cs) = Text.concat $
-    map (\(t, p) -> "Case: " <> pretty t <> pretty p) cs
+  pretty (Choose vs t prfs) = "Choose: " <> tupled' (map pretty vs)
+    <> " such that " <> nest 2 (pretty t) <> pretty prfs
+  pretty (Cases cs) = vsep $
+    map (\(t, p) -> "Case: " <> nest 2 (pretty t) <> pretty p) cs
+  pretty (TerminalCases cs) = vsep $
+    map (\(t, p) -> "Case: " <> nest 2 (pretty t) <> pretty p) cs
   pretty (ByContradiction goal) = "Assume the contrary: " 
     <> pretty (simp (App Not [goal]))
 
 instance Pretty a => Pretty (Located a) where
-  pretty (Located t p a) = "[" <> t  <> "] " 
-    <> Text.pack (show p) <> "\n" <> pretty a <> "\n"
+  pretty (Located t p a) = "[" <> pretty t <> "] " 
+    <> pretty (show p) <> "\n" <> pretty a <> "\n"

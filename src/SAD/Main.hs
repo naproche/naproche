@@ -21,7 +21,8 @@ import Control.Monad.State
 import Data.Either (isRight)
 import Data.Time (NominalDiffTime, UTCTime, getCurrentTime, diffUTCTime)
 
-import SAD.Core.Pretty (pretty)
+import Data.Text.Prettyprint.Doc
+import Data.Text.Prettyprint.Doc.Render.String (renderString)
 import SAD.Core.Logging (showTimeDiff, RState(..), sumCounter, Counter(..), Tracker(..))
 import SAD.Core.Message (Comm, errorParser, outputMain, Kind(..))
 import SAD.Core.Provers (Prover)
@@ -93,7 +94,8 @@ showTranslation txts = do
   let out = outputMain WRITELN (fileOnlyPos "")
   -- lift $ mapM_ (\case (ProofTextBlock b) -> out $ show b; _ -> pure ()) txts
   converted <- lift $ convert txts
-  lift $ mapM_ (out . (++"\n\n") . Text.unpack . pretty . located) converted
+  lift $ mapM_ (out . (++"\n") . renderString . layoutSmart
+    (defaultLayoutOptions { layoutPageWidth = AvailablePerLine 120 1.0 }) . pretty . located) converted
   endTimedSection CheckTime
   beginTimedSection ProvingTime
   endTimedSection ProvingTime

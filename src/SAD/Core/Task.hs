@@ -16,9 +16,7 @@ import Data.Binary (Binary)
 
 import SAD.Core.Typed
 import SAD.Data.Terms
-import SAD.Core.Pretty
-import qualified Data.Text as Text
-import SAD.Helpers (inParens)
+import Data.Text.Prettyprint.Doc
 import SAD.Core.SourcePos (SourcePos, sourceFile)
 import qualified Data.Set as Set
 
@@ -45,14 +43,14 @@ taskFile :: Task -> FilePath
 taskFile = sourceFile . taskPos
 
 instance Pretty Hypothesis where
-  pretty (Given n t) = n <> " : " <> pretty t
+  pretty (Given n t) = (pretty n) <> " : " <> pretty t
   pretty (Typing n t) = pretty n <> " : " <> pretty t
 
 instance Pretty Task where
   pretty (Task hypo c h n bc _) = 
-    "Goal \"" <> n <> "\": " <> pretty c <> " " <> inParens h 
+    "Goal \"" <> (pretty n) <> "\": " <> pretty c <> " " <> tupled (map pretty h) 
     <> (if bc then " by contradiction" else "") <> "\n"
-    <> Text.unlines (pretty <$> hypo)
+    <> pretty hypo
 
 -- | Generate tasks from the given proofs under the hypothesis that were assumed at this point.
 generateFromProof :: Text -> SourcePos -> Bool -> [Hypothesis] -> ProofBlock -> [Task]

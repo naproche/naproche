@@ -14,7 +14,6 @@ import SAD.Core.SourcePos
 import SAD.Data.Instr
 import SAD.Core.Provers
 import SAD.Core.Logging
-import SAD.Core.Pretty
 
 import Data.Text (Text)
 import qualified Data.Text as Text
@@ -22,6 +21,7 @@ import SAD.Core.Message (Comm, output, errorExport, Kind(..), outputReasoner, ou
 import SAD.Core.TPTP (tptp, ExportLang(..))
 import SAD.Core.Task (Task(..))
 import SAD.Core.Cache
+import SAD.Core.Typed (prettyForalls)
 
 class Monad m => RunProver m where
   -- | Given a prover, a timelimit, a memorylimit and a tptp text get a prover output.
@@ -64,13 +64,14 @@ verify provers instrs rstate tsks = do
     addCounter c n s = s { trackers = trackers s ++ [Counter c n] }
     go (c, rstate) t = do
       c <- loadFile (sourceFile $ taskPos t) c
+      let conj = show (prettyForalls (conjecture t))
       if isCached t c then do
-        outputReasoner WRITELN (taskPos t) $ Text.unpack 
-          $ "Cached: [" <> (taskName t) <> "] " <> pretty (conjecture t)
+        -- outputReasoner WRITELN (taskPos t)
+        --   $ "Cached: [" <> (Text.unpack $ taskName t) <> "] " <> conj <> "\n"
         pure (cache t c, addCounter CachedCounter 1 rstate)
       else do 
-        outputReasoner WRITELN (taskPos t) $ Text.unpack 
-          $ "[" <> (taskName t) <> "] " <> pretty (conjecture t)
+        outputReasoner WRITELN (taskPos t)
+          $ "[" <> (Text.unpack $ taskName t) <> "] " <> conj <> "\n"
         res <- export (taskPos t) provers instrs t
         case res of
           Success -> pure (cache t c, addCounter SuccessfulGoalsCounter 1 rstate)
