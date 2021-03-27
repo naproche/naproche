@@ -95,7 +95,7 @@ instance CacheStorage CommandLine where
     dirname <- cacheDir <$> get
     let dir = fdir </> dirname
     liftIO $ createDirectoryIfMissing True dir
-    c <- liftIO $ (decode' <$> BS.readFile (dir </> fname))
+    c <- liftIO $ ((decode' . BS.fromStrict) <$> ByteString.readFile (dir </> fname))
       `catch` (\(_ :: SomeException) -> pure Nothing)
     case c of
       Just c' -> pure $ c' { lastRun = 1 + lastRun c' }

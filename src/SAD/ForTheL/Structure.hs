@@ -33,7 +33,7 @@ import SAD.Parser.Token
 import SAD.Parser.Primitives
 
 import SAD.Data.Instr
-import SAD.Data.Text.Block (Block(Block), ProofText(..), Section(..))
+import SAD.Data.Text.Block as Block (Block(Block), ProofText(..), Section(..))
 import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Formula
 
@@ -240,15 +240,16 @@ pretyping bl = do
 pret :: Set VarName -> [TVar] -> Block -> FTL Block
 pret dvs tvs bl = do
   untyped <- makeDecls $ fvToVarSet $ excludeSet (allFree (Block.formula bl)) (blockVars <> dvs)
-  let typing =
-        if null untyped
-        then Top
-        else foldl1 And $ fmap ((`typeWith` tvs) . declName) (Set.toList untyped)
+  typing <- if null untyped then pure Top
+        else foldl1 And <$> mapM ((`typeWith` tvs) . declName) (Set.toList untyped)
   return $ assumeBlock {Block.formula = typing, Block.declaredVariables = untyped}
   where
     blockVars = Block.declaredNames bl
     assumeBlock = bl {Block.body = [], Block.kind = Assumption, Block.link = []}
-    typeWith v = subst (mkVar v) (VarHole "") . snd . fromJust . find (elem v . fst)
+    varNotFound v = fail $ "Variable was not introduced and can't be pretyped: " ++ show v
+    typeWith v vs = do
+      mvs <- maybe (varNotFound v) pure $ find (elem v . fst) vs
+      pure $ subst (mkVar v) (VarHole "") $ snd mvs
 
 pretypeBefore :: FTL Block -> FTL [ProofText] -> FTL [ProofText]
 pretypeBefore blp p = do

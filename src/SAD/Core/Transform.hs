@@ -443,7 +443,8 @@ preBind vs ctx = ctx { preBoundVars = vs <> preBoundVars ctx }
 autoIntroAssume :: Message.Comm m => Tactic m
 autoIntroAssume (_, _, []) = pure Nothing
 autoIntroAssume (goal, ctx, (b:bs)) = pure $ case goal of
-    Forall v (Identity typ) t -> Just ((Located "intro" (position b) (Intro v typ)), (t, preBind (Map.singleton v typ) ctx, b:bs))
+    Forall v (Identity typ) t -> Just ((Located "intro" (position b) (Intro v typ)),
+      (termify (Set.singleton v) t, preBind (Map.singleton v typ) ctx, b:bs))
     App Imp [ass, goal'] -> Just ((Located "intro" (position b) (Assume $ termify (Map.keysSet $ preBoundVars ctx) ass)), (goal', ctx, b:bs))
     _ -> Nothing
 
@@ -518,9 +519,9 @@ convertProof goal links ctx pts = do
     go bs = unfoldM (goal, ctx, bs) $ \st ->
       takeFirstSucceding
         [ autoIntroAssume st
+        , byContradiction st
         , cases st
         , chooses st
-        , byContradiction st
         , subClaims st
         ]
 

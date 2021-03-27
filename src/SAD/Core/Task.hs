@@ -55,32 +55,30 @@ instance Pretty Task where
     <> Text.unlines (pretty <$> hypo)
 
 -- | Generate tasks from the given proofs under the hypothesis that were assumed at this point.
--- When handling subclaims we assume we are not in a proof by contradiction.
--- That seems consistent with normal mathematical practice.
-generateFromProof :: Text -> SourcePos -> [Hypothesis] -> ProofBlock -> [Task]
-generateFromProof topname topPos hypo (Proving prf topclaim tophints)
-  = concat $ finalize $ mapAccumL go (hypo, False) prf
+generateFromProof :: Text -> SourcePos -> Bool -> [Hypothesis] -> ProofBlock -> [Task]
+generateFromProof topname topPos isContra hypo (Proving prf topclaim tophints)
+  = concat $ finalize $ mapAccumL go (hypo, isContra) prf
   where
     finalize ((h', isContra), ts) = ts ++ [[Task h' topclaim tophints topname isContra topPos]]
 
     go (hypo, isContra) (Located n _ p) = case p of
       Intro v typ -> (((Typing (TermVar v) (Pred [] (InType typ))):hypo, isContra), [])
       Assume t -> (((Given n t):hypo, isContra), [])
-      Subclaim t prf -> (((Given n t):hypo, isContra), generateFromProof n topPos hypo prf)
+      Subclaim t prf -> (((Given n t):hypo, isContra), generateFromProof n topPos isContra hypo prf)
       Cases [] -> ((hypo, isContra), [])
       Cases cs ->
-        let cases = concatMap (\(c, p) -> generateFromProof "case" topPos (Given "case" c:hypo) p) cs
+        let cases = concatMap (\(c, p) -> generateFromProof "case" topPos isContra (Given "case" c:hypo) p) cs
             claim = foldl1 (\a b -> App Or [a, b]) $ map (\(c, p) -> App Imp [c, asTerm p]) cs
         in (((Given n claim):hypo, isContra), cases)
       TerminalCases [] -> ((hypo, isContra), [])
       TerminalCases cs ->
-        let cases = concatMap (\(c, p) -> generateFromProof "case" topPos (Given "case" c:hypo) p) cs
+        let cases = concatMap (\(c, p) -> generateFromProof "case" topPos isContra (Given "case" c:hypo) p) cs
             final = foldl1 (\a b -> App Or [a, b]) (map fst cs)
         in ((hypo, isContra), cases ++ [Task hypo final [] n isContra topPos])
       ByContradiction goal -> (((Given n (simp $ App Not [goal])):hypo, True), [])
       Choose vs t prf -> -- TODO: Check if this is correct if the bound variable is a TermVar in the statement...
         let ts = map (\(v, typ) -> Typing (TermVar v) (Pred [] (InType typ))) vs
-        in (((Given n t) : ts ++ hypo, isContra), generateFromProof n topPos hypo prf)
+        in (((Given n t) : ts ++ hypo, isContra), generateFromProof n topPos isContra hypo prf)
 
 -- | Turn a proof block back into a term by unrolling all chooses, intros and assumptions.
 -- This might bind variables that are unused in the term and a future implementation should
@@ -115,5 +113,5 @@ generateTasks = concat . snd . mapAccumL go []
       IntroSort t -> ((Typing t Sort):hypo, [])
       Predicate n ts t -> ((Typing n (Pred ts t)):hypo, [])
       Axiom t -> ((Given n t):hypo, [])
-      Claim t prf -> ((Given n t):hypo, generateFromProof n pos hypo prf)
+      Claim t prf -> ((Given n t):hypo, generateFromProof n pos False hypo prf)
       Coercion n f t -> ((Typing n (Pred [Signature f] (InType (Signature t)))):hypo, [])

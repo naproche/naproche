@@ -81,12 +81,12 @@ atomic = label "atomic statement"
   where
     weHave = optLL1 () $ token' "we" >> token' "have"
 
-
 thesis :: FTL Formula
-thesis = art >> contradiction
+thesis = art >> (thes <|> contrary <|> contradiction)
   where
+    thes = token' "thesis" >> return mkThesis
+    contrary = token' "contrary" >> return (Not mkThesis)
     contradiction = token' "contradiction" >> return Bot
-
 
 thereIs :: FTL Formula
 thereIs = label "there-is statement" $ there >> (noNotion -|- notions)
@@ -203,7 +203,7 @@ multiPredicate p = (token' "not" >> mNegative) <|> mPositive
 --- Notions
 
 baseNotion :: FTL (Formula -> Formula, Formula, Set PosVar)
-baseNotion = fmap digadd $ cm <|> symEqnt <|> (set </> primNotion term)
+baseNotion = fmap digadd $ cm <|> symEqnt <|> (clss </> primNotion term)
   where
     cm = token' "common" >> primCommonNotion term terms
     symEqnt = do
@@ -374,34 +374,24 @@ sVar :: FTL Formula
 sVar = fmap pVar var
 
 -- class term equations
+
 classEquality :: FTL Formula
 classEquality = twoClassTerms </> oneClassTerm
   where
     twoClassTerms = do
-      cnd1 <- fmap stripSet symbSetNotation; token "="
-      cnd2 <- fmap stripSet symbSetNotation; h <- hidden
-      hDecl <- makeDecl h
-      return $ dAll hDecl $ Iff (cnd1 $ pVar h) (cnd2 $ pVar h)
-    stripSet = (.) strip . fst
+      (clss1, _) <- symbClassNotation; token "="
+      (clss2, _) <- symbClassNotation;
+      pure $ mkEquality clss1 clss2
 
     oneClassTerm = left </> right
     left = do
-      cnd <- fmap stripSet symbSetNotation; token "="
-      t <- sTerm; h <- hidden; hDecl <- makeDecl h; let hv = pVar h
-      return $ All hDecl $ Iff (cnd hv) (mkElem hv t)
+      (clss, _) <- symbClassNotation; token "="
+      t <- sTerm
+      pure $ mkEquality clss t
     right = do
-      t <- sTerm; token "="; h <- hidden; hDecl <- makeDecl h
-      let hv = pVar h
-      cnd <- fmap stripSet symbSetNotation
-      return $ dAll hDecl $ Iff (mkElem hv t) (cnd hv)
-
-
-{- strip away a Tag on top level or after negation -}
-strip :: Formula -> Formula
-strip (Tag _ f) = strip f
-strip (Not f)   = Not $ strip f
-strip f         = f
-
+      t <- sTerm; token "="
+      (clss, _) <- symbClassNotation
+      pure $ mkEquality t clss
 
 
 -- selection
@@ -417,41 +407,41 @@ selection = fmap (foldl1 And) $ (art >> takeLongest namedNotion) `sepByLL1` comm
 -- function and class syntax
 
 -- -- class
+
 classNotion :: FTL Formula
 classNotion = do
-  v <- var; token "="; (_, f, _) <- set
+  v <- var; token "="; (_, f, _) <- clss
   dig (Tag Dig f) [pVar v]
 
-set :: FTL MNotion
-set = label "set definition" $ symbSet <|> classOf
+clss :: FTL MNotion
+clss = label "class definition" $ symbSet <|> classOf
   where
     classOf = do
-      tokenOf' ["class", "classes"]; nm <- var -|- hidden; token' "of";
+      tokenOf' ["set", "sets", "class", "classes"]; nm <- var -|- hidden; token' "of";
       (q, f, u) <- notion >>= single; vnm <- hidden
-      vnmDecl <- makeDecl vnm;
-      return (id, setFormula mkClass vnmDecl $ (subst (pVar vnm) (posVarName u) $ q f) `blAnd` mkObject (pVar vnm) , Set.singleton nm)
+      return (id, classFormula $ subst (pVar vnm) (posVarName u) $ q f, Set.singleton nm)
     symbSet = do
-      (cnd, (nm, mkColl)) <- symbSetNotation; h <- hidden
-      nmDecl <- makeDecl nm
-      return (id, setFormula mkColl nmDecl $ cnd $ pVar nm, Set.singleton h)
-    setFormula mkColl dcl = let nm = PosVar (declName dcl) (declPosition dcl) in
-      And (mkColl (mkVar (VarHole ""))) . dAll dcl . Iff (mkElem (pVar nm) (mkVar (VarHole "")))
+      (clss, nm) <- symbClassNotation
+      return (id, classFormula clss, Set.singleton nm)
+    classFormula = mkEquality (mkVar (VarHole ""))
 
-
-symbSetNotation :: FTL (Formula -> Formula, (PosVar, Formula -> Formula))
-symbSetNotation = cndSet </> finSet
+symbClassNotation :: FTL (Formula, PosVar)
+symbClassNotation = cndSet </> finSet
   where
     finSet = braced $ do
       ts <- sTerm `sepByLL1` token ","
       h <- hidden
-      pure (\tr -> foldr1 Or $ map (mkEquality tr) ts, (h, mkSet))
+      hDecl <- makeDecl h
+      pure (Class hDecl $ foldr1 Or $ map (mkEquality $ pVar h) ts, h)
     cndSet = braced $ do
-      (tag, c, t, mkColl) <- sepFrom
-      st <- (token "|" <|> token ":") >> statement
+      (c, t) <- sepFrom
+      st <- token "|" >> statement;
       vs <- freeVars t
       vsDecl <- makeDecls $ fvToVarSet vs;
       nm <- if isVar t then pure $ PosVar (varName t) (varPosition t) else hidden
-      pure (\tr -> tag $ c tr `blAnd` mbEqu vsDecl tr t st `blAnd` mkObject tr, (nm, mkColl))
+      nmDecl <- makeDecl nm
+      let nmVar = pVar nm
+      pure (Class nmDecl $ bind (declName nmDecl) $ c nmVar `blAnd` mbEqu vsDecl nmVar t st, nm)
 
     -- | If we quantify over a variable v then vs = {v} and we can just substitute
     -- the new variable 'nmVar' for 'v'. Else we quantify over a term (say (x, y))
@@ -459,24 +449,23 @@ symbSetNotation = cndSet </> finSet
     mbEqu _ tr Var{varName = v} = subst tr v
     mbEqu vs tr t = \st -> foldr dExi (st `And` mkEquality tr t) vs
 
-    -- | Split into a constraint and a term.
-    -- For example: '(x, y) in Z^2' becomes (_ in Z^2, (x, y))
-    sepFrom :: FTL (Formula -> Formula, Formula -> Formula, Formula, Formula -> Formula)
-    sepFrom = notionSep -|- setSep -|- noSep
-
+-- | Split into a constraint and a term.
+-- For example: '(x, y) in Z^2' becomes (_ in Z^2, (x, y))
+sepFrom :: FTL (Formula -> Formula, Formula)
+sepFrom = notionSep -|- classSep -|- noSep
+  where
     notionSep = do
-      (q, f, v) <- notion >>= single;
-      guard (case f of Trm n _ _ _ -> n /= TermEquality; _ -> False)
-      return (Tag Replacement, \tr -> subst tr (posVarName v) $ q f, pVar v, mkClass)
-    setSep = do
-      t <- sTerm
-      token' "in"
-      clssTrm <- (Left <$> sTerm) </> (Right <$> symbSetNotation)
-      case clssTrm of
-        Left s -> pure (id, flip mkElem s, t, \v -> mkClass v `And` (mkSet s `Imp` mkSet v))
-        Right (cls, (_, mkColl)) -> pure (id, cls, t, mkColl)
+      (q, f, v) <- notion >>= single; guard (not . (==) TermEquality . trmName $ f)
+      return (\tr -> subst tr (posVarName v) $ q f, pVar v)
+    classSep = do
+      t <- sTerm; cnd <- token' "in" >> elementCnd
+      return (cnd, t)
     noSep  = do
-      t <- sTerm; return (Tag Replacement, const Top, t, mkClass)
+      t <- sTerm; return (const Top, t)
+
+elementCnd :: FTL (Formula -> Formula)
+elementCnd = flip mkElem <$> (sTerm </> fmap fst symbClassNotation)
+
 
 ---- chain tools
 

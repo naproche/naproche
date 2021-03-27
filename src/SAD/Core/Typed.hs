@@ -236,7 +236,7 @@ desugerClasses = go mempty
             ((clss', stmts), t') = go (Map.insert v m typings) clss t
             free = Map.toList $ Map.fromSet (typings Map.!) $ fvToVarSet $ bindVar v $ fst $ findFree mempty t'
             clsTrm = App (OpTrm cls) $ map (Var . fst) free
-            ext = Forall v m $ App Iff [App (OpTrm (TermName "in")) [Var v, clsTrm] , t' ]
+            ext = Forall v m $ App Iff [App (OpTrm (TermNotion "ElementOf")) [Var v, clsTrm] , t' ]
             ext' = foldr (\(v, m) -> Forall v m) ext free
         in ((clss', (cls, map snd free, ext'):stmts), clsTrm)
       App op ts ->

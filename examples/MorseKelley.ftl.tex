@@ -20,21 +20,29 @@
   The axiom schema of class formation has been omitted in this presentation
   because it is built into the compiler.
 
+  The presentation here follows largely http://www.math.uni-bonn.de/ag/logik/teaching/2018WS/set_theory/current_scriptum.pdf
+  for historical reasons. It would be worthwhile to port it to Kelley's formalization.
+
   \begin{forthel}
+    [synonym set/-s]
     [synonym relation/-s]
     [synonym function/-s]
     [synonym element/-s]
 
-    Let $B, C, D, E$ denote classes.
-    Let $b, c, d, e$ denote sets.
+    \begin{signature}
+      A set is a notion.
+    \end{signature}
+
+    Let $B, C, D$ denote classes.
+    Let $s, t, u$ denote sets.
     Let $w, x, y, z$ denote objects.
 
     \begin{axiom}
-      $b$ is a class.
+      $s$ is a class.
     \end{axiom}
     
     \begin{axiom}
-      $b$ is an object.
+      $s$ is an object.
     \end{axiom}
 
     \begin{definition}
@@ -63,7 +71,7 @@
     \end{axiom}
 
     \begin{lemma}
-      The empty set is $\{ u | u \neq u \}$.
+      The empty set is $\{ v | v \neq v \}$.
     \end{lemma}
 
     \begin{definition}
@@ -79,7 +87,7 @@
     \end{definition}
 
     \begin{lemma}
-      B is empty iff B is { u | u != u }.
+      B is empty iff B is { v | v != v }.
     \end{lemma}
 
     \begin{signature}
@@ -91,7 +99,7 @@
     \end{axiom}
 
     \begin{lemma}
-      The pair of x and y is { u | u = x or u = y }.
+      The pair of x and y is { v | v = x or v = y }.
     \end{lemma}
 
     \begin{definition}
@@ -111,12 +119,12 @@
     \end{lemma}
 
     \begin{definition}
-      The union of D is a class B such that (for every object $x$ x is in B iff there is a c 
-        such that c is in D and x is in c).
+      The union of D is a class B such that (for every object $x$ x is in B iff there is a set $s$ 
+        such that $s$ is in D and x is in $s$).
     \end{definition}
 
     \begin{axiom}[Union]
-      The union of d is a set.
+      The union of $s$ is a set.
     \end{axiom}
 
     \begin{definition}
@@ -129,20 +137,18 @@
     \end{definition}
 
     \begin{lemma}
-      \Union{d, b} is the union of the pair of d and b.
+      \Union{s, t} is the union of the pair of s and t.
     \end{lemma}
     \begin{proof}
-      For every object $x$ if $x$ is an element of \Union{d, b}
-        then $x$ is an element of the union of the pair of d and b.
-      For every object $x$ if $x$ is an element of the union of the pair of d and b
-        then $x$ is an element of \Union{d, b}.
-      Proof.
-        Take a set $c$ such that $x$ is in $c$ and $c$ is in the pair of d and b.
-      end.
+      For every object $x$ if $x$ is an element of \Union{s, t}
+        then $x$ is an element of the union of the pair of s and t.
+      For every object $x$ if $x$ is an element of the union of the pair of s and t
+        then $x$ is an element of \Union{s, t}.
+      Indeed take a set $u$ such that $x$ is in $u$ and $u$ is in the pair of s and t.
     \end{proof}
 
     \begin{lemma}
-      \Union{d, b} is a set.
+      \Union{s, t} is a set.
     \end{lemma}
 
     \begin{definition}
@@ -151,25 +157,31 @@
     \end{definition}
 
     \begin{definition}
-      A subset of b is a set c 
-        such that c is a subclass of b.
+      A subset of $s$ is a set $t$ 
+        such that $t$ is a subclass of $s$.
     \end{definition}
 
+    \begin{axiom}[Separation]
+      Let $B$ be a class. Let $s, t$ be sets.
+      Assume that $B$ is a subclass of $t$.
+      Then there is a set $s$ such that $s = B$.
+    \end{axiom}
+
     \begin{signature}
-      The powerset of b is a set.
+      The powerset of $s$ is a set.
     \end{signature}
 
     \begin{axiom}[PowerSet]
-      b is the powerset of d iff (for every set c c is in b iff c is a subclass of d).
+      $s$ is the powerset of $u$ iff (for every set $t$ $t$ is in $s$ iff $t$ is a subclass of $u$).
     \end{axiom}
 
     \begin{definition}
-      The successor of b is the pair of b and the singleton of b.
+      The successor of $s$ is the pair of $s$ and the singleton of $s$.
     \end{definition}
 
     \begin{axiom}[Inf]
-      There is a set n such that the empty set is in n and for every b
-        such that b is in n the successor of b is in n.
+      There is a set $n$ such that the empty set is in $n$ and for every $s$
+        such that $s$ is in $n$ the successor of $s$ is in $n$.
     \end{axiom}
 
     \begin{definition}
@@ -188,7 +200,7 @@
     Let R, S denote relations.
 
     \begin{definition} 
-      The domain of R is { u | there is a object v such that (u, v) is in R }.
+      The domain of R is { object u | there is a object v such that (u, v) is in R }.
     \end{definition}
 
     \begin{definition} 
@@ -204,7 +216,7 @@
     \end{definition}
 
     \begin{definition} 
-      The preimage of B under R is { u | there is a object v such that v is in B and (u, v) is in R }.
+      The preimage of B under R is { object u | there is a object v such that v is in B and (u, v) is in R }.
     \end{definition}
 
     \begin{definition} 
@@ -284,13 +296,13 @@
     \end{definition}
 
     \begin{axiom}[Choice]
-      Let c be a set such that for all b such that b is in c b is nonempty.
-        There exists a function F such that \Dom{F} = c
-        and for all x such that x is in c there is a set d such that x is in d and $d = F(x)$.
+      Let $t$ be a set such that for all $s$ such that $s$ is in $t$ $s$ is nonempty.
+        There exists a function F such that \Dom{F} = t
+        and for all x such that x is in $t$ there is a set $u$ such that x is in $u$ and $u = F(x)$.
     \end{axiom}
 
     \begin{axiom}[Replacement]
-      The restriction of F to c is a set.
+      The restriction of F to $s$ is a set.
     \end{axiom}
 
     \begin{definition}
@@ -298,12 +310,12 @@
     \end{definition}
 
     \begin{definition}
-      The intersection of c and b is the intersection of the pair of c and b.
+      The intersection of $t$ and $s$ is the intersection of the pair of $t$ and $s$.
     \end{definition}
 
     \begin{axiom}[Restriction]
-      If c is nonempty then there is a b such that b is in c and
-        (the intersection of c and b) is empty.
+      If $t$ is nonempty then there is a set $s$ such that $s$ is in $t$ and
+        (the intersection of t and s) is empty.
     \end{axiom}
   \end{forthel}
 \end{document}

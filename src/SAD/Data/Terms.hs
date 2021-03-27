@@ -13,6 +13,7 @@ import GHC.Generics (Generic)
 import Data.Hashable (Hashable)
 import Data.Binary (Binary)
 import Control.DeepSeq (NFData)
+import Data.Char
 
 data TermName
   = TermName Text
@@ -80,7 +81,10 @@ instance Pretty TermName where
   pretty TermThesis = "#TH#"
   pretty TermNotKnown = "[??]"
   pretty TermEmpty = ""
-  pretty (TermVar v) = pretty v
+  pretty (TermVar v) = let vp = pretty v
+    in case Text.uncons vp of
+      Nothing -> vp
+      Just (h, t) -> Text.cons (toLower h) t
 
 -- | Decode a TermSymbolic s with arguments ts
 decode :: Text -> [Text] -> Text
