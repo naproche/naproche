@@ -263,6 +263,11 @@ instance Pretty Type where
   pretty (Pred is t) = 
     encloseSep "" "" " → " (map pretty is ++ [pretty t])
 
+alternate :: [a] -> [a] -> [a]
+alternate [] _ = []
+alternate (x:xs) (y:ys) = x : y : alternate xs ys
+alternate (x:xs) [] = x : alternate xs []
+
 instance (Pretty (f InType), Show t, Show (f InType)) 
   => Pretty (Term f t) where
   pretty (Forall v t tr) = "(∀[" <> pretty v <+> ":"
@@ -270,7 +275,7 @@ instance (Pretty (f InType), Show t, Show (f InType))
   pretty (Exists v t tr) = "(∃[" <> pretty v <+> ":"
     <+> pretty t <> "]" <> softline <> pretty tr <> ")"
   pretty (Class v t tr) = "{" <+> pretty v <+> ":"
-    <+> pretty t <> softline <> " | " <> pretty tr <> " }"
+    <+> pretty t <> " | " <> pretty tr <> " }"
   pretty (App And [a, b]) = "(" <> pretty a <> softline <> "and " <> pretty b <> ")"
   pretty (App Or  [a, b]) = "(" <> pretty a <> softline <> "or " <> pretty b <> ")"
   pretty (App Iff [a, b]) = "(" <> pretty a <> softline <> "iff " <> pretty b <> ")"
@@ -283,7 +288,10 @@ instance (Pretty (f InType), Show t, Show (f InType))
     let args' = flip map args $ \a -> case a of
           App (OpTrm (TermSymbolic _)) _ -> "(" <> pretty a <> ")"
           _ -> pretty a
-    in concatWith (<>) $ zipWith (<>) (map pretty $ decode s) (args' ++ [""])
+    in concatWith (<+>) $ fmap (either pretty id)
+      -- we filter out the empty string to avoid spaces
+      $ filter (either (/="") (const True))
+      $ alternate (map Left $ decode s) $ map Right args'
   pretty (App (OpTrm op) []) = pretty op
   pretty (App (OpTrm op) args) = pretty op <> tupled' (map pretty args) 
   pretty (Var v) = pretty v

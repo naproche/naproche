@@ -32,14 +32,32 @@
           $x$ is equal to the value of $f$ at $y$ and $y$ is in the domain of $f$.
     \end{definition}
 
+    \begin{lemma}
+      If $f$ surjects onto the powerset of $M$ then for every object $z$ there is a set $S$
+        such that $S = f(z)$.
+    \end{lemma}
+
     \begin{theorem}[Cantor]
       No function $f$ that is defined on $M$ surjects onto the powerset of $M$.
     \end{theorem}
     \begin{proof}
-      Proof by contradiction.
+      Assume the contrary.
       Take a set $N$ such that $N = \{ x "in" M \mid "there is a set S such that S = f(x) and" x \notin S \}$.
-      Then for every object $x$ if $x \in M$ then $N \neq f(x)$.
-      But $N$ is in the powerset of $M$.
+      $N$ is a subset of $M$.
+      Take an object $z$ such that $z$ is in $M$ and $f(z) = N$.
+      Case $z \in N$.
+        Take a set $S$ such that $S = f(z)$ and $z \notin S$.
+        Then $S = f(z) = N$. Then $z \notin N$.
+      end.
+      Case $z \notin N$.
+        Take a set $S$ such that $S = f(z)$.
+        Case $z \notin S$.
+          $z \in N$.
+        end.
+        Case $z \in S$.
+          Then $z \in N$.
+        end.
+      end.
     \end{proof}
   \end{forthel}
 \end{document}

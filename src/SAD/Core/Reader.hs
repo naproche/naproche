@@ -89,7 +89,7 @@ readFtlFile pide pk doneFiles pos = \case
       (file', text) <- readLibrary file
       (newProofText, newState) <- beginParsing (filePos file') text initState 
       res <- cont doneFiles newState (filePos file') newProofText
-      outputParser TRACING (fileOnlyPos file') "parsing successful"
+      outputParser TRACING (fileOnlyPos file') "parsing done"
       pure res
   (Right text) -> do
     (newProofText, newState) <- beginParsing startPos text initState 
