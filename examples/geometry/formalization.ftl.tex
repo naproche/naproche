@@ -636,14 +636,15 @@ including Gupta's result that outer Pasch follows from inner Pasch.
     % LATER: currently somewhat ugly because of the asymmetric handling of cases
     \begin{proof}
       Case $\Betw{a}{b}{c}$.
-      Take $c'$ such that $\Betw{a'}{b'}{c'}$ and $\Cong{b'}{c'}{b}{c}$.
+        Take $c'$ such that $\Betw{a'}{b'}{c'}$ and $\Cong{b'}{c'}{b}{c}$.
       End.
       Case $\Betw{b}{a}{c}$.
-      Take $c'$ such that $\Betw{b'}{a'}{c'}$ and $\Cong{a'}{c'}{a}{c}$.
-      Then $\Cong{b}{c}{b'}{c'}$.
+        Take $c'$ such that $\Betw{b'}{a'}{c'}$ and $\Cong{a'}{c'}{a}{c}$.
+        Then $\Cong{b}{c}{b'}{c'}$.
       End.
-      Then $\Betw{a}{c}{b}$.
-      Take $c'$ such that $\Betw{a'}{c'}{b'}$ and $\SenaryCong{a}{c}{b}{a'}{c'}{b'}$.
+      Case $\Betw{a}{c}{b}$.
+        Take $c'$ such that $\Betw{a'}{c'}{b'}$ and $\SenaryCong{a}{c}{b}{a'}{c'}{b'}$.
+      End.
     \end{proof}
   \end{forthel}
 
@@ -680,10 +681,11 @@ including Gupta's result that outer Pasch follows from inner Pasch.
         Thus $\Betw{p}{v}{w}$.
         Then $\OFS{y}{x}{z}{r}{w}{v}{p}{q}$.
       End.
-      Then $\Betw{y}{z}{x}$.
+      Case $\Betw{y}{z}{x}$.
         We have $\SenaryCong{y}{z}{x}{w}{p}{v}$.
         Thus $\Betw{w}{p}{v}$.
         Then $\IFS{y}{z}{x}{r}{w}{p}{v}{q}$.
+      End.
     \end{proof}
   \end{forthel}
 
