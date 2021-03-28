@@ -89,7 +89,6 @@ data Coercions a c = Coercions
 
 -- | We do not check for disjointness and simply merge.
 -- Prefers the left argument on duplicates.
--- TODO: Reverse a <> a' so that we have nice addition behaviour?
 instance Ord a => Semigroup (Coercions a c) where
   (<>) (Coercions a c) (Coercions a' c') = Coercions (a <> a') (c <> c')
 

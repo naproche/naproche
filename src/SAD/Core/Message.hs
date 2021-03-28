@@ -41,6 +41,7 @@ class Monad m => Comm m where
   error :: String -> SourcePos -> String -> m a
   reportsString :: [ReportString] -> m ()
   pideContext :: m (Maybe PIDE)
+  textFieldWidth :: m Int
 
 type Report = (SourcePos, Markup.T)
 type ReportString = (Report, String)

@@ -42,6 +42,7 @@ import SAD.Core.Prove (RunProver(..))
 import SAD.Core.Reader (HasLibrary(..))
 
 import PIDE
+import TermSize (getTermSize)
 
 data CommandLineConfig = CommandLineConfig
   { cacheDir :: FilePath
@@ -78,11 +79,18 @@ instance Comm IO where
 
   pideContext = pide <$> getContext 
 
+  textFieldWidth = do
+    w <- getTermSize
+    pure $ case snd w of
+      0 -> 120
+      n -> n
+
 instance Comm CommandLine where
   output o k p m = liftIO $ output o k p m
   error o p m = liftIO $ error o p m
   reportsString a = liftIO $ reportsString a
   pideContext = liftIO pideContext
+  textFieldWidth = liftIO textFieldWidth
 
 decode' :: Binary a => BS.ByteString -> Maybe a
 decode' b = case decodeOrFail b of

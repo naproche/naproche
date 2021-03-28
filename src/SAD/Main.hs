@@ -24,7 +24,7 @@ import Data.Time (NominalDiffTime, UTCTime, getCurrentTime, diffUTCTime)
 import Data.Text.Prettyprint.Doc
 import Data.Text.Prettyprint.Doc.Render.String (renderString)
 import SAD.Core.Logging (showTimeDiff, RState(..), sumCounter, Counter(..), Tracker(..))
-import SAD.Core.Message (Comm, errorParser, outputMain, Kind(..))
+import SAD.Core.Message (Comm, errorParser, outputMain, Kind(..), textFieldWidth)
 import SAD.Core.Provers (Prover)
 import SAD.Core.Prove (RunProver(..), verify)
 import SAD.Core.Reader (readProofText, HasLibrary(..))
@@ -94,8 +94,9 @@ showTranslation txts = do
   let out = outputMain WRITELN (fileOnlyPos "")
   -- lift $ mapM_ (\case (ProofTextBlock b) -> out $ show b; _ -> pure ()) txts
   converted <- lift $ convert txts
+  w <- lift $ textFieldWidth
   lift $ mapM_ (out . (++"\n") . renderString . layoutSmart
-    (defaultLayoutOptions { layoutPageWidth = AvailablePerLine 120 1.0 }) . pretty . located) converted
+    (defaultLayoutOptions { layoutPageWidth = AvailablePerLine w 1.0 }) . pretty . located) converted
   endTimedSection CheckTime
   beginTimedSection ProvingTime
   endTimedSection ProvingTime

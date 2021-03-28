@@ -27,7 +27,6 @@
     [synonym set/-s]
     [synonym relation/-s]
     [synonym function/-s]
-    [synonym element/-s]
 
     \begin{signature}
       A set is a notion.
@@ -314,9 +313,12 @@
       The intersection of $t$ and $s$ is the intersection of the pair of $t$ and $s$.
     \end{definition}
 
-    \begin{axiom}[Restriction]
-      If $t$ is nonempty then there is a set $s$ such that $s$ is in $t$ and
-        (the intersection of t and s) is empty.
+    \begin{axiom}[Foundation]
+      Assume $t$ is nonempty.
+      Assume for every object $x$ if $x \in t$
+        then there is a set $s$ such that $s = x$.
+      There is a set $s$ such that $s$ is in $t$ and
+         (the intersection of $t$ and $s$) is empty.
     \end{axiom}
   \end{forthel}
 \end{document}

@@ -417,9 +417,10 @@ clss :: FTL MNotion
 clss = label "class definition" $ symbSet <|> classOf
   where
     classOf = do
-      tokenOf' ["set", "sets", "class", "classes"]; nm <- var -|- hidden; token' "of";
+      tokenOf' ["class", "classes"]; nm <- var -|- hidden; token' "of";
+      nmDecl <- makeDecl nm
       (q, f, u) <- notion >>= single; vnm <- hidden
-      return (id, classFormula $ subst (pVar vnm) (posVarName u) $ q f, Set.singleton nm)
+      return (id, classFormula $ Class nmDecl $ subst (pVar vnm) (posVarName u) $ q f, Set.singleton nm)
     symbSet = do
       (clss, nm) <- symbClassNotation
       return (id, classFormula clss, Set.singleton nm)

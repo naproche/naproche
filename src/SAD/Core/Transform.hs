@@ -2,6 +2,9 @@
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE ViewPatterns #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE FlexibleInstances #-}
 
 -- | Transform the blocks from a parsed text to TFF form.
 -- This code is a bit fragile since it was written mainly
@@ -63,10 +66,12 @@ failWithMessage txt = do
   src <- errorPosition <$> get
   f <- errorFormula <$> get
   b <- errorBlock <$> get
+  w <- lift $ Message.textFieldWidth
   lift $ Message.error Naproche.origin_reasoner src
     $  "\nWhile checking the block:\n\n" ++ show b
     ++ "\nmore specifically, the formula:\n\n" ++ showFormula f
-    ++ "\n\n" ++ (renderString $ layoutCompact txt)
+    ++ "\n\n" ++ (renderString $ layoutSmart
+      (defaultLayoutOptions { layoutPageWidth = AvailablePerLine w 1.0 }) txt)
 
 data Context = Context
   { typings :: Map TermName (Maybe Type)
@@ -84,10 +89,10 @@ instance Semigroup Context where
   (<>) (Context t1 r1 c1 p1) (Context t2 r2 c2 p2) = Context (t1 <> t2) (r1 <> r2) (c1 <> c2) (p1 <> p2)
 
 -- | This should be kept in sync with SAD.ForTheL.Base.initFS
+-- Equalities can be omitted since they are a feature of TPTP syntax.
 predefinedTypes :: Map TermName (Maybe Type)
 predefinedTypes = Map.fromList
-  [ (termSet, Just Sort)
-  , (termClass, Just Sort)
+  [ (termClass, Just Sort)
   , (termObject, Just Sort)
   , (termElement, Just $ Pred [Signature termObject, Signature termClass] Prop)
   ]
@@ -95,6 +100,14 @@ predefinedTypes = Map.fromList
 predefinedNames :: Map TermName (Set TermName)
 predefinedNames = Map.fromList
   [ (termElement, Set.singleton termElement) ]
+
+predefinedStmts :: [Statement]
+predefinedStmts =
+  [ Located "predef" noSourcePos $ IntroSort termClass
+  , Located "predef" noSourcePos $ IntroSort termObject
+  , Located "predef" noSourcePos $ Predicate termElement
+    [Signature termObject, Signature termClass] Prop
+  ]
 
 instance Monoid Context where
   mempty = Context predefinedTypes predefinedNames mempty mempty
@@ -145,10 +158,14 @@ parseType ctx = \case
 extractGivenTypes :: Message.Comm m => Context -> Term (Const ()) Tag -> Err m (Term Maybe Tag)
 extractGivenTypes ctx = \t -> snd <$> go t
   where
-    duplicateType ma mb = ma >>= \a -> mb >>= \b ->
-      if coercibleInto' a b (coercions ctx) /= Nothing then pure a else
-      if coercibleInto' b a (coercions ctx) /= Nothing then pure b else
-      failWithMessage $ "A variable has been defined with multiple types: " <> pretty a <> " and " <> pretty b
+    lookup :: Message.Comm m => VarName -> Map VarName (Set InType) -> Err m (Maybe InType)
+    lookup v m = case Map.lookup v m of
+      Nothing -> pure Nothing
+      Just s -> case leastGeneral (Set.toList s) (coercions ctx) of
+        Nothing -> failWithMessage $ "The variable " <> pretty v
+          <> " has been defined with the mutually non-coercible types: "
+          <> vsep (map pretty $ Set.toList s)
+        Just (a, _) -> pure $ Just a
 
     -- TODO: The hack below is fragile. It would be better to do the following:
     -- We say a term is in negative position if it occurs negated in the DNF
@@ -159,27 +176,30 @@ extractGivenTypes ctx = \t -> snd <$> go t
     -- A statement like 'x is an A iff x is a B and P(x)' should be translated to
     -- '(∀[x : A] ∃[y : B] x = y & P(x)) & (∀[x : B] P(x) => ∃[y : A] x = y)'
     -- (with coercions inserted later...)
-    go :: Message.Comm m => Term (Const ()) Tag -> Err m (Map VarName InType, Term Maybe Tag)
+    go :: Message.Comm m => Term (Const ()) Tag -> Err m (Map VarName (Set InType), Term Maybe Tag)
     go = \case
       Forall v (Const ()) t -> do
         (typings, t') <- go t
-        pure (typings, Forall v (Map.lookup v typings) t')
+        m <- lookup v typings
+        pure (typings, Forall v m t')
       Exists v (Const ()) t -> do
         (typings, t') <- go t
-        pure (typings, Exists v (Map.lookup v typings) t')
+        m <- lookup v typings
+        pure (typings, Exists v m t')
       Class v (Const ()) t -> do
         (typings, t') <- go t
-        pure (typings, Class v (Just $ Map.findWithDefault (Signature termObject) v typings) t')
+        m <- lookup v typings
+        pure (typings, Class v (Just $ fromMaybe (Signature termObject) m) t')
       -- this hack allows for new coercions in a lemma or axiom
       -- if it is of the form "Let s be a from. Then s is a to."
       App Imp [App (OpTrm (parseType ctx -> Just from)) [Var v0], App (OpTrm name@(parseType ctx -> Just _)) [Var v1]]
-        | v0 == v1 -> pure $ (Map.singleton v0 from, Tag CoercionTag $ App (OpTrm name) [Var v0])
+        | v0 == v1 -> pure $ (Map.singleton v0 (Set.singleton from), Tag CoercionTag $ App (OpTrm name) [Var v0])
       App (OpTrm name) [Var v] -> case parseType ctx name of
-        Just t -> pure $ (Map.singleton v t, App Top [])
+        Just t -> pure $ (Map.singleton v (Set.singleton t), App Top [])
         Nothing -> pure $ (mempty, App (OpTrm name) [Var v])
       App op args -> do
         res <- mapM go args
-        typings <- sequence $ Map.unionsWith duplicateType $ map (Map.map pure . fst) res
+        let typings = Map.unionsWith (<>) $ map fst res
         let args' = map snd res
         pure (typings, App op args')
       Tag tag t -> fmap (Tag tag) <$> go t
@@ -196,52 +216,78 @@ coercionsToTerm = go . reverse
 (<+>) (Just a) (Just b) = Just (a <> b)
 (<+>) _ _ = Nothing
 
--- | Find the coercions for two 'Type's.
--- If both are Sorts we return just the empty list and if both
--- are predicates, we return the coercions for each argument in order.
-coercibleInto :: Type -> Type -> Coercions TermName TermName -> Maybe [[TermName]]
-coercibleInto smaller bigger coe = case (smaller, bigger) of
-  (Sort, Sort) -> Just []
-  (Pred is o, Pred is' o') ->
-    let outOk = case (o, o') of
-          (Prop, Prop) -> Just [] 
-          (InType i, InType i') -> 
-            const [] <$> coercibleInto' i' i coe -- contravariant
-          _ -> Nothing
-        inOk = sequence $ zipWith (\a b -> coercibleInto' a b coe) is is'
-    in if length is == length is' then inOk <+> outOk else Nothing
-  _ -> Nothing
+class Coercible a b | a -> b where
+  coerceInto :: a -> a -> Coercions TermName TermName -> Maybe b
 
--- | Find the coercions for two 'InType's.
--- We handle 'TermNotKnown' specially, see 'resolve' below.
-coercibleInto' :: InType -> InType -> Coercions TermName TermName -> Maybe [TermName]
-coercibleInto' _ (Signature TermNotKnown) _ = Just []
-coercibleInto' (Signature smaller) (Signature bigger) coe = coerce (smaller, bigger) coe
+instance Coercible Type [[TermName]] where
+  -- | Find the coercions for two 'Type's.
+  -- If both are Sorts we return just the empty list and if both
+  -- are predicates, we return the coercions for each argument in order.
+  coerceInto :: Type -> Type -> Coercions TermName TermName -> Maybe [[TermName]]
+  coerceInto smaller bigger coe = case (smaller, bigger) of
+    (Sort, Sort) -> Just []
+    (Pred is o, Pred is' o') ->
+      let outOk = case (o, o') of
+            (Prop, Prop) -> Just [] 
+            (InType i, InType i') -> 
+              const [] <$> coerceInto i' i coe -- contravariant
+            _ -> Nothing
+          inOk = sequence $ zipWith (\a b -> coerceInto a b coe) is is'
+      in if length is == length is' then inOk <+> outOk else Nothing
+    _ -> Nothing
+
+instance Coercible InType [TermName] where
+  -- | Find the coercions for two 'InType's.
+  -- We handle 'TermNotKnown' specially, see 'resolve' below.
+  coerceInto :: InType -> InType -> Coercions TermName TermName -> Maybe [TermName]
+  coerceInto _ (Signature TermNotKnown) _ = Just []
+  coerceInto (Signature smaller) (Signature bigger) coe = coerce (smaller, bigger) coe
+
+instance Coercible (t, [InType]) [[TermName]] where
+  coerceInto (_, is) (_, is') coe = if length is == length is'
+    then sequence $ zipWith (\a b -> coerceInto a b coe) is is'
+    else Nothing
+
+-- | Given a list of coercible values, try to find a value that is generalized by
+-- all of them and is in the list. Then give the coercions to this value.
+-- O(n) calls to coerceInto.
+leastGeneral :: (Coercible a b) => [a] -> Coercions TermName TermName -> Maybe (a, [b])
+leastGeneral [] _ = Nothing
+leastGeneral (x:xs) coe = flip checkRoot (x:xs) $ getRoot x xs
+  where
+    -- We do this in two steps: First we try to find a root in the
+    -- reversed arborescence of coercions. Then we check if this root
+    -- is generalized by all elements.
+    getRoot root [] = root
+    getRoot root (x:xs) = case coerceInto x root coe of
+      Just _ -> getRoot x xs
+      Nothing -> getRoot root xs
+    checkRoot root = fmap (\b -> (root,b)) . mapM (\x -> coerceInto root x coe)
 
 data ReturnValue = Value | Proposition
   deriving (Eq, Ord, Show)
 
-resolve :: Message.Comm m => Context -> TermName -> [InType] -> ReturnValue -> Err m ((TermName, [[TermName]]), Type)
-resolve (Context idents res coe _) name intypes ret =
-  leastGeneral $ Set.toList feasibleNames
+resolve :: Message.Comm m => Context -> TermName -> [InType] -> ReturnValue -> Err m ((TermName, [[TermName]]), OutType)
+resolve (Context idents res coe _) name intypes ret = pick $ Set.toList feasibleNames
   where
     resolvedNames = setMapMaybe (\a -> (\b->(a,b)) <$> (idents Map.! a) ) $ res Map.! name
 
     feasibleNames = Set.map (\((t, Just a), typ) -> ((t, a), typ)) $ Set.filter (\a -> snd (fst a) /= Nothing) 
-        $ Set.map (\t -> ((fst t, coercibleInto typ (snd t) coe), snd t)) resolvedNames
+        $ Set.map (\t -> ((fst t, coerceInto typ (snd t) coe), snd t)) resolvedNames
 
     typ = case ret of
       Proposition -> Pred intypes Prop
       Value -> Pred intypes $ InType $ Signature TermNotKnown
 
-    -- TODO: Remember the smarter O(n) algo
-    leastGeneral [] = failWithMessage $ "Resolve failed: " <> pretty name <> " of type " <> pretty typ
-    leastGeneral [x] = pure x
-    leastGeneral (x:y:xs) = if coercibleInto (snd x) (snd y) coe /= Nothing then leastGeneral (x:xs) else
-      if coercibleInto (snd y) (snd x) coe /= Nothing then leastGeneral (y:xs) else
-        failWithMessage $ "Resolve ambigous: " <> pretty name <> " of type " <> pretty typ
-          <> " can be resolved as " <> pretty (snd x) <> " or " <> pretty (snd y) <> "\n"
-          <> "and none of them is more general than the other."
+    getArgs (t, (Pred is o)) = ((t, o), is)
+    getArgs _ = error $ "Internal: getArgs pattern not matched!"
+
+    pick :: Message.Comm m => [((TermName, [[TermName]]), Type)] -> Err m ((TermName, [[TermName]]), OutType)
+    pick [] = failWithMessage $ "Resolve failed: " <> pretty name <> " of type " <> pretty typ
+    pick xs = case leastGeneral (map getArgs xs) coe of
+      Just (x, _) -> pure $ fst x
+      Nothing -> failWithMessage $ "Resolve ambigous: " <> pretty name <> " of type\n  " <> nest 2 (pretty typ)
+          <> "\ncan be resolved as any of:\n  " <> nest 2 (vsep (map (pretty . snd) xs))
 
 -- | Type check applications and insert coercions.
 -- Forward type-checking: We assume that the functions without arguments and variables are typed
@@ -279,7 +325,7 @@ gatherTypes c = \t -> snd <$> go Proposition (Map.map Just $ preBoundVars c) 0 t
         let ia = Signature name
             a = Var (VarF d)
         eq <- case tb of
-          InType ib -> case (coercibleInto' ia ib (coercions c), coercibleInto' ib ia (coercions c)) of
+          InType ib -> case (coerceInto ia ib (coercions c), coerceInto ib ia (coercions c)) of
             (Just ts, _) -> pure $ App Eq [coercionsToTerm ts a, arg']
             (_, Just ts) -> pure $ App Eq [a, coercionsToTerm ts arg']
 
@@ -300,15 +346,12 @@ gatherTypes c = \t -> snd <$> go Proposition (Map.map Just $ preBoundVars c) 0 t
               InType t' -> pure t'
         res <- resolve c name argintypes context
         case res of
-              ((name', _), Sort) -> 
-                failWithMessage $ "Illegal use of sort as predicate: " <> pretty (App (OpTrm name') args') 
-                  <> " where a value was expected."
-              ((name', coe), Pred _ t) -> pure (t, App (OpTrm name') $ zipWith coercionsToTerm coe args')
+              ((name', coe), t) -> pure (t, App (OpTrm name') $ zipWith coercionsToTerm coe args')
       App Eq [a, b] -> do
         (ta, a') <- go Value typings d a
         (tb, b') <- go Value typings d b
         case (ta, tb) of
-          (InType ia, InType ib) -> case (coercibleInto' ia ib (coercions c), coercibleInto' ib ia (coercions c)) of
+          (InType ia, InType ib) -> case (coerceInto ia ib (coercions c), coerceInto ib ia (coercions c)) of
             (Just ts, _) -> pure (Prop, App Eq [coercionsToTerm ts a', b'])
             (_, Just ts) -> pure (Prop, App Eq [a', coercionsToTerm ts b'])
             (Nothing, Nothing) -> failWithMessage $
@@ -573,8 +616,11 @@ convertBlock ctx bl@(Block f b _ _ n l _) = map (Located n (position bl)) <$>
     _ -> failWithMessage "Internal: convertBlock should not be applied to proofs!"
 
 convert :: Message.Comm m => [ProofText] -> m [Statement]
-convert = flip evalStateT initErrors . go mempty . concatMap (\case ProofTextBlock bl -> [bl]; _ -> [])
+convert = appendPredef . flip evalStateT initErrors
+  . go mempty . concatMap (\case ProofTextBlock bl -> [bl]; _ -> [])
   where
+    appendPredef m = (predefinedStmts ++) <$> m
+
     initErrors = ErrorContext undefined F.Top noSourcePos
 
     go _ [] = pure []
