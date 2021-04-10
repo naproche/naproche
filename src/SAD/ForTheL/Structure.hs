@@ -340,11 +340,11 @@ defVars dvs f
   where
     unusedVars = let fvs = fvToVarSet $ free f in dvs `Set.difference` fvs
     errorMsg = "extra variables in the guard: " <> varText
-    varText = Text.concat $ map (Text.cons ' ' . varToText) $ Set.toList unusedVars
+    varText = Text.concat $ map (Text.cons ' ' . Text.pack . show) $ Set.toList unusedVars
 
 llDefnVars :: Set VarName -> Formula -> Maybe Text
 llDefnVars dvs f
-  | x `elem` dvs = Just $ "Defined variable is already in use: " <> varToText x
+  | x `elem` dvs = Just $ Text.pack $ "Defined variable is already in use: " <> show x
   | otherwise = freeOrOverlapping (Set.insert x dvs) f
   where
     [x] = Set.elems $ declNames mempty f

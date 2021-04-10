@@ -21,9 +21,7 @@ when:
   - haskell-stack-trace-plugin
   ghc-options:
   - -fplugin=StackTrace.Plugin
-  - -Weverything
-  - -Wno-unsafe
-  - -Wno-implicit-prelude
+  - -Wall
 
 dependencies:
 - base >= 4.7 && < 5
@@ -49,6 +47,7 @@ default-extensions:
   - LambdaCase
   - PartialTypeSignatures
   - ScopedTypeVariables
+  - DeriveGeneric
 
 ghc-options:
   - -O2
@@ -62,19 +61,22 @@ library:
     - src
     - Isabelle/src
   exposed-modules:
-    - SAD.Core.Logging
+    - SAD.Core.Cache
+    - SAD.Core.Coerce
     - SAD.Core.Message
-    - SAD.Core.Provers
     - SAD.Core.Prove
+    - SAD.Core.Provers
     - SAD.Core.Reader
     - SAD.Core.SourcePos
-    - SAD.Core.Transform
-    - SAD.Core.Typed
-    - SAD.Core.Cache
+    - SAD.Core.Tactic
     - SAD.Core.Task
-    - SAD.Data.Text.Block
+    - SAD.Core.TPTP
+    - SAD.Core.Transform
+    - SAD.Core.Typecheck
+    - SAD.Core.Typed
+    - SAD.Data.Identifier
     - SAD.Data.Instr
-    - SAD.Parser.Error
+    - SAD.Data.Text.Block
     - SAD.Main
   other-modules:
     - Isabelle.Markup
@@ -83,8 +85,6 @@ library:
     - Isabelle.Library
     - Isabelle.Properties
     - Isabelle.Symbol
-    - SAD.Core.Coerce
-    - SAD.Core.TPTP
     - SAD.Data.Formula
     - SAD.Data.Formula.Base
     - SAD.Data.Formula.Kit
@@ -101,6 +101,7 @@ library:
     - SAD.Helpers
     - SAD.Parser.Base
     - SAD.Parser.Combinators
+    - SAD.Parser.Error
     - SAD.Parser.Primitives
     - SAD.Parser.Token
 

@@ -16,7 +16,7 @@ import Foreign.C.Types
 #let alignment t = "%lu", (unsigned long)offsetof(struct {char x__; t (y__); }, y__)
 
 -- The ws_xpixel and ws_ypixel fields are unused, so I've omitted them here.
-data WinSize = WinSize { wsRow, wsCol :: CUShort }
+data WinSize = WinSize CUShort CUShort
 
 instance Storable WinSize where
   sizeOf _ = (#size struct winsize)

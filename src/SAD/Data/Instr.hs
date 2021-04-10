@@ -58,40 +58,19 @@ data Command =
 data Limit =
     Timelimit   -- time limit per prover launch  (3 sec)
   | Memorylimit -- memory limit per prover launch  (2048 MiB)
-  | Depthlimit  -- number of reasoner iterations (7)
-  | Checktime   -- time limit for checker's tasks (1 sec)
-  | Checkdepth  -- depth limit for checker's tasks (3)
   deriving (Eq, Ord, Show)
 
 data Flag =
     Prove          --  prove goals (yes)
   | Check          --  look for applicable definitions (yes)
   | CheckConsistency --  check that no contradictory axioms occur (yes)
-  | Symsign        --  rename symbols with diverging defs (yes)
-  | Info           --  accumulate evidences (yes)
-  | Thesis         --  modify thesis (yes)
-  | Filter         --  simplify the context (yes)
   | Skipfail       --  ignore failed goals (no)
-  | Flat           --  do not descend into proofs (no)
   | Printgoal      --  print current goal (yes)
-  | Printreason    --  print reasoner's log (no)
-  | Printsection   --  print current sentence (no)
-  | Printcheck     --  print definition checks (no)
-  | Printprover    --  print prover's log (no)
-  | Printunfold    --  print definition unfolds (no)
-  | Printfulltask  --  print inference tasks (no)
+  | Printprover    --  print the prover's logs (no)
   | Dump           --  print tasks in prover's syntax (no)
   | OnlyTranslate  --  translation only (comline only)
-  | Verbose        --  verbosity control (comline only)
   | Help           --  print help (comline only)
   | Server         --  server mode (comline only)
-  | Printsimp      --  print simplifier log (no)
-  | Printthesis    --  print thesis development (no)
-  | Unfold         --  general unfolding (on)
-  | Unfoldsf       --  general unfolding of sets and functions
-  | Unfoldlow      --  unfold the whole low level context (yes)
-  | Unfoldlowsf    --  unfold set and function conditions in low level (no)
-  | Translation    --  print first-order translation of sentences
   | UseTex         --  whether to use tex parser for the file passed in the CLI
   | UseFOF         --  whether to use FOF output
   deriving (Eq, Ord, Show)
@@ -148,37 +127,17 @@ keywordsCommand =
 keywordsLimit :: [(Limit, Text)]
 keywordsLimit =
  [(Timelimit, "timelimit"),
-  (Memorylimit, "memorylimit"),
-  (Depthlimit, "depthlimit"),
-  (Checktime, "checktime"),
-  (Checkdepth, "checkdepth")]
+  (Memorylimit, "memorylimit")]
 
 keywordsFlag :: [(Flag, Text)]
 keywordsFlag =
  [(Prove, "prove"),
   (Check, "check"),
   (CheckConsistency, "checkconsistency"),
-  (Symsign, "symsign"),
-  (Info, "info"),
-  (Thesis, "thesis"),
-  (Filter, "filter"),
   (Skipfail, "skipfail"),
-  (Flat, "flat"),
   (Printgoal, "printgoal"),
-  (Printsection, "printsection"),
-  (Printcheck, "printcheck"),
-  (Printunfold, "printunfold"),
-  (Printreason, "printreason"),
   (Printprover, "printprover"),
-  (Printfulltask, "printfulltask"),
   (Dump, "dump"),
-  (Printsimp, "printsimp"),
-  (Printthesis, "printthesis"),
-  (Unfold, "unfold"),
-  (Unfoldsf, "unfoldsf"),
-  (Unfoldlow, "unfoldlow"),
-  (Unfoldlowsf, "unfoldlowsf"),
-  (Translation, "translation"),
   (UseTex, "tex"),
   (UseFOF, "fof")]
 

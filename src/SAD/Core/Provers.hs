@@ -4,7 +4,6 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
 Construct prover database.
 -}
 
-{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Core.Provers (Prover(..), readProverDatabase) where
@@ -24,7 +23,7 @@ data Prover = Prover {
   successMessage :: [Text],
   contradictionMessage :: [Text],
   failureMessage :: [Text],
-  unknownMessage :: [Text] }
+  resourceOutMessage :: [Text] }
   deriving (Eq, Ord, Show, Generic)
 
 instance FromJSON Prover
@@ -42,6 +41,6 @@ validate Prover { name = n, path = "" }
   = Left $ " prover '" ++ n ++ "' has no command line"
 validate Prover { name = n, successMessage = [] }
   = Left $ " prover '" ++ n ++ "' has no success responses"
-validate Prover { name = n, failureMessage = [], unknownMessage = [] }
+validate Prover { name = n, failureMessage = [], resourceOutMessage = [] }
   = Left $ " prover '" ++ n ++ "' has no failure responses"
 validate r = Right r

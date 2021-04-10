@@ -1,8 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Helpers
-  ( trimLine
-  , notNull, setMapMaybe
+  ( trimLine, tupled'
+  , notNull
   , nubOrd, nubOrdBy, nubOrdOn
   ) where
 
@@ -10,12 +10,11 @@ import Control.Arrow
 import Data.Function
 import Data.Text (Text)
 import qualified Data.Text as Text
-import Data.Set (Set)
-import qualified Data.Set as Set
-import Data.Maybe (mapMaybe)
+import Data.Text.Prettyprint.Doc
 
-setMapMaybe :: (Ord a, Ord b) => (a -> Maybe b) -> Set a -> Set b
-setMapMaybe f = Set.fromList . mapMaybe f . Set.toList
+tupled' :: [Doc ann] -> Doc ann
+tupled' [] = ""
+tupled' xs = parens (hsep (punctuate comma xs))
 
 -- | Remove a trailing line break from a string.
 trimLine :: Text -> Text

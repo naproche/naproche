@@ -21,7 +21,7 @@
   because it is built into the compiler.
 
   The presentation here follows largely http://www.math.uni-bonn.de/ag/logik/teaching/2018WS/set_theory/current_scriptum.pdf
-  for historical reasons. It would be worthwhile to port it to Kelley's formalization.
+  It would be worthwhile to port it to Kelley's formalization.
 
   \begin{forthel}
     [synonym set/-s]
@@ -118,8 +118,7 @@
     \end{lemma}
 
     \begin{definition}
-      The union of D is a class B such that (for every object $x$ x is in B iff there is a set $s$ 
-        such that $s$ is in D and x is in $s$).
+      The union of D is $\{ v | "there is a set" s "such that" s \in D "and" v \in s \}$.
     \end{definition}
 
     \begin{axiom}[Union]
@@ -127,8 +126,7 @@
     \end{axiom}
 
     \begin{definition}
-      The union of D and B is a class C such that for every object $x$
-        $x$ is in C iff $x$ is in D or $x$ is in $B$.
+      The union of D and B is $\{ v | v \in D "or" v \in B \}$.
     \end{definition}
 
     \begin{definition}
@@ -235,7 +233,7 @@
     \end{definition}
 
     \begin{definition}
-      The field of R is a class C such that C is \Union{\Dom{R}, \Ran{R}}.
+      The field of R is \Union{\Dom{R}, \Ran{R}}.
     \end{definition}
 
     \begin{definition} 
@@ -285,10 +283,14 @@
 
     Let $F, G$ denote functions.
 
-    \begin{definition}
+    \begin{signature}
+      The value of F at x is an object.
+    \end{signature}
+
+    \begin{axiom}
       Assume $x \in \Dom{F}$.
       The value of F at x is a object y such that (x, y) is in F.
-    \end{definition}
+    \end{axiom}
 
     \begin{definition}
       Assume $x \in \Dom{F}$.

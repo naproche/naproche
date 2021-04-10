@@ -4,8 +4,6 @@ Authors: Steffen Frerix (2017 - 2018), Makarius Wenzel (2018)
 Token source positions: counting Unicode codepoints.
 -}
 
-{-# LANGUAGE DeriveGeneric #-}
-
 module SAD.Core.SourcePos
   ( SourcePos (sourceFile, sourceLine, sourceColumn, sourceOffset, sourceEndOffset),
     SourceRange(SourceRange),

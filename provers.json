@@ -18,7 +18,7 @@
       "failureMessage": [
          "# SZS status CounterSatisfiable"
       ],
-      "unknownMessage": [
+      "resourceOutMessage": [
          "# SZS status ResourceOut",
          "# SZS status GaveUp"
       ]
@@ -46,7 +46,7 @@
       "failureMessage": [
          "# SZS status CounterSatisfiable"
       ],
-      "unknownMessage": [
+      "resourceOutMessage": [
          "# SZS status ResourceOut",
          "# SZS status GaveUp"
       ]
@@ -69,7 +69,7 @@
       "failureMessage": [
          "SPASS beiseite: Completion found."
       ],
-      "unknownMessage": [
+      "resourceOutMessage": [
          "SPASS beiseite: Ran out of time."
       ]
    },
@@ -89,7 +89,7 @@
       "failureMessage": [
          "% SZS status CounterSatisfiable for"
       ],
-      "unknownMessage": [
+      "resourceOutMessage": [
          "% SZS status Timeout for"
       ]
    }

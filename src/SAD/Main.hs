@@ -12,6 +12,7 @@ module SAD.Main where
 
 import Data.List (isSuffixOf)
 
+import Data.Text (Text)
 import qualified Data.Text as Text
 import qualified System.Console.GetOpt as GetOpt
 import qualified System.Exit as Exit
@@ -20,22 +21,24 @@ import Data.Map (Map)
 import Control.Monad.State
 import Data.Either (isRight)
 import Data.Time (NominalDiffTime, UTCTime, getCurrentTime, diffUTCTime)
+import Data.Maybe (isNothing)
 
 import Data.Text.Prettyprint.Doc
 import Data.Text.Prettyprint.Doc.Render.String (renderString)
-import SAD.Core.Logging (showTimeDiff, RState(..), sumCounter, Counter(..), Tracker(..))
 import SAD.Core.Message (Comm, errorParser, outputMain, Kind(..), textFieldWidth)
 import SAD.Core.Provers (Prover)
-import SAD.Core.Prove (RunProver(..), verify)
+import SAD.Core.Prove (RunProver(..), verify, runProveT, ProveState(..))
 import SAD.Core.Reader (readProofText, HasLibrary(..))
-import SAD.Core.SourcePos (noSourcePos, fileOnlyPos)
+import SAD.Core.SourcePos (SourcePos, noSourcePos, fileOnlyPos)
 import SAD.Data.Text.Block (ProofText(..), findParseError)
 import SAD.Data.Instr (Instr(..), Flag(..), askFlag, Limit(..), Argument(..), ParserKind(..), Pos)
 import SAD.Parser.Error (errorPos)
-import SAD.Core.Transform (convert)
+import SAD.Core.Transform (transform)
 import SAD.Core.Typed (located)
 import SAD.Core.Cache (CacheStorage)
-import SAD.Core.Task (generateTasks)
+import SAD.Core.Task (Task(..))
+import SAD.Core.Tactic (generateTasks)
+import SAD.Core.Typecheck (typecheck)
 
 data TimedSection = ParsingTime | ProvingTime | CheckTime
   deriving (Eq, Ord, Show)
@@ -77,6 +80,18 @@ mainBody provers opts0 text0 = flip evalStateT mempty $ runTimes $ do
         then showTranslation txts
         else do proveFOL provers txts opts0
 
+showTimeDiff :: NominalDiffTime -> Text
+showTimeDiff t =
+  if hours == 0
+    then format minutes <> ":" <> format restSeconds <> "." <> format restCentis
+    else format hours   <> ":" <> format restMinutes <> ":" <> format restSeconds
+  where
+    format n = Text.pack $ if n < 10 then '0':show n else show n
+    centiseconds = (truncate $ t * 100) :: Int
+    (seconds, restCentis)  = divMod centiseconds 100
+    (minutes, restSeconds) = divMod seconds 60
+    (hours,   restMinutes) = divMod minutes 60
+
 showTimes :: (Comm m) => Map TimedSection NominalDiffTime -> m ()
 showTimes times = do
   outputMain TRACING noSourcePos $ Text.unpack $
@@ -87,17 +102,23 @@ showTimes times = do
   outputMain TRACING noSourcePos $ Text.unpack $
     "total " <> showTimeDiff ((times Map.! ParsingTime) + (times Map.! CheckTime) + (times Map.! ProvingTime))
 
+writeOut :: (Comm m) => SourcePos -> Doc ann -> m ()
+writeOut pos doc = do
+  w <- textFieldWidth
+  outputMain WRITELN pos $ renderString $ layoutSmart
+    (defaultLayoutOptions { layoutPageWidth = AvailablePerLine w 1.0 }) 
+    (doc <> hardline)
+
 showTranslation :: (MonadIO m, RunProver m, Comm m, CacheStorage m)
   => [ProofText] -> Times m Exit.ExitCode
 showTranslation txts = do
+  -- lift $ mapM_ (\case (ProofTextBlock b) -> outputMain WRITELN (fileOnlyPos "") $ show b; _ -> pure ()) txts
   beginTimedSection CheckTime
-  let out = outputMain WRITELN (fileOnlyPos "")
-  -- lift $ mapM_ (\case (ProofTextBlock b) -> out $ show b; _ -> pure ()) txts
-  converted <- lift $ convert txts
-  w <- lift $ textFieldWidth
-  lift $ mapM_ (out . (++"\n") . renderString . layoutSmart
-    (defaultLayoutOptions { layoutPageWidth = AvailablePerLine w 1.0 }) . pretty . located) converted
+  converted <- lift $ transform txts
+  -- lift $ mapM_ (writeOut (fileOnlyPos "") . pretty . located) converted
+  typed <- lift $ typecheck converted
   endTimedSection CheckTime
+  lift $ mapM_ (writeOut (fileOnlyPos "") . pretty . located) typed
   beginTimedSection ProvingTime
   endTimedSection ProvingTime
 
@@ -109,30 +130,46 @@ proveFOL :: (MonadIO m, RunProver m, Comm m, CacheStorage m)
   => [Prover] -> [ProofText] -> [Instr] -> Times m Exit.ExitCode
 proveFOL provers txts opts0 = do
   beginTimedSection CheckTime
-  typed <- lift $ convert txts
-  let tasks = generateTasks typed
+  converted <- lift $ transform txts
+  typed <- lift $ typecheck converted
   endTimedSection CheckTime
   beginTimedSection ProvingTime
-  let rstate = RState [Counter SectionsCounter (length typed)] False False
-  finalReasonerState <- lift $ verify provers opts0 rstate tasks
+  let numberOfSections = length typed
+  let tasks = generateTasks typed
+  proveOut <- lift $ fmap snd $ runProveT provers opts0 $ verify tasks
   endTimedSection ProvingTime
 
-  let trackerList = trackers finalReasonerState
-  let accumulate  = sumCounter trackerList
+  let numberOfNotSuccessful = length (proveGoalsFailed proveOut ++ proveGoalsTimeout proveOut) 
+  let numberProved = proveGoalsSentToATP proveOut - numberOfNotSuccessful
+  
+  if length (proveGoalsTimeout proveOut) == 0 then pure ()
+    else do
+      lift $ writeOut (fileOnlyPos "") $ "The following claims could not be shown to hold:"
+      lift $ mapM_ (\t -> writeOut (taskPos t) $ pretty $ conjecture t) (proveGoalsTimeout proveOut)
 
-  -- print statistics
-  lift $ outputMain TRACING noSourcePos $
-    "sections "       ++ show (accumulate SectionsCounter)
-    ++ " - goals "    ++ show (accumulate GoalsCounter)
-    ++ (let ignoredFails = accumulate FailedGoalsCounter
-        in  if   ignoredFails == 0
-            then ""
-            else " - failed "   ++ show ignoredFails)
-    ++ " - proved "    ++ show (accumulate SuccessfulGoalsCounter)
-    ++ " - cached "    ++ show (accumulate CachedCounter)
+  if length (proveGoalsFailed proveOut) == 0 then pure ()
+    else do
+      lift $ writeOut (fileOnlyPos "") $ "The following claims do not follow from the axioms:"
+      lift $ mapM_ (\t -> writeOut (taskPos t) $ pretty $ conjecture t) (proveGoalsFailed proveOut)
+
+  case proveFirstContradiction proveOut of
+    Nothing -> lift $ outputMain TRACING noSourcePos $
+      "sections "       ++ show numberOfSections
+      ++ " - goals "    ++ show (proveGoalsSentToATP proveOut)
+      ++ (if numberOfNotSuccessful == 0
+              then ""
+              else " - failed "   ++ show numberOfNotSuccessful)
+      ++ " - proved "    ++ show numberProved
+      ++ " - cached "    ++ show (proveGoalsCached proveOut)
+    Just t -> lift $ writeOut (taskPos t) $
+      "Ouch, there is a contradiction in your axioms!" <> softline
+      <> "It was first found in the claim:" <> softline
+      <> pretty (conjecture t) <> hardline
+      <> "Make sure you are in a proof by contradiction by writing 'Assume the contrary.'"
 
   getTimes >>= lift . showTimes
-  pure $ if accumulate FailedGoalsCounter == 0 then Exit.ExitSuccess else Exit.ExitFailure 1
+  pure $ if numberOfNotSuccessful == 0 && isNothing (proveFirstContradiction proveOut)
+    then Exit.ExitSuccess else Exit.ExitFailure 1
 
 parseArgs :: [String] -> ([Instr], [String], [String])
 parseArgs = GetOpt.getOpt GetOpt.Permute options
@@ -161,8 +198,6 @@ options = [
     "init file, empty to skip (def: init.opt)",
   GetOpt.Option "T" ["onlytranslate"] (GetOpt.NoArg (SetFlag OnlyTranslate True))
     "translate input text and exit",
-  GetOpt.Option "" ["translate"] (GetOpt.ReqArg (SetFlag Translation . parseConsent) "{on|off}")
-    "print first-order translation of sentences",
   GetOpt.Option "" ["server"] (GetOpt.NoArg (SetFlag Server True))
     "run in server mode",
   GetOpt.Option ""  ["library"] (GetOpt.ReqArg (GetArgument Library . Text.pack) "DIR")
@@ -179,12 +214,6 @@ options = [
     "N seconds per prover call (def: 3)",
   GetOpt.Option "m" ["memorylimit"] (GetOpt.ReqArg (LimitBy Memorylimit . getLeadingPositiveInt) "N")
     "maximum N MiB of memory usage per prover call (def: 2048)",
-  GetOpt.Option ""  ["depthlimit"] (GetOpt.ReqArg (LimitBy Depthlimit . getLeadingPositiveInt) "N")
-    "N reasoner loops per goal (def: 7)",
-  GetOpt.Option ""  ["checktime"] (GetOpt.ReqArg (LimitBy Checktime . getLeadingPositiveInt) "N")
-    "timelimit for checker's tasks (def: 1)",
-  GetOpt.Option ""  ["checkdepth"] (GetOpt.ReqArg (LimitBy Checkdepth . getLeadingPositiveInt) "N")
-    "depthlimit for checker's tasks (def: 3)",
   GetOpt.Option "n" [] (GetOpt.NoArg (SetFlag Prove False))
     "cursory mode (equivalent to --prove off)",
   GetOpt.Option "r" [] (GetOpt.NoArg (SetFlag Check False))
@@ -193,28 +222,12 @@ options = [
     "prove goals in the text (def: on)",
   GetOpt.Option "" ["check"] (GetOpt.ReqArg (SetFlag Check . parseConsent) "{on|off}")
     "check symbols for definedness (def: on)",
-  GetOpt.Option "" ["filter"] (GetOpt.ReqArg (SetFlag Filter . parseConsent) "{on|off}")
-    "filter prover tasks (def: on)",
   GetOpt.Option "" ["skipfail"] (GetOpt.ReqArg (SetFlag Skipfail . parseConsent) "{on|off}")
     "ignore failed goals (def: off)",
-  GetOpt.Option "q" [] (GetOpt.NoArg (SetFlag Verbose False))
-    "print no details",
-  GetOpt.Option "v" [] (GetOpt.NoArg (SetFlag Verbose True))
-    "print more details (-vv, -vvv, etc)",
   GetOpt.Option "" ["printgoal"] (GetOpt.ReqArg (SetFlag Printgoal . parseConsent) "{on|off}")
     "print current goal (def: on)",
-  GetOpt.Option "" ["printsection"] (GetOpt.ReqArg (SetFlag Printsection . parseConsent) "{on|off}")
-    "print sentence translations (def: off)",
-  GetOpt.Option "" ["printcheck"] (GetOpt.ReqArg (SetFlag Printcheck . parseConsent) "{on|off}")
-    "print checker's messages (def: off)",
   GetOpt.Option "" ["printprover"] (GetOpt.ReqArg (SetFlag Printprover . parseConsent) "{on|off}")
     "print prover's messages (def: off)",
-  GetOpt.Option "" ["printfulltask"] (GetOpt.ReqArg (SetFlag Printfulltask . parseConsent) "{on|off}")
-    "print full prover tasks (def: off)",
-  GetOpt.Option "" ["printsimp"] (GetOpt.ReqArg (SetFlag Printsimp . parseConsent) "{on|off}")
-    "print simplification process (def: off)",
-  GetOpt.Option "" ["printthesis"] (GetOpt.ReqArg (SetFlag Printthesis . parseConsent) "{on|off}")
-    "print thesis development (def: off)",
   GetOpt.Option "" ["dump"]
     (GetOpt.ReqArg (SetFlag Dump . parseConsent) "{on|off}")
     "print tasks in prover's syntax (def: off)",

@@ -12,7 +12,6 @@ module SAD.Data.Formula.Show (
 import SAD.Data.Formula.Base
 import SAD.Data.Terms
 import SAD.Core.SourcePos (noSourcePos)
-import SAD.Data.VarName (varToText)
 
 import qualified Data.Text as Text
 
@@ -41,22 +40,20 @@ goShowFormula p d = dive
     dive Trm{trmName = TermThesis} = showString "thesis"
     dive Trm{trmName = TermEquality, trmArgs = [l,r]} = showInfix " = " l r
     dive Trm{trmName = TermSymbolic tName, trmArgs = tArgs} = showString $ concat $
-      zipWith (++) (Text.unpack <$> decode tName) (map (\t -> showParen (ambig t) (goShowFormula p d t) "") tArgs ++ [""])
+      zipWith (++) (Text.unpack <$> tName) (map (\t -> showParen (ambig t) (goShowFormula p d t) "") tArgs ++ [""])
     dive Trm{trmName = TermThe tName, trmArgs = tArgs} =
           showString ("the" <> Text.unpack tName) . showArguments tArgs
     dive Trm{trmName = tName, trmArgs = tArgs} = showString (Text.unpack $ termToText tName) . showArguments tArgs
-    dive Var{varName = vName} = showString $ Text.unpack $ varToText vName
+    dive Var{varName = vName} = showString $ show vName
     dive Ind {indIndex = i }
       | i < d = showChar 'v' . shows (d - i - 1)
       | otherwise = showChar 'v' . showChar '?' . showString (show i)
 
-    ambig Trm {trmName = TermSymbolic tName} | "dt" `Text.isPrefixOf` tName = not $ funPat (Text.drop 3 tName)
-    ambig Trm {trmName = TermSymbolic tName} =
-      snd (Text.splitAt (Text.length tName - 2) tName) == "dt"
+    ambig Trm {trmName = TermSymbolic tName}
+      | tName == [] = True
+      | head tName == "" = tName /= ["", "lb", "rb"]
+      | last tName == "" = True
     ambig _ = False
-
-    funPat "lbdtrb" = True
-    funPat _ = False
 
     showArguments _ | p == 1 = showString "(...)"
     showArguments ts =

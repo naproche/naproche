@@ -27,7 +27,6 @@ import SAD.Parser.Primitives
 import SAD.Core.SourcePos (noSourcePos)
 
 import SAD.Core.Message (PIDE, Report)
-import Data.Text.Prettyprint.Doc (pretty)
 import SAD.Helpers (nubOrdOn)
 
 type FTL = Parser FState
@@ -345,10 +344,10 @@ nameList = varList -|- fmap Set.singleton hidden
 varList :: FTL (Set PosVar)
 varList = var `sepBy` token' "," >>= nodups
 
-nodups :: IsVar a => [a] -> FTL (Set a)
+nodups :: (Show a, IsVar a) => [a] -> FTL (Set a)
 nodups vs = do
   unless ((null :: [b] -> Bool) $ duplicateNames vs) $
-    fail $ "duplicate names: " ++ (show $ map (show . pretty) vs)
+    fail $ "duplicate names: " ++ (show $ map show vs)
   pure $ Set.fromList vs
 
 hidden :: FTL PosVar

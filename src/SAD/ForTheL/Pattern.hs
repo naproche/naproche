@@ -144,7 +144,7 @@ addExpr t@Trm{trmName = s, trmArgs = vs} f p st =
 -- pattern extraction
 
 extractWordPattern :: FState -> Formula -> Formula -> ([Pattern], Formula)
-extractWordPattern st t@Trm {trmName = s, trmArgs = vs} f = (pt, nf)
+extractWordPattern st t@Trm {trmName = s} f = (pt, nf)
   where
     pt = map getPattern ws
     nt = t {trmName = pr $ getName pt}
@@ -164,17 +164,17 @@ extractWordPattern st t@Trm {trmName = s, trmArgs = vs} f = (pt, nf)
 
 
 extractSymbPattern :: Formula -> Formula -> ([Pattern], Formula)
-extractSymbPattern t@Trm {trmName = TermName s, trmArgs = vs} f = (pt, nf)
+extractSymbPattern t@Trm {trmName = TermName s} f = (pt, nf)
   where
     pt = map getPattern (Text.words s)
-    nt = t {trmName = TermSymbolic $ getName pt}
+    nt = t {trmName = TermSymbolic $ Text.split (=='.') $ getName pt}
     nf = replace nt t {trId = AllEq NewId} f
 
     getPattern "#" = Vr
     getPattern w = Symbol w
 
-    getName (Symbol s:ls) = symEncode s <> getName ls
-    getName (Vr:ls) = symEncode "." <> getName ls
+    getName (Symbol s:ls) = s <> getName ls
+    getName (Vr:ls) = "." <> getName ls
     getName [] = ""
 
 

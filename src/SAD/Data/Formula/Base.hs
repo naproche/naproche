@@ -7,7 +7,7 @@ Core functions on formulas.
 module SAD.Data.Formula.Base
   ( Formula(..), Tag(..), AllEq(..), trmId
   , occursIn, isClosed, subst, substs, bind, mapF, foldF, replace
-  , Decl(..), newDecl, positionedDecl
+  , Decl(..), newDecl, positionedDecl, TermId(..)
   ) where
 
 import Data.Maybe
@@ -20,6 +20,18 @@ import SAD.Data.Terms
 import SAD.Data.VarName
 
 import qualified Data.Map as Map
+
+data TermId
+  = EqualityId
+  | ThesisId
+  | ObjectId
+  | SetId
+  | ClassId
+  | ElementId
+  | NewId -- ^ temporary id given to newly introduced symbols
+  | SkolemId Int
+  | SpecialId Int
+  deriving (Eq, Ord, Show)
 
 data Formula =
   All Decl Formula        | Exi Decl Formula |
@@ -50,7 +62,7 @@ trmId (Trm _ _ _ a) = a
 trmId f = error $ "trmId called no term" 
 
 data Tag =
-  Dig | DigMultiSubject | DigMultiPairwise | HeadTerm |
+  Dig | DigMultiSubject | DigMultiPairwise | HeadTerm | SortTerm |
   InductionHypothesis | CaseHypothesisTag | EqualityChain |
   -- Tags to mark certain parts of function definitions
   GenericMark | Evaluation | Condition | Defined | Domain | Replacement |

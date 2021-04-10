@@ -1,7 +1,6 @@
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE DeriveGeneric #-}
 
 module SAD.Data.VarName
   ( VarName(..)
@@ -10,7 +9,7 @@ module SAD.Data.VarName
   , IsVar(..)
   , fvToVarSet
   , fvFromVarSet
-  , varToText
+  , varToIdent
   , PosVar(..)
   ) where
 
@@ -19,13 +18,10 @@ import qualified Data.Set as Set
 import GHC.Magic (oneShot)
 import Data.Text (Text)
 import qualified Data.Text as Text
-import Data.Text.Prettyprint.Doc
 import SAD.Core.SourcePos
 import Data.Function (on)
-import GHC.Generics (Generic)
-import Data.Hashable (Hashable)
-import Data.Binary (Binary)
-import Control.DeepSeq (NFData)
+
+import SAD.Data.Identifier (Ident(..))
 
 -- These names may not reflect what the constructors are used for..
 data VarName 
@@ -33,31 +29,23 @@ data VarName
   | VarHole Text       -- ^ previously starting with ?
   | VarSlot            -- ^ previously !
   | VarHidden Int      -- ^ previously starting with h
-  | VarF Int           -- ^ for function outputs
   | VarEmpty           -- ^ previously ""
   | VarDefault Text    -- ^ everything else
-  deriving (Eq, Ord, Show, Read, Generic)
-instance NFData VarName
-instance Hashable VarName
-instance Binary VarName
+  deriving (Eq, Ord)
 
-varToText :: VarName -> Text
-varToText (VarConstant s) = s
-varToText (VarHole s) = "?" <> ( s)
-varToText (VarSlot) = "!"
-varToText (VarHidden n) = "h" <> (Text.pack (show n))
-varToText (VarF s) = "out_" <> (Text.pack (show s))
-varToText (VarEmpty) = ""
-varToText (VarDefault s) =  s
+varToIdent :: VarName -> Maybe Ident
+varToIdent (VarConstant s) = Just $ NormalIdent s
+varToIdent (VarHidden n) = Just $ NormalIdent $ "h" <> (Text.pack (show n))
+varToIdent (VarDefault s) = Just $ NormalIdent $ s
+varToIdent _ = Nothing
 
-instance Pretty VarName where
-  pretty (VarConstant s) = pretty s
-  pretty (VarHole s) = pretty $ "?" <> ( s)
-  pretty (VarSlot) = "!"
-  pretty (VarHidden n) = "h" <> pretty n
-  pretty (VarF s) = "out_" <> pretty s
-  pretty (VarEmpty) = ""
-  pretty (VarDefault s) = pretty s
+instance Show VarName where
+  show (VarConstant s) = Text.unpack s
+  show (VarHole s) = "?" <> (Text.unpack s)
+  show (VarSlot) = "!"
+  show (VarHidden n) = "h" <> show n
+  show (VarEmpty) = ""
+  show (VarDefault s) = Text.unpack s
 
 data PosVar = PosVar
   { posVarName :: VarName
@@ -70,10 +58,7 @@ instance Eq PosVar where
 instance Ord PosVar where
   compare = compare `on` posVarName
 
-instance Pretty PosVar where
-  pretty (PosVar v p) = "(" <> pretty v <> ", " <> pretty (show p) <> ")"
-
-class (Ord a, Pretty a) => IsVar a where
+class Ord a => IsVar a where
   buildVar :: VarName -> SourcePos -> a
 
 instance IsVar VarName where
