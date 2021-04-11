@@ -1,36 +1,17 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Helpers
-  ( trimLine, tupled'
-  , notNull
+  ( tupled'
   , nubOrd, nubOrdBy, nubOrdOn
   ) where
 
 import Control.Arrow
 import Data.Function
-import Data.Text (Text)
-import qualified Data.Text as Text
 import Data.Text.Prettyprint.Doc
 
 tupled' :: [Doc ann] -> Doc ann
 tupled' [] = ""
 tupled' xs = parens (hsep (punctuate comma xs))
-
--- | Remove a trailing line break from a string.
-trimLine :: Text -> Text
-trimLine t = case Text.unsnoc t of
-    Nothing -> t
-    Just (t', c) -> case c of
-        '\r' -> t'
-        '\n' -> case Text.unsnoc t' of
-            Just (t'', '\r') -> t''
-            _ -> t'
-        _ -> t 
-
--- | Returns @False@ if the list is empty and @True@ otherwise.
-notNull :: [a] -> Bool
-notNull [] = False
-notNull _  = True
 
 -- nubOrds taken from the 'extra' package.
 

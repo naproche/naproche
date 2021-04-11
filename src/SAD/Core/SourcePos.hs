@@ -18,7 +18,6 @@ module SAD.Core.SourcePos
     noRange)
   where
 
-import SAD.Helpers (notNull)
 import Data.Text (Text)
 import qualified Data.Text as Text
 import Control.DeepSeq (NFData)
@@ -93,12 +92,12 @@ noRange :: SourceRange
 noRange = SourceRange noSourcePos noSourcePos
 
 instance Show SourcePos where
-  show (SourcePos file line column _ _) = List.intercalate " " $ filter notNull [quotedFilePath, listOfDetails]
+  show (SourcePos file line column _ _) = List.intercalate " " $ filter (not . null) [quotedFilePath, listOfDetails]
     where
       detail a i = if i <= 0 then "" else a ++ " " ++ show i
       details = [detail "line" line, detail "column" column]
       listOfDetails =
-        case filter notNull details of
+        case filter (not . null) details of
           [] -> ""
           ds -> "(" ++ List.intercalate ", " ds ++ ")"
       quotedFilePath = if null file then "" else "\"" ++ file ++ "\""

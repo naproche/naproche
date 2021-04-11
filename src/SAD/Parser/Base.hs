@@ -29,7 +29,6 @@ import Control.Monad
 import qualified Control.Monad.Fail as Fail
 import Control.Applicative
 import Control.Monad.State.Class (MonadState(put, get))
-import SAD.Helpers (notNull)
 
 import SAD.Parser.Token
 import SAD.Parser.Error
@@ -117,9 +116,9 @@ tryParses f err = go err [] [] [] []
 
       -- If we have no further input: exit based on the accumulated results
       ([],[]) -> if
-        | notNull (accEmptyOk ++ accConsumedOk) -> Continuation accErr (reverse accEmptyOk) (reverse accConsumedOk)
-        | notNull accEmptyFails -> EmptyFail $ foldl' (<>) err $ accEmptyFails ++ accConsumedFails
-        | notNull accConsumedFails -> ConsumedFail $ foldl' (<>) err $ accConsumedFails
+        | not $ null (accEmptyOk ++ accConsumedOk) -> Continuation accErr (reverse accEmptyOk) (reverse accConsumedOk)
+        | not $ null accEmptyFails -> EmptyFail $ foldl' (<>) err $ accEmptyFails ++ accConsumedFails
+        | not $ null accConsumedFails -> ConsumedFail $ foldl' (<>) err $ accConsumedFails
         | otherwise -> error "tryParses: parser has empty result"
 
       -- If we have further input first work on the 'emptyOk' results

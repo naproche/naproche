@@ -20,7 +20,7 @@ module SAD.Parser.Error
   where
 
 import SAD.Core.SourcePos (SourcePos)
-import SAD.Helpers (notNull, nubOrd)
+import SAD.Helpers (nubOrd)
 import Data.Text (Text)
 import qualified Data.Text as Text
 
@@ -151,4 +151,4 @@ showErrorMessage msg = case msg of
     commasOr ms  = intercalate ", " (init ms) ++ " or " ++ last ms
 
     clean :: [String] -> [String]
-    clean = nubOrd . filter notNull
+    clean = nubOrd . filter (not . null)
