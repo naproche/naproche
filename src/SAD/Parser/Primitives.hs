@@ -43,48 +43,48 @@ import qualified Data.Text as Text
 -- | Parse the current token or return an @EmptyFail@
 -- if the input is empty, eof or the supplied test functions returns @Nothing@.
 tokenPrim :: (Token -> Maybe a) -> Parser st a
-tokenPrim test = Parser $ \(State st input parserKind _) ok _ eerr ->
+tokenPrim test = Parser $ \(State st input parserKind _) ->
   case input of
-    []   -> eerr $ unexpectError "" noSourcePos
+    []   -> EmptyFail $ unexpectError "" noSourcePos
     t:ts -> case guard (not $ isEOF t) >> test t of
       Just x  ->
         let newstate = State st ts parserKind (tokenPos t)
             newerr   = newErrorUnknown $ tokenPos t
-        in  ok newerr [] [PR x newstate]
-      Nothing -> eerr $ unexpectError (showToken t) (tokenPos t)
+        in  Continuation newerr [] [PR x newstate]
+      Nothing -> EmptyFail $ unexpectError (showToken t) (tokenPos t)
 
 
 -- | @tokenGuard test p@ parses the current token using @p@ only if the token passes
 -- the predicate @test@. Does not produce particularly useful error messages.
 tokenGuard :: (Token -> Bool) -> Parser st a -> Parser st a
-tokenGuard test p = Parser $ \st@(State _ input  _ _) ok cerr eerr ->
+tokenGuard test p = Parser $ \st@(State _ input  _ _) ->
   case input of
-    []   -> eerr $ unexpectError "" noSourcePos
+    []   -> EmptyFail $ unexpectError "" noSourcePos
     t:ts -> if test t
-      then runParser p st ok cerr eerr
-      else eerr $ unexpectError (showToken t) (tokenPos t)
+      then runParser p st
+      else EmptyFail $ unexpectError (showToken t) (tokenPos t)
 
 
 -- | Parse the end of input
 eof :: Parser st ()
-eof = Parser $ \(State st input parserKind _) ok _ eerr ->
+eof = Parser $ \(State st input parserKind _) ->
   case input of
-    [] -> eerr $ unexpectError "" noSourcePos
+    [] -> EmptyFail $ unexpectError "" noSourcePos
     (t:ts) ->
       if isEOF t
       then
         let newstate = State st ts parserKind (tokenPos t)
             newerr   = newErrorUnknown $ tokenPos t
-        in  ok newerr [] [PR () newstate]
-      else eerr $ unexpectError (showToken t) (tokenPos t)
+        in  Continuation newerr [] [PR () newstate]
+      else EmptyFail $ unexpectError (showToken t) (tokenPos t)
 
 
 -- | Turn @ParseError@s into valid @ParseResult@s.
 catchError :: (ParseError -> a) -> Parser st a -> Parser st a
-catchError catch p = Parser $ \st ok _cerr _eerr ->
-  let pcerr err = ok (newErrorUnknown $ stPosition st) [] [PR (catch err) st]
-      peerr err = ok (newErrorUnknown $ stPosition st) [PR (catch err) st] []
-  in  runParser p st ok pcerr peerr
+catchError catch p = Parser $ \st -> case runParser p st of
+    Continuation a b c -> Continuation a b c
+    ConsumedFail err -> Continuation (newErrorUnknown $ stPosition st) [] [PR (catch err) st]
+    EmptyFail err -> Continuation (newErrorUnknown $ stPosition st) [PR (catch err) st] []
 
 -- | Lift possible parse errors into the @ParseResult@ using @catchError@.
 inspectError :: Parser st a -> Parser st (Either ParseError a)
@@ -92,9 +92,9 @@ inspectError = catchError Left . fmap Right
 
 -- | Map a function over the input in the Parser @State@.
 mapInput :: ([Token] -> [Token]) -> Parser st a -> Parser st a
-mapInput jump p = Parser $ \st ok cerr err ->
+mapInput jump p = Parser $ \st ->
   let newInput = jump $ stInput st
-  in  runParser p st{stInput = newInput} ok cerr err
+  in  runParser p st{stInput = newInput}
 
 -- useful macros
 

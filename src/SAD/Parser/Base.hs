@@ -14,9 +14,7 @@ Parser datatype and monad instance.
 
 module SAD.Parser.Base
   ( Parser(..),
-    Continuation,
-    EmptyFail,
-    ConsumedFail,
+    ParseOut(..),
     State (..),
     stPosition,
     ParseResult (..),
@@ -59,57 +57,50 @@ stPosition State{ lastPosition = pos } = pos
 data ParseResult st a = PR { prResult :: a, prState :: State st }
   deriving (Eq, Ord, Show, Functor)
 
--- | Continutation passing style ambiguity parser
+-- | Ambiguity parser
 -- In practice: @st@ = @FState@, @r@ = @ParseResult FState a@
+data ParseOut st a 
+  = Continuation ParseError [ParseResult st a] [ParseResult st a]
+  | ConsumedFail ParseError
+  | EmptyFail ParseError
+  deriving (Eq, Ord, Show)
 
-type Continuation r st a =
-  ParseError -> [ParseResult st a] -> [ParseResult st a] -> r
-type EmptyFail    r = ParseError -> r
-type ConsumedFail r = ParseError -> r
-
-
-newtype Parser st a = Parser {runParser :: forall r .
-     State st
-  -> Continuation r st a
-  -> ConsumedFail r
-  -> EmptyFail r
-  -> r }
+newtype Parser st a = Parser {runParser :: State st -> ParseOut st a }
 
 instance Functor (Parser st) where
-  fmap f p = Parser \ st ok consumedFail err ->
-    runParser p st (new ok) consumedFail err
-    where
-      new ok err emptyOk consumedOk = ok err (map (fmap f) emptyOk) (map (fmap f) consumedOk)
+  fmap f (Parser p) = Parser $ \st -> case p st of
+    Continuation err emptyOk consumedOk -> 
+      Continuation err (map (fmap f) emptyOk) (map (fmap f) consumedOk)
+    ConsumedFail err -> ConsumedFail err
+    EmptyFail err -> EmptyFail err
 
 instance Applicative (Parser st) where
   pure = return
   (<*>) = ap
 
 instance Monad (Parser st) where
-  return x = Parser \st ok _ _ ->
-      ok (newErrorUnknown (stPosition st)) [PR x st] []
+  return x = Parser $ \st -> Continuation (newErrorUnknown (stPosition st)) [PR x st] []
 
-  p >>= f = Parser \st ok consumedFail emptyFail ->
-    let pok = tryParses f ok consumedFail emptyFail
-    in  runParser p st pok consumedFail emptyFail
+  (Parser p) >>= f = Parser $ \st -> case p st of
+    Continuation err eok cok -> tryParses f err eok cok
+    ConsumedFail err -> ConsumedFail err
+    EmptyFail err -> EmptyFail err
 
 #ifdef __GHCJS__
-  fail s = Parser $ \st _ _ emptyFail ->
-    emptyFail $ newErrorMessage (newMessage (Text.pack s)) (stPosition st)
+  fail s = Parser $ \st ->
+    EmptyFail $ newErrorMessage (newMessage (Text.pack s)) (stPosition st)
 #endif
 
 instance Fail.MonadFail (Parser st) where
-  fail s = Parser $ \st _ _ emptyFail ->
-    emptyFail $ newErrorMessage (newMessage (Text.pack s)) (stPosition st)
+  fail s = Parser $ \st ->
+    EmptyFail $ newErrorMessage (newMessage (Text.pack s)) (stPosition st)
 
 -- This function is simple, but unfriendly to read because of all the
 -- accumulators involved. A clearer definition would be welcome.
-tryParses :: forall r a b st. (a -> Parser st b)
-  -> Continuation r st b
-  -> ConsumedFail r
-  -> EmptyFail r
-  -> Continuation r st a
-tryParses f ok consumedFail emptyFail err = go err [] [] [] []
+tryParses :: forall a b st. (a -> Parser st b)
+  -> ParseError -> [ParseResult st a] -> [ParseResult st a]
+  -> ParseOut st b
+tryParses f err = go err [] [] [] []
   where
     -- The reverses are just for debugging to force an intuitive order.
     -- They are not necessary.
@@ -120,50 +111,44 @@ tryParses f ok consumedFail emptyFail err = go err [] [] [] []
       -> [ParseError]
       -> [ParseResult st a]
       -> [ParseResult st a]
-      -> r
+      -> ParseOut st b
     go accErr accEmptyOk accConsumedOk accConsumedFails accEmptyFails emptyOks consumedOks =
       case (emptyOks, consumedOks) of
 
       -- If we have no further input: exit based on the accumulated results
       ([],[]) -> if
-        | notNull (accEmptyOk ++ accConsumedOk) -> ok accErr (reverse accEmptyOk) (reverse accConsumedOk)
-        | notNull accEmptyFails -> emptyFail $ foldl' (<>) err $ accEmptyFails ++ accConsumedFails
-        | notNull accConsumedFails -> consumedFail $ foldl' (<>) err $ accConsumedFails
+        | notNull (accEmptyOk ++ accConsumedOk) -> Continuation accErr (reverse accEmptyOk) (reverse accConsumedOk)
+        | notNull accEmptyFails -> EmptyFail $ foldl' (<>) err $ accEmptyFails ++ accConsumedFails
+        | notNull accConsumedFails -> ConsumedFail $ foldl' (<>) err $ accConsumedFails
         | otherwise -> error "tryParses: parser has empty result"
 
       -- If we have further input first work on the 'emptyOk' results
-      ((PR a st):rs, ys) ->
-        let fok ferr feok fcok =
-              go (accErr <> ferr) (reverse feok ++ accEmptyOk) (reverse fcok ++ accConsumedOk) accConsumedFails accEmptyFails rs ys
-            fcerr err' = go accErr accEmptyOk accConsumedOk (err':accConsumedFails) accEmptyFails rs ys
-            feerr err' = go accErr accEmptyOk accConsumedOk accConsumedFails (err':accEmptyFails) rs ys
-        in  runParser (f a) st fok fcerr feerr
+      ((PR a st):rs, ys) -> case runParser (f a) st of
+        Continuation ferr feok fcok ->
+            go (accErr <> ferr) (reverse feok ++ accEmptyOk) (reverse fcok ++ accConsumedOk) accConsumedFails accEmptyFails rs ys
+        ConsumedFail err' -> go accErr accEmptyOk accConsumedOk (err':accConsumedFails) accEmptyFails rs ys
+        EmptyFail err' -> go accErr accEmptyOk accConsumedOk accConsumedFails (err':accEmptyFails) rs ys
 
       -- .. and then on the 'consumerOk' ones.
-      ([], (PR a st):rs) ->
-        let fok ferr feok fcok =
+      ([], (PR a st):rs) -> case runParser (f a) st of
+        Continuation ferr feok fcok ->
               go (accErr <+> ferr) accEmptyOk (reverse feok ++ reverse fcok ++ accConsumedOk) accConsumedFails accEmptyFails [] rs
-            fcerr err' = go accErr accEmptyOk accConsumedOk (err':accConsumedFails) accEmptyFails [] rs
-            feerr err' = go accErr accEmptyOk accConsumedOk (err':accConsumedFails) accEmptyFails [] rs
-        in  runParser (f a) st fok fcerr feerr
-
+        ConsumedFail err' -> go accErr accEmptyOk accConsumedOk (err':accConsumedFails) accEmptyFails [] rs
+        EmptyFail err' -> go accErr accEmptyOk accConsumedOk (err':accConsumedFails) accEmptyFails [] rs
 
 instance Alternative (Parser st) where
   empty = mzero
   (<|>) = mplus
 
-
 instance MonadPlus (Parser st) where
-  mzero = Parser \st _ _ emptyFail -> emptyFail $ newErrorUnknown (stPosition st)
-  m `mplus` n = Parser \st ok consumedFail emptyFail ->
-    let meerr err =
-          let nok   err' = ok (err <+> err')
-              ncerr err' = consumedFail (err <> err')
-              neerr err' = emptyFail (err <> err')
-          in  runParser n st nok ncerr neerr
-    in  runParser m st ok consumedFail meerr
-
-
+  mzero = Parser \st -> EmptyFail $ newErrorUnknown (stPosition st)
+  (Parser m) `mplus` (Parser n) = Parser $ \st ->
+    case m st of
+      EmptyFail err -> case n st of
+        Continuation err' a b -> Continuation (err <+> err') a b
+        ConsumedFail err' -> ConsumedFail (err <+> err')
+        EmptyFail err' -> EmptyFail (err <+> err')
+      c -> c
 
 -- Escaping the parser
 
@@ -176,12 +161,10 @@ data Reply a
 
 -- | Running the parser
 runP :: Parser st a -> State st -> Reply (ParseResult st a)
-runP p st = runParser p st ok consumedFail emptyFail
-  where
-    ok _ emptyOk consumedOk = Ok (emptyOk ++ consumedOk)
-    consumedFail err  = Error err
-    emptyFail err     = Error err
-
+runP (Parser p) st = case p st of
+  Continuation _ emptyOk consumedOk -> Ok (emptyOk ++ consumedOk)
+  ConsumedFail err -> Error err
+  EmptyFail err -> Error err
 
 -- Parser state management
 
@@ -189,27 +172,26 @@ runP p st = runParser p st ok consumedFail emptyFail
 instance MonadState st (Parser st) where
 
   get :: Parser st st
-  get = Parser \st ok _consumedFail _emptyFail ->
-    ok (newErrorUnknown (stPosition st)) [PR (stUser st) st] []
+  get = Parser \st ->
+    Continuation (newErrorUnknown (stPosition st)) [PR (stUser st) st] []
 
   put :: st -> Parser st ()
-  put s = Parser \st ok _consumedFail _emptyFail ->
-    ok (newErrorUnknown (stPosition st)) [PR () st {stUser = s}] []
-
+  put s = Parser \st ->
+    Continuation (newErrorUnknown (stPosition st)) [PR () st {stUser = s}] []
 
 -- | Get the @stInput@ as a @ParseResult@.
 getInput :: Parser st [Token]
-getInput = Parser \st ok _ _ ->
-  ok (newErrorUnknown (stPosition st)) [PR (stInput st) st] []
+getInput = Parser \st ->
+  Continuation (newErrorUnknown (stPosition st)) [PR (stInput st) st] []
 
 -- | Get the @stPosition@ as a @ParseResult@.
 getPos :: Parser st SourcePos
-getPos = Parser \st ok _ _ ->
-  ok (newErrorUnknown (stPosition st)) [PR (stPosition st) st] []
+getPos = Parser \st ->
+  Continuation (newErrorUnknown (stPosition st)) [PR (stPosition st) st] []
 
 -- | Get the tokens before the current @stPosition@ as a @ParseResult@.
 getTokens :: [Token] -> Parser st [Token]
-getTokens inp = Parser \st ok _ _ ->
+getTokens inp = Parser \st ->
   let pos = stPosition st
       toks = takeWhile (\tok -> tokenPos tok < pos) inp -- TODO: Don't use the default Ord instance
-  in  ok (newErrorUnknown (stPosition st)) [PR toks st] []
+  in  Continuation (newErrorUnknown (stPosition st)) [PR toks st] []

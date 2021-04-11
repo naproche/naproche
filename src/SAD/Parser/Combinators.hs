@@ -40,28 +40,27 @@ import SAD.Helpers (nubOrd)
 
 -- | Try a parser with lookahead.
 try :: Parser st a -> Parser st a
-try p = Parser $ \st ok _cerr eerr -> runParser p st ok eerr eerr
+try p = Parser $ \st -> case runParser p st of
+  Continuation a b c -> Continuation a b c
+  ConsumedFail err -> EmptyFail err
+  EmptyFail err -> EmptyFail err
 
 -- | Ambiguous choice. Run both parsers and combine the errors and results.
 infixr 2 -|-
 (-|-) :: forall st a. Parser st a -> Parser st a -> Parser st a
-p1 -|- p2 = Parser $ \st ok cerr eerr ->
-  let ok1 err eok cok =
-        let ok2 err' eok' cok' = ok (err <+> err') (eok ++ eok') (cok ++ cok')
-            cerr2 err'         = ok (err <+> err') eok cok
-            eerr2 err'         = ok (err <+> err') eok cok
-        in  runParser p2 st ok2 cerr2 eerr2
-      cerr1 err =
-        let ok2 err'      = ok   (err <+>  err')
-            cerr2 err'    = cerr (err <> err')
-            eerr2 err'    = eerr (err <> err')
-        in  runParser p2 st ok2 cerr2 eerr2
-      eerr1 err =
-        let ok2 err'      = ok   (err <+>  err')
-            eerr2 err'    = eerr (err <> err')
-            cerr2 err'    = eerr (err <> err')
-        in  runParser p2 st ok2 cerr2 eerr2
-  in  runParser p1 st ok1 cerr1 eerr1
+p1 -|- p2 = Parser $ \st -> case runParser p1 st of
+  Continuation err eok cok -> case runParser p2 st of
+    Continuation err' eok' cok' -> Continuation (err <+> err') (eok ++ eok') (cok ++ cok')
+    ConsumedFail err' -> Continuation (err <+> err') eok cok
+    EmptyFail err' -> Continuation (err <+> err') eok cok
+  ConsumedFail err -> case runParser p2 st of
+    Continuation err' a b -> Continuation (err <+>  err') a b
+    ConsumedFail err' -> ConsumedFail (err <> err')
+    EmptyFail err' -> EmptyFail (err <> err')
+  EmptyFail err -> case runParser p2 st of
+    Continuation err' a b -> Continuation (err <+>  err') a b
+    EmptyFail err' -> EmptyFail (err <> err')
+    ConsumedFail err' -> EmptyFail (err <> err')
 
 -- chain parsing combinators
 
@@ -156,20 +155,19 @@ repeatUntil step = fmap (uncurry (<>)) . repeatUntil' step
 
 -- | If p is ambiguous, fail and report a well-formedness error
 narrow :: (Ord a, Show a) => Parser st a -> Parser st a
-narrow p = Parser $ \st ok cerr eerr ->
-  let pok err eok cok = case nubOrd $ map prResult $ eok ++ cok of
-        [_] -> ok err (take 1 eok) (take (1 - length eok) cok)
-        ls  -> eerr $ newErrorMessage (newWellFormednessMessage ["ambiguity error" <> Text.pack (show ls)]) (stPosition st)
-  in  runParser p st pok cerr eerr
-
+narrow p = Parser $ \st -> case runParser p st of
+  Continuation err eok cok -> case nubOrd $ map prResult $ eok ++ cok of
+    [_] -> Continuation err (take 1 eok) (take (1 - length eok) cok)
+    ls  -> EmptyFail $ newErrorMessage (newWellFormednessMessage ["ambiguity error" <> Text.pack (show ls)]) (stPosition st)
+  f -> f
 
 -- | Only take the longest possible parses (by @SourcePos@), discard all others
 takeLongest :: Parser st a -> Parser st a
-takeLongest p = Parser $ \st ok cerr eerr ->
-  let pok err eok cok
-        | null cok  = ok err (longest eok) []
-        | otherwise = ok err [] (longest cok)
-  in  runParser p st pok cerr eerr
+takeLongest p = Parser $ \st -> case runParser p st of
+  Continuation err eok cok
+    | null cok  -> Continuation err (longest eok) []
+    | otherwise -> Continuation err [] (longest cok)
+  f -> f
   where
     longest :: [ParseResult st a] -> [ParseResult st a]
     longest = lng []
@@ -187,27 +185,23 @@ takeLongest p = Parser $ \st ok cerr eerr ->
 
 -- | Fail if p succeeds
 failing :: Parser st a -> Parser st ()
-failing p = Parser $ \st ok cerr eerr ->
-  let pok _err eok _ =
-        if   null eok
-        then cerr $ unexpectError (showCurrentToken st) (stPosition st)
-        else eerr $ unexpectError (showCurrentToken st) (stPosition st)
-      peerr _ = ok (newErrorUnknown (stPosition st)) [PR () st] []
-      pcerr _ = ok (newErrorUnknown (stPosition st)) [PR () st] []
-  in  runParser p st pok pcerr peerr
+failing p = Parser $ \st -> case runParser p st of
+  Continuation _err eok _ ->
+    if   null eok
+    then ConsumedFail $ unexpectError (showCurrentToken st) (stPosition st)
+    else EmptyFail $ unexpectError (showCurrentToken st) (stPosition st)
+  EmptyFail _ -> Continuation (newErrorUnknown (stPosition st)) [PR () st] []
+  ConsumedFail _ -> Continuation (newErrorUnknown (stPosition st)) [PR () st] []
   where
     showCurrentToken st = showToken $ head $ stInput st ++ noTokens
-
-
 
 -- | Labeling of production rules for better error messages
 infix 0 <?>
 (<?>) :: Parser st a -> Text -> Parser st a
-p <?> msg = Parser $ \st ok cerr eerr ->
-  let pok err   = ok   $ setError (stPosition st) err
-      pcerr     = cerr
-      peerr err = eerr $ setError (stPosition st) err
-  in  runParser p st pok pcerr peerr
+p <?> msg = Parser $ \st -> case runParser p st of
+  Continuation err a b -> Continuation (setError (stPosition st) err) a b
+  ConsumedFail err -> ConsumedFail err
+  EmptyFail err -> EmptyFail $ setError (stPosition st) err
   where
     setError pos err =
       if   pos < errorPos err
@@ -224,33 +218,31 @@ label msg p = p <?> msg
 
 -- | Fail with a well-formedness error
 failWF :: Text -> Parser st a
-failWF msg = Parser $ \st _ _ eerr ->
-  eerr $ newErrorMessage (newWellFormednessMessage [msg]) (stPosition st)
+failWF msg = Parser $ \st ->
+  EmptyFail $ newErrorMessage (newWellFormednessMessage [msg]) (stPosition st)
 
 
 ---- do not produce an error message
 noError :: Parser st a -> Parser st a
-noError p = Parser $ \st ok cerr eerr ->
-  let pok   _err = ok   $ newErrorUnknown (stPosition st)
-      pcerr _err = cerr $ newErrorUnknown (stPosition st)
-      peerr _err = eerr $ newErrorUnknown (stPosition st)
-  in  runParser p st pok pcerr peerr
+noError p = Parser $ \st -> case runParser p st of
+  Continuation _err a b -> Continuation (newErrorUnknown (stPosition st)) a b
+  ConsumedFail _err -> ConsumedFail $ newErrorUnknown (stPosition st)
+  EmptyFail _err -> EmptyFail $ newErrorUnknown (stPosition st)
 
 
 -- | Parse and keep only results well-formed according to the supplied check;
 -- fail if there are none. Here @Just str@ signifies an error.
 wellFormedCheck :: (a -> Maybe Text) -> Parser st a -> Parser st a
-wellFormedCheck check p = Parser $ \st ok cerr eerr ->
-  let pos = stPosition st
-      pok err eok cok =
-        let wfEok = wf eok; wfCok = wf cok
-        in  if   null $ wfEok ++ wfCok
-            then notWf err eok cok
-            else ok err wfEok wfCok
-      notWf _err eok cok =
-        eerr $ newErrorMessage (newWellFormednessMessage $ nwf $ eok ++ cok) pos
-  in  runParser p st pok cerr eerr
+wellFormedCheck check p = Parser $ \st -> case runParser p st of
+  Continuation err eok cok ->
+    let wfEok = wf eok; wfCok = wf cok
+    in  if   null $ wfEok ++ wfCok
+        then notWf err eok cok st
+        else Continuation err wfEok wfCok
+  f -> f
   where
+    notWf _err eok cok st =
+      EmptyFail $ newErrorMessage (newWellFormednessMessage $ nwf $ eok ++ cok) (stPosition st)
     wf  = filter (isNothing . check . prResult)
     nwf = catMaybes . map (check . prResult)
 
@@ -258,14 +250,14 @@ wellFormedCheck check p = Parser $ \st ok cerr eerr ->
 -- fail if there are none with a normal error (and not a well-formedness one).
 -- Here @True@ means well-formed.
 lexicalCheck :: (a -> Bool) -> Parser st a -> Parser st a
-lexicalCheck check p = Parser $ \st ok cerr eerr ->
-  let pok err eok cok =
-        let wfEok = filter (check . prResult) eok
-            wfCok = filter (check . prResult) cok
-        in  if null $ wfEok ++ wfCok
-            then eerr $ unexpectError (unit err st) (stPosition st)
-            else ok err wfEok wfCok
-  in  runParser p st pok cerr eerr
+lexicalCheck check p = Parser $ \st -> case runParser p st of
+  Continuation err eok cok ->
+    let wfEok = filter (check . prResult) eok
+        wfCok = filter (check . prResult) cok
+    in  if null $ wfEok ++ wfCok
+        then EmptyFail $ unexpectError (unit err st) (stPosition st)
+        else Continuation err wfEok wfCok
+  f -> f
   where
     unit err =
       let pos = errorPos err
@@ -281,23 +273,22 @@ lexicalCheck check p = Parser $ \st ok cerr eerr ->
 ---- and should only be used for debugging purposes.
 errorTrace ::
   Text -> (ParseResult st a -> Text) -> Parser st a -> Parser st a
-errorTrace lbl shw p = Parser $ \st ok cerr eerr ->
-    let nok err eok cok = trace (  "error trace (success) : " ++ Text.unpack lbl ++ "\n"
+errorTrace lbl shw p = Parser $ \st -> case runParser p st of
+    Continuation err eok cok -> trace (  "error trace (success) : " ++ Text.unpack lbl ++ "\n"
           ++ tabText ("results (e):\n" ++ tabText (unlines (map (Text.unpack . shw) eok)) )
           ++ tabText ("results (c):\n" ++ tabText (unlines (map (Text.unpack . shw) cok)))
-          ++ tabText ("error:\n" ++ tabText (show err))) $ ok err eok cok
-        ncerr err = trace ("error trace (consumed): " ++ Text.unpack lbl ++ "\n" ++  tabText (show err)) $ cerr err
-        neerr err = trace ("error trace (empty)   : " ++ Text.unpack lbl ++ "\n" ++  tabText (show err)) $ eerr err
-    in  runParser p st nok ncerr neerr
+          ++ tabText ("error:\n" ++ tabText (show err))) $ Continuation err eok cok
+    ConsumedFail err -> trace ("error trace (consumed): " ++ Text.unpack lbl ++ "\n" ++  tabText (show err)) $ ConsumedFail err
+    EmptyFail err -> trace ("error trace (empty)   : " ++ Text.unpack lbl ++ "\n" ++  tabText (show err)) $ EmptyFail err
     where
       tabText = unlines . map ((++) "   ") . lines
 
 
 -- | Return @()@ if the next token isn't @EOF@.
 notEof :: Parser st ()
-notEof = Parser $ \st ok _ eerr ->
+notEof = Parser $ \st ->
   case stInput st of
-    [] -> eerr $ unexpectError "" noSourcePos
+    [] -> EmptyFail $ unexpectError "" noSourcePos
     (t:_) -> case isEOF t of
-      True  -> eerr $ unexpectError (showToken t) (tokenPos t)
-      False -> ok (newErrorUnknown (tokenPos t)) [] [PR () st]
+      True  -> EmptyFail $ unexpectError (showToken t) (tokenPos t)
+      False -> Continuation (newErrorUnknown (tokenPos t)) [] [PR () st]
