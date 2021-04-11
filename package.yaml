@@ -1,12 +1,12 @@
 name:                Naproche-SAD
 version:             0.1.0.0
-github:              "Naproche/Naproche-SAD"
+github:              "naproche-community/naproche"
 license:             GPL-3
 
 extra-source-files:
 - README.md
 
-description:         <https://github.com/Naproche/Naproche-SAD>
+description:         <https://github.com/naproche-community/naproche>
 
 flags:
   debug:
