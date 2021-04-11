@@ -194,7 +194,7 @@ data Prf f t
   | ByContradiction (Term f t)
   -- ^ prove the goal by contradiction (e.g. assume the negation and prove Bot)
   -- The argument is the negated goal. It will be inserted during type-checking.
-  | Suffices (Term f t)
+  | Suffices (Term f t) (PrfBlock f t)
   -- ^ prove that term => goal and set term as the new goal.
   | Subclaim (NFTerm f t) (PrfBlock f t)
   -- ^ a subclaim, also called 'have'
@@ -385,7 +385,7 @@ instance (Pretty (f InType), Show t, Show (f InType))
   pretty (TerminalCases cs) = vsep $
     map (\(t, p) -> "Case: " <> nest 2 (pretty t) <> pretty p) cs
   pretty (ByContradiction _) = "Assume the contrary." 
-  pretty (Suffices t) = "It suffices to show: " <> pretty t
+  pretty (Suffices t prf) = "It suffices to show: " <> pretty t <> pretty prf
 
 instance Pretty a => Pretty (Located a) where
   pretty (Located t p a) = "[" <> pretty t <> "] " 

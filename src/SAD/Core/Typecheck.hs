@@ -143,14 +143,16 @@ resolve name intypes ret = do
       Proposition -> Pred intypes Prop
       Value -> Pred intypes $ InType $ Signature (NormalIdent "[??]")
 
-    getArgs (t, (Pred is o)) = ((t, o), is)
-    getArgs _ = error $ "Internal: getArgs pattern not matched!"
+    getArgs (t, (Pred is o)) = pure ((t, o), is)
+    getArgs _ = failWithMessage $ "Internal: getArgs pattern not matched!"
 
     pick _ [] = failWithMessage $ "Resolve failed: " <> pretty name <> " of type " <> pretty typ
-    pick coe xs = case leastGeneral (map getArgs xs) coe of
-      Just (x, _) -> pure $ fst x
-      Nothing -> failWithMessage $ "Resolve ambigous: " <> pretty name <> " of type\n  " <> nest 2 (pretty typ)
-          <> "\ncan be resolved as any of:\n  " <> nest 2 (vsep (map (pretty . snd) xs))
+    pick coe xs = do
+      xs' <- mapM getArgs xs
+      case leastGeneral xs' coe of
+        Just (x, _) -> pure $ fst x
+        Nothing -> failWithMessage $ "Resolve ambigous: " <> pretty name <> " of type\n  " <> nest 2 (pretty typ)
+            <> "\ncan be resolved as any of:\n  " <> nest 2 (vsep (map (pretty . snd) xs))
 
 addType :: Monad m => Ident -> Type -> TC m ()
 addType i t = do
@@ -314,9 +316,10 @@ checkProof goal (Located n p t) = case t of
   ByContradiction _ -> do
     let negGoal = App Not [goal]
     pure (Located n p (ByContradiction negGoal), App Bot [], [Given "negated_goal" negGoal])
-  Suffices t -> do
+  Suffices t pbl -> do
     (_, t') <- checkTerm p Proposition t
-    pure (Located n p $ Suffices t', t', [])
+    bl <- checkProofBlock (termToNF $ App Imp [t', goal]) p pbl
+    pure (Located n p $ Suffices t' bl, t', [])
   Subclaim nf pbl -> do
     (_, nf') <- checkNFTerm p Proposition nf
     bl <- checkProofBlock nf' p pbl
@@ -357,7 +360,7 @@ unroll claim = \case
   Intro i t -> Just $ Forall i t claim
   Assume as -> Just $ App Imp [as, claim]
   ByContradiction negGoal -> Just $ App Imp [negGoal, claim]
-  Suffices _ -> Just $ claim
+  Suffices _ _ -> Just $ claim
   Subclaim t _ -> Just $ App And [termFromNF t, claim]
   Choose vs t _ -> Just $ foldl' (\c (i, t) -> Exists i t c) (App And [t, claim]) vs
   Cases cs -> Just $ foldl' (\a b -> App And [a, b]) claim $ map (\(a, b, _) -> App Imp [a, b]) cs

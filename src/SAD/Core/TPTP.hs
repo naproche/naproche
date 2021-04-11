@@ -89,9 +89,9 @@ instance (f ~ Identity, t ~ ()) => TPTP (Term f t) where
     (_, App Bot []) -> "$false"
     (_, App Eq [a, b]) -> "(" <> tptp ex a <> " = " <> tptp ex b <> ")"
     (_, AppNF op _ args _) -> tptp ex op <> inParens (map (tptp ex) args)
-    (_, a@(App _ _)) -> error $ "Mismatched arguments in tptp generation: " ++ show a
+    (_, a@(App _ _)) -> error $ "Internal error: Mismatched arguments in tptp generation: " ++ show a
     (_, Tag () t) -> tptp ex t
-    (_, Class _ _ _) -> error "Class left in TPTP!"
+    (_, Class _ _ _) -> error "Internal error: Class left in TPTP!"
 
 tffStatement :: ExportLang -> Text -> Text -> Text -> Text
 tffStatement ex n typ inside =

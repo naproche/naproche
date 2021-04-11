@@ -124,7 +124,7 @@ proveOrRetrieveCached t = do
       TimeOut -> do
         modify $ \s -> s { proveGoalsTimeout = proveGoalsTimeout s ++ [t] }
         pure TimeOut
-      Cached -> error $ "proveOrRetrieveCached: Can't happen"
+      Cached -> lift $ errorExport noSourcePos $ "proveOrRetrieveCached: Can't happen"
 
 runProveT :: (CacheStorage m) => [Prover] -> [Instr] -> ProveT m a -> m (a, ProveState)
 runProveT provers instrs (ProveT p) = do

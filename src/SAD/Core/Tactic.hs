@@ -44,7 +44,7 @@ generateTask :: Bool -> Term Identity () -> [Hypothesis] -> Located (Prf Identit
 generateTask isContra goal hypo (Located n p tactic) = case tactic of
   Intro _ _ -> []
   Assume _ -> []
-  Suffices _ -> []
+  Suffices t prf -> generateFromProof n p isContra hypo (App Imp [t, goal]) prf
   ByContradiction _ -> []
   Subclaim t prf -> generateFromProof n p isContra hypo (termFromNF t) prf
   Choose vs t prf ->
@@ -59,7 +59,6 @@ generateTask isContra goal hypo (Located n p tactic) = case tactic of
         final = foldl1 (\a b -> App Or [a, b]) (map fst cs)
     in cases ++ [Task hypo final [] n isContra p]
 
--- runTactics :: Text -> SourcePos -> Bool -> Term Identity () -> [Hypothesis] -> [Located (Prf Identity ())] -> [Task]
 runTactics :: Text -> SourcePos -> Bool -> Term Identity () -> [Hypothesis] -> [(Located (Prf Identity ()), Term Identity (), [Hypothesis])] -> [Task]
 runTactics topName topPos isContra goal hypo [] = [Task hypo goal [] topName isContra topPos]
 runTactics topName topPos isContra goal hypo ((tactic, newGoal, newHypos):ts) =

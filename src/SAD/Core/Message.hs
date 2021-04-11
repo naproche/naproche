@@ -12,7 +12,7 @@ module SAD.Core.Message (
   Report, ReportString, reportString, reportMeta, report,
   trimString, Comm(..), outputMain, outputExport, outputForTheL,
   outputParser, outputReasoner, outputThesis, outputSimplifier, outputTranslate,
-  errorExport, errorParser
+  errorExport, errorParser, errorMain
 ) where
 
 import Prelude hiding (error)
@@ -108,3 +108,6 @@ errorExport = error Naproche.origin_export
 
 errorParser :: Comm m => SourcePos -> String -> m a
 errorParser = error Naproche.origin_parser
+
+errorMain :: Comm m => SourcePos -> String -> m a
+errorMain = error Naproche.origin_main

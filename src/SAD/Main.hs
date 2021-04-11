@@ -25,7 +25,7 @@ import Data.Maybe (isNothing)
 
 import Data.Text.Prettyprint.Doc
 import Data.Text.Prettyprint.Doc.Render.String (renderString)
-import SAD.Core.Message (Comm, errorParser, outputMain, Kind(..), textFieldWidth)
+import SAD.Core.Message (Comm, errorParser, outputMain, Kind(..), textFieldWidth, errorMain)
 import SAD.Core.Provers (Prover)
 import SAD.Core.Prove (RunProver(..), verify, runProveT, ProveState(..))
 import SAD.Core.Reader (readProofText, HasLibrary(..))
@@ -179,10 +179,10 @@ readArgs :: (Comm m, MonadIO m) => [(Pos, Instr)] -> [String] -> m ([(Pos, Instr
 readArgs initialOpts files = do
   let revInitialOpts = reverse initialOpts
   let useTexArg = askFlag UseTex False $ map snd revInitialOpts
-  let fileName = case files of
-                  [file] -> Just file
-                  [] -> Nothing
-                  _ -> errorWithoutStackTrace "More than one file argument\n"
+  fileName <- case files of
+    [file] -> pure $ Just file
+    [] -> pure Nothing
+    _ -> errorMain noSourcePos "More than one file argument\n"
   let parserKind = if useTexArg || maybe False (\f -> ".tex.ftl" `isSuffixOf` f || ".ftl.tex" `isSuffixOf` f) fileName 
       then Tex else NonTex
   pure (revInitialOpts, parserKind, fileName)
