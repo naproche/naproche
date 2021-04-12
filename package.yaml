@@ -8,23 +8,8 @@ extra-source-files:
 
 description:         <https://github.com/naproche-community/naproche>
 
-flags:
-  debug:
-    description: "Enable special debugging support"
-    manual: true
-    default: false
-  
-
-when:
-  condition: flag(debug)
-  dependencies:
-  - haskell-stack-trace-plugin
-  ghc-options:
-  - -fplugin=StackTrace.Plugin
-  - -Wall
-
 dependencies:
-- base >= 4.7 && < 5
+- base >= 4.13 && < 5
 - containers
 - unordered-containers
 - deepseq

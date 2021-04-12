@@ -20,6 +20,9 @@ x86_64-windows/
 
 .vscode
 dist-newstyle
+dist
+cabal.project.local
+.ghc.environment.*
 
 examples/added
 **/.ftlcache/**
