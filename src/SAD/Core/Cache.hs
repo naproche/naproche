@@ -79,11 +79,11 @@ cache t c =
       fc' = fc { tasks = HashMap.insert t (lastRun fc) (tasks fc) }
   in  c { perFile = Map.insert (taskFile t) fc' (perFile c) }
 
--- | Write the cache and remove old (>= 5 runs) entries from the cache
+-- | Write the cache and remove old (>= 10 runs) entries from the cache
 store :: CacheStorage m => Cache -> m ()
 store c = do
   let fcs = Map.toList $ perFile c
   let fcs' = flip map fcs $ \(f, fc) ->
         (f, fc { tasks = HashMap.mapMaybe 
-          (\v -> if v + 5 < lastRun fc then Nothing else Just v) $ tasks fc })
+          (\v -> if v + 10 < lastRun fc then Nothing else Just v) $ tasks fc })
   forM_ fcs' $ \(f, fc) -> writeFileCache f fc

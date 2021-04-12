@@ -75,11 +75,11 @@ instance (f ~ Identity, t ~ ()) => TPTP (Term f t) where
     (FOF, Forall v (Identity (Signature m)) t) ->
       let ex' = addVar v ex in
       "(! [" <> tptp ex' v <> "] : "
-      <> tptp ex' (App Imp [AppNF m [] [AppNF v [] [] []] [], t]) <> ")"
+      <> tptp ex' (App Imp [AppWf m [AppWf v [] noWf] noWf, t]) <> ")"
     (FOF, Exists v (Identity (Signature m)) t) ->
       let ex' = addVar v ex in
       "(? [" <> tptp ex' v <> "] : "
-      <> tptp ex' (App And [AppNF m [] [AppNF v [] [] []] [], t]) <> ")"
+      <> tptp ex' (App And [AppWf m [AppWf v [] noWf] noWf, t]) <> ")"
     (_, App And [a, b]) -> "(" <> tptp ex a <> " & " <> tptp ex b <> ")"
     (_, App Or  [a, b]) -> "(" <> tptp ex a <> " | " <> tptp ex b <> ")"
     (_, App Imp [a, b]) -> "(" <> tptp ex a <> " => " <> tptp ex b <> ")"
@@ -88,7 +88,7 @@ instance (f ~ Identity, t ~ ()) => TPTP (Term f t) where
     (_, App Top []) -> "$true"
     (_, App Bot []) -> "$false"
     (_, App Eq [a, b]) -> "(" <> tptp ex a <> " = " <> tptp ex b <> ")"
-    (_, AppNF op _ args _) -> tptp ex op <> inParens (map (tptp ex) args)
+    (_, AppWf op args _) -> tptp ex op <> inParens (map (tptp ex) args)
     (_, a@(App _ _)) -> error $ "Internal error: Mismatched arguments in tptp generation: " ++ show a
     (_, Tag () t) -> tptp ex t
     (_, Class _ _ _) -> error "Internal error: Class left in TPTP!"
@@ -110,7 +110,7 @@ instance TPTP Hypothesis where
           FOF -> case t of
             Pred ts (InType (Signature intype)) -> tffStatement (exportLang ex) (tptp ex name) "axiom" $ tptp ex $
               let vars = flip zip ts $ map (NormalIdent . Text.pack . ('x':) . show) [1::Int ..]
-              in foldr (\(v, t) -> Forall v (Identity t)) (AppNF intype [] [AppNF name [] (map (\(v, _) -> AppNF v [] [] []) vars) []] []) vars
+              in foldr (\(v, t) -> Forall v (Identity t)) (AppWf intype [AppWf name (map (\(v, _) -> AppWf v [] noWf) vars) noWf] noWf) vars
             Pred _ Prop -> "" -- we assume that type-checking has already been done in this code.
             Sort -> "" -- types don't need to be introduced in FOF
 
@@ -144,8 +144,8 @@ desugerClasses = go mempty
             ((clss', stmts), t') = go (Map.insert v m typings) clss t
             free = mapMaybe (\v -> case Map.lookup v typings of Nothing -> Nothing; Just t -> Just (v, t))
               $ Set.toList $ fvToVarSet $ bindVar v $ findFree t'
-            clsTrm = AppNF (NormalIdent cls) [] (map (\(v, _) -> AppNF v [] [] []) free) []
-            ext = Forall v m $ App Iff [AppNF identElement [] [AppNF v [] [] [], clsTrm] [], t']
+            clsTrm = AppWf (NormalIdent cls) (map (\(v, _) -> AppWf v [] noWf) free) noWf
+            ext = Forall v m $ App Iff [AppWf identElement [AppWf v [] noWf, clsTrm] noWf, t']
             ext' = foldr (\(v, m) -> Forall v m) ext free
         in ((clss', (cls, map snd free, ext'):stmts), clsTrm)
       App op ts ->
@@ -153,11 +153,11 @@ desugerClasses = go mempty
               let ((v', ax'), t') = go typings v t in ((v', ax ++ ax'), t'))
               (vars, []) ts
         in (st, App op ts')
-      AppNF op im ex as ->
+      AppWf op ex wf ->
         let (st, ex') = L.mapAccumL (\(v, ax) t -> 
               let ((v', ax'), t') = go typings v t in ((v', ax ++ ax'), t'))
               (vars, []) ex
-        in (st, AppNF op im ex' as)
+        in (st, AppWf op ex' wf)
       Tag tag t -> Tag tag <$> go typings vars t 
 
 instance TPTP Task where

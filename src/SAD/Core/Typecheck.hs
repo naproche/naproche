@@ -15,9 +15,9 @@ import Data.Map (Map)
 import qualified Data.Map as Map
 import Data.Set (Set)
 import qualified Data.Set as Set
+import qualified Data.List as List
 import Data.Functor.Identity
 import Control.Monad.State
-import Data.List (foldl')
 import Data.Maybe
 import Data.Foldable (foldrM)
 
@@ -92,7 +92,7 @@ coercionsToTerm :: [Ident] -> (Term f t -> Term f t)
 coercionsToTerm = go . reverse
   where
     go [] = id
-    go (x:xs) = go xs . \t -> AppNF x [] [t] []
+    go (x:xs) = go xs . \t -> AppWf x [t] noWf
 
 coerceInto :: [InType] -> [InType] -> Coercions Ident Ident -> Maybe [[Ident]]
 coerceInto is is' coe = if length is == length is'
@@ -163,7 +163,10 @@ addType i t = do
     , overloadings = Map.insertWith (<>) i (Set.singleton i') (overloadings s)}
 
 addVar :: Monad m => Ident -> InType -> TC m ()
-addVar i t = addType i (Pred [] $ InType t)
+addVar i t = do
+  modify $ \s -> s
+    { typings = Map.insert i (Pred [] $ InType t) (typings s)
+    , overloadings = Map.insert i (Set.singleton i) (overloadings s)}
 
 locally :: Monad m => TC m a -> TC m a
 locally action = do
@@ -235,9 +238,7 @@ checkTerm p retval t = locally $ do
           (_, inclass) <- go Proposition t
           pure (InType $ Signature identClass, Class v (Identity m') inclass)
         Proposition -> failWithMessage $ "Found a class where a proposition was expected."
-      AppNF name implicit explicit assms -> do
-        -- assms has already been checked in 'infer'
-        (_, implicit') <- unzip <$> mapM (go Value) implicit
+      AppWf name explicit wf -> do
         (argtypes, explicit') <- unzip <$> mapM (go Value) explicit
         argintypes <- flip mapM argtypes $ \t -> case t of
               Prop -> failWithMessage "A truth value cannot be passed to a function!"
@@ -246,16 +247,42 @@ checkTerm p retval t = locally $ do
         case res of
           ((name', coe), t) -> do
             m <- (Map.lookup name' . defs) <$> get
-            as' <- case (assms, m) of
-              (_, Just (NFTerm _ _ as _)) -> do
-                mapM (\(g, a) -> checkProofBlock (NFTerm [] [] [] g) p a) $ zip as assms
-              ([], Nothing) -> pure []
-              (_, Nothing) -> failWithMessage $ "Unknown function or predicate: " <> pretty name'
+            wf' <- case m of
+              Just (NFTerm im _ as _) -> do
+                let imSet = Set.fromList $ map fst im
+                let wfSet = Set.fromList $ map fst $ wfImplicits wf
+                let superflous = wfSet Set.\\ imSet
+                when (not $ Set.null superflous) $ do
+                  failWithMessage $ "The following implicits where supplied but could not be used: " <> pretty superflous
+                let notGivenSet = imSet Set.\\ wfSet
+                let (given, notGiven) = List.partition (\x -> fst x `Set.member` notGivenSet) im
+                let goal = simp $ foldr (\(i, t) -> Exists i t) (List.foldl' (\a b -> App And [a, b]) (App Top []) as) notGiven
+                assms <- flip mapM (wfImplicits wf) $ \(i, t) -> do 
+                  (o, t') <- checkTerm p Value t
+                  case o of
+                    Prop -> failWithMessage $ "Given implicit is a proposition!"
+                    InType o -> do
+                      let (Identity expected) = fromJust $ List.lookup i im
+                      if o /= expected then
+                        failWithMessage $ "Implicit " <> pretty i <> " should have type " <> pretty expected <> " but you supplied an expression of type " <> pretty o
+                      else pure (i, t')
+                let assms' = map (\(i, t) -> App Eq [AppWf i [] noWf, t]) assms
+                let nfgoal = (NFTerm given [] assms' goal)
+                case goal of
+                  App Top [] -> pure $ WfBlock assms Nothing
+                  _ -> do
+                    wfPrf' <- case snd <$> wfProof wf of
+                      Nothing -> checkProofBlock nfgoal p $ (ProofByHints [] :: PrfBlock Identity ())
+                      Just (ProofByHints hs) -> checkProofBlock nfgoal p $ (ProofByHints hs :: PrfBlock Identity ())
+                      Just (ProofByTactics ts) -> checkProofBlock nfgoal p $ ProofByTactics ts
+                      Just (ProofByTCTactics ts') -> pure (ProofByTCTactics ts')
+                    pure $ WfBlock assms $ Just (nfgoal, wfPrf')
+              Nothing -> pure noWf
 
             -- TODO: By using name' instead of name we make re-checking this impossible!
             -- In fact, we re-check the assumptions though, so this will become an error
             -- once we have overloading in any assumption in a text!
-            pure (t, AppNF name' implicit' (zipWith coercionsToTerm coe explicit') as')
+            pure (t, AppWf name' (zipWith coercionsToTerm coe explicit') wf')
       App Eq [a, b] -> do
         (ta, a') <- go Value a
         (tb, b') <- go Value b
@@ -269,7 +296,7 @@ checkTerm p retval t = locally $ do
           _ -> failWithMessage $ "Prop in equality: " <> pretty (App Eq [a', b'])
       App op args -> do 
         res <- mapM (go Proposition) args
-        pure (Prop, App op $ map snd res)
+        pure (Prop, simp $ App op $ map snd res)
       Tag () t -> fmap (Tag ()) <$> go retval t
 
 checkNFTerm :: (Infer f, Message.Comm m) => SourcePos -> ReturnValue -> NFTerm f () -> TC m (OutType, NFTerm Identity ())
@@ -325,7 +352,7 @@ checkProof goal (Located n p t) = case t of
     bl <- checkProofBlock nf' p pbl
     pure (Located n p $ Subclaim nf' bl, goal, [Given n (termFromNF nf')])
   Choose vs t pbl -> do
-    let ex = foldl' (\e (i, t) -> Exists i t e) t vs
+    let ex = List.foldl' (\e (i, t) -> Exists i t e) t vs
     (_, ex') <- checkTerm p Proposition ex
     let (t', vs') = splitExists ex'
     let vst = map (\(v, t) -> Typing v $ Pred [] (InType t)) vs'
@@ -337,7 +364,7 @@ checkProof goal (Located n p t) = case t of
     cs' <- flip mapM cs $ \(c, topClaim, pbl) -> do
       (_, c') <- checkTerm p Proposition c
       (_, topClaim') <- checkTerm p Proposition topClaim
-      bl <- checkProofBlock (NFTerm [] [] [] goal) p pbl
+      bl <- checkProofBlock (NFTerm [] [] [] topClaim') p pbl
       claim <- case bl of
         ProofByTCTactics ts -> pure $ foldrM (flip unroll) topClaim'
           $ map (\(a, _, _) -> located a) ts
@@ -362,8 +389,8 @@ unroll claim = \case
   ByContradiction negGoal -> Just $ App Imp [negGoal, claim]
   Suffices _ _ -> Just $ claim
   Subclaim t _ -> Just $ App And [termFromNF t, claim]
-  Choose vs t _ -> Just $ foldl' (\c (i, t) -> Exists i t c) (App And [t, claim]) vs
-  Cases cs -> Just $ foldl' (\a b -> App And [a, b]) claim $ map (\(a, b, _) -> App Imp [a, b]) cs
+  Choose vs t _ -> Just $ List.foldl' (\c (i, t) -> Exists i t c) (App And [t, claim]) vs
+  Cases cs -> Just $ List.foldl' (\a b -> App And [a, b]) claim $ map (\(a, b, _) -> App Imp [a, b]) cs
   TerminalCases _ -> Nothing
 
 foldTactics :: Monad m => (g -> t -> m (t', g, hs)) -> g -> [t] -> m [(t', g, hs)]
@@ -383,7 +410,7 @@ checkProofBlock nf@(NFTerm im ex as _) p = \case
     let g2 = fromMaybe (termFromNF nf) $ fmap (\(_, g, _) -> g) $ lastMay ts1
     ts2 <- foldTactics checkProof g2 $ ts
     pure $ ProofByTCTactics $ ts1 ++ ts2
-  ProofByTCTactics _ -> failWithMessage $ "Internal: Type-checked tactics passed to type-checking!"
+  ProofByTCTactics ts -> pure $ ProofByTCTactics ts
 
 typecheck :: Message.Comm m => [Located (Stmt Set ())] -> m [Located (Stmt Identity ())]
 typecheck = fmap appendStmts . flip evalStateT mempty . mapM go

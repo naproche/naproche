@@ -108,8 +108,9 @@ proveOrRetrieveCached t = do
     instrs <- proveInstrs <$> get
     modify $ \s -> s { proveGoalsSentToATP = proveGoalsSentToATP s + 1 }
     let conj = show (pretty (conjecture t))
-    lift $ outputReasoner WRITELN (taskPos t)
-      $ "[" <> (Text.unpack $ taskName t) <> "] " <> conj <> "\n"
+    when (askFlag Printgoal False instrs) $ do
+      lift $ outputReasoner WRITELN (taskPos t)
+        $ "[" <> (Text.unpack $ taskName t) <> "] " <> conj <> "\n"
     res <- lift $ export (taskPos t) provers instrs t
     case res of
       Success -> do
@@ -117,6 +118,8 @@ proveOrRetrieveCached t = do
         pure Success
       Failure -> do
         modify $ \s -> s { proveGoalsFailed = proveGoalsFailed s ++ [t] }
+        when (not $ askFlag Skipfail True instrs) $ do
+          lift $ errorExport (taskPos t) $ "\nGoal failed!\n  " <> conj
         pure Failure
       ContradictoryAxioms -> do
         modify $ \s -> s { proveFirstContradiction = case proveFirstContradiction s of Nothing -> Just t; j -> j }

@@ -2,8 +2,6 @@
 [provers provers.json]
 [prover eprover]
 [timelimit 3]
-[prove on]
-[check on]
 [skipfail off]
 [printgoal on]
 [printprover off]

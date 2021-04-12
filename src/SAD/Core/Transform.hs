@@ -98,7 +98,7 @@ parseFormula f = modify (\s -> s { errorFormula = f }) >> go [] f
       F.Tag HeadTerm (F.Trm (TermNotion sort) [arg] _ _) -> do
         name' <- checkTerm $ TermNotion sort
         arg' <- go vars arg
-        pure $ Tag SortTerm $ AppNF name' [] [arg'] []
+        pure $ Tag SortTerm $ AppWf name' [arg'] noWf
       F.Tag t  f  -> Tag t <$> go vars f
       F.Not f -> App Not <$> mapM (go vars) [f]
       F.Top -> pure $ App Top []
@@ -107,12 +107,12 @@ parseFormula f = modify (\s -> s { errorFormula = f }) >> go [] f
       F.Trm name args _ _ -> do
         name' <- checkTerm name
         args' <- mapM (go vars) args
-        pure $ AppNF name' [] args' []
+        pure $ AppWf name' args' noWf
       F.Var v _ _ -> do
         v' <- checkVar v
-        pure $ AppNF v' [] [] []
+        pure $ AppWf v' [] noWf
       F.Ind i _ ->
-        if length vars > i then pure $ AppNF (vars !! i) [] [] []
+        if length vars > i then pure $ AppWf (vars !! i) [] noWf
         else failWithMessage $ pretty $ "Internal error: Unbound index: " ++ show i
       f -> failWithMessage $ pretty
         $ "Internal error: Intermittent parse result in type-check: " ++ show f
@@ -152,28 +152,28 @@ extractGivenTypes ctx t = fmap (fst) $ runWriterT $ runReaderT (go t) mempty
         (t', typings) <- listen $ go t
         let m = Map.findWithDefault mempty v typings
         pure $ Class v m t'
-      AppNF op _ args _ -> do
+      AppWf op args _ -> do
         settable <- snd <$> ask
         case parseType ctx op of
           Just t -> case args of
-            [AppNF v [] [] []] | v `Set.member` settable -> do
+            [AppWf v [] _] | v `Set.member` settable -> do
               tell $ Map.singleton v (Set.singleton t)
               pure $ App Top []
             [arg] -> do
               let d = newIdent (NormalIdent "d") (SAD.Data.Identifier.fvToVarSet $ findFree arg)
               arg' <- local (const mempty) $ go arg
-              pure $ Exists d (Set.singleton t) $ App Eq [AppNF d [] [] [], arg']
+              pure $ Exists d (Set.singleton t) $ App Eq [AppWf d [] noWf, arg']
             [] -> lift $ lift $ failWithMessage $ "Internal: Sort applied to no arguments!"
             _ -> lift $ lift $ failWithMessage $ "Internal: Sort applied to several arguments!"
           Nothing -> do
             args' <- mapM (local (const mempty) . go) args
-            pure $ AppNF op [] args' []
+            pure $ AppWf op args' noWf
       -- this hack allows for new coercions in a lemma or axiom
       -- if it is of the form "Let s be a from. Then s is a to."
-      App Imp [AppNF (parseType ctx -> Just from) [] [AppNF v0 [] [] []] [], AppNF name@(parseType ctx -> Just _) [] [AppNF v1 [] [] []] []]
+      App Imp [AppWf (parseType ctx -> Just from) [AppWf v0 [] _] _, AppWf name@(parseType ctx -> Just _) [AppWf v1 [] _] _]
         | v0 == v1 -> do
           tell $ Map.singleton v0 (Set.singleton from)
-          pure $ Tag CoercionTag $ AppNF name [] [AppNF v0 [] [] []] []
+          pure $ Tag CoercionTag $ AppWf name [AppWf v0 [] noWf] noWf
       App Imp [a, b] -> do
         a' <- local (\(a, b) -> (mempty, a <> b)) $ go a
         b' <- go b
@@ -202,11 +202,11 @@ mkCoercion :: Message.Comm m => InType -> InType -> Err m [Stmt Set ()]
 mkCoercion (Signature from) (Signature to) = do
   name <- coercionName from to
   let [x, y] = [NormalIdent "x", NormalIdent "y"]
-  let coe = \x -> AppNF name [] [x] []
+  let coe = \x -> AppWf name [x] noWf
   let fromType = Set.singleton $ Signature from
   let inj = NFTerm [(x, fromType), (y, fromType)] []
-        [App Eq [coe (AppNF x [] [] []), coe (AppNF y [] [] [])]]
-        (App Eq [AppNF x [] [] [], AppNF y [] [] []])
+        [App Eq [coe (AppWf x [] noWf), coe (AppWf y [] noWf)]]
+        (App Eq [AppWf x [] noWf, AppWf y [] noWf])
   pure [Coercion name from to, Axiom inj]
 
 -- | Make sure that there are no tags left.
@@ -217,7 +217,7 @@ noTags = go
       Forall v m t -> Forall v m <$> go t
       Exists v m t -> Exists v m <$> go t
       Class v m t -> Class v m <$> go t
-      AppNF op _ args _ -> flip (AppNF op []) [] <$> mapM go args
+      AppWf op args _ -> flip (AppWf op) noWf <$> mapM go args
       App op args -> App op <$> mapM go args
       Tag Replacement t -> go t
       Tag EqualityChain t -> go t
@@ -356,7 +356,7 @@ extractExplicit name implicit args = removeMap <$> foldrM (flip go) (Map.delete 
   where 
     removeMap (m, a) = (Map.toList m, a)
 
-    go (im, ex) (AppNF v [] [] []) = case Map.lookup v im of
+    go (im, ex) (AppWf v [] _) = case Map.lookup v im of
       Just s -> pure (Map.delete v im, (v, s):ex)
       Nothing -> failWithMessage $ "In a definition for " <> pretty name
         <> ", the variable " <> pretty v <> " was found to be unbound."
@@ -370,9 +370,9 @@ extractDefinitions :: Message.Comm m => Context -> NFTerm Set Tag -> Err m [Stmt
 extractDefinitions ctx nf = do
   (asDefs, nf) <- case reverse $ nfAssumptions nf of
         -- sorts definitions
-        (Tag SortTerm (AppNF name _ [AppNF v [] [] []] _)):_ -> do
+        (Tag SortTerm (AppWf name [AppWf v [] _] _)):_ -> do
           case nfBody nf of
-            Exists d to (App Eq [AppNF d1 [] [] [], AppNF v1 [] [] []]) | d == d1 && v == v1 -> do
+            Exists d to (App Eq [AppWf d1 [] _, AppWf v1 [] _]) | d == d1 && v == v1 -> do
               case Set.toList to of
                 [to] -> do
                   coe <- mkCoercion (Signature name) to
@@ -382,15 +382,15 @@ extractDefinitions ctx nf = do
             App Top [] -> pure ([IntroSort name], NFTerm [] [] [] (App Top []))
             _ -> failWithMessage $ "The type declaration is malformed! " <> pretty nf
         -- Atoms and signatures.
-        (Tag HeadTerm (AppNF name _ args _)):assms -> do
+        (Tag HeadTerm (AppWf name args _)):assms -> do
           (im, ex) <- extractExplicit name (nfImplicit nf) args
           as <- mapM noTags $ reverse assms
           pure ([IntroAtom name im ex as], NFTerm [] [] [] (App Top []))
-        (Tag HeadTerm (App Eq [AppNF v0 [] [] [], AppNF name _ args _])):assms -> do
+        (Tag HeadTerm (App Eq [AppWf v0 [] _, AppWf name args _])):assms -> do
           as <- mapM noTags $ reverse assms
           (im, ex) <- extractExplicit name (nfImplicit nf) args
           case nfBody nf of
-            Exists d to (App Eq [AppNF d1 [] [] [], AppNF v1 [] [] []]) | d == d1 && v0 == v1 -> do
+            Exists d to (App Eq [AppWf d1 [] _, AppWf v1 [] _]) | d == d1 && v0 == v1 -> do
               let im' = List.deleteBy ((==) `on` fst) (v0, mempty) im
               pure ([IntroSignature name to im' ex as], NFTerm [] [] [] (App Top []))
             _ -> failWithMessage $ "The signature is malformed! " <> pretty nf
@@ -398,7 +398,7 @@ extractDefinitions ctx nf = do
   bdDefs <- case nfBody nf of
         -- TODO: This case does not match when the coercion already exists and thus an error
         -- 'Remaining tag: CoercionTag' is thrown!
-        Tag CoercionTag (AppNF to [] [AppNF v0 [] [] []] []) ->
+        Tag CoercionTag (AppWf to [AppWf v0 [] _] _) ->
           case List.lookup v0 (nfImplicit nf) of
             (Just from) -> do
               case (Set.toList from) of
@@ -408,7 +408,7 @@ extractDefinitions ctx nf = do
                   coe <- mkCoercion from (Signature to)
                   pure coe
             _ -> failWithMessage $ "Couldn't parse coercion!"
-        Tag CoercionTag (Exists _ to (App Eq [_, AppNF v0 [] [] []])) ->
+        Tag CoercionTag (Exists _ to (App Eq [_, AppWf v0 [] _])) ->
           case Map.lookup v0 (preBoundVars ctx) of
             (Just from) -> do
               case (Set.toList from, Set.toList to) of
@@ -421,28 +421,28 @@ extractDefinitions ctx nf = do
                   pure coe
             _ -> failWithMessage $ "Couldn't parse coercion!"
         -- predicate definitions
-        App Iff [Tag HeadTerm (AppNF name _ args _), def] -> do
+        App Iff [Tag HeadTerm (AppWf name args _), def] -> do
           as <- mapM noTags $ nfAssumptions nf
           b <- noTags $ def
           (im, ex) <- extractExplicit name (nfImplicit nf) args
           pure [Predicate name $ NFTerm im ex as b]
-        Forall v0 m (App Iff [Tag HeadTerm (AppNF name _ ((AppNF v1 [] [] []):args) _), def]) | v0 == v1 -> do
+        Forall v0 m (App Iff [Tag HeadTerm (AppWf name ((AppWf v1 [] _):args) _), def]) | v0 == v1 -> do
           as <- mapM noTags $ nfAssumptions nf
           b <- noTags $ def
           (im, ex) <- extractExplicit name (nfImplicit nf) args
           pure [Predicate name $ NFTerm im ((v0, m):ex) as b]
         -- function definitions
-        Forall _ retval (App Iff [Tag HeadTerm (App Eq [_, AppNF name _ args _]), App Eq [_, def]]) -> do
+        Forall _ retval (App Iff [Tag HeadTerm (App Eq [_, AppWf name args _]), App Eq [_, def]]) -> do
           as <- mapM noTags $ nfAssumptions nf
           b <- noTags $ def
           (im, ex) <- extractExplicit name (nfImplicit nf) args
           pure [Function name retval $ NFTerm im ex as b]
-        Forall _ retval (App Imp [Tag HeadTerm (App Eq [AppNF v0 [] [] [], AppNF name _ args _]), def]) -> do
+        Forall _ retval (App Imp [Tag HeadTerm (App Eq [AppWf v0 [] _, AppWf name args _]), def]) -> do
           as <- mapM noTags $ nfAssumptions nf
           b <- noTags $ def
           (im, ex) <- extractExplicit name (nfImplicit nf) args
           case b of
-            Exists d to (App Eq [AppNF d1 [] [] [], AppNF v1 [] [] []]) | d == d1 && v0 == v1 -> do
+            Exists d to (App Eq [AppWf d1 [] _, AppWf v1 [] _]) | d == d1 && v0 == v1 -> do
               let im' = List.deleteBy ((==) `on` fst) (v0, mempty) im
               pure [IntroSignature name to im' ex as]
             _ -> pure [Function name retval $ NFTerm im ex as b]

@@ -4,11 +4,11 @@
 
 module SAD.Core.Typed
  ( InType(..), OutType(..), Type(..), NFTerm(..)
- , Term(..), Located(..), Prf(..)
+ , Term(..), Located(..), Prf(..), WfBlock(..)
  , PrfBlock(..), Hypothesis(..)
  , Stmt(..), Operator(..)
  , simp, bindAllExcept, findFree
- , termToNF, termFromNF
+ , termToNF, termFromNF, noWf
  ) where
 
 import Data.Text (Text)
@@ -68,12 +68,7 @@ data Term f t
   | Exists Ident (f InType) (Term f t)
   | Class Ident (f InType) (Term f t)
   | App Operator [Term f t]
-  | AppNF Ident [Term f t] [Term f t] [PrfBlock f t]
-  -- ^ App to an identifier in NF. First implicit arguments,
-  -- then explicit arguments then proofs of assumptions.
-  -- This corresponds to Lean's @-form. If you leave this empty,
-  -- it will be ignored in type-checking and added during ontological
-  -- checking.
+  | AppWf Ident [Term f t] (WfBlock f t)
   | Tag t (Term f t)
 deriving instance (Eq (f InType), Eq t) => Eq (Term f t)
 deriving instance (Ord (f InType), Ord t) => Ord (Term f t)
@@ -147,6 +142,24 @@ deriving instance (Ord (f InType), Ord t) => Ord (Stmt f t)
 deriving instance (Show (f InType), Show t) => Show (Stmt f t)
 deriving instance (Generic (f InType), Generic t) => Generic (Stmt f t)
 
+data WfBlock f t = WfBlock 
+  { wfImplicits :: [(Ident, Term f t)]
+    -- ^ give terms for some implicits
+  , wfProof :: Maybe (NFTerm f t, PrfBlock f t)
+    -- ^ A proof for the claim in the first argument (added during type-checking):
+    --   Exists (implicits \ wfImplicits) st. assumptions
+    -- After type-checking 'Nothing' means that nothing needs to be done.
+  }
+deriving instance (Eq (f InType), Eq t) => Eq (WfBlock f t)
+deriving instance (Ord (f InType), Ord t) => Ord (WfBlock f t)
+deriving instance (Show (f InType), Show t) => Show (WfBlock f t)
+deriving instance (Generic (f InType), Generic t) => Generic (WfBlock f t)
+instance (Generic (f InType), Generic t, Binary (f InType), Binary t) => Binary (WfBlock f t)
+instance (Generic (f InType), Generic t, Hashable (f InType), Hashable t) => Hashable (WfBlock f t)
+
+noWf :: WfBlock f t
+noWf = WfBlock [] Nothing
+
 -- | A proof block. The first two tactics are given by users:
 -- either supplying the names of useful theorems or giving a list of tactics.
 -- The third is the result of type-checking tactics: Each tactic needs to
@@ -158,7 +171,7 @@ data PrfBlock f t
   -- should match the 'locName's given before.
   | ProofByTactics [Located (Prf f t)]
   -- ^ given by user: some tactics that should be run from left to right.
-  | ProofByTCTactics [(Located (Prf f t), Term Identity (), [Hypothesis])]
+  | ProofByTCTactics [(Located (Prf Identity ()), Term Identity (), [Hypothesis])]
   -- ^ after type-checking: Each tactic includes its hypothesis and the next goal.
 deriving instance (Eq (f InType), Eq t) => Eq (PrfBlock f t)
 deriving instance (Ord (f InType), Ord t) => Ord (PrfBlock f t)
@@ -166,14 +179,6 @@ deriving instance (Show (f InType), Show t) => Show (PrfBlock f t)
 deriving instance (Generic (f InType), Generic t) => Generic (PrfBlock f t)
 instance (Generic (f InType), Generic t, Binary (f InType), Binary t) => Binary (PrfBlock f t)
 instance (Generic (f InType), Generic t, Hashable (f InType), Hashable t) => Hashable (PrfBlock f t)
-
--- | Hypothesis as they are given in TPTP format.
-data Hypothesis
-  = Given Text (Term Identity ())
-  | Typing Ident Type
-  deriving (Eq, Ord, Show, Generic)
-instance Hashable Hypothesis
-instance Binary Hypothesis
 
 -- | A proof consists of sub-claims that will be given directly to the ATP
 -- and a number of tactics. Unlike in Lean, our Tactics need to be completely
@@ -216,6 +221,14 @@ deriving instance (Show (f InType), Show t) => Show (Prf f t)
 deriving instance (Generic (f InType), Generic t) => Generic (Prf f t)
 instance (Generic (f InType), Generic t, Binary (f InType), Binary t) => Binary (Prf f t)
 instance (Generic (f InType), Generic t, Hashable (f InType), Hashable t) => Hashable (Prf f t)
+
+-- | Hypothesis as they are given in TPTP format.
+data Hypothesis
+  = Given Text (Term Identity ())
+  | Typing Ident Type
+  deriving (Eq, Ord, Show, Generic)
+instance Hashable Hypothesis
+instance Binary Hypothesis
 
 -- | Simplify a formula for nicer pretty-printing.
 simp :: Term f t -> Term f t
@@ -283,7 +296,7 @@ findFree = free
       Forall v _ t -> bindVar v $ free t
       Exists v _ t -> bindVar v $ free t
       Class  v _ t -> bindVar v $ free t
-      AppNF v im ex _ -> unitFV v <> mconcat (free <$> im) <> mconcat (free <$> ex)
+      AppWf v ex _ -> unitFV v <> mconcat (free <$> ex)
       App _ args -> mconcat $ free <$> args
       Tag _ t -> free t
 
@@ -304,6 +317,14 @@ instance Pretty Type where
     encloseSep "" "" " → " (map pretty is ++ [pretty t])
 
 instance (Pretty (f InType), Show t, Show (f InType)) 
+  => Pretty (WfBlock f t) where
+  pretty (WfBlock is prf) = case (is, prf) of
+    ([], Nothing) -> ""
+    (xs, Nothing) -> " (with: " <> hsep (punctuate comma $ map (\(i, t) -> pretty i <> "=" <> pretty t) xs) <> ")"
+    ([], Just (_, prf)) -> " (wf. " <> pretty prf <> ")"
+    (xs, Just (_, prf)) -> " (with: " <> hsep (punctuate comma $ map (\(i, t) -> pretty i <> "=" <> pretty t) xs) <> "; wf. " <> pretty prf <> ")"
+
+instance (Pretty (f InType), Show t, Show (f InType)) 
   => Pretty (Term f t) where
   pretty (Forall v t tr) = "(∀[" <> pretty v <+> ":"
     <+> pretty t <> "]" <> softline <> pretty tr <> ")"
@@ -319,13 +340,13 @@ instance (Pretty (f InType), Show t, Show (f InType))
   pretty (App Not [a]) = "(not " <> pretty a <> ")"
   pretty (App Top []) = "true"
   pretty (App Bot []) = "false"
-  pretty (AppNF op _ [] _) = pretty op
-  pretty (AppNF op _ args _) | isSymbol op = 
+  pretty (AppWf op [] wf) = pretty op <> pretty wf
+  pretty (AppWf op args wf) | isSymbol op = 
     let args' = flip map args $ \a -> case a of
-          AppNF op _ _ _ | isSymbol op -> "(" <> pretty a <> ")"
+          AppWf op _ _ | isSymbol op -> "(" <> pretty a <> ")"
           _ -> pretty a
-    in prettyWithArgs op args' 
-  pretty (AppNF op _ args _) = pretty op <> tupled' (map pretty args) 
+    in prettyWithArgs op args' <> pretty wf
+  pretty (AppWf op args wf) = pretty op <> tupled' (map pretty args) <> pretty wf
   pretty (Tag t tr) = "(" <> pretty (show t) <> " :: " <> pretty tr <> ")"
   pretty t = error $ "Malformed term: " ++ show t
 
@@ -349,9 +370,9 @@ instance (Pretty (f InType), Show t, Show (f InType))
 instance (Pretty (f InType), Show t, Show (f InType)) 
   => Pretty (Stmt f t) where
   pretty (IntroSort tm) = "Sort: " <> pretty tm
-  pretty (IntroAtom i im ex as) = "Predicate " <> pretty i <> ": " <> pretty (NFTerm im ex as (AppNF (NormalIdent "") [] [] []))
+  pretty (IntroAtom i im ex as) = "Predicate " <> pretty i <> ": " <> pretty (NFTerm im ex as (AppWf (NormalIdent "") [] noWf))
   pretty (IntroSignature i t im ex as) = "Function " <> pretty i <> ": "
-    <> pretty (NFTerm im ex as (AppNF (NormalIdent "") [] [] [])) <> ": " <> pretty t
+    <> pretty (NFTerm im ex as (AppWf (NormalIdent "") [] noWf)) <> ": " <> pretty t
   pretty (Axiom t) = "Axiom: " <> pretty t
   pretty (Predicate t nf) = "Definition [" <> pretty t <> "]: " <> pretty nf
   pretty (Function t o nf) = "Definition [" <> pretty t <> " → " <> pretty o <> "]: " <> pretty nf

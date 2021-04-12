@@ -37,10 +37,10 @@ import SAD.Core.Transform (transform)
 import SAD.Core.Typed (located)
 import SAD.Core.Cache (CacheStorage)
 import SAD.Core.Task (Task(..))
-import SAD.Core.Tactic (generateTasks)
+import SAD.Core.Tactic (proofTasks, ontologicalTasks)
 import SAD.Core.Typecheck (typecheck)
 
-data TimedSection = ParsingTime | ProvingTime | CheckTime
+data TimedSection = ParsingTime | CheckTime | OntoTime | ProvingTime 
   deriving (Eq, Ord, Show)
 
 newtype Times m a = Times { runTimes :: StateT (Map TimedSection (Either UTCTime NominalDiffTime)) m a }
@@ -77,7 +77,7 @@ mainBody provers opts0 text0 = flip evalStateT mempty $ runTimes $ do
       endTimedSection ParsingTime
       -- if -T / --onlytranslate is passed as an option, only print the translated text
       if askFlag OnlyTranslate False opts0
-        then showTranslation txts
+        then showTranslation provers txts opts0
         else do proveFOL provers txts opts0
 
 showTimeDiff :: NominalDiffTime -> Text
@@ -97,6 +97,7 @@ showTimes times = do
   outputMain TRACING noSourcePos $ Text.unpack $
     "parser "           <> showTimeDiff (times Map.! ParsingTime)
     <> " - checker "     <> showTimeDiff (times Map.! CheckTime)
+    <> " - ontological "     <> showTimeDiff (times Map.! OntoTime)
     <> " - prover "     <> showTimeDiff (times Map.! ProvingTime)
 
   outputMain TRACING noSourcePos $ Text.unpack $
@@ -110,50 +111,70 @@ writeOut pos doc = do
     (doc <> hardline)
 
 showTranslation :: (MonadIO m, RunProver m, Comm m, CacheStorage m)
-  => [ProofText] -> Times m Exit.ExitCode
-showTranslation txts = do
+  => [Prover] -> [ProofText] -> [Instr] -> Times m Exit.ExitCode
+showTranslation provers txts opts0 = do
   -- lift $ mapM_ (\case (ProofTextBlock b) -> outputMain WRITELN (fileOnlyPos "") $ show b; _ -> pure ()) txts
+  
   beginTimedSection CheckTime
   converted <- lift $ transform txts
   -- lift $ mapM_ (writeOut (fileOnlyPos "") . pretty . located) converted
   typed <- lift $ typecheck converted
   endTimedSection CheckTime
+  
+  beginTimedSection OntoTime
+  lift $ writeOut noSourcePos $ "Ontological checking:"
+  proveTasks provers (ontologicalTasks typed) opts0
+  endTimedSection OntoTime
+  
   lift $ mapM_ (writeOut (fileOnlyPos "") . pretty . located) typed
+  
+  -- print statistics
   beginTimedSection ProvingTime
   endTimedSection ProvingTime
-
-  -- print statistics
   getTimes >>= lift . showTimes
   pure $ Exit.ExitSuccess
+
+proveTasks :: (MonadIO m, RunProver m, Comm m, CacheStorage m) 
+  => [Prover] -> [Task] -> [Instr] -> Times m ProveState
+proveTasks provers tasks opts0 = do
+  proveOut <- lift $ fmap snd $ runProveT provers opts0 $ verify tasks
+  if length (proveGoalsTimeout proveOut) == 0 then pure ()
+    else do
+      lift $ writeOut (fileOnlyPos "") $ "The following claims could not be shown to hold:"
+      lift $ mapM_ (\t -> writeOut (taskPos t) $ pretty $ conjecture t) (proveGoalsTimeout proveOut)
+  if length (proveGoalsFailed proveOut) == 0 then pure ()
+    else do
+      lift $ writeOut (fileOnlyPos "") $ "The following claims do not follow from the axioms:"
+      lift $ mapM_ (\t -> writeOut (taskPos t) $ pretty $ conjecture t) (proveGoalsFailed proveOut)
+  pure proveOut
 
 proveFOL :: (MonadIO m, RunProver m, Comm m, CacheStorage m) 
   => [Prover] -> [ProofText] -> [Instr] -> Times m Exit.ExitCode
 proveFOL provers txts opts0 = do
   beginTimedSection CheckTime
-  converted <- lift $ transform txts
-  typed <- lift $ typecheck converted
+  typed <- lift $ typecheck =<< transform txts
   endTimedSection CheckTime
+  
+  beginTimedSection OntoTime
+  proveTasks provers (ontologicalTasks typed) opts0
+  endTimedSection OntoTime
+  
   beginTimedSection ProvingTime
   let numberOfSections = length typed
-  let tasks = generateTasks typed
-  proveOut <- lift $ fmap snd $ runProveT provers opts0 $ verify tasks
+  proveOut <- proveTasks provers (proofTasks typed) opts0
   endTimedSection ProvingTime
 
   let numberOfNotSuccessful = length (proveGoalsFailed proveOut ++ proveGoalsTimeout proveOut) 
   let numberProved = proveGoalsSentToATP proveOut - numberOfNotSuccessful
   
-  if length (proveGoalsTimeout proveOut) == 0 then pure ()
-    else do
-      lift $ writeOut (fileOnlyPos "") $ "The following claims could not be shown to hold:"
-      lift $ mapM_ (\t -> writeOut (taskPos t) $ pretty $ conjecture t) (proveGoalsTimeout proveOut)
-
-  if length (proveGoalsFailed proveOut) == 0 then pure ()
-    else do
-      lift $ writeOut (fileOnlyPos "") $ "The following claims do not follow from the axioms:"
-      lift $ mapM_ (\t -> writeOut (taskPos t) $ pretty $ conjecture t) (proveGoalsFailed proveOut)
-
-  case proveFirstContradiction proveOut of
-    Nothing -> lift $ outputMain TRACING noSourcePos $
+  let checkConsistency = askFlag CheckConsistency True opts0
+  case (checkConsistency, proveFirstContradiction proveOut) of
+    (True, Just t) -> lift $ writeOut (taskPos t) $
+      "Ouch, there is a contradiction in your axioms!" <> softline
+      <> "It was first found in the claim:" <> softline
+      <> pretty (conjecture t) <> hardline
+      <> "Make sure you are in a proof by contradiction by writing 'Assume the contrary.'"
+    _ -> lift $ outputMain TRACING noSourcePos $
       "sections "       ++ show numberOfSections
       ++ " - goals "    ++ show (proveGoalsSentToATP proveOut)
       ++ (if numberOfNotSuccessful == 0
@@ -161,14 +182,9 @@ proveFOL provers txts opts0 = do
               else " - failed "   ++ show numberOfNotSuccessful)
       ++ " - proved "    ++ show numberProved
       ++ " - cached "    ++ show (proveGoalsCached proveOut)
-    Just t -> lift $ writeOut (taskPos t) $
-      "Ouch, there is a contradiction in your axioms!" <> softline
-      <> "It was first found in the claim:" <> softline
-      <> pretty (conjecture t) <> hardline
-      <> "Make sure you are in a proof by contradiction by writing 'Assume the contrary.'"
 
   getTimes >>= lift . showTimes
-  pure $ if numberOfNotSuccessful == 0 && isNothing (proveFirstContradiction proveOut)
+  pure $ if numberOfNotSuccessful == 0 && (not checkConsistency || isNothing (proveFirstContradiction proveOut))
     then Exit.ExitSuccess else Exit.ExitFailure 1
 
 parseArgs :: [String] -> ([Instr], [String], [String])
@@ -214,14 +230,6 @@ options = [
     "N seconds per prover call (def: 3)",
   GetOpt.Option "m" ["memorylimit"] (GetOpt.ReqArg (LimitBy Memorylimit . getLeadingPositiveInt) "N")
     "maximum N MiB of memory usage per prover call (def: 2048)",
-  GetOpt.Option "n" [] (GetOpt.NoArg (SetFlag Prove False))
-    "cursory mode (equivalent to --prove off)",
-  GetOpt.Option "r" [] (GetOpt.NoArg (SetFlag Check False))
-    "raw mode (equivalent to --check off)",
-  GetOpt.Option "" ["prove"] (GetOpt.ReqArg (SetFlag Prove . parseConsent) "{on|off}")
-    "prove goals in the text (def: on)",
-  GetOpt.Option "" ["check"] (GetOpt.ReqArg (SetFlag Check . parseConsent) "{on|off}")
-    "check symbols for definedness (def: on)",
   GetOpt.Option "" ["skipfail"] (GetOpt.ReqArg (SetFlag Skipfail . parseConsent) "{on|off}")
     "ignore failed goals (def: off)",
   GetOpt.Option "" ["printgoal"] (GetOpt.ReqArg (SetFlag Printgoal . parseConsent) "{on|off}")

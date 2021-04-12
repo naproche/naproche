@@ -60,11 +60,9 @@ data Limit =
   | Memorylimit -- memory limit per prover launch  (2048 MiB)
   deriving (Eq, Ord, Show)
 
-data Flag =
-    Prove          --  prove goals (yes)
-  | Check          --  look for applicable definitions (yes)
-  | CheckConsistency --  check that no contradictory axioms occur (yes)
-  | Skipfail       --  ignore failed goals (no)
+data Flag
+  = CheckConsistency --  check that no contradictory axioms occur (yes)
+  | Skipfail       --  don't stop when goal fail (yes)
   | Printgoal      --  print current goal (yes)
   | Printprover    --  print the prover's logs (no)
   | Dump           --  print tasks in prover's syntax (no)
@@ -131,9 +129,7 @@ keywordsLimit =
 
 keywordsFlag :: [(Flag, Text)]
 keywordsFlag =
- [(Prove, "prove"),
-  (Check, "check"),
-  (CheckConsistency, "checkconsistency"),
+ [(CheckConsistency, "checkconsistency"),
   (Skipfail, "skipfail"),
   (Printgoal, "printgoal"),
   (Printprover, "printprover"),
