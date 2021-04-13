@@ -211,7 +211,7 @@ topIdentifier :: FTL Text
 topIdentifier = Text.toCaseFold . Text.concat <$> many (tokenPrim notSymb)
   where
     notSymb t = case Text.uncons (showToken t) of
-      Just (c, "") -> guard (isAlphaNum c) >> return (Text.singleton c)
+      Just (c, "") -> guard (isAlphaNum c || c == '_') >> return (Text.singleton c)
       _ -> return (showToken t)
 
 lowIdentifier :: FTL Text
