@@ -3,8 +3,9 @@ chapter \<open>Introduction to Isabelle/Naproche\<close>
 text \<open>
   Note: Isabelle/jEdit allows to open hyperlinks (URLs, files, directories)
   via CONTROL-mouse-click (Linux, Windows) or COMMAND-mouse-click (macOS).
-  Files in the Isabelle File Browser can opened via a 
-  right-mouse-click-menu and "Open in Desktop".
+
+  PDF files in the jEdit File Browser can be opened via a right-mouse-click
+  menu and "Open in Desktop".
 \<close>
 
 theory Intro
@@ -37,6 +38,35 @@ text \<open>
 \<close>
 
 
+section \<open>Examples\<close>
+
+text \<open>
+  The folder \<^dir>\<open>$NAPROCHE_HOME/examples\<close> contains a selection of
+  formalizations which demonstrate the naturalness and coverage of Naproche.
+  The Isabelle/jEdit Prover IDE can check \<^verbatim>\<open>.ftl\<close> and \<^verbatim>\<open>.ftl.tex\<close> files;
+  corresponding \<^verbatim>\<open>.pdf\<close> files have been produced by regular \<^verbatim>\<open>pdflatex\<close>. Some
+  of the examples have been taken over from SAD and are rewritten in the LaTeX
+  dialect \<^verbatim>\<open>.ftl.tex\<close>. For example:
+
+    \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/tarski.ftl\<close>
+
+    \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/tarski.ftl.tex\<close>
+
+    \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/tarski.ftl.pdf\<close>
+
+  In LaTeX mode, only material in \begin{forthel} ... \end{forthel}
+  environments is fed to the parser and proof checker. Putting comments
+  outside those environments allows a ``literate'' formalization style where
+  forthel environments are accentuated in the pdf output by, e.g., a light
+  gray background. See
+
+    \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/checkerboard.ftl.tex\<close>
+
+  which is a chapter from a conference submission on a proof-checked
+  formalization of the Mutilated Checkerboard Problem in Naproche.
+\<close>
+
+
 section \<open>Tutorial\<close>
 
 text \<open>
@@ -51,38 +81,9 @@ text \<open>
 
   Andrei Paskevich's ``The syntax and semantics of the ForTheL language''
 
-    \<^enum> \<^url>\<open>http://nevidal.org/download/forthel.pdf\<close> 
+    \<^enum> \<^url>\<open>http://nevidal.org/download/forthel.pdf\<close>
 
   is still recommended as a guide to the principles of ForTheL.
-\<close>
-
-
-section \<open>Examples\<close>
-
-text \<open>
-  The folder \<^dir>\<open>$NAPROCHE_HOME/examples\<close> contains a selection of
-  formalizations which demonstrate the naturalness and coverage of Naproche.
-  The Isabelle/jEdit Prover IDE can check \<^verbatim>\<open>.ftl\<close> and \<^verbatim>\<open>.ftl.tex\<close> files;
-  corresponding \<^verbatim>\<open>.pdf\<close> files have been produced by regular \<^verbatim>\<open>pdflatex\<close>. Some
-  of the examples have been taken over from SAD and are rewritten in the LaTeX
-  dialect \<^verbatim>\<open>.ftl.tex\<close>. For example:
-
-    \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/tarski.ftl\<close>
-                     
-    \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/tarski.ftl.tex\<close>
-
-    \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/tarski.ftl.pdf\<close>
-  
-  In LaTeX mode, only material in \begin{forthel} ... \end{forthel}
-  environments is fed to the parser and proof checker. Putting comments
-  outside those environments allows a ``literate'' formalization style where
-  forthel environments are accentuated in the pdf output by, e.g., a light
-  gray background. See
-
-    \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/checkerboard.ftl.tex\<close> 
-
-  which is a chapter from a conference submission on a proof-checked 
-  formalization of the Mutilated Checkerboard Problem in Naproche.
 \<close>
 
 
@@ -106,9 +107,9 @@ text \<open>
       \<^file>\<open>$NAPROCHE_HOME/Isabelle/file_format.scala\<close>
 
     \<^item> Isabelle/Scala integration for external provers managed by Isabelle
-    (with robust interrupts/timeouts for all platforms):
-    \<^file>\<open>$NAPROCHE_HOME/Isabelle/prover_server.scala\<close> to invoke e.g. E prover
-    from the Isabelle distribution (see \<^dir>\<open>$E_HOME/..\<close>).
+      (with robust interrupts/timeouts for all platforms):
+      \<^file>\<open>$NAPROCHE_HOME/Isabelle/prover_server.scala\<close> to invoke e.g. E prover
+      from the Isabelle distribution (see \<^dir>\<open>$E_HOME/..\<close>).
 
     \<^item> Isabelle component settings to glue everything together:
       \<^file>\<open>$NAPROCHE_HOME/etc/settings\<close>

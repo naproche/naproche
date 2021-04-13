@@ -171,6 +171,7 @@ prove n lowLevelContext positives negatives goal =
       let (skf, nm) = skolemize m $ simplify f
       in  (concatMap contrapositives . transformToCNF) skf ++
           makeContrapositives nm fs
-    start t
-      | isLiteral t || (isTrm t && trmName t == TermEquality) = pure $ MR [ltNeg t] Bot
-      | otherwise = []
+    
+    start t@(Trm _ _ _ _) = pure $ MR [ltNeg t] Bot
+    start t@(Not (Trm _ _ _ _)) = pure $ MR [ltNeg t] Bot
+    start _ = []
