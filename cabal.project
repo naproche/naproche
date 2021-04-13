@@ -1,1 +1,1 @@
-packages: Naproche-SAD.cabal Isabelle/Isabelle.cabal
+packages: app/Naproche-SAD.cabal web/Naproche-Web.cabal naproche/Isabelle/Isabelle.cabal naproche/naproche.cabal

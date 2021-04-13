@@ -1,0 +1,56 @@
+name:                Naproche-SAD
+version:             0.1.0.0
+github:              "naproche/naproche"
+license:             GPL-3
+
+description:         <https://github.com/naproche/naproche>
+
+dependencies:
+- base >= 4.13 && < 5
+- containers
+- unordered-containers
+- deepseq
+- filepath
+- directory
+- binary
+- ghc-prim
+- hashable
+- time
+- mtl
+- bytestring
+- text
+- split
+- aeson
+- prettyprinter
+- naproche
+- Isabelle
+- mtl
+- transformers
+- utf8-string
+- process
+- network
+- uuid
+- threads
+
+default-extensions:
+  - GeneralizedNewtypeDeriving
+  - InstanceSigs
+  - LambdaCase
+  - PartialTypeSignatures
+  - ScopedTypeVariables
+  - DeriveGeneric
+
+ghc-options:
+  - -O2
+  - -Wall
+  - -fno-warn-unused-do-bind
+  - -fno-warn-unused-matches
+  - -fno-warn-name-shadowing
+  - -threaded
+  - -rtsopts
+  - -with-rtsopts=-N
+
+executables:
+  Naproche-SAD:
+    main:                Main.hs
+    source-dirs:         src

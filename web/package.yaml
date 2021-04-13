@@ -1,0 +1,38 @@
+name:                Naproche-Web
+version:             0.1.0.0
+github:              "naproche/naproche"
+license:             GPL-3
+
+extra-source-files:
+- README.md
+
+description:         <https://github.com/naproche/naproche>
+
+dependencies:
+- base >= 4.13 && < 5
+- binary
+- bytestring
+- aeson
+- text
+- naproche
+- asterius-prelude
+
+default-extensions:
+  - GeneralizedNewtypeDeriving
+  - InstanceSigs
+  - LambdaCase
+  - PartialTypeSignatures
+  - ScopedTypeVariables
+  - DeriveGeneric
+
+ghc-options:
+  - -O2
+  - -Wall
+  - -fno-warn-unused-do-bind
+  - -fno-warn-unused-matches
+  - -fno-warn-name-shadowing
+
+executables:
+  Naproche-Web:
+    main:                Main.hs
+    source-dirs:         src

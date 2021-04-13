@@ -72,7 +72,6 @@ for Mathematical Knowledge Management} lists a couple of formalizations.
 % Maybe this can be mentioned as an area for improvement in the subsequent section?
 \begin{comment}
 \begin{forthel}
-    [read ZFC.ftl]
     [synonym rank/ranks] [synonym file/files] [synonym square/squares] [synonym domino/dominoes]
 \end{forthel}
 \end{comment}
@@ -85,10 +84,8 @@ In future versions these signature declarations will be grouped together as a si
 
 \Naproche{} allows us to group elements into \textit{classes} and \textit{sets} as long as they are \textit{setsized} (informally also called \textit{small}).
 \begin{forthel}
-    \begin{signature} A rank is a notion. \end{signature}
+    \begin{signature} A rank is an object. \end{signature}
     Let $r, s$ denote ranks.
-
-    \begin{axiom} $r$ is setsized. \end{axiom}
 
     \begin{signature} $1$ is a rank. \end{signature}
     \begin{signature} $2$ is a rank. \end{signature}
@@ -101,10 +98,8 @@ In future versions these signature declarations will be grouped together as a si
 
     \begin{definition} $\Rank = \{1,2,3,4,5,6,7,8\}$. \end{definition}
 
-    \begin{signature} A file is a notion. \end{signature}
+    \begin{signature} A file is an object. \end{signature}
     Let $f, g$ denote files.
-
-    \begin{axiom} $f$ is setsized. \end{axiom}
 
     \begin{signature} $\fileA$ is a file. \end{signature}
     \begin{signature} $\fileB$ is a file. \end{signature}
@@ -119,40 +114,63 @@ In future versions these signature declarations will be grouped together as a si
         $\File = \{\fileA,\fileB,\fileC,\fileD,\fileE,\fileF,\fileG,\fileH\}$.
     \end{definition}
 
-    \begin{signature} A square is a notion. \end{signature}
-    \begin{axiom} $(f, r)$ is a square. \end{axiom}
-    Let $v, w, x, y, z$ denote squares.
-\end{forthel}
-
-Is there a set of all squares? This may not be true for an arbitrary notion,
-but it is true for squares, so we assume it as an axiom. Note that we can always
-form the class $C$ of all inhabitants of a notion as long as $x \in C$ can only be true
-for setsized $x$.
-Morse and Kelley \cite{Kelley1975,Morse1965} use the same approach in their axiomatization of set theory.
-
-\begin{forthel}
+    \begin{signature} A square is a object. \end{signature}
     \begin{definition}
-        $\Checkerboard$ is the class of squares $x$ such that $x = (f, r)$ for some
-        element $f$ of $\File$ and some element $r$ of $\Rank$.
+        (f, r) is a square.
     \end{definition}
-
-    \begin{axiom} $\Checkerboard$ is a set. \end{axiom}
+    Let $v, w, x, y, z$ denote squares.
+    \begin{definition}
+        $\Checkerboard$ = $\{ square x \mid x = (f, r) "for some file" f "and some rank" r \}$.
+    \end{definition}
 \end{forthel}
-
 
 \section{Preliminaries about sets and functions}
 
 We enrich the small built-in set theory by further properties and axioms that
 will be used in the course of our argument. To keep the document fully
 self-contained we formulate the necessary definitions and axioms ourselves.
+
 Note that there are many degrees of freedom in picking an axiomatic setting.
+The only built-ins are the sorts \texttt{class}, \texttt{object}
+and the predicate \texttt{element of}. These are necessary to implement the class notation
+in the last section. Objects is a catch-all notion for all objects that may be
+elements of sets. Morse and Kelley \cite{Kelley1975,Morse1965} 
+use the same approach in their axiomatization of set theory.
 
 \begin{forthel}
+    [synonym set/-s]
+    [synonym function/-s]
+
+    \begin{signature}
+        A set is a object.
+    \end{signature}
+    
     Let $A,B,C$ denote sets.
+
+    \begin{axiom}
+        $A$ is a class.
+    \end{axiom}
+
+    \begin{definition}
+        Let $x$ be an object. $x \in A$ iff $x$ is an element of $A$.
+    \end{definition}
+    
+    \begin{definition}
+        Let $x$ be an object. $x$ is in $A$ iff $x$ is an element of $A$.
+    \end{definition}
+    
+    \begin{definition}
+        Let $x$ be an object. $x \notin A$ iff $x$ is not an element of $A$.
+    \end{definition}
+
+    \begin{axiom} $\Checkerboard$ is a set. \end{axiom}
+    \begin{axiom} $\File$ is a set. \end{axiom}
+    \begin{axiom} $\Rank$ is a set. \end{axiom}
 
     \begin{definition}
         A subset of $B$ is a set $A$ such that
-        every element of $A$ is an element of $B$.
+        for every object $x$ such that $x$ is in $A$
+        $x$ is an element of $B$.
     \end{definition}
 
     \begin{axiom}[Extensionality]
@@ -178,52 +196,45 @@ Note that there are many degrees of freedom in picking an axiomatic setting.
     \end{definition}
 
     \begin{definition}
-        $B \cap C = \{ x \in B \mid x \in C\}$.
+        $B \cap C = \{ x "in" B \mid x \in C\}$.
     \end{definition}
 
     \begin{definition}
-        $B \setminus C = \{ x \in B \mid x \notin C\}$.
+        $B \setminus C = \{ x "in" B \mid x \notin C\}$.
     \end{definition}
 \end{forthel}
 
-The notion of \textit{object}
-is the built-in \textit{largest notion}, containing all other notions.
-%
-Also note that the proof of the lemma below really is omitted and not merely hidden:
-with the help of automated theorem provers
-such as the \textsf{E} theorem prover\,\cite{eprover}, \Naproche{}
-can accept some theorems without any additional argumentation.
-
-
-\begin{forthel}
-    \begin{lemma}
-        Every set is an object.
-    \end{lemma}
-\end{forthel}
-
-The built-in ordered pair notation that we already used in the first
-subsection does not include the universal property of ordered pairs,
-so we postulate it as an axiom.
+Because the pair notation we used in the first subsection is not built-in
+and thus does not include the universal property of ordered pairs,
+we postulate it as an axiom.
 
 \begin{forthel}
     \begin{axiom}
-        Let $\alpha, \beta, \gamma, \delta$ be objects.
-        If $(\alpha, \beta) = (\gamma, \delta)$
-        then $\alpha = \gamma$ and $\beta = \delta$.
+        If $(v, w) = (x, y)$ then $v = x$ and $w = y$.
     \end{axiom}
 \end{forthel}
 
-(Unary) functions are built into \Naproche{}; $F(t)$ denotes the
-application of a function $F$ to an argument $t$ and
-$\dom(F)$ stands for the domain of $F$. In our exposition we shall
-use functions to compare cardinalities of black and white squares. As with
-sets, we introduce some further properties of functions.
+In our exposition we shall use functions to compare cardinalities of black and white squares.
+As with sets, we introduce some further properties of functions.
 
 \begin{forthel}
+    \begin{signature}
+        A function is a notion.
+    \end{signature}
+
     Let $F,G$ denote functions.
 
+    \begin{signature}
+        $\Dom{F}$ is a set.
+    \end{signature}
+
+    \begin{signature}
+        Assume $x$ is an object.
+        $F(x)$ is a set.
+    \end{signature}
+
     \begin{definition}
-        $F : A \to B$ iff $\dom(F) = A$ and
+        $F : A \to B$ iff $\Dom{F} = A$ and
         $F(x)$ is an element of $B$ for all elements $x$ of $A$.
     \end{definition}
 \end{forthel}
@@ -267,8 +278,9 @@ have the same cardinality iff there is a bijection between them.
         Take a function $H$ such that $H : B \leftrightarrow C$.
         Take a function $I$ such that $I : C \to B$ and (for all elements $x$ of $B$ we have $I(H(x)) = x$) and
         (for all elements $y$ of $C$ we have $H(I(y))=y$).
-        Define $J(x) = H(F(x))$ for $x$ in $A$.
-        $J : A \leftrightarrow C$. Indeed define $K(y) = G(I(y))$ for $y$ in $C$.
+        Take a function $J$ such that for all objects $x$ $x$ is in $A$ iff $J(x) = H(F(x))$.
+        Take a function $K$ such that for all objects $x$ $x$ is in $C$ iff $K(y) = G(I(y))$.
+        $J : A \leftrightarrow C$. 
     \end{proof}
 \end{forthel}
 
@@ -306,12 +318,12 @@ we simply remove the two corners.
 \section{Dominoes}
 
 To define dominoes,
-we introduce concepts of adjacency by first declaring new relations and then axiomatizing them.
-As usual, chaining of relation symbols indicates a conjunction.
+we introduce concepts of adjacency by first declaring new atoms and then axiomatizing them.
+As usual, chaining of atomic symbols indicates a conjunction.
 
 \begin{forthel}
     \begin{signature}
-        $r$ is vertically adjacent to $s$ is a relation.
+        $r$ is vertically adjacent to $s$ is an atom.
     \end{signature}
     Let $r\vertadj s$ stand for $r$ is vertically adjacent to $s$.
 
@@ -323,7 +335,7 @@ As usual, chaining of relation symbols indicates a conjunction.
     \end{axiom}
 
     \begin{signature}
-        $f$ is horizontally adjacent to $g$ is a relation.
+        $f$ is horizontally adjacent to $g$ is an atom.
     \end{signature}
     Let $f\horizadj g$ stand for $f$ is horizontally adjacent to $g$.
 
@@ -392,8 +404,8 @@ subsets of the checkerboard and dominoes.
 
 
 \begin{forthel}
-    \begin{signature} $x$ is black is a relation. \end{signature}
-    \begin{signature} $x$ is white is a relation. \end{signature}
+    \begin{signature} $x$ is black is an atom. \end{signature}
+    \begin{signature} $x$ is white is an atom. \end{signature}
 
     \begin{axiom} $x$ is black iff $x$ is not white. \end{axiom}
     \begin{axiom} If $x$ is adjacent to $y$ then $x$ is black iff $y$ is white. \end{axiom}
@@ -483,8 +495,8 @@ Using $\Swap$ we can define a witness of $\Black \leftrightarrow \White$.
         $\Black$ is equinumerous with $\White$.
     \end{lemma}
     \begin{proof}
-        Define $F(x) = \Swap{x}$ for $x$ in $\Black$.
-        Define $G(x) = \Swap{x}$ for $x$ in $\White$.
+        Take a function $F$ such that for every square $x$ $x$ is in $\Black$ iff $F(x) = \Swap{x}$.
+        Take a function $G$ such that for every square $x$ $x$ is in $\White$ iff $G(x) = \Swap{x}$.
         Then $F : \Black \to \White$ and $G : \White \to \Black$.
         For all elements $x$ of $\Black$ we have $G(F(x)) = x$.
         For all elements $x$ of $\White$ we have $F(G(x)) = x$.
@@ -551,8 +563,8 @@ Swapping dominoes is also an involution.
         equinumerous with $A \cap \White$.
     \end{lemma}
     \begin{proof}
-        Define $F(x) = \Sw{T}{A}{x}$ for $x$ in $A \cap \Black$.
-        Define $G(x) = \Sw{T}{A}{x}$ for $x$ in $A \cap \White$.
+        Take a function $F$ such that for all objects $x$ $x$ is in $A \cap \Black$ iff $F(x) = \Sw{T}{A}{x}$.
+        Take a function $G$ such that for all objects $x$ $x$ is in $A \cap \White$ iff $G(x) = \Sw{T}{A}{x}$.
         Then $F: A \cap \Black \to A \cap \White$ and
         $G: A \cap \White \to A \cap \Black$.
         For all elements $x$ of $A \cap \Black$ we have $G(F(x))=x$.
