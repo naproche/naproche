@@ -440,7 +440,7 @@ that = token' "that"
 standFor :: FTL ()
 standFor = token' "denote" <|> (token' "stand" >> token' "for")
 arrow :: FTL ()
-arrow = symbol "->"
+arrow = symbol "->" <|> symbol "→"
 there :: FTL ()
 there = token' "there" >> tokenOf' ["is","exist","exists"]
 does :: FTL ()
@@ -453,7 +453,7 @@ such :: FTL ()
 such = tokenOf' ["such", "so"]
 
 elementOf :: FTL ()
-elementOf = token' "in" <|> token "\\in"
+elementOf = token' "in" <|> token "\\in" <|> symbol "∈"
 
 --just for now:
 

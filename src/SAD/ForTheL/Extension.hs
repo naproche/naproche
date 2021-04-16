@@ -48,7 +48,7 @@ defPredicat = do
   return $ Iff (Tag HeadTerm f) g
   where
     defn = do f <- newPredicat; equiv; g <- statement; return (f,g)
-    equiv = iff <|> symbol "<=>"
+    equiv = iff <|> symbol "<=>" <|> symbol "⟺"
 
 defNotion :: FTL Formula
 defNotion = do
@@ -73,7 +73,7 @@ sigPredicat = do
   return $ Imp (Tag HeadTerm f) g
   where
     sig    = do f <- newPredicat; imp; g <- statement </> noInfo; return (f,g)
-    imp    = token' "is" <|> token' "implies" <|> symbol "=>"
+    imp    = token' "is" <|> token' "implies" <|> symbol "=>" <|> symbol "⟹"
     noInfo = art >> tokenOf' ["atom", "relation"] >> return Top
 
 
