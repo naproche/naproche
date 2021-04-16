@@ -22,9 +22,10 @@ import qualified Data.Text.Lazy.Builder as Builder
 import SAD.Export.Representation
 import SAD.Core.SourcePos
 import Data.Function (on)
+import Data.Char (ord)
 
 -- These names may not reflect what the constructors are used for..
-data VariableName 
+data VariableName
   = VarConstant Text   -- ^ previously starting with x
   | VarHole Text       -- ^ previously starting with ?
   | VarSlot            -- ^ previously !
@@ -47,7 +48,7 @@ instance Show VariableName where
   show = Text.unpack . toLazyText . represent
 
 instance Representation VariableName where
-  represent (VarConstant s) = "x" <> (Builder.fromLazyText s)
+  represent (VarConstant s) = Builder.fromLazyText (encode s)
   represent (VarHole s) = "?" <> (Builder.fromLazyText s)
   represent (VarSlot) = "!"
   represent (VarU s) = "u" <> (Builder.fromLazyText s)
@@ -59,6 +60,11 @@ instance Representation VariableName where
   represent (VarW s) = "w" <> (Builder.fromLazyText s)
   represent (VarEmpty) = ""
   represent (VarDefault s) = Builder.fromLazyText s
+
+-- Encode each character by its unicode number with a leading 'x', e.g.
+-- encode Text.pack "fooα" == Text.pack "x102x111x111x945"
+encode :: Text -> Text
+encode = Text.concatMap $ Text.pack . (\s -> 'x' : s) . show . ord
 
 data PosVar = PosVar
   { posVarName :: VariableName
