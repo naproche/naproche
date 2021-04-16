@@ -322,14 +322,14 @@ symbolicTerm = fmap ((,) id) sTerm
 symbolicFormula :: FTL Formula
 symbolicFormula  = biimplication
   where
-    biimplication = implication >>= binary Iff (symbol "<=>" >> implication)
-    implication   = disjunction >>= binary Imp (symbol "=>"  >> implication)
-    disjunction   = conjunction >>= binary Or  (symbol "\\/" >> disjunction)
-    conjunction   = nonbinary   >>= binary And (symbol "/\\" >> conjunction)
-    universal     = liftA2 (quantified dAll Imp) (token' "forall" >> (declared =<< symNotion)) nonbinary
-    existential   = liftA2 (quantified dExi And) (token' "exists" >> (declared =<<symNotion)) nonbinary
+    biimplication = implication >>= binary Iff ((symbol "<=>" <|> symbol "⟺") >> implication)
+    implication   = disjunction >>= binary Imp ((symbol "=>" <|> symbol "⟹")  >> implication)
+    disjunction   = conjunction >>= binary Or  ((symbol "\\/" <|> symbol "∨") >> disjunction)
+    conjunction   = nonbinary   >>= binary And ((symbol "/\\" <|> symbol "∧") >> conjunction)
+    universal     = liftA2 (quantified dAll Imp) ((token' "forall" <|> symbol "∀") >> (declared =<< symNotion)) nonbinary
+    existential   = liftA2 (quantified dExi And) ((token' "exists" <|> symbol "∃") >> (declared =<<symNotion)) nonbinary
     nonbinary     = universal -|- existential -|- negation -|- separated -|- atomic
-    negation      = Not <$> (token' "not" >> nonbinary)
+    negation      = Not <$> ((token' "not" <|> symbol "¬") >> nonbinary)
     separated     = token' ":" >> symbolicFormula
 
     quantified quant op (_, f, v) = flip (foldr quant) v . op f
@@ -472,7 +472,7 @@ symbSetNotation = cndSet </> finSet
       return (Tag Replacement, \tr -> subst tr (posVarName v) $ q f, pVar v, mkClass)
     setSep = do
       t <- sTerm
-      token' "in"
+      token' "in" <|> symbol "∈"
       clssTrm <- (Left <$> sTerm) </> (Right <$> symbSetNotation)
       case clssTrm of
         Left s -> pure (id, flip mkElem s, t, \v -> mkClass v `And` (mkSet s `Imp` mkSet v))
