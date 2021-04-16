@@ -8,6 +8,7 @@
 
 \usepackage{../lib/tex/naproche}
 \usepackage{unicode-math}
+\usepackage{MnSymbol} % \bigsqcup
 
 \title{König's Theorem}
 \author{Steffen Frerix and Peter Koepke\\
@@ -128,7 +129,7 @@ Then $M \setminus N$ has an element.
 
 \section{Sums and Products of cardinals}
 
-\newcommand{\SumSet}[2]{{\dot{\bigcup}}_{i \in #2} {#1}_{i}}
+\newcommand{\SumSet}[2]{{\bigsqcup}_{i \in #2} {#1}_{i}}
 \newcommand{\Sum}[2]{{\sum}_{i \in #2} {#1}_{i}}
 \newcommand{\ProdSet}[2]{{\bigtimes}_{i \in #2} {#1}_{i}}
 \newcommand{\Prod}[2]{{\prod}_{i \in #2} {#1}_{i}}
@@ -262,5 +263,5 @@ of non-empty factors are themselves non-empty:
       is not an element of $Δ(j)$. Contradiction.
     \end{proof}
   \end{forthel}
-  
+
 \end{document}
