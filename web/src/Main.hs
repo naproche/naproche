@@ -67,7 +67,7 @@ consoleMainBody opts0 text0 proversFile = do
   Exit.exitWith exit
 
 foreign import javascript unsafe "sendMessage" sendMessage' :: JSVal -> IO ()
-foreign import javascript unsafe "requestMessage" requestMessage' :: JSVal -> IO JSVal
+foreign import javascript   safe "requestMessage" requestMessage' :: JSVal -> IO JSVal
 
 sendMessage :: ToJSON a => a -> IO ()
 sendMessage = sendMessage' . jsonToJSVal

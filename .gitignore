@@ -18,6 +18,7 @@ x86_64-windows/
 *.ps
 
 .vscode
+build
 dist-newstyle
 dist
 Naproche-Web
