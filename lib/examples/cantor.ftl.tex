@@ -21,10 +21,26 @@
 
   \begin{forthel}
     [synonym surject/-s]
-    [readtex MorseKelley.ftl.tex]
+    [readtex prelude.ftl.tex]
 
     Let $M$ denote a set. Let $f$ denote a function.
     Let $f$ is defined on $M$ stand for $\Dom{f} = M$.
+
+    \begin{axiom}
+      The value of $f$ at any element of the domain of $f$ is a set.
+    \end{axiom}
+
+    \begin{definition}[Subset]
+      A subset of $M$ is a set $N$ such that every element of $N$ is an element of $M$.
+    \end{definition}
+
+    \begin{definition}
+      The powerset of $M$ is the class of subsets of $M$.
+    \end{definition}
+
+    \begin{axiom}
+      The powerset of $M$ is a set.
+    \end{axiom}
 
     \begin{definition}
       $f$ surjects onto $M$ iff
@@ -43,21 +59,9 @@
     \begin{proof}
       Assume the contrary.
       Take a set $N$ such that $N = \{ x "in" M \mid "there is a set S such that S = f(x) and" x \notin S \}$.
-      $N$ is a subset of $M$.
-      Take an object $z$ such that $z$ is in $M$ and $f(z) = N$.
-      Case $z \in N$.
-        Take a set $S$ such that $S = f(z)$ and $z \notin S$.
-        Then $S = f(z) = N$. Then $z \notin N$.
-      end.
-      Case $z \notin N$.
-        Take a set $S$ such that $S = f(z)$.
-        Case $z \notin S$.
-          $z \in N$.
-        end.
-        Case $z \in S$.
-          Then $z \in N$.
-        end.
-      end.
+      Take an element $z$ of $M$ such that $f(z) = N$.
+      Then $$z\in N "iff" z\notin f(z) = N.$$
+      Contradiction.
     \end{proof}
   \end{forthel}
 \end{document}

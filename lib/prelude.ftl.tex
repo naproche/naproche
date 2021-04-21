@@ -1,0 +1,154 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{../lib/tex/naproche}
+
+\title{Prelude}
+\author{}
+\date{}
+
+\begin{document}
+  \pagenumbering{gobble}
+
+  \maketitle
+
+  This module implements a "Prelude" for Naproche: Those notions that were built-in
+  in the last release and need to be specified in Naproche texts now.
+  It is a shortened version of the Morse Kelley file in the same directory,
+  since the longer version adds many useful notions that make it harder
+  for provers to prove the tasks that they could prove before.
+
+  This module implements the Morse-Kelley (MK) set theory,
+  an extension of ZFC. Any lemma that can be proven in ZFC
+  also can be proven in MK, but unlike ZFC, MK is finitely axiomatizable,
+  that is, we can describe it without using schemata over arbitrary formulas.
+  The axiom schema of class formation has been omitted in this presentation
+  because it is built into the compiler.
+
+  \begin{forthel}
+    [synonym set/-s]
+    [synonym relation/-s]
+    [synonym function/-s]
+
+    \begin{signature}
+      A set is a notion.
+    \end{signature}
+
+    Let $B, C, D$ denote classes.
+    Let $s, t, u$ denote sets.
+    Let $w, x, y, z$ denote objects.
+
+    \begin{axiom}
+      $s$ is a class.
+    \end{axiom}
+    
+    \begin{axiom}
+      $s$ is an object.
+    \end{axiom}
+
+    \begin{definition}
+      $x$ is in $B$ iff $x$ is an element of $B$.
+    \end{definition}
+
+    \begin{axiom}[SubclassOfSet]
+      Assume for any object x such that x is an element of $B$ x is an element of $s$. Then $B$ is a set.
+    \end{axiom}
+
+    \begin{definition}
+      $x \in B$ iff $x$ is in $B$.
+    \end{definition}
+
+    \begin{definition}
+      $x \notin B$ iff $x$ is not in $B$.
+    \end{definition}
+
+    %This axiom is implicitly used in the compiler.
+    \begin{axiom}[Ext]
+      If for every object $x$ $x$ is an element of $C$ iff $x$ is an element of $B$ then $C = B$.
+    \end{axiom}
+
+    \begin{signature}
+      The empty set is a set.
+    \end{signature}
+
+    \begin{axiom}[Empty]
+      $x$ is not an element of the empty set.
+    \end{axiom}
+
+    \begin{signature}
+      The pair of x and y is a set.
+    \end{signature}
+
+    \begin{axiom}[Pair]
+      x is in the pair of y and z iff x = y or x = z.
+    \end{axiom}
+
+    \begin{lemma}
+      The pair of x and y is { v | v = x or v = y }.
+    \end{lemma}
+
+    \begin{definition}
+      The singleton of x is the pair of x and x.
+    \end{definition}
+
+    \begin{definition}
+      The ordered pair of x and y is the pair of (the singleton of x) and the pair of x and y.
+    \end{definition}
+
+    \begin{definition}
+      (x, y) is the ordered pair of x and y.
+    \end{definition}
+
+    \begin{lemma}[OrdPair]
+      If (x, y) = (z, w) then x = z and y = w.
+    \end{lemma}
+
+    \begin{definition}
+      The product of C and B is { (u, v) | u is a object and v is a object and u is in C and v is in B }.
+    \end{definition}
+
+    \begin{signature}
+      A relation is a class.
+    \end{signature}
+
+    \begin{axiom}[RelationIntro]
+      C is a relation iff for every x such that x is in C
+        there is a y such that there is a z such that x is the ordered pair of y and z.
+    \end{axiom}
+
+    Let R, S denote relations.
+
+    \begin{definition} 
+      The domain of R is { object u | there is a object v such that (u, v) is in R }.
+    \end{definition}
+
+    \begin{definition} 
+      \Dom{R} is the domain of R.
+    \end{definition}
+    
+    \begin{signature}
+      A function is a relation.
+    \end{signature}
+
+    \begin{axiom}[FunctionIntro]
+      R is a function iff for all x, y, z such that (x, y) is in R and (x, z) is in R y = z.
+    \end{axiom}
+
+    Let $F, G$ denote functions.
+
+    \begin{signature}
+      The value of F at x is an object.
+    \end{signature}
+
+    \begin{axiom}
+      Assume $x \in \Dom{F}$.
+      The value of F at x is a object y such that (x, y) is in F.
+    \end{axiom}
+
+    \begin{definition}
+      Assume $x \in \Dom{F}$.
+      F(x) is the value of F at x.
+    \end{definition}
+  \end{forthel}
+\end{document}
