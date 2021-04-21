@@ -61,8 +61,8 @@ instance Representation VariableName where
   represent (VarEmpty) = ""
   represent (VarDefault s) = Builder.fromLazyText s
 
--- Encode each character by its unicode number with a leading 'x', e.g.
--- encode Text.pack "fooα" == Text.pack "x102x111x111x945"
+-- Encode each character by its (decimal) unicode code point with a leading 'x',
+-- e.g. encode Text.pack "fooα" == Text.pack "x102x111x111x945"
 encode :: Text -> Text
 encode = Text.concatMap $ Text.pack . (\s -> 'x' : s) . show . ord
 
