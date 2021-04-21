@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 15d1ea719700c2d01aed2cf3b79900a79b556c734f0e40c9e6c3fc37ec4f183d
+-- hash: 95b1d7685f1568450aef2c88aa70c537ccd40949e9d1200f3b89790aff57e106
 
 name:           naproche
 version:        0.1.0.0
@@ -99,8 +99,7 @@ test-suite Naproche-SAD-test
   default-extensions: GeneralizedNewtypeDeriving InstanceSigs LambdaCase PartialTypeSignatures ScopedTypeVariables DeriveGeneric
   ghc-options: -O2 -Wall -fno-warn-unused-do-bind -fno-warn-unused-matches -fno-warn-name-shadowing -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      Naproche-SAD
-    , aeson
+      aeson
     , base >=4.13 && <5
     , binary
     , bytestring
@@ -111,6 +110,7 @@ test-suite Naproche-SAD-test
     , ghc-prim
     , hashable
     , mtl
+    , naproche
     , prettyprinter
     , process
     , split

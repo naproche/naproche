@@ -23,7 +23,7 @@ gather (hout, herr, ph) = do
   pure (code, cont)
 
 texFiles :: [FilePath]
-texFiles = fmap ("examples/"++)
+texFiles = fmap ("lib/examples/"++)
   [ "cantor.ftl.tex"
   , "checkerboard.ftl.tex"
   , "chinese.ftl.tex"

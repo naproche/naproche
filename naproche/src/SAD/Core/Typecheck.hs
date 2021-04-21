@@ -2,12 +2,8 @@
 {-# LANGUAGE ViewPatterns #-}
 {-# LANGUAGE TupleSections #-}
 
--- | Basic type-checking
--- In the future this should also support type inference
--- so that the user can write e.g. $for every subset S of P$
--- and it is inferred that $S$ is actually a set.
--- If you want to implement it, you may wish to consider
--- the paper 'A Second Look at Overloading' by Odersky et al.
+-- | Basic type-checking using a type-inference modelled
+-- roughly after the paper 'A Second Look at Overloading' by Odersky et al.
 
 module SAD.Core.Typecheck (typecheck) where
 
@@ -37,12 +33,28 @@ data Context = Context
   , errorFormula :: Maybe (Doc ())
   , errorPosition :: SourcePos
   , typings :: Map Ident Type
-    -- ^ a type for each resolved name
+    -- ^ a type for each internal name
+    -- this is extended after each section and otherwise read-only.
   , overloadings :: Map Ident (Set Ident)
     -- ^ possible overloadings for an identifier
+    -- this maps names as the user provided them to internal
+    -- names which are unique. For example when several
+    -- notions of subset are defined, the internal names
+    -- might be "subset, subset2, ..."
+    -- this is extended after each section and otherwise read-only.
+  , inferMap :: Map Ident (Maybe InType)
+    -- ^ the types of variables as the were inferred.
+    -- When the type of a variable was not provided
+    -- (for example because the variable was inserted by the parser)
+    -- we try to infer it. This is biased towards the first occurrence
+    -- of the variable similar to HM type inference.
+    -- this is only used during type-checking and emtpy otherwise.
   , coercions :: Coercions Ident Ident
+    -- ^ coercions defined in the text
   , defs :: Map Ident (NFTerm Identity ())
-  -- ^ definitions
+    -- ^ definitions: the difference to 'typings' is that
+    -- this contains well-formedness instead of type information
+    -- This is used to check the well-formedness blocks in the text.
   } deriving (Show)
 
 type TC m a = StateT Context m a
@@ -62,7 +74,7 @@ failWithMessage txt = do
 
 -- | Danger: Costly in second argument due to coercions
 instance Semigroup Context where
-  (<>) (Context _ _ _ t1 r1 c1 d1) (Context eb ef ep t2 r2 c2 d2) = Context eb ef ep (t1 <> t2) (r1 <> r2) (c1 <> c2) (d1 <> d2)
+  (<>) (Context _ _ _ t1 r1 i1 c1 d1) (Context eb ef ep t2 r2 i2 c2 d2) = Context eb ef ep (t1 <> t2) (r1 <> r2) (i1 <> i2) (c1 <> c2) (d1 <> d2)
 
 -- | This should be kept in sync with SAD.ForTheL.Base.initFS
 -- Equalities can be omitted since they are a feature of TPTP syntax.
@@ -86,7 +98,7 @@ predefinedStmts =
   ]
 
 instance Monoid Context where
-  mempty = Context undefined Nothing noSourcePos predefinedTypes predefinedNames mempty mempty
+  mempty = Context undefined Nothing noSourcePos predefinedTypes predefinedNames mempty mempty mempty
 
 coercionsToTerm :: [Ident] -> (Term f t -> Term f t)
 coercionsToTerm = go . reverse
@@ -120,17 +132,21 @@ leastGeneral (x:xs) coe = flip checkRoot (x:xs) $ getRoot x xs
 data ReturnValue = Value | Proposition
   deriving (Eq, Ord, Show)
 
-resolve :: Message.Comm m => Ident -> [InType] -> ReturnValue -> TC m ((Ident, [[Ident]]), OutType)
-resolve name intypes ret = do
-  (Context _ _ _ idents res coe _) <- get
-  res' <- resolvedNames idents res
+-- | Get the types and internal names of an identifier.
+-- This may be empty if none was found.
+getInternalNames :: Message.Comm m => Ident -> TC m (Set (Ident, Type))
+getInternalNames name = do
+  (Context _ _ _ idents res _ _ _) <- get
+  Set.map (\a -> (a, idents Map.! a)) <$>
+    case Map.lookup name res of
+      Nothing -> pure mempty
+      Just x -> pure x
+
+resolve :: Message.Comm m => Ident -> Set (Ident, Type) -> [InType] -> ReturnValue -> TC m ((Ident, [[Ident]]), OutType)
+resolve name res' intypes ret = do
+  (Context _ _ _ _ _ _ coe _) <- get
   pick coe $ Set.toList (feasibleNames coe res')
   where
-    resolvedNames idents res = Set.map (\a -> (a, idents Map.! a)) <$>
-      case Map.lookup name res of
-        Nothing -> failWithMessage $ "Internal: name not registered: " <> pretty name
-        Just x -> pure x
-
     feasibleNames coe =
         Set.map (\((t, Just a), typ) -> ((t, a), typ)) . Set.filter (\a -> snd (fst a) /= Nothing) 
         . Set.map (\(a, t) -> ((a, coerceTo t coe), t))
@@ -205,87 +221,144 @@ singleTypedVar v s = do
     Nothing -> failWithMessage $ "Untyped bind: " <> pretty v
     Just m -> pure m
 
+checkWf :: (Infer f, Message.Comm m) => SourcePos -> Ident -> (WfBlock f ()) -> TC m (WfBlock Identity ())
+checkWf p name' wf = do
+  m <- (Map.lookup name' . defs) <$> get
+  case m of
+    Just (NFTerm im _ as _) -> do
+      let imSet = Set.fromList $ map fst im
+      let wfSet = Set.fromList $ map fst $ wfImplicits wf
+      let superflous = wfSet Set.\\ imSet
+      when (not $ Set.null superflous) $ do
+        failWithMessage $ "The following implicits where supplied but could not be used: " <> pretty superflous
+      let notGivenSet = imSet Set.\\ wfSet
+      let (given, notGiven) = List.partition (\x -> fst x `Set.member` notGivenSet) im
+      let goal = simp $ foldr (\(i, t) -> Exists i t) (List.foldl' (\a b -> App And [a, b]) (App Top []) as) notGiven
+      assms <- flip mapM (wfImplicits wf) $ \(i, t) -> do 
+        (o, t') <- checkTerm p Value t
+        case o of
+          Prop -> failWithMessage $ "Given implicit is a proposition!"
+          InType o -> do
+            let (Identity expected) = fromJust $ List.lookup i im
+            if o /= expected then
+              failWithMessage $ "Implicit " <> pretty i <> " should have type " <> pretty expected <> " but you supplied an expression of type " <> pretty o
+            else pure (i, t')
+      let assms' = map (\(i, t) -> App Eq [AppWf i [] noWf, t]) assms
+      let nfgoal = (NFTerm given [] assms' goal)
+      case goal of
+        App Top [] -> pure $ WfBlock assms Nothing
+        _ -> do
+          wfPrf' <- case snd <$> wfProof wf of
+            Nothing -> checkProofBlock nfgoal p $ (ProofByHints [] :: PrfBlock Identity ())
+            Just (ProofByHints hs) -> checkProofBlock nfgoal p $ (ProofByHints hs :: PrfBlock Identity ())
+            Just (ProofByTactics ts) -> checkProofBlock nfgoal p $ ProofByTactics ts
+            Just (ProofByTCTactics ts') -> pure (ProofByTCTactics ts')
+          pure $ WfBlock assms $ Just (nfgoal, wfPrf')
+    Nothing -> pure noWf
+
 -- | Type check applications and insert coercions.
 -- Forward type-checking: We assume that the identifiers without arguments are typed
 -- and infer the type/resolved name of identifiers with arguments from them.
+-- TODO: At the moment variables can't shadow definitions because they live in different scopes.
 checkTerm :: (Infer f, Message.Comm m) => SourcePos -> ReturnValue -> Term f () -> TC m (OutType, Term Identity ())
 checkTerm p retval t = locally $ do
   modify $ \s -> s { errorFormula = Just $ pretty t }
-  (o, t') <- go retval t
+  (o, t') <- go Nothing t
   case (o, retval) of
     (Prop, Proposition) -> pure (o, simp t')
     (InType _, Value) -> pure (o, simp t')
     _ -> failWithMessage $ "The term has type " <> pretty o <> " but was expected to return a " <> pretty (show retval)
   where
-    go :: (Message.Comm m, Infer f) => ReturnValue -> Term f () -> StateT Context m (OutType, Term Identity ())
-    go retval = \case
-      Forall v m t -> case retval of
-        Proposition -> do
-          m' <- singleTypedVar v m
-          addVar v m'
-          fmap (Forall v (Identity m')) <$> go Proposition t
-        _ -> failWithMessage $ "Found a forall term where an object was expected"
-      Exists v m t -> case retval of
-        Proposition -> do
-          m' <- singleTypedVar v m
-          addVar v m'
-          fmap (Exists v (Identity m')) <$> go Proposition t
-        _ -> failWithMessage $ "Found an exists term where an object was expected"
-      Class v m t -> case retval of
-        Value -> do
-          m' <- fromMaybe (Signature identObject) <$> restrictType v m
-          addVar v m'
-          (_, inclass) <- go Proposition t
-          pure (InType $ Signature identClass, Class v (Identity m') inclass)
-        Proposition -> failWithMessage $ "Found a class where a proposition was expected."
-      AppWf name explicit wf -> do
-        (argtypes, explicit') <- unzip <$> mapM (go Value) explicit
-        argintypes <- flip mapM argtypes $ \t -> case t of
-              Prop -> failWithMessage "A truth value cannot be passed to a function!"
-              InType t' -> pure t'
-        res <- resolve name argintypes retval
-        case res of
-          ((name', coe), t) -> do
-            m <- (Map.lookup name' . defs) <$> get
-            wf' <- case m of
-              Just (NFTerm im _ as _) -> do
-                let imSet = Set.fromList $ map fst im
-                let wfSet = Set.fromList $ map fst $ wfImplicits wf
-                let superflous = wfSet Set.\\ imSet
-                when (not $ Set.null superflous) $ do
-                  failWithMessage $ "The following implicits where supplied but could not be used: " <> pretty superflous
-                let notGivenSet = imSet Set.\\ wfSet
-                let (given, notGiven) = List.partition (\x -> fst x `Set.member` notGivenSet) im
-                let goal = simp $ foldr (\(i, t) -> Exists i t) (List.foldl' (\a b -> App And [a, b]) (App Top []) as) notGiven
-                assms <- flip mapM (wfImplicits wf) $ \(i, t) -> do 
-                  (o, t') <- checkTerm p Value t
-                  case o of
-                    Prop -> failWithMessage $ "Given implicit is a proposition!"
-                    InType o -> do
-                      let (Identity expected) = fromJust $ List.lookup i im
-                      if o /= expected then
-                        failWithMessage $ "Implicit " <> pretty i <> " should have type " <> pretty expected <> " but you supplied an expression of type " <> pretty o
-                      else pure (i, t')
-                let assms' = map (\(i, t) -> App Eq [AppWf i [] noWf, t]) assms
-                let nfgoal = (NFTerm given [] assms' goal)
-                case goal of
-                  App Top [] -> pure $ WfBlock assms Nothing
-                  _ -> do
-                    wfPrf' <- case snd <$> wfProof wf of
-                      Nothing -> checkProofBlock nfgoal p $ (ProofByHints [] :: PrfBlock Identity ())
-                      Just (ProofByHints hs) -> checkProofBlock nfgoal p $ (ProofByHints hs :: PrfBlock Identity ())
-                      Just (ProofByTactics ts) -> checkProofBlock nfgoal p $ ProofByTactics ts
-                      Just (ProofByTCTactics ts') -> pure (ProofByTCTactics ts')
-                    pure $ WfBlock assms $ Just (nfgoal, wfPrf')
-              Nothing -> pure noWf
+    addVar :: Message.Comm m => Ident -> Maybe InType -> TC m ()
+    addVar v m = get >>= \i -> put $ i { inferMap = Map.insert v m (inferMap i) }
+    delVar :: Message.Comm m => Ident -> TC m ()
+    delVar v = get >>= \i -> put $ i { inferMap = Map.delete v (inferMap i) }
+    withVar v m a = do addVar v m; x <- a; t <- (join . Map.lookup v . inferMap) <$> get; delVar v; pure (x, t)
 
-            -- TODO: By using name' instead of name we make re-checking this impossible!
-            -- In fact, we re-check the assumptions though, so this will become an error
-            -- once we have overloading in any assumption in a text!
-            pure (t, AppWf name' (zipWith coercionsToTerm coe explicit') wf')
+    go :: (Message.Comm m, Infer f) => Maybe InType -> Term f () -> StateT Context m (OutType, Term Identity ())
+    go inferCtx = \case
+      Forall v m t -> do
+        m' <- restrictType v m
+        ((ret, t), inferredType) <- withVar v m' $ go Nothing t
+        case ret of
+          Prop -> pure ()
+          _ -> failWithMessage $ "Value inside forall term of variable " <> pretty v
+        m'' <- case maybe inferredType Just m' of
+          Just m' -> pure m'
+          Nothing -> failWithMessage $ "Couldn't infer type of " <> pretty v
+        pure $ (Prop, Forall v (Identity m'') t)
+      Exists v m t -> do
+        m' <- restrictType v m
+        ((ret, t), inferredType) <- withVar v m' $ go Nothing t
+        case ret of
+          Prop -> pure ()
+          _ -> failWithMessage $ "Value inside exists term of variable " <> pretty v
+        m'' <- case maybe inferredType Just m' of
+          Just m' -> pure m'
+          Nothing -> failWithMessage $ "Couldn't infer type of " <> pretty v
+        pure $ (Prop, Exists v (Identity m'') t)
+      Class v m t -> do
+        m' <- fromMaybe (Signature identObject) <$> restrictType v m
+        ((ret, t), _) <- withVar v (Just m') $ go Nothing t
+        case ret of
+          Prop -> pure ()
+          _ -> failWithMessage $ "Value inside class separator: { " <> pretty v <> " | !! }"
+        pure (InType $ Signature identClass, Class v (Identity m') t)
+      AppWf name explicit wf -> do
+        inferMap' <- inferMap <$> get
+        case (Map.lookup name inferMap', explicit) of
+          (Just t, []) -> case maybe inferCtx Just t of
+            Nothing -> failWithMessage $ "Couldn't infer the type of variable: " <> pretty name
+            Just t -> pure (InType t, AppWf name [] noWf)
+          (Just _, (_:_)) -> failWithMessage $ pretty name <> " is a variable but it has been applied to " <> pretty explicit
+          (Nothing, _) -> do
+            names <- getInternalNames name
+            case Set.toList names of
+              -- an empty set can also mean a free variable.
+              -- If you want to support them in this function this is the place:
+              [] -> failWithMessage $ "Unknown function: " <> pretty name
+              [(name', type')] -> do
+                case type' of
+                  Sort -> failWithMessage $ "Sort in a term: " <> pretty name
+                  Pred is t -> do
+                    if length is /= length explicit
+                      then failWithMessage $ "The number of arguments of " <> pretty name <> " is wrong!"
+                      else do
+                        (argtypes, explicit') <- unzip <$> zipWithM go (map Just is) explicit
+                        argintypes <- flip mapM argtypes $ \t -> case t of
+                              Prop -> failWithMessage "A truth value cannot be passed to a function!"
+                              InType t' -> pure t'
+                        coe <- coercions <$> get
+                        let coes = zipWith (\(Signature a) (Signature b) -> coerce (a, b) coe) argintypes is
+                        coes' <- flip mapM (List.zip4 coes [1::Int ..] is argintypes) $ \(c, i, exp, have) -> case c of
+                              Nothing -> failWithMessage $ "The " <> pretty i <> "th argument of "
+                                <> pretty name <> " could not be coerced into the correct type!\n"
+                                <> pretty name <> " expects: " <> pretty exp
+                                <> " but we got: " <> pretty have
+                              Just t -> pure t
+                        wf' <- checkWf p name' wf
+                        -- TODO: By using name' instead of name we make re-checking this impossible
+                        -- when the name is overloaded!
+                        -- In fact, we re-check the assumptions though, so this will become an error
+                        -- once we have overloading in any assumption in a text!
+                        pure (t, AppWf name' (zipWith coercionsToTerm coes' explicit') wf')
+              (_:_:_) -> do
+                (argtypes, explicit') <- unzip <$> mapM (go Nothing) explicit
+                argintypes <- flip mapM argtypes $ \t -> case t of
+                      Prop -> failWithMessage "A truth value cannot be passed to a function!"
+                      InType t' -> pure t'
+                res <- resolve name names argintypes retval
+                case res of
+                  ((name', coe), t) -> do
+                    wf' <- checkWf p name' wf
+                    -- TODO: By using name' instead of name we make re-checking this impossible
+                    -- when the name is overloaded!
+                    -- In fact, we re-check the assumptions though, so this will become an error
+                    -- once we have overloading in any assumption in a text!
+                    pure (t, AppWf name' (zipWith coercionsToTerm coe explicit') wf')
       App Eq [a, b] -> do
-        (ta, a') <- go Value a
-        (tb, b') <- go Value b
+        (ta, a') <- go Nothing a
+        (tb, b') <- go Nothing b
         coe <- coercions <$> get
         case (ta, tb) of
           (InType ia, InType ib) -> case (coerceInto [ia] [ib] coe, coerceInto [ib] [ia] coe) of
@@ -295,9 +368,9 @@ checkTerm p retval t = locally $ do
               "Can't coerce one side of equality into the other: " <> pretty (App Eq [a', b']) 
           _ -> failWithMessage $ "Prop in equality: " <> pretty (App Eq [a', b'])
       App op args -> do 
-        res <- mapM (go Proposition) args
-        pure (Prop, simp $ App op $ map snd res)
-      Tag () t -> fmap (Tag ()) <$> go retval t
+        (_, res) <- unzip <$> mapM (go Nothing) args
+        pure (Prop, simp $ App op res)
+      Tag () t -> go inferCtx t >>= \(a,c) -> pure (a, Tag () c)
 
 checkNFTerm :: (Infer f, Message.Comm m) => SourcePos -> ReturnValue -> NFTerm f () -> TC m (OutType, NFTerm Identity ())
 checkNFTerm p retval (NFTerm im ex as b) = locally $ do

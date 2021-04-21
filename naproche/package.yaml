@@ -99,5 +99,5 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - Naproche-SAD
+    - naproche
     - process
