@@ -30,12 +30,14 @@ The subsequent explanations are for **development** of the tool, not for end-use
 
     stack clean
 
-    stack build
+    stack build Naproche-SAD
 
-    stack test
+    cd app
+    stack test Naproche-SAD
 
 ### Manual checking of proof files
 
+    cd app
     stack exec Naproche-SAD -- OPTIONS FILE
 
   It may be necessary to allow the E Prover more time by appending "-t SECONDS"
