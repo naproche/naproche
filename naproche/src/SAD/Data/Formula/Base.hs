@@ -35,7 +35,8 @@ data TermId
 
 data Formula =
   All Decl Formula        | Exi Decl Formula |
-  Class Decl Formula      |
+  Class Decl Formula      | FinClass [Formula]      |
+  InClass Decl Formula Formula | -- { x "in" M | f }
   Iff Formula Formula     | Imp Formula Formula     |
   Or  Formula Formula     | And Formula Formula     |
   Tag Tag Formula         | Not Formula             |

@@ -8,7 +8,7 @@ The `naproche` package provides basic support for typesetting Naproche formaliza
 To use the package, add
 
 ```TeX
-\usepackage{../lib/tex/naproche}
+\usepackage{../tex/naproche}
 ```
 
 to the preamble of your document.
@@ -33,7 +33,7 @@ and licenses the document as `CC0`.
 \usepackage{stix2}
 \usepackage[type={CC},modifier={zero},version={1.0},imagemodifier=-80x15]{doclicense}
 
-\usepackage{../lib/tex/naproche}
+\usepackage{../tex/naproche}
 
 \begin{document}
     ···
@@ -49,7 +49,7 @@ For XeTeX/LuaTex use
 \usepackage{stix2}
 \usepackage[type={CC},modifier={zero},version={1.0},imagemodifier=-80x15]{doclicense}
 
-\usepackage{../lib/tex/naproche}
+\usepackage{../tex/naproche}
 
 \begin{document}
     ···

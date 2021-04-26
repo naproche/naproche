@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 95b1d7685f1568450aef2c88aa70c537ccd40949e9d1200f3b89790aff57e106
+-- hash: 124cc52958153e3101e2870a32847676735073ac2350b8ac35b706c8ff2e7840
 
 name:           naproche
 version:        0.1.0.0
@@ -83,36 +83,6 @@ library
     , hashable
     , mtl
     , prettyprinter
-    , split
-    , text
-    , time
-    , unordered-containers
-  default-language: Haskell2010
-
-test-suite Naproche-SAD-test
-  type: exitcode-stdio-1.0
-  main-is: Spec.hs
-  other-modules:
-      Paths_naproche
-  hs-source-dirs:
-      test
-  default-extensions: GeneralizedNewtypeDeriving InstanceSigs LambdaCase PartialTypeSignatures ScopedTypeVariables DeriveGeneric
-  ghc-options: -O2 -Wall -fno-warn-unused-do-bind -fno-warn-unused-matches -fno-warn-name-shadowing -threaded -rtsopts -with-rtsopts=-N
-  build-depends:
-      aeson
-    , base >=4.13 && <5
-    , binary
-    , bytestring
-    , containers
-    , deepseq
-    , directory
-    , filepath
-    , ghc-prim
-    , hashable
-    , mtl
-    , naproche
-    , prettyprinter
-    , process
     , split
     , text
     , time

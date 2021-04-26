@@ -61,6 +61,20 @@ failWithMessage txt = do
     ++ "\n\n" ++ (renderString $ layoutSmart
       (defaultLayoutOptions { layoutPageWidth = AvailablePerLine w 1.0 }) txt)
 
+-- | This should be kept in sync with SAD.ForTheL.Base.initFS
+-- Equalities can be omitted since they are a feature of TPTP syntax.
+predefinedStmts :: Message.Comm m => Err m [Located (Stmt Set ())]
+predefinedStmts = do
+  let predef = [ Located "predef" noSourcePos $ IntroSort identClass
+        , Located "predef" noSourcePos $ IntroSort identObject
+        , Located "predef" noSourcePos $ IntroSort identSet
+        , Located "predef" noSourcePos $ IntroAtom identElement
+            [] [(NormalIdent "x", Set.singleton (Signature identObject)), (NormalIdent "C", Set.singleton (Signature identClass))] []
+        ]
+  setClass <- map (Located "predef" noSourcePos) <$> mkCoercion (Signature identSet) (Signature identClass)
+  setObject <- map (Located "predef" noSourcePos) <$> mkCoercion (Signature identSet) (Signature identObject)
+  pure $ predef ++ setClass ++ setObject
+
 data Context = Context
   { sorts :: Set Ident
   , preBoundVars :: Map Ident (Set InType)
@@ -69,10 +83,8 @@ data Context = Context
 instance Semigroup Context where
   (<>) (Context s1 v1) (Context s2 v2) = Context (s1 <> s2) (v1 <> v2)
 
--- | This should be kept in sync with SAD.ForTheL.Base.initFS
--- Equalities can be omitted since they are a feature of TPTP syntax.
 instance Monoid Context where
-  mempty = Context (Set.fromList [identClass, identObject]) (Map.singleton identElement mempty)
+  mempty = Context mempty mempty 
 
 -- | Parse a formula into a term while ignoring all type information.
 -- This will only checkthat all de-bruijn indices have a binder.
@@ -90,7 +102,14 @@ parseFormula f = modify (\s -> s { errorFormula = f }) >> go [] f
         Exists v' (Const ()) <$> go (addVar v' vars) f
       F.Class (Decl v _ _) f -> do
         v' <- checkVar v
-        Class v' (Const ()) <$> go (addVar v' vars) f
+        Class v' (Const ()) Nothing mempty <$> go (addVar v' vars) f
+      F.FinClass fs -> do
+        fs' <- mapM (go vars) fs
+        pure $ FinClass (Const ()) mempty fs'
+      F.InClass (Decl v _ _) m f -> do
+        v' <- checkVar v
+        m' <- go vars m
+        Class v' (Const ()) (Just m') mempty <$> go (addVar v' vars) f
       F.Iff f1 f2 -> App Iff <$> mapM (go vars) [f1, f2]
       F.Imp f1 f2 -> App Imp <$> mapM (go vars) [f1, f2]
       F.And f1 f2 -> App And <$> mapM (go vars) [f1, f2]
@@ -115,7 +134,7 @@ parseFormula f = modify (\s -> s { errorFormula = f }) >> go [] f
         if length vars > i then pure $ AppWf (vars !! i) [] noWf
         else failWithMessage $ pretty $ "Internal error: Unbound index: " ++ show i
       f -> failWithMessage $ pretty
-        $ "Internal error: Intermittent parse result in type-check: " ++ show f
+        $ "Internal error: Intermittent parse result in type-check: " ++ showFormula f
 
     addVar v vars = v:vars
     checkVar v = case varToIdent v of
@@ -148,10 +167,18 @@ extractGivenTypes ctx t = fmap (fst) $ runWriterT $ runReaderT (go t) mempty
         (t', typings) <- listen $ local (\(a, b) -> (a, Set.insert v b)) $ go t
         let m = Map.findWithDefault mempty v typings
         pure $ Exists v m t'
-      Class v (Const ()) t -> do
+      Class v (Const ()) Nothing _ t -> do
         (t', typings) <- listen $ go t
         let m = Map.findWithDefault mempty v typings
-        pure $ Class v m t'
+        pure $ Class v m Nothing mempty t'
+      Class v (Const ()) (Just m) _ t -> do
+        (t', typings) <- listen $ go t
+        let typ = Map.findWithDefault mempty v typings
+        m' <- go m
+        pure $ Class v typ (Just m') mempty t'
+      FinClass (Const ()) _ ts -> do
+        ts' <- mapM go ts
+        pure $ FinClass mempty mempty ts'
       AppWf op args _ -> do
         settable <- snd <$> ask
         case parseType ctx op of
@@ -210,18 +237,23 @@ mkCoercion (Signature from) (Signature to) = do
   pure [Coercion name from to, Axiom inj]
 
 -- | Make sure that there are no tags left.
-noTags :: Message.Comm m => Term f Tag -> Err m (Term f ())
-noTags = go
+noTags :: (Pretty (f InType), Show (f InType), Show (f ClassInfo), Message.Comm m) => Term f Tag -> Err m (Term f ())
+noTags expr = go expr
   where
     go = \case
       Forall v m t -> Forall v m <$> go t
       Exists v m t -> Exists v m <$> go t
-      Class v m t -> Class v m <$> go t
+      Class v m Nothing ci t -> Class v m Nothing ci <$> go t
+      Class v m (Just mm) ci t -> do
+        mm' <- go mm
+        Class v m (Just mm') ci <$> go t
+      FinClass m cv ts -> FinClass m cv <$> mapM go ts
       AppWf op args _ -> flip (AppWf op) noWf <$> mapM go args
       App op args -> App op <$> mapM go args
       Tag Replacement t -> go t
       Tag EqualityChain t -> go t
-      Tag tag _ -> failWithMessage $ pretty $ "Remaining tag: " ++ show tag
+      Tag tag _ -> failWithMessage $ "Remaining tag: " <> pretty (show tag) <> line
+        <> "in expression: " <> pretty expr
 
 transformFormula :: Message.Comm m => Context -> Formula -> Err m (Term Set ())
 transformFormula ctx f =
@@ -264,6 +296,20 @@ splitExists vs t = let (a, b) = go t in (Map.fromList a, b)
         let (hs, t') = go t
         in (hs, Exists v m t')
       t -> ([], t)
+
+define :: Message.Comm m => Tactic m
+define (_, []) = pure $ Nothing
+define (ctx, (b:bs)) = case (formula b, Set.toList $ declaredVariables b) of
+  (F.Trm { F.trmName = TermEquality, F.trmArgs = [F.Var v0 [] _, def]}, [Decl v1 _ _]) | v0 == v1 -> do
+    let l = position b; n = name b
+        varToIdent' v = case varToIdent v of
+          Just a -> a
+          Nothing -> error $ "Parser variable in define tactic!"
+        x = varToIdent' v0
+        ctx' = preBind (Map.singleton x mempty) ctx
+    f <- transformFormula ctx def 
+    pure $ Just $ (Located n l $ Define x mempty f, (ctx', bs))
+  _ -> pure $ Nothing
 
 chooses :: Message.Comm m => Tactic m
 chooses (_, []) = pure $ Nothing
@@ -319,6 +365,7 @@ convertProof links ctx pts = do
         [ byContradiction st
         , cases st
         , chooses st
+        , define st
         , subClaims st
         ]
 
@@ -370,13 +417,25 @@ extractDefinitions :: Message.Comm m => Context -> NFTerm Set Tag -> Err m [Stmt
 extractDefinitions ctx nf = do
   (asDefs, nf) <- case reverse $ nfAssumptions nf of
         -- sorts definitions
-        (Tag SortTerm (AppWf name [AppWf v [] _] _)):_ -> do
+        (Tag SortTerm (AppWf name [AppWf v [] _] _)):assms -> do
           case nfBody nf of
             Exists d to (App Eq [AppWf d1 [] _, AppWf v1 [] _]) | d == d1 && v == v1 -> do
               case Set.toList to of
                 [to] -> do
                   coe <- mkCoercion (Signature name) to
                   pure (IntroSort name : coe, NFTerm [] [] [] (App Top []))
+                [] -> pure ([IntroSort name], NFTerm [] [] [] (App Top []))
+                (_:_:_) -> failWithMessage $ "The 'from' type of the coercion must be unique!"
+            -- e.g. a region is an open set -> cond is open(h5):
+            App And [Exists d to (App Eq [AppWf d1 [] _, AppWf v1 [] _]), cond] | d == d1 && v == v1 -> do
+              case Set.toList to of
+                [to] -> do
+                  coe <- mkCoercion (Signature name) to
+                  (im, ex) <- extractExplicit name (nfImplicit nf) [AppWf v [] noWf]
+                  as <- mapM noTags $ reverse assms
+                  let im' = List.deleteBy ((==) `on` fst) (v, mempty) $ im
+                  cond' <- noTags cond
+                  pure ([IntroSort name, Axiom (NFTerm (im' ++ ex) [] as cond')] ++ coe, NFTerm [] [] [] (App Top []))
                 [] -> pure ([IntroSort name], NFTerm [] [] [] (App Top []))
                 (_:_:_) -> failWithMessage $ "The 'from' type of the coercion must be unique!"
             App Top [] -> pure ([IntroSort name], NFTerm [] [] [] (App Top []))
@@ -393,6 +452,11 @@ extractDefinitions ctx nf = do
             Exists d to (App Eq [AppWf d1 [] _, AppWf v1 [] _]) | d == d1 && v0 == v1 -> do
               let im' = List.deleteBy ((==) `on` fst) (v0, mempty) im
               pure ([IntroSignature name to im' ex as], NFTerm [] [] [] (App Top []))
+            -- e.g. 1 is a nonzero natural number -> cond is 1 != 0:
+            App And [Exists d to (App Eq [AppWf d1 [] _, AppWf v1 [] _]), cond] | d == d1 && v0 == v1 -> do
+              let im' = List.deleteBy ((==) `on` fst) (v0, mempty) im
+              cond' <- noTags cond
+              pure ([IntroSignature name to im' ex as, Axiom (NFTerm (im' ++ ex) [] as cond')], NFTerm [] [] [] (App Top []))
             _ -> failWithMessage $ "The signature is malformed! " <> pretty nf
         _ -> pure ([], nf)
   bdDefs <- case nfBody nf of
@@ -421,7 +485,8 @@ extractDefinitions ctx nf = do
                   pure coe
             _ -> failWithMessage $ "Couldn't parse coercion!"
         -- predicate definitions
-        App Iff [Tag HeadTerm (AppWf name args _), def] -> do
+        App Iff [Tag tag (AppWf name args _), def]
+          | tag == HeadTerm || tag == SortTerm -> do
           as <- mapM noTags $ nfAssumptions nf
           b <- noTags $ def
           (im, ex) <- extractExplicit name (nfImplicit nf) args
@@ -432,11 +497,19 @@ extractDefinitions ctx nf = do
           (im, ex) <- extractExplicit name (nfImplicit nf) args
           pure [Predicate name $ NFTerm im ((v0, m):ex) as b]
         -- function definitions
-        Forall _ retval (App Iff [Tag HeadTerm (App Eq [_, AppWf name args _]), App Eq [_, def]]) -> do
+        Forall _ retval (App Iff [Tag HeadTerm (App Eq [AppWf v0 [] _, AppWf name args _]), App Eq [AppWf v1 [] _, def]]) | v0 == v1 -> do
           as <- mapM noTags $ nfAssumptions nf
           b <- noTags $ def
           (im, ex) <- extractExplicit name (nfImplicit nf) args
           pure [Function name retval $ NFTerm im ex as b]
+        App Iff [Tag HeadTerm (App Eq [AppWf v0 _ _, AppWf name args _]), App Eq [_, def]]
+          | List.lookup v0 (nfImplicit nf) /= Nothing -> do
+          as <- mapM noTags $ nfAssumptions nf
+          b <- noTags $ def
+          (im, ex) <- extractExplicit name (nfImplicit nf) args
+          let im' = List.deleteBy ((==) `on` fst) (v0, mempty) im
+          let retval = case List.lookup v0 (nfImplicit nf) of Just r -> r; Nothing -> error "Can't happen"
+          pure [Function name retval $ NFTerm im' ex as b]
         Forall _ retval (App Imp [Tag HeadTerm (App Eq [AppWf v0 [] _, AppWf name args _]), def]) -> do
           as <- mapM noTags $ nfAssumptions nf
           b <- noTags $ def
@@ -477,9 +550,13 @@ transformBlock ctx bl@(Block f b _ _ n l _) = map (Located n (position bl)) <$>
 
 transform :: Message.Comm m => [ProofText] -> m [Located (Stmt Set ())]
 transform = flip evalStateT initErrors
-  . go mempty . concatMap (\case ProofTextBlock bl -> [bl]; _ -> [])
+  . begin . concatMap (\case ProofTextBlock bl -> [bl]; _ -> [])
   where
     initErrors = ErrorContext undefined F.Top noSourcePos
+    
+    begin xs = do
+      stmts <- predefinedStmts
+      (stmts ++) <$> go (List.foldl' updateCtx mempty stmts) xs
 
     go _ [] = pure []
     go c (b:bs) = do

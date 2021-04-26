@@ -121,12 +121,14 @@ showTranslation provers txts opts0 = do
   typed <- lift $ typecheck converted
   endTimedSection CheckTime
   
-  beginTimedSection OntoTime
-  lift $ writeOut noSourcePos $ "Ontological checking:"
-  proveTasks provers (ontologicalTasks typed) opts0
-  endTimedSection OntoTime
-  
   lift $ mapM_ (writeOut (fileOnlyPos "") . pretty . located) typed
+  
+  beginTimedSection OntoTime
+  let ontoTasks = ontologicalTasks typed
+  unless (ontoTasks == []) $ do
+    lift $ writeOut noSourcePos $ "Ontological checking:"
+  proveTasks provers ontoTasks opts0
+  endTimedSection OntoTime
   
   -- print statistics
   beginTimedSection ProvingTime

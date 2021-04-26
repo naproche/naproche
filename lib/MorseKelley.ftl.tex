@@ -2,7 +2,7 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage{../lib/tex/naproche}
+\usepackage{tex/naproche}
 
 \title{Morse Kelley set theory}
 \author{}
@@ -24,25 +24,12 @@
   It would be worthwhile to port it to Kelley's formalization.
 
   \begin{forthel}
-    [synonym set/-s]
     [synonym relation/-s]
     [synonym function/-s]
-
-    \begin{signature}
-      A set is a notion.
-    \end{signature}
 
     Let $B, C, D$ denote classes.
     Let $s, t, u$ denote sets.
     Let $w, x, y, z$ denote objects.
-
-    \begin{axiom}
-      $s$ is a class.
-    \end{axiom}
-    
-    \begin{axiom}
-      $s$ is an object.
-    \end{axiom}
 
     \begin{definition}
       $x$ is in $B$ iff $x$ is an element of $B$.
@@ -159,7 +146,7 @@
     \end{definition}
 
     \begin{axiom}[Separation]
-      Let $B$ be a class. Let $s, t$ be sets.
+      Let $B$ be a class. Let $t$ be a set.
       Assume that $B$ is a subclass of $t$.
       Then there is a set $s$ such that $s = B$.
     \end{axiom}

@@ -32,7 +32,7 @@ import Data.Binary (Binary)
 import Control.DeepSeq (NFData)
 
 data Ident
-  = NormalIdent Text -- ^ An alpha-numeric identifier
+  = NormalIdent !Text -- ^ An alpha-numeric identifier
   | SymbolIdent [Text] -- ^ parts of the symbol with space for an argument between each two list elements
   deriving (Eq, Ord, Show, Read, Generic)
 instance NFData Ident

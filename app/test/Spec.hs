@@ -11,19 +11,19 @@ import qualified Data.Text.IO as TIO
 
 compileFile :: [String] -> FilePath -> IO (Handle, Handle, ProcessHandle)
 compileFile flags f = do
-  (_, Just hout, Just herr, ph) <- createProcess (proc "stack" (["exec", "Naproche-SAD", "--", f] ++ flags))
+  (_, Just hout, Just herr, ph) <- createProcess (proc "stack" (["exec", "Naproche-SAD", "--", f, "-T"] ++ flags))
     { std_out = CreatePipe, std_err = CreatePipe }
   pure (hout, herr, ph)
 
-gather :: (Handle, Handle, ProcessHandle) -> IO (ExitCode, Text)
+gather :: (Handle, Handle, ProcessHandle) -> IO (ExitCode, String)
 gather (hout, herr, ph) = do
   code <- waitForProcess ph
-  cont <- TIO.hGetContents hout
-  _ <- TIO.hGetContents herr
-  pure (code, cont)
+  cont <- hGetContents hout
+  err <- hGetContents herr
+  pure (code, cont <> err)
 
 texFiles :: [FilePath]
-texFiles = fmap ("lib/examples/"++)
+texFiles = fmap ("../lib/examples/"++)
   [ "cantor.ftl.tex"
   , "checkerboard.ftl.tex"
   , "chinese.ftl.tex"
@@ -37,9 +37,9 @@ texFiles = fmap ("lib/examples/"++)
   , "tarski.ftl.tex"
   ]
 
-output :: [(FilePath, (ExitCode, Text))] -> IO [(ExitCode, FilePath)]
+output :: [(FilePath, (ExitCode, String))] -> IO [(ExitCode, FilePath)]
 output xs = do
-  mapM_ (TIO.putStrLn . snd . snd) xs
+  mapM_ (putStrLn . snd . snd) xs
   let failed = map (\(f, (c, _)) -> (c, f)) $ filter ((/=ExitSuccess) . fst . snd) xs
   pure failed
 

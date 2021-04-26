@@ -28,6 +28,7 @@ proofTasksFromTactic isContra goal hypo (Located n p tactic) = case tactic of
   Suffices t prf -> proofTasksFromPrfBlock n p isContra hypo (App Imp [t, goal]) prf
   ByContradiction _ -> []
   Subclaim t prf -> proofTasksFromPrfBlock n p isContra hypo (termFromNF t) prf
+  Define _ _ _ -> []
   Choose vs t prf ->
     let ex = foldl' (\e (i, t) -> Exists i t e) t vs
     in proofTasksFromPrfBlock n p isContra hypo ex prf
@@ -47,6 +48,7 @@ ontoTasksFromTactic hypo (Located _ p tactic) = case tactic of
   Suffices t prf -> nftermToOntoTasks p hypo (termToNF t)
     ++ ontoTasksFromPrfBlock hypo prf
   ByContradiction _ -> []
+  Define _ _ t -> nftermToOntoTasks p hypo (termToNF t)
   Subclaim t prf -> nftermToOntoTasks p hypo t
     ++ ontoTasksFromPrfBlock hypo prf
   Choose vs t prf ->
@@ -131,7 +133,8 @@ nftermToOntoTasks p hypo = go hypo . termFromNF
     go hypo = \case
       Forall i (Identity typ) t -> go ((Typing i $ mkTyp typ):hypo) t
       Exists i (Identity typ) t -> go ((Typing i $ mkTyp typ):hypo) t
-      Class  i (Identity typ) t -> go ((Typing i $ mkTyp typ):hypo) t
+      FinClass _ _ ts -> concatMap (go hypo) ts
+      Class  i (Identity typ) _ _ t -> go ((Typing i $ mkTyp typ):hypo) t
       -- this rule allows "Exists x: x in Dom(f) and f(x) = y":
       App And [a, b] -> go hypo a ++ go ((Given "" a):hypo) b
       App Imp [a, b] -> go hypo a ++ go ((Given "" a):hypo) b

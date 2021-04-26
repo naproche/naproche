@@ -1,6 +1,6 @@
 \documentclass[11pt]{article}
 \usepackage{amssymb}
-\usepackage{../lib/tex/naproche}
+\usepackage{../tex/naproche}
 
 \author{Andrei Paskevich and Peter Koepke\\
    U Paris-Saclay and U Bonn}
@@ -42,6 +42,7 @@ around 75 seconds to check this text.
 
 [printprover on][dump on]
 
+[readtex prelude.ftl.tex]
 [synonym number/-s]
 [synonym divide/-s]
 [synonym set/-s] [synonym element/-s] 
@@ -51,20 +52,14 @@ around 75 seconds to check this text.
 
 
 \section{Natural Numbers}
-
-In order to be able to form classes and sets of natural numbers 
-natural numbers are introduced as ``small'' objects.
  
 \begin{forthel}
 
-Let $x$ is small stand for $x$ is setsized.
-
-\begin{signature}  A natural number is a small object.
+\begin{signature}
+  A natural number is an object.
 \end{signature}
 
 Let $i,k,l,m,n,p,q,r$ denote natural numbers.
-
-\begin{lemma} i is small. \end{lemma}
 
 \begin{signature} $0$ is a natural number.
 \end{signature}
@@ -170,14 +165,13 @@ then  $m \leq l$.
 
 \section{Induction}
 
-\Naproche{} provides a special binary relation
-symbol $\prec$ for a universal inductive relation: if at any
-point $m$ property $P$ is inherited at $m$ provided all
-$\prec$-predecessors of $m$ satisfy $P$, then $P$ holds everywhere.
-Induction along $<$ is ensured by:
+In \Naproche{} induction is defined over classes:
 
 \begin{forthel}
-\begin{axiom} If $n < m$ then $n \prec m$.
+\begin{axiom}[Induction]
+  Let $C$ be a class.
+  If for every natural number $m$ such that (\forall n $n < m$ => $n \in C$) $m \in C$
+    then every natural number is an element of $C$.
 \end{axiom}
 \end{forthel}
 
@@ -189,9 +183,9 @@ Induction along $<$ is ensured by:
   $n$ divides $m$ iff for some $l$ $m = n * l$.
 \end{definition}
 
-Let $x | y$ denote $x$ divides $y$.
-Let a divisor of $x$ denote a natural number 
-that divides $x$.
+Let $n | m$ denote $n$ divides $m$.
+Let a divisor of $n$ denote a natural number 
+that divides $n$.
 
 \begin{lemma} Let $l | m$ and $l | m + n$. Then $l | n$.
 \end{lemma}
@@ -231,8 +225,6 @@ $n$ is prime iff $n$ is nontrivial and
 
 \begin{lemma} Every nontrivial $k$ has a prime divisor.
 \end{lemma}
-\begin{proof} Proof by induction.
-\end{proof}
 
 \end{forthel}
 
@@ -255,14 +247,6 @@ We extend the built-in ontology of \Naproche{}
 according to the following principles for elements and sets:
 \begin{forthel}
 
-\begin{axiom}
-Every element of every class is small.
-\end{axiom}
-
-\begin{axiom}
-Every set is a small class and every small class is a set.
-\end{axiom}
-
 \begin{definition} $\mathbb{N}$ is the 
 class of natural numbers.
 \end{definition}
@@ -272,24 +256,21 @@ class of natural numbers.
 \section{Finite Sequences and Products}
 
 \begin{forthel}
-\begin{definition} $\Seq{m}{n}$ is the class of
-natural numbers $i$ such that $m \leq i \leq n$.
+\begin{definition}
+  $\Seq{m}{n}$ is { natural number i | $ m \leq i \leq n $ }.
 \end{definition}
 
 \begin{axiom} $\Seq{m}{n}$ is a set. \end{axiom}
 
-\begin{axiom}
-Assume $F$ is a function and $x \in Dom(F)$. Then $F(x)$ is small.
-\end{axiom}
-
 \begin{definition} A sequence of length $n$ is a
-function $F$ such that $Dom(F) = \Seq{1}{n}$.
+function $F$ such that $\Dom{F} = \Seq{1}{n}$.
 \end{definition}
 
+Let $F$ stand for a function.
 Let $\val{F}{i}$ stand for $F(i)$.
 
 \begin{definition} Let $F$ be a sequence of length $n$.
-$\Set{F}{1}{n} = \{ \val{F}{i} | i \in Dom(F)\}$.
+$\Set{F}{1}{n} = \{ \val{F}{i} | i \in \Dom{F}\}$.
 \end{definition}
 
 \begin{signature} Let $F$ be a sequence of length $n$
@@ -298,9 +279,9 @@ $\Prod{F}{1}{n}$ is a natural number.
 \end{signature}
 
 \begin{axiom}[Factorproperty] Let $F$ be a sequence of length $n$
-such that $F(i)$ is a nonzero natural number for every $i \in Dom(F)$.
+such that $F(i)$ is a nonzero natural number for every element $i$ of $\Dom{F}$.
 Then $\Prod{F}{1}{n}$ is nonzero and 
-$F(i)$ divides $\Prod{F}{1}{n}$ for every $i \in Dom(F)$.
+$F(i)$ divides $\Prod{F}{1}{n}$ for every element $i$ of $\Dom{F}$.
 \end{axiom}
 
 

@@ -6,7 +6,7 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage{../lib/tex/naproche}
+\usepackage{../tex/naproche}
 \usepackage{bbm}
 \usepackage{hyperref}
 
@@ -91,10 +91,8 @@ us to formalize part of the theory of $\mathbb{Z}/8 \mathbb{Z}$.
 \Naproche{} allows to group elements into \textit{classes} and \textit{sets} as long as they are \textit{setsized} (informally also called \textit{small}).
 
 \begin{forthel}
-    \begin{signature} A rank is a notion. \end{signature}
+    \begin{signature} A rank is an object. \end{signature}
     Let $r, s$ denote ranks.
-
-    \begin{axiom} $r$ is setsized. \end{axiom}
 
     \begin{signature} $1$ is a rank. \end{signature}
     \begin{signature} $2$ is a rank. \end{signature}
@@ -107,10 +105,8 @@ us to formalize part of the theory of $\mathbb{Z}/8 \mathbb{Z}$.
 
     \begin{definition} $\Rank = \{1,2,3,4,5,6,7,8\}$. \end{definition}
 
-    \begin{signature} A file is a notion. \end{signature}
+    \begin{signature} A file is an object. \end{signature}
     Let $f, g$ denote files.
-
-    \begin{axiom} $f$ is setsized. \end{axiom}
 
     \begin{signature} $\fileA$ is a file. \end{signature}
     \begin{signature} $\fileB$ is a file. \end{signature}
@@ -125,8 +121,8 @@ us to formalize part of the theory of $\mathbb{Z}/8 \mathbb{Z}$.
         $\File = \{\fileA,\fileB,\fileC,\fileD,\fileE,\fileF,\fileG,\fileH\}$.
     \end{definition}
 
-    \begin{signature} A square is a notion. \end{signature}
-    \begin{axiom} $(f, r)$ is a square. \end{axiom}
+    \begin{signature} A square is an object. \end{signature}
+    \begin{signature} $(f, r)$ is a square. \end{signature}
     Let $v, w, x, y, z$ denote squares.
 \end{forthel}
 
@@ -137,12 +133,14 @@ for setsized $x$.
 Morse and Kelley \cite{Kelley1975,Morse1965} use the same approach in their axiomatization of set theory.
 
 \begin{forthel}
-    \begin{definition}
-        $\Checkerboard$ is the class of squares $x$ such that $x = (f, r)$ for some
-        element $f$ of $\File$ and some element $r$ of $\Rank$.
-    \end{definition}
+    \begin{signature}
+        $\Checkerboard$ is a set.
+    \end{signature}
 
-    \begin{axiom} $\Checkerboard$ is a set. \end{axiom}
+    \begin{axiom}
+        $\Checkerboard$ = { square x | $x = (f, r)$ for some
+            element $f$ of $\File$ and some element $r$ of $\Rank$ }.
+    \end{axiom}
 \end{forthel}
 
 \section{Preliminaries about sets and functions}
@@ -204,16 +202,21 @@ disjointness in that format.
     \end{definition}
 
     \begin{definition}
-        A disjoint family is a family $F$ such that
-        $A$ is disjoint from $B$ for all nonequal elements $A, B$ of $F$.
+        Let $F$ be a family.
+        A member of $F$ is a set $A$ such that $A$ is an element of $F$.
+    \end{definition}
+    
+    \begin{definition}
+        A disjoint family is a family $F$ such that for all nonequal sets $A, B$
+        such that $A, B$ are elements of $F$ $A$ is disjoint from $B$.
     \end{definition}
 
     \begin{definition}
-        $B \cap C = \{ x \in B \mid x \in C\}$.
+        $B \cap C = \{ x "in" B \mid x \in C \}$.
     \end{definition}
 
     \begin{definition}
-        $B \setminus C = \{ x \in B \mid x \notin C\}$.
+        $B \setminus C = \{ x "in" B \mid x \notin C \}$.
     \end{definition}
 \end{forthel}
 
@@ -224,12 +227,6 @@ Also note that the proof of the lemma below really is omitted and not merely hid
 with its internal ``reasoner'' and in non-trivial cases with the help of automated theorem provers
 such as \textsf{E}, \Naproche{}
 can accept some theorems without any additional argumentation.
-
-\begin{forthel}
-    \begin{lemma}
-        Every set is an object.
-    \end{lemma}
-\end{forthel}
 
 The built-in ordered pair notation that we already used in the first
 section does not include the universal property of ordered pairs,
@@ -245,7 +242,7 @@ so we postulate it as an axiom.
 
 (Unary) functions are built into \Naproche{}; $F(t)$ denotes the
 application of a function $F$ to an argument $t$ and
-$\dom(F)$ stands for the domain of $F$. In our exposition we shall
+$\Dom{F}$ stands for the domain of $F$. In our exposition we shall
 use functions to compare cardinalities of black and white squares. As with
 sets, we introduce some further properties of functions.
 
@@ -253,7 +250,7 @@ sets, we introduce some further properties of functions.
     Let $F,G$ denote functions.
 
     \begin{definition}
-        $F : A \to B$ iff $\dom(F) = A$ and
+        $F : A \to B$ iff $\Dom{F} = A$ and
         $F(x)$ is an element of $B$ for all elements $x$ of $A$.
     \end{definition}
 \end{forthel}
@@ -296,8 +293,9 @@ have the same cardinality iff there is a bijection between them.
         Take a function $H$ such that $H : B \leftrightarrow C$.
         Take a function $I$ such that $I : C \to B$ and (for all elements $x$ of $B$ we have $I(H(x)) = x$) and
         (for all elements $y$ of $C$ we have $H(I(y))=y$).
-        Define $J(x) = H(F(x))$ for $x$ in $A$.
-        $J : A \leftrightarrow C$. Indeed define $K(y) = G(I(y))$ for $y$ in $C$.
+        Define $J' = \{ (x, H(F(x))) \mid x \in A \}$.
+        Take a function $J$ such that $J = J'$.
+        $J : A \leftrightarrow C$. Indeed define $K = \{ (y, G(I(y))) \mid y \in C \}$.
     \end{proof}
 \end{forthel}
 
@@ -378,7 +376,7 @@ As usual, chaining of relation symbols indicates a conjunction.
 
 \begin{forthel}
     \begin{definition}
-        A domino tiling is a disjoint family $T$ such that every element of $T$ is a domino.
+        A domino tiling is a disjoint family $T$ such that every member of $T$ is a domino.
     \end{definition}
 
     Let $A$ denote a subset of $\Checkerboard$.
@@ -387,7 +385,7 @@ As usual, chaining of relation symbols indicates a conjunction.
         A domino tiling of $A$ is a domino tiling $T$
         such that for every square $x$
         $x$ is an element of $A$ iff
-        $x$ is an element of some element of $T$.
+        $x$ is an element of some member of $T$.
     \end{definition}
 \end{forthel}
 
@@ -424,11 +422,8 @@ subsets of the checkerboard and dominoes.
     \begin{axiom} $(\fileA,1)$ is black. \end{axiom}
     \begin{axiom} $(\fileH,8)$ is black. \end{axiom}
 
-    \begin{definition} $\Black$ is the class of black elements of $\Checkerboard$. \end{definition}
-    \begin{definition} $\White$ is the class of white elements of $\Checkerboard$. \end{definition}
-
-    \begin{lemma} $\Black$ is a set. \end{lemma}
-    \begin{lemma} $\White$ is a set. \end{lemma}
+    \begin{definition} $\Black$ is $\{ x "in" \Checkerboard | "there is a square s such that s = x and s is black" \}$. \end{definition}
+    \begin{definition} $\White$ is $\{ x "in" \Checkerboard | "there is a square s such that s = x and s is white" \}$. \end{definition}
 \end{forthel}
 
 
@@ -442,11 +437,16 @@ We formalize swapping by a first-order function symbol $\Swap{}$.
 
 \begin{forthel}
     \begin{signature}
-        Let $x$ be an element of $\Checkerboard$.
-        $\Swap{x}$ is an element of $\Checkerboard$.
+        $\Swap{x}$ is a square.
     \end{signature}
 
-    Let $t$ denote an element of $\Rank$.
+    \begin{axiom}
+        Let $x$ be a square.
+        Assume $x$ is an element of $\Checkerboard$.
+        $\Swap{x}$ is an element of $\Checkerboard$.
+    \end{axiom}
+
+    Let $t$ denote a rank.
 
     \begin{axiom} $\Swap{(\fileA, t)} = (\fileB, t)$ and $\Swap{(\fileB, t)} = (\fileA, t)$. \end{axiom}
 
@@ -465,7 +465,8 @@ As a consolation price, we can omit the last case.
 
 \begin{forthel}
     \begin{lemma}
-        Let $x$ be an element of $\Checkerboard$.
+        Let $x$ be a square.
+        Assume $x$ is an element of $\Checkerboard$.
         $\Swap{x}$ is adjacent to $x$.
     \end{lemma}
     \begin{proof}
@@ -486,7 +487,8 @@ $\Swap{}$ is an involution.
 
 \begin{forthel}
     \begin{lemma}
-        Let $x$ be an element of $\Checkerboard$.
+        Let $x$ be a square.
+        Assume $x$ is an element of $\Checkerboard$.
         $\Swap{(\Swap{x})} = x$.
     \end{lemma}
     \begin{proof}
@@ -501,7 +503,8 @@ $\Swap{}$ is an involution.
     \end{proof}
 
     \begin{lemma}
-        Let $x$ be an element of $\Checkerboard$.
+        Let $x$ be a square.
+        Assume $x$ is an element of $\Checkerboard$.
         $x$ is black iff $\Swap{x}$ is white.
     \end{lemma}
 \end{forthel}
@@ -514,8 +517,10 @@ Using $\Swap$ we can define a witness of $\Black \leftrightarrow \White$.
         $\Black$ is equinumerous with $\White$.
     \end{lemma}
     \begin{proof}
-        Define $F(x) = \Swap{x}$ for $x$ in $\Black$.
-        Define $G(x) = \Swap{x}$ for $x$ in $\White$.
+        Define $F' = \{ (x, \Swap{x}) | "x is a square and" x \in \Black \}$.
+        Define $G' = \{ (x, \Swap{x}) | "x is a square and" x \in \White \}$.
+        Take a function $F$ such that $F = F'$.
+        Take a function $G$ such that $G = G'$.
         Then $F : \Black \to \White$ and $G : \White \to \Black$.
         For all elements $x$ of $\Black$ we have $G(F(x)) = x$.
         For all elements $x$ of $\White$ we have $F(G(x)) = x$.
@@ -582,8 +587,8 @@ Swapping dominoes is also an involution.
         equinumerous with $A \cap \White$.
     \end{lemma}
     \begin{proof}
-        Define $F(x) = \Sw{T}{A}{x}$ for $x$ in $A \cap \Black$.
-        Define $G(x) = \Sw{T}{A}{x}$ for $x$ in $A \cap \White$.
+        Define $F = \{ (x, \Sw{T}{A}{x}) \mid x \in A \cap \Black \}$.
+        Define $G = \{ (x, \Sw{T}{A}{x}) \mid x \in A \cap \White \}$.
         Then $F: A \cap \Black \to A \cap \White$ and
         $G: A \cap \White \to A \cap \Black$.
         For all elements $x$ of $A \cap \Black$ we have $G(F(x))=x$.

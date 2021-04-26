@@ -17,6 +17,7 @@ import Data.Hashable
 import SAD.Data.Identifier
 import SAD.Data.Terms
 import SAD.Core.Typed
+import SAD.Core.Typecheck (coercionsToTerm)
 import SAD.Core.Task
 import Data.Maybe
 
@@ -91,7 +92,8 @@ instance (f ~ Identity, t ~ ()) => TPTP (Term f t) where
     (_, AppWf op args _) -> tptp ex op <> inParens (map (tptp ex) args)
     (_, a@(App _ _)) -> error $ "Internal error: Mismatched arguments in tptp generation: " ++ show a
     (_, Tag () t) -> tptp ex t
-    (_, Class _ _ _) -> error "Internal error: Class left in TPTP!"
+    (_, Class _ _ _ _ _) -> error "Internal error: Class left in TPTP!"
+    (_, FinClass _ _ _) -> error "Internal error: FinClass left in TPTP!"
 
 tffStatement :: ExportLang -> Text -> Text -> Text -> Text
 tffStatement ex n typ inside =
@@ -125,29 +127,42 @@ desugerClasses' hs c =
     go vars (h:hs) = case h of
       Given name t ->
         let ((vars', axs), t') = desugerClasses vars t
-            clsType = InType (Signature identClass)
-        in Given name t' : (concatMap (\(n, typ, t) -> [Given (n <> "_aux") t, Typing (NormalIdent n) (Pred (map runIdentity typ) clsType)]) axs) ++ go vars' hs
+        in Given name t' : (concatMap (\(n, cc, typ, t) -> [Given (n <> "_aux") t, Typing (NormalIdent n) (Pred (map runIdentity typ) (InType cc))]) axs) ++ go vars' hs
       Typing name t -> Typing name t : go vars hs
 
 -- | Given an infinite stream of Idents,
 -- replace each class {x | c} by a new operator cls in a term t and return
 -- ((rest of the variables, [∀x x\in cls iff c]), t')
 -- If classes are nested, we will return the outermost first.
-desugerClasses :: [Text] -> Term f t -> (([Text], [(Text, [f InType], Term f t)]), Term f t)
+desugerClasses :: [Text] -> Term Identity () -> (([Text], [(Text, InType, [Identity InType], Term Identity ())]), Term Identity ())
 desugerClasses = go mempty
   where
     go typings vars = \case
       Forall v m t -> Forall v m <$> go (Map.insert v m typings) vars t 
       Exists v m t -> Exists v m <$> go (Map.insert v m typings) vars t 
-      Class v m t -> 
+      Class v m mm (Identity ci) t -> 
         let (cls:clss) = vars
             ((clss', stmts), t') = go (Map.insert v m typings) clss t
             free = mapMaybe (\v -> case Map.lookup v typings of Nothing -> Nothing; Just t -> Just (v, t))
               $ Set.toList $ fvToVarSet $ bindVar v $ findFree t'
             clsTrm = AppWf (NormalIdent cls) (map (\(v, _) -> AppWf v [] noWf) free) noWf
-            ext = Forall v m $ App Iff [AppWf identElement [AppWf v [] noWf, clsTrm] noWf, t']
+            v' = coercionsToTerm (coerceElemsToObject ci) (AppWf v [] noWf) 
+            t'' = maybe t' (\s -> App And [AppWf identElement [v', s] noWf, t']) mm
+            ext = Forall v m $ App Iff [AppWf identElement [v', coercionsToTerm (coerceClassTypeToClass ci) $ clsTrm] noWf, t'']
             ext' = foldr (\(v, m) -> Forall v m) ext free
-        in ((clss', (cls, map snd free, ext'):stmts), clsTrm)
+        in ((clss', (cls, classType ci, map snd free, ext'):stmts), clsTrm)
+      FinClass m (Identity ci) ts -> 
+        let (cls:clss) = vars
+            v = newIdent (NormalIdent "v") (Map.keysSet typings)
+            v' = coercionsToTerm (coerceElemsToObject ci) (AppWf v [] noWf) 
+            ts' = foldl (\a b -> App Or [a, b]) (App Top []) $ map (\t -> App Eq [AppWf v [] noWf, t] ) ts
+            ((clss', stmts), t') = go typings clss ts'
+            free = mapMaybe (\v -> case Map.lookup v typings of Nothing -> Nothing; Just t -> Just (v, t))
+              $ Set.toList $ fvToVarSet $ findFree t'
+            clsTrm = AppWf (NormalIdent cls) (map (\(v, _) -> AppWf v [] noWf) free) noWf
+            ext = Forall v m $ App Iff [AppWf identElement [v', coercionsToTerm (coerceClassTypeToClass ci) $ clsTrm] noWf, t']
+            ext' = foldr (\(v, m) -> Forall v m) ext free
+        in ((clss', (cls, classType ci, map snd free, ext'):stmts), clsTrm)
       App op ts ->
         let (st, ts') = L.mapAccumL (\(v, ax) t -> 
               let ((v', ax'), t') = go typings v t in ((v', ax ++ ax'), t'))

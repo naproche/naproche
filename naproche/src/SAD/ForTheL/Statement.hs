@@ -418,9 +418,9 @@ clss = label "class definition" $ symbSet <|> classOf
   where
     classOf = do
       tokenOf' ["class", "classes"]; nm <- var -|- hidden; token' "of";
-      nmDecl <- makeDecl nm
       (q, f, u) <- notion >>= single; vnm <- hidden
-      return (id, classFormula $ Class nmDecl $ subst (pVar vnm) (posVarName u) $ q f, Set.singleton nm)
+      vnmDecl <- makeDecl vnm;
+      return (id, classFormula $ Class vnmDecl $ subst (pVar vnm) (posVarName u) $ q f, Set.singleton nm)
     symbSet = do
       (clss, nm) <- symbClassNotation
       return (id, classFormula clss, Set.singleton nm)
@@ -432,17 +432,16 @@ symbClassNotation = cndSet </> finSet
     finSet = braced $ do
       ts <- sTerm `sepByLL1` token ","
       h <- hidden
-      hDecl <- makeDecl h
-      pure (Class hDecl $ foldr1 Or $ map (mkEquality $ pVar h) ts, h)
+      pure (FinClass ts, h)
     cndSet = braced $ do
-      (c, t) <- sepFrom
+      (consClass, c, t) <- sepFrom
       st <- token "|" >> statement;
       vs <- freeVars t
       vsDecl <- makeDecls $ fvToVarSet vs;
       nm <- if isVar t then pure $ PosVar (varName t) (varPosition t) else hidden
       nmDecl <- makeDecl nm
       let nmVar = pVar nm
-      pure (Class nmDecl $ bind (declName nmDecl) $ c nmVar `blAnd` mbEqu vsDecl nmVar t st, nm)
+      pure (consClass nmDecl $ bind (declName nmDecl) $ c nmVar `blAnd` mbEqu vsDecl nmVar t st, nm)
 
     -- | If we quantify over a variable v then vs = {v} and we can just substitute
     -- the new variable 'nmVar' for 'v'. Else we quantify over a term (say (x, y))
@@ -452,21 +451,19 @@ symbClassNotation = cndSet </> finSet
 
     -- | Split into a constraint and a term.
     -- For example: '(x, y) in Z^2' becomes (_ in Z^2, (x, y))
-    sepFrom :: FTL (Formula -> Formula, Formula)
+    sepFrom :: FTL (Decl -> Formula -> Formula, Formula -> Formula, Formula)
     sepFrom = notionSep -|- classSep -|- noSep
       where
         notionSep = do
           (q, f, v) <- notion >>= single
           guard (case f of Trm n _ _ _ -> n /= TermEquality; _ -> False)
-          return (\tr -> subst tr (posVarName v) $ q f, pVar v)
+          return (Class, \tr -> subst tr (posVarName v) $ q f, pVar v)
         classSep = do
-          t <- sTerm; cnd <- token' "in" >> elementCnd
-          return (cnd, t)
+          t <- sTerm; token' "in"
+          x <- sTerm </> fmap fst symbClassNotation
+          return (flip InClass x, flip mkElem x, t)
         noSep  = do
-          t <- sTerm; return (const Top, t)
-
-    elementCnd :: FTL (Formula -> Formula)
-    elementCnd = flip mkElem <$> (sTerm </> fmap fst symbClassNotation)
+          t <- sTerm; return (Class, const Top, t)
 
 
 ---- chain tools

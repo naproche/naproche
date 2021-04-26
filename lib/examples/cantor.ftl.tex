@@ -2,7 +2,7 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage{../lib/tex/naproche}
+\usepackage{../tex/naproche}
 
 \title{Cantor's theorem}
 \author{}
@@ -20,11 +20,16 @@
   \end{quotedtheorem}
 
   \begin{forthel}
-    [synonym surject/-s]
     [readtex prelude.ftl.tex]
+    [synonym subset/-s]
+    [synonym surject/-s]
 
     Let $M$ denote a set. Let $f$ denote a function.
+    Let $x$ denote an object.
+
+    Let the value of $f$ at $x$ stand for $f(x)$.
     Let $f$ is defined on $M$ stand for $\Dom{f} = M$.
+    Let the domain of $f$ stand for $\Dom{f}$.
 
     \begin{axiom}
       The value of $f$ at any element of the domain of $f$ is a set.
@@ -34,34 +39,31 @@
       A subset of $M$ is a set $N$ such that every element of $N$ is an element of $M$.
     \end{definition}
 
-    \begin{definition}
-      The powerset of $M$ is the class of subsets of $M$.
-    \end{definition}
+    \begin{signature}
+      The powerset of $M$ is a set.
+    \end{signature}
 
     \begin{axiom}
-      The powerset of $M$ is a set.
+      The powerset of $M$ is the class of subsets of $M$.
     \end{axiom}
 
     \begin{definition}
-      $f$ surjects onto $M$ iff
-        for every object $x$ if $x$ is in $M$ then there is an object $y$ such that
-          $x$ is equal to the value of $f$ at $y$ and $y$ is in the domain of $f$.
+      $f$ surjects onto $M$ iff every element of $M$ is equal to the value of $f$ at some element of the domain of $f$.
     \end{definition}
 
-    \begin{lemma}
-      If $f$ surjects onto the powerset of $M$ then for every object $z$ there is a set $S$
-        such that $S = f(z)$.
-    \end{lemma}
-
     \begin{theorem}[Cantor]
-      No function $f$ that is defined on $M$ surjects onto the powerset of $M$.
+      No function that is defined on $M$ surjects onto the powerset of $M$.
     \end{theorem}
     \begin{proof}
       Assume the contrary.
-      Take a set $N$ such that $N = \{ x "in" M \mid "there is a set S such that S = f(x) and" x \notin S \}$.
+      Take a function $f$ that is defined on $M$ and surjects onto the powerset of $M$.
+      Define $N' = \{ x "in" M \mid "there is a set" S "such that" S = f(x) "and" x \notin S \}$.
+      Take a set $N$ such that $N = N'$.
       Take an element $z$ of $M$ such that $f(z) = N$.
-      Then $$z\in N "iff" z\notin f(z) = N.$$
+      Then $$z\in N "iff" z\notin N.$$
       Contradiction.
     \end{proof}
+
   \end{forthel}
+
 \end{document}

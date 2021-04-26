@@ -4,7 +4,7 @@
 \usepackage[english]{babel}
 \usepackage{amssymb, mathtools}
 
-\usepackage{../lib/tex/naproche}
+\usepackage{../tex/naproche}
 
 \title{König's Theorem}
 \author{Steffen Frerix and Peter Koepke\\
@@ -37,7 +37,7 @@ around 35 seconds to check this text.
 \begin{forthel}
     [synonym cardinal/-s]
     [synonym sequence/-s]
-    [read ZFC.ftl]
+    [readtex prelude.ftl.tex]
 \end{forthel}
 
 
@@ -52,26 +52,22 @@ around 35 seconds to check this text.
     \end{definition}
 
     \begin{definition}
-      $M \setminus N = \{x \in M | x$ is not an element of $N\}$.
+      $M \setminus N = \{x "in" M | x \notin N \}$.
     \end{definition}
 
     Let $f$ denote a function.
-    Let the domain of $f$ stand for $\dom(f)$.
+    Let the domain of $f$ stand for $\Dom{f}$.
 
     \begin{definition}
       Assume $M$ is a subset of the domain of $f$.
       $f[M] = \{f(x) | x$ is an element of $M\}$.
     \end{definition}
 
-    Let the image of $f$ stand for $f[\dom(f)]$.
+    Let the image of $f$ stand for $f[\Dom{f}]$.
 
     \begin{axiom}
       Assume $M$ is a subset of the domain of $f$.
       Then $f[M]$ is a set.
-    \end{axiom}
-
-    \begin{axiom}
-      $f$ is setsized.
     \end{axiom}
 \end{forthel}
 
@@ -109,7 +105,7 @@ around 35 seconds to check this text.
     \end{axiom}
 
     \begin{axiom}[ImageCard]
-      Assume $M$ is a subset of $Dom(f)$. $\card{f[M]} \leq \card{M}$.
+      Assume $M$ is a subset of $\Dom{f}$. $\card{f[M]} \leq \card{M}$.
     \end{axiom}
 
     \begin{axiom}
@@ -136,11 +132,13 @@ Then $M \setminus N$ has an element.
 
     \begin{definition}
       A sequence of cardinals on $D$ is a function $\kappa$
-      such that $\dom(\kappa) = D$
+      such that $\Dom{\kappa} = D$
       and $\kappa(i)$ is a cardinal for every element $i$ of $D$.
     \end{definition}
 
-Let $\val{f}{i}$ stand for $f(i)$.
+    Let $f$ stand for a function.
+    Let $i$ stand for an object.
+    Let $\val{f}{i}$ stand for $f(i)$.
 
     \begin{signature}
       Let $\kappa$ be a sequence of cardinals on $D$.
@@ -170,7 +168,7 @@ Let $\val{f}{i}$ stand for $f(i)$.
 
     \begin{axiom}[ProdDef]
       Let $\kappa$ be a sequence of cardinals on $D$. $\ProdSet{\kappa}{D} =
-      \{$ function $f | \dom(f) = D \wedge (f(i)$ is an element of
+      \{$ function $f | \Dom{f} = D \wedge (f(i)$ is an element of
       $\val{\kappa}{i}$ for every
       element $i$ of $D)\}$.
     \end{axiom}
@@ -195,17 +193,12 @@ of non-empty factors are themselves non-empty:
 
 \begin{forthel}
 
-    \begin{lemma}[Choice]
+    \begin{axiom}[Choice]
       Let $\lambda$ be a sequence of cardinals on $D$.
       Assume that $\val{\lambda}{i}$
      has an element for every element $i$ of $D$.
      Then $\ProdSet{\lambda}{D}$ has an element.
-    \end{lemma}
-    \begin{proof}
-      Define $f(i) =$ choose an element $v$ of
-      $\val{\lambda}{i}$ in $v$ for $i$ in $D$.
-     Then $f$ is an element of $\ProdSet{\lambda}{D}$.
-    \end{proof}
+    \end{axiom}
 
 \end{forthel}
 
@@ -226,12 +219,8 @@ of non-empty factors are themselves non-empty:
       and $\ProdSet{\lambda}{D}$ is the image of $G$.
       Indeed $\ProdSet{\lambda}{D}$ has an element.
 
-      Define
-
-      $\Delta(i) =
-     \{G((n,i))(i) | n$ is an element of $\val{\kappa}{i}\}$
-
-      for $i$ in $D$.
+      Define $\Delta = \{ (i, x) \mid i \in D$ and $x$ is class and
+        $x = \{ G((n,i))(i) \mid n$ is an element of $\val{\kappa}{i}\} \}$.
 
       For every element $f$ of $\ProdSet{\lambda}{D}$
       for every element $i$ of $D$
@@ -246,7 +235,7 @@ of non-empty factors are themselves non-empty:
 
       Proof.
         Let $i$ be an element of $D$.
-        Define $F(n) = G((n,i))(i)$ for $n$ in $\val{\kappa}{i}$.
+        Define $F = \{ (n, G((n,i))(i)) \mid n \in \val{\kappa}{i} \}$.
         Then $F[\kappa(i)] = \Delta(i)$.
       end.
 

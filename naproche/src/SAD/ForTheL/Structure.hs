@@ -37,7 +37,6 @@ import SAD.Data.Text.Block as Block (Block(Block), ProofText(..), Section(..))
 import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Formula
 
-
 -- | The old .ftl file parser.
 forthel :: FTL [ProofText]
 forthel = repeatUntil (pure <$> (
@@ -347,7 +346,7 @@ llDefnVars dvs f
   | x `elem` dvs = Just $ Text.pack $ "Defined variable is already in use: " <> show x
   | otherwise = freeOrOverlapping (Set.insert x dvs) f
   where
-    [x] = Set.elems $ declNames mempty f
+    [x] = Set.elems $ fvToVarSet $ decl f
 
 assumeVars dvs f = freeOrOverlapping (declNames dvs f <> dvs) f
 

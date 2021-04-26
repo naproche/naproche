@@ -2,7 +2,7 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage{../lib/tex/naproche}
+\usepackage{../tex/naproche}
 
 \title{Knaster-Tarski fixed point theorem}
 \author{Andrei Paskevich et al.}
@@ -36,21 +36,14 @@
   \section{Sets and Elements}
 
   \begin{forthel}
+    [readtex prelude.ftl.tex]
 
     \begin{signature}
-      An element is a notion.
+      An element is an object.
     \end{signature}
 
     Let $S,T$ denote sets.
     Let $x,y,z,u,v,w$ denote elements.
-
-    \begin{axiom}
-      $S$ is setsized.
-    \end{axiom}
-
-    \begin{axiom}
-      $x$ is setsized.
-    \end{axiom}
 
     \begin{axiom}
       Every element of $S$ is an element.
@@ -63,7 +56,7 @@
     \end{definition}
 
     \begin{definition}[DefSub]
-      A subset of $S$ is a class $T$ such that every $x \in T$ belongs to $S$.
+      A subset of $S$ is a class $T$ such that every element $x$ of $T$ belongs to $S$.
     \end{definition}
 
     \begin{axiom}
@@ -93,12 +86,12 @@
 
     \begin{definition}[DefLB]
       Let $S$ be a subset of $T$. A lower bound of $S$ in $T$ is an element $u$ of $T$ such that
-      $u \leq x$ for every $x \in S$.
+      $u \leq x$ for every element $x$ of $S$.
     \end{definition}
 
     \begin{definition}[DefUB]
       Let $S$ be a subset of $T$. An upper bound of $S$ in $T$ is an element $u$ of $T$ such that
-      $x \leq u$ for every $x \in S$.
+      $x \leq u$ for every element $x$ of $S$.
     \end{definition}
 
     \begin{definition}[DefInf]
@@ -130,9 +123,9 @@
 
     Let $f$ stand for a function.
 
-    \begin{axiom}
+    \begin{signature}[DomSort]
       $Dom(f)$ is a set.
-    \end{axiom}
+    \end{signature}
 
     \begin{signature}[RanSort]
       $Ran(f)$ is a set.

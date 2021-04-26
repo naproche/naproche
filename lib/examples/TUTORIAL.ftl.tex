@@ -1,6 +1,6 @@
 \documentclass[11pt]{article}
 \usepackage{amssymb}
-\usepackage{../lib/tex/naproche}
+\usepackage{../tex/naproche}
 
 \author{Peter Koepke\\University of Bonn}
 
@@ -197,20 +197,13 @@ to organize the universe of mathematics.
 Here is ForTheL code for introducing the type, or rather
 notion, of natural numbers, the constants $0$ and $1$
 and the operations of $+$ and $*$.
-
-In order to be able to form classes and sets of natural numbers 
-we agree that natural numbers are small objects.
  
 \begin{forthel}
 
-Let $x$ is small stand for $x$ is setsized.
-
-\begin{signature}  A natural number is a small object.
+\begin{signature}  A natural number is an object.
 \end{signature}
 
 Let $i,k,l,m,n,p,q,r$ denote natural numbers.
-
-\begin{lemma} i is small. \end{lemma}
 
 \begin{signature} $0$ is a natural number.
 \end{signature}

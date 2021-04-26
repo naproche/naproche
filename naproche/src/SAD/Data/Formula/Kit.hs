@@ -10,7 +10,7 @@ module SAD.Data.Formula.Kit
   ( blImp, blAnd
   , free, pVar, occursH, occursS, allFree, duplicateNames, dExi, dAll
   , mkTrm, mkEquality, mkAll, mkVar, mkExi, mkThesis
-  , isNotion, isTrm, isVar, mkClass, mkObject, mkSet, mkElem
+  , isNotion, isTrm, isVar, mkClass, mkObject, mkSet, mkElem, isClass
   ) where
 
 import SAD.Data.Formula.Base
@@ -99,6 +99,11 @@ isVar :: Formula -> Bool
 isVar Var{} = True; isVar _ = False
 isTrm :: Formula -> Bool
 isTrm Trm{} = True; isTrm _ = False
+isClass :: Formula -> Bool
+isClass (Class _ _) = True;
+isClass (FinClass _) = True;
+isClass (InClass _ _ _) = True;
+isClass _ = False
 
 isNotion :: Formula -> Bool
 isNotion Trm {trmName = TermNotion _} = True

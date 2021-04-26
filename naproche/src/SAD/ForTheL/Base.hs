@@ -95,6 +95,7 @@ initFS = FState
       ([Word ["nonequal"], Word ["to"], Vr], Not . mkTrm EqualityId TermEquality) ]
     primNotions = [
       ([Word ["class", "classes"], Nm], mkClass . head),
+      ([Word ["set", "sets"], Nm], mkSet . head),
       ([Word ["object", "objects"], Nm], mkObject . head),
       ([Word ["element", "elements"], Nm, Word ["of"], Vr], \(x:m:_) -> mkElem x m) ]
     primSymbNotions = [
@@ -397,8 +398,8 @@ decl = dive
     dive (And f g) = dive f <> excludeVars (allFree f) (dive g)
     dive t@Trm {trmArgs = v@Var{varName = u@(VarConstant _)}:ts}
       | isNotion t && all (\t -> not (v `occursIn` t)) ts = unitFV u (varPosition v)
-    dive Trm{trmName = TermEquality, trmArgs = [v@Var{varName = u@(VarConstant _)}, t]}
-      | isTrm t && not (v `occursIn` t) = unitFV u (varPosition v)
+    dive Trm{trmName = TermEquality, trmArgs = [v@Var{varName = u}, t]}
+      | (isTrm t  || isClass t) && not (v `occursIn` t) = unitFV u (varPosition v)
     dive _ = mempty
 
 {- produce variable names declared by a formula -}

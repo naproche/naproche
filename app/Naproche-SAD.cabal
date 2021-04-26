@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 6f143d6b049f26acee6347405b3e38fe4973df22b7b5876ad0b388244047d329
+-- hash: c1fff22635173cd575b23b61b17fc2dc534997590795ba2a6c75bdfac2200390
 
 name:           Naproche-SAD
 version:        0.1.0.0
@@ -29,6 +29,42 @@ executable Naproche-SAD
       src
   default-extensions: GeneralizedNewtypeDeriving InstanceSigs LambdaCase PartialTypeSignatures ScopedTypeVariables DeriveGeneric
   ghc-options: -O2 -Wall -fno-warn-unused-do-bind -fno-warn-unused-matches -fno-warn-name-shadowing -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      Isabelle
+    , aeson
+    , base >=4.13 && <5
+    , binary
+    , bytestring
+    , containers
+    , deepseq
+    , directory
+    , filepath
+    , ghc-prim
+    , hashable
+    , mtl
+    , naproche
+    , network
+    , prettyprinter
+    , process
+    , split
+    , text
+    , threads
+    , time
+    , transformers
+    , unordered-containers
+    , utf8-string
+    , uuid
+  default-language: Haskell2010
+
+test-suite Naproche-SAD-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_Naproche_SAD
+  hs-source-dirs:
+      test
+  default-extensions: GeneralizedNewtypeDeriving InstanceSigs LambdaCase PartialTypeSignatures ScopedTypeVariables DeriveGeneric
+  ghc-options: -O2 -Wall -fno-warn-unused-do-bind -fno-warn-unused-matches -fno-warn-name-shadowing -threaded -rtsopts -with-rtsopts=-N -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       Isabelle
     , aeson

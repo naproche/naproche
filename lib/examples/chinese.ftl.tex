@@ -4,7 +4,7 @@
 \usepackage[british]{babel}
 \usepackage{amsfonts}
 
-\usepackage{../lib/tex/naproche}
+\usepackage{../tex/naproche}
 
 \renewcommand{\mod}{\text{mod }}
 \newcommand{\Int}{\mathbb{Z}}
@@ -24,10 +24,11 @@
   We assume that our universe is a fixed integral domain. We call elements of our universe simply ``elements``. In particular, we have two special elements, $0$ and $1$. Moreover, there is a unary operation, $-$, and two binary operations, $+$ and $\cdot$.
 
   \begin{forthel}
+    [readtex prelude.ftl.tex]
     [synonym element/-s]
 
     \begin{signature}[ElmSort]
-      An element is an setsized object.
+      An element is an object.
     \end{signature}
 
     Let $a,b,c,x,y,z,u,v,w$ denote elements.
@@ -191,10 +192,6 @@
     Let $X,Y,Z,U,V,W$ denote sets.
 
     \begin{axiom}
-      $X$ is setsized.
-    \end{axiom}
-
-    \begin{axiom}
       Every element of $X$ is an element.
     \end{axiom}
 
@@ -205,7 +202,8 @@
     \end{axiom}
 
     \begin{definition}[DefSum]
-      $X \oplus Y$ is a set such that for every element $z$ ($z \in X \oplus Y$) iff there exist $x \in X, y \in Y$ such that $z = x + y$.
+      $X \oplus Y$ is a set such that for every element $z$ ($z \in X \oplus Y$) iff there exist
+        an element $x$ of $X$ such that there exists an element $y$ of $Y$ such that $z = x + y$.
     \end{definition}
 
     \begin{definition}[DefSInt]
@@ -223,8 +221,8 @@
     [synonym ideal/-s]
 
     \begin{definition}[DefIdeal]
-      An ideal is a set $X$ such that for every $x \in X$ we have
-        $\forall y \in X (x + y \in X)$ and
+      An ideal is a set $X$ such that for every element $x$ of $X$ we have
+        $\forall y y \in X => (x + y \in X)$ and
         $\forall z (z \cdot x \in X)$.
     \end{definition}
 
@@ -303,12 +301,8 @@
     [synonym number/-s]
 
     \begin{signature}[NatSort]
-      A natural number is a notion.
+      A natural number is an object.
     \end{signature}
-
-    \begin{axiom}
-      Let $n$ be a natural number. Then $n$ is setsized.
-    \end{axiom}
   \end{forthel}
 
   Now we can equip our domain with a Euclidean function $|\cdot|$.

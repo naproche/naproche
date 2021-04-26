@@ -4,7 +4,7 @@
 \usepackage[british]{babel}
 \usepackage{amsfonts}
 
-\usepackage{../lib/tex/naproche}
+\usepackage{../tex/naproche}
 
 \renewcommand{\mod}{\text{mod }}
 \newcommand{\Int}{\mathbb{Z}}
@@ -26,18 +26,14 @@
   Let us start by introducing the signature of the ring of integers.
 
   \begin{forthel}
-    [unfoldlow on]
+    [readtex prelude.ftl.tex]
     [synonym integer/-s]
 
     \begin{signature}[Integers]
-      An integer is a notion.
+      An integer is an object.
     \end{signature}
 
     Let $a,b,c,d,i,j,k,l,m,n$ stand for integers.
-
-    \begin{axiom}
-      $a$ is setsized.
-    \end{axiom}
 
     \begin{signature}[IntZero]
       $0$ is an integer.
@@ -204,7 +200,6 @@
 
   \begin{forthel}
     [synonym belong/-s] [synonym subset/-s]
-    [read ZFC.ftl]
 
     Let $S,T$ stand for sets.
 
@@ -229,12 +224,12 @@
   Since Fürstenberg's proof is a topological proof we have to define unions, intersections and also complements of sets.
 
   \begin{forthel}
-    \begin{definition}
-      $\Int$ is the class of integers.
-    \end{definition}
+    \begin{signature}
+      $\Int$ is a set.
+    \end{signature}
 
     \begin{axiom}
-      $\Int$ is a set.
+      $\Int$ is the class of integers.
     \end{axiom}
 
     Let $A,B,C,D$ stand for subsets of $\Int$.
@@ -248,16 +243,23 @@
     \end{definition}
 
     \begin{definition}[IntegerSets]
-      A family of integer sets is a set $S$ such that every element of $S$ is a subset of $\Int$.
+      A family of integer sets is a set $S$ such that for every element $x$ of $S$
+        there is a set $s$ such that $s = x$ and $s$ is a subset of $\Int$.
+    \end{definition}
+
+    \begin{definition}
+      Let $F$ be a family of integer sets.
+      A member of $F$ is a set $s$ such that $s$ is an element of $F$.
     \end{definition}
 
     \begin{definition}[UnionSet]
       Let $S$ be a family of integer sets.
-      $\bigcup S = \{ "integer" x \mid x "belongs to some element of" S \}$.
+      $\bigcup S = \{ "integer" x \mid x "belongs to some member of" S \}$.
     \end{definition}
 
     \begin{lemma}
-      Let $S$ be a family of integer sets. $\bigcup S$ is a subset of $\Int$.
+      Let $S$ be a family of integer sets.
+      $\bigcup S$ is a subset of $\Int$.
     \end{lemma}
 
     \begin{definition}[Complement]
@@ -288,7 +290,7 @@
 
   \begin{forthel}
     \begin{definition}[Open]
-      $A$ is open iff $A = \Int$ or for any $a \in A$ there exists $q$ such that $q \Int + a \subseteq A$.
+      $A$ is open iff $A = \Int$ or for any element $a$ of $A$ there exists $q$ such that $q \Int + a \subseteq A$.
     \end{definition}
   \end{forthel}
 
@@ -379,7 +381,7 @@ This characterization allows us to prove that a family $S$ of closed sets is inf
 
           If $n$ has a prime divisor then $n$ belongs to $\bigcup S$. \\
           Proof.
-            Assume $n$ has a prime divisor. Take a prime divisor $p$ of $n$. $p \Int + 0$ is setsized. $p \Int + 0 \in S$. $n \in p \Int + 0$.
+            Assume $n$ has a prime divisor. Take a prime divisor $p$ of $n$. $p \Int + 0 \in S$. $n \in p \Int + 0$.
           Qed.
 
           If $n$ belongs to $\bigcup S$ then $n$ has a prime divisor. \\
