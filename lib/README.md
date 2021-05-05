@@ -8,7 +8,7 @@ This is the standard library of Naproche. It contains
   4. A 20-file long formalization of set theory up to Silvers Theorem in `SetTheory/`
 
 Furthermore it includes a `prelude.ftl.tex` which implements the built-in axioms of
-Isabelle Naproche 2021 and a file `MorseKelley.ftl.tex` which extends these to include
+Isabelle Naproche 2021 and a file `nbg.ftl.tex` which extends these to include
 more useful notions.
 
 Currently, not all of these files have been ported to the new code.
@@ -17,7 +17,7 @@ This is the current state of progress:
 Can be proof-checked (with 1 second time):
 
   - `prelude.ftl.tex`
-  - `MorseKelley.ftl.tex`
+  - `nbg.ftl.tex`
   - `examples/cantor.ftl.tex`
   - `examples/prime_no_square.ftl.tex`
 

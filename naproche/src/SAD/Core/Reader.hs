@@ -62,6 +62,8 @@ getReadInstr ps =
     splitLast (x:xs) = (x:) <$> splitLast xs
 
 -- | Resolve the last instruction if it is a Read or Text instruction.
+-- TODO: Keep this in file batches so that unnamed lemmata can be removed
+-- in imported files.
 readProofText :: (Comm m, HasLibrary m) => [ProofText] -> m [ProofText]
 readProofText text0 = do
   let (mReadInstr, rest) = getReadInstr text0

@@ -1,12 +1,11 @@
 {-# LANGUAGE MultiWayIf #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-{-
-Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018), Makarius Wenzel (2018)
-  Anton Lorenzen (2020)
+-- | Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018), Makarius Wenzel (2018)
+--     Anton Lorenzen (2020)
 
-Prover interface: export a proof task to an external prover.
--}
+-- Prover interface: export a proof task to an external prover.
+-- TODO: use the hints to guide the prover.
 
 module SAD.Core.Prove (RunProver(..), proveOrRetrieveCached, runProveT, verify, ProveT, ProveState(..)) where
 
