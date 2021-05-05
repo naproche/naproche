@@ -2,6 +2,7 @@
 {-# LANGUAGE ViewPatterns #-}
 {-# LANGUAGE TupleSections #-}
 {-# LANGUAGE PatternGuards #-}
+{-# LANGUAGE RankNTypes #-}
 
 -- | Basic type-checking using a type-inference modelled
 -- roughly after the paper 'A Second Look at Overloading' by Odersky et al.
@@ -109,9 +110,11 @@ coerceInto is is' coe = if length is == length is'
 -- | Given a list of coercible values, try to find a value that is generalized by
 -- all of them and is in the list. Then give the coercions to this value.
 -- O(n) calls to coerceInto.
-leastGeneral :: [(t, [InType])] -> Coercions Ident Ident -> Maybe ((t, [InType]), [[[Ident]]])
-leastGeneral [] _ = Nothing
-leastGeneral (x:xs) coe = flip checkRoot (x:xs) $ getRoot x xs
+-- Depending of the direction of the arrows, this will either compute the most
+-- or least general form.
+generalize :: (forall a b. (a -> a -> b) -> a -> a -> b) -> [(t, [InType])] -> Coercions Ident Ident -> Maybe ((t, [InType]), [[[Ident]]])
+generalize _ [] _ = Nothing
+generalize direction (x:xs) coe = flip checkRoot (x:xs) $ getRoot x xs
   where
     -- We find an element 'root' with the property that if it is
     -- comparable with another element 'x' then 'x -> root'.
@@ -119,10 +122,16 @@ leastGeneral (x:xs) coe = flip checkRoot (x:xs) $ getRoot x xs
     -- Due to transitivity this can be done in O(n).
     -- We then check if it is comparable to all elements.
     getRoot root [] = root
-    getRoot root (x:xs) = case coerceInto (snd x) (snd root) coe of
+    getRoot root (x:xs) = case (direction coerceInto) (snd x) (snd root) coe of
       Just _ -> getRoot x xs
       Nothing -> getRoot root xs
-    checkRoot root = fmap (\b -> (root,b)) . mapM (\x -> coerceInto (snd root) (snd x) coe)
+    checkRoot root = fmap (\b -> (root,b)) . mapM (\x -> (direction coerceInto) (snd root) (snd x) coe)
+
+leastGeneral :: [(t, [InType])] -> Coercions Ident Ident -> Maybe ((t, [InType]), [[[Ident]]])
+leastGeneral = generalize id
+
+mostGeneral :: [(t, [InType])] -> Coercions Ident Ident -> Maybe ((t, [InType]), [[[Ident]]])
+mostGeneral = generalize flip
 
 data ReturnValue = Value | Proposition
   deriving (Eq, Ord, Show)
@@ -165,13 +174,14 @@ resolve name res' intypes ret = do
         Nothing -> failWithMessage $ "Resolve ambigous: " <> pretty name <> " of type\n  " <> nest 2 (pretty typ)
             <> "\ncan be resolved as any of:\n  " <> nest 2 (vsep (map (pretty . snd) xs))
 
-addType :: Monad m => Ident -> Type -> TC m ()
+addType :: Monad m => Ident -> Type -> TC m Ident
 addType i t = do
-  taken <- Map.keysSet . overloadings <$> get
-  let i' = newIdent i taken
+  taken <- Map.lookup i . overloadings <$> get
+  let i' = newIdent i $ fromMaybe mempty taken
   modify $ \s -> s
     { typings = Map.insert i' t (typings s)
     , overloadings = Map.insertWith (<>) i (Set.singleton i') (overloadings s)}
+  pure i'
 
 locally :: Monad m => TC m a -> TC m a
 locally action = do
@@ -210,11 +220,11 @@ singleTypedVar v s = do
     Provided m -> pure m
     _ -> failWithMessage $ "Untyped bind: " <> pretty v
 
-checkWf :: (Infer f, Message.Comm m) => SourcePos -> Ident -> (WfBlock f ()) -> TC m (WfBlock Identity ())
-checkWf p name' wf = do
+checkWf :: (Infer f, Message.Comm m) => SourcePos -> Ident -> [Term Identity ()] -> (WfBlock f ()) -> TC m (WfBlock Identity ())
+checkWf p name' ex' wf = do
   m <- (Map.lookup name' . defs) <$> get
   case m of
-    Just (NFTerm im _ as _) -> do
+    Just (NFTerm im ex as _) -> do
       let imSet = Set.fromList $ map fst im
       let wfSet = Set.fromList $ map fst $ wfImplicits wf
       let superflous = wfSet Set.\\ imSet
@@ -222,7 +232,10 @@ checkWf p name' wf = do
         failWithMessage $ "The following implicits where supplied but could not be used: " <> pretty superflous
       let notGivenSet = imSet Set.\\ wfSet
       let (given, notGiven) = List.partition (\x -> fst x `Set.member` notGivenSet) im
-      let goal = simp $ foldr (\(i, t) -> Exists i t) (List.foldl' (\a b -> App And [a, b]) (App Top []) as) notGiven
+      let as' = map (substAll (Map.fromList $ zip (map fst ex) ex')) as
+
+      -- TODO: 'notGiven' variables may shadow variables used in the terms supplied as ex'
+      let goal = simp $ foldr (\(i, t) -> Exists i t) (List.foldl' (\a b -> App And [a, b]) (App Top []) as') notGiven
       assms <- flip mapM (wfImplicits wf) $ \(i, t) -> do 
         (o, t') <- checkTerm p Value t
         case o of
@@ -310,7 +323,7 @@ checkTerm p retval t = do
                InType x -> pure x
         ts' <- mapM (\(a,b) -> toInType a >>= \c -> pure (b, [c])) =<< mapM (go t') ts
         coe <- coercions <$> get
-        case leastGeneral ts' coe of
+        case mostGeneral ts' coe of
           Just ((_, [tt]), coes) -> do
             let ts'' = zipWith ($) (map (coercionsToTerm . head) coes) $ map fst ts'
             mv <- case coerceInto [tt] [Signature identObject] coe of
@@ -373,12 +386,13 @@ checkTerm p retval t = do
                                 <> pretty name <> " expects: " <> pretty exp
                                 <> " but we got: " <> pretty have
                               Just t -> pure t
-                        wf' <- checkWf p name' wf
+                        let ex' = zipWith coercionsToTerm coes' explicit'
+                        wf' <- checkWf p name' ex' wf
                         -- TODO: By using name' instead of name we make re-checking this impossible
                         -- when the name is overloaded!
                         -- In fact, we re-check the assumptions though, so this will become an error
                         -- once we have overloading in any assumption in a text!
-                        pure (t, AppWf name' (zipWith coercionsToTerm coes' explicit') wf')
+                        pure (t, AppWf name' ex' wf')
               (_:_:_) -> do
                 (argtypes, explicit') <- unzip <$> mapM (go NotProvided) explicit
                 argintypes <- flip mapM argtypes $ \t -> case t of
@@ -387,12 +401,13 @@ checkTerm p retval t = do
                 res <- resolve name names argintypes retval
                 case res of
                   ((name', coe), t) -> do
-                    wf' <- checkWf p name' wf
+                    let ex' = zipWith coercionsToTerm coe explicit'
+                    wf' <- checkWf p name' ex' wf
                     -- TODO: By using name' instead of name we make re-checking this impossible
                     -- when the name is overloaded!
                     -- In fact, we re-check the assumptions though, so this will become an error
                     -- once we have overloading in any assumption in a text!
-                    pure (t, AppWf name' (zipWith coercionsToTerm coe explicit') wf')
+                    pure (t, AppWf name' ex' wf')
       App Eq [a, b] -> do
         inferMap' <- inferMap <$> get
         case a of
@@ -567,31 +582,31 @@ typecheck = flip evalStateT mempty . mapM go
         IntroAtom i im ex as -> do
           (_, nf') <- checkNFTerm p Proposition (NFTerm im ex as (App Top []))
           let is = map (\(_, Identity t) -> t) (nfExplicit nf')
-          addType i (Pred is Prop)
-          modify $ \s -> s { defs = Map.insert i nf' (defs s) }
-          pure $ Located n p (IntroAtom i (nfImplicit nf') (nfExplicit nf') (nfAssumptions nf'))
+          i' <- addType i (Pred is Prop)
+          modify $ \s -> s { defs = Map.insert i' nf' (defs s) }
+          pure $ Located n p (IntroAtom i' (nfImplicit nf') (nfExplicit nf') (nfAssumptions nf'))
         IntroSignature i o im ex as -> do
           o' <- singleTypedVar i o
           (_, nf') <- checkNFTerm p Proposition (NFTerm im ex as (App Top []))
           let is = map (\(_, Identity t) -> t) (nfExplicit nf')
-          addType i (Pred is (InType o'))
-          modify $ \s -> s { defs = Map.insert i nf' (defs s) }
-          pure $ Located n p (IntroSignature i (Identity o') (nfImplicit nf') (nfExplicit nf') (nfAssumptions nf'))
+          i' <- addType i (Pred is (InType o'))
+          modify $ \s -> s { defs = Map.insert i' nf' (defs s) }
+          pure $ Located n p (IntroSignature i' (Identity o') (nfImplicit nf') (nfExplicit nf') (nfAssumptions nf'))
         Predicate i nf -> do
           (_, nf') <- checkNFTerm p Proposition nf
           let is = map (\(_, Identity t) -> t) (nfExplicit nf')
-          addType i (Pred is Prop)
-          modify $ \s -> s { defs = Map.insert i nf' (defs s) }
-          pure $ Located n p (Predicate i nf')
+          i' <- addType i (Pred is Prop)
+          modify $ \s -> s { defs = Map.insert i' nf' (defs s) }
+          pure $ Located n p (Predicate i' nf')
         Function i _ nf -> do
           (o, nf') <- checkNFTerm p Value nf
           case o of
             Prop -> failWithMessage $ "Internal error: Function checking returned a prop where a value was expected."
             InType o -> do
               let is = map (\(_, Identity t) -> t) (nfExplicit nf')
-              addType i (Pred is (InType o))
-              modify $ \s -> s { defs = Map.insert i nf' (defs s) }
-              pure $ Located n p (Function i (Identity o) nf')
+              i' <- addType i (Pred is (InType o))
+              modify $ \s -> s { defs = Map.insert i' nf' (defs s) }
+              pure $ Located n p (Function i' (Identity o) nf')
         Axiom nf -> do
           (_, nf') <- checkNFTerm p Proposition nf
           pure $ Located n p (Axiom nf')
@@ -601,5 +616,5 @@ typecheck = flip evalStateT mempty . mapM go
           pure $ Located n p (Claim nf' bl)
         Coercion name from to -> do
           modify $ \s -> s { coercions = add (from, to) name (coercions s) }
-          addType name (Pred [Signature from] (InType $ Signature to))
+          _ <- addType name (Pred [Signature from] (InType $ Signature to))
           pure $ Located n p (Coercion name from to)

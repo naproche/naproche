@@ -535,9 +535,14 @@ leading to similar properties.
     \begin{signature}
         Assume that $T$ is a domino tiling of $A$.
         Let $x$ be an element of $A$.
-        $\Sw{T}{A}{x}$ is a square $y$ such that there is an element $D$ of $T$
-        such that $D = \{x,y\}$.
+        $\Sw{T}{A}{x}$ is a square.
     \end{signature}
+
+    \begin{axiom}
+        Assume that $T$ is a domino tiling of $A$.
+        Let $x$ be an element of $A$.
+        There is an element $D$ of $T$ such that $D = \{x, \Sw{T}{A}{x}\}$.
+    \end{axiom}
 
     \begin{lemma}
         Assume that $T$ is a domino tiling of $A$.
@@ -568,7 +573,7 @@ Swapping dominoes is also an involution.
 
     \begin{lemma}
         Assume that $T$ is a domino tiling of $A$.
-        Let $x$ be a black element of $A$.
+        Let $x$ be a black square such that $x$ is an element of $A$.
         Then $\Sw{T}{A}{x}$ is white.
     \end{lemma}
     \begin{proof}
@@ -587,8 +592,10 @@ Swapping dominoes is also an involution.
         equinumerous with $A \cap \White$.
     \end{lemma}
     \begin{proof}
-        Define $F = \{ (x, \Sw{T}{A}{x}) \mid x \in A \cap \Black \}$.
-        Define $G = \{ (x, \Sw{T}{A}{x}) \mid x \in A \cap \White \}$.
+        Define $F' = \{ (x, \Sw{T}{A}{x}) \mid x \in A \cap \Black \}$.
+        Define $G' = \{ (x, \Sw{T}{A}{x}) \mid x \in A \cap \White \}$.
+        Take a function $F$ such that $F = F'$.
+        Take a function $G$ such that $G = G'$.
         Then $F: A \cap \Black \to A \cap \White$ and
         $G: A \cap \White \to A \cap \Black$.
         For all elements $x$ of $A \cap \Black$ we have $G(F(x))=x$.
@@ -607,7 +614,7 @@ Swapping dominoes is also an involution.
         $\Mutilated \cap \White$ is a subset of $\White$.
         $\White$ is a subset of $\Mutilated$.
         Proof.
-            Let $x$ be an element of $\White$.
+            Take an element $x$ of $\White$.
             $x \neq (\fileA, 1)$ and $x \neq (\fileH,8)$.
             Indeed $(\fileH, 8)$ is black.
         End.
@@ -622,7 +629,7 @@ Note that the phrasing \textit{[...]\,has no domino tiling} in the theorem is au
         The mutilated checkerboard has no domino tiling.
     \end{theorem}
     \begin{proof}
-        Proof by contradiction.
+        Assume the contrary.
         Assume $T$ is a domino tiling of $\Mutilated$.
         $\Mutilated \cap \Black$ is equinumerous with $\Mutilated \cap \White$.
         Indeed $\Mutilated$ is a subset of $\Checkerboard$.

@@ -14,18 +14,20 @@ more useful notions.
 Currently, not all of these files have been ported to the new code.
 This is the current state of progress:
 
-Can be proof-checked:
+Can be proof-checked (with 1 second time):
 
   - `prelude.ftl.tex`
   - `MorseKelley.ftl.tex`
-  - `geometry/formalisation.ftl.tex` (except for two lemmas and two others take very long)
-
-Can be type-checked:
-  
   - `examples/cantor.ftl.tex`
   - `examples/prime_no_square.ftl.tex`
 
+Can be type-checked (number of failing goals with one/ten seconds time):
+
+  - `geometry/formalisation.ftl.tex` (4/2)
+  - `examples/fuerstenberg.ftl.tex` (18/18)
+  - `examples/euclid.ftl.tex` (9/9)
+  - `examples/checkerboard.ftl.tex` (26/24)
+
 Can be transformed into the new representation:
 
-  - `examples/fuerstenberg.ftl.tex`
-  - `examples/checkerboard.ftl.tex`
+  - `examples/maximum_modulus.ftl.tex`

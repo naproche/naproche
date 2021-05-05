@@ -235,11 +235,11 @@
     Let $A,B,C,D$ stand for subsets of $\Int$.
 
     \begin{definition}[Union]
-      $A \cup B = \{ "integer" x \mid x \in A \vee x \in B \}$.
+      $A \cup B = \{ x "in" \Int \mid x \in A \vee x \in B \}$.
     \end{definition}
 
     \begin{definition}[Intersection]
-      $A \cap B = \{ "integer" x \mid x \in A \wedge x \in B \}$.
+      $A \cap B = \{ x "in" \Int \mid x \in A \wedge x \in B \}$.
     \end{definition}
 
     \begin{definition}[IntegerSets]
@@ -254,7 +254,7 @@
 
     \begin{definition}[UnionSet]
       Let $S$ be a family of integer sets.
-      $\bigcup S = \{ "integer" x \mid x "belongs to some member of" S \}$.
+      $\bigcup S = \{ x "in" \Int \mid x "belongs to some member of" S \}$.
     \end{definition}
 
     \begin{lemma}
@@ -263,7 +263,7 @@
     \end{lemma}
 
     \begin{definition}[Complement]
-      $\overline{A} = \{ "integer" x \mid x "does not belong to" A \}$.
+      $\overline{A} = \{ x "in" \Int \mid x "does not belong to" A \}$.
     \end{definition}
 
     \begin{lemma}
@@ -278,7 +278,7 @@
 
   \begin{forthel}
     \begin{definition}[ArSeq]
-      $q \Int + a = \{ "integer" b \mid b = a ~(\mod q) \}$.
+      $q \Int + a = \{ b "in" \Int \mid b is an integer and b = a ~(\mod q) \}$.
     \end{definition}
 
     \begin{lemma}
@@ -290,7 +290,7 @@
 
   \begin{forthel}
     \begin{definition}[Open]
-      $A$ is open iff $A = \Int$ or for any element $a$ of $A$ there exists $q$ such that $q \Int + a \subseteq A$.
+      $A$ is open iff $A = \Int$ or for any integer $a$ such that $a$ is element of $A$ there exists $q$ such that $q \Int + a \subseteq A$.
     \end{definition}
   \end{forthel}
 
@@ -302,7 +302,7 @@
     \end{definition}
 
     \begin{definition}[OpenIntegerSets]
-      An open family is a family of integer sets $S$ such that every element of $S$ is open.
+      An open family is a family of integer sets $S$ such that every member of $S$ is open.
     \end{definition}
   \end{forthel}
 
@@ -313,17 +313,23 @@
       Let $S$ be an open family. $\bigcup S$ is open.
     \end{lemma}
     \begin{proof}
-      Let $x \in \bigcup S$. Take a set $M$ such that ($M$ is an element of $S$ and $x \in M$). Take $q$ such that $q \Int + x \subseteq M$. Then $q \Int + x \subseteq \bigcup S$.
+      Take an integer $x$ such that $x \in \bigcup S$.
+      Take a set $M$ such that ($M$ is an element of $S$ and $x \in M$).
+      Take $q$ such that $q \neq 0$ and $q \Int + x \subseteq M$. Then $q \Int + x \subseteq \bigcup S$.
     \end{proof}
 
     \begin{lemma}[InterOpen]
       Let $A,B$ be open subsets of $\Int$. Then $A \cap B$ is a subset of $\Int$ and $A \cap B$ is open.
     \end{lemma}
     \begin{proof}
-      $A \cap B$ is a subset of $\Int$. Let $x \in A \cap B$. Then $x$ is an integer. Take $q$ such that $q \Int + x \subseteq A$. Take $p$ such that $p \Int + x \subseteq B$.
+      $A \cap B$ is a subset of $\Int$.
+      Take an integer $x$ such that $x \in A \cap B$.
+      Take $q$ such that $q \Int + x \subseteq A$.
+      Take $p$ such that $p \Int + x \subseteq B$.
 
       Let us show that $p \cdot q$ is a nonzero integer and $(p \cdot q) \Int + x \subseteq A \cap B$.
-        $p \cdot q$ is a nonzero integer. Let $a \in (p \cdot q) \Int + x$.
+        $p \cdot q$ is a nonzero integer.
+        Take $a$ such that $a \in (p \cdot q) \Int + x$.
 
         $a \in p \Int + x$ and $a \in q \Int + x$. \\
         Proof.
@@ -346,7 +352,7 @@
 
   \begin{forthel}
     \begin{axiom}[UnionSClosed]
-      Let $S$ be a finite family of integer sets such that all elements of $S$ are closed subsets of $\Int$. $\bigcup S$ is closed.
+      Let $S$ be a finite family of integer sets such that every member of $S$ are closed subsets of $\Int$. $\bigcup S$ is closed.
     \end{axiom}
   \end{forthel}
 
@@ -357,10 +363,18 @@ This characterization allows us to prove that a family $S$ of closed sets is inf
       $q \Int + a$ is a closed subset of $\Int$.
     \end{lemma}
     \begin{proof}
-      Proof by contradiction. $q \Int + a$ is a subset of $\Int$. Let $b \in \overline{q \Int + a}$.
+      Assume the contrary.
+      $q \Int + a$ is a subset of $\Int$.
+      Take an integer $b$ such that $b \in \overline{q \Int + a}$.
 
       Let us show that $q \Int + b \subseteq \overline{q \Int + a}$.
-        Let $c \in q \Int + b$. Assume not $c \in \overline{q \Int + a}$. Then $c = b ~(\mod q)$ and $a = c ~(\mod q)$. Hence $b = a ~(\mod q)$. Therefore $b \in q \Int + a$. Contradiction.
+        Take an integer $c$ such that $c \in q \Int + b$.
+        Case $c \in \overline{q \Int + a}$.
+          Then $c = b ~(\mod q)$ and $a = c ~(\mod q)$.
+          Hence $b = a ~(\mod q)$.
+          Therefore $b \in q \Int + a$.
+        end.
+        Contradiction.
       End.
     \end{proof}
   \end{forthel}
@@ -369,15 +383,18 @@ This characterization allows us to prove that a family $S$ of closed sets is inf
 
   \begin{forthel}
     \begin{theorem}[Fuerstenberg]
-      Let $S = \{ r \Int + 0 \mid r "is a prime" \}$. $S$ is infinite.
+      Let $S$ be a set.
+      Assume $S = \{ r \Int + 0 \mid r "is a prime" \}$.
+      $S$ is infinite.
     \end{theorem}
     \begin{proof}
-      Proof by contradiction. $S$ is a family of integer sets.
+      Proof by contradiction. Assume the contrary.
+      $S$ is a family of integer sets.
 
       We have $\overline{\bigcup S} = \{ 1, -1 \}$. \\
       Proof.
         Let us show that for any integer $n$ $n$ belongs to $\bigcup S$ iff $n$ has a prime divisor.
-          Let $n$ be an integer.
+          Take an integer $n$.
 
           If $n$ has a prime divisor then $n$ belongs to $\bigcup S$. \\
           Proof.

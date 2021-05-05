@@ -66,7 +66,8 @@ Let $i,k,l,m,n,p,q,r$ denote natural numbers.
 
 Let $x$ is nonzero stand for $x \neq 0$.
 
-\begin{signature} $1$ is a nonzero natural number.
+\begin{signature}
+  $1$ is a nonzero natural number.
 \end{signature}
 
 \begin{signature} $m + n$ is a natural number.
@@ -124,9 +125,15 @@ $m + l = n$.
 
 Let $m < n$ stand for $m \leq n$ and $m \neq n$.
 
-\begin{definition} Assume that $n \leq m$.
-$m - n$ is a natural number $l$ such that $n + l  = m$.
-\end{definition}
+\begin{signature}
+  Assume that $n \leq m$.
+  $m - n$ is a natural number.
+\end{signature}
+
+\begin{axiom}
+  Assume that $n \leq m$.
+  $n + (m - n) = m$.
+\end{axiom}
 
 \end{forthel}
 
@@ -187,7 +194,8 @@ Let $n | m$ denote $n$ divides $m$.
 Let a divisor of $n$ denote a natural number 
 that divides $n$.
 
-\begin{lemma} Let $l | m$ and $l | m + n$. Then $l | n$.
+\begin{lemma}
+  Let $l | m$ and $l | m + n$. Then $l | n$.
 \end{lemma}
 
 \begin{proof}
@@ -202,7 +210,7 @@ Assume the contrary. Then $q < p$.
 $m+n = l * q < l * p = m$.
 Contradiction. qed.
 
-Take $r = q - p$.
+Take $r$ such that $r = q - p$.
 We have $(l * p) + (l * r) = l * q = m + n = (l * p) + n$.
 Hence $n = l * r$.
 \end{proof}
@@ -278,10 +286,12 @@ such that $\Set{F}{1}{n} \subseteq \mathbb{N}$.
 $\Prod{F}{1}{n}$ is a natural number.
 \end{signature}
 
-\begin{axiom}[Factorproperty] Let $F$ be a sequence of length $n$
-such that $F(i)$ is a nonzero natural number for every element $i$ of $\Dom{F}$.
-Then $\Prod{F}{1}{n}$ is nonzero and 
-$F(i)$ divides $\Prod{F}{1}{n}$ for every element $i$ of $\Dom{F}$.
+\begin{axiom}[Factorproperty]
+  Let $F$ be a sequence of length $n$
+  such that $F(i)$ is a nonzero natural number for every element $i$ of $\Dom{F}$.
+
+  Then $\Prod{F}{1}{n}$ is nonzero and for every element $i$ of $\Dom{F}$
+    there is a natural number $m$ such that $m = F(i)$ and $m$ divides $\Prod{F}{1}{n}$.
 \end{axiom}
 
 
@@ -305,36 +315,37 @@ a sequence of length $n$.
 
 \begin{forthel}
 
-\begin{signature} $\Primes$ is the class of prime natural numbers.
+\begin{signature}
+  $\Primes$ is a class.
 \end{signature}
 
-% \begin{lemma} Contradiction. \end{lemma}
-
+\begin{axiom}
+  $\Primes$ is the class of prime natural numbers.
+\end{axiom}
 
 \begin{theorem}[Euclid]
 $\Primes$ is infinite.
 \end{theorem}
 \begin{proof}
-Assume that $r$ is a natural number and 
-$p$ is a sequence of length $r$ and
-$\Set{p}{1}{r}$ is a subclass of $\Primes$.
+Take a natural number $r$.
+Take a function $p$ such that $p$ is a sequence of length $r$.
+Assume that $\Set{p}{1}{r}$ is a subclass of $\Primes$.
 
 %$\val{p}{i}$ is a nonzero natural number for every $i \in Dom(p)$.
 (1) $\val{p}{i}$ is a nonzero natural number for every $i$ such
 that $1 \leq i \leq r$.
 
-Consider $n=\Prod{p}{1}{r}+1$.
+Take a natural number $n$ such that $n=\Prod{p}{1}{r}+1$.
 Take a prime divisor $q$ of $n$.
 
-Let us show that $q \neq \val{p}{i}$ for all $i$ such that 
-$1 \leq i \leq r$.
-
-Proof by contradiction.
-Assume that $q=\val{p}{i}$ for some natural number $i$ such that
-$1 \leq i \leq r$.
-$q$ is a divisor of $n$ and $q$ is a divisor of $\Prod{p}{1}{r}$
-(by Factorproperty, 1).
-Thus $q$ divides $1$. Contradiction. qed.
+Let us show that $q \neq \val{p}{i}$ for all $i$ such that  $1 \leq i \leq r$.
+  Assume the contrary.
+  Assume that $q=\val{p}{i}$ for some natural number $i$ such that
+  $1 \leq i \leq r$.
+  $q$ is a divisor of $n$ and $q$ is a divisor of $\Prod{p}{1}{r}$
+  (by Factorproperty, 1).
+  Thus $q$ divides $1$. Contradiction.
+qed.
 
 Hence $\Set{p}{1}{r}$ is not the class of prime natural numbers.
 \end{proof}

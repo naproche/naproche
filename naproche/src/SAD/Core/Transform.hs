@@ -168,11 +168,11 @@ extractGivenTypes ctx t = fmap (fst) $ runWriterT $ runReaderT (go t) mempty
         let m = Map.findWithDefault mempty v typings
         pure $ Exists v m t'
       Class v (Const ()) Nothing _ t -> do
-        (t', typings) <- listen $ go t
+        (t', typings) <- listen $ local (\(a, b) -> (a, Set.insert v b)) $ go t
         let m = Map.findWithDefault mempty v typings
         pure $ Class v m Nothing mempty t'
       Class v (Const ()) (Just m) _ t -> do
-        (t', typings) <- listen $ go t
+        (t', typings) <- listen $ local (\(a, b) -> (a, Set.insert v b)) $ go t
         let typ = Map.findWithDefault mempty v typings
         m' <- go m
         pure $ Class v typ (Just m') mempty t'
@@ -456,7 +456,9 @@ extractDefinitions ctx nf = do
             App And [Exists d to (App Eq [AppWf d1 [] _, AppWf v1 [] _]), cond] | d == d1 && v0 == v1 -> do
               let im' = List.deleteBy ((==) `on` fst) (v0, mempty) im
               cond' <- noTags cond
-              pure ([IntroSignature name to im' ex as, Axiom (NFTerm (im' ++ ex) [] as cond')], NFTerm [] [] [] (App Top []))
+              pure ([IntroSignature name to im' ex as
+                    , Axiom (NFTerm (im' ++ ex) [] as (subst v1 (AppWf name (map (\(i, _) -> AppWf i [] noWf) ex) noWf) cond'))
+                    ], NFTerm [] [] [] (App Top []))
             _ -> failWithMessage $ "The signature is malformed! " <> pretty nf
         _ -> pure ([], nf)
   bdDefs <- case nfBody nf of

@@ -9,16 +9,18 @@ module SAD.Core.Typed
  , PrfBlock(..), Hypothesis(..), ClassInfo(..)
  , Stmt(..), Operator(..)
  , simp, bindAllExcept, findFree
- , termToNF, termFromNF, noWf
+ , termToNF, termFromNF, noWf, subst, substAll
  ) where
 
 import Data.Text (Text)
 import Data.Set (Set)
+import Data.Map (Map)
 import GHC.Generics (Generic)
 import Data.Hashable (Hashable)
 import Data.Binary (Binary)
 import Data.Functor.Identity
 import qualified Data.Set as Set
+import qualified Data.Map as Map
 import Data.Functor.Const
 import Control.DeepSeq (NFData)
 
@@ -320,6 +322,26 @@ findFree = free
       AppWf v ex _ -> unitFV v <> mconcat (free <$> ex)
       App _ args -> mconcat $ free <$> args
       Tag _ t -> free t
+
+-- | (x `subst` t1) t2 == t2[x := t1]
+-- DANGER: This will currently not substitute in WfBlocks!
+subst :: Ident -> Term f t -> Term f t -> Term f t
+subst x t1 = substAll (Map.fromList [(x, t1)])
+
+-- | Simultaneous substitution of identifiers with terms.
+substAll :: Map Ident (Term f t) -> Term f t -> Term f t
+substAll subMap
+  | Map.null subMap = id
+  | otherwise = \case
+  Forall v m t -> Forall v m $ substAll (Map.delete v subMap) t
+  Exists v m t -> Exists v m $ substAll (Map.delete v subMap) t
+  FinClass m ci ts -> FinClass m ci (map (substAll subMap) ts)
+  Class v m mm ci t -> Class v m (substAll subMap <$> mm) ci
+    $ substAll (Map.delete v subMap) t
+  App op args -> App op (map (substAll subMap) args)
+  Tag tag t -> Tag tag (substAll subMap t)
+  AppWf v [] _ | Just t1 <- Map.lookup v subMap -> t1
+  AppWf v ex wf -> AppWf v (map (substAll subMap) ex) wf
 
 instance Pretty a => Pretty (Set a) where
   pretty s = "{" <> hsep (punctuate comma $ map pretty $ Set.toList s) <> "}"
