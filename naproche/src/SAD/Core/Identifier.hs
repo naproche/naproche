@@ -11,12 +11,13 @@
 -- into TPTP. It stores the representation given by the user
 -- in its constructors and can be pretty-printed.
 
-module SAD.Data.Identifier
+module SAD.Core.Identifier
   ( Ident(..)
   , isSymbol, isNormal, prettyWithArgs
   , newIdent, symChars, symEncode, symDecode
   , identAsType, identAsTerm, identAsVar
   , FV(..), FreeVarStrategy(..), fvFromVarSet, fvToVarSet, bindVarSet
+  , identSet, identClass, identElement, identObject
   ) where
 
 import qualified Data.List as List
@@ -38,6 +39,12 @@ data Ident
 instance NFData Ident
 instance Hashable Ident
 instance Binary Ident
+
+identSet, identClass, identElement, identObject :: Ident
+identSet = NormalIdent "set"
+identClass = NormalIdent "class"
+identElement = NormalIdent "elementOf"
+identObject = NormalIdent "object"
 
 isSymbol :: Ident -> Bool
 isSymbol = \case SymbolIdent _ -> True; _ -> False

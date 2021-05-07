@@ -1,8 +1,0 @@
-[library ../lib]
-[provers provers.json]
-[prover eprover]
-[timelimit 3]
-[skipfail off]
-[printgoal on]
-[printprover off]
-[tex off]

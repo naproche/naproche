@@ -67,29 +67,11 @@ instrDrop = instrPos addInstrReport (token' "/" >> readInstrDrop)
 
 readInstr :: FTL Instr
 readInstr =
-  readInstrCommand -|- readInstrLimit -|- readInstrBool -|- readInstrText -|- readInstrTexts
+  readInstrCommand -|- readInstrText -|- readInstrTexts
   where
     readInstrCommand = fmap Command (readKeywords keywordsCommand)
-    readInstrLimit = liftM2 LimitBy (readKeywords keywordsLimit) readInt
-    readInstrBool = liftM2 SetFlag (readKeywords keywordsFlag) readBool
     readInstrText = liftM2 GetArgument (readKeywords keywordsArgument) readText
     readInstrTexts = liftM2 GetArguments (readKeywords keywordsArguments) readWords
-
-readInt :: FTL Int
-readInt = try $ readText >>= intCheck
-  where
-    intCheck s = case reads $ Text.unpack s of
-      ((n,[]):_) | n >= 0 -> return n
-      _                   -> mzero
-
-readBool :: FTL Bool
-readBool = try $ readText >>= boolCheck
-  where
-    boolCheck "yes" = return True
-    boolCheck "on"  = return True
-    boolCheck "no"  = return False
-    boolCheck "off" = return False
-    boolCheck _     = mzero
 
 readText :: FTL Text
 readText = fmap Text.concat readTexts
@@ -111,11 +93,9 @@ readWords = shortHand </> chainLL1 word
   variant w = token "-" >> fmap (w <>) word
 
 readInstrDrop :: FTL Drop
-readInstrDrop = readInstrCommand -|- readInstrLimit -|- readInstrBool
+readInstrDrop = readInstrCommand
   where
     readInstrCommand = fmap DropCommand (readKeywords keywordsCommand)
-    readInstrLimit = fmap DropLimit (readKeywords keywordsLimit)
-    readInstrBool = fmap DropFlag (readKeywords keywordsFlag)
 
 -- | Try to parse the next token as one of the supplied keyword strings
 -- and return the corresponding @a@ on success.

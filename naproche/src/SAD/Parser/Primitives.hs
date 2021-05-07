@@ -30,7 +30,7 @@ import SAD.Parser.Base
 import SAD.Parser.Error
 import SAD.Parser.Token
 import SAD.Core.SourcePos
-import SAD.Data.Identifier (symChars)
+import SAD.Core.Identifier (symChars)
 
 import Data.Char (isAlpha)
 import Control.Monad (void, guard)

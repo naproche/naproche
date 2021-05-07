@@ -6,41 +6,63 @@ Construct prover database.
 
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.Core.Provers (Prover(..), readProverDatabase) where
+module SAD.Core.Provers (Prover(..), provers) where
 
-import Data.Aeson
-import SAD.Core.SourcePos
-import SAD.Core.Message (Comm, errorExport)
-import GHC.Generics
-import qualified Data.ByteString as B
 import Data.Text (Text)
+import SAD.Core.Task (ExportLang(..))
 
 data Prover = Prover {
   name           :: String,
-  label          :: Text,
   path           :: String,
   arguments      :: [String],
+  exportLang     :: ExportLang,
   successMessage :: [Text],
   contradictionMessage :: [Text],
   failureMessage :: [Text],
   resourceOutMessage :: [Text] }
-  deriving (Eq, Ord, Show, Generic)
+  deriving (Eq, Ord, Show)
 
-instance FromJSON Prover
-
-readProverDatabase :: Comm m => FilePath -> B.ByteString -> m [Prover]
-readProverDatabase path txt = do
-  case eitherDecodeStrict txt >>= mapM validate of
-    Right r -> pure r
-    Left l -> err l
-  where
-    err = errorExport (fileOnlyPos path)
-
-validate :: Prover -> Either String Prover
-validate Prover { name = n, path = "" }
-  = Left $ " prover '" ++ n ++ "' has no command line"
-validate Prover { name = n, successMessage = [] }
-  = Left $ " prover '" ++ n ++ "' has no success responses"
-validate Prover { name = n, failureMessage = [], resourceOutMessage = [] }
-  = Left $ " prover '" ++ n ++ "' has no failure responses"
-validate r = Right r
+provers :: [Prover]
+provers =
+  [ Prover
+      "eprover"
+      "eprover"
+      [ "--auto"
+      , "-s"
+      , "--memory-limit=%m"
+      , "--cpu-limit=%t"
+      ]
+      TF0
+      [ "# SZS status Theorem" ]
+      [ "# SZS status ContradictoryAxioms" ]
+      [ "# SZS status CounterSatisfiable" ]
+      [ "# SZS status ResourceOut"
+      , "# SZS status GaveUp"
+      ]
+   , Prover
+      "spass"
+      "SPASS"
+      [ "-TPTP"
+      , "-CNFOptSkolem=0"
+      , "-PProblem=0"
+      , "-PGiven=0"
+      , "-TimeLimit=%t"
+      ]
+      FOF
+      [ "SPASS beiseite: Proof found." ]
+      []
+      [ "SPASS beiseite: Completion found." ]
+      [ "SPASS beiseite: Ran out of time." ]
+   , Prover
+      "vampire"
+      "vampire"
+      [ "--mode"
+      , "casc"
+      , "-t %t"
+      ]
+      TF0
+      [ "% SZS output end Proof for" ]
+      []
+      [ "% SZS status CounterSatisfiable for" ]
+      [ "% SZS status Timeout for" ]
+   ]

@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c1fff22635173cd575b23b61b17fc2dc534997590795ba2a6c75bdfac2200390
+-- hash: c662f829d5bb8afbf568d98527863fa365436e659c8c0266320da81917ea7f7c
 
 name:           Naproche-SAD
 version:        0.1.0.0
@@ -44,6 +44,7 @@ executable Naproche-SAD
     , mtl
     , naproche
     , network
+    , optparse-applicative
     , prettyprinter
     , process
     , split
@@ -80,6 +81,7 @@ test-suite Naproche-SAD-test
     , mtl
     , naproche
     , network
+    , optparse-applicative
     , prettyprinter
     , process
     , split

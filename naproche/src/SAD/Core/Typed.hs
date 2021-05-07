@@ -25,7 +25,7 @@ import Data.Functor.Const
 import Control.DeepSeq (NFData)
 
 import SAD.Helpers (tupled')
-import SAD.Data.Identifier
+import SAD.Core.Identifier
 import Data.Text.Prettyprint.Doc
 import SAD.Core.SourcePos (SourcePos)
 
@@ -102,6 +102,8 @@ data NFTerm f t = NFTerm
   { nfImplicit :: [(Ident, f InType)]
   -- ^ implicit forall-bound variables.
   -- these could be unordered, but Map has no Hashable instance
+  -- TODO: In WfBlocks we only prove the existance of such terms
+  -- Do we require that they can be given constructively?
   , nfExplicit :: [(Ident, f InType)]
   -- ^ explicit forall-bound variables.
   -- these should be ordered as they appear in the definition.

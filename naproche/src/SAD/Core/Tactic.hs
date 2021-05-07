@@ -19,7 +19,7 @@ import Data.Text (Text)
 import SAD.Core.Typed
 import SAD.Core.SourcePos (SourcePos)
 import SAD.Core.Task
-import SAD.Data.Identifier
+import SAD.Core.Identifier
 
 proofTasksFromTactic :: Bool -> Term Identity () -> [Hypothesis] -> Located (Prf Identity ()) -> [Task]
 proofTasksFromTactic isContra goal hypo (Located n p tactic) = case tactic of

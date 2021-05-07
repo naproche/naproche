@@ -12,13 +12,10 @@ import qualified Data.Set as Set
 import Data.Functor.Identity
 import Data.Hashable
 
-import SAD.Data.Identifier
+import SAD.Core.Identifier
 import SAD.Core.Typed
 import SAD.Core.Task
 import Data.Maybe
-
-data ExportLang = TF0 | FOF
-  deriving (Eq, Ord, Show)
 
 data TPTPState = TPTPState
   { exportLang :: ExportLang

@@ -31,6 +31,7 @@ dependencies:
 - network
 - uuid
 - threads
+- optparse-applicative
 
 default-extensions:
   - GeneralizedNewtypeDeriving

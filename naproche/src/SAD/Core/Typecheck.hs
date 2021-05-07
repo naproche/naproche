@@ -19,14 +19,13 @@ import Control.Monad.State
 import Data.Maybe
 import Data.Foldable (foldrM)
 
-import SAD.Data.Terms (identObject, identClass, identSet)
 import Data.Text.Prettyprint.Doc
 import Data.Text.Prettyprint.Doc.Render.String (renderString)
 import SAD.Core.SourcePos (SourcePos, noSourcePos)
 import qualified SAD.Core.Message as Message
 import qualified Isabelle.Naproche as Naproche
 
-import SAD.Data.Identifier
+import SAD.Core.Identifier
 import SAD.Core.Typed
 import SAD.Core.Coerce
 

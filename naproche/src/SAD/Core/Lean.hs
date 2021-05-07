@@ -16,11 +16,10 @@
 
 module SAD.Core.Lean where
 
-import SAD.Data.Terms (identClass, identSet)
 import Control.Monad.State
 import Data.Functor.Identity
 import SAD.Core.Typed
-import SAD.Data.Identifier
+import SAD.Core.Identifier
 import Data.Text.Prettyprint.Doc
 
 data LeanState = LeanState

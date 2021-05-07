@@ -21,8 +21,7 @@ import Data.Functor.Identity
 import Control.Monad.State
 
 import SAD.Core.SourcePos
-import SAD.Data.Identifier
-import SAD.Data.Terms
+import SAD.Core.Identifier
 import SAD.Core.Typed
 import SAD.Core.Typecheck (coercionsToTerm)
 import Data.Maybe

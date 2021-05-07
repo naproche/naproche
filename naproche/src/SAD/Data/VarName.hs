@@ -21,7 +21,7 @@ import qualified Data.Text as Text
 import SAD.Core.SourcePos
 import Data.Function (on)
 
-import SAD.Data.Identifier (Ident(..))
+import SAD.Core.Identifier (Ident(..))
 
 -- These names may not reflect what the constructors are used for..
 data VarName 

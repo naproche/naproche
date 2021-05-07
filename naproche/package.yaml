@@ -61,7 +61,7 @@ library:
     - SAD.Core.Transform
     - SAD.Core.Typecheck
     - SAD.Core.Typed
-    - SAD.Data.Identifier
+    - SAD.Core.Identifier
     - SAD.Data.Instr
     - SAD.Data.Text.Block
     - SAD.Main

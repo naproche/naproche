@@ -38,7 +38,7 @@ import SAD.Core.SourcePos (SourcePos, noSourcePos)
 import qualified SAD.Core.Message as Message
 import qualified Isabelle.Naproche as Naproche
 
-import SAD.Data.Identifier
+import SAD.Core.Identifier
 import SAD.Core.Typed
 
 data ErrorContext = ErrorContext
@@ -187,7 +187,7 @@ extractGivenTypes ctx t = fmap (fst) $ runWriterT $ runReaderT (go t) mempty
               tell $ Map.singleton v (Set.singleton t)
               pure $ App Top []
             [arg] -> do
-              let d = newIdent (NormalIdent "d") (SAD.Data.Identifier.fvToVarSet $ findFree arg)
+              let d = newIdent (NormalIdent "d") (SAD.Core.Identifier.fvToVarSet $ findFree arg)
               arg' <- local (const mempty) $ go arg
               pure $ Exists d (Set.singleton t) $ App Eq [AppWf d [] noWf, arg']
             [] -> lift $ lift $ failWithMessage $ "Internal: Sort applied to no arguments!"

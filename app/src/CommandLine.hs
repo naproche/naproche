@@ -31,10 +31,6 @@ import qualified System.Process as Process
 
 import qualified Isabelle.File as File
 import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
-import qualified Isabelle.Server as Server
-import qualified Isabelle.Byte_Message as Byte_Message
-import qualified Isabelle.Value as Value
-import qualified Isabelle.Naproche as Naproche
 
 import SAD.Core.Cache (CacheStorage(..), FileCache(..))
 import SAD.Core.Provers (Prover(..))
@@ -149,9 +145,8 @@ reportBracketIO pos body = do
       return x
 
 instance RunProver CommandLine where
-  runProver pos (Prover _ label path args yes con nos uns) proverServer timeLimit memoryLimit task =
-    liftIO $ reportBracketIO pos $ case proverServer of
-      Nothing -> do
+  runProver pos (Prover _ path args _ yes con nos uns) timeLimit memoryLimit task =
+    liftIO $ reportBracketIO pos $ do
         let proc = (Process.proc path (map (setLimits timeLimit memoryLimit) args))
               { Process.std_in = Process.CreatePipe
               ,  Process.std_out = Process.CreatePipe
@@ -189,41 +184,6 @@ instance RunProver CommandLine where
                   ExitFailure rc -> 128 - rc
 
           pure (rc, Text.pack $ UTF8.toString output ++ UTF8.toString errors)
-
-      Just (port, password) ->
-        Server.connection port password
-          (\prover ->
-            do
-              Byte_Message.write_yxml prover
-                [XML.Elem ((Naproche.prover_command,
-                    [(Naproche.prover_name, path),
-                    (Naproche.command_args, unlines (map (setLimits 300 2048) args)),
-                    (Naproche.prover_timeout, show timeLimit)]),
-                  [XML.Text (Text.unpack task)])]
-
-              reply <- Byte_Message.read_line_message prover
-
-              case reply of
-                Nothing -> pure (0, "")
-                Just uuid ->
-                  do
-                    let kill_prover = do
-                          Server.connection port password (\prover_kill ->
-                            Byte_Message.write_yxml prover_kill
-                              [XML.Elem ((Naproche.kill_command, []),
-                                [XML.Text (UTF8.toString uuid)])])
-                    Isabelle_Thread.bracket_resource kill_prover $ do
-                      result <- Byte_Message.read_yxml prover
-                      return $
-                        case result of
-                          Just [XML.Elem ((elem, (a, b) : _), body)] |
-                            elem == Naproche.prover_result &&
-                            a == Naproche.prover_return_code ->
-                              case Value.parse_int b of
-                                Just rc -> (rc, Text.pack $ XML.content_of body)
-                                Nothing -> (2, "")
-                          _ -> (2, ""))
-
 
 setLimits :: Int -> Int -> String -> String
 setLimits timeLimit memoryLimit = go

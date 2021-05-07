@@ -4,7 +4,7 @@
 -- This will evaluate tactics and create the necessary
 -- statements for the prover.
 
-module SAD.Core.Task (Hypothesis(..), Task(..), taskFile) where
+module SAD.Core.Task (ExportLang(..), Hypothesis(..), Task(..), taskFile) where
 
 import Data.Functor.Identity
 import Data.Text (Text)
@@ -15,6 +15,9 @@ import Data.Binary (Binary)
 import SAD.Core.Typed
 import Data.Text.Prettyprint.Doc
 import SAD.Core.SourcePos (SourcePos, sourceFile)
+
+data ExportLang = TF0 | FOF
+  deriving (Eq, Ord, Show)
 
 data Task = Task 
   { hypothesis :: [Hypothesis] -- ^ from newest to oldest

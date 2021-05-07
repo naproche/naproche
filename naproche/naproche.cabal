@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 4ebbb50af64c9e91b3291b3ee82d869c5077937b9b479b1b8db354972126f36a
+-- hash: 4489c897aa1c88eb21fff884d02da2ed9bec13485685cc9638a2d748723ecf7f
 
 name:           naproche
 version:        0.1.0.0
@@ -37,7 +37,7 @@ library
       SAD.Core.Transform
       SAD.Core.Typecheck
       SAD.Core.Typed
-      SAD.Data.Identifier
+      SAD.Core.Identifier
       SAD.Data.Instr
       SAD.Data.Text.Block
       SAD.Main
