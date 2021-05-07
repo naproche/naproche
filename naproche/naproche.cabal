@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 124cc52958153e3101e2870a32847676735073ac2350b8ac35b706c8ff2e7840
+-- hash: 4ebbb50af64c9e91b3291b3ee82d869c5077937b9b479b1b8db354972126f36a
 
 name:           naproche
 version:        0.1.0.0
@@ -24,6 +24,8 @@ library
   exposed-modules:
       SAD.Core.Cache
       SAD.Core.Coerce
+      SAD.Core.Desuger
+      SAD.Core.Lean
       SAD.Core.Message
       SAD.Core.Prove
       SAD.Core.Provers

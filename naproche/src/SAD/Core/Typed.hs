@@ -184,7 +184,7 @@ noWf = WfBlock [] Nothing
 -- either supplying the names of useful theorems or giving a list of tactics.
 -- The third is the result of type-checking tactics: Each tactic needs to
 -- modify the goal and say what it's new hypotheses are.
--- The fourth is for once the tactics have been eva
+-- The fourth is for once the tactics have been evaluated.
 data PrfBlock f t
   = ProofByHints [Text]
   -- ^ given by user: Names of axioms/theorems that may be helpful for the ATP
@@ -208,6 +208,8 @@ instance (Generic (f InType), Generic t, Binary (f InType), Binary t, Generic (f
 -- as much as possible. Instead you can only have a tactic that tries to reduce
 -- the goal by a fixed amount (e.g. split all conjuncts, etc.). Of course,
 -- a tactic can fail to actually deliver what was promised.
+-- Be aware though that the goal during type-checking may differ from the goal
+-- when running the tactic in that classes are desugered in-between!
 data Prf f t
   = Intro Ident (f InType)
   -- ^ Given goal = Forall i t goal', Intro i t make (i : t) an hypothesis

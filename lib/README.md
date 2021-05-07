@@ -21,12 +21,12 @@ Can be proof-checked (with 1 second time):
   - `examples/cantor.ftl.tex`
   - `examples/prime_no_square.ftl.tex`
 
-Can be type-checked (number of failing goals with one/ten seconds time):
+Can be type-checked (number of failing goals with one second time):
 
-  - `geometry/formalisation.ftl.tex` (4/2)
-  - `examples/fuerstenberg.ftl.tex` (18/18)
-  - `examples/euclid.ftl.tex` (9/9)
-  - `examples/checkerboard.ftl.tex` (26/24)
+  - `geometry/formalisation.ftl.tex` (4)
+  - `examples/fuerstenberg.ftl.tex` (20)
+  - `examples/euclid.ftl.tex` (13)
+  - `examples/checkerboard.ftl.tex` (33)
 
 Can be transformed into the new representation:
 

@@ -89,6 +89,11 @@ data ProveState = ProveState
   , proveInstrs :: [Instr]
   } deriving (Eq, Ord, Show)
 
+instance Semigroup ProveState where
+  (ProveState f1 t1 s1 c1 cc1 fc1 _ _) <> (ProveState f2 t2 s2 c2 cc2 fc2 ps2 is2) =
+    ProveState (f1 <> f2) (t1 <> t2) (s1 + s2) (c1 + c2) (cc1 <> cc2)
+    (maybe fc2 Just fc1) ps2 is2
+
 -- | Main prove transformer
 newtype ProveT m a = ProveT (StateT ProveState m a)
   deriving (Functor, Applicative, Monad, MonadState ProveState, MonadTrans)

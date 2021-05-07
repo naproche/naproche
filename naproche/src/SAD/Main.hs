@@ -39,6 +39,8 @@ import SAD.Core.Cache (CacheStorage)
 import SAD.Core.Task (Task(..))
 import SAD.Core.Tactic (proofTasks, ontologicalTasks)
 import SAD.Core.Typecheck (typecheck)
+import SAD.Core.Desuger (desuger)
+import SAD.Core.Lean (exportLean)
 
 data TimedSection = ParsingTime | CheckTime | OntoTime | ProvingTime 
   deriving (Eq, Ord, Show)
@@ -124,31 +126,26 @@ showTranslation provers txts opts0 = do
   lift $ mapM_ (writeOut (fileOnlyPos "") . pretty . located) typed
   
   beginTimedSection OntoTime
-  let ontoTasks = ontologicalTasks typed
+  let numberOfSections = length typed
+  let ontoTasks = ontologicalTasks $ desuger typed
   unless (ontoTasks == []) $ do
     lift $ writeOut noSourcePos $ "Ontological checking:"
-  proveTasks provers ontoTasks opts0
+  proveOut <- proveTasks provers ontoTasks opts0
   endTimedSection OntoTime
+
+  lift $ writeOut (fileOnlyPos "") $ exportLean typed
   
   -- print statistics
   beginTimedSection ProvingTime
   endTimedSection ProvingTime
-  getTimes >>= lift . showTimes
-  pure $ Exit.ExitSuccess
+
+  let checkConsistency = askFlag CheckConsistency True opts0
+  exitWithProveState numberOfSections checkConsistency $ proveOut
 
 proveTasks :: (MonadIO m, RunProver m, Comm m, CacheStorage m) 
   => [Prover] -> [Task] -> [Instr] -> Times m ProveState
 proveTasks provers tasks opts0 = do
-  proveOut <- lift $ fmap snd $ runProveT provers opts0 $ verify tasks
-  if length (proveGoalsTimeout proveOut) == 0 then pure ()
-    else do
-      lift $ writeOut (fileOnlyPos "") $ "The following claims could not be shown to hold:"
-      lift $ mapM_ (\t -> writeOut (taskPos t) $ pretty $ conjecture t) (proveGoalsTimeout proveOut)
-  if length (proveGoalsFailed proveOut) == 0 then pure ()
-    else do
-      lift $ writeOut (fileOnlyPos "") $ "The following claims do not follow from the axioms:"
-      lift $ mapM_ (\t -> writeOut (taskPos t) $ pretty $ conjecture t) (proveGoalsFailed proveOut)
-  pure proveOut
+  lift $ fmap snd $ runProveT provers opts0 $ verify tasks
 
 proveFOL :: (MonadIO m, RunProver m, Comm m, CacheStorage m) 
   => [Prover] -> [ProofText] -> [Instr] -> Times m Exit.ExitCode
@@ -158,18 +155,32 @@ proveFOL provers txts opts0 = do
   endTimedSection CheckTime
   
   beginTimedSection OntoTime
-  proveTasks provers (ontologicalTasks typed) opts0
+  let desugered = desuger typed
+  proveOut1 <-proveTasks provers (ontologicalTasks desugered) opts0
   endTimedSection OntoTime
   
   beginTimedSection ProvingTime
   let numberOfSections = length typed
-  proveOut <- proveTasks provers (proofTasks typed) opts0
+  proveOut2 <- proveTasks provers (proofTasks desugered) opts0
   endTimedSection ProvingTime
+  let checkConsistency = askFlag CheckConsistency True opts0
+  exitWithProveState numberOfSections checkConsistency $ proveOut1 <> proveOut2
 
+exitWithProveState :: (MonadIO m, RunProver m, Comm m, CacheStorage m)
+  => Int -> Bool -> ProveState -> Times m Exit.ExitCode
+exitWithProveState numberOfSections checkConsistency proveOut = do
   let numberOfNotSuccessful = length (proveGoalsFailed proveOut ++ proveGoalsTimeout proveOut) 
   let numberProved = proveGoalsSentToATP proveOut - numberOfNotSuccessful
   
-  let checkConsistency = askFlag CheckConsistency True opts0
+  if length (proveGoalsTimeout proveOut) == 0 then pure ()
+    else do
+      lift $ writeOut (fileOnlyPos "") $ "The following claims could not be shown to hold:"
+      lift $ mapM_ (\t -> writeOut (taskPos t) $ pretty $ conjecture t) (proveGoalsTimeout proveOut)
+  if length (proveGoalsFailed proveOut) == 0 then pure ()
+    else do
+      lift $ writeOut (fileOnlyPos "") $ "The following claims do not follow from the axioms:"
+      lift $ mapM_ (\t -> writeOut (taskPos t) $ pretty $ conjecture t) (proveGoalsFailed proveOut)
+  
   case (checkConsistency, proveFirstContradiction proveOut) of
     (True, Just t) -> lift $ writeOut (taskPos t) $
       "Ouch, there is a contradiction in your axioms!" <> softline

@@ -7,17 +7,13 @@ module SAD.Core.TPTP (ExportLang(..), taskToTPTP) where
 
 import Data.Text (Text)
 import qualified Data.Text as Text
-import qualified Data.Map as Map
 import Data.Set (Set)
 import qualified Data.Set as Set
-import qualified Data.List as L
 import Data.Functor.Identity
 import Data.Hashable
 
 import SAD.Data.Identifier
-import SAD.Data.Terms
 import SAD.Core.Typed
-import SAD.Core.Typecheck (coercionsToTerm)
 import SAD.Core.Task
 import Data.Maybe
 
@@ -116,69 +112,9 @@ instance TPTP Hypothesis where
             Pred _ Prop -> "" -- we assume that type-checking has already been done in this code.
             Sort -> "" -- types don't need to be introduced in FOF
 
--- | Desuger all classes in the hypothesis and conjecture.
--- We assume the hypothesis to be in reverse order.
-desugerClasses' :: [Hypothesis] -> Term Identity () -> ([Hypothesis], Term Identity ())
-desugerClasses' hs c =
-  let (Given "conj" c' : hs') = go ["cls" <> Text.pack (show i) | i <- [1::Int ..]] (Given "conj" c : hs)
-  in (hs', c')
-  where
-    go _ [] = []
-    go vars (h:hs) = case h of
-      Given name t ->
-        let ((vars', axs), t') = desugerClasses vars t
-        in Given name t' : (concatMap (\(n, cc, typ, t) -> [Given (n <> "_aux") t, Typing (NormalIdent n) (Pred (map runIdentity typ) (InType cc))]) axs) ++ go vars' hs
-      Typing name t -> Typing name t : go vars hs
-
--- | Given an infinite stream of Idents,
--- replace each class {x | c} by a new operator cls in a term t and return
--- ((rest of the variables, [∀x x\in cls iff c]), t')
--- If classes are nested, we will return the outermost first.
-desugerClasses :: [Text] -> Term Identity () -> (([Text], [(Text, InType, [Identity InType], Term Identity ())]), Term Identity ())
-desugerClasses = go mempty
-  where
-    go typings vars = \case
-      Forall v m t -> Forall v m <$> go (Map.insert v m typings) vars t 
-      Exists v m t -> Exists v m <$> go (Map.insert v m typings) vars t 
-      Class v m mm (Identity ci) t -> 
-        let (cls:clss) = vars
-            ((clss', stmts), t') = go (Map.insert v m typings) clss t
-            free = mapMaybe (\v -> case Map.lookup v typings of Nothing -> Nothing; Just t -> Just (v, t))
-              $ Set.toList $ fvToVarSet $ bindVar v $ findFree t'
-            clsTrm = AppWf (NormalIdent cls) (map (\(v, _) -> AppWf v [] noWf) free) noWf
-            v' = coercionsToTerm (coerceElemsToObject ci) (AppWf v [] noWf) 
-            t'' = maybe t' (\s -> App And [AppWf identElement [v', s] noWf, t']) mm
-            ext = Forall v m $ App Iff [AppWf identElement [v', coercionsToTerm (coerceClassTypeToClass ci) $ clsTrm] noWf, t'']
-            ext' = foldr (\(v, m) -> Forall v m) ext free
-        in ((clss', (cls, classType ci, map snd free, ext'):stmts), clsTrm)
-      FinClass m (Identity ci) ts -> 
-        let (cls:clss) = vars
-            v = newIdent (NormalIdent "v") (Map.keysSet typings)
-            v' = coercionsToTerm (coerceElemsToObject ci) (AppWf v [] noWf) 
-            ts' = foldl (\a b -> App Or [a, b]) (App Top []) $ map (\t -> App Eq [AppWf v [] noWf, t] ) ts
-            ((clss', stmts), t') = go typings clss ts'
-            free = mapMaybe (\v -> case Map.lookup v typings of Nothing -> Nothing; Just t -> Just (v, t))
-              $ Set.toList $ fvToVarSet $ findFree t'
-            clsTrm = AppWf (NormalIdent cls) (map (\(v, _) -> AppWf v [] noWf) free) noWf
-            ext = Forall v m $ App Iff [AppWf identElement [v', coercionsToTerm (coerceClassTypeToClass ci) $ clsTrm] noWf, t']
-            ext' = foldr (\(v, m) -> Forall v m) ext free
-        in ((clss', (cls, classType ci, map snd free, ext'):stmts), clsTrm)
-      App op ts ->
-        let (st, ts') = L.mapAccumL (\(v, ax) t -> 
-              let ((v', ax'), t') = go typings v t in ((v', ax ++ ax'), t'))
-              (vars, []) ts
-        in (st, App op ts')
-      AppWf op ex wf ->
-        let (st, ex') = L.mapAccumL (\(v, ax) t -> 
-              let ((v', ax'), t') = go typings v t in ((v', ax ++ ax'), t'))
-              (vars, []) ex
-        in (st, AppWf op ex' wf)
-      Tag tag t -> Tag tag <$> go typings vars t 
-
 instance TPTP Task where
   tptp ex (Task hypo conj _ name _ _) =
-    let (hypo', conj') = desugerClasses' hypo conj
-    in Text.unlines (map (tptp ex) (reverse hypo') ++ [tffStatement (exportLang ex) name "conjecture" (tptp ex conj')])
+    Text.unlines (map (tptp ex) (reverse hypo) ++ [tffStatement (exportLang ex) name "conjecture" (tptp ex conj)])
 
 taskToTPTP :: ExportLang -> Task -> Text
 taskToTPTP ex = tptp (TPTPState ex mempty)

@@ -48,6 +48,8 @@ library:
   exposed-modules:
     - SAD.Core.Cache
     - SAD.Core.Coerce
+    - SAD.Core.Desuger
+    - SAD.Core.Lean
     - SAD.Core.Message
     - SAD.Core.Prove
     - SAD.Core.Provers
