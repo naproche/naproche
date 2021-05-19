@@ -33,6 +33,8 @@ import Data.List (sortOn)
 data ClassDef = ClassDef
   { outtype :: InType
   , intypes :: [(Ident, Identity InType)]
+  , implicits :: [(Ident, Identity InType)]
+  , assumptions :: [Term Identity ()]
   , v :: Ident
   , m :: InType
   , ci :: ClassInfo
@@ -86,19 +88,21 @@ dumpClasses = do
   pure $ concatMap (uncurry fromClassDef) cls'
 
 getClassTerm :: Ident -> ClassDef -> Term Identity ()
-getClassTerm cls (ClassDef _ intypes _ _ _ _)
-  = AppWf cls (map (\(v, _) -> AppWf v [] noWf) intypes) noWf
+getClassTerm cls (ClassDef _ intypes im as _ _ _ _)
+  = AppWf (Resolved cls) (map (\(v, _) -> AppWf (Resolved v) [] WellFormed) intypes) WellFormed
 
 fromClassDef :: Ident -> ClassDef -> [Stmt Identity ()]
-fromClassDef cls c@(ClassDef outtype intypes v m ci cond) =
-  let v' = coercionsToTerm (coerceElemsToObject ci) (AppWf v [] noWf)
+fromClassDef cls c@(ClassDef outtype intypes im as v m ci cond) =
+  let v' = coercionsToTerm (coerceElemsToObject ci) (AppWf (Resolved v) [] WellFormed)
       clsTrm = getClassTerm cls c
-      ext = Forall v (Identity m) $ App Iff [AppWf identElement [v', coercionsToTerm (coerceClassTypeToClass ci) $ clsTrm] noWf, cond]
-      ext' = foldr (\(v, m) -> Forall v m) ext intypes
-  in [IntroSignature cls (Identity outtype) [] intypes [], Axiom (termToNF ext')]
+      ext = Forall v (Identity m) $ App Iff [AppWf (Resolved identElement) [v', coercionsToTerm (coerceClassTypeToClass ci) clsTrm] WellFormed, cond]
+      ext' = foldr (uncurry Forall) ext intypes
+  in [IntroSignature cls (Identity outtype) intypes [], Axiom cls (termToNF ext')]
 
 desugerClass :: ClassDef -> Desuger ClassDef
-desugerClass (ClassDef o is v m ci cond) = ClassDef o is v m ci <$> desugerTerm cond
+desugerClass (ClassDef o is im as v m ci cond) = do
+  cond' <- desugerTerm cond
+  pure $ ClassDef o is im as v m ci cond'
 
 -- | Given an infinite stream of Idents,
 -- replace each class {x | c} by a new operator cls in a term t and return
@@ -118,16 +122,16 @@ desugerTerm = go
       Class v (Identity m) mm (Identity ci) t -> do
         typs <- typings <$> get
         let free = getFreeTyped (bindVar v $ findFree t) typs
-            v' = coercionsToTerm (coerceElemsToObject ci) (AppWf v [] noWf) 
-            t' = maybe t (\s -> App And [AppWf identElement [v', s] noWf, t]) mm
-            stmt = ClassDef (classType ci) free v m ci t'
+            v' = coercionsToTerm (coerceElemsToObject ci) (AppWf (Resolved v) [] WellFormed )
+            t' = maybe t (\s -> App And [AppWf (Resolved identElement) [v', s] WellFormed, t]) mm
+            stmt = ClassDef (classType ci) free [] [] v m ci t'
         addClass stmt
       FinClass (Identity m) (Identity ci) ts -> do
         typs <- typings <$> get
         let v = newIdent (NormalIdent "v") (Map.keysSet typs)
-            ts' = foldl (\a b -> App Or [a, b]) (App Top []) $ map (\t -> App Eq [AppWf v [] noWf, t] ) ts
+            ts' = foldl (\a b -> App Or [a, b]) (App Top []) $ map (\t -> App Eq [AppWf (Resolved v) [] WellFormed, t] ) ts
             free = getFreeTyped (findFree ts') typs
-            stmt = ClassDef (classType ci) free v m ci ts'
+            stmt = ClassDef (classType ci) free [] [] v m ci ts'
         addClass stmt
       App op ts -> do
         ts' <- mapM go ts
@@ -136,25 +140,21 @@ desugerTerm = go
         ex' <- mapM go ex
         wf' <- desugerWfBlock wf
         pure $ AppWf op ex' wf'
-      Tag tag t -> Tag tag <$> go t 
+      Tag tag t -> Tag tag <$> go t
 
 desugerNFTerm :: NFTerm Identity () -> Desuger (NFTerm Identity ())
-desugerNFTerm (NFTerm im ex as bd) = do
-  mapM_ (uncurry addType) im
+desugerNFTerm (NFTerm ex as bd) = do
   mapM_ (uncurry addType) ex
   as' <- mapM desugerTerm as
   bd' <- desugerTerm bd
-  pure $ NFTerm im ex as' bd'
+  pure $ NFTerm ex as' bd'
 
 desugerWfBlock :: WfBlock Identity () -> Desuger (WfBlock Identity ())
-desugerWfBlock (WfBlock im Nothing) = do
-  ts <- mapM (desugerTerm . snd) im
-  pure $ WfBlock (zip (map fst im) ts) Nothing
-desugerWfBlock (WfBlock im (Just (nf, pbl))) = do
-  ts <- mapM (desugerTerm . snd) im
+desugerWfBlock (WfProof nf pbl) = do
   nf' <- desugerNFTerm nf
   pbl' <- desugerPrfBlock pbl
-  pure $ WfBlock (zip (map fst im) ts) (Just (nf', pbl'))
+  pure $ WfProof nf' pbl'
+desugerWfBlock p = pure p
 
 desugerPrfBlock :: PrfBlock Identity () -> Desuger (PrfBlock Identity ())
 desugerPrfBlock (ProofByHints hs) = pure $ ProofByHints hs
@@ -163,11 +163,11 @@ desugerPrfBlock (ProofByTCTactics xs) = do
   xs' <- mapM f xs
   pure $ ProofByTCTactics xs'
   where
-    f (Located n p prf, t, hs) = do
+    f (Located p prf, t, hs) = do
       t' <- desugerTerm t
       hs' <- mapM desugerHypothesis hs
       prf' <- desugerProof prf
-      pure (Located n p prf', t', hs')
+      pure (Located p prf', t', hs')
 
 desugerProof :: Prf Identity () -> Desuger (Prf Identity ())
 desugerProof = \case
@@ -182,61 +182,61 @@ desugerProof = \case
     addType i m
     t' <- desugerTerm t
     pure $ Define i m t'
-  Subclaim nf pbl -> do
+  Subclaim n nf pbl -> do
     nf' <- desugerNFTerm nf
     pbl' <- desugerPrfBlock pbl
-    pure $ Subclaim nf' pbl'
+    pure $ Subclaim n nf' pbl'
   Choose vs t pbl -> do
     mapM_ (uncurry addType) vs
     t' <- desugerTerm t
     pbl' <- desugerPrfBlock pbl
     pure $ Choose vs t' pbl'
-  Cases ts -> fmap Cases $ flip mapM ts $ \(c, g, pbl) -> do
+  Cases ts -> fmap Cases $ forM ts $ \(c, g, pbl) -> do
     c' <- desugerTerm c
     g' <- desugerTerm g
     pbl' <- desugerPrfBlock pbl
     pure (c', g', pbl')
-  TerminalCases ts -> fmap TerminalCases $ flip mapM ts $ \(c, pbl) -> do
+  TerminalCases ts -> fmap TerminalCases $ forM ts $ \(c, pbl) -> do
     c' <- desugerTerm c
     pbl' <- desugerPrfBlock pbl
     pure (c', pbl')
 
-desugerHypothesis :: Hypothesis -> Desuger (Hypothesis)
+desugerHypothesis :: Hypothesis -> Desuger Hypothesis
 desugerHypothesis (Typing i t) = pure $ Typing i t
-desugerHypothesis (Given n t) = (Given n) <$> desugerTerm t
+desugerHypothesis (Given n t) = Given n <$> desugerTerm t
 
 locate :: SourcePos -> [Stmt Identity ()] -> [Located (Stmt Identity ())]
-locate p = map (Located "classDef" p)
+locate p = map (Located p)
 
 desugerStmt :: Located (Stmt Identity ()) -> Desuger [Located (Stmt Identity ())]
-desugerStmt (Located n p stmt) = case stmt of
-  IntroSort s -> pure $ [Located n p $ IntroSort s]
-  IntroAtom i im ex as -> do
+desugerStmt (Located p stmt) = case stmt of
+  IntroSort s -> pure $ [Located p $ IntroSort s]
+  IntroAtom i ex as -> do
     as' <- mapM desugerTerm as
     ss <- dumpClasses
-    pure $ locate p ss ++ [Located n p $ IntroAtom i im ex as']
-  IntroSignature i t im ex as -> do
+    pure $ locate p ss ++ [Located p $ IntroAtom i ex as']
+  IntroSignature i t ex as -> do
     as' <- mapM desugerTerm as
     ss <- dumpClasses
-    pure $ locate p ss ++ [Located n p $ IntroSignature i t im ex as']
+    pure $ locate p ss ++ [Located p $ IntroSignature i t ex as']
   Predicate i nf -> do
     nf' <- desugerNFTerm nf
     ss <- dumpClasses
-    pure $ locate p ss ++ [Located n p $ Predicate i nf']
+    pure $ locate p ss ++ [Located p $ Predicate i nf']
   Function i t nf -> do
     nf' <- desugerNFTerm nf
     ss <- dumpClasses
-    pure $ locate p ss ++ [Located n p $ Function i t nf']
-  Axiom nf -> do
+    pure $ locate p ss ++ [Located p $ Function i t nf']
+  Axiom n' nf -> do
     nf' <- desugerNFTerm nf
     ss <- dumpClasses
-    pure $ locate p ss ++ [Located n p $ Axiom nf']
-  Claim nf pbl -> do
+    pure $ locate p ss ++ [Located p $ Axiom n' nf']
+  Claim n' nf pbl -> do
     nf' <- desugerNFTerm nf
     pbl' <- desugerPrfBlock pbl
     ss <- dumpClasses
-    pure $ locate p ss ++ [Located n p $ Claim nf' pbl']
-  Coercion i f t -> pure [Located n p $ Coercion i f t]
+    pure $ locate p ss ++ [Located p $ Claim n' nf' pbl']
+  Coercion i f t -> pure [Located p $ Coercion i f t]
 
 desuger :: [Located (Stmt Identity ())] -> [Located (Stmt Identity ())]
 desuger = concat . runDesuger . mapM desugerStmt

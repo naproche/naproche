@@ -28,9 +28,12 @@ class TPTP a where
   tptp :: TPTPState -> a -> Text
 
 instance TPTP Ident where
-  tptp ex t = if t `Set.member` (boundAsVars ex)
+  tptp ex t = if t `Set.member` boundAsVars ex
     then identAsVar t
     else identAsTerm t
+
+instance TPTP RIdent where
+  tptp ex = tptp ex . fromRIdent
 
 instance TPTP InType where
   tptp _ (Signature t) = case identAsType t of
@@ -69,11 +72,11 @@ instance (f ~ Identity, t ~ ()) => TPTP (Term f t) where
     (FOF, Forall v (Identity (Signature m)) t) ->
       let ex' = addVar v ex in
       "(! [" <> tptp ex' v <> "] : "
-      <> tptp ex' (App Imp [AppWf m [AppWf v [] noWf] noWf, t]) <> ")"
+      <> tptp ex' (App Imp [AppWf (Resolved m) [AppWf (Resolved v) [] NoWf] NoWf, t]) <> ")"
     (FOF, Exists v (Identity (Signature m)) t) ->
       let ex' = addVar v ex in
       "(? [" <> tptp ex' v <> "] : "
-      <> tptp ex' (App And [AppWf m [AppWf v [] noWf] noWf, t]) <> ")"
+      <> tptp ex' (App And [AppWf (Resolved m) [AppWf (Resolved v) [] NoWf] NoWf, t]) <> ")"
     (_, App And [a, b]) -> "(" <> tptp ex a <> " & " <> tptp ex b <> ")"
     (_, App Or  [a, b]) -> "(" <> tptp ex a <> " | " <> tptp ex b <> ")"
     (_, App Imp [a, b]) -> "(" <> tptp ex a <> " => " <> tptp ex b <> ")"
@@ -85,8 +88,8 @@ instance (f ~ Identity, t ~ ()) => TPTP (Term f t) where
     (_, AppWf op args _) -> tptp ex op <> inParens (map (tptp ex) args)
     (_, a@(App _ _)) -> error $ "Internal error: Mismatched arguments in tptp generation: " ++ show a
     (_, Tag () t) -> tptp ex t
-    (_, Class _ _ _ _ _) -> error "Internal error: Class left in TPTP!"
-    (_, FinClass _ _ _) -> error "Internal error: FinClass left in TPTP!"
+    (_, Class {}) -> error "Internal error: Class left in TPTP!"
+    (_, FinClass {}) -> error "Internal error: FinClass left in TPTP!"
 
 tffStatement :: ExportLang -> Text -> Text -> Text -> Text
 tffStatement ex n typ inside =
@@ -105,7 +108,7 @@ instance TPTP Hypothesis where
           FOF -> case t of
             Pred ts (InType (Signature intype)) -> tffStatement (exportLang ex) (tptp ex name) "axiom" $ tptp ex $
               let vars = flip zip ts $ map (NormalIdent . Text.pack . ('x':) . show) [1::Int ..]
-              in foldr (\(v, t) -> Forall v (Identity t)) (AppWf intype [AppWf name (map (\(v, _) -> AppWf v [] noWf) vars) noWf] noWf) vars
+              in foldr (\(v, t) -> Forall v (Identity t)) (AppWf (Resolved intype) [AppWf (Resolved name) (map (\(v, _) -> AppWf (Resolved v) [] NoWf) vars) NoWf] NoWf) vars
             Pred _ Prop -> "" -- we assume that type-checking has already been done in this code.
             Sort -> "" -- types don't need to be introduced in FOF
 

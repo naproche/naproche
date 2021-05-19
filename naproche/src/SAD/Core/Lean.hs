@@ -16,6 +16,7 @@
 
 module SAD.Core.Lean where
 
+import Control.Monad
 import Control.Monad.State
 import Data.Functor.Identity
 import SAD.Core.Typed
@@ -30,14 +31,14 @@ data LeanState = LeanState
 getAxiomId :: Lean (Doc ann)
 getAxiomId = do
   s <- get
-  put $ s { nextAxiomId = (nextAxiomId s) + 1 }
-  pure $ "ax" <> (pretty (nextAxiomId s))
+  put $ s { nextAxiomId = nextAxiomId s + 1 }
+  pure $ "ax" <> pretty (nextAxiomId s)
 
 getLemmaId :: Lean (Doc ann)
 getLemmaId = do
   s <- get
-  put $ s { nextLemmaId = (nextLemmaId s) + 1 }
-  pure $ "lm" <> (pretty (nextLemmaId s))
+  put $ s { nextLemmaId = nextLemmaId s + 1 }
+  pure $ "lm" <> pretty (nextLemmaId s)
 
 type Lean = State LeanState
 
@@ -48,6 +49,9 @@ instance ExportLean Ident where
   toLean i = pure $ pretty $ case identAsTerm i of
     "if" -> "if'"
     t -> t
+
+instance ExportLean RIdent where
+  toLean = toLean . fromRIdent
 
 instance ExportLean InType where
   toLean (Signature i)
@@ -85,8 +89,8 @@ instance (f ~ Identity, t ~ ()) => ExportLean (Term f t) where
   toLean (Exists v (Identity m) t) = do
     v' <- toLean v; m' <- toLean m; t' <- toLean t
     pure $ "∃(" <> v' <> " : " <> m' <> "), " <> t'
-  toLean (FinClass _ _ _ ) = error "FinClass in Lean export!"
-  toLean (Class _ _ _ _ _ ) = error "Class in Lean export!"
+  toLean FinClass {} = error "FinClass in Lean export!"
+  toLean Class {} = error "Class in Lean export!"
   toLean (App op []) = toLean op
   toLean (App op [a]) = do
     op' <- toLean op; a' <- toLean a
@@ -96,10 +100,10 @@ instance (f ~ Identity, t ~ ()) => ExportLean (Term f t) where
     pure $ "(" <> a' <+> op' <+> b' <> ")"
   toLean (App _ _) = error "Malformed App in Lean Export"
   toLean (Tag _ t) = toLean t
-  toLean (AppWf op args _) | isSymbol op = do
-    args' <- flip mapM args $ \a -> case a of
-          AppWf op _ _ | isSymbol op -> toLean a >>= \a -> pure $ "(" <> a <> ")"
-          _ -> toLean a
+  toLean (AppWf op args _) | isSymbol (fromRIdent op) = do
+    args' <- forM args $ \a -> case a of
+     AppWf op _ _ | isSymbol (fromRIdent op) -> toLean a >>= \a -> pure $ "(" <> a <> ")"
+     _ -> toLean a
     op' <- toLean op
     pure $ op' <+> hsep args'
   toLean (AppWf op args _) = do
@@ -118,7 +122,7 @@ mkExplicit (i, Identity t) = do
 
 mkAssumptions :: [Term Identity ()] -> Lean (Doc ann)
 mkAssumptions as = do
-  fmap hsep $ flip mapM (zip as [1::Int ..]) $ \(a, i) -> do
+  fmap hsep $ forM (zip as [1::Int ..]) $ \(a, i) -> do
     a' <- toLean a
     pure $ "{ assm" <> pretty i <> " : " <> a' <> "}"
 
@@ -126,30 +130,30 @@ instance (f ~ Identity, t ~ ()) => ExportLean (Stmt f t) where
   toLean (IntroSort tm) = do
     tm' <- toLean (Signature tm)
     pure $ "axiom " <> tm' <> " : Type"
-  toLean (IntroAtom i im ex as) = do
-    i' <- toLean i; im' <- mapM mkImplicit im;
+  toLean (IntroAtom i ex as) = do
+    i' <- toLean i;
     ex' <- mapM mkExplicit ex; as' <- mkAssumptions as;
-    pure $ "axiom " <> i' <+> hsep im' <+> hsep ex' <+> as' <> " : Prop"
-  toLean (IntroSignature i (Identity t) im ex as) = do
-    i' <- toLean i; im' <- mapM mkImplicit im;
+    pure $ "axiom " <> i' <+> hsep ex' <+> as' <> " : Prop"
+  toLean (IntroSignature i (Identity t) ex as) = do
+    i' <- toLean i;
     ex' <- mapM mkExplicit ex; as' <- mkAssumptions as; t' <- toLean t
-    pure $ "axiom " <> i' <+> hsep im' <+> hsep ex' <+> as' <> " : " <> t'
-  toLean (Predicate i (NFTerm im ex as b)) = do
-    i' <- toLean i; im' <- mapM mkImplicit im;
+    pure $ "axiom " <> i' <+> hsep ex' <+> as' <> " : " <> t'
+  toLean (Predicate i (NFTerm ex as b)) = do
+    i' <- toLean i;
     ex' <- mapM mkExplicit ex; as' <- mkAssumptions as; b' <- toLean b
-    pure $ "def " <> i' <+> hsep im' <+> hsep ex' <+> as' <> " : Prop := " <> b'
-  toLean (Function i (Identity t) (NFTerm im ex as b)) = do
-    i' <- toLean i; im' <- mapM mkImplicit im; t' <- toLean t
+    pure $ "def " <> i' <+> hsep ex' <+> as' <> " : Prop := " <> b'
+  toLean (Function i (Identity t) (NFTerm ex as b)) = do
+    i' <- toLean i; t' <- toLean t
     ex' <- mapM mkExplicit ex; as' <- mkAssumptions as; b' <- toLean b
-    pure $ "def " <> i' <+> hsep im' <+> hsep ex' <+> as' <> " : " <> t' <> " := " <> b'
-  toLean (Axiom (NFTerm im ex as b)) = do
-    i' <- getAxiomId; im' <- mapM mkImplicit im;
+    pure $ "def " <> i' <+> hsep ex' <+> as' <> " : " <> t' <> " := " <> b'
+  toLean (Axiom i (NFTerm ex as b)) = do
+    i' <- toLean i;
     ex' <- mapM mkExplicit ex; as' <- mkAssumptions as; b' <- toLean b
-    pure $ "axiom " <> i' <+> hsep im' <+> hsep ex' <+> as' <> " : " <> b'
-  toLean (Claim (NFTerm im ex as b) _) = do
-    i' <- getLemmaId; im' <- mapM mkImplicit im;
+    pure $ "axiom " <> i' <+> hsep ex' <+> as' <> " : " <> b'
+  toLean (Claim i (NFTerm ex as b) _) = do
+    i' <- toLean i;
     ex' <- mapM mkExplicit ex; as' <- mkAssumptions as; b' <- toLean b
-    pure $ "lemma " <> i' <+> hsep im' <+> hsep ex' <+> as' <> " : " <> b' <> " := by sorry"
+    pure $ "lemma " <> i' <+> hsep ex' <+> as' <> " : " <> b' <> " := by sorry"
   toLean (Coercion i from to) = do
     i' <- toLean i; from' <- toLean (Signature from); to' <- toLean (Signature to)
     pure $ "axiom " <> i' <> " : " <> from' <> " → " <> to'

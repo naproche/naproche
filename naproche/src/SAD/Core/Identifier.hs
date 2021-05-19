@@ -20,6 +20,7 @@ module SAD.Core.Identifier
   , identSet, identClass, identElement, identObject
   ) where
 
+import Control.Monad
 import qualified Data.List as List
 import Data.Text (Text)
 import qualified Data.Text as Text
@@ -33,7 +34,7 @@ import Data.Binary (Binary)
 import Control.DeepSeq (NFData)
 
 data Ident
-  = NormalIdent !Text -- ^ An alpha-numeric identifier
+  = NormalIdent { fromNormalIdent :: !Text } -- ^ An alpha-numeric identifier
   | SymbolIdent [Text] -- ^ parts of the symbol with space for an argument between each two list elements
   deriving (Eq, Ord, Show, Read, Generic)
 instance NFData Ident
@@ -54,7 +55,7 @@ isNormal = \case NormalIdent _ -> True; _ -> False
 
 instance Pretty Ident where
   pretty (NormalIdent t) = pretty t
-  pretty (SymbolIdent ts) = pretty $ Text.intercalate "." ts 
+  pretty (SymbolIdent ts) = pretty $ Text.intercalate "." ts
 
 alternate :: [a] -> [a] -> [a]
 alternate [] _ = []
@@ -83,6 +84,8 @@ newIdent n taken =
     onLast f xs = case xs of
       [] -> [f ""]
       [x] -> [f x]
+      [x, ""] -> [f x, ""]
+      [x, "", ""] -> [f x, "", ""]
       (x:xs) -> x : onLast f xs
 
 identAsType :: Ident -> Maybe Text
@@ -152,8 +155,8 @@ symEncode = Text.concat . joinEithers . map chc . Text.chunksOf 1
 symDecode :: Text -> Maybe Text
 symDecode t = case Text.uncons t of
   Nothing -> Just ""
-  Just ('_', t) -> fmap Text.concat $ sequence $ zipWith ($) (tail fns) $ Text.split (=='_') t
-  Just _ -> fmap Text.concat $ sequence $ zipWith ($) fns $ Text.split (=='_') t
+  Just ('_', t) -> Text.concat <$> zipWithM ($) (tail fns) (Text.split (=='_') t)
+  Just _ -> Text.concat <$> zipWithM ($) fns (Text.split (=='_') t)
   where
     fns = concat $ repeat [decodeLeft, decodeRight]
     decodeLeft = Just
@@ -182,7 +185,7 @@ instance Monoid FV where
   mempty = FV $ \_ acc -> acc
 
 instance Semigroup FV where
-  fv1 <> fv2 = FV $ oneShot $ \boundVars -> oneShot $ \acc -> 
+  fv1 <> fv2 = FV $ oneShot $ \boundVars -> oneShot $ \acc ->
     runFV fv1 boundVars (runFV fv2 boundVars acc)
 
 class Monoid a => FreeVarStrategy a where
@@ -199,7 +202,7 @@ instance FreeVarStrategy FV where
 
 fvFromVarSet :: Set Ident -> FV
 fvFromVarSet vs = FV $ oneShot $ \boundVars -> oneShot $ \acc ->
-  acc `Set.union` (Set.filter (\a -> Set.notMember a boundVars) vs)
+  acc `Set.union` Set.filter (`Set.notMember` boundVars) vs
 
 fvToVarSet :: FV -> Set Ident
 fvToVarSet fv = runFV fv mempty mempty

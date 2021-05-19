@@ -7,9 +7,9 @@ module SAD.Core.Typed
  ( InType(..), OutType(..), Type(..), NFTerm(..)
  , Term(..), Located(..), Prf(..), WfBlock(..)
  , PrfBlock(..), Hypothesis(..), ClassInfo(..)
- , Stmt(..), Operator(..)
+ , Stmt(..), Operator(..), RIdent(..)
  , simp, bindAllExcept, findFree
- , termToNF, termFromNF, noWf, subst, substAll
+ , termToNF, termFromNF, subst, substAll
  ) where
 
 import Data.Text (Text)
@@ -30,7 +30,7 @@ import Data.Text.Prettyprint.Doc
 import SAD.Core.SourcePos (SourcePos)
 
 -- | Types that can be used as input in a TFF declaration 
-newtype InType 
+newtype InType
   = Signature Ident -- ^ introduced by signature
   deriving (Eq, Ord, Show, Read, Generic)
 instance NFData InType
@@ -72,6 +72,16 @@ instance NFData ClassInfo
 instance Hashable ClassInfo
 instance Binary ClassInfo
 
+-- | An identifier which is either resolved or not.
+-- This enables re-checking blocks: When the block has
+-- already been checked the resolved names appear like this:
+data RIdent
+  = Resolved   { fromRIdent :: !Ident }
+  | Unresolved { fromRIdent :: !Ident }
+  deriving (Eq, Ord, Show, Generic)
+instance Hashable RIdent
+instance Binary RIdent
+
 -- | An AST of typed first order form.
 -- During the first parse we will have f = Const (),
 -- then we might accumulate type information (f = [] or f = Set)
@@ -86,7 +96,7 @@ data Term f t
   | Class !Ident !(f InType) (Maybe (Term f t)) !(f ClassInfo) (Term f t)
     -- ^ { v : t "in" M | cond }
   | App !Operator [Term f t]
-  | AppWf !Ident [Term f t] (WfBlock f t)
+  | AppWf !RIdent [Term f t] (WfBlock f t)
   | Tag !t (Term f t)
 deriving instance (Eq (f InType), Eq t, Eq (f ClassInfo)) => Eq (Term f t)
 deriving instance (Ord (f InType), Ord t, Ord (f ClassInfo)) => Ord (Term f t)
@@ -99,12 +109,7 @@ instance (Generic (f InType), Generic t, Binary (f InType), Binary t, Generic (f
 -- followed by some assumptions and the main body.
 -- The forall bound variables should have pairwise different identifiers.
 data NFTerm f t = NFTerm
-  { nfImplicit :: [(Ident, f InType)]
-  -- ^ implicit forall-bound variables.
-  -- these could be unordered, but Map has no Hashable instance
-  -- TODO: In WfBlocks we only prove the existance of such terms
-  -- Do we require that they can be given constructively?
-  , nfExplicit :: [(Ident, f InType)]
+  { nfArguments :: [(Ident, f InType)]
   -- ^ explicit forall-bound variables.
   -- these should be ordered as they appear in the definition.
   , nfAssumptions :: [Term f t]
@@ -119,8 +124,7 @@ instance (Generic (f InType), Generic t, Binary (f InType), Binary t, Generic (f
 
 -- | Information for the user: Name of a lemma/axiom/sort/.. and position.
 data Located a = Located
-  { locName :: !Text
-  , locPos :: !SourcePos
+  { locPos :: !SourcePos
   , located :: a
   } deriving (Eq, Ord, Show, Generic)
 instance NFData a => NFData (Located a)
@@ -134,25 +138,22 @@ instance Hashable a => Hashable (Located a)
 -- Note that we don't check the term of the claim but only the proof block.
 data Stmt f t
   = IntroSort !Ident -- ^ new types
-  | IntroAtom !Ident [(Ident, f InType)] [(Ident, f InType)] [Term f t]
-    -- ^ atoms with implicit and explicit arguments as well as assumptions
+  | IntroAtom !Ident [(Ident, f InType)] [Term f t]
+    -- ^ atoms with arguments as well as assumptions
     -- but no body. Their semantics correspond to a predicate that may
     -- never be inlined.
-  | IntroSignature !Ident (f InType) [(Ident, f InType)] [(Ident, f InType)] [Term f t]
-    -- ^ functions with implicit and explicit arguments as well as assumptions
+  | IntroSignature !Ident (f InType) [(Ident, f InType)] [Term f t]
+    -- ^ functions with arguments as well as assumptions
     -- but no body. Their "body" can be defined through axioms. These are
     -- dangerous, because one can introduce a contradiction through them.
   | Predicate !Ident (NFTerm f t)
     -- ^ predicate definitions: ident <=> nfBody
   | Function !Ident (f InType) (NFTerm f t)
     -- ^ function definitions: ident : type = nfBody
-  | Axiom (NFTerm f t)
-    -- ^ axioms in the text. At the moment nfExplicit is empty,
-    -- but a future version could consider making some variables
-    -- explicit, so they have to be provided when the axiom is used
-    -- as a hint.
-  | Claim (NFTerm f t) (PrfBlock f t)
-    -- ^ lemma/theorem in the text. nfExplicit is empty, see above.
+  | Axiom !Ident (NFTerm f t)
+    -- ^ axioms in the text.
+  | Claim !Ident (NFTerm f t) (PrfBlock f t)
+    -- ^ lemma/theorem in the text.
   | Coercion
     !Ident -- ^ name of coercion
     !Ident -- ^ from notion
@@ -164,23 +165,21 @@ deriving instance (Generic (f InType), Generic t) => Generic (Stmt f t)
 instance (Generic (f InType), Generic t, Hashable (f InType), Hashable t, Generic (f ClassInfo), Hashable (f ClassInfo)) => Hashable (Stmt f t)
 instance (Generic (f InType), Generic t, Binary (f InType), Binary t, Generic (f ClassInfo), Binary (f ClassInfo)) => Binary (Stmt f t)
 
-data WfBlock f t = WfBlock 
-  { wfImplicits :: [(Ident, Term f t)]
-    -- ^ give terms for some implicits
-  , wfProof :: Maybe (NFTerm f t, PrfBlock f t)
-    -- ^ A proof for the claim in the first argument (added during type-checking):
-    --   Exists (implicits \ wfImplicits) st. assumptions
-    -- After type-checking 'Nothing' means that nothing needs to be done.
-  }
+-- | Wellformed-ness proofs. Initially these are 'NoWf'.
+-- Typechecking will either insert 'WellFormed' if no proof is necessary
+-- or 'WfProof' if a proof is necessary.
+-- With parser support, it should be possible for users to supply proofs.
+data WfBlock f t
+  = WellFormed -- ^ No proof necessary.
+  | NoWf -- ^ If no proof was given.
+  | WfProof (NFTerm f t) (PrfBlock f t)
+    -- ^ A proof for the claim in the first argument (added during type-checking)
 deriving instance (Eq (f InType), Eq t, Eq (f ClassInfo)) => Eq (WfBlock f t)
 deriving instance (Ord (f InType), Ord t, Ord (f ClassInfo)) => Ord (WfBlock f t)
 deriving instance (Show (f InType), Show t, Show (f ClassInfo)) => Show (WfBlock f t)
 deriving instance (Generic (f InType), Generic t) => Generic (WfBlock f t)
 instance (Generic (f InType), Generic t, Hashable (f InType), Hashable t, Generic (f ClassInfo), Hashable (f ClassInfo)) => Hashable (WfBlock f t)
 instance (Generic (f InType), Generic t, Binary (f InType), Binary t, Generic (f ClassInfo), Binary (f ClassInfo)) => Binary (WfBlock f t)
-
-noWf :: WfBlock f t
-noWf = WfBlock [] Nothing
 
 -- | A proof block. The first two tactics are given by users:
 -- either supplying the names of useful theorems or giving a list of tactics.
@@ -227,7 +226,7 @@ data Prf f t
   -- ^ prove that term => goal and set term as the new goal.
   | Define Ident (f InType) (Term f t)
   -- ^ give a name for an expression (a value).
-  | Subclaim (NFTerm f t) (PrfBlock f t)
+  | Subclaim !Ident (NFTerm f t) (PrfBlock f t)
   -- ^ a subclaim, also called 'have'
   -- the binders and assumptions of the NFTerm will be
   -- introduced/assumed automatically for the proof.
@@ -259,7 +258,7 @@ instance Binary Hypothesis
 -- | Simplify a formula for nicer pretty-printing.
 simp :: Term f t -> Term f t
 simp = \case
-  Forall v t tr -> Forall v t (simp tr) 
+  Forall v t tr -> Forall v t (simp tr)
   Exists v t tr -> Exists v t (simp tr)
   Class v m k ci tr -> Class v m k ci (simp tr)
   App And [App Top [], b] -> simp b
@@ -282,16 +281,16 @@ simp = \case
   Tag t a -> Tag t $ simp a
   t -> t
 
--- | Term in NF, with no explicit binders
+-- | Term in NF
 termToNF :: Term f t -> NFTerm f t
 termToNF t =
   let (t', bs) = stripForall t
       (b , as) = stripAssms t'
-  in NFTerm bs [] (filter (not . isTop) $ map simp as) b
+  in NFTerm bs (filter (not . isTop) $ map simp as) b
   where
     stripForall = \case
       Forall i m t -> ((i, m):) <$> stripForall t
-      b -> (b, []) 
+      b -> (b, [])
     stripAssms = \case
       App Imp [a, b] -> (a:) <$> stripAssms b
       b -> (b, [])
@@ -300,21 +299,20 @@ termToNF t =
 
 
 termFromNF :: NFTerm f t -> Term f t
-termFromNF (NFTerm im ex as b) = 
-  foldr (\(i, t) -> Forall i t) (
-    foldr (\(i, t) -> Forall i t) (
-      foldr (\a b -> App Imp [a, b]) b as
-    ) ex
-  ) im
+termFromNF (NFTerm ex as b) =
+  foldr (uncurry Forall) (
+    foldr (\a b -> App Imp [a, b]) b as
+  ) ex
 
 -- | Bind free variables by forall quantifiers
 -- and turn all bound variables into 'TermVar's.
 bindAllExcept :: Set Ident -> Term (Const ()) t -> Term (Const ()) t
 bindAllExcept bound t = bind $ bindVarSet bound $ findFree t
   where
-    bind vars = foldr (\v t -> Forall v (Const ()) t) t $ Set.toList $ fvToVarSet $ vars
+    bind vars = foldr (\v t -> Forall v (Const ()) t) t $ Set.toList $ fvToVarSet vars
 
 -- | Find free variables
+-- TODO: This will currently not look in WfBlocks!
 findFree :: Term f t -> FV
 findFree = free
   where
@@ -322,13 +320,13 @@ findFree = free
       Forall v _ t -> bindVar v $ free t
       Exists v _ t -> bindVar v $ free t
       FinClass _ _ ts -> mconcat (free <$> ts)
-      Class  v _ m _ t -> bindVar v $ free t <> maybe mempty (free) m
-      AppWf v ex _ -> unitFV v <> mconcat (free <$> ex)
+      Class  v _ m _ t -> bindVar v $ free t <> maybe mempty free m
+      AppWf v ex _ -> unitFV (fromRIdent v) <> mconcat (free <$> ex)
       App _ args -> mconcat $ free <$> args
       Tag _ t -> free t
 
 -- | (x `subst` t1) t2 == t2[x := t1]
--- DANGER: This will currently not substitute in WfBlocks!
+-- TODO: This will currently not substitute in WfBlocks!
 subst :: Ident -> Term f t -> Term f t -> Term f t
 subst x t1 = substAll (Map.fromList [(x, t1)])
 
@@ -344,7 +342,7 @@ substAll subMap
     $ substAll (Map.delete v subMap) t
   App op args -> App op (map (substAll subMap) args)
   Tag tag t -> Tag tag (substAll subMap t)
-  AppWf v [] _ | Just t1 <- Map.lookup v subMap -> t1
+  AppWf v [] _ | Just t1 <- Map.lookup (fromRIdent v) subMap -> t1
   AppWf v ex wf -> AppWf v (map (substAll subMap) ex) wf
 
 instance Pretty a => Pretty (Set a) where
@@ -360,18 +358,20 @@ instance Pretty OutType where
 instance Pretty Type where
   pretty Sort = "Sort"
   pretty (Pred [] t) = pretty t
-  pretty (Pred is t) = 
+  pretty (Pred is t) =
     encloseSep "" "" " → " (map pretty is ++ [pretty t])
 
-instance (Pretty (f InType), Show t, Show (f InType), Show (f ClassInfo)) 
+instance (Pretty (f InType), Show t, Show (f InType), Show (f ClassInfo))
   => Pretty (WfBlock f t) where
-  pretty (WfBlock is prf) = case (is, prf) of
-    ([], Nothing) -> ""
-    (xs, Nothing) -> " (with: " <> hsep (punctuate comma $ map (\(i, t) -> pretty i <> "=" <> pretty t) xs) <> ")"
-    ([], Just (_, prf)) -> " (wf. " <> pretty prf <> ")"
-    (xs, Just (_, prf)) -> " (with: " <> hsep (punctuate comma $ map (\(i, t) -> pretty i <> "=" <> pretty t) xs) <> "; wf. " <> pretty prf <> ")"
+  pretty WellFormed = ""
+  pretty NoWf = ""
+  pretty (WfProof _ prf) = " (wf." <> pretty prf <> ")"
 
-instance (Pretty (f InType), Show t, Show (f InType), Show (f ClassInfo)) 
+instance Pretty RIdent where
+  pretty (Resolved i) = pretty i
+  pretty (Unresolved i) = pretty i
+
+instance (Pretty (f InType), Show t, Show (f InType), Show (f ClassInfo))
   => Pretty (Term f t) where
   pretty (Forall v t tr) = "(∀[" <> pretty v <+> ":"
     <+> pretty t <> "]" <> softline <> pretty tr <> ")"
@@ -392,43 +392,41 @@ instance (Pretty (f InType), Show t, Show (f InType), Show (f ClassInfo))
   pretty (App Top []) = "true"
   pretty (App Bot []) = "false"
   pretty (AppWf op [] wf) = pretty op <> pretty wf
-  pretty (AppWf op args wf) | isSymbol op = 
+  pretty (AppWf op args wf) | isSymbol (fromRIdent op) =
     let args' = flip map args $ \a -> case a of
-          AppWf op _ _ | isSymbol op -> "(" <> pretty a <> ")"
+          AppWf op _ _ | isSymbol (fromRIdent op) -> "(" <> pretty a <> ")"
           _ -> pretty a
-    in prettyWithArgs op args' <> pretty wf
+    in prettyWithArgs (fromRIdent op) args' <> pretty wf
   pretty (AppWf op args wf) = pretty op <> tupled' (map pretty args) <> pretty wf
   pretty (Tag t tr) = "(" <> pretty (show t) <> " :: " <> pretty tr <> ")"
   pretty t = error $ "Malformed term: " ++ show t
 
-instance (Pretty (f InType), Show t, Show (f InType), Show (f ClassInfo)) 
+instance (Pretty (f InType), Show t, Show (f InType), Show (f ClassInfo))
   => Pretty (NFTerm f t) where
-  pretty (NFTerm im ex as b) =
-    let implicit = case im of
-          [] -> ""
-          _ -> "∀{" <> hsep (punctuate ("," <> softline) (map (\(v, m) -> pretty v <+> ":" <+> pretty m) im)) <> "}"
-        explicit = case ex of
+  pretty (NFTerm ex as b) =
+    let explicit = case ex of
           [] -> ""
           _ -> " ∀[" <> hsep (punctuate ("," <> softline) (map (\(v, m) -> pretty v <+> ":" <+> pretty m) ex)) <> "]"
-        break d = case im ++ ex of
+        break d = case ex of
           [] -> d
           _ -> ": " <> nest 2 (line <> d)
         assumptions = case as of
           [] -> ""
           _ -> vsep (pretty <$> as) <> line
-    in implicit <> explicit <> break (assumptions <> pretty b)
+    in explicit <> break (assumptions <> pretty b)
 
-instance (Pretty (f InType), Show t, Show (f InType), Show (f ClassInfo)) 
+instance (Pretty (f InType), Show t, Show (f InType), Show (f ClassInfo))
   => Pretty (Stmt f t) where
   pretty (IntroSort tm) = "Sort: " <> pretty tm
-  pretty (IntroAtom i im ex as) = "Predicate " <> pretty i <> ": " <> pretty (NFTerm im ex as (AppWf (NormalIdent "") [] noWf))
-  pretty (IntroSignature i t im ex as) = "Function " <> pretty i <> ": "
-    <> pretty (NFTerm im ex as (AppWf (NormalIdent "") [] noWf)) <> ": " <> pretty t
-  pretty (Axiom t) = "Axiom: " <> pretty t
+  pretty (IntroAtom i ex as) = "Predicate " <> pretty i <> ": "
+    <> pretty (NFTerm ex as (AppWf (Unresolved $ NormalIdent "") [] NoWf))
+  pretty (IntroSignature i t ex as) = "Function " <> pretty i <> ": "
+    <> pretty (NFTerm ex as (AppWf (Unresolved $ NormalIdent "") [] NoWf)) <> ": " <> pretty t
+  pretty (Axiom i t) = "Axiom " <> pretty i <> ": " <> pretty t
   pretty (Predicate t nf) = "Definition [" <> pretty t <> "]: " <> pretty nf
   pretty (Function t o nf) = "Definition [" <> pretty t <> " → " <> pretty o <> "]: " <> pretty nf
-  pretty (Claim t prf) = "Claim: " <> pretty t <> pretty prf
-  pretty (Coercion name from to) = "Coercion: " <> pretty name <> " : " 
+  pretty (Claim i t prf) = "Claim " <> pretty i <> ": " <> pretty t <> pretty prf
+  pretty (Coercion name from to) = "Coercion " <> pretty name <> " : "
     <> pretty from <> " → " <> pretty to
 
 instance (Pretty (f InType), Show t, Show (f InType), Show (f ClassInfo))
@@ -440,14 +438,14 @@ instance (Pretty (f InType), Show t, Show (f InType), Show (f ClassInfo))
     vsep (map (pretty . located . (\(a, _, _) -> a)) prfs)
 
 instance Pretty Hypothesis where
-  pretty (Given n t) = (pretty n) <> " : " <> pretty t
+  pretty (Given n t) = pretty n <> " : " <> pretty t
   pretty (Typing n t) = pretty n <> " : " <> pretty t
 
 instance (Pretty (f InType), Show t, Show (f InType), Show (f ClassInfo))
   => Pretty (Prf f t) where
   pretty (Intro i t) = "Let " <> pretty i <> " : " <> pretty t
   pretty (Assume t) = "Assume that " <> pretty t
-  pretty (Subclaim t prfs) = "We have: " <> pretty t <> " " <> pretty prfs
+  pretty (Subclaim i t prfs) = "We have " <> pretty i <> ": " <> pretty t <> " " <> pretty prfs
   pretty (Choose vs t prfs) = "Choose: "
     <> tupled' (map (\(x, t) -> pretty x <> " : " <> pretty t) vs)
     <> " such that " <> nest 2 (pretty t) <> pretty prfs
@@ -458,9 +456,8 @@ instance (Pretty (f InType), Show t, Show (f InType), Show (f ClassInfo))
       _ -> "Case: " <> nest 2 (pretty t <> " => " <> pretty c) <> pretty p) cs
   pretty (TerminalCases cs) = vsep $
     map (\(t, p) -> "Case: " <> nest 2 (pretty t) <> pretty p) cs
-  pretty (ByContradiction _) = "Assume the contrary." 
+  pretty (ByContradiction _) = "Assume the contrary."
   pretty (Suffices t prf) = "It suffices to show: " <> pretty t <> pretty prf
 
 instance Pretty a => Pretty (Located a) where
-  pretty (Located t p a) = "[" <> pretty t <> "] " 
-    <> pretty (show p) <> "\n" <> pretty a <> "\n"
+  pretty (Located p a) = pretty (show p) <> "\n" <> pretty a <> "\n"
