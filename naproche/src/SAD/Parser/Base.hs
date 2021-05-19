@@ -7,6 +7,7 @@ Parser datatype and monad instance.
 {-# LANGUAGE PolymorphicComponents #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE MultiWayIf #-}
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE BlockArguments #-}
@@ -41,10 +42,10 @@ import qualified Data.Text as Text
 
 -- | Parser state
 data State st = State
-  { stUser  :: st
-  , stInput :: [Token]
-  , parserKind :: ParserKind
-  , lastPosition :: SourcePos
+  { stUser  :: !st
+  , stInput :: ![Token]
+  , parserKind :: !ParserKind
+  , lastPosition :: !SourcePos
   } deriving (Eq, Ord, Show)
 
 -- | Get the current position of the parser.
@@ -59,9 +60,9 @@ data ParseResult st a = PR { prResult :: a, prState :: State st }
 -- | Ambiguity parser
 -- In practice: @st@ = @FState@, @r@ = @ParseResult FState a@
 data ParseOut st a 
-  = Continuation ParseError [ParseResult st a] [ParseResult st a]
-  | ConsumedFail ParseError
-  | EmptyFail ParseError
+  = Continuation !ParseError [ParseResult st a] [ParseResult st a]
+  | ConsumedFail !ParseError
+  | EmptyFail !ParseError
   deriving (Eq, Ord, Show)
 
 newtype Parser st a = Parser {runParser :: State st -> ParseOut st a }
@@ -111,7 +112,7 @@ tryParses f err = go err [] [] [] []
       -> [ParseResult st a]
       -> [ParseResult st a]
       -> ParseOut st b
-    go accErr accEmptyOk accConsumedOk accConsumedFails accEmptyFails emptyOks consumedOks =
+    go !accErr accEmptyOk accConsumedOk accConsumedFails accEmptyFails emptyOks consumedOks =
       case (emptyOks, consumedOks) of
 
       -- If we have no further input: exit based on the accumulated results
@@ -154,7 +155,7 @@ instance MonadPlus (Parser st) where
 -- | Reply type
 data Reply a
   = Ok [a]
-  | Error ParseError
+  | Error !ParseError
   deriving (Eq, Show)
 
 

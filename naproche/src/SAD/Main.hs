@@ -73,9 +73,9 @@ translate :: (MonadIO m, RunProver m, Comm m, CacheStorage m, HasLibrary m)
 translate opts0 file = flip evalStateT mempty $ runTimes $ do
   txts <- parse opts0 file
   -- lift $ mapM_ (\case (ProofTextBlock b) -> outputMain WRITELN (fileOnlyPos "") $ show b; _ -> pure ()) txts
+  converted <- lift $ transform txts
   
   beginTimedSection CheckTime
-  converted <- lift $ transform txts
   -- lift $ mapM_ (writeOut (fileOnlyPos "") . pretty . located) converted
   typed <- lift $ typecheck converted
   endTimedSection CheckTime

@@ -5,6 +5,7 @@ Parser combinators.
 -}
 
 {-# LANGUAGE TupleSections #-}
+{-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Parser.Combinators where
@@ -198,7 +199,7 @@ failing p = Parser $ \st -> case runParser p st of
 -- | Labeling of production rules for better error messages
 infix 0 <?>
 (<?>) :: Parser st a -> Text -> Parser st a
-p <?> msg = Parser $ \st -> case runParser p st of
+(<?>) p !msg = Parser $ \st -> case runParser p st of
   Continuation err a b -> Continuation (setError (stPosition st) err) a b
   ConsumedFail err -> ConsumedFail err
   EmptyFail err -> EmptyFail $ setError (stPosition st) err
@@ -210,7 +211,7 @@ p <?> msg = Parser $ \st -> case runParser p st of
 
 -- | Labeling of production rules for better error messages
 label :: Text -> Parser st a -> Parser st a
-label msg p = p <?> msg
+label !msg p = p <?> msg
 
 
 

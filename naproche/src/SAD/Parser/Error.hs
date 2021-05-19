@@ -5,6 +5,7 @@ Message and Parse Error data type and core functions.
 -}
 
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE BangPatterns #-}
 
 module SAD.Parser.Error
   ( ParseError(..),
@@ -29,7 +30,7 @@ import Data.Ord (comparing)
 
 
 data Message
-  = ExpectMsg {unexpect :: Text, expect :: [Text], message :: [Text]}
+  = ExpectMsg {unexpect :: !Text, expect :: [Text], message :: [Text]}
   | WellFormednessMessage {message :: [Text]}
   | Unknown
   deriving (Eq, Ord, Show)
@@ -51,7 +52,7 @@ newWellFormednessMessage :: [Text] -> Message
 newWellFormednessMessage msgs = WellFormednessMessage msgs
 
 compareImportance :: Message -> Message -> Ordering
-compareImportance msg1 msg2 =
+compareImportance !msg1 !msg2 =
   case comparing importance msg1 msg2 of
     GT -> GT
     LT -> LT
@@ -67,7 +68,7 @@ compareImportance msg1 msg2 =
 -- | Messages are a 'Semigroup' under importance-biased merging.
 instance Semigroup Message where
   (<>) :: Message -> Message -> Message
-  msg1 <> msg2 =
+  (<>) !msg1 !msg2 =
     case compareImportance msg1 msg2 of
       GT -> msg1
       LT -> msg2
@@ -81,7 +82,7 @@ instance Semigroup Message where
         Unknown -> msg1
 
 
-data ParseError = ParseError {errorPos :: SourcePos, peMsg :: Message}
+data ParseError = ParseError {errorPos :: !SourcePos, peMsg :: !Message}
     deriving (Eq, Ord)
 
 urgency :: ParseError -> ParseError -> Ordering
