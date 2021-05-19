@@ -82,7 +82,7 @@ pcheckConsistency = not <$> switch
 pinputFile :: Parser String
 pinputFile = argument str
   (  metavar "FILE"
-  <> help "The input file to be checked")
+  <> help "The input file to be checked: extension .ftl or .ftl.tex")
 
 arguments :: Parser Arguments
 arguments = Arguments <$>
@@ -111,7 +111,7 @@ commandArgs = hsubparser
 
 main :: IO ()
 main = do
-  args' <- execParser (info commandArgs (progDesc mainDesc))
+  args' <- execParser (info (commandArgs <**> helper) (progDesc mainDesc))
   case args' of
     Check (Arguments args library file) -> do
       exit <- runCommandLine library $ do
