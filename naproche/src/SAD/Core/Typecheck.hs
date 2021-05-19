@@ -228,7 +228,7 @@ checkWf p name' ex' wf = do
     Just (NFTerm ex as _) -> do
       let goal = simp $ List.foldl1' (\a b -> App And [a, b]) as
       let goal' = substAll (Map.fromList $ zip (map fst ex) ex') goal
-      -- todo: the current context should be inserted into this goal
+      -- TODO: the current context should be inserted into this goal
       -- so that it can be moved without any problems during desugering
       let nfgoal = NFTerm [] [] goal'
       pure $ WfProof nfgoal (ProofByHints [])

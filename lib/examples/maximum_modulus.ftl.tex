@@ -24,7 +24,7 @@
     [synonym number/-s]
 
     Let $f$ denote a function.
-    Let $M$ denote a set.
+    Let $M$ denote a class.
     Let $z$ denote an object.
 
     Let the domain of $f$ stand for $\Dom{f}$.
@@ -32,29 +32,35 @@
     Let $M$ contains $z$ stand for $z$ is in $M$.
 
     \begin{definition}
-      A subset of $M$ is a set $N$ such that
+      A subclass of $M$ is a class $N$ such that
       every element of $N$ is an element of $M$.
     \end{definition}
 
     \begin{definition}
-      Assume $M$ is a subset of the domain of $f$.
+      Let $f$ be a function.
+      Assume $M$ is a subclass of the domain of $f$.
       $\image{f}{M} = \{ f(x) | x\in M \}$.
     \end{definition}
-
-    \begin{axiom}
-      Assume $M$ is a subset of the domain of $f$.
-      $\image{f}{M}$ is a set.
-    \end{axiom}
   \end{forthel}
 
     \section{Real and complex numbers}
 
   \begin{forthel}
     \begin{signature}
-      A complex number is a notion.
+      A complex number is an object.
     \end{signature}
 
     Let $z, w$ denote complex numbers.
+
+    \begin{signature}
+      A complex function is a function.
+    \end{signature}
+
+    Let $f$ denote a complex function.
+
+    \begin{signature}
+      $f(z)$ is a complex number.
+    \end{signature}
 
     \begin{axiom}
       Every element of $\Dom{f}$ is a complex number and for every element $z$ of $\Dom{f}$ $f(z)$ is a complex number.
@@ -65,7 +71,7 @@
     \end{axiom}
 
     \begin{signature}
-      A real number is an object.
+      A real number is an complex number.
     \end{signature}
 
     Let $x,y$ denote real numbers.
@@ -99,20 +105,29 @@
     \end{signature}
 
     \begin{signature}
-      $\Ball{\varepsilon}{z}$ is a set that contains $z$.
+      $\Ball{\varepsilon}{z}$ is a set.
     \end{signature}
 
     \begin{axiom}
-      Assume $x$ is element of $\Ball{\varepsilon}{z}$. Then $x$ is a real number.
+       $\Ball{\varepsilon}{z}$ contains $z$.
     \end{axiom}
 
     \begin{axiom}
-      $|z| < |w|$ for some element $w$ of $\Ball{\varepsilon}{z}$.
+      Assume $x$ is element of $\Ball{\varepsilon}{z}$. Then $x$ is a complex number.
     \end{axiom}
 
     \begin{definition}
-      $M$ is open iff for every element $z$ of $M$ there exists $\varepsilon$ such that
-        $\Ball{\varepsilon}{z}$ is a subset of $M$.
+      Let $A$ be a class.
+      A member of $A$ is a complex number $x$ such that $x$ is an element of $A$.
+    \end{definition}
+
+    \begin{axiom}
+      $|z| < |w|$ for some member $w$ of $\Ball{\varepsilon}{z}$.
+    \end{axiom}
+
+    \begin{definition}
+      $M$ is open iff for every member $z$ of $M$ there exists $\varepsilon$ such that
+        $\Ball{\varepsilon}{z}$ is a subclass of $M$.
     \end{definition}
 
     \begin{axiom}
@@ -120,18 +135,19 @@
     \end{axiom}
 
     \begin{definition}
-      A local maximal point of $f$ is an element $z$ of the domain of $f$ such that there exists $\varepsilon$ such that $\Ball{\varepsilon}{z}$ is a subset of the domain of $f$ and $|f(w)| \leq |f(z)|$ for every element $w$ of $\Ball{\varepsilon}{z}$.
+      A local maximal point of $f$ is a member $z$ of the domain of $f$ such that there exists $\varepsilon$
+        such that $\Ball{\varepsilon}{z}$ is a subclass of the domain of $f$ and $|f(w)| \leq |f(z)|$ for every member $w$ of $\Ball{\varepsilon}{z}$.
     \end{definition}
 
     \begin{definition}
-      Let $U$ be a subset of the domain of $f$.
-      $f$ is constant on $U$ iff there exists an object $z$ such that $f(w) = z$ for every element $w$ of $U$.
+      Let $U$ be a subclass of the domain of $f$.
+      $f$ is constant on $U$ iff there exists an object $z$ such that $f(w) = z$ for every member $w$ of $U$.
     \end{definition}
 
     Let $f$ is constant stand for $f$ is constant on the domain of $f$.
 
     \begin{axiom}
-      Assume $f$ is holomorphic and $\Ball{\varepsilon}{z}$ is a subset of the domain of $f$.
+      Assume $f$ is holomorphic and $\Ball{\varepsilon}{z}$ is a subclass of the domain of $f$.
       If $f$ is not constant on $\Ball{\varepsilon}{z}$
         then $\image{f}{\Ball{\varepsilon}{z}}$ is open.
     \end{axiom}
@@ -146,7 +162,7 @@
 
     \begin{axiom}[Identity theorem]
       Assume $f$ is holomorphic and the domain of $f$ is a region.
-      Assume that $\Ball{\varepsilon}{z}$ is a subset of the domain of $f$.
+      Assume that $\Ball{\varepsilon}{z}$ is a subclass of the domain of $f$.
       If $f$ is constant on $\Ball{\varepsilon}{z}$ then $f$ is constant.
     \end{axiom}
 
@@ -157,7 +173,7 @@
     \begin{proof}
       Let $z$ be a local maximal point of $f$.
       Take $\varepsilon$ such that
-        $\Ball{\varepsilon}{z}$ is a subset of $\Dom{f}$
+        $\Ball{\varepsilon}{z}$ is a subclass of $\Dom{f}$
         and $|f(w)| \leq |f(z)|$ for every element $w$ of $\Ball{\varepsilon}{z}$.
 
       Let us show that $f$ is constant on $\Ball{\varepsilon}{z}$.
@@ -165,7 +181,7 @@
         Assume the contrary.
         Then $\image{f}{\Ball{\varepsilon}{z}}$ is open.
         We can take $\delta$ such that
-          $\Ball{\delta}{f(z)}$ is a subset of $\image{f}{\Ball{\varepsilon}{z}}$.
+          $\Ball{\delta}{f(z)}$ is a subclass of $\image{f}{\Ball{\varepsilon}{z}}$.
         Therefore there exists an element $w$ of $\Ball{\varepsilon}{z}$ such that
           $|f(z)| < |f(w)|$. Contradiction.
     	End.

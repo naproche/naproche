@@ -439,9 +439,8 @@ extractDefinitions ctx nf = do
                   coe <- mkCoercion (Signature name) to
                   ex <- extractExplicit name (nfArguments nf) [AppWf (Unresolved v) [] NoWf]
                   as <- mapM noTags $ reverse assms
-                  let ex' = List.deleteBy ((==) `on` fst) (v, mempty) ex
                   cond' <- noTags cond
-                  pure ([IntroSort name, Axiom name (NFTerm ex' as cond')] ++ coe, NFTerm [] [] (App Top []))
+                  pure ([IntroSort name, Axiom name (NFTerm ex as cond')] ++ coe, NFTerm [] [] (App Top []))
                 [] -> pure ([IntroSort name], NFTerm [] [] (App Top []))
                 (_:_:_) -> failWithMessage $ "The 'from' type of the coercion must be unique!"
             App Top [] -> pure ([IntroSort name], NFTerm [] [] (App Top []))
