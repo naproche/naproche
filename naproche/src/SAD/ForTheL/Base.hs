@@ -51,6 +51,31 @@ data FState = FState {
   idCount :: Int, hiddenCount :: Int, serialCounter :: Int,
   reports :: [Report], pide :: Maybe PIDE }
 
+instance Show FState where
+  show fs
+    =  "\n Adj: " <> show (fst <$> adjectiveExpr fs)
+    <> "\n Verb: " <> show (fst <$> verbExpr fs)
+    <> "\n Notion: " <> show (fst <$> notionExpr fs)
+    <> "\n SymbNotion: " <> show (fst <$> symbNotionExpr fs)
+    
+    <> "\n Cfn: " <> show (fst <$> cfnExpr fs)
+    <> "\n Rfn: " <> show (fst <$> rfnExpr fs)
+    <> "\n Lfn: " <> show (fst <$> lfnExpr fs)
+    <> "\n Ifn: " <> show (fst <$> ifnExpr fs)
+    
+    <> "\n Cpr: " <> show (fst <$> cprExpr fs)
+    <> "\n Rpr: " <> show (fst <$> rprExpr fs)
+    <> "\n Lpr: " <> show (fst <$> lprExpr fs)
+    <> "\n Ipr: " <> show (fst <$> iprExpr fs)
+
+    <> "\n tvr: " <> show (tvrExpr fs)
+    <> "\n str syms: " <> show (strSyms fs)
+    <> "\n varDecl: " <> show (varDecl fs)
+    <> "\n idCount: " <> show (idCount fs)
+    <> "\n hiddenCount: " <> show (hiddenCount fs)
+    <> "\n serialcounter: " <> show (serialCounter fs)
+    <> "\n reports: " <> show (reports fs)
+
 -- | Append the first fstate to the second.
 -- This adds definitions to the second, but keeps
 -- the vars / tvars / reports / etc of the second.
