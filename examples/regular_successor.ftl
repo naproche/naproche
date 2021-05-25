@@ -133,8 +133,8 @@ Then card(x) =< A.
 Take a function f that is surjective from A onto x (by Surj_Exi).
 Indeed x has an element and card(A) = A.
 Define g(i) =
-	Case i has an element → Choose a function h that is surjective from A onto i in h,
-	Case i has no element → 0^A
+  Case i has an element -> Choose a function h that is surjective from A onto i in h,
+  Case i has no element -> 0^A
 for i in Succ(A).
 Define h((xi,zeta)) = g(f(xi))(zeta) for (xi,zeta) in Prod(A,A).
 Let us show that h is surjective from Prod(A,A) onto Succ(A).

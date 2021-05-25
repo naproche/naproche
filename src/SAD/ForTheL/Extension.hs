@@ -1,6 +1,5 @@
 {-
 Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
-
 Extending the language: definitions, signature extensions, pretypings,
 macros and synonyms.
 -}
@@ -48,7 +47,7 @@ defPredicat = do
   return $ Iff (Tag HeadTerm f) g
   where
     defn = do f <- newPredicat; equiv; g <- statement; return (f,g)
-    equiv = iff <|> symbol "<=>" <|> symbol "⟺"
+    equiv = iff <|> symbol "<=>"
 
 defNotion :: FTL Formula
 defNotion = do
@@ -73,7 +72,7 @@ sigPredicat = do
   return $ Imp (Tag HeadTerm f) g
   where
     sig    = do f <- newPredicat; imp; g <- statement </> noInfo; return (f,g)
-    imp    = token' "is" <|> token' "implies" <|> symbol "=>" <|> symbol "⟹"
+    imp    = token' "is" <|> token' "implies" <|> symbol "=>"
     noInfo = art >> tokenOf' ["atom", "relation"] >> return Top
 
 

@@ -84,7 +84,7 @@ tokenize :: TexState -> SourcePos -> Text -> [Token]
 tokenize texState start = posToken texState start NoWhiteSpaceBefore
   where
     useTex = texState /= TexDisabled
-    isLexeme c = isAscii c && isAlphaNum c
+    isLexeme c = if useTex then isAscii c && isAlphaNum c else (isAscii c && isAlphaNum c) || c == '_'
     -- Activate the tokenizer when '\begin{forthel}' appears.
     posToken :: TexState -> SourcePos -> TokenType -> Text -> [Token]
     posToken OutsideForthelEnv pos _ s = toks
@@ -121,7 +121,7 @@ tokenize texState start = posToken texState start NoWhiteSpaceBefore
     -- We reuse the pattern parsing for sentences in order to parse LaTeX. Thus we simply tokenize
     -- away math-mode markers like '\[' and '\]'
     posToken texState pos _ s | useTex && hd `elem` ["\\[","\\]"] = toks
-      where 
+      where
         (hd, rest) = Text.splitAt 2 s
         toks = posToken texState (advancePos pos hd) WhiteSpaceBefore rest
 
