@@ -1,6 +1,5 @@
 {-
 Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
-
 FoTheL state and state management, parsing of primitives, operations on
 variables and macro expressions.
 -}
@@ -81,7 +80,6 @@ initFS = FState
     primInfixPredicates = [
       ([Symbol "="], mkTrm EqualityId TermEquality),
       ([Symbol "!", Symbol "="], Not . mkTrm EqualityId TermEquality),
-      ([Symbol "≠"], Not . mkTrm EqualityId TermEquality),
       ([Symbol "-", Symbol "<", Symbol "-"], mkTrm LessId TermLess),
       ([Symbol "\\in"], \(x:m:_) -> mkElem x m),
       ([Symbol "\\notin"], \(x:m:_) -> Not $ mkElem x m),
@@ -441,7 +439,7 @@ that = token' "that"
 standFor :: FTL ()
 standFor = token' "denote" <|> (token' "stand" >> token' "for")
 arrow :: FTL ()
-arrow = symbol "->" <|> symbol "→"
+arrow = symbol "->"
 there :: FTL ()
 there = token' "there" >> tokenOf' ["is","exist","exists"]
 does :: FTL ()
@@ -454,7 +452,7 @@ such :: FTL ()
 such = tokenOf' ["such", "so"]
 
 elementOf :: FTL ()
-elementOf = token' "in" <|> token "\\in" <|> symbol "∈"
+elementOf = token' "in" <|> token "\\in"
 
 --just for now:
 

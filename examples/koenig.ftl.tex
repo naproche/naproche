@@ -1,19 +1,17 @@
-% Cannot be compiled with pdftex. Use XeLaTeX instead.
-
 \documentclass{article}
 
+\usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{amssymb, mathtools}
 
 \usepackage{../lib/tex/naproche}
-\usepackage{unicode-math}
-\usepackage{MnSymbol} % \bigsqcup
 
 \title{König's Theorem}
 \author{Steffen Frerix and Peter Koepke\\
 University of Bonn}
 \date{2018 - 2021}
 
+\newcommand{\val}[2]{#1_{#2}}
 \newcommand{\card}[1]{\operatorname{card}(#1)}
 \newcommand{\Naproche}{$\mathbb{N}$aproche}
 
@@ -25,7 +23,7 @@ König's Theorem is an important set-theoretical result about the
 arithmetic of cardinals. It was proved by Julius König in 1905
 (König, Julius: Zum Kontinuumsproblem, Mathematische Annalen 60 (1905), 177–180).
 The proof is reminiscent of Cantor's diagonal argument for
-proving that $κ < 2^{κ}$.
+proving that $\kappa < 2^\kappa$.
 
 The formalization begins with a minimal axiomatic setup on sets, functions
 and cardinals, sufficient for the proof of the theorem.
@@ -54,7 +52,7 @@ around 35 seconds to check this text.
     \end{definition}
 
     \begin{definition}
-      $M \setminus N = \{x \in M \mid x$ is not an element of $N\}$.
+      $M \setminus N = \{x \in M | x$ is not an element of $N\}$.
     \end{definition}
 
     Let $f$ denote a function.
@@ -62,7 +60,7 @@ around 35 seconds to check this text.
 
     \begin{definition}
       Assume $M$ is a subset of the domain of $f$.
-      $f[M] = \{f(x) \mid x$ is an element of $M\}$.
+      $f[M] = \{f(x) | x$ is an element of $M\}$.
     \end{definition}
 
     Let the image of $f$ stand for $f[\dom(f)]$.
@@ -93,7 +91,7 @@ around 35 seconds to check this text.
     Let $A \leq B$ stand for $A = B$ or $A < B$.
 
     \begin{axiom}
-      $A < B < C ⟹ A < C$.
+      $A < B < C \implies A < C$.
     \end{axiom}
 
     \begin{axiom}
@@ -116,7 +114,7 @@ around 35 seconds to check this text.
 
     \begin{axiom}
       Assume the cardinality of $N$ is less than the cardinality of $M$.
-      Then $M \setminus N$ has an element.
+Then $M \setminus N$ has an element.
     \end{axiom}
 
     \begin{axiom}[SurjExi]
@@ -128,63 +126,63 @@ around 35 seconds to check this text.
 
 \section{Sums and Products of cardinals}
 
-\newcommand{\SumSet}[2]{{\bigsqcup}_{i \in #2} {#1}_{i}}
-\newcommand{\Sum}[2]{{\sum}_{i \in #2} {#1}_{i}}
-\newcommand{\ProdSet}[2]{{\bigtimes}_{i \in #2} {#1}_{i}}
-\newcommand{\Prod}[2]{{\prod}_{i \in #2} {#1}_{i}}
+\newcommand{\SumSet}[2]{{\dot{\bigcup}}_{i \in #2} \val{#1}{i}}
+\newcommand{\Sum}[2]{{\sum}_{i \in #2} \val{#1}{i}}
+\newcommand{\ProdSet}[2]{{\bigtimes}_{i \in #2} \val{#1}{i}}
+\newcommand{\Prod}[2]{{\prod}_{i \in #2} \val{#1}{i}}
 
   \begin{forthel}
     Let $D$ denote a set.
 
     \begin{definition}
-      A sequence of cardinals on $D$ is a function $κ$
-      such that $\dom(κ) = D$
-      and $κ(i)$ is a cardinal for every element $i$ of $D$.
+      A sequence of cardinals on $D$ is a function $\kappa$
+      such that $\dom(\kappa) = D$
+      and $\kappa(i)$ is a cardinal for every element $i$ of $D$.
     \end{definition}
 
-    Let $f_{i}$ stand for $f(i)$.
+Let $\val{f}{i}$ stand for $f(i)$.
 
     \begin{signature}
-      Let $κ$ be a sequence of cardinals on $D$.
-     $\SumSet{κ}{D}$ is a set.
+      Let $\kappa$ be a sequence of cardinals on $D$.
+     $\SumSet{\kappa}{D}$ is a set.
     \end{signature}
 
     \begin{axiom}[SumDef]
-      Let $κ$ be a sequence of cardinals on $D$. $\SumSet{κ}{D} =
-      \{(n,i) \mid i$ is an element of $D$ and $n$ is an element
-      of $κ_{i}\}$.
+      Let $\kappa$ be a sequence of cardinals on $D$. $\SumSet{\kappa}{D} =
+      \{(n,i) | i$ is an element of $D$ and $n$ is an element
+      of $\val{\kappa}{i}\}$.
     \end{axiom}
 
     \begin{axiom}
-      Let $κ$ be a sequence of cardinals on $D$.
-      Then $\SumSet{κ}{D}$ is a set.
+      Let $\kappa$ be a sequence of cardinals on $D$.
+      Then $\SumSet{\kappa}{D}$ is a set.
     \end{axiom}
 
     \begin{definition}
-      Let $κ$ be a sequence of cardinals on $D$.
-      $\Sum{κ}{D} = \card{\SumSet{κ}{D}}$.
+      Let $\kappa$ be a sequence of cardinals on $D$.
+      $\Sum{\kappa}{D} = \card{\SumSet{\kappa}{D}}$.
     \end{definition}
 
     \begin{signature}
-      Let $κ$ be a sequence of cardinals on $D$.
-      $\ProdSet{κ}{D}$ is a set.
+      Let $\kappa$ be a sequence of cardinals on $D$.
+      $\ProdSet{\kappa}{D}$ is a set.
     \end{signature}
 
     \begin{axiom}[ProdDef]
-      Let $κ$ be a sequence of cardinals on $D$. $\ProdSet{κ}{D} =
-      \{$ function $f \mid \dom(f) = D ∧ (f(i)$ is an element of
-      $κ_{i}$ for every
+      Let $\kappa$ be a sequence of cardinals on $D$. $\ProdSet{\kappa}{D} =
+      \{$ function $f | \dom(f) = D \wedge (f(i)$ is an element of
+      $\val{\kappa}{i}$ for every
       element $i$ of $D)\}$.
     \end{axiom}
 
     \begin{axiom}
-      Let $κ$ be a sequence of cardinals on $D$.
-      Then $\ProdSet{κ}{D}$ is a set.
+      Let $\kappa$ be a sequence of cardinals on $D$.
+      Then $\ProdSet{\kappa}{D}$ is a set.
     \end{axiom}
 
     \begin{definition}
-      Let $κ$ be a sequence of cardinals on $D$.
-      $\Prod{κ}{D} = \card{\ProdSet{κ}{D}}$.
+      Let $\kappa$ be a sequence of cardinals on $D$.
+      $\Prod{\kappa}{D} = \card{\ProdSet{\kappa}{D}}$.
     \end{definition}
 \end{forthel}
 
@@ -198,15 +196,15 @@ of non-empty factors are themselves non-empty:
 \begin{forthel}
 
     \begin{lemma}[Choice]
-      Let $λ$ be a sequence of cardinals on $D$.
-      Assume that $λ_{i}$
+      Let $\lambda$ be a sequence of cardinals on $D$.
+      Assume that $\val{\lambda}{i}$
      has an element for every element $i$ of $D$.
-     Then $\ProdSet{λ}{D}$ has an element.
+     Then $\ProdSet{\lambda}{D}$ has an element.
     \end{lemma}
     \begin{proof}
       Define $f(i) =$ choose an element $v$ of
-      $λ_{i}$ in $v$ for $i$ in $D$.
-     Then $f$ is an element of $\ProdSet{λ}{D}$.
+      $\val{\lambda}{i}$ in $v$ for $i$ in $D$.
+     Then $f$ is an element of $\ProdSet{\lambda}{D}$.
     \end{proof}
 
 \end{forthel}
@@ -216,51 +214,50 @@ of non-empty factors are themselves non-empty:
 
 \begin{forthel}
     \begin{theorem}
-      Let $κ, λ$ be sequences of cardinals on $D$.
+      Let $\kappa, \lambda$ be sequences of cardinals on $D$.
      Assume that for every element $i$ of $D$
-     $κ_{i} < λ_{i}$.
-     Then $$\Sum{κ}{D} < \Prod{λ}{D}.$$
+     $\val{\kappa}{i} < \val{\lambda}{i}$.
+     Then $$\Sum{\kappa}{D} < \Prod{\lambda}{D}.$$
     \end{theorem}
     \begin{proof}
       Proof by contradiction. Assume the contrary.
-      Then $$\Prod{λ}{D} \leq \Sum{κ}{D}.$$
-      Take a function $G$ such that $\SumSet{κ}{D}$ is the domain of $G$
-      and $\ProdSet{λ}{D}$ is the image of $G$.
-      Indeed $\ProdSet{λ}{D}$ has an element.
+      Then $$\Prod{\lambda}{D} \leq \Sum{\kappa}{D}.$$
+      Take a function $G$ such that $\SumSet{\kappa}{D}$ is the domain of $G$
+      and $\ProdSet{\lambda}{D}$ is the image of $G$.
+      Indeed $\ProdSet{\lambda}{D}$ has an element.
 
       Define
 
-      $Δ(i) =
-      \{G((n,i))(i) \mid n$ is an element of $κ_{i}\}$
+      $\Delta(i) =
+     \{G((n,i))(i) | n$ is an element of $\val{\kappa}{i}\}$
 
       for $i$ in $D$.
 
-      For every element $f$ of $\ProdSet{λ}{D}$
+      For every element $f$ of $\ProdSet{\lambda}{D}$
       for every element $i$ of $D$
-      $f(i)$ is an element of $λ_{i}$.
-      For every element $i$ of $D$ $λ_{i}$ is a set.
-      For every element $i$ of $D$ for every element $d$ of $Δ(i)$
-      we have $d\in λ_{i}$.
-      For every element $i$ of $D$ $Δ(i)$ is a set.
+      $f(i)$ is an element of $\val{\lambda}{i}$.
+      For every element $i$ of $D$ $\val{\lambda}{i}$ is a set.
+      For every element $i$ of $D$ for every element $d$ of $\Delta(i)$
+      we have $d\in \val{\lambda}{i}$.
+      For every element $i$ of $D$ $\Delta(i)$ is a set.
 
-      (1) For every element $i$ of $D$
-      $\card{Δ(i)} < λ_{i}$.
+     (1) For every element $i$ of $D$
+      $\card{\Delta(i)} < \val{\lambda}{i}$.
 
       Proof.
         Let $i$ be an element of $D$.
-        Define $F(n) = G((n,i))(i)$ for $n$ in $κ_{i}$.
-        Then $F[κ(i)] = Δ(i)$.
+        Define $F(n) = G((n,i))(i)$ for $n$ in $\val{\kappa}{i}$.
+        Then $F[\kappa(i)] = \Delta(i)$.
       end.
 
       Define
       $f(i) =$ choose an element $v$ of
-      $λ_{i} \setminus Δ(i)$ in
+      $\val{\lambda}{i} \setminus \Delta(i)$ in
       $v$ for $i$ in $D$. Then $f$ is an element of
-      $\ProdSet{λ}{D}$. Take an element $j$ of $D$ and an
-      element $m$ of $κ_{j}$ such that $G((m,j)) = f$.
-      $G((m,j))(j)$ is an element of $Δ(j)$ and $f(j)$
-      is not an element of $Δ(j)$. Contradiction.
+      $\ProdSet{\lambda}{D}$. Take an element $j$ of $D$ and an
+      element $m$ of $\val{\kappa}{j}$ such that $G((m,j)) = f$.
+      $G((m,j))(j)$ is an element of $\Delta(j)$ and $f(j)$
+      is not an element of $\Delta(j)$. Contradiction.
     \end{proof}
   \end{forthel}
-
 \end{document}
