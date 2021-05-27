@@ -121,7 +121,7 @@ tokenize texState start = posToken texState start NoWhiteSpaceBefore
     -- We reuse the pattern parsing for sentences in order to parse LaTeX. Thus we simply tokenize
     -- away math-mode markers like '\[' and '\]'
     posToken texState pos _ s | useTex && hd `elem` ["\\[","\\]"] = toks
-      where 
+      where
         (hd, rest) = Text.splitAt 2 s
         toks = posToken texState (advancePos pos hd) WhiteSpaceBefore rest
 
