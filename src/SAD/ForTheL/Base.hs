@@ -80,7 +80,6 @@ initFS = FState
     primInfixPredicates = [
       ([Symbol "="], mkTrm EqualityId TermEquality),
       ([Symbol "!", Symbol "="], Not . mkTrm EqualityId TermEquality),
-      ([Symbol "≠"], Not . mkTrm EqualityId TermEquality),
       ([Symbol "-", Symbol "<", Symbol "-"], mkTrm LessId TermLess),
       ([Symbol "\\in"], \(x:m:_) -> mkElem x m),
       ([Symbol "\\notin"], \(x:m:_) -> Not $ mkElem x m),
