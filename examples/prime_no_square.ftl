@@ -1,35 +1,47 @@
 [synonym number/-s] [synonym devide/-s]
+
 Signature. A rational number is a notion.
 
-Let s,r,q stand for rational numbers.
+Let q, s, r stand for rational numbers.
 
 Signature. r * q is a rational number.
 Axiom. r * q = q * r.
 Axiom. r * (q * s) = (r * q) * s.
-Axiom. q * s = q * r => s = r.
+
+Definition. q is left cancellative iff
+    for all r, s we have q * s = q * r => s = r.
+
+Signature. q is nonzero is a relation.
+
+Axiom. Every nonzero rational number is left cancellative.
+
 
 Signature. A natural number is a rational number.
 
-Let n,m,k denote natural numbers.
+Let m, n, k denote natural numbers.
 
 Axiom. n * m is a natural number.
 
-Definition. n | q iff there exists k such that k * n = q.
+Definition. n | m iff there exists k such that k * n = m.
 
 Let n divides m stand for n | m.
 Let a divisor of m stand for a natural number that divides m.
 
-Definition. n and m are coprime iff n and m have no common divisor.
+Definition.
+    Let p be a natural number.
+    p is prime iff p is nonzero and for all m, n we have p | n * m => (p | n \/ p | m).
 
-Signature. A prime number is a natural number.
+Let a prime number stand for a prime natural number.
 
 Let p denote a prime number.
 
-Axiom. p | n * m => p | n \/ p | m.
+Definition. n and m are coprime iff n and m have no common prime divisor.
 
-Axiom. There exist coprime m,n such that m * q = n.
+
+Axiom. There exist coprime m, n such that m * q = n.
 
 Let q^2 stand for q * q.
+
 
 Proposition. q^2 = p for no rational number q.
 Proof by contradiction.
@@ -39,4 +51,4 @@ Therefore p divides n. Take a natural number k such that n = k * p.
 Then p * m^2 = p * (k * n).
 Therefore m * m is equal to p * k^2.
 Hence p divides m. Contradiction.
-qed.
+QED.

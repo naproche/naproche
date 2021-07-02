@@ -22,7 +22,7 @@
       A rational number is a notion.
     \end{signature}
 
-    Let $s,r,q$ stand for rational numbers.
+    Let $q, s, r$ stand for rational numbers.
 
     \begin{signature}
       $r \cdot q$ is a rational number.
@@ -36,8 +36,17 @@
       $r \cdot (q \cdot s) = (r \cdot q) \cdot s$.
     \end{axiom}
 
+    \begin{definition}
+      $q$ is left cancellative iff
+      for all $r, s$ if $q\cdot s = q\cdot r$ then $s = r$.
+    \end{definition}
+
+    \begin{signature}
+      $q$ is nonzero is a relation.
+    \end{signature}
+
     \begin{axiom}
-      If $q \cdot s = q \cdot r$ then $s = r$.
+      Every nonzero rational number is left cancellative.
     \end{axiom}
   \end{forthel}
 
@@ -48,38 +57,38 @@
       A natural number is a rational number.
     \end{signature}
 
-    Let $n,m,k$ denote natural numbers.
+    Let $m, n, k$ denote natural numbers.
 
     \begin{axiom}
       $n \cdot m$ is a natural number.
     \end{axiom}
 
     \begin{definition}
-      $n \mid q$ iff there exists $k$ such that $k \cdot n = q$.
+      $n \mid m$ iff there exists $k$ such that $k \cdot n = m$.
     \end{definition}
 
     Let $n$ divides $m$ stand for $n \mid m$. Let a divisor of $m$ stand for a natural number that divides $m$.
-
-    \begin{definition}
-      $n$ and $m$ are coprime iff $n$ and $m$ have no common divisor.
-    \end{definition}
-
-    \begin{axiom}
-      There exist coprime $m,n$ such that $m \cdot q = n$.
-    \end{axiom}
   \end{forthel}
 
   \section*{Prime numbers}
 
   \begin{forthel}
-    \begin{signature}
-      A prime number is a natural number.
-    \end{signature}
+    \begin{definition}
+      Let $p$ be a natural number.
+      $p$ is prime iff $p$ is nonzero and for all $m, n$
+      if $p\mid n\cdot m$ then $p \mid n$ or $p \mid m$.
+    \end{definition}
+
+    Let a prime number stand for a prime natural number.
 
     Let $p$ denote a prime number.
 
+    \begin{definition}
+      $n$ and $m$ are coprime iff $n$ and $m$ have no common prime divisor.
+    \end{definition}
+
     \begin{axiom}
-      If $p \mid n \cdot m$ then $p \mid n$ or $p \mid m$.
+      There exist coprime $m,n$ such that $m \cdot q = n$.
     \end{axiom}
 
     Let $q^{2}$ stand for $q \cdot q$.
