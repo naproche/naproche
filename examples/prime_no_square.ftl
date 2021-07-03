@@ -4,6 +4,7 @@ Signature. A rational number is a notion.
 
 Let q, s, r stand for rational numbers.
 
+Signature. 0 is a rational number.
 Signature. r * q is a rational number.
 Axiom. r * q = q * r.
 Axiom. r * (q * s) = (r * q) * s.
@@ -11,7 +12,7 @@ Axiom. r * (q * s) = (r * q) * s.
 Definition. q is left cancellative iff
     for all r, s we have q * s = q * r => s = r.
 
-Signature. q is nonzero is a relation.
+Let q is nonzero stand for q != 0.
 
 Axiom. Every nonzero rational number is left cancellative.
 
@@ -20,6 +21,7 @@ Signature. A natural number is a rational number.
 
 Let m, n, k denote natural numbers.
 
+Signature. 1 is a natural number.
 Axiom. n * m is a natural number.
 
 Definition. n | m iff there exists k such that k * n = m.
@@ -29,7 +31,7 @@ Let a divisor of m stand for a natural number that divides m.
 
 Definition.
     Let p be a natural number.
-    p is prime iff p is nonzero and for all m, n we have p | n * m => (p | n \/ p | m).
+    p is prime iff p != 0, 1 and for all m, n we have p | n * m => (p | n \/ p | m).
 
 Let a prime number stand for a prime natural number.
 
