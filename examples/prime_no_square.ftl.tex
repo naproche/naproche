@@ -12,20 +12,20 @@
 
   \maketitle
 
-  \section*{Rational numbers}
+  \section*{(Strictly) positive rational numbers}
 
   \begin{forthel}
     [synonym number/-s]
     [synonym divide/-s]
 
     \begin{signature}
-      A rational number is a notion.
+      A positive rational number is a notion.
     \end{signature}
 
-    Let $q, s, r$ stand for rational numbers.
+    Let $q, s, r$ stand for positive rational numbers.
 
     \begin{signature}
-      $r \cdot q$ is a rational number.
+      $r \cdot q$ is a positive rational number.
     \end{signature}
 
     \begin{axiom}
@@ -41,14 +41,8 @@
       for all $r, s$ if $q\cdot s = q\cdot r$ then $s = r$.
     \end{definition}
 
-    \begin{signature}
-      $0$ is a rational number.
-    \end{signature}
-
-    Let $q$ is nonzero stand for $q\neq 0$.
-
     \begin{axiom}
-      Every nonzero rational number is left cancellative.
+      Every positive rational number is left cancellative.
     \end{axiom}
   \end{forthel}
 
@@ -56,7 +50,7 @@
 
   \begin{forthel}
     \begin{signature}
-      A natural number is a rational number.
+      A natural number is a positive rational number.
     \end{signature}
 
     Let $m, n, k$ denote natural numbers.
@@ -81,7 +75,7 @@
   \begin{forthel}
     \begin{definition}
       Let $p$ be a natural number.
-      $p$ is prime iff $p\neq 0, 1$ and for all $m, n$
+      $p$ is prime iff $p\neq 1$ and for all $m, n$
       if $p\mid n\cdot m$ then $p \mid n$ or $p \mid m$.
     \end{definition}
 
@@ -100,12 +94,12 @@
     Let $q^{2}$ stand for $q \cdot q$.
 
     \begin{proposition}
-      $q^{2} = p$ for no rational number $q$.
+      $q^{2} = p$ for no positive rational number $q$.
     \end{proposition}
     \begin{proof}
       Proof by contradiction. 
       Assume the contrary. 
-      Take a rational number $q$ such that $p = q^{2}$. 
+      Take a positive rational number $q$ such that $p = q^{2}$. 
       Take coprime $m,n$ such that $m \cdot q = n$. 
       Then $p \cdot m^{2} = n^{2}$. 
       Therefore $p$ divides $n$. 

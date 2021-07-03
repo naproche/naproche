@@ -1,23 +1,20 @@
 [synonym number/-s] [synonym devide/-s]
 
-Signature. A rational number is a notion.
+Signature. A positive rational number is a notion.
 
-Let q, s, r stand for rational numbers.
+Let q, s, r stand for positive rational numbers.
 
-Signature. 0 is a rational number.
-Signature. r * q is a rational number.
+Signature. r * q is a positive rational number.
 Axiom. r * q = q * r.
 Axiom. r * (q * s) = (r * q) * s.
 
 Definition. q is left cancellative iff
     for all r, s we have q * s = q * r => s = r.
 
-Let q is nonzero stand for q != 0.
-
-Axiom. Every nonzero rational number is left cancellative.
+Axiom. Every positive rational number is left cancellative.
 
 
-Signature. A natural number is a rational number.
+Signature. A natural number is a positive rational number.
 
 Let m, n, k denote natural numbers.
 
@@ -31,7 +28,7 @@ Let a divisor of m stand for a natural number that divides m.
 
 Definition.
     Let p be a natural number.
-    p is prime iff p != 0, 1 and for all m, n we have p | n * m => (p | n \/ p | m).
+    p is prime iff p != 1 and for all m, n we have p | n * m => (p | n \/ p | m).
 
 Let a prime number stand for a prime natural number.
 
@@ -45,9 +42,10 @@ Axiom. There exist coprime m, n such that m * q = n.
 Let q^2 stand for q * q.
 
 
-Proposition. q^2 = p for no rational number q.
+Proposition. q^2 = p for no positive rational number q.
 Proof by contradiction.
-Assume the contrary. Take a rational number q such that p = q^2.
+Assume the contrary. 
+Take a positive rational number q such that p = q^2.
 Take coprime m,n such that m * q = n. Then p * m^2 = n^2.
 Therefore p divides n. Take a natural number k such that n = k * p.
 Then p * m^2 = p * (k * n).
