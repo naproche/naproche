@@ -42,7 +42,7 @@ origin_translate = "Translation"
 
 -- server commands
 -- (see "$NAPROCHE_HOME/src/SAD/Main.hs")
--- (see "$NAPROCHE_HOME/Isabelle/prover_server.scala")
+-- (see "$NAPROCHE_HOME/Isabelle/src/scala/prover_server.scala")
 
 command_args :: String
 command_args = "command_args"

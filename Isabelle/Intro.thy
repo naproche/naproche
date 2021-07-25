@@ -104,12 +104,12 @@ text \<open>
       Language (ForTheL): \<^file>\<open>$NAPROCHE_HOME/Isabelle/Main/naproche.ML\<close>
 
     \<^item> Isabelle/Scala integration for the \<^verbatim>\<open>.ftl\<close> and \<^verbatim>\<open>.ftl.tex\<close> file-formats:
-      \<^file>\<open>$NAPROCHE_HOME/Isabelle/file_format.scala\<close>
+      \<^file>\<open>$NAPROCHE_HOME/Isabelle/src/scala/naproche_file_format.scala\<close>
 
     \<^item> Isabelle/Scala integration for external provers managed by Isabelle
       (with robust interrupts/timeouts for all platforms):
-      \<^file>\<open>$NAPROCHE_HOME/Isabelle/prover_server.scala\<close> to invoke e.g. E prover
-      from the Isabelle distribution (see \<^dir>\<open>$E_HOME/..\<close>).
+      \<^file>\<open>$NAPROCHE_HOME/Isabelle/src/scala/prover_server.scala\<close> to invoke e.g.
+      E prover from the Isabelle distribution (see \<^dir>\<open>$E_HOME/..\<close>).
 
     \<^item> Isabelle component settings to glue everything together:
       \<^file>\<open>$NAPROCHE_HOME/etc/settings\<close>

@@ -56,7 +56,7 @@ origin_translate = \<open>Naproche.origin_translate\<close>
 
 -- server commands
 -- (see \<^file>\<open>$NAPROCHE_HOME/src/SAD/Main.hs\<close>)
--- (see \<^file>\<open>$NAPROCHE_HOME/Isabelle/prover_server.scala\<close>)
+-- (see \<^file>\<open>$NAPROCHE_HOME/Isabelle/src/scala/prover_server.scala\<close>)
 
 command_args :: String
 command_args = \<open>Naproche.command_args\<close>
