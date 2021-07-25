@@ -32,13 +32,13 @@ Commands below assume the same current directory: repository clones
     hg clone https://isabelle.in.tum.de/repos/isabelle isabelle_naproche
     git clone https://github.com/naproche/naproche.git naproche
 
-    isabelle_naproche/Admin/init -I Isabelle_Naproche -V ./naproche
+    isabelle_naproche/Admin/init -I Isabelle_Naproche -V ./naproche/Isabelle
     isabelle_naproche/bin/isabelle components -u ./naproche
 
 * later updates:
 
     git --git-dir="./naproche/.git" pull
-    isabelle_naproche/Admin/init -V ./naproche
+    isabelle_naproche/Admin/init -V ./naproche/Isabelle
 
 
 ### Development
