@@ -1,0 +1,3 @@
+module = $ISABELLE_NAPROCHE/naproche_admin.jar
+services = \
+  isabelle.naproche.Admin_Tools

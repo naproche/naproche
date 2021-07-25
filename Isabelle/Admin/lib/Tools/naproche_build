@@ -6,41 +6,10 @@ set -e
 
 cd "$NAPROCHE_HOME"
 
-function fail()
-{
-  echo "$1" >&2
-  exit 2
-}
-
-[ "$#" -ne 0 ] && fail "Bad arguments: $@"
-
 
 echo "### Building Isabelle/Scala module: $NAPROCHE_JAR"
 
-declare -a SCALA_SOURCES=(
-  file_format.scala
-  naproche_component.scala
-  naproche_test.scala
-  naproche_tools.scala
-  prover_server.scala
-)
-
-rm -f "$NAPROCHE_JAR" 
-
-isabelle jedit -b
-
-(
-  cd Isabelle
-
-  rm -rf classes && mkdir classes
-  isabelle scalac -d classes -deprecation "${SCALA_SOURCES[@]}"
-
-  cd classes
-  isabelle_jdk jar cf "$(platform_path "$NAPROCHE_JAR")" *
-
-  cd ..
-  rm -rf classes
-)
+isabelle scala_build
 
 
 echo "### Building Isabelle/Naproche Haskell modules"

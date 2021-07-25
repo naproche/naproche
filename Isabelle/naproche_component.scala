@@ -20,7 +20,7 @@ object Naproche_Component
 
   val cleanup_names: List[String] = List("_config.yml")
   val cleanup_trees: List[String] =
-    List(".git", ".gitignore", ".travis.yml", "examples_pdf", "examples/test")
+    List(".git", ".gitignore", ".travis.yml", "examples_pdf", "examples/test", "Isabelle/Admin")
 
   val output_tail = 20
 
@@ -73,6 +73,9 @@ object Naproche_Component
     progress.echo("Copying " + naproche_jar.expand)
     Isabelle_System.copy_file(naproche_jar, component_dir + Path.explode("Isabelle"))
 
+    File.change(component_dir + Path.explode("etc/build.props"),
+      _.replaceAll("no_build\\s*=.*", "no_build = true"))
+
 
     /* PDF documents */
 
@@ -122,8 +125,6 @@ object Naproche_Component
 
     cleanup_trees.foreach(name =>
       Isabelle_System.rm_tree(component_dir + Path.explode(name)))
-
-    File.write(component_dir + Path.explode("etc/no_admin"), "")
 
 
     /* component archive */

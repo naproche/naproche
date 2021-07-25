@@ -1,0 +1,13 @@
+title = Isabelle/Scala/Naproche
+module = $NAPROCHE_JAR
+no_build = false
+requirements = \
+  env:ISABELLE_SCALA_JAR
+sources = \
+  Isabelle/file_format.scala \
+  Isabelle/naproche_component.scala \
+  Isabelle/naproche_test.scala \
+  Isabelle/naproche_tools.scala \
+  Isabelle/prover_server.scala
+services = \
+  isabelle.naproche.File_Format
