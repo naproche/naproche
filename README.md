@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.com/anfelor/Naproche-SAD.svg?branch=master)](https://travis-ci.com/anfelor/Naproche-SAD)
 
 Proof Checking of Natural Mathematical Documents, with optional support
-for Isabelle Prover IDE.
+for Isabelle Prover IDE (Isabelle/PIDE – Isabelle/jEdit).
 
 
 The subsequent explanations are for **development** of the tool, not for end-users!
@@ -26,7 +26,7 @@ The subsequent explanations are for **development** of the tool, not for end-use
 
 ### Build and test
 
-    cd .../Naproche-SAD  #repository
+    cd .../naproche  #repository
 
     stack clean
 
@@ -42,6 +42,7 @@ The subsequent explanations are for **development** of the tool, not for end-use
 
 
 ## Isabelle/Naproche Prover IDE
+
 ### Isabelle repository setup
 
   * Isabelle repository clone from https://isabelle.sketis.net/repos/isabelle-release
@@ -76,7 +77,7 @@ The subsequent explanations are for **development** of the tool, not for end-use
   * update reference to Naproche-SAD repository in $ISABELLE_HOME_USER/etc/components
     like this:
 
-        isabelle components -u .../Naproche-SAD
+        isabelle components -u .../naproche
 
 ### Isabelle build
 
@@ -106,7 +107,7 @@ The subsequent explanations are for **development** of the tool, not for end-use
 
 ### Use Isabelle Prover IDE
 
-        cd .../Naproche-SAD  #repository
+        cd .../naproche  #repository
 
 * Open ForTheL examples in Isabelle/jEdit, e.g.
 
