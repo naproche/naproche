@@ -13,11 +13,6 @@ import java.io.{File => JFile}
 
 object Naproche_Component
 {
-  val naproche_home: Path = Path.explode("$NAPROCHE_HOME")
-  val naproche_jar: Path = Path.explode("$NAPROCHE_JAR")
-  val naproche_exe_dir: Path = Path.explode("$NAPROCHE_EXE_DIR")
-  def naproche_platform: String = naproche_exe_dir.expand.base.implode
-
   val cleanup_names: List[String] = List("_config.yml")
   val cleanup_trees: List[String] =
     List(".git", ".gitignore", ".travis.yml", "examples_pdf", "examples/test", "Isabelle/Admin")
@@ -39,7 +34,7 @@ object Naproche_Component
 
     val version =
     {
-      val git_show = progress.bash("git show", cwd = naproche_home.file).check
+      val git_show = progress.bash("git show", cwd = Naproche.NAPROCHE_HOME.file).check
       val opt_version =
         for {
           line <- git_show.out_lines.headOption
@@ -63,15 +58,15 @@ object Naproche_Component
     {
       progress.bash(
         "git archive --output=" + File.bash_path(archive) + " -- " + Bash.string(version),
-        cwd = naproche_home.file).check
+        cwd = Naproche.NAPROCHE_HOME.file).check
       progress.bash("tar -x -f " + File.bash_path(archive), cwd = component_dir.file).check
     })
 
-    progress.echo("Copying " + naproche_exe_dir.expand)
-    Isabelle_System.copy_dir(naproche_exe_dir, component_dir)
+    progress.echo("Copying " + Naproche.NAPROCHE_EXE_DIR.expand)
+    Isabelle_System.copy_dir(Naproche.NAPROCHE_EXE_DIR, component_dir)
 
-    progress.echo("Copying " + naproche_jar.expand)
-    Isabelle_System.copy_file(naproche_jar, component_dir + Path.explode("Isabelle"))
+    progress.echo("Copying " + Naproche.NAPROCHE_JAR.expand)
+    Isabelle_System.copy_file(Naproche.NAPROCHE_JAR, component_dir + Path.explode("Isabelle"))
 
     File.change(component_dir + Path.explode("etc/build.props"),
       _.replaceAll("no_build\\s*=.*", "no_build = true"))
@@ -129,7 +124,7 @@ object Naproche_Component
 
     /* component archive */
 
-    val component_archive = Path.explode(component + "_" + naproche_platform + ".tar.gz")
+    val component_archive = Path.explode(component + "_" + Naproche.platform + ".tar.gz")
 
     progress.echo("Component archive " + (target_dir + component_archive))
     progress.bash("tar -czf " + File.bash_path(component_archive) + " " + Bash.string(component),

@@ -1,22 +1,15 @@
 chapter "Naproche"
 
-session "Naproche-Build" in "Isabelle" = Haskell +
-  description "Build Isabelle/Naproche modules."
-  sessions
-    Naproche
-  theories [condition = NAPROCHE_HOME]
-    Build
-  export_files (in src) [1] "*:**.hs"
-  export_files (in ".") [1] "*:**.jar"
-
 session "Naproche" in "Isabelle/Main" = Pure +
-  description "Isabelle Prover IDE support for NaProChe / ForTheL."
+  description "Isabelle/Naproche main session"
+  options [naproche_server = false]
   sessions
     Haskell
   theories [condition = NAPROCHE_HOME]
     Naproche
+    Build
 
 session "Naproche-Test" in "Isabelle/Test" = Naproche +
-  description "Some Isabelle/Naproche examples for testing."
+  description "Isabelle/Naproche test session"
   theories [condition = NAPROCHE_HOME]
     Test

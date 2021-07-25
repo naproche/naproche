@@ -6,7 +6,6 @@ ISABELLE_NAPROCHE="$NAPROCHE_HOME/Isabelle"
 
 if [ -d "$ISABELLE_NAPROCHE/Admin" ]; then
   init_component "$ISABELLE_NAPROCHE/Admin"
-  ISABELLE_TOOLS="$ISABELLE_TOOLS:$ISABELLE_NAPROCHE/Admin/lib/Tools"
 fi
 
 NAPROCHE_JAR="$ISABELLE_NAPROCHE/naproche.jar"
