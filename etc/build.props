@@ -1,5 +1,5 @@
 title = Isabelle/Scala/Naproche
-module = $NAPROCHE_JAR
+module = $ISABELLE_NAPROCHE/naproche.jar
 no_build = false
 requirements = \
   env:ISABELLE_SCALA_JAR
