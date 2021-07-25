@@ -45,22 +45,22 @@ The subsequent explanations are for **development** of the tool, not for end-use
 
 ### Isabelle repository setup
 
-  * Isabelle repository clone from https://isabelle.sketis.net/repos/isabelle-release
+  * Isabelle repository clone from https://isabelle.sketis.net/repos/isabelle
     (see also README_REPOSITORY)
 
   * Initialize fresh clone:
 
-        hg clone https://isabelle.sketis.net/repos/isabelle-release isabelle
+        hg clone https://isabelle.sketis.net/repos/isabelle isabelle
         cd isabelle
-        hg update -C -r Isabelle2021
+        hg update -C -r f175fd68b6a9
         bin/isabelle components -I
         bin/isabelle components -a
 
   * Update existing clone:
 
         cd isabelle
-        hg pull https://isabelle.sketis.net/repos/isabelle-release
-        hg update -C -r Isabelle2021
+        hg pull https://isabelle.sketis.net/repos/isabelle
+        hg update -C -r f175fd68b6a9
         bin/isabelle components -a
 
   * Isabelle executable: there is no need to have bin/isabelle in the PATH,

@@ -91,7 +91,7 @@ object Naproche_Test
       executor.shutdown()
       executor.awaitTermination(Long.MaxValue, TimeUnit.SECONDS)
     }
-    finally { prover_server.stop }
+    finally { prover_server.stop() }
 
     bad.value match {
       case Nil =>

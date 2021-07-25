@@ -50,10 +50,10 @@ object File_Format
         ("naproche_prover_server_port", prover_server.port.toString) +
         ("naproche_prover_server_password", prover_server.password)
 
-    override def stop: Unit =
+    override def stop(): Unit =
     {
       process.terminate()
-      prover_server.stop
+      prover_server.stop()
       process_result.join
     }
   }

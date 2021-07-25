@@ -50,7 +50,7 @@ object Prover_Server
     debugging: => Boolean = false): Prover_Server =
   {
     val server = new Prover_Server(port, provers, debugging)
-    server.start
+    server.start()
     server
   }
 }

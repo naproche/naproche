@@ -183,9 +183,10 @@ fun check_forthel ctxt {tex} (text, pos) =
               cat_lines environment,
               File.bash_path (Path.explode "$NAPROCHE_EXE") ^ " " ^ space_implode " " args ^
                 " \"\" < " ^ File.bash_path tmp_file];
-          val {out, err, rc, ...} = Bash.process script;
-          val _ = read_messages err;
-          val _ = read_messages out;
+          val res = Isabelle_System.bash_process script;
+          val rc = Process_Result.rc res;
+          val _ = read_messages (Process_Result.err res);
+          val _ = read_messages (Process_Result.out res);
         in rc = 0 orelse error ("Return code: " ^ string_of_int rc) end);
 
     val _ = Config.get ctxt naproche_server andalso try_server () orelse batch_tool ();

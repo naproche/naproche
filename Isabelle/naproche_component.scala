@@ -71,7 +71,7 @@ object Naproche_Component
     Isabelle_System.copy_dir(naproche_exe_dir, component_dir)
 
     progress.echo("Copying " + naproche_jar.expand)
-    File.copy(naproche_jar, component_dir + Path.explode("Isabelle"))
+    Isabelle_System.copy_file(naproche_jar, component_dir + Path.explode("Isabelle"))
 
 
     /* PDF documents */
@@ -110,7 +110,7 @@ object Naproche_Component
               :: result.out_lines.drop(result.out_lines.length - output_tail max 0)))
           }
         }
-        File.copy(examples_build + pdf_path, examples + pdf_path.dir)
+        Isabelle_System.copy_file(examples_build + pdf_path, examples + pdf_path.dir)
       }
     }
 
