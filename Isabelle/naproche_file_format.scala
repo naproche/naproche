@@ -9,9 +9,9 @@ package isabelle.naproche
 import isabelle._
 
 
-object File_Format
+object Naproche_File_Format
 {
-  class Agent(session_options: => Options) extends isabelle.File_Format.Agent
+  class Agent(session_options: => Options) extends File_Format.Agent
   {
     private def debugging: Boolean = session_options.bool("naproche_server_debugging")
 
@@ -59,7 +59,7 @@ object File_Format
   }
 }
 
-class File_Format extends isabelle.File_Format
+class Naproche_File_Format extends File_Format
 {
   override def format_name: String = "forthel"
 
@@ -72,9 +72,9 @@ class File_Format extends isabelle.File_Format
     "theory " + quote(if (detect_tex(name)) "tex" else "ftl") +
     " imports Naproche.Naproche begin forthel_file " + quote(name) + " end"
 
-  override def start(session: Session): isabelle.File_Format.Agent =
+  override def start(session: Session): File_Format.Agent =
     if (session.session_options.bool("naproche_server")) {
-      new File_Format.Agent(session.session_options)
+      new Naproche_File_Format.Agent(session.session_options)
     }
-    else isabelle.File_Format.No_Agent
+    else File_Format.No_Agent
 }

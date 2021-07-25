@@ -25,7 +25,7 @@ object Naproche_Test
     max_jobs: Int = 1,
     timeout: Time = Time.zero): Unit =
   {
-    val file_format = new isabelle.naproche.File_Format
+    val file_format = new Naproche_File_Format
 
     def relative(file: JFile): Path = File.relative_path(examples, File.path(file)).get
     def relative_name(file: JFile): String = relative(file).implode
