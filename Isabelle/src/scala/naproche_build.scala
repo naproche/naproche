@@ -24,9 +24,9 @@ object Naproche_Build
     /* export Haskell sources */
 
     val export_dir = Naproche.ISABELLE_NAPROCHE + Path.explode("src")
-    progress.echo("Exporting Isabelle/Naproche Haskell modules: " + export_dir.expand)
-    Export.export_files(Sessions.store(options), Naproche.session, export_dir,
-      export_prune = 1, export_patterns = List("Naproche.Build:**.hs"))
+    progress.echo("Exporting Isabelle/Naproche Haskell modules: ")
+    Export.export_files(Sessions.store(options), Naproche.session, export_dir.expand,
+      progress = progress, export_prune = 1, export_patterns = List("Naproche.Build:**.hs"))
 
 
     /* build executable */
