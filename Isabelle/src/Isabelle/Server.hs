@@ -13,7 +13,6 @@ module Isabelle.Server (
 )
 where
 
-import Data.ByteString (ByteString)
 import Control.Monad (forever, when)
 import qualified Control.Exception as Exception
 import Network.Socket (Socket)
@@ -21,6 +20,7 @@ import qualified Network.Socket as Socket
 import qualified System.IO as IO
 
 import Isabelle.Library
+import Isabelle.Bytes (Bytes)
 import qualified Isabelle.UUID as UUID
 import qualified Isabelle.Byte_Message as Byte_Message
 import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
@@ -49,7 +49,7 @@ server :: (String -> UUID.T -> IO ()) -> (Socket -> IO ()) -> IO ()
 server publish handle =
   Socket.withSocketsDo $ Exception.bracket open (Socket.close . fst) (uncurry loop)
   where
-    open :: IO (Socket, ByteString)
+    open :: IO (Socket, Bytes)
     open = do
       server_socket <- Socket.socket Socket.AF_INET Socket.Stream Socket.defaultProtocol
       Socket.bind server_socket (Socket.SockAddrInet 0 localhost)
@@ -62,7 +62,7 @@ server publish handle =
 
       return (server_socket, UUID.bytes password)
 
-    loop :: Socket -> ByteString -> IO ()
+    loop :: Socket -> Bytes -> IO ()
     loop server_socket password = forever $ do
       (connection, _) <- Socket.accept server_socket
       Isabelle_Thread.fork_finally

@@ -11,10 +11,65 @@ and "$ISABELLE_HOME/src/Pure/General/bytes.scala".
 -}
 
 module Isabelle.Bytes (
-  Bytes
+  Bytes,
+  make, unmake, pack, unpack,
+  empty, null, length, index, all, any,
+  head, last, take, drop, concat,
 )
 where
 
+import Prelude hiding (null, length, all, any, head, last, take, drop, concat)
+
+import qualified Data.ByteString.Short as ShortByteString
 import Data.ByteString.Short (ShortByteString)
+import Data.ByteString (ByteString)
+import qualified Data.List as List
+import Data.Word (Word8)
+
 
 type Bytes = ShortByteString
+
+make :: ByteString -> Bytes
+make = ShortByteString.toShort
+
+unmake :: Bytes -> ByteString
+unmake = ShortByteString.fromShort
+
+pack :: [Word8] -> Bytes
+pack = ShortByteString.pack
+
+unpack :: Bytes -> [Word8]
+unpack = ShortByteString.unpack
+
+empty :: Bytes
+empty = ShortByteString.empty
+
+null :: Bytes -> Bool
+null = ShortByteString.null
+
+length :: Bytes -> Int
+length = ShortByteString.length
+
+index :: Bytes -> Int -> Word8
+index = ShortByteString.index
+
+all :: (Word8 -> Bool) -> Bytes -> Bool
+all p = List.all p . unpack
+
+any :: (Word8 -> Bool) -> Bytes -> Bool
+any p = List.any p . unpack
+
+head :: Bytes -> Word8
+head bytes = index bytes 0
+
+last :: Bytes -> Word8
+last bytes = index bytes (length bytes - 1)
+
+take :: Int -> Bytes -> Bytes
+take n = pack . List.take n . unpack
+
+drop :: Int -> Bytes -> Bytes
+drop n = pack . List.drop n . unpack
+
+concat :: [Bytes] -> Bytes
+concat = mconcat

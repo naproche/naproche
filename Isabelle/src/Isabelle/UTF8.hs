@@ -26,7 +26,9 @@ import qualified Data.Text.Encoding as Encoding
 import qualified Data.Text.Encoding.Error as Error
 
 import Data.ByteString (ByteString)
-import Data.ByteString.Short (ShortByteString, toShort, fromShort)
+
+import qualified Isabelle.Bytes as Bytes
+import Isabelle.Bytes (Bytes)
 
 
 class Recode a b where
@@ -39,11 +41,11 @@ instance Recode Text ByteString where
   decode :: ByteString -> Text
   decode = Encoding.decodeUtf8With Error.lenientDecode
 
-instance Recode Text ShortByteString where
-  encode :: Text -> ShortByteString
-  encode = toShort . encode
-  decode :: ShortByteString -> Text
-  decode = decode . fromShort
+instance Recode Text Bytes where
+  encode :: Text -> Bytes
+  encode = Bytes.make . encode
+  decode :: Bytes -> Text
+  decode = decode . Bytes.unmake
 
 instance Recode String ByteString where
   encode :: String -> ByteString
@@ -51,8 +53,8 @@ instance Recode String ByteString where
   decode :: ByteString -> String
   decode = Text.unpack . decode
 
-instance Recode String ShortByteString where
-  encode :: String -> ShortByteString
+instance Recode String Bytes where
+  encode :: String -> Bytes
   encode = encode . Text.pack
-  decode :: ShortByteString -> String
+  decode :: Bytes -> String
   decode = Text.unpack . decode

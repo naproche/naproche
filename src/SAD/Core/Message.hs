@@ -23,10 +23,8 @@ import Control.Monad
 import Data.Maybe
 import Data.IORef
 import System.IO.Unsafe
-import Data.ByteString (ByteString)
 import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
-import qualified Data.ByteString as ByteString
 import qualified Data.ByteString.Char8 as Char8
 import Control.Concurrent (ThreadId)
 import qualified Control.Concurrent as Concurrent
@@ -35,7 +33,8 @@ import SAD.Core.SourcePos (SourcePos)
 import qualified SAD.Core.SourcePos as SourcePos
 import qualified Data.Text.Lazy as Text
 
-
+import qualified Isabelle.Bytes as Bytes
+import Isabelle.Bytes (Bytes)
 import qualified Isabelle.Properties as Properties
 import qualified Isabelle.Value as Value
 import qualified Isabelle.Markup as Markup
@@ -50,11 +49,11 @@ import qualified Isabelle.Library as Library
 -- PIDE thread context
 
 data PIDE = PIDE {pideID :: String, pideFile :: String, pideShift :: Int}
-type Channel = [ByteString] -> IO ()
+type Channel = [Bytes] -> IO ()
 data Context = Context {pide :: Maybe PIDE, channel :: Channel}
 
 defaultChannel :: Channel
-defaultChannel = Char8.putStrLn . ByteString.concat
+defaultChannel = Char8.putStrLn . Bytes.unmake . Bytes.concat
 
 defaultContext :: Context
 defaultContext = Context Nothing defaultChannel
@@ -166,7 +165,7 @@ xmlMessage pide origin kind pos msg =
     props0 = posProperties pide pos
     props = if null origin then props0 else (Naproche.origin, origin) : props0
 
-pideMessage :: String -> [ByteString]
+pideMessage :: String -> [Bytes]
 pideMessage = Byte_Message.make_line_message . UTF8.encode
 
 
@@ -202,7 +201,7 @@ report pos markup = reports [(pos, markup)]
 trimString :: String -> String
 trimString = Library.trim_line
 
-messageBytes :: Maybe PIDE -> String -> Kind -> SourcePos -> String -> [ByteString]
+messageBytes :: Maybe PIDE -> String -> Kind -> SourcePos -> String -> [Bytes]
 messageBytes pide origin kind pos msg =
   if isJust pide then
     pideMessage $ YXML.string_of $ xmlMessage (fromJust pide) origin kind pos msg
@@ -220,8 +219,7 @@ output origin kind pos msg = do
 error :: String -> SourcePos -> String -> IO a
 error origin pos msg = do
   pide <- pideContext
-  errorWithoutStackTrace $
-    UTF8.decode $ ByteString.concat $ messageBytes pide origin ERROR pos msg
+  errorWithoutStackTrace $ UTF8.decode $ Bytes.concat $ messageBytes pide origin ERROR pos msg
 
 
 -- specific messages
