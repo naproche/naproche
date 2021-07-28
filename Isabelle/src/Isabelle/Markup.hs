@@ -118,7 +118,7 @@ entityN = "entity"
 entity :: String -> String -> T
 entity kind name =
   (entityN,
-    (if null name then [] else [(nameN, name)]) ++ (if null kind then [] else [(kindN, kind)]))
+    (if null name then [] else [(nameN, name)]) <> (if null kind then [] else [(kindN, kind)]))
 
 defN :: String
 defN = "def"
@@ -211,7 +211,7 @@ blockN = "block"
 block :: Bool -> Int -> T
 block c i =
   (blockN,
-    (if c then [(consistentN, Value.print_bool c)] else []) ++
+    (if c then [(consistentN, Value.print_bool c)] else []) <>
     (if i /= 0 then [(indentN, Value.print_int i)] else []))
 
 breakN :: String
@@ -219,7 +219,7 @@ breakN = "break"
 break :: Int -> Int -> T
 break w i =
   (breakN,
-    (if w /= 0 then [(widthN, Value.print_int w)] else []) ++
+    (if w /= 0 then [(widthN, Value.print_int w)] else []) <>
     (if i /= 0 then [(indentN, Value.print_int i)] else []))
 
 fbreakN :: String

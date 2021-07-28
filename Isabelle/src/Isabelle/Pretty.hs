@@ -140,7 +140,7 @@ commas :: [T] -> [T]
 commas = separate ","
 
 enclose :: String -> String -> [T] -> T
-enclose lpar rpar prts = block (str lpar : prts ++ [str rpar])
+enclose lpar rpar prts = block (str lpar : prts <> [str rpar])
 
 enum :: String -> String -> String -> [T] -> T
 enum sep lpar rpar = enclose lpar rpar . separate sep

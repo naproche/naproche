@@ -77,6 +77,6 @@ instance Show Tree where
       show_tree (Text s) = Buffer.add (show_text s)
 
       show_elem name atts =
-        unwords (name : map (\(a, x) -> a ++ "=\"" ++ show_text x ++ "\"") atts)
+        unwords (name : map (\(a, x) -> a <> "=\"" <> show_text x <> "\"") atts)
 
       show_text = concatMap encode

@@ -86,7 +86,7 @@ proper_string :: String -> Maybe String
 proper_string s = if null s then Nothing else Just s
 
 quote :: String -> String
-quote s = "\"" ++ s ++ "\""
+quote s = "\"" <> s <> "\""
 
 space_implode :: String -> [String] -> String
 space_implode = List.intercalate

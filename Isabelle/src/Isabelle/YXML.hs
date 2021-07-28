@@ -34,8 +34,8 @@ charY = Char.chr 6
 strX, strY, strXY, strXYX :: String
 strX = [charX]
 strY = [charY]
-strXY = strX ++ strY
-strXYX = strXY ++ strX
+strXY = strX <> strY
+strXYX = strXY <> strX
 
 detect :: String -> Bool
 detect = any (\c -> c == charX || c == charY)
@@ -46,7 +46,7 @@ detect = any (\c -> c == charX || c == charY)
 output_markup :: Markup.T -> Markup.Output
 output_markup markup@(name, atts) =
   if Markup.is_empty markup then Markup.no_output
-  else (strXY ++ name ++ concatMap (\(a, x) -> strY ++ a ++ "=" ++ x) atts ++ strX, strXYX)
+  else (strXY <> name <> concatMap (\(a, x) -> strY <> a <> "=" <> x) atts <> strX, strXYX)
 
 buffer_attrib (a, x) =
   Buffer.add strY #> Buffer.add a #> Buffer.add "=" #> Buffer.add x
@@ -85,11 +85,11 @@ split fields sep str = splitting str
 
 -- structural errors
 
-err msg = error ("Malformed YXML: " ++ msg)
+err msg = error ("Malformed YXML: " <> msg)
 err_attribute = err "bad attribute"
 err_element = err "bad element"
 err_unbalanced "" = err "unbalanced element"
-err_unbalanced name = err ("unbalanced element " ++ quote name)
+err_unbalanced name = err ("unbalanced element " <> quote name)
 
 
 -- stack operations

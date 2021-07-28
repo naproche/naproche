@@ -10,6 +10,7 @@ See "$ISABELLE_HOME/src/Pure/PIDE/byte_message.ML"
 and "$ISABELLE_HOME/src/Pure/PIDE/byte_message.scala".
 -}
 
+{-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 
 module Isabelle.Byte_Message (
@@ -30,7 +31,7 @@ import qualified Isabelle.XML as XML
 import qualified Isabelle.YXML as YXML
 
 import Network.Socket (Socket)
-import qualified Network.Socket.ByteString as ByteString
+import qualified Network.Socket.ByteString as Socket
 
 import Isabelle.Library hiding (trim_line)
 import qualified Isabelle.Value as Value
@@ -39,13 +40,10 @@ import qualified Isabelle.Value as Value
 {- output operations -}
 
 write :: Socket -> [ByteString] -> IO ()
-write = ByteString.sendMany
-
-newline :: ByteString
-newline = ByteString.singleton 10
+write = Socket.sendMany
 
 write_line :: Socket -> ByteString -> IO ()
-write_line socket s = write socket [s, newline]
+write_line socket s = write socket [s, "\n"]
 
 
 {- input operations -}
@@ -58,7 +56,7 @@ read socket n = read_body 0 []
       if len >= n then return (result ss)
       else
         (do
-          s <- ByteString.recv socket (min (n - len) 8192)
+          s <- Socket.recv socket (min (n - len) 8192)
           case ByteString.length s of
             0 -> return (result ss)
             m -> read_body (len + m) (s : ss))
@@ -83,7 +81,7 @@ read_line socket = read_body []
   where
     result = trim_line . ByteString.pack . reverse
     read_body bs = do
-      s <- ByteString.recv socket 1
+      s <- Socket.recv socket 1
       case ByteString.length s of
         0 -> return (if null bs then Nothing else Just (result bs))
         1 ->
@@ -95,10 +93,10 @@ read_line socket = read_body []
 {- messages with multiple chunks (arbitrary content) -}
 
 make_header :: [Int] -> [ByteString]
-make_header ns = [UTF8.encode (space_implode "," (map Value.print_int ns)), newline]
+make_header ns = [UTF8.encode (space_implode "," (map Value.print_int ns)), "\n"]
 
 make_message :: [ByteString] -> [ByteString]
-make_message chunks = make_header (map ByteString.length chunks) ++ chunks
+make_message chunks = make_header (map ByteString.length chunks) <> chunks
 
 write_message :: Socket -> [ByteString] -> IO ()
 write_message socket = write socket . make_message
@@ -109,7 +107,7 @@ parse_header line =
     res = map Value.parse_nat (space_explode ',' (UTF8.decode line))
   in
     if all isJust res then map fromJust res
-    else error ("Malformed message header: " ++ quote (UTF8.decode line))
+    else error ("Malformed message header: " <> quote (UTF8.decode line))
 
 read_chunk :: Socket -> Int -> IO ByteString
 read_chunk socket n = do
@@ -118,8 +116,8 @@ read_chunk socket n = do
     case res of
       (Just chunk, _) -> chunk
       (Nothing, len) ->
-        error ("Malformed message chunk: unexpected EOF after " ++
-          show len ++ " of " ++ show n ++ " bytes")
+        error ("Malformed message chunk: unexpected EOF after " <>
+          show len <> " of " <> show n <> " bytes")
 
 read_message :: Socket -> IO (Maybe [ByteString])
 read_message socket = do
@@ -143,10 +141,10 @@ make_line_message :: ByteString -> [ByteString]
 make_line_message msg =
   let n = ByteString.length msg in
     if is_length msg || is_terminated msg then
-      error ("Bad content for line message:\n" ++ take 100 (UTF8.decode msg))
+      error ("Bad content for line message:\n" <> take 100 (UTF8.decode msg))
     else
-      (if n > 100 || ByteString.any (== 10) msg then make_header [n + 1] else []) ++
-      [msg, newline]
+      (if n > 100 || ByteString.any (== 10) msg then make_header [n + 1] else []) <>
+      [msg, "\n"]
 
 write_line_message :: Socket -> ByteString -> IO ()
 write_line_message socket = write socket . make_line_message
