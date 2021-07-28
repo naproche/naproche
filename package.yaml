@@ -34,7 +34,6 @@ dependencies:
 - mtl
 - transformers
 - bytestring
-- utf8-string
 - text
 - network
 - split
@@ -65,6 +64,7 @@ library:
     - Isabelle.Server
     - Isabelle.Byte_Message
     - Isabelle.Properties
+    - Isabelle.UTF8
     - Isabelle.XML
     - Isabelle.YXML
     - Isabelle.UUID

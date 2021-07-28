@@ -25,7 +25,6 @@ import qualified System.Exit as Exit
 import qualified System.IO as IO
 
 import Isabelle.Library (trim_line)
-import qualified Data.ByteString.UTF8 as UTF8
 import qualified Isabelle.Byte_Message as Byte_Message
 import qualified Isabelle.File as File
 import qualified Isabelle.Naproche as Naproche
@@ -33,6 +32,7 @@ import qualified Isabelle.Properties as Properties
 import qualified Isabelle.Server as Server
 import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
 import qualified Isabelle.UUID as UUID
+import qualified Isabelle.UTF8 as UTF8
 import qualified Isabelle.XML as XML
 import qualified Isabelle.YXML as YXML
 import Network.Socket (Socket)
@@ -190,7 +190,7 @@ serverConnection oldProofTextRef args0 connection = do
   mapM_ (Byte_Message.write_line_message connection . UUID.bytes) thread_uuid
 
   res <- Byte_Message.read_line_message connection
-  case fmap (YXML.parse . UTF8.toString) res of
+  case fmap (YXML.parse . UTF8.decode) res of
     Just (XML.Elem ((command, _), body)) | command == Naproche.cancel_command ->
       mapM_ Isabelle_Thread.stop_uuid (UUID.parse_string (XML.content_of body))
 
@@ -209,7 +209,7 @@ serverConnection oldProofTextRef args0 connection = do
               let msg = Exception.displayException (err :: Exception.SomeException)
               Exception.catch
                 (if YXML.detect msg then
-                  Byte_Message.write connection [UTF8.fromString msg]
+                  Byte_Message.write connection [UTF8.encode msg]
                  else outputMain ERROR noSourcePos msg)
                 (\(err2 :: Exception.IOException) -> pure ())))
 

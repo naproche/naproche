@@ -25,7 +25,7 @@ import Prelude hiding (read)
 import Data.Maybe
 import Data.ByteString (ByteString)
 import qualified Data.ByteString as ByteString
-import qualified Data.ByteString.UTF8 as UTF8
+import qualified Isabelle.UTF8 as UTF8
 import qualified Isabelle.XML as XML
 import qualified Isabelle.YXML as YXML
 
@@ -95,8 +95,7 @@ read_line socket = read_body []
 {- messages with multiple chunks (arbitrary content) -}
 
 make_header :: [Int] -> [ByteString]
-make_header ns =
-  [UTF8.fromString (space_implode "," (map Value.print_int ns)), newline]
+make_header ns = [UTF8.encode (space_implode "," (map Value.print_int ns)), newline]
 
 make_message :: [ByteString] -> [ByteString]
 make_message chunks = make_header (map ByteString.length chunks) ++ chunks
@@ -107,10 +106,10 @@ write_message socket = write socket . make_message
 parse_header :: ByteString -> [Int]
 parse_header line =
   let
-    res = map Value.parse_nat (space_explode ',' (UTF8.toString line))
+    res = map Value.parse_nat (space_explode ',' (UTF8.decode line))
   in
     if all isJust res then map fromJust res
-    else error ("Malformed message header: " ++ quote (UTF8.toString line))
+    else error ("Malformed message header: " ++ quote (UTF8.decode line))
 
 read_chunk :: Socket -> Int -> IO ByteString
 read_chunk socket n = do
@@ -144,7 +143,7 @@ make_line_message :: ByteString -> [ByteString]
 make_line_message msg =
   let n = ByteString.length msg in
     if is_length msg || is_terminated msg then
-      error ("Bad content for line message:\n" ++ take 100 (UTF8.toString msg))
+      error ("Bad content for line message:\n" ++ take 100 (UTF8.decode msg))
     else
       (if n > 100 || ByteString.any (== 10) msg then make_header [n + 1] else []) ++
       [msg, newline]
@@ -158,7 +157,7 @@ read_line_message socket = do
   case opt_line of
     Nothing -> return Nothing
     Just line ->
-      case Value.parse_nat (UTF8.toString line) of
+      case Value.parse_nat (UTF8.decode line) of
         Nothing -> return $ Just line
         Just n -> fmap trim_line . fst <$> read_block socket n
 
@@ -166,8 +165,8 @@ read_line_message socket = do
 read_yxml :: Socket -> IO (Maybe XML.Body)
 read_yxml socket = do
   res <- read_line_message socket
-  return (YXML.parse_body . UTF8.toString <$> res)
+  return (YXML.parse_body . UTF8.decode <$> res)
 
 write_yxml :: Socket -> XML.Body -> IO ()
 write_yxml socket body =
-  write_line_message socket (UTF8.fromString (YXML.string_of_body body))
+  write_line_message socket (UTF8.encode (YXML.string_of_body body))

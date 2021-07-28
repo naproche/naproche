@@ -24,7 +24,7 @@ import Isabelle.Library
 import qualified Isabelle.UUID as UUID
 import qualified Isabelle.Byte_Message as Byte_Message
 import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
-import qualified Data.ByteString.UTF8 as UTF8
+import qualified Isabelle.UTF8 as UTF8
 
 
 {- server address -}
@@ -99,5 +99,5 @@ connection port password client =
       return socket
 
     body socket = do
-      Byte_Message.write_line socket (UTF8.fromString password)
+      Byte_Message.write_line socket (UTF8.encode password)
       client socket

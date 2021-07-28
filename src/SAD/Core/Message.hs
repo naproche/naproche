@@ -28,7 +28,6 @@ import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
 import qualified Data.ByteString as ByteString
 import qualified Data.ByteString.Char8 as Char8
-import qualified Data.ByteString.UTF8 as UTF8
 import Control.Concurrent (ThreadId)
 import qualified Control.Concurrent as Concurrent
 
@@ -40,6 +39,7 @@ import qualified Data.Text.Lazy as Text
 import qualified Isabelle.Properties as Properties
 import qualified Isabelle.Value as Value
 import qualified Isabelle.Markup as Markup
+import qualified Isabelle.UTF8 as UTF8
 import qualified Isabelle.XML as XML
 import qualified Isabelle.YXML as YXML
 import qualified Isabelle.Byte_Message as Byte_Message
@@ -167,7 +167,7 @@ xmlMessage pide origin kind pos msg =
     props = if null origin then props0 else (Naproche.origin, origin) : props0
 
 pideMessage :: String -> [ByteString]
-pideMessage = Byte_Message.make_line_message . UTF8.fromString
+pideMessage = Byte_Message.make_line_message . UTF8.encode
 
 
 -- PIDE markup reports
@@ -207,7 +207,7 @@ messageBytes pide origin kind pos msg =
   if isJust pide then
     pideMessage $ YXML.string_of $ xmlMessage (fromJust pide) origin kind pos msg
   else
-    [UTF8.fromString
+    [UTF8.encode
       ((if null origin then "" else "[" ++ origin ++ "] ") ++
        (case show kind of "" -> "" ; s -> s ++ ": ") ++
        (case show pos of "" -> ""; s -> s ++ "\n") ++ msg)]
@@ -221,7 +221,7 @@ error :: String -> SourcePos -> String -> IO a
 error origin pos msg = do
   pide <- pideContext
   errorWithoutStackTrace $
-    UTF8.toString $ ByteString.concat $ messageBytes pide origin ERROR pos msg
+    UTF8.decode $ ByteString.concat $ messageBytes pide origin ERROR pos msg
 
 
 -- specific messages

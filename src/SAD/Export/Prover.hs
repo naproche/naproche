@@ -16,7 +16,6 @@ import System.Exit (ExitCode(..))
 import qualified System.Process as Process
 import qualified Control.Exception as Exception
 import qualified Data.ByteString as ByteString
-import qualified Data.ByteString.UTF8 as UTF8
 import qualified Data.Text.Lazy as Text
 import qualified Data.Text.Lazy.IO as TIO
 import Data.Text.Lazy (Text)
@@ -24,6 +23,7 @@ import Data.Text.Lazy (Text)
 import qualified Isabelle.File as File
 import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
 import qualified Isabelle.Server as Server
+import qualified Isabelle.UTF8 as UTF8
 import qualified Isabelle.XML as XML
 import qualified Isabelle.Byte_Message as Byte_Message
 import qualified Isabelle.Value as Value
@@ -143,7 +143,7 @@ runProver pos (Prover _ label path args yes con nos uns) proverServer printProve
                   ExitFailure rc | rc >= 0 -> rc
                   ExitFailure rc -> 128 - rc
 
-          proverResult rc (UTF8.toString output ++ UTF8.toString errors)
+          proverResult rc (UTF8.decode output ++ UTF8.decode errors)
 
       Just (port, password) ->
         Server.connection port password
@@ -166,7 +166,7 @@ runProver pos (Prover _ label path args yes con nos uns) proverServer printProve
                           Server.connection port password (\prover_kill ->
                             Byte_Message.write_yxml prover_kill
                               [XML.Elem ((Naproche.kill_command, []),
-                                [XML.Text (UTF8.toString uuid)])])
+                                [XML.Text (UTF8.decode uuid)])])
                     (rc, output) <-
                       Isabelle_Thread.bracket_resource kill_prover $ do
                         result <- Byte_Message.read_yxml prover
