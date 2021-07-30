@@ -16,7 +16,7 @@ module Isabelle.Library (
 
   the, the_default,
 
-  fold, fold_rev, single, map_index, get_index,
+  fold, fold_rev, single, map_index, get_index, separate,
 
   proper_string, quote, space_implode, commas, commas_quote, cat_lines,
   space_explode, split_lines, trim_line, clean_name)

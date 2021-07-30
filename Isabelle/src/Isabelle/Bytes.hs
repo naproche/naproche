@@ -14,7 +14,7 @@ module Isabelle.Bytes (
   Bytes,
   make, unmake, pack, unpack,
   empty, null, length, index, all, any,
-  head, last, take, drop, concat,
+  head, last, take, drop, concat, trim_line
 )
 where
 
@@ -73,3 +73,12 @@ drop n = pack . List.drop n . unpack
 
 concat :: [Bytes] -> Bytes
 concat = mconcat
+
+trim_line :: Bytes -> Bytes
+trim_line s =
+  if n >= 2 && at (n - 2) == 13 && at (n - 1) == 10 then take (n - 2) s
+  else if n >= 1 && (at (n - 1) == 13 || at (n - 1) == 10) then take (n - 1) s
+  else s
+  where
+    n = length s
+    at = index s
