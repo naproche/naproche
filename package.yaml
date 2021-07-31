@@ -33,6 +33,7 @@ dependencies:
 - time
 - mtl
 - transformers
+- array
 - bytestring
 - text
 - network
