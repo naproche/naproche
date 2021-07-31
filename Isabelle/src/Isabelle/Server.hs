@@ -24,7 +24,6 @@ import Isabelle.Bytes (Bytes)
 import qualified Isabelle.UUID as UUID
 import qualified Isabelle.Byte_Message as Byte_Message
 import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
-import qualified Isabelle.UTF8 as UTF8
 
 
 {- server address -}
@@ -40,7 +39,8 @@ publish_text name address password =
   "server " <> quote name <> " = " <> address <> " (password " <> quote (show password) <> ")"
 
 publish_stdout :: String -> String -> UUID.T -> IO ()
-publish_stdout name address password = putStrLn (publish_text name address password)
+publish_stdout name address password =
+  putStrLn (publish_text name address password)
 
 
 {- server -}
@@ -60,7 +60,7 @@ server publish handle =
       password <- UUID.random
       publish address password
 
-      return (server_socket, UUID.bytes password)
+      return (server_socket, UUID.print password)
 
     loop :: Socket -> Bytes -> IO ()
     loop server_socket password = forever $ do
@@ -79,7 +79,7 @@ server publish handle =
 
 {- client connection -}
 
-connection :: String -> String -> (Socket -> IO a) -> IO a
+connection :: String -> Bytes -> (Socket -> IO a) -> IO a
 connection port password client =
   Socket.withSocketsDo $ do
     addr <- resolve
@@ -99,5 +99,5 @@ connection port password client =
       return socket
 
     body socket = do
-      Byte_Message.write_line socket (UTF8.encode password)
+      Byte_Message.write_line socket password
       client socket

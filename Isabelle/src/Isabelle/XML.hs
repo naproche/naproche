@@ -9,6 +9,7 @@ Untyped XML trees and representation of ML values.
 See also "$ISABELLE_HOME/src/Pure/PIDE/xml.ML".
 -}
 
+{-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -fno-warn-missing-signatures #-}
 
 module Isabelle.XML (Attributes, Body, Tree(..), wrap_elem, unwrap_elem, content_of)
@@ -18,13 +19,15 @@ import Isabelle.Library
 import qualified Isabelle.Properties as Properties
 import qualified Isabelle.Markup as Markup
 import qualified Isabelle.Buffer as Buffer
+import qualified Isabelle.Bytes as Bytes
+import Isabelle.Bytes (Bytes)
 
 
 {- types -}
 
 type Attributes = Properties.T
 type Body = [Tree]
-data Tree = Elem (Markup.T, Body) | Text String
+data Tree = Elem (Markup.T, Body) | Text Bytes
 
 
 {- wrapped elements -}
@@ -51,22 +54,26 @@ add_content tree =
         Elem (_, ts) -> fold add_content ts
         Text s -> Buffer.add s
 
-content_of :: Body -> String
+content_of :: Body -> Bytes
 content_of body = Buffer.empty |> fold add_content body |> Buffer.content
 
 
 {- string representation -}
 
-encode '<' = "&lt;"
-encode '>' = "&gt;"
-encode '&' = "&amp;"
-encode '\'' = "&apos;"
-encode '\"' = "&quot;"
-encode c = [c]
+encode_char :: Char -> String
+encode_char '<' = "&lt;"
+encode_char '>' = "&gt;"
+encode_char '&' = "&amp;"
+encode_char '\'' = "&apos;"
+encode_char '\"' = "&quot;"
+encode_char c = [c]
+
+encode_text :: Bytes -> Bytes
+encode_text = make_bytes . concatMap (encode_char . Bytes.char) . Bytes.unpack
 
 instance Show Tree where
   show tree =
-    Buffer.empty |> show_tree tree |> Buffer.content
+    Buffer.empty |> show_tree tree |> Buffer.content |> make_string
     where
       show_tree (Elem ((name, atts), [])) =
         Buffer.add "<" #> Buffer.add (show_elem name atts) #> Buffer.add "/>"
@@ -74,9 +81,7 @@ instance Show Tree where
         Buffer.add "<" #> Buffer.add (show_elem name atts) #> Buffer.add ">" #>
         fold show_tree ts #>
         Buffer.add "</" #> Buffer.add name #> Buffer.add ">"
-      show_tree (Text s) = Buffer.add (show_text s)
+      show_tree (Text s) = Buffer.add (encode_text s)
 
       show_elem name atts =
-        unwords (name : map (\(a, x) -> a <> "=\"" <> show_text x <> "\"") atts)
-
-      show_text = concatMap encode
+        space_implode " " (name : map (\(a, x) -> a <> "=\"" <> encode_text x <> "\"") atts)

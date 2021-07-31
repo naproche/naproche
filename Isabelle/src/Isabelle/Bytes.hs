@@ -10,14 +10,13 @@ See "$ISABELLE_HOME/src/Pure/General/bytes.ML"
 and "$ISABELLE_HOME/src/Pure/General/bytes.scala".
 -}
 
-{-# LANGUAGE ScopedTypeVariables #-}
-
 module Isabelle.Bytes (
   Bytes,
   make, unmake, pack, unpack,
   empty, null, length, index, all, any,
-  head, last, take, drop, concat, trim_line,
-  singleton
+  head, last, take, drop, concat,
+  space, spaces, singleton, char, byte,
+  trim_line, space_explode, split_lines
 )
 where
 
@@ -79,13 +78,30 @@ drop n = pack . List.drop n . unpack
 concat :: [Bytes] -> Bytes
 concat = mconcat
 
+space :: Word8
+space = 32
+
+small_spaces :: Array Int Bytes
+small_spaces = array (0, 64) [(i, pack (replicate i space)) | i <- [0 .. 64]]
+
+spaces :: Int -> Bytes
+spaces n =
+  if n < 64 then small_spaces ! n
+  else concat ((small_spaces ! (n `mod` 64)) : replicate (n `div` 64) (small_spaces ! 64))
+
 singletons :: Array Word8 Bytes
 singletons =
-  array (minBound, maxBound) $!
-  [(i, make (ByteString.singleton i)) | i <- [minBound .. maxBound]]
+  array (minBound, maxBound)
+    [(i, make (ByteString.singleton i)) | i <- [minBound .. maxBound]]
 
 singleton :: Word8 -> Bytes
 singleton b = singletons ! b
+
+char :: Word8 -> Char
+char = toEnum . fromEnum
+
+byte :: Char -> Word8
+byte = toEnum . fromEnum
 
 trim_line :: Bytes -> Bytes
 trim_line s =
@@ -94,4 +110,18 @@ trim_line s =
   else s
   where
     n = length s
-    at :: Int -> Char = toEnum . fromEnum . index s
+    at = char . index s
+
+space_explode :: Word8 -> Bytes -> [Bytes]
+space_explode sep str =
+  if null str then []
+  else if all (/= sep) str then [str]
+  else explode (unpack str)
+  where
+    explode rest =
+      case span (/= sep) rest of
+        (_, []) -> [pack rest]
+        (prfx, _ : rest') -> pack prfx : explode rest'
+
+split_lines :: Bytes -> [Bytes]
+split_lines = space_explode (byte '\n')

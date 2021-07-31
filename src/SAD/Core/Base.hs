@@ -73,6 +73,8 @@ import qualified SAD.Core.Message as Message
 import qualified SAD.Data.Structures.DisTree as DT
 import qualified SAD.Data.Text.Context as Context (name)
 
+import Isabelle.Library (make_bytes)
+
 
 
 -- | Reasoner state
@@ -267,13 +269,13 @@ sumTimer trackers timer = sum (projectTimer trackers timer)
 maximalTimer :: [Tracker] -> Timer -> NominalDiffTime
 maximalTimer trackers timer = foldr max 0 (projectTimer trackers timer)
 
-showTimeDiff :: NominalDiffTime -> Text
+showTimeDiff :: NominalDiffTime -> String
 showTimeDiff t =
   if hours == 0
     then format minutes <> ":" <> format restSeconds <> "." <> format restCentis
     else format hours   <> ":" <> format restMinutes <> ":" <> format restSeconds
   where
-    format n = Text.pack $ if n < 10 then '0':show n else show n
+    format n = if n < 10 then '0':show n else show n
     centiseconds = (truncate $ t * 100) :: Int
     (seconds, restCentis)  = divMod centiseconds 100
     (minutes, restSeconds) = divMod seconds 60
@@ -312,17 +314,17 @@ unsetChecked = updateRS (\st -> st {alreadyChecked = False})
 -- common messages
 
 reasonLog :: Message.Kind -> SourcePos -> Text -> VM ()
-reasonLog kind pos = justIO . Message.outputReasoner kind pos . Text.unpack
+reasonLog kind pos = justIO . Message.outputReasoner kind pos . make_bytes . Text.unpack
 
 thesisLog :: Message.Kind -> SourcePos -> Int -> Text -> VM ()
 thesisLog kind pos indent msg =
-  justIO (Message.outputThesis kind pos (replicate (3 * indent) ' ' ++ Text.unpack msg))
+  justIO (Message.outputThesis kind pos (make_bytes (replicate (3 * indent) ' ' ++ Text.unpack msg)))
 
 simpLog :: Message.Kind -> SourcePos -> Text -> VM ()
-simpLog kind pos = justIO . Message.outputSimplifier kind pos . Text.unpack
+simpLog kind pos = justIO . Message.outputSimplifier kind pos . make_bytes . Text.unpack
 
 translateLog :: Message.Kind -> SourcePos -> Text -> VM ()
-translateLog kind pos = justIO . Message.outputTranslate kind pos . Text.unpack
+translateLog kind pos = justIO . Message.outputTranslate kind pos . make_bytes . Text.unpack
 
 
 

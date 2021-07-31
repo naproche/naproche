@@ -9,6 +9,7 @@ XML as data representation language.
 See also "$ISABELLE_HOME/src/Pure/PIDE/xml.ML".
 -}
 
+{-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -fno-warn-missing-signatures #-}
 
 module Isabelle.XML.Decode (
@@ -21,15 +22,16 @@ module Isabelle.XML.Decode (
 where
 
 import Isabelle.Library
+import Isabelle.Bytes (Bytes)
 import qualified Isabelle.Value as Value
 import qualified Isabelle.Properties as Properties
 import qualified Isabelle.XML as XML
 
 
-type A a = String -> a
+type A a = Bytes -> a
 type T a = XML.Body -> a
-type V a = ([String], XML.Body) -> a
-type P a = [String] -> a
+type V a = ([Bytes], XML.Body) -> a
+type P a = [Bytes] -> a
 
 err_atom = error "Malformed XML atom"
 err_body = error "Malformed XML body"
@@ -75,7 +77,7 @@ properties :: T Properties.T
 properties [XML.Elem ((":", props), [])] = props
 properties _ = err_body
 
-string :: T String
+string :: T Bytes
 string [] = ""
 string [XML.Text s] = s
 string _ = err_body

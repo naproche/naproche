@@ -24,7 +24,8 @@ import qualified System.Environment as Environment
 import qualified System.Exit as Exit
 import qualified System.IO as IO
 
-import Isabelle.Library (trim_line)
+import Isabelle.Library (trim_line, make_string, make_bytes)
+import qualified Isabelle.Bytes as Bytes
 import qualified Isabelle.Byte_Message as Byte_Message
 import qualified Isabelle.File as File
 import qualified Isabelle.Naproche as Naproche
@@ -32,7 +33,6 @@ import qualified Isabelle.Properties as Properties
 import qualified Isabelle.Server as Server
 import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
 import qualified Isabelle.UUID as UUID
-import qualified Isabelle.UTF8 as UTF8
 import qualified Isabelle.XML as XML
 import qualified Isabelle.YXML as YXML
 import Network.Socket (Socket)
@@ -100,7 +100,7 @@ showTranslation txts startTime = do
 
   -- print statistics
   finishTime <- getCurrentTime
-  outputMain TRACING noSourcePos $ Text.unpack $ "total " <> timeDifference finishTime
+  outputMain TRACING noSourcePos $ make_bytes $ "total " <> timeDifference finishTime
 
 exportCiC :: ProofText -> IO ()
 exportCiC pt = do
@@ -133,7 +133,7 @@ proveFOL proversYaml text1 opts0 oldProofText oldProofTextRef startTime fileName
       (success, newProofText) <- verify (maybe "" Text.pack fileName) provers reasonerState text
       mapM_ (writeIORef oldProofTextRef) newProofText
       pure success
-    Just err -> do errorParser (errorPos err) (show err); pure False
+    Just err -> do errorParser (errorPos err) (make_bytes $ show err); pure False
 
   finishTime <- getCurrentTime
   finalReasonerState <- readIORef reasonerState
@@ -142,7 +142,7 @@ proveFOL proversYaml text1 opts0 oldProofText oldProofTextRef startTime fileName
   let accumulate  = sumCounter trackerList
 
   -- print statistics
-  outputMain TRACING noSourcePos $
+  (outputMain TRACING noSourcePos . make_bytes) $
     "sections "       ++ show (accumulate Sections)
     ++ " - goals "    ++ show (accumulate Goals)
     ++ (let ignoredFails = accumulate FailedGoals
@@ -159,7 +159,7 @@ proveFOL proversYaml text1 opts0 oldProofText oldProofTextRef startTime fileName
 
   let trivialChecks = accumulate TrivialChecks
 
-  outputMain TRACING noSourcePos $
+  (outputMain TRACING noSourcePos . make_bytes) $
     "symbols "        ++ show (accumulate Symbols)
     ++ " - checks "   ++ show
       (sumCounter trackerList HardChecks + trivialChecks)
@@ -172,14 +172,14 @@ proveFOL proversYaml text1 opts0 oldProofText oldProofTextRef startTime fileName
   let proveFinish    = addUTCTime proverTime proveStart
   let simplifyFinish = addUTCTime simplifyTime proveFinish
 
-  outputMain TRACING noSourcePos $ Text.unpack $
+  (outputMain TRACING noSourcePos . make_bytes) $
     "parser "           <> showTimeDiff (diffUTCTime proveStart startTime)
     <> " - reasoner "   <> showTimeDiff (diffUTCTime finishTime simplifyFinish)
     <> " - simplifier " <> showTimeDiff simplifyTime
     <> " - prover "     <> showTimeDiff proverTime
     <> "/" <> showTimeDiff (maximalTimer trackerList SuccessTimer)
 
-  outputMain TRACING noSourcePos $ Text.unpack $
+  (outputMain TRACING noSourcePos . make_bytes) $
     "total " <> showTimeDiff (diffUTCTime finishTime startTime)
 
   unless success Exit.exitFailure
@@ -187,29 +187,30 @@ proveFOL proversYaml text1 opts0 oldProofText oldProofTextRef startTime fileName
 serverConnection :: IORef ProofText -> [String] -> Socket -> IO ()
 serverConnection oldProofTextRef args0 connection = do
   thread_uuid <- Isabelle_Thread.my_uuid
-  mapM_ (Byte_Message.write_line_message connection . UUID.bytes) thread_uuid
+  mapM_ (Byte_Message.write_line_message connection . UUID.print) thread_uuid
 
   res <- Byte_Message.read_line_message connection
-  case fmap (YXML.parse . UTF8.decode) res of
+  case fmap YXML.parse res of
     Just (XML.Elem ((command, _), body)) | command == Naproche.cancel_command ->
-      mapM_ Isabelle_Thread.stop_uuid (UUID.parse_string (XML.content_of body))
+      mapM_ Isabelle_Thread.stop_uuid (UUID.parse (XML.content_of body))
 
     Just (XML.Elem ((command, props), body)) | command == Naproche.forthel_command ->
       Exception.bracket_ (initThread props (Byte_Message.write connection))
         exitThread
         (do
-          let args1 = lines (fromMaybe "" (Properties.get props Naproche.command_args))
-          (opts0, pk, fileName) <- readArgs (args0 ++ args1)
+          let more_args = fromMaybe Bytes.empty (Properties.get props Naproche.command_args)
+          let more_text = Text.pack $ make_string $ XML.content_of body
+
+          (opts0, pk, fileName) <- readArgs (args0 ++ lines (make_string more_args))
           let opts1 = map snd opts0
           let text0 = map (uncurry ProofTextInstr) (reverse opts0)
-          let text1 = text0 ++ [ProofTextInstr noPos (GetArgument (Text pk) (Text.pack $ XML.content_of body))]
+          let text1 = text0 ++ [ProofTextInstr noPos (GetArgument (Text pk) more_text)]
 
           Exception.catch (mainBody Nothing oldProofTextRef opts1 text1 fileName)
             (\err -> do
-              let msg = Exception.displayException (err :: Exception.SomeException)
+              let msg = make_bytes $ Exception.displayException (err :: Exception.SomeException)
               Exception.catch
-                (if YXML.detect msg then
-                  Byte_Message.write connection [UTF8.encode msg]
+                (if YXML.detect msg then Byte_Message.write connection [msg]
                  else outputMain ERROR noSourcePos msg)
                 (\(err2 :: Exception.IOException) -> pure ())))
 

@@ -9,6 +9,7 @@ Quasi-abstract markup elements.
 See also "$ISABELLE_HOME/src/Pure/PIDE/markup.ML".
 -}
 
+{-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -fno-warn-missing-signatures #-}
 
 module Isabelle.Markup (
@@ -64,11 +65,13 @@ import Prelude hiding (words, error, break)
 import Isabelle.Library
 import qualified Isabelle.Properties as Properties
 import qualified Isabelle.Value as Value
+import qualified Isabelle.Bytes as Bytes
+import Isabelle.Bytes (Bytes)
 
 
 {- basic markup -}
 
-type T = (String, Properties.T)
+type T = (Bytes, Properties.T)
 
 empty :: T
 empty = ("", [])
@@ -81,60 +84,61 @@ properties :: Properties.T -> T -> T
 properties more_props (elem, props) =
   (elem, fold_rev Properties.put more_props props)
 
-markup_elem :: String -> T
+markup_elem :: Bytes -> T
 markup_elem name = (name, [])
 
-markup_string :: String -> String -> String -> T
+markup_string :: Bytes -> Bytes -> Bytes -> T
 markup_string name prop = \s -> (name, [(prop, s)])
 
 
 {- misc properties -}
 
-nameN :: String
+nameN :: Bytes
 nameN = "name"
 
-name :: String -> T -> T
+name :: Bytes -> T -> T
 name a = properties [(nameN, a)]
 
-xnameN :: String
+xnameN :: Bytes
 xnameN = "xname"
 
-xname :: String -> T -> T
+xname :: Bytes -> T -> T
 xname a = properties [(xnameN, a)]
 
-kindN :: String
+kindN :: Bytes
 kindN = "kind"
 
 
 {- formal entities -}
 
-bindingN :: String
+bindingN :: Bytes
 bindingN = "binding"
 binding :: T
 binding = markup_elem bindingN
 
-entityN :: String
+entityN :: Bytes
 entityN = "entity"
-entity :: String -> String -> T
+entity :: Bytes -> Bytes -> T
 entity kind name =
   (entityN,
-    (if null name then [] else [(nameN, name)]) <> (if null kind then [] else [(kindN, kind)]))
+    (if Bytes.null name then [] else [(nameN, name)]) <>
+    (if Bytes.null kind then [] else [(kindN, kind)]))
 
-defN :: String
+defN :: Bytes
 defN = "def"
 
-refN :: String
+refN :: Bytes
 refN = "ref"
 
 
 {- completion -}
 
-completionN :: String
+completionN :: Bytes
 completionN = "completion"
 completion :: T
 completion = markup_elem completionN
 
-no_completionN :: String
+no_completionN :: Bytes
 no_completionN = "no_completion"
 no_completion :: T
 no_completion = markup_elem no_completionN
@@ -142,19 +146,19 @@ no_completion = markup_elem no_completionN
 
 {- position -}
 
-lineN, end_lineN :: String
+lineN, end_lineN :: Bytes
 lineN = "line"
 end_lineN = "end_line"
 
-offsetN, end_offsetN :: String
+offsetN, end_offsetN :: Bytes
 offsetN = "offset"
 end_offsetN = "end_offset"
 
-fileN, idN :: String
+fileN, idN :: Bytes
 fileN = "file"
 idN = "id"
 
-positionN :: String
+positionN :: Bytes
 positionN = "position"
 position :: T
 position = markup_elem positionN
@@ -162,51 +166,51 @@ position = markup_elem positionN
 
 {- expression -}
 
-expressionN :: String
+expressionN :: Bytes
 expressionN = "expression"
 
-expression :: String -> T
+expression :: Bytes -> T
 expression kind = (expressionN, if kind == "" then [] else [(kindN, kind)])
 
 
 {- citation -}
 
-citationN :: String
+citationN :: Bytes
 citationN = "citation"
-citation :: String -> T
+citation :: Bytes -> T
 citation = markup_string nameN citationN
 
 
 {- external resources -}
 
-pathN :: String
+pathN :: Bytes
 pathN = "path"
-path :: String -> T
+path :: Bytes -> T
 path = markup_string pathN nameN
 
-urlN :: String
+urlN :: Bytes
 urlN = "url"
-url :: String -> T
+url :: Bytes -> T
 url = markup_string urlN nameN
 
-docN :: String
+docN :: Bytes
 docN = "doc"
-doc :: String -> T
+doc :: Bytes -> T
 doc = markup_string docN nameN
 
 
 {- pretty printing -}
 
-markupN, consistentN, unbreakableN, indentN :: String
+markupN, consistentN, unbreakableN, indentN :: Bytes
 markupN = "markup"
 consistentN = "consistent"
 unbreakableN = "unbreakable"
 indentN = "indent"
 
-widthN :: String
+widthN :: Bytes
 widthN = "width"
 
-blockN :: String
+blockN :: Bytes
 blockN = "block"
 block :: Bool -> Int -> T
 block c i =
@@ -214,7 +218,7 @@ block c i =
     (if c then [(consistentN, Value.print_bool c)] else []) <>
     (if i /= 0 then [(indentN, Value.print_int i)] else []))
 
-breakN :: String
+breakN :: Bytes
 breakN = "break"
 break :: Int -> Int -> T
 break w i =
@@ -222,12 +226,12 @@ break w i =
     (if w /= 0 then [(widthN, Value.print_int w)] else []) <>
     (if i /= 0 then [(indentN, Value.print_int i)] else []))
 
-fbreakN :: String
+fbreakN :: Bytes
 fbreakN = "fbreak"
 fbreak :: T
 fbreak = markup_elem fbreakN
 
-itemN :: String
+itemN :: Bytes
 itemN = "item"
 item :: T
 item = markup_elem itemN
@@ -235,7 +239,7 @@ item = markup_elem itemN
 
 {- text properties -}
 
-wordsN :: String
+wordsN :: Bytes
 wordsN = "words"
 words :: T
 words = markup_elem wordsN
@@ -243,79 +247,79 @@ words = markup_elem wordsN
 
 {- inner syntax -}
 
-tfreeN :: String
+tfreeN :: Bytes
 tfreeN = "tfree"
 tfree :: T
 tfree = markup_elem tfreeN
 
-tvarN :: String
+tvarN :: Bytes
 tvarN = "tvar"
 tvar :: T
 tvar = markup_elem tvarN
 
-freeN :: String
+freeN :: Bytes
 freeN = "free"
 free :: T
 free = markup_elem freeN
 
-skolemN :: String
+skolemN :: Bytes
 skolemN = "skolem"
 skolem :: T
 skolem = markup_elem skolemN
 
-boundN :: String
+boundN :: Bytes
 boundN = "bound"
 bound :: T
 bound = markup_elem boundN
 
-varN :: String
+varN :: Bytes
 varN = "var"
 var :: T
 var = markup_elem varN
 
-numeralN :: String
+numeralN :: Bytes
 numeralN = "numeral"
 numeral :: T
 numeral = markup_elem numeralN
 
-literalN :: String
+literalN :: Bytes
 literalN = "literal"
 literal :: T
 literal = markup_elem literalN
 
-delimiterN :: String
+delimiterN :: Bytes
 delimiterN = "delimiter"
 delimiter :: T
 delimiter = markup_elem delimiterN
 
-inner_stringN :: String
+inner_stringN :: Bytes
 inner_stringN = "inner_string"
 inner_string :: T
 inner_string = markup_elem inner_stringN
 
-inner_cartoucheN :: String
+inner_cartoucheN :: Bytes
 inner_cartoucheN = "inner_cartouche"
 inner_cartouche :: T
 inner_cartouche = markup_elem inner_cartoucheN
 
 
-token_rangeN :: String
+token_rangeN :: Bytes
 token_rangeN = "token_range"
 token_range :: T
 token_range = markup_elem token_rangeN
 
 
-sortingN :: String
+sortingN :: Bytes
 sortingN = "sorting"
 sorting :: T
 sorting = markup_elem sortingN
 
-typingN :: String
+typingN :: Bytes
 typingN = "typing"
 typing :: T
 typing = markup_elem typingN
 
-class_parameterN :: String
+class_parameterN :: Bytes
 class_parameterN = "class_parameter"
 class_parameter :: T
 class_parameter = markup_elem class_parameterN
@@ -323,12 +327,12 @@ class_parameter = markup_elem class_parameterN
 
 {- antiquotations -}
 
-antiquotedN :: String
+antiquotedN :: Bytes
 antiquotedN = "antiquoted"
 antiquoted :: T
 antiquoted = markup_elem antiquotedN
 
-antiquoteN :: String
+antiquoteN :: Bytes
 antiquoteN = "antiquote"
 antiquote :: T
 antiquote = markup_elem antiquoteN
@@ -336,12 +340,12 @@ antiquote = markup_elem antiquoteN
 
 {- text structure -}
 
-paragraphN :: String
+paragraphN :: Bytes
 paragraphN = "paragraph"
 paragraph :: T
 paragraph = markup_elem paragraphN
 
-text_foldN :: String
+text_foldN :: Bytes
 text_foldN = "text_fold"
 text_fold :: T
 text_fold = markup_elem text_foldN
@@ -349,57 +353,57 @@ text_fold = markup_elem text_foldN
 
 {- outer syntax -}
 
-keyword1N :: String
+keyword1N :: Bytes
 keyword1N = "keyword1"
 keyword1 :: T
 keyword1 = markup_elem keyword1N
 
-keyword2N :: String
+keyword2N :: Bytes
 keyword2N = "keyword2"
 keyword2 :: T
 keyword2 = markup_elem keyword2N
 
-keyword3N :: String
+keyword3N :: Bytes
 keyword3N = "keyword3"
 keyword3 :: T
 keyword3 = markup_elem keyword3N
 
-quasi_keywordN :: String
+quasi_keywordN :: Bytes
 quasi_keywordN = "quasi_keyword"
 quasi_keyword :: T
 quasi_keyword = markup_elem quasi_keywordN
 
-improperN :: String
+improperN :: Bytes
 improperN = "improper"
 improper :: T
 improper = markup_elem improperN
 
-operatorN :: String
+operatorN :: Bytes
 operatorN = "operator"
 operator :: T
 operator = markup_elem operatorN
 
-stringN :: String
+stringN :: Bytes
 stringN = "string"
 string :: T
 string = markup_elem stringN
 
-alt_stringN :: String
+alt_stringN :: Bytes
 alt_stringN = "alt_string"
 alt_string :: T
 alt_string = markup_elem alt_stringN
 
-verbatimN :: String
+verbatimN :: Bytes
 verbatimN = "verbatim"
 verbatim :: T
 verbatim = markup_elem verbatimN
 
-cartoucheN :: String
+cartoucheN :: Bytes
 cartoucheN = "cartouche"
 cartouche :: T
 cartouche = markup_elem cartoucheN
 
-commentN :: String
+commentN :: Bytes
 commentN = "comment"
 comment :: T
 comment = markup_elem commentN
@@ -407,17 +411,17 @@ comment = markup_elem commentN
 
 {- comments -}
 
-comment1N :: String
+comment1N :: Bytes
 comment1N = "comment1"
 comment1 :: T
 comment1 = markup_elem comment1N
 
-comment2N :: String
+comment2N :: Bytes
 comment2N = "comment2"
 comment2 :: T
 comment2 = markup_elem comment2N
 
-comment3N :: String
+comment3N :: Bytes
 comment3N = "comment3"
 comment3 :: T
 comment3 = markup_elem comment3N
@@ -426,7 +430,7 @@ comment3 = markup_elem comment3N
 {- command status -}
 
 forkedN, joinedN, runningN, finishedN, failedN, canceledN,
-  initializedN, finalizedN, consolidatedN :: String
+  initializedN, finalizedN, consolidatedN :: Bytes
 forkedN = "forked"
 joinedN = "joined"
 runningN = "running"
@@ -452,52 +456,52 @@ consolidated = markup_elem consolidatedN
 
 {- messages -}
 
-writelnN :: String
+writelnN :: Bytes
 writelnN = "writeln"
 writeln :: T
 writeln = markup_elem writelnN
 
-stateN :: String
+stateN :: Bytes
 stateN = "state"
 state :: T
 state = markup_elem stateN
 
-informationN :: String
+informationN :: Bytes
 informationN = "information"
 information :: T
 information = markup_elem informationN
 
-tracingN :: String
+tracingN :: Bytes
 tracingN = "tracing"
 tracing :: T
 tracing = markup_elem tracingN
 
-warningN :: String
+warningN :: Bytes
 warningN = "warning"
 warning :: T
 warning = markup_elem warningN
 
-legacyN :: String
+legacyN :: Bytes
 legacyN = "legacy"
 legacy :: T
 legacy = markup_elem legacyN
 
-errorN :: String
+errorN :: Bytes
 errorN = "error"
 error :: T
 error = markup_elem errorN
 
-reportN :: String
+reportN :: Bytes
 reportN = "report"
 report :: T
 report = markup_elem reportN
 
-no_reportN :: String
+no_reportN :: Bytes
 no_reportN = "no_report"
 no_report :: T
 no_report = markup_elem no_reportN
 
-intensifyN :: String
+intensifyN :: Bytes
 intensifyN = "intensify"
 intensify :: T
 intensify = markup_elem intensifyN
@@ -505,7 +509,7 @@ intensify = markup_elem intensifyN
 
 {- output -}
 
-type Output = (String, String)
+type Output = (Bytes, Bytes)
 
 no_output :: Output
 no_output = ("", "")

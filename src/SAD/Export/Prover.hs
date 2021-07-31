@@ -1,4 +1,5 @@
 {-# LANGUAGE MultiWayIf #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-
 Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018), Makarius Wenzel (2018)
 
@@ -23,11 +24,13 @@ import Data.Text.Lazy (Text)
 import qualified Isabelle.File as File
 import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
 import qualified Isabelle.Server as Server
-import qualified Isabelle.UTF8 as UTF8
 import qualified Isabelle.XML as XML
 import qualified Isabelle.Byte_Message as Byte_Message
 import qualified Isabelle.Value as Value
 import qualified Isabelle.Naproche as Naproche
+import Isabelle.Library (make_bytes, make_string)
+import qualified Isabelle.Bytes as Bytes
+import Isabelle.Bytes (Bytes)
 
 
 import SAD.Core.SourcePos
@@ -52,25 +55,26 @@ export pos depth provers instrs context goal = do
       proversNamed = filter ((==) proverName . name) provers
 
   when (null proversNamed) $
-    Message.errorExport pos $ "No prover named " ++ show proverName
+    Message.errorExport pos ("No prover named " <> make_bytes proverName)
 
   let printProver = askFlag Printprover False instrs
   let timeLimit = askLimit Timelimit 3 instrs
   let memoryLimit = askLimit Memorylimit 2048 instrs
 
   let proverServerPort = askArgument ProverServerPort Text.empty instrs
-  let proverServerPassword = askArgument ProverServerPassword Text.empty instrs
+  let proverServerPassword =
+        make_bytes $ Text.unpack $ askArgument ProverServerPassword Text.empty instrs
   let proverServer =
-        if Text.null proverServerPort || Text.null proverServerPassword then
+        if Text.null proverServerPort || Bytes.null proverServerPassword then
           Nothing
-        else Just (Text.unpack proverServerPort, Text.unpack proverServerPassword)
+        else Just (Text.unpack proverServerPort, proverServerPassword)
 
   let task = TPTP.output context goal
   let isByContradiction = any (==Block.ProofByContradiction)
         (map Block.kind (head (branch goal) : concatMap branch context))
 
   when (askFlag Dump False instrs) $
-    Message.output "" Message.WRITELN pos (Text.unpack task)
+    Message.output "" Message.WRITELN pos (make_bytes $ Text.unpack task)
 
   reportBracketIO pos $
     runProver pos (head proversNamed) proverServer printProver task isByContradiction timeLimit memoryLimit
@@ -78,7 +82,7 @@ export pos depth provers instrs context goal = do
 data Result = Success | Failure | ContradictoryAxioms | Unknown | Error
   deriving (Eq, Ord, Show)
 
-runProver :: SourcePos -> Prover -> Maybe (String, String) -> Bool -> Text -> Bool -> Int -> Int -> IO Result
+runProver :: SourcePos -> Prover -> Maybe (String, Bytes) -> Bool -> Text -> Bool -> Int -> Int -> IO Result
 runProver pos (Prover _ label path args yes con nos uns) proverServer printProver task isByContradiction timeLimit memoryLimit =
   let
     proverResult :: Int -> String -> IO Result
@@ -89,7 +93,7 @@ runProver pos (Prover _ label path args yes con nos uns) proverServer printProve
         let out = map (("[" ++ label ++ "] ") ++) lns
 
         when (not timeout && null lns) $ Message.errorExport pos "No prover response"
-        when printProver $ mapM_ (Message.output "" Message.WRITELN pos) out
+        when printProver $ mapM_ (Message.output "" Message.WRITELN pos . make_bytes) out
 
         let contradictions = any (\l -> any (`isPrefixOf` l) con) lns
             positive = any (\l -> any (`isPrefixOf` l) yes) lns
@@ -97,7 +101,7 @@ runProver pos (Prover _ label path args yes con nos uns) proverServer printProve
             inconclusive = any (\l -> any (`isPrefixOf` l) uns) lns
 
         unless (timeout || positive || contradictions || negative || inconclusive) $
-            Message.errorExport pos $ unlines ("Bad prover response:" : lns)
+            Message.errorExport pos $ make_bytes (unlines ("Bad prover response:" : lns))
 
         if | positive || (isByContradiction && contradictions) -> pure Success
            | negative -> pure Failure
@@ -119,7 +123,7 @@ runProver pos (Prover _ label path args yes con nos uns) proverServer printProve
 
         (prvin, prvout, prverr, prv) <- Exception.catch process
             (\e -> Message.errorExport pos $
-              "Failed to run " ++ show path ++ ": " ++ ioeGetErrorString e)
+              make_bytes ("Failed to run " ++ show path ++ ": " ++ ioeGetErrorString e))
 
         File.setup prvin
         File.setup prvout
@@ -143,7 +147,7 @@ runProver pos (Prover _ label path args yes con nos uns) proverServer printProve
                   ExitFailure rc | rc >= 0 -> rc
                   ExitFailure rc -> 128 - rc
 
-          proverResult rc (UTF8.decode output ++ UTF8.decode errors)
+          proverResult rc (make_string (Bytes.make (output <> errors)))
 
       Just (port, password) ->
         Server.connection port password
@@ -151,10 +155,10 @@ runProver pos (Prover _ label path args yes con nos uns) proverServer printProve
             do
               Byte_Message.write_yxml prover
                 [XML.Elem ((Naproche.prover_command,
-                    [(Naproche.prover_name, path),
-                     (Naproche.command_args, unlines (map (setLimits 300 2048) args)),
-                     (Naproche.prover_timeout, show timeLimit)]),
-                  [XML.Text (Text.unpack task)])]
+                    [(Naproche.prover_name, make_bytes path),
+                     (Naproche.command_args, make_bytes $ unlines (map (setLimits 300 2048) args)),
+                     (Naproche.prover_timeout, Value.print_int timeLimit)]),
+                  [XML.Text (make_bytes $ Text.unpack task)])]
 
               reply <- Byte_Message.read_line_message prover
 
@@ -166,7 +170,7 @@ runProver pos (Prover _ label path args yes con nos uns) proverServer printProve
                           Server.connection port password (\prover_kill ->
                             Byte_Message.write_yxml prover_kill
                               [XML.Elem ((Naproche.kill_command, []),
-                                [XML.Text (UTF8.decode uuid)])])
+                                [XML.Text uuid])])
                     (rc, output) <-
                       Isabelle_Thread.bracket_resource kill_prover $ do
                         result <- Byte_Message.read_yxml prover
@@ -180,7 +184,7 @@ runProver pos (Prover _ label path args yes con nos uns) proverServer printProve
                                   Nothing -> (2, "")
                             _ -> (2, "")
 
-                    proverResult rc output)
+                    proverResult rc (make_string output))
 
 
 setLimits :: Int -> Int -> String -> String

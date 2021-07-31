@@ -34,6 +34,7 @@ import SAD.Parser.Primitives
 import SAD.Parser.Error
 import qualified SAD.Core.Message as Message
 import qualified Isabelle.File as File
+import Isabelle.Library (make_bytes)
 
 
 -- Init file parsing
@@ -41,7 +42,7 @@ import qualified Isabelle.File as File
 readInit :: Text -> IO [(Pos, Instr)]
 readInit "" = return []
 readInit file = do
-  input <- catch (File.read (Text.unpack file)) $ Message.errorParser (fileOnlyPos file) . ioeGetErrorString
+  input <- catch (File.read (Text.unpack file)) $ Message.errorParser (fileOnlyPos file) . make_bytes . ioeGetErrorString
   let tokens = filter isProperToken $ tokenize TexDisabled (filePos file) $ Text.pack input
       initialParserState = State (initFS Nothing) tokens NonTex noSourcePos
   fst <$> launchParser instructionFile initialParserState
@@ -67,7 +68,7 @@ reader :: Text -> [Text] -> [State FState] -> [ProofText] -> IO ([ProofText], [M
 reader pathToLibrary doneFiles = go
   where
     go stateList [ProofTextInstr pos (GetArgument (Read pk) file)] = if ".." `Text.isInfixOf` file
-      then Message.errorParser (Instr.position pos) ("Illegal \"..\" in file name: " ++ show file)
+      then Message.errorParser (Instr.position pos) (make_bytes ("Illegal \"..\" in file name: " ++ show file))
       else go stateList [ProofTextInstr pos $ GetArgument (File pk) $ pathToLibrary <> "/" <> file]
 
     go (pState:states) [ProofTextInstr pos (GetArgument (File parserKind') file)]
@@ -78,13 +79,13 @@ reader pathToLibrary doneFiles = go
           when (parserKind pState /= parserKind')
             (Message.errorParser (Instr.position pos) "Trying to read the same file once in Tex format and once in NonTex format.")
           Message.outputMain Message.WARNING (Instr.position pos)
-            ("Skipping already read file: " ++ show file)
+            (make_bytes ("Skipping already read file: " ++ show file))
           (newProofText, newState) <- chooseParser pState
           go (newState:states) newProofText
       | otherwise = do
           text <-
             catch (if Text.null file then getContents else File.read $ Text.unpack file)
-              (Message.errorParser (fileOnlyPos file) . ioeGetErrorString)
+              (Message.errorParser (fileOnlyPos file) . make_bytes . ioeGetErrorString)
           (newProofText, newState) <- reader0 (filePos file) (Text.pack text) (pState {parserKind = parserKind'})
           -- state from before reading is still here
           reader pathToLibrary (file:doneFiles) (newState:pState:states) newProofText
@@ -132,5 +133,5 @@ chooseTokenizer st = case parserKind st of
 launchParser :: Parser st a -> State st -> IO (a, State st)
 launchParser parser state =
   case runP parser state of
-    Error err -> Message.errorParser (errorPos err) (show err)
+    Error err -> Message.errorParser (errorPos err) (make_bytes $ show err)
     Ok [PR a st] -> return (a, st)

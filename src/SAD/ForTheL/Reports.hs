@@ -5,6 +5,7 @@ PIDE markup reports for ForTheL text elements.
 -}
 
 {-# LANGUAGE TupleSections #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module SAD.ForTheL.Reports
   ( addMarkup
@@ -51,6 +52,7 @@ import SAD.Parser.Base
 import SAD.Parser.Primitives
 
 
+import Isabelle.Library (make_bytes)
 import qualified Isabelle.Markup as Markup
 
 addReports :: (PIDE -> [Message.Report]) -> FTL ()
@@ -83,7 +85,7 @@ variableReport :: PIDE -> Bool -> Decl -> SourcePos -> [Message.Report]
 variableReport pide def decl pos =
   case declName decl of
     VarConstant name ->
-      [(pos, Message.entityMarkup pide "variable" (Text.unpack name) def (declSerial decl) (declPosition decl))]
+      [(pos, Message.entityMarkup pide "variable" (make_bytes $ Text.unpack name) def (declSerial decl) (declPosition decl))]
     _ -> []
 
 formulaReports :: PIDE -> Set Decl -> Formula -> [Message.Report]

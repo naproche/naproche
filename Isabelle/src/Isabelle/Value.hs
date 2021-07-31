@@ -9,21 +9,25 @@ Plain values, represented as string.
 See also "$ISABELLE_HOME/src/Pure/General/value.ML".
 -}
 
+{-# LANGUAGE OverloadedStrings #-}
+
 module Isabelle.Value
   (print_bool, parse_bool, parse_nat, print_int, parse_int, print_real, parse_real)
 where
 
 import qualified Data.List as List
 import qualified Text.Read as Read
+import Isabelle.Bytes (Bytes)
+import Isabelle.Library
 
 
 {- bool -}
 
-print_bool :: Bool -> String
+print_bool :: Bool -> Bytes
 print_bool True = "true"
 print_bool False = "false"
 
-parse_bool :: String -> Maybe Bool
+parse_bool :: Bytes -> Maybe Bool
 parse_bool "true" = Just True
 parse_bool "false" = Just False
 parse_bool _ = Nothing
@@ -31,30 +35,30 @@ parse_bool _ = Nothing
 
 {- nat -}
 
-parse_nat :: String -> Maybe Int
+parse_nat :: Bytes -> Maybe Int
 parse_nat s =
-  case Read.readMaybe s of
+  case Read.readMaybe (make_string s) of
     Just n | n >= 0 -> Just n
     _ -> Nothing
 
 
 {- int -}
 
-print_int :: Int -> String
-print_int = show
+print_int :: Int -> Bytes
+print_int = make_bytes . show
 
-parse_int :: String -> Maybe Int
-parse_int = Read.readMaybe
+parse_int :: Bytes -> Maybe Int
+parse_int = Read.readMaybe . make_string
 
 
 {- real -}
 
-print_real :: Double -> String
+print_real :: Double -> Bytes
 print_real x =
   let s = show x in
     case span (/= '.') s of
-      (a, '.' : b) | List.all (== '0') b -> a
-      _ -> s
+      (a, '.' : b) | List.all (== '0') b -> make_bytes a
+      _ -> make_bytes s
 
-parse_real :: String -> Maybe Double
-parse_real = Read.readMaybe
+parse_real :: Bytes -> Maybe Double
+parse_real = Read.readMaybe . make_string

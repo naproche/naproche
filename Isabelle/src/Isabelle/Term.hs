@@ -9,6 +9,8 @@ Lambda terms, types, sorts.
 See also "$ISABELLE_HOME/src/Pure/term.scala".
 -}
 
+{-# LANGUAGE OverloadedStrings #-}
+
 module Isabelle.Term (
   Indexname,
 
@@ -17,18 +19,21 @@ module Isabelle.Term (
   Typ(..), dummyT, is_dummyT, Term(..))
 where
 
-type Indexname = (String, Int)
+import Isabelle.Bytes (Bytes)
 
 
-type Sort = [String]
+type Indexname = (Bytes, Int)
+
+
+type Sort = [Bytes]
 
 dummyS :: Sort
 dummyS = [""]
 
 
 data Typ =
-    Type (String, [Typ])
-  | TFree (String, Sort)
+    Type (Bytes, [Typ])
+  | TFree (Bytes, Sort)
   | TVar (Indexname, Sort)
   deriving Show
 
@@ -41,10 +46,10 @@ is_dummyT _ = False
 
 
 data Term =
-    Const (String, [Typ])
-  | Free (String, Typ)
+    Const (Bytes, [Typ])
+  | Free (Bytes, Typ)
   | Var (Indexname, Typ)
   | Bound Int
-  | Abs (String, Typ, Term)
+  | Abs (Bytes, Typ, Term)
   | App (Term, Term)
   deriving Show

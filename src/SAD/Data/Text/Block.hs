@@ -36,6 +36,7 @@ import qualified Data.Text.Lazy as Text
 
 import Control.Monad
 
+import Isabelle.Library (make_text)
 
 data ProofText =
     ProofTextBlock Block
@@ -123,7 +124,7 @@ isTopLevel  = isHole' . formula
     isHole' _ = False
 
 file :: Block-> Text
-file = sourceFile . position
+file = Text.fromStrict . make_text . sourceFile . position
 
 
 declaredNames :: Block -> Set VariableName

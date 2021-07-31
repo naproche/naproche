@@ -9,6 +9,7 @@ XML as data representation language.
 See also "$ISABELLE_HOME/src/Pure/PIDE/xml.ML".
 -}
 
+{-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -fno-warn-missing-signatures #-}
 
 module Isabelle.XML.Encode (
@@ -21,15 +22,16 @@ module Isabelle.XML.Encode (
 where
 
 import Isabelle.Library
+import Isabelle.Bytes (Bytes)
 import qualified Isabelle.Value as Value
 import qualified Isabelle.Properties as Properties
 import qualified Isabelle.XML as XML
 
 
-type A a = a -> String
+type A a = a -> Bytes
 type T a = a -> XML.Body
-type V a = a -> Maybe ([String], XML.Body)
-type P a = a -> [String]
+type V a = a -> Maybe ([Bytes], XML.Body)
+type P a = a -> [Bytes]
 
 
 -- atomic values
@@ -62,7 +64,7 @@ tree t = [t]
 properties :: T Properties.T
 properties props = [XML.Elem ((":", props), [])]
 
-string :: T String
+string :: T Bytes
 string "" = []
 string s = [XML.Text s]
 

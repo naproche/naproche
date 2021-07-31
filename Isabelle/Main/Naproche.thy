@@ -15,17 +15,22 @@ ML_file \<open>naproche.ML\<close>
 
 generate_file "Isabelle/Naproche.hs" = \<open>
 {-
-Authors: Makarius (2018)
+Authors: Makarius (2021)
 
-String constants for Isabelle/Naproche.
+Constants for Isabelle/Naproche.
 -}
+
+{-# LANGUAGE OverloadedStrings #-}
 
 module Isabelle.Naproche
 where
 
+import Isabelle.Bytes (Bytes)
+
+
 -- options
 
-naproche_prove, naproche_check, naproche_skipfail :: String
+naproche_prove, naproche_check, naproche_skipfail :: Bytes
 naproche_prove = \<open>\<^system_option>\<open>naproche_prove\<close>\<close>
 naproche_check = \<open>\<^system_option>\<open>naproche_check\<close>\<close>
 naproche_skipfail = \<open>\<^system_option>\<open>naproche_skipfail\<close>\<close>
@@ -33,7 +38,7 @@ naproche_skipfail = \<open>\<^system_option>\<open>naproche_skipfail\<close>\<cl
 
 -- environment
 
-naproche_pide, naproche_pos_file, naproche_pos_shift :: String
+naproche_pide, naproche_pos_file, naproche_pos_shift :: Bytes
 naproche_pide = \<open>Naproche.NAPROCHE_PIDE\<close>
 naproche_pos_file = \<open>Naproche.NAPROCHE_POS_FILE\<close>
 naproche_pos_shift = \<open>Naproche.NAPROCHE_POS_SHIFT\<close>
@@ -42,7 +47,7 @@ naproche_pos_shift = \<open>Naproche.NAPROCHE_POS_SHIFT\<close>
 -- message origin
 
 origin, origin_main, origin_export, origin_forthel, origin_parser,
-  origin_reasoner, origin_simplifier, origin_thesis, origin_translate :: String
+  origin_reasoner, origin_simplifier, origin_thesis, origin_translate :: Bytes
 origin = \<open>Naproche.origin\<close>
 origin_main = \<open>Naproche.origin_main\<close>
 origin_export = \<open>Naproche.origin_export\<close>
@@ -58,32 +63,32 @@ origin_translate = \<open>Naproche.origin_translate\<close>
 -- (see \<^file>\<open>$NAPROCHE_HOME/src/SAD/Main.hs\<close>)
 -- (see \<^file>\<open>$NAPROCHE_HOME/Isabelle/src/scala/prover_server.scala\<close>)
 
-command_args :: String
+command_args :: Bytes
 command_args = \<open>Naproche.command_args\<close>
 
-cancel_command :: String
+cancel_command :: Bytes
 cancel_command = \<open>Naproche.cancel_command\<close>
 
-forthel_command :: String
+forthel_command :: Bytes
 forthel_command = \<open>Naproche.forthel_command\<close>
 
 
-prover_command :: String
+prover_command :: Bytes
 prover_command = "prover"
 
-prover_name :: String
+prover_name :: Bytes
 prover_name = "name"
 
-prover_timeout :: String
+prover_timeout :: Bytes
 prover_timeout = "timeout"
 
-prover_result :: String
+prover_result :: Bytes
 prover_result = "result"
 
-prover_return_code :: String
+prover_return_code :: Bytes
 prover_return_code = "return_code"
 
-kill_command :: String
+kill_command :: Bytes
 kill_command = "kill"
 \<close>
 

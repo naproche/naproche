@@ -8,7 +8,9 @@ module SAD.Core.SourcePos
   ( SourcePos (sourceFile, sourceLine, sourceColumn, sourceOffset, sourceEndOffset),
     SourceRange(SourceRange),
     noSourcePos,
+    fileOnlyPos',
     fileOnlyPos,
+    filePos',
     filePos,
     startPos,
     advancePos,
@@ -24,11 +26,16 @@ import qualified Data.Text.Lazy as Text
 
 import qualified Data.List as List
 
+import qualified Isabelle.Bytes as Bytes
+import Isabelle.Bytes (Bytes)
+import Isabelle.Library (make_string, make_bytes, quote, commas)
+
+
 -- | A 'SourcePos' is either a position or a range in the 'sourceFile'.
 -- Integer values <= 0 signify 'not given'.
 data SourcePos =
   SourcePos {
-    sourceFile :: Text,
+    sourceFile :: Bytes,
     sourceLine :: Int,
     sourceColumn :: Int,
     sourceOffset :: Int,
@@ -36,16 +43,22 @@ data SourcePos =
   deriving (Eq, Ord)
 
 noSourcePos :: SourcePos
-noSourcePos = SourcePos Text.empty 0 0 0 0
+noSourcePos = SourcePos Bytes.empty 0 0 0 0
+
+fileOnlyPos' :: Bytes -> SourcePos
+fileOnlyPos' file = SourcePos file 0 0 0 0
 
 fileOnlyPos :: Text -> SourcePos
-fileOnlyPos file = SourcePos file 0 0 0 0
+fileOnlyPos = fileOnlyPos' . make_bytes . Text.unpack
+
+filePos' :: Bytes -> SourcePos
+filePos' file = SourcePos file 1 1 1 0
 
 filePos :: Text -> SourcePos
-filePos file = SourcePos file 1 1 1 0
+filePos = filePos' . make_bytes . Text.unpack
 
 startPos :: SourcePos
-startPos = filePos Text.empty
+startPos = filePos' Bytes.empty
 
 
 -- advance position
@@ -93,5 +106,5 @@ instance Show SourcePos where
       listOfDetails =
         case filter notNull details of
           [] -> ""
-          ds -> "(" ++ List.intercalate ", " ds ++ ")"
-      quotedFilePath = if Text.null file then "" else "\"" ++ Text.unpack file ++ "\""
+          ds -> "(" ++ commas ds ++ ")"
+      quotedFilePath = if Bytes.null file then "" else quote (make_string file)

@@ -10,16 +10,19 @@ inlining into plain text.
 See also "$ISABELLE_HOME/src/Pure/PIDE/yxml.ML".
 -}
 
+{-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -fno-warn-missing-signatures -fno-warn-incomplete-patterns #-}
 
 module Isabelle.YXML (charX, charY, strX, strY, detect, output_markup,
   buffer_body, buffer, string_of_body, string_of, parse_body, parse)
 where
 
-import qualified Data.Char as Char
 import qualified Data.List as List
+import Data.Word (Word8)
 
 import Isabelle.Library
+import qualified Isabelle.Bytes as Bytes
+import Isabelle.Bytes (Bytes)
 import qualified Isabelle.Markup as Markup
 import qualified Isabelle.XML as XML
 import qualified Isabelle.Buffer as Buffer
@@ -27,18 +30,18 @@ import qualified Isabelle.Buffer as Buffer
 
 {- markers -}
 
-charX, charY :: Char
-charX = Char.chr 5
-charY = Char.chr 6
+charX, charY :: Word8
+charX = 5
+charY = 6
 
-strX, strY, strXY, strXYX :: String
-strX = [charX]
-strY = [charY]
+strX, strY, strXY, strXYX :: Bytes
+strX = Bytes.singleton charX
+strY = Bytes.singleton charY
 strXY = strX <> strY
 strXYX = strXY <> strX
 
-detect :: String -> Bool
-detect = any (\c -> c == charX || c == charY)
+detect :: Bytes -> Bool
+detect = Bytes.any (\c -> c == charX || c == charY)
 
 
 {- output -}
@@ -46,7 +49,7 @@ detect = any (\c -> c == charX || c == charY)
 output_markup :: Markup.T -> Markup.Output
 output_markup markup@(name, atts) =
   if Markup.is_empty markup then Markup.no_output
-  else (strXY <> name <> concatMap (\(a, x) -> strY <> a <> "=" <> x) atts <> strX, strXYX)
+  else (strXY <> name <> Bytes.concat (map (\(a, x) -> strY <> a <> "=" <> x) atts) <> strX, strXYX)
 
 buffer_attrib (a, x) =
   Buffer.add strY #> Buffer.add a #> Buffer.add "=" #> Buffer.add x
@@ -61,10 +64,10 @@ buffer (XML.Elem ((name, atts), ts)) =
   Buffer.add strXYX
 buffer (XML.Text s) = Buffer.add s
 
-string_of_body :: XML.Body -> String
+string_of_body :: XML.Body -> Bytes
 string_of_body body = Buffer.empty |> buffer_body body |> Buffer.content
 
-string_of :: XML.Tree -> String
+string_of :: XML.Tree -> Bytes
 string_of = string_of_body . single
 
 
@@ -72,7 +75,7 @@ string_of = string_of_body . single
 
 -- split: fields or non-empty tokens
 
-split :: Bool -> Char -> String -> [String]
+split :: Bool -> Word8 -> [Word8] -> [[Word8]]
 split _ _ [] = []
 split fields sep str = splitting str
   where
@@ -85,43 +88,50 @@ split fields sep str = splitting str
 
 -- structural errors
 
-err msg = error ("Malformed YXML: " <> msg)
+err :: Bytes -> a
+err msg = error (make_string ("Malformed YXML: " <> msg))
+
 err_attribute = err "bad attribute"
 err_element = err "bad element"
-err_unbalanced "" = err "unbalanced element"
-err_unbalanced name = err ("unbalanced element " <> quote name)
+
+err_unbalanced :: Bytes -> a
+err_unbalanced name =
+  if Bytes.null name then err "unbalanced element"
+  else err ("unbalanced element " <> quote name)
 
 
 -- stack operations
 
 add x ((elem, body) : pending) = (elem, x : body) : pending
 
-push "" _ _ = err_element
-push name atts pending = ((name, atts), []) : pending
+push name atts pending =
+  if Bytes.null name then err_element
+  else ((name, atts), []) : pending
 
-pop ((("", _), _) : _) = err_unbalanced ""
-pop ((markup, body) : pending) = add (XML.Elem (markup, reverse body)) pending
+pop (((name, atts), body) : pending) =
+  if Bytes.null name then err_unbalanced name
+  else add (XML.Elem ((name, atts), reverse body)) pending
 
 
 -- parsing
 
 parse_attrib s =
-  case List.elemIndex '=' s of
-    Just i | i > 0 -> (take i s, drop (i + 1) s)
+  case List.elemIndex (Bytes.byte '=') s of
+    Just i | i > 0 -> (Bytes.pack $ take i s, Bytes.pack $ drop (i + 1) s)
     _ -> err_attribute
 
-parse_chunk ["", ""] = pop
-parse_chunk ("" : name : atts) = push name (map parse_attrib atts)
-parse_chunk txts = fold (add . XML.Text) txts
+parse_chunk [[], []] = pop
+parse_chunk ([] : name : atts) = push (Bytes.pack name) (map parse_attrib atts)
+parse_chunk txts = fold (add . XML.Text . Bytes.pack) txts
 
-parse_body :: String -> XML.Body
+parse_body :: Bytes -> XML.Body
 parse_body source =
-  case fold parse_chunk chunks [(("", []), [])] of
-    [(("", _), result)] -> reverse result
+  case fold parse_chunk chunks [((Bytes.empty, []), [])] of
+    [((name, _), result)] | Bytes.null name -> reverse result
     ((name, _), _) : _ -> err_unbalanced name
-  where chunks = split False charX source |> map (split True charY)
+  where chunks = source |> Bytes.unpack |> split False charX |> map (split True charY)
 
-parse :: String -> XML.Tree
+parse :: Bytes -> XML.Tree
 parse source =
   case parse_body source of
     [result] -> result

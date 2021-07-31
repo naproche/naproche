@@ -85,7 +85,7 @@ read_line socket = read_body []
 {- messages with multiple chunks (arbitrary content) -}
 
 make_header :: [Int] -> [Bytes]
-make_header ns = [UTF8.encode (space_implode "," (map Value.print_int ns)), "\n"]
+make_header ns = [space_implode "," (map Value.print_int ns), "\n"]
 
 make_message :: [Bytes] -> [Bytes]
 make_message chunks = make_header (map Bytes.length chunks) <> chunks
@@ -96,7 +96,7 @@ write_message socket = write socket . make_message
 parse_header :: Bytes -> [Int]
 parse_header line =
   let
-    res = map Value.parse_nat (space_explode ',' (UTF8.decode line))
+    res = map Value.parse_nat (Bytes.space_explode (Bytes.byte ',') line)
   in
     if all isJust res then map fromJust res
     else error ("Malformed message header: " <> quote (UTF8.decode line))
@@ -146,7 +146,7 @@ read_line_message socket = do
   case opt_line of
     Nothing -> return Nothing
     Just line ->
-      case Value.parse_nat (UTF8.decode line) of
+      case Value.parse_nat line of
         Nothing -> return $ Just line
         Just n -> fmap Bytes.trim_line . fst <$> read_block socket n
 
@@ -154,8 +154,8 @@ read_line_message socket = do
 read_yxml :: Socket -> IO (Maybe XML.Body)
 read_yxml socket = do
   res <- read_line_message socket
-  return (YXML.parse_body . UTF8.decode <$> res)
+  return (YXML.parse_body <$> res)
 
 write_yxml :: Socket -> XML.Body -> IO ()
 write_yxml socket body =
-  write_line_message socket (UTF8.encode (YXML.string_of_body body))
+  write_line_message socket (YXML.string_of_body body)
