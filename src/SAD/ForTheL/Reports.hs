@@ -85,7 +85,7 @@ variableReport :: PIDE -> Bool -> Decl -> SourcePos -> [Message.Report]
 variableReport pide def decl pos =
   case declName decl of
     VarConstant name ->
-      [(pos, Message.entityMarkup pide "variable" (make_bytes $ Text.unpack name) def (declSerial decl) (declPosition decl))]
+      [(pos, Message.entityMarkup pide "variable" (make_bytes name) def (declSerial decl) (declPosition decl))]
     _ -> []
 
 formulaReports :: PIDE -> Set Decl -> Formula -> [Message.Report]

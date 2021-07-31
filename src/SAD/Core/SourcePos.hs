@@ -49,13 +49,13 @@ fileOnlyPos' :: Bytes -> SourcePos
 fileOnlyPos' file = SourcePos file 0 0 0 0
 
 fileOnlyPos :: Text -> SourcePos
-fileOnlyPos = fileOnlyPos' . make_bytes . Text.unpack
+fileOnlyPos = fileOnlyPos' . make_bytes
 
 filePos' :: Bytes -> SourcePos
 filePos' file = SourcePos file 1 1 1 0
 
 filePos :: Text -> SourcePos
-filePos = filePos' . make_bytes . Text.unpack
+filePos = filePos' . make_bytes
 
 startPos :: SourcePos
 startPos = filePos' Bytes.empty

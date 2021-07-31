@@ -74,7 +74,7 @@ export pos depth provers instrs context goal = do
         (map Block.kind (head (branch goal) : concatMap branch context))
 
   when (askFlag Dump False instrs) $
-    Message.output "" Message.WRITELN pos (make_bytes $ Text.unpack task)
+    Message.output "" Message.WRITELN pos (make_bytes task)
 
   reportBracketIO pos $
     runProver pos (head proversNamed) proverServer printProver task isByContradiction timeLimit memoryLimit
@@ -158,7 +158,7 @@ runProver pos (Prover _ label path args yes con nos uns) proverServer printProve
                     [(Naproche.prover_name, make_bytes path),
                      (Naproche.command_args, make_bytes $ unlines (map (setLimits 300 2048) args)),
                      (Naproche.prover_timeout, Value.print_int timeLimit)]),
-                  [XML.Text (make_bytes $ Text.unpack task)])]
+                  [XML.Text (make_bytes task)])]
 
               reply <- Byte_Message.read_line_message prover
 
