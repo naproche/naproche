@@ -21,7 +21,6 @@ import qualified Data.Text.Lazy as Text
 import qualified Data.Text.Lazy.IO as TIO
 import Data.Text.Lazy (Text)
 
-import qualified Isabelle.File as File
 import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
 import qualified Isabelle.Server as Server
 import qualified Isabelle.XML as XML
@@ -31,7 +30,7 @@ import qualified Isabelle.Naproche as Naproche
 import Isabelle.Library (make_bytes, make_string)
 import qualified Isabelle.Bytes as Bytes
 import Isabelle.Bytes (Bytes)
-
+import qualified Isabelle.UTF8 as UTF8
 
 import SAD.Core.SourcePos
 import SAD.Core.Base (reportBracketIO)
@@ -125,9 +124,7 @@ runProver pos (Prover _ label path args yes con nos uns) proverServer printProve
             (\e -> Message.errorExport pos $
               make_bytes ("Failed to run " ++ show path ++ ": " ++ ioeGetErrorString e))
 
-        File.setup prvin
-        File.setup prvout
-        File.setup prverr
+        UTF8.setup3 prvin prvout prverr
 
         TIO.hPutStrLn prvin task
         hClose prvin

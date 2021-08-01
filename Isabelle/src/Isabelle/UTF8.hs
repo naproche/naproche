@@ -16,10 +16,12 @@ and "$ISABELLE_HOME/src/Pure/General/utf8.scala".
 {-# LANGUAGE InstanceSigs #-}
 
 module Isabelle.UTF8 (
+  setup, setup3,
   Recode (..)
 )
 where
 
+import qualified System.IO as IO
 import Data.Text (Text)
 import qualified Data.Text as Text
 import qualified Data.Text.Encoding as Encoding
@@ -30,6 +32,16 @@ import Data.ByteString (ByteString)
 import qualified Isabelle.Bytes as Bytes
 import Isabelle.Bytes (Bytes)
 
+setup :: IO.Handle -> IO ()
+setup h = do
+  IO.hSetEncoding h IO.utf8
+  IO.hSetNewlineMode h IO.noNewlineTranslation
+
+setup3 :: IO.Handle -> IO.Handle -> IO.Handle -> IO ()
+setup3 h1 h2 h3 = do
+  setup h1
+  setup h2
+  setup h3
 
 class Recode a b where
   encode :: a -> b

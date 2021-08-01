@@ -25,9 +25,9 @@ import qualified System.Exit as Exit
 import qualified System.IO as IO
 
 import Isabelle.Library (trim_line, make_string, make_bytes)
+import qualified Isabelle.UTF8 as UTF8
 import qualified Isabelle.Bytes as Bytes
 import qualified Isabelle.Byte_Message as Byte_Message
-import qualified Isabelle.File as File
 import qualified Isabelle.Naproche as Naproche
 import qualified Isabelle.Properties as Properties
 import qualified Isabelle.Server as Server
@@ -41,10 +41,8 @@ import SAD.API
 
 main :: IO ()
 main  = do
-  -- setup stdin/stdout
-  File.setup IO.stdin
-  File.setup IO.stdout
-  File.setup IO.stderr
+  -- setup channels
+  UTF8.setup3 IO.stdin IO.stdout IO.stderr
   IO.hSetBuffering IO.stdout IO.LineBuffering
   IO.hSetBuffering IO.stderr IO.LineBuffering
 

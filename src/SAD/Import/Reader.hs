@@ -34,7 +34,7 @@ import SAD.Parser.Primitives
 import SAD.Parser.Error
 import qualified SAD.Core.Message as Message
 import qualified Isabelle.File as File
-import Isabelle.Library (make_bytes)
+import Isabelle.Library (make_bytes, make_string, make_text)
 
 
 -- Init file parsing
@@ -43,7 +43,7 @@ readInit :: Text -> IO [(Pos, Instr)]
 readInit "" = return []
 readInit file = do
   input <- catch (File.read (Text.unpack file)) $ Message.errorParser (fileOnlyPos file) . make_bytes . ioeGetErrorString
-  let tokens = filter isProperToken $ tokenize TexDisabled (filePos file) $ Text.pack input
+  let tokens = filter isProperToken $ tokenize TexDisabled (filePos file) $ Text.fromStrict $ make_text input
       initialParserState = State (initFS Nothing) tokens NonTex noSourcePos
   fst <$> launchParser instructionFile initialParserState
 
@@ -84,7 +84,7 @@ reader pathToLibrary doneFiles = go
           go (newState:states) newProofText
       | otherwise = do
           text <-
-            catch (if Text.null file then getContents else File.read $ Text.unpack file)
+            catch (if Text.null file then getContents else make_string <$> File.read (Text.unpack file))
               (Message.errorParser (fileOnlyPos file) . make_bytes . ioeGetErrorString)
           (newProofText, newState) <- reader0 (filePos file) (Text.pack text) (pState {parserKind = parserKind'})
           -- state from before reading is still here

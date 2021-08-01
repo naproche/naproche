@@ -9,25 +9,19 @@ File-system operations.
 See also "$ISABELLE_HOME/src/Pure/General/file.ML".
 -}
 
-module Isabelle.File (setup, read, write, append) where
+module Isabelle.File (read, write, append) where
 
 import Prelude hiding (read)
 import qualified System.IO as IO
+import qualified Data.ByteString as ByteString
+import qualified Isabelle.Bytes as Bytes
+import Isabelle.Bytes (Bytes)
 
-setup :: IO.Handle -> IO ()
-setup h = do
-  IO.hSetEncoding h IO.utf8
-  IO.hSetNewlineMode h IO.noNewlineTranslation
+read :: IO.FilePath -> IO Bytes
+read path = Bytes.make <$> IO.withFile path IO.ReadMode ByteString.hGetContents
 
-read :: IO.FilePath -> IO String
-read path =
-  IO.withFile path IO.ReadMode (\h ->
-    do setup h; IO.hGetContents h >>= \s -> length s `seq` return s)
+write :: IO.FilePath -> Bytes -> IO ()
+write path bs = IO.withFile path IO.WriteMode (\h -> ByteString.hPut h (Bytes.unmake bs))
 
-write :: IO.FilePath -> String -> IO ()
-write path s =
-  IO.withFile path IO.WriteMode (\h -> do setup h; IO.hPutStr h s)
-
-append :: IO.FilePath -> String -> IO ()
-append path s =
-  IO.withFile path IO.AppendMode (\h -> do setup h; IO.hPutStr h s)
+append :: IO.FilePath -> Bytes -> IO ()
+append path bs = IO.withFile path IO.AppendMode (\h -> ByteString.hPut h (Bytes.unmake bs))
