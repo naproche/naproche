@@ -73,7 +73,8 @@ import qualified SAD.Core.Message as Message
 import qualified SAD.Data.Structures.DisTree as DT
 import qualified SAD.Data.Text.Context as Context (name)
 
-import Isabelle.Library (make_bytes)
+import qualified Isabelle.Bytes as Bytes
+import Isabelle.Library (BYTES, make_bytes)
 
 
 
@@ -313,18 +314,18 @@ unsetChecked = updateRS (\st -> st {alreadyChecked = False})
 
 -- common messages
 
-reasonLog :: Message.Kind -> SourcePos -> Text -> VM ()
-reasonLog kind pos = justIO . Message.outputReasoner kind pos . make_bytes
+reasonLog :: BYTES a => Message.Kind -> SourcePos -> a -> VM ()
+reasonLog kind pos = justIO . Message.outputReasoner kind pos
 
-thesisLog :: Message.Kind -> SourcePos -> Int -> Text -> VM ()
+thesisLog :: BYTES a => Message.Kind -> SourcePos -> Int -> a -> VM ()
 thesisLog kind pos indent msg =
-  justIO (Message.outputThesis kind pos (make_bytes (replicate (3 * indent) ' ' ++ Text.unpack msg)))
+  justIO (Message.outputThesis kind pos (Bytes.spaces (3 * indent) <> make_bytes msg))
 
-simpLog :: Message.Kind -> SourcePos -> Text -> VM ()
-simpLog kind pos = justIO . Message.outputSimplifier kind pos . make_bytes
+simpLog :: BYTES a => Message.Kind -> SourcePos -> a -> VM ()
+simpLog kind pos = justIO . Message.outputSimplifier kind pos
 
-translateLog :: Message.Kind -> SourcePos -> Text -> VM ()
-translateLog kind pos = justIO . Message.outputTranslate kind pos . make_bytes
+translateLog :: BYTES a => Message.Kind -> SourcePos -> a -> VM ()
+translateLog kind pos = justIO . Message.outputTranslate kind pos
 
 
 

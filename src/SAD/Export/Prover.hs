@@ -1,5 +1,4 @@
 {-# LANGUAGE MultiWayIf #-}
-{-# LANGUAGE OverloadedStrings #-}
 {-
 Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018), Makarius Wenzel (2018)
 
@@ -54,7 +53,7 @@ export pos depth provers instrs context goal = do
       proversNamed = filter ((==) proverName . name) provers
 
   when (null proversNamed) $
-    Message.errorExport pos ("No prover named " <> make_bytes proverName)
+    Message.errorExport pos ("No prover named " <> proverName)
 
   let printProver = askFlag Printprover False instrs
   let timeLimit = askLimit Timelimit 3 instrs
@@ -73,7 +72,7 @@ export pos depth provers instrs context goal = do
         (map Block.kind (head (branch goal) : concatMap branch context))
 
   when (askFlag Dump False instrs) $
-    Message.output "" Message.WRITELN pos (make_bytes task)
+    Message.output Bytes.empty Message.WRITELN pos task
 
   reportBracketIO pos $
     runProver pos (head proversNamed) proverServer printProver task isByContradiction timeLimit memoryLimit
@@ -92,7 +91,7 @@ runProver pos (Prover _ label path args yes con nos uns) proverServer printProve
         let out = map (("[" ++ label ++ "] ") ++) lns
 
         when (not timeout && null lns) $ Message.errorExport pos "No prover response"
-        when printProver $ mapM_ (Message.output "" Message.WRITELN pos . make_bytes) out
+        when printProver $ mapM_ (Message.output Bytes.empty Message.WRITELN pos) out
 
         let contradictions = any (\l -> any (`isPrefixOf` l) con) lns
             positive = any (\l -> any (`isPrefixOf` l) yes) lns
@@ -100,7 +99,7 @@ runProver pos (Prover _ label path args yes con nos uns) proverServer printProve
             inconclusive = any (\l -> any (`isPrefixOf` l) uns) lns
 
         unless (timeout || positive || contradictions || negative || inconclusive) $
-            Message.errorExport pos $ make_bytes (unlines ("Bad prover response:" : lns))
+            Message.errorExport pos $ unlines ("Bad prover response:" : lns)
 
         if | positive || (isByContradiction && contradictions) -> pure Success
            | negative -> pure Failure
@@ -122,7 +121,7 @@ runProver pos (Prover _ label path args yes con nos uns) proverServer printProve
 
         (prvin, prvout, prverr, prv) <- Exception.catch process
             (\e -> Message.errorExport pos $
-              make_bytes ("Failed to run " ++ show path ++ ": " ++ ioeGetErrorString e))
+              ("Failed to run " ++ show path ++ ": " ++ ioeGetErrorString e))
 
         UTF8.setup3 prvin prvout prverr
 
@@ -178,8 +177,8 @@ runProver pos (Prover _ label path args yes con nos uns) proverServer printProve
                               a == Naproche.prover_return_code ->
                                 case Value.parse_int b of
                                   Just rc -> (rc, XML.content_of body)
-                                  Nothing -> (2, "")
-                            _ -> (2, "")
+                                  Nothing -> (2, Bytes.empty)
+                            _ -> (2, Bytes.empty)
 
                     proverResult rc (make_string output))
 

@@ -44,7 +44,7 @@ import qualified Isabelle.XML as XML
 import qualified Isabelle.YXML as YXML
 import qualified Isabelle.Byte_Message as Byte_Message
 import qualified Isabelle.Naproche as Naproche
-import Isabelle.Library (make_bytes, trim_line)
+import Isabelle.Library (BYTES, make_bytes, trim_line)
 
 
 -- PIDE thread context
@@ -212,21 +212,22 @@ messageBytes pide origin kind pos msg =
       (case show pos of "" -> ""; s -> make_bytes s <> "\n")
     , msg]
 
-output :: Bytes -> Kind -> SourcePos -> Bytes -> IO ()
+output :: BYTES a => Bytes -> Kind -> SourcePos -> a -> IO ()
 output origin kind pos msg = do
   context <- getContext
-  channel context $ messageBytes (pide context) origin kind pos msg
+  channel context $ messageBytes (pide context) origin kind pos (make_bytes msg)
 
-error :: Bytes -> SourcePos -> Bytes -> IO a
+error :: BYTES a => Bytes -> SourcePos -> a -> IO b
 error origin pos msg = do
   pide <- pideContext
-  errorWithoutStackTrace $ UTF8.decode $ Bytes.concat $ messageBytes pide origin ERROR pos msg
+  errorWithoutStackTrace $ UTF8.decode $ Bytes.concat $
+    messageBytes pide origin ERROR pos (make_bytes msg)
 
 
 -- specific messages
 
 outputMain, outputExport, outputForTheL, outputParser, outputReasoner,
-  outputSimplifier, outputThesis :: Kind -> SourcePos -> Bytes -> IO ()
+  outputSimplifier, outputThesis :: BYTES a => Kind -> SourcePos -> a -> IO ()
 outputMain = output Naproche.origin_main
 outputExport = output Naproche.origin_export
 outputForTheL = output Naproche.origin_forthel
@@ -235,11 +236,11 @@ outputReasoner = output Naproche.origin_reasoner
 outputSimplifier = output Naproche.origin_simplifier
 outputThesis = output Naproche.origin_thesis
 
-outputTranslate :: Kind -> SourcePos -> Bytes -> IO ()
+outputTranslate :: BYTES a => Kind -> SourcePos -> a -> IO ()
 outputTranslate = output Naproche.origin_translate
 
-errorExport :: SourcePos -> Bytes -> IO a
+errorExport :: BYTES a => SourcePos -> a -> IO b
 errorExport = error Naproche.origin_export
 
-errorParser :: SourcePos -> Bytes -> IO a
+errorParser :: BYTES a => SourcePos -> a -> IO b
 errorParser = error Naproche.origin_parser

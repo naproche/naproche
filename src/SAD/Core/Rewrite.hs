@@ -6,7 +6,6 @@ Term rewriting: extraction of rules and proof of equlities.
 
 {-# LANGUAGE FlexibleContexts #-}
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
-{-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Core.Rewrite (equalityReasoning, lpoGe) where
 
@@ -33,6 +32,7 @@ import Data.Either
 import Control.Monad.Reader
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
+import Isabelle.Library ()
 
 
 -- Lexicographic path ordering
@@ -109,7 +109,7 @@ simpstep rules w = flip runStateT undefined . dive
 findNormalform :: [Rule] -> Weighting -> Formula -> [[(Formula, SimpInfo)]]
 findNormalform rules w t = map (reverse . (:) (t, trivialSimpInfo)) $ dive t
   where
-    trivialSimpInfo = (pure Top, "")
+    trivialSimpInfo = (pure Top, mempty)
     dive t = case simpstep rules w t of
       [] -> return []
       simplifications -> do
@@ -143,14 +143,14 @@ generateConditions pos verbositySetting rules w l r =
       simpLog Message.WRITELN pos "no matching normal forms found"
       showPath leftNormalForm; showPath rightNormalForm
     showPath ((t,_):rest) = when verbositySetting $ do
-      simpLog Message.WRITELN pos (Text.pack $ show t)
+      simpLog Message.WRITELN pos (show t)
       mapM_ (simpLog Message.WRITELN pos . format) rest
     -- formatting of paths
-    format (t, simpInfo) = " --> " <> Text.pack (show t) <> conditions simpInfo
+    format (t, simpInfo) = " --> " <> show t <> conditions simpInfo
     conditions (conditions, name) =
-      (if Text.null name then "" else " by " <> name <> ",") <>
+      (if Text.null name then "" else " by " <> Text.unpack name <> ",") <>
       (if null conditions then "" else " conditions: " <>
-        Text.unwords (intersperse "," $ map (Text.pack . show) conditions))
+        unwords (intersperse "," $ map show conditions))
 
 
 {- applies computational reasoning to an equality chain -}
@@ -175,7 +175,7 @@ getLinkedRules pos link = do
   where
     warn st =
       simpLog Message.WARNING pos $
-        "Could not find rules " <> Text.unwords (map (Text.pack . show) $ Set.elems st)
+        "Could not find rules " <> unwords (map show $ Set.elems st)
 
     retrieve _ [] = return []
     retrieve s (c:cnt) = let nm = Rule.label c in
@@ -226,7 +226,7 @@ dischargeConditions pos verbositySetting conditions =
     format conditions =
       if   null conditions
       then " - "
-      else Text.unwords . intersperse "," . map (Text.pack . show) $ reverse conditions
+      else unwords . intersperse "," . map show $ reverse conditions
     log msg =
       when verbositySetting $ thesis >>=
         flip (simpLog Message.WRITELN . Block.position . Context.head) msg

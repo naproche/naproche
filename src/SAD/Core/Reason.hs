@@ -10,7 +10,6 @@ by an external prover fails, the reasoner expands some definitions and tries aga
 
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 {-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Core.Reason (
   reason,
@@ -102,7 +101,7 @@ sequenceGoals pos reasoningDepth iteration (goal:restGoals) = do
 
     updateTrivialStatistics =
       unless (isTop goal) $ whenInstruction Printreason False $ do
-        reasonLog Message.WRITELN pos ("trivial: " <> (Text.pack $ show goal))
+        reasonLog Message.WRITELN pos ("trivial: " <> show goal)
         incrementCounter TrivialGoals
 
 sequenceGoals _ _ _ [] = return ()
@@ -139,8 +138,8 @@ launchProver pos iteration = do
       contextFormulas <- asks $ map Context.formula . reverse . currentContext
       concl <- thesis
       reasonLog Message.WRITELN pos $ "prover task:\n" <>
-        Text.concat (map (\form -> "  " <> Text.pack (show form) <> "\n") contextFormulas) <>
-        "  |- " <> (Text.pack (show (Context.formula concl))) <> "\n"
+        concatMap (\form -> "  " <> show form <> "\n") contextFormulas <>
+        "  |- " <> show (Context.formula concl) <> "\n"
 
     guardResult Success = pure ()
     guardResult ContradictoryAxioms = do
@@ -289,8 +288,8 @@ unfold pos = do
 
     unfoldLog (goal:lowLevelContext) =
       whenInstruction Printunfold False $ reasonLog Message.WRITELN pos $ "unfold to:\n"
-        <> Text.unlines (reverse $ map ((<>) "  " . Text.pack . show . Context.formula) lowLevelContext)
-        <> "  |- " <> Text.pack (show (neg $ Context.formula goal))
+        <> unlines (reverse $ map ((<>) "  " . show . Context.formula) lowLevelContext)
+        <> "  |- " <> show (neg $ Context.formula goal)
 
     neg (Not f) = f
     neg f = f

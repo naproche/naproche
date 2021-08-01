@@ -5,7 +5,6 @@ Main verification loop.
 -}
 
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
-{-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Core.Verify (verify) where
 
@@ -109,7 +108,7 @@ verificationLoop state@VS {
       toBeProved && notNull proofBody &&
       not (hasDEC $ Context.formula freshThesis)) $
         thesisLog Message.WRITELN (Block.position block) (length branch - 1) $
-        "thesis: " <> Text.pack (show (Context.formula freshThesis))
+        "thesis: " <> show (Context.formula freshThesis)
 
 
     (fortifiedProof, markedProof) <-
@@ -152,7 +151,7 @@ verificationLoop state@VS {
         hasChanged && motivated && newMotivation &&
         (not $ hasDEC $ Block.formula $ head branch) ) $
           thesisLog Message.WRITELN (Block.position block) (length branch - 2) $
-          "new thesis: " <> Text.pack (show (Context.formula newThesis))
+          "new thesis: " <> show (Context.formula newThesis)
 
       when (not newMotivation && motivated) $
         thesisLog Message.WARNING (Block.position block) (length branch - 2) "unmotivated assumption"
@@ -195,7 +194,7 @@ verificationLoop st@VS {
   where
     prove = do
       let block = Context.head thesis
-      let text = Block.text block
+      let text = Text.unpack $ Block.text block
       let pos = Block.position block
       whenInstruction Printgoal True $ reasonLog Message.TRACING pos $ "goal: " <> text
       if hasDEC (Context.formula thesis) --computational reasoning
@@ -280,7 +279,7 @@ verifyProof state@VS {
         noInductionOrCase (Context.formula newThesis) && not (null $ restProofText state)) $
           thesisLog Message.WRITELN
           (Block.position $ head $ Context.branch $ head context) (length branch - 2) $
-          "new thesis " <> Text.pack (show (Context.formula newThesis))
+          "new thesis " <> show (Context.formula newThesis)
       verifyProof state {
         rewriteRules = newRules, currentThesis = newThesis,
         currentContext = newContext}
@@ -314,21 +313,21 @@ procProofTextInstr pos = flip proc $ ask >>= verificationLoop
     proc (Command RULES) = (>>) $ do
       rules <- asks rewriteRules
       reasonLog Message.WRITELN pos $
-        "current ruleset: " <> "\n" <> Text.unlines (map (Text.pack . show) (reverse rules))
+        "current ruleset: " <> "\n" <> unlines (map show (reverse rules))
     proc (Command THESIS) = (>>) $ do
       motivated <- asks thesisMotivated; thesis <- asks currentThesis
       let motivation = if motivated then "(motivated): " else "(not motivated): "
       reasonLog Message.WRITELN pos $
-        "current thesis " <> motivation <> Text.pack (show (Context.formula thesis))
+        "current thesis " <> motivation <> show (Context.formula thesis)
     proc (Command CONTEXT) = (>>) $ do
       context <- asks currentContext
       reasonLog Message.WRITELN pos $ "current context:\n" <>
-        Text.concat (map (\form -> "  " <> Text.pack (show (Context.formula form)) <> "\n") (reverse context))
+        concatMap (\form -> "  " <> show (Context.formula form) <> "\n") (reverse context)
     proc (Command FILTER) = (>>) $ do
       context <- asks currentContext
       let topLevelContext = filter Context.isTopLevel context
       reasonLog Message.WRITELN pos $ "current filtered top-level context:\n" <>
-        Text.concat (map (\form -> "  " <> Text.pack (show (Context.formula form)) <> "\n") (reverse topLevelContext))
+        concatMap (\form -> "  " <> show (Context.formula form) <> "\n") (reverse topLevelContext)
 
     proc (Command _) = (>>) $ reasonLog Message.WRITELN pos "unsupported instruction"
 

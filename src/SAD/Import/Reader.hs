@@ -5,7 +5,6 @@ Main text reading functions.
 -}
 
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
-{-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Import.Reader (readInit, readProofText) where
 
@@ -40,7 +39,7 @@ import Isabelle.Library (make_bytes, make_string, make_text)
 -- Init file parsing
 
 readInit :: Text -> IO [(Pos, Instr)]
-readInit "" = return []
+readInit file | Text.null file = return []
 readInit file = do
   input <- catch (File.read (Text.unpack file)) $ Message.errorParser (fileOnlyPos file) . make_bytes . ioeGetErrorString
   let tokens = filter isProperToken $ tokenize TexDisabled (filePos file) $ Text.fromStrict $ make_text input
@@ -67,9 +66,9 @@ readProofText pathToLibrary text0 = do
 reader :: Text -> [Text] -> [State FState] -> [ProofText] -> IO ([ProofText], [Message.Report])
 reader pathToLibrary doneFiles = go
   where
-    go stateList [ProofTextInstr pos (GetArgument (Read pk) file)] = if ".." `Text.isInfixOf` file
-      then Message.errorParser (Instr.position pos) (make_bytes ("Illegal \"..\" in file name: " ++ show file))
-      else go stateList [ProofTextInstr pos $ GetArgument (File pk) $ pathToLibrary <> "/" <> file]
+    go stateList [ProofTextInstr pos (GetArgument (Read pk) file)] = if Text.pack ".." `Text.isInfixOf` file
+      then Message.errorParser (Instr.position pos) ("Illegal \"..\" in file name: " ++ show file)
+      else go stateList [ProofTextInstr pos $ GetArgument (File pk) $ pathToLibrary <> Text.pack "/" <> file]
 
     go (pState:states) [ProofTextInstr pos (GetArgument (File parserKind') file)]
       | file `elem` doneFiles = do
