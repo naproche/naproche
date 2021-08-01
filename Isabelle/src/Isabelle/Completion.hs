@@ -15,8 +15,6 @@ module Isabelle.Completion (
     Name, T, names, none, make, markup_element, markup_report, make_report
   ) where
 
-import qualified Data.List as List
-
 import Isabelle.Library
 import qualified Isabelle.Bytes as Bytes
 import Isabelle.Bytes (Bytes)
@@ -36,10 +34,17 @@ names limit props names = Completion props (length names) (take limit names)
 none :: T
 none = names 0 [] []
 
+clean_name :: Bytes -> Bytes
+clean_name bs =
+  if not (Bytes.null bs) && Bytes.last bs == u then
+    Bytes.unpack bs |> reverse |> dropWhile (== u) |> reverse |> Bytes.pack
+  else bs
+  where u = Bytes.byte '_'
+
 make :: Int -> (Bytes, Properties.T) -> ((Bytes -> Bool) -> [Name]) -> T
 make limit (name, props) make_names =
   if name /= "" && name /= "_" then
-    names limit props (make_names (List.isPrefixOf (clean_name (make_string name)) . make_string))
+    names limit props (make_names (Bytes.isPrefixOf (clean_name name)))
   else none
 
 markup_element :: T -> (Markup.T, XML.Body)

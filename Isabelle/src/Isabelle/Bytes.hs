@@ -14,8 +14,8 @@ module Isabelle.Bytes (
   Bytes,
   make, unmake, pack, unpack,
   empty, null, length, index, all, any,
-  head, last, take, drop, concat,
-  space, spaces, singleton, char, byte,
+  head, last, take, drop, isPrefixOf, isSuffixOf,
+  concat, space, spaces, singleton, char, byte,
   trim_line, space_explode, split_lines
 )
 where
@@ -74,6 +74,16 @@ take n = pack . List.take n . unpack
 
 drop :: Int -> Bytes -> Bytes
 drop n = pack . List.drop n . unpack
+
+isPrefixOf :: Bytes -> Bytes -> Bool
+isPrefixOf bs1 bs2 =
+  n1 <= n2 && List.all (\i -> index bs1 i == index bs2 i) [0 .. n1 - 1]
+  where n1 = length bs1; n2 = length bs2
+
+isSuffixOf :: Bytes -> Bytes -> Bool
+isSuffixOf bs1 bs2 =
+  n1 <= n2 && List.all (\i -> index bs1 i == index bs2 (i + k)) [0 .. n1 - 1]
+  where n1 = length bs1; n2 = length bs2; k = n2 - n1
 
 concat :: [Bytes] -> Bytes
 concat = mconcat

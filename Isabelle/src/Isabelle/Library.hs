@@ -23,7 +23,7 @@ module Isabelle.Library (
   StringLike, STRING (..), TEXT (..), BYTES (..),
 
   proper_string, quote, space_implode, commas, commas_quote, cat_lines,
-  space_explode, split_lines, trim_line, clean_name)
+  space_explode, split_lines, trim_line)
 where
 
 import qualified Data.Text as Text
@@ -156,6 +156,3 @@ trim_line line =
       '\n' : rest -> reverse rest
       _ -> line
   else line
-
-clean_name :: String -> String
-clean_name = reverse #> dropWhile (== '_') #> reverse
