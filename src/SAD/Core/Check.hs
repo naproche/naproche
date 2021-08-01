@@ -138,9 +138,9 @@ testDef pos context term (guards, fortifiedTerm) = do
 
 
     header select guards =
-      "check: " <> (Text.pack $ showsPrec 2 term " vs ") <> format (select guards)
+      "check: " <> showsPrec 2 term " vs " <> format (select guards)
     thead [] = ""; thead guards = "(trivial: " <> format guards <> ")"
-    format guards = if null guards then " - " else Text.unwords . map (Text.pack . show) $ guards
+    format guards = if null guards then " - " else unwords . map show $ guards
     defLog =
       whenInstruction Printcheck False .
         reasonLog Message.WRITELN (Block.position (head $ Context.branch context))

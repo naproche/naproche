@@ -56,7 +56,6 @@ import Data.Time (NominalDiffTime, getCurrentTime, diffUTCTime)
 
 import qualified Data.Set as Set
 import qualified Data.Map as Map
-import qualified Data.Text.Lazy as Text
 
 import qualified Isabelle.Markup as Markup
 
@@ -336,7 +335,7 @@ retrieveContext pos names = do
 
   unless (Set.null unfoundSections) $
     reasonLog Message.WARNING pos $
-      "Could not find sections " <> Text.unwords (map (Text.pack . show) $ Set.elems unfoundSections)
+      "Could not find sections " <> unwords (map show $ Set.elems unfoundSections)
   return context
   where
     retrieve [] = return []
