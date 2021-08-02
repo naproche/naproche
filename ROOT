@@ -1,6 +1,6 @@
 chapter "Naproche"
 
-session "Naproche" in "Isabelle/Main" = Pure +
+session "Naproche" in "Isabelle/Main" = HOL +
   description "Isabelle/Naproche main session"
   options [naproche_server = false]
   sessions

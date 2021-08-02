@@ -12,44 +12,144 @@ See also "$ISABELLE_HOME/src/Pure/term.scala".
 {-# LANGUAGE OverloadedStrings #-}
 
 module Isabelle.Term (
-  Indexname,
-
-  Sort, dummyS,
-
-  Typ(..), dummyT, is_dummyT, Term(..))
+  Name, Indexname, Sort, Typ(..), Term(..), Free,
+  type_op0, type_op1, op0, op1, op2, typed_op2, binder,
+  dummyS, dummyT, is_dummyT, propT, is_propT, (-->), dest_funT, (--->),
+  aconv, list_comb, strip_comb, head_of, lambda
+)
 where
 
 import Isabelle.Bytes (Bytes)
 
+infixr 5 -->
+infixr --->
 
-type Indexname = (Bytes, Int)
+
+{- types and terms -}
+
+type Name = Bytes
+
+type Indexname = (Name, Int)
+
+type Sort = [Name]
+
+data Typ =
+    Type (Name, [Typ])
+  | TFree (Name, Sort)
+  | TVar (Indexname, Sort)
+  deriving (Show, Eq, Ord)
+
+data Term =
+    Const (Name, [Typ])
+  | Free (Name, Typ)
+  | Var (Indexname, Typ)
+  | Bound Int
+  | Abs (Name, Typ, Term)
+  | App (Term, Term)
+  deriving (Show, Eq, Ord)
+
+type Free = (Name, Typ)
 
 
-type Sort = [Bytes]
+{- type and term operators -}
+
+type_op0 :: Name -> (Typ, Typ -> Bool)
+type_op0 name = (mk, is)
+  where
+    mk = Type (name, [])
+    is (Type (name, _)) = True
+    is _ = False
+
+type_op1 :: Name -> (Typ -> Typ, Typ -> Maybe Typ)
+type_op1 name = (mk, dest)
+  where
+    mk ty = Type (name, [ty])
+    dest (Type (name, [ty])) = Just ty
+    dest _ = Nothing
+
+type_op2 :: Name -> (Typ -> Typ -> Typ, Typ -> Maybe (Typ, Typ))
+type_op2 name = (mk, dest)
+  where
+    mk ty1 ty2 = Type (name, [ty1, ty2])
+    dest (Type (name, [ty1, ty2])) = Just (ty1, ty2)
+    dest _ = Nothing
+
+op0 :: Name -> (Term, Term -> Bool)
+op0 name = (mk, is)
+  where
+    mk = Const (name, [])
+    is (Const (c, _)) = c == name
+    is _ = False
+
+op1 :: Name -> (Term -> Term, Term -> Maybe Term)
+op1 name = (mk, dest)
+  where
+    mk t = App (Const (name, []), t)
+    dest (App (Const (c, _), t)) | c == name = Just t
+    dest _ = Nothing
+
+op2 :: Name -> (Term -> Term -> Term, Term -> Maybe (Term, Term))
+op2 name = (mk, dest)
+  where
+    mk t u = App (App (Const (name, []), t), u)
+    dest (App (App (Const (c, _), t), u)) | c == name = Just (t, u)
+    dest _ = Nothing
+
+typed_op2 :: Name -> (Typ -> Term -> Term -> Term, Term -> Maybe (Typ, Term, Term))
+typed_op2 name = (mk, dest)
+  where
+    mk ty t u = App (App (Const (name, [ty]), t), u)
+    dest (App (App (Const (c, [ty]), t), u)) | c == name = Just (ty, t, u)
+    dest _ = Nothing
+
+binder :: Name -> Free -> Term -> Term
+binder c (a, ty) b = App (Const (c, [ty]), lambda (a, ty) b)
+
+
+{- type operations -}
 
 dummyS :: Sort
 dummyS = [""]
 
+dummyT :: Typ; is_dummyT :: Typ -> Bool
+(dummyT, is_dummyT) = type_op0 "dummy"
 
-data Typ =
-    Type (Bytes, [Typ])
-  | TFree (Bytes, Sort)
-  | TVar (Indexname, Sort)
-  deriving Show
+propT :: Typ; is_propT :: Typ -> Bool
+(propT, is_propT) = type_op0 "prop"
 
-dummyT :: Typ
-dummyT = Type ("dummy", [])
+(-->) :: Typ -> Typ -> Typ; dest_funT :: Typ -> Maybe (Typ, Typ)
+((-->), dest_funT) = type_op2 "fun"
 
-is_dummyT :: Typ -> Bool
-is_dummyT (Type ("dummy", [])) = True
-is_dummyT _ = False
+(--->) :: [Typ] -> Typ -> Typ
+[] ---> b = b
+(a : as) ---> b = a --> (as ---> b)
 
 
-data Term =
-    Const (Bytes, [Typ])
-  | Free (Bytes, Typ)
-  | Var (Indexname, Typ)
-  | Bound Int
-  | Abs (Bytes, Typ, Term)
-  | App (Term, Term)
-  deriving Show
+{- term operations -}
+
+aconv :: Term -> Term -> Bool
+aconv (App (t1, u1)) (App (t2, u2)) = aconv t1 t2 && aconv u1 u2
+aconv (Abs (_, ty1, t1)) (Abs (_, ty2, t2)) = aconv t1 t2 && ty1 == ty2
+aconv a1 a2 = a1 == a2
+
+list_comb :: Term -> [Term] -> Term
+list_comb f [] = f
+list_comb f (t : ts) = list_comb (App (f, t)) ts
+
+strip_comb :: Term -> (Term, [Term])
+strip_comb tm = strip (tm, [])
+  where
+    strip (App (f, t), ts) = strip (f, t : ts)
+    strip x = x
+
+head_of :: Term -> Term
+head_of (App (f, _)) = head_of f
+head_of u = u
+
+lambda :: Free -> Term -> Term
+lambda (name, typ) body = Abs (name, typ, abstract 0 body)
+  where
+    abstract lev (Free (x, ty)) | name == x && typ == ty = Bound lev
+    abstract lev (Abs (a, ty, t)) = Abs (a, ty, abstract (lev + 1) t)
+    abstract lev (App (t, u)) = App (abstract lev t, abstract lev u)
+    abstract _ t = t
