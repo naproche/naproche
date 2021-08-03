@@ -15,9 +15,9 @@ module Isabelle.Completion (
     Name, T, names, none, make, markup_element, markup_report, make_report
   ) where
 
-import Isabelle.Library
 import qualified Isabelle.Bytes as Bytes
-import Isabelle.Bytes (Bytes)
+import qualified Isabelle.Name as Name
+import Isabelle.Name (Name)
 import qualified Isabelle.Properties as Properties
 import qualified Isabelle.Markup as Markup
 import qualified Isabelle.XML.Encode as Encode
@@ -25,26 +25,19 @@ import qualified Isabelle.XML as XML
 import qualified Isabelle.YXML as YXML
 
 
-type Name = (Bytes, (Bytes, Bytes))  -- external name, kind, internal name
-data T = Completion Properties.T Int [Name]  -- position, total length, names
+type Names = [(Name, (Name, Name))]  -- external name, kind, internal name
+data T = Completion Properties.T Int Names  -- position, total length, names
 
-names :: Int -> Properties.T -> [Name] -> T
+names :: Int -> Properties.T -> Names -> T
 names limit props names = Completion props (length names) (take limit names)
 
 none :: T
 none = names 0 [] []
 
-clean_name :: Bytes -> Bytes
-clean_name bs =
-  if not (Bytes.null bs) && Bytes.last bs == u then
-    Bytes.unpack bs |> reverse |> dropWhile (== u) |> reverse |> Bytes.pack
-  else bs
-  where u = Bytes.byte '_'
-
-make :: Int -> (Bytes, Properties.T) -> ((Bytes -> Bool) -> [Name]) -> T
+make :: Int -> (Name, Properties.T) -> ((Name -> Bool) -> Names) -> T
 make limit (name, props) make_names =
   if name /= "" && name /= "_" then
-    names limit props (make_names (Bytes.isPrefixOf (clean_name name)))
+    names limit props (make_names (Bytes.isPrefixOf (Name.clean name)))
   else none
 
 markup_element :: T -> (Markup.T, XML.Body)
@@ -59,11 +52,11 @@ markup_element (Completion props total names) =
     in (markup, body)
   else (Markup.empty, [])
 
-markup_report :: [T] -> Bytes
+markup_report :: [T] -> Name
 markup_report [] = Bytes.empty
 markup_report elems =
   YXML.string_of $ XML.Elem (Markup.report, map (XML.Elem . markup_element) elems)
 
-make_report :: Int -> (Bytes, Properties.T) -> ((Bytes -> Bool) -> [Name]) -> Bytes
+make_report :: Int -> (Name, Properties.T) -> ((Name -> Bool) -> Names) -> Name
 make_report limit name_props make_names =
   markup_report [make limit name_props make_names]

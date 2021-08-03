@@ -12,22 +12,23 @@ See also "$ISABELLE_HOME/src/Pure/term.scala".
 {-# LANGUAGE OverloadedStrings #-}
 
 module Isabelle.Term (
-  Name, Indexname, Sort, Typ(..), Term(..), Free,
+  Indexname, Sort, Typ(..), Term(..),
+  Free, lambda, declare_frees, incr_boundvars, subst_bound, dest_abs,
   type_op0, type_op1, op0, op1, op2, typed_op2, binder,
   dummyS, dummyT, is_dummyT, propT, is_propT, (-->), dest_funT, (--->),
-  aconv, list_comb, strip_comb, head_of, lambda
+  aconv, list_comb, strip_comb, head_of
 )
 where
 
-import Isabelle.Bytes (Bytes)
+import Isabelle.Library
+import qualified Isabelle.Name as Name
+import Isabelle.Name (Name)
 
 infixr 5 -->
 infixr --->
 
 
 {- types and terms -}
-
-type Name = Bytes
 
 type Indexname = (Name, Int)
 
@@ -48,7 +49,51 @@ data Term =
   | App (Term, Term)
   deriving (Show, Eq, Ord)
 
+
+{- free and bound variables -}
+
 type Free = (Name, Typ)
+
+lambda :: Free -> Term -> Term
+lambda (name, typ) body = Abs (name, typ, abstract 0 body)
+  where
+    abstract lev (Free (x, ty)) | name == x && typ == ty = Bound lev
+    abstract lev (Abs (a, ty, t)) = Abs (a, ty, abstract (lev + 1) t)
+    abstract lev (App (t, u)) = App (abstract lev t, abstract lev u)
+    abstract _ t = t
+
+declare_frees :: Term -> Name.Context -> Name.Context
+declare_frees (Free (x, _)) = Name.declare x
+declare_frees (Abs (_, _, b)) = declare_frees b
+declare_frees (App (t, u)) = declare_frees t #> declare_frees u
+declare_frees _ = id
+
+incr_boundvars :: Int -> Term -> Term
+incr_boundvars inc = if inc == 0 then id else incr 0
+  where
+    incr lev (Bound i) = if i >= lev then Bound (i + inc) else Bound i
+    incr lev (Abs (a, ty, b)) = Abs (a, ty, incr (lev + 1) b)
+    incr lev (App (t, u)) = App (incr lev t, incr lev u)
+    incr _ t = t
+
+subst_bound :: Term -> Term -> Term
+subst_bound arg = subst 0
+  where
+    subst lev (Bound i) =
+      if i < lev then Bound i
+      else if i == lev then incr_boundvars lev arg
+      else Bound (i - 1)
+    subst lev (Abs (a, ty, b)) = Abs (a, ty, subst (lev + 1) b)
+    subst lev (App (t, u)) = App (subst lev t, subst lev u)
+    subst _ t = t
+
+dest_abs :: Name.Context -> Term -> Maybe (Free, Term)
+dest_abs names (Abs (x, ty, b)) =
+  let
+    (x', _) = Name.variant x (declare_frees b names)
+    v = (x', ty)
+  in Just (v, subst_bound (Free v) b)
+dest_abs _ _ = Nothing
 
 
 {- type and term operators -}
@@ -145,11 +190,3 @@ strip_comb tm = strip (tm, [])
 head_of :: Term -> Term
 head_of (App (f, _)) = head_of f
 head_of u = u
-
-lambda :: Free -> Term -> Term
-lambda (name, typ) body = Abs (name, typ, abstract 0 body)
-  where
-    abstract lev (Free (x, ty)) | name == x && typ == ty = Bound lev
-    abstract lev (Abs (a, ty, t)) = Abs (a, ty, abstract (lev + 1) t)
-    abstract lev (App (t, u)) = App (abstract lev t, abstract lev u)
-    abstract _ t = t
