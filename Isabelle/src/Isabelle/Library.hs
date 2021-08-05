@@ -21,6 +21,7 @@ module Isabelle.Library (
   fold, fold_rev, single, map_index, get_index, separate,
 
   StringLike, STRING (..), TEXT (..), BYTES (..),
+  show_bytes, show_text,
 
   proper_string, quote, space_implode, commas, commas_quote, cat_lines,
   space_explode, split_lines, trim_line)
@@ -120,6 +121,12 @@ instance BYTES String where make_bytes = UTF8.encode
 instance BYTES Text where make_bytes = UTF8.encode
 instance BYTES Lazy.Text where make_bytes = UTF8.encode . Lazy.toStrict
 instance BYTES Bytes where make_bytes = id
+
+show_bytes :: Show a => a -> Bytes
+show_bytes = make_bytes . show
+
+show_text :: Show a => a -> Text
+show_text = make_text . show
 
 
 {- strings -}

@@ -33,7 +33,7 @@ import SAD.Parser.Primitives
 import SAD.Parser.Error
 import qualified SAD.Core.Message as Message
 import qualified Isabelle.File as File
-import Isabelle.Library (make_bytes, make_string, make_text)
+import Isabelle.Library (make_bytes, make_string, make_text, show_bytes)
 
 
 -- Init file parsing
@@ -132,5 +132,5 @@ chooseTokenizer st = case parserKind st of
 launchParser :: Parser st a -> State st -> IO (a, State st)
 launchParser parser state =
   case runP parser state of
-    Error err -> Message.errorParser (errorPos err) (make_bytes $ show err)
+    Error err -> Message.errorParser (errorPos err) (show_bytes err)
     Ok [PR a st] -> return (a, st)

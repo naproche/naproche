@@ -45,7 +45,7 @@ parse_nat s =
 {- int -}
 
 print_int :: Int -> Bytes
-print_int = make_bytes . show
+print_int = show_bytes
 
 parse_int :: Bytes -> Maybe Int
 parse_int = Read.readMaybe . make_string

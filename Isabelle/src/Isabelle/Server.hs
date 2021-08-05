@@ -41,7 +41,7 @@ localhost = Socket.tupleToHostAddress (127, 0, 0, 1)
 publish_text :: Bytes -> Bytes -> UUID.T -> Bytes
 publish_text name address password =
   "server " <> quote name <> " = " <> address <>
-    " (password " <> quote (make_bytes $ show password) <> ")"
+    " (password " <> quote (show_bytes password) <> ")"
 
 publish_stdout :: Bytes -> Bytes -> UUID.T -> IO ()
 publish_stdout name address password =
@@ -61,7 +61,7 @@ server publish handle =
       Socket.listen server_socket 50
 
       port <- Socket.socketPort server_socket
-      let address = localhost_name <> ":" <> make_bytes (show port)
+      let address = localhost_name <> ":" <> show_bytes port
       password <- UUID.random
       publish address password
 

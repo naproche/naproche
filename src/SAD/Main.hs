@@ -24,7 +24,7 @@ import qualified System.Environment as Environment
 import qualified System.Exit as Exit
 import qualified System.IO as IO
 
-import Isabelle.Library (trim_line, make_string, make_bytes)
+import Isabelle.Library (trim_line, make_string, make_bytes, show_bytes)
 import qualified Isabelle.UTF8 as UTF8
 import qualified Isabelle.Bytes as Bytes
 import qualified Isabelle.Byte_Message as Byte_Message
@@ -131,7 +131,7 @@ proveFOL proversYaml text1 opts0 oldProofText oldProofTextRef startTime fileName
       (success, newProofText) <- verify (maybe "" Text.pack fileName) provers reasonerState text
       mapM_ (writeIORef oldProofTextRef) newProofText
       pure success
-    Just err -> do errorParser (errorPos err) (make_bytes $ show err); pure False
+    Just err -> do errorParser (errorPos err) (show_bytes err); pure False
 
   finishTime <- getCurrentTime
   finalReasonerState <- readIORef reasonerState
