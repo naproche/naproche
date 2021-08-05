@@ -16,7 +16,7 @@ module Isabelle.Bytes (
   empty, null, length, index, all, any,
   head, last, take, drop, isPrefixOf, isSuffixOf,
   concat, space, spaces, singleton, char, byte,
-  trim_line, space_explode, split_lines
+  trim_line
 )
 where
 
@@ -121,17 +121,3 @@ trim_line s =
   where
     n = length s
     at = char . index s
-
-space_explode :: Word8 -> Bytes -> [Bytes]
-space_explode sep str =
-  if null str then []
-  else if all (/= sep) str then [str]
-  else explode (unpack str)
-  where
-    explode rest =
-      case span (/= sep) rest of
-        (_, []) -> [pack rest]
-        (prfx, _ : rest') -> pack prfx : explode rest'
-
-split_lines :: Bytes -> [Bytes]
-split_lines = space_explode (byte '\n')
