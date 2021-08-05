@@ -20,7 +20,7 @@ import qualified Isabelle.Name as Name
 import Isabelle.Name (Name)
 import qualified Isabelle.Properties as Properties
 import qualified Isabelle.Markup as Markup
-import qualified Isabelle.XML.Encode as Encode
+import Isabelle.XML.Classes
 import qualified Isabelle.XML as XML
 import qualified Isabelle.YXML as YXML
 
@@ -43,13 +43,7 @@ make limit (name, props) make_names =
 markup_element :: T -> (Markup.T, XML.Body)
 markup_element (Completion props total names) =
   if not (null names) then
-    let
-      markup = Markup.properties props Markup.completion
-      body =
-        Encode.pair Encode.int
-          (Encode.list (Encode.pair Encode.string (Encode.pair Encode.string Encode.string)))
-          (total, names)
-    in (markup, body)
+    (Markup.properties props Markup.completion, encode (total, names))
   else (Markup.empty, [])
 
 markup_report :: [T] -> Name
