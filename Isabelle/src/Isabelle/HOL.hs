@@ -17,10 +17,11 @@ module Isabelle.HOL (
   mk_eq, dest_eq, true, is_true, false, is_false,
   mk_not, dest_not, mk_conj, dest_conj, mk_disj, dest_disj,
   mk_imp, dest_imp, mk_iff, dest_iff,
-  mk_all, mk_ex
+  mk_all, dest_all, mk_ex, dest_ex
 )
 where
 
+import qualified Isabelle.Name as Name
 import Isabelle.Term
 
 
@@ -66,8 +67,8 @@ dest_iff tm =
     Just (ty, t, u) | ty == boolT -> Just (t, u)
     _ -> Nothing
 
-mk_all :: Free -> Term -> Term
-mk_all = binder "HOL.All"
+mk_all :: Free -> Term -> Term; dest_all :: Name.Context -> Term -> Maybe (Free, Term)
+(mk_all, dest_all) = binder "HOL.All"
 
-mk_ex :: Free -> Term -> Term
-mk_ex = binder "HOL.Ex"
+mk_ex :: Free -> Term -> Term; dest_ex :: Name.Context -> Term -> Maybe (Free, Term)
+(mk_ex, dest_ex) = binder "HOL.Ex"

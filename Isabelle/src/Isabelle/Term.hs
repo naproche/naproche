@@ -13,7 +13,7 @@ See also "$ISABELLE_HOME/src/Pure/term.scala".
 
 module Isabelle.Term (
   Indexname, Sort, Typ(..), Term(..),
-  Free, lambda, declare_frees, incr_boundvars, subst_bound, dest_abs,
+  Free, lambda, declare_frees, incr_boundvars, subst_bound, dest_abs, strip_abs,
   type_op0, type_op1, op0, op1, op2, typed_op2, binder,
   dummyS, dummyT, is_dummyT, propT, is_propT, (-->), dest_funT, (--->),
   aconv, list_comb, strip_comb, head_of
@@ -95,6 +95,14 @@ dest_abs names (Abs (x, ty, b)) =
   in Just (v, subst_bound (Free v) b)
 dest_abs _ _ = Nothing
 
+strip_abs :: Name.Context -> Term -> ([Free], Term)
+strip_abs names tm =
+  case dest_abs names tm of
+    Just (v, t) ->
+      let (vs, t') = strip_abs names t'
+      in (v : vs, t')
+    Nothing -> ([], tm)
+
 
 {- type and term operators -}
 
@@ -147,8 +155,12 @@ typed_op2 name = (mk, dest)
     dest (App (App (Const (c, [ty]), t), u)) | c == name = Just (ty, t, u)
     dest _ = Nothing
 
-binder :: Name -> Free -> Term -> Term
-binder c (a, ty) b = App (Const (c, [ty]), lambda (a, ty) b)
+binder :: Name -> (Free -> Term -> Term, Name.Context -> Term -> Maybe (Free, Term))
+binder name = (mk, dest)
+  where
+    mk (a, ty) b = App (Const (name, [ty]), lambda (a, ty) b)
+    dest names (App (Const (c, _), t)) | c == name = dest_abs names t
+    dest _ _ = Nothing
 
 
 {- type operations -}
