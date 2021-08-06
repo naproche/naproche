@@ -27,6 +27,7 @@ import Data.Maybe
 import qualified Data.ByteString as ByteString
 import qualified Isabelle.Bytes as Bytes
 import Isabelle.Bytes (Bytes)
+import qualified Isabelle.Symbol as Symbol
 import qualified Isabelle.UTF8 as UTF8
 import qualified Isabelle.XML as XML
 import qualified Isabelle.YXML as YXML
@@ -71,7 +72,7 @@ read_block socket n = do
 read_line :: Socket -> IO (Maybe Bytes)
 read_line socket = read_body []
   where
-    result = Bytes.trim_line . Bytes.pack . reverse
+    result = trim_line . Bytes.pack . reverse
     read_body bs = do
       s <- Socket.recv socket 1
       case ByteString.length s of
@@ -123,11 +124,11 @@ read_message socket = do
 
 is_length :: Bytes -> Bool
 is_length msg =
-  not (Bytes.null msg) && Bytes.all (\b -> 48 <= b && b <= 57) msg
+  not (Bytes.null msg) && Bytes.all_char (\c -> '0' <= c && c <= '9') msg
 
 is_terminated :: Bytes -> Bool
 is_terminated msg =
-  not (Bytes.null msg) && (Bytes.last msg == 13 || Bytes.last msg == 10)
+  not (Bytes.null msg) && Symbol.is_ascii_line_terminator (Bytes.char $ Bytes.last msg)
 
 make_line_message :: Bytes -> [Bytes]
 make_line_message msg =
@@ -135,7 +136,7 @@ make_line_message msg =
     if is_length msg || is_terminated msg then
       error ("Bad content for line message:\n" <> take 100 (UTF8.decode msg))
     else
-      (if n > 100 || Bytes.any (== 10) msg then make_header [n + 1] else []) <> [msg, "\n"]
+      (if n > 100 || Bytes.any_char (== '\n') msg then make_header [n + 1] else []) <> [msg, "\n"]
 
 write_line_message :: Socket -> Bytes -> IO ()
 write_line_message socket = write socket . make_line_message
@@ -148,7 +149,7 @@ read_line_message socket = do
     Just line ->
       case Value.parse_nat line of
         Nothing -> return $ Just line
-        Just n -> fmap Bytes.trim_line . fst <$> read_block socket n
+        Just n -> fmap trim_line . fst <$> read_block socket n
 
 
 read_yxml :: Socket -> IO (Maybe XML.Body)

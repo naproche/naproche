@@ -17,8 +17,7 @@ module Isabelle.Bytes (
   make, unmake, pack, unpack,
   empty, null, length, index, all, any,
   head, last, take, drop, isPrefixOf, isSuffixOf,
-  concat, space, spaces, char, byte, max_byte, max_char, singleton,
-  trim_line
+  concat, space, spaces, char, all_char, any_char, byte, max_byte, max_char, singleton
 )
 where
 
@@ -104,6 +103,12 @@ spaces n =
 char :: Word8 -> Char
 char = toEnum . fromEnum
 
+all_char :: (Char -> Bool) -> Bytes -> Bool
+all_char pred = all (pred . char)
+
+any_char :: (Char -> Bool) -> Bytes -> Bool
+any_char pred = any (pred . char)
+
 byte :: Char -> Word8
 byte = toEnum . fromEnum
 
@@ -120,12 +125,3 @@ singletons =
 
 singleton :: Word8 -> Bytes
 singleton b = singletons ! b
-
-trim_line :: Bytes -> Bytes
-trim_line s =
-  if n >= 2 && at (n - 2) == '\r' && at (n - 1) == '\n' then take (n - 2) s
-  else if n >= 1 && (at (n - 1) == '\r' || at (n - 1) == '\n') then take (n - 1) s
-  else s
-  where
-    n = length s
-    at = char . index s

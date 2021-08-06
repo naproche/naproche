@@ -12,6 +12,7 @@ See also "$ISABELLE_HOME/src/Pure/General/basics.ML", "$ISABELLE_HOME/src/Pure/l
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeSynonymInstances #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE InstanceSigs #-}
 
 module Isabelle.Library (
   (|>), (|->), (#>), (#->),
@@ -30,7 +31,6 @@ where
 import qualified Data.Text as Text
 import Data.Text (Text)
 import qualified Data.Text.Lazy as Lazy
-import GHC.Exts (IsList, Item)
 import Data.String (IsString)
 import qualified Data.List.Split as Split
 import qualified Isabelle.Symbol as Symbol
@@ -102,26 +102,50 @@ separate _ xs = xs;
 
 class (IsString a, Monoid a, Eq a, Ord a) => StringLike a where
   space_explode :: Char -> a -> [a]
+  trim_line :: a -> a
 
 instance StringLike String where
+  space_explode :: Char -> String -> [String]
   space_explode c = Split.split (Split.dropDelims (Split.whenElt (== c)))
+  trim_line :: String -> String
+  trim_line s =
+    if not (null s) && Symbol.is_ascii_line_terminator (last s) then
+      case reverse s of
+        '\n' : '\r' : rest -> reverse rest
+        '\r' : rest -> reverse rest
+        '\n' : rest -> reverse rest
+        _ -> s
+    else s
 
 instance StringLike Text where
+  space_explode :: Char -> Text -> [Text]
   space_explode c str =
     if Text.null str then []
     else if Text.all (/= c) str then [str]
     else map Text.pack $ space_explode c $ Text.unpack str
+  trim_line :: Text -> Text
+  trim_line s =
+    if n >= 2 && at (n - 2) == '\r' && at (n - 1) == '\n' then Text.take (n - 2) s
+    else if n >= 1 && Symbol.is_ascii_line_terminator (at (n - 1)) then Text.take (n - 1) s
+    else s
+    where
+      n = Text.length s
+      at = Text.index s
 
 instance StringLike Lazy.Text where
+  space_explode :: Char -> Lazy.Text -> [Lazy.Text]
   space_explode c str =
     if Lazy.null str then []
     else if Lazy.all (/= c) str then [str]
     else map Lazy.pack $ space_explode c $ Lazy.unpack str
+  trim_line :: Lazy.Text -> Lazy.Text
+  trim_line = Lazy.fromStrict . trim_line . Lazy.toStrict
 
 instance StringLike Bytes where
+  space_explode :: Char -> Bytes -> [Bytes]
   space_explode c str =
     if Bytes.null str then []
-    else if c > Bytes.max_char || Bytes.all (/= (Bytes.byte c)) str then [str]
+    else if Bytes.all_char (/= c) str then [str]
     else
       explode (Bytes.unpack str)
       where
@@ -129,6 +153,14 @@ instance StringLike Bytes where
           case span (/= (Bytes.byte c)) rest of
             (_, []) -> [Bytes.pack rest]
             (prfx, _ : rest') -> Bytes.pack prfx : explode rest'
+  trim_line :: Bytes -> Bytes
+  trim_line s =
+    if n >= 2 && at (n - 2) == '\r' && at (n - 1) == '\n' then Bytes.take (n - 2) s
+    else if n >= 1 && Symbol.is_ascii_line_terminator (at (n - 1)) then Bytes.take (n - 1) s
+    else s
+    where
+      n = Bytes.length s
+      at = Bytes.char . Bytes.index s
 
 class StringLike a => STRING a where make_string :: a -> String
 instance STRING String where make_string = id
@@ -175,13 +207,3 @@ split_lines = space_explode '\n'
 
 cat_lines :: StringLike a => [a] -> a
 cat_lines = space_implode "\n"
-
-trim_line :: String -> String
-trim_line line =
-  if not (null line) && Symbol.is_ascii_line_terminator (last line) then
-    case reverse line of
-      '\n' : '\r' : rest -> reverse rest
-      '\r' : rest -> reverse rest
-      '\n' : rest -> reverse rest
-      _ -> line
-  else line
