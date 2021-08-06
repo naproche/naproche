@@ -44,7 +44,6 @@ import SAD.Data.Text.Block (Block)
 import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Text.Decl
 import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
 import SAD.Data.Formula
 import SAD.Data.Instr
 
