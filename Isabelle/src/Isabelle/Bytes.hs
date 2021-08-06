@@ -10,12 +10,14 @@ See "$ISABELLE_HOME/src/Pure/General/bytes.ML"
 and "$ISABELLE_HOME/src/Pure/General/bytes.scala".
 -}
 
+{-# LANGUAGE TypeApplications #-}
+
 module Isabelle.Bytes (
   Bytes,
   make, unmake, pack, unpack,
   empty, null, length, index, all, any,
   head, last, take, drop, isPrefixOf, isSuffixOf,
-  concat, space, spaces, singleton, char, byte,
+  concat, space, spaces, char, byte, max_byte, max_char, singleton,
   trim_line
 )
 where
@@ -99,19 +101,25 @@ spaces n =
   if n < 64 then small_spaces ! n
   else concat ((small_spaces ! (n `mod` 64)) : replicate (n `div` 64) (small_spaces ! 64))
 
-singletons :: Array Word8 Bytes
-singletons =
-  array (minBound, maxBound)
-    [(i, make (ByteString.singleton i)) | i <- [minBound .. maxBound]]
-
-singleton :: Word8 -> Bytes
-singleton b = singletons ! b
-
 char :: Word8 -> Char
 char = toEnum . fromEnum
 
 byte :: Char -> Word8
 byte = toEnum . fromEnum
+
+max_byte :: Word8
+max_byte = maxBound
+
+max_char :: Char
+max_char = char max_byte
+
+singletons :: Array Word8 Bytes
+singletons =
+  array (0, max_byte)
+    [(i, make (ByteString.singleton i)) | i <- [0 .. max_byte]]
+
+singleton :: Word8 -> Bytes
+singleton b = singletons ! b
 
 trim_line :: Bytes -> Bytes
 trim_line s =

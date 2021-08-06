@@ -96,7 +96,7 @@ write_message socket = write socket . make_message
 parse_header :: Bytes -> [Int]
 parse_header line =
   let
-    res = map Value.parse_nat (space_explode (Bytes.byte ',') line)
+    res = map Value.parse_nat (space_explode ',' line)
   in
     if all isJust res then map fromJust res
     else error ("Malformed message header: " <> quote (UTF8.decode line))

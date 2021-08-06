@@ -120,7 +120,7 @@ keyword1 name = mark_str (Markup.keyword1, name)
 keyword2 name = mark_str (Markup.keyword2, name)
 
 text :: BYTES a => a -> [T]
-text = breaks . map str . filter (not . Bytes.null) . space_explode Bytes.space . make_bytes
+text = breaks . map str . filter (not . Bytes.null) . space_explode ' ' . make_bytes
 
 paragraph :: [T] -> T
 paragraph = markup Markup.paragraph

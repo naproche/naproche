@@ -100,40 +100,35 @@ separate _ xs = xs;
 
 {- string-like interfaces -}
 
-class (IsList a, IsString a, Monoid a, Eq a, Ord a) => StringLike a
-  where
-    space_explode :: Item a -> a -> [a]
-    split_lines :: a -> [a]
+class (IsString a, Monoid a, Eq a, Ord a) => StringLike a where
+  space_explode :: Char -> a -> [a]
 
 instance StringLike String where
-  space_explode sep = Split.split (Split.dropDelims (Split.whenElt (== sep)))
-  split_lines = space_explode '\n'
+  space_explode c = Split.split (Split.dropDelims (Split.whenElt (== c)))
 
 instance StringLike Text where
-  space_explode sep str =
+  space_explode c str =
     if Text.null str then []
-    else if Text.all (/= sep) str then [str]
-    else map Text.pack $ space_explode sep $ Text.unpack str
-  split_lines = space_explode '\n'
+    else if Text.all (/= c) str then [str]
+    else map Text.pack $ space_explode c $ Text.unpack str
 
 instance StringLike Lazy.Text where
-  space_explode sep str =
+  space_explode c str =
     if Lazy.null str then []
-    else if Lazy.all (/= sep) str then [str]
-    else map Lazy.pack $ space_explode sep $ Lazy.unpack str
-  split_lines = space_explode '\n'
+    else if Lazy.all (/= c) str then [str]
+    else map Lazy.pack $ space_explode c $ Lazy.unpack str
 
 instance StringLike Bytes where
-  space_explode sep str =
+  space_explode c str =
     if Bytes.null str then []
-    else if Bytes.all (/= sep) str then [str]
-    else explode (Bytes.unpack str)
-    where
-      explode rest =
-        case span (/= sep) rest of
-          (_, []) -> [Bytes.pack rest]
-          (prfx, _ : rest') -> Bytes.pack prfx : explode rest'
-  split_lines = space_explode (Bytes.byte '\n')
+    else if c > Bytes.max_char || Bytes.all (/= (Bytes.byte c)) str then [str]
+    else
+      explode (Bytes.unpack str)
+      where
+        explode rest =
+          case span (/= (Bytes.byte c)) rest of
+            (_, []) -> [Bytes.pack rest]
+            (prfx, _ : rest') -> Bytes.pack prfx : explode rest'
 
 class StringLike a => STRING a where make_string :: a -> String
 instance STRING String where make_string = id
@@ -174,6 +169,9 @@ space_implode s = mconcat . separate s
 commas, commas_quote :: StringLike a => [a] -> a
 commas = space_implode ", "
 commas_quote = commas . map quote
+
+split_lines :: StringLike a => a -> [a]
+split_lines = space_explode '\n'
 
 cat_lines :: StringLike a => [a] -> a
 cat_lines = space_implode "\n"
