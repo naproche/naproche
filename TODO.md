@@ -1,5 +1,16 @@
 ## TODO ##
 
+# Isabelle/Naproche integration
+
+* Isabelle/ML vs. Isabelle/Haskell/Naproche should always use TCP server
+  (not command-line tool), and allow to augment the enclosing theory / proof context.
+
+* The Isabelle/Scala prover_server should become general bash_process server, for arbitrary
+  executables (name, bash script).
+
+* Clarify connection (or non-connection) of Isabelle.Pretty vs. Hackage prettyprinter (1.7.0).
+
+
 # PIDE markup reports #
 
 * def/ref markup fact names (!?)
