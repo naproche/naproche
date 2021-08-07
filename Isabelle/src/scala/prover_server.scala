@@ -74,7 +74,7 @@ class Prover_Server private(port: Int, provers: Map[String, Path], debugging: =>
         (if (!timing.is_zero) Markup.Timing_Properties(timing) else Nil)
       val xml = XML.Elem(Markup(Prover_Server.RESULT, props), List(XML.Text(output)))
 
-      connection.write_message(YXML.string_of_body(List(xml)))
+      connection.write_line_message(YXML.string_of_body(List(xml)))
     }
 
     def return_failure(output: String): Unit =
@@ -140,7 +140,7 @@ class Prover_Server private(port: Int, provers: Map[String, Path], debugging: =>
       }
     }
 
-    connection.read_message() match {
+    connection.read_line_message() match {
       case None =>
       case Some(text) =>
         YXML.parse_body(text) match {
@@ -151,7 +151,7 @@ class Prover_Server private(port: Int, provers: Map[String, Path], debugging: =>
             val timeout = Time.seconds(Prover_Server.Timeout.unapply(props).getOrElse(0))
 
             val uuid = UUID.random()
-            connection.write_message(uuid.toString)
+            connection.write_line_message(uuid.toString)
 
             provers.get(name) match {
               case None => return_failure("Unknown prover: " + quote(name))
