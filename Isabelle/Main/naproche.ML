@@ -183,7 +183,7 @@ fun check_forthel ctxt {tex} (text, pos) =
               cat_lines environment,
               File.bash_path (Path.explode "$NAPROCHE_EXE") ^ " " ^ space_implode " " args ^
                 " \"\" < " ^ File.bash_path tmp_file];
-          val res = Isabelle_System.bash_process script;
+          val res = Isabelle_System.bash_process_script script;
           val rc = Process_Result.rc res;
           val _ = read_messages (Process_Result.err res);
           val _ = read_messages (Process_Result.out res);
