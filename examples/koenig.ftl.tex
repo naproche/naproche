@@ -11,7 +11,6 @@
 University of Bonn}
 \date{2018 - 2021}
 
-\newcommand{\val}[2]{#1_{#2}}
 \newcommand{\card}[1]{\operatorname{card}(#1)}
 \newcommand{\Naproche}{$\mathbb{N}$aproche}
 
@@ -126,10 +125,10 @@ Then $M \setminus N$ has an element.
 
 \section{Sums and Products of cardinals}
 
-\newcommand{\SumSet}[2]{{\dot{\bigcup}}_{i \in #2} \val{#1}{i}}
-\newcommand{\Sum}[2]{{\sum}_{i \in #2} \val{#1}{i}}
-\newcommand{\ProdSet}[2]{{\bigtimes}_{i \in #2} \val{#1}{i}}
-\newcommand{\Prod}[2]{{\prod}_{i \in #2} \val{#1}{i}}
+\newcommand{\SumSet}[2]{{\dot{\bigcup}}_{i \in #2} {#1}_{i}}
+\newcommand{\Sum}[2]{{\sum}_{i \in #2} {#1}_{i}}
+\newcommand{\ProdSet}[2]{{\bigtimes}_{i \in #2} {#1}_{i}}
+\newcommand{\Prod}[2]{{\prod}_{i \in #2} {#1}_{i}}
 
   \begin{forthel}
     Let $D$ denote a set.
@@ -140,7 +139,7 @@ Then $M \setminus N$ has an element.
       and $\kappa(i)$ is a cardinal for every element $i$ of $D$.
     \end{definition}
 
-Let $\val{f}{i}$ stand for $f(i)$.
+Let $f_{i}$ stand for $f(i)$.
 
     \begin{signature}
       Let $\kappa$ be a sequence of cardinals on $D$.
@@ -150,7 +149,7 @@ Let $\val{f}{i}$ stand for $f(i)$.
     \begin{axiom}[SumDef]
       Let $\kappa$ be a sequence of cardinals on $D$. $\SumSet{\kappa}{D} =
       \{(n,i) | i$ is an element of $D$ and $n$ is an element
-      of $\val{\kappa}{i}\}$.
+      of $\kappa_{i}\}$.
     \end{axiom}
 
     \begin{axiom}
@@ -171,7 +170,7 @@ Let $\val{f}{i}$ stand for $f(i)$.
     \begin{axiom}[ProdDef]
       Let $\kappa$ be a sequence of cardinals on $D$. $\ProdSet{\kappa}{D} =
       \{$ function $f | \dom(f) = D \wedge (f(i)$ is an element of
-      $\val{\kappa}{i}$ for every
+      $\kappa_{i}$ for every
       element $i$ of $D)\}$.
     \end{axiom}
 
@@ -197,13 +196,13 @@ of non-empty factors are themselves non-empty:
 
     \begin{lemma}[Choice]
       Let $\lambda$ be a sequence of cardinals on $D$.
-      Assume that $\val{\lambda}{i}$
+      Assume that $\lambda_{i}$
      has an element for every element $i$ of $D$.
      Then $\ProdSet{\lambda}{D}$ has an element.
     \end{lemma}
     \begin{proof}
       Define $f(i) =$ choose an element $v$ of
-      $\val{\lambda}{i}$ in $v$ for $i$ in $D$.
+      $\lambda_{i}$ in $v$ for $i$ in $D$.
      Then $f$ is an element of $\ProdSet{\lambda}{D}$.
     \end{proof}
 
@@ -216,7 +215,7 @@ of non-empty factors are themselves non-empty:
     \begin{theorem}
       Let $\kappa, \lambda$ be sequences of cardinals on $D$.
      Assume that for every element $i$ of $D$
-     $\val{\kappa}{i} < \val{\lambda}{i}$.
+     $\kappa_{i} < \lambda_{i}$.
      Then $$\Sum{\kappa}{D} < \Prod{\lambda}{D}.$$
     \end{theorem}
     \begin{proof}
@@ -229,33 +228,33 @@ of non-empty factors are themselves non-empty:
       Define
 
       $\Delta(i) =
-     \{G((n,i))(i) | n$ is an element of $\val{\kappa}{i}\}$
+     \{G((n,i))(i) | n$ is an element of $\kappa_{i}\}$
 
       for $i$ in $D$.
 
       For every element $f$ of $\ProdSet{\lambda}{D}$
       for every element $i$ of $D$
-      $f(i)$ is an element of $\val{\lambda}{i}$.
-      For every element $i$ of $D$ $\val{\lambda}{i}$ is a set.
+      $f(i)$ is an element of $\lambda_{i}$.
+      For every element $i$ of $D$ $\lambda_{i}$ is a set.
       For every element $i$ of $D$ for every element $d$ of $\Delta(i)$
-      we have $d\in \val{\lambda}{i}$.
+      we have $d\in \lambda_{i}$.
       For every element $i$ of $D$ $\Delta(i)$ is a set.
 
      (1) For every element $i$ of $D$
-      $\card{\Delta(i)} < \val{\lambda}{i}$.
+      $\card{\Delta(i)} < \lambda_{i}$.
 
       Proof.
         Let $i$ be an element of $D$.
-        Define $F(n) = G((n,i))(i)$ for $n$ in $\val{\kappa}{i}$.
+        Define $F(n) = G((n,i))(i)$ for $n$ in $\kappa_{i}$.
         Then $F[\kappa(i)] = \Delta(i)$.
       end.
 
       Define
       $f(i) =$ choose an element $v$ of
-      $\val{\lambda}{i} \setminus \Delta(i)$ in
+      $\lambda_{i} \setminus \Delta(i)$ in
       $v$ for $i$ in $D$. Then $f$ is an element of
       $\ProdSet{\lambda}{D}$. Take an element $j$ of $D$ and an
-      element $m$ of $\val{\kappa}{j}$ such that $G((m,j)) = f$.
+      element $m$ of $\kappa_{j}$ such that $G((m,j)) = f$.
       $G((m,j))(j)$ is an element of $\Delta(j)$ and $f(j)$
       is not an element of $\Delta(j)$. Contradiction.
     \end{proof}
