@@ -181,8 +181,7 @@ fun check_forthel ctxt {tex} (text, pos) =
             cat_lines environment,
             File.bash_path (Path.explode "$NAPROCHE_EXE") ^ " " ^ space_implode " " args ^ " \"\""];
         val res =
-          Isabelle_System.bash_process
-            {script = script, input = text, redirect = true, timeout = Time.zeroTime};
+          Isabelle_System.bash_process (Bash.script script |> Bash.input text |> Bash.redirect);
         val rc = Process_Result.rc res;
         val _ = read_messages (Process_Result.out res);
       in rc = 0 orelse error ("Return code: " ^ string_of_int rc) end;
