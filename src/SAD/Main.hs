@@ -12,7 +12,6 @@ module SAD.Main where
 import Control.Monad (unless)
 import Data.Char (toLower)
 import Data.IORef
-import Data.Maybe (fromMaybe)
 import Data.Time (UTCTime, addUTCTime, getCurrentTime, diffUTCTime)
 import Data.ByteString (ByteString)
 import Data.List (isSuffixOf)
@@ -24,21 +23,21 @@ import qualified System.Environment as Environment
 import qualified System.Exit as Exit
 import qualified System.IO as IO
 
-import Isabelle.Library (trim_line, make_string, make_bytes, show_bytes)
+import Isabelle.Library (trim_line, make_string, make_bytes, show_bytes, space_explode)
 import qualified Isabelle.UTF8 as UTF8
-import qualified Isabelle.Bytes as Bytes
 import qualified Isabelle.Byte_Message as Byte_Message
 import qualified Isabelle.Naproche as Naproche
-import qualified Isabelle.Properties as Properties
 import qualified Isabelle.Server as Server
 import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
 import qualified Isabelle.UUID as UUID
-import qualified Isabelle.XML as XML
+import qualified Isabelle.XML.Decode as Decode
 import qualified Isabelle.YXML as YXML
 import qualified Isabelle.Process_Result as Process_Result
 import Network.Socket (Socket)
 
 import SAD.API
+import SAD.Core.Message (is_pide_message)
+
 
 main :: IO ()
 main  = do
@@ -185,20 +184,21 @@ proveFOL proversYaml text1 opts0 oldProofText oldProofTextRef startTime fileName
 
 serverConnection :: IORef ProofText -> [String] -> Socket -> IO ()
 serverConnection oldProofTextRef args0 connection = do
+  let channel = Byte_Message.write_message connection
   thread_uuid <- Isabelle_Thread.my_uuid
-  mapM_ (Byte_Message.write_line_message connection . UUID.print) thread_uuid
+  mapM_ (\uuid -> channel [Naproche.uuid_command, UUID.print uuid]) thread_uuid
 
-  res <- Byte_Message.read_line_message connection
-  case fmap YXML.parse res of
-    Just (XML.Elem ((command, _), body)) | command == Naproche.cancel_command ->
-      mapM_ Isabelle_Thread.stop_uuid (UUID.parse (XML.content_of body))
+  chunks <- Byte_Message.read_message connection
+  case chunks of
+    Just [command, uuid] | command == Naproche.cancel_command ->
+      mapM_ Isabelle_Thread.stop_uuid (UUID.parse uuid)
 
-    Just (XML.Elem ((command, props), body)) | command == Naproche.forthel_command ->
-      Exception.bracket_ (initThread props (Byte_Message.write connection))
+    Just [command, more_args, opts, text] | command == Naproche.forthel_command ->
+      let props = Decode.properties $ YXML.parse_body opts in
+      Exception.bracket_ (initThread props channel)
         exitThread
         (do
-          let more_args = fromMaybe Bytes.empty (Properties.get props Naproche.command_args)
-          let more_text = Text.pack $ make_string $ XML.content_of body
+          let more_text = Text.pack $ make_string text
 
           (opts0, pk, fileName) <- readArgs (args0 ++ lines (make_string more_args))
           let opts1 = map snd opts0
@@ -209,8 +209,9 @@ serverConnection oldProofTextRef args0 connection = do
             (\err -> do
               let msg = make_bytes $ Exception.displayException (err :: Exception.SomeException)
               Exception.catch
-                (if YXML.detect msg then Byte_Message.write connection [msg]
-                 else outputMain ERROR noSourcePos msg)
+                (case space_explode '\0' msg of
+                  chunks | is_pide_message chunks -> channel chunks
+                  _ -> outputMain ERROR noSourcePos msg)
                 (\(err2 :: Exception.IOException) -> pure ())))
 
     _ -> return ()

@@ -11,9 +11,9 @@ Formal output messages, with PIDE (Prover IDE) support.
 module SAD.Core.Message (
   PIDE, pideContext, pideActive,
   initThread, exitThread, consoleThread,
-  Kind (..), entityMarkup,
+  Kind (..), entityMarkup, is_pide_message,
   Report, ReportString, reportsString, reportString, reports, report,
-  trimString, output, error, outputMain, outputExport, outputForTheL,
+  trimString, messageBytes, output, error, outputMain, outputExport, outputForTheL,
   outputParser, outputReasoner, outputThesis, outputSimplifier, outputTranslate,
   errorExport, errorParser
 ) where
@@ -39,12 +39,11 @@ import Isabelle.Bytes (Bytes)
 import qualified Isabelle.Properties as Properties
 import qualified Isabelle.Value as Value
 import qualified Isabelle.Markup as Markup
-import qualified Isabelle.UTF8 as UTF8
 import qualified Isabelle.XML as XML
+import qualified Isabelle.XML.Encode as Encode
 import qualified Isabelle.YXML as YXML
-import qualified Isabelle.Byte_Message as Byte_Message
 import qualified Isabelle.Naproche as Naproche
-import Isabelle.Library (BYTES, make_bytes, trim_line)
+import Isabelle.Library (BYTES, make_string, make_bytes, trim_line, space_implode)
 
 
 -- PIDE thread context
@@ -124,15 +123,6 @@ instance Show Kind where
   show ERROR = "Error"
   show _ = ""
 
-kindXML :: Kind -> Bytes
-kindXML STATE = Markup.stateN
-kindXML WRITELN = Markup.writelnN
-kindXML INFORMATION = Markup.informationN
-kindXML TRACING = Markup.tracingN
-kindXML WARNING = Markup.warningN
-kindXML LEGACY = Markup.legacyN
-kindXML ERROR = Markup.errorN
-
 posProperties :: PIDE -> SourcePos -> Properties.T
 posProperties PIDE{pideID, pideFile, pideShift} pos =
   (if Bytes.null pideID then [] else [(Markup.idN, pideID)]) ++
@@ -159,15 +149,22 @@ entityMarkup :: PIDE -> Bytes -> Bytes -> Bool -> Int -> SourcePos -> Markup.T
 entityMarkup pide kind name def serial pos =
     Markup.properties (entityProperties pide def serial pos) (Markup.entity kind name)
 
-xmlMessage :: PIDE -> Bytes -> Kind -> SourcePos -> Bytes -> XML.Tree
-xmlMessage pide origin kind pos msg =
-  XML.Elem ((kindXML kind, props), [XML.Text msg])
+pide_message :: PIDE -> Bytes -> Kind -> SourcePos -> Bytes -> [Bytes]
+pide_message pide origin kind pos msg = [kind_name, origin, position, msg]
   where
-    props0 = posProperties pide pos
-    props = if Bytes.null origin then props0 else (Naproche.origin, make_bytes origin) : props0
+    kind_name =
+      case kind of
+        STATE -> Markup.stateN
+        WRITELN -> Markup.writelnN
+        INFORMATION -> Markup.informationN
+        TRACING -> Markup.tracingN
+        WARNING -> Markup.warningN
+        LEGACY -> Markup.legacyN
+        ERROR -> Markup.errorN
+    position = YXML.string_of_body $ Encode.properties $ posProperties pide pos
 
-pideMessage :: Bytes -> [Bytes]
-pideMessage = Byte_Message.make_line_message
+is_pide_message :: [Bytes] -> Bool
+is_pide_message chunks = length chunks == 4
 
 
 -- PIDE markup reports
@@ -179,13 +176,12 @@ reportsString :: [ReportString] -> IO ()
 reportsString args = do
   context <- getContext
   when (isJust (pide context) && not (null args)) $
-    channel context $ pideMessage $ YXML.string_of $
-      XML.Elem (Markup.report,
+    channel context (Markup.reportN :
         map (\((pos, markup), txt) ->
           let
             markup' = Markup.properties (posProperties (fromJust (pide context)) pos) markup
             body = if null txt then [] else [XML.Text $ make_bytes txt]
-          in XML.Elem (markup', body)) args)
+          in YXML.string_of $ XML.Elem (markup', body)) args)
 
 reportString :: SourcePos -> Markup.T -> String -> IO ()
 reportString pos markup txt = reportsString [((pos, markup), txt)]
@@ -203,14 +199,11 @@ trimString :: String -> String
 trimString = trim_line
 
 messageBytes :: Maybe PIDE -> Bytes -> Kind -> SourcePos -> Bytes -> [Bytes]
-messageBytes pide origin kind pos msg =
-  if isJust pide then
-    pideMessage $ YXML.string_of $ xmlMessage (fromJust pide) origin kind pos msg
-  else
-    [(if Bytes.null origin then "" else "[" <> origin <> "] ") <>
-      (case show kind of "" -> "" ; s -> make_bytes s <> ": ") <>
-      (case show pos of "" -> ""; s -> make_bytes s <> "\n")
-    , msg]
+messageBytes (Just pide) origin kind pos msg = pide_message pide origin kind pos msg
+messageBytes Nothing origin kind pos msg =
+  [(if Bytes.null origin then "" else "[" <> origin <> "] ") <>
+   (case show kind of "" -> "" ; s -> make_bytes s <> ": ") <>
+   (case show pos of "" -> ""; s -> make_bytes s <> "\n") <> msg]
 
 output :: BYTES a => Bytes -> Kind -> SourcePos -> a -> IO ()
 output origin kind pos msg = do
@@ -220,7 +213,8 @@ output origin kind pos msg = do
 error :: BYTES a => Bytes -> SourcePos -> a -> IO b
 error origin pos msg = do
   pide <- pideContext
-  errorWithoutStackTrace $ UTF8.decode $ Bytes.concat $
+  errorWithoutStackTrace $ make_string $
+    space_implode (Bytes.singleton 0) $
     messageBytes pide origin ERROR pos (make_bytes msg)
 
 

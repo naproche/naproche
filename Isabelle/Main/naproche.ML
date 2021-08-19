@@ -23,7 +23,8 @@ sig
   val origin_simplifier: string
   val origin_thesis: string
   val origin_translate: string
-  val command_args: string
+  val prover_args: string
+  val uuid_command: string
   val forthel_command: string
   val cancel_command: string
   val check_forthel: Proof.context -> {tex: bool} -> string * Position.T -> unit
@@ -90,28 +91,35 @@ val message_fns =
     (Markup.legacyN, legacy_feature),
     (Markup.errorN, Output.error_message)]
 
-fun output_message ((elem, props), body) =
-  if elem = Markup.reportN then Output.report (map YXML.string_of body)
-  else
-    let
-      val message_fn = the_default writeln (Symtab.lookup message_fns elem);
-      val header = enclose "[" "]" (the_default origin_main (Properties.get props origin));
-      val here = (case Position.here (Position.of_properties props) of "" => " " | s => s ^ "\n");
-    in message_fn (header ^ here ^ YXML.string_of_body body) end;
-
 fun input_messages in_stream =
-  (case Byte_Message.read_line_message in_stream of
-    NONE => ()
-  | SOME msg =>
-      (case try YXML.parse msg of
-        SOME (XML.Text txt) => writeln txt
-      | SOME (XML.Elem elem) => output_message elem
-      | NONE => Output.error_message ("Malformed YXML tree " ^ quote msg);
-      input_messages in_stream));
+  let
+    fun continue () = input_messages in_stream;
+    fun skip info =
+     (Output.system_message
+        ("Ignoring bad server message" ^ (if info = "" then "" else " " ^ quote info));
+      continue ());
+  in
+    (case Byte_Message.read_message in_stream of
+      NONE => ()
+    | SOME [] => skip ""
+    | SOME (command :: args) =>
+        if command = Markup.reportN then Output.report args
+        else if Symtab.defined message_fns command andalso length args = 3 then
+          let
+            val message_fn = the (Symtab.lookup message_fns command);
+            val [origin, position, text] = args;
+            val header = enclose "[" "]" (if origin = "" then origin_main else origin);
+            val props = XML.Decode.properties (YXML.parse_body position);
+            val here =
+              (case Position.here (Position.of_properties props) of "" => " " | s => s ^ "\n");
+          in message_fn (header ^ here ^ text); continue () end
+        else skip command)
+  end
 
 in
 
-val command_args = "command_args";
+val prover_args = "prover_args";
+val uuid_command = "uuid";
 val cancel_command = "cancel";
 val forthel_command = "forthel";
 
@@ -146,22 +154,22 @@ fun check_forthel ctxt {tex} (text, pos) =
       else
         Socket_IO.with_streams'
           (fn (in_stream, out_stream) =>
-            (case Byte_Message.read_line_message in_stream of
-              NONE => server_error ()
-            | SOME uuid => body {in_stream = in_stream, out_stream = out_stream, uuid = uuid}))
+            (case Byte_Message.read_message in_stream of
+              SOME (command :: args) =>
+                if command = uuid_command andalso length args = 1 then
+                  body {in_stream = in_stream, out_stream = out_stream, uuid = nth args 0}
+                else server_error ()
+            | _ => server_error ()))
           server_address server_password;
 
     fun cancel_connection uuid =
       server_connection (fn {out_stream, ...} =>
-        Byte_Message.write_line_message out_stream
-          (YXML.string_of (XML.Elem ((cancel_command, []), XML.Encode.string uuid))));
+        Byte_Message.write_message out_stream [cancel_command, uuid]);
   in
     server_connection (fn {in_stream, out_stream, uuid} =>
       let
-        val props = (command_args, cat_lines args) :: naproche_environment pos;
-        val _ =
-          Byte_Message.write_line_message out_stream
-            (YXML.string_of (XML.Elem ((forthel_command, props), XML.Encode.string text)));
+        val opts = YXML.string_of_body (XML.Encode.properties (naproche_environment pos));
+        val _ = Byte_Message.write_message out_stream [forthel_command, cat_lines args, opts, text]
       in input_messages in_stream end
       handle exn => (cancel_connection uuid; Exn.reraise exn))
   end;

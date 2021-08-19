@@ -63,8 +63,11 @@ origin_translate = \<open>Naproche.origin_translate\<close>
 -- (see \<^file>\<open>$NAPROCHE_HOME/src/SAD/Main.hs\<close>)
 -- (see \<^file>\<open>$NAPROCHE_HOME/Isabelle/src/scala/prover_server.scala\<close>)
 
-command_args :: Bytes
-command_args = \<open>Naproche.command_args\<close>
+prover_args :: Bytes
+prover_args = \<open>Naproche.prover_args\<close>
+
+uuid_command :: Bytes
+uuid_command = \<open>Naproche.uuid_command\<close>
 
 cancel_command :: Bytes
 cancel_command = \<open>Naproche.cancel_command\<close>

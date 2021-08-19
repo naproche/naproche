@@ -7,7 +7,7 @@ Server for external provers, managed as Isabelle bash process
 Commands:
 
   * start prover:
-    IN: <prover name=NAME command_args=LINES timeout=SECONDS>INPUT</>
+    IN: <prover name=NAME prover_args=LINES timeout=SECONDS>INPUT</>
     OUT: UUID
     OUT: <result return_code=RC TIMING_PROPERTIES>OUTPUT</result>
 
@@ -33,7 +33,7 @@ object Prover_Server
   val KILL = "kill"
   val RESULT = "result"
 
-  val Command_Args = new Properties.String("command_args")
+  val Prover_Args = new Properties.String("prover_args")
   val Timeout = new Properties.Double("timeout")
 
 
@@ -147,7 +147,7 @@ class Prover_Server private(port: Int, provers: Map[String, Path], debugging: =>
           case List(XML.Elem(Markup(Prover_Server.PROVER, props), body)) =>
             val name = Markup.Name.unapply(props).getOrElse("")
             val args =
-              Library.trim_split_lines(Prover_Server.Command_Args.unapply(props).getOrElse(""))
+              Library.trim_split_lines(Prover_Server.Prover_Args.unapply(props).getOrElse(""))
             val timeout = Time.seconds(Prover_Server.Timeout.unapply(props).getOrElse(0))
 
             val uuid = UUID.random()

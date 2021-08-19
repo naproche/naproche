@@ -49,8 +49,11 @@ origin_translate = "Translation"
 -- (see "$NAPROCHE_HOME/src/SAD/Main.hs")
 -- (see "$NAPROCHE_HOME/Isabelle/src/scala/prover_server.scala")
 
-command_args :: Bytes
-command_args = "command_args"
+prover_args :: Bytes
+prover_args = "prover_args"
+
+uuid_command :: Bytes
+uuid_command = "uuid"
 
 cancel_command :: Bytes
 cancel_command = "cancel"

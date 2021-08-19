@@ -153,7 +153,7 @@ runProver pos (Prover _ label path args yes con nos uns) proverServer printProve
               Byte_Message.write_yxml prover
                 [XML.Elem ((Naproche.prover_command,
                     [(Naproche.prover_name, make_bytes path),
-                     (Naproche.command_args, make_bytes $ unlines (map (setLimits 300 2048) args)),
+                     (Naproche.prover_args, make_bytes $ unlines (map (setLimits 300 2048) args)),
                      (Naproche.prover_timeout, Value.print_int timeLimit)]),
                   [XML.Text (make_bytes task)])]
 
