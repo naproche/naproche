@@ -30,6 +30,7 @@ import Isabelle.Library (make_bytes, make_string)
 import qualified Isabelle.Bytes as Bytes
 import Isabelle.Bytes (Bytes)
 import qualified Isabelle.UTF8 as UTF8
+import qualified Isabelle.Process_Result as Process_Result
 
 import SAD.Core.SourcePos
 import SAD.Core.Base (reportBracketIO)
@@ -86,7 +87,7 @@ runProver pos (Prover _ label path args yes con nos uns) proverServer printProve
     proverResult :: Int -> String -> IO Result
     proverResult rc output =
       do
-        let timeout = rc == 142
+        let timeout = rc == Process_Result.timeout_rc
         let lns = filter notNull (lines output)
         let out = map (("[" ++ label ++ "] ") ++) lns
 

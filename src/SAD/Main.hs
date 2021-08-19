@@ -35,6 +35,7 @@ import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
 import qualified Isabelle.UUID as UUID
 import qualified Isabelle.XML as XML
 import qualified Isabelle.YXML as YXML
+import qualified Isabelle.Process_Result as Process_Result
 import Network.Socket (Socket)
 
 import SAD.API
@@ -69,7 +70,7 @@ main  = do
       (\err -> do
         exitThread
         let msg = Exception.displayException (err :: Exception.SomeException)
-        let rc = if msg == "user interrupt" then 130 else 1
+        let rc = if msg == "user interrupt" then Process_Result.interrupt_rc else 1
         IO.hPutStrLn IO.stderr msg
         Exit.exitWith (Exit.ExitFailure rc))
 
