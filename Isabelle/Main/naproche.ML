@@ -6,7 +6,6 @@ Isabelle Prover IDE support for NaProChe / ForTheL.
 
 signature NAPROCHE =
 sig
-  val naproche_server: bool Config.T
   val naproche_prove: bool Config.T
   val naproche_check: bool Config.T
   val naproche_skipfail: bool Config.T
@@ -35,7 +34,6 @@ struct
 
 (* options *)
 
-val naproche_server = Attrib.setup_option_bool (\<^system_option>\<open>naproche_server\<close>, \<^here>);
 val naproche_prove = Attrib.setup_option_bool (\<^system_option>\<open>naproche_prove\<close>, \<^here>);
 val naproche_check = Attrib.setup_option_bool (\<^system_option>\<open>naproche_check\<close>, \<^here>);
 val naproche_skipfail = Attrib.setup_option_bool (\<^system_option>\<open>naproche_skipfail\<close>, \<^here>);
@@ -111,10 +109,6 @@ fun input_messages in_stream =
       | NONE => Output.error_message ("Malformed YXML tree " ^ quote msg);
       input_messages in_stream));
 
-fun read_messages str =
-  Isabelle_System.with_tmp_file "tmp" ""
-    (fn path => (File.write path str; File.open_input input_messages path));
-
 in
 
 val command_args = "command_args";
@@ -143,51 +137,34 @@ fun check_forthel ctxt {tex} (text, pos) =
 
     val server_address = Options.default_string \<^system_option>\<open>naproche_server_address\<close>;
     val server_password = Options.default_string \<^system_option>\<open>naproche_server_password\<close>;
-    fun server_connection f =
-      server_address <> "" andalso server_password <> "" andalso
-        server_address |> Socket_IO.with_streams (fn (in_stream, out_stream) =>
-          let val _ = Byte_Message.write_line out_stream server_password in
+
+    fun server_error () =
+      error ("Cannot connect to Naproche server " ^ quote server_address);
+
+    fun server_connection body =
+      if server_address = "" orelse server_password = "" then server_error ()
+      else
+        Socket_IO.with_streams'
+          (fn (in_stream, out_stream) =>
             (case Byte_Message.read_line_message in_stream of
-              NONE => false
-            | SOME uuid => (f {in_stream = in_stream, out_stream = out_stream, uuid = uuid}; true))
-          end);
+              NONE => server_error ()
+            | SOME uuid => body {in_stream = in_stream, out_stream = out_stream, uuid = uuid}))
+          server_address server_password;
 
     fun cancel_connection uuid =
       server_connection (fn {out_stream, ...} =>
         Byte_Message.write_line_message out_stream
           (YXML.string_of (XML.Elem ((cancel_command, []), XML.Encode.string uuid))));
-
-    fun try_server () =
-      server_connection (fn {in_stream, out_stream, uuid} =>
-        let
-          val props = (command_args, cat_lines args) :: naproche_environment pos;
-          val _ =
-            Byte_Message.write_line_message out_stream
-              (YXML.string_of (XML.Elem ((forthel_command, props), XML.Encode.string text)));
-        in input_messages in_stream end
-        handle exn => (cancel_connection uuid; Exn.reraise exn))
-      orelse (warning "Naproche-SAD server not active: using batch tool"; false);
-
-    fun batch_tool () =
+  in
+    server_connection (fn {in_stream, out_stream, uuid} =>
       let
-        val environment =
-          naproche_environment pos
-          |> map (fn (a, b) => "export " ^ a ^ "=" ^ Bash.string b);
-        val script =
-          cat_lines [
-            "set -e",
-            "cd \"$NAPROCHE_HOME\"",
-            "export PATH=\"$E_HOME:$SPASS_HOME:$PATH\"",
-            cat_lines environment,
-            File.bash_path (Path.explode "$NAPROCHE_EXE") ^ " " ^ space_implode " " args ^ " \"\""];
-        val res =
-          Isabelle_System.bash_process (Bash.script script |> Bash.input text |> Bash.redirect);
-        val rc = Process_Result.rc res;
-        val _ = read_messages (Process_Result.out res);
-      in rc = 0 orelse error ("Return code: " ^ string_of_int rc) end;
-
-    val _ = Config.get ctxt naproche_server andalso try_server () orelse batch_tool ();
-  in () end;
+        val props = (command_args, cat_lines args) :: naproche_environment pos;
+        val _ =
+          Byte_Message.write_line_message out_stream
+            (YXML.string_of (XML.Elem ((forthel_command, props), XML.Encode.string text)));
+      in input_messages in_stream end
+      handle exn => (cancel_connection uuid; Exn.reraise exn))
+  end;
 
 end;
 
