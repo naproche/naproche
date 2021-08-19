@@ -103,7 +103,7 @@ fun input_messages in_stream =
       NONE => ()
     | SOME [] => skip ""
     | SOME (command :: args) =>
-        if command = Markup.reportN then Output.report args
+        if command = Markup.reportN then (Output.report args; continue ())
         else if Symtab.defined message_fns command andalso length args = 3 then
           let
             val message_fn = the (Symtab.lookup message_fns command);
