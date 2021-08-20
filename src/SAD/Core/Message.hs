@@ -11,11 +11,11 @@ Formal output messages, with PIDE (Prover IDE) support.
 module SAD.Core.Message (
   PIDE, pideContext, pideActive,
   initThread, exitThread, consoleThread,
-  Kind (..), entityMarkup, is_pide_message,
+  Kind (..), entityMarkup,
   Report, ReportString, reportsString, reportString, reports, report,
-  trimString, messageBytes, output, error, outputMain, outputExport, outputForTheL,
+  trimString, messageBytes, output, outputMain, outputExport, outputForTheL,
   outputParser, outputReasoner, outputThesis, outputSimplifier, outputTranslate,
-  errorExport, errorParser
+  Error (..), error, errorExport, errorParser
 ) where
 
 import Prelude hiding (error)
@@ -31,7 +31,8 @@ import qualified Control.Concurrent as Concurrent
 
 import SAD.Core.SourcePos (SourcePos)
 import qualified SAD.Core.SourcePos as SourcePos
-
+import qualified Control.Exception as Exception
+import Control.Exception (Exception)
 import qualified Isabelle.Bytes as Bytes
 import Isabelle.Bytes (Bytes)
 import qualified Isabelle.Properties as Properties
@@ -42,7 +43,7 @@ import qualified Isabelle.XML.Encode as Encode
 import qualified Isabelle.YXML as YXML
 import qualified Isabelle.Options as Options
 import qualified Isabelle.Naproche as Naproche
-import Isabelle.Library (BYTES, make_string, make_bytes, trim_line, space_implode)
+import Isabelle.Library (BYTES, make_string, make_bytes, trim_line, cat_lines)
 
 
 -- PIDE thread context
@@ -155,9 +156,6 @@ pide_message pide origin kind pos msg = [kind_name, origin, position, msg]
         ERROR -> Markup.errorN
     position = YXML.string_of_body $ Encode.properties $ posProperties pide pos
 
-is_pide_message :: [Bytes] -> Bool
-is_pide_message chunks = length chunks == 4
-
 
 -- PIDE markup reports
 
@@ -202,16 +200,6 @@ output origin kind pos msg = do
   context <- getContext
   channel context $ messageBytes (pide context) origin kind pos (make_bytes msg)
 
-error :: BYTES a => Bytes -> SourcePos -> a -> IO b
-error origin pos msg = do
-  pide <- pideContext
-  errorWithoutStackTrace $ make_string $
-    space_implode (Bytes.singleton 0) $
-    messageBytes pide origin ERROR pos (make_bytes msg)
-
-
--- specific messages
-
 outputMain, outputExport, outputForTheL, outputParser, outputReasoner,
   outputSimplifier, outputThesis :: BYTES a => Kind -> SourcePos -> a -> IO ()
 outputMain = output Naproche.origin_main
@@ -224,6 +212,20 @@ outputThesis = output Naproche.origin_thesis
 
 outputTranslate :: BYTES a => Kind -> SourcePos -> a -> IO ()
 outputTranslate = output Naproche.origin_translate
+
+
+-- errors
+
+newtype Error = Error [Bytes]
+instance Show Error where show (Error chunks) = make_string $ cat_lines chunks
+instance Exception Error
+
+error :: BYTES a => Bytes -> SourcePos -> a -> IO b
+error origin pos msg = do
+  pide <- pideContext
+  let chunks = messageBytes pide origin ERROR pos (make_bytes msg)
+  if isJust pide then Exception.throw $ Error chunks
+  else errorWithoutStackTrace $ make_string $ cat_lines chunks
 
 errorExport :: BYTES a => SourcePos -> a -> IO b
 errorExport = error Naproche.origin_export

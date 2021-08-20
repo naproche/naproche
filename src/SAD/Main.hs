@@ -24,7 +24,7 @@ import qualified System.Environment as Environment
 import qualified System.Exit as Exit
 import qualified System.IO as IO
 
-import Isabelle.Library (trim_line, make_string, make_bytes, show_bytes, space_explode)
+import Isabelle.Library (trim_line, make_string, make_bytes, show_bytes)
 import qualified Isabelle.UTF8 as UTF8
 import qualified Isabelle.Byte_Message as Byte_Message
 import qualified Isabelle.Naproche as Naproche
@@ -37,7 +37,7 @@ import qualified Isabelle.Process_Result as Process_Result
 import Network.Socket (Socket)
 
 import SAD.API
-import SAD.Core.Message (is_pide_message)
+import qualified SAD.Core.Message as Message
 
 
 main :: IO ()
@@ -208,11 +208,13 @@ serverConnection oldProofTextRef args0 connection = do
           let text1 = text0 ++ [ProofTextInstr noPos (GetArgument (Text pk) more_text)]
 
           mainBody Nothing oldProofTextRef opts1 text1 fileName
+            `catch` (\(err :: Message.Error) -> do
+              let Message.Error chunks = err
+              channel chunks
+                `catch` (\(_ :: Exception.IOException) -> pure ()))
             `catch` (\(err :: Exception.SomeException) -> do
               let msg = make_bytes $ Exception.displayException err
-              (case space_explode '\0' msg of
-                chunks | is_pide_message chunks -> channel chunks
-                _ -> outputMain ERROR noSourcePos msg)
+              outputMain ERROR noSourcePos msg
                 `catch` (\(_ :: Exception.IOException) -> pure ())))
 
     _ -> return ()
