@@ -13,7 +13,7 @@ module SAD.Core.Message (
   initThread, exitThread, consoleThread,
   Kind (..), entityMarkup,
   Report, ReportString, reportsString, reportString, reports, report,
-  trimString, messageBytes, output, outputMain, outputExport, outputForTheL,
+  trimString, output, outputMain, outputExport, outputForTheL,
   outputParser, outputReasoner, outputThesis, outputSimplifier, outputTranslate,
   Error (..), error, errorExport, errorParser
 ) where
@@ -142,20 +142,6 @@ entityMarkup :: PIDE -> Bytes -> Bytes -> Bool -> Int -> SourcePos -> Markup.T
 entityMarkup pide kind name def serial pos =
     Markup.properties (entityProperties pide def serial pos) (Markup.entity kind name)
 
-pide_message :: PIDE -> Bytes -> Kind -> SourcePos -> Bytes -> [Bytes]
-pide_message pide origin kind pos msg = [kind_name, origin, position, msg]
-  where
-    kind_name =
-      case kind of
-        STATE -> Markup.stateN
-        WRITELN -> Markup.writelnN
-        INFORMATION -> Markup.informationN
-        TRACING -> Markup.tracingN
-        WARNING -> Markup.warningN
-        LEGACY -> Markup.legacyN
-        ERROR -> Markup.errorN
-    position = YXML.string_of_body $ Encode.properties $ posProperties pide pos
-
 
 -- PIDE markup reports
 
@@ -188,17 +174,30 @@ report pos markup = reports [(pos, markup)]
 trimString :: String -> String
 trimString = trim_line
 
-messageBytes :: Maybe PIDE -> Bytes -> Kind -> SourcePos -> Bytes -> [Bytes]
-messageBytes (Just pide) origin kind pos msg = pide_message pide origin kind pos msg
-messageBytes Nothing origin kind pos msg =
-  [(if Bytes.null origin then "" else "[" <> origin <> "] ") <>
-   (case show kind of "" -> "" ; s -> make_bytes s <> ": ") <>
-   (case show pos of "" -> ""; s -> make_bytes s <> "\n") <> msg]
+message_chunks :: Maybe PIDE -> Bytes -> Kind -> SourcePos -> Bytes -> [Bytes]
+message_chunks (Just pide) origin kind pos msg = [command, origin, position, msg]
+  where
+    command =
+      case kind of
+        STATE -> Markup.stateN
+        WRITELN -> Markup.writelnN
+        INFORMATION -> Markup.informationN
+        TRACING -> Markup.tracingN
+        WARNING -> Markup.warningN
+        LEGACY -> Markup.legacyN
+        ERROR -> Markup.errorN
+    position = YXML.string_of_body $ Encode.properties $ posProperties pide pos
+message_chunks Nothing origin kind pos msg = [chunk]
+  where
+    chunk =
+      (if Bytes.null origin then "" else "[" <> origin <> "] ") <>
+      (case show kind of "" -> "" ; s -> make_bytes s <> ": ") <>
+      (case show pos of "" -> ""; s -> make_bytes s <> "\n") <> msg
 
 output :: BYTES a => Bytes -> Kind -> SourcePos -> a -> IO ()
 output origin kind pos msg = do
   context <- getContext
-  channel context $ messageBytes (pide context) origin kind pos (make_bytes msg)
+  channel context $ message_chunks (pide context) origin kind pos (make_bytes msg)
 
 outputMain, outputExport, outputForTheL, outputParser, outputReasoner,
   outputSimplifier, outputThesis :: BYTES a => Kind -> SourcePos -> a -> IO ()
@@ -223,7 +222,7 @@ instance Exception Error
 error :: BYTES a => Bytes -> SourcePos -> a -> IO b
 error origin pos msg = do
   pide <- pideContext
-  let chunks = messageBytes pide origin ERROR pos (make_bytes msg)
+  let chunks = message_chunks pide origin ERROR pos (make_bytes msg)
   if isJust pide then Exception.throw $ Error chunks
   else errorWithoutStackTrace $ make_string $ cat_lines chunks
 
