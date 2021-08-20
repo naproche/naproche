@@ -28,9 +28,9 @@ import qualified Isabelle.UTF8 as UTF8
 import qualified Isabelle.Byte_Message as Byte_Message
 import qualified Isabelle.Naproche as Naproche
 import qualified Isabelle.Server as Server
+import qualified Isabelle.Options as Options
 import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
 import qualified Isabelle.UUID as UUID
-import qualified Isabelle.XML.Decode as Decode
 import qualified Isabelle.YXML as YXML
 import qualified Isabelle.Process_Result as Process_Result
 import Network.Socket (Socket)
@@ -194,8 +194,8 @@ serverConnection oldProofTextRef args0 connection = do
       mapM_ Isabelle_Thread.stop_uuid (UUID.parse uuid)
 
     Just [command, more_args, opts, text] | command == Naproche.forthel_command ->
-      let props = Decode.properties $ YXML.parse_body opts in
-      Exception.bracket_ (initThread props channel)
+      let options = Options.decode $ YXML.parse_body opts in
+      Exception.bracket_ (initThread options channel)
         exitThread
         (do
           let more_text = Text.pack $ make_string text

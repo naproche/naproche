@@ -11,9 +11,6 @@ sig
   val naproche_skipfail: bool Config.T
   val naproche_print_thesis: bool Config.T
   val naproche_translate: bool Config.T
-  val NAPROCHE_PIDE: string
-  val NAPROCHE_POS_FILE: string
-  val NAPROCHE_POS_SHIFT: string
   val origin: string
   val origin_main: string
   val origin_export: string
@@ -41,25 +38,19 @@ val naproche_skipfail = Attrib.setup_option_bool (\<^system_option>\<open>naproc
 val naproche_print_thesis = Attrib.setup_option_bool (\<^system_option>\<open>naproche_print_thesis\<close>, \<^here>);
 val naproche_translate = Attrib.setup_option_bool (\<^system_option>\<open>naproche_translate\<close>, \<^here>);
 
-
-(* environment *)
-
-val NAPROCHE_PIDE = "NAPROCHE_PIDE";
-val NAPROCHE_POS_FILE = "NAPROCHE_POS_FILE";
-val NAPROCHE_POS_SHIFT = "NAPROCHE_POS_SHIFT";
-
-fun naproche_environment pos =
+fun naproche_options pos =
   let
-    val pide =
+    val pos_id =
       (case Position.get_id (Position.thread_data ()) of
         SOME id => id
       | NONE => raise Fail "Missing PIDE position id");
     val pos_file = the_default "" (Position.file_of pos);
     val pos_offset = the_default 0 (Position.offset_of pos);
   in
-    [(NAPROCHE_PIDE, pide),
-     (NAPROCHE_POS_FILE, pos_file),
-     (NAPROCHE_POS_SHIFT, string_of_int (pos_offset - 1))]
+    Options.default ()
+    |> Options.put_string \<^system_option>\<open>naproche_pos_id\<close> pos_id
+    |> Options.put_string \<^system_option>\<open>naproche_pos_file\<close> pos_file
+    |> Options.put_int \<^system_option>\<open>naproche_pos_shift\<close> (pos_offset - 1)
   end;
 
 
@@ -168,7 +159,7 @@ fun check_forthel ctxt {tex} (text, pos) =
   in
     server_connection (fn {in_stream, out_stream, uuid} =>
       let
-        val opts = YXML.string_of_body (XML.Encode.properties (naproche_environment pos));
+        val opts = YXML.string_of_body (Options.encode (naproche_options pos));
         val _ = Byte_Message.write_message out_stream [forthel_command, cat_lines args, opts, text]
       in input_messages in_stream end
       handle exn => (cancel_connection uuid; Exn.reraise exn))

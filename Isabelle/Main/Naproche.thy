@@ -35,13 +35,10 @@ naproche_prove = \<open>\<^system_option>\<open>naproche_prove\<close>\<close>
 naproche_check = \<open>\<^system_option>\<open>naproche_check\<close>\<close>
 naproche_skipfail = \<open>\<^system_option>\<open>naproche_skipfail\<close>\<close>
 
-
--- environment
-
-naproche_pide, naproche_pos_file, naproche_pos_shift :: Bytes
-naproche_pide = \<open>Naproche.NAPROCHE_PIDE\<close>
-naproche_pos_file = \<open>Naproche.NAPROCHE_POS_FILE\<close>
-naproche_pos_shift = \<open>Naproche.NAPROCHE_POS_SHIFT\<close>
+naproche_pos_id, naproche_pos_file, naproche_pos_shift :: Bytes
+naproche_pos_id = \<open>\<^system_option>\<open>naproche_pos_id\<close>\<close>
+naproche_pos_file = \<open>\<^system_option>\<open>naproche_pos_file\<close>\<close>
+naproche_pos_shift = \<open>\<^system_option>\<open>naproche_pos_shift\<close>\<close>
 
 
 -- message origin

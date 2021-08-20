@@ -21,13 +21,10 @@ naproche_prove = "naproche_prove"
 naproche_check = "naproche_check"
 naproche_skipfail = "naproche_skipfail"
 
-
--- environment
-
-naproche_pide, naproche_pos_file, naproche_pos_shift :: Bytes
-naproche_pide = "NAPROCHE_PIDE"
-naproche_pos_file = "NAPROCHE_POS_FILE"
-naproche_pos_shift = "NAPROCHE_POS_SHIFT"
+naproche_pos_id, naproche_pos_file, naproche_pos_shift :: Bytes
+naproche_pos_id = "naproche_pos_id"
+naproche_pos_file = "naproche_pos_file"
+naproche_pos_shift = "naproche_pos_shift"
 
 
 -- message origin

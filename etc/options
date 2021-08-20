@@ -37,3 +37,7 @@ option naproche_prover_server_port : string = ""
 
 option naproche_prover_server_password : string = ""
   -- "password for connection to Naproche-SAD prover server"
+
+option naproche_pos_id : string = ""
+option naproche_pos_file : string = ""
+option naproche_pos_shift : int = 0

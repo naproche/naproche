@@ -19,13 +19,11 @@ module SAD.Core.Message (
 ) where
 
 import Prelude hiding (error)
-import System.Environment
 import Control.Monad
 import Data.Maybe
 import Data.IORef
 import System.IO.Unsafe
 import Data.Map.Strict (Map)
-import Data.Bifunctor (bimap)
 import qualified Data.Map.Strict as Map
 import qualified Data.ByteString.Char8 as Char8
 import Control.Concurrent (ThreadId)
@@ -42,6 +40,7 @@ import qualified Isabelle.Markup as Markup
 import qualified Isabelle.XML as XML
 import qualified Isabelle.XML.Encode as Encode
 import qualified Isabelle.YXML as YXML
+import qualified Isabelle.Options as Options
 import qualified Isabelle.Naproche as Naproche
 import Isabelle.Library (BYTES, make_string, make_bytes, trim_line, space_implode)
 
@@ -90,26 +89,19 @@ pideActive = isJust <$> pideContext
 
 -- init/exit thread context
 
-initThread :: Properties.T -> Channel -> IO ()
-initThread props channel = do
-  updateState (\id -> Map.insert id (Context pideContext channel))
+initThread :: Options.T -> Channel -> IO ()
+initThread options channel =
+  updateState (\id -> Map.insert id (Context (Just $ PIDE pide file shift) channel))
   where
-    property parse = Properties.get_value parse props
-    pideProperty = property (\x -> guard (not $ Bytes.null x) >> pure x) Naproche.naproche_pide
-    fileProperty = property Just Naproche.naproche_pos_file
-    shiftProperty = property Value.parse_int Naproche.naproche_pos_shift
-    pideContext =
-      case (pideProperty, fileProperty, shiftProperty) of
-        (Just pide, Just file, Just shift) -> Just (PIDE pide file shift)
-        _ -> Nothing
+    pide = Options.string options Naproche.naproche_pos_id
+    file = Options.string options Naproche.naproche_pos_file
+    shift = Options.int options Naproche.naproche_pos_shift
 
 exitThread :: IO ()
 exitThread = updateState Map.delete
 
 consoleThread :: IO ()
-consoleThread = do
-  env <- getEnvironment
-  initThread (map (bimap make_bytes make_bytes) env) defaultChannel
+consoleThread = updateState (\id -> Map.insert id defaultContext)
 
 
 -- PIDE messages
