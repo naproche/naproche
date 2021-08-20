@@ -1,5 +1,5 @@
 {-
-Authors: Makarius Wenzel (2018)
+Authors: Makarius Wenzel (2018, 2021)
 
 Formal output messages, with PIDE (Prover IDE) support.
 -}
@@ -12,7 +12,7 @@ module SAD.Core.Message (
   PIDE, pideContext, pideActive,
   initThread, exitThread, consoleThread,
   Kind (..), entityMarkup,
-  Report, ReportString, reportsString, reportString, reports, report,
+  Report, Report_Text, reports_text, report_text, reports, report,
   trimString, output, outputMain, outputExport, outputForTheL,
   outputParser, outputReasoner, outputThesis, outputSimplifier, outputTranslate,
   Error (..), error, errorExport, errorParser
@@ -146,24 +146,24 @@ entityMarkup pide kind name def serial pos =
 -- PIDE markup reports
 
 type Report = (SourcePos, Markup.T)
-type ReportString = (Report, String)
+type Report_Text = (Report, Bytes)
 
-reportsString :: [ReportString] -> IO ()
-reportsString args = do
+reports_text :: [Report_Text] -> IO ()
+reports_text args = do
   context <- getContext
   when (isJust (pide context) && not (null args)) $
     channel context (Markup.reportN :
         map (\((pos, markup), txt) ->
           let
             markup' = Markup.properties (posProperties (fromJust (pide context)) pos) markup
-            body = if null txt then [] else [XML.Text $ make_bytes txt]
+            body = if Bytes.null txt then [] else [XML.Text $ txt]
           in YXML.string_of $ XML.Elem (markup', body)) args)
 
-reportString :: SourcePos -> Markup.T -> String -> IO ()
-reportString pos markup txt = reportsString [((pos, markup), txt)]
+report_text :: SourcePos -> Markup.T -> Bytes -> IO ()
+report_text pos markup txt = reports_text [((pos, markup), txt)]
 
 reports :: [Report] -> IO ()
-reports = reportsString . map (, "")
+reports = reports_text . map (, Bytes.empty)
 
 report :: SourcePos -> Markup.T -> IO ()
 report pos markup = reports [(pos, markup)]
