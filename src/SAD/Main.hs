@@ -17,6 +17,7 @@ import Data.ByteString (ByteString)
 import Data.List (isSuffixOf)
 
 import qualified Control.Exception as Exception
+import Control.Exception (catch)
 import qualified Data.Text.Lazy as Text
 import qualified System.Console.GetOpt as GetOpt
 import qualified System.Environment as Environment
@@ -62,16 +63,17 @@ main  = do
   if askFlag Help False opts1 then
     putStr (GetOpt.usageInfo usageHeader options)
   else -- main body with explicit error handling, notably for PIDE
-    Exception.catch
       (if askFlag Server False opts1 then
         Server.server (Server.publish_stdout "Naproche-SAD") (serverConnection oldProofTextRef args0)
-      else do consoleThread; mainBody Nothing oldProofTextRef opts1 text0 mFileName)
-      (\err -> do
-        exitThread
-        let msg = Exception.displayException (err :: Exception.SomeException)
-        let rc = if msg == "user interrupt" then Process_Result.interrupt_rc else 1
-        IO.hPutStrLn IO.stderr msg
-        Exit.exitWith (Exit.ExitFailure rc))
+      else do
+        consoleThread
+        mainBody Nothing oldProofTextRef opts1 text0 mFileName)
+          `catch` (\err -> do
+            exitThread
+            let msg = Exception.displayException (err :: Exception.SomeException)
+            let rc = if msg == "user interrupt" then Process_Result.interrupt_rc else 1
+            IO.hPutStrLn IO.stderr msg
+            Exit.exitWith (Exit.ExitFailure rc))
 
 mainBody :: Maybe ByteString -> IORef ProofText -> [Instr] -> [ProofText] -> Maybe FilePath -> IO ()
 mainBody proversYaml oldProofTextRef opts0 text0 fileName = do
@@ -205,14 +207,13 @@ serverConnection oldProofTextRef args0 connection = do
           let text0 = map (uncurry ProofTextInstr) (reverse opts0)
           let text1 = text0 ++ [ProofTextInstr noPos (GetArgument (Text pk) more_text)]
 
-          Exception.catch (mainBody Nothing oldProofTextRef opts1 text1 fileName)
-            (\err -> do
-              let msg = make_bytes $ Exception.displayException (err :: Exception.SomeException)
-              Exception.catch
-                (case space_explode '\0' msg of
-                  chunks | is_pide_message chunks -> channel chunks
-                  _ -> outputMain ERROR noSourcePos msg)
-                (\(err2 :: Exception.IOException) -> pure ())))
+          mainBody Nothing oldProofTextRef opts1 text1 fileName
+            `catch` (\(err :: Exception.SomeException) -> do
+              let msg = make_bytes $ Exception.displayException err
+              (case space_explode '\0' msg of
+                chunks | is_pide_message chunks -> channel chunks
+                _ -> outputMain ERROR noSourcePos msg)
+                `catch` (\(_ :: Exception.IOException) -> pure ())))
 
     _ -> return ()
 
