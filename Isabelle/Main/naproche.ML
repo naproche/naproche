@@ -46,7 +46,7 @@ val naproche_translate = Attrib.setup_option_bool (\<^system_option>\<open>napro
 fun naproche_options pos =
   let
     val pos_id =
-      (case Position.get_id (Position.thread_data ()) of
+      (case Position.id_of (Position.thread_data ()) of
         SOME id => id
       | NONE => raise Fail "Missing PIDE position id");
     val pos_file = the_default "" (Position.file_of pos);

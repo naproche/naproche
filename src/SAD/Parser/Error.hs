@@ -19,13 +19,15 @@ module SAD.Parser.Error
     newWellFormednessMessage )
   where
 
-import SAD.Core.SourcePos (SourcePos)
 import SAD.Helpers (notNull, nubOrd)
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 
 import Data.List (intercalate)
 import Data.Ord (comparing)
+
+import SAD.Core.Message (show_position)
+import qualified Isabelle.Position as Position
 
 
 data Message
@@ -81,7 +83,7 @@ instance Semigroup Message where
         Unknown -> msg1
 
 
-data ParseError = ParseError {errorPos :: SourcePos, peMsg :: Message}
+data ParseError = ParseError {errorPos :: Position.T, peMsg :: Message}
     deriving (Eq, Ord)
 
 urgency :: ParseError -> ParseError -> Ordering
@@ -98,10 +100,10 @@ instance Semigroup ParseError where
     GT -> e1
     LT -> e2
 
-newErrorMessage :: Message -> SourcePos -> ParseError
+newErrorMessage :: Message -> Position.T -> ParseError
 newErrorMessage msg pos = ParseError pos msg
 
-newErrorUnknown :: SourcePos -> ParseError
+newErrorUnknown :: Position.T -> ParseError
 newErrorUnknown pos = ParseError pos Unknown
 
 -- | Left-biased merge based on importance favouring @ExpectMsg@s.
@@ -122,14 +124,14 @@ setExpectMessage expe pe@(ParseError pos msg)
   | isWellFormednessMessage      msg = pe
   | otherwise        = ParseError pos $ msg {expect = [expe]}
 
-unexpectError :: Text -> SourcePos -> ParseError
+unexpectError :: Text -> Position.T -> ParseError
 unexpectError uex pos = newErrorMessage (newUnexpect uex) pos
 
 errorMessage :: ParseError -> Message
 errorMessage (ParseError _ msg) = msg
 
 instance Show ParseError where
-  show err = show (errorPos err) ++ ":\n"
+  show err = show_position (errorPos err) ++ ":\n"
           ++ showErrorMessage (errorMessage err)
 
 showErrorMessage :: Message -> String

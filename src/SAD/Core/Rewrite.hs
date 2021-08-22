@@ -11,7 +11,6 @@ module SAD.Core.Rewrite (equalityReasoning, lpoGe) where
 
 import SAD.Core.Base
 import SAD.Core.Reason
-import SAD.Core.SourcePos
 import SAD.Data.Formula
 import SAD.Data.Instr
 import SAD.Data.Rules (Rule)
@@ -33,6 +32,7 @@ import Control.Monad.Reader
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 import Isabelle.Library ()
+import qualified Isabelle.Position as Position
 
 
 -- Lexicographic path ordering
@@ -120,7 +120,7 @@ findNormalform rules w t = map (reverse . (:) (t, trivialSimpInfo)) $ dive t
 {- finds two matching normalforms and outputs all conditions accumulated
 during their rewriting -}
 generateConditions ::
-  SourcePos -> Bool -> [Rule] -> Weighting -> Formula -> Formula -> VM [SimpInfo]
+  Position.T -> Bool -> [Rule] -> Weighting -> Formula -> Formula -> VM [SimpInfo]
 generateConditions pos verbositySetting rules w l r =
   let leftNormalForms  = findNormalform rules w l
       rightNormalForms = findNormalform rules w r
@@ -154,7 +154,7 @@ generateConditions pos verbositySetting rules w l r =
 
 
 {- applies computational reasoning to an equality chain -}
-equalityReasoning :: SourcePos -> Context -> VM ()
+equalityReasoning :: Position.T -> Context -> VM ()
 equalityReasoning pos thesis
   | body = whenInstruction Printreason False $ reasonLog Message.WRITELN pos "eqchain concluded"
   | notNull link = getLinkedRules pos link >>= rewrite pos equation
@@ -166,7 +166,7 @@ equalityReasoning pos thesis
     body = notNull $ Block.body . head . Context.branch $ thesis
 
 
-getLinkedRules :: SourcePos -> [Text] -> VM [Rule]
+getLinkedRules :: Position.T -> [Text] -> VM [Rule]
 getLinkedRules pos link = do
   rules <- rules; let setLink = Set.fromList link
   let (linkedRules, unfoundRules) = runState (retrieve setLink rules) setLink
@@ -191,7 +191,7 @@ rules = asks rewriteRules
 
 {- applies rewriting to both sides of an equation
 and compares the resulting normal forms -}
-rewrite :: SourcePos -> Formula -> [Rule] -> VM ()
+rewrite :: Position.T -> Formula -> [Rule] -> VM ()
 rewrite pos Trm {trmName = TermEquality, trmArgs = [l,r]} rules = do
   verbositySetting <- askInstructionBool Printsimp False
   conditions <- generateConditions pos verbositySetting rules (>) l r;
@@ -200,7 +200,7 @@ rewrite _ _ _ = error "SAD.Core.Rewrite.rewrite: non-equation argument"
 
 
 {- dischargeConditions accumulated during rewriting -}
-dischargeConditions :: SourcePos -> Bool -> [Formula] -> VM ()
+dischargeConditions :: Position.T -> Bool -> [Formula] -> VM ()
 dischargeConditions pos verbositySetting conditions =
   setup $ easy >>= hard
   where

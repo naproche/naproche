@@ -6,7 +6,6 @@
 module SAD.API
   ( module SAD.Core.Base
   , module SAD.Core.Message
-  , module SAD.Core.SourcePos
   , module SAD.Core.Verify
   , module SAD.Data.Instr
   , module SAD.Data.Text.Block
@@ -20,7 +19,6 @@ module SAD.API
 
 import SAD.Core.Base (showTimeDiff, RState(..), sumCounter, Counter(..), sumTimer, Timer(..), maximalTimer)
 import SAD.Core.Message (consoleThread, exitThread, errorParser, outputMain, initThread, Kind(..))
-import SAD.Core.SourcePos (noSourcePos)
 import SAD.Core.Verify (verify)
 import SAD.Data.Instr (Instr(..), Flag(..), askFlag, Limit(..), askLimit, Argument(..), askArgument, Arguments(..), noPos
   , UnderlyingTheory(..), askTheory, ParserKind(..), Pos)

@@ -23,7 +23,6 @@ module SAD.Data.Text.Block (
   )where
 
 import SAD.Data.Formula
-import SAD.Core.SourcePos
 import SAD.Data.Instr hiding (position)
 import SAD.Parser.Token
 import SAD.Data.Text.Decl
@@ -33,9 +32,12 @@ import Data.Set (Set)
 import qualified Data.Set as Set
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
+import Data.Maybe (fromMaybe)
 
 import Control.Monad
 
+import qualified Isabelle.Bytes as Bytes
+import qualified Isabelle.Position as Position
 import Isabelle.Library (make_text)
 
 data ProofText =
@@ -43,9 +45,9 @@ data ProofText =
   | ProofTextInstr Pos Instr
   | NonProofTextStoredInstr [Instr] -- a way to restore instructions during verification
   | ProofTextDrop Pos Drop
-  | ProofTextSynonym SourcePos
-  | ProofTextPretyping SourcePos (Set PosVar)
-  | ProofTextMacro SourcePos
+  | ProofTextSynonym Position.T
+  | ProofTextPretyping Position.T (Set PosVar)
+  | ProofTextMacro Position.T
   | ProofTextError ParseError
   | ProofTextChecked (ProofText)
   | ProofTextRoot [ProofText]
@@ -64,8 +66,8 @@ data Block = Block {
 makeBlock :: Formula -> [ProofText] -> Section -> Text -> [Text] -> [Token] -> Block
 makeBlock form body kind = Block form body kind mempty
 
-position :: Block -> SourcePos
-position = rangePos . tokensRange . tokens
+position :: Block -> Position.T
+position = Position.range_position . tokensRange . tokens
 
 text :: Block -> Text
 text Block {tokens} = composeTokens tokens
@@ -124,7 +126,7 @@ isTopLevel  = isHole' . formula
     isHole' _ = False
 
 file :: Block-> Text
-file = Text.fromStrict . make_text . sourceFile . position
+file = Text.fromStrict . make_text . fromMaybe Bytes.empty . Position.file_of . position
 
 
 declaredNames :: Block -> Set VariableName

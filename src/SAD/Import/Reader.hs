@@ -26,14 +26,15 @@ import SAD.ForTheL.Base
 import SAD.ForTheL.Structure
 import SAD.Parser.Base
 import SAD.ForTheL.Instruction
-import SAD.Core.SourcePos
 import SAD.Parser.Token
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
 import SAD.Parser.Error
 import qualified SAD.Core.Message as Message
+
 import qualified Isabelle.File as File
 import Isabelle.Library (make_bytes, make_string, make_text, show_bytes)
+import Isabelle.Position as Position
 
 
 -- Init file parsing
@@ -41,9 +42,9 @@ import Isabelle.Library (make_bytes, make_string, make_text, show_bytes)
 readInit :: Text -> IO [(Pos, Instr)]
 readInit file | Text.null file = return []
 readInit file = do
-  input <- catch (File.read (Text.unpack file)) $ Message.errorParser (fileOnlyPos file) . make_bytes . ioeGetErrorString
-  let tokens = filter isProperToken $ tokenize TexDisabled (filePos file) $ Text.fromStrict $ make_text input
-      initialParserState = State (initFS Nothing) tokens NonTex noSourcePos
+  input <- catch (File.read (Text.unpack file)) $ Message.errorParser (Position.file_only $ make_bytes file) . make_bytes . ioeGetErrorString
+  let tokens = filter isProperToken $ tokenize TexDisabled (Position.file $ make_bytes file) $ Text.fromStrict $ make_text input
+      initialParserState = State (initFS Nothing) tokens NonTex Position.none
   fst <$> launchParser instructionFile initialParserState
 
 instructionFile :: FTL [(Pos, Instr)]
@@ -59,7 +60,7 @@ instructionFile = after (optLL1 [] $ chainLL1 instr) eof
 readProofText :: Text -> [ProofText] -> IO [ProofText]
 readProofText pathToLibrary text0 = do
   pide <- Message.pideContext
-  (text, reports) <- reader pathToLibrary [] [State (initFS pide) noTokens NonTex noSourcePos] text0
+  (text, reports) <- reader pathToLibrary [] [State (initFS pide) noTokens NonTex Position.none] text0
   when (isJust pide) $ Message.reports reports
   return text
 
@@ -84,13 +85,13 @@ reader pathToLibrary doneFiles = go
       | otherwise = do
           text <-
             catch (if Text.null file then getContents else make_string <$> File.read (Text.unpack file))
-              (Message.errorParser (fileOnlyPos file) . make_bytes . ioeGetErrorString)
-          (newProofText, newState) <- reader0 (filePos file) (Text.pack text) (pState {parserKind = parserKind'})
+              (Message.errorParser (Position.file_only $ make_bytes file) . make_bytes . ioeGetErrorString)
+          (newProofText, newState) <- reader0 (Position.file $ make_bytes file) (Text.pack text) (pState {parserKind = parserKind'})
           -- state from before reading is still here
           reader pathToLibrary (file:doneFiles) (newState:pState:states) newProofText
 
     go (pState:states) [ProofTextInstr _ (GetArgument (Text pk) text)] = do
-      (newProofText, newState) <- reader0 startPos text (pState {parserKind = pk})
+      (newProofText, newState) <- reader0 Position.start text (pState {parserKind = pk})
       go (newState:pState:states) newProofText -- state from before reading is still here
 
     -- This says that we are only really processing the last instruction in a [ProofText].
@@ -100,7 +101,7 @@ reader pathToLibrary doneFiles = go
 
     go (pState:oldState:rest) [] = do
       Message.outputParser Message.TRACING
-        (if null doneFiles then noSourcePos else fileOnlyPos $ head doneFiles) "parsing successful"
+        (if null doneFiles then Position.none else Position.file_only $ make_bytes $ head doneFiles) "parsing successful"
       let resetState = oldState {
             stUser = (stUser pState) {tvrExpr = tvrExpr $ stUser oldState}}
       -- Continue running a parser after eg. a read instruction was evaluated.
@@ -109,12 +110,12 @@ reader pathToLibrary doneFiles = go
 
     go (state:_) [] = return ([], reports $ stUser state)
 
-reader0 :: SourcePos -> Text -> State FState -> IO ([ProofText], State FState)
+reader0 :: Position.T -> Text -> State FState -> IO ([ProofText], State FState)
 reader0 pos text pState = do
   let tokens0 = chooseTokenizer pState pos text
   Message.reports $ mapMaybe reportComments tokens0
   let tokens = filter isProperToken tokens0
-      st = State ((stUser pState) { tvrExpr = [] }) tokens (parserKind pState) noSourcePos
+      st = State ((stUser pState) { tvrExpr = [] }) tokens (parserKind pState) Position.none
   chooseParser st
 
 
@@ -123,7 +124,7 @@ chooseParser st = case parserKind st of
   Tex -> launchParser texForthel st
   NonTex -> launchParser forthel st
 
-chooseTokenizer :: State FState -> SourcePos -> Text -> [Token]
+chooseTokenizer :: State FState -> Position.T -> Text -> [Token]
 chooseTokenizer st = case parserKind st of
   Tex -> tokenize OutsideForthelEnv
   NonTex -> tokenize TexDisabled

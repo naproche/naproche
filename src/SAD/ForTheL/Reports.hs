@@ -37,7 +37,6 @@ import SAD.Helpers (nubOrd)
 import Data.Set (Set)
 import SAD.Core.Message (PIDE)
 import qualified SAD.Core.Message as Message
-import SAD.Core.SourcePos
 import SAD.ForTheL.Base
 
 import SAD.Data.Text.Block (Block)
@@ -50,9 +49,10 @@ import SAD.Data.Instr
 import SAD.Parser.Base
 import SAD.Parser.Primitives
 
-
 import Isabelle.Library (make_bytes)
 import qualified Isabelle.Markup as Markup
+import qualified Isabelle.Position as Position
+
 
 addReports :: (PIDE -> [Message.Report]) -> FTL ()
 addReports rep = modify (\st -> case pide st of
@@ -80,11 +80,11 @@ markupTokenOf markup = addMarkup markup . tokenOf'
 
 -- formula and variable reports
 
-variableReport :: PIDE -> Bool -> Decl -> SourcePos -> [Message.Report]
+variableReport :: PIDE -> Bool -> Decl -> Position.T -> [Message.Report]
 variableReport pide def decl pos =
   case declName decl of
     VarConstant name ->
-      [(pos, Message.entityMarkup pide "variable" (make_bytes name) def (declSerial decl) (declPosition decl))]
+      [(pos, Message.entity_markup pide "variable" (make_bytes name) def (declSerial decl) (declPosition decl))]
     _ -> []
 
 formulaReports :: PIDE -> Set Decl -> Formula -> [Message.Report]
@@ -132,12 +132,12 @@ addDropReport :: Pos -> FTL ()
 addDropReport pos = addReports $ const $
   map (position pos,) [Markup.comment2, Markup.expression "drop text instruction"]
 
-addPretypingReport :: SourcePos -> [SourcePos] -> FTL ()
+addPretypingReport :: Position.T -> [Position.T] -> FTL ()
 addPretypingReport pos ps = addReports $ const $
   map (pos,) [Markup.cartouche, Markup.expression "variable pretyping"] ++
   map (, Markup.free) ps
 
-addMacroReport :: SourcePos -> FTL ()
+addMacroReport :: Position.T -> FTL ()
 addMacroReport pos =
   addReports $ const (map (pos,) [Markup.cartouche, Markup.expression "macro definition"])
 

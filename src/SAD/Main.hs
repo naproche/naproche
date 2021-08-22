@@ -33,6 +33,7 @@ import qualified Isabelle.Server as Server
 import qualified Isabelle.Options as Options
 import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
 import qualified Isabelle.UUID as UUID
+import qualified Isabelle.Position as Position
 import qualified Isabelle.YXML as YXML
 import qualified Isabelle.Process_Result as Process_Result
 import Network.Socket (Socket)
@@ -101,7 +102,7 @@ showTranslation txts startTime = do
 
   -- print statistics
   finishTime <- getCurrentTime
-  outputMain TRACING noSourcePos $ make_bytes $ "total " <> timeDifference finishTime
+  outputMain TRACING Position.none $ make_bytes $ "total " <> timeDifference finishTime
 
 exportCiC :: ProofText -> IO ()
 exportCiC pt = do
@@ -143,7 +144,7 @@ proveFOL proversYaml text1 opts0 oldProofText oldProofTextRef startTime fileName
   let accumulate  = sumCounter trackerList
 
   -- print statistics
-  (outputMain TRACING noSourcePos . make_bytes) $
+  (outputMain TRACING Position.none . make_bytes) $
     "sections "       ++ show (accumulate Sections)
     ++ " - goals "    ++ show (accumulate Goals)
     ++ (let ignoredFails = accumulate FailedGoals
@@ -160,7 +161,7 @@ proveFOL proversYaml text1 opts0 oldProofText oldProofTextRef startTime fileName
 
   let trivialChecks = accumulate TrivialChecks
 
-  (outputMain TRACING noSourcePos . make_bytes) $
+  (outputMain TRACING Position.none . make_bytes) $
     "symbols "        ++ show (accumulate Symbols)
     ++ " - checks "   ++ show
       (sumCounter trackerList HardChecks + trivialChecks)
@@ -173,14 +174,14 @@ proveFOL proversYaml text1 opts0 oldProofText oldProofTextRef startTime fileName
   let proveFinish    = addUTCTime proverTime proveStart
   let simplifyFinish = addUTCTime simplifyTime proveFinish
 
-  (outputMain TRACING noSourcePos . make_bytes) $
+  (outputMain TRACING Position.none . make_bytes) $
     "parser "           <> showTimeDiff (diffUTCTime proveStart startTime)
     <> " - reasoner "   <> showTimeDiff (diffUTCTime finishTime simplifyFinish)
     <> " - simplifier " <> showTimeDiff simplifyTime
     <> " - prover "     <> showTimeDiff proverTime
     <> "/" <> showTimeDiff (maximalTimer trackerList SuccessTimer)
 
-  (outputMain TRACING noSourcePos . make_bytes) $
+  (outputMain TRACING Position.none . make_bytes) $
     "total " <> showTimeDiff (diffUTCTime finishTime startTime)
 
   unless success Exit.exitFailure
@@ -215,7 +216,7 @@ serverConnection oldProofTextRef args0 connection = do
                 `catch` (\(_ :: Exception.IOException) -> pure ()))
             `catch` (\(err :: Exception.SomeException) -> do
               let msg = make_bytes $ Exception.displayException err
-              outputMain ERROR noSourcePos msg
+              outputMain ERROR Position.none msg
                 `catch` (\(_ :: Exception.IOException) -> pure ())))
 
     _ -> return ()

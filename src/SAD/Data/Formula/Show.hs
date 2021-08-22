@@ -13,7 +13,7 @@ import SAD.Data.Formula.Base
 import SAD.Data.VarName
 import SAD.Data.Terms
 import SAD.Export.Representation (toLazyText, represent)
-import SAD.Core.SourcePos (noSourcePos)
+import qualified Isabelle.Position as Position
 
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
@@ -55,7 +55,7 @@ showFormula p d = dive
       let showTerm = showFormula (pred p) d
       in  showArgumentsWith showTerm ts
 
-    showBinder f = showFormula p (succ d) (Ind 0 noSourcePos) . showChar ' ' .
+    showBinder f = showFormula p (succ d) (Ind 0 Position.none) . showChar ' ' .
       showFormula p (succ d) f
 
     showInfix operator f g = dive f . showString operator . dive g

@@ -11,10 +11,10 @@ module SAD.Export.Base (Prover(..),readProverFile, readProverDatabase) where
 
 import Data.Yaml
 import qualified SAD.Core.Message as Message
-import SAD.Core.SourcePos
 import GHC.Generics
 import Data.Bifunctor
 import qualified Data.ByteString as B
+import Isabelle.Position as Position
 import Isabelle.Library (make_bytes)
 
 data Prover = Prover {
@@ -41,7 +41,7 @@ readProverDatabase path txt = do
     Right r -> pure r
     Left l -> err l
   where
-    err = Message.errorExport (fileOnlyPos' $ make_bytes path) . make_bytes
+    err = Message.errorExport (Position.file_only $ make_bytes path) . make_bytes
 
 validate :: Prover -> Either String Prover
 validate Prover { name = n, path = "" }

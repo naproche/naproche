@@ -32,7 +32,6 @@ import Isabelle.Bytes (Bytes)
 import qualified Isabelle.UTF8 as UTF8
 import qualified Isabelle.Process_Result as Process_Result
 
-import SAD.Core.SourcePos
 import SAD.Core.Base (reportBracketIO)
 import SAD.Data.Instr hiding (Prover)
 import SAD.Data.Text.Context (Context, branch)
@@ -44,7 +43,10 @@ import qualified SAD.Core.Message as Message
 import qualified SAD.Data.Instr as Instr
 import qualified SAD.Export.TPTP as TPTP
 
-export :: SourcePos -> Int -> [Prover] -> [Instr] -> [Context] -> Context -> IO Result
+import qualified Isabelle.Position as Position
+
+
+export :: Position.T -> Int -> [Prover] -> [Instr] -> [Context] -> Context -> IO Result
 export pos depth provers instrs context goal = do
   Isabelle_Thread.expose_stopped
 
@@ -81,7 +83,7 @@ export pos depth provers instrs context goal = do
 data Result = Success | Failure | ContradictoryAxioms | Unknown | Error
   deriving (Eq, Ord, Show)
 
-runProver :: SourcePos -> Prover -> Maybe (String, Bytes) -> Bool -> Text -> Bool -> Int -> Int -> IO Result
+runProver :: Position.T -> Prover -> Maybe (String, Bytes) -> Bool -> Text -> Bool -> Int -> Int -> IO Result
 runProver pos (Prover _ label path args yes con nos uns) proverServer printProver task isByContradiction timeLimit memoryLimit =
   let
     proverResult :: Int -> String -> IO Result

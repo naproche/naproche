@@ -34,11 +34,12 @@ import SAD.Helpers (notNull)
 
 import SAD.Parser.Token
 import SAD.Parser.Error
-import SAD.Core.SourcePos
 import SAD.Data.Instr (ParserKind)
 
 import Data.List
 import qualified Data.Text.Lazy as Text
+
+import qualified Isabelle.Position as Position
 
 
 -- | Parser state
@@ -46,17 +47,17 @@ data State st = State
   { stUser  :: st
   , stInput :: [Token]
   , parserKind :: ParserKind
-  , lastPosition :: SourcePos
-  } deriving (Eq, Ord, Show)
+  , lastPosition :: Position.T
+  } deriving (Eq, Ord)
 
 -- | Get the current position of the parser.
-stPosition :: State st -> SourcePos
+stPosition :: State st -> Position.T
 stPosition State{ stInput = t:_ } = tokenPos t
 stPosition State{ lastPosition = pos } = pos
 
 -- | Intermediate parse results
 data ParseResult st a = PR { prResult :: a, prState :: State st }
-  deriving (Eq, Ord, Show, Functor)
+  deriving (Eq, Ord, Functor)
 
 -- | Continutation passing style ambiguity parser
 -- In practice: @st@ = @FState@, @r@ = @ParseResult FState a@
@@ -200,7 +201,7 @@ getInput = Parser \st ok _ _ ->
   ok (newErrorUnknown (stPosition st)) [PR (stInput st) st] []
 
 -- | Get the @stPosition@ as a @ParseResult@.
-getPos :: Parser st SourcePos
+getPos :: Parser st Position.T
 getPos = Parser \st ok _ _ ->
   ok (newErrorUnknown (stPosition st)) [PR (stPosition st) st] []
 

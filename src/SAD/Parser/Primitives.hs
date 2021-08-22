@@ -29,7 +29,6 @@ module SAD.Parser.Primitives
 import SAD.Parser.Base
 import SAD.Parser.Error
 import SAD.Parser.Token
-import SAD.Core.SourcePos
 import SAD.Data.Formula.Show (symChars)
 
 import Data.Char (isAlpha)
@@ -37,6 +36,7 @@ import Control.Monad (void, guard)
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 
+import qualified Isabelle.Position as Position
 
 -- primitive Token operations
 
@@ -45,7 +45,7 @@ import qualified Data.Text.Lazy as Text
 tokenPrim :: (Token -> Maybe a) -> Parser st a
 tokenPrim test = Parser $ \(State st input parserKind _) ok _ eerr ->
   case input of
-    []   -> eerr $ unexpectError "" noSourcePos
+    []   -> eerr $ unexpectError "" Position.none
     t:ts -> case guard (not $ isEOF t) >> test t of
       Just x  ->
         let newstate = State st ts parserKind (tokenPos t)
@@ -59,7 +59,7 @@ tokenPrim test = Parser $ \(State st input parserKind _) ok _ eerr ->
 tokenGuard :: (Token -> Bool) -> Parser st a -> Parser st a
 tokenGuard test p = Parser $ \st@(State _ input  _ _) ok cerr eerr ->
   case input of
-    []   -> eerr $ unexpectError "" noSourcePos
+    []   -> eerr $ unexpectError "" Position.none
     t:ts -> if test t
       then runParser p st ok cerr eerr
       else eerr $ unexpectError (showToken t) (tokenPos t)
@@ -69,7 +69,7 @@ tokenGuard test p = Parser $ \st@(State _ input  _ _) ok cerr eerr ->
 eof :: Parser st ()
 eof = Parser $ \(State st input parserKind _) ok _ eerr ->
   case input of
-    [] -> eerr $ unexpectError "" noSourcePos
+    [] -> eerr $ unexpectError "" Position.none
     (t:ts) ->
       if isEOF t
       then
@@ -135,7 +135,7 @@ token' :: Text -> Parser st ()
 token' tok = void $ satisfy $ (tok ==) . Text.toCaseFold
 
 -- | A version of @token'@ that returns the position of the token instead of @()@.
-tokenPos' :: Text -> Parser st SourcePos
+tokenPos' :: Text -> Parser st Position.T
 tokenPos' s = do
   pos <- getPos
   token' s

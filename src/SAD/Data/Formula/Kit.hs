@@ -15,10 +15,11 @@ import qualified Data.Set as Set
 
 import SAD.Data.Formula.Base
 import SAD.Data.Tag
-import SAD.Core.SourcePos
 import SAD.Data.Text.Decl
 import SAD.Data.Terms
 import SAD.Data.VarName
+
+import qualified Isabelle.Position as Position
 
 import qualified Data.Map as Map
 
@@ -95,7 +96,7 @@ boolSimp f = bool $ mapF boolSimp f
 --     "forall x (x = t => P(x))" is replaced by "P(t)"
 --
 -- In code:
--- @(mbExi "x" (And (Trm TermEquality [Var "x" [] noSourcePos, Var "t" [] noSourcePos] [] 0) (Var "x" [] noSourcePos))) == Just (Var "t" [] noSourcePos)@
+-- @(mbExi "x" (And (Trm TermEquality [Var "x" [] Position.none, Var "t" [] Position.none] [] 0) (Var "x" [] Position.none))) == Just (Var "t" [] Position.none)@
 -- Danger: We ignore the fact that @=@ is symmetric.
 --
 -- Arguments: the variable to look for (e.g. "x"), whether we are in an "existence" or an "all" case and the formula.
@@ -170,7 +171,7 @@ zOr (Not f) g = Imp f g
 zOr f g       = Or  f g
 
 mkVar :: VariableName -> Formula
-mkVar v = pVar $ PosVar v noSourcePos
+mkVar v = pVar $ PosVar v Position.none
 
 -- | Given a variable name with position data, creates a formula consisting of just
 -- a that variable.

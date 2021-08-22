@@ -17,13 +17,12 @@ module SAD.Prove.Normalize  (
   ) where
 
 import SAD.Data.Formula
-import SAD.Core.SourcePos
 
 import Data.List
 import qualified Data.Text.Lazy as Text
 import SAD.Data.Text.Decl
 
-
+import qualified Isabelle.Position as Position
 
 
 -- simplification : push down negation, replace implication and equivalence
@@ -142,7 +141,7 @@ instSk skolemCnt dependencyCnt = dive 0
     dive d f = mapF (dive d) f
 
     skolemFunction = mkTrm (SkolemId (skolemCnt)) (TermTask skolemCnt) . skolemArguments
-    skolemArguments d = [Ind (i + d) noSourcePos | i <- [1..dependencyCnt] ]
+    skolemArguments d = [Ind (i + d) Position.none | i <- [1..dependencyCnt] ]
 
 
 -- specialization of formula: get rid of universal quantifiers

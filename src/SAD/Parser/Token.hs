@@ -20,7 +20,7 @@ module SAD.Parser.Token
   , greek
   ) where
 
-import SAD.Core.SourcePos
+import qualified Isabelle.Position as Position
 import qualified Isabelle.Markup as Markup
 import qualified SAD.Core.Message as Message
 
@@ -31,13 +31,13 @@ import qualified Data.Text.Lazy as Text
 
 data Token = Token
   { tokenText :: Text
-  , tokenPos :: SourcePos
+  , tokenPos :: Position.T
   , tokenType :: TokenType
-  } | EOF { tokenPos :: SourcePos }
+  } | EOF { tokenPos :: Position.T }
   deriving (Eq, Ord)
 
 instance Show Token where
-  show Token{tokenText = p, tokenPos = s} = show s ++ show p
+  show Token{tokenText = p, tokenPos = s} = show p
   show EOF{} = "EOF"
 
 data TokenType = NoWhiteSpaceBefore | WhiteSpaceBefore | Comment deriving (Eq, Ord, Show)
@@ -47,20 +47,20 @@ data TokenType = NoWhiteSpaceBefore | WhiteSpaceBefore | Comment deriving (Eq, O
 -- | Indicates whether the tokenizer is currently inside a forthel env.
 data TexState = InsideForthelEnv | OutsideForthelEnv | TexDisabled deriving (Eq)
 
-makeTokenRange :: Text -> SourceRange -> TokenType -> Token
-makeTokenRange text range = Token text (rangePos range)
+makeTokenRange :: Text -> Position.Range -> TokenType -> Token
+makeTokenRange text range = Token text (Position.range_position range)
 
-makeToken :: Text -> SourcePos -> TokenType -> Token
-makeToken text pos = makeTokenRange text (SourceRange pos (pos `advancePos` text))
+makeToken :: Text -> Position.T -> TokenType -> Token
+makeToken text pos = makeTokenRange text (pos, Position.advance text pos)
 
-tokenEndPos :: Token -> SourcePos
-tokenEndPos tok@Token{} = tokenPos tok `advancePos` tokenText tok
+tokenEndPos :: Token -> Position.T
+tokenEndPos tok@Token{} = Position.advance (tokenText tok) (tokenPos tok)
 tokenEndPos tok@EOF{} = tokenPos tok
 
 -- | The range in which the tokens lie.
-tokensRange :: [Token] -> SourceRange
-tokensRange [] = noRange
-tokensRange toks = makeRange (tokenPos $ head toks, tokenEndPos $ last toks)
+tokensRange :: [Token] -> Position.Range
+tokensRange [] = Position.no_range
+tokensRange toks = Position.range (tokenPos $ head toks, tokenEndPos $ last toks)
 
 -- | Return the @tokenText@ or "end of input" if the token is @EOF@.
 showToken :: Token -> Text
@@ -75,55 +75,55 @@ isProperToken t@Token{} = case tokenType t of
 isProperToken EOF{} = True
 
 noTokens :: [Token]
-noTokens = [EOF noSourcePos]
+noTokens = [EOF Position.none]
 
 -- | @tokenize commentChars start text@ takes a list of characters @commentChars@ to use
 -- for comments when used as first character in the line and a @text@ that gets tokenized
 -- starting from the @start@ position.
-tokenize :: TexState -> SourcePos -> Text -> [Token]
+tokenize :: TexState -> Position.T -> Text -> [Token]
 tokenize texState start = posToken texState start NoWhiteSpaceBefore
   where
     useTex = texState /= TexDisabled
     isLexeme c = if useTex then isAscii c && isAlphaNum c else (isAscii c && isAlphaNum c) || c == '_'
     -- Activate the tokenizer when '\begin{forthel}' appears.
-    posToken :: TexState -> SourcePos -> TokenType -> Text -> [Token]
+    posToken :: TexState -> Position.T -> TokenType -> Text -> [Token]
     posToken OutsideForthelEnv pos _ s = toks
       where
         (ignoredText, rest) = Text.breakOn "\\begin{forthel}" s
-        newPos = advancePos pos (ignoredText <> "\\begin{forthel}")
+        newPos = Position.advance (ignoredText <> "\\begin{forthel}") pos
         toks = posToken InsideForthelEnv newPos WhiteSpaceBefore (Text.drop 15 rest)
 
     -- Deactivate the tokenizer when '\end{forthel}' appears.
     posToken InsideForthelEnv pos _ s | start == "\\end{forthel}" = toks
       where
         (start,rest) = Text.splitAt 13 s
-        toks = posToken OutsideForthelEnv (advancePos pos start) WhiteSpaceBefore rest
+        toks = posToken OutsideForthelEnv (Position.advance start pos) WhiteSpaceBefore rest
 
     -- Make alphanumeric tokens that don't start with whitespace.
     posToken texState pos whitespaceBefore s | not (Text.null lexeme) = tok:toks
       where
         (lexeme, rest) = Text.span isLexeme s
         tok  = makeToken lexeme pos whitespaceBefore
-        toks = posToken texState (advancePos pos lexeme) NoWhiteSpaceBefore rest
+        toks = posToken texState (Position.advance lexeme pos) NoWhiteSpaceBefore rest
 
     -- Process whitespace.
     posToken texState pos _ s | not (Text.null white) = toks
       where
         (white, rest) = Text.span isSpace s
-        toks = posToken texState (advancePos pos white) WhiteSpaceBefore rest
+        toks = posToken texState (Position.advance white pos) WhiteSpaceBefore rest
 
     -- Process tex whitespace.
     posToken texState pos _ s | useTex && hd == "\\\\" = toks
       where
         (hd, rest) = Text.splitAt 2 s
-        toks = posToken texState (advancePos pos "\\\\") WhiteSpaceBefore rest
+        toks = posToken texState (Position.advance_string "\\\\" pos) WhiteSpaceBefore rest
 
     -- We reuse the pattern parsing for sentences in order to parse LaTeX. Thus we simply tokenize
     -- away math-mode markers like '\[' and '\]'
     posToken texState pos _ s | useTex && hd `elem` ["\\[","\\]"] = toks
       where 
         (hd, rest) = Text.splitAt 2 s
-        toks = posToken texState (advancePos pos hd) WhiteSpaceBefore rest
+        toks = posToken texState (Position.advance hd pos) WhiteSpaceBefore rest
 
     -- Process non-alphanumeric symbol or EOF.
     posToken texState pos whitespaceBefore s = case Text.uncons s of
@@ -131,37 +131,37 @@ tokenize texState start = posToken texState start NoWhiteSpaceBefore
 
       -- We expand the `\{` and `\}` tex commands here
       Just ('\\', rest) | Text.head rest `elem` ['{','}'] && useTex ->
-            posToken texState (advancePos pos "\\") WhiteSpaceBefore rest
+            posToken texState (Position.advance_string "\\" pos) WhiteSpaceBefore rest
 
       -- We expand alphanumeric tex commands here
       Just ('\\', rest) | useTex -> newToks ++ toks
         where
           (name, rest') = Text.span isAlpha rest
-          pos' = advancePos pos (Text.cons '\\' name)
-          newToks = expandTexCmd name (SourceRange pos pos') whitespaceBefore
+          pos' = Position.advance (Text.cons '\\' name) pos
+          newToks = expandTexCmd name (pos, pos') whitespaceBefore
           toks = posToken texState pos' WhiteSpaceBefore rest'
 
       -- We reuse the pattern parsing for sentences in order to parse LaTeX. Thus we simply tokenize
       -- away math-mode markers like '$'
-      Just ('$', rest) | useTex -> posToken texState (advancePos pos "$") WhiteSpaceBefore rest
+      Just ('$', rest) | useTex -> posToken texState (Position.advance_string "$" pos) WhiteSpaceBefore rest
 
       -- We also tokenize away quotation marks, because they are intended to be used by the user
       -- as a way to write regular text in math mode. Of course, one needs to appropriately remap
       -- quotation marks in the tex file, see examples/cantor.ftl.tex on how to do this.
-      Just ('"', rest) | useTex -> posToken texState (advancePos pos "\"") WhiteSpaceBefore rest
+      Just ('"', rest) | useTex -> posToken texState (Position.advance_string "\"" pos) WhiteSpaceBefore rest
       Just (c, _) | if useTex then c == '%' else c == '#' -> tok:toks
         where
           (comment, rest) = Text.break (== '\n') s
           tok  = makeToken comment pos Comment
-          toks = posToken texState (advancePos pos comment) whitespaceBefore rest
+          toks = posToken texState (Position.advance comment pos) whitespaceBefore rest
       Just (c, cs) -> tok:toks
         where
           text = Text.singleton c
           tok  = makeToken text pos whitespaceBefore
-          toks = posToken texState (advancePos pos text) NoWhiteSpaceBefore cs
+          toks = posToken texState (Position.advance text pos) NoWhiteSpaceBefore cs
 
 
-expandTexCmd :: Text -> SourceRange -> TokenType -> [Token]
+expandTexCmd :: Text -> Position.Range -> TokenType -> [Token]
 -- Logical symbols
 expandTexCmd "wedge" range whiteSpaceBefore = makeSymbolTokens ["/","\\"] range whiteSpaceBefore
 expandTexCmd "vee" range whiteSpaceBefore = makeSymbolTokens ["\\","/"] range whiteSpaceBefore
@@ -244,7 +244,7 @@ upperGreek = [
   , "Omega"
   ]
 
-makeSymbolTokens :: [Text] -> SourceRange -> TokenType -> [Token]
+makeSymbolTokens :: [Text] -> Position.Range -> TokenType -> [Token]
 makeSymbolTokens (s:symbols) range whiteSpaceBefore =
   makeTokenRange s range whiteSpaceBefore : makeSymbolTokens symbols range NoWhiteSpaceBefore
 makeSymbolTokens [] _ _ = []

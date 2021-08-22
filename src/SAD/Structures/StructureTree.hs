@@ -14,6 +14,7 @@ import qualified Data.Text.Lazy as T
 import Data.Tree
 import qualified Data.Text.Lazy as Text
 import SAD.Data.Text.Decl
+import SAD.Core.Message (show_position)
 import Data.List (foldl')
 
 data ForthelExpr = ForthelExpr
@@ -125,8 +126,8 @@ debugShow (Trm name args info id) = show name ++ "(args: "
   ++ (concatMap (parens . debugShow) args) ++ ") (info: "
   ++ (concatMap (parens . debugShow) info) ++ ") (id: " ++ show id ++ ")"
 debugShow (Var name info pos) = show name ++ "(info: " ++ (concatMap (parens . debugShow) info)
-  ++ ") (pos: " ++ show pos ++ ")"
-debugShow (Ind idx pos) = show idx ++ "(pos: " ++ show pos ++ ")"
+  ++ ") (pos: " ++ show_position pos ++ ")"
+debugShow (Ind idx pos) = show idx ++ "(pos: " ++ show_position pos ++ ")"
 debugShow ThisT = "ThisT"
 
 parens :: String -> String

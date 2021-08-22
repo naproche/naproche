@@ -19,8 +19,9 @@ import GHC.Magic (oneShot)
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 import qualified Data.Text.Lazy.Builder as Builder
+import SAD.Core.Message (show_position)
 import SAD.Export.Representation
-import SAD.Core.SourcePos
+import qualified Isabelle.Position as Position
 import Data.Function (on)
 
 -- These names may not reflect what the constructors are used for..
@@ -62,8 +63,11 @@ instance Representation VariableName where
 
 data PosVar = PosVar
   { posVarName :: VariableName
-  , posVarPosition :: SourcePos
-  } deriving (Show)
+  , posVarPosition :: Position.T
+  }
+
+instance Show PosVar where
+  show = show . posVarName
 
 instance Eq PosVar where
   (==) = (==) `on` posVarName
@@ -72,10 +76,11 @@ instance Ord PosVar where
   compare = compare `on` posVarName
 
 instance Representation PosVar where
-  represent (PosVar v p) = "(" <> represent v <> ", " <> Builder.fromString (show p) <> ")"
+  represent (PosVar v pos) =
+    "(" <> represent v <> ", " <> Builder.fromString (show_position pos) <> ")"
 
 class (Ord a, Representation a) => IsVar a where
-  buildVar :: VariableName -> SourcePos -> a
+  buildVar :: VariableName -> Position.T -> a
 
 instance IsVar VariableName where
   buildVar = const
@@ -100,7 +105,7 @@ instance Semigroup (FV a) where
   fv1 <> fv2 = FV $ oneShot $ \boundVars -> oneShot $ \acc ->
     runFV fv1 boundVars (runFV fv2 boundVars acc)
 
-unitFV :: IsVar a => VariableName -> SourcePos -> FV a
+unitFV :: IsVar a => VariableName -> Position.T -> FV a
 unitFV v s = FV $ oneShot $ \boundVars -> oneShot $ \acc ->
   if Set.member v boundVars
   then acc

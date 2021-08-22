@@ -36,7 +36,6 @@ import qualified Data.Text.Lazy as Text
 import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
 
 import SAD.Core.Base
-import SAD.Core.SourcePos
 import SAD.Data.Definition
 import SAD.Data.Formula
 import SAD.Data.Instr (Limit(..), Flag(..))
@@ -51,11 +50,12 @@ import qualified SAD.Data.Structures.DisTree as DT
 import qualified SAD.Data.Text.Block as Block
 import qualified SAD.Data.Text.Context as Context
 
+import qualified Isabelle.Position as Position
 
 
 -- Reasoner
 
-reason :: SourcePos -> Context -> VM ()
+reason :: Position.T -> Context -> VM ()
 reason pos tc = local (\st -> st {currentThesis = tc}) $ proveThesis pos
 
 withGoal :: VM a -> Formula -> VM a
@@ -70,7 +70,7 @@ thesis :: VM Context
 thesis = asks currentThesis
 
 
-proveThesis :: SourcePos -> VM ()
+proveThesis :: Position.T -> VM ()
 proveThesis pos = do
   reasoningDepth <- askInstructionInt Depthlimit 3
   guard (reasoningDepth > 0) -- Fallback to defaulting of the underlying CPS Maybe monad.
@@ -78,7 +78,7 @@ proveThesis pos = do
   goals <- splitGoal
   filterContext pos (sequenceGoals pos reasoningDepth 0 goals) ctx
 
-sequenceGoals :: SourcePos -> Int -> Int -> [Formula] -> VM ()
+sequenceGoals :: Position.T -> Int -> Int -> [Formula] -> VM ()
 sequenceGoals pos reasoningDepth iteration (goal:restGoals) = do
   (trivial <|> proofByATP <|> reason) `withGoal` reducedGoal
   sequenceGoals pos reasoningDepth iteration restGoals
@@ -118,7 +118,7 @@ splitGoal = asks (normalizedSplit . strip . Context.formula . currentThesis)
 
 -- Call prover
 
-launchProver :: SourcePos -> Int -> VM ()
+launchProver :: Position.T -> Int -> VM ()
 launchProver pos iteration = do
   whenInstruction Printfulltask False printTask
   proverList <- asks provers
@@ -174,7 +174,7 @@ launchReasoning = do
   plus all definitions/sigexts (as they usually import type information that
   is easily forgotten) and the low level context. Otherwise the whole
   context is selected. -}
-filterContext :: SourcePos -> VM a -> [Context] -> VM a
+filterContext :: Position.T -> VM a -> [Context] -> VM a
 filterContext pos action context = do
   link <- asks (Set.fromList . Context.link . currentThesis)
   if Set.null link
@@ -252,7 +252,7 @@ data UnfoldState = UF {
 
 
 -- FIXME the reader monad transformer used here is completely superfluous
-unfold :: SourcePos -> VM [Context]
+unfold :: Position.T -> VM [Context]
 unfold pos = do
   thesis <- asks currentThesis
   context <- asks currentContext

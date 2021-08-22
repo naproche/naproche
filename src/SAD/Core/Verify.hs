@@ -21,7 +21,6 @@ import SAD.Core.Extract (addDefinition, addEvaluation, extractRewriteRule)
 import SAD.Core.ProofTask (generateProofTask)
 import SAD.Core.Reason (proveThesis)
 import SAD.Core.Rewrite (equalityReasoning)
-import SAD.Core.SourcePos (SourcePos, fileOnlyPos)
 import SAD.Core.Thesis (inferNewThesis)
 import SAD.Data.Formula
 import SAD.Data.Instr
@@ -37,6 +36,7 @@ import qualified SAD.Data.Text.Context as Context
 import qualified SAD.Prove.MESON as MESON
 
 import Isabelle.Library (make_bytes)
+import qualified Isabelle.Position as Position
 
 
 -- | Main verification loop
@@ -44,7 +44,7 @@ verify :: Text -> [Prover] -> IORef RState -> ProofText -> IO (Bool, Maybe Proof
 verify fileName provers reasonerState (ProofTextRoot text) = do
   let text' = ProofTextInstr noPos (GetArgument (File NonTex) fileName) : text
   let verificationState = makeInitialVState provers text'
-  Message.outputReasoner Message.TRACING (fileOnlyPos fileName) "verification started"
+  Message.outputReasoner Message.TRACING (Position.file_only $ make_bytes fileName) "verification started"
 
   result <- flip runRM reasonerState $
     runReaderT (verificationLoop verificationState) verificationState
@@ -53,7 +53,7 @@ verify fileName provers reasonerState (ProofTextRoot text) = do
     readIORef reasonerState
 
   let success = isJust result && ignoredFails == 0
-  Message.outputReasoner Message.TRACING (fileOnlyPos fileName) $
+  Message.outputReasoner Message.TRACING (Position.file_only $ make_bytes fileName) $
     "verification " <> (if success then "successful" else "failed")
   return (success, fmap (ProofTextRoot . tail . snd) result)
 
@@ -307,7 +307,7 @@ deleteInductionOrCase = dive id
 -- Instruction handling
 
 {- execute an instruction or add an instruction parameter to the state -}
-procProofTextInstr :: SourcePos -> Instr -> VM ([ProofText], [ProofText])
+procProofTextInstr :: Position.T -> Instr -> VM ([ProofText], [ProofText])
 procProofTextInstr pos = flip proc $ ask >>= verificationLoop
   where
     proc (Command RULES) = (>>) $ do

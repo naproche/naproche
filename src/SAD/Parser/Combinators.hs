@@ -9,7 +9,6 @@ Parser combinators.
 
 module SAD.Parser.Combinators where
 
-import SAD.Core.SourcePos
 import SAD.Parser.Base
 import SAD.Parser.Token
 import SAD.Parser.Error
@@ -23,6 +22,7 @@ import Debug.Trace
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 
+import qualified Isabelle.Position as Position
 
 
 -- choices
@@ -109,8 +109,8 @@ after p end = do
   return result
 
 -- | @enclosed begin end p@ parses @begin@, followed by @p@, followed by @end@,
--- returning the result of @p@ and two positions indicating the range of the parse.
-enclosed :: Text -> Text -> Parser st a -> Parser st ((SourcePos, SourcePos), a)
+-- returning the result of @p@ and its range.
+enclosed :: Text -> Text -> Parser st a -> Parser st (Position.Range, a)
 enclosed begin end p = do
   beginPos <- tokenPos' begin
   result <- p
@@ -129,10 +129,10 @@ paren :: Parser st a -> Parser st a
 paren p = p -|- parenthesised p
 
 -- | Dot keyword
-dot :: Parser st SourceRange
+dot :: Parser st Position.Range
 dot = do
   pos1 <- tokenPos' "." <?> "a dot"
-  return $ makeRange (pos1, pos1 `advancePos` ".")
+  return $ Position.range (pos1, Position.advance_string "." pos1)
 
 -- | mandatory finishing dot
 finish :: Parser st a -> Parser st a
@@ -159,6 +159,13 @@ narrow p = Parser $ \st ok cerr eerr ->
   let pok err eok cok = case eok ++ cok of
         [_] -> ok err eok cok
         ls  ->  eerr $ newErrorMessage (newWellFormednessMessage ["ambiguity error" <> Text.pack (show (map prResult ls))]) (stPosition st)
+  in  runParser p st pok cerr eerr
+
+narrow2 :: Show b => Parser st (a, b) -> Parser st (a, b)
+narrow2 p = Parser $ \st ok cerr eerr ->
+  let pok err eok cok = case eok ++ cok of
+        [_] -> ok err eok cok
+        ls  ->  eerr $ newErrorMessage (newWellFormednessMessage ["ambiguity error" <> Text.pack (show (map (snd . prResult) ls))]) (stPosition st)
   in  runParser p st pok cerr eerr
 
 
@@ -296,7 +303,7 @@ errorTrace lbl shw p = Parser $ \st ok cerr eerr ->
 notEof :: Parser st ()
 notEof = Parser $ \st ok _ eerr ->
   case stInput st of
-    [] -> eerr $ unexpectError "" noSourcePos
+    [] -> eerr $ unexpectError "" Position.none
     (t:_) -> case isEOF t of
       True  -> eerr $ unexpectError (showToken t) (tokenPos t)
       False -> ok (newErrorUnknown (tokenPos t)) [] [PR () st]

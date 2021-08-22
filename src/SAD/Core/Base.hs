@@ -57,9 +57,6 @@ import Data.Time (NominalDiffTime, getCurrentTime, diffUTCTime)
 import qualified Data.Set as Set
 import qualified Data.Map as Map
 
-import qualified Isabelle.Markup as Markup
-
-import SAD.Core.SourcePos
 import SAD.Data.Definition
 import SAD.Data.Formula
 import SAD.Data.Instr
@@ -73,6 +70,8 @@ import qualified SAD.Data.Structures.DisTree as DT
 import qualified SAD.Data.Text.Context as Context (name)
 
 import qualified Isabelle.Bytes as Bytes
+import qualified Isabelle.Markup as Markup
+import qualified Isabelle.Position as Position
 import Isabelle.Library (BYTES, make_bytes)
 
 
@@ -215,7 +214,7 @@ dropInstruction instr =
 
 -- Markup reports (with exception handling)
 
-reportBracketIO :: SourcePos -> IO a -> IO a
+reportBracketIO :: Position.T -> IO a -> IO a
 reportBracketIO pos body = do
   Message.report pos Markup.running
   (res :: Either SomeException a) <- try body
@@ -313,22 +312,22 @@ unsetChecked = updateRS (\st -> st {alreadyChecked = False})
 
 -- common messages
 
-reasonLog :: BYTES a => Message.Kind -> SourcePos -> a -> VM ()
+reasonLog :: BYTES a => Message.Kind -> Position.T -> a -> VM ()
 reasonLog kind pos = justIO . Message.outputReasoner kind pos
 
-thesisLog :: BYTES a => Message.Kind -> SourcePos -> Int -> a -> VM ()
+thesisLog :: BYTES a => Message.Kind -> Position.T -> Int -> a -> VM ()
 thesisLog kind pos indent msg =
   justIO (Message.outputThesis kind pos (Bytes.spaces (3 * indent) <> make_bytes msg))
 
-simpLog :: BYTES a => Message.Kind -> SourcePos -> a -> VM ()
+simpLog :: BYTES a => Message.Kind -> Position.T -> a -> VM ()
 simpLog kind pos = justIO . Message.outputSimplifier kind pos
 
-translateLog :: BYTES a => Message.Kind -> SourcePos -> a -> VM ()
+translateLog :: BYTES a => Message.Kind -> Position.T -> a -> VM ()
 translateLog kind pos = justIO . Message.outputTranslate kind pos
 
 
 
-retrieveContext :: SourcePos -> Set.Set Text -> VM [Context]
+retrieveContext :: Position.T -> Set.Set Text -> VM [Context]
 retrieveContext pos names = do
   globalContext <- asks currentContext
   let (context, unfoundSections) = runState (retrieve globalContext) names

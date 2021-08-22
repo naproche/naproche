@@ -16,7 +16,6 @@ import Control.Monad.Reader
 import qualified Data.Text.Lazy as Text
 
 import SAD.Core.Base
-import SAD.Core.SourcePos
 import SAD.Core.Reason as Reason
 import SAD.Data.Definition hiding (Guards)
 import SAD.Data.Formula
@@ -27,10 +26,11 @@ import qualified SAD.Core.Message as Message
 import qualified SAD.Data.Text.Block as Block (link, position)
 import qualified SAD.Data.Text.Context as Context
 
+import qualified Isabelle.Position as Position
 
 
 {- check definitions and fortify terms with evidences in a formula -}
-fillDef :: SourcePos -> Bool -> Context -> VM Formula
+fillDef :: Position.T -> Bool -> Context -> VM Formula
 fillDef pos alreadyChecked context = fill True False [] (Just True) 0 (Context.formula context)
   where
     fill :: Bool -> Bool -> [Formula] -> Maybe Bool -> Int -> Formula -> VM Formula
@@ -75,7 +75,7 @@ cnRaise thisBlock local = do
 
 
 
-setDef :: SourcePos -> Bool -> Context -> Formula -> VM Formula
+setDef :: Position.T -> Bool -> Context -> Formula -> VM Formula
 setDef pos isNewWord context term@Trm{trmName = t, trId = tId} =
   incrementCounter Symbols >>
     (    (guard isNewWord >> return term) -- do not check new word
@@ -108,7 +108,7 @@ check it. setup and cleanup take care of the special proof times that we allow
 an ontological check. easyCheck are inbuild reasoning methods, hardCheck passes
 a task to an ATP.
 -}
-testDef :: SourcePos -> Context -> Formula -> (Guards, FortifiedTerm) -> VM Formula
+testDef :: Position.T -> Context -> Formula -> (Guards, FortifiedTerm) -> VM Formula
 testDef pos context term (guards, fortifiedTerm) = do
   userCheckSetting <- askInstructionBool Check True
   if   userCheckSetting

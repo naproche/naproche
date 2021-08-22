@@ -15,7 +15,6 @@ module SAD.ForTheL.Extension (
   where
 
 
-import SAD.Core.SourcePos
 import SAD.Data.Formula
 import SAD.Data.Text.Block (ProofText (..))
 
@@ -34,6 +33,9 @@ import Control.Applicative
 import Control.Monad.State.Class (get, modify)
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
+
+import qualified Isabelle.Position as Position
+
 
 -- definitions and signature extensions
 
@@ -144,7 +146,7 @@ allDistinctVars = disVs []
 
 pretypeVariable :: FTL ProofText
 pretypeVariable = do
-  (pos, tv) <- narrow typeVar
+  (pos, tv) <- narrow2 typeVar
   modify $ upd tv
   return $ ProofTextPretyping pos (fst tv)
   where
@@ -152,14 +154,14 @@ pretypeVariable = do
       pos1 <- getPos; markupToken synonymLet "let"; vs <- varList; standFor
       when (Set.size vs == 0) $ fail "empty variable list in let binding"
       (g, pos2) <- wellFormedCheck (freeOrOverlapping mempty . fst) holedNotion
-      let pos = rangePos $ SourceRange pos1 pos2
+      let pos = Position.range_position (pos1, pos2)
       addPretypingReport pos $ map posVarPosition $ Set.toList vs;
       return (pos, (vs, ignoreNames g))
 
     holedNotion = do
       (q, f) <- anotion
       g <- q <$> dig f [(mkVar (VarHole ""))]
-      SourceRange _ pos2 <- dot
+      (_, pos2) <- dot
       return (g, pos2)
 
     upd (vs, notion) st = st { tvrExpr = (Set.map posVarName vs, notion) : tvrExpr st }
@@ -169,25 +171,25 @@ introduceMacro :: FTL ProofText
 introduceMacro = do
   pos1 <- getPos
   markupToken macroLet "let"
-  (pos2, (f, g)) <- narrow (prd -|- notion)
-  let pos = rangePos $ SourceRange pos1 pos2
+  (pos2, (f, g)) <- narrow2 (prd -|- notion)
+  let pos = Position.range_position (pos1, pos2)
   addMacroReport pos
   st <- get
   addExpr f (ignoreNames g) False st
   return $ ProofTextMacro pos
   where
-    prd, notion :: FTL (SourcePos, (Formula, Formula))
+    prd, notion :: FTL (Position.T, (Formula, Formula))
     prd = wellFormedCheck (prdVars . snd) $ do
       f <- newPrdPattern singleLetterVariable
       standFor
       g <- statement
-      SourceRange _ pos2 <- dot
+      (_, pos2) <- dot
       return (pos2, (f, g))
     notion = wellFormedCheck (funVars . snd) $ do
       (n, u) <- unnamedNotion singleLetterVariable
       standFor
       (q, f) <- anotion
-      SourceRange _ pos2 <- dot
+      (_, pos2) <- dot
       h <- q <$> dig f [pVar u]
       return (pos2, (n, h))
 

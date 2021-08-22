@@ -24,13 +24,14 @@ import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
 
-import SAD.Core.SourcePos (noSourcePos)
-
 import SAD.Data.Text.Decl
 
 import SAD.Core.Message (PIDE)
 import qualified SAD.Core.Message as Message
 import SAD.Export.Representation (represent, toLazyText)
+
+import qualified Isabelle.Position as Position
+
 
 type FTL = Parser FState
 
@@ -340,7 +341,7 @@ hidden :: FTL PosVar
 hidden = do
   n <- gets hiddenCount
   modify $ \st -> st {hiddenCount = succ n}
-  return (PosVar (VarHidden n) noSourcePos)
+  return (PosVar (VarHidden n) Position.none)
 
 -- | Parse the next token as a variable (a sequence of alpha-num chars beginning with an alpha)
 -- and return ('x' + the sequence) with the current position.

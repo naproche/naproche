@@ -12,13 +12,14 @@ import Control.Monad.Identity
 import Control.Applicative
 
 import SAD.Data.Tag (Tag)
-import SAD.Core.SourcePos (SourcePos)
 import SAD.Data.Terms
 import SAD.Data.Text.Decl (Decl)
 import SAD.Data.VarName
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 import SAD.Export.Representation
+
+import qualified Isabelle.Position as Position
 
 import qualified Data.Map as Map
 
@@ -31,12 +32,12 @@ data Formula =
   Trm { trmName :: TermName, trmArgs :: [Formula],
         trmInfo :: [Formula], trId   :: TermId}         |
   -- | Free variables 'Var'.
-  Var { varName :: VariableName, varInfo :: [Formula], varPosition :: SourcePos } |
+  Var { varName :: VariableName, varInfo :: [Formula], varPosition :: Position.T } |
   -- | This is used for representing bound variables through de Brujin indices.
   -- @Ind n indPosition@ tells us that the variable corresponding
   -- to this index has been quantified over at the @n@th quantifier one meets if one
   -- traverses the formula from the inside to the outside.
-  Ind { indIndex :: Int, indPosition :: SourcePos } | ThisT
+  Ind { indIndex :: Int, indPosition :: Position.T } | ThisT
   deriving (Eq, Ord)
 
 trmId :: Formula -> TermId

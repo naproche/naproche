@@ -17,7 +17,6 @@ import Control.Monad
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 
-import SAD.Core.SourcePos
 import SAD.Data.Instr
 
 import SAD.ForTheL.Base
@@ -27,11 +26,13 @@ import SAD.Parser.Primitives
 import SAD.ForTheL.Reports
 import SAD.Parser.Token
 
+import qualified Isabelle.Position as Position
+
 
 instrPos :: (Pos -> FTL ()) -> FTL a -> FTL (Pos, a)
 instrPos report p = do
   ((pos1, pos2), x) <- enclosed begin end p
-  let pos = Pos pos1 pos2 (makeRange (pos1, pos2 `advancePos` end))
+  let pos = Pos pos1 pos2 (Position.range (pos1, Position.advance end pos2))
   report pos; return (pos, x)
   where begin = "["; end = "]"
 

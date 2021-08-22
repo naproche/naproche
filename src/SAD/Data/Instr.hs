@@ -8,20 +8,20 @@ Instruction datatype and core functions.
 
 module SAD.Data.Instr where
 
-import SAD.Core.SourcePos (SourcePos, SourceRange(..), noSourcePos, noRange)
+import qualified Isabelle.Position as Position
 import Data.Text.Lazy (Text)
 
 
 -- Position information
 
-data Pos = Pos {start :: SourcePos, stop :: SourcePos, range :: SourceRange}
-  deriving (Eq, Ord, Show)
+data Pos = Pos {start :: Position.T, stop :: Position.T, range :: Position.Range}
+  deriving (Eq, Ord)
 
-position :: Pos -> SourcePos
-position p = let SourceRange a _ = range p in a
+position :: Pos -> Position.T
+position pos = fst $ range pos
 
 noPos :: Pos
-noPos = Pos noSourcePos noSourcePos noRange
+noPos = Pos Position.none Position.none Position.no_range
 
 
 -- Instruction types
