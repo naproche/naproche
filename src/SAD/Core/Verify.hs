@@ -42,7 +42,7 @@ import qualified Isabelle.Position as Position
 -- | Main verification loop
 verify :: Text -> [Prover] -> IORef RState -> ProofText -> IO (Bool, Maybe ProofText)
 verify fileName provers reasonerState (ProofTextRoot text) = do
-  let text' = ProofTextInstr noPos (GetArgument (File NonTex) fileName) : text
+  let text' = ProofTextInstr Position.none (GetArgument (File NonTex) fileName) : text
   let verificationState = makeInitialVState provers text'
   Message.outputReasoner Message.TRACING (Position.file_only $ make_bytes fileName) "verification started"
 
@@ -230,7 +230,7 @@ verificationLoop state@ VS {restProofText = NonProofTextStoredInstr ins : rest} 
 -- verification state and those that influence (at most) the global state
 verificationLoop state@VS {restProofText = i@(ProofTextInstr pos instr) : blocks} =
   fmap (\(as,bs) -> (as, i:bs)) $
-    local (const state {restProofText = blocks}) $ procProofTextInstr (start pos) instr
+    local (const state {restProofText = blocks}) $ procProofTextInstr (Position.no_range_position pos) instr
 
 {- process a command to drop an instruction, i.e. [/prove], etc.-}
 verificationLoop state@VS {restProofText = (i@(ProofTextDrop _ instr) : blocks)} =

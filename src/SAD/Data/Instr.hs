@@ -8,20 +8,7 @@ Instruction datatype and core functions.
 
 module SAD.Data.Instr where
 
-import qualified Isabelle.Position as Position
 import Data.Text.Lazy (Text)
-
-
--- Position information
-
-data Pos = Pos {start :: Position.T, stop :: Position.T, range :: Position.Range}
-  deriving (Eq, Ord)
-
-position :: Pos -> Position.T
-position pos = fst $ range pos
-
-noPos :: Pos
-noPos = Pos Position.none Position.none Position.no_range
 
 
 -- Instruction types

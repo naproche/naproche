@@ -19,9 +19,7 @@ import SAD.Data.Text.Block
 import SAD.Data.Instr as Instr
     ( Argument(Text, File, Read),
       ParserKind(Tex, NonTex),
-      Instr(GetArgument),
-      Pos,
-      position )
+      Instr(GetArgument))
 import SAD.ForTheL.Base
 import SAD.ForTheL.Structure
 import SAD.Parser.Base
@@ -39,7 +37,7 @@ import Isabelle.Position as Position
 
 -- Init file parsing
 
-readInit :: Text -> IO [(Pos, Instr)]
+readInit :: Text -> IO [(Position.T, Instr)]
 readInit file | Text.null file = return []
 readInit file = do
   input <- catch (File.read (Text.unpack file)) $ Message.errorParser (Position.file_only $ make_bytes file) . make_bytes . ioeGetErrorString
@@ -47,7 +45,7 @@ readInit file = do
       initialParserState = State (initFS Nothing) tokens NonTex Position.none
   fst <$> launchParser instructionFile initialParserState
 
-instructionFile :: FTL [(Pos, Instr)]
+instructionFile :: FTL [(Position.T, Instr)]
 instructionFile = after (optLL1 [] $ chainLL1 instr) eof
 
 
@@ -68,7 +66,7 @@ reader :: Text -> [Text] -> [State FState] -> [ProofText] -> IO ([ProofText], [M
 reader pathToLibrary doneFiles = go
   where
     go stateList [ProofTextInstr pos (GetArgument (Read pk) file)] = if Text.pack ".." `Text.isInfixOf` file
-      then Message.errorParser (Instr.position pos) ("Illegal \"..\" in file name: " ++ show file)
+      then Message.errorParser pos ("Illegal \"..\" in file name: " ++ show file)
       else go stateList [ProofTextInstr pos $ GetArgument (File pk) $ pathToLibrary <> Text.pack "/" <> file]
 
     go (pState:states) [ProofTextInstr pos (GetArgument (File parserKind') file)]
@@ -77,8 +75,8 @@ reader pathToLibrary doneFiles = go
           -- or the .ftl parser. Now if, for example, we originally read the file with the .ftl format and now we
           -- are reading the file again with the .tex format(by eg using '[readtex myfile.ftl]'), we want to throw an error.
           when (parserKind pState /= parserKind')
-            (Message.errorParser (Instr.position pos) "Trying to read the same file once in Tex format and once in NonTex format.")
-          Message.outputMain Message.WARNING (Instr.position pos)
+            (Message.errorParser pos "Trying to read the same file once in Tex format and once in NonTex format.")
+          Message.outputMain Message.WARNING pos
             (make_bytes ("Skipping already read file: " ++ show file))
           (newProofText, newState) <- chooseParser pState
           go (newState:states) newProofText

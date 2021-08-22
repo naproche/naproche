@@ -20,8 +20,7 @@ module SAD.API
 import SAD.Core.Base (showTimeDiff, RState(..), sumCounter, Counter(..), sumTimer, Timer(..), maximalTimer)
 import SAD.Core.Message (consoleThread, exitThread, errorParser, outputMain, initThread, Kind(..))
 import SAD.Core.Verify (verify)
-import SAD.Data.Instr (Instr(..), Flag(..), askFlag, Limit(..), askLimit, Argument(..), askArgument, Arguments(..), noPos
-  , UnderlyingTheory(..), askTheory, ParserKind(..), Pos)
+import SAD.Data.Instr (Instr(..), Flag(..), askFlag, Limit(..), askLimit, Argument(..), askArgument, Arguments(..), UnderlyingTheory(..), askTheory, ParserKind(..))
 import SAD.Data.Text.Block (ProofText(..), textToCheck, findParseError)
 import SAD.Export.Base (readProverFile, readProverDatabase)
 import SAD.Import.Reader (readInit, readProofText)

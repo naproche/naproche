@@ -55,9 +55,9 @@ main  = do
   text0 <- (map (uncurry ProofTextInstr) (reverse opts0) ++) <$> case mFileName of
     Nothing -> do
       stdin <- getContents
-      pure $ [ProofTextInstr noPos $ GetArgument (Text pk) (Text.pack stdin)]
+      pure $ [ProofTextInstr Position.none $ GetArgument (Text pk) (Text.pack stdin)]
     Just f -> do
-      pure $ [ProofTextInstr noPos $ GetArgument (File pk) (Text.pack f)]
+      pure $ [ProofTextInstr Position.none $ GetArgument (File pk) (Text.pack f)]
   let opts1 = map snd opts0
 
   oldProofTextRef <- newIORef $ ProofTextRoot []
@@ -207,7 +207,7 @@ serverConnection oldProofTextRef args0 connection = do
           (opts0, pk, fileName) <- readArgs (args0 ++ lines (make_string more_args))
           let opts1 = map snd opts0
           let text0 = map (uncurry ProofTextInstr) (reverse opts0)
-          let text1 = text0 ++ [ProofTextInstr noPos (GetArgument (Text pk) more_text)]
+          let text1 = text0 ++ [ProofTextInstr Position.none (GetArgument (Text pk) more_text)]
 
           mainBody Nothing oldProofTextRef opts1 text1 fileName
             `catch` (\(err :: Message.Error) -> do
@@ -223,7 +223,7 @@ serverConnection oldProofTextRef args0 connection = do
 
 -- Command line parsing
 
-readArgs :: [String] -> IO ([(Pos, Instr)], ParserKind, Maybe FilePath)
+readArgs :: [String] -> IO ([(Position.T, Instr)], ParserKind, Maybe FilePath)
 readArgs args = do
   let (instrs, files, errs) = GetOpt.getOpt GetOpt.Permute options args
 
@@ -231,7 +231,7 @@ readArgs args = do
   unless (null errs) $ fail errs
 
   initFile <- readInit (askArgument Init "init.opt" instrs)
-  let initialOpts = initFile ++ map (noPos,) instrs
+  let initialOpts = initFile ++ map (Position.none,) instrs
 
   let revInitialOpts = reverse initialOpts
   let useTexArg = askFlag UseTex False $ map snd revInitialOpts

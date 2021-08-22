@@ -44,7 +44,6 @@ import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Text.Decl
 import Data.Text.Lazy (Text)
 import SAD.Data.Formula
-import SAD.Data.Instr
 
 import SAD.Parser.Base
 import SAD.Parser.Primitives
@@ -124,13 +123,13 @@ addBlockReports bl = addReports $ \pide -> let decls = Block.declaredVariables b
   formulaReports pide decls (Block.formula bl) ++
   concatMap (\decl -> variableReport pide True decl $ declPosition decl) decls
 
-addInstrReport :: Pos -> FTL ()
+addInstrReport :: Position.T -> FTL ()
 addInstrReport pos = addReports $ const $
-  map (position pos,) [Markup.comment2, Markup.expression "text instruction"]
+  map (pos,) [Markup.comment2, Markup.expression "text instruction"]
 
-addDropReport :: Pos -> FTL ()
+addDropReport :: Position.T -> FTL ()
 addDropReport pos = addReports $ const $
-  map (position pos,) [Markup.comment2, Markup.expression "drop text instruction"]
+  map (pos,) [Markup.comment2, Markup.expression "drop text instruction"]
 
 addPretypingReport :: Position.T -> [Position.T] -> FTL ()
 addPretypingReport pos ps = addReports $ const $

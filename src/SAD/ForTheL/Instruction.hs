@@ -29,15 +29,15 @@ import SAD.Parser.Token
 import qualified Isabelle.Position as Position
 
 
-instrPos :: (Pos -> FTL ()) -> FTL a -> FTL (Pos, a)
+instrPos :: (Position.T -> FTL ()) -> FTL a -> FTL (Position.T, a)
 instrPos report p = do
   ((pos1, pos2), x) <- enclosed begin end p
-  let pos = Pos pos1 pos2 (Position.range (pos1, Position.advance end pos2))
+  let pos = Position.range_position (pos1, Position.advance end pos2)
   report pos; return (pos, x)
   where begin = "["; end = "]"
 
 
-instr :: FTL (Pos, Instr)
+instr :: FTL (Position.T, Instr)
 instr =
   instrPos addDropReport $ readInstr >>=
     (\case
@@ -47,14 +47,14 @@ instr =
       i -> return i)
 
 
-instrRead :: FTL (Pos, Instr)
+instrRead :: FTL (Position.T, Instr)
 instrRead =
   instrPos addInstrReport $ readInstr >>=
     (\case
       i@(GetArgument (Read _) _) -> return i
       _ -> mzero)
 
-instrExit :: FTL (Pos, Instr)
+instrExit :: FTL (Position.T, Instr)
 instrExit =
   instrPos addInstrReport $ readInstr >>=
     (\case
@@ -62,7 +62,7 @@ instrExit =
       i@(Command QUIT) -> return i
       _ -> mzero)
 
-instrDrop :: FTL (Pos, Drop)
+instrDrop :: FTL (Position.T, Drop)
 instrDrop = instrPos addInstrReport (token' "/" >> readInstrDrop)
 
 

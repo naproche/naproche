@@ -23,7 +23,7 @@ module SAD.Data.Text.Block (
   )where
 
 import SAD.Data.Formula
-import SAD.Data.Instr hiding (position)
+import SAD.Data.Instr
 import SAD.Parser.Token
 import SAD.Data.Text.Decl
 import SAD.Parser.Error (ParseError)
@@ -42,9 +42,9 @@ import Isabelle.Library (make_text)
 
 data ProofText =
     ProofTextBlock Block
-  | ProofTextInstr Pos Instr
+  | ProofTextInstr Position.T Instr
   | NonProofTextStoredInstr [Instr] -- a way to restore instructions during verification
-  | ProofTextDrop Pos Drop
+  | ProofTextDrop Position.T Drop
   | ProofTextSynonym Position.T
   | ProofTextPretyping Position.T (Set PosVar)
   | ProofTextMacro Position.T
