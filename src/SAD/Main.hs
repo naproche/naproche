@@ -15,6 +15,7 @@ import Data.IORef
 import Data.Time (UTCTime, addUTCTime, getCurrentTime, diffUTCTime)
 import Data.ByteString (ByteString)
 import Data.List (isSuffixOf)
+import Data.Maybe (mapMaybe)
 
 import qualified Control.Exception as Exception
 import Control.Exception (catch)
@@ -188,14 +189,14 @@ serverConnection :: IORef ProofText -> [String] -> Socket -> IO ()
 serverConnection oldProofTextRef args0 connection = do
   let channel = Byte_Message.write_message connection
   thread_uuid <- Isabelle_Thread.my_uuid
-  mapM_ (\uuid -> channel [Naproche.uuid_command, UUID.print uuid]) thread_uuid
+  mapM_ (\uuid -> channel [Naproche.threads_command, UUID.print uuid]) thread_uuid
 
   chunks <- Byte_Message.read_message connection
   case chunks of
-    Just [command, uuid] | command == Naproche.cancel_command ->
-      mapM_ Isabelle_Thread.stop_uuid (UUID.parse uuid)
+    Just (command : threads) | command == Naproche.cancel_program ->
+      mapM_ Isabelle_Thread.stop_uuid (mapMaybe UUID.parse threads)
 
-    Just [command, more_args, opts, text] | command == Naproche.forthel_command ->
+    Just [command, more_args, opts, text] | command == Naproche.forthel_program ->
       let options = Options.decode $ YXML.parse_body opts in
       Exception.bracket_ (initThread options channel)
         exitThread

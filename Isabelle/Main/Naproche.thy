@@ -1,5 +1,5 @@
 (*
-Authors: Makarius (2018)
+Authors: Makarius (2018, 2021)
 
 Isabelle Prover IDE support for NaProChe / ForTheL.
 *)
@@ -43,9 +43,8 @@ naproche_pos_shift = \<open>\<^system_option>\<open>naproche_pos_shift\<close>\<
 
 -- message origin
 
-origin, origin_main, origin_export, origin_forthel, origin_parser,
+origin_main, origin_export, origin_forthel, origin_parser,
   origin_reasoner, origin_simplifier, origin_thesis, origin_translate :: Bytes
-origin = \<open>Naproche.origin\<close>
 origin_main = \<open>Naproche.origin_main\<close>
 origin_export = \<open>Naproche.origin_export\<close>
 origin_forthel = \<open>Naproche.origin_forthel\<close>
@@ -56,22 +55,39 @@ origin_thesis = \<open>Naproche.origin_thesis\<close>
 origin_translate = \<open>Naproche.origin_translate\<close>
 
 
--- server commands
+-- programs in Haskell
 -- (see \<^file>\<open>$NAPROCHE_HOME/src/SAD/Main.hs\<close>)
+
+cancel_program :: Bytes
+cancel_program = \<open>Naproche.cancel_program\<close>
+
+forthel_program :: Bytes
+forthel_program = \<open>Naproche.forthel_program\<close>
+
+
+-- commands in ML
+
+threads_command :: Bytes
+threads_command = \<open>\<^naproche_command>\<open>threads\<close>\<close>
+
+output_state_command, output_writeln_command, output_information_command,
+  output_tracing_command, output_warning_command, output_legacy_feature_command,
+  output_error_command, output_report_command :: Bytes
+output_state_command = \<open>\<^naproche_command>\<open>output_state\<close>\<close>
+output_writeln_command = \<open>\<^naproche_command>\<open>output_writeln\<close>\<close>
+output_information_command = \<open>\<^naproche_command>\<open>output_information\<close>\<close>
+output_tracing_command = \<open>\<^naproche_command>\<open>output_tracing\<close>\<close>
+output_warning_command = \<open>\<^naproche_command>\<open>output_warning\<close>\<close>
+output_legacy_feature_command = \<open>\<^naproche_command>\<open>output_legacy_feature\<close>\<close>
+output_error_command = \<open>\<^naproche_command>\<open>output_error\<close>\<close>
+output_report_command = \<open>\<^naproche_command>\<open>output_report\<close>\<close>
+
+
+-- prover server
 -- (see \<^file>\<open>$NAPROCHE_HOME/Isabelle/src/scala/prover_server.scala\<close>)
 
 prover_args :: Bytes
-prover_args = \<open>Naproche.prover_args\<close>
-
-uuid_command :: Bytes
-uuid_command = \<open>Naproche.uuid_command\<close>
-
-cancel_command :: Bytes
-cancel_command = \<open>Naproche.cancel_command\<close>
-
-forthel_command :: Bytes
-forthel_command = \<open>Naproche.forthel_command\<close>
-
+prover_args = "prover_args"
 
 prover_command :: Bytes
 prover_command = "prover"

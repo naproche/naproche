@@ -1,7 +1,7 @@
 (*
-Authors: Makarius Wenzel (2018)
+Authors: Makarius Wenzel (2018, 2021)
 
-Isabelle Prover IDE support for NaProChe / ForTheL.
+Isabelle/Naproche connectivity, with Prover IDE support.
 *)
 
 signature NAPROCHE =
@@ -11,7 +11,17 @@ sig
   val naproche_skipfail: bool Config.T
   val naproche_print_thesis: bool Config.T
   val naproche_translate: bool Config.T
-  val origin: string
+  type state
+  val get_theory: state -> generic_theory
+  val map_theory_result: (generic_theory -> 'a * generic_theory) -> state -> 'a * state
+  val map_theory: (generic_theory -> generic_theory) -> state -> state
+  val theory_of_state: state -> theory
+  val context_of_state: state -> Proof.context
+  type command = string list * state -> string list * state
+  val command_setup: binding -> command -> theory -> theory
+  val cancel_program: string
+  val forthel_program: string
+  val check_forthel: Proof.context -> {tex: bool} -> string * Position.T -> unit
   val origin_main: string
   val origin_export: string
   val origin_forthel: string
@@ -20,17 +30,12 @@ sig
   val origin_simplifier: string
   val origin_thesis: string
   val origin_translate: string
-  val prover_args: string
-  val uuid_command: string
-  val forthel_command: string
-  val cancel_command: string
-  val check_forthel: Proof.context -> {tex: bool} -> string * Position.T -> unit
 end;
 
 structure Naproche: NAPROCHE =
 struct
 
-(* options *)
+(** options **)
 
 val naproche_prove = Attrib.setup_option_bool (\<^system_option>\<open>naproche_prove\<close>, \<^here>);
 val naproche_check = Attrib.setup_option_bool (\<^system_option>\<open>naproche_check\<close>, \<^here>);
@@ -54,65 +59,114 @@ fun naproche_options pos =
   end;
 
 
-(* message origin *)
 
-val origin = "origin";
+(** commands in ML **)
 
-val origin_main = "Main";
-val origin_export = "Export";
-val origin_forthel = "ForTheL";
-val origin_parser = "Parser";
-val origin_reasoner = "Reasoner";
-val origin_simplifier = "Simplifier";
-val origin_thesis = "Thesis";
-val origin_translate = "Translation";
+(* state *)
+
+datatype state = State of {threads: string list, theory: generic_theory};
+
+fun make_state (threads, theory) = State {threads = threads, theory = theory};
+fun map_state f (State {threads, theory}) = make_state (f (threads, theory));
+
+fun get_threads (State ({threads, ...})) = threads;
+fun get_theory (State ({theory, ...})) = theory;
+
+val map_threads = map_state o @{apply 2(1)};
+
+fun map_theory_result f state =
+  let
+    val (res, theory') = f (get_theory state);
+    val state' = map_state (fn (threads, _) => (threads, theory')) state;
+  in (res, state') end;
+
+fun map_theory f = map_theory_result (f #> pair ()) #> #2;
+
+val theory_of_state = Context.theory_of o get_theory;
+val context_of_state = Context.proof_of o get_theory;
+
+
+(* commands *)
+
+type command = string list * state -> string list * state;
+
+structure Data = Theory_Data
+(
+  type T = command Name_Space.table;
+  val empty : T = Name_Space.empty_table "naproche_command";
+  val extend = I;
+  fun merge data : T = Name_Space.merge_tables data;
+);
+
+fun command_setup binding cmd thy =
+  let
+    val context = Context.Theory thy |> Name_Space.map_naming (K Name_Space.global_naming);
+    val (_, data') = Name_Space.define context true (binding, cmd) (Data.get thy);
+  in Data.put data' thy end;
+
+val get_command = Name_Space.lookup o Data.get;
+
+fun check_command thy = #1 o Name_Space.check (Context.Theory thy) (Data.get thy);
+
+val _ = Theory.setup
+ (ML_Antiquotation.inline_embedded \<^binding>\<open>naproche_command\<close>
+   (Args.theory -- Scan.lift Args.embedded_position >>
+     (ML_Syntax.print_string o uncurry check_command)));
+
+
+
+(** programs in Haskell **)
+
+(* server connection *)
+
+fun read_message streams = Byte_Message.read_message (fst streams);
+fun write_message streams = Byte_Message.write_message (snd streams);
+
+fun with_server f =
+  let
+    val server_address = Options.default_string \<^system_option>\<open>naproche_server_address\<close>;
+    val server_password = Options.default_string \<^system_option>\<open>naproche_server_password\<close>;
+  in
+    if server_address = "" orelse server_password = ""
+    then error "Nissing Isabelle/Naproche server"
+    else Socket_IO.with_streams' f server_address server_password
+  end;
+
+
+(* threads in Haskell *)
+
+val cancel_program = "cancel";
+
+fun cancel state =
+  with_server (fn streams => write_message streams (cancel_program :: get_threads state));
+
+val _ = Theory.setup
+ (command_setup \<^binding>\<open>threads\<close> (fn (more_threads, state) =>
+   ([], map_threads (fold (insert op =) more_threads) state)));
+
+
+(* command loop *)
+
+fun command_loop streams state =
+  (case read_message streams of
+    NONE => ()
+  | SOME [] => command_loop streams state
+  | SOME (name :: args) =>
+      (case get_command (theory_of_state state) name of
+        NONE => raise Fail ("Protocol error: bad Isabelle/Naproche command " ^ quote name)
+      | SOME cmd =>
+          (case Exn.interruptible_capture cmd (args, state) of
+            Exn.Exn exn =>
+              raise Fail ("Protocol error: failure of Isabelle/Naproche command " ^ quote name
+                ^ "\n" ^ Runtime.exn_message exn)
+          | Exn.Res (result, state') =>
+              (write_message streams result; command_loop streams state'))))
+  handle exn => (cancel state; Exn.reraise exn);
 
 
 (* process ForTheL text *)
 
-local
-
-val message_fns =
-  Symtab.make
-   [(Markup.stateN, Output.state),
-    (Markup.writelnN, writeln),
-    (Markup.informationN, Output.information),
-    (Markup.tracingN, tracing),
-    (Markup.warningN, warning),
-    (Markup.legacyN, legacy_feature),
-    (Markup.errorN, Output.error_message)]
-
-fun input_messages in_stream =
-  let
-    fun continue () = input_messages in_stream;
-    fun skip info =
-     (Output.system_message
-        ("Ignoring bad server message" ^ (if info = "" then "" else " " ^ quote info));
-      continue ());
-  in
-    (case Byte_Message.read_message in_stream of
-      NONE => ()
-    | SOME [] => skip ""
-    | SOME (command :: args) =>
-        if command = Markup.reportN then (Output.report args; continue ())
-        else if Symtab.defined message_fns command andalso length args = 3 then
-          let
-            val message_fn = the (Symtab.lookup message_fns command);
-            val [origin, position, text] = args;
-            val header = enclose "[" "]" (if origin = "" then origin_main else origin);
-            val props = XML.Decode.properties (YXML.parse_body position);
-            val here =
-              (case Position.here (Position.of_properties props) of "" => " " | s => s ^ "\n");
-          in message_fn (header ^ here ^ text); continue () end
-        else skip command)
-  end
-
-in
-
-val prover_args = "prover_args";
-val uuid_command = "uuid";
-val cancel_command = "cancel";
-val forthel_command = "forthel";
+val forthel_program = "forthel";
 
 fun check_forthel ctxt {tex} (text, pos) =
   let
@@ -124,6 +178,7 @@ fun check_forthel ctxt {tex} (text, pos) =
         (Options.default_string \<^system_option>\<open>naproche_prover_server_port\<close>,
          Options.default_string \<^system_option>\<open>naproche_prover_server_password\<close>)
       else ("", "");
+
     val args =
      ["--tex=" ^ bool tex,
       "--prove=" ^ bool_option naproche_prove,
@@ -134,41 +189,49 @@ fun check_forthel ctxt {tex} (text, pos) =
       "--prover-server-port=" ^ prover_server_port,
       "--prover-server-password=" ^ prover_server_password];
 
-    val server_address = Options.default_string \<^system_option>\<open>naproche_server_address\<close>;
-    val server_password = Options.default_string \<^system_option>\<open>naproche_server_password\<close>;
+    val opts = YXML.string_of_body (Options.encode (naproche_options pos));
 
-    fun server_error () =
-      error ("Cannot connect to Naproche server " ^ quote server_address);
-
-    fun server_connection body =
-      if server_address = "" orelse server_password = "" then server_error ()
-      else
-        Socket_IO.with_streams'
-          (fn (in_stream, out_stream) =>
-            (case Byte_Message.read_message in_stream of
-              SOME (command :: args) =>
-                if command = uuid_command andalso length args = 1 then
-                  body {in_stream = in_stream, out_stream = out_stream, uuid = nth args 0}
-                else server_error ()
-            | _ => server_error ()))
-          server_address server_password;
-
-    fun cancel_connection uuid =
-      server_connection (fn {out_stream, ...} =>
-        Byte_Message.write_message out_stream [cancel_command, uuid]);
+    val state = make_state ([], Context.Theory (Proof_Context.theory_of ctxt));
   in
-    server_connection (fn {in_stream, out_stream, uuid} =>
-      let
-        val opts = YXML.string_of_body (Options.encode (naproche_options pos));
-        val _ = Byte_Message.write_message out_stream [forthel_command, cat_lines args, opts, text]
-      in input_messages in_stream end
-      handle exn => (cancel_connection uuid; Exn.reraise exn))
+    with_server (fn streams =>
+     (write_message streams [forthel_program, cat_lines args, opts, text];
+      command_loop streams state))
   end;
 
-end;
+
+(* output messages *)
+
+val origin_main = "Main";
+val origin_export = "Export";
+val origin_forthel = "ForTheL";
+val origin_parser = "Parser";
+val origin_reasoner = "Reasoner";
+val origin_simplifier = "Simplifier";
+val origin_thesis = "Thesis";
+val origin_translate = "Translation";
+
+fun message_setup binding message_fn =
+  command_setup binding (fn ([origin, position, text], state) =>
+    let
+      val header = enclose "[" "]" (if origin = "" then origin_main else origin);
+      val pos = Position.of_properties (XML.Decode.properties (YXML.parse_body position));
+      val here = (case Position.here pos of "" => " " | s => s ^ "\n");
+      val _ = message_fn (header ^ here ^ text);
+    in ([], state) end);
+
+val _ = Theory.setup
+ (message_setup \<^binding>\<open>output_state\<close> Output.state #>
+  message_setup \<^binding>\<open>output_writeln\<close> writeln #>
+  message_setup \<^binding>\<open>output_information\<close> Output.information #>
+  message_setup \<^binding>\<open>output_tracing\<close> tracing #>
+  message_setup \<^binding>\<open>output_warning\<close> warning #>
+  message_setup \<^binding>\<open>output_legacy_feature\<close> legacy_feature #>
+  message_setup \<^binding>\<open>output_error\<close> Output.error_message #>
+  command_setup \<^binding>\<open>output_report\<close> (fn (reports, state) => (Output.report reports; ([], state))));
 
 
-(* Isabelle/Isar command setup *)
+
+(** Isabelle/Isar commands **)
 
 val _ =
   Outer_Syntax.local_theory \<^command_keyword>\<open>forthel\<close> "check Naproche-SAD text"

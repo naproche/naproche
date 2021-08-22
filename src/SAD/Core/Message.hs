@@ -108,11 +108,11 @@ consoleThread = updateState (\id -> Map.insert id defaultContext)
 -- PIDE messages
 
 data Kind =
-  STATE | WRITELN | INFORMATION | TRACING | WARNING | LEGACY | ERROR
+  STATE | WRITELN | INFORMATION | TRACING | WARNING | LEGACY_FEATURE | ERROR
 
 instance Show Kind where
   show WARNING = "Warning"
-  show LEGACY = "Legacy feature"
+  show LEGACY_FEATURE = "Legacy feature"
   show ERROR = "Error"
   show _ = ""
 
@@ -152,7 +152,7 @@ reports_text :: [Report_Text] -> IO ()
 reports_text args = do
   context <- getContext
   when (isJust (pide context) && not (null args)) $
-    channel context (Markup.reportN :
+    channel context (Naproche.output_report_command :
         map (\((pos, markup), txt) ->
           let
             markup' = Markup.properties (posProperties (fromJust (pide context)) pos) markup
@@ -174,30 +174,30 @@ report pos markup = reports [(pos, markup)]
 trimString :: String -> String
 trimString = trim_line
 
-message_chunks :: Maybe PIDE -> Bytes -> Kind -> SourcePos -> Bytes -> [Bytes]
-message_chunks (Just pide) origin kind pos msg = [command, origin, position, msg]
+message_chunks :: Maybe PIDE -> Kind -> Bytes -> SourcePos -> Bytes -> [Bytes]
+message_chunks (Just pide) kind origin pos text = [command, origin, position, text]
   where
     command =
       case kind of
-        STATE -> Markup.stateN
-        WRITELN -> Markup.writelnN
-        INFORMATION -> Markup.informationN
-        TRACING -> Markup.tracingN
-        WARNING -> Markup.warningN
-        LEGACY -> Markup.legacyN
-        ERROR -> Markup.errorN
+        STATE -> Naproche.output_state_command
+        WRITELN -> Naproche.output_writeln_command
+        INFORMATION -> Naproche.output_information_command
+        TRACING -> Naproche.output_tracing_command
+        WARNING -> Naproche.output_warning_command
+        LEGACY_FEATURE -> Naproche.output_legacy_feature_command
+        ERROR -> Naproche.output_error_command
     position = YXML.string_of_body $ Encode.properties $ posProperties pide pos
-message_chunks Nothing origin kind pos msg = [chunk]
+message_chunks Nothing kind origin pos text = [chunk]
   where
     chunk =
       (if Bytes.null origin then "" else "[" <> origin <> "] ") <>
       (case show kind of "" -> "" ; s -> make_bytes s <> ": ") <>
-      (case show pos of "" -> ""; s -> make_bytes s <> "\n") <> msg
+      (case show pos of "" -> ""; s -> make_bytes s <> "\n") <> text
 
 output :: BYTES a => Bytes -> Kind -> SourcePos -> a -> IO ()
 output origin kind pos msg = do
   context <- getContext
-  channel context $ message_chunks (pide context) origin kind pos (make_bytes msg)
+  channel context $ message_chunks (pide context) kind origin pos (make_bytes msg)
 
 outputMain, outputExport, outputForTheL, outputParser, outputReasoner,
   outputSimplifier, outputThesis :: BYTES a => Kind -> SourcePos -> a -> IO ()
@@ -222,7 +222,7 @@ instance Exception Error
 error :: BYTES a => Bytes -> SourcePos -> a -> IO b
 error origin pos msg = do
   pide <- pideContext
-  let chunks = message_chunks pide origin ERROR pos (make_bytes msg)
+  let chunks = message_chunks pide ERROR origin pos (make_bytes msg)
   if isJust pide then Exception.throw $ Error chunks
   else errorWithoutStackTrace $ make_string $ cat_lines chunks
 

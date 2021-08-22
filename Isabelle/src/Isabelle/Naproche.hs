@@ -29,9 +29,8 @@ naproche_pos_shift = "naproche_pos_shift"
 
 -- message origin
 
-origin, origin_main, origin_export, origin_forthel, origin_parser,
+origin_main, origin_export, origin_forthel, origin_parser,
   origin_reasoner, origin_simplifier, origin_thesis, origin_translate :: Bytes
-origin = "origin"
 origin_main = "Main"
 origin_export = "Export"
 origin_forthel = "ForTheL"
@@ -42,22 +41,39 @@ origin_thesis = "Thesis"
 origin_translate = "Translation"
 
 
--- server commands
+-- programs in Haskell
 -- (see "$NAPROCHE_HOME/src/SAD/Main.hs")
+
+cancel_program :: Bytes
+cancel_program = "cancel"
+
+forthel_program :: Bytes
+forthel_program = "forthel"
+
+
+-- commands in ML
+
+threads_command :: Bytes
+threads_command = "threads"
+
+output_state_command, output_writeln_command, output_information_command,
+  output_tracing_command, output_warning_command, output_legacy_feature_command,
+  output_error_command, output_report_command :: Bytes
+output_state_command = "output_state"
+output_writeln_command = "output_writeln"
+output_information_command = "output_information"
+output_tracing_command = "output_tracing"
+output_warning_command = "output_warning"
+output_legacy_feature_command = "output_legacy_feature"
+output_error_command = "output_error"
+output_report_command = "output_report"
+
+
+-- prover server
 -- (see "$NAPROCHE_HOME/Isabelle/src/scala/prover_server.scala")
 
 prover_args :: Bytes
 prover_args = "prover_args"
-
-uuid_command :: Bytes
-uuid_command = "uuid"
-
-cancel_command :: Bytes
-cancel_command = "cancel"
-
-forthel_command :: Bytes
-forthel_command = "forthel"
-
 
 prover_command :: Bytes
 prover_command = "prover"
