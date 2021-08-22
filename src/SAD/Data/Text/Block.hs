@@ -49,7 +49,7 @@ data ProofText =
   | ProofTextPretyping Position.T (Set PosVar)
   | ProofTextMacro Position.T
   | ProofTextError ParseError
-  | ProofTextChecked (ProofText)
+  | ProofTextChecked ProofText
   | ProofTextRoot [ProofText]
   deriving (Eq, Ord)
 
