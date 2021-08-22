@@ -35,7 +35,7 @@ import qualified SAD.Data.Text.Block as Block
 import qualified SAD.Data.Text.Context as Context
 import qualified SAD.Prove.MESON as MESON
 
-import Isabelle.Library (make_bytes)
+import Isabelle.Library (trim_line, make_bytes)
 import qualified Isabelle.Position as Position
 
 
@@ -76,7 +76,7 @@ verificationLoop state@VS {
   unless alreadyChecked $ incrementCounter Sections
   whenInstruction Printsection False $ justIO $
     Message.outputForTheL Message.WRITELN (Block.position block) $
-    make_bytes (Message.trimString (Block.showForm 0 block ""))
+    make_bytes (trim_line (Block.showForm 0 block ""))
   let newBranch = block : branch
   let contextBlock = Context f newBranch []
 

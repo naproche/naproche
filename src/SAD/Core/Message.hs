@@ -13,7 +13,7 @@ module SAD.Core.Message (
   initThread, exitThread, consoleThread,
   Kind (..), entity_markup,
   Report, Report_Text, reports_text, report_text, reports, report,
-  trimString, print_position, show_position,
+  print_position, show_position,
   output, outputMain, outputExport, outputForTheL,
   outputParser, outputReasoner, outputThesis, outputSimplifier, outputTranslate,
   Error (..), error, errorExport, errorParser
@@ -154,9 +154,6 @@ report pos markup = reports [(pos, markup)]
 
 
 -- PIDE output messages
-
-trimString :: String -> String
-trimString = trim_line
 
 data Kind =
   STATE | WRITELN | INFORMATION | TRACING | WARNING | LEGACY_FEATURE | ERROR
