@@ -17,8 +17,6 @@ See also "$ISABELLE_HOME/src/Pure/General/basics.ML", "$ISABELLE_HOME/src/Pure/l
 module Isabelle.Library (
   (|>), (|->), (#>), (#->),
 
-  the, the_default,
-
   fold, fold_rev, single, map_index, get_index, separate,
 
   StringLike, STRING (..), TEXT (..), BYTES (..),
@@ -52,17 +50,6 @@ x |> f = f x
 
 (#->) :: (a -> (c, b)) -> (c -> b -> d) -> a -> d
 (f #-> g) x  = x |> f |-> g
-
-
-{- options -}
-
-the :: Maybe a -> a
-the (Just x) = x
-the Nothing = error "the Nothing"
-
-the_default :: a -> Maybe a -> a
-the_default x Nothing = x
-the_default _ (Just y) = y
 
 
 {- lists -}

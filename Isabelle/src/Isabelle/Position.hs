@@ -22,7 +22,7 @@ module Isabelle.Position (
   Range, no_range, no_range_position, range_position, range
 ) where
 
-import Data.Maybe (isJust)
+import Data.Maybe (isJust, fromMaybe)
 import qualified Isabelle.Properties as Properties
 import qualified Isabelle.Bytes as Bytes
 import qualified Isabelle.Value as Value
@@ -129,10 +129,10 @@ shift_offsets shift pos = pos { _offset = offset', _end_offset = end_offset' }
 {- markup properties -}
 
 get_string :: Properties.T -> Bytes -> Bytes
-get_string props name = the_default "" (Properties.get_value Just props name)
+get_string props name = fromMaybe "" (Properties.get_value Just props name)
 
 get_int :: Properties.T -> Bytes -> Int
-get_int props name = the_default 0 (Properties.get_value Value.parse_int props name)
+get_int props name = fromMaybe 0 (Properties.get_value Value.parse_int props name)
 
 of_properties :: Properties.T -> T
 of_properties props =

@@ -21,6 +21,8 @@ module Isabelle.XML.Encode (
 )
 where
 
+import Data.Maybe (fromJust)
+
 import Isabelle.Library
 import Isabelle.Bytes (Bytes)
 import qualified Isabelle.Value as Value
@@ -91,4 +93,4 @@ option _ Nothing = []
 option f (Just x) = [node (f x)]
 
 variant :: [V a] -> T a
-variant fs x = [tagged (the (get_index (\f -> f x) fs))]
+variant fs x = [tagged (fromJust (get_index (\f -> f x) fs))]
