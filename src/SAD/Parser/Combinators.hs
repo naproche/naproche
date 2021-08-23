@@ -132,7 +132,7 @@ paren p = p -|- parenthesised p
 dot :: Parser st Position.Range
 dot = do
   pos1 <- tokenPos' "." <?> "a dot"
-  return $ Position.range (pos1, Position.advance_symbol_explode_string "." pos1)
+  return $ Position.range (pos1, Position.symbol_explode_string "." pos1)
 
 -- | mandatory finishing dot
 finish :: Parser st a -> Parser st a

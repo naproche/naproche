@@ -32,7 +32,7 @@ import qualified Isabelle.Position as Position
 instrPos :: (Position.T -> FTL ()) -> FTL a -> FTL (Position.T, a)
 instrPos report p = do
   ((pos1, pos2), x) <- enclosed begin end p
-  let pos = Position.range_position (pos1, Position.advance_symbol_explode end pos2)
+  let pos = Position.range_position (pos1, Position.symbol_explode end pos2)
   report pos; return (pos, x)
   where begin = "["; end = "]"
 
