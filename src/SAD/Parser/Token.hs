@@ -51,10 +51,10 @@ makeTokenRange :: Text -> Position.Range -> TokenType -> Token
 makeTokenRange text range = Token text (Position.range_position range)
 
 makeToken :: Text -> Position.T -> TokenType -> Token
-makeToken text pos = makeTokenRange text (pos, Position.advance text pos)
+makeToken text pos = makeTokenRange text (pos, Position.advance_symbol_explode text pos)
 
 tokenEndPos :: Token -> Position.T
-tokenEndPos tok@Token{} = Position.advance (tokenText tok) (tokenPos tok)
+tokenEndPos tok@Token{} = Position.advance_symbol_explode (tokenText tok) (tokenPos tok)
 tokenEndPos tok@EOF{} = tokenPos tok
 
 -- | The range in which the tokens lie.
@@ -90,40 +90,40 @@ tokenize texState start = posToken texState start NoWhiteSpaceBefore
     posToken OutsideForthelEnv pos _ s = toks
       where
         (ignoredText, rest) = Text.breakOn "\\begin{forthel}" s
-        newPos = Position.advance (ignoredText <> "\\begin{forthel}") pos
+        newPos = Position.advance_symbol_explode (ignoredText <> "\\begin{forthel}") pos
         toks = posToken InsideForthelEnv newPos WhiteSpaceBefore (Text.drop 15 rest)
 
     -- Deactivate the tokenizer when '\end{forthel}' appears.
     posToken InsideForthelEnv pos _ s | start == "\\end{forthel}" = toks
       where
         (start,rest) = Text.splitAt 13 s
-        toks = posToken OutsideForthelEnv (Position.advance start pos) WhiteSpaceBefore rest
+        toks = posToken OutsideForthelEnv (Position.advance_symbol_explode start pos) WhiteSpaceBefore rest
 
     -- Make alphanumeric tokens that don't start with whitespace.
     posToken texState pos whitespaceBefore s | not (Text.null lexeme) = tok:toks
       where
         (lexeme, rest) = Text.span isLexeme s
         tok  = makeToken lexeme pos whitespaceBefore
-        toks = posToken texState (Position.advance lexeme pos) NoWhiteSpaceBefore rest
+        toks = posToken texState (Position.advance_symbol_explode lexeme pos) NoWhiteSpaceBefore rest
 
     -- Process whitespace.
     posToken texState pos _ s | not (Text.null white) = toks
       where
         (white, rest) = Text.span isSpace s
-        toks = posToken texState (Position.advance white pos) WhiteSpaceBefore rest
+        toks = posToken texState (Position.advance_symbol_explode white pos) WhiteSpaceBefore rest
 
     -- Process tex whitespace.
     posToken texState pos _ s | useTex && hd == "\\\\" = toks
       where
         (hd, rest) = Text.splitAt 2 s
-        toks = posToken texState (Position.advance_string "\\\\" pos) WhiteSpaceBefore rest
+        toks = posToken texState (Position.advance_symbol_explode_string "\\\\" pos) WhiteSpaceBefore rest
 
     -- We reuse the pattern parsing for sentences in order to parse LaTeX. Thus we simply tokenize
     -- away math-mode markers like '\[' and '\]'
     posToken texState pos _ s | useTex && hd `elem` ["\\[","\\]"] = toks
       where 
         (hd, rest) = Text.splitAt 2 s
-        toks = posToken texState (Position.advance hd pos) WhiteSpaceBefore rest
+        toks = posToken texState (Position.advance_symbol_explode hd pos) WhiteSpaceBefore rest
 
     -- Process non-alphanumeric symbol or EOF.
     posToken texState pos whitespaceBefore s = case Text.uncons s of
@@ -131,34 +131,34 @@ tokenize texState start = posToken texState start NoWhiteSpaceBefore
 
       -- We expand the `\{` and `\}` tex commands here
       Just ('\\', rest) | Text.head rest `elem` ['{','}'] && useTex ->
-            posToken texState (Position.advance_string "\\" pos) WhiteSpaceBefore rest
+            posToken texState (Position.advance_symbol_explode_string "\\" pos) WhiteSpaceBefore rest
 
       -- We expand alphanumeric tex commands here
       Just ('\\', rest) | useTex -> newToks ++ toks
         where
           (name, rest') = Text.span isAlpha rest
-          pos' = Position.advance (Text.cons '\\' name) pos
+          pos' = Position.advance_symbol_explode (Text.cons '\\' name) pos
           newToks = expandTexCmd name (pos, pos') whitespaceBefore
           toks = posToken texState pos' WhiteSpaceBefore rest'
 
       -- We reuse the pattern parsing for sentences in order to parse LaTeX. Thus we simply tokenize
       -- away math-mode markers like '$'
-      Just ('$', rest) | useTex -> posToken texState (Position.advance_string "$" pos) WhiteSpaceBefore rest
+      Just ('$', rest) | useTex -> posToken texState (Position.advance_symbol_explode_string "$" pos) WhiteSpaceBefore rest
 
       -- We also tokenize away quotation marks, because they are intended to be used by the user
       -- as a way to write regular text in math mode. Of course, one needs to appropriately remap
       -- quotation marks in the tex file, see examples/cantor.ftl.tex on how to do this.
-      Just ('"', rest) | useTex -> posToken texState (Position.advance_string "\"" pos) WhiteSpaceBefore rest
+      Just ('"', rest) | useTex -> posToken texState (Position.advance_symbol_explode_string "\"" pos) WhiteSpaceBefore rest
       Just (c, _) | if useTex then c == '%' else c == '#' -> tok:toks
         where
           (comment, rest) = Text.break (== '\n') s
           tok  = makeToken comment pos Comment
-          toks = posToken texState (Position.advance comment pos) whitespaceBefore rest
+          toks = posToken texState (Position.advance_symbol_explode comment pos) whitespaceBefore rest
       Just (c, cs) -> tok:toks
         where
           text = Text.singleton c
           tok  = makeToken text pos whitespaceBefore
-          toks = posToken texState (Position.advance text pos) NoWhiteSpaceBefore cs
+          toks = posToken texState (Position.advance_symbol_explode text pos) NoWhiteSpaceBefore cs
 
 
 expandTexCmd :: Text -> Position.Range -> TokenType -> [Token]
