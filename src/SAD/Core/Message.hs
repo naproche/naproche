@@ -13,11 +13,13 @@ module SAD.Core.Message (
   initThread, exitThread, consoleThread,
   Kind (..), entity_markup,
   Report, Report_Text, reports_text, report_text, reports, report,
-  print_position, show_position,
-  output, outputMain, outputExport, outputForTheL,
-  outputParser, outputReasoner, outputThesis, outputSimplifier, outputTranslate,
-  Error (..), error, errorExport, errorParser
-) where
+  console_position, show_position,
+  output, Error (..), error,
+  outputMain, outputExport, outputForTheL, outputParser, outputReasoner,
+  outputThesis, outputSimplifier, outputTranslate,
+  errorExport, errorParser
+)
+where
 
 import Prelude hiding (error)
 import Control.Monad
@@ -105,7 +107,7 @@ exitThread :: IO ()
 exitThread = updateState Map.delete
 
 consoleThread :: IO ()
-consoleThread = updateState (\id -> Map.insert id defaultContext)
+consoleThread = updateState (`Map.insert` defaultContext)
 
 
 -- PIDE markup
@@ -158,8 +160,23 @@ report pos markup = reports [(pos, markup)]
 data Kind =
   STATE | WRITELN | INFORMATION | TRACING | WARNING | LEGACY_FEATURE | ERROR
 
-print_position :: Position.T -> Bytes
-print_position pos = space_implode " " (catMaybes [file_name, details])
+pide_kind :: Kind -> Bytes
+pide_kind STATE = Naproche.output_state_command
+pide_kind WRITELN = Naproche.output_writeln_command
+pide_kind INFORMATION = Naproche.output_information_command
+pide_kind TRACING = Naproche.output_tracing_command
+pide_kind WARNING = Naproche.output_warning_command
+pide_kind LEGACY_FEATURE = Naproche.output_legacy_feature_command
+pide_kind ERROR = Naproche.output_error_command
+
+console_kind :: Kind -> Bytes
+console_kind WARNING = "Warning"
+console_kind LEGACY_FEATURE = "Legacy feature"
+console_kind ERROR = "Error"
+console_kind _ = ""
+
+console_position :: Position.T -> Bytes
+console_position pos = space_implode " " (catMaybes [file_name, details])
   where
     file_name = quote <$> Position.file_of pos
     details =
@@ -169,52 +186,26 @@ print_position pos = space_implode " " (catMaybes [file_name, details])
     detail (a, f) = (\i -> a <> " " <> Value.print_int i) <$> f pos
 
 show_position :: Position.T -> String
-show_position = make_string . print_position
+show_position = make_string . console_position
 
 message_chunks :: Maybe PIDE -> Kind -> Bytes -> Position.T -> Bytes -> [Bytes]
 message_chunks (Just pide) kind origin pos text = [command, origin, position, text]
   where
-    command =
-      case kind of
-        STATE -> Naproche.output_state_command
-        WRITELN -> Naproche.output_writeln_command
-        INFORMATION -> Naproche.output_information_command
-        TRACING -> Naproche.output_tracing_command
-        WARNING -> Naproche.output_warning_command
-        LEGACY_FEATURE -> Naproche.output_legacy_feature_command
-        ERROR -> Naproche.output_error_command
+    command = pide_kind kind
     position = YXML.string_of_body $ Encode.properties $ position_properties_of pide pos
 message_chunks Nothing kind origin pos text = [chunk]
   where
     chunk =
       (if Bytes.null origin then "" else "[" <> origin <> "] ") <>
-      (if Bytes.null print_kind then "" else make_bytes (print_kind <> ": ")) <>
-      (if Bytes.null print_pos then "" else make_bytes (print_pos <> "\n")) <> text
-    print_kind =
-      case kind of
-        WARNING -> "Warning"
-        LEGACY_FEATURE -> "Legacy feature"
-        ERROR -> "Error"
-        _ -> ""
-    print_pos = print_position pos
+      (if Bytes.null k then "" else make_bytes (k <> ": ")) <>
+      (if Bytes.null p then "" else make_bytes (p <> "\n")) <> text
+    k = console_kind kind
+    p = console_position pos
 
 output :: BYTES a => Bytes -> Kind -> Position.T -> a -> IO ()
 output origin kind pos msg = do
   context <- getContext
   _channel context $ message_chunks (_pide context) kind origin pos (make_bytes msg)
-
-outputMain, outputExport, outputForTheL, outputParser, outputReasoner,
-  outputSimplifier, outputThesis :: BYTES a => Kind -> Position.T -> a -> IO ()
-outputMain = output Naproche.origin_main
-outputExport = output Naproche.origin_export
-outputForTheL = output Naproche.origin_forthel
-outputParser = output Naproche.origin_parser
-outputReasoner = output Naproche.origin_reasoner
-outputSimplifier = output Naproche.origin_simplifier
-outputThesis = output Naproche.origin_thesis
-
-outputTranslate :: BYTES a => Kind -> Position.T -> a -> IO ()
-outputTranslate = output Naproche.origin_translate
 
 
 -- errors
@@ -229,6 +220,22 @@ error origin pos msg = do
   let chunks = message_chunks pide ERROR origin pos (make_bytes msg)
   if isJust pide then Exception.throw $ Error chunks
   else errorWithoutStackTrace $ make_string $ cat_lines chunks
+
+
+-- message origins
+
+outputMain, outputExport, outputForTheL, outputParser, outputReasoner,
+  outputSimplifier, outputThesis :: BYTES a => Kind -> Position.T -> a -> IO ()
+outputMain = output Naproche.origin_main
+outputExport = output Naproche.origin_export
+outputForTheL = output Naproche.origin_forthel
+outputParser = output Naproche.origin_parser
+outputReasoner = output Naproche.origin_reasoner
+outputSimplifier = output Naproche.origin_simplifier
+outputThesis = output Naproche.origin_thesis
+
+outputTranslate :: BYTES a => Kind -> Position.T -> a -> IO ()
+outputTranslate = output Naproche.origin_translate
 
 errorExport :: BYTES a => Position.T -> a -> IO b
 errorExport = error Naproche.origin_export
