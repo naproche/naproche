@@ -12,7 +12,6 @@ module SAD.API
   , module SAD.Export.Base
   , module SAD.Import.Reader
   , module SAD.Parser.Error
-  , module SAD.Helpers
   , module SAD.Data.Formula
   , module SAD.Structures.StructureTree
   ) where
@@ -25,6 +24,5 @@ import SAD.Data.Text.Block (ProofText(..), textToCheck, findParseError)
 import SAD.Export.Base (readProverFile, readProverDatabase)
 import SAD.Import.Reader (readInit, readProofText)
 import SAD.Parser.Error (errorPos)
-import SAD.Helpers (trimLine)
 import SAD.Data.Formula (Formula)
 import SAD.Structures.StructureTree
