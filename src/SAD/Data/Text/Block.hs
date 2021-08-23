@@ -125,7 +125,7 @@ isTopLevel  = isHole' . formula
     isHole' Var {varName = VarHole _} = True
     isHole' _ = False
 
-file :: Block-> Text
+file :: Block -> Text
 file = Text.fromStrict . make_text . fromMaybe Bytes.empty . Position.file_of . position
 
 

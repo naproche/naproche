@@ -107,7 +107,7 @@ readWords = shortHand </> chainLL1 word
   where
   shortHand = do
     w <- word ; root <- optLL1 w $ variant w; token "/"
-    syms <- (fmap (Text.toCaseFold) word -|- variant w) `sepByLL1` token "/"
+    syms <- (fmap Text.toCaseFold word -|- variant w) `sepByLL1` token "/"
     return $ root : syms
   variant w = token "-" >> fmap (w <>) word
 

@@ -163,7 +163,7 @@ launchReasoning = do
       -- (usually not necessary as max proof depth is limited)
       callOwn = do
         Isabelle_Thread.expose_stopped
-        timeout (1000) $ evaluate $ proveGoal
+        timeout 1000 $ evaluate proveGoal
   justIO callOwn >>= guard . (==) (Just True)
 
 

@@ -55,9 +55,9 @@ main  = do
   text0 <- (map (uncurry ProofTextInstr) (reverse opts0) ++) <$> case mFileName of
     Nothing -> do
       stdin <- getContents
-      pure $ [ProofTextInstr Position.none $ GetArgument (Text pk) (Text.pack stdin)]
+      pure [ProofTextInstr Position.none $ GetArgument (Text pk) (Text.pack stdin)]
     Just f -> do
-      pure $ [ProofTextInstr Position.none $ GetArgument (File pk) (Text.pack f)]
+      pure [ProofTextInstr Position.none $ GetArgument (File pk) (Text.pack f)]
   let opts1 = map snd opts0
 
   oldProofTextRef <- newIORef $ ProofTextRoot []
