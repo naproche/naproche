@@ -9,8 +9,6 @@ Formal output messages, with PIDE (Prover IDE) support.
 {-# LANGUAGE NamedFieldPuns #-}
 
 module SAD.Core.Message (
-  PIDE, pideContext, pideActive,
-  initThread, exitThread, consoleThread,
   Kind (..), entity_markup,
   Report, Report_Text, reports_text, report_text, reports, report,
   console_position, show_position,
@@ -23,15 +21,7 @@ where
 
 import Prelude hiding (error)
 import Control.Monad
-import Data.Maybe (isJust, fromJust, fromMaybe, mapMaybe, catMaybes)
-import Data.IORef
-import System.IO.Unsafe
-import Data.Map.Strict (Map)
-import qualified Data.Map.Strict as Map
-import qualified Data.ByteString.Char8 as Char8
-import Control.Concurrent (ThreadId)
-import qualified Control.Concurrent as Concurrent
-
+import Data.Maybe (catMaybes, mapMaybe)
 import qualified Control.Exception as Exception
 import Control.Exception (Exception)
 import qualified Isabelle.Bytes as Bytes
@@ -43,87 +33,20 @@ import qualified Isabelle.Markup as Markup
 import qualified Isabelle.XML as XML
 import qualified Isabelle.XML.Encode as Encode
 import qualified Isabelle.YXML as YXML
-import qualified Isabelle.Options as Options
 import qualified Isabelle.Naproche as Naproche
 import Isabelle.Library
 
-
--- PIDE thread context
-
-data PIDE = PIDE { _id :: Bytes, _file :: Bytes, _shift :: Int }
-type Channel = [Bytes] -> IO ()
-data Context = Context { _pide :: Maybe PIDE, _channel :: Channel }
-
-defaultChannel :: Channel
-defaultChannel = Char8.putStrLn . Bytes.unmake . Bytes.concat
-
-defaultContext :: Context
-defaultContext = Context Nothing defaultChannel
-
-
--- global state
-
-type Threads = Map ThreadId Context
-
-{-# NOINLINE globalState #-}
-globalState :: IORef Threads
-globalState = unsafePerformIO (newIORef Map.empty)
-
-getContext :: IO Context
-getContext = do
-  id <- Concurrent.myThreadId
-  threads <- readIORef globalState
-  return (fromMaybe defaultContext (Map.lookup id threads))
-
-updateState :: (ThreadId -> Threads -> Threads) -> IO ()
-updateState f = do
-  id <- Concurrent.myThreadId
-  atomicModifyIORef' globalState (\threads -> (f id threads, ()))
-
-
--- PIDE context
-
-pideContext :: IO (Maybe PIDE)
-pideContext = _pide <$> getContext
-
-pideActive :: IO Bool
-pideActive = isJust <$> pideContext
-
-
--- init/exit thread context
-
-initThread :: Options.T -> Channel -> IO ()
-initThread options channel =
-  updateState (\id -> Map.insert id (Context (Just pide) channel))
-  where
-    pide =
-      PIDE {
-        _id = Options.string options Naproche.naproche_pos_id,
-        _file = Options.string options Naproche.naproche_pos_file,
-        _shift = Options.int options Naproche.naproche_pos_shift
-      }
-
-exitThread :: IO ()
-exitThread = updateState Map.delete
-
-consoleThread :: IO ()
-consoleThread = updateState (`Map.insert` defaultContext)
+import qualified Naproche.Program as Program
 
 
 -- PIDE markup
 
-pide_position :: PIDE -> Position.T -> Position.T
-pide_position pide pos =
-  pos
-  |> Position.put_file (fromMaybe (_file pide) (Position.file_of pos))
-  |> Position.put_id (_id pide)
-  |> Position.shift_offsets (_shift pide)
+position_properties_of :: Program.Context -> Position.T -> Properties.T
+position_properties_of context =
+  Position.properties_of . Program.adjust_position context
 
-position_properties_of :: PIDE -> Position.T -> Properties.T
-position_properties_of pide = Position.properties_of . pide_position pide
-
-entity_markup :: PIDE -> Bytes -> Bytes -> Bool -> Int -> Position.T -> Markup.T
-entity_markup pide kind name def serial pos =
+entity_markup :: Bytes -> Bytes -> Bool -> Int -> Position.T -> Markup.T
+entity_markup kind name def serial pos =
   Markup.entity kind name
   |> Markup.properties (Position.entity_properties_of def serial pos)
 
@@ -135,12 +58,13 @@ type Report_Text = (Report, Bytes)
 
 reports_text :: [Report_Text] -> IO ()
 reports_text args = do
-  context <- getContext
-  when (isJust (_pide context) && not (null args)) $
-    _channel context (Naproche.output_report_command :
+  context <- Program.thread_context
+  when (Program.is_pide context && not (null args)) $
+    Program.write_message context
+      (Naproche.output_report_command :
         map (\((pos, markup), txt) ->
           let
-            props = position_properties_of (fromJust (_pide context)) pos
+            props = position_properties_of context pos
             markup' = Markup.properties props markup
             body = if Bytes.null txt then [] else [XML.Text txt]
           in YXML.string_of $ XML.Elem (markup', body)) args)
@@ -155,25 +79,7 @@ report :: Position.T -> Markup.T -> IO ()
 report pos markup = reports [(pos, markup)]
 
 
--- PIDE output messages
-
-data Kind =
-  STATE | WRITELN | INFORMATION | TRACING | WARNING | LEGACY_FEATURE | ERROR
-
-pide_kind :: Kind -> Bytes
-pide_kind STATE = Naproche.output_state_command
-pide_kind WRITELN = Naproche.output_writeln_command
-pide_kind INFORMATION = Naproche.output_information_command
-pide_kind TRACING = Naproche.output_tracing_command
-pide_kind WARNING = Naproche.output_warning_command
-pide_kind LEGACY_FEATURE = Naproche.output_legacy_feature_command
-pide_kind ERROR = Naproche.output_error_command
-
-console_kind :: Kind -> Bytes
-console_kind WARNING = "Warning"
-console_kind LEGACY_FEATURE = "Legacy feature"
-console_kind ERROR = "Error"
-console_kind _ = ""
+-- console position
 
 console_position :: Position.T -> Bytes
 console_position pos = space_implode " " (catMaybes [file_name, details])
@@ -188,24 +94,48 @@ console_position pos = space_implode " " (catMaybes [file_name, details])
 show_position :: Position.T -> String
 show_position = make_string . console_position
 
-message_chunks :: Maybe PIDE -> Kind -> Bytes -> Position.T -> Bytes -> [Bytes]
-message_chunks (Just pide) kind origin pos text = [command, origin, position, text]
-  where
-    command = pide_kind kind
-    position = YXML.string_of_body $ Encode.properties $ position_properties_of pide pos
-message_chunks Nothing kind origin pos text = [chunk]
-  where
-    chunk =
-      (if Bytes.null origin then "" else "[" <> origin <> "] ") <>
-      (if Bytes.null k then "" else make_bytes (k <> ": ")) <>
-      (if Bytes.null p then "" else make_bytes (p <> "\n")) <> text
-    k = console_kind kind
-    p = console_position pos
+
+-- PIDE output messages
+
+data Kind =
+  STATE | WRITELN | INFORMATION | TRACING | WARNING | LEGACY_FEATURE | ERROR
+
+console_kind :: Kind -> Bytes
+console_kind WARNING = "Warning"
+console_kind LEGACY_FEATURE = "Legacy feature"
+console_kind ERROR = "Error"
+console_kind _ = ""
+
+pide_kind :: Kind -> Bytes
+pide_kind STATE = Naproche.output_state_command
+pide_kind WRITELN = Naproche.output_writeln_command
+pide_kind INFORMATION = Naproche.output_information_command
+pide_kind TRACING = Naproche.output_tracing_command
+pide_kind WARNING = Naproche.output_warning_command
+pide_kind LEGACY_FEATURE = Naproche.output_legacy_feature_command
+pide_kind ERROR = Naproche.output_error_command
+
+message_chunks :: Program.Context -> Kind -> Bytes -> Position.T -> Bytes -> [Bytes]
+message_chunks context kind origin pos text =
+  if Program.is_pide context then
+    let
+      command = pide_kind kind
+      position = YXML.string_of_body $ Encode.properties $ position_properties_of context pos
+    in [command, origin, position, text]
+  else
+    let
+      k = console_kind kind
+      p = console_position pos
+      chunk =
+        (if Bytes.null origin then "" else "[" <> origin <> "] ") <>
+        (if Bytes.null k then "" else make_bytes (k <> ": ")) <>
+        (if Bytes.null p then "" else make_bytes (p <> "\n")) <> text
+    in [chunk]
 
 output :: BYTES a => Bytes -> Kind -> Position.T -> a -> IO ()
 output origin kind pos msg = do
-  context <- getContext
-  _channel context $ message_chunks (_pide context) kind origin pos (make_bytes msg)
+  context <- Program.thread_context
+  Program.write_message context $ message_chunks context kind origin pos (make_bytes msg)
 
 
 -- errors
@@ -216,9 +146,9 @@ instance Exception Error
 
 error :: BYTES a => Bytes -> Position.T -> a -> IO b
 error origin pos msg = do
-  pide <- pideContext
-  let chunks = message_chunks pide ERROR origin pos (make_bytes msg)
-  if isJust pide then Exception.throw $ Error chunks
+  context <- Program.thread_context
+  let chunks = message_chunks context ERROR origin pos (make_bytes msg)
+  if Program.is_pide context then Exception.throw $ Error chunks
   else errorWithoutStackTrace $ make_string $ cat_lines chunks
 
 

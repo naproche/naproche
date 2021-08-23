@@ -34,6 +34,8 @@ import qualified Isabelle.File as File
 import Isabelle.Library (make_bytes, make_string, make_text, show_bytes)
 import Isabelle.Position as Position
 
+import qualified Naproche.Program as Program
+
 
 -- Init file parsing
 
@@ -42,7 +44,7 @@ readInit file | Text.null file = return []
 readInit file = do
   input <- catch (File.read (Text.unpack file)) $ Message.errorParser (Position.file_only $ make_bytes file) . make_bytes . ioeGetErrorString
   let tokens = filter isProperToken $ tokenize TexDisabled (Position.file $ make_bytes file) $ Text.fromStrict $ make_text input
-      initialParserState = State (initFS Nothing) tokens NonTex Position.none
+      initialParserState = State (initFS Program.Console) tokens NonTex Position.none
   fst <$> launchParser instructionFile initialParserState
 
 instructionFile :: FTL [(Position.T, Instr)]
@@ -57,9 +59,9 @@ instructionFile = after (optLL1 [] $ chainLL1 instr) eof
 -- @text0@, containing some configuration.
 readProofText :: Text -> [ProofText] -> IO [ProofText]
 readProofText pathToLibrary text0 = do
-  pide <- Message.pideContext
-  (text, reports) <- reader pathToLibrary [] [State (initFS pide) noTokens NonTex Position.none] text0
-  when (isJust pide) $ Message.reports reports
+  context <- Program.thread_context
+  (text, reports) <- reader pathToLibrary [] [State (initFS context) noTokens NonTex Position.none] text0
+  when (Program.is_pide context) $ Message.reports reports
   return text
 
 reader :: Text -> [Text] -> [State FState] -> [ProofText] -> IO ([ProofText], [Message.Report])

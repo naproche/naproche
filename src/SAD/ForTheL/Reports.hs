@@ -35,7 +35,6 @@ import Control.Monad.State.Class (modify)
 import Data.List hiding (or)
 import SAD.Helpers (nubOrd)
 import Data.Set (Set)
-import SAD.Core.Message (PIDE)
 import qualified SAD.Core.Message as Message
 import SAD.ForTheL.Base
 
@@ -52,12 +51,14 @@ import Isabelle.Library (make_bytes)
 import qualified Isabelle.Markup as Markup
 import qualified Isabelle.Position as Position
 
+import qualified Naproche.Program as Program
 
-addReports :: (PIDE -> [Message.Report]) -> FTL ()
-addReports rep = modify (\st -> case pide st of
-  Just pide -> let newRep = rep pide
-               in  seq newRep $ st {reports = newRep ++ reports st}
-  Nothing -> st)
+
+addReports :: [Message.Report] -> FTL ()
+addReports newRep = modify (\st ->
+  if Program.is_pide (program st) then
+    seq newRep $ st {reports = newRep ++ reports st}
+  else st)
 
 
 -- markup tokens while parsing
@@ -67,7 +68,7 @@ addMarkup :: Markup.T -> FTL a -> FTL a
 addMarkup markup parser = do
   pos <- getPos
   content <- parser
-  addReports $ const [(pos, markup)]
+  addReports [(pos, markup)]
   return content
 
 markupToken :: Markup.T -> Text -> FTL ()
@@ -79,15 +80,15 @@ markupTokenOf markup = addMarkup markup . tokenOf'
 
 -- formula and variable reports
 
-variableReport :: PIDE -> Bool -> Decl -> Position.T -> [Message.Report]
-variableReport pide def decl pos =
+variableReport :: Bool -> Decl -> Position.T -> [Message.Report]
+variableReport def decl pos =
   case declName decl of
     VarConstant name ->
-      [(pos, Message.entity_markup pide "variable" (make_bytes name) def (declSerial decl) (declPosition decl))]
+      [(pos, Message.entity_markup "variable" (make_bytes name) def (declSerial decl) (declPosition decl))]
     _ -> []
 
-formulaReports :: PIDE -> Set Decl -> Formula -> [Message.Report]
-formulaReports pide decls = nubOrd . dive
+formulaReports :: Set Decl -> Formula -> [Message.Report]
+formulaReports decls = nubOrd . dive
   where
     dive Var {varName = name, varPosition = pos} =
       (pos, Markup.free) : entity
@@ -95,50 +96,50 @@ formulaReports pide decls = nubOrd . dive
         entity =
           case find (\decl -> declName decl == name) decls of
             Nothing -> []
-            Just decl -> variableReport pide False decl pos
+            Just decl -> variableReport False decl pos
     dive (All decl f) = quantDive decl f
     dive (Exi decl f) = quantDive decl f
     dive f = foldF dive f
 
     quantDive decl f = let pos = declPosition decl in
-      (pos, Markup.bound) : variableReport pide True decl pos ++
-      boundReports pide decl f ++
+      (pos, Markup.bound) : variableReport True decl pos ++
+      boundReports decl f ++
       dive f
 
-boundReports :: PIDE -> Decl -> Formula -> [Message.Report]
-boundReports pide decl = dive 0
+boundReports :: Decl -> Formula -> [Message.Report]
+boundReports decl = dive 0
   where
     dive n (All _ f) = dive (succ n) f
     dive n (Exi _ f) = dive (succ n) f
     dive n Ind {indIndex = i, indPosition = pos} | i == n =
-      (pos, Markup.bound) : variableReport pide False decl pos
+      (pos, Markup.bound) : variableReport False decl pos
     dive n f = foldF (dive n) f
 
 
 -- add reports during parsing
 
 addBlockReports :: Block -> FTL ()
-addBlockReports bl = addReports $ \pide -> let decls = Block.declaredVariables bl in
+addBlockReports bl = addReports $ let decls = Block.declaredVariables bl in
   map (Block.position bl,) [Markup.cartouche, Markup.expression "text block"] ++
-  formulaReports pide decls (Block.formula bl) ++
-  concatMap (\decl -> variableReport pide True decl $ declPosition decl) decls
+  formulaReports decls (Block.formula bl) ++
+  concatMap (\decl -> variableReport True decl $ declPosition decl) decls
 
 addInstrReport :: Position.T -> FTL ()
-addInstrReport pos = addReports $ const $
+addInstrReport pos = addReports $
   map (pos,) [Markup.comment2, Markup.expression "text instruction"]
 
 addDropReport :: Position.T -> FTL ()
-addDropReport pos = addReports $ const $
+addDropReport pos = addReports $
   map (pos,) [Markup.comment2, Markup.expression "drop text instruction"]
 
 addPretypingReport :: Position.T -> [Position.T] -> FTL ()
-addPretypingReport pos ps = addReports $ const $
+addPretypingReport pos ps = addReports $
   map (pos,) [Markup.cartouche, Markup.expression "variable pretyping"] ++
   map (, Markup.free) ps
 
 addMacroReport :: Position.T -> FTL ()
 addMacroReport pos =
-  addReports $ const (map (pos,) [Markup.cartouche, Markup.expression "macro definition"])
+  addReports $ map (pos,) [Markup.cartouche, Markup.expression "macro definition"]
 
 
 -- specific markup

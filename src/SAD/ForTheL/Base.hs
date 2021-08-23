@@ -26,11 +26,11 @@ import SAD.Parser.Primitives
 
 import SAD.Data.Text.Decl
 
-import SAD.Core.Message (PIDE)
 import qualified SAD.Core.Message as Message
 import SAD.Export.Representation (represent, toLazyText)
 
 import qualified Isabelle.Position as Position
+import Naproche.Program as Program
 
 
 type FTL = Parser FState
@@ -53,10 +53,10 @@ data FState = FState {
 
   tvrExpr :: [TVar], strSyms :: [[Text]], varDecl :: Set VariableName,
   idCount :: Int, hiddenCount :: Int, serialCounter :: Int,
-  reports :: [Message.Report], pide :: Maybe PIDE }
+  reports :: [Message.Report], program :: Program.Context }
 
 
-initFS :: Maybe PIDE -> FState
+initFS :: Program.Context -> FState
 initFS = FState
   primAdjs [] primNotions primSymbNotions
   cf rf [] []

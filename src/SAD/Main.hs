@@ -39,6 +39,7 @@ import qualified Isabelle.Process_Result as Process_Result
 import Network.Socket (Socket)
 
 import SAD.API
+import qualified Naproche.Program as Program
 import qualified SAD.Core.Message as Message
 
 
@@ -68,10 +69,10 @@ main  = do
       (if askFlag Server False opts1 then
         Server.server (Server.publish_stdout "Naproche-SAD") (serverConnection oldProofTextRef args0)
       else do
-        consoleThread
+        Program.init_console
         mainBody Nothing oldProofTextRef opts1 text0 mFileName)
           `catch` (\err -> do
-            exitThread
+            Program.exit_thread
             let msg = Exception.displayException (err :: Exception.SomeException)
             let rc = if msg == "user interrupt" then Process_Result.interrupt_rc else 1
             IO.hPutStrLn IO.stderr msg
@@ -187,20 +188,22 @@ proveFOL proversYaml text1 opts0 oldProofText oldProofTextRef startTime fileName
   unless success Exit.exitFailure
 
 serverConnection :: IORef ProofText -> [String] -> Socket -> IO ()
-serverConnection oldProofTextRef args0 connection = do
-  let channel = Byte_Message.write_message connection
-  thread_uuid <- Isabelle_Thread.my_uuid
-  mapM_ (\uuid -> channel [Naproche.threads_command, UUID.print uuid]) thread_uuid
+serverConnection oldProofTextRef args0 socket = do
+  let write_message = Byte_Message.write_message socket
+  let read_message = Byte_Message.read_message socket
 
-  chunks <- Byte_Message.read_message connection
+  thread_uuid <- Isabelle_Thread.my_uuid
+  mapM_ (\uuid -> write_message [Naproche.threads_command, UUID.print uuid]) thread_uuid
+
+  chunks <- read_message
   case chunks of
     Just (command : threads) | command == Naproche.cancel_program ->
       mapM_ Isabelle_Thread.stop_uuid (mapMaybe UUID.parse threads)
 
     Just [command, more_args, opts, text] | command == Naproche.forthel_program ->
       let options = Options.decode $ YXML.parse_body opts in
-      Exception.bracket_ (initThread options channel)
-        exitThread
+      Exception.bracket_ (Program.init_pide socket options)
+        Program.exit_thread
         (do
           let more_text = Text.pack $ make_string text
 
@@ -212,7 +215,7 @@ serverConnection oldProofTextRef args0 connection = do
           mainBody Nothing oldProofTextRef opts1 text1 fileName
             `catch` (\(err :: Message.Error) -> do
               let Message.Error chunks = err
-              channel chunks
+              write_message chunks
                 `catch` (\(_ :: Exception.IOException) -> pure ()))
             `catch` (\(err :: Exception.SomeException) -> do
               let msg = make_bytes $ Exception.displayException err
