@@ -140,7 +140,7 @@ reports_text args = do
           let
             props = position_properties_of (fromJust (_pide context)) pos
             markup' = Markup.properties props markup
-            body = if Bytes.null txt then [] else [XML.Text $ txt]
+            body = if Bytes.null txt then [] else [XML.Text txt]
           in YXML.string_of $ XML.Elem (markup', body)) args)
 
 report_text :: Position.T -> Markup.T -> Bytes -> IO ()
