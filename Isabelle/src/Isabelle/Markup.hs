@@ -22,6 +22,7 @@ module Isabelle.Markup (
   completionN, completion, no_completionN, no_completion,
 
   lineN, end_lineN, offsetN, end_offsetN, fileN, idN, positionN, position,
+  position_properties, def_name,
 
   expressionN, expression,
 
@@ -61,6 +62,8 @@ module Isabelle.Markup (
 where
 
 import Prelude hiding (words, error, break)
+import Data.Map.Strict (Map)
+import qualified Data.Map.Strict as Map
 
 import Isabelle.Library
 import qualified Isabelle.Properties as Properties
@@ -162,6 +165,24 @@ positionN :: Bytes
 positionN = "position"
 position :: T
 position = markup_elem positionN
+
+position_properties :: [Bytes]
+position_properties = [lineN, offsetN, end_offsetN, fileN, idN]
+
+
+{- position "def" names -}
+
+make_def :: Bytes -> Bytes
+make_def a = "def_" <> a
+
+def_names :: Map Bytes Bytes
+def_names = Map.fromList $ map (\a -> (a, make_def a)) position_properties
+
+def_name :: Bytes -> Bytes
+def_name a =
+  case Map.lookup a def_names of
+    Just b -> b
+    Nothing -> make_def a
 
 
 {- expression -}

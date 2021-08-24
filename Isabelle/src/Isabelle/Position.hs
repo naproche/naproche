@@ -25,6 +25,7 @@ module Isabelle.Position (
 ) where
 
 import Data.Maybe (isJust, fromMaybe)
+import Data.Bifunctor (first)
 import qualified Isabelle.Properties as Properties
 import qualified Isabelle.Bytes as Bytes
 import qualified Isabelle.Value as Value
@@ -165,7 +166,7 @@ properties_of pos =
   string_entry Markup.idN (_id pos)
 
 def_properties_of :: T -> Properties.T
-def_properties_of = properties_of #> map (\(a, b) -> ("def_" <> a, b))
+def_properties_of = properties_of #> map (first Markup.def_name)
 
 entity_markup :: Bytes -> (Bytes, T) -> Markup.T
 entity_markup kind (name, pos) =
