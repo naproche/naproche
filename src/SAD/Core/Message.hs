@@ -9,7 +9,7 @@ Formal output messages, with PIDE (Prover IDE) support.
 {-# LANGUAGE NamedFieldPuns #-}
 
 module SAD.Core.Message (
-  Kind (..), entity_markup,
+  Kind (..),
   Report, Report_Text, reports_text, report_text, reports, report,
   console_position, show_position,
   output, Error (..), error,
@@ -39,22 +39,14 @@ import Isabelle.Library
 import qualified Naproche.Program as Program
 
 
--- PIDE markup
-
-position_properties_of :: Program.Context -> Position.T -> Properties.T
-position_properties_of context =
-  Position.properties_of . Program.adjust_position context
-
-entity_markup :: Bytes -> Bytes -> Bool -> Int -> Position.T -> Markup.T
-entity_markup kind name def serial pos =
-  Markup.entity kind name
-  |> Markup.properties (Position.entity_properties_of def serial pos)
-
-
 -- PIDE markup reports
 
 type Report = (Position.T, Markup.T)
 type Report_Text = (Report, Bytes)
+
+position_properties_of :: Program.Context -> Position.T -> Properties.T
+position_properties_of context =
+  Position.properties_of . Program.adjust_position context
 
 reports_text :: [Report_Text] -> IO ()
 reports_text args = do

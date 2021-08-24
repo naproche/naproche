@@ -84,7 +84,8 @@ variableReport :: Bool -> Decl -> Position.T -> [Message.Report]
 variableReport def decl pos =
   case declName decl of
     VarConstant name ->
-      [(pos, Message.entity_markup "variable" (make_bytes name) def (declSerial decl) (declPosition decl))]
+      [(pos,
+        Position.make_entity_markup def (declSerial decl) "variable" (make_bytes name, declPosition decl))]
     _ -> []
 
 formulaReports :: Set Decl -> Formula -> [Message.Report]
