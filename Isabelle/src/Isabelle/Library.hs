@@ -23,7 +23,7 @@ module Isabelle.Library (
   StringLike, STRING (..), TEXT (..), BYTES (..),
   show_bytes, show_text,
 
-  proper_string, quote, space_implode, commas, commas_quote, cat_lines,
+  proper_string, enclose, quote, space_implode, commas, commas_quote, cat_lines,
   space_explode, split_lines, trim_line)
 where
 
@@ -167,8 +167,11 @@ show_text = make_text . show
 proper_string :: StringLike a => a -> Maybe a
 proper_string s = if s == "" then Nothing else Just s
 
+enclose :: StringLike a => a -> a -> a -> a
+enclose lpar rpar str = lpar <> str <> rpar
+
 quote :: StringLike a => a -> a
-quote s = "\"" <> s <> "\""
+quote = enclose "\"" "\""
 
 space_implode :: StringLike a => a -> [a] -> a
 space_implode s = mconcat . separate s

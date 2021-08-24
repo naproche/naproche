@@ -15,7 +15,7 @@ See "$ISABELLE_HOME/src/Pure/General/position.ML".
 
 module Isabelle.Position (
   T, line_of, column_of, offset_of, end_offset_of, file_of, id_of,
-  start, none, put_file, file, file_only, put_id,
+  start, none, put_file, file, file_only, put_id, id, id_only,
   symbol, symbol_explode, symbol_explode_string, shift_offsets,
   of_properties, properties_of, def_properties_of, entity_markup, make_entity_markup,
   is_reported, is_reported_range, here,
@@ -24,6 +24,7 @@ module Isabelle.Position (
 )
 where
 
+import Prelude hiding (id)
 import Data.Maybe (isJust, fromMaybe)
 import Data.Bifunctor (first)
 import qualified Isabelle.Properties as Properties
@@ -94,6 +95,12 @@ file_only file = put_file file none
 
 put_id :: Bytes -> T -> T
 put_id id pos = pos { _id = id }
+
+id :: Bytes -> T
+id id = put_id id start
+
+id_only :: Bytes -> T
+id_only id = put_id id none
 
 
 {- count position -}

@@ -24,7 +24,7 @@ import qualified Data.List as List
 
 import qualified Isabelle.Bytes as Bytes
 import Isabelle.Bytes (Bytes)
-import Isabelle.Library hiding (quote, separate, commas)
+import Isabelle.Library hiding (enclose, quote, separate, commas)
 import qualified Isabelle.Buffer as Buffer
 import qualified Isabelle.Markup as Markup
 import qualified Isabelle.XML as XML
