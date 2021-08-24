@@ -24,8 +24,8 @@ import qualified System.Console.GetOpt as GetOpt
 import qualified System.Environment as Environment
 import qualified System.Exit as Exit
 import qualified System.IO as IO
+import Network.Socket (Socket)
 
-import Isabelle.Library (trim_line, make_string, make_bytes, show_bytes)
 import qualified Isabelle.UTF8 as UTF8
 import qualified Isabelle.Byte_Message as Byte_Message
 import qualified Isabelle.Naproche as Naproche
@@ -36,7 +36,7 @@ import qualified Isabelle.UUID as UUID
 import qualified Isabelle.Position as Position
 import qualified Isabelle.YXML as YXML
 import qualified Isabelle.Process_Result as Process_Result
-import Network.Socket (Socket)
+import Isabelle.Library
 
 import SAD.API
 import qualified Naproche.Program as Program
