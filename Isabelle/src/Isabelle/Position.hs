@@ -8,7 +8,7 @@ Source positions starting from 1; values <= 0 mean "absent". Count Isabelle
 symbols, not UTF8 bytes nor UTF16 characters. Position range specifies a
 right-open interval offset .. end_offset (exclusive).
 
-See also "$ISABELLE_HOME/src/Pure/General/position.ML".
+See "$ISABELLE_HOME/src/Pure/General/position.ML".
 -}
 
 

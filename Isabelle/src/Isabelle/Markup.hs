@@ -6,7 +6,7 @@
 
 Quasi-abstract markup elements.
 
-See also "$ISABELLE_HOME/src/Pure/PIDE/markup.ML".
+See "$ISABELLE_HOME/src/Pure/PIDE/markup.ML".
 -}
 
 {-# LANGUAGE OverloadedStrings #-}

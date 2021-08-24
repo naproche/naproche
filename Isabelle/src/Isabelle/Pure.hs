@@ -6,7 +6,7 @@
 
 Support for Isabelle/Pure logic.
 
-See also "$ISABELLE_HOME/src/Pure/logic.ML".
+See "$ISABELLE_HOME/src/Pure/logic.ML".
 -}
 
 {-# LANGUAGE OverloadedStrings #-}

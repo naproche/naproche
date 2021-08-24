@@ -6,7 +6,7 @@
 
 Completion of names.
 
-See also "$ISABELLE_HOME/src/Pure/General/completion.ML".
+See "$ISABELLE_HOME/src/Pure/General/completion.ML".
 -}
 
 {-# LANGUAGE OverloadedStrings #-}

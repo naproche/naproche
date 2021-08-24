@@ -6,7 +6,7 @@
 
 Generic pretty printing module.
 
-See also "$ISABELLE_HOME/src/Pure/General/pretty.ML".
+See "$ISABELLE_HOME/src/Pure/General/pretty.ML".
 -}
 
 {-# LANGUAGE OverloadedStrings #-}

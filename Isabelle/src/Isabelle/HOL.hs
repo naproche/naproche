@@ -6,7 +6,7 @@
 
 Support for Isabelle/HOL logic.
 
-See also "$ISABELLE_HOME/src/HOL/Tools/hologic.ML".
+See "$ISABELLE_HOME/src/HOL/Tools/hologic.ML".
 -}
 
 {-# LANGUAGE OverloadedStrings #-}

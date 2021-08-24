@@ -6,7 +6,7 @@
 
 Plain values, represented as string.
 
-See also "$ISABELLE_HOME/src/Pure/General/value.ML".
+See "$ISABELLE_HOME/src/Pure/General/value.ML".
 -}
 
 {-# LANGUAGE OverloadedStrings #-}

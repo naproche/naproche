@@ -6,7 +6,7 @@
 
 XML data representation of lambda terms.
 
-See also "$ISABELLE_HOME/src/Pure/term_xml.ML".
+See "$ISABELLE_HOME/src/Pure/term_xml.ML".
 -}
 
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}

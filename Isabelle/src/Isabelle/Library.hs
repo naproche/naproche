@@ -6,7 +6,8 @@
 
 Basic library of Isabelle idioms.
 
-See also "$ISABELLE_HOME/src/Pure/General/basics.ML", "$ISABELLE_HOME/src/Pure/library.ML".
+See "$ISABELLE_HOME/src/Pure/General/basics.ML"
+and "$ISABELLE_HOME/src/Pure/library.ML".
 -}
 
 {-# LANGUAGE OverloadedStrings #-}

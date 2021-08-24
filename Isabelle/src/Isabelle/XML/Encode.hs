@@ -6,7 +6,7 @@
 
 XML as data representation language.
 
-See also "$ISABELLE_HOME/src/Pure/PIDE/xml.ML".
+See "$ISABELLE_HOME/src/Pure/PIDE/xml.ML".
 -}
 
 {-# LANGUAGE OverloadedStrings #-}

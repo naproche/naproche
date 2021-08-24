@@ -6,7 +6,7 @@
 
 File-system operations.
 
-See also "$ISABELLE_HOME/src/Pure/General/file.ML".
+See "$ISABELLE_HOME/src/Pure/General/file.ML".
 -}
 
 module Isabelle.File (read, write, append) where

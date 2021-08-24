@@ -7,7 +7,7 @@
 Efficient text representation of XML trees.  Suitable for direct
 inlining into plain text.
 
-See also "$ISABELLE_HOME/src/Pure/PIDE/yxml.ML".
+See "$ISABELLE_HOME/src/Pure/PIDE/yxml.ML".
 -}
 
 {-# LANGUAGE OverloadedStrings #-}

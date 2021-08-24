@@ -6,7 +6,7 @@
 
 Property lists.
 
-See also "$ISABELLE_HOME/src/Pure/General/properties.ML".
+See "$ISABELLE_HOME/src/Pure/General/properties.ML".
 -}
 
 module Isabelle.Properties (Entry, T, defined, get, get_value, put, remove)

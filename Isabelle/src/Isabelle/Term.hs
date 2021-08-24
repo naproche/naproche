@@ -6,7 +6,7 @@
 
 Lambda terms, types, sorts.
 
-See also "$ISABELLE_HOME/src/Pure/term.scala".
+See "$ISABELLE_HOME/src/Pure/term.scala".
 -}
 
 {-# LANGUAGE OverloadedStrings #-}

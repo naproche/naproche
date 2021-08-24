@@ -6,7 +6,7 @@
 
 Efficient buffer of byte strings.
 
-See also "$ISABELLE_HOME/src/Pure/General/buffer.ML".
+See "$ISABELLE_HOME/src/Pure/General/buffer.ML".
 -}
 
 module Isabelle.Buffer (T, empty, add, content)

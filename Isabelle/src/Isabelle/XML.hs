@@ -6,7 +6,7 @@
 
 Untyped XML trees and representation of ML values.
 
-See also "$ISABELLE_HOME/src/Pure/PIDE/xml.ML".
+See "$ISABELLE_HOME/src/Pure/PIDE/xml.ML".
 -}
 
 {-# LANGUAGE OverloadedStrings #-}

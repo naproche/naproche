@@ -5,7 +5,7 @@
 
 Names of basic logical entities (variables etc.).
 
-See also "$ISABELLE_HOME/src/Pure/name.ML".
+See "$ISABELLE_HOME/src/Pure/name.ML".
 -}
 
 {-# LANGUAGE OverloadedStrings #-}
