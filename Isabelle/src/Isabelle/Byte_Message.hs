@@ -16,7 +16,8 @@ and "$ISABELLE_HOME/src/Pure/PIDE/byte_message.scala".
 module Isabelle.Byte_Message (
     write, write_line,
     read, read_block, read_line,
-    make_message, write_message, read_message, exchange_message,
+    make_message, write_message, read_message,
+    exchange_message, exchange_message0,
     make_line_message, write_line_message, read_line_message,
     read_yxml, write_yxml
   )
@@ -123,6 +124,11 @@ exchange_message :: Socket -> [Bytes] -> IO (Maybe [Bytes])
 exchange_message socket msg = do
   write_message socket msg
   read_message socket
+
+exchange_message0 :: Socket -> [Bytes] -> IO ()
+exchange_message0 socket msg = do
+  _ <- exchange_message socket msg
+  return ()
 
 
 -- hybrid messages: line or length+block (with content restriction)

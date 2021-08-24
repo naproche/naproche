@@ -18,8 +18,7 @@ module Isabelle.Position (
   start, none, put_file, file, file_only, put_id, id, id_only,
   symbol, symbol_explode, symbol_explode_string, shift_offsets,
   of_properties, properties_of, def_properties_of, entity_markup, make_entity_markup,
-  is_reported, is_reported_range, here,
-
+  Report, Report_Text, is_reported, is_reported_range, here,
   Range, no_range, no_range_position, range_position, range
 )
 where
@@ -189,6 +188,9 @@ make_entity_markup def serial kind (name, pos) =
 
 
 {- reports -}
+
+type Report = (T, Markup.T)
+type Report_Text = (Report, Bytes)
 
 is_reported :: T -> Bool
 is_reported pos = isJust (offset_of pos) && isJust (id_of pos)
