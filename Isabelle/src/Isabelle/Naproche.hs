@@ -27,20 +27,6 @@ naproche_pos_file = "naproche_pos_file"
 naproche_pos_shift = "naproche_pos_shift"
 
 
--- message origin
-
-origin_main, origin_export, origin_forthel, origin_parser,
-  origin_reasoner, origin_simplifier, origin_thesis, origin_translate :: Bytes
-origin_main = "Main"
-origin_export = "Export"
-origin_forthel = "ForTheL"
-origin_parser = "Parser"
-origin_reasoner = "Reasoner"
-origin_simplifier = "Simplifier"
-origin_thesis = "Thesis"
-origin_translate = "Translation"
-
-
 -- programs in Haskell
 -- (see "$NAPROCHE_HOME/src/SAD/Main.hs")
 

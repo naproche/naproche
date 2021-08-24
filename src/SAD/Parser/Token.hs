@@ -22,7 +22,6 @@ module SAD.Parser.Token
 
 import qualified Isabelle.Position as Position
 import qualified Isabelle.Markup as Markup
-import qualified SAD.Core.Message as Message
 
 import Data.Char
 import Data.Text.Lazy (Text)
@@ -249,7 +248,7 @@ makeSymbolTokens (s:symbols) range whiteSpaceBefore =
   makeTokenRange s range whiteSpaceBefore : makeSymbolTokens symbols range NoWhiteSpaceBefore
 makeSymbolTokens [] _ _ = []
 
-reportComments :: Token -> Maybe Message.Report
+reportComments :: Token -> Maybe Position.Report
 reportComments t@Token{}
   | isProperToken t = Nothing
   | otherwise = Just (tokenPos t, Markup.comment1)

@@ -10,9 +10,11 @@ Formal output messages, with PIDE (Prover IDE) support.
 
 module SAD.Core.Message (
   Kind (..),
-  Report, Report_Text, reports_text, report_text, reports, report,
+  reports_text, report_text, reports, report,
   console_position, show_position,
-  output, Error (..), error,
+  origin_main, origin_export, origin_forthel, origin_parser,
+  origin_reasoner, origin_simplifier, origin_thesis, origin_translate,
+  output, Error (..), print_error, error,
   outputMain, outputExport, outputForTheL, outputParser, outputReasoner,
   outputThesis, outputSimplifier, outputTranslate,
   errorExport, errorParser
@@ -26,12 +28,10 @@ import qualified Control.Exception as Exception
 import Control.Exception (Exception)
 import qualified Isabelle.Bytes as Bytes
 import Isabelle.Bytes (Bytes)
-import qualified Isabelle.Properties as Properties
 import qualified Isabelle.Position as Position
 import qualified Isabelle.Value as Value
 import qualified Isabelle.Markup as Markup
 import qualified Isabelle.XML as XML
-import qualified Isabelle.XML.Encode as Encode
 import qualified Isabelle.YXML as YXML
 import qualified Isabelle.Naproche as Naproche
 import Isabelle.Library
@@ -41,30 +41,23 @@ import qualified Naproche.Program as Program
 
 -- PIDE markup reports
 
-type Report = (Position.T, Markup.T)
-type Report_Text = (Report, Bytes)
-
-position_properties_of :: Program.Context -> Position.T -> Properties.T
-position_properties_of context =
-  Position.properties_of . Program.adjust_position context
-
-reports_text :: [Report_Text] -> IO ()
+reports_text :: [Position.Report_Text] -> IO ()
 reports_text args = do
   context <- Program.thread_context
   when (Program.is_pide context && not (null args)) $
-    Program.write_message context
+    Program.exchange_message0 context
       (Naproche.output_report_command :
         map (\((pos, markup), txt) ->
           let
-            props = position_properties_of context pos
-            markup' = Markup.properties props markup
+            pos' = Program.adjust_position context pos
+            markup' = Markup.properties (Position.properties_of pos') markup
             body = if Bytes.null txt then [] else [XML.Text txt]
           in YXML.string_of $ XML.Elem (markup', body)) args)
 
 report_text :: Position.T -> Markup.T -> Bytes -> IO ()
 report_text pos markup txt = reports_text [((pos, markup), txt)]
 
-reports :: [Report] -> IO ()
+reports :: [Position.Report] -> IO ()
 reports = reports_text . map (, Bytes.empty)
 
 report :: Position.T -> Markup.T -> IO ()
@@ -87,6 +80,20 @@ show_position :: Position.T -> String
 show_position = make_string . console_position
 
 
+-- message origin
+
+origin_main, origin_export, origin_forthel, origin_parser,
+  origin_reasoner, origin_simplifier, origin_thesis, origin_translate :: Bytes
+origin_main = "Main"
+origin_export = "Export"
+origin_forthel = "ForTheL"
+origin_parser = "Parser"
+origin_reasoner = "Reasoner"
+origin_simplifier = "Simplifier"
+origin_thesis = "Thesis"
+origin_translate = "Translation"
+
+
 -- PIDE output messages
 
 data Kind =
@@ -107,60 +114,66 @@ pide_kind WARNING = Naproche.output_warning_command
 pide_kind LEGACY_FEATURE = Naproche.output_legacy_feature_command
 pide_kind ERROR = Naproche.output_error_command
 
-message_chunks :: Program.Context -> Kind -> Bytes -> Position.T -> Bytes -> [Bytes]
-message_chunks context kind origin pos text =
+make_message :: Program.Context -> Kind -> Bytes -> Position.T -> Bytes -> (Bytes, Bytes)
+make_message context kind origin pos text =
   if Program.is_pide context then
     let
-      command = pide_kind kind
-      position = YXML.string_of_body $ Encode.properties $ position_properties_of context pos
-    in [command, origin, position, text]
+      k = pide_kind kind
+      p = Position.here (Program.adjust_position context pos)
+      msg =
+        enclose "[" "]" (if Bytes.null origin then origin_main else origin) <>
+        (if Bytes.null p then " " else p <> "\n") <> text
+    in (k, msg)
   else
     let
       k = console_kind kind
       p = console_position pos
-      chunk =
+      msg =
         (if Bytes.null origin then "" else "[" <> origin <> "] ") <>
         (if Bytes.null k then "" else make_bytes (k <> ": ")) <>
         (if Bytes.null p then "" else make_bytes (p <> "\n")) <> text
-    in [chunk]
+    in ("", msg)
 
 output :: BYTES a => Bytes -> Kind -> Position.T -> a -> IO ()
-output origin kind pos msg = do
+output origin kind pos text = do
   context <- Program.thread_context
-  Program.write_message context $ message_chunks context kind origin pos (make_bytes msg)
+  let (command, msg) = make_message context kind origin pos (make_bytes text)
+  Program.exchange_message0 context [command, msg]
 
 
 -- errors
 
-newtype Error = Error [Bytes]
-instance Show Error where show (Error chunks) = make_string $ cat_lines chunks
+newtype Error = Error Bytes
 instance Exception Error
 
+print_error :: Error -> Bytes
+print_error (Error msg) = msg
+
+instance Show Error where show = make_string . print_error
+
 error :: BYTES a => Bytes -> Position.T -> a -> IO b
-error origin pos msg = do
+error origin pos text = do
   context <- Program.thread_context
-  let chunks = message_chunks context ERROR origin pos (make_bytes msg)
-  if Program.is_pide context then Exception.throw $ Error chunks
-  else errorWithoutStackTrace $ make_string $ cat_lines chunks
+  let msg = snd $ make_message context ERROR origin pos (make_bytes text)
+  if Program.is_pide context then Exception.throw $ Error msg
+  else errorWithoutStackTrace $ make_string msg
 
 
--- message origins
+-- common messages
 
 outputMain, outputExport, outputForTheL, outputParser, outputReasoner,
   outputSimplifier, outputThesis :: BYTES a => Kind -> Position.T -> a -> IO ()
-outputMain = output Naproche.origin_main
-outputExport = output Naproche.origin_export
-outputForTheL = output Naproche.origin_forthel
-outputParser = output Naproche.origin_parser
-outputReasoner = output Naproche.origin_reasoner
-outputSimplifier = output Naproche.origin_simplifier
-outputThesis = output Naproche.origin_thesis
+outputMain = output origin_main
+outputExport = output origin_export
+outputForTheL = output origin_forthel
+outputParser = output origin_parser
+outputReasoner = output origin_reasoner
+outputSimplifier = output origin_simplifier
+outputThesis = output origin_thesis
 
 outputTranslate :: BYTES a => Kind -> Position.T -> a -> IO ()
-outputTranslate = output Naproche.origin_translate
+outputTranslate = output origin_translate
 
-errorExport :: BYTES a => Position.T -> a -> IO b
-errorExport = error Naproche.origin_export
-
-errorParser :: BYTES a => Position.T -> a -> IO b
-errorParser = error Naproche.origin_parser
+errorExport, errorParser :: BYTES a => Position.T -> a -> IO b
+errorExport = error origin_export
+errorParser = error origin_parser

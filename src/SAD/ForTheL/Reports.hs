@@ -35,7 +35,6 @@ import Control.Monad.State.Class (modify)
 import Data.List hiding (or)
 import SAD.Helpers (nubOrd)
 import Data.Set (Set)
-import qualified SAD.Core.Message as Message
 import SAD.ForTheL.Base
 
 import SAD.Data.Text.Block (Block)
@@ -54,7 +53,7 @@ import qualified Isabelle.Position as Position
 import qualified Naproche.Program as Program
 
 
-addReports :: [Message.Report] -> FTL ()
+addReports :: [Position.Report] -> FTL ()
 addReports newRep = modify (\st ->
   if Program.is_pide (program st) then
     seq newRep $ st {reports = newRep ++ reports st}
@@ -80,7 +79,7 @@ markupTokenOf markup = addMarkup markup . tokenOf'
 
 -- formula and variable reports
 
-variableReport :: Bool -> Decl -> Position.T -> [Message.Report]
+variableReport :: Bool -> Decl -> Position.T -> [Position.Report]
 variableReport def decl pos =
   case declName decl of
     VarConstant name ->
@@ -88,7 +87,7 @@ variableReport def decl pos =
         Position.make_entity_markup def (declSerial decl) "variable" (make_bytes name, declPosition decl))]
     _ -> []
 
-formulaReports :: Set Decl -> Formula -> [Message.Report]
+formulaReports :: Set Decl -> Formula -> [Position.Report]
 formulaReports decls = nubOrd . dive
   where
     dive Var {varName = name, varPosition = pos} =
@@ -107,7 +106,7 @@ formulaReports decls = nubOrd . dive
       boundReports decl f ++
       dive f
 
-boundReports :: Decl -> Formula -> [Message.Report]
+boundReports :: Decl -> Formula -> [Position.Report]
 boundReports decl = dive 0
   where
     dive n (All _ f) = dive (succ n) f

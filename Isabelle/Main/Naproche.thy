@@ -41,20 +41,6 @@ naproche_pos_file = \<open>\<^system_option>\<open>naproche_pos_file\<close>\<cl
 naproche_pos_shift = \<open>\<^system_option>\<open>naproche_pos_shift\<close>\<close>
 
 
--- message origin
-
-origin_main, origin_export, origin_forthel, origin_parser,
-  origin_reasoner, origin_simplifier, origin_thesis, origin_translate :: Bytes
-origin_main = \<open>Naproche.origin_main\<close>
-origin_export = \<open>Naproche.origin_export\<close>
-origin_forthel = \<open>Naproche.origin_forthel\<close>
-origin_parser = \<open>Naproche.origin_parser\<close>
-origin_reasoner = \<open>Naproche.origin_reasoner\<close>
-origin_simplifier = \<open>Naproche.origin_simplifier\<close>
-origin_thesis = \<open>Naproche.origin_thesis\<close>
-origin_translate = \<open>Naproche.origin_translate\<close>
-
-
 -- programs in Haskell
 -- (see \<^file>\<open>$NAPROCHE_HOME/src/SAD/Main.hs\<close>)
 

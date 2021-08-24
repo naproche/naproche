@@ -26,7 +26,6 @@ import SAD.Parser.Primitives
 
 import SAD.Data.Text.Decl
 
-import qualified SAD.Core.Message as Message
 import SAD.Export.Representation (represent, toLazyText)
 
 import qualified Isabelle.Position as Position
@@ -53,7 +52,7 @@ data FState = FState {
 
   tvrExpr :: [TVar], strSyms :: [[Text]], varDecl :: Set VariableName,
   idCount :: Int, hiddenCount :: Int, serialCounter :: Int,
-  reports :: [Message.Report], program :: Program.Context }
+  reports :: [Position.Report], program :: Program.Context }
 
 
 initFS :: Program.Context -> FState

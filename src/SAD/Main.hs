@@ -188,41 +188,42 @@ proveFOL proversYaml text1 opts0 oldProofText oldProofTextRef startTime fileName
   unless success Exit.exitFailure
 
 serverConnection :: IORef ProofText -> [String] -> Socket -> IO ()
-serverConnection oldProofTextRef args0 socket = do
-  let write_message = Byte_Message.write_message socket
-  let read_message = Byte_Message.read_message socket
+serverConnection oldProofTextRef args0 socket =
+  let
+    exchange_message0 = Byte_Message.exchange_message0 socket
+    robust_error msg =
+      exchange_message0 [Naproche.output_error_command, msg]
+        `catch` (\(_ :: Exception.IOException) -> return ())
+  in
+    do
+      chunks <- Byte_Message.read_message socket
+      case chunks of
+        Just (command : threads) | command == Naproche.cancel_program ->
+          mapM_ Isabelle_Thread.stop_uuid (mapMaybe UUID.parse threads)
 
-  thread_uuid <- Isabelle_Thread.my_uuid
-  mapM_ (\uuid -> write_message [Naproche.threads_command, UUID.print uuid]) thread_uuid
+        Just [command, more_args, opts, text] | command == Naproche.forthel_program -> do
+          let options = Options.decode $ YXML.parse_body opts
 
-  chunks <- read_message
-  case chunks of
-    Just (command : threads) | command == Naproche.cancel_program ->
-      mapM_ Isabelle_Thread.stop_uuid (mapMaybe UUID.parse threads)
+          Exception.bracket_ (Program.init_pide socket options)
+            Program.exit_thread
+            (do
+              thread_uuid <- Isabelle_Thread.my_uuid
+              mapM_ (\uuid -> exchange_message0 [Naproche.threads_command, UUID.print uuid]) thread_uuid
 
-    Just [command, more_args, opts, text] | command == Naproche.forthel_program ->
-      let options = Options.decode $ YXML.parse_body opts in
-      Exception.bracket_ (Program.init_pide socket options)
-        Program.exit_thread
-        (do
-          let more_text = Text.pack $ make_string text
+              let more_text = Text.pack $ make_string text
 
-          (opts0, pk, fileName) <- readArgs (args0 ++ lines (make_string more_args))
-          let opts1 = map snd opts0
-          let text0 = map (uncurry ProofTextInstr) (reverse opts0)
-          let text1 = text0 ++ [ProofTextInstr Position.none (GetArgument (Text pk) more_text)]
+              (opts0, pk, fileName) <- readArgs (args0 ++ lines (make_string more_args))
+              let opts1 = map snd opts0
+              let text0 = map (uncurry ProofTextInstr) (reverse opts0)
+              let text1 = text0 ++ [ProofTextInstr Position.none (GetArgument (Text pk) more_text)]
 
-          mainBody Nothing oldProofTextRef opts1 text1 fileName
-            `catch` (\(err :: Message.Error) -> do
-              let Message.Error chunks = err
-              write_message chunks
-                `catch` (\(_ :: Exception.IOException) -> pure ()))
-            `catch` (\(err :: Exception.SomeException) -> do
-              let msg = make_bytes $ Exception.displayException err
-              outputMain ERROR Position.none msg
-                `catch` (\(_ :: Exception.IOException) -> pure ())))
+              mainBody Nothing oldProofTextRef opts1 text1 fileName
+                `catch` (\(err :: Message.Error) ->
+                  robust_error $ Message.print_error err)
+                `catch` (\(err :: Exception.SomeException) ->
+                  robust_error $ make_bytes $ Exception.displayException err))
 
-    _ -> return ()
+        _ -> return ()
 
 -- Command line parsing
 
@@ -242,7 +243,7 @@ readArgs args = do
                   [file] -> Just file
                   [] -> Nothing
                   _ -> fail ["More than one file argument\n"]
-  let parserKind = if useTexArg || maybe False (\f -> ".tex.ftl" `isSuffixOf` f || ".ftl.tex" `isSuffixOf` f) fileName 
+  let parserKind = if useTexArg || maybe False (\f -> ".tex.ftl" `isSuffixOf` f || ".ftl.tex" `isSuffixOf` f) fileName
       then Tex else NonTex
   pure (revInitialOpts, parserKind, fileName)
 

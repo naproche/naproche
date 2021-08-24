@@ -6,8 +6,8 @@ Naproche program context: Console or PIDE.
 
 module Naproche.Program (
   Context (..), is_pide,
-  write_message, read_message, exchange_message, adjust_position,
-  exit_thread, init_console, init_pide, thread_context
+  write_message, read_message, exchange_message, exchange_message0,
+  adjust_position, exit_thread, init_console, init_pide, thread_context
 )
 where
 
@@ -56,6 +56,12 @@ exchange_message context msg = do
   write_message context msg
   res <- read_message context
   return $ fromMaybe [] res
+
+exchange_message0 :: Context -> [Bytes] -> IO ()
+exchange_message0 context msg = do
+  write_message context msg
+  _ <- read_message context
+  return ()
 
 adjust_position :: Context -> Position.T -> Position.T
 adjust_position Console pos = pos

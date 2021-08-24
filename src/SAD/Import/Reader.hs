@@ -64,7 +64,7 @@ readProofText pathToLibrary text0 = do
   when (Program.is_pide context) $ Message.reports reports
   return text
 
-reader :: Text -> [Text] -> [State FState] -> [ProofText] -> IO ([ProofText], [Message.Report])
+reader :: Text -> [Text] -> [State FState] -> [ProofText] -> IO ([ProofText], [Position.Report])
 reader pathToLibrary doneFiles = go
   where
     go stateList [ProofTextInstr pos (GetArgument (Read pk) file)] = if Text.pack ".." `Text.isInfixOf` file

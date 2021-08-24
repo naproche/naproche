@@ -18,18 +18,12 @@ sig
   val theory_of_state: state -> theory
   val context_of_state: state -> Proof.context
   type command = string list * state -> string list * state
+  type command0 = string list -> unit
   val command_setup: binding -> command -> theory -> theory
+  val command0_setup: binding -> command0 -> theory -> theory
   val cancel_program: string
   val forthel_program: string
   val check_forthel: Proof.context -> {tex: bool} -> string * Position.T -> unit
-  val origin_main: string
-  val origin_export: string
-  val origin_forthel: string
-  val origin_parser: string
-  val origin_reasoner: string
-  val origin_simplifier: string
-  val origin_thesis: string
-  val origin_translate: string
 end;
 
 structure Naproche: NAPROCHE =
@@ -89,6 +83,7 @@ val context_of_state = Context.proof_of o get_theory;
 (* commands *)
 
 type command = string list * state -> string list * state;
+type command0 = string list -> unit
 
 structure Data = Theory_Data
 (
@@ -103,6 +98,9 @@ fun command_setup binding cmd thy =
     val context = Context.Theory thy |> Name_Space.map_naming (K Name_Space.global_naming);
     val (_, data') = Name_Space.define context true (binding, cmd) (Data.get thy);
   in Data.put data' thy end;
+
+fun command0_setup binding (cmd: command0) =
+  command_setup binding (fn (args, state) => (cmd args; ([], state)));
 
 val get_command = Name_Space.lookup o Data.get;
 
@@ -201,33 +199,15 @@ fun check_forthel ctxt {tex} (text, pos) =
 
 (* output messages *)
 
-val origin_main = "Main";
-val origin_export = "Export";
-val origin_forthel = "ForTheL";
-val origin_parser = "Parser";
-val origin_reasoner = "Reasoner";
-val origin_simplifier = "Simplifier";
-val origin_thesis = "Thesis";
-val origin_translate = "Translation";
-
-fun message_setup binding message_fn =
-  command_setup binding (fn ([origin, position, text], state) =>
-    let
-      val header = enclose "[" "]" (if origin = "" then origin_main else origin);
-      val pos = Position.of_properties (XML.Decode.properties (YXML.parse_body position));
-      val here = (case Position.here pos of "" => " " | s => s ^ "\n");
-      val _ = message_fn (header ^ here ^ text);
-    in ([], state) end);
-
 val _ = Theory.setup
- (message_setup \<^binding>\<open>output_state\<close> Output.state #>
-  message_setup \<^binding>\<open>output_writeln\<close> writeln #>
-  message_setup \<^binding>\<open>output_information\<close> Output.information #>
-  message_setup \<^binding>\<open>output_tracing\<close> tracing #>
-  message_setup \<^binding>\<open>output_warning\<close> warning #>
-  message_setup \<^binding>\<open>output_legacy_feature\<close> legacy_feature #>
-  message_setup \<^binding>\<open>output_error\<close> Output.error_message #>
-  command_setup \<^binding>\<open>output_report\<close> (fn (reports, state) => (Output.report reports; ([], state))));
+ (command0_setup \<^binding>\<open>output_state\<close> (Output.state o the_single) #>
+  command0_setup \<^binding>\<open>output_writeln\<close> (writeln o the_single) #>
+  command0_setup \<^binding>\<open>output_information\<close> (Output.information o the_single) #>
+  command0_setup \<^binding>\<open>output_tracing\<close> (tracing o the_single) #>
+  command0_setup \<^binding>\<open>output_warning\<close> (warning o the_single) #>
+  command0_setup \<^binding>\<open>output_legacy_feature\<close> (legacy_feature o the_single) #>
+  command0_setup \<^binding>\<open>output_error\<close> (Output.error_message o the_single) #>
+  command0_setup \<^binding>\<open>output_report\<close> Output.report);
 
 
 
