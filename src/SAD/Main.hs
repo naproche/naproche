@@ -40,7 +40,6 @@ import Network.Socket (Socket)
 
 import SAD.API
 import qualified Naproche.Program as Program
-import qualified SAD.Core.Message as Message
 
 
 main :: IO ()
@@ -218,8 +217,8 @@ serverConnection oldProofTextRef args0 socket =
               let text1 = text0 ++ [ProofTextInstr Position.none (GetArgument (Text pk) more_text)]
 
               mainBody Nothing oldProofTextRef opts1 text1 fileName
-                `catch` (\(err :: Message.Error) ->
-                  robust_error $ Message.print_error err)
+                `catch` (\(err :: Program.Error) ->
+                  robust_error $ Program.print_error err)
                 `catch` (\(err :: Exception.SomeException) ->
                   robust_error $ make_bytes $ Exception.displayException err))
 

@@ -14,7 +14,7 @@ module SAD.Core.Message (
   console_position, show_position,
   origin_main, origin_export, origin_forthel, origin_parser,
   origin_reasoner, origin_simplifier, origin_thesis, origin_translate,
-  output, Error (..), print_error, error,
+  output, error,
   outputMain, outputExport, outputForTheL, outputParser, outputReasoner,
   outputThesis, outputSimplifier, outputTranslate,
   errorExport, errorParser
@@ -25,7 +25,6 @@ import Prelude hiding (error)
 import Control.Monad
 import Data.Maybe (catMaybes, mapMaybe)
 import qualified Control.Exception as Exception
-import Control.Exception (Exception)
 import qualified Isabelle.Bytes as Bytes
 import Isabelle.Bytes (Bytes)
 import qualified Isabelle.Position as Position
@@ -143,19 +142,12 @@ output origin kind pos text = do
 
 -- errors
 
-newtype Error = Error Bytes
-instance Exception Error
-
-print_error :: Error -> Bytes
-print_error (Error msg) = msg
-
-instance Show Error where show = make_string . print_error
-
 error :: BYTES a => Bytes -> Position.T -> a -> IO b
 error origin pos text = do
   context <- Program.thread_context
   let msg = snd $ make_message context ERROR origin pos (make_bytes text)
-  if Program.is_pide context then Exception.throw $ Error msg
+  if Program.is_pide context
+  then Exception.throw $ Program.Error msg
   else errorWithoutStackTrace $ make_string msg
 
 
