@@ -9,12 +9,11 @@ Formal output messages, with PIDE (Prover IDE) support.
 {-# LANGUAGE NamedFieldPuns #-}
 
 module SAD.Core.Message (
-  Kind (..),
   reports_text, report_text, reports, report,
   console_position, show_position,
   origin_main, origin_export, origin_forthel, origin_parser,
   origin_reasoner, origin_simplifier, origin_thesis, origin_translate,
-  output, error,
+  Kind (..), output, error,
   outputMain, outputExport, outputForTheL, outputParser, outputReasoner,
   outputThesis, outputSimplifier, outputTranslate,
   errorExport, errorParser
@@ -24,7 +23,6 @@ where
 import Prelude hiding (error)
 import Control.Monad
 import Data.Maybe (catMaybes, mapMaybe)
-import qualified Control.Exception as Exception
 import qualified Isabelle.Bytes as Bytes
 import Isabelle.Bytes (Bytes)
 import qualified Isabelle.Position as Position
@@ -93,7 +91,7 @@ origin_thesis = "Thesis"
 origin_translate = "Translation"
 
 
--- PIDE output messages
+-- message kind
 
 data Kind =
   STATE | WRITELN | INFORMATION | TRACING | WARNING | LEGACY_FEATURE | ERROR
@@ -112,6 +110,9 @@ pide_kind TRACING = Naproche.output_tracing_command
 pide_kind WARNING = Naproche.output_warning_command
 pide_kind LEGACY_FEATURE = Naproche.output_legacy_feature_command
 pide_kind ERROR = Naproche.output_error_command
+
+
+-- make formal message
 
 make_message :: Program.Context -> Kind -> Bytes -> Position.T -> Bytes -> (Bytes, Bytes)
 make_message context kind origin pos text =
@@ -139,16 +140,10 @@ output origin kind pos text = do
   let (command, msg) = make_message context kind origin pos (make_bytes text)
   Program.exchange_message0 context [command, msg]
 
-
--- errors
-
 error :: BYTES a => Bytes -> Position.T -> a -> IO b
 error origin pos text = do
   context <- Program.thread_context
-  let msg = snd $ make_message context ERROR origin pos (make_bytes text)
-  if Program.is_pide context
-  then Exception.throw $ Program.Error msg
-  else errorWithoutStackTrace $ make_string msg
+  Program.error $ snd $ make_message context ERROR origin pos (make_bytes text)
 
 
 -- common messages

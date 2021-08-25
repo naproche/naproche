@@ -8,10 +8,12 @@ module Naproche.Program (
   Error (..), print_error,
   Context (..), is_pide,
   write_message, read_message, exchange_message, exchange_message0,
-  adjust_position, exit_thread, init_console, init_pide, thread_context
+  adjust_position, exit_thread, init_console, init_pide, thread_context,
+  error
 )
 where
 
+import Prelude hiding (error)
 import Data.Maybe (fromMaybe)
 import Data.IORef (IORef)
 import qualified Data.IORef as IORef
@@ -21,6 +23,7 @@ import qualified Data.Map.Strict as Map
 import qualified Data.ByteString.Char8 as Char8
 import Control.Concurrent (ThreadId)
 import qualified Control.Concurrent as Concurrent
+import qualified Control.Exception as Exception
 import Control.Exception (Exception)
 
 import Network.Socket (Socket)
@@ -31,17 +34,6 @@ import qualified Isabelle.Position as Position
 import qualified Isabelle.Options as Options
 import qualified Isabelle.Naproche as Naproche
 import Isabelle.Library
-
-
-{- user errors -}
-
-newtype Error = Error Bytes
-instance Exception Error
-
-print_error :: Error -> Bytes
-print_error (Error msg) = msg
-
-instance Show Error where show = make_string . print_error
 
 
 {- program context -}
@@ -122,3 +114,20 @@ thread_context = do
   id <- Concurrent.myThreadId
   threads <- IORef.readIORef global_threads
   return $ fromMaybe Console (Map.lookup id threads)
+
+
+{- errors -}
+
+newtype Error = Error Bytes
+instance Exception Error
+
+print_error :: Error -> Bytes
+print_error (Error msg) = msg
+
+instance Show Error where show = make_string . print_error
+
+error :: Bytes -> IO a
+error msg = do
+  context <- thread_context
+  if is_pide context then Exception.throw $ Error msg
+  else errorWithoutStackTrace $ make_string msg
