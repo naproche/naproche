@@ -2,6 +2,9 @@
 
 # General
 
+* Prefer compact Isabelle.Bytes (ShortByteString) for symbolic names,
+  instead of String, Text, Lazy.Text!?
+
 * Use Program.serial to identify Decl: but this requires IO monad, or to modify
   pro-forma serial numbers produced during parsing.
 
