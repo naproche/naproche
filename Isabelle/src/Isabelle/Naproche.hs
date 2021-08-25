@@ -40,19 +40,19 @@ forthel_program = "forthel"
 -- commands in ML
 
 threads_command :: Bytes
-threads_command = "threads"
+threads_command = "Naproche.threads"
 
 output_state_command, output_writeln_command, output_information_command,
   output_tracing_command, output_warning_command, output_legacy_feature_command,
   output_error_command, output_report_command :: Bytes
-output_state_command = "output_state"
-output_writeln_command = "output_writeln"
-output_information_command = "output_information"
-output_tracing_command = "output_tracing"
-output_warning_command = "output_warning"
-output_legacy_feature_command = "output_legacy_feature"
-output_error_command = "output_error"
-output_report_command = "output_report"
+output_state_command = "Naproche.output_state"
+output_writeln_command = "Naproche.output_writeln"
+output_information_command = "Naproche.output_information"
+output_tracing_command = "Naproche.output_tracing"
+output_warning_command = "Naproche.output_warning"
+output_legacy_feature_command = "Naproche.output_legacy_feature"
+output_error_command = "Naproche.output_error"
+output_report_command = "Naproche.output_report"
 
 
 -- prover server

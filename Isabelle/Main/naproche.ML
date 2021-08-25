@@ -94,10 +94,7 @@ structure Data = Theory_Data
 );
 
 fun command_setup binding cmd thy =
-  let
-    val context = Context.Theory thy |> Name_Space.map_naming (K Name_Space.global_naming);
-    val (_, data') = Name_Space.define context true (binding, cmd) (Data.get thy);
-  in Data.put data' thy end;
+  thy |> Data.put (#2 (Name_Space.define (Context.Theory thy) true (binding, cmd) (Data.get thy)));
 
 fun command0_setup binding (cmd: command0) =
   command_setup binding (fn (args, state) => (cmd args; ([], state)));
