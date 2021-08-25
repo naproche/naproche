@@ -12,12 +12,16 @@ See "$ISABELLE_HOME/src/Pure/logic.ML".
 {-# LANGUAGE OverloadedStrings #-}
 
 module Isabelle.Pure (
-  mk_forall, dest_forall, mk_equals, dest_equals, mk_implies, dest_implies
+  mk_forall_op, dest_forall_op, mk_forall, dest_forall,
+  mk_equals, dest_equals, mk_implies, dest_implies
 )
 where
 
 import qualified Isabelle.Name as Name
 import Isabelle.Term
+
+mk_forall_op :: Typ -> Term -> Term; dest_forall_op :: Term -> Maybe (Typ, Term)
+(mk_forall_op, dest_forall_op) = typed_op1 "Pure.all"
 
 mk_forall :: Free -> Term -> Term; dest_forall :: Name.Context -> Term -> Maybe (Free, Term)
 (mk_forall, dest_forall) = binder "Pure.all"

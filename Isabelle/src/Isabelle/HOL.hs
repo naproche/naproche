@@ -17,6 +17,7 @@ module Isabelle.HOL (
   mk_eq, dest_eq, true, is_true, false, is_false,
   mk_not, dest_not, mk_conj, dest_conj, mk_disj, dest_disj,
   mk_imp, dest_imp, mk_iff, dest_iff,
+  mk_all_op, dest_all_op, mk_ex_op, dest_ex_op,
   mk_all, dest_all, mk_ex, dest_ex
 )
 where
@@ -66,6 +67,12 @@ dest_iff tm =
   case dest_eq tm of
     Just (ty, t, u) | ty == boolT -> Just (t, u)
     _ -> Nothing
+
+mk_all_op :: Typ -> Term -> Term; dest_all_op :: Term -> Maybe (Typ, Term)
+(mk_all_op, dest_all_op) = typed_op1 "HOL.All"
+
+mk_ex_op :: Typ -> Term -> Term; dest_ex_op :: Term -> Maybe (Typ, Term)
+(mk_ex_op, dest_ex_op) = typed_op1 "HOL.Ex"
 
 mk_all :: Free -> Term -> Term; dest_all :: Name.Context -> Term -> Maybe (Free, Term)
 (mk_all, dest_all) = binder "HOL.All"
