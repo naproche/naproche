@@ -56,6 +56,9 @@ forthel_program = \<open>Naproche.forthel_program\<close>
 threads_command :: Bytes
 threads_command = \<open>\<^naproche_command>\<open>threads\<close>\<close>
 
+serials_command :: Bytes
+serials_command = \<open>\<^naproche_command>\<open>serials\<close>\<close>
+
 output_state_command, output_writeln_command, output_information_command,
   output_tracing_command, output_warning_command, output_legacy_feature_command,
   output_error_command, output_report_command :: Bytes

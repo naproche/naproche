@@ -9,12 +9,13 @@ module Naproche.Program (
   Context (..), is_pide,
   write_message, read_message, exchange_message, exchange_message0,
   adjust_position, exit_thread, init_console, init_pide, thread_context,
-  error
+  error,
+  serials, serial
 )
 where
 
 import Prelude hiding (error)
-import Data.Maybe (fromMaybe)
+import Data.Maybe (fromMaybe, mapMaybe)
 import Data.IORef (IORef)
 import qualified Data.IORef as IORef
 import System.IO.Unsafe (unsafePerformIO)
@@ -22,6 +23,7 @@ import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
 import qualified Data.ByteString.Char8 as Char8
 import Control.Concurrent (ThreadId)
+import Control.Monad (when, replicateM)
 import qualified Control.Concurrent as Concurrent
 import qualified Control.Exception as Exception
 import Control.Exception (Exception)
@@ -30,6 +32,7 @@ import Network.Socket (Socket)
 import qualified Isabelle.Bytes as Bytes
 import Isabelle.Bytes (Bytes)
 import qualified Isabelle.Byte_Message as Byte_Message
+import qualified Isabelle.Value as Value
 import qualified Isabelle.Position as Position
 import qualified Isabelle.Options as Options
 import qualified Isabelle.Naproche as Naproche
@@ -131,3 +134,35 @@ error msg = do
   context <- thread_context
   if is_pide context then Exception.throw $ Error msg
   else errorWithoutStackTrace $ make_string msg
+
+
+{- serial numbers, preferable from Isabelle/ML -}
+
+{-# NOINLINE global_counter #-}
+global_counter :: IORef Int
+global_counter = unsafePerformIO (IORef.newIORef 0)
+
+next_counter :: IO Int
+next_counter = do
+  IORef.atomicModifyIORef' global_counter
+    (\i ->
+      if i < maxBound then (i + 1, i + 1)
+      else errorWithoutStackTrace "Overflow of global counter")
+
+serials :: Context -> Int -> IO [Int]
+serials context n =
+  if is_pide context then
+    do
+      result <- exchange_message context [Naproche.serials_command, Value.print_int n]
+      let res = mapMaybe Value.parse_int result
+      let m = length res
+      when (m /= n) $
+        errorWithoutStackTrace
+          ("Bad result of command \"serials\": returned " <> show m <> ", expected " <> show n)
+      return res
+  else replicateM n next_counter
+
+serial :: Context -> IO Int
+serial context = do
+  res <- serials context 1
+  return $ head res

@@ -207,6 +207,13 @@ val _ = Theory.setup
   command0_setup \<^binding>\<open>output_report\<close> Output.report);
 
 
+(* serial numbers from Isabelle/ML *)
+
+val _ = Theory.setup
+  (command_setup \<^binding>\<open>serials\<close>
+    (apfst (fn [n] => replicate (Value.parse_nat n) () |> map serial_string)));
+
+
 
 (** Isabelle/Isar commands **)
 
