@@ -11,7 +11,9 @@ See "$ISABELLE_HOME/src/Pure/name.ML".
 {-# LANGUAGE OverloadedStrings #-}
 
 module Isabelle.Name (
-  Name, clean_index, clean,
+  Name,
+  uu, uu_, aT,
+  clean_index, clean,
   Context, declare, is_declared, context, make_context, variant
 )
 where
@@ -26,6 +28,14 @@ import Isabelle.Library
 
 
 type Name = Bytes
+
+
+{- common defaults -}
+
+uu, uu_, aT :: Name
+uu = "uu"
+uu_ = "uu_"
+aT = "'a"
 
 
 {- suffix for internal names -}
@@ -49,7 +59,7 @@ clean = fst . clean_index
 
 {- context for used names -}
 
-data Context = Context (Set Name)
+newtype Context = Context (Set Name)
 
 declare :: Name -> Context -> Context
 declare x (Context names) = Context (Set.insert x names)
