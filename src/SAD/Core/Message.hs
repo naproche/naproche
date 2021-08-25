@@ -21,7 +21,7 @@ module SAD.Core.Message (
 where
 
 import Prelude hiding (error)
-import Control.Monad
+import Control.Monad (when)
 import Data.Maybe (catMaybes, mapMaybe)
 import qualified Isabelle.Bytes as Bytes
 import Isabelle.Bytes (Bytes)
@@ -61,22 +61,6 @@ report :: Position.T -> Markup.T -> IO ()
 report pos markup = reports [(pos, markup)]
 
 
--- console position
-
-console_position :: Position.T -> Bytes
-console_position pos = space_implode " " (catMaybes [file_name, details])
-  where
-    file_name = quote <$> Position.file_of pos
-    details =
-      case mapMaybe detail [("line", Position.line_of), ("column", Position.column_of)] of
-        [] -> Nothing
-        ds -> Just ("(" <> commas ds <> ")")
-    detail (a, f) = (\i -> a <> " " <> Value.print_int i) <$> f pos
-
-show_position :: Position.T -> String
-show_position = make_string . console_position
-
-
 -- message origin
 
 origin_main, origin_export, origin_forthel, origin_parser,
@@ -113,6 +97,19 @@ pide_kind ERROR = Naproche.output_error_command
 
 
 -- make formal message
+
+console_position :: Position.T -> Bytes
+console_position pos = space_implode " " (catMaybes [file_name, details])
+  where
+    file_name = quote <$> Position.file_of pos
+    details =
+      case mapMaybe detail [("line", Position.line_of), ("column", Position.column_of)] of
+        [] -> Nothing
+        ds -> Just ("(" <> commas ds <> ")")
+    detail (a, f) = (\i -> a <> " " <> Value.print_int i) <$> f pos
+
+show_position :: Position.T -> String
+show_position = make_string . console_position
 
 make_message :: Program.Context -> Kind -> Bytes -> Position.T -> Bytes -> (Bytes, Bytes)
 make_message context kind origin pos text =

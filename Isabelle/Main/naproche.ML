@@ -197,14 +197,14 @@ fun check_forthel ctxt {tex} (text, pos) =
 (* output messages *)
 
 val _ = Theory.setup
- (command0_setup \<^binding>\<open>output_state\<close> (Output.state o the_single) #>
+ (command0_setup \<^binding>\<open>output_report\<close> Output.report #>
+  command0_setup \<^binding>\<open>output_state\<close> (Output.state o the_single) #>
   command0_setup \<^binding>\<open>output_writeln\<close> (writeln o the_single) #>
   command0_setup \<^binding>\<open>output_information\<close> (Output.information o the_single) #>
   command0_setup \<^binding>\<open>output_tracing\<close> (tracing o the_single) #>
   command0_setup \<^binding>\<open>output_warning\<close> (warning o the_single) #>
   command0_setup \<^binding>\<open>output_legacy_feature\<close> (legacy_feature o the_single) #>
-  command0_setup \<^binding>\<open>output_error\<close> (Output.error_message o the_single) #>
-  command0_setup \<^binding>\<open>output_report\<close> Output.report);
+  command0_setup \<^binding>\<open>output_error\<close> (Output.error_message o the_single));
 
 
 (* serial numbers from Isabelle/ML *)
