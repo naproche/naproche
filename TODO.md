@@ -1,9 +1,12 @@
 ## TODO ##
 
-# Isabelle/Naproche integration
+# General
 
-* Isabelle/ML vs. Isabelle/Haskell/Naproche should always use TCP server
-  (not command-line tool), and allow to augment the enclosing theory / proof context.
+* Use Program.serial to identify Decl: but this requires IO monad, or to modify
+  pro-forma serial numbers produced during parsing.
+
+
+# Isabelle/Naproche integration
 
 * The Isabelle/Scala prover_server should become general bash_process server, for arbitrary
   executables (name, bash script).
