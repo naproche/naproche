@@ -8,7 +8,21 @@ Constants for Isabelle/Naproche.
 
 {-# LANGUAGE OverloadedStrings #-}
 
-module Isabelle.Naproche
+module Isabelle.Naproche (
+  naproche_prove, naproche_check, naproche_skipfail,
+  naproche_pos_id, naproche_pos_file, naproche_pos_shift,
+
+  cancel_program, forthel_program,
+
+  threads_command, serials_command,
+
+  output_state_command, output_writeln_command, output_information_command,
+  output_tracing_command, output_warning_command, output_legacy_feature_command,
+  output_error_command, output_report_command,
+
+  prover_args, prover_command, prover_name, prover_timeout, prover_result,
+  prover_return_code, kill_command
+)
 where
 
 import Isabelle.Bytes (Bytes)
