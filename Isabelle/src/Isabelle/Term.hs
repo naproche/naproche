@@ -14,7 +14,7 @@ See "$ISABELLE_HOME/src/Pure/term.scala".
 module Isabelle.Term (
   Indexname, Sort, Typ(..), Term(..),
   Free, lambda, declare_frees, incr_boundvars, subst_bound, dest_abs, strip_abs,
-  type_op0, type_op1, op0, op1, op2, typed_op1, typed_op2, binder,
+  type_op0, type_op1, op0, op1, op2, typed_op0, typed_op1, typed_op2, binder,
   dummyS, dummyT, is_dummyT, propT, is_propT, (-->), dest_funT, (--->),
   aconv, list_comb, strip_comb, head_of
 )
@@ -146,6 +146,13 @@ op2 name = (mk, dest)
   where
     mk t u = App (App (Const (name, []), t), u)
     dest (App (App (Const (c, _), t), u)) | c == name = Just (t, u)
+    dest _ = Nothing
+
+typed_op0 :: Name -> (Typ -> Term, Term -> Maybe Typ)
+typed_op0 name = (mk, dest)
+  where
+    mk ty = Const (name, [ty])
+    dest (Const (c, [ty])) | c == name = Just ty
     dest _ = Nothing
 
 typed_op1 :: Name -> (Typ -> Term -> Term, Term -> Maybe (Typ, Term))

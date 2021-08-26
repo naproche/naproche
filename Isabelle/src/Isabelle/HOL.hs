@@ -18,7 +18,8 @@ module Isabelle.HOL (
   mk_not, dest_not, mk_conj, dest_conj, mk_disj, dest_disj,
   mk_imp, dest_imp, mk_iff, dest_iff,
   mk_all_op, dest_all_op, mk_ex_op, dest_ex_op,
-  mk_all, dest_all, mk_ex, dest_ex
+  mk_all, dest_all, mk_ex, dest_ex,
+  mk_undefined, dest_undefined
 )
 where
 
@@ -79,3 +80,6 @@ mk_all :: Free -> Term -> Term; dest_all :: Name.Context -> Term -> Maybe (Free,
 
 mk_ex :: Free -> Term -> Term; dest_ex :: Name.Context -> Term -> Maybe (Free, Term)
 (mk_ex, dest_ex) = binder "HOL.Ex"
+
+mk_undefined :: Typ -> Term; dest_undefined :: Term -> Maybe Typ
+(mk_undefined, dest_undefined) = typed_op0 "HOL.undefined"
