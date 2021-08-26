@@ -14,17 +14,20 @@ module Isabelle.Naproche (
 
   cancel_program, forthel_program,
 
-  threads_command, serials_command,
+  threads_command, serials_command, type_terms_command, print_terms_command,
 
   output_state_command, output_writeln_command, output_information_command,
   output_tracing_command, output_warning_command, output_legacy_feature_command,
   output_error_command, output_report_command,
 
   prover_args, prover_command, prover_name, prover_timeout, prover_result,
-  prover_return_code, kill_command
+  prover_return_code, kill_command,
+
+  iT, is_iT, mk_this, dest_this
 )
 where
 
+import Isabelle.Term
 import Isabelle.Bytes (Bytes)
 
 
@@ -53,11 +56,11 @@ forthel_program = "forthel"
 
 -- commands in ML
 
-threads_command :: Bytes
+threads_command, serials_command, type_terms_command, print_terms_command :: Bytes
 threads_command = "Naproche.threads"
-
-serials_command :: Bytes
 serials_command = "Naproche.serials"
+type_terms_command = "Naproche.type_terms"
+print_terms_command = "Naproche.print_terms"
 
 output_state_command, output_writeln_command, output_information_command,
   output_tracing_command, output_warning_command, output_legacy_feature_command,
@@ -95,3 +98,12 @@ prover_return_code = "return_code"
 
 kill_command :: Bytes
 kill_command = "kill"
+
+
+-- logic
+
+iT :: Typ; is_iT :: Typ -> Bool
+(iT, is_iT) = type_op0 "Naproche.i"
+
+mk_this :: Typ -> Term; dest_this :: Term -> Maybe Typ
+(mk_this, dest_this) = typed_op0 "Naproche.this"

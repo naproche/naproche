@@ -6,9 +6,10 @@ Naproche program context: Console or PIDE.
 
 module Naproche.Program (
   Error (..), print_error,
-  Context (..), is_pide,
+  Context (..), is_pide, check_pide,
   write_message, read_message, exchange_message, exchange_message0,
-  adjust_position, exit_thread, init_console, init_pide, thread_context,
+  adjust_position, pide_command, yxml_pide_command,
+  exit_thread, init_console, init_pide, thread_context,
   error,
   serials, serial
 )
@@ -23,7 +24,7 @@ import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
 import qualified Data.ByteString.Char8 as Char8
 import Control.Concurrent (ThreadId)
-import Control.Monad (when, replicateM)
+import Control.Monad (when, unless, replicateM)
 import qualified Control.Concurrent as Concurrent
 import qualified Control.Exception as Exception
 import Control.Exception (Exception)
@@ -35,6 +36,9 @@ import qualified Isabelle.Byte_Message as Byte_Message
 import qualified Isabelle.Value as Value
 import qualified Isabelle.Position as Position
 import qualified Isabelle.Options as Options
+import qualified Isabelle.XML.Encode as Encode
+import qualified Isabelle.XML.Decode as Decode
+import qualified Isabelle.YXML as YXML
 import qualified Isabelle.Naproche as Naproche
 import Isabelle.Library
 
@@ -51,6 +55,10 @@ is_pide :: Context -> Bool
 is_pide Console = False
 is_pide (PIDE _ _) = True
 
+check_pide :: Applicative f => Context -> f ()
+check_pide context =
+  unless (is_pide context) $ errorWithoutStackTrace "No PIDE context"
+
 write_message :: Context -> [Bytes] -> IO ()
 write_message Console = Char8.putStrLn . Bytes.unmake . Bytes.concat
 write_message (PIDE socket _) = Byte_Message.write_message socket
@@ -62,8 +70,10 @@ read_message (PIDE socket _) = Byte_Message.read_message socket
 exchange_message :: Context -> [Bytes] -> IO [Bytes]
 exchange_message context msg = do
   write_message context msg
-  res <- read_message context
-  return $ fromMaybe [] res
+  result <- read_message context
+  case result of
+    Nothing -> errorWithoutStackTrace "No result message: socket closed"
+    Just res -> return res
 
 exchange_message0 :: Context -> [Bytes] -> IO ()
 exchange_message0 context msg = do
@@ -83,6 +93,20 @@ adjust_position (PIDE _ options) pos =
     |> Position.put_file (fromMaybe pos_file (Position.file_of pos))
     |> Position.put_id pos_id
     |> Position.shift_offsets pos_shift
+
+
+{- PIDE commands -}
+
+pide_command :: Bytes -> Context -> [Bytes] -> IO [Bytes]
+pide_command command context args = do
+  check_pide context
+  exchange_message context (command : args)
+
+yxml_pide_command :: Encode.T a -> Decode.T b -> Bytes -> Context -> [a] -> IO [b]
+yxml_pide_command encode decode command context xs = do
+  let args = map (YXML.string_of_body . encode) xs
+  result <- pide_command command context args
+  return $ map (decode . YXML.parse_body) result
 
 
 {- program threads -}

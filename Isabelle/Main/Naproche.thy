@@ -10,8 +10,20 @@ theory Naproche
     and "forthel_file" :: thy_load
 begin
 
+
+section \<open>Isabelle logic: Pure + HOL\<close>
+
+typedecl i  \<comment> \<open>individuals of "untyped" HOL\<close>
+
+axiomatization this :: 'a
+
+
+section \<open>Isabelle/ML\<close>
+
 ML_file \<open>naproche.ML\<close>
 
+
+section \<open>Isabelle/Haskell\<close>
 
 generate_file "Isabelle/Naproche.hs" = \<open>
 {-
@@ -28,17 +40,20 @@ module Isabelle.Naproche (
 
   cancel_program, forthel_program,
 
-  threads_command, serials_command,
+  threads_command, serials_command, type_terms_command, print_terms_command,
 
   output_state_command, output_writeln_command, output_information_command,
   output_tracing_command, output_warning_command, output_legacy_feature_command,
   output_error_command, output_report_command,
 
   prover_args, prover_command, prover_name, prover_timeout, prover_result,
-  prover_return_code, kill_command
+  prover_return_code, kill_command,
+
+  iT, is_iT, mk_this, dest_this
 )
 where
 
+import Isabelle.Term
 import Isabelle.Bytes (Bytes)
 
 
@@ -67,11 +82,11 @@ forthel_program = \<open>Naproche.forthel_program\<close>
 
 -- commands in ML
 
-threads_command :: Bytes
+threads_command, serials_command, type_terms_command, print_terms_command :: Bytes
 threads_command = \<open>\<^naproche_command>\<open>threads\<close>\<close>
-
-serials_command :: Bytes
 serials_command = \<open>\<^naproche_command>\<open>serials\<close>\<close>
+type_terms_command = \<open>\<^naproche_command>\<open>type_terms\<close>\<close>
+print_terms_command = \<open>\<^naproche_command>\<open>print_terms\<close>\<close>
 
 output_state_command, output_writeln_command, output_information_command,
   output_tracing_command, output_warning_command, output_legacy_feature_command,
@@ -109,6 +124,15 @@ prover_return_code = "return_code"
 
 kill_command :: Bytes
 kill_command = "kill"
+
+
+-- logic
+
+iT :: Typ; is_iT :: Typ -> Bool
+(iT, is_iT) = type_op0 \<open>\<^type_name>\<open>i\<close>\<close>
+
+mk_this :: Typ -> Term; dest_this :: Term -> Maybe Typ
+(mk_this, dest_this) = typed_op0 \<open>\<^const_name>\<open>this\<close>\<close>
 \<close>
 
 end

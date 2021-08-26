@@ -21,6 +21,8 @@ sig
   type command0 = string list -> unit
   val command_setup: binding -> command -> theory -> theory
   val command0_setup: binding -> command0 -> theory -> theory
+  val command1_setup: binding -> (Proof.context -> string -> string) -> theory -> theory
+  val yxml_command1_setup: binding -> (Proof.context -> XML.body -> XML.body) -> theory -> theory
   val cancel_program: string
   val forthel_program: string
   val check_forthel: Proof.context -> {tex: bool} -> string * Position.T -> unit
@@ -99,6 +101,13 @@ fun command_setup binding cmd thy =
 fun command0_setup binding (cmd: command0) =
   command_setup binding (fn (args, state) => (cmd args; ([], state)));
 
+fun command1_setup binding cmd =
+  command_setup binding (fn (args, state) =>
+    (map (cmd (context_of_state state)) args, state));
+
+fun yxml_command1_setup binding cmd =
+  command1_setup binding (fn ctxt => YXML.parse_body #> cmd ctxt #> YXML.string_of_body);
+
 val get_command = Name_Space.lookup o Data.get;
 
 fun check_command thy = #1 o Name_Space.check (Context.Theory thy) (Data.get thy);
@@ -152,8 +161,8 @@ fun command_loop streams state =
       | SOME cmd =>
           (case Exn.interruptible_capture cmd (args, state) of
             Exn.Exn exn =>
-              raise Fail ("Protocol error: failure of Isabelle/Naproche command " ^ quote name
-                ^ "\n" ^ Runtime.exn_message exn)
+              raise Fail ("Protocol error: failure of Isabelle/Naproche command " ^ quote name ^
+                "\n" ^ Runtime.exn_message (Runtime.exn_context (SOME (context_of_state state)) exn))
           | Exn.Res (result, state') =>
               (write_message streams result; command_loop streams state'))))
   handle exn => (cancel state; Exn.reraise exn);
@@ -194,22 +203,25 @@ fun check_forthel ctxt {tex} (text, pos) =
   end;
 
 
-
 (** Isabelle/Naproche protocol commands **)
 
-val _ = Theory.setup
- (command0_setup \<^binding>\<open>output_report\<close> Output.report #>
+val decode_term = Term_XML.Decode.term o Proof_Context.consts_of;
 
+val _ = Theory.setup
+ (command_setup \<^binding>\<open>serials\<close>
+    (apfst (fn [n] => replicate (Value.parse_nat n) () |> map serial_string)) #>
+  yxml_command1_setup \<^binding>\<open>type_terms\<close>
+    (fn ctxt => decode_term ctxt #> Term.type_of #> Term_XML.Encode.typ) #>
+  yxml_command1_setup \<^binding>\<open>print_terms\<close>
+    (fn ctxt => decode_term ctxt #> Syntax.string_of_term ctxt #> XML.Encode.string) #>
+  command0_setup \<^binding>\<open>output_report\<close> Output.report #>
   command0_setup \<^binding>\<open>output_state\<close> (Output.state o the_single) #>
   command0_setup \<^binding>\<open>output_writeln\<close> (writeln o the_single) #>
   command0_setup \<^binding>\<open>output_information\<close> (Output.information o the_single) #>
   command0_setup \<^binding>\<open>output_tracing\<close> (tracing o the_single) #>
   command0_setup \<^binding>\<open>output_warning\<close> (warning o the_single) #>
   command0_setup \<^binding>\<open>output_legacy_feature\<close> (legacy_feature o the_single) #>
-  command0_setup \<^binding>\<open>output_error\<close> (Output.error_message o the_single) #>
-
-  command_setup \<^binding>\<open>serials\<close>
-    (apfst (fn [n] => replicate (Value.parse_nat n) () |> map serial_string)));
+  command0_setup \<^binding>\<open>output_error\<close> (Output.error_message o the_single));
 
 
 
