@@ -18,7 +18,7 @@ and "$ISABELLE_HOME/src/Pure/library.ML".
 module Isabelle.Library (
   (|>), (|->), (#>), (#->),
 
-  fold, fold_rev, single, map_index, get_index, separate,
+  fold, fold_rev, single, the_single, singletonM, map_index, get_index, separate,
 
   StringLike, STRING (..), TEXT (..), BYTES (..),
   show_bytes, show_text,
@@ -65,6 +65,13 @@ fold_rev f (x : xs) y = f x (fold_rev f xs y)
 
 single :: a -> [a]
 single x = [x]
+
+the_single :: [a] -> a
+the_single [x] = x
+the_single _ = undefined
+
+singletonM :: Monad m => ([a] -> m [b]) -> a -> m b
+singletonM f x = the_single <$> f [x]
 
 map_index :: ((Int, a) -> b) -> [a] -> [b]
 map_index f = map_aux 0
