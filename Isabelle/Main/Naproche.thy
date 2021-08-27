@@ -1,7 +1,7 @@
 (*
 Authors: Makarius (2018, 2021)
 
-Isabelle Prover IDE support for NaProChe / ForTheL.
+Isabelle Prover IDE and logic support for NaProChe / ForTheL.
 *)
 
 theory Naproche
@@ -11,7 +11,7 @@ theory Naproche
 begin
 
 
-section \<open>Isabelle logic: Pure + HOL\<close>
+section \<open>Logic\<close>
 
 typedecl i  \<comment> \<open>individuals of ``untyped'' HOL\<close>
 
