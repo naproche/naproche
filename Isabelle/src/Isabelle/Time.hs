@@ -13,11 +13,12 @@ See "$ISABELLE_HOME/src/Pure/General/time.scala"
 
 module Isabelle.Time (
   Time, seconds, minutes, ms, zero, is_zero, is_relevant,
-  get_seconds, get_minutes, get_ms, message
+  get_seconds, get_minutes, get_ms, message, now
 )
 where
 
 import Text.Printf (printf)
+import Data.Time.Clock.POSIX (getPOSIXTime)
 import Isabelle.Bytes (Bytes)
 import Isabelle.Library
 
@@ -59,3 +60,8 @@ instance Show Time where
 
 message :: Time -> Bytes
 message t = make_bytes (show t) <> "s"
+
+now :: IO Time
+now = do
+  t <- getPOSIXTime
+  return $ Time (round (realToFrac t * 1000.0 :: Double))
