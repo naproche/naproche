@@ -38,7 +38,7 @@ object Naproche_Build
 
     val path = progress.bash("isabelle ghc_stack path --local-install-root", cwd = cwd).check.out
     Isabelle_System.copy_file(
-      Path.explode(File.standard_path(path)) + Path.explode("bin/Naproche-SAD"),
+      Path.explode(File.standard_path(path)) + Path.explode("bin/Naproche-SAD").platform_exe,
       Isabelle_System.make_directory(Naproche.NAPROCHE_EXE_DIR))
   }
 
