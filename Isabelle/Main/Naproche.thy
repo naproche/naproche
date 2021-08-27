@@ -42,7 +42,8 @@ notation (output)
   Elem (infix \<open>\<^bold>\<in>\<close> 50) and
   Less (infix \<open>\<prec>\<close> 50) and
   Prod (infix \<open>\<times>\<close> 20) and
-  Pair (\<open>\<langle>_,/ _\<rangle>\<close> [0, 0] 1000)
+  Pair (\<open>\<langle>_,/ _\<rangle>\<close> [0, 0] 1000) and
+  App (infix \<open>\<cdot>\<close> 90)
 
 
 section \<open>Isabelle/ML\<close>
