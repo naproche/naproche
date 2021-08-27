@@ -6,7 +6,7 @@ Naproche program context: Console or PIDE.
 
 module Naproche.Program (
   Error (..), print_error,
-  Context (..), is_pide, check_pide,
+  Context (..), is_pide, check_pide, is_isabelle,
   write_message, read_message, exchange_message, exchange_message0,
   adjust_position, pide_command, yxml_pide_command,
   exit_thread, init_console, init_pide, thread_context,
@@ -54,6 +54,10 @@ instance Show Context where
 is_pide :: Context -> Bool
 is_pide Console = False
 is_pide (PIDE _ _) = True
+
+is_isabelle :: Context -> Bool
+is_isabelle Console = False
+is_isabelle (PIDE _ options) = Options.bool options Naproche.naproche_isabelle
 
 check_pide :: Applicative f => Context -> f ()
 check_pide context =

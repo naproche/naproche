@@ -26,6 +26,9 @@ public option naproche_print_thesis : bool = true
 public option naproche_translate : bool = true
   -- "print first-order translations"
 
+public option naproche_isabelle : bool = false
+  -- "integration of Naproche logic with Isabelle"
+
 option naproche_server_address : string = ""
   -- "address/port of Naproche-SAD server"
 

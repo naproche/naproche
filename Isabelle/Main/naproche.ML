@@ -11,6 +11,7 @@ sig
   val naproche_skipfail: bool Config.T
   val naproche_print_thesis: bool Config.T
   val naproche_translate: bool Config.T
+  val naproche_isabelle: bool Config.T
   type state
   val get_theory: state -> generic_theory
   val map_theory_result: (generic_theory -> 'a * generic_theory) -> state -> 'a * state
@@ -39,6 +40,7 @@ val naproche_check = Attrib.setup_option_bool (\<^system_option>\<open>naproche_
 val naproche_skipfail = Attrib.setup_option_bool (\<^system_option>\<open>naproche_skipfail\<close>, \<^here>);
 val naproche_print_thesis = Attrib.setup_option_bool (\<^system_option>\<open>naproche_print_thesis\<close>, \<^here>);
 val naproche_translate = Attrib.setup_option_bool (\<^system_option>\<open>naproche_translate\<close>, \<^here>);
+val naproche_isabelle = Attrib.setup_option_bool (\<^system_option>\<open>naproche_isabelle\<close>, \<^here>);
 
 fun naproche_options pos =
   let

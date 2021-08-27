@@ -64,6 +64,7 @@ Constants for Isabelle/Naproche.
 module Isabelle.Naproche (
   naproche_prove, naproche_check, naproche_skipfail,
   naproche_pos_id, naproche_pos_file, naproche_pos_shift,
+  naproche_isabelle,
 
   cancel_program, forthel_program,
 
@@ -99,6 +100,9 @@ naproche_pos_id, naproche_pos_file, naproche_pos_shift :: Bytes
 naproche_pos_id = \<open>\<^system_option>\<open>naproche_pos_id\<close>\<close>
 naproche_pos_file = \<open>\<^system_option>\<open>naproche_pos_file\<close>\<close>
 naproche_pos_shift = \<open>\<^system_option>\<open>naproche_pos_shift\<close>\<close>
+
+naproche_isabelle :: Bytes
+naproche_isabelle = \<open>\<^system_option>\<open>naproche_isabelle\<close>\<close>
 
 
 -- programs in Haskell
