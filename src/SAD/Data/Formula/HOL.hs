@@ -42,19 +42,33 @@ base_type, prop_type :: Isabelle.Typ
 base_type = Isabelle.iT
 prop_type = Isabelle.boolT
 
-variable_name :: VariableName -> Isabelle.Name
-variable_name (VarConstant s) = "x" <> make_bytes s
-variable_name (VarHole s) = Isabelle.internal ("HOLE_" <> make_bytes s)
-variable_name VarSlot = Isabelle.internal "SLOT"
-variable_name (VarU s) = "u" <> make_bytes s
-variable_name (VarHidden n) = "h" <> Value.print_int n
-variable_name (VarAssume n) = "i" <> Value.print_int n
-variable_name (VarSkolem n) = "o" <> Value.print_int n
-variable_name (VarTask s) = "c" <> variable_name s
-variable_name (VarZ s) = "z" <> make_bytes s
-variable_name (VarW s) = "w" <> make_bytes s
-variable_name VarEmpty = Isabelle.uu_
-variable_name (VarDefault s) = make_bytes s
+free_name :: VariableName -> Isabelle.Name
+free_name (VarConstant s) = "x" <> make_bytes s
+free_name (VarHole s) = Isabelle.internal ("HOLE_" <> make_bytes s)
+free_name VarSlot = Isabelle.internal "SLOT"
+free_name (VarU s) = "u" <> make_bytes s
+free_name (VarHidden n) = "h" <> Value.print_int n
+free_name (VarAssume n) = "i" <> Value.print_int n
+free_name (VarSkolem n) = "o" <> Value.print_int n
+free_name (VarTask s) = "c" <> free_name s
+free_name (VarZ s) = "z" <> make_bytes s
+free_name (VarW s) = "w" <> make_bytes s
+free_name VarEmpty = Isabelle.uu_
+free_name (VarDefault s) = make_bytes s
+
+bound_name :: VariableName -> Isabelle.Name
+bound_name (VarConstant s) = make_bytes s
+bound_name (VarHole s) = Isabelle.internal ("v" <> make_bytes s)
+bound_name VarSlot = Isabelle.uu
+bound_name (VarU s) = "u"
+bound_name (VarHidden _) = "h"
+bound_name (VarAssume _) = "i"
+bound_name (VarSkolem _) = "o"
+bound_name (VarTask s) = "c" <> bound_name s
+bound_name (VarZ s) = "z"
+bound_name (VarW s) = "w"
+bound_name VarEmpty = Isabelle.uu
+bound_name (VarDefault s) = make_bytes s
 
 term_name :: TermName -> Isabelle.Name
 term_name (TermName t) = make_bytes t
@@ -117,10 +131,10 @@ export_formula = Isabelle.mk_trueprop . form
     term _ = error "Bad formula as term"
 
     free :: VariableName -> Isabelle.Typ -> Isabelle.Term
-    free x ty = Isabelle.Free (variable_name x, ty)
+    free x ty = Isabelle.Free (free_name x, ty)
 
     abs :: VariableName -> Isabelle.Term -> Isabelle.Term
-    abs x body = Isabelle.Abs (variable_name x, base_type, body)
+    abs x body = Isabelle.Abs (bound_name x, base_type, body)
 
     app :: TermName -> [Isabelle.Term] -> Isabelle.Typ -> Isabelle.Term
     app name args res_type = Isabelle.list_comb op args
