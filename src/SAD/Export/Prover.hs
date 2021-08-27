@@ -34,7 +34,7 @@ import qualified Isabelle.Process_Result as Process_Result
 
 import SAD.Core.Base (reportBracketIO)
 import SAD.Data.Instr hiding (Prover)
-import SAD.Data.Text.Context (Context, branch)
+import SAD.Data.Text.Context (Context, branch, formula)
 import qualified SAD.Data.Text.Block as Block
 import SAD.Export.Base
 import SAD.Helpers (notNull)
@@ -42,13 +42,20 @@ import SAD.Helpers (notNull)
 import qualified SAD.Core.Message as Message
 import qualified SAD.Data.Instr as Instr
 import qualified SAD.Export.TPTP as TPTP
+import qualified SAD.Data.Formula.HOL as HOL
 
 import qualified Isabelle.Position as Position
+import qualified Naproche.Program as Program
 
 
 export :: Position.T -> Int -> [Prover] -> [Instr] -> [Context] -> Context -> IO Result
 export pos depth provers instrs context goal = do
   Isabelle_Thread.expose_stopped
+
+  program_context <- Program.thread_context
+  when (Program.is_isabelle program_context) $ do
+    s <- HOL.print_sequent program_context (reverse $ map formula context, [formula goal])
+    Message.outputExport Message.TRACING pos s
 
   when (null provers) $ Message.errorExport pos "No provers"
 
