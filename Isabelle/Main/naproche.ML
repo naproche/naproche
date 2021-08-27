@@ -26,6 +26,7 @@ sig
   val cancel_program: string
   val forthel_program: string
   val check_forthel: Proof.context -> {tex: bool} -> string * Position.T -> unit
+  val pretty_sequent: Proof.context -> term list * term list -> Pretty.T
 end;
 
 structure Naproche: NAPROCHE =
@@ -203,9 +204,41 @@ fun check_forthel ctxt {tex} (text, pos) =
   end;
 
 
+
+(** Naproche logic **)
+
+fun pretty_sequent ctxt (asms, concls) =
+  let
+    val ts = asms @ concls;
+    val xs = rev (fold (Variable.add_frees ctxt) ts []);
+
+    val fixes =
+      if null xs then []
+      else [Element.Fixes (map (fn (x, T) => (Binding.name x, SOME T, NoSyn)) xs)];
+    val assumes =
+      if null asms then []
+      else [Element.Assumes (map (fn t => (Binding.empty_atts, [(t, [])])) asms)];
+    val shows =
+      if null concls then []
+      else [(Element.Shows [(Binding.empty_atts, map (rpair []) concls)])];
+
+    val ctxt' = fold Variable.add_fixes_implicit ts ctxt;
+  in
+    maps (Element.pretty_ctxt ctxt') (fixes @ assumes) @
+    maps (Element.pretty_stmt ctxt') shows
+  end |> Pretty.chunks;
+
+val string_of_sequent = Pretty.string_of oo pretty_sequent;
+
+
+
 (** Isabelle/Naproche protocol commands **)
 
 val decode_term = Term_XML.Decode.term o Proof_Context.consts_of;
+
+fun decode_sequent ctxt =
+  let val decode = XML.Decode.list (decode_term ctxt)
+  in XML.Decode.pair decode decode end;
 
 val _ = Theory.setup
  (command_setup \<^binding>\<open>serials\<close>
@@ -214,6 +247,8 @@ val _ = Theory.setup
     (fn ctxt => decode_term ctxt #> Term.type_of #> Term_XML.Encode.typ) #>
   yxml_command1_setup \<^binding>\<open>print_terms\<close>
     (fn ctxt => decode_term ctxt #> Syntax.string_of_term ctxt #> XML.Encode.string) #>
+  yxml_command1_setup \<^binding>\<open>print_sequents\<close>
+    (fn ctxt => decode_sequent ctxt #> string_of_sequent ctxt #> XML.Encode.string) #>
   command0_setup \<^binding>\<open>output_report\<close> Output.report #>
   command0_setup \<^binding>\<open>output_state\<close> (Output.state o the_single) #>
   command0_setup \<^binding>\<open>output_writeln\<close> (writeln o the_single) #>

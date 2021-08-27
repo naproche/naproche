@@ -15,6 +15,7 @@ module Isabelle.Naproche (
   cancel_program, forthel_program,
 
   threads_command, serials_command, type_terms_command, print_terms_command,
+  print_sequents_command,
 
   output_state_command, output_writeln_command, output_information_command,
   output_tracing_command, output_warning_command, output_legacy_feature_command,
@@ -59,11 +60,13 @@ forthel_program = "forthel"
 
 -- commands in ML
 
-threads_command, serials_command, type_terms_command, print_terms_command :: Bytes
+threads_command, serials_command, type_terms_command, print_terms_command,
+  print_sequents_command :: Bytes
 threads_command = "Naproche.threads"
 serials_command = "Naproche.serials"
 type_terms_command = "Naproche.type_terms"
 print_terms_command = "Naproche.print_terms"
+print_sequents_command = "Naproche.print_sequents"
 
 output_state_command, output_writeln_command, output_information_command,
   output_tracing_command, output_warning_command, output_legacy_feature_command,

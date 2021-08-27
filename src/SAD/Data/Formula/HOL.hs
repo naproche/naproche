@@ -9,7 +9,7 @@ The Naproche logic within Isabelle/HOL.
 
 module SAD.Data.Formula.HOL (
   base_type, prop_type, export_formula,
-  type_terms, type_term, print_terms, print_term
+  type_terms, type_term, print_terms, print_term, print_sequents, print_sequent
 )
 where
 
@@ -31,6 +31,7 @@ import qualified Isabelle.Naproche as Isabelle
 import Isabelle.Library
 import qualified Naproche.Program as Program
 import qualified Isabelle.YXML as YXML
+import qualified Isabelle.XML.Encode as Encode
 import qualified Isabelle.Term_XML.Encode as Encode
 import qualified Isabelle.Term_XML.Decode as Decode
 
@@ -144,3 +145,14 @@ print_terms = Program.yxml_pide_command Encode.term YXML.string_of_body Isabelle
 
 print_term :: Program.Context -> Isabelle.Term -> IO Bytes
 print_term = singletonM . print_terms
+
+print_sequents :: Program.Context -> [([Formula], [Formula])] -> IO [Bytes]
+print_sequents =
+  let
+    encode1 = Encode.list (Encode.term . export_formula)
+    encode2 = Encode.pair encode1 encode1
+  in
+    Program.yxml_pide_command encode2 YXML.string_of_body Isabelle.print_sequents_command
+
+print_sequent :: Program.Context -> ([Formula], [Formula]) -> IO Bytes
+print_sequent = singletonM . print_sequents
