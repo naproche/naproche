@@ -23,7 +23,10 @@ module Isabelle.Naproche (
   prover_args, prover_command, prover_name, prover_timeout, prover_result,
   prover_return_code, kill_command,
 
-  iT, is_iT, mk_this, dest_this
+  iT, is_iT, mk_this, dest_this,
+
+  setsized_const, fun_const, set_const, class_const, elem_const, obj_const,
+  less_const, dom_const, prod_const, pair_const, app_const, thesis_const
 )
 where
 
@@ -106,4 +109,19 @@ iT :: Typ; is_iT :: Typ -> Bool
 (iT, is_iT) = type_op0 "Naproche.i"
 
 mk_this :: Typ -> Term; dest_this :: Term -> Maybe Typ
-(mk_this, dest_this) = typed_op0 "Naproche.this"
+(mk_this, dest_this) = typed_op0 "Naproche.This"
+
+setsized_const, fun_const, set_const, class_const, elem_const, obj_const,
+  less_const, dom_const, prod_const, pair_const, app_const, thesis_const :: Bytes
+setsized_const = "Naproche.setsized"
+fun_const = "Naproche.Fun"
+set_const = "Naproche.Set"
+class_const = "Naproche.Class"
+elem_const = "Naproche.Elem"
+obj_const = "Naproche.Obj"
+less_const = "Naproche.Less"
+dom_const = "Naproche.Dom"
+prod_const = "Naproche.Prod"
+pair_const = "Naproche.Pair"
+app_const = "Naproche.App"
+thesis_const = "Naproche.Thesis"

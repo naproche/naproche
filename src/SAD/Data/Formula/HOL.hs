@@ -13,6 +13,9 @@ module SAD.Data.Formula.HOL (
 )
 where
 
+import qualified Data.Map.Strict as Map
+import Data.Map.Strict (Map)
+
 import SAD.Data.VarName (VariableName (..))
 import SAD.Data.Text.Decl (Decl (..))
 import SAD.Data.Terms
@@ -62,11 +65,27 @@ term_name (TermMultiAdjective t) = "mis" <> make_bytes t
 term_name (TermUnaryVerb t) = "do" <> make_bytes t
 term_name (TermMultiVerb t) = "mdo" <> make_bytes t
 term_name (TermTask n) = "tsk " <> Value.print_int n
-term_name TermEquality = "="
-term_name TermLess  = "iLess"
-term_name TermSmall = "isSetSized"
-term_name TermThesis = "#TH#"
+term_name TermEquality = undefined
+term_name TermLess  = undefined
+term_name TermSmall = undefined
+term_name TermThesis = undefined
 term_name TermEmpty = ""
+
+consts :: Map TermName Bytes
+consts =
+  Map.fromList [
+    (TermSmall, Isabelle.setsized_const),
+    (termFunction, Isabelle.fun_const),
+    (termSet, Isabelle.set_const),
+    (termClass, Isabelle.class_const),
+    (termElement, Isabelle.elem_const),
+    (termObject, Isabelle.obj_const),
+    (TermLess, Isabelle.less_const),
+    (termDomain, Isabelle.dom_const),
+    (termProduct, Isabelle.prod_const),
+    (termPair, Isabelle.pair_const),
+    (termApplication, Isabelle.app_const),
+    (TermThesis, Isabelle.thesis_const)]
 
 export_formula :: Formula -> Isabelle.Term
 export_formula = Isabelle.mk_trueprop . form
@@ -105,8 +124,11 @@ export_formula = Isabelle.mk_trueprop . form
     app :: TermName -> [Isabelle.Term] -> Isabelle.Typ -> Isabelle.Term
     app name args res_type = Isabelle.list_comb op args
       where
-        op = Isabelle.Free (term_name name, ty)
         ty = replicate (length args) base_type ---> res_type
+        op =
+          case Map.lookup name consts of
+            Just c -> Isabelle.Const (c, [])
+            Nothing -> Isabelle.Free (term_name name, ty)
 
 
 {- Isabelle term operations -}

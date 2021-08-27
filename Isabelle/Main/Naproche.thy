@@ -13,9 +13,36 @@ begin
 
 section \<open>Isabelle logic: Pure + HOL\<close>
 
-typedecl i  \<comment> \<open>individuals of "untyped" HOL\<close>
+typedecl i  \<comment> \<open>individuals of ``untyped'' HOL\<close>
 
-axiomatization this :: 'a
+axiomatization
+  \<comment> \<open>primitive adjectives\<close>
+  setsized :: \<open>i \<Rightarrow> bool\<close> and  \<comment> \<open>``small'' sets\<close>
+
+  \<comment> \<open>primitive notions\<close>
+  Fun :: \<open>i \<Rightarrow> bool\<close>  \<comment> \<open>functions\<close> and
+  Set :: \<open>i \<Rightarrow> bool\<close>  \<comment> \<open>sets\<close> and
+  Class :: \<open>i \<Rightarrow> bool\<close>  \<comment> \<open>classes\<close> and
+  Elem :: \<open>i \<Rightarrow> i \<Rightarrow> bool\<close>  \<comment> \<open>set membership / elements of a set\<close> and
+  Obj :: \<open>i \<Rightarrow> bool\<close>  \<comment> \<open>objects\<close> and
+
+  \<comment> \<open>primitive predicates\<close>
+  Less :: \<open>i \<Rightarrow> i \<Rightarrow> bool\<close>  \<comment> \<open>relation for induction\<close> and
+
+  \<comment> \<open>primitive operations\<close>
+  Dom :: \<open>i \<Rightarrow> i\<close> and
+  Prod :: \<open>i \<Rightarrow> i \<Rightarrow> i\<close> and
+  Pair :: \<open>i \<Rightarrow> i \<Rightarrow> i\<close> and
+  App :: \<open>i \<Rightarrow> i \<Rightarrow> i\<close> and
+
+  Thesis :: \<open>bool\<close> and
+  This :: 'a
+
+notation (output)
+  Elem (infix \<open>\<^bold>\<in>\<close> 50) and
+  Less (infix \<open>\<prec>\<close> 50) and
+  Prod (infix \<open>\<times>\<close> 20) and
+  Pair (\<open>\<langle>_,/ _\<rangle>\<close> [0, 0] 1000)
 
 
 section \<open>Isabelle/ML\<close>
@@ -49,7 +76,10 @@ module Isabelle.Naproche (
   prover_args, prover_command, prover_name, prover_timeout, prover_result,
   prover_return_code, kill_command,
 
-  iT, is_iT, mk_this, dest_this
+  iT, is_iT, mk_this, dest_this,
+
+  setsized_const, fun_const, set_const, class_const, elem_const, obj_const,
+  less_const, dom_const, prod_const, pair_const, app_const, thesis_const
 )
 where
 
@@ -132,7 +162,22 @@ iT :: Typ; is_iT :: Typ -> Bool
 (iT, is_iT) = type_op0 \<open>\<^type_name>\<open>i\<close>\<close>
 
 mk_this :: Typ -> Term; dest_this :: Term -> Maybe Typ
-(mk_this, dest_this) = typed_op0 \<open>\<^const_name>\<open>this\<close>\<close>
+(mk_this, dest_this) = typed_op0 \<open>\<^const_name>\<open>This\<close>\<close>
+
+setsized_const, fun_const, set_const, class_const, elem_const, obj_const,
+  less_const, dom_const, prod_const, pair_const, app_const, thesis_const :: Bytes
+setsized_const = \<open>\<^const_name>\<open>setsized\<close>\<close>
+fun_const = \<open>\<^const_name>\<open>Fun\<close>\<close>
+set_const = \<open>\<^const_name>\<open>Set\<close>\<close>
+class_const = \<open>\<^const_name>\<open>Class\<close>\<close>
+elem_const = \<open>\<^const_name>\<open>Elem\<close>\<close>
+obj_const = \<open>\<^const_name>\<open>Obj\<close>\<close>
+less_const = \<open>\<^const_name>\<open>Less\<close>\<close>
+dom_const = \<open>\<^const_name>\<open>Dom\<close>\<close>
+prod_const = \<open>\<^const_name>\<open>Prod\<close>\<close>
+pair_const = \<open>\<^const_name>\<open>Pair\<close>\<close>
+app_const = \<open>\<^const_name>\<open>App\<close>\<close>
+thesis_const = \<open>\<^const_name>\<open>Thesis\<close>\<close>
 \<close>
 
 end
