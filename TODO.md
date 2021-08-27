@@ -2,6 +2,8 @@
 
 # General
 
+* Discontinue used TermEmpty!?
+
 * Prefer compact Isabelle.Bytes (ShortByteString) for symbolic names,
   instead of String, Text, Lazy.Text!?
 
