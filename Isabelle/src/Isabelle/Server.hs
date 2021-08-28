@@ -10,7 +10,7 @@ TCP server on localhost.
 {-# LANGUAGE OverloadedStrings #-}
 
 module Isabelle.Server (
-  localhost_name, localhost, publish_text, publish_stdout,
+  localhost_name, localhost_unprefix, localhost, publish_text, publish_stdout,
   server, connection
 )
 where
@@ -34,6 +34,15 @@ import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
 
 localhost_name :: Bytes
 localhost_name = "127.0.0.1"
+
+localhost_prefix :: Bytes
+localhost_prefix = localhost_name <> ":"
+
+localhost_unprefix :: Bytes -> Maybe Bytes
+localhost_unprefix address =
+  if Bytes.isPrefixOf localhost_prefix address
+  then Just $ Bytes.drop (Bytes.length localhost_prefix) address
+  else Nothing
 
 localhost :: Socket.HostAddress
 localhost = Socket.tupleToHostAddress (127, 0, 0, 1)
@@ -95,7 +104,7 @@ connection port password client =
             Socket.defaultHints {
               Socket.addrFlags = [Socket.AI_NUMERICHOST, Socket.AI_NUMERICSERV],
               Socket.addrSocketType = Socket.Stream }
-      head <$> Socket.getAddrInfo (Just hints) (Just "127.0.0.1") (Just port)
+      head <$> Socket.getAddrInfo (Just hints) (Just $ make_string localhost_name) (Just port)
 
     open addr = do
       socket <- Socket.socket (Socket.addrFamily addr) (Socket.addrSocketType addr)

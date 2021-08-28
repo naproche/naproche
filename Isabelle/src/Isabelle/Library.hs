@@ -24,9 +24,13 @@ module Isabelle.Library (
   show_bytes, show_text,
 
   proper_string, enclose, quote, space_implode, commas, commas_quote, cat_lines,
-  space_explode, split_lines, trim_line)
+  space_explode, split_lines, trim_line,
+
+  getenv, getenv_strict)
 where
 
+import System.Environment (lookupEnv)
+import Data.Maybe (fromMaybe)
 import qualified Data.Text as Text
 import Data.Text (Text)
 import qualified Data.Text.Lazy as Lazy
@@ -192,3 +196,18 @@ split_lines = space_explode '\n'
 
 cat_lines :: StringLike a => [a] -> a
 cat_lines = space_implode "\n"
+
+
+{- getenv -}
+
+getenv :: Bytes -> IO Bytes
+getenv x = do
+  y <- lookupEnv (make_string x)
+  return $ make_bytes $ fromMaybe "" y
+
+getenv_strict :: Bytes -> IO Bytes
+getenv_strict x = do
+  y <- getenv x
+  if Bytes.null y then
+    errorWithoutStackTrace $ make_string ("Undefined Isabelle environment variable: " <> quote x)
+  else return y

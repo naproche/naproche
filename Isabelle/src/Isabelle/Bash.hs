@@ -18,6 +18,8 @@ module Isabelle.Bash (
   get_script, get_input, get_cwd, get_putenv, get_redirect,
   get_timeout, get_description,
   script, input, cwd, putenv, redirect, timeout, description,
+  server_run, server_kill,
+  server_uuid, server_interrupt, server_failure, server_result
 )
 where
 
@@ -106,3 +108,16 @@ timeout timeout params = params { _timeout = timeout }
 
 description :: Bytes -> Params -> Params
 description description params = params { _description = description }
+
+
+{- server messages -}
+
+server_run, server_kill :: Bytes
+server_run = "run";
+server_kill = "kill";
+
+server_uuid, server_interrupt, server_failure, server_result :: Bytes
+server_uuid = "uuid";
+server_interrupt = "interrupt";
+server_failure = "failure";
+server_result = "result";
