@@ -70,12 +70,14 @@ main  = do
       else do
         Program.init_console
         mainBody Nothing oldProofTextRef opts1 text0 mFileName)
-          `catch` (\err -> do
+          `catch` (\Exception.UserInterrupt -> do
             Program.exit_thread
-            let msg = Exception.displayException (err :: Exception.SomeException)
-            let rc = if msg == "user interrupt" then Process_Result.interrupt_rc else 1
-            IO.hPutStrLn IO.stderr msg
-            Exit.exitWith (Exit.ExitFailure rc))
+            IO.hPutStrLn IO.stderr "Interrupt"
+            Exit.exitWith (Exit.ExitFailure Process_Result.interrupt_rc))
+          `catch` (\(err :: Exception.SomeException) -> do
+            Program.exit_thread
+            IO.hPutStrLn IO.stderr (Exception.displayException err)
+            Exit.exitWith (Exit.ExitFailure 1))
 
 mainBody :: Maybe ByteString -> IORef ProofText -> [Instr] -> [ProofText] -> Maybe FilePath -> IO ()
 mainBody proversYaml oldProofTextRef opts0 text0 fileName = do
