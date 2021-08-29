@@ -42,7 +42,7 @@ val naproche_print_thesis = Attrib.setup_option_bool (\<^system_option>\<open>na
 val naproche_translate = Attrib.setup_option_bool (\<^system_option>\<open>naproche_translate\<close>, \<^here>);
 val naproche_isabelle = Attrib.setup_option_bool (\<^system_option>\<open>naproche_isabelle\<close>, \<^here>);
 
-fun naproche_options pos =
+fun naproche_options ctxt pos =
   let
     val pos_id =
       (case Position.id_of (Position.thread_data ()) of
@@ -55,6 +55,7 @@ fun naproche_options pos =
     |> Options.put_string \<^system_option>\<open>naproche_pos_id\<close> pos_id
     |> Options.put_string \<^system_option>\<open>naproche_pos_file\<close> pos_file
     |> Options.put_int \<^system_option>\<open>naproche_pos_shift\<close> (pos_offset - 1)
+    |> Options.put_bool \<^system_option>\<open>naproche_isabelle\<close> (Config.get ctxt naproche_isabelle)
   end;
 
 
@@ -196,7 +197,7 @@ fun check_forthel ctxt {tex} (text, pos) =
       "--prover-server-port=" ^ prover_server_port,
       "--prover-server-password=" ^ prover_server_password];
 
-    val opts = YXML.string_of_body (Options.encode (naproche_options pos));
+    val opts = YXML.string_of_body (Options.encode (naproche_options ctxt pos));
 
     val state = make_state ([], Context.Theory (Proof_Context.theory_of ctxt));
   in

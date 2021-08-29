@@ -12,6 +12,8 @@ begin
 
 subsection \<open>Inlined text\<close>
 
+declare [[naproche_isabelle]]
+
 forthel \<open>
 [synonym subset/-s] [synonym surject/-s]
 
