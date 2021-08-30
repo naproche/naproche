@@ -210,6 +210,12 @@ fun check_forthel ctxt {tex} (text, pos) =
 
 (** Naproche logic **)
 
+fun cert_term ctxt t =
+  let
+    val t' = Proof_Context.cert_term ctxt t;
+    val T = Term.type_of t';
+  in (t', T) end;
+
 fun pretty_sequent ctxt (asms, concls) =
   let
     val ts = asms @ concls;
@@ -238,6 +244,7 @@ val string_of_sequent = Pretty.string_of oo pretty_sequent;
 (** Isabelle/Naproche protocol commands **)
 
 val decode_term = Term_XML.Decode.term o Proof_Context.consts_of;
+val encode_term = Term_XML.Encode.term o Proof_Context.consts_of;
 
 fun decode_sequent ctxt =
   let val decode = XML.Decode.list (decode_term ctxt)
@@ -246,8 +253,10 @@ fun decode_sequent ctxt =
 val _ = Theory.setup
  (command_setup \<^binding>\<open>serials\<close>
     (apfst (fn [n] => replicate (Value.parse_nat n) () |> map serial_string)) #>
-  yxml_command1_setup \<^binding>\<open>type_terms\<close>
-    (fn ctxt => decode_term ctxt #> Term.type_of #> Term_XML.Encode.typ) #>
+  yxml_command1_setup \<^binding>\<open>cert_terms\<close>
+    (fn ctxt =>
+      decode_term ctxt #> cert_term ctxt #>
+      XML.Encode.pair (encode_term ctxt) Term_XML.Encode.typ) #>
   yxml_command1_setup \<^binding>\<open>print_terms\<close>
     (fn ctxt => decode_term ctxt #> Syntax.string_of_term ctxt #> XML.Encode.string) #>
   yxml_command1_setup \<^binding>\<open>print_sequents\<close>
