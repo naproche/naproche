@@ -16,7 +16,7 @@ module Isabelle.Bytes (
   Bytes,
   make, unmake, pack, unpack,
   empty, null, length, index, all, any,
-  head, last, take, drop, isPrefixOf, isSuffixOf,
+  head, last, take, drop, isPrefixOf, isSuffixOf, try_unprefix, try_unsuffix,
   concat, space, spaces, char, all_char, any_char, byte, singleton
 )
 where
@@ -71,10 +71,16 @@ last :: Bytes -> Word8
 last bytes = index bytes (length bytes - 1)
 
 take :: Int -> Bytes -> Bytes
-take n = pack . List.take n . unpack
+take n bs
+  | n == 0 = empty
+  | n >= length bs = bs
+  | otherwise = pack (List.take n (unpack bs))
 
 drop :: Int -> Bytes -> Bytes
-drop n = pack . List.drop n . unpack
+drop n bs
+  | n == 0 = bs
+  | n >= length bs = empty
+  | otherwise = pack (List.drop n (unpack bs))
 
 isPrefixOf :: Bytes -> Bytes -> Bool
 isPrefixOf bs1 bs2 =
@@ -85,6 +91,16 @@ isSuffixOf :: Bytes -> Bytes -> Bool
 isSuffixOf bs1 bs2 =
   n1 <= n2 && List.all (\i -> index bs1 i == index bs2 (i + k)) [0 .. n1 - 1]
   where n1 = length bs1; n2 = length bs2; k = n2 - n1
+
+try_unprefix :: Bytes -> Bytes -> Maybe Bytes
+try_unprefix bs1 bs2 =
+  if isPrefixOf bs1 bs2 then Just (drop (length bs1) bs2)
+  else Nothing
+
+try_unsuffix :: Bytes -> Bytes -> Maybe Bytes
+try_unsuffix bs1 bs2 =
+  if isSuffixOf bs1 bs2 then Just (take (length bs2 - length bs1) bs2)
+  else Nothing
 
 concat :: [Bytes] -> Bytes
 concat = mconcat

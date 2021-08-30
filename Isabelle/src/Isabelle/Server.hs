@@ -10,7 +10,7 @@ TCP server on localhost.
 {-# LANGUAGE OverloadedStrings #-}
 
 module Isabelle.Server (
-  localhost_name, localhost_unprefix, localhost, publish_text, publish_stdout,
+  localhost_name, localhost_prefix, localhost, publish_text, publish_stdout,
   server, connection
 )
 where
@@ -37,12 +37,6 @@ localhost_name = "127.0.0.1"
 
 localhost_prefix :: Bytes
 localhost_prefix = localhost_name <> ":"
-
-localhost_unprefix :: Bytes -> Maybe Bytes
-localhost_unprefix address =
-  if Bytes.isPrefixOf localhost_prefix address
-  then Just $ Bytes.drop (Bytes.length localhost_prefix) address
-  else Nothing
 
 localhost :: Socket.HostAddress
 localhost = Socket.tupleToHostAddress (127, 0, 0, 1)

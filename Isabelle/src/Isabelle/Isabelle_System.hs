@@ -20,6 +20,7 @@ where
 import Data.Maybe (fromMaybe)
 import Control.Exception (throw, AsyncException (UserInterrupt))
 import Network.Socket (Socket)
+import qualified Isabelle.Bytes as Bytes
 import Isabelle.Bytes (Bytes)
 import qualified Isabelle.Byte_Message as Byte_Message
 import qualified Isabelle.Time as Time
@@ -55,7 +56,7 @@ bash_process0 address password params = do
         loop Nothing socket)
   where
     port =
-      case Server.localhost_unprefix address of
+      case Bytes.try_unprefix Server.localhost_prefix address of
         Just port -> make_string port
         Nothing -> errorWithoutStackTrace "Bad bash_process server address"
 
