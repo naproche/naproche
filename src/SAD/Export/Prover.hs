@@ -54,8 +54,12 @@ export pos depth provers instrs context goal = do
 
   program_context <- Program.thread_context
   when (Program.is_isabelle program_context) $ do
-    s <- HOL.print_sequent program_context (reverse $ map formula context, [formula goal])
+    let asms = reverse $ map formula context
+    let concl = formula goal
+    _ <- HOL.cert_terms program_context (map HOL.export_formula (asms <> [concl]))
+    s <- HOL.print_sequent program_context (asms, [concl])
     Message.outputExport Message.TRACING pos s
+    return ()
 
   when (null provers) $ Message.errorExport pos "No provers"
 
