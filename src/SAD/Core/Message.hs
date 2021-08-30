@@ -127,8 +127,8 @@ make_message context kind origin pos text =
       p = console_position pos
       msg =
         (if Bytes.null origin then "" else "[" <> origin <> "] ") <>
-        (if Bytes.null k then "" else make_bytes (k <> ": ")) <>
-        (if Bytes.null p then "" else make_bytes (p <> "\n")) <> text
+        (if Bytes.null k then "" else k <> ": ") <>
+        (if Bytes.null p then "" else p <> "\n") <> text
     in ("", msg)
 
 output :: BYTES a => Bytes -> Kind -> Position.T -> a -> IO ()
