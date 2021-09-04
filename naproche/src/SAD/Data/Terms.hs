@@ -4,7 +4,7 @@ module SAD.Data.Terms where
 
 import Data.Text (Text)
 import qualified Data.Text as Text
-import SAD.Core.Identifier (Ident(..))
+import SAD.Data.Identifier
 import Data.Char
 
 data TermName
@@ -28,7 +28,7 @@ termClass = TermNotion "Class"
 termElement = TermNotion "ElementOf"
 termObject = TermNotion "Object"
 
-termToIdent :: TermName -> Maybe Ident
+termToIdent :: TermName -> Maybe Identifier
 termToIdent (TermName t) = Just $ NormalIdent $ t
 termToIdent (TermSymbolic ds) = Just $ SymbolIdent ds
 termToIdent (TermNotion t) = Just $ NormalIdent $ case Text.uncons t of

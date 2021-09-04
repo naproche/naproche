@@ -18,8 +18,8 @@ import qualified Isabelle.Naproche as Naproche
 import qualified Isabelle.Markup as Markup
 import qualified Isabelle.Value as Value
 import Data.IORef
-import SAD.Core.Message
-import SAD.Core.SourcePos
+import SAD.Data.Message
+import SAD.Data.SourcePos
 import Control.Monad
 import System.Environment
 import System.IO.Unsafe (unsafePerformIO)

@@ -20,9 +20,9 @@ module SAD.Parser.Token
   , greek
   ) where
 
-import SAD.Core.SourcePos
+import SAD.Data.SourcePos
 import qualified Isabelle.Markup as Markup
-import SAD.Core.Message (Report)
+import SAD.Data.Message (Report)
 
 import Data.Char
 import Data.Text (Text)

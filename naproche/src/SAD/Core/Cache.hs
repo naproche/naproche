@@ -4,8 +4,6 @@ module SAD.Core.Cache
   ) where
 
 import Control.Monad
-import Data.HashMap.Strict (HashMap)
-import qualified Data.HashMap.Strict as HashMap
 import Data.Map (Map)
 import qualified Data.Map as Map
 import Data.Binary
@@ -18,7 +16,7 @@ class Monad m => CacheStorage m where
   readFileCache :: FilePath -> m FileCache
   writeFileCache :: FilePath -> FileCache -> m ()
 
-data Cache = Cache
+newtype Cache = Cache
   { perFile :: Map FilePath FileCache
   } deriving (Eq, Ord, Show)
 
@@ -31,8 +29,8 @@ instance Monoid Cache where
 -- | The cache is simply a set of hashed tasks that we know to hold.
 -- To prevent excessive growth of the cache file we also store the
 -- last run at which the task was used and delete those that are old.
-data FileCache = FileCache 
-  { tasks :: HashMap Task Int
+data FileCache = FileCache
+  { tasks :: Map Task Int
   , lastRun :: !Int
   } deriving (Eq, Ord, Show)
 
@@ -47,12 +45,11 @@ instance Monoid FileCache where
 
 instance Binary FileCache where
   put (FileCache t l) = do
-    put $ HashMap.toList t
+    put $ Map.toList t
     put l
   get = do
-    t <- HashMap.fromList <$> get
-    l <- get
-    pure $ FileCache t l
+    t <- Map.fromList <$> get
+    FileCache t <$> get
 
 -- | Load a file into the cache even if it is already present.
 -- This may overwrite elements that were cached previously.
@@ -63,20 +60,20 @@ reloadFile f (Cache c) = do
 
 -- | Load a file into the cache if it is not present.
 loadFile :: CacheStorage m => FilePath -> Cache -> m Cache
-loadFile f c = if f `Map.member` (perFile c)
+loadFile f c = if f `Map.member` perFile c
   then pure c else reloadFile f c
 
 -- | Is a task cached and known to be true?
 isCached :: Task -> Cache -> Bool
-isCached t c = case Map.lookup (taskFile t) (perFile c) of 
+isCached t c = case Map.lookup (taskFile t) (perFile c) of
   Nothing -> False
-  Just fc -> t `HashMap.member` (tasks fc)
+  Just fc -> t `Map.member` tasks fc
 
 -- | Cache a task
 cache :: Task -> Cache -> Cache
-cache t c = 
+cache t c =
   let fc = Map.findWithDefault mempty (taskFile t) (perFile c)
-      fc' = fc { tasks = HashMap.insert t (lastRun fc) (tasks fc) }
+      fc' = fc { tasks = Map.insert t (lastRun fc) (tasks fc) }
   in  c { perFile = Map.insert (taskFile t) fc' (perFile c) }
 
 -- | Write the cache and remove old (>= 10 runs) entries from the cache
@@ -84,6 +81,6 @@ store :: CacheStorage m => Cache -> m ()
 store c = do
   let fcs = Map.toList $ perFile c
   let fcs' = flip map fcs $ \(f, fc) ->
-        (f, fc { tasks = HashMap.mapMaybe 
+        (f, fc { tasks = Map.mapMaybe
           (\v -> if v + 10 < lastRun fc then Nothing else Just v) $ tasks fc })
-  forM_ fcs' $ \(f, fc) -> writeFileCache f fc
+  forM_ fcs' $ uncurry writeFileCache

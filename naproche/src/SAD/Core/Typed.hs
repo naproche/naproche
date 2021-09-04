@@ -1,14 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE UndecidableInstances #-}
 {-# OPTIONS_GHC -Wno-orphans #-}
 
 module SAD.Core.Typed
  ( InType(..), OutType(..), Type(..), NFTerm(..)
  , Term(..), Located(..), Prf(..), WfBlock(..)
- , PrfBlock(..), Hypothesis(..), ClassInfo(..)
- , Stmt(..), Operator(..), RIdent(..)
- , simp, bindAllExcept, findFree
+ , Hypothesis(..)
+ , Stmt(..), Operator(..)
+ , simp, findFree
  , termToNF, termFromNF, subst, substAll
  ) where
 
@@ -18,16 +17,15 @@ import Data.Map (Map)
 import GHC.Generics (Generic)
 import Data.Hashable (Hashable)
 import Data.Binary (Binary)
-import Data.Functor.Identity
 import qualified Data.Set as Set
 import qualified Data.Map as Map
-import Data.Functor.Const
 import Control.DeepSeq (NFData)
 
 import SAD.Helpers (tupled')
-import SAD.Core.Identifier
+import SAD.Data.Identifier
 import Data.Text.Prettyprint.Doc
-import SAD.Core.SourcePos (SourcePos)
+import SAD.Data.SourcePos (SourcePos)
+import SAD.Core.Unique
 
 -- | Types that can be used as input in a TFF declaration 
 newtype InType
@@ -46,7 +44,7 @@ instance Hashable OutType
 instance Binary OutType
 
 -- | A type for a term in TFF.
-data Type = Sort | Pred [InType] OutType
+data Type = Sort | Pred [InType] !OutType
   deriving (Eq, Ord, Show, Read, Generic)
 instance NFData Type
 instance Hashable Type
@@ -60,67 +58,29 @@ instance NFData Operator
 instance Hashable Operator
 instance Binary Operator
 
--- | This stores information that is important during the desugering of classes.
--- TODO: This corresponds to von Neumann Bernays Gödel set theory.
--- Is it also possible to support Morse-Kelley set theory in this framework?
-data ClassInfo = ClassInfo
-  { coerceElemsToObject :: [Ident]
-  , classType :: !InType -- ^ class, set or something user defined
-  , coerceClassTypeToClass :: [Ident]
-  } deriving (Eq, Ord, Show, Generic)
-instance NFData ClassInfo
-instance Hashable ClassInfo
-instance Binary ClassInfo
-
--- | An identifier which is either resolved or not.
--- This enables re-checking blocks: When the block has
--- already been checked the resolved names appear like this:
-data RIdent
-  = Resolved   { fromRIdent :: !Ident }
-  | Unresolved { fromRIdent :: !Ident }
-  deriving (Eq, Ord, Show, Generic)
-instance Hashable RIdent
-instance Binary RIdent
-
 -- | An AST of typed first order form.
--- During the first parse we will have f = Const (),
--- then we might accumulate type information (f = [] or f = Set)
--- and when all types are resolved we have f = Identity
--- We start out with t = Tag and end up with t = () once all
--- tag information is processed.
-data Term f t
-  = Forall !Ident !(f InType) (Term f t)
-  | Exists !Ident !(f InType) (Term f t)
-  | FinClass !(f InType) !(f ClassInfo) [Term f t]
-    -- ^ { t1 : type, t2, ... }
-  | Class !Ident !(f InType) (Maybe (Term f t)) !(f ClassInfo) (Term f t)
-    -- ^ { v : t "in" M | cond }
-  | App !Operator [Term f t]
-  | AppWf !RIdent [Term f t] (WfBlock f t)
-  | Tag !t (Term f t)
-deriving instance (Eq (f InType), Eq t, Eq (f ClassInfo)) => Eq (Term f t)
-deriving instance (Ord (f InType), Ord t, Ord (f ClassInfo)) => Ord (Term f t)
-deriving instance (Show (f InType), Show t, Show (f ClassInfo)) => Show (Term f t)
-deriving instance (Generic (f InType), Generic t) => Generic (Term f t)
-instance (Generic (f InType), Generic t, Hashable (f InType), Hashable t, Generic (f ClassInfo), Hashable (f ClassInfo)) => Hashable (Term f t)
-instance (Generic (f InType), Generic t, Binary (f InType), Binary t, Generic (f ClassInfo), Binary (f ClassInfo)) => Binary (Term f t)
+data Term
+  = Forall !Ident !InType Term
+  | Exists !Ident !InType Term
+  | App !Operator [Term]
+  | AppWf !Ident [Term] WfBlock
+  deriving (Eq, Ord, Show, Generic)
+instance Hashable Term
+instance Binary Term
 
 -- | A term in normal form: A list of forall binders,
 -- followed by some assumptions and the main body.
 -- The forall bound variables should have pairwise different identifiers.
-data NFTerm f t = NFTerm
-  { nfArguments :: [(Ident, f InType)]
+data NFTerm = NFTerm
+  { nfArguments :: [(Ident, InType)]
   -- ^ explicit forall-bound variables.
   -- these should be ordered as they appear in the definition.
-  , nfAssumptions :: [Term f t]
-  , nfBody :: Term f t
+  , nfAssumptions :: [Term]
+  , nfBody :: Term
   }
-deriving instance (Eq (f InType), Eq t, Eq (f ClassInfo)) => Eq (NFTerm f t)
-deriving instance (Ord (f InType), Ord t, Ord (f ClassInfo)) => Ord (NFTerm f t)
-deriving instance (Show (f InType), Show t, Show (f ClassInfo)) => Show (NFTerm f t)
-deriving instance (Generic (f InType), Generic t) => Generic (NFTerm f t)
-instance (Generic (f InType), Generic t, Hashable (f InType), Hashable t, Generic (f ClassInfo), Hashable (f ClassInfo)) => Hashable (NFTerm f t)
-instance (Generic (f InType), Generic t, Binary (f InType), Binary t, Generic (f ClassInfo), Binary (f ClassInfo)) => Binary (NFTerm f t)
+  deriving (Eq, Ord, Show, Generic)
+instance Hashable NFTerm
+instance Binary NFTerm
 
 -- | Information for the user: Name of a lemma/axiom/sort/.. and position.
 data Located a = Located
@@ -136,131 +96,70 @@ instance Hashable a => Hashable (Located a)
 -- For example, defining 'p(x) iff q' will yield a predicate (p : x -> Prop)
 -- and an axiom 'p(x) iff q'.
 -- Note that we don't check the term of the claim but only the proof block.
-data Stmt f t
+data Stmt
   = IntroSort !Ident -- ^ new types
-  | IntroAtom !Ident [(Ident, f InType)] [Term f t]
+  | IntroAtom !Ident [(Ident, InType)] [Term]
     -- ^ atoms with arguments as well as assumptions
     -- but no body. Their semantics correspond to a predicate that may
     -- never be inlined.
-  | IntroSignature !Ident (f InType) [(Ident, f InType)] [Term f t]
+  | IntroSignature !Ident InType [(Ident, InType)] [Term]
     -- ^ functions with arguments as well as assumptions
     -- but no body. Their "body" can be defined through axioms. These are
     -- dangerous, because one can introduce a contradiction through them.
-  | Predicate !Ident (NFTerm f t)
+  | Predicate !Ident NFTerm
     -- ^ predicate definitions: ident <=> nfBody
-  | Function !Ident (f InType) (NFTerm f t)
+  | Function !Ident InType NFTerm
     -- ^ function definitions: ident : type = nfBody
-  | Axiom !Ident (NFTerm f t)
+  | Axiom !Ident NFTerm
     -- ^ axioms in the text.
-  | Claim !Ident (NFTerm f t) (PrfBlock f t)
+  | Claim !Ident NFTerm Prf
     -- ^ lemma/theorem in the text.
-  | Coercion
-    !Ident -- ^ name of coercion
-    !Ident -- ^ from notion
-    !Ident -- ^ to notion
-deriving instance (Eq (f InType), Eq t, Eq (f ClassInfo)) => Eq (Stmt f t)
-deriving instance (Ord (f InType), Ord t, Ord (f ClassInfo)) => Ord (Stmt f t)
-deriving instance (Show (f InType), Show t, Show (f ClassInfo)) => Show (Stmt f t)
-deriving instance (Generic (f InType), Generic t) => Generic (Stmt f t)
-instance (Generic (f InType), Generic t, Hashable (f InType), Hashable t, Generic (f ClassInfo), Hashable (f ClassInfo)) => Hashable (Stmt f t)
-instance (Generic (f InType), Generic t, Binary (f InType), Binary t, Generic (f ClassInfo), Binary (f ClassInfo)) => Binary (Stmt f t)
+  deriving (Eq, Ord, Show, Generic)
+instance Hashable Stmt
+instance Binary Stmt
 
--- | Wellformed-ness proofs. Initially these are 'NoWf'.
--- Typechecking will either insert 'WellFormed' if no proof is necessary
--- or 'WfProof' if a proof is necessary.
--- With parser support, it should be possible for users to supply proofs.
-data WfBlock f t
-  = WellFormed -- ^ No proof necessary.
-  | NoWf -- ^ If no proof was given.
-  | WfProof (NFTerm f t) (PrfBlock f t)
-    -- ^ A proof for the claim in the first argument (added during type-checking)
-deriving instance (Eq (f InType), Eq t, Eq (f ClassInfo)) => Eq (WfBlock f t)
-deriving instance (Ord (f InType), Ord t, Ord (f ClassInfo)) => Ord (WfBlock f t)
-deriving instance (Show (f InType), Show t, Show (f ClassInfo)) => Show (WfBlock f t)
-deriving instance (Generic (f InType), Generic t) => Generic (WfBlock f t)
-instance (Generic (f InType), Generic t, Hashable (f InType), Hashable t, Generic (f ClassInfo), Hashable (f ClassInfo)) => Hashable (WfBlock f t)
-instance (Generic (f InType), Generic t, Binary (f InType), Binary t, Generic (f ClassInfo), Binary (f ClassInfo)) => Binary (WfBlock f t)
+-- | Wellformed-ness proofs.
+-- Contains a proof for the claim in the first argument
+data WfBlock
+  = NoWf
+  | WfProof NFTerm Prf
+  deriving (Eq, Ord, Show, Generic)
+instance Hashable WfBlock
+instance Binary WfBlock
 
--- | A proof block. The first two tactics are given by users:
--- either supplying the names of useful theorems or giving a list of tactics.
--- The third is the result of type-checking tactics: Each tactic needs to
--- modify the goal and say what it's new hypotheses are.
--- The fourth is for once the tactics have been evaluated.
-data PrfBlock f t
-  = ProofByHints [Text]
-  -- ^ given by user: Names of axioms/theorems that may be helpful for the ATP
-  -- should match the 'locName's given before.
-  | ProofByTactics [Located (Prf f t)]
-  -- ^ given by user: some tactics that should be run from left to right.
-  | ProofByTCTactics [(Located (Prf Identity ()), Term Identity (), [Hypothesis])]
-  -- ^ after type-checking: Each tactic includes its hypothesis and the next goal.
-deriving instance (Eq (f InType), Eq t, Eq (f ClassInfo)) => Eq (PrfBlock f t)
-deriving instance (Ord (f InType), Ord t, Ord (f ClassInfo)) => Ord (PrfBlock f t)
-deriving instance (Show (f InType), Show t, Show (f ClassInfo)) => Show (PrfBlock f t)
-deriving instance (Generic (f InType), Generic t) => Generic (PrfBlock f t)
-instance (Generic (f InType), Generic t, Hashable (f InType), Hashable t, Generic (f ClassInfo), Hashable (f ClassInfo)) => Hashable (PrfBlock f t)
-instance (Generic (f InType), Generic t, Binary (f InType), Binary t, Generic (f ClassInfo), Binary (f ClassInfo)) => Binary (PrfBlock f t)
+data Prf
+  = Prf [PrfStep] ClosingPrf
+  deriving (Eq, Ord, Show, Generic)
+instance Hashable Prf
+instance Binary Prf
 
--- | A proof consists of sub-claims that will be given directly to the ATP
--- and a number of tactics. Unlike in Lean, our Tactics need to be completely
--- predictable: They need to specify how they would like to change hypotheses
--- and goal during type-checking (before actually running the tactic).
--- This prevents us from using 'ring'-like tactics that try to reduce the goal
--- as much as possible. Instead you can only have a tactic that tries to reduce
--- the goal by a fixed amount (e.g. split all conjuncts, etc.). Of course,
--- a tactic can fail to actually deliver what was promised.
--- Be aware though that the goal during type-checking may differ from the goal
--- when running the tactic in that classes are desugered in-between!
-data Prf f t
-  = Intro Ident (f InType)
-  -- ^ Given goal = Forall i t goal', Intro i t make (i : t) an hypothesis
-  -- and set the goal to goal'. During type-checking the type t will be
-  -- ignored and set to match the type of i in the goal.
-  | Assume (Term f t)
-  -- ^ Given goal = (ass => goal'), make ass a hypothesis
-  -- and set the goal to goal'
-  | ByContradiction (Term f t)
-  -- ^ prove the goal by contradiction (e.g. assume the negation and prove Bot)
-  -- The argument is the negated goal. It will be inserted during type-checking.
-  | Suffices (Term f t) (PrfBlock f t)
-  -- ^ prove that term => goal and set term as the new goal.
-  | Define Ident (f InType) (Term f t)
-  -- ^ give a name for an expression (a value).
-  | Subclaim !Ident (NFTerm f t) (PrfBlock f t)
-  -- ^ a subclaim, also called 'have'
-  -- the binders and assumptions of the NFTerm will be
-  -- introduced/assumed automatically for the proof.
-  | Choose [(Ident, f InType)] (Term f t) (PrfBlock f t)
-  -- ^ choose variables such that the term holds
-  | Cases [(Term f t, Term f t, PrfBlock f t)]
-  -- ^ cases in the middle of a proof (with other tactics following this).
-  -- Each triple consists of: case hypothesis, claim to be proven under the hypothesis, proof.
-  -- The type-checking will also add all intermediary claims of the case block to the main claim.
-  | TerminalCases [(Term f t, PrfBlock f t)]
-  -- ^ cases at the end of a proof
-  -- finishes the proof by proving the goal under each case hypothesis
-  -- and then proving that the hypothesis cover all cases.
-deriving instance (Eq (f InType), Eq t, Eq (f ClassInfo)) => Eq (Prf f t)
-deriving instance (Ord (f InType), Ord t, Ord (f ClassInfo)) => Ord (Prf f t)
-deriving instance (Show (f InType), Show t, Show (f ClassInfo)) => Show (Prf f t)
-deriving instance (Generic (f InType), Generic t) => Generic (Prf f t)
-instance (Generic (f InType), Generic t, Hashable (f InType), Hashable t, Generic (f ClassInfo), Hashable (f ClassInfo)) => Hashable (Prf f t)
-instance (Generic (f InType), Generic t, Binary (f InType), Binary t, Generic (f ClassInfo), Binary (f ClassInfo)) => Binary (Prf f t)
+data PrfStep
+  = Have Ident Term Bool Prf -- ^ name, proposition, may contain contradictory axioms, proof
+  | Define Ident InType Term
+  deriving (Eq, Ord, Show, Generic)
+instance Hashable PrfStep
+instance Binary PrfStep
+
+data ClosingPrf
+  = CallATP [Text] -- ^ hints
+  | Trivial -- ^ The goal can be simplified to true or closed by an assumption.
+  deriving (Eq, Ord, Show, Generic)
+instance Hashable ClosingPrf
+instance Binary ClosingPrf
 
 -- | Hypothesis as they are given in TPTP format.
 data Hypothesis
-  = Given Text (Term Identity ())
-  | Typing Ident Type
+  = Given !Text Term
+  | TypeDef !Ident Type
   deriving (Eq, Ord, Show, Generic)
 instance Hashable Hypothesis
 instance Binary Hypothesis
 
 -- | Simplify a formula for nicer pretty-printing.
-simp :: Term f t -> Term f t
+simp :: Term -> Term
 simp = \case
   Forall v t tr -> Forall v t (simp tr)
   Exists v t tr -> Exists v t (simp tr)
-  Class v m k ci tr -> Class v m k ci (simp tr)
   App And [App Top [], b] -> simp b
   App And [a, App Top []] -> simp a
   App And [App Bot [], _] -> App Bot []
@@ -278,11 +177,10 @@ simp = \case
   App Iff [App Bot [], b] -> simp $ App Not [b]
   App Iff [a, App Bot []] -> simp $ App Not [a]
   App Not [App Not [a]] -> simp a
-  Tag t a -> Tag t $ simp a
   t -> t
 
 -- | Term in NF
-termToNF :: Term f t -> NFTerm f t
+termToNF :: Term -> NFTerm
 termToNF t =
   let (t', bs) = stripForall t
       (b , as) = stripAssms t'
@@ -298,51 +196,37 @@ termToNF t =
     isTop _ = False
 
 
-termFromNF :: NFTerm f t -> Term f t
+termFromNF :: NFTerm -> Term
 termFromNF (NFTerm ex as b) =
   foldr (uncurry Forall) (
     foldr (\a b -> App Imp [a, b]) b as
   ) ex
 
--- | Bind free variables by forall quantifiers
--- and turn all bound variables into 'TermVar's.
-bindAllExcept :: Set Ident -> Term (Const ()) t -> Term (Const ()) t
-bindAllExcept bound t = bind $ bindVarSet bound $ findFree t
-  where
-    bind vars = foldr (\v t -> Forall v (Const ()) t) t $ Set.toList $ fvToVarSet vars
-
 -- | Find free variables
 -- TODO: This will currently not look in WfBlocks!
-findFree :: Term f t -> FV
+findFree :: Term -> FV
 findFree = free
   where
     free = \case
       Forall v _ t -> bindVar v $ free t
       Exists v _ t -> bindVar v $ free t
-      FinClass _ _ ts -> mconcat (free <$> ts)
-      Class  v _ m _ t -> bindVar v $ free t <> maybe mempty free m
-      AppWf v ex _ -> unitFV (fromRIdent v) <> mconcat (free <$> ex)
+      AppWf v ex _ -> unitFV v <> mconcat (free <$> ex)
       App _ args -> mconcat $ free <$> args
-      Tag _ t -> free t
 
 -- | (x `subst` t1) t2 == t2[x := t1]
 -- TODO: This will currently not substitute in WfBlocks!
-subst :: Ident -> Term f t -> Term f t -> Term f t
+subst :: Ident -> Term -> Term -> Term
 subst x t1 = substAll (Map.fromList [(x, t1)])
 
 -- | Simultaneous substitution of identifiers with terms.
-substAll :: Map Ident (Term f t) -> Term f t -> Term f t
+substAll :: Map Ident Term -> Term -> Term
 substAll subMap
   | Map.null subMap = id
   | otherwise = \case
-  Forall v m t -> Forall v m $ substAll (Map.delete v subMap) t
-  Exists v m t -> Exists v m $ substAll (Map.delete v subMap) t
-  FinClass m ci ts -> FinClass m ci (map (substAll subMap) ts)
-  Class v m mm ci t -> Class v m (substAll subMap <$> mm) ci
-    $ substAll (Map.delete v subMap) t
+  Forall v m t -> Forall v m $ substAll subMap t
+  Exists v m t -> Exists v m $ substAll subMap t
   App op args -> App op (map (substAll subMap) args)
-  Tag tag t -> Tag tag (substAll subMap t)
-  AppWf v [] _ | Just t1 <- Map.lookup (fromRIdent v) subMap -> t1
+  AppWf v [] _ | Just t1 <- Map.lookup v subMap -> t1
   AppWf v ex wf -> AppWf v (map (substAll subMap) ex) wf
 
 instance Pretty a => Pretty (Set a) where
@@ -361,28 +245,26 @@ instance Pretty Type where
   pretty (Pred is t) =
     encloseSep "" "" " → " (map pretty is ++ [pretty t])
 
-instance (Pretty (f InType), Show t, Show (f InType), Show (f ClassInfo))
-  => Pretty (WfBlock f t) where
-  pretty WellFormed = ""
+instance Pretty Prf where
+  pretty (Prf steps close) = vsep (map pretty steps ++ [pretty close])
+
+instance Pretty PrfStep where
+  pretty (Have h t _ p) = "have " <> pretty h <> " : " <> pretty t <> " by " <> line <> nest 2 (pretty p)
+  pretty (Define f t tt) = "define " <> pretty f <> " : " <> pretty t <> " = " <> pretty tt
+
+instance Pretty ClosingPrf where
+  pretty Trivial = "trivial."
+  pretty (CallATP hints) = "by ATP (using: " <> pretty hints <> ")."
+
+instance Pretty WfBlock where
   pretty NoWf = ""
   pretty (WfProof _ prf) = " (wf." <> pretty prf <> ")"
 
-instance Pretty RIdent where
-  pretty (Resolved i) = pretty i
-  pretty (Unresolved i) = pretty i
-
-instance (Pretty (f InType), Show t, Show (f InType), Show (f ClassInfo))
-  => Pretty (Term f t) where
+instance Pretty Term where
   pretty (Forall v t tr) = "(∀[" <> pretty v <+> ":"
     <+> pretty t <> "]" <> softline <> pretty tr <> ")"
   pretty (Exists v t tr) = "(∃[" <> pretty v <+> ":"
     <+> pretty t <> "]" <> softline <> pretty tr <> ")"
-  pretty (FinClass _ _ []) = "{}"
-  pretty (FinClass _ _ ts) = "{ " <> hsep (punctuate comma $ map pretty ts) <> " }"
-  pretty (Class v t Nothing _ tr) = "{" <+> pretty v <+> ":"
-    <+> pretty t <> " | " <> pretty tr <> " }"
-  pretty (Class v t (Just m) _ tr) = "{ (" <> pretty v <+> ":"
-    <+> pretty t <> ") in " <> pretty m <> " | " <> pretty tr <> " }"
   pretty (App And [a, b]) = "(" <> pretty a <> softline <> "and " <> pretty b <> ")"
   pretty (App Or  [a, b]) = "(" <> pretty a <> softline <> "or " <> pretty b <> ")"
   pretty (App Iff [a, b]) = "(" <> pretty a <> softline <> "iff " <> pretty b <> ")"
@@ -392,17 +274,15 @@ instance (Pretty (f InType), Show t, Show (f InType), Show (f ClassInfo))
   pretty (App Top []) = "true"
   pretty (App Bot []) = "false"
   pretty (AppWf op [] wf) = pretty op <> pretty wf
-  pretty (AppWf op args wf) | isSymbol (fromRIdent op) =
+  pretty (AppWf op args wf) | isSymbol op =
     let args' = flip map args $ \a -> case a of
-          AppWf op _ _ | isSymbol (fromRIdent op) -> "(" <> pretty a <> ")"
+          AppWf op _ _ | isSymbol op -> "(" <> pretty a <> ")"
           _ -> pretty a
-    in prettyWithArgs (fromRIdent op) args' <> pretty wf
+    in prettyWithArgs op args' <> pretty wf
   pretty (AppWf op args wf) = pretty op <> tupled' (map pretty args) <> pretty wf
-  pretty (Tag t tr) = "(" <> pretty (show t) <> " :: " <> pretty tr <> ")"
   pretty t = error $ "Malformed term: " ++ show t
 
-instance (Pretty (f InType), Show t, Show (f InType), Show (f ClassInfo))
-  => Pretty (NFTerm f t) where
+instance Pretty NFTerm where
   pretty (NFTerm ex as b) =
     let explicit = case ex of
           [] -> ""
@@ -415,49 +295,20 @@ instance (Pretty (f InType), Show t, Show (f InType), Show (f ClassInfo))
           _ -> vsep (pretty <$> as) <> line
     in explicit <> break (assumptions <> pretty b)
 
-instance (Pretty (f InType), Show t, Show (f InType), Show (f ClassInfo))
-  => Pretty (Stmt f t) where
+instance  Pretty Stmt where
   pretty (IntroSort tm) = "Sort: " <> pretty tm
   pretty (IntroAtom i ex as) = "Predicate " <> pretty i <> ": "
-    <> pretty (NFTerm ex as (AppWf (Unresolved $ NormalIdent "") [] NoWf))
+    <> pretty (NFTerm ex as (AppWf identEmpty [] NoWf))
   pretty (IntroSignature i t ex as) = "Function " <> pretty i <> ": "
-    <> pretty (NFTerm ex as (AppWf (Unresolved $ NormalIdent "") [] NoWf)) <> ": " <> pretty t
+    <> pretty (NFTerm ex as (AppWf identEmpty [] NoWf)) <> ": " <> pretty t
   pretty (Axiom i t) = "Axiom " <> pretty i <> ": " <> pretty t
   pretty (Predicate t nf) = "Definition [" <> pretty t <> "]: " <> pretty nf
   pretty (Function t o nf) = "Definition [" <> pretty t <> " → " <> pretty o <> "]: " <> pretty nf
   pretty (Claim i t prf) = "Claim " <> pretty i <> ": " <> pretty t <> pretty prf
-  pretty (Coercion name from to) = "Coercion " <> pretty name <> " : "
-    <> pretty from <> " → " <> pretty to
-
-instance (Pretty (f InType), Show t, Show (f InType), Show (f ClassInfo))
-  => Pretty (PrfBlock f t) where
-  pretty (ProofByHints ls) = tupled' $ map pretty ls
-  pretty (ProofByTactics prfs) = nest 4 $ line <>
-    vsep (map (pretty . located) prfs)
-  pretty (ProofByTCTactics prfs) = nest 4 $ line <>
-    vsep (map (pretty . located . (\(a, _, _) -> a)) prfs)
 
 instance Pretty Hypothesis where
   pretty (Given n t) = pretty n <> " : " <> pretty t
-  pretty (Typing n t) = pretty n <> " : " <> pretty t
-
-instance (Pretty (f InType), Show t, Show (f InType), Show (f ClassInfo))
-  => Pretty (Prf f t) where
-  pretty (Intro i t) = "Let " <> pretty i <> " : " <> pretty t
-  pretty (Assume t) = "Assume that " <> pretty t
-  pretty (Subclaim i t prfs) = "We have " <> pretty i <> ": " <> pretty t <> " " <> pretty prfs
-  pretty (Choose vs t prfs) = "Choose: "
-    <> tupled' (map (\(x, t) -> pretty x <> " : " <> pretty t) vs)
-    <> " such that " <> nest 2 (pretty t) <> pretty prfs
-  pretty (Define n tt t) = "Define: " <> pretty n <> " : " <> pretty tt <> " = " <> pretty t
-  pretty (Cases cs) = vsep $
-    map (\(t, c, p) -> case c of
-      App Top [] -> "Case: " <> nest 2 (pretty t) <> pretty p
-      _ -> "Case: " <> nest 2 (pretty t <> " => " <> pretty c) <> pretty p) cs
-  pretty (TerminalCases cs) = vsep $
-    map (\(t, p) -> "Case: " <> nest 2 (pretty t) <> pretty p) cs
-  pretty (ByContradiction _) = "Assume the contrary."
-  pretty (Suffices t prf) = "It suffices to show: " <> pretty t <> pretty prf
+  pretty (TypeDef n t) = pretty n <> " : " <> pretty t
 
 instance Pretty a => Pretty (Located a) where
   pretty (Located p a) = pretty (show p) <> "\n" <> pretty a <> "\n"

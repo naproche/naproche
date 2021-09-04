@@ -26,7 +26,7 @@ import qualified System.Console.GetOpt as GetOpt
 import Asterius.Types
 import Asterius.Aeson
 
-import SAD.Core.Message
+import SAD.Data.Message
 import SAD.Core.Cache (CacheStorage(..), FileCache(..))
 import SAD.Core.Provers (Prover(..), readProverDatabase)
 import SAD.Core.Prove (RunProver(..))

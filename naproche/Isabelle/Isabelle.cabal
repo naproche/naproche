@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.33.0.
+-- This file has been generated from package.yaml by hpack version 0.34.4.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 7185be151fbf61b9e9f3cbc4382cd5aa68fffdab019475dbbcb59db65c50e75f
+-- hash: 5ed0857b4ce72777171429f021ea71d1bfaf2fd3769a29c9945702b73427b8d3
 
 name:           Isabelle
 version:        0.1.0.0
@@ -45,7 +45,12 @@ library
       Paths_Isabelle
   hs-source-dirs:
       src
-  default-extensions: GeneralizedNewtypeDeriving InstanceSigs LambdaCase PartialTypeSignatures ScopedTypeVariables
+  default-extensions:
+      GeneralizedNewtypeDeriving
+      InstanceSigs
+      LambdaCase
+      PartialTypeSignatures
+      ScopedTypeVariables
   ghc-options: -O2
   build-depends:
       base >=4.7 && <5

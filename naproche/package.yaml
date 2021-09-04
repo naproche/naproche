@@ -25,6 +25,7 @@ dependencies:
 - split
 - aeson
 - prettyprinter
+- monad-validate
 
 default-extensions:
   - GeneralizedNewtypeDeriving
@@ -46,23 +47,26 @@ library:
     - src
     - Isabelle/src
   exposed-modules:
+    - SAD.Core.AST
     - SAD.Core.Cache
     - SAD.Core.Coerce
     - SAD.Core.Desuger
+    - SAD.Core.Errors
     - SAD.Core.Lean
-    - SAD.Core.Message
     - SAD.Core.Prove
     - SAD.Core.Provers
     - SAD.Core.Reader
-    - SAD.Core.SourcePos
+    - SAD.Core.TPTP
     - SAD.Core.Tactic
     - SAD.Core.Task
-    - SAD.Core.TPTP
     - SAD.Core.Transform
     - SAD.Core.Typecheck
     - SAD.Core.Typed
-    - SAD.Core.Identifier
+    - SAD.Core.Unique
+    - SAD.Data.Identifier
     - SAD.Data.Instr
+    - SAD.Data.Message
+    - SAD.Data.SourcePos
     - SAD.Data.Text.Block
     - SAD.Main
   other-modules:

@@ -10,8 +10,8 @@ import qualified Data.ByteString.UTF8 as UTF8
 import qualified Isabelle.YXML as YXML
 import qualified Isabelle.XML as XML
 import qualified Isabelle.Markup as Markup
-import SAD.Core.Message
-import SAD.Core.SourcePos
+import SAD.Data.Message
+import SAD.Data.SourcePos
 import Control.Monad
 import Control.Exception
 import Control.Monad.IO.Class
@@ -36,6 +36,7 @@ import SAD.Core.Cache (CacheStorage(..), FileCache(..))
 import SAD.Core.Provers (Prover(..))
 import SAD.Core.Prove (RunProver(..))
 import SAD.Core.Reader (HasLibrary(..))
+import SAD.Core.Unique
 
 import PIDE
 import TermSize (getTermSize)
@@ -46,11 +47,14 @@ data CommandLineConfig = CommandLineConfig
   } deriving (Eq, Ord, Show)
 
 newtype CommandLine a = CommandLine
-  { fromCommandLine :: StateT CommandLineConfig IO a
+  { fromCommandLine :: StateT CommandLineConfig (UniqueT IO) a
   } deriving (Functor, Applicative, Monad, MonadIO, MonadState CommandLineConfig)
 
+instance HasUnique CommandLine where
+  newIdent = CommandLine . lift . newIdent
+
 runCommandLine :: String -> CommandLine a -> IO a
-runCommandLine libraryDir = flip evalStateT (CommandLineConfig ".ftlcache" libraryDir) . fromCommandLine
+runCommandLine libraryDir = fmap fst . runUnique . flip evalStateT (CommandLineConfig ".ftlcache" libraryDir) . fromCommandLine
 
 instance Comm IO where
   output origin kind pos msg = do

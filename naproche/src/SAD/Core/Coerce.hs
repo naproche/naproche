@@ -15,7 +15,7 @@ import qualified Data.List as List
 -- It was taught in the course 'New Network Flow Algorithms' in SS2020.
 -- G. Italiano: Amortized efficiency of a path retrieval data structure. Theoretical Computer Science 48 (1986), 273-281
 
-data Arborescence a = Arb (Map a (Set a))
+newtype Arborescence a = Arb (Map a (Set a))
   deriving (Eq, Ord, Show)
 
 instance Ord a => Semigroup (Arborescence a) where

@@ -34,8 +34,8 @@ import Control.Monad.State.Class (modify)
 import Data.List hiding (or)
 import SAD.Helpers (nubOrd)
 import Data.Set (Set)
-import SAD.Core.Message (PIDE, Report, entityMarkup)
-import SAD.Core.SourcePos
+import SAD.Data.Message (PIDE, Report, entityMarkup)
+import SAD.Data.SourcePos
 import SAD.ForTheL.Base
 
 import SAD.Data.Text.Block (Block)

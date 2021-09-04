@@ -15,7 +15,7 @@ import qualified Data.Monoid as Monoid
 import Control.Monad.Identity
 import Control.Applicative
 
-import SAD.Core.SourcePos (SourcePos, noSourcePos)
+import SAD.Data.SourcePos (SourcePos, noSourcePos)
 import SAD.Data.Terms
 import SAD.Data.VarName
 

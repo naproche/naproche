@@ -18,10 +18,10 @@ import qualified Data.Set as Set
 import GHC.Magic (oneShot)
 import Data.Text (Text)
 import qualified Data.Text as Text
-import SAD.Core.SourcePos
+import SAD.Data.SourcePos
 import Data.Function (on)
 
-import SAD.Core.Identifier (Ident(..))
+import SAD.Data.Identifier (Identifier(..))
 
 -- These names may not reflect what the constructors are used for..
 data VarName 
@@ -33,7 +33,7 @@ data VarName
   | VarDefault Text    -- ^ everything else
   deriving (Eq, Ord)
 
-varToIdent :: VarName -> Maybe Ident
+varToIdent :: VarName -> Maybe Identifier
 varToIdent (VarConstant s) = Just $ NormalIdent s
 varToIdent (VarHidden n) = Just $ NormalIdent $ "h" <> (Text.pack (show n))
 varToIdent (VarDefault s) = Just $ NormalIdent $ s

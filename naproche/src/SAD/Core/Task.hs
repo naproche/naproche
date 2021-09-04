@@ -6,7 +6,6 @@
 
 module SAD.Core.Task (ExportLang(..), Hypothesis(..), Task(..), taskFile) where
 
-import Data.Functor.Identity
 import Data.Text (Text)
 import GHC.Generics (Generic)
 import Data.Hashable (Hashable)
@@ -14,14 +13,14 @@ import Data.Binary (Binary)
 
 import SAD.Core.Typed
 import Data.Text.Prettyprint.Doc
-import SAD.Core.SourcePos (SourcePos, sourceFile)
+import SAD.Data.SourcePos (SourcePos, sourceFile)
 
 data ExportLang = TF0 | FOF
   deriving (Eq, Ord, Show)
 
 data Task = Task 
   { hypothesis :: [Hypothesis] -- ^ from newest to oldest
-  , conjecture :: (Term Identity ())
+  , conjecture :: Term
   , hints :: [Text] -- ^ helpful lemmata
   , taskName :: Text
   , byContradiction :: Bool -- ^ eprover can detect contradictory axioms

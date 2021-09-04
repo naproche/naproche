@@ -10,14 +10,15 @@
 
 module SAD.Core.Prove (ProveArgs(..), RunProver(..), proveOrRetrieveCached, runProveT, verify, ProveT, ProveState(..)) where
 
+import Control.Applicative
 import Control.Monad.State
 import Data.Text (Text)
 import qualified Data.Text as Text
 import Data.Text.Prettyprint.Doc (pretty)
 
-import SAD.Core.SourcePos
+import SAD.Data.SourcePos
 import SAD.Core.Provers
-import SAD.Core.Message (Comm, output, errorExport, Kind(..), outputReasoner)
+import SAD.Data.Message (Comm, output, errorExport, Kind(..), outputReasoner)
 import SAD.Core.TPTP (taskToTPTP)
 import SAD.Core.Task (Task(..))
 import SAD.Core.Cache
@@ -62,12 +63,12 @@ export :: (RunProver m, Comm m) => SourcePos -> [Prover] -> ProveArgs -> Task ->
 export pos [] _ _ = errorExport pos "No provers"
 export pos provers instrs tsk = do
   let proverName = prover instrs
-  
+
   case filter ((==) proverName . name) provers of
     [] -> errorExport noSourcePos $ "No prover named " ++ show proverName
     (prover:_) -> do
       let task = taskToTPTP (exportLang prover) tsk
-      when (dump instrs) $ 
+      when (dump instrs) $
         output "" WRITELN noSourcePos (Text.unpack task)
 
       (rc, out) <- runProver pos prover (timelimit instrs) (memorylimit instrs) task
@@ -86,7 +87,7 @@ data ProveState = ProveState
 instance Semigroup ProveState where
   (ProveState f1 t1 s1 c1 cc1 fc1 _) <> (ProveState f2 t2 s2 c2 cc2 fc2 is2) =
     ProveState (f1 <> f2) (t1 <> t2) (s1 + s2) (c1 + c2) (cc1 <> cc2)
-    (maybe fc2 Just fc1) is2
+    (fc1 <|> fc2) is2
 
 -- | Main prove transformer
 newtype ProveT m a = ProveT (StateT ProveState m a)
@@ -101,13 +102,13 @@ proveOrRetrieveCached t = do
     modify $ \s -> s { proveGoalsCached = proveGoalsCached s + 1 }
     modify $ \s -> s { proveCache = cache t (proveCache s) }
     pure Cached
-  else do 
+  else do
     instrs <- proveInstrs <$> get
     modify $ \s -> s { proveGoalsSentToATP = proveGoalsSentToATP s + 1 }
     let conj = show (pretty (conjecture t))
-    when (not $ noPrintGoal instrs) $ do
+    unless (noPrintGoal instrs) $ do
       lift $ outputReasoner WRITELN (taskPos t)
-        $ "[" <> (Text.unpack $ taskName t) <> "] " <> conj <> "\n"
+        $ "[" <> Text.unpack (taskName t) <> "] " <> conj <> "\n"
     res <- lift $ export (taskPos t) provers instrs t
     case res of
       Success -> do

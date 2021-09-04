@@ -20,7 +20,7 @@ module SAD.Parser.Error
     newWellFormednessMessage )
   where
 
-import SAD.Core.SourcePos (SourcePos)
+import SAD.Data.SourcePos (SourcePos)
 import SAD.Helpers (nubOrd)
 import Data.Text (Text)
 import qualified Data.Text as Text

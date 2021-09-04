@@ -24,9 +24,9 @@ import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
 
-import SAD.Core.SourcePos (noSourcePos)
+import SAD.Data.SourcePos (noSourcePos)
 
-import SAD.Core.Message (PIDE, Report)
+import SAD.Data.Message (PIDE, Report)
 import SAD.Helpers (nubOrdOn)
 
 type FTL = Parser FState

@@ -18,7 +18,7 @@ module SAD.Data.Text.Block (
   )where
 
 import SAD.Data.Formula
-import SAD.Core.SourcePos
+import SAD.Data.SourcePos
 import SAD.Data.Instr hiding (position)
 import SAD.Parser.Token
 import SAD.Parser.Error (ParseError)

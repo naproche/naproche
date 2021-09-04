@@ -14,7 +14,7 @@ module SAD.Data.Formula.Kit
   ) where
 
 import SAD.Data.Formula.Base
-import SAD.Core.SourcePos
+import SAD.Data.SourcePos
 import SAD.Data.Terms
 import SAD.Data.VarName
 

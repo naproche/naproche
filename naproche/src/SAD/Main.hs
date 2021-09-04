@@ -5,7 +5,6 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018), Makarius 
 Main application entry point: console or server mode.
 -}
 
-{-# LANGUAGE TupleSections #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Main (Args(..), ParseArgs(..), ProveArgs(..), translate, check, exportLean) where
@@ -20,26 +19,29 @@ import Data.Either (isRight)
 import Data.Time (NominalDiffTime, UTCTime, getCurrentTime, diffUTCTime)
 import Data.Maybe (isNothing)
 import Data.List (isSuffixOf)
+import Data.Foldable (toList)
 
 import Data.Text.Prettyprint.Doc
 import Data.Text.Prettyprint.Doc.Render.String (renderString)
-import SAD.Core.Message (Comm, errorParser, outputMain, Kind(..), textFieldWidth)
+import SAD.Data.Message (Comm, errorParser, outputMain, Kind(..), textFieldWidth)
 import SAD.Core.Prove (ProveArgs(..), RunProver(..), verify, runProveT, ProveState(..))
 import SAD.Core.Reader (readProofText, HasLibrary(..))
-import SAD.Core.SourcePos (SourcePos, noSourcePos, fileOnlyPos)
+import SAD.Data.SourcePos (SourcePos, noSourcePos, fileOnlyPos)
 import SAD.Data.Text.Block (ProofText(..), findParseError)
 import SAD.Data.Instr (Instr(..), Argument(..), ParserKind(..), noPos)
 import SAD.Parser.Error (errorPos)
 import SAD.Core.Transform (transform)
-import SAD.Core.Typed (located)
+import SAD.Core.AST (located)
 import SAD.Core.Cache (CacheStorage)
 import SAD.Core.Task (Task(..))
 import SAD.Core.Tactic (proofTasks, ontologicalTasks)
 import SAD.Core.Typecheck (typecheck)
 import SAD.Core.Desuger (desuger)
+import SAD.Core.Unique
 import qualified SAD.Core.Lean as Lean (exportLean)
+import System.Exit (exitFailure)
 
-data ParseArgs = ParseArgs
+newtype ParseArgs = ParseArgs
   { useTex :: Bool
   } deriving (Eq, Ord, Show)
 
@@ -57,95 +59,102 @@ parse opts0 file = do
   beginTimedSection ParsingTime
   txts <- lift $ readProofText text0
   case findParseError $ ProofTextRoot txts of
-    Just err -> do 
+    Just err -> do
       lift $ errorParser (errorPos err) (show err)
     Nothing -> do
       endTimedSection ParsingTime
       pure $ txts
 
-proveTasks :: (MonadIO m, RunProver m, Comm m, CacheStorage m) 
+proveTasks :: (MonadIO m, RunProver m, Comm m, CacheStorage m)
   => [Task] -> Args -> Times m ProveState
 proveTasks tasks opts0 = do
   lift $ fmap snd $ runProveT (proveArgs opts0) $ verify tasks
 
-translate :: (MonadIO m, RunProver m, Comm m, CacheStorage m, HasLibrary m)
+printFailure :: (MonadIO m, Pretty a, Foldable t, Comm m) => Either (t a) b -> m b
+printFailure x = case x of
+  Left errs -> do
+    mapM_ (writeOut noSourcePos . pretty) $ toList errs
+    liftIO exitFailure
+  Right x -> pure x
+
+translate :: (MonadIO m, RunProver m, Comm m, CacheStorage m, HasLibrary m, HasUnique m)
   => Args -> FilePath -> m Exit.ExitCode
 translate opts0 file = flip evalStateT mempty $ runTimes $ do
   txts <- parse opts0 file
   -- lift $ mapM_ (\case (ProofTextBlock b) -> outputMain WRITELN (fileOnlyPos "") $ show b; _ -> pure ()) txts
-  converted <- lift $ transform txts
-  
+  converted <-lift $ printFailure =<< transform txts
   beginTimedSection CheckTime
   -- lift $ mapM_ (writeOut (fileOnlyPos "") . pretty . located) converted
-  typed <- lift $ typecheck converted
+  typed <- lift $ printFailure =<< typecheck converted
   endTimedSection CheckTime
-  
   lift $ mapM_ (writeOut (fileOnlyPos "") . pretty . located) typed
-  
+
   beginTimedSection OntoTime
   let numberOfSections = length typed
   let ontoTasks = ontologicalTasks $ desuger typed
-  unless (ontoTasks == []) $ do
+  unless (null ontoTasks) $ do
     lift $ writeOut noSourcePos $ "Ontological checking:"
   proveOut <- proveTasks ontoTasks opts0
   endTimedSection OntoTime
-  
+
   -- print statistics
   beginTimedSection ProvingTime
   endTimedSection ProvingTime
 
   exitWithProveState numberOfSections (checkConsistency $ proveArgs opts0) $ proveOut
-  
-check :: (MonadIO m, RunProver m, Comm m, CacheStorage m, HasLibrary m) 
+
+check :: (MonadIO m, RunProver m, Comm m, CacheStorage m, HasLibrary m, HasUnique m)
   => Args -> FilePath -> m Exit.ExitCode
 check opts0 file = flip evalStateT mempty $ runTimes $ do
   txts <- parse opts0 file
   beginTimedSection CheckTime
-  typed <- lift $ typecheck =<< transform txts
+  converted <- lift $ printFailure =<< transform txts
+  typed <- lift $ printFailure =<< typecheck converted
   endTimedSection CheckTime
-  
+
   beginTimedSection OntoTime
   let desugered = desuger typed
-  proveOut1 <-proveTasks (ontologicalTasks desugered) opts0
+  proveOut1 <- proveTasks (ontologicalTasks desugered) opts0
   endTimedSection OntoTime
-  
+
   beginTimedSection ProvingTime
   let numberOfSections = length typed
   proveOut2 <- proveTasks (proofTasks desugered) opts0
   endTimedSection ProvingTime
   exitWithProveState numberOfSections (checkConsistency $ proveArgs opts0) $ proveOut1 <> proveOut2
 
-exportLean :: (MonadIO m, RunProver m, Comm m, CacheStorage m, HasLibrary m) 
+exportLean :: (MonadIO m, RunProver m, Comm m, CacheStorage m, HasLibrary m, HasUnique m)
   => Args -> FilePath -> m Exit.ExitCode
 exportLean opts0 file = flip evalStateT mempty $ runTimes $ do
   txts <- parse opts0 file
-  converted <- lift $ transform txts
-  typed <- lift $ typecheck converted
-  lift $ writeOut (fileOnlyPos "") $ Lean.exportLean typed
+  converted <- lift $ printFailure =<< transform txts
+  typed <- lift $ printFailure =<< typecheck converted
+  let desugered = desuger typed
+  lift $ writeOut (fileOnlyPos "") $ Lean.exportLean desugered
   pure $ Exit.ExitSuccess
 
 writeOut :: (Comm m) => SourcePos -> Doc ann -> m ()
 writeOut pos doc = do
   w <- textFieldWidth
   outputMain WRITELN pos $ renderString $ layoutSmart
-    (defaultLayoutOptions { layoutPageWidth = AvailablePerLine w 1.0 }) 
+    (defaultLayoutOptions { layoutPageWidth = AvailablePerLine w 1.0 })
     (doc <> hardline)
 
 exitWithProveState :: (MonadIO m, RunProver m, Comm m, CacheStorage m)
   => Int -> Bool -> ProveState -> Times m Exit.ExitCode
 exitWithProveState numberOfSections checkConsistency proveOut = do
-  let numberOfNotSuccessful = length (proveGoalsFailed proveOut ++ proveGoalsTimeout proveOut) 
+  let numberOfNotSuccessful = length (proveGoalsFailed proveOut ++ proveGoalsTimeout proveOut)
   let numberProved = proveGoalsSentToATP proveOut - numberOfNotSuccessful
-  
-  if length (proveGoalsTimeout proveOut) == 0 then pure ()
+
+  if null (proveGoalsTimeout proveOut) then pure ()
     else do
       lift $ writeOut (fileOnlyPos "") $ "The following claims could not be shown to hold:"
       lift $ mapM_ (\t -> writeOut (taskPos t) $ pretty $ conjecture t) (proveGoalsTimeout proveOut)
-  if length (proveGoalsFailed proveOut) == 0 then pure ()
+  if null (proveGoalsFailed proveOut) then pure ()
     else do
       lift $ writeOut (fileOnlyPos "") $ "The following claims do not follow from the axioms:"
       lift $ mapM_ (\t -> writeOut (taskPos t) $ pretty $ conjecture t) (proveGoalsFailed proveOut)
-  
+
   case (checkConsistency, proveFirstContradiction proveOut) of
     (True, Just t) -> lift $ writeOut (taskPos t) $
       "Ouch, there is a contradiction in your axioms!" <> softline
@@ -167,7 +176,7 @@ exitWithProveState numberOfSections checkConsistency proveOut = do
 
 -- Show final statistics
 
-data TimedSection = ParsingTime | CheckTime | OntoTime | ProvingTime 
+data TimedSection = ParsingTime | CheckTime | OntoTime | ProvingTime
   deriving (Eq, Ord, Show)
 
 newtype Times m a = Times { runTimes :: StateT (Map TimedSection (Either UTCTime NominalDiffTime)) m a }

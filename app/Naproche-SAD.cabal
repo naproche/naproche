@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.33.0.
+-- This file has been generated from package.yaml by hpack version 0.34.4.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c662f829d5bb8afbf568d98527863fa365436e659c8c0266320da81917ea7f7c
+-- hash: 017032bb541aaf29969f23695403b46e7b6ff19c58666e63605e8cf5af60c7ed
 
 name:           Naproche-SAD
 version:        0.1.0.0
@@ -27,7 +27,13 @@ executable Naproche-SAD
       Paths_Naproche_SAD
   hs-source-dirs:
       src
-  default-extensions: GeneralizedNewtypeDeriving InstanceSigs LambdaCase PartialTypeSignatures ScopedTypeVariables DeriveGeneric
+  default-extensions:
+      GeneralizedNewtypeDeriving
+      InstanceSigs
+      LambdaCase
+      PartialTypeSignatures
+      ScopedTypeVariables
+      DeriveGeneric
   ghc-options: -O2 -Wall -fno-warn-unused-do-bind -fno-warn-unused-matches -fno-warn-name-shadowing -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       Isabelle
@@ -64,7 +70,13 @@ test-suite Naproche-SAD-test
       Paths_Naproche_SAD
   hs-source-dirs:
       test
-  default-extensions: GeneralizedNewtypeDeriving InstanceSigs LambdaCase PartialTypeSignatures ScopedTypeVariables DeriveGeneric
+  default-extensions:
+      GeneralizedNewtypeDeriving
+      InstanceSigs
+      LambdaCase
+      PartialTypeSignatures
+      ScopedTypeVariables
+      DeriveGeneric
   ghc-options: -O2 -Wall -fno-warn-unused-do-bind -fno-warn-unused-matches -fno-warn-name-shadowing -threaded -rtsopts -with-rtsopts=-N -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       Isabelle

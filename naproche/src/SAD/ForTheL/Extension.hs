@@ -15,7 +15,7 @@ module SAD.ForTheL.Extension (
   where
 
 
-import SAD.Core.SourcePos
+import SAD.Data.SourcePos
 import SAD.Data.Formula
 import SAD.Data.Text.Block (ProofText (..))
 

@@ -1,15 +1,14 @@
 {-# LANGUAGE OverloadedStrings #-}
 
--- | Desuger classes into definitions
--- This is surprisingly tricky: Classes need to be ordered in the correct way
--- when they are nested and the same class may occur multiple times in the
--- AST (for example as part of a goal that is transformed several times).
-
--- TODO: This does not take into account that wellformedness proofs are
--- sometimes impossible when we take classes out of their context.
--- See the bug in cantor.ftl.tex
--- This can be fixed by lifting the wellformedness proofs out of the classes
--- and into the class application.
+-- | This module desugeres the parsing AST into the TFF syntax.
+-- There are two main tasks:
+--  - Desuger classes into definitions
+--    This is surprisingly tricky: Classes need to be ordered in the correct way
+--    when they are nested and the same class may occur multiple times in the
+--    AST (for example as part of a goal that is transformed several times).
+--  - Turn intersection types into regular types by adding a variable for each
+--    type in the intersection and an axiom that all these variables are equal
+--    (where equality means equality on the variables coerced to $i).
 
 module SAD.Core.Desuger (desuger) where
 
@@ -17,226 +16,238 @@ import qualified Data.Text as Text
 import qualified Data.Set as Set
 import Data.Map (Map)
 import qualified Data.Map as Map
-import Data.Functor.Identity
 import Control.Monad.State
 
-import SAD.Core.SourcePos
-import SAD.Core.Identifier
-import SAD.Core.Typed
-import SAD.Core.Typecheck (coercionsToTerm)
+import SAD.Data.SourcePos
+import SAD.Data.Identifier
+import qualified SAD.Core.AST as A
+import qualified SAD.Core.Typed as T
 import Data.Maybe
 import Data.List (sortOn)
 
--- | A class definition of type 'outtype' (may be set/class/..)
--- with arguments 'intypes' (= free variables of the class body).
--- The class's body is in 'cond' and may contain classes itself!
-data ClassDef = ClassDef
-  { outtype :: InType
-  , intypes :: [(Ident, Identity InType)]
-  , implicits :: [(Ident, Identity InType)]
-  , assumptions :: [Term Identity ()]
-  , v :: Ident
-  , m :: InType
-  , ci :: ClassInfo
-  , cond :: Term Identity ()
-  } deriving (Eq, Ord, Show)
+-- -- | A class definition of type 'outtype' (may be set/class/..)
+-- -- with arguments 'intypes' (= free variables of the class body).
+-- -- The class's body is in 'cond' and may contain classes itself!
+-- data ClassDef = ClassDef
+  -- { outtype :: T.InType
+  -- , intypes :: [(Ident, T.InType)]
+  -- , implicits :: [(Ident, T.InType)]
+  -- , assumptions :: [T.Term]
+  -- , v :: Ident
+  -- , m :: A.InType
+  -- , ci :: A.ClassInfo
+  -- , cond :: A.Term
+  -- } deriving (Eq, Ord, Show)
 
--- | Map the original class definition (with nested classes)
--- to the given identifier and desugered class def.
--- If we encounter a new class we can thus check if we have seen it
--- before (in the same stmt).
-data DesugerState = DesugerState
-  { classIdx :: Int
-  , classes :: Map ClassDef (Ident, ClassDef)
-  , typings :: Map Ident (Identity InType)
-    -- ^ this map may contain variables that are out of scope,
-    -- but we don't care since the stmts are all type-checked.
-  } deriving (Eq, Ord, Show)
+-- -- | Map the original class definition (with nested classes)
+-- -- to the given identifier and desugered class def.
+-- -- If we encounter a new class we can thus check if we have seen it
+-- -- before (in the same stmt).
+-- data DesugerState = DesugerState
+  -- { classIdx :: Int
+  -- , classes :: Map ClassDef (Ident, ClassDef)
+  -- , typings :: Map Ident (Map T.InType Ident)
+    -- -- ^ this map may contain variables that are out of scope,
+    -- -- but we don't care since the stmts are all type-checked.
+    -- -- We map an ident to a map that associates each of its type
+    -- -- with the variable that implements this variant.
+  -- } deriving (Eq, Ord, Show)
 
-type Desuger a = State DesugerState a
+-- type Desuger a = State DesugerState a
 
-runDesuger :: Desuger a -> a
-runDesuger = flip evalState (DesugerState 1 mempty mempty)
+-- coercionsToTerm :: [Ident] -> (T.Term -> T.Term)
+-- coercionsToTerm = go . reverse
+  -- where
+    -- go [] = id
+    -- go (x:xs) = go xs . \t -> T.AppWf x [t] T.WellFormed
 
-newClassId :: Desuger Ident
-newClassId = do
-  s <- get
-  put $ s { classIdx = (classIdx s + 1) }
-  pure $ NormalIdent $ "cls" <> Text.pack (show (classIdx s))
+-- runDesuger :: Desuger a -> a
+-- runDesuger = flip evalState (DesugerState 1 mempty mempty)
 
-addClass :: ClassDef -> Desuger (Term Identity ())
-addClass c = do
-  cls <- classes <$> get
-  case Map.lookup c cls of
-    Nothing -> do
-      i <- newClassId
-      c' <- desugerClass c
-      modify $ \s -> s { classes = Map.insert c (i, c') (classes s) }
-      pure $ getClassTerm i c'
-    Just (i, c') -> pure $ getClassTerm i c'
+-- newClassId :: Desuger Ident
+-- newClassId = do
+  -- s <- get
+  -- put $ s { classIdx = (classIdx s + 1) }
+  -- pure $ NormalIdent $ "cls" <> Text.pack (show (classIdx s))
 
-addType :: Ident -> Identity InType -> Desuger ()
-addType i t = modify $ \s -> s { typings = Map.insert i t (typings s) }
+-- addClass :: ClassDef -> Desuger T.Term
+-- addClass c = do
+  -- cls <- classes <$> get
+  -- case Map.lookup c cls of
+    -- Nothing -> do
+      -- i <- newClassId
+      -- c' <- desugerClass c
+      -- modify $ \s -> s { classes = Map.insert c (i, c') (classes s) }
+      -- pure $ getClassTerm i c'
+    -- Just (i, c') -> pure $ getClassTerm i c'
 
--- | Remove all classes from the state and return them together with
--- all their nested classes in the correct order.
-dumpClasses :: Desuger [Stmt Identity ()]
-dumpClasses = do
-  cls <- map snd . Map.toList . classes <$> get
-  let cls' = sortOn fst cls
-  modify $ \s -> s { classes = mempty }
-  pure $ concatMap (uncurry fromClassDef) cls'
+-- addType :: Ident -> T.InType -> Desuger ()
+-- addType i t = modify $ \s -> s { typings = Map.insert i t (typings s) }
 
-getClassTerm :: Ident -> ClassDef -> Term Identity ()
-getClassTerm cls (ClassDef _ intypes im as _ _ _ _)
-  = AppWf (Resolved cls) (map (\(v, _) -> AppWf (Resolved v) [] WellFormed) intypes) WellFormed
+-- -- | Remove all classes from the state and return them together with
+-- -- all their nested classes in the correct order.
+-- dumpClasses :: Desuger [T.Stmt]
+-- dumpClasses = do
+  -- cls <- map snd . Map.toList . classes <$> get
+  -- let cls' = sortOn fst cls
+  -- modify $ \s -> s { classes = mempty }
+  -- pure $ concatMap (uncurry fromClassDef) cls'
 
-fromClassDef :: Ident -> ClassDef -> [Stmt Identity ()]
-fromClassDef cls c@(ClassDef outtype intypes im as v m ci cond) =
-  let v' = coercionsToTerm (coerceElemsToObject ci) (AppWf (Resolved v) [] WellFormed)
-      clsTrm = getClassTerm cls c
-      ext = Forall v (Identity m) $ App Iff [AppWf (Resolved identElement) [v', coercionsToTerm (coerceClassTypeToClass ci) clsTrm] WellFormed, cond]
-      ext' = foldr (uncurry Forall) ext intypes
-  in [IntroSignature cls (Identity outtype) intypes [], Axiom cls (termToNF ext')]
+-- getClassTerm :: Ident -> ClassDef -> T.Term
+-- getClassTerm cls (ClassDef _ intypes im as _ _ _ _)
+  -- = T.AppWf cls (map (\(v, _) -> T.AppWf v [] T.WellFormed) intypes) T.WellFormed
 
-desugerClass :: ClassDef -> Desuger ClassDef
-desugerClass (ClassDef o is im as v m ci cond) = do
-  cond' <- desugerTerm cond
-  pure $ ClassDef o is im as v m ci cond'
+-- fromClassDef :: Ident -> ClassDef -> [T.Stmt]
+-- fromClassDef cls c@(ClassDef outtype intypes im as v m ci cond) =
+  -- let v' = coercionsToTerm (A.coerceElemsToObject ci) (T.AppWf v [] T.WellFormed)
+      -- clsTrm = getClassTerm cls c
+      -- ext = T.Forall v m $ T.App T.Iff [T.AppWf identElement [v', coercionsToTerm (A.coerceClassTypeToClass ci) clsTrm] T.WellFormed, cond]
+      -- ext' = foldr (uncurry T.Forall) ext intypes
+  -- in [T.IntroSignature cls outtype intypes [], T.Axiom cls (T.termToNF ext')]
 
--- | Given an infinite stream of Idents,
--- replace each class {x | c} by a new operator cls in a term t and return
--- ((rest of the variables, [∀x x\in cls iff c]), t')
--- If classes are nested, we will return the outermost first.
-desugerTerm :: Term Identity () -> Desuger (Term Identity ())
-desugerTerm = go
-  where
-    getFreeTyped fv typings = mapMaybe
-      (\v -> case Map.lookup v typings of Nothing -> Nothing; Just t -> Just (v, t))
-      $ Set.toList $ fvToVarSet fv
+-- desugerClass :: ClassDef -> Desuger ClassDef
+-- desugerClass (ClassDef o is im as v m ci cond) = do
+  -- cond' <- desugerTerm cond
+  -- pure $ ClassDef o is im as v m ci cond'
 
-    go :: Term Identity () -> Desuger (Term Identity ())
-    go = \case
-      Forall v m t -> (Forall v m) <$> (addType v m >> go t)
-      Exists v m t -> (Exists v m) <$> (addType v m >> go t)
-      Class v (Identity m) mm (Identity ci) t -> do
-        typs <- typings <$> get
-        let free = getFreeTyped (bindVar v $ findFree t) typs
-            v' = coercionsToTerm (coerceElemsToObject ci) (AppWf (Resolved v) [] WellFormed )
-            t' = maybe t (\s -> App And [AppWf (Resolved identElement) [v', s] WellFormed, t]) mm
-            stmt = ClassDef (classType ci) free [] [] v m ci t'
-        addClass stmt
-      FinClass (Identity m) (Identity ci) ts -> do
-        typs <- typings <$> get
-        let v = newIdent (NormalIdent "v") (Map.keysSet typs)
-            ts' = foldl (\a b -> App Or [a, b]) (App Top []) $ map (\t -> App Eq [AppWf (Resolved v) [] WellFormed, t] ) ts
-            free = getFreeTyped (findFree ts') typs
-            stmt = ClassDef (classType ci) free [] [] v m ci ts'
-        addClass stmt
-      App op ts -> do
-        ts' <- mapM go ts
-        pure $ App op ts'
-      AppWf op ex wf -> do
-        ex' <- mapM go ex
-        wf' <- desugerWfBlock wf
-        pure $ AppWf op ex' wf'
-      Tag tag t -> Tag tag <$> go t
+-- -- | Replace each class {x | c} by a new operator cls in a term t and return
+-- -- ((rest of the variables, [∀x x\in cls iff c]), t')
+-- -- If classes are nested, we will return the outermost first.
+-- desugerTerm :: A.Term -> Desuger T.Term
+-- desugerTerm = go
+  -- where
+    -- getFreeTyped fv typings = mapMaybe
+      -- (\v -> case Map.lookup v typings of Nothing -> Nothing; Just t -> Just (v, t))
+      -- $ Set.toList $ fvToVarSet fv
 
-desugerNFTerm :: NFTerm Identity () -> Desuger (NFTerm Identity ())
-desugerNFTerm (NFTerm ex as bd) = do
-  mapM_ (uncurry addType) ex
-  as' <- mapM desugerTerm as
-  bd' <- desugerTerm bd
-  pure $ NFTerm ex as' bd'
+    -- go :: A.Term -> Desuger T.Term
+    -- go = \case
+      -- A.Forall v m t -> T.Forall v m <$> (addType v m >> go t)
+      -- A.Exists v m t -> T.Exists v m <$> (addType v m >> go t)
+      -- A.Class v m mm ci t -> do
+        -- typs <- typings <$> get
+        -- let free = getFreeTyped (bindVar v $ A.findFree t) typs
+            -- v' = coercionsToTerm (A.coerceElemsToObject ci) (T.AppWf v [] T.WellFormed )
+            -- t' = maybe t (\s -> A.App A.And [A.AppWf (A.Resolved identElement) [v', s] A.WellFormed, t]) mm
+            -- stmt = ClassDef (A.classType ci) free [] [] v m ci t'
+        -- addClass stmt
+      -- A.FinClass m ci ts -> do
+        -- typs <- typings <$> get
+        -- let v = newIdent (NormalIdent "v") (Map.keysSet typs)
+            -- ts' = foldl (\a b -> A.App A.Or [a, b]) (A.App A.Top []) $ map (\t -> A.App A.Eq [A.AppWf (A.Resolved v) [] A.WellFormed, t] ) ts
+            -- free = getFreeTyped (A.findFree ts') typs
+            -- stmt = ClassDef (A.classType ci) free [] [] v m ci ts'
+        -- addClass stmt
+      -- A.App op ts -> do
+        -- ts' <- mapM go ts
+        -- pure $ T.App op ts'
+      -- A.AppWf op ex wf -> do
+        -- ex' <- mapM go ex
+        -- wf' <- desugerWfBlock wf
+        -- pure $ T.AppWf op ex' wf'
+      -- A.Coe cs t -> _
+      -- A.Typing ty t -> _
+      -- A.Tag tag t -> failWithMessage $ "Internal: Tag left after type checking!"
 
-desugerWfBlock :: WfBlock Identity () -> Desuger (WfBlock Identity ())
-desugerWfBlock (WfProof nf pbl) = do
-  nf' <- desugerNFTerm nf
-  pbl' <- desugerPrfBlock pbl
-  pure $ WfProof nf' pbl'
-desugerWfBlock p = pure p
+-- desugerInType :: A.InType -> T.InType
+-- desugerInType (A.Signature i) = T.Signature i
 
-desugerPrfBlock :: PrfBlock Identity () -> Desuger (PrfBlock Identity ())
-desugerPrfBlock (ProofByHints hs) = pure $ ProofByHints hs
-desugerPrfBlock (ProofByTactics _) = error $ "Internal error: Desugering should run after type-checking!"
-desugerPrfBlock (ProofByTCTactics xs) = do
-  xs' <- mapM f xs
-  pure $ ProofByTCTactics xs'
-  where
-    f (Located p prf, t, hs) = do
-      t' <- desugerTerm t
-      hs' <- mapM desugerHypothesis hs
-      prf' <- desugerProof prf
-      pure (Located p prf', t', hs')
+-- desugerNFTerm :: A.NFTerm -> Desuger T.NFTerm
+-- desugerNFTerm (A.NFTerm ex as bd) = do
+  -- mapM_ (uncurry addType) ex
+  -- as' <- mapM desugerTerm as
+  -- bd' <- desugerTerm bd
+  -- pure $ T.NFTerm ex as' bd'
 
-desugerProof :: Prf Identity () -> Desuger (Prf Identity ())
-desugerProof = \case
-  Intro i t -> pure $ Intro i t
-  Assume t -> Assume <$> desugerTerm t
-  ByContradiction t -> ByContradiction <$> desugerTerm t
-  Suffices t pbl -> do
-    t' <- desugerTerm t
-    pbl' <- desugerPrfBlock pbl
-    pure $ Suffices t' pbl'
-  Define i m t -> do
-    addType i m
-    t' <- desugerTerm t
-    pure $ Define i m t'
-  Subclaim n nf pbl -> do
-    nf' <- desugerNFTerm nf
-    pbl' <- desugerPrfBlock pbl
-    pure $ Subclaim n nf' pbl'
-  Choose vs t pbl -> do
-    mapM_ (uncurry addType) vs
-    t' <- desugerTerm t
-    pbl' <- desugerPrfBlock pbl
-    pure $ Choose vs t' pbl'
-  Cases ts -> fmap Cases $ forM ts $ \(c, g, pbl) -> do
-    c' <- desugerTerm c
-    g' <- desugerTerm g
-    pbl' <- desugerPrfBlock pbl
-    pure (c', g', pbl')
-  TerminalCases ts -> fmap TerminalCases $ forM ts $ \(c, pbl) -> do
-    c' <- desugerTerm c
-    pbl' <- desugerPrfBlock pbl
-    pure (c', pbl')
+-- desugerWfBlock :: A.WfBlock -> Desuger T.WfBlock
+-- desugerWfBlock (A.WfProof nf pbl) = do
+  -- nf' <- desugerNFTerm nf
+  -- pbl' <- desugerPrfBlock pbl
+  -- pure $ T.WfProof nf' pbl'
+-- desugerWfBlock A.WellFormed = pure T.WellFormed
+-- desugerWfBlock A.NoWf = failWithMessage $ "Internal: WfBlock not checked!"
 
-desugerHypothesis :: Hypothesis -> Desuger Hypothesis
-desugerHypothesis (Typing i t) = pure $ Typing i t
-desugerHypothesis (Given n t) = Given n <$> desugerTerm t
+-- desugerPrfBlock :: A.PrfBlock -> Desuger T.PrfBlock
+-- desugerPrfBlock (A.ProofByHints hs) = pure $ T.ProofByHints hs
+-- desugerPrfBlock (A.ProofByTactics _) = error $ "Internal error: Desugering should run after type-checking!"
+-- desugerPrfBlock (A.ProofByTCTactics xs) = do
+  -- xs' <- mapM f xs
+  -- pure $ T.ProofByTCTactics xs'
+  -- where
+    -- f (A.Located p prf, t, hs) = do
+      -- t' <- desugerTerm t
+      -- hs' <- mapM desugerHypothesis hs
+      -- prf' <- desugerProof prf
+      -- pure (T.Located p prf', t', hs')
 
-locate :: SourcePos -> [Stmt Identity ()] -> [Located (Stmt Identity ())]
-locate p = map (Located p)
+-- desugerProof :: A.Prf -> Desuger T.Prf
+-- desugerProof = \case
+  -- A.Intro i t -> pure $ T.Intro i t
+  -- A.Assume t -> T.Assume <$> desugerTerm t
+  -- A.ByContradiction t -> T.ByContradiction <$> desugerTerm t
+  -- A.Suffices t pbl -> do
+    -- t' <- desugerTerm t
+    -- pbl' <- desugerPrfBlock pbl
+    -- pure $ T.Suffices t' pbl'
+  -- A.Define i m t -> do
+    -- addType i m
+    -- t' <- desugerTerm t
+    -- pure $ T.Define i m t'
+  -- A.Subclaim n nf pbl -> do
+    -- nf' <- desugerNFTerm nf
+    -- pbl' <- desugerPrfBlock pbl
+    -- pure $ T.Subclaim n nf' pbl'
+  -- A.Choose vs t pbl -> do
+    -- mapM_ (uncurry addType) vs
+    -- t' <- desugerTerm t
+    -- pbl' <- desugerPrfBlock pbl
+    -- pure $ T.Choose vs t' pbl'
+  -- A.Cases ts -> fmap T.Cases $ forM ts $ \(c, g, pbl) -> do
+    -- c' <- desugerTerm c
+    -- g' <- desugerTerm g
+    -- pbl' <- desugerPrfBlock pbl
+    -- pure (c', g', pbl')
+  -- A.TerminalCases ts -> fmap T.TerminalCases $ forM ts $ \(c, pbl) -> do
+    -- c' <- desugerTerm c
+    -- pbl' <- desugerPrfBlock pbl
+    -- pure (c', pbl')
 
-desugerStmt :: Located (Stmt Identity ()) -> Desuger [Located (Stmt Identity ())]
-desugerStmt (Located p stmt) = case stmt of
-  IntroSort s -> pure $ [Located p $ IntroSort s]
-  IntroAtom i ex as -> do
-    as' <- mapM desugerTerm as
-    ss <- dumpClasses
-    pure $ locate p ss ++ [Located p $ IntroAtom i ex as']
-  IntroSignature i t ex as -> do
-    as' <- mapM desugerTerm as
-    ss <- dumpClasses
-    pure $ locate p ss ++ [Located p $ IntroSignature i t ex as']
-  Predicate i nf -> do
-    nf' <- desugerNFTerm nf
-    ss <- dumpClasses
-    pure $ locate p ss ++ [Located p $ Predicate i nf']
-  Function i t nf -> do
-    nf' <- desugerNFTerm nf
-    ss <- dumpClasses
-    pure $ locate p ss ++ [Located p $ Function i t nf']
-  Axiom n' nf -> do
-    nf' <- desugerNFTerm nf
-    ss <- dumpClasses
-    pure $ locate p ss ++ [Located p $ Axiom n' nf']
-  Claim n' nf pbl -> do
-    nf' <- desugerNFTerm nf
-    pbl' <- desugerPrfBlock pbl
-    ss <- dumpClasses
-    pure $ locate p ss ++ [Located p $ Claim n' nf' pbl']
-  Coercion i f t -> pure [Located p $ Coercion i f t]
+-- desugerHypothesis :: A.Hypothesis -> Desuger T.Hypothesis
+-- desugerHypothesis (A.TypeDef i t) = pure $ T.TypeDef i t
+-- desugerHypothesis (A.Given n t) = T.Given n <$> desugerTerm t
 
-desuger :: [Located (Stmt Identity ())] -> [Located (Stmt Identity ())]
-desuger = concat . runDesuger . mapM desugerStmt
+-- locate :: SourcePos -> [T.Stmt] -> [T.Located T.Stmt]
+-- locate p = map (T.Located p)
+
+-- desugerStmt :: A.Located A.Stmt -> Desuger [T.Located T.Stmt]
+-- desugerStmt (A.Located p stmt) = case stmt of
+  -- A.IntroSort s -> pure $ [T.Located p $ T.IntroSort s]
+  -- A.IntroAtom i ex as -> do
+    -- as' <- mapM desugerTerm as
+    -- ss <- dumpClasses
+    -- pure $ locate p ss ++ [T.Located p $ T.IntroAtom i ex as']
+  -- A.IntroSignature i t ex as -> do
+    -- as' <- mapM desugerTerm as
+    -- ss <- dumpClasses
+    -- pure $ locate p ss ++ [T.Located p $ T.IntroSignature i t ex as']
+  -- A.Predicate i nf -> do
+    -- nf' <- desugerNFTerm nf
+    -- ss <- dumpClasses
+    -- pure $ locate p ss ++ [T.Located p $ T.Predicate i nf']
+  -- A.Function i t nf -> do
+    -- nf' <- desugerNFTerm nf
+    -- ss <- dumpClasses
+    -- pure $ locate p ss ++ [T.Located p $ T.Function i t nf']
+  -- A.Axiom n' nf -> do
+    -- nf' <- desugerNFTerm nf
+    -- ss <- dumpClasses
+    -- pure $ locate p ss ++ [T.Located p $ T.Axiom n' nf']
+  -- A.Claim n' nf pbl -> do
+    -- nf' <- desugerNFTerm nf
+    -- pbl' <- desugerPrfBlock pbl
+    -- ss <- dumpClasses
+    -- pure $ locate p ss ++ [T.Located p $ T.Claim n' nf' pbl']
+  -- A.Coercion i f t -> pure [T.Located p $ A.Coercion i f t]
+
+desuger :: [A.Located A.Stmt] -> [T.Located T.Stmt]
+desuger _ = [] -- concat . runDesuger . mapM desugerStmt

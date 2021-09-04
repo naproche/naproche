@@ -29,8 +29,8 @@ module SAD.Parser.Primitives
 import SAD.Parser.Base
 import SAD.Parser.Error
 import SAD.Parser.Token
-import SAD.Core.SourcePos
-import SAD.Core.Identifier (symChars)
+import SAD.Data.SourcePos
+import SAD.Data.Identifier (symChars)
 
 import Data.Char (isAlpha)
 import Control.Monad (void, guard)

@@ -33,7 +33,7 @@ import Control.Monad.State.Class (MonadState(put, get))
 
 import SAD.Parser.Token
 import SAD.Parser.Error
-import SAD.Core.SourcePos
+import SAD.Data.SourcePos
 import SAD.Data.Instr (ParserKind)
 
 import Data.List

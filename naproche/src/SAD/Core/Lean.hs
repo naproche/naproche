@@ -18,10 +18,10 @@ module SAD.Core.Lean where
 
 import Control.Monad
 import Control.Monad.State
-import Data.Functor.Identity
 import SAD.Core.Typed
-import SAD.Core.Identifier
+import SAD.Data.Identifier
 import Data.Text.Prettyprint.Doc
+import SAD.Core.Unique
 
 data LeanState = LeanState
   { nextAxiomId :: Int
@@ -46,18 +46,15 @@ class ExportLean a where
   toLean :: a -> Lean (Doc ann)
 
 instance ExportLean Ident where
-  toLean i = pure $ pretty $ case identAsTerm i of
+  toLean i = pure $ pretty $ case identifierAsTerm (uniqueIdentifier i) of
     "if" -> "if'"
     t -> t
-
-instance ExportLean RIdent where
-  toLean = toLean . fromRIdent
 
 instance ExportLean InType where
   toLean (Signature i)
     | i == identClass = pure "class'"
     | i == identSet = pure "set'"
-    | otherwise = case identAsType i of
+    | otherwise = case identifierAsType (uniqueIdentifier i) of
       Just t -> pure $ pretty t
       Nothing -> error $ "Lean export: " <> show i <> " is not a type!"
 
@@ -82,15 +79,13 @@ instance ExportLean Operator where
   toLean Bot = pure "false"
   toLean Eq  = pure "="
 
-instance (f ~ Identity, t ~ ()) => ExportLean (Term f t) where
-  toLean (Forall v (Identity m) t) = do
+instance ExportLean Term where
+  toLean (Forall v m t) = do
     v' <- toLean v; m' <- toLean m; t' <- toLean t
     pure $ "∀(" <> v' <> " : " <> m' <> "), " <> t'
-  toLean (Exists v (Identity m) t) = do
+  toLean (Exists v m t) = do
     v' <- toLean v; m' <- toLean m; t' <- toLean t
     pure $ "∃(" <> v' <> " : " <> m' <> "), " <> t'
-  toLean FinClass {} = error "FinClass in Lean export!"
-  toLean Class {} = error "Class in Lean export!"
   toLean (App op []) = toLean op
   toLean (App op [a]) = do
     op' <- toLean op; a' <- toLean a
@@ -99,10 +94,9 @@ instance (f ~ Identity, t ~ ()) => ExportLean (Term f t) where
     a' <- toLean a; op' <- toLean op; b' <- toLean b;
     pure $ "(" <> a' <+> op' <+> b' <> ")"
   toLean (App _ _) = error "Malformed App in Lean Export"
-  toLean (Tag _ t) = toLean t
-  toLean (AppWf op args _) | isSymbol (fromRIdent op) = do
+  toLean (AppWf op args _) | isSymbol op = do
     args' <- forM args $ \a -> case a of
-     AppWf op _ _ | isSymbol (fromRIdent op) -> toLean a >>= \a -> pure $ "(" <> a <> ")"
+     AppWf op _ _ | isSymbol op -> toLean a >>= \a -> pure $ "(" <> a <> ")"
      _ -> toLean a
     op' <- toLean op
     pure $ op' <+> hsep args'
@@ -110,23 +104,23 @@ instance (f ~ Identity, t ~ ()) => ExportLean (Term f t) where
     op' <- toLean op; args' <- mapM toLean args
     pure $ "(" <> op' <+> hsep args' <> ")"
 
-mkImplicit :: (Ident, Identity InType) -> Lean (Doc ann)
-mkImplicit (i, Identity t) = do
+mkImplicit :: (Ident, InType) -> Lean (Doc ann)
+mkImplicit (i, t) = do
   i' <- toLean i; t' <- toLean t
   pure $ "{" <> i' <> " : " <> t' <> "}"
 
-mkExplicit :: (Ident, Identity InType) -> Lean (Doc ann)
-mkExplicit (i, Identity t) = do
+mkExplicit :: (Ident, InType) -> Lean (Doc ann)
+mkExplicit (i, t) = do
   i' <- toLean i; t' <- toLean t
   pure $ "(" <> i' <> " : " <> t' <> ")"
 
-mkAssumptions :: [Term Identity ()] -> Lean (Doc ann)
+mkAssumptions :: [Term] -> Lean (Doc ann)
 mkAssumptions as = do
   fmap hsep $ forM (zip as [1::Int ..]) $ \(a, i) -> do
     a' <- toLean a
     pure $ "{ assm" <> pretty i <> " : " <> a' <> "}"
 
-instance (f ~ Identity, t ~ ()) => ExportLean (Stmt f t) where
+instance ExportLean Stmt where
   toLean (IntroSort tm) = do
     tm' <- toLean (Signature tm)
     pure $ "axiom " <> tm' <> " : Type"
@@ -134,7 +128,7 @@ instance (f ~ Identity, t ~ ()) => ExportLean (Stmt f t) where
     i' <- toLean i;
     ex' <- mapM mkExplicit ex; as' <- mkAssumptions as;
     pure $ "axiom " <> i' <+> hsep ex' <+> as' <> " : Prop"
-  toLean (IntroSignature i (Identity t) ex as) = do
+  toLean (IntroSignature i t ex as) = do
     i' <- toLean i;
     ex' <- mapM mkExplicit ex; as' <- mkAssumptions as; t' <- toLean t
     pure $ "axiom " <> i' <+> hsep ex' <+> as' <> " : " <> t'
@@ -142,7 +136,7 @@ instance (f ~ Identity, t ~ ()) => ExportLean (Stmt f t) where
     i' <- toLean i;
     ex' <- mapM mkExplicit ex; as' <- mkAssumptions as; b' <- toLean b
     pure $ "def " <> i' <+> hsep ex' <+> as' <> " : Prop := " <> b'
-  toLean (Function i (Identity t) (NFTerm ex as b)) = do
+  toLean (Function i t (NFTerm ex as b)) = do
     i' <- toLean i; t' <- toLean t
     ex' <- mapM mkExplicit ex; as' <- mkAssumptions as; b' <- toLean b
     pure $ "def " <> i' <+> hsep ex' <+> as' <> " : " <> t' <> " := " <> b'
@@ -154,9 +148,6 @@ instance (f ~ Identity, t ~ ()) => ExportLean (Stmt f t) where
     i' <- toLean i;
     ex' <- mapM mkExplicit ex; as' <- mkAssumptions as; b' <- toLean b
     pure $ "lemma " <> i' <+> hsep ex' <+> as' <> " : " <> b' <> " := by sorry"
-  toLean (Coercion i from to) = do
-    i' <- toLean i; from' <- toLean (Signature from); to' <- toLean (Signature to)
-    pure $ "axiom " <> i' <> " : " <> from' <> " → " <> to'
 
-exportLean :: [Located (Stmt Identity ())] -> Doc ann
+exportLean :: [Located Stmt] -> Doc ann
 exportLean ls = vsep $ flip evalState (LeanState 1 1) $ mapM (toLean . located) ls

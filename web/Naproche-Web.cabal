@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.33.0.
+-- This file has been generated from package.yaml by hpack version 0.34.4.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 878a591c9a0581f50705b6c16874204f89051c7e4594fb7338108b72e247cc93
+-- hash: f55485ce2e322191a8966f04c085aa794e0984c92f05329af1de9ed265c37700
 
 name:           Naproche-Web
 version:        0.1.0.0
@@ -26,7 +26,13 @@ executable Naproche-Web
       Paths_Naproche_Web
   hs-source-dirs:
       src
-  default-extensions: GeneralizedNewtypeDeriving InstanceSigs LambdaCase PartialTypeSignatures ScopedTypeVariables DeriveGeneric
+  default-extensions:
+      GeneralizedNewtypeDeriving
+      InstanceSigs
+      LambdaCase
+      PartialTypeSignatures
+      ScopedTypeVariables
+      DeriveGeneric
   ghc-options: -O2 -Wall -fno-warn-unused-do-bind -fno-warn-unused-matches -fno-warn-name-shadowing
   build-depends:
       aeson

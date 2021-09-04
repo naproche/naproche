@@ -8,7 +8,7 @@ Main text reading functions.
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.Core.Reader (HasLibrary(..), parseInit, readProofText) where
+module SAD.Core.Reader (HasLibrary(..), readProofText) where
 
 import Data.Maybe
 import Control.Monad
@@ -26,26 +26,15 @@ import SAD.Data.Instr as Instr
 import SAD.ForTheL.Base
 import SAD.ForTheL.Structure (forthel, texForthel)
 import SAD.Parser.Base
-import SAD.ForTheL.Instruction
-import SAD.Core.SourcePos
+import SAD.Data.SourcePos
 import SAD.Parser.Token
-import SAD.Parser.Combinators (after, optLL1, chainLL1)
-import SAD.Parser.Primitives
 import SAD.Parser.Error
-import SAD.Core.Message (Comm, PIDE, Report, pideContext, errorParser, outputParser, Kind(..), reportMeta)
+import SAD.Data.Message (Comm, PIDE, Report, pideContext, errorParser, outputParser, Kind(..), reportMeta)
 
 class Monad m => HasLibrary m where
   -- | Read a relative filepath in the current paths
   -- and return its content and the matched filepath.
   readLibrary :: FilePath -> m (FilePath, Text)
-
--- | Parse the content of an "init.opt" file
-parseInit :: Comm m => FilePath -> Text -> m [(Pos, Instr)]
-parseInit file input = do
-  let tokens = filter isProperToken $ tokenize TexDisabled (filePos file) input
-      initialParserState = State (initFS Nothing) tokens NonTex noSourcePos
-      instructionFile = after (optLL1 [] $ chainLL1 instr) eof
-  fst <$> launchParser instructionFile initialParserState
 
 -- | Get the final read instruction from a sequence of proof texts.
 getReadInstr :: [ProofText] -> (Maybe (ParserKind, Pos, Either FilePath Text), [ProofText])
