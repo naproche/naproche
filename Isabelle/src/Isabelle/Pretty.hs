@@ -58,7 +58,7 @@ formatted :: T -> Bytes
 formatted = YXML.string_of_body . symbolic
 
 unformatted :: T -> Bytes
-unformatted prt = Buffer.empty |> out prt |> Buffer.content
+unformatted = Buffer.build_content . out
   where
     out (Block markup _ _ prts) =
       let (bg, en) = YXML.output_markup markup

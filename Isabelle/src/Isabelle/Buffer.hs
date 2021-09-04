@@ -9,11 +9,12 @@ Efficient buffer of byte strings.
 See "$ISABELLE_HOME/src/Pure/General/buffer.ML".
 -}
 
-module Isabelle.Buffer (T, empty, add, content)
+module Isabelle.Buffer (T, empty, add, content, build, build_content)
 where
 
 import qualified Isabelle.Bytes as Bytes
 import Isabelle.Bytes (Bytes)
+import Isabelle.Library
 
 
 newtype T = Buffer [Bytes]
@@ -26,3 +27,9 @@ add b (Buffer bs) = Buffer (if Bytes.null b then bs else b : bs)
 
 content :: T -> Bytes
 content (Buffer bs) = Bytes.concat (reverse bs)
+
+build :: (T -> T) -> T
+build f = f empty
+
+build_content :: (T -> T) -> Bytes
+build_content f = build f |> content

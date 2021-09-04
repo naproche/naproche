@@ -65,7 +65,7 @@ buffer (XML.Elem ((name, atts), ts)) =
 buffer (XML.Text s) = Buffer.add s
 
 string_of_body :: XML.Body -> Bytes
-string_of_body body = Buffer.empty |> buffer_body body |> Buffer.content
+string_of_body = Buffer.build_content . buffer_body
 
 string_of :: XML.Tree -> Bytes
 string_of = string_of_body . single

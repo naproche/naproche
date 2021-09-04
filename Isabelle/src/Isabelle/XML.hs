@@ -55,7 +55,7 @@ add_content tree =
         Text s -> Buffer.add s
 
 content_of :: Body -> Bytes
-content_of body = Buffer.empty |> fold add_content body |> Buffer.content
+content_of = Buffer.build_content . fold add_content
 
 
 {- string representation -}
@@ -73,7 +73,7 @@ encode_text = make_bytes . concatMap (encode_char . Bytes.char) . Bytes.unpack
 
 instance Show Tree where
   show tree =
-    Buffer.empty |> show_tree tree |> Buffer.content |> make_string
+    make_string $ Buffer.build_content (show_tree tree)
     where
       show_tree (Elem ((name, atts), [])) =
         Buffer.add "<" #> Buffer.add (show_elem name atts) #> Buffer.add "/>"
