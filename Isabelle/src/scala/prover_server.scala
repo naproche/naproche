@@ -123,7 +123,7 @@ class Prover_Server private(port: Int, provers: Map[String, Path], debugging: =>
             result match {
               case Exn.Exn(exn) => return_failure(Exn.message(exn))
               case Exn.Res(res) =>
-                val rc = if (!res.ok && was_timeout) Process_Result.timeout_rc else res.rc
+                val rc = if (!res.ok && was_timeout) Process_Result.RC.timeout else res.rc
                 val output = cat_lines(res.out_lines ::: res.err_lines)
 
                 if (debugging) {
