@@ -14,7 +14,7 @@ import qualified SAD.Core.Message as Message
 import GHC.Generics
 import Data.Bifunctor
 import qualified Data.ByteString as B
-import Isabelle.Position as Position
+import qualified Isabelle.Position as Position
 import Isabelle.Library (make_bytes)
 
 data Prover = Prover {
