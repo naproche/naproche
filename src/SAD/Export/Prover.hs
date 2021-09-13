@@ -64,8 +64,8 @@ export pos depth provers instrs context goal = do
   let memoryLimit = askLimit Memorylimit 2048 instrs
 
   let task = TPTP.output context goal
-  let isByContradiction = any (==Block.ProofByContradiction)
-        (map Block.kind (head (branch goal) : concatMap branch context))
+  let isByContradiction = elem Block.ProofByContradiction $
+        map Block.kind (head (branch goal) : concatMap branch context)
 
   when (askFlag Dump False instrs) $
     Message.output Bytes.empty Message.WRITELN pos task
