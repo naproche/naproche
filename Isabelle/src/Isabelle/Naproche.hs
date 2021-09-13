@@ -22,9 +22,6 @@ module Isabelle.Naproche (
   output_tracing_command, output_warning_command, output_legacy_feature_command,
   output_error_command, output_report_command,
 
-  prover_args, prover_command, prover_name, prover_timeout, prover_result,
-  prover_return_code, kill_command,
-
   iT, is_iT, mk_this, dest_this,
 
   setsized_const, fun_const, set_const, class_const, elem_const, obj_const,
@@ -83,31 +80,6 @@ output_warning_command = "Naproche.output_warning"
 output_legacy_feature_command = "Naproche.output_legacy_feature"
 output_error_command = "Naproche.output_error"
 output_report_command = "Naproche.output_report"
-
-
--- prover server
--- (see "$NAPROCHE_HOME/Isabelle/src/scala/prover_server.scala")
-
-prover_args :: Bytes
-prover_args = "prover_args"
-
-prover_command :: Bytes
-prover_command = "prover"
-
-prover_name :: Bytes
-prover_name = "name"
-
-prover_timeout :: Bytes
-prover_timeout = "timeout"
-
-prover_result :: Bytes
-prover_result = "result"
-
-prover_return_code :: Bytes
-prover_return_code = "return_code"
-
-kill_command :: Bytes
-kill_command = "kill"
 
 
 -- logic

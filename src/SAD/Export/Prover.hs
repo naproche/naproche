@@ -1,35 +1,26 @@
 {-# LANGUAGE MultiWayIf #-}
 {-
-Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018), Makarius Wenzel (2018)
+Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018), Makarius Wenzel (2018, 2021)
 
 Prover interface: export a proof task to an external prover.
 -}
 
+{-# LANGUAGE OverloadedStrings #-}
+
 module SAD.Export.Prover where
 
 import Control.Monad (when, unless)
-import Data.Maybe
 import Data.List
-import System.IO
-import System.IO.Error
-import System.Exit (ExitCode(..))
-import qualified System.Process as Process
-import qualified Control.Exception as Exception
-import qualified Data.ByteString as ByteString
 import qualified Data.Text.Lazy as Text
-import qualified Data.Text.Lazy.IO as TIO
 import Data.Text.Lazy (Text)
 
 import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
-import qualified Isabelle.Server as Server
-import qualified Isabelle.XML as XML
-import qualified Isabelle.Byte_Message as Byte_Message
-import qualified Isabelle.Value as Value
-import qualified Isabelle.Naproche as Naproche
-import Isabelle.Library (make_bytes, make_string)
+import qualified Isabelle.Position as Position
+import qualified Isabelle.Time as Time
+import qualified Isabelle.Bash as Bash
+import Isabelle.Library
 import qualified Isabelle.Bytes as Bytes
 import Isabelle.Bytes (Bytes)
-import qualified Isabelle.UTF8 as UTF8
 import qualified Isabelle.Process_Result as Process_Result
 
 import SAD.Core.Base (reportBracketIO)
@@ -37,15 +28,14 @@ import SAD.Data.Instr hiding (Prover)
 import SAD.Data.Text.Context (Context, branch, formula)
 import qualified SAD.Data.Text.Block as Block
 import SAD.Export.Base
-import SAD.Helpers (notNull)
 
 import qualified SAD.Core.Message as Message
 import qualified SAD.Data.Instr as Instr
 import qualified SAD.Export.TPTP as TPTP
 import qualified SAD.Data.Formula.HOL as HOL
 
-import qualified Isabelle.Position as Position
 import qualified Naproche.Program as Program
+import qualified Naproche.System as System
 
 
 export :: Position.T -> Int -> [Prover] -> [Instr] -> [Context] -> Context -> IO Result
@@ -61,7 +51,7 @@ export pos depth provers instrs context goal = do
     Message.outputExport Message.TRACING pos s
     return ()
 
-  when (null provers) $ Message.errorExport pos "No provers"
+  when (null provers) $ Message.errorExport pos ("No provers" :: Bytes)
 
   let proverName = Text.unpack $ askArgument Instr.Prover (Text.pack $ name $ head provers) instrs
       proversNamed = filter ((==) proverName . name) provers
@@ -73,14 +63,6 @@ export pos depth provers instrs context goal = do
   let timeLimit = askLimit Timelimit 3 instrs
   let memoryLimit = askLimit Memorylimit 2048 instrs
 
-  let proverServerPort = askArgument ProverServerPort Text.empty instrs
-  let proverServerPassword =
-        make_bytes $ Text.unpack $ askArgument ProverServerPassword Text.empty instrs
-  let proverServer =
-        if Text.null proverServerPort || Bytes.null proverServerPassword then
-          Nothing
-        else Just (Text.unpack proverServerPort, proverServerPassword)
-
   let task = TPTP.output context goal
   let isByContradiction = any (==Block.ProofByContradiction)
         (map Block.kind (head (branch goal) : concatMap branch context))
@@ -89,113 +71,39 @@ export pos depth provers instrs context goal = do
     Message.output Bytes.empty Message.WRITELN pos task
 
   reportBracketIO pos $
-    runProver pos (head proversNamed) proverServer printProver task isByContradiction timeLimit memoryLimit
+    runProver pos (head proversNamed) printProver task isByContradiction timeLimit memoryLimit
 
 data Result = Success | Failure | ContradictoryAxioms | Unknown | Error
   deriving (Eq, Ord, Show)
 
-runProver :: Position.T -> Prover -> Maybe (String, Bytes) -> Bool -> Text -> Bool -> Int -> Int -> IO Result
-runProver pos (Prover _ label path args yes con nos uns) proverServer printProver task isByContradiction timeLimit memoryLimit =
-  let
-    proverResult :: Int -> String -> IO Result
-    proverResult rc output =
-      do
-        let timeout = rc == Process_Result.timeout_rc
-        let lns = filter notNull (lines output)
-        let out = map (("[" ++ label ++ "] ") ++) lns
+runProver :: Position.T -> Prover -> Bool -> Text -> Bool -> Int -> Int -> IO Result
+runProver pos (Prover _ label path args yes con nos uns) printProver task isByContradiction timeLimit memoryLimit = do
+  context <- Program.thread_context
+  result <- System.bash_process context $
+    Bash.script (Bash.strings (map make_bytes (path : map (setLimits timeLimit memoryLimit) args)))
+    |> Bash.timeout (Time.seconds (fromIntegral timeLimit))
+    |> Bash.input (make_bytes task)
 
-        when (not timeout && null lns) $ Message.errorExport pos "No prover response"
-        when printProver $ mapM_ (Message.output Bytes.empty Message.WRITELN pos) out
+  let timeout = Process_Result.rc result == Process_Result.timeout_rc
+  let lns = filter (not . Bytes.null) (Process_Result.out_lines result)
+  let out = map (("[" <> make_bytes label <> "] ") <>) lns
 
-        let contradictions = any (\l -> any (`isPrefixOf` l) con) lns
-            positive = any (\l -> any (`isPrefixOf` l) yes) lns
-            negative = any (\l -> any (`isPrefixOf` l) nos) lns
-            inconclusive = any (\l -> any (`isPrefixOf` l) uns) lns
+  when (not timeout && null lns) $ Message.errorExport pos ("No prover response" :: Bytes)
+  when printProver $ mapM_ (Message.output Bytes.empty Message.WRITELN pos) out
 
-        unless (timeout || positive || contradictions || negative || inconclusive) $
-            Message.errorExport pos $ unlines ("Bad prover response:" : lns)
+  let contradictions = any (\l -> any (`isPrefixOf` make_string l) con) lns
+      positive = any (\l -> any (`isPrefixOf` make_string l) yes) lns
+      negative = any (\l -> any (`isPrefixOf` make_string l) nos) lns
+      inconclusive = any (\l -> any (`isPrefixOf` make_string l) uns) lns
 
-        if | positive || (isByContradiction && contradictions) -> pure Success
-           | negative -> pure Failure
-           | not isByContradiction && contradictions -> pure ContradictoryAxioms
-           | timeout -> pure Unknown
-           | otherwise -> pure Error
-  in
-    case proverServer of
-      Nothing -> do
-        let proc = (Process.proc path (map (setLimits timeLimit memoryLimit) args))
-              { Process.std_in = Process.CreatePipe
-              ,  Process.std_out = Process.CreatePipe
-              ,  Process.std_err = Process.CreatePipe
-              ,  Process.create_group = True
-              ,  Process.new_session = True}
-        let process = do
-              (pin, pout, perr, p) <- Process.createProcess proc
-              return (fromJust pin, fromJust pout, fromJust perr, p)
+  unless (timeout || positive || contradictions || negative || inconclusive) $
+      Message.errorExport pos $ cat_lines ("Bad prover response:" : lns)
 
-        (prvin, prvout, prverr, prv) <- Exception.catch process
-            (\e -> Message.errorExport pos $
-              ("Failed to run " ++ show path ++ ": " ++ ioeGetErrorString e))
-
-        UTF8.setup3 prvin prvout prverr
-
-        TIO.hPutStrLn prvin task
-        hClose prvin
-
-        let terminate = do
-              Process.interruptProcessGroupOf prv
-              Process.waitForProcess prv
-              return ()
-
-        Isabelle_Thread.bracket_resource terminate $ do
-          output <- ByteString.hGetContents prvout
-          errors <- ByteString.hGetContents prverr
-          exitCode <- Process.waitForProcess prv
-          let rc =
-                case exitCode of
-                  ExitSuccess -> 0
-                  ExitFailure rc | rc >= 0 -> rc
-                  ExitFailure rc -> 128 - rc
-
-          proverResult rc (make_string (Bytes.make (output <> errors)))
-
-      Just (port, password) ->
-        Server.connection port password
-          (\prover ->
-            do
-              Byte_Message.write_yxml prover
-                [XML.Elem ((Naproche.prover_command,
-                    [(Naproche.prover_name, make_bytes path),
-                     (Naproche.prover_args, make_bytes $ unlines (map (setLimits 300 2048) args)),
-                     (Naproche.prover_timeout, Value.print_int timeLimit)]),
-                  [XML.Text (make_bytes task)])]
-
-              reply <- Byte_Message.read_line_message prover
-
-              case reply of
-                Nothing -> proverResult 0 ""
-                Just uuid ->
-                  do
-                    let kill_prover = do
-                          Server.connection port password (\prover_kill ->
-                            Byte_Message.write_yxml prover_kill
-                              [XML.Elem ((Naproche.kill_command, []),
-                                [XML.Text uuid])])
-                    (rc, output) <-
-                      Isabelle_Thread.bracket_resource kill_prover $ do
-                        result <- Byte_Message.read_yxml prover
-                        return $
-                          case result of
-                            Just [XML.Elem ((elem, (a, b) : _), body)] |
-                              elem == Naproche.prover_result &&
-                              a == Naproche.prover_return_code ->
-                                case Value.parse_int b of
-                                  Just rc -> (rc, XML.content_of body)
-                                  Nothing -> (2, Bytes.empty)
-                            _ -> (2, Bytes.empty)
-
-                    proverResult rc (make_string output))
-
+  if | positive || (isByContradiction && contradictions) -> pure Success
+     | negative -> pure Failure
+     | not isByContradiction && contradictions -> pure ContradictoryAxioms
+     | timeout -> pure Unknown
+     | otherwise -> pure Error
 
 setLimits :: Int -> Int -> String -> String
 setLimits timeLimit memoryLimit = go

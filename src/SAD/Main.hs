@@ -269,10 +269,6 @@ options = [
     "index of provers (def: provers.yaml)",
   GetOpt.Option "P" ["prover"] (GetOpt.ReqArg (GetArgument Prover . Text.pack) "NAME")
     "use prover NAME (def: first listed)",
-  GetOpt.Option "" ["prover-server-port"] (GetOpt.ReqArg (GetArgument ProverServerPort . Text.pack) "NAME")
-    "prover server port (on localhost)",
-  GetOpt.Option "" ["prover-server-password"] (GetOpt.ReqArg (GetArgument ProverServerPassword . Text.pack) "UUID")
-    "prover server password",
   GetOpt.Option "t" ["timelimit"] (GetOpt.ReqArg (LimitBy Timelimit . getLeadingPositiveInt) "N")
     "N seconds per prover call (def: 3)",
   GetOpt.Option "m" ["memorylimit"] (GetOpt.ReqArg (LimitBy Memorylimit . getLeadingPositiveInt) "N")

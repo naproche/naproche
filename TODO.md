@@ -13,9 +13,6 @@
 
 # Isabelle/Naproche integration
 
-* The Isabelle/Scala prover_server should become general bash_process server, for arbitrary
-  executables (name, bash script).
-
 * Clarify connection (or non-connection) of Isabelle.Pretty vs. Hackage prettyprinter (1.7.0).
 
 

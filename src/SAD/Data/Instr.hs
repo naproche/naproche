@@ -96,8 +96,6 @@ data Argument =
   | Library            --  library directory
   | Provers            --  prover database
   | Prover             --  current prover
-  | ProverServerPort   --  port for prover server (on localhost)
-  | ProverServerPassword  --  password for prover server
   deriving (Eq, Ord, Show)
 
 data Arguments =

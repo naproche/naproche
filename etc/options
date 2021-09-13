@@ -17,9 +17,6 @@ public option naproche_server : bool = true
 public option naproche_server_debugging : bool = false
   -- "console debugging for Naproche-SAD server"
 
-public option naproche_prover_server : bool = true
-  -- "prefer Naproche-SAD prover server over batch process (change requires restart)"
-
 public option naproche_print_thesis : bool = true
   -- "print thesis development"
 
@@ -34,12 +31,6 @@ option naproche_server_address : string = ""
 
 option naproche_server_password : string = ""
   -- "password for connection to Naproche-SAD server"
-
-option naproche_prover_server_port : string = ""
-  -- "port of Naproche-SAD prover server (on localhost)"
-
-option naproche_prover_server_password : string = ""
-  -- "password for connection to Naproche-SAD prover server"
 
 option naproche_pos_id : string = ""
 option naproche_pos_file : string = ""
