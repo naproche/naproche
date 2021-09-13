@@ -40,9 +40,9 @@ object Prover_Server
   /* executables */
 
   val default_provers: Map[String, Path] =
-    Map("eprover" -> Path.explode("$E_HOME/eprover"),
-      "SPASS" -> Path.explode("$SPASS_HOME/SPASS"),
-      "vampire4.2.2" -> Path.explode("$VAMPIRE_HOME/vampire"))
+    Map("eprover" -> Path.explode("$NAPROCHE_EPROVER"),
+      "SPASS" -> Path.explode("$NAPROCHE_SPASS"),
+      "vampire4.2.2" -> Path.explode("$NAPROCHE_VAMPIRE"))
 
   def start(
     port: Int = 0,
