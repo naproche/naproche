@@ -96,7 +96,7 @@ bash_process context params = do
             exit_code <- Process.waitForProcess ph
             let rc =
                   case exit_code of
-                    Exit.ExitSuccess -> 0
+                    Exit.ExitSuccess -> Process_Result.ok_rc
                     Exit.ExitFailure rc | rc >= 0 -> rc
                     Exit.ExitFailure rc -> 128 - rc
             return $ Process_Result.make rc out_lines err_lines Timing.zero)
