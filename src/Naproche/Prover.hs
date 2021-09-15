@@ -145,7 +145,7 @@ prover_status prover result =
        | positive || _by_contradiction prover && contradictions -> Success
        | negative -> Failure
        | not (_by_contradiction prover) && contradictions -> Contradictory_Axioms
-       | timeout -> Unknown
+       | timeout || inconclusive -> Unknown
        | null err -> Error "Prover error"
        | otherwise -> Error (cat_lines ("Prover error:" : err))
 

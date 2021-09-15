@@ -77,4 +77,6 @@ export pos depth instrs context goal = do
     when printProver $
       Message.output Bytes.empty Message.WRITELN pos (Process_Result.out result)
 
-    return $ Prover.status (fromJust prover) result
+    case Prover.status (fromJust prover) result of
+      Prover.Error msg -> Message.errorExport pos msg
+      status -> return status
