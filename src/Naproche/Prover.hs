@@ -242,9 +242,9 @@ vampire_command prover = prover_command args prover
   where
     Prover{_timeout, _memory_limit} = prover
     args =
-      ["--mode", "casc"] ++
-      ["-t=" <> print_seconds _timeout <> "s" | _timeout > Time.zero] ++
-      ["-m=" <> Value.print_int _memory_limit | _memory_limit > 0]
+      ["--mode", "vampire", "--bad_option", "hard"] ++
+      (if _timeout > Time.zero then ["--time_limit", print_seconds _timeout <> "s"] else []) ++
+      (if _memory_limit > 0 then ["--memory_limit", Value.print_int _memory_limit] else [])
 
 vampire_messages :: Messages
 vampire_messages =
