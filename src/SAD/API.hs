@@ -9,7 +9,6 @@ module SAD.API
   , module SAD.Core.Verify
   , module SAD.Data.Instr
   , module SAD.Data.Text.Block
-  , module SAD.Export.Base
   , module SAD.Import.Reader
   , module SAD.Parser.Error
   , module SAD.Data.Formula
@@ -21,7 +20,6 @@ import SAD.Core.Message
 import SAD.Core.Verify (verify)
 import SAD.Data.Instr (Instr(..), Flag(..), askFlag, Limit(..), askLimit, Argument(..), askArgument, Arguments(..), UnderlyingTheory(..), askTheory, ParserKind(..))
 import SAD.Data.Text.Block (ProofText(..), textToCheck, findParseError)
-import SAD.Export.Base (readProverFile, readProverDatabase)
 import SAD.Import.Reader (readInit, readProofText)
 import SAD.Parser.Error (errorPos)
 import SAD.Data.Formula (Formula)

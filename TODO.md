@@ -10,6 +10,8 @@
 * Use Program.serial to identify Decl: but this requires IO monad, or to modify
   pro-forma serial numbers produced during parsing.
 
+* More robust treatment of prover errors (return code): genuine error vs. timeout!?
+
 
 # Isabelle/Naproche integration
 

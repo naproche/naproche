@@ -26,7 +26,6 @@ import SAD.Data.Formula
 import SAD.Data.Instr
 import SAD.Data.Text.Block (Block(Block), ProofText(..), Section(..))
 import SAD.Data.Text.Context (Context(Context))
-import SAD.Export.Base (Prover)
 import SAD.Helpers (notNull)
 
 import qualified SAD.Core.Message as Message
@@ -40,10 +39,10 @@ import qualified Isabelle.Position as Position
 
 
 -- | Main verification loop
-verify :: Text -> [Prover] -> IORef RState -> ProofText -> IO (Bool, Maybe ProofText)
-verify fileName provers reasonerState (ProofTextRoot text) = do
+verify :: Text -> IORef RState -> ProofText -> IO (Bool, Maybe ProofText)
+verify fileName reasonerState (ProofTextRoot text) = do
   let text' = ProofTextInstr Position.none (GetArgument (File NonTex) fileName) : text
-  let verificationState = makeInitialVState provers text'
+  let verificationState = makeInitialVState text'
   Message.outputReasoner Message.TRACING (Position.file_only $ make_bytes fileName) "verification started"
 
   result <- flip runRM reasonerState $

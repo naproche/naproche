@@ -13,7 +13,6 @@ import Control.Monad (unless)
 import Data.Char (toLower)
 import Data.IORef
 import Data.Time (UTCTime, addUTCTime, getCurrentTime, diffUTCTime)
-import Data.ByteString (ByteString)
 import Data.List (isSuffixOf)
 import Data.Maybe (mapMaybe)
 
@@ -69,7 +68,7 @@ main  = do
         Server.server (Server.publish_stdout "Naproche-SAD") (serverConnection oldProofTextRef args0)
       else do
         Program.init_console
-        mainBody Nothing oldProofTextRef opts1 text0 mFileName)
+        mainBody oldProofTextRef opts1 text0 mFileName)
           `catch` (\Exception.UserInterrupt -> do
             Program.exit_thread
             IO.hPutStrLn IO.stderr "Interrupt"
@@ -79,8 +78,8 @@ main  = do
             IO.hPutStrLn IO.stderr (Exception.displayException err)
             Exit.exitWith (Exit.ExitFailure 1))
 
-mainBody :: Maybe ByteString -> IORef ProofText -> [Instr] -> [ProofText] -> Maybe FilePath -> IO ()
-mainBody proversYaml oldProofTextRef opts0 text0 fileName = do
+mainBody :: IORef ProofText -> [Instr] -> [ProofText] -> Maybe FilePath -> IO ()
+mainBody oldProofTextRef opts0 text0 fileName = do
   startTime <- getCurrentTime
 
   oldProofText <- readIORef oldProofTextRef
@@ -93,7 +92,7 @@ mainBody proversYaml oldProofTextRef opts0 text0 fileName = do
       -- if -T / --onlytranslate is passed as an option, only print the translated text
       if askFlag OnlyTranslate False opts0
         then showTranslation txts startTime
-        else do proveFOL proversYaml text1 opts0 oldProofText oldProofTextRef startTime fileName
+        else do proveFOL text1 opts0 oldProofText oldProofTextRef startTime fileName
     CiC -> return ()
     Lean -> exportLean text1
 
@@ -120,12 +119,8 @@ exportLean pt = do
     Right t -> putStrLn $ Text.unpack t
   return ()
 
-proveFOL :: Maybe ByteString -> ProofText -> [Instr] -> ProofText -> IORef ProofText -> UTCTime -> Maybe FilePath -> IO ()
-proveFOL proversYaml text1 opts0 oldProofText oldProofTextRef startTime fileName = do
-  -- read provers.yaml
-  provers <- case proversYaml of
-    Nothing -> readProverFile $ Text.unpack (askArgument Provers "provers.yaml" opts0)
-    Just txt -> readProverDatabase "" txt
+proveFOL :: ProofText -> [Instr] -> ProofText -> IORef ProofText -> UTCTime -> Maybe FilePath -> IO ()
+proveFOL text1 opts0 oldProofText oldProofTextRef startTime fileName = do
   -- initialize reasoner state
   reasonerState <- newIORef (RState [] False False)
 
@@ -134,7 +129,7 @@ proveFOL proversYaml text1 opts0 oldProofText oldProofTextRef startTime fileName
   success <- case findParseError text1 of
     Nothing -> do
       let text = textToCheck oldProofText text1
-      (success, newProofText) <- verify (maybe "" Text.pack fileName) provers reasonerState text
+      (success, newProofText) <- verify (maybe "" Text.pack fileName) reasonerState text
       mapM_ (writeIORef oldProofTextRef) newProofText
       pure success
     Just err -> do errorParser (errorPos err) (show_bytes err); pure False
@@ -218,7 +213,7 @@ serverConnection oldProofTextRef args0 socket =
               let text0 = map (uncurry ProofTextInstr) (reverse opts0)
               let text1 = text0 ++ [ProofTextInstr Position.none (GetArgument (Text pk) more_text)]
 
-              mainBody Nothing oldProofTextRef opts1 text1 fileName
+              mainBody oldProofTextRef opts1 text1 fileName
                 `catch` (\(err :: Program.Error) ->
                   robust_error $ Program.print_error err)
                 `catch` (\(err :: Exception.SomeException) ->
@@ -265,8 +260,6 @@ options = [
     "run in server mode",
   GetOpt.Option ""  ["library"] (GetOpt.ReqArg (GetArgument Library . Text.pack) "DIR")
     "place to look for library texts (def: examples)",
-  GetOpt.Option ""  ["provers"] (GetOpt.ReqArg (GetArgument Provers . Text.pack) "FILE")
-    "index of provers (def: provers.yaml)",
   GetOpt.Option "P" ["prover"] (GetOpt.ReqArg (GetArgument Prover . Text.pack) "NAME")
     "use prover NAME (def: first listed)",
   GetOpt.Option "t" ["timelimit"] (GetOpt.ReqArg (LimitBy Timelimit . getLeadingPositiveInt) "N")

@@ -41,7 +41,7 @@ import SAD.Data.Formula
 import SAD.Data.Instr (Limit(..), Flag(..))
 import SAD.Data.Text.Context (Context(Context))
 import SAD.Data.Text.Decl (newDecl)
-import SAD.Export.Prover (export, Result(..))
+import SAD.Export.Prover (export)
 import SAD.Prove.MESON (prove)
 
 import qualified SAD.Core.Message as Message
@@ -51,6 +51,7 @@ import qualified SAD.Data.Text.Block as Block
 import qualified SAD.Data.Text.Context as Context
 
 import qualified Isabelle.Position as Position
+import qualified Naproche.Prover as Prover
 
 
 -- Reasoner
@@ -121,11 +122,10 @@ splitGoal = asks (normalizedSplit . strip . Context.formula . currentThesis)
 launchProver :: Position.T -> Int -> VM ()
 launchProver pos iteration = do
   whenInstruction Printfulltask False printTask
-  proverList <- asks provers
   instrList <- asks instructions
   goal <- thesis
   context <- asks currentContext
-  let callATP = justIO $ pure $ export pos iteration proverList instrList context goal
+  let callATP = justIO $ pure $ export pos iteration instrList context goal
   callATP >>= timeWith ProofTimer . justIO >>= guardResult
   res <- fmap head $ askRS trackers
   case res of
@@ -141,8 +141,8 @@ launchProver pos iteration = do
         concatMap (\form -> "  " <> show form <> "\n") contextFormulas <>
         "  |- " <> show (Context.formula concl) <> "\n"
 
-    guardResult Success = pure ()
-    guardResult ContradictoryAxioms = do
+    guardResult Prover.Success = pure ()
+    guardResult Prover.Contradictory_Axioms = do
       checkConsistency <- askInstructionBool CheckConsistency True
       if checkConsistency then do
         reasonLog Message.WRITELN pos $ "Found contradictory axioms. Make sure you are in a proof by contradiction!"

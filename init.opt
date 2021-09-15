@@ -1,5 +1,4 @@
 [library examples]
-[provers provers.yaml]
 [prover eprover]
 [timelimit 3]
 [depthlimit 7]

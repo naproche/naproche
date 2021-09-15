@@ -41,7 +41,6 @@ dependencies:
 - split
 - uuid
 - threads
-- yaml
 - temporary
 
 default-extensions:

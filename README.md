@@ -91,9 +91,14 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
 
   * The Haskell Tool Stack: https://www.haskellstack.org
 
-  * The E Theorem Prover as executable "eprover" in the shell PATH (e.g. the
-    multi-platform version provided by Isabelle: "isabelle getenv -b E_HOME")
-    Supported versions: 2.0 to 2.5
+  * Install the E Theorem Prover (supported versions: 2.0 to 2.5) and
+    set the environment variable NAPROCHE_EPROVER to its executable
+    path.
+
+    Note: the E prover executable bundled with Isabelle can be located
+    like this:
+
+      isabelle getenv -b NAPROCHE_EPROVER
 
   * Optional (for development): Haskell IDE within VSCode:
     https://marketplace.visualstudio.com/items?itemName=haskell.haskell

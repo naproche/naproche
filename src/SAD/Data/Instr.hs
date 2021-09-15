@@ -94,7 +94,6 @@ data Argument =
   | File ParserKind    --  read file
   | Read ParserKind    --  read library file
   | Library            --  library directory
-  | Provers            --  prover database
   | Prover             --  current prover
   deriving (Eq, Ord, Show)
 
@@ -180,7 +179,6 @@ keywordsArgument =
  [(Read NonTex, "read"),
   (Read Tex, "readtex"),
   (Library, "library"),
-  (Provers, "provers"),
   (Prover, "prover")]
 
 keywordsArguments :: [(Arguments, Text)]
