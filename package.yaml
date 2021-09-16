@@ -13,7 +13,7 @@ flags:
     description: "Enable special debugging support"
     manual: true
     default: false
-  
+
 
 when:
   condition: flag(debug)
@@ -27,21 +27,24 @@ when:
 
 dependencies:
 - base >= 4.7 && < 5
-- containers
-- process
-- ghc-prim
-- time
-- mtl
-- transformers
 - array
 - bytestring
-- text
-- time
+- charset
+- containers
+- data-ascii
+- ghc-prim
+- megaparsec
+- mtl
 - network
+- process
 - split
-- uuid
-- threads
 - temporary
+- text
+- threads
+- time
+- time
+- transformers
+- uuid
 
 default-extensions:
   - GeneralizedNewtypeDeriving
