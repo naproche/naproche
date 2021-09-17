@@ -6,25 +6,16 @@
 
 -- |
 -- This module defines the Naproche lexer and its associated data types.
--- The lexer takes a UTF-8 encoded 'ByteString' as input and
--- produces a stream of tokens annotated with positional information.
--- This information is bundled together with the original raw input
--- for producing error messages.
+-- The lexer takes 'Text' as input and produces chunks (list of lists)
+-- of tokens annotated with positional information. This information is
+-- bundled together with the original raw input for producing error messages.
 --
 -- The lexer perfoms some normalizations to make describing the grammar easier.
--- We use 'ByteString'/'ShortByteString' for efficiency and a smoother handover
--- to Isabelle. Non-ASCII bytes are treated as “abstract symbols”, which causes
--- some minor inconsistencies. For example, non-ASCII letters are case-sensitive
--- in words, whereas ASCII letters are normalized to lowercase to accommodate
--- the need for capitalization at the start of sentences.
+-- For instance, words are casefolded to allow for capitalization at the start
+-- of sentences.
 --
 -- Throughout we make the assumption that the input is wellformed LaTeX markup:
 -- for instance, braces are assumed to be balanced.
---
--- Positions are currently counting bytes. Counting Unicode codepoints would
--- probably work better using the 'Text' instances of megaparsec (again) or
--- using custom byte-oriented lexer combinators (we can tell width of a character
--- from its first byte, assuming wellformed UTF-8 input).
 --
 module Naproche.Token where
 
@@ -221,7 +212,7 @@ mathEnd = guardM isMathMode *> lexeme do
 word :: Lexer (Located Tok)
 word = guardM isTextMode *> lexeme do
     w <- takeWhile1P (Just "word") (\c -> isAlpha c || c == '\'' || c == '-')
-    let t = Word (encode (Text.toLower w))
+    let t = Word (encode (Text.toCaseFold w))
     pure t
 
 
