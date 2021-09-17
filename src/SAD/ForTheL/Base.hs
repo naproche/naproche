@@ -1,6 +1,5 @@
 {-
 Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
-
 FoTheL state and state management, parsing of primitives, operations on
 variables and macro expressions.
 -}

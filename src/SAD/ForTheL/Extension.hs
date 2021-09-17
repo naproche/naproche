@@ -1,6 +1,5 @@
 {-
 Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
-
 Extending the language: definitions, signature extensions, pretypings,
 macros and synonyms.
 -}

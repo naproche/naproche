@@ -23,9 +23,10 @@ import SAD.Core.Message (show_position)
 import SAD.Export.Representation
 import qualified Isabelle.Position as Position
 import Data.Function (on)
+import Data.Char (ord, isAsciiUpper, isAsciiLower, isDigit)
 
 -- These names may not reflect what the constructors are used for..
-data VariableName 
+data VariableName
   = VarConstant Text   -- ^ previously starting with x
   | VarHole Text       -- ^ previously starting with ?
   | VarSlot            -- ^ previously !
@@ -48,7 +49,7 @@ instance Show VariableName where
   show = Text.unpack . toLazyText . represent
 
 instance Representation VariableName where
-  represent (VarConstant s) = "x" <> (Builder.fromLazyText s)
+  represent (VarConstant s) = "x" <> Builder.fromLazyText (encode s)
   represent (VarHole s) = "?" <> (Builder.fromLazyText s)
   represent (VarSlot) = "!"
   represent (VarU s) = "u" <> (Builder.fromLazyText s)
@@ -60,6 +61,35 @@ instance Representation VariableName where
   represent (VarW s) = "w" <> (Builder.fromLazyText s)
   represent (VarEmpty) = ""
   represent (VarDefault s) = Builder.fromLazyText s
+
+
+data CharType = Digit | Latin | Other deriving (Eq)
+
+{-
+Encode a variable name N by the following rules:
+
+  * Prepend a 'N' to all decimal digits which are not followed by another
+    decimal digit.
+  * Prepend a 'U' to all symbols that are not digits or basic latin letters and
+    encode them with their (decimal) Unicode code points.
+
+Example: "foo42αβ" --> "fooN42U945U946"
+-}
+encode :: Text -> Text
+encode = enc Latin
+  where
+    enc currentCharType text = case Text.uncons text of
+      Nothing -> text
+      Just (c, cs)
+        | isAsciiUpper c || isAsciiLower c ->
+            c `Text.cons` enc Latin cs
+        | isDigit c && currentCharType == Digit ->
+            c `Text.cons` enc Digit cs
+        | isDigit c && currentCharType /= Digit ->
+            'N' `Text.cons` (c `Text.cons` enc Digit cs)
+        | otherwise ->
+            ('U' `Text.cons` Text.pack (show $ ord c)) `Text.append` enc Other cs
+
 
 data PosVar = PosVar
   { posVarName :: VariableName

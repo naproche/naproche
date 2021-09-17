@@ -13,15 +13,15 @@ Definition.
 A subset of M is a set N such that every element of N is an element of M.
 
 Definition.
-M \ N = { x in M | x is not an element of N }.
+M \ N = { x ∈ M | x is not an element of N }.
 
 Definition.
-Assume M is a subset of the domain of f. f^(M) = { f(x) | x is an element of M }.
+Assume M is a subset of the domain of f. f[M] = { f(x) | x is an element of M }.
 
 Axiom.
-Assume M is a subset of the domain of f. f^(M) is a set.
+Assume M is a subset of the domain of f. f[M] is a set.
 
-Let the image of f stand for f^(Dom(f)).
+Let the image of f stand for f[Dom(f)].
 
 ### Cardinals and Cardinality
 
@@ -36,7 +36,7 @@ A < B is an atom.
 Let A =< B stand for A = B or A < B.
 
 Axiom.
-A < B < C => A < C.
+A < B < C ⟹ A < C.
 
 Axiom.
 A < B or B < A or B = A.
@@ -48,7 +48,7 @@ The cardinality of M is a cardinal.
 
 Let card(M) denote the cardinality of M.
 
-Axiom Image_Card. Assume M is a subset of Dom(f). card(f^(M)) =< card(M).
+Axiom Image_Card. Assume M is a subset of Dom(f). card(f[M]) =< card(M).
 
 Axiom.
 Assume the cardinality of N is less than the cardinality of M. Then M \ N has an element.
@@ -69,56 +69,56 @@ A sequence of cardinals on D is a function f such that Dom(f) = D and f(x) is a 
 element x of D.
 
 Signature.
-Let kappa be a sequence of cardinals on D. SumSet(kappa,D) is a set.
+Let κ be a sequence of cardinals on D. SumSet(κ,D) is a set.
 
 Axiom Sum_Def.
-Let kappa be a sequence of cardinals on D.
-SumSet(kappa,D) =
-  { (n,i) | i is an element of D and n is an element of kappa(i) }.
-Axiom. Let kappa be a sequence of cardinals on D. Then SumSet(kappa, D) is a set.
+Let κ be a sequence of cardinals on D.
+SumSet(κ,D) =
+  { (n,i) | i is an element of D and n is an element of κ(i) }.
+Axiom. Let κ be a sequence of cardinals on D. Then SumSet(κ, D) is a set.
 
 Definition.
-Let kappa be a sequence of cardinals on D. Sum(kappa,D) = card(SumSet(kappa,D)).
+Let κ be a sequence of cardinals on D. Sum(κ,D) = card(SumSet(κ,D)).
 
 Signature.
-Let kappa be a sequence of cardinals on D. ProdSet(kappa,D) is a set.
+Let κ be a sequence of cardinals on D. ProdSet(κ,D) is a set.
 
 Axiom Prod_Def.
-let kappa be a sequence of cardinals on D.
-ProdSet(kappa,D) =
-  { function f | Dom(f) = D /\ (f(i) is an element of kappa(i) for every element i of D) }.
-Axiom. Let kappa be a sequence of cardinals on D. Then ProdSet(kappa, D) is a set.
+let κ be a sequence of cardinals on D.
+ProdSet(κ,D) =
+  { function f | Dom(f) = D ∧ (f(i) is an element of κ(i) for every element i of D) }.
+Axiom. Let κ be a sequence of cardinals on D. Then ProdSet(κ, D) is a set.
 
 Definition.
-Let kappa be a sequence of cardinals on D. Prod(kappa,D) = card(ProdSet(kappa,D)).
+Let κ be a sequence of cardinals on D. Prod(κ,D) = card(ProdSet(κ,D)).
 
-Lemma Choice. Let lambda be a sequence  of cardinals on D. Assume that lambda(i) has an element
-for every element i of D.  ProdSet(lambda, D) has an element.
+Lemma Choice. Let λ be a sequence  of cardinals on D. Assume that λ(i) has an element
+for every element i of D.  ProdSet(λ, D) has an element.
 Proof.
-Define f(i) = Choose an element v of lambda(i) in v for i in D.
-Then f is an element of ProdSet(lambda,D). qed.
+Define f(i) = Choose an element v of λ(i) in v for i in D.
+Then f is an element of ProdSet(λ,D). qed.
 
 ### Koenig's lemma
 
 Theorem Koenig.
-Let kappa, lambda be sequences of cardinals on D. Assume that for every element i of D
-kappa(i) < lambda(i). Then Sum(kappa,D) < Prod (lambda,D).
+Let κ, λ be sequences of cardinals on D. Assume that for every element i of D
+κ(i) < λ(i). Then Sum(κ,D) < Prod (λ,D).
 Proof by contradiction.
-Assume the contrary. Then Prod (lambda,D) =< Sum(kappa,D).
-Take a function G such that SumSet(kappa,D) is the domain of G and ProdSet(lambda,D) is the image
+Assume the contrary. Then Prod (λ,D) =< Sum(κ,D).
+Take a function G such that SumSet(κ,D) is the domain of G and ProdSet(λ,D) is the image
 of G.
-  Indeed ProdSet(lambda, D) has an element.
-Define Diag(i) = { G((n,i))(i) | n is an element of kappa(i) } for i in D.
-For every element f of ProdSet(lambda, D) for every element i of D f(i) is an element of lambda(i).
-For every element i of D lambda(i) is a set.
-For every element i of D for every element d of Diag(i) d is an element of lambda(i).
-For every element i of D Diag(i) is a set.
-For every element i of D card(Diag(i)) < lambda(i). Proof.
-  Let i be an element of D. Define F(n) = G((n,i))(i) for n in kappa(i).
-  Then F^(kappa(i)) = Diag(i).qed.
-Define f(i) = Choose an element v of lambda(i) \ Diag(i) in v for i in D.
-Then f is an element of ProdSet(lambda,D).
-Take an element j of D and an element m of kappa(j) such that G((m,j)) = f. G((m,j))(j) is an
-element of Diag(j) and f(j) is not an element of Diag(j).
+  Indeed ProdSet(λ, D) has an element.
+Define Δ(i) = { G((n,i))(i) | n is an element of κ(i) } for i in D.
+For every element f of ProdSet(λ, D) for every element i of D f(i) is an element of λ(i).
+For every element i of D λ(i) is a set.
+For every element i of D for every element d of Δ(i) d is an element of λ(i).
+For every element i of D Δ(i) is a set.
+For every element i of D card(Δ(i)) < λ(i). Proof.
+  Let i be an element of D. Define F(n) = G((n,i))(i) for n in κ(i).
+  Then F[κ(i)] = Δ(i).qed.
+Define f(i) = Choose an element v of λ(i) \ Δ(i) in v for i in D.
+Then f is an element of ProdSet(λ,D).
+Take an element j of D and an element m of κ(j) such that G((m,j)) = f. G((m,j))(j) is an
+element of Δ(j) and f(j) is not an element of Δ(j).
 Contradiction.
 qed.
