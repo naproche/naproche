@@ -21,31 +21,36 @@
 -- Throughout we make the assumption that the input is wellformed LaTeX markup:
 -- for instance, braces are assumed to be balanced.
 --
+-- Positions are currently counting bytes. Counting Unicode codepoints would
+-- probably work better using the 'Text' instances of megaparsec (again) or
+-- using custom byte-oriented lexer combinators (we can tell width of a character
+-- from its first byte, assuming wellformed UTF-8 input).
+--
 module Naproche.Token where
 
 
 import Control.Monad.State.Strict
 import Naproche.Helpers (guardM)
-import Data.Ascii.Word8 (ascii)
 import Data.Void (Void)
 import Data.Foldable
 import Data.Function (on)
-import Data.Ascii.Word8 qualified as Ascii
-import Data.ByteString qualified as BS
-import Data.ByteString (ByteString)
-import Data.Word (Word8)
-import Data.ByteString.Short (ShortByteString, toShort)
+import Data.Text qualified as Text
+import Data.Text (Text)
 import Text.Megaparsec hiding (State)
-import Text.Megaparsec.Byte qualified as Byte
-import Text.Megaparsec.Byte.Lexer qualified as ByteLexer
+import Text.Megaparsec.Char qualified as Char
+import Text.Megaparsec.Char.Lexer qualified as Lexer
 import Data.String (IsString(..))
+import Isabelle.Bytes (Bytes)
+import Isabelle.UTF8
+import Data.Char
 
 
-runLexer :: String -> ByteString -> Either (ParseErrorBundle ByteString Void) [[Located Tok]]
+
+runLexer :: String -> Text -> Either (ParseErrorBundle Text Void) [[Located Tok]]
 runLexer file raw = evalState (runParserT topLevelChunks file raw) initLexerState
 
 
-type Lexer = ParsecT Void ByteString (State LexerState)
+type Lexer = ParsecT Void Text (State LexerState)
 
 data LexerState = LexerState
     { textNesting :: Int
@@ -89,22 +94,22 @@ setMathMode = do
 
 -- |
 -- A token stream as input stream for a parser. Contains the raw input
--- before lexing as 'ByteString' for showing error messages.
+-- before lexing as 'Text' for showing error messages.
 --
 data TokenChunks = TokenChunks
-    { rawInput :: ByteString
+    { rawInput :: Text
     , unTokenChunks :: [[Located Tok]]
     } deriving (Show, Eq)
 
 
 data Tok
-    = Word ShortByteString
-    | Variable ShortByteString
-    | Symbol ShortByteString
+    = Word Bytes
+    | Variable Bytes
+    | Symbol Bytes
     | Integer Integer
-    | Command ShortByteString
-    | BeginEnv ShortByteString
-    | EndEnv ShortByteString
+    | Command Bytes
+    | BeginEnv Bytes
+    | EndEnv Bytes
     | ParenL | ParenR
     | GroupL | GroupR
     | BraceL | BraceR
@@ -118,6 +123,11 @@ instance IsString Tok where
     fromString w = Word (fromString w)
 
 
+maybeVarTok :: Located Tok -> Maybe (Bytes, SourcePos)
+maybeVarTok t = case unLocated t of
+    Variable x -> Just (x, startPos t)
+    _tok -> Nothing
+
 
 data Located a = Located
     { startPos :: SourcePos
@@ -128,7 +138,6 @@ data Located a = Located
 
 instance Eq a  => Eq  (Located a) where (==) = (==) `on` unLocated
 instance Ord a => Ord (Located a) where compare = compare `on` unLocated
-
 
 topLevelChunks :: Lexer [[Located Tok]]
 topLevelChunks = space *> many topLevelChunk
@@ -150,7 +159,7 @@ topLevelChunk = do
 
 -- | Parses a single normal mode token.
 tok :: Lexer (Located Tok)
-tok = word <|> var <|> asciiSymbol
+tok = word <|> var <|> symbol
     <|> beginInlineText <|> endInlineText
     <|> beginLowLevel <|> endLowLevel
     <|> mathBegin <|> mathEnd
@@ -161,16 +170,15 @@ tok = word <|> var <|> asciiSymbol
 beginInlineText :: Lexer (Located Tok)
 beginInlineText = lexeme do
     guardM isMathMode
-    Byte.string "\\text{"
+    Char.string "\\text{"
     setTextMode
     pure (BeginEnv "text")
-
 
 endInlineText :: Lexer (Located Tok)
 endInlineText = lexeme do
     guardM isTextMode
     0 <- gets textNesting -- Otherwise fail.
-    Byte.char (ascii '}')
+    Char.char '}'
     setMathMode
     pure (EndEnv "text")
 
@@ -178,25 +186,25 @@ endInlineText = lexeme do
 opening :: Lexer (Located Tok)
 opening = lexeme (brace <|> group <|> paren <|> bracket)
     where
-        brace = BraceL <$ lexeme (Byte.string "\\{")
-        group = GroupL <$ lexeme (Byte.char (ascii '{')) <* modify' incrNesting
-        paren = ParenL <$ lexeme (Byte.char (ascii '('))
-        bracket = BracketL <$ lexeme (Byte.char (ascii '['))
+        brace = BraceL <$ lexeme (Char.string "\\{")
+        group = GroupL <$ lexeme (Char.char '{') <* modify' incrNesting
+        paren = ParenL <$ lexeme (Char.char '(')
+        bracket = BracketL <$ lexeme (Char.char '[')
 
 
 closing :: Lexer (Located Tok)
 closing = lexeme (brace <|> group <|> paren <|> bracket)
     where
-        brace = BraceR <$ lexeme (Byte.string "\\}")
-        group = GroupR <$ lexeme (Byte.char (ascii '}')) <* modify' decrNesting
-        paren = ParenR <$ lexeme (Byte.char (ascii ')'))
-        bracket = BracketR <$ lexeme (Byte.char (ascii ']'))
+        brace = BraceR <$ lexeme (Char.string "\\}")
+        group = GroupR <$ lexeme (Char.char '}') <* modify' decrNesting
+        paren = ParenR <$ lexeme (Char.char ')')
+        bracket = BracketR <$ lexeme (Char.char ']')
 
 
 -- | Parses a single begin math token.
 mathBegin :: Lexer (Located Tok)
 mathBegin = guardM isTextMode *> lexeme do
-    Byte.string "\\(" <|> Byte.string "\\[" <|> Byte.string "$"
+    Char.string "\\(" <|> Char.string "\\[" <|> Char.string "$"
     setMathMode
     pure (BeginEnv "math")
 
@@ -204,7 +212,7 @@ mathBegin = guardM isTextMode *> lexeme do
 -- | Parses a single end math token.
 mathEnd :: Lexer (Located Tok)
 mathEnd = guardM isMathMode *> lexeme do
-    Byte.string "\\)" <|> Byte.string "\\]" <|> Byte.string "$"
+    Char.string "\\)" <|> Char.string "\\]" <|> Char.string "$"
     setTextMode
     pure (EndEnv "math")
 
@@ -212,58 +220,58 @@ mathEnd = guardM isMathMode *> lexeme do
 -- | Parses a word. Words are returned casefolded, since we want to ignore their case later on.
 word :: Lexer (Located Tok)
 word = guardM isTextMode *> lexeme do
-    w <- takeWhile1P (Just "word") (\c -> not (Ascii.isAscii c) || Ascii.isAlpha c || c == ascii '\'' || c == ascii '-')
-    let t = Word (toShort (BS.map Ascii.toLower w))
+    w <- takeWhile1P (Just "word") (\c -> isAlpha c || c == '\'' || c == '-')
+    let t = Word (encode (Text.toLower w))
     pure t
 
 
 number :: Lexer (Located Tok)
-number = lexeme $ Integer <$> ByteLexer.decimal
+number = lexeme $ Integer <$> Lexer.decimal
 
 
 var :: Lexer (Located Tok)
-var = guardM isMathMode *> lexeme (Variable . toShort <$> var')
+var = guardM isMathMode *> lexeme (Variable . encode <$> var')
     where
     var' = do
         alphabeticPart <- letter <|> greek <|> bb
         variationPart <- subscriptNumber <|> ticked
         pure (alphabeticPart <> variationPart)
 
-    subscriptNumber :: Lexer ByteString
+    subscriptNumber :: Lexer Text
     subscriptNumber = do
-        Byte.char (ascii '_')
-        n <- takeWhile1P (Just "subscript number") Ascii.isDigit
+        Char.char '_'
+        n <- takeWhile1P (Just "subscript number") isDigit
         pure n
 
     -- 0 or more ASCII apostrophes (0x27): always succeeds.
     -- Apostrophes have a special use in TPTP, so we replace
     -- them with the string "prime" for an easier translation.
-    ticked :: Lexer ByteString
+    ticked :: Lexer Text
     ticked = do
-        ticks <- many $ Byte.char (ascii '\'')
+        ticks <- many $ Char.char '\''
         let ticks' = "prime" <$ ticks
-        pure (BS.concat ticks')
+        pure (Text.concat ticks')
 
-    letter :: Lexer ByteString
-    letter = fmap BS.singleton Byte.letterChar
+    letter :: Lexer Text
+    letter = fmap Text.singleton Char.letterChar
 
-    bb :: Lexer ByteString
+    bb :: Lexer Text
     bb = do
-        Byte.string "\\mathbb{"
+        Char.string "\\mathbb{"
         l <- symbolParser bbs
-        Byte.char (ascii '}')
+        Char.char '}'
         pure ("bb" <> l)
 
-    bbs :: [ByteString]
-    bbs = BS.singleton . ascii <$> ['A'..'Z']
+    bbs :: [Text]
+    bbs = Text.singleton <$> ['A'..'Z']
 
-    greek :: Lexer ByteString
+    greek :: Lexer Text
     greek = try do
         l <- symbolParser greeks
-        notFollowedBy Byte.letterChar
+        notFollowedBy Char.letterChar
         pure l
 
-    greeks :: [ByteString]
+    greeks :: [Text]
     greeks =
         [ "\\alpha", "\\beta", "\\gamma", "\\delta", "\\epsilon", "\\zeta"
         , "\\eta", "\\theta", "\\iota", "\\kappa", "\\lambda", "\\mu", "\\nu"
@@ -273,17 +281,17 @@ var = guardM isMathMode *> lexeme (Variable . toShort <$> var')
         , "\\Upsilon", "\\Phi", "\\Psi", "\\Omega"
         ]
 
-    symbolParser :: [ByteString] -> Lexer ByteString
-    symbolParser symbols = asum [Byte.string s | s <- symbols]
+    symbolParser :: [Text] -> Lexer Text
+    symbolParser symbols = asum [Char.string s | s <- symbols]
 
 
-asciiSymbol :: Lexer (Located Tok)
-asciiSymbol = lexeme do
+symbol :: Lexer (Located Tok)
+symbol = lexeme do
     symb <- satisfy (`elem` symbols)
-    pure (Symbol (toShort (BS.singleton symb)))
+    pure (Symbol (encode (Text.singleton symb)))
     where
-        symbols :: [Word8]
-        symbols = fmap ascii ".,:;!?@=+-/^><*&"
+        symbols :: [Char]
+        symbols = ".,:;!?@=+-/^><*&"
 
 
 -- | Parses a TEX-style command, except @\\begin@ and @\\end@.
@@ -291,14 +299,14 @@ asciiSymbol = lexeme do
 -- (Greek, blackboard bold, etc.) can be lexed correctly.
 command :: Lexer (Located Tok)
 command = lexeme $ try do
-    Byte.char (ascii '\\')
-    cmd <- takeWhile1P (Just "TeX command") Ascii.isAlpha
+    Char.char '\\'
+    cmd <- takeWhile1P (Just "TeX command") isAlpha
     if
         | cmd == "begin" || cmd == "end" -> empty
-        | otherwise -> pure (Command (toShort cmd))
+        | otherwise -> pure (Command (encode cmd))
 
 
-topLevelEnvs :: [ByteString]
+topLevelEnvs :: [Text]
 topLevelEnvs =
     [ "axiom"
     , "definition"
@@ -311,7 +319,7 @@ topLevelEnvs =
     ]
 
 
-lowLevelEnvs :: [ByteString]
+lowLevelEnvs :: [Text]
 lowLevelEnvs =
     [ "byCase"
     , "enumerate"
@@ -320,16 +328,17 @@ lowLevelEnvs =
     ]
 
 
-begin :: ByteString -> Lexer (Located Tok)
+
+begin :: Text -> Lexer (Located Tok)
 begin env = lexeme do
-    Byte.string ("\\begin{" <> env <> "}")
-    pure (BeginEnv (toShort env))
+    Char.string ("\\begin{" <> env <> "}")
+    pure (BeginEnv (encode env))
 
 
-end :: ByteString -> Lexer (Located Tok)
+end :: Text -> Lexer (Located Tok)
 end env = lexeme do
-    Byte.string ("\\end{" <> env <> "}")
-    pure (BeginEnv (toShort env))
+    Char.string ("\\end{" <> env <> "}")
+    pure (BeginEnv (encode env))
 
 
 beginTopLevel, endTopLevel :: Lexer (Located Tok)
@@ -357,4 +366,4 @@ lexeme p = do
 
 
 space :: Lexer ()
-space = ByteLexer.space Byte.space1 (ByteLexer.skipLineComment "%") empty
+space = Lexer.space Char.space1 (Lexer.skipLineComment "%") empty
