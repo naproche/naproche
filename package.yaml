@@ -29,9 +29,7 @@ dependencies:
 - base >= 4.7 && < 5
 - array
 - bytestring
-- charset
 - containers
-- data-ascii
 - ghc-prim
 - megaparsec
 - mtl
@@ -41,7 +39,6 @@ dependencies:
 - temporary
 - text
 - threads
-- time
 - time
 - transformers
 - uuid
@@ -89,6 +86,9 @@ executables:
     - -with-rtsopts=-N
     dependencies:
     - Naproche-SAD
+    when:
+    - condition: false
+      other-modules: Paths_Naproche_SAD
 
 tests:
   Naproche-SAD-test:
