@@ -285,7 +285,7 @@ symbol = lexeme do
         symbols = ".,:;!?@=+-/^><*&"
 
 
--- | Parses a TEX-style command, except @\\begin@ and @\\end@.
+-- | Parses a TeX-style command, except @\\begin@ and @\\end@.
 -- Should occur after the variable lexer so that special variables
 -- (Greek, blackboard bold, etc.) can be lexed correctly.
 command :: Lexer (Located Tok)
