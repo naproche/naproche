@@ -32,7 +32,7 @@ import Text.Megaparsec.Char qualified as Char
 import Text.Megaparsec.Char.Lexer qualified as Lexer
 import Data.String (IsString(..))
 import Isabelle.Bytes (Bytes)
-import Isabelle.UTF8
+import Isabelle.Library (make_bytes)
 import Data.Char
 
 
@@ -212,7 +212,7 @@ mathEnd = guardM isMathMode *> lexeme do
 word :: Lexer (Located Tok)
 word = guardM isTextMode *> lexeme do
     w <- takeWhile1P (Just "word") (\c -> isAlpha c || c == '\'' || c == '-')
-    let t = Word (encode (Text.toCaseFold w))
+    let t = Word (make_bytes (Text.toCaseFold w))
     pure t
 
 
@@ -221,7 +221,7 @@ number = lexeme $ Integer <$> Lexer.decimal
 
 
 var :: Lexer (Located Tok)
-var = guardM isMathMode *> lexeme (Variable . encode <$> var')
+var = guardM isMathMode *> lexeme (Variable . make_bytes <$> var')
     where
     var' = do
         alphabeticPart <- letter <|> greek <|> bb
@@ -279,7 +279,7 @@ var = guardM isMathMode *> lexeme (Variable . encode <$> var')
 symbol :: Lexer (Located Tok)
 symbol = lexeme do
     symb <- satisfy (`elem` symbols)
-    pure (Symbol (encode (Text.singleton symb)))
+    pure (Symbol (make_bytes (Text.singleton symb)))
     where
         symbols :: [Char]
         symbols = ".,:;!?@=+-/^><*&"
@@ -294,7 +294,7 @@ command = lexeme $ try do
     cmd <- takeWhile1P (Just "TeX command") isAlpha
     if
         | cmd == "begin" || cmd == "end" -> empty
-        | otherwise -> pure (Command (encode cmd))
+        | otherwise -> pure (Command (make_bytes cmd))
 
 
 topLevelEnvs :: [Text]
@@ -323,13 +323,13 @@ lowLevelEnvs =
 begin :: Text -> Lexer (Located Tok)
 begin env = lexeme do
     Char.string ("\\begin{" <> env <> "}")
-    pure (BeginEnv (encode env))
+    pure (BeginEnv (make_bytes env))
 
 
 end :: Text -> Lexer (Located Tok)
 end env = lexeme do
     Char.string ("\\end{" <> env <> "}")
-    pure (BeginEnv (encode env))
+    pure (BeginEnv (make_bytes env))
 
 
 beginTopLevel, endTopLevel :: Lexer (Located Tok)
