@@ -14,7 +14,8 @@ module Isabelle.Name (
   Name,
   uu, uu_, aT,
   clean_index, clean, internal, skolem, is_internal, is_skolem, dest_internal, dest_skolem,
-  Context, declare, declare_renaming, is_declared, declared, context, make_context, variant
+  Context, declare, declare_renaming, is_declared, declared, context, make_context,
+  variant, variant_list
 )
 where
 
@@ -132,3 +133,6 @@ variant name ctxt =
             |> declare x'
         in (x', ctxt')
   in (x' <> Bytes.pack (replicate n underscore), ctxt')
+
+variant_list :: [Name] -> [Name] -> [Name]
+variant_list used names = fst (make_context used |> fold_map variant names)
