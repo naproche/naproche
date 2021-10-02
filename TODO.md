@@ -2,6 +2,9 @@
 
 # General
 
+* E prover 2.6 (re-used from Isabelle) breaks examples/koenig.ftl.tex while examples/koenig.ftl
+  still works. What is going on here?
+
 * Discontinue used TermEmpty!?
 
 * Prefer compact Isabelle.Bytes (ShortByteString) for symbolic names,
