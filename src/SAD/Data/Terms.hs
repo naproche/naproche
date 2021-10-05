@@ -28,10 +28,10 @@ termFun :: TermName
 termFun = TermNotion "Function"
 
 termApp :: TermName
-termApp = TermSymbolic "dtlpdtrp" -- ".(.)"
+termApp = TermSymbolic "__App__" -- ".(.)"
 
 termDom :: TermName
-termDom = TermSymbolic "zDzozmlpdtrp" -- "Dom(.)"
+termDom = TermSymbolic "__Dom__" -- "Dom(.)"
 
 termSet :: TermName
 termSet = TermNotion "Set"
@@ -43,10 +43,10 @@ termElem :: TermName
 termElem = TermNotion "ElementOf"
 
 termProd :: TermName
-termProd = TermSymbolic "zPzrzozdlpdtcmdtrp" -- "Prod(.,.)"
+termProd = TermSymbolic "__Prod__" -- "Prod(.,.)"
 
 termPair :: TermName
-termPair = TermSymbolic "lpdtcmdtrp" -- "(.,.)"
+termPair = TermSymbolic "__Pair__" -- "(.,.)"
 
 termObj :: TermName
 termObj = TermNotion "Obj"
