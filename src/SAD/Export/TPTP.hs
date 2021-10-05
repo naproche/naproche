@@ -18,6 +18,8 @@ import Data.Text.Lazy.Builder (Builder)
 import qualified Data.Text.Lazy.Builder as Builder
 import SAD.Export.Representation
 import qualified Isabelle.Position as Position
+import Isabelle.Library
+import Naproche.TPTP (atomic_word)
 
 
 output :: [Context] -> Context -> Text
@@ -33,6 +35,9 @@ tptpForm s (Context fr (Block { Block.name = m } : _) _) =
   <> s <> tptpTerm 0 fr <> ").\n"
 tptpForm _ _ = ""
 
+tptpName :: Formula -> Builder
+tptpName = Builder.fromText . make_text . atomic_word . make_bytes . showTrName
+
 tptpTerm :: Int -> Formula -> Builder
 tptpTerm d = term
   where
@@ -47,8 +52,8 @@ tptpTerm d = term
     term Top        = "$true"
     term Bot        = "$false"
     term t@Trm {trmName = TermEquality} = let [l, r] = trmArgs t in sinfix " = " l r
-    term t@Trm {}   = Builder.fromLazyText (showTrName t) <> buildArgumentsWith term (trmArgs t)
-    term v@Var {}   = Builder.fromLazyText (showTrName v)
+    term t@Trm {}   = tptpName t <> buildArgumentsWith term (trmArgs t)
+    term v@Var {}   = tptpName v
     term i@Ind {}   = "W" <> Builder.fromString (show (d - 1 - indIndex i))
     term ThisT      = error "SAD.Export.TPTP: Didn't expect ThisT here"
 
