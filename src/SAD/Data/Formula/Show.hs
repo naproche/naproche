@@ -52,11 +52,11 @@ showFormula p d = dive
 
     showArguments _ | p == 1 = showString "(...)"
     showArguments ts =
-      let showTerm = showFormula (pred p) d
+      let showTerm = showFormula (p - 1) d
       in  showArgumentsWith showTerm ts
 
-    showBinder f = showFormula p (succ d) (Ind 0 Position.none) . showChar ' ' .
-      showFormula p (succ d) f
+    showBinder f = showFormula p (d + 1) (Ind 0 Position.none) . showChar ' ' .
+      showFormula p (d + 1) f
 
     showInfix operator f g = dive f . showString operator . dive g
 

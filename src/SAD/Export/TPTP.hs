@@ -54,4 +54,4 @@ tptpTerm d = dive
 
     sinfix o f g  = buildParens $ dive f <> o <> dive g
 
-    binder f  = "[" <> tptpTerm (succ d) (Ind 0 Position.none) <> "] : " <> tptpTerm (succ d) f
+    binder f  = "[" <> tptpTerm (d + 1) (Ind 0 Position.none) <> "] : " <> tptpTerm (d + 1) f

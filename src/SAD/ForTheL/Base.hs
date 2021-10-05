@@ -339,7 +339,7 @@ nodups vs = do
 hidden :: FTL PosVar
 hidden = do
   n <- gets hiddenCount
-  modify $ \st -> st {hiddenCount = succ n}
+  modify $ \st -> st {hiddenCount = n + 1}
   return (PosVar (VarHidden n) Position.none)
 
 -- | Parse the next token as a variable (a sequence of alpha-num chars beginning with an alpha)

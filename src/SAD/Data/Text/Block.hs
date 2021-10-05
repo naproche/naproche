@@ -150,7 +150,7 @@ instance Show Block where
         showIndent p . showString "proof.\n" . showBody .
         showIndent p . showString "qed.\n"
     where
-      showBody = foldr ((.) . showsPrec (succ p)) id body
+      showBody = foldr ((.) . showsPrec (p + 1)) id body
 
 showForm :: Int -> Block -> String -> String
 showForm p block@Block {formula = formula, name = name} =

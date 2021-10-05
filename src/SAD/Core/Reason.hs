@@ -92,7 +92,7 @@ sequenceGoals pos depth iteration (goal:restGoals) = do
       else do
         newTask <- unfold pos
         let Context {Context.formula = Not newGoal} : newContext = newTask
-        sequenceGoals pos (pred depth) (succ iteration) [newGoal]
+        sequenceGoals pos (depth - 1) (iteration + 1) [newGoal]
           `withContext` newContext
 
     warnDepthExceeded =
@@ -202,7 +202,7 @@ replaceHeadTerm c = Context.setFormula c $ dive 0 $ Context.formula c
       = And (subst t VarEmpty $ inst VarEmpty f) (All (newDecl VarEmpty) $ Imp f eq)
     dive n (All _ (Imp (Tag HeadTerm Trm{}) Top)) = Top
     dive n (All v f) =
-      bool $ All v $ bind (VarDefault $ Text.pack $ show n) $ dive (succ n) $ inst (VarDefault $ Text.pack $ show n) f
+      bool $ All v $ bind (VarDefault $ Text.pack $ show n) $ dive (n + 1) $ inst (VarDefault $ Text.pack $ show n) f
     dive n (Imp f g) = bool $ Imp f $ dive n g
     dive _ f = f
 

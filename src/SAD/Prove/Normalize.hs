@@ -95,9 +95,9 @@ inc :: Formula -> Formula
 inc = incAbove 0
   where
     incAbove n = \case
-      v@Ind{indIndex = i} -> v{indIndex = if n <= i then succ i else i}
-      All x f -> All x $ incAbove (succ n) f
-      Exi x f -> Exi x $ incAbove (succ n) f
+      v@Ind{indIndex = i} -> v{indIndex = if n <= i then i + 1 else i}
+      All x f -> All x $ incAbove (n + 1) f
+      Exi x f -> Exi x $ incAbove (n + 1) f
       f -> mapF (incAbove n) f
 
 -- | Decrement all de Bruijn indices by one.
@@ -105,9 +105,9 @@ dec :: Formula -> Formula
 dec = decAbove 0
   where
     decAbove n = \case
-      v@Ind{indIndex = i} -> v{indIndex = if n <= i then pred i else i}
-      All x f -> All x $ decAbove (succ n) f
-      Exi x f -> Exi x $ decAbove (succ n) f
+      v@Ind{indIndex = i} -> v{indIndex = if n <= i then i - 1 else i}
+      All x f -> All x $ decAbove (n + 1) f
+      Exi x f -> Exi x $ decAbove (n + 1) f
       f -> mapF (decAbove n) f
 
 
@@ -124,8 +124,8 @@ skolemize :: Int -> Formula -> (Formula, Int)
 skolemize n f = let (sc, _, fs) = dive (n, 0, id) f in (fs, sc)
   where
     -- sc: skolemCounter, dc: dependencyCounter, fs: Formula visited so far
-    dive (sc, dc, fs) (All x f) = dive (sc, succ dc, fs . All x) f
-    dive (sc, dc, fs) (Exi _ f) = dive (succ sc, dc, fs) (dec $ instSk sc dc f)
+    dive (sc, dc, fs) (All x f) = dive (sc, dc + 1, fs . All x) f
+    dive (sc, dc, fs) (Exi _ f) = dive (sc + 1, dc, fs) (dec $ instSk sc dc f)
     dive (sc, dc, fs) (Or  f g) =
       let (sc', _, fs') = dive (sc, dc, id) f in dive (sc', dc, fs . Or  fs') g
     dive (sc, dc, fs) (And f g) =
@@ -135,8 +135,8 @@ skolemize n f = let (sc, _, fs) = dive (n, 0, id) f in (fs, sc)
 instSk :: Int -> Int -> Formula -> Formula
 instSk skolemCnt dependencyCnt = dive 0
   where
-    dive d (All x f) = All x $ dive (succ d) f
-    dive d (Exi x f) = Exi x $ dive (succ d) f
+    dive d (All x f) = All x $ dive (d + 1) f
+    dive d (Exi x f) = Exi x $ dive (d + 1) f
     dive d Ind {indIndex = m} | d == m = skolemFunction d
     dive d f = mapF (dive d) f
 
@@ -152,7 +152,7 @@ specialize = specCh (VarHole . Text.pack . show) 0
 specCh :: (Int -> VariableName) -> Int -> Formula -> Formula
 specCh mkVar = dive
   where
-    dive n (All _ f) = dive (succ n) $ inst (mkVar n) f
+    dive n (All _ f) = dive (n + 1) $ inst (mkVar n) f
     dive n f = f
 
 

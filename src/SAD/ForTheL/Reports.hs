@@ -109,8 +109,8 @@ formulaReports decls = nubOrd . dive
 boundReports :: Decl -> Formula -> [Position.Report]
 boundReports decl = dive 0
   where
-    dive n (All _ f) = dive (succ n) f
-    dive n (Exi _ f) = dive (succ n) f
+    dive n (All _ f) = dive (n + 1) f
+    dive n (Exi _ f) = dive (n + 1) f
     dive n Ind {indIndex = i, indPosition = pos} | i == n =
       (pos, Markup.bound) : variableReport False decl pos
     dive n f = foldF (dive n) f

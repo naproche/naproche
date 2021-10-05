@@ -58,8 +58,8 @@ initLexerState = LexerState 0 TextMode
 
 
 incrNesting, decrNesting :: LexerState -> LexerState
-incrNesting (LexerState n m) = LexerState (succ n) m
-decrNesting (LexerState n m) = LexerState (pred n) m
+incrNesting (LexerState n m) = LexerState (n + 1) m
+decrNesting (LexerState n m) = LexerState (n - 1) m
 
 
 data Mode = TextMode | MathMode deriving (Show, Eq)

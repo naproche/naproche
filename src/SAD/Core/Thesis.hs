@@ -83,9 +83,9 @@ equivalentTo = normalizedCheck 0
     normalizedCheck :: Int -> Formula -> Formula -> Bool
     normalizedCheck n f g = check n (albet f) (albet g)
     check n (All _ a) (All _ b) = let freshVariable = VarDefault $ Text.pack $ show n in
-      normalizedCheck (succ n) (inst freshVariable a) (inst freshVariable b)
+      normalizedCheck (n + 1) (inst freshVariable a) (inst freshVariable b)
     check n (Exi _ a) (Exi _ b) = let freshVariable = VarDefault $ Text.pack $ show n in
-      normalizedCheck (succ n) (inst freshVariable a) (inst freshVariable b)
+      normalizedCheck (n + 1) (inst freshVariable a) (inst freshVariable b)
     check n (And a b) (And c d) = normalizedCheck n a c && normalizedCheck n b d
     check n (Or a b) (Or c d)   = normalizedCheck n a c && normalizedCheck n b d
     check n (Not a) (Not b)     = normalizedCheck n a b
@@ -119,9 +119,9 @@ instantiations n currentInst f hs =
     patchTogether (And f g) = -- find instantiation of g then extend them to f
       [ fInst | gInst <- instantiations n currentInst (albet g) hs,
                 fInst <- instantiations n gInst (albet f) $
-                  subInfo gInst (pred n) ++ hs ]--add collected local properties
+                  subInfo gInst (n - 1) ++ hs ]--add collected local properties
     patchTogether (Exi _ f) =
-      instantiations (succ n) currentInst (albet $ inst (VarAssume n) f) hs
+      instantiations (n + 1) currentInst (albet $ inst (VarAssume n) f) hs
     patchTogether _ = []
 
     subInfo :: Instantiation -> Int -> [Formula]
@@ -139,9 +139,9 @@ extendInstantiation sb f g = snd <$> runStateT (normalizedDive 0 f g) sb
     normalizedDive :: Int -> Formula -> Formula -> StateT (Map.Map VariableName Formula) [] ()
     normalizedDive n f g = dive n (albet f) (albet g)
     dive n (All _ f) (All _ g)
-      = let nn = VarDefault $ Text.pack $ show n in normalizedDive (succ n) (inst nn f) (inst nn g)
+      = let nn = VarDefault $ Text.pack $ show n in normalizedDive (n + 1) (inst nn f) (inst nn g)
     dive n (Exi _ f) (Exi _ g)
-      = let nn = VarDefault $ Text.pack $ show n in normalizedDive (succ n) (inst nn f) (inst nn g)
+      = let nn = VarDefault $ Text.pack $ show n in normalizedDive (n + 1) (inst nn f) (inst nn g)
     dive n (And f1 g1) (And f2 g2) =
       normalizedDive n f1 f2 >> normalizedDive n g1 g2
     dive n (Or  f1 g1) (Or  f2 g2) =

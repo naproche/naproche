@@ -88,11 +88,11 @@ roundFM :: (Monad m) =>
 roundFM mkVar traversalAction localContext polarity n = dive
   where
     dive (All u f) = do
-      let action = traversalAction localContext polarity (succ n)
+      let action = traversalAction localContext polarity (n + 1)
           nn = mkVar $ Text.pack $ show n
       All u . bind nn <$> action (inst nn f)
     dive (Exi u f) = do
-      let action = traversalAction localContext polarity (succ n)
+      let action = traversalAction localContext polarity (n + 1)
           nn = mkVar $ Text.pack $ show n
       Exi u . bind nn <$> action (inst nn f)
     dive (Iff f g) = do
@@ -145,8 +145,8 @@ foldFM _ _ = pure Monoid.mempty
 isClosed :: Formula -> Bool
 isClosed  = dive 0
   where
-    dive n (All _ g) = dive (succ n) g
-    dive n (Exi _ g) = dive (succ n) g
+    dive n (All _ g) = dive (n + 1) g
+    dive n (Exi _ g) = dive (n + 1) g
     dive n t@Trm{} = all (dive n) $ trmArgs t
     dive _ Var{} = True
     dive n Ind {indIndex = v} = v < n
@@ -162,8 +162,8 @@ t `occursIn` f = twins t f || anyF (t `occursIn`) f
 bind :: VariableName -> Formula -> Formula
 bind v = dive 0
   where
-    dive n (All u g) = All u $ dive (succ n) g
-    dive n (Exi u g) = Exi u $ dive (succ n) g
+    dive n (All u g) = All u $ dive (n + 1) g
+    dive n (Exi u g) = Exi u $ dive (n + 1) g
     dive n Var {varName = u, varPosition = pos}
       | u == v = Ind n pos
     dive n t@Trm{} = t {
@@ -177,8 +177,8 @@ bind v = dive 0
 inst :: VariableName -> Formula -> Formula
 inst x = dive 0
   where
-    dive n (All u g) = All u $ dive (succ n) g
-    dive n (Exi u g) = Exi u $ dive (succ n) g
+    dive n (All u g) = All u $ dive (n + 1) g
+    dive n (Exi u g) = Exi u $ dive (n + 1) g
     dive n Ind {indIndex = m, indPosition = pos}
       | m == n = Var x [] pos
     dive n t@Trm{} = t {
