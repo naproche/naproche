@@ -21,7 +21,6 @@ import Control.Exception (catch)
 import qualified Data.Text.Lazy as Text
 import qualified System.Console.GetOpt as GetOpt
 import qualified System.Environment as Environment
-import qualified System.Exit as Exit
 import Network.Socket (Socket)
 
 import qualified Isabelle.Byte_Message as Byte_Message
@@ -84,17 +83,19 @@ main  = do
         Server.server (Server.publish_stdout "Naproche-SAD") (serverConnection cache args0)
       else do
         Program.init_console
-        mainBody cache opts1 text0 mFileName)
-          `catch` (\Exception.UserInterrupt -> do
-            Program.exit_thread
-            Console.stderr ("Interrupt" :: String)
-            Console.exit Process_Result.interrupt_rc)
-          `catch` (\(err :: Exception.SomeException) -> do
-            Program.exit_thread
-            Console.stderr (Exception.displayException err)
-            Console.exit 1)
+        rc <- do
+          mainBody cache opts1 text0 mFileName
+            `catch` (\Exception.UserInterrupt -> do
+              Program.exit_thread
+              Console.stderr ("Interrupt" :: String)
+              return Process_Result.interrupt_rc)
+            `catch` (\(err :: Exception.SomeException) -> do
+              Program.exit_thread
+              Console.stderr (Exception.displayException err)
+              return 1)
+        Console.exit rc)
 
-mainBody :: Cache -> [Instr] -> [ProofText] -> Maybe FilePath -> IO ()
+mainBody :: Cache -> [Instr] -> [ProofText] -> Maybe FilePath -> IO Int
 mainBody cache opts0 text0 fileName = do
   startTime <- getCurrentTime
 
@@ -107,10 +108,12 @@ mainBody cache opts0 text0 fileName = do
     FirstOrderLogic -> do
       -- if -T / --onlytranslate is passed as an option, only print the translated text
       if askFlag OnlyTranslate False opts0
-        then showTranslation txts startTime
-        else do proveFOL text1 opts0 oldProofText cache startTime fileName
-    CiC -> return ()
-    Lean -> exportLean text1
+        then do { showTranslation txts startTime; return 0 }
+        else do
+          success <- proveFOL text1 opts0 oldProofText cache startTime fileName
+          return (if success then 0 else 1)
+    CiC -> return 0
+    Lean -> do { exportLean text1; return 0 }
 
 showTranslation :: [ProofText] -> UTCTime -> IO ()
 showTranslation txts startTime = do
@@ -135,7 +138,7 @@ exportLean pt = do
     Right t -> putStrLn $ Text.unpack t
   return ()
 
-proveFOL :: ProofText -> [Instr] -> ProofText -> Cache -> UTCTime -> Maybe FilePath -> IO ()
+proveFOL :: ProofText -> [Instr] -> ProofText -> Cache -> UTCTime -> Maybe FilePath -> IO Bool
 proveFOL text1 opts0 oldProofText cache startTime fileName = do
   -- initialize reasoner state
   reasonerState <- newIORef (RState [] False False)
@@ -197,7 +200,7 @@ proveFOL text1 opts0 oldProofText cache startTime fileName = do
   (outputMain TRACING Position.none . make_bytes) $
     "total " <> showTimeDiff (diffUTCTime finishTime startTime)
 
-  unless success Exit.exitFailure
+  return success
 
 serverConnection :: Cache -> [String] -> Socket -> IO ()
 serverConnection cache args0 socket =
@@ -231,11 +234,16 @@ serverConnection cache args0 socket =
 
               check_cache cache $ Options.int options Naproche.naproche_pos_context
 
-              mainBody cache opts1 text1 fileName
-                `catch` (\(err :: Program.Error) ->
-                  robust_error $ Program.print_error err)
-                `catch` (\(err :: Exception.SomeException) ->
-                  robust_error $ make_bytes $ Exception.displayException err))
+              rc <- do
+                mainBody cache opts1 text1 fileName
+                  `catch` (\(err :: Program.Error) -> do
+                    robust_error $ Program.print_error err
+                    return 0)
+                  `catch` (\(err :: Exception.SomeException) -> do
+                    robust_error $ make_bytes $ Exception.displayException err
+                    return 0)
+
+              if rc == 0 then return () else robust_error "ERROR")
 
         _ -> return ()
 
