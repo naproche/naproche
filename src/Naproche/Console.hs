@@ -5,11 +5,12 @@ Access to physical console.
 -}
 
 module Naproche.Console (
-  setup, stdout, stderr
+  setup, stdout, stderr, exit
 )
 where
 
 import qualified System.IO as IO
+import qualified System.Exit as Exit
 
 import qualified Isabelle.UTF8 as UTF8
 import Isabelle.Library
@@ -26,3 +27,7 @@ stdout = IO.putStrLn . make_string
   
 stderr :: STRING a => a -> IO ()
 stderr = IO.hPutStrLn IO.stderr . make_string
+
+exit :: Int -> IO a
+exit 0 = Exit.exitSuccess
+exit rc = Exit.exitWith $ Exit.ExitFailure rc

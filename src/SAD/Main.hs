@@ -88,11 +88,11 @@ main  = do
           `catch` (\Exception.UserInterrupt -> do
             Program.exit_thread
             Console.stderr ("Interrupt" :: String)
-            Exit.exitWith (Exit.ExitFailure Process_Result.interrupt_rc))
+            Console.exit Process_Result.interrupt_rc)
           `catch` (\(err :: Exception.SomeException) -> do
             Program.exit_thread
             Console.stderr (Exception.displayException err)
-            Exit.exitWith (Exit.ExitFailure 1))
+            Console.exit 1)
 
 mainBody :: Cache -> [Instr] -> [ProofText] -> Maybe FilePath -> IO ()
 mainBody cache opts0 text0 fileName = do
