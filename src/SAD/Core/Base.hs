@@ -353,12 +353,12 @@ initialDefinitions = Map.fromList [
   (EqualityId,  equality),
   (LessId,  less),
   (SmallId, isSmall),
-  (FunctionId,  function),
-  (ApplicationId,  functionApplication),
-  (DomainId,  domain),
+  (FunId,  function),
+  (AppId,  functionApplication),
+  (DomId,  domain),
   (SetId,  set),
   (ClassId,  clss),
-  (ElementId,  elementOf),
+  (ElemId,  elementOf),
   (PairId, pair) ]
 
 hole0, hole1 :: VariableName
@@ -385,26 +385,26 @@ elementOf = DE [mkClass (mkVar hole1) `Or` mkSet (mkVar hole1)] Top Signature
   (mkElem (mkVar hole0) (mkVar hole1)) [] [[mkClass (mkVar hole1) `Or` mkSet (mkVar hole1)]]
 
 function :: DefEntry
-function  = DE [] Top Signature (mkFun $ mkVar hole0) [] []
+function  = DE [] Top Signature (mkFunction $ mkVar hole0) [] []
 
 domain :: DefEntry
-domain = DE [mkFun $ mkVar hole0] (mkSet ThisT) Signature
-  (mkDom $ mkVar hole0) [mkSet ThisT] [[mkFun $ mkVar hole0]]
+domain = DE [mkFunction $ mkVar hole0] (mkSet ThisT) Signature
+  (mkDom $ mkVar hole0) [mkSet ThisT] [[mkFunction $ mkVar hole0]]
 
 pair :: DefEntry
 pair = DE [] Top Signature (mkPair (mkVar hole0) (mkVar hole1)) [] []
 
 functionApplication :: DefEntry
 functionApplication =
-  DE [mkFun $ mkVar hole0, mkElem (mkVar $ hole1) $ mkDom $ mkVar hole0] Top Signature
+  DE [mkFunction $ mkVar hole0, mkElem (mkVar $ hole1) $ mkDom $ mkVar hole0] Top Signature
     (mkApp (mkVar hole0) (mkVar hole1)) []
-    [[mkFun $ mkVar hole0],[mkElem (mkVar $ hole1) $ mkDom $ mkVar hole0]]
+    [[mkFunction $ mkVar hole0],[mkElem (mkVar $ hole1) $ mkDom $ mkVar hole0]]
 
 
 initialGuards :: DT.DisTree Bool
 initialGuards = foldr (\f -> DT.insert f True) (DT.empty) [
   mkSet $ mkVar hole1,
-  mkFun $ mkVar hole0,
+  mkFunction $ mkVar hole0,
   mkElem (mkVar $ hole1) $ mkDom $ mkVar hole0]
 
 -- retrieve definitional formula of a term

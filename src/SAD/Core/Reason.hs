@@ -405,6 +405,6 @@ setType Trm {trmInfo = info} = any (infoTwins ThisT $ mkSet ThisT) info
 setType _ = False
 
 funType :: Formula -> Bool
-funType Var {varInfo = info} = any (infoTwins ThisT $ mkFun ThisT) info
-funType Trm {trmInfo = info} = any (infoTwins ThisT $ mkFun ThisT) info
+funType Var {varInfo = info} = any (infoTwins ThisT $ mkFunction ThisT) info
+funType Trm {trmInfo = info} = any (infoTwins ThisT $ mkFunction ThisT) info
 funType _ = False

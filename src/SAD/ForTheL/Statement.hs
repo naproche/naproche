@@ -495,7 +495,7 @@ functionNotion = sVar <**> (wordFun <|> (token "=" >> lambda))
     (_, _, dom) <- token' "for" >> lambdaIn;
     vsDecl <- makeDecls vs
     let body f = foldr dAll (Imp (t `mkElem` mkDom f) $ def $ mkApp f t) vsDecl
-    return $ \f -> mkFun f `And` Tag Domain (dom f) `And` body f
+    return $ \f -> mkFunction f `And` Tag Domain (dom f) `And` body f
 
 lambdaBody :: FTL (Formula -> Formula)
 lambdaBody = label "function definition" $ paren $ cases <|> texCases <|> chooseInTerm
@@ -559,7 +559,7 @@ lambda = do
   (t, df_head, dom) <- ld_head
   vs <- fvToVarSet <$> freeVars t
   df <- addDecl vs lambdaBody
-  return $ \f -> mkFun f `And` Tag Domain (dom f) `And` (df_head f $ df $ mkApp f t)
+  return $ \f -> mkFunction f `And` Tag Domain (dom f) `And` (df_head f $ df $ mkApp f t)
   where
     ld_head = finish $ symbol "\\" >> lambdaIn
 

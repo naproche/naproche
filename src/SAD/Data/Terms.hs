@@ -24,14 +24,14 @@ data TermName
   | TermEmpty
   deriving (Eq, Ord, Show)
 
-termFunction :: TermName
-termFunction = TermNotion "Function"
+termFun :: TermName
+termFun = TermNotion "Function"
 
-termApplication :: TermName
-termApplication = TermSymbolic "dtlpdtrp" -- ".(.)"
+termApp :: TermName
+termApp = TermSymbolic "dtlpdtrp" -- ".(.)"
 
-termDomain :: TermName
-termDomain = TermSymbolic "zDzozmlpdtrp" -- "Dom(.)"
+termDom :: TermName
+termDom = TermSymbolic "zDzozmlpdtrp" -- "Dom(.)"
 
 termSet :: TermName
 termSet = TermNotion "Set"
@@ -39,17 +39,17 @@ termSet = TermNotion "Set"
 termClass :: TermName
 termClass = TermNotion "Class"
 
-termElement :: TermName
-termElement = TermNotion "ElementOf"
+termElem :: TermName
+termElem = TermNotion "ElementOf"
 
-termProduct :: TermName
-termProduct = TermSymbolic "zPzrzozdlpdtcmdtrp" -- "Prod(.,.)"
+termProd :: TermName
+termProd = TermSymbolic "zPzrzozdlpdtcmdtrp" -- "Prod(.,.)"
 
 termPair :: TermName
 termPair = TermSymbolic "lpdtcmdtrp" -- "(.,.)"
 
-termObject :: TermName
-termObject = TermNotion "Obj"
+termObj :: TermName
+termObj = TermNotion "Obj"
 
 termSplit :: TermName -> (Text -> TermName, Text)
 termSplit (TermNotion t) = (TermNotion, t)
@@ -81,15 +81,15 @@ data TermId
   | LessId
   | SmallId
   | ThesisId
-  | FunctionId
-  | ApplicationId
-  | DomainId
+  | FunId
+  | AppId
+  | DomId
   | SetId
   | ClassId
-  | ElementId
-  | ProductId
+  | ElemId
+  | ProdI
   | PairId
-  | ObjectId
+  | ObjId
   | NewId -- ^ temporary id given to newly introduced symbols
   | SkolemId Int
   | SpecialId Int
@@ -102,13 +102,13 @@ specialId n =
   ( -1) -> trace msg $ EqualityId
   ( -2) -> trace msg $ LessId
   ( -3) -> trace msg $ ThesisId
-  ( -4) -> trace msg $ FunctionId
-  ( -5) -> trace msg $ ApplicationId
-  ( -6) -> trace msg $ DomainId
+  ( -4) -> trace msg $ FunId
+  ( -5) -> trace msg $ AppId
+  ( -6) -> trace msg $ DomId
   ( -7) -> trace msg $ SetId
-  ( -8) -> trace msg $ ElementId
-  ( -9) -> trace msg $ ProductId
+  ( -8) -> trace msg $ ElemId
+  ( -9) -> trace msg $ ProdI
   (-10) -> trace msg $ PairId
-  (-11) -> trace msg $ ObjectId
+  (-11) -> trace msg $ ObjId
   (-15) -> trace msg $ NewId
   n -> SpecialId n
