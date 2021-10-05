@@ -41,6 +41,20 @@ import qualified Naproche.Program as Program
 import qualified Naproche.Console as Console
 
 
+newtype Cache = Cache (IORef ProofText)
+
+init_cache :: IO Cache
+init_cache = do
+  ref <- newIORef $ ProofTextRoot []
+  return $ Cache ref
+
+read_cache :: Cache -> IO ProofText
+read_cache (Cache ref) = readIORef ref
+
+write_cache :: Cache -> ProofText -> IO ()
+write_cache (Cache ref) = writeIORef ref
+  
+
 main :: IO ()
 main  = do
   Console.setup
@@ -56,16 +70,16 @@ main  = do
       pure [ProofTextInstr Position.none $ GetArgument (File pk) (Text.pack f)]
   let opts1 = map snd opts0
 
-  oldProofTextRef <- newIORef $ ProofTextRoot []
+  cache <- init_cache
 
   if askFlag Help False opts1 then
     putStr (GetOpt.usageInfo usageHeader options)
   else -- main body with explicit error handling, notably for PIDE
       (if askFlag Server False opts1 then
-        Server.server (Server.publish_stdout "Naproche-SAD") (serverConnection oldProofTextRef args0)
+        Server.server (Server.publish_stdout "Naproche-SAD") (serverConnection cache args0)
       else do
         Program.init_console
-        mainBody oldProofTextRef opts1 text0 mFileName)
+        mainBody cache opts1 text0 mFileName)
           `catch` (\Exception.UserInterrupt -> do
             Program.exit_thread
             Console.stderr ("Interrupt" :: String)
@@ -75,11 +89,11 @@ main  = do
             Console.stderr (Exception.displayException err)
             Exit.exitWith (Exit.ExitFailure 1))
 
-mainBody :: IORef ProofText -> [Instr] -> [ProofText] -> Maybe FilePath -> IO ()
-mainBody oldProofTextRef opts0 text0 fileName = do
+mainBody :: Cache -> [Instr] -> [ProofText] -> Maybe FilePath -> IO ()
+mainBody cache opts0 text0 fileName = do
   startTime <- getCurrentTime
 
-  oldProofText <- readIORef oldProofTextRef
+  oldProofText <- read_cache cache
   -- parse input text
   txts <- readProofText (askArgument Library "." opts0) text0
   let text1 = ProofTextRoot txts
@@ -89,7 +103,7 @@ mainBody oldProofTextRef opts0 text0 fileName = do
       -- if -T / --onlytranslate is passed as an option, only print the translated text
       if askFlag OnlyTranslate False opts0
         then showTranslation txts startTime
-        else do proveFOL text1 opts0 oldProofText oldProofTextRef startTime fileName
+        else do proveFOL text1 opts0 oldProofText cache startTime fileName
     CiC -> return ()
     Lean -> exportLean text1
 
@@ -116,8 +130,8 @@ exportLean pt = do
     Right t -> putStrLn $ Text.unpack t
   return ()
 
-proveFOL :: ProofText -> [Instr] -> ProofText -> IORef ProofText -> UTCTime -> Maybe FilePath -> IO ()
-proveFOL text1 opts0 oldProofText oldProofTextRef startTime fileName = do
+proveFOL :: ProofText -> [Instr] -> ProofText -> Cache -> UTCTime -> Maybe FilePath -> IO ()
+proveFOL text1 opts0 oldProofText cache startTime fileName = do
   -- initialize reasoner state
   reasonerState <- newIORef (RState [] False False)
 
@@ -127,7 +141,7 @@ proveFOL text1 opts0 oldProofText oldProofTextRef startTime fileName = do
     Nothing -> do
       let text = textToCheck oldProofText text1
       (success, newProofText) <- verify (maybe "" Text.pack fileName) reasonerState text
-      mapM_ (writeIORef oldProofTextRef) newProofText
+      mapM_ (write_cache cache) newProofText
       pure success
     Just err -> do errorParser (errorPos err) (show_bytes err); pure False
 
@@ -180,8 +194,8 @@ proveFOL text1 opts0 oldProofText oldProofTextRef startTime fileName = do
 
   unless success Exit.exitFailure
 
-serverConnection :: IORef ProofText -> [String] -> Socket -> IO ()
-serverConnection oldProofTextRef args0 socket =
+serverConnection :: Cache -> [String] -> Socket -> IO ()
+serverConnection cache args0 socket =
   let
     exchange_message0 = Byte_Message.exchange_message0 socket
     robust_error msg =
@@ -210,7 +224,7 @@ serverConnection oldProofTextRef args0 socket =
               let text0 = map (uncurry ProofTextInstr) (reverse opts0)
               let text1 = text0 ++ [ProofTextInstr Position.none (GetArgument (Text pk) more_text)]
 
-              mainBody oldProofTextRef opts1 text1 fileName
+              mainBody cache opts1 text1 fileName
                 `catch` (\(err :: Program.Error) ->
                   robust_error $ Program.print_error err)
                 `catch` (\(err :: Exception.SomeException) ->
