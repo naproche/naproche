@@ -44,7 +44,7 @@ termSplit (TermUnaryAdjective t) = (TermUnaryAdjective, t)
 termSplit (TermMultiAdjective t) = (TermMultiAdjective, t)
 termSplit (TermUnaryVerb t) = (TermUnaryVerb, t)
 termSplit (TermMultiVerb t) = (TermMultiVerb, t)
-termSplit _ = error "wont happen"
+termSplit _ = undefined
 
 instance Representation TermName where
   represent (TermName t) = fromLazyText t
