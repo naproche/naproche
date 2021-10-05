@@ -25,7 +25,6 @@ import qualified System.Exit as Exit
 import qualified System.IO as IO
 import Network.Socket (Socket)
 
-import qualified Isabelle.UTF8 as UTF8
 import qualified Isabelle.Byte_Message as Byte_Message
 import qualified Isabelle.Naproche as Naproche
 import qualified Isabelle.Server as Server
@@ -43,10 +42,7 @@ import qualified Naproche.Program as Program
 
 main :: IO ()
 main  = do
-  -- setup channels
-  UTF8.setup3 IO.stdin IO.stdout IO.stderr
-  IO.hSetBuffering IO.stdout IO.LineBuffering
-  IO.hSetBuffering IO.stderr IO.LineBuffering
+  Program.setup_console
 
   -- command line and init file
   args0 <- Environment.getArgs
