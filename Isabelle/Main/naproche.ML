@@ -176,21 +176,23 @@ fun command_loop streams state =
 
 val forthel_program = "forthel";
 
-fun check_forthel ctxt {tex} (text, pos) =
+fun forthel_bool b = if b then "on" else "off";
+fun forthel_bool_option ctxt = forthel_bool o Config.get ctxt;
+
+fun forthel_args ctxt {tex} =
+  let val bool_option = forthel_bool_option ctxt in
+   ["--tex=" ^ forthel_bool tex,
+    "--prove=" ^ bool_option naproche_prove,
+    "--check=" ^ bool_option naproche_check,
+    "--skipfail=" ^ bool_option naproche_skipfail,
+    "--printthesis=" ^ bool_option naproche_print_thesis,
+    "--translate=" ^ bool_option naproche_translate]
+  end;
+
+fun check_forthel ctxt tex (text, pos) =
   let
-    fun bool b = if b then "on" else "off";
-    val bool_option = bool o Config.get ctxt;
-
-    val args =
-     ["--tex=" ^ bool tex,
-      "--prove=" ^ bool_option naproche_prove,
-      "--check=" ^ bool_option naproche_check,
-      "--skipfail=" ^ bool_option naproche_skipfail,
-      "--printthesis=" ^ bool_option naproche_print_thesis,
-      "--translate=" ^ bool_option naproche_translate];
-
+    val args = forthel_args ctxt tex;
     val opts = YXML.string_of_body (Options.encode (naproche_options ctxt pos));
-
     val state = make_state ([], Context.Theory (Proof_Context.theory_of ctxt));
   in
     with_server (fn streams =>
