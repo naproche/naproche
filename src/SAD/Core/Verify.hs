@@ -96,7 +96,7 @@ verificationLoop state@VS {
   ifAskFailed (return (restProofText state, restProofText state)) $ do
     let proofTask = generateProofTask kind (Block.declaredNames block) fortifiedFormula
     let freshThesis = Context proofTask newBranch []
-    let toBeProved = (Block.needsProof block) && not (Block.isTopLevel block)
+    let toBeProved = Block.needsProof block && not (Block.isTopLevel block)
     proofBody <- do
       flat <- askInstructionBool Flat False
       if flat
@@ -148,7 +148,7 @@ verificationLoop state@VS {
 
       whenInstruction Printthesis False $ when (
         hasChanged && motivated && newMotivation &&
-        (not $ hasDEC $ Block.formula $ head branch) ) $
+        not (hasDEC $ Block.formula $ head branch) ) $
           thesisLog Message.WRITELN (Block.position block) (length branch - 2) $
           "new thesis: " <> show (Context.formula newThesis)
 

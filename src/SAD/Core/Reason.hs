@@ -73,27 +73,26 @@ thesis = asks currentThesis
 
 proveThesis :: Position.T -> VM ()
 proveThesis pos = do
-  reasoningDepth <- askInstructionInt Depthlimit 3
-  guard (reasoningDepth > 0) -- Fallback to defaulting of the underlying CPS Maybe monad.
+  depth <- askInstructionInt Depthlimit 3
+  guard (depth > 0) -- Fallback to defaulting of the underlying CPS Maybe monad.
   ctx <- asks currentContext
   goals <- splitGoal
-  filterContext pos (sequenceGoals pos reasoningDepth 0 goals) ctx
+  filterContext pos (sequenceGoals pos depth 0 goals) ctx
 
 sequenceGoals :: Position.T -> Int -> Int -> [Formula] -> VM ()
-sequenceGoals pos reasoningDepth iteration (goal:restGoals) = do
-  (trivial <|> proofByATP <|> reason) `withGoal` reducedGoal
-  sequenceGoals pos reasoningDepth iteration restGoals
+sequenceGoals pos depth iteration (goal:restGoals) = do
+  (trivial <|> prover <|> reason) `withGoal` reducedGoal
+  sequenceGoals pos depth iteration restGoals
   where
     reducedGoal = reduceWithEvidence goal
     trivial = guard (isTop reducedGoal) >> updateTrivialStatistics
-    proofByATP = launchProver pos iteration
-
-    reason = if reasoningDepth == 1
-      then warnDepthExceeded >> mzero
+    prover = launchProver pos iteration
+    reason =
+      if depth == 1 then warnDepthExceeded >> mzero
       else do
         newTask <- unfold pos
         let Context {Context.formula = Not newGoal} : newContext = newTask
-        sequenceGoals pos (pred reasoningDepth) (succ iteration) [newGoal]
+        sequenceGoals pos (pred depth) (succ iteration) [newGoal]
           `withContext` newContext
 
     warnDepthExceeded =
@@ -127,7 +126,7 @@ launchProver pos iteration = do
   context <- asks currentContext
   let callATP = justIO $ pure $ export pos iteration instrList context goal
   callATP >>= timeWith ProofTimer . justIO >>= guardResult
-  res <- fmap head $ askRS trackers
+  res <- head <$> askRS trackers
   case res of
     Timer _ time -> do
       addToTimer SuccessTimer time
@@ -179,7 +178,7 @@ filterContext pos action context = do
   link <- asks (Set.fromList . Context.link . currentThesis)
   if Set.null link
     then action `withContext`
-         (map replaceSignHead $ filter (not . isTop . Context.formula) context)
+         map replaceSignHead (filter (not . isTop . Context.formula) context)
     else do
          linkedContext <- retrieveContext pos link
          action `withContext` (lowlevelContext ++ linkedContext ++ defsAndSigs)
@@ -264,12 +263,12 @@ unfold pos = do
   generalSetUnfoldSetting <- askInstructionBool Unfoldsf True
   lowlevelSetUnfoldSetting <- askInstructionBool Unfoldlowsf False
   guard (generalUnfoldSetting || generalSetUnfoldSetting)
-  let ((goal:toUnfold), topLevelContext) = span Context.isLowLevel task
+  let (goal : toUnfold, topLevelContext) = span Context.isLowLevel task
       unfoldState = UF
         { defs = definitions
         , evals = evaluations
-        , unfoldSetting = (generalUnfoldSetting    && lowlevelUnfoldSetting)
-        , unfoldSetSetting = (generalSetUnfoldSetting && lowlevelSetUnfoldSetting) }
+        , unfoldSetting = generalUnfoldSetting && lowlevelUnfoldSetting
+        , unfoldSetSetting = generalSetUnfoldSetting && lowlevelSetUnfoldSetting }
       (newLowLevelContext, numberOfUnfolds) =
         W.runWriter $ flip runReaderT unfoldState $
           liftM2 (:)
@@ -304,7 +303,7 @@ unfoldConservative toUnfold
     fill :: [Formula] -> Maybe Bool -> Int -> Formula -> ReaderT UnfoldState (W.Writer (Sum Int)) Formula
     fill localContext sign n f
       | hasDMK f = return f -- check if f has been unfolded already
-      | isTrm f  =  fmap reduceWithEvidence $ unfoldAtomic (fromJust sign) f
+      | isTrm f = reduceWithEvidence <$> unfoldAtomic (fromJust sign) f
     -- Iff is changed to double implication -> every position has a polarity
     fill localContext sign n (Iff f g) = fill localContext sign n $ zIff f g
     fill localContext sign n f = roundFM VarU fill localContext sign n f
@@ -371,7 +370,7 @@ unfoldAtomic sign f = do
       let v = mkVar VarEmpty in mkAll VarEmpty $ Iff (mkElem v f) (mkElem v g)
     funExtensionality f g =
       let v = mkVar VarEmpty
-      in (domainEquality (mkDom f) (mkDom g)) `And`
+      in domainEquality (mkDom f) (mkDom g) `And`
          mkAll VarEmpty (Imp (mkElem v $ mkDom f) $ mkEquality (mkApp f v) (mkApp g v))
 
     -- depending on the sign we choose the more convenient form of set equality
@@ -389,7 +388,7 @@ unfoldAtomic sign f = do
       where
         findev ev = do
           sb <- match (evaluationTerm ev) t
-          guard (all trivialByEvidence $ map sb $ evaluationConditions ev)
+          guard (all (trivialByEvidence . sb) $ evaluationConditions ev)
           return $ replace (Tag GenericMark t) ThisT $ sb $
             if sign then evaluationPositives ev else evaluationNegatives ev
 

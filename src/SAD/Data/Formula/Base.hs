@@ -42,7 +42,7 @@ data Formula =
 
 trmId :: Formula -> TermId
 trmId (Trm _ _ _ a) = a
-trmId f = error $ "trmId called no term" 
+trmId f = error "trmId called no term"
 
 trInfo :: Formula -> [Formula]
 trInfo Trm {trmInfo = xs} = xs
@@ -50,8 +50,8 @@ trInfo Var {varInfo = xs} = xs
 trInfo _ = error "Formula.Base.trInfo: Partial function"
 
 showTrName :: Formula -> Text
-showTrName (Trm {trmName = s}) = Text.filter (/= ':') $ toLazyText $ represent s
-showTrName (Var {varName = s}) = Text.filter (/= ':') $ toLazyText $ represent s
+showTrName Trm{trmName = s} = Text.filter (/= ':') $ toLazyText $ represent s
+showTrName Var{varName = s} = Text.filter (/= ':') $ toLazyText $ represent s
 showTrName _ = Text.empty
 
 -- Traversing functions
@@ -70,7 +70,7 @@ mapFM fn (Or f g) = liftA2 Or (fn f) (fn g)
 mapFM fn (And f g) = liftA2 And (fn f) (fn g)
 mapFM fn (Tag a f) = Tag a <$> fn f
 mapFM fn (Not f) = Not <$> fn f
-mapFM fn t@Trm{} = (\args -> t {trmArgs = args}) <$> (traverse fn $ trmArgs t)
+mapFM fn t@Trm{} = (\args -> t {trmArgs = args}) <$> traverse fn (trmArgs t)
 mapFM _ f = pure f
 
 -- Logical traversing
@@ -90,11 +90,11 @@ roundFM mkVar traversalAction localContext polarity n = dive
     dive (All u f) = do
       let action = traversalAction localContext polarity (succ n)
           nn = mkVar $ Text.pack $ show n
-      All u . bind nn <$> (action $ inst nn f)
+      All u . bind nn <$> action (inst nn f)
     dive (Exi u f) = do
       let action = traversalAction localContext polarity (succ n)
           nn = mkVar $ Text.pack $ show n
-      Exi u . bind nn <$> (action $ inst nn f)
+      Exi u . bind nn <$> action (inst nn f)
     dive (Iff f g) = do
       nf <- traversalAction localContext Nothing n f
       Iff nf <$> traversalAction localContext Nothing n g

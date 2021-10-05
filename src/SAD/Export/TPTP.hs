@@ -49,7 +49,7 @@ tptpTerm d = dive
     dive t@Trm {trmName = TermEquality} = let [l, r] = trmArgs t in sinfix " = " l r
     dive t@Trm {}   = Builder.fromLazyText (showTrName t) <> buildArgumentsWith dive (trmArgs t)
     dive v@Var {}   = Builder.fromLazyText (showTrName v)
-    dive i@Ind {}   = "W" <> (Builder.fromString (show (d - 1 - indIndex i)))
+    dive i@Ind {}   = "W" <> Builder.fromString (show (d - 1 - indIndex i))
     dive ThisT      = error "SAD.Export.TPTP: Didn't expect ThisT here"
 
     sinfix o f g  = buildParens $ dive f <> o <> dive g
