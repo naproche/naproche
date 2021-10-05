@@ -22,7 +22,6 @@ import qualified Data.Text.Lazy as Text
 import qualified System.Console.GetOpt as GetOpt
 import qualified System.Environment as Environment
 import qualified System.Exit as Exit
-import qualified System.IO as IO
 import Network.Socket (Socket)
 
 import qualified Isabelle.Byte_Message as Byte_Message
@@ -37,12 +36,14 @@ import qualified Isabelle.Process_Result as Process_Result
 import Isabelle.Library
 
 import SAD.API
+
 import qualified Naproche.Program as Program
+import qualified Naproche.Console as Console
 
 
 main :: IO ()
 main  = do
-  Program.setup_console
+  Console.setup
 
   -- command line and init file
   args0 <- Environment.getArgs
@@ -67,11 +68,11 @@ main  = do
         mainBody oldProofTextRef opts1 text0 mFileName)
           `catch` (\Exception.UserInterrupt -> do
             Program.exit_thread
-            IO.hPutStrLn IO.stderr "Interrupt"
+            Console.stderr ("Interrupt" :: String)
             Exit.exitWith (Exit.ExitFailure Process_Result.interrupt_rc))
           `catch` (\(err :: Exception.SomeException) -> do
             Program.exit_thread
-            IO.hPutStrLn IO.stderr (Exception.displayException err)
+            Console.stderr (Exception.displayException err)
             Exit.exitWith (Exit.ExitFailure 1))
 
 mainBody :: IORef ProofText -> [Instr] -> [ProofText] -> Maybe FilePath -> IO ()

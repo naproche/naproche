@@ -11,7 +11,6 @@ module Naproche.Program (
   adjust_position, pide_command, yxml_pide_command,
   exit_thread, init_console, init_pide, thread_context,
   error,
-  setup_console,
   serials, serial
 )
 where
@@ -29,12 +28,10 @@ import Control.Monad (when, unless, replicateM)
 import qualified Control.Concurrent as Concurrent
 import qualified Control.Exception as Exception
 import Control.Exception (Exception)
-import qualified System.IO as IO
 
 import Network.Socket (Socket)
 import qualified Isabelle.Bytes as Bytes
 import Isabelle.Bytes (Bytes)
-import qualified Isabelle.UTF8 as UTF8
 import qualified Isabelle.Byte_Message as Byte_Message
 import qualified Isabelle.Value as Value
 import qualified Isabelle.Position as Position
@@ -169,15 +166,6 @@ error msg = do
   context <- thread_context
   if is_pide context then Exception.throw $ Error msg
   else errorWithoutStackTrace $ make_string msg
-
-
-{- console channels -}
-
-setup_console :: IO ()
-setup_console = do
-  UTF8.setup3 IO.stdin IO.stdout IO.stderr
-  IO.hSetBuffering IO.stdout IO.LineBuffering
-  IO.hSetBuffering IO.stderr IO.LineBuffering
 
 
 {- serial numbers, preferable from Isabelle/ML -}
