@@ -9,7 +9,7 @@ Main application entry point: console or server mode.
 
 module SAD.Main where
 
-import Control.Monad (unless)
+import Control.Monad (unless, when)
 import Data.Char (toLower)
 import Data.IORef
 import Data.Time (UTCTime, addUTCTime, getCurrentTime, diffUTCTime)
@@ -18,7 +18,6 @@ import Data.Maybe (mapMaybe)
 
 import qualified Control.Exception as Exception
 import Control.Exception (catch)
-import Control.Monad (when)
 import qualified Data.Text.Lazy as Text
 import qualified System.Console.GetOpt as GetOpt
 import qualified System.Environment as Environment
