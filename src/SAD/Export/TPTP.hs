@@ -34,24 +34,24 @@ tptpForm s (Context fr (Block { Block.name = m } : _) _) =
 tptpForm _ _ = ""
 
 tptpTerm :: Int -> Formula -> Builder
-tptpTerm d = dive
+tptpTerm d = term
   where
-    dive (All _ f)  = buildParens $ " ! " <> binder f
-    dive (Exi _ f)  = buildParens $ " ? " <> binder f
-    dive (Iff f g)  = sinfix " <=> " f g
-    dive (Imp f g)  = sinfix " => " f g
-    dive (Or  f g)  = sinfix " | " f g
-    dive (And f g)  = sinfix " & " f g
-    dive (Tag _ f)  = dive f
-    dive (Not f)    = buildParens $ " ~ " <> dive f
-    dive Top        = "$true"
-    dive Bot        = "$false"
-    dive t@Trm {trmName = TermEquality} = let [l, r] = trmArgs t in sinfix " = " l r
-    dive t@Trm {}   = Builder.fromLazyText (showTrName t) <> buildArgumentsWith dive (trmArgs t)
-    dive v@Var {}   = Builder.fromLazyText (showTrName v)
-    dive i@Ind {}   = "W" <> Builder.fromString (show (d - 1 - indIndex i))
-    dive ThisT      = error "SAD.Export.TPTP: Didn't expect ThisT here"
+    term (All _ f)  = buildParens $ " ! " <> binder f
+    term (Exi _ f)  = buildParens $ " ? " <> binder f
+    term (Iff f g)  = sinfix " <=> " f g
+    term (Imp f g)  = sinfix " => " f g
+    term (Or  f g)  = sinfix " | " f g
+    term (And f g)  = sinfix " & " f g
+    term (Tag _ f)  = term f
+    term (Not f)    = buildParens $ " ~ " <> term f
+    term Top        = "$true"
+    term Bot        = "$false"
+    term t@Trm {trmName = TermEquality} = let [l, r] = trmArgs t in sinfix " = " l r
+    term t@Trm {}   = Builder.fromLazyText (showTrName t) <> buildArgumentsWith term (trmArgs t)
+    term v@Var {}   = Builder.fromLazyText (showTrName v)
+    term i@Ind {}   = "W" <> Builder.fromString (show (d - 1 - indIndex i))
+    term ThisT      = error "SAD.Export.TPTP: Didn't expect ThisT here"
 
-    sinfix o f g  = buildParens $ dive f <> o <> dive g
+    sinfix o f g  = buildParens $ term f <> o <> term g
 
     binder f  = "[" <> tptpTerm (d + 1) (Ind 0 Position.none) <> "] : " <> tptpTerm (d + 1) f
