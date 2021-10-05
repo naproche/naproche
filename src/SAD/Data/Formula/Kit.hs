@@ -192,8 +192,8 @@ mkSmall :: Formula -> Formula
 mkSmall s = mkTrm SmallId TermSmall [s]
 mkThesis :: Formula
 mkThesis = mkTrm ThesisId TermThesis []
-mkFunction :: Formula -> Formula
-mkFunction = mkTrm FunId termFun . pure
+mkFun :: Formula -> Formula
+mkFun = mkTrm FunId termFun . pure
 mkApp :: Formula -> Formula -> Formula
 mkApp f v = mkTrm AppId termApp [f, v]
 mkDom :: Formula -> Formula
@@ -213,8 +213,8 @@ mkObj = mkTrm ObjId termObj . pure -- this is a dummy for parsing purposes
 
 -- quick checks of syntactic properties
 
-isApplication :: Formula -> Bool
-isApplication Trm {trId = AppId} = True; isApplication _ = False
+isApp :: Formula -> Bool
+isApp Trm {trId = AppId} = True; isApp _ = False
 isTop :: Formula -> Bool
 isTop Top = True; isTop _ = False
 isBot :: Formula -> Bool

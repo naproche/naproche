@@ -338,7 +338,7 @@ unfoldAtomic sign f = do
   -- we have functions we throw in function extensionality
 
     localProperties t
-      | isApplication t || isElem t = setFunDefinitionalProperties t
+      | isApp t || isElem t = setFunDefinitionalProperties t
       | otherwise = definitionalProperties t t
 
     -- return definitional property of f instantiated with g
@@ -405,6 +405,6 @@ setType Trm {trmInfo = info} = any (infoTwins ThisT $ mkSet ThisT) info
 setType _ = False
 
 funType :: Formula -> Bool
-funType Var {varInfo = info} = any (infoTwins ThisT $ mkFunction ThisT) info
-funType Trm {trmInfo = info} = any (infoTwins ThisT $ mkFunction ThisT) info
+funType Var {varInfo = info} = any (infoTwins ThisT $ mkFun ThisT) info
+funType Trm {trmInfo = info} = any (infoTwins ThisT $ mkFun ThisT) info
 funType _ = False

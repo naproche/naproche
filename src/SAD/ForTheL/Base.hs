@@ -70,7 +70,7 @@ initFS = FState
       ([Word ["equal"], Word ["to"], Vr], mkTrm EqualityId TermEquality),
       ([Word ["nonequal"], Word ["to"], Vr], Not . mkTrm EqualityId TermEquality) ]
     primNotions = [
-      ([Word ["function","functions"], Nm], mkFunction . head),
+      ([Word ["function","functions"], Nm], mkFun . head),
       ([Word ["set","sets"], Nm], mkSet . head),
       ([Word ["class","classes"], Nm], mkClass . head),
       ([Word ["element", "elements"], Nm, Word ["of"], Vr], \(x:m:_) -> mkElem x m),
