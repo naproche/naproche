@@ -27,28 +27,14 @@ data TermName
 termFun :: TermName
 termFun = TermNotion "Function"
 
-termApp :: TermName
+termApp, termDom, termSet, termClass, termElem, termProd, termPair, termObj :: TermName
 termApp = TermSymbolic "__App__" -- ".(.)"
-
-termDom :: TermName
 termDom = TermSymbolic "__Dom__" -- "Dom(.)"
-
-termSet :: TermName
 termSet = TermNotion "Set"
-
-termClass :: TermName
 termClass = TermNotion "Class"
-
-termElem :: TermName
 termElem = TermNotion "ElementOf"
-
-termProd :: TermName
 termProd = TermSymbolic "__Prod__" -- "Prod(.,.)"
-
-termPair :: TermName
 termPair = TermSymbolic "__Pair__" -- "(.,.)"
-
-termObj :: TermName
 termObj = TermNotion "Obj"
 
 termSplit :: TermName -> (Text -> TermName, Text)
@@ -99,16 +85,16 @@ specialId :: Int -> TermId
 specialId n =
   let msg =  "TermId: If you see this message, please file an issue."
   in case n of
-  ( -1) -> trace msg $ EqualityId
-  ( -2) -> trace msg $ LessId
-  ( -3) -> trace msg $ ThesisId
-  ( -4) -> trace msg $ FunId
-  ( -5) -> trace msg $ AppId
-  ( -6) -> trace msg $ DomId
-  ( -7) -> trace msg $ SetId
-  ( -8) -> trace msg $ ElemId
-  ( -9) -> trace msg $ ProdI
-  (-10) -> trace msg $ PairId
-  (-11) -> trace msg $ ObjId
-  (-15) -> trace msg $ NewId
+  ( -1) -> trace msg EqualityId
+  ( -2) -> trace msg LessId
+  ( -3) -> trace msg ThesisId
+  ( -4) -> trace msg FunId
+  ( -5) -> trace msg AppId
+  ( -6) -> trace msg DomId
+  ( -7) -> trace msg SetId
+  ( -8) -> trace msg ElemId
+  ( -9) -> trace msg ProdI
+  (-10) -> trace msg PairId
+  (-11) -> trace msg ObjId
+  (-15) -> trace msg NewId
   n -> SpecialId n
