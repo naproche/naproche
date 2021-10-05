@@ -32,6 +32,7 @@ option naproche_server_address : string = ""
 option naproche_server_password : string = ""
   -- "password for connection to Naproche-SAD server"
 
+option naproche_pos_context : int = 0
 option naproche_pos_id : string = ""
 option naproche_pos_file : string = ""
 option naproche_pos_shift : int = 0

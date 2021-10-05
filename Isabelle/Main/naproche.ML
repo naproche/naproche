@@ -26,7 +26,7 @@ sig
   val yxml_command1_setup: binding -> (Proof.context -> XML.body -> XML.body) -> theory -> theory
   val cancel_program: string
   val forthel_program: string
-  val check_forthel: Proof.context -> {tex: bool} -> string * Position.T -> unit
+  val check_forthel: {tex: bool} -> string * Position.T -> local_theory -> local_theory
   val pretty_sequent: Proof.context -> term list * term list -> Pretty.T
 end;
 
@@ -42,8 +42,9 @@ val naproche_print_thesis = Attrib.setup_option_bool (\<^system_option>\<open>na
 val naproche_translate = Attrib.setup_option_bool (\<^system_option>\<open>naproche_translate\<close>, \<^here>);
 val naproche_isabelle = Attrib.setup_option_bool (\<^system_option>\<open>naproche_isabelle\<close>, \<^here>);
 
-fun naproche_options ctxt pos =
+fun naproche_options lthy pos =
   let
+    val pos_context = Toplevel.get_prev_theory (Context.Proof lthy);
     val pos_id =
       (case Position.id_of (Position.thread_data ()) of
         SOME id => id
@@ -52,10 +53,11 @@ fun naproche_options ctxt pos =
     val pos_offset = the_default 0 (Position.offset_of pos);
   in
     Options.default ()
+    |> Options.put_int \<^system_option>\<open>naproche_pos_context\<close> pos_context
     |> Options.put_string \<^system_option>\<open>naproche_pos_id\<close> pos_id
     |> Options.put_string \<^system_option>\<open>naproche_pos_file\<close> pos_file
     |> Options.put_int \<^system_option>\<open>naproche_pos_shift\<close> (pos_offset - 1)
-    |> Options.put_bool \<^system_option>\<open>naproche_isabelle\<close> (Config.get ctxt naproche_isabelle)
+    |> Options.put_bool \<^system_option>\<open>naproche_isabelle\<close> (Config.get lthy naproche_isabelle)
   end;
 
 
@@ -189,16 +191,16 @@ fun forthel_args ctxt {tex} =
     "--translate=" ^ bool_option naproche_translate]
   end;
 
-fun check_forthel ctxt tex (text, pos) =
+fun check_forthel tex (text, pos) lthy =
   let
-    val args = forthel_args ctxt tex;
-    val opts = YXML.string_of_body (Options.encode (naproche_options ctxt pos));
-    val state = make_state ([], Context.Theory (Proof_Context.theory_of ctxt));
-  in
-    with_server (fn streams =>
-     (write_message streams [forthel_program, cat_lines args, opts, text];
-      command_loop streams state))
-  end;
+    val args = forthel_args lthy tex;
+    val opts = YXML.string_of_body (Options.encode (naproche_options lthy pos));
+    val state = make_state ([], Context.Theory (Proof_Context.theory_of lthy));
+    val _ =
+      with_server (fn streams =>
+       (write_message streams [forthel_program, cat_lines args, opts, text];
+        command_loop streams state))
+  in lthy end;
 
 
 
@@ -270,11 +272,11 @@ val _ = Theory.setup
 
 val _ =
   Outer_Syntax.local_theory \<^command_keyword>\<open>forthel\<close> "check Naproche-SAD text"
-    (Parse.embedded_position >> (fn inp => fn lthy => (check_forthel lthy {tex = false} inp; lthy)));
+    (Parse.embedded_position >> check_forthel {tex = false});
 
 val _ =
   Outer_Syntax.local_theory \<^command_keyword>\<open>forthel_tex\<close> "check Naproche-SAD text (TeX)"
-    (Parse.embedded_position >> (fn inp => fn lthy => (check_forthel lthy {tex = true} inp; lthy)));
+    (Parse.embedded_position >> check_forthel {tex = true});
 
 val _ =
   Outer_Syntax.local_theory \<^command_keyword>\<open>forthel_file\<close> "check Naproche-SAD text file"
@@ -283,9 +285,10 @@ val _ =
           val {src_path, lines, digest, pos} = get_file (Proof_Context.theory_of lthy);
           val file_name = Path.implode (Path.expand src_path);
           val tex = String.isSuffix ".ftl.tex" file_name;
-          val lthy' = lthy
-            |> Local_Theory.background_theory (Resources.provide (src_path, digest));
-          val _ = check_forthel lthy' {tex = tex} (cat_lines lines, pos);
-        in lthy' end));
+        in
+          lthy
+          |> Local_Theory.background_theory (Resources.provide (src_path, digest))
+          |> check_forthel {tex = tex} (cat_lines lines, pos)
+        end));
 
 end;

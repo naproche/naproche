@@ -18,6 +18,7 @@ import Data.Maybe (mapMaybe)
 
 import qualified Control.Exception as Exception
 import Control.Exception (catch)
+import Control.Monad (when)
 import qualified Data.Text.Lazy as Text
 import qualified System.Console.GetOpt as GetOpt
 import qualified System.Environment as Environment
@@ -41,18 +42,23 @@ import qualified Naproche.Program as Program
 import qualified Naproche.Console as Console
 
 
-newtype Cache = Cache (IORef ProofText)
+newtype Cache = Cache (IORef (Int, ProofText))
 
 init_cache :: IO Cache
-init_cache = do
-  ref <- newIORef $ ProofTextRoot []
-  return $ Cache ref
+init_cache = Cache <$> newIORef (0, ProofTextRoot [])
+
+check_cache :: Cache -> Int -> IO ()
+check_cache (Cache ref) i = do
+  (j, _) <- readIORef ref
+  when (i /= j || j == 0) (writeIORef ref (i, ProofTextRoot []))
 
 read_cache :: Cache -> IO ProofText
-read_cache (Cache ref) = readIORef ref
+read_cache (Cache ref) = snd <$> readIORef ref
 
 write_cache :: Cache -> ProofText -> IO ()
-write_cache (Cache ref) = writeIORef ref
+write_cache (Cache ref) text = do
+  (i, _) <- readIORef ref
+  writeIORef ref (i, text)
   
 
 main :: IO ()
@@ -223,6 +229,8 @@ serverConnection cache args0 socket =
               let opts1 = map snd opts0
               let text0 = map (uncurry ProofTextInstr) (reverse opts0)
               let text1 = text0 ++ [ProofTextInstr Position.none (GetArgument (Text pk) more_text)]
+
+              check_cache cache $ Options.int options Naproche.naproche_pos_context
 
               mainBody cache opts1 text1 fileName
                 `catch` (\(err :: Program.Error) ->
