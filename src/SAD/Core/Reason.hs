@@ -93,7 +93,7 @@ sequenceGoals pos depthlimit = sequence 0
         trivial = guard (isTop reducedGoal) >> updateTrivialStatistics
         prover = launchProver pos iteration
         reason =
-          if iteration >= depthlimit - 1 then warnDepthExceeded >> mzero
+          if iteration >= depthlimit then warnDepthExceeded >> mzero
           else do
             newTask <- unfold pos
             let Context {Context.formula = Not newGoal} : newContext = newTask
