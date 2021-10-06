@@ -2,6 +2,9 @@
 
 # General
 
+* Discontinue symEncode / symDecode!? TPTP can handle arbitrary names via
+  single quoted string literals.
+
 * E prover 2.6 (re-used from Isabelle) breaks examples/koenig.ftl.tex while examples/koenig.ftl
   still works. What is going on here?
 
