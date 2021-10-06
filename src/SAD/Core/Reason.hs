@@ -75,38 +75,38 @@ thesis = asks currentThesis
 
 proveThesis :: Position.T -> VM ()
 proveThesis pos = do
-  depth <- askInstructionInt Depthlimit 3
-  guard (depth > 0) -- Fallback to defaulting of the underlying CPS Maybe monad.
+  depthlimit <- askInstructionInt Depthlimit 3
+  guard (depthlimit > 0) -- Fallback to defaulting of the underlying CPS Maybe monad.
   ctx <- asks currentContext
   goals <- splitGoal
-  filterContext pos (sequenceGoals pos depth 0 goals) ctx
+  filterContext pos (sequenceGoals pos depthlimit goals) ctx
 
-sequenceGoals :: Position.T -> Int -> Int -> [Formula] -> VM ()
-sequenceGoals pos depth iteration (goal : restGoals) = do
-  (trivial <|> prover <|> reason) `withGoal` reducedGoal
-  sequenceGoals pos depth iteration restGoals
+sequenceGoals :: Position.T -> Int -> [Formula] -> VM ()
+sequenceGoals pos depthlimit = sequence 0
   where
-    reducedGoal = reduceWithEvidence goal
-    trivial = guard (isTop reducedGoal) >> updateTrivialStatistics
-    prover = launchProver pos iteration
-    reason =
-      if depth == 1 then warnDepthExceeded >> mzero
-      else do
-        newTask <- unfold pos
-        let Context {Context.formula = Not newGoal} : newContext = newTask
-        sequenceGoals pos (depth - 1) (iteration + 1) [newGoal]
-          `withContext` newContext
+    sequence _ [] = return ()
+    sequence iteration (goal : restGoals) = do
+      (trivial <|> prover <|> reason) `withGoal` reducedGoal
+      sequence iteration restGoals
+      where
+        reducedGoal = reduceWithEvidence goal
+        trivial = guard (isTop reducedGoal) >> updateTrivialStatistics
+        prover = launchProver pos iteration
+        reason =
+          if iteration >= depthlimit - 1 then warnDepthExceeded >> mzero
+          else do
+            newTask <- unfold pos
+            let Context {Context.formula = Not newGoal} : newContext = newTask
+            sequence (iteration + 1) [newGoal] `withContext` newContext
 
-    warnDepthExceeded =
-      whenInstruction Printreason False $
-        reasonLog Message.WARNING pos "reasoning depth exceeded"
+        warnDepthExceeded =
+          whenInstruction Printreason False $
+            reasonLog Message.WARNING pos "reasoning depth exceeded"
 
-    updateTrivialStatistics =
-      unless (isTop goal) $ whenInstruction Printreason False $ do
-        reasonLog Message.WRITELN pos ("trivial: " <> show goal)
-        incrementCounter TrivialGoals
-
-sequenceGoals _ _ _ [] = return ()
+        updateTrivialStatistics =
+          unless (isTop goal) $ whenInstruction Printreason False $ do
+            reasonLog Message.WRITELN pos ("trivial: " <> show goal)
+            incrementCounter TrivialGoals
 
 splitGoal :: VM [Formula]
 splitGoal = asks (normalizedSplit . strip . Context.formula . currentThesis)

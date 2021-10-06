@@ -35,7 +35,7 @@ import qualified Naproche.Prover as Prover
 
 
 export :: Position.T -> Int -> [Instr] -> [Context] -> Context -> IO Prover.Status
-export pos depth instrs context goal = do
+export pos iteration instrs context goal = do
   Isabelle_Thread.expose_stopped
 
   program_context <- Program.thread_context
