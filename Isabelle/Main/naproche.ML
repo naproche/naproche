@@ -42,9 +42,11 @@ val naproche_print_thesis = Attrib.setup_option_bool (\<^system_option>\<open>na
 val naproche_translate = Attrib.setup_option_bool (\<^system_option>\<open>naproche_translate\<close>, \<^here>);
 val naproche_isabelle = Attrib.setup_option_bool (\<^system_option>\<open>naproche_isabelle\<close>, \<^here>);
 
-fun naproche_options lthy pos =
+fun naproche_options ctxt pos =
   let
-    val pos_context = Toplevel.get_prev_theory (Context.Proof lthy);
+    val thy = Proof_Context.theory_of ctxt;
+    val pos_context = Toplevel.get_prev_theory thy;
+    val _ = \<^assert> (pos_context <> 0);
     val pos_id =
       (case Position.id_of (Position.thread_data ()) of
         SOME id => id
@@ -57,7 +59,7 @@ fun naproche_options lthy pos =
     |> Options.put_string \<^system_option>\<open>naproche_pos_id\<close> pos_id
     |> Options.put_string \<^system_option>\<open>naproche_pos_file\<close> pos_file
     |> Options.put_int \<^system_option>\<open>naproche_pos_shift\<close> (pos_offset - 1)
-    |> Options.put_bool \<^system_option>\<open>naproche_isabelle\<close> (Config.get lthy naproche_isabelle)
+    |> Options.put_bool \<^system_option>\<open>naproche_isabelle\<close> (Config.get ctxt naproche_isabelle)
   end;
 
 
