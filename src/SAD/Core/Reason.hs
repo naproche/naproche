@@ -58,15 +58,16 @@ import qualified Naproche.Prover as Prover
 -- Reasoner
 
 reason :: Position.T -> Context -> VM ()
-reason pos tc = local (\st -> st {currentThesis = tc}) $ proveThesis pos
+reason pos tc =
+  local (\st -> st {currentThesis = tc}) (proveThesis pos)
 
 withGoal :: VM a -> Formula -> VM a
-withGoal action goal = local (\vState ->
-  vState { currentThesis = Context.setFormula (currentThesis vState) goal}) action
+withGoal action goal =
+  local (\st -> st { currentThesis = Context.setFormula (currentThesis st) goal}) action
 
 withContext :: VM a -> [Context] -> VM a
-withContext action context = local (\vState ->
-  vState { currentContext = context }) action
+withContext action context =
+  local (\st -> st { currentContext = context }) action
 
 thesis :: VM Context
 thesis = asks currentThesis
