@@ -27,6 +27,7 @@ import Control.Exception (evaluate)
 import Control.Monad.Reader
 import Data.Maybe (fromJust, fromMaybe, maybeToList)
 import Data.Monoid (Sum, getSum)
+import Data.Functor ((<&>))
 import System.Timeout (timeout)
 
 import qualified Control.Monad.Writer as W
@@ -80,7 +81,7 @@ proveThesis pos = do
   filterContext pos (sequenceGoals pos depth 0 goals) ctx
 
 sequenceGoals :: Position.T -> Int -> Int -> [Formula] -> VM ()
-sequenceGoals pos depth iteration (goal:restGoals) = do
+sequenceGoals pos depth iteration (goal : restGoals) = do
   (trivial <|> prover <|> reason) `withGoal` reducedGoal
   sequenceGoals pos depth iteration restGoals
   where
@@ -144,7 +145,7 @@ launchProver pos iteration = do
     guardResult Prover.Contradictory_Axioms = do
       checkConsistency <- askInstructionBool CheckConsistency True
       if checkConsistency then do
-        reasonLog Message.WRITELN pos $ "Found contradictory axioms. Make sure you are in a proof by contradiction!"
+        reasonLog Message.WRITELN pos "Found contradictory axioms. Make sure you are in a proof by contradiction!"
         mzero
       else pure ()
     guardResult _ = mzero
@@ -316,8 +317,8 @@ unfoldAtomic :: (W.MonadWriter w m, MonadTrans t,
                  MonadReader UnfoldState (t m), Num w) =>
                 Bool -> Formula -> t m Formula
 unfoldAtomic sign f = do
-  nbs <- localProperties f >>= return . foldr (if sign then And else Or ) marked
-  subtermLocalProperties f >>= return . foldr (if sign then And else Imp) nbs
+  nbs <- localProperties f <&> foldr (if sign then And else Or ) marked
+  subtermLocalProperties f <&> foldr (if sign then And else Imp) nbs
   where
     -- we mark the term so that it does not get
     -- unfolded again in subsequent iterations
