@@ -21,6 +21,7 @@ import SAD.Data.Text.Context (Context, MRule(MR, conclusion))
 import SAD.Helpers (notNull)
 import qualified SAD.Data.Text.Context as Context
 import qualified SAD.Data.Structures.DisTree as DT
+import Isabelle.Library (fold_rev)
 
 
 -- generate MESON rules
@@ -47,13 +48,12 @@ splitContras = partition isPositive
   where
     isPositive = not . isNot . conclusion
 
-addRules ::
-  (DT.DisTree MRule, DT.DisTree MRule) ->
-  ([MRule], [MRule]) ->
-  (DT.DisTree MRule, DT.DisTree MRule)
-addRules (pos, neg) (newPos, newNeg) =
-  (foldr (DT.insertBy conclusion) pos newPos,
-   foldr (DT.insertBy (ltNeg. conclusion)) neg newNeg)
+addRules ::([MRule], [MRule])
+  -> (DT.DisTree MRule, DT.DisTree MRule)
+  -> (DT.DisTree MRule, DT.DisTree MRule)
+addRules (pos, neg) (positives, negatives) =
+  (fold_rev (DT.insertBy conclusion) pos positives,
+   fold_rev (DT.insertBy (ltNeg . conclusion)) neg negatives)
 
 
 -- MESON algorithm

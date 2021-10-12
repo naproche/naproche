@@ -139,7 +139,7 @@ verificationLoop state@VS {
       let newContext = newContextBlock : context
       let newRules =
             if Block.isTopLevel block
-              then MESON.addRules mRules mesonRules
+              then MESON.addRules mesonRules mRules
               else mRules
       let (newMotivation, hasChanged , newThesis) =
             if thesisSetting
