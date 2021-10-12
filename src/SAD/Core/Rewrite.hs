@@ -234,8 +234,3 @@ dischargeConditions pos verbositySetting conditions =
     wipeLink thesis =
       let block:restBranch = Context.branch thesis
       in  thesis {Context.branch = block {Block.link = []} : restBranch}
-
-    trivialityCheck g =
-      if   trivialByEvidence g
-      then return $ Right g  -- triviality check
-      else (launchReasoning `withGoal` g >> return (Right g)) <|> return (Left g)

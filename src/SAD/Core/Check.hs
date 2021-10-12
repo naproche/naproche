@@ -144,13 +144,6 @@ testDef pos context term (guards, fortifiedTerm) = do
         reasonLog Message.WRITELN (Block.position (head $ Context.branch context))
 
 
-
-    trivialityCheck g =
-      if   trivialByEvidence g
-      then return $ Right g  -- triviality check
-      else (launchReasoning `withGoal` g >> return (Right g)) <|> return (Left g)
-
-
 -- Info heuristic
 
 {- moves through the low level context and collects typings of a given term. In

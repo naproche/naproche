@@ -12,16 +12,13 @@ by an external prover fails, the reasoner expands some definitions and tries aga
 {-# LANGUAGE FlexibleContexts #-}
 
 module SAD.Core.Reason (
+  thesis,
   reason,
-  withGoal, withContext,
+  withContext,
   proveThesis,
   reduceWithEvidence, trivialByEvidence,
-  launchReasoning,
-  thesis
-  ) where
--- FIXME reconcept some functions so that this module does not need to export
---       the small fries anymore
-
+  trivialityCheck
+) where
 
 import Control.Exception (evaluate)
 import Control.Monad.Reader
@@ -166,6 +163,11 @@ launchReasoning = do
         timeout 10000 $ evaluate proveGoal
   justIO prove >>= guard . (==) (Just True)
 
+trivialityCheck :: Formula -> VM (Either Formula Formula)
+trivialityCheck g =
+  if   trivialByEvidence g
+  then return $ Right g  -- triviality check
+  else (launchReasoning `withGoal` g >> return (Right g)) <|> return (Left g)
 
 
 -- Context filtering
