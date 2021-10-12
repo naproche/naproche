@@ -149,9 +149,10 @@ launchProver pos iteration = do
     guardResult _ = mzero
 
 
-launchReasoning :: VM ()
-launchReasoning = do
-  goal <- thesis
+-- Triviality check
+
+trivialByMeson :: Formula -> VM ()
+trivialByMeson goal = do
   context <- asks currentContext
   n <- asks skolemCounter
   (positives, negatives) <- asks mesonRules
@@ -164,10 +165,10 @@ launchReasoning = do
   justIO prove >>= guard . (==) (Just True)
 
 trivialityCheck :: Formula -> VM (Either Formula Formula)
-trivialityCheck g =
-  if   trivialByEvidence g
-  then return $ Right g  -- triviality check
-  else (launchReasoning `withGoal` g >> return (Right g)) <|> return (Left g)
+trivialityCheck goal =
+  if   trivialByEvidence goal
+  then return $ Right goal  -- triviality check
+  else (trivialByMeson goal >> return (Right goal)) <|> return (Left goal)
 
 
 -- Context filtering

@@ -150,14 +150,13 @@ umatch _ _         = mzero
    n -> current counter for skolem constants; loc -> local context;
    ps -> positive global rules; ng -> negative global rules;
    gl -> goal.-}
-prove :: Int -> [Context] -> DT.DisTree MRule -> DT.DisTree MRule -> Context -> Bool
+prove :: Int -> [Context] -> DT.DisTree MRule -> DT.DisTree MRule -> Formula -> Bool
 prove n lowLevelContext positives negatives goal =
   let (localContext, proofContext) =
         span (null . Context.mesonRules) lowLevelContext
       localRules = makeContrapositives n $
-        Not (deTag $ Context.formula goal) :
-        map (deTag . Context.formula) localContext
-      startingRule = start (simplify $ Not $ Context.formula goal)
+        Not (deTag goal) : map (deTag . Context.formula) localContext
+      startingRule = start (simplify $ Not goal)
       lowLevelRules =
         startingRule ++
         localRules   ++
