@@ -4,8 +4,8 @@ Authors: Steffen Frerix (2017 - 2018)
 An implementation of the MESON algorithm.
 -}
 
-
-module SAD.Prove.MESON (prove, contras, addRules) where
+module SAD.Prove.MESON (prove, contras, addRules)
+where
 
 import Control.Monad
 import Control.Monad.Reader
@@ -53,7 +53,7 @@ addRules ::
   (DT.DisTree MRule, DT.DisTree MRule)
 addRules (pos, neg) (newPos, newNeg) =
   (foldr (DT.insertBy conclusion) pos newPos,
-  foldr (DT.insertBy (ltNeg. conclusion)) neg newNeg)
+   foldr (DT.insertBy (ltNeg. conclusion)) neg newNeg)
 
 
 -- MESON algorithm
@@ -150,13 +150,12 @@ umatch _ _         = mzero
    n -> current counter for skolem constants; loc -> local context;
    ps -> positive global rules; ng -> negative global rules;
    gl -> goal.-}
-prove :: Int -> [Context] -> DT.DisTree MRule -> DT.DisTree MRule -> Context
-      -> Bool
+prove :: Int -> [Context] -> DT.DisTree MRule -> DT.DisTree MRule -> Context -> Bool
 prove n lowLevelContext positives negatives goal =
   let (localContext, proofContext) =
         span (null . Context.mesonRules) lowLevelContext
       localRules = makeContrapositives n $
-        (Not $ deTag $ Context.formula goal) :
+        Not (deTag $ Context.formula goal) :
         map (deTag . Context.formula) localContext
       startingRule = start (simplify $ Not $ Context.formula goal)
       lowLevelRules =
@@ -172,6 +171,6 @@ prove n lowLevelContext positives negatives goal =
       in  (concatMap contrapositives . transformToCNF) skf ++
           makeContrapositives nm fs
     
-    start t@(Trm _ _ _ _) = pure $ MR [ltNeg t] Bot
-    start t@(Not (Trm _ _ _ _)) = pure $ MR [ltNeg t] Bot
+    start t@Trm{} = pure $ MR [ltNeg t] Bot
+    start t@(Not Trm{}) = pure $ MR [ltNeg t] Bot
     start _ = []

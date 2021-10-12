@@ -248,8 +248,8 @@ isElem t = isTrm t && trmId t == ElemId
 -- Holes and slots
 
 occursH, occursS :: Formula -> Bool
-occursH = ((mkVar (VarHole "")) `occursIn`)
-occursS = ((mkVar VarSlot) `occursIn`)
+occursH = (mkVar (VarHole "") `occursIn`)
+occursS = (mkVar VarSlot `occursIn`)
 
 
 -- | Replace @ObjId@ Terms with @Top@

@@ -35,13 +35,11 @@ fillDef pos alreadyChecked context = fill True False [] (Just True) 0 (Context.f
   where
     fill :: Bool -> Bool -> [Formula] -> Maybe Bool -> Int -> Formula -> VM Formula
     fill isPredicate isNewWord localContext sign n = \case
-      Tag HeadTerm f' -> fmap (Tag HeadTerm) $ fill isPredicate True localContext sign n f'
+      Tag HeadTerm f' -> Tag HeadTerm <$> fill isPredicate True localContext sign n f'
 
-      Tag tag f' -> fmap (Tag tag) $ fill isPredicate isNewWord localContext sign n f'
+      Tag tag f' -> Tag tag <$> fill isPredicate isNewWord localContext sign n f'
 
-      Trm{trmName = TermThesis} -> do
-        context' <- thesis
-        return (Context.formula context')
+      Trm{trmName = TermThesis} -> Context.formula <$> thesis
 
       v@Var{} -> do
         userInfoSetting <- askInstructionBool Info True
@@ -84,7 +82,7 @@ setDef pos isNewWord context term@Trm{trmName = t, trId = tId} =
   where
     out =
       reasonLog Message.ERROR (Block.position (Context.head context)) $
-        "unrecognized: " <> (Text.pack $ showsPrec 2 term "")
+        "unrecognized: " <> Text.pack (showsPrec 2 term "")
 
 
 -- Find relevant definitions and test them
