@@ -156,15 +156,15 @@ launchReasoning :: VM ()
 launchReasoning = do
   goal <- thesis
   context <- asks currentContext
-  skolemInt <- asks skolemCounter
-  (mesonPos, mesonNeg) <- asks mesonRules
+  n <- asks skolemCounter
+  (positives, negatives) <- asks mesonRules
   let lowlevelContext = takeWhile Context.isLowLevel context
-      proveGoal = MESON.prove skolemInt lowlevelContext mesonPos mesonNeg goal
+      proveGoal = MESON.prove n lowlevelContext positives negatives goal
       -- timeout: usually not necessary as max proof depth is limited
-      callOwn = do
+      prove = do
         Isabelle_Thread.expose_stopped
         timeout 10000 $ evaluate proveGoal
-  justIO callOwn >>= guard . (==) (Just True)
+  justIO prove >>= guard . (==) (Just True)
 
 
 
