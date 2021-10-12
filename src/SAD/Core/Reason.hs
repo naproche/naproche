@@ -42,8 +42,8 @@ import SAD.Data.Formula
 import SAD.Data.Instr (Limit(..), Flag(..))
 import SAD.Data.Text.Context (Context(Context))
 import SAD.Data.Text.Decl (newDecl)
-import SAD.Export.Prover (export)
-import SAD.Prove.MESON (prove)
+import qualified SAD.Export.Prover as Prover
+import qualified SAD.Prove.MESON as MESON
 
 import qualified SAD.Core.Message as Message
 import qualified SAD.Data.Definition as Definition
@@ -126,7 +126,7 @@ launchProver pos iteration = do
   instrList <- asks instructions
   goal <- thesis
   context <- asks currentContext
-  let callATP = justIO $ pure $ export pos iteration instrList context goal
+  let callATP = justIO $ pure $ Prover.export pos iteration instrList context goal
   callATP >>= timeWith ProofTimer . justIO >>= guardResult
   res <- head <$> askRS trackers
   case res of
@@ -159,7 +159,7 @@ launchReasoning = do
   skolemInt <- asks skolemCounter
   (mesonPos, mesonNeg) <- asks mesonRules
   let lowlevelContext = takeWhile Context.isLowLevel context
-      proveGoal = prove skolemInt lowlevelContext mesonPos mesonNeg goal
+      proveGoal = MESON.prove skolemInt lowlevelContext mesonPos mesonNeg goal
       -- set timelimit to 10^4
       -- (usually not necessary as max proof depth is limited)
       callOwn = do
