@@ -41,13 +41,13 @@ data Formula =
   deriving (Eq, Ord)
 
 trmId :: Formula -> TermId
-trmId (Trm _ _ _ a) = a
-trmId f = error "trmId called no term"
+trmId Trm {trId = a} = a
+trmId f = error "Formula.Base.trmId: undefined"
 
 trInfo :: Formula -> [Formula]
 trInfo Trm {trmInfo = xs} = xs
 trInfo Var {varInfo = xs} = xs
-trInfo _ = error "Formula.Base.trInfo: Partial function"
+trInfo _ = error "Formula.Base.trInfo: undefined"
 
 showTrName :: Formula -> Text
 showTrName Trm{trmName = s} = Text.filter (/= ':') $ toLazyText $ represent s
