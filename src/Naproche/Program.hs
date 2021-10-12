@@ -5,12 +5,12 @@ Naproche program context: Console or PIDE.
 -}
 
 module Naproche.Program (
-  Context, console, is_pide, is_isabelle, get_options, check_pide,
-  Error (..), print_error,
+  Context, console, is_pide, check_pide,
   write_message, read_message, exchange_message, exchange_message0,
+  get_options, bool_option, int_option, string_option, is_isabelle,
   adjust_position, pide_command, yxml_pide_command,
   exit_thread, init_console, init_pide, thread_context,
-  error,
+  Error (..), print_error, error,
   serials, serial
 )
 where
@@ -58,14 +58,6 @@ is_pide :: Context -> Bool
 is_pide Console = False
 is_pide (PIDE _ _) = True
 
-get_options :: Context -> Maybe Options.T
-get_options Console = Nothing
-get_options (PIDE _ options) = Just options
-
-is_isabelle :: Context -> Bool
-is_isabelle Console = False
-is_isabelle (PIDE _ options) = Options.bool options Naproche.naproche_isabelle
-
 check_pide :: Applicative f => Context -> f ()
 check_pide context =
   unless (is_pide context) $ errorWithoutStackTrace "No PIDE context"
@@ -91,6 +83,34 @@ exchange_message0 context msg = do
   write_message context msg
   _ <- read_message context
   return ()
+
+
+{- options -}
+
+get_options :: Context -> Maybe Options.T
+get_options Console = Nothing
+get_options (PIDE _ options) = Just options
+
+get_option :: a -> (Options.T -> Bytes -> a) -> Context -> Bytes -> a
+get_option def get context opt =
+  case get_options context of
+    Nothing -> def
+    Just options -> get options opt
+
+bool_option :: Context -> Bytes -> Bool
+bool_option = get_option False Options.bool
+
+int_option :: Context -> Bytes -> Int
+int_option = get_option 0 Options.int
+
+string_option :: Context -> Bytes -> Bytes
+string_option = get_option Bytes.empty Options.string
+
+is_isabelle :: Context -> Bool
+is_isabelle context = bool_option context Naproche.naproche_isabelle
+
+
+{- position -}
 
 adjust_position :: Context -> Position.T -> Position.T
 adjust_position Console pos = pos
