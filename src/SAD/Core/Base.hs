@@ -190,15 +190,15 @@ updateRS f = justRS >>= (justIO . flip modifyIORef f)
 
 askInstructionInt :: Limit -> Int -> VM Int
 askInstructionInt instr _default =
-  fmap (askLimit instr _default) $ asks instructions
+  asks (askLimit instr _default . instructions)
 
 askInstructionBool :: Flag -> Bool -> VM Bool
 askInstructionBool instr _default =
-  fmap (askFlag instr _default) $ asks instructions
+  asks (askFlag instr _default . instructions)
 
 askInstructionText :: Argument -> Text -> VM Text
 askInstructionText instr _default =
-  fmap (askArgument instr _default) $ asks instructions
+  asks (askArgument instr _default. instructions)
 
 addInstruction :: Instr -> VM a -> VM a
 addInstruction instr =
@@ -402,10 +402,10 @@ functionApplication =
 
 
 initialGuards :: DT.DisTree Bool
-initialGuards = foldr (\f -> DT.insert f True) (DT.empty) [
+initialGuards = foldr (`DT.insert` True) DT.empty [
   mkSet $ mkVar hole1,
   mkFun $ mkVar hole0,
-  mkElem (mkVar $ hole1) $ mkDom $ mkVar hole0]
+  mkElem (mkVar hole1) $ mkDom $ mkVar hole0]
 
 -- retrieve definitional formula of a term
 defForm :: Definitions -> Formula -> Maybe Formula
