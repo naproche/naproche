@@ -5,7 +5,7 @@ Naproche program context: Console or PIDE.
 -}
 
 module Naproche.Program (
-  Context (..), is_pide, is_isabelle, get_options, check_pide,
+  Context, console, is_pide, is_isabelle, get_options, check_pide,
   Error (..), print_error,
   write_message, read_message, exchange_message, exchange_message0,
   adjust_position, pide_command, yxml_pide_command,
@@ -46,6 +46,9 @@ import Isabelle.Library
 {- program context -}
 
 data Context = Console | PIDE Socket Options.T
+
+console :: Context
+console = Console
 
 instance Show Context where
   show Console = "Console"

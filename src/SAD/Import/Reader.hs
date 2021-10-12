@@ -44,7 +44,7 @@ readInit file | Text.null file = return []
 readInit file = do
   input <- catch (File.read (Text.unpack file)) $ Message.errorParser (Position.file_only $ make_bytes file) . make_bytes . ioeGetErrorString
   let tokens = filter isProperToken $ tokenize TexDisabled (Position.file $ make_bytes file) $ Text.fromStrict $ make_text input
-      initialParserState = State (initFS Program.Console) tokens NonTex Position.none
+      initialParserState = State (initFS Program.console) tokens NonTex Position.none
   fst <$> launchParser instructionFile initialParserState
 
 instructionFile :: FTL [(Position.T, Instr)]
