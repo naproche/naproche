@@ -166,7 +166,6 @@ dExi dcl = bool . Exi dcl . bind (declName dcl)
 
 zIff, zOr :: Formula -> Formula -> Formula
 zIff f g = And (Imp f g) (Imp g f)
-
 zOr (Not f) g = Imp f g
 zOr f g       = Or  f g
 

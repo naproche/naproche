@@ -26,18 +26,18 @@ import Data.Function (on)
 
 -- These names may not reflect what the constructors are used for..
 data VariableName 
-  = VarConstant Text   -- ^ previously starting with x
-  | VarHole Text       -- ^ previously starting with ?
-  | VarSlot            -- ^ previously !
-  | VarU Text          -- ^ previously starting with u
-  | VarHidden Int      -- ^ previously starting with h
-  | VarAssume Int      -- ^ previously starting with i
-  | VarSkolem Int      -- ^ previously starting with o
+  = VarConstant Text     -- ^ previously starting with x
+  | VarHole Text         -- ^ previously starting with ?
+  | VarSlot              -- ^ previously !
+  | VarU Text            -- ^ previously starting with u
+  | VarHidden Int        -- ^ previously starting with h
+  | VarAssume Int        -- ^ previously starting with i
+  | VarSkolem Int        -- ^ previously starting with o
   | VarTask VariableName -- ^ previously starting with c
-  | VarZ Text          -- ^ previously starting with z
-  | VarW Text          -- ^ previously starting with w
+  | VarZ Text            -- ^ previously starting with z
+  | VarW Text            -- ^ previously starting with w
   | VarEmpty             -- ^ previously ""
-  | VarDefault Text    -- ^ everything else
+  | VarDefault Text      -- ^ everything else
   deriving (Eq, Ord)
 
 isHole :: VariableName -> Bool
@@ -48,17 +48,17 @@ instance Show VariableName where
   show = Text.unpack . toLazyText . represent
 
 instance Representation VariableName where
-  represent (VarConstant s) = "x" <> (Builder.fromLazyText s)
-  represent (VarHole s) = "?" <> (Builder.fromLazyText s)
-  represent (VarSlot) = "!"
-  represent (VarU s) = "u" <> (Builder.fromLazyText s)
-  represent (VarHidden n) = "h" <> (Builder.fromString (show n))
-  represent (VarAssume n) = "i" <> (Builder.fromString (show n))
-  represent (VarSkolem n) = "o" <> (Builder.fromString (show n))
+  represent (VarConstant s) = "x" <> Builder.fromLazyText s
+  represent (VarHole s) = "?" <> Builder.fromLazyText s
+  represent VarSlot = "!"
+  represent (VarU s) = "u" <> Builder.fromLazyText s
+  represent (VarHidden n) = "h" <> Builder.fromString (show n)
+  represent (VarAssume n) = "i" <> Builder.fromString (show n)
+  represent (VarSkolem n) = "o" <> Builder.fromString (show n)
   represent (VarTask s) = "c" <> represent s
-  represent (VarZ s) = "z" <> (Builder.fromLazyText s)
-  represent (VarW s) = "w" <> (Builder.fromLazyText s)
-  represent (VarEmpty) = ""
+  represent (VarZ s) = "z" <> Builder.fromLazyText s
+  represent (VarW s) = "w" <> Builder.fromLazyText s
+  represent VarEmpty = ""
   represent (VarDefault s) = Builder.fromLazyText s
 
 data PosVar = PosVar
@@ -106,10 +106,10 @@ instance Semigroup (FV a) where
     runFV fv1 boundVars (runFV fv2 boundVars acc)
 
 unitFV :: IsVar a => VariableName -> Position.T -> FV a
-unitFV v s = FV $ oneShot $ \boundVars -> oneShot $ \acc ->
+unitFV v pos = FV $ oneShot $ \boundVars -> oneShot $ \acc ->
   if Set.member v boundVars
   then acc
-  else Set.insert (buildVar v s) acc
+  else Set.insert (buildVar v pos) acc
 
 bindVar :: Ord a => VariableName -> FV a -> FV a
 bindVar v fv = FV $ oneShot $ \boundVars -> oneShot $ \acc ->
