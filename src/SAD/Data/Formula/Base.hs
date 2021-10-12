@@ -75,16 +75,17 @@ mapFM _ f = pure f
 
 -- Logical traversing
 -- | Same as roundFM but without the monadic action.
-roundF :: (Text -> VariableName) -> ([Formula] -> Maybe Bool -> Int -> Formula -> Formula)
-               -> [Formula] -> Maybe Bool -> Int -> Formula -> Formula
+roundF :: (Text -> VariableName)
+  -> ([Formula] -> Maybe Bool -> Int -> Formula -> Formula)
+  -> [Formula] -> Maybe Bool -> Int -> Formula -> Formula
 roundF c fn l p n f = runIdentity $ roundFM c (\w x y z -> Identity $ fn w x y z) l p n f
 
 {- traverse the structure of a formula with a monadic action all while keeping
 track of local premises, polarity and quantification depth. A unique identifying
 char is provided to shape the instantiations.-}
-roundFM :: (Monad m) =>
-          (Text -> VariableName) -> ([Formula] -> Maybe Bool -> Int -> Formula -> m Formula)
-               -> [Formula] -> Maybe Bool -> Int -> Formula -> m Formula
+roundFM :: (Monad m) => (Text -> VariableName)
+  -> ([Formula] -> Maybe Bool -> Int -> Formula -> m Formula)
+  -> [Formula] -> Maybe Bool -> Int -> Formula -> m Formula
 roundFM mkVar traversalAction localContext polarity n = dive
   where
     dive (All u f) = do
