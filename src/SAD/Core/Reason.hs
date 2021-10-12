@@ -160,8 +160,7 @@ launchReasoning = do
   (mesonPos, mesonNeg) <- asks mesonRules
   let lowlevelContext = takeWhile Context.isLowLevel context
       proveGoal = MESON.prove skolemInt lowlevelContext mesonPos mesonNeg goal
-      -- set timelimit to 10^4
-      -- (usually not necessary as max proof depth is limited)
+      -- timeout: usually not necessary as max proof depth is limited
       callOwn = do
         Isabelle_Thread.expose_stopped
         timeout 10000 $ evaluate proveGoal
