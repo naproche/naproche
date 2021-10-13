@@ -209,7 +209,7 @@ fun check_forthel tex (text, pos) lthy =
 
 
 
-(** Naproche logic **)
+(** Naproche logic within Isabelle **)
 
 type sequent = term list * term list;
 
@@ -224,21 +224,18 @@ fun make_fixes xs = xs |> map (fn (x, T: typ) => (Binding.name x, SOME T, NoSyn)
 fun make_assumes asms = asms |> map (fn t: term => (Binding.empty_atts, [(t, []: term list)]));
 fun make_shows concls = [(Binding.empty_atts, map (rpair ([]: term list)) concls)];
 
-fun prove_sequent binding (asms, concls) method ctxt =
+fun have_sequent (asms, concls) =
+  Context_Position.set_visible false
+  #> Proof.init
+  #> Proof.begin_block
+  #> Proof.have false NONE (K I) [] (make_assumes asms) (make_shows concls) false #> #2;
+
+fun prove_sequent binding sequent method ctxt =
   let
-    val ctxt1 = ctxt
-      |> Context_Position.set_visible false
-      |> declare_sequent (asms, concls) |> #2;
-    val state1 = Proof.init ctxt1
-      |> Proof.begin_block
-      |> Proof.have false NONE (K I) [] (make_assumes asms) (make_shows concls) false |> #2;
-
-    val text = #1 (Method.read_closure_input (Proof.context_of state1) method)
-    val state2 = state1
-      |> Proof.local_terminal_proof ((text, Position.no_range), NONE);
-    val ctxt2 = Proof.context_of state2;
-
-    val res = Proof_Context.export ctxt2 ctxt (Proof.the_facts state2);
+    val state1 = ctxt |> declare_sequent sequent |> #2 |> have_sequent sequent;
+    val text = #1 (Method.read_closure_input (Proof.context_of state1) method);
+    val state2 = state1 |> Proof.local_terminal_proof ((text, Position.no_range), NONE);
+    val res = Proof_Context.export (Proof.context_of state2) ctxt (Proof.the_facts state2);
   in ctxt |> Proof_Context.note_thms "" ((binding, []), [(res, [])]) |>> #2 end;
 
 fun pretty_sequent ctxt ((asms, concls): sequent) =
