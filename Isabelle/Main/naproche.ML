@@ -211,12 +211,6 @@ fun check_forthel tex (text, pos) lthy =
 
 (** Naproche logic **)
 
-fun cert_term ctxt t =
-  let
-    val t' = Proof_Context.cert_term ctxt t;
-    val T = Term.type_of t';
-  in (t', T) end;
-
 type sequent = term list * term list;
 
 fun declare_sequent (sequent: sequent) ctxt =
@@ -263,6 +257,12 @@ val string_of_sequent = Pretty.string_of oo pretty_sequent;
 
 
 (** Isabelle/Naproche protocol commands **)
+
+fun cert_term ctxt t =
+  let
+    val t' = Proof_Context.cert_term ctxt t;
+    val T = Term.type_of t';
+  in (t', T) end;
 
 val decode_term = Term_XML.Decode.term o Proof_Context.consts_of;
 val encode_term = Term_XML.Encode.term o Proof_Context.consts_of;
