@@ -27,7 +27,10 @@ sig
   val cancel_program: string
   val forthel_program: string
   val check_forthel: {tex: bool} -> string * Position.T -> local_theory -> local_theory
-  val pretty_sequent: Proof.context -> term list * term list -> Pretty.T
+  type sequent = term list * term list
+  val prove_sequent: binding -> sequent -> Input.source -> Proof.context -> thm list * Proof.context
+  val pretty_sequent: Proof.context -> sequent -> Pretty.T
+  val string_of_sequent: Proof.context -> sequent -> string
 end;
 
 structure Naproche: NAPROCHE =
@@ -214,22 +217,42 @@ fun cert_term ctxt t =
     val T = Term.type_of t';
   in (t', T) end;
 
-fun pretty_sequent ctxt (asms, concls) =
+type sequent = term list * term list;
+
+fun declare_sequent (sequent: sequent) ctxt =
   let
-    val ts = asms @ concls;
+    val ts = op @ sequent;
     val xs = rev (fold (Variable.add_frees ctxt) ts []);
-
-    val fixes =
-      if null xs then []
-      else [Element.Fixes (map (fn (x, T) => (Binding.name x, SOME T, NoSyn)) xs)];
-    val assumes =
-      if null asms then []
-      else [Element.Assumes (map (fn t => (Binding.empty_atts, [(t, [])])) asms)];
-    val shows =
-      if null concls then []
-      else [(Element.Shows [(Binding.empty_atts, map (rpair []) concls)])];
-
     val ctxt' = fold Variable.add_fixes_implicit ts ctxt;
+  in (xs, ctxt') end;
+
+fun make_fixes xs = xs |> map (fn (x, T: typ) => (Binding.name x, SOME T, NoSyn));
+fun make_assumes asms = asms |> map (fn t: term => (Binding.empty_atts, [(t, []: term list)]));
+fun make_shows concls = [(Binding.empty_atts, map (rpair ([]: term list)) concls)];
+
+fun prove_sequent binding (asms, concls) method ctxt =
+  let
+    val ctxt1 = ctxt
+      |> Context_Position.set_visible false
+      |> declare_sequent (asms, concls) |> #2;
+    val state1 = Proof.init ctxt1
+      |> Proof.begin_block
+      |> Proof.have false NONE (K I) [] (make_assumes asms) (make_shows concls) false |> #2;
+
+    val text = #1 (Method.read_closure_input (Proof.context_of state1) method)
+    val state2 = state1
+      |> Proof.local_terminal_proof ((text, Position.no_range), NONE);
+    val ctxt2 = Proof.context_of state2;
+
+    val res = Proof_Context.export ctxt2 ctxt (Proof.the_facts state2);
+  in ctxt |> Proof_Context.note_thms "" ((binding, []), [(res, [])]) |>> #2 end;
+
+fun pretty_sequent ctxt ((asms, concls): sequent) =
+  let
+    val (xs, ctxt') = declare_sequent (asms, concls) ctxt;
+    val fixes = if null xs then [] else [Element.Fixes (make_fixes xs)];
+    val assumes = if null asms then [] else [Element.Assumes (make_assumes asms)];
+    val shows = if null concls then [] else [Element.Shows (make_shows concls)];
   in
     maps (Element.pretty_ctxt ctxt') (fixes @ assumes) @
     maps (Element.pretty_stmt ctxt') shows
