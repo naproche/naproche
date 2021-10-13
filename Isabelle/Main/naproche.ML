@@ -143,7 +143,7 @@ fun with_server f =
     val server_password = Options.default_string \<^system_option>\<open>naproche_server_password\<close>;
   in
     if server_address = "" orelse server_password = ""
-    then error "Nissing Isabelle/Naproche server"
+    then error "Missing Isabelle/Naproche server"
     else Socket_IO.with_streams' f server_address server_password
   end;
 
