@@ -13,40 +13,42 @@ NOTE: The subsequent explanations are for **development** of the tool, not for e
 
 ### Prerequisites
 
-Ensure that "curl", "git", and "hg" (Mercurial) are installed:
+Ensure that `curl`, `git`, and `hg` (Mercurial) are installed:
 
-  * Linux: e.g. "sudo apt install curl git mercurial"
+  * Linux: e.g. `sudo apt install curl git mercurial`
 
-  * macOS: e.g. "brew install mercurial" or download from https://www.mercurial-scm.org
+  * macOS: e.g. `brew install mercurial` or download from https://www.mercurial-scm.org
 
-  * Windows: use Cygwin64 with packages "curl", "git", and "mercurial" (via Cygwin setup-x86_64.exe)
+  * Windows: use Cygwin64 with packages `curl`, `git`, and `mercurial` (via Cygwin setup-x86_64.exe)
 
 
 ### Repository management
 
 Commands below assume the same current directory: repository clones
-"isabelle_naproche" and "naproche" are put side-by-side.
+`isabelle_naproche` and `naproche` are put side-by-side.
 
 * initial clone:
 
-    hg clone https://isabelle.in.tum.de/repos/isabelle isabelle_naproche
-    git clone https://github.com/naproche/naproche.git naproche
+      hg clone https://isabelle.in.tum.de/repos/isabelle isabelle_naproche
+      git clone https://github.com/naproche/naproche.git naproche
+      
+      isabelle_naproche/Admin/init -I Isabelle_Naproche -V ./naproche/Isabelle
+      isabelle_naproche/bin/isabelle components -u ./naproche
 
-    isabelle_naproche/Admin/init -I Isabelle_Naproche -V ./naproche/Isabelle
-    isabelle_naproche/bin/isabelle components -u ./naproche
 
 * later updates:
 
-    git --git-dir="./naproche/.git" pull
-    isabelle_naproche/Admin/init -V ./naproche/Isabelle
+      git --git-dir="./naproche/.git" pull
+      isabelle_naproche/Admin/init -V ./naproche/Isabelle
 
 
 ### Development
 
-* Isabelle executable: there is no need to have isabelle_naproche/bin/isabelle
+* Isabelle executable: there is no need to have `isabelle_naproche/bin/isabelle`
 in the PATH, but it is convenient to put it into a standard place once, e.g.:
 
-    isabelle_naproche/bin/isabelle install "$HOME/bin"
+      isabelle_naproche/bin/isabelle install "$HOME/bin"
+
 
 * Build and test:
 
@@ -54,15 +56,18 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
 
         isabelle naproche_build
 
+
   - Run some tests as follows (make sure that your current directory is the root of the Naproche repository):
 
         isabelle naproche_build && isabelle naproche_test -j2
 
         isabelle naproche_test -o naproche_server_debugging
 
+
   - Package the Isabelle/Naproche component as follows:
 
         isabelle naproche_build && isabelle naproche_component -P
+
 
     The result is for the current repository version, and the underlying
     HW + OS platform. The following reference platforms (x86_64) are
@@ -76,11 +81,13 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
 
     - Open ForTheL examples in Isabelle/jEdit, e.g.
 
-        isabelle jedit examples/cantor.ftl
+          isabelle jedit examples/cantor.ftl
+        
 
     - Open Isabelle development environment with ForTheL examples, e.g.
 
-        isabelle jedit -l Pure Isabelle/Test.thy
+          isabelle jedit -l Pure Isabelle/Test.thy
+
 
 
 ## Low-level command-line tool (without Isabelle)
@@ -98,7 +105,9 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
     Note: the E prover executable bundled with Isabelle can be located
     like this:
 
+      ```
       isabelle getenv -b NAPROCHE_EPROVER
+      ```
 
   * Optional (for development): Haskell IDE within VSCode:
     https://marketplace.visualstudio.com/items?itemName=haskell.haskell
@@ -115,11 +124,14 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
     stack test
 
 
+
 ### Manual checking of proof files
+
 
     stack exec Naproche-SAD -- OPTIONS FILE
 
-  It may be necessary to allow the E Prover more time by appending "-t SECONDS"
+
+  It may be necessary to allow the E Prover more time by appending `-t SECONDS`
 
 
 ## Reference ##
