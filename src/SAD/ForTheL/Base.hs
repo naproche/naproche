@@ -65,16 +65,16 @@ initFS = FState
   []
   where
     primAdjs = [
-      ([Word ["setsized"]], mkTrm SmallId TermSmall),
-      ([Word ["set"], Word ["sized"]], mkTrm SmallId TermSmall),
       ([Word ["equal"], Word ["to"], Vr], mkTrm EqualityId TermEquality),
       ([Word ["nonequal"], Word ["to"], Vr], Not . mkTrm EqualityId TermEquality) ]
     primNotions = [
+      ([Word ["map", "maps"], Nm], mkMap . head),
       ([Word ["function","functions"], Nm], mkFun . head),
       ([Word ["set","sets"], Nm], mkSet . head),
-      ([Word ["class","classes"], Nm], mkClass . head),
+      ([Word ["class","classes", "collection", "collections"], Nm], mkClass . head),
+      ([Word ["object", "objects", "element", "elements"], Nm], mkObject . head),
       ([Word ["element", "elements"], Nm, Word ["of"], Vr], \(x:m:_) -> mkElem x m),
-      ([Word ["object", "objects"], Nm], mkObj . head)]
+      ([Word ["mathematical"], Word ["object", "objects"], Nm], mkObject . head)]
     primSymbNotions = [
       ([Symbol "=", Vr], mkTrm EqualityId TermEquality),
       ([Symbol "\\in", Vr], \(x:m:_) -> mkElem x m) ]

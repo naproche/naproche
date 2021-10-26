@@ -342,7 +342,7 @@ unfoldAtomic sign f = do
   -- we have functions we throw in function extensionality
 
     localProperties t
-      | isApp t || isElem t = setFunDefinitionalProperties t
+      | isApplication t || isElem t = setFunDefinitionalProperties t
       | otherwise = definitionalProperties t t
 
     -- return definitional property of f instantiated with g

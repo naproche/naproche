@@ -314,7 +314,7 @@ pretypeSentence kind p wfVars mbLink = narrow $ do
   bl <- wellFormedCheck (wf dvs tvr) $ statementBlock kind p mbLink
   newDecl <- bindings dvs $ Block.formula bl
   let nbl = if Block.canDeclare kind then bl {Block.declaredVariables = newDecl} else bl
-  addBlockReports nbl; return nbl {Block.formula = removeObject $ Block.formula bl}
+  addBlockReports nbl; return nbl {Block.formula = Block.formula bl}
   where
     wf dvs tvr bl =
       let fr = Block.formula bl; nvs = Set.intersection tvr $ fvToVarSet $ excludeSet (free fr) dvs
@@ -330,7 +330,7 @@ sentence kind p wfVars mbLink = do
   bl <- wellFormedCheck (wfVars dvs . Block.formula) $ statementBlock kind p mbLink
   newDecl <- bindings dvs $ Block.formula bl
   let nbl = bl {Block.declaredVariables = newDecl}
-  addBlockReports nbl; return nbl {Block.formula = removeObject $ Block.formula bl}
+  addBlockReports nbl; return nbl {Block.formula = Block.formula bl}
 
 -- variable well-formedness checks
 

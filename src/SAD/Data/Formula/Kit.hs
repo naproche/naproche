@@ -166,6 +166,7 @@ dExi dcl = bool . Exi dcl . bind (declName dcl)
 
 zIff, zOr :: Formula -> Formula -> Formula
 zIff f g = And (Imp f g) (Imp g f)
+
 zOr (Not f) g = Imp f g
 zOr f g       = Or  f g
 
@@ -187,33 +188,33 @@ mkEquality :: Formula -> Formula -> Formula
 mkEquality t s  = mkTrm EqualityId TermEquality [t,s]
 mkLess :: Formula -> Formula -> Formula
 mkLess t s = mkTrm LessId TermLess [t,s]
-mkSmall :: Formula -> Formula
-mkSmall s = mkTrm SmallId TermSmall [s]
 mkThesis :: Formula
 mkThesis = mkTrm ThesisId TermThesis []
 mkFun :: Formula -> Formula
-mkFun = mkTrm FunId termFun . pure
+mkFun = mkTrm FunctionId termFunction . pure
+mkMap :: Formula -> Formula
+mkMap      = mkTrm MapId termMap . pure
 mkApp :: Formula -> Formula -> Formula
-mkApp f v = mkTrm AppId termApp [f, v]
+mkApp f v = mkTrm ApplicationId termApplication [f, v]
 mkDom :: Formula -> Formula
-mkDom = mkTrm DomId termDom . pure
+mkDom = mkTrm DomainId termDomain . pure
 mkSet :: Formula -> Formula
 mkSet = mkTrm SetId termSet . pure
 mkClass :: Formula -> Formula
 mkClass = mkTrm ClassId termClass . pure
 mkElem :: Formula -> Formula -> Formula
-mkElem x m = mkTrm ElemId termElem [x,m]
+mkElem x m = mkTrm ElementId termElement [x,m]
 mkProd :: Formula -> Formula -> Formula
-mkProd m n = mkTrm ProdI termProd [m, n]
+mkProd m n = mkTrm ProductId termProduct [m, n]
 mkPair :: Formula -> Formula -> Formula
 mkPair x y = mkTrm PairId termPair [x,y]
-mkObj :: Formula -> Formula
-mkObj = mkTrm ObjId termObj . pure -- this is a dummy for parsing purposes
+mkObject :: Formula -> Formula
+mkObject = mkTrm ObjectId termObject . pure -- this is a dummy for parsing purposes
 
 -- quick checks of syntactic properties
 
-isApp :: Formula -> Bool
-isApp Trm {trId = AppId} = True; isApp _ = False
+isApplication :: Formula -> Bool
+isApplication Trm {trId = ApplicationId} = True; isApplication _ = False
 isTop :: Formula -> Bool
 isTop Top = True; isTop _ = False
 isBot :: Formula -> Bool
@@ -242,7 +243,7 @@ isNotion Trm {trmName = TermNotion _} = True
 isNotion _ = False
 
 isElem :: Formula -> Bool
-isElem t = isTrm t && trmId t == ElemId
+isElem t = isTrm t && trmId t == ElementId
 
 -- Holes and slots
 
@@ -255,7 +256,7 @@ occursS = (mkVar VarSlot `occursIn`)
 -- pseudotyping with "object"
 removeObject :: Formula -> Formula
 removeObject t@Trm {trId = tId}
-  | tId == ObjId = Top
+  | tId == ObjectId = Top
   | otherwise = t
 removeObject f = mapF removeObject f
 

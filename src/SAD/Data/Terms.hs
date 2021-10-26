@@ -19,23 +19,25 @@ data TermName
   | TermTask Int
   | TermEquality
   | TermLess
-  | TermSmall -- ^ predicate for set sized objects
   | TermThesis
   | TermEmpty
   deriving (Eq, Ord, Show)
 
-termFun :: TermName
-termFun = TermNotion "Function"
+termFunction :: TermName
+termFunction = TermNotion "Function"
 
-termApp, termDom, termSet, termClass, termElem, termProd, termPair, termObj :: TermName
-termApp = TermSymbolic "__App__" -- ".(.)"
-termDom = TermSymbolic "__Dom__" -- "Dom(.)"
+termMap, termApplication, termDomain, termSet, termClass, termElement, 
+         termProduct, termPair, termObject :: TermName
+
+termMap = TermNotion "Map"
+termApplication = TermSymbolic "__App__" -- ".(.)"
+termDomain = TermSymbolic "__Dom__" -- "Dom(.)"
 termSet = TermNotion "Set"
 termClass = TermNotion "Class"
-termElem = TermNotion "ElementOf"
-termProd = TermSymbolic "__Prod__" -- "Prod(.,.)"
+termElement = TermNotion "ElementOf"
+termProduct = TermSymbolic "__Prod__" -- "Prod(.,.)"
 termPair = TermSymbolic "__Pair__" -- "(.,.)"
-termObj = TermNotion "Obj"
+termObject = TermNotion "Object"
 
 termSplit :: TermName -> (Text -> TermName, Text)
 termSplit (TermNotion t) = (TermNotion, t)
@@ -58,24 +60,23 @@ instance Representation TermName where
   represent (TermTask n) = "tsk " <> fromString (show n)
   represent TermEquality = "="
   represent TermLess  = "iLess"
-  represent TermSmall = "isSetSized"
   represent TermThesis = "#TH#"
   represent TermEmpty = ""
 
 data TermId
   = EqualityId
   | LessId
-  | SmallId
   | ThesisId
-  | FunId
-  | AppId
-  | DomId
+  | FunctionId
+  | MapId
+  | ApplicationId
+  | DomainId
   | SetId
   | ClassId
-  | ElemId
-  | ProdI
+  | ElementId
+  | ProductId
   | PairId
-  | ObjId
+  | ObjectId
   | NewId -- ^ temporary id given to newly introduced symbols
   | SkolemId Int
   | SpecialId Int
@@ -88,13 +89,13 @@ specialId n =
   ( -1) -> trace msg EqualityId
   ( -2) -> trace msg LessId
   ( -3) -> trace msg ThesisId
-  ( -4) -> trace msg FunId
-  ( -5) -> trace msg AppId
-  ( -6) -> trace msg DomId
+  ( -4) -> trace msg FunctionId
+  ( -5) -> trace msg ApplicationId
+  ( -6) -> trace msg DomainId
   ( -7) -> trace msg SetId
-  ( -8) -> trace msg ElemId
-  ( -9) -> trace msg ProdI
+  ( -8) -> trace msg ElementId
+  ( -9) -> trace msg ProductId
   (-10) -> trace msg PairId
-  (-11) -> trace msg ObjId
+  (-11) -> trace msg ObjectId
   (-15) -> trace msg NewId
   n -> SpecialId n

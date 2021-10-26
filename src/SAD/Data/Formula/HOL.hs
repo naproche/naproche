@@ -82,24 +82,22 @@ term_name (TermMultiVerb t) = "mdo" <> make_bytes t
 term_name (TermTask n) = "tsk " <> Value.print_int n
 term_name TermEquality = undefined
 term_name TermLess  = undefined
-term_name TermSmall = undefined
 term_name TermThesis = undefined
 term_name TermEmpty = ""
 
 consts :: Map TermName Bytes
 consts =
   Map.fromList [
-    (TermSmall, Isabelle.setsized_const),
-    (termFun, Isabelle.fun_const),
+    (termFunction, Isabelle.fun_const),
     (termSet, Isabelle.set_const),
     (termClass, Isabelle.class_const),
-    (termElem, Isabelle.elem_const),
-    (termObj, Isabelle.obj_const),
+    (termElement, Isabelle.elem_const),
+    (termObject, Isabelle.obj_const),
     (TermLess, Isabelle.less_const),
-    (termDom, Isabelle.dom_const),
-    (termProd, Isabelle.prod_const),
+    (termDomain, Isabelle.dom_const),
+    (termProduct, Isabelle.prod_const),
     (termPair, Isabelle.pair_const),
-    (termApp, Isabelle.app_const),
+    (termApplication, Isabelle.app_const),
     (TermThesis, Isabelle.thesis_const)]
 
 export_formula :: Formula -> Isabelle.Term

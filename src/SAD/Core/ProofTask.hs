@@ -31,7 +31,7 @@ generateProofTask _ _ f = f
 
 {- Check whether a formula is a set or function defintion -}
 funDcl, setDcl :: Formula -> Bool
-funDcl (And (And f _) _) = trmId f == FunId
+funDcl (And (And f _) _) = trmId f == FunctionId
 funDcl _ = False
 
 setDcl (And (Trm _ _ _ id) _) = id == SetId || id == ClassId
@@ -155,12 +155,12 @@ domainCondition :: Formula -> Formula -> Formula
 domainCondition (Tag _ (All _ (Iff Trm {trmArgs = [_,dm]} g))) = dive
   where
     dive Trm {trId = tId, trmArgs = [x,d]}
-      | tId == ElemId && twins d dm = subst x VarEmpty $ inst VarEmpty g
+      | tId == ElementId && twins d dm = subst x VarEmpty $ inst VarEmpty g
     dive f = mapF dive f
 domainCondition (Tag _ Trm {trmName = TermEquality, trmArgs = [dm,g]}) = dive
   where
     dive Trm {trId = tId, trmArgs = [x,d]}
-      | tId == ElemId && twins d dm = mkElem x g
+      | tId == ElementId && twins d dm = mkElem x g
     dive f = mapF dive f
 domainCondition _ =
   error "SAD.Core.ProofTask.domainCondition: misformed argument"

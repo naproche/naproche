@@ -393,19 +393,20 @@ classEquality = twoClassTerms </> oneClassTerm
       cnd1 <- fmap stripSet symbSetNotation; token "="
       cnd2 <- fmap stripSet symbSetNotation; h <- hidden
       hDecl <- makeDecl h
-      return $ dAll hDecl $ Iff (cnd1 $ pVar h) (cnd2 $ pVar h)
+      let hv = pVar h
+      return $ dAll hDecl $ Imp (mkObject hv) $ Iff (cnd1 hv) (cnd2 hv)
     stripSet = (.) strip . fst
 
     oneClassTerm = left </> right
     left = do
       cnd <- fmap stripSet symbSetNotation; token "="
       t <- sTerm; h <- hidden; hDecl <- makeDecl h; let hv = pVar h
-      return $ All hDecl $ Iff (cnd hv) (mkElem hv t)
+      return $ All hDecl $ Imp (mkObject hv) $ Iff (cnd hv) (mkElem hv t)
     right = do
       t <- sTerm; token "="; h <- hidden; hDecl <- makeDecl h
       let hv = pVar h
       cnd <- fmap stripSet symbSetNotation
-      return $ dAll hDecl $ Iff (mkElem hv t) (cnd hv)
+      return $ dAll hDecl $ Imp (mkObject hv) $ Iff (mkElem hv t) (cnd hv)
 
 
 
@@ -432,10 +433,12 @@ set :: FTL MNotion
 set = label "set definition" $ symbSet <|> classOf
   where
     classOf = do
-      tokenOf' ["class", "classes"]; nm <- var -|- hidden; token' "of";
-      (q, f, u) <- notion >>= single; vnm <- hidden
+      tokenOf' ["class", "classes", "collection", "collections"]; 
+      nm <- var -|- hidden; 
+      token' "of" >> (optLL1 () (token' "all"));
+      (q, f, u) <- notion >>= single; vnm <- hidden;
       vnmDecl <- makeDecl vnm;
-      return (id, setFormula mkClass vnmDecl $ (subst (pVar vnm) (posVarName u) $ q f) `blAnd` mkSmall (pVar vnm) , Set.singleton nm)
+      return (id, setFormula mkClass vnmDecl $ (subst (pVar vnm) (posVarName u) $ q f) `blAnd` mkObject (pVar vnm) , Set.singleton nm)
     symbSet = do
       (cnd, (nm, mkColl)) <- symbSetNotation; h <- hidden
       nmDecl <- makeDecl nm
@@ -457,22 +460,18 @@ symbSetNotation = cndSet </> finSet
       vs <- freeVars t
       vsDecl <- makeDecls $ fvToVarSet vs;
       nm <- if isVar t then pure $ PosVar (varName t) (varPosition t) else hidden
-      pure (\tr -> tag $ c tr `blAnd` mbEqu vsDecl tr t st `blAnd` mkSmall tr, (nm, mkColl))
+      pure (\tr -> tag $ c tr `blAnd` mbEqu vsDecl tr t st `blAnd` mkObject tr, (nm, mkColl))
 
     mbEqu _ tr Var{varName = v} = subst tr v
     mbEqu vs tr t = \st -> foldr mbdExi (st `And` mkEquality tr t) vs
 
 
     sepFrom :: FTL (Formula -> Formula, Formula -> Formula, Formula, Formula -> Formula)
-    sepFrom = notionSep -|- setSep -|- noSep
+    sepFrom = setSep -|- noSep
 
-    notionSep = do
-      (q, f, v) <- notion >>= single;
-      guard (case f of Trm n _ _ _ -> n /= TermEquality; _ -> False)
-      return (Tag Replacement, \tr -> subst tr (posVarName v) $ q f, pVar v, mkClass)
     setSep = do
       t <- sTerm
-      token' "in"
+      elementOf
       clssTrm <- (Left <$> sTerm) </> (Right <$> symbSetNotation)
       case clssTrm of
         Left s -> pure (id, flip mkElem s, t, \v -> mkClass v `And` (mkSet s `Imp` mkSet v))

@@ -352,14 +352,15 @@ initialDefinitions :: Definitions
 initialDefinitions = Map.fromList [
   (EqualityId,  equality),
   (LessId,  less),
-  (SmallId, isSmall),
-  (FunId,  function),
-  (AppId,  functionApplication),
-  (DomId,  domain),
+  (MapId, mapd), 
+  (FunctionId,  function),
+  (ApplicationId,  mapApplication),
+  (DomainId,  domain),
   (SetId,  set),
   (ClassId,  clss),
-  (ElemId,  elementOf),
-  (PairId, pair) ]
+  (ElementId,  elementOf),
+  (PairId, pair),
+  (ObjectId, object) ]
 
 hole0, hole1 :: VariableName
 hole0 = VarHole "0"
@@ -371,34 +372,43 @@ equality  = DE [] Top Signature (mkEquality (mkVar hole0) (mkVar hole1)) [] []
 less :: DefEntry
 less = DE [] Top Signature (mkLess (mkVar hole0) (mkVar hole1)) [] []
 
-isSmall :: DefEntry
-isSmall = DE [] Top Signature (mkSmall (mkVar hole0)) [] []
-
 set :: DefEntry
-set = DE [] Top Signature (mkSet $ mkVar hole0) [] []
+set = DE [] ((mkClass (mkVar hole0)) `And` (mkObject (mkVar hole0)))  
+           Definition (mkSet $ mkVar hole0) [mkSet ThisT] []
+
+object :: DefEntry
+object = DE [] Top Signature (mkObject $ mkVar hole0) [] []
 
 clss :: DefEntry
 clss = DE [] Top Signature (mkClass $ mkVar hole0) [] []
 
 elementOf :: DefEntry
-elementOf = DE [mkClass (mkVar hole1) `Or` mkSet (mkVar hole1)] Top Signature
-  (mkElem (mkVar hole0) (mkVar hole1)) [] [[mkClass (mkVar hole1) `Or` mkSet (mkVar hole1)]]
+elementOf = DE [mkClass (mkVar hole1)] Top Signature
+  (mkElem (mkVar hole0) (mkVar hole1)) [mkObject (mkVar hole0)] 
+  [[mkObject (mkVar hole0)], [mkClass (mkVar hole1)]]
 
 function :: DefEntry
-function  = DE [] Top Signature (mkFun $ mkVar hole0) [] []
+function  = DE [] ((mkMap(mkVar hole0)) `And` (mkObject (mkVar hole0)))
+                 Definition (mkFun $ mkVar hole0) [mkFun ThisT] []
+
+mapd :: DefEntry
+mapd  = DE [] Top Signature (mkMap $ mkVar hole0) [] []
 
 domain :: DefEntry
-domain = DE [mkFun $ mkVar hole0] (mkSet ThisT) Signature
-  (mkDom $ mkVar hole0) [mkSet ThisT] [[mkFun $ mkVar hole0]]
+domain = DE [mkMap $ mkVar hole0] (mkClass ThisT) Signature
+  (mkDom $ mkVar hole0) [mkClass ThisT] [[mkMap $ mkVar hole0]]
 
 pair :: DefEntry
-pair = DE [] Top Signature (mkPair (mkVar hole0) (mkVar hole1)) [] []
+pair = DE [mkObject (mkVar hole0), mkObject (mkVar hole1)]
+  (mkObject ThisT) Signature (mkPair (mkVar hole0) (mkVar hole1))
+  [mkObject ThisT] []
 
-functionApplication :: DefEntry
-functionApplication =
-  DE [mkFun $ mkVar hole0, mkElem (mkVar $ hole1) $ mkDom $ mkVar hole0] Top Signature
-    (mkApp (mkVar hole0) (mkVar hole1)) []
-    [[mkFun $ mkVar hole0],[mkElem (mkVar $ hole1) $ mkDom $ mkVar hole0]]
+
+mapApplication :: DefEntry
+mapApplication =
+  DE [mkMap $ mkVar hole0, mkElem (mkVar $ hole1) $ mkDom $ mkVar hole0] Top Signature
+    (mkApp (mkVar hole0) (mkVar hole1)) [mkObject ThisT]
+    [[mkMap $ mkVar hole0],[mkElem (mkVar hole1) $ mkDom $ mkVar hole0]]
 
 
 initialGuards :: DT.DisTree Bool
