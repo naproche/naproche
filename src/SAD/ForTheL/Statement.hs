@@ -465,6 +465,7 @@ symbSetNotation = cndSet </> finSet
     mbEqu _ tr Var{varName = v} = subst tr v
     mbEqu vs tr t = \st -> foldr mbdExi (st `And` mkEquality tr t) vs
 
+-- Maybe we have to reconstitute notionSep?
 
     sepFrom :: FTL (Formula -> Formula, Formula -> Formula, Formula, Formula -> Formula)
     sepFrom = setSep -|- noSep
