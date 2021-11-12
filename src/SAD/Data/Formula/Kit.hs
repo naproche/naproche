@@ -254,6 +254,8 @@ occursS = (mkVar VarSlot `occursIn`)
 
 -- | Replace @ObjId@ Terms with @Top@
 -- pseudotyping with "object"
+-- Test for git
+
 removeObject :: Formula -> Formula
 removeObject t@Trm {trId = tId}
   | tId == ObjectId = Top
