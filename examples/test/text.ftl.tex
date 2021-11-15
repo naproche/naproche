@@ -1,0 +1,75 @@
+% This file should both be accepted by Naproche and by LaTeX
+
+\documentclass{article}
+
+\usepackage{amsfonts}
+\usepackage{../../lib/tex/naproche}
+
+\begin{document}
+  \begin{forthel}
+    [synonym integer/-s]
+
+    \begin{signature}
+      An integer is an element.
+    \end{signature}
+
+    Let $n,m$ denote integers.
+
+    \begin{signature}
+      $0$ is an integer.
+    \end{signature}
+
+    \begin{signature}
+      $1$ is an integer.
+    \end{signature}
+
+    \begin{axiom}
+      $1 \neq 0$.
+    \end{axiom}
+
+    \begin{signature}
+      Assume $m \neq 0$.
+      $\frac{n}{m}$ is an integer.
+    \end{signature}
+
+    % Class terms with flexible adoption of the height of the braces and the
+    % vertical separation bar. Moreover, the LHS and RHS of such class terms can
+    % be put in \text:
+    \begin{definition}
+      \[ \mathbb{Q} = \class{\frac{n}{m} | \text{$n,m$ are integers and $m \neq 0$}}. \]
+    \end{definition}
+
+    % If we use the old "\{ ... \mid ... \}" instead of "\class{ ... | ... }"
+    % the size of the braces and the vertical bar is not adopted to the height
+    % of the fraction. But \text is supported nevertheless:
+    \begin{definition}
+      \[ \mathbb{Q}^{*} = \{\frac{x}{y} \mid \text{$x,y$ are integers and $x,y \neq 0$}\}. \]
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}
+      Let $X$ be a set.
+      Assume that every element of $X$ is a set.
+      Then there exists a function.
+    \end{proposition}
+    \begin{proof}
+      Every function is a map.
+
+      % \text can be used in function bodies:
+      Define $g(x) = \text{define $h = \fun y \in x. y$ in $h$}$ for $x \in X$.
+
+      % \text also works in cases distinctions:
+      Define \[ f(x) =
+        \begin{cases}
+          \text{choose an element $y$ of $x$ in $y$} & : \text{$x$ has an element} \\
+          g(x)                                       & : \text{$x$ has no element}
+        \end{cases} \]
+      for $x \in X$.
+
+      % In parenthesised parts of symbolic (!) statements \text works, too:
+      Then we have
+      \[ \forall x \in X: (\text{$x$ has an element}) \implies f(x) \in x. \]
+    \end{proof}
+  \end{forthel}
+\end{document}

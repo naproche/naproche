@@ -4,7 +4,7 @@
 \RequirePackage{amsmath}
 \RequirePackage{amsthm}
 \RequirePackage{etoolbox}
-
+\RequirePackage{braket}     % \Set
 
 
 \newtheoremstyle{formalized}% name of the style to be used
@@ -61,6 +61,14 @@ boxrule=0pt,boxsep=0pt,breakable}
 \setlength{\ftlparskip}{0.5em}
 
 
+% Flexible class terms
+% ====================
+
+% Use "\class{ ... | ... }" the same way as "\Set{ ... | ... }" from the braket
+% package, i.e. as an alternative to "\{ ... \mid ... \}" with additional
+% support for flexible sizes of the braces and the vertical bar.
+\def\class{\Set}
+
 
 % More visible line breaks in proofs.
 % ===================================
@@ -82,18 +90,6 @@ boxrule=0pt,boxsep=0pt,breakable}
 {%
   \originalendproof%
 }
-
-
-\let\ftlquotationmark"
-\catcode`\"=\active
-
-\def"#1"{%
-  \ifbool{forthel}%
-    {\ifbool{mmode}{\mathrel{\textrm{#1}}}{#1}}%
-    {\ftlquotationmark{ #1}\ftlquotationmark}%
-}
-
-
 
 
 % Predefined symbols
@@ -123,9 +119,6 @@ boxrule=0pt,boxsep=0pt,breakable}
 }
 \DeclareOption{numberswithinsubsection}{%
     \counterwithin{theoremcount}{subsection}
-}
-\DeclareOption{noquoteworkaround}{%
-  \catcode`\"=12
 }
 \DeclareOption{unmarked}{%
   \renewenvironment{forthel}{%

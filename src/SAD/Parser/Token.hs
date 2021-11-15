@@ -120,7 +120,7 @@ tokenize texState start = posToken texState start NoWhiteSpaceBefore
     -- We reuse the pattern parsing for sentences in order to parse LaTeX. Thus we simply tokenize
     -- away math-mode markers like '\[' and '\]'
     posToken texState pos _ s | useTex && hd `elem` ["\\[","\\]"] = toks
-      where 
+      where
         (hd, rest) = Text.splitAt 2 s
         toks = posToken texState (Position.symbol_explode hd pos) WhiteSpaceBefore rest
 
@@ -144,10 +144,6 @@ tokenize texState start = posToken texState start NoWhiteSpaceBefore
       -- away math-mode markers like '$'
       Just ('$', rest) | useTex -> posToken texState (Position.symbol_explode_string "$" pos) WhiteSpaceBefore rest
 
-      -- We also tokenize away quotation marks, because they are intended to be used by the user
-      -- as a way to write regular text in math mode. Of course, one needs to appropriately remap
-      -- quotation marks in the tex file, see examples/cantor.ftl.tex on how to do this.
-      Just ('"', rest) | useTex -> posToken texState (Position.symbol_explode_string "\"" pos) WhiteSpaceBefore rest
       Just (c, _) | if useTex then c == '%' else c == '#' -> tok:toks
         where
           (comment, rest) = Text.break (== '\n') s

@@ -16,7 +16,7 @@
   In this document we prove Cantor's theorem:
 
   \begin{quotedtheorem}
-    There is no surjection defined on a set $M$ that surjects onto the powerset of $M$.
+    There is no function defined on a set $M$ that surjects onto the powerset of $M$.
   \end{quotedtheorem}
 
   \begin{forthel}
@@ -24,14 +24,6 @@
     [synonym surject/-s]
 
     Let $M$ denote a set. Let $f$ denote a function.
-
-    \begin{axiom}
-        $M$ is setsized.
-    \end{axiom}
-
-    \begin{axiom}
-        Let $x$ be an element of $M$. Then $x$ is setsized.
-    \end{axiom}
 
     Let the value of $f$ at $x$ stand for $f(x)$.
     Let $f$ is defined on $M$ stand for $\dom(f) = M$.
@@ -62,14 +54,15 @@
       No function that is defined on $M$ surjects onto the powerset of $M$.
     \end{theorem}
     \begin{proof}
-      Proof by contradiction. Assume the contrary.
+      Proof by contradiction.
+      Assume the contrary.
       Take a function $f$ that is defined on $M$ and surjects onto the powerset of $M$.
-      Define $N = \{ x "in" M \mid x \notin f(x) \}$.
+      The value of $f$ at any element of $M$ is a set.
+      Define $N = \class{x \in M | \text{$x$ is not an element of $f(x)$}}$.
+      $N$ is a subset of $M$.
       Take an element $z$ of $M$ such that $f(z) = N$.
-      Then $$z\in N "iff" z\notin f(z) = N.$$
+      Then \[ z\in N \iff z\notin f(z) = N. \]
       Contradiction.
     \end{proof}
-
   \end{forthel}
-
 \end{document}

@@ -336,7 +336,7 @@ symbolicFormula  = biimplication
 
     binary op p f = optLL1 f $ fmap (op f) p
 
-    atomic = relation -|- parenthesised statement
+    atomic = relation -|- parenthesised (optionallyInText statement)
       where
         relation = sChain </> primCpr sTerm
 
@@ -433,8 +433,8 @@ set :: FTL MNotion
 set = label "set definition" $ symbSet <|> classOf
   where
     classOf = do
-      tokenOf' ["class", "classes", "collection", "collections"]; 
-      nm <- var -|- hidden; 
+      tokenOf' ["class", "classes", "collection", "collections"];
+      nm <- var -|- hidden;
       token' "of" >> (optLL1 () (token' "all"));
       (q, f, u) <- notion >>= single; vnm <- hidden;
       vnmDecl <- makeDecl vnm;
@@ -448,15 +448,29 @@ set = label "set definition" $ symbSet <|> classOf
 
 
 symbSetNotation :: FTL (Formula -> Formula, (PosVar, Formula -> Formula))
-symbSetNotation = cndSet </> finSet
+symbSetNotation = texSet </> cndSet </> finSet
   where
+    -- Finite set, e.g. "{x, f(y), 5}"
     finSet = braced $ do
       ts <- sTerm `sepByLL1` token ","
       h <- hidden
       pure (\tr -> foldr1 Or $ map (mkEquality tr) ts, (h, mkSet))
+    -- Set-builder notation, e.g. "{x in X | x is less than y}"
     cndSet = braced $ do
-      (tag, c, t, mkColl) <- sepFrom
-      st <- (token "|" <|> token ":") >> statement
+      (tag, c, t, mkColl) <- optionallyInText sepFrom
+      st <- (token "|" <|> token ":") >> optionallyInText statement
+      vs <- freeVars t
+      vsDecl <- makeDecls $ fvToVarSet vs;
+      nm <- if isVar t then pure $ PosVar (varName t) (varPosition t) else hidden
+      pure (\tr -> tag $ c tr `blAnd` mbEqu vsDecl tr t st `blAnd` mkObject tr, (nm, mkColl))
+    -- Set-builder notation using a certain TeX macro, e.g.
+    -- "\class{$x \in X$ | $x$ is less than $y$}". Semantically identical to `cndSet`.
+    texSet = do
+      token "\\class"
+      symbol "{"
+      (tag, c, t, mkColl) <- optionallyInText sepFrom
+      st <- (token "|") >> optionallyInText statement
+      symbol "}"
       vs <- freeVars t
       vsDecl <- makeDecls $ fvToVarSet vs;
       nm <- if isVar t then pure $ PosVar (varName t) (varPosition t) else hidden
@@ -520,18 +534,17 @@ texCases = do
   texEnd (token "cases")
   return $ \fx -> foldr1 And $ map ((&) fx) stanza
   where
-    optionallyInText :: FTL a -> FTL a
-    optionallyInText p = (token "\\text" *> symbol "{" *> p <* symbol "}") <|> p
     line :: FTL (Formula -> Formula)
     line = do
-      value <- optionallyInText chooseInTerm
+      value <- chooseInTerm
       symbol "&"
+      opt () (symbol ":")
       condition <- optionallyInText statement
       return (Tag Condition . Imp condition . value)
 
 
 chooseInTerm :: FTL (Formula -> Formula)
-chooseInTerm = do
+chooseInTerm = optionallyInText $ do
   chs <- optLL1 [] $ after (ld_choice `sepByLL1` token ",") elementOf
   f   <- term -|- defTerm; return $ flip (foldr ($)) chs . f
   where
@@ -602,6 +615,9 @@ quantifierChain = fmap (foldl fld id) $ token' "for" >> quantifiedNotion `sepByL
 -- same non-terminal
   where
     fld x (y, _) = x . y
+
+optionallyInText :: FTL a -> FTL a
+optionallyInText p = (token "\\text" *> symbol "{" *> p <* symbol "}") <|> p
 
 
 -- Digger
