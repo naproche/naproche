@@ -104,7 +104,7 @@ existence  = Tag ExistenceTask . dive 0
     dive :: Int -> Formula -> Formula
     dive n (All x f) = let nn = VarTask $ VarDefault $ Text.pack $ show n in mkAll nn $ dive (n + 1) $ inst nn f
     dive n (Imp f g) = blImp f $ dive n g
-    dive _ f = let y = mkVar (VarDefault "y") in mkExi (VarDefault "y") $ devReplace y $ describe_exi f
+    dive _ f = let y = mkVar (VarDefault "y") in mkExi (VarDefault "y") (mkObject y `And` devReplace y (describe_exi f))
 
 
 
