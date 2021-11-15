@@ -75,7 +75,7 @@ text Block {tokens} = composeTokens tokens
 {- All possible types that a ForTheL block can have. -}
 data Section =
   Definition | Signature | Axiom       | Theorem | CaseHypothesis  |
-  Assumption | Selection | Affirmation | Posit   | LowDefinition   |
+  Assumption | Choice | Affirmation | Posit   | LowDefinition   |
   ProofByContradiction
   deriving (Eq, Ord, Show)
 
@@ -115,7 +115,7 @@ needsProof block = sign $ kind block
 
 {- which statements can declare variables -}
 canDeclare :: Section -> Bool
-canDeclare Assumption = True; canDeclare Selection = True
+canDeclare Assumption = True; canDeclare Choice = True
 canDeclare LowDefinition = True; canDeclare _ = False
 
 

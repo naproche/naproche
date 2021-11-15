@@ -11,7 +11,7 @@ module SAD.ForTheL.Statement
   , sTerm
   , anotion
   , dig
-  , selection
+  , choice
   , setNotion
   , functionNotion
   , plainTerm -- TODO: This seems unused?
@@ -411,10 +411,10 @@ classEquality = twoClassTerms </> oneClassTerm
 
 
 
--- selection
+-- Choice
 
-selection :: FTL Formula
-selection = fmap (foldl1 And) $ (art >> takeLongest namedNotion) `sepByLL1` comma
+choice :: FTL Formula
+choice = fmap (foldl1 And) $ (art >> takeLongest namedNotion) `sepByLL1` comma
   where
     namedNotion = label "named notion" $ do
       (q, f, vs) <- notion; guard (all isExplicitName $ map posVarName $ Set.toList vs); return $ q f
@@ -476,6 +476,7 @@ symbSetNotation = texSet </> cndSet </> finSet
       nm <- if isVar t then pure $ PosVar (varName t) (varPosition t) else hidden
       pure (\tr -> tag $ c tr `blAnd` mbEqu vsDecl tr t st `blAnd` mkObject tr, (nm, mkColl))
 
+    mbEqu :: Set Decl -> Formula -> Formula -> Formula -> Formula
     mbEqu _ tr Var{varName = v} = subst tr v
     mbEqu vs tr t = \st -> foldr mbdExi (st `And` mkEquality tr t) vs
 

@@ -23,7 +23,7 @@ import SAD.Data.Text.Decl
 {- generate proof task associated with a block -}
 
 generateProofTask :: Section -> Set VariableName -> Formula -> Formula
-generateProofTask Selection vs f = foldr mbExi f vs
+generateProofTask Choice vs f = foldr mbExi f vs
 generateProofTask LowDefinition _ f
   | funDcl f = funTask f
   | setDcl f = setTask f

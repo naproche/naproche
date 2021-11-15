@@ -181,7 +181,7 @@ theoremTags = ["theorem", "lemma", "corollary", "proposition"]
 
 -- low-level
 choose :: FTL Block
-choose = sentence Selection (beginChoice >> selection) assumeVars link
+choose = sentence Choice (beginChoice >> choice) assumeVars link
 caseHypo :: FTL Block
 caseHypo = sentence Block.CaseHypothesis (beginCase >> statement) affirmVars link
 affirm :: FTL Block
