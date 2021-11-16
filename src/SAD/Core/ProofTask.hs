@@ -31,7 +31,7 @@ generateProofTask _ _ f = f
 
 {- Check whether a formula is a set or function defintion -}
 funDcl, setDcl :: Formula -> Bool
-funDcl (And (And f _) _) = trmId f == FunctionId
+funDcl (And (And f _) _) = trmId f == MapId
 funDcl _ = False
 
 setDcl (And (Trm _ _ _ id) _) = id == SetId || id == ClassId
