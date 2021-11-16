@@ -1,6 +1,5 @@
 [synonym element/-s] [synonym system/-s] [synonym reduct/-s]
 
-Signature ElmSort.  An element is a notion.
 Signature RelSort.  A rewriting system is a notion.
 
 Let a,b,c,d,u,v,w,x,y,z denote elements.
