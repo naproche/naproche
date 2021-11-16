@@ -454,7 +454,7 @@ symbSetNotation = texSet </> cndSet </> finSet
     finSet = braced $ do
       ts <- sTerm `sepByLL1` token ","
       h <- hidden
-      pure (\tr -> foldr1 Or $ map (mkEquality tr) ts, (h, mkSet))
+      pure (\tr -> mkObject tr `And` (foldr1 Or $ map (mkEquality tr) ts), (h, mkSet))
     -- Set-builder notation, e.g. "{x in X | x is less than y}"
     cndSet = braced $ do
       (tag, c, t, mkColl) <- optionallyInText sepFrom
