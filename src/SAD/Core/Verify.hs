@@ -258,6 +258,7 @@ verifyProof state@VS {
   currentBranch  = branch}
   = dive id context $ Context.formula thesis
   where
+    dive :: (Formula -> Formula) -> [Context] -> Formula -> ReaderT VState CRM ([ProofText], [ProofText])
     dive construct context (Imp (Tag InductionHypothesis f) g)
       | isClosed f =
           process (Context.setFormula thesis f : context) (construct g)
@@ -270,6 +271,7 @@ verifyProof state@VS {
     dive _ _ _ = verificationLoop state
 
     -- extract rules, compute new thesis and move on with the verification
+    process :: [Context] -> Formula -> ReaderT VState CRM ([ProofText], [ProofText])
     process newContext f = do
       let newRules = extractRewriteRule (head newContext) ++ rules
           (_, _, newThesis) =
@@ -294,6 +296,7 @@ noInductionOrCase f = allF noInductionOrCase f
 deleteInductionOrCase :: Formula -> Formula
 deleteInductionOrCase = dive id
   where
+    dive :: (Formula -> a) -> Formula -> a
     dive c (Imp (Tag InductionHypothesis _) f) = c f
     dive c (Imp (Tag Tag.CaseHypothesis f) _) = c $ Not f
     dive c (Imp f g) = dive (c . Imp f) g
@@ -307,30 +310,31 @@ deleteInductionOrCase = dive id
 
 {- execute an instruction or add an instruction parameter to the state -}
 procProofTextInstr :: Position.T -> Instr -> VM ([ProofText], [ProofText])
-procProofTextInstr pos = flip proc $ ask >>= verificationLoop
+procProofTextInstr pos = flip process $ ask >>= verificationLoop
   where
-    proc (Command RULES) = (>>) $ do
+    process :: Instr -> ReaderT VState CRM a -> ReaderT VState CRM a
+    process (Command RULES) = (>>) $ do
       rules <- asks rewriteRules
       reasonLog Message.WRITELN pos $
         "current ruleset: " <> "\n" <> unlines (map show (reverse rules))
-    proc (Command THESIS) = (>>) $ do
+    process (Command THESIS) = (>>) $ do
       motivated <- asks thesisMotivated; thesis <- asks currentThesis
       let motivation = if motivated then "(motivated): " else "(not motivated): "
       reasonLog Message.WRITELN pos $
         "current thesis " <> motivation <> show (Context.formula thesis)
-    proc (Command CONTEXT) = (>>) $ do
+    process (Command CONTEXT) = (>>) $ do
       context <- asks currentContext
       reasonLog Message.WRITELN pos $ "current context:\n" <>
         concatMap (\form -> "  " <> show (Context.formula form) <> "\n") (reverse context)
-    proc (Command FILTER) = (>>) $ do
+    process (Command FILTER) = (>>) $ do
       context <- asks currentContext
       let topLevelContext = filter Context.isTopLevel context
       reasonLog Message.WRITELN pos $ "current filtered top-level context:\n" <>
         concatMap (\form -> "  " <> show (Context.formula form) <> "\n") (reverse topLevelContext)
 
-    proc (Command _) = (>>) $ reasonLog Message.WRITELN pos "unsupported instruction"
+    process (Command _) = (>>) $ reasonLog Message.WRITELN pos "unsupported instruction"
 
-    proc (SetFlag Verbose False) =
+    process (SetFlag Verbose False) =
       addInstruction (SetFlag Printgoal False) .
       addInstruction (SetFlag Printreason False) .
       addInstruction (SetFlag Printsection False) .
@@ -339,7 +343,7 @@ procProofTextInstr pos = flip proc $ ask >>= verificationLoop
       addInstruction (SetFlag Printunfold False) .
       addInstruction (SetFlag Printfulltask False)
 
-    proc (SetFlag Verbose True) =
+    process (SetFlag Verbose True) =
       addInstruction (SetFlag Printgoal True) .
       addInstruction (SetFlag Printreason True) .
       addInstruction (SetFlag Printcheck True) .
@@ -347,7 +351,7 @@ procProofTextInstr pos = flip proc $ ask >>= verificationLoop
       addInstruction (SetFlag Printunfold True) .
       addInstruction (SetFlag Printfulltask True)
 
-    proc i
+    process i
       | isParserInstruction i = id
       | otherwise = addInstruction i
 

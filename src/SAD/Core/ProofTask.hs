@@ -47,13 +47,14 @@ setTask f = error $ "SAD.Core.ProofTask.setTask: misformed definition: " ++ show
 {- generate separation proof task -}
 separation :: Formula -> Formula
 separation (And f g) = separation f
-separation t | isElem t = dec $ mkSet $ last $ trmArgs t
+separation t | isElem t = dec $ mkClass $ last $ trmArgs t
 separation f = error $ "SAD.Core.ProofTask.separation: misformed argument: " ++ show f
 
 {- generate replacement proof task -}
 replacement :: VariableName -> Formula -> Formula
 replacement x f = fromMaybe _default $ dive [] f
   where
+    dive :: [VariableName] -> Formula -> Maybe Formula
     dive vs (Exi x f) = dive (declName x:vs) f
     dive vs (And f g) | not $ null vs =
       let vsAlt  = map VarTask vs
@@ -62,9 +63,9 @@ replacement x f = fromMaybe _default $ dive [] f
     dive _ _ = Nothing
     _default =
       let x2 = VarTask x; xv = mkVar x; x2v = mkVar x2
-      in  mkAll x $ Imp f $ mkExi x2 $ mkSet x2v `And` (xv `mkElem` x2v)
+      in  mkAll x $ Imp f $ mkExi x2 $ mkClass x2v `And` (xv `mkElem` x2v)
 
-    sets = foldr blAnd Top . map (mkSet . mkVar)
+    sets = foldr blAnd Top . map (mkClass . mkVar)
     elements (v1:vs) (v2:vs2) =
       mkElem (mkVar v1) (mkVar v2) `blAnd` elements vs vs2
     elements _ _ = Top
@@ -78,7 +79,7 @@ funTask _ = error "SAD.Core.ProofTask.funTask: misformed definition"
 
 domain :: Formula -> Formula
 domain (Tag Domain (All _ (Iff _ f))) = Tag DomainTask $ separation f
-domain (Tag Domain Trm{trmName = TermEquality, trmArgs = [_,t]}) = Tag DomainTask $ mkSet t
+domain (Tag Domain Trm{trmName = TermEquality, trmArgs = [_,t]}) = Tag DomainTask $ mkClass t
 domain _ = error "SAD.Core.ProofTask.domain: misformed definition"
 
 

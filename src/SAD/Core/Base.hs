@@ -413,8 +413,8 @@ mapApplication =
 
 initialGuards :: DT.DisTree Bool
 initialGuards = foldr (`DT.insert` True) DT.empty [
-  mkSet $ mkVar hole1,
-  mkFun $ mkVar hole0,
+  mkClass $ mkVar hole1,
+  mkMap $ mkVar hole0,
   mkElem (mkVar hole1) $ mkDom $ mkVar hole0]
 
 -- retrieve definitional formula of a term

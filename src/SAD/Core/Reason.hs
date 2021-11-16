@@ -364,10 +364,18 @@ unfoldAtomic sign f = do
         -- increase the counter by 1 and return what we got
 
     extensionalities f g =
-      let extensionalityFormula = -- set extensionality
+      let extensionalityFormula = 
+            -- set extensionality
             (guard (setType f && setType g) >> return (setExtensionality f g))
-            `mplus`  -- function extensionality
+            `mplus`
+            -- class extensionality
+            (guard (classType f && classType g) >> return (setExtensionality f g))
+            `mplus`
+            -- function extensionality
             (guard (funType f && funType g) >> return (funExtensionality f g))
+            `mplus`
+            -- map extensionality
+            (guard (mapType f && mapType g) >> return (funExtensionality f g))
       in  lift (W.tell 1) >> return extensionalityFormula
 
     setExtensionality f g =
@@ -408,7 +416,17 @@ setType Var {varInfo = info} = any (infoTwins ThisT $ mkSet ThisT) info
 setType Trm {trmInfo = info} = any (infoTwins ThisT $ mkSet ThisT) info
 setType _ = False
 
+classType :: Formula -> Bool
+classType Var {varInfo = info} = any (infoTwins ThisT $ mkClass ThisT) info
+classType Trm {trmInfo = info} = any (infoTwins ThisT $ mkClass ThisT) info
+classType _ = False
+
 funType :: Formula -> Bool
 funType Var {varInfo = info} = any (infoTwins ThisT $ mkFun ThisT) info
 funType Trm {trmInfo = info} = any (infoTwins ThisT $ mkFun ThisT) info
 funType _ = False
+
+mapType :: Formula -> Bool
+mapType Var {varInfo = info} = any (infoTwins ThisT $ mkMap ThisT) info
+mapType Trm {trmInfo = info} = any (infoTwins ThisT $ mkMap ThisT) info
+mapType _ = False
