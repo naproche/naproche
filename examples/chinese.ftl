@@ -1,9 +1,6 @@
 [synonym element/-s]
 
-Signature ElmSort. An element is a notion.
-
 Let a,b,c,x,y,z,u,v,w denote elements.
-Axiom. a is setsized.
 
 Signature SortsC.  0 is an element.
 Signature SortsC.  1 is an element.
@@ -47,7 +44,6 @@ Axiom UnNeZr.  1 != 0.
 [synonym set/-s] [synonym belong/-s]
 
 Let X,Y,Z,U,V,W denote sets.
-Axiom. X is setsized.
 
 Axiom. Every element of X is an element.
 
@@ -131,8 +127,7 @@ qed.
 
 [synonym number/-s]
 
-Signature NatSort.  A natural number is a notion.
-Axiom. Let n be a natural number. Then n is setsized.
+Signature NatSort.  A natural number is an object.
 
 Signature EucSort.  Let x be a nonzero element. |x| is a natural number.
 
