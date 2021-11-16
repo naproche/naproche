@@ -43,12 +43,20 @@ showFormula p d = dive
     dive t@Trm{trmName = TermSymbolic tName, trmArgs = tArgs} = decode (Text.unpack tName) tArgs p d
     dive t@Trm{trmName = TermThe tName, trmArgs = tArgs} =
           showString ("the" <> Text.unpack tName) . showArguments tArgs
+    dive t@Trm{trmName = TermName "mkApp", trmArgs = [f,x]} = showString $ showArgument f ++ "(" ++ showArgument x ++ ")"
+    dive t@Trm{trmName = TermName "mkDom", trmArgs = [f]} = showString $ "Dom(" ++ showArgument f ++ ")"
+    dive t@Trm{trmName = TermName "mkPair", trmArgs = [x,y]} = showString $ "(" ++ showArgument x ++ "," ++ showArgument y ++ ")"
+    dive t@Trm{trmName = TermName "mkProd", trmArgs = [x,y]} = showString $ "Prod(" ++ showArgument x ++ "," ++ showArgument y ++ ")"
     dive t@Trm{trmName = tName, trmArgs = tArgs} = showString (Text.unpack $ toLazyText $ represent tName) . showArguments tArgs
     dive v@Var{varName = VarConstant s} = showString (Text.unpack s)
     dive v@Var{varName = vName} = showString $ Text.unpack $ toLazyText $ represent vName
     dive Ind {indIndex = i }
       | i < d = showChar 'v' . shows (d - i - 1)
       | otherwise = showChar 'v' . showChar '?' . showString (show i)
+
+    showArgument t
+      | p == 1 = "..."
+      | otherwise = showFormula (p - 1) d t ""
 
     showArguments _ | p == 1 = showString "(...)"
     showArguments ts =
