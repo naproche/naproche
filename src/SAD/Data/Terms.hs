@@ -26,18 +26,17 @@ data TermName
 termFunction :: TermName
 termFunction = TermNotion "Function"
 
-termMap, termApplication, termDomain, termSet, termClass, termElement, 
-         termProduct, termPair, termObject :: TermName
-
+termMap, termSet, termClass, termElement, termObject :: TermName
 termMap = TermNotion "Map"
-termApplication = TermSymbolic "__App__" -- ".(.)"
-termDomain = TermSymbolic "__Dom__" -- "Dom(.)"
 termSet = TermNotion "Set"
 termClass = TermNotion "Class"
-termElement = TermNotion "ElementOf"
-termProduct = TermSymbolic "__Prod__" -- "Prod(.,.)"
-termPair = TermSymbolic "__Pair__" -- "(.,.)"
 termObject = TermNotion "Object"
+termElement = TermNotion "ElementOf"
+
+termApplication, termDomain, termPair :: TermName
+termApplication = TermName "mkApp" -- ".(.)"
+termDomain = TermName "mkDom"
+termPair = TermName "mkPair" -- "(.,.)"
 
 termSplit :: TermName -> (Text -> TermName, Text)
 termSplit (TermNotion t) = (TermNotion, t)
