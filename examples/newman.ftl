@@ -42,15 +42,17 @@ Let R be a rewriting system.
     Assume R is locally confluent and terminating.
     Let us demonstrate by induction that for all a,b,c
     such that a -R*> b,c there exists d such that b,c -R*> d.
-    let a,b,c be elements.
-        Assume a -R+> b,c.
+        Let a,b,c be elements.
+        Let us show that if a -R+> b,c then thesis.
+            Assume a -R+> b,c.
 
-        Take u such that a -R> u -R*> b.
-        Take v such that a -R> v -R*> c.
-        Take w such that u,v -R*> w.
-        Take a normal form d of w in R.
-
-        b -R*> d. Indeed take x such that b,d -R*> x.
-        c -R*> d. Indeed take y such that c,d -R*> y.
-    end.
-qed.
+            Take u such that a -R> u -R*> b.
+            Take v such that a -R> v -R*> c.
+            Take w such that u,v -R*> w.
+            Take a normal form d of w in R.
+    
+            b -R*> d. Indeed take x such that b,d -R*> x.
+            c -R*> d. Indeed take y such that c,d -R*> y.
+        End.
+    End.
+End.
