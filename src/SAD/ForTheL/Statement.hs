@@ -469,7 +469,7 @@ symbSetNotation = texSet </> cndSet </> finSet
       token "\\class"
       symbol "{"
       (tag, c, t, mkColl) <- optionallyInText sepFrom
-      st <- (token "|") >> optionallyInText statement
+      st <- (token "|") >> (optionallyInText statement) <|> (optionallyInClassText statement)
       symbol "}"
       vs <- freeVars t
       vsDecl <- makeDecls $ fvToVarSet vs;
@@ -619,6 +619,9 @@ quantifierChain = fmap (foldl fld id) $ token' "for" >> quantifiedNotion `sepByL
 
 optionallyInText :: FTL a -> FTL a
 optionallyInText p = (token "\\text" *> symbol "{" *> p <* symbol "}") <|> p
+
+optionallyInClassText :: FTL a -> FTL a
+optionallyInClassText p = (token "\\classtext" *> symbol "{" *> p <* symbol "}") <|> p
 
 
 -- Digger

@@ -86,3 +86,10 @@ Options can be enabled in the following form.
 | `numberswithinsection` | Reset theorem numbers for each section. |
 | `numberswithinsubsection` | Reset theorem numbers for each subsection. |
 | `noquoteworkaround` | Sometimes the quote workaround breaks other packages. Changing the load order of the packages might suffice, but the workaround can also be disabled with this option. |
+
+
+## Compilation errors
+
+The usage of `\classtext{...}` can cause the compilation error
+`latexmk: Failure in some part of making files.`. It might vanish by compiling
+the document a second time.

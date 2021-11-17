@@ -7,7 +7,7 @@
 
 \begin{document}
   \begin{forthel}
-    [synonym integer/-s]
+    [synonym integer/-s] [synonym divisor/-s]
 
     \begin{signature}
       An integer is an element.
@@ -21,6 +21,14 @@
 
     \begin{signature}
       $1$ is an integer.
+    \end{signature}
+
+    \begin{signature}
+      $n$ is greater than $m$ is a relation.
+    \end{signature}
+
+    \begin{signature}
+      A divisor of $n$ is an integer.
     \end{signature}
 
     \begin{axiom}
@@ -43,7 +51,15 @@
     % the size of the braces and the vertical bar is not adopted to the height
     % of the fraction. But \text is supported nevertheless:
     \begin{definition}
-      \[ \mathbb{Q}^{*} = \{\frac{x}{y} \mid \text{$x,y$ are integers and $x,y \neq 0$}\}. \]
+      \[ \mathbb{Q}^{*} = \{\frac{n}{m} \mid \text{$n,m$ are integers and $n,m \neq 0$}\}. \]
+    \end{definition}
+
+    % Line breaks within class terms can be achieved by using "\classtext"
+    % instead of "\text" in the RHS:
+    \begin{definition}
+      \[ \mathbb{P} = \class{ q \in \mathbb{Q} | \classtext{$q = \frac{p}{1}$
+      for some integer $p$ such that $p$ is greater than $1$ and for all
+      divisors $d$ of $p$ we have $d = p$ or $d = 1$}}. \]
     \end{definition}
   \end{forthel}
 
@@ -51,13 +67,13 @@
     \begin{proposition}
       Let $X$ be a set.
       Assume that every element of $X$ is a set.
-      Then there exists a function.
+      Then there exists a map.
     \end{proposition}
     \begin{proof}
-      Every function is a map.
+      Every set is a class that is an object.
 
       % \text can be used in function bodies:
-      Define $g(x) = \text{define $h = \fun y \in x. y$ in $h$}$ for $x \in X$.
+      Define $g(x) = \text{define $y = {x}$ in $y$}$ for $x \in X$.
 
       % \text also works in cases distinctions:
       Define \[ f(x) =

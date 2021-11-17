@@ -5,7 +5,7 @@
 \RequirePackage{amsthm}
 \RequirePackage{etoolbox}
 \RequirePackage{braket}     % \Set
-
+\RequirePackage{linegoal}  % \linegoal
 
 \newtheoremstyle{formalized}% name of the style to be used
     {4pt}% measure of space to leave above the theorem. E.g.: 3pt
@@ -68,6 +68,11 @@ boxrule=0pt,boxsep=0pt,breakable}
 % package, i.e. as an alternative to "\{ ... \mid ... \}" with additional
 % support for flexible sizes of the braces and the vertical bar.
 \def\class{\Set}
+
+% Let "\classtext{...}" behave as "\text{...}" but with automatic linebreaks.
+% Intended to be used together with "\class{ ... | ... }" as in
+% "\class{ ... | \classtext{...}}".
+\newcommand{\classtext}[1]{\parbox{\linegoal}{#1}}
 
 
 % More visible line breaks in proofs.
