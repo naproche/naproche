@@ -1,0 +1,231 @@
+\documentclass[../../natural-numbers.ftl.tex]{subfiles}
+
+
+\begin{document}
+
+  \typeout{
+    \begin{forthel}
+      [readtex basic-notions/natural-numbers/sections/01_arithmetic/01_peano-axioms.ftl.tex]
+
+      [checkconsistency off]
+
+      Let $k, l, m, n$ denote natural numbers.
+    \end{forthel}
+  }
+
+
+  \section{Addition}
+
+  \subsection{Axioms}
+
+  \begin{forthel}
+    \begin{signature}
+      $n + m$ is a natural number.
+    \end{signature}
+
+    Let the sum of $n$ and $m$ stand for $n + m$.
+
+    \begin{axiom}[1st addition axiom]
+      $n + 0 = n$.
+    \end{axiom}
+
+    \begin{axiom}[2nd addition axiom]
+      $n + \succ(m) = \succ(n + m)$.
+    \end{axiom}
+  \end{forthel}
+
+
+  \subsection{Immediate consequences}
+
+  \begin{forthel}
+    \begin{lemma}
+      $\succ(n) = n + 1$.
+    \end{lemma}
+
+    \begin{corollary}[1st Peano axiom]
+      If $n + 1 = m + 1$ then $n = m$.
+    \end{corollary}
+
+    \begin{corollary}[2nd Peano axiom]
+      For no n we have $n + 1 = 0$.
+    \end{corollary}
+
+    \begin{corollary}[3rd Peano axiom]
+      Let $P$ be a class.
+      Assume $0 \in P$ and for all $n$: $n \in P \implies n + 1 \in P$.
+      Then every natural number is an element of $P$.
+    \end{corollary}
+
+    \begin{corollary}[2nd addition axiom]
+      $n + (m + 1) = (n + m) + 1$.
+    \end{corollary}
+
+    Let $n - 1$ stand for $\pred(n)$.
+
+    \begin{proposition}
+      $(n + 1) - 1 = n$.
+    \end{proposition}
+    \begin{proof}
+      We have $\succ((n + 1) - 1) = n + 1$.
+      Hence $((n + 1) - 1) + 1 = n + 1$.
+      Thus $(n + 1) - 1 = n$.
+    \end{proof}
+
+    \begin{corollary}
+      Let $n$ be nonzero.
+      Then $(n - 1) + 1 = n$.
+    \end{corollary}
+    \begin{proof}
+      Take a natural number $m$ such that $n = m + 1$.
+      Then $(n - 1) + 1 = ((m + 1) - 1) + 1 = m + 1 = n$.
+    \end{proof}
+  \end{forthel}
+
+
+  \subsection{Computation laws}
+
+  \begin{forthel}
+    \begin{proposition}[NN 01 02 468785]
+      For all $n,m,k$ we have \[ n + (m + k) = (n + m) + k. \]
+    \end{proposition}
+    \begin{proof}
+      Define $P = \class{ k \in \mathbb{N} | \text{for all $n,m$: $n + (m + k) = (n + m) + k$}}$.
+
+      (BASE CASE) $0$ is contained in $P$.
+      Indeed $n + (m + 0) = n + m = (n + m) + 0$ for all natural numbers $n,m$.
+
+      (INDUCTION STEP) For all $k$ we have $k \in P \implies k + 1 \in P$. \\
+      Proof.
+        Let $k$ be a natural number.
+         Assume $k \in P$.
+
+        Let us show that $n + (m + (k + 1)) = (n + m) + (k + 1)$ for all natural numbers $n,m$. \\
+          Let $n,m$ be natural numbers.
+          Then $n + m$ is a natural number.
+
+          \[   n + (m + (k + 1)) \]
+          \[ = n + ((m + k) + 1) \]  % 2nd addition axiom
+          \[ = (n + (m + k)) + 1 \]  % 2nd addition axiom
+          \[ = ((n + m) + k) + 1 \]  % Induction hypothesis
+          \[ = (n + m) + (k + 1). \] % by 2nd addition axiom
+
+          Hence the thesis.
+        End.
+
+        Therefore we have $k + 1 \in P$.
+      Qed.
+
+      Thus every natural number is an element of $P$.
+    \end{proof}
+
+
+    \begin{proposition}[NN 01 02 273100]
+      For all $n,m$ we have \[ n + m = m + n. \]
+    \end{proposition}
+    \begin{proof}
+      Define $P = \class{m \in \mathbb{N} | \text{$n + m = m + n$ for all natural numbers $n$}}$.
+
+      (BASE CASE 1) $0$ is an element of $P$. \\
+      Proof.
+        Define $Q = \class{n \in \mathbb{N} | n + 0 = 0 + n}$.
+
+        $0$ belongs to $Q$.
+
+        For all $n$ we have $n \in Q \implies n + 1 \in Q$. \\
+        Proof.
+          Let $n$ be a natural number.
+          Assume $n \in Q$.
+
+          \[   (n + 1) + 0 \]
+          \[ = n + 1 \]        % 1st addition axiom
+          \[ = (n + 0) + 1 \]  % 1st addition axiom
+          \[ = (0 + n) + 1 \]  % Induction hypothesis
+          \[ = 0 + (n + 1). \] % 2nd addition axiom
+        Qed.
+
+        Thus every natural number belongs to $Q$.
+        Therefore $0$ is an element of $P$.
+      Qed.
+
+      (BASE CASE 2) $1$ is contained in $P$. \\
+      Proof.
+        Define $Q = \class{n \in \mathbb{N} | n + 1 = 1 + n}$.
+
+        $0$ is an element of $Q$.
+
+        For all natural numbers $n$ we have $n \in Q \implies n + 1 \in Q$. \\
+        Proof.
+          Let $n$ be a natural number.
+          Assume that $n$ is contained in $Q$.
+
+          \[   (n + 1) + 1 \]
+          \[ = (1 + n) + 1 \]  % Induction hypothesis
+          \[ = 1 + (n + 1). \] % 2nd addition axiom
+        Qed.
+
+        Thus every natural number belongs to $Q$.
+        Therefore $1$ is an element of $P$.
+      Qed.
+
+      (INDUCTION STEP) For all natural numbers $n$ we have $n \in P \implies n + 1 \in P$. \\
+      Proof.
+        Let $n$ be an natural number.
+        Assume $n \in P$.
+
+        $(n + 1) + m = m + (n + 1)$ for all natural numbers $m$. \\
+        Proof.
+          Let $m$ be a natural number.
+
+          \[   (n + 1) + m \]
+          \[ = n + (1 + m) \]  % Associativity of addition
+          \[ = (1 + m) + n \]  % Induction hypothesis
+          \[ = (m + 1) + n \]  % BASE CASE 2
+          \[ = m + (n + 1). \] % Associativity of addition and by BASE CASE 2
+        Qed.
+      Qed.
+
+      Hence every natural number is an element of $P$.
+    \end{proof}
+
+
+    \begin{proposition}[NN 01 02 882987]
+      For all natural numbers $n,m,k$ we have \[ n + k = m + k \implies n = m. \]
+    \end{proposition}
+    \begin{proof}
+      Define $P = \class{k \in \mathbb{N} | \classtext{for all natural numbers $n,m$ if $n + k = m + k$ then $n = m$}}$.
+
+      (BASE CASE) $0$ is an element of $P$.
+
+      (INDUCTION STEP) For all $k$ we have $k \in P \implies k + 1 \in P$. \\
+      Proof.
+        Let $k$ be a natural number.
+        Assume $k \in P$.
+
+        For all natural numbers $n,m$ we have $n + (k + 1) = m + (k + 1) \implies n = m$. \\
+        Proof.
+          Let $n,m$ be natural numbers.
+          Assume $n + (k + 1) = m + (k + 1)$.
+          Then $(n + k) + 1 = (m + k) + 1$.
+          Hence $n + k = m + k$.
+          Thus $n = m$.
+        Qed.
+
+        Hence the thesis.
+      Qed.
+
+      Therefore every natural number is an element of $P$.
+    \end{proof}
+
+
+    \begin{corollary}[NN 01 02 402018]
+      For all $n,m,k$ we have \[ k + n = k + m \implies n = m. \]
+    \end{corollary}
+    \begin{proof}
+      Let $n,m,k$ be natural numbers.
+      Assume $k + n = k + m$.
+      We have $k + n = n + k$ and $k + m = m + k$.
+      Hence $n + k = m + k$.
+      Thus $n = m$.
+    \end{proof}
+  \end{forthel}
+\end{document}

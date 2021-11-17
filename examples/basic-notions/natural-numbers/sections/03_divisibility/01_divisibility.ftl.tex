@@ -1,0 +1,211 @@
+\documentclass[../../natural-numbers.ftl.tex]{subfiles}
+
+\begin{document}
+
+  \typeout{
+    \begin{forthel}
+      [readtex basic-notions/natural-numbers/sections/01_arithmetic/03_multiplication.ftl.tex]
+      [readtex basic-notions/natural-numbers/sections/02_ordering/03_ordering-and-multiplication.ftl.tex]
+
+      [checkconsistency off]
+
+      [synonym divide/-s]
+      [synonym divisor/-s]
+      [synonym factor/-s]
+
+      Let $k,l,m,n$ denote natural numbers.
+    \end{forthel}
+  }
+
+
+  \section{Divisibility}
+
+  \subsection{Definitions}
+
+  \begin{forthel}
+    \begin{definition}
+      $n$ divides $m$ iff there exists a natural number $k$ such that $n \cdot k = m$.
+    \end{definition}
+
+    Let $n \mid m$ stand for $n$ divides $m$.
+    Let $m$ is divisible by $n$ stand for $n$ divides $m$.
+    Let $n \nmid m$ stand for $n$ does not divide $m$.
+
+    \begin{definition}
+      A factor of $n$ is a natural number that divides $n$.
+    \end{definition}
+
+    Let a divisor of $n$ stand for a factor of $n$.
+
+    \begin{definition}
+      $n$ is even iff $n$ is divisible by $2$.
+    \end{definition}
+
+    \begin{definition}
+      $n$ is odd iff $n$ is not divisible by $2$.
+    \end{definition}
+  \end{forthel}
+
+
+  \subsection{Basic properties}
+
+  \begin{forthel}
+    \begin{proposition}[NN 03 01 148842]
+      Every natural number divides $0$.
+    \end{proposition}
+    \begin{proof}
+      Let $n$ be a natural number.
+      We have $n \cdot 0 = 0$.
+      Hence $n \mid 0$.
+    \end{proof}
+
+    \begin{proposition}[NN 03 01 295259]
+      Every natural number that is divisible by $0$ is equal to $0$.
+    \end{proposition}
+    \begin{proof}
+      Let $n$ be a natural number.
+      Assume $0 \mid n$.
+      Take a natural number $k$ such that $0 \cdot k = n$.
+      Then we have $n = 0$.
+    \end{proof}
+
+    \begin{proposition}[NN 03 01 856465]
+      $1$ divides every natural number.
+    \end{proposition}
+    \begin{proof}
+      Let $n$ be a natural number.
+      We have $1 \cdot n = n$.
+      Hence $1 \mid n$.
+    \end{proof}
+
+    \begin{proposition}[NN 03 01 258975]
+      Every natural number $n$ divides $n$.
+    \end{proposition}
+    \begin{proof}
+      Let $n$ be a natural number.
+      We have $n \cdot 1 = n$.
+      Hence $n \mid n$.
+    \end{proof}
+
+    \begin{proposition}[NN 03 01 211137]
+      Every natural number that divides $1$ is equal to $1$.
+    \end{proposition}
+    \begin{proof}
+      Let $n$ be a natural number.
+      Assume $n \mid 1$.
+      Take a natural number $k$ such that $n \cdot k = 1$.
+      Suppose $n \neq 1$.
+      Then $n < 1$ or $n > 1$.
+
+      Case $n < 1$.
+        Then $n = 0$.
+        Hence $0 = 0 \cdot k = n \cdot k = 1$.
+        Contradiction.
+      End.
+
+      Case $n > 1$.
+        We have $k \neq 0$.
+        Indeed if $k = 0$ then $1 = n \cdot k = n \cdot 0 = 0$.
+        Hence $k \geq 1$.
+        Take a positive natural number $l$ such that $n = 1 + l$.
+        Then $1 < 1 + l = n = n \cdot 1 \leq n \cdot k$.
+        Hence $1 < n$.
+        Contradiction.
+      End.
+    \end{proof}
+
+    \begin{proposition}[NN 03 01 364584]
+      We have \[ (\text{$n \mid m$ and $m \mid k$}) \implies n \mid k. \]
+    \end{proposition}
+    \begin{proof}
+      Assume $n \mid m$ and $m \mid k$.
+      Take natural numbers $l,l'$ such that $n \cdot l = m$ and $m \cdot l' = k$.
+      Then $n \cdot (l \cdot l') = (n \cdot l) \cdot l' = m \cdot l' = k$.
+      Hence $n \mid k$.
+    \end{proof}
+
+    \begin{proposition}[NN 03 01 710814]
+      We have \[ n \mid m \implies k \cdot n \mid k \cdot m. \]
+    \end{proposition}
+    \begin{proof}
+      Assume $n \mid m$.
+      Take a natural number $l$ such that $n \cdot l = m$.
+      Then $(k \cdot n) \cdot l = k \cdot (n \cdot l) = k \cdot m$.
+      Hence $k \cdot n \mid k \cdot m$.
+    \end{proof}
+
+    \begin{proposition}[NN 03 01 382863]
+      Assume $k \neq 0$.
+      Then \[ k \cdot n \mid k \cdot m \implies n \mid m. \]
+    \end{proposition}
+    \begin{proof}
+      Assume $k \cdot n \mid k \cdot m$.
+      Take a natural number $l$ such that $(k \cdot n) \cdot l = k \cdot m$.
+      Then $k \cdot (n \cdot l) = k \cdot m$.
+      Hence $n \cdot l = m$.
+      Thus $n \mid m$.
+    \end{proof}
+
+    \begin{proposition}[NN 03 01 210721]
+      If $k \mid n$ and $k \mid m$ then $k \mid (n' \cdot n) + (m' \cdot m)$ for all natural numbers $n',m'$.
+    \end{proposition}
+    \begin{proof}
+      Assume $k \mid n$ and $k \mid m$.
+      Let $n',m'$ be natural numbers.
+      Take natural numbers $l,l'$ such that $k \cdot l = n$ and $k \cdot l' = m$.
+      Then
+
+      \[   k \cdot ((n' \cdot l) + (m' \cdot l')) \]
+      \[ = (k \cdot (n' \cdot l)) + (k \cdot (m' \cdot l')) \]
+      \[ = ((k \cdot n') \cdot l) + ((k \cdot m') \cdot l') \]
+      \[ = (n' \cdot (k \cdot l)) + (m' \cdot (k \cdot l')) \]
+      \[ = (n' \cdot n) + (m' \cdot m). \]
+    \end{proof}
+
+    \begin{corollary}
+      We have \[ (\text{$k \mid n$ and $k \mid m$}) \implies k \mid n + m. \]
+    \end{corollary}
+    \begin{proof}
+      Assume $k \mid n$ and $k \mid m$.
+      Take $n' = 1$ and $m' = 1$.
+      Then $k \mid (n' \cdot n) + (m' \cdot m)$ (by NN 03 01 210721).
+      $(n' \cdot n) + (m' \cdot m) = n + m$.
+      Hence $k \mid n + m$.
+    \end{proof}
+
+    \begin{proposition}[NN 03 01 695362]
+      Assume $k \mid n$ and $k \mid n + m$.
+      Then $k \mid m$.
+    \end{proposition}
+    \begin{proof}
+      Case $k = 0$. Obvious.
+
+      Case $k \neq 0$.
+        Take a natural number $l$ such that $n = k \cdot l$.
+        Take a natural number $l'$ such that $n + m = k \cdot l'$.
+        Then $(k \cdot l) + m = k \cdot l'$.
+        We have $l' \geq l$.
+        Indeed if $l' < l$ then $n + m = k \cdot l' < k \cdot l = n$.
+        Hence we can take a natural number $l''$ such that $l' = l + l''$.
+        Then $(k \cdot l) + m = k \cdot l' = k \cdot (l + l'') = (k \cdot l) + (k \cdot l'')$ (by NN 01 03 539933).
+        Thus $m = (k \cdot l'')$.
+        Therefore $k \mid m$.
+      End.
+    \end{proof}
+
+    \begin{proposition}[NN 03 01 376821]
+      Let $n,m$ be nonzero.
+      If $m \mid n$ then $m \leq n$.
+    \end{proposition}
+    \begin{proof}
+      Assume $m \mid n$.
+      Take a natural number $k$ such that $m \cdot k = n$.
+      If $k = 0$ then $n = m \cdot k = m \cdot 0 = 0$.
+      Thus $k \geq 1$.
+      Assume $m > n$.
+      Then $n = m \cdot k \geq m \cdot 1 = m > n$.
+      Hence $n > n$.
+      Contradiction.
+    \end{proof}
+  \end{forthel}
+\end{document}

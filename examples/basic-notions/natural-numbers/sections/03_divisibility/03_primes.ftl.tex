@@ -1,0 +1,271 @@
+\documentclass[../../natural-numbers.ftl.tex]{subfiles}
+
+\begin{document}
+
+  \typeout{
+    \begin{forthel}
+      [readtex basic-notions/natural-numbers/sections/01_arithmetic/04_exponentiation.ftl.tex]
+      [readtex basic-notions/natural-numbers/sections/02_ordering/04_ordering-and-exponentiation.ftl.tex]
+      [readtex basic-notions/natural-numbers/sections/02_ordering/05_induction.ftl.tex]
+      [readtex basic-notions/natural-numbers/sections/03_divisibility/01_divisibility.ftl.tex]
+      [readtex basic-notions/natural-numbers/sections/03_divisibility/02_euclidean-division.ftl.tex]
+
+      [checkconsistency off]
+
+      [synonym prime/-s]
+
+      Let $k,l,m,n$ denote natural numbers.
+    \end{forthel}
+  }
+
+
+  \section{Primes}
+
+  \subsection{Definitions}
+
+  \begin{forthel}
+    \begin{definition}
+      A trivial divisor of $n$ is a divisor $m$ of $n$ such that $m = 1$ or $m = n$.
+    \end{definition}
+
+    \begin{definition}
+      A nontrivial divisor of $n$ is a divisor $m$ of $n$ such that $m \neq 1$ and $m \neq n$.
+    \end{definition}
+
+    \begin{definition}
+      $n$ is prime iff $n > 1$ and $n$ has no nontrivial divisors.
+    \end{definition}
+
+    Let $n$ is compound stand for $n$ is not prime.
+    Let a prime number stand for a natural number that is prime.
+
+    \begin{definition}
+      $n$ is composite iff $n > 1$ and $n$ has a nontrivial divisor.
+    \end{definition}
+  \end{forthel}
+
+
+  \subsection{Basic properties}
+
+  \begin{forthel}
+    \begin{proposition}[NN 03 03 357744]
+      Let $n > 1$.
+      Then $n$ is prime iff every divisor of $n$ is a trivial divisor of $n$.
+    \end{proposition}
+
+    \begin{proposition}[NN 03 03 175431]
+      $2$ and $3$ are prime.
+    \end{proposition}
+    \begin{proof}
+      Let us show that $2$ is prime.
+        Let $k$ be a divisor of $2$.
+        Then $0 < k \leq 2$.
+        Hence $k = 1$ or $k = 2$.
+        Thus $k$ is a trivial divisor of $2$.
+      End.
+
+      Let us show that $3$ is prime.
+        Let $k$ be a divisor of $3$.
+        Then $0 < k \leq 3$.
+        Hence $k = 1$ or $k = 2$ or $k = 3$.
+
+        $2$ does not divide $3$.
+        Proof.
+          Assume the contrary.
+          Take a natural number $l$ such that $3 = 2 \cdot l$.
+          If $l = 0$ then $3 = 2 \cdot 0 = 0$.
+          If $l = 1$ then $3 = 2 \cdot 1 = 2$.
+          If $l \geq 2$ then $3 = 2 \cdot l \geq 2 \cdot 2 = 4 > 3$.
+          Hence it is wrong that $3 = 2 \cdot l$.
+          Contradiction.
+        Qed.
+
+        Therefore $k = 1$ or $k = 3$.
+        Thus $k$ is a trivial divisor of $3$.
+      End.
+    \end{proof}
+
+    \begin{proposition}[NN 03 03 520376]
+      Let $p$ be a prime number.
+      If $p$ is even then $p = 2$.
+    \end{proposition}
+    \begin{proof}
+      Assume that $p$ is even.
+      Then $2$ divides $p$.
+      Hence $2$ is a trivial divisor of $p$.
+      Thus $p = 2$.
+    \end{proof}
+
+    \begin{proposition}[NN 03 03 130748]
+      Every natural number that is greater than $1$ has a prime divisor.
+    \end{proposition}
+    \begin{proof}
+      Define $P = \class{n \in \mathbb{N} | \text{if $n > 1$ then $n$ has a prime divisor}}$.
+
+      Let us show that for every natural number $n$ if $P$ contains all predecessors of $n$ then $P$ contains $n$.
+        Let $n$ be a natural number.
+        Assume that $P$ contains all predecessors of $n$.
+        $n = 0$ or $n = 1$ or $n$ is prime or $n$ is composite.
+
+        Case $n = 0$ or $n = 1$. Trivial.
+
+        Case $n$ is prime. Obvious.
+
+        Case $n$ is composite.
+          Take a nontrivial divisor $m$ of $n$.
+          Then $1 < m < n$.
+          $m$ is contained in $P$.
+          Hence we can take a prime divisor $p$ of $m$.
+          Then we have $p \mid m \mid n$.
+          Thus $p \mid n$.
+          Therefore $p$ is a prime divisor of $n$.
+        End.
+      End.
+
+      Thus every natural number belongs to $P$ (by NN 02 05 167446).
+    \end{proof}
+
+    \begin{proposition}[NN 03 03 306779]
+      Let $n$ be composite.
+      Then $n$ has a nontrivial divisor $m$ such that $m^{2} \leq n$.
+    \end{proposition}
+    \begin{proof}
+      Define $A = \class{m \in \mathbb{N} | \text{$m$ is a nontrivial divisor of $n$}}$.
+      $A$ contains some natural number.
+      Hence we can take a least natural number $m$ of $A$.
+      Consider a natural number $k$ such that $m \cdot k = n$.
+      Then $m \leq k$.
+      Indeed if $k < m$ then $k$ is the least natural number of $A$.
+      Hence $m^{2} = m \cdot m \leq m \cdot k = n$.
+      Therefore $m^{2} \leq n$.
+    \end{proof}
+
+    \begin{definition}
+      $n$ and $m$ are coprime iff for all nonzero natural numbers $k$ such that $k \mid n$ and $k \mid m$ we have $k = 1$.
+    \end{definition}
+
+    Let $n$ and $m$ are relatively prime stand for $n$ and $m$ are coprime.
+    Let $n$ and $m$ are mutually prime stand for $n$ and $m$ are coprime.
+    Let $n$ is prime to $m$ stand for $n$ and $m$ are coprime.
+
+    \begin{proposition}[NN 03 03 356588]
+      $n$ and $m$ are coprime iff for no prime number $p$ we have $p \mid n$ and $p \mid m$.
+    \end{proposition}
+    \begin{proof}
+      Case $n$ and $m$ are coprime.
+        Let $p$ be a prime number such that $p \mid n$ and $p \mid m$.
+        Then $p$ is nonzero and $p \neq 1$.
+        Contradiction.
+      End.
+
+      Case for no prime number $p$ we have $p \mid n$ and $p \mid m$.
+        Let $k$ be a nonzero natural number such that $k \mid n$ and $k \mid m$.
+        Assume that $k \neq 1$.
+        Consider a prime divisor $p$ of $k$.
+        Then $p \mid k \mid n,m$.
+        Hence $p \mid n$ and $p \mid m$.
+        Contradiction.
+      End.
+    \end{proof}
+
+    \begin{proposition}[NN 03 03 691058]
+      Let $p$ be a prime number.
+      If $p$ does not divide $n$ then $p$ and $n$ are coprime.
+    \end{proposition}
+    \begin{proof}
+      Assume $p \nmid n$.
+      Suppose that $p$ and $n$ are not coprime.
+      Take a nonzero natural number $k$ such that $k \mid p$ and $k \mid n$.
+      Then $k = p$.
+      Hence $p \mid n$.
+      Contradiction.
+    \end{proof}
+
+    \begin{proposition}[NN 03 03 703692]
+      Let $p$ be a prime number.
+      Then \[ p \mid n \cdot m \implies (\text{$p \mid n$ or $p \mid m$}). \]
+    \end{proposition}
+    \begin{proof}
+      Assume $p \mid n \cdot m$.
+
+      Case $p \mid n$. Trivial.
+
+      Case $p \nmid n$.
+        Define $N = \class{x \in \mathbb{N} | \text{$x \neq 0$ and $p \mid x \cdot m$}}$.
+        We have $p \in N$ and $n \in N$.
+        Hence $N$ contains some natural number.
+        Thus we can take a least natural number $n'$ of $N$.
+
+        Let us show that $n'$ divides all elements of $N$.
+          Let $x \in N$.
+          Take natural numbers $q,r$ such that $x = (q \cdot n') + r$ and $r < n'$.
+          Then $x \cdot m = ((q \cdot n') + r) \cdot m = ((q \cdot n') \cdot m) + (r \cdot m)$.
+          We have $p \mid x \cdot m$.
+          Hence $p \mid ((q \cdot n') \cdot m) + (r \cdot m)$.
+          Thus $p \mid r \cdot m$ (by NN 03 01 695362).
+          Indeed $p \mid ((q \cdot n') \cdot m) = (q \cdot (n' \cdot m))$.
+          Indeed $p \mid n' \cdot m$.
+          Therefore $r = 0$.
+          Indeed if $r \neq 0$ then $r$ is an element of $N$ that is less than $n'$.
+          Hence $x = q \cdot n'$.
+          Thus $n'$ divides $x$.
+        End.
+
+        Then we have $n' \mid p$ and $n' \mid n$.
+        Hence $n' = p$ or $n' = 1$.
+        Thus $n' = 1$.
+        Indeed if $n' = p$ then $p \mid n$.
+        Then $1 \in N$.
+        Therefore $p \mid 1 \cdot m = m$.
+      End.
+    \end{proof}
+
+    \begin{proposition}[NN 03 03 119851]
+      Let $k$ be nonzero.
+      Then for all nonzero $n,m$ if $k \cdot m^{2} = n^{2}$ then $k$ is compound.
+    \end{proposition}
+    \begin{proof}
+      Case $k = 1$. Obvious.
+
+      Case $k > 1$.
+        (1) Define \[ P = \class{n \in \mathbb{N} | \classtext{for all natural numbers $m$ if $n$ and $m$ are nonzero and $k \cdot m^{2} = n^{2}$ then $k$ is compound}}. \]
+
+        Let us show that for all natural numbers $n$ if $P$ contains all predecessors of $n$ then $P$ contains $n$.
+          Let $n$ be a natural number.
+          Presume that $P$ contains all predecessors of $n$.
+
+          Let $m$ be a natural number.
+          Assume that $n$ and $m$ are nonzero and $k \cdot m^{2} = n^{2}$.
+
+          Suppose that $k$ is prime.
+          Then $k$ divides $n^{2}$ and $k$ divides $n$.
+          Take a natural number $l$ such that $k \cdot l = n$.
+
+          (2) Then $m^{2} = k \cdot l^{2}$ (by NN 01 03 169506).
+          Indeed $k \cdot m^{2} = (k \cdot l)^{2} = k \cdot (k \cdot l^{2})$.
+
+          (3) $m$ is an element of $P$. \\
+          Proof.
+            We have $n^{2} > m^{2}$ (by NN 02 03 252473).
+            Indeed $k \cdot m^{2} = n^{2}$ and $k > 1$ and $m^{2} > 0$.
+            Hence $m < n$.
+            Indeed if $n \leq m$ then $n^{2} \leq m^{2}$.
+            Thus $m \in P$.
+          Qed.
+
+          (4) $m$ is nonzero.
+          Indeed $m = 0 \implies n^{2} = k \cdot 0^{2} = k \cdot 0 = 0$ and $n^{2} = 0 \implies n = 0$.
+
+          (5) $l$ is nonzero.
+          Indeed $l = 0 \implies m^{2} = k \cdot 0^{2} = k \cdot 0 = 0$ and $m^{2} = 0 \implies m = 0$.
+
+          Therefore $k$ is compound (by 2, 3, 4, 5).
+          Contradiction.
+        End.
+
+        Thus $P$ contains every natural number (by NN 02 05 167446).
+        Hence the thesis (by 1).
+      End.
+    \end{proof}
+  \end{forthel}
+\end{document}
