@@ -60,11 +60,11 @@
       Hence the thesis (by 1).
     \end{proof}
 
-    \begin{lemma}
+    \begin{proposition}[NN 03 02 531279]
       Let $m$ be nonzero.
-      Let $q,q',r,r'$ be natural numbers such that $n = (m \cdot q) + r$ and $n = (m \cdot q') + r'$ and $r,r' < m$.
+      Let $q,q',r,r'$ be natural numbers such that $(m \cdot q) + r = n = (m \cdot q') + r'$ and $r,r' < m$.
       Then $q = q'$ and $r = r'$.
-    \end{lemma}
+    \end{proposition}
     \begin{proof}
       We have $(m \cdot q) + r = (m \cdot q') + r'$.
 
@@ -146,45 +146,5 @@
     \end{definition}
 
     Let the quotient of $n$ over $m$ stand for $n \div m$.
-
-    \begin{definition}
-      Let $k$ be nonzero.
-      $n \equiv m \pmod{k}$ iff $n \mod k = m \mod k$.
-    \end{definition}
-
-    Let $n$ and $m$ are congruent modulo $k$ stand for $n \equiv m \pmod{k}$.
-
-    Let $n',n''$ denote natural numbers.
-
-    \begin{proposition}[NN 03 02 188421]
-      Let $m$ be nonzero.
-      Then \[ n \equiv n \pmod{m}. \]
-    \end{proposition}
-    \begin{proof}
-      We have $n \mod m = n \mod m$.
-      $n \equiv n \pmod{m}$.
-    \end{proof}
-
-    \begin{proposition}[NN 03 02 880545]
-      Let $m$ be nonzero.
-      Then \[ n \equiv n' \pmod{m} \implies n' \equiv n \pmod{m}. \]
-    \end{proposition}
-    \begin{proof}
-      Assume $n \equiv n' \pmod{m}$.
-      Then $n \mod m = n' \mod m$.
-      Hence $n' \mod m = n \mod m$.
-      Thus $n' \equiv n \pmod{m}$.
-    \end{proof}
-
-    \begin{proposition}[NN 03 02 310316]
-      Let $m$ be nonzero.
-      Then \[ (\text{$n \equiv n' \pmod{m}$ and $n' \equiv n'' \pmod{m}$}) \implies n \equiv n'' \pmod{m}. \]
-    \end{proposition}
-    \begin{proof}
-      Assume $n \equiv n' \pmod{m}$ and $n' \equiv n'' \pmod{m}$.
-      Then $n \mod m = n' \mod m$ and $n' \mod m = n'' \mod m$.
-      Hence $n \mod m = n'' \mod m$.
-      Thus $n \equiv n'' \pmod{m}$.
-    \end{proof}
   \end{forthel}
 \end{document}
