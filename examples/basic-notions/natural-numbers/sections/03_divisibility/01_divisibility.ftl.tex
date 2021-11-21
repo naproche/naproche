@@ -6,6 +6,7 @@
     \begin{forthel}
       [readtex basic-notions/natural-numbers/sections/01_arithmetic/03_multiplication.ftl.tex]
       [readtex basic-notions/natural-numbers/sections/02_ordering/03_ordering-and-multiplication.ftl.tex]
+      [readtex basic-notions/natural-numbers/sections/02_ordering/04_ordering-and-exponentiation.ftl.tex]
 
       [checkconsistency off]
 
@@ -124,6 +125,19 @@
       Hence $n \mid k$.
     \end{proof}
 
+    \begin{proposition}[NN 03 01 185910]
+      Let $n$ be nonzero.
+      Assume $n \mid m$ and $m \mid n$.
+      Then $n = m$.
+    \end{proposition}
+    \begin{proof}
+      Take natural numbers $k,k'$ such that $n \cdot k = m$ and $m \cdot k' = n$.
+      Then $n = m \cdot k' = (n \cdot k) \cdot k' = n \cdot (k \cdot k')$.
+      Hence $k \cdot k' = 1$.
+      Thus $k = 1 = k'$.
+      Therefore $n = m$.
+    \end{proof}
+
     \begin{proposition}[NN 03 01 710814]
       We have \[ n \mid m \implies k \cdot n \mid k \cdot m. \]
     \end{proposition}
@@ -206,6 +220,28 @@
       Then $n = m \cdot k \geq m \cdot 1 = m > n$.
       Hence $n > n$.
       Contradiction.
+    \end{proof}
+
+    \begin{proposition}[NN 03 01 499003]
+      Let $n,m$ be nonzero and $k > 1$.
+      Then $k^{n} \mid k^{m}$ iff $n \leq m$.
+    \end{proposition}
+    \begin{proof}
+      Case $k^{n} \mid k^{m}$.
+        Assume $n > m$.
+        Take a nonzero natural number $l$ such that $n = m + l$.
+        Then $k^{n} = k^{m + l} = k^{m} \cdot k^{l}$.
+        Hence $k^{m} \mid k^{n}$.
+        Thus $k^{m} = k^{n}$.
+        Therefore $m = n$.
+        Contradiction.
+      End.
+
+      Case $n \leq m$.
+        Take a natural number $l$ such that $m = n + l$.
+        Then $k^{m} = k^{n + l} = k^{n} \cdot k^{l}$.
+        Hence $k^{n} \mid k^{m}$.
+      End.
     \end{proof}
   \end{forthel}
 \end{document}
