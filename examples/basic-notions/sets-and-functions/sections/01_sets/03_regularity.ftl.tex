@@ -1,0 +1,69 @@
+\documentclass[../../sets-and-functions.ftl.tex]{subfiles}
+
+\typeout{
+  \begin{forthel}
+    [readtex basic-notions/sets-and-functions/sections/01_sets/01_sets.ftl.tex]
+
+    [checkconsistency off]
+
+    Let $u,v,w$ denote elements.
+    Let $x,y,z$ denote sets.
+  \end{forthel}
+}
+
+\begin{document}
+  \section{The axiom of regularity}
+
+  \begin{forthel}
+    \begin{axiom}[Regularity]
+      Every nonempty set $x$ that contains some set contains some set $y$ such that $x$ and $y$ are disjoint.
+    \end{axiom}
+
+    \begin{proposition}[SF 01 03 877283]
+      No set $x$ is an element of $x$.
+    \end{proposition}
+    \begin{proof}
+      Assume the contrary.
+      Take a set $x$ such that $x \in x$.
+      We can take an element $y$ of $\set{x}$ such that $\set{x}$ and $y$ are disjoint (by regularity).
+      Indeed $\set{x}$ contains some set.
+      Then $y = x$.
+      Hence $\set{x}$ and $x$ are disjoint.
+      Contradiction.
+      Indeed $x \in \set{x}$ and $x \in x$.
+    \end{proof}
+
+    \begin{corollary}[SF 01 03 722484]
+      There is no set that contains every set.
+    \end{corollary}
+    \begin{proof}
+      Assume the contrary.
+      Take a set $V$ that contains every set.
+      Then $V$ is an element of $V$.
+      Contradiction.
+    \end{proof}
+
+    \begin{proposition}[SF 01 03 512352]
+      There exist no sets $x,y$ such that $x \in y$ and $y \in x$.
+    \end{proposition}
+    \begin{proof}
+      Assume the contrary.
+      Take sets $x,y$ such that $x \in y$ and $y \in x$.
+      Consider an element $z$ of $\set{x,y}$ such that $\set{x,y}$ and $z$ are disjoint (by regularity).
+      Indeed $\set{x,y}$ contains some set.
+      We have $z = x$ or $z = y$.
+
+      Case $z = x$.
+        Then $x$ and $\set{x,y}$ are disjoint.
+        Hence $y \notin x$.
+        Contradiction.
+      End.
+
+      Case $z = y$.
+        Then $y$ and $\set{x,y}$ are disjoint.
+        Hence $x \notin y$.
+        Contradiction.
+      End.
+    \end{proof}
+  \end{forthel}
+\end{document}
