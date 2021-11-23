@@ -1,0 +1,5 @@
+[synonym domino/dominoes]
+[synonym file/files]
+[synonym integer/integers]
+[synonym rank/ranks]
+[synonym square/squares]
