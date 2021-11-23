@@ -57,14 +57,7 @@
       Assume that $f(u)$ is an element for each $u \in \dom(f)$.
       Then $f$ is a function.
     \end{axiom}
-  \end{forthel}
 
-  \textbf{Important note:} The current version of Naproche\footnote{Isabelle/Naproche 2021} allows to define functions \textit{manually} whose values are not elements.
-  Hence such a manual definition will introduce an inconsistency to the theory.
-  Fortunately the ATP is not able to deduce the existence of a function which contradicts this axiom.
-  So as long as you do not define a non-element-valued function yourself, there will not be any consistency issues (assuming that our is consistent at all).
-
-  \begin{forthel}
     \begin{axiom}[Replacement]
       Let $f$ be a function. % Without this line the following class term would not be parsed successfully.
       There exists a set $y$ such that $y = \class{f(u) | u \in \dom(f)}$.
@@ -343,8 +336,17 @@
       Then $f \circ \const{x}{v} = \const{x}{f(v)}$.
     \end{proposition}
     \begin{proof}
-      We have $\dom(f \circ \const{x}{v}) = \dom(\const{x}{v}) = x = \dom(\const{x}{f(v)})$.
-      $(f \circ \const{x}{v})(u) = f(\const{x}{v}(u)) = f(v) = \const{x}{f(v)}(u)$ for all $u \in x$.
+      We have
+      \[  \dom(f \circ \const{x}{v})
+          = \dom(\const{x}{v})
+          = x
+          = \dom(\const{x}{f(v)}). \]
+
+      For all $u \in x$ we have
+      \[  (f \circ \const{x}{v})(u)
+          = f(\const{x}{v}(u))
+          = f(v)
+          = \const{x}{f(v)}(u). \]
       Hence the thesis (by function extensionality).
     \end{proof}
 

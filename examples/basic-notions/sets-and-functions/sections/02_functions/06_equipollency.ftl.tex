@@ -1,0 +1,71 @@
+\documentclass[../../basic-notions.ftl.tex]{subfiles}
+
+\typeout{
+  \begin{forthel}
+    [readtex basic-notions/sets-and-functions/sections/02_functions/03_invertible-functions.ftl.tex]
+
+    [checkconsistency off]
+
+    Let $u,v,w$ denote elements.
+    Let $x,y,z$ denote sets.
+    Let $f,g,h$ denote functions.
+  \end{forthel}
+}
+
+\begin{document}
+  \section{Equipollency}
+
+  \begin{forthel}
+    \begin{definition}
+      $x$ and $y$ are equipollent iff there exists a bijection between $x$ and $y$.
+    \end{definition}
+
+    Let $x$ and $y$ are equipotent stand for $x$ and $y$ are equipollent.
+
+    \begin{proposition}[SF 01 07 639059]
+      $x$ and $x$ are equipollent.
+    \end{proposition}
+    \begin{proof}
+      $\id{x}$ is a bijection between $x$ and $x$.
+    \end{proof}
+
+    \begin{proposition}[SF 01 07 467393]
+      If $x$ and $y$ are equipollent then $y$ and $x$ are equipollent.
+    \end{proposition}
+    \begin{proof}
+      Assume that $x$ and $y$ are equipollent.
+      Take a bijection $f$ between $x$ and $y$.
+      Then $f^{-1}$ is a bijection between $y$ and $x$.
+      Hence $y$ and $x$ are equipollent.
+    \end{proof}
+
+    \begin{proposition}[SF 01 07 956273]
+      If $x$ and $y$ are equipollent and $y$ and $z$ are equipollent then $x$ and $z$ are equipollent.
+    \end{proposition}
+    \begin{proof}
+      Assume that $x$ and $y$ are equipollent and $y$ and $z$ are equipollent.
+      Take a bijection $f$ between $x$ and $y$.
+      Take a bijection $g$ between $y$ and $z$.
+      Then $g \circ f$ is a bijection between $x$ and $z$.
+      Hence $x$ and $z$ are equipollent.
+    \end{proof}
+
+    \begin{proposition}[SF 01 07 430789]
+      $x$ and $\emptyset$ are equipollent iff $x$ is empty.
+    \end{proposition}
+    \begin{proof}
+      Case $x$ and $\emptyset$ are equipollent.
+        Take a bijection $f$ between $x$ and $\emptyset$.
+        Assume that $x$ is nonempty.
+        Take an element $u$ of $x$.
+        Then $f(u) \in \emptyset$.
+        Contradiction.
+      End.
+
+      Case $x$ is empty.
+        Then $x = \emptyset$.
+        Hence $x$ and $\emptyset$ are equipollent.
+      End.
+    \end{proof}
+  \end{forthel}
+\end{document}
