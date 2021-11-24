@@ -58,8 +58,6 @@ Definition.
     F : B -> C iff Dom F = B and
     F(x) is an element of C for all elements x of B.
 
-#Let F : B -> C stand for Dom F = B and F(x) is an element of C for all elements x of B.
-
 Let g retracts f stand for g(f(x)) = x for all elements x of Dom f.
 Let h sections f stand for f(h(y)) = y for all elements y of Dom h.
     

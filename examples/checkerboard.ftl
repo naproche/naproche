@@ -17,9 +17,10 @@ Definition. An integer mod eight is an integer x
 
 Let m, n, i, j, k, l denote integers mod eight.
 
+Signature. A square is an object x.
+Axiom. (m,n) is a square.
+Axiom. Let x be a square. Then x = (m,n) for some integer mod eight m and some integer mod eight n.
 
-Definition. A square is an object x such that
-    x = (m, n) for some integer mod eight m and some integer mod eight n.
 Let x, y, z denote squares.
 
 Definition. Check = {x | x is a square}.
