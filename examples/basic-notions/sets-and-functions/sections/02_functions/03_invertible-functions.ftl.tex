@@ -6,9 +6,6 @@
 
     [checkconsistency off]
 
-    [synonym inverse/-s]
-    [synonym involution/-s]
-
     Let $u,v,w$ denote elements.
     Let $x,y,z$ denote sets.
     Let $f,g,h$ denote functions.
@@ -43,6 +40,8 @@
         We have $f(u) = v$ iff $g'(v) = u$.
         Thus $g(v) = g'(v)$.
       End.
+
+      Hence the thesis (by function extensionality).
     \end{proof}
 
     \begin{definition}
@@ -128,7 +127,7 @@
       $g \circ f$ is a function from $x$ to $z$.
 
       Let us show that $((g \circ f) \circ h) = \id{z}$.
-        We have $f \circ (f^{-1} \circ g^{-1}) = (f \circ f^{-1}) \circ g^{-1}$.
+        We have $f \circ (f^{-1} \circ g^{-1}) = (f \circ f^{-1}) \circ g^{-1}$ (by function extensionality).
         $f \circ h$ is a function from $z$ to $y$.
         Hence
         \[   (g \circ f) \circ h \]
@@ -141,7 +140,7 @@
       End.
 
       Let us show that $h \circ (g \circ f) = \id{x}$.
-        We have $(f^{-1} \circ g^{-1}) \circ g = f^{-1} \circ (g^{-1} \circ g)$.
+        We have $(f^{-1} \circ g^{-1}) \circ g = f^{-1} \circ (g^{-1} \circ g)$ (by function extensionality).
         $g \circ f$ is a function from $x$ to $z$.
         Hence
         \[   h \circ (g \circ f) \]
