@@ -13,7 +13,7 @@ of the Infinitude of Primes, Formalized in \Naproche{}}
 \newcommand{\val}[2]{#1_{#2}}
 \newcommand{\Prod}[3]{#1_{#2} \cdots #1_{#3}}
 \newcommand{\Seq}[2]{\{#1,\dots,#2\}}
-\newcommand{\Set}[3]{\{#1_{#2},\dots,#1_{#3}\}}
+\newcommand{\FinSet}[3]{\{#1_{#2},\dots,#1_{#3}\}}
 \newcommand{\Primes}{\mathbb{P}}
 \newcommand{\Naproche}{$\mathbb{N}$aproche}
 
@@ -34,37 +34,25 @@ with an Intel Pentium N3710 processor \Naproche{} takes
 around 75 seconds to check this text.
 
 
-\section{\Naproche{} Settings and Notation}
+\section{Importing Standard Preliminaries}
 
 \begin{forthel}
-
-%\begin{lemma} Contradiction. \end{lemma}
-
-[printprover on][dump on]
-
-[synonym number/-s]
-[synonym divide/-s]
-[synonym set/-s] [synonym element/-s] 
-[synonym belong/-s] [synonym subset/-s]
-
+[readtex preliminaries.ftl.tex]
 \end{forthel}
 
 
 \section{Natural Numbers}
-
-In order to be able to form classes and sets of natural numbers 
-natural numbers are introduced as ``small'' objects.
  
 \begin{forthel}
 
-Let $x$ is small stand for $x$ is setsized.
-
-\begin{signature}  A natural number is a small object.
+\begin{signature}  A natural number is a mathematical object.
 \end{signature}
 
 Let $i,k,l,m,n,p,q,r$ denote natural numbers.
 
-\begin{lemma} i is small. \end{lemma}
+\begin{definition} $\mathbb{N}$ is the 
+collection of natural numbers.
+\end{definition}
 
 \begin{signature} $0$ is a natural number.
 \end{signature}
@@ -145,6 +133,13 @@ The following three lemmas show that $\leq$ is a partial order:
 \begin{lemma} If $m \leq n \leq m$ 
 then $m = n$.
 \end{lemma}
+\begin{proof}
+Let $m \leq n \leq m$.
+Take a natural numbers $k,l$ such that 
+$n = m + k$ and $m = n + l$.
+Then $m = m + (k + l)$ and $k + l = 0$ and $k = 0$.
+Hence $m = n$.
+\end{proof}
 
 \begin{lemma} If $m \leq n \leq l$ 
 then  $m \leq l$.
@@ -161,11 +156,6 @@ then  $m \leq l$.
   Then $m * l < m * n$ and $l * m < n * m$.
 \end{lemma}
 
-\begin{axiom} $n = 0$ or $n = 1$ or $1 < n$.
-\end{axiom}
-
-\begin{lemma} If $m \neq 0$ then $n \leq n * m$.
-\end{lemma}
 \end{forthel}
 
 \section{Induction}
@@ -179,6 +169,15 @@ Induction along $<$ is ensured by:
 \begin{forthel}
 \begin{axiom} If $n < m$ then $n \prec m$.
 \end{axiom}
+
+\begin{lemma} For every natural number $n$ $n = 0$ or $n = 1$ or $1 < n$.
+\end{lemma}
+\begin{proof} Proof by induction.
+\end{proof}
+
+\begin{lemma} If $m \neq 0$ then $n \leq n * m$.
+\end{lemma}
+
 \end{forthel}
 
 \section{Division}
@@ -236,39 +235,6 @@ $n$ is prime iff $n$ is nontrivial and
 
 \end{forthel}
 
-\section{Classes}
-
-\begin{forthel}
-
-Let $S,T$ stand for classes.
-Let $x$ belongs to $S$ stand 
-for $x$ is an element of $S$.
-
-\begin{definition} A subclass of $S$ is a class $T$ 
-such that every element of $T$ belongs to $S$.
-\end{definition}
-
-Let $T \subseteq S$ stand for $T$ is a subclass of $S$.
-\end{forthel}
-
-We extend the built-in ontology of \Naproche{}
-according to the following principles for elements and sets:
-\begin{forthel}
-
-\begin{axiom}
-Every element of every class is small.
-\end{axiom}
-
-\begin{axiom}
-Every set is a small class and every small class is a set.
-\end{axiom}
-
-\begin{definition} $\mathbb{N}$ is the 
-class of natural numbers.
-\end{definition}
-
-\end{forthel}
-
 \section{Finite Sequences and Products}
 
 \begin{forthel}
@@ -279,7 +245,7 @@ natural numbers $i$ such that $m \leq i \leq n$.
 \begin{axiom} $\Seq{m}{n}$ is a set. \end{axiom}
 
 \begin{axiom}
-Assume $F$ is a function and $x \in Dom(F)$. Then $F(x)$ is small.
+Assume $F$ is a function and $x \in Dom(F)$. Then $F(x)$ is an object.
 \end{axiom}
 
 \begin{definition} A sequence of length $n$ is a
@@ -289,11 +255,11 @@ function $F$ such that $Dom(F) = \Seq{1}{n}$.
 Let $\val{F}{i}$ stand for $F(i)$.
 
 \begin{definition} Let $F$ be a sequence of length $n$.
-$\Set{F}{1}{n} = \{ \val{F}{i} | i \in Dom(F)\}$.
+$\FinSet{F}{1}{n} = \{ \val{F}{i} | i \in Dom(F)\}$.
 \end{definition}
 
 \begin{signature} Let $F$ be a sequence of length $n$
-such that $\Set{F}{1}{n} \subseteq \mathbb{N}$.
+such that $\FinSet{F}{1}{n} \subseteq \mathbb{N}$.
 $\Prod{F}{1}{n}$ is a natural number.
 \end{signature}
 
@@ -310,8 +276,10 @@ $F(i)$ divides $\Prod{F}{1}{n}$ for every $i \in Dom(F)$.
 
 \begin{forthel}
 
+Let $S$ denote a class.
+
 \begin{definition} $S$ is finite iff 
-$S = \Set{F}{1}{n}$ for some natural number $n$ and some function $F$ that is 
+$S = \FinSet{s}{1}{n}$ for some natural number $n$ and some function $s$ that is 
 a sequence of length $n$.
 \end{definition}
 
@@ -324,7 +292,7 @@ a sequence of length $n$.
 
 \begin{forthel}
 
-\begin{signature} $\Primes$ is the class of prime natural numbers.
+\begin{signature} $\Primes$ is the collection of prime natural numbers.
 \end{signature}
 
 % \begin{lemma} Contradiction. \end{lemma}
@@ -336,26 +304,26 @@ $\Primes$ is infinite.
 \begin{proof}
 Assume that $r$ is a natural number and 
 $p$ is a sequence of length $r$ and
-$\Set{p}{1}{r}$ is a subclass of $\Primes$.
-
-%$\val{p}{i}$ is a nonzero natural number for every $i \in Dom(p)$.
-(1) $\val{p}{i}$ is a nonzero natural number for every $i$ such
-that $1 \leq i \leq r$.
-
+$\FinSet{p}{1}{r}$ is a subclass of $\Primes$.
+$\val{p}{i}$ is a nonzero natural number for every 
+$i \in  Dom p$.
 Consider $n=\Prod{p}{1}{r}+1$.
+[dump on]
+$\Prod{p}{1}{r}$ is nonzero (by Factorproperty). $n$ is nontrivial.
 Take a prime divisor $q$ of $n$.
 
 Let us show that $q \neq \val{p}{i}$ for all $i$ such that 
 $1 \leq i \leq r$.
-
+   
 Proof by contradiction.
 Assume that $q=\val{p}{i}$ for some natural number $i$ such that
 $1 \leq i \leq r$.
-$q$ is a divisor of $n$ and $q$ is a divisor of $\Prod{p}{1}{r}$
+$q$ is a divisor of $n$.
+$q$ is a divisor of $\Prod{p}{1}{r}$
 (by Factorproperty, 1).
 Thus $q$ divides $1$. Contradiction. qed.
 
-Hence $\Set{p}{1}{r}$ is not the class of prime natural numbers.
+Hence $\FinSet{p}{1}{r}$ is not the class of prime natural numbers.
 \end{proof}
 \end{forthel}
 
