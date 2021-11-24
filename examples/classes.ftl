@@ -1,12 +1,8 @@
 [dump on]
-[printcheck on]
 
 Lemma. Every set is a class.
 Lemma. Every set is an object.
 Lemma. Every function is a map.
-
-Let x << X stand for x is an element of X.
-Let x !<< X stand for x is not an element of X.
 
 Definition Subclass.
     Let A be a class.
@@ -38,6 +34,9 @@ Definition.
 Definition.
     A disjoint family is a family F such that
     B is disjoint from C for all nonequal elements B, C of F.
+
+Let x << X stand for x is an element of X.
+Let x !<< X stand for x is not an element of X.
 
 Definition.
     Let B, C be classes.
