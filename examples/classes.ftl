@@ -12,10 +12,6 @@ Definition Subclass.
     Let A be a class.
     A subclass of A is a class B such that every element of B is an element of A.
 
-#Definition Subset.
-#    Let X be a set.
-#    A subset of X is a subclass of X.
-
 Let a subset of X stand for a set that is a subclass of X.
 
 Axiom.
@@ -64,22 +60,15 @@ Definition.
 
 #Let F : B -> C stand for Dom F = B and F(x) is an element of C for all elements x of B.
 
-Let a retraction of f stand for a map g such that g(f(x)) = x for all elements x of Dom f.
-Let a section of f stand for a map h such that f(h(y)) = y for all elements y of Dom h.
-
-#Definition.
-#    Let F be a map.
-#    Let B, C be classes.
-#    F : B <-> C iff F : B -> C and
-#    there exists a retraction G of F such that G is a section of F.
+Let g retracts f stand for g(f(x)) = x for all elements x of Dom f.
+Let h sections f stand for f(h(y)) = y for all elements y of Dom h.
     
 Definition.
     Let F be a map.
     Let B, C be classes.
     F : B <-> C iff F : B -> C and there exists a map G such that
     G : C -> B  and
-    (for all elements x of B we have G(F(x)) = x) and
-    (for all elements y of C we have F(G(y)) = y).
+    G retracts F and G sections F.
 
 Definition.
     Let B, C be sets.
