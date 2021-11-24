@@ -31,6 +31,27 @@
     % Note that we cannot write "x! = y" since this can either be understood as
     % "x! = y" ("x factorial is equal to y") or as "x != y" ("x is not equal to
     % y").
+
+    \begin{proposition}
+      $n!$ is nonzero for any natural number $n$.
+    \end{proposition}
+    \begin{proof}
+      Define $P = \class{n \in \mathbb{N} | n! \neq 0}$.
+
+      (BASE CASE) $P$ contains $0$.
+      Indeed $(0!) = 1 \neq 0$.
+
+      (INDUCTION STEP) For every natural number $n$ we have $n \in P \implies n + 1 \in P$. \\
+      Proof.
+        Let $n$ be a natural number.
+        Assume $n \in P$.
+        We have $((n + 1)!) = (n + 1) \cdot (n!)$.
+        $n + 1$ and $n!$ are nonzero.
+        Hence $(n + 1)!$ is nonzero.
+      Qed.
+
+      Thus $P$ contains every natural number.
+    \end{proof}
   \end{forthel}
 
 \end{document}
