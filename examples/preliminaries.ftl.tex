@@ -1,0 +1,184 @@
+\documentclass[11pt]{article}
+\usepackage{amssymb}
+\usepackage{../lib/tex/naproche}
+
+\author{Peter Koepke, University of Bonn}
+
+\title{A Kelley-Morse-Style Ontology with Objects}
+
+\begin{document}
+
+\newcommand{\val}[2]{#1_{#2}}
+\newcommand{\Prod}[3]{#1_{#2} \cdots #1_{#3}}
+\newcommand{\Seq}[2]{\{#1,\dots,#2\}}
+\newcommand{\FinSet}[3]{\{#1_{#2},\dots,#1_{#3}\}}
+\newcommand{\Primes}{\mathbb{P}}
+\newcommand{\Naproche}{$\mathbb{N}$aproche}
+
+\maketitle
+
+\section{Basic Ideas}
+
+This file provides an ontology for $\mathbb{N}$aproche which
+is close to ordinary mathematical practices. There are
+mathematical objects, and sets and classes of mathematical
+objects. Sets are classes which are objects themselves and
+can be used in further mathematical constructions. Functions
+and maps map objects to objects, where functions are those
+maps which are objects. Sets and functions are required to
+satisfy separation and replacement properties known from the 
+set theories of Kelley-Morse or Zermelo-Fraenkel.
+
+Modelling mathematical notions by objects corresponds
+to the intuition that one does not expect internal set-theoretical
+structurings of numbers, points, etc.. This is also advantageous
+for automated proving since it prevents proof search to
+dig into such internal structurings.
+
+The ontology presented here is more hierarchical then previous
+ad-hoc first-order axiomatizations in some of our formalizations. This
+may lead to more complex and longer ontological checking tasks.
+Controlling the complexitiy of automated proofs will be a major
+issue for the further development of $\mathbb{N}$aproche.
+
+\section{Importing Grammatical Forms}
+We import singular/plural forms of words that will be used in
+our formalizations. In the long run this should be replaced by
+employing a proper English vocabulary.
+
+\begin{forthel}
+[read vocabulary.ftl]
+\end{forthel}
+
+\section{Sets and Classes}
+The notions of \textit{classes} and \textit{sets} are already
+provided by $\mathbb{N}$aproche. Classes can be defined by
+abstraction terms $\{\dots\mid\dots\}$. Since these terms need to be 
+processed by the parser we cannot introduce them simply by first-order
+definitions but have to implement them in the software.
+That sets is are classes which are objects can be proved
+from inbuilt assumptions, but it is important to restate such
+facts to be used in the further proving. 
+
+\begin{forthel}
+Let $S,T$ denote classes. Let $X,Y$ denote sets.
+Let $x$ denote objects.
+
+\begin{lemma} Every set is a class. \end{lemma}
+
+\begin{lemma} Every class that is an object is a set. \end{lemma}
+
+\begin{axiom} Every element of every class is an object.
+\end{axiom}
+
+Let $x$ belongs to $S$ stand for $x$ is an element of $S$.
+Let $z$ is in $M$ stand for $z$ is an element of $M$.
+Let $M$ contains $z$ stand for $z$ is in $M$.
+Let $M,N$ denote classes.
+
+\begin{definition} The empty set is the set that has
+no elements.
+\end{definition}
+  
+\begin{definition}
+A subclass of $S$ is a class $T$ such that every $x \in T$ 
+belongs to $S$.
+\end{definition}
+
+Let $T \subseteq S$ stand for $T$ is a subclass of $S$.
+
+\begin{lemma} [Class Extensionality] If $M$ is a subclass of $N$ and 
+$N$ is a subclass of $M$ then $M = N$.
+\end{lemma}
+
+\begin{definition}
+A subset of $S$ is a set $X$ such that $X \subseteq S$. 
+\end{definition}
+
+\begin{axiom} [Separation Axiom] Assume that $X$ is a set. 
+Let $T$ be a subclass of $X$. Then $T$ is a set.
+\end{axiom}
+
+\end{forthel}
+\section{Pairs and Products}
+Since we prefer objects over sets if possible, we do not work
+with Kuratowski-style set-theoretical ordered pairs, but
+axiomatize them as objects. 
+
+\begin{forthel}
+\begin{axiom}
+For any objects $a,b,c,d$ if $(a,b) = (c,d)$ then $a = c$ 
+and $b = d$.
+\end{axiom}
+
+\begin{definition}
+$M \times N = \{(x,y) | x$ is an element of $M$ and $y$ 
+is an element of $N\}$.
+\end{definition}
+
+\begin{axiom}
+$M \times N$ is a set.
+\end{axiom}
+
+\begin{lemma}
+Let $x,y$ be objects.
+If $(x,y)$ is an element of $M \times N$ then $x$ is an 
+element of $M$ and $y$ is an element of $N$.
+\end{lemma}
+
+\end{forthel}
+\section{Functions and Maps}
+The treatment of functions and maps is similar to that
+of sets and classes.
+\begin{forthel}
+
+\begin{lemma} Every function is a map.
+\end{lemma}
+
+\begin{lemma} Every map that is an object is a function.
+\end{lemma}
+
+Let $f,g$ stand for maps.
+Let the value of $f$ at $x$ stand for $f(x)$.
+Let the domain of $f$ stand for $Dom f$.
+
+\begin{lemma} The domain of every map is a class.
+\end{lemma}
+
+\begin{lemma} If $x \in Dom(f)$ then $f(x)$ is an object.
+\end{lemma}
+
+\begin{lemma} [Functional Extensionality] Let $Dom(f)=Dom(g)$ and for every $x \in Dom(f)$
+$f(x)=g(x)$. Then $f=g$.
+\end{lemma}
+
+Let $f$ is defined on $M$ stand for the domain of $f$ is 
+equal to $M$.
+
+
+\begin{definition}
+Assume $M$ is a subclass of the domain of $f$. 
+$f[M] = \{ f(x) | x \in M \}$.
+\end{definition}
+
+\begin{axiom} [Replacement Axiom]
+Assume $M$ is a subset of the domain of $f$. 
+Then $f[M]$ is a set.
+\end{axiom}
+
+\begin{signature} [RanSort]  $Ran(f)$ is a set.
+\end{signature}
+
+Let $B$ denote a class.
+
+\begin{definition} [DefDom]  $f$ is on $B$ iff 
+$Dom(f) = Ran(f) = B$.
+\end{definition}
+
+\begin{axiom} [ImgSort]  Let $x$ belong to $Dom(f)$.
+    $f(x)$ is an element of $Ran(f)$.
+\end{axiom}
+
+\end{forthel}
+
+\end{document}
