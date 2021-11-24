@@ -12,8 +12,7 @@ Signature. 5 is a integer.
 Signature. 6 is a integer.
 Signature. 7 is a integer.
 
-#Definition. Z8 = {1, 2, 3, 4, 5, 6, 7}.
-Definition. an integer mod eight is an integer x
+Definition. An integer mod eight is an integer x
   such that x = 0 or x = 1 or x = 2 or x = 3 or x = 4 or x = 5 or x = 6 or x = 7.
 
 Let m, n, i, j, k, l denote integers mod eight.
@@ -32,8 +31,7 @@ Let the checkerboard stand for Check.
 #    Let A, B be sets.
 #    If A is a subset of B and B is a subset of A then A = B.
 
-#Axiom. Check is Dedekind finite.
-Axiom. Every subset of Check is Dedekind finite. ## TODO replace with the above.
+Axiom. Every subset of Check is Dedekind finite.
 
 Definition. Corners = {(0,0), (7,7)}.
 
