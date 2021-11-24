@@ -26,11 +26,6 @@ Definition. Check = {x | x is a square}.
 Axiom. Check is a set.
 Let the checkerboard stand for Check.
 
-
-#Theorem Ext.
-#    Let A, B be sets.
-#    If A is a subset of B and B is a subset of A then A = B.
-
 Axiom. Every subset of Check is Dedekind finite.
 
 Definition. Corners = {(0,0), (7,7)}.
