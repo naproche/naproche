@@ -1,9 +1,5 @@
 \begin{forthel}
-  [synonym belong/-s]
-  [synonym contain/-s]
-  [synonym element/-s]
-  [synonym lie/-s]
-  [synonym member/-s]
+  [read vocab.ftl]
 
   Let $x$ and $y$ agree stand for $x = y$.
 
@@ -14,8 +10,37 @@
   Let $x$ lies in $X$ stand for $x$ is an element of $X$.
 
   \begin{axiom}
-    Every element is an element of some set.
+    Let $x$ be an element.
+    Then $x$ is contained in some class.
     % We need this axiom to ensure that the proof tasks for low-level class
     % definitions pass
   \end{axiom}
+
+  \begin{lemma}
+    Let $x$ be a set.
+    Then $x$ is a class that is an element.
+  \end{lemma}
+
+  \begin{lemma}
+    Let $x$ be a class.
+    Assume that $x$ is an element.
+    Then $x$ is a set.
+  \end{lemma}
+
+  \begin{lemma}
+    Let $f$ be a map.
+    Assume that $f$ is an element.
+    Then $f$ is a function.
+  \end{lemma}
+
+  \begin{lemma}
+    Let $f$ be a function.
+    Then $f$ is a map that is an element.
+  \end{lemma}
+
+  \begin{lemma}
+    Let $f$ be a map.
+    Let $u \in \dom(f)$.
+    Then $f(u)$ is an element.
+  \end{lemma}
 \end{forthel}

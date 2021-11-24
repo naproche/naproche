@@ -72,8 +72,8 @@ for Mathematical Knowledge Management} lists a couple of formalizations.
 % Maybe this can be mentioned as an area for improvement in the subsequent section?
 \begin{comment}
 \begin{forthel}
-    [read ZFC.ftl]
-    [synonym rank/ranks] [synonym file/files] [synonym square/squares] [synonym domino/dominoes]
+    [read classes.ftl]
+    [read vocab.ftl]
 \end{forthel}
 \end{comment}
 
@@ -85,39 +85,24 @@ In future versions these signature declarations will be grouped together as a si
 
 \Naproche{} allows us to group elements into \textit{classes} and \textit{sets} as long as they are \textit{setsized} (informally also called \textit{small}).
 \begin{forthel}
-    \begin{signature} A rank is a notion. \end{signature}
-    Let $r, s$ denote ranks.
+    \begin{signature} An integer is an object. \end{signature}
 
-    \begin{axiom} $r$ is setsized. \end{axiom}
-
-    \begin{signature} $1$ is a rank. \end{signature}
-    \begin{signature} $2$ is a rank. \end{signature}
-    \begin{signature} $3$ is a rank. \end{signature}
-    \begin{signature} $4$ is a rank. \end{signature}
-    \begin{signature} $5$ is a rank. \end{signature}
-    \begin{signature} $6$ is a rank. \end{signature}
-    \begin{signature} $7$ is a rank. \end{signature}
-    \begin{signature} $8$ is a rank. \end{signature}
-
-    \begin{definition} $\Rank = \{1,2,3,4,5,6,7,8\}$. \end{definition}
-
-    \begin{signature} A file is a notion. \end{signature}
-    Let $f, g$ denote files.
-
-    \begin{axiom} $f$ is setsized. \end{axiom}
-
-    \begin{signature} $\fileA$ is a file. \end{signature}
-    \begin{signature} $\fileB$ is a file. \end{signature}
-    \begin{signature} $\fileC$ is a file. \end{signature}
-    \begin{signature} $\fileD$ is a file. \end{signature}
-    \begin{signature} $\fileE$ is a file. \end{signature}
-    \begin{signature} $\fileF$ is a file. \end{signature}
-    \begin{signature} $\fileG$ is a file. \end{signature}
-    \begin{signature} $\fileH$ is a file. \end{signature}
+    \begin{signature} $0$ is a integer. \end{signature}
+    \begin{signature} $1$ is a integer. \end{signature}
+    \begin{signature} $2$ is a integer. \end{signature}
+    \begin{signature} $3$ is a integer. \end{signature}
+    \begin{signature} $4$ is a integer. \end{signature}
+    \begin{signature} $5$ is a integer. \end{signature}
+    \begin{signature} $6$ is a integer. \end{signature}
+    \begin{signature} $7$ is a integer. \end{signature}
 
     \begin{definition}
-        $\File = \{\fileA,\fileB,\fileC,\fileD,\fileE,\fileF,\fileG,\fileH\}$.
+        An integer mod eight is an integer $x$
+        such that $x = 0$ or $x = 1$ or $x = 2$ or $x = 3$ or $x = 4$ 
+        or $x = 5$ or $x = 6$ or $x = 7$.
     \end{definition}
+
+    Let m, n, i, j, k, l denote integers mod eight.
 
     \begin{signature} A square is a notion. \end{signature}
     \begin{axiom} $(f, r)$ is a square. \end{axiom}
@@ -257,8 +242,8 @@ have the same cardinality iff there is a bijection between them.
     % Use symbolic quantifiers to avoid uncanny valley of parenthesized natural language text?
     %
     \begin{lemma}
-        Assume that A is equinumerous with B and B is equinumerous with C.
-        Then A is equinumerous with C.
+        Assume that $A$ is equinumerous with $B$ and $B$ is equinumerous with $C$.
+        Then $A$ is equinumerous with $C$.
     \end{lemma}
     \begin{proof}
         Take a function $F$ such that $F : A \leftrightarrow B$.

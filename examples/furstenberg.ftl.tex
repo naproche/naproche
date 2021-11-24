@@ -1,0 +1,259 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[british]{babel}
+\usepackage{amsfonts}
+\usepackage{xurl}
+
+\usepackage{../lib/tex/naproche}
+\usepackage{../lib/tex/basicnotions}
+
+\newcommand{\N}[2]{\mathrm{N}_{#1,#2}}
+
+\title{Furstenberg's proof of the infinitude of primes}
+\author{Andrei Paskevich (2007), \\
+Marcel Schütz (2021)}
+\date{}
+
+
+\begin{document}
+  \maketitle
+
+  Furstenberg's proof of the infinitude of primes is a topological proof of the
+  fact that there are infinitely many primes.
+  It was published 1955 while Furstenberg was still an undergraduate
+  student.\footnote{Furstenberg, Harry. “On the Infinitude of Primes.” The
+  American Mathematical Monthly, vol. 62, no. 5, 1955, pp. 353–353}
+  The following formalization of his proof is based on the notions of natural
+  numbers and sets provided by the following files:
+
+  \begin{itemize}
+    \item \url{$NAPROCHE/examples/basic-notions/natural-numbers/sections/03_divisibility/03_modular-arithmetic.ftl.tex}
+    \item \url{$NAPROCHE/examples/basic-notions/natural-numbers/sections/03_divisibility/04_primes.ftl.tex}
+    \item \url{$NAPROCHE/examples/basic-notions/sets-and-functions/sections/01_sets/02_powerset.ftl.tex}
+  \end{itemize}
+
+  \typeout{
+    \begin{forthel}
+      [readtex basic-notions/natural-numbers/sections/03_divisibility/03_modular-arithmetic.ftl.tex]
+      [readtex basic-notions/natural-numbers/sections/03_divisibility/04_primes.ftl.tex]
+      [readtex basic-notions/sets-and-functions/sections/01_sets/02_powerset.ftl.tex]
+    \end{forthel}
+  }
+
+  The central idea of Furstenberg's proof is to define a certain topology on
+  $\mathbb{N}$ from the properties of which we can deduce that the set of
+  primes is infinite.\footnote{Actually, Furstenberg's proof makes use of a
+  topology on $\mathbb{Z}$. But this topology can as well be restricted to
+  $\mathbb{N}$ without substantially changing the proof.}
+  To do so, let us begin with a few preliminaries about natural numbers.
+
+  \begin{forthel}
+    \begin{axiom}
+      $\mathbb{N}$ is a set.
+    \end{axiom}
+
+    Let $n,m,k$ denote natural numbers.
+    Let $p,q$ denote nonzero natural numbers.
+
+    \begin{definition}
+      Let $A$ be a subset of $\mathbb{N}$.
+      $A^{\complement} = \mathbb{N} \setminus A$.
+    \end{definition}
+
+    Let the complement of $A$ stand for $A^{\complement}$.
+  \end{forthel}
+
+  Towards a suitable topology on $\mathbb{N}$ let us define \textit{arithmetic
+  sequences} $\N{n}{q}$ on $\mathbb{N}$.
+
+  \begin{forthel}
+    \begin{definition}
+      $\N{n}{q} = \{ m \in \mathbb{N} \mid m \equiv n \pmod{q} \}$.
+    \end{definition}
+  \end{forthel}
+
+  This allows us to define the \textit{evenly spaced natural number
+  topology} on $\mathbb{N}$, whose open sets are defined as follows.
+
+  \begin{forthel}
+    \begin{definition}
+      Let $U$ be a subset of $\mathbb{N}$.
+      $U$ is open iff for any $n \in U$ there exists a $q$ such that $\N{n}{q} \subseteq U$.
+    \end{definition}
+
+    \begin{definition}
+    A system of open sets is a system of sets $S$ such that every element of $S$ is an open subset of $\mathbb{N}$.
+    \end{definition}
+  \end{forthel}
+
+  We can show that the open sets form a topology on $\mathbb{N}$.
+
+  \begin{forthel}
+    \begin{lemma}
+      $\mathbb{N}$ and $\emptyset$ are open.
+    \end{lemma}
+
+    \begin{lemma}
+      Let $U,V$ be open subsets of $\mathbb{N}$.
+      Then $U \cap V$ is open.
+    \end{lemma}
+    \begin{proof}
+      $U \cap V$ is a subset of $\mathbb{N}$.
+      Let $n \in U \cap V$.
+      Take $q$ such that $\N{n}{q} \subseteq U$.
+      Take $p$ such that $\N{n}{p} \subseteq V$.
+
+      Let us show that $\N{n}{p \cdot q} \subseteq U \cap V$.
+        Let $m \in \N{n}{p \cdot q}$.
+        We have $m \equiv n \pmod{p \cdot q}$.
+        Hence $m \equiv n \pmod{p}$ and $m \equiv n \pmod{q}$.
+        Thus $m \in \N{n}{p}$ and $m \in \N{n}{q}$.
+        Therefore $m \in U$ and $m \in V$.
+        Consequently $m \in U \cap V$.
+      End.
+    \end{proof}
+
+    \begin{lemma}
+      Let $S$ be a system of open sets.
+      Then $\bigcup S$ is an open set.
+    \end{lemma}
+    \begin{proof}
+      Let $n \in \bigcup S$.
+      Take a set $M$ such that $n \in M \in S$.
+      Consider a $q$ such that $\N{n}{q} \subseteq M$.
+      Then $\N{n}{q} \subseteq \bigcup S$.
+    \end{proof}
+  \end{forthel}
+
+  Now that we have a topology of open sets on $\mathbb{N}$, we can continue
+  with a characterization of closed sets.
+  Their key property is that they are closed under \textit{finite} unions.
+  Since we cannot provide a proper definition of finiteness in the context of
+  this formalization, we cannot prove this closedness condition.
+  All we can do is to prove that the union of \textit{two} closed sets remains
+  closed.
+  Having shown this little fact we will introduce the notion of finiteness
+  axiomatically and state that every finite union of closed sets is indeed
+  closed.
+  Actually this condition is all we need to know about finiteness to prove that
+  there are infinitely many primes.
+
+  \begin{forthel}
+    \begin{definition}
+      Let $A$ be a subset of $\mathbb{N}$.
+      $A$ is closed iff $A^{\complement}$ is open.
+    \end{definition}
+
+    \begin{definition}
+      A system of closed sets is a system of sets $S$ such that every element of $S$ is a closed subset of $\mathbb{N}$.
+    \end{definition}
+
+    \begin{lemma}
+      Let $A,B$ be closed subsets of $\mathbb{N}$.
+      Then $A \cup B$ is closed.
+    \end{lemma}
+    \begin{proof}
+      % The LHS of the following equation must be put in parentheses due to a
+      % bug in Naproche's parser.
+      We have $((A \cup B)^{\complement}) = A^{\complement} \cap B^{\complement}$.
+      $A^{\complement}$ and $B^{\complement}$ are open.
+      Hence $A^{\complement} \cap B^{\complement}$ is open.
+      Thus $A \cup B$ is closed.
+    \end{proof}
+
+    \begin{signature}
+      Let $X$ be a set.
+      $X$ is finite is an atom.
+    \end{signature}
+
+    Let $X$ is infinite stand for $X$ is not finite.
+
+    \begin{axiom}
+      Let $S$ be a finite system of closed sets.
+      Then $\bigcup S$ is closed.
+    \end{axiom}
+  \end{forthel}
+
+  An important step towards Furstenberg's proof is to show that the arithmetic
+  sequences are closed.
+
+  \begin{forthel}
+    \begin{lemma}
+      $\N{n}{q}$ is a closed subset of $\mathbb{N}$.
+    \end{lemma}
+    \begin{proof}
+      Proof by contradiction.
+      Let $m \in (\N{n}{q})^{\complement}$.
+
+      Let us show that $\N{m}{q} \subseteq (\N{n}{q})^{\complement}$.
+        Let $k \in \N{m}{q}$.
+        Assume $k \notin (\N{n}{q})^{\complement}$.
+        Then $k \equiv m \pmod{q}$ and $n \equiv k \pmod{q}$.
+        Hence $m \equiv n \pmod{q}$.
+        Therefore $m \in \N{n}{q}$.
+        Contradiction.
+      End.
+    \end{proof}
+  \end{forthel}
+
+  Finally, to show that there are infinitely many primes we identify a prime
+  number $p$ with the arithmetic sequence $\N{0}{p}$.
+  In fact we could prove that there exists a bijection between the set of all
+  prime numbers and the set of all arithmetic sequences of this form.
+  But this would go beyond the scope of this formalization.
+
+  \begin{forthel}
+    \begin{definition}
+      $\mathbb{P} = \{ \N{0}{p} \mid \text{$p$ is a prime number} \}$.
+    \end{definition}
+
+    \begin{lemma}
+      $\mathbb{P}$ is a set.
+    \end{lemma}
+    \begin{proof}
+      Every element of $\mathbb{P}$ is a subset of $\mathbb{N}$.
+      Hence every element of $\mathbb{P}$ is contained in $\pow(\mathbb{N})$.
+      Thus $\mathbb{P}$ is a set.
+    \end{proof}
+
+    \begin{theorem}[Furstenberg]
+      $\mathbb{P}$ is infinite.
+    \end{theorem}
+    \begin{proof}
+      Proof by contradiction.
+
+      Let us show that for any natural number $n$ $n$ belongs to $\bigcup \mathbb{P}$ iff $n$ has a prime divisor.
+        Let $n$ be a natural number.
+
+        If $n$ has a prime divisor then $n$ belongs to $\bigcup \mathbb{P}$. \\
+        Proof.
+          Assume $n$ has a prime divisor.
+          Take a prime divisor $p$ of $n$.
+          We have $\N{0}{p} \in \mathbb{P}$.
+          Hence $n \in \N{0}{p}$.
+        Qed.
+
+        If $n$ belongs to $\bigcup \mathbb{P}$ then $n$ has a prime divisor. \\
+        Proof.
+          Assume $n$ belongs to $\bigcup \mathbb{P}$.
+          Take a prime number $r$ such that $n \in \N{0}{r}$.
+          Hence $n \equiv 0 \pmod{r}$.
+          Thus $n \mod r = 0 \mod r = 0$.
+          Therefore $r$ is a prime divisor of $n$.
+        Qed.
+      End.
+
+      Thus we have $(\bigcup \mathbb{P})^{\complement} = \set{1}$.
+      Indeed for any natural number $n$ if $n$ has no prime divisor then we have $n = 1$.
+      Assume that $\mathbb{P}$ is finite.
+      Then $\bigcup \mathbb{P}$ is closed and $(\bigcup \mathbb{P})^{\complement}$ is open.
+      Take a $p$ such that $\N{1}{p} \subseteq (\bigcup \mathbb{P})^{\complement}$.
+      $1 + p$ is an element of $\N{1}{p}$.
+      Indeed $1 + p \equiv 1 \pmod{p}$.
+      $1 + p$ is not equal to $1$.
+      Hence $1 + p \notin (\bigcup \mathbb{P})^{\complement}$.
+      Contradiction.
+    \end{proof}
+  \end{forthel}
+\end{document}

@@ -539,7 +539,7 @@ texCases = do
     line = do
       value <- chooseInTerm
       symbol "&"
-      opt () (symbol ":")
+      optLL1 () (symbol ":")
       condition <- optionallyInText statement
       return (Tag Condition . Imp condition . value)
 

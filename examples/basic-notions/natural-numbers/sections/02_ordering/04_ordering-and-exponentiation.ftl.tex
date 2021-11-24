@@ -184,13 +184,17 @@
 
           For all natural numbers $n$ if $k > 1$ and $n < m + 1$ then $k^{n} < k^{m + 1}$. \\
           Proof.
-            Let $n$ be natural numbers.
-            Assume $k > 1$ and $n < m + 1$.
+            Let $n$ be natural numbers such that $k > 1$ and $n < m + 1$.
             Then $n \leq m$.
             We have $k^{m} \cdot 1 < k^{m} \cdot k$.
             Indeed $k^{m} \neq 0$.
-            If $n = m$ then $k^{n} = k^{m} < k^{m} \cdot k = k^{m + 1}$.
-            If $n < m$ then $k^{n} < k^{m} < k^{m} \cdot k = k^{m + 1}$.
+            Case $n = m$.
+              Then $k^{n} = k^{m} < k^{m} \cdot k = k^{m + 1}$.
+            End.
+
+            Case $n < m$.
+              Then $k^{n} < k^{m} < k^{m} \cdot k = k^{m + 1}$.
+            End.
           Qed.
         Qed.
 

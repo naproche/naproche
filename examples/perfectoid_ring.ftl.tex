@@ -1,0 +1,426 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amssymb, mathtools}
+\usepackage{xurl}
+
+\usepackage{../lib/tex/naproche}
+
+\title{A Shallow Formalization of Perfectoid Rings in the
+\Naproche{} Natural Language Proof Assistant}
+\author{Peter Koepke\\
+University of Bonn}
+
+\newcommand{\card}[1]{\operatorname{card}(#1)}
+\newcommand{\Naproche}{$\mathbb{N}$aproche}
+
+\begin{document}
+
+\maketitle
+
+We define \textit{perfectoid rings} in \Naproche{} with the main intention to approximate
+the language of definitions and
+to the mathematical \textit{language} of Definition 3.1 in
+Peter Scholze, \textit{Étale cohomology of diamonds} and of other material leading up
+to that definition.
+This requires to iteratively formalize
+defining notions, down to undefined basic notions.
+The formalization is shallow as we do not prove well-definedness or lemmas about
+newly defined notions. As an example, for the definition of topologically nilpotent
+we introduce the notation $x^{n,S}$ for an $n$-th power in a ring $S$, but there are
+no inductive definitions or axioms about this term except that it should be an element
+of $S$. Also the natural numbers $n$ carry no arithmetic structure.
+Such properties would have to be axiomatized in detail for a deeper formalization.
+We think, however, that the undefined notions in this text are basic enough so that an
+extension to a complete formalization is possible.
+
+As a further simplification we circumvent certain constructions like quotients of rings,
+and we express a property like
+\[ \Phi^{R} : R^o / \omega \cong R^o / \omega^{p,R}. \]
+via congruences mod $\omega$ or mod $\omega^{p,R}$ resp.. Note that we
+have to repeat the variable $R$ for a ring throughout the document since
+we do not have automatic type elaboration as in Lean. This should be
+provided in future versions of \Naproche{}.
+
+This text is written as a file
+\texttt{perfectoidring.ftl.tex}
+in the \LaTeX{} dialect of \Naproche{} and
+typeset by pdf-\LaTeX. The formal parts are printed on a grey background. Everything else
+is interpreted as commentary that is not subject to the logical checking by the system.
+\texttt{perfectoidring.ftl.tex}
+can be checked in the \Naproche{} program by opening the file in Isabelle (see
+\texttt{https://isabelle.in.tum.de/}).
+The main burden is the ``type checking'' of statements, i.e., that the preconditions
+for complex terms are satisfied. These checks can take several seconds and involve
+first-order proving since we do not use a standard type theory with fast type checking
+algorithms.
+
+
+\section{Sets and natural numbers}
+
+A somewhat odd collection of notations and properties for classes and sets is
+built into \Naproche{}.
+Further premises needed in the formalization are imported from:
+
+\begin{itemize}
+  \item \url{$NAPROCHE/examples/basic-notions/sets-and-functions/01_sets/01_sets.ftl.tex}
+  \item \url{$NAPROCHE/examples/basic-notions/natural-numbers/03_divisibility/04_primes.ftl.tex}
+\end{itemize}
+
+\typeout{
+  \begin{forthel}
+    [readtex basic-notions/sets-and-functions/sections/01_sets/01_sets.ftl.tex]
+    [readtex basic-notions/natural-numbers/sections/03_divisibility/04_primes.ftl.tex]
+  \end{forthel}
+}
+
+\begin{forthel}
+  Let $n,m$ denote natural numbers.
+\end{forthel}
+
+
+\section{Rings}
+
+We work with commutative rings with 1's. Since we
+do not really do arithmetic in this text, we can take the natural numbers
+$0$ and $1$ as the neutral elements of all occuring rings, and
+we can even assume that every natural number is a ring element.
+
+\begin{forthel}
+  \begin{signature}
+    A ring is a set.
+  \end{signature}
+
+  Let $S$ denote a ring.
+
+  \begin{axiom}
+    Every natural number is an element of $S$.
+  \end{axiom}
+
+  \begin{signature}
+    Let $x \in S$.
+    $-^{S} x$ is an element of $S$.
+  \end{signature}
+
+  \begin{signature}
+    Let $x,y \in S$.
+    $x +^{S} y$ is an element of $S$.
+  \end{signature}
+
+  \begin{signature}
+    Let $x,y \in S$.
+    $x \cdot^{S} y$ is an element of $S$.
+  \end{signature}
+
+  \begin{axiom}
+    $(x +^{S} y) +^{S} z = x +^{S} (y +^{S} z)$ for all $x,y,z \in S$.
+  \end{axiom}
+
+  \begin{axiom}
+    $x +^{S} 0 = x$ for all $x \in S$.
+  \end{axiom}
+
+  \begin{axiom}
+    $x +^{S} -^{S} x = 0$ for all $x \in S$.
+  \end{axiom}
+
+  \begin{axiom}
+    $x +^{S} y = y +^{S} x$ for all $x,y \in S$.
+  \end{axiom}
+
+  \begin{axiom}
+    $(x \cdot^{S} y) \cdot^{S} z = x \cdot^{S} (y \cdot^{S} z)$ for all $x,y,z \in S$.
+  \end{axiom}
+
+  \begin{axiom}
+    $x \cdot^{S} 1 = x$ for all $x \in S$.
+  \end{axiom}
+
+  \begin{axiom}
+    $x \cdot^{S} y = y \cdot^{S} x$ for all $x,y \in S$.
+  \end{axiom}
+
+  \begin{axiom}
+    $(x +^{S} y) \cdot^{S} z = (x \cdot^{S} z) +^{S} (y \cdot^{S} z)$ for all $x,y,z \in S$.
+  \end{axiom}
+\end{forthel}
+
+As an example we formalize a trivial lemma and its proof.
+
+\begin{forthel}
+  \begin{lemma}
+    $ 0 \cdot^{S} x = 0$ for all $x \in S$.
+  \end{lemma}
+  \begin{proof}
+    Let $x \in S$.
+    $(0 \cdot^{S} x) +^{S} x = (0 \cdot^{S} x) +^{S} (1 \cdot^{S} x) = (0 +^{S} 1) \cdot^{S} x =  1 \cdot^{S} x = x $.
+    $ 0 \cdot^{S} x = (0 \cdot^{S} x) +^{S} (-^{S}x +^{S} x) = 0$.
+  \end{proof}
+
+  \begin{definition}
+    A subring of $S$ is a subset $T$ of $S$ such that
+
+    $0, 1 \in T$ and
+
+    (for all $x,y \in S$ $x +^{S} y \in S$) and
+
+    (for all $x \in S$ $-^{S} x \in S$) and
+
+    (for all $x,y \in S$ $x +^{S} y \in S$).
+  \end{definition}
+
+  \begin{lemma}
+    $S$ is a subring of $S$.
+  \end{lemma}
+
+  \begin{definition}
+    A unit in $S$ is an element $x$ of $S$ such that $x \cdot^{S} y = 1$ for some element $y$ of $S$.
+  \end{definition}
+
+  \begin{definition}
+    Let $x,y \in S$.
+    Let $X$ be a subset of $S$.
+    $x$ divides $y$ in $X$ within $S$ iff $x \cdot^{S} z = y$ for some element $z$ of $X$.
+  \end{definition}
+
+  Let $x | y$ in $X$ within $S$ stand for $x$ divides $y$ in $X$ within $S$.
+
+  Let $x -^{S} y$ stand for $x +^{S} -^{S} y$.
+
+  Let $x \equiv y$ mod $a,X$ within $S$ stand for $a$ divides $x-^{S} y$ in $X$ within $S$.
+\end{forthel}
+
+It suffices to introduce powers of ring elements formally:
+
+\begin{forthel}
+  \begin{signature}
+    Let $x \in S$.
+    $x^{n,S}$ is an element of $S$.
+  \end{signature}
+\end{forthel}
+
+
+\section{Topological rings}
+
+\begin{forthel}
+  \begin{signature}
+    A topological ring is a ring.
+  \end{signature}
+
+  Let $R$ denote a topological ring.
+
+  \begin{signature}
+    Assume that $X$ is a subset of $R$.
+    $X$ is open in $R$ is an atom.
+  \end{signature}
+
+  \begin{axiom}
+    $\emptyset$, $R$ are open in $R$.
+  \end{axiom}
+
+  \begin{axiom}
+    Let $X,Y$ be subsets of $R$ that are open in $R$.
+    Then $X \cap Y$ is open in $R$.
+  \end{axiom}
+
+  \begin{axiom}
+    Let $Z$ be a set such that every element of $Z$ is a subset of $R$ that is open in $R$.
+    Then $\bigcup Z$ is open in $R$.
+  \end{axiom}
+
+  \begin{axiom}
+    For every subset $C$ of $R$ that is open in $R$ there exist subsets $A,B$ of $R$ such that
+    $A,B$ are open in $R$ and ($x +^{R} y \in C$ where  $x \in A$ and $y \in B$).
+  \end{axiom}
+
+  \begin{axiom}
+    For every subset $C$ of $R$ that is open in $R$ there exist subsets $A,B$ of $R$ such that
+    $A,B$ are open in $R$ and ($x \cdot^{R} y \in C$ where $x \in A$ and $y \in B$).
+  \end{axiom}
+
+  \begin{definition}
+    Let $x \in R$.
+    An open neighborhood of $x$ in $R$ is a subset $U$ of $R$ such that $U$ is open in $R$ and $x \in U$.
+  \end{definition}
+
+  \begin{definition}
+    $R$ is Hausdorff iff for every $x,y \in R$ there is an open neighborhood $A$ of $x$ in $R$ such that
+    there is an open neighborhood $B$ of $y$ in $R$ such that $A \cap B = \emptyset$.
+  \end{definition}
+
+  \begin{definition}
+    Let $x$ be an element of $R$.
+    $x$ is topologically nilpotent in $R$ iff for every open neighborhood $U$ of $0$ in $R$
+    there exists a natural number $N$ such that $x^{n,R} \in U$ for all $n$ such that $n \geq N$.
+  \end{definition}
+
+  \begin{definition}
+    A pseudouniformizer in $R$ is an element of $R$ that is a unit in $R$ and topologically nilpotent in $R$.
+  \end{definition}
+\end{forthel}
+
+
+\section{Boundedness}
+
+See Wedhorn, p.36
+
+\begin{forthel}
+  \begin{definition}
+    Assume that $B$ is a subset of $R$.
+    $B$ is bounded in $R$ iff for every open neighborhood $U$ of $0$ in $R$
+    there exists an open neighborhood $V$ of $0$ in $R$ such that $v \cdot^{R} b \in U$ where $v \in V$ and $b \in B$.
+  \end{definition}
+
+  \begin{definition}
+    A bounded subset of $R$ is a subset of $R$ that is bounded in $R$.
+  \end{definition}
+
+  \begin{lemma}
+    Every subset of every bounded subset of $R$ is a bounded subset of $R$.
+  \end{lemma}
+\end{forthel}
+
+The corresponding lemma and its proof in \verb+power_bounded.lean+ read:
+
+\begin{verbatim}
+lemma subset {S1 S2 : set R} (h : S1 \subset S2) (H : is_bounded S2) :
+is_bounded S1 :=
+begin
+  intros U hU,
+  rcases H U hU with <V, hV1, hV2>,
+  use [V, hV1],
+  intros v hv b hb,
+  exact hV2 _ hv _ (h hb),
+end
+\end{verbatim}
+
+\begin{forthel}
+  \begin{definition}
+    Let $x \in R$.
+    $x^{\mathbb{N};R} = \{ x^{n,R} \mid \text{$n$ is a natural number} \}$.
+  \end{definition}
+
+  \begin{axiom}
+    $x^{\mathbb{N};R}$ is a set for every $x \in R$.
+  \end{axiom}
+
+  \begin{definition}
+    Let $x \in R$.
+    $x$ is powerbounded in $R$ iff $x^{\mathbb{N};R}$ is bounded in $R$.
+  \end{definition}
+\end{forthel}
+
+
+
+\section{Completion of topological rings, Wedhorn 5.4}
+
+\begin{forthel}
+  \begin{definition}
+    A filter basis on $R$ is a nonempty set $B$ such that
+    every element of $B$ is a nonempty subset of $R$ and for all elements $A1,A2$ of $B$
+    there exists an element $A$ of $B$ such that  $A \subset A1 \cap A2$.
+  \end{definition}
+
+  \begin{definition}
+    Let $B$ be a filter basis on $R$ and $x \in R$.
+    $B$ converges to $x$ in $R$ iff for every open neighborhood $U$ of $x$ in $R$
+    there exists an element $A$ of $B$ such that $A \subset U$.
+  \end{definition}
+
+  \begin{definition}
+    Let $B$ be a filter basis on $R$.
+    $B$ is Cauchy in $R$ iff for every open neighborhood $U$ of $0$ in $R$ there exists
+    $A \in B$ such that $x +^{R} (-^{R} y) \in U$ for all $x,y \in A$.
+  \end{definition}
+
+  \begin{definition}
+    $R$ is complete iff $R$ is Hausdorff and every filter basis on $R$ that is Cauchy in $R$
+    converges to some $x \in R$ in $R$.
+  \end{definition}
+\end{forthel}
+
+
+\section{Tate rings}
+
+\begin{forthel}
+  % Scholze, p.14
+  \begin{definition}
+    A Tate ring is a topological ring $R$ such that
+    there exists a subring $R0$ of $R$ that is open in $R$ and bounded in $R$
+    and there exists an element of $R$ that is a unit in $R$
+    and topologically nilpotent in $R$.
+  \end{definition}
+
+  Let $R$ denote a Tate ring.
+\end{forthel}
+
+
+\section{Frobenius}
+
+Normally we would use (set-theoretic) quotients by principal ideals in $R^o$
+for the definition of perfectoid rings, and then Frobenius-style maps on
+those quotient rings.
+Instead we define a global map $\Phi^R$, $x \mapsto x^{p,R}$ and consider the
+question whether it induces maps between such quotients. This
+can be expressed by calculations modulo the generators of the ideals.
+A complete formalization would have to prove certain well-definednesses
+which we assume for simplicity.
+
+\begin{forthel}
+  \begin{definition}
+    $R^o$ is the class of elements $x$ of $R$ such that $x$ is powerbounded in $R$.
+  \end{definition}
+
+  \begin{axiom}
+    $R^o$ is a set and a subset of $R$.
+  \end{axiom}
+
+  \begin{signature}
+    $p$ is a prime number.
+  \end{signature}
+
+  \begin{definition}
+    Let $x \in R$.
+    $\Phi^{R}(x) = x^{p,R}$.
+  \end{definition}
+
+  \begin{definition}
+    Let $S,T \subset R$.
+    Let $a \in S$ and $b \in T$.
+    \[ \Phi^{R} : S / a \cong T / b \] iff
+
+    (for every $x,y \in S$ if $x \equiv y$ mod $a,S$ within $R$ then $x^{p,R} \equiv y^{p,R}$ mod $b,T$ within $R$) and
+
+    (for every $x,y \in S$ $ (x +^{R} y)^{p,R} \equiv x^{p,R} +^{R} y^{p,R}$ mod $b,T$ within $R$) and
+
+    (for every $x,y \in S$ $ (x \cdot^{R} y)^{p,R} \equiv x^{p,R} \cdot^{R} y^{p,R}$ mod $b,T$ within $R$) and
+
+    (for every $x,y \in S$ if
+    $x^{p,R} \equiv y^{p,R}$ mod $b,T$ within $R$ then $x \equiv y$ mod $a,S$ within $R$) and
+
+    (for every $z \in T$ there exists $x \in S$ such that $z \equiv x^{p,R}$ mod $b,T$ within $R$).
+  \end{definition}
+
+
+  \begin{definition}
+    $R$ is uniform iff $R^o$ is bounded in $R$.
+  \end{definition}
+
+  \begin{axiom}
+    Let $\omega$ be a pseudouniformizer in $R$.
+    Then $\omega, \omega^{p,R} \in R^o$.
+  \end{axiom}
+\end{forthel}
+
+
+\section{Perfectoid rings}
+
+\begin{forthel}
+  \begin{definition}
+    $R$ is perfectoid iff $R$ is complete and uniform and there exists a pseudouniformizer $\omega$ in $R$
+    such that $\omega^{p,R} | p$ in $R^o$ within $R$ and \[ \Phi^{R} : R^o / \omega \cong R^o / \omega^{p,R}. \]
+  \end{definition}
+\end{forthel}
+
+\end{document}
