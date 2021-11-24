@@ -102,4 +102,3 @@ End.
 Definition.
     Let X be a set.
     X is Dedekind finite iff every proper subset of X is not equinumerous with X.
-#Let X is Dedekind finite stand for every proper subset of X is not equinumerous with X.
