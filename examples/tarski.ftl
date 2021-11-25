@@ -1,4 +1,5 @@
 [synonym set/-s] [synonym subset/-s] [synonym element/-s] [synonym belong/-s]
+[read macros.ftl]
 # [prover vampire]
 # Lemma. Contradiction.
 
@@ -12,7 +13,6 @@ Lemma. Every set is a class.
 Axiom. Every element of every class  is an object.
 
 Let x << S stand for x is an element of S.
-Let x belongs to S stand for x is an element of S.
 
 Definition DefEmpty.    S is empty iff S has no elements.
 
@@ -22,7 +22,7 @@ Definition DefSub.
 Let T (= S denote T is a subclass of S.
 
 Definition Subset.
-    A subset of S is a set X such that X (= S.  
+    A subset of S is a set X such that X (= S.
 
 Axiom. Let T be a subclass of X. Then T is a set.
 

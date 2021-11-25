@@ -1,6 +1,6 @@
 [synonym cardinal/-s][synonym sequence/-s]
 [read ZFC.ftl]
-Let the domain of f stand for Dom(f).
+[read macros.ftl]
 
 Let M,N denote a set.
 

@@ -26,11 +26,13 @@
   \begin{forthel}
     [synonym set/-s] [synonym subset/-s] [synonym element/-s]
 
-    [synonym belong/-s] [synonym bound/-s] [synonym supremum/suprema] 
+    [synonym belong/-s] [synonym bound/-s] [synonym supremum/suprema]
 
     [synonym infimum/infima] [synonym lattice/-s] [synonym function/-s]
 
     [synonym point/-s]
+
+    [read macros.ftl]
   \end{forthel}
 
   \section{Sets and Elements}
@@ -55,8 +57,6 @@
     \begin{axiom}
       Every element of $S$ is an element.
     \end{axiom}
-
-    Let $x$ belongs to $S$ denote $x \in S$.
 
     \begin{definition}[DefEmpty]
       $S$ is empty iff $S$ has no elements.
@@ -166,7 +166,7 @@
     \begin{proof}
       Let $T$ be a subset of $S$.
       Let us show that $T$ has a supremum in $S$. \\
-        Define 
+        Define
         \[
           P = \{x \in U \mid f(x) \leq x "and" x "is an upper bound of" T "in" U\} .
         \]
@@ -174,7 +174,7 @@
         Hence $p$ is a fixed point of $f$ and a supremum of $T$ in $S$.
       end. \\
       Let us show that $T$ has an infimum in $S$. \\
-        Define 
+        Define
         \[
           Q = \{x \in U \mid x \leq f(x) "and" x "is a lower bound of" T "in" U\} .
         \]
