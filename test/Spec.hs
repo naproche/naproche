@@ -53,6 +53,7 @@ texFiles = fmap ("examples/"++)
   , "test/inconsistency.ftl.tex"
   , "test/read_test.ftl.tex"
   , "test/lambda_term_test.ftl.tex"
+  , "test/text.ftl.tex"
   , "test/varprime.ftl.tex"
   ]
 
