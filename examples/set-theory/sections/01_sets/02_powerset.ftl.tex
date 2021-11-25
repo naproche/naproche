@@ -1,0 +1,67 @@
+\documentclass[../../sets-and-functions.ftl.tex]{subfiles}
+
+\begin{document}
+  \section{The powerset}
+
+  \begin{forthel}
+    [readtex \path{set-theory/sections/01_sets/01_sets.ftl.tex}]
+  \end{forthel}
+
+  \begin{forthel}
+  Let $u,v,w$ denote elements.
+  Let $x,y,z$ denote sets.
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{axiom}
+      There exists a set $z$ such that $z = \class{y | y \subseteq x}$.
+    \end{axiom}
+
+    \begin{definition}
+      $\pow(x)$ is the set $z$ such that $z = \class{y | y \subseteq x}$.
+    \end{definition}
+
+    Let the powerset of $x$ stand for $\pow(x)$.
+
+    \begin{proposition}[SF 01 02 481481]
+      $\emptyset$ and $x$ are elements of $\pow(x)$.
+    \end{proposition}
+    \begin{proof}
+      We have $\emptyset, x \subseteq x$.
+      Hence the thesis.
+    \end{proof}
+
+    \begin{corollary}[SF 01 02 671341]
+      $\pow(x)$ is nonempty.
+    \end{corollary}
+
+    \begin{proposition}[SF 01 02 833606]
+      $\pow(x)$ is a system of subsets of $x$.
+    \end{proposition}
+
+    \begin{proposition}[SF 01 02 706547]
+      $\bigcup \pow(x) = x$.
+    \end{proposition}
+    \begin{proof}
+      Every element of $\pow(x)$ is a subset of $x$.
+      Hence $\bigcup \pow(x) \subseteq x$.
+
+      We have $x \in \pow(x)$.
+      Hence every element of $x$ is an element of some element of $\pow(x)$.
+      Thus every element of $x$ belongs to $\bigcup \pow(x)$.
+      Therefore $x \subseteq \bigcup \pow(x)$.
+
+      Then we have the thesis.
+    \end{proof}
+
+    \begin{proposition}[SF 01 02 818609]
+      $\bigcap \pow(x) = \emptyset$.
+    \end{proposition}
+    \begin{proof}
+      We have $\emptyset \in \pow(x)$.
+      Hence every element of $\bigcap \pow(x)$ is an element of $\emptyset$.
+      Thus $\bigcap \pow(x)$ is empty.
+      Therefore $\bigcap \pow(x) = \emptyset$.
+    \end{proof}
+  \end{forthel}
+\end{document}

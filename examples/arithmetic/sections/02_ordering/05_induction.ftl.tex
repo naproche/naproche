@@ -1,0 +1,140 @@
+\documentclass[../../natural-numbers.ftl.tex]{subfiles}
+
+\begin{document}
+
+  \section{Induction}
+
+  \begin{forthel}
+    [readtex \path{arithmetic/sections/02_ordering/01_ordering.ftl.tex}]
+  \end{forthel}
+
+  \begin{forthel}
+    Let $k, l, m, n$ denote natural numbers.
+  \end{forthel}
+
+
+  \subsection{Least natural numbers}
+
+  \begin{forthel}
+    Let $P$ denote a class.
+
+    \begin{definition}
+      A least natural number of $P$ is a natural number $n$ such that $n \in P$ and no natural number that is less than $n$ belongs to $P$.
+    \end{definition}
+
+    \begin{lemma}
+      Let $n,m$ be least natural numbers of $P$.
+      Then $n = m$.
+    \end{lemma}
+    \begin{proof}
+      Assume $n \neq m$.
+      Then $n < m$ or $m < n$.
+      If $n < m$ then $n \notin P$ and if $m < n$ then $m \notin P$.
+      Contradiction.
+      Therefore $n = m$.
+    \end{proof}
+
+
+    \begin{theorem}[NN 02 05 124228]
+      Assume that $P$ contains some natural number.
+      Then $P$ has a least natural number.
+    \end{theorem}
+    \begin{proof}
+      Assume the contrary.
+      Define \[ Q = \class{n \in \mathbb{N} | \text{n is less than any natural number $m$ such that $m \in P$}}. \]
+
+      Let us show that every natural number belongs to $Q$.
+
+        (BASE CASE) $Q$ contains $0$. \\
+        Proof.
+          If $P$ contains $0$ then $0$ is the least natural number of $P$.
+          Hence $0$ is less than any natural number $m$ such that $m \in P$.
+          Therefore $Q$ contains $0$.
+        Qed.
+
+        For all natural numbers $n$ we have $n \in Q \implies n + 1 \in Q$. \\
+        Proof.
+          Let $n$ be a natural number.
+          Assume $n \in Q$.
+          Then $n$ is less than any natural number $m$ such that $m \in P$.
+          Assume that $Q$ does not contain $n + 1$.
+          Then we can take a natural number $m$ such that $m \in P$ and $n + 1 \nless m$.
+          Hence $n < m \leq n + 1$.
+          Thus $m = n + 1$.
+          Then $n + 1$ is the least natural number of $P$.
+          Contradiction.
+        Qed.
+      End.
+
+      Then every natural number is less than any natural number $n$ such that $n \in P$.
+      Hence there is no natural number $n$ such that $n \in P$.
+      Contradiction.
+    \end{proof}
+  \end{forthel}
+
+
+  \subsection{Induction via predecessors}
+
+  \begin{forthel}
+    \begin{theorem}[NN 02 05 167446]
+      Assume for all natural numbers $n$ if $P$ contains all predecessors of $n$ then $P$ contains $n$.
+      Then $P$ contains every natural number.
+    \end{theorem}
+    \begin{proof}
+      Assume the contrary.
+      Take a natural number $n$ such that $P$ does not contain $n$.
+      Define $Q = \class{k \in \mathbb{N} | k \notin P}$.
+      Then $Q$ contains $n$.
+      Thus we can take a least natural number $m$ of $Q$.
+      Hence $Q$ does not contain any predecessor of $m$.
+      Therefore $P$ contains all predecessors of $m$.
+      Thus $P$ contains $m$.
+      Contradiction.
+    \end{proof}
+  \end{forthel}
+
+
+  \subsection{Induction above a certain number}
+
+  \begin{forthel}
+    \begin{theorem}[NN 02 05 497603]
+      Let $k$ be a natural number such that $k \in P$.
+      Suppose that for all natural numbers $n$ such that $n \geq k$ we have $n \in P \implies n + 1 \in P$.
+      Then for every natural number $n$ such that $n \geq k$ we have $n \in P$.
+    \end{theorem}
+    \begin{proof}
+      Define $Q = \class{n \in \mathbb{N} | \text{if $n \geq k$ then $n \in P$}}$.
+
+      Let us show that every natural number belongs to $Q$.
+
+        (BASE CASE) We have $0 \in Q$.
+
+        (INDUCTION STEP) For all natural numbers $n$ we have $n \in Q \implies n + 1 \in Q$. \\
+        Proof.
+          Let $n$ be a natural number.
+          Assume $n \in Q$.
+
+          If $n + 1 \geq k$ then $n + 1 \in P$. \\
+          Proof.
+            Assume $n + 1 \geq k$.
+
+            Case $n < k$.
+              Then $n + 1 = k$.
+              Hence $n + 1 \in P$.
+            End.
+
+            Case $n \geq k$.
+              Then $n \in P$.
+              Hence $n + 1 \in P$.
+            End.
+          Qed.
+
+          Thus we have $n + 1 \in Q$.
+        Qed.
+      End.
+
+      Therefore $Q$ contains every natural number.
+      Hence the thesis.
+    \end{proof}
+  \end{forthel}
+\end{document}

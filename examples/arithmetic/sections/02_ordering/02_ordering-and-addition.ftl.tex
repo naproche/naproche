@@ -1,0 +1,54 @@
+\documentclass[../../natural-numbers.ftl.tex]{subfiles}
+
+\begin{document}
+
+  \section{Ordering and addition}
+
+  \begin{forthel}
+    [readtex \path{arithmetic/sections/02_ordering/01_ordering.ftl.tex}]
+  \end{forthel}
+
+  \begin{forthel}
+    Let $k, l, m, n$ denote natural numbers.
+  \end{forthel}
+
+
+  \begin{forthel}
+    \begin{proposition}[NN 02 02 179654]
+      We have \[ n < m \iff n + k < m + k. \]
+    \end{proposition}
+    \begin{proof}
+      Case $n < m$.
+        Take a positive natural number $l$ such that $m = n + l$.
+        Then $m + k = (n + l) + k = (n + k) + l$.
+        Hence $n + k < m + k$.
+      End.
+
+      Case $n + k < m + k$.
+        Take a positive natural number $l$ such that $m + k = (n + k) + l$.
+        $(n + k) + l = n + (k + l) = n + (l + k) = (n + l) + k$.
+        Hence $m + k = (n + l) + k$.
+        Thus $m = n + l$.
+        Therefore $n < m$.
+      End.
+    \end{proof}
+
+
+    \begin{corollary}[NN 02 02 316437]
+      We have \[ n < m \iff k + n < k + m. \]
+    \end{corollary}
+    \begin{proof}
+      We have $k + n = n + k$ and $k + m = m + k$.
+      Hence $k + n < k + m$ iff $n + k < m + k$.
+    \end{proof}
+
+
+    \begin{corollary}[NN 02 02 143631]
+      $n \leq m$ iff $k + n \leq k + m$.
+    \end{corollary}
+
+    \begin{corollary}[NN 02 02 598206]
+      $n \leq m$ iff $n + k \leq m + k$.
+    \end{corollary}
+  \end{forthel}
+\end{document}

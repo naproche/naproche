@@ -1,0 +1,140 @@
+\documentclass[../../natural-numbers.ftl.tex]{subfiles}
+
+\begin{document}
+
+  \section{Peano Arithmetic}
+
+  \begin{forthel}
+    [read \path{macros.ftl}]
+  \end{forthel}
+
+  \begin{forthel}
+    [read \path{vocab.ftl}]
+  \end{forthel}
+
+
+  \subsection{The Peano axioms}
+
+  \begin{forthel}
+    \begin{signature}
+      A natural number is an element.
+    \end{signature}
+
+    Let $k,l,m,n$ denote natural numbers.
+
+    \begin{definition}
+      $\mathbb{N}$ is the class of natural numbers.
+    \end{definition}
+
+    \begin{signature}
+      $0$ is a natural number.
+    \end{signature}
+
+    Let $n$ is nonzero stand for $n \neq 0$.
+
+    \begin{signature}
+      $\succ(n)$ is a natural number.
+    \end{signature}
+
+    Let the direct successor of $n$ stand for $\succ(n)$.
+
+    \begin{axiom}[1st Peano axiom]
+      If $\succ(n) = \succ(m)$ then $n = m$.
+    \end{axiom}
+
+    \begin{axiom}[2nd Peano axiom]
+      $0$ is not the direct successor of any natural number.
+    \end{axiom}
+
+    \begin{axiom}[3rd Peano axiom]
+      Let $P$ be a class.
+      Assume $0 \in P$ and for all natural numbers $n$ we have $n \in P \implies \succ(n) \in P$.
+      Then every natural number is an element of $P$.
+    \end{axiom}
+  \end{forthel}
+
+
+  \subsection{Immediate consequences}
+
+  \begin{forthel}
+    \begin{proposition}[NN 01 01 178800]
+      For all $n$ we have $n = 0$ or $n = \succ(m)$ for some natural number $m$.
+    \end{proposition}
+    \begin{proof}
+      Define $P = \class{n \in \mathbb{N} | \classtext{$n = 0$ or $n = \succ(m)$ for some natural number $m$}}$.
+
+      $0 \in P$ and for all natural numbers $n$ we have $n \in P \implies \succ(n) \in P$.
+      Hence the thesis (by 3rd Peano axiom).
+    \end{proof}
+
+    \begin{proposition}[NN 01 01 670417]
+      For no natural number $n$ we have $n = \succ(n)$.
+    \end{proposition}
+    \begin{proof}
+      Define $P = \class{n \in \mathbb{N} | n \neq \succ(n)}$.
+
+      (BASE CASE) $0$ belongs to $P$.
+
+      (INDUCTION STEP) For all $n$ we have $n \in P \implies \succ(n) \in P$. \\
+      Proof.
+        Let $n$ be a natural number.
+        Assume that $n \in P$.
+        Then $n \neq \succ(n)$.
+        If $\succ(n) = \succ(\succ(n))$ then $n = \succ(n)$.
+        Thus it is wrong that $\succ(n) = \succ(\succ(n))$.
+        Hence $\succ(n) \in P$.
+      Qed.
+
+      Therefore every natural number is an element of $P$.
+      Then we have the thesis.
+    \end{proof}
+
+    \begin{definition}
+      Let $n$ be nonzero.
+      $\pred(n)$ is the natural number $m$ such that $\succ(m) = n$.
+    \end{definition}
+
+    Let the direct predecessor of $n$ stand for $\pred(n)$.
+  \end{forthel}
+
+
+  \subsection{Additional constants}
+
+  \begin{forthel}
+    \begin{definition}
+      $1 = \succ(0)$.
+    \end{definition}
+
+    \begin{definition}
+      $2 = \succ(1)$.
+    \end{definition}
+
+    \begin{definition}
+      $3 = \succ(2)$.
+    \end{definition}
+
+    \begin{definition}
+      $4 = \succ(3)$.
+    \end{definition}
+
+    \begin{definition}
+      $5 = \succ(4)$.
+    \end{definition}
+
+    \begin{definition}
+      $6 = \succ(5)$.
+    \end{definition}
+
+    \begin{definition}
+      $7 = \succ(6)$.
+    \end{definition}
+
+    \begin{definition}
+      $8 = \succ(7)$.
+    \end{definition}
+
+    \begin{definition}
+      $9 = \succ(8)$.
+    \end{definition}
+  \end{forthel}
+\end{document}

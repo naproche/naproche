@@ -1,0 +1,201 @@
+\documentclass[../../natural-numbers.ftl.tex]{subfiles}
+
+\begin{document}
+
+  \section{Standard exercises}
+
+  \begin{forthel}
+    [readtex \path{arithmetic/sections/01_arithmetic/04_exponentiation.ftl.tex}]
+  \end{forthel}
+
+  \begin{forthel}
+    [readtex \path{arithmetic/sections/01_arithmetic/05_factorial.ftl.tex}]
+  \end{forthel}
+
+  \begin{forthel}
+    [readtex \path{arithmetic/sections/02_ordering/04_ordering-and-exponentiation.ftl.tex}]
+  \end{forthel}
+
+  \begin{forthel}
+    [readtex \path{arithmetic/sections/02_ordering/05_induction.ftl.tex}]
+  \end{forthel}
+
+  \begin{forthel}
+    Let $k, l, m, n$ denote natural numbers.
+  \end{forthel}
+
+
+  \begin{forthel}
+    \begin{proposition}[NN 02 06 276270]
+      We have \[ (n + 1)^{2} = (n^{2} + (2 \cdot n)) + 1. \]
+    \end{proposition}
+    \begin{proof}
+      We have
+      \[   (n + 1)^{2} \]
+      \[ = (n + 1) \cdot (n + 1) \]
+      \[ = ((n + 1) \cdot n) + (n + 1) \]
+      \[ = ((n \cdot n) + n) + (n + 1) \]
+      \[ = (n^{2} + n) + (n + 1) \]
+      \[ = ((n^{2} + n) + n) + 1 \]
+      \[ = (n^{2} + (n + n)) + 1 \]
+      \[ = (n^{2} + (2 \cdot n)) + 1. \]
+    \end{proof}
+
+
+    \begin{proposition}[NN 02 06 671464]
+      For all $n$ if $n \geq 3$ then \[ n^{2} > (2 \cdot n) + 1. \]
+    \end{proposition}
+    \begin{proof}
+      Define $P = \class{n \in \mathbb{N} | n^{2} > (2 \cdot n) + 1}$.
+
+      (BASE CASE) $P$ contains $3$.
+
+      (INDUCTION STEP) For all natural numbers $n$ such that $n \geq 3$ we have $n \in P \implies n + 1 \in P$. \\
+      Proof.
+        Let $n$ be a natural number.
+        Suppose $n \geq 3$.
+        Assume $n \in P$.
+
+        $(n^{2} + (2 \cdot n)) + 1 > (((2 \cdot n) + 1) + (2 \cdot n)) + 1$.
+        Indeed $n^{2} + (2 \cdot n) > ((2 \cdot n) + 1) + (2 \cdot n)$.
+
+        $(2 \cdot (n + n)) + 1 > (2 \cdot (n + 1)) + 1$.
+        Indeed $2 \cdot (n + n) > 2 \cdot (n + 1)$.
+        Indeed $n + n > n + 1$ and $2 \neq 0$.
+
+        Hence
+        \[   (n + 1)^{2} \]
+        \[ = (n^{2} + (2 \cdot n)) + 1 \]
+        \[ > (((2 \cdot n) + 1) + (2 \cdot n)) + 1 \]
+        \[ > ((2 \cdot n) + (2 \cdot n)) + 1 \]
+        \[ = (2 \cdot (n + n)) + 1 \]
+        \[ > (2 \cdot (n + 1)) + 1. \]
+
+        Thus $(n + 1)^{2} > (2 \cdot (n + 1)) + 1$ (by NN 02 01 662806).
+      Qed.
+
+      Therefore $P$ contains every natural number $n$ such that $n \geq 3$ (by NN 02 05 497603).
+    \end{proof}
+
+
+    \begin{proposition}[NN 02 06 205395]
+      For all $n$ if $n \geq 5$ then \[ 2^{n} > n^{2}. \]
+    \end{proposition}
+    \begin{proof}
+      Define $P = \class{n \in \mathbb{N} | 2^{n} > n^{2}}$.
+
+      (BASE CASE) $P$ contains $5$.
+      Indeed $2^{5} = 2 \cdot (2 \cdot (2 \cdot (2 \cdot 2))) = (5 \cdot 5) + 7 > 5 \cdot 5 = 5^{2}$.
+
+      (INDUCTION STEP) For all natural numbers $n$ such that $n \geq 5$ we have $n \in P \implies n + 1 \in P$. \\
+      Proof.
+        Let $n$ be a natural number.
+        Suppose $n \geq 5$.
+        Assume $n \in P$.
+        Then $2^{n} > n^{2}$.
+
+        (1) $2^{n} \cdot 2 > n^{2} \cdot 2$ (by NN 02 03 496205).
+        Indeed $2 \neq 0$.
+
+        (2) $n^{2} \cdot 2 = n^{2} + n^{2}$.
+
+        (3) $n^{2} + n^{2} > n^{2} + ((2 \cdot n) + 1)$ (by NN 02 02 316437).
+        Indeed $n^{2} > (2 \cdot n) + 1$.
+
+        (4) $n^{2} + ((2 \cdot n) + 1) = (n + 1)^{2}$.
+
+        Hence
+        \[   2^{n + 1} \]
+        \[ = 2^{n} \cdot 2 \]
+        \[ > n^{2} \cdot 2 \]
+        \[ = n^{2} + n^{2} \]
+        \[ > n^{2} + ((2 \cdot n) + 1) \]
+        \[ = (n + 1)^{2}. \]
+
+        Thus $2^{n + 1} > (n + 1)^{2}$.
+      Qed.
+
+      Therefore $P$ contains every natural number $n$ such that $n \geq 5$ (by NN 02 05 497603).
+    \end{proof}
+
+
+    \begin{proposition}[NN 02 06 527159]
+      For all $n$ if $n \geq 2$ then \[ n^{n} > n!. \]
+    \end{proposition}
+    \begin{proof}
+      Define $P = \class{n \in \mathbb{N} | n^{n} > n!}$.
+
+      (BASE CASE) $P$ contains $2$.
+
+      (INDUCTION STEP) For all natural numbers $n$ such that $n \geq 2$ we have $n \in P \implies n + 1 \in P$. \\
+      Proof.
+        Let $n$ be a natural number.
+        Suppose $n \geq 2$.
+        Assume $n \in P$.
+
+        (1) $(n + 1)^{n} \cdot (n + 1) > n^{n} \cdot (n + 1)$ (by NN 02 03 496205).
+        Indeed $(n + 1)^{n} > n^{n}$ and $n + 1 \neq 0$.
+        Indeed $n + 1 > n$ and $n \neq 0$.
+
+        (2) $n^{n} \cdot (n + 1) > n! \cdot (n + 1)$ (by NN 02 03 496205).
+        Indeed $n^{n} > n!$ and $n + 1 \neq 0$.
+
+        Hence
+        \[   (n + 1)^{n + 1} \]
+        \[ = (n + 1)^{n} \cdot (n + 1) \]
+        \[ > n^{n} \cdot (n + 1) \]
+        \[ > n! \cdot (n + 1) \]
+        \[ = (n + 1)!. \]
+
+        Thus $(n + 1)^{n + 1} > (n + 1)!$.
+      Qed.
+
+      Therefore $P$ contains every natural number $n$ such that $n \geq 2$ (by NN 02 05 497603).
+    \end{proof}
+
+
+    \begin{proposition}[NN 02 06 493411]
+      For all $n$ if $n \geq 4$ then \[ n! > 2^{n}. \]
+    \end{proposition}
+    \begin{proof}
+      Define $P = \class{n \in \mathbb{N} | n! > 2^{n}}$.
+
+      (BASE CASE) $P$ contains $4$. \\
+      Proof.
+        \[   (4!) \]
+        \[ = 4 \cdot (3 \cdot 2) \]
+        \[ = 2 \cdot (2 \cdot (3 \cdot 2)) \]
+        \[ = 3 \cdot (2 \cdot (2 \cdot 2)) \]
+        \[ > 2 \cdot (2 \cdot (2 \cdot 2)) \]
+        \[ = 2^{4}. \]
+      Qed.
+
+      (INDUCTION STEP) For all natural numbers $n$ such that $n \geq 4$ we have $n \in P \implies n + 1 \in P$. \\
+      Proof.
+        Let $n$ be a natural number.
+        Suppose $n \geq 4$.
+        Assume $n \in P$.
+        Then $n! > 2^{n}$.
+
+        (1) $0 \neq n + 1 > 2$.
+        Indeed $n > 1$.
+
+        (2) $n! \cdot (n + 1) > 2^{n} \cdot (n + 1)$ (by NN 02 03 496205).
+
+        (3) $2^{n} \cdot (n + 1) > 2^{n} \cdot 2$ (by NN 02 03 332119).
+        Indeed $2^{n} \neq 0$.
+
+        Hence
+        \[   ((n + 1)!) \]
+        \[ = n! \cdot (n + 1) \]
+        \[ > 2^{n} \cdot (n + 1) \]
+        \[ > 2^{n} \cdot 2 \]
+        \[ = 2^{n + 1}. \]
+
+        Thus $(n + 1)! > 2^{n + 1}$.
+      Qed.
+
+      Therefore $P$ contains every natural number $n$ such that $n \geq 4$ (by NN 02 05 497603).
+    \end{proof}
+  \end{forthel}
+\end{document}
