@@ -10,8 +10,8 @@
    In-depth paper on the ForTheL language.
  - **[Méthodes de formalisation des connaissances et des raisonnements mathématiques: aspects appliqués et théoriques](http://tertium.org/papers/thesis-07.fr.pdf)**:
    Andrei Paskevich's PhD thesis on this topic (in French)
-- **[Handbook of Practical Logic and Automated Reasoning](https://www.cl.cam.ac.uk/~jrh13/atp/)**:
-  Textbook on logic and automated theorem proving. Some functions in the code base are literal translations of the OCaml code presented in the book.
+ - **[Handbook of Practical Logic and Automated Reasoning](https://www.cl.cam.ac.uk/~jrh13/atp/)**:
+   Textbook on logic and automated theorem proving. Some functions in the code base are literal translations of the OCaml code presented in the book.
 
 ## Abbreviations
 
