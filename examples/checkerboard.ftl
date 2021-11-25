@@ -1,5 +1,5 @@
 [read classes.ftl]
-[read vocab.ftl]
+[read vocabulary.ftl]
 
 Signature. An integer is an object.
 
