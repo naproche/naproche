@@ -1,28 +1,22 @@
 \documentclass[../../sets-and-functions.ftl.tex]{subfiles}
 
-\typeout{
-  \begin{forthel}
-    [readtex basic-notions/sets-and-functions/sections/01_sets/01_sets.ftl.tex]
-
-    [checkconsistency off]
-  \end{forthel}
-}
-
 \begin{document}
   \section{Functions}
+
+  \begin{forthel}
+    [readtex \path{basic-notions/sets-and-functions/sections/01_sets/01_sets.ftl.tex}]
+  \end{forthel}
+
+  \begin{forthel}
+  Let $u,v,w$ denote elements.
+  Let $x,y,z$ denote sets.
+  Let $f,g,h$ denote functions.
+  \end{forthel}
+
 
   \subsection{Function axioms}
 
   \begin{forthel}
-    Let $u,v,w$ denote elements.
-    Let $x,y,z$ denote sets.
-    Let $f,g,h$ denote functions.
-
-    Let the domain of $f$ stand for $\dom(f)$.
-    Let the value of $f$ at $u$ stand for $f(u)$.
-    Let $\val{f}{u}$ stand for $f(u)$.
-    Let $f$ is defined on $x$ stand for $\dom(f) = x$.
-
     \begin{definition}
       A value of $f$ is an object $v$ such that $v = f(u)$ for some $u \in \dom(f)$.
     \end{definition}
