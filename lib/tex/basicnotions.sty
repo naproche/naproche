@@ -35,3 +35,41 @@
 \newcommand{\const}[2]{\mbox{const}_{#1,#2}}
 \renewcommand{\div}{\mathop{\operatorname{div}}}
 \renewcommand{\mod}{\mathop{\operatorname{mod}}}
+
+
+% New style for top-level sections
+
+\newtheoremstyle{basicnotions}% name of the style to be used
+    {4pt}% measure of space to leave above the theorem. E.g.: 3pt
+    {4pt}% measure of space to leave below the theorem. E.g.: 3pt
+    {\normalfont} % name of font to use in the body of the theorem
+    {0pt}% measure of space to indent
+    {\bfseries}% name of head font
+    {}% punctuation between head and body
+    { }% space after theorem head; " " = normal inter-word space
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}.}
+
+\let\definition\relax
+\let\enddefinition\relax
+\let\signature\relax
+\let\endsignature\relax
+\let\axiom\relax
+\let\endaxiom\relax
+\let\theorem\relax
+\let\endtheorem\relax
+\let\proposition\relax
+\let\endproposition\relax
+\let\lemma\relax
+\let\endlemma\relax
+\let\corollary\relax
+\let\endcorollary\relax
+
+\theoremstyle{basicnotions}
+
+\newtheorem{definition}{Definition}[section]
+\newtheorem{signature}[definition]{Signature}
+\newtheorem{axiom}[definition]{Axiom}
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{corollary}[definition]{Corollary}
