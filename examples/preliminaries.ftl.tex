@@ -26,7 +26,7 @@ objects. Sets are classes which are objects themselves and
 can be used in further mathematical constructions. Functions
 and maps map objects to objects, where functions are those
 maps which are objects. Sets and functions are required to
-satisfy separation and replacement properties known from the 
+satisfy separation and replacement properties known from the
 set theories of Kelley-Morse or Zermelo-Fraenkel.
 
 Modelling mathematical notions by objects corresponds
@@ -48,17 +48,19 @@ employing a proper English vocabulary.
 
 \begin{forthel}
 [read vocabulary.ftl]
+
+[read macros.ftl]
 \end{forthel}
 
 \section{Sets and Classes}
 The notions of \textit{classes} and \textit{sets} are already
 provided by $\mathbb{N}$aproche. Classes can be defined by
-abstraction terms $\{\dots\mid\dots\}$. Since these terms need to be 
+abstraction terms $\{\dots\mid\dots\}$. Since these terms need to be
 processed by the parser we cannot introduce them simply by first-order
 definitions but have to implement them in the software.
-That sets is are classes which are objects can be proved
-from inbuilt assumptions, but it is important to restate such
-facts to be used in the further proving. 
+That sets is are classes which are objects, or extensionality can be proved
+from inbuilt assumptions, but it is important to reprove or restate such
+facts so that they can be accessed by the ATP.
 
 \begin{forthel}
 Let $S,T$ denote classes. Let $X,Y$ denote sets.
@@ -71,31 +73,28 @@ Let $x$ denote objects.
 \begin{axiom} Every element of every class is an object.
 \end{axiom}
 
-Let $x$ belongs to $S$ stand for $x$ is an element of $S$.
-Let $z$ is in $M$ stand for $z$ is an element of $M$.
-Let $M$ contains $z$ stand for $z$ is in $M$.
 Let $M,N$ denote classes.
 
 \begin{definition} The empty set is the set that has
 no elements.
 \end{definition}
-  
+
 \begin{definition}
-A subclass of $S$ is a class $T$ such that every $x \in T$ 
+A subclass of $S$ is a class $T$ such that every $x \in T$
 belongs to $S$.
 \end{definition}
 
 Let $T \subseteq S$ stand for $T$ is a subclass of $S$.
 
-\begin{lemma} [Class Extensionality] If $M$ is a subclass of $N$ and 
+\begin{lemma} [Class Extensionality] If $M$ is a subclass of $N$ and
 $N$ is a subclass of $M$ then $M = N$.
 \end{lemma}
 
 \begin{definition}
-A subset of $S$ is a set $X$ such that $X \subseteq S$. 
+A subset of $S$ is a set $X$ such that $X \subseteq S$.
 \end{definition}
 
-\begin{axiom} [Separation Axiom] Assume that $X$ is a set. 
+\begin{axiom} [Separation Axiom] Assume that $X$ is a set.
 Let $T$ be a subclass of $X$. Then $T$ is a set.
 \end{axiom}
 
@@ -103,16 +102,16 @@ Let $T$ be a subclass of $X$. Then $T$ is a set.
 \section{Pairs and Products}
 Since we prefer objects over sets if possible, we do not work
 with Kuratowski-style set-theoretical ordered pairs, but
-axiomatize them as objects. 
+axiomatize them as objects.
 
 \begin{forthel}
 \begin{axiom}
-For any objects $a,b,c,d$ if $(a,b) = (c,d)$ then $a = c$ 
+For any objects $a,b,c,d$ if $(a,b) = (c,d)$ then $a = c$
 and $b = d$.
 \end{axiom}
 
 \begin{definition}
-$M \times N = \{(x,y) | x$ is an element of $M$ and $y$ 
+$M \times N = \{(x,y) | x$ is an element of $M$ and $y$
 is an element of $N\}$.
 \end{definition}
 
@@ -122,7 +121,7 @@ $M \times N$ is a set.
 
 \begin{lemma}
 Let $x,y$ be objects.
-If $(x,y)$ is an element of $M \times N$ then $x$ is an 
+If $(x,y)$ is an element of $M \times N$ then $x$ is an
 element of $M$ and $y$ is an element of $N$.
 \end{lemma}
 
@@ -139,8 +138,6 @@ of sets and classes.
 \end{lemma}
 
 Let $f,g$ stand for maps.
-Let the value of $f$ at $x$ stand for $f(x)$.
-Let the domain of $f$ stand for $Dom f$.
 
 \begin{lemma} The domain of every map is a class.
 \end{lemma}
@@ -152,16 +149,13 @@ Let the domain of $f$ stand for $Dom f$.
 $f(x)=g(x)$. Then $f=g$.
 \end{lemma}
 
-%Let $f$ is defined on $M$ stand for the domain of $f$ is 
-%equal to $M$.
-
 \begin{definition}
-Assume $M$ is a subclass of the domain of $f$. 
+Assume $M$ is a subclass of the domain of $f$.
 $f[M] = \{ f(x) | x \in M \}$.
 \end{definition}
 
 \begin{axiom} [Replacement Axiom]
-Assume $M$ is a subset of the domain of $f$. 
+Assume $M$ is a subset of the domain of $f$.
 Then $f[M]$ is a set.
 \end{axiom}
 

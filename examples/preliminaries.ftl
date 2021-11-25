@@ -1,4 +1,5 @@
 [read vocabulary.ftl]
+[read macros.ftl]
 
 ### Sets and Classes
 Let S,T denote classes. Let X,Y denote sets.
@@ -8,26 +9,23 @@ Lemma. Every set is a class.
 
 Axiom. Every element of every class  is an object.
 Let x \in S stand for x is an element of S.
-Let x belongs to S stand for x is an element of S.
-Let z is in M stand for z is an element of M.
-Let M contains z stand for z is in M.
 Let M,N denote classes.
 
 Definition DefEmpty. The empty set is the set that has
 no elements.
-  
+
 Definition DefSub.
-A subclass of S is a class T such that every x \in T 
+A subclass of S is a class T such that every x \in T
 belongs to S.
 Let T \subseteq S stand for T is a subclass of S.
 
-Axiom Extensionality. If M is a subclass of N and N is a subclass of M 
+Axiom Extensionality. If M is a subclass of N and N is a subclass of M
 then M = N.
 
 Definition Subset.
-A subset of S is a set X such that X \subseteq S.  
+A subset of S is a set X such that X \subseteq S.
 
-Axiom Separation. Assume that X is a set. 
+Axiom Separation. Assume that X is a set.
 Let T be a subclass of X. Then T is a set.
 
 ### Pairs and Products
@@ -53,10 +51,6 @@ element of N.
 
 Lemma. Every function is a map.
 
-Let the value of f at x stand for f(x).
-Let the domain of f stand for Dom f.
-Let f is defined on M stand for the domain of f is 
-equal to M.
 
 Let f stand for a function.
 
@@ -75,4 +69,3 @@ Definition DefDom.  f is on B iff Dom(f) = Ran(f) = B.
 
 Axiom ImgSort.  Let x belong to Dom(f).
     f(x) is an element of Ran(f).
-

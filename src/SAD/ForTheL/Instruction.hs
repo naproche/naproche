@@ -6,7 +6,7 @@ Syntax of ForThel Instructions.
 
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.ForTheL.Instruction 
+module SAD.ForTheL.Instruction
   ( instr
   , instrDrop
   , instrExit
@@ -14,6 +14,7 @@ module SAD.ForTheL.Instruction
   ) where
 
 import Control.Monad
+import Control.Applicative ((<|>))
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 
@@ -97,10 +98,11 @@ readText = fmap Text.concat readTexts
 
 
 readTexts :: FTL [Text]
-readTexts = chainLL1 notClosingBrk
+readTexts = texEnclosed "path" (chainLL1 notClosingBrc) <|> chainLL1 notClosingBrk
   where
-    notClosingBrk = tokenPrim notCl
-    notCl t = let tk = showToken t in guard (tk /= "]") >> return tk
+    notClosingBrk = tokenPrim $ notCl "]"
+    notClosingBrc = tokenPrim $ notCl "}"
+    notCl str t = let tk = showToken t in guard (tk /= str) >> return tk
 
 readWords :: FTL [Text]
 readWords = shortHand </> chainLL1 word

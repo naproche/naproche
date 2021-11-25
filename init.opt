@@ -20,3 +20,4 @@
 [printunfold off]
 [printfulltask off]
 [tex off]
+[checkconsistency off]

@@ -117,6 +117,13 @@ enclosed begin end p = do
   endPos <- tokenPos' end
   return ((beginPos, endPos), result)
 
+-- | Parse text enclosed within "\<command>{" and "}" (where "<command>" can be
+-- an arbitrary TeX command identifier)
+texEnclosed :: Text -> Parser st a -> Parser st a
+texEnclosed command p = do
+  token ("\\" <> command)
+  braced p
+
 -- | Mandatory surrounding parentheses, brackets, and braces.
 parenthesised, bracketed, braced :: Parser st a -> Parser st a
 parenthesised p = snd <$> enclosed "(" ")" p
