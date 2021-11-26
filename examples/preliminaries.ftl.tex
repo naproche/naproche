@@ -145,7 +145,7 @@ Let $f,g$ stand for maps.
 \begin{lemma} If $x \in Dom(f)$ then $f(x)$ is an object.
 \end{lemma}
 
-\begin{lemma} [Functional Extensionality] Let $Dom(f)=Dom(g)$ and for every $x \in Dom(f)$
+\begin{lemma} [Functional Extensionality] Assume $Dom(f)=Dom(g)$ and for every $x \in Dom(f)$
 $f(x)=g(x)$. Then $f=g$.
 \end{lemma}
 
@@ -154,14 +154,14 @@ Assume $M$ is a subclass of the domain of $f$.
 $f[M] = \{ f(x) | x \in M \}$.
 \end{definition}
 
+\begin{definition}
+$f : S \rightarrow T$ iff $Dom (f) = S$ and $f[S] \subseteq T$.
+\end{definition}
+
 \begin{axiom} [Replacement Axiom]
 Assume $M$ is a subset of the domain of $f$.
 Then $f[M]$ is a set.
 \end{axiom}
-
-\begin{definition} Let $f$ be a functions and $S,T$ be classes.
-f : S \rightarrow T iff $Dom (f) = S$ and $f[S] \subseteq T$.
-\end{definition}
 
 \end{forthel}
 
