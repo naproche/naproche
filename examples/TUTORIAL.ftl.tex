@@ -13,7 +13,7 @@ of the Infinitude of Primes}}
 \newcommand{\val}[2]{#1_{#2}}
 \newcommand{\Prod}[3]{#1_{#2} \cdots #1_{#3}}
 \newcommand{\Seq}[2]{\{#1,\dots,#2\}}
-\newcommand{\Set}[3]{\{#1_{#2},\dots,#1_{#3}\}}
+\renewcommand{\set}[3]{\{#1_{#2},\dots,#1_{#3}\}}
 \newcommand{\Primes}{\mathbb{P}}
 
 \maketitle
@@ -936,7 +936,7 @@ where this notation is defined by a macro
 Let $\val{F}{i}$ stand for $F(i)$.
 
 \begin{definition} Let $F$ be a sequence of length $n$.
-$\Set{F}{1}{n} = \{ \val{F}{i} | i \in Dom(F)\}$.
+$\set{F}{1}{n} = \{ \val{F}{i} | i \in Dom(F)\}$.
 \end{definition}
 
 \end{forthel}
@@ -949,14 +949,14 @@ axiomatically:
 \begin{forthel}
 
 %\begin{signature} Let $F$ be a sequence of length $n$
-%such that $\Set{F}{1}{n} \subseteq \mathbb{N}$.
+%such that $\set{F}{1}{n} \subseteq \mathbb{N}$.
 %$\Prod{F}{1}{n}$ is a nonzero natural number.
 %\end{signature}
 
 %\begin{axiom} $\mathbb{N}$ is a set. \end{axiom}
 
 \begin{signature} Let $F$ be a sequence of length $n$
-such that $\Set{F}{1}{n} \subseteq \mathbb{N}$.
+such that $\set{F}{1}{n} \subseteq \mathbb{N}$.
 $\Prod{F}{1}{n}$ is a natural number.
 \end{signature}
 
@@ -980,7 +980,7 @@ of finiteness for arbitrary sets and classes.
 \begin{forthel}
 
 \begin{definition} $S$ is finite iff
-$S = \Set{F}{1}{n}$ for some natural number $n$ and some function $F$ that is
+$S = \set{F}{1}{n}$ for some natural number $n$ and some function $F$ that is
 a sequence of length $n$.
 \end{definition}
 
@@ -1007,7 +1007,7 @@ $\Primes$ is infinite.
 \begin{proof}
 Assume that $r$ is a natural number and
 $p$ is a sequence of length $r$ and
-$\Set{p}{1}{r}$ is a subclass of $\Primes$.
+$\set{p}{1}{r}$ is a subclass of $\Primes$.
 
 %$\val{p}{i}$ is a nonzero natural number for every $i \in Dom(p)$.
 (1) $\val{p}{i}$ is a nonzero natural number for every $i$ such
@@ -1026,7 +1026,7 @@ $q$ is a divisor of $n$ and $q$ is a divisor of $\Prod{p}{1}{r}$
 (by Factorproperty, 1).
 Thus $q$ divides $1$. Contradiction. qed.
 
-Hence $\Set{p}{1}{r}$ is not the class of prime natural numbers.
+Hence $\set{p}{1}{r}$ is not the class of prime natural numbers.
 \end{proof}
 \end{forthel}
 
