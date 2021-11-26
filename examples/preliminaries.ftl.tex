@@ -1,51 +1,58 @@
 \documentclass[11pt]{article}
 \usepackage{amssymb}
+\usepackage{url}
 \usepackage{../lib/tex/naproche}
 
 \author{Peter Koepke, University of Bonn}
 
-\title{A Kelley-Morse-Style Ontology with Objects}
+\title{Ontological Axioms for \Naproche}
 
 \begin{document}
 
-\newcommand{\val}[2]{#1_{#2}}
-\newcommand{\Prod}[3]{#1_{#2} \cdots #1_{#3}}
-\newcommand{\Seq}[2]{\{#1,\dots,#2\}}
-\newcommand{\FinSet}[3]{\{#1_{#2},\dots,#1_{#3}\}}
-\newcommand{\Primes}{\mathbb{P}}
 \newcommand{\Naproche}{$\mathbb{N}$aproche}
-
 \maketitle
 
 \section{Basic Ideas}
 
-This file provides an ontology for $\mathbb{N}$aproche which
-is close to ordinary mathematical practices. There are
+The natural proof assistant \Naproche{} is intended to 
+approximate and support ordinary mathematical practices. 
+\Naproche{} employs the controlled natural language ForTheL
+as its input language. Some ForTheL notions are already
+built into \Naproche{}, as well as some basic properties of
+these notions.
+There are
 mathematical objects, and sets and classes of mathematical
 objects. Sets are classes which are objects themselves and
-can be used in further mathematical constructions. Functions
+can thus be used in further mathematical constructions. Functions
 and maps map objects to objects, where functions are those
-maps which are objects. Sets and functions are required to
+maps which are objects.
+
+Modelling mathematical notions by objects corresponds
+to the intuition that numbers, points, etc. should
+not have internal set-theoretical
+structurings, contrary to purely set-theoretical
+foundations of mathematics. This is also advantageous
+for automated proving since it prevents proof searches to
+dig into non-informative internal structurings.
+
+As in common mathematics, sets and functions are required to
 satisfy separation and replacement properties known from the
 set theories of Kelley-Morse or Zermelo-Fraenkel.
 
-Modelling mathematical notions by objects corresponds
-to the intuition that one does not expect internal set-theoretical
-structurings of numbers, points, etc.. This is also advantageous
-for automated proving since it prevents proof search to
-dig into such internal structurings.
-
-The ontology presented here is more hierarchical then previous
-ad-hoc first-order axiomatizations in some of our formalizations. This
-may lead to more complex and longer ontological checking tasks.
+The ontology presented here is more hierarchical than
+ad-hoc first-order axiomatizations in some previous
+\Naproche{} formalizations. Sometimes
+this results in more complex and longer ontological checking tasks.
 Controlling the complexitiy of automated proofs will be a major
-issue for the further development of $\mathbb{N}$aproche.
+issue for the further development.
 
-\section{Importing Grammatical Forms}
+\section{Importing Some Mathematical Language}
 We import singular/plural forms of words that will be used in
-our formalizations. In the long run this should be replaced by
-employing a proper English vocabulary.
-
+our formalizations (\path{examples/vocabulary.ftl}). 
+In the long run this should be replaced by
+employing a proper English vocabulary. We also 
+import some alternative formulations for 
+useful mathematical phrases (\path{examples/macros.ftl}).
 \begin{forthel}
 [read vocabulary.ftl]
 
@@ -54,17 +61,15 @@ employing a proper English vocabulary.
 
 \section{Sets and Classes}
 The notions of \textit{classes} and \textit{sets} are already
-provided by $\mathbb{N}$aproche. Classes can be defined by
-abstraction terms $\{\dots\mid\dots\}$. Since these terms need to be
+provided by \Naproche{}. Classes are usually defined by
+abstraction terms $\{\dots\mid\dots\}$. Since such terms need to be
 processed by the parser we cannot introduce them simply by first-order
 definitions but have to implement them in the software.
-That sets is are classes which are objects, or extensionality can be proved
+That sets are classes which are objects, or extensionality can be proved
 from inbuilt assumptions, but it is important to reprove or restate such
-facts so that they can be accessed by the ATP.
+facts so that they can directly be accessed by the ATP.
 
 \begin{forthel}
-Let $S,T$ denote classes. Let $X,Y$ denote sets.
-Let $x$ denote objects.
 
 \begin{lemma} Every set is a class. \end{lemma}
 
@@ -73,7 +78,7 @@ Let $x$ denote objects.
 \begin{axiom} Every element of every class is an object.
 \end{axiom}
 
-Let $M,N$ denote classes.
+Let $S,T$ denote classes.
 
 \begin{definition} The empty set is the set that has
 no elements.
@@ -86,8 +91,8 @@ belongs to $S$.
 
 Let $T \subseteq S$ stand for $T$ is a subclass of $S$.
 
-\begin{lemma} [Class Extensionality] If $M$ is a subclass of $N$ and
-$N$ is a subclass of $M$ then $M = N$.
+\begin{lemma} [Class Extensionality] If $S$ is a subclass of $T$ and
+$T$ is a subclass of $S$ then $S = T$.
 \end{lemma}
 
 \begin{definition}
@@ -105,24 +110,28 @@ with Kuratowski-style set-theoretical ordered pairs, but
 axiomatize them as objects.
 
 \begin{forthel}
+
+\begin{axiom}
+$(a,b)$ is an object for all objects $a,b$.
+\end{axiom}
+
 \begin{axiom}
 For any objects $a,b,c,d$ if $(a,b) = (c,d)$ then $a = c$
 and $b = d$.
 \end{axiom}
 
 \begin{definition}
-$M \times N = \{(x,y) | x$ is an element of $M$ and $y$
-is an element of $N\}$.
+$S \times T = \{(x,y) | x \in S$ and $y \in T\}$.
 \end{definition}
 
-\begin{axiom}
-$M \times N$ is a set.
+\begin{axiom} Let $X,Y$ be sets. Then
+$X \times Y$ is a set.
 \end{axiom}
 
 \begin{lemma}
 Let $x,y$ be objects.
-If $(x,y)$ is an element of $M \times N$ then $x$ is an
-element of $M$ and $y$ is an element of $N$.
+If $(x,y)$ is an element of $S \times T$ then $x$ is an
+element of $S$ and $y$ is an element of $T$.
 \end{lemma}
 
 \end{forthel}
@@ -142,7 +151,7 @@ Let $f,g$ stand for maps.
 \begin{lemma} The domain of every map is a class.
 \end{lemma}
 
-\begin{lemma} If $x \in Dom(f)$ then $f(x)$ is an object.
+\begin{lemma} Let $x \in Dom(f)$. Then $f(x)$ is an object.
 \end{lemma}
 
 \begin{lemma} [Functional Extensionality] Assume $Dom(f)=Dom(g)$ and for every $x \in Dom(f)$
@@ -150,8 +159,8 @@ $f(x)=g(x)$. Then $f=g$.
 \end{lemma}
 
 \begin{definition}
-Assume $M$ is a subclass of the domain of $f$.
-$f[M] = \{ f(x) | x \in M \}$.
+Assume $S$ is a subclass of the domain of $f$.
+$f[S] = \{ f(x) | x \in S \}$.
 \end{definition}
 
 \begin{definition}
@@ -159,8 +168,8 @@ $f : S \rightarrow T$ iff $Dom (f) = S$ and $f[S] \subseteq T$.
 \end{definition}
 
 \begin{axiom} [Replacement Axiom]
-Assume $M$ is a subset of the domain of $f$.
-Then $f[M]$ is a set.
+Assume $X$ is a subset of the domain of $f$.
+Then $f[X]$ is a set.
 \end{axiom}
 
 \end{forthel}
