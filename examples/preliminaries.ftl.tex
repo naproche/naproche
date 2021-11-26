@@ -9,16 +9,15 @@
 
 \begin{document}
 
-\newcommand{\Naproche}{$\mathbb{N}$aproche}
 \maketitle
 
 \section{Basic Ideas}
 
-The natural proof assistant \Naproche{} is intended to 
-approximate and support ordinary mathematical practices. 
-\Naproche{} employs the controlled natural language ForTheL
+The natural proof assistant \Naproche is intended to
+approximate and support ordinary mathematical practices.
+\Naproche employs the controlled natural language ForTheL
 as its input language. Some ForTheL notions are already
-built into \Naproche{}, as well as some basic properties of
+built into \Naproche, as well as some basic properties of
 these notions.
 There are
 mathematical objects, and sets and classes of mathematical
@@ -41,17 +40,17 @@ set theories of Kelley-Morse or Zermelo-Fraenkel.
 
 The ontology presented here is more hierarchical than
 ad-hoc first-order axiomatizations in some previous
-\Naproche{} formalizations. Sometimes
+\Naproche formalizations. Sometimes
 this results in more complex and longer ontological checking tasks.
 Controlling the complexitiy of automated proofs will be a major
 issue for the further development.
 
 \section{Importing Some Mathematical Language}
 We import singular/plural forms of words that will be used in
-our formalizations (\path{examples/vocabulary.ftl}). 
+our formalizations (\path{examples/vocabulary.ftl}).
 In the long run this should be replaced by
-employing a proper English vocabulary. We also 
-import some alternative formulations for 
+employing a proper English vocabulary. We also
+import some alternative formulations for
 useful mathematical phrases (\path{examples/macros.ftl}).
 \begin{forthel}
 [read vocabulary.ftl]
@@ -61,7 +60,7 @@ useful mathematical phrases (\path{examples/macros.ftl}).
 
 \section{Sets and Classes}
 The notions of \textit{classes} and \textit{sets} are already
-provided by \Naproche{}. Classes are usually defined by
+provided by \Naproche. Classes are usually defined by
 abstraction terms $\{\dots\mid\dots\}$. Since such terms need to be
 processed by the parser we cannot introduce them simply by first-order
 definitions but have to implement them in the software.

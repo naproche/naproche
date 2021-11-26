@@ -3,9 +3,11 @@
 
 \RequirePackage{amsmath}
 \RequirePackage{amsthm}
+\RequirePackage{amsfonts}
 \RequirePackage{etoolbox}
 \RequirePackage{braket}     % \Set
-\RequirePackage{linegoal}  % \linegoal
+\RequirePackage{linegoal}   % \linegoal
+\RequirePackage{xspace}     % \xspace
 
 \newtheoremstyle{formalized}% name of the style to be used
     {4pt}% measure of space to leave above the theorem. E.g.: 3pt
@@ -102,6 +104,12 @@ boxrule=0pt,boxsep=0pt,breakable}
 
 \newcommand{\dom}{\operatorname{dom}}
 \newcommand{\fun}{\mathrm{\lambda}}
+
+
+% Naproche logo
+% =============
+
+\newcommand{\Naproche}{\ensuremath{\mathbb{N}}aproche\xspace}
 
 
 % Options

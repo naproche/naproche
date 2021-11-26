@@ -34,8 +34,6 @@
 \newcommand{\Swap}[1]{\operatorname{Swap}#1}
 \newcommand{\Sw}[3]{\operatorname{Swap}_{#1}^{#2}(#3)}
 
-\newcommand{\Naproche}{$\mathbbm{N}$aproche}
-
 
 \begin{document}
 
@@ -83,7 +81,7 @@ to model checkerboards as a Cartesian product of
 In future versions these signature declarations will be grouped together as a single declaration of an inductively defined set.
 
 
-\Naproche{} allows us to group elements into \textit{classes} and \textit{sets} as long as they are \textit{setsized} (informally also called \textit{small}).
+\Naproche allows us to group elements into \textit{classes} and \textit{sets} as long as they are \textit{setsized} (informally also called \textit{small}).
 \begin{forthel}
     \begin{signature} An integer is an object. \end{signature}
 
@@ -98,7 +96,7 @@ In future versions these signature declarations will be grouped together as a si
 
     \begin{definition}
         An integer mod eight is an integer $x$
-        such that $x = 0$ or $x = 1$ or $x = 2$ or $x = 3$ or $x = 4$ 
+        such that $x = 0$ or $x = 1$ or $x = 2$ or $x = 3$ or $x = 4$
         or $x = 5$ or $x = 6$ or $x = 7$.
     \end{definition}
 
@@ -176,7 +174,7 @@ is the built-in \textit{largest notion}, containing all other notions.
 %
 Also note that the proof of the lemma below really is omitted and not merely hidden:
 with the help of automated theorem provers
-such as the \textsf{E} theorem prover\,\cite{eprover}, \Naproche{}
+such as the \textsf{E} theorem prover\,\cite{eprover}, \Naproche
 can accept some theorems without any additional argumentation.
 
 
@@ -198,7 +196,7 @@ so we postulate it as an axiom.
     \end{axiom}
 \end{forthel}
 
-(Unary) functions are built into \Naproche{}; $F(t)$ denotes the
+(Unary) functions are built into \Naproche; $F(t)$ denotes the
 application of a function $F$ to an argument $t$ and
 $\dom(F)$ stands for the domain of $F$. In our exposition we shall
 use functions to compare cardinalities of black and white squares. As with

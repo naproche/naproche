@@ -5,8 +5,8 @@
 \author{Andrei Paskevich and Peter Koepke\\
    U Paris-Saclay and U Bonn}
 
-\title{Euclid's Proof 
-of the Infinitude of Primes, Formalized in \Naproche{}}
+\title{Euclid's Proof
+of the Infinitude of Primes, Formalized in \Naproche}
 
 \begin{document}
 
@@ -15,22 +15,21 @@ of the Infinitude of Primes, Formalized in \Naproche{}}
 \newcommand{\Seq}[2]{\{#1,\dots,#2\}}
 \newcommand{\FinSet}[3]{\{#1_{#2},\dots,#1_{#3}\}}
 \newcommand{\Primes}{\mathbb{P}}
-\newcommand{\Naproche}{$\mathbb{N}$aproche}
 
 \maketitle
 
-This paper contains a standard proof of Euclid's theorem 
+This paper contains a standard proof of Euclid's theorem
 that there are infinitely many prime numbers. We
 follow the first proof given in \emph{Proofs from THE BOOK}
 by Martin Aigner and Günter M. Ziegler, Springer Verlag.
-Before the proof we 
+Before the proof we
 set up a language and axioms for natural number arithmetic,
 define divisibility and prime numbers,
 introduce some set theoretic background and define
 finite sets, sequences and products.
 
-On an older laptop 
-with an Intel Pentium N3710 processor \Naproche{} takes 
+On an older laptop
+with an Intel Pentium N3710 processor \Naproche takes
 around 75 seconds to check this text.
 
 
@@ -42,7 +41,7 @@ around 75 seconds to check this text.
 
 
 \section{Natural Numbers}
- 
+
 \begin{forthel}
 
 \begin{signature}  A natural number is a mathematical object.
@@ -50,7 +49,7 @@ around 75 seconds to check this text.
 
 Let $i,k,l,m,n,p,q,r$ denote natural numbers.
 
-\begin{definition} $\mathbb{N}$ is the 
+\begin{definition} $\mathbb{N}$ is the
 collection of natural numbers.
 \end{definition}
 
@@ -93,7 +92,7 @@ Let $x$ is nonzero stand for $x \neq 0$.
                 $(n + l) * m = (n * m) + (l * m)$.
 \end{axiom}
 
-\begin{axiom} If $l + m = l + n$ or $m + l = n + l$ 
+\begin{axiom} If $l + m = l + n$ or $m + l = n + l$
 then $m = n$.
 \end{axiom}
 
@@ -110,8 +109,8 @@ If $l * m = l * n$ or $m * l = n * l$ then $m = n$.
 
 \begin{forthel}
 
-\begin{definition} $m \leq n$ iff 
-there exists a natural number $l$ such that  
+\begin{definition} $m \leq n$ iff
+there exists a natural number $l$ such that
 $m + l = n$.
 \end{definition}
 
@@ -130,18 +129,18 @@ The following three lemmas show that $\leq$ is a partial order:
 \begin{lemma} $m \leq m$.
 \end{lemma}
 
-\begin{lemma} If $m \leq n \leq m$ 
+\begin{lemma} If $m \leq n \leq m$
 then $m = n$.
 \end{lemma}
 \begin{proof}
 Let $m \leq n \leq m$.
-Take a natural numbers $k,l$ such that 
+Take a natural numbers $k,l$ such that
 $n = m + k$ and $m = n + l$.
 Then $m = m + (k + l)$ and $k + l = 0$ and $k = 0$.
 Hence $m = n$.
 \end{proof}
 
-\begin{lemma} If $m \leq n \leq l$ 
+\begin{lemma} If $m \leq n \leq l$
 then  $m \leq l$.
 \end{lemma}
 
@@ -160,7 +159,7 @@ then  $m \leq l$.
 
 \section{Induction}
 
-\Naproche{} provides a special binary relation
+\Naproche provides a special binary relation
 symbol $\prec$ for a universal inductive relation: if at any
 point $m$ property $P$ is inherited at $m$ provided all
 $\prec$-predecessors of $m$ satisfy $P$, then $P$ holds everywhere.
@@ -189,7 +188,7 @@ Induction along $<$ is ensured by:
 \end{definition}
 
 Let $x | y$ denote $x$ divides $y$.
-Let a divisor of $x$ denote a natural number 
+Let a divisor of $x$ denote a natural number
 that divides $x$.
 
 \begin{lemma} Let $l | m$ and $l | m + n$. Then $l | n$.
@@ -197,10 +196,10 @@ that divides $x$.
 
 \begin{proof}
 Assume that $l$ is nonzero.
-Take $p$ such that $m = l * p$. 
+Take $p$ such that $m = l * p$.
 Take $q$ such that $m + n = l * q$.
 
-Let us show that 
+Let us show that
 $p \leq q$.
 Proof by contradiction.
 Assume the contrary. Then $q < p$.
@@ -265,7 +264,7 @@ $\Prod{F}{1}{n}$ is a natural number.
 
 \begin{axiom}[Factorproperty] Let $F$ be a sequence of length $n$
 such that $F(i)$ is a nonzero natural number for every $i \in Dom(F)$.
-Then $\Prod{F}{1}{n}$ is nonzero and 
+Then $\Prod{F}{1}{n}$ is nonzero and
 $F(i)$ divides $\Prod{F}{1}{n}$ for every $i \in Dom(F)$.
 \end{axiom}
 
@@ -278,8 +277,8 @@ $F(i)$ divides $\Prod{F}{1}{n}$ for every $i \in Dom(F)$.
 
 Let $S$ denote a class.
 
-\begin{definition} $S$ is finite iff 
-$S = \FinSet{s}{1}{n}$ for some natural number $n$ and some function $s$ that is 
+\begin{definition} $S$ is finite iff
+$S = \FinSet{s}{1}{n}$ for some natural number $n$ and some function $s$ that is
 a sequence of length $n$.
 \end{definition}
 
@@ -302,19 +301,19 @@ a sequence of length $n$.
 $\Primes$ is infinite.
 \end{theorem}
 \begin{proof}
-Assume that $r$ is a natural number and 
+Assume that $r$ is a natural number and
 $p$ is a sequence of length $r$ and
 $\FinSet{p}{1}{r}$ is a subclass of $\Primes$.
-$\val{p}{i}$ is a nonzero natural number for every 
+$\val{p}{i}$ is a nonzero natural number for every
 $i \in  Dom p$.
 Consider $n=\Prod{p}{1}{r}+1$.
 [dump on]
 $\Prod{p}{1}{r}$ is nonzero (by Factorproperty). $n$ is nontrivial.
 Take a prime divisor $q$ of $n$.
 
-Let us show that $q \neq \val{p}{i}$ for all $i$ such that 
+Let us show that $q \neq \val{p}{i}$ for all $i$ such that
 $1 \leq i \leq r$.
-   
+
 Proof by contradiction.
 Assume that $q=\val{p}{i}$ for some natural number $i$ such that
 $1 \leq i \leq r$.

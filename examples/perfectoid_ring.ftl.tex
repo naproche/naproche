@@ -8,18 +8,17 @@
 \usepackage{../lib/tex/naproche}
 
 \title{A Shallow Formalization of Perfectoid Rings in the
-\Naproche{} Natural Language Proof Assistant}
+\Naproche Natural Language Proof Assistant}
 \author{Peter Koepke\\
 University of Bonn}
 
 \newcommand{\card}[1]{\operatorname{card}(#1)}
-\newcommand{\Naproche}{$\mathbb{N}$aproche}
 
 \begin{document}
 
 \maketitle
 
-We define \textit{perfectoid rings} in \Naproche{} with the main intention to approximate
+We define \textit{perfectoid rings} in \Naproche with the main intention to approximate
 the language of definitions and
 to the mathematical \textit{language} of Definition 3.1 in
 Peter Scholze, \textit{Étale cohomology of diamonds} and of other material leading up
@@ -41,15 +40,15 @@ and we express a property like
 via congruences mod $\omega$ or mod $\omega^{p,R}$ resp.. Note that we
 have to repeat the variable $R$ for a ring throughout the document since
 we do not have automatic type elaboration as in Lean. This should be
-provided in future versions of \Naproche{}.
+provided in future versions of \Naproche.
 
 This text is written as a file
 \texttt{perfectoidring.ftl.tex}
-in the \LaTeX{} dialect of \Naproche{} and
+in the \LaTeX{} dialect of \Naproche and
 typeset by pdf-\LaTeX. The formal parts are printed on a grey background. Everything else
 is interpreted as commentary that is not subject to the logical checking by the system.
 \texttt{perfectoidring.ftl.tex}
-can be checked in the \Naproche{} program by opening the file in Isabelle (see
+can be checked in the \Naproche program by opening the file in Isabelle (see
 \texttt{https://isabelle.in.tum.de/}).
 The main burden is the ``type checking'' of statements, i.e., that the preconditions
 for complex terms are satisfied. These checks can take several seconds and involve
@@ -60,7 +59,7 @@ algorithms.
 \section{Sets and natural numbers}
 
 A somewhat odd collection of notations and properties for classes and sets is
-built into \Naproche{}.
+built into \Naproche.
 Further premises needed in the formalization are imported from:
 
 \begin{itemize}
