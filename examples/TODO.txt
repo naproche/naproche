@@ -1,0 +1,39 @@
+TODO für das nächste Naproche, insbesondere examples
+
+BITTE MODIFIZIEREN!!!
+
+
+
+1. eingebaute Ontologie in Richtung von gewöhnlichen Klassen/Mengen/
+Abbildungen/Funktionen/Objekten verändern. OK
+
+2. Proof tasks im Zusammenhang mit Abstraktionstermen {...} überprüfen.
+    (2022?)
+3. Abstraktionsterm-Konstrukte in Formalisierungen überprüfen und
+notfalls eliminieren.
+
+4. Verbesserung der mitgelieferten Beispiele.
+Adrian:
+
+Peter:
+TUTORIAL
+euclid
+maximum_modulus
+tarski
+preliminaries
+vocabulary
+
+Marcel:
+
+5. Rausnehmen von koenig und regular_successor 
+
+6. Koordination der Ontologie- oder Preliminaries-Dateien von Adrian
+und Peter
+
+7. Perfectoide Ringe aufnehmen??
+
+8. Hat sich durch unsere Diskussionen erledigt: Wenn eine Theorie als .ftl und 
+als .ftl.tex formalisiert ist, sollten beide Dateien einigermaßen parallel 
+laufen. Es gibt aber gewisse Probleme, z.B. eine .ftl-Ontologie in eine .ftl.tex-
+Formalisierung einzuladen, da Definitionen mit \ nicht gut übernommen werden.
+
