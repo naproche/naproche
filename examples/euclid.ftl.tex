@@ -10,7 +10,6 @@ of the Infinitude of Primes, Formalized in \Naproche}
 
 \begin{document}
 
-\newcommand{\val}[2]{#1_{#2}}
 \newcommand{\Prod}[3]{#1_{#2} \cdots #1_{#3}}
 \newcommand{\Seq}[2]{\{#1,\dots,#2\}}
 \newcommand{\FinSet}[3]{\{#1_{#2},\dots,#1_{#3}\}}
@@ -251,10 +250,10 @@ Assume $F$ is a function and $x \in Dom(F)$. Then $F(x)$ is an object.
 function $F$ such that $Dom(F) = \Seq{1}{n}$.
 \end{definition}
 
-Let $\val{F}{i}$ stand for $F(i)$.
+Let $F_{i}$ stand for $F(i)$.
 
 \begin{definition} Let $F$ be a sequence of length $n$.
-$\FinSet{F}{1}{n} = \{ \val{F}{i} | i \in Dom(F)\}$.
+$\FinSet{F}{1}{n} = \{ F_{i} | i \in Dom(F)\}$.
 \end{definition}
 
 \begin{signature} Let $F$ be a sequence of length $n$
@@ -304,18 +303,18 @@ $\Primes$ is infinite.
 Assume that $r$ is a natural number and
 $p$ is a sequence of length $r$ and
 $\FinSet{p}{1}{r}$ is a subclass of $\Primes$.
-$\val{p}{i}$ is a nonzero natural number for every
+$p_{i}$ is a nonzero natural number for every
 $i \in  Dom p$.
 Consider $n=\Prod{p}{1}{r}+1$.
 [dump on]
 $\Prod{p}{1}{r}$ is nonzero (by Factorproperty). $n$ is nontrivial.
 Take a prime divisor $q$ of $n$.
 
-Let us show that $q \neq \val{p}{i}$ for all $i$ such that
+Let us show that $q \neq p_{i}$ for all $i$ such that
 $1 \leq i \leq r$.
 
 Proof by contradiction.
-Assume that $q=\val{p}{i}$ for some natural number $i$ such that
+Assume that $q=p_{i}$ for some natural number $i$ such that
 $1 \leq i \leq r$.
 $q$ is a divisor of $n$.
 $q$ is a divisor of $\Prod{p}{1}{r}$
