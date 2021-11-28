@@ -16,12 +16,16 @@ notfalls eliminieren.
 Adrian:
 
 Peter:
-TUTORIAL
-euclid
+
+README über die Sammlung der Beispiele schreiben.
+
+TUTORIAL OK?
+euclid 
 maximum_modulus
 tarski
 preliminaries
 vocabulary
+group.lean.ftl.tex
 
 Marcel:
 
