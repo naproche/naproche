@@ -22,8 +22,8 @@ Marcel Schütz (2019, 2021)}
 
   \typeout{
     \begin{forthel}
-      [readtex basic-notions/sets-and-functions/sections/02_functions/05_functions-and-set-systems.ftl.tex]
-      [readtex basic-notions/sets-and-functions/sections/02_functions/06_equipollency.ftl.tex]
+      [readtex set-theory/sections/02_functions/05_functions-and-set-systems.ftl.tex]
+      [readtex set-theory/sections/02_functions/06_equipollency.ftl.tex]
     \end{forthel}
   }
 
@@ -47,13 +47,14 @@ Marcel Schütz (2019, 2021)}
         (1) Define $h(a) = x \setminus g[y \setminus f[a]]$ for $a \in \pow(x)$.
 
         $h$ is a function from $\pow(x)$ to $\pow(x)$.
+        Indeed $h(a)$ is a subset of $x$ for each subset $a$ of $x$.
 
         Let us show that $h$ preserves subsets.
           Let $a,b$ be subsets of $x$.
           Assume $a \subseteq b$.
           Then $f[a] \subseteq f[b]$.
           Hence $y \setminus f[b] \subseteq y \setminus f[a]$.
-          Thus $g[y \setminus f[b]] \subseteq g[y \setminus f[a]]$ (by SF 02 02 889945).
+          Thus $g[y \setminus f[b]] \subseteq g[y \setminus f[a]]$ (by \ref{SetTheory_02_02_889945}).
           Indeed $y \setminus f[b]$ and $y \setminus f[a]$ are subsets of $y$.
           Therefore $x \setminus g[y \setminus f[a]] \subseteq x \setminus g[y \setminus f[b]]$.
           Consequently $h[a] \subseteq h[b]$.
@@ -66,6 +67,7 @@ Marcel Schütz (2019, 2021)}
         We have $c = h(c)$ iff $x \setminus c = g[y \setminus f[c]]$.
         $g^{-1}$ is a bijection between $\range(g)$ and $y$.
         Thus $x \setminus c = g[y \setminus f[c]] \subseteq \range(g)$.
+        Therefore $x \setminus c$ is a subset of $\dom(g^{-1})$.
 
         (3) Define $G(u) = g^{-1}(u)$ for $u \in x \setminus c$.
 
@@ -80,10 +82,15 @@ Marcel Schütz (2019, 2021)}
         for $u \in x$.
 
         Let us show that $H$ is a function to $y$.
-          Let $v$ be a value of $H$.
-          Take $u \in x$ such that $H(u) = v$.
-          If $u \in c$ then $v = H(u) = F(u) = f(u) \in y$.
-          If $u \notin c$ then $v = H(u) = G(u) = g^{-1}(u) \in y$.
+          $\dom(H)$ is a set and every value of $H$ is an object.
+          Hence $H$ is a function.
+
+          Let us show that every value of $H$ lies in $y$.
+            Let $v$ be a value of $H$.
+            Take $u \in x$ such that $H(u) = v$.
+            If $u \in c$ then $v = H(u) = F(u) = f(u) \in y$.
+            If $u \notin c$ then $v = H(u) = G(u) = g^{-1}(u) \in y$.
+          End.
         End.
 
         Let us show that every element of $y$ is a value of $H$.
