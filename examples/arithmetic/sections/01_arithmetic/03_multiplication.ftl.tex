@@ -22,11 +22,11 @@
 
     Let the product of $n$ and $m$ stand for $n \cdot m$.
 
-    \begin{axiom}[1st multiplication axiom]
+    \begin{axiom}[\nth{1} multiplication axiom]\label{Arithmetic_01_03_374176}
       $n \cdot 0 = 0$.
     \end{axiom}
 
-    \begin{axiom}[2nd multiplication axiom]
+    \begin{axiom}[\nth{2} multiplication axiom]\label{Arithmetic_01_03_667207}
       $n \cdot (m + 1) = (n \cdot m) + n$.
     \end{axiom}
   \end{forthel}
@@ -35,7 +35,7 @@
   \subsection{Computation laws}
 
   \begin{forthel}
-    \begin{proposition}[NN 01 03 539933]
+    \begin{proposition}\label{Arithmetic_01_03_539933}
       For all $n,m,k$ we have \[ n \cdot (m + k) = (n \cdot m) + (n \cdot k). \]
     \end{proposition}
     \begin{proof}
@@ -68,7 +68,7 @@
     \end{proof}
 
 
-    \begin{proposition}[NN 01 03 322712]
+    \begin{proposition}\label{Arithmetic_01_03_322712}
       For all $n,m,k$ we have \[ (n + m) \cdot k = (n \cdot k) + (m \cdot k). \]
     \end{proposition}
     \begin{proof}
@@ -110,7 +110,7 @@
     \end{proof}
 
 
-    \begin{proposition}[NN 01 03 866630]
+    \begin{proposition}\label{Arithmetic_01_03_866630}
       $n \cdot 1 = n$.
     \end{proposition}
     \begin{proof}
@@ -122,7 +122,7 @@
     \end{proof}
 
 
-    \begin{corollary}[NN 01 03 302621]
+    \begin{corollary}\label{Arithmetic_01_03_302621}
     $n \cdot 2 = n + n$.
     \end{corollary}
     \begin{proof}
@@ -133,7 +133,7 @@
     \end{proof}
 
 
-    \begin{proposition}[NN 01 03 299637]
+    \begin{proposition}\label{Arithmetic_01_03_299637}
       For all $n,m,k$ we have \[ n \cdot (m \cdot k) = (n \cdot m) \cdot k. \]
     \end{proposition}
     \begin{proof}
@@ -168,7 +168,7 @@
     \end{proof}
 
 
-    \begin{proposition}[NN 01 03 850937]
+    \begin{proposition}\label{Arithmetic_01_03_850937}
       For all $n,m$ we have \[ n \cdot m = m \cdot n. \]
     \end{proposition}
     \begin{proof}
@@ -250,7 +250,7 @@
     \end{proof}
 
 
-    \begin{proposition}[NN 01 03 692941]
+    \begin{proposition}\label{Arithmetic_01_03_692941}
       For all $n,m$ we have \[ n \cdot m = 0 \implies (\text{$n = 0$ or $m = 0$}). \]
     \end{proposition}
     \begin{proof}
@@ -275,7 +275,7 @@
     \end{proof}
 
 
-    \begin{proposition}[NN 01 03 799692]
+    \begin{proposition}\label{Arithmetic_01_03_799692}
       Assume $k \neq 0$.
       Then for all $n,m$ we have \[ n \cdot k = m \cdot k \implies n = m. \]
     \end{proposition}
@@ -313,7 +313,7 @@
             Take a natural number $m'$ such that $m = m' + 1$.
             Then $(n + 1) \cdot k = (m' + 1) \cdot k$.
             Hence $(n \cdot k) + k = (m' \cdot k) + k$.
-            Thus $n \cdot k = m' \cdot k$ (by NN 01 02 882987).
+            Thus $n \cdot k = m' \cdot k$ (by \ref{Arithmetic_01_02_882987}).
             Then we have $n = m'$.
             Therefore $n + 1 = m' + 1 = m$.
           End.
@@ -324,7 +324,7 @@
     \end{proof}
 
 
-    \begin{corollary}[NN 01 03 169506]
+    \begin{corollary}\label{Arithmetic_01_03_169506}
       Assume $k \neq 0$.
       Then for all $n,m$ we have \[ k \cdot n = k \cdot m \implies n = m. \]
     \end{corollary}

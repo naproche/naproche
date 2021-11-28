@@ -56,12 +56,12 @@
   \subsection{Basic properties}
 
   \begin{forthel}
-    \begin{proposition}[NN 03 04 357744]
+    \begin{proposition}\label{Arithmetic_03_04_357744}
       Let $n > 1$.
       Then $n$ is prime iff every divisor of $n$ is a trivial divisor of $n$.
     \end{proposition}
 
-    \begin{proposition}[NN 03 04 175431]
+    \begin{proposition}\label{Arithmetic_03_04_175431}
       $2$ and $3$ are prime.
     \end{proposition}
     \begin{proof}
@@ -77,7 +77,7 @@
         Then $0 < k \leq 3$.
         Hence $k = 1$ or $k = 2$ or $k = 3$.
 
-        $2$ does not divide $3$.
+        $2$ does not divide $3$. \\
         Proof.
           Assume the contrary.
           Take a natural number $l$ such that $3 = 2 \cdot l$.
@@ -93,7 +93,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[NN 03 04 520376]
+    \begin{proposition}\label{Arithmetic_03_04_520376}
       Let $p$ be a prime number.
       If $p$ is even then $p = 2$.
     \end{proposition}
@@ -104,7 +104,7 @@
       Thus $p = 2$.
     \end{proof}
 
-    \begin{proposition}[NN 03 04 130748]
+    \begin{proposition}\label{Arithmetic_03_04_130748}
       Every natural number that is greater than $1$ has a prime divisor.
     \end{proposition}
     \begin{proof}
@@ -130,10 +130,10 @@
         End.
       End.
 
-      Thus every natural number belongs to $P$ (by NN 02 05 167446).
+      Thus every natural number belongs to $P$ (by \ref{Arithmetic_02_05_167446}).
     \end{proof}
 
-    \begin{proposition}[NN 03 04 306779]
+    \begin{proposition}\label{Arithmetic_03_04_306779}
       Let $n$ be composite.
       Then $n$ has a nontrivial divisor $m$ such that $m^{2} \leq n$.
     \end{proposition}
@@ -156,7 +156,7 @@
     Let $n$ and $m$ are mutually prime stand for $n$ and $m$ are coprime.
     Let $n$ is prime to $m$ stand for $n$ and $m$ are coprime.
 
-    \begin{proposition}[NN 03 04 356588]
+    \begin{proposition}\label{Arithmetic_03_04_356588}
       $n$ and $m$ are coprime iff for no prime number $p$ we have $p \mid n$ and $p \mid m$.
     \end{proposition}
     \begin{proof}
@@ -176,7 +176,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[NN 03 04 691058]
+    \begin{proposition}\label{Arithmetic_03_04_691058}
       Let $p$ be a prime number.
       If $p$ does not divide $n$ then $p$ and $n$ are coprime.
     \end{proposition}
@@ -189,7 +189,7 @@
       Contradiction.
     \end{proof}
 
-    \begin{proposition}[NN 03 04 703692]
+    \begin{proposition}\label{Arithmetic_03_04_703692}
       Let $p$ be a prime number.
       Then \[ p \mid n \cdot m \implies (\text{$p \mid n$ or $p \mid m$}). \]
     \end{proposition}
@@ -210,7 +210,7 @@
           Then $x \cdot m = ((q \cdot n') + r) \cdot m = ((q \cdot n') \cdot m) + (r \cdot m)$.
           We have $p \mid x \cdot m$.
           Hence $p \mid ((q \cdot n') \cdot m) + (r \cdot m)$.
-          Thus $p \mid r \cdot m$ (by NN 03 01 695362).
+          Thus $p \mid r \cdot m$ (by \ref{Arithmetic_03_01_695362}).
           Indeed $p \mid ((q \cdot n') \cdot m) = (q \cdot (n' \cdot m))$.
           Indeed $p \mid n' \cdot m$.
           Therefore $r = 0$.
@@ -228,7 +228,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[NN 03 04 119851]
+    \begin{proposition}\label{Arithmetic_03_04_119851}
       Let $k$ be nonzero.
       Then for all nonzero $n,m$ if $k \cdot m^{2} = n^{2}$ then $k$ is compound.
     \end{proposition}
@@ -249,12 +249,12 @@
           Then $k$ divides $n^{2}$ and $k$ divides $n$.
           Take a natural number $l$ such that $k \cdot l = n$.
 
-          (2) Then $m^{2} = k \cdot l^{2}$ (by NN 01 03 169506).
+          (2) Then $m^{2} = k \cdot l^{2}$ (by \ref{Arithmetic_01_03_169506}).
           Indeed $k \cdot m^{2} = (k \cdot l)^{2} = k \cdot (k \cdot l^{2})$.
 
           (3) $m$ is an element of $P$. \\
           Proof.
-            We have $n^{2} > m^{2}$ (by NN 02 03 252473).
+            We have $n^{2} > m^{2}$ (by \ref{Arithmetic_02_03_252473}).
             Indeed $k \cdot m^{2} = n^{2}$ and $k > 1$ and $m^{2} > 0$.
             Hence $m < n$.
             Indeed if $n \leq m$ then $n^{2} \leq m^{2}$.
@@ -271,7 +271,7 @@
           Contradiction.
         End.
 
-        Thus $P$ contains every natural number (by NN 02 05 167446).
+        Thus $P$ contains every natural number (by \ref{Arithmetic_02_05_167446}).
         Hence the thesis (by 1).
       End.
     \end{proof}

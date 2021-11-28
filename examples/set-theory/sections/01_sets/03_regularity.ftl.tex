@@ -13,17 +13,17 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{axiom}[Regularity]
+    \begin{axiom}[Regularity]\label{SetTheory_01_03_283644}
       Every nonempty set $x$ that contains some set contains some set $y$ such that $x$ and $y$ are disjoint.
     \end{axiom}
 
-    \begin{proposition}[SF 01 03 877283]
+    \begin{proposition}\label{SetTheory_01_03_877283}
       No set $x$ is an element of $x$.
     \end{proposition}
     \begin{proof}
       Assume the contrary.
       Take a set $x$ such that $x \in x$.
-      We can take an element $y$ of $\set{x}$ such that $\set{x}$ and $y$ are disjoint (by regularity).
+      We can take an element $y$ of $\set{x}$ such that $\set{x}$ and $y$ are disjoint (by \nameref{SetTheory_01_03_283644}).
       Indeed $\set{x}$ contains some set.
       Then $y = x$.
       Hence $\set{x}$ and $x$ are disjoint.
@@ -31,7 +31,7 @@
       Indeed $x \in \set{x}$ and $x \in x$.
     \end{proof}
 
-    \begin{corollary}[SF 01 03 722484]
+    \begin{corollary}\label{SetTheory_01_03_722484}
       There is no set that contains every set.
     \end{corollary}
     \begin{proof}
@@ -41,13 +41,13 @@
       Contradiction.
     \end{proof}
 
-    \begin{proposition}[SF 01 03 512352]
+    \begin{proposition}\label{SetTheory_01_03_512352}
       There exist no sets $x,y$ such that $x \in y$ and $y \in x$.
     \end{proposition}
     \begin{proof}
       Assume the contrary.
       Take sets $x,y$ such that $x \in y$ and $y \in x$.
-      Consider an element $z$ of $\set{x,y}$ such that $\set{x,y}$ and $z$ are disjoint (by regularity).
+      Consider an element $z$ of $\set{x,y}$ such that $\set{x,y}$ and $z$ are disjoint (by \nameref{SetTheory_01_03_283644}).
       Indeed $\set{x,y}$ contains some set.
       We have $z = x$ or $z = y$.
 

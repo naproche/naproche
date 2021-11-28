@@ -22,7 +22,7 @@
       $(u,v) = \set{\set{u}, \set{u,v}}$.
     \end{axiom}
 
-    \begin{proposition}[SF 01 05 366682]
+    \begin{proposition}\label{SetTheory_01_05_366682}
       Let $u,v$ be elements.
       Then $(u,v)$ is an element.
     \end{proposition}
@@ -32,7 +32,7 @@
       Thus $(u,v)$ is an element.
     \end{proof}
 
-    \begin{proposition}[SF 01 05 270653]
+    \begin{proposition}\label{SetTheory_01_05_270653}
       If $(u,v) = (u',v')$ then $u = u'$ and $v = v'$.
     \end{proposition}
     \begin{proof}
@@ -98,7 +98,7 @@
         Consequently $w \in \pow(\pow(x \cup y)) = z'$.
       End.
 
-      Hence $z$ is a set (by separation).
+      Hence $z$ is a set (by \nameref{SetTheory_01_01_240572}).
       Therefore the thesis (by 1).
     \end{proof}
 
@@ -108,7 +108,7 @@
 
     Let the Cartesian product of $x$ and $y$ stand for $x \times y$.
 
-    \begin{proposition}[SF 01 05 773790]
+    \begin{proposition}\label{SetTheory_01_05_773790}
       $(u,v) \in x \times y$ iff $u \in x$ and $v \in y$.
     \end{proposition}
     \begin{proof}
@@ -126,7 +126,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[SF 01 05 279635]
+    \begin{proposition}\label{SetTheory_01_05_279635}
       $x \times y$ is empty iff $x$ is empty or $y$ is empty.
     \end{proposition}
     \begin{proof}
@@ -146,7 +146,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[SF 01 05 784919]
+    \begin{proposition}\label{SetTheory_01_05_784919}
       $\set{u} \times \set{v} = \set{(u,v)}$.
     \end{proposition}
     \begin{proof}
@@ -171,7 +171,7 @@
   \subsection{Computation laws}
 
   \begin{forthel}
-    \begin{proposition}[SF 01 05 197314]
+    \begin{proposition}\label{SetTheory_01_05_197314}
       \[ x \subseteq y \implies x \times z \subseteq y \times z. \]
     \end{proposition}
     \begin{proof}
@@ -182,7 +182,7 @@
       Hence $(u,v) \in y \times z$.
     \end{proof}
 
-    \begin{proposition}[SF 01 05 238807]
+    \begin{proposition}\label{SetTheory_01_05_238807}
       Assume that $x$ and $x'$ are nonempty.
       \[ (x \times x') \subseteq (y \times y') \iff (\text{$x \subseteq y$ and $x' \subseteq y'$}). \]
     \end{proposition}
@@ -204,7 +204,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[SF 01 05 138531]
+    \begin{proposition}\label{SetTheory_01_05_138531}
       \[ ((x \cup y) \times z) = (x \times z) \cup (y \times z). \]
     \end{proposition}
     \begin{proof}
@@ -227,7 +227,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[SF 01 05 575129]
+    \begin{proposition}\label{SetTheory_01_05_575129}
       \[ x \times (y \cup z) = (x \times y) \cup (x \times z). \]
     \end{proposition}
     \begin{proof}
@@ -249,7 +249,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[SF 01 05 811990]
+    \begin{proposition}\label{SetTheory_01_05_811990}
       \[ ((x \cap y) \times z) = (x \times z) \cap (y \times z). \]
     \end{proposition}
     \begin{proof}
@@ -271,7 +271,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[SF 01 05 427022]
+    \begin{proposition}\label{SetTheory_01_05_427022}
       \[ x \times (y \cap z) = (x \times y) \cap (x \times z). \]
     \end{proposition}
     \begin{proof}
@@ -292,7 +292,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[SF 01 05 517847]
+    \begin{proposition}\label{SetTheory_01_05_517847}
       \[ ((x \setminus y) \times z) = (x \times z) \setminus (y \times z). \]
     \end{proposition}
     \begin{proof}
@@ -315,7 +315,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[SF 01 05 773842]
+    \begin{proposition}\label{SetTheory_01_05_773842}
       \[ x \times (y \setminus z) = (x \times y) \setminus (x \times z). \]
     \end{proposition}
     \begin{proof}
@@ -336,7 +336,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[SF 01 05 472623]
+    \begin{proposition}\label{SetTheory_01_05_472623}
       Assume that $x$ and $x'$ are nonempty or $y$ and $y'$ are nonempty.
       Then \[ (x \times x') = (y \times y') \iff (\text{$x = y$ and $x' = y'$}). \]
     \end{proposition}
@@ -368,7 +368,7 @@
       Case $x = y$ and $x' = y'$. Trivial.
     \end{proof}
 
-    \begin{proposition}[SF 01 05 261950]
+    \begin{proposition}\label{SetTheory_01_05_261950}
       \[ ((x \times y) \cap (x' \times y')) = (x \cap x') \times (y \cap y'). \]
     \end{proposition}
     \begin{proof}
@@ -391,7 +391,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[SF 01 05 687547]
+    \begin{proposition}\label{SetTheory_01_05_687547}
       \[ ((x \times y) \cup (x' \times y')) \subseteq (x \cup x') \times (y \cup y'). \]
     \end{proposition}
     \begin{proof}
@@ -403,7 +403,7 @@
       Thus $w \in (x \cup x') \times (y \cup y')$.
     \end{proof}
 
-    \begin{proposition}[SF 01 05 247770]
+    \begin{proposition}\label{SetTheory_01_05_247770}
       \[ ((x \times y) \setminus (x' \times y')) = (x \times (y \setminus y')) \cup ((x \setminus x') \times y). \]
     \end{proposition}
     \begin{proof}

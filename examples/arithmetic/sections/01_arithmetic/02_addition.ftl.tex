@@ -23,11 +23,11 @@
 
     Let the sum of $n$ and $m$ stand for $n + m$.
 
-    \begin{axiom}[1st addition axiom]
+    \begin{axiom}[\nth{1} addition axiom]\label{Arithmetic_01_02_190669}
       $n + 0 = n$.
     \end{axiom}
 
-    \begin{axiom}[2nd addition axiom]
+    \begin{axiom}[\nth{2} addition axiom]\label{Arithmetic_01_02_110889}
       $n + \succ(m) = \succ(n + m)$.
     \end{axiom}
   \end{forthel}
@@ -40,21 +40,21 @@
       $\succ(n) = n + 1$.
     \end{lemma}
 
-    \begin{corollary}[1st Peano axiom]
+    \begin{corollary}[\nth{1} Peano axiom]\label{Arithmetic_01_02_631603}
       If $n + 1 = m + 1$ then $n = m$.
     \end{corollary}
 
-    \begin{corollary}[2nd Peano axiom]
+    \begin{corollary}[\nth{2} Peano axiom]\label{Arithmetic_01_02_329014}
       For no n we have $n + 1 = 0$.
     \end{corollary}
 
-    \begin{corollary}[3rd Peano axiom]
+    \begin{corollary}[\nth{3} Peano axiom]\label{Arithmetic_01_02_253087}
       Let $P$ be a class.
       Assume $0 \in P$ and for all $n$: $n \in P \implies n + 1 \in P$.
       Then every natural number is an element of $P$.
     \end{corollary}
 
-    \begin{corollary}[2nd addition axiom]
+    \begin{corollary}[\nth{2} addition axiom]\label{Arithmetic_01_02_117171}
       $n + (m + 1) = (n + m) + 1$.
     \end{corollary}
   \end{forthel}
@@ -63,7 +63,7 @@
   \subsection{Computation laws}
 
   \begin{forthel}
-    \begin{proposition}[NN 01 02 468785]
+    \begin{proposition}\label{Arithmetic_01_02_468785}
       For all $n,m,k$ we have \[ n + (m + k) = (n + m) + k. \]
     \end{proposition}
     \begin{proof}
@@ -97,7 +97,7 @@
     \end{proof}
 
 
-    \begin{proposition}[NN 01 02 273100]
+    \begin{proposition}\label{Arithmetic_01_02_273100}
       For all $n,m$ we have \[ n + m = m + n. \]
     \end{proposition}
     \begin{proof}
@@ -166,7 +166,7 @@
     \end{proof}
 
 
-    \begin{proposition}[NN 01 02 882987]
+    \begin{proposition}\label{Arithmetic_01_02_882987}
       For all natural numbers $n,m,k$ we have \[ n + k = m + k \implies n = m. \]
     \end{proposition}
     \begin{proof}
@@ -195,7 +195,7 @@
     \end{proof}
 
 
-    \begin{corollary}[NN 01 02 402018]
+    \begin{corollary}\label{Arithmetic_01_02_402018}
       For all $n,m,k$ we have \[ k + n = k + m \implies n = m. \]
     \end{corollary}
     \begin{proof}
