@@ -51,7 +51,7 @@
   \subsection{Basic properties}
 
   \begin{forthel}
-    \begin{proposition}[NN 03 01 148842]
+    \begin{proposition}\label{Arithmetic_03_01_148842}
       Every natural number divides $0$.
     \end{proposition}
     \begin{proof}
@@ -60,7 +60,7 @@
       Hence $n \mid 0$.
     \end{proof}
 
-    \begin{proposition}[NN 03 01 295259]
+    \begin{proposition}\label{Arithmetic_03_01_295259}
       Every natural number that is divisible by $0$ is equal to $0$.
     \end{proposition}
     \begin{proof}
@@ -70,7 +70,7 @@
       Then we have $n = 0$.
     \end{proof}
 
-    \begin{proposition}[NN 03 01 856465]
+    \begin{proposition}\label{Arithmetic_03_01_856465}
       $1$ divides every natural number.
     \end{proposition}
     \begin{proof}
@@ -79,7 +79,7 @@
       Hence $1 \mid n$.
     \end{proof}
 
-    \begin{proposition}[NN 03 01 258975]
+    \begin{proposition}\label{Arithmetic_03_01_258975}
       Every natural number $n$ divides $n$.
     \end{proposition}
     \begin{proof}
@@ -88,7 +88,7 @@
       Hence $n \mid n$.
     \end{proof}
 
-    \begin{proposition}[NN 03 01 211137]
+    \begin{proposition}\label{Arithmetic_03_01_211137}
       Every natural number that divides $1$ is equal to $1$.
     \end{proposition}
     \begin{proof}
@@ -115,7 +115,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[NN 03 01 364584]
+    \begin{proposition}\label{Arithmetic_03_01_364584}
       We have \[ (\text{$n \mid m$ and $m \mid k$}) \implies n \mid k. \]
     \end{proposition}
     \begin{proof}
@@ -125,7 +125,7 @@
       Hence $n \mid k$.
     \end{proof}
 
-    \begin{proposition}[NN 03 01 185910]
+    \begin{proposition}\label{Arithmetic_03_01_185910}
       Let $n$ be nonzero.
       Assume $n \mid m$ and $m \mid n$.
       Then $n = m$.
@@ -138,7 +138,7 @@
       Therefore $n = m$.
     \end{proof}
 
-    \begin{proposition}[NN 03 01 710814]
+    \begin{proposition}\label{Arithmetic_03_01_710814}
       We have \[ n \mid m \implies k \cdot n \mid k \cdot m. \]
     \end{proposition}
     \begin{proof}
@@ -148,7 +148,7 @@
       Hence $k \cdot n \mid k \cdot m$.
     \end{proof}
 
-    \begin{proposition}[NN 03 01 382863]
+    \begin{proposition}\label{Arithmetic_03_01_382863}
       Assume $k \neq 0$.
       Then \[ k \cdot n \mid k \cdot m \implies n \mid m. \]
     \end{proposition}
@@ -160,7 +160,7 @@
       Thus $n \mid m$.
     \end{proof}
 
-    \begin{proposition}[NN 03 01 210721]
+    \begin{proposition}\label{Arithmetic_03_01_210721}
       If $k \mid n$ and $k \mid m$ then $k \mid (n' \cdot n) + (m' \cdot m)$ for all natural numbers $n',m'$.
     \end{proposition}
     \begin{proof}
@@ -176,18 +176,18 @@
       \[ = (n' \cdot n) + (m' \cdot m). \]
     \end{proof}
 
-    \begin{corollary}
+    \begin{corollary}\label{Arithmetic_03_01_655411}
       We have \[ (\text{$k \mid n$ and $k \mid m$}) \implies k \mid n + m. \]
     \end{corollary}
     \begin{proof}
       Assume $k \mid n$ and $k \mid m$.
       Take $n' = 1$ and $m' = 1$.
-      Then $k \mid (n' \cdot n) + (m' \cdot m)$ (by NN 03 01 210721).
+      Then $k \mid (n' \cdot n) + (m' \cdot m)$ (by \ref{Arithmetic_03_01_210721}).
       $(n' \cdot n) + (m' \cdot m) = n + m$.
       Hence $k \mid n + m$.
     \end{proof}
 
-    \begin{proposition}[NN 03 01 695362]
+    \begin{proposition}\label{Arithmetic_03_01_695362}
       Assume $k \mid n$ and $k \mid n + m$.
       Then $k \mid m$.
     \end{proposition}
@@ -201,13 +201,13 @@
         We have $l' \geq l$.
         Indeed if $l' < l$ then $n + m = k \cdot l' < k \cdot l = n$.
         Hence we can take a natural number $l''$ such that $l' = l + l''$.
-        Then $(k \cdot l) + m = k \cdot l' = k \cdot (l + l'') = (k \cdot l) + (k \cdot l'')$ (by NN 01 03 539933).
+        Then $(k \cdot l) + m = k \cdot l' = k \cdot (l + l'') = (k \cdot l) + (k \cdot l'')$ (by \ref{Arithmetic_01_03_539933}).
         Thus $m = (k \cdot l'')$.
         Therefore $k \mid m$.
       End.
     \end{proof}
 
-    \begin{proposition}[NN 03 01 376821]
+    \begin{proposition}\label{Arithmetic_03_01_376821}
       Let $n,m$ be nonzero.
       If $m \mid n$ then $m \leq n$.
     \end{proposition}
@@ -222,7 +222,7 @@
       Contradiction.
     \end{proof}
 
-    \begin{proposition}[NN 03 01 499003]
+    \begin{proposition}\label{Arithmetic_03_01_499003}
       Let $n,m$ be nonzero and $k > 1$.
       Then $k^{n} \mid k^{m}$ iff $n \leq m$.
     \end{proposition}

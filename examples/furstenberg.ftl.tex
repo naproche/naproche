@@ -4,7 +4,6 @@
 \usepackage[british]{babel}
 \usepackage{amsfonts}
 \usepackage{xurl}
-
 \usepackage{../lib/tex/naproche}
 \usepackage{../lib/tex/basicnotions}
 
@@ -27,19 +26,17 @@ Marcel Schütz (2021)}
   The following formalization of his proof is based on the notions of natural
   numbers and sets provided by the following files:
 
-  \begin{itemize}
-    \item \url{$NAPROCHE/examples/basic-notions/natural-numbers/sections/03_divisibility/03_modular-arithmetic.ftl.tex}
-    \item \url{$NAPROCHE/examples/basic-notions/natural-numbers/sections/03_divisibility/04_primes.ftl.tex}
-    \item \url{$NAPROCHE/examples/basic-notions/sets-and-functions/sections/01_sets/02_powerset.ftl.tex}
-  \end{itemize}
+  \begin{forthel}[prove off][check off]
+    [readtex \path{arithmetic/sections/03_divisibility/03_modular-arithmetic.ftl.tex}]
+  \end{forthel}
 
-  \typeout{
-    \begin{forthel}
-      [readtex basic-notions/natural-numbers/sections/03_divisibility/03_modular-arithmetic.ftl.tex]
-      [readtex basic-notions/natural-numbers/sections/03_divisibility/04_primes.ftl.tex]
-      [readtex basic-notions/sets-and-functions/sections/01_sets/02_powerset.ftl.tex]
-    \end{forthel}
-  }
+  \begin{forthel}
+    [readtex \path{arithmetic/sections/03_divisibility/04_primes.ftl.tex}]
+  \end{forthel}
+
+  \begin{forthel}
+    [readtex \path{set-theory/sections/01_sets/02_powerset.ftl.tex}][prove on][check on]
+  \end{forthel}
 
   The central idea of Furstenberg's proof is to define a certain topology on
   $\mathbb{N}$ from the properties of which we can deduce that the set of

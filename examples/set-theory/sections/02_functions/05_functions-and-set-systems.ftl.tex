@@ -4,7 +4,7 @@
   \section{Functions and set-systems}
 
   \begin{forthel}
-    [readtex \path{readtex set-theory/sections/01_sets/02_powerset.ftl.tex}]
+    [readtex \path{set-theory/sections/01_sets/02_powerset.ftl.tex}]
   \end{forthel}
 
   \begin{forthel}
@@ -55,13 +55,13 @@
       End.
     \end{proof}
 
-    \begin{theorem}[SF 01 05 636019]
+    \begin{theorem}\label{SetTheory_02_05_636019}
       Let $h$ be a function from $\pow(x)$ to $\pow(x)$ that preserves subsets.
       Then $h$ has a fixed point.
     \end{theorem}
     \begin{proof}
       (1) Define $A = \class{y | \text{$y \subseteq x$ and $y \subseteq h(y)$}}$.
-      Then $A$ is a subset of $\pow(x)$ (by separation).
+      Then $A$ is a subset of $\pow(x)$ (by \nameref{SetTheory_01_01_240572}).
       We have $\bigcup A \in \pow(x)$.
 
       Let us show that (2) $\bigcup A \subseteq h(\bigcup A)$.

@@ -1,14 +1,24 @@
 # Cantor's Theorem
 
-[readtex basic-notions/sets-and-functions/sections/01_sets/02_powerset.ftl.tex]
-[readtex basic-notions/sets-and-functions/sections/02_functions/01_functions.ftl.tex]
+[read preliminaries.ftl]
 
-Let x \in y stand for x is an element of y.
-Let x \notin y stand for x is not an element of y.
+Definition. Let X be a set.
+A function of X is a function f such that Dom(f) = X.
 
-Theorem Cantor.
-  Let M be a set.
-  No function of M surjects onto the powerset of M.
+Definition. Let f be a function and Y be a set.
+f surjects onto Y iff Y = {f(x) | x \in Dom(f)}.
+
+Definition. Let X,Y be sets.
+A function from X onto Y is a function of X that surjects onto Y.
+
+Definition. Let X be a set.
+The powerset of X is the collection of subsets of X.
+
+Axiom. The powerset of any set is a set.
+
+
+Theorem Cantor. Let M be a set.
+No function of M surjects onto the powerset of M.
 
 Proof by contradiction.
   Assume the contrary.
@@ -16,7 +26,7 @@ Proof by contradiction.
   The value of f at any element of M is a set.
   Define N = {x in M | x is not an element of f(x)}.
   N is a subset of M.
-  Take an element z of M such that f(z) = N.
+  Consider an element z of M such that f(z) = N.
   Then z \in N iff z \notin f(z) = N.
   Contradiction.
 Qed.

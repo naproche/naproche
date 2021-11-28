@@ -6,42 +6,66 @@
 \usepackage{../lib/tex/naproche}
 \usepackage{../lib/tex/basicnotions}
 
-\title{Cantor's theorem}
+\title{Cantor's Theorem}
 \author{}
 \date{}
+
+\setlength{\parindent}{0em}
 
 \begin{document}
   \pagenumbering{gobble}
 
   \maketitle
 
-  This formalization of Cantor's Theorem is based on the following files:
+  In this document we give a proof of Cantor's Theorem:
 
-  \begin{itemize}
-    \item \url{$NAPROCHE/examples/basic-notions/sets-and-functions/sections/01_sets/02_powerset.ftl.tex}
-    \item \url{$NAPROCHE/examples/basic-notions/sets-and-functions/sections/02_functions/01_functions.ftl.tex}
-  \end{itemize}
+  \begin{quotedtheorem}
+    There is no surjection from a set onto its powerset.
+  \end{quotedtheorem}
 
-  \typeout{
-    \begin{forthel}
-      [readtex basic-notions/sets-and-functions/sections/01_sets/02_powerset.ftl.tex]
-      [readtex basic-notions/sets-and-functions/sections/02_functions/01_functions.ftl.tex]
-    \end{forthel}
-  }
+  The notions and set-theoretic axioms used to formulate and prove it are
+  taken from the following files:
 
   \begin{forthel}
+    [readtex \path{preliminaries.ftl.tex}]
+  \end{forthel}
+
+  On the basis of them the theorem and its proof can be formalized as follows.
+
+  \begin{forthel}
+    \begin{definition}
+      Let $X$ be a set.
+      A function of $X$ is a function $f$ such that $\dom(f) = X$.
+    \end{definition}
+
+    \begin{definition}
+      Let $f$ be a function and $Y$ be a set.
+      $f$ surjects onto $Y$ iff $Y = \class{f(x) | x \in \dom(f)}$.
+    \end{definition}
+
+    Let a function from $X$ onto $Y$ stand for a function of $X$ that surjects onto $Y$.
+
+    \begin{definition}
+      Let $X$ be a set.
+      The powerset of $X$ is the collection of subsets of $X$.
+    \end{definition}
+
+    \begin{axiom}
+      The powerset of any set is a set.
+    \end{axiom}
+
+
     \begin{theorem}[Cantor]
       Let $M$ be a set.
       No function of $M$ surjects onto the powerset of $M$.
     \end{theorem}
     \begin{proof}
-      Proof by contradiction.
       Assume the contrary.
-      Take a function $f$ from $M$ onto $\pow(M)$.
+      Take a function $f$ from $M$ onto the powerset of $M$.
       The value of $f$ at any element of $M$ is a set.
-      Define $N = \class{x \in M | \text{$x$ is not an element of $f(x)$}}$.
+      Define \[ N = \class{x \in M | \text{$x$ is not an element of $f(x)$}}. \]
       $N$ is a subset of $M$.
-      Take an element $z$ of $M$ such that $f(z) = N$.
+      Consider an element $z$ of $M$ such that $f(z) = N$.
       Then \[ z \in N \iff z \notin f(z) = N. \]
       Contradiction.
     \end{proof}

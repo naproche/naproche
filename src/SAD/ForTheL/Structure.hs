@@ -194,11 +194,16 @@ llDefn = sentence LowDefinition(beginDef >> setNotion </> functionNotion) llDefn
 
 -- Tex labels
 envLabel :: FTL Text
-envLabel = do
-  symbol "["
-  label <- topIdentifier
-  symbol "]"
-  return label
+envLabel = try labeledEnvName <|> envName
+  where
+    -- "[name]\label{identifier}"
+    labeledEnvName = do
+      optLL1 [] $ bracketed (chainLL1 notClosingBrk)
+      texEnclosed "label" topIdentifier
+    -- "[identifier]"
+    envName = bracketed topIdentifier
+    notClosingBrk = tokenPrim notCl
+    notCl t = let tk = showToken t in guard (tk /= "]") >> return tk
 
 optionalEnvLabel :: FTL (Maybe Text)
 optionalEnvLabel = optLLx Nothing (Just <$> envLabel)
@@ -211,7 +216,7 @@ topIdentifier :: FTL Text
 topIdentifier = Text.toCaseFold . Text.concat <$> many (tokenPrim notSymb)
   where
     notSymb t = case Text.uncons (showToken t) of
-      Just (c, "") -> guard (isAlphaNum c) >> return (Text.singleton c)
+      Just (c, "") -> guard (isAlphaNum c || c == '_') >> return (Text.singleton c)
       _ -> return (showToken t)
 
 lowIdentifier :: FTL Text
@@ -223,7 +228,7 @@ noLink = finish $ return []
 eqLink :: FTL [Text]
 eqLink = optLL1 [] $ parenthesised $ token' "by" >> identifiers
   where
-    identifiers = topIdentifier `sepByLL1` comma
+    identifiers = (texEnclosed "ref" topIdentifier <|> texEnclosed "nameref" topIdentifier <|> topIdentifier) `sepByLL1` comma
 
 -- declaration management, typings and pretypings
 

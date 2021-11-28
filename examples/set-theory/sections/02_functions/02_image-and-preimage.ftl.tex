@@ -35,7 +35,7 @@
     Let the image of $z$ under $f$ stand for $f[z]$.
     Let the direct image of $z$ under $f$ stand for $f[z]$.
 
-    \begin{proposition}[SF 02 02 549225]
+    \begin{proposition}\label{SetTheory_02_02_549225}
       Let $f$ be a function from $x$ to $y$ and $a \subseteq x$.
       Then $f[a] = \class{f(u) | u \in a}$.
     \end{proposition}
@@ -45,7 +45,7 @@
       Hence the thesis.
     \end{proof}
 
-    \begin{corollary}[SF 02 02 516307]
+    \begin{corollary}\label{SetTheory_02_02_516307}
       Let $f$ be a function from $x$ to $y$.
       Then $f[x] = \range(f)$.
     \end{corollary}
@@ -54,7 +54,7 @@
       Hence $f[x] = \range(f)$.
     \end{proof}
 
-    \begin{corollary}[SF 02 0 216993]
+    \begin{corollary}\label{SetTheory_02_02_216993}
       Let $f$ be a function from $x$ to $y$ and $a \subseteq x$.
       Then $f[a] = \range(f \restr a)$.
     \end{corollary}
@@ -63,7 +63,7 @@
       Hence $f[a] = \range(f \restr a)$.
     \end{proof}
 
-    \begin{proposition}[SF 02 02 560324]
+    \begin{proposition}\label{SetTheory_02_02_560324}
       Let $a \subseteq x$.
       Then $\id{x}[a] = a$.
     \end{proposition}
@@ -74,7 +74,7 @@
       Thus $\id{x}[a] = a$.
     \end{proof}
 
-    \begin{proposition}[SF 02 02 196036]
+    \begin{proposition}\label{SetTheory_02_02_196036}
       Let $a \subseteq x$ and $v$ be an element.
       Assume that $a$ is nonempty.
       Then $\const{x}{v}[a] = \set{v}$.
@@ -96,7 +96,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[SF 02 01 257685]
+    \begin{proposition}\label{SetTheory_02_01_257685}
       Let $f$ be a function from $x$ into $y$ and $a \subseteq x$.
       Then $f \restr a$ is a bijection between $a$ and $f[a]$.
     \end{proposition}
@@ -161,7 +161,7 @@
     Let the preimage of $z$ under $f$ stand for $f^{-}[z]$.
     Let the inverse image of $z$ under $f$ stand for $f^{-}[z]$.
 
-    \begin{proposition}[SF 02 02 317629]
+    \begin{proposition}\label{SetTheory_02_02_317629}
       Let $b \subseteq y$.
       Then $\id{y}^{-}[b] = b$.
     \end{proposition}
@@ -172,7 +172,7 @@
       Thus $\id{y}^{-}[b] = b$.
     \end{proof}
 
-    \begin{proposition}[SF 02 02 732231]
+    \begin{proposition}\label{SetTheory_02_02_732231}
       Let $v$ be an element and $z$ be a set that contains $v$.
       Then $\const{x}{v}^{-}[z] = x$.
     \end{proposition}
@@ -184,7 +184,7 @@
       Thus $\const{x}{v}^{-}[z] = x$.
     \end{proof}
 
-    \begin{proposition}[SF 02 02 483725]
+    \begin{proposition}\label{SetTheory_02_02_483725}
       Let $v$ be an element and $z$ be a set that does not contain $v$.
       Then $\const{x}{v}^{-}[z] = \emptyset$.
     \end{proposition}
@@ -201,7 +201,7 @@
   \subsection{Computation rules}
 
   \begin{forthel}
-    \begin{proposition}[SF 02 02 206888]
+    \begin{proposition}\label{SetTheory_02_02_206888}
       Let $f$ be a function from $x$ to $y$ and $a \subseteq x$ and $u \in x$.
       Then $u \in a \implies f(u) \in f[a]$.
     \end{proposition}
@@ -211,7 +211,7 @@
       Hence $f(u) \in f[a]$.
     \end{proof}
 
-    \begin{proposition}[SF 02 02 451910]
+    \begin{proposition}\label{SetTheory_02_02_451910}
       Let $f$ be a function from $x$ to $y$ and $b \subseteq y$ and $u \in x$.
       Then $f(u) \in b \iff u \in f^{-}[b]$.
     \end{proposition}
@@ -221,7 +221,7 @@
       Then we have the thesis.
     \end{proof}
 
-    \begin{proposition}[SF 02 02 186101]
+    \begin{proposition}\label{SetTheory_02_02_186101}
       Let $f$ be a function from $x$ to $y$.
       Then $f[x] \subseteq y$.
     \end{proposition}
@@ -229,7 +229,7 @@
       $f[x] = f[\dom(f)] = \range(f) \subseteq y$.
     \end{proof}
 
-    \begin{proposition}[SF 02 02 104059]
+    \begin{proposition}\label{SetTheory_02_02_104059}
       Let $f$ be a function from $x$ to $y$.
       Then $f^{-}[y] = x$.
     \end{proposition}
@@ -239,7 +239,7 @@
       Hence the thesis.
     \end{proof}
 
-    \begin{proposition}[SF 02 02 481295]
+    \begin{proposition}\label{SetTheory_02_02_481295}
       Let $f$ be a function from $x$ to $y$.
       Then $f[f^{-}[y]] = f[x]$.
     \end{proposition}
@@ -262,7 +262,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[SF 02 02 253830]
+    \begin{proposition}\label{SetTheory_02_02_253830}
       Let $f$ be a function from $x$ to $y$.
       Then $f^{-}[f[x]] = x$.
     \end{proposition}
@@ -273,7 +273,7 @@
       Thus $f^{-}[f[x]] = x$.
     \end{proof}
 
-    \begin{proposition}[SF 02 02 163978]
+    \begin{proposition}\label{SetTheory_02_02_163978}
       Let $f$ be a function from $x$ to $y$ and $b \subseteq y$.
       Then $f[f^{-}[b]] = b \cap f[x]$.
     \end{proposition}
@@ -293,7 +293,7 @@
       End.
     \end{proof}
 
-    \begin{corollary}[SF 02 02 422873]
+    \begin{corollary}\label{SetTheory_02_02_422873}
       Let $f$ be a function from $x$ to $y$ and $b \subseteq y$.
       Then $f[f^{-}[b]] \subseteq b$.
     \end{corollary}
@@ -302,7 +302,7 @@
       Hence $f[f^{-}[b]] \subseteq b$.
     \end{proof}
 
-    \begin{proposition}[SF 02 02 171121]
+    \begin{proposition}\label{SetTheory_02_02_171121}
       Let $f$ be a function from $x$ to $y$ and $a \subseteq x$.
       Then $f^{-}[f[a]] \supseteq a$.
     \end{proposition}
@@ -313,7 +313,7 @@
       Indeed $f[a] \subseteq y$.
     \end{proof}
 
-    \begin{proposition}[SF 02 02 693086]
+    \begin{proposition}\label{SetTheory_02_02_693086}
       Let $f$ be a function from $x$ to $y$ and $a \subseteq x$.
       Then $f[a] = \emptyset \iff a = \emptyset$.
     \end{proposition}
@@ -331,7 +331,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[SF 02 02 464503]
+    \begin{proposition}\label{SetTheory_02_02_464503}
       Let $f$ be a function from $x$ to $y$ and $b \subseteq y$.
       Then $f^{-}[b] = \emptyset \iff b \subseteq y \setminus f[x]$.
     \end{proposition}
@@ -361,7 +361,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[SF 02 02 474184]
+    \begin{proposition}\label{SetTheory_02_02_474184}
       Let $f$ be a function from $x$ to $y$ and $a \subseteq x$ and $b \subseteq y$.
       Then $f[a] \cap b = \emptyset \iff a \cap f^{-}[b] = \emptyset$.
     \end{proposition}
@@ -385,7 +385,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[SF 02 02 522811]
+    \begin{proposition}\label{SetTheory_02_02_522811}
       Let $f$ be a function from $x$ to $y$ and $g$ be a function from $y$ to $z$ and $a \subseteq x$.
       Then $(g \circ f)[a] = g[f[a]]$.
     \end{proposition}
@@ -398,7 +398,7 @@
       Therefore $(g \circ f)[a] = g[f[a]]$.
     \end{proof}
 
-    \begin{proposition}[SF 02 02 819065]
+    \begin{proposition}\label{SetTheory_02_02_819065}
       Let $f$ be a function from $x$ to $y$ and $g$ be a function from $y$ to $z$ and $c \subseteq z$.
       Then $(g \circ f)^{-}[z] = f^{-}[g^{-}[z]]$.
     \end{proposition}
@@ -410,7 +410,7 @@
       Thus $(g \circ f)^{-}[z] = f^{-}[g^{-}[z]]$.
     \end{proof}
 
-    \begin{proposition}[SF 02 02 889945]
+    \begin{proposition}\label{SetTheory_02_02_889945}
       Let $f$ be a function from $x$ to $y$ and $a,a' \subseteq x$.
       Then $a \subseteq a' \implies f[a] \subseteq f[a']$.
     \end{proposition}
@@ -422,7 +422,7 @@
       Hence $v = f(u) \in f[a']$.
     \end{proof}
 
-    \begin{proposition}[SF 02 02 514409]
+    \begin{proposition}\label{SetTheory_02_02_514409}
       Let $f$ be a function from $x$ to $y$ and $b,b' \subseteq y$.
       Then $b \subseteq b' \implies f^{-}[b] \subseteq f^{-}[b']$.
     \end{proposition}
@@ -434,7 +434,7 @@
       Thus $u \in f^{-}[b']$.
     \end{proof}
 
-    \begin{proposition}[SF 02 02 319894]
+    \begin{proposition}\label{SetTheory_02_02_319894}
       Let $f$ be a function from $x$ to $y$ and $a,a' \subseteq x$.
       Then $f[a \cup a'] = f[a] \cup f[a']$.
     \end{proposition}
@@ -464,7 +464,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[SF 02 02 357044]
+    \begin{proposition}\label{SetTheory_02_02_357044}
       Let $f$ be a function from $x$ to $y$ and $b,b' \subseteq y$.
       Then $f^{-}[b \cup b'] = f^{-}[b] \cup f^{-}[b']$.
     \end{proposition}
@@ -488,7 +488,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[SF 02 02 512404]
+    \begin{proposition}\label{SetTheory_02_02_512404}
       Let $f$ be a function from $x$ to $y$ and $a,a' \subseteq x$.
       Then $f[a \cap a'] \subseteq f[a] \cap f[a']$.
     \end{proposition}
@@ -500,7 +500,7 @@
       Thus $v \in f[a] \cap f[a]$.
     \end{proof}
 
-    \begin{proposition}[SF 02 02 266480]
+    \begin{proposition}\label{SetTheory_02_02_266480}
       Let $f$ be a function from $x$ to $y$ and $b,b' \subseteq y$.
       Then $f^{-}[b \cap b'] = f^{-}[b] \cap f^{-}[b']$.
     \end{proposition}
@@ -522,7 +522,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[SF 02 02 560446]
+    \begin{proposition}\label{SetTheory_02_02_560446}
       Let $f$ be a function from $x$ to $y$ and $a,a' \subseteq x$.
       Then $f[a \setminus a'] \supseteq f[a] \setminus f[a']$.
     \end{proposition}
@@ -536,7 +536,7 @@
       Therefore $v = f(u) \in f[a \setminus a']$.
     \end{proof}
 
-    \begin{proposition}[SF 02 02 523450]
+    \begin{proposition}\label{SetTheory_02_02_523450}
       Let $f$ be a function from $x$ to $y$ and $b,b' \subseteq y$.
       Then $f^{-}[b \setminus b'] = f^{-}[b] \setminus f^{-}[b']$.
     \end{proposition}

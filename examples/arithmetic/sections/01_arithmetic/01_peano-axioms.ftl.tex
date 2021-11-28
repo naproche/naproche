@@ -5,11 +5,11 @@
   \section{Peano Arithmetic}
 
   \begin{forthel}
-    [read \path{macros.ftl}]
+    [read \path{vocabulary.ftl}]
   \end{forthel}
 
   \begin{forthel}
-    [read \path{vocabulary.ftl}]
+    [read \path{macros.ftl}]
   \end{forthel}
 
 
@@ -38,15 +38,15 @@
 
     Let the direct successor of $n$ stand for $\succ(n)$.
 
-    \begin{axiom}[1st Peano axiom]
+    \begin{axiom}[\nth{1} Peano axiom]\label{Arithmetic_01_01_011520}
       If $\succ(n) = \succ(m)$ then $n = m$.
     \end{axiom}
 
-    \begin{axiom}[2nd Peano axiom]
+    \begin{axiom}[\nth{2} Peano axiom]\label{Arithmetic_01_01_795282}
       $0$ is not the direct successor of any natural number.
     \end{axiom}
 
-    \begin{axiom}[3rd Peano axiom]
+    \begin{axiom}[\nth{3} Peano axiom]\label{Arithmetic_01_01_350822}
       Let $P$ be a class.
       Assume $0 \in P$ and for all natural numbers $n$ we have $n \in P \implies \succ(n) \in P$.
       Then every natural number is an element of $P$.
@@ -57,17 +57,17 @@
   \subsection{Immediate consequences}
 
   \begin{forthel}
-    \begin{proposition}[NN 01 01 178800]
+    \begin{proposition}\label{Arithmetic_01_01_178800}
       For all $n$ we have $n = 0$ or $n = \succ(m)$ for some natural number $m$.
     \end{proposition}
     \begin{proof}
       Define $P = \class{n \in \mathbb{N} | \classtext{$n = 0$ or $n = \succ(m)$ for some natural number $m$}}$.
 
       $0 \in P$ and for all natural numbers $n$ we have $n \in P \implies \succ(n) \in P$.
-      Hence the thesis (by 3rd Peano axiom).
+      Hence the thesis (by \nameref{Arithmetic_01_01_350822}).
     \end{proof}
 
-    \begin{proposition}[NN 01 01 670417]
+    \begin{proposition}\label{Arithmetic_01_01_670417}
       For no natural number $n$ we have $n = \succ(n)$.
     \end{proposition}
     \begin{proof}

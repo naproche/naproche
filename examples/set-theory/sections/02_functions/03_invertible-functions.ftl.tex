@@ -40,7 +40,7 @@
         Thus $g(v) = g'(v)$.
       End.
 
-      Hence the thesis (by function extensionality).
+      Hence the thesis (by \nameref{SetTheory_02_01_200419}).
     \end{proof}
 
     \begin{definition}
@@ -51,7 +51,7 @@
     Let $f$ is involutory stand for $f$ is the inverse of $f$.
     Let $f$ is selfinverse stand for $f$ is the inverse of $f$.
 
-    \begin{proposition}[SF 02 03 587168]
+    \begin{proposition}\label{SetTheory_02_03_587168}
       Let $f$ be a function from $x$ onto $y$ and $g$ be a function from $y$ onto $x$.
       Then $g$ is the inverse of $f$ iff $g \circ f = \id{x}$ and $f \circ g = \id{y}$.
     \end{proposition}
@@ -75,7 +75,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[SF 02 03 196251]
+    \begin{proposition}\label{SetTheory_02_03_196251}
       Let $f$ be an invertible function from $x$ onto $y$.
       Then $f^{-1}$ is an invertible function from $y$ onto $x$ such that $(f^{-1})^{-1} = f$.
     \end{proposition}
@@ -85,20 +85,20 @@
       Hence $f^{-1}$ is a function from $y$ onto $x$.
       $f^{-1}$ is the inverse of $f$.
       Thus $f \circ f^{-1} = \id{y}$ and $f^{-1} \circ f = \id{x}$.
-      Therefore $f$ is the inverse of $f^{-1}$ (by SF 02 03 587168).
+      Therefore $f$ is the inverse of $f^{-1}$ (by \ref{SetTheory_02_03_587168}).
     \end{proof}
 
-    \begin{proposition}[SF 02 03 601485]
+    \begin{proposition}\label{SetTheory_02_03_601485}
       Let $f$ be an invertible function from $x$ onto $y$.
       Then $f \circ f^{-1} = \id{y}$ and $f^{-1} \circ f = \id{x}$.
     \end{proposition}
     \begin{proof}
-      $f^{-1}$ is a function from $y$ onto $x$ (by SF 02 03 196251).
+      $f^{-1}$ is a function from $y$ onto $x$ (by \ref{SetTheory_02_03_196251}).
       $f^{-1}$ is the inverse of $f$.
-      Hence the thesis (by SF 02 03 587168).
+      Hence the thesis (by \ref{SetTheory_02_03_587168}).
     \end{proof}
 
-    \begin{proposition}[SF 02 03 173329]
+    \begin{proposition}\label{SetTheory_02_03_173329}
       Let $f$ be an invertible function from $x$ onto $y$.
       Then ($f^{-1}(f(u)) = u$ for all $u \in x$) and ($f(f^{-1}(v)) = v$ for all $v \in y$).
     \end{proposition}
@@ -114,7 +114,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[SF 02 03 430030]
+    \begin{proposition}\label{SetTheory_02_03_430030}
       Let $f$ be an invertible function from $x$ onto $y$ and $g$ be an invertible function from $y$ onto $z$.
       Then $g \circ f$ is invertible and $(g \circ f)^{-1} = f^{-1} \circ g^{-1}$.
     \end{proposition}
@@ -122,11 +122,11 @@
       $f^{-1}$ is a function from $y$ onto $x$.
       $g^{-1}$ is a function from $z$ onto $y$.
       Take $h = f^{-1} \circ g^{-1}$.
-      Then $h$ is a function from $z$ onto $x$ (by SF 02 01 205975).
+      Then $h$ is a function from $z$ onto $x$ (by \ref{SetTheory_02_01_205975}).
       $g \circ f$ is a function from $x$ to $z$.
 
       Let us show that $((g \circ f) \circ h) = \id{z}$.
-        We have $f \circ (f^{-1} \circ g^{-1}) = (f \circ f^{-1}) \circ g^{-1}$ (by function extensionality).
+        We have $f \circ (f^{-1} \circ g^{-1}) = (f \circ f^{-1}) \circ g^{-1}$ (by \nameref{SetTheory_02_01_200419}).
         $f \circ h$ is a function from $z$ to $y$.
         Hence
         \[   (g \circ f) \circ h \]
@@ -139,7 +139,7 @@
       End.
 
       Let us show that $h \circ (g \circ f) = \id{x}$.
-        We have $(f^{-1} \circ g^{-1}) \circ g = f^{-1} \circ (g^{-1} \circ g)$ (by function extensionality).
+        We have $(f^{-1} \circ g^{-1}) \circ g = f^{-1} \circ (g^{-1} \circ g)$ (by \nameref{SetTheory_02_01_200419}).
         $g \circ f$ is a function from $x$ to $z$.
         Hence
         \[   h \circ (g \circ f) \]
@@ -151,11 +151,11 @@
         \[ = \id{x}. \]
       End.
 
-      Thus $h$ is the inverse of $g \circ f$ (by SF 02 03 587168).
+      Thus $h$ is the inverse of $g \circ f$ (by \ref{SetTheory_02_03_587168}).
       Indeed $g \circ f$ is a function from $x$ onto $z$ and $h$ is a function from $z$ onto $x$.
     \end{proof}
 
-    \begin{proposition}[SF 02 03 908585]
+    \begin{proposition}\label{SetTheory_02_03_908585}
       Let $f$ be an invertible function from $x$ onto $y$ and $a \subseteq x$.
       Then $f \restr a$ is invertible and $(f\restr a)^{-1} = f^{-1} \restr f[a]$.
     \end{proposition}
@@ -198,7 +198,7 @@
       Therefore $g$ is the inverse of $f \restr a$.
     \end{proof}
 
-    \begin{proposition}[SF 02 03 293037]
+    \begin{proposition}\label{SetTheory_02_03_293037}
       Let $f$ be an invertible function from $x$ onto $y$ and $b \subseteq y$.
       Then $f^{-}[b] = f^{-1}[b]$.
     \end{proposition}
@@ -220,7 +220,7 @@
       End.
     \end{proof}
 
-    \begin{corollary}[SF 02 03 265073]
+    \begin{corollary}\label{SetTheory_02_03_265073}
       Let $f$ be an invertible function from $x$ onto $y$ and $v \in y$.
       Then $f^{-}[\set{v}] = \set{f^{-1}(v)}$.
     \end{corollary}
@@ -230,7 +230,7 @@
       Hence $f^{-1}[\set{v}] = \set{f^{-1}(v)}$.
     \end{proof}
 
-    \begin{proposition}[SF 02 03 394829]
+    \begin{proposition}\label{SetTheory_02_03_394829}
       Let $f$ be a function from $x$ onto $y$.
       $f$ is invertible iff $f$ is one to one.
     \end{proposition}
@@ -252,7 +252,7 @@
       End.
     \end{proof}
 
-    \begin{corollary}[SF 02 03 187673]
+    \begin{corollary}\label{SetTheory_02_03_187673}
       Let $f$ be an invertible function from $x$ onto $y$.
       Then $f^{-1}$ is a bijection between $y$ and $x$.
     \end{corollary}
@@ -273,7 +273,7 @@
       An involution on $x$ is a selfinverse function $f$ on $x$.
     \end{definition}
 
-    \begin{proposition}[SF 02 03 305935]
+    \begin{proposition}\label{SetTheory_02_03_305935}
       $\id{x}$ is an involution on $x$.
     \end{proposition}
     \begin{proof}
@@ -282,7 +282,7 @@
       Hence $\id{x}$ is selfinverse.
     \end{proof}
 
-    \begin{proposition}[SF 02 03 610247]
+    \begin{proposition}\label{SetTheory_02_03_610247}
       Let $f$ and $g$ be involutions on $x$.
       Then $g \circ f$ is an involution on $x$ iff $g \circ f = f \circ g$.
     \end{proposition}
@@ -305,12 +305,12 @@
       End.
     \end{proof}
 
-    \begin{corollary}[SF 02 03 310947]
+    \begin{corollary}\label{SetTheory_02_03_310947}
       Let $f$ be an involutions on $x$.
       Then $f \circ f$ is an involution on $x$.
     \end{corollary}
 
-    \begin{proposition}[SF 02 03 280184]
+    \begin{proposition}\label{SetTheory_02_03_280184}
       Let $f$ be an involution on $x$.
       Then $f$ is a permutation of $x$.
     \end{proposition}

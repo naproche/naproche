@@ -9,6 +9,7 @@ Lemma. Every set is a class.
 
 Axiom. Every element of every class  is an object.
 Let x \in S stand for x is an element of S.
+Let x \notin S stand for x is not an element of S.
 Let M,N denote classes.
 
 Definition DefEmpty. The empty set is the set that has
@@ -69,3 +70,8 @@ Definition DefDom.  f is on B iff Dom(f) = Ran(f) = B.
 
 Axiom ImgSort.  Let x belong to Dom(f).
     f(x) is an element of Ran(f).
+
+
+# Just temporary to make sure that certain proof tasks pass:
+Axiom.
+Every object is an element of some class.

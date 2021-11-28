@@ -5,11 +5,11 @@
   \section{Sets}
 
   \begin{forthel}
-    [read \path{macros.ftl}]
+    [read \path{vocabulary.ftl}]
   \end{forthel}
 
   \begin{forthel}
-    [read \path{vocabulary.ftl}]
+    [read \path{macros.ftl}]
   \end{forthel}
 
   \begin{forthel}
@@ -17,15 +17,15 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{axiom}[SF 01 01 729563]
+    \begin{axiom}\label{SetTheory_01_01_729563}
       $x$ is a class.
     \end{axiom}
 
-    \begin{axiom}[SF 01 01 603161]
+    \begin{axiom}\label{SetTheory_01_01_603161}
       $x$ is an element.
     \end{axiom}
 
-    \begin{axiom}[SF 01 01 617091]
+    \begin{axiom}\label{SetTheory_01_01_617091}
       Let $u$ be an element of $x$.
       Then $u$ is an element.
     \end{axiom}
@@ -53,11 +53,11 @@
     Let a proper superset of $x$ stand for a set $y$ such that $x \subsetneq y$.
     Let $y \supsetneq x$ stand for $y$ is a proper superset of $x$.
 
-    \begin{proposition}[SF 01 01 375611]
+    \begin{proposition}\label{SetTheory_01_01_375611}
       $x \subseteq x$.
     \end{proposition}
 
-    \begin{proposition}[SF 01 01 726162]
+    \begin{proposition}\label{SetTheory_01_01_726162}
       If $x \subseteq y$ and $y \subseteq z$ then $x \subseteq z$.
     \end{proposition}
   \end{forthel}
@@ -66,7 +66,7 @@
   \subsection{Set extensionality}
 
   \begin{forthel}
-    \begin{axiom}[Set extensionality]
+    \begin{axiom}[Set extensionality]\label{SetTheory_01_01_253735}
       If $x \subseteq y$ and $y \subseteq x$ then $x = y$.
     \end{axiom}
   \end{forthel}
@@ -75,7 +75,7 @@
   \subsection{Separation}
 
   \begin{forthel}
-    \begin{axiom}[Separation]
+    \begin{axiom}[Separation]\label{SetTheory_01_01_240572}
       Let $C$ be a class and $x$ be a set.
       Assume that every element of $C$ is contained in $x$.
       Then $C$ is a set.
@@ -86,7 +86,7 @@
   \subsection{Set existence}
 
   \begin{forthel}
-    \begin{axiom}[Set existence]
+    \begin{axiom}[Set existence]\label{SetTheory_01_01_559689}
       There exists a set.
     \end{axiom}
   \end{forthel}
@@ -106,9 +106,9 @@
     \end{lemma}
     \begin{proof}
       Define $C = \class{u | \text{contradiction}}$.
-      Take a set $x$ (by set existence).
+      Take a set $x$ (by \nameref{SetTheory_01_01_559689}).
       Then every element of $C$ is contained in $x$.
-      Hence $C$ is a set (by separation).
+      Hence $C$ is a set (by \nameref{SetTheory_01_01_240572}).
       $C$ has no element.
       Hence the thesis.
     \end{proof}
@@ -130,7 +130,7 @@
     Let $\set{}$ stand for $\emptyset$.
     Let the empty set stand for $\emptyset$.
 
-    \begin{proposition}[SF 01 01 656396]
+    \begin{proposition}\label{SetTheory_01_01_656396}
       $\emptyset$ is a subset of every set.
     \end{proposition}
     \begin{proof}
@@ -145,7 +145,7 @@
   \subsection{Pairing}
 
   \begin{forthel}
-    \begin{axiom}[Pairing]
+    \begin{axiom}[Pairing]\label{SetTheory_01_01_422528}
       Let $u,v$ be elements.
       There exists a set $z$ such that $z = \class{w | \text{$w = u$ or $w = v$}}$.
     \end{axiom}
@@ -192,11 +192,11 @@
       A system of nonempty sets is a system of sets $X$ such that every element of $X$ is nonempty.
     \end{definition}
 
-    \begin{proposition}[SF 01 01 261697]
+    \begin{proposition}\label{SetTheory_01_01_261697}
       $\set{x}$ is a system of sets.
     \end{proposition}
 
-    \begin{proposition}[SF 01 01 176500]
+    \begin{proposition}\label{SetTheory_01_01_176500}
       $\set{x,y}$ is a system of sets.
     \end{proposition}
 
@@ -204,7 +204,7 @@
       A system of subsets of $x$ is a set $X$ such that every element of $X$ is a subset of $x$.
     \end{definition}
 
-    \begin{proposition}[SF 01 01 366869]
+    \begin{proposition}\label{SetTheory_01_01_366869}
       Every system of subsets of $x$ is a system of sets.
     \end{proposition}
   \end{forthel}
@@ -249,7 +249,7 @@
 
     Let the intersection of $x$ and $y$ stand for $x \cap y$.
 
-    \begin{proposition}[SF 01 01 220491]
+    \begin{proposition}\label{SetTheory_01_01_220491}
       $\bigcap \set{x,y} = x \cap y$.
     \end{proposition}
     \begin{proof}
@@ -268,14 +268,14 @@
       End.
     \end{proof}
 
-    \begin{corollary}[SF 01 01 485484]
+    \begin{corollary}\label{SetTheory_01_01_485484}
       $\bigcap \set{x} = x$.
     \end{corollary}
     \begin{proof}
       $\bigcap \set{x} = \bigcap \set{x,x} = x \cap x = x$.
     \end{proof}
 
-    \begin{proposition}[SF 01 01 517087]
+    \begin{proposition}\label{SetTheory_01_01_517087}
       Let $x$ be a nonempty system of sets.
       Then $y \subseteq \bigcap x$ iff $y$ is a subset of every element of $x$.
     \end{proposition}
@@ -298,7 +298,7 @@
       $x$ and $y$ are disjoint iff $x \cap y = \emptyset$.
     \end{definition}
 
-    \begin{proposition}[SF 01 01 300845]
+    \begin{proposition}\label{SetTheory_01_01_300845}
       If $x$ and $y$ are disjoint then $y$ and $x$ are disjoint.
     \end{proposition}
     \begin{proof}
@@ -314,7 +314,7 @@
   \subsection{Unions}
 
   \begin{forthel}
-    \begin{axiom}[Union]
+    \begin{axiom}[Union]\label{SetTheory_01_01_709019}
       Let $x$ be a system of sets.
       Then there exists a set $z$ such that $z = \class{u | \text{$u$ is contained in some element of $x$}}$.
     \end{axiom}
@@ -342,7 +342,7 @@
 
     Let the union of $x$ and $y$ stand for $x \cup y$.
 
-    \begin{proposition}[SF 01 01 519005]
+    \begin{proposition}\label{SetTheory_01_01_519005}
       $\bigcup \set{x,y} = x \cup y$.
     \end{proposition}
     \begin{proof}
@@ -361,14 +361,14 @@
       End.
     \end{proof}
 
-    \begin{corollary}[SF 01 01 820534]
+    \begin{corollary}\label{SetTheory_01_01_820534}
       $\bigcup \set{x} = x$.
     \end{corollary}
     \begin{proof}
       $\bigcup \set{x} = \bigcup \set{x,x} = x \cup x = x$.
     \end{proof}
 
-    \begin{proposition}[SF 01 01 251673]
+    \begin{proposition}\label{SetTheory_01_01_251673}
       Let $x$ be a system of sets.
       Then $\bigcup x \subseteq y$ iff every element of $x$ is a subset of $y$.
     \end{proposition}
@@ -389,7 +389,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[SF 01 01 675114]
+    \begin{proposition}\label{SetTheory_01_01_675114}
       $\bigcup \emptyset = \emptyset$.
     \end{proposition}
     \begin{proof}
@@ -411,7 +411,7 @@
     \begin{proof}
       Define $z = \class{w | \text{$w \in x$ and $w \notin y$}}$.
       Then every element of $z$ is contained in $x$.
-      Hence $z$ is a set (by separation).
+      Hence $z$ is a set (by \nameref{SetTheory_01_01_240572}).
     \end{proof}
 
     \begin{definition}
@@ -425,7 +425,7 @@
   \subsection{Computation laws}
 
   \begin{forthel}
-    \begin{proposition}[SF 01 01 830899]
+    \begin{proposition}\label{SetTheory_01_01_830899}
       \[ x \cup y = y \cup x. \]
     \end{proposition}
     \begin{proof}
@@ -445,7 +445,7 @@
     \end{proof}
 
 
-    \begin{proposition}[SF 01 01 728823]
+    \begin{proposition}\label{SetTheory_01_01_728823}
       \[ x \cap y = y \cap x. \]
     \end{proposition}
     \begin{proof}
@@ -464,7 +464,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[SF 01 01 665069]
+    \begin{proposition}\label{SetTheory_01_01_665069}
       \[ ((x \cup y) \cup z) = x \cup (y \cup z). \]
       % Note again that we have to put the LHS in parentheses.
     \end{proposition}
@@ -487,7 +487,7 @@
     \end{proof}
 
 
-    \begin{proposition}[SF 01 01 368359]
+    \begin{proposition}\label{SetTheory_01_01_368359}
       \[ ((x \cap y) \cap z) = x \cap (y \cap z). \]
       % And again parentheses are needed on the LHS.
     \end{proposition}
@@ -509,7 +509,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[SF 01 01 106755]
+    \begin{proposition}\label{SetTheory_01_01_106755}
       \[ x \cap (y \cup z) = (x \cap y) \cup (x \cap z). \]
     \end{proposition}
     \begin{proof}
@@ -532,7 +532,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[SF 01 01 836290]
+    \begin{proposition}\label{SetTheory_01_01_836290}
       \[ x \cup (y \cap z) = (x \cup y) \cap (x \cup z). \]
     \end{proposition}
     \begin{proof}
@@ -555,7 +555,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[SF 01 01 496190]
+    \begin{proposition}\label{SetTheory_01_01_496190}
       \[ x \cup x = x. \]
     \end{proposition}
     \begin{proof}
@@ -565,7 +565,7 @@
     \end{proof}
 
 
-    \begin{proposition}[SF 01 01 783425]
+    \begin{proposition}\label{SetTheory_01_01_783425}
       \[ x \cap x = x. \]
     \end{proposition}
     \begin{proof}
@@ -574,7 +574,7 @@
       Thus $x \cap x = x$.
     \end{proof}
 
-    \begin{proposition}[SF 01 01 339365]
+    \begin{proposition}\label{SetTheory_01_01_339365}
       \[ x \setminus (y \cap z) = (x \setminus y) \cup (x \setminus z). \]
     \end{proposition}
     \begin{proof}
@@ -601,7 +601,7 @@
     \end{proof}
 
 
-    \begin{proposition}[SF 01 01 403962]
+    \begin{proposition}\label{SetTheory_01_01_403962}
       \[ x \setminus (y \cup z) = (x \setminus y) \cap (x \setminus z). \]
     \end{proposition}
     \begin{proof}
@@ -628,7 +628,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[SF 01 01 628970]
+    \begin{proposition}\label{SetTheory_01_01_628970}
       \[ x \subseteq x \cup y. \]
     \end{proposition}
     \begin{proof}
@@ -638,7 +638,7 @@
     \end{proof}
 
 
-    \begin{proposition}[SF 01 01 368515]
+    \begin{proposition}\label{SetTheory_01_01_368515}
       \[ x \cap y \subseteq x. \]
     \end{proposition}
     \begin{proof}
@@ -648,7 +648,7 @@
     \end{proof}
 
 
-    \begin{proposition}[SF 01 01 591527]
+    \begin{proposition}\label{SetTheory_01_01_591527}
       \[ x \subseteq y \iff x \cup y = y. \]
     \end{proposition}
     \begin{proof}
@@ -676,7 +676,7 @@
     \end{proof}
 
 
-    \begin{proposition}[SF 01 01 681535]
+    \begin{proposition}\label{SetTheory_01_01_681535}
       \[ x \subseteq y \iff x \cap y = x. \]
     \end{proposition}
     \begin{proof}
@@ -704,7 +704,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}[SF 01 01 402739]
+    \begin{proposition}\label{SetTheory_01_01_402739}
       \[ x \setminus x = \emptyset. \]
     \end{proposition}
     \begin{proof}
@@ -714,7 +714,7 @@
     \end{proof}
 
 
-    \begin{proposition}[SF 01 01 661163]
+    \begin{proposition}\label{SetTheory_01_01_661163}
       \[ x \setminus \emptyset = x. \]
     \end{proposition}
     \begin{proof}
@@ -724,7 +724,7 @@
       Then we have the thesis.
     \end{proof}
 
-    \begin{proposition}[SF 01 01 408438]
+    \begin{proposition}\label{SetTheory_01_01_408438}
       \[ x \setminus (x \setminus y) = x \cap y. \]
     \end{proposition}
     \begin{proof}
@@ -746,7 +746,7 @@
     \end{proof}
 
 
-    \begin{proposition}[SF 01 01 185130]
+    \begin{proposition}\label{SetTheory_01_01_185130}
       \[ y \subseteq x \iff x \setminus (x \setminus y) = y. \]
     \end{proposition}
     \begin{proof}
@@ -761,7 +761,7 @@
     \end{proof}
 
 
-    \begin{proposition}[SF 01 01 878796]
+    \begin{proposition}\label{SetTheory_01_01_878796}
       \[ x \cap (y \setminus z) = (x \cap y) \setminus (x \cap z). \]
     \end{proposition}
     \begin{proof}

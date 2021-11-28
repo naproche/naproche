@@ -26,7 +26,7 @@
 
 
   \begin{forthel}
-    \begin{proposition}[NN 02 06 276270]
+    \begin{proposition}\label{Arithmetic_02_06_276270}
       We have \[ (n + 1)^{2} = (n^{2} + (2 \cdot n)) + 1. \]
     \end{proposition}
     \begin{proof}
@@ -42,7 +42,7 @@
     \end{proof}
 
 
-    \begin{proposition}[NN 02 06 671464]
+    \begin{proposition}\label{Arithmetic_02_06_671464}
       For all $n$ if $n \geq 3$ then \[ n^{2} > (2 \cdot n) + 1. \]
     \end{proposition}
     \begin{proof}
@@ -71,14 +71,14 @@
         \[ = (2 \cdot (n + n)) + 1 \]
         \[ > (2 \cdot (n + 1)) + 1. \]
 
-        Thus $(n + 1)^{2} > (2 \cdot (n + 1)) + 1$ (by NN 02 01 662806).
+        Thus $(n + 1)^{2} > (2 \cdot (n + 1)) + 1$ (by \ref{Arithmetic_02_01_662806}).
       Qed.
 
-      Therefore $P$ contains every natural number $n$ such that $n \geq 3$ (by NN 02 05 497603).
+      Therefore $P$ contains every natural number $n$ such that $n \geq 3$ (by \ref{Arithmetic_02_05_497603}).
     \end{proof}
 
 
-    \begin{proposition}[NN 02 06 205395]
+    \begin{proposition}\label{Arithmetic_02_06_205395}
       For all $n$ if $n \geq 5$ then \[ 2^{n} > n^{2}. \]
     \end{proposition}
     \begin{proof}
@@ -94,12 +94,12 @@
         Assume $n \in P$.
         Then $2^{n} > n^{2}$.
 
-        (1) $2^{n} \cdot 2 > n^{2} \cdot 2$ (by NN 02 03 496205).
+        (1) $2^{n} \cdot 2 > n^{2} \cdot 2$ (by \ref{Arithmetic_02_03_496205}).
         Indeed $2 \neq 0$.
 
         (2) $n^{2} \cdot 2 = n^{2} + n^{2}$.
 
-        (3) $n^{2} + n^{2} > n^{2} + ((2 \cdot n) + 1)$ (by NN 02 02 316437).
+        (3) $n^{2} + n^{2} > n^{2} + ((2 \cdot n) + 1)$ (by \ref{Arithmetic_02_02_316437}).
         Indeed $n^{2} > (2 \cdot n) + 1$.
 
         (4) $n^{2} + ((2 \cdot n) + 1) = (n + 1)^{2}$.
@@ -115,11 +115,11 @@
         Thus $2^{n + 1} > (n + 1)^{2}$.
       Qed.
 
-      Therefore $P$ contains every natural number $n$ such that $n \geq 5$ (by NN 02 05 497603).
+      Therefore $P$ contains every natural number $n$ such that $n \geq 5$ (by \ref{Arithmetic_02_05_497603}).
     \end{proof}
 
 
-    \begin{proposition}[NN 02 06 527159]
+    \begin{proposition}\label{Arithmetic_02_06_527159}
       For all $n$ if $n \geq 2$ then \[ n^{n} > n!. \]
     \end{proposition}
     \begin{proof}
@@ -133,11 +133,11 @@
         Suppose $n \geq 2$.
         Assume $n \in P$.
 
-        (1) $(n + 1)^{n} \cdot (n + 1) > n^{n} \cdot (n + 1)$ (by NN 02 03 496205).
+        (1) $(n + 1)^{n} \cdot (n + 1) > n^{n} \cdot (n + 1)$ (by \ref{Arithmetic_02_03_496205}).
         Indeed $(n + 1)^{n} > n^{n}$ and $n + 1 \neq 0$.
         Indeed $n + 1 > n$ and $n \neq 0$.
 
-        (2) $n^{n} \cdot (n + 1) > n! \cdot (n + 1)$ (by NN 02 03 496205).
+        (2) $n^{n} \cdot (n + 1) > n! \cdot (n + 1)$ (by \ref{Arithmetic_02_03_496205}).
         Indeed $n^{n} > n!$ and $n + 1 \neq 0$.
 
         Hence
@@ -150,11 +150,11 @@
         Thus $(n + 1)^{n + 1} > (n + 1)!$.
       Qed.
 
-      Therefore $P$ contains every natural number $n$ such that $n \geq 2$ (by NN 02 05 497603).
+      Therefore $P$ contains every natural number $n$ such that $n \geq 2$ (by \ref{Arithmetic_02_05_497603}).
     \end{proof}
 
 
-    \begin{proposition}[NN 02 06 493411]
+    \begin{proposition}\label{Arithmetic_02_06_493411}
       For all $n$ if $n \geq 4$ then \[ n! > 2^{n}. \]
     \end{proposition}
     \begin{proof}
@@ -180,9 +180,9 @@
         (1) $0 \neq n + 1 > 2$.
         Indeed $n > 1$.
 
-        (2) $n! \cdot (n + 1) > 2^{n} \cdot (n + 1)$ (by NN 02 03 496205).
+        (2) $n! \cdot (n + 1) > 2^{n} \cdot (n + 1)$ (by \ref{Arithmetic_02_03_496205}).
 
-        (3) $2^{n} \cdot (n + 1) > 2^{n} \cdot 2$ (by NN 02 03 332119).
+        (3) $2^{n} \cdot (n + 1) > 2^{n} \cdot 2$ (by \ref{Arithmetic_02_03_332119}).
         Indeed $2^{n} \neq 0$.
 
         Hence
@@ -195,7 +195,7 @@
         Thus $(n + 1)! > 2^{n + 1}$.
       Qed.
 
-      Therefore $P$ contains every natural number $n$ such that $n \geq 4$ (by NN 02 05 497603).
+      Therefore $P$ contains every natural number $n$ such that $n \geq 4$ (by \ref{Arithmetic_02_05_497603}).
     \end{proof}
   \end{forthel}
 \end{document}

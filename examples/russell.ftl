@@ -1,7 +1,6 @@
 # Russell's paradox
 
-[readtex basic-notions/prelude.ftl.tex]
-[checkconsistency off]
+[read preliminaries.ftl]
 
 Theorem Russell.
 If every class is a set then we have a contradiction.
