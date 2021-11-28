@@ -125,7 +125,7 @@ fun check_command thy = #1 o Name_Space.check (Context.Theory thy) (Data.get thy
 
 val _ = Theory.setup
  (ML_Antiquotation.inline_embedded \<^binding>\<open>naproche_command\<close>
-   (Args.theory -- Scan.lift Args.embedded_position >>
+   (Args.theory -- Scan.lift Parse.embedded_position >>
      (ML_Syntax.print_string o uncurry check_command)));
 
 
