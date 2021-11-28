@@ -2,7 +2,9 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage{../lib/tex/naproche}
+\usepackage{xurl}
+\usepackage{amsfonts}
+\usepackage{../lib/tex/naproche}[nonumbers]
 
 \title{Russell's Paradox}
 \author{Marcel Schütz}
@@ -13,19 +15,14 @@
 
   \maketitle
 
-  \typeout{
-    \begin{forthel}
-      [readtex basic-notions/prelude.ftl.tex]
-
-      [checkconsistency off]
-    \end{forthel}
-  }
-
   Russell's paradox is the assertion that every set theory that contains an
   unrestricted comprehension principle leads to contradictions.
-  In terms of \textit{sets} and \textit{classes} it can be phrased as follows.
+  The following is a formalization of this fact expressed in the language of
+  \textit{sets} and \textit{classes}.
 
   \begin{forthel}
+    [readtex \path{preliminaries.ftl.tex}]
+
     \begin{theorem}[Russell]
       If every class is a set then we have a contradiction.
     \end{theorem}
