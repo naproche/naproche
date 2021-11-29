@@ -70,8 +70,3 @@ Definition DefDom.  f is on B iff Dom(f) = Ran(f) = B.
 
 Axiom ImgSort.  Let x belong to Dom(f).
     f(x) is an element of Ran(f).
-
-
-# Just temporary to make sure that certain proof tasks pass:
-Axiom.
-Every object is an element of some class.
