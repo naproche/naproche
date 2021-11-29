@@ -401,12 +401,12 @@ classEquality = twoClassTerms </> oneClassTerm
     left = do
       cnd <- fmap stripSet symbSetNotation; token "="
       t <- sTerm; h <- hidden; hDecl <- makeDecl h; let hv = pVar h
-      return $ All hDecl $ Imp (mkObject hv) $ Iff (cnd hv) (mkElem hv t)
+      return $ And (mkClass t) $ All hDecl $ Iff (cnd hv) (mkElem hv t)
     right = do
       t <- sTerm; token "="; h <- hidden; hDecl <- makeDecl h
       let hv = pVar h
       cnd <- fmap stripSet symbSetNotation
-      return $ dAll hDecl $ Imp (mkObject hv) $ Iff (mkElem hv t) (cnd hv)
+      return $ And (mkClass t) $ dAll hDecl $ Iff (mkElem hv t) (cnd hv)
 
 
 
