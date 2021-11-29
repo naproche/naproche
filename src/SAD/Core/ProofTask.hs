@@ -42,7 +42,7 @@ setTask (And _ (All x (Iff _ (And (Trm _ _ _ ObjectId) _)))) = Top
 -- {t(x_1, ..., x_n) | ...}
 setTask (And _ (All x (Iff _ (Tag Replacement f)))) = Top
 -- {t(x_1,...,x_n) in X | ...}
-setTask (And _ (All _ (Iff _ f))) = separation f
+setTask (And _ (All _ (Iff _ f))) = Top
 -- Anything else
 setTask f = error $ "SAD.Core.ProofTask.setTask: misformed definition: " ++ show f
 
