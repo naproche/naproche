@@ -46,6 +46,24 @@ notation (output)
   Pair (\<open>\<langle>_,/ _\<rangle>\<close> [0, 0] 1000) and
   App (infix \<open>\<cdot>\<close> 90)
 
+abbreviation Not_Elem :: \<open>i \<Rightarrow> i \<Rightarrow> bool\<close>
+  where \<open>Not_Elem x A \<equiv> \<not> Elem x A\<close>
+
+abbreviation All_Elem :: "i \<Rightarrow> (i \<Rightarrow> bool) \<Rightarrow> bool"
+  where \<open>All_Elem A B \<equiv> (\<forall>x. Elem x A \<longrightarrow> B x)\<close>
+
+abbreviation Ex_Elem :: "i \<Rightarrow> (i \<Rightarrow> bool) \<Rightarrow> bool"
+  where \<open>Ex_Elem A B \<equiv> (\<exists>x. Elem x A \<and> B x)\<close>
+
+syntax (output)
+  "_All_Elem" :: \<open>pttrn \<Rightarrow> i \<Rightarrow> bool \<Rightarrow> bool\<close>  (\<open>(3\<forall>(_/\<^bold>\<in>_)./ _)\<close> [0, 0, 10] 10)
+  "_Ex_Elem" :: \<open>pttrn \<Rightarrow> i \<Rightarrow> bool \<Rightarrow> bool\<close>  (\<open>(3\<exists>(_/\<^bold>\<in>_)./ _)\<close> [0, 0, 10] 10)
+  "_Not_Ex_Elem" :: \<open>pttrn \<Rightarrow> i \<Rightarrow> bool \<Rightarrow> bool\<close>  (\<open>(3\<nexists>(_/\<^bold>\<in>_)./ _)\<close> [0, 0, 10] 10)
+translations
+  "_All_Elem x A B" \<rightleftharpoons> "CONST All_Elem A (\<lambda>x. B)"
+  "_Ex_Elem x A B" \<rightleftharpoons> "CONST Ex_Elem A (\<lambda>x. B)"
+  "_Not_Ex_Elem x A B" \<rightleftharpoons> "CONST Not (CONST Ex_Elem A (\<lambda>x. B))"
+
 
 section \<open>Isabelle/ML\<close>
 
