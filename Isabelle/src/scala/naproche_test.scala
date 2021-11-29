@@ -20,7 +20,6 @@ object Naproche_Test
   val examples: Path = naproche_home + Path.explode("examples")
 
   def run_tests(
-    options: Options,
     progress: Progress = new Progress,
     max_jobs: Int = 1,
     timeout: Time = Time.zero): Unit =
@@ -125,6 +124,6 @@ Usage: isabelle naproche_test
           progress = progress, max_jobs = max_jobs)
       if (!results.ok) sys.exit(results.rc)
 
-      run_tests(options, progress = progress, max_jobs = max_jobs, timeout = timeout)
+      run_tests(progress = progress, max_jobs = max_jobs, timeout = timeout)
     })
 }
