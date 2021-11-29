@@ -37,7 +37,7 @@ object Naproche_Test
     val executor = Executors.newFixedThreadPool(max_jobs max 1)
     for (test <- tests) {
       executor.submit(new Runnable {
-        def run =
+        def run(): Unit =
         {
           val path = File.path(test)
           val text = File.read(path)
