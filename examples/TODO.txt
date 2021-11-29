@@ -20,7 +20,7 @@ Peter:
 README über die Sammlung der Beispiele schreiben.
 
 TUTORIAL OK?
-euclid 
+euclid
 maximum_modulus
 tarski
 preliminaries
@@ -29,15 +29,20 @@ group.lean.ftl.tex
 
 Marcel:
 
-5. Rausnehmen von koenig und regular_successor 
+  [ ] arithmetic
+  [ ] set-theory
+  [X] cantor-schroeder-bernstein
+  [X] cantor
+  [X] furstenberg
+
+5. Rausnehmen von koenig, regular_successor, ZFC, "...01.ftl"-Dateien
 
 6. Koordination der Ontologie- oder Preliminaries-Dateien von Adrian
 und Peter
 
 7. Perfectoide Ringe aufnehmen??
 
-8. Hat sich durch unsere Diskussionen erledigt: Wenn eine Theorie als .ftl und 
-als .ftl.tex formalisiert ist, sollten beide Dateien einigermaßen parallel 
+8. Hat sich durch unsere Diskussionen erledigt: Wenn eine Theorie als .ftl und
+als .ftl.tex formalisiert ist, sollten beide Dateien einigermaßen parallel
 laufen. Es gibt aber gewisse Probleme, z.B. eine .ftl-Ontologie in eine .ftl.tex-
 Formalisierung einzuladen, da Definitionen mit \ nicht gut übernommen werden.
-
