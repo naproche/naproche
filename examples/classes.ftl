@@ -1,5 +1,3 @@
-[dump on]
-
 Lemma. Every set is a class.
 Lemma. Every set is an object.
 Lemma. Every function is a map.
@@ -40,11 +38,13 @@ Let x !<< X stand for x is not an element of X.
 
 Definition.
     Let B, C be classes.
-    B /\ C = { x in B | x << C}.
+    The intersection of B and C is { x in B | x << C}.
+Let B /\ C stand for the intersection of B and C.
 
 Definition.
     Let B, C be classes.
-    B -- C = { x in B | x !<< C}.
+    The set difference of B and C is { x in B | x !<< C}.
+Let B -- C stand for the set difference of B and C.
 
 Axiom PairDefiningProperty.
       Let u, v, x, y be objects.
