@@ -88,6 +88,7 @@ term_name TermEmpty = ""
 consts :: Map TermName Bytes
 consts =
   Map.fromList [
+    (termMap, Isabelle.map_const),
     (termFunction, Isabelle.fun_const),
     (termSet, Isabelle.set_const),
     (termClass, Isabelle.class_const),

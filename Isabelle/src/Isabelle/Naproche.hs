@@ -24,7 +24,7 @@ module Isabelle.Naproche (
 
   iT, is_iT, mk_this, dest_this,
 
-  setsized_const, fun_const, set_const, class_const, elem_const, obj_const,
+  map_const, fun_const, set_const, class_const, elem_const, obj_const,
   less_const, dom_const, prod_const, pair_const, app_const, thesis_const
 )
 where
@@ -91,9 +91,9 @@ iT :: Typ; is_iT :: Typ -> Bool
 mk_this :: Typ -> Term; dest_this :: Term -> Maybe Typ
 (mk_this, dest_this) = typed_op0 "Naproche.This"
 
-setsized_const, fun_const, set_const, class_const, elem_const, obj_const,
+map_const, fun_const, set_const, class_const, elem_const, obj_const,
   less_const, dom_const, prod_const, pair_const, app_const, thesis_const :: Bytes
-setsized_const = "Naproche.setsized"
+map_const = "Naproche.Map"
 fun_const = "Naproche.Fun"
 set_const = "Naproche.Set"
 class_const = "Naproche.Class"
