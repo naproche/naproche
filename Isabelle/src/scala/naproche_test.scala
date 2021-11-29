@@ -68,7 +68,7 @@ object Naproche_Test
             val expect_ok = !test_failure
             progress.echo("Finished " + path_relative + ": " +
               (if (was_timeout) "TIMEOUT"
-               else if (result.rc == 130) "INTERRUPT"
+               else if (result.interrupted) "INTERRUPT"
                else
                 (if (result.ok) "OK" else "FAILURE") +
                 (if (result.ok == expect_ok) ""
