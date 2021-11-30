@@ -96,7 +96,6 @@ consts =
     (termObject, Isabelle.obj_const),
     (TermLess, Isabelle.less_const),
     (termDomain, Isabelle.dom_const),
-    (termProduct, Isabelle.prod_const),
     (termPair, Isabelle.pair_const),
     (termApplication, Isabelle.app_const),
     (TermThesis, Isabelle.thesis_const)]

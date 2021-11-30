@@ -204,8 +204,6 @@ mkClass :: Formula -> Formula
 mkClass = mkTrm ClassId termClass . pure
 mkElem :: Formula -> Formula -> Formula
 mkElem x m = mkTrm ElementId termElement [x,m]
-mkProd :: Formula -> Formula -> Formula
-mkProd m n = mkTrm ProductId termProduct [m, n]
 mkPair :: Formula -> Formula -> Formula
 mkPair x y = mkTrm PairId termPair [x,y]
 mkObject :: Formula -> Formula
