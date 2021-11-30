@@ -352,7 +352,7 @@ initialDefinitions :: Definitions
 initialDefinitions = Map.fromList [
   (EqualityId,  equality),
   (LessId,  less),
-  (MapId, mapd), 
+  (MapId, mapd),
   (FunctionId,  function),
   (ApplicationId,  mapApplication),
   (DomainId,  domain),
@@ -373,7 +373,7 @@ less :: DefEntry
 less = DE [] Top Signature (mkLess (mkVar hole0) (mkVar hole1)) [] []
 
 set :: DefEntry
-set = DE [] ((mkClass (mkVar hole0)) `And` (mkObject (mkVar hole0)))  
+set = DE [] ((mkClass (mkVar hole0)) `And` (mkObject (mkVar hole0)))
            Definition (mkSet $ mkVar hole0) [mkSet ThisT] []
 
 object :: DefEntry
@@ -384,12 +384,12 @@ clss = DE [] Top Signature (mkClass $ mkVar hole0) [] []
 
 elementOf :: DefEntry
 elementOf = DE [mkClass (mkVar hole1)] Top Signature
-  (mkElem (mkVar hole0) (mkVar hole1)) [mkObject (mkVar hole0)] 
+  (mkElem (mkVar hole0) (mkVar hole1)) [mkObject (mkVar hole0)]
   [[mkObject (mkVar hole0)], [mkClass (mkVar hole1)]]
 
 function :: DefEntry
 function  = DE [] ((mkMap(mkVar hole0)) `And` (mkObject (mkVar hole0)))
-                 Definition (mkFun $ mkVar hole0) [mkFun ThisT] []
+                 Definition (mkFunction $ mkVar hole0) [mkFunction ThisT] []
 
 mapd :: DefEntry
 mapd  = DE [] Top Signature (mkMap $ mkVar hole0) [] []

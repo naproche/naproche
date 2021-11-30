@@ -46,7 +46,6 @@ showFormula p d = dive
     dive t@Trm{trmName = TermName "mkApp", trmArgs = [f,x]} = showString $ showArgument f ++ "(" ++ showArgument x ++ ")"
     dive t@Trm{trmName = TermName "mkDom", trmArgs = [f]} = showString $ "Dom(" ++ showArgument f ++ ")"
     dive t@Trm{trmName = TermName "mkPair", trmArgs = [x,y]} = showString $ "(" ++ showArgument x ++ "," ++ showArgument y ++ ")"
-    dive t@Trm{trmName = TermName "mkProd", trmArgs = [x,y]} = showString $ "Prod(" ++ showArgument x ++ "," ++ showArgument y ++ ")"
     dive t@Trm{trmName = tName, trmArgs = tArgs} = showString (Text.unpack $ toLazyText $ represent tName) . showArguments tArgs
     dive v@Var{varName = VarConstant s} = showString (Text.unpack s)
     dive v@Var{varName = vName} = showString $ Text.unpack $ toLazyText $ represent vName
@@ -123,14 +122,14 @@ decode s (t:ts) p d = dec s
     dec _            = showString s
 
 
-    ambig Trm {trmName = TermSymbolic tName} | "dt" `Text.isPrefixOf` tName = not $ funPat (Text.drop 3 tName)
+    ambig Trm {trmName = TermSymbolic tName} | "dt" `Text.isPrefixOf` tName = not $ appPattern (Text.drop 3 tName)
     ambig Trm {trmName = TermSymbolic tName} =
       snd (Text.splitAt (Text.length tName - 2) tName) == "dt"
     ambig _ = False
 
-    -- function pattern: "(.)"
-    funPat "lpdtrp" = True
-    funPat _ = False
+    -- map application: "(.)"
+    appPattern "lpdtrp" = True
+    appPattern _ = False
 
 
 

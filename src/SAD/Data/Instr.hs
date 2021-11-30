@@ -81,9 +81,9 @@ data Flag =
   | Printsimp      --  print simplifier log (no)
   | Printthesis    --  print thesis development (no)
   | Unfold         --  general unfolding (on)
-  | Unfoldsf       --  general unfolding of sets and functions
+  | Unfoldsf       --  general unfolding of classes and maps
   | Unfoldlow      --  unfold the whole low level context (yes)
-  | Unfoldlowsf    --  unfold set and function conditions in low level (no)
+  | Unfoldlowsf    --  unfold class and map conditions in low level (no)
   | Translation    --  print first-order translation of sentences
   | UseTex         --  whether to use tex parser for the file passed in the CLI
   deriving (Eq, Ord, Show)

@@ -33,11 +33,10 @@ termClass = TermNotion "Class"
 termObject = TermNotion "Object"
 termElement = TermNotion "ElementOf"
 
-termApplication, termDomain, termPair, termProduct :: TermName
+termApplication, termDomain, termPair :: TermName
 termApplication = TermName "mkApp" -- ".(.)"
 termDomain = TermName "mkDom"
 termPair = TermName "mkPair" -- "(.,.)"
-termProduct = TermName "mkProd"
 
 termSplit :: TermName -> (Text -> TermName, Text)
 termSplit (TermNotion t) = (TermNotion, t)
@@ -74,7 +73,6 @@ data TermId
   | SetId
   | ClassId
   | ElementId
-  | ProductId
   | PairId
   | ObjectId
   | NewId -- ^ temporary id given to newly introduced symbols
@@ -94,8 +92,9 @@ specialId n =
   ( -6) -> trace msg DomainId
   ( -7) -> trace msg SetId
   ( -8) -> trace msg ElementId
-  ( -9) -> trace msg ProductId
+  ( -9) -> trace msg ClassId
   (-10) -> trace msg PairId
   (-11) -> trace msg ObjectId
+  (-12) -> trace msg MapId
   (-15) -> trace msg NewId
   n -> SpecialId n

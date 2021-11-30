@@ -189,7 +189,7 @@ affirm = sentence Affirmation (beginAff >> statement) affirmVars link </> eqChai
 assume :: FTL Block
 assume = sentence Assumption (beginAsm >> statement) assumeVars noLink
 llDefn :: FTL Block
-llDefn = sentence LowDefinition(beginDef >> setNotion </> functionNotion) llDefnVars noLink
+llDefn = sentence LowDefinition(beginDef >> classNotion </> mapNotion) llDefnVars noLink
 
 
 -- Tex labels

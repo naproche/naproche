@@ -338,8 +338,8 @@ unfoldAtomic sign f = do
              (definitionalProperties r l)
              (extensionalities l r)
   -- we combine definitional information for l, for r and if
-  -- we have set equality we also throw in extensionality for sets and if
-  -- we have functions we throw in function extensionality
+  -- we have set/class equality we also throw in extensionality for sets/classes
+  -- and if we have maps we throw in map extensionality
 
     localProperties t
       | isApplication t || isElem t = setFunDefinitionalProperties t
@@ -364,28 +364,28 @@ unfoldAtomic sign f = do
         -- increase the counter by 1 and return what we got
 
     extensionalities f g =
-      let extensionalityFormula = 
+      let extensionalityFormula =
             -- set extensionality
-            (guard (setType f && setType g) >> return (setExtensionality f g))
+            (guard (setType f && setType g) >> return (classExtensionality f g))
             `mplus`
             -- class extensionality
-            (guard (classType f && classType g) >> return (setExtensionality f g))
-            `mplus`
-            -- function extensionality
-            (guard (funType f && funType g) >> return (funExtensionality f g))
+            (guard (classType f && classType g) >> return (classExtensionality f g))
             `mplus`
             -- map extensionality
-            (guard (mapType f && mapType g) >> return (funExtensionality f g))
+            (guard (functionType f && functionType g) >> return (mapExtensionality f g))
+            `mplus`
+            -- map extensionality
+            (guard (mapType f && mapType g) >> return (mapExtensionality f g))
       in  lift (W.tell 1) >> return extensionalityFormula
 
-    setExtensionality f g =
+    classExtensionality f g =
       let v = mkVar VarEmpty in mkAll VarEmpty $ Iff (mkElem v f) (mkElem v g)
-    funExtensionality f g =
+    mapExtensionality f g =
       let v = mkVar VarEmpty
       in domainEquality (mkDom f) (mkDom g) `And`
          mkAll VarEmpty (Imp (mkElem v $ mkDom f) $ mkEquality (mkApp f v) (mkApp g v))
 
-    -- depending on the sign we choose the more convenient form of set equality
+    -- depending on the sign we choose the more convenient form of class equality
     domainEquality =
       let v = mkVar VarEmpty; sEqu x y = mkAll VarEmpty (Iff (mkElem v x) (mkElem v y))
       in  if sign then mkEquality else sEqu
@@ -421,10 +421,10 @@ classType Var {varInfo = info} = any (infoTwins ThisT $ mkClass ThisT) info
 classType Trm {trmInfo = info} = any (infoTwins ThisT $ mkClass ThisT) info
 classType _ = False
 
-funType :: Formula -> Bool
-funType Var {varInfo = info} = any (infoTwins ThisT $ mkFun ThisT) info
-funType Trm {trmInfo = info} = any (infoTwins ThisT $ mkFun ThisT) info
-funType _ = False
+functionType :: Formula -> Bool
+functionType Var {varInfo = info} = any (infoTwins ThisT $ mkFunction ThisT) info
+functionType Trm {trmInfo = info} = any (infoTwins ThisT $ mkFunction ThisT) info
+functionType _ = False
 
 mapType :: Formula -> Bool
 mapType Var {varInfo = info} = any (infoTwins ThisT $ mkMap ThisT) info

@@ -69,9 +69,9 @@ initFS = FState
       ([Word ["nonequal"], Word ["to"], Vr], Not . mkTrm EqualityId TermEquality) ]
     primNotions = [
       ([Word ["map", "maps"], Nm], mkMap . head),
-      ([Word ["function","functions"], Nm], mkFun . head),
-      ([Word ["set","sets"], Nm], mkSet . head),
-      ([Word ["class","classes", "collection", "collections"], Nm], mkClass . head),
+      ([Word ["function", "functions"], Nm], mkFunction . head),
+      ([Word ["set", "sets"], Nm], mkSet . head),
+      ([Word ["class", "classes", "collection", "collections"], Nm], mkClass . head),
       ([Word ["object", "objects", "element", "elements"], Nm], mkObject . head),
       ([Word ["element", "elements"], Nm, Word ["of"], Vr], \(x:m:_) -> mkElem x m),
       ([Word ["mathematical"], Word ["object", "objects"], Nm], mkObject . head)]
@@ -87,7 +87,7 @@ initFS = FState
       ([Symbol "\\neq"], Not . mkTrm EqualityId TermEquality),
       ([Symbol "\\prec"], mkTrm LessId TermLess) ]
     cf = [
-      ([Symbol "Dom",Vr], mkDom . head),
+      ([Symbol "Dom", Vr], mkDom . head),
       ([Symbol "(", Vr, Symbol ",", Vr, Symbol ")"], \(x:y:_) -> mkPair x y),
       ([Symbol "\\dom", Symbol "(",Vr,Symbol ")"], mkDom . head) ]
     rf = [ ([Symbol "(", Vr, Symbol ")"], \(f:x:_) -> mkApp f x)]
