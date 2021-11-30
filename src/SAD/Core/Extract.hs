@@ -2,7 +2,7 @@
 Authors: Steffen Frerix (2017 - 2018)
 
 Extraction of various information from formulas: definitions,
-function evaluations, elementhood conditions for sets
+map evaluations, elementhood conditions for classes
 -}
 
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
@@ -57,7 +57,7 @@ extractDefinition defs =
     dive guards _ (All _ (Iff (Tag HeadTerm Trm {trmName = TermEquality, trmArgs = [_, t]}) f))
       = (guards, instWith ThisT f, Definition, t) -- function definition
     dive guards _ (All _ (Imp (Tag HeadTerm Trm {trmName = TermEquality, trmArgs = [_, t]}) f))
-      = (guards, instWith ThisT f, Signature, t)  -- function sigext
+      = (guards, instWith ThisT f, Signature, t)  -- function signature extension
     dive guards _ (Iff (Tag HeadTerm t) f)
       = (guards, f, Definition, t)                -- predicate definition
     dive guards _ (Imp (Tag HeadTerm t) f)
@@ -135,7 +135,7 @@ extractRewriteRule c =
     dive n gs f | isNot f = dive n gs $ albet f -- pushdown negation
     dive _ _ _ = mzero
 
--- Evaluation for functions and sets
+-- Evaluation for maps and classes
 
 addEvaluation :: DT.DisTree Evaluation
                  -> Formula -> DT.DisTree Evaluation
@@ -156,7 +156,7 @@ extractEv :: (Formula -> Formula)
              -> [Formula]
              -> Formula
              -> ReaderT (Int, DT.DisTree Evaluation) [] Evaluation
-extractEv c gs f = extractFunctionEval c gs f `mplus` extractSetEval c gs f
+extractEv c gs f = extractMapEval c gs f `mplus` extractClassEval c gs f
 
 freshV :: (MonadReader (a, b1) m, Enum a, Show a) =>
           (Formula -> m b2) -> Formula -> m b2
@@ -164,12 +164,12 @@ freshV fn f = do -- generate fresh variables
   n <- asks fst; local (\(m,dt) -> (succ m, dt)) $ fn $ inst (VarHole $ Text.pack $ show n) f
 
 
-extractFunctionEval :: (Formula -> Formula) -> [Formula] -> Formula
+extractMapEval :: (Formula -> Formula) -> [Formula] -> Formula
   -> ReaderT (Int, DT.DisTree Evaluation) [] Evaluation
-extractFunctionEval c gs (And g@(Tag Domain _ ) h) =
-  extractSetEval c gs g `mplus` extractFunctionEval c gs h
-extractFunctionEval c gs (And f g) = extractFunctionEval c gs g
-extractFunctionEval c gs f = dive c gs f
+extractMapEval c gs (And g@(Tag Domain _ ) h) =
+  extractClassEval c gs g `mplus` extractMapEval c gs h
+extractMapEval c gs (And f g) = extractMapEval c gs g
+extractMapEval c gs f = dive c gs f
   where
     dive c gs (Imp _ g) = dive c gs g -- ignore ontological assumptions
     dive c gs (Tag Condition (Imp f g)) = dive c (f:gs) g --but add case distinctions
@@ -185,16 +185,16 @@ extractFunctionEval c gs f = dive c gs f
       dive (c . dExi x . And f) gs $ inst (declName x) g
     dive _ _ _ = mzero
 
-extractSetEval :: (Formula -> Formula) -> [Formula]-> Formula
+extractClassEval :: (Formula -> Formula) -> [Formula]-> Formula
   -> ReaderT (Int, DT.DisTree Evaluation) [] Evaluation
-extractSetEval c gs (And f g) =
-  extractSetEval c gs f `mplus` extractSetEval c gs g
-extractSetEval c gs (Tag _ f) = extractSetEval c gs f
-extractSetEval c gs (All _ (Iff g@Trm{trmArgs = [_,t]} f )) | isElem g = do
+extractClassEval c gs (And f g) =
+  extractClassEval c gs f `mplus` extractClassEval c gs g
+extractClassEval c gs (Tag _ f) = extractClassEval c gs f
+extractClassEval c gs (All _ (Iff g@Trm{trmArgs = [_,t]} f )) | isElem g = do
   (n, evals) <- ask
   let nm = VarHole $ Text.pack $ show n; nf = simplifyElementCondition evals $ strip $ inst nm f
   return $ EV (mkElem (mkVar nm) t) (mkPos $ c $ Tag Evaluation nf)(c nf) gs
-extractSetEval _ _ f = mzero
+extractClassEval _ _ f = mzero
 
 
 simplifyElementCondition :: DT.DisTree Evaluation

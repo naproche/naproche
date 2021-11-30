@@ -23,28 +23,28 @@ import SAD.Data.Text.Decl
 generateProofTask :: Section -> Set VariableName -> Formula -> Formula
 generateProofTask Choice vs f = foldr mbExi f vs
 generateProofTask LowDefinition _ f
-  | funDcl f = funTask f
-  | setDcl f = setTask f
+  | mapDcl f = mapTask f
+  | classDcl f = classTask f
 generateProofTask _ _ f = f
 
-{- Check whether a formula is a set or function defintion -}
-funDcl, setDcl :: Formula -> Bool
-funDcl (And (And f _) _) = trmId f == MapId
-funDcl _ = False
+{- Check whether a formula is a class or map defintion -}
+mapDcl, classDcl :: Formula -> Bool
+mapDcl (And (And f _) _) = trmId f == MapId
+mapDcl _ = False
 
-setDcl (And (Trm _ _ _ id) _) = id == SetId || id == ClassId
-setDcl (And f _) = setDcl f
-setDcl f = error $ "SAD.Core.ProofTask.setDcl: misformed definition: " ++ show f
+classDcl (And (Trm _ _ _ id) _) = id == SetId || id == ClassId
+classDcl (And f _) = classDcl f
+classDcl f = error $ "SAD.Core.ProofTask.classDcl: misformed definition: " ++ show f
 
-setTask :: Formula -> Formula
+classTask :: Formula -> Formula
 -- {x_1, ..., x_n}
-setTask (And _ (All x (Iff _ (And (Trm _ _ _ ObjectId) _)))) = Top
+classTask (And _ (All x (Iff _ (And (Trm _ _ _ ObjectId) _)))) = Top
 -- {t(x_1, ..., x_n) | ...}
-setTask (And _ (All x (Iff _ (Tag Replacement f)))) = Top
+classTask (And _ (All x (Iff _ (Tag Replacement f)))) = Top
 -- {t(x_1,...,x_n) in X | ...}
-setTask (And _ (All _ (Iff _ f))) = Top
+classTask (And _ (All _ (Iff _ f))) = Top
 -- Anything else
-setTask f = error $ "SAD.Core.ProofTask.setTask: misformed definition: " ++ show f
+classTask f = error $ "SAD.Core.ProofTask.classTask: misformed definition: " ++ show f
 
 {- generate separation proof task -}
 separation :: Formula -> Formula
@@ -53,11 +53,11 @@ separation t | isElem t = dec $ mkClass $ last $ trmArgs t
 separation f = error $ "SAD.Core.ProofTask.separation: misformed argument: " ++ show f
 
 
-funTask :: Formula -> Formula
-funTask h@(And (And _ g) f) =
+mapTask :: Formula -> Formula
+mapTask h@(And (And _ g) f) =
   let c = domainCondition g
   in  domain g `blAnd` c (choices f `blAnd` existence f `blAnd` uniqueness f)
-funTask _ = error "SAD.Core.ProofTask.funTask: misformed definition"
+mapTask _ = error "SAD.Core.ProofTask.mapTask: misformed definition"
 
 domain :: Formula -> Formula
 domain (Tag Domain (All _ (Iff _ f))) = Tag DomainTask $ separation f
@@ -102,7 +102,7 @@ uniqueness = Tag UniquenessTask . dive
           yf = devReplace y df; cyf = devReplace cy df
       in  mkAll (VarDefault "y") $ mkAll (VarTask $ VarDefault "y") $ inc $ inc $ Imp (yf `And` cyf) $ mkEquality y cy
 
-{- output a description of a function in the form
+{- output a description of a map in the form
   (condition_1 /\ evaluation_1) \/ ... \/ (condition_n /\ evaluation_n)
   choices are expressed by choice operator rather than throuth an existentially
   quantified formula -}
@@ -133,7 +133,7 @@ devReplace y (Tag Evaluation eq@Trm {trmName = TermEquality, trmArgs = [_, t]}) 
   eq {trmArgs = [y,t]}
 devReplace y f = mapF (devReplace y) f
 
-{- compute domain conditions of functions -}
+{- compute domain conditions of maps -}
 domainCondition :: Formula -> Formula -> Formula
 domainCondition (Tag _ (All _ (Iff Trm {trmArgs = [_,dm]} g))) = dive
   where

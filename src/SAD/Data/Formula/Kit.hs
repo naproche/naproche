@@ -190,8 +190,8 @@ mkLess :: Formula -> Formula -> Formula
 mkLess t s = mkTrm LessId TermLess [t,s]
 mkThesis :: Formula
 mkThesis = mkTrm ThesisId TermThesis []
-mkFun :: Formula -> Formula
-mkFun = mkTrm FunctionId termFunction . pure
+mkFunction :: Formula -> Formula
+mkFunction = mkTrm FunctionId termFunction . pure
 mkMap :: Formula -> Formula
 mkMap      = mkTrm MapId termMap . pure
 mkApp :: Formula -> Formula -> Formula

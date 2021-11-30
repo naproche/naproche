@@ -12,8 +12,8 @@ module SAD.ForTheL.Statement
   , anotion
   , dig
   , choice
-  , setNotion
-  , functionNotion
+  , classNotion
+  , mapNotion
   , plainTerm -- TODO: This seems unused?
   ) where
 
@@ -209,7 +209,7 @@ multiPredicate p = (token' "not" >> mNegative) <|> mPositive
 --- Notions
 
 baseNotion :: FTL (Formula -> Formula, Formula, Set PosVar)
-baseNotion = fmap digadd $ cm <|> symEqnt <|> (set </> primNotion term)
+baseNotion = fmap digadd $ cm <|> symEqnt <|> (collection </> primNotion term)
   where
     cm = token' "common" >> primCommonNotion term terms
     symEqnt = do
@@ -390,22 +390,22 @@ classEquality :: FTL Formula
 classEquality = twoClassTerms </> oneClassTerm
   where
     twoClassTerms = do
-      cnd1 <- fmap stripSet symbSetNotation; token "="
-      cnd2 <- fmap stripSet symbSetNotation; h <- hidden
+      cnd1 <- fmap stripClass symbClassNotation; token "="
+      cnd2 <- fmap stripClass symbClassNotation; h <- hidden
       hDecl <- makeDecl h
       let hv = pVar h
       return $ dAll hDecl $ Imp (mkObject hv) $ Iff (cnd1 hv) (cnd2 hv)
-    stripSet = (.) strip . fst
+    stripClass = (.) strip . fst
 
     oneClassTerm = left </> right
     left = do
-      cnd <- fmap stripSet symbSetNotation; token "="
+      cnd <- fmap stripClass symbClassNotation; token "="
       t <- sTerm; h <- hidden; hDecl <- makeDecl h; let hv = pVar h
       return $ And (mkClass t) $ All hDecl $ Iff (cnd hv) (mkElem hv t)
     right = do
       t <- sTerm; token "="; h <- hidden; hDecl <- makeDecl h
       let hv = pVar h
-      cnd <- fmap stripSet symbSetNotation
+      cnd <- fmap stripClass symbClassNotation
       return $ And (mkClass t) $ dAll hDecl $ Iff (mkElem hv t) (cnd hv)
 
 
@@ -421,16 +421,17 @@ choice = fmap (foldl1 And) $ (art >> takeLongest namedNotion) `sepByLL1` comma
     isExplicitName (VarConstant _) = True; isExplicitName _ = False
 
 
--- function and set syntax
+-- Map and class syntax
 
--- -- sets
-setNotion :: FTL Formula
-setNotion = do
-  v <- after var (token "="); (_, f, _) <- set
+-- -- classes
+
+classNotion :: FTL Formula
+classNotion = do
+  v <- after var (token "="); (_, f, _) <- collection
   dig (Tag Dig f) [pVar v]
 
-set :: FTL MNotion
-set = label "set definition" $ symbSet <|> classOf
+collection :: FTL MNotion
+collection = label "class definition" $ symbClass <|> classOf
   where
     classOf = do
       tokenOf' ["class", "classes", "collection", "collections"];
@@ -439,24 +440,24 @@ set = label "set definition" $ symbSet <|> classOf
       (q, f, u) <- notion >>= single; vnm <- hidden;
       vnmDecl <- makeDecl vnm;
       return (id, setFormula mkClass vnmDecl $ (subst (pVar vnm) (posVarName u) $ q f) `blAnd` mkObject (pVar vnm) , Set.singleton nm)
-    symbSet = do
-      (cnd, (nm, mkColl)) <- symbSetNotation; h <- hidden
+    symbClass = do
+      (cnd, (nm, mkColl)) <- symbClassNotation; h <- hidden
       nmDecl <- makeDecl nm
       return (id, setFormula mkColl nmDecl $ cnd $ pVar nm, Set.singleton h)
     setFormula mkColl dcl = let nm = PosVar (declName dcl) (declPosition dcl) in
       And (mkColl (mkVar (VarHole ""))) . dAll dcl . Iff (mkElem (pVar nm) (mkVar (VarHole "")))
 
 
-symbSetNotation :: FTL (Formula -> Formula, (PosVar, Formula -> Formula))
-symbSetNotation = texSet </> cndSet </> finSet
+symbClassNotation :: FTL (Formula -> Formula, (PosVar, Formula -> Formula))
+symbClassNotation = texClass </> cndClass </> finiteSet
   where
-    -- Finite set, e.g. "{x, f(y), 5}"
-    finSet = braced $ do
+    -- Finite class, e.g. "{x, f(y), 5}"
+    finiteSet = braced $ do
       ts <- sTerm `sepByLL1` token ","
       h <- hidden
       pure (\tr -> mkObject tr `And` (foldr1 Or $ map (mkEquality tr) ts), (h, mkSet))
     -- Set-builder notation, e.g. "{x in X | x is less than y}"
-    cndSet = braced $ do
+    cndClass = braced $ do
       (tag, c, t, mkColl) <- optionallyInText sepFrom
       st <- (token "|" <|> token ":") >> optionallyInText statement
       vs <- freeVars t
@@ -464,8 +465,8 @@ symbSetNotation = texSet </> cndSet </> finSet
       nm <- if isVar t then pure $ PosVar (varName t) (varPosition t) else hidden
       pure (\tr -> tag $ c tr `blAnd` mbEqu vsDecl tr t st `blAnd` mkObject tr, (nm, mkColl))
     -- Set-builder notation using a certain TeX macro, e.g.
-    -- "\class{$x \in X$ | $x$ is less than $y$}". Semantically identical to `cndSet`.
-    texSet = do
+    -- "\class{$x \in X$ | $x$ is less than $y$}". Semantically identical to `cndClass`.
+    texClass = do
       token "\\class"
       symbol "{"
       (tag, c, t, mkColl) <- optionallyInText sepFrom
@@ -483,24 +484,24 @@ symbSetNotation = texSet </> cndSet </> finSet
 -- Maybe we have to reconstitute notionSep?
 
     sepFrom :: FTL (Formula -> Formula, Formula -> Formula, Formula, Formula -> Formula)
-    sepFrom = setSep -|- noSep
+    sepFrom = classSep -|- noSep
 
-    setSep = do
+    classSep = do
       t <- sTerm
       elementOf
-      clssTrm <- (Left <$> sTerm) </> (Right <$> symbSetNotation)
+      clssTrm <- (Left <$> sTerm) </> (Right <$> symbClassNotation)
       case clssTrm of
         Left s -> pure (id, flip mkElem s, t, \v -> mkClass v `And` (mkSet s `Imp` mkSet v))
         Right (cls, (_, mkColl)) -> pure (id, cls, t, mkColl)
     noSep  = do
       t <- sTerm; return (Tag Replacement, const Top, t, mkClass)
 
--- -- functions
+-- -- maps
 
-functionNotion :: FTL Formula
-functionNotion = sVar <**> (wordFun <|> (token "=" >> lambda))
+mapNotion :: FTL Formula
+mapNotion = sVar <**> (wordMap <|> (token "=" >> lambda))
   where
-  wordFun = do
+  wordMap = do
     token "("
     t <- pair
     token ")"
@@ -513,7 +514,7 @@ functionNotion = sVar <**> (wordFun <|> (token "=" >> lambda))
     return $ \f -> mkMap f `And` Tag Domain (dom f) `And` body f
 
 lambdaBody :: FTL (Formula -> Formula)
-lambdaBody = label "function definition" $ paren $ cases <|> texCases <|> chooseInTerm
+lambdaBody = label "map definition" $ paren $ cases <|> texCases <|> chooseInTerm
 
 cases :: FTL (Formula -> Formula)
 cases = do
@@ -555,17 +556,17 @@ chooseInTerm = optionallyInText $ do
       return $ flip (foldr dExi) vs . And (q f)
     def = do
       token' "define"; x <- var; xDecl <- makeDecl x; token "="
-      ap <- ld_set <|> lambda
+      ap <- ld_class <|> lambda
       return $ dExi xDecl . And (Tag Defined $ ap $ pVar x)
 
     term = fmap ((.) (Tag Evaluation) . flip mkEquality) sTerm
     defTerm = do
-      ap <- ld_set <|> lambda; h <- hidden; let hv = pVar h
+      ap <- ld_class <|> lambda; h <- hidden; let hv = pVar h
       hDecl <- makeDecl h;
       return $ \fx -> dExi hDecl $
         And (Tag Defined $ ap hv) (Tag Evaluation $ mkEquality fx hv)
 
-    ld_set = do (_, t, _) <- set; return $ (\f -> subst f (VarHole "") t)
+    ld_class = do (_, t, _) <- collection; return $ (\f -> subst f (VarHole "") t)
 
 
 lambda :: FTL (Formula -> Formula)
@@ -597,7 +598,7 @@ lambdaIn = do
     trm = do
       t <- sTerm; return $ \f _ _ -> mkDom f `mkEquality` t
     setTrm = do
-      (ap, _) <- symbSetNotation
+      (ap, _) <- symbClassNotation
       return $ \f t -> foldr dAll (Iff (t `mkElem` mkDom f) (ap t))
 
 ---- chain tools
