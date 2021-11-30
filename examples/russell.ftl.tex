@@ -18,19 +18,16 @@
   Russell's paradox is the assertion that every set theory that contains an
   unrestricted comprehension principle leads to contradictions.
   The following is a formalization of this fact expressed in the language of
-  \textit{sets} and \textit{classes}.
+  \textit{classes} and \textit{objects}.
 
   \begin{forthel}
-    [readtex \path{preliminaries.ftl.tex}]
-
     \begin{theorem}[Russell]
-      If every class is a set then we have a contradiction.
+      Assume that every class is an object.
+      Then we have a contradiction.
     \end{theorem}
     \begin{proof}
-      Assume that every class is a set.
-      Define \[ R = \class{x | \text{$x$ is a set such that $x \notin x$}}. \]
-      Then $R$ is a set.
-      Hence $R \in R$ iff $R \notin R$.
+      Define \[ R = \class{x | \text{$x$ is a class such that $x \notin x$}}. \]
+      Then $R \in R$ iff $R \notin R$.
       Contradiction.
     \end{proof}
   \end{forthel}
