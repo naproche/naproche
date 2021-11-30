@@ -92,7 +92,9 @@ specialId n =
   ( -6) -> trace msg DomainId
   ( -7) -> trace msg SetId
   ( -8) -> trace msg ElementId
+  ( -9) -> trace msg ClassId
   (-10) -> trace msg PairId
   (-11) -> trace msg ObjectId
+  (-12) -> trace msg MapId
   (-15) -> trace msg NewId
   n -> SpecialId n
