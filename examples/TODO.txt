@@ -15,21 +15,24 @@ notfalls eliminieren.
 4. Verbesserung der mitgelieferten Beispiele.
 Adrian:
 
+chinese
+
 Peter:
 
 README über die Sammlung der Beispiele schreiben.
-
+cantor OK
 TUTORIAL OK?
 euclid 
 maximum_modulus
 tarski
+foundations?? Muss Weg
 preliminaries
 vocabulary
-group.lean.ftl.tex
+group.lean.ftl.tex (OK)
 
 Marcel:
 
-5. Rausnehmen von koenig und regular_successor 
+5. Rausnehmen von koenig und regular_successor OK 
 
 6. Koordination der Ontologie- oder Preliminaries-Dateien von Adrian
 und Peter
