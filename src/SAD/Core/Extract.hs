@@ -127,7 +127,7 @@ extractRewriteRule c =
     dive n gs (Tag _ f) = dive n gs f -- ignore tags
     dive n gs (And f g) = dive n gs f ++ dive n gs g
     -- we do not allow rules where the left side is a variable
-    dive n gs Trm {trmName = TermEquality, trmArgs = [l@Var{},r]} | not (isHole (varName l))
+    dive n gs Trm {trmName = TermEquality, trmArgs = [l@Var{},r]} | not (isVarHole (varName l))
       = return $ Rule l r gs undefined -- the name is filled in later
     dive n gs Trm {trmName = TermEquality, trmArgs = [l@Trm{},r]}
       = return $ Rule l r gs undefined -- the name is filled in later

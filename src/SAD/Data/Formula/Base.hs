@@ -4,6 +4,8 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
 Core functions on formulas.
 -}
 
+{-# LANGUAGE NamedFieldPuns #-}
+
 module SAD.Data.Formula.Base where
 
 import Data.Maybe
@@ -53,6 +55,10 @@ showTrName :: Formula -> Text
 showTrName Trm{trmName = s} = Text.filter (/= ':') $ toLazyText $ represent s
 showTrName Var{varName = s} = Text.filter (/= ':') $ toLazyText $ represent s
 showTrName _ = Text.empty
+
+isHole :: Formula -> Bool
+isHole Var{varName} = isVarHole varName
+isHole _ = False
 
 -- Traversing functions
 

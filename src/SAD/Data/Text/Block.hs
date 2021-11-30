@@ -69,6 +69,9 @@ makeBlock form body kind = Block form body kind mempty
 position :: Block -> Position.T
 position = Position.range_position . tokensRange . tokens
 
+isTopLevel :: Block -> Bool
+isTopLevel = isHole . formula
+
 text :: Block -> Text
 text Block {tokens} = composeTokens tokens
 
@@ -83,9 +86,8 @@ data Section =
 
 {- form the formula image of a whole block -}
 formulate :: Block -> Formula
-formulate block
-  | isTopLevel block = compose $ body block
-  | otherwise = formula block
+formulate block =
+  if isTopLevel block then compose $ body block else formula block
 
 compose :: [ProofText] -> Formula
 compose = foldr comp Top
@@ -121,15 +123,8 @@ canDeclare LowDefinition = True
 canDeclare _ = False
 
 
-isTopLevel :: Block -> Bool
-isTopLevel  = isHole' . formula
-  where
-    isHole' Var {varName = VarHole _} = True
-    isHole' _ = False
-
 file :: Block -> Text
 file = Text.fromStrict . make_text . fromMaybe Bytes.empty . Position.file_of . position
-
 
 declaredNames :: Block -> Set VariableName
 declaredNames = Set.map declName . declaredVariables

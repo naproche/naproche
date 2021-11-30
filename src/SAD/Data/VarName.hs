@@ -9,7 +9,7 @@ module SAD.Data.VarName
   , IsVar(..)
   , fvToVarSet
   , fvFromVarSet
-  , isHole
+  , isVarHole
   , PosVar(..)
   ) where
 
@@ -40,9 +40,9 @@ data VariableName
   | VarDefault Text      -- ^ everything else
   deriving (Eq, Ord)
 
-isHole :: VariableName -> Bool
-isHole (VarHole _) = True
-isHole _ = False
+isVarHole :: VariableName -> Bool
+isVarHole (VarHole _) = True
+isVarHole _ = False
 
 instance Show VariableName where
   show = Text.unpack . toLazyText . represent
