@@ -463,7 +463,7 @@ symbClassNotation = texClass </> cndClass </> finiteSet
       vs <- freeVars t
       vsDecl <- makeDecls $ fvToVarSet vs;
       nm <- if isVar t then pure $ PosVar (varName t) (varPosition t) else hidden
-      pure (\tr -> tag $ c tr `blAnd` mbEqu vsDecl tr t st `blAnd` mkObject tr, (nm, mkColl))
+      pure (\tr -> tag $ c tr `blAnd` mkObject tr `blAnd` mbEqu vsDecl tr t st, (nm, mkColl))
     -- Set-builder notation using a certain TeX macro, e.g.
     -- "\class{$x \in X$ | $x$ is less than $y$}". Semantically identical to `cndClass`.
     texClass = do
@@ -475,7 +475,7 @@ symbClassNotation = texClass </> cndClass </> finiteSet
       vs <- freeVars t
       vsDecl <- makeDecls $ fvToVarSet vs;
       nm <- if isVar t then pure $ PosVar (varName t) (varPosition t) else hidden
-      pure (\tr -> tag $ c tr `blAnd` mbEqu vsDecl tr t st `blAnd` mkObject tr, (nm, mkColl))
+      pure (\tr -> tag $ c tr `blAnd` mkObject tr `blAnd` mbEqu vsDecl tr t st, (nm, mkColl))
 
     mbEqu :: Set Decl -> Formula -> Formula -> Formula -> Formula
     mbEqu _ tr Var{varName = v} = subst tr v
