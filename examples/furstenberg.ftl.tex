@@ -4,10 +4,11 @@
 \usepackage[british]{babel}
 \usepackage{amsfonts}
 \usepackage{xurl}
+\usepackage{csquotes}
 \usepackage{../lib/tex/naproche}
 \usepackage{../lib/tex/basicnotions}
 
-\newcommand{\N}[2]{\mathrm{N}_{#1,#2}}
+\newcommand{\N}{\mathrm{N}}
 
 \title{Furstenberg's proof of the infinitude of primes}
 \author{Andrei Paskevich (2007), \\
@@ -21,12 +22,12 @@ Marcel Schütz (2021)}
   Furstenberg's proof of the infinitude of primes is a topological proof of the
   fact that there are infinitely many primes.
   It was published 1955 while Furstenberg was still an undergraduate
-  student.\footnote{Furstenberg, Harry. “On the Infinitude of Primes.” The
-  American Mathematical Monthly, vol. 62, no. 5, 1955, pp. 353–353}
+  student.\footnote{Furstenberg, Harry. \enquote{On the Infinitude of Primes}.
+  The American Mathematical Monthly, vol. 62, no. 5, 1955, pp. 353–353}
   The following formalization of his proof is based on the notions of natural
   numbers and sets provided by the following files:
 
-  \begin{forthel}[prove off][check off]
+  \begin{forthel}
     [readtex \path{arithmetic/sections/03_divisibility/03_modular-arithmetic.ftl.tex}]
   \end{forthel}
 
@@ -35,7 +36,7 @@ Marcel Schütz (2021)}
   \end{forthel}
 
   \begin{forthel}
-    [readtex \path{set-theory/sections/01_sets/02_powerset.ftl.tex}][prove on][check on]
+    [readtex \path{set-theory/sections/01_sets/02_powerset.ftl.tex}]
   \end{forthel}
 
   The central idea of Furstenberg's proof is to define a certain topology on
@@ -62,11 +63,11 @@ Marcel Schütz (2021)}
   \end{forthel}
 
   Towards a suitable topology on $\mathbb{N}$ let us define \textit{arithmetic
-  sequences} $\N{n}{q}$ on $\mathbb{N}$.
+  sequences} $\N_{n, q}$ on $\mathbb{N}$.
 
   \begin{forthel}
     \begin{definition}
-      $\N{n}{q} = \{ m \in \mathbb{N} \mid m \equiv n \pmod{q} \}$.
+      $\N_{n, q} = \{ m \in \mathbb{N} \mid m \equiv n \pmod{q} \}$.
     \end{definition}
   \end{forthel}
 
@@ -76,7 +77,7 @@ Marcel Schütz (2021)}
   \begin{forthel}
     \begin{definition}
       Let $U$ be a subset of $\mathbb{N}$.
-      $U$ is open iff for any $n \in U$ there exists a $q$ such that $\N{n}{q} \subseteq U$.
+      $U$ is open iff for any $n \in U$ there exists a $q$ such that $\N_{n, q} \subseteq U$.
     \end{definition}
 
     \begin{definition}
@@ -98,14 +99,14 @@ Marcel Schütz (2021)}
     \begin{proof}
       $U \cap V$ is a subset of $\mathbb{N}$.
       Let $n \in U \cap V$.
-      Take $q$ such that $\N{n}{q} \subseteq U$.
-      Take $p$ such that $\N{n}{p} \subseteq V$.
+      Take $q$ such that $\N_{n, q} \subseteq U$.
+      Take $p$ such that $\N_{n, p} \subseteq V$.
 
-      Let us show that $\N{n}{p \cdot q} \subseteq U \cap V$.
-        Let $m \in \N{n}{p \cdot q}$.
+      Let us show that $\N_{n, p \cdot q} \subseteq U \cap V$.
+        Let $m \in \N_{n, p \cdot q}$.
         We have $m \equiv n \pmod{p \cdot q}$.
         Hence $m \equiv n \pmod{p}$ and $m \equiv n \pmod{q}$.
-        Thus $m \in \N{n}{p}$ and $m \in \N{n}{q}$.
+        Thus $m \in \N_{n, p}$ and $m \in \N_{n, q}$.
         Therefore $m \in U$ and $m \in V$.
         Consequently $m \in U \cap V$.
       End.
@@ -118,8 +119,8 @@ Marcel Schütz (2021)}
     \begin{proof}
       Let $n \in \bigcup S$.
       Take a set $M$ such that $n \in M \in S$.
-      Consider a $q$ such that $\N{n}{q} \subseteq M$.
-      Then $\N{n}{q} \subseteq \bigcup S$.
+      Consider a $q$ such that $\N_{n, q} \subseteq M$.
+      Then $\N_{n, q} \subseteq \bigcup S$.
     \end{proof}
   \end{forthel}
 
@@ -177,32 +178,32 @@ Marcel Schütz (2021)}
 
   \begin{forthel}
     \begin{lemma}
-      $\N{n}{q}$ is a closed subset of $\mathbb{N}$.
+      $\N_{n, q}$ is a closed subset of $\mathbb{N}$.
     \end{lemma}
     \begin{proof}
       Proof by contradiction.
-      Let $m \in (\N{n}{q})^{\complement}$.
+      Let $m \in (\N_{n, q})^{\complement}$.
 
-      Let us show that $\N{m}{q} \subseteq (\N{n}{q})^{\complement}$.
-        Let $k \in \N{m}{q}$.
-        Assume $k \notin (\N{n}{q})^{\complement}$.
+      Let us show that $\N_{m, q} \subseteq (\N_{n, q})^{\complement}$.
+        Let $k \in \N_{m, q}$.
+        Assume $k \notin (\N_{n, q})^{\complement}$.
         Then $k \equiv m \pmod{q}$ and $n \equiv k \pmod{q}$.
         Hence $m \equiv n \pmod{q}$.
-        Therefore $m \in \N{n}{q}$.
+        Therefore $m \in \N_{n, q}$.
         Contradiction.
       End.
     \end{proof}
   \end{forthel}
 
   Finally, to show that there are infinitely many primes we identify a prime
-  number $p$ with the arithmetic sequence $\N{0}{p}$.
+  number $p$ with the arithmetic sequence $\N_{0, p}$.
   In fact we could prove that there exists a bijection between the set of all
   prime numbers and the set of all arithmetic sequences of this form.
   But this would go beyond the scope of this formalization.
 
   \begin{forthel}
     \begin{definition}
-      $\mathbb{P} = \{ \N{0}{p} \mid \text{$p$ is a prime number} \}$.
+      $\mathbb{P} = \{ \N_{0, p} \mid \text{$p$ is a prime number} \}$.
     \end{definition}
 
     \begin{lemma}
@@ -227,14 +228,14 @@ Marcel Schütz (2021)}
         Proof.
           Assume $n$ has a prime divisor.
           Take a prime divisor $p$ of $n$.
-          We have $\N{0}{p} \in \mathbb{P}$.
-          Hence $n \in \N{0}{p}$.
+          We have $\N_{0, p} \in \mathbb{P}$.
+          Hence $n \in \N_{0, p}$.
         Qed.
 
         If $n$ belongs to $\bigcup \mathbb{P}$ then $n$ has a prime divisor. \\
         Proof.
           Assume $n$ belongs to $\bigcup \mathbb{P}$.
-          Take a prime number $r$ such that $n \in \N{0}{r}$.
+          Take a prime number $r$ such that $n \in \N_{0, r}$.
           Hence $n \equiv 0 \pmod{r}$.
           Thus $n \mod r = 0 \mod r = 0$.
           Therefore $r$ is a prime divisor of $n$.
@@ -245,8 +246,8 @@ Marcel Schütz (2021)}
       Indeed for any natural number $n$ if $n$ has no prime divisor then we have $n = 1$.
       Assume that $\mathbb{P}$ is finite.
       Then $\bigcup \mathbb{P}$ is closed and $(\bigcup \mathbb{P})^{\complement}$ is open.
-      Take a $p$ such that $\N{1}{p} \subseteq (\bigcup \mathbb{P})^{\complement}$.
-      $1 + p$ is an element of $\N{1}{p}$.
+      Take a $p$ such that $\N_{1, p} \subseteq (\bigcup \mathbb{P})^{\complement}$.
+      $1 + p$ is an element of $\N_{1, p}$.
       Indeed $1 + p \equiv 1 \pmod{p}$.
       $1 + p$ is not equal to $1$.
       Hence $1 + p \notin (\bigcup \mathbb{P})^{\complement}$.

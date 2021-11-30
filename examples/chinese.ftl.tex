@@ -26,10 +26,6 @@
   \begin{forthel}
     [synonym element/-s]
 
-    \begin{signature}[ElmSort]
-      An element is an setsized object.
-    \end{signature}
-
     Let $a,b,c,x,y,z,u,v,w$ denote elements.
 
     \begin{signature}[SortsC]
@@ -191,11 +187,7 @@
     Let $X,Y,Z,U,V,W$ denote sets.
 
     \begin{axiom}
-      $X$ is setsized.
-    \end{axiom}
-
-    \begin{axiom}
-      Every element of $X$ is an element.
+      Every element of $X$ is an object.
     \end{axiom}
 
     Let $x$ belongs to $W$ denote $x$ is an element of $W$.
@@ -303,12 +295,9 @@
     [synonym number/-s]
 
     \begin{signature}[NatSort]
-      A natural number is a notion.
+      A natural number is an object.
     \end{signature}
 
-    \begin{axiom}
-      Let $n$ be a natural number. Then $n$ is setsized.
-    \end{axiom}
   \end{forthel}
 
   Now we can equip our domain with a Euclidean function $|\cdot|$.

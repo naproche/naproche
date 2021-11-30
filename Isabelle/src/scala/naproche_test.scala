@@ -20,7 +20,6 @@ object Naproche_Test
   val examples: Path = naproche_home + Path.explode("examples")
 
   def run_tests(
-    options: Options,
     progress: Progress = new Progress,
     max_jobs: Int = 1,
     timeout: Time = Time.zero): Unit =
@@ -37,7 +36,7 @@ object Naproche_Test
     val executor = Executors.newFixedThreadPool(max_jobs max 1)
     for (test <- tests) {
       executor.submit(new Runnable {
-        def run =
+        def run(): Unit =
         {
           val path = File.path(test)
           val text = File.read(path)
@@ -69,7 +68,7 @@ object Naproche_Test
             val expect_ok = !test_failure
             progress.echo("Finished " + path_relative + ": " +
               (if (was_timeout) "TIMEOUT"
-               else if (result.rc == 130) "INTERRUPT"
+               else if (result.interrupted) "INTERRUPT"
                else
                 (if (result.ok) "OK" else "FAILURE") +
                 (if (result.ok == expect_ok) ""
@@ -125,6 +124,6 @@ Usage: isabelle naproche_test
           progress = progress, max_jobs = max_jobs)
       if (!results.ok) sys.exit(results.rc)
 
-      run_tests(options, progress = progress, max_jobs = max_jobs, timeout = timeout)
+      run_tests(progress = progress, max_jobs = max_jobs, timeout = timeout)
     })
 }

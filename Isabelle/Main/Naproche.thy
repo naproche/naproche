@@ -13,18 +13,19 @@ begin
 
 section \<open>Logic\<close>
 
+text \<open>See also \<^file>\<open>$NAPROCHE_HOME/src/SAD/ForTheL/Base.hs\<close>\<close>
+
+
 typedecl i  \<comment> \<open>individuals of ``untyped'' HOL\<close>
 
 axiomatization
-  \<comment> \<open>primitive adjectives\<close>
-  setsized :: \<open>i \<Rightarrow> bool\<close> and  \<comment> \<open>``small'' sets\<close>
-
   \<comment> \<open>primitive notions\<close>
+  Map :: \<open>i \<Rightarrow> bool\<close>  \<comment> \<open>maps\<close> and
   Fun :: \<open>i \<Rightarrow> bool\<close>  \<comment> \<open>functions\<close> and
   Set :: \<open>i \<Rightarrow> bool\<close>  \<comment> \<open>sets\<close> and
   Class :: \<open>i \<Rightarrow> bool\<close>  \<comment> \<open>classes\<close> and
   Elem :: \<open>i \<Rightarrow> i \<Rightarrow> bool\<close>  \<comment> \<open>set membership / elements of a set\<close> and
-  Obj :: \<open>i \<Rightarrow> bool\<close>  \<comment> \<open>objects\<close> and
+  Obj :: \<open>i \<Rightarrow> bool\<close>  \<comment> \<open>mathematical objects\<close> and
 
   \<comment> \<open>primitive predicates\<close>
   Less :: \<open>i \<Rightarrow> i \<Rightarrow> bool\<close>  \<comment> \<open>relation for induction\<close> and
@@ -44,6 +45,24 @@ notation (output)
   Prod (infix \<open>\<times>\<close> 20) and
   Pair (\<open>\<langle>_,/ _\<rangle>\<close> [0, 0] 1000) and
   App (infix \<open>\<cdot>\<close> 90)
+
+abbreviation Not_Elem :: \<open>i \<Rightarrow> i \<Rightarrow> bool\<close>
+  where \<open>Not_Elem x A \<equiv> \<not> Elem x A\<close>
+
+abbreviation All_Elem :: "i \<Rightarrow> (i \<Rightarrow> bool) \<Rightarrow> bool"
+  where \<open>All_Elem A B \<equiv> (\<forall>x. Elem x A \<longrightarrow> B x)\<close>
+
+abbreviation Ex_Elem :: "i \<Rightarrow> (i \<Rightarrow> bool) \<Rightarrow> bool"
+  where \<open>Ex_Elem A B \<equiv> (\<exists>x. Elem x A \<and> B x)\<close>
+
+syntax (output)
+  "_All_Elem" :: \<open>pttrn \<Rightarrow> i \<Rightarrow> bool \<Rightarrow> bool\<close>  (\<open>(3\<forall>(_/\<^bold>\<in>_)./ _)\<close> [0, 0, 10] 10)
+  "_Ex_Elem" :: \<open>pttrn \<Rightarrow> i \<Rightarrow> bool \<Rightarrow> bool\<close>  (\<open>(3\<exists>(_/\<^bold>\<in>_)./ _)\<close> [0, 0, 10] 10)
+  "_Not_Ex_Elem" :: \<open>pttrn \<Rightarrow> i \<Rightarrow> bool \<Rightarrow> bool\<close>  (\<open>(3\<nexists>(_/\<^bold>\<in>_)./ _)\<close> [0, 0, 10] 10)
+translations
+  "_All_Elem x A B" \<rightleftharpoons> "CONST All_Elem A (\<lambda>x. B)"
+  "_Ex_Elem x A B" \<rightleftharpoons> "CONST Ex_Elem A (\<lambda>x. B)"
+  "_Not_Ex_Elem x A B" \<rightleftharpoons> "CONST Not (CONST Ex_Elem A (\<lambda>x. B))"
 
 
 section \<open>Isabelle/ML\<close>
@@ -78,7 +97,7 @@ module Isabelle.Naproche (
 
   iT, is_iT, mk_this, dest_this,
 
-  setsized_const, fun_const, set_const, class_const, elem_const, obj_const,
+  map_const, fun_const, set_const, class_const, elem_const, obj_const,
   less_const, dom_const, prod_const, pair_const, app_const, thesis_const
 )
 where
@@ -145,9 +164,9 @@ iT :: Typ; is_iT :: Typ -> Bool
 mk_this :: Typ -> Term; dest_this :: Term -> Maybe Typ
 (mk_this, dest_this) = typed_op0 \<open>\<^const_name>\<open>This\<close>\<close>
 
-setsized_const, fun_const, set_const, class_const, elem_const, obj_const,
+map_const, fun_const, set_const, class_const, elem_const, obj_const,
   less_const, dom_const, prod_const, pair_const, app_const, thesis_const :: Bytes
-setsized_const = \<open>\<^const_name>\<open>setsized\<close>\<close>
+map_const = \<open>\<^const_name>\<open>Map\<close>\<close>
 fun_const = \<open>\<^const_name>\<open>Fun\<close>\<close>
 set_const = \<open>\<^const_name>\<open>Set\<close>\<close>
 class_const = \<open>\<^const_name>\<open>Class\<close>\<close>

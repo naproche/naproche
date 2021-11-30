@@ -17,15 +17,15 @@ Definition. An integer mod eight is an integer x
 
 Let m, n, i, j, k, l denote integers mod eight.
 
-Signature. A square is an object x.
+Signature. A square is an object.
 Axiom. (m,n) is a square.
 Axiom. Let x be a square. Then x = (m,n) for some integer mod eight m and some integer mod eight n.
 
 Let x, y, z denote squares.
 
-Definition. Check = {x | x is a square}.
-Axiom. Check is a set.
-Let the checkerboard stand for Check.
+Definition. The checkerboard is the class of all squares.
+Axiom. The checkerboard is a set.
+Let Check stand for the checkerboard.
 
 Axiom. Every subset of Check is Dedekind finite.
 
@@ -36,9 +36,9 @@ Definition. Mutil = Check -- Corners.
 Let the mutilated checkerboard stand for Mutil.
 
 
-Signature. Let m, n be integers. m is followed by n is a relation.
+Signature. Let m be an integer. A neighbour of m is an integer.
 
-Let m ~ n stand for m is followed by n.
+Let m ~ n stand for m is a neighbour of n.
 
 Axiom. If m ~ n then n ~ m.
 
@@ -143,7 +143,7 @@ Signature.
     Let T be a domino tiling of A.
     Let x be an element of A.
     Sw(T,A,x) is a square y such that there is an element D of T
-    such that D = {x, Sw(T,A,x)}.
+    such that D = {x, y}.
 
 Lemma.
     Let A be a subset of the checkerboard.
@@ -220,8 +220,8 @@ End.
 
 Theorem.
     The mutilated checkerboard has no domino tiling.
-Proof by contradiction. Suppose the contrary.
-    Take a domino tiling T of the mutilated checkerboard.
+Proof by contradiction. 
+    Assume T is a domino tiling of Mutil.
     Mutil /\ Blck is equinumerous with Mutil /\ Wht.
     Mutil /\ Blck is equinumerous with Wht.
     Mutil /\ Blck is equinumerous with Blck.
