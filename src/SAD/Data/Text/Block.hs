@@ -227,7 +227,6 @@ findParseError (ProofTextError err) = pure err
 findParseError txt = dive $ children txt
   where
     dive [] = mzero
-    dive (ProofTextBlock bl : rest) =
-      dive (body bl) `mplus` dive rest
+    dive (ProofTextBlock bl : rest) = dive (body bl) `mplus` dive rest
     dive (ProofTextError err : _) = return err
     dive (_ : rest) = dive rest
