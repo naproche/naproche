@@ -74,8 +74,8 @@ text Block {tokens} = composeTokens tokens
 
 {- All possible types that a ForTheL block can have. -}
 data Section =
-  Definition | Signature | Axiom       | Theorem | CaseHypothesis  |
-  Assumption | Choice | Affirmation | Posit   | LowDefinition   |
+  Definition | Signature | Axiom | Theorem | CaseHypothesis |
+  Assumption | Choice | Affirmation | Posit | LowDefinition |
   ProofByContradiction
   deriving (Eq, Ord, Show)
 
@@ -115,8 +115,10 @@ needsProof block = sign $ kind block
 
 {- which statements can declare variables -}
 canDeclare :: Section -> Bool
-canDeclare Assumption = True; canDeclare Choice = True
-canDeclare LowDefinition = True; canDeclare _ = False
+canDeclare Assumption = True
+canDeclare Choice = True
+canDeclare LowDefinition = True
+canDeclare _ = False
 
 
 isTopLevel :: Block -> Bool
@@ -219,7 +221,6 @@ textCompare (ProofTextBlock bl1) (ProofTextBlock bl2) =
 textCompare _ _ = False
 
 -- parse correctness of a structure tree
-
 
 findParseError :: MonadPlus m => ProofText -> m ParseError
 findParseError (ProofTextError err) = pure err
