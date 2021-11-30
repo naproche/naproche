@@ -38,15 +38,14 @@ import Isabelle.Library (trim_line, make_bytes)
 import qualified Isabelle.Position as Position
 
 
--- | Main verification loop
+-- | verify proof text
 verify :: Text -> IORef RState -> ProofText -> IO (Bool, Maybe ProofText)
 verify fileName reasonerState (ProofTextRoot text) = do
   let text' = ProofTextInstr Position.none (GetArgument (File NonTex) fileName) : text
-  let verificationState = makeInitialVState text'
+  let state = makeInitialVState text'
   Message.outputReasoner Message.TRACING (Position.file_only $ make_bytes fileName) "verification started"
 
-  result <- flip runRM reasonerState $
-    runReaderT (verificationLoop verificationState) verificationState
+  result <- flip runRM reasonerState $ runReaderT (verificationLoop state) state
 
   ignoredFails <- (\st -> sumCounter (trackers st) FailedGoals) <$>
     readIORef reasonerState
@@ -56,6 +55,7 @@ verify fileName reasonerState (ProofTextRoot text) = do
     "verification " <> (if success then "successful" else "failed")
   return (success, fmap (ProofTextRoot . tail . snd) result)
 
+-- | Main verification loop
 verificationLoop :: VState -> VM ([ProofText], [ProofText])
 verificationLoop state@VS {
   thesisMotivated = motivated,
@@ -66,7 +66,7 @@ verificationLoop state@VS {
   mesonRules      = mRules,
   definitions     = defs,
   guards          = grds,
-  restProofText = ProofTextBlock block@(Block f body kind declaredVariables _ _ _):blocks,
+  restProofText   = ProofTextBlock block@(Block f body kind declaredVariables _ _ _):blocks,
   evaluations     = evaluations }
     = local (const state) $ do
   alreadyChecked <- askRS alreadyChecked
@@ -183,13 +183,13 @@ verificationLoop state@VS {
       return (ProofTextBlock newBlock : newBlocks, checkMark (ProofTextBlock markedBlock) : markedBlocks)
 
 -- if there is no text to be read in a branch it means we must call the prover
-verificationLoop st@VS {
+verificationLoop state@VS {
   thesisMotivated = True,
   rewriteRules    = rules,
   currentThesis   = thesis,
   currentContext  = context,
-  restProofText        = [] }
-  = local (const st) $ whenInstruction Prove True prove >> return ([], [])
+  restProofText   = [] }
+  = local (const state) $ whenInstruction Prove True prove >> return ([], [])
   where
     prove = do
       let block = Context.head thesis
@@ -208,7 +208,8 @@ verificationLoop st@VS {
             reasonLog Message.ERROR pos "goal failed" >> setFailed >>
             --guardInstruction Skipfail False >>
             incrementCounter FailedGoals)
-verificationLoop state@ VS {restProofText = ProofTextChecked txt : rest} =
+
+verificationLoop state@VS {restProofText = ProofTextChecked txt : rest} =
   let newTxt = Block.setChildren txt (Block.children txt ++ newInstructions)
       newInstructions = [NonProofTextStoredInstr $
         SetFlag Prove False :
@@ -222,7 +223,7 @@ verificationLoop state@ VS {restProofText = ProofTextChecked txt : rest} =
         instructions state]
   in  setChecked >> verificationLoop state {restProofText = newTxt : rest}
 
-verificationLoop state@ VS {restProofText = NonProofTextStoredInstr ins : rest} =
+verificationLoop state@VS {restProofText = NonProofTextStoredInstr ins : rest} =
   verificationLoop state {restProofText = rest, instructions = ins}
 
 -- process instructions. we distinguish between those that influence the
@@ -236,12 +237,14 @@ verificationLoop state@VS {restProofText = (i@(ProofTextDrop _ instr) : blocks)}
   fmap (\(as,bs) -> (as, i:bs)) $
     local (const state {restProofText = blocks}) $ procProofTextDrop instr
 
-verificationLoop st@VS {restProofText = (i@ProofTextSynonym{} : blocks)} =
-  fmap (\(as,bs) -> (as, i:bs)) $ verificationLoop st {restProofText = blocks}
-verificationLoop st@VS {restProofText = (i@ProofTextPretyping{} : blocks)} =
-  fmap (\(as,bs) -> (as, i:bs)) $ verificationLoop st {restProofText = blocks}
-verificationLoop st@VS {restProofText = (i@ProofTextMacro{} : blocks)} =
-  fmap (\(as,bs) -> (as, i:bs)) $ verificationLoop st {restProofText = blocks}
+verificationLoop state@VS {restProofText = (i@ProofTextSynonym{} : blocks)} =
+  fmap (\(as,bs) -> (as, i:bs)) $ verificationLoop state {restProofText = blocks}
+
+verificationLoop state@VS {restProofText = (i@ProofTextPretyping{} : blocks)} =
+  fmap (\(as,bs) -> (as, i:bs)) $ verificationLoop state {restProofText = blocks}
+
+verificationLoop state@VS {restProofText = (i@ProofTextMacro{} : blocks)} =
+  fmap (\(as,bs) -> (as, i:bs)) $ verificationLoop state {restProofText = blocks}
 
 verificationLoop VS {restProofText = []} = return ([], [])
 
