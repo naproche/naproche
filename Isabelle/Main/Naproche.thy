@@ -32,7 +32,6 @@ axiomatization
 
   \<comment> \<open>primitive operations\<close>
   Dom :: \<open>i \<Rightarrow> i\<close> and
-  Prod :: \<open>i \<Rightarrow> i \<Rightarrow> i\<close> and
   Pair :: \<open>i \<Rightarrow> i \<Rightarrow> i\<close> and
   App :: \<open>i \<Rightarrow> i \<Rightarrow> i\<close> and
 
@@ -42,7 +41,6 @@ axiomatization
 notation (output)
   Elem (infix \<open>\<^bold>\<in>\<close> 50) and
   Less (infix \<open>\<prec>\<close> 50) and
-  Prod (infix \<open>\<times>\<close> 20) and
   Pair (\<open>\<langle>_,/ _\<rangle>\<close> [0, 0] 1000) and
   App (infix \<open>\<cdot>\<close> 90)
 
@@ -98,7 +96,7 @@ module Isabelle.Naproche (
   iT, is_iT, mk_this, dest_this,
 
   map_const, fun_const, set_const, class_const, elem_const, obj_const,
-  less_const, dom_const, prod_const, pair_const, app_const, thesis_const
+  less_const, dom_const, pair_const, app_const, thesis_const
 )
 where
 
@@ -165,7 +163,7 @@ mk_this :: Typ -> Term; dest_this :: Term -> Maybe Typ
 (mk_this, dest_this) = typed_op0 \<open>\<^const_name>\<open>This\<close>\<close>
 
 map_const, fun_const, set_const, class_const, elem_const, obj_const,
-  less_const, dom_const, prod_const, pair_const, app_const, thesis_const :: Bytes
+  less_const, dom_const, pair_const, app_const, thesis_const :: Bytes
 map_const = \<open>\<^const_name>\<open>Map\<close>\<close>
 fun_const = \<open>\<^const_name>\<open>Fun\<close>\<close>
 set_const = \<open>\<^const_name>\<open>Set\<close>\<close>
@@ -174,7 +172,6 @@ elem_const = \<open>\<^const_name>\<open>Elem\<close>\<close>
 obj_const = \<open>\<^const_name>\<open>Obj\<close>\<close>
 less_const = \<open>\<^const_name>\<open>Less\<close>\<close>
 dom_const = \<open>\<^const_name>\<open>Dom\<close>\<close>
-prod_const = \<open>\<^const_name>\<open>Prod\<close>\<close>
 pair_const = \<open>\<^const_name>\<open>Pair\<close>\<close>
 app_const = \<open>\<^const_name>\<open>App\<close>\<close>
 thesis_const = \<open>\<^const_name>\<open>Thesis\<close>\<close>
