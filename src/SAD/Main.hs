@@ -151,9 +151,12 @@ proveFOL text1 opts0 oldProofText cache startTime fileName = do
       (success, newProofText) <- verify (maybe "" Text.pack fileName) reasonerState text
       mapM_ (write_cache cache) newProofText
       pure success
-    Just err -> do errorParser (errorPos err) (show_bytes err); pure False
+    Just err -> do
+      errorParser (errorPos err) (show_bytes err)
+      pure False
 
   finishTime <- getCurrentTime
+
   finalReasonerState <- readIORef reasonerState
 
   let trackerList = trackers finalReasonerState
@@ -163,24 +166,21 @@ proveFOL text1 opts0 oldProofText cache startTime fileName = do
   (outputMain TRACING Position.none . make_bytes) $
     "sections "       ++ show (accumulate Sections)
     ++ " - goals "    ++ show (accumulate Goals)
-    ++ (let ignoredFails = accumulate FailedGoals
-        in  if   ignoredFails == 0
-            then ""
-            else " - failed "   ++ show ignoredFails)
+    ++ (case accumulate FailedGoals of
+        0 -> ""
+        n -> " - failed " ++ show n)
     ++ " - trivial "   ++ show (accumulate TrivialGoals)
     ++ " - proved "    ++ show (accumulate SuccessfulGoals)
     ++ " - equations " ++ show (accumulate Equations)
-    ++ (let failedEquations = accumulate FailedEquations
-        in  if   failedEquations == 0
-            then ""
-            else " - failed " ++ show failedEquations)
+    ++ (case accumulate FailedEquations of
+        0 -> ""
+        n -> " - failed " ++ show n)
 
   let trivialChecks = accumulate TrivialChecks
 
   (outputMain TRACING Position.none . make_bytes) $
     "symbols "        ++ show (accumulate Symbols)
-    ++ " - checks "   ++ show
-      (sumCounter trackerList HardChecks + trivialChecks)
+    ++ " - checks "   ++ show (sumCounter trackerList HardChecks + trivialChecks)
     ++ " - trivial "  ++ show trivialChecks
     ++ " - proved "   ++ show (accumulate SuccessfulChecks)
     ++ " - unfolds "  ++ show (accumulate Unfolds)
