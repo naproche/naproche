@@ -58,8 +58,8 @@ verifyRoot filePos reasonerState text = do
 type Verify = VM ([ProofText], [ProofText])
 
 verify :: VState -> Verify
-verify state@VS {restProofText = ProofTextBlock block:blocks} =
-  verifyBranch state block blocks
+verify state@VS {restProofText = ProofTextBlock block : rest} =
+  verifyBranch state block rest
 verify state@VS {thesisMotivated = True, currentThesis = thesis, restProofText = []} =
   verifyLeaf state thesis
 verify state@VS {restProofText = ProofTextChecked txt : rest} =
@@ -79,23 +79,23 @@ verify state@VS {restProofText = NonProofTextStoredInstr ins : rest} =
   verify state {restProofText = rest, instructions = ins}
 -- process instructions. we distinguish between those that influence the
 -- verification state and those that influence (at most) the global state
-verify state@VS {restProofText = i@(ProofTextInstr pos instr) : blocks} =
+verify state@VS {restProofText = i@(ProofTextInstr pos instr) : rest} =
   fmap (\(as,bs) -> (as, i:bs)) $
-    local (const state {restProofText = blocks}) $ procProofTextInstr (Position.no_range_position pos) instr
+    local (const state {restProofText = rest}) $ procProofTextInstr (Position.no_range_position pos) instr
 {- process a command to drop an instruction, i.e. [/prove], etc.-}
-verify state@VS {restProofText = (i@(ProofTextDrop _ instr) : blocks)} =
+verify state@VS {restProofText = (i@(ProofTextDrop _ instr) : rest)} =
   fmap (\(as,bs) -> (as, i:bs)) $
-    local (const state {restProofText = blocks}) $ procProofTextDrop instr
-verify state@VS {restProofText = (i@ProofTextSynonym{} : blocks)} =
-  fmap (\(as,bs) -> (as, i:bs)) $ verify state {restProofText = blocks}
-verify state@VS {restProofText = (i@ProofTextPretyping{} : blocks)} =
-  fmap (\(as,bs) -> (as, i:bs)) $ verify state {restProofText = blocks}
-verify state@VS {restProofText = (i@ProofTextMacro{} : blocks)} =
-  fmap (\(as,bs) -> (as, i:bs)) $ verify state {restProofText = blocks}
+    local (const state {restProofText = rest}) $ procProofTextDrop instr
+verify state@VS {restProofText = (i@ProofTextSynonym{} : rest)} =
+  fmap (\(as,bs) -> (as, i:bs)) $ verify state {restProofText = rest}
+verify state@VS {restProofText = (i@ProofTextPretyping{} : rest)} =
+  fmap (\(as,bs) -> (as, i:bs)) $ verify state {restProofText = rest}
+verify state@VS {restProofText = (i@ProofTextMacro{} : rest)} =
+  fmap (\(as,bs) -> (as, i:bs)) $ verify state {restProofText = rest}
 verify VS {restProofText = []} = return ([], [])
 
 verifyBranch :: VState -> Block -> [ProofText] -> Verify
-verifyBranch state block blocks = local (const state) $ do
+verifyBranch state block rest = local (const state) $ do
   let
     VS {
       thesisMotivated = motivated,
@@ -169,7 +169,7 @@ verifyBranch state block blocks = local (const state) $ do
     let formulaImage = Block.formulate newBlock
     let markedBlock = block {Block.body = markedProof}
 
-    ifAskFailed (return (ProofTextBlock newBlock : blocks, ProofTextBlock markedBlock : blocks)) $ do
+    ifAskFailed (return (ProofTextBlock newBlock : rest, ProofTextBlock markedBlock : rest)) $ do
 
       (mesonRules, intermediateSkolem) <- MESON.contras $ deTag formulaImage
       let (newDefinitions, newGuards) =
@@ -208,7 +208,7 @@ verifyBranch state block blocks = local (const state) $ do
         rewriteRules = newRewriteRules, evaluations = newEvaluations,
         currentThesis = newThesis, currentContext = newContext,
         mesonRules = newRules, definitions = newDefinitions,
-        skolemCounter = intermediateSkolem, restProofText = blocks }
+        skolemCounter = intermediateSkolem, restProofText = rest }
 
       -- If this block made the thesis unmotivated, we must discharge a composite
       -- (and possibly quite difficult) prove task
