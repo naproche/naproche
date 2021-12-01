@@ -11,7 +11,6 @@ module SAD.Core.Verify (verify) where
 import Data.IORef (IORef, readIORef)
 import Data.Maybe (isJust)
 import Control.Monad.Reader
-import Data.Text.Lazy (Text)
 
 import qualified Data.Text.Lazy as Text
 
@@ -39,21 +38,20 @@ import qualified Isabelle.Position as Position
 
 
 -- | verify proof text
-verify :: Text -> IORef RState -> ProofText -> IO (Bool, Maybe ProofText)
-verify fileName reasonerState (ProofTextRoot text) = do
-  let text' = ProofTextInstr Position.none (GetArgument (File NonTex) fileName) : text
-  let state = makeInitialVState text'
-  Message.outputReasoner Message.TRACING (Position.file_only $ make_bytes fileName) "verification started"
+verify :: Position.T -> IORef RState -> [ProofText] -> IO (Bool, Maybe [ProofText])
+verify filePos reasonerState text = do
+  Message.outputReasoner Message.TRACING filePos "verification started"
 
+  let state = makeInitialVState text
   result <- flip runRM reasonerState $ runReaderT (verificationLoop state) state
 
-  ignoredFails <- (\st -> sumCounter (trackers st) FailedGoals) <$>
-    readIORef reasonerState
+  rstate <- readIORef reasonerState
+  let ignoredFails = sumCounter (trackers rstate) FailedGoals
 
   let success = isJust result && ignoredFails == 0
-  Message.outputReasoner Message.TRACING (Position.file_only $ make_bytes fileName) $
+  Message.outputReasoner Message.TRACING filePos $
     "verification " <> (if success then "successful" else "failed")
-  return (success, fmap (ProofTextRoot . tail . snd) result)
+  return (success, fmap (tail . snd) result)
 
 -- | Main verification loop
 verificationLoop :: VState -> VM ([ProofText], [ProofText])

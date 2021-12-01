@@ -147,9 +147,12 @@ proveFOL text1 opts0 oldProofText cache startTime fileName = do
 
   success <- case findParseError text1 of
     Nothing -> do
-      let text = textToCheck oldProofText text1
-      (success, newProofText) <- verify (maybe "" Text.pack fileName) reasonerState text
-      mapM_ (write_cache cache) newProofText
+      let ProofTextRoot text = textToCheck oldProofText text1
+      let file = maybe "" Text.pack fileName
+      let filePos = Position.file_only $ make_bytes file
+      let text' = ProofTextInstr Position.none (GetArgument (File NonTex) file) : text
+      (success, newProofText) <- verify filePos reasonerState text'
+      mapM_ (write_cache cache . ProofTextRoot) newProofText
       pure success
     Just err -> do
       errorParser (errorPos err) (show_bytes err)
