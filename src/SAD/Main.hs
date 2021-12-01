@@ -151,7 +151,7 @@ proveFOL text1 opts0 oldProofText cache startTime fileName = do
       let file = maybe "" Text.pack fileName
       let filePos = Position.file_only $ make_bytes file
       let text' = ProofTextInstr Position.none (GetArgument (File NonTex) file) : text
-      (success, newProofText) <- verify filePos reasonerState text'
+      (success, newProofText) <- verifyRoot filePos reasonerState text'
       mapM_ (write_cache cache . ProofTextRoot) newProofText
       pure success
     Just err -> do

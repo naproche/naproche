@@ -6,7 +6,7 @@ Main verification loop.
 
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 
-module SAD.Core.Verify (verify) where
+module SAD.Core.Verify (verifyRoot) where
 
 import Data.IORef (IORef, readIORef)
 import Data.Maybe (isJust)
@@ -37,13 +37,13 @@ import Isabelle.Library (trim_line, make_bytes)
 import qualified Isabelle.Position as Position
 
 
--- | verify proof text
-verify :: Position.T -> IORef RState -> [ProofText] -> IO (Bool, Maybe [ProofText])
-verify filePos reasonerState text = do
+-- | verify proof text (document root)
+verifyRoot :: Position.T -> IORef RState -> [ProofText] -> IO (Bool, Maybe [ProofText])
+verifyRoot filePos reasonerState text = do
   Message.outputReasoner Message.TRACING filePos "verification started"
 
   let state = makeInitialVState text
-  result <- flip runRM reasonerState $ runReaderT (verificationLoop state) state
+  result <- flip runRM reasonerState $ runReaderT (verify state) state
 
   rstate <- readIORef reasonerState
   let ignoredFails = sumCounter (trackers rstate) FailedGoals
@@ -53,20 +53,63 @@ verify filePos reasonerState text = do
     "verification " <> (if success then "successful" else "failed")
   return (success, fmap (tail . snd) result)
 
--- | Main verification loop
-verificationLoop :: VState -> VM ([ProofText], [ProofText])
-verificationLoop state@VS {
-  thesisMotivated = motivated,
-  rewriteRules    = rules,
-  currentThesis   = thesis,
-  currentBranch   = branch,
-  currentContext  = context,
-  mesonRules      = mRules,
-  definitions     = defs,
-  guards          = grds,
-  restProofText   = ProofTextBlock block@(Block f body kind declaredVariables _ _ _):blocks,
-  evaluations     = evaluations }
-    = local (const state) $ do
+-- Main verification loop, based on mutual functions:
+-- verify, verifyBranch, verifyLeaf, verifyProof
+type Verify = VM ([ProofText], [ProofText])
+
+verify :: VState -> Verify
+verify state@VS {restProofText = ProofTextBlock block:blocks} =
+  verifyBranch state block blocks
+verify state@VS {thesisMotivated = True, currentThesis = thesis, restProofText = []} =
+  verifyLeaf state thesis
+verify state@VS {restProofText = ProofTextChecked txt : rest} =
+  let newTxt = Block.setChildren txt (Block.children txt ++ newInstructions)
+      newInstructions = [NonProofTextStoredInstr $
+        SetFlag Prove False :
+        SetFlag Printgoal False :
+        SetFlag Printreason False :
+        SetFlag Printsection False :
+        SetFlag Printcheck False :
+        SetFlag Printprover False :
+        SetFlag Printunfold False :
+        SetFlag Printfulltask False :
+        instructions state]
+  in  setChecked >> verify state {restProofText = newTxt : rest}
+verify state@VS {restProofText = NonProofTextStoredInstr ins : rest} =
+  verify state {restProofText = rest, instructions = ins}
+-- process instructions. we distinguish between those that influence the
+-- verification state and those that influence (at most) the global state
+verify state@VS {restProofText = i@(ProofTextInstr pos instr) : blocks} =
+  fmap (\(as,bs) -> (as, i:bs)) $
+    local (const state {restProofText = blocks}) $ procProofTextInstr (Position.no_range_position pos) instr
+{- process a command to drop an instruction, i.e. [/prove], etc.-}
+verify state@VS {restProofText = (i@(ProofTextDrop _ instr) : blocks)} =
+  fmap (\(as,bs) -> (as, i:bs)) $
+    local (const state {restProofText = blocks}) $ procProofTextDrop instr
+verify state@VS {restProofText = (i@ProofTextSynonym{} : blocks)} =
+  fmap (\(as,bs) -> (as, i:bs)) $ verify state {restProofText = blocks}
+verify state@VS {restProofText = (i@ProofTextPretyping{} : blocks)} =
+  fmap (\(as,bs) -> (as, i:bs)) $ verify state {restProofText = blocks}
+verify state@VS {restProofText = (i@ProofTextMacro{} : blocks)} =
+  fmap (\(as,bs) -> (as, i:bs)) $ verify state {restProofText = blocks}
+verify VS {restProofText = []} = return ([], [])
+
+verifyBranch :: VState -> Block -> [ProofText] -> Verify
+verifyBranch state block blocks = local (const state) $ do
+  let
+    VS {
+      thesisMotivated = motivated,
+      rewriteRules    = rules,
+      currentThesis   = thesis,
+      currentBranch   = branch,
+      currentContext  = context,
+      mesonRules      = mRules,
+      definitions     = defs,
+      guards          = grds,
+      evaluations     = evaluations } = state
+
+  let Block f body kind _ _ _ _ = block
+  
   alreadyChecked <- askRS alreadyChecked
 
   -- statistics and user communication
@@ -180,12 +223,9 @@ verificationLoop state@VS {
       let checkMark = if Block.isTopLevel block then id else ProofTextChecked
       return (ProofTextBlock newBlock : newBlocks, checkMark (ProofTextBlock markedBlock) : markedBlocks)
 
--- leaf position, no text to be read in a branch: prove thesis
-verificationLoop state@VS {
-  thesisMotivated = True,
-  currentThesis   = thesis,
-  restProofText   = [] }
-  = local (const state) $ whenInstruction Prove True prove >> return ([], [])
+-- no text to be read in a branch: prove thesis
+verifyLeaf :: VState -> Context -> Verify
+verifyLeaf state thesis = local (const state) $ whenInstruction Prove True prove >> return ([], [])
   where
     prove = do
       let block = Context.head thesis
@@ -205,51 +245,12 @@ verificationLoop state@VS {
             --guardInstruction Skipfail False >>
             incrementCounter FailedGoals)
 
-verificationLoop state@VS {restProofText = ProofTextChecked txt : rest} =
-  let newTxt = Block.setChildren txt (Block.children txt ++ newInstructions)
-      newInstructions = [NonProofTextStoredInstr $
-        SetFlag Prove False :
-        SetFlag Printgoal False :
-        SetFlag Printreason False :
-        SetFlag Printsection False :
-        SetFlag Printcheck False :
-        SetFlag Printprover False :
-        SetFlag Printunfold False :
-        SetFlag Printfulltask False :
-        instructions state]
-  in  setChecked >> verificationLoop state {restProofText = newTxt : rest}
-
-verificationLoop state@VS {restProofText = NonProofTextStoredInstr ins : rest} =
-  verificationLoop state {restProofText = rest, instructions = ins}
-
--- process instructions. we distinguish between those that influence the
--- verification state and those that influence (at most) the global state
-verificationLoop state@VS {restProofText = i@(ProofTextInstr pos instr) : blocks} =
-  fmap (\(as,bs) -> (as, i:bs)) $
-    local (const state {restProofText = blocks}) $ procProofTextInstr (Position.no_range_position pos) instr
-
-{- process a command to drop an instruction, i.e. [/prove], etc.-}
-verificationLoop state@VS {restProofText = (i@(ProofTextDrop _ instr) : blocks)} =
-  fmap (\(as,bs) -> (as, i:bs)) $
-    local (const state {restProofText = blocks}) $ procProofTextDrop instr
-
-verificationLoop state@VS {restProofText = (i@ProofTextSynonym{} : blocks)} =
-  fmap (\(as,bs) -> (as, i:bs)) $ verificationLoop state {restProofText = blocks}
-
-verificationLoop state@VS {restProofText = (i@ProofTextPretyping{} : blocks)} =
-  fmap (\(as,bs) -> (as, i:bs)) $ verificationLoop state {restProofText = blocks}
-
-verificationLoop state@VS {restProofText = (i@ProofTextMacro{} : blocks)} =
-  fmap (\(as,bs) -> (as, i:bs)) $ verificationLoop state {restProofText = blocks}
-
-verificationLoop VS {restProofText = []} = return ([], [])
-
 {- some automated processing steps: add induction hypothesis and case hypothesis
 at the right point in the context; extract rewriteRules from them and further
 refine the currentThesis. Then move on with the verification loop.
 If neither inductive nor case hypothesis is present this is the same as
-verificationLoop state -}
-verifyProof :: VState -> VM ([ProofText], [ProofText])
+verify state -}
+verifyProof :: VState -> Verify
 verifyProof state@VS {
   rewriteRules   = rules,
   currentThesis  = thesis,
@@ -267,7 +268,7 @@ verifyProof state@VS {
     dive construct context (Imp f g)   = dive (construct . Imp f) context g
     dive construct context (All v f)   = dive (construct . All v) context f
     dive construct context (Tag tag f) = dive (construct . Tag tag) context f
-    dive _ _ _ = verificationLoop state
+    dive _ _ _ = verify state
 
     -- extract rules, compute new thesis and move on with the verification
     process :: [Context] -> Formula -> ReaderT VState CRM ([ProofText], [ProofText])
@@ -303,13 +304,11 @@ deleteInductionOrCase = dive id
     dive c f = c f
 
 
-
-
 -- Instruction handling
 
 {- execute an instruction or add an instruction parameter to the state -}
-procProofTextInstr :: Position.T -> Instr -> VM ([ProofText], [ProofText])
-procProofTextInstr pos = flip process $ ask >>= verificationLoop
+procProofTextInstr :: Position.T -> Instr -> Verify
+procProofTextInstr pos = flip process $ ask >>= verify
   where
     process :: Instr -> ReaderT VState CRM a -> ReaderT VState CRM a
     process (Command RULES) = (>>) $ do
@@ -355,5 +354,5 @@ procProofTextInstr pos = flip process $ ask >>= verificationLoop
       | otherwise = addInstruction i
 
 {- drop an instruction from the state -}
-procProofTextDrop :: Drop -> VM ([ProofText], [ProofText])
-procProofTextDrop = flip dropInstruction $ ask >>= verificationLoop
+procProofTextDrop :: Drop -> Verify
+procProofTextDrop = flip dropInstruction $ ask >>= verify
