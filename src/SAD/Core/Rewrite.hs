@@ -156,7 +156,7 @@ generateConditions pos verbositySetting rules w l r =
 {- applies computational reasoning to an equality chain -}
 equalityReasoning :: Position.T -> Context -> VM ()
 equalityReasoning pos thesis
-  | body = whenInstruction Printreason False $ reasonLog Message.WRITELN pos "eqchain concluded"
+  | body = whenInstruction Printreason False $ reasonLog Message.WRITELN pos "equality chain concluded"
   | notNull link = getLinkedRules pos link >>= rewrite pos equation
   | otherwise = rules >>= rewrite pos equation -- if no link is given -> all rules
   where
