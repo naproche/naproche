@@ -180,7 +180,7 @@ verificationLoop state@VS {
       let checkMark = if Block.isTopLevel block then id else ProofTextChecked
       return (ProofTextBlock newBlock : newBlocks, checkMark (ProofTextBlock markedBlock) : markedBlocks)
 
--- if there is no text to be read in a branch it means we must call the prover
+-- leave position, no text to be read in a branch: prove thesis
 verificationLoop state@VS {
   thesisMotivated = True,
   rewriteRules    = rules,
