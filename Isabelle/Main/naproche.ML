@@ -102,7 +102,6 @@ structure Data = Theory_Data
 (
   type T = command Name_Space.table;
   val empty : T = Name_Space.empty_table "naproche_command";
-  val extend = I;
   fun merge data : T = Name_Space.merge_tables data;
 );
 
