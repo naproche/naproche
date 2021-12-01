@@ -180,7 +180,7 @@ verificationLoop state@VS {
       let checkMark = if Block.isTopLevel block then id else ProofTextChecked
       return (ProofTextBlock newBlock : newBlocks, checkMark (ProofTextBlock markedBlock) : markedBlocks)
 
--- leave position, no text to be read in a branch: prove thesis
+-- leaf position, no text to be read in a branch: prove thesis
 verificationLoop state@VS {
   thesisMotivated = True,
   currentThesis   = thesis,
