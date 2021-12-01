@@ -8,6 +8,8 @@ theory Naproche
   imports Main
   keywords "forthel" "forthel_tex" :: thy_decl
     and "forthel_file" :: thy_load
+    and "naproche_problem" :: thy_goal
+    and "naproche_problems" :: diag
 begin
 
 

@@ -29,8 +29,17 @@ sig
   val check_forthel: {tex: bool} -> string * Position.T -> theory -> theory
   type sequent = term list * term list
   val prove_sequent: binding -> sequent -> Input.source -> Proof.context -> thm list * Proof.context
+  val present_sequent: sequent -> Proof.context ->
+    {fixes: Element.context_i list,
+     assumes: Element.context_i list,     
+     shows: Element.statement_i} * Proof.context
   val pretty_sequent: Proof.context -> sequent -> Pretty.T
   val string_of_sequent: Proof.context -> sequent -> string
+  type problem = {sequent: sequent, fact: thm list option}
+  val define_problem: binding -> problem -> theory -> theory
+  val get_problem: theory -> string -> problem option
+  val check_problem: Proof.context -> xstring * Position.T -> string
+  val pretty_problems: Proof.context -> Pretty.T list
 end;
 
 structure Naproche: NAPROCHE =
@@ -98,6 +107,8 @@ val context_of_state = Context.proof_of o get_theory;
 type command = string list * state -> string list * state;
 type command0 = string list -> unit
 
+local
+
 structure Data = Theory_Data
 (
   type T = command Name_Space.table;
@@ -105,8 +116,10 @@ structure Data = Theory_Data
   fun merge data : T = Name_Space.merge_tables data;
 );
 
+in
+
 fun command_setup binding cmd thy =
-  thy |> Data.put (#2 (Name_Space.define (Context.Theory thy) true (binding, cmd) (Data.get thy)));
+  thy |> Data.map (#2 o Name_Space.define (Context.Theory thy) true (binding, cmd));
 
 fun command0_setup binding (cmd: command0) =
   command_setup binding (fn (args, state) => (cmd args; ([], state)));
@@ -126,6 +139,8 @@ val _ = Theory.setup
  (ML_Antiquotation.inline_embedded \<^binding>\<open>naproche_command\<close>
    (Args.theory -- Scan.lift Parse.embedded_position >>
      (ML_Syntax.print_string o uncurry check_command)));
+
+end;
 
 
 
@@ -208,8 +223,9 @@ fun check_forthel tex (text, pos) thy =
   in thy end;
 
 
-
 (** Naproche logic within Isabelle **)
+
+(* sequents *)
 
 type sequent = term list * term list;
 
@@ -221,7 +237,7 @@ fun declare_sequent (sequent: sequent) ctxt =
   in (xs, ctxt') end;
 
 fun make_fixes xs = xs |> map (fn (x, T: typ) => (Binding.name x, SOME T, NoSyn));
-fun make_assumes asms = asms |> map (fn t: term => (Binding.empty_atts, [(t, []: term list)]));
+fun make_assumes assms = assms |> map (fn t: term => (Binding.empty_atts, [(t, []: term list)]));
 fun make_shows concls = [(Binding.empty_atts, map (rpair ([]: term list)) concls)];
 
 fun have_sequent (asms, concls) =
@@ -238,18 +254,96 @@ fun prove_sequent binding sequent method ctxt =
     val res = Proof_Context.export (Proof.context_of state2) ctxt (Proof.the_facts state2);
   in ctxt |> Proof_Context.note_thms "" ((binding, []), [(res, [])]) |>> #2 end;
 
-fun pretty_sequent ctxt ((asms, concls): sequent) =
+fun present_sequent ((assms, concls): sequent) ctxt =
   let
-    val (xs, ctxt') = declare_sequent (asms, concls) ctxt;
+    val (xs, ctxt') = declare_sequent (assms, concls) ctxt;
     val fixes = if null xs then [] else [Element.Fixes (make_fixes xs)];
-    val assumes = if null asms then [] else [Element.Assumes (make_assumes asms)];
-    val shows = if null concls then [] else [Element.Shows (make_shows concls)];
-  in
-    maps (Element.pretty_ctxt ctxt') (fixes @ assumes) @
-    maps (Element.pretty_stmt ctxt') shows
+    val assumes = if null assms then [] else [Element.Assumes (make_assumes assms)];
+    val shows = Element.Shows (make_shows concls);
+  in ({fixes = fixes, assumes = assumes, shows = shows}, ctxt') end;
+
+fun pretty_sequent ctxt sequent =
+  let val ({fixes, assumes, shows}, ctxt') = present_sequent sequent ctxt in
+    maps (Element.pretty_ctxt ctxt') (fixes @ assumes) @ Element.pretty_stmt ctxt' shows
   end |> Pretty.chunks;
 
 val string_of_sequent = Pretty.string_of oo pretty_sequent;
+
+
+(* proof problems *)
+
+type problem = {sequent: sequent, fact: thm list option};
+
+local
+
+structure Data = Theory_Data
+(
+  type T = problem Name_Space.table;
+  val empty : T = Name_Space.empty_table "naproche_problem";
+  fun merge data : T = Name_Space.merge_tables data;
+);
+
+in
+
+val problem_table = Data.get;
+val problem_space = problem_table #> Name_Space.space_of_table;
+
+val get_problem = problem_table #> Name_Space.lookup;
+
+fun check_problem ctxt =
+  #1 o Name_Space.check (Context.Proof ctxt) (problem_table (Proof_Context.theory_of ctxt));
+
+fun define_problem binding problem thy =
+  thy |> Data.map (#2 o Name_Space.define (Context.Theory thy) true (binding, problem));
+
+fun state_problem (xname, pos) int lthy =
+  let
+    val _ = Local_Theory.assert lthy;
+    val thy = Proof_Context.theory_of lthy;
+
+    val name = check_problem lthy (xname, pos);
+    val space = problem_space thy;
+    fun err msg =
+      error (msg ^ quote (uncurry Markup.markup (Name_Space.markup_extern lthy space name)) ^
+        Position.here pos);
+    val sequent =
+      (case get_problem thy name of
+        NONE => err "Bad problem"
+      | SOME {fact = SOME _, ...} => err "Problem already solved"
+      | SOME {sequent, ...} => sequent);
+
+    fun after_qed results lthy' =
+      let
+        val fact = Proof_Context.export lthy' (Proof_Context.init_global thy) (flat results);
+        val problem = {sequent = sequent, fact = SOME fact};
+      in
+        (Local_Theory.background_theory o Data.map o Name_Space.map_table_entry name)
+          (K problem) lthy'
+      end;
+    val binding = Binding.make (Long_Name.base_name name, pos);
+    val ({fixes, assumes, shows}, _) = present_sequent sequent lthy;
+  in
+    Specification.theorem true "" NONE after_qed (binding, []) [] (fixes @ assumes) shows int lthy
+  end;
+
+fun pretty_problems ctxt =
+  let
+    val thy = Proof_Context.theory_of ctxt;
+    val space = problem_space thy;
+    val (solved, unsolved) = 
+      Name_Space.extern_table true ctxt (problem_table thy)
+      |> sort (Name_Space.entry_ord space o apply2 (#1 o #1))
+      |> List.partition (is_some o #fact o #2);
+    fun pretty ((name, xname), problem) =
+      Pretty.item
+       [Pretty.mark_str (Name_Space.markup space name, xname), Pretty.str ":", Pretty.fbrk,
+        pretty_sequent ctxt (#sequent problem)];
+  in
+    (if null solved then [] else [Pretty.big_list "solved:" (map pretty solved)]) @
+    (if null unsolved then [] else [Pretty.big_list "unsolved:" (map pretty unsolved)])
+  end;
+
+end;
 
 
 
@@ -309,5 +403,14 @@ val _ =
           val file_name = Path.implode (Path.expand src_path);
           val tex = String.isSuffix ".ftl.tex" file_name;
         in check_forthel {tex = tex} (cat_lines lines, pos) thy' end)));
+
+val _ =
+  Outer_Syntax.local_theory_to_proof' \<^command_keyword>\<open>naproche_problem\<close> "prove Naproche problem"
+    (Parse.name_position >> state_problem);
+
+val _ =
+  Outer_Syntax.command \<^command_keyword>\<open>naproche_problems\<close> "print Naproche problems"
+    (Scan.succeed (Toplevel.keep (fn st =>
+      Pretty.writeln (Pretty.chunks (pretty_problems (Toplevel.context_of st))))));
 
 end;
