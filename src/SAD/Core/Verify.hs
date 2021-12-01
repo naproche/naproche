@@ -183,9 +183,7 @@ verificationLoop state@VS {
 -- leave position, no text to be read in a branch: prove thesis
 verificationLoop state@VS {
   thesisMotivated = True,
-  rewriteRules    = rules,
   currentThesis   = thesis,
-  currentContext  = context,
   restProofText   = [] }
   = local (const state) $ whenInstruction Prove True prove >> return ([], [])
   where
