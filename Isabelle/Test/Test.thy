@@ -79,12 +79,9 @@ End.
 
 subsection \<open>External text file\<close>
 
-context notes [[naproche_prove = false]]
-begin
+declare [[naproche_prove = false]]
 
 forthel_file \<open>$NAPROCHE_HOME/examples/newman.ftl\<close>
 forthel_file \<open>$NAPROCHE_HOME/examples/newman.ftl.tex\<close>
-
-end
 
 end

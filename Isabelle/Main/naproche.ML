@@ -26,7 +26,7 @@ sig
   val yxml_command1_setup: binding -> (Proof.context -> XML.body -> XML.body) -> theory -> theory
   val cancel_program: string
   val forthel_program: string
-  val check_forthel: {tex: bool} -> string * Position.T -> local_theory -> local_theory
+  val check_forthel: {tex: bool} -> string * Position.T -> theory -> theory
   type sequent = term list * term list
   val prove_sequent: binding -> sequent -> Input.source -> Proof.context -> thm list * Proof.context
   val pretty_sequent: Proof.context -> sequent -> Pretty.T
@@ -196,16 +196,17 @@ fun forthel_args ctxt {tex} =
     "--translate=" ^ bool_option naproche_translate]
   end;
 
-fun check_forthel tex (text, pos) lthy =
+fun check_forthel tex (text, pos) thy =
   let
-    val args = forthel_args lthy tex;
-    val opts = YXML.string_of_body (Options.encode (naproche_options lthy pos));
-    val state = make_state ([], Context.Theory (Proof_Context.theory_of lthy));
+    val ctxt = Proof_Context.init_global thy;
+    val args = forthel_args ctxt tex;
+    val opts = YXML.string_of_body (Options.encode (naproche_options ctxt pos));
+    val state = make_state ([], Context.Theory thy);
     val _ =
       with_server (fn streams =>
        (write_message streams [forthel_program, cat_lines args, opts, text];
         command_loop streams state))
-  in lthy end;
+  in thy end;
 
 
 
@@ -293,24 +294,21 @@ val _ = Theory.setup
 (** Isabelle/Isar commands **)
 
 val _ =
-  Outer_Syntax.local_theory \<^command_keyword>\<open>forthel\<close> "check Naproche-SAD text"
-    (Parse.embedded_position >> check_forthel {tex = false});
+  Outer_Syntax.command \<^command_keyword>\<open>forthel\<close> "check Naproche-SAD text"
+    (Parse.embedded_position >> (Toplevel.theory o check_forthel {tex = false}));
 
 val _ =
-  Outer_Syntax.local_theory \<^command_keyword>\<open>forthel_tex\<close> "check Naproche-SAD text (TeX)"
-    (Parse.embedded_position >> check_forthel {tex = true});
+  Outer_Syntax.command \<^command_keyword>\<open>forthel_tex\<close> "check Naproche-SAD text (TeX)"
+    (Parse.embedded_position >> (Toplevel.theory o check_forthel {tex = true}));
 
 val _ =
-  Outer_Syntax.local_theory \<^command_keyword>\<open>forthel_file\<close> "check Naproche-SAD text file"
-    (Resources.parse_file >> (fn get_file => fn lthy =>
+  Outer_Syntax.command \<^command_keyword>\<open>forthel_file\<close> "check Naproche-SAD text file"
+    (Resources.provide_parse_file >> (fn get_file =>
+      Toplevel.theory (fn thy =>
         let
-          val {src_path, lines, digest, pos} = get_file (Proof_Context.theory_of lthy);
+          val ({src_path, lines, pos, ...}, thy') = get_file thy;
           val file_name = Path.implode (Path.expand src_path);
           val tex = String.isSuffix ".ftl.tex" file_name;
-        in
-          lthy
-          |> Local_Theory.background_theory (Resources.provide (src_path, digest))
-          |> check_forthel {tex = tex} (cat_lines lines, pos)
-        end));
+        in check_forthel {tex = tex} (cat_lines lines, pos) thy' end)));
 
 end;
