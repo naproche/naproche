@@ -13,11 +13,10 @@ sig
   val naproche_translate: bool Config.T
   val naproche_isabelle: bool Config.T
   type state
-  val get_theory: state -> generic_theory
-  val map_theory_result: (generic_theory -> 'a * generic_theory) -> state -> 'a * state
-  val map_theory: (generic_theory -> generic_theory) -> state -> state
-  val theory_of_state: state -> theory
-  val context_of_state: state -> Proof.context
+  val get_theory: state -> theory
+  val get_context: state -> Proof.context
+  val map_theory_result: (theory -> 'a * theory) -> state -> 'a * state
+  val map_theory: (theory -> theory) -> state -> state
   type command = string list * state -> string list * state
   type command0 = string list -> unit
   val command_setup: binding -> command -> theory -> theory
@@ -36,9 +35,9 @@ sig
   val pretty_sequent: Proof.context -> sequent -> Pretty.T
   val string_of_sequent: Proof.context -> sequent -> string
   type problem = {sequent: sequent, fact: thm list option}
-  val define_problem: binding -> problem -> theory -> theory
   val get_problem: theory -> string -> problem option
   val check_problem: Proof.context -> xstring * Position.T -> string
+  val define_problem: binding -> sequent -> theory -> string * theory
   val state_problem: xstring * Position.T -> bool -> local_theory -> Proof.state
   val pretty_problems: Proof.context -> Pretty.T list
 end;
@@ -81,13 +80,15 @@ fun naproche_options ctxt pos =
 
 (* state *)
 
-datatype state = State of {threads: string list, theory: generic_theory};
+datatype state = State of {threads: string list, theory: theory};
 
 fun make_state (threads, theory) = State {threads = threads, theory = theory};
 fun map_state f (State {threads, theory}) = make_state (f (threads, theory));
 
 fun get_threads (State ({threads, ...})) = threads;
 fun get_theory (State ({theory, ...})) = theory;
+
+val get_context = Proof_Context.init_global o get_theory;
 
 val map_threads = map_state o @{apply 2(1)};
 
@@ -98,9 +99,6 @@ fun map_theory_result f state =
   in (res, state') end;
 
 fun map_theory f = map_theory_result (f #> pair ()) #> #2;
-
-val theory_of_state = Context.theory_of o get_theory;
-val context_of_state = Context.proof_of o get_theory;
 
 
 (* commands *)
@@ -126,8 +124,7 @@ fun command0_setup binding (cmd: command0) =
   command_setup binding (fn (args, state) => (cmd args; ([], state)));
 
 fun command1_setup binding cmd =
-  command_setup binding (fn (args, state) =>
-    (map (cmd (context_of_state state)) args, state));
+  command_setup binding (fn (args, state) => (map (cmd (get_context state)) args, state));
 
 fun yxml_command1_setup binding cmd =
   command1_setup binding (fn ctxt => YXML.parse_body #> cmd ctxt #> YXML.string_of_body);
@@ -182,13 +179,13 @@ fun command_loop streams state =
     NONE => ()
   | SOME [] => command_loop streams state
   | SOME (name :: args) =>
-      (case get_command (theory_of_state state) name of
+      (case get_command (get_theory state) name of
         NONE => raise Fail ("Protocol error: bad Isabelle/Naproche command " ^ quote name)
       | SOME cmd =>
           (case Exn.interruptible_capture cmd (args, state) of
             Exn.Exn exn =>
               raise Fail ("Protocol error: failure of Isabelle/Naproche command " ^ quote name ^
-                "\n" ^ Runtime.exn_message (Runtime.exn_context (SOME (context_of_state state)) exn))
+                "\n" ^ Runtime.exn_message (Runtime.exn_context (SOME (get_context state)) exn))
           | Exn.Res (result, state') =>
               (write_message streams result; command_loop streams state'))))
   handle exn => (cancel state; Exn.reraise exn);
@@ -216,11 +213,10 @@ fun check_forthel tex (text, pos) thy =
     val ctxt = Proof_Context.init_global thy;
     val args = forthel_args ctxt tex;
     val opts = YXML.string_of_body (Options.encode (naproche_options ctxt pos));
-    val state = make_state ([], Context.Theory thy);
     val _ =
       with_server (fn streams =>
        (write_message streams [forthel_program, cat_lines args, opts, text];
-        command_loop streams state))
+        command_loop streams (make_state ([], thy))))
   in thy end;
 
 
@@ -301,8 +297,12 @@ fun print_problem ctxt name =
     val (markup, xname) = Name_Space.markup_extern ctxt (problem_space thy) name;
   in Markup.markup markup xname end;
 
-fun define_problem binding problem thy =
-  thy |> Data.map (#2 o Name_Space.define (Context.Theory thy) true (binding, problem));
+fun define_problem binding sequent thy =
+  let
+    val table = problem_table thy;
+    val problem = {sequent = sequent, fact = NONE};
+    val (name, table') = Name_Space.define (Context.Theory thy) true (binding, problem) table;
+  in (name, Data.put table' thy) end;
 
 fun solve_problem name fact =
   (Data.map o Name_Space.map_table_entry name)
