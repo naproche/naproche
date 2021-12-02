@@ -70,9 +70,9 @@ proveThesis :: Position.T -> VM ()
 proveThesis pos = do
   depthlimit <- askInstructionInt Depthlimit 3
   guard (depthlimit > 0) -- Fallback to defaulting of the underlying CPS Maybe monad.
-  ctx <- asks currentContext
+  context <- asks currentContext
   thesis <- asks currentThesis
-  filterContext pos (sequenceGoals pos depthlimit (splitGoal thesis)) ctx
+  filterContext pos context (sequenceGoals pos depthlimit (splitGoal thesis))
 
 sequenceGoals :: Position.T -> Int -> [Formula] -> VM ()
 sequenceGoals pos depthlimit = sequence 0
@@ -175,8 +175,8 @@ trivialityCheck goal =
   plus all definitions/sigexts (as they usually import type information that
   is easily forgotten) and the low level context. Otherwise the whole
   context is selected. -}
-filterContext :: Position.T -> VM a -> [Context] -> VM a
-filterContext pos action context = do
+filterContext :: Position.T -> [Context] -> VM a -> VM a
+filterContext pos context action = do
   link <- asks (Set.fromList . Context.link . currentThesis)
   if Set.null link
     then action `withContext`
