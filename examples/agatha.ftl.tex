@@ -22,14 +22,13 @@ We quote the original text in the third section below where it can
 directly compared with our formalization.
 
 In our formalization we imitate the language of the puzzle by 
-adding nouns and other phrases to the input language ForTheL of \Naproche{}.
+adding nouns and other phrases to the input language ForTheL of the \Naproche{} system.
 We then formulate the problem in a somewhat ungrammatical language
 which resembles the original text.
 The conclusion of the case is formulated as a theorem and
-proved automatically by the background ATP of \Naproche. Modern
+proved automatically by the background automated theorem prover (ATP) of \Naproche. Modern
 ATPs have no difficulties with the Pelletier problem, so we don't
 have to supply an explicit proof.
-
 
 The source text of the formalization looks like a standard \LaTeX{} source
 with signature, axiom and theorem environments:
@@ -39,7 +38,6 @@ with signature, axiom and theorem environments:
 \begin{signature}
 Aunt Agatha is a person.
 \end{signature}
-...
 ...
 \begin{axiom}
 Some one that lives in Dreadsbury mansion killed Aunt Agatha.
@@ -57,27 +55,32 @@ the theorem environment prints out as ``Therefore: ...''.
 
 \section{The Language of Dreadsbury}
 
+To approximate the language of the puzzle we use some tricks.
+In natural language the word ``killed'' could be introduced by writing
+``A person killed a person is a sentence''. In ForTheL we cannot use
+common nouns (``a person'') to specify the variable slots. Instead
+we use variables that are pre-typed as ``a person''. To stay close
+to the natural language the variables are called ``APerson'' and
+``another person'' and we introduce ``killed'' by 
+``APerson killed anotherPerson is an atom.''
+Note that in FortheL a basic sentence is called an ``atom''. \\
+
 \begin{forthel}
 
-[synonym live/-s][synonym herself/themselves]
+[synonym live/-s][synonym herself/himself/themselves]
 [synonym person/-s]
 
 \begin{signature}
 A person is a notion.
 \end{signature}
-
 Let one, aPerson, APerson, anotherPerson  stand for persons.
-
 \begin{signature}
 Aunt Agatha is a person.
 \end{signature}
-
 Let Agatha stand for Aunt Agatha.
-
 \begin{signature}
 The butler is a person.
 \end{signature}
-
 \begin{signature}
 Charles is a person.
 \end{signature}
@@ -89,7 +92,6 @@ APerson lives in Dreadsbury mansion is an atom.
 \begin{signature}
 APerson killed anotherPerson is an atom.
 \end{signature}
-
 Let P killed themselves stand for P killed P.
 Let Q was killed by P stand for P killed Q.
 Let a victim of P stand for a person that was killed by P.
@@ -121,49 +123,41 @@ butler. Therefore: Agatha killed herself.
 \begin{axiom}
 Some one that lives in Dreadsbury mansion killed Aunt Agatha.
 \end{axiom}
-
 \begin{axiom}
 Agatha, the butler and Charles live in Dreadsbury mansion and
 for every Person P that lives in Dreadsbury mansion P is Aunt Agatha
 or P is the butler or P is Charles.
 \end{axiom}
-
-
 \begin{axiom}
 Every killer X hates every victim of X and is not richer than any victim of X.
 \end{axiom}
-
 \begin{axiom}
 Charles hates no one that is hated by Aunt Agatha.
 \end{axiom}
-
 \begin{axiom}
 Agatha hates every one that is not the butler.
 \end{axiom}
-
 \begin{axiom}
 The butler hates every one that is not richer than Aunt Agatha.
 \end{axiom}
-
 \begin{axiom}
 The butler hates every one that is hated by Agatha.
 \end{axiom}
-
 \begin{axiom}
 No one hates every person.
 \end{axiom}
-
 \begin{axiom}
 Agatha is not the butler.
 \end{axiom}
-
 \end{forthel}
 \section{The Solution}
+
 \begin{forthel}
 
 \begin{theorem}
 Agatha killed herself.
 \end{theorem}
+
 
 \end{forthel}
 
