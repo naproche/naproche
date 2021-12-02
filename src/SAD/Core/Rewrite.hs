@@ -212,7 +212,7 @@ dischargeConditions pos verbositySetting conditions =
           else log $ "trivial " <> header rights hardConditions
       | otherwise = do
           log (header lefts hardConditions <> thead (rights hardConditions))
-          thesis <- thesis
+          thesis <- asks currentThesis
           mapM_ (reason pos . Context.setFormula (wipeLink thesis)) (lefts hardConditions)
 
     setup :: VM a -> VM a
@@ -228,7 +228,7 @@ dischargeConditions pos verbositySetting conditions =
       then " - "
       else unwords . intersperse "," . map show $ reverse conditions
     log msg =
-      when verbositySetting $ thesis >>=
+      when verbositySetting $ asks currentThesis >>=
         flip (simpLog Message.WRITELN . Block.position . Context.head) msg
 
     wipeLink thesis =

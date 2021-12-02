@@ -39,7 +39,7 @@ fillDef pos alreadyChecked context = fill True False [] (Just True) 0 (Context.f
 
       Tag tag f' -> Tag tag <$> fill isPredicate isNewWord localContext sign n f'
 
-      Trm{trmName = TermThesis} -> Context.formula <$> thesis
+      Trm{trmName = TermThesis} -> asks (Context.formula . currentThesis)
 
       v@Var{} -> do
         userInfoSetting <- askInstructionBool Info True

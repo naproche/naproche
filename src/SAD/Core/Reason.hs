@@ -12,7 +12,6 @@ by an external prover fails, the reasoner expands some definitions and tries aga
 {-# LANGUAGE FlexibleContexts #-}
 
 module SAD.Core.Reason (
-  thesis,
   reason,
   withContext,
   proveThesis,
@@ -65,9 +64,6 @@ withGoal action goal =
 withContext :: VM a -> [Context] -> VM a
 withContext action context =
   local (\st -> st { currentContext = context }) action
-
-thesis :: VM Context
-thesis = asks currentThesis
 
 
 proveThesis :: Position.T -> VM ()
@@ -123,7 +119,7 @@ launchProver :: Position.T -> Int -> VM ()
 launchProver pos iteration = do
   whenInstruction Printfulltask False printTask
   instrList <- asks instructions
-  goal <- thesis
+  goal <- asks currentThesis
   context <- asks currentContext
   let callATP = justIO $ pure $ Prover.export pos iteration instrList context goal
   callATP >>= timeWith ProofTimer . justIO >>= guardResult
@@ -136,7 +132,7 @@ launchProver pos iteration = do
   where
     printTask = do
       contextFormulas <- asks $ map Context.formula . reverse . currentContext
-      concl <- thesis
+      concl <- asks currentThesis
       reasonLog Message.WRITELN pos $ "prover task:\n" <>
         concatMap (\form -> "  " <> show form <> "\n") contextFormulas <>
         "  |- " <> show (Context.formula concl) <> "\n"
