@@ -183,8 +183,9 @@ print_sequent = singletonM . print_sequents
 
 export_sequent :: Program.Context -> (Bytes, Position.T) -> Sequent -> IO Bytes
 export_sequent context (bname, pos) sequent = do
+  let props = Position.properties_of $ Program.adjust_position context pos
   let arg =
-       (bname, Position.properties_of pos, sequent)
+       (bname, props, sequent)
         |> Encode.triple Encode.string Encode.properties encode_sequent
         |> YXML.string_of_body
   [name] <- Program.pide_command Isabelle.define_problems_command context [arg]
