@@ -223,6 +223,7 @@ fun check_forthel tex (text, pos) thy =
   in thy end;
 
 
+
 (** Naproche logic within Isabelle **)
 
 (* sequents *)
@@ -293,8 +294,20 @@ val get_problem = problem_table #> Name_Space.lookup;
 fun check_problem ctxt =
   #1 o Name_Space.check (Context.Proof ctxt) (problem_table (Proof_Context.theory_of ctxt));
 
+fun print_problem ctxt name =
+  let
+    val thy = Proof_Context.theory_of ctxt;
+    val (markup, xname) = Name_Space.markup_extern ctxt (problem_space thy) name;
+  in Markup.markup markup xname end;
+
 fun define_problem binding problem thy =
   thy |> Data.map (#2 o Name_Space.define (Context.Theory thy) true (binding, problem));
+
+fun solve_problem name fact =
+  (Data.map o Name_Space.map_table_entry name)
+    (fn {sequent, ...} => {sequent = sequent, fact = SOME fact});
+
+end;
 
 fun state_problem (xname, pos) int lthy =
   let
@@ -302,10 +315,7 @@ fun state_problem (xname, pos) int lthy =
     val thy = Proof_Context.theory_of lthy;
 
     val name = check_problem lthy (xname, pos);
-    val space = problem_space thy;
-    fun err msg =
-      error (msg ^ quote (uncurry Markup.markup (Name_Space.markup_extern lthy space name)) ^
-        Position.here pos);
+    fun err msg = error (msg ^ quote (print_problem lthy name) ^ Position.here pos);
     val sequent =
       (case get_problem thy name of
         NONE => err "Bad problem"
@@ -313,13 +323,8 @@ fun state_problem (xname, pos) int lthy =
       | SOME {sequent, ...} => sequent);
 
     fun after_qed results lthy' =
-      let
-        val fact = Proof_Context.export lthy' (Proof_Context.init_global thy) (flat results);
-        val problem = {sequent = sequent, fact = SOME fact};
-      in
-        (Local_Theory.background_theory o Data.map o Name_Space.map_table_entry name)
-          (K problem) lthy'
-      end;
+      let val fact = Proof_Context.export lthy' (Proof_Context.init_global thy) (flat results);
+      in Local_Theory.background_theory (solve_problem name fact) lthy' end;
     val binding = Binding.make (Long_Name.base_name name, pos);
     val ({fixes, assumes, shows}, _) = present_sequent sequent lthy;
   in
@@ -342,8 +347,6 @@ fun pretty_problems ctxt =
     (if null solved then [] else [Pretty.big_list "solved:" (map pretty solved)]) @
     (if null unsolved then [] else [Pretty.big_list "unsolved:" (map pretty unsolved)])
   end;
-
-end;
 
 
 
