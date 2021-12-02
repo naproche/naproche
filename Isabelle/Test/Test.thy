@@ -76,6 +76,33 @@ Let R be a rewriting system.
 End.
 \<close>
 
+naproche_problem problem1
+  by (metis assms(6) assms(7) assms(8))
+naproche_problem problem2 using assms
+  by (metis assms(11) assms(12) assms(13) assms(3) assms(5) assms(7))
+naproche_problem problem3
+  by (metis (no_types, lifting) assms(14) assms(16) assms(18) assms(5) assms(7))
+naproche_problem problem4
+  by (metis assms(14) assms(16) assms(18) assms(5) assms(7))
+naproche_problem problem5
+  by (metis (no_types, lifting) assms(10) assms(14) assms(15) assms(16) assms(19) assms(20))
+naproche_problem problem6
+  by (metis assms(13) assms(14) assms(15) assms(21))
+naproche_problem problem7
+  by (smt (verit, del_insts) assms(11) assms(12) assms(14) assms(15) assms(16) assms(17) assms(19) assms(21) assms(22) assms(5) assms(8))
+naproche_problem problem8
+  by (metis (no_types, lifting) assms(12) assms(14) assms(21) assms(22) assms(23) assms(5) assms(7))
+naproche_problem problem9
+  by (smt (verit, del_insts) assms(11) assms(12) assms(14) assms(15) assms(16) assms(17) assms(20) assms(21) assms(22) assms(5) assms(8))
+naproche_problem problem10
+  by (metis assms(12) assms(14) assms(21) assms(22) assms(24) assms(5) assms(7))
+naproche_problem problem11
+  by (metis (no_types, lifting))
+naproche_problem problem12
+  by (metis (no_types, lifting) assms(14) assms(16) assms(18) assms(7))
+naproche_problem problem13
+  by (metis (mono_tags, lifting))
+
 
 subsection \<open>External text file\<close>
 
