@@ -39,6 +39,7 @@ sig
   val define_problem: binding -> problem -> theory -> theory
   val get_problem: theory -> string -> problem option
   val check_problem: Proof.context -> xstring * Position.T -> string
+  val state_problem: xstring * Position.T -> bool -> local_theory -> Proof.state
   val pretty_problems: Proof.context -> Pretty.T list
 end;
 
