@@ -75,8 +75,8 @@ proveThesis pos = do
   depthlimit <- askInstructionInt Depthlimit 3
   guard (depthlimit > 0) -- Fallback to defaulting of the underlying CPS Maybe monad.
   ctx <- asks currentContext
-  goals <- splitGoal
-  filterContext pos (sequenceGoals pos depthlimit goals) ctx
+  thesis <- asks currentThesis
+  filterContext pos (sequenceGoals pos depthlimit (splitGoal thesis)) ctx
 
 sequenceGoals :: Position.T -> Int -> [Formula] -> VM ()
 sequenceGoals pos depthlimit = sequence 0
@@ -105,10 +105,12 @@ sequenceGoals pos depthlimit = sequence 0
             reasonLog Message.WRITELN pos ("trivial: " <> show goal)
             incrementCounter TrivialGoals
 
-splitGoal :: VM [Formula]
-splitGoal = asks (normalizedSplit . strip . Context.formula . currentThesis)
+splitGoal :: Context -> [Formula]
+splitGoal = normalizedSplit . strip . Context.formula
+
+normalizedSplit :: Formula -> [Formula]
+normalizedSplit = split . albet
   where
-    normalizedSplit = split . albet
     split (All u f) = map (All u) (normalizedSplit f)
     split (And f g) = normalizedSplit f ++ normalizedSplit (Imp f g)
     split (Or f g)  = map (zOr f) (normalizedSplit g)
