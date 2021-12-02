@@ -89,7 +89,7 @@ module Isabelle.Naproche (
   cancel_program, forthel_program,
 
   threads_command, serials_command, cert_terms_command, print_terms_command,
-  print_sequents_command,
+  print_sequents_command, define_problems_command,
 
   output_state_command, output_writeln_command, output_information_command,
   output_tracing_command, output_warning_command, output_legacy_feature_command,
@@ -136,12 +136,13 @@ forthel_program = \<open>Naproche.forthel_program\<close>
 -- commands in ML
 
 threads_command, serials_command, cert_terms_command, print_terms_command,
-  print_sequents_command :: Bytes
+  print_sequents_command, define_problems_command :: Bytes
 threads_command = \<open>\<^naproche_command>\<open>threads\<close>\<close>
 serials_command = \<open>\<^naproche_command>\<open>serials\<close>\<close>
 cert_terms_command = \<open>\<^naproche_command>\<open>cert_terms\<close>\<close>
 print_terms_command = \<open>\<^naproche_command>\<open>print_terms\<close>\<close>
 print_sequents_command = \<open>\<^naproche_command>\<open>print_sequents\<close>\<close>
+define_problems_command = \<open>\<^naproche_command>\<open>define_problems\<close>\<close>
 
 output_state_command, output_writeln_command, output_information_command,
   output_tracing_command, output_warning_command, output_legacy_feature_command,

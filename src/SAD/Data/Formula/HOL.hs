@@ -8,7 +8,8 @@ The Naproche logic within Isabelle/HOL.
 
 module SAD.Data.Formula.HOL (
   base_type, prop_type, export_formula,
-  cert_terms, cert_term, print_terms, print_term, print_sequents, print_sequent
+  cert_terms, cert_term, print_terms, print_term,
+  Sequent, encode_sequent, print_sequents, print_sequent, export_sequent
 )
 where
 
@@ -31,6 +32,7 @@ import Isabelle.Library
 import qualified Naproche.Program as Program
 import qualified Isabelle.YXML as YXML
 import qualified Isabelle.XML.Encode as Encode
+import qualified Isabelle.Position as Position
 import qualified Isabelle.Term_XML.Encode as Encode
 import qualified Isabelle.Term_XML.Decode as Decode
 
@@ -157,13 +159,29 @@ print_terms = Program.yxml_pide_command Encode.term YXML.string_of_body Isabelle
 print_term :: Program.Context -> Isabelle.Term -> IO Bytes
 print_term = singletonM . print_terms
 
-print_sequents :: Program.Context -> [([Formula], [Formula])] -> IO [Bytes]
-print_sequents =
-  let
-    encode1 = Encode.list (Encode.term . export_formula)
-    encode2 = Encode.pair encode1 encode1
-  in
-    Program.yxml_pide_command encode2 YXML.string_of_body Isabelle.print_sequents_command
 
-print_sequent :: Program.Context -> ([Formula], [Formula]) -> IO Bytes
+{- Isabelle sequents -}
+
+type Sequent = ([Formula], [Formula])
+
+encode_sequent :: Encode.T Sequent
+encode_sequent =
+  let encode = Encode.list (Encode.term . export_formula)
+  in Encode.pair encode encode
+
+print_sequents :: Program.Context -> [Sequent] -> IO [Bytes]
+print_sequents =
+  Program.yxml_pide_command encode_sequent YXML.string_of_body
+    Isabelle.print_sequents_command
+
+print_sequent :: Program.Context -> Sequent -> IO Bytes
 print_sequent = singletonM . print_sequents
+
+export_sequent :: Program.Context -> (Bytes, Position.T) -> Sequent -> IO Bytes
+export_sequent context (bname, pos) sequent = do
+  let arg =
+       (bname, Position.properties_of pos, sequent)
+        |> Encode.triple Encode.string Encode.properties encode_sequent
+        |> YXML.string_of_body
+  [name] <- Program.pide_command Isabelle.define_problems_command context [arg]
+  return name

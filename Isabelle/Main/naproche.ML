@@ -276,14 +276,14 @@ local
 
 structure Data = Theory_Data
 (
-  type T = problem Name_Space.table;
-  val empty : T = Name_Space.empty_table "naproche_problem";
-  fun merge data : T = Name_Space.merge_tables data;
+  type T = problem Name_Space.table * int;
+  val empty : T = (Name_Space.empty_table "naproche_problem", 0);
+  fun merge ((table1, _), (table2, _)) : T = (Name_Space.merge_tables (table1, table2), 0);
 );
 
 in
 
-val problem_table = Data.get;
+val problem_table = #1 o Data.get;
 val problem_space = problem_table #> Name_Space.space_of_table;
 
 val get_problem = problem_table #> Name_Space.lookup;
@@ -299,13 +299,17 @@ fun print_problem ctxt name =
 
 fun define_problem binding sequent thy =
   let
-    val table = problem_table thy;
+    val (table, index) = Data.get thy;
+    val index' = index + 1;
+    val n = string_of_int index';
+    val binding' = binding |> Binding.map_name
+      (fn "" => "problem" ^ n | a => Symbol.explode a |> map (fn "\<index>" => n | s => s) |> implode);
     val problem = {sequent = sequent, fact = NONE};
-    val (name, table') = Name_Space.define (Context.Theory thy) true (binding, problem) table;
-  in (name, Data.put table' thy) end;
+    val (name, table') = Name_Space.define (Context.Theory thy) true (binding', problem) table;
+  in (name, Data.put (table', index') thy) end;
 
 fun solve_problem name fact =
-  (Data.map o Name_Space.map_table_entry name)
+  (Data.map o apfst o Name_Space.map_table_entry name)
     (fn {sequent, ...} => {sequent = sequent, fact = SOME fact});
 
 end;
@@ -377,6 +381,17 @@ val _ = Theory.setup
     (fn ctxt => decode_term ctxt #> Syntax.string_of_term ctxt #> XML.Encode.string) #>
   yxml_command1_setup \<^binding>\<open>print_sequents\<close>
     (fn ctxt => decode_sequent ctxt #> string_of_sequent ctxt #> XML.Encode.string) #>
+  command_setup \<^binding>\<open>define_problems\<close>
+    (fn (args, state) =>
+      let
+        val ctxt = get_context state;
+        fun define arg =
+          let
+            val (bname, pos, sequent) = YXML.parse_body arg |>
+              let open XML.Decode
+              in triple string (Position.of_properties o properties) (decode_sequent ctxt) end;
+          in define_problem (Binding.make (bname, pos)) sequent end;
+      in fold_map (map_theory_result o define) args state end) #>
   command0_setup \<^binding>\<open>output_report\<close> Output.report #>
   command0_setup \<^binding>\<open>output_state\<close> (Output.state o the_single) #>
   command0_setup \<^binding>\<open>output_writeln\<close> (writeln o the_single) #>
