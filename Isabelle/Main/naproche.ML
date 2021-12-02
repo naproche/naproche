@@ -176,7 +176,7 @@ val _ = Theory.setup
 
 fun command_loop streams state =
   (case read_message streams of
-    NONE => ()
+    NONE => state
   | SOME [] => command_loop streams state
   | SOME (name :: args) =>
       (case get_command (get_theory state) name of
@@ -213,11 +213,12 @@ fun check_forthel tex (text, pos) thy =
     val ctxt = Proof_Context.init_global thy;
     val args = forthel_args ctxt tex;
     val opts = YXML.string_of_body (Options.encode (naproche_options ctxt pos));
-    val _ =
-      with_server (fn streams =>
-       (write_message streams [forthel_program, cat_lines args, opts, text];
-        command_loop streams (make_state ([], thy))))
-  in thy end;
+  in
+    with_server (fn streams =>
+     (write_message streams [forthel_program, cat_lines args, opts, text];
+      command_loop streams (make_state ([], thy))))
+    |> get_theory
+  end;
 
 
 
@@ -260,10 +261,12 @@ fun present_sequent ((assms, concls): sequent) ctxt =
     val shows = Element.Shows (make_shows concls);
   in ({fixes = fixes, assumes = assumes, shows = shows}, ctxt') end;
 
+fun check_sequent ctxt sequent =
+  (List.app (ignore o Proof_Context.cert_prop ctxt) (op @ sequent); sequent);
+
 fun pretty_sequent ctxt sequent =
   let
-    val _ = List.app (ignore o Proof_Context.cert_prop ctxt) (op @ sequent);
-    val ({fixes, assumes, shows}, ctxt') = present_sequent sequent ctxt;
+    val ({fixes, assumes, shows}, ctxt') = present_sequent (check_sequent ctxt sequent) ctxt;
   in
     maps (Element.pretty_ctxt ctxt') (fixes @ assumes) @ Element.pretty_stmt ctxt' shows
   end |> Pretty.chunks;
@@ -302,13 +305,15 @@ fun print_problem ctxt name =
 
 fun define_problem binding sequent thy =
   let
+    val ctxt = Proof_Context.init_global thy;
+
     val (table, index) = Data.get thy;
     val index' = index + 1;
     val n = string_of_int index';
     val binding' = binding |> Binding.map_name
       (fn "" => "problem" ^ n | a => Symbol.explode a |> map (fn "\<index>" => n | s => s) |> implode);
-    val problem = {sequent = sequent, fact = NONE};
-    val (name, table') = Name_Space.define (Context.Theory thy) true (binding', problem) table;
+    val problem = {sequent = check_sequent ctxt sequent, fact = NONE};
+    val (name, table') = Name_Space.define (Context.Proof ctxt) true (binding', problem) table;
   in (name, Data.put (table', index') thy) end;
 
 fun solve_problem name fact =

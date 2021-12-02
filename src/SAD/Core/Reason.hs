@@ -46,8 +46,11 @@ import qualified SAD.Data.Definition as Definition
 import qualified SAD.Data.Structures.DisTree as DT
 import qualified SAD.Data.Text.Block as Block
 import qualified SAD.Data.Text.Context as Context
+import qualified SAD.Data.Formula.HOL as HOL
 
 import qualified Isabelle.Position as Position
+import qualified Isabelle.Bytes as Bytes
+import qualified Naproche.Program as Program
 import qualified Naproche.Prover as Prover
 
 
@@ -73,6 +76,13 @@ proveThesis pos = do
   context <- asks currentContext
   thesis <- asks currentThesis
   filterContext pos context (sequenceGoals pos depthlimit (splitGoal thesis))
+  justIO $ do
+    program_context <- Program.thread_context
+    when (Program.is_isabelle program_context) $ do
+      let sequent = HOL.make_sequent context thesis
+      let binding = (Bytes.empty, pos)
+      _ <- HOL.export_sequent program_context binding sequent
+      return ()
 
 sequenceGoals :: Position.T -> Int -> [Formula] -> VM ()
 sequenceGoals pos depthlimit = sequence 0
