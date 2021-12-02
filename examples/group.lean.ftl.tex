@@ -3,19 +3,34 @@
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{amssymb}
+\usepackage{url}
 \usepackage{../lib/tex/naproche}
 
 \title{group.lean in \Naproche}
-\author{Formalization: Peter Koepke}
+\author{\Naproche Formalization: Peter Koepke}
 \date{2021}
 
 \begin{document}
   \pagenumbering{gobble}
 
   \maketitle
+\noindent We give a ForTheL version of the ``multiplicative half'' of
+\path{https://github.com/leanprover/lean/blob/master/library/init/
+algebra/group.lean} on basic concepts in group theory 
+by J. Avigad and L. de Moura.
+Whereas the Lean formalization takes place within a sophisticated type system
+we suggest a simplistic approach in which types are naively viewed as sets.
 
-% This file is a ForTheL version of 
-% https://github.com/leanprover/lean/blob/master/library/init/algebra/group.lean
+The purpose of this text is a comparison of the technical approach in Lean
+with the rather natural input language ForTheL of \Naproche{}.
+\Naproche{} allows to introduce new notions like ``type with multiplication''
+or ``group'' for which further structural components like a multiplication can
+be introduced and equipped with axioms. Since the mathematics of this
+text is very basic, \Naproche{} can prove most lemmas automatically without
+explicit proofs. The formalization given here motivates to further
+use and adapt \Naproche{}'s soft types for abstract algebraic structures. 
+
+\subsection{Defining Groups}
 
 \begin{forthel}
 
@@ -85,6 +100,21 @@ for all $a$ : $\alpha a^{-1,\alpha} *^{\alpha} a = 1^{\alpha}$.
 \begin{definition} A commutative group is a group that is a commutative
 monoid.
 \end{definition}
+
+\end{forthel}
+
+\section{Term Identities in Groups}
+
+We prove a number of simple algebraic consequences of the the
+group axioms. The formalizations would read even more natural
+if the dependence on a group $\alpha$ could be made implicit
+and one could write $a * a^{-1} = 1$ instead of
+$a *^{\alpha} a^{-1,\alpha} = 1^{\alpha}$.
+Lean's elaboration mechanism provides this important feature
+which we would like to implement in \Naproche{} as well. \\
+
+
+\begin{forthel}
 
 \begin{lemma}[mul left comm] Let $\alpha$ be a commutative semigroup.
 Then for all $a,b,c : \alpha$ 

@@ -6,7 +6,8 @@
 \usepackage{../lib/tex/naproche}
 
 \title{Maximum modulus principle}
-\author{Steffen Frerix (2018), Adrian De Lon (2021), Peter Koepke (2021)}
+\author{\Naproche{} Formalization: Steffen Frerix (2018),\\
+Adrian De Lon (2021), Peter Koepke (2021)}
 \date{}
 
 \newcommand{\Ball}[2]{B_{#1}(#2)}
@@ -122,7 +123,7 @@ $z$ such that $f(w) = z$ for every element $w$ of $U$.
 
     Let $f$ is constant stand for $f$ is constant on the domain of $f$.
 
-    \begin{axiom}
+    \begin{axiom}[Open Mapping Theorem]
       Assume $f$ is a holomorphic function and $\Ball{\varepsilon}{z}$ is a subset of the domain of $f$.
       If $f$ is not constant on $\Ball{\varepsilon}{z}$
         then $f[\Ball{\varepsilon}{z}]$ is open.

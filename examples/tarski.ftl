@@ -1,7 +1,5 @@
 [synonym set/-s] [synonym subset/-s] [synonym element/-s] [synonym belong/-s]
 [read macros.ftl]
-# [prover vampire]
-# Lemma. Contradiction.
 
 ##############################################################
 
@@ -15,7 +13,6 @@ Axiom. Every element of every class  is an object.
 Let x << S stand for x is an element of S.
 
 Definition DefEmpty.    S is empty iff S has no elements.
-
 
 Definition DefSub.
     A subclass of S is a class T such that every x << T belongs to S.
@@ -38,7 +35,6 @@ Definition DefDom.  f is on S iff Dom(f) = Ran(f) = S.
 
 Axiom ImgSort.  Let x belong to Dom(f).
     f(x) is an element of Ran(f).
-
 
 ###############################################################
 
