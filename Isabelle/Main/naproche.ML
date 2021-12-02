@@ -30,11 +30,12 @@ sig
   val prove_sequent: binding -> sequent -> Input.source -> Proof.context -> thm list * Proof.context
   val present_sequent: sequent -> Proof.context ->
     {fixes: Element.context_i list,
-     assumes: Element.context_i list,     
+     assumes: Element.context_i list,
      shows: Element.statement_i} * Proof.context
   val pretty_sequent: Proof.context -> sequent -> Pretty.T
   val string_of_sequent: Proof.context -> sequent -> string
   type problem = {sequent: sequent, fact: thm list option}
+  val problem_space: theory -> Name_Space.T
   val get_problem: theory -> string -> problem option
   val check_problem: Proof.context -> xstring * Position.T -> string
   val define_problem: binding -> sequent -> theory -> string * theory
@@ -313,7 +314,7 @@ fun define_problem binding sequent thy =
     val binding' = binding |> Binding.map_name
       (fn "" => "problem" ^ n | a => Symbol.explode a |> map (fn "\<index>" => n | s => s) |> implode);
     val problem = {sequent = check_sequent ctxt sequent, fact = NONE};
-    val (name, table') = Name_Space.define (Context.Proof ctxt) true (binding', problem) table;
+    val (name, table') = Name_Space.define (Context.Theory thy) true (binding', problem) table;
   in (name, Data.put (table', index') thy) end;
 
 fun solve_problem name fact =
@@ -348,7 +349,7 @@ fun pretty_problems ctxt =
   let
     val thy = Proof_Context.theory_of ctxt;
     val space = problem_space thy;
-    val (solved, unsolved) = 
+    val (solved, unsolved) =
       Name_Space.extern_table true ctxt (problem_table thy)
       |> sort (Name_Space.entry_ord space o apply2 (#1 o #1))
       |> List.partition (is_some o #fact o #2);
