@@ -22,7 +22,7 @@ import Isabelle.Library
 
 import SAD.Core.Base (reportBracketIO)
 import SAD.Data.Instr hiding (Prover)
-import SAD.Data.Text.Context (Context, branch, formula)
+import SAD.Data.Text.Context (Context, branch)
 import qualified SAD.Data.Text.Block as Block
 
 import qualified SAD.Core.Message as Message
@@ -40,10 +40,7 @@ export pos iteration instrs context goal = do
 
   program_context <- Program.thread_context
   when (Program.is_isabelle program_context) $ do
-    let asms = reverse $ map formula context
-    let concl = formula goal
-    _ <- HOL.cert_terms program_context (map HOL.export_formula (asms <> [concl]))
-    s <- HOL.print_sequent program_context (asms, [concl])
+    s <- HOL.print_sequent program_context $ HOL.make_sequent context goal
     Message.outputExport Message.TRACING pos s
     return ()
 

@@ -261,7 +261,10 @@ fun present_sequent ((assms, concls): sequent) ctxt =
   in ({fixes = fixes, assumes = assumes, shows = shows}, ctxt') end;
 
 fun pretty_sequent ctxt sequent =
-  let val ({fixes, assumes, shows}, ctxt') = present_sequent sequent ctxt in
+  let
+    val _ = List.app (ignore o Proof_Context.cert_prop ctxt) (op @ sequent);
+    val ({fixes, assumes, shows}, ctxt') = present_sequent sequent ctxt;
+  in
     maps (Element.pretty_ctxt ctxt') (fixes @ assumes) @ Element.pretty_stmt ctxt' shows
   end |> Pretty.chunks;
 

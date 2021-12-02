@@ -9,7 +9,7 @@ The Naproche logic within Isabelle/HOL.
 module SAD.Data.Formula.HOL (
   base_type, prop_type, export_formula,
   cert_terms, cert_term, print_terms, print_term,
-  Sequent, encode_sequent, print_sequents, print_sequent, export_sequent
+  Sequent, make_sequent, encode_sequent, print_sequents, print_sequent, export_sequent
 )
 where
 
@@ -20,6 +20,7 @@ import SAD.Data.VarName (VariableName (..))
 import SAD.Data.Text.Decl (Decl (..))
 import SAD.Data.Terms
 import SAD.Data.Formula.Base
+import SAD.Data.Text.Context (Context, formula)
 
 import Isabelle.Bytes (Bytes)
 import qualified Isabelle.Value as Value
@@ -163,6 +164,9 @@ print_term = singletonM . print_terms
 {- Isabelle sequents -}
 
 type Sequent = ([Formula], [Formula])
+
+make_sequent :: [Context] -> Context -> Sequent
+make_sequent assms concl = (reverse $ map formula assms, [formula concl])
 
 encode_sequent :: Encode.T Sequent
 encode_sequent =
