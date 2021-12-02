@@ -356,10 +356,10 @@ fun pretty_problems ctxt =
       Pretty.item
        [Pretty.mark_str (Name_Space.markup space name, xname), Pretty.str ":", Pretty.fbrk,
         pretty_sequent ctxt (#sequent problem)];
-  in
-    (if null solved then [] else [Pretty.big_list "solved:" (map pretty solved)]) @
-    (if null unsolved then [] else [Pretty.big_list "unsolved:" (map pretty unsolved)])
-  end;
+    fun pretty_list head list =
+      if null list then []
+      else [Pretty.big_list (head ^ " (" ^ string_of_int (length list) ^ "):") (map pretty list)];
+  in pretty_list "solved" solved @ pretty_list "unsolved" unsolved end;
 
 
 
