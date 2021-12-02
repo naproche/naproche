@@ -5,7 +5,6 @@ The Naproche logic within Isabelle/HOL.
 -}
 
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE NamedFieldPuns #-}
 
 module SAD.Data.Formula.HOL (
   base_type, prop_type, export_formula,

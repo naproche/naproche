@@ -6,7 +6,6 @@ Formal output messages, with PIDE (Prover IDE) support.
 
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TupleSections #-}
-{-# LANGUAGE NamedFieldPuns #-}
 
 module SAD.Core.Message (
   reports_text, report_text, reports, report,
