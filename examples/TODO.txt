@@ -1,50 +1,68 @@
 TODO für das nächste Naproche, insbesondere examples
 
+Makarius: *** Bad tests: 
+"test/lambda_term_test.ftl.tex", "regular_successor.ftl.tex",
+"regular_successor.ftl", "perfectoid_ring.ftl.tex", "koenig.ftl.tex",
+"koenig.ftl", "dwarfs.ftl",
+"arithmetic/sections/03_divisibility/04_primes.ftl.tex", "ZFC.ftl"
+
 BITTE MODIFIZIEREN!!!
-
-
 
 1. eingebaute Ontologie in Richtung von gewöhnlichen Klassen/Mengen/
 Abbildungen/Funktionen/Objekten verändern. OK
 
 2. Proof tasks im Zusammenhang mit Abstraktionstermen {...} überprüfen.
     (2022?)
+
 3. Abstraktionsterm-Konstrukte in Formalisierungen überprüfen und
 notfalls eliminieren.
 
 4. Verbesserung der mitgelieferten Beispiele.
+
+perfectoid regular successor, 
+
+einlesen read readtex 
+
+Weg: koenig.ftl, perfectoid, 
+
 Adrian:
 
-chinese
+  [x] chinese
+  [x] checkerboard läuft ftl/classes
+  [X] geometry
+  [X] hilbert
+  [X] prime
 
 Peter:
 
-README über die Sammlung der Beispiele schreiben.
-cantor OK
-TUTORIAL OK?
-euclid
-maximum_modulus
-tarski
-foundations?? Muss Weg
-preliminaries
-vocabulary
-group.lean.ftl.tex (OK)
+  [ ] README über die Sammlung der Beispiele schreiben.
+  [ ] TUTORIAL Brauche hier eine rein graphische greybox, statt forthel
+  [x] euclid noch ausprobieren
+  [X] maximum_modulus tex
+  [X] maximum_modulus ftl modulus01??
+  [X] tarski tex
+  [X] tarski ftl
+  [ ] foundations?? Muss Weg
+  [ ] preliminaries beide OK
+  [ ] vocabulary Kurzer Kommentar zu Anfang
+  [X] group.lean.ftl.tex (OK)
+  [X] agatha tex naproche01  puzzle-style.sty
+  [X] dwarfs tex naproche01 umbenennen
+  [ ] numbers ???????? noch ans Laufen bringen?
+  [X] newman
+  TODO muss weg
 
 Marcel:
 
-  [ ] arithmetic
-  [ ] set-theory
+  [X] arithmetic für texen subfiles (main files), großes pdf, 
+  [X] set-theory "
   [X] cantor-schroeder-bernstein
-  [X] cantor
-  [X] furstenberg
-
+  [X] cantor (Marcel zufrieden)
+  [X] furstenberg OK
+     macros.ftl.tex
+russell
 
 6. Koordination der Ontologie- oder Preliminaries-Dateien von Adrian
 und Peter
 
-7. Perfectoide Ringe aufnehmen??
-
-8. Hat sich durch unsere Diskussionen erledigt: Wenn eine Theorie als .ftl und
-als .ftl.tex formalisiert ist, sollten beide Dateien einigermaßen parallel
-laufen. Es gibt aber gewisse Probleme, z.B. eine .ftl-Ontologie in eine .ftl.tex-
-Formalisierung einzuladen, da Definitionen mit \ nicht gut übernommen werden.
+- Wiggly Underlining seems to be fixed, only that it misses initial $-signs.
