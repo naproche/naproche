@@ -14,27 +14,63 @@
 \newcommand{\Seq}[2]{\{#1,\dots,#2\}}
 \newcommand{\Finset}[3]{\{#1_{#2},\dots,#1_{#3}\}}
 \newcommand{\Primes}{\mathbb{P}}
-%\newcommand{\Naproche}{$\mathbb{N}$aproche}
 
 \maketitle
 
 \section{Introduction}
 \Naproche{} (Natural Proof Checking) is a mathematical proof assistant
-for texts in the input language ForTheL (Formula Theory Language)
-that aims to approximate the
+for texts in the input language ForTheL (Formula Theory Language).
+ForThel aims to approximate the
 language, structure and appearance of common mathematical texts;
-FortheL texts are checked for syntactic, ontological
+FortheL texts are checked by \Naproche{} for syntactic, ontological
 and logical correctness. \Naproche{} is a component of
 Isabelle PIDE (Proof Interactive Development Environment) which provides
 comfortable text editing and interactive checking through a continuously
-running \Naproche{} server process.
+running \Naproche{} server.
 
-This document is an introduction to some principles and to the
-use of the \Naproche{} prover. We introduce ForTheL commands and statements by
-examples taken from a proof of the infinitude of primes.
+Ideally, a user edits a mathematical text in \LaTeX{}, and
+\Naproche{} automatically checks the correctness of those parts which are
+in \verb+\begin+\verb+{forthel}+ ... \verb+\end{forthel}+ 
+environments and gives
+feedback to the user, similar to a continuous spellchecker.
+Although that goal is still far away, the current \Naproche{} offers
+the possibility to write university-level mathematical text 
+in a natural language and style whose ForTheL segments are logically
+verified by \Naproche{}. In this tutorial and in example texts
+which are distributed together with \Naproche{} these segments
+are typeset on a grey background.
+
+\Naproche{} is a derivative of the seminal System 
+for Automated Deduction (SAD). \Naproche{} still supports the 
+ASCII format \path{.ftl} of SAD which allows rapid 
+experiments without worrying about LaTeX particulars, and we
+use that format for a Quick Start and some exercises. 
+
+This tutorial is an introduction to the principles and
+use of the \Naproche{} prover. After the Quick Start and 
+some general information we explain 
+ForTheL commands and statements and the structuring of ForTheL texts
+along a proof of the infinitude of primes. Actually the tutorial,
+after all, is a version of Euclid's proof, preceded by 
+necessary number-theoretic and set-theoretic preliminaries.
+After studying this material, a reader should be able to understand the
+other example texts and start writing similar formalizations.
+Let us, however, warn the reader that writing formally complete
+and unambiguous mathematical texts in a readable natural language 
+is subtle and requires ample exercise, as one may already guess by
+looking at legal texts.
+
+We suggest that the tutorial is read as pdf and simultaneously followed 
+interactively in the Isabelle
+PIDE (Proof Interactive Development Environment), with the source
+\path{TUTORIAL.ftl.tex} opened in one buffer, using other buffers
+for experiments and exercises. Moreover one may use a \LaTeX{} compiler
+for displaying \path{.ftl.tex} formalizations.
 
 \section{Quick Start: $1 + 2 = 3$}
+
 Let us prove our first theorem in Isabelle/Naproche:
+
 \begin{itemize}
 \item Download and install Isabelle 2021-1 from
 \path{https://isabelle.in.tum.de/} (this may take several minutes).
@@ -44,8 +80,6 @@ start editing a new file \path{temp.ftl}; \path{.ftl} files are recognized
 as ForTheL files and are continuously checked by Isabelle/Naproche.
 
 \item Copy the following bit of number theory into \path{temp.ftl}:
-\end{itemize}
-\begin{quotation}
 \begin{verbatim}
 [synonym number/numbers]
 Signature. A natural number is a mathematical object.
@@ -59,8 +93,7 @@ Axiom. Assume that k,l,m are natural numbers.
 (k+l)+m=k+(l+m).
 Theorem. 1 + 2 = 3.
 \end{verbatim}
-\end{quotation}
-\begin{itemize}
+
 \item The Output window of Isabelle/Naproche displays the checking
 process, ending in \verb+verification successful+ and
 some statistics.
@@ -116,8 +149,8 @@ language by a new constant symbol \verb+0+ which is intended to be
 a natural number. This can be seen in the translation:\\
 \verb+forall v0 ((HeadTerm :: v0 = 0) implies aNaturalNumber(v0))+.
 
-\item \verb/Signature. Assume that k,l are natural numbers.
-k + l is a natural number./ generates an
+\item \verb/Signature. Assume that k,l are natural numbers. k + l is a natural number./ 
+generates an
 internal binary function symbol \verb/+/. The translation
 shows that the (universally quantified) variables \verb/k/ and
 \verb/l/ are natural numbers, and that the resulting term
@@ -1308,20 +1341,8 @@ function $F$ such that $Dom(F) = \Seq{1}{n}$.
 \end{forthel}
 
 The members $F(i)$ of a sequence $F$ are often
-written in an indexed notation $F_{i}$
-where this notation is defined by a macro
-
-\verb+\newcommand{\val}[2]{#1_{#2}}+.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%
-%%%% TODO:
-%%%% This notation is outdated since underscores are now treated as regular
-%%%% symbols in Naproche.
-%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\noindent The ForTheL semantics is defined by:
+written in an indexed notation $F_{i}$.
+This is just an alias at the parsing level:
 
 \begin{forthel}
 Let $F_{i}$ stand for $F(i)$.
