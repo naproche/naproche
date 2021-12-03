@@ -31,7 +31,7 @@ Adrian:
 Peter:
 
   [ ] README über die Sammlung der Beispiele schreiben.
-  [ ] TUTORIAL Brauche hier eine rein graphische greybox, statt forthel
+  [ ] TUTORIAL Brauche hier eine rein graphische greybox OK, statt forthel
   [x] euclid noch ausprobieren
   [X] maximum_modulus tex
   [X] maximum_modulus ftl modulus01??
