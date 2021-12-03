@@ -49,8 +49,8 @@ Peter:
 
 Marcel:
 
-  [X] arithmetic für texen subfiles (main files), großes pdf,
-  [X] set-theory "
+  [ ] arithmetic für texen subfiles (main files), großes pdf; Eliminate Makarius' error
+  [x] set-theory -------------- " --------------------------; Beautify
   [X] cantor-schroeder-bernstein
   [X] cantor (Marcel zufrieden)
   [X] furstenberg OK
