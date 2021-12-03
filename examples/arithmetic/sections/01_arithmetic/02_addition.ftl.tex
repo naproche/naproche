@@ -16,6 +16,10 @@
 
   \subsection{Axioms}
 
+  Up to now our arithmetic -- if it already deserves this name -- is very
+  primitive. In this section we change that by inductively defining an addition
+  operation.
+
   \begin{forthel}
     \begin{signature}
       $n + m$ is a natural number.
@@ -35,11 +39,18 @@
 
   \subsection{Immediate consequences}
 
+  Having this characterization of addition at hand, the successor operation
+  turns out to coincide with the "$+ 1$" operation.
+
   \begin{forthel}
     \begin{lemma}
       $\succ(n) = n + 1$.
     \end{lemma}
+  \end{forthel}
 
+  This enables us to restate all previous axioms purely in terms of addition.
+
+  \begin{forthel}
     \begin{corollary}[\nth{1} Peano axiom]\label{Arithmetic_01_02_631603}
       If $n + 1 = m + 1$ then $n = m$.
     \end{corollary}
@@ -61,6 +72,12 @@
 
 
   \subsection{Computation laws}
+
+  Let us now prove the common computation laws for addition: Associativity,
+  commutativity and the cancellation laws.
+
+
+  \subsubsection*{Associativity:}
 
   \begin{forthel}
     \begin{proposition}\label{Arithmetic_01_02_468785}
@@ -95,8 +112,12 @@
 
       Thus every natural number is an element of $P$.
     \end{proof}
+  \end{forthel}
 
 
+  \subsubsection*{Commutativity:}
+
+  \begin{forthel}
     \begin{proposition}\label{Arithmetic_01_02_273100}
       For all $n,m$ we have \[ n + m = m + n. \]
     \end{proposition}
@@ -164,8 +185,12 @@
 
       Hence every natural number is an element of $P$.
     \end{proof}
+  \end{forthel}
 
 
+  \subsubsection*{Cancellation:}
+
+  \begin{forthel}
     \begin{proposition}\label{Arithmetic_01_02_882987}
       For all natural numbers $n,m,k$ we have \[ n + k = m + k \implies n = m. \]
     \end{proposition}

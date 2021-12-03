@@ -15,6 +15,9 @@
 
   \subsection{Axioms}
 
+  Another common operation on the natural numbers is exponentiation.
+  Again, we introduce it as an inductively defined operation.
+
   \begin{forthel}
     \begin{signature}
       $n^{m}$ is a natural number.
@@ -34,6 +37,12 @@
 
 
   \subsection{Computation laws}
+
+  As in the previous sections let us prove some basic arithmetical properties of
+  our new operation.
+
+
+  \subsubsection*{Exponentiation with $0$, $1$ and $2$}
 
   \begin{forthel}
     \begin{proposition}\label{Arithmetic_01_04_876526}
@@ -97,8 +106,12 @@
       $= n^{1} \cdot n$   % 2nd exponentiation axiom
       $= n \cdot n$.      % exponentiation law for 1 as exponent
     \end{proof}
+  \end{forthel}
 
 
+  \subsubsection*{Sums as exponents:}
+
+  \begin{forthel}
     \begin{proposition}\label{Arithmetic_01_04_461164}
       For all $n,m,k$ we have \[ k^{n + m} = k^{n} \cdot k^{m}. \]
     \end{proposition}
@@ -139,8 +152,12 @@
 
       Hence every natural number is contained in $P$.
     \end{proof}
+  \end{forthel}
 
 
+  \subsubsection*{Products as exponents:}
+
+  \begin{forthel}
     \begin{proposition}\label{Arithmetic_01_04_531499}
       For all $n,m,k$ we have \[ k^{n \cdot m} = (k^{n})^{m}. \]
     \end{proposition}
@@ -171,8 +188,12 @@
 
       Therefore every natural number is contained in $P$.
     \end{proof}
+  \end{forthel}
 
 
+  \subsubsection*{Products as base:}
+
+  \begin{forthel}
     \begin{proposition}\label{Arithmetic_01_04_644237}
       For all natural numbers $n,m,k$ we have \[ ((n \cdot m)^{k}) = n^{k} \cdot m^{k}. \]
     \end{proposition}
@@ -212,8 +233,12 @@
 
       Therefore every natural number is contained in $P$.
     \end{proof}
+  \end{forthel}
 
 
+  \subsubsection*{Zeroes of exponentiation:}
+
+  \begin{forthel}
     \begin{proposition}\label{Arithmetic_01_04_857078}
       For all $n,m$ we have \[ n^{m} = 0 \iff (\text{$n = 0$ and $m \neq 0$}). \]
     \end{proposition}

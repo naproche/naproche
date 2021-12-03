@@ -12,8 +12,16 @@
     Let $k, l, m, n$ denote natural numbers.
   \end{forthel}
 
+  When we introduced the Peano axioms we came across an induction axiom which
+  gives us a method to prove universal assertions about the natural numbers.
+  In this section we will give some reformulations of this induction
+  principle.
+
 
   \subsection{Least natural numbers}
+
+  As a first example of such a reformulation we will show in this paragraph that
+  every collection of natural numbers admits a smallest element.
 
   \begin{forthel}
     Let $P$ denote a class.
@@ -75,6 +83,9 @@
 
   \subsection{Induction via predecessors}
 
+  Next we will see how to merge the base and induction step of a proof by
+  induction into a single step. This yields a new induction principle.
+
   \begin{forthel}
     \begin{theorem}\label{Arithmetic_02_05_167446}
       Assume for all natural numbers $n$ if $P$ contains all predecessors of $n$ then $P$ contains $n$.
@@ -95,6 +106,11 @@
 
 
   \subsection{Induction above a certain number}
+
+  In our induction principle given by the \nth{3} Peano axiom we considered the
+  number $0$ as the starting point of an inductive proof. But we can as well
+  start at any arbitrary number $k$ to prove that a statement holds for all
+  natural numbers from $k$ on.
 
   \begin{forthel}
     \begin{theorem}\label{Arithmetic_02_05_497603}

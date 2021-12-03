@@ -12,6 +12,9 @@
     Let $k, l, m, n$ denote natural numbers.
   \end{forthel}
 
+  An operation rather rarely mentioned together with (formal) Peano arithmetic
+  is the factorial operation which we are going to define now.
+
   \begin{forthel}
     \begin{signature}
       $n!$ is a natural number.
@@ -24,11 +27,16 @@
     \begin{axiom}[\nth{2} factorial axiom]\label{Arithmetic_01_05_539010}
       $((n + 1)!) = n! \cdot (n + 1)$.
     \end{axiom}
+  \end{forthel}
 
-    % Note that we cannot write "x! = y" since this can either be understood as
-    % "x! = y" ("x factorial is equal to y") or as "x != y" ("x is not equal to
-    % y").
+  \textcolor{gray}{Note that we have to put the LHS of any expression of the
+  form \enquote{$x! = y$} in parentheses, because such an expression can either
+  be understood as \enquote{$x$ factorial is equal to $y$} or as
+  \enquote{$x$ is not equal to $y$} by Naproche since it treats the combination
+  of an exclamation mark followed by an equality sign as a synonym for
+  \enquote{$\neq$}.}
 
+  \begin{forthel}
     \begin{proposition}\label{Arithmetic_01_05_473272}
       $n!$ is nonzero for any natural number $n$.
     \end{proposition}
