@@ -70,6 +70,7 @@ facts so that they can directly be accessed by the ATP.
 
 \begin{forthel}
 
+    
 \begin{lemma} Every set is a class. \end{lemma}
 
 \begin{lemma} Every class that is an object is a set. \end{lemma}
@@ -77,7 +78,7 @@ facts so that they can directly be accessed by the ATP.
 \begin{axiom} Every element of every class is an object.
 \end{axiom}
 
-Let $S,T$ denote classes.
+Let $S,T,X,Y,Z$ denote classes.
 
 \begin{definition} The empty set is the set that has
 no elements.
@@ -90,6 +91,8 @@ belongs to $S$.
 
 Let $T \subseteq S$ stand for $T$ is a subclass of $S$.
 
+Let a proper subclass of $B$ stand for a subclass $A$ of $B$ such that $A\neq B$.
+
 \begin{lemma} [Class Extensionality] If $S$ is a subclass of $T$ and
 $T$ is a subclass of $S$ then $S = T$.
 \end{lemma}
@@ -98,11 +101,50 @@ $T$ is a subclass of $S$ then $S = T$.
 A subset of $S$ is a set $X$ such that $X \subseteq S$.
 \end{definition}
 
+Let a proper subset of $B$ stand for a subset $A$ of $B$ such that $A\neq B$.
+
+
 \begin{axiom} [Separation Axiom] Assume that $X$ is a set.
 Let $T$ be a subclass of $X$. Then $T$ is a set.
 \end{axiom}
 
+
+\begin{definition}
+    Let $B, C$ be classes.
+    The intersection of $B$ and $C$ is $\{ x \in B | x \in C\}$.
+\end{definition}
+Let $B\cap C$ stand for the intersection of $B$ and $C$.
+
+\begin{definition}
+    Let $B, C$ be classes.
+    The union of $B$ and $C$ is $\{ x | x \in B \vee x\in C\}$.
+\end{definition}
+Let $B\cup C$ stand for the union of $B$ and $C$.
+
+\begin{definition}
+    Let $B, C$ be classes.
+    The set difference of $B$ and $C$ is $\{ x\in B | x\notin C\}$.
+\end{definition}
+Let $B\setminus C$ stand for the set difference of $B$ and $C$.
+
+\begin{definition}
+    Let $B, C$ be classes.
+    $B$ is disjoint from $C$ iff there is no element of $B$ that is an element of $C$.
+\end{definition}
+
+\begin{definition}
+    A family is a set $F$ such that every element of $F$ is a set.
+\end{definition}
+
+\begin{definition}
+    $A$ disjoint family is a family $F$ such that
+    $B$ is disjoint from $C$ for all nonequal elements $B, C$ of $F$.
+\end{definition}
+
+
+
 \end{forthel}
+
 \section{Pairs and Products}
 Since we prefer objects over sets if possible, we do not work
 with Kuratowski-style set-theoretical ordered pairs, but
@@ -145,7 +187,7 @@ of sets and classes.
 \begin{lemma} Every map that is an object is a function.
 \end{lemma}
 
-Let $f,g$ stand for maps.
+Let $f, g$ stand for maps.
 
 \begin{lemma} The domain of every map is a class.
 \end{lemma}
@@ -163,13 +205,31 @@ $f[S] = \{ f(x) | x \in S \}$.
 \end{definition}
 
 \begin{definition}
-$f : S \rightarrow T$ iff $Dom (f) = S$ and $f[S] \subseteq T$.
+    $f$ maps elements of $X$ to elements of $Y$ iff
+    $Dom (f) = X$ and $f[X] \subseteq Y$.
 \end{definition}
+Let $f : X \rightarrow Y$ stand for $f$ maps elements of $X$ to elements of $Y$.
+
 
 \begin{axiom} [Replacement Axiom]
-Assume $X$ is a subset of the domain of $f$.
+Let $X$ be a set.
+Assume that $X$ is a subset of the domain of $f$.
 Then $f[X]$ is a set.
 \end{axiom}
+
+Let $g$ retracts $f$ stand for $g(f(x)) = x$ for all elements $x$ of $Dom f$.
+Let $h$ sections $f$ stand for $f(h(y)) = y$ for all elements $y$ of $Dom h$.
+
+\begin{definition}
+    Let $F$ be a map.
+    Let $B, C$ be classes.
+    $F : B\leftrightarrow C$ iff $F : B\rightarrow C$ and there exists a map $G$ such that
+    $G : C\rightarrow B$ and
+    $G$ retracts $F$ and $G$ sections $F$.
+\end{definition}
+
+
 \end{forthel}
+
 
 \end{document}

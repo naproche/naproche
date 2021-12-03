@@ -1,7 +1,7 @@
 \documentclass{article}
 
 \title{The mutilated checkerboard}
-\author{Adrian De Lon, Peter Koepke, Anton Lorenzen}
+\author{Naproche formalization and commentary:\\ Adrian De Lon, Peter Koepke, Anton Lorenzen}
 \date{2021}
 
 \usepackage[utf8]{inputenc}
@@ -30,9 +30,7 @@
 
 \section{Introduction}
 
-
-\
-Max Black proposed this problem in his book
+Max Black proposed the mutilated checkerboard problem in his book
 \textit{Critical Thinking} (1946).
 %
 It was later discussed by Martin Gardner in his
@@ -46,35 +44,75 @@ and discussed fully automatic or interactive proofs of the solution.
 There have been several formalization of the Checkerboard problem before. A
 survey article by Manfred Kerber and Martin Pollet called \emph{A Tough Nut
 for Mathematical Knowledge Management} lists a couple of formalizations.
+Our formalization is based on a set-theoretical formalization by John McCarthy.
+
+
+% Hidden because we have not discussed it yet.
+% Maybe this can be mentioned as an area for improvement in the subsequent section?
+\begin{comment}
+    \begin{forthel}
+        [readtex preliminaries.ftl.tex]
+        [synonym coordinate/-s]
+        [synonym square/-s]
+        [synonym subset/-s]
+        
+        Let $f : X\to Y$ stand for $f : X\rightarrow Y$.
+    \end{forthel}
+\end{comment}
+
+
+\section{Preliminaries about cardinality}
+
+
+\begin{forthel}
+    
+\begin{definition}
+    Let $B, C$ be sets.
+    $B$ is equinumerous with $C$ iff there exists a map $F$ such that
+    $F : B\leftrightarrow C$.
+\end{definition}
+    
+\begin{lemma}
+    Let $B, C$ be sets.
+    Assume that $B$ is equinumerous with $C$.
+    Then $C$ is equinumerous with $B$.
+\end{lemma}
+
+\begin{lemma}
+    Let $A, B, C$ be sets.
+    Assume $A$ is equinumerous with $B$.
+    Assume $B$ is equinumerous with $C$.
+    Then $A$ is equinumerous with $C$.
+\end{lemma}
+\begin{proof}
+    Take a map $F$ such that $F : A\leftrightarrow B$.
+    Take a map $G$ such that $G : B\rightarrow A$ 
+    and (for all elements $x$ of $A$ we have $G(F(x)) = x$) and
+    (for all elements $y$ of $B$ we have $F(G(y))=y$).
+    Take a map $H$ such that $H : B\leftrightarrow C$.
+    Take a map $I$ such that $I : C\rightarrow B$ and (for all elements $x$ of $B$ we have $I(H(x)) = x$) and
+    (for all elements $y$ of $C$ we have $H(I(y))=y$).
+    For every element $x$ of $A$ $H(F(x))$ is an object.
+    Define $J(x) = H(F(x))$ for $x$ in $A$.
+    For every element $y$ of $C$ $G(I(y))$ is an object.
+    $J : A\leftrightarrow C$. Indeed define $K(y) = G(I(y))$ for $y$ in $C$.
+\end{proof}
+
+\begin{definition}
+    Let $X$ be a set.
+    $X$ is Dedekind finite iff every proper subset of $X$
+    is not equinumerous with $X$.
+\end{definition}
+
+\end{forthel}
+
 
 
 
 \section{Setting up the checkerboard}
 
-% Hidden because we have not discussed it yet.
-% Maybe this can be mentioned as an area for improvement in the subsequent section?
-\begin{comment}
-\begin{forthel}
-    [read classes.ftl]
-    [read vocabulary.ftl]
-    [synonym coordinate/-s]
-    [synonym square/-s]
-    [synonym subset/-s]
-\end{forthel}
-\end{comment}
-
-% Temporary:
-\begin{comment}
-\begin{forthel}
-    Let $X\setminus Y$ stand for the set difference of $X$ and $Y$.
-    Let $X\cap Y$ stand for the intersection of $X$ and $Y$.
-    Let $f : X\to Y$ stand for $f : X -> Y$.
-    Let $f : X\leftrightarrow Y$ stand for $f : X <-> Y$.
-\end{forthel}
-\end{comment}
-
-We introduce \textit{types} (or \textit{notions}) and constants
-to model checkerboards as a Cartesian product of
+We introduce integer constants
+to model checkerboards as a Cartesian product of the
 integers $0, 1, 2, \ldots, 7$.
 
 \begin{forthel}
