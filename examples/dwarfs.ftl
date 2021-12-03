@@ -1,21 +1,3 @@
-\documentclass{article}
-
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
-\usepackage{amssymb}
-\usepackage{../lib/tex/naproche01}
-
-\title{Murder at Dreadsbury Mansion (Pelletier Problem 55)}
-\author{\Naproche{} Formalization: Steffen Frerix and Peter Koepke}
-\date{2018 and 2021}
-
-\begin{document}
-  \pagenumbering{gobble}
-
-  \maketitle
-\section{Introduction}
-
-\begin{forthel}
 Signature.
 A dwarf is a notion.
 
@@ -63,9 +45,8 @@ The opposite color of white is black.
 Axiom.
 The opposite color of black is white.
 
-Definition. Both dwarfs get released iff some Dwarf D names the color
-of the hat of D.
-
+Definition. Both dwarfs get released iff some Dwarf D 
+names the color of the hat of D.
 
 Axiom.
 Sigbert names the opposite color of the color of the hat of Tormund.
@@ -73,11 +54,7 @@ Sigbert names the opposite color of the color of the hat of Tormund.
 Axiom.
 Tormund names the color of the hat of Sigbert.
 
-
 Proposition.
 Both dwarfs get released.
-
-\end{forthel}
-\end{document}
 
 
