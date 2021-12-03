@@ -31,6 +31,10 @@
 
   \subsection{Definitions}
 
+  Let us turn back to the notion of divisibility. We will now investigate
+  natural numbers which cannot be decomposed into a product of two
+  (non-trivial) smaller numbers. Such numbers are called \textit{prime}.
+
   \begin{forthel}
     \begin{definition}
       A trivial divisor of $n$ is a divisor $m$ of $n$ such that $m = 1$ or $m = n$.
@@ -50,17 +54,19 @@
     \begin{definition}
       $n$ is composite iff $n > 1$ and $n$ has a nontrivial divisor.
     \end{definition}
-  \end{forthel}
 
-
-  \subsection{Basic properties}
-
-  \begin{forthel}
     \begin{proposition}\label{Arithmetic_03_04_357744}
       Let $n > 1$.
       Then $n$ is prime iff every divisor of $n$ is a trivial divisor of $n$.
     \end{proposition}
+  \end{forthel}
 
+  Let us have a look at some easy examples of prime numbers. For a human it is
+  in general not a big deal to find the first few primes. But as the following
+  reveals, it is not as easy as seems to give a fully formal proof of the
+  assertion that a certain number actually is prime.
+
+  \begin{forthel}
     \begin{proposition}\label{Arithmetic_03_04_175431}
       $2$ and $3$ are prime.
     \end{proposition}
@@ -103,7 +109,14 @@
       Hence $2$ is a trivial divisor of $p$.
       Thus $p = 2$.
     \end{proof}
+  \end{forthel}
 
+  An important fact about primes is that every natural number has a prime
+  divisor. From this the \textit{fundamental theorem of arithmetic} follows,
+  namely the assertion that every natural number has a unique decomposition
+  into prime factors.
+
+  \begin{forthel}
     \begin{proposition}\label{Arithmetic_03_04_130748}
       Every natural number that is greater than $1$ has a prime divisor.
     \end{proposition}
@@ -147,7 +160,12 @@
       Hence $m^{2} = m \cdot m \leq m \cdot k = n$.
       Therefore $m^{2} \leq n$.
     \end{proof}
+  \end{forthel}
 
+  Let us now have a look at natural numbers which have no (non-trivial) common
+  divisor. Such numbers are called \textit{coprime}.
+
+  \begin{forthel}
     \begin{definition}
       $n$ and $m$ are coprime iff for all nonzero natural numbers $k$ such that $k \mid n$ and $k \mid m$ we have $k = 1$.
     \end{definition}

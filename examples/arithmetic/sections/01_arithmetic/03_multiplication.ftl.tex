@@ -15,6 +15,9 @@
 
   \subsection{Axioms}
 
+  Having introduced addition in the last section, we now define a multiplication
+  operation on the natural numbers.
+
   \begin{forthel}
     \begin{signature}
       $n \cdot m$ is a natural number.
@@ -33,6 +36,11 @@
 
 
   \subsection{Computation laws}
+
+  Let us show some basic computation laws for it.
+
+
+  \subsubsection*{Associativity}
 
   \begin{forthel}
     \begin{proposition}\label{Arithmetic_01_03_539933}
@@ -53,7 +61,7 @@
         Proof.
           Let $n,m$ be natural numbers.
 
-          \[ n \cdot (m + (k + 1)) \]
+          \[   n \cdot (m + (k + 1)) \]
           \[ = n \cdot ((m + k) + 1) \]             % 2nd addition axiom
           \[ = (n \cdot (m + k)) + n \]             % 2nd multiplication axiom
           \[ = ((n \cdot m) + (n \cdot k)) + n \]   % k \in P
@@ -66,8 +74,12 @@
 
       Therefore every natural number is contained in $P$.
     \end{proof}
+  \end{forthel}
 
 
+  \subsubsection*{Distributivity:}
+
+  \begin{forthel}
     \begin{proposition}\label{Arithmetic_01_03_322712}
       For all $n,m,k$ we have \[ (n + m) \cdot k = (n \cdot k) + (m \cdot k). \]
     \end{proposition}
@@ -166,8 +178,12 @@
 
       Hence every natural number is contained in $P$.
     \end{proof}
+  \end{forthel}
 
 
+  \subsubsection*{Commutativity:}
+
+  \begin{forthel}
     \begin{proposition}\label{Arithmetic_01_03_850937}
       For all $n,m$ we have \[ n \cdot m = m \cdot n. \]
     \end{proposition}
@@ -248,8 +264,12 @@
 
       Hence every natural number is contained in $P$.
     \end{proof}
+  \end{forthel}
 
 
+  \subsubsection*{Non-existence of zero-divisors:}
+
+  \begin{forthel}
     \begin{proposition}\label{Arithmetic_01_03_692941}
       For all $n,m$ we have \[ n \cdot m = 0 \implies (\text{$n = 0$ or $m = 0$}). \]
     \end{proposition}
@@ -273,8 +293,12 @@
 
       Thus $n = 0$ or $m = 0$.
     \end{proof}
+  \end{forthel}
 
 
+  \subsubsection*{Cancellation:}
+
+  \begin{forthel}
     \begin{proposition}\label{Arithmetic_01_03_799692}
       Assume $k \neq 0$.
       Then for all $n,m$ we have \[ n \cdot k = m \cdot k \implies n = m. \]

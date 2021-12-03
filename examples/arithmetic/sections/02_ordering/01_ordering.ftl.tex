@@ -12,11 +12,18 @@
     Let $k, l, m, n$ denote natural numbers.
   \end{forthel}
 
+  In this section we will establish an order on the natural
+  numbers.
+
 
   \subsection{Definitions and immediate consequences}
 
-  \begin{forthel}
+  A natural number $m$ should be greater than a natural number $n$ if $m$ can
+  be reached from $n$ by iteratively applying the successor operation to $n$.
+  Or, in other words, if $m$ can be reached by adding a nonzero natural number
+  to $m$.
 
+  \begin{forthel}
     \begin{definition}
       $n < m$ iff there exists a nonzero natural number $k$ such that $m = n + k$.
     \end{definition}
@@ -27,14 +34,6 @@
     Let $n \nless m$ stand for $n$ is not less than $m$.
     Let $n \ngtr m$ stand for $n$ is not greater than $m$.
     Let $n$ is positive stand for $n > 0$.
-
-    \begin{definition}
-      A predecessor of $n$ is a natural number that is less than $n$.
-    \end{definition}
-
-    \begin{definition}
-      A successor of $n$ is a natural number that is greater than $n$.
-    \end{definition}
 
     \begin{definition}
       $n \leq m$ iff there exists a natural number $k$ such that $m = n + k$.
@@ -62,18 +61,36 @@
         Hence the thesis.
       End.
     \end{proof}
+  \end{forthel}
 
+  This relation enables us to to generalize the notions of direct
+  predecessors and successors:
 
+  \begin{forthel}
+    \begin{definition}
+      A predecessor of $n$ is a natural number that is less than $n$.
+    \end{definition}
+
+    \begin{definition}
+      A successor of $n$ is a natural number that is greater than $n$.
+    \end{definition}
+  \end{forthel}
+
+  A direct consequence of the definition of our ordering relation
+  is that the terms \enquote{positive} and \enquote{non-zero}
+  coincide on the natural numbers.
+
+  \begin{forthel}
     \begin{proposition}\label{Arithmetic_02_01_115117}
-      $0 < n$ iff $n \neq 0$.
+      $n$ is positive iff $n$ is nonzero.
     \end{proposition}
     \begin{proof}
-      Case $0 < n$.
+      Case $n$ is positive.
         Take a positive natural number $k$ such that $n = 0 + k = k$.
         Then we have $n \neq 0$.
       End.
 
-      Case $n \neq 0$.
+      Case $n$ is nonzero.
         Take a natural number $k$ such that $n = k + 1$.
         Then $n = 0 + (k + 1)$.
         $k + 1$ is positive.
@@ -84,6 +101,9 @@
 
 
   \subsection{Basic properties}
+
+  Let us now prove some basic relational properties of the
+  ordering.
 
   \begin{forthel}
     \begin{proposition}\label{Arithmetic_02_01_659871}
@@ -248,6 +268,9 @@
 
   \subsection{Ordering and successors}
 
+  We end this section by showing that there are no natural numbers
+  between $n$ and $n + 1$.
+
   \begin{forthel}
     \begin{proposition}\label{Arithmetic_02_01_203608}
       If $n < m \leq n + 1$ then $m = n + 1$.
@@ -305,6 +328,19 @@
         Then $n < m \leq n + 1$.
         Hence $n = m$.
       End.
+    \end{proof}
+
+
+    \begin{corollary}\label{Arithmetic_02_01_666910}
+      There is no natural number $m$ such that $n < m < n + 1$.
+    \end{corollary}
+    \begin{proof}
+      Assume the contrary.
+      Take a natural number $m$ such that $n < m < n + 1$.
+      Then $n < m \leq n + 1$ and $n \leq m < n + 1$.
+      Hence $m = n + 1$ and $m = n$ (by \ref{Arithmetic_02_01_203608}, \ref{Arithmetic_02_01_126729}).
+      Hence $n = n + 1$.
+      Contradiction.
     \end{proof}
 
 
