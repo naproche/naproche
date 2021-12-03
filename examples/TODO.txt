@@ -1,10 +1,8 @@
 TODO für das nächste Naproche, insbesondere examples
 
 Makarius: *** Bad tests:
-"test/lambda_term_test.ftl.tex", "regular_successor.ftl.tex",
-"regular_successor.ftl", "perfectoid_ring.ftl.tex", "koenig.ftl.tex",
-"koenig.ftl", "dwarfs.ftl",
-"arithmetic/sections/03_divisibility/04_primes.ftl.tex", "ZFC.ftl"
+"test/lambda_term_test.ftl.tex", "dwarfs.ftl",
+"arithmetic/sections/03_divisibility/04_primes.ftl.tex",
 
 BITTE MODIFIZIEREN!!!
 
@@ -19,11 +17,8 @@ notfalls eliminieren.
 
 4. Verbesserung der mitgelieferten Beispiele.
 
-perfectoid regular successor,
-
 einlesen read readtex
 
-Weg: koenig.ftl, perfectoid,
 
 Adrian:
 
