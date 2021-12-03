@@ -1,6 +1,6 @@
 TODO für das nächste Naproche, insbesondere examples
 
-Makarius: *** Bad tests: 
+Makarius: *** Bad tests:
 "test/lambda_term_test.ftl.tex", "regular_successor.ftl.tex",
 "regular_successor.ftl", "perfectoid_ring.ftl.tex", "koenig.ftl.tex",
 "koenig.ftl", "dwarfs.ftl",
@@ -19,11 +19,11 @@ notfalls eliminieren.
 
 4. Verbesserung der mitgelieferten Beispiele.
 
-perfectoid regular successor, 
+perfectoid regular successor,
 
-einlesen read readtex 
+einlesen read readtex
 
-Weg: koenig.ftl, perfectoid, 
+Weg: koenig.ftl, perfectoid,
 
 Adrian:
 
@@ -54,13 +54,13 @@ Peter:
 
 Marcel:
 
-  [X] arithmetic für texen subfiles (main files), großes pdf, 
+  [X] arithmetic für texen subfiles (main files), großes pdf,
   [X] set-theory "
   [X] cantor-schroeder-bernstein
   [X] cantor (Marcel zufrieden)
   [X] furstenberg OK
-     macros.ftl.tex
-russell
+  [X] macros.ftl.tex
+  [X] russell
 
 6. Koordination der Ontologie- oder Preliminaries-Dateien von Adrian
 und Peter
