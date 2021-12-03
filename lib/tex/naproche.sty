@@ -57,6 +57,12 @@ boxrule=0pt,boxsep=0pt,breakable}
   \setbool{forthel}{false}%
 }
 
+\newenvironment{greybox}{
+  \begin{grayblock}
+}{
+  \end{grayblock}
+}
+
 
 %% Space between paragraphs in proofs in ForTheL environments
 \newlength{\ftlparskip}
