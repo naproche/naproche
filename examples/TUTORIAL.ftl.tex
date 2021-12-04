@@ -34,13 +34,13 @@ in \verb+\begin+\verb+{forthel}+ ... \verb+\end{forthel}+
 environments and gives
 feedback to the user, similar to a continuous spellchecker.
 Although that goal is still far away, the current \Naproche{} offers
-the possibility to write university-level mathematical text 
+the possibility to write university-level mathematical texts 
 in a natural language and style whose ForTheL segments are logically
 verified by \Naproche{}. In this tutorial and in example texts
 which are distributed together with \Naproche{} these segments
 are typeset on a grey background.
 
-\Naproche{} is a derivative of the seminal System 
+\Naproche{} is a derivative of the ground-breaking System 
 for Automated Deduction (SAD). \Naproche{} still supports the 
 ASCII format \path{.ftl} of SAD which allows rapid 
 experiments without worrying about LaTeX particulars, and we
@@ -50,8 +50,8 @@ This tutorial is an introduction to the principles and
 use of the \Naproche{} prover. After the Quick Start and 
 some general information we explain 
 ForTheL commands and statements and the structuring of ForTheL texts
-along a proof of the infinitude of primes. Actually the tutorial,
-after all, is a version of Euclid's proof, preceded by 
+along a proof of the infinitude of primes. Actually the tutorial is 
+a version of Euclid's proof, preceded by 
 necessary number-theoretic and set-theoretic preliminaries.
 After studying this material, a reader should be able to understand the
 other example texts and start writing similar formalizations.
@@ -107,19 +107,19 @@ ballons when hovering over sentences with the mouse pointer.
 The above text consists of a sequence of ForTheL ``commands'' that steer its
 parsing and logical processing. The ForTheL language is designed
 in a way that appears natural to human mathematicians although it is a
-completely formal language like programming languages.
+completely formal language like a programming language.
 
 \begin{itemize}
 
 \item \verb+[synonym number/numbers]+ is a linguistic command which
 identifies the identifiers \verb+nummber+ and \verb+nummbers+ in the
-subsequent text. This \textit{allows} to use the grammatically correct singular
-or plural forms. Note that \Naproche{} does not enforce grammatical
+subsequent text. This \textit{allows} to use grammatically correct singular
+or plural forms. On the other hand \Naproche{} does not enforce grammatical
 correctness.
 
 \item \verb+Signature+ commands define and extend the mathematical
-``vocabulary'' of the text. The
-command\\\verb+Signature. A natural number is a mathematical object.+
+``vocabulary'' of the text. The command
+\\\verb+Signature. A natural number is a mathematical object.+\\
 has the following effects:
 \begin{itemize}
 \item The noun phrase ``natural number'' is added to
@@ -128,11 +128,12 @@ command one can also write ``natural numbers'' instead.
 \item Internally, a unary predicate symbol
 \verb+aNaturalNumber+ is generated, to be used by the first-order
 logical processing. One can see this symbol by hovering the mouse
-over the command: a pop-up baloon will show a translation to a
+over the command: a pop-up balloon will show a translation to a
 first-order formula which contains the subformula
 \verb+aNaturalNumber(v0)+ with a variable \verb+v0+ inserted.
 \item The first-order translation\\
-\verb+forall v0 ((HeadTerm :: aNaturalNumber(v0)) implies aObject(v0))+
+\verb+forall v0 ((HeadTerm :: aNaturalNumber(v0))+\\
+\verb+implies aObject(v0))+\\
 is added to internal representation of the text. Note that
 \Naproche{} has an inbuilt predicate \verb+aObject+ to encompass
 all mathematical objects to be used in a text. This predicate is
@@ -146,10 +147,12 @@ to be used in further processing.
 
 \item \verb+Signature. 0 is a natural number.+ extends the
 language by a new constant symbol \verb+0+ which is intended to be
-a natural number. This can be seen in the translation:\\
-\verb+forall v0 ((HeadTerm :: v0 = 0) implies aNaturalNumber(v0))+.
+a natural number. This can be seen in the translation:
+\verb+forall v0+\\
+\verb+((HeadTerm :: v0 = 0) implies aNaturalNumber(v0))+.
 
-\item \verb/Signature. Assume that k,l are natural numbers. k + l is a natural number./ 
+\item \verb/Signature. Assume that k,l are natural numbers./\\
+\verb/k + l is a natural number./\\ 
 generates an
 internal binary function symbol \verb/+/. The translation
 shows that the (universally quantified) variables \verb/k/ and
@@ -159,23 +162,24 @@ of type $\mathbb{N} \times \mathbb{N} \rightarrow \mathbb{N}$, where
 $\mathbb{N}$ is the standard notation for the class / set / type of
 natural numbers.
 
-\item The commands \verb/Definition. 2 = 1 + 1./ also extends the
+\item The command \verb/Definition. 2 = 1 + 1./ also extends the
 language. A new constant symbol \verb/2/ is added together with
 an obvious definitional equivalence
 \verb/forall v0 ((HeadTerm :: v0 = 2) iff v0 = 1+1)/.
 
 \item The only axiom of our small number theory is added by the
 command \\
-\verb/Axiom. Assume that k,l,m are natural numbers.
-(k+l)+m=k+(l+m)./
+\verb/Axiom. Assume that k,l,m are natural numbers./\\
+\verb/(k+l)+m=k+(l+m)./\\
 The first-order translation
 includes the guards\\
-\verb/((aNaturalNumber(k) and aNaturalNumber(l)) and aNaturalNumber(m))/
+\verb/((aNaturalNumber(k) and aNaturalNumber(l))/\\
+\verb/and aNaturalNumber(m))/\\
 for the universally quantified variables, as explained above.
 
 \item Finally
 \verb/Theorem. 1 + 2 = 3./ requests that the statement $1+2=3$ be
-proved. The system the previous first-order
+proved. The system sends the previous first-order
 translations as ``hypotheses'' and the thesis ``$1+2=3$'' as
 ``conjecture'' to the external automated theorem prover (ATP) in
 the first-order format TPTP:
@@ -185,12 +189,12 @@ the first-order format TPTP:
 fof(m_,hypothesis,( ! [W0] : (aNaturalNumber(W0) => aObject(W0)))).
 fof(m_,hypothesis,aNaturalNumber(sz0)).
 fof(m_,hypothesis,aNaturalNumber(sz1)).
-fof(m_,hypothesis,( ! [W0] : ( ! [W1] : ((aNaturalNumber(W0) & aNaturalNumber(W1))
-      => aNaturalNumber(sdtpldt(W0,W1)))))).
-fof(m_,hypothesis,((sz2 = sdtpldt(sz1,sz1)) & ( ! [W0] : ((W0 = sdtpldt(sz1,sz1))
-      => (W0 = sz2))))).
-fof(m_,hypothesis,((sz3 = sdtpldt(sz2,sz1)) & ( ! [W0] : ((W0 = sdtpldt(sz2,sz1))
-      => (W0 = sz3))))).
+fof(m_,hypothesis,( ! [W0] : ( ! [W1] : ((aNaturalNumber(W0) & 
+      aNaturalNumber(W1)) => aNaturalNumber(sdtpldt(W0,W1)))))).
+fof(m_,hypothesis,((sz2 = sdtpldt(sz1,sz1)) & ( ! [W0] :
+      ((W0 = sdtpldt(sz1,sz1)) => (W0 = sz2))))).
+fof(m_,hypothesis,((sz3 = sdtpldt(sz2,sz1)) & ( ! [W0] : 
+      ((W0 = sdtpldt(sz2,sz1)) => (W0 = sz3))))).
 fof(m_,hypothesis,( ! [W0] : ( ! [W1] : ( ! [W2] :
       (((aNaturalNumber(W0) & aNaturalNumber(W1)) & aNaturalNumber(W2))
       => (sdtpldt(sdtpldt(W0,W1),W2) = sdtpldt(W0,sdtpldt(W1,W2)))))))).
@@ -198,8 +202,9 @@ fof(m__,conjecture,(sdtpldt(sz1,sz2) = sz3)).
 \end{verbatim}
 \end{footnotesize}
 \begin{itemize}
-\item \Naproche{} uses the ATP eprover that derives the conjecture
-due to the equality chain:
+\item \Naproche{} uses internal reasoning and the eprover ATP to
+derive the conjecture
+along the equality chain:
 $$1 + 2 = 1 + (1 + 1) = (1 + 1) + 1 = 2 + 1 = 3,$$
 as one could see from the eprover proof output.
 \end{itemize}
@@ -215,12 +220,10 @@ by the ASCII combination \verb+!=+.)
 \end{exercise}
 
 \begin{exercise}
-One can define the order relation $\leq$ in number theory
-by
-
-\verb/Definition. k \leq l iff there exists a natural number m
-such that k + m = l./
-
+One can define the order relation $\leq$ in our number theory
+by\\
+\verb/Definition. k \leq l iff there exists a natural number m/\\
+\verb/such that k + m = l./\\
 Which axioms for partial or linear orders can now be proved about
 \verb+\leq+?
 \end{exercise}
@@ -230,7 +233,7 @@ the variables \verb+k,l,m+ in the definition of $+$ or in the
 associativity axiom are typed by explicit assumptions. Instead one
 can ``pretype'' variables until the end of a file by a command of
 the form\\
-\verb+Let k,l,m denote natural numbers.+
+\verb+Let k,l,m denote natural numbers.+\\
 Eliminate the type assumptions by pretyping.
 What happens, if a variable does not have a previous
 type assumption?
@@ -287,7 +290,6 @@ start a new file with the \LaTeX-ending \path{.ftl.tex}, containing:
 \end{signature}
 
 Let $m,n$ denote natural numbers.
-%\begin{lemma} m = m. \end{lemma}
 \begin{signature} $0$ is a natural number.
 \end{signature}
 
@@ -305,11 +307,10 @@ Let $x$ is nonzero stand for $x \neq 0$.
 \end{verbatim}
 
 This file which will also be the beginning of our formalization
-of Euclid's theorem on the infinitude of primes, checks successfully
-in \Naproche.
+of Euclid's theorem on the infinitude of primes.
 
 At the same time it is a \LaTeX{} file which can by typeset as a
-\LaTeX{} document in the context of a \LaTeX{} preamble
+\LaTeX{} document in the context of an adequate \LaTeX{} preamble
 
 \begin{verbatim}
 \documentclass[11pt]{article}
@@ -374,23 +375,12 @@ outside those environments. This allows to insert arbitrary comments,
 including sectioning commands or even pictures, into
 \verb+.ftl.tex+ formalizations.
 
-Actually, the \LaTeX{} source \verb+TUTORIAL.ftl.tex+ of this document
-is a proper ForTheL text which proof-checks successfully
-\Naproche{}.
-The source text can be loaded into the Isabelle-PIDE, in which the text
-can be edited
-and continuously checked for correctness.
-Note that the checking process consists of proving a large number of explicit
-and implicit first-order properties of the ForTheL text by the Eprover ATP.
-The power of Eprover and of the overall \Naproche{} system
-strongly depends on hardware performance. It may be necessary to supply
-more proof details to get a text checked. On an older laptop
-with an Intel Pentium N3710 processor \Naproche{} takes
-more than a minute to check this text.
-
-To experiment with \Naproche{} in Isabelle-jEdit one edits the
+As was mentiioned before, the \LaTeX{} source \verb+TUTORIAL.ftl.tex+ of this document
+is a proper ForTheL text which proof-checks successfully in
+\Naproche{}. One can experiment with this text by loading it into the Isabelle-PIDE
+and editing the
 forthel environments. It may be convenient to
-deactivate most of these environments by replacing the outer
+deactivate some of these environments by replacing the outer
 \verb_\_\verb_begin_ and \verb_\_\verb_end_ by
 \verb_begin_ and \verb_end_.
 
@@ -472,7 +462,7 @@ in \Naproche.
 
 The \Naproche{} system
 comes with a minimal set of in-built mathematical notions.
-Usually on has to explicitly extend the first-order
+Usually one has to explicitly extend the first-order
 language through Signature and Definition commands and through
 Axioms. Then Lemmas and Theorems can be postulated and proved
 with familiar proof structures. In the following this procedure
@@ -494,11 +484,12 @@ can be carried out in this axiomatic setup.
 
 The \Naproche{} system comes along with a small inbuilt language which
 includes the notions of
-(mathematical) object, classes, sets, maps and functions.
+(mathematical) object, classes, sets, maps and functions:
+\begin{quotation}
 Elements of classes or sets are objects, maps and functions map objects
 to objects. Sets are classes which are objects.
 Similarly functions are maps which are objects.
-
+\end{quotation}
 Basic properties can be checked in the system. E.g.,
 \begin{greybox}
 \begin{theorem} Every element of every class is an object. \end{theorem}
@@ -521,7 +512,7 @@ The file also includes a list \path{vocabulary.ftl} of singular/plural pairs
 like the above
 \verb+[synonym number/numbers]+, to be used for grammatical correctness.
 Moreover, some alternative phrases for certain mathematical phrases are
-imported from \path{macros.ftl}.
+imported with \path{macros.ftl}.
 
 These preliminaries are imported by:
 \begin{forthel}
@@ -545,7 +536,8 @@ Let $\emptyset$ denote the empty set.
 \end{exercise}
 
 \begin{exercise}
-The preliminaries file also provides the notion $F(x)$ for elements $x \in Dom(F)$.
+The preliminaries file also provides the notion $F(x)$ for elements $x \in Dom(F)$
+where $F$ is a function or map.
 Formalize the property that a function is injective and that
 the composition of two injective functions is injective.
 \end{exercise}
@@ -595,7 +587,7 @@ In these formulas we see the newly introduced first-order symbols:
 \verb_aNaturalNumber(v0), 0, 1, +, *_.
 
 The first-order translations follow a certain idiom which
-is favourable for the overall processing. Formula 1 is
+is favourable for the overall processing. Formula 1
 exhibits
 the new symbol marked by the tag \verb+HeadTerm+. Similarly
 formula 2 emphasizes the symbol \verb+0+ which would not have been
@@ -606,15 +598,15 @@ Note that 5 and 7 both have the premises
 
 \noindent for the two arguments of the operations.
 
-The correctness of mathematical text includes the principle of
+The correctness of mathematical texts includes the principle of
 \textit{ontological correctness} which in this case means that
 such premises have to
 be proved before the operations can reasonably be applied within
-a proofs. \Naproche{} checks texts sentence by sentence.
+a proof. \Naproche{} checks texts sentence by sentence.
 The first check is for the indicated ontological correctness
 of the sentence. Only if that is successful the logical correctness
 will be checked if the sentence is an assertion of a mathematical fact;
-Assumptions or statements in signature or definition commands will
+Assumptions, or statements in signature or definition commands will
 be treated differently.
 
 \begin{exercise}
@@ -640,7 +632,7 @@ like ``natural'',
 In between those tokens a pattern may have holes for the insertion
 of terms, which in the Signature command are indicated by previously
 introduced variables, like ``$m$'' or ``$n$''. These were introduced in
-the parser command ``Let $i,k,l,m,n,p,q,r$ denote natural numbers.''
+the parser command ``Let $m,n$ denote natural numbers.''
 Thereafter, $m$ and $n$ are variables which are ``pretyped'' to be
 natural numbers. With that,
 \begin{signature} $m + n$ is a natural number.
@@ -691,7 +683,7 @@ choices.
 \section{Postulating Natural Number Axioms}
 
 We need to introduce axioms for our abstract first-order structure.
-Axiom are ForTheL statements written in axiom environments.
+Axioms are ForTheL statements written in axiom environments.
 For arithmetic we use self-explanatory symbolic formulas.
 There are many ways of axiomatizing the natural numbers in order
 to be able to prove our final goal: the infinitude of
@@ -780,7 +772,7 @@ defines the binary difference function $-$.
 \begin{exercise}
 Introduce aliases for numbers and arithmetic operations
 so that one can prove:
-``The sume of one and three is equal to five''.
+``The sum of one and three is equal to five''.
 \end{exercise}
 
 \begin{exercise}
@@ -792,8 +784,9 @@ prove the binomial formula for $(m+n)^2$.
 
 Definitions of functions and constants usually contain
 implicit postulates corresponding to the existence
-and uniquess-properties of function values and constants. In case of
-the function definition the condition for $l$ should be
+and uniquess-properties of function values and constants. In
+the above definition of the difference ($-$), the condition for 
+$l$ should be
 satisfiable by a unique natural number. This is however \textit{not}
 checked by \Naproche, so that the well-definedness of the
 function is the user's responsibility. If the function
@@ -923,25 +916,26 @@ been treated right. E.g., although the number $0$ is quite
 uninteresting for the study of prime numbers, we still have to
 deal with $0$-cases or explicitly request that terms are
 nonzero. If a text with non-trivial mathematical content checks
-unexpectedly fast then one should become suspicious, because eprover
-may exploit a contradiction to prove every proposition via an
+unexpectedly fast then one should become suspicious, because 
+eprover may exploit a contradiction to prove every proposition via
 \textit{ex falso quodlibet}.
 
 To find inconsistencies it is helpful to try to prove
 \begin{lemma} Contradiction. \end{lemma}
-in various places of a text. If the lemma is validated by
-\Naproche{} then one has to investigate further. In the source text
-of this document one finds an Contradiction-Lemma which is commented
-out by \verb+%+. This can be quickly activated for a contradiction
-check. It can also be used to force rechecking of the text: uncomment
-the lemma and then comment it again; this will lead to rechecking at
-least from the position of the lemma onwards.
+\noindent in various places of a text. If the lemma is validated by
+\Naproche{} then one has to investigate further. Contradiction-
+lemmas can be quickly de-activated by commenting out
+with \verb+%+.. They can also be used to force rechecking of 
+the text: uncomment
+the lemma and then comment it again; this will lead to rechecking 
+from the position of the lemma onwards.
 
 
 \section{Linear and Discrete Orders}
 
 We need more axiomatic assumptions for the ordering of the natural numbers. The axioms
-so far do not guarantee that the ordering is linear. So we continue:
+so far do not guarantee that the ordering is linear. 
+So we continue:
 
 \begin{forthel}
 
@@ -963,25 +957,32 @@ so far do not guarantee that the ordering is linear. So we continue:
 \Naproche{} has inherited an elegant treatment of induction
 from the SAD system. \Naproche{} has a special binary relation
 symbol $\prec$ for a universal inductive relation: if
-the property $P$ is \textit{inductive}, i.e., if at any
+the property $P$ is \textit{inductive} along $\prec$, i.e., if at any
 point $m$ property $P$ is inherited at $m$ provided all
 $\prec$-predecessors of $m$ satisfy $P$, then $P$ holds everywhere.
+More formally the general induction principle for the relation 
+$\prec$ reads:
+\begin{quotation} 
+To prove $\forall k \phi(k)$, it suffices to prove
+inductivity along $\prec$:
+$$\forall v_0 (\forall v_1 (v_1 \prec v_0 \rightarrow \phi(v_1))
+\rightarrow \phi(v_0).$$
+\end{quotation}
 
-So to prove that $P$ holds universally, it suffices to prove
-inductivity along $\prec$. This modification of proof tasks
-is already carried out by the parser when it comes across the
+This modification of proof tasks
+is immediately carried out by the parser when it comes across the
 keyword ``proof by induction''.
+
+Induction along the relation $<$ on natural numbers is introduced
+axiomatically by embedding the $<$-relation into $\prec$:
 
 \begin{forthel}
 \begin{axiom} If $n < m$ then $n \prec m$.
 \end{axiom}
 \end{forthel}
 
-From this axiom one can derive Peano axioms for the
-natural numbers.
-
-Let us consider a proof by induction which shows that
-our order is  ``discrete'' with nothing strictly between
+Let us consider a proof by induction that $\leq$ is
+a ``discrete'' order with nothing strictly between
 $0$ and $1$.
 
 \begin{forthel}
@@ -991,7 +992,7 @@ $0$ and $1$.
 \end{proof}
 \end{forthel}
 
-The translation of the statement of the lemma is
+The automatic translation of the statement of the lemma is
 \begin{verbatim}
 forall v0 (aNaturalNumber(v0) implies
 ((InductionHypothesis ::
@@ -1003,13 +1004,14 @@ implies (v0 = 0 or 1\leq v0)))
 The formula expresses that the property ``$n = 0$ or $1 \leq n$''
 is \textit{inductive}. Proving the universal formula
 ``For every $n$ $n = 0$ or $1 \leq n$'' has been reduced to
-proving inductivity. Remarkably this task can be carried out automatically by
+proving inductivity. In this case the inductivity task can be 
+carried out automatically by
 eprover.
 
 Remark: It seems difficult to prove this inductivity by a short intuitive
 proof. Apparently the above axiomatization is not standard and should
 be replaced by an approach where the natural numbers are generated from
-$0$ by a $+1$-operation, expressed by using using $n \prec n+1$ as
+$0$ by a $+1$-operation, expressed by using $n \prec n+1$ as
 induction axiom.
 
 With the previous lemma we can show:
@@ -1021,7 +1023,7 @@ With the previous lemma we can show:
 
 \section{Division}
 
-Prime (natural) numbers are defined via divisibility of natural numbers.
+Prime (natural) numbers are defined via divisibility.
 
 \begin{forthel}
 
@@ -1041,26 +1043,26 @@ that divides $x$.
 The definition is similar to the definition of $\leq$.
 Note, however, the possible syntactic variations:
 ``there exists a natural number $l$ such that
-$m + l = n$'', ``for some $l$ $m = n * l$''. It is also possible
+$m = n * l$''; it is also possible
 to put the quantifier after the property:
 ``$n$ divides $m$ iff $m = n * l$ for some $l$''.
 
 Natural language has many mechanisms for putting
 information into sentences in a compact, un-formalistic way.
 Un-formalistic means, e.g., that natural language
-does not favour brackets (...) in speech.
-Although the language has been extended,
+does not normally use brackets (...) in speech.
 ``The syntax and semantics of the ForTheL language'' by Andrei
-Paskevich is still a good guide to most ForTheL constructs.
+Paskevich is still a good guide to most ForTheL constructs, although
+the language has been extended since then.
 
 \section{An Interactive Proof}
 
-We shall later need a technical lemma on divisibility:
+The final contradiction in Euclid's proof will need:
 
 \begin{lemma} Let $l | m$ and $l | m + n$. Then $l | n$.
 \end{lemma}
 
-On the computer I am using, \Naproche{} does not find
+\Naproche{} does not find
 a proof on its own: depending on some default timeouts the
 proof search is abandoned, and the goal $l | n$ fails.
 In Isabelle-Naproche this is signaled in the output
@@ -1068,7 +1070,7 @@ window, and the failed goal is underlined in red.
 
 So the user has to ``interactively'' supply a proof, which in a first
 approximation is a list
-of statements which leads up to the claim, and which
+of statements leading up to the claim, and which
 \Naproche{}'s ATP is able to prove successively.
 Proof statements can also introduce assumptions
 and new variables to the argument, and they can
@@ -1109,26 +1111,27 @@ Proofs of a ``toplevel'' Lemma or Theorem use the
 
 \noindent environment well-known from \LaTeX.
 In our proof there is also a ``lowlevel'' proof of $p \leq q$
-indicated by ``Let us show that''. Let us discuss some aspects of the
+indicated by ``Let us show that''. We discuss some aspects of the
 proof:
 \begin{itemize}
 \item Most sentences in a proof are statements, or statements
-extended by certain constructs that organize the flow of the argument.
+extended by constructs that organize the flow of the argument.
 \item ``Assume that $l$ is nonzero.'' is an assumption that introduces
 the premise ``$l$ is nonzero'' to the argument. Instead of ``Assume that''
 one could also use variants like
-[let us | we can] (assume | presume | suppose) [that].
+[let us $\mid$ we can] (assume $\mid$ presume $\mid$ suppose) [that].
 \item ``Take $p$ such that $m = l * p$.'' introduces a new variable
 $p$ with a specific property to the argument. To verify this construct
 the prover has to show the existence of some object satisfying the
 property. Again there are variants:
-[let us | we can] (choose | take | consider).
+[let us $\mid$ we can] (choose $\mid$ take $\mid$ consider).
 \item ``Let us show that $p \leq q$.'' claims that the statement
 $p \leq q$ holds and announces a subsequent proof.
-Alternatives: [let us | we can] (prove | show | demonstrate) (that).
+Alternatives: [let us $\mid$ we can] 
+(prove $\mid$ show $\mid$ demonstrate) (that).
 \item ``Proof by contradiction'' denotes the start of an indirect
-proof. It is recommended to explicitly mark indirect proof.
-Note that in the example this is a ``lowlevel'' proof that
+proof. It is recommended to explicitly mark indirect proofs.
+Note that in the example there is a ``lowlevel'' proof that
 uses a simple
 
 \verb+Proof [by ...](.) ... (qed. | end.)+
@@ -1147,7 +1150,7 @@ or ``$<$'' can be chained. The statement means the conjunction
 of the single relations. These will be checked from
 left to right.
 \item ``Contradiction. qed.'': The indirect proof has reached the
-desired contradiction, and that proof environment is closed by
+desired contradiction, and the (local) proof environment is closed by
 ``qed.''.
 \end{itemize}
 
@@ -1189,12 +1192,9 @@ divisor which is also a prime divisor of $k$.
 \begin{proof} Proof by induction on $m$. \end{proof}
 \end{forthel}
 
-The phrase ``proof by induction'' invokes a general induction principle
-for the relation $\prec$. To prove $\forall k \phi(k)$, it suffices to
-prove:
-$$\forall v_0 (\forall v_1 (v_1 \prec v_0 \rightarrow \phi(v_1))
-\rightarrow \phi(v_0).$$
-So ``proof by induction'' transforms the thesis into a new thesis:
+
+``Proof by induction'' transforms the thesis into the inductivity
+theses:
 \begin{footnotesize}
 \begin{verbatim}
 thesis: forall v0 ((aNaturalNumber(v0) and (not v0 = 0 and not v0 = 1))
@@ -1205,10 +1205,7 @@ and isPrime(v2))))) implies exists v1
 ((aNaturalNumber(v1) and doDivides(v1,v0)) and isPrime(v1))))
 \end{verbatim}
 \end{footnotesize}
-Note that internally,
-\verb+iLess+ represents the relation $\prec$. Since we had postulated
-axiomatically that $<$ is a subrelation of $\prec$, the induction principle
-for $\prec$ implies a standard induction principle for the natural numbers.
+which can be discharged automatically by eprover.
 
 \section{Sets and Classes}
 
@@ -1234,7 +1231,7 @@ forall v0 ((HeadTerm :: v0 = \mathbb{N}) iff
 
 The \verb+aObject(v1)+ is part of the collection construct and ensures
 that only objects will be elements of the collection. Such collections
-are automatically registered as classes (\verb+aClass(v0)+).
+are automatically registered as {\em classes} (\verb+aClass(v0)+).
 There are a few grammatical extensions and variants of this construct:
 in particular one could form the collection of all
 [terms] such that [condition], where [condition] is an arbitrary ForTheL
@@ -1244,11 +1241,11 @@ Classes can also be defined by abstraction terms, i.e., we could
 have defined alternatively:
 
 \begin{definition}
-$\mathbb(N) = \{n | n$ is a natural number$\}$.
+$\mathbb{N} = \{n | n$ is a natural number$\}$.
 \end{definition}
 
 To work freely with the class of natural numbers one wants it be a
-mathematical object itself, i.e., a set. The axioms so far do not
+{\em mathematical object} itself, i.e., a {\em set}. The axioms so far do not
 imply this, as one can check by trying to prove
 ``$\mathbb{N}$ is a set.''
 So we postulate this as an axiom which is (equivalent to) the
@@ -1263,16 +1260,16 @@ We define the set of prime numbers so that we can prove its infinity.
 
 \begin{forthel}
 \begin{definition}
-$\mathbb(P) = \{n | n$ is a prime natural number$\}$.
+$\mathbb{P} = \{n | n$ is a prime natural number$\}$.
 \end{definition}
 \end{forthel}
-Since $\mathbb(P)$ is a subclass of the set $\mathbb(N)$, the
-axiom of separation from \path{preliminaries.ftl.tex} yields:
+The axiom of separation from \path{preliminaries.ftl.tex} yields:
 \begin{forthel}
 \begin{lemma}
-$\mathbb(P)$ is a set.
+$\mathbb{P}$ is a set.
 \end{lemma}
 \end{forthel}
+\noindent since $\mathbb{P}$ is a subclass of the {\em set} $\mathbb{N}$.
 
 \begin{exercise}
 Form the collection of all even numbers or of all square numbers and
@@ -1299,12 +1296,13 @@ This translates to
 \begin{verbatim}
 forall v0 ((HeadTerm :: v0 = \Seq{m}{n}) iff ((aClass(v0) and
 (aSet(\mathbb{N}) implies aSet(v0))) and
-forall v1 (aElementOf(v1,v0) iff
-((aElementOf(v1,\mathbb{N}) and (m\leq v1 and v1\leq n)) and aObject(v1)))))
+forall v1 (aElementOf(v1,v0) iff ((aElementOf(v1,\mathbb{N}) 
+and (m\leq v1 and v1\leq n)) and aObject(v1)))))
 \end{verbatim}
 
 Note that the second line of the translation contains an instance
-of the axiom of separation: if the class that bounds $i$ is a set then
+of the axiom of separation: if the class that bounds 
+the variable $i$ is a set then
 the resulting class is a set. Thus:
 
 \begin{forthel}
@@ -1312,13 +1310,15 @@ the resulting class is a set. Thus:
 \end{lemma}
 \end{forthel}
 
-The notation $\Seq{m}{n}$ indicates the typographical potential
+The notation $\Seq{m}{n}$ indicates the notational and 
+typographical potential
 for \Naproche{} texts if one uses appropriate \LaTeX macros.
-$\Seq{m}{n}$ is the printout of the following macro
+
+$\Seq{m}{n}$ is printed using the macro
 
 \verb+\newcommand{\Seq}[2]{\{#1,\dots,#2\}}+
 
-in the \path{.ftl.tex} source code
+The macro is used in the source code of the above definition:
 
 \begin{verbatim}
 \begin{definition} $\Seq{m}{n} = \{ i \in \mathbb{N} |
@@ -1326,11 +1326,14 @@ m \leq i \leq n \}$.
 \end{definition}
 \end{verbatim}
 
-In this way, intuitive and customary \dots-notation which may seem
-vague can be given a unambiguous meaning and can be used
+\Naproche{} reads this as the introduction of a binary function
+pattern \verb+\Seq{m}{n}+ as one can see from the first-order translation.
+
+In this way, intuitive and customary $\dots$-notations which may seem
+vague can be given an unambiguous meaning and can be used
 in \Naproche{} formalizations.
 
-We now turn to definitions and notations for finite sequences.
+These techniques are used in further definitions and notations for finite sequences.
 
 \begin{forthel}
 
@@ -1350,8 +1353,11 @@ Let $F_{i}$ stand for $F(i)$.
 \begin{definition} Let $F$ be a sequence of length $n$.
 $\Finset{F}{1}{n} = \{ F_{i} | i \in Dom(F)\}$.
 \end{definition}
-
 \end{forthel}
+
+This definition uses the \LaTeX{}-macro
+
+\verb+\newcommand{\Finset}[3]{\{#1_{#2},\dots,#1_{#3}\}}+
 
 Dot notation is also used for iterations of all sorts.
 For Euclid's theorem we shall want to consider products
@@ -1415,7 +1421,9 @@ $\Primes$ is infinite.
 Assume that $r$ is a natural number and
 $p$ is a sequence of length $r$ and
 $\Finset{p}{1}{r}$ is a subclass of $\Primes$.
+
 (1) $p_{i}$ is a nonzero natural number for every $i \in Dom(p)$.
+
 Consider $n=\Prod{p}{1}{r}+1$.
 $\Prod{p}{1}{r}$ is nonzero.
 Hence $n$ is nontrivial. Take a prime divisor $q$ of $n$.
