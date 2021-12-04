@@ -71,6 +71,9 @@ object Naproche_Component
     File.change(component_dir + Path.explode("etc/build.props"),
       _.replaceAll("no_build\\s*=.*", "no_build = true"))
 
+    File.change(component_dir + Path.explode("etc/settings"),
+      s => s + "\nclasspath \"$ISABELLE_NAPROCHE/naproche.jar\"\n")
+
 
     /* PDF documents */
 
