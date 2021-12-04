@@ -102,7 +102,7 @@ get_index f = get_aux 0
         Just y -> Just (i, y)
 
 separate :: a -> [a] -> [a]
-separate s (x : (xs @ (_ : _))) = x : s : separate s xs
+separate s (x : xs@(_ : _)) = x : s : separate s xs
 separate _ xs = xs;
 
 
@@ -122,7 +122,7 @@ instance StringLike String where
   space_explode :: Char -> String -> [String]
   space_explode c = Split.split (Split.dropDelims (Split.whenElt (== c)))
   trim_line :: String -> String
-  trim_line s = gen_trim_line (length s) ((!!) s) take s
+  trim_line s = gen_trim_line (length s) (s !!) take s
 
 instance StringLike Text where
   space_explode :: Char -> Text -> [Text]

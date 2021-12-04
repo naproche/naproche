@@ -26,10 +26,7 @@ get :: T -> Bytes -> Maybe Bytes
 get props name = List.lookup name props
 
 get_value :: (Bytes -> Maybe a) -> T -> Bytes -> Maybe a
-get_value parse props name =
-  case get props name of
-    Nothing -> Nothing
-    Just s -> parse s
+get_value parse props name = maybe Nothing parse (get props name)
 
 put :: Entry -> T -> T
 put entry props = entry : remove (fst entry) props

@@ -9,7 +9,6 @@
 Type classes for XML data representation.
 -}
 
-{-# LANGUAGE TypeSynonymInstances #-}
 {-# LANGUAGE FlexibleInstances #-}
 
 module Isabelle.XML.Classes
