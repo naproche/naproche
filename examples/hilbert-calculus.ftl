@@ -3,7 +3,7 @@
 [synonym formula/-s/-e]
 
 Signature. 
-    A formula is a notion.
+    A formula is an object.
 
 Let P, Q, R, S denote formulas.
 

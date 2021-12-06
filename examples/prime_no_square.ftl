@@ -1,6 +1,6 @@
 [synonym number/-s] [synonym devide/-s]
 
-Signature. A positive rational number is a notion.
+Signature. A positive rational number is an object.
 
 Let q, s, r stand for positive rational numbers.
 
