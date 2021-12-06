@@ -47,7 +47,7 @@
       For all $n,m,k$ we have \[ n \cdot (m + k) = (n \cdot m) + (n \cdot k). \]
     \end{proposition}
     \begin{proof}
-      Define $P = \class{k \in \mathbb{N} | \classtext{$n \cdot (m + k) = (n \cdot m) + (n \cdot k)$ for all natural numbers $n,m$}}$.
+      Define \[ P = \class{k \in \mathbb{N} | \classtext{$n \cdot (m + k) = (n \cdot m) + (n \cdot k)$ for all natural numbers $n,m$}}. \]
 
       (BASE CASE) $0$ is an element of $P$.
       Indeed for all natural numbers $n,m$ we have $n \cdot (m + 0) = n \cdot m = (n \cdot m) + 0 = (n \cdot m) + (n \cdot 0)$.
@@ -84,7 +84,7 @@
       For all $n,m,k$ we have \[ (n + m) \cdot k = (n \cdot k) + (m \cdot k). \]
     \end{proposition}
     \begin{proof}
-      Define $P = \class{k \in \mathbb{N} | \classtext{$(n + m) \cdot k = (n \cdot k) + (m \cdot k)$ for all natural numbers $n,m$}}$.
+      Define \[ P = \class{k \in \mathbb{N} | \classtext{$(n + m) \cdot k = (n \cdot k) + (m \cdot k)$ for all natural numbers $n,m$}}. \]
 
       (BASE CASE) $0$ belongs to $P$.
       Indeed $(n + m) \cdot 0 = 0 = 0 + 0 = (n \cdot 0) + (m \cdot 0)$ for all natural numbers $n,m$.
@@ -149,7 +149,7 @@
       For all $n,m,k$ we have \[ n \cdot (m \cdot k) = (n \cdot m) \cdot k. \]
     \end{proposition}
     \begin{proof}
-      Define $P = \class{k \in \mathbb{N} | \classtext{$n \cdot (m \cdot k) = (n \cdot m) \cdot k$ for all natural numbers $n,m$}}$.
+      Define \[ P = \class{k \in \mathbb{N} | \classtext{$n \cdot (m \cdot k) = (n \cdot m) \cdot k$ for all natural numbers $n,m$}}. \]
 
       (BASE CASE) $0$ is contained in $P$.
       Indeed for all natural numbers $n,m$ we have $n \cdot (m \cdot 0) = n \cdot 0 = 0 = (n \cdot m) \cdot 0$.
@@ -188,14 +188,14 @@
       For all $n,m$ we have \[ n \cdot m = m \cdot n. \]
     \end{proposition}
     \begin{proof}
-      Define $P = \class{m \in \mathbb{N} | \text{$n \cdot m = m \cdot n$ for all natural numbers $n$}}$.
+      Define \[ P = \class{m \in \mathbb{N} | \text{$n \cdot m = m \cdot n$ for all natural numbers $n$}}. \]
 
       (BASE CASE 1) $0$ is contained in $P$. \\
       Proof.
 
         For all natural numbers $n$ we have $n \cdot 0 = 0 \cdot n$. \\
         Proof.
-          Define $Q = \class{n \in \mathbb{N} | n \cdot 0 = 0 \cdot n}$.
+          Define \[ Q = \class{n \in \mathbb{N} | n \cdot 0 = 0 \cdot n}. \]
 
           $0$ is contained in $Q$.
 
@@ -219,7 +219,7 @@
       (BASE CASE 2) $1$ belongs to $P$. \\
       Proof.
         Let us show that for all natural numbers $n$ we have $n \cdot 1 = 1 \cdot n$.
-          Define $Q = \class{n \in \mathbb{N} | n \cdot 1 = 1 \cdot n}$.
+          Define \[ Q = \class{n \in \mathbb{N} | n \cdot 1 = 1 \cdot n}. \]
 
           $0$ is contained in $Q$.
 
@@ -304,7 +304,7 @@
       Then for all $n,m$ we have \[ n \cdot k = m \cdot k \implies n = m. \]
     \end{proposition}
     \begin{proof}
-      Define $P = \class{n \in \mathbb{N} | \classtext{for all natural numbers $m$ if $n \cdot k = m \cdot k$ and $k \neq 0$ then $n = m$}}$.
+      Define \[ P = \class{n \in \mathbb{N} | \classtext{for all natural numbers $m$ if $n \cdot k = m \cdot k$ and $k \neq 0$ then $n = m$}}. \]
 
       (BASE CASE) $0$ is contained in $P$. \\
       Proof.

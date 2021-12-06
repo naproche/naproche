@@ -22,7 +22,7 @@
       For all natural numbers $n,m$ such that $m$ is nonzero there exist natural numbers $q,r$ such that \[ n = (m \cdot q) + r \] and $r < m$.
     \end{proposition}
     \begin{proof}
-      (1) Define $P = \class{n \in \mathbb{N} | \classtext{for all nonzero natural numbers $m$ there exist natural numbers $q,r$ such that $r < m$ and $n = (m \cdot q) + r$}}$.
+      (1) Define \[ P = \class{n \in \mathbb{N} | \classtext{for all nonzero natural numbers $m$ there exist natural numbers $q,r$ such that $r < m$ and $n = (m \cdot q) + r$}}. \]
 
       (BASE CASE) $P$ contains $0$.
       Proof.
@@ -52,12 +52,15 @@
             Then $r < m$ and $n + 1 = ((q' \cdot m) + r') + 1 = (q' \cdot m) + (r' + 1) = (q' \cdot m) + m = (q' + 1) \cdot m = (q \cdot m) + r$.
           End.
         End.
+
+        Hence the thesis (by 1).
       Qed.
 
       Then $P$ contains every natural number.
       Let $n,m$ be a natural numbers such that $m$ is nonzero.
       Then $n \in P$.
-      Hence the thesis (by 1).
+      Hence we can take natural numbers $q,r$ such that $r < m$ and $n = (m \cdot q) + r$ (by 1).
+      Then we have the thesis.
     \end{proof}
 
     \begin{proposition}\label{Arithmetic_03_02_531279}

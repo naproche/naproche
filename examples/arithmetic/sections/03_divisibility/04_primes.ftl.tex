@@ -121,7 +121,7 @@
       Every natural number that is greater than $1$ has a prime divisor.
     \end{proposition}
     \begin{proof}
-      Define $P = \class{n \in \mathbb{N} | \text{if $n > 1$ then $n$ has a prime divisor}}$.
+      Define \[ P = \class{n \in \mathbb{N} | \text{if $n > 1$ then $n$ has a prime divisor}}. \]
 
       Let us show that for every natural number $n$ if $P$ contains all predecessors of $n$ then $P$ contains $n$.
         Let $n$ be a natural number.
@@ -151,7 +151,7 @@
       Then $n$ has a nontrivial divisor $m$ such that $m^{2} \leq n$.
     \end{proposition}
     \begin{proof}
-      Define $A = \class{m \in \mathbb{N} | \text{$m$ is a nontrivial divisor of $n$}}$.
+      Define \[ A = \class{m \in \mathbb{N} | \text{$m$ is a nontrivial divisor of $n$}}. \]
       $A$ contains some natural number.
       Hence we can take a least natural number $m$ of $A$.
       Consider a natural number $k$ such that $m \cdot k = n$.
@@ -217,14 +217,15 @@
       Case $p \mid n$. Trivial.
 
       Case $p \nmid n$.
-        Define $N = \class{x \in \mathbb{N} | \text{$x \neq 0$ and $p \mid x \cdot m$}}$.
+        Define \[ N = \class{x \in \mathbb{N} | \text{$x \neq 0$ and $p \mid x \cdot m$}}. \]
         We have $p \in N$ and $n \in N$.
         Hence $N$ contains some natural number.
         Thus we can take a least natural number $n'$ of $N$.
 
         Let us show that $n'$ divides all elements of $N$.
           Let $x \in N$.
-          Take natural numbers $q,r$ such that $x = (q \cdot n') + r$ and $r < n'$.
+          Take natural numbers $q,r$ such that $x = (n' \cdot q) + r$ and $r < n'$ (by \ref{Arithmetic_03_02_332233}).
+          Indeed $n'$ is nonzero.
           Then $x \cdot m = ((q \cdot n') + r) \cdot m = ((q \cdot n') \cdot m) + (r \cdot m)$.
           We have $p \mid x \cdot m$.
           Hence $p \mid ((q \cdot n') \cdot m) + (r \cdot m)$.
@@ -264,7 +265,8 @@
           Assume that $n$ and $m$ are nonzero and $k \cdot m^{2} = n^{2}$.
 
           Suppose that $k$ is prime.
-          Then $k$ divides $n^{2}$ and $k$ divides $n$.
+          $k$ is a nontrivial divisor of $n^{2}$.
+          Hence $k$ divides $n$.
           Take a natural number $l$ such that $k \cdot l = n$.
 
           (2) Then $m^{2} = k \cdot l^{2}$ (by \ref{Arithmetic_01_03_169506}).
