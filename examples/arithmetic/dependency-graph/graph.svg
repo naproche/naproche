@@ -1,0 +1,300 @@
+<svg width="847pt" height="636pt" viewBox="0 0 847 636" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 632)">
+<title>Sections</title>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-632 842.6925,-632 842.6925,4 -4,4"></polygon>
+<g id="clust1" class="cluster">
+<title>cluster_1</title>
+<polygon fill="none" stroke="#000000" points="474,-296 474,-564 797,-564 797,-296 474,-296"></polygon>
+</g>
+<g id="clust2" class="cluster">
+<title>cluster_2</title>
+<polygon fill="none" stroke="#000000" points="8,-80 8,-420 434,-420 434,-80 8,-80"></polygon>
+</g>
+<g id="clust3" class="cluster">
+<title>cluster_3</title>
+<polygon fill="none" stroke="#000000" points="442,-8 442,-132 811,-132 811,-8 442,-8"></polygon>
+</g>
+<!-- vocab -->
+<g id="node1" class="node">
+<title>vocab</title>
+<ellipse fill="none" stroke="#000000" cx="522" cy="-610" rx="56.1608" ry="18"></ellipse>
+<text text-anchor="middle" x="522" y="-605.8" font-family="Times,serif" font-size="14.00" fill="#000000">Vocabulary</text>
+</g>
+<!-- arith_01 -->
+<g id="node3" class="node">
+<title>arith_01</title>
+<ellipse fill="none" stroke="#000000" cx="579" cy="-538" rx="96.7177" ry="18"></ellipse>
+<text text-anchor="middle" x="579" y="-533.8" font-family="Times,serif" font-size="14.00" fill="#000000">1.1 The Peano axioms</text>
+</g>
+<!-- vocab&#45;&gt;arith_01 -->
+<g id="edge1" class="edge">
+<title>vocab-&gt;arith_01</title>
+<path fill="none" stroke="#000000" d="M536.0899,-592.2022C542.8724,-583.6348 551.1326,-573.2009 558.5877,-563.7839"></path>
+<polygon fill="#000000" stroke="#000000" points="561.4118,-565.8555 564.8747,-555.8425 555.9234,-561.5106 561.4118,-565.8555"></polygon>
+</g>
+<!-- macros -->
+<g id="node2" class="node">
+<title>macros</title>
+<ellipse fill="none" stroke="#000000" cx="636" cy="-610" rx="39.9857" ry="18"></ellipse>
+<text text-anchor="middle" x="636" y="-605.8" font-family="Times,serif" font-size="14.00" fill="#000000">Macros</text>
+</g>
+<!-- macros&#45;&gt;arith_01 -->
+<g id="edge2" class="edge">
+<title>macros-&gt;arith_01</title>
+<path fill="none" stroke="#000000" d="M622.4918,-592.937C615.6678,-584.3173 607.2409,-573.6727 599.6273,-564.0555"></path>
+<polygon fill="#000000" stroke="#000000" points="602.1579,-561.6133 593.2067,-555.9453 596.6696,-565.9582 602.1579,-561.6133"></polygon>
+</g>
+<!-- arith_02 -->
+<g id="node4" class="node">
+<title>arith_02</title>
+<ellipse fill="none" stroke="#000000" cx="567" cy="-466" rx="59.7166" ry="18"></ellipse>
+<text text-anchor="middle" x="567" y="-461.8" font-family="Times,serif" font-size="14.00" fill="#000000">1.2 Addition</text>
+</g>
+<!-- arith_01&#45;&gt;arith_02 -->
+<g id="edge3" class="edge">
+<title>arith_01-&gt;arith_02</title>
+<path fill="none" stroke="#000000" d="M575.9719,-519.8314C574.6885,-512.131 573.1624,-502.9743 571.7361,-494.4166"></path>
+<polygon fill="#000000" stroke="#000000" points="575.1653,-493.7018 570.0689,-484.4133 568.2606,-494.8526 575.1653,-493.7018"></polygon>
+</g>
+<!-- arith_03 -->
+<g id="node5" class="node">
+<title>arith_03</title>
+<ellipse fill="none" stroke="#000000" cx="567" cy="-394" rx="80.5585" ry="18"></ellipse>
+<text text-anchor="middle" x="567" y="-389.8" font-family="Times,serif" font-size="14.00" fill="#000000">1.3 Multiplication</text>
+</g>
+<!-- arith_02&#45;&gt;arith_03 -->
+<g id="edge4" class="edge">
+<title>arith_02-&gt;arith_03</title>
+<path fill="none" stroke="#000000" d="M567,-447.8314C567,-440.131 567,-430.9743 567,-422.4166"></path>
+<polygon fill="#000000" stroke="#000000" points="570.5001,-422.4132 567,-412.4133 563.5001,-422.4133 570.5001,-422.4132"></polygon>
+</g>
+<!-- ord_01 -->
+<g id="node8" class="node">
+<title>ord_01</title>
+<ellipse fill="none" stroke="#000000" cx="256" cy="-394" rx="60.2576" ry="18"></ellipse>
+<text text-anchor="middle" x="256" y="-389.8" font-family="Times,serif" font-size="14.00" fill="#000000">2.1 Ordering</text>
+</g>
+<!-- arith_02&#45;&gt;ord_01 -->
+<g id="edge7" class="edge">
+<title>arith_02-&gt;ord_01</title>
+<path fill="none" stroke="#000000" d="M519.4273,-454.9864C464.1747,-442.1948 373.0496,-421.0983 313.777,-407.376"></path>
+<polygon fill="#000000" stroke="#000000" points="314.3547,-403.9173 303.8229,-405.0715 312.7758,-410.7369 314.3547,-403.9173"></polygon>
+</g>
+<!-- arith_04 -->
+<g id="node6" class="node">
+<title>arith_04</title>
+<ellipse fill="none" stroke="#000000" cx="567" cy="-322" rx="84.5575" ry="18"></ellipse>
+<text text-anchor="middle" x="567" y="-317.8" font-family="Times,serif" font-size="14.00" fill="#000000">1.4 Exponentiation</text>
+</g>
+<!-- arith_03&#45;&gt;arith_04 -->
+<g id="edge5" class="edge">
+<title>arith_03-&gt;arith_04</title>
+<path fill="none" stroke="#000000" d="M567,-375.8314C567,-368.131 567,-358.9743 567,-350.4166"></path>
+<polygon fill="#000000" stroke="#000000" points="570.5001,-350.4132 567,-340.4133 563.5001,-350.4133 570.5001,-350.4132"></polygon>
+</g>
+<!-- arith_05 -->
+<g id="node7" class="node">
+<title>arith_05</title>
+<ellipse fill="none" stroke="#000000" cx="729" cy="-322" rx="59.6897" ry="18"></ellipse>
+<text text-anchor="middle" x="729" y="-317.8" font-family="Times,serif" font-size="14.00" fill="#000000">1.5 Factorial</text>
+</g>
+<!-- arith_03&#45;&gt;arith_05 -->
+<g id="edge6" class="edge">
+<title>arith_03-&gt;arith_05</title>
+<path fill="none" stroke="#000000" d="M603.356,-377.8418C627.8657,-366.9486 660.3063,-352.5305 686.0842,-341.0737"></path>
+<polygon fill="#000000" stroke="#000000" points="687.5362,-344.2585 695.2528,-336.9987 684.6932,-337.8618 687.5362,-344.2585"></polygon>
+</g>
+<!-- ord_03 -->
+<g id="node10" class="node">
+<title>ord_03</title>
+<ellipse fill="none" stroke="#000000" cx="293" cy="-250" rx="133.172" ry="18"></ellipse>
+<text text-anchor="middle" x="293" y="-245.8" font-family="Times,serif" font-size="14.00" fill="#000000">2.3 Ordering and multiplication</text>
+</g>
+<!-- arith_03&#45;&gt;ord_03 -->
+<g id="edge9" class="edge">
+<title>arith_03-&gt;ord_03</title>
+<path fill="none" stroke="#000000" d="M532.1545,-377.5825C513.6166,-367.9877 490.9999,-354.8541 473,-340 453.0707,-323.5538 456.5301,-310.2868 435,-296 417.012,-284.0636 395.6939,-275.0246 375.118,-268.2613"></path>
+<polygon fill="#000000" stroke="#000000" points="376.0033,-264.8709 365.4141,-265.2167 373.9077,-271.5499 376.0033,-264.8709"></polygon>
+</g>
+<!-- ord_07 -->
+<g id="node14" class="node">
+<title>ord_07</title>
+<ellipse fill="none" stroke="#000000" cx="356" cy="-322" rx="70.0867" ry="18"></ellipse>
+<text text-anchor="middle" x="356" y="-317.8" font-family="Times,serif" font-size="14.00" fill="#000000">2.7 Subtraction</text>
+</g>
+<!-- arith_03&#45;&gt;ord_07 -->
+<g id="edge18" class="edge">
+<title>arith_03-&gt;ord_07</title>
+<path fill="none" stroke="#000000" d="M522.7675,-378.9064C489.2985,-367.4857 443.2402,-351.7692 408.0062,-339.7462"></path>
+<polygon fill="#000000" stroke="#000000" points="408.9694,-336.3768 398.3749,-336.4597 406.7087,-343.0017 408.9694,-336.3768"></polygon>
+</g>
+<!-- div_01 -->
+<g id="node15" class="node">
+<title>div_01</title>
+<ellipse fill="none" stroke="#000000" cx="733" cy="-106" rx="69.5399" ry="18"></ellipse>
+<text text-anchor="middle" x="733" y="-101.8" font-family="Times,serif" font-size="14.00" fill="#000000">3.1 Divisibility</text>
+</g>
+<!-- arith_03&#45;&gt;div_01 -->
+<g id="edge20" class="edge">
+<title>arith_03-&gt;div_01</title>
+<path fill="none" stroke="#000000" d="M640.7655,-386.6466C700.7591,-378.9621 778.5484,-364.5231 798,-340 847.9498,-277.027 787.4633,-178.0821 753.3184,-131.6598"></path>
+<polygon fill="#000000" stroke="#000000" points="756.0863,-129.517 747.2819,-123.6234 750.4894,-133.7211 756.0863,-129.517"></polygon>
+</g>
+<!-- ord_04 -->
+<g id="node11" class="node">
+<title>ord_04</title>
+<ellipse fill="none" stroke="#000000" cx="289" cy="-178" rx="136.5899" ry="18"></ellipse>
+<text text-anchor="middle" x="289" y="-173.8" font-family="Times,serif" font-size="14.00" fill="#000000">2.4 Ordering and exponentiation</text>
+</g>
+<!-- arith_04&#45;&gt;ord_04 -->
+<g id="edge11" class="edge">
+<title>arith_04-&gt;ord_04</title>
+<path fill="none" stroke="#000000" d="M544.6988,-304.2784C519.2721,-284.6867 475.9171,-253.1119 435,-232 409.1251,-218.6494 379.1707,-206.9719 353.1532,-197.9238"></path>
+<polygon fill="#000000" stroke="#000000" points="353.9857,-194.5096 343.3912,-194.5868 351.7214,-201.1333 353.9857,-194.5096"></polygon>
+</g>
+<!-- ord_06 -->
+<g id="node13" class="node">
+<title>ord_06</title>
+<ellipse fill="none" stroke="#000000" cx="328" cy="-106" rx="97.7937" ry="18"></ellipse>
+<text text-anchor="middle" x="328" y="-101.8" font-family="Times,serif" font-size="14.00" fill="#000000">2.6 Standard exercises</text>
+</g>
+<!-- arith_04&#45;&gt;ord_06 -->
+<g id="edge14" class="edge">
+<title>arith_04-&gt;ord_06</title>
+<path fill="none" stroke="#000000" d="M556.0758,-304.1168C535.6554,-271.8684 488.8597,-203.3083 435,-160 418.3534,-146.6145 397.8516,-135.281 379.2633,-126.506"></path>
+<polygon fill="#000000" stroke="#000000" points="380.5829,-123.2608 370.0335,-122.28 377.6687,-129.6254 380.5829,-123.2608"></polygon>
+</g>
+<!-- div_04 -->
+<g id="node18" class="node">
+<title>div_04</title>
+<ellipse fill="none" stroke="#000000" cx="733" cy="-34" rx="52.1867" ry="18"></ellipse>
+<text text-anchor="middle" x="733" y="-29.8" font-family="Times,serif" font-size="14.00" fill="#000000">3.4 Primes</text>
+</g>
+<!-- arith_04&#45;&gt;div_04 -->
+<g id="edge25" class="edge">
+<title>arith_04-&gt;div_04</title>
+<path fill="none" stroke="#000000" d="M608.7784,-306.3265C670.4041,-280.646 783.399,-223.1558 830,-132 840.52,-111.422 842.3543,-99.5319 830,-80 820.2556,-64.5943 803.7986,-54.2459 787.1804,-47.3391"></path>
+<polygon fill="#000000" stroke="#000000" points="788.0184,-43.9144 777.4267,-43.6579 785.5467,-50.4635 788.0184,-43.9144"></polygon>
+</g>
+<!-- arith_05&#45;&gt;ord_06 -->
+<g id="edge15" class="edge">
+<title>arith_05-&gt;ord_06</title>
+<path fill="none" stroke="#000000" d="M705.2952,-305.2719C660.3288,-274.0167 558.9075,-205.7833 467,-160 440.5959,-146.8469 410.1595,-134.7047 384.5111,-125.2793"></path>
+<polygon fill="#000000" stroke="#000000" points="385.5281,-121.925 374.9339,-121.8035 383.1399,-128.5051 385.5281,-121.925"></polygon>
+</g>
+<!-- ord_02 -->
+<g id="node9" class="node">
+<title>ord_02</title>
+<ellipse fill="none" stroke="#000000" cx="157" cy="-322" rx="110.6052" ry="18"></ellipse>
+<text text-anchor="middle" x="157" y="-317.8" font-family="Times,serif" font-size="14.00" fill="#000000">2.2 Ordering and addition</text>
+</g>
+<!-- ord_01&#45;&gt;ord_02 -->
+<g id="edge8" class="edge">
+<title>ord_01-&gt;ord_02</title>
+<path fill="none" stroke="#000000" d="M233.0386,-377.3008C220.0508,-367.8552 203.6025,-355.8927 189.3285,-345.5117"></path>
+<polygon fill="#000000" stroke="#000000" points="191.3641,-342.6644 181.2181,-339.6132 187.2469,-348.3255 191.3641,-342.6644"></polygon>
+</g>
+<!-- ord_05 -->
+<g id="node12" class="node">
+<title>ord_05</title>
+<ellipse fill="none" stroke="#000000" cx="79" cy="-250" rx="62.5663" ry="18"></ellipse>
+<text text-anchor="middle" x="79" y="-245.8" font-family="Times,serif" font-size="14.00" fill="#000000">2.5 Induction</text>
+</g>
+<!-- ord_01&#45;&gt;ord_05 -->
+<g id="edge13" class="edge">
+<title>ord_01-&gt;ord_05</title>
+<path fill="none" stroke="#000000" d="M199.1497,-387.8843C141.1105,-380.3302 56.8022,-365.2781 37,-340 24.9404,-324.6056 29.9286,-314.2323 37,-296 40.0245,-288.2019 45.0551,-280.9169 50.6037,-274.5469"></path>
+<polygon fill="#000000" stroke="#000000" points="53.4324,-276.6519 57.7968,-266.9977 48.3646,-271.8231 53.4324,-276.6519"></polygon>
+</g>
+<!-- ord_01&#45;&gt;ord_07 -->
+<g id="edge19" class="edge">
+<title>ord_01-&gt;ord_07</title>
+<path fill="none" stroke="#000000" d="M279.1934,-377.3008C292.5052,-367.7163 309.4162,-355.5403 323.9796,-345.0547"></path>
+<polygon fill="#000000" stroke="#000000" points="326.1677,-347.7921 332.238,-339.1086 322.0776,-342.1113 326.1677,-347.7921"></polygon>
+</g>
+<!-- ord_02&#45;&gt;ord_03 -->
+<g id="edge10" class="edge">
+<title>ord_02-&gt;ord_03</title>
+<path fill="none" stroke="#000000" d="M189.5754,-304.7542C207.8919,-295.0572 230.966,-282.8415 250.6699,-272.41"></path>
+<polygon fill="#000000" stroke="#000000" points="252.5453,-275.3775 259.7456,-267.6053 249.2701,-269.1909 252.5453,-275.3775"></polygon>
+</g>
+<!-- ord_03&#45;&gt;ord_04 -->
+<g id="edge12" class="edge">
+<title>ord_03-&gt;ord_04</title>
+<path fill="none" stroke="#000000" d="M291.9906,-231.8314C291.5628,-224.131 291.0541,-214.9743 290.5787,-206.4166"></path>
+<polygon fill="#000000" stroke="#000000" points="294.0724,-206.2037 290.023,-196.4133 287.0831,-206.592 294.0724,-206.2037"></polygon>
+</g>
+<!-- ord_03&#45;&gt;div_01 -->
+<g id="edge21" class="edge">
+<title>ord_03-&gt;div_01</title>
+<path fill="none" stroke="#000000" d="M350.9208,-233.7093C387.0308,-223.3552 434.3843,-209.4176 476,-196 548.4927,-172.6272 631.5336,-143.0257 683.1315,-124.2936"></path>
+<polygon fill="#000000" stroke="#000000" points="684.5033,-127.519 692.7048,-120.8118 682.1107,-120.9406 684.5033,-127.519"></polygon>
+</g>
+<!-- div_02 -->
+<g id="node16" class="node">
+<title>div_02</title>
+<ellipse fill="none" stroke="#000000" cx="548" cy="-106" rx="97.8382" ry="18"></ellipse>
+<text text-anchor="middle" x="548" y="-101.8" font-family="Times,serif" font-size="14.00" fill="#000000">3.2 Euclidean division</text>
+</g>
+<!-- ord_03&#45;&gt;div_02 -->
+<g id="edge23" class="edge">
+<title>ord_03-&gt;div_02</title>
+<path fill="none" stroke="#000000" d="M348.0469,-233.509C375.1302,-224.3014 407.7309,-211.5404 435,-196 467.2152,-177.6409 499.909,-150.47 521.7841,-130.7884"></path>
+<polygon fill="#000000" stroke="#000000" points="524.301,-133.23 529.3329,-123.9063 519.585,-128.057 524.301,-133.23"></polygon>
+</g>
+<!-- ord_04&#45;&gt;ord_06 -->
+<g id="edge16" class="edge">
+<title>ord_04-&gt;ord_06</title>
+<path fill="none" stroke="#000000" d="M298.8413,-159.8314C303.2627,-151.6688 308.5704,-141.87 313.4385,-132.8827"></path>
+<polygon fill="#000000" stroke="#000000" points="316.6115,-134.3734 318.2969,-123.9134 310.4565,-131.0393 316.6115,-134.3734"></polygon>
+</g>
+<!-- ord_04&#45;&gt;div_01 -->
+<g id="edge22" class="edge">
+<title>ord_04-&gt;div_01</title>
+<path fill="none" stroke="#000000" d="M407.8805,-169.0226C479.985,-162.1067 573.5024,-150.5147 655,-132 664.4011,-129.8643 674.2708,-127.0457 683.7074,-124.0534"></path>
+<polygon fill="#000000" stroke="#000000" points="684.9347,-127.3344 693.3469,-120.8934 682.7542,-120.6827 684.9347,-127.3344"></polygon>
+</g>
+<!-- ord_04&#45;&gt;div_04 -->
+<g id="edge26" class="edge">
+<title>ord_04-&gt;div_04</title>
+<path fill="none" stroke="#000000" d="M250.0339,-160.7175C238.582,-153.5758 227.4156,-144.0856 221,-132 210.1637,-111.5868 205.1879,-96.8552 221,-80 254.3647,-44.4343 610.7905,-59.3465 659,-52 666.5434,-50.8505 674.4464,-49.3045 682.1635,-47.5992"></path>
+<polygon fill="#000000" stroke="#000000" points="683.2028,-50.9512 692.1555,-45.2856 681.6237,-44.1316 683.2028,-50.9512"></polygon>
+</g>
+<!-- ord_05&#45;&gt;ord_06 -->
+<g id="edge17" class="edge">
+<title>ord_05-&gt;ord_06</title>
+<path fill="none" stroke="#000000" d="M87.1841,-232.026C97.393,-211.5964 116.7534,-178.6715 143,-160 171.2901,-139.8748 207.0411,-127.1925 239.5567,-119.2258"></path>
+<polygon fill="#000000" stroke="#000000" points="240.587,-122.5796 249.532,-116.9018 238.9987,-115.7622 240.587,-122.5796"></polygon>
+</g>
+<!-- ord_05&#45;&gt;div_04 -->
+<g id="edge27" class="edge">
+<title>ord_05-&gt;div_04</title>
+<path fill="none" stroke="#000000" d="M124.9124,-237.6575C133.5402,-235.5844 142.5154,-233.5925 151,-232 187.5027,-225.1487 788.0363,-160.3747 812,-132 826.9119,-114.3433 823.5186,-100.0361 812,-80 804.8074,-67.4888 792.7574,-58.0619 780.2082,-51.1067"></path>
+<polygon fill="#000000" stroke="#000000" points="781.5475,-47.8619 771.0445,-46.4703 778.3873,-54.108 781.5475,-47.8619"></polygon>
+</g>
+<!-- div_01&#45;&gt;div_04 -->
+<g id="edge28" class="edge">
+<title>div_01-&gt;div_04</title>
+<path fill="none" stroke="#000000" d="M733,-87.8314C733,-80.131 733,-70.9743 733,-62.4166"></path>
+<polygon fill="#000000" stroke="#000000" points="736.5001,-62.4132 733,-52.4133 729.5001,-62.4133 736.5001,-62.4132"></polygon>
+</g>
+<!-- div_03 -->
+<g id="node17" class="node">
+<title>div_03</title>
+<ellipse fill="none" stroke="#000000" cx="550" cy="-34" rx="100.1823" ry="18"></ellipse>
+<text text-anchor="middle" x="550" y="-29.8" font-family="Times,serif" font-size="14.00" fill="#000000">3.3 Modular arithmetic</text>
+</g>
+<!-- div_02&#45;&gt;div_03 -->
+<g id="edge24" class="edge">
+<title>div_02-&gt;div_03</title>
+<path fill="none" stroke="#000000" d="M548.5047,-87.8314C548.7186,-80.131 548.9729,-70.9743 549.2106,-62.4166"></path>
+<polygon fill="#000000" stroke="#000000" points="552.7094,-62.5066 549.4885,-52.4133 545.7121,-62.3122 552.7094,-62.5066"></polygon>
+</g>
+<!-- div_02&#45;&gt;div_04 -->
+<g id="edge29" class="edge">
+<title>div_02-&gt;div_04</title>
+<path fill="none" stroke="#000000" d="M589.9794,-89.6621C619.5116,-78.1685 658.9545,-62.8177 688.9384,-51.1483"></path>
+<polygon fill="#000000" stroke="#000000" points="690.2669,-54.3871 698.3166,-47.4984 687.728,-47.8637 690.2669,-54.3871"></polygon>
+</g>
+</g>
+</svg>
