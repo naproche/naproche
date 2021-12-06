@@ -49,12 +49,12 @@ Peter:
 
 Marcel:
 
-  [ ] arithmetic für texen subfiles (main files), großes pdf; Eliminate Makarius' error
-  [x] set-theory -------------- " --------------------------; Beautify
+  [X] arithmetic
+  [ ] set-theory (TODO: Beautify)
   [X] cantor-schroeder-bernstein
-  [X] cantor (Marcel zufrieden)
-  [X] furstenberg OK
-  [X] macros.ftl.tex
+  [X] cantor
+  [X] furstenberg
+  [X] macros
   [X] russell
 
 6. Koordination der Ontologie- oder Preliminaries-Dateien von Adrian
