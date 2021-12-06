@@ -1,16 +1,14 @@
-\documentclass[../../set-theory.ftl.tex]{subfiles}
-
 \begin{document}
   \section{Invertible functions}
 
   \begin{forthel}
-    [readtex \path{set-theory/sections/02_functions/02_image-and-preimage.ftl.tex}]
+    [readtex \path{set-theory/sections/02_functions/02_image-and-preimage.ftl.tex}][prove on][check on]
   \end{forthel}
 
   \begin{forthel}
-  Let $u,v,w$ denote elements.
-  Let $x,y,z$ denote sets.
-  Let $f,g,h$ denote functions.
+    Let $u,v,w$ denote elements.
+    Let $x,y,z$ denote sets.
+    Let $f,g,h$ denote functions.
   \end{forthel}
 
 
@@ -82,7 +80,8 @@
     \begin{proof}
       $f^{-1}$ is a function from $y$ to $x$.
       Indeed $\range(f) = y$ and $\dom(f) = x$.
-      Hence $f^{-1}$ is a function from $y$ onto $x$.
+      $f^{-1}$ is a function onto $x$.
+      Indeed for any $u \in x$ we have $f^{-1}(f(u)) = u$.
       $f^{-1}$ is the inverse of $f$.
       Thus $f \circ f^{-1} = \id{y}$ and $f^{-1} \circ f = \id{x}$.
       Therefore $f$ is the inverse of $f^{-1}$ (by \ref{SetTheory_02_03_587168}).
@@ -127,6 +126,7 @@
 
       Let us show that $((g \circ f) \circ h) = \id{z}$.
         We have $f \circ (f^{-1} \circ g^{-1}) = (f \circ f^{-1}) \circ g^{-1}$ (by \nameref{SetTheory_02_01_200419}).
+        Indeed $f \circ (f^{-1} \circ g^{-1})$ and $(f \circ f^{-1}) \circ g^{-1}$ are functions of $z$.
         $f \circ h$ is a function from $z$ to $y$.
         Hence
         \[   (g \circ f) \circ h \]
