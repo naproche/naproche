@@ -10,6 +10,7 @@
 # --------
 
 Let x and y agree stand for x = y.
+Let x agrees with y stand for x = y.
 
 
 # Elementhood relation
