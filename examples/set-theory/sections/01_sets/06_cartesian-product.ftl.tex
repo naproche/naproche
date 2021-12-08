@@ -1,83 +1,35 @@
 \documentclass[../../set-theory.ftl.tex]{subfiles}
 
 \begin{document}
-  \section{Ordered pairs and Cartesian products}
+  \begin{comment}
+    \begin{forthel}
+      % Uncomment for debugging:
+
+      %[prove off][check off]
+      %[readtex set-theory/sections/01_sets/01_sets.ftl.tex]
+      %[readtex set-theory/sections/01_sets/02_powerset.ftl.tex]
+      %[readtex set-theory/sections/01_sets/03_regularity.ftl.tex]
+      %[readtex set-theory/sections/01_sets/04_symmetric-difference.ftl.tex]
+      %[readtex set-theory/sections/01_sets/05_ordered-pairs.ftl.tex]
+      %[prove on][check on]
+    \end{forthel}
+  \end{comment}
+
+
+  \section{Cartesian products}
 
   \begin{forthel}
     [readtex \path{set-theory/sections/01_sets/02_powerset.ftl.tex}]
   \end{forthel}
 
   \begin{forthel}
+    [readtex \path{set-theory/sections/01_sets/05_ordered-pairs.ftl.tex}]
+  \end{forthel}
+
+  \begin{forthel}
     Let $u,v,w,u',v',w'$ denote elements.
     Let $x,y,z,x',y',z'$ denote sets.
   \end{forthel}
-
-
-  \subsection{Ordered pairs}
-
-  Note that Naproche provides an built-in function symbol $(\cdot,\cdot)$, i.e. for any two objects $a,b$ there is an object $(a,b)$.
-
-  \begin{forthel}
-    \begin{axiom}
-      $(u,v) = \set{\set{u}, \set{u,v}}$.
-    \end{axiom}
-
-    \begin{proposition}\label{SetTheory_01_05_366682}
-      Let $u,v$ be elements.
-      Then $(u,v)$ is an element.
-    \end{proposition}
-    \begin{proof}
-      $\set{u}$ and $\set{u,v}$ are elements.
-      Hence $(u,v) = \set{\set{u}, \set{u,v}}$.
-      Thus $(u,v)$ is an element.
-    \end{proof}
-
-    \begin{proposition}\label{SetTheory_01_05_270653}
-      If $(u,v) = (u',v')$ then $u = u'$ and $v = v'$.
-    \end{proposition}
-    \begin{proof}
-      Assume $(u,v) = (u',v')$.
-      (1) Then $\set{\set{u}, \set{u,v}} = \set{\set{u'}, \set{u',v'}}$.
-      Hence ($\set{u} = \set{u'}$ or $\set{u} = \set{u',v'}$) and ($\set{u,v} = \set{u'}$ or $\set{u,v} = \set{u',v'}$).
-      Thus ($\set{u} = \set{u'}$ and ($\set{u,v} = \set{u'}$ or $\set{u,v} = \set{u',v'}$)) or ($\set{u} = \set{u',v'}$ and ($\set{u,v} = \set{u'}$ or $\set{u,v} = \set{u',v'}$)).
-
-      Case $\set{u} = \set{u'}$ and ($\set{u,v} = \set{u'}$ or $\set{u,v} = \set{u',v'}$).
-        We have $\set{u} = \set{u'}$.
-        Hence $u = u'$.
-
-        Case $\set{u,v} = \set{u'}$.
-          Then $u = u'= v$.
-          Hence $\set{\set{u}, \set{u,u}} = \set{\set{u}, \set{u,v'}}$ (by 1).
-          Thus $\set{\set{u}} = \set{\set{u}, \set{u,v'}}$.
-          Therefore $\set{u} = \set{u,v'}$.
-          Consequently $v' = u = v$.
-        End.
-
-        Case $\set{u,v} = \set{u',v'}$.
-          Then $\set{u,v} = \set{u,v'}$.
-          Hence $v = v'$.
-        End.
-      End.
-
-      Case $\set{u} = \set{u',v'}$ and ($\set{u,v} = \set{u'}$ or $\set{u,v} = \set{u',v'}$).
-        We have $\set{u} = \set{u',v'}$.
-        Hence $u = u'$.
-
-        Case $\set{u,v} = \set{u'}$.
-          Then $u = v = u'$.
-          Hence $v = v'$.
-        End.
-
-        Case $\set{u,v} = \set{u',v'}$.
-          Then $\set{u,v} = \set{u,v'}$.
-          Hence $v = v'$.
-        End.
-      End.
-    \end{proof}
-  \end{forthel}
-
-
-  \subsection{Cartesian products}
 
   \begin{forthel}
     \begin{lemma}
@@ -108,7 +60,7 @@
 
     Let the Cartesian product of $x$ and $y$ stand for $x \times y$.
 
-    \begin{proposition}\label{SetTheory_01_05_773790}
+    \begin{proposition}\label{SetTheory_01_06_773790}
       $(u,v) \in x \times y$ iff $u \in x$ and $v \in y$.
     \end{proposition}
     \begin{proof}
@@ -126,7 +78,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}\label{SetTheory_01_05_279635}
+    \begin{proposition}\label{SetTheory_01_06_279635}
       $x \times y$ is empty iff $x$ is empty or $y$ is empty.
     \end{proposition}
     \begin{proof}
@@ -146,7 +98,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}\label{SetTheory_01_05_784919}
+    \begin{proposition}\label{SetTheory_01_06_784919}
       $\set{u} \times \set{v} = \set{(u,v)}$.
     \end{proposition}
     \begin{proof}
@@ -171,7 +123,7 @@
   \subsection{Computation laws}
 
   \begin{forthel}
-    \begin{proposition}\label{SetTheory_01_05_197314}
+    \begin{proposition}\label{SetTheory_01_06_197314}
       \[ x \subseteq y \implies x \times z \subseteq y \times z. \]
     \end{proposition}
     \begin{proof}
@@ -182,7 +134,7 @@
       Hence $(u,v) \in y \times z$.
     \end{proof}
 
-    \begin{proposition}\label{SetTheory_01_05_238807}
+    \begin{proposition}\label{SetTheory_01_06_238807}
       Assume that $x$ and $x'$ are nonempty.
       \[ (x \times x') \subseteq (y \times y') \iff (\text{$x \subseteq y$ and $x' \subseteq y'$}). \]
     \end{proposition}
@@ -204,7 +156,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}\label{SetTheory_01_05_138531}
+    \begin{proposition}\label{SetTheory_01_06_138531}
       \[ ((x \cup y) \times z) = (x \times z) \cup (y \times z). \]
     \end{proposition}
     \begin{proof}
@@ -227,7 +179,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}\label{SetTheory_01_05_575129}
+    \begin{proposition}\label{SetTheory_01_06_575129}
       \[ x \times (y \cup z) = (x \times y) \cup (x \times z). \]
     \end{proposition}
     \begin{proof}
@@ -249,7 +201,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}\label{SetTheory_01_05_811990}
+    \begin{proposition}\label{SetTheory_01_06_811990}
       \[ ((x \cap y) \times z) = (x \times z) \cap (y \times z). \]
     \end{proposition}
     \begin{proof}
@@ -271,7 +223,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}\label{SetTheory_01_05_427022}
+    \begin{proposition}\label{SetTheory_01_06_427022}
       \[ x \times (y \cap z) = (x \times y) \cap (x \times z). \]
     \end{proposition}
     \begin{proof}
@@ -292,7 +244,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}\label{SetTheory_01_05_517847}
+    \begin{proposition}\label{SetTheory_01_06_517847}
       \[ ((x \setminus y) \times z) = (x \times z) \setminus (y \times z). \]
     \end{proposition}
     \begin{proof}
@@ -315,7 +267,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}\label{SetTheory_01_05_773842}
+    \begin{proposition}\label{SetTheory_01_06_773842}
       \[ x \times (y \setminus z) = (x \times y) \setminus (x \times z). \]
     \end{proposition}
     \begin{proof}
@@ -336,7 +288,7 @@
       End.
     \end{proof}
 
-    \begin{proposition}\label{SetTheory_01_05_472623}
+    \begin{proposition}\label{SetTheory_01_06_472623}
       Assume that $x$ and $x'$ are nonempty or $y$ and $y'$ are nonempty.
       Then \[ (x \times x') = (y \times y') \iff (\text{$x = y$ and $x' = y'$}). \]
     \end{proposition}
@@ -368,7 +320,7 @@
       Case $x = y$ and $x' = y'$. Trivial.
     \end{proof}
 
-    \begin{proposition}\label{SetTheory_01_05_261950}
+    \begin{proposition}\label{SetTheory_01_06_261950}
       \[ ((x \times y) \cap (x' \times y')) = (x \cap x') \times (y \cap y'). \]
     \end{proposition}
     \begin{proof}
@@ -384,14 +336,14 @@
       Let us show that $(x \cap x') \times (y \cap y') \subseteq (x \times y) \cap (x' \times y')$.
         Let $w \in (x \cap x') \times (y \cap y')$.
         Take elements $u,v$ such that $w = (u,v)$.
-        Then $u \in x \cap x'$ and $v \in y \cap y'$ (by \ref{SetTheory_01_05_773790}).
+        Then $u \in x \cap x'$ and $v \in y \cap y'$ (by \ref{SetTheory_01_06_773790}).
         Hence $u \in x,x'$ and $v \in y,y'$.
         Thus $w \in x \times y$ and $w \in x' \times y'$.
         Therefore $w \in (x \times y) \cap (x' \times y')$.
       End.
     \end{proof}
 
-    \begin{proposition}\label{SetTheory_01_05_687547}
+    \begin{proposition}\label{SetTheory_01_06_687547}
       \[ ((x \times y) \cup (x' \times y')) \subseteq (x \cup x') \times (y \cup y'). \]
     \end{proposition}
     \begin{proof}
@@ -403,7 +355,7 @@
       Thus $w \in (x \cup x') \times (y \cup y')$.
     \end{proof}
 
-    \begin{proposition}\label{SetTheory_01_05_247770}
+    \begin{proposition}\label{SetTheory_01_06_247770}
       \[ ((x \times y) \setminus (x' \times y')) = (x \times (y \setminus y')) \cup ((x \setminus x') \times y). \]
     \end{proposition}
     \begin{proof}
@@ -422,7 +374,7 @@
         Let $w \in (x \times (y \setminus y')) \cup ((x \setminus x') \times y)$.
         Then $w \in (x \times (y \setminus y'))$ or $w \in ((x \setminus x') \times y)$.
         Take elements $u,v$ such that $w = (u,v)$.
-        Then ($u \in x$ and $v \in y \setminus y'$) or ($u \in x \setminus x'$ and $v \in y$) (by \ref{SetTheory_01_05_773790}).
+        Then ($u \in x$ and $v \in y \setminus y'$) or ($u \in x \setminus x'$ and $v \in y$) (by \ref{SetTheory_01_06_773790}).
 
         Case $u \in x$ and $v \in y \setminus y'$.
           Then $u \in x$ and $v \in y$.

@@ -1,6 +1,19 @@
 \documentclass[../../set-theory.ftl.tex]{subfiles}
 
 \begin{document}
+  \begin{comment}
+    \begin{forthel}
+      % Uncomment for debugging:
+
+      %[prove off][check off]
+      %[readtex set-theory/sections/01_sets/01_sets.ftl.tex]
+      %[readtex set-theory/sections/01_sets/02_powerset.ftl.tex]
+      %[readtex set-theory/sections/01_sets/03_regularity.ftl.tex]
+      %[prove on][check on]
+    \end{forthel}
+  \end{comment}
+
+
   \section{The symmetric difference}
 
   \begin{forthel}
@@ -35,8 +48,7 @@
       $x \symdiff y = (x \setminus y) \cup (y \setminus x)$.
     \end{proposition}
     \begin{proof}
-      Let us show that $x \symdiff y \subseteq (x \setminus y) \cup
-      (y \setminus x)$.
+      Let us show that $x \symdiff y \subseteq (x \setminus y) \cup (y \setminus x)$.
         Let $u \in x \symdiff y$.
         Then $u \in x \cup y$ and $u \notin x \cap y$.
         Hence ($u \in x$ or $u \in y$) and not ($u \in x$ and $u \in y$).
@@ -49,8 +61,7 @@
         Thus $u \in (x \setminus y) \cup (y \setminus x)$.
       End.
 
-      Let us show that $((x \setminus y) \cup (y \setminus x)) \subseteq
-      x \symdiff y$.
+      Let us show that $((x \setminus y) \cup (y \setminus x)) \subseteq x \symdiff y$.
         % Note that we have to put the LHS in parentheses.
         Let $u \in (x \setminus y) \cup (y \setminus x)$.
         Then ($u \in x$ and $u \notin y$) or ($u \in y$ and $u \notin x$).
@@ -114,7 +125,8 @@
         End.
 
         (A 2) Case $u \in z \setminus ((x \setminus y) \cup (y \setminus x))$.
-          Then $u \in z$. $u \notin x \setminus y$ and $u \notin y \setminus x$.
+          Then $u \in z$.
+          $u \notin x \setminus y$ and $u \notin y \setminus x$.
           Hence not ($u \in x \setminus y$ or $u \in y \setminus x$).
           Thus not (($u \in x$ and $u \notin y$) or ($u \in y$ and
           $u \notin x$)).

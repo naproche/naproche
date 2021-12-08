@@ -1,8 +1,28 @@
+\documentclass[../../set-theory.ftl.tex]{subfiles}
+
 \begin{document}
+  \begin{comment}
+    \begin{forthel}
+      % Uncomment for debugging:
+
+      %[prove off][check off]
+      %[readtex set-theory/sections/01_sets/01_sets.ftl.tex]
+      %[readtex set-theory/sections/01_sets/02_powerset.ftl.tex]
+      %[readtex set-theory/sections/01_sets/03_regularity.ftl.tex]
+      %[readtex set-theory/sections/01_sets/04_symmetric-difference.ftl.tex]
+      %[readtex set-theory/sections/01_sets/05_ordered-pairs.ftl.tex]
+      %[readtex set-theory/sections/01_sets/06_cartesian-product.ftl.tex]
+      %[readtex set-theory/sections/02_functions/01_functions.ftl.tex]
+      %[readtex set-theory/sections/02_functions/02_image-and-preimage.ftl.tex]
+      %[prove on][check on]
+    \end{forthel}
+  \end{comment}
+
+
   \section{Invertible functions}
 
   \begin{forthel}
-    [readtex \path{set-theory/sections/02_functions/02_image-and-preimage.ftl.tex}][prove on][check on]
+    [readtex \path{set-theory/sections/02_functions/02_image-and-preimage.ftl.tex}]
   \end{forthel}
 
   \begin{forthel}
@@ -14,7 +34,7 @@
 
   \subsection{Definitions and basic properties}
 
-  \begin{forthel}
+  \begin{forthel}[prove off][check off]
     \begin{definition}
       An inverse of $f$ is a function $g$ from $\range(f)$ to $\dom(f)$ such that \[ f(u) = v \iff g(v) = u \] for all $u \in \dom(f)$ and all $v \in \dom(g)$.
     \end{definition}
@@ -39,6 +59,7 @@
       End.
 
       Hence the thesis (by \nameref{SetTheory_02_01_200419}).
+      Indeed $\dom(g) = \dom(g')$.
     \end{proof}
 
     \begin{definition}
@@ -121,7 +142,9 @@
       $f^{-1}$ is a function from $y$ onto $x$.
       $g^{-1}$ is a function from $z$ onto $y$.
       Take $h = f^{-1} \circ g^{-1}$.
+      [prover vampire] % No clue why, but E cannot prove this
       Then $h$ is a function from $z$ onto $x$ (by \ref{SetTheory_02_01_205975}).
+      [prover eprover]
       $g \circ f$ is a function from $x$ to $z$.
 
       Let us show that $((g \circ f) \circ h) = \id{z}$.

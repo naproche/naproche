@@ -11,7 +11,8 @@ A formalization of a ZF-like set theory
     1.2 The powerset  
     1.3 Regularity  
     1.4 The symmetric difference  
-    1.5 The Cartesian product
+    1.5 Ordered pairs  
+    1.6 The Cartesian product
 
 2.  Functions  
 

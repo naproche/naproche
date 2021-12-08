@@ -44,6 +44,8 @@
     Let a superset of $x$ stand for a set $y$ such that $x \subseteq y$.
     Let $y \supseteq x$ stand for $y$ is a superset of $x$.
     Let $y \supset x$ stand for $y \supseteq x$.
+    Let $x$ includes $y$ stand for $y \subseteq x$.
+    Let $y$ is included in $x$ stand for $x$ includes $y$.
 
     \begin{definition}
       A proper subset of $x$ is a subset of $x$ that is not equal to $x$.
@@ -188,8 +190,10 @@
 
     Let $X, Y, Z$ denote systems of sets.
 
+    Let a set of $X$ stand for an element of $X$.
+
     \begin{definition}
-      A system of nonempty sets is a system of sets $X$ such that every element of $X$ is nonempty.
+      A system of nonempty sets is a system of sets $X$ such that every set of $X$ is nonempty.
     \end{definition}
 
     \begin{proposition}\label{SetTheory_01_01_261697}
@@ -201,7 +205,7 @@
     \end{proposition}
 
     \begin{definition}
-      A system of subsets of $x$ is a set $X$ such that every element of $X$ is a subset of $x$.
+      A system of subsets of $x$ is a set $X$ such that every set of $X$ is a subset of $x$.
     \end{definition}
 
     \begin{proposition}\label{SetTheory_01_01_366869}
@@ -397,6 +401,34 @@
       Hence there is no $x \in \emptyset$ that has an element.
       Thus $\bigcup \emptyset$ is empty.
       Therefore $\bigcup \emptyset = \emptyset$.
+    \end{proof}
+  \end{forthel}
+
+
+  \subsection{Partitions}
+
+  \begin{forthel}
+    \begin{definition}
+      A partition of $x$ is a system of sets $P$ such that every element of $x$ is contained in some set of $P$ and every member of $P$ is a nonempty subset of $x$ and for any set $A,B$ of $P$ we have $A \cap B = \emptyset$.
+    \end{definition}
+
+    \begin{proposition}\label{SetTheory_01_01_493610}
+      Let $P$ be a partition of $x$.
+      Then $x = \bigcup P$.
+    \end{proposition}
+    \begin{proof}
+      Let us show that $x \subseteq \bigcup P$.
+        Let $u \in x$.
+        Take a set $A$ of $P$ such that $u \in A$.
+        Then we have $u \in \bigcup P$.
+      End.
+
+      Let us show that $\bigcup P \subseteq x$.
+        Let $u \in \bigcup P$.
+        Then we can take a set $A$ of $P$ such that $u \in A$.
+        $A$ is a subset of $x$.
+        Hence $u \in x$.
+      End.
     \end{proof}
   \end{forthel}
 
@@ -616,8 +648,7 @@
         Thus $u \in (x \setminus y) \cap (x \setminus z)$.
       End.
 
-      Let us show that $((x \setminus y) \cap (x \setminus z)) \subseteq
-      x \setminus (y \cup z)$.
+      Let us show that $((x \setminus y) \cap (x \setminus z)) \subseteq x \setminus (y \cup z)$.
         Let $u \in (x \setminus y) \cap (x \setminus z)$.
         Then $u \in x \setminus y$ and $u \in x \setminus z$.
         Hence ($u \in x$ and $u \notin y$) and ($u \in x$ and $u \notin z$).
