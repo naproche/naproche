@@ -4,8 +4,8 @@ text \<open>
   Note: Isabelle/jEdit allows to open hyperlinks (URLs, files, directories)
   via CONTROL-mouse-click (Linux, Windows) or COMMAND-mouse-click (macOS).
 
-  PDF files in the jEdit File Browser can be opened via a right-mouse-click
-  menu and "Open in Desktop".
+  PDF files can be opened directly by these hyperlinks, while the jEdit File
+  Browser requires the action "Open in Desktop" via the right-click menu.
 \<close>
 
 theory Intro
@@ -22,19 +22,27 @@ text \<open>
   mathematical texts. The development of the Naproche proof checker is carried
   out at the University of Bonn, coordinated by Peter Koepke
   (koepke@math.uni-bonn.de). The source code repository is
-  \<^url>\<open>https://github.com/naproche-community/naproche\<close>
+  \<^url>\<open>https://github.com/naproche/naproche\<close>
 
   The Naproche system is part of the long-term Naproche (Natural Proof
   Checking) project with Bernhard Schröder, at the Universities of Bonn and
   Duisburg-Essen (\<^url>\<open>http://naproche.net\<close>). Andrei Paskevich kindly let us
   take over his source code of SAD (System for Automated Deduction,
-  \<^url>\<open>http://nevidal.org/sad.en.html\<close>) and gave essential advice. Program
-  development was carried out by Steffen Frerix, Adrian De Lon and Anton
-  Lorenzen. Adrian Marti and Marcel Schütz contributed to the present release.
+  \<^url>\<open>http://nevidal.org/sad.en.html\<close>) and gave essential advice.
+  Development of the program and examples was carried out by:
+
+    \<^item> Adrian De Lon
+    \<^item> Adrian Marti
+    \<^item> Anton Lorenzen
+    \<^item> Makarius Wenzel
+    \<^item> Marcel Schütz
+    \<^item> Steffen Frerix
 
   Note that the Naproche system is research quality experimental software
   which may exhibit unexpected behaviour and bugs. Naproche does not yet
-  produce independently checkable correctness certificates for checked texts.
+  produce independently checkable correctness certificates for checked texts,
+  but \<^system_option>\<open>naproche_isabelle\<close> enables limited integration with
+  Isabelle/HOL.
 \<close>
 
 
@@ -94,7 +102,7 @@ text \<open>
   as follows:
 
     \<^item> \<^verbatim>\<open>Naproche-SAD\<close> as command-line tool and TCP server, written in
-      Haskell: \<^dir>\<open>$NAPROCHE_HOME/src/SAD\<close>
+      Haskell: \<^dir>\<open>$NAPROCHE_HOME/src/Naproche\<close> and \<^dir>\<open>$NAPROCHE_HOME/src/SAD\<close>
 
     \<^item> Isabelle/Haskell modules to help connecting the main executable to the
       Isabelle/PIDE framework: \<^file>\<open>~~/src/Tools/Haskell/Haskell.thy\<close> --- the
@@ -106,8 +114,8 @@ text \<open>
     \<^item> Isabelle/Scala integration for the \<^verbatim>\<open>.ftl\<close> and \<^verbatim>\<open>.ftl.tex\<close> file-formats:
       \<^file>\<open>$NAPROCHE_HOME/Isabelle/src/scala/naproche_file_format.scala\<close>
 
-    \<^item> Isabelle component settings to glue everything together:
-      \<^file>\<open>$NAPROCHE_HOME/etc/settings\<close>
+    \<^item> Isabelle component setup to glue everything together:
+      \<^file>\<open>$NAPROCHE_HOME/etc/build.props\<close> and \<^file>\<open>$NAPROCHE_HOME/etc/settings\<close>
 \<close>
 
 end
