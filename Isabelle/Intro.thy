@@ -36,6 +36,7 @@ text \<open>
     \<^item> Anton Lorenzen
     \<^item> Makarius Wenzel
     \<^item> Marcel Schütz
+    \<^item> Peter Koepke
     \<^item> Steffen Frerix
 
   Note that the Naproche system is research quality experimental software
@@ -43,6 +44,15 @@ text \<open>
   produce independently checkable correctness certificates for checked texts,
   but \<^system_option>\<open>naproche_isabelle\<close> enables limited integration with
   Isabelle/HOL.
+
+  The following CADE System description covers an earlier version of
+  Isabelle/Naproche, according to Isabelle2021 (February 2021):
+
+    De Lon A., Koepke P., Lorenzen A., Marti A., Schütz M., Wenzel M. (2021)
+    The Isabelle/Naproche Natural Language Proof Assistant. In: Platzer A.,
+    Sutcliffe G. (eds) Automated Deduction – CADE 28. CADE 2021. Lecture Notes
+    in Computer Science, vol 12699. Springer, Cham.
+    \<^url>\<open>https://doi.org/10.1007/978-3-030-79876-5_36\<close>
 \<close>
 
 
