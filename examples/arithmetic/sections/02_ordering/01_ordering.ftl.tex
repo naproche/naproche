@@ -1,6 +1,20 @@
 \documentclass[../../arithmetic.ftl.tex]{subfiles}
 
 \begin{document}
+  \begin{comment}
+    \begin{forthel}
+      % Uncomment for debugging:
+
+      %[prove off][check off]
+      %[readtex arithmetic/sections/01_arithmetic/01_peano-axioms.ftl.tex]
+      %[readtex arithmetic/sections/01_arithmetic/02_addition.ftl.tex]
+      %[readtex arithmetic/sections/01_arithmetic/03_multiplication.ftl.tex]
+      %[readtex arithmetic/sections/01_arithmetic/04_exponentiation.ftl.tex]
+      %[readtex arithmetic/sections/01_arithmetic/05_factorial.ftl.tex]
+      %[prove on][check on]
+    \end{forthel}
+  \end{comment}
+
 
   \section{Ordering}
 
@@ -146,7 +160,8 @@
     \end{proposition}
     \begin{proof}
       Assume $n < m < k$.
-      Take positive natural numbers $a,b$ such that $m = n + a$ and $k = m + b$.
+      Take a positive natural number $a$ such that $m = n + a$.
+      Take a positive natural number $b$ such that $k = m + b$.
       Then $k = (n + a) + b = n + (a + b)$.
       $a + b$ is positive.
       Hence $n < k$.

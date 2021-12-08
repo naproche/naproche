@@ -1,6 +1,30 @@
 \documentclass[../../arithmetic.ftl.tex]{subfiles}
 
 \begin{document}
+  \begin{comment}
+    \begin{forthel}
+      % Uncomment for debugging:
+
+      %[prove off][check off]
+      %[readtex arithmetic/sections/01_arithmetic/01_peano-axioms.ftl.tex]
+      %[readtex arithmetic/sections/01_arithmetic/02_addition.ftl.tex]
+      %[readtex arithmetic/sections/01_arithmetic/03_multiplication.ftl.tex]
+      %[readtex arithmetic/sections/01_arithmetic/04_exponentiation.ftl.tex]
+      %[readtex arithmetic/sections/01_arithmetic/05_factorial.ftl.tex]
+      %[readtex arithmetic/sections/02_ordering/01_ordering.ftl.tex]
+      %[readtex arithmetic/sections/02_ordering/02_ordering-and-addition.ftl.tex]
+      %[readtex arithmetic/sections/02_ordering/03_ordering-and-multiplication.ftl.tex]
+      %[readtex arithmetic/sections/02_ordering/04_ordering-and-exponentiation.ftl.tex]
+      %[readtex arithmetic/sections/02_ordering/05_induction.ftl.tex]
+      %[readtex arithmetic/sections/02_ordering/06_standard-exercises.ftl.tex]
+      %[readtex arithmetic/sections/02_ordering/07_subtraction.ftl.tex]
+      %[readtex arithmetic/sections/03_divisibility/01_divisibility.ftl.tex]
+      %[readtex arithmetic/sections/03_divisibility/02_euclidean-division.ftl.tex]
+      %[readtex arithmetic/sections/03_divisibility/03_modular-arithmetic.ftl.tex]
+      %[prove on][check on]
+    \end{forthel}
+  \end{comment}
+
 
   \section{Primes}
 
@@ -61,14 +85,11 @@
     \end{proposition}
   \end{forthel}
 
-  Let us have a look at some easy examples of prime numbers. For a human it is
-  in general not a big deal to find the first few primes. But as the following
-  reveals, it is not as easy as seems to give a fully formal proof of the
-  assertion that a certain number actually is prime.
+  Let us have a look at what the first few prime numbers are.
 
   \begin{forthel}
     \begin{proposition}\label{Arithmetic_03_04_175431}
-      $2$ and $3$ are prime.
+      $2$, $3$, $5$ and $7$ are prime.
     \end{proposition}
     \begin{proof}
       Let us show that $2$ is prime.
@@ -82,21 +103,55 @@
         Let $k$ be a divisor of $3$.
         Then $0 < k \leq 3$.
         Hence $k = 1$ or $k = 2$ or $k = 3$.
-
-        $2$ does not divide $3$. \\
-        Proof.
-          Assume the contrary.
-          Take a natural number $l$ such that $3 = 2 \cdot l$.
-          If $l = 0$ then $3 = 2 \cdot 0 = 0$.
-          If $l = 1$ then $3 = 2 \cdot 1 = 2$.
-          If $l \geq 2$ then $3 = 2 \cdot l \geq 2 \cdot 2 = 4 > 3$.
-          Hence it is wrong that $3 = 2 \cdot l$.
-          Contradiction.
-        Qed.
-
+        $2$ does not divide $3$.
         Therefore $k = 1$ or $k = 3$.
         Thus $k$ is a trivial divisor of $3$.
       End.
+
+      Let us show that $5$ is prime.
+        Let $k$ be a divisor of $5$.
+        Then $0 < k \leq 5$.
+        Hence $k = 1$ or $k = 2$ or $k = 3$ or $k = 4$ or $k = 5$.
+        $2$ does not divide $5$.
+        $3$ does not divide $5$.
+        $4$ does not divide $5$.
+        Therefore $k = 1$ or $k = 5$.
+        Thus $k$ is a trivial divisor of $5$.
+      End.
+
+      Let us show that $7$ is prime.
+        Let $k$ be a divisor of $7$.
+        Then $0 < k \leq 7$.
+        Hence $k = 1$ or $k = 2$ or $k = 3$ or $k = 4$ or $k = 5$ or $k = 6$ or $k = 7$.
+        $2$ does not divide $7$.
+        $3$ does not divide $7$.
+        $4$ does not divide $7$.
+        $5$ does not divide $7$.
+        $6$ does not divide $7$.
+        Therefore $k = 1$ or $k = 7$.
+        Thus $k$ is a trivial divisor of $7$.
+      End.
+    \end{proof}
+
+    \begin{proposition}\label{Arithmetic_03_04_985728}
+      $4$, $6$, $8$ and $9$ are compound.
+    \end{proposition}
+    \begin{proof}
+      $4 = 2 \cdot 2$.
+      Hence $2$ divides $4$.
+      Thus $4$ is compound.
+
+      $6 = 2 \cdot 3$.
+      Hence $2$ divides $6$.
+      Thus $6$ is compound.
+
+      $8 = 2 \cdot 4$.
+      Hence $2$ divides $8$.
+      Thus $8$ is compound.
+
+      $9 = 3 \cdot 3$.
+      Hence $3$ divides $9$.
+      Thus $9$ is compound.
     \end{proof}
 
     \begin{proposition}\label{Arithmetic_03_04_520376}
@@ -123,7 +178,7 @@
     \begin{proof}
       Define \[ P = \class{n \in \mathbb{N} | \text{if $n > 1$ then $n$ has a prime divisor}}. \]
 
-      Let us show that for every natural number $n$ if $P$ contains all predecessors of $n$ then $P$ contains $n$.
+      Let us show that (1) for every natural number $n$ if $P$ contains all predecessors of $n$ then $P$ contains $n$.
         Let $n$ be a natural number.
         Assume that $P$ contains all predecessors of $n$.
         $n = 0$ or $n = 1$ or $n$ is prime or $n$ is composite.
@@ -143,7 +198,7 @@
         End.
       End.
 
-      Thus every natural number belongs to $P$ (by \ref{Arithmetic_02_05_167446}).
+      Thus every natural number belongs to $P$ (by \ref{Arithmetic_02_05_167446}, 1).
     \end{proof}
 
     \begin{proposition}\label{Arithmetic_03_04_306779}
