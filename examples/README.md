@@ -1,12 +1,54 @@
 # On the Examples
 
-This folder contains a selection of example formalizations in the Naproche natural language proof checking system. The examples come in two dialects of the ForTheL controlled natural language: `.ftl` files use ASCII formating and are close to the original ForTheL language of the System for Automated Deduction (SAD); `.ftl.tex` files use standard LaTeX commands and can directly be typeset by LaTeX using appropriate preambles and style files.
+This folder contains a selection of example formalizations in the Naproche natural language proof checking system. The examples come in two dialects of the ForTheL controlled natural language: `.ftl` files use an ASCII formatted language that is close to the original ForTheL language of the System for Automated Deduction (SAD); `.ftl.tex` files use standard LaTeX commands and can directly be typeset by LaTeX using appropriate preambles and style files.
+Some examples are formalized in both formats. 
 
-The examples are chosen to demonstrate possibilities of the current Naproche which is included as a component in the Isabelle 2021-1 platform. The examples include single files devoted to single theorems from mathematical fields like number theory or analysis as well as groups of formalizations on arithmetic or set theory interlinked by "`read`" commands. There are also some odd examples about a mutilated checkerboard or recreational puzzles.
+The examples are chosen to demonstrate possibilities of the current Naproche which is included as a component in the Isabelle 2021-1 platform. A main emphasis is on the presentation of naturally readable formalizations in LaTeX which we include as PDF-printouts. Putting arbitrary LaTeX material around the actual formalizations allows a literary style of documents which includes explanations and even graphics. The examples include single files as well as folders of formalizations that are interlinked by "`read`" commands. The spectrum reaches from recreational puzzles to undergraduate-level theorems:
 
-A main emphasis is on the presentation of naturally readable formalizations in LaTeX which we include as PDF-printouts. Putting arbitrary LaTeX material around the actual formalizations allows a literary style of documents which includes explanations and even graphics. 
+* arithmetic - elementary Peano arithmetic
+
+* geometry - beginnings of Tarski geometry
+
+* set-theory - elementary set theory
+
+* agatha - a logic puzzle set in "Dreadsbury Mansion"
+
+* cantor - Cantor diagonal argument
+
+* cantor-schroeder-bernstein - classical result in cardinality theory
+
+* checkerboard - the mutilated checkerboard
+
+* chinese - Chinese remainder theorem
+
+* dwarfs - a hat puzzles
+
+* euclid - classical proof of infinity of primes
+
+* furstenberg - topological proof of infinity of primes
+
+* group - Naproche rendering of a Lean file on groups
+
+* hilbert-calculus - proving derivations in a Hilbert calculus
+
+* maximum_modulus - theorem from complex analysis
+
+* newman - Newman's theorem on rewriting systems
+
+* numbers - introduction of number systems for Rudin's Principles of Mathematical Analysis
+
+* preliminaries - basic theory of classes and sets
+
+* prime no square - irrationality of square roots
+
+* russell - Russell's paradox
+
+* tarski - Tarski fixpoint theorem for lattices
+ 
 The further development of Naproche will focus on the `.ftl.tex` format in order to build readable libraries of computer-verifiable mathematics. The classical `.ftl` format will be kept up for some time since it allows rapid experiments without worrying about LaTeX particulars. Over time, however, the formats will diverge, as we are going to extract semantic context out of typesetting information (parsing depending on LaTeX text versus math mode, matrix notation, ...).
 
+
+## Requirements
 
 Note that Naproche requires significant computing resources, 
 since its checking mechanisms involve the continuous operation of an ATP server.
