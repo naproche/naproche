@@ -5,8 +5,8 @@
 \usepackage{amsfonts}
 \usepackage{xurl}
 \usepackage{csquotes}
-\usepackage{../lib/tex/naproche}
-\usepackage{../lib/tex/basicnotions}
+\usepackage[nonumbers]{../lib/tex/naproche}
+\usepackage{../lib/tex/basic-notions}
 
 \newcommand{\N}{\mathrm{N}}
 
@@ -163,7 +163,7 @@ Marcel Schütz (2021)}
 
     \begin{signature}
       Let $X$ be a set.
-      $X$ is finite is an atom.
+      $X$ is finite is a relation.
     \end{signature}
 
     Let $X$ is infinite stand for $X$ is not finite.
@@ -174,7 +174,7 @@ Marcel Schütz (2021)}
     \end{axiom}
   \end{forthel}
 
-  An important step towards Furstenberg's proof is to show that the arithmetic
+  An important step towards Furstenberg's proof is to show that arithmetic
   sequences are closed.
 
   \begin{forthel}
@@ -235,7 +235,7 @@ Marcel Schütz (2021)}
 
         If $n$ belongs to $\bigcup \mathbb{P}$ then $n$ has a prime divisor. \\
         Proof.
-          Assume $n$ belongs to $\bigcup \mathbb{P}$.
+          Assume that $n$ belongs to $\bigcup \mathbb{P}$.
           Take a prime number $r$ such that $n \in \N_{0, r}$.
           Hence $n \equiv 0 \pmod{r}$.
           Thus $n \mod r = 0 \mod r = 0$.

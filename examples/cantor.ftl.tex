@@ -3,7 +3,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{xurl}
-\usepackage{../lib/tex/naproche}
+\usepackage[nonumbers]{../lib/tex/naproche}
 
 \title{Cantor's Theorem}
 \author{}
@@ -22,14 +22,15 @@
     There is no surjection from a set onto its powerset.
   \end{quotedtheorem}
 
-  The notions and set-theoretic axioms used to formulate and prove it are
-  taken from the following files:
+  Some basic notions and set-theoretic axioms used to formulate and prove it are
+  taken from:
 
   \begin{forthel}
     [readtex \path{preliminaries.ftl.tex}]
   \end{forthel}
 
-  On the basis of them the theorem and its proof can be formalized as follows.
+  Moreover, we need to provide certain definitions concerning surjective
+  functions and the notion of the powerset.
 
   \begin{forthel}
     \begin{definition}
@@ -52,8 +53,11 @@
     \begin{axiom}
       The powerset of any set is a set.
     \end{axiom}
+  \end{forthel}
 
+  On this basis Cantor's theorem and its proof can be formalized as follows.
 
+  \begin{forthel}
     \begin{theorem}[Cantor]
       Let $M$ be a set.
       No function of $M$ surjects onto the powerset of $M$.
