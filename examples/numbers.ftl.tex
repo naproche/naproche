@@ -1,0 +1,468 @@
+\documentclass{article}
+\usepackage[english]{babel}
+\usepackage{enumerate, latexsym, amssymb, amsmath}
+\usepackage{framed}
+\newenvironment{forthel}{\begin{leftbar}}{\end{leftbar}}
+
+%%%%%%%%%% Start TeXmacs macros
+\newcommand{\tmaffiliation}[1]{\\ #1}
+\newcommand{\tmem}[1]{{\em #1\/}}
+\newenvironment{enumeratenumeric}{\begin{enumerate}[1.] }{\end{enumerate}}
+\newenvironment{proof}{\noindent\textbf{Proof\ }}{\hspace*{\fill}$\Box$\medskip}
+\newenvironment{quoteenv}{\begin{quote} }{\end{quote}}
+\newtheorem{axiom}{Axiom}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{signature}{Signature}
+\newtheorem{proposition}{Proposition}
+%%%%%%%%%% End TeXmacs macros
+
+\newcommand{\event}{UITP 2018}
+\newcommand{\dom}{Dom}
+\newcommand{\fun}{aFunction}
+\newcommand{\sym}{sym}
+\newcommand{\halfline}{{\vspace{3pt}}}
+\newcommand{\tab}{{\hspace{1cm}}}
+\newcommand{\ball}[2]{B_{#1}(#2)}
+\newcommand{\llbracket}{[}
+\newcommand{\rrbracket}{]}
+\newcommand{\less}[1]{<_{#1}}
+\newcommand{\greater}[1]{>_{#1}}
+\newcommand{\leeq}[1]{{\leq}_{#1}}
+\newcommand{\supr}[1]{\mathrm{sup}_{#1}}
+
+\begin{document}
+
+\title{Numbers for Rudin}
+
+\author{Peter Koepke}
+
+\date{August 1, 2018}
+
+\maketitle
+
+\subsection{Set-Theoretic Terminology}
+\begin{forthel}
+
+
+Let $A,B$ stand for sets.
+Let $x \in A$ denote $x$ is an element of $A$.
+Let $x$ is \emph{in} $A$ denote $x$ is an element of $A$.
+Let $x \notin A$ denote $x$ is not an element of $A$.
+
+\begin{signature}[1.3] The \emph{empty set} is the set that has no elements.
+Let $\emptyset$ denote the empty set.
+\end{signature}
+
+\begin{definition} $A$ is \emph{nonempty} iff $A$ has an element.
+\end{definition}
+
+\begin{definition} A subset of $B$ is a set $A$ such that every element 
+of $A$ is an element of $B$. 
+Let $A \subseteq B$ stand for $A$ is a subset of $B$.
+Let $B \supseteq A$ stand for $A$ is a subset of $B$.
+\end{definition}
+
+\begin{definition} A proper subset of $B$ is a subset $A$ of $B$ such that there is an element of $B$ that is not in $A$.
+\end{definition}
+
+\begin{proposition} $A \subseteq A$. \end{proposition}
+
+\begin{proposition} If $A \subseteq B$ and $B \subseteq A$ then $A = B$. \end{proposition}
+
+\begin{definition} $A \cup B = \{x \mid x \in A \vee x \in B\}$. \end{definition}
+
+\end{forthel}
+
+\section{The real field}
+
+\begin{forthel}
+[number/-s]
+
+\begin{signature} A \emph{real number} is a notion.\end{signature}
+\begin{signature} $\mathbb{R}$ is the set of \emph{real numbers}.
+Let $x,y,z$ denote real numbers.
+\end{signature}
+
+\begin{signature}[1.12 A1] $x + y$ is a real number.
+Let the \emph{sum} of $x$ and $y$ denote $x + y$.\end{signature}
+
+\begin{signature}[1.12 M1] $x \cdot y$ is a real number.
+Let the product of $x$ and $y$ denote $x \cdot y$.\end{signature}
+
+\begin{signature}[1.5] $x < y$ is an atom.
+Let $x > y$ stand for $y < x$.
+Let $x \leq y$ stand for $x < y \vee x = y$.
+Let $x \geq y$ stand for $y \leq x$.\end{signature}
+
+\begin{axiom}[1.5(i)] $x < y \wedge x \neq y \wedge \neg y < x$
+or $\neg x < y \wedge x = y \wedge \neg y < x$
+or $\neg x < y \wedge x \neq y \wedge y < x$.\end{axiom}
+
+\begin{axiom}[1.5(ii)] If $x < y$ and $y < z$ then $x < z$.
+\end{axiom}
+
+\begin{proposition} $x \leq y$ iff not $x > y$.\end{proposition}
+
+\begin{axiom}[1.12 A2] $x + y = y + x$.\end{axiom}
+
+\begin{axiom}[1.12 A3] $(x + y) + z = x + (y + z)$.\end{axiom}
+
+\begin{signature}[1.12 A4] $0$ is a real number such that
+for every real number $x$ $x + 0 = x$.\end{signature}
+
+\begin{signature}[1.12 A5] $-x$ is a real number such that $x + (-x) = 0$.
+\end{signature}
+
+\begin{axiom}[1.12 M2] $x \cdot y = y \cdot x$.\end{axiom}
+
+\begin{axiom}[1.12 M3] $(x \cdot y) \cdot z = x \cdot (y \cdot z)$.
+\end{axiom}
+
+\begin{signature}[1.12 M4] $1$ is a real number such that $1 \neq 0$ and 
+for every real number $x$ $1 \cdot x = x$.\end{signature}
+
+\begin{signature}[1.12 M5] Assume $x \neq 0$. $1/x$ is a real number
+such that $x * (1/x) = 1$.\end{signature}
+
+\begin{axiom}[1.12 D] $x \cdot (y + z) = (x \cdot y) + (x \cdot z)$.
+\end{axiom}
+\begin{proposition}[Dist1] $(y \cdot x) + (z \cdot x) = (y + z) \cdot x$.
+\end{proposition}
+
+\begin{proposition}[1-14 a] If $x + y = x + z$ then $y = z$.
+\end{proposition}
+\begin{proof} Assume $x + y = x + z$. Then 
+$$y = (-x+x) + y = -x + (x+y) = -x + (x+z) = (-x+x) + z = z.$$
+\end{proof}
+
+\begin{proposition} If $x + y = x$ then $y = 0$.\end{proposition}
+\begin{proposition} If $x + y = 0$ then $y = -x$.\end{proposition}
+\begin{proposition}[1.14 d] $-(-x) = x$.\end{proposition}
+
+
+\begin{proposition}[1.15 a] If $x \neq 0$ and $x \cdot y = x \cdot z$ 
+then $y = z$. \end{proposition}
+\begin{proof} Let $x \neq 0$ and $x \cdot y = x \cdot z$.
+$$y = 1 \cdot y = ((1/x) \cdot x) \cdot y = (1/x) \cdot (x \cdot y) =
+(1/x) \cdot (x \cdot z) = ((1/x) \cdot x) \cdot z = 1 \cdot z = z.$$
+\end{proof}
+
+\begin{proposition} If $x \neq 0$ and $x \cdot y = x$ then $y = 1$.
+\end{proposition}
+\begin{proposition} If $x \neq 0$ and $x \cdot y = 1$ then $y = 1/x$.
+\end{proposition}
+
+\begin{proposition} If $x \neq 0$ then $1/(1/x) = x$.
+\end{proposition}
+\begin{proposition}[1.16 a] $0 \cdot x = 0$. \end{proposition}
+\begin{proposition} If $x \neq 0$ and $y \neq 0$ then $x \cdot y \neq 0$.
+\end{proposition}
+\begin{proposition} $(-x) \cdot y = -(x \cdot y)$. \end{proposition}
+\begin{proof} $(x \cdot y) + (-x \cdot y) = (x + (-x)) \cdot y 
+= 0 \cdot y = 0$.
+\end{proof}
+
+\begin{proposition} $-x = -1 \cdot x$. \end{proposition}
+
+\begin{proposition}[1.16 d] $(-x) \cdot (-y) = x \cdot y$.
+\end{proposition}
+\begin{proof} $(-x)\cdot (-y)=-(x\cdot(-y))=-((-y)\cdot x)=
+-(-(y\cdot x))=y\cdot x=x\cdot y$. 
+\end{proof}
+
+Let $x - y$ stand for $x + (-y)$.
+Let $\frac{x}{y}$ stand for $x \cdot (1/y)$.
+
+\end{forthel}
+
+\section{The real ordered field}
+
+\begin{forthel}
+
+\begin{axiom}[1.17 i] If $y < z$ then $x + y < x + z$ and $y + x < z + x$.
+\end{axiom}
+
+\begin{axiom}[1.17 ii] If $x > 0$ and $y > 0$ then $x \cdot y > 0$.
+\end{axiom}
+
+\begin{definition} $x$ is \emph{positive} iff $x > 0$.
+\end{definition}
+
+\begin{definition} $x$ is \emph{negative} iff $x < 0$.
+\end{definition}
+
+
+\begin{proposition}[1.18 a] $x > 0$ iff $-x < 0$. \end{proposition}
+
+\begin{proposition}[1.18 b] If $x > 0$ and $y < z$ then $x * y < x * z$.
+\end{proposition}
+\begin{proof} Let $x > 0$ and $y < z$.
+$z - y > y - y = 0$.
+$x \cdot (z - y) > 0$.
+$x \cdot z = (x \cdot (z - y)) + (x \cdot y)$.
+$(x \cdot (z - y)) + (x \cdot y)  > 0 + (x \cdot y)$ (by 1.17 i).
+$0 + (x \cdot y) = x \cdot y$.
+\end{proof}
+
+\begin{proposition}[1.18 bb] If $x > 0$ and $y < z$ then 
+$y \cdot x < z \cdot x$.
+\end{proposition}
+
+\begin{proposition}[1.18 d] If $x \neq 0$ then $x \cdot x > 0$.
+\end{proposition}
+
+
+\begin{proposition}[1.18 dd] $1 > 0$.\end{proposition}
+
+\begin{proposition} $x < y$ iff $-x > -y$.\end{proposition}
+\begin{proof}
+$x < y \Leftrightarrow x - y < 0$. 
+$x - y < 0 \Leftrightarrow (-y) + x < 0$. 
+$(-y) + x < 0 \Leftrightarrow (-y)+(-(-x)) < 0$.
+$(-y)+(-(-x)) < 0 \Leftrightarrow (-y)-(-x) < 0$.
+$(-y)-(-x) < 0 \Leftrightarrow -y < -x$.
+\end{proof}
+
+\begin{proposition}[1.18 c] If $x < 0$ and $y < z$ then 
+$x \cdot y > x \cdot z$.\end{proposition}
+\begin{proof} Let $x < 0$ and $y < z$.
+$-x > 0$.
+$(-x)\cdot y < (-x)\cdot z$ (by 1.18 b).
+$-(x\cdot y) < -(x\cdot z)$.
+\end{proof}
+
+\begin{proposition}[1.18 cc] If $x < 0$ and $y < z$ then 
+$y \cdot x > z \cdot x$.\end{proposition}
+
+\begin{proposition}[Next] $x + 1 > x$.\end{proposition}
+\begin{proposition} $x - 1 < x$. \end{proposition}
+
+
+\begin{proposition} If $0 < x$ then $0 < 1/x$.
+\end{proposition}
+[prove off]
+
+\begin{proposition} Assume $0 < x < y$. Then $1/y < 1/x$.
+\end{proposition}
+\begin{proof} 
+Case $1/x < 1/y$. Then
+$$1 = x \cdot (1/x) = (1/x) \cdot x < (1/x) \cdot y = 
+y \cdot (1/x) < y \cdot (1/y) = 1.$$ 
+Contradiction. end.
+
+Case $1/x = 1/y$. Then
+$$1 = x * (1/x) < y * (1/y) = 1.$$ 
+Contradiction. end.
+
+Case $1/y < 1/x$. end.
+\end{proof}
+
+\section{Upper and lower bounds}
+
+[/prove]
+
+\begin{definition} Let $E$ be a subset of $\mathbb{R}$. 
+An \emph{upper bound} of $E$ is a
+real number $b$ such that for all elements $x$ of $E$ $x \leq b$.
+\end{definition}
+
+\begin{definition} Let $E$ be a subset of $\mathbb{R}$. $E$ is 
+\emph{bounded above} iff
+$E$ has an upper bound.\end{definition}
+
+\begin{definition} Let $E$ be a subset of $\mathbb{R}$. 
+A \emph{lower bound} of $E$ is a
+real number $b$ such that for all elements $x$ of $E$ $x \geq b$.
+\end{definition}
+
+\begin{definition} Let $E$ be a subset of $\mathbb{R}$. 
+$E$ is \emph{bounded below} iff
+$E$ has a lower bound.\end{definition}
+
+\begin{definition} Let $E$ be a subset of $\mathbb{R}$ such that $E$ is bounded above.
+A \emph{least upper bound} of $E$ is a real number $a$ such that
+$a$ is an upper bound of $E$ and for all $x$ if $x < a$ then $x$ 
+is not an upper bound of $E$.\end{definition}
+
+\begin{definition} Let $E$ be a subset of $\mathbb{R}$ such that $E$ 
+is bounded below.
+A \emph{greatest lower bound} of $E$ is a real number $a$ such that
+$a$ is a lower bound of $E$ and for all $x$ if $x > a$ then $x$ is 
+not a lower bound of $E$.\end{definition}
+
+\begin{axiom} Assume that $E$ is a nonempty subset of $\mathbb{R}$ 
+such that $E$ is bounded
+above. Then $E$ has a least upper bound.
+\end{axiom}
+
+\begin{definition}. Let $E$ be a subset of $\mathbb{R}$. 
+$E^- = \{-x \mid x \in E\}$.\end{definition}
+
+\begin{lemma} Let $E$ be a subset of $\mathbb{R}$.
+$x$ is an upper bound of $E$ iff $-x$ is a lower bound of $E^-$.
+\end{lemma}
+
+\begin{theorem} Assume that $E$ is a nonempty subset of $\mathbb{R}$ 
+such that $E$ is bounded below.
+Then $E$ has a greatest lower bound.\end{theorem}
+\begin{proof}
+Take a lower bound $a$ of $E$.
+$-a$ is an upper bound of $E^-$.
+Take a least upper bound $b$ of $E^-$.
+Let us show that $-b$ is a greatest lower bound of $E$.
+$-b$ is a lower bound of $E$. Let $c$ be a lower bound of $E$. 
+Then $-c$ is an upper bound of $E^-$.
+end. \end{proof}
+
+\end{forthel}
+
+\section{The rational numbers}
+
+\begin{signature} A \emph{rational number} is a real number.
+Let $p,q,r$ stand for rational numbers.\end{signature}
+
+\begin{definition} $\mathbb{Q}$ is the set of rational numbers.
+\end{definition}
+
+$\mathbb{Q}$ is a subfield of $\mathbb{R}$:
+
+\begin{lemma} $\mathbb{Q} \subseteq \mathbb{R}$.\end{lemma}
+
+\begin{axiom} $p + q$, $p \cdot q$, $0$, $-p$, $1$ are 
+rational numbers.\end{axiom}
+
+\begin{axiom} Assume $p \neq 0$. $1/p$ is a rational number.
+\end{axiom}
+
+\begin{axiom} There exists a subset $A$ of $\mathbb{Q}$ 
+such that ($A$ is bounded above and
+$x$ is a least upper bound of $A$).
+\end{axiom}
+
+\begin{theorem} 
+$\mathbb{R} = \{x \in \mathbb{R} \mid \text{ there exists }
+A \subseteq \mathbb{Q}\text{ such that }
+A\text{ is bounded above\\ and }x\text{ is a least upper
+bound of }A\}$.
+\end{theorem}
+
+\section{Integers}
+
+[integer/-s]
+
+\begin{signature} An \emph{integer} is a rational number.
+Let $a,b$ stand for integers.\end{signature}
+
+\begin{definition} $\mathbb{Z}$ is the set of integers.\end{definition}
+
+$\mathbb{Z}$ is a discrete subring of $\mathbb{Q}$:
+
+\begin{axiom} $a + b$, $a * b$, $0$, $-a$, $1$ are integers.
+\end{axiom}
+
+\begin{axiom} There is no integer $a$ such that $0 < a < 1$.
+\end{axiom}
+
+\begin{axiom} There exist $a,b$ such that 
+$a \neq 0 \wedge p = \frac{b}{a}$.
+\end{axiom}
+
+\begin{theorem}[Archimedes1] $\mathbb{Z}$ is not bounded above.
+\end{theorem}
+\begin{proof} Assume the contrary.
+$\mathbb{Z}$ is nonempty. Take a least upper bound 
+$b$ of $\mathbb{Z}$.
+Let us show that $b - 1$ is an upper bound of $\mathbb{Z}$.
+Let $x \in \mathbb{Z}$. $x + 1 \in \mathbb{Z}$. 
+$x + 1 \leq b$.
+$x = (x + 1) - 1 \leq b - 1$.
+end.
+\end{proof}
+
+\begin{theorem}[Archimedes2] There is an integer $a$ 
+such that $x \leq a$.\end{theorem}
+\begin{proof} $x$ is not an upper bound of $\mathbb{Z}$ 
+(by Archimedes1).
+Take $a \in \mathbb{Z}$ such that not $a \leq x$.
+Then $x \leq a$.
+\end{proof}
+
+\section{The natural numbers}
+
+\begin{definition} $\mathbb{N}$ is the set of positive integers.
+Let $m,n$ stand for positive integers.\end{definition}
+
+\begin{definition} $\{x\} = \{y \in \mathbb{R} \mid y = x\}$.
+\end{definition}
+
+\begin{lemma} $\mathbb{Z} = ({\mathbb{N}}^- \cup {0}) \cup \mathbb{N}$.
+\end{lemma}
+
+\begin{theorem}[Induction Theorem] Assume $A \subseteq \mathbb{N}$ 
+and $1 \in A$ and for all $n \in A$ $n + 1 \in A$.
+Then $A = \mathbb{N}$.\end{theorem}
+
+\begin{proof}
+Let us show that every element of $\mathbb{N}$ is an element of $A$. 
+	Let $n \in \mathbb{N}$.
+	Assume the contrary.
+	Define $F = \{ j \in \mathbb{N} \mid j \notin A\}$.
+	$F$ is nonempty. $F$ is bounded below.
+  Take a greatest lower bound $a$ of $F$.
+	Let us show that $a+1$ is a lower bound of $F$.
+		Let $x \in F$. $x - 1 \in \mathbb{Z}$.
+		
+		Case $x - 1 < 0$. Then $0 < x < 1$. Contradiction. end.
+
+		Case $x - 1 = 0$. Then $x = 1$ and $1 \notin A$. Contradiction. end.
+		
+		Case $x - 1 > 0$. Then $x - 1 \in \mathbb{N}$. $x - 1 \in F$.
+			$a \leq x - 1$.
+			$a + 1 \leq (x - 1) + 1 = x$.
+			end.
+	end.
+	
+	Then $a+1 > a$ (by Next).
+	Contradiction.
+end.
+\end{proof}
+
+\section{Archimedian properties}
+
+\begin{theorem}[1.20 a] Let $x > 0$. Then there is a 
+positive integer $n$ such that $n \cdot x > y$. \end{theorem}
+
+\begin{proof} Take an integer $a$ such that $a > \frac{y}{x}$.
+Take a positive integer $n$ such that $n > a$.
+$n > \frac{y}{x}$ and $n \cdot x > (\frac{y}{x})*x = y$.
+\end{proof}
+
+
+\begin{theorem}[1.20 b] Let $x < y$. Then there exists 
+$p \in \mathbb{Q}$ such that $x < p < y$. \end{theorem}
+\begin{proof} Assume $x < y$. Then $y - x > 0$.
+Take a positive integer $n$ such that 
+$n\cdot (y-x) > 1$ (by 1.20 a).
+[prove off]
+Take an integer $m$ such that
+$m -1 \leq n \cdot x < m$.
+Then
+$$n \cdot x < m = (m - 1) + 1 <= (n\cdot x) + 1 < 
+(n\cdot x) + (n\cdot (y-x)) = n \cdot (x + (y - x)) = n \cdot y.$$
+[/prove]
+$m \leq (n\cdot x) + 1 < n \cdot y$.
+Let us show that $m < n\cdot y$.
+
+Case $m < (n\cdot x) + 1$. end.
+
+Case $m = (n\cdot x) + 1$. end.
+end.
+$\frac{m}{n} < \frac{n\cdot y}{n}$. Indeed $m < n\cdot y$ and $1/n > 0$.
+Then
+$$x = \frac{n\cdot x}{n} < \frac{m}{n} < \frac{n\cdot y}{n} = y.$$
+Let $p = \frac{m}{n}$. Then $p \in \mathbb{Q}$ and $x < p < y$.
+\end{proof}
+
+\end{document}
