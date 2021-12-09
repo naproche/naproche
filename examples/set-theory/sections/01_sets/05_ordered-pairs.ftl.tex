@@ -1,0 +1,121 @@
+\documentclass[../../set-theory.ftl.tex]{subfiles}
+
+\begin{document}
+  \begin{comment}
+    \begin{forthel}
+      % Uncomment for debugging:
+
+      %[prove off][check off]
+      %[readtex set-theory/sections/01_sets/01_sets.ftl.tex]
+      %[readtex set-theory/sections/01_sets/02_powerset.ftl.tex]
+      %[readtex set-theory/sections/01_sets/03_regularity.ftl.tex]
+      %[readtex set-theory/sections/01_sets/04_symmetric-difference.ftl.tex]
+      %[prove on][check on]
+    \end{forthel}
+  \end{comment}
+
+
+  \section{Ordered pairs}
+
+  \begin{forthel}
+    [readtex \path{set-theory/sections/01_sets/01_sets.ftl.tex}]
+  \end{forthel}
+
+  \begin{forthel}
+    Let $u,v,w,u',v',w'$ denote elements.
+    Let $x,y,z,x',y',z'$ denote sets.
+  \end{forthel}
+
+  Note that Naproche provides an built-in function symbol $(\cdot,\cdot)$, i.e. for any two objects $a,b$ there is an object $(a,b)$.
+
+  \begin{forthel}
+    \begin{axiom}
+      $(u,v) = \set{\set{u}, \set{u,v}}$.
+    \end{axiom}
+
+    \begin{proposition}\label{SetTheory_01_05_366682}
+      Let $u,v$ be elements.
+      Then $(u,v)$ is an element.
+    \end{proposition}
+    \begin{proof}
+      $\set{u}$ and $\set{u,v}$ are elements.
+      Hence $(u,v) = \set{\set{u}, \set{u,v}}$.
+      Thus $(u,v)$ is an element.
+    \end{proof}
+
+    \begin{proposition}\label{SetTheory_01_05_270653}
+      If $(u,v) = (u',v')$ then $u = u'$ and $v = v'$.
+    \end{proposition}
+    \begin{proof}
+      Assume $(u,v) = (u',v')$.
+      (1) Then $\set{\set{u}, \set{u,v}} = \set{\set{u'}, \set{u',v'}}$.
+      Hence ($\set{u} = \set{u'}$ or $\set{u} = \set{u',v'}$) and ($\set{u,v} = \set{u'}$ or $\set{u,v} = \set{u',v'}$).
+      Thus ($\set{u} = \set{u'}$ and ($\set{u,v} = \set{u'}$ or $\set{u,v} = \set{u',v'}$)) or ($\set{u} = \set{u',v'}$ and ($\set{u,v} = \set{u'}$ or $\set{u,v} = \set{u',v'}$)).
+
+      Case $\set{u} = \set{u'}$ and ($\set{u,v} = \set{u'}$ or $\set{u,v} = \set{u',v'}$).
+        We have $\set{u} = \set{u'}$.
+        Hence $u = u'$.
+
+        Case $\set{u,v} = \set{u'}$.
+          Then $u = u'= v$.
+          Hence $\set{\set{u}, \set{u,u}} = \set{\set{u}, \set{u,v'}}$ (by 1).
+          Thus $\set{\set{u}} = \set{\set{u}, \set{u,v'}}$.
+          Therefore $\set{u} = \set{u,v'}$.
+          Consequently $v' = u = v$.
+        End.
+
+        Case $\set{u,v} = \set{u',v'}$.
+          Then $\set{u,v} = \set{u,v'}$.
+          Hence $v = v'$.
+        End.
+      End.
+
+      Case $\set{u} = \set{u',v'}$ and ($\set{u,v} = \set{u'}$ or $\set{u,v} = \set{u',v'}$).
+        We have $\set{u} = \set{u',v'}$.
+        Hence $u = u'$.
+
+        Case $\set{u,v} = \set{u'}$.
+          Then $u = v = u'$.
+          Hence $v = v'$.
+        End.
+
+        Case $\set{u,v} = \set{u',v'}$.
+          Then $\set{u,v} = \set{u,v'}$.
+          Hence $v = v'$.
+        End.
+      End.
+    \end{proof}
+
+    \begin{definition}
+      A pair is an object $x$ such that $x = (u,v)$ for some objects $u,v$.
+    \end{definition}
+
+    Let an ordered pair stand for a pair.
+
+    \begin{definition}
+      Let $x$ be a pair.
+      The first component of $x$ is the object $u$ such that $x = (u,v)$ for some object $v$.
+    \end{definition}
+
+    Let the first entry of $x$ stand for the first component of $x$.
+
+    \begin{definition}
+      Let $x$ be a pair.
+      The second component of $x$ is the object $v$ such that $x = (u,v)$ for some object $u$.
+    \end{definition}
+
+    Let the second entry of $x$ stand for the second component of $x$.
+
+    \begin{lemma}\label{SetTheory_01_05_160632}
+      Let $x$ be a pair.
+      Let $u$ be the first component of $x$ and $v$ be the second component of $x$.
+      Then $x = (u,v)$.
+    \end{lemma}
+
+    \begin{lemma}\label{SetTheory_01_05_204699}
+      Let $x,y$ be pairs.
+      Assume that the first component of $x$ agrees with the first component of $y$ and the second component of $x$ agrees with the second component of $y$.
+      Then $x = y$.
+    \end{lemma}
+  \end{forthel}
+\end{document}
