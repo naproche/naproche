@@ -75,8 +75,6 @@ For XeTeX/LuaTex use
 instead.
 
 
-
-
 ### Features
 
 * Content within the `forthel` environment is marked with a grey background.
@@ -126,9 +124,9 @@ The usage of `\classtext{...}` can cause the compilation error
 the document a second time.
 
 
-## "basicnotions"
+## "basic-notions"
 
-`basicnotions` is used by Naproche's example formalizations of arithmetic
+`basic-notions` is used by Naproche's example formalizations of arithmetic
 and set theory and provides just some new commands for printing mathematical
 symbols and an alternative environment style for top-level sections and proofs.
 
