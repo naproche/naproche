@@ -3,7 +3,7 @@
 A formalization of Peano arithmetic
 
 
-## Content
+## Contents
 
 1.  Arithmetic  
 

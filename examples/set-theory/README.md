@@ -3,7 +3,7 @@
 A formalization of a ZF-like set theory
 
 
-## Content
+## Contents
 
 1.  Sets  
 
