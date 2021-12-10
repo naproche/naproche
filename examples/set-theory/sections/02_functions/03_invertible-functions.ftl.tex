@@ -26,7 +26,7 @@
   \end{forthel}
 
   \begin{forthel}
-    Let $u,v,w$ denote elements.
+    Let $u,v,w$ denote objects.
     Let $x,y,z$ denote sets.
     Let $f,g,h$ denote functions.
   \end{forthel}
@@ -34,7 +34,11 @@
 
   \subsection{Definitions and basic properties}
 
-  \begin{forthel}[prove off][check off]
+  We call a function $f$ \textit{invertible} if there is a function $g$ that
+  undoes the operation of $f$, i.e. applying $f$ after $g$ and applying $g$
+  after $f$ each results in the identity function.
+
+  \begin{forthel}
     \begin{definition}
       An inverse of $f$ is a function $g$ from $\range(f)$ to $\dom(f)$ such that \[ f(u) = v \iff g(v) = u \] for all $u \in \dom(f)$ and all $v \in \dom(g)$.
     \end{definition}
@@ -72,24 +76,24 @@
 
     \begin{proposition}\label{SetTheory_02_03_587168}
       Let $f$ be a function from $x$ onto $y$ and $g$ be a function from $y$ onto $x$.
-      Then $g$ is the inverse of $f$ iff $g \circ f = \id{x}$ and $f \circ g = \id{y}$.
+      Then $g$ is the inverse of $f$ iff $g \circ f = \id_{x}$ and $f \circ g = \id_{y}$.
     \end{proposition}
     \begin{proof}
       Case $g$ is the inverse of $f$.
-        We have $\dom(g \circ f) = \dom(f) = x = \dom(\id{x})$.
+        We have $\dom(g \circ f) = \dom(f) = x = \dom(\id_{x})$.
         For all $u \in x$ we have $(g \circ f)(u) = g(f(u)) = u$.
-        Hence $g \circ f = \id{x}$.
+        Hence $g \circ f = \id_{x}$.
 
-        We have $\dom(f \circ g) = \dom(g) = y = \dom(\id{y})$.
+        We have $\dom(f \circ g) = \dom(g) = y = \dom(\id_{y})$.
         For all $v \in y$ we have $(f \circ g)(v) = f(g(v)) = v$.
-        Hence $f \circ g = \id{y}$.
+        Hence $f \circ g = \id_{y}$.
       End.
 
-      Case $g \circ f = \id{x}$ and $f \circ g = \id{y}$.
+      Case $g \circ f = \id_{x}$ and $f \circ g = \id_{y}$.
         Then $\dom(g) = y = \range(f)$ and $\range(g) = x = \dom(f)$.
         Let $u \in \dom(f)$ and $v \in \dom(g)$.
-        If $f(u) = v$ then $g(v) = g(f(u)) = (g \circ f)(u) = \id{x}(u) = u$.
-        If $g(v) = u$ then $f(u) = f(g(v)) = (f \circ g)(v) = \id{y}(v) = v$.
+        If $f(u) = v$ then $g(v) = g(f(u)) = (g \circ f)(u) = \id_{x}(u) = u$.
+        If $g(v) = u$ then $f(u) = f(g(v)) = (f \circ g)(v) = \id_{y}(v) = v$.
         Hence $f(u) = v$ iff $g(v) = u$.
       End.
     \end{proof}
@@ -104,13 +108,13 @@
       $f^{-1}$ is a function onto $x$.
       Indeed for any $u \in x$ we have $f^{-1}(f(u)) = u$.
       $f^{-1}$ is the inverse of $f$.
-      Thus $f \circ f^{-1} = \id{y}$ and $f^{-1} \circ f = \id{x}$.
+      Thus $f \circ f^{-1} = \id_{y}$ and $f^{-1} \circ f = \id_{x}$.
       Therefore $f$ is the inverse of $f^{-1}$ (by \ref{SetTheory_02_03_587168}).
     \end{proof}
 
     \begin{proposition}\label{SetTheory_02_03_601485}
       Let $f$ be an invertible function from $x$ onto $y$.
-      Then $f \circ f^{-1} = \id{y}$ and $f^{-1} \circ f = \id{x}$.
+      Then $f \circ f^{-1} = \id_{y}$ and $f^{-1} \circ f = \id_{x}$.
     \end{proposition}
     \begin{proof}
       $f^{-1}$ is a function from $y$ onto $x$ (by \ref{SetTheory_02_03_196251}).
@@ -125,12 +129,12 @@
     \begin{proof}
       Let us show that  $f^{-1}(f(u)) = u$ for all $u \in x$.
         Let $u \in x$.
-        Then $f^{-1}(f(u)) = (f^{-1} \circ f)(u) = \id{x}(u) = u$.
+        Then $f^{-1}(f(u)) = (f^{-1} \circ f)(u) = \id_{x}(u) = u$.
       End.
 
       Let us show that $f(f^{-1}(v)) = v$ for all $v \in y$.
         Let $v \in y$.
-        Then $f(f^{-1}(v)) = (f \circ f^{-1})(v) = \id{y}(v) = v$.
+        Then $f(f^{-1}(v)) = (f \circ f^{-1})(v) = \id_{y}(v) = v$.
       End.
     \end{proof}
 
@@ -147,7 +151,7 @@
       [prover eprover]
       $g \circ f$ is a function from $x$ to $z$.
 
-      Let us show that $((g \circ f) \circ h) = \id{z}$.
+      Let us show that $((g \circ f) \circ h) = \id_{z}$.
         We have $f \circ (f^{-1} \circ g^{-1}) = (f \circ f^{-1}) \circ g^{-1}$ (by \nameref{SetTheory_02_01_200419}).
         Indeed $f \circ (f^{-1} \circ g^{-1})$ and $(f \circ f^{-1}) \circ g^{-1}$ are functions of $z$.
         $f \circ h$ is a function from $z$ to $y$.
@@ -156,12 +160,12 @@
         \[ = g \circ (f \circ h) \]
         \[ = g \circ (f \circ (f^{-1} \circ g^{-1})) \]
         \[ = g \circ ((f \circ f^{-1}) \circ g^{-1}) \]
-        \[ = g \circ (\id{y} \circ g^{-1}) \]
+        \[ = g \circ (\id_{y} \circ g^{-1}) \]
         \[ = g \circ g^{-1} \]
-        \[ = \id{z}. \]
+        \[ = \id_{z}. \]
       End.
 
-      Let us show that $h \circ (g \circ f) = \id{x}$.
+      Let us show that $h \circ (g \circ f) = \id_{x}$.
         We have $(f^{-1} \circ g^{-1}) \circ g = f^{-1} \circ (g^{-1} \circ g)$ (by \nameref{SetTheory_02_01_200419}).
         $g \circ f$ is a function from $x$ to $z$.
         Hence
@@ -169,9 +173,9 @@
         \[ = (h \circ g) \circ f \]
         \[ = ((f^{-1} \circ g^{-1}) \circ g) \circ f \]
         \[ = (f^{-1} \circ (g^{-1} \circ g)) \circ f \]
-        \[ = (f^{-1} \circ \id{y}) \circ f \]
+        \[ = (f^{-1} \circ \id_{y}) \circ f \]
         \[ = f^{-1} \circ f \]
-        \[ = \id{x}. \]
+        \[ = \id_{x}. \]
       End.
 
       Thus $h$ is the inverse of $g \circ f$ (by \ref{SetTheory_02_03_587168}).
@@ -217,7 +221,7 @@
         Hence $(f \restr a)(g(v)) = (f \restr a)(u) = f(u) = v$.
       End.
 
-      Thus $g \circ (f \restr a) = \id{a}$ and $(f \restr a) \circ g = \id{f[a]}$.
+      Thus $g \circ (f \restr a) = \id_{a}$ and $(f \restr a) \circ g = \id_{f[a]}$.
       Therefore $g$ is the inverse of $f \restr a$.
     \end{proof}
 
@@ -291,18 +295,21 @@
 
   \subsection{Involutions}
 
+  A special case of invertible functions are \textit{involutions}, i.e.
+  functions which are self-inverse on their domain.
+
   \begin{forthel}
     \begin{definition}
       An involution on $x$ is a selfinverse function $f$ on $x$.
     \end{definition}
 
     \begin{proposition}\label{SetTheory_02_03_305935}
-      $\id{x}$ is an involution on $x$.
+      $\id_{x}$ is an involution on $x$.
     \end{proposition}
     \begin{proof}
-      $\id{x}$ is a function on $x$.
-      We have $\id{x} \circ \id{x} = \id{x}$.
-      Hence $\id{x}$ is selfinverse.
+      $\id_{x}$ is a function on $x$.
+      We have $\id_{x} \circ \id_{x} = \id_{x}$.
+      Hence $\id_{x}$ is selfinverse.
     \end{proof}
 
     \begin{proposition}\label{SetTheory_02_03_610247}
@@ -321,9 +328,9 @@
         \[ = (g \circ f) \circ (f \circ g) \]
         \[ = ((g \circ f) \circ f) \circ g \]
         \[ = (g \circ (f \circ f)) \circ g \]
-        \[ = (g \circ \id{x}) \circ g \]
+        \[ = (g \circ \id_{x}) \circ g \]
         \[ = g \circ g \]
-        \[ = \id{x}. \]
+        \[ = \id_{x}. \]
         Thus $g \circ f$ is selfinverse.
       End.
     \end{proof}

@@ -32,11 +32,14 @@
   \end{forthel}
 
   \begin{forthel}
-    Let $u,v,w$ denote elements.
+    Let $u,v,w$ denote objects.
     Let $x,y,z$ denote sets.
     Let $f,g,h$ denote functions.
   \end{forthel}
 
+  \noindent When dealing with set-systems, we might want to consider functions
+  wich preserve the order given by the $\subseteq$-relation on these
+  set-systems.
 
   \begin{forthel}
     \begin{definition}
@@ -74,8 +77,13 @@
         Thus $f(x) \subseteq f(y)$.
       End.
     \end{proof}
+  \end{forthel}
 
-    \begin{theorem}\label{SetTheory_02_05_636019}
+  \noindent A famous result about order-preserving functions is the
+  \textit{Knaster-Tarski fixed point theorem}:
+
+  \begin{forthel}
+    \begin{theorem}[Knaster-Tarski]\label{SetTheory_02_05_636019}
       Let $h$ be a function from $\pow(x)$ to $\pow(x)$ that preserves subsets.
       Then $h$ has a fixed point.
     \end{theorem}

@@ -25,13 +25,18 @@
   \end{forthel}
 
   \begin{forthel}
-    Let $u,v,w$ denote elements.
+    Let $u,v,w$ denote objects.
     Let $x,y,z$ denote sets.
     Let $f,g,h$ denote functions.
   \end{forthel}
 
 
   \subsection{The image}
+
+  Given an arbitrary set $z$ we can ask ourselves where its elements are mapped
+  to under a function $f$.
+  The resulting set of such an application of $f$ to all elements of $z$ is
+  called the \textit{image} of $z$ under $f$.
 
   \begin{forthel}
     \begin{lemma}
@@ -82,13 +87,13 @@
 
     \begin{proposition}\label{SetTheory_02_02_560324}
       Let $a \subseteq x$.
-      Then $\id{x}[a] = a$.
+      Then $\id_{x}[a] = a$.
     \end{proposition}
     \begin{proof}
-      $\id{x}[a] = \class{\id{x}(u) | u \in a}$.
-      We have $\id{x}(u) = u$ for all $u \in a$.
-      Hence $\id{x}[a] = \class{u | u \in a}$.
-      Thus $\id{x}[a] = a$.
+      $\id_{x}[a] = \class{\id_{x}(u) | u \in a}$.
+      We have $\id_{x}(u) = u$ for all $u \in a$.
+      Hence $\id_{x}[a] = \class{u | u \in a}$.
+      Thus $\id_{x}[a] = a$.
     \end{proof}
 
     \begin{proposition}\label{SetTheory_02_02_196036}
@@ -147,6 +152,11 @@
 
   \subsection{The preimage}
 
+  Similar to the construction of the image of a set under a function, we can
+  consider a set $z$ and ask ourselves which elements of a function $f$ are
+  mapped into $z$.
+  This yields the so-called \textit{preimage} of $z$ under $f$.
+
   \begin{forthel}
     \begin{lemma}
       Let $f$ be a function.
@@ -180,13 +190,13 @@
 
     \begin{proposition}\label{SetTheory_02_02_317629}
       Let $b \subseteq y$.
-      Then $\id{y}^{-}[b] = b$.
+      Then $\id_{y}^{-}[b] = b$.
     \end{proposition}
     \begin{proof}
-      $\id{y}^{-}[b] = \class{u \in y | \id{y}(u) \in b}$.
-      $\id{y}(u) = u$ for all $u \in y$.
-      Hence $\id{y}^{-}[b] = \class{u \in y | u \in b}$.
-      Thus $\id{y}^{-}[b] = b$.
+      $\id_{y}^{-}[b] = \class{u \in y | \id_{y}(u) \in b}$.
+      $\id_{y}(u) = u$ for all $u \in y$.
+      Hence $\id_{y}^{-}[b] = \class{u \in y | u \in b}$.
+      Thus $\id_{y}^{-}[b] = b$.
     \end{proof}
 
     \begin{proposition}\label{SetTheory_02_02_732231}
@@ -216,6 +226,9 @@
 
 
   \subsection{Computation rules}
+
+  To conclude this paragraph let us prove some facts about the image and
+  preimage.
 
   \begin{forthel}
     \begin{proposition}\label{SetTheory_02_02_206888}

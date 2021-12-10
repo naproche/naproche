@@ -24,10 +24,14 @@
   \end{forthel}
 
   \begin{forthel}
-    Let $u,v,w$ denote elements.
+    Let $u,v,w$ denote objects.
     Let $x,y,z$ denote sets.
     Let $f,g,h$ denote functions.
   \end{forthel}
+
+  \noindent In this section we introduce the notion of \textit{functions} as
+  some kind of \enquote{small} maps, i.e. maps whose domains are sets and whose
+  values are objects.
 
 
   \subsection{Function axioms}
@@ -43,21 +47,27 @@
     \end{definition}
   \end{forthel}
 
-  Note that the following two axioms are already hard-coded into Naproche.
+  \noindent As with sets we give an \textit{extentionality axiom} for functions, which
+  asserts that two functions are identical if their domains and values agree.
 
   \begin{forthel}
     \begin{axiom}[Function extensionality]\label{SetTheory_02_01_200419}
       Let $f,g$ be functions.
       If $\dom(f) = \dom(g)$ and $f(u) = g(u)$ for all $u \in \dom(f)$ then $f = g$.
     \end{axiom}
+  \end{forthel}
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \noindent {\color{gray}Since functions are already built-in notions of
+  \Naproche we cannot introduce them via a definition such as the following:
 
-    %\begin{definition}
-    %  A function is a map $f$ such that $\dom(f)$ is a set and every value of
-    %  $f$ is an object.
-    %\end{definition}
+  \begin{quoteddefinition}
+    A function is a map $f$ such that $\dom(f)$ is a set and every value of
+    $f$ is an object.
+  \end{quoteddefinition}
 
+  \noindent Instead we have to describe them axiomatically.}
+
+  \begin{forthel}
     \begin{axiom}
       Let $f$ be a map.
       Assume that $\dom(f)$ is a set.
@@ -80,17 +90,35 @@
       Let $x$ be an element of $\dom(f)$.
       Then $f(x)$ is an object.
     \end{axiom}
+  \end{forthel}
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \noindent The next axiom we introduce does not just fulfil definitional
+  purposes.
+  Instead it ensures that the image of any set under an arbitrary
+  \textit{mapping} is also a set.
+  It plays an important role in the construction of certain infinite sets.
 
-    \begin{axiom}[Replacement]\label{SetTheory_02_01_297906}
+  \begin{forthel}
+    \begin{axiom}[Replacement]\label{SetTheory_02_01_303432}
+      Let $f$ be a map and $x$ be a set.
+      There exists a set $y$ such that $y = \class{f(u) | u \in x}$.
+    \end{axiom}
+
+    \begin{corollary}\label{SetTheory_02_01_297906}
       Let $f$ be a function.
       There exists a set $y$ such that $y = \class{f(u) | u \in \dom(f)}$.
-    \end{axiom}
+    \end{corollary}
+    \begin{proof}
+      $\dom(f)$ is a set.
+      Hence the thesis (by \nameref{SetTheory_02_01_303432}).
+    \end{proof}
   \end{forthel}
 
 
   \subsection{The range}
+
+  Using the replacement axiom we can easily define the \textit{range} of a
+  function as the set of all its values.
 
   \begin{forthel}
     \begin{definition}
@@ -121,6 +149,10 @@
 
   \subsection{Functions between sets}
 
+  In the following we mostly want to consider functions \textit{between} two
+  sets $x$ and $y$, i.e. functions whose domain is $x$ and which maps all
+  elements of $x$ into $y$.
+
   \begin{forthel}
     \begin{definition}
       A function of $x$ is a function $f$ such that $\dom(f) = x$.
@@ -143,6 +175,18 @@
       Then $v \in y$.
     \end{proof}
 
+    \begin{definition}
+      A function on $x$ is a function from $x$ to $x$.
+    \end{definition}
+  \end{forthel}
+
+  \noindent There are three important types of functions:
+  Functions which are \textit{injective}, i.e. one-to-one correspondences
+  between their domain and range, functions which are \textit{surjrective},
+  i.e. whose values match all elements of a given set, and functions which are
+  \textit{bijective}, i.e. both \textit{injective} and \textit{surjective}.
+
+  \begin{forthel}
     \begin{definition}
       A function onto $y$ is a function $f$ such that $y = \range(f)$.
     \end{definition}
@@ -168,10 +212,6 @@
       Then $f(u) \in \range(f)$.
       Hence $f(u) \in y$.
     \end{proof}
-
-    \begin{definition}
-      A function on $x$ is a function from $x$ to $x$.
-    \end{definition}
 
     \begin{definition}
       $f$ is one to one iff for all $u,v \in \dom(f)$ if $f(u) = f(v)$ then $u = v$.
@@ -210,6 +250,10 @@
 
   \subsection{The identity function}
 
+  Let us consider some special function:
+  The \textit{identity} function, which just maps any element of its domain to
+  itself.
+
   \begin{forthel}
     \begin{lemma}
       There is a function $\iota$ of $x$ such that $\iota(u) = u$ for all $u \in x$.
@@ -219,28 +263,28 @@
     \end{proof}
 
     \begin{definition}
-      $\id{x}$ is the function of $x$ such that $\id{x}(u) = u$ for all $u \in x$.
+      $\id_{x}$ is the function of $x$ such that $\id_{x}(u) = u$ for all $u \in x$.
     \end{definition}
 
-    Let the identity function on $x$ stand for $\id{x}$.
+    Let the identity function on $x$ stand for $\id_{x}$.
 
     \begin{proposition}\label{SetTheory_02_01_848243}
-      $\id{x}$ is a permutation of $x$.
+      $\id_{x}$ is a permutation of $x$.
     \end{proposition}
     \begin{proof}
-      (1) $\id{x}$ is a function of $x$.
+      (1) $\id_{x}$ is a function of $x$.
 
-      (2) $\id{x}$ is a function onto $x$.
+      (2) $\id_{x}$ is a function onto $x$.
       Proof.
         Let $v \in x$.
-        Then $v = \id{x}(v)$.
-        Hence $v \in \range(\id{x})$.
+        Then $v = \id_{x}(v)$.
+        Hence $v \in \range(\id_{x})$.
       Qed.
 
-      (3) $\id{x}$ is a function into $x$.
+      (3) $\id_{x}$ is a function into $x$.
       Proof.
         Let $v,v' \in x$.
-        Assume $\id{x}(v) = \id{x}(v')$.
+        Assume $\id_{x}(v) = \id_{x}(v')$.
         Then $v = v'$.
       Qed.
     \end{proof}
@@ -248,6 +292,9 @@
 
 
   \subsection{Constant functions}
+
+  Another importat class of functions is that of \textit{constant} functions.
+  Such functions map every element of their domain to the same value.
 
   \begin{forthel}
     \begin{lemma}
@@ -291,6 +338,10 @@
 
 
   \subsection{Composition}
+
+  Let us now consider some operations on functions.
+  The first one, called \textit{composition}, allows us to combine two functions
+  to a new one by applying them one after another.
 
   \begin{forthel}
     \begin{lemma}
@@ -338,11 +389,11 @@
 
     \begin{proposition}\label{SetTheory_02_01_718601}
       Let $f$ be a function from $x$ to $y$.
-      Then $f \circ \id{x} = f = \id{y} \circ f$.
+      Then $f \circ \id_{x} = f = \id_{y} \circ f$.
     \end{proposition}
     \begin{proof}
-      $x$ is the domain of $f \circ \id{x}$ and the domain of $f$ and the domain of $\id{y} \circ f$.
-      $(f \circ \id{x})(u) = f(\id{x}(u)) = f(u) = \id{y}(f(u)) = (\id{y} \circ f)(u)$ for all $u \in x$.
+      $x$ is the domain of $f \circ \id_{x}$ and the domain of $f$ and the domain of $\id_{y} \circ f$.
+      $(f \circ \id_{x})(u) = f(\id_{x}(u)) = f(u) = \id_{y}(f(u)) = (\id_{y} \circ f)(u)$ for all $u \in x$.
       Hence the thesis (by \nameref{SetTheory_02_01_200419}).
     \end{proof}
 
@@ -420,6 +471,9 @@
 
   \subsection{Restriction}
 
+  Another operation on functions is the \textit{restriction} to a subset of
+  their domain.
+
   \begin{forthel}
     \begin{lemma}
       Let $a \subseteq \dom(f)$.
@@ -448,11 +502,11 @@
 
     \begin{proposition}\label{SetTheory_02_01_795968}
       Let $a \subseteq x$.
-      Then $\id{x} \restr a = \id{a}$.
+      Then $\id_{x} \restr a = \id_{a}$.
     \end{proposition}
     \begin{proof}
-      We have $\dom(\id{x} \restr a) = a = \dom(\id{a})$.
-      $(\id{x} \restr a)(u) = \id{x}(u) = u = \id{a}(u)$ for all $u \in a$.
+      We have $\dom(\id_{x} \restr a) = a = \dom(\id_{a})$.
+      $(\id_{x} \restr a)(u) = \id_{x}(u) = u = \id_{a}(u)$ for all $u \in a$.
       Hence the thesis (by \nameref{SetTheory_02_01_200419}).
     \end{proof}
 
