@@ -101,7 +101,7 @@
   \begin{forthel}
     \begin{axiom}[Replacement]\label{SetTheory_02_01_303432}
       Let $f$ be a map and $x$ be a set.
-      There exists a set $y$ such that $y = \class{f(u) | u \in x}$.
+      There exists a set $y$ such that $y = \class{f(u) | \text{$u \in \dom(f)$ and $u \in x$}}$.
     \end{axiom}
 
     \begin{corollary}\label{SetTheory_02_01_297906}
@@ -109,8 +109,10 @@
       There exists a set $y$ such that $y = \class{f(u) | u \in \dom(f)}$.
     \end{corollary}
     \begin{proof}
-      $\dom(f)$ is a set.
-      Hence the thesis (by \nameref{SetTheory_02_01_303432}).
+      Take $x = \dom(f)$.
+      Then $x$ is a set.
+      Hence we can take a set $y$ such that $y = \class{f(u) | u \in \dom(f)}$ (by \nameref{SetTheory_02_01_303432}).
+      Indeed $f$ is a map.
     \end{proof}
   \end{forthel}
 
