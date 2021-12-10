@@ -3,7 +3,7 @@
 This folder contains a selection of example formalizations in the Naproche natural language proof checking system. The examples come in two dialects of the ForTheL controlled natural language: `.ftl` files use an ASCII formatted language that is close to the original ForTheL language of the System for Automated Deduction (SAD); `.ftl.tex` files use standard LaTeX commands and can directly be typeset by LaTeX using appropriate preambles and style files.
 Some examples are formalized in both formats.
 
-The examples are chosen to demonstrate possibilities of the current Naproche which is included as a component in the Isabelle 2021-1 platform. A main emphasis is on the presentation of naturally readable formalizations in LaTeX which we include as PDF-printouts. Putting arbitrary LaTeX material around the actual formalizations allows a literary style of documents which includes explanations and even graphics. The examples include single files as well as folders of formalizations that are interlinked by "`read`" commands. The spectrum reaches from recreational puzzles to undergraduate-level theorems:
+The examples are chosen to demonstrate possibilities of the current Naproche which is included as a component in the Isabelle 2021-1 platform. A main emphasis is on the presentation of naturally readable formalizations in LaTeX for which we also include PDF-printouts. Putting arbitrary LaTeX material around the actual formalizations allows a literary style of documents which includes explanations and even graphics. The examples include single files as well as folders of formalizations that are interlinked by "`read`" commands. The spectrum reaches from recreational puzzles to undergraduate-level theorems:
 
 * arithmetic - elementary Peano arithmetic
 
@@ -21,7 +21,7 @@ The examples are chosen to demonstrate possibilities of the current Naproche whi
 
 * chinese - Chinese remainder theorem
 
-* dwarfs - a hat puzzles
+* dwarfs - a "hat puzzle"
 
 * euclid - classical proof of infinity of primes
 
@@ -51,7 +51,7 @@ The further development of Naproche will focus on the `.ftl.tex` format in order
 ## Requirements
 
 Note that Naproche requires significant computing resources,
-since its checking mechanisms involve the continuous operation of an ATP server.
+since its checking mechanisms involve the continuous operation of an ATP.
 Checking longer documents from the collection of examples can take up to half an hour.
 Please observe the progress of the processing in the Isabelle buffers.
 Computers satisfying the recommendations for running the current Isabelle release
@@ -62,8 +62,9 @@ For example, an Intel Pentium N3710 (quad-core mobile CPU from 2016, 6 W TDP) wi
 still check most examples without the accomodations outlined below.
 
 On weaker systems successful checking of texts may require stopping other resource-heavy processes or even adding intermediate proof steps.
-One can also increase the time-out for the internal reasoner or the external ATP by Naproche commands like
-`[timelimit XXX]` (default = 3 sec) or `[checktime XXX]` (default = 1 sec).
+One can also increase the time-out for the external ATP 
+or the internal reasoner by Naproche commands like
+`[timelimit XXX]` (default = 5 sec) or `[checktime XXX]` (default = 1 sec) resp..
 These commands can be inserted into the formalization where required.
 Parts of the text may also be exempted from checking by surrounding them with
 `[prove off]` ... `[prove on]` or `[check off]` ... `[check on]` commands.
