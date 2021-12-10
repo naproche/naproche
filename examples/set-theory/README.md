@@ -27,3 +27,11 @@ A formalization of a ZF-like set theory
 ## Dependency graph
 
 ![foo](dependency-graph/graph.svg)
+
+
+## Technical note
+
+The file `set-theory.ftl.aux` must be kept in this directory in order to allow
+for references to labels defined in `set-theory.ftl.tex` (and its subfiles) via
+the LaTeX package `xr`. Such a "cross-document" reference is for instance used
+in `$NAPROCHE/examples/cantor-schroeder-bernstein.ftl.tex`.

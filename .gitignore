@@ -25,3 +25,6 @@ x86_64-windows/
 *.out
 *.toc
 *.ftl.synctex(busy)
+
+# Exceptions
+!examples/set-theory/set-theory.ftl.aux

@@ -2,15 +2,26 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage{url}
-\usepackage{../lib/tex/naproche}
-\usepackage{../lib/tex/basicnotions}
+\usepackage{xurl}
+\usepackage{xr-hyper}
+\usepackage{hyperref}
+\usepackage[nonumbers]{../lib/tex/naproche}
+\usepackage{../lib/tex/basic-notions}
 
 \title{The Cantor-Schröder-Bernstein Theorem}
 \author{\Naproche formalization: \vspace{0.5em} \\
 Alexander Holz (2019), \\
 Marcel Schütz (2019 - 2021)}
 \date{}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  urlcolor=blue,
+  filecolor=blue
+}
+
+\externaldocument{set-theory/set-theory.ftl}
 
 \begin{document}
   \pagenumbering{gobble}
@@ -63,7 +74,7 @@ Marcel Schütz (2019 - 2021)}
           Consequently $h[a] \subseteq h[b]$.
         End.
 
-        Hence we can take a fixed point $c$ of $h$.
+        Hence we can take a fixed point $c$ of $h$ (by \ref{SetTheory_02_05_636019}).
 
         (2) Define $F(u) = f(u)$ for $u \in c$.
 
