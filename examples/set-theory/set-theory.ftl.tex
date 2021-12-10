@@ -5,6 +5,7 @@
 \usepackage{xurl}
 \usepackage{hyperref}
 \usepackage{subfiles}
+\usepackage{csquotes}
 \usepackage{../../lib/tex/naproche}
 \usepackage{../../lib/tex/basic-notions}
 
@@ -24,13 +25,15 @@
   \begin{abstract}
     This is a formalization of some ZF-like set theory.
     It introduces the common operations on sets like unions, intersections,
-    complements, powersets, symmetric differences and Cartesian products.
-    For all these operations, detailled proofs of their algebraic computation
-    laws are given.
-    Moreover, basic notions concerning functions, like images, preimages and
-    invertability, are provided, again with detailed proofs of how they behave
-    towards the mentioned operations on sets, which finally leads to the
-    definition of equipollency.
+    complements, powersets, symmetric differences and Cartesian products and
+    presents detailled proofs of their algebraic properties.
+    Moreover, basic notions concerning functions like images, preimages and
+    invertibility are provided, again with detailed proofs of their computation
+    laws, up to the definition of equipollency.
+
+    It can either be regarded as an independent collection of contents from
+    basic undergraduate mathematics or serve as the basis for more
+    sophisticated formalizations.
   \end{abstract}
 
   \tableofcontents
@@ -45,7 +48,6 @@
     \end{forthel}
   \end{comment}
 
-  \newpage
   \subfile{sections/01_sets/02_powerset.ftl.tex}
   \begin{comment}
     \begin{forthel}
@@ -53,7 +55,6 @@
     \end{forthel}
   \end{comment}
 
-  \newpage
   \subfile{sections/01_sets/03_regularity.ftl.tex}
   \begin{comment}
     \begin{forthel}
@@ -61,7 +62,6 @@
     \end{forthel}
   \end{comment}
 
-  \newpage
   \subfile{sections/01_sets/04_symmetric-difference.ftl.tex}
   \begin{comment}
     \begin{forthel}
@@ -69,7 +69,6 @@
     \end{forthel}
   \end{comment}
 
-  \newpage
   \subfile{sections/01_sets/05_ordered-pairs.ftl.tex}
   \begin{comment}
     \begin{forthel}
@@ -77,7 +76,6 @@
     \end{forthel}
   \end{comment}
 
-  \newpage
   \subfile{sections/01_sets/06_cartesian-product.ftl.tex}
   \begin{comment}
     \begin{forthel}
@@ -96,7 +94,6 @@
     \end{forthel}
   \end{comment}
 
-  \newpage
   \subfile{sections/02_functions/02_image-and-preimage.ftl.tex}
   \begin{comment}
     \begin{forthel}
@@ -104,7 +101,6 @@
     \end{forthel}
   \end{comment}
 
-  \newpage
   \subfile{sections/02_functions/03_invertible-functions.ftl.tex}
   \begin{comment}
     \begin{forthel}
@@ -112,7 +108,6 @@
     \end{forthel}
   \end{comment}
 
-  \newpage
   \subfile{sections/02_functions/04_functions-and-symmetric-difference.ftl.tex}
   \begin{comment}
     \begin{forthel}
@@ -120,7 +115,6 @@
     \end{forthel}
   \end{comment}
 
-  \newpage
   \subfile{sections/02_functions/05_functions-and-set-systems.ftl.tex}
   \begin{comment}
     \begin{forthel}
@@ -128,7 +122,6 @@
     \end{forthel}
   \end{comment}
 
-  \newpage
   \subfile{sections/02_functions/06_equipollency.ftl.tex}
   \begin{comment}
     \begin{forthel}

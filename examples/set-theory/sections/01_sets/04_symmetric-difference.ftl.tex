@@ -21,11 +21,18 @@
   \end{forthel}
 
   \begin{forthel}
-    Let $u,v,w$ denote elements.
+    Let $u,v,w$ denote objects.
     Let $x,y,z$ denote sets.
   \end{forthel}
 
+  \noindent It is time to indroduce a new operation on sets: The
+  \textit{symmetric difference}.
+
+
   \subsection{Definition}
+
+  \noindent The symmetric difference of two sets is the set of all objects wich
+  are contained in \textit{exactly one} of these sets.
 
   \begin{forthel}
     \begin{definition}
@@ -43,7 +50,12 @@
       Thus $(x \cup y) \setminus (x \cap y)$ is a set.
       Therefore $x \symdiff y$ is a set.
     \end{proof}
+  \end{forthel}
 
+  \noindent Alternatively, we could have defined the symmetric difference as
+  follows:
+
+  \begin{forthel}
     \begin{proposition}\label{SetTheory_01_04_470605}
       $x \symdiff y = (x \setminus y) \cup (y \setminus x)$.
     \end{proposition}
@@ -78,6 +90,13 @@
 
   \subsection{Computation laws}
 
+  \noindent As we did with our previously introduced set operations let us
+  prove some of the most important algebraic properties of the symmetric
+  difference.
+
+
+  \subsubsection*{Commutativity:}
+
   \begin{forthel}
     \begin{proposition}\label{SetTheory_01_04_688675}
       \[ x \symdiff y = y \symdiff x. \]
@@ -88,8 +107,12 @@
       = (y \cup x) \setminus (y \cap x)
       = y \symdiff x$.
     \end{proof}
+  \end{forthel}
 
 
+  \subsubsection*{Associativity:}
+
+  \begin{forthel}
     \begin{proposition}\label{SetTheory_01_04_606646}
       \[ ((x \symdiff y) \symdiff z) = x \symdiff (y \symdiff z). \]
       % Again parentheses on the LHS.
@@ -197,8 +220,12 @@
         End.
       End.
     \end{proof}
+  \end{forthel}
 
 
+  \subsubsection*{Distributivity of intersection and symmetric difference:}
+
+  \begin{forthel}
     \begin{proposition}\label{SetTheory_01_04_751668}
       \[ x \cap (y \symdiff z) = (x \cap y) \symdiff (x \cap z). \]
     \end{proposition}
@@ -212,8 +239,12 @@
       Hence $x \cap (y \symdiff z) = ((x \cap y) \setminus (x \cap z)) \cup
       ((x \cap z) \setminus (x \cap y)) = (x \cap y) \symdiff (x \cap z)$.
     \end{proof}
+  \end{forthel}
 
 
+  \subsubsection*{Miscellaneous rules:}
+
+  \begin{forthel}
     \begin{proposition}\label{SetTheory_01_04_420961}
       \[ x \subseteq y \iff x \symdiff y = y \setminus x. \]
     \end{proposition}
@@ -234,7 +265,6 @@
         Then we have the thesis.
       End.
     \end{proof}
-
 
     \begin{proposition}\label{SetTheory_01_04_241267}
       \[ x \symdiff y = x \symdiff z \iff y = z. \]
@@ -286,7 +316,6 @@
       End.
     \end{proof}
 
-
     \begin{proposition}\label{SetTheory_01_04_496712}
       \[ x \symdiff x = \emptyset. \]
     \end{proposition}
@@ -297,7 +326,6 @@
       = \emptyset$.
     \end{proof}
 
-
     \begin{proposition}\label{SetTheory_01_04_182395}
       \[ x \symdiff \emptyset = x. \]
     \end{proposition}
@@ -306,7 +334,6 @@
       = (x \cup \emptyset) \setminus (x \cap \emptyset)
       = x \setminus \emptyset = x$.
     \end{proof}
-
 
     \begin{proposition}\label{SetTheory_01_04_814558}
       \[ x = y \iff x \symdiff y = \emptyset. \]

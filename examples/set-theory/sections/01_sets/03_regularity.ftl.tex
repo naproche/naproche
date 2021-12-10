@@ -20,15 +20,24 @@
   \end{forthel}
 
   \begin{forthel}
-    Let $u,v,w$ denote elements.
+    Let $u,v,w$ denote objects.
     Let $x,y,z$ denote sets.
   \end{forthel}
+
+  \noindent The \textit{axiom of regularity} (or \textit{axiom of foundation})
+  states that every non-empty set has a $\in$-minimal element.
 
   \begin{forthel}
     \begin{axiom}[Regularity]\label{SetTheory_01_03_283644}
       Every nonempty set $x$ that contains some set contains some set $y$ such that $x$ and $y$ are disjoint.
     \end{axiom}
+  \end{forthel}
 
+  \noindent As a consequence we get that no set can contain itself.
+  Moreover, this allows us to show that there exists no universal set, i.e. that
+  \enquote{the set of all sets} does not exist.
+
+  \begin{forthel}
     \begin{proposition}\label{SetTheory_01_03_877283}
       No set $x$ is an element of $x$.
     \end{proposition}

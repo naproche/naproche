@@ -27,9 +27,14 @@
   \end{forthel}
 
   \begin{forthel}
-    Let $u,v,w,u',v',w'$ denote elements.
+    Let $u,v,w,u',v',w'$ denote objects.
     Let $x,y,z,x',y',z'$ denote sets.
   \end{forthel}
+
+  \noindent Let us now consider collections of ordered pairs.
+  We can show that for any given sets $x,y$ the collection of all pairs whose
+  first component lies in $x$ and whose second component lies in $y$ is a set.
+  This set is called the \textit{Cartesian product} of $x$ and $y$.
 
   \begin{forthel}
     \begin{lemma}
@@ -122,6 +127,12 @@
 
   \subsection{Computation laws}
 
+  \noindent As always let us have a look at the algebraic properties of our new
+  operation.
+
+
+  \subsubsection*{Subset laws:}
+
   \begin{forthel}
     \begin{proposition}\label{SetTheory_01_06_197314}
       \[ x \subseteq y \implies x \times z \subseteq y \times z. \]
@@ -155,7 +166,12 @@
         Hence $(u,v) \in y \times y'$.
       End.
     \end{proof}
+  \end{forthel}
 
+
+  \subsubsection*{Distributivity of product and union:}
+
+  \begin{forthel}
     \begin{proposition}\label{SetTheory_01_06_138531}
       \[ ((x \cup y) \times z) = (x \times z) \cup (y \times z). \]
     \end{proposition}
@@ -200,7 +216,12 @@
         Hence $w \in x \times (y \cup z)$.
       End.
     \end{proof}
+  \end{forthel}
 
+
+  \subsubsection*{Distributivity of product and intersection:}
+
+  \begin{forthel}
     \begin{proposition}\label{SetTheory_01_06_811990}
       \[ ((x \cap y) \times z) = (x \times z) \cap (y \times z). \]
     \end{proposition}
@@ -243,7 +264,12 @@
         Hence $w \in x \times (y \cap z)$.
       End.
     \end{proof}
+  \end{forthel}
 
+
+  \subsubsection*{Distributivity of product and complement:}
+
+  \begin{forthel}
     \begin{proposition}\label{SetTheory_01_06_517847}
       \[ ((x \setminus y) \times z) = (x \times z) \setminus (y \times z). \]
     \end{proposition}
@@ -287,7 +313,12 @@
         Hence $w \in x \times (y \setminus z)$.
       End.
     \end{proof}
+  \end{forthel}
 
+
+  \subsubsection*{Equality law:}
+
+  \begin{forthel}
     \begin{proposition}\label{SetTheory_01_06_472623}
       Assume that $x$ and $x'$ are nonempty or $y$ and $y'$ are nonempty.
       Then \[ (x \times x') = (y \times y') \iff (\text{$x = y$ and $x' = y'$}). \]
@@ -319,7 +350,12 @@
 
       Case $x = y$ and $x' = y'$. Trivial.
     \end{proof}
+  \end{forthel}
 
+
+  \subsubsection*{Intersection of products:}
+
+  \begin{forthel}
     \begin{proposition}\label{SetTheory_01_06_261950}
       \[ ((x \times y) \cap (x' \times y')) = (x \cap x') \times (y \cap y'). \]
     \end{proposition}
@@ -342,7 +378,12 @@
         Therefore $w \in (x \times y) \cap (x' \times y')$.
       End.
     \end{proof}
+  \end{forthel}
 
+
+  \subsubsection*{Union of products:}
+
+  \begin{forthel}
     \begin{proposition}\label{SetTheory_01_06_687547}
       \[ ((x \times y) \cup (x' \times y')) \subseteq (x \cup x') \times (y \cup y'). \]
     \end{proposition}
@@ -354,7 +395,12 @@
       Hence $u \in x \cup x'$ and $v \in y \cup y'$.
       Thus $w \in (x \cup x') \times (y \cup y')$.
     \end{proof}
+  \end{forthel}
 
+
+  \subsubsection*{Complement of products:}
+
+  \begin{forthel}
     \begin{proposition}\label{SetTheory_01_06_247770}
       \[ ((x \times y) \setminus (x' \times y')) = (x \times (y \setminus y')) \cup ((x \setminus x') \times y). \]
     \end{proposition}

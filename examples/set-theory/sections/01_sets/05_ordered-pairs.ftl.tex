@@ -22,11 +22,16 @@
   \end{forthel}
 
   \begin{forthel}
-    Let $u,v,w,u',v',w'$ denote elements.
+    Let $u,v,w,u',v',w'$ denote objects.
     Let $x,y,z,x',y',z'$ denote sets.
   \end{forthel}
 
-  Note that Naproche provides an built-in function symbol $(\cdot,\cdot)$, i.e. for any two objects $a,b$ there is an object $(a,b)$.
+  \noindent In this paragraph we introduce the \textit{ordered pair} of two
+  objects, following the definition proposed by Kuratowski.
+
+  \vspace{1em}\noindent \textcolor{gray}{Note that Naproche has ordered pairs
+  already built in.
+  Thus we have to formulate the definition of them as an axiom.}
 
   \begin{forthel}
     \begin{axiom}
@@ -34,15 +39,21 @@
     \end{axiom}
 
     \begin{proposition}\label{SetTheory_01_05_366682}
-      Let $u,v$ be elements.
-      Then $(u,v)$ is an element.
+      Let $u,v$ be objects.
+      Then $(u,v)$ is an object.
     \end{proposition}
     \begin{proof}
-      $\set{u}$ and $\set{u,v}$ are elements.
-      Hence $(u,v) = \set{\set{u}, \set{u,v}}$.
-      Thus $(u,v)$ is an element.
+      $\set{u}$ and $\set{u,v}$ are objects.
+      Hence $\set{\set{u}, \set{u,v}}$ is an object.
+      We have $(u,v) = \set{\set{u}, \set{u,v}}$.
+      Thus $(u,v)$ is an object.
     \end{proof}
+  \end{forthel}
 
+  \noindent The central property of ordered pairs is that two of them agree if
+  they agree on each component.
+
+  \begin{forthel}
     \begin{proposition}\label{SetTheory_01_05_270653}
       If $(u,v) = (u',v')$ then $u = u'$ and $v = v'$.
     \end{proposition}

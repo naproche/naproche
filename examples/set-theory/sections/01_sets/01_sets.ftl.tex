@@ -12,9 +12,15 @@
     [readtex \path{macros.ftl.tex}]
   \end{forthel}
 
+  \noindent We base our formalization on the notions of classes, sets and
+  objects which are hardcoded into \Naproche.
+
   \begin{forthel}
     Let $x,y,z$ denote sets.
   \end{forthel}
+
+  \noindent Sets are regarded as classes which are also objects, the latter
+  being entities that are in some sense small enough to be contained in classes.
 
   \begin{forthel}
     \begin{axiom}\label{SetTheory_01_01_729563}
@@ -22,17 +28,20 @@
     \end{axiom}
 
     \begin{axiom}\label{SetTheory_01_01_603161}
-      $x$ is an element.
+      $x$ is an objects.
     \end{axiom}
 
     \begin{axiom}\label{SetTheory_01_01_617091}
       Let $u$ be an element of $x$.
-      Then $u$ is an element.
+      Then $u$ is an object.
     \end{axiom}
   \end{forthel}
 
 
   \subsection{Subsets}
+
+  \noindent Let us continue with the notion of \textit{subsets}, i.e. sets
+  which are included in some other set.
 
   \begin{forthel}
     \begin{definition}
@@ -67,6 +76,10 @@
 
   \subsection{Set extensionality}
 
+  \noindent Since the only distinguishing feature of a set should be its
+  elements, let us add the following \textit{extensionality axiom} to our
+  theory.
+
   \begin{forthel}
     \begin{axiom}[Set extensionality]\label{SetTheory_01_01_253735}
       If $x \subseteq y$ and $y \subseteq x$ then $x = y$.
@@ -76,9 +89,13 @@
 
   \subsection{Separation}
 
+  \noindent Our next axiom ensures that the universe of sets is closed under
+  taking subcollections.
+  This means that any subcollection of a given set is itself a set.
+
   \begin{forthel}
     \begin{axiom}[Separation]\label{SetTheory_01_01_240572}
-      Let $C$ be a class and $x$ be a set.
+      Let $C$ be a collection and $x$ be a set.
       Assume that every element of $C$ is contained in $x$.
       Then $C$ is a set.
     \end{axiom}
@@ -86,6 +103,9 @@
 
 
   \subsection{Set existence}
+
+  \noindent Up to now our theory does not admit the existence of a single set.
+  This is changed by the following axiom.
 
   \begin{forthel}
     \begin{axiom}[Set existence]\label{SetTheory_01_01_559689}
@@ -95,6 +115,9 @@
 
 
   \subsection{The empty set}
+
+  \noindent The last to axioms allow us now to show that there exists a unique
+  set that does not contain any element -- the \textit{empty} set.
 
   \begin{forthel}
     \begin{definition}
@@ -146,9 +169,12 @@
 
   \subsection{Pairing}
 
+  \noindent Let us now consider an axiom which allows us to collect two given
+  objects into a set which contains exactly these two ones.
+
   \begin{forthel}
     \begin{axiom}[Pairing]\label{SetTheory_01_01_422528}
-      Let $u,v$ be elements.
+      Let $u,v$ be objects.
       There exists a set $z$ such that $z = \class{w | \text{$w = u$ or $w = v$}}$.
     \end{axiom}
 
@@ -183,6 +209,9 @@
 
   \subsection{Set-systems}
 
+  \noindent Sets whose elements are all sets as well are called \textit{set-
+  systems} or \textit{systems of sets}.
+
   \begin{forthel}
     \begin{definition}
       A system of sets is a set $X$ such that every element of $X$ is a set.
@@ -216,10 +245,14 @@
 
   \subsection{Intersections}
 
+  \noindent Considering a set-system $X$ we can extract all objects which are
+  contained in \textit{every} member of $X$ into a new set, called the
+  \textit{intersection} over $X$.
+
   \begin{forthel}
     \begin{lemma}
       Let $x$ be a nonempty system of sets.
-      Then there exists a set $z$ such that $z = \class{u | \text{$u$ is contained in every element of $x$}}$.
+      Then there exists a set $z$ such that $z = \class{u | \text{$u$ is contained in every member of $x$}}$.
     \end{lemma}
     \begin{proof}
       Take an element $y$ of $x$.
@@ -232,11 +265,17 @@
 
     \begin{definition}
       Let $x$ be a nonempty system of sets.
-      $\bigcap x$ is the set $z$ such that $z = \class{u | \text{$u$ is contained in every element of $x$}}$.
+      $\bigcap x$ is the set $z$ such that $z = \class{u | \text{$u$ is contained in every member of $x$}}$.
     \end{definition}
 
     Let the intersection over $x$ stand for $\bigcap x$.
+  \end{forthel}
 
+  \noindent The notion of the intersection over a set-system can be used to
+  provide an operation which maps two sets to the set of all elements they have
+  in common.
+
+  \begin{forthel}
     \begin{lemma}
       Let $x,y$ be sets.
       Then there exists a set $z$ such that $z = \class{u | \text{$u \in x$ and $u \in y$}}$.
@@ -297,11 +336,20 @@
         Hence $u \in \bigcap x$.
       End.
     \end{proof}
+  \end{forthel}
 
+  \noindent An important notion is that of \textit{disjoint} sets, i.e. sets
+  wich do not have any elements in common.
+
+  \begin{forthel}
     \begin{definition}
       $x$ and $y$ are disjoint iff $x \cap y = \emptyset$.
     \end{definition}
+  \end{forthel}
 
+  \noindent Obviously this yields a symmetric relation on the universe of sets.
+
+  \begin{forthel}
     \begin{proposition}\label{SetTheory_01_01_300845}
       If $x$ and $y$ are disjoint then $y$ and $x$ are disjoint.
     \end{proposition}
@@ -316,6 +364,11 @@
 
 
   \subsection{Unions}
+
+  \noindent Analogous to the definition of the intersection over a set-system
+  we now want to consider for a given set-system $X$ the collection of all
+  elements which lie in \textit{some} member of $X$.
+  To ensure that this collection is a set we need an additional axiom.
 
   \begin{forthel}
     \begin{axiom}[Union]\label{SetTheory_01_01_709019}
@@ -407,9 +460,12 @@
 
   \subsection{Partitions}
 
+  \noindent Another important notion is that of a \textit{partition} of a set
+  $x$. i.e. a set which splits $x$ into pairwise disjoint subsets.
+
   \begin{forthel}
     \begin{definition}
-      A partition of $x$ is a system of sets $P$ such that every element of $x$ is contained in some set of $P$ and every member of $P$ is a nonempty subset of $x$ and for any set $A,B$ of $P$ we have $A \cap B = \emptyset$.
+      A partition of $x$ is a system of sets $P$ such that every element of $P$ is a subset of $x$ and every element of $x$ is contained in some member of $P$ and all distinct sets $A,B$ of $P$ are pairwise disjoint.
     \end{definition}
 
     \begin{proposition}\label{SetTheory_01_01_493610}
@@ -435,6 +491,9 @@
 
   \subsection{Complements}
 
+  \noindent Let us define another operation on sets: The \textit{(relative)
+  complement}.
+
   \begin{forthel}
     \begin{lemma}
       Let $x,y$ be sets.
@@ -456,6 +515,11 @@
 
   \subsection{Computation laws}
 
+  \noindent Now that we are provided with the most common operations on sets
+  let us have a look on their algebraic properties.
+
+  \subsubsection*{Commutativity of union and intersection:}
+
   \begin{forthel}
     \begin{proposition}\label{SetTheory_01_01_830899}
       \[ x \cup y = y \cup x. \]
@@ -476,7 +540,6 @@
       End.
     \end{proof}
 
-
     \begin{proposition}\label{SetTheory_01_01_728823}
       \[ x \cap y = y \cap x. \]
     \end{proposition}
@@ -495,7 +558,12 @@
         Thus $u \in x \cap y$.
       End.
     \end{proof}
+  \end{forthel}
 
+
+  \subsubsection*{Associativity of union and intersection:}
+
+  \begin{forthel}
     \begin{proposition}\label{SetTheory_01_01_665069}
       \[ ((x \cup y) \cup z) = x \cup (y \cup z). \]
       % Note again that we have to put the LHS in parentheses.
@@ -518,7 +586,6 @@
       End.
     \end{proof}
 
-
     \begin{proposition}\label{SetTheory_01_01_368359}
       \[ ((x \cap y) \cap z) = x \cap (y \cap z). \]
       % And again parentheses are needed on the LHS.
@@ -540,7 +607,12 @@
         Therefore$ u \in (x \cap y) \cap z$.
       End.
     \end{proof}
+  \end{forthel}
 
+
+  \subsubsection*{Distributivity of union and intersection:}
+
+  \begin{forthel}
     \begin{proposition}\label{SetTheory_01_01_106755}
       \[ x \cap (y \cup z) = (x \cap y) \cup (x \cap z). \]
     \end{proposition}
@@ -586,7 +658,12 @@
         Hence $u \in x \cup (y \cap z)$.
       End.
     \end{proof}
+  \end{forthel}
 
+
+  \subsubsection*{Idempocy laws for union and intersection:}
+
+  \begin{forthel}
     \begin{proposition}\label{SetTheory_01_01_496190}
       \[ x \cup x = x. \]
     \end{proposition}
@@ -596,7 +673,6 @@
       Thus $x \cup x = x$.
     \end{proof}
 
-
     \begin{proposition}\label{SetTheory_01_01_783425}
       \[ x \cap x = x. \]
     \end{proposition}
@@ -605,7 +681,12 @@
       Hence $x \cap x = \class{u | u \in x}$.
       Thus $x \cap x = x$.
     \end{proof}
+  \end{forthel}
 
+
+  \subsubsection*{Distributivity of complement wrt. union and intersection:}
+
+  \begin{forthel}
     \begin{proposition}\label{SetTheory_01_01_339365}
       \[ x \setminus (y \cap z) = (x \setminus y) \cup (x \setminus z). \]
     \end{proposition}
@@ -632,7 +713,6 @@
       End.
     \end{proof}
 
-
     \begin{proposition}\label{SetTheory_01_01_403962}
       \[ x \setminus (y \cup z) = (x \setminus y) \cap (x \setminus z). \]
     \end{proposition}
@@ -658,7 +738,12 @@
         Hence $u \in x \setminus (y \cup z)$.
       End.
     \end{proof}
+  \end{forthel}
 
+
+  \subsubsection*{Subset laws:}
+
+  \begin{forthel}
     \begin{proposition}\label{SetTheory_01_01_628970}
       \[ x \subseteq x \cup y. \]
     \end{proposition}
@@ -668,7 +753,6 @@
       Hence $u \in x \cup y$.
     \end{proof}
 
-
     \begin{proposition}\label{SetTheory_01_01_368515}
       \[ x \cap y \subseteq x. \]
     \end{proposition}
@@ -677,7 +761,6 @@
       Then $u \in x$ and $u \in y$.
       Hence $u \in x$.
     \end{proof}
-
 
     \begin{proposition}\label{SetTheory_01_01_591527}
       \[ x \subseteq y \iff x \cup y = y. \]
@@ -706,7 +789,6 @@
       End.
     \end{proof}
 
-
     \begin{proposition}\label{SetTheory_01_01_681535}
       \[ x \subseteq y \iff x \cap y = x. \]
     \end{proposition}
@@ -734,7 +816,12 @@
         Thus $u \in y$.
       End.
     \end{proof}
+  \end{forthel}
 
+
+  \subsubsection*{Complement laws:}
+
+  \begin{forthel}
     \begin{proposition}\label{SetTheory_01_01_402739}
       \[ x \setminus x = \emptyset. \]
     \end{proposition}
@@ -743,7 +830,6 @@
       Indeed $x \setminus x = \class{u | \text{$u \in x$ and $u \notin x$}}$.
       Hence the thesis.
     \end{proof}
-
 
     \begin{proposition}\label{SetTheory_01_01_661163}
       \[ x \setminus \emptyset = x. \]
@@ -776,7 +862,6 @@
       End.
     \end{proof}
 
-
     \begin{proposition}\label{SetTheory_01_01_185130}
       \[ y \subseteq x \iff x \setminus (x \setminus y) = y. \]
     \end{proposition}
@@ -790,7 +875,6 @@
         Then we have the thesis.
       End.
     \end{proof}
-
 
     \begin{proposition}\label{SetTheory_01_01_878796}
       \[ x \cap (y \setminus z) = (x \cap y) \setminus (x \cap z). \]
