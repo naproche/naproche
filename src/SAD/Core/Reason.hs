@@ -379,7 +379,7 @@ unfoldAtomic sign f = do
             -- class extensionality
             (guard (classType f && classType g) >> return (classExtensionality f g))
             `mplus`
-            -- map extensionality
+            -- function extensionality
             (guard (functionType f && functionType g) >> return (mapExtensionality f g))
             `mplus`
             -- map extensionality
