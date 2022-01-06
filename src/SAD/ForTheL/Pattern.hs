@@ -153,7 +153,7 @@ extractWordPattern st t@Trm {trmName = s, trmArgs = vs} f = (pt, nf)
     dict = strSyms st
 
     getPattern "." = Nm
-    getPattern "#" = Vr
+    getPattern "__VAR__" = Vr
     getPattern w = Word $ foldl' union [w] $ filter (elem w) dict
 
     getName (Word (t:_):ls) = case Text.uncons t of
@@ -170,7 +170,7 @@ extractSymbPattern t@Trm {trmName = TermName s, trmArgs = vs} f = (pt, nf)
     nt = t {trmName = TermSymbolic $ getName pt}
     nf = replace nt t {trId = NewId} f
 
-    getPattern "#" = Vr
+    getPattern "__VAR__" = Vr
     getPattern w = Symbol w
 
     getName (Symbol s:ls) = symEncode s <> getName ls
@@ -247,7 +247,7 @@ patTail :: FTL Text -> FTL a -> FTL (Text, [a])
 patTail lxm tvr = do
   v <- tvr
   (ls, vs) <- opt ("", []) $ patHead lxm tvr
-  return ("# " <> ls, v:vs)
+  return ("__VAR__ " <> ls, v:vs)
 
 
 patName :: FTL Text -> FTL PosVar -> FTL (Text, [PosVar])

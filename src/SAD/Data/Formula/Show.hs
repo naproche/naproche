@@ -113,6 +113,7 @@ decode s (t:ts) p d = dec s
     dec ('s':'c':cs) = showChar ';' . dec cs
     dec ('c':'m':cs) = showChar ',' . dec cs
     dec ('u':'s':cs) = showChar '_' . dec cs
+    dec ('h':'s':cs) = showChar '#' . dec cs
     dec ('d':'t':cs) =
       showParen (ambig t) (showFormula p d t) . decode cs ts p d
     dec ('z':c:cs@('d':'t':_)) = showChar c . showChar ' ' . dec cs
@@ -136,7 +137,7 @@ decode s (t:ts) p d = dec s
 -- Symbolic names
 
 symChars :: String
-symChars = "`~!@$%^&*()-+=[]{}:'\"<>/?\\|;,_"
+symChars = "`~!@$%^&*()-+=[]{}:'\"<>/?\\|;,_#"
 
 symEncode :: Text -> Text
 symEncode = Text.concat . map chc . Text.chunksOf 1
@@ -152,7 +153,7 @@ symEncode = Text.concat . map chc . Text.chunksOf 1
     chc "<" = "ls" ; chc ">"  = "gt" ; chc "/" = "sl"
     chc "?" = "qu" ; chc "\\" = "bs" ; chc "|" = "br"
     chc ";" = "sc" ; chc ","  = "cm" ; chc "." = "dt"
-    chc "_" = "us"
+    chc "_" = "us" ; chc "#"  = "hs"
     chc c   = Text.cons 'z' c
 
 symDecode :: String -> String
@@ -189,6 +190,7 @@ symDecode s = sname [] s
     sname ac ('c':'m':cs) = sname (',':ac) cs
     sname ac ('d':'t':cs) = sname ('.':ac) cs
     sname ac ('u':'s':cs) = sname ('_':ac) cs
+    sname ac ('h':'s':cs) = sname ('#':ac) cs
     sname ac ('z':c:cs)   = sname (c:ac) cs
     sname ac cs@(':':_)   = reverse ac ++ cs
     sname ac []           = reverse ac
