@@ -9,6 +9,13 @@ variant of ForTheL, respectively.
 
 --------------------------------------------------------------------------------
 
+## Current development version
+
+  * **Fixed:** In FTL-TeX `#` is a regular character now.
+
+
+--------------------------------------------------------------------------------
+
 ## naproche-20211211 (Isabelle 2021-1)
 
 ### Changes on the ontology of Naproche:
