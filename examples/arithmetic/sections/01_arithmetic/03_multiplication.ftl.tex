@@ -51,7 +51,7 @@
   Let us show some basic computation laws for it.
 
 
-  \subsubsection*{Associativity:}
+  \subsubsection*{Distributivity}
 
   \begin{forthel}
     \begin{proposition}\label{Arithmetic_01_03_539933}
@@ -85,12 +85,7 @@
 
       Therefore every natural number is contained in $P$.
     \end{proof}
-  \end{forthel}
 
-
-  \subsubsection*{Distributivity:}
-
-  \begin{forthel}
     \begin{proposition}\label{Arithmetic_01_03_322712}
       For all $n,m,k$ we have \[ (n + m) \cdot k = (n \cdot k) + (m \cdot k). \]
     \end{proposition}
@@ -131,8 +126,12 @@
 
       Thus every natural number is an element of $P$.
     \end{proof}
+  \end{forthel}
 
 
+  \subsubsection*{Multiplication with $1$ and $2$}
+
+  \begin{forthel}
     \begin{proposition}\label{Arithmetic_01_03_866630}
       $n \cdot 1 = n$.
     \end{proposition}
@@ -154,8 +153,12 @@
       = (n \cdot 1) + n   % 2nd multiplication axiom
       = n + n$.           % 1 is neutral wrt. multiplication
     \end{proof}
+  \end{forthel}
 
 
+  \subsubsection*{Associativity}
+
+  \begin{forthel}
     \begin{proposition}\label{Arithmetic_01_03_299637}
       For all $n,m,k$ we have \[ n \cdot (m \cdot k) = (n \cdot m) \cdot k. \]
     \end{proposition}
