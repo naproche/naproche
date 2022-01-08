@@ -1,0 +1,303 @@
+\documentclass[../../arithmetic.ftl.tex]{subfiles}
+
+\begin{document}
+  \begin{comment}
+    \begin{forthel}
+      % Uncomment for debugging:
+
+      %[prove off][check off]
+      %[readtex arithmetic/sections/01_arithmetic/01_peano-axioms.ftl.tex]
+      %[readtex arithmetic/sections/01_arithmetic/02_addition.ftl.tex]
+      %[readtex arithmetic/sections/01_arithmetic/03_multiplication.ftl.tex]
+      %[readtex arithmetic/sections/01_arithmetic/04_exponentiation.ftl.tex]
+      %[readtex arithmetic/sections/01_arithmetic/05_factorial.ftl.tex]
+      %[readtex arithmetic/sections/02_ordering/01_ordering.ftl.tex]
+      %[readtex arithmetic/sections/02_ordering/02_ordering-and-addition.ftl.tex]
+      %[readtex arithmetic/sections/02_ordering/03_ordering-and-multiplication.ftl.tex]
+      %[readtex arithmetic/sections/02_ordering/04_ordering-and-exponentiation.ftl.tex]
+      %[readtex arithmetic/sections/02_ordering/05_induction.ftl.tex]
+      %[readtex arithmetic/sections/02_ordering/06_standard-exercises.ftl.tex]
+      %[readtex arithmetic/sections/02_ordering/07_subtraction.ftl.tex]
+      %[readtex arithmetic/sections/03_divisibility/01_divisibility.ftl.tex]
+      %[readtex arithmetic/sections/03_divisibility/02_euclidean-division.ftl.tex]
+      %[readtex arithmetic/sections/03_divisibility/03_modular-arithmetic.ftl.tex]
+      %[readtex arithmetic/sections/03_divisibility/04_primes.ftl.tex]
+      %[prove on][check on]
+    \end{forthel}
+  \end{comment}
+
+
+  \section{Division}
+
+  \begin{forthel}
+    [readtex \path{arithmetic/sections/01_arithmetic/05_factorial.ftl.tex}]
+  \end{forthel}
+
+  \begin{forthel}
+    [readtex \path{arithmetic/sections/02_ordering/05_induction.ftl.tex}]
+  \end{forthel}
+
+  \begin{forthel}
+    [readtex \path{arithmetic/sections/02_ordering/07_subtraction.ftl.tex}]
+  \end{forthel}
+
+  \begin{forthel}
+    [readtex \path{arithmetic/sections/03_divisibility/01_divisibility.ftl.tex}]
+  \end{forthel}
+
+  \begin{forthel}
+    Let $k,l,m,n$ denote natural numbers.
+  \end{forthel}
+
+
+  \noindent In this section we define fractions of natural numbers in order to get a (partial) inverse operation to multiplication.
+
+  \begin{forthel}
+    \begin{definition}
+      Let $m$ be a nonzero divisor of $n$.
+      $\frac{n}{m}$ is the natural number $k$ such that $k \cdot m = n$.
+    \end{definition}
+
+    Let the quotient of $n$ and $m$ stand for $\frac{n}{m}$.
+
+    \begin{proposition}\label{Arithmetic_03_05_479904}
+      \[ \frac{n}{1} = n. \]
+    \end{proposition}
+    \begin{proof}
+      We have $\frac{n}{1} = \frac{n}{1} \cdot 1 = n$.
+    \end{proof}
+
+    \begin{proposition}\label{Arithmetic_03_05_471851}
+      Let $m$ be a nonzero divisor of $n$.
+      Then \[ \frac{n}{m} = 0 \iff n = 0. \]
+    \end{proposition}
+    \begin{proof}
+      Case $\frac{n}{m} = 0$.
+        Then $n = \frac{n}{m} \cdot m = 0 \cdot m = 0$.
+      End.
+
+      Case $n = 0$.
+        Then $\frac{n}{m} \cdot m = n = 0$.
+        Hence $\frac{n}{m} = 0$ or $m = 0$.
+        $m$ is nonzero.
+        Thus $\frac{n}{m} = 0$.
+      End.
+    \end{proof}
+
+    \begin{proposition}\label{Arithmetic_03_05_363442}
+      Let $k$ be nonzero.
+      Assume $k \mid n,m$.
+      Then \[ \frac{n + m}{k} = \frac{n}{k} + \frac{m}{k}. \]
+    \end{proposition}
+    \begin{proof}
+      We have $\frac{n + m}{k} \cdot k = n + m$ and $\frac{n}{k} \cdot k = n$ and $\frac{m}{k} \cdot k = m$.
+      Hence
+      \[  \frac{n + m}{k} \cdot k
+          = (\frac{n}{k} \cdot k) + (\frac{m}{k} \cdot k)
+          = (\frac{n}{k} + \frac{m}{k}) \cdot k. \]
+      Thus $\frac{n + m}{k} = \frac{n}{k} + \frac{m}{k}$.
+    \end{proof}
+
+    \begin{proposition}\label{Arithmetic_03_05_170600}
+      Let $k$ be a nonzero divisor of $m$.
+      Then \[ \frac{n \cdot m}{k} = n \cdot \frac{m}{k}. \]
+    \end{proposition}
+    \begin{proof}
+      We have $\frac{n \cdot m}{k} \cdot k = n \cdot m$ and $\frac{m}{k} \cdot k = m$.
+      Hence
+      \[  \frac{n \cdot m}{k} \cdot k
+          = n \cdot (\frac{m}{k} \cdot k)
+          = (n \cdot \frac{m}{k}) \cdot k. \]
+      Thus $\frac{n \cdot m}{k} = n \cdot \frac{m}{k}$.
+    \end{proof}
+
+    \begin{corollary}\label{Arithmetic_03_05_173047}
+      Let $k$ be a nonzero divisor of $m$.
+      Then \[ \frac{n \cdot m}{k} = \frac{m}{k} \cdot n. \]
+    \end{corollary}
+
+    \begin{corollary}\label{Arithmetic_03_05_401748}
+      Let $k$ be a nonzero divisor of $n$.
+      Then \[ \frac{n \cdot m}{k} = \frac{n}{k} \cdot m. \]
+    \end{corollary}
+
+    \begin{proposition}\label{Arithmetic_03_05_243924}
+      Let $k$ be nonzero.
+      Let $m$ be a nonzero divisor of $n$.
+      Then \[ \frac{n \cdot k}{m \cdot k} = \frac{n}{m}. \]
+    \end{proposition}
+    \begin{proof}
+      We have $\frac{n \cdot k}{m \cdot k} \cdot (m \cdot k) = n \cdot k$.
+      Hence
+      \[  (\frac{n \cdot k}{m \cdot k} \cdot m) \cdot k
+          = \frac{n \cdot k}{m \cdot k} \cdot (m \cdot k)
+          = n \cdot k. \]
+      Thus $\frac{n \cdot k}{m \cdot k} \cdot m = n$.
+      Therefore $\frac{n}{m} = \frac{n \cdot k}{m \cdot k}$.
+    \end{proof}
+
+    \begin{corollary}\label{Arithmetic_03_05_424330}
+      Let $k$ be nonzero.
+      Let $m$ be a nonzero divisor of $n$.
+      Then \[ \frac{k \cdot n}{k \cdot m} = \frac{n}{m}. \]
+    \end{corollary}
+
+    \begin{proposition}\label{Arithmetic_03_05_469833}
+      Let $k$ be nonzero and $n \geq m$.
+      Then \[ \frac{k^{n}}{k^{m}} = k^{n - m}. \]
+    \end{proposition}
+    \begin{proof}
+      We have $k^{n} = k^{(n - m) + m} = k^{n - m} \cdot k^{m}$.
+      Hence
+      \[  \frac{k^{n}}{k^{m}}
+          = \frac{k^{n - m} \cdot k^{m}}{k^{m}}
+          = \frac{k^{n - m} \cdot k^{m}}{1 \cdot k^{m}}
+          = \frac{k^{n - m}}{1}
+          = k^{n - m}. \]
+    \end{proof}
+
+    \begin{proposition}\label{Arithmetic_03_05_805525}
+      $(m + k)!$ is divisible by $m!$ for any natural number $k$.
+    \end{proposition}
+    \begin{proof}
+      Define $P = \class{k \in \mathbb{N} | m! \mid (m + k)!}$.
+
+      (BASE CASE) $P$ contains $0$.
+      Indeed $m! \mid (m!) = (m + 0)!$.
+
+      (INDUCTION STEP) For all natural numbers $k$ we have $k \in P \implies k + 1 \in P$. \\
+      Proof.
+        Let $k$ be a natural number.
+        Assume $k \in P$.
+        We have
+        \[  (((m + k) + 1)!)
+            = ((m + (k + 1))!)
+            = (((m + k) + 1)!)
+            = ((m + k) + 1) \cdot ((m + k)!). \]
+        $m!$ divides $(m + k)!$.
+        Hence we can take a natural number $l$ such that $l \cdot (m!) = (m + k)!$.
+        Then we have
+        \[  (((m + k) + 1)!)
+            = ((m + k) + 1) \cdot (l \cdot (m!))
+            = (((m + k) + 1) \cdot l) \cdot (m!). \]
+        Thus $m!$ divides $((m + k) + 1)!$.
+      Qed.
+    \end{proof}
+
+    \begin{corollary}
+      $(m + k)! \cdot n$ is divisible by $m!$.
+    \end{corollary}
+    \begin{proof}
+      $(m + k)!$ is divisible by $m!$.
+      Hence we can take a natural number $l$ such that $((m + k)!) = m! \cdot l$.
+      Then $(m + k)! \cdot n = (m! \cdot l) \cdot n = m! \cdot (l \cdot n)$.
+      Thus $(m + k)! \cdot n$ is divisible by $m!$.
+    \end{proof}
+
+    \begin{corollary}
+      $(m + k)! \cdot n$ is divisible by $m! \cdot n$.
+    \end{corollary}
+    \begin{proof}
+      We can take a natural number $l$ such that $m! \cdot l = ((m + k)!)$.
+      Indeed $m!$ divides $(m + k)!$.
+      Then $(m + k)! \cdot n = (m! \cdot l) \cdot n = m! \cdot (l \cdot n) = m! \cdot (n \cdot l) = (m! \cdot n) \cdot l$.
+      Hence $m! \cdot n$ divides $(m + k)! \cdot n$.
+    \end{proof}
+
+    \begin{proposition}\label{Arithmetic_03_05_335719}
+      $\frac{(m + k)!}{m!}$ is divisible by $k!$ for any natural numbers $m,k$.
+    \end{proposition}
+    \begin{proof}
+      Let us show that for all natural numbers $m,k$ such that $m,k > 1$ we have
+      \[ \frac{(m + k)!}{m!} = (k \cdot \frac{(m + (k - 1))!}{m!}) + \frac{((m - 1) + k)!}{(m - 1)!}. \]
+        Let $m,k$ be natural numbers.
+        Assume $m,k > 1$.
+
+        %%%%%%%%%% Needed for ontological checking:
+        $m,k$ are nonzero.
+        $(m - 1) + k = (m + k) - 1 = m + (k - 1)$.
+        $(((m - 1) + k)!) = (((m + k) - 1)!) = (m + (k - 1))!$.
+        $(m - 1)!$ and $m!$ is a nonzero divisor of $((m - 1) + k)!$.
+        $m!$ is a nonzero divisor of $((m - 1) + k)!$.
+        $m!$ divides $((m + k) - 1)! \cdot (m + k)$.
+        We have $(m - 1)! \cdot m = m!$.
+        %%%%%%%%%%
+
+        [prover vampire]
+
+        (1) $k \cdot \frac{(m + (k - 1))!}{m!} = \frac{((m + k) - 1)!}{m!} \cdot k$.
+
+        (2) $\frac{((m - 1) + k)!}{(m - 1)!} = \frac{((m + k) - 1)!}{m!} \cdot m$. \\
+        Proof.
+          \[ \frac{((m - 1) + k)!}{(m - 1)!} = \frac{((m - 1) + k)! \cdot m}{(m - 1)! \cdot m} \]
+          (by \ref{Arithmetic_03_05_243924}).
+          \[ \frac{((m - 1) + k)! \cdot m}{(m - 1)! \cdot m} = \frac{((m - 1) + k)! \cdot m}{m!}. \]
+          \[ \frac{((m - 1) + k)! \cdot m}{m!} = \frac{((m - 1) + k)!}{m!} \cdot m \]
+          (by \ref{Arithmetic_03_05_401748}).
+          \[ \frac{((m - 1) + k)!}{m!} \cdot m = \frac{((m + k) - 1)!}{m!} \cdot m. \]
+        Qed.
+
+        (3) $(\frac{((m + k) - 1)!}{m!} \cdot k) + (\frac{((m + k) - 1)!}{m!} \cdot m) = \frac{(m + k)!}{m!}$. \\
+        Proof.
+          \[ (\frac{((m + k) - 1)!}{m!} \cdot k) + (\frac{((m + k) - 1)!}{m!} \cdot m) = \frac{((m + k) - 1)!}{m!} \cdot (k + m) \]
+          (by \ref{Arithmetic_01_03_539933}).
+          \[ \frac{((m + k) - 1)!}{m!} \cdot (k + m) = \frac{((m + k) - 1)!}{m!} \cdot (m + k). \]
+          \[ \frac{((m + k) - 1)!}{m!} \cdot (m + k) = \frac{((m + k) - 1)! \cdot (m + k)}{m!} \]
+          (by \ref{Arithmetic_03_05_401748}).
+          \[ \frac{((m + k) - 1)! \cdot (m + k)}{m!} = \frac{(m + k)!}{m!}. \]
+        Qed.
+
+        Then we have the thesis (by 1, 2, 3).
+      End.
+
+      Define \[ P = \class{n \in \mathbb{N} | \classtext{for all $m,k \in \mathbb{N}$ such that $n = m + k$ we have $k! \mid \frac{(m + k)!}{m!}$}}. \]
+
+      For all natural numbers $n$ if every predecessor of $n$ is contained in $P$ then $n \in P$. \\
+      Proof.
+        Let $n$ be a natural number.
+        Assume that every predecessor of $n$ lies in $P$.
+
+        Let us show that for all natural numbers $m,k$ such that $n = m + k$ we have $k! \mid \frac{(m + k)!}{m!}$.
+          Let $m,k$ be natural numbers.
+          Assume $n = m + k$.
+
+          Case $m \leq 1$. Obvious.
+
+          Case $k \leq 1$. Obvious.
+
+          Case $m,k > 1$.
+            Case $m + k < n$ or $m + k > n$. Obvious.
+
+            Case $m + k = n$.
+              We have \[ \frac{(m + k)!}{m!} = (k \cdot \frac{(m + (k - 1))!}{m!}) + \frac{((m - 1) + k)!}{(m - 1)!}. \]
+
+              (1) $k! \mid k \cdot \frac{(m + (k - 1))!}{m!}$. \\
+              Proof.
+                We have $m + (k - 1) < n$.
+                Hence $(k - 1)!$ divides $\frac{(m + (k - 1))!}{m!}$.
+                Thus we can take a natural number $l$ such that $(k - 1)! \cdot l = \frac{(m + (k - 1))!}{m!}$.
+                Then $k! \cdot l = (k \cdot (k - 1)!) \cdot l = k \cdot ((k - 1)! \cdot l) = k \cdot \frac{(m + (k - 1))!}{m!}$.
+                Therefore $k!$ divides $k \cdot \frac{(m + (k - 1))!}{m!}$.
+              Qed.
+
+              [prover vampire]
+
+              (2) $k! \mid \frac{((m - 1) + k)!}{(m - 1)!}$. \\
+              Proof.
+                We have $(m - 1) + k < n$.
+                Indeed $(m - 1) + k = (m + k) - 1 = n - 1 < n$.
+                Hence $k! \mid \frac{((m - 1) + k)!}{(m - 1)!}$.
+              Qed.
+
+              Then $k!$ divides $(k \cdot \frac{(m + (k - 1))!}{m!}) + \frac{((m - 1) + k)!}{(m - 1)!}$ (by \ref{Arithmetic_03_01_655411}, 1, 2).
+            End.
+          End.
+        End.
+      Qed.
+
+      [prover vampire]
+      Hence $P$ contains every natural number (by \ref{Arithmetic_02_05_167446}).
+      Then we have the thesis.
+    \end{proof}
+  \end{forthel}
+\end{document}

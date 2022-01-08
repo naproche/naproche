@@ -25,6 +25,7 @@ digraph Sections {
     div_02 [label = "3.2 Euclidean division"]
     div_03 [label = "3.3 Modular arithmetic"]
     div_04 [label = "3.4 Primes"]
+    div_05 [label = "3.5 Division"]
   }
 
   /* 1.1 */ vocab, macros                             -> arith_01
@@ -45,4 +46,5 @@ digraph Sections {
   /* 3.2 */ ord_03                                    -> div_02
   /* 3.3 */ div_02                                    -> div_03
   /* 3.4 */ arith_04, ord_04, ord_05, div_01, div_02  -> div_04
+  /* 3.4 */ arith_05, ord_05, ord_07, div_01          -> div_05
 }

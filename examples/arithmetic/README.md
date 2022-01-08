@@ -28,7 +28,8 @@ A formalization of Peano arithmetic
     3.1 Divisibility  
     3.2 Euclidean division  
     3.3 Modular arithmetic  
-    3.4 Primes
+    3.4 Primes  
+    3.5 Division
 
 
 ## Dependency graph
