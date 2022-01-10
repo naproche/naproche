@@ -168,6 +168,10 @@ expandTexCmd "exists" range whiteSpaceBefore = [makeTokenRange "exists" range wh
 expandTexCmd "mid" range whiteSpaceBefore = [makeTokenRange "|" range whiteSpaceBefore]
 expandTexCmd "rightarrow" range whiteSpaceBefore = makeSymbolTokens ["-",">"] range whiteSpaceBefore
 expandTexCmd "fun" range whiteSpaceBefore = [makeTokenRange "\\" range whiteSpaceBefore]
+-- Grouping commands (simply tokenize away "\left", "\middle" and "\right")
+expandTexCmd "left" range whiteSpaceBefore = []
+expandTexCmd "middle" range whiteSpaceBefore = []
+expandTexCmd "right" range whiteSpaceBefore = []
 
 -- All tokens starting with `\` are treated as symbols by the parser. But there are tex commands,
 -- that we don't want to treat as symbols in our patterns, for example greek letters. Thus we expand this fixed
