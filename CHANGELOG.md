@@ -11,8 +11,10 @@ variant of ForTheL, respectively.
 
 ## Current development version
 
+  * **New:** In FTL-TeX `\left`, `\middle` and `\right` are tokenized away.
+
   * **New:** New sections about division and binomial coefficients in arithmetic
-    examples
+    examples.
 
   * **Fixed:** In FTL-TeX `#` is a regular character now.
 
