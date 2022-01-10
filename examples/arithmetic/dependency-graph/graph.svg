@@ -1,7 +1,7 @@
-<svg width="1004pt" height="708pt" viewBox="0 0 1004 708" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="991pt" height="708pt" viewBox="0 0 991 708" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 704)">
 <title>Sections</title>
-<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-704 999.9594,-704 999.9594,4 -4,4"></polygon>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-704 987,-704 987,4 -4,4"></polygon>
 <g id="clust1" class="cluster">
 <title>cluster_1</title>
 <polygon fill="none" stroke="#000000" points="474,-368 474,-636 797,-636 797,-368 474,-368"></polygon>
@@ -182,17 +182,17 @@
 <path fill="none" stroke="#000000" d="M699.5135,-378.117C628.8049,-340.0296 449.4832,-243.4373 368.6326,-199.8869"></path>
 <polygon fill="#000000" stroke="#000000" points="370.1992,-196.7553 359.7354,-195.0944 366.8796,-202.9181 370.1992,-196.7553"></polygon>
 </g>
-<!-- div_05 -->
-<g id="node19" class="node">
-<title>div_05</title>
-<ellipse fill="none" stroke="#000000" cx="850" cy="-106" rx="58.5713" ry="18"></ellipse>
-<text text-anchor="middle" x="850" y="-101.8" font-family="Times,serif" font-size="14.00" fill="#000000">3.5 Division</text>
+<!-- div_06 -->
+<g id="node20" class="node">
+<title>div_06</title>
+<ellipse fill="none" stroke="#000000" cx="800" cy="-34" rx="108.8464" ry="18"></ellipse>
+<text text-anchor="middle" x="800" y="-29.8" font-family="Times,serif" font-size="14.00" fill="#000000">3.6 Binomial coefficients</text>
 </g>
-<!-- arith_05&#45;&gt;div_05 -->
-<g id="edge30" class="edge">
-<title>arith_05-&gt;div_05</title>
-<path fill="none" stroke="#000000" d="M786.1787,-388.5956C847.1528,-381.5108 937.825,-366.7223 959,-340 1010.8931,-274.5123 1005.19,-221.6277 959,-152 947.9773,-135.3841 929.6401,-124.7552 911.121,-117.9621"></path>
-<polygon fill="#000000" stroke="#000000" points="912.0514,-114.5831 901.4579,-114.7479 909.8421,-121.2253 912.0514,-114.5831"></polygon>
+<!-- arith_05&#45;&gt;div_06 -->
+<g id="edge32" class="edge">
+<title>arith_05-&gt;div_06</title>
+<path fill="none" stroke="#000000" d="M762.4673,-378.9189C831.4392,-347.3286 983,-275.0603 983,-250 983,-250 983,-250 983,-178 983,-132.4558 968.0095,-118.2923 934,-88 916.2164,-72.1602 893.1911,-60.6418 871.2586,-52.4182"></path>
+<polygon fill="#000000" stroke="#000000" points="872.2087,-49.0412 861.614,-48.9805 869.8584,-55.6349 872.2087,-49.0412"></polygon>
 </g>
 <!-- ord_02 -->
 <g id="node9" class="node">
@@ -284,17 +284,23 @@
 <path fill="none" stroke="#000000" d="M421.2771,-315.4295C531.6241,-301.6603 764.3194,-265.8304 812,-204 826.1132,-185.6986 824.1071,-171.6861 812,-152 803.1683,-137.6397 788.314,-127.5977 773.1402,-120.6485"></path>
 <polygon fill="#000000" stroke="#000000" points="774.2787,-117.3312 763.7021,-116.7104 771.5831,-123.7914 774.2787,-117.3312"></polygon>
 </g>
-<!-- ord_05&#45;&gt;div_05 -->
-<g id="edge31" class="edge">
-<title>ord_05-&gt;div_05</title>
-<path fill="none" stroke="#000000" d="M423.0301,-316.877C514.3912,-308.4968 683.6676,-290.5133 740,-268 785.5774,-249.7849 803.2256,-245.1366 830,-204 843.5514,-183.1795 848.2027,-155.0242 849.6693,-134.2342"></path>
-<polygon fill="#000000" stroke="#000000" points="853.1716,-134.2742 850.1761,-124.1117 846.1803,-133.9241 853.1716,-134.2742"></polygon>
+<!-- ord_05&#45;&gt;div_06 -->
+<g id="edge33" class="edge">
+<title>ord_05-&gt;div_06</title>
+<path fill="none" stroke="#000000" d="M423.0301,-316.877C514.3912,-308.4968 683.6676,-290.5133 740,-268 834.4907,-230.2366 876.8337,-217.0586 918,-124 924.4729,-109.3678 926.645,-101.4634 918,-88 907.7291,-72.0045 891.4103,-60.6869 874.146,-52.7012"></path>
+<polygon fill="#000000" stroke="#000000" points="875.0622,-49.2878 864.4898,-48.599 872.3251,-55.7305 875.0622,-49.2878"></polygon>
+</g>
+<!-- div_05 -->
+<g id="node19" class="node">
+<title>div_05</title>
+<ellipse fill="none" stroke="#000000" cx="850" cy="-106" rx="58.5713" ry="18"></ellipse>
+<text text-anchor="middle" x="850" y="-101.8" font-family="Times,serif" font-size="14.00" fill="#000000">3.5 Division</text>
 </g>
 <!-- ord_07&#45;&gt;div_05 -->
-<g id="edge32" class="edge">
+<g id="edge30" class="edge">
 <title>ord_07-&gt;div_05</title>
-<path fill="none" stroke="#000000" d="M408.508,-382.0569C508.4525,-358.7731 721.8784,-306.2462 787,-268 821.9588,-247.4686 836.3402,-241.3955 852,-204 861.2918,-181.8112 859.7122,-154.2461 856.4341,-134.0076"></path>
-<polygon fill="#000000" stroke="#000000" points="859.8731,-133.3564 854.6136,-124.1593 852.9897,-134.6289 859.8731,-133.3564"></polygon>
+<path fill="none" stroke="#000000" d="M406.0962,-381.3242C480.6776,-361.6223 624.5137,-320.4071 740,-268 790.8083,-244.9435 819.8841,-252.1932 848,-204 860.2681,-182.9714 859.449,-154.8406 856.3387,-134.1128"></path>
+<polygon fill="#000000" stroke="#000000" points="859.7434,-133.2656 854.5605,-124.0251 852.8497,-134.4808 859.7434,-133.2656"></polygon>
 </g>
 <!-- div_01&#45;&gt;div_04 -->
 <g id="edge28" class="edge">
@@ -303,7 +309,7 @@
 <polygon fill="#000000" stroke="#000000" points="729.1653,-133.7018 724.0689,-124.4133 722.2606,-134.8526 729.1653,-133.7018"></polygon>
 </g>
 <!-- div_01&#45;&gt;div_05 -->
-<g id="edge33" class="edge">
+<g id="edge31" class="edge">
 <title>div_01-&gt;div_05</title>
 <path fill="none" stroke="#000000" d="M760.1362,-161.3008C776.3471,-151.3248 797.12,-138.5415 814.6094,-127.7789"></path>
 <polygon fill="#000000" stroke="#000000" points="816.7321,-130.5823 823.4143,-122.3604 813.0634,-124.6206 816.7321,-130.5823"></polygon>
@@ -325,12 +331,6 @@
 <title>div_02-&gt;div_04</title>
 <path fill="none" stroke="#000000" d="M587.6897,-161.4817C614.7281,-150.2288 650.4987,-135.3416 678.1788,-123.8215"></path>
 <polygon fill="#000000" stroke="#000000" points="679.7171,-126.9724 687.6046,-119.8987 677.0274,-120.5098 679.7171,-126.9724"></polygon>
-</g>
-<!-- div_06 -->
-<g id="node20" class="node">
-<title>div_06</title>
-<ellipse fill="none" stroke="#000000" cx="800" cy="-34" rx="108.8464" ry="18"></ellipse>
-<text text-anchor="middle" x="800" y="-29.8" font-family="Times,serif" font-size="14.00" fill="#000000">3.6 Binomial coefficients</text>
 </g>
 <!-- div_05&#45;&gt;div_06 -->
 <g id="edge34" class="edge">

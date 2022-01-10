@@ -31,6 +31,14 @@
   \section{Binomial coefficients}
 
   \begin{forthel}
+    [readtex \path{arithmetic/sections/01_arithmetic/05_factorial.ftl.tex}]
+  \end{forthel}
+
+  \begin{forthel}
+    [readtex \path{arithmetic/sections/02_ordering/05_induction.ftl.tex}]
+  \end{forthel}
+
+  \begin{forthel}
     [readtex \path{arithmetic/sections/03_divisibility/05_division.ftl.tex}]
   \end{forthel}
 
@@ -38,7 +46,156 @@
     Let $k,l,m,n$ denote natural numbers.
   \end{forthel}
 
+
+  \subsection{Definition}
+
   \begin{forthel}
+    \begin{proposition}\label{Arithmetic_03_06_805525}
+      $(m + k)!$ is divisible by $m!$ for any natural number $k$.
+    \end{proposition}
+    \begin{proof}
+      Define $P = \class{k \in \mathbb{N} | m! \mid (m + k)!}$.
+
+      (BASE CASE) $P$ contains $0$.
+      Indeed $m! \mid (m!) = (m + 0)!$.
+
+      (INDUCTION STEP) For all natural numbers $k$ we have $k \in P \implies k + 1 \in P$. \\
+      Proof.
+        Let $k$ be a natural number.
+        Assume $k \in P$.
+        We have
+        \[  (((m + k) + 1)!)
+            = ((m + (k + 1))!)
+            = (((m + k) + 1)!)
+            = ((m + k) + 1) \cdot ((m + k)!). \]
+        $m!$ divides $(m + k)!$.
+        Hence we can take a natural number $l$ such that $l \cdot (m!) = (m + k)!$.
+        Then we have
+        \[  (((m + k) + 1)!)
+            = ((m + k) + 1) \cdot (l \cdot (m!))
+            = (((m + k) + 1) \cdot l) \cdot (m!). \]
+        Thus $m!$ divides $((m + k) + 1)!$.
+      Qed.
+
+      Then $P$ contains every natural number.
+    \end{proof}
+
+    \begin{corollary}\label{Arithmetic_03_06_797409}
+      $(m + k)! \cdot n$ is divisible by $m!$.
+    \end{corollary}
+    \begin{proof}
+      $(m + k)!$ is divisible by $m!$.
+      Hence we can take a natural number $l$ such that $((m + k)!) = m! \cdot l$.
+      Then $(m + k)! \cdot n = (m! \cdot l) \cdot n = m! \cdot (l \cdot n)$.
+      Thus $(m + k)! \cdot n$ is divisible by $m!$.
+    \end{proof}
+
+    \begin{corollary}\label{Arithmetic_03_06_319523}
+      $(m + k)! \cdot n$ is divisible by $m! \cdot n$.
+    \end{corollary}
+    \begin{proof}
+      We can take a natural number $l$ such that $m! \cdot l = ((m + k)!)$.
+      Indeed $m!$ divides $(m + k)!$.
+      Then $(m + k)! \cdot n = (m! \cdot l) \cdot n = m! \cdot (l \cdot n) = m! \cdot (n \cdot l) = (m! \cdot n) \cdot l$.
+      Hence $m! \cdot n$ divides $(m + k)! \cdot n$.
+    \end{proof}
+
+    \begin{proposition}\label{Arithmetic_03_06_335719}
+      $\frac{(m + k)!}{m!}$ is divisible by $k!$ for any natural numbers $m,k$.
+    \end{proposition}
+    \begin{proof}
+      Let us show that for all natural numbers $m,k$ such that $m,k > 1$ we have
+      \[ \frac{(m + k)!}{m!} = (k \cdot \frac{(m + (k - 1))!}{m!}) + \frac{((m - 1) + k)!}{(m - 1)!}. \]
+        Let $m,k$ be natural numbers.
+        Assume $m,k > 1$.
+
+        %%%%%%%%%% Needed for ontological checking:
+        $m,k$ are nonzero.
+        $(m - 1) + k = (m + k) - 1 = m + (k - 1)$.
+        $(((m - 1) + k)!) = (((m + k) - 1)!) = (m + (k - 1))!$.
+        $(m - 1)!$ and $m!$ is a nonzero divisor of $((m - 1) + k)!$.
+        $m!$ is a nonzero divisor of $((m - 1) + k)!$.
+        $m!$ divides $((m + k) - 1)! \cdot (m + k)$.
+        We have $(m - 1)! \cdot m = m!$.
+        %%%%%%%%%%
+
+        [prover vampire]
+
+        (1) $k \cdot \frac{(m + (k - 1))!}{m!} = \frac{((m + k) - 1)!}{m!} \cdot k$.
+
+        (2) $\frac{((m - 1) + k)!}{(m - 1)!} = \frac{((m + k) - 1)!}{m!} \cdot m$. \\
+        Proof.
+          \[ \frac{((m - 1) + k)!}{(m - 1)!} = \frac{((m - 1) + k)! \cdot m}{(m - 1)! \cdot m} \]
+          (by \ref{Arithmetic_03_05_243924}).
+          \[ \frac{((m - 1) + k)! \cdot m}{(m - 1)! \cdot m} = \frac{((m - 1) + k)! \cdot m}{m!}. \]
+          \[ \frac{((m - 1) + k)! \cdot m}{m!} = \frac{((m - 1) + k)!}{m!} \cdot m \]
+          (by \ref{Arithmetic_03_05_401748}).
+          \[ \frac{((m - 1) + k)!}{m!} \cdot m = \frac{((m + k) - 1)!}{m!} \cdot m. \]
+        Qed.
+
+        (3) $(\frac{((m + k) - 1)!}{m!} \cdot k) + (\frac{((m + k) - 1)!}{m!} \cdot m) = \frac{(m + k)!}{m!}$. \\
+        Proof.
+          \[ (\frac{((m + k) - 1)!}{m!} \cdot k) + (\frac{((m + k) - 1)!}{m!} \cdot m) = \frac{((m + k) - 1)!}{m!} \cdot (k + m) \]
+          (by \ref{Arithmetic_01_03_539933}).
+          \[ \frac{((m + k) - 1)!}{m!} \cdot (k + m) = \frac{((m + k) - 1)!}{m!} \cdot (m + k). \]
+          \[ \frac{((m + k) - 1)!}{m!} \cdot (m + k) = \frac{((m + k) - 1)! \cdot (m + k)}{m!} \]
+          (by \ref{Arithmetic_03_05_401748}).
+          \[ \frac{((m + k) - 1)! \cdot (m + k)}{m!} = \frac{(m + k)!}{m!}. \]
+        Qed.
+
+        Then we have the thesis (by 1, 2, 3).
+      End.
+
+      Define \[ P = \class{n \in \mathbb{N} | \classtext{for all $m,k \in \mathbb{N}$ such that $n = m + k$ we have $k! \mid \frac{(m + k)!}{m!}$}}. \]
+
+      For all natural numbers $n$ if every predecessor of $n$ is contained in $P$ then $n \in P$. \\
+      Proof.
+        Let $n$ be a natural number.
+        Assume that every predecessor of $n$ lies in $P$.
+
+        Let us show that for all natural numbers $m,k$ such that $n = m + k$ we have $k! \mid \frac{(m + k)!}{m!}$.
+          Let $m,k$ be natural numbers.
+          Assume $n = m + k$.
+
+          Case $m \leq 1$. Obvious.
+
+          Case $k \leq 1$. Obvious.
+
+          Case $m,k > 1$.
+            Case $m + k < n$ or $m + k > n$. Obvious.
+
+            Case $m + k = n$.
+              We have \[ \frac{(m + k)!}{m!} = (k \cdot \frac{(m + (k - 1))!}{m!}) + \frac{((m - 1) + k)!}{(m - 1)!}. \]
+
+              (1) $k! \mid k \cdot \frac{(m + (k - 1))!}{m!}$. \\
+              Proof.
+                We have $m + (k - 1) < n$.
+                Hence $(k - 1)!$ divides $\frac{(m + (k - 1))!}{m!}$.
+                Thus we can take a natural number $l$ such that $(k - 1)! \cdot l = \frac{(m + (k - 1))!}{m!}$.
+                Then $k! \cdot l = (k \cdot (k - 1)!) \cdot l = k \cdot ((k - 1)! \cdot l) = k \cdot \frac{(m + (k - 1))!}{m!}$.
+                Therefore $k!$ divides $k \cdot \frac{(m + (k - 1))!}{m!}$.
+              Qed.
+
+              [prover vampire]
+
+              (2) $k! \mid \frac{((m - 1) + k)!}{(m - 1)!}$. \\
+              Proof.
+                We have $(m - 1) + k < n$.
+                Indeed $(m - 1) + k = (m + k) - 1 = n - 1 < n$.
+                Hence $k! \mid \frac{((m - 1) + k)!}{(m - 1)!}$.
+              Qed.
+
+              Then $k!$ divides $(k \cdot \frac{(m + (k - 1))!}{m!}) + \frac{((m - 1) + k)!}{(m - 1)!}$ (by \ref{Arithmetic_03_01_655411}, 1, 2).
+            End.
+          End.
+        End.
+      Qed.
+
+      [prover vampire]
+      Hence $P$ contains every natural number (by \ref{Arithmetic_02_05_167446}).
+      Then we have the thesis.
+    \end{proof}
+
     \begin{lemma}\label{Arithmetic_03_06_504192}
       Let $n \geq k$.
       Then $k! \cdot ((n - k)!)$ divides $n!$.
@@ -53,7 +210,12 @@
       Let $n \geq k$.
       \[ \binom{n}{k} = \frac{n!}{k! \cdot ((n - k)!)}. \]
     \end{definition}
+  \end{forthel}
 
+
+  \subsection{Basic properties}
+
+  \begin{forthel}
     \begin{proposition}\label{Arithmetic_03_06_502271}
       Let $n \geq k$.
       Then \[ \binom{n}{k} \geq 1. \]
