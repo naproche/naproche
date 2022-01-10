@@ -11,6 +11,9 @@ variant of ForTheL, respectively.
 
 ## Current development version
 
+  * **New:** New sections about division and binomial coefficients in arithmetic
+    examples
+
   * **Fixed:** In FTL-TeX `#` is a regular character now.
 
 
