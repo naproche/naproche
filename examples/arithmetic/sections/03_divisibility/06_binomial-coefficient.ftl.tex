@@ -105,7 +105,7 @@
     \end{proposition}
     \begin{proof}
       Let us show that for all natural numbers $m,k$ such that $m,k > 1$ we have
-      \[ \frac{(m + k)!}{m!} = (k \cdot \frac{(m + (k - 1))!}{m!}) + \frac{((m - 1) + k)!}{(m - 1)!}. \]
+      \[ \frac{(m + k)!}{m!} = \left( k \cdot \frac{(m + (k - 1))!}{m!} \right) + \frac{((m - 1) + k)!}{(m - 1)!}. \]
         Let $m,k$ be natural numbers.
         Assume $m,k > 1$.
 
@@ -133,9 +133,9 @@
           \[ \frac{((m - 1) + k)!}{m!} \cdot m = \frac{((m + k) - 1)!}{m!} \cdot m. \]
         Qed.
 
-        (3) $(\frac{((m + k) - 1)!}{m!} \cdot k) + (\frac{((m + k) - 1)!}{m!} \cdot m) = \frac{(m + k)!}{m!}$. \\
+        (3) $\left( \frac{((m + k) - 1)!}{m!} \cdot k \right) + \left( \frac{((m + k) - 1)!}{m!} \cdot m \right) = \frac{(m + k)!}{m!}$. \\
         Proof.
-          \[ (\frac{((m + k) - 1)!}{m!} \cdot k) + (\frac{((m + k) - 1)!}{m!} \cdot m) = \frac{((m + k) - 1)!}{m!} \cdot (k + m) \]
+          \[ \left( \frac{((m + k) - 1)!}{m!} \cdot k \right) + \left( \frac{((m + k) - 1)!}{m!} \cdot m \right) = \frac{((m + k) - 1)!}{m!} \cdot (k + m) \]
           (by \ref{Arithmetic_01_03_539933}).
           \[ \frac{((m + k) - 1)!}{m!} \cdot (k + m) = \frac{((m + k) - 1)!}{m!} \cdot (m + k). \]
           \[ \frac{((m + k) - 1)!}{m!} \cdot (m + k) = \frac{((m + k) - 1)! \cdot (m + k)}{m!} \]
@@ -165,7 +165,7 @@
             Case $m + k < n$ or $m + k > n$. Obvious.
 
             Case $m + k = n$.
-              We have \[ \frac{(m + k)!}{m!} = (k \cdot \frac{(m + (k - 1))!}{m!}) + \frac{((m - 1) + k)!}{(m - 1)!}. \]
+              We have \[ \frac{(m + k)!}{m!} = \left( k \cdot \frac{(m + (k - 1))!}{m!} \right) + \frac{((m - 1) + k)!}{(m - 1)!}. \]
 
               (1) $k! \mid k \cdot \frac{(m + (k - 1))!}{m!}$. \\
               Proof.
@@ -185,7 +185,7 @@
                 Hence $k! \mid \frac{((m - 1) + k)!}{(m - 1)!}$.
               Qed.
 
-              Then $k!$ divides $(k \cdot \frac{(m + (k - 1))!}{m!}) + \frac{((m - 1) + k)!}{(m - 1)!}$ (by \ref{Arithmetic_03_01_655411}, 1, 2).
+              Then $k!$ divides $\left( k \cdot \frac{(m + (k - 1))!}{m!} \right) + \frac{((m - 1) + k)!}{(m - 1)!}$ (by \ref{Arithmetic_03_01_655411}, 1, 2).
             End.
           End.
         End.
