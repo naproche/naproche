@@ -1,0 +1,630 @@
+\documentclass[../../set-theory.tex]{subfiles}
+
+\begin{document}
+  \section{Finite and infinite sets}
+
+  \begin{forthel}
+    [readtex \path{set-theory/sections/02_functions/06_equipollency.ftl.tex}]
+  \end{forthel}
+
+  \begin{forthel}
+    [readtex \path{arithmetic/sections/02_ordering/01_ordering.ftl.tex}]
+  \end{forthel}
+
+  \begin{forthel}
+    Let $n, m, k$ denote natural numbers.
+    Let $x, y, z$ denote sets.
+  \end{forthel}
+
+
+  \subsection{Initial segments of the natural numbers}
+
+  \begin{forthel}
+    \begin{lemma}\label{SetTheory_03_01_609328}
+      Let $n,m$ be natural numbers.
+      Then there exists a set $x$ such that $x = \class{k \in \mathbb{N} | n \leq k \leq m}$.
+    \end{lemma}
+    \begin{proof}
+      (1) Define \[ P = \class{l \in \mathbb{N} | \text{there exists a set $x$ such that $x = \class{k \in \mathbb{N} | k \leq l}$}}. \]
+
+      (BASE CASE) $P$ contains $0$.
+      Proof.
+        Take $x = \set{0}$.
+        Every natural number that is less than or equal to $0$ is equal to $0$.
+        Hence $x = \class{k \in \mathbb{N} | k \leq 0}$.
+        Thus $0 \in P$.
+      Qed.
+
+      (INDUCTION STEP) For all natural numbers $l$ we have $l \in P \implies l + 1 \in P$. \\
+      Proof.
+        Let $l$ be a natural number.
+        Assume $l \in P$.
+        [prover vampire]
+        Then we can take a set $x'$ such that $x' = \class{k \in \mathbb{N} | k \leq l}$.
+        [prover eprover]
+        Take $x = x' \cup \set{l + 1}$.
+        For all natural numbers $k$ we have $k \leq l + 1$ iff $k \leq l$ or $k = l + 1$.
+        Hence $x = \class{k \in \mathbb{N} | k \leq l + 1}$.
+        Thus $l + 1 \in P$ (by 1).
+        Indeed $x$ is a set.
+      Qed.
+
+      Hence every natural number is contained in $P$.
+      Thus we can take a set $x'$ such that $x' = \class{k \in \mathbb{N} | k \leq m}$ (by 1).
+      Define $x = \class{k \in \mathbb{N} | \text{$k \in x'$ and $n \leq k$}}$.
+      Then every element of $x$ is contained in $x'$.
+      Hence $x$ is a set (by \nameref{SetTheory_01_01_240572}).
+      We have $x = \class{k \in \mathbb{N} | n \leq k \leq m}$.
+    \end{proof}
+
+    \begin{definition}
+      Let $n,m$ be natural numbers.
+      $\set{n, \dots, m}$ is the set $x$ such that $x = \class{k \in \mathbb{N} | n \leq k \leq m}$.
+    \end{definition}
+
+    \begin{proposition}\label{SetTheory_03_01_510576}
+      Assume $n \leq m$.
+      Then $\set{1, \dots, n} \subseteq \set{1, \dots, m}$.
+    \end{proposition}
+    \begin{proof}
+      Let $k \in \set{1, \dots, n}$.
+      Then $1 \leq k \leq n$.
+      Hence $1 \leq k \leq m$.
+      Thus $k \in \set{1, \dots, m}$.
+    \end{proof}
+
+    \begin{proposition}\label{SetTheory_03_01_792549}
+      $\set{n, \dots, m} = \emptyset$ iff $m < n$.
+    \end{proposition}
+    \begin{proof}
+      Case $\set{n, \dots, m} = \emptyset$.
+        Then there is no natural number $k$ such that $n \leq k \leq m$.
+        Hence for every natural number $k$ we have $k < n$ or $m < k$.
+        Thus $m < n$ or $m < m$.
+        Consequently $n > m$.
+      End.
+
+      Case $m < n$.
+        Assume that $\set{n, \dots, m}$ is nonempty.
+        Take a natural number $k$ such that $n \leq k \leq m$.
+        Then $n \leq m$.
+        Hence $m$ is not less than $n$.
+        Contradiction.
+      End.
+    \end{proof}
+
+    \begin{corollary}\label{SetTheory_03_01_614247}
+      Let $n$ be nonzero.
+      Then $\set{n, \dots, 0} = \emptyset$.
+    \end{corollary}
+
+    \begin{proposition}\label{SetTheory_03_01_240037}
+      $\set{n, \dots, m + 1} \setminus \set{m + 1} = \set{n, \dots, m}$.
+    \end{proposition}
+    \begin{proof}
+      Let us show that $\set{n, \dots, m + 1} \setminus \set{m + 1} \subseteq \set{n, \dots, m}$.
+        Let $k \in \set{n, \dots, m + 1} \setminus \set{m + 1}$.
+        Then $k \in \set{n, \dots, m + 1}$ and $k \notin \set{m + 1}$.
+        Hence $n \leq k \leq m + 1$ and $k \neq m + 1$.
+        Thus $n \leq k \leq m$.
+        Therefore $k \in \set{n, \dots, m}$.
+      End.
+
+      Let us show that $\set{n, \dots, m} \subseteq \set{n, \dots, m + 1} \setminus \set{m + 1}$.
+        Let $k \in \set{n, \dots, m}$.
+        Then $n \leq k \leq m$.
+        Hence $n \leq k \leq m + 1$ and $k \neq m + 1$.
+        Thus $k \in \set{n, \dots, m + 1}$ and $k \notin \set{m + 1}$.
+        Therefore $k \in \set{n, \dots, m + 1} \setminus \set{m + 1}$.
+      End.
+    \end{proof}
+
+    \begin{proposition}
+      For all natural numbers $n,m$ if $\set{1, \dots, n}$ and $\set{1, \dots, m}$ are equipollent then $n = m$.
+    \end{proposition}
+    \begin{proof}
+      Define \[ P = \class{n \in \mathbb{N} | \classtext{for all natural numbers $m$ if $\set{1, \dots, n}$ and $\set{1, \dots, m}$ are equipollent then $n = m$}}. \]
+
+      (BASE CASE) $P$ contains $0$. \\
+      Proof.
+        Let us show that for all natural numbers $m$ if $\set{1, \dots, 0}$ and $\set{1, \dots, m}$ are equipollent then $m = 0$.
+          Let $m$ be a natural number.
+          Assume that $\set{1, \dots, 0}$ and $\set{1, \dots, m}$ are equipollent.
+          We have $\set{1, \dots, 0} = \emptyset$.
+          Hence $\set{1, \dots, m}$ and $\emptyset$ are equipollent.
+          Thus $\set{1, \dots, m} = \emptyset$.
+          Therefore $m = 0$.
+        End.
+      Qed.
+
+      (INDUCTION STEP) For all natural numbers $n$ we have $n \in P \implies n + 1 \in P$. \\
+      Proof.
+        Let $n$ be a natural number.
+        Assume $n \in P$.
+
+        Define \[ Q = \class{m \in \mathbb{N} | \classtext{if $n + 1 \neq m$ then $\set{1, \dots, m}$ and $\set{1, \dots, n + 1}$ are not equipollent}}. \]
+
+        (BASE CASE) $Q$ contains $0$. \\
+        Proof.
+          Case $n = 0$. Obvious.
+
+          Case $n \neq 0$.
+            We have $\set{1, \dots, 0} = \emptyset$.
+            $n + 1 > 1$.
+            Hence $\set{1, \dots, n + 1} \neq \emptyset$.
+            Thus $\set{1, \dots, 0}$ and $\set{1, \dots, n + 1}$ are not equipollent.
+            Therefore $0 \in Q$.
+          End.
+        Qed.
+
+        (INDUCTION STEP) For all natural numbers $m$ we have $m \in Q \implies m + 1 \in Q$. \\
+        Proof.
+          Let $m$ be a natural number.
+          Assume $m \in Q$.
+
+          Let us show that if $n + 1 \neq m + 1$ then $\set{1, \dots, m + 1}$ and $\set{1, \dots, n + 1}$ are not equipollent.
+            Assume $n + 1 \neq m + 1$.
+            Then $n \neq m$.
+            Hence $\set{1, \dots, n}$ and $\set{1, \dots, m}$ are not equipollent.
+            Indeed $n \in P$.
+            Suppose that $\set{1, \dots, n + 1}$ and $\set{1, \dots, m + 1}$ are equipollent.
+            Take a bijection $f$ between $\set{1, \dots, n + 1}$ and $\set{1, \dots, m + 1}$.
+
+            If $n + 1 = f^{-1}(m + 1)$ then $f(n + 1) = m + 1$.
+            Define \[ g(k) =
+              \begin{cases}
+                m + 1    & : k = n + 1 \\
+                f(n + 1) & : k = f^{-1}(m + 1) \\
+                f(k)     & : \text{$k \neq n + 1$ and $k \neq f^{-1}(m + 1)$}
+              \end{cases} \]
+            for $k \in \set{1, \dots, n + 1}$.
+
+            (1) $g$ is a function to $\set{1, \dots, m + 1}$. \\
+            Proof.
+              $g$ is a function.
+              Let $k \in \set{1, \dots, n + 1}$.
+
+              Let us show that $g(k) \in \set{1, \dots, m + 1}$.
+                Case $k = n + 1$.
+                  Then $g(k) = m + 1 \in \set{1, \dots, m + 1}$.
+                End.
+
+                Case $k = f^{-1}(m + 1)$.
+                  Then $g(k) = f(n + 1) \in \set{1, \dots, m + 1}$.
+                End.
+
+                Case $k \neq n + 1$ and $k \neq f^{-1}(m + 1)$.
+                  Then $g(k) = f(k) \in \set{1, \dots, m + 1}$.
+                End.
+              End.
+            Qed.
+
+            (2) $g$ is a function onto $\set{1, \dots, m + 1}$. \\
+            Proof.
+              Let us show that every element of $\set{1, \dots, m + 1}$ is a value of $g$.
+                Let $l \in \set{1, \dots, m + 1}$.
+
+                Case $l = m + 1$.
+                  Then $l = m + 1 = g(n + 1)$.
+                End.
+
+                Case $l = f(n + 1)$.
+                  Then $l = f(n + 1) = g(f^{-1}(m + 1))$.
+                End.
+
+                Case $l \neq m + 1$ and $l \neq f(n + 1)$.
+                  Take $k = f^{-1}(l)$.
+                  $k \neq n + 1$.
+                  Indeed if $k = n + 1$ then $f(n + 1) = f(k) = f(f^{-1}(l)) = l$.
+                  $k \neq f^{-1}(m + 1)$.
+                  Indeed if $k = f^{-1}(m + 1)$ then $m + 1 = f(f^{-1}(m + 1)) = f(k) = f(f^{-1}(l)) = l$.
+                  Hence $g(k) = f(k) = f(f^{-1}(l)) = l$.
+                End.
+              End.
+
+              Thus $g$ is a function onto $\set{1, \dots, m + 1}$ (by \ref{SetTheory_02_01_195739}, 1).
+            Qed.
+
+            (3) $g$ is one to one. \\
+            Proof.
+              Let $k,k' \in \set{1, \dots, n + 1}$.
+              Assume $g(k) = g(k')$.
+
+              Let us show that $k = k'$.
+                Case $k, k' = n + 1$. Trivial.
+
+                Case $k = n + 1$ and $k' = f^{-1}(m + 1)$.
+                  Then $g(k) = m + 1$ and $g(k') = f(n + 1)$.
+                  Hence $k' = f^{-1}(m + 1) = f^{-1}(g(k)) = f^{-1}(g(k')) = f^{-1}(f(n + 1)) = n + 1 = k$.
+                End.
+
+                Case $k = n + 1$ and $k' \neq n + 1, f^{-1}(m + 1)$.
+                  Then $g(k) = m + 1$ and $g(k') = f(k')$.
+                  Hence $f(k') = g(k') = g(k) = m + 1$.
+                  Thus $f(k) = f(n + 1) = g(f^{-1}(m + 1)) = g(f^{-1}(f(k'))) = g(k')= f(k')$.
+                  Therefore $k = k'$.
+                End.
+
+                Case $k = f^{-1}(m + 1)$ and $k' = n + 1$.
+                  Then $g(k) = f(n + 1)$ and $g(k') = m + 1$.
+                  Hence $f(k) = f(f^{-1}(m + 1)) = m + 1 = g(k') = g(k) = f(n + 1) = f(k')$.
+                  Thus $k = k'$.
+                End.
+
+                Case $k, k' = f^{-1}(m + 1)$. Trivial.
+
+                Case $k = f^{-1}(m + 1)$ and $k' \neq n + 1, f^{-1}(m + 1)$.
+                  Then $g(k) = f(n + 1)$ and $g(k') = f(k')$.
+                  Hence $f(k') = g(k') = g(k) = f(n + 1)$.
+                  Thus $k' = n + 1$.
+                  Indeed $f$ is one to one and $k', n + 1$ belong to the domain of $f$.
+                  Contradiction.
+                End.
+
+                Case $k \neq n + 1, f^{-1}(m + 1)$ and $k' = n + 1$.
+                  Then $g(k) = f(k)$ and $g(k') = m + 1$.
+                  Hence $f(k) = g(k) = g(k') = m + 1$.
+                  Thus $f(k') = f(n + 1) = g(f^{-1}(m + 1)) = g(f^{-1}(f(k))) = g(k) = f(k)$.
+                  Therefore $k' = k$.
+                End.
+
+                Case $k \neq n + 1, f^{-1}(m + 1)$ and $k' = f^{-1}(m + 1)$.
+                  Then $g(k) = f(k)$ and $g(k') = f(n + 1)$.
+                  Hence $f(k) = g(k) = g(k') = f(n + 1)$.
+                  Thus $k = n + 1$.
+                  Indeed $f$ is one to one and $k, n + 1$ belong to the domain of $f$.
+                  Contradiction.
+                End.
+
+                Case $k, k' \neq n + 1, f^{-1}(m + 1)$.
+                  Then $g(k) = f(k)$ and $g(k') = f(k')$.
+                  Hence $f(k) = g(k) = g(k') = f(k')$.
+                  Thus $k = k'$.
+                  Indeed $f$ is one to one and $k, k'$ belong to the domain of $f$.
+                End.
+              End.
+            Qed.
+
+            Thus $g$ is a bijection between $\set{1, \dots, n + 1}$ and $\set{1, \dots, m + 1}$ (by 2, 3).
+            Take $h = g \restr \set{1, \dots, n}$.
+            Then $h$ is a one to one function of $\set{1, \dots, n}$ (by \ref{SetTheory_02_01_507691}).
+            Indeed $\set{1, \dots, n} \subseteq \set{1, \dots, n + 1}$.
+
+            Let us show that every element of $\set{1, \dots, m + 1} \setminus \set{g(n + 1)}$ is a value of $h$.
+              Let $k \in \set{1, \dots, m + 1} \setminus \set{g(n + 1)}$.
+              Then $k \in \set{1, \dots, m + 1}$.
+              Take $l = g^{-1}(k)$.
+              Hence $l \in \set{1, \dots, n + 1}$.
+              We have $l = g^{-1}(k) \neq n + 1$.
+              Indeed if $g^{-1}(k) = n + 1$ then $k = g(g^{-1}(k)) = g(n + 1) \notin \set{1, \dots, m + 1} \setminus \set{g(n + 1)}$.
+              Thus $l \in \set{1, \dots, n}$.
+              We have $k = g(g^{-1}(k)) = g(l) = h(l)$.
+              Therefore $k$ is a value of $h$.
+            End.
+
+            Let us show that $h$ is a function to $\set{1, \dots, m + 1} \setminus \set{g(n + 1)}$.
+              Let $k \in \set{1, \dots, n}$.
+              Then $h(k) = g(k) \in \set{1, \dots, m + 1}$.
+              Indeed $g$ is a function to $\set{1, \dots, m + 1}$ and $k \in \dom(g)$.
+              We have $h(k) \neq g(n + 1)$.
+              Indeed if $h(k) = g(n + 1)$ then $k = g^{-1}(g(k)) = g^{-1}(h(k)) = g^{-1}(g(n + 1)) = n + 1 \notin \set{1, \dots, n}$.
+              Thus $h(k) \notin \set{g(n + 1)}$.
+              Therefore $h(k) \in \set{1, \dots, m + 1} \setminus \set{g(n + 1)}$.
+            End.
+
+            Then $h$ is a function onto $\set{1, \dots, m + 1} \setminus \set{g(n + 1)}$.
+            Hence $h$ is a bijection between $\set{1, \dots, n}$ and $\set{1, \dots, m + 1} \setminus \set{g(n + 1)}$.
+            We have $g(n + 1) = m + 1$.
+            Thus $\set{1, \dots, m + 1} \setminus \set{g(n + 1)} = \set{1, \dots, m}$.
+            Therefore $h$ is a bijection between $\set{1, \dots, n}$ and $\set{1, \dots, m}$.
+            Consequently $\set{1, \dots, n}$ and $\set{1, \dots, m}$ are equipollent.
+            Contradiction.
+          End.
+        Qed.
+      Qed.
+    \end{proof}
+  \end{forthel}
+
+
+  \subsection{Finite sets}
+
+  \begin{forthel}
+    \begin{definition}
+      $x$ has $n$ elements iff $x$ is equipollent to $\set{1, \dots, n}$.
+    \end{definition}
+
+    Let $x$ has exactly $n$ elements stand for $x$ has $n$ elements.
+    Let $\# x = n$ stand for $x$ has $n$ elements.
+    Let $\# x \neq n$ stand for it is wrong that $x$ has $n$ elements.
+
+    \begin{definition}
+      $x$ is finite iff there exists a natural number $n$ such that $x$ has $n$ elements.
+    \end{definition}
+
+    Let $\# x < \infty$ stand for $x$ is finite.
+
+    \begin{definition}
+      A system of finite sets is a system of set $X$ such that every element of $X$ is finite.
+    \end{definition}
+
+    \begin{definition}
+      $x$ has less than $n$ elements iff $x$ has $m$ elements for some natural number $m$ such that $m < n$.
+    \end{definition}
+
+    Let $\# x < n$ stand for $x$ has less than $n$ elements.
+    Let $x$ does not have less than $n$ elements stand for it is wrong that $x$ has less than $n$ elements.
+
+    \begin{definition}
+      $x$ has at most $n$ elements iff $x$ has $m$ elements for some natural number $m$ such that $m \leq n$.
+    \end{definition}
+
+    Let $\# x \leq n$ stand for $x$ has at most $n$ elements.
+    Let $x$ does not have at most $n$ elements stand for it is wrong that $x$ has at most $n$ elements.
+
+    \begin{definition}
+      $x$ has more than $n$ elements iff $x$ does not have at most $n$ elements.
+    \end{definition}
+
+    Let $\# x > n$ stand for $x$ has more than $n$ elements.
+    Let $x$ does not have more than $n$ elements stand for it is wrong that $x$ has more than $n$ elements.
+
+    \begin{definition}
+      $x$ has at least $n$ elements iff $x$ does not have less than $n$ elements.
+    \end{definition}
+
+    Let $\# x \geq n$ stand for $x$ has at least $n$ elements.
+  \end{forthel}
+
+
+  \subsection{Properties of finite cardinalities}
+
+  \begin{forthel}
+    \begin{proposition}
+      \[ (\text{$\# x = n$ and $\# x = m$}) \implies n = m. \]
+    \end{proposition}
+    \begin{proof}
+      Assume $\# x = n$ and $\# x = m$.
+      Then $x$ is equipollent to $\set{1, \dots, n}$ and $x$ is equipollent to $\set{1, \dots, m}$.
+      Hence $\set{1, \dots, n}$ and $\set{1, \dots, m}$ are equipollent.
+      Thus $n = m$.
+    \end{proof}
+
+    \begin{proposition}
+      \[ (\text{$\# x < n$ and $n \leq m$}) \implies \# x < m. \]
+    \end{proposition}
+    \begin{proof}
+      Assume $\# x < n$ and $n \leq m$.
+      Take a natural number $k$ such that $k < n$ and $\# x = k$.
+      Then $k < m$.
+      Hence $\# x < m$.
+    \end{proof}
+
+    \begin{proposition}
+      \[ \# x \leq n \iff (\text{$\# x = n$ or $\# x < n$}). \]
+    \end{proposition}
+    \begin{proof}
+      Case $\# x \leq n$.
+        Take a natural number $m$ such that $m \leq n$ and $\# x = m$.
+        Then $m = n$ or $m < n$.
+        If $m = n$ then $\# x = n$.
+        If $m < n$ then $\# x < n$.
+      End.
+
+      Case $\# x = n$ or $\# x < n$.
+        Case $\# x = n$.
+          We have $n \leq n$.
+          Hence $\# x \leq n$.
+        End.
+
+        Case $\# x < n$.
+          Take a natural number $m$ such that $m < n$ and $\# x = m$.
+          Then $m \leq n$.
+          Hence $\# x \leq n$.
+        End.
+      End.
+    \end{proof}
+
+    \begin{proposition}
+      \[ (\text{$\# x \leq n$ and $n \leq m$}) \implies \# x \leq m. \]
+    \end{proposition}
+    \begin{proof}
+      Assume $\# x \leq n$ and $n \leq m$.
+      Take a natural number $k$ such that $k \leq n$ and $\# x = k$.
+      Then $k \leq m$.
+      Hence $\# x \leq m$.
+    \end{proof}
+
+    \begin{proposition}
+      \[ (\text{$\# x > n$ and $n \geq m$}) \implies \# x > m. \]
+    \end{proposition}
+    \begin{proof}
+      Assume $\# x > n$ and $n \geq m$.
+      Assume that it is wrong that $\# x > m$.
+      Then $\# x \leq m$.
+      Take a natural number $k$ such that $k \leq m$ and $\# x = k$.
+      Then $k \leq n$.
+      Hence $\# x \leq n$.
+      Contradiction.
+    \end{proof}
+
+    \begin{proposition}
+      \[ \# x \geq n \iff (\text{$\# x = n$ or $\# x > n$}). \]
+    \end{proposition}
+    \begin{proof}
+      Case $\# x \geq n$.
+        Then it is wrong that $\# x < n$.
+        Assume that it is wrong that $\# x = n$ or $\# x > n$.
+        Then $\# x \neq n$ and $\# x \leq n$.
+        Hence $\# x < n$.
+        Contradiction.
+      End.
+
+      Case $\# x = n$ or $\# x > n$.
+        Assume that it is wrong that $\# x \geq n$.
+        Then $\# x < n$.
+        Hence we can take a natural number $m$ such that $m < n$ and $\# x = m$.
+
+        Case $\# x = n$.
+          Then $m = n$.
+          Contradiction.
+        End.
+
+        Case $\# x > n$.
+          We have $m \leq n$.
+          Hence $\# x \leq n$.
+          Contradiction.
+        End.
+      End.
+    \end{proof}
+
+    \begin{proposition}
+      \[ (\text{$\# x \geq n$ and $n \geq m$}) \implies \# x \geq m. \]
+    \end{proposition}
+    \begin{proof}
+      Assume $\# x \geq n$ and $n \geq m$.
+      Then $\# x = n$ or $\# x > n$.
+      We have $n = m$ or $n > m$.
+
+      Case $n = m$.
+        Then $\# x = m$ or $\# x > m$.
+        Hence $\# x \geq m$.
+      End.
+
+      Case $n > m$.
+        Then $\# x > m$.
+        Hence $\# x \geq m$.
+      End.
+    \end{proof}
+
+    \begin{proposition}
+      $x$ is finite iff $\# x \leq n$ for some natural number $n$.
+    \end{proposition}
+    \begin{proof}
+      Case $x$ is finite.
+        Take a natural number $n$ such that $\# x = n$.
+        We have $n \leq n$.
+        Hence $\# x \leq n$.
+      End.
+
+      Case $\# x \leq n$ for some natural number $n$.
+        Consider a natural number $n$ such that $\# x \leq n$.
+        Take a natural number $m$ such that $m \leq n$ and $\# x = m$.
+        Then $x$ is finite.
+      End.
+    \end{proof}
+
+    \begin{corollary}
+      $x$ is finite iff $\# x < n$ for some natural number $n$.
+    \end{corollary}
+    \begin{proof}
+      Case $x$ is finite.
+        Take a natural number $n$ such that $\# x = n$.
+        Then $\# x < n + 1$.
+      End.
+
+      Case $\# x < n$ for some natural number $n$.
+        Then $\# x \leq n$ for some natural number $n$.
+        Hence $x$ is finite.
+      End.
+    \end{proof}
+  \end{forthel}
+
+
+  \subsection{Properties of finite sets}
+
+  \begin{forthel}
+    \begin{proposition}\label{SetTheory_03_01_835809}
+      $x$ is empty iff $x$ has zero elements.
+    \end{proposition}
+    \begin{proof}
+      Case $x$ is empty.
+        Then $x = \emptyset$.
+        We have $\set{1, \dots, 0} = \emptyset$.
+        Then $\id_{\emptyset}$ is a bijection between $x$ and $\set{1, \dots, 0}$.
+        Hence $x$ and $\set{1, \dots, 0}$ are equipollent.
+        Thus $x$ has zero elements.
+      End.
+
+      Case $x$ has zero elements.
+        Take a bijection $f$ between $x$ and $\set{1, \dots, 0}$.
+        We have $\set{1, \dots, 0} = \emptyset$.
+        Hence $x$ is empty.
+        Indeed if $x$ is nonempty then $\emptyset$ contains $f(u)$ for some $u \in x$.
+      End.
+    \end{proof}
+
+    \begin{corollary}\label{SetTheory_03_01_750555}
+      $\emptyset$ has zero elements.
+    \end{corollary}
+
+    \begin{proposition}\label{SetTheory_03_01_758768}
+      Let $u$ be an element.
+      Then $\set{u}$ has exactly one element.
+    \end{proposition}
+    \begin{proof}
+      Define $f(w) = 1$ for $w \in \set{u}$.
+
+      (1) $f$ is one to one.
+      Indeed for all $a,b \in \set{u}$ we have $f(a) = f(u) = f(b)$.
+
+      (2) $f$ is a function onto $\set{1}$.
+      Indeed every element of $\set{1}$ is equal to $1$ and $f(u) = 1$.
+
+      Hence $f$ is a bijection between $\set{u}$ and $\set{1}$.
+      We have $\set{1} = \set{1, \dots, 1}$.
+      Thus $\set{u}$ has exactly one element.
+    \end{proof}
+
+    \begin{proposition}\label{SetTheory_03_01_105900}
+      Let $u,v$ be distinct elements.
+      Then $\set{u,v}$ has exactly two elements.
+    \end{proposition}
+    \begin{proof}
+      Define \[ f(w) =
+        \begin{cases}
+          1 & w = u \\
+          2 & w = v
+        \end{cases} \]
+      for $w \in \set{u,v}$.
+
+      (1) $f$ is one to one.
+      Proof.
+        Let $a,b \in \set{u,v}$.
+        Assume $a \neq b$.
+        Then ($a = u$ and $b = v$) or ($a = v$ and $b = u$).
+
+        Case $a = u$ and $b = v$.
+          Then $f(a) = 1$ and $f(b) = 2$.
+          Hence $f(a) \neq f(b)$.
+        End.
+
+        Case $a = v$ and $b = u$.
+          Then $f(a) = 2$ and $f(b) = 1$.
+          Hence $f(a) \neq f(b)$.
+        End.
+      Qed.
+
+      Let us show that every element of $\set{1, 2}$ is a value of $f$.
+        Let $b \in \set{1,2}$.
+        Then $b = 1$ or $b = 2$.
+        If $b = 1$ then $b = f(u)$.
+        If $b = 2$ then $b = f(v)$.
+        Hence $b$ is a value of $f$.
+      Qed.
+
+      Let us show that $f$ is a function to $\set{1,2}$.
+        Let $a \in \set{u,v}$.
+        Then $a = u$ or $a = v$.
+        If $a = u$ then $f(a) = 1 \in \set{1,2}$.
+        If $a = v$ then $f(a) = 2 \in \set{1,2}$.
+        Thus $f(a) \in \set{1,2}$.
+      End.
+
+      (2) Hence $f$ is a function onto $\set{1,2}$.
+
+      Thus $f$ is a bijection between $\set{u,v}$ and $\set{1,2}$ (by 1, 2).
+      We have $\set{1,2} = \set{1, \dots, 2}$.
+      Therefore $\set{u,v}$ has exactly two elements.
+    \end{proof}
+  \end{forthel}
+\end{document}
