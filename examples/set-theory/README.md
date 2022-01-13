@@ -26,7 +26,7 @@ A formalization of a ZF-like set theory
 
 ## Dependency graph
 
-![foo](dependency-graph/graph.svg)
+![dependency graph](dependency-graph/graph.svg)
 
 
 ## Technical note
