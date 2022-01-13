@@ -215,6 +215,33 @@
       Hence $f(u) \in y$.
     \end{proof}
 
+    \begin{proposition}\label{SetTheory_02_01_195739}
+      Let $f$ be a function to $y$.
+      $f$ is a function onto $y$ iff every element of $y$ is a value of $f$.
+    \end{proposition}
+    \begin{proof}
+      Case $f$ is a function onto $y$.
+        Then $y = \range(f)$.
+        Let $v$ be an element of $y$.
+        Then $v$ is an element of $\range(f)$.
+        Hence $v$ is a value of $f$.
+      End.
+
+      Case every element of $y$ is a value of $f$.
+        Let us show that $y \subseteq \range(f)$.
+          Let $v \in y$.
+          Then $v$ is a value of $f$.
+          Hence $v \in \range(f)$.
+        End.
+
+        Let us show that $\range(f) \subseteq y$.
+          Let $v \in \range(f)$.
+          Then $v$ is a value of $f$.
+          Hence $v \in y$.
+        End.
+      End.
+    \end{proof}
+
     \begin{definition}
       $f$ is one to one iff for all $u,v \in \dom(f)$ if $f(u) = f(v)$ then $u = v$.
     \end{definition}
