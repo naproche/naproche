@@ -27,4 +27,4 @@ x86_64-windows/
 *.ftl.synctex(busy)
 
 # Exceptions
-!examples/set-theory/set-theory.ftl.aux
+!examples/set-theory/set-theory.aux
