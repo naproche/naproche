@@ -23,6 +23,10 @@ A formalization of a ZF-like set theory
     2.5 Functions and set-systems  
     2.6 Equipollency
 
+3.  Cardinalities
+
+    3.1 Finite and infinite sets
+
 
 ## Dependency graph
 
@@ -31,7 +35,7 @@ A formalization of a ZF-like set theory
 
 ## Technical note
 
-The file `set-theory.ftl.aux` must be kept in this directory in order to allow
-for references to labels defined in `set-theory.ftl.tex` (and its subfiles) via
-the LaTeX package `xr`. Such a "cross-document" reference is for instance used
-in `$NAPROCHE/examples/cantor-schroeder-bernstein.ftl.tex`.
+The file `set-theory.aux` must be kept in this directory in order to allow for
+references to labels defined in `set-theory.tex` (and its subfiles) via the
+LaTeX package `xr`. Such a "cross-document" reference is for instance used in
+`$NAPROCHE/examples/cantor-schroeder-bernstein.ftl.tex`.
