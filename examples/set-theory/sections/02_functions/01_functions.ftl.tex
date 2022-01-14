@@ -498,48 +498,48 @@
 
     \begin{definition}
       Let $a \subseteq \dom(f)$.
-      $f \restr a$ is the function $h$ of $a$ such that $h(u) = f(u)$ for all $u \in a$.
+      $f \restriction_{a}$ is the function $h$ of $a$ such that $h(u) = f(u)$ for all $u \in a$.
     \end{definition}
 
-    Let the restriction of $f$ to $a$ stand for $f \restr a$.
+    Let the restriction of $f$ to $a$ stand for $f \restriction_{a}$.
 
     \begin{proposition}\label{SetTheory_02_01_589280}
       Let $f$ be a function from $x$ to $y$ and $a \subseteq x$.
-      Then $f \restr a$ is a function from $a$ to $y$.
+      Then $f \restriction_{a}$ is a function from $a$ to $y$.
     \end{proposition}
     \begin{proof}
-      We have $\dom(f \restr a) = a$.
-      Then $(f \restr a)(u) = f(u) \in y$ for all $u \in a$.
-      Hence $f \restr a$ is a function from $a$ to $y$.
+      We have $\dom(f \restriction_{a}) = a$.
+      Then $(f \restriction_{a})(u) = f(u) \in y$ for all $u \in a$.
+      Hence $f \restriction_{a}$ is a function from $a$ to $y$.
     \end{proof}
 
     \begin{proposition}\label{SetTheory_02_01_795968}
       Let $a \subseteq x$.
-      Then $\id_{x} \restr a = \id_{a}$.
+      Then $\id_{x} \restriction_{a} = \id_{a}$.
     \end{proposition}
     \begin{proof}
-      We have $\dom(\id_{x} \restr a) = a = \dom(\id_{a})$.
-      $(\id_{x} \restr a)(u) = \id_{x}(u) = u = \id_{a}(u)$ for all $u \in a$.
+      We have $\dom(\id_{x} \restriction_{a}) = a = \dom(\id_{a})$.
+      $(\id_{x} \restriction_{a})(u) = \id_{x}(u) = u = \id_{a}(u)$ for all $u \in a$.
       Hence the thesis (by \nameref{SetTheory_02_01_200419}).
     \end{proof}
 
     \begin{proposition}\label{SetTheory_02_01_575265}
       Let $v$ be an element and $a \subseteq x$.
-      Then $\const{x}{v} \restr a = \const{a}{v}$.
+      Then $\const{x}{v} \restriction_{a} = \const{a}{v}$.
     \end{proposition}
     \begin{proof}
-      We have $\dom(\const{x}{v} \restr a) = a = \dom(\const{a}{v})$.
-      $(\const{x}{v} \restr a)(u) = \const{x}{v}(u) = v = \const{a}{v}(u)$ for all $u \in a$.
+      We have $\dom(\const{x}{v} \restriction_{a}) = a = \dom(\const{a}{v})$.
+      $(\const{x}{v} \restriction_{a})(u) = \const{x}{v}(u) = v = \const{a}{v}(u)$ for all $u \in a$.
       Hence the thesis (by \nameref{SetTheory_02_01_200419}).
     \end{proof}
 
     \begin{proposition}\label{SetTheory_02_01_507691}
       Let $f$ be an one to one function from $x$ to $y$ and $a \subseteq x$.
-      Then $f \restr a$ is one to one.
+      Then $f \restriction_{a}$ is one to one.
     \end{proposition}
     \begin{proof}
       Let $u,u' \in a$.
-      Assume $(f \restr a)(u) = (f \restr a)(u')$.
+      Assume $(f \restriction_{a})(u) = (f \restriction_{a})(u')$.
       Then $f(u) = f(u')$.
       Hence $u = u'$.
     \end{proof}

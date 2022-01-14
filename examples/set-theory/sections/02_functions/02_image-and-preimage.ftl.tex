@@ -27,8 +27,8 @@
       There exists a set $y$ such that $y = \class{f(u) | u \in \dom(f) \cap z}$.
     \end{lemma}
     \begin{proof}
-      Take $y = \range(f \restr (\dom(f) \cap z))$.
-      Then \[ y = \class{(f \restr (\dom(f) \cap z))(u) | u \in \dom(f) \cap z}. \]
+      Take $y = \range(f \restriction_{(\dom(f) \cap z)})$.
+      Then \[ y = \class{(f \restriction_{(\dom(f) \cap z)})(u) | u \in \dom(f) \cap z}. \]
       Hence $y = \class{f(u) | u \in \dom(f) \cap z}$.
     \end{proof}
 
@@ -61,11 +61,11 @@
 
     \begin{corollary}\label{SetTheory_02_02_216993}
       Let $f$ be a function from $x$ to $y$ and $a \subseteq x$.
-      Then $f[a] = \range(f \restr a)$.
+      Then $f[a] = \range(f \restriction_{a})$.
     \end{corollary}
     \begin{proof}
       We have $f[a] = \class{f(u) | u \in a}$.
-      Hence $f[a] = \range(f \restr a)$.
+      Hence $f[a] = \range(f \restriction_{a})$.
     \end{proof}
 
     \begin{proposition}\label{SetTheory_02_02_560324}
@@ -103,32 +103,32 @@
 
     \begin{proposition}\label{SetTheory_02_01_257685}
       Let $f$ be a function from $x$ into $y$ and $a \subseteq x$.
-      Then $f \restr a$ is a bijection between $a$ and $f[a]$.
+      Then $f \restriction_{a}$ is a bijection between $a$ and $f[a]$.
     \end{proposition}
     \begin{proof}
-      (1) $f \restr a$ is a function of $a$.
+      (1) $f \restriction_{a}$ is a function of $a$.
 
-      (2) $f \restr a$ is one to one.
+      (2) $f \restriction_{a}$ is one to one.
 
-      (3) $\range(f \restr a) = f[a]$.
+      (3) $\range(f \restriction_{a}) = f[a]$.
       Proof.
-        Let us show that $\range(f \restr a) \subseteq f[a]$.
-          Let $v \in \range(f \restr a)$.
-          Take $u \in a$ such that $v = (f \restr a)(u)$.
+        Let us show that $\range(f \restriction_{a}) \subseteq f[a]$.
+          Let $v \in \range(f \restriction_{a})$.
+          Take $u \in a$ such that $v = (f \restriction_{a})(u)$.
           Then $v = f(u)$.
           Hence $v \in f[a]$.
         End.
 
-        Let us show that $f[a] \subseteq \range(f \restr a)$.
+        Let us show that $f[a] \subseteq \range(f \restriction_{a})$.
           Let $v \in f[a]$.
           Take $u \in a$ such that $v = f(u)$.
-          Then $v = (f \restr a)(u)$.
-          Hence $v \in \range(f \restr a)$.
+          Then $v = (f \restriction_{a})(u)$.
+          Hence $v \in \range(f \restriction_{a})$.
         End.
       Qed.
 
-      Thus $f \restr a$ is an one to one function from $a$ onto $f[a]$.
-      Therefore $f \restr a$ is a bijection between $a$ and $f[a]$.
+      Thus $f \restriction_{a}$ is an one to one function from $a$ onto $f[a]$.
+      Therefore $f \restriction_{a}$ is a bijection between $a$ and $f[a]$.
     \end{proof}
   \end{forthel}
 

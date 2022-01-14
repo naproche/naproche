@@ -166,11 +166,11 @@
 
     \begin{proposition}\label{SetTheory_02_03_908585}
       Let $f$ be an invertible function from $x$ onto $y$ and $a \subseteq x$.
-      Then $f \restr a$ is invertible and $(f\restr a)^{-1} = f^{-1} \restr f[a]$.
+      Then $f \restriction_{a}$ is invertible and $(f\restriction_{a})^{-1} = f^{-1} \restriction_{f[a]}$.
     \end{proposition}
     \begin{proof}
-      $f \restr a$ is a function from $a$ onto $f[a]$.
-      Take $g = f^{-1} \restr f[a]$.
+      $f \restriction_{a}$ is a function from $a$ onto $f[a]$.
+      Take $g = f^{-1} \restriction_{f[a]}$.
       Then $g$ is a function of $f[a]$.
 
       Let us show that $a \subseteq \range(g)$.
@@ -184,27 +184,27 @@
         Let $u \in \range(g)$.
         Take $v \in f[a]$ such that $u = g(v)$.
         Take $w \in a$ such that $v = f(w)$.
-        Then $u = (f^{-1} \restr f[a])(v) = f^{-1}(v) = f^{-1}(f(w)) = w$.
+        Then $u = (f^{-1} \restriction_{f[a]})(v) = f^{-1}(v) = f^{-1}(f(w)) = w$.
         Hence $u \in a$.
       End.
 
       Hence $\range(g) = a$.
       Thus $g$ is a function onto $a$.
 
-      Let us show that $g((f \restr a)(u)) = u$ for all $u \in a$.
+      Let us show that $g((f \restriction_{a})(u)) = u$ for all $u \in a$.
         Let $u \in a$.
-        Then $g((f \restr a)(u)) = g(f(u)) = (f^{-1} \restr f[a])(f(u)) = f^{-1}(f(u)) = u$.
+        Then $g((f \restriction_{a})(u)) = g(f(u)) = (f^{-1} \restriction_{f[a]})(f(u)) = f^{-1}(f(u)) = u$.
       End.
 
-      Let us show that $((f \restr a)(g(v))) = v$ for all $v \in f[a]$.
+      Let us show that $((f \restriction_{a})(g(v))) = v$ for all $v \in f[a]$.
         Let $v \in f[a]$.
         Take $u \in a$ such that $v = f(u)$.
-        We have $g(v) = g(f(u)) = (f^{-1} \restr f[a])(f(u)) = f^{-1}(f(u)) = u$.
-        Hence $(f \restr a)(g(v)) = (f \restr a)(u) = f(u) = v$.
+        We have $g(v) = g(f(u)) = (f^{-1} \restriction_{f[a]})(f(u)) = f^{-1}(f(u)) = u$.
+        Hence $(f \restriction_{a})(g(v)) = (f \restriction_{a})(u) = f(u) = v$.
       End.
 
-      Thus $g \circ (f \restr a) = \id_{a}$ and $(f \restr a) \circ g = \id_{f[a]}$.
-      Therefore $g$ is the inverse of $f \restr a$.
+      Thus $g \circ (f \restriction_{a}) = \id_{a}$ and $(f \restriction_{a}) \circ g = \id_{f[a]}$.
+      Therefore $g$ is the inverse of $f \restriction_{a}$.
     \end{proof}
 
     \begin{proposition}\label{SetTheory_02_03_293037}
