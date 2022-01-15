@@ -257,5 +257,81 @@
           = \frac{n!}{k! \cdot ((n - k)!)}
           = \binom{n}{k}. \]
     \end{proof}
+
+    \begin{proposition}[Pascal's rule]\label{Arithmetic_03_06_639359}
+      Let $n > k$.
+      Then \[ \binom{n + 1}{k + 1} = \binom{n}{k} + \binom{n}{k + 1}. \]
+    \end{proposition}
+    \begin{proof}
+      %%%%%%%%%% Needed for ontological checking:
+      (1) $((k + 1)! \cdot ((n - (k + 1))!)) \cdot (n - k)$ divides $n! \cdot (n - k)$. \\
+      Proof.
+        $(k + 1)! \cdot ((n - (k + 1))!)$ divides $n!$.
+        Hence we can take a natural number $l$ such that $(n!) = l \cdot ((k + 1)! \cdot ((n - (k + 1))!))$.
+        Then \[ n! \cdot (n - k) = (l \cdot ((k + 1)! \cdot ((n - (k + 1))!))) \cdot (n - k). \]
+        [prover vampire]
+        We have \[ (l \cdot ((k + 1)! \cdot ((n - (k + 1))!))) \cdot (n - k) = l \cdot (((k + 1)! \cdot ((n - (k + 1))!)) \cdot (n - k)) \]
+        (by \ref{Arithmetic_01_03_299637}).
+        Hence \[ n! \cdot (n - k) = l \cdot (((k + 1)! \cdot ((n - (k + 1))!)) \cdot (n - k)). \]
+        Then we have the thesis (by \ref{Arithmetic_03_01_926592}).
+      Qed.
+
+      (2) $(k + 1)! \cdot ((n - k)!)$ divides $(k + 1) \cdot (n!)$. \\
+      Proof.
+        $k! \cdot ((n - k)!)$ divides $n!$.
+        Hence we can take a natural number $l$ such that $(k! \cdot ((n - k)!)) \cdot l = n!$.
+        Then $(k + 1) \cdot ((k! \cdot ((n - k)!)) \cdot l) = (k + 1) \cdot (n!)$.
+        Thus $((k + 1)! \cdot ((n - k)!)) \cdot l =
+        (k + 1)! \cdot (((n - k)!) \cdot l) =
+        ((k + 1) \cdot (k!)) \cdot (((n - k)!) \cdot l) =
+        (k + 1) \cdot (k! \cdot (((n - k)!) \cdot l)) =
+        (k + 1) \cdot ((k! \cdot ((n - k)!)) \cdot l) =
+        (k + 1) \cdot (n!)$.
+        Indeed $k! \cdot (((n - k)!) \cdot l) = (k! \cdot ((n - k)!)) \cdot l$.
+      Qed.
+
+      (3) $(k + 1)! \cdot (n - k)!$ divides $n! \cdot (n - k)$.
+
+      (4) $(k + 1)! \cdot ((n - k)!)$ divides $n! \cdot ((k + 1) + (n - k))$.
+      %%%%%%%%%%
+
+      Let us show that $\binom{n}{k} = \frac{(k + 1) \cdot (n!)}{(k + 1)! \cdot ((n - k)!)}$.
+        [prover vampire]
+        We have $(k + 1) \cdot (k! \cdot ((n - k)!)) =
+        ((k + 1) \cdot (k!)) \cdot ((n - k)!) =
+        (k + 1)! \cdot ((n - k)!)$.
+        Hence
+        \[ \binom{n}{k} \]
+        \[ = \frac{n!}{k! \cdot ((n - k)!)} \]
+        \[ = \frac{(k + 1) \cdot (n!)}{(k + 1) \cdot (k! \cdot ((n - k)!))} \]
+        \[ = \frac{(k + 1) \cdot (n!)}{(k + 1)! \cdot ((n - k)!)}. \]
+      End.
+
+      Let us show that $\binom{n}{k + 1} = \frac{n! \cdot (n - k)}{(k + 1)! \cdot (n - k)!}$.
+        \[ \binom{n}{k + 1} = \frac{n!}{(k + 1)! \cdot ((n - (k + 1))!)}. \]
+        \[ \frac{n!}{(k + 1)! \cdot ((n - (k + 1))!)} = \frac{n! \cdot (n - k)}{((k + 1)! \cdot ((n - (k + 1))!)) \cdot (n - k)} \]
+        (by \ref{Arithmetic_03_05_243924}).
+        Indeed $(k + 1)! \cdot ((n - (k + 1))!)$ is a nonzero divisor of $n!$.
+        We have $((k + 1)! \cdot ((n - (k + 1))!)) \cdot (n - k) =
+        (k + 1)! \cdot ((n - (k + 1))! \cdot (n - k)) =
+        (k + 1)! \cdot (((n - k) - 1)! \cdot (n - k)) =
+        (k + 1)! \cdot ((n - k)!)$.
+        Hence \[ \frac{n! \cdot (n - k)}{((k + 1)! \cdot ((n - (k + 1))!)) \cdot (n - k)} = \frac{n! \cdot (n - k)}{(k + 1)! \cdot (n - k)!}. \]
+      End.
+
+      Then we have
+      \[   \binom{n}{k} + \binom{n}{k + 1} \]
+      \[ = \frac{(k + 1) \cdot (n!)}{(k + 1)! \cdot ((n - k)!)} + \frac{n! \cdot (n - k)}{(k + 1)! \cdot (n - k)!} \]
+      \[ = \frac{((k + 1) \cdot (n!)) + (n! \cdot (n - k))}{(k + 1)! \cdot ((n - k)!)} \]
+      (by \ref{Arithmetic_03_05_363442}).
+      Indeed $(k + 1)! \cdot ((n - k)!)$ is a nonzero divisor of $(k + 1) \cdot (n!)$ and a nonzero divisor of $n! \cdot (n - k)$.
+
+      \[   \frac{((k + 1) \cdot (n!)) + (n! \cdot (n - k))}{(k + 1)! \cdot ((n - k)!)} \]
+      \[ = \frac{n! \cdot ((k + 1) + (n - k))}{(k + 1)! \cdot ((n - k)!)} \]
+      \[ = \frac{n! \cdot (n + 1)}{(k + 1)! \cdot ((n - k)!)} \]
+      \[ = \frac{(n + 1)!}{(k + 1)! \cdot ((n - k)!)} \]
+      \[ = \frac{(n + 1)!}{(k + 1)! \cdot (((n + 1) - (k + 1))!)} \]
+      \[ = \binom{n + 1}{k + 1}. \]
+    \end{proof}
   \end{forthel}
 \end{document}
