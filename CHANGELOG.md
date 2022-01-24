@@ -18,6 +18,14 @@ variant of ForTheL, respectively.
   * **Fixed:** In FTL-TeX `#` is a regular character now.
 
 
+### Changes on the ontology of Naproche:
+
+  * **Fixed:** The translation of low-level function definitions now ensures
+    that the arguments of defined functions are objects. This is in particular
+    important when the function is given two parameters which are considered as
+    an ordered pair whose entries must always be objects.
+
+
 ### Changes on the example files
 
   * **New:** New sections about division and binomial coefficients in arithmetic

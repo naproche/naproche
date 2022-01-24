@@ -510,7 +510,8 @@ mapNotion = sVar <**> (wordMap <|> (token "=" >> lambda))
     def <- addDecl (Set.map posVarName vs) lambdaBody
     (_, _, dom) <- token' "for" >> lambdaIn;
     vsDecl <- makeDecls vs
-    let body f = foldr dAll (Imp (t `mkElem` mkDom f) $ def $ mkApp f t) vsDecl
+    --let body f = foldr dAll (Imp (t `mkElem` mkDom f) $ def $ mkApp f t) vsDecl
+    let body f = foldr (\x g -> dAll x (mkObject (mkVar (declName x)) `Imp` g)) (Imp (t `mkElem` mkDom f) $ def $ mkApp f t) vsDecl
     return $ \f -> mkMap f `And` Tag Domain (dom f) `And` body f
 
 lambdaBody :: FTL (Formula -> Formula)
