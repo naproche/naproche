@@ -312,7 +312,7 @@ fun define_problem binding sequent thy =
     val index' = index + 1;
     val n = string_of_int index';
     val binding' = binding |> Binding.map_name
-      (fn "" => "problem" ^ n | a => Symbol.explode a |> map (fn "\<index>" => n | s => s) |> implode);
+      (fn "" => n | a => Symbol.explode a |> map (fn "\<index>" => n | s => s) |> implode);
     val problem = {sequent = check_sequent ctxt sequent, fact = NONE};
     val (name, table') = Name_Space.define (Context.Theory thy) true (binding', problem) table;
   in (name, Data.put (table', index') thy) end;
