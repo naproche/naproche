@@ -87,7 +87,7 @@ output_report_command = "Naproche.output_report"
 -- logic
 
 iT :: Typ; is_iT :: Typ -> Bool
-(iT, is_iT) = type_op0 "Naproche.i"
+(iT, is_iT) = type_op0 "ZFC_Rudiments.V"
 
 mk_this :: Typ -> Term; dest_this :: Term -> Maybe Typ
 (mk_this, dest_this) = typed_op0 "Naproche.This"

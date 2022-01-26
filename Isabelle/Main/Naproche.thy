@@ -1,11 +1,7 @@
-(*
-Authors: Makarius (2018, 2021)
-
-Isabelle Prover IDE and logic support for NaProChe / ForTheL.
-*)
+section \<open>Isabelle Prover IDE and logic support for NaProChe / ForTheL\<close>
 
 theory Naproche
-  imports Main
+  imports Main ZFC_Rudiments
   keywords "forthel" "forthel_tex" :: thy_decl
     and "forthel_file" :: thy_load
     and "naproche_problem" :: thy_goal
@@ -18,24 +14,22 @@ section \<open>Logic\<close>
 text \<open>See also \<^file>\<open>$NAPROCHE_HOME/src/SAD/ForTheL/Base.hs\<close>\<close>
 
 
-typedecl i  \<comment> \<open>individuals of ``untyped'' HOL\<close>
-
 axiomatization
   \<comment> \<open>primitive notions\<close>
-  Map :: \<open>i \<Rightarrow> bool\<close>  \<comment> \<open>maps\<close> and
-  Fun :: \<open>i \<Rightarrow> bool\<close>  \<comment> \<open>functions\<close> and
-  Set :: \<open>i \<Rightarrow> bool\<close>  \<comment> \<open>sets\<close> and
-  Class :: \<open>i \<Rightarrow> bool\<close>  \<comment> \<open>classes\<close> and
-  Elem :: \<open>i \<Rightarrow> i \<Rightarrow> bool\<close>  \<comment> \<open>set membership / elements of a set\<close> and
-  Obj :: \<open>i \<Rightarrow> bool\<close>  \<comment> \<open>mathematical objects\<close> and
+  Map :: \<open>V \<Rightarrow> bool\<close>  \<comment> \<open>maps\<close> and
+  Fun :: \<open>V \<Rightarrow> bool\<close>  \<comment> \<open>functions\<close> and
+  Set :: \<open>V \<Rightarrow> bool\<close>  \<comment> \<open>sets\<close> and
+  Class :: \<open>V \<Rightarrow> bool\<close>  \<comment> \<open>classes\<close> and
+  Elem :: \<open>V \<Rightarrow> V \<Rightarrow> bool\<close>  \<comment> \<open>set membership / elements of a set\<close> and
+  Obj :: \<open>V \<Rightarrow> bool\<close>  \<comment> \<open>mathematical objects\<close> and
 
   \<comment> \<open>primitive predicates\<close>
-  Less :: \<open>i \<Rightarrow> i \<Rightarrow> bool\<close>  \<comment> \<open>relation for induction\<close> and
+  Less :: \<open>V \<Rightarrow> V \<Rightarrow> bool\<close>  \<comment> \<open>relation for induction\<close> and
 
   \<comment> \<open>primitive operations\<close>
-  Dom :: \<open>i \<Rightarrow> i\<close> and
-  Pair :: \<open>i \<Rightarrow> i \<Rightarrow> i\<close> and
-  App :: \<open>i \<Rightarrow> i \<Rightarrow> i\<close> and
+  Dom :: \<open>V \<Rightarrow> V\<close> and
+  Pair :: \<open>V \<Rightarrow> V \<Rightarrow> V\<close> and
+  App :: \<open>V \<Rightarrow> V \<Rightarrow> V\<close> and
 
   Thesis :: \<open>bool\<close> and
   This :: 'a
@@ -46,19 +40,19 @@ notation (output)
   Pair (\<open>\<langle>_,/ _\<rangle>\<close> [0, 0] 1000) and
   App (infix \<open>\<cdot>\<close> 90)
 
-abbreviation Not_Elem :: \<open>i \<Rightarrow> i \<Rightarrow> bool\<close>
+abbreviation Not_Elem :: \<open>V \<Rightarrow> V \<Rightarrow> bool\<close>
   where \<open>Not_Elem x A \<equiv> \<not> Elem x A\<close>
 
-abbreviation All_Elem :: "i \<Rightarrow> (i \<Rightarrow> bool) \<Rightarrow> bool"
+abbreviation All_Elem :: "V \<Rightarrow> (V \<Rightarrow> bool) \<Rightarrow> bool"
   where \<open>All_Elem A B \<equiv> (\<forall>x. Elem x A \<longrightarrow> B x)\<close>
 
-abbreviation Ex_Elem :: "i \<Rightarrow> (i \<Rightarrow> bool) \<Rightarrow> bool"
+abbreviation Ex_Elem :: "V \<Rightarrow> (V \<Rightarrow> bool) \<Rightarrow> bool"
   where \<open>Ex_Elem A B \<equiv> (\<exists>x. Elem x A \<and> B x)\<close>
 
 syntax (output)
-  "_All_Elem" :: \<open>pttrn \<Rightarrow> i \<Rightarrow> bool \<Rightarrow> bool\<close>  (\<open>(3\<forall>(_/\<^bold>\<in>_)./ _)\<close> [0, 0, 10] 10)
-  "_Ex_Elem" :: \<open>pttrn \<Rightarrow> i \<Rightarrow> bool \<Rightarrow> bool\<close>  (\<open>(3\<exists>(_/\<^bold>\<in>_)./ _)\<close> [0, 0, 10] 10)
-  "_Not_Ex_Elem" :: \<open>pttrn \<Rightarrow> i \<Rightarrow> bool \<Rightarrow> bool\<close>  (\<open>(3\<nexists>(_/\<^bold>\<in>_)./ _)\<close> [0, 0, 10] 10)
+  "_All_Elem" :: \<open>pttrn \<Rightarrow> V \<Rightarrow> bool \<Rightarrow> bool\<close>  (\<open>(3\<forall>(_/\<^bold>\<in>_)./ _)\<close> [0, 0, 10] 10)
+  "_Ex_Elem" :: \<open>pttrn \<Rightarrow> V \<Rightarrow> bool \<Rightarrow> bool\<close>  (\<open>(3\<exists>(_/\<^bold>\<in>_)./ _)\<close> [0, 0, 10] 10)
+  "_Not_Ex_Elem" :: \<open>pttrn \<Rightarrow> V \<Rightarrow> bool \<Rightarrow> bool\<close>  (\<open>(3\<nexists>(_/\<^bold>\<in>_)./ _)\<close> [0, 0, 10] 10)
 translations
   "_All_Elem x A B" \<rightleftharpoons> "CONST All_Elem A (\<lambda>x. B)"
   "_Ex_Elem x A B" \<rightleftharpoons> "CONST Ex_Elem A (\<lambda>x. B)"
@@ -160,7 +154,7 @@ output_report_command = \<open>\<^naproche_command>\<open>output_report\<close>\
 -- logic
 
 iT :: Typ; is_iT :: Typ -> Bool
-(iT, is_iT) = type_op0 \<open>\<^type_name>\<open>i\<close>\<close>
+(iT, is_iT) = type_op0 \<open>\<^type_name>\<open>V\<close>\<close>
 
 mk_this :: Typ -> Term; dest_this :: Term -> Maybe Typ
 (mk_this, dest_this) = typed_op0 \<open>\<^const_name>\<open>This\<close>\<close>
