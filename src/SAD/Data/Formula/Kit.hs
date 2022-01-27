@@ -10,8 +10,6 @@ module SAD.Data.Formula.Kit where
 
 import Control.Monad
 import Data.Maybe
-import Data.Set (Set)
-import qualified Data.Set as Set
 
 import SAD.Data.Formula.Base
 import SAD.Data.Tag
@@ -342,12 +340,6 @@ except those in vs -}
 allFree :: IsVar a => Formula -> FV a
 allFree f@Var {varName = u} = unitFV u (varPosition f) <> foldF allFree f
 allFree f = foldF allFree f
-
-
-{- universal closure of a formula -}
-universialClosure :: Set VariableName -> Formula -> Formula
-universialClosure ls f = foldr mkAll f $ Set.toList $ fvToVarSet
-  $ allFree f `excludeSet` ls
 
 
 -- Substitution with substitution maps
