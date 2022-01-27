@@ -121,7 +121,7 @@ testDef pos context term (guards, fortifiedTerm) = do
       | otherwise =
           incrementCounter HardChecks >>
           defLog (header lefts hardGuards <> thead (rights hardGuards)) >>
-          mapM_ (reason pos . Context.setFormula (wipeLink context)) (lefts hardGuards) >>
+          mapM_ (proveThesis' pos . Context.setFormula (wipeLink context)) (lefts hardGuards) >>
           incrementCounter SuccessfulChecks
 
     setup :: VM a -> VM a

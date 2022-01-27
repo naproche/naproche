@@ -12,9 +12,8 @@ by an external prover fails, the reasoner expands some definitions and tries aga
 {-# LANGUAGE FlexibleContexts #-}
 
 module SAD.Core.Reason (
-  reason,
   withContext,
-  proveThesis,
+  proveThesis', proveThesis,
   reduceWithEvidence, trivialByEvidence,
   trivialityCheck
 ) where
@@ -56,10 +55,6 @@ import qualified Naproche.Prover as Prover
 
 -- Reasoner
 
-reason :: Position.T -> Context -> VM ()
-reason pos tc =
-  local (\st -> st {currentThesis = tc}) (proveThesis pos)
-
 withGoal :: VM a -> Formula -> VM a
 withGoal action goal =
   local (\st -> st { currentThesis = Context.setFormula (currentThesis st) goal}) action
@@ -68,7 +63,10 @@ withContext :: VM a -> [Context] -> VM a
 withContext action context =
   local (\st -> st { currentContext = context }) action
 
-
+proveThesis' :: Position.T -> Context -> VM ()
+proveThesis' pos tc =
+  local (\st -> st {currentThesis = tc}) (proveThesis pos)
+  
 proveThesis :: Position.T -> VM ()
 proveThesis pos = do
   depthlimit <- askInstructionInt Depthlimit 3
