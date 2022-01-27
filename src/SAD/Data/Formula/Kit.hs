@@ -185,29 +185,30 @@ mkTrm tId t ts = Trm t ts [] tId
 -- creation of predefined functions and notions
 
 mkEquality :: Formula -> Formula -> Formula
-mkEquality t s  = mkTrm EqualityId TermEquality [t,s]
+mkEquality x y = mkTrm EqualityId TermEquality [x, y]
 mkLess :: Formula -> Formula -> Formula
-mkLess t s = mkTrm LessId TermLess [t,s]
+mkLess x y = mkTrm LessId TermLess [x, y]
 mkThesis :: Formula
 mkThesis = mkTrm ThesisId TermThesis []
 mkFunction :: Formula -> Formula
-mkFunction = mkTrm FunctionId termFunction . pure
+mkFunction t = mkTrm FunctionId termFunction [t]
 mkMap :: Formula -> Formula
-mkMap      = mkTrm MapId termMap . pure
+mkMap t = mkTrm MapId termMap [t]
 mkApp :: Formula -> Formula -> Formula
-mkApp f v = mkTrm ApplicationId termApplication [f, v]
+mkApp f x = mkTrm ApplicationId termApplication [f, x]
 mkDom :: Formula -> Formula
-mkDom = mkTrm DomainId termDomain . pure
+mkDom t = mkTrm DomainId termDomain [t]
 mkSet :: Formula -> Formula
-mkSet = mkTrm SetId termSet . pure
+mkSet t = mkTrm SetId termSet [t]
 mkClass :: Formula -> Formula
-mkClass = mkTrm ClassId termClass . pure
+mkClass t = mkTrm ClassId termClass [t]
 mkElem :: Formula -> Formula -> Formula
-mkElem x m = mkTrm ElementId termElement [x,m]
+mkElem x m = mkTrm ElementId termElement [x, m]
 mkPair :: Formula -> Formula -> Formula
-mkPair x y = mkTrm PairId termPair [x,y]
+mkPair x y = mkTrm PairId termPair [x, y]
 mkObject :: Formula -> Formula
-mkObject = mkTrm ObjectId termObject . pure -- this is a dummy for parsing purposes
+mkObject x = mkTrm ObjectId termObject [x] -- this is a dummy for parsing purposes
+
 
 -- quick checks of syntactic properties
 
