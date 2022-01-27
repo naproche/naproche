@@ -73,7 +73,7 @@ proveThesis pos = do
   guard (depthlimit > 0) -- Fallback to defaulting of the underlying CPS Maybe monad.
   context <- asks currentContext
   thesis <- asks currentThesis
-  filterContext pos context (sequenceGoals pos depthlimit (splitGoal thesis))
+  filterContext pos context (proveGoals pos depthlimit (splitGoal thesis))
   justIO $ do
     program_context <- Program.thread_context
     when (Program.is_isabelle program_context) $ do
@@ -82,13 +82,13 @@ proveThesis pos = do
       _ <- HOL.export_sequent program_context binding sequent
       return ()
 
-sequenceGoals :: Position.T -> Int -> [Formula] -> VM ()
-sequenceGoals pos depthlimit = sequence 0
+proveGoals :: Position.T -> Int -> [Formula] -> VM ()
+proveGoals pos depthlimit = prove 0
   where
-    sequence _ [] = return ()
-    sequence iteration (goal : restGoals) = do
+    prove _ [] = return ()
+    prove iteration (goal : restGoals) = do
       (trivial <|> prover <|> reason) `withGoal` reducedGoal
-      sequence iteration restGoals
+      prove iteration restGoals
       where
         reducedGoal = reduceWithEvidence goal
         trivial = guard (isTop reducedGoal) >> updateTrivialStatistics
@@ -98,7 +98,7 @@ sequenceGoals pos depthlimit = sequence 0
           else do
             newTask <- unfold pos
             let Context {Context.formula = Not newGoal} : newContext = newTask
-            sequence (iteration + 1) [newGoal] `withContext` newContext
+            prove (iteration + 1) [newGoal] `withContext` newContext
 
         warnDepthExceeded =
           whenInstruction Printreason False $
