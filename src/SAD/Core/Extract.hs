@@ -41,8 +41,8 @@ addDefinition :: (Definitions, Guards) -> Formula -> (Definitions, Guards)
 addDefinition (defs, grds) f = let newDef = extractDefinition defs f in
   (addD newDef defs, addG newDef grds)
   where
-    addD df@DE {defTerm = t} = Map.insert (trmId t) df
-    addG df@DE {defGuards = grd} grds = foldr add grds $ filter isTrm grd
+    addD df@DefEntry {defTerm = t} = Map.insert (trmId t) df
+    addG df@DefEntry {defGuards = grd} grds = foldr add grds $ filter isTrm grd
 
     add guard grds =
       if   case DT.find guard grds of [] -> False; (x:_) -> x
@@ -67,7 +67,7 @@ extractDefinition defs =
     -- make a universal quant matchable
     dive guards n (All _ f) = dive guards (succ n) $ inst (VarHole $ Text.pack $ show n) f
     dive guards n (Imp g f) = dive (guards ++ splitConjuncts g) n f
-    makeDefinition (guards, formula, kind, term) = DE {
+    makeDefinition (guards, formula, kind, term) = DefEntry {
       defGuards = guards, defFormula = formula,
       defKind = kind, defTerm = term,
       defEvidence = extractEvidences term formula,
@@ -87,7 +87,7 @@ extractEvidences t =
 if we have "natural c= rational c= real" then we do not only know that
 a natural number is rational, but also add the info that it is real.-}
 closeEvidence :: Definitions -> DefEntry -> DefEntry
-closeEvidence dfs def@DE{defEvidence = evidence} = def { defEvidence = newEvidence }
+closeEvidence dfs def@DefEntry {defEvidence = evidence} = def { defEvidence = newEvidence }
   where
     newEvidence = nubBy twins $ evidence ++ concatMap definitionalEvidence evidence
     definitionalEvidence t@Trm {trId = n} =

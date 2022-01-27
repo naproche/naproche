@@ -361,60 +361,60 @@ initDefinitions = Map.fromList [
   (PairId, pair),
   (ObjectId, object) ]
 
-hole0, hole1 :: VariableName
-hole0 = VarHole "0"
-hole1 = VarHole "1"
+v0, v1 :: VariableName
+v0 = VarHole "0"
+v1 = VarHole "1"
 
 equality :: DefEntry
-equality  = DE [] Top Signature (mkEquality (mkVar hole0) (mkVar hole1)) [] []
+equality  = DefEntry [] Top Signature (mkEquality (mkVar v0) (mkVar v1)) [] []
 
 less :: DefEntry
-less = DE [] Top Signature (mkLess (mkVar hole0) (mkVar hole1)) [] []
+less = DefEntry [] Top Signature (mkLess (mkVar v0) (mkVar v1)) [] []
 
 set :: DefEntry
-set = DE [] ((mkClass (mkVar hole0)) `And` (mkObject (mkVar hole0)))
-           Definition (mkSet $ mkVar hole0) [mkSet ThisT] []
+set = DefEntry [] (mkClass (mkVar v0) `And` mkObject (mkVar v0))
+           Definition (mkSet $ mkVar v0) [mkSet ThisT] []
 
 object :: DefEntry
-object = DE [] Top Signature (mkObject $ mkVar hole0) [] []
+object = DefEntry [] Top Signature (mkObject $ mkVar v0) [] []
 
 clss :: DefEntry
-clss = DE [] Top Signature (mkClass $ mkVar hole0) [] []
+clss = DefEntry [] Top Signature (mkClass $ mkVar v0) [] []
 
 elementOf :: DefEntry
-elementOf = DE [mkClass (mkVar hole1)] Top Signature
-  (mkElem (mkVar hole0) (mkVar hole1)) [mkObject (mkVar hole0)]
-  [[mkObject (mkVar hole0)], [mkClass (mkVar hole1)]]
+elementOf = DefEntry [mkClass (mkVar v1)] Top Signature
+  (mkElem (mkVar v0) (mkVar v1)) [mkObject (mkVar v0)]
+  [[mkObject (mkVar v0)], [mkClass (mkVar v1)]]
 
 function :: DefEntry
-function  = DE [] ((mkMap(mkVar hole0)) `And` (mkObject (mkVar hole0)))
-                 Definition (mkFunction $ mkVar hole0) [mkFunction ThisT] []
+function  = DefEntry [] (mkMap (mkVar v0) `And` mkObject (mkVar v0))
+                 Definition (mkFunction $ mkVar v0) [mkFunction ThisT] []
 
 mapd :: DefEntry
-mapd  = DE [] Top Signature (mkMap $ mkVar hole0) [] []
+mapd  = DefEntry [] Top Signature (mkMap $ mkVar v0) [] []
 
 domain :: DefEntry
-domain = DE [mkMap $ mkVar hole0] (mkClass ThisT) Signature
-  (mkDom $ mkVar hole0) [mkClass ThisT] [[mkMap $ mkVar hole0]]
+domain = DefEntry [mkMap $ mkVar v0] (mkClass ThisT) Signature
+  (mkDom $ mkVar v0) [mkClass ThisT] [[mkMap $ mkVar v0]]
 
 pair :: DefEntry
-pair = DE [mkObject (mkVar hole0), mkObject (mkVar hole1)]
-  (mkObject ThisT) Signature (mkPair (mkVar hole0) (mkVar hole1))
+pair = DefEntry [mkObject (mkVar v0), mkObject (mkVar v1)]
+  (mkObject ThisT) Signature (mkPair (mkVar v0) (mkVar v1))
   [mkObject ThisT] []
 
 
 mapApplication :: DefEntry
 mapApplication =
-  DE [mkMap $ mkVar hole0, mkElem (mkVar $ hole1) $ mkDom $ mkVar hole0] Top Signature
-    (mkApp (mkVar hole0) (mkVar hole1)) [mkObject ThisT]
-    [[mkMap $ mkVar hole0],[mkElem (mkVar hole1) $ mkDom $ mkVar hole0]]
+  DefEntry [mkMap $ mkVar v0, mkElem (mkVar $ v1) $ mkDom $ mkVar v0] Top Signature
+    (mkApp (mkVar v0) (mkVar v1)) [mkObject ThisT]
+    [[mkMap $ mkVar v0],[mkElem (mkVar v1) $ mkDom $ mkVar v0]]
 
 
 initGuards :: DT.DisTree Bool
 initGuards = foldr (`DT.insert` True) DT.empty [
-  mkClass $ mkVar hole1,
-  mkMap $ mkVar hole0,
-  mkElem (mkVar hole1) $ mkDom $ mkVar hole0]
+  mkClass $ mkVar v1,
+  mkMap $ mkVar v0,
+  mkElem (mkVar v1) $ mkDom $ mkVar v0]
 
 -- retrieve definitional formula of a term
 defForm :: Definitions -> Formula -> Maybe Formula

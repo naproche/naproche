@@ -8,7 +8,7 @@ import Data.Map (Map)
 data DefType = Signature | Definition
   deriving (Eq, Show)
 
-data DefEntry = DE
+data DefEntry = DefEntry
   { defGuards    :: [Formula]    -- ^ guards of the definitions
   , defFormula   :: Formula      -- ^ defining formula
   , defKind      :: DefType      -- ^ proper definition or only sig extension
