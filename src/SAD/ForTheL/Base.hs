@@ -55,8 +55,8 @@ data FState = FState {
   reports :: [Position.Report], program :: Program.Context }
 
 
-initFS :: Program.Context -> FState
-initFS = FState
+initFState :: Program.Context -> FState
+initFState = FState
   primAdjs [] primNotions primSymbNotions
   cf rf [] []
   [] [] [] primInfixPredicates

@@ -44,11 +44,13 @@ readInit file | Text.null file = return []
 readInit file = do
   input <- catch (File.read (Text.unpack file)) $ Message.errorParser (Position.file_only $ make_bytes file) . make_bytes . ioeGetErrorString
   let tokens = filter isProperToken $ tokenize TexDisabled (Position.file $ make_bytes file) $ Text.fromStrict $ make_text input
-      initialParserState = State (initFS Program.console) tokens NonTex Position.none
-  fst <$> launchParser instructionFile initialParserState
+  fst <$> launchParser instructionFile (initState Program.console tokens)
 
 instructionFile :: FTL [(Position.T, Instr)]
 instructionFile = after (optLL1 [] $ chainLL1 instr) eof
+
+initState :: Program.Context -> [Token] -> State FState
+initState context tokens = State (initFState context) tokens NonTex Position.none
 
 
 -- Reader loop
@@ -60,7 +62,7 @@ instructionFile = after (optLL1 [] $ chainLL1 instr) eof
 readProofText :: Text -> [ProofText] -> IO [ProofText]
 readProofText pathToLibrary text0 = do
   context <- Program.thread_context
-  (text, reports) <- reader pathToLibrary [] [State (initFS context) noTokens NonTex Position.none] text0
+  (text, reports) <- reader pathToLibrary [] [initState context noTokens] text0
   when (Program.is_pide context) $ Message.reports reports
   return text
 
