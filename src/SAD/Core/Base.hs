@@ -19,7 +19,7 @@ module SAD.Core.Base
   , runRM
 
   , retrieveContext
-  , makeInitialVState
+  , initVState
   , defForm
   , getDef
 
@@ -155,8 +155,8 @@ data VState = VS
   , restProofText   :: [ProofText]
   }
 
-makeInitialVState :: [ProofText] -> VState
-makeInitialVState text = VS
+initVState :: [ProofText] -> VState
+initVState text = VS
   { thesisMotivated = False
   , rewriteRules    = []
   , evaluations     = DT.empty
@@ -164,8 +164,8 @@ makeInitialVState text = VS
   , currentBranch   = []
   , currentContext  = []
   , mesonRules      = (DT.empty, DT.empty)
-  , definitions     = initialDefinitions
-  , guards          = initialGuards
+  , definitions     = initDefinitions
+  , guards          = initGuards
   , skolemCounter   = 0
   , instructions    = []
   , restProofText   = text
@@ -345,11 +345,10 @@ retrieveContext pos names = do
 
 
 
--- Definition management
+-- Definitions
 
--- initial definitions
-initialDefinitions :: Definitions
-initialDefinitions = Map.fromList [
+initDefinitions :: Definitions
+initDefinitions = Map.fromList [
   (EqualityId,  equality),
   (LessId,  less),
   (MapId, mapd),
@@ -411,8 +410,8 @@ mapApplication =
     [[mkMap $ mkVar hole0],[mkElem (mkVar hole1) $ mkDom $ mkVar hole0]]
 
 
-initialGuards :: DT.DisTree Bool
-initialGuards = foldr (`DT.insert` True) DT.empty [
+initGuards :: DT.DisTree Bool
+initGuards = foldr (`DT.insert` True) DT.empty [
   mkClass $ mkVar hole1,
   mkMap $ mkVar hole0,
   mkElem (mkVar hole1) $ mkDom $ mkVar hole0]

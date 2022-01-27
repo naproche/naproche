@@ -42,7 +42,7 @@ verifyRoot :: Position.T -> IORef RState -> [ProofText] -> IO (Bool, Maybe [Proo
 verifyRoot filePos reasonerState text = do
   Message.outputReasoner Message.TRACING filePos "verification started"
 
-  let state = makeInitialVState text
+  let state = initVState text
   result <- flip runRM reasonerState $ runReaderT (verify state) state
 
   rstate <- readIORef reasonerState
