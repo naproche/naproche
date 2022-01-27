@@ -140,7 +140,7 @@ instance MonadPlus CRM where
 runRM :: CRM a -> IORef RState -> IO (Maybe a)
 runRM m s = runCRM m s (return Nothing) (return . Just)
 
-data VState = VS
+data VState = VState
   { thesisMotivated :: Bool
   , rewriteRules    :: [Rule]
   , evaluations     :: DT.DisTree Evaluation -- (low level) evaluation rules
@@ -156,7 +156,7 @@ data VState = VS
   }
 
 initVState :: [ProofText] -> VState
-initVState text = VS
+initVState text = VState
   { thesisMotivated = False
   , rewriteRules    = []
   , evaluations     = DT.empty

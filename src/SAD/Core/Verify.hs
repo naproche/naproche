@@ -58,11 +58,11 @@ verifyRoot filePos reasonerState text = do
 type Verify = VM ([ProofText], [ProofText])
 
 verify :: VState -> Verify
-verify state@VS {restProofText = ProofTextBlock block : rest} =
+verify state@VState {restProofText = ProofTextBlock block : rest} =
   verifyBranch state block rest
-verify state@VS {thesisMotivated = True, currentThesis = thesis, restProofText = []} =
+verify state@VState {thesisMotivated = True, currentThesis = thesis, restProofText = []} =
   verifyLeaf state thesis
-verify state@VS {restProofText = ProofTextChecked txt : rest} =
+verify state@VState {restProofText = ProofTextChecked txt : rest} =
   let newTxt = Block.setChildren txt (Block.children txt ++ newInstructions)
       newInstructions = [NonProofTextStoredInstr $
         SetFlag Prove False :
@@ -75,29 +75,29 @@ verify state@VS {restProofText = ProofTextChecked txt : rest} =
         SetFlag Printfulltask False :
         instructions state]
   in  setChecked >> verify state {restProofText = newTxt : rest}
-verify state@VS {restProofText = NonProofTextStoredInstr ins : rest} =
+verify state@VState {restProofText = NonProofTextStoredInstr ins : rest} =
   verify state {restProofText = rest, instructions = ins}
 -- process instructions. we distinguish between those that influence the
 -- verification state and those that influence (at most) the global state
-verify state@VS {restProofText = i@(ProofTextInstr pos instr) : rest} =
+verify state@VState {restProofText = i@(ProofTextInstr pos instr) : rest} =
   fmap (\(as,bs) -> (as, i:bs)) $
     local (const state {restProofText = rest}) $ procProofTextInstr (Position.no_range_position pos) instr
 {- process a command to drop an instruction, i.e. [/prove], etc.-}
-verify state@VS {restProofText = (i@(ProofTextDrop _ instr) : rest)} =
+verify state@VState {restProofText = (i@(ProofTextDrop _ instr) : rest)} =
   fmap (\(as,bs) -> (as, i:bs)) $
     local (const state {restProofText = rest}) $ procProofTextDrop instr
-verify state@VS {restProofText = (i@ProofTextSynonym{} : rest)} =
+verify state@VState {restProofText = (i@ProofTextSynonym{} : rest)} =
   fmap (\(as,bs) -> (as, i:bs)) $ verify state {restProofText = rest}
-verify state@VS {restProofText = (i@ProofTextPretyping{} : rest)} =
+verify state@VState {restProofText = (i@ProofTextPretyping{} : rest)} =
   fmap (\(as,bs) -> (as, i:bs)) $ verify state {restProofText = rest}
-verify state@VS {restProofText = (i@ProofTextMacro{} : rest)} =
+verify state@VState {restProofText = (i@ProofTextMacro{} : rest)} =
   fmap (\(as,bs) -> (as, i:bs)) $ verify state {restProofText = rest}
-verify VS {restProofText = []} = return ([], [])
+verify VState {restProofText = []} = return ([], [])
 
 verifyBranch :: VState -> Block -> [ProofText] -> Verify
 verifyBranch state block rest = local (const state) $ do
   let
-    VS {
+    VState {
       thesisMotivated = motivated,
       rewriteRules    = rules,
       currentThesis   = thesis,
@@ -251,7 +251,7 @@ refine the currentThesis. Then move on with the verification loop.
 If neither inductive nor case hypothesis is present this is the same as
 verify state -}
 verifyProof :: VState -> Verify
-verifyProof state@VS {
+verifyProof state@VState {
   rewriteRules   = rules,
   currentThesis  = thesis,
   currentContext = context,
