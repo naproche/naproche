@@ -365,47 +365,51 @@ v0, v1 :: VariableName
 v0 = VarHole "0"
 v1 = VarHole "1"
 
+assume, define :: [Formula] -> Formula -> Formula -> [Formula] -> [[Formula]] -> DefEntry
+assume g f = DefEntry g f Signature
+define g f = DefEntry g f Definition
+
+
 equality :: DefEntry
-equality  = DefEntry [] Top Signature (mkEquality (mkVar v0) (mkVar v1)) [] []
+equality  = assume [] Top (mkEquality (mkVar v0) (mkVar v1)) [] []
 
 less :: DefEntry
-less = DefEntry [] Top Signature (mkLess (mkVar v0) (mkVar v1)) [] []
+less = assume [] Top (mkLess (mkVar v0) (mkVar v1)) [] []
 
 set :: DefEntry
-set = DefEntry [] (mkClass (mkVar v0) `And` mkObject (mkVar v0))
-           Definition (mkSet $ mkVar v0) [mkSet ThisT] []
+set = define [] (mkClass (mkVar v0) `And` mkObject (mkVar v0))
+           (mkSet $ mkVar v0) [mkSet ThisT] []
 
 object :: DefEntry
-object = DefEntry [] Top Signature (mkObject $ mkVar v0) [] []
+object = assume [] Top (mkObject $ mkVar v0) [] []
 
 clss :: DefEntry
-clss = DefEntry [] Top Signature (mkClass $ mkVar v0) [] []
+clss = assume [] Top (mkClass $ mkVar v0) [] []
 
 elementOf :: DefEntry
-elementOf = DefEntry [mkClass (mkVar v1)] Top Signature
+elementOf = assume [mkClass (mkVar v1)] Top
   (mkElem (mkVar v0) (mkVar v1)) [mkObject (mkVar v0)]
   [[mkObject (mkVar v0)], [mkClass (mkVar v1)]]
 
 function :: DefEntry
-function  = DefEntry [] (mkMap (mkVar v0) `And` mkObject (mkVar v0))
-                 Definition (mkFunction $ mkVar v0) [mkFunction ThisT] []
+function  = define [] (mkMap (mkVar v0) `And` mkObject (mkVar v0))
+                 (mkFunction $ mkVar v0) [mkFunction ThisT] []
 
 mapd :: DefEntry
-mapd  = DefEntry [] Top Signature (mkMap $ mkVar v0) [] []
+mapd  = assume [] Top (mkMap $ mkVar v0) [] []
 
 domain :: DefEntry
-domain = DefEntry [mkMap $ mkVar v0] (mkClass ThisT) Signature
+domain = assume [mkMap $ mkVar v0] (mkClass ThisT)
   (mkDom $ mkVar v0) [mkClass ThisT] [[mkMap $ mkVar v0]]
 
 pair :: DefEntry
-pair = DefEntry [mkObject (mkVar v0), mkObject (mkVar v1)]
-  (mkObject ThisT) Signature (mkPair (mkVar v0) (mkVar v1))
+pair = assume [mkObject (mkVar v0), mkObject (mkVar v1)]
+  (mkObject ThisT) (mkPair (mkVar v0) (mkVar v1))
   [mkObject ThisT] []
-
 
 mapApplication :: DefEntry
 mapApplication =
-  DefEntry [mkMap $ mkVar v0, mkElem (mkVar $ v1) $ mkDom $ mkVar v0] Top Signature
+  assume [mkMap $ mkVar v0, mkElem (mkVar v1) $ mkDom $ mkVar v0] Top
     (mkApp (mkVar v0) (mkVar v1)) [mkObject ThisT]
     [[mkMap $ mkVar v0],[mkElem (mkVar v1) $ mkDom $ mkVar v0]]
 
@@ -415,6 +419,7 @@ initGuards = foldr (`DT.insert` True) DT.empty [
   mkClass $ mkVar v1,
   mkMap $ mkVar v0,
   mkElem (mkVar v1) $ mkDom $ mkVar v0]
+
 
 -- retrieve definitional formula of a term
 defForm :: Definitions -> Formula -> Maybe Formula
