@@ -205,9 +205,7 @@ proveFOL text1 opts0 oldProofText cache startTime fileName = do
 
   finishTime <- getCurrentTime
 
-  finalReasonerState <- readIORef reasonerState
-
-  let trackerList = trackers finalReasonerState
+  trackerList <- trackers <$> readIORef reasonerState
   let accumulate  = sumCounter trackerList
 
   -- print statistics
