@@ -10,7 +10,7 @@ Verifier state monad and common functions.
 
 
 module SAD.Core.Base
-  ( RState(..), CRM
+  ( RState(..), initRState, CRM
   , askRS
   , updateRS
   , justIO
@@ -82,6 +82,8 @@ data RState = RState
   , alreadyChecked :: Bool
   } deriving (Eq, Ord, Show)
 
+initRState :: RState
+initRState = RState [] False False
 
 -- | All of these counters are for gathering statistics to print out later
 data Tracker

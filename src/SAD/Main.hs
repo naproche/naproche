@@ -186,7 +186,7 @@ exportLean pt = do
 proveFOL :: ProofText -> [Instr] -> ProofText -> Cache -> UTCTime -> Maybe FilePath -> IO Bool
 proveFOL text1 opts0 oldProofText cache startTime fileName = do
   -- initialize reasoner state
-  reasonerState <- newIORef (RState [] False False)
+  reasonerState <- newIORef initRState
 
   proveStart <- getCurrentTime
 
