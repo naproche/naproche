@@ -45,8 +45,8 @@ newtype Cache = Cache (IORef (Int, ProofText))
 init_cache :: IO Cache
 init_cache = Cache <$> newIORef (0, ProofTextRoot [])
 
-check_cache :: Cache -> Int -> IO ()
-check_cache (Cache ref) i = do
+reinit_cache :: Cache -> Int -> IO ()
+reinit_cache (Cache ref) i = do
   (j, _) <- readIORef ref
   when (i /= j || j == 0) (writeIORef ref (i, ProofTextRoot []))
 
@@ -125,7 +125,7 @@ mainServer cache args0 socket =
               let text0 = map (uncurry ProofTextInstr) (reverse opts0)
               let text1 = text0 ++ [ProofTextInstr Position.none (GetArgument (Text pk) more_text)]
 
-              check_cache cache $ Options.int options Naproche.naproche_pos_context
+              reinit_cache cache $ Options.int options Naproche.naproche_pos_context
 
               rc <- do
                 mainBody cache opts1 text1 fileName
