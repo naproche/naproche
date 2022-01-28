@@ -136,7 +136,7 @@ mainServer cache args0 socket =
                     robust_error $ make_bytes $ Exception.displayException err
                     return 0)
 
-              if rc == 0 then return () else robust_error "ERROR")
+              when (rc /= 0) $ robust_error "ERROR")
 
         _ -> return ()
 
