@@ -200,7 +200,7 @@ askInstructionBool instr _default =
 
 askInstructionText :: Argument -> Text -> VM Text
 askInstructionText instr _default =
-  asks (askArgument instr _default. instructions)
+  asks (askArgument instr _default . instructions)
 
 addInstruction :: Instr -> VM a -> VM a
 addInstruction instr =
