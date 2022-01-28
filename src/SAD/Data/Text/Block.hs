@@ -172,7 +172,7 @@ textToCheck old new
   | isRoot old && isRoot new = dive [] (isChecked old) new (children old) (children new)
   | otherwise = new
   where
-    dive acc checked root [] [] = setChecked checked $ setChildren root (reverse acc)
+    dive acc checked root [] [] = checkedText checked $ setChildren root (reverse acc)
     dive acc _ root old [] = setChildren root (reverse acc)
     dive acc _ root [] new = setChildren root (reverse acc ++ new)
     dive acc checked root (o:old) (n:new) =
@@ -193,8 +193,8 @@ children (ProofTextChecked text) = children text
 children (ProofTextBlock bl) = body bl
 children _ = []
 
-setChecked :: Bool -> ProofText -> ProofText
-setChecked p = if p then ProofTextChecked else id
+checkedText :: Bool -> ProofText -> ProofText
+checkedText p = if p then ProofTextChecked else id
 
 setChildren :: ProofText -> [ProofText] -> ProofText
 setChildren (ProofTextRoot _) children = ProofTextRoot children
