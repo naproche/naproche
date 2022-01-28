@@ -134,7 +134,7 @@ verifyBranch state block rest = local (const state) $ do
 
   unsetChecked
 
-  ifAskFailed (return (restProofText state, restProofText state)) $ do
+  ifFailed (return (restProofText state, restProofText state)) $ do
     let proofTask = generateProofTask kind (Block.declaredNames block) fortifiedFormula
     let freshThesis = Context proofTask newBranch []
     let toBeProved = Block.needsProof block && not (Block.isTopLevel block)
@@ -169,7 +169,7 @@ verifyBranch state block rest = local (const state) $ do
     let formulaImage = Block.formulate newBlock
     let markedBlock = block {Block.body = markedProof}
 
-    ifAskFailed (return (ProofTextBlock newBlock : rest, ProofTextBlock markedBlock : rest)) $ do
+    ifFailed (return (ProofTextBlock newBlock : rest, ProofTextBlock markedBlock : rest)) $ do
 
       (mesonRules, intermediateSkolem) <- MESON.contras $ deTag formulaImage
       let (newDefinitions, newGuards) =

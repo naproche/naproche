@@ -24,7 +24,7 @@ module SAD.Core.Base
   , getDef
 
   , setFailed
-  , ifAskFailed
+  , ifFailed
   , unsetChecked
   , setChecked
 
@@ -297,8 +297,8 @@ whenInstruction instr _default action =
 setFailed :: VM ()
 setFailed = updateRS (\st -> st {failed = True})
 
-ifAskFailed :: VM a -> VM a -> VM a
-ifAskFailed alt1 alt2 = do
+ifFailed :: VM a -> VM a -> VM a
+ifFailed alt1 alt2 = do
   failed <- askRS failed
   if failed then alt1 else alt2
 
