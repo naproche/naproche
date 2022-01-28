@@ -45,8 +45,8 @@ verifyRoot filePos reasonerState text = do
   let state = initVState text
   result <- flip runRM reasonerState $ runReaderT (verify state) state
 
-  rstate <- readIORef reasonerState
-  let ignoredFails = sumCounter (trackers rstate) FailedGoals
+  trackers <- trackers <$> readIORef reasonerState
+  let ignoredFails = sumCounter trackers FailedGoals
 
   let success = isJust result && ignoredFails == 0
   Message.outputReasoner Message.TRACING filePos $

@@ -205,8 +205,8 @@ proveFOL text1 opts0 oldProofText cache startTime fileName = do
 
   finishTime <- getCurrentTime
 
-  trackerList <- trackers <$> readIORef reasonerState
-  let accumulate  = sumCounter trackerList
+  trackers <- trackers <$> readIORef reasonerState
+  let accumulate = sumCounter trackers
 
   -- print statistics
   (outputMain TRACING Position.none . make_bytes) $
@@ -226,13 +226,13 @@ proveFOL text1 opts0 oldProofText cache startTime fileName = do
 
   (outputMain TRACING Position.none . make_bytes) $
     "symbols "        ++ show (accumulate Symbols)
-    ++ " - checks "   ++ show (sumCounter trackerList HardChecks + trivialChecks)
+    ++ " - checks "   ++ show (sumCounter trackers HardChecks + trivialChecks)
     ++ " - trivial "  ++ show trivialChecks
     ++ " - proved "   ++ show (accumulate SuccessfulChecks)
     ++ " - unfolds "  ++ show (accumulate Unfolds)
 
-  let proverTime     = sumTimer trackerList ProofTimer
-  let simplifyTime   = sumTimer trackerList SimplifyTimer
+  let proverTime     = sumTimer trackers ProofTimer
+  let simplifyTime   = sumTimer trackers SimplifyTimer
   let proveFinish    = addUTCTime proverTime proveStart
   let simplifyFinish = addUTCTime simplifyTime proveFinish
 
@@ -241,7 +241,7 @@ proveFOL text1 opts0 oldProofText cache startTime fileName = do
     <> " - reasoner "   <> showTimeDiff (diffUTCTime finishTime simplifyFinish)
     <> " - simplifier " <> showTimeDiff simplifyTime
     <> " - prover "     <> showTimeDiff proverTime
-    <> "/" <> showTimeDiff (maximalTimer trackerList SuccessTimer)
+    <> "/" <> showTimeDiff (maximalTimer trackers SuccessTimer)
 
   (outputMain TRACING Position.none . make_bytes) $
     "total " <> showTimeDiff (diffUTCTime finishTime startTime)
