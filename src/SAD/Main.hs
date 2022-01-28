@@ -80,7 +80,7 @@ main  = do
     putStr (GetOpt.usageInfo usageHeader options)
   else -- main body with explicit error handling, notably for PIDE
       (if askFlag Server False opts1 then
-        Server.server (Server.publish_stdout "Naproche-SAD") (serverConnection cache args0)
+        Server.server (Server.publish_stdout "Naproche-SAD") (mainServer cache args0)
       else do
         Program.init_console
         rc <- do
@@ -94,6 +94,51 @@ main  = do
               Console.stderr (Exception.displayException err)
               return 1)
         Console.exit rc)
+
+mainServer :: Cache -> [String] -> Socket -> IO ()
+mainServer cache args0 socket =
+  let
+    exchange_message0 = Byte_Message.exchange_message0 socket
+    robust_error msg =
+      exchange_message0 [Naproche.output_error_command, msg]
+        `catch` (\(_ :: Exception.IOException) -> return ())
+  in
+    do
+      chunks <- Byte_Message.read_message socket
+      case chunks of
+        Just (command : threads) | command == Naproche.cancel_program ->
+          mapM_ Isabelle_Thread.stop_uuid (mapMaybe UUID.parse threads)
+
+        Just [command, more_args, opts, text] | command == Naproche.forthel_program -> do
+          let options = Options.decode $ YXML.parse_body opts
+
+          Exception.bracket_ (Program.init_pide socket options)
+            Program.exit_thread
+            (do
+              thread_uuid <- Isabelle_Thread.my_uuid
+              mapM_ (\uuid -> exchange_message0 [Naproche.threads_command, UUID.print uuid]) thread_uuid
+
+              let more_text = Text.pack $ make_string text
+
+              (opts0, pk, fileName) <- readArgs (args0 ++ lines (make_string more_args))
+              let opts1 = map snd opts0
+              let text0 = map (uncurry ProofTextInstr) (reverse opts0)
+              let text1 = text0 ++ [ProofTextInstr Position.none (GetArgument (Text pk) more_text)]
+
+              check_cache cache $ Options.int options Naproche.naproche_pos_context
+
+              rc <- do
+                mainBody cache opts1 text1 fileName
+                  `catch` (\(err :: Program.Error) -> do
+                    robust_error $ Program.print_error err
+                    return 0)
+                  `catch` (\(err :: Exception.SomeException) -> do
+                    robust_error $ make_bytes $ Exception.displayException err
+                    return 0)
+
+              if rc == 0 then return () else robust_error "ERROR")
+
+        _ -> return ()
 
 mainBody :: Cache -> [Instr] -> [ProofText] -> Maybe FilePath -> IO Int
 mainBody cache opts0 text0 fileName = do
@@ -205,50 +250,6 @@ proveFOL text1 opts0 oldProofText cache startTime fileName = do
 
   return success
 
-serverConnection :: Cache -> [String] -> Socket -> IO ()
-serverConnection cache args0 socket =
-  let
-    exchange_message0 = Byte_Message.exchange_message0 socket
-    robust_error msg =
-      exchange_message0 [Naproche.output_error_command, msg]
-        `catch` (\(_ :: Exception.IOException) -> return ())
-  in
-    do
-      chunks <- Byte_Message.read_message socket
-      case chunks of
-        Just (command : threads) | command == Naproche.cancel_program ->
-          mapM_ Isabelle_Thread.stop_uuid (mapMaybe UUID.parse threads)
-
-        Just [command, more_args, opts, text] | command == Naproche.forthel_program -> do
-          let options = Options.decode $ YXML.parse_body opts
-
-          Exception.bracket_ (Program.init_pide socket options)
-            Program.exit_thread
-            (do
-              thread_uuid <- Isabelle_Thread.my_uuid
-              mapM_ (\uuid -> exchange_message0 [Naproche.threads_command, UUID.print uuid]) thread_uuid
-
-              let more_text = Text.pack $ make_string text
-
-              (opts0, pk, fileName) <- readArgs (args0 ++ lines (make_string more_args))
-              let opts1 = map snd opts0
-              let text0 = map (uncurry ProofTextInstr) (reverse opts0)
-              let text1 = text0 ++ [ProofTextInstr Position.none (GetArgument (Text pk) more_text)]
-
-              check_cache cache $ Options.int options Naproche.naproche_pos_context
-
-              rc <- do
-                mainBody cache opts1 text1 fileName
-                  `catch` (\(err :: Program.Error) -> do
-                    robust_error $ Program.print_error err
-                    return 0)
-                  `catch` (\(err :: Exception.SomeException) -> do
-                    robust_error $ make_bytes $ Exception.displayException err
-                    return 0)
-
-              if rc == 0 then return () else robust_error "ERROR")
-
-        _ -> return ()
 
 -- Command line parsing
 
