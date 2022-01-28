@@ -65,13 +65,13 @@ main  = do
 
   -- command line and init file
   args0 <- Environment.getArgs
-  (opts0, pk, mFileName) <- readArgs args0
-  text0 <- (map (uncurry ProofTextInstr) (reverse opts0) ++) <$> case mFileName of
+  (opts0, pk, fileArg) <- readArgs args0
+  text0 <- (map (uncurry ProofTextInstr) (reverse opts0) ++) <$> case fileArg of
     Nothing -> do
       stdin <- getContents
       pure [ProofTextInstr Position.none $ GetArgument (Text pk) (Text.pack stdin)]
-    Just f -> do
-      pure [ProofTextInstr Position.none $ GetArgument (File pk) (Text.pack f)]
+    Just name -> do
+      pure [ProofTextInstr Position.none $ GetArgument (File pk) (Text.pack name)]
   let opts1 = map snd opts0
 
   cache <- init_cache
@@ -84,7 +84,7 @@ main  = do
       else do
         Program.init_console
         rc <- do
-          mainBody cache opts1 text0 mFileName
+          mainBody cache opts1 text0 fileArg
             `catch` (\Exception.UserInterrupt -> do
               Program.exit_thread
               Console.stderr ("Interrupt" :: String)
@@ -120,7 +120,7 @@ mainServer cache args0 socket =
 
               let more_text = Text.pack $ make_string text
 
-              (opts0, pk, fileName) <- readArgs (args0 ++ lines (make_string more_args))
+              (opts0, pk, fileArg) <- readArgs (args0 ++ lines (make_string more_args))
               let opts1 = map snd opts0
               let text0 = map (uncurry ProofTextInstr) (reverse opts0)
               let text1 = text0 ++ [ProofTextInstr Position.none (GetArgument (Text pk) more_text)]
@@ -128,7 +128,7 @@ mainServer cache args0 socket =
               reinit_cache cache $ Options.int options Naproche.naproche_pos_context
 
               rc <- do
-                mainBody cache opts1 text1 fileName
+                mainBody cache opts1 text1 fileArg
                   `catch` (\(err :: Program.Error) -> do
                     robust_error $ Program.print_error err
                     return 0)
@@ -141,7 +141,7 @@ mainServer cache args0 socket =
         _ -> return ()
 
 mainBody :: Cache -> [Instr] -> [ProofText] -> Maybe FilePath -> IO Int
-mainBody cache opts0 text0 fileName = do
+mainBody cache opts0 text0 fileArg = do
   startTime <- getCurrentTime
 
   oldProofText <- read_cache cache
@@ -155,7 +155,7 @@ mainBody cache opts0 text0 fileName = do
       if askFlag OnlyTranslate False opts0
         then do { showTranslation txts startTime; return 0 }
         else do
-          success <- proveFOL text1 opts0 oldProofText cache startTime fileName
+          success <- proveFOL text1 opts0 oldProofText cache startTime fileArg
           return (if success then 0 else 1)
     CiC -> return 0
     Lean -> do { exportLean text1; return 0 }
@@ -184,7 +184,7 @@ exportLean pt = do
   return ()
 
 proveFOL :: ProofText -> [Instr] -> ProofText -> Cache -> UTCTime -> Maybe FilePath -> IO Bool
-proveFOL text1 opts0 oldProofText cache startTime fileName = do
+proveFOL text1 opts0 oldProofText cache startTime fileArg = do
   -- initialize reasoner state
   reasonerState <- newIORef initRState
 
@@ -193,7 +193,7 @@ proveFOL text1 opts0 oldProofText cache startTime fileName = do
   success <- case findParseError text1 of
     Nothing -> do
       let ProofTextRoot text = textToCheck oldProofText text1
-      let file = maybe "" Text.pack fileName
+      let file = maybe "" Text.pack fileArg
       let filePos = Position.file_only $ make_bytes file
       let text' = ProofTextInstr Position.none (GetArgument (File NonTex) file) : text
       (success, newProofText) <- verifyRoot filePos reasonerState text'
@@ -263,13 +263,15 @@ readArgs args = do
 
   let revInitialOpts = reverse initialOpts
   let useTexArg = askFlag UseTex False $ map snd revInitialOpts
-  let fileName = case files of
-                  [file] -> Just file
-                  [] -> Nothing
-                  _ -> fail ["More than one file argument\n"]
-  let parserKind = if useTexArg || maybe False (\f -> ".tex.ftl" `isSuffixOf` f || ".ftl.tex" `isSuffixOf` f) fileName
-      then Tex else NonTex
-  pure (revInitialOpts, parserKind, fileName)
+  let fileArg =
+        case files of
+          [file] -> Just file
+          [] -> Nothing
+          _ -> fail ["More than one file argument\n"]
+  let parserKind =
+        if useTexArg || maybe False (\f -> ".tex.ftl" `isSuffixOf` f || ".ftl.tex" `isSuffixOf` f) fileArg
+        then Tex else NonTex
+  pure (revInitialOpts, parserKind, fileArg)
 
 usageHeader :: String
 usageHeader =
