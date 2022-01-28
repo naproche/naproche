@@ -361,9 +361,9 @@ initDefinitions = Map.fromList [
   (PairId, pair),
   (ObjectId, object) ]
 
-v0, v1 :: VariableName
-v0 = VarHole "0"
-v1 = VarHole "1"
+v0, v1 :: Formula
+v0 = mkVar $ VarHole "0"
+v1 = mkVar $ VarHole "1"
 
 signature_, definition :: [Formula] -> Formula -> Formula -> [Formula] -> [[Formula]] -> DefEntry
 signature_ g f = DefEntry g f Signature
@@ -371,54 +371,49 @@ definition g f = DefEntry g f Definition
 
 
 equality :: DefEntry
-equality  = signature_ [] Top (mkEquality (mkVar v0) (mkVar v1)) [] []
+equality = signature_ [] Top (mkEquality v0 v1) [] []
 
 less :: DefEntry
-less = signature_ [] Top (mkLess (mkVar v0) (mkVar v1)) [] []
+less = signature_ [] Top (mkLess v0 v1) [] []
 
 set :: DefEntry
-set = definition [] (mkClass (mkVar v0) `And` mkObject (mkVar v0))
-           (mkSet $ mkVar v0) [mkSet ThisT] []
+set = definition [] (mkClass v0 `And` mkObject v0) (mkSet v0) [mkSet ThisT] []
 
 object :: DefEntry
-object = signature_ [] Top (mkObject $ mkVar v0) [] []
+object = signature_ [] Top (mkObject v0) [] []
 
 clss :: DefEntry
-clss = signature_ [] Top (mkClass $ mkVar v0) [] []
+clss = signature_ [] Top (mkClass v0) [] []
 
 elementOf :: DefEntry
-elementOf = signature_ [mkClass (mkVar v1)] Top
-  (mkElem (mkVar v0) (mkVar v1)) [mkObject (mkVar v0)]
-  [[mkObject (mkVar v0)], [mkClass (mkVar v1)]]
+elementOf =
+  signature_ [mkClass v1] Top (mkElem v0 v1) [mkObject v0] [[mkObject v0], [mkClass v1]]
 
 function :: DefEntry
-function  = definition [] (mkMap (mkVar v0) `And` mkObject (mkVar v0))
-                 (mkFunction $ mkVar v0) [mkFunction ThisT] []
+function =
+  definition [] (mkMap v0 `And` mkObject v0) (mkFunction v0) [mkFunction ThisT] []
 
 mapd :: DefEntry
-mapd  = signature_ [] Top (mkMap $ mkVar v0) [] []
+mapd = signature_ [] Top (mkMap v0) [] []
 
 domain :: DefEntry
-domain = signature_ [mkMap $ mkVar v0] (mkClass ThisT)
-  (mkDom $ mkVar v0) [mkClass ThisT] [[mkMap $ mkVar v0]]
+domain = signature_ [mkMap v0] (mkClass ThisT) (mkDom v0) [mkClass ThisT] [[mkMap v0]]
 
 pair :: DefEntry
-pair = signature_ [mkObject (mkVar v0), mkObject (mkVar v1)]
-  (mkObject ThisT) (mkPair (mkVar v0) (mkVar v1))
-  [mkObject ThisT] []
+pair =
+  signature_ [mkObject v0, mkObject v1] (mkObject ThisT) (mkPair v0 v1) [mkObject ThisT] []
 
 mapApplication :: DefEntry
 mapApplication =
-  signature_ [mkMap $ mkVar v0, mkElem (mkVar v1) $ mkDom $ mkVar v0] Top
-    (mkApp (mkVar v0) (mkVar v1)) [mkObject ThisT]
-    [[mkMap $ mkVar v0],[mkElem (mkVar v1) $ mkDom $ mkVar v0]]
+  signature_ [mkMap v0, mkElem v1 $ mkDom v0] Top
+    (mkApp v0 v1) [mkObject ThisT] [[mkMap v0], [mkElem v1 $ mkDom v0]]
 
 
 initGuards :: DT.DisTree Bool
 initGuards = foldr (`DT.insert` True) DT.empty [
-  mkClass $ mkVar v1,
-  mkMap $ mkVar v0,
-  mkElem (mkVar v1) $ mkDom $ mkVar v0]
+  mkClass v1,
+  mkMap v0,
+  mkElem v1 $ mkDom v0]
 
 
 -- retrieve definitional formula of a term
