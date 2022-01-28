@@ -131,7 +131,7 @@ launchProver pos iteration = do
   context <- asks currentContext
   let callATP = justIO $ pure $ Prover.export pos iteration instrList context goal
   callATP >>= timeWith ProofTimer . justIO >>= guardResult
-  res <- head <$> askRS trackers
+  res <- head <$> readRState trackers
   case res of
     Timer _ time -> do
       addToTimer SuccessTimer time

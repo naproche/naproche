@@ -2,6 +2,9 @@
 
 # General
 
+* Clarify the true meaning of mutable state component "alreadyChecked", with its
+  local modifications.
+
 * Discontinue symEncode / symDecode!? TPTP can handle arbitrary names via
   single quoted string literals.
 

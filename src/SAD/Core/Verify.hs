@@ -74,7 +74,7 @@ verify state@VState {restProofText = ProofTextChecked txt : rest} =
         SetFlag Printunfold False :
         SetFlag Printfulltask False :
         instructions state]
-  in  setChecked >> verify state {restProofText = newTxt : rest}
+  in  setChecked True >> verify state {restProofText = newTxt : rest}
 verify state@VState {restProofText = NonProofTextStoredInstr ins : rest} =
   verify state {restProofText = rest, instructions = ins}
 -- process instructions. we distinguish between those that influence the
@@ -110,7 +110,7 @@ verifyBranch state block rest = local (const state) $ do
 
   let Block f body kind _ _ _ _ = block
   
-  alreadyChecked <- askRS alreadyChecked
+  alreadyChecked <- readRState alreadyChecked
 
   -- statistics and user communication
   unless alreadyChecked $ incrementCounter Sections
@@ -132,7 +132,7 @@ verifyBranch state block rest = local (const state) $ do
         fillDef (Block.position block) alreadyChecked contextBlock
           <|> (setFailed >> return f)
 
-  unsetChecked
+  setChecked False
 
   ifFailed (return (restProofText state, restProofText state)) $ do
     let proofTask = generateProofTask kind (Block.declaredNames block) fortifiedFormula

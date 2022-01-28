@@ -11,8 +11,8 @@ Verifier state monad and common functions.
 
 module SAD.Core.Base
   ( RState(..), initRState, CRM
-  , askRS
-  , updateRS
+  , readRState
+  , modifyRState
   , justIO
   , reportBracketIO
   , (<|>)
@@ -25,7 +25,6 @@ module SAD.Core.Base
 
   , setFailed
   , ifFailed
-  , unsetChecked
   , setChecked
 
   , VState(..), VM
@@ -184,11 +183,11 @@ justIO m = lift $ CRM $ \ _ _ k -> m >>= k
 
 -- State management from inside the verification monad
 
-askRS :: (RState -> a) -> VM a
-askRS f = justRS >>= (justIO . fmap f . readIORef)
+readRState :: (RState -> a) -> VM a
+readRState f = justRS >>= (justIO . fmap f . readIORef)
 
-updateRS :: (RState -> RState) -> VM ()
-updateRS f = justRS >>= (justIO . flip modifyIORef f)
+modifyRState :: (RState -> RState) -> VM ()
+modifyRState f = justRS >>= (justIO . flip modifyIORef f)
 
 askInstructionInt :: Limit -> Int -> VM Int
 askInstructionInt instr _default =
@@ -231,11 +230,11 @@ reportBracketIO pos body = do
 
 addToTimer :: Timer -> NominalDiffTime -> VM ()
 addToTimer timer time =
-  updateRS $ \rs -> rs{trackers = Timer timer time : trackers rs}
+  modifyRState $ \rs -> rs{trackers = Timer timer time : trackers rs}
 
 addToCounter :: Counter -> Int -> VM ()
 addToCounter counter increment =
-  updateRS $ \rs -> rs{trackers = Counter counter increment : trackers rs}
+  modifyRState $ \rs -> rs{trackers = Counter counter increment : trackers rs}
 
 incrementCounter :: Counter -> VM ()
 incrementCounter counter = addToCounter counter 1
@@ -295,18 +294,17 @@ whenInstruction instr _default action =
 -- explicit failure management
 
 setFailed :: VM ()
-setFailed = updateRS (\st -> st {failed = True})
+setFailed = modifyRState (\st -> st {failed = True})
 
 ifFailed :: VM a -> VM a -> VM a
 ifFailed alt1 alt2 = do
-  failed <- askRS failed
+  failed <- readRState failed
   if failed then alt1 else alt2
 
 -- local checking support
 
-setChecked, unsetChecked :: VM ()
-setChecked = updateRS (\st -> st {alreadyChecked = True})
-unsetChecked = updateRS (\st -> st {alreadyChecked = False})
+setChecked :: Bool -> VM ()
+setChecked b = modifyRState (\st -> st {alreadyChecked = b})
 
 
 -- common messages
