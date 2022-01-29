@@ -30,10 +30,10 @@ import qualified Isabelle.Position as Position
 
 
 {- check definitions and fortify terms with evidences in a formula -}
-fillDef :: Position.T -> Bool -> Context -> VM Formula
+fillDef :: Position.T -> Bool -> Context -> VerifyMonad Formula
 fillDef pos alreadyChecked context = fill True False [] (Just True) 0 (Context.formula context)
   where
-    fill :: Bool -> Bool -> [Formula] -> Maybe Bool -> Int -> Formula -> VM Formula
+    fill :: Bool -> Bool -> [Formula] -> Maybe Bool -> Int -> Formula -> VerifyMonad Formula
     fill isPredicate isNewWord localContext sign n = \case
       Tag HeadTerm f' -> Tag HeadTerm <$> fill isPredicate True localContext sign n f'
 
@@ -59,13 +59,13 @@ fillDef pos alreadyChecked context = fill True False [] (Just True) 0 (Context.f
       f -> roundFM VarW (fill isPredicate isNewWord) localContext sign n f
 
 
-    collectInfo :: Bool -> Formula -> VM Formula
+    collectInfo :: Bool -> Formula -> VerifyMonad Formula
     collectInfo infoSetting term = if infoSetting
       then setInfo term
       else return term
 
 
-cnRaise :: Context -> [Formula] -> VM [Context]
+cnRaise :: Context -> [Formula] -> VerifyMonad [Context]
 cnRaise thisBlock local = do
   context <- asks currentContext
   return ((foldr $ (:) . Context.setFormula thisBlock) context local)
@@ -73,7 +73,7 @@ cnRaise thisBlock local = do
 
 
 
-setDef :: Position.T -> Bool -> Context -> Formula -> VM Formula
+setDef :: Position.T -> Bool -> Context -> Formula -> VerifyMonad Formula
 setDef pos isNewWord context term@Trm{trmName = t, trId = tId} =
   incrementCounter Symbols >>
     (    (guard isNewWord >> return term) -- do not check new word
@@ -90,7 +90,7 @@ type Guards = [Formula]
 type FortifiedTerm = Formula
 
 
-findDef :: Formula -> VM (Guards, FortifiedTerm)
+findDef :: Formula -> VerifyMonad (Guards, FortifiedTerm)
 findDef term@Trm{trmArgs = tArgs} = do
   def <- getDef term
   sb  <- match (defTerm def) term
@@ -106,7 +106,7 @@ check it. setup and cleanup take care of the special proof times that we allow
 an ontological check. easyCheck are inbuild reasoning methods, hardCheck passes
 a task to an ATP.
 -}
-testDef :: Position.T -> Context -> Formula -> (Guards, FortifiedTerm) -> VM Formula
+testDef :: Position.T -> Context -> Formula -> (Guards, FortifiedTerm) -> VerifyMonad Formula
 testDef pos context term (guards, fortifiedTerm) = do
   userCheckSetting <- askInstructionBool Check True
   if   userCheckSetting
@@ -124,7 +124,7 @@ testDef pos context term (guards, fortifiedTerm) = do
           mapM_ (proveThesis' pos . Context.setFormula (wipeLink context)) (lefts hardGuards) >>
           incrementCounter SuccessfulChecks
 
-    setup :: VM a -> VM a
+    setup :: VerifyMonad a -> VerifyMonad a
     setup action = do
       timelimit <- LimitBy Timelimit <$> askInstructionInt Checktime 1
       depthlimit <- LimitBy Depthlimit <$> askInstructionInt Checkdepth 3
@@ -185,7 +185,7 @@ typings (context:restContext) term =
 
 
 
-setInfo :: Formula -> VM Formula
+setInfo :: Formula -> VerifyMonad Formula
 setInfo t = do
   context <- asks currentContext
   let lowlevelContext  = takeWhile Context.isLowLevel context

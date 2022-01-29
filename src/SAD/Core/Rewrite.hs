@@ -120,7 +120,7 @@ findNormalform rules w t = map (reverse . (:) (t, trivialSimpInfo)) $ dive t
 {- finds two matching normalforms and outputs all conditions accumulated
 during their rewriting -}
 generateConditions ::
-  Position.T -> Bool -> [Rule] -> Weighting -> Formula -> Formula -> VM [SimpInfo]
+  Position.T -> Bool -> [Rule] -> Weighting -> Formula -> Formula -> VerifyMonad [SimpInfo]
 generateConditions pos verbositySetting rules w l r =
   let leftNormalForms  = findNormalform rules w l
       rightNormalForms = findNormalform rules w r
@@ -154,7 +154,7 @@ generateConditions pos verbositySetting rules w l r =
 
 
 {- applies computational reasoning to an equality chain -}
-equalityReasoning :: Position.T -> Context -> VM ()
+equalityReasoning :: Position.T -> Context -> VerifyMonad ()
 equalityReasoning pos thesis
   | body = whenInstruction Printreason False $ reasonLog Message.WRITELN pos "equality chain concluded"
   | notNull link = getLinkedRules pos link >>= rewrite pos equation
@@ -166,7 +166,7 @@ equalityReasoning pos thesis
     body = notNull $ Block.body . head . Context.branch $ thesis
 
 
-getLinkedRules :: Position.T -> [Text] -> VM [Rule]
+getLinkedRules :: Position.T -> [Text] -> VerifyMonad [Rule]
 getLinkedRules pos link = do
   rules <- rules; let setLink = Set.fromList link
   let (linkedRules, unfoundRules) = runState (retrieve setLink rules) setLink
@@ -185,13 +185,13 @@ getLinkedRules pos link = do
 
 
 {- fetch all rewrite rules from the global state -}
-rules :: VM [Rule]
+rules :: VerifyMonad [Rule]
 rules = asks rewriteRules
 
 
 {- applies rewriting to both sides of an equation
 and compares the resulting normal forms -}
-rewrite :: Position.T -> Formula -> [Rule] -> VM ()
+rewrite :: Position.T -> Formula -> [Rule] -> VerifyMonad ()
 rewrite pos Trm {trmName = TermEquality, trmArgs = [l,r]} rules = do
   verbositySetting <- askInstructionBool Printsimp False
   conditions <- generateConditions pos verbositySetting rules (>) l r;
@@ -200,7 +200,7 @@ rewrite _ _ _ = error "SAD.Core.Rewrite.rewrite: non-equation argument"
 
 
 {- dischargeConditions accumulated during rewriting -}
-dischargeConditions :: Position.T -> Bool -> [Formula] -> VM ()
+dischargeConditions :: Position.T -> Bool -> [Formula] -> VerifyMonad ()
 dischargeConditions pos verbositySetting conditions =
   setup $ easy >>= hard
   where
@@ -215,7 +215,7 @@ dischargeConditions pos verbositySetting conditions =
           thesis <- asks currentThesis
           mapM_ (proveThesis' pos . Context.setFormula (wipeLink thesis)) (lefts hardConditions)
 
-    setup :: VM a -> VM a
+    setup :: VerifyMonad a -> VerifyMonad a
     setup action = do
       timelimit <- LimitBy Timelimit <$> askInstructionInt Checktime 1
       depthlimit <- LimitBy Depthlimit <$> askInstructionInt Checkdepth 3

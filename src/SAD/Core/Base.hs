@@ -27,7 +27,7 @@ module SAD.Core.Base
   , ifFailed
   , setChecked
 
-  , VState(..), VM
+  , VState(..), VerifyMonad
 
   , Tracker(..), Timer(..), Counter(..)
   , sumCounter
@@ -172,40 +172,40 @@ initVState text = VState
   , restProofText   = text
   }
 
-type VM = ReaderT VState CRM
+type VerifyMonad = ReaderT VState CRM
 
-justRS :: VM (IORef RState)
+justRS :: VerifyMonad (IORef RState)
 justRS = lift $ CRM $ \ s _ k -> k s
 
-justIO :: IO a -> VM a
+justIO :: IO a -> VerifyMonad a
 justIO m = lift $ CRM $ \ _ _ k -> m >>= k
 
 
 -- State management from inside the verification monad
 
-readRState :: (RState -> a) -> VM a
+readRState :: (RState -> a) -> VerifyMonad a
 readRState f = justRS >>= (justIO . fmap f . readIORef)
 
-modifyRState :: (RState -> RState) -> VM ()
+modifyRState :: (RState -> RState) -> VerifyMonad ()
 modifyRState f = justRS >>= (justIO . flip modifyIORef f)
 
-askInstructionInt :: Limit -> Int -> VM Int
+askInstructionInt :: Limit -> Int -> VerifyMonad Int
 askInstructionInt instr _default =
   asks (askLimit instr _default . instructions)
 
-askInstructionBool :: Flag -> Bool -> VM Bool
+askInstructionBool :: Flag -> Bool -> VerifyMonad Bool
 askInstructionBool instr _default =
   asks (askFlag instr _default . instructions)
 
-askInstructionText :: Argument -> Text -> VM Text
+askInstructionText :: Argument -> Text -> VerifyMonad Text
 askInstructionText instr _default =
   asks (askArgument instr _default . instructions)
 
-addInstruction :: Instr -> VM a -> VM a
+addInstruction :: Instr -> VerifyMonad a -> VerifyMonad a
 addInstruction instr =
   local $ \vs -> vs { instructions = instr : instructions vs }
 
-dropInstruction :: Drop -> VM a -> VM a
+dropInstruction :: Drop -> VerifyMonad a -> VerifyMonad a
 dropInstruction instr =
   local $ \vs -> vs { instructions = dropInstr instr $ instructions vs }
 
@@ -228,19 +228,19 @@ reportBracketIO pos body = do
 
 -- Trackers
 
-addToTimer :: Timer -> NominalDiffTime -> VM ()
+addToTimer :: Timer -> NominalDiffTime -> VerifyMonad ()
 addToTimer timer time =
   modifyRState $ \rs -> rs{trackers = Timer timer time : trackers rs}
 
-addToCounter :: Counter -> Int -> VM ()
+addToCounter :: Counter -> Int -> VerifyMonad ()
 addToCounter counter increment =
   modifyRState $ \rs -> rs{trackers = Counter counter increment : trackers rs}
 
-incrementCounter :: Counter -> VM ()
+incrementCounter :: Counter -> VerifyMonad ()
 incrementCounter counter = addToCounter counter 1
 
 -- Time proof tasks.
-timeWith :: Timer -> VM a -> VM a
+timeWith :: Timer -> VerifyMonad a -> VerifyMonad a
 timeWith timer task = do
   begin  <- justIO getCurrentTime
   result <- task
@@ -279,52 +279,52 @@ showTimeDiff t =
     (hours,   restMinutes) = divMod minutes 60
 
 
-guardInstruction :: Flag -> Bool -> VM ()
+guardInstruction :: Flag -> Bool -> VerifyMonad ()
 guardInstruction instr _default =
   askInstructionBool instr _default >>= guard
 
-guardNotInstruction :: Flag -> Bool -> VM ()
+guardNotInstruction :: Flag -> Bool -> VerifyMonad ()
 guardNotInstruction instr _default =
   askInstructionBool instr _default >>= guard . not
 
-whenInstruction :: Flag -> Bool -> VM () -> VM ()
+whenInstruction :: Flag -> Bool -> VerifyMonad () -> VerifyMonad ()
 whenInstruction instr _default action =
   askInstructionBool instr _default >>= \b -> when b action
 
 -- explicit failure management
 
-setFailed :: VM ()
+setFailed :: VerifyMonad ()
 setFailed = modifyRState (\st -> st {failed = True})
 
-ifFailed :: VM a -> VM a -> VM a
+ifFailed :: VerifyMonad a -> VerifyMonad a -> VerifyMonad a
 ifFailed alt1 alt2 = do
   failed <- readRState failed
   if failed then alt1 else alt2
 
 -- local checking support
 
-setChecked :: Bool -> VM ()
+setChecked :: Bool -> VerifyMonad ()
 setChecked b = modifyRState (\st -> st {alreadyChecked = b})
 
 
 -- common messages
 
-reasonLog :: BYTES a => Message.Kind -> Position.T -> a -> VM ()
+reasonLog :: BYTES a => Message.Kind -> Position.T -> a -> VerifyMonad ()
 reasonLog kind pos = justIO . Message.outputReasoner kind pos
 
-thesisLog :: BYTES a => Message.Kind -> Position.T -> Int -> a -> VM ()
+thesisLog :: BYTES a => Message.Kind -> Position.T -> Int -> a -> VerifyMonad ()
 thesisLog kind pos indent msg =
   justIO (Message.outputThesis kind pos (Bytes.spaces (3 * indent) <> make_bytes msg))
 
-simpLog :: BYTES a => Message.Kind -> Position.T -> a -> VM ()
+simpLog :: BYTES a => Message.Kind -> Position.T -> a -> VerifyMonad ()
 simpLog kind pos = justIO . Message.outputSimplifier kind pos
 
-translateLog :: BYTES a => Message.Kind -> Position.T -> a -> VM ()
+translateLog :: BYTES a => Message.Kind -> Position.T -> a -> VerifyMonad ()
 translateLog kind pos = justIO . Message.outputTranslate kind pos
 
 
 
-retrieveContext :: Position.T -> Set.Set Text -> VM [Context]
+retrieveContext :: Position.T -> Set.Set Text -> VerifyMonad [Context]
 retrieveContext pos names = do
   globalContext <- asks currentContext
   let (context, unfoundSections) = runState (retrieve globalContext) names
@@ -426,7 +426,7 @@ defForm definitions term = do
 
 
 -- retrieve definition of a symbol (monadic)
-getDef :: Formula -> VM DefEntry
+getDef :: Formula -> VerifyMonad DefEntry
 getDef term = do
   defs <- asks definitions
   let mbDef = Map.lookup (trmId term) defs

@@ -55,7 +55,7 @@ verifyRoot filePos reasonerState text = do
 
 -- Main verification loop, based on mutual functions:
 -- verify, verifyBranch, verifyLeaf, verifyProof
-type Verify = VM ([ProofText], [ProofText])
+type Verify = VerifyMonad ([ProofText], [ProofText])
 
 verify :: VState -> Verify
 verify state@VState {restProofText = ProofTextBlock block : rest} =

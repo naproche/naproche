@@ -36,7 +36,7 @@ contrapositives ls =
 
 
 {- the monadic action to generate meson rules during text verfication -}
-contras :: Formula -> VM (([MRule], [MRule]), Int)
+contras :: Formula -> VerifyMonad (([MRule], [MRule]), Int)
 contras f = do
   m <- asks skolemCounter;
   let (skf, nm) = skolemize m $ simplify f

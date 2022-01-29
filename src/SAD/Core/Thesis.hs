@@ -249,7 +249,7 @@ markRecursive n f = mapF (markRecursive n) f
 
 {- generate all instantiations with as of yet unused variables -}
 generateInstantiations :: Formula -> VariationMonad Formula
-generateInstantiations f = VM tryAllVars
+generateInstantiations f = VariationMonad tryAllVars
   where
     tryAllVars vs = map go $ Set.elems vs
       where
@@ -261,13 +261,13 @@ generateInstantiations f = VM tryAllVars
 {- monad to do bookkeeping during the search for a variation, i.e. keep track
 of which variables have already been used for an instantiation -}
 newtype VariationMonad res =
-  VM { runVM :: Set VariableName -> [(Set VariableName, res)] }
+  VariationMonad { runVM :: Set VariableName -> [(Set VariableName, res)] }
 
 instance Ord a => Semigroup (VariationMonad a) where
-  a <> b = VM $ \s -> runVM a s <> runVM b s
+  a <> b = VariationMonad $ \s -> runVM a s <> runVM b s
 
 instance Ord a => Monoid (VariationMonad a) where
-  mempty = VM $ \s -> []
+  mempty = VariationMonad $ \s -> []
 
 instance Functor VariationMonad where
   fmap = liftM
@@ -277,8 +277,8 @@ instance Applicative VariationMonad where
   (<*>) = ap
 
 instance Monad VariationMonad where
-  return r = VM $ \ s -> [(s, r)]
-  m >>= k  = VM $ \ s -> concatMap apply (runVM m s)
+  return r = VariationMonad $ \ s -> [(s, r)]
+  m >>= k  = VariationMonad $ \ s -> concatMap apply (runVM m s)
     where apply (s, r) = runVM (k r) s
 
 instance Alternative VariationMonad where
@@ -286,8 +286,8 @@ instance Alternative VariationMonad where
   (<|>) = mplus
 
 instance MonadPlus VariationMonad where
-  mzero     = VM $ \ _ -> []
-  mplus m k = VM $ \ s -> runVM m s ++ runVM k s
+  mzero     = VariationMonad $ \ _ -> []
+  mplus m k = VariationMonad $ \ s -> runVM m s ++ runVM k s
 
 -- special reduction of function thesis
 

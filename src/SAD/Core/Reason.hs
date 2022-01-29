@@ -55,19 +55,19 @@ import qualified Naproche.Prover as Prover
 
 -- Reasoner
 
-withGoal :: VM a -> Formula -> VM a
+withGoal :: VerifyMonad a -> Formula -> VerifyMonad a
 withGoal action goal =
   local (\st -> st { currentThesis = Context.setFormula (currentThesis st) goal}) action
 
-withContext :: VM a -> [Context] -> VM a
+withContext :: VerifyMonad a -> [Context] -> VerifyMonad a
 withContext action context =
   local (\st -> st { currentContext = context }) action
 
-proveThesis' :: Position.T -> Context -> VM ()
+proveThesis' :: Position.T -> Context -> VerifyMonad ()
 proveThesis' pos tc =
   local (\st -> st {currentThesis = tc}) (proveThesis pos)
   
-proveThesis :: Position.T -> VM ()
+proveThesis :: Position.T -> VerifyMonad ()
 proveThesis pos = do
   depthlimit <- askInstructionInt Depthlimit 3
   guard (depthlimit > 0) -- Fallback to defaulting of the underlying CPS Maybe monad.
@@ -82,7 +82,7 @@ proveThesis pos = do
       _ <- HOL.export_sequent program_context binding sequent
       return ()
 
-proveGoals :: Position.T -> Int -> [Formula] -> VM ()
+proveGoals :: Position.T -> Int -> [Formula] -> VerifyMonad ()
 proveGoals pos depthlimit = prove 0
   where
     prove _ [] = return ()
@@ -123,7 +123,7 @@ normalizedSplit = split . albet
 
 -- Call prover
 
-launchProver :: Position.T -> Int -> VM ()
+launchProver :: Position.T -> Int -> VerifyMonad ()
 launchProver pos iteration = do
   whenInstruction Printfulltask False printTask
   instrList <- asks instructions
@@ -157,7 +157,7 @@ launchProver pos iteration = do
 
 -- Triviality check
 
-trivialByMeson :: Formula -> VM ()
+trivialByMeson :: Formula -> VerifyMonad ()
 trivialByMeson goal = do
   context <- asks currentContext
   n <- asks skolemCounter
@@ -170,7 +170,7 @@ trivialByMeson goal = do
         timeout 10000 $ evaluate proveGoal
   justIO prove >>= guard . (==) (Just True)
 
-trivialityCheck :: Formula -> VM (Either Formula Formula)
+trivialityCheck :: Formula -> VerifyMonad (Either Formula Formula)
 trivialityCheck goal =
   if   trivialByEvidence goal
   then return $ Right goal  -- triviality check
@@ -183,7 +183,7 @@ trivialityCheck goal =
   plus all definitions/sigexts (as they usually import type information that
   is easily forgotten) and the low level context. Otherwise the whole
   context is selected. -}
-filterContext :: Position.T -> [Context] -> VM a -> VM a
+filterContext :: Position.T -> [Context] -> VerifyMonad a -> VerifyMonad a
 filterContext pos context action = do
   link <- asks (Set.fromList . Context.link . currentThesis)
   if Set.null link
@@ -261,7 +261,7 @@ data UnfoldState = UF {
 
 
 -- FIXME the reader monad transformer used here is completely superfluous
-unfold :: Position.T -> VM [Context]
+unfold :: Position.T -> VerifyMonad [Context]
 unfold pos = do
   thesis <- asks currentThesis
   context <- asks currentContext
