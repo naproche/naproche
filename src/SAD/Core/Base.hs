@@ -125,16 +125,16 @@ instance Applicative CRM where
   (<*>) = ap
 
 instance Monad CRM where
-  return r  = CRM $ \ _ _ k -> k r
-  m >>= n   = CRM $ \ s z k -> runCRM m s z (\ r -> runCRM (n r) s z k)
+  return r = CRM (\_ _ k -> k r)
+  m >>= n = CRM (\s z k -> runCRM m s z (\r -> runCRM (n r) s z k))
 
 instance Alternative CRM where
   empty = mzero
   (<|>) = mplus
 
 instance MonadPlus CRM where
-  mzero     = CRM $ \ _ z _ -> z
-  mplus m n = CRM $ \ s z k -> runCRM m s (runCRM n s z k) k
+  mzero = CRM (\_ z _ -> z)
+  mplus m n = CRM (\s z k -> runCRM m s (runCRM n s z k) k)
 
 
 -- | @runCRM@ with defaults.
@@ -175,10 +175,10 @@ initVState text = VState
 type VerifyMonad = ReaderT VState CRM
 
 justRS :: VerifyMonad (IORef RState)
-justRS = lift $ CRM $ \ s _ k -> k s
+justRS = lift $ CRM (\s _ k -> k s)
 
 justIO :: IO a -> VerifyMonad a
-justIO m = lift $ CRM $ \ _ _ k -> m >>= k
+justIO m = lift $ CRM (\_ _ k -> m >>= k)
 
 
 -- State management from inside the verification monad
