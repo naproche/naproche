@@ -43,7 +43,7 @@ verifyRoot filePos reasonerState text = do
   Message.outputReasoner Message.TRACING filePos "verification started"
 
   let state = initVState text
-  result <- flip runRM reasonerState $ runReaderT (verify state) state
+  result <- runVerifyMonad reasonerState state (verify state)
 
   trackers <- trackers <$> readIORef reasonerState
   let ignoredFails = sumCounter trackers FailedGoals

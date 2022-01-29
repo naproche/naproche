@@ -16,7 +16,6 @@ module SAD.Core.Base
   , justIO
   , reportBracketIO
   , (<|>)
-  , runRM
 
   , retrieveContext
   , initVState
@@ -27,7 +26,7 @@ module SAD.Core.Base
   , ifFailed
   , setChecked
 
-  , VState(..), VerifyMonad
+  , VState(..), VerifyMonad, runVerifyMonad
 
   , Tracker(..), Timer(..), Counter(..)
   , sumCounter
@@ -137,10 +136,6 @@ instance MonadPlus CRM where
   mplus m n = CRM (\s z k -> runCRM m s (runCRM n s z k) k)
 
 
--- | @runCRM@ with defaults.
-runRM :: CRM a -> IORef RState -> IO (Maybe a)
-runRM m s = runCRM m s (return Nothing) (return . Just)
-
 data VState = VState
   { thesisMotivated :: Bool
   , rewriteRules    :: [Rule]
@@ -179,6 +174,9 @@ justRS = lift $ CRM (\s _ k -> k s)
 
 justIO :: IO a -> VerifyMonad a
 justIO m = lift $ CRM (\_ _ k -> m >>= k)
+
+runVerifyMonad :: IORef RState -> VState -> VerifyMonad a -> IO (Maybe a)
+runVerifyMonad r s m = runCRM (runReaderT m s) r (return Nothing) (return . Just)
 
 
 -- State management from inside the verification monad
