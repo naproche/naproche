@@ -310,7 +310,7 @@ deleteInductionOrCase = dive id
 procProofTextInstr :: Position.T -> Instr -> Verify
 procProofTextInstr pos = flip process $ ask >>= verify
   where
-    process :: Instr -> VerifyMonad a -> VerifyMonad a
+    process :: Instr -> Verify -> Verify
     process (Command RULES) = (>>) $ do
       rules <- asks rewriteRules
       reasonLog Message.WRITELN pos $
