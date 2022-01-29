@@ -258,7 +258,7 @@ verifyProof state@VState {
   currentBranch  = branch}
   = dive id context $ Context.formula thesis
   where
-    dive :: (Formula -> Formula) -> [Context] -> Formula -> ReaderT VState CRM ([ProofText], [ProofText])
+    dive :: (Formula -> Formula) -> [Context] -> Formula -> Verify
     dive construct context (Imp (Tag InductionHypothesis f) g)
       | isClosed f =
           process (Context.setFormula thesis f : context) (construct g)
@@ -271,7 +271,7 @@ verifyProof state@VState {
     dive _ _ _ = verify state
 
     -- extract rules, compute new thesis and move on with the verification
-    process :: [Context] -> Formula -> ReaderT VState CRM ([ProofText], [ProofText])
+    process :: [Context] -> Formula -> Verify
     process newContext f = do
       let newRules = extractRewriteRule (head newContext) ++ rules
           (_, _, newThesis) =
@@ -310,7 +310,7 @@ deleteInductionOrCase = dive id
 procProofTextInstr :: Position.T -> Instr -> Verify
 procProofTextInstr pos = flip process $ ask >>= verify
   where
-    process :: Instr -> ReaderT VState CRM a -> ReaderT VState CRM a
+    process :: Instr -> VerifyMonad a -> VerifyMonad a
     process (Command RULES) = (>>) $ do
       rules <- asks rewriteRules
       reasonLog Message.WRITELN pos $
