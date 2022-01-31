@@ -31,8 +31,8 @@ files = fmap ("examples/"++)
   , "cantor.ftl"
   , "prime_no_square.ftl"
   , "tarski.ftl"
-  , "test/inconsistency.ftl"
-  , "test/read_test.ftl"
+  ] ++ [
+   "test/examples/read_test.ftl"
   ]
 
 texFiles :: [FilePath]
@@ -45,17 +45,11 @@ texFiles = fmap ("examples/"++)
   , "cantor.ftl.tex"
   , "prime_no_square.ftl.tex"
   , "tarski.ftl.tex"
-  , "test/inconsistency.ftl.tex"
-  , "test/read_test.ftl.tex"
-  , "test/lambda_term_test.ftl.tex"
-  , "test/text.ftl.tex"
-  , "test/varprime.ftl.tex"
-  ]
-
-shouldFailFiles :: [FilePath]
-shouldFailFiles = fmap ("examples/"++)
-  [ "test/inconsistency.ftl"
-  , "test/inconsistency.ftl.tex"
+  ] ++ fmap ("text/examples/"++)
+  [ "read_test.ftl.tex"
+  , "lambda_term_test.ftl.tex"
+  , "text.ftl.tex"
+  , "varprime.ftl.tex"
   ]
 
 output :: [(FilePath, (ExitCode, Text))] -> IO [(ExitCode, FilePath)]
@@ -70,13 +64,8 @@ main = do
   compiledTex <- mapM (\f -> gather =<< compileFile ["--tex=on"] f) texFiles
 
   failed <- output . zip (files ++ texFiles) $ (compiled ++ compiledTex)
-  let shouldntHaveFailed = filter (\f -> snd f `notElem` shouldFailFiles) failed
-  let shouldHaveFailed = shouldFailFiles \\ map snd failed
   code <- newIORef ExitSuccess
-  unless (null shouldntHaveFailed) $ do
-    putStrLn $ "Failed to compile: " ++ unwords (map snd shouldntHaveFailed)
-    writeIORef code $ foldl' max ExitSuccess $ map fst shouldntHaveFailed
-  unless (null shouldHaveFailed) $ do
-    putStrLn $ "Compiled even though it shouldn't: " ++ unwords shouldHaveFailed
-    writeIORef code (ExitFailure 1)
+  unless (null failed) $ do
+    putStrLn $ "Failed to compile: " ++ unwords (map snd failed)
+    writeIORef code $ foldl' max ExitSuccess $ map fst failed
   readIORef code >>= exitWith
