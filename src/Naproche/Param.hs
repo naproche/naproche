@@ -9,7 +9,7 @@ Typed parameters, stored via plain bytes.
 
 module Naproche.Param (
   T, name, description, bool, int, real, string, strings,
-  Env, empty, declare, get, set, reset
+  Env, empty, declare, get, put, input, restore
 )
 where
 
@@ -78,18 +78,27 @@ check Param{_name = a, _parse = parse} env =
       Nothing -> error (make_string ("Unknown parameter " <> quote a))
       Just s -> s
 
+error_malformed :: Bytes -> Bytes -> a
+error_malformed a s =
+  error (make_string ("Malformed value for parameter " <> quote a <> " =\n  " <> quote s))
+
 get :: T a -> Env -> a
 get p@Param{_name = a, _parse = parse} env =
   let s = check p env in
     case parse s of
-      Nothing ->
-        error (make_string ("Malformed value for parameter " <> quote a <> " =\n  " <> quote s))
+      Nothing -> error_malformed a s
       Just x -> x
 
-set :: T a -> a -> Env -> Env
-set p@Param{_name = a, _print = print} x env =
+put :: T a -> a -> Env -> Env
+put p@Param{_name = a, _print = print} x env =
   let !_ = check p env; Env ps = env
   in Env (Map.insert a (print x) ps)
 
-reset :: T a -> Env -> Env
-reset p@Param{_default = x} = set p x
+input :: T a -> Bytes -> Env -> Env
+input p@Param{_name = a, _parse = parse} s env =
+  case parse s of
+    Nothing -> error_malformed a s
+    Just x -> put p x env
+
+restore :: T a -> Env -> Env
+restore p@Param{_default = x} = put p x
