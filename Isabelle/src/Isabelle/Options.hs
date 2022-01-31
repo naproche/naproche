@@ -56,7 +56,7 @@ data Opt = Opt {
   _typ :: Bytes,
   _value :: Bytes }
 
-data T = Options (Map Bytes Opt)
+newtype T = Options (Map Bytes Opt)
 
 
 {- check -}
