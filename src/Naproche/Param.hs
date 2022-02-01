@@ -78,16 +78,15 @@ check Param{_name = a, _parse = parse} env =
       Nothing -> error (make_string ("Unknown parameter " <> quote a))
       Just s -> s
 
-error_malformed :: Bytes -> Bytes -> a
-error_malformed a s =
-  error (make_string ("Malformed value for parameter " <> quote a <> " =\n  " <> quote s))
+parse :: T a -> Bytes -> a
+parse Param{_name = a, _parse = parse} s =
+  case parse s of
+    Nothing ->
+      error (make_string ("Malformed value for parameter " <> quote a <> " =\n  " <> quote s))
+    Just x -> x
 
 get :: T a -> Env -> a
-get p@Param{_name = a, _parse = parse} env =
-  let s = check p env in
-    case parse s of
-      Nothing -> error_malformed a s
-      Just x -> x
+get p env = parse p $ check p env
 
 put :: T a -> a -> Env -> Env
 put p@Param{_name = a, _print = print} x env =
@@ -95,10 +94,7 @@ put p@Param{_name = a, _print = print} x env =
   in Env (Map.insert a (print x) ps)
 
 input :: T a -> Bytes -> Env -> Env
-input p@Param{_name = a, _parse = parse} s env =
-  case parse s of
-    Nothing -> error_malformed a s
-    Just x -> put p x env
+input p s = put p $ parse p s
 
 restore :: T a -> Env -> Env
-restore p@Param{_default = x} = put p x
+restore p = put p $ _default p
