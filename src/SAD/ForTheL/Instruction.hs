@@ -26,8 +26,11 @@ import SAD.Parser.Combinators
 import SAD.Parser.Primitives
 import SAD.ForTheL.Reports
 import SAD.Parser.Token
+import qualified Naproche.Param as Param
 
+import qualified Isabelle.Value as Value
 import qualified Isabelle.Position as Position
+import Isabelle.Library
 
 
 instrPos :: (Position.T -> FTL ()) -> FTL a -> FTL (Position.T, a)
@@ -78,20 +81,14 @@ readInstr =
     readInstrTexts = liftM2 GetArguments (readKeywords keywordsArguments) readWords
 
 readInt :: FTL Int
-readInt = try $ readText >>= intCheck
-  where
-    intCheck s = case reads $ Text.unpack s of
-      ((n,[]):_) | n >= 0 -> return n
-      _                   -> mzero
+readInt = try $ do
+  s <- readText
+  maybe mzero return (Value.parse_nat $ make_bytes s)
 
 readBool :: FTL Bool
-readBool = try $ readText >>= boolCheck
-  where
-    boolCheck "yes" = return True
-    boolCheck "on"  = return True
-    boolCheck "no"  = return False
-    boolCheck "off" = return False
-    boolCheck _     = mzero
+readBool = try $ do
+  s <- readText
+  maybe mzero return (Param.parse_flag $ make_bytes s)
 
 readText :: FTL Text
 readText = fmap Text.concat readTexts

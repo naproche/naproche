@@ -31,6 +31,7 @@ import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
 import qualified Isabelle.UUID as UUID
 import qualified Isabelle.Position as Position
 import qualified Isabelle.YXML as YXML
+import qualified Isabelle.Value as Value
 import qualified Isabelle.Process_Result as Process_Result
 import Isabelle.Library
 
@@ -38,6 +39,7 @@ import SAD.API
 
 import qualified Naproche.Program as Program
 import qualified Naproche.Console as Console
+import qualified Naproche.Param as Param
 
 
 newtype Cache = Cache (IORef (Int, ProofText))
@@ -284,7 +286,7 @@ options = [
     "init file, empty to skip (def: init.opt)",
   GetOpt.Option "T" ["onlytranslate"] (GetOpt.NoArg (SetFlag OnlyTranslate True))
     "translate input text and exit",
-  GetOpt.Option "" ["translate"] (GetOpt.ReqArg (SetFlag Translation . parseConsent) "{on|off}")
+  GetOpt.Option "" ["translate"] (GetOpt.ReqArg (SetFlag Translation . parseFlag) "{on|off}")
     "print first-order translation of sentences",
   GetOpt.Option "" ["server"] (GetOpt.NoArg (SetFlag Server True))
     "run in server mode",
@@ -292,90 +294,92 @@ options = [
     "place to look for library texts (def: examples)",
   GetOpt.Option "P" ["prover"] (GetOpt.ReqArg (GetArgument Prover . Text.pack) "NAME")
     "use prover NAME (def: first listed)",
-  GetOpt.Option "t" ["timelimit"] (GetOpt.ReqArg (LimitBy Timelimit . getLeadingPositiveInt) "N")
+  GetOpt.Option "t" ["timelimit"] (GetOpt.ReqArg (LimitBy Timelimit . parseNat) "N")
     "N seconds per prover call (def: 3)",
-  GetOpt.Option "m" ["memorylimit"] (GetOpt.ReqArg (LimitBy Memorylimit . getLeadingPositiveInt) "N")
+  GetOpt.Option "m" ["memorylimit"] (GetOpt.ReqArg (LimitBy Memorylimit . parseNat) "N")
     "maximum N MiB of memory usage per prover call (def: 2048)",
-  GetOpt.Option ""  ["depthlimit"] (GetOpt.ReqArg (LimitBy Depthlimit . getLeadingPositiveInt) "N")
+  GetOpt.Option ""  ["depthlimit"] (GetOpt.ReqArg (LimitBy Depthlimit . parseNat) "N")
     "N reasoner loops per goal (def: 7)",
-  GetOpt.Option ""  ["checktime"] (GetOpt.ReqArg (LimitBy Checktime . getLeadingPositiveInt) "N")
+  GetOpt.Option ""  ["checktime"] (GetOpt.ReqArg (LimitBy Checktime . parseNat) "N")
     "timelimit for checker's tasks (def: 1)",
-  GetOpt.Option ""  ["checkdepth"] (GetOpt.ReqArg (LimitBy Checkdepth . getLeadingPositiveInt) "N")
+  GetOpt.Option ""  ["checkdepth"] (GetOpt.ReqArg (LimitBy Checkdepth . parseNat) "N")
     "depthlimit for checker's tasks (def: 3)",
   GetOpt.Option "n" [] (GetOpt.NoArg (SetFlag Prove False))
     "cursory mode (equivalent to --prove off)",
   GetOpt.Option "r" [] (GetOpt.NoArg (SetFlag Check False))
     "raw mode (equivalent to --check off)",
-  GetOpt.Option "" ["prove"] (GetOpt.ReqArg (SetFlag Prove . parseConsent) "{on|off}")
+  GetOpt.Option "" ["prove"] (GetOpt.ReqArg (SetFlag Prove . parseFlag) "{on|off}")
     "prove goals in the text (def: on)",
   GetOpt.Option "" ["theory"] (GetOpt.ReqArg (Theory . parseTheory) "{fol|lean|cic}")
     "Choose the underlying theory (First-Order-Logic, Lean Prover, Calculus of inductive Constructions) (def: fol)",
-  GetOpt.Option "" ["check"] (GetOpt.ReqArg (SetFlag Check . parseConsent) "{on|off}")
+  GetOpt.Option "" ["check"] (GetOpt.ReqArg (SetFlag Check . parseFlag) "{on|off}")
     "check symbols for definedness (def: on)",
-  GetOpt.Option "" ["symsign"] (GetOpt.ReqArg (SetFlag Symsign . parseConsent) "{on|off}")
+  GetOpt.Option "" ["symsign"] (GetOpt.ReqArg (SetFlag Symsign . parseFlag) "{on|off}")
     "prevent ill-typed unification (def: on)",
-  GetOpt.Option "" ["info"] (GetOpt.ReqArg (SetFlag Info . parseConsent) "{on|off}")
+  GetOpt.Option "" ["info"] (GetOpt.ReqArg (SetFlag Info . parseFlag) "{on|off}")
     "collect \"evidence\" literals (def: on)",
-  GetOpt.Option "" ["thesis"] (GetOpt.ReqArg (SetFlag Thesis . parseConsent) "{on|off}")
+  GetOpt.Option "" ["thesis"] (GetOpt.ReqArg (SetFlag Thesis . parseFlag) "{on|off}")
     "maintain current thesis (def: on)",
-  GetOpt.Option "" ["filter"] (GetOpt.ReqArg (SetFlag Filter . parseConsent) "{on|off}")
+  GetOpt.Option "" ["filter"] (GetOpt.ReqArg (SetFlag Filter . parseFlag) "{on|off}")
     "filter prover tasks (def: on)",
-  GetOpt.Option "" ["skipfail"] (GetOpt.ReqArg (SetFlag Skipfail . parseConsent) "{on|off}")
+  GetOpt.Option "" ["skipfail"] (GetOpt.ReqArg (SetFlag Skipfail . parseFlag) "{on|off}")
     "ignore failed goals (def: off)",
-  GetOpt.Option "" ["flat"] (GetOpt.ReqArg (SetFlag Flat . parseConsent) "{on|off}")
+  GetOpt.Option "" ["flat"] (GetOpt.ReqArg (SetFlag Flat . parseFlag) "{on|off}")
     "do not read proofs (def: off)",
   GetOpt.Option "q" [] (GetOpt.NoArg (SetFlag Verbose False))
     "print no details",
   GetOpt.Option "v" [] (GetOpt.NoArg (SetFlag Verbose True))
     "print more details (-vv, -vvv, etc)",
-  GetOpt.Option "" ["printgoal"] (GetOpt.ReqArg (SetFlag Printgoal . parseConsent) "{on|off}")
+  GetOpt.Option "" ["printgoal"] (GetOpt.ReqArg (SetFlag Printgoal . parseFlag) "{on|off}")
     "print current goal (def: on)",
-  GetOpt.Option "" ["printreason"] (GetOpt.ReqArg (SetFlag Printreason . parseConsent) "{on|off}")
+  GetOpt.Option "" ["printreason"] (GetOpt.ReqArg (SetFlag Printreason . parseFlag) "{on|off}")
     "print reasoner's messages (def: off)",
-  GetOpt.Option "" ["printsection"] (GetOpt.ReqArg (SetFlag Printsection . parseConsent) "{on|off}")
+  GetOpt.Option "" ["printsection"] (GetOpt.ReqArg (SetFlag Printsection . parseFlag) "{on|off}")
     "print sentence translations (def: off)",
-  GetOpt.Option "" ["printcheck"] (GetOpt.ReqArg (SetFlag Printcheck . parseConsent) "{on|off}")
+  GetOpt.Option "" ["printcheck"] (GetOpt.ReqArg (SetFlag Printcheck . parseFlag) "{on|off}")
     "print checker's messages (def: off)",
-  GetOpt.Option "" ["printprover"] (GetOpt.ReqArg (SetFlag Printprover . parseConsent) "{on|off}")
+  GetOpt.Option "" ["printprover"] (GetOpt.ReqArg (SetFlag Printprover . parseFlag) "{on|off}")
     "print prover's messages (def: off)",
-  GetOpt.Option "" ["printunfold"] (GetOpt.ReqArg (SetFlag Printunfold . parseConsent) "{on|off}")
+  GetOpt.Option "" ["printunfold"] (GetOpt.ReqArg (SetFlag Printunfold . parseFlag) "{on|off}")
     "print definition unfoldings (def: off)",
-  GetOpt.Option "" ["printfulltask"] (GetOpt.ReqArg (SetFlag Printfulltask . parseConsent) "{on|off}")
+  GetOpt.Option "" ["printfulltask"] (GetOpt.ReqArg (SetFlag Printfulltask . parseFlag) "{on|off}")
     "print full prover tasks (def: off)",
-  GetOpt.Option "" ["printsimp"] (GetOpt.ReqArg (SetFlag Printsimp . parseConsent) "{on|off}")
+  GetOpt.Option "" ["printsimp"] (GetOpt.ReqArg (SetFlag Printsimp . parseFlag) "{on|off}")
     "print simplification process (def: off)",
-  GetOpt.Option "" ["printthesis"] (GetOpt.ReqArg (SetFlag Printthesis . parseConsent) "{on|off}")
+  GetOpt.Option "" ["printthesis"] (GetOpt.ReqArg (SetFlag Printthesis . parseFlag) "{on|off}")
     "print thesis development (def: off)",
-  GetOpt.Option "" ["unfoldlow"] (GetOpt.ReqArg (SetFlag Unfoldlow . parseConsent) "{on|off}")
+  GetOpt.Option "" ["unfoldlow"] (GetOpt.ReqArg (SetFlag Unfoldlow . parseFlag) "{on|off}")
     "enable unfolding of definitions in the whole low level context (def: on)",
-  GetOpt.Option "" ["unfold"] (GetOpt.ReqArg (SetFlag Unfold . parseConsent) "{on|off}")
+  GetOpt.Option "" ["unfold"] (GetOpt.ReqArg (SetFlag Unfold . parseFlag) "{on|off}")
     "enable unfolding of definitions (def: on)",
-  GetOpt.Option "" ["unfoldsf"] (GetOpt.ReqArg (SetFlag Unfoldsf . parseConsent) "{on|off}")
+  GetOpt.Option "" ["unfoldsf"] (GetOpt.ReqArg (SetFlag Unfoldsf . parseFlag) "{on|off}")
     "enable unfolding of class conditions and map evaluations (def: on)",
-  GetOpt.Option "" ["unfoldlowsf"] (GetOpt.ReqArg (SetFlag Unfoldlowsf . parseConsent) "{on|off}")
+  GetOpt.Option "" ["unfoldlowsf"] (GetOpt.ReqArg (SetFlag Unfoldlowsf . parseFlag) "{on|off}")
     "enable unfolding of class and map conditions in general (def: off)",
   GetOpt.Option "" ["dump"]
-    (GetOpt.ReqArg (SetFlag Dump . parseConsent) "{on|off}")
+    (GetOpt.ReqArg (SetFlag Dump . parseFlag) "{on|off}")
     "print tasks in prover's syntax (def: off)",
   GetOpt.Option "" ["tex"]
-    (GetOpt.ReqArg (SetFlag UseTex . parseConsent) "{on|off}")
+    (GetOpt.ReqArg (SetFlag UseTex . parseFlag) "{on|off}")
     "parse passed file with forthel tex parser (def: off)"
   ]
 
-parseConsent :: String -> Bool
-parseConsent "yes" = True ; parseConsent "on"  = True
-parseConsent "no"  = False; parseConsent "off" = False
-parseConsent s     = errorWithoutStackTrace $ "Invalid boolean argument: \"" ++ s ++ "\""
+parseFlag :: String -> Bool
+parseFlag s =
+  case Param.parse_flag (make_bytes s) of
+    Just b -> b
+    Nothing -> errorWithoutStackTrace ("Bad flag (on|off|yes|no): " <> quote s)
+
+parseNat :: String -> Int
+parseNat s =
+  case Value.parse_nat $ make_bytes s of
+    Just n -> n
+    Nothing -> errorWithoutStackTrace ("Bad natural number: " <> quote s)
 
 parseTheory :: String -> UnderlyingTheory
-parseTheory s = go (map toLower s)
-  where
-    go "fol" = FirstOrderLogic
-    go "cic" = CiC
-    go "lean" = Lean
-    go s = errorWithoutStackTrace $ "Invalid theory: \"" ++ s ++ "\""
-
-getLeadingPositiveInt :: String -> Int
-getLeadingPositiveInt s = case reads s of
-  ((n, []) : _) | n >= 0 -> n
-  _ -> errorWithoutStackTrace $ "Invalid integer argument: \"" ++ s ++ "\""
+parseTheory s =
+  case map toLower s of
+    "fol" -> FirstOrderLogic
+    "cic" -> CiC
+    "lean" -> Lean
+    _ -> errorWithoutStackTrace ("Bad theory (fol|cic|lean): " <> quote s)

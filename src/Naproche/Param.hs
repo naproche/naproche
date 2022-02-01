@@ -8,7 +8,8 @@ Typed parameters, stored via plain bytes.
 {-# LANGUAGE BangPatterns #-}
 
 module Naproche.Param (
-  T, name, description, bool, int, real, string, strings,
+  print_flag, parse_flag,
+  T, name, description, bool, flag, nat, int, real, string, strings,
   Env, empty, declare, get, put, input, restore
 )
 where
@@ -18,6 +19,20 @@ import Data.Map.Strict (Map)
 import Isabelle.Bytes (Bytes)
 import qualified Isabelle.Value as Value
 import Isabelle.Library
+
+
+{- flags -}
+
+print_flag :: Bool -> Bytes
+print_flag True = "on" 
+print_flag False = "off"
+
+parse_flag :: Bytes -> Maybe Bool
+parse_flag "on" = Just True
+parse_flag "off" = Just False
+parse_flag "yes" = Just True
+parse_flag "no" = Just False
+parse_flag _ = Nothing
 
 
 {- typed parameters -}
@@ -40,6 +55,12 @@ instance Show (T a)
 
 bool :: Bytes -> Bytes -> Bool -> T Bool
 bool = Param Value.print_bool Value.parse_bool
+
+flag :: Bytes -> Bytes -> Bool -> T Bool
+flag = Param print_flag parse_flag
+
+nat :: Bytes -> Bytes -> Int -> T Int
+nat = Param Value.print_int Value.parse_nat
 
 int :: Bytes -> Bytes -> Int -> T Int
 int = Param Value.print_int Value.parse_int
