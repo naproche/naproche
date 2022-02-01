@@ -77,7 +77,7 @@ bracketExpression =
 -- | If ProofText has synonym instruction, it gets added.
 addSynonym :: ProofText -> FTL ProofText
 addSynonym text = case text of
-  ProofTextInstr _ (GetArguments Synonym syms) -> add syms >> return text
+  ProofTextInstr _ (Synonym syms) -> add syms >> return text
   _ -> return text
   where
     add :: [Text] -> FTL ()

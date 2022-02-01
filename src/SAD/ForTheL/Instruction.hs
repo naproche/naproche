@@ -72,13 +72,13 @@ instrDrop = instrPos addInstrReport (token' "/" >> readInstrDrop)
 
 readInstr :: FTL Instr
 readInstr =
-  readInstrCommand -|- readInstrLimit -|- readInstrBool -|- readInstrText -|- readInstrTexts
+  readInstrCommand -|- readInstrLimit -|- readInstrBool -|- readInstrText -|- readInstrSynonym
   where
     readInstrCommand = fmap Command (readKeywords keywordsCommand)
+    readInstrSynonym = ap (readKeywords keywordsSynonym) readWords
     readInstrLimit = liftM2 LimitBy (readKeywords keywordsLimit) readInt
     readInstrBool = liftM2 SetFlag (readKeywords keywordsFlag) readBool
     readInstrText = liftM2 GetArgument (readKeywords keywordsArgument) readText
-    readInstrTexts = liftM2 GetArguments (readKeywords keywordsArguments) readWords
 
 readInt :: FTL Int
 readInt = try $ do

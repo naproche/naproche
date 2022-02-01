@@ -22,10 +22,10 @@ data ParserKind = NonTex | Tex deriving (Eq, Ord, Show)
 
 data Instr =
     Command Command
+  | Synonym [Text]
   | LimitBy Limit Int
   | SetFlag Flag Bool
   | GetArgument Argument Text
-  | GetArguments Arguments [Text]
   | Theory UnderlyingTheory
   deriving (Eq, Ord, Show)
 
@@ -97,9 +97,6 @@ data Argument =
   | Prover             --  current prover
   deriving (Eq, Ord, Show)
 
-data Arguments =
-  Synonym
-  deriving (Eq, Ord, Show)
 
 -- Ask
 
@@ -138,6 +135,10 @@ keywordsCommand =
   (FILTER, "filter"),
   (RULES, "rules")]
 
+keywordsSynonym :: [([Text] -> Instr, Text)]
+keywordsSynonym =
+  [(Synonym, "synonym")]
+  
 keywordsLimit :: [(Limit, Text)]
 keywordsLimit =
  [(Timelimit, "timelimit"),
@@ -181,16 +182,12 @@ keywordsArgument =
   (Library, "library"),
   (Prover, "prover")]
 
-keywordsArguments :: [(Arguments, Text)]
-keywordsArguments =
-  [(Synonym, "synonym")]
-
 -- distinguish between parser and verifier instructions
 
 isParserInstruction :: Instr -> Bool
 isParserInstruction i = case i of
   Command EXIT -> True
   Command QUIT -> True
+  Synonym _ -> True
   GetArgument (Read _) _ -> True
-  GetArguments Synonym _ -> True
   _ -> False

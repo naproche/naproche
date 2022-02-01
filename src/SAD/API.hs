@@ -18,7 +18,7 @@ module SAD.API
 import SAD.Core.Base (showTimeDiff, RState(..), initRState, sumCounter, Counter(..), sumTimer, Timer(..), maximalTimer)
 import SAD.Core.Message
 import SAD.Core.Verify (verifyRoot)
-import SAD.Data.Instr (Instr(..), Flag(..), askFlag, Limit(..), askLimit, Argument(..), askArgument, Arguments(..), UnderlyingTheory(..), askTheory, ParserKind(..))
+import SAD.Data.Instr (Instr(..), Flag(..), askFlag, Limit(..), askLimit, Argument(..), askArgument, UnderlyingTheory(..), askTheory, ParserKind(..))
 import SAD.Data.Text.Block (ProofText(..), textToCheck, findParseError)
 import SAD.Import.Reader (readInit, readProofText)
 import SAD.Parser.Error (errorPos)
