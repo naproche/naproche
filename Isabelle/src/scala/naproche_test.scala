@@ -21,6 +21,7 @@ object Naproche_Test
 
   def run_tests(
     progress: Progress = new Progress,
+    log_dir: Option[Path] = None,
     max_jobs: Int = 1,
     timeout: Time = Time.zero): Unit =
   {
@@ -66,15 +67,24 @@ object Naproche_Test
             val timing = stop - start
 
             val expect_ok = !test_failure
-            progress.echo("Finished " + path_relative + ": " +
-              (if (was_timeout) "TIMEOUT"
-               else if (result.interrupted) "INTERRUPT"
-               else
-                (if (result.ok) "OK" else "FAILURE") +
-                (if (result.ok == expect_ok) ""
-                else ", but expected " + (if (expect_ok) "OK" else "FAILURE"))) +
+            val status =
+              "Finished " + path_relative + ": " +
+                (if (was_timeout) "TIMEOUT"
+                else if (result.interrupted) "INTERRUPT"
+                else
+                  (if (result.ok) "OK" else "FAILURE") +
+                    (if (result.ok == expect_ok) ""
+                    else ", but expected " + (if (expect_ok) "OK" else "FAILURE"))) +
                 (" (" + timing.message + " elapsed time)" +
-                (if (result.ok != expect_ok) "\n" + result.err else "")))
+                  (if (result.ok != expect_ok) "\n" + result.err else ""))
+            progress.echo(status)
+            log_dir.foreach(dir0 =>
+              {
+                val dir = Isabelle_System.make_directory(dir0 + path_relative)
+                File.write(dir + Path.basic("status"), status)
+                File.write(dir + Path.basic("output"), result.out)
+                File.write(dir + Path.basic("error"), result.err)
+              })
             if (result.ok != expect_ok) bad.change(path_relative :: _)
           }
         }
@@ -96,6 +106,7 @@ object Naproche_Test
     Isabelle_Tool("naproche_test", "run Naproche tests",
       Scala_Project.here, args =>
     {
+      var log_dir : Option[Path] = None
       var max_jobs = 1
       var options = Options.init()
       var timeout = Time.zero
@@ -104,12 +115,14 @@ object Naproche_Test
 Usage: isabelle naproche_test
 
   Options are:
+    -D DIR       directory for log files (default: none)
     -j JOBS      maximum number of parallel jobs (default: 1)
     -o OPTION    override Isabelle system OPTION (via NAME=VAL or NAME)
     -t SECONDS   timeout in seconds (default: 0, which means disabled)
 
   Run Naproche tests.
 """,
+        "D:" -> (arg => log_dir = Some(Path.explode(arg))),
         "j:" -> (arg => max_jobs = Value.Int.parse(arg)),
         "o:" -> (arg => options = options + arg),
         "t:" -> (arg => timeout = Time.seconds(Value.Double.parse(arg))))
@@ -124,6 +137,6 @@ Usage: isabelle naproche_test
           progress = progress, max_jobs = max_jobs)
       if (!results.ok) sys.exit(results.rc)
 
-      run_tests(progress = progress, max_jobs = max_jobs, timeout = timeout)
+      run_tests(progress = progress, log_dir = log_dir, max_jobs = max_jobs, timeout = timeout)
     })
 }
