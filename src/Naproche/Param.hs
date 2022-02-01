@@ -9,7 +9,7 @@ Typed parameters, stored via plain bytes.
 
 module Naproche.Param (
   print_flag, parse_flag,
-  T, name, description, bool, flag, nat, int, real, string, strings,
+  T, name, description, bool, flag, nat, int, real, string,
   Env, empty, declare, get, put, input, restore
 )
 where
@@ -70,9 +70,6 @@ real = Param Value.print_real Value.parse_real
 
 string :: Bytes -> Bytes -> Bytes -> T Bytes
 string = Param id Just
-
-strings :: Bytes -> Bytes -> [Bytes] -> T [Bytes]
-strings = Param (space_implode "\0") (Just . space_explode '\0')
 
 
 {- untyped environment -}
