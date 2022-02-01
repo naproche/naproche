@@ -77,13 +77,9 @@ bracketExpression =
 -- | If ProofText has synonym instruction, it gets added.
 addSynonym :: ProofText -> FTL ProofText
 addSynonym text = case text of
-  ProofTextInstr _ (Synonym syms) -> add syms >> return text
+  ProofTextInstr _ (Synonym syms) | length syms > 1 ->
+    modify (\st -> st {strSyms = syms : strSyms st}) >> return text
   _ -> return text
-  where
-    add :: [Text] -> FTL ()
-    add syms =
-      if length syms <= 1 then return ()
-      else modify $ \st -> st {strSyms = syms : strSyms st}
 
 -- | Succeeds if the ProofText consists of an exit instruction.
 exitInstruction :: ProofText -> FTL [ProofText]
