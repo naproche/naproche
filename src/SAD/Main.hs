@@ -151,7 +151,7 @@ mainBody cache opts0 text0 fileArg = do
 
   oldProofText <- read_cache cache
   -- parse input text
-  txts <- readProofText (askArgument Library "." opts0) text0
+  txts <- readProofText (askParam libraryParam opts0) text0
   let text1 = ProofTextRoot txts
 
   case askTheory FirstOrderLogic opts0 of
@@ -263,7 +263,7 @@ readArgs args = do
   let fail msgs = errorWithoutStackTrace (unlines (map trim_line msgs))
   unless (null errs) $ fail errs
 
-  initFile <- readInit (askArgument Init "init.opt" instrs)
+  initFile <- readInit (askParam initParam instrs)
   let initialOpts = initFile ++ map (Position.none,) instrs
 
   let revInitialOpts = reverse initialOpts
@@ -300,18 +300,20 @@ optLimit chars p = optParam chars p arg s
   where arg = GetOpt.ReqArg (SetInt p . Param.parse p . make_bytes) "N"
         s = make_string $ Param.description_default p
 
+optText :: [Char] -> Param.T Bytes -> String -> GetOpt.OptDescr Instr
+optText chars p a = optParam chars p arg s
+  where arg = GetOpt.ReqArg (SetBytes p . make_bytes) a
+        s = make_string $ Param.description_default p
+
 options :: [GetOpt.OptDescr Instr]
 options = [
   optSwitch "h" helpParam True "",
-  GetOpt.Option ""  ["init"] (GetOpt.ReqArg (GetArgument Init . Text.pack) "FILE")
-    "init file, empty to skip (default: \"init.opt\")",
+  optText "" initParam "FILE",
   optSwitch "T" onlytranslateParam True "",
   optFlag "" translationParam,
   optSwitch "" serverParam True "",
-  GetOpt.Option ""  ["library"] (GetOpt.ReqArg (GetArgument Library . Text.pack) "DIR")
-    "place to look for library texts (default: \"examples\")",
-  GetOpt.Option "P" ["prover"] (GetOpt.ReqArg (GetArgument Prover . Text.pack) "NAME")
-    "use prover NAME (default: first listed)",
+  optText "" libraryParam "DIR",
+  optText "P" proverParam "NAME",
   optLimit "t" timelimitParam,
   optLimit "m" memorylimitParam,
   optLimit "" depthlimitParam,

@@ -33,16 +33,18 @@ import qualified SAD.Core.Message as Message
 import qualified Isabelle.File as File
 import Isabelle.Library (make_bytes, make_string, make_text, show_bytes)
 import Isabelle.Position as Position
+import Isabelle.Bytes (Bytes)
+import qualified Isabelle.Bytes as Bytes
 
 import qualified Naproche.Program as Program
 
 
 -- Init file parsing
 
-readInit :: Text -> IO [(Position.T, Instr)]
-readInit file | Text.null file = return []
+readInit :: Bytes -> IO [(Position.T, Instr)]
+readInit file | Bytes.null file = return []
 readInit file = do
-  input <- catch (File.read (Text.unpack file)) $ Message.errorParser (Position.file_only $ make_bytes file) . make_bytes . ioeGetErrorString
+  input <- catch (File.read (make_string file)) $ Message.errorParser (Position.file_only $ make_bytes file) . make_bytes . ioeGetErrorString
   let tokens = filter isProperToken $ tokenize TexDisabled (Position.file $ make_bytes file) $ Text.fromStrict $ make_text input
   fst <$> launchParser instructionFile (initState Program.console tokens)
 
@@ -59,19 +61,20 @@ initState context tokens = State (initFState context) tokens NonTex Position.non
 -- @startWithTex@, a boolean indicating whether to execute the next file instruction using the tex parser,
 -- @pathToLibrary@, a path to where the read instruction should look for files and
 -- @text0@, containing some configuration.
-readProofText :: Text -> [ProofText] -> IO [ProofText]
+readProofText :: Bytes -> [ProofText] -> IO [ProofText]
 readProofText pathToLibrary text0 = do
   context <- Program.thread_context
   (text, reports) <- reader pathToLibrary [] [initState context noTokens] text0
   when (Program.is_pide context) $ Message.reports reports
   return text
 
-reader :: Text -> [Text] -> [State FState] -> [ProofText] -> IO ([ProofText], [Position.Report])
+reader :: Bytes -> [Text] -> [State FState] -> [ProofText] -> IO ([ProofText], [Position.Report])
 reader pathToLibrary doneFiles = go
   where
     go stateList [ProofTextInstr pos (GetArgument (Read pk) file)] = if Text.pack ".." `Text.isInfixOf` file
       then Message.errorParser pos ("Illegal \"..\" in file name: " ++ show file)
-      else go stateList [ProofTextInstr pos $ GetArgument (File pk) $ pathToLibrary <> Text.pack "/" <> file]
+      else go stateList [ProofTextInstr pos $ GetArgument (File pk) $
+            Text.pack (make_string pathToLibrary) <> Text.pack "/" <> file]
 
     go (pState:states) [ProofTextInstr pos (GetArgument (File parserKind') file)]
       | file `elem` doneFiles = do

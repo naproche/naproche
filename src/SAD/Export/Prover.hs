@@ -11,7 +11,6 @@ where
 
 import Control.Monad (when)
 import Data.Maybe (fromJust, isNothing)
-import qualified Data.Text.Lazy as Text
 
 import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
 import qualified Isabelle.Position as Position
@@ -21,12 +20,11 @@ import qualified Isabelle.Process_Result as Process_Result
 import Isabelle.Library
 
 import SAD.Core.Base (reportBracketIO)
-import SAD.Data.Instr hiding (Prover)
+import SAD.Data.Instr
 import SAD.Data.Text.Context (Context, branch)
 import qualified SAD.Data.Text.Block as Block
 
 import qualified SAD.Core.Message as Message
-import qualified SAD.Data.Instr as Instr
 import qualified SAD.Export.TPTP as TPTP
 import qualified SAD.Data.Formula.HOL as HOL
 
@@ -52,10 +50,9 @@ export pos iteration instrs context goal = do
           map Block.kind (head (branch goal) : concatMap branch context)
 
   let
-    proverNameDefault = Text.pack $ make_string $ Prover.get_name Prover.eprover
-    proverName = askArgument Instr.Prover proverNameDefault instrs
+    proverName = askParam proverParam instrs
     prover = do
-      prover <- Prover.find (make_bytes proverName)
+      prover <- Prover.find proverName
       return $
         prover
         |> Prover.timeout (Time.seconds $ fromIntegral timeLimit)

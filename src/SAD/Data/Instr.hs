@@ -16,6 +16,7 @@ module SAD.Data.Instr
   printsimpParam, printthesisParam, unfoldParam, unfoldsfParam, unfoldlowParam, unfoldlowsfParam,
   translationParam, texParam,
   helpParam, serverParam, onlytranslateParam,
+  libraryParam, proverParam, initParam,
   keywordsCommand, keywordsSynonym, keywordsLimit, keywordsFlag, keywordsArgument,
   keywordsDropLimit, keywordsDropFlag, isParserInstruction)
 where
@@ -26,6 +27,7 @@ import Isabelle.Bytes (Bytes)
 import Isabelle.Library
 
 import qualified Naproche.Param as Param
+import qualified Naproche.Prover as Prover
 
 
 -- Instruction types
@@ -69,12 +71,9 @@ data Command =
   deriving (Eq, Ord, Show)
 
 data Argument =
-    Init               --  init file (init.opt)
-  | Text ParserKind    --  literal text
+    Text ParserKind    --  literal text
   | File ParserKind    --  read file
   | Read ParserKind    --  read library file
-  | Library            --  library directory
-  | Prover             --  current prover
   deriving (Eq, Ord, Show)
 
 
@@ -112,8 +111,12 @@ dropInstr _ _ = []
 -- Parameters
 
 allParams :: Param.Env
-allParams = foldr Param.declare (foldr Param.declare Param.empty allLimits) allFlags
-  where allLimits = textLimits; allFlags = textFlags ++ programFlags
+allParams = declare allLimits $ declare allFlags $ declare allArgs Param.empty
+  where
+    declare = flip $ foldr Param.declare
+    allLimits = textLimits
+    allFlags = textFlags ++ programFlags
+    allArgs = textArgs ++ programArgs
 
 textLimits :: [Param.T Int]
 timelimitParam, memorylimitParam, depthlimitParam, checktimeParam, checkdepthParam :: Param.T Int
@@ -161,6 +164,17 @@ textFlags @ [proveParam, checkParam, checkconsistencyParam, symsignParam, infoPa
     Param.flag "translation" "print first-order translation of sentences" False,
     Param.flag "tex" "parse passed file with forthel tex parser" False]
 
+textArgs :: [Param.T Bytes]
+libraryParam, proverParam :: Param.T Bytes
+textArgs @ [libraryParam, proverParam] =
+  [Param.string "library" "place to look for library texts" "examples",
+   Param.string "prover" "use prover NAME" (Prover.get_name Prover.eprover)]
+
+programArgs :: [Param.T Bytes]
+initParam :: Param.T Bytes
+programArgs @ [initParam] =
+  [Param.string "init" "init file, empty to skip" "init.opt"]
+   
 verboseFlags :: [Param.T Bool]
 verboseFlags =
   [printgoalParam,
@@ -196,25 +210,25 @@ keywordsSynonym :: [([Text] -> Instr, Text)]
 keywordsSynonym =
   [(Synonym, "synonym")]
 
-paramName :: Param.T a -> Text
-paramName p = Lazy.pack $ make_string $ Param.name p
+
+paramKeyword :: (Param.T a -> b) -> Param.T a -> (b, Text)
+paramKeyword f p = (f p, Lazy.pack $ make_string $ Param.name p)
 
 keywordsLimit :: [(Int -> Instr, Text)]
-keywordsLimit = map (\p -> (SetInt p, paramName p)) textLimits
+keywordsLimit = map (paramKeyword SetInt) textLimits
 
 keywordsFlag :: [(Bool -> Instr, Text)]
-keywordsFlag = map (\p -> (SetBool p, paramName p)) textFlags
+keywordsFlag = map (paramKeyword SetBool) textFlags
 
 keywordsDropLimit, keywordsDropFlag :: [(Drop, Text)]
-keywordsDropLimit = map (\p -> (DropInt p, paramName p)) textLimits
-keywordsDropFlag = map (\p -> (DropBool p, paramName p)) textFlags
+keywordsDropLimit = map (paramKeyword DropInt) textLimits
+keywordsDropFlag = map (paramKeyword DropBool) textFlags
 
 keywordsArgument :: [(Text -> Instr, Text)]
 keywordsArgument =
  [(GetArgument $ Read NonTex, "read"),
-  (GetArgument $ Read Tex, "readtex"),
-  (GetArgument Library, "library"),
-  (GetArgument Prover, "prover")]
+  (GetArgument $ Read Tex, "readtex")] ++
+  map (paramKeyword (\p -> SetBytes p . make_bytes)) textArgs
 
 -- distinguish between parser and verifier instructions
 
