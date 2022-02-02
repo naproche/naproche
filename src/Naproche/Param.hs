@@ -54,9 +54,9 @@ instance Ord (T a) where compare p p' = compare (name p) (name p')
 description :: T a -> Bytes
 description Param{_descr = a} = a
 
-description_default :: Show a => T a -> Bytes
-description_default Param{_descr = a, _default = x} =
-  a <> " (default: " <> make_bytes (show x) <> ")"
+description_default :: T a -> Bytes
+description_default Param{_descr = a, _print = print, _default = x} =
+  a <> " (default: " <> print x <> ")"
 
 instance Show (T a)
   where show = make_string . name
