@@ -87,21 +87,7 @@ askParam p = Param.get p . foldr instr allParams
     instr (SetBool p x) = Param.put p x
     instr (SetInt p x) = Param.put p x
     instr (SetBytes p x) = Param.put p (make_bytes x)
-    instr (Verbose False) =
-      Param.put printgoalParam False .
-      Param.put printreasonParam False .
-      Param.put printsectionParam False .
-      Param.put printcheckParam False .
-      Param.put printproverParam False .
-      Param.put printunfoldParam False .
-      Param.put printfulltaskParam False
-    instr (Verbose True) =
-      Param.put printgoalParam True .
-      Param.put printreasonParam True .
-      Param.put printcheckParam True .
-      Param.put printproverParam True .
-      Param.put printunfoldParam True .
-      Param.put printfulltaskParam True
+    instr (Verbose b) = \env -> foldr (`Param.put` b) env verboseFlags
     instr _ = id
 
 askArgument :: Argument -> Text -> [Instr] -> Text
@@ -174,6 +160,18 @@ textFlags @ [proveParam, checkParam, checkconsistencyParam, symsignParam, infoPa
     Param.flag "unfoldlowsf" "enable unfolding of class and map conditions in general" False,
     Param.flag "translation" "print first-order translation of sentences" False,
     Param.flag "tex" "parse passed file with forthel tex parser" False]
+
+verboseFlags :: [Param.T Bool]
+verboseFlags =
+  [printgoalParam,
+   printsectionParam,
+   printcheckParam,
+   printunfoldParam,
+   printreasonParam,
+   printproverParam,
+   printfulltaskParam,
+   printsimpParam,
+   printthesisParam]
 
 programFlags :: [Param.T Bool]
 helpParam, serverParam, onlytranslateParam :: Param.T Bool

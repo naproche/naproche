@@ -64,16 +64,8 @@ verify state@VState {thesisMotivated = True, currentThesis = thesis, restProofTe
   verifyLeaf state thesis
 verify state@VState {restProofText = ProofTextChecked txt : rest} =
   let newTxt = Block.setChildren txt (Block.children txt ++ newInstructions)
-      newInstructions = [NonProofTextStoredInstr $
-        SetBool proveParam False :
-        SetBool printgoalParam False :
-        SetBool printreasonParam False :
-        SetBool printsectionParam False :
-        SetBool printcheckParam False :
-        SetBool printproverParam False :
-        SetBool printunfoldParam False :
-        SetBool printfulltaskParam False :
-        instructions state]
+      newInstructions =
+        [NonProofTextStoredInstr (SetBool proveParam False : Verbose False : instructions state)]
   in  setChecked True >> verify state {restProofText = newTxt : rest}
 verify state@VState {restProofText = NonProofTextStoredInstr ins : rest} =
   verify state {restProofText = rest, instructions = ins}
