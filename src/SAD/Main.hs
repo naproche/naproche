@@ -280,19 +280,20 @@ readArgs args = do
 
 usageHeader :: String
 usageHeader =
-  "\nUsage: Naproche-SAD <options...> <file...>\n\n  At most one file argument may be given; \"\" refers to stdin.\n\n  Options are:\n"
+  "\nUsage: Naproche-SAD <options...> <file...>\n\n  At most one file argument may be given; \"\" refers to stdin.\n  The syntax for FLAG is {on|off} or {yes|no}.\n\n  Options are:\n"
 
 optParam :: [Char] -> Param.T a -> GetOpt.ArgDescr b -> String -> GetOpt.OptDescr b
-optParam chars p = GetOpt.Option chars [make_string $ Param.name p]
+optParam chars p = GetOpt.Option chars [name | not (null name)]
+  where name = make_string $ Param.name p
 
 optSwitch :: [Char] -> Param.T Bool -> Bool -> Bytes -> GetOpt.OptDescr Instr
-optSwitch chars p b s = optParam chars p arg s'
+optSwitch chars p b s = optParam chars (if b then p else Param.unnamed p) arg s'
   where arg = GetOpt.NoArg (SetBool p b)
         s' = make_string (if Bytes.null s then Param.description p else s)
 
 optFlag :: [Char] -> Param.T Bool -> GetOpt.OptDescr Instr
 optFlag chars p = optParam chars p arg s
-  where arg = GetOpt.ReqArg (SetBool p . Param.parse p . make_bytes) "{on|off|yes|no}"
+  where arg = GetOpt.ReqArg (SetBool p . Param.parse p . make_bytes) "FLAG"
         s = make_string $ Param.description_default p
 
 optLimit :: [Char] -> Param.T Int -> GetOpt.OptDescr Instr
@@ -323,7 +324,7 @@ options = [
   optSwitch "r" checkParam False "raw mode (equivalent to --check=off)",
   optFlag "" proveParam,
   GetOpt.Option "" ["theory"] (GetOpt.ReqArg (Theory . parseTheory) "{fol|lean|cic}")
-    "Choose the underlying theory (First-Order-Logic, Lean Prover, Calculus of inductive Constructions) (default: \"fol\")",
+    "Choose the underlying theory (First-Order-Logic, Lean Prover, Calculus of inductive Constructions) (default: fol)",
   optFlag "" checkParam,
   optFlag "" symsignParam,
   optFlag "" infoParam,
@@ -353,7 +354,7 @@ parseFlag :: String -> Bool
 parseFlag s =
   case Param.parse_flag (make_bytes s) of
     Just b -> b
-    Nothing -> errorWithoutStackTrace ("Bad flag (on|off|yes|no): " <> quote s)
+    Nothing -> errorWithoutStackTrace ("Bad flag: " <> quote s)
 
 parseNat :: String -> Int
 parseNat s =
