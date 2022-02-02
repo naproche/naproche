@@ -78,7 +78,7 @@ readInstr =
     readInstrSynonym = ap (readKeywords keywordsSynonym) readWords
     readInstrLimit = ap (readKeywords keywordsLimit) readInt
     readInstrBool = ap (readKeywords keywordsFlag) readBool
-    readInstrText = liftM2 GetArgument (readKeywords keywordsArgument) readText
+    readInstrText = ap (readKeywords keywordsArgument) readText
 
 readInt :: FTL Int
 readInt = try $ do

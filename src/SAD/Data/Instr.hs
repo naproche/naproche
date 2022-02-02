@@ -209,12 +209,12 @@ keywordsDropLimit, keywordsDropFlag :: [(Drop, Text)]
 keywordsDropLimit = map (\p -> (DropInt p, paramName p)) textLimits
 keywordsDropFlag = map (\p -> (DropBool p, paramName p)) textFlags
 
-keywordsArgument :: [(Argument, Text)]
+keywordsArgument :: [(Text -> Instr, Text)]
 keywordsArgument =
- [(Read NonTex, "read"),
-  (Read Tex, "readtex"),
-  (Library, "library"),
-  (Prover, "prover")]
+ [(GetArgument $ Read NonTex, "read"),
+  (GetArgument $ Read Tex, "readtex"),
+  (GetArgument Library, "library"),
+  (GetArgument Prover, "prover")]
 
 -- distinguish between parser and verifier instructions
 
