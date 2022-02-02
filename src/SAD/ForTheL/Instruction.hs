@@ -76,8 +76,8 @@ readInstr =
   where
     readInstrCommand = fmap Command (readKeywords keywordsCommand)
     readInstrSynonym = ap (readKeywords keywordsSynonym) readWords
-    readInstrLimit = liftM2 LimitBy (readKeywords keywordsLimit) readInt
-    readInstrBool = liftM2 SetFlag (readKeywords keywordsFlag) readBool
+    readInstrLimit = ap (readKeywords keywordsLimit) readInt
+    readInstrBool = ap (readKeywords keywordsFlag) readBool
     readInstrText = liftM2 GetArgument (readKeywords keywordsArgument) readText
 
 readInt :: FTL Int
@@ -114,8 +114,8 @@ readInstrDrop :: FTL Drop
 readInstrDrop = readInstrCommand -|- readInstrLimit -|- readInstrBool
   where
     readInstrCommand = fmap DropCommand (readKeywords keywordsCommand)
-    readInstrLimit = fmap DropLimit (readKeywords keywordsLimit)
-    readInstrBool = fmap DropFlag (readKeywords keywordsFlag)
+    readInstrLimit = readKeywords keywordsDropLimit
+    readInstrBool = readKeywords keywordsDropFlag
 
 -- | Try to parse the next token as one of the supplied keyword strings
 -- and return the corresponding @a@ on success.

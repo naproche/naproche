@@ -42,7 +42,7 @@ fillDef pos alreadyChecked context = fill True False [] (Just True) 0 (Context.f
       Trm{trmName = TermThesis} -> asks (Context.formula . currentThesis)
 
       v@Var{} -> do
-        userInfoSetting <- askInstructionBool Info True
+        userInfoSetting <- askInstructionParam infoParam
         newContext      <- cnRaise context localContext
         collectInfo userInfoSetting v `withContext` newContext -- fortify the term
 
@@ -50,7 +50,7 @@ fillDef pos alreadyChecked context = fill True False [] (Just True) 0 (Context.f
         if alreadyChecked
           then return term
           else do
-            userInfoSetting <- askInstructionBool Info True
+            userInfoSetting <- askInstructionParam infoParam
             fortifiedArgs   <- mapM (fill False isNewWord localContext sign n) tArgs
             newContext      <- cnRaise context localContext
             fortifiedTerm   <- setDef pos isNewWord context term{trmArgs = fortifiedArgs} `withContext` newContext
@@ -108,7 +108,7 @@ a task to an ATP.
 -}
 testDef :: Position.T -> Context -> Formula -> (Guards, FortifiedTerm) -> VerifyMonad Formula
 testDef pos context term (guards, fortifiedTerm) = do
-  userCheckSetting <- askInstructionBool Check True
+  userCheckSetting <- askInstructionParam checkParam
   if   userCheckSetting
   then setup $ easyCheck >>= hardCheck >> return fortifiedTerm
   else return fortifiedTerm
@@ -126,8 +126,8 @@ testDef pos context term (guards, fortifiedTerm) = do
 
     setup :: VerifyMonad a -> VerifyMonad a
     setup action = do
-      timelimit <- LimitBy Timelimit <$> askInstructionInt Checktime 1
-      depthlimit <- LimitBy Depthlimit <$> askInstructionInt Checkdepth 3
+      timelimit <- SetInt timelimitParam <$> askInstructionParam checktimeParam
+      depthlimit <- SetInt depthlimitParam <$> askInstructionParam checkdepthParam
       addInstruction timelimit $ addInstruction depthlimit action
 
     wipeLink context =
@@ -140,7 +140,7 @@ testDef pos context term (guards, fortifiedTerm) = do
     thead [] = ""; thead guards = "(trivial: " <> format guards <> ")"
     format guards = if null guards then " - " else unwords . map show $ guards
     defLog =
-      whenInstruction Printcheck False .
+      whenInstruction printcheckParam .
         reasonLog Message.WRITELN (Block.position (head $ Context.branch context))
 
 

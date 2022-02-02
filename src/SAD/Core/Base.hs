@@ -35,7 +35,7 @@ module SAD.Core.Base
   , showTimeDiff
   , timeWith
 
-  , askInstructionInt, askInstructionBool, askInstructionText
+  , askInstructionParam, askInstructionArgument
   , addInstruction, dropInstruction
   , addToTimer, addToCounter, incrementCounter
   , guardInstruction, guardNotInstruction, whenInstruction
@@ -71,6 +71,7 @@ import qualified Isabelle.Markup as Markup
 import qualified Isabelle.Position as Position
 import Isabelle.Library (BYTES, make_bytes)
 
+import qualified Naproche.Param as Param
 
 
 -- | Reasoner state
@@ -187,16 +188,11 @@ readRState f = justRS >>= (justIO . fmap f . readIORef)
 modifyRState :: (RState -> RState) -> VerifyMonad ()
 modifyRState f = justRS >>= (justIO . flip modifyIORef f)
 
-askInstructionInt :: Limit -> Int -> VerifyMonad Int
-askInstructionInt instr _default =
-  asks (askLimit instr _default . instructions)
+askInstructionParam :: Param.T a -> VerifyMonad a
+askInstructionParam p = asks (askParam p . instructions)
 
-askInstructionBool :: Flag -> Bool -> VerifyMonad Bool
-askInstructionBool instr _default =
-  asks (askFlag instr _default . instructions)
-
-askInstructionText :: Argument -> Text -> VerifyMonad Text
-askInstructionText instr _default =
+askInstructionArgument :: Argument -> Text -> VerifyMonad Text
+askInstructionArgument instr _default =
   asks (askArgument instr _default . instructions)
 
 addInstruction :: Instr -> VerifyMonad a -> VerifyMonad a
@@ -277,17 +273,15 @@ showTimeDiff t =
     (hours,   restMinutes) = divMod minutes 60
 
 
-guardInstruction :: Flag -> Bool -> VerifyMonad ()
-guardInstruction instr _default =
-  askInstructionBool instr _default >>= guard
+guardInstruction :: Param.T Bool -> VerifyMonad ()
+guardInstruction p = askInstructionParam p >>= guard
 
-guardNotInstruction :: Flag -> Bool -> VerifyMonad ()
-guardNotInstruction instr _default =
-  askInstructionBool instr _default >>= guard . not
+guardNotInstruction :: Param.T Bool -> VerifyMonad ()
+guardNotInstruction p = askInstructionParam p >>= guard . not
 
-whenInstruction :: Flag -> Bool -> VerifyMonad () -> VerifyMonad ()
-whenInstruction instr _default action =
-  askInstructionBool instr _default >>= \b -> when b action
+whenInstruction :: Param.T Bool -> VerifyMonad () -> VerifyMonad ()
+whenInstruction p action = askInstructionParam p >>= \b -> when b action
+
 
 -- explicit failure management
 

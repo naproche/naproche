@@ -34,7 +34,7 @@ import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
 import SAD.Core.Base
 import SAD.Data.Definition
 import SAD.Data.Formula
-import SAD.Data.Instr (Limit(..), Flag(..))
+import SAD.Data.Instr
 import SAD.Data.Text.Context (Context(Context))
 import SAD.Data.Text.Decl (newDecl)
 import qualified SAD.Export.Prover as Prover
@@ -69,7 +69,7 @@ proveThesis' pos tc =
   
 proveThesis :: Position.T -> VerifyMonad ()
 proveThesis pos = do
-  depthlimit <- askInstructionInt Depthlimit 3
+  depthlimit <- askInstructionParam depthlimitParam
   guard (depthlimit > 0) -- Fallback to defaulting of the underlying CPS Maybe monad.
   context <- asks currentContext
   thesis <- asks currentThesis
@@ -101,11 +101,11 @@ proveGoals pos depthlimit = prove 0
             prove (iteration + 1) [newGoal] `withContext` newContext
 
         warnDepthExceeded =
-          whenInstruction Printreason False $
+          whenInstruction printreasonParam $
             reasonLog Message.WARNING pos "reasoning depth exceeded"
 
         updateTrivialStatistics =
-          unless (isTop goal) $ whenInstruction Printreason False $ do
+          unless (isTop goal) $ whenInstruction printreasonParam $ do
             reasonLog Message.WRITELN pos ("trivial: " <> show goal)
             incrementCounter TrivialGoals
 
@@ -125,7 +125,7 @@ normalizedSplit = split . albet
 
 launchProver :: Position.T -> Int -> VerifyMonad ()
 launchProver pos iteration = do
-  whenInstruction Printfulltask False printTask
+  whenInstruction printfulltaskParam printTask
   instrList <- asks instructions
   goal <- asks currentThesis
   context <- asks currentContext
@@ -147,7 +147,7 @@ launchProver pos iteration = do
 
     guardResult Prover.Success = pure ()
     guardResult Prover.Contradictory_Axioms = do
-      checkConsistency <- askInstructionBool CheckConsistency True
+      checkConsistency <- askInstructionParam checkconsistencyParam
       if checkConsistency then do
         reasonLog Message.WRITELN pos "Found contradictory axioms. Make sure you are in a proof by contradiction!"
         mzero
@@ -268,10 +268,10 @@ unfold pos = do
   let task = Context.setFormula thesis (Not $ Context.formula thesis) : context
   definitions <- asks definitions
   evaluations <- asks evaluations
-  generalUnfoldSetting <- askInstructionBool Unfold True
-  lowlevelUnfoldSetting <- askInstructionBool Unfoldlow True
-  generalSetUnfoldSetting <- askInstructionBool Unfoldsf True
-  lowlevelSetUnfoldSetting <- askInstructionBool Unfoldlowsf False
+  generalUnfoldSetting <- askInstructionParam unfoldParam
+  lowlevelUnfoldSetting <- askInstructionParam unfoldlowParam
+  generalSetUnfoldSetting <- askInstructionParam unfoldsfParam
+  lowlevelSetUnfoldSetting <- askInstructionParam unfoldlowsfParam
   guard (generalUnfoldSetting || generalSetUnfoldSetting)
   let (goal : toUnfold, topLevelContext) = span Context.isLowLevel task
       unfoldState = UF
@@ -293,10 +293,10 @@ unfold pos = do
   return $ newLowLevelContext ++ topLevelContext
   where
     nothingToUnfold =
-      whenInstruction Printunfold False $ reasonLog Message.WRITELN pos "nothing to unfold"
+      whenInstruction printunfoldParam $ reasonLog Message.WRITELN pos "nothing to unfold"
 
     unfoldLog (goal:lowLevelContext) =
-      whenInstruction Printunfold False $ reasonLog Message.WRITELN pos $ "unfold to:\n"
+      whenInstruction printunfoldParam $ reasonLog Message.WRITELN pos $ "unfold to:\n"
         <> unlines (reverse $ map ((<>) "  " . show . Context.formula) lowLevelContext)
         <> "  |- " <> show (neg $ Context.formula goal)
 

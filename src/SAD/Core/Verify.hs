@@ -65,14 +65,14 @@ verify state@VState {thesisMotivated = True, currentThesis = thesis, restProofTe
 verify state@VState {restProofText = ProofTextChecked txt : rest} =
   let newTxt = Block.setChildren txt (Block.children txt ++ newInstructions)
       newInstructions = [NonProofTextStoredInstr $
-        SetFlag Prove False :
-        SetFlag Printgoal False :
-        SetFlag Printreason False :
-        SetFlag Printsection False :
-        SetFlag Printcheck False :
-        SetFlag Printprover False :
-        SetFlag Printunfold False :
-        SetFlag Printfulltask False :
+        SetBool proveParam False :
+        SetBool printgoalParam False :
+        SetBool printreasonParam False :
+        SetBool printsectionParam False :
+        SetBool printcheckParam False :
+        SetBool printproverParam False :
+        SetBool printunfoldParam False :
+        SetBool printfulltaskParam False :
         instructions state]
   in  setChecked True >> verify state {restProofText = newTxt : rest}
 verify state@VState {restProofText = NonProofTextStoredInstr ins : rest} =
@@ -114,13 +114,13 @@ verifyBranch state block rest = local (const state) $ do
 
   -- statistics and user communication
   unless alreadyChecked $ incrementCounter Sections
-  whenInstruction Printsection False $ justIO $
+  whenInstruction printsectionParam $ justIO $
     Message.outputForTheL Message.WRITELN (Block.position block) $
     make_bytes (trim_line (Block.showForm 0 block ""))
   let newBranch = block : branch
   let contextBlock = Context f newBranch []
 
-  whenInstruction Translation False $
+  whenInstruction translationParam $
     unless (Block.isTopLevel block) $
       translateLog Message.WRITELN (Block.position block) $ Text.pack $ show f
 
@@ -139,12 +139,12 @@ verifyBranch state block rest = local (const state) $ do
     let freshThesis = Context proofTask newBranch []
     let toBeProved = Block.needsProof block && not (Block.isTopLevel block)
     proofBody <- do
-      flat <- askInstructionBool Flat False
+      flat <- askInstructionParam flatParam
       if flat
         then return []
         else return body
 
-    whenInstruction Printthesis False $ when (
+    whenInstruction printthesisParam $ when (
       toBeProved && notNull proofBody &&
       not (hasDEC $ Context.formula freshThesis)) $
         thesisLog Message.WRITELN (Block.position block) (length branch - 1) $
@@ -162,7 +162,7 @@ verifyBranch state block rest = local (const state) $ do
 
     -- in what follows we prepare the current block to contribute to the context,
     -- extract rules, definitions and compute the new thesis
-    thesisSetting <- askInstructionBool Thesis True
+    thesisSetting <- askInstructionParam thesisParam
     let newBlock = block {
           Block.formula = deleteInductionOrCase fortifiedFormula,
           Block.body = fortifiedProof }
@@ -187,7 +187,7 @@ verifyBranch state block rest = local (const state) $ do
               then inferNewThesis defs newContext thesis
               else (Block.needsProof block, False, thesis)
 
-      whenInstruction Printthesis False $ when (
+      whenInstruction printthesisParam $ when (
         hasChanged && motivated && newMotivation &&
         not (hasDEC $ Block.formula $ head branch) ) $
           thesisLog Message.WRITELN (Block.position block) (length branch - 2) $
@@ -225,19 +225,19 @@ verifyBranch state block rest = local (const state) $ do
 
 -- no text to be read in a branch: prove thesis
 verifyLeaf :: VState -> Context -> Verify
-verifyLeaf state thesis = local (const state) $ whenInstruction Prove True prove >> return ([], [])
+verifyLeaf state thesis = local (const state) $ whenInstruction proveParam prove >> return ([], [])
   where
     prove = do
       let block = Context.head thesis
       let text = Text.unpack $ Block.text block
       let pos = Block.position block
-      whenInstruction Printgoal True $ reasonLog Message.TRACING pos $ "goal: " <> text
+      whenInstruction printgoalParam $ reasonLog Message.TRACING pos $ "goal: " <> text
       if hasDEC (Context.formula thesis) --computational reasoning
         then do
           incrementCounter Equations
           timeWith SimplifyTimer (equalityReasoning pos thesis) <|> (
             reasonLog Message.WARNING pos "equation failed" >> setFailed >>
-            guardInstruction Skipfail False >> incrementCounter FailedEquations)
+            guardInstruction skipfailParam >> incrementCounter FailedEquations)
         else do
           unless (isTop . Context.formula $ thesis) $ incrementCounter Goals
           proveThesis pos <|> (
@@ -276,7 +276,7 @@ verifyProof state@VState {
       let newRules = extractRewriteRule (head newContext) ++ rules
           (_, _, newThesis) =
             inferNewThesis (definitions state) newContext $ Context.setFormula thesis f
-      whenInstruction Printthesis False $ when (
+      whenInstruction printthesisParam $ when (
         noInductionOrCase (Context.formula newThesis) && not (null $ restProofText state)) $
           thesisLog Message.WRITELN
           (Block.position $ head $ Context.branch $ head context) (length branch - 2) $
@@ -331,23 +331,6 @@ procProofTextInstr pos = flip process $ ask >>= verify
         concatMap (\form -> "  " <> show (Context.formula form) <> "\n") (reverse topLevelContext)
 
     process (Command _) = (>>) $ reasonLog Message.WRITELN pos "unsupported instruction"
-
-    process (SetFlag Verbose False) =
-      addInstruction (SetFlag Printgoal False) .
-      addInstruction (SetFlag Printreason False) .
-      addInstruction (SetFlag Printsection False) .
-      addInstruction (SetFlag Printcheck False) .
-      addInstruction (SetFlag Printprover False) .
-      addInstruction (SetFlag Printunfold False) .
-      addInstruction (SetFlag Printfulltask False)
-
-    process (SetFlag Verbose True) =
-      addInstruction (SetFlag Printgoal True) .
-      addInstruction (SetFlag Printreason True) .
-      addInstruction (SetFlag Printcheck True) .
-      addInstruction (SetFlag Printprover True) .
-      addInstruction (SetFlag Printunfold True) .
-      addInstruction (SetFlag Printfulltask True)
 
     process i
       | isParserInstruction i = id

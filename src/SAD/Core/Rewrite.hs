@@ -156,7 +156,7 @@ generateConditions pos verbositySetting rules w l r =
 {- applies computational reasoning to an equality chain -}
 equalityReasoning :: Position.T -> Context -> VerifyMonad ()
 equalityReasoning pos thesis
-  | body = whenInstruction Printreason False $ reasonLog Message.WRITELN pos "equality chain concluded"
+  | body = whenInstruction printreasonParam $ reasonLog Message.WRITELN pos "equality chain concluded"
   | notNull link = getLinkedRules pos link >>= rewrite pos equation
   | otherwise = rules >>= rewrite pos equation -- if no link is given -> all rules
   where
@@ -193,7 +193,7 @@ rules = asks rewriteRules
 and compares the resulting normal forms -}
 rewrite :: Position.T -> Formula -> [Rule] -> VerifyMonad ()
 rewrite pos Trm {trmName = TermEquality, trmArgs = [l,r]} rules = do
-  verbositySetting <- askInstructionBool Printsimp False
+  verbositySetting <- askInstructionParam printsimpParam
   conditions <- generateConditions pos verbositySetting rules (>) l r;
   mapM_ (dischargeConditions pos verbositySetting . fst) conditions
 rewrite _ _ _ = error "SAD.Core.Rewrite.rewrite: non-equation argument"
@@ -217,8 +217,8 @@ dischargeConditions pos verbositySetting conditions =
 
     setup :: VerifyMonad a -> VerifyMonad a
     setup action = do
-      timelimit <- LimitBy Timelimit <$> askInstructionInt Checktime 1
-      depthlimit <- LimitBy Depthlimit <$> askInstructionInt Checkdepth 3
+      timelimit <- SetInt timelimitParam <$> askInstructionParam checktimeParam
+      depthlimit <- SetInt depthlimitParam <$> askInstructionParam checkdepthParam
       addInstruction timelimit $ addInstruction depthlimit action
 
     header select conditions = "condition: " <> format (select conditions)

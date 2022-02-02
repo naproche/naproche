@@ -9,8 +9,9 @@ Typed parameters, stored via plain bytes.
 
 module Naproche.Param (
   print_flag, parse_flag,
-  T, name, description, bool, flag, nat, int, real, string,
-  Env, empty, declare, get, put, input, restore
+  T, name, description, description_default,
+  bool, flag, nat, int, real, string,
+  Env, empty, declare, parse, get, put, input, restore
 )
 where
 
@@ -41,14 +42,21 @@ data T a = Param {
   _print :: a -> Bytes,
   _parse :: Bytes -> Maybe a,
   _name :: Bytes,
-  _description :: Bytes,
+  _descr :: Bytes,
   _default :: a }
 
 name :: T a -> Bytes
 name Param{_name = a} = a
 
+instance Eq (T a) where p == p' = name p == name p'
+instance Ord (T a) where compare p p' = compare (name p) (name p')
+
 description :: T a -> Bytes
-description Param{_description = a} = a
+description Param{_descr = a} = a
+
+description_default :: Show a => T a -> Bytes
+description_default Param{_descr = a, _default = x} =
+  a <> " (default: " <> make_bytes (show x) <> ")"
 
 instance Show (T a)
   where show = make_string . name
