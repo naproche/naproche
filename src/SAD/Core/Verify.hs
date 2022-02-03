@@ -76,8 +76,31 @@ verify state@VState {restProofText = NonProofTextStoredInstr ins : rest} =
 -- verification state and those that influence (at most) the global state
 verify state@VState {restProofText = p@(ProofTextInstr pos instr) : rest} =
   pushProofText p <$>
-    local (const state {restProofText = rest})
-      (procProofTextInstr (Position.no_range_position pos) instr)
+    local (const state {restProofText = rest}) (processInstr (ask >>= verify))
+  where
+    processInstr :: Verify -> Verify
+    processInstr =
+      case instr of
+        Command RULES -> (>>) $ do
+          rules <- asks rewriteRules
+          message $ "current ruleset: " <> "\n" <> unlines (map show (reverse rules))
+        Command THESIS -> (>>) $ do
+          motivated <- asks thesisMotivated; thesis <- asks currentThesis
+          let motivation = if motivated then "(motivated): " else "(not motivated): "
+          message $ "current thesis " <> motivation <> show (Context.formula thesis)
+        Command CONTEXT -> (>>) $ do
+          context <- asks currentContext
+          message $ "current context:\n" <>
+            concatMap (\form -> "  " <> show (Context.formula form) <> "\n") (reverse context)
+        Command FILTER -> (>>) $ do
+          context <- asks currentContext
+          let topLevelContext = filter Context.isTopLevel context
+          message $ "current filtered top-level context:\n" <>
+            concatMap (\form -> "  " <> show (Context.formula form) <> "\n") (reverse topLevelContext)
+        Command _ -> (>>) $ message "unsupported instruction"
+        _ -> if isParserInstruction instr then id else addInstruction instr
+    message :: String -> VerifyMonad ()
+    message msg = reasonLog Message.WRITELN (Position.no_range_position pos) msg
 {- process a command to drop an instruction, i.e. [/prove], etc.-}
 verify state@VState {restProofText = (p@(ProofTextDrop _ instr) : rest)} =
   pushProofText p <$>
@@ -298,36 +321,3 @@ deleteInductionOrCase = dive id
     dive c (Imp f g) = dive (c . Imp f) g
     dive c (All v f) = dive (c . All v) f
     dive c f = c f
-
-
--- Instruction handling
-
-{- execute an instruction or add an instruction parameter to the state -}
-procProofTextInstr :: Position.T -> Instr -> Verify
-procProofTextInstr pos = flip process $ ask >>= verify
-  where
-    process :: Instr -> Verify -> Verify
-    process (Command RULES) = (>>) $ do
-      rules <- asks rewriteRules
-      reasonLog Message.WRITELN pos $
-        "current ruleset: " <> "\n" <> unlines (map show (reverse rules))
-    process (Command THESIS) = (>>) $ do
-      motivated <- asks thesisMotivated; thesis <- asks currentThesis
-      let motivation = if motivated then "(motivated): " else "(not motivated): "
-      reasonLog Message.WRITELN pos $
-        "current thesis " <> motivation <> show (Context.formula thesis)
-    process (Command CONTEXT) = (>>) $ do
-      context <- asks currentContext
-      reasonLog Message.WRITELN pos $ "current context:\n" <>
-        concatMap (\form -> "  " <> show (Context.formula form) <> "\n") (reverse context)
-    process (Command FILTER) = (>>) $ do
-      context <- asks currentContext
-      let topLevelContext = filter Context.isTopLevel context
-      reasonLog Message.WRITELN pos $ "current filtered top-level context:\n" <>
-        concatMap (\form -> "  " <> show (Context.formula form) <> "\n") (reverse topLevelContext)
-
-    process (Command _) = (>>) $ reasonLog Message.WRITELN pos "unsupported instruction"
-
-    process i
-      | isParserInstruction i = id
-      | otherwise = addInstruction i
