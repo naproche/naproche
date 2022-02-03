@@ -1,5 +1,5 @@
 {-
-Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
+Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018), Makarius Wenzel (2021 - 2022)
 
 Main verification loop.
 -}
@@ -126,7 +126,7 @@ verifyBranch state block rest = local (const state) $ do
       evaluations     = evaluations } = state
 
   let Block f body kind _ _ _ _ = block
-  
+
   alreadyChecked <- readRState alreadyChecked
 
   -- statistics and user communication
@@ -277,13 +277,11 @@ verifyProof state@VState {
   where
     dive :: (Formula -> Formula) -> [Context] -> Formula -> Verify
     dive construct context (Imp (Tag InductionHypothesis f) g)
-      | isClosed f =
-          process (Context.setFormula thesis f : context) (construct g)
+      | isClosed f = process (Context.setFormula thesis f : context) (construct g)
     dive construct context (Imp (Tag Tag.CaseHypothesis f) g)
-      | isClosed f =
-          process (thesis {Context.formula = f} : context) (construct g)
-    dive construct context (Imp f g)   = dive (construct . Imp f) context g
-    dive construct context (All v f)   = dive (construct . All v) context f
+      | isClosed f = process (thesis {Context.formula = f} : context) (construct g)
+    dive construct context (Imp f g) = dive (construct . Imp f) context g
+    dive construct context (All v f) = dive (construct . All v) context f
     dive construct context (Tag tag f) = dive (construct . Tag tag) context f
     dive _ _ _ = verify state
 
