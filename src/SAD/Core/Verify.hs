@@ -72,36 +72,34 @@ verify state@VState {restProofText = ProofTextChecked txt : rest} =
   in  setChecked True >> verify state {restProofText = newTxt : rest}
 verify state@VState {restProofText = NonProofTextStoredInstr ins : rest} =
   verify state {restProofText = rest, instructions = ins}
--- process instructions. we distinguish between those that influence the
--- verification state and those that influence (at most) the global state
-verify state@VState {restProofText = p@(ProofTextInstr pos instr) : rest} =
-  pushProofText p <$>
-    local (const state {restProofText = rest}) (processInstr (ask >>= verify))
+verify state@VState {restProofText = p@(ProofTextInstr pos (Command cmd)) : rest} =
+  pushProofText p <$> local (const state {restProofText = rest}) (command cmd >> ask >>= verify)
   where
-    processInstr :: Verify -> Verify
-    processInstr =
-      case instr of
-        Command RULES -> (>>) $ do
-          rules <- asks rewriteRules
-          message $ "current ruleset: " <> "\n" <> unlines (map show (reverse rules))
-        Command THESIS -> (>>) $ do
-          motivated <- asks thesisMotivated; thesis <- asks currentThesis
-          let motivation = if motivated then "(motivated): " else "(not motivated): "
-          message $ "current thesis " <> motivation <> show (Context.formula thesis)
-        Command CONTEXT -> (>>) $ do
-          context <- asks currentContext
-          message $ "current context:\n" <>
-            concatMap (\form -> "  " <> show (Context.formula form) <> "\n") (reverse context)
-        Command FILTER -> (>>) $ do
-          context <- asks currentContext
-          let topLevelContext = filter Context.isTopLevel context
-          message $ "current filtered top-level context:\n" <>
-            concatMap (\form -> "  " <> show (Context.formula form) <> "\n") (reverse topLevelContext)
-        Command _ -> (>>) $ message "unsupported instruction"
-        _ -> if isParserInstruction instr then id else addInstruction instr
+    command :: Command -> VerifyMonad ()
+    command RULES = do
+      rules <- asks rewriteRules
+      message $ "current ruleset: " <> "\n" <> unlines (map show (reverse rules))
+    command THESIS = do
+      motivated <- asks thesisMotivated; thesis <- asks currentThesis
+      let motivation = if motivated then "(motivated): " else "(not motivated): "
+      message $ "current thesis " <> motivation <> show (Context.formula thesis)
+    command CONTEXT = do
+      context <- asks currentContext
+      message $ "current context:\n" <>
+        concatMap (\form -> "  " <> show (Context.formula form) <> "\n") (reverse context)
+    command FILTER = do
+      context <- asks currentContext
+      let topLevelContext = filter Context.isTopLevel context
+      message $ "current filtered top-level context:\n" <>
+        concatMap (\form -> "  " <> show (Context.formula form) <> "\n") (reverse topLevelContext)
+    command _ = do
+      message "unsupported instruction"
     message :: String -> VerifyMonad ()
     message msg = reasonLog Message.WRITELN (Position.no_range_position pos) msg
-{- process a command to drop an instruction, i.e. [/prove], etc.-}
+verify state@VState {restProofText = p@(ProofTextInstr _ instr) : rest} =
+  pushProofText p <$>
+    local (const state {restProofText = rest})
+      ((if isParserInstruction instr then id else addInstruction instr) (ask >>= verify))
 verify state@VState {restProofText = (p@(ProofTextDrop _ instr) : rest)} =
   pushProofText p <$>
     local (const state {restProofText = rest}) (dropInstruction instr (ask >>= verify))
