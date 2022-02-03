@@ -57,6 +57,9 @@ verifyRoot filePos reasonerState text = do
 -- verify, verifyBranch, verifyLeaf, verifyProof
 type Verify = VerifyMonad ([ProofText], [ProofText])
 
+pushProofText :: ProofText -> ([ProofText], [ProofText]) -> ([ProofText], [ProofText])
+pushProofText p (as, bs) = (as, p : bs)
+
 verify :: VState -> Verify
 verify state@VState {restProofText = ProofTextBlock block : rest} =
   verifyBranch state block rest
@@ -71,19 +74,20 @@ verify state@VState {restProofText = NonProofTextStoredInstr ins : rest} =
   verify state {restProofText = rest, instructions = ins}
 -- process instructions. we distinguish between those that influence the
 -- verification state and those that influence (at most) the global state
-verify state@VState {restProofText = i@(ProofTextInstr pos instr) : rest} =
-  fmap (\(as,bs) -> (as, i:bs)) $
-    local (const state {restProofText = rest}) $ procProofTextInstr (Position.no_range_position pos) instr
+verify state@VState {restProofText = p@(ProofTextInstr pos instr) : rest} =
+  pushProofText p <$>
+    local (const state {restProofText = rest})
+      (procProofTextInstr (Position.no_range_position pos) instr)
 {- process a command to drop an instruction, i.e. [/prove], etc.-}
-verify state@VState {restProofText = (i@(ProofTextDrop _ instr) : rest)} =
-  fmap (\(as,bs) -> (as, i:bs)) $
-    local (const state {restProofText = rest}) $ procProofTextDrop instr
-verify state@VState {restProofText = (i@ProofTextSynonym{} : rest)} =
-  fmap (\(as,bs) -> (as, i:bs)) $ verify state {restProofText = rest}
-verify state@VState {restProofText = (i@ProofTextPretyping{} : rest)} =
-  fmap (\(as,bs) -> (as, i:bs)) $ verify state {restProofText = rest}
-verify state@VState {restProofText = (i@ProofTextMacro{} : rest)} =
-  fmap (\(as,bs) -> (as, i:bs)) $ verify state {restProofText = rest}
+verify state@VState {restProofText = (p@(ProofTextDrop _ instr) : rest)} =
+  pushProofText p <$>
+    local (const state {restProofText = rest}) (dropInstruction instr (ask >>= verify))
+verify state@VState {restProofText = (p@ProofTextSynonym{} : rest)} =
+  pushProofText p <$> verify state {restProofText = rest}
+verify state@VState {restProofText = (p@ProofTextPretyping{} : rest)} =
+  pushProofText p <$> verify state {restProofText = rest}
+verify state@VState {restProofText = (p@ProofTextMacro{} : rest)} =
+  pushProofText p <$> verify state {restProofText = rest}
 verify VState {restProofText = []} = return ([], [])
 
 verifyBranch :: VState -> Block -> [ProofText] -> Verify
@@ -327,7 +331,3 @@ procProofTextInstr pos = flip process $ ask >>= verify
     process i
       | isParserInstruction i = id
       | otherwise = addInstruction i
-
-{- drop an instruction from the state -}
-procProofTextDrop :: Drop -> Verify
-procProofTextDrop = flip dropInstruction $ ask >>= verify
