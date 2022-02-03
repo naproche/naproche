@@ -20,7 +20,7 @@ public option naproche_server_debugging : bool = false
 public option naproche_print_thesis : bool = true
   -- "print thesis development"
 
-public option naproche_translate : bool = true
+public option naproche_translation : bool = true
   -- "print first-order translations"
 
 public option naproche_isabelle : bool = false

@@ -10,7 +10,7 @@ sig
   val naproche_check: bool Config.T
   val naproche_skipfail: bool Config.T
   val naproche_print_thesis: bool Config.T
-  val naproche_translate: bool Config.T
+  val naproche_translation: bool Config.T
   val naproche_isabelle: bool Config.T
   type state
   val get_theory: state -> theory
@@ -52,7 +52,7 @@ val naproche_prove = Attrib.setup_option_bool (\<^system_option>\<open>naproche_
 val naproche_check = Attrib.setup_option_bool (\<^system_option>\<open>naproche_check\<close>, \<^here>);
 val naproche_skipfail = Attrib.setup_option_bool (\<^system_option>\<open>naproche_skipfail\<close>, \<^here>);
 val naproche_print_thesis = Attrib.setup_option_bool (\<^system_option>\<open>naproche_print_thesis\<close>, \<^here>);
-val naproche_translate = Attrib.setup_option_bool (\<^system_option>\<open>naproche_translate\<close>, \<^here>);
+val naproche_translation = Attrib.setup_option_bool (\<^system_option>\<open>naproche_translation\<close>, \<^here>);
 val naproche_isabelle = Attrib.setup_option_bool (\<^system_option>\<open>naproche_isabelle\<close>, \<^here>);
 
 fun naproche_options ctxt pos =
@@ -206,7 +206,7 @@ fun forthel_args ctxt {tex} =
     "--check=" ^ bool_option naproche_check,
     "--skipfail=" ^ bool_option naproche_skipfail,
     "--printthesis=" ^ bool_option naproche_print_thesis,
-    "--translate=" ^ bool_option naproche_translate]
+    "--translation=" ^ bool_option naproche_translation]
   end;
 
 fun check_forthel tex (text, pos) thy =
