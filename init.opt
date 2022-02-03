@@ -1,3 +1,2 @@
-# This file may contain global options (as standard prelude).
-
+# Prelude of global options
 [checkconsistency off]
