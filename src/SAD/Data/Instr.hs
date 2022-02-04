@@ -97,7 +97,7 @@ askTheory d is = head $ [ t | Theory t <- is] ++ [d]
 
 -- Drop
 
--- | Drop an @Instr@ from the @[Instr]@ (assuming the latter doesn't contain duplicates)
+-- | Drop the latest corresponding @Instr@ entry in the @[Instr]@
 dropInstr :: Drop -> [Instr] -> [Instr]
 dropInstr (DropCommand m) (Command n : rs) | n == m = rs
 dropInstr (DropBool p) (SetBool p' _ : rs) | p == p' = rs
