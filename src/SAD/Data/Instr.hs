@@ -7,8 +7,8 @@ Instruction datatype and core functions.
 {-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Data.Instr
-  (UnderlyingTheory(..), ParserKind(..), Instr(..), Drop(..), Command(..), Argument(..),
-  askParam, askArgument, askTheory, dropInstr,
+  (ParserKind(..), Instr(..), Drop(..), Command(..), Argument(..),
+  askParam, askArgument, dropInstr,
   timelimitParam, memorylimitParam, depthlimitParam, checktimeParam, checkdepthParam,
   proveParam, checkParam, checkconsistencyParam, symsignParam, infoParam, thesisParam,
   filterParam, skipfailParam, flatParam, printgoalParam, printsectionParam, printcheckParam,
@@ -16,7 +16,7 @@ module SAD.Data.Instr
   printsimpParam, printthesisParam, unfoldParam, unfoldsfParam, unfoldlowParam, unfoldlowsfParam,
   translationParam, texParam,
   helpParam, serverParam, onlytranslateParam,
-  libraryParam, proverParam, initParam,
+  libraryParam, proverParam, initParam, theoryParam,
   keywordsCommand, keywordsSynonym, keywordsLimit, keywordsFlag, keywordsArgument,
   keywordsDropLimit, keywordsDropFlag, isParserInstruction)
 where
@@ -32,9 +32,6 @@ import qualified Naproche.Prover as Prover
 
 -- Instruction types
 
-data UnderlyingTheory = FirstOrderLogic | CiC | Lean
-  deriving (Eq, Ord, Show)
-
 -- | Indicate which of the parsers is currently used. This is must be recorded in the State
 -- for read instruction to work properly.
 data ParserKind = NonTex | Tex deriving (Eq, Ord, Show)
@@ -46,7 +43,6 @@ data Instr =
   | SetInt (Param.T Int) Int
   | SetBytes (Param.T Bytes) Bytes
   | GetArgument Argument Text
-  | Theory UnderlyingTheory
   | Verbose Bool
   deriving (Eq, Ord, Show)
 
@@ -92,8 +88,6 @@ askParam p = Param.get p . foldr instr allParams
 askArgument :: Argument -> Text -> [Instr] -> Text
 askArgument i d is  = head $ [ v | GetArgument j v <- is, i == j ] ++ [d]
 
-askTheory :: UnderlyingTheory -> [Instr] -> UnderlyingTheory
-askTheory d is = head $ [ t | Theory t <- is] ++ [d]
 
 -- Drop
 
@@ -171,9 +165,10 @@ textArgs @ [libraryParam, proverParam] =
    Param.string "prover" "use prover NAME" (Prover.get_name Prover.eprover)]
 
 programArgs :: [Param.T Bytes]
-initParam :: Param.T Bytes
-programArgs @ [initParam] =
-  [Param.string "init" "init file, empty to skip" "init.opt"]
+initParam, theoryParam :: Param.T Bytes
+programArgs @ [initParam, theoryParam] =
+  [Param.string "init" "init file, empty to skip" "init.opt",
+   Param.string "theory" "choose the underlying theory" "fol"]
    
 verboseFlags :: [Param.T Bool]
 verboseFlags =

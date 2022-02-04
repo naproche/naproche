@@ -154,16 +154,17 @@ mainBody cache opts0 text0 fileArg = do
   txts <- readProofText (askParam libraryParam opts0) text0
   let text1 = ProofTextRoot txts
 
-  case askTheory FirstOrderLogic opts0 of
-    FirstOrderLogic -> do
+  case map toLower $make_string $ askParam theoryParam opts0 of
+    "fol" -> do
       -- if -T / --onlytranslate is passed as an option, only print the translated text
       if askParam onlytranslateParam opts0
         then do { showTranslation txts startTime; return 0 }
         else do
           success <- proveFOL text1 opts0 oldProofText cache startTime fileArg
           return (if success then 0 else 1)
-    CiC -> return 0
-    Lean -> do { exportLean text1; return 0 }
+    "cic" -> return 0
+    "lean" -> do { exportLean text1; return 0 }
+    s -> errorWithoutStackTrace ("Bad theory (fol|cic|lean): " <> quote s)
 
 showTranslation :: [ProofText] -> UTCTime -> IO ()
 showTranslation txts startTime = do
@@ -280,7 +281,7 @@ readArgs args = do
 
 usageHeader :: String
 usageHeader =
-  "\nUsage: Naproche-SAD <options...> <file...>\n\n  At most one file argument may be given; \"\" refers to stdin.\n  The syntax for FLAG is {on|off} or {yes|no}.\n\n  Options are:\n"
+  "\nUsage: Naproche-SAD <options...> <file...>\n\n  At most one file argument may be given; \"\" refers to stdin.\n\n  FLAG may be {on|off} or {yes|no}.\n\n  THEORY may be:\n    fol   (First-Order-Logic)\n    cic   (Calculus of inductive Constructions)\n    lean  (Lean Prover)\n\n  Options are:\n"
 
 optParam :: [Char] -> Param.T a -> GetOpt.ArgDescr b -> String -> GetOpt.OptDescr b
 optParam chars p = GetOpt.Option chars [name | not (null name)]
@@ -323,8 +324,7 @@ options = [
   optSwitch "n" proveParam False "cursory mode (equivalent to --prove=off)",
   optSwitch "r" checkParam False "raw mode (equivalent to --check=off)",
   optFlag "" proveParam,
-  GetOpt.Option "" ["theory"] (GetOpt.ReqArg (Theory . parseTheory) "{fol|lean|cic}")
-    "Choose the underlying theory (First-Order-Logic, Lean Prover, Calculus of inductive Constructions) (default: fol)",
+  optText "" theoryParam "THEORY",
   optFlag "" checkParam,
   optFlag "" symsignParam,
   optFlag "" infoParam,
@@ -361,11 +361,3 @@ parseNat s =
   case Value.parse_nat $ make_bytes s of
     Just n -> n
     Nothing -> errorWithoutStackTrace ("Bad natural number: " <> quote s)
-
-parseTheory :: String -> UnderlyingTheory
-parseTheory s =
-  case map toLower s of
-    "fol" -> FirstOrderLogic
-    "cic" -> CiC
-    "lean" -> Lean
-    _ -> errorWithoutStackTrace ("Bad theory (fol|cic|lean): " <> quote s)
