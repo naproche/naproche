@@ -76,7 +76,7 @@ data Argument =
 -- Ask
 
 askParam :: Param.T a -> [Instr] -> a
-askParam p = Param.get p . foldr instr allParams
+askParam p = Param.get p . foldr instr Param.empty
   where
     instr :: Instr -> Param.Env -> Param.Env
     instr (SetBool p x) = Param.put p x
@@ -103,14 +103,6 @@ dropInstr _ _ = []
 
 
 -- Parameters
-
-allParams :: Param.Env
-allParams = declare allLimits $ declare allFlags $ declare allArgs Param.empty
-  where
-    declare = flip $ foldr Param.declare
-    allLimits = textLimits
-    allFlags = textFlags ++ programFlags
-    allArgs = textArgs ++ programArgs
 
 textLimits :: [Param.T Int]
 timelimitParam, memorylimitParam, depthlimitParam, checktimeParam, checkdepthParam :: Param.T Int
@@ -161,14 +153,12 @@ textFlags @ [proveParam, checkParam, checkconsistencyParam, symsignParam, infoPa
 textArgs :: [Param.T Bytes]
 libraryParam, proverParam :: Param.T Bytes
 textArgs @ [libraryParam, proverParam] =
-  [Param.string "library" "place to look for library texts" "examples",
-   Param.string "prover" "use prover NAME" (Prover.get_name Prover.eprover)]
+  [Param.bytes "library" "place to look for library texts" "examples",
+   Param.bytes "prover" "use prover NAME" (Prover.get_name Prover.eprover)]
 
-programArgs :: [Param.T Bytes]
 initParam, theoryParam :: Param.T Bytes
-programArgs @ [initParam, theoryParam] =
-  [Param.string "init" "init file, empty to skip" "init.opt",
-   Param.string "theory" "choose the underlying theory" "fol"]
+initParam = Param.bytes "init" "init file, empty to skip" "init.opt"
+theoryParam = Param.bytes "theory" "choose the underlying theory" "fol"
    
 verboseFlags :: [Param.T Bool]
 verboseFlags =
@@ -182,12 +172,10 @@ verboseFlags =
    printsimpParam,
    printthesisParam]
 
-programFlags :: [Param.T Bool]
 helpParam, serverParam, onlytranslateParam :: Param.T Bool
-programFlags @ [helpParam, serverParam, onlytranslateParam] =
-  [Param.flag "help" "show command-line help" False,
-   Param.flag "server" "run in server mode" False,
-   Param.flag "onlytranslate" "translate input text and exit" False]
+helpParam = Param.flag "help" "show command-line help" False
+serverParam = Param.flag "server" "run in server mode" False
+onlytranslateParam = Param.flag "onlytranslate" "translate input text and exit" False
 
 
 -- Keywords

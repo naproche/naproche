@@ -5,13 +5,12 @@ Typed parameters, stored via plain bytes.
 -}
 
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE BangPatterns #-}
 
 module Naproche.Param (
   print_flag, parse_flag,
-  T, name, description, description_default,
-  bool, flag, nat, int, real, string, unnamed,
-  Env, empty, declare, parse, get, put, input, restore
+  T, name, unnamed, description, description_default,
+  bytes, bool, flag, nat, int, real,
+  Env, empty, parse, get, put
 )
 where
 
@@ -48,8 +47,8 @@ data T a = Param {
 name :: T a -> Bytes
 name Param{_name = a} = a
 
-instance Eq (T a) where p == p' = name p == name p'
-instance Ord (T a) where compare p p' = compare (name p) (name p')
+unnamed :: T a -> T a
+unnamed p = p { _name = ""}
 
 description :: T a -> Bytes
 description Param{_descr = a} = a
@@ -58,9 +57,13 @@ description_default :: T a -> Bytes
 description_default Param{_descr = a, _print = print, _default = x} =
   a <> " (default: " <> print x <> ")"
 
-instance Show (T a)
-  where show = make_string . name
+instance Eq (T a) where p == p' = name p == name p'
+instance Ord (T a) where compare p p' = compare (name p) (name p')
+instance Show (T a) where show = make_string . name
 
+bytes :: Bytes -> Bytes -> Bytes -> T Bytes
+bytes = Param id Just
+  
 bool :: Bytes -> Bytes -> Bool -> T Bool
 bool = Param Value.print_bool Value.parse_bool
 
@@ -76,12 +79,6 @@ int = Param Value.print_int Value.parse_int
 real :: Bytes -> Bytes -> Double -> T Double
 real = Param Value.print_real Value.parse_real
 
-string :: Bytes -> Bytes -> Bytes -> T Bytes
-string = Param id Just
-
-unnamed :: T a -> T a
-unnamed p = p { _name = ""}
-
 
 {- untyped environment -}
 
@@ -93,20 +90,6 @@ instance Show Env
 empty :: Env
 empty = Env Map.empty
 
-declare :: T a -> Env -> Env
-declare Param{_name = a, _print = print, _default = x} env =
-  let Env ps = env in
-    case Map.lookup a ps of
-      Nothing -> Env (Map.insert a (print x) ps)
-      Just _ -> error (make_string ("Duplicate declaration of parameter " <> quote a))
-
-check :: T a -> Env -> Bytes
-check Param{_name = a, _parse = parse} env =
-  let Env ps = env in
-    case Map.lookup a ps of
-      Nothing -> error (make_string ("Unknown parameter " <> quote a))
-      Just s -> s
-
 parse :: T a -> Bytes -> a
 parse Param{_name = a, _parse = parse} s =
   case parse s of
@@ -115,15 +98,9 @@ parse Param{_name = a, _parse = parse} s =
     Just x -> x
 
 get :: T a -> Env -> a
-get p env = parse p $ check p env
+get p@Param{_name = a, _default = x} (Env ps) =
+  maybe x (parse p) (Map.lookup a ps)
 
 put :: T a -> a -> Env -> Env
-put p@Param{_name = a, _print = print} x env =
-  let !_ = check p env; Env ps = env
-  in Env (Map.insert a (print x) ps)
-
-input :: T a -> Bytes -> Env -> Env
-input p s = put p $ parse p s
-
-restore :: T a -> Env -> Env
-restore p = put p $ _default p
+put Param{_name = a, _print = print} x (Env ps) =
+  Env (Map.insert a (print x) ps)
