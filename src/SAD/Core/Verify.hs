@@ -98,8 +98,7 @@ verify state@VState {restProofText = p@(ProofTextInstr pos (Command cmd)) : rest
     message msg = reasonLog Message.WRITELN (Position.no_range_position pos) msg
 verify state@VState {restProofText = p@(ProofTextInstr _ instr) : rest} =
   pushProofText p <$>
-    local (const state {restProofText = rest})
-      ((if isParserInstruction instr then id else addInstruction instr) (ask >>= verify))
+    local (const state {restProofText = rest}) (addInstruction instr (ask >>= verify))
 verify state@VState {restProofText = (p@(ProofTextDrop _ instr) : rest)} =
   pushProofText p <$>
     local (const state {restProofText = rest}) (dropInstruction instr (ask >>= verify))

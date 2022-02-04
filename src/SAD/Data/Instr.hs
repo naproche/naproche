@@ -8,7 +8,7 @@ Instruction datatype and core functions.
 
 module SAD.Data.Instr
   (ParserKind(..), Instr(..), Drop(..), Command(..), Argument(..),
-  askParam, askArgument, dropInstr,
+  askParam, askArgument, addInstr, dropInstr,
   timelimitParam, memorylimitParam, depthlimitParam, checktimeParam, checkdepthParam,
   proveParam, checkParam, checkconsistencyParam, symsignParam, infoParam, thesisParam,
   filterParam, skipfailParam, flatParam, printgoalParam, printsectionParam, printcheckParam,
@@ -18,7 +18,7 @@ module SAD.Data.Instr
   helpParam, serverParam, onlytranslateParam,
   libraryParam, proverParam, initParam, theoryParam,
   keywordsCommand, keywordsSynonym, keywordsLimit, keywordsFlag, keywordsArgument,
-  keywordsDropLimit, keywordsDropFlag, isParserInstruction)
+  keywordsDropLimit, keywordsDropFlag)
 where
 
 import Data.Text.Lazy (Text)
@@ -89,9 +89,13 @@ askArgument :: Argument -> Text -> [Instr] -> Text
 askArgument i d is  = head $ [ v | GetArgument j v <- is, i == j ] ++ [d]
 
 
--- Drop
+-- instruction environment
 
--- | Drop the latest corresponding @Instr@ entry in the @[Instr]@
+addInstr :: Instr -> [Instr] -> [Instr]
+addInstr (Synonym _) = id
+addInstr (GetArgument (Read _) _) = id
+addInstr i = (:) i
+
 dropInstr :: Drop -> [Instr] -> [Instr]
 dropInstr (DropCommand m) (Command n : rs) | n == m = rs
 dropInstr (DropBool p) (SetBool p' _ : rs) | p == p' = rs
@@ -212,13 +216,3 @@ keywordsArgument =
  [(GetArgument $ Read NonTex, "read"),
   (GetArgument $ Read Tex, "readtex")] ++
   map (paramKeyword (\p -> SetBytes p . make_bytes)) textArgs
-
--- distinguish between parser and verifier instructions
-
-isParserInstruction :: Instr -> Bool
-isParserInstruction i = case i of
-  Command EXIT -> True
-  Command QUIT -> True
-  Synonym _ -> True
-  GetArgument (Read _) _ -> True
-  _ -> False

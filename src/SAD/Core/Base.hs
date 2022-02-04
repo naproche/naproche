@@ -197,7 +197,7 @@ askInstructionArgument instr _default =
 
 addInstruction :: Instr -> VerifyMonad a -> VerifyMonad a
 addInstruction instr =
-  local $ \vs -> vs { instructions = instr : instructions vs }
+  local $ \vs -> vs { instructions = addInstr instr $ instructions vs }
 
 dropInstruction :: Drop -> VerifyMonad a -> VerifyMonad a
 dropInstruction instr =
