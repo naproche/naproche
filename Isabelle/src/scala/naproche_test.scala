@@ -57,7 +57,7 @@ object Naproche_Test
             def check_timeout: Boolean =
               Time.now() > start + timeout && { was_timeout = true; true }
             val result =
-              Isabelle_System.bash(""""$NAPROCHE_EXE" -- """ + File.bash_platform_path(path),
+              Isabelle_System.bash(""""$NAPROCHE_EXE" -v -- """ + File.bash_platform_path(path),
                 cwd = naproche_home.file,
                 strict = false,
                 watchdog =
