@@ -33,7 +33,6 @@ import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
 import qualified Isabelle.UUID as UUID
 import qualified Isabelle.Position as Position
 import qualified Isabelle.YXML as YXML
-import qualified Isabelle.Value as Value
 import qualified Isabelle.Process_Result as Process_Result
 import Isabelle.Library
 
@@ -297,34 +296,34 @@ optFlag chars p = optParam chars p arg s
   where arg = GetOpt.ReqArg (SetBool p . Param.parse p . make_bytes) "FLAG"
         s = make_string $ Param.description_default p
 
-optLimit :: [Char] -> Param.T Int -> GetOpt.OptDescr Instr
-optLimit chars p = optParam chars p arg s
+optNat :: [Char] -> Param.T Int -> GetOpt.OptDescr Instr
+optNat chars p = optParam chars p arg s
   where arg = GetOpt.ReqArg (SetInt p . Param.parse p . make_bytes) "N"
         s = make_string $ Param.description_default p
 
-optText :: [Char] -> Param.T Bytes -> String -> GetOpt.OptDescr Instr
-optText chars p a = optParam chars p arg s
+optArgument :: [Char] -> Param.T Bytes -> String -> GetOpt.OptDescr Instr
+optArgument chars p a = optParam chars p arg s
   where arg = GetOpt.ReqArg (SetBytes p . make_bytes) a
         s = make_string $ Param.description_default p
-
+        
 options :: [GetOpt.OptDescr Instr]
 options = [
   optSwitch "h" helpParam True "",
-  optText "" initParam "FILE",
+  optArgument "" initParam "FILE",
   optSwitch "T" onlytranslateParam True "",
   optFlag "" translationParam,
   optSwitch "" serverParam True "",
-  optText "" libraryParam "DIR",
-  optText "P" proverParam "NAME",
-  optLimit "t" timelimitParam,
-  optLimit "m" memorylimitParam,
-  optLimit "" depthlimitParam,
-  optLimit "" checktimeParam,
-  optLimit "" checkdepthParam,
+  optArgument "" libraryParam "DIR",
+  optArgument "P" proverParam "NAME",
+  optNat "t" timelimitParam,
+  optNat "m" memorylimitParam,
+  optNat "" depthlimitParam,
+  optNat "" checktimeParam,
+  optNat "" checkdepthParam,
   optSwitch "n" proveParam False "cursory mode (equivalent to --prove=off)",
   optSwitch "r" checkParam False "raw mode (equivalent to --check=off)",
   optFlag "" proveParam,
-  optText "" theoryParam "THEORY",
+  optArgument "" theoryParam "THEORY",
   optFlag "" checkParam,
   optFlag "" symsignParam,
   optFlag "" infoParam,
@@ -349,15 +348,3 @@ options = [
   optFlag "" unfoldlowsfParam,
   optFlag "" dumpParam,
   optFlag "" texParam]
-
-parseFlag :: String -> Bool
-parseFlag s =
-  case Param.parse_flag (make_bytes s) of
-    Just b -> b
-    Nothing -> errorWithoutStackTrace ("Bad flag: " <> quote s)
-
-parseNat :: String -> Int
-parseNat s =
-  case Value.parse_nat $ make_bytes s of
-    Just n -> n
-    Nothing -> errorWithoutStackTrace ("Bad natural number: " <> quote s)
