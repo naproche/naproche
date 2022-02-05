@@ -76,18 +76,18 @@ verify state@VState {restProofText = p@(ProofTextInstr pos (Command cmd)) : rest
   pushProofText p <$> local (const state {restProofText = rest}) (command cmd >> ask >>= verify)
   where
     command :: Command -> VerifyMonad ()
-    command RULES = do
+    command PrintRules = do
       rules <- asks rewriteRules
       message $ "current ruleset: " <> "\n" <> unlines (map show (reverse rules))
-    command THESIS = do
+    command PrintThesis = do
       motivated <- asks thesisMotivated; thesis <- asks currentThesis
       let motivation = if motivated then "(motivated): " else "(not motivated): "
       message $ "current thesis " <> motivation <> show (Context.formula thesis)
-    command CONTEXT = do
+    command PrintContext = do
       context <- asks currentContext
       message $ "current context:\n" <>
         concatMap (\form -> "  " <> show (Context.formula form) <> "\n") (reverse context)
-    command FILTER = do
+    command PrintContextFiltered = do
       context <- asks currentContext
       let topLevelContext = filter Context.isTopLevel context
       message $ "current filtered top-level context:\n" <>

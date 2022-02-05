@@ -58,11 +58,11 @@ data Drop =
 -- Instructions
 
 data Command =
-    EXIT     -- exit
-  | THESIS   -- print current thesis
-  | CONTEXT  -- print current context
-  | FILTER   -- print simplified top-level context
-  | RULES
+    PrintRules
+  | PrintThesis
+  | PrintContext
+  | PrintContextFiltered
+  | Exit
   deriving (Eq, Ord, Show)
 
 data Argument =
@@ -185,12 +185,12 @@ onlytranslateParam = Param.flag "onlytranslate" "translate input text and exit" 
 
 keywordsCommand :: [(Command, Text)]
 keywordsCommand =
- [(EXIT, "exit"),
-  (EXIT, "quit"),
-  (THESIS, "thesis"),
-  (CONTEXT, "context"),
-  (FILTER, "filter"),
-  (RULES, "rules")]
+ [(PrintRules, "rules"),
+  (PrintThesis, "thesis"),
+  (PrintContext, "context"),
+  (PrintContextFiltered, "filter"),
+  (Exit, "exit"),
+  (Exit, "quit")]
 
 keywordsSynonym :: [([Text] -> Instr, Text)]
 keywordsSynonym =
