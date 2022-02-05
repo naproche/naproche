@@ -54,17 +54,20 @@ verifyRoot filePos reasonerState text = do
   return (success, fmap (tail . snd) result)
 
 -- Main verification loop, based on mutual functions:
--- verify, verifyBranch, verifyLeaf, verifyProof
+-- verify, verifyBlock, verifyProof
 type Verify = VerifyMonad ([ProofText], [ProofText])
 
 pushProofText :: ProofText -> ([ProofText], [ProofText]) -> ([ProofText], [ProofText])
 pushProofText p (as, bs) = (as, p : bs)
 
 verify :: VState -> Verify
+verify state@VState {restProofText = []} =
+  local (const state) $ do
+    motivated <- asks thesisMotivated
+    prove <- askInstructionParam proveParam
+    when (motivated && prove) verifyThesis >> return ([], [])
 verify state@VState {restProofText = ProofTextBlock block : rest} =
-  verifyBranch state block rest
-verify state@VState {thesisMotivated = True, currentThesis = thesis, restProofText = []} =
-  verifyLeaf state thesis
+  verifyBlock state block rest
 verify state@VState {restProofText = ProofTextChecked txt : rest} =
   let newTxt = Block.setChildren txt (Block.children txt ++ newInstructions)
       newInstructions =
@@ -109,10 +112,29 @@ verify state@VState {restProofText = (p@ProofTextPretyping{} : rest)} =
   pushProofText p <$> verify state {restProofText = rest}
 verify state@VState {restProofText = (p@ProofTextMacro{} : rest)} =
   pushProofText p <$> verify state {restProofText = rest}
-verify VState {restProofText = []} = return ([], [])
 
-verifyBranch :: VState -> Block -> [ProofText] -> Verify
-verifyBranch state block rest = local (const state) $ do
+verifyThesis :: VerifyMonad ()
+verifyThesis = do
+  thesis <- asks currentThesis
+  let block = Context.head thesis
+  let text = Text.unpack $ Block.text block
+  let pos = Block.position block
+  whenInstruction printgoalParam $ reasonLog Message.TRACING pos $ "goal: " <> text
+  if hasDEC (Context.formula thesis) --computational reasoning
+    then do
+      incrementCounter Equations
+      timeWith SimplifyTimer (equalityReasoning pos thesis) <|> (
+        reasonLog Message.WARNING pos "equation failed" >> setFailed >>
+        guardInstruction skipfailParam >> incrementCounter FailedEquations)
+    else do
+      unless (isTop . Context.formula $ thesis) $ incrementCounter Goals
+      proveThesis pos <|> (
+        reasonLog Message.ERROR pos "goal failed" >> setFailed >>
+        --guardInstruction Skipfail False >>
+        incrementCounter FailedGoals)
+
+verifyBlock :: VState -> Block -> [ProofText] -> Verify
+verifyBlock state block rest = local (const state) $ do
   let
     VState {
       thesisMotivated = motivated,
@@ -239,28 +261,6 @@ verifyBranch state block rest = local (const state) $ do
       -- put everything together
       let checkMark = if Block.isTopLevel block then id else ProofTextChecked
       return (ProofTextBlock newBlock : newBlocks, checkMark (ProofTextBlock markedBlock) : markedBlocks)
-
--- no text to be read in a branch: prove thesis
-verifyLeaf :: VState -> Context -> Verify
-verifyLeaf state thesis = local (const state) $ whenInstruction proveParam prove >> return ([], [])
-  where
-    prove = do
-      let block = Context.head thesis
-      let text = Text.unpack $ Block.text block
-      let pos = Block.position block
-      whenInstruction printgoalParam $ reasonLog Message.TRACING pos $ "goal: " <> text
-      if hasDEC (Context.formula thesis) --computational reasoning
-        then do
-          incrementCounter Equations
-          timeWith SimplifyTimer (equalityReasoning pos thesis) <|> (
-            reasonLog Message.WARNING pos "equation failed" >> setFailed >>
-            guardInstruction skipfailParam >> incrementCounter FailedEquations)
-        else do
-          unless (isTop . Context.formula $ thesis) $ incrementCounter Goals
-          proveThesis pos <|> (
-            reasonLog Message.ERROR pos "goal failed" >> setFailed >>
-            --guardInstruction Skipfail False >>
-            incrementCounter FailedGoals)
 
 {- some automated processing steps: add induction hypothesis and case hypothesis
 at the right point in the context; extract rewriteRules from them and further
