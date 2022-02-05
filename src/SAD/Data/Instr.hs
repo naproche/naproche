@@ -8,7 +8,7 @@ Instruction datatype and core functions.
 
 module SAD.Data.Instr
   (ParserKind(..), Instr(..), Drop(..), Command(..), Argument(..),
-  askParam, askArgument, addInstr, dropInstr,
+  askParam, addInstr, dropInstr,
   timelimitParam, memorylimitParam, depthlimitParam, checktimeParam, checkdepthParam,
   proveParam, checkParam, checkconsistencyParam, symsignParam, infoParam, thesisParam,
   filterParam, skipfailParam, flatParam, printgoalParam, printsectionParam, printcheckParam,
@@ -51,7 +51,6 @@ data Drop =
   | DropBool (Param.T Bool)
   | DropInt (Param.T Int)
   | DropBytes (Param.T Bytes)
-  | DropArgument Argument
   deriving (Eq, Ord, Show)
 
 
@@ -84,9 +83,6 @@ askParam p = Param.get p . foldr instr Param.empty
     instr (Verbose b) = \env -> foldr (`Param.put` b) env verboseFlags
     instr _ = id
 
-askArgument :: Argument -> Text -> [Instr] -> Text
-askArgument i d is  = head $ [ v | GetArgument j v <- is, i == j ] ++ [d]
-
 
 -- instruction environment
 
@@ -100,7 +96,6 @@ dropInstr (DropCommand m) (Command n : rs) | n == m = rs
 dropInstr (DropBool p) (SetBool p' _ : rs) | p == p' = rs
 dropInstr (DropInt p) (SetInt p' _ : rs) | p == p' = rs
 dropInstr (DropBytes p) (SetBytes p' _ : rs) | p == p' = rs
-dropInstr (DropArgument m) (GetArgument n _ : rs) | n == m = rs
 dropInstr i (r : rs)  = r : dropInstr i rs
 dropInstr _ _ = []
 

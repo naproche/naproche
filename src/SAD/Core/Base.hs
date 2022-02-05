@@ -35,8 +35,7 @@ module SAD.Core.Base
   , showTimeDiff
   , timeWith
 
-  , askInstructionParam, askInstructionArgument
-  , addInstruction, dropInstruction
+  , askInstructionParam, addInstruction, dropInstruction
   , addToTimer, addToCounter, incrementCounter
   , guardInstruction, guardNotInstruction, whenInstruction
 
@@ -190,10 +189,6 @@ modifyRState f = justRS >>= (justIO . flip modifyIORef f)
 
 askInstructionParam :: Param.T a -> VerifyMonad a
 askInstructionParam p = asks (askParam p . instructions)
-
-askInstructionArgument :: Argument -> Text -> VerifyMonad Text
-askInstructionArgument instr _default =
-  asks (askArgument instr _default . instructions)
 
 addInstruction :: Instr -> VerifyMonad a -> VerifyMonad a
 addInstruction instr =
