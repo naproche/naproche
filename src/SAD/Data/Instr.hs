@@ -59,7 +59,6 @@ data Drop =
 
 data Command =
     EXIT     -- exit
-  | QUIT     -- exit
   | THESIS   -- print current thesis
   | CONTEXT  -- print current context
   | FILTER   -- print simplified top-level context
@@ -187,7 +186,7 @@ onlytranslateParam = Param.flag "onlytranslate" "translate input text and exit" 
 keywordsCommand :: [(Command, Text)]
 keywordsCommand =
  [(EXIT, "exit"),
-  (QUIT, "quit"),
+  (EXIT, "quit"),
   (THESIS, "thesis"),
   (CONTEXT, "context"),
   (FILTER, "filter"),

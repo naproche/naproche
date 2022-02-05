@@ -46,8 +46,7 @@ instr =
   instrPos addDropReport $ readInstr >>=
     (\case
       GetArgument (Read _) _ -> fail "'read' and 'readtex' not allowed here"
-      Command EXIT -> fail "'exit' not allowed here"
-      Command QUIT -> fail "'quit' not allowed here"
+      Command EXIT -> fail "'exit' and 'quit' not allowed here"
       i -> return i)
 
 
@@ -63,7 +62,6 @@ instrExit =
   instrPos addInstrReport $ readInstr >>=
     (\case
       i@(Command EXIT) -> return i
-      i@(Command QUIT) -> return i
       _ -> mzero)
 
 instrDrop :: FTL (Position.T, Drop)
