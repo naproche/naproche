@@ -80,7 +80,8 @@ verify state@VState {restProofText = p@(ProofTextInstr pos (Command cmd)) : rest
       rules <- asks rewriteRules
       message $ "current ruleset: " <> "\n" <> unlines (map show (reverse rules))
     command PrintThesis = do
-      motivated <- asks thesisMotivated; thesis <- asks currentThesis
+      motivated <- asks thesisMotivated
+      thesis <- asks currentThesis
       let motivation = if motivated then "(motivated): " else "(not motivated): "
       message $ "current thesis " <> motivation <> show (Context.formula thesis)
     command PrintContext = do
