@@ -58,7 +58,7 @@ import SAD.Data.Definition
 import SAD.Data.Formula
 import SAD.Data.Instr
 import SAD.Data.Rules (Rule)
-import SAD.Data.Text.Block (Block, ProofText)
+import SAD.Data.Text.Block (Block)
 import SAD.Data.Text.Context (Context(Context), MRule(..))
 
 import qualified SAD.Core.Message as Message
@@ -148,11 +148,10 @@ data VState = VState
   , guards          :: Guards -- tracks which atomic formulas appear as guard
   , skolemCounter   :: Int
   , instructions    :: [Instr]
-  , restProofText   :: [ProofText]
   }
 
-initVState :: [ProofText] -> VState
-initVState text = VState
+initVState :: VState
+initVState = VState
   { thesisMotivated = False
   , rewriteRules    = []
   , evaluations     = DT.empty
@@ -164,7 +163,6 @@ initVState text = VState
   , guards          = initGuards
   , skolemCounter   = 0
   , instructions    = []
-  , restProofText   = text
   }
 
 type VerifyMonad = ReaderT VState CRM
