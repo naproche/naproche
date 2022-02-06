@@ -193,11 +193,15 @@ verifyBlock state block rest = local (const state) $ do
     (fortifiedProof, markedProof) <-
       if toBeProved
         then verifyProof state {
-          thesisMotivated = True, currentThesis = freshThesis,
-          currentBranch = newBranch, restProofText = proofBody }
+          thesisMotivated = True,
+          currentThesis = freshThesis,
+          currentBranch = newBranch,
+          restProofText = proofBody }
         else verifyProof state {
-          thesisMotivated = False, currentThesis = freshThesis,
-          currentBranch = newBranch, restProofText = body }
+          thesisMotivated = False,
+          currentThesis = freshThesis,
+          currentBranch = newBranch,
+          restProofText = body }
 
     -- in what follows we prepare the current block to contribute to the context,
     -- extract rules, definitions and compute the new thesis
@@ -243,11 +247,16 @@ verifyBlock state block rest = local (const state) $ do
             else evaluations-- extract evaluations
       -- Now we are done with the block. Move on and verify the rest.
       (newBlocks, markedBlocks) <- verifyProof state {
-        thesisMotivated = motivated && newMotivation, guards = newGuards,
-        rewriteRules = newRewriteRules, evaluations = newEvaluations,
-        currentThesis = newThesis, currentContext = newContext,
-        mesonRules = newRules, definitions = newDefinitions,
-        skolemCounter = intermediateSkolem, restProofText = rest }
+        thesisMotivated = motivated && newMotivation,
+        guards = newGuards,
+        rewriteRules = newRewriteRules,
+        evaluations = newEvaluations,
+        currentThesis = newThesis,
+        currentContext = newContext,
+        mesonRules = newRules,
+        definitions = newDefinitions,
+        skolemCounter = intermediateSkolem,
+        restProofText = rest }
 
       -- If this block made the thesis unmotivated, we must discharge a composite
       -- (and possibly quite difficult) prove task
@@ -257,7 +266,8 @@ verifyBlock state block rest = local (const state) $ do
       -- motivated && not newMotivated == True
       verifyProof state {
         thesisMotivated = motivated && not newMotivation,
-        currentThesis = Context.setFormula thesis finalThesis, restProofText = [] }
+        currentThesis = Context.setFormula thesis finalThesis,
+        restProofText = [] }
       -- put everything together
       let checkMark = if Block.isTopLevel block then id else ProofTextChecked
       return (ProofTextBlock newBlock : newBlocks, checkMark (ProofTextBlock markedBlock) : markedBlocks)
