@@ -4,8 +4,6 @@ Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018), Makarius 
 Main verification loop.
 -}
 
-{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
-
 module SAD.Core.Verify (verifyRoot) where
 
 import Data.IORef (IORef, readIORef)
@@ -102,6 +100,8 @@ verify (p@(ProofTextDrop _ instr) : rest) = pushProofText p <$> dropInstruction 
 verify (p@ProofTextSynonym{} : rest) = pushProofText p <$> verify rest
 verify (p@ProofTextPretyping{} : rest) = pushProofText p <$> verify rest
 verify (p@ProofTextMacro{} : rest) = pushProofText p <$> verify rest
+verify (ProofTextError _ : _) = undefined
+verify (ProofTextRoot _ : _) = undefined
 
 verifyThesis :: VerifyMonad ()
 verifyThesis = do
