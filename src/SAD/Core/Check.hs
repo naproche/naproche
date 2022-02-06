@@ -110,7 +110,7 @@ testDef :: Position.T -> Context -> Formula -> (Guards, FortifiedTerm) -> Verify
 testDef pos context term (guards, fortifiedTerm) = do
   userCheckSetting <- asks (getInstruction checkParam)
   if   userCheckSetting
-  then setup $ easyCheck >>= hardCheck >> return fortifiedTerm
+  then local setup $ easyCheck >>= hardCheck >> return fortifiedTerm
   else return fortifiedTerm
   where
     easyCheck = mapM trivialityCheck guards
@@ -124,11 +124,11 @@ testDef pos context term (guards, fortifiedTerm) = do
           mapM_ (proveThesis' pos . Context.setFormula (wipeLink context)) (lefts hardGuards) >>
           incrementCounter SuccessfulChecks
 
-    setup :: VerifyMonad a -> VerifyMonad a
-    setup action = do
-      timelimit <- SetInt timelimitParam <$> asks (getInstruction checktimeParam)
-      depthlimit <- SetInt depthlimitParam <$> asks (getInstruction checkdepthParam)
-      addInstruction timelimit $ addInstruction depthlimit action
+    setup state =
+      let
+        timelimit = SetInt timelimitParam $ getInstruction checktimeParam state
+        depthlimit = SetInt depthlimitParam $ getInstruction checkdepthParam state
+      in addInstruction timelimit $ addInstruction depthlimit state
 
     wipeLink context =
       let block:restBranch = Context.branch context

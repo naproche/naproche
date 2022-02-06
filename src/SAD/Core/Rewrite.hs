@@ -202,7 +202,7 @@ rewrite _ _ _ = error "SAD.Core.Rewrite.rewrite: non-equation argument"
 {- dischargeConditions accumulated during rewriting -}
 dischargeConditions :: Position.T -> Bool -> [Formula] -> VerifyMonad ()
 dischargeConditions pos verbositySetting conditions =
-  setup $ easy >>= hard
+  local setup $ easy >>= hard
   where
     easy = mapM trivialityCheck conditions
     hard hardConditions
@@ -215,11 +215,11 @@ dischargeConditions pos verbositySetting conditions =
           thesis <- asks currentThesis
           mapM_ (proveThesis' pos . Context.setFormula (wipeLink thesis)) (lefts hardConditions)
 
-    setup :: VerifyMonad a -> VerifyMonad a
-    setup action = do
-      timelimit <- SetInt timelimitParam <$> asks (getInstruction checktimeParam)
-      depthlimit <- SetInt depthlimitParam <$> asks (getInstruction checkdepthParam)
-      addInstruction timelimit $ addInstruction depthlimit action
+    setup state =
+      let
+        timelimit = SetInt timelimitParam $ getInstruction checktimeParam state
+        depthlimit = SetInt depthlimitParam $ getInstruction checkdepthParam state
+      in addInstruction timelimit $ addInstruction depthlimit state
 
     header select conditions = "condition: " <> format (select conditions)
     thead [] = ""; thead conditions = "(trivial: " <> format conditions <> ")"

@@ -188,13 +188,13 @@ modifyRState f = justRS >>= (justIO . flip modifyIORef f)
 getInstruction :: Param.T a -> VState -> a
 getInstruction p = getInstr p . instructions
 
-addInstruction :: Instr -> VerifyMonad a -> VerifyMonad a
-addInstruction instr =
-  local $ \vs -> vs { instructions = addInstr instr $ instructions vs }
+addInstruction :: Instr -> VState -> VState
+addInstruction instr state =
+  state { instructions = addInstr instr $ instructions state }
 
-dropInstruction :: Drop -> VerifyMonad a -> VerifyMonad a
-dropInstruction instr =
-  local $ \vs -> vs { instructions = dropInstr instr $ instructions vs }
+dropInstruction :: Drop -> VState -> VState
+dropInstruction instr state =
+  state { instructions = dropInstr instr $ instructions state }
 
 
 -- Markup reports (with exception handling)

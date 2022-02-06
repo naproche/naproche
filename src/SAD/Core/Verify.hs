@@ -95,8 +95,10 @@ verify (p@(ProofTextInstr pos (Command cmd)) : rest) =
       message "unsupported instruction"
     message :: String -> VerifyMonad ()
     message msg = reasonLog Message.WRITELN (Position.no_range_position pos) msg
-verify (p@(ProofTextInstr _ instr) : rest) = pushProofText p <$> addInstruction instr (verify rest)
-verify (p@(ProofTextDrop _ instr) : rest) = pushProofText p <$> dropInstruction instr (verify rest)
+verify (p@(ProofTextInstr _ instr) : rest) =
+  pushProofText p <$> local (addInstruction instr) (verify rest)
+verify (p@(ProofTextDrop _ instr) : rest) =
+  pushProofText p <$> local (dropInstruction instr) (verify rest)
 verify (p@ProofTextSynonym{} : rest) = pushProofText p <$> verify rest
 verify (p@ProofTextPretyping{} : rest) = pushProofText p <$> verify rest
 verify (p@ProofTextMacro{} : rest) = pushProofText p <$> verify rest
