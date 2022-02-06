@@ -260,7 +260,6 @@ data UnfoldState = UF {
   unfoldSetSetting :: Bool }
 
 
--- FIXME the reader monad transformer used here is completely superfluous
 unfold :: Position.T -> VerifyMonad [Context]
 unfold pos = do
   thesis <- asks currentThesis
@@ -274,18 +273,18 @@ unfold pos = do
   lowlevelSetUnfoldSetting <- asks (getInstruction unfoldlowsfParam)
   guard (generalUnfoldSetting || generalSetUnfoldSetting)
   let (goal : toUnfold, topLevelContext) = span Context.isLowLevel task
-      unfoldState = UF
+  let unfoldState = UF
         { defs = definitions
         , evals = evaluations
         , unfoldSetting = generalUnfoldSetting && lowlevelUnfoldSetting
         , unfoldSetSetting = generalSetUnfoldSetting && lowlevelSetUnfoldSetting }
-      (newLowLevelContext, numberOfUnfolds) =
+  let (newLowLevelContext, numberOfUnfolds) =
         W.runWriter $ flip runReaderT unfoldState $
           liftM2 (:)
-            (let localState st = st { -- unfold goal with general settings
-                  unfoldSetting    = generalUnfoldSetting,
-                  unfoldSetSetting = generalSetUnfoldSetting}
-             in  local localState $ unfoldConservative goal)
+            (local
+              (\st -> st { -- unfold goal with general settings
+                unfoldSetting = generalUnfoldSetting,
+                unfoldSetSetting = generalSetUnfoldSetting}) $ unfoldConservative goal)
             (mapM unfoldConservative toUnfold)
   unfoldLog newLowLevelContext
   when (numberOfUnfolds == 0) $ nothingToUnfold >> mzero
