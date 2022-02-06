@@ -191,17 +191,11 @@ verifyBlock state block rest = local (const state) $ do
 
 
     (fortifiedProof, markedProof) <-
-      if toBeProved
-        then verifyProof state {
-          thesisMotivated = True,
-          currentThesis = freshThesis,
-          currentBranch = newBranch,
-          restProofText = proofBody }
-        else verifyProof state {
-          thesisMotivated = False,
-          currentThesis = freshThesis,
-          currentBranch = newBranch,
-          restProofText = body }
+      verifyProof state {
+        thesisMotivated = toBeProved,
+        currentThesis = freshThesis,
+        currentBranch = newBranch,
+        restProofText = if toBeProved then proofBody else body }
 
     -- in what follows we prepare the current block to contribute to the context,
     -- extract rules, definitions and compute the new thesis
