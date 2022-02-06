@@ -55,19 +55,18 @@ verifyRoot filePos reasonerState text = do
 
 -- Main verification loop, based on mutual functions:
 -- verify, verifyBlock, verifyProof
-type Verify = VerifyMonad ([ProofText], [ProofText])
 
 pushProofText :: ProofText -> ([ProofText], [ProofText]) -> ([ProofText], [ProofText])
 pushProofText p (as, bs) = (as, p : bs)
 
-verify :: VState -> Verify
+verify :: VState -> VerifyMonad ([ProofText], [ProofText])
 verify state@VState {restProofText = []} =
   local (const state) $ do
     motivated <- asks thesisMotivated
     prove <- asks (getInstruction proveParam)
     when (motivated && prove) verifyThesis >> return ([], [])
 verify state@VState {restProofText = ProofTextBlock block : rest} =
-  verifyBlock state block rest
+  verifyBlock block rest state
 verify state@VState {restProofText = ProofTextChecked txt : rest} =
   let newTxt = Block.setChildren txt (Block.children txt ++ newInstructions)
       newInstructions =
@@ -133,8 +132,8 @@ verifyThesis = do
         --guardInstruction Skipfail False >>
         incrementCounter FailedGoals)
 
-verifyBlock :: VState -> Block -> [ProofText] -> Verify
-verifyBlock state block rest = local (const state) $ do
+verifyBlock :: Block -> [ProofText] -> VState -> VerifyMonad ([ProofText], [ProofText])
+verifyBlock block rest state = local (const state) $ do
   let
     VState {
       thesisMotivated = motivated,
@@ -271,7 +270,7 @@ at the right point in the context; extract rewriteRules from them and further
 refine the currentThesis. Then move on with the verification loop.
 If neither inductive nor case hypothesis is present this is the same as
 verify state -}
-verifyProof :: VState -> Verify
+verifyProof :: VState -> VerifyMonad ([ProofText], [ProofText])
 verifyProof state@VState {
   rewriteRules   = rules,
   currentThesis  = thesis,
@@ -279,7 +278,7 @@ verifyProof state@VState {
   currentBranch  = branch}
   = dive id context $ Context.formula thesis
   where
-    dive :: (Formula -> Formula) -> [Context] -> Formula -> Verify
+    dive :: (Formula -> Formula) -> [Context] -> Formula -> VerifyMonad ([ProofText], [ProofText])
     dive construct context (Imp (Tag InductionHypothesis f) g)
       | isClosed f = process (Context.setFormula thesis f : context) (construct g)
     dive construct context (Imp (Tag Tag.CaseHypothesis f) g)
@@ -290,7 +289,7 @@ verifyProof state@VState {
     dive _ _ _ = verify state
 
     -- extract rules, compute new thesis and move on with the verification
-    process :: [Context] -> Formula -> Verify
+    process :: [Context] -> Formula -> VerifyMonad ([ProofText], [ProofText])
     process newContext f = do
       let newRules = extractRewriteRule (head newContext) ++ rules
           (_, _, newThesis) =
