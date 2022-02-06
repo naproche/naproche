@@ -6,7 +6,7 @@ Main verification loop.
 
 module SAD.Core.Verify (verifyRoot) where
 
-import Data.IORef (IORef, readIORef)
+import Data.IORef (readIORef)
 import Data.Maybe (isJust)
 import Control.Monad.Reader
 
@@ -36,19 +36,22 @@ import qualified Isabelle.Position as Position
 
 
 -- | verify proof text (document root)
-verifyRoot :: Position.T -> IORef RState -> [ProofText] -> IO (Bool, Maybe [ProofText])
-verifyRoot filePos reasonerState text = do
+verifyRoot :: Position.T -> [ProofText] -> IO (Bool, Maybe [ProofText], RState)
+verifyRoot filePos text = do
   Message.outputReasoner Message.TRACING filePos "verification started"
 
-  result <- runVerifyMonad reasonerState initVState (verify text)
+  state <- initVState
+  result <- runVerifyMonad state (verify text)
 
-  trackers <- trackers <$> readIORef reasonerState
+  trackers <- trackers <$> readIORef (reasonerState state)
   let ignoredFails = sumCounter trackers FailedGoals
 
   let success = isJust result && ignoredFails == 0
   Message.outputReasoner Message.TRACING filePos $
     "verification " <> (if success then "successful" else "failed")
-  return (success, fmap (tail . snd) result)
+
+  rstate <- readIORef (reasonerState state)
+  return (success, fmap (tail . snd) result, rstate)
 
 -- Main verification loop, based on mutual functions:
 -- verify, verifyBlock, verifyProof

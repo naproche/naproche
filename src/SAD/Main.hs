@@ -6,6 +6,7 @@ Main application entry point: console or server mode.
 
 {-# LANGUAGE TupleSections #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE NamedFieldPuns #-}
 
 module SAD.Main where
 
@@ -191,26 +192,24 @@ exportLean pt = do
 proveFOL :: ProofText -> [Instr] -> ProofText -> Cache -> UTCTime -> Maybe FilePath -> IO Bool
 proveFOL text1 opts0 oldProofText cache startTime fileArg = do
   -- initialize reasoner state
-  reasonerState <- newIORef initRState
-
   proveStart <- getCurrentTime
 
-  success <- case findParseError text1 of
+  (success, rstate) <- case findParseError text1 of
     Nothing -> do
       let ProofTextRoot text = textToCheck oldProofText text1
       let file = maybe "" Text.pack fileArg
       let filePos = Position.file_only $ make_bytes file
       let text' = ProofTextInstr Position.none (GetArgument (File NonTex) file) : text
-      (success, newProofText) <- verifyRoot filePos reasonerState text'
+      (success, newProofText, rstate) <- verifyRoot filePos text'
       mapM_ (write_cache cache . ProofTextRoot) newProofText
-      pure success
+      pure (success, rstate)
     Just err -> do
       errorParser (errorPos err) (show_bytes err)
-      pure False
+      pure (False, initRState)
 
   finishTime <- getCurrentTime
 
-  trackers <- trackers <$> readIORef reasonerState
+  let RState {trackers} = rstate
   let accumulate = sumCounter trackers
 
   -- print statistics

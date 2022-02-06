@@ -114,7 +114,7 @@ data Counter
 
 -- | CPS IO Maybe monad
 newtype CRM b = CRM
-  { runCRM :: forall a . IORef RState -> IO a -> (b -> IO a) -> IO a }
+  { runCRM :: forall a . IO a -> (b -> IO a) -> IO a }
 
 instance Functor CRM where
   fmap = liftM
@@ -124,16 +124,16 @@ instance Applicative CRM where
   (<*>) = ap
 
 instance Monad CRM where
-  return r = CRM (\_ _ k -> k r)
-  m >>= n = CRM (\s z k -> runCRM m s z (\r -> runCRM (n r) s z k))
+  return r = CRM (\_ k -> k r)
+  m >>= n = CRM (\z k -> runCRM m z (\r -> runCRM (n r) z k))
 
 instance Alternative CRM where
   empty = mzero
   (<|>) = mplus
 
 instance MonadPlus CRM where
-  mzero = CRM (\_ z _ -> z)
-  mplus m n = CRM (\s z k -> runCRM m s (runCRM n s z k) k)
+  mzero = CRM (\z _ -> z)
+  mplus m n = CRM (\z k -> runCRM m (runCRM n z k) k)
 
 
 data VState = VState
@@ -148,42 +148,48 @@ data VState = VState
   , guards          :: Guards -- tracks which atomic formulas appear as guard
   , skolemCounter   :: Int
   , instructions    :: [Instr]
+  , reasonerState   :: IORef RState
   }
 
-initVState :: VState
-initVState = VState
-  { thesisMotivated = False
-  , rewriteRules    = []
-  , evaluations     = DT.empty
-  , currentThesis   = Context Bot [] []
-  , currentBranch   = []
-  , currentContext  = []
-  , mesonRules      = (DT.empty, DT.empty)
-  , definitions     = initDefinitions
-  , guards          = initGuards
-  , skolemCounter   = 0
-  , instructions    = []
-  }
+initVState :: IO VState
+initVState = do
+  reasonerState <- newIORef initRState
+  return
+    VState
+    { thesisMotivated = False
+    , rewriteRules    = []
+    , evaluations     = DT.empty
+    , currentThesis   = Context Bot [] []
+    , currentBranch   = []
+    , currentContext  = []
+    , mesonRules      = (DT.empty, DT.empty)
+    , definitions     = initDefinitions
+    , guards          = initGuards
+    , skolemCounter   = 0
+    , instructions    = []
+    , reasonerState = reasonerState
+    }
 
 type VerifyMonad = ReaderT VState CRM
 
-justRS :: VerifyMonad (IORef RState)
-justRS = lift $ CRM (\s _ k -> k s)
-
 justIO :: IO a -> VerifyMonad a
-justIO m = lift $ CRM (\_ _ k -> m >>= k)
+justIO m = lift $ CRM (\_ k -> m >>= k)
 
-runVerifyMonad :: IORef RState -> VState -> VerifyMonad a -> IO (Maybe a)
-runVerifyMonad r s m = runCRM (runReaderT m s) r (return Nothing) (return . Just)
+runVerifyMonad :: VState -> VerifyMonad a -> IO (Maybe a)
+runVerifyMonad s m = runCRM (runReaderT m s) (return Nothing) (return . Just)
 
 
 -- State management from inside the verification monad
 
 readRState :: (RState -> a) -> VerifyMonad a
-readRState f = justRS >>= (justIO . fmap f . readIORef)
+readRState f = do
+  r <- asks reasonerState
+  justIO (f <$> readIORef r)
 
 modifyRState :: (RState -> RState) -> VerifyMonad ()
-modifyRState f = justRS >>= (justIO . flip modifyIORef f)
+modifyRState f = do
+  r <- asks reasonerState
+  justIO (modifyIORef r f)
 
 getInstruction :: Param.T a -> VState -> a
 getInstruction p = getInstr p . instructions
