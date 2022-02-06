@@ -69,7 +69,7 @@ proveThesis' pos tc =
   
 proveThesis :: Position.T -> VerifyMonad ()
 proveThesis pos = do
-  depthlimit <- askInstructionParam depthlimitParam
+  depthlimit <- asks (getInstruction depthlimitParam)
   guard (depthlimit > 0) -- Fallback to defaulting of the underlying CPS Maybe monad.
   context <- asks currentContext
   thesis <- asks currentThesis
@@ -147,7 +147,7 @@ launchProver pos iteration = do
 
     guardResult Prover.Success = pure ()
     guardResult Prover.Contradictory_Axioms = do
-      checkConsistency <- askInstructionParam checkconsistencyParam
+      checkConsistency <- asks (getInstruction checkconsistencyParam)
       if checkConsistency then do
         reasonLog Message.WRITELN pos "Found contradictory axioms. Make sure you are in a proof by contradiction!"
         mzero
@@ -268,10 +268,10 @@ unfold pos = do
   let task = Context.setFormula thesis (Not $ Context.formula thesis) : context
   definitions <- asks definitions
   evaluations <- asks evaluations
-  generalUnfoldSetting <- askInstructionParam unfoldParam
-  lowlevelUnfoldSetting <- askInstructionParam unfoldlowParam
-  generalSetUnfoldSetting <- askInstructionParam unfoldsfParam
-  lowlevelSetUnfoldSetting <- askInstructionParam unfoldlowsfParam
+  generalUnfoldSetting <- asks (getInstruction unfoldParam)
+  lowlevelUnfoldSetting <- asks (getInstruction unfoldlowParam)
+  generalSetUnfoldSetting <- asks (getInstruction unfoldsfParam)
+  lowlevelSetUnfoldSetting <- asks (getInstruction unfoldlowsfParam)
   guard (generalUnfoldSetting || generalSetUnfoldSetting)
   let (goal : toUnfold, topLevelContext) = span Context.isLowLevel task
       unfoldState = UF

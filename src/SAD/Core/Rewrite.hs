@@ -193,7 +193,7 @@ rules = asks rewriteRules
 and compares the resulting normal forms -}
 rewrite :: Position.T -> Formula -> [Rule] -> VerifyMonad ()
 rewrite pos Trm {trmName = TermEquality, trmArgs = [l,r]} rules = do
-  verbositySetting <- askInstructionParam printsimpParam
+  verbositySetting <- asks (getInstruction printsimpParam)
   conditions <- generateConditions pos verbositySetting rules (>) l r;
   mapM_ (dischargeConditions pos verbositySetting . fst) conditions
 rewrite _ _ _ = error "SAD.Core.Rewrite.rewrite: non-equation argument"
@@ -217,8 +217,8 @@ dischargeConditions pos verbositySetting conditions =
 
     setup :: VerifyMonad a -> VerifyMonad a
     setup action = do
-      timelimit <- SetInt timelimitParam <$> askInstructionParam checktimeParam
-      depthlimit <- SetInt depthlimitParam <$> askInstructionParam checkdepthParam
+      timelimit <- SetInt timelimitParam <$> asks (getInstruction checktimeParam)
+      depthlimit <- SetInt depthlimitParam <$> asks (getInstruction checkdepthParam)
       addInstruction timelimit $ addInstruction depthlimit action
 
     header select conditions = "condition: " <> format (select conditions)

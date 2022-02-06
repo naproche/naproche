@@ -35,7 +35,7 @@ module SAD.Core.Base
   , showTimeDiff
   , timeWith
 
-  , askInstructionParam, addInstruction, dropInstruction
+  , getInstruction, addInstruction, dropInstruction
   , addToTimer, addToCounter, incrementCounter
   , guardInstruction, guardNotInstruction, whenInstruction
 
@@ -187,8 +187,8 @@ readRState f = justRS >>= (justIO . fmap f . readIORef)
 modifyRState :: (RState -> RState) -> VerifyMonad ()
 modifyRState f = justRS >>= (justIO . flip modifyIORef f)
 
-askInstructionParam :: Param.T a -> VerifyMonad a
-askInstructionParam p = asks (askParam p . instructions)
+getInstruction :: Param.T a -> VState -> a
+getInstruction p = getInstr p . instructions
 
 addInstruction :: Instr -> VerifyMonad a -> VerifyMonad a
 addInstruction instr =
@@ -269,13 +269,13 @@ showTimeDiff t =
 
 
 guardInstruction :: Param.T Bool -> VerifyMonad ()
-guardInstruction p = askInstructionParam p >>= guard
+guardInstruction p = asks (getInstruction p) >>= guard
 
 guardNotInstruction :: Param.T Bool -> VerifyMonad ()
-guardNotInstruction p = askInstructionParam p >>= guard . not
+guardNotInstruction p = asks (getInstruction p) >>= guard . not
 
 whenInstruction :: Param.T Bool -> VerifyMonad () -> VerifyMonad ()
-whenInstruction p action = askInstructionParam p >>= \b -> when b action
+whenInstruction p action = asks (getInstruction p) >>= \b -> when b action
 
 
 -- explicit failure management

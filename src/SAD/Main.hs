@@ -80,10 +80,10 @@ main  = do
 
   cache <- init_cache
 
-  if askParam helpParam opts1 then
+  if getInstr helpParam opts1 then
     putStr (GetOpt.usageInfo usageHeader options)
   else -- main body with explicit error handling, notably for PIDE
-      (if askParam serverParam opts1 then
+      (if getInstr serverParam opts1 then
         Server.server (Server.publish_stdout "Naproche-SAD") (mainServer cache args0)
       else do
         Program.init_console
@@ -150,13 +150,13 @@ mainBody cache opts0 text0 fileArg = do
 
   oldProofText <- read_cache cache
   -- parse input text
-  txts <- readProofText (askParam libraryParam opts0) text0
+  txts <- readProofText (getInstr libraryParam opts0) text0
   let text1 = ProofTextRoot txts
 
-  case map toLower $make_string $ askParam theoryParam opts0 of
+  case map toLower $make_string $ getInstr theoryParam opts0 of
     "fol" -> do
       -- if -T / --onlytranslate is passed as an option, only print the translated text
-      if askParam onlytranslateParam opts0
+      if getInstr onlytranslateParam opts0
         then do { showTranslation txts startTime; return 0 }
         else do
           success <- proveFOL text1 opts0 oldProofText cache startTime fileArg
@@ -263,11 +263,11 @@ readArgs args = do
   let fail msgs = errorWithoutStackTrace (unlines (map trim_line msgs))
   unless (null errs) $ fail errs
 
-  initFile <- readInit (askParam initParam instrs)
+  initFile <- readInit (getInstr initParam instrs)
   let initialOpts = initFile ++ map (Position.none,) instrs
 
   let revInitialOpts = reverse initialOpts
-  let useTexArg = askParam texParam $ map snd revInitialOpts
+  let useTexArg = getInstr texParam $ map snd revInitialOpts
   let fileArg =
         case files of
           [file] -> Just file

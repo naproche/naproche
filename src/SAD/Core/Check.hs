@@ -42,7 +42,7 @@ fillDef pos alreadyChecked context = fill True False [] (Just True) 0 (Context.f
       Trm{trmName = TermThesis} -> asks (Context.formula . currentThesis)
 
       v@Var{} -> do
-        userInfoSetting <- askInstructionParam infoParam
+        userInfoSetting <- asks (getInstruction infoParam)
         newContext      <- cnRaise context localContext
         collectInfo userInfoSetting v `withContext` newContext -- fortify the term
 
@@ -50,7 +50,7 @@ fillDef pos alreadyChecked context = fill True False [] (Just True) 0 (Context.f
         if alreadyChecked
           then return term
           else do
-            userInfoSetting <- askInstructionParam infoParam
+            userInfoSetting <- asks (getInstruction infoParam)
             fortifiedArgs   <- mapM (fill False isNewWord localContext sign n) tArgs
             newContext      <- cnRaise context localContext
             fortifiedTerm   <- setDef pos isNewWord context term{trmArgs = fortifiedArgs} `withContext` newContext
@@ -108,7 +108,7 @@ a task to an ATP.
 -}
 testDef :: Position.T -> Context -> Formula -> (Guards, FortifiedTerm) -> VerifyMonad Formula
 testDef pos context term (guards, fortifiedTerm) = do
-  userCheckSetting <- askInstructionParam checkParam
+  userCheckSetting <- asks (getInstruction checkParam)
   if   userCheckSetting
   then setup $ easyCheck >>= hardCheck >> return fortifiedTerm
   else return fortifiedTerm
@@ -126,8 +126,8 @@ testDef pos context term (guards, fortifiedTerm) = do
 
     setup :: VerifyMonad a -> VerifyMonad a
     setup action = do
-      timelimit <- SetInt timelimitParam <$> askInstructionParam checktimeParam
-      depthlimit <- SetInt depthlimitParam <$> askInstructionParam checkdepthParam
+      timelimit <- SetInt timelimitParam <$> asks (getInstruction checktimeParam)
+      depthlimit <- SetInt depthlimitParam <$> asks (getInstruction checkdepthParam)
       addInstruction timelimit $ addInstruction depthlimit action
 
     wipeLink context =

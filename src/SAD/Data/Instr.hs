@@ -8,7 +8,7 @@ Instruction datatype and core functions.
 
 module SAD.Data.Instr
   (ParserKind(..), Instr(..), Drop(..), Command(..), Argument(..),
-  askParam, addInstr, dropInstr,
+  getInstr, addInstr, dropInstr,
   timelimitParam, memorylimitParam, depthlimitParam, checktimeParam, checkdepthParam,
   proveParam, checkParam, checkconsistencyParam, symsignParam, infoParam, thesisParam,
   filterParam, skipfailParam, flatParam, printgoalParam, printsectionParam, printcheckParam,
@@ -71,10 +71,10 @@ data Argument =
   deriving (Eq, Ord, Show)
 
 
--- Ask
+-- instruction environment
 
-askParam :: Param.T a -> [Instr] -> a
-askParam p = Param.get p . foldr instr Param.empty
+getInstr :: Param.T a -> [Instr] -> a
+getInstr p = Param.get p . foldr instr Param.empty
   where
     instr :: Instr -> Param.Env -> Param.Env
     instr (SetBool p x) = Param.put p x
@@ -82,9 +82,6 @@ askParam p = Param.get p . foldr instr Param.empty
     instr (SetBytes p x) = Param.put p (make_bytes x)
     instr (Verbose b) = \env -> foldr (`Param.put` b) env verboseFlags
     instr _ = id
-
-
--- instruction environment
 
 addInstr :: Instr -> [Instr] -> [Instr]
 addInstr (Synonym _) = id

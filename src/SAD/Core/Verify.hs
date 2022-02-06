@@ -64,7 +64,7 @@ verify :: VState -> Verify
 verify state@VState {restProofText = []} =
   local (const state) $ do
     motivated <- asks thesisMotivated
-    prove <- askInstructionParam proveParam
+    prove <- asks (getInstruction proveParam)
     when (motivated && prove) verifyThesis >> return ([], [])
 verify state@VState {restProofText = ProofTextBlock block : rest} =
   verifyBlock state block rest
@@ -178,7 +178,7 @@ verifyBlock state block rest = local (const state) $ do
     let freshThesis = Context proofTask newBranch []
     let toBeProved = Block.needsProof block && not (Block.isTopLevel block)
     proofBody <- do
-      flat <- askInstructionParam flatParam
+      flat <- asks (getInstruction flatParam)
       if flat
         then return []
         else return body
@@ -199,7 +199,7 @@ verifyBlock state block rest = local (const state) $ do
 
     -- in what follows we prepare the current block to contribute to the context,
     -- extract rules, definitions and compute the new thesis
-    thesisSetting <- askInstructionParam thesisParam
+    thesisSetting <- asks (getInstruction thesisParam)
     let newBlock = block {
           Block.formula = deleteInductionOrCase fortifiedFormula,
           Block.body = fortifiedProof }

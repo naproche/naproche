@@ -42,15 +42,15 @@ export pos iteration instrs context goal = do
     Message.outputExport Message.TRACING pos s
     return ()
 
-  let printProver = askParam printproverParam instrs
-  let timeLimit = askParam timelimitParam instrs
-  let memoryLimit = askParam memorylimitParam instrs
+  let printProver = getInstr printproverParam instrs
+  let timeLimit = getInstr timelimitParam instrs
+  let memoryLimit = getInstr memorylimitParam instrs
   let byContradiction =
         elem Block.ProofByContradiction $
           map Block.kind (head (branch goal) : concatMap branch context)
 
   let
-    proverName = askParam proverParam instrs
+    proverName = getInstr proverParam instrs
     prover = do
       prover <- Prover.find proverName
       return $
@@ -63,7 +63,7 @@ export pos iteration instrs context goal = do
 
 
   let task = make_bytes $ TPTP.output context goal
-  when (askParam dumpParam instrs) $
+  when (getInstr dumpParam instrs) $
     Message.output Bytes.empty Message.WRITELN pos task
 
   reportBracketIO pos $ do
