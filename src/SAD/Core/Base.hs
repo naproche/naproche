@@ -37,7 +37,7 @@ module SAD.Core.Base
 
   , getInstruction, addInstruction, dropInstruction
   , addToTimer, addToCounter, incrementCounter
-  , guardInstruction, guardNotInstruction, whenInstruction
+  , guardInstruction, whenInstruction
 
   , reasonLog, simpLog, thesisLog, translateLog
   ) where
@@ -268,9 +268,6 @@ showTimeDiff t =
 
 guardInstruction :: Param.T Bool -> VerifyMonad ()
 guardInstruction p = asks (getInstruction p) >>= guard
-
-guardNotInstruction :: Param.T Bool -> VerifyMonad ()
-guardNotInstruction p = asks (getInstruction p) >>= guard . not
 
 whenInstruction :: Param.T Bool -> VerifyMonad () -> VerifyMonad ()
 whenInstruction p action = asks (getInstruction p) >>= \b -> when b action
