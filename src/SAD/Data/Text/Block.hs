@@ -16,7 +16,7 @@ module SAD.Data.Text.Block (
   isTopLevel,
   file,
   textToCheck,
-  findParseError,
+  parseErrors,
   isChecked,
   children, setChildren,
   canDeclare
@@ -33,8 +33,6 @@ import qualified Data.Set as Set
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 import Data.Maybe (fromMaybe)
-
-import Control.Monad
 
 import qualified Isabelle.Bytes as Bytes
 import qualified Isabelle.Position as Position
@@ -215,13 +213,6 @@ textCompare (ProofTextBlock bl1) (ProofTextBlock bl2) =
   syntacticEquality (formulate bl1) (formulate bl2)
 textCompare _ _ = False
 
--- parse correctness of a structure tree
-
-findParseError :: MonadPlus m => ProofText -> m ParseError
-findParseError (ProofTextError err) = pure err
-findParseError txt = dive $ children txt
-  where
-    dive [] = mzero
-    dive (ProofTextBlock bl : rest) = dive (body bl) `mplus` dive rest
-    dive (ProofTextError err : _) = return err
-    dive (_ : rest) = dive rest
+parseErrors :: ProofText -> [ParseError]
+parseErrors (ProofTextError err) = [err]
+parseErrors txt = concatMap parseErrors (children txt)

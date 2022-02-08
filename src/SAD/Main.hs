@@ -194,8 +194,8 @@ proveFOL text1 opts0 oldProofText cache startTime fileArg = do
   -- initialize reasoner state
   proveStart <- getCurrentTime
 
-  (success, trackers) <- case findParseError text1 of
-    Nothing -> do
+  (success, trackers) <- case parseErrors text1 of
+    [] -> do
       let ProofTextRoot text = textToCheck oldProofText text1
       let file = maybe "" Text.pack fileArg
       let filePos = Position.file_only $ make_bytes file
@@ -203,7 +203,7 @@ proveFOL text1 opts0 oldProofText cache startTime fileArg = do
       (success, newProofText, trackers) <- verifyRoot filePos text'
       mapM_ (write_cache cache . ProofTextRoot) newProofText
       pure (success, trackers)
-    Just err -> do
+    err : _ -> do
       errorParser (errorPos err) (show_bytes err)
       pure (False, [])
 
