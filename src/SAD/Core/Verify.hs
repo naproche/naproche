@@ -36,7 +36,7 @@ import qualified Isabelle.Position as Position
 
 
 -- | verify proof text (document root)
-verifyRoot :: Position.T -> [ProofText] -> IO (Bool, Maybe [ProofText], RState)
+verifyRoot :: Position.T -> [ProofText] -> IO (Bool, Maybe [ProofText], [Tracker])
 verifyRoot filePos text = do
   Message.outputReasoner Message.TRACING filePos "verification started"
 
@@ -50,8 +50,7 @@ verifyRoot filePos text = do
   Message.outputReasoner Message.TRACING filePos $
     "verification " <> (if success then "successful" else "failed")
 
-  rstate <- readIORef (reasonerState state)
-  return (success, fmap (tail . snd) result, rstate)
+  return (success, fmap (tail . snd) result, trackers)
 
 -- Main verification loop, based on mutual functions:
 -- verify, verifyBlock, verifyProof
