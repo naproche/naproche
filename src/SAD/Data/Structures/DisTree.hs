@@ -36,7 +36,7 @@ empty :: DisTree a
 empty = DT []
 
 
-{- a sucture element is a variable or a function symbol with identifier and
+{- a structure element is a variable or a function symbol with identifier and
 arity or a generalized constant (i.e. non-matchable free variable) -}
 data Struct =
   Variable |
