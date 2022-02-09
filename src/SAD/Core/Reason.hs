@@ -41,7 +41,8 @@ import qualified SAD.Prove.MESON as MESON
 
 import qualified SAD.Core.Message as Message
 import qualified SAD.Data.Definition as Definition
-import qualified SAD.Data.Structures.DisTree as DT
+import SAD.Data.Structures.DisTree (DisTree)
+import qualified SAD.Data.Structures.DisTree as DisTree
 import qualified SAD.Data.Text.Block as Block
 import qualified SAD.Data.Text.Context as Context
 import qualified SAD.Data.Formula.HOL as HOL
@@ -255,7 +256,7 @@ lookFor literal t =
 
 data UnfoldState = UF {
   defs             :: Definitions,
-  evals            :: DT.DisTree Evaluation,
+  evals            :: DisTree Evaluation,
   unfoldSetting    :: Bool, -- user parameters that control what is unfolded
   unfoldSetSetting :: Bool }
 
@@ -398,7 +399,7 @@ unfoldAtomic sign f = do
     setFunDefinitionalProperties t = do
       evaluations <- asks evals
       let evaluationFormula = maybeToList $
-            DT.lookup t evaluations >>= msum . map findev
+            DisTree.lookup t evaluations >>= msum . map findev
       unfGuard unfoldSetSetting $
         unless (null evaluationFormula) (lift $ W.tell 1) >>
         return evaluationFormula

@@ -1,7 +1,8 @@
 module SAD.Data.Definition where
 
 import SAD.Data.Formula (Formula, TermId)
-import qualified SAD.Data.Structures.DisTree as DT
+import SAD.Data.Structures.DisTree (DisTree)
+import qualified SAD.Data.Structures.DisTree as DisTree
 
 import Data.Map (Map)
 
@@ -24,10 +25,10 @@ type Definitions = Map TermId DefEntry
 isDefinition :: DefEntry -> Bool
 isDefinition entry = defKind entry == Definition
 
-type Guards = DT.DisTree Bool
+type Guards = DisTree Bool
 
 isGuard :: Formula -> Guards -> Bool
-isGuard f g = case DT.find f g of [] -> False; (x:_) -> x
+isGuard f g = case DisTree.find f g of [] -> False; (x:_) -> x
 
 data Evaluation = EV {
   evaluationTerm       :: Formula,  -- the term to be reduced

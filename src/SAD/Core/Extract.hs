@@ -23,7 +23,8 @@ import qualified SAD.Data.Text.Context as Context (formula, name)
 import SAD.Data.Rules (Rule(Rule))
 import qualified SAD.Data.Rules as Rule
 import SAD.Prove.Normalize
-import qualified SAD.Data.Structures.DisTree as DT
+import SAD.Data.Structures.DisTree (DisTree)
+import qualified SAD.Data.Structures.DisTree as DisTree
 import SAD.Data.Text.Decl
 
 
@@ -45,9 +46,9 @@ addDefinition (defs, grds) f = let newDef = extractDefinition defs f in
     addG df@DefEntry {defGuards = grd} grds = foldr add grds $ filter isTrm grd
 
     add guard grds =
-      if   case DT.find guard grds of [] -> False; (x:_) -> x
+      if   case DisTree.find guard grds of [] -> False; (x:_) -> x
       then grds
-      else DT.insert guard True grds
+      else DisTree.insert guard True grds
 
 {- Extract definition from a formula. Evidence closure is computed afterwards -}
 extractDefinition :: Definitions -> Formula -> DefEntry
@@ -138,13 +139,12 @@ extractRewriteRule c =
 
 -- Evaluation for maps and classes
 
-addEvaluation :: DT.DisTree Evaluation
-                 -> Formula -> DT.DisTree Evaluation
+addEvaluation :: DisTree Evaluation -> Formula -> DisTree Evaluation
 addEvaluation evaluations f =
-  foldr (\eval -> DT.insert (evaluationTerm eval) eval) evaluations $
+  foldr (\eval -> DisTree.insert (evaluationTerm eval) eval) evaluations $
   extractEvaluation evaluations f
 
-extractEvaluation :: DT.DisTree Evaluation -> Formula -> [Evaluation]
+extractEvaluation :: DisTree Evaluation -> Formula -> [Evaluation]
 extractEvaluation dt = flip runReaderT (0, dt) . dive
   where
     dive (All _ (Iff (Tag HeadTerm Trm {trmName = TermEquality, trmArgs = [_, t]}) f))
@@ -156,7 +156,7 @@ extractEvaluation dt = flip runReaderT (0, dt) . dive
 extractEv :: (Formula -> Formula)
              -> [Formula]
              -> Formula
-             -> ReaderT (Int, DT.DisTree Evaluation) [] Evaluation
+             -> ReaderT (Int, DisTree Evaluation) [] Evaluation
 extractEv c gs f = extractMapEval c gs f `mplus` extractClassEval c gs f
 
 freshV :: (MonadReader (a, b1) m, Enum a, Show a) =>
@@ -166,7 +166,7 @@ freshV fn f = do -- generate fresh variables
 
 
 extractMapEval :: (Formula -> Formula) -> [Formula] -> Formula
-  -> ReaderT (Int, DT.DisTree Evaluation) [] Evaluation
+  -> ReaderT (Int, DisTree Evaluation) [] Evaluation
 extractMapEval c gs (And g@(Tag Domain _ ) h) =
   extractClassEval c gs g `mplus` extractMapEval c gs h
 extractMapEval c gs (And f g) = extractMapEval c gs g
@@ -187,7 +187,7 @@ extractMapEval c gs f = dive c gs f
     dive _ _ _ = mzero
 
 extractClassEval :: (Formula -> Formula) -> [Formula]-> Formula
-  -> ReaderT (Int, DT.DisTree Evaluation) [] Evaluation
+  -> ReaderT (Int, DisTree Evaluation) [] Evaluation
 extractClassEval c gs (And f g) =
   extractClassEval c gs f `mplus` extractClassEval c gs g
 extractClassEval c gs (Tag _ f) = extractClassEval c gs f
@@ -198,8 +198,7 @@ extractClassEval c gs (All _ (Iff g@Trm{trmArgs = [_,t]} f )) | isElem g = do
 extractClassEval _ _ f = mzero
 
 
-simplifyElementCondition :: DT.DisTree Evaluation
-                            -> Formula -> Formula
+simplifyElementCondition :: DisTree Evaluation -> Formula -> Formula
 simplifyElementCondition evals = dive
   where
     dive f@Trm {trmArgs = [x,t]} | isElem f = fromMaybe f $ simp f
@@ -207,7 +206,7 @@ simplifyElementCondition evals = dive
     dive f = mapF dive f
 
     simp f = do
-      ev <- DT.lookup f evals >>= single; guard (null $ evaluationConditions ev)
+      ev <- DisTree.lookup f evals >>= single; guard (null $ evaluationConditions ev)
       sb <- match (evaluationTerm ev) f; return $ sb $ evaluationNegatives ev
 
     single [x] = return x; single l = mzero

@@ -18,7 +18,8 @@ import SAD.Prove.Normalize
 import SAD.Data.Text.Context (Context, MRule(MR, conclusion))
 import SAD.Helpers (notNull)
 import qualified SAD.Data.Text.Context as Context
-import qualified SAD.Data.Structures.DisTree as DT
+import SAD.Data.Structures.DisTree (DisTree)
+import qualified SAD.Data.Structures.DisTree as DisTree
 import qualified Isabelle.Cache as Cache
 import qualified Isabelle.Time as Time
 import Isabelle.Library (fold_rev)
@@ -48,11 +49,11 @@ splitContras = partition isPositive
     isPositive = not . isNot . conclusion
 
 addRules ::([MRule], [MRule])
-  -> (DT.DisTree MRule, DT.DisTree MRule)
-  -> (DT.DisTree MRule, DT.DisTree MRule)
+  -> (DisTree MRule, DisTree MRule)
+  -> (DisTree MRule, DisTree MRule)
 addRules (pos, neg) (positives, negatives) =
-  (fold_rev (DT.insertBy conclusion) pos positives,
-   fold_rev (DT.insertBy (ltNeg . conclusion)) neg negatives)
+  (fold_rev (DisTree.insertBy conclusion) pos positives,
+   fold_rev (DisTree.insertBy (ltNeg . conclusion)) neg negatives)
 
 
 -- MESON algorithm
@@ -63,7 +64,7 @@ addRules (pos, neg) (positives, negatives) =
    then whether we can close a branch because a literal is repeted.
    Otherwise we try to close the branch by unification or extend the branch
    with a MESON rule. -}
-solve :: MonadPlus m => Int -> [MRule] -> DT.DisTree MRule -> DT.DisTree MRule
+solve :: MonadPlus m => Int -> [MRule] -> DisTree MRule -> DisTree MRule
       -> [Formula] -> Formula -> m (Formula -> Formula)
 solve n localRules positives negatives ancestors goal =
   guard (n >= 0) >> guard repCheck >> (closeBranch `mplus` expandBranch)
@@ -72,8 +73,8 @@ solve n localRules positives negatives ancestors goal =
     closeBranch = msum $ map closeWith ancestors
     expandBranch = msum $ map expandWith $ localRules ++
       if   isNot goal
-      then DT.find (ltNeg goal) negatives
-      else DT.find goal positives
+      then DisTree.find (ltNeg goal) negatives
+      else DisTree.find goal positives
 
     expandWith (MR assumptions conclusion) = do
       sbs <- unify conclusion goal
@@ -141,7 +142,7 @@ umatch _ _         = mzero
 
 -- prove function
 
-type Cache = Cache.T ([MRule], DT.DisTree MRule, DT.DisTree MRule) Bool
+type Cache = Cache.T ([MRule], DisTree MRule, DisTree MRule) Bool
 
 init_cache :: IO Cache
 init_cache = Cache.init
@@ -157,7 +158,7 @@ prune_cache cache = Cache.prune cache 10000 (Time.ms 1)
    n -> current counter for skolem constants; loc -> local context;
    ps -> positive global rules; ng -> negative global rules;
    gl -> goal.-}
-prove :: Cache -> Int -> [Context] -> DT.DisTree MRule -> DT.DisTree MRule -> Formula -> IO Bool
+prove :: Cache -> Int -> [Context] -> DisTree MRule -> DisTree MRule -> Formula -> IO Bool
 prove cache n lowLevelContext positives negatives goal =
   let (localContext, proofContext) =
         span (null . Context.mesonRules) lowLevelContext

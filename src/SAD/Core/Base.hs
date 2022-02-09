@@ -63,7 +63,8 @@ import SAD.Data.Text.Context (Context(Context), MRule(..))
 import qualified SAD.Prove.MESON as MESON
 
 import qualified SAD.Core.Message as Message
-import qualified SAD.Data.Structures.DisTree as DT
+import SAD.Data.Structures.DisTree (DisTree)
+import qualified SAD.Data.Structures.DisTree as DisTree
 import qualified SAD.Data.Text.Context as Context (name)
 
 import qualified Isabelle.Bytes as Bytes
@@ -140,11 +141,11 @@ instance MonadPlus CRM where
 data VState = VState
   { thesisMotivated :: Bool
   , rewriteRules    :: [Rule]
-  , evaluations     :: DT.DisTree Evaluation -- (low level) evaluation rules
+  , evaluations     :: DisTree Evaluation -- (low level) evaluation rules
   , currentThesis   :: Context
   , currentBranch   :: [Block] -- branch of the current block
   , currentContext  :: [Context]
-  , mesonRules      :: (DT.DisTree MRule, DT.DisTree MRule)
+  , mesonRules      :: (DisTree MRule, DisTree MRule)
   , definitions     :: Definitions
   , guards          :: Guards -- tracks which atomic formulas appear as guard
   , skolemCounter   :: Int
@@ -160,11 +161,11 @@ initVState mesonCache = do
     VState
     { thesisMotivated = False
     , rewriteRules    = []
-    , evaluations     = DT.empty
+    , evaluations     = DisTree.empty
     , currentThesis   = Context Bot [] []
     , currentBranch   = []
     , currentContext  = []
-    , mesonRules      = (DT.empty, DT.empty)
+    , mesonRules      = (DisTree.empty, DisTree.empty)
     , definitions     = initDefinitions
     , guards          = initGuards
     , skolemCounter   = 0
@@ -400,8 +401,8 @@ mapApplication =
     (mkApp v0 v1) [mkObject ThisT] [[mkMap v0], [mkElem v1 $ mkDom v0]]
 
 
-initGuards :: DT.DisTree Bool
-initGuards = foldr (`DT.insert` True) DT.empty [
+initGuards :: DisTree Bool
+initGuards = foldr (`DisTree.insert` True) DisTree.empty [
   mkClass v1,
   mkMap v0,
   mkElem v1 $ mkDom v0]
