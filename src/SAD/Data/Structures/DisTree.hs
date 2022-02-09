@@ -20,7 +20,7 @@ module SAD.Data.Structures.DisTree (
 import SAD.Data.Formula (Formula(..))
 
 import Prelude hiding (lookup, head)
-import qualified Data.List as L
+import qualified Data.List as List
 import Data.Maybe
 import SAD.Data.Terms (TermId)
 import SAD.Data.VarName
@@ -76,7 +76,7 @@ args _ = []
 
 {- insert a term into the tree -}
 insert :: Formula -> a -> DisTree a -> DisTree a
-insert key@(Trm{}) value (DT nodes) = DT $ dive nodes [key]
+insert key@Trm{} value (DT nodes) = DT $ dive nodes [key]
   where
     dive nodes keylist@(k:ks) = case break (structMatch k . struct) nodes of
       -- if nothing matches -> create a whole new branch with value at the end
@@ -114,7 +114,7 @@ lookup key (DT nodes) = mbConcat $ dive nodes [key]
   where
     dive :: [DTree [a]] -> [Formula] -> [[a]]
     dive nodes (Var{varName = VarHole _}:ks)
-      = let (leafs, newNodes) = L.partition isLeaf $ concatMap jump nodes
+      = let (leafs, newNodes) = List.partition isLeaf $ concatMap jump nodes
          in map stored leafs ++ dive newNodes ks
     dive nodes keylist@(k:ks) =
       case dropWhile (not . retrieveMatch k . struct) nodes of
@@ -125,10 +125,10 @@ lookup key (DT nodes) = mbConcat $ dive nodes [key]
     dive [Leaf values] [] = [values]
     dive [] [] = [[]]
 
-    mbArgs Variable = const []; 
+    mbArgs Variable = const [] 
     mbArgs _ = args
 
-    mbConcat [] = Nothing; 
+    mbConcat [] = Nothing
     mbConcat lst = Just $ concat lst
 
     isLeaf (Leaf _) = True
@@ -149,7 +149,8 @@ showTree (DT xs) = "\n" ++ unlines (recursor xs)
     
     helper (Node struct children) =
       let ([head],stringChildren) = splitAt 1 $ recursor children
-          sn = show struct; l = length sn
-      in  (sn ++ space (4-l) ++ head) : map ((space 4) ++ ) stringChildren
+          sn = show struct
+          l = length sn
+      in  (sn ++ space (4-l) ++ head) : map (space 4 ++) stringChildren
 
     space n = replicate n ' '
