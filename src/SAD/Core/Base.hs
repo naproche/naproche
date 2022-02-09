@@ -60,6 +60,7 @@ import SAD.Data.Instr
 import SAD.Data.Rules (Rule)
 import SAD.Data.Text.Block (Block)
 import SAD.Data.Text.Context (Context(Context), MRule(..))
+import qualified SAD.Prove.MESON as MESON
 
 import qualified SAD.Core.Message as Message
 import qualified SAD.Data.Structures.DisTree as DT
@@ -149,10 +150,11 @@ data VState = VState
   , skolemCounter   :: Int
   , instructions    :: [Instr]
   , reasonerState   :: IORef RState
+  , mesonCache      :: MESON.Cache
   }
 
-initVState :: IO VState
-initVState = do
+initVState :: MESON.Cache -> IO VState
+initVState mesonCache = do
   reasonerState <- newIORef initRState
   return
     VState
@@ -167,7 +169,8 @@ initVState = do
     , guards          = initGuards
     , skolemCounter   = 0
     , instructions    = []
-    , reasonerState = reasonerState
+    , reasonerState   = reasonerState
+    , mesonCache      = mesonCache
     }
 
 type VerifyMonad = ReaderT VState CRM

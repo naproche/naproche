@@ -29,8 +29,10 @@ import Data.Text.Lazy (Text)
 data DTree a =
   Node {struct :: Struct, children :: [DTree a]} |
   Leaf {stored :: a}
+  deriving (Eq, Ord)
 
 newtype DisTree a = DT [DTree [a]]
+  deriving (Eq, Ord)
 
 empty :: DisTree a
 empty = DT []
@@ -42,7 +44,7 @@ data Struct =
   Variable |
   Function {symbolId :: TermId, symbolArity :: Int} |
   GeneralizedConstant Text
-  deriving Show
+  deriving (Eq, Ord, Show)
 
 {- move to the next argument by jumping the arity of the current argument -}
 jump :: DTree [a] -> [DTree [a]]

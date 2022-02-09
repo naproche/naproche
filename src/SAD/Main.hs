@@ -37,6 +37,7 @@ import qualified Isabelle.YXML as YXML
 import qualified Isabelle.Process_Result as Process_Result
 import Isabelle.Library
 
+import qualified SAD.Prove.MESON as MESON
 import SAD.Data.Instr
 import SAD.API
 
@@ -80,16 +81,17 @@ main  = do
   let opts1 = map snd opts0
 
   cache <- init_cache
+  mesonCache <- MESON.init_cache
 
   if getInstr helpParam opts1 then
     putStr (GetOpt.usageInfo usageHeader options)
   else -- main body with explicit error handling, notably for PIDE
       (if getInstr serverParam opts1 then
-        Server.server (Server.publish_stdout "Naproche-SAD") (mainServer cache args0)
+        Server.server (Server.publish_stdout "Naproche-SAD") (mainServer mesonCache cache args0)
       else do
         Program.init_console
         rc <- do
-          mainBody cache opts1 text0 fileArg
+          mainBody mesonCache cache opts1 text0 fileArg
             `catch` (\Exception.UserInterrupt -> do
               Program.exit_thread
               Console.stderr ("Interrupt" :: String)
@@ -100,8 +102,8 @@ main  = do
               return 1)
         Console.exit rc)
 
-mainServer :: Cache -> [String] -> Socket -> IO ()
-mainServer cache args0 socket =
+mainServer :: MESON.Cache -> Cache -> [String] -> Socket -> IO ()
+mainServer mesonCache cache args0 socket =
   let
     exchange_message0 = Byte_Message.exchange_message0 socket
     robust_error msg =
@@ -133,7 +135,7 @@ mainServer cache args0 socket =
               reinit_cache cache $ Options.int options Naproche.naproche_pos_context
 
               rc <- do
-                mainBody cache opts1 text1 fileArg
+                mainBody mesonCache cache opts1 text1 fileArg
                   `catch` (\(err :: Program.Error) -> do
                     robust_error $ Program.print_error err
                     return 0)
@@ -145,8 +147,8 @@ mainServer cache args0 socket =
 
         _ -> return ()
 
-mainBody :: Cache -> [Instr] -> [ProofText] -> Maybe FilePath -> IO Int
-mainBody cache opts0 text0 fileArg = do
+mainBody :: MESON.Cache -> Cache -> [Instr] -> [ProofText] -> Maybe FilePath -> IO Int
+mainBody mesonCache cache opts0 text0 fileArg = do
   startTime <- getCurrentTime
 
   oldProofText <- read_cache cache
@@ -160,7 +162,8 @@ mainBody cache opts0 text0 fileArg = do
       if getInstr onlytranslateParam opts0
         then do { showTranslation txts startTime; return 0 }
         else do
-          success <- proveFOL text1 opts0 oldProofText cache startTime fileArg
+          success <- proveFOL text1 opts0 oldProofText mesonCache cache startTime fileArg
+          MESON.prune_cache mesonCache
           return (if success then 0 else 1)
     "cic" -> return 0
     "lean" -> do { exportLean text1; return 0 }
@@ -189,8 +192,9 @@ exportLean pt = do
     Right t -> putStrLn $ Text.unpack t
   return ()
 
-proveFOL :: ProofText -> [Instr] -> ProofText -> Cache -> UTCTime -> Maybe FilePath -> IO Bool
-proveFOL text1 opts0 oldProofText cache startTime fileArg = do
+proveFOL :: ProofText -> [Instr] -> ProofText -> MESON.Cache -> Cache -> UTCTime
+  -> Maybe FilePath -> IO Bool
+proveFOL text1 opts0 oldProofText mesonCache cache startTime fileArg = do
   -- initialize reasoner state
   proveStart <- getCurrentTime
 
@@ -200,7 +204,7 @@ proveFOL text1 opts0 oldProofText cache startTime fileArg = do
       let file = maybe "" Text.pack fileArg
       let filePos = Position.file_only $ make_bytes file
       let text' = ProofTextInstr Position.none (GetArgument (File NonTex) file) : text
-      (success, newProofText, trackers) <- verifyRoot filePos text'
+      (success, newProofText, trackers) <- verifyRoot mesonCache filePos text'
       mapM_ (write_cache cache . ProofTextRoot) newProofText
       pure (success, trackers)
     err : _ -> do

@@ -1,19 +1,17 @@
 {-
-Authors: Steffen Frerix (2017 - 2018)
+Authors: Steffen Frerix (2017 - 2018), Makarius Wenzel (2022)
 
 An implementation of the MESON algorithm.
 -}
 
-module SAD.Prove.MESON (prove, contras, addRules)
+module SAD.Prove.MESON (Cache, init_cache, prune_cache, prove, contras, addRules)
 where
 
 import Control.Monad
-import Control.Monad.Reader
 import Data.List
 import Data.Maybe
 import qualified Data.Text.Lazy as Text
 
-import SAD.Core.Base
 import SAD.Data.Formula
 import SAD.Prove.Unify
 import SAD.Prove.Normalize
@@ -21,6 +19,8 @@ import SAD.Data.Text.Context (Context, MRule(MR, conclusion))
 import SAD.Helpers (notNull)
 import qualified SAD.Data.Text.Context as Context
 import qualified SAD.Data.Structures.DisTree as DT
+import qualified Isabelle.Cache as Cache
+import qualified Isabelle.Time as Time
 import Isabelle.Library (fold_rev)
 
 
@@ -36,12 +36,11 @@ contrapositives ls =
 
 
 {- the monadic action to generate meson rules during text verfication -}
-contras :: Formula -> VerifyMonad (([MRule], [MRule]), Int)
-contras f = do
-  m <- asks skolemCounter;
+contras :: Formula -> Int -> (([MRule], [MRule]), Int)
+contras f m =
   let (skf, nm) = skolemize m $ simplify f
       cnf = transformToCNF skf
-  return (splitContras $ concatMap contrapositives cnf, nm)
+  in (splitContras $ concatMap contrapositives cnf, nm)
 
 splitContras :: [MRule] -> ([MRule],[MRule])
 splitContras = partition isPositive
@@ -142,6 +141,14 @@ umatch _ _         = mzero
 
 -- prove function
 
+type Cache = Cache.T ([MRule], DT.DisTree MRule, DT.DisTree MRule) Bool
+
+init_cache :: IO Cache
+init_cache = Cache.init
+
+prune_cache :: Cache -> IO ()
+prune_cache cache = Cache.prune cache 10000 (Time.ms 1)
+
 {- tries to prove a goal by employing MESON. First we split of the local
    premises that have not yet had their MESON rules computed and do so.
    Then we set a starting goal for MESON and see if MESON can solve the goal.
@@ -150,8 +157,8 @@ umatch _ _         = mzero
    n -> current counter for skolem constants; loc -> local context;
    ps -> positive global rules; ng -> negative global rules;
    gl -> goal.-}
-prove :: Int -> [Context] -> DT.DisTree MRule -> DT.DisTree MRule -> Formula -> Bool
-prove n lowLevelContext positives negatives goal =
+prove :: Cache -> Int -> [Context] -> DT.DisTree MRule -> DT.DisTree MRule -> Formula -> IO Bool
+prove cache n lowLevelContext positives negatives goal =
   let (localContext, proofContext) =
         span (null . Context.mesonRules) lowLevelContext
       localRules = makeContrapositives n $
@@ -161,8 +168,8 @@ prove n lowLevelContext positives negatives goal =
         startingRule ++
         localRules   ++
         concatMap Context.mesonRules proofContext
-  in  (notNull :: [a] -> Bool) $
-      solve 6 lowLevelRules positives negatives [] Bot
+      body (a, b, c) = (notNull :: [a] -> Bool) $ solve 6 a b c [] Bot
+  in Cache.apply cache body (lowLevelRules, positives, negatives)
   where
     makeContrapositives _ [] = []
     makeContrapositives m (f:fs) =

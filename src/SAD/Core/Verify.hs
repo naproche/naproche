@@ -36,11 +36,11 @@ import qualified Isabelle.Position as Position
 
 
 -- | verify proof text (document root)
-verifyRoot :: Position.T -> [ProofText] -> IO (Bool, Maybe [ProofText], [Tracker])
-verifyRoot filePos text = do
+verifyRoot :: MESON.Cache -> Position.T -> [ProofText] -> IO (Bool, Maybe [ProofText], [Tracker])
+verifyRoot mesonCache filePos text = do
   Message.outputReasoner Message.TRACING filePos "verification started"
 
-  state <- initVState
+  state <- initVState mesonCache
   result <- runVerifyMonad state (verify text)
 
   trackers <- trackers <$> readIORef (reasonerState state)
@@ -204,7 +204,8 @@ verifyBlock block rest = do
 
     ifFailed (return (ProofTextBlock newBlock : rest, ProofTextBlock markedBlock : rest)) $ do
 
-      (mesonRules, intermediateSkolem) <- MESON.contras $ deTag formulaImage
+      skolem <- asks skolemCounter
+      let (mesonRules, intermediateSkolem) = MESON.contras (deTag formulaImage) skolem
       let (newDefinitions, newGuards) =
             if kind == Definition || kind == Signature
               then addDefinition (defs, grds) formulaImage

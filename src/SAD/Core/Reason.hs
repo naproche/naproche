@@ -18,7 +18,6 @@ module SAD.Core.Reason (
   trivialityCheck
 ) where
 
-import Control.Exception (evaluate)
 import Control.Monad.Reader
 import Data.Maybe (fromJust, fromMaybe, maybeToList)
 import Data.Monoid (Sum, getSum)
@@ -162,12 +161,13 @@ trivialByMeson goal = do
   context <- asks currentContext
   n <- asks skolemCounter
   (positives, negatives) <- asks mesonRules
+  cache <- asks mesonCache
   let lowlevelContext = takeWhile Context.isLowLevel context
-      proveGoal = MESON.prove n lowlevelContext positives negatives goal
+      proveGoal = MESON.prove cache n lowlevelContext positives negatives goal
       -- timeout: usually not necessary as max proof depth is limited
       prove = do
         Isabelle_Thread.expose_stopped
-        timeout 10000 $ evaluate proveGoal
+        timeout 10000 proveGoal
   justIO prove >>= guard . (==) (Just True)
 
 trivialityCheck :: Formula -> VerifyMonad (Either Formula Formula)
