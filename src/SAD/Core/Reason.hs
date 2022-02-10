@@ -129,7 +129,8 @@ launchProver pos iteration = do
   instrList <- asks instructions
   goal <- asks currentThesis
   context <- asks currentContext
-  let callATP = justIO $ pure $ Prover.export pos iteration instrList context goal
+  cache <- asks proverCache
+  let callATP = justIO $ pure $ Prover.export cache pos iteration instrList context goal
   callATP >>= timeWith ProofTimer . justIO >>= guardResult
   res <- head <$> readRState trackers
   case res of

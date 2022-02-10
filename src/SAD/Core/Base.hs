@@ -14,7 +14,6 @@ module SAD.Core.Base
   , readRState
   , modifyRState
   , justIO
-  , reportBracketIO
   , (<|>)
 
   , retrieveContext
@@ -45,7 +44,6 @@ module SAD.Core.Base
 import Control.Applicative (Alternative(..))
 import Control.Monad.Reader
 import Control.Monad.State
-import Control.Exception (SomeException, try, throw)
 import Data.IORef
 import Data.Maybe (isJust, fromJust)
 import Data.Text.Lazy (Text)
@@ -61,6 +59,7 @@ import SAD.Data.Rules (Rule)
 import SAD.Data.Text.Block (Block)
 import SAD.Data.Text.Context (Context(Context), MRule(..))
 import qualified SAD.Prove.MESON as MESON
+import qualified SAD.Export.Prover as Prover
 
 import qualified SAD.Core.Message as Message
 import SAD.Data.Structures.DisTree (DisTree)
@@ -68,7 +67,6 @@ import qualified SAD.Data.Structures.DisTree as DisTree
 import qualified SAD.Data.Text.Context as Context (name)
 
 import qualified Isabelle.Bytes as Bytes
-import qualified Isabelle.Markup as Markup
 import qualified Isabelle.Position as Position
 import Isabelle.Library (BYTES, make_bytes)
 
@@ -152,10 +150,11 @@ data VState = VState
   , instructions    :: [Instr]
   , reasonerState   :: IORef RState
   , mesonCache      :: MESON.Cache
+  , proverCache     :: Prover.Cache
   }
 
-initVState :: MESON.Cache -> IO VState
-initVState mesonCache = do
+initVState :: MESON.Cache -> Prover.Cache -> IO VState
+initVState mesonCache proverCache = do
   reasonerState <- newIORef initRState
   return
     VState
@@ -172,6 +171,7 @@ initVState mesonCache = do
     , instructions    = []
     , reasonerState   = reasonerState
     , mesonCache      = mesonCache
+    , proverCache     = proverCache
     }
 
 type VerifyMonad = ReaderT VState CRM
@@ -205,22 +205,6 @@ addInstruction instr state =
 dropInstruction :: Drop -> VState -> VState
 dropInstruction instr state =
   state { instructions = dropInstr instr $ instructions state }
-
-
--- Markup reports (with exception handling)
-
-reportBracketIO :: Position.T -> IO a -> IO a
-reportBracketIO pos body = do
-  Message.report pos Markup.running
-  (res :: Either SomeException a) <- try body
-  case res of
-    Left e -> do
-      Message.report pos Markup.failed
-      Message.report pos Markup.finished
-      throw e
-    Right x -> do
-      Message.report pos Markup.finished
-      return x
 
 
 -- Trackers

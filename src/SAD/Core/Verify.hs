@@ -30,17 +30,18 @@ import qualified SAD.Data.Tag as Tag
 import qualified SAD.Data.Text.Block as Block
 import qualified SAD.Data.Text.Context as Context
 import qualified SAD.Prove.MESON as MESON
+import qualified SAD.Export.Prover as Prover
 
 import Isabelle.Library (trim_line, make_bytes)
 import qualified Isabelle.Position as Position
 
 
 -- | verify proof text (document root)
-verifyRoot :: MESON.Cache -> Position.T -> [ProofText] -> IO (Bool, Maybe [ProofText], [Tracker])
-verifyRoot mesonCache filePos text = do
+verifyRoot :: MESON.Cache -> Prover.Cache -> Position.T -> [ProofText] -> IO (Bool, Maybe [ProofText], [Tracker])
+verifyRoot mesonCache proverCache filePos text = do
   Message.outputReasoner Message.TRACING filePos "verification started"
 
-  state <- initVState mesonCache
+  state <- initVState mesonCache proverCache
   result <- runVerifyMonad state (verify text)
 
   trackers <- trackers <$> readIORef (reasonerState state)

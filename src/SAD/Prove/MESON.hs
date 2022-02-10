@@ -8,6 +8,7 @@ module SAD.Prove.MESON (Cache, init_cache, prune_cache, prove, contras, addRules
 where
 
 import Control.Monad
+import Control.Exception (evaluate)
 import Data.List
 import Data.Maybe
 import qualified Data.Text.Lazy as Text
@@ -169,8 +170,9 @@ prove cache n lowLevelContext positives negatives goal =
         startingRule ++
         localRules   ++
         concatMap Context.mesonRules proofContext
-      body (a, b, c) = (notNull :: [a] -> Bool) $ solve 6 a b c [] Bot
-  in Cache.apply cache body (lowLevelRules, positives, negatives)
+  in
+    Cache.apply cache (lowLevelRules, positives, negatives) $
+      evaluate $ (notNull :: [a] -> Bool) $ solve 6 lowLevelRules positives negatives [] Bot
   where
     makeContrapositives _ [] = []
     makeContrapositives m (f:fs) =
