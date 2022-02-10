@@ -47,15 +47,15 @@ issue for the further development.
 
 \section{Importing Some Mathematical Language}
 We import singular/plural forms of words that will be used in
-our formalizations (\path{examples/vocabulary.ftl}).
+our formalizations (\path{examples/vocabulary.ftl.tex}).
 In the long run this should be replaced by
 employing a proper English vocabulary. We also
 import some alternative formulations for
-useful mathematical phrases (\path{examples/macros.ftl}).
+useful mathematical phrases (\path{examples/macros.ftl.tex}).
 \begin{forthel}
-[read vocabulary.ftl]
+[readtex \path{vocabulary.ftl.tex}]
 
-[read macros.ftl]
+[readtex \path{macros.ftl.tex}]
 \end{forthel}
 
 \section{Sets and Classes}
@@ -70,7 +70,7 @@ facts so that they can directly be accessed by the ATP.
 
 \begin{forthel}
 
-    
+
 \begin{lemma} Every set is a class. \end{lemma}
 
 \begin{lemma} Every class that is an object is a set. \end{lemma}
