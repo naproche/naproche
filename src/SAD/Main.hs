@@ -131,7 +131,6 @@ mainBody mesonCache proverCache opts0 text0 fileArg = do
 
   -- parse input text
   txts <- readProofText (getInstr libraryParam opts0) text0
-  let text1 = ProofTextRoot txts
 
   case map toLower $make_string $ getInstr theoryParam opts0 of
     "fol" -> do
@@ -139,12 +138,12 @@ mainBody mesonCache proverCache opts0 text0 fileArg = do
       if getInstr onlytranslateParam opts0
         then do { showTranslation txts startTime; return 0 }
         else do
-          success <- proveFOL text1 opts0 mesonCache proverCache startTime fileArg
+          success <- proveFOL txts opts0 mesonCache proverCache startTime fileArg
           MESON.prune_cache mesonCache
           Prover.prune_cache proverCache
           return (if success then 0 else 1)
     "cic" -> return 0
-    "lean" -> do { exportLean text1; return 0 }
+    "lean" -> do { exportLean txts; return 0 }
     s -> errorWithoutStackTrace ("Bad theory (fol|cic|lean): " <> quote s)
 
 showTranslation :: [ProofText] -> UTCTime -> IO ()
@@ -163,26 +162,25 @@ exportCiC pt = do
     Right s -> putStrLn s
   return ()
 
-exportLean :: ProofText -> IO ()
-exportLean pt = do
-  case fmap toLeanCode $ mapM toStatement $ extractBlocks pt of
+exportLean :: [ProofText] -> IO ()
+exportLean txts = do
+  case fmap toLeanCode $ mapM toStatement $ concatMap extractBlocks txts of
     Left t -> putStrLn $ Text.unpack t
     Right t -> putStrLn $ Text.unpack t
   return ()
 
-proveFOL :: ProofText -> [Instr] -> MESON.Cache -> Prover.Cache -> UTCTime
+proveFOL :: [ProofText] -> [Instr] -> MESON.Cache -> Prover.Cache -> UTCTime
   -> Maybe FilePath -> IO Bool
-proveFOL text opts0 mesonCache proverCache startTime fileArg = do
+proveFOL txts opts0 mesonCache proverCache startTime fileArg = do
   -- initialize reasoner state
   proveStart <- getCurrentTime
 
-  (success, trackers) <- case parseErrors text of
+  (success, trackers) <- case concatMap parseErrors txts of
     [] -> do
-      let ProofTextRoot texts = text
       let file = maybe "" Text.pack fileArg
       let filePos = Position.file_only $ make_bytes file
-      let text' = ProofTextInstr Position.none (GetArgument (File NonTex) file) : texts
-      (success, newProofText, trackers) <- verifyRoot mesonCache proverCache filePos text'
+      let txts' = ProofTextInstr Position.none (GetArgument (File NonTex) file) : txts
+      (success, newProofText, trackers) <- verifyRoot mesonCache proverCache filePos txts'
       pure (success, trackers)
     err : _ -> do
       errorParser (errorPos err) (show_bytes err)

@@ -16,9 +16,9 @@ module SAD.Data.Text.Block (
   isTopLevel,
   file,
   parseErrors,
-  children, setChildren,
   canDeclare
-  )where
+  )
+where
 
 import SAD.Data.Formula
 import SAD.Data.Instr
@@ -44,7 +44,6 @@ data ProofText =
   | ProofTextPretyping Position.T (Set PosVar)
   | ProofTextMacro Position.T
   | ProofTextError ParseError
-  | ProofTextRoot [ProofText]
   deriving (Eq, Ord)
 
 data Block = Block {
@@ -129,7 +128,6 @@ instance Show ProofText where
   showsPrec 0 (ProofTextInstr _ instr) = shows instr . showChar '\n'
   showsPrec 0 (ProofTextDrop _ instr) = shows instr . showChar '\n'
   showsPrec _ (ProofTextError err) = shows err . showChar '\n'
-  showsPrec 0 (ProofTextRoot txt ) = shows txt
   showsPrec _ _ = id
 
 instance Show Block where
@@ -158,16 +156,7 @@ showForm p block@Block {formula = formula, name = name} =
 showIndent :: Int -> ShowS
 showIndent n = showString $ replicate (n * 2) ' '
 
-children :: ProofText -> [ProofText]
-children (ProofTextRoot texts) = texts
-children (ProofTextBlock bl) = body bl
-children _ = []
-
-setChildren :: ProofText -> [ProofText] -> ProofText
-setChildren (ProofTextRoot _) children = ProofTextRoot children
-setChildren (ProofTextBlock bl) children = ProofTextBlock bl {body = children}
-setChildren txt _ = txt
-
 parseErrors :: ProofText -> [ParseError]
 parseErrors (ProofTextError err) = [err]
-parseErrors txt = concatMap parseErrors (children txt)
+parseErrors (ProofTextBlock bl) = concatMap parseErrors (body bl)
+parseErrors _ = []

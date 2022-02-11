@@ -30,7 +30,6 @@ extractBlocks :: ProofText -> Forest ForthelExpr
 extractBlocks (ProofTextBlock b) = 
   [ Node (ForthelExpr (name b) [] (isTopLevel b) (needsProof b) (canDeclare (kind b)) (formula b))
     (concatMap extractBlocks (body b))]
-extractBlocks (ProofTextRoot t) = concatMap extractBlocks t
 extractBlocks _ = []
 
 toStatement :: Tree ForthelExpr -> Either Text ForthelExpr

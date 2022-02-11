@@ -98,7 +98,6 @@ verify (p@ProofTextSynonym{} : rest) = pushProofText p <$> verify rest
 verify (p@ProofTextPretyping{} : rest) = pushProofText p <$> verify rest
 verify (p@ProofTextMacro{} : rest) = pushProofText p <$> verify rest
 verify (ProofTextError _ : _) = undefined
-verify (ProofTextRoot _ : _) = undefined
 
 verifyThesis :: VerifyMonad ()
 verifyThesis = do
