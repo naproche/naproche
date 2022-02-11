@@ -104,12 +104,12 @@ verifyThesis = do
     then do
       incrementCounter Equations
       timeWith SimplifyTimer (equalityReasoning pos thesis) <|> (
-        reasonLog Message.WARNING pos "equation failed" >> setFailed >>
+        reasonLog Message.WARNING pos "equation failed" >>
         guardInstruction skipfailParam >> incrementCounter FailedEquations)
     else do
       unless (isTop . Context.formula $ thesis) $ incrementCounter Goals
       proveThesis pos <|> (
-        reasonLog Message.ERROR pos "goal failed" >> setFailed >>
+        reasonLog Message.ERROR pos "goal failed" >>
         guardInstruction skipfailParam >> incrementCounter FailedGoals)
 
 verifyBlock :: Block -> [ProofText] -> VerifyMonad [ProofText]
@@ -147,98 +147,93 @@ verifyBlock block rest = do
       -- For low-level blocks we check definitions and fortify terms (by supplying evidence).
       else
         fillDef (Block.position block) contextBlock
-          <|> (setFailed >> return f)
 
-  ifFailed (return (ProofTextBlock block : rest)) $ do
-    let proofTask = generateProofTask kind (Block.declaredNames block) fortifiedFormula
-    let freshThesis = Context proofTask newBranch []
-    let toBeProved = Block.needsProof block && not (Block.isTopLevel block)
-    proofBody <- do
-      flat <- asks (getInstruction flatParam)
-      if flat
-        then return []
-        else return body
+  let proofTask = generateProofTask kind (Block.declaredNames block) fortifiedFormula
+  let freshThesis = Context proofTask newBranch []
+  let toBeProved = Block.needsProof block && not (Block.isTopLevel block)
+  proofBody <- do
+    flat <- asks (getInstruction flatParam)
+    if flat
+      then return []
+      else return body
 
-    whenInstruction printthesisParam $ when (
-      toBeProved && notNull proofBody &&
-      not (hasDEC $ Context.formula freshThesis)) $
-        thesisLog Message.WRITELN (Block.position block) (length branch - 1) $
-        "thesis: " <> show (Context.formula freshThesis)
+  whenInstruction printthesisParam $ when (
+    toBeProved && notNull proofBody &&
+    not (hasDEC $ Context.formula freshThesis)) $
+      thesisLog Message.WRITELN (Block.position block) (length branch - 1) $
+      "thesis: " <> show (Context.formula freshThesis)
 
+  fortifiedProof <-
+    local (\st -> st {
+      thesisMotivated = toBeProved,
+      currentThesis = freshThesis,
+      currentBranch = newBranch }) $
+    verifyProof (if toBeProved then proofBody else body)
 
-    fortifiedProof <-
-      local (\st -> st {
-        thesisMotivated = toBeProved,
-        currentThesis = freshThesis,
-        currentBranch = newBranch }) $
-      verifyProof (if toBeProved then proofBody else body)
+  -- in what follows we prepare the current block to contribute to the context,
+  -- extract rules, definitions and compute the new thesis
+  thesisSetting <- asks (getInstruction thesisParam)
+  let newBlock = block {
+        Block.formula = deleteInductionOrCase fortifiedFormula,
+        Block.body = fortifiedProof }
+  let formulaImage = Block.formulate newBlock
 
-    -- in what follows we prepare the current block to contribute to the context,
-    -- extract rules, definitions and compute the new thesis
-    thesisSetting <- asks (getInstruction thesisParam)
-    let newBlock = block {
-          Block.formula = deleteInductionOrCase fortifiedFormula,
-          Block.body = fortifiedProof }
-    let formulaImage = Block.formulate newBlock
+  skolem <- asks skolemCounter
+  let (mesonRules, intermediateSkolem) = MESON.contras (deTag formulaImage) skolem
+  let (newDefinitions, newGuards) =
+        if kind == Definition || kind == Signature
+          then addDefinition (defs, grds) formulaImage
+          else (defs, grds)
+  let newContextBlock = Context formulaImage newBranch (uncurry (++) mesonRules)
+  let newContext = newContextBlock : context
+  let newRules =
+        if Block.isTopLevel block
+          then MESON.addRules mesonRules mRules
+          else mRules
+  let (newMotivation, hasChanged , newThesis) =
+        if thesisSetting
+          then inferNewThesis defs newContext thesis
+          else (Block.needsProof block, False, thesis)
 
-    ifFailed (return (ProofTextBlock newBlock : rest)) $ do
+  whenInstruction printthesisParam $ when (
+    hasChanged && motivated && newMotivation &&
+    not (hasDEC $ Block.formula $ head branch) ) $
+      thesisLog Message.WRITELN (Block.position block) (length branch - 2) $
+      "new thesis: " <> show (Context.formula newThesis)
 
-      skolem <- asks skolemCounter
-      let (mesonRules, intermediateSkolem) = MESON.contras (deTag formulaImage) skolem
-      let (newDefinitions, newGuards) =
-            if kind == Definition || kind == Signature
-              then addDefinition (defs, grds) formulaImage
-              else (defs, grds)
-      let newContextBlock = Context formulaImage newBranch (uncurry (++) mesonRules)
-      let newContext = newContextBlock : context
-      let newRules =
-            if Block.isTopLevel block
-              then MESON.addRules mesonRules mRules
-              else mRules
-      let (newMotivation, hasChanged , newThesis) =
-            if thesisSetting
-              then inferNewThesis defs newContext thesis
-              else (Block.needsProof block, False, thesis)
+  when (not newMotivation && motivated) $
+    thesisLog Message.WARNING (Block.position block) (length branch - 2) "unmotivated assumption"
 
-      whenInstruction printthesisParam $ when (
-        hasChanged && motivated && newMotivation &&
-        not (hasDEC $ Block.formula $ head branch) ) $
-          thesisLog Message.WRITELN (Block.position block) (length branch - 2) $
-          "new thesis: " <> show (Context.formula newThesis)
+  let newRewriteRules = extractRewriteRule (head newContext) ++ rules
 
-      when (not newMotivation && motivated) $
-        thesisLog Message.WARNING (Block.position block) (length branch - 2) "unmotivated assumption"
+  let newEvaluations =
+        if   kind `elem` [LowDefinition, Definition]
+        then addEvaluation evaluations formulaImage
+        else evaluations-- extract evaluations
+  -- Now we are done with the block. Move on and verify the rest.
+  newBlocks <-
+    local (\st -> st {
+      thesisMotivated = motivated && newMotivation,
+      guards = newGuards,
+      rewriteRules = newRewriteRules,
+      evaluations = newEvaluations,
+      currentThesis = newThesis,
+      currentContext = newContext,
+      mesonRules = newRules,
+      definitions = newDefinitions,
+      skolemCounter = intermediateSkolem}) $ verifyProof rest
 
-      let newRewriteRules = extractRewriteRule (head newContext) ++ rules
+  -- If this block made the thesis unmotivated, we must discharge a composite
+  -- (and possibly quite difficult) prove task
+  let finalThesis = Imp (Block.compose $ ProofTextBlock newBlock : newBlocks) (Context.formula thesis)
 
-      let newEvaluations =
-            if   kind `elem` [LowDefinition, Definition]
-            then addEvaluation evaluations formulaImage
-            else evaluations-- extract evaluations
-      -- Now we are done with the block. Move on and verify the rest.
-      newBlocks <-
-        local (\st -> st {
-          thesisMotivated = motivated && newMotivation,
-          guards = newGuards,
-          rewriteRules = newRewriteRules,
-          evaluations = newEvaluations,
-          currentThesis = newThesis,
-          currentContext = newContext,
-          mesonRules = newRules,
-          definitions = newDefinitions,
-          skolemCounter = intermediateSkolem}) $ verifyProof rest
-
-      -- If this block made the thesis unmotivated, we must discharge a composite
-      -- (and possibly quite difficult) prove task
-      let finalThesis = Imp (Block.compose $ ProofTextBlock newBlock : newBlocks) (Context.formula thesis)
-
-      -- notice that the following is only really executed if
-      -- motivated && not newMotivated == True
-      local (\st -> st {
-        thesisMotivated = motivated && not newMotivation,
-        currentThesis = Context.setFormula thesis finalThesis }) $ verifyProof []
-      -- put everything together
-      return (ProofTextBlock newBlock : newBlocks)
+  -- notice that the following is only really executed if
+  -- motivated && not newMotivated == True
+  local (\st -> st {
+    thesisMotivated = motivated && not newMotivation,
+    currentThesis = Context.setFormula thesis finalThesis }) $ verifyProof []
+  -- put everything together
+  return (ProofTextBlock newBlock : newBlocks)
 
 {- some automated processing steps: add induction hypothesis and case hypothesis
 at the right point in the context; extract rewriteRules from them and further

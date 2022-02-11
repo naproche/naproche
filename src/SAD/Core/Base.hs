@@ -21,9 +21,6 @@ module SAD.Core.Base
   , defForm
   , getDef
 
-  , setFailed
-  , ifFailed
-
   , VState(..), VerifyMonad, runVerifyMonad
 
   , Tracker(..), Timer(..), Counter(..)
@@ -75,11 +72,10 @@ import qualified Naproche.Param as Param
 -- | Reasoner state
 data RState = RState
   { trackers       :: [Tracker]
-  , failed         :: Bool
   } deriving (Eq, Ord, Show)
 
 initRState :: RState
-initRState = RState [] False
+initRState = RState []
 
 -- | All of these counters are for gathering statistics to print out later
 data Tracker
@@ -263,17 +259,6 @@ guardInstruction p = asks (getInstruction p) >>= guard
 
 whenInstruction :: Param.T Bool -> VerifyMonad () -> VerifyMonad ()
 whenInstruction p action = asks (getInstruction p) >>= \b -> when b action
-
-
--- explicit failure management
-
-setFailed :: VerifyMonad ()
-setFailed = modifyRState (\st -> st {failed = True})
-
-ifFailed :: VerifyMonad a -> VerifyMonad a -> VerifyMonad a
-ifFailed alt1 alt2 = do
-  failed <- readRState failed
-  if failed then alt1 else alt2
 
 
 -- common messages
