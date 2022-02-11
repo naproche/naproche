@@ -125,35 +125,32 @@ normalizedSplit = split . albet
 
 launchProver :: Position.T -> Int -> VerifyMonad ()
 launchProver pos iteration = do
-  whenInstruction printfulltaskParam printTask
   instrList <- asks instructions
   goal <- asks currentThesis
   context <- asks currentContext
   cache <- asks proverCache
-  let callATP = justIO $ pure $ Prover.export cache pos iteration instrList context goal
-  callATP >>= timeWith ProofTimer . justIO >>= guardResult
-  trackers <- readTrackers
-  case trackers of
-    Timer _ time : _ -> do
-      addToTimer SuccessTimer time
-      incrementCounter SuccessfulGoals
-    _ -> error "No matching case in launchProver"
-  where
-    printTask = do
-      contextFormulas <- asks $ map Context.formula . reverse . currentContext
-      concl <- asks currentThesis
-      reasonLog Message.WRITELN pos $ "prover task:\n" <>
-        concatMap (\form -> "  " <> show form <> "\n") contextFormulas <>
-        "  |- " <> show (Context.formula concl) <> "\n"
 
-    guardResult Prover.Success = pure ()
-    guardResult Prover.Contradictory_Axioms = do
+  whenInstruction printfulltaskParam $ do
+    reasonLog Message.WRITELN pos $ "prover task:\n" <>
+      concatMap (\c -> "  " <> show (Context.formula c) <> "\n") (reverse context) <>
+      "  |- " <> show (Context.formula goal) <> "\n"
+
+  status <- timeWith ProofTimer (justIO $ Prover.export cache pos iteration instrList context goal)
+  trackers <- readTrackers
+  case status of
+    Prover.Success -> pure ()
+    Prover.Contradictory_Axioms -> do
       checkConsistency <- asks (getInstruction checkconsistencyParam)
       if checkConsistency then do
         reasonLog Message.WRITELN pos "Found contradictory axioms. Make sure you are in a proof by contradiction!"
         mzero
       else pure ()
-    guardResult _ = mzero
+    _ -> mzero
+  case trackers of
+    Timer _ time : _ -> do
+      addToTimer SuccessTimer time
+      incrementCounter SuccessfulGoals
+    _ -> error "No matching case in launchProver"
 
 
 -- Triviality check
