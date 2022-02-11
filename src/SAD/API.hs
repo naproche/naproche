@@ -15,7 +15,7 @@ module SAD.API
   , module SAD.Structures.StructureTree
   ) where
 
-import SAD.Core.Base (showTimeDiff, RState(..), initRState, sumCounter, Counter(..), sumTimer, Timer(..), maximalTimer)
+import SAD.Core.Base (showTimeDiff, sumCounter, Counter(..), sumTimer, Timer(..), maximalTimer)
 import SAD.Core.Message
 import SAD.Core.Verify (verifyRoot)
 import SAD.Data.Instr (Instr(..), getInstr, Argument(..), ParserKind(..))

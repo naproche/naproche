@@ -10,9 +10,9 @@ Verifier state monad and common functions.
 
 
 module SAD.Core.Base
-  ( RState(..), initRState, CRM
-  , readRState
-  , modifyRState
+  ( CRM
+  , readTrackers
+  , modifyTrackers
   , justIO
   , (<|>)
 
@@ -68,14 +68,6 @@ import Isabelle.Library (BYTES, make_bytes)
 
 import qualified Naproche.Param as Param
 
-
--- | Reasoner state
-data RState = RState
-  { trackers       :: [Tracker]
-  } deriving (Eq, Ord, Show)
-
-initRState :: RState
-initRState = RState []
 
 -- | All of these counters are for gathering statistics to print out later
 data Tracker
@@ -142,14 +134,14 @@ data VState = VState
   , guards          :: Guards -- tracks which atomic formulas appear as guard
   , skolemCounter   :: Int
   , instructions    :: [Instr]
-  , reasonerState   :: IORef RState
+  , trackers        :: IORef [Tracker]
   , mesonCache      :: MESON.Cache
   , proverCache     :: Prover.Cache
   }
 
 initVState :: MESON.Cache -> Prover.Cache -> IO VState
 initVState mesonCache proverCache = do
-  reasonerState <- newIORef initRState
+  trackers <- newIORef ([] :: [Tracker])
   return
     VState
     { thesisMotivated = False
@@ -163,7 +155,7 @@ initVState mesonCache proverCache = do
     , guards          = initGuards
     , skolemCounter   = 0
     , instructions    = []
-    , reasonerState   = reasonerState
+    , trackers        = trackers
     , mesonCache      = mesonCache
     , proverCache     = proverCache
     }
@@ -179,14 +171,14 @@ runVerifyMonad s m = runCRM (runReaderT m s) (return Nothing) (return . Just)
 
 -- State management from inside the verification monad
 
-readRState :: (RState -> a) -> VerifyMonad a
-readRState f = do
-  r <- asks reasonerState
-  justIO (f <$> readIORef r)
+readTrackers :: VerifyMonad [Tracker]
+readTrackers = do
+  r <- asks trackers
+  justIO (readIORef r)
 
-modifyRState :: (RState -> RState) -> VerifyMonad ()
-modifyRState f = do
-  r <- asks reasonerState
+modifyTrackers :: ([Tracker] -> [Tracker]) -> VerifyMonad ()
+modifyTrackers f = do
+  r <- asks trackers
   justIO (modifyIORef r f)
 
 getInstruction :: Param.T a -> VState -> a
@@ -204,12 +196,10 @@ dropInstruction instr state =
 -- Trackers
 
 addToTimer :: Timer -> NominalDiffTime -> VerifyMonad ()
-addToTimer timer time =
-  modifyRState $ \rs -> rs{trackers = Timer timer time : trackers rs}
+addToTimer timer time = modifyTrackers (Timer timer time : )
 
 addToCounter :: Counter -> Int -> VerifyMonad ()
-addToCounter counter increment =
-  modifyRState $ \rs -> rs{trackers = Counter counter increment : trackers rs}
+addToCounter counter increment = modifyTrackers (Counter counter increment : )
 
 incrementCounter :: Counter -> VerifyMonad ()
 incrementCounter counter = addToCounter counter 1

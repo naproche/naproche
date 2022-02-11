@@ -132,9 +132,9 @@ launchProver pos iteration = do
   cache <- asks proverCache
   let callATP = justIO $ pure $ Prover.export cache pos iteration instrList context goal
   callATP >>= timeWith ProofTimer . justIO >>= guardResult
-  res <- head <$> readRState trackers
+  res <- readTrackers
   case res of
-    Timer _ time -> do
+    Timer _ time : _ -> do
       addToTimer SuccessTimer time
       incrementCounter SuccessfulGoals
     _ -> error "No matching case in launchProver"

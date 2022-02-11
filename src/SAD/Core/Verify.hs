@@ -44,7 +44,7 @@ verifyRoot mesonCache proverCache filePos text = do
   state <- initVState mesonCache proverCache
   result <- runVerifyMonad state (verify text)
 
-  trackers <- trackers <$> readIORef (reasonerState state)
+  trackers <- readIORef (trackers state)
   let ignoredFails = sumCounter trackers FailedGoals
 
   let success = isJust result && ignoredFails == 0
