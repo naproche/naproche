@@ -30,8 +30,8 @@ import qualified Isabelle.Position as Position
 
 
 {- check definitions and fortify terms with evidences in a formula -}
-fillDef :: Position.T -> Bool -> Context -> VerifyMonad Formula
-fillDef pos alreadyChecked context = fill True False [] (Just True) 0 (Context.formula context)
+fillDef :: Position.T -> Context -> VerifyMonad Formula
+fillDef pos context = fill True False [] (Just True) 0 (Context.formula context)
   where
     fill :: Bool -> Bool -> [Formula] -> Maybe Bool -> Int -> Formula -> VerifyMonad Formula
     fill isPredicate isNewWord localContext sign n = \case
@@ -47,14 +47,12 @@ fillDef pos alreadyChecked context = fill True False [] (Just True) 0 (Context.f
         collectInfo userInfoSetting v `withContext` newContext -- fortify the term
 
       term@Trm{trmName = t, trmArgs = tArgs, trmInfo = infos, trId = tId} ->
-        if alreadyChecked
-          then return term
-          else do
-            userInfoSetting <- asks (getInstruction infoParam)
-            fortifiedArgs   <- mapM (fill False isNewWord localContext sign n) tArgs
-            newContext      <- cnRaise context localContext
-            fortifiedTerm   <- setDef pos isNewWord context term{trmArgs = fortifiedArgs} `withContext` newContext
-            collectInfo (not isPredicate && userInfoSetting) fortifiedTerm `withContext` newContext -- fortify term
+        do
+          userInfoSetting <- asks (getInstruction infoParam)
+          fortifiedArgs   <- mapM (fill False isNewWord localContext sign n) tArgs
+          newContext      <- cnRaise context localContext
+          fortifiedTerm   <- setDef pos isNewWord context term{trmArgs = fortifiedArgs} `withContext` newContext
+          collectInfo (not isPredicate && userInfoSetting) fortifiedTerm `withContext` newContext -- fortify term
 
       f -> roundFM VarW (fill isPredicate isNewWord) localContext sign n f
 

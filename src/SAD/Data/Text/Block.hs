@@ -15,9 +15,7 @@ module SAD.Data.Text.Block (
   needsProof,
   isTopLevel,
   file,
-  textToCheck,
   parseErrors,
-  isChecked,
   children, setChildren,
   canDeclare
   )where
@@ -41,13 +39,11 @@ import Isabelle.Library (make_text)
 data ProofText =
     ProofTextBlock Block
   | ProofTextInstr Position.T Instr
-  | NonProofTextStoredInstr [Instr] -- a way to restore instructions during verification
   | ProofTextDrop Position.T Drop
   | ProofTextSynonym Position.T
   | ProofTextPretyping Position.T (Set PosVar)
   | ProofTextMacro Position.T
   | ProofTextError ParseError
-  | ProofTextChecked ProofText
   | ProofTextRoot [ProofText]
   deriving (Eq, Ord)
 
@@ -96,7 +92,6 @@ compose = foldr comp Top
           Set.foldr mkExi (blAnd (formulate block) f) $ Set.map declName dvs
       -- Otherwise, we give the formula 'forall x_1,...,x_n . (formulate block) => f'.
       | otherwise = Set.foldr mkAll (blImp (formulate block) f) $ Set.map declName dvs
-    comp (ProofTextChecked txt) f = comp txt f
     comp _ fb = fb
 
 
@@ -163,55 +158,15 @@ showForm p block@Block {formula = formula, name = name} =
 showIndent :: Int -> ShowS
 showIndent n = showString $ replicate (n * 2) ' '
 
---- comparison of text trees, computation of parts that need checking
-
-textToCheck :: ProofText -> ProofText -> ProofText
-textToCheck old new
-  | isRoot old && isRoot new = dive [] (isChecked old) new (children old) (children new)
-  | otherwise = new
-  where
-    dive acc checked root [] [] = checkedText checked $ setChildren root (reverse acc)
-    dive acc _ root old [] = setChildren root (reverse acc)
-    dive acc _ root [] new = setChildren root (reverse acc ++ new)
-    dive acc checked root (o:old) (n:new) =
-      if   textCompare o n
-      then let newAcc = dive [] (isChecked o) n (children o) (children n) : acc
-           in  dive newAcc checked root old new
-      else setChildren root (reverse acc ++ (n:new))
-
-isRoot :: ProofText -> Bool
-isRoot (ProofTextRoot _) = True; isRoot _ = False
-
-isChecked :: ProofText -> Bool
-isChecked (ProofTextChecked _) = True; isChecked _ = False
-
 children :: ProofText -> [ProofText]
 children (ProofTextRoot texts) = texts
-children (ProofTextChecked text) = children text
 children (ProofTextBlock bl) = body bl
 children _ = []
-
-checkedText :: Bool -> ProofText -> ProofText
-checkedText p = if p then ProofTextChecked else id
 
 setChildren :: ProofText -> [ProofText] -> ProofText
 setChildren (ProofTextRoot _) children = ProofTextRoot children
 setChildren (ProofTextBlock bl) children = ProofTextBlock bl {body = children}
 setChildren txt _ = txt
-
-textCompare :: ProofText -> ProofText -> Bool
-textCompare (ProofTextInstr _ i1) (ProofTextInstr _ i2) = i1 == i2
-textCompare (ProofTextDrop _ d1) (ProofTextDrop _ d2) = d1 == d2
-textCompare (ProofTextSynonym _) (ProofTextSynonym _) = True
-textCompare (ProofTextPretyping _ _) (ProofTextPretyping _ _) = True
-textCompare (ProofTextMacro _) (ProofTextMacro _) = True
-textCompare (ProofTextError _) (ProofTextError _) = True
-textCompare (ProofTextChecked txt) text = textCompare txt text
-textCompare text (ProofTextChecked txt) = textCompare text txt
-textCompare (ProofTextRoot _) (ProofTextRoot _) = True
-textCompare (ProofTextBlock bl1) (ProofTextBlock bl2) =
-  syntacticEquality (formulate bl1) (formulate bl2)
-textCompare _ _ = False
 
 parseErrors :: ProofText -> [ParseError]
 parseErrors (ProofTextError err) = [err]

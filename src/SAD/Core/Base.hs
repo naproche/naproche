@@ -23,7 +23,6 @@ module SAD.Core.Base
 
   , setFailed
   , ifFailed
-  , setChecked
 
   , VState(..), VerifyMonad, runVerifyMonad
 
@@ -77,11 +76,10 @@ import qualified Naproche.Param as Param
 data RState = RState
   { trackers       :: [Tracker]
   , failed         :: Bool
-  , alreadyChecked :: Bool
   } deriving (Eq, Ord, Show)
 
 initRState :: RState
-initRState = RState [] False False
+initRState = RState [] False
 
 -- | All of these counters are for gathering statistics to print out later
 data Tracker
@@ -276,11 +274,6 @@ ifFailed :: VerifyMonad a -> VerifyMonad a -> VerifyMonad a
 ifFailed alt1 alt2 = do
   failed <- readRState failed
   if failed then alt1 else alt2
-
--- local checking support
-
-setChecked :: Bool -> VerifyMonad ()
-setChecked b = modifyRState (\st -> st {alreadyChecked = b})
 
 
 -- common messages

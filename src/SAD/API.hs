@@ -19,7 +19,7 @@ import SAD.Core.Base (showTimeDiff, RState(..), initRState, sumCounter, Counter(
 import SAD.Core.Message
 import SAD.Core.Verify (verifyRoot)
 import SAD.Data.Instr (Instr(..), getInstr, Argument(..), ParserKind(..))
-import SAD.Data.Text.Block (ProofText(..), textToCheck, parseErrors)
+import SAD.Data.Text.Block (ProofText(..), parseErrors)
 import SAD.Import.Reader (readInit, readProofText)
 import SAD.Parser.Error (errorPos)
 import SAD.Data.Formula (Formula)

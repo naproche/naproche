@@ -6,13 +6,11 @@ Main application entry point: console or server mode.
 
 {-# LANGUAGE TupleSections #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE NamedFieldPuns #-}
 
 module SAD.Main where
 
 import Control.Monad (unless, when)
 import Data.Char (toLower)
-import Data.IORef
 import Data.Time (UTCTime, addUTCTime, getCurrentTime, diffUTCTime)
 import Data.List (isSuffixOf)
 import Data.Maybe (mapMaybe)
@@ -47,25 +45,6 @@ import qualified Naproche.Console as Console
 import qualified Naproche.Param as Param
 
 
-newtype Cache = Cache (IORef (Int, ProofText))
-
-init_cache :: IO Cache
-init_cache = Cache <$> newIORef (0, ProofTextRoot [])
-
-reinit_cache :: Cache -> Int -> IO ()
-reinit_cache (Cache ref) i = do
-  (j, _) <- readIORef ref
-  when (i /= j || j == 0) (writeIORef ref (i, ProofTextRoot []))
-
-read_cache :: Cache -> IO ProofText
-read_cache (Cache ref) = snd <$> readIORef ref
-
-write_cache :: Cache -> ProofText -> IO ()
-write_cache (Cache ref) text = do
-  (i, _) <- readIORef ref
-  writeIORef ref (i, text)
-
-
 main :: IO ()
 main  = do
   Console.setup
@@ -81,7 +60,6 @@ main  = do
       pure [ProofTextInstr Position.none $ GetArgument (File pk) (Text.pack name)]
   let opts1 = map snd opts0
 
-  cache <- init_cache
   mesonCache <- MESON.init_cache
   proverCache <- Prover.init_cache
 
@@ -89,11 +67,11 @@ main  = do
     putStr (GetOpt.usageInfo usageHeader options)
   else -- main body with explicit error handling, notably for PIDE
       (if getInstr serverParam opts1 then
-        Server.server (Server.publish_stdout "Naproche-SAD") (mainServer mesonCache proverCache cache args0)
+        Server.server (Server.publish_stdout "Naproche-SAD") (mainServer mesonCache proverCache args0)
       else do
         Program.init_console
         rc <- do
-          mainBody mesonCache proverCache cache opts1 text0 fileArg
+          mainBody mesonCache proverCache opts1 text0 fileArg
             `catch` (\Exception.UserInterrupt -> do
               Program.exit_thread
               Console.stderr ("Interrupt" :: String)
@@ -104,8 +82,8 @@ main  = do
               return 1)
         Console.exit rc)
 
-mainServer :: MESON.Cache -> Prover.Cache -> Cache -> [String] -> Socket -> IO ()
-mainServer mesonCache proverCache cache args0 socket =
+mainServer :: MESON.Cache -> Prover.Cache -> [String] -> Socket -> IO ()
+mainServer mesonCache proverCache args0 socket =
   let
     exchange_message0 = Byte_Message.exchange_message0 socket
     robust_error msg =
@@ -134,10 +112,8 @@ mainServer mesonCache proverCache cache args0 socket =
               let text0 = map (uncurry ProofTextInstr) (reverse opts0)
               let text1 = text0 ++ [ProofTextInstr Position.none (GetArgument (Text pk) more_text)]
 
-              reinit_cache cache $ Options.int options Naproche.naproche_pos_context
-
               rc <- do
-                mainBody mesonCache proverCache cache opts1 text1 fileArg
+                mainBody mesonCache proverCache opts1 text1 fileArg
                   `catch` (\(err :: Program.Error) -> do
                     robust_error $ Program.print_error err
                     return 0)
@@ -149,11 +125,10 @@ mainServer mesonCache proverCache cache args0 socket =
 
         _ -> return ()
 
-mainBody :: MESON.Cache -> Prover.Cache -> Cache -> [Instr] -> [ProofText] -> Maybe FilePath -> IO Int
-mainBody mesonCache proverCache cache opts0 text0 fileArg = do
+mainBody :: MESON.Cache -> Prover.Cache -> [Instr] -> [ProofText] -> Maybe FilePath -> IO Int
+mainBody mesonCache proverCache opts0 text0 fileArg = do
   startTime <- getCurrentTime
 
-  oldProofText <- read_cache cache
   -- parse input text
   txts <- readProofText (getInstr libraryParam opts0) text0
   let text1 = ProofTextRoot txts
@@ -164,7 +139,7 @@ mainBody mesonCache proverCache cache opts0 text0 fileArg = do
       if getInstr onlytranslateParam opts0
         then do { showTranslation txts startTime; return 0 }
         else do
-          success <- proveFOL text1 opts0 oldProofText mesonCache proverCache cache startTime fileArg
+          success <- proveFOL text1 opts0 mesonCache proverCache startTime fileArg
           MESON.prune_cache mesonCache
           Prover.prune_cache proverCache
           return (if success then 0 else 1)
@@ -195,20 +170,19 @@ exportLean pt = do
     Right t -> putStrLn $ Text.unpack t
   return ()
 
-proveFOL :: ProofText -> [Instr] -> ProofText -> MESON.Cache -> Prover.Cache -> Cache -> UTCTime
+proveFOL :: ProofText -> [Instr] -> MESON.Cache -> Prover.Cache -> UTCTime
   -> Maybe FilePath -> IO Bool
-proveFOL text1 opts0 oldProofText mesonCache proverCache cache startTime fileArg = do
+proveFOL text opts0 mesonCache proverCache startTime fileArg = do
   -- initialize reasoner state
   proveStart <- getCurrentTime
 
-  (success, trackers) <- case parseErrors text1 of
+  (success, trackers) <- case parseErrors text of
     [] -> do
-      let ProofTextRoot text = textToCheck oldProofText text1
+      let ProofTextRoot texts = text
       let file = maybe "" Text.pack fileArg
       let filePos = Position.file_only $ make_bytes file
-      let text' = ProofTextInstr Position.none (GetArgument (File NonTex) file) : text
+      let text' = ProofTextInstr Position.none (GetArgument (File NonTex) file) : texts
       (success, newProofText, trackers) <- verifyRoot mesonCache proverCache filePos text'
-      mapM_ (write_cache cache . ProofTextRoot) newProofText
       pure (success, trackers)
     err : _ -> do
       errorParser (errorPos err) (show_bytes err)

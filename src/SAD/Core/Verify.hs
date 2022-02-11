@@ -65,14 +65,6 @@ verify [] = do
   prove <- asks (getInstruction proveParam)
   when (motivated && prove) verifyThesis >> return ([], [])
 verify (ProofTextBlock block : rest) = verifyBlock block rest
-verify (ProofTextChecked txt : rest) = do
-  instructions <- asks instructions
-  let newInstructions = [NonProofTextStoredInstr (SetBool proveParam False : Verbose False : instructions)]
-  let newTxt = Block.setChildren txt (Block.children txt ++ newInstructions)
-  setChecked True
-  verify (newTxt : rest)
-verify (NonProofTextStoredInstr ins : rest) =
-  local (\state -> state {instructions = ins}) (verify rest)
 verify (p@(ProofTextInstr pos (Command cmd)) : rest) =
   pushProofText p <$> (command cmd >> verify rest)
   where
@@ -144,10 +136,9 @@ verifyBlock block rest = do
 
   let Block f body kind _ _ _ _ = block
 
-  alreadyChecked <- readRState alreadyChecked
 
   -- statistics and user communication
-  unless alreadyChecked $ incrementCounter Sections
+  incrementCounter Sections
   whenInstruction printsectionParam $ justIO $
     Message.outputForTheL Message.WRITELN (Block.position block) $
     make_bytes (trim_line (Block.showForm 0 block ""))
@@ -163,10 +154,8 @@ verifyBlock block rest = do
       then return f
       -- For low-level blocks we check definitions and fortify terms (by supplying evidence).
       else
-        fillDef (Block.position block) alreadyChecked contextBlock
+        fillDef (Block.position block) contextBlock
           <|> (setFailed >> return f)
-
-  setChecked False
 
   let restProofText = ProofTextBlock block : rest
 
@@ -260,8 +249,7 @@ verifyBlock block rest = do
         thesisMotivated = motivated && not newMotivation,
         currentThesis = Context.setFormula thesis finalThesis }) $ verifyProof []
       -- put everything together
-      let checkMark = if Block.isTopLevel block then id else ProofTextChecked
-      return (ProofTextBlock newBlock : newBlocks, checkMark (ProofTextBlock markedBlock) : markedBlocks)
+      return (ProofTextBlock newBlock : newBlocks, ProofTextBlock markedBlock : markedBlocks)
 
 {- some automated processing steps: add induction hypothesis and case hypothesis
 at the right point in the context; extract rewriteRules from them and further
