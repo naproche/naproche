@@ -132,8 +132,8 @@ launchProver pos iteration = do
   cache <- asks proverCache
   let callATP = justIO $ pure $ Prover.export cache pos iteration instrList context goal
   callATP >>= timeWith ProofTimer . justIO >>= guardResult
-  res <- readTrackers
-  case res of
+  trackers <- readTrackers
+  case trackers of
     Timer _ time : _ -> do
       addToTimer SuccessTimer time
       incrementCounter SuccessfulGoals
