@@ -226,6 +226,8 @@ isTrm :: Formula -> Bool
 isTrm Trm{} = True; isTrm _ = False
 hasDEC :: Formula -> Bool
 hasDEC (Tag EqualityChain _) = True; hasDEC _ = False
+hasDMK :: Formula -> Bool
+hasDMK (Tag GenericMark _ ) = True; hasDMK _ = False
 isExi :: Formula -> Bool
 isExi (Exi _ _) = True; isExi _ = False
 isAll :: Formula -> Bool

@@ -411,10 +411,6 @@ unfoldAtomic sign f = do
     unfGuard unfoldSetting action =
       asks unfoldSetting >>= \p -> if p then action else return []
 
-hasDMK :: Formula -> Bool
-hasDMK (Tag GenericMark _ ) = True
-hasDMK _ = False
-
 setType :: Formula -> Bool
 setType Var {varInfo = info} = any (infoTwins ThisT $ mkSet ThisT) info
 setType Trm {trmInfo = info} = any (infoTwins ThisT $ mkSet ThisT) info
