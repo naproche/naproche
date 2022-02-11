@@ -76,7 +76,7 @@ Let R be a rewriting system.
 End.
 \<close>
 
-naproche_problems  (* FIXME fragile for cached text *)
+naproche_problems
 
 naproche_problem 1
   by (metis assms(6) assms(7) assms(8))
