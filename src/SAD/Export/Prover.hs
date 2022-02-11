@@ -73,7 +73,6 @@ export cache pos iteration instrs context goal = do
 
   when (isNothing prover) $ Message.errorExport pos ("No prover named " <> quote proverName)
 
-
   let task = make_bytes $ TPTP.output context goal
   when (getInstr dumpParam instrs) $
     Message.output Bytes.empty Message.WRITELN pos task
