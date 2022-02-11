@@ -62,7 +62,7 @@ verify [] = do
   prove <- asks (getInstruction proveParam)
   when (motivated && prove) verifyThesis >> return []
 verify (ProofTextBlock block : rest) = verifyBlock block rest
-verify (p@(ProofTextInstr pos (Command cmd)) : rest) = command cmd >> verify rest
+verify (ProofTextInstr pos (Command cmd) : rest) = command cmd >> verify rest
   where
     command :: Command -> VerifyMonad ()
     command PrintRules = do
@@ -88,10 +88,7 @@ verify (p@(ProofTextInstr pos (Command cmd)) : rest) = command cmd >> verify res
     message msg = reasonLog Message.WRITELN (Position.no_range_position pos) msg
 verify (ProofTextInstr _ instr : rest) = local (addInstruction instr) (verify rest)
 verify (ProofTextDrop _ instr : rest) = local (dropInstruction instr) (verify rest)
-verify (ProofTextSynonym _ : rest) = verify rest
-verify (ProofTextPretyping _ _ : rest) = verify rest
-verify (ProofTextMacro _ : rest) = verify rest
-verify (ProofTextError _ : _) = undefined
+verify (_ : rest) = verify rest
 
 verifyThesis :: VerifyMonad ()
 verifyThesis = do
