@@ -110,8 +110,7 @@ verifyThesis = do
       unless (isTop . Context.formula $ thesis) $ incrementCounter Goals
       proveThesis pos <|> (
         reasonLog Message.ERROR pos "goal failed" >> setFailed >>
-        --guardInstruction skipfailParam >>
-        incrementCounter FailedGoals)
+        guardInstruction skipfailParam >> incrementCounter FailedGoals)
 
 verifyBlock :: Block -> [ProofText] -> VerifyMonad [ProofText]
 verifyBlock block rest = do
