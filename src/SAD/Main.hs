@@ -180,8 +180,7 @@ proveFOL txts opts0 mesonCache proverCache startTime fileArg = do
       let file = maybe "" Text.pack fileArg
       let filePos = Position.file_only $ make_bytes file
       let txts' = ProofTextInstr Position.none (GetArgument (File NonTex) file) : txts
-      (success, newProofText, trackers) <- verifyRoot mesonCache proverCache filePos txts'
-      pure (success, trackers)
+      verifyRoot mesonCache proverCache filePos txts'
     err : _ -> do
       errorParser (errorPos err) (show_bytes err)
       pure (False, [])

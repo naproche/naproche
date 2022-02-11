@@ -37,7 +37,7 @@ import qualified Isabelle.Position as Position
 
 
 -- | verify proof text (document root)
-verifyRoot :: MESON.Cache -> Prover.Cache -> Position.T -> [ProofText] -> IO (Bool, Maybe [ProofText], [Tracker])
+verifyRoot :: MESON.Cache -> Prover.Cache -> Position.T -> [ProofText] -> IO (Bool, [Tracker])
 verifyRoot mesonCache proverCache filePos text = do
   Message.outputReasoner Message.TRACING filePos "verification started"
 
@@ -51,22 +51,18 @@ verifyRoot mesonCache proverCache filePos text = do
   Message.outputReasoner Message.TRACING filePos $
     "verification " <> (if success then "successful" else "failed")
 
-  return (success, fmap (tail . snd) result, trackers)
+  return (success, trackers)
 
 -- Main verification loop, based on mutual functions:
 -- verify, verifyBlock, verifyProof
 
-pushProofText :: ProofText -> ([ProofText], [ProofText]) -> ([ProofText], [ProofText])
-pushProofText p (as, bs) = (as, p : bs)
-
-verify :: [ProofText] -> VerifyMonad ([ProofText], [ProofText])
+verify :: [ProofText] -> VerifyMonad [ProofText]
 verify [] = do
   motivated <- asks thesisMotivated
   prove <- asks (getInstruction proveParam)
-  when (motivated && prove) verifyThesis >> return ([], [])
+  when (motivated && prove) verifyThesis >> return []
 verify (ProofTextBlock block : rest) = verifyBlock block rest
-verify (p@(ProofTextInstr pos (Command cmd)) : rest) =
-  pushProofText p <$> (command cmd >> verify rest)
+verify (p@(ProofTextInstr pos (Command cmd)) : rest) = command cmd >> verify rest
   where
     command :: Command -> VerifyMonad ()
     command PrintRules = do
@@ -90,13 +86,11 @@ verify (p@(ProofTextInstr pos (Command cmd)) : rest) =
       message "unsupported instruction"
     message :: String -> VerifyMonad ()
     message msg = reasonLog Message.WRITELN (Position.no_range_position pos) msg
-verify (p@(ProofTextInstr _ instr) : rest) =
-  pushProofText p <$> local (addInstruction instr) (verify rest)
-verify (p@(ProofTextDrop _ instr) : rest) =
-  pushProofText p <$> local (dropInstruction instr) (verify rest)
-verify (p@ProofTextSynonym{} : rest) = pushProofText p <$> verify rest
-verify (p@ProofTextPretyping{} : rest) = pushProofText p <$> verify rest
-verify (p@ProofTextMacro{} : rest) = pushProofText p <$> verify rest
+verify (ProofTextInstr _ instr : rest) = local (addInstruction instr) (verify rest)
+verify (ProofTextDrop _ instr : rest) = local (dropInstruction instr) (verify rest)
+verify (ProofTextSynonym _ : rest) = verify rest
+verify (ProofTextPretyping _ _ : rest) = verify rest
+verify (ProofTextMacro _ : rest) = verify rest
 verify (ProofTextError _ : _) = undefined
 
 verifyThesis :: VerifyMonad ()
@@ -119,7 +113,7 @@ verifyThesis = do
         --guardInstruction skipfailParam >>
         incrementCounter FailedGoals)
 
-verifyBlock :: Block -> [ProofText] -> VerifyMonad ([ProofText], [ProofText])
+verifyBlock :: Block -> [ProofText] -> VerifyMonad [ProofText]
 verifyBlock block rest = do
   state <- ask
   let VState {
@@ -156,9 +150,7 @@ verifyBlock block rest = do
         fillDef (Block.position block) contextBlock
           <|> (setFailed >> return f)
 
-  let restProofText = ProofTextBlock block : rest
-
-  ifFailed (return (restProofText, restProofText)) $ do
+  ifFailed (return (ProofTextBlock block : rest)) $ do
     let proofTask = generateProofTask kind (Block.declaredNames block) fortifiedFormula
     let freshThesis = Context proofTask newBranch []
     let toBeProved = Block.needsProof block && not (Block.isTopLevel block)
@@ -175,7 +167,7 @@ verifyBlock block rest = do
         "thesis: " <> show (Context.formula freshThesis)
 
 
-    (fortifiedProof, markedProof) <-
+    fortifiedProof <-
       local (\st -> st {
         thesisMotivated = toBeProved,
         currentThesis = freshThesis,
@@ -189,9 +181,8 @@ verifyBlock block rest = do
           Block.formula = deleteInductionOrCase fortifiedFormula,
           Block.body = fortifiedProof }
     let formulaImage = Block.formulate newBlock
-    let markedBlock = block {Block.body = markedProof}
 
-    ifFailed (return (ProofTextBlock newBlock : rest, ProofTextBlock markedBlock : rest)) $ do
+    ifFailed (return (ProofTextBlock newBlock : rest)) $ do
 
       skolem <- asks skolemCounter
       let (mesonRules, intermediateSkolem) = MESON.contras (deTag formulaImage) skolem
@@ -226,7 +217,7 @@ verifyBlock block rest = do
             then addEvaluation evaluations formulaImage
             else evaluations-- extract evaluations
       -- Now we are done with the block. Move on and verify the rest.
-      (newBlocks, markedBlocks) <-
+      newBlocks <-
         local (\st -> st {
           thesisMotivated = motivated && newMotivation,
           guards = newGuards,
@@ -248,14 +239,14 @@ verifyBlock block rest = do
         thesisMotivated = motivated && not newMotivation,
         currentThesis = Context.setFormula thesis finalThesis }) $ verifyProof []
       -- put everything together
-      return (ProofTextBlock newBlock : newBlocks, ProofTextBlock markedBlock : markedBlocks)
+      return (ProofTextBlock newBlock : newBlocks)
 
 {- some automated processing steps: add induction hypothesis and case hypothesis
 at the right point in the context; extract rewriteRules from them and further
 refine the currentThesis. Then move on with the verification loop.
 If neither inductive nor case hypothesis is present this is the same as
 verify state -}
-verifyProof :: [ProofText] -> VerifyMonad ([ProofText], [ProofText])
+verifyProof :: [ProofText] -> VerifyMonad [ProofText]
 verifyProof restProofText = do
   state <- ask
   let VState {
@@ -264,7 +255,7 @@ verifyProof restProofText = do
     currentContext = context,
     currentBranch  = branch} = state
   let
-    process :: [Context] -> Formula -> VerifyMonad ([ProofText], [ProofText])
+    process :: [Context] -> Formula -> VerifyMonad [ProofText]
     process newContext f = do
       let newRules = extractRewriteRule (head newContext) ++ rules
           (_, _, newThesis) =
@@ -279,7 +270,7 @@ verifyProof restProofText = do
         currentThesis = newThesis,
         currentContext = newContext}) $ verifyProof restProofText
   let
-    dive :: (Formula -> Formula) -> [Context] -> Formula -> VerifyMonad ([ProofText], [ProofText])
+    dive :: (Formula -> Formula) -> [Context] -> Formula -> VerifyMonad [ProofText]
     dive construct context (Imp (Tag InductionHypothesis f) g)
       | isClosed f = process (Context.setFormula thesis f : context) (construct g)
     dive construct context (Imp (Tag Tag.CaseHypothesis f) g)
