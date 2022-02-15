@@ -23,6 +23,7 @@ import qualified Isabelle.Value as Value
 import qualified Isabelle.Bash as Bash
 import qualified Isabelle.Process_Result as Process_Result
 import qualified Isabelle.Time as Time
+import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
 import Isabelle.Time (Time)
 import Isabelle.Library
 
@@ -84,7 +85,9 @@ make_prover name variable command status messages =
 run :: Program.Context -> Prover -> Bytes -> IO Process_Result.T
 run context prover input = do
   params <- _command prover prover input
-  System.bash_process context params
+  result <- System.bash_process context params
+  Isabelle_Thread.expose_stopped
+  return result
 
 status :: Prover -> Process_Result.T -> Status
 status prover = _status prover prover
