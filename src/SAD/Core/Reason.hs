@@ -66,7 +66,7 @@ withContext action context =
 proveThesis' :: Position.T -> Context -> VerifyMonad ()
 proveThesis' pos tc =
   local (\st -> st {currentThesis = tc}) (proveThesis pos)
-  
+
 proveThesis :: Position.T -> VerifyMonad ()
 proveThesis pos = do
   depthlimit <- asks (getInstruction depthlimitParam)
@@ -142,7 +142,7 @@ launchProver pos iteration = do
     Prover.Contradictory_Axioms -> do
       checkConsistency <- asks (getInstruction checkconsistencyParam)
       if checkConsistency then do
-        reasonLog Message.WRITELN pos "Found contradictory axioms. Make sure you are in a proof by contradiction!"
+        reasonLog Message.WARNING pos "Found contradictory axioms. Make sure you are in a proof by contradiction!"
         mzero
       else pure ()
     _ -> mzero
