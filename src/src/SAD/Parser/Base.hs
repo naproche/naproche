@@ -10,6 +10,7 @@ Parser datatype and monad instance.
 {-# LANGUAGE MultiWayIf #-}
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE BlockArguments #-}
+{-# LANGUAGE CPP #-}
 
 module SAD.Parser.Base
   ( Parser(..),
@@ -93,11 +94,16 @@ instance Monad (Parser st) where
     let pok = tryParses f ok consumedFail emptyFail
     in  runParser p st pok consumedFail emptyFail
 
+#ifdef __GHCJS__
+  fail = failParser
+#endif
 
 instance Fail.MonadFail (Parser st) where
-  fail s = Parser \st _ _ emptyFail ->
-    emptyFail $ newErrorMessage (newMessage (Text.pack s)) (stPosition st)
+  fail = failParser
 
+failParser :: String -> Parser st a
+failParser s = Parser \st _ _ emptyFail ->
+  emptyFail $ newErrorMessage (newMessage (Text.pack s)) (stPosition st)
 
 
 -- This function is simple, but unfriendly to read because of all the

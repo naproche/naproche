@@ -30,6 +30,7 @@ import SAD.API
 import qualified Naproche.Param as Param
 import Naproche.File (MonadFile)
 import Control.Monad.IO.Class (MonadIO(liftIO))
+import qualified SAD.Core.Message as Kind
 
 mainBody :: MonadFile m => [Instr] -> [ProofText] -> Maybe FilePath -> m Int
 mainBody opts0 text0 fileArg = do
@@ -58,7 +59,7 @@ mainBody opts0 text0 fileArg = do
 showTranslation :: [ProofText] -> UTCTime -> IO ()
 showTranslation txts startTime = do
   let timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)
-  mapM_ (\case ProofTextBlock bl -> print bl; _ -> return ()) txts
+  mapM_ (\case ProofTextBlock bl -> outputTranslate Kind.WRITELN Position.none (show bl); _ -> return ()) txts
 
   -- print statistics
   finishTime <- getCurrentTime

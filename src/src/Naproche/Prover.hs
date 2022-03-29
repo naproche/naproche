@@ -9,7 +9,7 @@ External provers.
 {-# LANGUAGE MultiWayIf #-}
 
 module Naproche.Prover (
-  Prover, Status (..), get_name, run, status, run_status,
+  Prover, Status (..), get_name, get_variable, run, status, run_status,
   verbose, timeout, memory_limit, by_contradiction,
   list, find, eprover, eproververb, spass, vampire
 )
@@ -60,6 +60,9 @@ data Messages = Messages {
 
 get_name :: Prover -> Bytes
 get_name Prover{_name} = _name
+
+get_variable :: Prover -> Bytes
+get_variable Prover{_variable} = _variable
 
 instance Show Prover where show = make_string . get_name
 
