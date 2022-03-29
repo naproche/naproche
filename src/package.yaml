@@ -42,6 +42,7 @@ library:
   exposed-modules:
     - Naproche.Program
     - Naproche.Console
+    - Naproche.Prover
     - Naproche.File
     - SAD.Core.Message
     - SAD.Data.Instr

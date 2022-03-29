@@ -70,7 +70,7 @@ bash_process0 address password params = do
 
     run :: Bytes -> [Bytes]
     run isabelle_tmp =
-     [Bash.server_run, space_implode " " script, input,
+     [Bash.server_run, script, input,
       YXML.string_of_body (Encode.option (Encode.string . absolute_path) cwd),
       YXML.string_of_body
       (Encode.list (Encode.pair Encode.string Encode.string)

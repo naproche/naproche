@@ -79,8 +79,10 @@ export cache pos iteration instrs context goal = do
 
   reportBracketIO pos $ do
     result <-
-      Cache.apply cache (proverName, timeLimit, memoryLimit, byContradiction, task) $
-        Prover.run program_context (fromJust prover) task
+      Cache.apply cache (proverName, timeLimit, memoryLimit, byContradiction, task) $ do
+        result <- Program.runProver program_context (fromJust prover) task
+        Isabelle_Thread.expose_stopped
+        return result
     when printProver $
       Message.output Bytes.empty Message.WRITELN pos (Process_Result.out result)
 

@@ -42,8 +42,8 @@ import qualified Isabelle.YXML as YXML
 import qualified Isabelle.Naproche as Naproche
 import Isabelle.Library
 import qualified Isabelle.Process_Result as Process_Result
-import qualified Isabelle.Bash as Bash
 import qualified Naproche.System as System
+import qualified Naproche.Prover as Prover
 
 {- program context -}
 
@@ -54,7 +54,7 @@ class MessageExchangeContext context where
   get_options :: context -> Maybe Options.T
 
 class RunProverContext c where
-  runProver :: c -> Bash.Params -> IO Process_Result.T
+  runProver :: c -> Prover.Prover -> Bytes -> IO Process_Result.T
 
 {- console context -}
 
@@ -67,7 +67,9 @@ instance MessageExchangeContext Console where
   get_options Console = Nothing
 
 instance RunProverContext Console where
-  runProver _ = System.bash_process
+  runProver _ prover input = do
+    params <- Prover.prover_command (Prover.get_args prover) prover input
+    System.bash_process params
 
 check_pide :: (MessageExchangeContext context, Applicative f) => context -> f ()
 check_pide context =

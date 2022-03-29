@@ -46,8 +46,8 @@ bash_process params = do
 
     let script =
           if Bash.get_redirect params then
-            "eval " <> Bash.string (space_implode " " (Bash.get_script params)) <> " 2>&1"
-          else space_implode " " (Bash.get_script params)
+            "eval " <> Bash.string (Bash.get_script params) <> " 2>&1"
+          else Bash.get_script params
 
     ByteString.hPut tmp_handle (Bytes.unmake $ env <> script)
     IO.hClose tmp_handle
