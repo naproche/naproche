@@ -28,7 +28,6 @@ import Isabelle.Time (Time)
 import Isabelle.Library
 
 import qualified Naproche.Program as Program
-import qualified Naproche.System as System
 
 
 {- type Prover -}
@@ -82,17 +81,17 @@ make_prover name variable command status messages =
 
 {- run prover -}
 
-run :: Program.Context -> Prover -> Bytes -> IO Process_Result.T
+run :: (Program.MessageExchangeContext c, Program.RunProverContext c) => c -> Prover -> Bytes -> IO Process_Result.T
 run context prover input = do
   params <- _command prover prover input
-  result <- System.bash_process context params
+  result <- Program.runProver context params
   Isabelle_Thread.expose_stopped
   return result
 
 status :: Prover -> Process_Result.T -> Status
 status prover = _status prover prover
 
-run_status :: Program.Context -> Prover -> Bytes -> IO Status
+run_status :: (Program.MessageExchangeContext c, Program.RunProverContext c) => c -> Prover -> Bytes -> IO Status
 run_status context prover input =
   status prover <$> run context prover input
 
@@ -126,7 +125,7 @@ prover_command args prover input = do
   return $
     Bash.input input $
     Bash.timeout (_timeout prover) $
-    Bash.script (Bash.strings (exe : args))
+    Bash.script (map Bash.string (exe : args))
   
 prover_status :: Prover_Status
 prover_status prover result =

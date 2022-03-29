@@ -10,8 +10,6 @@ module SAD.Import.Reader (readInit, readProofText) where
 
 import Data.Maybe
 import Control.Monad
-import System.IO.Error
-import Control.Exception
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 
@@ -30,28 +28,29 @@ import SAD.Parser.Primitives
 import SAD.Parser.Error
 import qualified SAD.Core.Message as Message
 
-import qualified Isabelle.File as File
+import qualified Naproche.File as File
 import Isabelle.Library (make_bytes, make_string, make_text, show_bytes)
 import Isabelle.Position as Position
 import Isabelle.Bytes (Bytes)
 import qualified Isabelle.Bytes as Bytes
 
 import qualified Naproche.Program as Program
+import Control.Monad.IO.Class (MonadIO(liftIO))
 
 
 -- Init file parsing
 
-readInit :: Bytes -> IO [(Position.T, Instr)]
+readInit :: File.MonadFile m => Bytes -> m [(Position.T, Instr)]
 readInit file | Bytes.null file = return []
 readInit file = do
-  input <- catch (File.read (make_string file)) $ Message.errorParser (Position.file_only $ make_bytes file) . make_bytes . ioeGetErrorString
+  input <- File.read (make_string file)
   let tokens = filter isProperToken $ tokenize TexDisabled (Position.file $ make_bytes file) $ Text.fromStrict $ make_text input
-  fst <$> launchParser instructionFile (initState Program.console tokens)
+  fst <$> liftIO (launchParser instructionFile (initState Program.Console tokens))
 
 instructionFile :: FTL [(Position.T, Instr)]
 instructionFile = after (optLL1 [] $ chainLL1 instr) eof
 
-initState :: Program.Context -> [Token] -> State FState
+initState :: Program.MessageExchangeContext c => c -> [Token] -> State FState
 initState context tokens = State (initFState context) tokens NonTex Position.none
 
 
@@ -61,18 +60,18 @@ initState context tokens = State (initFState context) tokens NonTex Position.non
 -- @startWithTex@, a boolean indicating whether to execute the next file instruction using the tex parser,
 -- @pathToLibrary@, a path to where the read instruction should look for files and
 -- @text0@, containing some configuration.
-readProofText :: Bytes -> [ProofText] -> IO [ProofText]
+readProofText :: File.MonadFile m => Bytes -> [ProofText] -> m [ProofText]
 readProofText pathToLibrary text0 = do
-  context <- Program.thread_context
+  context <- liftIO $ Program.thread_context
   (text, reports) <- reader pathToLibrary [] [initState context noTokens] text0
-  when (Program.is_pide context) $ Message.reports reports
+  when (Program.is_pide context) $ liftIO $ Message.reports reports
   return text
 
-reader :: Bytes -> [Text] -> [State FState] -> [ProofText] -> IO ([ProofText], [Position.Report])
+reader :: File.MonadFile m => Bytes -> [Text] -> [State FState] -> [ProofText] -> m ([ProofText], [Position.Report])
 reader pathToLibrary doneFiles = go
   where
     go stateList [ProofTextInstr pos (GetArgument (Read pk) file)] = if Text.pack ".." `Text.isInfixOf` file
-      then Message.errorParser pos ("Illegal \"..\" in file name: " ++ show file)
+      then liftIO $ Message.errorParser pos ("Illegal \"..\" in file name: " ++ show file)
       else go stateList [ProofTextInstr pos $ GetArgument (File pk) $
             Text.pack (make_string pathToLibrary) <> Text.pack "/" <> file]
 
@@ -82,21 +81,19 @@ reader pathToLibrary doneFiles = go
           -- or the .ftl parser. Now if, for example, we originally read the file with the .ftl format and now we
           -- are reading the file again with the .tex format(by eg using '[readtex myfile.ftl]'), we want to throw an error.
           when (parserKind pState /= parserKind')
-            (Message.errorParser pos "Trying to read the same file once in Tex format and once in NonTex format.")
-          Message.outputMain Message.WARNING pos
+            (liftIO $ Message.errorParser pos "Trying to read the same file once in Tex format and once in NonTex format.")
+          liftIO $ Message.outputMain Message.WARNING pos
             (make_bytes ("Skipping already read file: " ++ show file))
-          (newProofText, newState) <- chooseParser pState
+          (newProofText, newState) <- liftIO $ chooseParser pState
           go (newState:states) newProofText
       | otherwise = do
-          text <-
-            catch (if Text.null file then getContents else make_string <$> File.read (Text.unpack file))
-              (Message.errorParser (Position.file_only $ make_bytes file) . make_bytes . ioeGetErrorString)
-          (newProofText, newState) <- reader0 (Position.file $ make_bytes file) (Text.pack text) (pState {parserKind = parserKind'})
+          text <- if Text.null file then liftIO getContents else make_string <$> File.read (Text.unpack file)
+          (newProofText, newState) <- liftIO $ reader0 (Position.file $ make_bytes file) (Text.pack text) (pState {parserKind = parserKind'})
           -- state from before reading is still here
           reader pathToLibrary (file:doneFiles) (newState:pState:states) newProofText
 
     go (pState:states) [ProofTextInstr _ (GetArgument (Text pk) text)] = do
-      (newProofText, newState) <- reader0 Position.start text (pState {parserKind = pk})
+      (newProofText, newState) <- liftIO $ reader0 Position.start text (pState {parserKind = pk})
       go (newState:pState:states) newProofText -- state from before reading is still here
 
     -- This says that we are only really processing the last instruction in a [ProofText].
@@ -105,12 +102,12 @@ reader pathToLibrary doneFiles = go
       return (t:ts, ls)
 
     go (pState:oldState:rest) [] = do
-      Message.outputParser Message.TRACING
+      liftIO $ Message.outputParser Message.TRACING
         (if null doneFiles then Position.none else Position.file_only $ make_bytes $ head doneFiles) "parsing successful"
       let resetState = oldState {
             stUser = (stUser pState) {tvrExpr = tvrExpr $ stUser oldState}}
       -- Continue running a parser after eg. a read instruction was evaluated.
-      (newProofText, newState) <- chooseParser resetState
+      (newProofText, newState) <- liftIO $ chooseParser resetState
       go (newState:rest) newProofText
 
     go (state:_) [] = return ([], reports $ stUser state)

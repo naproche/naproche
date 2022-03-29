@@ -1,0 +1,53 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.34.4.
+--
+-- see: https://github.com/sol/hpack
+
+name:           Isabelle
+version:        0.1.0.0
+description:    <https://github.com/naproche/naproche>
+homepage:       https://github.com/naproche/naproche#readme
+bug-reports:    https://github.com/naproche/naproche/issues
+license:        GPL-3
+build-type:     Simple
+
+source-repository head
+  type: git
+  location: https://github.com/naproche/naproche
+
+library
+  exposed-modules:
+      Isabelle.Server
+      Isabelle.Byte_Message
+      Isabelle.Isabelle_System
+  other-modules:
+      Paths_Isabelle
+  hs-source-dirs:
+      src
+  default-extensions:
+      GeneralizedNewtypeDeriving
+      InstanceSigs
+      LambdaCase
+      PartialTypeSignatures
+      ScopedTypeVariables
+  ghc-options: -O2 -Wall -fno-warn-unused-do-bind -fno-warn-unused-matches -fno-warn-name-shadowing
+  build-depends:
+      Naproche-SAD
+    , array
+    , base >=4.7 && <5
+    , bytestring
+    , containers
+    , ghc-prim
+    , megaparsec
+    , mtl
+    , network
+    , process
+    , split
+    , temporary
+    , text
+    , threads
+    , time
+    , transformers
+    , uuid
+  default-language: Haskell2010

@@ -1,0 +1,47 @@
+name:                Isabelle 
+version:             0.1.0.0
+github:              "naproche/naproche"
+license:             GPL-3
+
+description:         <https://github.com/naproche/naproche>
+
+dependencies:
+- base >= 4.7 && < 5
+- array
+- bytestring
+- containers
+- ghc-prim
+- megaparsec
+- mtl
+- network
+- process
+- split
+- temporary
+- text
+- threads
+- time
+- transformers
+- uuid
+- Naproche-SAD
+
+default-extensions:
+  - GeneralizedNewtypeDeriving
+  - InstanceSigs
+  - LambdaCase
+  - PartialTypeSignatures
+  - ScopedTypeVariables
+
+ghc-options:
+  - -O2
+  - -Wall
+  - -fno-warn-unused-do-bind
+  - -fno-warn-unused-matches
+  - -fno-warn-name-shadowing
+
+library:
+  source-dirs:
+    - src
+  exposed-modules:
+    - Isabelle.Server
+    - Isabelle.Byte_Message
+    - Isabelle.Isabelle_System

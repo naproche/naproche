@@ -9,30 +9,17 @@ Main application entry point: console or server mode.
 
 module SAD.Main where
 
-import Control.Monad (unless, when)
+import Control.Monad (unless)
 import Data.Char (toLower)
 import Data.Time (UTCTime, addUTCTime, getCurrentTime, diffUTCTime)
 import Data.List (isSuffixOf)
-import Data.Maybe (mapMaybe)
 
-import qualified Control.Exception as Exception
-import Control.Exception (catch)
 import qualified Data.Text.Lazy as Text
 import qualified System.Console.GetOpt as GetOpt
-import qualified System.Environment as Environment
-import Network.Socket (Socket)
 
 import qualified Isabelle.Bytes as Bytes
 import Isabelle.Bytes (Bytes)
-import qualified Isabelle.Byte_Message as Byte_Message
-import qualified Isabelle.Naproche as Naproche
-import qualified Isabelle.Server as Server
-import qualified Isabelle.Options as Options
-import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
-import qualified Isabelle.UUID as UUID
 import qualified Isabelle.Position as Position
-import qualified Isabelle.YXML as YXML
-import qualified Isabelle.Process_Result as Process_Result
 import Isabelle.Library
 
 import qualified SAD.Prove.MESON as MESON
@@ -40,94 +27,16 @@ import qualified SAD.Export.Prover as Prover
 import SAD.Data.Instr
 import SAD.API
 
-import qualified Naproche.Program as Program
-import qualified Naproche.Console as Console
 import qualified Naproche.Param as Param
+import Naproche.File (MonadFile)
+import Control.Monad.IO.Class (MonadIO(liftIO))
 
+mainBody :: MonadFile m => [Instr] -> [ProofText] -> Maybe FilePath -> m Int
+mainBody opts0 text0 fileArg = do
+  mesonCache <- liftIO $ MESON.init_cache
+  proverCache <- liftIO $ Prover.init_cache
 
-main :: IO ()
-main  = do
-  Console.setup
-
-  -- command line and init file
-  args0 <- Environment.getArgs
-  (opts0, pk, fileArg) <- readArgs args0
-  text0 <- (map (uncurry ProofTextInstr) (reverse opts0) ++) <$> case fileArg of
-    Nothing -> do
-      stdin <- getContents
-      pure [ProofTextInstr Position.none $ GetArgument (Text pk) (Text.pack stdin)]
-    Just name -> do
-      pure [ProofTextInstr Position.none $ GetArgument (File pk) (Text.pack name)]
-  let opts1 = map snd opts0
-
-  mesonCache <- MESON.init_cache
-  proverCache <- Prover.init_cache
-
-  if getInstr helpParam opts1 then
-    putStr (GetOpt.usageInfo usageHeader options)
-  else -- main body with explicit error handling, notably for PIDE
-      (if getInstr serverParam opts1 then
-        Server.server (Server.publish_stdout "Naproche-SAD") (mainServer mesonCache proverCache args0)
-      else do
-        Program.init_console
-        rc <- do
-          mainBody mesonCache proverCache opts1 text0 fileArg
-            `catch` (\Exception.UserInterrupt -> do
-              Program.exit_thread
-              Console.stderr ("Interrupt" :: String)
-              return Process_Result.interrupt_rc)
-            `catch` (\(err :: Exception.SomeException) -> do
-              Program.exit_thread
-              Console.stderr (Exception.displayException err)
-              return 1)
-        Console.exit rc)
-
-mainServer :: MESON.Cache -> Prover.Cache -> [String] -> Socket -> IO ()
-mainServer mesonCache proverCache args0 socket =
-  let
-    exchange_message0 = Byte_Message.exchange_message0 socket
-    robust_error msg =
-      exchange_message0 [Naproche.output_error_command, msg]
-        `catch` (\(_ :: Exception.IOException) -> return ())
-  in
-    do
-      chunks <- Byte_Message.read_message socket
-      case chunks of
-        Just (command : threads) | command == Naproche.cancel_program ->
-          mapM_ Isabelle_Thread.stop_uuid (mapMaybe UUID.parse threads)
-
-        Just [command, more_args, opts, text] | command == Naproche.forthel_program -> do
-          let options = Options.decode $ YXML.parse_body opts
-
-          Exception.bracket_ (Program.init_pide socket options)
-            Program.exit_thread
-            (do
-              thread_uuid <- Isabelle_Thread.my_uuid
-              mapM_ (\uuid -> exchange_message0 [Naproche.threads_command, UUID.print uuid]) thread_uuid
-
-              let more_text = Text.pack $ make_string text
-
-              (opts0, pk, fileArg) <- readArgs (args0 ++ lines (make_string more_args))
-              let opts1 = map snd opts0
-              let text0 = map (uncurry ProofTextInstr) (reverse opts0)
-              let text1 = text0 ++ [ProofTextInstr Position.none (GetArgument (Text pk) more_text)]
-
-              rc <- do
-                mainBody mesonCache proverCache opts1 text1 fileArg
-                  `catch` (\(err :: Program.Error) -> do
-                    robust_error $ Program.print_error err
-                    return 0)
-                  `catch` (\(err :: Exception.SomeException) -> do
-                    robust_error $ make_bytes $ Exception.displayException err
-                    return 0)
-
-              when (rc /= 0) $ robust_error "ERROR")
-
-        _ -> return ()
-
-mainBody :: MESON.Cache -> Prover.Cache -> [Instr] -> [ProofText] -> Maybe FilePath -> IO Int
-mainBody mesonCache proverCache opts0 text0 fileArg = do
-  startTime <- getCurrentTime
+  startTime <- liftIO getCurrentTime
 
   -- parse input text
   txts <- readProofText (getInstr libraryParam opts0) text0
@@ -136,14 +45,14 @@ mainBody mesonCache proverCache opts0 text0 fileArg = do
     "fol" -> do
       -- if -T / --onlytranslate is passed as an option, only print the translated text
       if getInstr onlytranslateParam opts0
-        then do { showTranslation txts startTime; return 0 }
+        then do { liftIO $ showTranslation txts startTime; return 0 }
         else do
-          success <- proveFOL txts opts0 mesonCache proverCache startTime fileArg
-          MESON.prune_cache mesonCache
-          Prover.prune_cache proverCache
+          success <- liftIO $ proveFOL txts opts0 mesonCache proverCache startTime fileArg
+          liftIO $ MESON.prune_cache mesonCache
+          liftIO $ Prover.prune_cache proverCache
           return (if success then 0 else 1)
     "cic" -> return 0
-    "lean" -> do { exportLean txts; return 0 }
+    "lean" -> do { liftIO $ exportLean txts; return 0 }
     s -> errorWithoutStackTrace ("Bad theory (fol|cic|lean): " <> quote s)
 
 showTranslation :: [ProofText] -> UTCTime -> IO ()
@@ -232,7 +141,7 @@ proveFOL txts opts0 mesonCache proverCache startTime fileArg = do
 
 -- Command line parsing
 
-readArgs :: [String] -> IO ([(Position.T, Instr)], ParserKind, Maybe FilePath)
+readArgs :: MonadFile m => [String] -> m ([(Position.T, Instr)], ParserKind, Maybe FilePath)
 readArgs args = do
   let (instrs, files, errs) = GetOpt.getOpt GetOpt.Permute options args
 

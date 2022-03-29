@@ -58,7 +58,7 @@ strings = space_implode " " . map string
 {- server parameters -}
 
 data Params = Params {
-    _script :: Bytes,
+    _script :: [Bytes],
     _input :: Bytes,
     _cwd :: Maybe Bytes,
     _putenv :: [(Bytes, Bytes)],
@@ -67,7 +67,7 @@ data Params = Params {
     _description :: Bytes}
   deriving (Show, Eq)
 
-get_script :: Params -> Bytes
+get_script :: Params -> [Bytes]
 get_script = _script
 
 get_input :: Params -> Bytes
@@ -88,7 +88,7 @@ get_timeout = _timeout
 get_description :: Params -> Bytes
 get_description = _description
 
-script :: Bytes -> Params
+script :: [Bytes] -> Params
 script script = Params script "" Nothing [] False Time.zero ""
 
 input :: Bytes -> Params -> Params

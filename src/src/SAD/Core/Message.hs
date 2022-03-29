@@ -110,7 +110,7 @@ console_position pos = space_implode " " (catMaybes [file_name, details])
 show_position :: Position.T -> String
 show_position = make_string . console_position
 
-make_message :: Program.Context -> Kind -> Bytes -> Position.T -> Bytes -> (Bytes, Bytes)
+make_message :: Program.MessageExchangeContext c => c -> Kind -> Bytes -> Position.T -> Bytes -> (Bytes, Bytes)
 make_message context kind origin pos text =
   if Program.is_pide context then
     let

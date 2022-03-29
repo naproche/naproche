@@ -148,16 +148,16 @@ export_formula = Isabelle.mk_trueprop . form
 
 {- Isabelle term operations -}
 
-cert_terms :: Program.Context -> [Isabelle.Term] -> IO [Isabelle.Typ]
+cert_terms :: Program.MessageExchangeContext c => c -> [Isabelle.Term] -> IO [Isabelle.Typ]
 cert_terms = Program.yxml_pide_command Encode.term Decode.typ Isabelle.cert_terms_command
 
-cert_term :: Program.Context -> Isabelle.Term -> IO Isabelle.Typ
+cert_term :: Program.MessageExchangeContext c => c -> Isabelle.Term -> IO Isabelle.Typ
 cert_term = singletonM . cert_terms
 
-print_terms :: Program.Context -> [Isabelle.Term] -> IO [Bytes]
+print_terms :: Program.MessageExchangeContext c => c -> [Isabelle.Term] -> IO [Bytes]
 print_terms = Program.yxml_pide_command Encode.term YXML.string_of_body Isabelle.print_terms_command
 
-print_term :: Program.Context -> Isabelle.Term -> IO Bytes
+print_term :: Program.MessageExchangeContext c => c -> Isabelle.Term -> IO Bytes
 print_term = singletonM . print_terms
 
 
@@ -173,15 +173,15 @@ encode_sequent =
   let encode = Encode.list (Encode.term . export_formula)
   in Encode.pair encode encode
 
-print_sequents :: Program.Context -> [Sequent] -> IO [Bytes]
+print_sequents :: Program.MessageExchangeContext c => c -> [Sequent] -> IO [Bytes]
 print_sequents =
   Program.yxml_pide_command encode_sequent YXML.string_of_body
     Isabelle.print_sequents_command
 
-print_sequent :: Program.Context -> Sequent -> IO Bytes
+print_sequent :: Program.MessageExchangeContext c => c -> Sequent -> IO Bytes
 print_sequent = singletonM . print_sequents
 
-export_sequent :: Program.Context -> (Bytes, Position.T) -> Sequent -> IO Bytes
+export_sequent :: Program.MessageExchangeContext c => c -> (Bytes, Position.T) -> Sequent -> IO Bytes
 export_sequent context (bname, pos) sequent = do
   let props = Position.properties_of $ Program.adjust_position context pos
   let arg =

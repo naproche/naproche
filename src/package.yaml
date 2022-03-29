@@ -1,0 +1,67 @@
+name:                Naproche-SAD
+version:             0.1.0.0
+github:              "naproche/naproche"
+license:             GPL-3
+
+description:         <https://github.com/naproche/naproche>
+
+dependencies:
+- base >= 4.7 && < 5
+- array
+- bytestring
+- containers
+- ghc-prim
+- megaparsec
+- mtl
+- process
+- split
+- temporary
+- text
+- threads
+- time
+- transformers
+- uuid
+
+default-extensions:
+  - GeneralizedNewtypeDeriving
+  - InstanceSigs
+  - LambdaCase
+  - PartialTypeSignatures
+  - ScopedTypeVariables
+
+ghc-options:
+  - -O2
+  - -Wall
+  - -fno-warn-unused-do-bind
+  - -fno-warn-unused-matches
+  - -fno-warn-name-shadowing
+
+library:
+  source-dirs:
+    - src
+  exposed-modules:
+    - Naproche.Program
+    - Naproche.Console
+    - Naproche.File
+    - SAD.Core.Message
+    - SAD.Data.Instr
+    - SAD.API
+    - SAD.Main
+    - Isabelle.Bytes
+    - Isabelle.Symbol
+    - Isabelle.UTF8
+    - Isabelle.File
+    - Isabelle.XML
+    - Isabelle.YXML
+    - Isabelle.Library
+    - Isabelle.Value
+    - Isabelle.UUID
+    - Isabelle.Isabelle_Thread
+    - Isabelle.Time
+    - Isabelle.Timing
+    - Isabelle.Options
+    - Isabelle.Bash
+    - Isabelle.Process_Result
+    - Isabelle.XML.Encode
+    - Isabelle.Naproche
+    - Isabelle.Position
