@@ -15,7 +15,8 @@ module SAD.Core.Message (
   Kind (..), output, error,
   outputMain, outputExport, outputForTheL, outputParser, outputReasoner,
   outputThesis, outputSimplifier, outputTranslate,
-  errorExport, errorParser
+  errorMain, errorExport, errorForTheL, errorParser, errorReasoner,
+  errorThesis, errorSimplifier,
 )
 where
 
@@ -157,6 +158,12 @@ outputThesis = output origin_thesis
 outputTranslate :: BYTES a => Kind -> Position.T -> a -> IO ()
 outputTranslate = output origin_translate
 
-errorExport, errorParser :: BYTES a => Position.T -> a -> IO b
+errorMain, errorExport, errorForTheL, errorParser, errorReasoner,
+  errorSimplifier, errorThesis :: BYTES a => Position.T -> a -> IO b
+errorMain = error origin_main
 errorExport = error origin_export
+errorForTheL = error origin_forthel
 errorParser = error origin_parser
+errorReasoner = error origin_reasoner
+errorSimplifier = error origin_simplifier
+errorThesis = error origin_thesis

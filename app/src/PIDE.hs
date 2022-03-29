@@ -17,6 +17,7 @@ import qualified Isabelle.Options as Options
 import qualified Isabelle.Isabelle_System as Isabelle_System
 import Naproche.Program
 import qualified Naproche.Prover as Prover
+import Isabelle.Library (getenv)
 
 data PIDE = PIDE Socket Options.T
 
@@ -28,7 +29,8 @@ instance MessageExchangeContext PIDE where
 
 instance RunProverContext PIDE where
   runProver (PIDE _ options) prover input = do
-    params <- Prover.prover_command (Prover.get_args prover) prover input
+    exe <- getenv (Prover.get_variable prover)
+    params <- Prover.prover_command exe (Prover.get_args prover) prover input
     Isabelle_System.bash_process options params
 
 init_pide :: Socket -> Options.T -> IO PIDE

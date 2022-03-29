@@ -12,7 +12,7 @@ module Naproche.Prover (
   Prover, Status (..), get_name, get_args, status,
   verbose, timeout, memory_limit, by_contradiction,
   list, find, eprover, eproververb, spass, vampire,
-  prover_command,
+  prover_command, get_variable,
 )
 where
 
@@ -57,6 +57,9 @@ data Messages = Messages {
 
 get_name :: Prover -> Bytes
 get_name Prover{_name} = _name
+
+get_variable :: Prover -> Bytes
+get_variable Prover{_variable} = _variable
 
 get_args :: Prover -> [Bytes]
 get_args p = _args p p
@@ -105,9 +108,8 @@ print_seconds = Value.print_int . round . Time.get_seconds
 
 {- prover "methods" -}
 
-prover_command :: [Bytes] -> Prover -> Bytes -> IO Bash.Params 
-prover_command args prover input = do
-  exe <- getenv (_variable prover)
+prover_command :: Bytes -> [Bytes] -> Prover -> Bytes -> IO Bash.Params 
+prover_command exe args prover input = do
   when (Bytes.null exe) $
     error $ make_string ("Cannot run prover " <> quote (_name prover) <>
       ": undefined environment variable " <> _variable prover)
@@ -133,7 +135,7 @@ prover_status prover result =
     if | not timeout && null out -> Error "No prover response"
        | not (timeout || positive || contradictions || negative || inconclusive) ->
           Error (cat_lines ("Bad prover response:" : out))
-       | positive || _by_contradiction prover && contradictions -> Success
+       | positive || (_by_contradiction prover && contradictions) -> Success
        | negative -> Failure
        | not (_by_contradiction prover) && contradictions -> Contradictory_Axioms
        | timeout || inconclusive -> Unknown

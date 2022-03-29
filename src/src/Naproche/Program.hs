@@ -68,7 +68,7 @@ instance MessageExchangeContext Console where
 
 instance RunProverContext Console where
   runProver _ prover input = do
-    params <- Prover.prover_command (Prover.get_args prover) prover input
+    params <- Prover.prover_command (Prover.get_name prover) (Prover.get_args prover) prover input
     System.bash_process params
 
 check_pide :: (MessageExchangeContext context, Applicative f) => context -> f ()
@@ -200,7 +200,9 @@ error :: Bytes -> IO a
 error msg = do
   context <- thread_context
   if is_pide context then Exception.throw $ Error msg
-  else errorWithoutStackTrace $ make_string msg
+  else do
+    write_message context [msg]
+    errorWithoutStackTrace ""
 
 
 {- serial numbers, preferable from Isabelle/ML -}
