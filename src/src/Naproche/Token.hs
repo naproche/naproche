@@ -2,7 +2,6 @@
 {-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE MultiWayIf #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE ImportQualifiedPost #-}
 
 -- |
 -- This module defines the Naproche lexer and its associated data types.
@@ -25,11 +24,11 @@ import Naproche.Helpers (guardM)
 import Data.Void (Void)
 import Data.Foldable
 import Data.Function (on)
-import Data.Text qualified as Text
+import qualified Data.Text as Text
 import Data.Text (Text)
 import Text.Megaparsec hiding (State)
-import Text.Megaparsec.Char qualified as Char
-import Text.Megaparsec.Char.Lexer qualified as Lexer
+import qualified Text.Megaparsec.Char as Char
+import qualified Text.Megaparsec.Char.Lexer as Lexer
 import Data.String (IsString(..))
 import Isabelle.Bytes (Bytes)
 import Isabelle.Library (make_bytes)

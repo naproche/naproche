@@ -1,29 +1,9 @@
-name:                Naproche-SAD
+name:                naproche
 version:             0.1.0.0
-github:              "naproche-community/naproche"
+github:              "naproche/naproche"
 license:             GPL-3
 
-extra-source-files:
-- README.md
-
-description:         <https://github.com/naproche-community/naproche>
-
-flags:
-  debug:
-    description: "Enable special debugging support"
-    manual: true
-    default: false
-
-
-when:
-  condition: flag(debug)
-  dependencies:
-  - haskell-stack-trace-plugin
-  ghc-options:
-  - -fplugin=StackTrace.Plugin
-  - -Weverything
-  - -Wno-unsafe
-  - -Wno-implicit-prelude
+description:         <https://github.com/naproche/naproche>
 
 dependencies:
 - base >= 4.7 && < 5
@@ -42,6 +22,8 @@ dependencies:
 - time
 - transformers
 - uuid
+- Naproche-SAD
+- Isabelle
 
 default-extensions:
   - GeneralizedNewtypeDeriving
@@ -57,29 +39,10 @@ ghc-options:
   - -fno-warn-unused-matches
   - -fno-warn-name-shadowing
 
-library:
-  source-dirs:
-    - src
-    - Isabelle/src
-  exposed-modules:
-    - Isabelle.File
-    - Isabelle.Server
-    - Isabelle.Byte_Message
-    - Isabelle.Properties
-    - Isabelle.UTF8
-    - Isabelle.XML
-    - Isabelle.YXML
-    - Isabelle.UUID
-    - Isabelle.Isabelle_Thread
-    - Isabelle.Library
-    - Isabelle.Naproche
-    - SAD.API
-    - SAD.Main
-
 executables:
   Naproche-SAD:
     main:                Main.hs
-    source-dirs:         app
+    source-dirs:         src
     ghc-options:
     - -threaded
     - -rtsopts

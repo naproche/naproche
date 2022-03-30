@@ -9,9 +9,10 @@ External provers.
 {-# LANGUAGE MultiWayIf #-}
 
 module Naproche.Prover (
-  Prover, Status (..), get_name, run, status, run_status,
+  Prover, Status (..), get_name, get_args, status,
   verbose, timeout, memory_limit, by_contradiction,
-  list, find, eprover, eproververb, spass, vampire
+  list, find, eprover, eproververb, spass, vampire,
+  prover_command, get_variable,
 )
 where
 
@@ -23,12 +24,8 @@ import qualified Isabelle.Value as Value
 import qualified Isabelle.Bash as Bash
 import qualified Isabelle.Process_Result as Process_Result
 import qualified Isabelle.Time as Time
-import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
 import Isabelle.Time (Time)
 import Isabelle.Library
-
-import qualified Naproche.Program as Program
-import qualified Naproche.System as System
 
 
 {- type Prover -}
@@ -36,7 +33,7 @@ import qualified Naproche.System as System
 data Prover = Prover {
   _name :: Bytes,
   _variable :: Bytes,
-  _command :: Prover_Command,
+  _args :: Prover -> [Bytes],
   _status :: Prover_Status,
   _messages :: Messages,
 
@@ -46,7 +43,6 @@ data Prover = Prover {
   _by_contradiction :: Bool
 }
 
-type Prover_Command = Prover -> Bytes -> IO Bash.Params
 type Prover_Status = Prover -> Process_Result.T -> Status
 
 data Status = Success | Failure | Contradictory_Axioms | Unknown | Error Bytes
@@ -62,14 +58,20 @@ data Messages = Messages {
 get_name :: Prover -> Bytes
 get_name Prover{_name} = _name
 
+get_variable :: Prover -> Bytes
+get_variable Prover{_variable} = _variable
+
+get_args :: Prover -> [Bytes]
+get_args p = _args p p
+
 instance Show Prover where show = make_string . get_name
 
-make_prover :: Bytes -> Bytes -> Prover_Command -> Prover_Status -> Messages -> Prover
-make_prover name variable command status messages =
+make_prover :: Bytes -> Bytes -> (Prover -> [Bytes]) -> Prover_Status -> Messages -> Prover
+make_prover name variable args status messages =
   Prover {
   _name = name,
   _variable = variable,
-  _command = command,
+  _args = args,
   _status = status,
   _messages = messages,
 
@@ -82,19 +84,8 @@ make_prover name variable command status messages =
 
 {- run prover -}
 
-run :: Program.Context -> Prover -> Bytes -> IO Process_Result.T
-run context prover input = do
-  params <- _command prover prover input
-  result <- System.bash_process context params
-  Isabelle_Thread.expose_stopped
-  return result
-
 status :: Prover -> Process_Result.T -> Status
 status prover = _status prover prover
-
-run_status :: Program.Context -> Prover -> Bytes -> IO Status
-run_status context prover input =
-  status prover <$> run context prover input
 
 
 {- prover parameters -}
@@ -117,9 +108,8 @@ print_seconds = Value.print_int . round . Time.get_seconds
 
 {- prover "methods" -}
 
-prover_command :: [Bytes] -> Prover_Command
-prover_command args prover input = do
-  exe <- getenv (_variable prover)
+prover_command :: Bytes -> [Bytes] -> Prover -> Bytes -> IO Bash.Params 
+prover_command exe args prover input = do
   when (Bytes.null exe) $
     error $ make_string ("Cannot run prover " <> quote (_name prover) <>
       ": undefined environment variable " <> _variable prover)
@@ -145,7 +135,7 @@ prover_status prover result =
     if | not timeout && null out -> Error "No prover response"
        | not (timeout || positive || contradictions || negative || inconclusive) ->
           Error (cat_lines ("Bad prover response:" : out))
-       | positive || _by_contradiction prover && contradictions -> Success
+       | positive || (_by_contradiction prover && contradictions) -> Success
        | negative -> Failure
        | not (_by_contradiction prover) && contradictions -> Contradictory_Axioms
        | timeout || inconclusive -> Unknown
@@ -170,8 +160,8 @@ eprover =
   make_prover "eprover" "NAPROCHE_EPROVER" eprover_command
     prover_status eprover_messages
 
-eprover_command :: Prover_Command
-eprover_command prover = prover_command args prover
+eprover_command :: Prover -> [Bytes]
+eprover_command prover = args
   where
     Prover{_verbose, _timeout, _memory_limit} = prover
     args =
@@ -197,8 +187,8 @@ eproververb =
   make_prover "eproververb" "NAPROCHE_EPROVER" eproververb_command
     prover_status eprover_messages
 
-eproververb_command :: Prover_Command
-eproververb_command prover = prover_command args prover
+eproververb_command :: Prover -> [Bytes]
+eproververb_command prover = args
   where
     Prover{_timeout, _memory_limit} = prover
     args =
@@ -214,8 +204,8 @@ spass =
   make_prover "spass" "NAPROCHE_SPASS" spass_command
     prover_status spass_messages
 
-spass_command :: Prover_Command
-spass_command prover = prover_command args prover
+spass_command :: Prover -> [Bytes]
+spass_command prover = args
   where
     Prover{_timeout, _memory_limit} = prover
     args =
@@ -240,8 +230,8 @@ vampire =
   make_prover "vampire" "NAPROCHE_VAMPIRE" vampire_command
     prover_status vampire_messages
 
-vampire_command :: Prover_Command
-vampire_command prover = prover_command args prover
+vampire_command :: Prover -> [Bytes]
+vampire_command prover = args
   where
     Prover{_timeout, _memory_limit} = prover
     args =

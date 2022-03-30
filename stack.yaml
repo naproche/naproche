@@ -34,7 +34,10 @@ resolver: lts-18.12
 #  - auto-update
 #  - wai
 packages:
-- .
+- ./src
+- ./Isabelle
+- ./app
+
 # Dependency packages to be pulled from upstream that are not in the resolver
 # using the same syntax as the packages field.
 # (e.g., acme-missiles-0.3)

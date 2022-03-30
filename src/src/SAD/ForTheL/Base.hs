@@ -5,6 +5,7 @@ FoTheL state and state management, parsing of primitives, operations on
 variables and macro expressions.
 -}
 
+{-# LANGUAGE ExistentialQuantification #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module SAD.ForTheL.Base where
@@ -45,17 +46,17 @@ type MNotion = (Formula -> Formula, Formula, Set PosVar)
 type Prim    = ([Pattern], [Formula] -> Formula)
 
 
-data FState = FState {
+data FState = forall context. Program.MessageExchangeContext context => FState {
   adjectiveExpr, verbExpr, notionExpr, symbNotionExpr :: [Prim],
   cfnExpr, rfnExpr, lfnExpr, ifnExpr :: [Prim],
   cprExpr, rprExpr, lprExpr, iprExpr :: [Prim],
 
   tvrExpr :: [TVar], strSyms :: [[Text]], varDecl :: Set VariableName,
   idCount :: Int, hiddenCount :: Int, serialCounter :: Int,
-  reports :: [Position.Report], program :: Program.Context }
+  reports :: [Position.Report], program :: context }
 
 
-initFState :: Program.Context -> FState
+initFState :: Program.MessageExchangeContext c => c -> FState
 initFState = FState
   primAdjs [] primNotions primSymbNotions
   cf rf [] []

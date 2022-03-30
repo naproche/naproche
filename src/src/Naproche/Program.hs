@@ -1,3 +1,5 @@
+{-# LANGUAGE ExistentialQuantification #-}
+
 {-
 Authors: Makarius Wenzel (2021)
 
@@ -5,11 +7,11 @@ Naproche program context: Console or PIDE.
 -}
 
 module Naproche.Program (
-  Context, console, is_pide, check_pide,
-  write_message, read_message, exchange_message, exchange_message0,
-  get_options, bool_option, int_option, string_option, is_isabelle,
+  MessageExchangeContext(..), RunProverContext(..), Console(..),
+  check_pide, exchange_message, exchange_message0,
+  bool_option, int_option, string_option, is_isabelle,
   adjust_position, pide_command, yxml_pide_command,
-  exit_thread, init_console, init_pide, thread_context,
+  exit_thread, init_console, init_thread, thread_context,
   Error (..), print_error, error,
   serials, serial
 )
@@ -29,10 +31,8 @@ import qualified Control.Concurrent as Concurrent
 import qualified Control.Exception as Exception
 import Control.Exception (Exception)
 
-import Network.Socket (Socket)
 import qualified Isabelle.Bytes as Bytes
 import Isabelle.Bytes (Bytes)
-import qualified Isabelle.Byte_Message as Byte_Message
 import qualified Isabelle.Value as Value
 import qualified Isabelle.Position as Position
 import qualified Isabelle.Options as Options
@@ -41,36 +41,41 @@ import qualified Isabelle.XML.Decode as Decode
 import qualified Isabelle.YXML as YXML
 import qualified Isabelle.Naproche as Naproche
 import Isabelle.Library
-
+import qualified Isabelle.Process_Result as Process_Result
+import qualified Naproche.System as System
+import qualified Naproche.Prover as Prover
 
 {- program context -}
 
-data Context = Console | PIDE Socket Options.T
+class MessageExchangeContext context where
+  write_message :: context -> [Bytes] -> IO ()
+  read_message :: context -> IO (Maybe [Bytes])
+  is_pide :: context -> Bool
+  get_options :: context -> Maybe Options.T
 
-console :: Context
-console = Console
+class RunProverContext c where
+  runProver :: c -> Prover.Prover -> Bytes -> IO Process_Result.T
 
-instance Show Context where
-  show Console = "Console"
-  show (PIDE _ _) = "PIDE"
+{- console context -}
 
-is_pide :: Context -> Bool
-is_pide Console = False
-is_pide (PIDE _ _) = True
+data Console = Console
 
-check_pide :: Applicative f => Context -> f ()
+instance MessageExchangeContext Console where
+  read_message Console = return Nothing
+  write_message Console = Char8.putStrLn . Bytes.unmake . Bytes.concat
+  is_pide Console = False
+  get_options Console = Nothing
+
+instance RunProverContext Console where
+  runProver _ prover input = do
+    params <- Prover.prover_command (Prover.get_name prover) (Prover.get_args prover) prover input
+    System.bash_process params
+
+check_pide :: (MessageExchangeContext context, Applicative f) => context -> f ()
 check_pide context =
   unless (is_pide context) $ errorWithoutStackTrace "No PIDE context"
 
-write_message :: Context -> [Bytes] -> IO ()
-write_message Console = Char8.putStrLn . Bytes.unmake . Bytes.concat
-write_message (PIDE socket _) = Byte_Message.write_message socket
-
-read_message :: Context -> IO (Maybe [Bytes])
-read_message Console = return Nothing
-read_message (PIDE socket _) = Byte_Message.read_message socket
-
-exchange_message :: Context -> [Bytes] -> IO [Bytes]
+exchange_message :: MessageExchangeContext context => context -> [Bytes] -> IO [Bytes]
 exchange_message context msg = do
   write_message context msg
   result <- read_message context
@@ -78,7 +83,7 @@ exchange_message context msg = do
     Nothing -> errorWithoutStackTrace "No result message: socket closed"
     Just res -> return res
 
-exchange_message0 :: Context -> [Bytes] -> IO ()
+exchange_message0 :: MessageExchangeContext context => context -> [Bytes] -> IO ()
 exchange_message0 context msg = do
   write_message context msg
   _ <- read_message context
@@ -87,53 +92,51 @@ exchange_message0 context msg = do
 
 {- options -}
 
-get_options :: Context -> Maybe Options.T
-get_options Console = Nothing
-get_options (PIDE _ options) = Just options
-
-get_option :: a -> (Options.T -> Bytes -> a) -> Context -> Bytes -> a
+get_option :: MessageExchangeContext context => a -> (Options.T -> Bytes -> a) -> context -> Bytes -> a
 get_option def get context opt =
   case get_options context of
     Nothing -> def
     Just options -> get options opt
 
-bool_option :: Context -> Bytes -> Bool
+bool_option :: MessageExchangeContext context => context -> Bytes -> Bool
 bool_option = get_option False Options.bool
 
-int_option :: Context -> Bytes -> Int
+int_option :: MessageExchangeContext context => context -> Bytes -> Int
 int_option = get_option 0 Options.int
 
-string_option :: Context -> Bytes -> Bytes
+string_option :: MessageExchangeContext context => context -> Bytes -> Bytes
 string_option = get_option Bytes.empty Options.string
 
-is_isabelle :: Context -> Bool
+is_isabelle :: MessageExchangeContext context => context -> Bool
 is_isabelle context = bool_option context Naproche.naproche_isabelle
 
 
 {- position -}
 
-adjust_position :: Context -> Position.T -> Position.T
-adjust_position Console pos = pos
-adjust_position (PIDE _ options) pos =
-  let
-    pos_id = Options.string options Naproche.naproche_pos_id
-    pos_file = Options.string options Naproche.naproche_pos_file
-    pos_shift = Options.int options Naproche.naproche_pos_shift
-  in
-    pos
-    |> Position.put_file (fromMaybe pos_file (Position.file_of pos))
-    |> Position.put_id pos_id
-    |> Position.shift_offsets pos_shift
+adjust_position :: MessageExchangeContext context => context -> Position.T -> Position.T
+adjust_position context pos =
+  case get_options context of
+    Nothing -> pos
+    Just options -> 
+      let
+        pos_id = Options.string options Naproche.naproche_pos_id
+        pos_file = Options.string options Naproche.naproche_pos_file
+        pos_shift = Options.int options Naproche.naproche_pos_shift
+      in
+        pos
+        |> Position.put_file (fromMaybe pos_file (Position.file_of pos))
+        |> Position.put_id pos_id
+        |> Position.shift_offsets pos_shift
 
 
 {- PIDE commands -}
 
-pide_command :: Bytes -> Context -> [Bytes] -> IO [Bytes]
+pide_command :: MessageExchangeContext context => Bytes -> context -> [Bytes] -> IO [Bytes]
 pide_command command context args = do
   check_pide context
   exchange_message context (command : args)
 
-yxml_pide_command :: Encode.T a -> Decode.T b -> Bytes -> Context -> [a] -> IO [b]
+yxml_pide_command :: MessageExchangeContext context => Encode.T a -> Decode.T b -> Bytes -> context -> [a] -> IO [b]
 yxml_pide_command encode decode command context xs = do
   let args = map (YXML.string_of_body . encode) xs
   result <- pide_command command context args
@@ -142,7 +145,19 @@ yxml_pide_command encode decode command context xs = do
 
 {- program threads -}
 
-type Threads = Map ThreadId Context
+data ThreadContext = forall context. (MessageExchangeContext context, RunProverContext context) =>
+  ThreadContext context
+
+instance MessageExchangeContext ThreadContext where
+  write_message (ThreadContext c) = write_message c
+  read_message (ThreadContext c) = read_message c
+  is_pide (ThreadContext c) = is_pide c
+  get_options (ThreadContext c) = get_options c
+
+instance RunProverContext ThreadContext where
+  runProver (ThreadContext c) = runProver c
+
+type Threads = Map ThreadId ThreadContext
 
 {-# NOINLINE global_threads #-}
 global_threads :: IORef Threads
@@ -156,22 +171,19 @@ update_threads f = do
 exit_thread :: IO ()
 exit_thread = update_threads Map.delete
     
-init_thread :: Context -> IO Context
+init_thread :: (MessageExchangeContext context, RunProverContext context) => context -> IO context
 init_thread context = do
-  update_threads (`Map.insert` context)
+  update_threads (`Map.insert` ThreadContext context)
   return context
-  
-init_console :: IO Context
+
+init_console :: IO Console
 init_console = init_thread Console
 
-init_pide :: Socket -> Options.T -> IO Context
-init_pide socket options = init_thread (PIDE socket options)
-
-thread_context :: IO Context
+thread_context :: IO ThreadContext
 thread_context = do
   id <- Concurrent.myThreadId
   threads <- IORef.readIORef global_threads
-  return $ fromMaybe Console (Map.lookup id threads)
+  return $ fromMaybe (ThreadContext Console) (Map.lookup id threads)
 
 
 {- errors -}
@@ -188,7 +200,9 @@ error :: Bytes -> IO a
 error msg = do
   context <- thread_context
   if is_pide context then Exception.throw $ Error msg
-  else errorWithoutStackTrace $ make_string msg
+  else do
+    write_message context [msg]
+    errorWithoutStackTrace ""
 
 
 {- serial numbers, preferable from Isabelle/ML -}
@@ -204,7 +218,7 @@ next_counter = do
       if i < maxBound then (i + 1, i + 1)
       else errorWithoutStackTrace "Overflow of global counter")
 
-serials :: Context -> Int -> IO [Int]
+serials :: MessageExchangeContext context => context -> Int -> IO [Int]
 serials context n =
   if is_pide context then
     do
@@ -217,7 +231,7 @@ serials context n =
       return res
   else replicateM n next_counter
 
-serial :: Context -> IO Int
+serial :: MessageExchangeContext context => context -> IO Int
 serial context = do
   res <- serials context 1
   return $ head res

@@ -55,9 +55,11 @@ import qualified Naproche.Program as Program
 
 addReports :: [Position.Report] -> FTL ()
 addReports newRep = modify (\st ->
-  if Program.is_pide (program st) then
-    seq newRep $ st {reports = newRep ++ reports st}
-  else st)
+  case st of
+    FState _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ program ->
+      if Program.is_pide program then
+        seq newRep $ st {reports = newRep ++ reports st}
+      else st)
 
 
 -- markup tokens while parsing
