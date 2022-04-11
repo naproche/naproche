@@ -101,7 +101,7 @@ dropInstr _ _ = []
 
 textLimits :: [Param.T Int]
 timelimitParam, memorylimitParam, depthlimitParam, checktimeParam, checkdepthParam :: Param.T Int
-textLimits @ [timelimitParam, memorylimitParam, depthlimitParam, checktimeParam, checkdepthParam] =
+textLimits@[timelimitParam, memorylimitParam, depthlimitParam, checktimeParam, checkdepthParam] =
   [Param.nat "timelimit" "N seconds per prover call" 3,
    Param.nat "memorylimit" "maximum N MiB of memory usage per prover call" 2048,
    Param.nat "depthlimit" "N reasoner loops per goal" 7,
@@ -114,7 +114,7 @@ proveParam, checkParam, checkconsistencyParam, symsignParam, infoParam, thesisPa
   printunfoldParam, printreasonParam, printproverParam, printfulltaskParam, dumpParam,
   printsimpParam, printthesisParam, unfoldParam, unfoldsfParam, unfoldlowParam, unfoldlowsfParam,
   translationParam, texParam :: Param.T Bool
-textFlags @ [proveParam, checkParam, checkconsistencyParam, symsignParam, infoParam, thesisParam,
+textFlags@[proveParam, checkParam, checkconsistencyParam, symsignParam, infoParam, thesisParam,
   filterParam, skipfailParam, flatParam, printgoalParam, printsectionParam, printcheckParam,
   printunfoldParam, printreasonParam, printproverParam, printfulltaskParam, dumpParam,
   printsimpParam, printthesisParam, unfoldParam, unfoldsfParam, unfoldlowParam, unfoldlowsfParam,
@@ -147,7 +147,7 @@ textFlags @ [proveParam, checkParam, checkconsistencyParam, symsignParam, infoPa
 
 textArgs :: [Param.T Bytes]
 libraryParam, proverParam :: Param.T Bytes
-textArgs @ [libraryParam, proverParam] =
+textArgs@[libraryParam, proverParam] =
   [Param.bytes "library" "place to look for library texts" "examples",
    Param.bytes "prover" "use prover NAME" (Prover.get_name Prover.eprover)]
 
