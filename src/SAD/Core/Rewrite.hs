@@ -133,7 +133,7 @@ generateConditions pos verbositySetting rules w l r =
   where
     -- check for matching normalforms and output the paths to them
     simpPaths leftNormalForms rightNormalForms = do
-      leftPath@ ((simplifiedLeft , _):_) <- leftNormalForms
+      leftPath@((simplifiedLeft , _):_) <- leftNormalForms
       rightPath@((simplifiedRight, _):_) <- rightNormalForms
       guard (twins simplifiedLeft simplifiedRight)
       return (reverse leftPath, reverse rightPath)
