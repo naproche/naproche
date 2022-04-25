@@ -68,11 +68,13 @@ object Naproche_Component
     progress.echo("Copying " + Naproche.NAPROCHE_JAR.expand)
     Isabelle_System.copy_file(Naproche.NAPROCHE_JAR, component_dir + Path.explode("Isabelle"))
 
-    File.change(component_dir + Path.explode("etc/build.props"),
-      _.replaceAll("no_build\\s*=.*", "no_build = true"))
+    File.change(component_dir + Path.explode("etc/build.props")) {
+      s => s.replaceAll("no_build\\s*=.*", "no_build = true")
+    }
 
-    File.change(component_dir + Path.explode("etc/settings"),
-      s => s + "\nclasspath \"$ISABELLE_NAPROCHE/naproche.jar\"\n")
+    File.change(component_dir + Path.explode("etc/settings")) {
+      s => s + "\nclasspath \"$ISABELLE_NAPROCHE/naproche.jar\"\n"
+    }
 
 
     /* PDF documents */
