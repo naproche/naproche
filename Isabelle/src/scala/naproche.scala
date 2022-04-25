@@ -9,8 +9,7 @@ package isabelle.naproche
 import isabelle._
 
 
-object Naproche
-{
+object Naproche {
   val ISABELLE_NAPROCHE: Path = Path.explode("$ISABELLE_NAPROCHE")
   val NAPROCHE_JAR: Path = Path.explode("$ISABELLE_NAPROCHE/naproche.jar")
   val NAPROCHE_HOME: Path = Path.explode("$NAPROCHE_HOME")
