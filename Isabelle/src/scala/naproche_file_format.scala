@@ -9,10 +9,8 @@ package isabelle.naproche
 import isabelle._
 
 
-object Naproche_File_Format
-{
-  class Agent(session_options: => Options) extends File_Format.Agent
-  {
+object Naproche_File_Format {
+  class Agent(session_options: => Options) extends File_Format.Agent {
     private def debugging: Boolean = session_options.bool("naproche_server_debugging")
 
     private val process: Bash.Process =
@@ -45,16 +43,14 @@ object Naproche_File_Format
         ("naproche_server_address", server_info.get.address) +
         ("naproche_server_password", server_info.get.password)
 
-    override def stop(): Unit =
-    {
+    override def stop(): Unit = {
       process.terminate()
       process_result.join
     }
   }
 }
 
-class Naproche_File_Format extends File_Format
-{
+class Naproche_File_Format extends File_Format {
   override def format_name: String = "forthel"
 
   val file_ext = ""

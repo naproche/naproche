@@ -9,10 +9,8 @@ package isabelle.naproche
 import isabelle._
 
 
-object Naproche_Build
-{
-  def build(options: Options, progress: Progress = new Progress): Unit =
-  {
+object Naproche_Build {
+  def build(options: Options, progress: Progress = new Progress): Unit = {
     /* build session */
 
     val build_options = options + "naproche_server=false"
@@ -48,21 +46,20 @@ object Naproche_Build
   /* Isabelle tool wrapper */
 
   val isabelle_tool =
-    Isabelle_Tool("naproche_build", "build Isabelle/Naproche executable",
-      Scala_Project.here, args =>
-    {
-      val getopts = Getopts("""
+    Isabelle_Tool("naproche_build", "build Isabelle/Naproche executable", Scala_Project.here,
+      { args =>
+        val getopts = Getopts("""
 Usage: isabelle naproche_build
 
   Build Isabelle/Naproche executable.
 """)
 
-      val more_args = getopts(args)
-      if (more_args.nonEmpty) getopts.usage()
+        val more_args = getopts(args)
+        if (more_args.nonEmpty) getopts.usage()
 
-      val options = Options.init()
-      val progress = new Console_Progress
+        val options = Options.init()
+        val progress = new Console_Progress
 
-      build(options, progress = progress)
-    })
+        build(options, progress = progress)
+      })
 }

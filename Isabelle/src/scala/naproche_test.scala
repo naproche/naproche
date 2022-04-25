@@ -14,8 +14,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 
-object Naproche_Test
-{
+object Naproche_Test {
   val naproche_home: Path = Path.explode("$NAPROCHE_HOME")
   val examples: Path = naproche_home + Path.explode("examples")
 
@@ -23,8 +22,8 @@ object Naproche_Test
     progress: Progress = new Progress,
     log_dir: Option[Path] = None,
     max_jobs: Int = 1,
-    timeout: Time = Time.zero): Unit =
-  {
+    timeout: Time = Time.zero
+  ): Unit = {
     val file_format = new Naproche_File_Format
 
     def relative(file: JFile): Path = File.relative_path(examples, File.path(file)).get
@@ -37,8 +36,7 @@ object Naproche_Test
     val executor = Executors.newFixedThreadPool(max_jobs max 1)
     for (test <- tests) {
       executor.submit(new Runnable {
-        def run(): Unit =
-        {
+        def run(): Unit = {
           val path = File.path(test)
           val text = File.read(path)
 
@@ -78,13 +76,12 @@ object Naproche_Test
                 (" (" + timing.message + " elapsed time)" +
                   (if (result.ok != expect_ok) "\n" + result.err else ""))
             progress.echo(status)
-            log_dir.foreach(dir0 =>
-              {
-                val dir = Isabelle_System.make_directory(dir0 + path_relative)
-                File.write(dir + Path.basic("status"), status)
-                File.write(dir + Path.basic("output"), result.out)
-                File.write(dir + Path.basic("error"), result.err)
-              })
+            log_dir.foreach { dir0 =>
+              val dir = Isabelle_System.make_directory(dir0 + path_relative)
+              File.write(dir + Path.basic("status"), status)
+              File.write(dir + Path.basic("output"), result.out)
+              File.write(dir + Path.basic("error"), result.err)
+            }
             if (result.ok != expect_ok) bad.change(path_relative :: _)
           }
         }
@@ -103,15 +100,14 @@ object Naproche_Test
   /* Isabelle tool wrapper */
 
   val isabelle_tool =
-    Isabelle_Tool("naproche_test", "run Naproche tests",
-      Scala_Project.here, args =>
-    {
-      var log_dir : Option[Path] = None
-      var max_jobs = 1
-      var options = Options.init()
-      var timeout = Time.zero
+    Isabelle_Tool("naproche_test", "run Naproche tests", Scala_Project.here,
+      { args =>
+        var log_dir : Option[Path] = None
+        var max_jobs = 1
+        var options = Options.init()
+        var timeout = Time.zero
 
-      val getopts = Getopts("""
+        val getopts = Getopts("""
 Usage: isabelle naproche_test
 
   Options are:
@@ -122,21 +118,21 @@ Usage: isabelle naproche_test
 
   Run Naproche tests.
 """,
-        "D:" -> (arg => log_dir = Some(Path.explode(arg))),
-        "j:" -> (arg => max_jobs = Value.Int.parse(arg)),
-        "o:" -> (arg => options = options + arg),
-        "t:" -> (arg => timeout = Time.seconds(Value.Double.parse(arg))))
+          "D:" -> (arg => log_dir = Some(Path.explode(arg))),
+          "j:" -> (arg => max_jobs = Value.Int.parse(arg)),
+          "o:" -> (arg => options = options + arg),
+          "t:" -> (arg => timeout = Time.seconds(Value.Double.parse(arg))))
 
-      val more_args = getopts(args)
-      if (more_args.nonEmpty) getopts.usage()
+        val more_args = getopts(args)
+        if (more_args.nonEmpty) getopts.usage()
 
-      val progress = new Console_Progress()
+        val progress = new Console_Progress()
 
-      val results =
-        Build.build(options, select_dirs = List(naproche_home),
-          progress = progress, max_jobs = max_jobs)
-      if (!results.ok) sys.exit(results.rc)
+        val results =
+          Build.build(options, select_dirs = List(naproche_home),
+            progress = progress, max_jobs = max_jobs)
+        if (!results.ok) sys.exit(results.rc)
 
-      run_tests(progress = progress, log_dir = log_dir, max_jobs = max_jobs, timeout = timeout)
-    })
+        run_tests(progress = progress, log_dir = log_dir, max_jobs = max_jobs, timeout = timeout)
+      })
 }

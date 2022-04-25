@@ -11,8 +11,7 @@ import isabelle._
 import java.io.{File => JFile}
 
 
-object Naproche_Component
-{
+object Naproche_Component {
   val cleanup_names: List[String] = List("_config.yml")
   val cleanup_trees: List[String] =
     List(".git", ".gitignore", ".travis.yml", "examples_pdf", "examples/test", "Isabelle/Admin")
@@ -25,15 +24,14 @@ object Naproche_Component
   def build_component(
     progress: Progress = new Progress,
     target_dir: Path = Path.current,
-    pdf_documents: Boolean = false): Unit =
-  {
+    pdf_documents: Boolean = false
+  ): Unit = {
     Isabelle_System.require_command("git")
 
 
     /* repository version */
 
-    val version =
-    {
+    val version = {
       val git_show = progress.bash("git show", cwd = Naproche.NAPROCHE_HOME.file).check
       val opt_version =
         for {
@@ -54,13 +52,12 @@ object Naproche_Component
 
     /* copy content */
 
-    Isabelle_System.with_tmp_file("archive", "tar")(archive =>
-    {
+    Isabelle_System.with_tmp_file("archive", "tar") { archive =>
       progress.bash(
         "git archive --output=" + File.bash_path(archive) + " -- " + Bash.string(version),
         cwd = Naproche.NAPROCHE_HOME.file).check
       progress.bash("tar -x -f " + File.bash_path(archive), cwd = component_dir.file).check
-    })
+    }
 
     progress.echo("Copying " + Naproche.NAPROCHE_EXE_DIR.expand)
     Isabelle_System.copy_dir(Naproche.NAPROCHE_EXE_DIR, component_dir)
@@ -141,12 +138,12 @@ object Naproche_Component
 
   val isabelle_tool =
     Isabelle_Tool("naproche_component", "build Isabelle/Naproche component from repository",
-      Scala_Project.here, args =>
-    {
-      var target_dir = Path.current
-      var pdf_documents = false
-
-      val getopts = Getopts("""
+      Scala_Project.here,
+      { args =>
+        var target_dir = Path.current
+        var pdf_documents = false
+  
+        val getopts = Getopts("""
 Usage: isabelle naproche_component [OPTIONS]
 
   Options are:
@@ -155,14 +152,14 @@ Usage: isabelle naproche_component [OPTIONS]
 
   Build Isabelle/Naproche component from repository.
 """,
-        "D:" -> (arg => target_dir = Path.explode(arg)),
-        "P" -> (_ => pdf_documents = true))
+          "D:" -> (arg => target_dir = Path.explode(arg)),
+          "P" -> (_ => pdf_documents = true))
 
-      val more_args = getopts(args)
-      if (more_args.nonEmpty) getopts.usage()
+        val more_args = getopts(args)
+        if (more_args.nonEmpty) getopts.usage()
 
-      val progress = new Console_Progress()
+        val progress = new Console_Progress()
 
-      build_component(progress = progress, target_dir = target_dir, pdf_documents = pdf_documents)
+        build_component(progress = progress, target_dir = target_dir, pdf_documents = pdf_documents)
     })
 }
