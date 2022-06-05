@@ -25,6 +25,7 @@ x86_64-windows/
 *.out
 *.toc
 *.ftl.synctex(busy)
+*.xdv
 
 # Exceptions
 !examples/set-theory/set-theory.aux
