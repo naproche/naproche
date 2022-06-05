@@ -27,6 +27,7 @@ digraph Sections {
     div_04 [label = "3.4 Primes"]
     div_05 [label = "3.5 Division"]
     div_06 [label = "3.6 Binomial coefficients"]
+    div_07 [label = "3.7 Even and odd numbers"]
   }
 
   /* 1.1 */ vocab, macros                             -> arith_01
@@ -49,4 +50,5 @@ digraph Sections {
   /* 3.4 */ arith_04, ord_04, ord_05, div_01, div_02  -> div_04
   /* 3.5 */ ord_07, div_01                            -> div_05
   /* 3.6 */ arith_05, ord_05, div_05                  -> div_06
+  /* 3.7 */ ord_07, div_01                            -> div_07
 }
