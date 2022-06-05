@@ -55,5 +55,7 @@ Let f stand for a function.
 Definition. Assume M is a subclass of the domain of f.
 f[M] = { f(x) | x \in M }.
 
+Let the image of f stand for f[Dom(f)].
+
 Axiom Replacement. Assume M is a subset of the domain of f.
 Then f[M] is a set.
