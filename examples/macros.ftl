@@ -36,3 +36,4 @@ Let f is defined on X stand for Dom(f) = X.
 # ---------------
 
 Let the value of f at x stand for f(x).
+Let f(x,y) stand for f((x,y)).
