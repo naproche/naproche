@@ -28,10 +28,17 @@ variant of ForTheL, respectively.
 
 ### Changes on the example files
 
-  * **New:** New sections about division and binomial coefficients in arithmetic
-    examples.
+  * **New:** New file `paradoxes.ftl.tex` which contains formalizations about
+    some famous paradoxes. (Note that Russell's paradox was moved to this
+    collection.)
 
-  * **New:** New sections about cardinalities in set theory examples.
+  * **New:** New files `axioms.ftl` and `axioms.ftl.tex` that list Naproche's
+    built-in axioms.
+
+  * **New:** New sections about division, binomial coefficients and even and odd
+    numbers in arithmetic library.
+
+  * **New:** New sections about cardinalities in set theory library.
 
 --------------------------------------------------------------------------------
 
