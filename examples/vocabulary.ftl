@@ -27,6 +27,8 @@
 [synonym reduct/-s]
 [synonym relation/-s]
 [synonym set/-s]
+[synonym sequence/-s]
+[synonym shave/-s]
 [synonym square/-s]
 [synonym subset/-s]
 [synonym successor/-s]
