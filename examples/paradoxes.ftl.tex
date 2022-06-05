@@ -1,0 +1,158 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{xurl}
+\usepackage[nonumbers]{../lib/tex/naproche}
+
+\title{Paradoxes}
+\author{\Naproche formalization: Marcel Schütz}
+\date{2022}
+
+\begin{document}
+  \maketitle
+
+  \begin{forthel}
+    [readtex \path{axioms.ftl.tex}]
+
+    [readtex \path{macros.ftl.tex}]
+
+    [readtex \path{vocabulary.ftl.tex}]
+  \end{forthel}
+
+
+  \section*{The Barber Paradox}
+
+  \begin{forthel}
+    \begin{signature}
+      A person is a notion.
+    \end{signature}
+
+    Let a barber denote a person.
+
+    \begin{signature}
+      Let $B$ be a barber and $P$ be a person.
+      $B$ shaves $P$ is a relation.
+    \end{signature}
+
+    Let $P$ shaves himself stand for $P$ shaves $P$.
+
+    \begin{theorem}
+      Let $B$ be a barber such that for any person $P$ $B$ shaves $P$ iff $P$
+      does not shave $P$.
+      Then we have a contradiction.
+    \end{theorem}
+    \begin{proof}
+      $B$ shaves himself iff $B$ does not shave himself.
+    \end{proof}
+  \end{forthel}
+
+
+  \section*{The Drinker Paradox}
+
+  \begin{forthel}
+    \begin{signature}
+      Let $P$ be a person.
+      $P$ is drinking is a relation.
+    \end{signature}
+
+    \begin{signature}
+      The pub is an object.
+    \end{signature}
+
+    \begin{signature}
+      Let $P$ be a person and $A$ be an object.
+      $P$ is inside $A$ is a relation.
+    \end{signature}
+
+    \begin{theorem}
+      Assume that there is a person inside the pub.
+      Then there is a person $P$ such that $P$ is inside the pub and if $P$ is
+      drinking then every person inside the pub is drinking.
+      %Then there is a person $P$ inside the pub such that if $P$ is drinking
+      %then every person inside the pub is drinking.
+    \end{theorem}
+    \begin{proof}
+      Case every person inside the pub is drinking.
+        Choose a person $P$ inside the pub.
+        Then $P$ is drinking and every person inside the pub is drinking.
+        Hence if $P$ is drinking then every person inside the pub is drinking.
+      End.
+
+      %Case there is a person inside the pub that is not drinking.
+      Case there is a person that is inside the pub and not drinking.
+        %Consider a person $P$ inside the pub that is not drinking.
+        Consider a person $P$ that is inside the pub and not drinking.
+        Then if $P$ is drinking then every person inside the pub is drinking.
+      End.
+    \end{proof}
+  \end{forthel}
+
+
+  \section*{Russell's Paradox}
+
+  \begin{forthel}
+    \begin{theorem}
+      There exists a class that is not a set.
+    \end{theorem}
+    \begin{proof}
+      Assume that every class is a set.
+      Define $R = \class{x | \text{$x$ is a set such that $x \notin x$}}$.
+      Then $R \in R$ iff $R \notin R$.
+      Contradiction.
+    \end{proof}
+  \end{forthel}
+
+
+  \section*{The Burali-Forti Paradox}
+
+  \begin{forthel}
+    \begin{definition}
+      Let $x$ be a set.
+      $x$ is transitive iff every element of $x$ is a set and for all $y \in x$
+      and all $z \in y$ we have $z \in x$.
+    \end{definition}
+
+    \begin{definition}
+      An ordinal number is a transitive set $\alpha$ such that every element of
+      $\alpha$ is a transitive set.
+    \end{definition}
+
+    \begin{definition}
+      Let $\alpha, \beta$ be ordinal numbers.
+      $\alpha < \beta$ iff $\alpha \in \beta$.
+    \end{definition}
+
+    \begin{theorem}
+      Let $\alpha$ be the collection of all ordinal numbers.
+      Assume that $\alpha$ is a set.
+      Then $\alpha$ is an ordinal number such that $\alpha < \alpha$.
+    \end{theorem}
+    \begin{proof}
+      (1) $\alpha$ is transitive. \\
+      Proof.
+        Let $\beta \in \alpha$ and $\gamma \in \beta$.
+        Then $\beta$ is an ordinal number.
+        Hence $\gamma$ is a transitive set.
+
+        Let us show that every element of $\gamma$ is a transitive set.
+          Let $x \in \gamma$.
+          Then $x \in \beta$.
+          Indeed $\beta$ is transitive.
+          Thus $x$ is a transitive set.
+          Indeed every element of $\beta$ is a transitive set.
+        End.
+
+        Therefore $\gamma$ is an ordinal number.
+        Consequently $\gamma \in \alpha$.
+      Qed.
+
+      (2) Every set that is contained in $\alpha$ is transitive.
+      Indeed every element of $\alpha$ is an ordinal number and every ordinal
+      number is transitive.
+
+      Therefore $\alpha$ is an ordinal number.
+      Consequently $\alpha < \alpha$.
+    \end{proof}
+  \end{forthel}
+\end{document}
