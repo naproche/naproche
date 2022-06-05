@@ -45,20 +45,25 @@ this results in more complex and longer ontological checking tasks.
 Controlling the complexitiy of automated proofs will be a major
 issue for the further development.
 
+
 \section{Importing Some Mathematical Language}
+
 We import singular/plural forms of words that will be used in
 our formalizations (\path{examples/vocabulary.ftl.tex}).
 In the long run this should be replaced by
 employing a proper English vocabulary. We also
 import some alternative formulations for
 useful mathematical phrases (\path{examples/macros.ftl.tex}).
-\begin{forthel}
-[readtex \path{vocabulary.ftl.tex}]
 
-[readtex \path{macros.ftl.tex}]
+\begin{forthel}
+  [readtex \path{vocabulary.ftl.tex}]
+
+  [readtex \path{macros.ftl.tex}]
 \end{forthel}
 
+
 \section{Sets and Classes}
+
 The notions of \textit{classes} and \textit{sets} are already
 provided by \Naproche. Classes are usually defined by
 abstraction terms $\{\dots\mid\dots\}$. Since such terms need to be
@@ -69,167 +74,177 @@ from inbuilt assumptions, but it is important to reprove or restate such
 facts so that they can directly be accessed by the ATP.
 
 \begin{forthel}
+  \begin{lemma}
+    Every set is a class.
+  \end{lemma}
 
+  \begin{lemma}
+    Every class that is an object is a set.
+  \end{lemma}
 
-\begin{lemma} Every set is a class. \end{lemma}
+  \begin{axiom}
+    Every element of every class is an object.
+  \end{axiom}
 
-\begin{lemma} Every class that is an object is a set. \end{lemma}
+  Let $S, T, X, Y, Z$ denote classes.
 
-\begin{axiom} Every element of every class is an object.
-\end{axiom}
+  \begin{definition}
+    The empty set is the set that has no elements.
+  \end{definition}
 
-Let $S,T,X,Y,Z$ denote classes.
+  \begin{definition}
+    A subclass of $S$ is a class $T$ such that every $x \in T$ belongs to $S$.
+  \end{definition}
 
-\begin{definition} The empty set is the set that has
-no elements.
-\end{definition}
+  Let $T \subseteq S$ stand for $T$ is a subclass of $S$.
 
-\begin{definition}
-A subclass of $S$ is a class $T$ such that every $x \in T$
-belongs to $S$.
-\end{definition}
+  Let a proper subclass of $B$ stand for a subclass $A$ of $B$ such that $A \neq
+  B$.
 
-Let $T \subseteq S$ stand for $T$ is a subclass of $S$.
+  \begin{lemma}[Class Extensionality]
+    If $S$ is a subclass of $T$ and $T$ is a subclass of $S$ then $S = T$.
+  \end{lemma}
 
-Let a proper subclass of $B$ stand for a subclass $A$ of $B$ such that $A\neq B$.
+  \begin{definition}
+    A subset of $S$ is a set $X$ such that $X \subseteq S$.
+  \end{definition}
 
-\begin{lemma} [Class Extensionality] If $S$ is a subclass of $T$ and
-$T$ is a subclass of $S$ then $S = T$.
-\end{lemma}
+  Let a proper subset of $B$ stand for a subset $A$ of $B$ such that $A\neq B$.
 
-\begin{definition}
-A subset of $S$ is a set $X$ such that $X \subseteq S$.
-\end{definition}
+  \begin{axiom}[Separation Axiom]
+    Assume that $X$ is a set.
+    Let $T$ be a subclass of $X$.
+    Then $T$ is a set.
+  \end{axiom}
 
-Let a proper subset of $B$ stand for a subset $A$ of $B$ such that $A\neq B$.
-
-
-\begin{axiom} [Separation Axiom] Assume that $X$ is a set.
-Let $T$ be a subclass of $X$. Then $T$ is a set.
-\end{axiom}
-
-
-\begin{definition}
+  \begin{definition}
     Let $B, C$ be classes.
-    The intersection of $B$ and $C$ is $\{ x \in B | x \in C\}$.
-\end{definition}
-Let $B\cap C$ stand for the intersection of $B$ and $C$.
+    The intersection of $B$ and $C$ is $\class{ x \in B | x \in C}$.
+  \end{definition}
 
-\begin{definition}
+  Let $B \cap C$ stand for the intersection of $B$ and $C$.
+
+  \begin{definition}
     Let $B, C$ be classes.
-    The union of $B$ and $C$ is $\{ x | x \in B \vee x\in C\}$.
-\end{definition}
-Let $B\cup C$ stand for the union of $B$ and $C$.
+    The union of $B$ and $C$ is $\class{ x | x \in B \vee x \in C}$.
+  \end{definition}
 
-\begin{definition}
+  Let $B \cup C$ stand for the union of $B$ and $C$.
+
+  \begin{definition}
     Let $B, C$ be classes.
-    The set difference of $B$ and $C$ is $\{ x\in B | x\notin C\}$.
-\end{definition}
-Let $B\setminus C$ stand for the set difference of $B$ and $C$.
+    The set difference of $B$ and $C$ is $\class{x \in B | x \notin C}$.
+  \end{definition}
 
-\begin{definition}
+  Let $B \setminus C$ stand for the set difference of $B$ and $C$.
+
+  \begin{definition}
     Let $B, C$ be classes.
-    $B$ is disjoint from $C$ iff there is no element of $B$ that is an element of $C$.
-\end{definition}
+    $B$ is disjoint from $C$ iff there is no element of $B$ that is an element
+    of $C$.
+  \end{definition}
 
-\begin{definition}
+  \begin{definition}
     A family is a set $F$ such that every element of $F$ is a set.
-\end{definition}
+  \end{definition}
 
-\begin{definition}
-    $A$ disjoint family is a family $F$ such that
-    $B$ is disjoint from $C$ for all nonequal elements $B, C$ of $F$.
-\end{definition}
-
-
-
+  \begin{definition}
+    $A$ disjoint family is a family $F$ such that $B$ is disjoint from $C$ for
+    all nonequal elements $B, C$ of $F$.
+  \end{definition}
 \end{forthel}
 
+
 \section{Pairs and Products}
+
 Since we prefer objects over sets if possible, we do not work
 with Kuratowski-style set-theoretical ordered pairs, but
 axiomatize them as objects.
 
 \begin{forthel}
+  \begin{axiom}
+    $(a,b)$ is an object for all objects $a, b$.
+  \end{axiom}
 
-\begin{axiom}
-$(a,b)$ is an object for all objects $a,b$.
-\end{axiom}
+  \begin{axiom}
+    For any objects $a, b, c, d$ if $(a,b) = (c,d)$ then $a = c$ and $b = d$.
+  \end{axiom}
 
-\begin{axiom}
-For any objects $a,b,c,d$ if $(a,b) = (c,d)$ then $a = c$
-and $b = d$.
-\end{axiom}
+  \begin{definition}
+    $S \times T = \class{(x,y) | \text{$x \in S$ and $y \in T$}}$.
+  \end{definition}
 
-\begin{definition}
-$S \times T = \{(x,y) | x \in S$ and $y \in T\}$.
-\end{definition}
+  \begin{axiom}
+    Let $X, Y$ be sets.
+    Then $X \times Y$ is a set.
+  \end{axiom}
 
-\begin{axiom} Let $X,Y$ be sets. Then
-$X \times Y$ is a set.
-\end{axiom}
-
-\begin{axiom}
-Let $x,y$ be objects.
-If $(x,y)$ is an element of $S \times T$ then $x$ is an
-element of $S$ and $y$ is an element of $T$.
-\end{axiom}
-
+  \begin{axiom}
+    Let $x, y$ be objects.
+    If $(x,y)$ is an element of $S \times T$ then $x$ is an element of $S$ and
+    $y$ is an element of $T$.
+  \end{axiom}
 \end{forthel}
+
+
 \section{Functions and Maps}
+
 The treatment of functions and maps is similar to that
 of sets and classes.
+
 \begin{forthel}
+  \begin{lemma}
+    Every function is a map.
+  \end{lemma}
 
-\begin{lemma} Every function is a map.
-\end{lemma}
+  \begin{lemma}
+    Every map that is an object is a function.
+  \end{lemma}
 
-\begin{lemma} Every map that is an object is a function.
-\end{lemma}
+  Let $f, g$ stand for maps.
 
-Let $f, g$ stand for maps.
+  \begin{lemma}
+    The domain of every map is a class.
+  \end{lemma}
 
-\begin{lemma} The domain of every map is a class.
-\end{lemma}
+  \begin{lemma}
+    Let $x \in \dom(f)$.
+    Then $f(x)$ is an object.
+  \end{lemma}
 
-\begin{lemma} Let $x \in Dom(f)$. Then $f(x)$ is an object.
-\end{lemma}
+  \begin{lemma}[Functional Extensionality]
+    Assume $\dom(f) = \dom(g)$ and for every $x \in \dom(f)$ $f(x) = g(x)$.
+    Then $f = g$.
+  \end{lemma}
 
-\begin{lemma} [Functional Extensionality] Assume $Dom(f)=Dom(g)$ and for every $x \in Dom(f)$
-$f(x)=g(x)$. Then $f=g$.
-\end{lemma}
+  \begin{definition}
+    Assume $S$ is a subclass of the domain of $f$.
+    $f[S] = \class{f(x) | x \in S}$.
+  \end{definition}
 
-\begin{definition}
-Assume $S$ is a subclass of the domain of $f$.
-$f[S] = \{ f(x) | x \in S \}$.
-\end{definition}
+  \begin{definition}
+    $f$ maps elements of $X$ to elements of $Y$ iff $\dom (f) = X$ and $f[X]
+    \subseteq Y$.
+  \end{definition}
 
-\begin{definition}
-    $f$ maps elements of $X$ to elements of $Y$ iff
-    $Dom (f) = X$ and $f[X] \subseteq Y$.
-\end{definition}
-Let $f : X \rightarrow Y$ stand for $f$ maps elements of $X$ to elements of $Y$.
+  Let $f : X \rightarrow Y$ stand for $f$ maps elements of $X$ to elements of
+  $Y$.
 
+  \begin{axiom}[Replacement Axiom]
+    Let $X$ be a set.
+    Assume that $X$ is a subset of the domain of $f$.
+    Then $f[X]$ is a set.
+  \end{axiom}
 
-\begin{axiom} [Replacement Axiom]
-Let $X$ be a set.
-Assume that $X$ is a subset of the domain of $f$.
-Then $f[X]$ is a set.
-\end{axiom}
+  Let $g$ retracts $f$ stand for $g(f(x)) = x$ for all elements $x$ of $Dom f$.
+  Let $h$ sections $f$ stand for $f(h(y)) = y$ for all elements $y$ of $Dom h$.
 
-Let $g$ retracts $f$ stand for $g(f(x)) = x$ for all elements $x$ of $Dom f$.
-Let $h$ sections $f$ stand for $f(h(y)) = y$ for all elements $y$ of $Dom h$.
-
-\begin{definition}
+  \begin{definition}
     Let $F$ be a map.
     Let $B, C$ be classes.
-    $F : B\leftrightarrow C$ iff $F : B\rightarrow C$ and there exists a map $G$ such that
-    $G : C\rightarrow B$ and
-    $G$ retracts $F$ and $G$ sections $F$.
-\end{definition}
-
-
+    $F : B\leftrightarrow C$ iff $F : B\rightarrow C$ and there exists a map $G$
+    such that $G : C\rightarrow B$ and $G$ retracts $F$ and $G$ sections $F$.
+  \end{definition}
 \end{forthel}
-
 
 \end{document}
