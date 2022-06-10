@@ -1,5 +1,4 @@
 \NeedsTeXFormat{LaTeX2e}
-%\ProvidesPackage{naproche}[2021/02/04 Typesetting for Naproche formalizations]
 
 \RequirePackage{amsmath}
 \RequirePackage{amsthm}
@@ -8,6 +7,12 @@
 \RequirePackage{braket}     % \Set
 \RequirePackage{linegoal}   % \linegoal
 \RequirePackage{xspace}     % \xspace
+\RequirePackage{xcolor}     % lightgray
+\RequirePackage{mdframed}   % \begin{mdframed} ... \end{mdframed}
+
+
+% Top-level sections
+% ==================
 
 \newtheoremstyle{formalized}% name of the style to be used
     {4pt}% measure of space to leave above the theorem. E.g.: 3pt
@@ -44,29 +49,34 @@
 \newtheorem*{quotedtheorem}{Theorem}
 
 
+% ForTheL environment
+% ===================
 
-\RequirePackage[most]{tcolorbox}
-\definecolor{block-gray}{gray}{0.95}
-\newtcolorbox{grayblock}{arc=0mm,colframe=block-gray,colback=block-gray,grow to right by=0mm,grow to left by=0mm,
-boxrule=0pt,boxsep=0pt,breakable}
+% Space between paragraphs in forthel environments
+\newlength{\ftlparskip}
+\setlength{\ftlparskip}{0.5em}
+
+% ForTheL environment
 \newenvironment{forthel}{%
+  \begin{mdframed}[backgroundcolor=lightgray!30, linecolor=lightgray!30]%
+  \rmfamily%
   \setbool{forthel}{true}%
-  \begin{grayblock}\rmfamily
+  \setlength{\parindent}{0pt}%
+  \setlength{\parskip}{\ftlparskip}%
 }{%
-  \end{grayblock}\rmfamily%
+  \end{mdframed}%
+  \rmfamily%
   \setbool{forthel}{false}%
 }
 
+% Wrapper for ForTheL environments. Warning: In the PDF it looks exactly like
+% an ordinary ForTheL environment, but its content is not checked by Naproche.
+% So use it wisely!
 \newenvironment{greybox}{
-  \begin{grayblock}
+  \begin{forthel}
 }{
-  \end{grayblock}
+  \end{forthel}
 }
-
-
-%% Space between paragraphs in proofs in ForTheL environments
-\newlength{\ftlparskip}
-\setlength{\ftlparskip}{0.5em}
 
 
 % Flexible class terms
