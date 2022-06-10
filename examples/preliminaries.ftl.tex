@@ -56,6 +56,8 @@ import some alternative formulations for
 useful mathematical phrases (\path{examples/macros.ftl.tex}).
 
 \begin{forthel}
+  [readtex \path{axioms.ftl.tex}]
+
   [readtex \path{vocabulary.ftl.tex}]
 
   [readtex \path{macros.ftl.tex}]
@@ -74,19 +76,7 @@ from inbuilt assumptions, but it is important to reprove or restate such
 facts so that they can directly be accessed by the ATP.
 
 \begin{forthel}
-  \begin{lemma}
-    Every set is a class.
-  \end{lemma}
-
-  \begin{lemma}
-    Every class that is an object is a set.
-  \end{lemma}
-
-  \begin{axiom}
-    Every element of every class is an object.
-  \end{axiom}
-
-  Let $S, T, X, Y, Z$ denote classes.
+  Let $S, T$ denote classes.
 
   \begin{definition}
     The empty set is the set that has no elements.
@@ -98,8 +88,8 @@ facts so that they can directly be accessed by the ATP.
 
   Let $T \subseteq S$ stand for $T$ is a subclass of $S$.
 
-  Let a proper subclass of $B$ stand for a subclass $A$ of $B$ such that $A \neq
-  B$.
+  Let a proper subclass of $S$ stand for a subclass $T$ of $S$ such that $T \neq
+  S$.
 
   \begin{lemma}[Class Extensionality]
     If $S$ is a subclass of $T$ and $T$ is a subclass of $S$ then $S = T$.
@@ -109,7 +99,7 @@ facts so that they can directly be accessed by the ATP.
     A subset of $S$ is a set $X$ such that $X \subseteq S$.
   \end{definition}
 
-  Let a proper subset of $B$ stand for a subset $A$ of $B$ such that $A\neq B$.
+  Let a proper subset of $S$ stand for a subset $X$ of $S$ such that $X \neq S$.
 
   \begin{axiom}[Separation Axiom]
     Assume that $X$ is a set.
@@ -118,30 +108,26 @@ facts so that they can directly be accessed by the ATP.
   \end{axiom}
 
   \begin{definition}
-    Let $B, C$ be classes.
-    The intersection of $B$ and $C$ is $\class{ x \in B | x \in C}$.
+    The intersection of $S$ and $T$ is $\class{x \in S | x \in T}$.
   \end{definition}
 
-  Let $B \cap C$ stand for the intersection of $B$ and $C$.
+  Let $S \cap T$ stand for the intersection of $S$ and $T$.
 
   \begin{definition}
-    Let $B, C$ be classes.
-    The union of $B$ and $C$ is $\class{ x | x \in B \vee x \in C}$.
+    The union of $S$ and $T$ is $\class{x | x \in S \vee x \in T}$.
   \end{definition}
 
-  Let $B \cup C$ stand for the union of $B$ and $C$.
+  Let $S \cup T$ stand for the union of $S$ and $T$.
 
   \begin{definition}
-    Let $B, C$ be classes.
-    The set difference of $B$ and $C$ is $\class{x \in B | x \notin C}$.
+    The set difference of $S$ and $T$ is $\class{x \in S | x \notin T}$.
   \end{definition}
 
-  Let $B \setminus C$ stand for the set difference of $B$ and $C$.
+  Let $S \setminus T$ stand for the set difference of $S$ and $T$.
 
   \begin{definition}
-    Let $B, C$ be classes.
-    $B$ is disjoint from $C$ iff there is no element of $B$ that is an element
-    of $C$.
+    $S$ is disjoint from $T$ iff there is no element of $S$ that is an element
+    of $T$.
   \end{definition}
 
   \begin{definition}
@@ -149,8 +135,8 @@ facts so that they can directly be accessed by the ATP.
   \end{definition}
 
   \begin{definition}
-    $A$ disjoint family is a family $F$ such that $B$ is disjoint from $C$ for
-    all nonequal elements $B, C$ of $F$.
+    A disjoint family is a family $F$ such that $X$ is disjoint from $Y$ for all
+    nonequal elements $X, Y$ of $F$.
   \end{definition}
 \end{forthel}
 
@@ -162,10 +148,6 @@ with Kuratowski-style set-theoretical ordered pairs, but
 axiomatize them as objects.
 
 \begin{forthel}
-  \begin{axiom}
-    $(a,b)$ is an object for all objects $a, b$.
-  \end{axiom}
-
   \begin{axiom}
     For any objects $a, b, c, d$ if $(a,b) = (c,d)$ then $a = c$ and $b = d$.
   \end{axiom}
@@ -179,11 +161,11 @@ axiomatize them as objects.
     Then $X \times Y$ is a set.
   \end{axiom}
 
-  \begin{axiom}
+  \begin{lemma}
     Let $x, y$ be objects.
     If $(x,y)$ is an element of $S \times T$ then $x$ is an element of $S$ and
     $y$ is an element of $T$.
-  \end{axiom}
+  \end{lemma}
 \end{forthel}
 
 
@@ -193,29 +175,13 @@ The treatment of functions and maps is similar to that
 of sets and classes.
 
 \begin{forthel}
-  \begin{lemma}
-    Every function is a map.
-  \end{lemma}
+  Let $f$ stand for a map.
 
-  \begin{lemma}
-    Every map that is an object is a function.
-  \end{lemma}
-
-  Let $f, g$ stand for maps.
-
-  \begin{lemma}
-    The domain of every map is a class.
-  \end{lemma}
-
-  \begin{lemma}
-    Let $x \in \dom(f)$.
-    Then $f(x)$ is an object.
-  \end{lemma}
-
-  \begin{lemma}[Functional Extensionality]
-    Assume $\dom(f) = \dom(g)$ and for every $x \in \dom(f)$ $f(x) = g(x)$.
-    Then $f = g$.
-  \end{lemma}
+  \begin{axiom}
+    Assume that $\dom(f)$ is a set and $f(x)$ is an object for any
+    $x \in \dom(f)$.
+    Then $f$ is a function.
+  \end{axiom}
 
   \begin{definition}
     Assume $S$ is a subclass of the domain of $f$.
@@ -225,12 +191,12 @@ of sets and classes.
   Let the image of $f$ stand for $f[\dom(f)]$.
 
   \begin{definition}
-    $f$ maps elements of $X$ to elements of $Y$ iff $\dom (f) = X$ and $f[X]
-    \subseteq Y$.
+    $f$ maps elements of $S$ to elements of $T$ iff $\dom(f) = S$ and $f[S]
+    \subseteq T$.
   \end{definition}
 
-  Let $f : X \rightarrow Y$ stand for $f$ maps elements of $X$ to elements of
-  $Y$.
+  Let $f : S \rightarrow T$ stand for $f$ maps elements of $S$ to elements of
+  $T$.
 
   \begin{axiom}[Replacement Axiom]
     Let $X$ be a set.
@@ -238,14 +204,15 @@ of sets and classes.
     Then $f[X]$ is a set.
   \end{axiom}
 
-  Let $g$ retracts $f$ stand for $g(f(x)) = x$ for all elements $x$ of $Dom f$.
-  Let $h$ sections $f$ stand for $f(h(y)) = y$ for all elements $y$ of $Dom h$.
+  Let $g$ retracts $f$ stand for $g(f(x)) = x$ for all elements $x$ of
+  $\dom(f)$.
+  Let $h$ sections $f$ stand for $f(h(y)) = y$ for all elements $y$ of
+  $\dom(h)$.
 
   \begin{definition}
-    Let $F$ be a map.
-    Let $B, C$ be classes.
-    $F : B\leftrightarrow C$ iff $F : B\rightarrow C$ and there exists a map $G$
-    such that $G : C\rightarrow B$ and $G$ retracts $F$ and $G$ sections $F$.
+    $f : S \leftrightarrow T$ iff $f : S \rightarrow T$ and there exists a map
+    $g$ such that $g : T \rightarrow S$ and $g$ retracts $f$ and $g$ sections
+    $f$.
   \end{definition}
 \end{forthel}
 
