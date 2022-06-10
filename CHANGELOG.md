@@ -28,6 +28,8 @@ variant of ForTheL, respectively.
 
 ### Changes on the example files
 
+  * **New:** `koenig.ftl(.tex)` (König's theorem) is back!
+
   * **New:** New file `paradoxes.ftl.tex` which contains formalizations about
     some famous paradoxes. (Note that Russell's paradox was moved to this
     collection.)
