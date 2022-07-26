@@ -75,6 +75,7 @@ library:
     - Isabelle.Naproche
     - SAD.API
     - SAD.Main
+    - SAD.Parser.Token
 
 executables:
   Naproche-SAD:

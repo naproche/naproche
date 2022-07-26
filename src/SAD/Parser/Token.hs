@@ -1,23 +1,32 @@
-{-
-Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
+{-|
+License     : GPL 3
+Maintainer  : Andrei Paskevich (2001 - 2008),
+              Steffen Frerix (2017 - 2018)
 
-Tokenization of input.
+Tokenization of input
 -}
 
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.Parser.Token
-  ( Token (tokenPos, tokenText)
+module SAD.Parser.Token (
+    -- * Tokens
+    Token (tokenPos, tokenText)
   , Dialect (..)
   , tokensRange
   , showToken
   , isProperToken
+
+  -- * Tokenizing ForTheL texts
   , tokenize
+
+  -- * Greek letters
+  , greek
+
+  -- * Helper functions
   , reportComments
   , composeTokens
   , isEOF
   , noTokens
-  , greek
   ) where
 
 import qualified Isabelle.Position as Position
@@ -28,44 +37,58 @@ import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 
 
-data Token = Token
-  { tokenText :: Text
-  , tokenPos :: Position.T
-  , tokenType :: TokenType
-  } | EOF { tokenPos :: Position.T }
+-- | A token of a ForTheL text
+data Token =
+    Token {
+      tokenText :: Text
+    , tokenPos :: Position.T
+    , tokenType :: TokenType
+    }
+  | EOF { tokenPos :: Position.T }
   deriving (Eq, Ord)
 
 instance Show Token where
   show Token{tokenText = p, tokenPos = s} = show p
   show EOF{} = "EOF"
 
-data TokenType = NoWhiteSpaceBefore | WhiteSpaceBefore | Comment deriving (Eq, Ord, Show)
+data TokenType =
+    NoWhiteSpaceBefore  -- a regular token without preceding whitespace
+  | WhiteSpaceBefore    -- a regular token with preceding whitespace
+  | Comment             -- a comment
+  deriving (Eq, Ord, Show)
 
--- If at some point one uses a more powerful parser for tokenizing, this should be much
--- less messy.
--- | Indicates whether the tokenizer is currently inside a forthel env.
+-- | The ForTheL dialects
+data Dialect =
+    FTL   -- ^ ForTheL's ASCII dialect (used in @.ftl@ files)
+  | TEX   -- ^ ForTheL's LaTeX dialect (used in @.ftl.tex@ files)
+
+-- Indicates whether the tokenizer is currently inside a forthel environment
 data TexState = InsideForthelEnv | OutsideForthelEnv deriving (Eq)
 
+-- Generate a token with a given range
 makeTokenRange :: Text -> Position.Range -> TokenType -> Token
 makeTokenRange text range = Token text (Position.range_position range)
 
+-- Generate a new token with a given starting position
 makeToken :: Text -> Position.T -> TokenType -> Token
 makeToken text pos = makeTokenRange text (pos, Position.symbol_explode text pos)
 
+-- Get the end position of a token
 tokenEndPos :: Token -> Position.T
 tokenEndPos tok@Token{} = Position.symbol_explode (tokenText tok) (tokenPos tok)
 tokenEndPos tok@EOF{} = tokenPos tok
 
--- | The range in which the tokens lie.
+-- | The range in which the tokens lie
 tokensRange :: [Token] -> Position.Range
 tokensRange [] = Position.no_range
 tokensRange toks = Position.range (tokenPos $ head toks, tokenEndPos $ last toks)
 
--- | Return the @tokenText@ or "end of input" if the token is @EOF@.
+-- | Print a token
 showToken :: Token -> Text
 showToken t@Token{} = tokenText t
 showToken EOF{} = Text.pack "end of input"
 
+-- | Determine whether a given token is /proper/, i.e. not a comment
 isProperToken :: Token -> Bool
 isProperToken t@Token{} = case tokenType t of
   NoWhiteSpaceBefore -> True
@@ -73,15 +96,36 @@ isProperToken t@Token{} = case tokenType t of
   Comment -> False
 isProperToken EOF{} = True
 
-noTokens :: [Token]
-noTokens = [EOF Position.none]
-
-data Dialect = FTL | TEX
-
 isLexeme :: Char -> Bool
 isLexeme c = isAscii c && isAlphaNum c
 
 
+-- | Tokenize a ForTheL text (depending on a ForTheL dialect and a starting
+-- position)
+--
+-- If @Dialect@ is chosen to be @FTL@ then the text is tokenized as follows:
+--
+--  * Any alphanumeric string becomes a token
+--  * Any symbolic character becomes a token
+--  * Everything from a @#@ to the next linebreak becomes a comment token
+--  * Whitespaces are ignored
+--
+-- If @Dialect@ is chosen to be @TEX@ then the text is tokenized as follows
+--
+--  * Everything not enclosed within "@\\begin{forthel}@" and "@\\end{forthel}@"
+--    is ignored
+--  * Any alphanumeric string becomes a token
+--  * Any symbolic character becomes a token
+--  * LaTeX commands for logical symbols and certain special commands are first
+--    converted to ASCII representations (e.g. @\\wedge@ to @/\\@) and then
+--    tokenized by the above rules
+--  * Any expression of the form @\\{@ or @\\}@ is transformed to @{@ or @}@,
+--    resp. which then becomes a single token
+--  * LaTeX commands for greek letters are also converted to alphanumeric
+--    strings and then also tokenized by the above rules
+--  * Everything from a @%@ to the next linebreak becomes a comment token
+--  * Any whitespace and any expression of the form @\\\\@, @\\[@, @\\]@, @\\(@,
+--    @\\)@, @$@, @\\left@, @\\middle@, @\\right@ is ignored
 tokenize :: Dialect -> Position.T -> Text -> [Token]
 
 -- Tokenize an FTL document
@@ -224,6 +268,8 @@ expandTexCmd s range whiteSpaceBefore | s `elem` greek = [makeTokenRange ("tex" 
 -- If this is not a predefined command to be expanded, just leave the backslash so that it gets treated as a symbol.
 expandTexCmd s range whiteSpaceBefore = [makeTokenRange (Text.cons '\\' s) range whiteSpaceBefore]
 
+-- | LaTeX commands for greek letters, e.g. @alpha@, @varphi@, @Gamma@.
+-- Used to denote variables in ForTheL's LaTeX dialect.
 greek :: [Text]
 greek = lowerGreek ++ varGreek ++ upperGreek
 
@@ -289,6 +335,7 @@ makeSymbolTokens (s:symbols) range whiteSpaceBefore =
   makeTokenRange s range whiteSpaceBefore : makeSymbolTokens symbols range NoWhiteSpaceBefore
 makeSymbolTokens [] _ _ = []
 
+-- | Markup report for comments
 reportComments :: Token -> Maybe Position.Report
 reportComments t@Token{}
   | isProperToken t = Nothing
@@ -296,7 +343,7 @@ reportComments t@Token{}
 reportComments EOF{} = Nothing
 
 -- | Append tokens separated by a single space if they were separated
--- by whitespace before.
+-- by whitespace before
 composeTokens :: [Token] -> Text
 composeTokens = Text.concat . dive
   where
@@ -305,6 +352,12 @@ composeTokens = Text.concat . dive
       let whitespaceBefore = if tokenType t == WhiteSpaceBefore then Text.singleton ' ' else Text.empty
       in  whitespaceBefore : showToken t : dive ts
 
+-- | A singleton /end of file/ token, i.e. the result of tokenizing an empty
+-- document
+noTokens :: [Token]
+noTokens = [EOF Position.none]
+
+-- | Determines whether a token is an /end of file/ token
 isEOF :: Token -> Bool
 isEOF EOF{} = True
 isEOF _ = False
