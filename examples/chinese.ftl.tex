@@ -21,7 +21,7 @@
 
   \section{Integral domain axioms}
 
-  We assume that our universe is a fixed integral domain. We call elements of our universe simply ``elements``. In particular, we have two special elements, $0$ and $1$. Moreover, there is a unary operation, $-$, and two binary operations, $+$ and $\cdot$.
+  We assume that our universe is a fixed integral domain. We call elements of our universe simply ``elements''. In particular, we have two special elements, $0$ and $1$. Moreover, there is a unary operation, $-$, and two binary operations, $+$ and $\cdot$.
 
   \begin{forthel}
     [synonym element/-s]
@@ -119,30 +119,6 @@
   \end{forthel}
 
   The next two statements are some simple computation rules. The first one concerning multiplication with $-1$ can be derived from our previous laws together with \textit{MulZero}, even if we state it as an axiom here. We leave the proof of this claim as an exercise for the reader.
-
-  \begin{comment}
-    $$x + ((-1) \cdot x)
-    = (1 \cdot x) + ((-1) \cdot x)
-    = (1 + (-1)) \cdot x
-    = 0 \cdot x
-    = 0$$
-
-    $$\implies (-x) + (x + ((-1) \cdot x)) = (-x) + 0$$
-    $$\implies ((-x) + x) + ((-1) \cdot x) = -x$$
-    $$\implies 0 + ((-1) \cdot x) = -x$$
-    $$\implies ((-1) \cdot x) = -x$$
-
-    $$(x \cdot (-1)) + x
-    = (x \cdot (-1)) \cdot (x \cdot 1)
-    = x \cdot ((-1) + 1)
-    = x \cdot 0
-    = 0$$
-
-    $$\implies ((x \cdot (-1)) + x) - x = 0 - x$$
-    $$\implies (x \cdot (-1)) + (x - x) = -x$$
-    $$\implies (x \cdot (-1)) + 0 = -x$$
-    $$\implies (x \cdot (-1)) = -x$$
-  \end{comment}
 
   \begin{forthel}
     \begin{axiom}[MulMnOne]
