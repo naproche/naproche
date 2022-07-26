@@ -161,7 +161,7 @@ tokenize TEX startPos = procToken OutsideForthelEnv startPos NoWhiteSpaceBefore
         toks = procToken InsideForthelEnv (Position.symbol_explode head currentPos) WhiteSpaceBefore rest
     -- Display style math mode delimiters
     procToken InsideForthelEnv currentPos _ remainingText
-      | head `elem` ["\\[", "\\]"] = toks
+      | head `elem` ["\\[", "\\]", "\\(", "\\)"] = toks
       where
         (head, rest) = Text.splitAt 2 remainingText
         toks = procToken InsideForthelEnv (Position.symbol_explode head currentPos) WhiteSpaceBefore rest
