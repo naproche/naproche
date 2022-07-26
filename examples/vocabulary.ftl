@@ -1,3 +1,5 @@
+# A list of singular/plural pairs for use in formalizations.
+
 [synonym belong/-s]
 [synonym bound/-s]
 [synonym cardinal/-s]
