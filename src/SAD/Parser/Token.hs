@@ -8,7 +8,7 @@ Tokenization of input.
 
 module SAD.Parser.Token
   ( Token (tokenPos, tokenText)
-  , TexState (InsideForthelEnv, OutsideForthelEnv, TexDisabled)
+  , Dialect (..)
   , tokensRange
   , showToken
   , isProperToken
@@ -44,7 +44,7 @@ data TokenType = NoWhiteSpaceBefore | WhiteSpaceBefore | Comment deriving (Eq, O
 -- If at some point one uses a more powerful parser for tokenizing, this should be much
 -- less messy.
 -- | Indicates whether the tokenizer is currently inside a forthel env.
-data TexState = InsideForthelEnv | OutsideForthelEnv | TexDisabled deriving (Eq)
+data TexState = InsideForthelEnv | OutsideForthelEnv deriving (Eq)
 
 makeTokenRange :: Text -> Position.Range -> TokenType -> Token
 makeTokenRange text range = Token text (Position.range_position range)
@@ -76,84 +76,125 @@ isProperToken EOF{} = True
 noTokens :: [Token]
 noTokens = [EOF Position.none]
 
--- | @tokenize commentChars start text@ takes a list of characters @commentChars@ to use
--- for comments when used as first character in the line and a @text@ that gets tokenized
--- starting from the @start@ position.
-tokenize :: TexState -> Position.T -> Text -> [Token]
-tokenize texState start = posToken texState start NoWhiteSpaceBefore
+data Dialect = FTL | TEX
+
+isLexeme :: Char -> Bool
+isLexeme c = isAscii c && isAlphaNum c
+
+
+tokenize :: Dialect -> Position.T -> Text -> [Token]
+
+-- Tokenize an FTL document
+tokenize FTL startPos = procToken startPos NoWhiteSpaceBefore
   where
-    useTex = texState /= TexDisabled
-    isLexeme c = isAscii c && isAlphaNum c
-    -- Activate the tokenizer when '\begin{forthel}' appears.
-    posToken :: TexState -> Position.T -> TokenType -> Text -> [Token]
-    posToken OutsideForthelEnv pos _ s = toks
+    -- Process a token
+    procToken :: Position.T -> TokenType -> Text -> [Token]
+    -- Process alphanumeric token
+    procToken currentPos whitespaceBefore remainingText
+      | not (Text.null lexeme) = tok:toks
       where
-        (ignoredText, rest) = Text.breakOn "\\begin{forthel}" s
-        newPos = Position.symbol_explode (ignoredText <> "\\begin{forthel}") pos
-        toks = posToken InsideForthelEnv newPos WhiteSpaceBefore (Text.drop 15 rest)
-
-    -- Deactivate the tokenizer when '\end{forthel}' appears.
-    posToken InsideForthelEnv pos _ s | start == "\\end{forthel}" = toks
+        (lexeme, rest) = Text.span isLexeme remainingText
+        tok  = makeToken lexeme currentPos whitespaceBefore
+        toks = procToken (Position.symbol_explode lexeme currentPos) NoWhiteSpaceBefore rest
+    -- Process whitespace
+    procToken currentPos _ remainingText
+      | not (Text.null white) = toks
       where
-        (start,rest) = Text.splitAt 13 s
-        toks = posToken OutsideForthelEnv (Position.symbol_explode start pos) WhiteSpaceBefore rest
+        (white, rest) = Text.span isSpace remainingText
+        toks = procToken (Position.symbol_explode white currentPos) WhiteSpaceBefore rest
+    -- Process EOF, comment or symbolic token
+    procToken currentPos whitespaceBefore remainingText =
+      case Text.uncons remainingText of
+        -- EOF
+        Nothing -> [EOF currentPos]
+        -- Comment
+        Just ('#', _) -> tok:toks
+          where
+            (comment, rest) = Text.break (== '\n') remainingText
+            tok  = makeToken comment currentPos Comment
+            toks = procToken (Position.symbol_explode comment currentPos) whitespaceBefore rest
+        -- Symbolic token
+        Just (c, cs) -> tok:toks
+          where
+            text = Text.singleton c
+            tok  = makeToken text currentPos whitespaceBefore
+            toks = procToken (Position.symbol_explode text currentPos) NoWhiteSpaceBefore cs
 
-    -- Make alphanumeric tokens that don't start with whitespace.
-    posToken texState pos whitespaceBefore s | not (Text.null lexeme) = tok:toks
+-- Tokenize an FTL-TeX document
+tokenize TEX startPos = procToken OutsideForthelEnv startPos NoWhiteSpaceBefore
+  where
+    -- Process a token
+    procToken :: TexState -> Position.T -> TokenType -> Text -> [Token]
+    -- When outside a forthel environment, ignore anything till the next
+    -- occurence of "\begin{forthel}" and then switch to 'InsideForthelEnv' mode
+    -- TODO: Handle commented "\begin{forthel}" expressions
+    procToken OutsideForthelEnv currentPos _ remainingText = toks
       where
-        (lexeme, rest) = Text.span isLexeme s
-        tok  = makeToken lexeme pos whitespaceBefore
-        toks = posToken texState (Position.symbol_explode lexeme pos) NoWhiteSpaceBefore rest
-
-    -- Process whitespace.
-    posToken texState pos _ s | not (Text.null white) = toks
+        (ignoredText, rest) = Text.breakOn "\\begin{forthel}" remainingText
+        newPos = Position.symbol_explode (ignoredText <> "\\begin{forthel}") currentPos
+        toks = procToken InsideForthelEnv newPos WhiteSpaceBefore $ Text.drop (Text.length "\\begin{forthel}") rest
+    -- When we reach an "\end{forthel}" expression inside a forthen environment,
+    -- switch to 'OutsideForthelEnv' mode
+    procToken InsideForthelEnv currentPos _ remainingText
+      | start == "\\end{forthel}" = toks
       where
-        (white, rest) = Text.span isSpace s
-        toks = posToken texState (Position.symbol_explode white pos) WhiteSpaceBefore rest
-
-    -- Process tex whitespace.
-    posToken texState pos _ s | useTex && hd == "\\\\" = toks
+        (start, rest) = Text.splitAt (Text.length "\\end{forthel}") remainingText
+        toks = procToken OutsideForthelEnv (Position.symbol_explode start currentPos) WhiteSpaceBefore rest
+    -- Process alphanumeric token
+    procToken InsideForthelEnv currentPos whitespaceBefore remainingText
+      | not (Text.null lexeme) = tok:toks
       where
-        (hd, rest) = Text.splitAt 2 s
-        toks = posToken texState (Position.symbol_explode_string "\\\\" pos) WhiteSpaceBefore rest
-
-    -- We reuse the pattern parsing for sentences in order to parse LaTeX. Thus we simply tokenize
-    -- away math-mode markers like '\[' and '\]'
-    posToken texState pos _ s | useTex && hd `elem` ["\\[","\\]"] = toks
+        (lexeme, rest) = Text.span isLexeme remainingText
+        tok  = makeToken lexeme currentPos whitespaceBefore
+        toks = procToken InsideForthelEnv (Position.symbol_explode lexeme currentPos) NoWhiteSpaceBefore rest
+    -- Process whitespace
+    procToken InsideForthelEnv currentPos _ remainingText
+      | not (Text.null white) = toks
       where
-        (hd, rest) = Text.splitAt 2 s
-        toks = posToken texState (Position.symbol_explode hd pos) WhiteSpaceBefore rest
-
-    -- Process non-alphanumeric symbol or EOF.
-    posToken texState pos whitespaceBefore s = case Text.uncons s of
-      Nothing -> [EOF pos]
-
-      -- We expand the `\{` and `\}` tex commands here
-      Just ('\\', rest) | Text.head rest `elem` ['{','}'] && useTex ->
-            posToken texState (Position.symbol_explode_string "\\" pos) WhiteSpaceBefore rest
-
-      -- We expand alphanumeric tex commands here
-      Just ('\\', rest) | useTex -> newToks ++ toks
-        where
-          (name, rest') = Text.span isAlpha rest
-          pos' = Position.symbol_explode (Text.cons '\\' name) pos
-          newToks = expandTexCmd name (pos, pos') whitespaceBefore
-          toks = posToken texState pos' WhiteSpaceBefore rest'
-
-      -- We reuse the pattern parsing for sentences in order to parse LaTeX. Thus we simply tokenize
-      -- away math-mode markers like '$'
-      Just ('$', rest) | useTex -> posToken texState (Position.symbol_explode_string "$" pos) WhiteSpaceBefore rest
-
-      Just (c, _) | if useTex then c == '%' else c == '#' -> tok:toks
-        where
-          (comment, rest) = Text.break (== '\n') s
-          tok  = makeToken comment pos Comment
-          toks = posToken texState (Position.symbol_explode comment pos) whitespaceBefore rest
-      Just (c, cs) -> tok:toks
-        where
-          text = Text.singleton c
-          tok  = makeToken text pos whitespaceBefore
-          toks = posToken texState (Position.symbol_explode text pos) NoWhiteSpaceBefore cs
+        (white, rest) = Text.span isSpace remainingText
+        toks = procToken InsideForthelEnv (Position.symbol_explode white currentPos) WhiteSpaceBefore rest
+    -- Process line break
+    procToken InsideForthelEnv currentPos _ remainingText
+      | head == "\\\\" = toks
+      where
+        (head, rest) = Text.splitAt (Text.length "\\\\") remainingText
+        toks = procToken InsideForthelEnv (Position.symbol_explode head currentPos) WhiteSpaceBefore rest
+    -- Display style math mode delimiters
+    procToken InsideForthelEnv currentPos _ remainingText
+      | head `elem` ["\\[", "\\]"] = toks
+      where
+        (head, rest) = Text.splitAt 2 remainingText
+        toks = procToken InsideForthelEnv (Position.symbol_explode head currentPos) WhiteSpaceBefore rest
+    -- Process non-alphanumeric symbol or EOF
+    procToken InsideForthelEnv currentPos whitespaceBefore remainingText =
+      case Text.uncons remainingText of
+        -- EOF
+        Nothing -> [EOF currentPos]
+        -- Inline math mode delimiter
+        Just ('$', rest) -> procToken InsideForthelEnv (Position.symbol_explode_string "$" currentPos) WhiteSpaceBefore rest
+        -- Comment
+        Just ('%', _) -> tok:toks
+          where
+            (comment, rest) = Text.break (== '\n') remainingText
+            tok  = makeToken comment currentPos Comment
+            toks = procToken InsideForthelEnv (Position.symbol_explode comment currentPos) whitespaceBefore rest
+        -- Escaped special character
+        Just ('\\', rest)
+          | Text.head rest `elem` ['{', '}'] ->
+            procToken InsideForthelEnv (Position.symbol_explode_string "\\" currentPos) WhiteSpaceBefore rest
+        -- TeX command
+        Just ('\\', rest) -> newToks ++ toks
+          where
+            (name, rest') = Text.span isAlpha rest
+            newPos = Position.symbol_explode (Text.cons '\\' name) currentPos
+            newToks = expandTexCmd name (currentPos, newPos) whitespaceBefore
+            toks = procToken InsideForthelEnv newPos WhiteSpaceBefore rest'
+        -- Symbolic token
+        Just (c, cs) -> tok:toks
+          where
+            text = Text.singleton c
+            tok  = makeToken text currentPos whitespaceBefore
+            toks = procToken InsideForthelEnv (Position.symbol_explode text currentPos) NoWhiteSpaceBefore cs
 
 
 expandTexCmd :: Text -> Position.Range -> TokenType -> [Token]
