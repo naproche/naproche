@@ -31,7 +31,7 @@ Commands below assume the same current directory: repository clones
 
       hg clone https://isabelle.in.tum.de/repos/isabelle isabelle_naproche
       git clone https://github.com/naproche/naproche.git naproche
-      
+
       isabelle_naproche/Admin/init -I Isabelle_Naproche -V ./naproche/Isabelle
       isabelle_naproche/bin/isabelle components -u ./naproche
 
@@ -82,7 +82,7 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
     - Open ForTheL examples in Isabelle/jEdit, e.g.
 
           isabelle jedit examples/cantor.ftl
-        
+
 
     - Open Isabelle development environment with ForTheL examples, e.g.
 
@@ -134,8 +134,44 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
   It may be necessary to allow the E Prover more time by appending `-t SECONDS`
 
 
+## Documentation
+
+You can use the tool [Haddock][1] to automatically generate documentation of
+Naproche's source code.
+Just run the following command:
+
+  ```sh
+  stack haddock
+  ```
+
+To access this documentation via a local [Hoogle][2] server, proceed the
+following steps:
+
+  1.  Generate a local Hoogle database.
+
+      ```sh
+      stack hoogle -- generate --local
+      ```
+
+  2.  Start a local Hoogle server.
+
+      ```sh
+      stack hoogle -- server --local --port=8080
+      ```
+
+Now you can access the documentation with your favourite web browser at
+<http://localhost:8080>.
+
+If you are developing Naproche and want to add Haddock annotations to the source files, have a look at this guide:
+<https://haskell-haddock.readthedocs.io/en/latest/markup.html>
+
+
 ## Reference ##
 
 This program is based on the System for Automated Deduction (SAD) by
 Andrei Paskevich, see https://github.com/tertium/SAD.
 You can find more resources in our [CONTRIBUTING.md](CONTRIBUTING.md).
+
+
+[1]: <https://haskell-haddock.readthedocs.io/en/latest/>
+[2]: <https://wiki.haskell.org/Hoogle>
