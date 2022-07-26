@@ -39,7 +39,7 @@
 
     \begin{theorem}
       Let $B$ be a barber such that for any person $P$ $B$ shaves $P$ iff $P$
-      does not shave $P$.
+      does not shave himself.
       Then we have a contradiction.
     \end{theorem}
     \begin{proof}
@@ -93,10 +93,10 @@
 
   \begin{forthel}
     \begin{theorem}
-      There exists a class that is not a set.
+      Assume that every class is a set.
+      Then we have a contradiction.
     \end{theorem}
     \begin{proof}
-      Assume that every class is a set.
       Define $R = \class{x | \text{$x$ is a set such that $x \notin x$}}$.
       Then $R \in R$ iff $R \notin R$.
       Contradiction.
