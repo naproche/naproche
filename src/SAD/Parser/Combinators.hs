@@ -18,7 +18,7 @@ import SAD.Parser.Primitives
 import Control.Applicative
 import Control.Monad
 import Data.Ord (comparing)
-import Data.Maybe (isNothing, catMaybes)
+import Data.Maybe (isNothing, mapMaybe)
 import Debug.Trace
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
@@ -269,7 +269,7 @@ wellFormedCheck check p = Parser $ \st ok cerr eerr ->
   in  runParser p st pok cerr eerr
   where
     wf  = filter (isNothing . check . prResult)
-    nwf = catMaybes . map (check . prResult)
+    nwf = mapMaybe (check . prResult)
 
 -- | Parse and keep only results well-formed according to the supplied check;
 -- fail if there are none with a normal error (and not a well-formedness one).
@@ -307,7 +307,7 @@ errorTrace lbl shw p = Parser $ \st ok cerr eerr ->
         neerr err = trace ("error trace (empty)   : " ++ Text.unpack lbl ++ "\n" ++  tabText (show err)) $ eerr err
     in  runParser p st nok ncerr neerr
     where
-      tabText = unlines . map ((++) "   ") . lines
+      tabText = unlines . map ("   " ++) . lines
 
 
 -- | Return @()@ if the next token isn't @EOF@.
@@ -315,6 +315,6 @@ notEof :: Parser st ()
 notEof = Parser $ \st ok _ eerr ->
   case stInput st of
     [] -> eerr $ unexpectError "" Position.none
-    (t:_) -> case isEOF t of
-      True  -> eerr $ unexpectError (showToken t) (tokenPos t)
-      False -> ok (newErrorUnknown (tokenPos t)) [] [PR () st]
+    (t:_) -> if isEOF t
+      then eerr $ unexpectError (showToken t) (tokenPos t)
+      else ok (newErrorUnknown (tokenPos t)) [] [PR () st]

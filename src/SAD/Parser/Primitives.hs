@@ -103,9 +103,7 @@ satisfy :: (Text -> Bool) -> Parser st Text
 satisfy pr = tokenPrim prTest
   where
     prTest :: Token -> Maybe Text
-    prTest tk = let s = showToken tk in case pr s of
-      True  -> Just s
-      False -> Nothing
+    prTest tk = let s = showToken tk in if pr s then Just s else Nothing
 
 -- | Always succeed and pass on the string of the token
 anyToken :: Parser st Text
