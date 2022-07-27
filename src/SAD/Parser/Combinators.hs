@@ -1,7 +1,8 @@
-{-
-Authors: Steffen Frerix (2017 - 2018)
+{-|
+License     : GPL 3
+Maintainer  : Steffen Frerix (2017 - 2018)
 
-Parser combinators.
+Parser combinators
 -}
 
 {-# LANGUAGE TupleSections #-}
@@ -25,12 +26,11 @@ import qualified Data.Text.Lazy as Text
 import qualified Isabelle.Position as Position
 
 
--- choices
-
----- unambiguous choice
-
-------  Choose in LL1 fashion
--- use '<|>' in "Control.Applicative"
+-- * Choices
+--
+-- $Choices
+--
+-- To choose in LL1 fashion use '<|>' in @Control.Applicative@
 
 -- | Choose with lookahead.
 {-# INLINE (</>) #-}
@@ -62,7 +62,8 @@ p1 -|- p2 = Parser $ \st ok cerr eerr ->
         in  runParser p2 st ok2 cerr2 eerr2
   in  runParser p1 st ok1 cerr1 eerr1
 
--- chain parsing combinators
+
+-- * Chain parsing combinators
 
 -- | Parse @a@s interleaved by @sep@s keeping all intermediary results.
 sepBy :: Parser st a -> Parser st sep -> Parser st [a]
@@ -71,22 +72,23 @@ sepBy p sep = do
   as <- opt [] $ sep >> sepBy p sep
   pure $ a:as
 
--- | Same as @sepBy@ but keep only the largest result.
+-- | Same as 'sepBy' but keep only the largest result.
 sepByLL1 :: Parser st a -> Parser st sep -> Parser st [a]
 sepByLL1 p sep = do
   a <- p
   as <- optLL1 [] $ sep >> sepByLL1 p sep
   pure $ a:as
 
-
+-- | @opt x p@ runs both @p@ and @x@ and combines their errors and results.
 opt :: a -> Parser st a -> Parser st a
 opt x p = p -|- return x
 
-
+-- | @optLL1 x p@ will run @p@; if @p@ fails without consuming any input it will
+-- return @x@.
 optLL1 :: a -> Parser st a -> Parser st a
 optLL1 x p = p <|> return x
 
-
+-- | @optLLx x p@ will try @p@; if @p@ fails it will return @x@.
 optLLx :: a -> Parser st a -> Parser st a
 optLLx x p = p </> return x
 
@@ -117,38 +119,44 @@ enclosed begin end p = do
   endPos <- tokenPos' end
   return ((beginPos, endPos), result)
 
--- | Parse text enclosed within "\<command>{" and "}" (where "<command>" can be
--- an arbitrary TeX command identifier)
+-- | Parse text enclosed within @\<command>{@ and @}@ (where @<command>@ can be
+-- an arbitrary TeX command identifier).
 texEnclosed :: Text -> Parser st a -> Parser st a
 texEnclosed command p = do
   token ("\\" <> command)
   braced p
 
--- | Mandatory surrounding parentheses, brackets, and braces.
-parenthesised, bracketed, braced :: Parser st a -> Parser st a
+-- | Mandatory surrounding parentheses.
+parenthesised :: Parser st a -> Parser st a
 parenthesised p = snd <$> enclosed "(" ")" p
+
+-- | Mandatory surrounding brackets.
+bracketed :: Parser st a -> Parser st a
 bracketed p     = snd <$> enclosed "[" "]" p
+
+-- | Mandatory surrounding braces.
+braced :: Parser st a -> Parser st a
 braced p        = snd <$> enclosed "{" "}" p
 
-
--- | Optional parentheses
+-- | Optional parentheses.
 paren :: Parser st a -> Parser st a
 paren p = p -|- parenthesised p
 
--- | Dot keyword
+-- | Dot keyword.
 dot :: Parser st Position.Range
 dot = do
   pos1 <- tokenPos' "." <?> "a dot"
   return $ Position.range (pos1, Position.symbol_explode_string "." pos1)
 
--- | mandatory finishing dot
+-- | Mandatory finishing dot.
 finish :: Parser st a -> Parser st a
 finish p = after p dot
 
 
--- Iterating parser usage
+-- * Iterating parser usage
 
--- | @repeatUntil step end@ repeats a monadic action @step@ until @end@ succeeds.
+-- | @repeatUntil' step end@ repeats a monadic action @step@ until @end@
+-- succeeds.
 repeatUntil' :: (MonadPlus m, Monoid a) => m a -> m b -> m (a, b)
 repeatUntil' step end =
   fmap (mempty,) end
@@ -158,9 +166,10 @@ repeatUntil' step end =
 repeatUntil :: (MonadPlus m, Monoid a) => m a -> m a -> m a
 repeatUntil step = fmap (uncurry (<>)) . repeatUntil' step
 
--- Control ambiguity
 
--- | If p is ambiguous, fail and report a well-formedness error
+-- * Control ambiguity
+
+-- | If @p@ is ambiguous, @narrow p@ fails and reports a well-formedness error.
 narrow :: Show a => Parser st a -> Parser st a
 narrow p = Parser $ \st ok cerr eerr ->
   let pok err eok cok = case eok ++ cok of
@@ -168,6 +177,7 @@ narrow p = Parser $ \st ok cerr eerr ->
         ls  ->  eerr $ newErrorMessage (newWellFormednessMessage ["ambiguity error" <> Text.pack (show (map prResult ls))]) (stPosition st)
   in  runParser p st pok cerr eerr
 
+-- | If @p@ is ambiguous, @narrow p@ fails and reports a well-formedness error.
 narrow2 :: Show b => Parser st (a, b) -> Parser st (a, b)
 narrow2 p = Parser $ \st ok cerr eerr ->
   let pok err eok cok = case eok ++ cok of
@@ -175,8 +185,7 @@ narrow2 p = Parser $ \st ok cerr eerr ->
         ls  ->  eerr $ newErrorMessage (newWellFormednessMessage ["ambiguity error" <> Text.pack (show (map (snd . prResult) ls))]) (stPosition st)
   in  runParser p st pok cerr eerr
 
-
--- | Only take the longest possible parses (by @SourcePos@), discard all others
+-- | Only take the longest possible parses (by @SourcePos@), discard all others.
 takeLongest :: Parser st a -> Parser st a
 takeLongest p = Parser $ \st ok cerr eerr ->
   let pok err eok cok
@@ -195,10 +204,9 @@ takeLongest p = Parser $ \st ok cerr eerr ->
         EQ -> lng (c:l:ls) cs
 
 
+-- * Deny parses
 
--- Deny parses
-
--- | Fail if p succeeds
+-- | @failing p@ fails if @p@ succeeds.
 failing :: Parser st a -> Parser st ()
 failing p = Parser $ \st ok cerr eerr ->
   let pok _err eok _ =
@@ -211,9 +219,7 @@ failing p = Parser $ \st ok cerr eerr ->
   where
     showCurrentToken st = showToken $ head $ stInput st ++ noTokens
 
-
-
--- | Labeling of production rules for better error messages
+-- | Labeling of production rules for better error messages.
 infix 0 <?>
 (<?>) :: Parser st a -> Text -> Parser st a
 p <?> msg = Parser $ \st ok cerr eerr ->
@@ -227,28 +233,26 @@ p <?> msg = Parser $ \st ok cerr eerr ->
       then err
       else setExpectMessage msg err
 
--- | Labeling of production rules for better error messages
+-- | Labeling of production rules for better error messages.
+-- (@label msg p = p <?> msg@)
 label :: Text -> Parser st a -> Parser st a
 label msg p = p <?> msg
 
 
+-- * Control error messages
 
--- Control error messages
-
--- | Fail with a well-formedness error
+-- | Fail with a well-formedness error.
 failWF :: Text -> Parser st a
 failWF msg = Parser $ \st _ _ eerr ->
   eerr $ newErrorMessage (newWellFormednessMessage [msg]) (stPosition st)
 
-
----- do not produce an error message
+-- | Do not produce an error message.
 noError :: Parser st a -> Parser st a
 noError p = Parser $ \st ok cerr eerr ->
   let pok   _err = ok   $ newErrorUnknown (stPosition st)
       pcerr _err = cerr $ newErrorUnknown (stPosition st)
       peerr _err = eerr $ newErrorUnknown (stPosition st)
   in  runParser p st pok pcerr peerr
-
 
 -- | Parse and keep only results well-formed according to the supplied check;
 -- fail if there are none. Here @Just str@ signifies an error.
@@ -286,12 +290,12 @@ lexicalCheck check p = Parser $ \st ok cerr eerr ->
         -- TODO: Don't use the default Ord SourcePos instance.
 
 
--- Debugging
+-- * Debugging
 
----- In case of failure print the error, in case of success print the result
----- of the function shw.
----- This function is implemented using the impure function Debug.Trace.trace
----- and should only be used for debugging purposes.
+-- | In case of failure print the error, in case of success print the result
+-- of the function shw.
+-- This function is implemented using the impure function @Debug.Trace.trace@
+-- and should only be used for debugging purposes.
 errorTrace ::
   Text -> (ParseResult st a -> Text) -> Parser st a -> Parser st a
 errorTrace lbl shw p = Parser $ \st ok cerr eerr ->
