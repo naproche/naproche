@@ -189,7 +189,7 @@ primPrd :: FTL (b1 -> b1, Formula)
            -> ([Pattern], [Formula] -> b2) -> FTL (b1 -> b1, b2)
 primPrd p (pt, fm) = do
   (q, ts) <- wdPattern p pt
-  return (q, fm $ (mkVar (VarHole "")):ts)
+  return (q, fm $ mkVar (VarHole ""):ts)
 
 
 -- * Multi-subject predicates: [a,b are] equal
@@ -237,7 +237,7 @@ primCommonNotion p s = getExpr notionExpr notion
       return (q, foldr1 And $ map fn as, vs)
 
 primFun :: FTL UTerm -> FTL UTerm
-primFun  = (>>= fun) . primNotion
+primFun  = fun <=< primNotion
   where
     fun (q, Trm {trmName = TermEquality, trmArgs = [_, t]}, _)
       | not (occursH t) = return (q, t)
@@ -365,7 +365,7 @@ commonPattern _ _ _ = mzero
 -- token' and then continues to follow the pattern
 naPattern :: FTL (b -> b, a)
           -> [Pattern] -> FTL (b -> b, [a])
-naPattern p (Word l : ls) = guard (notElem "and" l) >> patternTokenOf' l >> wdPattern p ls
+naPattern p (Word l : ls) = guard ("and" `notElem` l) >> patternTokenOf' l >> wdPattern p ls
 naPattern p ls = wdPattern p ls
 
 
@@ -381,7 +381,7 @@ varList = var `sepBy` token' "," >>= nodups
 nodups :: IsVar a => [a] -> FTL (Set a)
 nodups vs = do
   unless ((null :: [b] -> Bool) $ duplicateNames vs) $
-    fail $ "duplicate names: " ++ (show $ map (Text.unpack . toLazyText . represent) vs)
+    fail $ "duplicate names: " ++ show (map (Text.unpack . toLazyText . represent) vs)
   pure $ Set.fromList vs
 
 hidden :: FTL PosVar
@@ -450,14 +450,14 @@ bindings vs f = makeDecls $ fvToVarSet $ excludeSet (decl f) vs
 
 freeOrOverlapping :: Set VariableName -> Formula -> Maybe Text
 freeOrOverlapping vs f
-    | (mkVar VarSlot) `occursIn` f = Just $ "too few subjects for an m-predicate " <> info
+    | mkVar VarSlot `occursIn` f = Just $ "too few subjects for an m-predicate " <> info
     | not (Text.null sbs) = Just $ "free undeclared variables: "   <> sbs <> info
     | not (Text.null ovl) = Just $ "overlapped variables: "        <> ovl <> info
     | otherwise      = Nothing
   where
     sbs = Text.unwords $ map showVar $ Set.toList $ fvToVarSet $ excludeSet (free f) vs
     ovl = Text.unwords $ map showVar $ Set.toList $ over vs f
-    info = "\n in translation: " <> (Text.pack $ show f)
+    info = "\n in translation: " <> Text.pack (show f)
 
     over :: Set VariableName -> Formula -> Set VariableName
     over vs (All v f) = boundVars vs (declName v) f
