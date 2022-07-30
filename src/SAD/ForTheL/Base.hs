@@ -1,5 +1,7 @@
-{-
-Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
+{-|
+License     : GPL 3
+Maintainer  : Andrei Paskevich (2001 - 2008),
+              Steffen Frerix (2017 - 2018)
 
 FoTheL state and state management, parsing of primitives, operations on
 variables and macro expressions.
@@ -32,29 +34,75 @@ import qualified Isabelle.Position as Position
 import Naproche.Program as Program
 
 
+-- | Parser for ForTheL texts
 type FTL = Parser FState
 
--- Unary terms and notions.
+-- | Unary terms.
 type UTerm   = (Formula -> Formula, Formula)
+
+-- | Unary notions.
 type UNotion = (Formula -> Formula, Formula, PosVar)
 
--- Multi-terms and -notions.
+-- | Multi-terms.
 type MTerm   = (Formula -> Formula, [Formula])
+
+-- | Multi-notions.
 type MNotion = (Formula -> Formula, Formula, Set PosVar)
 
 type Prim    = ([Pattern], [Formula] -> Formula)
 
-
+-- | ForTheL state
 data FState = FState {
-  adjectiveExpr, verbExpr, notionExpr, symbNotionExpr :: [Prim],
-  cfnExpr, rfnExpr, lfnExpr, ifnExpr :: [Prim],
-  cprExpr, rprExpr, lprExpr, iprExpr :: [Prim],
+  adjectiveExpr :: [Prim],      -- ^ adjective expressions
+  verbExpr :: [Prim],           -- ^ verb expressions
+  notionExpr :: [Prim],         -- ^ notion expressions
+  symbNotionExpr :: [Prim],     -- ^ symbolic notion expressions
 
-  tvrExpr :: [TVar], strSyms :: [[Text]], varDecl :: Set VariableName,
-  idCount :: Int, hiddenCount :: Int, serialCounter :: Int,
-  reports :: [Position.Report], program :: Program.Context }
+  cfnExpr :: [Prim],            -- ^ circumfix funxtion expressions
+  rfnExpr :: [Prim],            -- ^ right funxtion expressions
+  lfnExpr :: [Prim],            -- ^left funxtion expressions
+  ifnExpr :: [Prim],            -- ^ infix function expressions
+
+  cprExpr :: [Prim],            -- ^ circumfix predicate expressions
+  rprExpr :: [Prim],            -- ^ right predicate expressions
+  lprExpr :: [Prim],            -- ^ left predicate expressions
+  iprExpr :: [Prim],            -- ^ infix predicate expressions
+
+  tvrExpr :: [TVar],
+  strSyms :: [[Text]],
+  varDecl :: Set VariableName,
+
+  idCount :: Int,
+  hiddenCount :: Int,
+  serialCounter :: Int,
+  reports :: [Position.Report],
+
+  program :: Program.Context
+}
 
 
+-- | Initial state of the parsing process. Provides the following predefined
+-- expressions:
+--
+--  * @"equal" "to" ...@ (notion expression)
+--  * @"nonequal" "to" ...@ (notion expression)
+--  * @"map" | "maps"@ (notion expression)
+--  * @"function" | "functions"@ (notion expression)
+--  * @"set" | "sets"@ (notion expression)
+--  * @"class" | "classes" | "collection" | "collections"@ (notion expression)
+--  * @(["mathematical"] ("object" | "objects")) | "element" | "elements"@ (notion expression)
+--  * @("element" | "elements") "of" ...@ (notion expression)
+--  * @"=" ...@ (notion expression)
+--  * @"\\in" ...@ (notion expression)
+--  * @... "=" ...@ (predicate expression)
+--  * @... ("!=" | "\\neq") ...@ (predicate expression)
+--  * @... "\\in" ...@ (predicate expression)
+--  * @... "\\notin" ...@ (predicate expression)
+--  * @... "-<-" ... (predicate expression)
+--  * @... "\\prec ...@ (predicate expression)
+--  * @("Dom" ...) | ("\\dom" "(" ... ")")@ (function expression)
+--  * @"(" ... "," ... ")"@ (function expression)
+--
 initFState :: Program.Context -> FState
 initFState = FState
   primAdjs [] primNotions primSymbNotions
@@ -100,8 +148,8 @@ getExpr e p = gets e >>=  foldr ((-|-) . try . p ) mzero
 getDecl :: FTL (Set VariableName)
 getDecl = gets varDecl
 
--- | @addDecl vs p@ temporarily modifies the variable declarations to include @vs@ while running
--- the parser @p@.
+-- | @addDecl vs p@ temporarily modifies the variable declarations to include
+-- @vs@ while running the parser @p@.
 addDecl :: Set VariableName -> FTL a -> FTL a
 addDecl vs p = do
   dcl <- gets varDecl
@@ -126,7 +174,8 @@ makeDecls = Set.foldr (\v f -> makeDecl v >>= \d -> Set.insert d <$> f) (pure me
 declared :: MNotion -> FTL (Formula -> Formula, Formula, Set Decl)
 declared (q, f, v) = do nv <- makeDecls v; return (q, f, nv)
 
--- Predicates: verbs and adjectiveectives
+
+-- * Predicates: verbs and adjectives
 
 primVer, primAdj, primUnAdj :: FTL UTerm -> FTL UTerm
 
@@ -143,7 +192,7 @@ primPrd p (pt, fm) = do
   return (q, fm $ (mkVar (VarHole "")):ts)
 
 
--- Multi-subject predicates: [a,b are] equal
+-- * Multi-subject predicates: [a,b are] equal
 
 primMultiVer, primMultiAdj, primMultiUnAdj :: FTL UTerm -> FTL UTerm
 
@@ -162,8 +211,7 @@ primMultiPredicate p (pt, fm) = do
   return (q, fm $ mkVar (VarHole "") : mkVar VarSlot : ts)
 
 
--- Notions and functions
-
+-- * Notions and functions
 
 primNotion :: FTL UTerm -> FTL MNotion
 primNotion p  = getExpr notionExpr notion
@@ -196,7 +244,7 @@ primFun  = (>>= fun) . primNotion
     fun _ = mzero
 
 
--- Symbolic primitives
+-- * Symbolic primitives
 
 primCpr :: FTL Formula -> FTL Formula
 primCpr = getExpr cprExpr . primCsm
@@ -240,14 +288,14 @@ primSnt p  = noError $ varList >>= getExpr symbNotionExpr . snt
 data Pattern = Word [Text] | Symbol Text | Vr | Nm deriving (Eq, Show)
 
 
--- adding error reporting to pattern parsing
+-- | Adding error reporting to pattern parsing.
 patternTokenOf' :: [Text] -> FTL ()
 patternTokenOf' l = label ("a word of " <> Text.pack (show l)) $ tokenOf' l
 
 patternSymbolTokenOf :: Text -> FTL ()
 patternSymbolTokenOf l = label ("the symbol " <> Text.pack (show l)) $ token l
 
--- most basic pattern parser: simply follow the pattern and parse terms with p
+-- | Most basic pattern parser: simply follow the pattern and parse terms with p
 -- at variable places
 wdPattern :: FTL (b -> b, a) -> [Pattern] -> FTL (b-> b, [a])
 wdPattern p (Word l : ls) = patternTokenOf' l >> wdPattern p ls
@@ -258,14 +306,14 @@ wdPattern p (Vr : ls) = do
 wdPattern _ [] = return (id, [])
 wdPattern _ _ = mzero
 
--- parses a symbolic pattern
+-- | Parse a symbolic pattern.
 symbolPattern :: FTL a -> [Pattern] -> FTL [a]
 symbolPattern p (Vr : ls) = liftM2 (:) p $ symbolPattern p ls
 symbolPattern p (Symbol s : ls) = patternSymbolTokenOf s >> symbolPattern p ls
 symbolPattern _ [] = return []
 symbolPattern _ _ = mzero
 
--- parses a multi-subject pattern: follow the pattern, but ignore the token'
+-- | Parse a multi-subject pattern: follow the pattern, but ignore the token'
 -- right before the first variable. Then check that all "and" tokens have been
 -- consumed. Example pattern: [Word ["commute","commutes"], Word ["with"], Vr]. Then
 -- we can parse "a commutes with c and d" as well as "a and b commute".
@@ -322,7 +370,7 @@ naPattern p ls = wdPattern p ls
 
 
 
--- Variables
+-- * Variables
 
 nameList :: FTL (Set PosVar)
 nameList = varList -|- fmap Set.singleton hidden
@@ -352,7 +400,8 @@ var = do
   let v' = v <> primes
   return (PosVar (VarConstant v') pos)
 
---- pretyped Variables
+
+-- ** Pretyped Variables
 
 type TVar = (Set VariableName, Formula)
 
@@ -364,15 +413,17 @@ primTypedVar = getExpr tvrExpr tvr
       guard $ Set.foldr (\v b -> b && v `Set.member` vr) True $ Set.map posVarName vs
       return (id, nt, vs)
 
--- free
+
+-- ** Free variables
 
 freeVars :: IsVar a => Formula -> FTL (FV a)
 freeVars f = excludeSet (free f) <$> getDecl
 
---- decl
 
-{- produce the variables declared by a formula together with their positions. As
-parameter we pass the already known variables-}
+-- ** Declarations
+
+-- | Produce the variables declared by a formula together with their positions.
+-- As parameter we pass the already known variables.
 decl :: IsVar a => Formula -> FV a
 decl = dive
   where
@@ -387,12 +438,12 @@ decl = dive
       | isTrm t && not (v `occursIn` t) = unitFV u (varPosition v)
     dive _ = mempty
 
-{- produce variable names declared by a formula -}
+--  Produce variable names declared by a formula.
 declNames :: Set VariableName -> Formula -> Set VariableName
 declNames vs f = fvToVarSet $ excludeSet (decl f) vs
 
-{- produce the bindings in a formula in a Decl data type and take care of
-the serial counter. -}
+-- | Produce the bindings in a formula in a Decl data type and take care of
+-- the serial counter.
 bindings :: Set VariableName -> Formula -> FTL (Set Decl)
 bindings vs f = makeDecls $ fvToVarSet $ excludeSet (decl f) vs
 
@@ -420,48 +471,74 @@ freeOrOverlapping vs f
       | otherwise = over (Set.insert v vs) f
 
 
---- macro expressions
+-- * Macro expressions
 
-
+-- | @"," | "and"@
 comma :: FTL ()
 comma = tokenOf' [",", "and"]
+
+-- | @"is" | "be" | "are"@
 is :: FTL ()
 is = tokenOf' ["is", "be", "are"]
+
+-- | An article
 art :: FTL ()
-art = opt () $ tokenOf' ["a","an","the"]
+art = opt () $ tokenOf' ["a", "an", "the"]
+
+-- | An indefinite article
 an :: FTL ()
 an = tokenOf' ["a", "an"]
+
+-- | A definite article
 the :: FTL ()
 the = token' "the"
+
+-- | @"iff" | "if and only if" | "when and only when"@
 iff :: FTL ()
 iff = token' "iff" <|> mapM_ token' ["if", "and", "only", "if"] <|> mapM_ token' ["when", "and", "only", "when"]
+
+-- | Q"that"@
 that :: FTL ()
 that = token' "that"
+
+-- | @"denote" | "stand for"@
 standFor :: FTL ()
 standFor = token' "denote" <|> (token' "stand" >> token' "for")
+
+-- | @"->"@
 arrow :: FTL ()
 arrow = symbol "->"
+
+-- | @"there" ("is" | "are" | "exist" | "exists")@
 there :: FTL ()
-there = token' "there" >> tokenOf' ["is","exist","exists"]
+there = token' "there" >> tokenOf' ["is", "are", "exist", "exists"]
+
+-- | @"does" | "do"@
 does :: FTL ()
 does = opt () $ tokenOf' ["does", "do"]
+
+-- | @"has" | "have"@
 has :: FTL ()
 has = tokenOf' ["has" , "have"]
+
+-- | @"with" | "of" | "having"@
 with :: FTL ()
 with = tokenOf' ["with", "of", "having"]
+
+-- | @"such" | "so"@
 such :: FTL ()
 such = tokenOf' ["such", "so"]
 
+-- | @"in" | "\\in"@
 elementOf :: FTL ()
 elementOf = token' "in" <|> token "\\in"
 
---just for now:
-
+-- | Print a variable (just for now).
 showVar :: VariableName -> Text
 showVar (VarConstant nm) = nm
 showVar nm = toLazyText $ represent nm
 
--- | Parses '\begin{env}'. Takes a parser for parsing 'env'.
+-- | @texBegin env@ parses @"\\begin" "{" env "}"@.
 texBegin :: FTL a -> FTL a
 texBegin envType = do
   token "\\begin"
@@ -470,7 +547,7 @@ texBegin envType = do
   symbol "}"
   return envType'
 
--- | Parses '\end{env}'. Takes a parser for parsing 'env'.
+-- | @texBegin env@ parses @"\\end" "{" env "}"@.
 texEnd :: FTL () -> FTL ()
 texEnd envType = do
   token "\\end"
