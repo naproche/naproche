@@ -14,7 +14,6 @@ module SAD.ForTheL.Statement
   , choice
   , classNotion
   , mapNotion
-  , plainTerm -- TODO: This seems unused?
   ) where
 
 
@@ -219,7 +218,7 @@ baseNotion = fmap digadd $ cm <|> symEqnt <|> (collection </> primNotion term)
 
 symNotion :: FTL (Formula -> Formula, Formula, Set PosVar)
 symNotion = do
-  x <- paren (primSnt sTerm) </> primTypedVar
+  x <- optParenthesised (primSnt sTerm) </> primTypedVar
   digNotion (digadd x)
 
 
@@ -284,7 +283,7 @@ term = label "a term" $ (quantifiedNotion >>= toSing) -|- definiteTerm
 -- Returns a quantifying function and a list of variables as expression
 quantifiedNotion :: FTL (Formula -> Formula, [Formula])
 quantifiedNotion = label "quantified notion" $
-  paren (universal <|> existential <|> no)
+  optParenthesised (universal <|> existential <|> no)
   where
     universal = do
       tokenOf' ["every", "each", "all", "any"]; (q, f, v) <- notion
@@ -305,12 +304,8 @@ quantifiedNotion = label "quantified notion" $
 definiteTerm :: FTL (Formula -> Formula, Formula)
 definiteTerm = label "definiteTerm" $  symbolicTerm -|- definiteNoun
   where
-    definiteNoun = label "definiteNoun" $ paren (art >> primFun term)
+    definiteNoun = label "definiteNoun" $ optParenthesised (art >> primFun term)
 
-plainTerm :: FTL (Formula -> Formula, Formula)
-plainTerm = symbolicTerm -|- plainDefiniteNoun
-  where
-    plainDefiniteNoun = paren (art >> primFun plainTerm)
 
 symbolicTerm :: FTL (a -> a, Formula)
 symbolicTerm = fmap ((,) id) sTerm
@@ -336,7 +331,7 @@ symbolicFormula  = biimplication
 
     binary op p f = optLL1 f $ fmap (op f) p
 
-    atomic = relation -|- parenthesised (optionallyInText statement)
+    atomic = relation -|- parenthesised (optInText statement)
       where
         relation = sChain </> primCpr sTerm
 
@@ -458,20 +453,17 @@ symbClassNotation = texClass </> cndClass </> finiteSet
       pure (\tr -> mkObject tr `And` (foldr1 Or $ map (mkEquality tr) ts), (h, mkSet))
     -- Set-builder notation, e.g. "{x in X | x is less than y}"
     cndClass = braced $ do
-      (tag, c, t, mkColl) <- optionallyInText sepFrom
-      st <- (token "|" <|> token ":") >> optionallyInText statement
+      (tag, c, t, mkColl) <- optInText sepFrom
+      st <- (token "|" <|> token ":") >> optInText statement
       vs <- freeVars t
       vsDecl <- makeDecls $ fvToVarSet vs;
       nm <- if isVar t then pure $ PosVar (varName t) (varPosition t) else hidden
       pure (\tr -> tag $ c tr `blAnd` mkObject tr `blAnd` mbEqu vsDecl tr t st, (nm, mkColl))
     -- Set-builder notation using a certain TeX macro, e.g.
     -- "\class{$x \in X$ | $x$ is less than $y$}". Semantically identical to `cndClass`.
-    texClass = do
-      token "\\class"
-      symbol "{"
-      (tag, c, t, mkColl) <- optionallyInText sepFrom
-      st <- (token "|") >> (optionallyInText statement) <|> (optionallyInClassText statement)
-      symbol "}"
+    texClass = texCommandWithArg "class" $ do
+      (tag, c, t, mkColl) <- optInText sepFrom
+      st <- symbol "|" >> optInText statement <|> optInClasstext statement
       vs <- freeVars t
       vsDecl <- makeDecls $ fvToVarSet vs;
       nm <- if isVar t then pure $ PosVar (varName t) (varPosition t) else hidden
@@ -480,8 +472,6 @@ symbClassNotation = texClass </> cndClass </> finiteSet
     mbEqu :: Set Decl -> Formula -> Formula -> Formula -> Formula
     mbEqu _ tr Var{varName = v} = subst tr v
     mbEqu vs tr t = \st -> foldr mbdExi (st `And` mkEquality tr t) vs
-
--- Maybe we have to reconstitute notionSep?
 
     sepFrom :: FTL (Formula -> Formula, Formula -> Formula, Formula, Formula -> Formula)
     sepFrom = classSep -|- noSep
@@ -515,7 +505,7 @@ mapNotion = sVar <**> (wordMap <|> (token "=" >> lambda))
     return $ \f -> mkMap f `And` Tag Domain (dom f) `And` body f
 
 lambdaBody :: FTL (Formula -> Formula)
-lambdaBody = label "map definition" $ paren $ cases <|> texCases <|> chooseInTerm
+lambdaBody = label "map definition" $ optParenthesised $ cases <|> texCases <|> chooseInTerm
 
 cases :: FTL (Formula -> Formula)
 cases = do
@@ -542,12 +532,12 @@ texCases = do
       value <- chooseInTerm
       symbol "&"
       optLL1 () (symbol ":")
-      condition <- optionallyInText statement
+      condition <- optInText statement
       return (Tag Condition . Imp condition . value)
 
 
 chooseInTerm :: FTL (Formula -> Formula)
-chooseInTerm = optionallyInText $ do
+chooseInTerm = optInText $ do
   chs <- optLL1 [] $ after (ld_choice `sepByLL1` token ",") elementOf
   f   <- term -|- defTerm; return $ flip (foldr ($)) chs . f
   where
@@ -619,11 +609,11 @@ quantifierChain = fmap (foldl fld id) $ token' "for" >> quantifiedNotion `sepByL
   where
     fld x (y, _) = x . y
 
-optionallyInText :: FTL a -> FTL a
-optionallyInText p = (token "\\text" *> symbol "{" *> p <* symbol "}") <|> p
+optInText :: FTL a -> FTL a
+optInText p = texCommandWithArg "text" p <|> p
 
-optionallyInClassText :: FTL a -> FTL a
-optionallyInClassText p = (token "\\classtext" *> symbol "{" *> p <* symbol "}") <|> p
+optInClasstext :: FTL a -> FTL a
+optInClasstext p = texCommandWithArg "classtext" p <|> p
 
 
 -- Digger

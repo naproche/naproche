@@ -194,7 +194,7 @@ envLabel = try labeledEnvName <|> envName
     -- "[name]\label{identifier}"
     labeledEnvName = do
       optLL1 [] $ bracketed (chainLL1 notClosingBrk)
-      texEnclosed "label" topIdentifier
+      texCommandWithArg "label" topIdentifier
     -- "[identifier]"
     envName = bracketed topIdentifier
     notClosingBrk = tokenPrim notCl
@@ -223,7 +223,7 @@ noLink = finish $ return []
 eqLink :: FTL [Text]
 eqLink = optLL1 [] $ parenthesised $ token' "by" >> identifiers
   where
-    identifiers = (texEnclosed "ref" topIdentifier <|> texEnclosed "nameref" topIdentifier <|> topIdentifier) `sepByLL1` comma
+    identifiers = (texCommandWithArg "ref" topIdentifier <|> texCommandWithArg "nameref" topIdentifier <|> topIdentifier) `sepByLL1` comma
 
 -- declaration management, typings and pretypings
 

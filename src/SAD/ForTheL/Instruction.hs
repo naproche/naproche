@@ -93,7 +93,7 @@ readText = fmap Text.concat readTexts
 
 
 readTexts :: FTL [Text]
-readTexts = texEnclosed "path" (chainLL1 notClosingBrc) <|> chainLL1 notClosingBrk
+readTexts = texCommandWithArg "path" (chainLL1 notClosingBrc) <|> chainLL1 notClosingBrk
   where
     notClosingBrk = tokenPrim $ notCl "]"
     notClosingBrc = tokenPrim $ notCl "}"

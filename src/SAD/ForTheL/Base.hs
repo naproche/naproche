@@ -531,26 +531,12 @@ such = tokenOf' ["such", "so"]
 
 -- | @"in" | "\\in"@
 elementOf :: FTL ()
-elementOf = token' "in" <|> token "\\in"
+elementOf = token' "in" <|> texCommand "in"
+
+
+-- * Show function
 
 -- | Print a variable (just for now).
 showVar :: VariableName -> Text
 showVar (VarConstant nm) = nm
 showVar nm = toLazyText $ represent nm
-
--- | @texBegin env@ parses @"\\begin" "{" env "}"@.
-texBegin :: FTL a -> FTL a
-texBegin envType = do
-  token "\\begin"
-  symbol "{"
-  envType' <- envType
-  symbol "}"
-  return envType'
-
--- | @texBegin env@ parses @"\\end" "{" env "}"@.
-texEnd :: FTL () -> FTL ()
-texEnd envType = do
-  token "\\end"
-  symbol "{"
-  envType
-  symbol "}"

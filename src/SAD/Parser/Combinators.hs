@@ -119,36 +119,58 @@ enclosed begin end p = do
   endPos <- tokenPos' end
   return ((beginPos, endPos), result)
 
--- | Parse text enclosed within @\<command>{@ and @}@ (where @<command>@ can be
--- an arbitrary TeX command identifier).
-texEnclosed :: Text -> Parser st a -> Parser st a
-texEnclosed command p = do
-  token ("\\" <> command)
-  braced p
 
--- | Mandatory surrounding parentheses.
+-- * Special combinators for ForTheL texts
+
+-- ** TeX commands
+
+-- | @texCommand name@ parses @"\\" <name>@.
+texCommand :: Text -> Parser st ()
+texCommand name = token ("\\" <> name)
+
+-- | @texCommandWithArg name arg@ parses @"\\" <name> "{" <arg> "}"@.
+texCommandWithArg :: Text -> Parser st a -> Parser st a
+texCommandWithArg name arg = do
+  texCommand name
+  braced arg
+
+-- | @texBegin env@ parses @"\\begin" "{" <env> "}"@.
+texBegin :: Parser st a -> Parser st a
+texBegin = texCommandWithArg "begin"
+
+-- | @texBegin env@ parses @"\\end" "{" <env> "}"@.
+texEnd :: Parser st a -> Parser st a
+texEnd = texCommandWithArg "end"
+
+
+-- ** Brackets
+
+-- | @parenthesised p@ parses @"(" <p> ")".
 parenthesised :: Parser st a -> Parser st a
 parenthesised p = snd <$> enclosed "(" ")" p
 
--- | Mandatory surrounding brackets.
+-- | @bracketed p@ parses @"[" <p> "]".
 bracketed :: Parser st a -> Parser st a
-bracketed p     = snd <$> enclosed "[" "]" p
+bracketed p = snd <$> enclosed "[" "]" p
 
--- | Mandatory surrounding braces.
+-- | @braced p@ parses @"{" <p> "}"@.
 braced :: Parser st a -> Parser st a
-braced p        = snd <$> enclosed "{" "}" p
+braced p = snd <$> enclosed "{" "}" p
 
--- | Optional parentheses.
-paren :: Parser st a -> Parser st a
-paren p = p -|- parenthesised p
+-- | @optParenthesised p@ parses @<p> | "(" <p> ")"@.
+optParenthesised :: Parser st a -> Parser st a
+optParenthesised p = p -|- parenthesised p
 
--- | Dot keyword.
+
+-- ** Dots
+
+-- | Parses @"."@.
 dot :: Parser st Position.Range
 dot = do
   pos1 <- tokenPos' "." <?> "a dot"
   return $ Position.range (pos1, Position.symbol_explode_string "." pos1)
 
--- | Mandatory finishing dot.
+-- | @finish p@ parses @<p> "."@.
 finish :: Parser st a -> Parser st a
 finish p = after p dot
 
