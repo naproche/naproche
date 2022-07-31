@@ -45,7 +45,7 @@ readInit :: Bytes -> IO [(Position.T, Instr)]
 readInit file | Bytes.null file = return []
 readInit file = do
   input <- catch (File.read (make_string file)) $ Message.errorParser (Position.file_only $ make_bytes file) . make_bytes . ioeGetErrorString
-  let tokens = filter isProperToken $ tokenize FTL (Position.file $ make_bytes file) $ Text.fromStrict $ make_text input
+  let tokens = filter isProperToken $ tokenize NonTex (Position.file $ make_bytes file) $ Text.fromStrict $ make_text input
   fst <$> launchParser instructionFile (initState Program.console tokens)
 
 instructionFile :: FTL [(Position.T, Instr)]
@@ -130,9 +130,7 @@ chooseParser st = case parserKind st of
   NonTex -> launchParser forthel st
 
 chooseTokenizer :: State FState -> Position.T -> Text -> [Token]
-chooseTokenizer st = case parserKind st of
-  Tex -> tokenize TEX
-  NonTex -> tokenize FTL
+chooseTokenizer st = tokenize (parserKind st)
 
 -- launch a parser in the IO monad
 launchParser :: Parser st a -> State st -> IO (a, State st)

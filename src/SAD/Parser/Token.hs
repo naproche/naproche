@@ -11,7 +11,6 @@ Tokenization of input
 module SAD.Parser.Token (
     -- * Tokens
     Token (tokenPos, tokenText)
-  , Dialect (..)
   , tokensRange
   , showToken
   , isProperToken
@@ -28,6 +27,8 @@ module SAD.Parser.Token (
   , isEOF
   , noTokens
   ) where
+
+import SAD.Data.Instr (ParserKind(..))
 
 import qualified Isabelle.Position as Position
 import qualified Isabelle.Markup as Markup
@@ -56,11 +57,6 @@ data TokenType =
   | WhiteSpaceBefore    -- a regular token with preceding whitespace
   | Comment             -- a comment
   deriving (Eq, Ord, Show)
-
--- | The ForTheL dialects
-data Dialect =
-    FTL   -- ^ ForTheL's ASCII dialect (used in @.ftl@ files)
-  | TEX   -- ^ ForTheL's LaTeX dialect (used in @.ftl.tex@ files)
 
 -- Indicates whether the tokenizer is currently inside a forthel environment
 data TexState = InsideForthelEnv | OutsideForthelEnv deriving (Eq)
@@ -126,10 +122,10 @@ isLexeme c = isAscii c && isAlphaNum c
 --  * Everything from a @%@ to the next linebreak becomes a comment token
 --  * Any whitespace and any expression of the form @\\\\@, @\\[@, @\\]@, @\\(@,
 --    @\\)@, @$@, @\\left@, @\\middle@, @\\right@ is ignored
-tokenize :: Dialect -> Position.T -> Text -> [Token]
+tokenize :: ParserKind -> Position.T -> Text -> [Token]
 
 -- Tokenize an FTL document
-tokenize FTL startPos = procToken startPos NoWhiteSpaceBefore
+tokenize NonTex startPos = procToken startPos NoWhiteSpaceBefore
   where
     -- Process a token
     procToken :: Position.T -> TokenType -> Text -> [Token]
@@ -165,7 +161,7 @@ tokenize FTL startPos = procToken startPos NoWhiteSpaceBefore
             toks = procToken (Position.symbol_explode text currentPos) NoWhiteSpaceBefore cs
 
 -- Tokenize an FTL-TeX document
-tokenize TEX startPos = procToken OutsideForthelEnv startPos NoWhiteSpaceBefore
+tokenize Tex startPos = procToken OutsideForthelEnv startPos NoWhiteSpaceBefore
   where
     -- Process a token
     procToken :: TexState -> Position.T -> TokenType -> Text -> [Token]
