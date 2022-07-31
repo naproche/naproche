@@ -1,5 +1,7 @@
-{-
-Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
+{-|
+License     : GPL 3
+Maintainer  : Andrei Paskevich (2001 - 2008),
+              Steffen Frerix (2017 - 2018)
 
 Main text reading functions.
 -}
@@ -39,8 +41,9 @@ import qualified Isabelle.Bytes as Bytes
 import qualified Naproche.Program as Program
 
 
--- Init file parsing
+-- * Init file parsing
 
+-- | Parse initial instructions (e.g. @$NAPROCHE_HOME/init.opt@)
 readInit :: Bytes -> IO [(Position.T, Instr)]
 readInit file | Bytes.null file = return []
 readInit file = do
@@ -55,13 +58,14 @@ initState :: Program.Context -> [Token] -> State FState
 initState context tokens = State (initFState context) tokens NonTex Position.none
 
 
--- Reader loop
+-- * Reader loop
 
--- | @readProofText startWithTex pathToLibrary text0@ takes:
--- @startWithTex@, a boolean indicating whether to execute the next file instruction using the tex parser,
--- @pathToLibrary@, a path to where the read instruction should look for files and
--- @text0@, containing some configuration.
-readProofText :: Bytes -> [ProofText] -> IO [ProofText]
+-- | Parse one or more ForTheL texts
+readProofText :: Bytes          -- ^ path to library from where other ForTheL
+                                -- texts can be imported via @read(tex)@
+                                -- instructions (e.g. @$NAPROCHE_HOME/examples)
+              -> [ProofText]    -- ^ ForTheL texts to be parsed
+              -> IO [ProofText]
 readProofText pathToLibrary text0 = do
   context <- Program.thread_context
   (text, reports) <- reader pathToLibrary [] [initState context noTokens] text0
@@ -117,10 +121,11 @@ reader pathToLibrary doneFiles = go
 
 reader0 :: Position.T -> Text -> State FState -> IO ([ProofText], State FState)
 reader0 pos text pState = do
-  let tokens0 = chooseTokenizer pState pos text
-  Message.reports $ mapMaybe reportComments tokens0
-  let tokens = filter isProperToken tokens0
-      st = State ((stUser pState) { tvrExpr = [] }) tokens (parserKind pState) Position.none
+  let dialect = parserKind pState
+  let tokens = tokenize dialect pos text
+  Message.reports $ mapMaybe reportComments tokens
+  let properTokens = filter isProperToken tokens
+      st = State (addInits dialect ((stUser pState) {tvrExpr = []})) properTokens dialect Position.none
   chooseParser st
 
 
@@ -129,10 +134,7 @@ chooseParser st = case parserKind st of
   Tex -> launchParser texForthel st
   NonTex -> launchParser forthel st
 
-chooseTokenizer :: State FState -> Position.T -> Text -> [Token]
-chooseTokenizer st = tokenize (parserKind st)
-
--- launch a parser in the IO monad
+-- Launch a parser in the IO monad.
 launchParser :: Parser st a -> State st -> IO (a, State st)
 launchParser parser state =
   case runP parser state of

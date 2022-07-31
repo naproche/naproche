@@ -15,6 +15,9 @@ variant of ForTheL, respectively.
 
   * **New:** In FTL-TeX `\left`, `\middle` and `\right` are tokenized away.
 
+  * **New:** FTL-TeX does no longer provide primitive expressions inherited
+    from FTL (e.g. `!=` or `-<-`).
+
   * **Fixed:** In FTL-TeX `#` is a regular character now.
 
 
