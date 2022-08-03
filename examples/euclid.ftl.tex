@@ -243,17 +243,17 @@ natural numbers $i$ such that $m \leq i \leq n$.
 \begin{axiom} $\Seq{m}{n}$ is a set. \end{axiom}
 
 \begin{axiom}
-Assume $F$ is a function and $x \in Dom(F)$. Then $F(x)$ is an object.
+Assume $F$ is a function and $x \in \dom(F)$. Then $F(x)$ is an object.
 \end{axiom}
 
 \begin{definition} A sequence of length $n$ is a
-function $F$ such that $Dom(F) = \Seq{1}{n}$.
+function $F$ such that $\dom(F) = \Seq{1}{n}$.
 \end{definition}
 
 Let $F_{i}$ stand for $F(i)$.
 
 \begin{definition} Let $F$ be a sequence of length $n$.
-$\FinSet{F}{1}{n} = \{ F_{i} | i \in Dom(F)\}$.
+$\FinSet{F}{1}{n} = \{ F_{i} | i \in \dom(F)\}$.
 \end{definition}
 
 \begin{signature} Let $F$ be a sequence of length $n$
@@ -262,9 +262,9 @@ $\Prod{F}{1}{n}$ is a natural number.
 \end{signature}
 
 \begin{axiom}[Factorproperty] Let $F$ be a sequence of length $n$
-such that $F(i)$ is a nonzero natural number for every $i \in Dom(F)$.
+such that $F(i)$ is a nonzero natural number for every $i \in \dom(F)$.
 Then $\Prod{F}{1}{n}$ is nonzero and
-$F(i)$ divides $\Prod{F}{1}{n}$ for every $i \in Dom(F)$.
+$F(i)$ divides $\Prod{F}{1}{n}$ for every $i \in \dom(F)$.
 \end{axiom}
 
 

@@ -536,7 +536,7 @@ Let $\emptyset$ denote the empty set.
 \end{exercise}
 
 \begin{exercise}
-The preliminaries file also provides the notion $F(x)$ for elements $x \in Dom(F)$
+The preliminaries file also provides the notion $F(x)$ for elements $x \in \dom(F)$
 where $F$ is a function or map.
 Formalize the property that a function is injective and that
 the composition of two injective functions is injective.
@@ -1338,7 +1338,7 @@ These techniques are used in further definitions and notations for finite sequen
 \begin{forthel}
 
 \begin{definition} A sequence of length $n$ is a
-function $F$ such that $Dom(F) = \Seq{1}{n}$.
+function $F$ such that $\dom(F) = \Seq{1}{n}$.
 \end{definition}
 
 \end{forthel}
@@ -1351,7 +1351,7 @@ This is just an alias at the parsing level:
 Let $F_{i}$ stand for $F(i)$.
 
 \begin{definition} Let $F$ be a sequence of length $n$.
-$\Finset{F}{1}{n} = \{ F_{i} | i \in Dom(F)\}$.
+$\Finset{F}{1}{n} = \{ F_{i} | i \in \dom(F)\}$.
 \end{definition}
 \end{forthel}
 
@@ -1372,9 +1372,9 @@ $\Prod{F}{1}{n}$ is a natural number.
 \end{signature}
 
 \begin{axiom}[Factorproperty] Let $F$ be a sequence of length $n$
-such that $F(i)$ is a nonzero natural number for every $i \in Dom(F)$.
+such that $F(i)$ is a nonzero natural number for every $i \in \dom(F)$.
 Then $\Prod{F}{1}{n}$ is nonzero and
-$F(i)$ divides $\Prod{F}{1}{n}$ for every $i \in Dom(F)$.
+$F(i)$ divides $\Prod{F}{1}{n}$ for every $i \in \dom(F)$.
 \end{axiom}
 
 
@@ -1422,7 +1422,7 @@ Assume that $r$ is a natural number and
 $p$ is a sequence of length $r$ and
 $\Finset{p}{1}{r}$ is a subclass of $\Primes$.
 
-(1) $p_{i}$ is a nonzero natural number for every $i \in Dom(p)$.
+(1) $p_{i}$ is a nonzero natural number for every $i \in \dom(p)$.
 
 Consider $n=\Prod{p}{1}{r}+1$.
 $\Prod{p}{1}{r}$ is nonzero.
