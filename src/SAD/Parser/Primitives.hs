@@ -25,6 +25,8 @@ module SAD.Parser.Primitives (
   , tokenPos'
   , tokenOf
   , tokenOf'
+  , getToken
+  , getToken'
   , getTokenOf
   , getTokenOf'
   , symbol
@@ -153,6 +155,12 @@ tokenOf = void . getTokenOf
 {-# INLINE tokenOf' #-}
 tokenOf' :: [Text] -> Parser st ()
 tokenOf' = void . getTokenOf'
+
+getToken :: Text -> Parser st Text
+getToken = satisfy . (==)
+
+getToken' :: Text -> Parser st Text
+getToken' = satisfy . (==) . Text.toCaseFold
 
 -- | @tokenOf toks@ succeeds iff the current token is an element of @toks@.
 -- Returns the parsed token.

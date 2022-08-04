@@ -1,5 +1,7 @@
-{-
-Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
+{-|
+License     : GPL 3
+Maintainer  : Andrei Paskevich (2001 - 2008),
+              Steffen Frerix (2017 - 2018)
 
 Syntax of ForTheL sections.
 -}
@@ -40,33 +42,155 @@ import qualified SAD.Data.Tag as Tag
 import SAD.Data.Text.Decl
 
 
--- | The old .ftl file parser.
+-- * Parsing a ForTheL text
+
+-- ** FTL
+
+-- | Parse a @.ftl@ document.
 forthel :: FTL [ProofText]
-forthel = repeatUntil (pure <$> (
-    makeFtlSection Signature signatureTags signature'
-    <|> makeFtlSection Definition definitionTags definition
-    <|> makeFtlSection Axiom axiomTags axiom
-    <|> makeFtlSection Theorem theoremTags theorem
-    <|> (bracketExpression >>= addSynonym)
-    <|> try introduceMacro
-    <|> pretypeVariable))
+forthel = repeatUntil (pure <$> ftlTopLevelBlock)
   (try (bracketExpression >>= exitInstruction) <|> (eof >> return []))
 
--- | Parses tex files.
+-- | Parse a top-level block (FTL).
+ftlTopLevelBlock :: FTL ProofText
+ftlTopLevelBlock =
+      ftlTopLevelSection
+  <|> (bracketExpression >>= addSynonym)
+  <|> try introduceMacro
+  <|> pretypeVariable
+
+
+-- ** TEX
+
+-- | Parse the content of a @forthel@ environment in a @.ftl.tex@ document.
 texForthel :: FTL [ProofText]
-texForthel = repeatUntil (pure <$> forthelStep) (try (bracketExpression >>= exitInstruction) <|> (eof >> return []))
+texForthel = repeatUntil (pure <$> texTopLevelBlock)
+  (try (bracketExpression >>= exitInstruction) <|> (eof >> return []))
 
--- | Parses one forthel construct with tex syntax for forthel sections.
-forthelStep :: FTL ProofText
-forthelStep =
-    makeSectionTexEnv Signature signatureTags signature'
-    <|> makeSectionTexEnv Definition definitionTags definition
-    <|> makeSectionTexEnv Axiom axiomTags axiom
-    <|> addMetadata Theorem texTheorem
-    <|> (bracketExpression >>= addSynonym)
-    <|> try introduceMacro
-    <|> pretypeVariable
+-- | Parse a top-level block (TEX).
+texTopLevelBlock :: FTL ProofText
+texTopLevelBlock =
+      texTopLevelSection
+  <|> (bracketExpression >>= addSynonym)
+  <|> try introduceMacro
+  <|> pretypeVariable
 
+
+-- * Top-level sections
+
+-- ** FTL
+
+-- | Parse a top-level section (FTL).
+ftlTopLevelSection :: FTL ProofText
+ftlTopLevelSection =
+      ftlSignature
+  <|> ftlDefinition
+  <|> ftlAxiom
+  <|> ftlTheorem
+
+-- | Parse a signature (FTL).
+ftlSignature :: FTL ProofText
+ftlSignature = addMetadata Signature $ do
+  keyword <- markupToken sectionHeader "signature"
+  label <- optLL1 Nothing (Just <$> identifier)
+  dot
+  body <- signatureBody
+  return (body, label)
+
+-- | Parse a definition (FTL).
+ftlDefinition :: FTL ProofText
+ftlDefinition = addMetadata Definition $ do
+  keyword <- markupToken sectionHeader "definition"
+  label <- optLL1 Nothing (Just <$> identifier)
+  dot
+  body <- definitionBody
+  return (body, label)
+
+-- | Parse an axiom (FTL).
+ftlAxiom :: FTL ProofText
+ftlAxiom = addMetadata Axiom $ do
+  keyword <- markupToken sectionHeader "axiom"
+  label <- optLL1 Nothing (Just <$> identifier)
+  dot
+  body <- axiomBody
+  return (body, label)
+
+-- | Parse a theorem together with an optional proof (FTL).
+ftlTheorem :: FTL ProofText
+ftlTheorem = addMetadata Theorem $ do
+  keyword <- markupTokenOf sectionHeader ["theorem", "proposition", "lemma", "corollary"]
+  label <- optLL1 Nothing (Just <$> identifier)
+  dot
+  body <- theoremBody
+  return (body, label)
+
+
+-- ** TEX
+
+-- | Parse a top-level section (TEX).
+texTopLevelSection :: FTL ProofText
+texTopLevelSection =
+      texSignature
+  <|> texDefinition
+  <|> texAxiom
+  <|> texTheorem
+
+-- | Parse a signature (TEX).
+texSignature :: FTL ProofText
+texSignature = addMetadata Signature $ do
+  keyword <- try . texBegin $ getMarkupToken sectionHeader "signature"
+  label <- optionalEnvLabel
+  content <- signatureBody
+  texEnd (markupToken sectionHeader keyword)
+  return (content, label)
+
+-- | Parse a definition (TEX).
+texDefinition :: FTL ProofText
+texDefinition = addMetadata Definition $ do
+  keyword <- try . texBegin $ getMarkupToken sectionHeader "definition"
+  label <- optionalEnvLabel
+  content <- definitionBody
+  texEnd (markupToken sectionHeader keyword)
+  return (content, label)
+
+-- | Parse an axiom (TEX).
+texAxiom :: FTL ProofText
+texAxiom = addMetadata Axiom $ do
+  keyword <- try . texBegin $ getMarkupToken sectionHeader "axiom"
+  label <- optionalEnvLabel
+  content <- axiomBody
+  texEnd (markupToken sectionHeader keyword)
+  return (content, label)
+
+-- | Parse a theorem together with an optional proof (TEX).
+texTheorem :: FTL ProofText
+texTheorem = addMetadata Theorem $ do
+  keyword <- try . texBegin $ getMarkupTokenOf sectionHeader ["theorem", "lemma", "corollary", "proposition"]
+  label <- optionalEnvLabel
+  content <- addAssumptions . texTopLevelProof $
+            pretypeSentence Affirmation (affirmationHeader >> statement) affirmVars finishWithLink <* texEnd (markupToken sectionHeader keyword)
+  return (content, label)
+
+
+-- ** Adding meta data
+
+-- | This is the last step when creating a proof text from a topsection. We take
+-- some metadata and moreover read some metadata from the state and use it to
+-- make a `ProofText` out of a parser that returns @ProofText@s and optional
+-- label information.
+addMetadata :: Section -> FTL ([ProofText], Maybe Text) -> FTL ProofText
+addMetadata kind content = do
+  input <- getInput
+  (content', label) <- content
+  tokens <- getTokens input
+  -- If there is no label, represent it by an empty string
+  let label' = fromMaybe "" label
+  let block = Block.makeBlock (mkVar (VarHole "")) content' kind label' [] tokens
+  addBlockReports block
+  return $ ProofTextBlock block
+
+
+-- * Bracket expressions (aka instructions)
 
 -- | Parses a bracket expression without evaluating it.
 bracketExpression :: FTL ProofText
@@ -89,143 +213,120 @@ exitInstruction text = case text of
   _ -> failing (return ()) >> return [] -- Not sure how to properly throw an error.
 
 
--- | Creates a full forthel section parser for parsing tex envs.
-makeSectionTexEnv :: Section -> [Text] -> FTL [ProofText] -> FTL ProofText
-makeSectionTexEnv kind envType content =
-  addMetadata kind $ texEnv envType content
+-- * Top-level section bodies
 
--- | @texEnv envType labelParser parseContent@ is a tex environment parser
--- for forthel sections.
--- @envType@ parses the environment type specified in the environment declaration.
--- @content@ parses the insides of the environment.
-texEnv :: [Text] -> FTL a -> FTL (a, Maybe Text)
-texEnv envType content = do
-  -- We use 'try' to backtrack if parsing the environment declaration fails.
-  envType' <- try . texBegin . addMarkup sectionHeader $ getTokenOf envType
-  envLabel <- optionalEnvLabel
-  (, envLabel) <$> (content <* texEnd (markupToken sectionHeader envType'))
+signatureBody :: FTL [ProofText]
+signatureBody = addAssumptions $ pretype $ pretypeSentence Posit sigExtend defVars finishWithoutLink
+
+definitionBody :: FTL [ProofText]
+definitionBody = addAssumptions $ pretype $ pretypeSentence Posit defExtend defVars finishWithoutLink
+
+axiomBody :: FTL [ProofText]
+axiomBody = addAssumptions $ pretype $ pretypeSentence Posit (affirmationHeader >> statement) affirmVars finishWithoutLink
+
+theoremBody :: FTL [ProofText]
+theoremBody = addAssumptions $ ftlTopLevelProof $ pretypeSentence Affirmation (affirmationHeader >> statement) affirmVars finishWithLink
 
 
--- | Creates a full forthel section parser with its header included.
-makeFtlSection :: Section -> [Text] -> FTL [ProofText] -> FTL ProofText
-makeFtlSection kind titles content =
-  addMetadata kind $ do
-    label <- header $ markupTokenOf sectionHeader titles
-    content' <- content
-    return (content', label)
-    where
-      header :: FTL () -> FTL (Maybe Text)
-      header title = finish $ title >> optLL1 Nothing (Just <$> topIdentifier)
-
--- | This is the last step when creating a proof text from a topsection. We take some metadata
--- and moreover read some metadata from the state and use it to make a `ProofText` out
--- of a parser that returns @ProofText@s and optional label information.
-addMetadata :: Section -> FTL ([ProofText], Maybe Text) -> FTL ProofText
-addMetadata kind content = do
-  inp <- getInput
-  (content', label) <- content
-  tokens <- getTokens inp
-  -- For some weird reason, if no label is present we must represent it as the empty string.
-  let block = Block.makeBlock (mkVar (VarHole "")) content' kind (fromMaybe "" label) [] tokens
-  addBlockReports block
-  return $ ProofTextBlock block
-
-
--- Core parsers for the bodies of the forthel sections.
-
-signature' :: FTL [ProofText]
-signature' = addAssumptions $ pretype $ pretypeSentence Posit sigExtend defVars noLink
-
-definition :: FTL [ProofText]
-definition = addAssumptions $ pretype $ pretypeSentence Posit defExtend defVars noLink
-
-axiom :: FTL [ProofText]
-axiom = addAssumptions $ pretype $ pretypeSentence Posit (beginAff >> statement) affirmVars noLink
-
-theorem :: FTL [ProofText]
-theorem = addAssumptions $ topProof postMethod qed link $ pretypeSentence Affirmation (beginAff >> statement) affirmVars link
-
--- Parsing tex theorems has the additional difficulty over other environments, that it could consist of
--- two tex envs, a theorem env and a proof env.
-texTheorem :: FTL ([ProofText], Maybe Text)
-texTheorem = do
-  envType <- try . texBegin . addMarkup sectionHeader $ getTokenOf theoremTags
-  label <- optionalEnvLabel
-  text <- addAssumptions . topProof texPostMethod texQed (return []) $
-            pretypeSentence Affirmation (beginAff >> statement) affirmVars link <* texEnd (markupToken sectionHeader envType)
-  return (text, label)
-
-
--- | Adds parser for parsing any number of assumptions before the passed content parser.
+-- | Adds parser for parsing any number of assumptions before the passed content
+-- parser.
 addAssumptions :: FTL [ProofText] -> FTL [ProofText]
 addAssumptions content = body
   where
     body = assumption <|> content
     assumption = topAssume `pretypeBefore` body
-    topAssume = pretypeSentence Assumption (beginAsm >> statement) assumeVars noLink
-
--- These are given in text format and not as a parser, because we want to later decide
--- whether they are parsed in a case-sensitive manner.
-signatureTags, definitionTags, axiomTags, theoremTags :: [Text]
-
-signatureTags = ["signature"]
-definitionTags = ["definition"]
-axiomTags = ["axiom"]
-theoremTags = ["theorem", "lemma", "corollary", "proposition"]
+    topAssume = pretypeSentence Assumption (assumptionHeader >> statement) assumeVars finishWithoutLink
 
 
--- low-level
+-- * Low-level blocks
+
+-- | Parse a choice expression.
 choose :: FTL Block
-choose = sentence Choice (beginChoice >> choice) assumeVars link
-caseHypo :: FTL Block
-caseHypo = sentence Block.CaseHypothesis (beginCase >> statement) affirmVars link
-affirm :: FTL Block
-affirm = sentence Affirmation (beginAff >> statement) affirmVars link </> eqChain
-assume :: FTL Block
-assume = sentence Assumption (beginAsm >> statement) assumeVars noLink
-llDefn :: FTL Block
-llDefn = sentence LowDefinition(beginDef >> classNotion </> mapNotion) llDefnVars noLink
+choose = sentence Choice (choiceHeader >> choice) assumeVars finishWithLink
+
+-- | Parse a case hypothesis.
+caseHypothesis :: FTL Block
+caseHypothesis = sentence Block.CaseHypothesis (caseHeader >> statement) affirmVars finishWithLink
+
+-- | Parse an affirmation.
+affirmation :: FTL Block
+affirmation = sentence Affirmation (affirmationHeader >> statement) affirmVars finishWithLink </> eqChain
+
+-- | Parse an assumption.
+assumption :: FTL Block
+assumption = sentence Assumption (assumptionHeader >> statement) assumeVars finishWithoutLink
+
+-- | Parse a low-level definition.
+lowLevelDefinition :: FTL Block
+lowLevelDefinition = sentence LowDefinition (lowLevelDefinitionHeader >> classNotion </> mapNotion) llDefnVars finishWithoutLink
 
 
--- Tex labels
-envLabel :: FTL Text
-envLabel = try labeledEnvName <|> envName
-  where
-    -- "[name]\label{identifier}"
-    labeledEnvName = do
-      optLL1 [] $ bracketed (chainLL1 notClosingBrk)
-      texCommandWithArg "label" topIdentifier
-    -- "[identifier]"
-    envName = bracketed topIdentifier
-    notClosingBrk = tokenPrim notCl
-    notCl t = let tk = showToken t in guard (tk /= "]") >> return tk
+-- * Identifiers, links, labels
 
-optionalEnvLabel :: FTL (Maybe Text)
-optionalEnvLabel = optLLx Nothing (Just <$> envLabel)
+-- ** Identifiers
 
--- Links and Identifiers
-link :: FTL [Text]
-link = finish eqLink
-
-topIdentifier :: FTL Text
-topIdentifier = Text.toCaseFold . Text.concat <$> many (tokenPrim notSymb)
+-- | Parse an identifier, i.e. a sequence of alphanumeric tokens and underscores.
+identifier :: FTL Text
+identifier = Text.toCaseFold . Text.concat <$> many (tokenPrim notSymb)
   where
     notSymb t = case Text.uncons (showToken t) of
       Just (c, "") -> guard (isAlphaNum c || c == '_') >> return (Text.singleton c)
       _ -> return (showToken t)
 
-lowIdentifier :: FTL Text
-lowIdentifier = parenthesised topIdentifier
 
-noLink :: FTL [a]
-noLink = finish $ return []
+-- ** Links
 
-eqLink :: FTL [Text]
-eqLink = optLL1 [] $ parenthesised $ token' "by" >> identifiers
+-- | Finish a statement with a link.
+finishWithLink :: FTL [Text]
+finishWithLink = finish link
+
+-- | Finish a statement without a link.
+finishWithoutLink :: FTL [a]
+finishWithoutLink = finish $ return []
+
+-- | Parses a link expression, i.e. "(by ...)"
+link :: FTL [Text]
+link = optLL1 [] $ parenthesised $ token' "by" >> identifiers
   where
-    identifiers = (texCommandWithArg "ref" topIdentifier <|> texCommandWithArg "nameref" topIdentifier <|> topIdentifier) `sepByLL1` comma
+    identifiers = (texCommandWithArg "ref" identifier <|> texCommandWithArg "nameref" identifier <|> identifier) `sepByLL1` comma
 
--- declaration management, typings and pretypings
+
+-- ** Labels
+
+-- | Parse an environment label (TEX), i.e. one of the following expressions:
+--
+--  * A name together with a label, i.e. "[<name>]\label{<label>}"
+--    In this case @<name>@ can be any string while @<label>@ must be an
+--    identifier which is used as an idenfier of the top-level section it
+--    belongs to.
+--  * Just a name, i.e. "[<name>]".
+--    In this case @<name>@ must be an identifier which is used as an
+--    idenfier of the top-level section it belongs to.
+--  * Just a label, i.e. "\label{<label>}".
+--    In this case @<label>@ must be an identifier which is used as an idenfier
+--    of the top-level section it belongs to.
+--
+envLabel :: FTL Text
+envLabel = try nameAndLabel <|> name <|> label
+  where
+    -- "[<name>]\label{<label>}"
+    nameAndLabel = do
+      bracketed (chainLL1 notClosingBrk)
+      label
+    -- "[<name>]"
+    name = bracketed identifier
+    -- "\label{<label>}"
+    label = texCommandWithArg "label" identifier
+
+    notClosingBrk = tokenPrim notCl
+    notCl t = let tk = showToken t in guard (tk /= "]") >> return tk
+
+-- | Parse an optional environment label (TEX).
+optionalEnvLabel :: FTL (Maybe Text)
+optionalEnvLabel = optLLx Nothing (Just <$> envLabel)
+
+
+-- * Declaration management, typings and pretypings
 
 updateDeclbefore :: FTL ProofText -> FTL [ProofText] -> FTL [ProofText]
 updateDeclbefore blp p = do
@@ -268,34 +369,54 @@ pretype :: FTL Block -> FTL [ProofText]
 pretype p = p `pretypeBefore` return []
 
 
--- low-level header
+-- * Low-level header
+
+-- | @[ "then" | "hence" | "thus" | "therefore" | "consequently" ]@
 hence :: FTL ()
 hence = optLL1 () $ tokenOf' ["then", "hence", "thus", "therefore", "consequently"]
+
+-- | @[ ("let" "us") | ("we" "can") ]@
 letUs :: FTL ()
 letUs = optLL1 () $ (mu "let" >> mu "us") <|> (mu "we" >> mu "can")
   where
     mu = markupToken lowlevelHeader
 
-beginChoice :: FTL ()
-beginChoice = hence >> letUs >> markupTokenOf lowlevelHeader ["choose", "take", "consider"]
-beginCase :: FTL ()
-beginCase = markupToken lowlevelHeader "case"
-beginAff :: FTL ()
-beginAff = hence
-beginAsm :: FTL ()
-beginAsm = lus </> markupToken lowlevelHeader "let"
+-- | Header for choice expressions:
+-- @[ <hence> ] [ <letUs> ] ("choose" | "take" | "consider")@
+choiceHeader :: FTL ()
+choiceHeader = hence >> letUs >> markupTokenOf lowlevelHeader ["choose", "take", "consider"]
+
+-- | Header for case hypothesis:
+-- @"case"@
+caseHeader :: FTL ()
+caseHeader = markupToken lowlevelHeader "case"
+
+-- | Header for affirmation:
+-- @<hence>@
+affirmationHeader :: FTL ()
+affirmationHeader = hence
+
+-- | Header for assumption:
+-- @"let" | (<letUs> ("assume" | "presume" | "suppose") ["that"])
+assumptionHeader :: FTL ()
+assumptionHeader = lus </> markupToken lowlevelHeader "let"
   where
     lus = letUs >> markupTokenOf lowlevelHeader ["assume", "presume", "suppose"] >> optLL1 () that
-beginDef :: FTL ()
-beginDef = markupToken lowlevelHeader "define"
+
+-- | Low-leve definition header:
+-- @"define"@
+lowLevelDefinitionHeader :: FTL ()
+lowLevelDefinitionHeader = markupToken lowlevelHeader "define"
 
 
--- generic sentence parser
+-- * Generic sentence parser
 
 statementBlock :: Section
-                  -> FTL Formula -> FTL [Text] -> FTL Block
+               -> FTL Formula
+               -> FTL [Text]
+               -> FTL Block
 statementBlock kind p mbLink = do
-  nm <- optLLx "__" lowIdentifier
+  nm <- optLLx "__" (parenthesised identifier)
   inp <- getInput
   fr <- p
   link <- mbLink
@@ -304,35 +425,39 @@ statementBlock kind p mbLink = do
 
 
 pretypeSentence :: Section
-                   -> FTL Formula
-                   -> (Set VariableName -> Formula -> Maybe Text)
-                   -> FTL [Text]
-                   -> FTL Block
+                -> FTL Formula
+                -> (Set VariableName -> Formula -> Maybe Text)
+                -> FTL [Text]
+                -> FTL Block
 pretypeSentence kind p wfVars mbLink = narrow $ do
   dvs <- getDecl
   tvr <- fmap (Set.unions . map fst) getPretyped
   bl <- wellFormedCheck (wf dvs tvr) $ statementBlock kind p mbLink
   newDecl <- bindings dvs $ Block.formula bl
   let nbl = if Block.canDeclare kind then bl {Block.declaredVariables = newDecl} else bl
-  addBlockReports nbl; return nbl {Block.formula = Block.formula bl}
+  addBlockReports nbl
+  return nbl {Block.formula = Block.formula bl}
   where
     wf dvs tvr bl =
-      let fr = Block.formula bl; nvs = Set.intersection tvr $ fvToVarSet $ excludeSet (free fr) dvs
+      let fr = Block.formula bl
+          nvs = Set.intersection tvr $ fvToVarSet $ excludeSet (free fr) dvs
       in  wfVars (nvs <> dvs) fr
 
 sentence :: Section
-            -> FTL Formula
-            -> (Set VariableName -> Formula -> Maybe Text)
-            -> FTL [Text]
-            -> FTL Block
+         -> FTL Formula
+         -> (Set VariableName -> Formula -> Maybe Text)
+         -> FTL [Text]
+         -> FTL Block
 sentence kind p wfVars mbLink = do
   dvs <- getDecl
   bl <- wellFormedCheck (wfVars dvs . Block.formula) $ statementBlock kind p mbLink
   newDecl <- bindings dvs $ Block.formula bl
   let nbl = bl {Block.declaredVariables = newDecl}
-  addBlockReports nbl; return nbl {Block.formula = Block.formula bl}
+  addBlockReports nbl
+  return nbl {Block.formula = Block.formula bl}
 
--- variable well-formedness checks
+
+-- * Variable well-formedness checks
 
 defVars, assumeVars, affirmVars :: Set VariableName -> Formula -> Maybe Text
 
@@ -356,53 +481,86 @@ assumeVars dvs f = affirmVars (declNames dvs f <> dvs) f
 affirmVars = freeOrOverlapping
 
 
--- proofs
+-- * Proofs
 
--- proof methods
+-- | Proof scheme
+data Scheme =
+    None            -- ^ No proof
+  | Short           -- ^ Confirmation ("Indeed ... .")
+  | Raw             -- ^ Proof without special method
+  | Contradiction   -- ^ Proof by contradiction
+  | InS             -- ^ Proof by induction
+  | InT Formula     -- ^ Term to induce on (in a proof by induction)
+  deriving (Eq, Ord, Show)
 
-data Scheme = None | Short | Raw | Contradiction | InS | InT Formula deriving (Eq, Ord, Show)
+-- | Low-level theorem header:
+-- @<letUs> ("prove" | "show" | "demonstrate") [<byProofMethod>] "that"@
+letUsShowThat :: FTL Scheme
+letUsShowThat = do
+  letUs
+  markupTokenOf lowlevelHeader ["prove", "show", "demonstrate"]
+  method <- optLL1 Raw byProofMethod
+  markupToken lowlevelHeader "that"
+  return method
 
-preMethod :: FTL Scheme
-preMethod = optLLx None $ letUs >> dem >> after (optLL1 Raw method) that
+-- | Confirmation header (FTL):
+-- @"indeed"@
+ftlConfirmationHeader :: FTL Scheme
+ftlConfirmationHeader = do
+  markupToken proofStart "indeed"
+  return Short
+
+-- | Proof header (FTL)
+-- @"proof" [<byProofMethod>] "."@
+ftlProofHeader :: FTL Scheme
+ftlProofHeader = do
+  markupToken proofStart "proof"
+  method <- optLL1 Raw byProofMethod
+  dot
+  return method
+
+-- | Proof header (TEX):
+-- @"\\begin" "{" "proof" "}" ["proof" <byProofMethod> "."]
+texProofHeader :: FTL Scheme
+texProofHeader = do
+  texBegin (markupToken proofStart "proof")
+  optLL1 Raw $ do
+    markupToken proofStart "proof"
+    method <- byProofMethod
+    dot
+    return method
+
+-- | Proof method:
+-- @"by" ("contradiction" | "case" "analysis" | "induction" ["on" <sTerm>])
+byProofMethod :: FTL Scheme
+byProofMethod = markupToken byAnnotation "by" >> (contradiction <|> caseAnalysis <|> induction)
   where
-    dem = markupTokenOf lowlevelHeader ["prove", "show", "demonstrate"]
-    that = markupToken lowlevelHeader "that"
-
-postMethod :: FTL Scheme
-postMethod = optLL1 None $ short <|> explicit
-  where
-    short = markupToken proofStart "indeed" >> return Short
-    explicit = finish $ markupToken proofStart "proof" >> optLL1 Raw method
-
-texPostMethod :: FTL Scheme
-texPostMethod = optLLx None $ texBegin (markupToken proofStart "proof") >> (short <|> explicit)
-  where
-    short = markupToken proofStart "indeed" >> return Short
-    explicit = optLL1 Raw . finish $ markupToken byAnnotation "proof" >> method
-
-method :: FTL Scheme
-method = markupToken byAnnotation "by" >> (contradict <|> cases <|> induction)
-  where
-    contradict = token' "contradiction" >> return Contradiction
-    cases = token' "case" >> token' "analysis" >> return Raw
+    contradiction = token' "contradiction" >> return Contradiction
+    caseAnalysis = token' "case" >> token' "analysis" >> return Raw
     induction = token' "induction" >> optLL1 InS (token' "on" >> fmap InT sTerm)
 
-qed :: FTL ()
-qed = label "qed" $ markupTokenOf proofEnd ["qed", "end", "trivial", "obvious"]
+-- | Proof end (FTL):
+-- @"qed" | "end" | "trivial" | "obvious"@
+ftlProofEnd :: FTL ()
+ftlProofEnd = label "qed" $ markupTokenOf proofEnd ["qed", "end", "trivial", "obvious"]
 
-texQed :: FTL ()
-texQed = label "qed" . texEnd $ markupToken proofEnd "proof"
+-- | Proof end (TEX):
+-- @"\\end" "{" "proof" "}"@
+texProofEnd :: FTL ()
+texProofEnd = label "qed" . texEnd $ markupToken proofEnd "proof"
 
---- creation of induction thesis
-
+-- | Creation of induction thesis.
 indThesis :: Formula -> Scheme -> Scheme -> FTL Formula
 indThesis fr pre post = do
-  it <- indScheme pre post >>= indTerm fr; dvs <- getDecl
+  it <- indScheme pre post >>= indTerm fr
+  dvs <- getDecl
   indFormula (fvToVarSet $ excludeSet (free it) dvs) it fr
   where
     indScheme (InT _) (InT _) = failWF "conflicting induction schemes"
-    indScheme m@(InT _) _ = return m; indScheme _ m@(InT _) = return m
-    indScheme InS _ = return InS; indScheme _ m = return m
+    indScheme m@(InT _) _ = return m
+    indScheme _ m@(InT _) = return m
+    indScheme InS _ = return InS
+    indScheme _ m = return m
 
     indTerm _ (InT t) = return t
     indTerm (All v _) InS = return $ pVar $ PosVar (declName v) (declPosition v)
@@ -422,22 +580,28 @@ indThesis fr pre post = do
     deleteDecl Decl{declName, declPosition} = Set.delete (PosVar declName declPosition)
 
 
+-- ** Proof initiation
 
--- proof initiation
-
+-- | Parse a statement with an optional proof.
 proof :: FTL Block -> FTL Block
 proof p = do
-  pre <- preMethod
-  bl <- p
-  post <- postMethod
-  nf <- indThesis (Block.formula bl) pre post
-  addBody qed link pre post $ bl {Block.formula = nf}
+  pre <- optLLx None letUsShowThat
+  block <- p
+  post <- optLL1 None (ftlProofHeader <|> ftlConfirmationHeader)
+  nf <- indThesis (Block.formula block) pre post
+  addBody ftlProofEnd finishWithLink pre post $ block {Block.formula = nf}
 
+ftlTopLevelProof :: FTL Block -> FTL [ProofText]
+ftlTopLevelProof = topProof (optLLx None $ ftlProofHeader <|> ftlConfirmationHeader) ftlProofEnd (finish link)
 
+texTopLevelProof :: FTL Block -> FTL [ProofText]
+texTopLevelProof = topProof (optLLx None texProofHeader) texProofEnd (return [])
 
+-- | Parse a top-level proof:
+-- @[<letUsShowThat>] <affirmation> [<ftlProofHeader>]
 topProof :: FTL Scheme -> FTL () -> FTL [Text] -> FTL Block -> FTL [ProofText]
 topProof postMethod qed link p = do
-  pre <- preMethod
+  pre <- optLLx None letUsShowThat
   bl <- p
   post <- postMethod
   typeBlock <- pretyping bl
@@ -448,46 +612,67 @@ topProof postMethod qed link p = do
   return $ if null pretyped then [nbl] else [ProofTextBlock typeBlock, nbl]
 
 -- Takes proof end parser @qed@ and the link @link@ to insert after the proof body as parameters.
-addBody :: FTL () -> FTL [Text] -> Scheme -> Scheme -> Block -> FTL Block
-addBody _ _ None None b = return b -- no proof was given
-addBody _ _ _ Short b = proofSentence b   -- a short proof was given
-addBody qed link pre post b = proofBody qed link $ b {Block.kind = kind}  -- a full proof was given
+addBody :: FTL ()     -- ^ Proof end parser
+        -> FTL [Text] -- ^ Link parser
+        -> Scheme     -- ^ Proof scheme from a "let us show" expression
+        -> Scheme     -- ^ Proof scheme from a proof header
+        -> Block
+        -> FTL Block
+-- No proof was given
+addBody _ _ None None b = return b
+-- A confirmation was given
+addBody _ _ _ Short b = confirmationBody b
+-- A full proof was given
+addBody qed link pre post b = proofBody qed link $ b {Block.kind = kind}
   where kind = if pre == Contradiction || post == Contradiction then ProofByContradiction else Block.kind b
 
 
 
--- proof texts
+-- ** Proof texts
 
-proofSentence :: Block -> FTL Block
-proofSentence bl = do
-  pbl <- narrow assume </> proof (narrow $ affirm </> choose) </> narrow llDefn
-  return bl {Block.body = [ProofTextBlock pbl]}
+-- | Confirmation body:
+-- @<assumption> | ((<affirmation> | <choose>) <proof>) | <lowLevelDefinition>@
+confirmationBody :: Block -> FTL Block
+confirmationBody block = do
+  pbl <- narrow assumption </> proof (narrow $ affirmation </> choose) </> narrow lowLevelDefinition
+  return block {Block.body = [ProofTextBlock pbl]}
 
--- Takes proof end parser @qed@ and the link @link@ to insert after the proof body as parameters.
-proofBody :: FTL () -> FTL [Text] -> Block -> FTL Block
-proofBody qed link bl = do
+-- | Proof body + proof end + link
+-- @
+proofBody :: FTL ()       -- ^ Proof end parser
+          -> FTL [Text]   -- ^ Link parser
+          -> Block
+          -> FTL Block
+proofBody qed link block = do
   bs <- proofText qed
   ls <- link
-  return bl {Block.body = bs, Block.link = ls ++ Block.link bl}
+  return block {Block.body = bs, Block.link = ls ++ Block.link block}
 
--- Takes the proof end parser @qed@ as parameter.
+-- | Proof body + proof end
+-- @{ <assumption>
+--    | (<affirmation> | <choose> | <lowLevelDefinition>) <proof>
+--    | <caseDistinction>
+--    | <instruction> }
+--  <qed>@
 proofText :: FTL () -> FTL [ProofText]
 proofText qed =
   (qed >> return []) <|>
   (unfailing (fmap ProofTextBlock lowtext <|> instruction) `updateDeclbefore` proofText qed)
   where
     lowtext =
-      narrow assume </>
-      proof (narrow $ affirm </> choose </> llDefn) </>
+      narrow assumption </>
+      proof (narrow $ affirmation </> choose </> lowLevelDefinition) </>
       caseDestinction
     instruction =
       fmap (uncurry ProofTextDrop) instrDrop </>
       fmap (uncurry ProofTextInstr) instr
 
+-- | Case distinction:
+-- @<caseHypothesis> <proofBody>@
 caseDestinction :: FTL Block
 caseDestinction = do
-  bl@Block { Block.formula = fr } <- narrow caseHypo
-  proofBody qed link $ bl {
+  bl@Block { Block.formula = fr } <- narrow caseHypothesis
+  proofBody ftlProofEnd finishWithLink $ bl {
   Block.formula = Imp (Tag Tag.CaseHypothesis fr) mkThesis}
 
 
@@ -495,7 +680,7 @@ caseDestinction = do
 
 eqChain :: FTL Block
 eqChain = do
-  dvs <- getDecl; nm <- opt "__" lowIdentifier; inp <- getInput
+  dvs <- getDecl; nm <- opt "__" (parenthesised identifier); inp <- getInput
   body <- wellFormedCheck (chainVars dvs) $ sTerm >>= nextTerm
   toks <- getTokens inp
   let Tag EqualityChain Trm{trmArgs = [t,_]} = Block.formula $ head body
@@ -513,7 +698,7 @@ nextTerm t = do
   inp <- getInput
   symbol ".="
   s <- sTerm
-  ln <- eqLink
+  ln <- link
   toks <- getTokens inp
   (:) (Block.makeBlock (Tag EqualityChain $ mkEquality t s)
     [] Affirmation "__" ln toks) <$> eqTail s

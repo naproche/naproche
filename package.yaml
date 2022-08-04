@@ -76,6 +76,7 @@ library:
     - SAD.API
     - SAD.Main
     - SAD.ForTheL.Base
+    - SAD.ForTheL.Structure
     - SAD.Import.Reader
     - SAD.Parser.Combinators
     - SAD.Parser.Primitives

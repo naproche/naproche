@@ -11,6 +11,8 @@ module SAD.ForTheL.Reports
   ( addMarkup
   , markupToken
   , markupTokenOf
+  , getMarkupToken
+  , getMarkupTokenOf
   , or
   , neitherNor
   , conjunctiveAnd
@@ -75,6 +77,12 @@ markupToken markup = addMarkup markup . token'
 
 markupTokenOf :: Markup.T -> [Text] -> FTL ()
 markupTokenOf markup = addMarkup markup . tokenOf'
+
+getMarkupToken :: Markup.T -> Text -> FTL Text
+getMarkupToken markup = addMarkup markup . getToken'
+
+getMarkupTokenOf :: Markup.T -> [Text] -> FTL Text
+getMarkupTokenOf markup = addMarkup markup . getTokenOf'
 
 
 -- formula and variable reports
