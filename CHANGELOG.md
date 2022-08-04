@@ -15,8 +15,12 @@ variant of ForTheL, respectively.
 
   * **New:** In FTL-TeX `\left`, `\middle` and `\right` are tokenized away.
 
-  * **New:** FTL-TeX does no longer provide primitive expressions inherited
+  * **Changed:** FTL-TeX does no longer provide primitive expressions inherited
     from FTL (e.g. `!=` or `-<-`).
+
+  * **Changed:** In FTL-TeX a proof method for proofs of top-level theorems is
+    now given via `\begin{proof}[by <method>]` instead of
+    `\begin{proof} Proof by <method>.`.
 
   * **Fixed:** In FTL-TeX `#` is a regular character now.
 

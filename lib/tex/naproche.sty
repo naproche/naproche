@@ -98,20 +98,17 @@
 
 \newbool{forthel}
 
-\let\originalproof\proof
-\let\originalendproof\endproof
-
 % Set length of \parskip to \ftlparskip in proofs in ForTheL environments.
 %
 % NOTE: "\vspace*{-\parskip}" is necessary to avoid additional space between
 % theorem and proof
-\renewenvironment{proof}{%
-  \originalproof%
+\renewenvironment{proof}[1][\unskip]{%
   \ifbool{forthel}{\setlength{\parskip}{\ftlparskip}\vspace*{-\parskip}}%
+  \noindent\textit{Proof #1. }%
   \relax%
 }
 {%
-  \originalendproof%
+  \hfill\qed
 }
 
 

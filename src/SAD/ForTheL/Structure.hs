@@ -520,15 +520,11 @@ ftlProofHeader = do
   return method
 
 -- | Proof header (TEX):
--- @"\\begin" "{" "proof" "}" ["proof" <byProofMethod> "."]
+-- @"\\begin" "{" "proof" "}" ["[" <byProofMethod> "]"]
 texProofHeader :: FTL Scheme
 texProofHeader = do
   texBegin (markupToken proofStart "proof")
-  optLL1 Raw $ do
-    markupToken proofStart "proof"
-    method <- byProofMethod
-    dot
-    return method
+  optLL1 Raw $ bracketed byProofMethod
 
 -- | Proof method:
 -- @"by" ("contradiction" | "case" "analysis" | "induction" ["on" <sTerm>])
