@@ -29,7 +29,11 @@ The examples are chosen to demonstrate possibilities of the current Naproche whi
 
 * group - Naproche rendering of a Lean file on groups
 
+* hausdorff - theorem on the regularity of successor cardinals
+
 * hilbert-calculus - proving derivations in a Hilbert calculus
+
+* koenig - theorem about sequences of cardinals
 
 * maximum_modulus - theorem from complex analysis
 
@@ -37,11 +41,11 @@ The examples are chosen to demonstrate possibilities of the current Naproche whi
 
 * numbers - introduction of number systems for Rudin's Principles of Mathematical Analysis
 
+* paradoxes - collection of (mathematical) paradoxes
+
 * preliminaries - basic theory of classes and sets
 
 * prime no square - irrationality of square roots
-
-* russell - Russell's paradox
 
 * tarski - Tarski fixpoint theorem for lattices
 
