@@ -168,7 +168,7 @@ texTheorem = addMetadata Theorem $ do
   keyword <- try . texBegin $ getMarkupTokenOf sectionHeader ["theorem", "lemma", "corollary", "proposition"]
   label <- optionalEnvLabel
   content <- addAssumptions . texTopLevelProof $
-            pretypeSentence Affirmation (affirmationHeader >> statement) affirmVars finishWithLink <* texEnd (markupToken sectionHeader keyword)
+            pretypeSentence Affirmation (affirmationHeader >> statement) affirmVars finishWithOptLink <* texEnd (markupToken sectionHeader keyword)
   return (content, label)
 
 
@@ -225,7 +225,7 @@ axiomBody :: FTL [ProofText]
 axiomBody = addAssumptions $ pretype $ pretypeSentence Posit (affirmationHeader >> statement) affirmVars finishWithoutLink
 
 theoremBody :: FTL [ProofText]
-theoremBody = addAssumptions $ ftlTopLevelProof $ pretypeSentence Affirmation (affirmationHeader >> statement) affirmVars finishWithLink
+theoremBody = addAssumptions $ ftlTopLevelProof $ pretypeSentence Affirmation (affirmationHeader >> statement) affirmVars finishWithOptLink
 
 
 -- | Adds parser for parsing any number of assumptions before the passed content
@@ -242,15 +242,15 @@ addAssumptions content = body
 
 -- | Parse a choice expression.
 choose :: FTL Block
-choose = sentence Choice (choiceHeader >> choice) assumeVars finishWithLink
+choose = sentence Choice (choiceHeader >> choice) assumeVars finishWithOptLink
 
 -- | Parse a case hypothesis.
 caseHypothesis :: FTL Block
-caseHypothesis = sentence Block.CaseHypothesis (caseHeader >> statement) affirmVars finishWithLink
+caseHypothesis = sentence Block.CaseHypothesis (caseHeader >> statement) affirmVars finishWithOptLink
 
 -- | Parse an affirmation.
 affirmation :: FTL Block
-affirmation = sentence Affirmation (affirmationHeader >> statement) affirmVars finishWithLink </> eqChain
+affirmation = sentence Affirmation (affirmationHeader >> statement) affirmVars finishWithOptLink </> eqChain
 
 -- | Parse an assumption.
 assumption :: FTL Block
@@ -277,16 +277,16 @@ identifier = Text.toCaseFold . Text.concat <$> many (tokenPrim notSymb)
 -- ** Links
 
 -- | Finish a statement with a link.
-finishWithLink :: FTL [Text]
-finishWithLink = finish link
+finishWithOptLink :: FTL [Text]
+finishWithOptLink = finish optLink
 
 -- | Finish a statement without a link.
 finishWithoutLink :: FTL [a]
 finishWithoutLink = finish $ return []
 
--- | Parses a link expression, i.e. "(by ...)"
-link :: FTL [Text]
-link = optLL1 [] $ parenthesised $ token' "by" >> identifiers
+-- | Parses an optionsl link expression, i.e. "(by ...)"
+optLink :: FTL [Text]
+optLink = optLL1 [] $ parenthesised $ token' "by" >> identifiers
   where
     identifiers = (texCommandWithArg "ref" identifier <|> texCommandWithArg "nameref" identifier <|> identifier) `sepByLL1` comma
 
@@ -585,10 +585,10 @@ proof p = do
   block <- p
   post <- optLL1 None (ftlProofHeader <|> ftlConfirmationHeader)
   nf <- indThesis (Block.formula block) pre post
-  addBody ftlProofEnd finishWithLink pre post $ block {Block.formula = nf}
+  addBody ftlProofEnd finishWithOptLink pre post $ block {Block.formula = nf}
 
 ftlTopLevelProof :: FTL Block -> FTL [ProofText]
-ftlTopLevelProof = topProof (optLLx None $ ftlProofHeader <|> ftlConfirmationHeader) ftlProofEnd (finish link)
+ftlTopLevelProof = topProof (optLLx None $ ftlProofHeader <|> ftlConfirmationHeader) ftlProofEnd finishWithOptLink
 
 texTopLevelProof :: FTL Block -> FTL [ProofText]
 texTopLevelProof = topProof (optLLx None texProofHeader) texProofEnd (return [])
@@ -668,7 +668,7 @@ proofText qed =
 caseDestinction :: FTL Block
 caseDestinction = do
   bl@Block { Block.formula = fr } <- narrow caseHypothesis
-  proofBody ftlProofEnd finishWithLink $ bl {
+  proofBody ftlProofEnd finishWithOptLink $ bl {
   Block.formula = Imp (Tag Tag.CaseHypothesis fr) mkThesis}
 
 
@@ -694,7 +694,7 @@ nextTerm t = do
   inp <- getInput
   symbol ".="
   s <- sTerm
-  ln <- link
+  ln <- optLink
   toks <- getTokens inp
   (:) (Block.makeBlock (Tag EqualityChain $ mkEquality t s)
     [] Affirmation "__" ln toks) <$> eqTail s
