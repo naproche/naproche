@@ -143,8 +143,11 @@ end;
 
 (* server connection *)
 
-fun read_message streams = Byte_Message.read_message (fst streams);
-fun write_message streams = Byte_Message.write_message (snd streams);
+fun read_message streams =
+  Byte_Message.read_message (fst streams) |> (Option.map o map) Bytes.content;
+
+fun write_message streams =
+  map Bytes.string #> Byte_Message.write_message (snd streams);
 
 fun with_server f =
   let
@@ -162,7 +165,8 @@ fun with_server f =
 val cancel_program = "cancel";
 
 fun cancel state =
-  with_server (fn streams => write_message streams (cancel_program :: get_threads state));
+  with_server (fn streams =>
+    write_message streams (cancel_program :: get_threads state));
 
 val _ = Theory.setup
  (command_setup \<^binding>\<open>threads\<close> (fn (more_threads, state) =>
