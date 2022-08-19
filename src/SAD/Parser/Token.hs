@@ -125,7 +125,7 @@ isLexeme c = isAscii c && isAlphaNum c
 tokenize :: ParserKind -> Position.T -> Text -> [Token]
 
 -- Tokenize an FTL document
-tokenize NonTex startPos = procToken startPos NoWhiteSpaceBefore
+tokenize Ftl startPos = procToken startPos NoWhiteSpaceBefore
   where
     -- Process a token
     procToken :: Position.T -> TokenType -> Text -> [Token]

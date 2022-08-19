@@ -20,7 +20,7 @@ import qualified Data.Text.Lazy as Text
 import SAD.Data.Text.Block
 import SAD.Data.Instr as Instr
     ( Argument(Text, File, Read),
-      ParserKind(Tex, NonTex),
+      ParserKind(Tex, Ftl),
       Instr(GetArgument))
 import SAD.ForTheL.Base
 import SAD.ForTheL.Structure
@@ -48,14 +48,14 @@ readInit :: Bytes -> IO [(Position.T, Instr)]
 readInit file | Bytes.null file = return []
 readInit file = do
   input <- catch (File.read (make_string file)) $ Message.errorParser (Position.file_only $ make_bytes file) . make_bytes . ioeGetErrorString
-  let tokens = filter isProperToken $ tokenize NonTex (Position.file $ make_bytes file) $ Text.fromStrict $ make_text input
+  let tokens = filter isProperToken $ tokenize Ftl (Position.file $ make_bytes file) $ Text.fromStrict $ make_text input
   fst <$> launchParser instructionFile (initState Program.console tokens)
 
 instructionFile :: FTL [(Position.T, Instr)]
 instructionFile = after (optLL1 [] $ chainLL1 instr) eof
 
 initState :: Program.Context -> [Token] -> State FState
-initState context tokens = State (initFState context) tokens NonTex Position.none
+initState context tokens = State (initFState context) tokens Ftl Position.none
 
 
 -- * Reader loop
@@ -86,7 +86,7 @@ reader pathToLibrary doneFiles = go
           -- or the .ftl parser. Now if, for example, we originally read the file with the .ftl format and now we
           -- are reading the file again with the .tex format(by eg using '[readtex myfile.ftl]'), we want to throw an error.
           when (parserKind pState /= parserKind')
-            (Message.errorParser pos "Trying to read the same file once in Tex format and once in NonTex format.")
+            (Message.errorParser pos "Trying to read the same file once in TEX format and once in FTL format.")
           Message.outputMain Message.WARNING pos
             (make_bytes ("Skipping already read file: " ++ show file))
           (newProofText, newState) <- chooseParser pState
@@ -132,7 +132,7 @@ reader0 pos text pState = do
 chooseParser :: State FState -> IO ([ProofText], State FState)
 chooseParser st = case parserKind st of
   Tex -> launchParser texForthel st
-  NonTex -> launchParser forthel st
+  Ftl -> launchParser forthel st
 
 -- Launch a parser in the IO monad.
 launchParser :: Parser st a -> State st -> IO (a, State st)

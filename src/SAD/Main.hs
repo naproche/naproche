@@ -179,7 +179,7 @@ proveFOL txts opts0 mesonCache proverCache startTime fileArg = do
     [] -> do
       let file = maybe "" Text.pack fileArg
       let filePos = Position.file_only $ make_bytes file
-      let txts' = ProofTextInstr Position.none (GetArgument (File NonTex) file) : txts
+      let txts' = ProofTextInstr Position.none (GetArgument (File Ftl) file) : txts
       verifyRoot mesonCache proverCache filePos txts'
     err : _ -> do
       errorParser (errorPos err) (show_bytes err)
@@ -251,7 +251,7 @@ readArgs args = do
           _ -> fail ["More than one file argument\n"]
   let parserKind =
         if useTexArg || maybe False (\f -> ".tex.ftl" `isSuffixOf` f || ".ftl.tex" `isSuffixOf` f) fileArg
-        then Tex else NonTex
+        then Tex else Ftl
   pure (revInitialOpts, parserKind, fileArg)
 
 usageHeader :: String
@@ -281,7 +281,7 @@ optArgument :: [Char] -> Param.T Bytes -> String -> GetOpt.OptDescr Instr
 optArgument chars p a = optParam chars p arg s
   where arg = GetOpt.ReqArg (SetBytes p . make_bytes) a
         s = make_string $ Param.description_default p
-        
+
 options :: [GetOpt.OptDescr Instr]
 options = [
   optSwitch "h" helpParam True "",

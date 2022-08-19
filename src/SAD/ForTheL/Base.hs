@@ -172,7 +172,7 @@ initFState = FState
 addInits :: ParserKind -> FState -> FState
 addInits dialect state@FState{symbNotionExpr = sn, cfnExpr = cfn, iprExpr = ipr} =
   case dialect of
-    NonTex -> state {
+    Ftl -> state {
         cfnExpr = unionBy comparePatterns cfn [ftlDomFunction],
         iprExpr = unionBy comparePatterns ipr [ftlInequalityPredicate, ftlInductionPredicate]
       }

@@ -34,7 +34,7 @@ import qualified Naproche.Prover as Prover
 
 -- | Indicate which of the parsers is currently used. This is must be recorded in the State
 -- for read instruction to work properly.
-data ParserKind = NonTex | Tex deriving (Eq, Ord, Show)
+data ParserKind = Ftl | Tex deriving (Eq, Ord, Show)
 
 data Instr =
     Command Command
@@ -154,7 +154,7 @@ textArgs@[libraryParam, proverParam] =
 initParam, theoryParam :: Param.T Bytes
 initParam = Param.bytes "init" "init file, empty to skip" "init.opt"
 theoryParam = Param.bytes "theory" "choose the underlying theory" "fol"
-   
+
 verboseFlags :: [Param.T Bool]
 verboseFlags =
   [printgoalParam,
@@ -204,6 +204,6 @@ keywordsDropFlag = map (paramKeyword DropBool) textFlags
 
 keywordsArgument :: [(Text -> Instr, Text)]
 keywordsArgument =
- [(GetArgument $ Read NonTex, "read"),
+ [(GetArgument $ Read Ftl, "read"),
   (GetArgument $ Read Tex, "readtex")] ++
   map (paramKeyword (\p -> SetBytes p . make_bytes)) textArgs
