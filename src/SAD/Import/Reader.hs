@@ -20,7 +20,7 @@ import qualified Data.Text.Lazy as Text
 import SAD.Data.Text.Block
 import SAD.Data.Instr as Instr
     ( Argument(Text, File, Read),
-      ParserKind(Tex, Ftl),
+      ParserKind(Ftl),
       Instr(GetArgument))
 import SAD.ForTheL.Base
 import SAD.ForTheL.Structure
@@ -130,9 +130,8 @@ reader0 pos text pState = do
 
 
 chooseParser :: State FState -> IO ([ProofText], State FState)
-chooseParser st = case parserKind st of
-  Tex -> launchParser texForthel st
-  Ftl -> launchParser forthel st
+chooseParser st = let dialect = parserKind st in
+  launchParser (forthel dialect) st
 
 -- Launch a parser in the IO monad.
 launchParser :: Parser st a -> State st -> IO (a, State st)

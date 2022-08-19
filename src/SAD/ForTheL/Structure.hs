@@ -6,11 +6,10 @@ Maintainer  : Andrei Paskevich (2001 - 2008),
 Syntax of ForTheL sections.
 -}
 
-{-# LANGUAGE TupleSections #-}
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.ForTheL.Structure (forthel, texForthel) where
+module SAD.ForTheL.Structure (forthel) where
 
 import Data.List
 import Data.Maybe
@@ -44,148 +43,132 @@ import SAD.Data.Text.Decl
 
 -- * Parsing a ForTheL text
 
--- ** FTL
-
--- | Parse a @.ftl@ document.
-forthel :: FTL [ProofText]
-forthel = repeatUntil (pure <$> ftlTopLevelBlock)
+-- | Parse a @.ftl@ or @.ftl.tex@ document:
+-- @{<topLevelBlock>} (<exitInstructin> | <EOF>)@
+forthel :: ParserKind -> FTL [ProofText]
+forthel dialect = repeatUntil (pure <$> topLevelBlock dialect)
   (try (bracketExpression >>= exitInstruction) <|> (eof >> return []))
 
--- | Parse a top-level block (FTL).
-ftlTopLevelBlock :: FTL ProofText
-ftlTopLevelBlock =
-      ftlTopLevelSection
+-- | Parse a top-level block:
+-- @<topLevelSection> | <instruction> | <macro> | <pretyping>@
+topLevelBlock :: ParserKind -> FTL ProofText
+topLevelBlock dialect =
+      topLevelSection dialect
   <|> (bracketExpression >>= addSynonym)
   <|> try introduceMacro
   <|> pretypeVariable
 
-
--- ** TEX
-
--- | Parse the content of a @forthel@ environment in a @.ftl.tex@ document.
-texForthel :: FTL [ProofText]
-texForthel = repeatUntil (pure <$> texTopLevelBlock)
-  (try (bracketExpression >>= exitInstruction) <|> (eof >> return []))
-
--- | Parse a top-level block (TEX).
-texTopLevelBlock :: FTL ProofText
-texTopLevelBlock =
-      texTopLevelSection
-  <|> (bracketExpression >>= addSynonym)
-  <|> try introduceMacro
-  <|> pretypeVariable
+-- | Parse a top-level section:
+-- @<signature> | <definition> | <axiom> | <theorem>@
+topLevelSection :: ParserKind -> FTL ProofText
+topLevelSection dialect =
+      signature dialect
+  <|> definition dialect
+  <|> axiom dialect
+  <|> theorem dialect
 
 
 -- * Top-level sections
 
--- ** FTL
-
--- | Parse a top-level section (FTL).
-ftlTopLevelSection :: FTL ProofText
-ftlTopLevelSection =
-      ftlSignature
-  <|> ftlDefinition
-  <|> ftlAxiom
-  <|> ftlTheorem
-
--- | Parse a signature (FTL).
-ftlSignature :: FTL ProofText
-ftlSignature = addMetadata Signature $ do
+-- | Parse a signature:
+--
+-- FTL:
+-- @"signature" [<identifier>] "." <signatureBody>@
+--
+-- TEX:
+-- @"\\begin" "{" "signature" "}" ["[" <name> "]"] [<label>] <signatureBody>
+-- "\\end" "{" "signature" "}"@
+signature :: ParserKind -> FTL ProofText
+signature Ftl = do
   keyword <- markupToken sectionHeader "signature"
   label <- optLL1 Nothing (Just <$> identifier)
   dot
-  body <- signatureBody
-  return (body, label)
-
--- | Parse a definition (FTL).
-ftlDefinition :: FTL ProofText
-ftlDefinition = addMetadata Definition $ do
-  keyword <- markupToken sectionHeader "definition"
-  label <- optLL1 Nothing (Just <$> identifier)
-  dot
-  body <- definitionBody
-  return (body, label)
-
--- | Parse an axiom (FTL).
-ftlAxiom :: FTL ProofText
-ftlAxiom = addMetadata Axiom $ do
-  keyword <- markupToken sectionHeader "axiom"
-  label <- optLL1 Nothing (Just <$> identifier)
-  dot
-  body <- axiomBody
-  return (body, label)
-
--- | Parse a theorem together with an optional proof (FTL).
-ftlTheorem :: FTL ProofText
-ftlTheorem = addMetadata Theorem $ do
-  keyword <- markupTokenOf sectionHeader ["theorem", "proposition", "lemma", "corollary"]
-  label <- optLL1 Nothing (Just <$> identifier)
-  dot
-  body <- theoremBody
-  return (body, label)
-
-
--- ** TEX
-
--- | Parse a top-level section (TEX).
-texTopLevelSection :: FTL ProofText
-texTopLevelSection =
-      texSignature
-  <|> texDefinition
-  <|> texAxiom
-  <|> texTheorem
-
--- | Parse a signature (TEX).
-texSignature :: FTL ProofText
-texSignature = addMetadata Signature $ do
+  content <- signatureBody
+  addMetadata Signature content label
+signature Tex = do
   keyword <- try . texBegin $ getMarkupToken sectionHeader "signature"
   label <- optionalEnvLabel
   content <- signatureBody
   texEnd (markupToken sectionHeader keyword)
-  return (content, label)
+  addMetadata Signature content label
 
--- | Parse a definition (TEX).
-texDefinition :: FTL ProofText
-texDefinition = addMetadata Definition $ do
+-- | Parse a signature:
+--
+-- FTL:
+-- @"definition" [<identifier>] "." <definitionBody>@
+--
+-- TEX:
+-- @"\\begin" "{" "definition" "}" ["[" <name> "]"] [<label>] <definitionBody>
+-- "\\end" "{" "definition" "}"@
+definition :: ParserKind -> FTL ProofText
+definition Ftl = do
+  keyword <- markupToken sectionHeader "definition"
+  label <- optLL1 Nothing (Just <$> identifier)
+  dot
+  content <- definitionBody
+  addMetadata Definition content label
+definition Tex = do
   keyword <- try . texBegin $ getMarkupToken sectionHeader "definition"
   label <- optionalEnvLabel
   content <- definitionBody
   texEnd (markupToken sectionHeader keyword)
-  return (content, label)
+  addMetadata Definition content label
 
--- | Parse an axiom (TEX).
-texAxiom :: FTL ProofText
-texAxiom = addMetadata Axiom $ do
+-- | Parse a signature:
+--
+-- FTL:
+-- @"axiom" [<identifier>] "." <axiomBody>@
+--
+-- TEX:
+-- @"\\begin" "{" "axiom" "}" ["[" <name> "]"] [<label>] <axiomBody>
+-- "\\end" "{" "axiom" "}"@
+axiom :: ParserKind -> FTL ProofText
+axiom Ftl = do
+  keyword <- markupToken sectionHeader "axiom"
+  label <- optLL1 Nothing (Just <$> identifier)
+  dot
+  content <- axiomBody
+  addMetadata Axiom content label
+axiom Tex = do
   keyword <- try . texBegin $ getMarkupToken sectionHeader "axiom"
   label <- optionalEnvLabel
   content <- axiomBody
   texEnd (markupToken sectionHeader keyword)
-  return (content, label)
+  addMetadata Axiom content label
 
--- | Parse a theorem together with an optional proof (TEX).
-texTheorem :: FTL ProofText
-texTheorem = addMetadata Theorem $ do
+-- | Parse a signature:
+--
+-- FTL:
+-- @("theorem" | "proposition" | "lemma" | "corollary") [<identifier>] "."
+-- <theoremBody>@
+--
+-- TEX:
+-- @...@
+theorem :: ParserKind -> FTL ProofText
+theorem Ftl = do
+  keyword <- markupTokenOf sectionHeader ["theorem", "proposition", "lemma", "corollary"]
+  label <- optLL1 Nothing (Just <$> identifier)
+  dot
+  content <- theoremBody
+  addMetadata Theorem content label
+theorem Tex = do
   keyword <- try . texBegin $ getMarkupTokenOf sectionHeader ["theorem", "lemma", "corollary", "proposition"]
   label <- optionalEnvLabel
   content <- addAssumptions . texTopLevelProof $
-            pretypeSentence Affirmation (affirmationHeader >> statement) affirmVars finishWithOptLink <* texEnd (markupToken sectionHeader keyword)
-  return (content, label)
+             pretypeSentence Affirmation (affirmationHeader >> statement) affirmVars finishWithOptLink <* texEnd (markupToken sectionHeader keyword)
+  addMetadata Theorem content label
 
-
--- ** Adding meta data
-
--- | This is the last step when creating a proof text from a topsection. We take
--- some metadata and moreover read some metadata from the state and use it to
--- make a `ProofText` out of a parser that returns @ProofText@s and optional
--- label information.
-addMetadata :: Section -> FTL ([ProofText], Maybe Text) -> FTL ProofText
-addMetadata kind content = do
+-- | This is the last step when creating a proof text from a top-level section.
+-- We take some metadata and moreover read some metadata from the state and use
+-- it to make a 'ProofText' out of the content and (optional) label of a
+-- top-level section.
+addMetadata :: Section -> [ProofText] -> Maybe Text -> FTL ProofText
+addMetadata kind content optLabel = do
   input <- getInput
-  (content', label) <- content
   tokens <- getTokens input
   -- If there is no label, represent it by an empty string
-  let label' = fromMaybe "" label
-  let block = Block.makeBlock (mkVar (VarHole "")) content' kind label' [] tokens
+  let label = fromMaybe "" optLabel
+  let block = Block.makeBlock (mkVar (VarHole "")) content kind label [] tokens
   addBlockReports block
   return $ ProofTextBlock block
 
