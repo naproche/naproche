@@ -4,8 +4,6 @@
 \RequirePackage{amsthm}
 \RequirePackage{amsfonts}
 \RequirePackage{etoolbox}
-\RequirePackage{braket}     % \Set
-\RequirePackage{linegoal}   % \linegoal
 \RequirePackage{xspace}     % \xspace
 \RequirePackage{xcolor}     % lightgray
 \RequirePackage{mdframed}   % \begin{mdframed} ... \end{mdframed}
@@ -79,17 +77,30 @@
 }
 
 
-% Flexible class terms
-% ====================
+% Comprehension terms
+% ===================
 
-% Use "\class{ ... | ... }" the same way as "\Set{ ... | ... }" from the braket
-% package, i.e. as an alternative to "\{ ... \mid ... \}" with additional
-% support for flexible sizes of the braces and the vertical bar.
-\def\class{\Set}
+\RequirePackage{linegoal}
 
-% Let "\classtext{...}" behave as "\text{...}" but with automatic linebreaks.
-% Intended to be used together with "\class{ ... | ... }" as in
-% "\class{ ... | \classtext{...}}".
+% Gets the left-hand and right-hand side, resp., of an expression of the form
+% "foo|bar"
+\def\getfirst#1|#2\relax{#1}
+\def\getsecond#1|#2\relax{#2}
+
+% Comprehension term: "\class{... | ...}".
+% Naproche allows to enclose the RHS within "\text{...}", e.g.
+% "\class{x | \text{$x$ is greater than $y$}}".
+% Use "\classtext{...}" instead of "\text{...}" to enable automatic line breaks
+% in the RHS.
+\newcommand{\class}[1]{%
+  \left\{%
+  \getfirst#1\relax%
+  ~\middle\vert~%
+  \linebreak[1]%
+  \getsecond#1\relax%
+  \right\}%
+}
+
 \newcommand{\classtext}[1]{\parbox{\linegoal}{#1}}
 
 
