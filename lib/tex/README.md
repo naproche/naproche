@@ -79,24 +79,25 @@ instead.
 
 * Content within the `forthel` environment is marked with a grey background.
 
-* Top-level environments for `axiom`, `definition`, `theorem`, `proposition`,        
-  `lemma`, `corollary`, `signature` and `proof`.
+* Top-level environments for `axiom`, `definition`, `theorem`,
+  `proposition`, `lemma`, `corollary`, `signature` and `proof`.
 
 * A length `ftlparskip` with which the space between paragraphs in proofs within
   `forthel` environments can be controlled (default: 0.5em).
+  Can be changed via `\setlength{\ftlparskip}{<new length>}`.
 
-* An alternative way for writing class terms: `\class{... | ...}` behaves like
-  `\{... \mid ...\}` but with additional support for flexible sizes of the
-  braces and the vertical bar.
+* Alternative syntax for comprehension terms:
+  `\class{... | ...}` behaves like `\{... \mid ...\}` with additional support
+  for flexible sizes of the braces and the vertical bar.
 
-* `\classtext{...}` as an alternative for `\text{...}`. Can be used within
-  `\classtext{... | ...}` to achieve automatic line breaks within a class term.
+* `\classtext{...}` as an alternative for `\text{...}`. Can be used (in
+  display math mode) in the RHS of `\class{... | ...}` to achieve automatic
+  line breaks within a comprehension term.
 
 * Predefined symbols:
 
   * `\dom` for the domain of a map
   * `\fun` for lambda abstraction in low-level map definitions
-
 
 * `\Naproche`: The word "Naproche" with a 'blackbord N'
 
@@ -114,7 +115,6 @@ Options can be enabled in the following form.
 | `nonumbers`               | Turn off numbering for theorem-like environments.
 | `numberswithinsection`    | Reset theorem numbers for each section.
 | `numberswithinsubsection` | Reset theorem numbers for each subsection.
-| `noquoteworkaround`       | Sometimes the quote workaround breaks other packages. Changing the load order of the packages might suffice, but the workaround can also be disabled with this option.
 
 
 ### Compilation errors
@@ -126,14 +126,13 @@ the document a second time.
 
 ## "basic-notions"
 
-`basic-notions` is used by Naproche's example formalizations of arithmetic
-and set theory and provides just some new commands for printing mathematical
-symbols and an alternative environment style for top-level sections and proofs.
+Required by Naproche's set theory and arithmetic libraries and by any
+formalizations based on then.
 
 
 ## "naproche-puzzle"
 
-...
+Used by the puzzles `agatha` and `dwarves` in the Naproche examples.
 
 
 

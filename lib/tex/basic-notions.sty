@@ -4,8 +4,38 @@
 \RequirePackage{amssymb}
 \RequirePackage{amsmath}
 
-% Enumerative set notation, e.g. `\set{1, 2, 3, 4}` prints the numbers 1, 2, 3
-% and 4 as a comma-separated list which is enclosed within curly braces.
+
+% Operations and relations
+% ------------------------
+
+\let\succ\relax
+\let\exp\relax
+
+\DeclareMathOperator{\cucc}{succ}
+\DeclareMathOperator{\pred}{pred}
+\DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\range}{range}
+\DeclareMathOperator{\add}{add}
+\DeclareMathOperator{\mul}{mul}
+\DeclareMathOperator{\exp}{exp}
+\DeclareMathOperator{\fac}{fac}
+
+\newcommand{\symdiff}{\mathop{\triangle}}
+\newcommand{\pow}{\mathcal{P}}
+\renewcommand{\div}{\mathop{\operatorname{div}}}
+\renewcommand{\mod}{\mathop{\operatorname{mod}}}
+\newcommand{\onto}{\twoheadrightarrow}
+\newcommand{\into}{\hookrightarrow}
+\newcommand{\Ord}{\mathrm{Ord}}
+\newcommand{\Field}{\mathrm{Field}}
+
+\newcommand{\const}[2]{\mbox{const}_{#1,#2}}
+
+
+% Enumerative set notation
+
+% E.g. `\set{1, 2, 3, 4}` prints the numbers 1, 2, 3 and 4 as a comma-separated
+% list which is enclosed within curly braces.
 \def\set#1{%
   \ensuremath{%
     \{%
@@ -16,55 +46,3 @@
     \}
   }%
 }
-
-\newcommand{\onto}{\twoheadrightarrow}
-\newcommand{\into}{\hookrightarrow}
-
-\DeclareMathOperator{\id}{id}
-\DeclareMathOperator{\range}{range}
-\DeclareMathOperator{\pred}{pred}
-\let\succ\relax\DeclareMathOperator{\succ}{succ}
-
-\newcommand{\symdiff}{\mathop{\triangle}}
-\newcommand{\pow}{\mathcal{P}}
-\newcommand{\const}[2]{\mbox{const}_{#1,#2}}
-\renewcommand{\div}{\mathop{\operatorname{div}}}
-\renewcommand{\mod}{\mathop{\operatorname{mod}}}
-
-
-% New style for top-level sections
-
-\newtheoremstyle{basicnotions}% name of the style to be used
-    {4pt}% measure of space to leave above the theorem. E.g.: 3pt
-    {4pt}% measure of space to leave below the theorem. E.g.: 3pt
-    {\normalfont} % name of font to use in the body of the theorem
-    {0pt}% measure of space to indent
-    {\bfseries}% name of head font
-    {}% punctuation between head and body
-    { }% space after theorem head; " " = normal inter-word space
-    {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}.}
-
-\let\definition\relax
-\let\enddefinition\relax
-\let\signature\relax
-\let\endsignature\relax
-\let\axiom\relax
-\let\endaxiom\relax
-\let\theorem\relax
-\let\endtheorem\relax
-\let\proposition\relax
-\let\endproposition\relax
-\let\lemma\relax
-\let\endlemma\relax
-\let\corollary\relax
-\let\endcorollary\relax
-
-\theoremstyle{basicnotions}
-
-\newtheorem{definition}{Definition}[section]
-\newtheorem{signature}[definition]{Signature}
-\newtheorem{axiom}[definition]{Axiom}
-\newtheorem{theorem}[definition]{Theorem}
-\newtheorem{proposition}[definition]{Proposition}
-\newtheorem{lemma}[definition]{Lemma}
-\newtheorem{corollary}[definition]{Corollary}
