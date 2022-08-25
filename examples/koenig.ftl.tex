@@ -12,7 +12,6 @@
 University of Bonn}
 \date{2018 - 2021}
 
-\newcommand{\card}[1]{\operatorname{card}(#1)}
 \newcommand{\SumSet}[2]{\bigsqcup_{i \in #2} #1_{i}}
 \newcommand{\Sum}[2]{\sum_{i \in #2} #1_{i}}
 \newcommand{\ProdSet}[2]{\bigtimes_{i \in #2} #1_{i}}
@@ -23,18 +22,14 @@ University of Bonn}
 
 \maketitle
 
-König's Theorem is an important set-theoretical result about the arithmetic of
-cardinals.
-It was proved by Julius König in 1905 (König, Julius: Zum Kontinuumsproblem,
-Mathematische Annalen 60 (1905), 177–180).
-The proof is reminiscent of Cantor's diagonal argument for proving that $\kappa
-< 2^\kappa$.
+\noindent König's Theorem is an important set-theoretical result about the
+arithmetic of cardinals.
+It was proved by Julius König in 1905 \cite[p. 177--180]{Koenig1905}.
+The proof is reminiscent of Cantor's diagonal argument for proving that
+$\kappa < 2^\kappa$.
 
-The formalization begins with a minimal axiomatic setup on sets, functions and
-cardinals, sufficient for the proof of the theorem.
-
-On an older laptop with an Intel Pentium N3710 processor \Naproche takes around
-35 seconds to check this text.
+The formalization begins with a minimal axiomatic setup on cardinals,
+sufficient for the proof of the theorem.
 
 
 \section{ForTheL Setup}
@@ -56,36 +51,36 @@ On an older laptop with an Intel Pentium N3710 processor \Naproche takes around
     A cardinal is a set.
   \end{signature}
 
-  Let $A, B, C$ denote cardinals.
+  Let $\kappa, \lambda, \mu$ denote cardinals.
 
   \begin{signature}
-    $A < B$ is a relation.
+    $\kappa < \lambda$ is an atom.
   \end{signature}
 
-  Let $A$ is less than $B$ stand for $A < B$.
-  Let $A \leq B$ stand for $A = B$ or $A < B$.
+  Let $\kappa$ is less than $\lambda$ stand for $\kappa < \lambda$.
+  Let $\kappa \leq \lambda$ stand for $\kappa = \lambda$ or $\kappa < \lambda$.
 
   \begin{axiom}
-    $A < B < C \implies A < C$.
+    If $\kappa < \lambda < \mu$ then $\kappa < \mu$.
   \end{axiom}
 
   \begin{axiom}
-    $A < B$ or $B < A$ or $B = A$.
+    $\kappa < \lambda$ or $\lambda < \kappa$ or $\kappa = \lambda$.
   \end{axiom}
 
   \begin{signature}
     The cardinality of $M$ is a cardinal.
   \end{signature}
 
-  Let $\card{M}$ denote the cardinality of $M$.
+  Let $|M|$ denote the cardinality of $M$.
 
   \begin{axiom}
-    $\card{A} = A$.
+    $|\kappa| = \kappa$.
   \end{axiom}
 
   \begin{axiom}
     Assume $M$ is a subset of $\dom(f)$.
-    $\card{f[M]} \leq \card{M}$.
+    $|f[M]| \leq |M|$.
   \end{axiom}
 
   \begin{axiom}
@@ -94,7 +89,7 @@ On an older laptop with an Intel Pentium N3710 processor \Naproche takes around
   \end{axiom}
 
   \begin{axiom}
-    Assume $\card{M} \leq \card{N}$.
+    Assume $|M| \leq |N|$.
     Assume $M$ has an element.
     There exists a function $f$ such that $N$ is the domain of $f$ and $M$ is
     the image of $f$.
@@ -126,7 +121,7 @@ On an older laptop with an Intel Pentium N3710 processor \Naproche takes around
 
   \begin{definition}
     Let $\kappa$ be a sequence of cardinals on $D$.
-    $\Sum{\kappa}{D} = \card{\SumSet{\kappa}{D}}$.
+    \[ \Sum{\kappa}{D} = \left| \SumSet{\kappa}{D} \right|. \]
   \end{definition}
 
   \begin{definition}
@@ -143,14 +138,13 @@ On an older laptop with an Intel Pentium N3710 processor \Naproche takes around
 
   \begin{definition}
     Let $\kappa$ be a sequence of cardinals on $D$.
-    $\Prod{\kappa}{D} = \card{\ProdSet{\kappa}{D}}$.
+    \[ \Prod{\kappa}{D} = \left| \ProdSet{\kappa}{D} \right|. \]
   \end{definition}
 \end{forthel}
 
 König's Theorem requires some form of the axiom of choice.
 Currently choice is built into Naproche by the \emph{choose} construct in
 function definitions.
-
 The axiom of choice is also required to show that products of non-empty factors
 are themselves non-empty:
 
@@ -171,7 +165,7 @@ are themselves non-empty:
 \section{König's theorem}
 
 \begin{forthel}
-  \begin{theorem}
+  \begin{theorem}[König]\label{koenig}
     Let $\kappa, \lambda$ be sequences of cardinals on $D$.
     Assume that for every element $i$ of $D$ $\kappa_{i} < \lambda_{i}$.
     Then \[ \Sum{\kappa}{D} < \Prod{\lambda}{D}. \]
@@ -193,7 +187,7 @@ are themselves non-empty:
     $d\in \lambda_{i}$.
     For every element $i$ of $D$ $\Delta(i)$ is a set.
 
-    For every element $i$ of $D$ $\card{\Delta(i)} < \lambda_{i}$. \\
+    For every element $i$ of $D$ we have $|\Delta(i)| < \lambda_{i}$. \\
     Proof.
       Let $i$ be an element of $D$.
       Define $F(n) = G(n,i)(i)$ for $n$ in $\kappa_{i}$.
@@ -210,5 +204,11 @@ are themselves non-empty:
     Contradiction.
   \end{proof}
 \end{forthel}
+
+\begin{thebibliography}{1}
+  \bibitem{Koenig1905} Julius König,
+  \textit{Zum Kontinuumsproblem};
+  Mathematische Annalen 60 (1905)
+\end{thebibliography}
 
 \end{document}

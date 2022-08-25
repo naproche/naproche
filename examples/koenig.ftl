@@ -11,34 +11,34 @@ Let f denote a function.
 
 Signature. A cardinal is a set.
 
-Let A, B, C denote cardinals.
+Let kappa, lambda, mu denote cardinals.
 
-Signature. A < B is an atom.
+Signature. kappa < lambda is an atom.
 
-Let A \leq B stand for A = B or A < B.
+Let k \leq l stand for k = l or k < l.
 
-Axiom. A < B < C => A < C.
+Axiom. If kappa < lambda < mu then kappa < mu.
 
-Axiom. A < B or B < A or B = A.
+Axiom. kappa < lambda or lambda < kappa or kappa = lambda.
 
-Let A is less than B stand for A < B.
+Let k is less than l stand for k < l.
 
 Signature. The cardinality of M is a cardinal.
 
-Let card(M) denote the cardinality of M.
+Let |M| denote the cardinality of M.
 
 Axiom. Assume M is a subset of Dom(f).
-card(f[M]) \leq card(M).
+|f[M]| \leq |M|.
 
 Axiom. Assume the cardinality of N is less than the cardinality of M.
 Then M \ N has an element.
 
-Axiom. Assume card(M) \leq card(N).
+Axiom. Assume |M| \leq |N|.
 Assume M has an element.
 There exists a function f such that N is the domain of f and M is the image of
 f.
 
-Axiom. card(A) = A.
+Axiom. |kappa| = kappa.
 
 
 ### Product and Sum of cardinals
@@ -56,7 +56,7 @@ Axiom. Let kappa be a sequence of cardinals on D.
 Then SumSet(kappa,D) is a set.
 
 Definition. Let kappa be a sequence of cardinals on D.
-Sum(kappa,D) = card(SumSet(kappa,D)).
+Sum(kappa,D) = |SumSet(kappa,D)|.
 
 Definition. Let kappa be a sequence of cardinals on D.
 ProdSet(kappa,D) = {f | f is a function and Dom(f) = D  and f(i) is an element
@@ -66,7 +66,7 @@ Axiom. Let kappa be a sequence of cardinals on D.
 Then ProdSet(kappa,D) is a set.
 
 Definition. Let kappa be a sequence of cardinals on D.
-Prod(kappa,D) = card(ProdSet(kappa,D)).
+Prod(kappa,D) = |ProdSet(kappa,D)|.
 
 Lemma Choice. Let lambda be a sequence of cardinals on D.
 Assume that lambda(i) has an element for every element i of D.
@@ -100,7 +100,7 @@ Proof by contradiction.
   lambda(i).
   For every element i of D Diag(i) is a set.
 
-  For every element i of D card(Diag(i)) < lambda(i).
+  For every element i of D we have |Diag(i)| < lambda(i).
   Proof.
     Let i be an element of D.
     Define F(n) = G((n,i))(i) for n in kappa(i).
