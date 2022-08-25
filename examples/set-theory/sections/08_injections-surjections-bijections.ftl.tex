@@ -1,0 +1,221 @@
+\documentclass[../set-theory.tex]{subfiles}
+
+\begin{document}
+  \chapter{Surjections, injections and bijections}
+
+  \readftl{set-theory/sections/08_injections-surjections-bijections.ftl.tex}
+
+  \begin{forthel}
+    %[prove off][check off]
+
+    [readtex \path{set-theory/sections/06_maps.ftl.tex}]
+
+    %[prove on][check on]
+  \end{forthel}
+
+
+  \section{Surjective maps}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_08_8681187805495296}
+      Let $B$ be a class.
+      A map onto $B$ is a map $f$ such that $\range(f) = B$.
+    \end{definition}
+
+    Let $f$ surjects onto $B$ stand for $\range(f) = B$.
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_08_4611935769198592}
+      Let $A, B$ be classes.
+      A map from $A$ onto $B$ is a map from $A$ that is a map onto $B$.
+    \end{definition}
+
+    Let $f: A \onto B$ stand for $f$ is a map from $A$ onto $B$.
+    Let $f$ maps $A$ onto $B$ stand for $f$ is a map from $A$ onto $B$.
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_08_1974205941809152}
+      Let $B$ be a class and $f$ be a map to $B$.
+      $f$ is a map onto $B$ iff every element of $B$ is a value of $f$.
+    \end{proposition}
+    \begin{proof}
+      Case $f$ is a map onto $B$.
+        Then $B = \range(f)$.
+        Let $b$ be an element of $B$.
+        Then $b \in \range(f)$.
+        Hence $b$ is a value of $f$.
+      End.
+
+      Case every element of $B$ is a value of $f$.
+        Let us show that $B \subseteq \range(f)$.
+          Let $b \in B$.
+          Then $b$ is a value of $f$.
+          Hence $b \in \range(f)$.
+        End.
+
+        Let us show that $\range(f) \subseteq B$.
+          Let $b \in \range(f)$.
+          Then $b$ is a value of $f$.
+          Hence $b \in B$.
+        End.
+      End.
+    \end{proof}
+  \end{forthel}
+
+
+  \section{Injective maps}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_08_605931408719872}
+      Let $f$ be a map.
+      $f$ is injective iff for all $a, a' \in \dom(f)$ if $f(a) = f(a')$ then $a = a'$.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_08_7264375979114496}
+      Let $B$ be a class.
+      A map into $B$ is an injective map to $B$.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_08_5754157419986944}
+      Let $A, B$ be classes.
+      A map from $A$ into $B$ is a map from $A$ that is a map into $B$.
+    \end{definition}
+
+    Let $f: A \into B$ stand for $f$ is a map from $A$ into $B$.
+    Let $f$ maps $A$ into $B$ stand for $f$ is a map from $A$ into $B$.
+  \end{forthel}
+
+
+  \section{Bijective maps}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_08_3356670992318464}
+      Let $A, B$ be classes.
+      A bijection between $A$ and $B$ is an injective map from $A$ onto $B$.
+    \end{definition}
+
+    Let a bijection from $A$ to $B$ stand for a bijection between $A$ and $B$.
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_08_60881194975232}
+      Let $A, B$ be classes and $f : A \into B$.
+      Then $f$ is a bijection between $A$ and $\range(f)$.
+    \end{proposition}
+    \begin{proof}
+      $f$ is injective and $f$ is a map from $A$ onto $\range(f)$.
+      Hence $f$ is a bijection between $A$ and $\range(f)$.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_08_8188451318923264}
+      Let $A$ be a class.
+      A permutation of $A$ is a bijection between $A$ and $A$.
+    \end{definition}
+  \end{forthel}
+
+
+  \section{Some basic facts}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_08_7883784041005056}
+      Let $A$ be a class.
+      Then $\id_{A}$ is a permutation of $A$.
+    \end{proposition}
+    \begin{proof}
+      (1) $\id_{A}$ is a map on $A$.
+
+      (2) $\id_{A}$ is a map onto $A$. \\
+      Proof.
+        Let $a \in A$.
+        Then $a = \id_{A}(a)$.
+        Hence $a \in \range(\id_{A})$.
+      Qed.
+
+      (3) $\id_{A}$ is a map into $A$. \\
+      Proof.
+        Let $a, a' \in A$.
+        Assume $\id_{A}(a) = \id_{A}(a')$.
+        Then $a = a'$.
+      Qed.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_08_8542698338254848}
+      Let $A, B, C$ be classes and $f : A \onto B$ and $g : B \onto C$.
+      Then $g \circ f$ is a map from $A$ onto $C$.
+    \end{proposition}
+    \begin{proof}
+      $g \circ f$ is a map from $A$.
+
+      Let us show that $g \circ f$ is a map onto $C$.
+        Let $c \in C$.
+        Take $b \in B$ such that $c = g(b)$.
+        Take $a \in A$ such that $b = f(a)$.
+        Then $c = g(f(a)) = (g \circ f)(a)$.
+      End.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_08_3367836856614912}
+      Let $A, B, C$ be classes and $f : A \into B$ and $g : B \into C$.
+      Then $g \circ f$ is a map from $A$ into $C$.
+    \end{proposition}
+    \begin{proof}
+      $g \circ f$ is a map from $A$.
+
+      Let us show that $g \circ f$ is injective.
+        Let $a, a' \in A$.
+        Assume $(g \circ f)(a) = (g \circ f)(a')$.
+        Then $g(f(a)) = g(f(a'))$.
+        Hence $f(a) = f(a')$.
+        Indeed $f(a), f(a') \in B$.
+        Thus $a = a'$.
+      End.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{corollary}\label{SET_THEORY_08_6435206693126144}
+      Let $A, B, C$ be classes.
+      Let $f$ be a bijection between $A$ and $B$ and $g$ be a bijection between $B$ and $C$.
+      Then $g \circ f$ is a bijection between $A$ and $C$.
+    \end{corollary}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_08_2621531811217408}
+      Let $A, B$ be classes and $f : A \into B$ and $X \subseteq A$.
+      Then $f \restriction_{X}$ is injective.
+    \end{proposition}
+    \begin{proof}
+      Let $a, a' \in X$.
+      Assume $(f \restriction_{X})(a) = (f \restriction_{X})(a')$.
+      Then $f(a) = f(a')$.
+      Hence $a = a'$.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_08_647446231252992}
+      Let $A, B$ be classes and $f : A \into B$ and $X \subseteq A$.
+      Then $f \restriction_{X}$ is a bijection between $X$ and $f_{*}(X)$.
+    \end{proposition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{corollary}\label{SET_THEORY_08_8159443759923200}
+      Let $A, B$ be classes and $f : A \into B$.
+      Then $f$ is a bijection between $A$ and $f_{*}(A)$.
+    \end{corollary}
+  \end{forthel}
+\end{document}

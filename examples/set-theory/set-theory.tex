@@ -1,78 +1,41 @@
-\documentclass{article}
+\documentclass[12pt,oneside]{book}
 
-\usepackage[english]{babel}
-\usepackage{amssymb}
-\usepackage{xurl}
-\usepackage{hyperref}
-\usepackage{subfiles}
-\usepackage{csquotes}
-\usepackage{comment}
 \usepackage{../../lib/tex/naproche}
+\usepackage{../../lib/tex/libraries}
 \usepackage{../../lib/tex/basic-notions}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
 
-\hypersetup{
-  colorlinks=true,
-  linkcolor=blue,
-  urlcolor=blue
-}
 
-\title{Set Theory}
+\title{Set theory}
 \author{Marcel Schütz}
-\date{2021}
+\date{2022}
 
 \begin{document}
   \maketitle
 
-  \begin{abstract}
-    This is a formalization of some ZF-like set theory.
-    It introduces the common operations on sets like unions, intersections,
-    complements, powersets, symmetric differences and Cartesian products and
-    presents detailled proofs of their algebraic properties.
-    Moreover, basic notions concerning functions like images, preimages and
-    invertibility are provided, again with detailed proofs of their computation
-    laws, up to the definition of equipollency.
-
-    It can either be regarded as an independent collection of contents from
-    basic undergraduate mathematics or serve as the basis for more
-    sophisticated formalizations.
-  \end{abstract}
-
   \tableofcontents
 
-  \newpage
-  \part{Sets}
+  \begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[scale=0.22]{./dependency-graph/graph.png}}
+    \caption*{Interdependencies of the chapters}
+  \end{figure}
 
-  \subfile{sections/01_sets/01_sets.ftl.tex}
-
-  \subfile{sections/01_sets/02_powerset.ftl.tex}
-
-  \subfile{sections/01_sets/03_regularity.ftl.tex}
-
-  \subfile{sections/01_sets/04_symmetric-difference.ftl.tex}
-
-  \subfile{sections/01_sets/05_ordered-pairs.ftl.tex}
-
-  \subfile{sections/01_sets/06_cartesian-product.ftl.tex}
-
-
-  \newpage
-  \part{Functions}
-
-  \subfile{sections/02_functions/01_functions.ftl.tex}
-
-  \subfile{sections/02_functions/02_image-and-preimage.ftl.tex}
-
-  \subfile{sections/02_functions/03_invertible-functions.ftl.tex}
-
-  \subfile{sections/02_functions/04_functions-and-symmetric-difference.ftl.tex}
-
-  \subfile{sections/02_functions/05_functions-and-set-systems.ftl.tex}
-
-  \subfile{sections/02_functions/06_equipollency.ftl.tex}
-
-
-  \newpage
-  \part{Cardinalities}
-
-  \subfile{sections/03_cardinalities/01_finite-and-infinite-sets.ftl.tex}
+  \subfile{sections/01_classes.ftl.tex}
+  \subfile{sections/02_computation-laws-for-classes.ftl.tex}
+  \subfile{sections/03_symmetric-difference.ftl.tex}
+  \subfile{sections/04_pairs-and-products.ftl.tex}
+  \subfile{sections/05_computation-laws-for-products.ftl.tex}
+  \subfile{sections/06_maps.ftl.tex}
+  \subfile{sections/07_image-and-preimage.ftl.tex}
+  \subfile{sections/08_injections-surjections-bijections.ftl.tex}
+  \subfile{sections/09_invertible-maps.ftl.tex}
+  \subfile{sections/10_sets.ftl.tex}
+  \subfile{sections/11_binary-relations.ftl.tex}
+  \subfile{sections/12_fixed-points.ftl.tex}
+  \subfile{sections/13_equinumerosity.ftl.tex}
+  \subfile{sections/14_transitive-classes.ftl.tex}
+  \subfile{sections/15_ordinals.ftl.tex}
 \end{document}

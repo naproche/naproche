@@ -130,6 +130,13 @@ Required by Naproche's set theory and arithmetic libraries and by any
 formalizations based on then.
 
 
+## "libraries"
+
+`libraries` is used by Naproche's set theory and arithmetic libraries to
+provide a document layout that is rather suitable for libraries than for
+stand-alone files.
+
+
 ## "naproche-puzzle"
 
 Used by the puzzles `agatha` and `dwarves` in the Naproche examples.

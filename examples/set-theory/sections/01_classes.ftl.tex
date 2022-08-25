@@ -1,0 +1,228 @@
+\documentclass[../set-theory.tex]{subfiles}
+
+\begin{document}
+  \chapter{Classes}
+
+  \readftl{set-theory/sections/01_classes.ftl.tex}
+
+
+  \section{Preliminaries}
+
+  \begin{forthel}
+    [readtex \path{axioms.ftl.tex}]
+
+    [readtex \path{macros.ftl.tex}]
+
+    [readtex \path{vocabulary.ftl.tex}]
+  \end{forthel}
+
+
+  \section{Sub- and superclasses}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_01_3275578358628352}
+      Let $A$ be a class.
+      A subclass of $A$ is a class $B$ such that every element of $B$ is an element of $A$.
+    \end{definition}
+
+    Let $B \subseteq A$ stand for $B$ is a subclass of $A$.
+    Let $B \subset A$ stand for $B \subseteq A$.
+
+    Let a superclass of $B$ stand for a class $A$ such that $B \subseteq A$.
+    Let $B \supseteq A$ stand for $B$ is a superclass of $A$.
+    Let $B \supset A$ stand for $B \subseteq A$.
+
+    Let a proper subclass of $A$ stand for a subclass $B$ of $A$ such that $B \neq A$.
+    Let $B \subsetneq A$ stand for $B$ is a proper subclass of $A$.
+
+    Let a proper superclass of $B$ stand for a superclass $A$ of $B$ such that $A \neq B$.
+    Let $B \supsetneq A$ stand for $B$ is a proper superclass of $A$.
+
+    Let $A$ includes $B$ stand for $B \subseteq A$.
+    Let $B$ is included in $A$ stand for $B \subseteq A$.
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_01_5994555614691328}
+      Let $A$ be a class.
+      Then \[ A \subseteq A. \]
+    \end{proposition}
+    \begin{proof}
+      Every element of $A$ is contained in $A$.
+      Therefore $A \subseteq A$.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_01_3939677545431040}
+      Let $A, B, C$ be classes.
+      Then \[ (\text{$A \subseteq B$ and $B \subseteq C$}) \implies
+      A \subseteq C. \]
+    \end{proposition}
+    \begin{proof}
+      Assume $A \subseteq B$ and $B \subseteq C$.
+      Then every element of $A$ is contained in $B$ and every element of $B$ is
+      contained in $C$.
+      Hence every element of $A$ is contained in $C$.
+      Thus $A \subseteq C$.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_01_7159957847801856}
+      Let $A, B$ be classes.
+      Then \[ (\text{$A \subseteq B$ and $B \subseteq A$}) \implies A = B. \]
+    \end{proposition}
+    \begin{proof}
+      Assume $A \subseteq B$ and $B \subseteq A$.
+      Then every element of $A$ is contained in $B$ and every element of $B$ is
+      contained in $A$.
+      Hence $A = B$.
+    \end{proof}
+  \end{forthel}
+
+
+  \section{The empty class}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_01_6252477624090624}
+      Let $A$ be a class.
+      $A$ is empty iff $A$ has no elements.
+    \end{definition}
+
+    Let $A$ is nonempty stand for $A$ is not empty.
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_01_7939928493129728}
+      \[ \emptyset = \class{ x | x \neq x }. \]
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_01_2263153161273344}
+      Let $A$ be a class.
+      $A$ is empty iff $A = \emptyset$.
+    \end{proposition}
+    \begin{proof}
+      We can show that $\emptyset$ is empty.
+      Indeed any element $x$ of $\emptyset$ is nonequal to $x$.
+      Hence if $A = \emptyset$ then $A$ is empty.
+      If $A$ is empty then $A$ and $\emptyset$ have no elements.
+      Hence if $A$ is empty then $A \subseteq \emptyset$ and
+      $\emptyset \subseteq A$.
+      Thus if $A$ is empty then $A = \emptyset$.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{corollary}\label{SET_THEORY_01_1495141426659328}
+      $\emptyset$ is empty.
+    \end{corollary}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{corollary}\label{SET_THEORY_01_6931785090859008}
+      Let $A$ be a class.
+      Then \[ \emptyset \subseteq A. \]
+    \end{corollary}
+    \begin{proof}
+      $\emptyset$ has no elements.
+      Hence every element of $\emptyset$ is contained in $A$.
+    \end{proof}
+  \end{forthel}
+
+
+  \section{Unordered pairs}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_01_3471035364016128}
+      Let $a, b$ be objects.
+      The unordered pair of $a$ and $b$ is
+      \[ \class{ x | \text{$x = a$ or $x = b$} }. \]
+    \end{definition}
+
+    Let $\set{a, b}$ stand for the unordered pair of $a$ and $b$.
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_01_1160414603771904}
+      Let $a$ be an object.
+      The singleton class of $a$ is
+      \[ \class{ x | x = a }. \]
+    \end{definition}
+
+    Let $\set{a}$ stand for the singleton class of $a$.
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_01_6125259604361216}
+      Let $a, a', b, b'$ be objects.
+      Assume $\set{a, b} = \set{a', b'}$.
+      Then ($a = a'$ and $b = b'$) or ($a = b'$ and $b = a'$).
+    \end{proposition}
+    \begin{proof}
+      We have $a = a'$ or $a = b'$.
+      If $a = a'$ then $b = b'$.
+      If $a = b'$ then $b = a'$.
+      Hence ($a = a'$ and $b = b'$) or ($a = b'$ and $b = a'$).
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{corollary}\label{SET_THEORY_01_6954678910713856}
+      Let $a, a'$ be objects.
+      Then \[ \set{a} = \set{a'} \implies a = a'. \]
+    \end{corollary}
+  \end{forthel}
+
+
+  \section{Unions, intersections, complements}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_01_2159753924968448}
+      Let $A, B$ be classes.
+      The union of $A$ and $B$ is
+      \[ \class{ x | \text{$x \in A$ or $x \in B$} }. \]
+    \end{definition}
+
+    Let $A \cup B$ stand for the union of $A$ and $B$.
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_01_5744033011859456}
+      Let $A, B$ be classes.
+      The intersection of $A$ and $B$ is
+      \[ \class{ x | \text{$x \in A$ and $x \in B$} }. \]
+    \end{definition}
+
+    Let $A \cap B$ stand for the intersection of $A$ and $B$.
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_01_7620345041256448}
+      Let $A, B$ be classes.
+      The complement of $B$ in $A$ is
+      \[ \class{ x | \text{$x \in A$ and $x \notin B$} }. \]
+    \end{definition}
+
+    Let $A \setminus B$ stand for the complement of $B$ in $A$.
+  \end{forthel}
+
+
+  \section{Disjoint classes}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_01_4981913324355584}
+      Let $A, B$ be classes.
+      $A$ and $B$ are disjoint iff $A$ and $B$ have no common elements.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_01_1211191546347520}
+      Let $A, B$ be classes.
+      Then $A$ and $B$ are disjoint iff $A \cap B$ is empty.
+    \end{proposition}
+  \end{forthel}
+\end{document}

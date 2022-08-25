@@ -1,0 +1,508 @@
+\documentclass[../set-theory.tex]{subfiles}
+
+\begin{document}
+  \chapter{Sets}
+
+  \readftl{set-theory/sections/10_sets.ftl.tex}
+
+  \begin{forthel}
+    %[prove off][check off]
+
+    [readtex \path{set-theory/sections/04_pairs-and-products.ftl.tex}]
+
+    [readtex \path{set-theory/sections/06_maps.ftl.tex}]
+
+    %[prove on][check on]
+  \end{forthel}
+
+
+  \section{Sub- and supersets}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_10_5530582838673408}
+      A proper class is a class that is not a set.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_10_1346889551183872}
+      Let $A$ be a class.
+      A subset of $A$ is a subclass of $A$ that is a set.
+    \end{definition}
+
+    Let a superset of $A$ stand for a superclass of $A$ that is a set.
+    Let a proper subset of $A$ stand for a proper subclass of $A$ that is a set.
+    Let a proper superset of $A$ stand for a proper superclass of $A$ that is a set.
+  \end{forthel}
+
+
+  \section{Powerclasses}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_10_1448589907722240}
+      Let $A$ be a class.
+      The powerclass of $A$ is
+      \[ \class{ x | \text{$x$ is a subset of $A$} }. \]
+    \end{definition}
+
+    Let $\pow(A)$ stand for the powerclass of $A$.
+  \end{forthel}
+
+
+  \section{Systems of sets}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_10_5805323570905088}
+      A system of sets is a class $X$ such that every element of $X$ is a set.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_10_1631952387964928}
+      A system of nonempty sets is a class $X$ such that every element of $X$ is a nonempty set.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_10_943381479948288}
+      Let $A$ be a class.
+      A system of subsets of $A$ is a class $X$ such that every element of $X$ is a subset of $A$.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_10_8268633648136192}
+      Let $A$ be a class.
+      Then $\emptyset$ is a system of subsets of $A$.
+    \end{proposition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_10_7546016869908480}
+      Let $A$ be a class.
+      Then $\pow(A)$ is a system of subsets of $A$.
+    \end{proposition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}
+      Let $X, Y$ be systems of sets.
+      Then $X \cup Y$ is a system of sets.
+    \end{proposition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}
+      Let $X, Y$ be systems of sets.
+      Then $X \cap Y$ is a system of sets.
+    \end{proposition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}
+      Let $X, Y$ be systems of sets.
+      Then $X \setminus Y$ is a system of sets.
+    \end{proposition}
+  \end{forthel}
+
+
+  \section{Unions}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_10_541772562300928}
+      Let $X$ be a system of sets.
+      The union over $X$ is
+      \[ \class{ a | \text{$a \in x$ for some $x \in X$} }. \]
+    \end{definition}
+
+    Let $\bigcup X$ stand for the union over $X$.
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_10_4872701241982976}
+      \[ \bigcup \emptyset = \emptyset. \]
+    \end{proposition}
+    \begin{proof}
+      $\bigcup \emptyset = \class{ a | \text{$a \in x$ for some
+      $x \in \emptyset$} }$.
+      $\emptyset$ has no elements.
+      Hence there is no object $a$ such that $a \in x$ for some $x \in \emptyset$.
+      Thus $\bigcup \emptyset = \emptyset$.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_10_2559541585641472}
+      Let $x, y$ be sets.
+      Then \[ \bigcup \set{x, y} = x \cup y. \]
+    \end{proposition}
+    \begin{proof}
+      Let us show that $\bigcup \set{x, y} \subseteq x \cup y$.
+        Let $a \in \bigcup \set{x, y}$.
+        Then $a$ is contained in some element of $\set{x, y}$.
+        Hence $a \in x$ or $a \in y$.
+        Thus $a \in x \cup y$.
+      End.
+
+      Let us show that $x \cup y \subseteq \bigcup \set{x, y}$.
+        Let $a \in x \cup y$.
+        Then $a \in x$ or $a \in y$.
+        Hence $a$ is contained in some element of $\set{x, y}$.
+        Therefore $a \in \bigcup \set{x, y}$.
+      End.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{corollary}\label{SET_THEORY_10_2157223832715264}
+      Let $x$ be a set.
+      Then \[ \bigcup \set{x} = x. \]
+    \end{corollary}
+  \end{forthel}
+
+
+  \section{Intersections}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_10_2659345095458816}
+      Let $X$ be a system of sets.
+      The intersection over $X$ is
+      \[ \class{ a | \text{$a \in x$ for all $x \in X$} }. \]
+    \end{definition}
+
+    Let $\bigcap X$ stand for the intersection over $X$.
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_10_2809770322952192}
+      $\bigcap \emptyset$ is the class of all objects.
+    \end{proposition}
+    \begin{proof}
+      Define $V = \class{ x | \text{$x$ is an object} }$.
+      We have $\bigcap \emptyset \subseteq V$.
+      Indeed every element of $\bigcap \emptyset$ is an object.
+
+      Let us show that $V \subseteq \bigcap \emptyset$.
+        Let $a \in V$.
+        Then $a$ is an object.
+        For every $x \in \emptyset$ we have $a \in x$.
+        Indeed $\emptyset$ has no elements.
+        Thus $a \in \bigcap \emptyset$.
+      End.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_10_7851827447988224}
+      Let $x, y$ be sets.
+      Then \[ \bigcap \set{x, y} = x \cap y. \]
+    \end{proposition}
+    \begin{proof}
+      Let us show that $\bigcap \set{x, y} \subseteq x \cap y$.
+        Let $a \in \bigcap \set{x, y}$.
+        Then $a$ is contained in every element of $\set{x, y}$.
+        Hence $a \in x$ and $a \in y$.
+        Thus $a \in x \cap y$.
+      End.
+
+      Let us show that $x \cap y = \bigcap \set{x, y}$.
+        Let $a \in x \cap y$.
+        Then $a \in x$ and $a \in y$.
+        Hence $a$ is contained in every element of $\set{x, y}$.
+        Therefore $a \in \bigcap \set{x, y}$.
+      End.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{corollary}\label{SET_THEORY_10_7239895674257408}
+      Let $x$ be a set.
+      Then \[ \bigcap \set{x} = x. \]
+    \end{corollary}
+  \end{forthel}
+
+
+  \section{The KM axioms}
+
+  \begin{forthel}
+    \begin{axiom}[Separation]\label{SET_THEORY_10_2263707272871936}
+      Let $A$ be a class.
+      If there exists a set $x$ such that every element of $A$ is contained in
+      $x$ then $A$ is a set.
+    \end{axiom}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{axiom}[Pairing]\label{SET_THEORY_10_7376893816864768}
+      Let $a, b$ be objects.
+      Then $\set{a, b}$ is a set.
+    \end{axiom}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{axiom}[Union]\label{SET_THEORY_10_5536459412996096}
+      Let $X$ be a system of sets.
+      If $X$ is a set then $\bigcup X$ is a set.
+    \end{axiom}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{axiom}[Infinity]\label{SET_THEORY_10_367388832825344}
+      There exists a set $x$ such that $\emptyset \in x$ and for all sets $y$ if
+      $y \in x$ then $y \cup \set{y} \in x$.
+    \end{axiom}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{axiom}[Powerset]\label{SET_THEORY_10_5862230203564032}
+      Let $x$ be a set.
+      Then $\pow(x)$ is a set.
+    \end{axiom}
+
+    Let the powerset of $x$ stand for $\pow(x)$.
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{axiom}[Choice]\label{SET_THEORY_10_1897613305577472}
+      Let $X$ be a system of nonempty sets.
+      Then there exists a map $f$ such that $\dom(f) = X$ and $f(x) \in x$ for
+      any $x \in X$.
+    \end{axiom}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{axiom}[Foundation]\label{SET_THEORY_10_1320008569323520}
+      Let $X$ be a nonempty system of sets.
+      Then $X$ has an element $x$ such that $X$ and $x$ are disjoint.
+    \end{axiom}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{axiom}[Replacement]\label{SET_THEORY_10_8142956584239104}
+      Let $f$ be a map and $x$ be a set.
+      Then $f_{*}(x)$ is a set.
+    \end{axiom}
+  \end{forthel}
+
+
+  \section{Consequences of the axioms}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_10_5891530432708608}
+      $\emptyset$ is a set.
+    \end{proposition}
+    \begin{proof}
+      Take a set $x$ (by \ref{SET_THEORY_10_367388832825344}).
+      Define $A = \class{y \in x | y \neq y}$.
+      Then $A$ is a set (by \ref{SET_THEORY_10_2263707272871936}).
+      We have $A = \emptyset$.
+      Hence $\emptyset$ is a set.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_10_4052198354845696}
+      Let $x, y$ be sets.
+      Then $x \cup y$ is a set.
+    \end{proposition}
+    \begin{proof}
+      Define $X = \{ x, y \}$.
+      $\bigcup X$ is a set (by \ref{SET_THEORY_10_5536459412996096}).
+      Indeed $X$ is a system of sets.
+      We have $x \cup y = \bigcup X$.
+      Hence $x \cup y$ is a set.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_10_4475839687163904}
+      Let $x, y$ be sets.
+      Then $x \cap y$ is a set.
+    \end{proposition}
+    \begin{proof}
+      We have $x \cap y \subseteq x$.
+      Hence $x \cap y$ is a set (by \ref{SET_THEORY_10_2263707272871936}).
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_10_7795203882614784}
+      Let $x, y$ be sets.
+      Then $x \setminus y$ is a set.
+    \end{proposition}
+    \begin{proof}
+      We have $x \setminus y \subseteq x$.
+      Hence $x \setminus y$ is a set (by \ref{SET_THEORY_10_2263707272871936}).
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_10_4458706448154624}
+      Let $x, y$ be sets.
+      Then $x \times y$ is a set.
+    \end{proposition}
+    \begin{proof}
+      Define $P = \class{\set{\set{a}, \set{a,b}} | \text{$a \in x$ and
+      $b \in y$}}$.
+
+      (1) $P$ is a set. \\
+      Proof.
+        Let us show that $P \subseteq \pow(\pow(x \cup y))$.
+          Let $p \in P$.
+          Consider $a \in x$ and $b \in y$ such that
+          $p = \set{\set{a},\set{a,b}}$.
+          Then $a, b \in x \cup y$.
+          Hence $\set{a}, \set{a,b} \in \pow(x \cup y)$.
+          Thus $\set{\set{a}, \set{a,b}} \in \pow(\pow(x \cup y))$.
+        End.
+
+        $x \cup y$ is a set.
+        Consequently $\pow(\pow(x \cup y))$ is a set (by
+        \ref{SET_THEORY_10_5862230203564032}).
+        Therefore $P$ is a set (by \ref{SET_THEORY_10_2263707272871936}).
+      Qed.
+
+      Define $l(p) = \text{choose $a \in x$, choose $b \in y$ such that
+      $p = \set{\set{a}, \set{a,b}}$ in $a$}$ for $p \in P$.
+      Define $r(p) = \text{choose $a \in x$, choose $b \in y$ such that
+      $p = \set{\set{a}, \set{a,b}}$ in $b$}$ for $p \in P$.
+
+      Define $f(p) = (l(p), r(p))$ for $p \in P$.
+
+      Let us show that for any objects $u, u', v, v'$ if
+      $\set{\set{u}, \set{u,v}} = \set{\set{u'}, \set{u',v'}}$ then $u = u'$ and
+      $v = v'$.
+        Let $u, u', v, v'$ be objects.
+        Assume $\set{\set{u}, \set{u,v}} = \set{\set{u'}, \set{u',v'}}$.
+        Then ($\set{u} = \set{u'}$ or $\set{u} = \set{u',v'}$) and
+        ($\set{u,v} = \set{u'}$ or $\set{u,v} = \set{u',v'}$).
+        Thus ($\set{u} = \set{u'}$ and ($\set{u,v} = \set{u'}$ or
+        $\set{u,v} = \set{u',v'}$)) or ($\set{u} = \set{u',v'}$ and
+        ($\set{u,v} = \set{u'}$ or $\set{u,v} = \set{u',v'}$)).
+
+        Case $\set{u} = \set{u'}$ and ($\set{u,v} = \set{u'}$ or
+          $\set{u,v} = \set{u',v'}$).
+          We have $\set{u} = \set{u'}$.
+          Hence $u = u'$.
+
+          Case $\set{u,v} = \set{u'}$.
+            Then $u = u'= v$.
+            Hence $\set{\set{u}, \set{u,u}} = \set{\set{u}, \set{u,v'}}$ (by 1).
+            Thus $\set{\set{u}} = \set{\set{u}, \set{u,v'}}$.
+            Therefore $\set{u} = \set{u,v'}$.
+            Consequently $v' = u = v$.
+          End.
+
+          Case $\set{u,v} = \set{u',v'}$.
+            Then $\set{u,v} = \set{u,v'}$.
+            Hence $v = v'$.
+          End.
+        End.
+
+        Case $\set{u} = \set{u',v'}$ and ($\set{u,v} = \set{u'}$ or
+        $\set{u,v} = \set{u',v'}$).
+          We have $\set{u} = \set{u',v'}$.
+          Hence $u = u'$.
+
+          Case $\set{u,v} = \set{u'}$.
+            Then $u = v = u'$.
+            Hence $v = v'$.
+          End.
+
+          Case $\set{u,v} = \set{u',v'}$.
+            Then $\set{u,v} = \set{u,v'}$.
+            Hence $v = v'$.
+          End.
+        End.
+      End.
+
+      Let us show that for any $a \in x$ and any $b \in y$ we have
+      $f(\set{\set{a}, \set{a,b}}) = (a,b)$.
+        Let $a \in x$ and $b \in y$.
+        %Define $p = \set{\set{a}, \set{a,b}}$. %!
+        Consider an object $p$ such that $p = \set{\set{a}, \set{a,b}}$.
+        Then we can choose $a' \in x$ and $b' \in y$ such that $p =
+        \set{\set{a'}, \set{a',b'}}$ and $l(p) = a'$.
+        Then $a = a'$ and $b = b'$.
+        Hence $l(p) = a$.
+        Choose $a'' \in x$ and $b'' \in y$ such that $p =
+        \set{\set{a''}, \set{a'',b''}}$ and $r(p) = b''$.
+        Then $a = a''$ and $b = b''$.
+        Thus $r(p) = b$.
+        Therefore $f(p) = (a,b)$.
+      End.
+
+      (2) $x \times y = f[P]$. \\
+      Proof.
+        For all $p \in P$ we have $l(p) \in x$ and $r(p) \in y$.
+        Hence $f(p) \in x \times y$ for all $p \in P$.
+        Therefore $f[P] \subseteq x \times y$.
+
+        For any $a \in x$ and any $b \in y$ we have $(a,b) =
+        f(\set{\set{a}, \set{a,b}})$.
+        Thus $(a,b) \in f[P]$ for all $a \in x$ and all $b \in y$.
+
+        Consequently $x \times y = f[P]$.
+      Qed.
+
+      Thus $x \times y$ is the image of some set under some map.
+      Therefore $x \times y$ is a set (by \ref{SET_THEORY_10_8142956584239104}).
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_10_5486815207227392}
+      Let $X$ be a nonempty system of sets.
+      Then $\bigcap X$ is a set.
+    \end{proposition}
+    \begin{proof}
+      Take an element $x$ of $X$.
+      Then $\bigcap X \subseteq x$.
+      Hence $\bigcap X$ is a set (by \ref{SET_THEORY_10_2263707272871936}).
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_10_7598384349184000}
+      Let $f$ be a map such that $\dom(f)$ is a set.
+      Then $\range(f)$ is a set.
+    \end{proposition}
+    \begin{proof}
+      $\range(f) = f_{*}(\dom(f))$ and $f_{*}(\dom(f))$ is a set.
+      Hence $\range(f)$ is a set (by \ref{SET_THEORY_10_8142956584239104}).
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_10_8812282138066944}
+      There exist no sets $x, y$ such that $x \in y$ and $y \in x$.
+    \end{proposition}
+    \begin{proof}
+      Assume the contrary.
+      Take sets $x,y$ such that $x \in y$ and $y \in x$.
+      Consider an element $z$ of $\set{x,y}$ such that $\set{x,y}$ and $z$ are
+      disjoint (by \ref{SET_THEORY_10_1320008569323520}).
+      Indeed $\set{x,y}$ is a nonempty system of sets.
+      Then we have $z = x$ or $z = y$.
+
+      Case $z = x$.
+        Then $x$ and $\set{x,y}$ are disjoint.
+        Hence $y \notin x$.
+        Contradiction.
+      End.
+
+      Case $z = y$.
+        Then $y$ and $\set{x,y}$ are disjoint.
+        Hence $x \notin y$.
+        Contradiction.
+      End.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{corollary}\label{SET_THEORY_10_3086917813927936}
+      Let $x$ be a set.
+      Then $x \notin x$.
+    \end{corollary}
+  \end{forthel}
+\end{document}

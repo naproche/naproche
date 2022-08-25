@@ -1,43 +1,34 @@
+# https://dreampuf.github.io/GraphvizOnline/#digraph%20Sections%20%7B%0A%20%20%20%20set_theory_01%20%5Blabel%20%3D%20%22%201%20Classes%22%5D%0A%20%20%20%20set_theory_02%20%5Blabel%20%3D%20%22%202%20Computation%20laws%20for%20classes%22%5D%0A%20%20%20%20set_theory_03%20%5Blabel%20%3D%20%22%203%20Symmetric%20difference%22%5D%0A%20%20%20%20set_theory_04%20%5Blabel%20%3D%20%22%204%20Ordered%20pairs%20and%20Cartesian%20products%22%5D%0A%20%20%20%20set_theory_05%20%5Blabel%20%3D%20%22%205%20Computation%20laws%20for%20Cartesian%20products%22%5D%0A%20%20%20%20set_theory_06%20%5Blabel%20%3D%20%22%206%20Maps%22%5D%0A%20%20%20%20set_theory_07%20%5Blabel%20%3D%20%22%207%20Computation%20laws%20for%20images%20and%20preimages%22%5D%0A%20%20%20%20set_theory_08%20%5Blabel%20%3D%20%22%208%20Surjections%2C%20injections%20and%20bijections%22%5D%0A%20%20%20%20set_theory_09%20%5Blabel%20%3D%20%22%209%20Invertible%20maps%20and%20involutions%22%5D%0A%20%20%20%20set_theory_10%20%5Blabel%20%3D%20%2210%20Sets%22%5D%0A%20%20%20%20set_theory_11%20%5Blabel%20%3D%20%2211%20Binary%20relations%22%5D%0A%20%20%20%20set_theory_12%20%5Blabel%20%3D%20%2212%20Fixed%20points%22%5D%0A%20%20%20%20set_theory_13%20%5Blabel%20%3D%20%2213%20Equinumerosity%22%5D%0A%20%20%20%20set_theory_14%20%5Blabel%20%3D%20%2214%20Transitive%20classes%22%5D%0A%20%20%20%20set_theory_15%20%5Blabel%20%3D%20%2215%20Ordinal%20numbers%22%5D%0A%0A%20%20%20%20set_theory_01%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20-%3E%20set_theory_02%0A%20%20%20%20set_theory_02%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20-%3E%20set_theory_03%0A%20%20%20%20set_theory_01%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20-%3E%20set_theory_04%0A%20%20%20%20set_theory_02%2C%20set_theory_04%20-%3E%20set_theory_05%0A%20%20%20%20set_theory_04%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20-%3E%20set_theory_06%0A%20%20%20%20set_theory_06%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20-%3E%20set_theory_07%0A%20%20%20%20set_theory_06%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20-%3E%20set_theory_08%0A%20%20%20%20set_theory_08%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20-%3E%20set_theory_09%0A%20%20%20%20set_theory_04%2C%20set_theory_06%20-%3E%20set_theory_10%0A%20%20%20%20set_theory_10%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20-%3E%20set_theory_11%0A%20%20%20%20set_theory_06%2C%20set_theory_10%20-%3E%20set_theory_12%0A%20%20%20%20set_theory_09%2C%20set_theory_12%20-%3E%20set_theory_13%0A%20%20%20%20set_theory_10%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20-%3E%20set_theory_14%0A%20%20%20%20set_theory_11%20%2Cset_theory_14%20-%3E%20set_theory_15%0A%7D%0A
+
 digraph Sections {
-  vocab [label = "Vocabulary"]
-  macros [label = "Macros"]
-  ord_01 [label = "Arithmetic: 2.1 Ordering"]
+    set_theory_01 [label = " 1 Classes"]
+    set_theory_02 [label = " 2 Computation laws for classes"]
+    set_theory_03 [label = " 3 Symmetric difference"]
+    set_theory_04 [label = " 4 Ordered pairs and Cartesian products"]
+    set_theory_05 [label = " 5 Computation laws for Cartesian products"]
+    set_theory_06 [label = " 6 Maps"]
+    set_theory_07 [label = " 7 Computation laws for images and preimages"]
+    set_theory_08 [label = " 8 Surjections, injections and bijections"]
+    set_theory_09 [label = " 9 Invertible maps and involutions"]
+    set_theory_10 [label = "10 Sets"]
+    set_theory_11 [label = "11 Binary relations"]
+    set_theory_12 [label = "12 Fixed points"]
+    set_theory_13 [label = "13 Equinumerosity"]
+    set_theory_14 [label = "14 Transitive classes"]
+    set_theory_15 [label = "15 Ordinal numbers"]
 
-  subgraph cluster_1 {
-    set_01 [label = "1.1 Sets"]
-    set_02 [label = "1.2 The powerset"]
-    set_03 [label = "1.3 The axiom of regularity"]
-    set_04 [label = "1.4 The symmetric difference"]
-    set_05 [label = "1.5 Ordered pairs"]
-    set_06 [label = "1.6 The Cartesian product"]
-  }
-
-  subgraph cluster_2 {
-    fun_01 [label = "2.1 Functions"]
-    fun_02 [label = "2.2 Image and preimage"]
-    fun_03 [label = "2.3 Invertible functions"]
-    fun_04 [label = "2.4 Functions and the symmetric difference"]
-    fun_05 [label = "2.5 Functions and set-systems"]
-    fun_06 [label = "2.6 Equipollency"]
-  }
-
-  subgraph cluster_3 {
-    card_01 [label = "3.1 Finite and infinite sets"]
-  }
-
-  /* 1.1 */ vocab, macros   -> set_01
-  /* 1.2 */ set_01          -> set_02
-  /* 1.3 */ set_01          -> set_03
-  /* 1.4 */ set_01          -> set_04
-  /* 1.5 */ set_01          -> set_05
-  /* 1.6 */ set_02, set_05  -> set_06
-
-  /* 2.1 */ set_01          -> fun_01
-  /* 2.2 */ fun_01          -> fun_02
-  /* 2.3 */ fun_02          -> fun_03
-  /* 2.4 */ set_04, fun_02  -> fun_04
-  /* 2.5 */ set_02, fun_01  -> fun_05
-  /* 2.6 */ fun_03          -> fun_06
-
-  /* 3.1 */ ord_01, fun_06  -> card_01
+    set_theory_01                -> set_theory_02
+    set_theory_02                -> set_theory_03
+    set_theory_01                -> set_theory_04
+    set_theory_02, set_theory_04 -> set_theory_05
+    set_theory_04                -> set_theory_06
+    set_theory_06                -> set_theory_07
+    set_theory_06                -> set_theory_08
+    set_theory_08                -> set_theory_09
+    set_theory_04, set_theory_06 -> set_theory_10
+    set_theory_10                -> set_theory_11
+    set_theory_06, set_theory_10 -> set_theory_12
+    set_theory_09, set_theory_12 -> set_theory_13
+    set_theory_10                -> set_theory_14
+    set_theory_11 ,set_theory_14 -> set_theory_15
 }

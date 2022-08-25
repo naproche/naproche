@@ -1,0 +1,104 @@
+\NeedsTeXFormat{LaTeX2e}
+
+\RequirePackage[english]{babel}
+
+\RequirePackage{hyperref}
+\RequirePackage{xcolor}
+\RequirePackage{subfiles}
+\RequirePackage{xurl}
+\RequirePackage[inline]{showlabels}
+\RequirePackage{fancyhdr}
+
+
+% Top-level sections and proofs
+
+\newtheoremstyle{foundations}% name of the style to be used
+  {\dimexpr\ftlparskip+4pt\relax}% measure of space to leave above the theorem.
+  % (We must add \ftlparskip since otherwise the name of the label would not fit
+  % into the border drawn around the environment.)
+  {4pt}% measure of space to leave below the theorem.
+  {\normalfont}% name of font to use in the body of the theorem
+  {0pt}% measure of space to indent
+  {\bfseries}% name of head font
+  {}% punctuation between head and body
+  { }% space after theorem head; " " = normal inter-word space
+  {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}.}
+
+\let\definition\relax
+\let\enddefinition\relax
+\let\signature\relax
+\let\endsignature\relax
+\let\axiom\relax
+\let\endaxiom\relax
+\let\theorem\relax
+\let\endtheorem\relax
+\let\proposition\relax
+\let\endproposition\relax
+\let\lemma\relax
+\let\endlemma\relax
+\let\corollary\relax
+\let\endcorollary\relax
+
+\theoremstyle{foundations}
+
+\newmdtheoremenv[
+  backgroundcolor=lightgray!10,
+  linecolor=black,
+  innertopmargin=1em
+]{definition}{Definition}[chapter]
+\newmdtheoremenv[
+  backgroundcolor=lightgray!10,
+  linecolor=black,
+  innertopmargin=1em
+]{signature}[definition]{Signature}
+\newmdtheoremenv[
+  backgroundcolor=lightgray!10,
+  linecolor=black,
+  innertopmargin=1em
+]{axiom}[definition]{Axiom}
+\newmdtheoremenv[
+  backgroundcolor=lightgray!10,
+  linecolor=black,
+  innertopmargin=1em
+]{theorem}[definition]{Theorem}
+\newmdtheoremenv[
+  backgroundcolor=lightgray!10,
+  linecolor=black,
+  innertopmargin=1em
+]{proposition}[definition]{Proposition}
+\newmdtheoremenv[
+  backgroundcolor=lightgray!10,
+  linecolor=black,
+  innertopmargin=1em
+]{lemma}[definition]{Lemma}
+\newmdtheoremenv[
+  backgroundcolor=lightgray!10,
+  linecolor=black,
+  innertopmargin=1em
+]{corollary}[definition]{Corollary}
+
+
+% Header and footer
+
+\pagestyle{fancy}
+\fancyhf{} % Clear the header
+\rhead{}
+\lhead{\rightmark}
+\cfoot{\thepage}
+
+
+% Imports
+
+\newcommand{\readftl}[1]{
+  \footnotesize{\textbf{File:}}
+  \hfill
+  \footnotesize{\path{#1}}
+  \vspace{0.5em}
+  \hrule
+  \vspace{2em}
+}
+
+
+% Labels of top-level sections
+
+\renewcommand{\showlabelfont}{\scriptsize\ttfamily\color{gray}}

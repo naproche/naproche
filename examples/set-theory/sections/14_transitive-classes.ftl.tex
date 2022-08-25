@@ -1,0 +1,161 @@
+\documentclass[../set-theory.tex]{subfiles}
+
+\begin{document}
+  \chapter{Transitive classes}
+
+  \readftl{set-theory/sections/14_transitive-classes.ftl.tex}
+
+  \begin{forthel}
+    %[prove off][check off]
+
+    [readtex \path{set-theory/sections/10_sets.ftl.tex}]
+
+    %[prove on][check on]
+  \end{forthel}
+
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_14_8167915266244608}
+      Let $A$ be a class.
+      $A$ is transitive iff every element of $A$ is a subset of $A$.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_14_6964770955591680}
+      Let $X$ be a system of sets.
+      Then $X$ is transitive iff for every $x \in X$ and every $y \in x$ we
+      have $y \in X$.
+    \end{proposition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_14_4219967964708864}
+      A system of transitive sets is a system of sets $X$ such that every member
+      of $X$ is a transitive set.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_14_2095807333400576}
+      Every transitive class is a system of sets.
+    \end{proposition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_14_6524117649981440}
+      Let $X$ be a system of sets.
+      Then $X$ is transitive iff $\bigcup X \subseteq X$.
+    \end{proposition}
+    \begin{proof}
+      Case $X$ is transitive.
+        Let $x \in \bigcup X$.
+        Take a member $y$ of $X$ such that $x \in y$.
+        Then $y$ is a subset of $X$.
+        Hence $x$ is an element of $X$.
+      End.
+
+      Case $\bigcup X \subseteq X$.
+        Let $x \in X$.
+
+        Let us show that $x \subseteq X$.
+          Let $y \in x$.
+          Then $y \in \bigcup X$.
+          Hence $y \in X$.
+        End.
+      End.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_14_620651482185728}
+      Let $A$ be a transitive class.
+      Then $\bigcup A$ is transitive.
+    \end{proposition}
+    \begin{proof}
+      Let $x \in \bigcup A$.
+
+      Let us show that $x \subseteq \bigcup A$.
+        Let $y \in x$.
+        Take a member $z$ of $A$ such that $x \in z$.
+        Then $z \subseteq A$.
+        Hence $x \in A$.
+        Thus $y$ is an element of some member of $A$.
+        Therefore $y \in \bigcup A$.
+      End.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}
+      Let $X$ be a system of transitive sets.
+      Then $\bigcup X$ is transitive.
+    \end{proposition}
+    \begin{proof}
+      Let $x \in \bigcup X$ and $y \in x$.
+      Take $z \in X$ such that $x \in z$.
+      Then $z$ is transitive.
+      Hence $x \subseteq z$.
+      Thus $y \in z$.
+      Therefore $y \in \bigcup X$.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_14_4884401668227072}
+      Let $X$ be a system of transitive sets.
+      Then $X \cup \bigcup X$ is transitive.
+    \end{proposition}
+    \begin{proof}
+      Let $x \in X \cup \bigcup X$.
+
+      Let us show that $x \subseteq X \cup \bigcup X$.
+        Let $u \in x$.
+        We have $x \in X$ or $x \in \bigcup X$.
+        If $x \in X$then $u \in \bigcup X$.
+        If $x \in \bigcup X$ then $u \in \bigcup X$.
+        Indeed $\bigcup X$ is transitive.
+        Hence $u \in \bigcup X$.
+        Thus $u \in X \cup \bigcup X$.
+      End.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_14_1399002962591744}
+      Let $X$ be a system of sets.
+      Then $X$ is transitive iff $X \subseteq \pow(X)$.
+    \end{proposition}
+    \begin{proof}
+      Case $X$ is transitive.
+        Let $x \in X$.
+        Then $x \subseteq X$.
+        Hence $x \in \pow(X)$.
+      End.
+
+      Case $X \subseteq \pow(X)$.
+        Let $x \in X$.
+        Then $x \in \pow(X)$.
+        Hence $x \subseteq X$.
+      End.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_14_6995689103949824}
+      Let $A$ be a transitive class.
+      Then $\pow(A)$ is transitive.
+    \end{proposition}
+    \begin{proof}
+      Let $x \in \pow(A)$.
+      Then $x \subseteq A$.
+
+      Let us show that $x \subseteq \pow(A)$.
+        Let $y \in x$.
+        Then $y \in A$.
+        Hence $y \subseteq A$.
+        Thus $y \in \pow(A)$.
+      End.
+    \end{proof}
+  \end{forthel}
+\end{document}

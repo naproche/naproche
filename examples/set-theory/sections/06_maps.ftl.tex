@@ -1,0 +1,301 @@
+\documentclass[../set-theory.tex]{subfiles}
+
+\begin{document}
+  \chapter{Maps}
+
+  \readftl{set-theory/sections/06_maps.ftl.tex}
+
+  \begin{forthel}
+    %[prove off][check off]
+
+    [readtex \path{set-theory/sections/04_pairs-and-products.ftl.tex}]
+
+    %[prove on][check on]
+  \end{forthel}
+
+
+  \section{Ranges}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_06_4284980337311744}
+      Let $f$ be a map.
+      A value of $f$ is an object $b$ such that $b = f(a)$ for some $a \in \dom(f)$.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_06_1938831225913344}
+      Let $f$ be a map.
+      The range of $f$ is
+      \[ \class{ f(a) | a \in \dom(f) }. \]
+    \end{definition}
+
+    Let $\range(f)$ stand for the range of $f$.
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_06_6386349418479616}
+      Let $f$ be a map and $b$ be an object.
+      $b$ is a value of $f$ iff $b \in \range(f)$.
+    \end{proposition}
+    \begin{proof}
+      Case $b$ is a value of $f$.
+        Take $a \in \dom(f)$ such that $b = f(a)$.
+        $b$ is an object.
+        Hence $b \in \range(f)$.
+      End.
+
+      Case $b \in \range(f)$.
+        Then $b$ is an object such that $b = f(a)$ for some $a \in \dom(f)$.
+        Hence $b$ is a value of $f$.
+      End.
+    \end{proof}
+  \end{forthel}
+
+
+  \section{The identity map}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_06_1920902360989696}
+      Let $A$ be a class.
+      %$\id_{A}$ is the map defined on $A$ such that $\id_{A}(a) = a$ for all $a \in A$.
+      $\id_{A}$ is the map $h$ such that $h$ is defined on $A$ and $h(a) = a$ for all $a \in A$.
+    \end{definition}
+
+    Let the identity map on $A$ stand for $\id_{A}$.
+  \end{forthel}
+
+
+  \section{Composition}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_06_7605717729017856}
+      Let $f, g$ be maps.
+      Assume $\range(f) \subseteq \dom(g)$.
+      %$g \circ f$ is the map defined on $\dom(f)$ such that $(g \circ f)(a) = g(f(a))$ for all $a \in \dom(f)$.
+      $g \circ f$ is the map $h$ such that $h$ is defined on $\dom(f)$ and $h(a) = g(f(a))$ for all $a \in \dom(f)$.
+    \end{definition}
+
+    Let the composition of $g$ and $f$ stand for $g \circ f$.
+  \end{forthel}
+
+
+  \section{Restriction}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_06_7095412741636096}
+      Let $f$ be a map and $X \subseteq \dom(f)$.
+      %$f \restriction_{X}$ is the map defined on $X$ such that $(f \restriction_{X})(a) = f(a)$ for all $a \in X$.
+      $f \restriction_{X}$ is the map $h$ such that $h$ is defined on $X$ and $h(a) = f(a)$ for all $a \in X$.
+    \end{definition}
+
+    Let the restriction of $f$ to $X$ stand for $f \restriction_{X}$.
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_06_2170189258948608}
+      Let $A$ be a class and $X \subseteq A$.
+      Then $\id_{A} \restriction_{X} = \id_{X}$.
+    \end{proposition}
+  \end{forthel}
+
+
+  \section{Images and preimages}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_06_3038237683613696}
+      Let $f$ be a map and $A$ be a class.
+      The image of $A$ under $f$ is
+      \[ \class{ f(a) | a \in \dom(f) \cap A }. \]
+    \end{definition}
+
+    Let the direct image of $A$ under $f$ stand for the image of $A$ under $f$.
+    Let $f_{*}(A)$ stand for the image of $A$ under $f$.
+
+    Let $f[A]$ stand for $f_{*}(A)$.
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_06_4563167805964288}
+      Let $f$ be a map and $B$ be a class.
+      The preimage of $B$ under $f$ is
+      \[ \class{ a \in \dom(f) | f(a) \in B }. \]
+    \end{definition}
+
+    Let the inverse image of $B$ under $f$ stand for the preimage of $B$ under
+    $f$.
+    Let $f^{*}(B)$ stand for the preimage of $B$ under $f$.
+
+    Let $f^{-1}[B]$ stand for $f^{*}(B)$.
+  \end{forthel}
+
+
+  \section{Maps between classes}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_06_6934038600220672}
+      Let $A$ be a class.
+      A map from $A$ is a map $f$ such that $\dom(f) = A$.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_06_7725375157174272}
+      Let $B$ be a class.
+      A map to $B$ is a map $f$ such that $f(a) \in B$ for each $a \in \dom(f)$.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_06_2823507398361088}
+      Let $A, B$ be classes.
+      A map from $A$ to $B$ is a map $f$ such that $\dom(f) = A$ and $f(a) \in B$ for each $a \in A$.
+    \end{definition}
+
+    Let $f: A \to B$ stand for $f$ is a map from $A$ to $B$.
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_06_3390734908522496}
+      Let $A$ be a class.
+      A map on $A$ is a map from $A$ to $A$.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_06_3312973569327104}
+      Let $A, B$ be classes and $f, g : A \to B$.
+      Assume that $f(a) = g(a)$ for all $a \in A$.
+      Then $f = g$.
+    \end{proposition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}
+      Let $A, B$ be classes and $f$ be a map from $A$.
+      Assume that $f(a) \in B$ for all $a \in A$.
+      Then $f$ is a map from $A$ to $B$ iff $\range(f) \subseteq B$.
+    \end{proposition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_06_5104361690628096}
+      Let $A$ be a class.
+      Then $\id_{A}$ is a map on $A$.
+    \end{proposition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_06_1706446651654144}
+      Let $A, B, C$ be classes and $f : A \to B$ and $g : B \to C$.
+      Then $g \circ f : A \to C$.
+    \end{proposition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_06_4078561256275968}
+      Let $A, B$ be classes and $f : A \to B$ and $X \subseteq A$.
+      Then $f \restriction_{X} : X \to B$.
+    \end{proposition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_06_3964401904254976}
+      Let $A, B$ be classes and $f : A \to B$.
+      Then \[ f \circ \id_{A} = f = \id_{B} \circ f. \]
+    \end{proposition}
+    \begin{proof}
+      $A$ is the domain of $f \circ \id_{A}$ and the domain of $f$ and the domain of $\id_{B} \circ f$.
+      We have $(f \circ \id_{A})(a) =
+      f(\id_{A}(a)) =
+      f(a) =
+      \id_{B}(f(a)) =
+      (\id_{B} \circ f)(a)$ for all $a \in A$.
+      Hence $f \circ \id_{A} = f = \id_{B} \circ f$.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_06_3118771061391360}
+      Let $A$ be a class and $X \subseteq A$.
+      Then \[ \id_{A} \restriction_{X} = \id_{X}. \]
+    \end{proposition}
+    \begin{proof}
+      We have $\dom(\id_{A} \restriction_{X}) = X = \dom(\id_{X})$.
+      $(\id_{A} \restriction_{X})(a) = \id_{A}(a) = a = \id_{X}(a)$ for all $a \in X$.
+      Hence $\id_{A} \restriction_{X} = \id_{X}$.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_06_6866147389472768}
+      Let $A, B, C, D$ be classes and $f : A \to B$ and $g : B \to C$ and $h : C \to D$.
+      Then \[ h \circ (g \circ f) = (h \circ g) \circ f. \]
+    \end{proposition}
+    \begin{proof}
+      $h \circ (g \circ f)$ and $(h \circ g) \circ f$ are maps from $A$ to $D$.
+
+      Let us show that $(h \circ (g \circ f))(a) = ((h \circ g) \circ f)(a)$ for all $a \in A$.
+        Let $a \in A$.
+        Then $(h \circ (g \circ f))(a) =
+        h((g \circ f)(a)) =
+        h(g(f(a))) =
+        (h \circ g)(f(a)) =
+        ((h \circ g) \circ f)(a)$.
+      End.
+
+      Hence $h \circ (g \circ f) = (h \circ g) \circ f$.
+    \end{proof}
+  \end{forthel}
+
+
+  \section{Maps and products}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_06_5135634870042624}
+      Let $f$ be a map such that $\dom(f) = A \times B$ for some nonempty classes $A, B$.
+      Let $a$ be an object such that $(a,b) \in \dom(f)$ for some object $b$.
+      $f(a,-)$ is the map such that $\dom(f(a,-)) = B$ and $f(a,-)(b) = f(a,b)$ for all $b \in B$ where $B$ is the class such that $\dom(f) = A \times B$ for some class $A$.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\label{SET_THEORY_06_3621991366000640}
+      Let $f$ be a map such that $\dom(f) = A \times B$ for some nonempty classes $A, B$.
+      Let $b$ be an object such that $(a,b) \in \dom(f)$ for some object $a$.
+      $f(-,b)$ is the map such that $\dom(f(-,b)) = A$ and $f(-,b)(a) = f(a,b)$ for all $a \in A$ where $A$ is the class such that $\dom(f) = A \times B$ for some class $B$.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_06_8946256734846976}
+      Let $A, B, C$ be classes such that $A, B$ are nonempty and $a \in A$.
+      Let $f$ be a map from $A \times B$ to $C$.
+      Then $f(a,-)$ is a map from $B$ to $C$.
+    \end{proposition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_06_8080207992848384}
+      Let $A, B, C$ be classes such that $A, B$ are nonempty and $b \in B$.
+      Let $f$ be a map from $A \times B$ to $C$.
+      Then $f(-,b)$ is a map from $A$ to $C$.
+    \end{proposition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_06_2754759509409792}
+      Let $A, B, C$ be classes and $f$ be a map from $A \times B$.
+      Assume that $f(a,b) \in C$ for all $a \in A$ and all $b \in B$.
+      Then $f$ is a map from $A \times B$ to $C$.
+    \end{proposition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_06_2304295212941312}
+      Let $A, B, C$ be classes and $f$ be a map from $A \times B$ to $C$.
+      Let $a \in A$ and $b \in B$.
+      Then $f(a,b) \in C$.
+    \end{proposition}
+  \end{forthel}
+\end{document}
