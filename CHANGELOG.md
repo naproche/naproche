@@ -35,6 +35,13 @@ variant of ForTheL, respectively.
 
 ### Changes on the example files
 
+  * **Changed:** The set theory library was completely rewritten. It now
+    provides better support for classes and includes additional chapters on
+    *binary relations*, *transitive classes* and *ordinal numbers*.
+    Moreover, the paths of the source files of all chapters and the labels of
+    any definitions, theorems etc. are now displayed in the PDF, making
+    importing and referencing a bit easier.
+
   * **New:** The formalizations of König's theorem (`koenig.ftl(.tex)`) and
     Hausdorff's theorem (`hausdorff.ftl(.tex)`, formerly
     `regular_successor.ftl(.tex)`) are back!
