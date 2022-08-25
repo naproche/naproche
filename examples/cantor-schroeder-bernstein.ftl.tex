@@ -2,79 +2,130 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage{xurl}
-\usepackage{xr-hyper}
-\usepackage{hyperref}
 \usepackage[nonumbers]{../lib/tex/naproche}
 \usepackage{../lib/tex/basic-notions}
 
-\title{The Cantor-Schröder-Bernstein Theorem}
-\author{\Naproche formalization: \vspace{0.5em} \\
-Alexander Holz (2019), \\
-Marcel Schütz (2019 - 2021)}
+
+\title{The Knaster-Tarski fixed point theorem and \\
+the Cantor-Schröder-Bernstein Theorem}
+\author{Alexander Holz (2019), \\
+Marcel Schütz (2019 - 2022)}
 \date{}
 
-\hypersetup{
-  colorlinks=true,
-  linkcolor=blue,
-  urlcolor=blue,
-  filecolor=blue
-}
-
-\externaldocument{set-theory/set-theory.ftl}
-
 \begin{document}
-  \pagenumbering{gobble}
-
   \maketitle
 
-  This is a formalization of the proof of the \textit{Cantor-Schröder-Bernstein
-  Theorem}, i.e. of the fact that two sets are equipollent if they can be
-  embedded into each other, based on some version of the \textit{Knaster-Tarski
-  Fixed Point Theorem}.
+  \noindent This is a formalization of the \textit{Knaster-Tarski Fixed Point
+  Theorem} (i.e. of the assertion that every subset-preserving map has a fixed
+  point) and of the \textit{Cantor-Schröder-Bernstein Theorem} (i.e. of the
+  fact that two sets are equinumerous iff they can be embedded into each other),
+  where the proof of the latter theorem is based on the former one, as in
+  \cite[p. 530]{Schroeder2012}.
 
   \begin{forthel}
-    [readtex \path{set-theory/sections/02_functions/05_functions-and-set-systems.ftl.tex}]
+    [readtex \path{set-theory/sections/09_invertible-maps.ftl.tex}]
+
+    [readtex \path{set-theory/sections/10_sets.ftl.tex}]
   \end{forthel}
 
-  \begin{forthel}
-    [readtex \path{set-theory/sections/02_functions/06_equipollency.ftl.tex}]
-  \end{forthel}
+
+  \section*{The Knaster-Tarski fixed point theorem}
 
   \begin{forthel}
-    \begin{theorem}[Cantor Schroeder Bernstein]
-      Let $x,y$ be sets.
-      $x$ and $y$ are equipollent iff there exists a function from $x$ into $y$ and there exists a function from $y$ into $x$.
+    \begin{definition}
+      Let $h$ be a map.
+      A fixed point of $h$ is an element $u$ of $\dom(h)$ such that $h(u) = u$.
+    \end{definition}
+
+    \begin{definition}
+      A map between systems of sets is a map from some system of sets to some
+      system of sets.
+    \end{definition}
+
+    \begin{definition}
+      Let $h$ be a map between systems of sets.
+      $h$ preserves subsets iff for all $u, v \in \dom(h)$
+      we have \[ u \subseteq v \implies h(u) \subseteq h(v). \]
+    \end{definition}
+
+    \begin{theorem}[Knaster-Tarski]\label{KT}
+      Let $x$ be a set.
+      Let $h$ be a map from $\pow(x)$ to $\pow(x)$ that preserves subsets.
+      Then $h$ has a fixed point.
     \end{theorem}
     \begin{proof}
-      Case $x$ and $y$ are equipollent.
-        Take a bijection $f$ between $x$ and $y$.
-        Then $f^{-1}$ is a bijection between $y$ and $x$.
-        Hence $f$ is a function from $x$ into $y$ and $f^{-1}$ is a function from $y$ into $x$.
+      (1) Define $A = \class{y | \text{$y \subseteq x$ and
+      $y \subseteq h(y)$}}$.
+      Then $A$ is a subset of $\pow(x)$.
+      We have $\bigcup A \in \pow(x)$.
+
+      Let us show that (2) $\bigcup A \subseteq h(\bigcup A)$.
+        Let $u \in \bigcup A$.
+        Take $y \in A$ such that $u \in y$.
+        Then $u \in h(y)$.
+        We have $y \subseteq \bigcup A$.
+        Hence $h(y) \subseteq h(\bigcup A)$.
+        Thus $h(y) \subseteq h(\bigcup A)$.
+        Therefore $u \in h(\bigcup A)$.
       End.
 
-      Case there exists a function from $x$ into $y$ and there exists a function from $y$ into $x$.
-        Take a function $f$ from $x$ into $y$.
-        Take a function $g$ from $y$ into $x$.
+      Then $h(\bigcup A) \in A$ (by 1).
+      Indeed $h(\bigcup A) \subseteq x$.
+      (3) Hence $h(\bigcup A) \subseteq \bigcup A$.
+      Indeed every element of $h(\bigcup A)$ is an element of some element of
+      $A$.
+
+      Thus $h(\bigcup A) = \bigcup A$ (by 2, 3).
+    \end{proof}
+  \end{forthel}
+
+
+  \section*{The Cantor-Schröder-Bernstein theorem}
+
+  \begin{forthel}
+    \begin{definition}
+      Let $x, y$ be sets.
+      $x$ and $y$ are equinumerous iff there exists a bijection between $x$ and
+      $y$.
+    \end{definition}
+    
+    \begin{theorem}[Cantor-Schröder-Bernstein]\label{CSB}
+      Let $x,y$ be sets.
+      $x$ and $y$ are equinumerous iff there exists a map from $x$ into $y$ and
+      there exists a map from $y$ into $x$.
+    \end{theorem}
+    \begin{proof}
+      Case $x$ and $y$ are equinumerous.
+        Take a bijection $f$ between $x$ and $y$.
+        Then $f^{-1}$ is a bijection between $y$ and $x$.
+        Hence $f$ is a map from $x$ into $y$ and $f^{-1}$ is a map from $y$ into
+        $x$.
+      End.
+
+      Case there exists a map from $x$ into $y$ and there exists a map from $y$
+      into $x$.
+        Take a map $f$ from $x$ into $y$.
+        Take a map $g$ from $y$ into $x$.
         We have $y \setminus f[a] \subseteq y$ for any $a \in \pow(x)$.
 
         (1) Define $h(a) = x \setminus g[y \setminus f[a]]$ for $a \in \pow(x)$.
 
-        $h$ is a function from $\pow(x)$ to $\pow(x)$.
+        $h$ is a map from $\pow(x)$ to $\pow(x)$.
         Indeed $h(a)$ is a subset of $x$ for each subset $a$ of $x$.
 
         Let us show that $h$ preserves subsets.
-          Let $a,b$ be subsets of $x$.
-          Assume $a \subseteq b$.
-          Then $f[a] \subseteq f[b]$.
-          Hence $y \setminus f[b] \subseteq y \setminus f[a]$.
-          Thus $g[y \setminus f[b]] \subseteq g[y \setminus f[a]]$ (by \ref{SetTheory_02_02_889945}).
-          Indeed $y \setminus f[b]$ and $y \setminus f[a]$ are subsets of $y$.
-          Therefore $x \setminus g[y \setminus f[a]] \subseteq x \setminus g[y \setminus f[b]]$.
-          Consequently $h[a] \subseteq h[b]$.
+          Let $u, v$ be subsets of $x$.
+          Assume $u \subseteq v$.
+          Then $f[u] \subseteq f[v]$.
+          Hence $y \setminus f[v] \subseteq y \setminus f[u]$.
+          Thus $g[y \setminus f[v]] \subseteq g[y \setminus f[u]]$.
+          Indeed $y \setminus f[v]$ and $y \setminus f[u]$ are subsets of $y$.
+          Therefore $x \setminus g[y \setminus f[u]] \subseteq
+          x \setminus g[y \setminus f[v]]$.
+          Consequently $h[u] \subseteq h[v]$.
         End.
 
-        Hence we can take a fixed point $c$ of $h$ (by \ref{SetTheory_02_05_636019}).
+        Hence we can take a fixed point $c$ of $h$ (by \ref{KT}).
 
         (2) Define $F(u) = f(u)$ for $u \in c$.
 
@@ -95,9 +146,9 @@ Marcel Schütz (2019 - 2021)}
           \end{cases} \]
         for $u \in x$.
 
-        Let us show that $H$ is a function to $y$.
+        Let us show that $H$ is a map to $y$.
           $\dom(H)$ is a set and every value of $H$ is an object.
-          Hence $H$ is a function.
+          Hence $H$ is a map.
 
           Let us show that every value of $H$ lies in $y$.
             Let $v$ be a value of $H$.
@@ -125,8 +176,11 @@ Marcel Schütz (2019 - 2021)}
           End.
         End.
 
-        Let us show that $H$ is one to one.
-          Let $u,v \in \dom(H)$.
+        (4) Thus $H$ is a map from $x$ onto $y$.
+
+        Let us show that for all $u, v \in x$ if $u \neq v$ then
+        $H(u) \neq H(v)$.
+          Let $u,v \in x$.
           Assume $u \neq v$.
 
           Case $u,v \in c$.
@@ -156,8 +210,16 @@ Marcel Schütz (2019 - 2021)}
           End.
         End.
 
-        Hence $H$ is a bijection between $x$ and $y$.
+        (5) Thus $H$ is a map from $x$ into $y$.
+        Consequently $H$ is a bijection between $x$ and $y$ (by 4, 5).
+        Therefore $x$ and $y$ are equinumerous.
       End.
     \end{proof}
   \end{forthel}
+
+  \begin{thebibliography}{1}
+    \bibitem{Schroeder2012} Bernd S. W. Schröder,
+      \textit{The fixed point property for ordered sets};
+      Springer, \textit{Arabian Journal of Mathematics}, vol. 1, p. 529--547
+  \end{thebibliography}
 \end{document}

@@ -37,7 +37,7 @@ Marcel Schütz (2021)}
   \end{forthel}
 
   \begin{forthel}
-    [readtex \path{set-theory/sections/01_sets/02_powerset.ftl.tex}]
+    [readtex \path{set-theory/sections/10_sets.ftl.tex}]
   \end{forthel}
 
   The central idea of Furstenberg's proof is to define a certain topology on
@@ -61,6 +61,10 @@ Marcel Schütz (2021)}
     \end{definition}
 
     Let the complement of $A$ stand for $A^{\complement}$.
+
+    \begin{lemma}
+      The complement of any subset of $\mathbb{N}$ is a subset of $\mathbb{N}$.
+    \end{lemma}
   \end{forthel}
 
   Towards a suitable topology on $\mathbb{N}$ let us define \textit{arithmetic
@@ -78,11 +82,13 @@ Marcel Schütz (2021)}
   \begin{forthel}
     \begin{definition}
       Let $U$ be a subset of $\mathbb{N}$.
-      $U$ is open iff for any $n \in U$ there exists a $q$ such that $\N_{n, q} \subseteq U$.
+      $U$ is open iff for any $n \in U$ there exists a $q$ such that
+      $\N_{n, q} \subseteq U$.
     \end{definition}
 
     \begin{definition}
-    A system of open sets is a system of sets $S$ such that every element of $S$ is an open subset of $\mathbb{N}$.
+      A system of open sets is a system of sets $S$ such that every element of
+      $S$ is an open subset of $\mathbb{N}$.
     \end{definition}
   \end{forthel}
 
@@ -145,7 +151,8 @@ Marcel Schütz (2021)}
     \end{definition}
 
     \begin{definition}
-      A system of closed sets is a system of sets $S$ such that every element of $S$ is a closed subset of $\mathbb{N}$.
+      A system of closed sets is a system of sets $S$ such that every element of
+      $S$ is a closed subset of $\mathbb{N}$.
     \end{definition}
 
     \begin{lemma}
@@ -162,8 +169,8 @@ Marcel Schütz (2021)}
     \end{proof}
 
     \begin{signature}
-      Let $X$ be a set.
-      $X$ is finite is a relation.
+      Let $X$ be a class.
+      $X$ is finite is an atom.
     \end{signature}
 
     Let $X$ is infinite stand for $X$ is not finite.
@@ -220,7 +227,8 @@ Marcel Schütz (2021)}
     \end{theorem}
     \begin{proof}[by contradiction]
 
-      Let us show that for any natural number $n$ $n$ belongs to $\bigcup \mathbb{P}$ iff $n$ has a prime divisor.
+      Let us show that for any natural number $n$ $n$ belongs to
+      $\bigcup \mathbb{P}$ iff $n$ has a prime divisor.
         Let $n$ be a natural number.
 
         If $n$ has a prime divisor then $n$ belongs to $\bigcup \mathbb{P}$. \\
@@ -244,7 +252,9 @@ Marcel Schütz (2021)}
       Thus we have $(\bigcup \mathbb{P})^{\complement} = \set{1}$.
       Indeed any natural number having no prime divisor is equal to $1$.
       Assume that $\mathbb{P}$ is finite.
-      Then $\bigcup \mathbb{P}$ is closed and $(\bigcup \mathbb{P})^{\complement}$ is open.
+      Then $\bigcup \mathbb{P}$ is closed and
+      $(\bigcup \mathbb{P})^{\complement}$ is open.
+      Indeed every element of $\mathbb{P}$ is a closed set.
       Take a $p$ such that $\N_{1, p} \subseteq (\bigcup \mathbb{P})^{\complement}$.
       $1 + p$ is an element of $\N_{1, p}$.
       Indeed $1 + p \equiv 1 \pmod{p}$.
