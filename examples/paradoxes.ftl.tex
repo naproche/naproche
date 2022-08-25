@@ -3,57 +3,47 @@
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{xurl}
+\usepackage{csquotes}
 \usepackage[nonumbers]{../lib/tex/naproche}
+\usepackage{../lib/tex/basic-notions}
 
 \title{Paradoxes}
-\author{\Naproche formalization: Marcel Schütz}
+\author{Marcel Schütz}
 \date{2022}
 
 \begin{document}
   \maketitle
 
+  \noindent This is a small collection of some famous (mathematical) paradoxes.
+  On mid-range hardware \Naproche needs approximately 7 minutes to check it
+  (including checking the library files it depends on, which takes by far the
+  largest part of the time).
+
   \begin{forthel}
-    [readtex \path{axioms.ftl.tex}]
-
-    [readtex \path{macros.ftl.tex}]
-
-    [readtex \path{vocabulary.ftl.tex}]
+    [readtex \path{set-theory/sections/15_ordinals.ftl.tex}]
   \end{forthel}
 
+  \section*{The Drinker Paradox}
 
-  \section*{The Barber Paradox}
+  The Drinker Paradox is a principle of classical predicate logic popularised by
+  the logician Raymond Smullyan in his 1978 book \textit{What Is the Name of
+  this Book?} which can be stated as
+
+  \begin{quotation}
+    \noindent There is someone in the pub such that, if he is drinking then
+    everyone in the pub is drinking.
+  \end{quotation}
+
+  \noindent We can formalize and prove this assertion in \Naproche:
 
   \begin{forthel}
     \begin{signature}
       A person is a notion.
     \end{signature}
 
-    Let a barber denote a person.
-
-    \begin{signature}
-      Let $B$ be a barber and $P$ be a person.
-      $B$ shaves $P$ is a relation.
-    \end{signature}
-
-    Let $P$ shaves himself stand for $P$ shaves $P$.
-
-    \begin{theorem}
-      Let $B$ be a barber such that for any person $P$ $B$ shaves $P$ iff $P$
-      does not shave himself.
-      Then we have a contradiction.
-    \end{theorem}
-    \begin{proof}
-      $B$ shaves himself iff $B$ does not shave himself.
-    \end{proof}
-  \end{forthel}
-
-
-  \section*{The Drinker Paradox}
-
-  \begin{forthel}
     \begin{signature}
       Let $P$ be a person.
-      $P$ is drinking is a relation.
+      $P$ is drinking is an atom.
     \end{signature}
 
     \begin{signature}
@@ -72,7 +62,7 @@
       %Then there is a person $P$ inside the pub such that if $P$ is drinking
       %then every person inside the pub is drinking.
     \end{theorem}
-    \begin{proof}
+    \begin{proof}[by case analysis]
       Case every person inside the pub is drinking.
         Choose a person $P$ inside the pub.
         Then $P$ is drinking and every person inside the pub is drinking.
@@ -91,68 +81,79 @@
 
   \section*{Russell's Paradox}
 
+  Russell's Paradox is a set-theoretical paradox discovered by Bertrand Russell
+  in 1901 which shows that every set theory with an unrestricted comprehension
+  principle leads to contradictions.
+  Using \Naproche's ontology of classes and sets and its inbuilt axiom of class
+  comprehension we can formalize this paradox as follows.
+
   \begin{forthel}
     \begin{theorem}
-      Assume that every class is a set.
-      Then we have a contradiction.
+      If every class is a set then we have a contradiction.
     \end{theorem}
     \begin{proof}
       Define $R = \class{x | \text{$x$ is a set such that $x \notin x$}}$.
-      Then $R \in R$ iff $R \notin R$.
+      Assume that every class is a set.
+      Then $R$ is a set.
+      Hence $R \in R$ iff $R \notin R$.
       Contradiction.
+    \end{proof}
+  \end{forthel}
+
+
+  \section*{The Barber Paradox}
+
+  The Barber Paradox is a puzzle illustrating Russell's Paradox, formulated by
+  Bertrand Russell in 1918 with the following words:
+
+  \begin{quotation}
+    \noindent You can define the barber as \enquote{one who shaves all those,
+    and those only, who do not shave themselves}.
+    The question is, does the barber shave himself?
+  \end{quotation}
+
+  \noindent We can show in \Naproche that the existence of such a barber would
+  be contradictory.
+
+  \begin{forthel}
+    \begin{signature}
+      A barber is a person.
+    \end{signature}
+
+    \begin{signature}
+      Let $B, P$ be persons.
+      $B$ shaves $P$ is an atom.
+    \end{signature}
+
+    Let $P$ shaves himself stand for $P$ shaves $P$.
+
+    \begin{theorem}
+      Let $B$ be a barber such that for any person $P$ $B$ shaves $P$ iff $P$
+      does not shave himself.
+      Then we have a contradiction.
+    \end{theorem}
+    \begin{proof}
+      $B$ shaves himself iff $B$ does not shave himself.
     \end{proof}
   \end{forthel}
 
 
   \section*{The Burali-Forti Paradox}
 
+  The Burali-Forti paradox, named after Cesare Burali-Forti, demonstates that
+  the assumption of the collection $\Ord$ of all all ordinal numbers being a set
+  leads to contradictions.
+
   \begin{forthel}
-    \begin{definition}
-      Let $x$ be a set.
-      $x$ is transitive iff every element of $x$ is a set and for all $y \in x$
-      and all $z \in y$ we have $z \in x$.
-    \end{definition}
-
-    \begin{definition}
-      An ordinal number is a transitive set $\alpha$ such that every element of
-      $\alpha$ is a transitive set.
-    \end{definition}
-
-    \begin{definition}
-      Let $\alpha, \beta$ be ordinal numbers.
-      $\alpha < \beta$ iff $\alpha \in \beta$.
-    \end{definition}
-
     \begin{theorem}
-      Let $\alpha$ be the collection of all ordinal numbers.
-      Assume that $\alpha$ is a set.
-      Then $\alpha$ is an ordinal number such that $\alpha < \alpha$.
+      If $\Ord$ is a set then we have a contradiction.
     \end{theorem}
     \begin{proof}
-      (1) $\alpha$ is transitive. \\
-      Proof.
-        Let $\beta \in \alpha$ and $\gamma \in \beta$.
-        Then $\beta$ is an ordinal number.
-        Hence $\gamma$ is a transitive set.
-
-        Let us show that every element of $\gamma$ is a transitive set.
-          Let $x \in \gamma$.
-          Then $x \in \beta$.
-          Indeed $\beta$ is transitive.
-          Thus $x$ is a transitive set.
-          Indeed every element of $\beta$ is a transitive set.
-        End.
-
-        Therefore $\gamma$ is an ordinal number.
-        Consequently $\gamma \in \alpha$.
-      Qed.
-
-      (2) Every set that is contained in $\alpha$ is transitive.
-      Indeed every element of $\alpha$ is an ordinal number and every ordinal
-      number is transitive.
-
-      Therefore $\alpha$ is an ordinal number.
-      Consequently $\alpha < \alpha$.
+      $\Ord$ is transitive and every element of $\Ord$ is transitive.
+      Assume that $\Ord$ is a set.
+      Then $\Ord$ is an ordinal.
+      Hence $\Ord \in \Ord$.
+      Contradiction.
     \end{proof}
   \end{forthel}
 \end{document}
