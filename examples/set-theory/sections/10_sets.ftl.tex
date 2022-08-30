@@ -8,9 +8,7 @@
   \begin{forthel}
     %[prove off][check off]
 
-    [readtex \path{set-theory/sections/04_pairs-and-products.ftl.tex}]
-
-    [readtex \path{set-theory/sections/06_maps.ftl.tex}]
+    [readtex \path{set-theory/sections/09_invertible-maps.ftl.tex}]
 
     %[prove on][check on]
   \end{forthel}
@@ -222,7 +220,13 @@
   \end{forthel}
 
 
-  \section{The KM axioms}
+  \section{Axioms for mathematics}
+
+  \begin{forthel}
+    \begin{axiom}[Set existence]\label{SET_THEORY_10_2362039748001792}
+      There exists a set.
+    \end{axiom}
+  \end{forthel}
 
   \begin{forthel}
     \begin{axiom}[Separation]\label{SET_THEORY_10_2263707272871936}
@@ -248,8 +252,9 @@
 
   \begin{forthel}
     \begin{axiom}[Infinity]\label{SET_THEORY_10_367388832825344}
-      There exists a set $x$ such that $\emptyset \in x$ and for all sets $y$ if
-      $y \in x$ then $y \cup \set{y} \in x$.
+      Let $A$ be a class and $a \in A$ and $f : A \to A$.
+      Then there exists a subset $X$ of $A$ such that $a \in X$ and for all
+      $x \in X$ we have $f(x) \in X$.
     \end{axiom}
   \end{forthel}
 
@@ -280,7 +285,14 @@
   \begin{forthel}
     \begin{axiom}[Replacement]\label{SET_THEORY_10_8142956584239104}
       Let $f$ be a map and $x$ be a set.
-      Then $f_{*}(x)$ is a set.
+      Then $f[x]$ is a set.
+    \end{axiom}
+  \end{forthel}
+  
+  \begin{forthel}
+    \begin{axiom}[Function]\label{SET_THEORY_10_7781693549182976}
+      Let $f$ be a map.
+      $f$ is a function iff $\dom(f)$ is a set.
     \end{axiom}
   \end{forthel}
 
@@ -292,7 +304,7 @@
       $\emptyset$ is a set.
     \end{proposition}
     \begin{proof}
-      Take a set $x$ (by \ref{SET_THEORY_10_367388832825344}).
+      Take a set $x$ (by \ref{SET_THEORY_10_2362039748001792}).
       Define $A = \class{y \in x | y \neq y}$.
       Then $A$ is a set (by \ref{SET_THEORY_10_2263707272871936}).
       We have $A = \emptyset$.
@@ -306,7 +318,8 @@
       Then $x \cup y$ is a set.
     \end{proposition}
     \begin{proof}
-      Define $X = \{ x, y \}$.
+      %Define $X = \set{x,y}$. %!
+      Take a set $X$ such that $X = \set{x,y}$.
       $\bigcup X$ is a set (by \ref{SET_THEORY_10_5536459412996096}).
       Indeed $X$ is a system of sets.
       We have $x \cup y = \bigcup X$.
@@ -470,6 +483,20 @@
     \begin{proof}
       $\range(f) = f_{*}(\dom(f))$ and $f_{*}(\dom(f))$ is a set.
       Hence $\range(f)$ is a set (by \ref{SET_THEORY_10_8142956584239104}).
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\label{SET_THEORY_10_8631339572002816}
+      Let $A$ be a class and $x$ be a set.
+      Assume that there exists a map from $A$ into $x$.
+      Then $A$ is a set.
+    \end{proposition}
+    \begin{proof}
+      Consider a map $f$ from $A$ into $x$.
+      Then $f^{-1}$ is a bijection between $\range(f)$ and $A$.
+      $\range(f)$ is a set and $A$ is the image of $\range(f)$ under $f^{-1}$.
+      Thus $A$ is a set (by \ref{SET_THEORY_10_8142956584239104}).
     \end{proof}
   \end{forthel}
 
