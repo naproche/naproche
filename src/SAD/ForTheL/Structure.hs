@@ -271,7 +271,12 @@ finishWithoutLink = finish $ return []
 optLink :: FTL [Text]
 optLink = optLL1 [] $ parenthesised $ token' "by" >> identifiers
   where
-    identifiers = (texCommandWithArg "ref" identifier <|> texCommandWithArg "nameref" identifier <|> identifier) `sepByLL1` comma
+    identifiers = reference `sepByLL1` comma
+    reference =
+          texCommandWithArg "ref" identifier
+      <|> texCommandWithArg "nameref" identifier
+      <|> texCommandWithArg "cref" identifier
+      <|> identifier
 
 
 -- ** Labels
