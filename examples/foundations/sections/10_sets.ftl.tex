@@ -1,14 +1,14 @@
 \documentclass[../set-theory.tex]{subfiles}
 
 \begin{document}
-  \chapter{Sets}
+  \chapter{Sets}\label{sets}
 
-  \readftl{set-theory/sections/10_sets.ftl.tex}
+  \readftl{foundations/sections/10_sets.ftl.tex}
 
   \begin{forthel}
     %[prove off][check off]
 
-    [readtex \path{set-theory/sections/09_invertible-maps.ftl.tex}]
+    [readtex \path{foundations/sections/09_invertible-maps.ftl.tex}]
 
     %[prove on][check on]
   \end{forthel}
@@ -203,7 +203,7 @@
         Thus $a \in x \cap y$.
       End.
 
-      Let us show that $x \cap y = \bigcap \set{x, y}$.
+      Let us show that $x \cap y \subseteq \bigcap \set{x, y}$.
         Let $a \in x \cap y$.
         Then $a \in x$ and $a \in y$.
         Hence $a$ is contained in every element of $\set{x, y}$.
@@ -221,6 +221,15 @@
 
 
   \section{Axioms for mathematics}
+
+  \begin{forthel}
+    \begin{definition}
+      Let $A$ be a class and $a$ be an object and $f$ be a map such that
+      $A \subseteq \dom(f)$.
+      $A$ is inductive regarding $a$ and $f$ iff $a \in A$ and for all $x \in A$
+      we have $f(x) \in A$.
+    \end{definition}
+  \end{forthel}
 
   \begin{forthel}
     \begin{axiom}[Set existence]\label{SET_THEORY_10_2362039748001792}
@@ -253,8 +262,7 @@
   \begin{forthel}
     \begin{axiom}[Infinity]\label{SET_THEORY_10_367388832825344}
       Let $A$ be a class and $a \in A$ and $f : A \to A$.
-      Then there exists a subset $X$ of $A$ such that $a \in X$ and for all
-      $x \in X$ we have $f(x) \in X$.
+      Then there exists a subset of $A$ that is inductive regarding $a$ and $f$.
     \end{axiom}
   \end{forthel}
 
@@ -292,7 +300,7 @@
   \begin{forthel}
     \begin{axiom}[Function]\label{SET_THEORY_10_7781693549182976}
       Let $f$ be a map.
-      $f$ is a function iff $\dom(f)$ is a set.
+      If $\dom(f)$ is a set then $f$ is a function.
     \end{axiom}
   \end{forthel}
 
@@ -451,9 +459,13 @@
         Hence $f(p) \in x \times y$ for all $p \in P$.
         Therefore $f[P] \subseteq x \times y$.
 
-        For any $a \in x$ and any $b \in y$ we have $(a,b) =
-        f(\set{\set{a}, \set{a,b}})$.
-        Thus $(a,b) \in f[P]$ for all $a \in x$ and all $b \in y$.
+        Let us show that $x \times y \subseteq f[P]$.
+          Let $z \in x \times y$.
+          Take $a \in x$ and $b \in y$ such that $z = (a,b)$.
+          Then $(a,b) = f(\set{\set{a}, \set{a,b}})$.
+          Hence there exists a $p \in P$ such that $(a,b) = f(p)$.
+          Thus $(a,b) \in f[P]$.
+        End.
 
         Consequently $x \times y = f[P]$.
       Qed.

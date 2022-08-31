@@ -1,0 +1,44 @@
+\documentclass[12pt,oneside]{book}
+
+\usepackage{../../lib/tex/naproche}
+\usepackage{../../lib/tex/libraries}
+\usepackage{../../lib/tex/basic-notions}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{footnote}
+\usepackage{cleveref}
+
+\makesavenoteenv{tabular} % Make footnotes work in tabular environments
+
+
+\title{Foundations of Mathematics}
+\author{Marcel Schütz}
+\date{2022}
+
+\begin{document}
+  \maketitle
+  
+  \tableofcontents
+
+  \begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[width=0.9\linewidth]{./dependency-graph/graph.png}}
+    \caption*{Interdependencies of the chapters}
+  \end{figure}
+
+
+  \subfile{sections/01_classes.ftl.tex}
+  \subfile{sections/02_computation-laws-for-classes.ftl.tex}
+  \subfile{sections/03_symmetric-difference.ftl.tex}
+  \subfile{sections/04_pairs-and-products.ftl.tex}
+  \subfile{sections/05_computation-laws-for-products.ftl.tex}
+  \subfile{sections/06_maps.ftl.tex}
+  \subfile{sections/07_image-and-preimage.ftl.tex}
+  \subfile{sections/08_injections-surjections-bijections.ftl.tex}
+  \subfile{sections/09_invertible-maps.ftl.tex}
+  \subfile{sections/10_sets.ftl.tex}
+  \subfile{sections/11_binary-relations.ftl.tex}
+  \subfile{sections/12_fixed-points.ftl.tex}
+  \subfile{sections/13_equinumerosity.ftl.tex}
+\end{document}

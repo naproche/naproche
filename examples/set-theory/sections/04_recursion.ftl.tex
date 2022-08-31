@@ -1,0 +1,99 @@
+\documentclass[../set-theory.tex]{subfiles}
+
+\begin{document}
+  \chapter{Recursion}
+
+  \readftl{set-theory/sections/04_recursion.ftl.tex}
+
+  \begin{forthel}
+    %[prove off][check off]
+
+    [readtex \path{set-theory/sections/02_ordinals.ftl.tex}]
+
+    %[prove on][check on]
+  \end{forthel}
+
+
+  \begin{forthel}
+    \begin{definition}
+      Let $A$ be a class and $\alpha$ be an ordinal.
+      \[ A^{< \alpha} = \class{f | \text{$f$ is a function from $\beta$ to $A$
+      for some ordinal $\beta$ less than $\alpha$}}. \]
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}
+      Let $A$ be a class.
+      \[ A^{< \infty} = \class{f | \text{$f$ is a function from $\alpha$ to $A$
+      for some ordinal $\alpha$}}. \]
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}
+      Let $H$ be a map and $G : A^{< \infty} \to A$ for some class $A$.
+      $H$ is recursive regarding $G$ iff $\dom(H)$ is a transitive subclass of
+      $\Ord$ and for all $\alpha \in \dom(H)$ we have
+      \[ H(\alpha) = G(H \restriction \alpha). \]
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}
+      Let $A$ be a class and $G : A^{< \infty} \to A$.
+      Let $H, H'$ be maps that are recursive regarding $G$.
+      Then \[ H(\alpha) = H'(\alpha) \]
+      for all $\alpha \in \dom(H) \cap \dom(H')$.
+    \end{proposition}
+    \begin{proof}
+      % ...
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{theorem}
+      Let $G$ be a map from $A^{< \infty}$ to $A$.
+      Then there exists a map $F$ from $\Ord$ to $A$ such that
+      \[ F(\alpha) = G(F \restriction \alpha) \]
+      for any ordinal $\alpha$.
+    \end{theorem}
+    \begin{proof}
+      % ...
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{theorem}
+      Let $A$ be a class and $G$ be a map from $A^{< \infty}$ to $A$.
+      Let $F, F'$ be maps from $\Ord$ to $A$ such that for any ordinal $\alpha$
+      we have
+      \[ F(\alpha) = G(F \restriction \alpha) \]
+      and
+      \[ F'(\alpha) = G(F' \restriction \alpha). \]
+      Then $F = F'$.
+    \end{theorem}
+    \begin{proof}
+      $F$ and $F'$ are recursive regarding $G$.
+      Hence $F(\alpha) = F'(\alpha)$ for all $\alpha \in \Ord$.
+      Thus $F = F'$.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{theorem}
+      Let $A$ be a class.
+      Let $a \in A$ and $G : \Ord \times A \to A$ and
+      $H : \Ord \times A^{< \infty} \to A$.
+      Then there exists a map $F$ from $\Ord$ to $A$ such that
+      \[ F(0) = a \]
+      and for all ordinals $\alpha$ we have
+      \[ F(\succ(\alpha)) = G(\alpha, F(\alpha)) \]
+      and for all limit ordinals $\lambda$ we have
+      \[ F(\lambda) = H(\lambda, F \restriction \lambda). \]
+    \end{theorem}
+    \begin{proof}
+      % ...
+    \end{proof}
+  \end{forthel}
+\end{document}

@@ -1,32 +1,14 @@
 digraph Sections {
-    set_theory_01 [label = "1 Classes"]
-    set_theory_02 [label = "2 Computation laws for classes"]
-    set_theory_03 [label = "3 Symmetric difference"]
-    set_theory_04 [label = "4 Ordered pairs and Cartesian products"]
-    set_theory_05 [label = "5 Computation laws for Cartesian products"]
-    set_theory_06 [label = "6 Maps"]
-    set_theory_07 [label = "7 Computation laws for images and preimages"]
-    set_theory_08 [label = "8 Surjections, injections and bijections"]
-    set_theory_09 [label = "9 Invertible maps and involutions"]
-    set_theory_10 [label = "10 Sets"]
-    set_theory_11 [label = "11 Binary relations"]
-    set_theory_12 [label = "12 Fixed points"]
-    set_theory_13 [label = "13 Equinumerosity"]
-    set_theory_14 [label = "14 Transitive classes"]
-    set_theory_15 [label = "15 Ordinal numbers"]
 
-    set_theory_01                -> set_theory_02
-    set_theory_02                -> set_theory_03
-    set_theory_01                -> set_theory_04
-    set_theory_02, set_theory_04 -> set_theory_05
-    set_theory_04                -> set_theory_06
-    set_theory_06                -> set_theory_07
-    set_theory_06                -> set_theory_08
-    set_theory_08                -> set_theory_09
-    set_theory_09                -> set_theory_10
-    set_theory_10                -> set_theory_11
-    set_theory_10                -> set_theory_12
-    set_theory_12                -> set_theory_13
-    set_theory_10                -> set_theory_14
-    set_theory_11, set_theory_14 -> set_theory_15
+    foundations_10 [label = "Foundations: 10 Sets", color = "gray", fontcolor = "gray"]
+    foundations_11 [label = "Foundations: 11 Binary relations", color = "gray", fontcolor = "gray"]
+
+    set_theory_01 [label = "1 Transitive classes"]
+    set_theory_02 [label = "2 Ordinal numbers"]
+    set_theory_03 [label = "3 Finite ordinals"]
+
+    foundations_10  -> set_theory_01    [color = "gray"]
+    foundations_11  -> set_theory_02    [color = "gray"]
+    set_theory_01   -> set_theory_02
+    set_theory_02   -> set_theory_03
 }
