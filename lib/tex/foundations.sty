@@ -1,0 +1,29 @@
+\NeedsTeXFormat{LaTeX2e}
+
+\RequirePackage{pgffor}
+\RequirePackage{amssymb}
+\RequirePackage{amsmath}
+
+\DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\range}{range}
+
+\newcommand{\symdiff}{\mathop{\triangle}}
+\newcommand{\pow}{\mathcal{P}}
+\newcommand{\onto}{\twoheadrightarrow}
+\newcommand{\into}{\hookrightarrow}
+
+
+% Enumerative set notation
+
+% E.g. `\set{1, 2, 3, 4}` prints the numbers 1, 2, 3 and 4 as a comma-separated
+% list which is enclosed within curly braces.
+\def\set#1{%
+  \ensuremath{%
+    \{%
+    \foreach[count=\i] \x in {#1}{%
+      \ifnum\i>1,\,\fi%
+      \x%
+    }%
+    \}
+  }%
+}
