@@ -13,6 +13,15 @@ variant of ForTheL, respectively.
 
 ### Changes on ForTheL
 
+  * **New:** To label a top-level section you can now use `\printlabel{...}`
+    instead of `\label{...}` if you want the label to be printed in the PDF.
+    `\printlabel` behaves exactly as `\label` (apart from the fact that its
+    label is printed); in particular you can use it in conjunction with `\ref`
+    or other referencing commands.
+
+  * **New:** To reference top-level sections you can now use `\cref` besides
+    `\ref` and `\nameref`.
+
   * **New:** In FTL-TeX `\left`, `\middle` and `\right` are tokenized away.
 
   * **Changed:** FTL-TeX does no longer provide primitive expressions inherited
@@ -35,12 +44,14 @@ variant of ForTheL, respectively.
 
 ### Changes on the example files
 
-  * **Changed:** The set theory library was completely rewritten. It now
-    provides better support for classes and includes additional chapters on
-    *binary relations*, *transitive classes* and *ordinal numbers*.
+  * **Changed:** The set theory library (now stored at `examples/foundations`)
+    was completely rewritten to provides better support for classes.
     Moreover, the paths of the source files of all chapters and the labels of
     any definitions, theorems etc. are now displayed in the PDF, making
     importing and referencing a bit easier.
+
+  * **New:** A new library on set theory (stored at `examples/set-theory`)
+    including chapters on *transitive classes* and *ordinal numbers* (so far).
 
   * **New:** The formalizations of König's theorem (`koenig.ftl(.tex)`) and
     Hausdorff's theorem (`hausdorff.ftl(.tex)`, formerly
