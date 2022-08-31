@@ -17,13 +17,13 @@
   \section{Sub- and supersets}
 
   \begin{forthel}
-    \begin{definition}\label{SET_THEORY_10_5530582838673408}
+    \begin{definition}\printlabel{SET_THEORY_10_5530582838673408}
       A proper class is a class that is not a set.
     \end{definition}
   \end{forthel}
 
   \begin{forthel}
-    \begin{definition}\label{SET_THEORY_10_1346889551183872}
+    \begin{definition}\printlabel{SET_THEORY_10_1346889551183872}
       Let $A$ be a class.
       A subset of $A$ is a subclass of $A$ that is a set.
     \end{definition}
@@ -37,7 +37,7 @@
   \section{Powerclasses}
 
   \begin{forthel}
-    \begin{definition}\label{SET_THEORY_10_1448589907722240}
+    \begin{definition}\printlabel{SET_THEORY_10_1448589907722240}
       Let $A$ be a class.
       The powerclass of $A$ is
       \[ \class{ x | \text{$x$ is a subset of $A$} }. \]
@@ -50,33 +50,33 @@
   \section{Systems of sets}
 
   \begin{forthel}
-    \begin{definition}\label{SET_THEORY_10_5805323570905088}
+    \begin{definition}\printlabel{SET_THEORY_10_5805323570905088}
       A system of sets is a class $X$ such that every element of $X$ is a set.
     \end{definition}
   \end{forthel}
 
   \begin{forthel}
-    \begin{definition}\label{SET_THEORY_10_1631952387964928}
+    \begin{definition}\printlabel{SET_THEORY_10_1631952387964928}
       A system of nonempty sets is a class $X$ such that every element of $X$ is a nonempty set.
     \end{definition}
   \end{forthel}
 
   \begin{forthel}
-    \begin{definition}\label{SET_THEORY_10_943381479948288}
+    \begin{definition}\printlabel{SET_THEORY_10_943381479948288}
       Let $A$ be a class.
       A system of subsets of $A$ is a class $X$ such that every element of $X$ is a subset of $A$.
     \end{definition}
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\label{SET_THEORY_10_8268633648136192}
+    \begin{proposition}\printlabel{SET_THEORY_10_8268633648136192}
       Let $A$ be a class.
       Then $\emptyset$ is a system of subsets of $A$.
     \end{proposition}
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\label{SET_THEORY_10_7546016869908480}
+    \begin{proposition}\printlabel{SET_THEORY_10_7546016869908480}
       Let $A$ be a class.
       Then $\pow(A)$ is a system of subsets of $A$.
     \end{proposition}
@@ -107,7 +107,7 @@
   \section{Unions}
 
   \begin{forthel}
-    \begin{definition}\label{SET_THEORY_10_541772562300928}
+    \begin{definition}\printlabel{SET_THEORY_10_541772562300928}
       Let $X$ be a system of sets.
       The union over $X$ is
       \[ \class{ a | \text{$a \in x$ for some $x \in X$} }. \]
@@ -117,7 +117,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\label{SET_THEORY_10_4872701241982976}
+    \begin{proposition}\printlabel{SET_THEORY_10_4872701241982976}
       \[ \bigcup \emptyset = \emptyset. \]
     \end{proposition}
     \begin{proof}
@@ -130,7 +130,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\label{SET_THEORY_10_2559541585641472}
+    \begin{proposition}\printlabel{SET_THEORY_10_2559541585641472}
       Let $x, y$ be sets.
       Then \[ \bigcup \set{x, y} = x \cup y. \]
     \end{proposition}
@@ -152,7 +152,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{corollary}\label{SET_THEORY_10_2157223832715264}
+    \begin{corollary}\printlabel{SET_THEORY_10_2157223832715264}
       Let $x$ be a set.
       Then \[ \bigcup \set{x} = x. \]
     \end{corollary}
@@ -162,7 +162,7 @@
   \section{Intersections}
 
   \begin{forthel}
-    \begin{definition}\label{SET_THEORY_10_2659345095458816}
+    \begin{definition}\printlabel{SET_THEORY_10_2659345095458816}
       Let $X$ be a system of sets.
       The intersection over $X$ is
       \[ \class{ a | \text{$a \in x$ for all $x \in X$} }. \]
@@ -172,7 +172,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\label{SET_THEORY_10_2809770322952192}
+    \begin{proposition}\printlabel{SET_THEORY_10_2809770322952192}
       $\bigcap \emptyset$ is the class of all objects.
     \end{proposition}
     \begin{proof}
@@ -191,7 +191,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\label{SET_THEORY_10_7851827447988224}
+    \begin{proposition}\printlabel{SET_THEORY_10_7851827447988224}
       Let $x, y$ be sets.
       Then \[ \bigcap \set{x, y} = x \cap y. \]
     \end{proposition}
@@ -213,7 +213,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{corollary}\label{SET_THEORY_10_7239895674257408}
+    \begin{corollary}\printlabel{SET_THEORY_10_7239895674257408}
       Let $x$ be a set.
       Then \[ \bigcap \set{x} = x. \]
     \end{corollary}
@@ -232,13 +232,13 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{axiom}[Set existence]\label{SET_THEORY_10_2362039748001792}
+    \begin{axiom}[Set existence]\printlabel{SET_THEORY_10_2362039748001792}
       There exists a set.
     \end{axiom}
   \end{forthel}
 
   \begin{forthel}
-    \begin{axiom}[Separation]\label{SET_THEORY_10_2263707272871936}
+    \begin{axiom}[Separation]\printlabel{SET_THEORY_10_2263707272871936}
       Let $A$ be a class.
       If there exists a set $x$ such that every element of $A$ is contained in
       $x$ then $A$ is a set.
@@ -246,28 +246,28 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{axiom}[Pairing]\label{SET_THEORY_10_7376893816864768}
+    \begin{axiom}[Pairing]\printlabel{SET_THEORY_10_7376893816864768}
       Let $a, b$ be objects.
       Then $\set{a, b}$ is a set.
     \end{axiom}
   \end{forthel}
 
   \begin{forthel}
-    \begin{axiom}[Union]\label{SET_THEORY_10_5536459412996096}
+    \begin{axiom}[Union]\printlabel{SET_THEORY_10_5536459412996096}
       Let $X$ be a system of sets.
       If $X$ is a set then $\bigcup X$ is a set.
     \end{axiom}
   \end{forthel}
 
   \begin{forthel}
-    \begin{axiom}[Infinity]\label{SET_THEORY_10_367388832825344}
+    \begin{axiom}[Infinity]\printlabel{SET_THEORY_10_367388832825344}
       Let $A$ be a class and $a \in A$ and $f : A \to A$.
       Then there exists a subset of $A$ that is inductive regarding $a$ and $f$.
     \end{axiom}
   \end{forthel}
 
   \begin{forthel}
-    \begin{axiom}[Powerset]\label{SET_THEORY_10_5862230203564032}
+    \begin{axiom}[Powerset]\printlabel{SET_THEORY_10_5862230203564032}
       Let $x$ be a set.
       Then $\pow(x)$ is a set.
     \end{axiom}
@@ -276,7 +276,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{axiom}[Choice]\label{SET_THEORY_10_1897613305577472}
+    \begin{axiom}[Choice]\printlabel{SET_THEORY_10_1897613305577472}
       Let $X$ be a system of nonempty sets.
       Then there exists a map $f$ such that $\dom(f) = X$ and $f(x) \in x$ for
       any $x \in X$.
@@ -284,21 +284,21 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{axiom}[Foundation]\label{SET_THEORY_10_1320008569323520}
+    \begin{axiom}[Foundation]\printlabel{SET_THEORY_10_1320008569323520}
       Let $X$ be a nonempty system of sets.
       Then $X$ has an element $x$ such that $X$ and $x$ are disjoint.
     \end{axiom}
   \end{forthel}
 
   \begin{forthel}
-    \begin{axiom}[Replacement]\label{SET_THEORY_10_8142956584239104}
+    \begin{axiom}[Replacement]\printlabel{SET_THEORY_10_8142956584239104}
       Let $f$ be a map and $x$ be a set.
       Then $f[x]$ is a set.
     \end{axiom}
   \end{forthel}
   
   \begin{forthel}
-    \begin{axiom}[Function]\label{SET_THEORY_10_7781693549182976}
+    \begin{axiom}[Function]\printlabel{SET_THEORY_10_7781693549182976}
       Let $f$ be a map.
       If $\dom(f)$ is a set then $f$ is a function.
     \end{axiom}
@@ -308,27 +308,27 @@
   \section{Consequences of the axioms}
 
   \begin{forthel}
-    \begin{proposition}\label{SET_THEORY_10_5891530432708608}
+    \begin{proposition}\printlabel{SET_THEORY_10_5891530432708608}
       $\emptyset$ is a set.
     \end{proposition}
     \begin{proof}
-      Take a set $x$ (by \ref{SET_THEORY_10_2362039748001792}).
+      Take a set $x$ (by \cref{SET_THEORY_10_2362039748001792}).
       Define $A = \class{y \in x | y \neq y}$.
-      Then $A$ is a set (by \ref{SET_THEORY_10_2263707272871936}).
+      Then $A$ is a set (by \cref{SET_THEORY_10_2263707272871936}).
       We have $A = \emptyset$.
       Hence $\emptyset$ is a set.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\label{SET_THEORY_10_4052198354845696}
+    \begin{proposition}\printlabel{SET_THEORY_10_4052198354845696}
       Let $x, y$ be sets.
       Then $x \cup y$ is a set.
     \end{proposition}
     \begin{proof}
       %Define $X = \set{x,y}$. %!
       Take a set $X$ such that $X = \set{x,y}$.
-      $\bigcup X$ is a set (by \ref{SET_THEORY_10_5536459412996096}).
+      $\bigcup X$ is a set (by \cref{SET_THEORY_10_5536459412996096}).
       Indeed $X$ is a system of sets.
       We have $x \cup y = \bigcup X$.
       Hence $x \cup y$ is a set.
@@ -336,29 +336,29 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\label{SET_THEORY_10_4475839687163904}
+    \begin{proposition}\printlabel{SET_THEORY_10_4475839687163904}
       Let $x, y$ be sets.
       Then $x \cap y$ is a set.
     \end{proposition}
     \begin{proof}
       We have $x \cap y \subseteq x$.
-      Hence $x \cap y$ is a set (by \ref{SET_THEORY_10_2263707272871936}).
+      Hence $x \cap y$ is a set (by \cref{SET_THEORY_10_2263707272871936}).
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\label{SET_THEORY_10_7795203882614784}
+    \begin{proposition}\printlabel{SET_THEORY_10_7795203882614784}
       Let $x, y$ be sets.
       Then $x \setminus y$ is a set.
     \end{proposition}
     \begin{proof}
       We have $x \setminus y \subseteq x$.
-      Hence $x \setminus y$ is a set (by \ref{SET_THEORY_10_2263707272871936}).
+      Hence $x \setminus y$ is a set (by \cref{SET_THEORY_10_2263707272871936}).
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\label{SET_THEORY_10_4458706448154624}
+    \begin{proposition}\printlabel{SET_THEORY_10_4458706448154624}
       Let $x, y$ be sets.
       Then $x \times y$ is a set.
     \end{proposition}
@@ -379,8 +379,8 @@
 
         $x \cup y$ is a set.
         Consequently $\pow(\pow(x \cup y))$ is a set (by
-        \ref{SET_THEORY_10_5862230203564032}).
-        Therefore $P$ is a set (by \ref{SET_THEORY_10_2263707272871936}).
+        \cref{SET_THEORY_10_5862230203564032}).
+        Therefore $P$ is a set (by \cref{SET_THEORY_10_2263707272871936}).
       Qed.
 
       Define $l(p) = \text{choose $a \in x$, choose $b \in y$ such that
@@ -471,35 +471,35 @@
       Qed.
 
       Thus $x \times y$ is the image of some set under some map.
-      Therefore $x \times y$ is a set (by \ref{SET_THEORY_10_8142956584239104}).
+      Therefore $x \times y$ is a set (by \cref{SET_THEORY_10_8142956584239104}).
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\label{SET_THEORY_10_5486815207227392}
+    \begin{proposition}\printlabel{SET_THEORY_10_5486815207227392}
       Let $X$ be a nonempty system of sets.
       Then $\bigcap X$ is a set.
     \end{proposition}
     \begin{proof}
       Take an element $x$ of $X$.
       Then $\bigcap X \subseteq x$.
-      Hence $\bigcap X$ is a set (by \ref{SET_THEORY_10_2263707272871936}).
+      Hence $\bigcap X$ is a set (by \cref{SET_THEORY_10_2263707272871936}).
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\label{SET_THEORY_10_7598384349184000}
+    \begin{proposition}\printlabel{SET_THEORY_10_7598384349184000}
       Let $f$ be a map such that $\dom(f)$ is a set.
       Then $\range(f)$ is a set.
     \end{proposition}
     \begin{proof}
       $\range(f) = f_{*}(\dom(f))$ and $f_{*}(\dom(f))$ is a set.
-      Hence $\range(f)$ is a set (by \ref{SET_THEORY_10_8142956584239104}).
+      Hence $\range(f)$ is a set (by \cref{SET_THEORY_10_8142956584239104}).
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\label{SET_THEORY_10_8631339572002816}
+    \begin{proposition}\printlabel{SET_THEORY_10_8631339572002816}
       Let $A$ be a class and $x$ be a set.
       Assume that there exists a map from $A$ into $x$.
       Then $A$ is a set.
@@ -508,19 +508,19 @@
       Consider a map $f$ from $A$ into $x$.
       Then $f^{-1}$ is a bijection between $\range(f)$ and $A$.
       $\range(f)$ is a set and $A$ is the image of $\range(f)$ under $f^{-1}$.
-      Thus $A$ is a set (by \ref{SET_THEORY_10_8142956584239104}).
+      Thus $A$ is a set (by \cref{SET_THEORY_10_8142956584239104}).
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\label{SET_THEORY_10_8812282138066944}
+    \begin{proposition}\printlabel{SET_THEORY_10_8812282138066944}
       There exist no sets $x, y$ such that $x \in y$ and $y \in x$.
     \end{proposition}
     \begin{proof}
       Assume the contrary.
       Take sets $x,y$ such that $x \in y$ and $y \in x$.
       Consider an element $z$ of $\set{x,y}$ such that $\set{x,y}$ and $z$ are
-      disjoint (by \ref{SET_THEORY_10_1320008569323520}).
+      disjoint (by \cref{SET_THEORY_10_1320008569323520}).
       Indeed $\set{x,y}$ is a nonempty system of sets.
       Then we have $z = x$ or $z = y$.
 
@@ -539,7 +539,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{corollary}\label{SET_THEORY_10_3086917813927936}
+    \begin{corollary}\printlabel{SET_THEORY_10_3086917813927936}
       Let $x$ be a set.
       Then $x \notin x$.
     \end{corollary}

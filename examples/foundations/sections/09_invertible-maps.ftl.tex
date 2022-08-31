@@ -17,7 +17,7 @@
   \section{Invertible maps}
 
   \begin{forthel}
-    \begin{definition}\label{SET_THEORY_09_7776974319648768}
+    \begin{definition}\printlabel{SET_THEORY_09_7776974319648768}
       Let $f$ be a map.
       An inverse of $f$ is a map $g$ from $\range(f)$ to $\dom(f)$ such that
       \[ f(a) = b \iff g(b) = a \]
@@ -26,14 +26,14 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{definition}\label{SET_THEORY_09_3430350086733824}
+    \begin{definition}\printlabel{SET_THEORY_09_3430350086733824}
       Let $f$ be a map.
       $f$ is invertible iff $f$ has an inverse.
     \end{definition}
   \end{forthel}
 
   \begin{forthel}
-    \begin{lemma}\label{SET_THEORY_09_5108611793551360}
+    \begin{lemma}\printlabel{SET_THEORY_09_5108611793551360}
       Let $f$ be a map and $g, g'$ be inverses of $f$.
       Then $g = g'$.
     \end{lemma}
@@ -51,7 +51,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{definition}\label{SET_THEORY_09_6458627204317184}
+    \begin{definition}\printlabel{SET_THEORY_09_6458627204317184}
       Let $f$ be an invertible map.
       $f^{-1}$ is the inverse of $f$.
     \end{definition}
@@ -64,7 +64,7 @@
   \section{Some basic facts about invertible maps}
 
   \begin{forthel}
-    \begin{proposition}\label{SET_THEORY_09_7840743571849216}
+    \begin{proposition}\printlabel{SET_THEORY_09_7840743571849216}
       Let $A, B$ be classes and $f : A \onto B$ and $g : B \onto A$.
       Then $g$ is the inverse of $f$ iff $g \circ f = \id_{A}$ and $f \circ g =
       \id_{B}$.
@@ -91,7 +91,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\label{SET_THEORY_09_8414736098000896}
+    \begin{proposition}\printlabel{SET_THEORY_09_8414736098000896}
       Let $A, B$ be classes and $f : A \onto B$.
       Assume that $f$ is invertible.
       Then $f^{-1}$ is an invertible map from $B$ onto $A$ such that
@@ -109,7 +109,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\label{SET_THEORY_09_4577560740495360}
+    \begin{proposition}\printlabel{SET_THEORY_09_4577560740495360}
       Let $A, B$ be classes and $f : A \onto B$.
       Assume that $f$ is invertible.
       Then \[ f \circ f^{-1} = \id_{B} \] and \[ f^{-1} \circ f = \id_{A}. \]
@@ -121,7 +121,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\label{SET_THEORY_09_4606651604664320}
+    \begin{proposition}\printlabel{SET_THEORY_09_4606651604664320}
       Let $A, B$ be classes and $f : A \onto B$ and $a \in A$.
       Assume that $f$ is invertible.
       Then \[ f^{-1}(f(a)) = a. \]
@@ -141,7 +141,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\label{SET_THEORY_09_7619151963095040}
+    \begin{proposition}\printlabel{SET_THEORY_09_7619151963095040}
       Let $A, B, C$ be classes and $f : A \onto B$ and $g : B \onto C$.
       Assume that $f$ and $g$ are invertible.
       Then $g \circ f$ is invertible and
@@ -187,7 +187,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\label{SET_THEORY_09_6374884963778560}
+    \begin{proposition}\printlabel{SET_THEORY_09_6374884963778560}
       Let $A, B$ be classes and $f : A \onto B$ and $X \subseteq A$.
       Assume that $f$ is invertible.
       Then $f \restriction_{X}$ is invertible and
@@ -234,7 +234,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\label{SET_THEORY_09_7726021377785856}
+    \begin{proposition}\printlabel{SET_THEORY_09_7726021377785856}
       Let $A, B$ be classes and $f : A \onto B$ and $Y \subseteq B$.
       Assume that $f$ is invertible.
       Then \[ f^{*}(Y) = (f^{-1})_{*}(Y). \]
@@ -259,7 +259,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{corollary}\label{SET_THEORY_09_8607784268464128}
+    \begin{corollary}\printlabel{SET_THEORY_09_8607784268464128}
       Let $A, B$ be classes and $f : A \onto B$ and $b \in B$.
       Assume that $f$ is invertible.
       Then \[ f^{*}(\set{b}) = \set{f^{-1}(b)}. \]
@@ -272,7 +272,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\label{SET_THEORY_09_6777575974109184}
+    \begin{proposition}\printlabel{SET_THEORY_09_6777575974109184}
       Let $A, B$ be classes and $f : A \onto B$.
       Then $f$ is invertible iff $f$ is injective.
     \end{proposition}
@@ -296,7 +296,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{corollary}\label{SET_THEORY_09_5708971514003456}
+    \begin{corollary}\printlabel{SET_THEORY_09_5708971514003456}
       Let $A, B$ be classes and $f : A \onto B$.
       Assume that $f$ is invertible.
       Then $f^{-1}$ is a bijection between $B$ and $A$.
@@ -314,14 +314,14 @@
   \section{Involutions}
 
   \begin{forthel}
-    \begin{definition}\label{SET_THEORY_09_7282039688527872}
+    \begin{definition}\printlabel{SET_THEORY_09_7282039688527872}
       Let $A$ be a class.
       An involution on $A$ is a selfinverse map $f$ on $A$.
     \end{definition}
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\label{SET_THEORY_09_7944474185433088}
+    \begin{proposition}\printlabel{SET_THEORY_09_7944474185433088}
       Let $A$ be a class.
       $\id_{A}$ is an involution on $A$.
     \end{proposition}
@@ -332,7 +332,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\label{SET_THEORY_09_6897019612299264}
+    \begin{proposition}\printlabel{SET_THEORY_09_6897019612299264}
       Let $A$ be a class and $f, g$ be involutions on $A$.
       Then $g \circ f$ is an involution on $A$ iff $g \circ f = f \circ g$.
     \end{proposition}
@@ -357,14 +357,14 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{corollary}\label{SET_THEORY_09_5958206868160512}
+    \begin{corollary}\printlabel{SET_THEORY_09_5958206868160512}
       Let $A$ be a class and $f$ be an involutions on $A$.
       Then $f \circ f$ is an involution on $A$.
     \end{corollary}
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\label{SET_THEORY_09_2314262743613440}
+    \begin{proposition}\printlabel{SET_THEORY_09_2314262743613440}
       Let $A$ be a class and $f$ be an involution on $A$.
       Then $f$ is a permutation of $A$.
     \end{proposition}
