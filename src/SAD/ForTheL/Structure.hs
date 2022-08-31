@@ -304,7 +304,9 @@ envLabel = try nameAndLabel <|> name <|> label
     -- "[<name>]"
     name = bracketed identifier
     -- "\label{<label>}"
-    label = texCommandWithArg "label" identifier
+    label =
+          texCommandWithArg "label" identifier
+      <|> texCommandWithArg "printlabel" identifier
 
     notClosingBrk = tokenPrim notCl
     notCl t = let tk = showToken t in guard (tk /= "]") >> return tk
