@@ -142,6 +142,16 @@ stand-alone files.
 Used by the puzzles `agatha` and `dwarves` in the Naproche examples.
 
 
+## "foundations"
+
+To be used when importing the foundations library.
+
+
+## "set-theory"
+
+To be used when importing the set theory library.
+
+
 
 
 [1]: <https://en.wikibooks.org/wiki/LaTeX/Installing_Extra_Packages#Manual_installation>
