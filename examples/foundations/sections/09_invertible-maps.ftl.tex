@@ -190,12 +190,12 @@
     \begin{proposition}\printlabel{SET_THEORY_09_6374884963778560}
       Let $A, B$ be classes and $f : A \onto B$ and $X \subseteq A$.
       Assume that $f$ is invertible.
-      Then $f \restriction_{X}$ is invertible and
-      \[ (f\restriction_{X})^{-1} = f^{-1} \restriction_{f_{*}(X)}. \]
+      Then $f \restriction X$ is invertible and
+      \[ (f\restriction X)^{-1} = f^{-1} \restriction (f_{*}(X)). \]
     \end{proposition}
     \begin{proof}
-      $f \restriction_{X}$ is a map from $X$ onto $f_{*}(X)$.
-      Take $g = f^{-1} \restriction_{f_{*}(X)}$.
+      $f \restriction X$ is a map from $X$ onto $f_{*}(X)$.
+      Take $g = f^{-1} \restriction (f_{*}(X))$.
       Then $g$ is a map from $f_{*}(X)$.
 
       Let us show that $X \subseteq \range(g)$.
@@ -209,27 +209,27 @@
         Let $a \in \range(g)$.
         Take $b \in f_{*}(X)$ such that $a = g(b)$.
         Take $c \in X$ such that $b = f(c)$.
-        Then $a = (f^{-1} \restriction_{f_{*}(X)})(b) = f^{-1}(b) = f^{-1}(f(c)) = c$.
+        Then $a = (f^{-1} \restriction (f_{*}(X)))(b) = f^{-1}(b) = f^{-1}(f(c)) = c$.
         Hence $a \in X$.
       End.
 
       Hence $\range(g) = X$.
       Thus $g$ is a map onto $X$.
 
-      Let us show that $g((f \restriction_{X})(a)) = a$ for all $a \in X$.
+      Let us show that $g((f \restriction X)(a)) = a$ for all $a \in X$.
         Let $a \in X$.
-        Then $g((f \restriction_{X})(a)) = g(f(a)) = (f^{-1} \restriction_{f_{*}(X)})(f(a)) = f^{-1}(f(a)) = a$.
+        Then $g((f \restriction X)(a)) = g(f(a)) = (f^{-1} \restriction (f_{*}(X)))(f(a)) = f^{-1}(f(a)) = a$.
       End.
 
-      Let us show that $((f \restriction_{X})(g(b))) = b$ for all $b \in f_{*}(X)$.
+      Let us show that $((f \restriction X)(g(b))) = b$ for all $b \in f_{*}(X)$.
         Let $b \in f_{*}(X)$.
         Take $a \in X$ such that $b = f(a)$.
-        We have $g(b) = g(f(a)) = (f^{-1} \restriction_{f_{*}(X)})(f(a)) = f^{-1}(f(a)) = a$.
-        Hence $(f \restriction_{X})(g(b)) = (f \restriction_{X})(a) = f(a) = b$.
+        We have $g(b) = g(f(a)) = (f^{-1} \restriction (f_{*}(X)))(f(a)) = f^{-1}(f(a)) = a$.
+        Hence $(f \restriction X)(g(b)) = (f \restriction X)(a) = f(a) = b$.
       End.
 
-      Thus $g \circ (f \restriction_{X}) = \id_{X}$ and $(f \restriction_{X}) \circ g = \id_{f_{*}(X)}$.
-      Therefore $g$ is the inverse of $f \restriction_{X}$.
+      Thus $g \circ (f \restriction X) = \id_{X}$ and $(f \restriction X) \circ g = \id_{f_{*}(X)}$.
+      Therefore $g$ is the inverse of $f \restriction X$.
     \end{proof}
   \end{forthel}
 

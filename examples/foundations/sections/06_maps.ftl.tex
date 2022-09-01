@@ -85,17 +85,17 @@
   \begin{forthel}
     \begin{definition}\printlabel{SET_THEORY_06_7095412741636096}
       Let $f$ be a map and $X \subseteq \dom(f)$.
-      %$f \restriction_{X}$ is the map defined on $X$ such that $(f \restriction_{X})(a) = f(a)$ for all $a \in X$.
-      $f \restriction_{X}$ is the map $h$ such that $h$ is defined on $X$ and $h(a) = f(a)$ for all $a \in X$.
+      %$f \restriction X$ is the map defined on $X$ such that $(f \restriction X)(a) = f(a)$ for all $a \in X$.
+      $f \restriction X$ is the map $h$ such that $h$ is defined on $X$ and $h(a) = f(a)$ for all $a \in X$.
     \end{definition}
 
-    Let the restriction of $f$ to $X$ stand for $f \restriction_{X}$.
+    Let the restriction of $f$ to $X$ stand for $f \restriction X$.
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_06_2170189258948608}
       Let $A$ be a class and $X \subseteq A$.
-      Then $\id_{A} \restriction_{X} = \id_{X}$.
+      Then $\id_{A} \restriction X = \id_{X}$.
     \end{proposition}
   \end{forthel}
 
@@ -195,7 +195,7 @@
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_06_4078561256275968}
       Let $A, B$ be classes and $f : A \to B$ and $X \subseteq A$.
-      Then $f \restriction_{X} : X \to B$.
+      Then $f \restriction X : X \to B$.
     \end{proposition}
   \end{forthel}
 
@@ -218,12 +218,12 @@
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_06_3118771061391360}
       Let $A$ be a class and $X \subseteq A$.
-      Then \[ \id_{A} \restriction_{X} = \id_{X}. \]
+      Then \[ \id_{A} \restriction X = \id_{X}. \]
     \end{proposition}
     \begin{proof}
-      We have $\dom(\id_{A} \restriction_{X}) = X = \dom(\id_{X})$.
-      $(\id_{A} \restriction_{X})(a) = \id_{A}(a) = a = \id_{X}(a)$ for all $a \in X$.
-      Hence $\id_{A} \restriction_{X} = \id_{X}$.
+      We have $\dom(\id_{A} \restriction X) = X = \dom(\id_{X})$.
+      $(\id_{A} \restriction X)(a) = \id_{A}(a) = a = \id_{X}(a)$ for all $a \in X$.
+      Hence $\id_{A} \restriction X = \id_{X}$.
     \end{proof}
   \end{forthel}
 
