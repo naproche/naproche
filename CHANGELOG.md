@@ -13,6 +13,13 @@ variant of ForTheL, respectively.
 
 ### Changes on ForTheL
 
+  * **New:** In low-level definitions `choose` and `define` terms can now be
+    enclosed within ``` `` ``` and `''`, e.g.:
+
+    ```
+    Define $f(n) =$ ``choose a prime $p$ greater than $n$ in $p^{2}$'' for $n \in \Nat$.
+    ```
+
   * **New:** To label a top-level section you can now use `\printlabel{...}`
     instead of `\label{...}` if you want the label to be printed in the PDF.
     `\printlabel` behaves exactly as `\label` (apart from the fact that its

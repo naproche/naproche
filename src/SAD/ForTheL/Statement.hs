@@ -505,7 +505,15 @@ mapNotion = sVar <**> (wordMap <|> (token "=" >> lambda))
     return $ \f -> mkMap f `And` Tag Domain (dom f) `And` body f
 
 lambdaBody :: FTL (Formula -> Formula)
-lambdaBody = label "map definition" $ optParenthesised $ cases <|> texCases <|> chooseInTerm
+lambdaBody = label "map definition" $ optParenthesised $ cases <|> texCases <|> quotedChooseInTerm <|> chooseInTerm
+  where
+    quotedChooseInTerm = do
+      symbol "`"
+      symbol "`"
+      choice <- chooseInTerm
+      symbol "'"
+      symbol "'"
+      return choice
 
 cases :: FTL (Formula -> Formula)
 cases = do
