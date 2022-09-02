@@ -6,9 +6,11 @@ digraph Sections {
     set_theory_01 [label = "1 Transitive classes"]
     set_theory_02 [label = "2 Ordinal numbers"]
     set_theory_03 [label = "3 Finite ordinals"]
+    set_theory_04 [label = "4 Recursion"]
 
     foundations_10  -> set_theory_01    [color = "gray"]
     foundations_11  -> set_theory_02    [color = "gray"]
     set_theory_01   -> set_theory_02
     set_theory_02   -> set_theory_03
+    set_theory_02   -> set_theory_04
 }
