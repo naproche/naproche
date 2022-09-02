@@ -30,6 +30,7 @@ module SAD.Parser.Primitives (
   , getTokenOf
   , getTokenOf'
   , symbol
+  , symbolNotAfterSpace
   ) where
 
 import SAD.Parser.Base
@@ -176,3 +177,10 @@ getTokenOf' toks = satisfy $ \tok -> Text.toCaseFold tok `elem` toks
 -- of the input string. Useful for parsing symbols.
 symbol :: Text -> Parser st ()
 symbol = mapM_ (token . Text.singleton) . Text.unpack
+
+-- | Same as 'symbol' but the token to be parsed must not be prepended by a
+-- white token.
+symbolNotAfterSpace :: Text -> Parser st ()
+symbolNotAfterSpace s = tokenGuard notAfterSpace (symbol s)
+  where
+    notAfterSpace tok = tokenType tok == NoWhiteSpaceBefore

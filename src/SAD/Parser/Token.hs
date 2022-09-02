@@ -10,7 +10,8 @@ Tokenization of input
 
 module SAD.Parser.Token (
     -- * Tokens
-    Token (tokenPos, tokenText)
+    Token (tokenType, tokenPos, tokenText)
+  , TokenType (..)
   , tokensRange
   , showToken
   , isProperToken
