@@ -124,17 +124,10 @@ The usage of `\classtext{...}` can cause the compilation error
 the document a second time.
 
 
-## "basic-notions"
-
-Required by Naproche's set theory and arithmetic libraries and by any
-formalizations based on then.
-
-
 ## "libraries"
 
-`libraries` is used by Naproche's set theory and arithmetic libraries to
-provide a document layout that is rather suitable for libraries than for
-stand-alone files.
+`libraries` is used by Naproche's libraries to provide a document layout that is
+rather suitable for libraries than for stand-alone files.
 
 
 ## "naproche-puzzle"
@@ -152,6 +145,9 @@ To be used when importing the foundations library.
 To be used when importing the set theory library.
 
 
+## "arithmetic"
+
+To be used when importing the arithmetic library.
 
 
 [1]: <https://en.wikibooks.org/wiki/LaTeX/Installing_Extra_Packages#Manual_installation>
