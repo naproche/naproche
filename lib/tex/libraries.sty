@@ -79,11 +79,13 @@
 
 % Header and footer
 
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+
 \pagestyle{fancy}
-\fancyhf{} % Clear the header
-\rhead{}
-\lhead{\rightmark}
-\cfoot{\thepage}
+\fancyhf{}
+\fancyhead[R]{\thepage}
+\fancyhead[L]{\thechapter\ \leftmark}
+\fancyfoot{}
 
 
 % Imports
