@@ -7,6 +7,8 @@ The examples are chosen to demonstrate possibilities of the current Naproche whi
 
 * arithmetic - elementary Peano arithmetic
 
+* foundations - Kelley-Morse like foundations of mathematics
+
 * geometry - beginnings of Tarski geometry
 
 * set-theory - elementary set theory
