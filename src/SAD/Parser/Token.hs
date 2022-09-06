@@ -218,18 +218,18 @@ tokenize Tex startPos = procToken OutsideForthelEnv startPos NoWhiteSpaceBefore
           where
             (comment, rest) = Text.break (== '\n') remainingText
             tok  = makeToken comment currentPos Comment
-            toks = procToken InsideForthelEnv (Position.symbol_explode comment currentPos) whitespaceBefore rest
+            toks = procToken InsideForthelEnv (Position.symbol_explode comment currentPos) WhiteSpaceBefore rest
         -- Escaped special character
         Just ('\\', rest)
           | Text.head rest `elem` ['{', '}'] ->
-            procToken InsideForthelEnv (Position.symbol_explode_string "\\" currentPos) WhiteSpaceBefore rest
+            procToken InsideForthelEnv (Position.symbol_explode_string "\\" currentPos) NoWhiteSpaceBefore rest
         -- TeX command
         Just ('\\', rest) -> newToks ++ toks
           where
             (name, rest') = Text.span isAlpha rest
             newPos = Position.symbol_explode (Text.cons '\\' name) currentPos
             newToks = expandTexCmd name (currentPos, newPos) whitespaceBefore
-            toks = procToken InsideForthelEnv newPos WhiteSpaceBefore rest'
+            toks = procToken InsideForthelEnv newPos NoWhiteSpaceBefore rest'
         -- Symbolic token
         Just (c, cs) -> tok:toks
           where
