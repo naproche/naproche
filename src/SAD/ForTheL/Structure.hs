@@ -44,7 +44,7 @@ import SAD.Data.Text.Decl
 -- * Parsing a ForTheL text
 
 -- | Parse a @.ftl@ or @.ftl.tex@ document:
--- @{<topLevelBlock>} (<exitInstructin> | <EOF>)@
+-- @{<topLevelBlock>} (<exitInstruction> | <EOF>)@
 forthel :: ParserKind -> FTL [ProofText]
 forthel dialect = repeatUntil (pure <$> topLevelBlock dialect)
   (try (bracketExpression >>= exitInstruction) <|> (eof >> return []))
