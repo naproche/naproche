@@ -299,10 +299,16 @@ envLabel = try nameAndLabel <|> name <|> label
   where
     -- "[<name>]\label{<label>}"
     nameAndLabel = do
-      bracketed (chainLL1 notClosingBrk)
+      symbolNotAfterSpace "["
+      chainLL1 notClosingBrk
+      symbol "]"
       label
     -- "[<name>]"
-    name = bracketed identifier
+    name = do
+      symbolNotAfterSpace "["
+      id <- identifier
+      symbol "]"
+      return id
     -- "\label{<label>}"
     label =
           texCommandWithArg "label" identifier
@@ -514,7 +520,11 @@ ftlProofHeader = do
 texProofHeader :: FTL Scheme
 texProofHeader = do
   texBegin (markupToken proofStart "proof")
-  optLL1 Raw $ bracketed byProofMethod
+  optLL1 Raw $ do
+    symbolNotAfterSpace "["
+    method <- byProofMethod
+    symbol "]"
+    return method
 
 -- | Proof method:
 -- @"by" ("contradiction" | "case" "analysis" | "induction" ["on" <sTerm>])
