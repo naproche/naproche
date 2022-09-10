@@ -71,11 +71,11 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
 
     The result is for the current repository version, and the underlying
     HW + OS platform. The following reference platforms (x86_64) are
-    used for Isabelle2021:
+    used for Isabelle2022:
 
-      - Linux: Ubuntu 16.04 LTS
-      - macOS: Mac OS X 10.13 High Sierra
-      - Windows: Windows 10
+      - Ubuntu Linux 16.04 LTS
+      - macOS 10.14 Mojave
+      - Windows 10
 
 * Isabelle Prover IDE
 
