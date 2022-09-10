@@ -62,9 +62,11 @@ class Naproche_File_Format extends File_Format {
     "theory " + quote(if (detect_tex(name)) "tex" else "ftl") +
     " imports Naproche.Naproche begin forthel_file " + quote(name) + " end"
 
-  override def start(session: Session): File_Format.Agent =
-    if (session.session_options.bool("naproche_server")) {
-      new Naproche_File_Format.Agent(session.session_options)
-    }
+  override def start(session: Session): File_Format.Agent = {
+    val enabled =
+      Isabelle_System.getenv("NAPROCHE_EXE").nonEmpty &&
+      session.session_options.bool("naproche_server")
+    if (enabled) new Naproche_File_Format.Agent(session.session_options)
     else File_Format.No_Agent
+  }
 }

@@ -31,7 +31,7 @@ object Naproche_Build {
 
     /* build executable */
 
-    progress.echo("Building executable program: " + Naproche.NAPROCHE_EXE.expand)
+    progress.echo("Building executable program")
 
     val cwd = Naproche.NAPROCHE_HOME.file
     progress.bash("isabelle ghc_stack build", cwd = cwd, echo = true).check
