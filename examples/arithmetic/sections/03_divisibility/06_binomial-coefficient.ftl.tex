@@ -27,7 +27,7 @@
       $(m + k)!$ is divisible by $m!$ for any natural number $k$.
     \end{proposition}
     \begin{proof}
-      Define $P = \class{k \in \mathbb{N} | m! \mid (m + k)!}$.
+      Define $P = \class{k \in \Nat | m! \mid (m + k)!}$.
 
       (BASE CASE) $P$ contains $0$.
       Indeed $m! \mid (m!) = (m + 0)!$.
@@ -119,7 +119,7 @@
         Then we have the thesis (by 1, 2, 3).
       End.
 
-      Define \[ P = \class{n \in \mathbb{N} | \classtext{for all $m,k \in \mathbb{N}$ such that $n = m + k$ we have $k! \mid \frac{(m + k)!}{m!}$}}. \]
+      Define \[ P = \class{n \in \Nat | \classtext{for all $m,k \in \Nat$ such that $n = m + k$ we have $k! \mid \frac{(m + k)!}{m!}$}}. \]
 
       For all natural numbers $n$ if every predecessor of $n$ is contained in $P$ then $n \in P$. \\
       Proof.

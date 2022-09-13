@@ -27,7 +27,7 @@
     Let $k,l,m,n$ denote natural numbers.
 
     \begin{definition}
-      $\mathbb{N}$ is the class of natural numbers.
+      $\Nat$ is the class of natural numbers.
     \end{definition}
 
     \begin{signature}
@@ -76,7 +76,7 @@
       For all $n$ we have $n = 0$ or $n = \succ(m)$ for some natural number $m$.
     \end{proposition}
     \begin{proof}
-      Define \[ P = \class{n \in \mathbb{N} | \classtext{$n = 0$ or $n = \succ(m)$ for some natural number $m$}}. \]
+      Define \[ P = \class{n \in \Nat | \classtext{$n = 0$ or $n = \succ(m)$ for some natural number $m$}}. \]
 
       $0 \in P$ and for all natural numbers $n$ we have $n \in P \implies \succ(n) \in P$.
       Hence the thesis (by \nameref{Arithmetic_01_01_350822}).
@@ -104,7 +104,7 @@
       For no natural number $n$ we have $n = \succ(n)$.
     \end{proposition}
     \begin{proof}
-      Define \[ P = \class{n \in \mathbb{N} | n \neq \succ(n)}. \]
+      Define \[ P = \class{n \in \Nat | n \neq \succ(n)}. \]
 
       (BASE CASE) $0$ belongs to $P$.
 

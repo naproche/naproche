@@ -140,7 +140,7 @@
       Every natural number that is greater than $1$ has a prime divisor.
     \end{proposition}
     \begin{proof}
-      Define \[ P = \class{n \in \mathbb{N} | \text{if $n > 1$ then $n$ has a prime divisor}}. \]
+      Define \[ P = \class{n \in \Nat | \text{if $n > 1$ then $n$ has a prime divisor}}. \]
 
       Let us show that (1) for every natural number $n$ if $P$ contains all predecessors of $n$ then $P$ contains $n$.
         Let $n$ be a natural number.
@@ -170,7 +170,7 @@
       Then $n$ has a nontrivial divisor $m$ such that $m^{2} \leq n$.
     \end{proposition}
     \begin{proof}
-      Define \[ A = \class{m \in \mathbb{N} | \text{$m$ is a nontrivial divisor of $n$}}. \]
+      Define \[ A = \class{m \in \Nat | \text{$m$ is a nontrivial divisor of $n$}}. \]
       $A$ contains some natural number.
       Hence we can take a least natural number $m$ of $A$.
       Consider a natural number $k$ such that $m \cdot k = n$.
@@ -237,7 +237,7 @@
       Case $p \mid n$. Trivial.
 
       Case $p \nmid n$.
-        Define \[ N = \class{x \in \mathbb{N} | \text{$x \neq 0$ and $p \mid x \cdot m$}}. \]
+        Define \[ N = \class{x \in \Nat | \text{$x \neq 0$ and $p \mid x \cdot m$}}. \]
         We have $p \in N$ and $n \in N$.
         Hence $N$ contains some natural number.
         Thus we can take a least natural number $n'$ of $N$.
@@ -275,7 +275,7 @@
       Case $k = 1$. Obvious.
 
       Case $k > 1$.
-        (1) Define \[ P = \class{n \in \mathbb{N} | \classtext{for all natural numbers $m$ if $n$ and $m$ are nonzero and $k \cdot m^{2} = n^{2}$ then $k$ is compound}}. \]
+        (1) Define \[ P = \class{n \in \Nat | \classtext{for all natural numbers $m$ if $n$ and $m$ are nonzero and $k \cdot m^{2} = n^{2}$ then $k$ is compound}}. \]
 
         Let us show that for all natural numbers $n$ if $P$ contains all predecessors of $n$ then $P$ contains $n$.
           Let $n$ be a natural number.

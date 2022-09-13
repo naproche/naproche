@@ -25,7 +25,7 @@
       Then for all $n,m$ we have \[ n < m \iff n^{k} < m^{k}. \]
     \end{proposition}
     \begin{proof}
-      Define \[ P = \class{k' \in \mathbb{N} | \classtext{for all natural numbers $n,m$ if $n < m$ and $k' > 1$ then $n^{k'} < m^{k'}$}}. \]
+      Define \[ P = \class{k' \in \Nat | \classtext{for all natural numbers $n,m$ if $n < m$ and $k' > 1$ then $n^{k'} < m^{k'}$}}. \]
 
       Let us show that every natural number is contained in $P$.
         (BASE CASE 1) $P$ contains $0$.
@@ -92,7 +92,7 @@
       End.
 
 
-      Define \[ Q = \class{k' \in \mathbb{N} | \classtext{for all natural numbers $n,m$ if $n \geq m$ then $n^{k'} \geq m^{k'}$}}. \]
+      Define \[ Q = \class{k' \in \Nat | \classtext{for all natural numbers $n,m$ if $n \geq m$ then $n^{k'} \geq m^{k'}$}}. \]
 
       Let us show that every natural number is contained in $Q$.
         (BASE CASE) $Q$ contains $0$.
@@ -174,7 +174,7 @@
       Then for all $n,m$ we have \[ n < m \iff k^{n} < k^{m}. \]
     \end{proposition}
     \begin{proof}
-      Define \[ P = \class{m \in \mathbb{N} | \classtext{for all natural numbers $n$ if $k > 1$ and $n < m$ then $k^{n} < k^{m}$}}. \]
+      Define \[ P = \class{m \in \Nat | \classtext{for all natural numbers $n$ if $k > 1$ and $n < m$ then $k^{n} < k^{m}$}}. \]
 
       Let us show that every natural number is contained in $P$.
 
@@ -205,7 +205,7 @@
       End.
 
 
-      Define \[ Q = \class{n \in \mathbb{N} | \classtext{for all natural numbers $m$ if $n \geq m$ then $k^{n} \geq k^{m}$ or $k \leq 1$}}. \]
+      Define \[ Q = \class{n \in \Nat | \classtext{for all natural numbers $m$ if $n \geq m$ then $k^{n} \geq k^{m}$ or $k \leq 1$}}. \]
 
       Let us show that every natural number is contained in $Q$.
 
