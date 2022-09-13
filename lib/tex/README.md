@@ -111,10 +111,13 @@ Options can be enabled in the following form.
 ```
 
 | Option                    | Effect
-| ------------------------- | --------------------------------------------------
+| ------------------------- | -----------------------------------------------------
 | `nonumbers`               | Turn off numbering for theorem-like environments.
 | `numberswithinsection`    | Reset theorem numbers for each section.
 | `numberswithinsubsection` | Reset theorem numbers for each subsection.
+| `foundations`             | Provides TeX commands used by the foundations library
+| `arithmetic`              | Provides TeX commands used by the arithmetic library
+| `settheory`               | Provides TeX commands used by the set theory library
 
 
 ### Compilation errors
@@ -133,21 +136,6 @@ rather suitable for libraries than for stand-alone files.
 ## "naproche-puzzle"
 
 Used by the puzzles `agatha` and `dwarves` in the Naproche examples.
-
-
-## "foundations"
-
-To be used when importing the foundations library.
-
-
-## "set-theory"
-
-To be used when importing the set theory library.
-
-
-## "arithmetic"
-
-To be used when importing the arithmetic library.
 
 
 [1]: <https://en.wikibooks.org/wiki/LaTeX/Installing_Extra_Packages#Manual_installation>
