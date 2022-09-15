@@ -69,6 +69,14 @@
 \newtheorem{signature}[theoremcount]{Signature}
 \newtheorem{theorem}[theoremcount]{Theorem}
 
+\newtheorem*{definition*}{Definition}
+\newtheorem*{signature*}{Signature}
+\newtheorem*{axiom*}{Axiom}
+\newtheorem*{theorem*}{Theorem}
+\newtheorem*{proposition*}{Proposition}
+\newtheorem*{lemma*}{Lemma}
+\newtheorem*{corollary*}{Corollary}
+
 
 % ForTheL environment
 % ===================
@@ -166,33 +174,6 @@
 \newbool{arithmetic}
 \newbool{settheory}
 
-% If the option 'nonumbers' is activated, then all the theorem environment are left unnumbered.
-\DeclareOption{nonumbers}{%
-    \let\definition\relax
-    \let\enddefinition\relax
-    \let\signature\relax
-    \let\endsignature\relax
-    \let\axiom\relax
-    \let\endaxiom\relax
-    \let\theorem\relax
-    \let\endtheorem\relax
-    \let\proposition\relax
-    \let\endproposition\relax
-    \let\lemma\relax
-    \let\endlemma\relax
-    \let\corollary\relax
-    \let\endcorollary\relax
-
-    \theoremstyle{unnumbered}
-
-    \newtheorem{definition}{Definition}
-    \newtheorem{signature}{Signature}
-    \newtheorem{axiom}{Axiom}
-    \newtheorem{theorem}{Theorem}
-    \newtheorem{proposition}{Proposition}
-    \newtheorem{lemma}{Lemma}
-    \newtheorem{corollary}{Corollary}
-}
 \DeclareOption{numberswithinsection}{%
     \counterwithin{theoremcount}{section}
 }

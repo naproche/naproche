@@ -70,6 +70,28 @@ topLevelSection dialect =
 
 -- * Top-level sections
 
+-- | @beginTopLevelSection keywords@ parses @"\\begin" "{" <keyword> ["*"] "}"@,
+-- where @<keyword>@ is a member of @keywords@.
+beginTopLevelSection :: [Text] -> FTL (Text,Bool)
+beginTopLevelSection keywords = do
+  texCommand "begin" <?> "\\begin"
+  symbol "{" <?> "{"
+  key <- getMarkupTokenOf sectionHeader keywords
+  starred <- optLL1 False $ getMarkupToken sectionHeader "*" >> pure True
+  symbol "}" <?> "}"
+  return (key,starred)
+
+-- | @endTopLevelSection <key> <starred>@ parses either
+-- @"\\end" "{" <keyword> "}"@ or @"\\end" "{" <keyword> "*" "}"@ depending on
+-- whether @starred == False@ or @starred == True@.
+endTopLevelSection :: Text -> Bool -> FTL ()
+endTopLevelSection keyword starred = do
+  texCommand "end" <?> "\\end"
+  symbol "{" <?> "{"
+  getMarkupToken sectionHeader keyword <?> keyword
+  when starred (markupToken sectionHeader "*" <?> "*")
+  symbol "}" <?> "}"
+
 -- | Parse a signature:
 --
 -- FTL:
@@ -80,16 +102,16 @@ topLevelSection dialect =
 -- "\\end" "{" "signature" "}"@
 signature :: ParserKind -> FTL ProofText
 signature Ftl = do
-  keyword <- markupToken sectionHeader "signature"
+  keyword <- getMarkupToken sectionHeader "signature"
   label <- optLL1 Nothing (Just <$> identifier)
   dot
   content <- signatureBody
   addMetadata Signature content label
 signature Tex = do
-  keyword <- try . texBegin $ getMarkupToken sectionHeader "signature"
+  (keyword, starred) <- try $ beginTopLevelSection ["signature"]
   label <- optionalEnvLabel
   content <- signatureBody
-  texEnd (markupToken sectionHeader keyword)
+  endTopLevelSection keyword starred
   addMetadata Signature content label
 
 -- | Parse a signature:
@@ -108,10 +130,10 @@ definition Ftl = do
   content <- definitionBody
   addMetadata Definition content label
 definition Tex = do
-  keyword <- try . texBegin $ getMarkupToken sectionHeader "definition"
+  (keyword, starred) <- try $ beginTopLevelSection ["definition"]
   label <- optionalEnvLabel
-  content <- definitionBody
-  texEnd (markupToken sectionHeader keyword)
+  content <- signatureBody
+  endTopLevelSection keyword starred
   addMetadata Definition content label
 
 -- | Parse a signature:
@@ -130,10 +152,10 @@ axiom Ftl = do
   content <- axiomBody
   addMetadata Axiom content label
 axiom Tex = do
-  keyword <- try . texBegin $ getMarkupToken sectionHeader "axiom"
+  (keyword, starred) <- try $ beginTopLevelSection ["axiom"]
   label <- optionalEnvLabel
-  content <- axiomBody
-  texEnd (markupToken sectionHeader keyword)
+  content <- signatureBody
+  endTopLevelSection keyword starred
   addMetadata Axiom content label
 
 -- | Parse a signature:
@@ -152,10 +174,10 @@ theorem Ftl = do
   content <- theoremBody
   addMetadata Theorem content label
 theorem Tex = do
-  keyword <- try . texBegin $ getMarkupTokenOf sectionHeader ["theorem", "lemma", "corollary", "proposition"]
+  (keyword, starred) <- try $ beginTopLevelSection ["theorem", "proposition", "lemma", "corollary"]
   label <- optionalEnvLabel
   content <- addAssumptions . texTopLevelProof $
-             pretypeSentence Affirmation (affirmationHeader >> statement) affirmVars finishWithOptLink <* texEnd (markupToken sectionHeader keyword)
+             pretypeSentence Affirmation (affirmationHeader >> statement) affirmVars finishWithOptLink <* endTopLevelSection keyword starred
   addMetadata Theorem content label
 
 -- | This is the last step when creating a proof text from a top-level section.

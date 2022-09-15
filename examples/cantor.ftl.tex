@@ -3,8 +3,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{xurl}
-\usepackage[nonumbers]{../lib/tex/naproche}
-\newtheorem*{quotedtheorem}{Theorem}
+\usepackage{../lib/tex/naproche}
 
 \title{Cantor's Theorem}
 \author{}
@@ -19,9 +18,9 @@
 
   In this document we give a proof of Cantor's Theorem:
 
-  \begin{quotedtheorem}
+  \begin{theorem*}
     There is no surjection from a set onto its powerset.
-  \end{quotedtheorem}
+  \end{theorem*}
 
   Some basic notions and set-theoretic axioms used to formulate and prove it are
   taken from:
@@ -34,35 +33,35 @@
   functions and the notion of the powerset.
 
   \begin{forthel}
-    \begin{definition}
+    \begin{definition*}
       Let $X$ be a set.
       A function of $X$ is a function $f$ such that $\dom(f) = X$.
-    \end{definition}
+    \end{definition*}
 
-    \begin{definition}
+    \begin{definition*}
       Let $f$ be a function and $Y$ be a set.
       $f$ surjects onto $Y$ iff $Y = \class{f(x) | x \in \dom(f)}$.
-    \end{definition}
+    \end{definition*}
 
     Let a function from $X$ onto $Y$ stand for a function of $X$ that surjects onto $Y$.
 
-    \begin{definition}
+    \begin{definition*}
       Let $X$ be a set.
       The powerset of $X$ is the collection of subsets of $X$.
-    \end{definition}
+    \end{definition*}
 
-    \begin{axiom}
+    \begin{axiom*}
       The powerset of any set is a set.
-    \end{axiom}
+    \end{axiom*}
   \end{forthel}
 
   On this basis Cantor's theorem and its proof can be formalized as follows.
 
   \begin{forthel}
-    \begin{theorem}[Cantor]
+    \begin{theorem*}[Cantor]
       Let $M$ be a set.
       No function of $M$ surjects onto the powerset of $M$.
-    \end{theorem}
+    \end{theorem*}
     \begin{proof}
       Assume the contrary.
       Take a function $f$ from $M$ onto the powerset of $M$.

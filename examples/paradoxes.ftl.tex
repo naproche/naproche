@@ -4,7 +4,7 @@
 \usepackage[english]{babel}
 \usepackage{xurl}
 \usepackage{csquotes}
-\usepackage[nonumbers, settheory]{../lib/tex/naproche}
+\usepackage[settheory]{../lib/tex/naproche}
 
 \title{Paradoxes}
 \author{Marcel Schütz}
@@ -36,31 +36,31 @@
   \noindent We can formalize and prove this assertion in \Naproche:
 
   \begin{forthel}
-    \begin{signature}
+    \begin{signature*}
       A person is a notion.
-    \end{signature}
+    \end{signature*}
 
-    \begin{signature}
+    \begin{signature*}
       Let $P$ be a person.
       $P$ is drinking is an atom.
-    \end{signature}
+    \end{signature*}
 
-    \begin{signature}
+    \begin{signature*}
       The pub is an object.
-    \end{signature}
+    \end{signature*}
 
-    \begin{signature}
+    \begin{signature*}
       Let $P$ be a person and $A$ be an object.
       $P$ is inside $A$ is a relation.
-    \end{signature}
+    \end{signature*}
 
-    \begin{theorem}
+    \begin{theorem*}
       Assume that there is a person inside the pub.
       Then there is a person $P$ such that $P$ is inside the pub and if $P$ is
       drinking then every person inside the pub is drinking.
       %Then there is a person $P$ inside the pub such that if $P$ is drinking
       %then every person inside the pub is drinking.
-    \end{theorem}
+    \end{theorem*}
     \begin{proof}[by case analysis]
       Case every person inside the pub is drinking.
         Choose a person $P$ inside the pub.
@@ -87,9 +87,9 @@
   comprehension we can formalize this paradox as follows.
 
   \begin{forthel}
-    \begin{theorem}
+    \begin{theorem*}
       If every class is a set then we have a contradiction.
-    \end{theorem}
+    \end{theorem*}
     \begin{proof}
       Define $R = \class{x | \text{$x$ is a set such that $x \notin x$}}$.
       Assume that every class is a set.
@@ -115,22 +115,22 @@
   be contradictory.
 
   \begin{forthel}
-    \begin{signature}
+    \begin{signature*}
       A barber is a person.
-    \end{signature}
+    \end{signature*}
 
-    \begin{signature}
+    \begin{signature*}
       Let $B, P$ be persons.
       $B$ shaves $P$ is an atom.
-    \end{signature}
+    \end{signature*}
 
     Let $P$ shaves himself stand for $P$ shaves $P$.
 
-    \begin{theorem}
+    \begin{theorem*}
       Let $B$ be a barber such that for any person $P$ $B$ shaves $P$ iff $P$
       does not shave himself.
       Then we have a contradiction.
-    \end{theorem}
+    \end{theorem*}
     \begin{proof}
       $B$ shaves himself iff $B$ does not shave himself.
     \end{proof}
@@ -144,9 +144,9 @@
   leads to contradictions.
 
   \begin{forthel}
-    \begin{theorem}
+    \begin{theorem*}
       If $\Ord$ is a set then we have a contradiction.
-    \end{theorem}
+    \end{theorem*}
     \begin{proof}
       $\Ord$ is transitive and every element of $\Ord$ is transitive.
       Assume that $\Ord$ is a set.

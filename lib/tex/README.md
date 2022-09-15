@@ -112,7 +112,6 @@ Options can be enabled in the following form.
 
 | Option                    | Effect
 | ------------------------- | -----------------------------------------------------
-| `nonumbers`               | Turn off numbering for theorem-like environments.
 | `numberswithinsection`    | Reset theorem numbers for each section.
 | `numberswithinsubsection` | Reset theorem numbers for each subsection.
 | `foundations`             | Provides TeX commands used by the foundations library
