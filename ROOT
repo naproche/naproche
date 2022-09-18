@@ -1,5 +1,3 @@
-chapter "Naproche"
-
 session "Naproche" in "Isabelle/Main" = HOL +
   description "Isabelle/Naproche main session"
   sessions
