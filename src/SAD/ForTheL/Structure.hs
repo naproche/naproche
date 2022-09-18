@@ -132,7 +132,7 @@ definition Ftl = do
 definition Tex = do
   (keyword, starred) <- try $ beginTopLevelSection ["definition"]
   label <- optionalEnvLabel
-  content <- signatureBody
+  content <- definitionBody
   endTopLevelSection keyword starred
   addMetadata Definition content label
 
@@ -154,7 +154,7 @@ axiom Ftl = do
 axiom Tex = do
   (keyword, starred) <- try $ beginTopLevelSection ["axiom"]
   label <- optionalEnvLabel
-  content <- signatureBody
+  content <- axiomBody
   endTopLevelSection keyword starred
   addMetadata Axiom content label
 
