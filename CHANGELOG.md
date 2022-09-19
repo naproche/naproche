@@ -13,6 +13,20 @@ variant of ForTheL, respectively.
 
 ### Changes on ForTheL
 
+  * **New:** In FTL-TeX unnumbered top-level environments are now supported via
+
+    ```
+    \begin{<environment-name>*}
+      ...
+    \end{<environment-name>*}
+    ```
+
+    where `<environment-name>` is one of the usual top-level environment names,
+    e.g. `theorem` or `definition`.
+
+    **Deprecation notice:** This change makes the option `unnumbered` of the
+    LaTeX package `naproche` obsolete.
+
   * **New:** In low-level definitions `choose` and `define` terms can now be
     enclosed within ``` `` ``` and `''`, e.g.:
 
