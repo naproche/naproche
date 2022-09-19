@@ -106,7 +106,7 @@
         Then $x \in A$ and $x \in B \cap C$.
         Hence $x \in A$ and $x \in B$ and $x \in C$.
         Thus $x \in A \cap B$ and $x \in C$.
-        Therefore$ x \in (A \cap B) \cap C$.
+        Therefore $x \in (A \cap B) \cap C$.
       End.
     \end{proof}
   \end{forthel}
@@ -175,8 +175,8 @@
       Then \[ A \cup A = A. \]
     \end{proposition}
     \begin{proof}
-      $A \cup A = \{x | x \in A$ or $x \in A \}$.
-      Hence $A \cup A = \{ x | x \in A \}$.
+      $A \cup A = \{x \mid x \in A$ or $x \in A \}$.
+      Hence $A \cup A = \{ x \mid x \in A \}$.
       Thus $A \cup A = A$.
     \end{proof}
   \end{forthel}
@@ -202,7 +202,8 @@
       Then \[ A \setminus (B \cap C) = (A \setminus B) \cup (A \setminus C). \]
     \end{proposition}
     \begin{proof}
-      Let us show that $A \setminus (B \cap C) \subseteq (A \setminus B) \cup (A \setminus C)$.
+      Let us show that $A \setminus (B \cap C) \subseteq
+      (A \setminus B) \cup (A \setminus C)$.
         Let $x \in A \setminus (B \cap C)$.
         Then $x \in A$ and $x \notin B \cap C$.
         Hence it is wrong that ($x \in B$ and $x \in C$).
@@ -213,7 +214,8 @@
         Thus $x \in (A \setminus B) \cup (A \setminus C)$.
       End.
 
-      Let us show that $((A \setminus B) \cup (A \setminus C)) \subseteq A \setminus (B \cap C)$. %!
+      Let us show that $((A \setminus B) \cup (A \setminus C)) \subseteq
+      A \setminus (B \cap C)$. %!
         Let $x \in (A \setminus B) \cup (A \setminus C)$.
         Then $x \in A \setminus B$ or $x \in A \setminus C$.
         Hence ($x \in A$ and $x \notin B$) or ($x \in A$ and $x \notin C$).
@@ -231,7 +233,8 @@
       Then \[ A \setminus (B \cup C) = (A \setminus B) \cap (A \setminus C). \]
     \end{proposition}
     \begin{proof}
-      Let us show that $A \setminus (B \cup C) \subseteq (A \setminus B) \cap (A \setminus C)$.
+      Let us show that $A \setminus (B \cup C) \subseteq
+      (A \setminus B) \cap (A \setminus C)$.
         Let $x \in A \setminus (B \cup C)$.
         Then $x \in A$ and $x \notin B \cup C$.
         Hence it is wrong that ($x \in B$ or $x \in C$).
@@ -242,7 +245,8 @@
         Thus $x \in (A \setminus B) \cap (A \setminus C)$.
       End.
 
-      Let us show that $((A \setminus B) \cap (A \setminus C)) \subseteq A \setminus (B \cup C)$. %!
+      Let us show that $((A \setminus B) \cap (A \setminus C)) \subseteq
+      A \setminus (B \cup C)$. %!
         Let $x \in (A \setminus B) \cap (A \setminus C)$.
         Then $x \in A \setminus B$ and $x \in A \setminus C$.
         Hence ($x \in A$ and $x \notin B$) and ($x \in A$ and $x \notin C$).
@@ -363,7 +367,8 @@
       Then \[ A \setminus \emptyset = A. \]
     \end{proposition}
     \begin{proof}
-      $A \setminus \emptyset = \class{ x | \text{$x \in A$ and $x \notin \emptyset$} }$.
+      $A \setminus \emptyset = \class{ x | \text{$x \in A$ and
+      $x \notin \emptyset$} }$.
       No element is an element of $\emptyset$.
       Hence $A \setminus \emptyset = \class{ x | x \in A }$.
       Then we have the thesis.
@@ -417,7 +422,8 @@
       Then \[ A \cap (B \setminus C) = (A \cap B) \setminus (A \cap C). \]
     \end{proposition}
     \begin{proof}
-      Let us show that $A \cap (B \setminus C) \subseteq (A \cap B) \setminus (A \cap C)$.
+      Let us show that $A \cap (B \setminus C) \subseteq
+      (A \cap B) \setminus (A \cap C)$.
         Let $x \in A \cap (B \setminus C)$.
         Then $x \in A$ and $x \in B \setminus C$.
         Hence $x \in A$ and $x \in B$.
@@ -426,7 +432,8 @@
         Then we have $x \in (A \cap B) \setminus (A \cap C)$.
       End.
 
-      Let us show that $((A \cap B) \setminus (A \cap C)) \subseteq A \cap (B \setminus C)$. %!
+      Let us show that $((A \cap B) \setminus (A \cap C)) \subseteq
+      A \cap (B \setminus C)$. %!
         Let $x \in (A \cap B) \setminus (A \cap C)$.
         Then $x \in A$ and $x \in B$.
         $x \notin A \cap C$.

@@ -31,23 +31,28 @@
       Then \[ A \symdiff B = (A \setminus B) \cup (B \setminus A). \]
     \end{proposition}
     \begin{proof}
-      Let us show that $A \symdiff B \subseteq (A \setminus B) \cup (B \setminus A)$.
+      Let us show that $A \symdiff B \subseteq
+      (A \setminus B) \cup (B \setminus A)$.
         Let $u \in A \symdiff B$.
         Then $u \in A \cup B$ and $u \notin A \cap B$.
         Hence ($u \in A$ or $u \in B$) and not ($u \in A$ and $u \in B$).
         Thus ($u \in A$ or $u \in B$) and ($u \notin A$ or $u \notin B$).
         Therefore if $u \in A$ then $u \notin B$.
         If $u \in B$ then $u \notin A$.
-        Then we have ($u \in A$ and $u \notin B$) or ($u \in B$ and $u \notin A$).
+        Then we have ($u \in A$ and $u \notin B$) or
+        ($u \in B$ and $u \notin A$).
         Hence $u \in A \setminus B$ or $u \in B \setminus A$.
         Thus $u \in (A \setminus B) \cup (B \setminus A)$.
       End.
 
-      Let us show that $((A \setminus B) \cup (B \setminus A)) \subseteq A \symdiff B$. %!
+      Let us show that $((A \setminus B) \cup (B \setminus A)) \subseteq
+      A \symdiff B$. %!
         Let $u \in (A \setminus B) \cup (B \setminus A)$.
         Then ($u \in A$ and $u \notin B$) or ($u \in B$ and $u \notin A$).
-        If $u \in A$ and $u \notin B$ then $u \in A \cup B$ and $u \notin A \cap B$.
-        If $u \in B$ and $u \notin A$ then $u \in A \cup B$ and $u \notin A \cap B$.
+        If $u \in A$ and $u \notin B$ then $u \in A \cup B$ and
+        $u \notin A \cap B$.
+        If $u \in B$ and $u \notin A$ then $u \in A \cup B$ and
+        $u \notin A \cap B$.
         Hence $u \in A \cup B$ and $u \notin A \cap B$.
         Thus $u \in (A \cup B) \setminus (A \cap B) = A \symdiff B$.
       End.
@@ -57,7 +62,7 @@
 
   \section{Computation laws}
 
-  \subsection*{Commutativity:}
+  \subsection*{Commutativity}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_03_4518372049944576}
@@ -65,15 +70,15 @@
       Then \[ A \symdiff B = B \symdiff A. \]
     \end{proposition}
     \begin{proof}
-      $A \symdiff B =
-      (A \cup B) \setminus (A \cap B) =
-      (B \cup A) \setminus (B \cap A) =
-      B \symdiff A$.
+      $A \symdiff B
+        = (A \cup B) \setminus (A \cap B)
+        = (B \cup A) \setminus (B \cap A)
+        = B \symdiff A$.
     \end{proof}
   \end{forthel}
 
 
-  \subsection*{Associativity:}
+  \subsection*{Associativity}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_03_8680845204258816}
@@ -81,11 +86,14 @@
       Then \[ (A \symdiff B) \symdiff C = A \symdiff (B \symdiff C). \]
     \end{proposition}
     \begin{proof}
-      Take a class $X$ such that $X = (((A \setminus B) \cup (B \setminus A)) \setminus C) \cup (C \setminus ((A \setminus B) \cup (B \setminus A)))$.
+      Take a class $X$ such that $X = (((A \setminus B) \cup (B \setminus A))
+      \setminus C) \cup (C \setminus ((A \setminus B) \cup (B \setminus A)))$.
 
-      Take a class $Y$ such that $Y = (A \setminus ((B \setminus C) \cup (C \setminus B))) \cup (((B \setminus C) \cup (C \setminus B)) \setminus A)$.
+      Take a class $Y$ such that $Y = (A \setminus ((B \setminus C) \cup
+      (C \setminus B))) \cup (((B \setminus C) \cup (C \setminus B)) \setminus A)$.
 
-      We have $A \symdiff B = (A \setminus B) \cup (B \setminus A)$ and $B \symdiff C = (B \setminus C) \cup (C \setminus B)$.
+      We have $A \symdiff B = (A \setminus B) \cup (B \setminus A)$ and
+      $B \symdiff C = (B \setminus C) \cup (C \setminus B)$.
       Hence $(A \symdiff B) \symdiff C = X$ and $A \symdiff (B \symdiff C) = Y$.
 
       Let us show that (I) $X \subseteq Y$.
@@ -192,12 +200,16 @@
       Then \[ A \cap (B \symdiff C) = (A \cap B) \symdiff (A \cap C). \]
     \end{proposition}
     \begin{proof}
-      $A \cap (B \symdiff C) = A \cap ((B \setminus C) \cup (C \setminus B)) = (A \cap (B \setminus C)) \cup (A \cap (C \setminus B))$.
+      $A \cap (B \symdiff C)
+        = A \cap ((B \setminus C) \cup (C \setminus B))
+        = (A \cap (B \setminus C)) \cup (A \cap (C \setminus B))$.
 
       $A \cap (B \setminus C) = (A \cap B) \setminus (A \cap C)$.
       $A \cap (C \setminus B) = (A \cap C) \setminus (A \cap B)$.
 
-      Hence $A \cap (B \symdiff C) = ((A \cap B) \setminus (A \cap C)) \cup ((A \cap C) \setminus (A \cap B)) = (A \cap B) \symdiff (A \cap C)$.
+      Hence $A \cap (B \symdiff C)
+        = ((A \cap B) \setminus (A \cap C)) \cup ((A \cap C) \setminus (A \cap B))
+        = (A \cap B) \symdiff (A \cap C)$.
     \end{proof}
   \end{forthel}
 
@@ -287,10 +299,10 @@
       Then \[ A \symdiff A = \emptyset. \]
     \end{proposition}
     \begin{proof}
-      $A \symdiff A =
-      (A \cup A) \setminus (A \cap A) =
-      A \setminus A =
-      \emptyset$.
+      $A \symdiff A
+        = (A \cup A) \setminus (A \cap A)
+        = A \setminus A
+        = \emptyset$.
     \end{proof}
   \end{forthel}
 
@@ -300,9 +312,10 @@
       Then \[ A \symdiff \emptyset = A. \]
     \end{proposition}
     \begin{proof}
-      $A \symdiff \emptyset =
-      (A \cup \emptyset) \setminus (A \cap \emptyset) =
-      A \setminus \emptyset = A$.
+      $A \symdiff \emptyset
+        = (A \cup \emptyset) \setminus (A \cap \emptyset)
+        = A \setminus \emptyset
+        = A$.
     \end{proof}
   \end{forthel}
 
@@ -313,14 +326,18 @@
     \end{proposition}
     \begin{proof}
       Case $A = B$.
-        Then $A \symdiff B = (A \cup A) \setminus (A \cap A) = A \setminus A = \emptyset.$
+        Then $A \symdiff B
+          = (A \cup A) \setminus (A \cap A)
+          = A \setminus A
+          = \emptyset.$
         Hence the thesis.
       End.
 
       Case $A \symdiff B = \emptyset$.
         Then $(A \cup B) \setminus (A \cap B)$ is empty.
         Hence every element of $A \cup B$ is an element of $A \cap B$.
-        Thus for all objects $u$ if $u \in A$ or $u \in B$ then $u \in A$ and $u \in B$.
+        Thus for all objects $u$ if $u \in A$ or $u \in B$ then $u \in A$ and
+        $u \in B$.
         Therefore every element of $A$ is an element of $B$.
         Every element of $B$ is an element of $A$.
         Then we have the thesis.

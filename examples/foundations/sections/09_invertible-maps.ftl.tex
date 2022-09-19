@@ -71,20 +71,49 @@
     \end{proposition}
     \begin{proof}
       Case $g$ is the inverse of $f$.
-        We have $\dom(g \circ f) = \dom(f) = A = \dom(\id_{A})$.
-        For all $a \in A$ we have $(g \circ f)(a) = g(f(a)) = a$.
+        We have
+        $\dom(g \circ f)
+          = \dom(f)
+          = A
+          = \dom(\id_{A})$.
+        For all $a \in A$ we have
+        $(g \circ f)(a)
+          = g(f(a))
+          = a$.
         Hence $g \circ f = \id_{A}$.
 
-        We have $\dom(f \circ g) = \dom(g) = B = \dom(\id_{B})$.
-        For all $b \in B$ we have $(f \circ g)(b) = f(g(b)) = b$.
+        We have
+        $\dom(f \circ g)
+          = \dom(g)
+          = B
+          = \dom(\id_{B})$.
+        For all $b \in B$ we have
+        $(f \circ g)(b)
+          = f(g(b))
+          = b$.
         Hence $f \circ g = \id_{B}$.
       End.
 
       Case $g \circ f = \id_{A}$ and $f \circ g = \id_{B}$.
-        Then $\dom(g) = B = \range(f)$ and $\range(g) = A = \dom(f)$.
+        Then $\dom(g)
+          = B
+          = \range(f)$
+        and $\range(g)
+          = A
+          = \dom(f)$.
         Let $a \in \dom(f)$ and $b \in \dom(g)$.
-        If $f(a) = b$ then $g(b) = g(f(a)) = (g \circ f)(a) = \id_{A}(a) = a$.
-        If $g(b) = a$ then $f(a) = f(g(b)) = (f \circ g)(b) = \id_{B}(b) = b$.
+        If $f(a) = b$ then
+        $g(b)
+          = g(f(a))
+          = (g \circ f)(a)
+          = \id_{A}(a)
+          = a$.
+        If $g(b) = a$ then
+        $f(a)
+          = f(g(b))
+          = (f \circ g)(b)
+          = \id_{B}(b)
+          = b$.
         Hence $f(a) = b$ iff $g(b) = a$.
       End.
     \end{proof}
@@ -136,7 +165,11 @@
       Then \[ f(f^{-1}(b)) = b. \]
     \end{proposition}
     \begin{proof}
-      We have $f(f^{-1}(b)) = (f \circ f^{-1})(b) = \id_{B}(b) = b$.
+      We have
+      $f(f^{-1}(b))
+        = (f \circ f^{-1})(b)
+        = \id_{B}(b)
+        = b$.
     \end{proof}
   \end{forthel}
 
@@ -159,30 +192,31 @@
         Indeed $f \circ (f^{-1} \circ g^{-1})$ and $(f \circ f^{-1}) \circ g^{-1}$ are maps from $C$.
         $f \circ h$ is a map from $C$ to $B$.
         Hence
-        \[ (g \circ f) \circ h = \]
-        \[ g \circ (f \circ h) = \]
-        \[ g \circ (f \circ (f^{-1} \circ g^{-1})) = \]
-        \[ g \circ ((f \circ f^{-1}) \circ g^{-1}) = \]
-        \[ g \circ (\id_{B} \circ g^{-1}) = \]
-        \[ g \circ g^{-1} = \]
-        \[ \id_{C}. \]
+        \[  (g \circ f) \circ h                           \]
+        \[    = g \circ (f \circ h)                       \]
+        \[    = g \circ (f \circ (f^{-1} \circ g^{-1}))   \]
+        \[    = g \circ ((f \circ f^{-1}) \circ g^{-1})   \]
+        \[    = g \circ (\id_{B} \circ g^{-1})            \]
+        \[    = g \circ g^{-1}                            \]
+        \[    = \id_{C}.                                  \]
       End.
 
       Let us show that $h \circ (g \circ f) = \id_{A}$.
         We have $(f^{-1} \circ g^{-1}) \circ g = f^{-1} \circ (g^{-1} \circ g)$.
         $g \circ f$ is a map from $A$ to $C$.
         Hence
-        \[ h \circ (g \circ f) = \]
-        \[ (h \circ g) \circ f = \]
-        \[ ((f^{-1} \circ g^{-1}) \circ g) \circ f = \]
-        \[ (f^{-1} \circ (g^{-1} \circ g)) \circ f = \]
-        \[ (f^{-1} \circ \id_{B}) \circ f = \]
-        \[ f^{-1} \circ f = \]
-        \[ \id_{A}. \]
+        \[  h \circ (g \circ f)                           \]
+        \[    = (h \circ g) \circ f                       \]
+        \[    = ((f^{-1} \circ g^{-1}) \circ g) \circ f   \]
+        \[    = (f^{-1} \circ (g^{-1} \circ g)) \circ f   \]
+        \[    = (f^{-1} \circ \id_{B}) \circ f            \]
+        \[    = f^{-1} \circ f                            \]
+        \[    = \id_{A}.                                  \]
       End.
 
       Thus $h$ is the inverse of $g \circ f$.
-      Indeed $g \circ f$ is a map from $A$ onto $C$ and $h$ is a map from $C$ onto $A$.
+      Indeed $g \circ f$ is a map from $A$ onto $C$ and $h$ is a map from $C$
+      onto $A$.
     \end{proof}
   \end{forthel}
 
@@ -209,7 +243,11 @@
         Let $a \in \range(g)$.
         Take $b \in f_{*}(X)$ such that $a = g(b)$.
         Take $c \in X$ such that $b = f(c)$.
-        Then $a = (f^{-1} \restriction (f_{*}(X)))(b) = f^{-1}(b) = f^{-1}(f(c)) = c$.
+        Then $a
+          = (f^{-1} \restriction (f_{*}(X)))(b)
+          = f^{-1}(b)
+          = f^{-1}(f(c))
+          = c$.
         Hence $a \in X$.
       End.
 
@@ -218,17 +256,29 @@
 
       Let us show that $g((f \restriction X)(a)) = a$ for all $a \in X$.
         Let $a \in X$.
-        Then $g((f \restriction X)(a)) = g(f(a)) = (f^{-1} \restriction (f_{*}(X)))(f(a)) = f^{-1}(f(a)) = a$.
+        Then $g((f \restriction X)(a))
+          = g(f(a))
+          = (f^{-1} \restriction (f_{*}(X)))(f(a))
+          = f^{-1}(f(a))
+          = a$.
       End.
 
       Let us show that $((f \restriction X)(g(b))) = b$ for all $b \in f_{*}(X)$.
         Let $b \in f_{*}(X)$.
         Take $a \in X$ such that $b = f(a)$.
-        We have $g(b) = g(f(a)) = (f^{-1} \restriction (f_{*}(X)))(f(a)) = f^{-1}(f(a)) = a$.
-        Hence $(f \restriction X)(g(b)) = (f \restriction X)(a) = f(a) = b$.
+        We have $g(b)
+          = g(f(a))
+          = (f^{-1} \restriction (f_{*}(X)))(f(a))
+          = f^{-1}(f(a))
+          = a$.
+        Hence $(f \restriction X)(g(b))
+          = (f \restriction X)(a)
+          = f(a)
+          = b$.
       End.
 
-      Thus $g \circ (f \restriction X) = \id_{X}$ and $(f \restriction X) \circ g = \id_{f_{*}(X)}$.
+      Thus $g \circ (f \restriction X) = \id_{X}$ and
+      $(f \restriction X) \circ g = \id_{f_{*}(X)}$.
       Therefore $g$ is the inverse of $f \restriction X$.
     \end{proof}
   \end{forthel}
@@ -240,7 +290,8 @@
       Then \[ f^{*}(Y) = (f^{-1})_{*}(Y). \]
     \end{proposition}
     \begin{proof}
-      We have $(f^{-1})_{*}(Y) = \class{ f^{-1}(b) | b \in Y }$ and $f^{*}(Y) = \class{ a \in A | f(a) \in Y }$.
+      We have $(f^{-1})_{*}(Y) = \class{ f^{-1}(b) | b \in Y }$ and
+      $f^{*}(Y) = \class{ a \in A | f(a) \in Y }$.
 
       Let us show that $f^{*}(Y) \subseteq (f^{-1})_{*}(Y)$.
         Let $a \in f^{*}(Y)$.
@@ -345,13 +396,13 @@
       Case $g \circ f = f \circ g$.
         $f \circ f$, $f \circ g$ and $f \circ g$ are maps on $A$.
         Hence
-        \[ (g \circ f) \circ (g \circ f) = \]
-        \[ (g \circ f) \circ (f \circ g) = \]
-        \[ ((g \circ f) \circ f) \circ g = \]
-        \[ (g \circ (f \circ f)) \circ g = \]
-        \[ (g \circ \id_{A}) \circ g = \]
-        \[ g \circ g = \]
-        \[ \id_{A}. \]
+        \[  (g \circ f) \circ (g \circ f)       \]
+        \[    = (g \circ f) \circ (f \circ g)   \]
+        \[    = ((g \circ f) \circ f) \circ g   \]
+        \[    = (g \circ (f \circ f)) \circ g   \]
+        \[    = (g \circ \id_{A}) \circ g       \]
+        \[    = g \circ g                       \]
+        \[    = \id_{A}.                        \]
         Thus $g \circ f$ is selfinverse.
       End.
     \end{proof}

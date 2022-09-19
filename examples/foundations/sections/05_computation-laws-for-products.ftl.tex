@@ -41,7 +41,8 @@
     \end{proposition}
     \begin{proof}
       Case $(A \times A') \subseteq (B \times B')$.
-        Let us show that for all $a \in A$ and all $a' \in A'$ we have $a \in B$ and $a' \in B'$.
+        Let us show that for all $a \in A$ and all $a' \in A'$ we have $a \in B$
+        and $a' \in B'$.
           Let $a \in A$ and $a' \in A'$.
           Then $(a, a') \in A \times A'$.
           Hence $(a, a') \in B \times B'$.
@@ -67,16 +68,19 @@
       Then \[ (A \cup B) \times C = (A \times C) \cup (B \times C). \]
     \end{proposition}
     \begin{proof}
-      Let us show that $((A \cup B) \times C) \subseteq (A \times C) \cup (B \times C).$ %!
+      Let us show that $((A \cup B) \times C) \subseteq
+      (A \times C) \cup (B \times C).$ %!
         Let $x \in (A \cup B) \times C$.
         Take $y \in A \cup B$ and $c \in C$ such that $x = (y, c)$.
         Then $y \in A$ or $y \in B$.
-        If $y \in A$ then $x \in A \times C$ and if $y \in B$ then $x \in B \times C$.
+        If $y \in A$ then $x \in A \times C$ and if $y \in B$ then
+        $x \in B \times C$.
         Hence $x \in A \times C$ or $x \in B \times C$.
         Thus $x \in (A \times C) \cup (B \times C)$.
       End.
 
-      Let us show that $((A \times C) \cup (B \times C)) \subseteq (A \cup B) \times C$. %!
+      Let us show that $((A \times C) \cup (B \times C)) \subseteq
+      (A \cup B) \times C$. %!
         Let $x \in (A \times C) \cup (B \times C)$.
         Then $x \in A \times C$ or $x \in B \times C$.
         Take objects $y, c$ such that $x = (y, c)$.
@@ -93,16 +97,19 @@
       Then \[ A \times (B \cup C) = (A \times B) \cup (A \times C). \]
     \end{proposition}
     \begin{proof}
-      Let us show that $A \times (B \cup C) \subseteq (A \times B) \cup (A \times C)$.
+      Let us show that $A \times (B \cup C) \subseteq
+      (A \times B) \cup (A \times C)$.
         Let $x \in A \times (B \cup C)$.
         Take $a \in A$ and $y \in B \cup C$ such that $x = (a, y)$.
         Then $y \in B$ or $y \in C$.
         Hence $x \in A \times B$ or $x \in A \times C$.
-        Indeed if $y \in B$ then $x \in A \times B$ and if $y \in C$ then $x \in A \times C$.
+        Indeed if $y \in B$ then $x \in A \times B$ and if $y \in C$ then
+        $x \in A \times C$.
         Thus $x \in (A \times B) \cup (A \times C)$.
       End.
 
-      Let us show that $((A \times B) \cup (A \times C)) \subseteq A \times (B \cup C)$.
+      Let us show that $((A \times B) \cup (A \times C)) \subseteq
+      A \times (B \cup C)$.
         Let $x \in (A \times B) \cup (A \times C)$.
         Then $x \in A \times B$ or $x \in A \times C$.
         Take objects $a, y$ such that $x = (a, y)$.
@@ -121,7 +128,8 @@
       Then \[ (A \cap B) \times C = (A \times C) \cap (B \times C). \]
     \end{proposition}
     \begin{proof}
-      Let us show that $((A \cap B) \times C) \subseteq (A \times C) \cap (B \times C)$. %!
+      Let us show that $((A \cap B) \times C) \subseteq
+      (A \times C) \cap (B \times C)$. %!
         Let $x \in (A \cap B) \times C$.
         Take $y \in A \cap B$ and $c \in C$ such that $x = (y, c)$.
         Then $y \in A$ and $y \in B$.
@@ -129,7 +137,8 @@
         Thus $x \in (A \times C) \cap (B \times C)$.
       End.
 
-      Let us show that $((A \times C) \cap (B \times C)) \subseteq (A \cap B) \times C$. %!
+      Let us show that $((A \times C) \cap (B \times C)) \subseteq
+      (A \cap B) \times C$. %!
         Let $x \in (A \times C) \cap (B \times C)$.
         Then $x \in A \times C$ and $x \in B \times C$.
         Take objects $y, z$ such that $x = (y, z)$.
@@ -146,7 +155,8 @@
       Then \[ A \times (B \cap C) = (A \times B) \cap (A \times C). \]
     \end{proposition}
     \begin{proof}
-      Let us show that $A \times (B \cap C) \subseteq (A \times B) \cap (A \times C)$.
+      Let us show that $A \times (B \cap C) \subseteq
+      (A \times B) \cap (A \times C)$.
         Let $x \in A \times (B \cap C)$.
         Take $a \in A$ and $b \in B \cap C$ such that $x = (a, b)$.
         Then $b \in B$ and $b \in C$.
@@ -154,7 +164,8 @@
         Thus $x \in (A \times B) \cap (A \times C)$.
       End.
 
-      Let us show that $((A \times B) \cap (A \times C)) \subseteq A \times (B \cap C)$. %!
+      Let us show that $((A \times B) \cap (A \times C)) \subseteq
+      A \times (B \cap C)$. %!
         Let $x \in (A \times B) \cap (A \times C)$.
         Then $x \in A \times B$ and $x \in A \times C$.
         Take objects $y, z$ such that $x = (y, z)$.
@@ -173,7 +184,8 @@
       Then \[ (A \setminus B) \times C = (A \times C) \setminus (B \times C). \]
     \end{proposition}
     \begin{proof}
-      Let us show that $((A \setminus B) \times C) \subseteq (A \times C) \setminus (B \times C).$ %!
+      Let us show that $((A \setminus B) \times C) \subseteq
+      (A \times C) \setminus (B \times C).$ %!
         Let $x \in (A \setminus B) \times C$.
         Take $a \in A \setminus B$ and $c \in C$ such that $x = (a, c)$.
         Then $a \in A$ and $a \notin B$.
@@ -181,7 +193,8 @@
         Thus $x \in (A \times C) \setminus (B \times C)$.
       End.
 
-      Let us show that $((A \times C) \setminus (B \times C)) \subseteq (A \setminus B) \times C$. %!
+      Let us show that $((A \times C) \setminus (B \times C)) \subseteq
+      (A \setminus B) \times C$. %!
         Let $x \in (A \times C) \setminus (B \times C)$.
         Then $x \in A \times C$ and $x \notin B \times C$.
         Take $a \in A$ and $c \in C$ such that $x = (a, c)$.
@@ -199,7 +212,8 @@
       Then \[ A \times (B \setminus C) = (A \times B) \setminus (A \times C). \]
     \end{proposition}
     \begin{proof}
-      Let us show that $A \times (B \setminus C) \subseteq (A \times B) \setminus (A \times C)$.
+      Let us show that $A \times (B \setminus C) \subseteq
+      (A \times B) \setminus (A \times C)$.
         Let $x \in A \times (B \setminus C)$.
         Take $a \in A$ and $b \in B \setminus C$ such that $x = (a, b)$.
         Then $b \in B$ and $b \notin C$.
@@ -207,7 +221,8 @@
         Thus $x \in (A \times B) \setminus (A \times C)$.
       End.
 
-      Let us show that $((A \times B) \setminus (A \times C)) \subseteq A \times (B \setminus C)$. %!
+      Let us show that $((A \times B) \setminus (A \times C)) \subseteq
+      A \times (B \setminus C)$. %!
         Let $x \in (A \times B) \setminus (A \times C)$.
         Then $x \in A \times B$ and $x \notin A \times C$.
         Take objects $a, b$ such that $x = (a, b)$.
@@ -231,7 +246,8 @@
       Case $A \times A' = B \times B'$.
         Then $A$ and $A'$ are nonempty iff $B$ and $B'$ are nonempty.
 
-        Let us show that for all $a \in A$ and all $a' \in A'$ we have $a \in B$ and $a' \in B'$.
+        Let us show that for all $a \in A$ and all $a' \in A'$ we have $a \in B$
+        and $a' \in B'$.
           Let $a \in A$ and $a' \in A'$.
           Then $(a, a') \in A \times A'$.
           Hence we can take $x \in B \times B'$ such that $x = (a, a')$.
@@ -241,7 +257,8 @@
         Therefore $A \subseteq B$ and $A' \subseteq B'$.
         Indeed $A$ and $A'$ are nonempty.
 
-        Let us show that for all $b \in B$ and all $b' \in B'$ we have $b \in A$ and $b' \in A'$.
+        Let us show that for all $b \in B$ and all $b' \in B'$ we have $b \in A$
+        and $b' \in A'$.
           Let $b \in B$ and $b' \in B'$.
           Then $(b, b') \in B \times B'$.
           Hence we can take $x \in A \times A'$ such that $x = (b, b')$.
@@ -266,7 +283,8 @@
       (A \cap A') \times (B \cap B'). \]
     \end{proposition}
     \begin{proof}
-      Let us show that $((A \times B) \cap (A' \times B')) \subseteq (A \cap A') \times (B \cap B')$. %!
+      Let us show that $((A \times B) \cap (A' \times B')) \subseteq
+      (A \cap A') \times (B \cap B')$. %!
         Let $x \in (A \times B) \cap (A' \times B')$.
         Then $x \in A \times B$ and $x \in A' \times B'$.
         Take objects $a, b$ such that $x = (a, b)$.
@@ -275,7 +293,8 @@
         Thus $x \in (A \cap A') \times (B \cap B')$.
       End.
 
-      Let us show that $(A \cap A') \times (B \cap B') \subseteq (A \times B) \cap (A' \times B')$.
+      Let us show that $(A \cap A') \times (B \cap B') \subseteq
+      (A \times B) \cap (A' \times B')$.
         Let $x \in (A \cap A') \times (B \cap B')$.
         Take elements $a, b$ such that $x = (a, b)$.
         Then $a \in A \cap A'$ and $b \in B \cap B'$.
@@ -306,7 +325,7 @@
   \end{forthel}
 
 
-  \subsection*{Complements of products:}
+  \subsection*{Complements of products}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_05_5552125989879808}
@@ -315,22 +334,29 @@
       (A \times (B \setminus B')) \cup ((A \setminus A') \times B). \]
     \end{proposition}
     \begin{proof}
-      Let us show that $((A \times B) \setminus (A' \times B')) \subseteq (A \times (B \setminus B')) \cup ((A \setminus A') \times B)$.
+      Let us show that $((A \times B) \setminus (A' \times B')) \subseteq
+      (A \times (B \setminus B')) \cup ((A \setminus A') \times B)$.
         Let $x \in (A \times B) \setminus (A' \times B')$.
         Then $x \in A \times B$ and $x \notin A' \times B'$.
         Take $a \in A$ and $b \in B$ such that $x = (a, b)$.
         Then it is wrong that $a \in A'$ and $b \in B'$.
         Hence $a \notin A'$ or $b \notin B'$.
         Thus $a \in A \setminus A'$ or $b \in B \setminus B'$.
-        Therefore $x \in A \times (B \setminus B')$ or $x \in (A \setminus A') \times B$.
-        Hence we have $x \in (A \times (B \setminus B')) \cup ((A \setminus A') \times B)$.
+        Therefore $x \in A \times (B \setminus B')$ or
+        $x \in (A \setminus A') \times B$.
+        Hence we have $x \in (A \times (B \setminus B')) \cup
+        ((A \setminus A') \times B)$.
       End.
 
-      Let us show that $(A \times (B \setminus B')) \cup ((A \setminus A') \times B) \subseteq (A \times B) \setminus (A' \times B')$.
-        Let $x \in (A \times (B \setminus B')) \cup ((A \setminus A') \times B)$.
-        Then $x \in (A \times (B \setminus B'))$ or $x \in ((A \setminus A') \times B)$.
+      Let us show that $(A \times (B \setminus B')) \cup ((A \setminus A') \times B)
+      \subseteq (A \times B) \setminus (A' \times B')$.
+        Let $x \in (A \times (B \setminus B')) \cup
+        ((A \setminus A') \times B)$.
+        Then $x \in (A \times (B \setminus B'))$ or
+        $x \in ((A \setminus A') \times B)$.
         Take elements $a,b$ such that $x = (a, b)$.
-        Then ($a \in A$ and $b \in B \setminus B'$) or ($a \in A \setminus A'$ and $b \in B$).
+        Then ($a \in A$ and $b \in B \setminus B'$) or
+        ($a \in A \setminus A'$ and $b \in B$).
 
         Case $a \in A$ and $b \in B \setminus B'$.
           Then $a \in A$ and $b \in B$.

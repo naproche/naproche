@@ -115,7 +115,8 @@
     \begin{proof}
       $f^{*}(f_{*}(A)) = \class{ a \in A | f(a) \in f_{*}(A) }$.
       For all $a \in A$ we have $f(a) \in f_{*}(A)$.
-      Hence every element of $f^{*}(f_{*}(A))$ is contained in $A$ and every element of $A$ is contained in $f^{*}(f_{*}(A))$.
+      Hence every element of $f^{*}(f_{*}(A))$ is contained in $A$ and every
+      element of $A$ is contained in $f^{*}(f_{*}(A))$.
       Thus $f^{*}(f_{*}(A)) = A$.
     \end{proof}
   \end{forthel}
@@ -216,7 +217,8 @@
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_07_6295504988143616}
-      Let $A, B$ be classes and $f : A \to B$ and $X \subseteq A$ and $Y \subseteq B$.
+      Let $A, B$ be classes and $f : A \to B$ and $X \subseteq A$ and
+      $Y \subseteq B$.
       Then \[ f_{*}(X) \cap Y = \emptyset \iff X \cap f^{*}(Y) = \emptyset. \]
     \end{proposition}
     \begin{proof}
@@ -242,13 +244,15 @@
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_07_5628919411638272}
-      Let $A, B, C$ be classes and $f : A \to B$ and $g : B \to C$ and $X \subseteq A$.
+      Let $A, B, C$ be classes and $f : A \to B$ and $g : B \to C$ and
+      $X \subseteq A$.
       Then \[ (g \circ f)_{*}(X) = g_{*}(f_{*}(X)). \]
     \end{proposition}
     \begin{proof}
       $((g \circ f)_{*}(X)) = \class{ g(f(a)) | a \in X }$. %!
       $f_{*}(X)$ is a subclass of $B$.
-      We have $g_{*}(f_{*}(X)) = \class{ g(b) | \text{$b \in f_{*}(X)$} }$ and $f_{*}(X) = \class{ f(a) | a \in X }$.
+      We have $g_{*}(f_{*}(X)) = \class{ g(b) | \text{$b \in f_{*}(X)$} }$ and
+      $f_{*}(X) = \class{ f(a) | a \in X }$.
       Thus $g_{*}(f_{*}(X)) = \class{ g(f(a)) | a \in X }$.
       Therefore $(g \circ f)_{*}(X) = g_{*}(f_{*}(X))$.
     \end{proof}
@@ -256,12 +260,14 @@
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_07_6824917886566400}
-      Let $A, B, C$ be classes and $f : A \to B$ and $g : B \to C$ and $Z \subseteq C$.
+      Let $A, B, C$ be classes and $f : A \to B$ and $g : B \to C$ and
+      $Z \subseteq C$.
       Then \[ (g \circ f)^{*}(Z) = f^{*}(g^{*}(Z)). \]
     \end{proposition}
     \begin{proof}
       $((g \circ f)^{*}(Z)) = \class{ a \in A | g(f(a)) \in Z }$.
-      We have $g^{*}(Z) = \class{ b \in B | g(b) \in Z }$ and $f^{*}(g^{*}(Z)) = \class{ a \in A | f(a) \in g^{*}(Z) }$.
+      We have $g^{*}(Z) = \class{ b \in B | g(b) \in Z }$ and
+      $f^{*}(g^{*}(Z)) = \class{ a \in A | f(a) \in g^{*}(Z) }$.
       Hence $f^{*}(g^{*}(Z)) = \class{ a \in A | g(f(a)) \in Z }$.
       Thus $(g \circ f)^{*}(Z) = f^{*}(g^{*}(Z))$.
     \end{proof}
@@ -413,7 +419,8 @@
       Then \[ f^{*}(Y \setminus Y') = f^{*}(Y) \setminus f^{*}(Y'). \]
     \end{proposition}
     \begin{proof}
-      Let us show that $f^{*}(Y \setminus Y') \subseteq f^{*}(Y) \setminus f^{*}(Y')$.
+      Let us show that $f^{*}(Y \setminus Y') \subseteq
+      f^{*}(Y) \setminus f^{*}(Y')$.
         Let $a \in f^{*}(Y \setminus Y')$.
         Then $f(a) \in Y \setminus Y'$.
         Hence $f(a) \in Y$ and $f(a) \notin Y'$.
@@ -421,7 +428,8 @@
         Therefore $a \in f^{*}(Y) \setminus f^{*}(Y')$.
       End.
 
-      Let us show that $f^{*}(Y) \setminus f^{*}(Y') \subseteq f^{*}(Y \setminus Y')$.
+      Let us show that $f^{*}(Y) \setminus f^{*}(Y') \subseteq
+      f^{*}(Y \setminus Y')$.
         Let $a \in f^{*}(Y) \setminus f^{*}(Y')$.
         Then $a \in f^{*}(Y)$ and $a \notin f^{*}(Y')$.
         Hence $f(a) \in Y$ and $f(a) \notin Y'$.

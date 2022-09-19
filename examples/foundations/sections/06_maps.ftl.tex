@@ -19,7 +19,8 @@
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_06_4284980337311744}
       Let $f$ be a map.
-      A value of $f$ is an object $b$ such that $b = f(a)$ for some $a \in \dom(f)$.
+      A value of $f$ is an object $b$ such that $b = f(a)$ for some
+      $a \in \dom(f)$.
     \end{definition}
   \end{forthel}
 
@@ -58,8 +59,10 @@
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_06_1920902360989696}
       Let $A$ be a class.
-      %$\id_{A}$ is the map defined on $A$ such that $\id_{A}(a) = a$ for all $a \in A$.
-      $\id_{A}$ is the map $h$ such that $h$ is defined on $A$ and $h(a) = a$ for all $a \in A$.
+      % $\id_{A}$ is the map defined on $A$ such that $\id_{A}(a) = a$ for all
+      % $a \in A$. %!
+      $\id_{A}$ is the map $h$ such that $h$ is defined on $A$ and $h(a) = a$
+      for all $a \in A$.
     \end{definition}
 
     Let the identity map on $A$ stand for $\id_{A}$.
@@ -72,8 +75,10 @@
     \begin{definition}\printlabel{FOUNDATIONS_06_7605717729017856}
       Let $f, g$ be maps.
       Assume $\range(f) \subseteq \dom(g)$.
-      %$g \circ f$ is the map defined on $\dom(f)$ such that $(g \circ f)(a) = g(f(a))$ for all $a \in \dom(f)$.
-      $g \circ f$ is the map $h$ such that $h$ is defined on $\dom(f)$ and $h(a) = g(f(a))$ for all $a \in \dom(f)$.
+      % $g \circ f$ is the map defined on $\dom(f)$ such that $(g \circ f)(a) =
+      % g(f(a))$ for all $a \in \dom(f)$. %!
+      $g \circ f$ is the map $h$ such that $h$ is defined on $\dom(f)$ and
+      $h(a) = g(f(a))$ for all $a \in \dom(f)$.
     \end{definition}
 
     Let the composition of $g$ and $f$ stand for $g \circ f$.
@@ -85,8 +90,10 @@
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_06_7095412741636096}
       Let $f$ be a map and $X \subseteq \dom(f)$.
-      %$f \restriction X$ is the map defined on $X$ such that $(f \restriction X)(a) = f(a)$ for all $a \in X$.
-      $f \restriction X$ is the map $h$ such that $h$ is defined on $X$ and $h(a) = f(a)$ for all $a \in X$.
+      % $f \restriction X$ is the map defined on $X$ such that
+      % $(f \restriction X)(a) = f(a)$ for all $a \in X$. %!
+      $f \restriction X$ is the map $h$ such that $h$ is defined on $X$ and
+      $h(a) = f(a)$ for all $a \in X$.
     \end{definition}
 
     Let the restriction of $f$ to $X$ stand for $f \restriction X$.
@@ -149,7 +156,8 @@
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_06_2823507398361088}
       Let $A, B$ be classes.
-      A map from $A$ to $B$ is a map $f$ such that $\dom(f) = A$ and $f(a) \in B$ for each $a \in A$.
+      A map from $A$ to $B$ is a map $f$ such that $\dom(f) = A$ and
+      $f(a) \in B$ for each $a \in A$.
     \end{definition}
 
     Let $f: A \to B$ stand for $f$ is a map from $A$ to $B$.
@@ -205,13 +213,17 @@
       Then \[ f \circ \id_{A} = f = \id_{B} \circ f. \]
     \end{proposition}
     \begin{proof}
-      $A$ is the domain of $f \circ \id_{A}$ and the domain of $f$ and the domain of $\id_{B} \circ f$.
-      We have $(f \circ \id_{A})(a) =
-      f(\id_{A}(a)) =
-      f(a) =
-      \id_{B}(f(a)) =
-      (\id_{B} \circ f)(a)$ for all $a \in A$.
-      Hence $f \circ \id_{A} = f = \id_{B} \circ f$.
+      $A$ is the domain of $f \circ \id_{A}$ and the domain of $f$ and the
+      domain of $\id_{B} \circ f$.
+      We have $(f \circ \id_{A})(a)
+        = f(\id_{A}(a))
+        = f(a)
+        = \id_{B}(f(a))
+        = (\id_{B} \circ f)(a)$
+      for all $a \in A$.
+      Hence $f \circ \id_{A}
+        = f
+        = \id_{B} \circ f$.
     \end{proof}
   \end{forthel}
 
@@ -221,27 +233,35 @@
       Then \[ \id_{A} \restriction X = \id_{X}. \]
     \end{proposition}
     \begin{proof}
-      We have $\dom(\id_{A} \restriction X) = X = \dom(\id_{X})$.
-      $(\id_{A} \restriction X)(a) = \id_{A}(a) = a = \id_{X}(a)$ for all $a \in X$.
+      We have $\dom(\id_{A} \restriction X)
+        = X
+        = \dom(\id_{X})$.
+      $(\id_{A} \restriction X)(a)
+        = \id_{A}(a)
+        = a
+        = \id_{X}(a)$
+      for all $a \in X$.
       Hence $\id_{A} \restriction X = \id_{X}$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_06_6866147389472768}
-      Let $A, B, C, D$ be classes and $f : A \to B$ and $g : B \to C$ and $h : C \to D$.
+      Let $A, B, C, D$ be classes and $f : A \to B$ and $g : B \to C$ and
+      $h : C \to D$.
       Then \[ h \circ (g \circ f) = (h \circ g) \circ f. \]
     \end{proposition}
     \begin{proof}
       $h \circ (g \circ f)$ and $(h \circ g) \circ f$ are maps from $A$ to $D$.
 
-      Let us show that $(h \circ (g \circ f))(a) = ((h \circ g) \circ f)(a)$ for all $a \in A$.
+      Let us show that $(h \circ (g \circ f))(a) = ((h \circ g) \circ f)(a)$ for
+      all $a \in A$.
         Let $a \in A$.
-        Then $(h \circ (g \circ f))(a) =
-        h((g \circ f)(a)) =
-        h(g(f(a))) =
-        (h \circ g)(f(a)) =
-        ((h \circ g) \circ f)(a)$.
+        Then $(h \circ (g \circ f))(a)
+          = h((g \circ f)(a))
+          = h(g(f(a)))
+          = (h \circ g)(f(a))
+          = ((h \circ g) \circ f)(a)$.
       End.
 
       Hence $h \circ (g \circ f) = (h \circ g) \circ f$.
@@ -253,17 +273,23 @@
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_06_5135634870042624}
-      Let $f$ be a map such that $\dom(f) = A \times B$ for some nonempty classes $A, B$.
+      Let $f$ be a map such that $\dom(f) = A \times B$ for some nonempty
+      classes $A, B$.
       Let $a$ be an object such that $(a,b) \in \dom(f)$ for some object $b$.
-      $f(a,-)$ is the map such that $\dom(f(a,-)) = B$ and $f(a,-)(b) = f(a,b)$ for all $b \in B$ where $B$ is the class such that $\dom(f) = A \times B$ for some class $A$.
+      $f(a,-)$ is the map such that $\dom(f(a,-)) = B$ and $f(a,-)(b) = f(a,b)$
+      for all $b \in B$ where $B$ is the class such that $\dom(f) = A \times B$
+      for some class $A$.
     \end{definition}
   \end{forthel}
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_06_3621991366000640}
-      Let $f$ be a map such that $\dom(f) = A \times B$ for some nonempty classes $A, B$.
+      Let $f$ be a map such that $\dom(f) = A \times B$ for some nonempty
+      classes $A, B$.
       Let $b$ be an object such that $(a,b) \in \dom(f)$ for some object $a$.
-      $f(-,b)$ is the map such that $\dom(f(-,b)) = A$ and $f(-,b)(a) = f(a,b)$ for all $a \in A$ where $A$ is the class such that $\dom(f) = A \times B$ for some class $B$.
+      $f(-,b)$ is the map such that $\dom(f(-,b)) = A$ and $f(-,b)(a) = f(a,b)$
+      for all $a \in A$ where $A$ is the class such that $\dom(f) = A \times B$
+      for some class $B$.
     \end{definition}
   \end{forthel}
 
