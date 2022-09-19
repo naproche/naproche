@@ -220,6 +220,21 @@
   \end{forthel}
 
 
+  \section{Classes of functions}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{FOUNDATIONS_10_5119110467813376}
+      Let $x, y$ be sets.
+      $[x \to y]$ is the class of all maps from $x$ to $y$.
+    \end{definition}
+
+    \begin{proposition}\printlabel{FOUNDATIONS_10_3702893448265728}
+      Let $x, y$ be sets.
+      Then every element of $[x \to y]$ is a function.
+    \end{proposition}
+  \end{forthel}
+
+
   \section{Axioms for mathematics}
 
   \begin{forthel}
@@ -363,6 +378,7 @@
       Then $x \times y$ is a set.
     \end{proposition}
     \begin{proof}
+      $\set{a}$ and $\set{a,b}$ are sets for each $a \in x$ and each $b \in y$.
       Define $P = \class{\set{\set{a}, \set{a,b}} | \text{$a \in x$ and
       $b \in y$}}$.
 
@@ -543,5 +559,50 @@
       Let $x$ be a set.
       Then $x \notin x$.
     \end{corollary}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{FOUNDATIONS_10_4105036244189184}
+      Let $x, y$ be sets.
+      Then $[x \to y]$ is a set.
+    \end{proposition}
+    \begin{proof}
+      Define $R = \{ F \in \pow(x \times y) \mid$ (for all $a \in x$ there
+      exists a $b \in y$ such that $(a,b) \in F$) and for all $a \in x$ and
+      all $b, b' \in y$ such that $(a,b), (a,b') \in F$ we have $b = b' \}$.
+
+      [prover vampire][timelimit 5]
+      Every element of $R$ is a class. % Needed for ontological checking...
+      Define $h(F) = \fun a \in x.$ choose $b \in y$ such that
+      $(a,b) \in F$ in $b$ for $F \in R$.
+      [prover eprover][/timelimit]
+
+      Let us show that $[x \to y] \subseteq \range(h)$.
+        Let $f \in [x \to y]$.
+        Define $F = \{ (a,f(a)) \mid a \in x \}$.
+
+        Then $F \in R$. \\
+        Proof.
+          Define $g(a) = (a,f(a))$ for $a \in x$.
+          Then $F = \range(g)$.
+          Hence $F$ is a set.
+          Thus $F \in \pow(x \times y)$.
+          Indeed $F \subseteq x \times y$.
+
+          (1) For all $a \in x$ there exists a $b \in y$ such that $(a,b) \in F$.
+
+          (2) For all $a \in x$ and all $b, b' \in y$ such that $(a,b),
+          (a,b') \in F$ we have $b = b'$.
+        End.
+
+        We have $\dom(f) = x = \dom(h(F))$.
+        For each $a \in x$ we have $h(F)(a) = f(a)$.
+        Hence $f = h(F)$.
+        Thus $f \in \range(h)$.
+      End.
+
+      Therefore $[x \to y]$ is a set.
+      Indeed Then $R$ is a set.
+    \end{proof}
   \end{forthel}
 \end{document}
