@@ -1,0 +1,29 @@
+on: [push, pull_request_target]
+name: build
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install isabelle
+        run: |
+          wget -q 'https://isabelle.in.tum.de/dist/Isabelle2021-1_linux.tar.gz'
+          tar -xzf Isabelle2021-1_linux.tar.gz
+
+      - uses: actions/cache@v3
+        with:
+          path: ~/.stack
+          key: cache-$${{ hashFiles('package.yaml') }}
+
+      - run: stack build
+
+      - run: |
+          export NAPROCHE_EPROVER=./Isabelle2021-1/contrib/e-*/x86_64-linux/eprover
+          $NAPROCHE_EPROVER --version
+          stack exec Naproche-SAD -- -t 60 examples/cantor.ftl.tex
+
+      #- run: |
+      #    export NAPROCHE_EPROVER=./Isabelle2021-1/contrib/e-*/x86_64-linux/eprover
+      #    $NAPROCHE_EPROVER --version
+      #    stack test
