@@ -75,6 +75,8 @@ library:
     - Isabelle.Naproche
     - SAD.API
     - SAD.Main
+    - SAD.Core.ProofTask
+    - SAD.Data.Formula.Kit
     - SAD.ForTheL.Base
     - SAD.ForTheL.Structure
     - SAD.Import.Reader

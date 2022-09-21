@@ -1,5 +1,7 @@
-{-
-Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
+{-|
+License     : GPL 3
+Maintainer  : Andrei Paskevich (2001 - 2008),
+              Steffen Frerix (2017 - 2018)
 
 Various functions on formulas.
 -}
@@ -21,7 +23,7 @@ import qualified Isabelle.Position as Position
 
 import qualified Data.Map as Map
 
--- Alpha-beta normalization
+-- * Alpha-beta normalization
 
 -- | gets rid of top level negation, implication and equivalence if possible.
 -- @albet (Not (Ind ..)) == Not (Ind ..)@
@@ -48,7 +50,6 @@ splitConjuncts = go . albet
     go f = [f]
 
 -- | remove all tags from a formula
-
 deTag :: Formula -> Formula
 deTag (Tag _ f) = deTag f
 deTag f = mapF deTag f
@@ -86,7 +87,7 @@ boolSimp :: Formula -> Formula
 boolSimp f = bool $ mapF boolSimp f
 
 
--- Maybe quantification
+-- * Maybe quantification
 
 -- | Maybe quantification handles quantification more efficiently in that it
 -- possibly already simplifies formulas. Prototype example:
@@ -149,7 +150,9 @@ pBlAll v f = All (positionedDecl v) f
 pBlExi _ Top = Top
 pBlExi v f = Exi (positionedDecl v) f
 
--- creation of formulas
+
+-- * Creation of formulas
+
 mkAll, mkExi :: VariableName -> Formula -> Formula
 mkAll v = bool . All (newDecl v) . bind v
 mkExi v = bool . Exi (newDecl v) . bind v
@@ -180,88 +183,195 @@ mkTrm :: TermId -> TermName -> [Formula] -> Formula
 mkTrm tId t ts = Trm t ts [] tId
 
 
--- creation of predefined functions and notions
+-- * Creation of predefined functions and notions
 
+-- @mkEquality s t@ creates a formula of the form @s = t@
 mkEquality :: Formula -> Formula -> Formula
-mkEquality x y = mkTrm EqualityId TermEquality [x, y]
+mkEquality s t = mkTrm EqualityId TermEquality [s, t]
+
+-- @mkLess s t@ creates a formula of the form @iLess(s,t)@
 mkLess :: Formula -> Formula -> Formula
-mkLess x y = mkTrm LessId TermLess [x, y]
+mkLess s t = mkTrm LessId TermLess [s, t]
+
+-- @mkThesis@ creates a formula of the form @thesis@
 mkThesis :: Formula
 mkThesis = mkTrm ThesisId TermThesis []
+
+-- @mkFunction t@ creates a formula of the form @aFunction(t)@
 mkFunction :: Formula -> Formula
 mkFunction t = mkTrm FunctionId termFunction [t]
+
+-- @mkMap t@ creates a formula of the form @aMap(t)@
 mkMap :: Formula -> Formula
 mkMap t = mkTrm MapId termMap [t]
+
+-- @mkApp s t@ creates a formula of the form @s(t)@
 mkApp :: Formula -> Formula -> Formula
-mkApp f x = mkTrm ApplicationId termApplication [f, x]
+mkApp s t = mkTrm ApplicationId termApplication [s, t]
+
+-- @mkDom t@ creates a formula of the form @Dom(t)@
 mkDom :: Formula -> Formula
 mkDom t = mkTrm DomainId termDomain [t]
+
+-- @mkSet t@ creates a formula of the form @aSet(t)@
 mkSet :: Formula -> Formula
 mkSet t = mkTrm SetId termSet [t]
+
+-- @mkClass t@ creates a formula of the form @aClass(t)@
 mkClass :: Formula -> Formula
 mkClass t = mkTrm ClassId termClass [t]
+
+-- @mkElem s t@ creates a formula of the form @aElementOf(s,t)@
 mkElem :: Formula -> Formula -> Formula
-mkElem x m = mkTrm ElementId termElement [x, m]
+mkElem s t = mkTrm ElementId termElement [s, t]
+
+-- @mkPair s t@ creates a formula of the form @(s,t)@
 mkPair :: Formula -> Formula -> Formula
-mkPair x y = mkTrm PairId termPair [x, y]
+mkPair s t = mkTrm PairId termPair [s, t]
+
+-- @mkObject t@ creates a formula of the form @aObject(t)@
 mkObject :: Formula -> Formula
-mkObject x = mkTrm ObjectId termObject [x] -- this is a dummy for parsing purposes
+mkObject t = mkTrm ObjectId termObject [t]
 
 
--- quick checks of syntactic properties
+-- * Cquick checks of syntactic properties
 
-isApplication :: Formula -> Bool
-isApplication Trm {trId = ApplicationId} = True; isApplication _ = False
+-- ** Composite formulas
+
+-- | Check whether a formula is of the form @truth@
 isTop :: Formula -> Bool
-isTop Top = True; isTop _ = False
+isTop Top = True
+isTop _ = False
+
+-- | Check whether a formula is of the form @falsity@
 isBot :: Formula -> Bool
-isBot Bot = True; isBot _ = False
-isIff :: Formula -> Bool
-isIff (Iff _ _) = True; isIff _ = False
-isInd :: Formula -> Bool
-isInd Ind{} = True; isInd _ = False
-isVar :: Formula -> Bool
-isVar Var{} = True; isVar _ = False
-isTrm :: Formula -> Bool
-isTrm Trm{} = True; isTrm _ = False
-hasDEC :: Formula -> Bool
-hasDEC (Tag EqualityChain _) = True; hasDEC _ = False
-hasDMK :: Formula -> Bool
-hasDMK (Tag GenericMark _ ) = True; hasDMK _ = False
-isExi :: Formula -> Bool
-isExi (Exi _ _) = True; isExi _ = False
-isAll :: Formula -> Bool
-isAll (All _ _) = True; isAll _ = False
-isConst :: Formula -> Bool
-isConst t@Trm{} = null $ trmArgs t; isConst Var{} = True; isConst _ = False
+isBot Bot = True
+isBot _ = False
+
+-- | Check whether a formula is of the form @not ...@
 isNot :: Formula -> Bool
-isNot (Not _) = True; isNot _ = False
+isNot (Not _) = True
+isNot _ = False
+
+-- | Check whether a formula is of the form @... and ...@
+isAnd :: Formula -> Bool
+isAnd (_ `And` _) = True
+isAnd _ = False
+
+-- | Check whether a formula is of the form @... or ...@
+isOr :: Formula -> Bool
+isOr (_ `Or` _) = True
+isOr _ = False
+
+-- | Check whether a formula is of the form @... implies ...@
+isImp :: Formula -> Bool
+isImp (_ `Imp` _) = True
+isImp _ = False
+
+-- | Check whether a formula is of the form @... iff ...@
+isIff :: Formula -> Bool
+isIff (_ `Iff` _) = True
+isIff _ = False
+
+-- | Check whether a formula is of the form @exists ... such that ...@
+isExi :: Formula -> Bool
+isExi (Exi _ _) = True
+isExi _ = False
+
+-- | Check whether a formula is of the form @for all ... we have ...@
+isAll :: Formula -> Bool
+isAll (All _ _) = True
+isAll _ = False
+
+
+-- ** Atomic formulas
+
+-- | Check whether a formula is of the form @aObject(...)@
+isObject :: Formula -> Bool
+isObject t = isTrm t && trmId t == ObjectId
+
+-- | Check whether a formula is of the form @aClass(...)@
+isClass :: Formula -> Bool
+isClass t = isTrm t && trmId t == ClassId
+
+-- | Check whether a formula is of the form @aSet(...)@
+isSet :: Formula -> Bool
+isSet t = isTrm t && trmId t == SetId
+
+-- | Check whether a formula is of the form @aMap(...)@
+isMap :: Formula -> Bool
+isMap t = isTrm t && trmId t == MapId
+
+-- | Check whether a formula is of the form @aFunction(...)@
+isFunction :: Formula -> Bool
+isFunction t = isTrm t && trmId t == FunctionId
+
+-- | Check whether a formula is of the form @aElementOf(...)@
+isElem :: Formula -> Bool
+isElem t = isTrm t && trmId t == ElementId
+
+-- | Check whether a formula is of the form @...(...)@
+isApplication :: Formula -> Bool
+isApplication t = isTrm t && trId t == ApplicationId
+
+-- | Check whether a formula is of the form @Dom(...)@
+isDom :: Formula -> Bool
+isDom t = isTrm t && trmId t == DomainId
+
+-- | Check whether a formula is of the form @(...,...)@
+isPair :: Formula -> Bool
+isPair t = isTrm t && trmId t == PairId
+
+-- | Check whether a formula is of the form @iLess(...)@
+isLess :: Formula -> Bool
+isLess t = isTrm t && trmId t == LessId
+
+-- | Check whether a formula is of the form @thesis@
+isThesis :: Formula -> Bool
+isThesis t = isTrm t && trmId t == ThesisId
+
+
+-- ** Misc
+
+isInd :: Formula -> Bool
+isInd Ind{} = True
+isInd _ = False
+
+isVar :: Formula -> Bool
+isVar Var{} = True
+isVar _ = False
+
+isTrm :: Formula -> Bool
+isTrm Trm{} = True
+isTrm _ = False
+
+hasDEC :: Formula -> Bool
+hasDEC (Tag EqualityChain _) = True
+hasDEC _ = False
+
+hasDMK :: Formula -> Bool
+hasDMK (Tag GenericMark _ ) = True
+hasDMK _ = False
+
+isConst :: Formula -> Bool
+isConst t@Trm{} = null $ trmArgs t
+isConst Var{} = True
+isConst _ = False
 
 isNotion :: Formula -> Bool
 isNotion Trm {trmName = TermNotion _} = True
 isNotion _ = False
 
-isElem :: Formula -> Bool
-isElem t = isTrm t && trmId t == ElementId
 
--- Holes and slots
+-- * Holes and slots
 
 occursH, occursS :: Formula -> Bool
 occursH = (mkVar (VarHole "") `occursIn`)
 occursS = (mkVar VarSlot `occursIn`)
 
 
--- | Replace @ObjId@ Terms with @Top@
--- pseudotyping with "object"
--- Test for git
+-- * Functions for operating on literals
 
-removeObject :: Formula -> Formula
-removeObject t@Trm {trId = tId}
-  | tId == ObjectId = Top
-  | otherwise = t
-removeObject f = mapF removeObject f
-
--- functions for operating on literals
 -- QUESTION: Why do we handle @Not t@ different from @t@?
 isLiteral :: Formula -> Bool
 isLiteral t@Trm{} = trmId t /= EqualityId
@@ -284,7 +394,8 @@ ltTwins :: Formula -> Formula -> Bool
 ltTwins (Not f) (Not g) = twins f g
 ltTwins f g = twins f g
 
--- compare and match
+
+-- * Compare and match
 
 {- checks for syntactic equality of literals modulo instantiation of the
 placeholder token ThisT with the term t -}
@@ -320,7 +431,8 @@ match t@Trm{} s@Trm{} | trmId t == trmId s = pairs (trmArgs t) (trmArgs s)
     pairs _ _   = mzero
 match _ _ = mzero
 
--- Misc stuff
+
+-- * Misc stuff
 
 {- strip away a Tag on top level or after negation -}
 strip :: Formula -> Formula
@@ -344,7 +456,7 @@ allFree f@Var {varName = u} = unitFV u (varPosition f) <> foldF allFree f
 allFree f = foldF allFree f
 
 
--- Substitution with substitution maps
+-- * Substitution with substitution maps
 
 -- | Apply a substitution that is represented as a finite partial map.
 applySub :: Map.Map VariableName Formula -> Formula -> Formula

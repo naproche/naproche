@@ -102,7 +102,7 @@ endTopLevelSection keyword starred = do
 -- "\\end" "{" "signature" "}"@
 signature :: ParserKind -> FTL ProofText
 signature Ftl = do
-  keyword <- getMarkupToken sectionHeader "signature"
+  markupToken sectionHeader "signature"
   label <- optLL1 Nothing (Just <$> identifier)
   dot
   content <- signatureBody
@@ -124,7 +124,7 @@ signature Tex = do
 -- "\\end" "{" "definition" "}"@
 definition :: ParserKind -> FTL ProofText
 definition Ftl = do
-  keyword <- markupToken sectionHeader "definition"
+  markupToken sectionHeader "definition"
   label <- optLL1 Nothing (Just <$> identifier)
   dot
   content <- definitionBody
@@ -146,7 +146,7 @@ definition Tex = do
 -- "\\end" "{" "axiom" "}"@
 axiom :: ParserKind -> FTL ProofText
 axiom Ftl = do
-  keyword <- markupToken sectionHeader "axiom"
+  markupToken sectionHeader "axiom"
   label <- optLL1 Nothing (Just <$> identifier)
   dot
   content <- axiomBody
@@ -168,7 +168,7 @@ axiom Tex = do
 -- @...@
 theorem :: ParserKind -> FTL ProofText
 theorem Ftl = do
-  keyword <- markupTokenOf sectionHeader ["theorem", "proposition", "lemma", "corollary"]
+  markupTokenOf sectionHeader ["theorem", "proposition", "lemma", "corollary"]
   label <- optLL1 Nothing (Just <$> identifier)
   dot
   content <- theoremBody
