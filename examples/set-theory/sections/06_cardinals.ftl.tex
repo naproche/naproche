@@ -1,0 +1,295 @@
+\documentclass[../set-theory.tex]{subfiles}
+
+\begin{document}
+  \chapter{ZCardinal numbers}
+
+  \filename{set-theory/sections/06_cardinals.ftl.tex}
+
+  \begin{forthel}
+    %[prove off][check off]
+
+    [readtex \path{set-theory/sections/05_well-ordering-theorem.ftl.tex}]
+
+    %[prove on][check on]
+  \end{forthel}
+
+
+  \begin{forthel}
+    \begin{definition}\printlabel{SET_THEORY_06_8286266038681600}
+      Let $x$ be a set.
+      The cardinality of $x$ is the ordinal $\kappa$ such that $\kappa$ is
+      equinumerous to $x$ and every ordinal that is equinumerous to $x$ is
+      greater than or equal to $\kappa$.
+    \end{definition}
+
+    Let $|x|$ stand for the cardinality of $x$.
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{SET_THEORY_06_6818986081648640}
+      A cardinal number is an ordinal $\kappa$ such that $\kappa = |x|$ for some
+      set $x$.
+    \end{definition}
+
+    Let a cardinal stand for a cardinal number.
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_06_2820082336006144}
+      Let $\kappa$ be a cardinal.
+      Then $|\kappa| = \kappa$.
+    \end{proposition}
+    \begin{proof}
+      $\kappa$ is an ordinal that is equinumerous to $\kappa$.
+      Hence $|\kappa| \leq \kappa$.
+      Consider a set $x$ such that $\kappa = |x|$.
+      Then $|\kappa|$ is an ordinal that is equinumerous to $x$.
+      Hence $\kappa \leq |\kappa|$.
+      Thus $|\kappa| = \kappa$.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_06_6920913721229312}
+      Let $x, y$ be sets.
+      Then $x$ and $y$ are equinumerous iff $|x| = |y|$.
+    \end{proposition}
+    \begin{proof}
+      Case $x$ and $y$ are equinumerous.
+        Take a bijection $f$ between $x$ and $y$.
+        Consider a bijection $g$ between $y$ and $|y|$.
+        Then $g \circ f$ is a bijection between $x$ and $|y|$.
+        Hence $x$ and $|y|$ are equinumerous.
+        Thus $|y| \geq |x|$.
+
+        $f^{-1}$ is a bijection between $y$ and $x$.
+        Consider a bijection $h$ between $x$ and $|x|$.
+        Then $h \circ f^{-1}$ is a bijection between $y$ and $|x|$.
+        Hence $y$ and $|x|$ are equinumerous.
+        Thus $|x| \geq |y|$.
+
+        Therefore $|x| = |y|$.
+      End.
+
+      Case $|x| = |y|$.
+        Consider a bijection $f$ between $x$ and $|x|$ and a bijection $g$
+        between $|y|$ and $y$.
+        Then $g \circ f$ is a bijection between $x$ and $y$.
+        Hence $x$ and $y$ are equinumerous.
+      End.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_06_5513850721927168}
+      Let $x, y$ be sets and $f : x \into y$ and $a \subseteq x$.
+      Then $|f[a]| = |a|$.
+    \end{proposition}
+    \begin{proof}
+      $f \restriction a$ is a bijection between $a$ and $f[a]$.
+      $f[a]$ is a set.
+      Hence $|a| = |f[a]|$.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}
+      Let $\kappa$ be a cardinal and $x \subseteq \kappa$.
+      Then $|x| \leq \kappa$.
+    \end{proposition}
+    \begin{proof}
+      Assume $|x| > \kappa$.
+      Then $\kappa \subseteq |x|$.
+      Take a bijection $f$ between $|x|$ and $x$.
+      Then $f \restriction \kappa$ is a map from $\kappa$ into $x$.
+      $\id_{x}$ is a map from $x$ into $\kappa$.
+      Hence $x$ and $\kappa$ are equinumerous (by
+      \cref{FOUNDATIONS_13_1913663275401216}).
+      Indeed $x$ is a set.
+      Thus $|x| = \kappa$.
+      Contradiction.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_06_407116133171200}
+      Let $x, y$ be sets.
+      Then there exists a map from $x$ into $y$ iff $|x| \leq |y|$.
+    \end{proposition}
+    \begin{proof}
+      Case there exists a map from $x$ into $y$.
+        Consider a map $f$ from $x$ into $y$.
+        Take a bijection $g$ from $|x|$ to $x$ and a bijection $h$ from $y$ to
+        $|y|$.
+        Then $g$ is a map from $|x|$ into $x$ and $h$ is a map from $y$ into
+        $|y|$.
+        [prover vampire]
+        Hence $h \circ f$ is a map from $x$ into $|y|$.
+        Thus $(h \circ f) \circ g$ is a map from $|x|$ into $|y|$.
+        [prover eprover]
+        Therefore $|x|
+          = ||x||
+          = |((h \circ f) \circ g)[|x|]|$.
+        We have $((h \circ f) \circ g)[|x|] \subseteq |y|$.
+        Hence $|x| \leq |y|$.
+      End.
+
+      Case $|x| \leq |y|$.
+        Take a bijection $g$ from $x$ to $|x|$ and a bijection $h$ from $|y|$ to
+        $y$.
+        We have $|x| \subseteq |y|$.
+        Hence $g$ is a map from $x$ into $|y|$.
+        Take $f = h \circ g$.
+        [prover vampire]
+        Then $f$ is a map from $x$ into $y$.
+        Indeed $h$ is a map from $|y|$ into $y$.
+      End.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{corollary}\printlabel{SET_THEORY_06_4944303633727488}
+      Let $x$ be a set and $y \subseteq x$.
+      Then $|y| \leq |x|$.
+    \end{corollary}
+    \begin{proof}
+      Define $f(v) = v$ for $v \in y$.
+      Then $f$ is a map from $y$ into $x$.
+      Hence $|y| \leq |x|$.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_06_192336220913664}
+      Let $x, y$ be nonempty sets.
+      Then there exists a map from $x$ onto $y$ iff $|x| \geq |y|$.
+    \end{proposition}
+    \begin{proof}
+      Case there exists a map from $x$ onto $y$.
+        Consider a map $f$ from $x$ onto $y$.
+        Define $g(v) =$ ``choose $u \in x$ such that $f(u) = v$ in $u$'' for
+        $v \in y$.
+        Then $g$ is a map from $y$ into $x$.
+        Indeed we can show that $g$ is injective.
+          Let $v, v' \in y$.
+          Assume $g(v) = g(v')$.
+          Take $u \in x$ such that $f(u) = v$ and $g(v) = u$.
+          Take $u' \in x$ such that $f(u') = v'$ and $g(v') = u'$.
+          Then $v
+            = f(u)
+            = f(g(v))
+            = f(g(v'))
+            = f(u')
+            = v'$.
+        End.
+        Hence $|x| \geq |y|$.
+      End.
+
+      Case $|x| \geq |y|$.
+        Then we can take a map $f$ from $y$ into $x$.
+        Then $f^{-1}$ is a bijection between $\range(f)$ and $y$.
+        Consider an element $z$ of $y$.
+        Define \[ g(u) =
+          \begin{cases}
+            f^{-1}(u) & : u \in \range(f) \\
+            z         & : u \notin \range(f)
+          \end{cases} \]
+        for $u \in x$.
+        Then $g$ is a map from $x$ onto $y$.
+        Indeed we can show that every element of $y$ is a value of $g$.
+          Let $v \in y$.
+          Then $f(v) \in \range(f)$.
+          Hence $g(f(v)) = f^{-1}(f(v)) = v$.
+        End.
+      End.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_06_8113916590686208}
+      Let $x, y$ be sets and $f : x \to y$ and $a \subseteq x$.
+      Then $|f[a]| \leq |a|$.
+    \end{proposition}
+    \begin{proof}
+      $f \restriction a$ is a map from $a$ onto $f[a]$.
+      $f[a]$ is a set.
+      Hence $|f[a]| \leq |a|$.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_06_5843717288099840}
+      Let $x, y$ be nonempty sets.
+      $|x| < |y|$ iff there exists a map from $x$ into $y$ and there exists no
+      map from $x$ onto $y$.
+    \end{proposition}
+    \begin{proof}
+      There exists a map from $x$ into $y$ and there exists no map from $x$ onto
+      $y$ iff $|x| \leq |y|$ and $|x| \ngeq |y|$ (by
+      \cref{SET_THEORY_06_407116133171200},
+      \cref{SET_THEORY_06_192336220913664}).
+      $|x| \leq |y|$ and $|x| \ngeq |y|$ iff $|x| \leq |y|$ and $|x| \neq |y|$.
+      $|x| \leq |y|$ and $|x| \neq |y|$ iff $|x| < |y|$.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_06_8300194126888960}
+      Let $x, y$ be sets and $f : x \to y$ and $b \subseteq \range(f)$.
+      Then $|f^{*}(b)| \geq |b|$.
+    \end{proposition}
+    \begin{proof}
+      $f \restriction f^{*}(b)$ is a map from $f^{*}(b)$ onto $b$.
+      Hence $|f^{*}(b)| \geq |b|$.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_06_2993566311776256}
+      Let $x, y$ be sets and $f : x \into y$ and $b \subseteq \range(f)$.
+      Then $|f^{*}(b)| = |b|$.
+    \end{proposition}
+    \begin{proof}
+      $f \restriction f^{*}(b)$ is a bijection between $f^{*}(b)$ and $b$.
+      Indeed $b
+        = f[f^{*}(b)]
+        = (f \restriction f^{*}(b))[f^{*}(b)]
+        = \range(f \restriction f^{*}(b))$.
+      Hence $|f^{*}(b)| = |b|$.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_06_7746592696172544}
+      Let $x, y$ be sets such that $|y| < |x|$.
+      Then $x \setminus y$ is nonempty.
+    \end{proposition}
+    \begin{proof}
+      Assume the contrary.
+      Then $x \subseteq y$.
+      Hence $|x| \leq |y|$.
+      Contradiction.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{theorem}[Cantor]\printlabel{SET_THEORY_06_914271456198656}
+      Let $x$ be a set.
+      Then \[ |x| < |\pow(x)|. \]
+    \end{theorem}
+    \begin{proof}
+      Let us show that there exists no map from $x$ onto $\pow(x)$.
+        Assume the contrary.
+        Take a map $f$ from $x$ onto $\pow(x)$.
+        Define $C = \{ u \in x \mid u \notin f(u) \}$.
+        Then $C \in \pow(x)$.
+        Hence we can take a $u \in x$ such that $f(u) = C$.
+        Then $u \in C$ iff $u \in f(u)$ iff $u \notin C$.
+        Contradiction.
+      End.
+
+      Thus $|x| \ngeq |\pow(x)|$.
+      Therefore $|x| < |\pow(x)|$.
+    \end{proof}
+  \end{forthel}
+\end{document}

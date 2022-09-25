@@ -9,6 +9,7 @@ digraph Sections {
     set_theory_03 [label = "3 Finite ordinals"]
     set_theory_04 [label = "4 Recursion"]
     set_theory_05 [label = "5 Zermelo's well-ordering theorem"]
+    set_theory_06 [label = "6 Cardinal numbers"]
 
     foundations_10  -> set_theory_01    [color = "gray"]
     foundations_11  -> set_theory_02    [color = "gray"]
@@ -17,4 +18,5 @@ digraph Sections {
     set_theory_02   -> set_theory_04
     foundations_13  -> set_theory_05    [color = "gray"]
     set_theory_04   -> set_theory_05
+    set_theory_05   -> set_theory_06
 }
