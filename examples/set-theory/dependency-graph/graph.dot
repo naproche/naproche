@@ -2,15 +2,19 @@ digraph Sections {
 
     foundations_10 [label = "Foundations: 10 Sets", color = "gray", fontcolor = "gray"]
     foundations_11 [label = "Foundations: 11 Binary relations", color = "gray", fontcolor = "gray"]
+    foundations_13 [label = "Foundations: 13 Equinumerosity", color = "gray", fontcolor = "gray"]
 
     set_theory_01 [label = "1 Transitive classes"]
     set_theory_02 [label = "2 Ordinal numbers"]
     set_theory_03 [label = "3 Finite ordinals"]
     set_theory_04 [label = "4 Recursion"]
+    set_theory_05 [label = "5 Zermelo's well-ordering theorem"]
 
     foundations_10  -> set_theory_01    [color = "gray"]
     foundations_11  -> set_theory_02    [color = "gray"]
     set_theory_01   -> set_theory_02
     set_theory_02   -> set_theory_03
     set_theory_02   -> set_theory_04
+    foundations_13  -> set_theory_05    [color = "gray"]
+    set_theory_04   -> set_theory_05
 }
