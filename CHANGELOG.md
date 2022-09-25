@@ -71,8 +71,7 @@ variant of ForTheL, respectively.
     any definitions, theorems etc. are now displayed in the PDF, making
     importing and referencing a bit easier.
 
-  * **New:** A new library on set theory (stored at `examples/set-theory`)
-    including chapters on *transitive classes* and *ordinal numbers* (so far).
+  * **New:** A new library on set theory (stored at `examples/set-theory`).
 
   * **New:** The formalizations of König's theorem (`koenig.ftl(.tex)`) and
     Hausdorff's theorem (`hausdorff.ftl(.tex)`, formerly
@@ -87,8 +86,6 @@ variant of ForTheL, respectively.
 
   * **New:** New sections about division, binomial coefficients and even and odd
     numbers in arithmetic library.
-
-  * **New:** New sections about cardinalities in set theory library.
 
 --------------------------------------------------------------------------------
 
