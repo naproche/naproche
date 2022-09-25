@@ -23,38 +23,53 @@
   \end{forthel}
 
   \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_03_3576717620805632}
+      $0 \in \omega$.
+    \end{proposition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_03_8807317141192704}
+      Let $n \in \omega$.
+      Then $\succ(n) \in \omega$.
+    \end{proposition}
+  \end{forthel}
+
+  \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_03_344585425387520}
-      Let $X \subseteq \omega$.
-      Assume that $0 \in X$ and for every $x \in X$ we have $\succ(x) \in X$.
-      Then $X = \omega$.
+      Let $\Phi \subseteq \omega$.
+      Assume that $0 \in \Phi$ and for every $x \in \Phi$ we have
+      $\succ(x) \in \Phi$.
+      Then $\Phi = \omega$.
     \end{proposition}
     \begin{proof}
-      Suppose $X \neq \omega$.
-      Consider an element $n$ of $\omega$ that is not contained in $X$.
-      %Define $X' = X \setminus \set{n}$. %!
-      Take a class $X'$ such that $X' = X \setminus \set{n}$.
+      Suppose $\Phi \neq \omega$.
+      Consider an element $n$ of $\omega$ that is not contained in $\Phi$.
+      %Define $\Phi' = \Phi \setminus \set{n}$. %!
+      Take a class $\Phi'$ such that $\Phi' = \Phi \setminus \set{n}$.
 
-      (1) $0 \in X'$.
-      Indeed $0 \in X$ and $0 \neq n$.
+      (1) $0 \in \Phi'$.
+      Indeed $0 \in \Phi$ and $0 \neq n$.
 
-      (2) For each $x \in X'$ we have $\succ(x) \in X'$. \\
+      (2) For each $x \in \Phi'$ we have $\succ(x) \in \Phi'$. \\
       Proof.
-        Let $x \in X'$.
-        Then $\succ(x) \in X$.
+        Let $x \in \Phi'$.
+        Then $\succ(x) \in \Phi$.
 
         Let us show that $\succ(x) \neq n$.
           Assume $\succ(x) = n$.
-          Then $x \notin X$.
-          Indeed $n \notin X$ and if $x \in X$ then $n = \succ(x) \in X$.
+          Then $x \notin \Phi$.
+          Indeed $n \notin \Phi$ and if $x \in \Phi$ then
+          $n = \succ(x) \in \Phi$.
           Contradiction.
         End.
 
-        Thus $\succ(x) \in X'$.
+        Thus $\succ(x) \in \Phi'$.
       Qed.
 
-      Therefore every element of $\omega$ lies in $X'$.
-      Indeed $X' \subseteq \Ord$.
-      Consequently $n \in X'$.
+      Therefore every element of $\omega$ lies in $\Phi'$.
+      Indeed $\Phi' \subseteq \Ord$.
+      Consequently $n \in \Phi'$.
       Contradiction.
     \end{proof}
   \end{forthel}
@@ -71,25 +86,6 @@
       Thus $X = \omega$.
       Therefore $\omega$ is a set.
     \end{proof}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{proposition}\printlabel{SET_THEORY_03_3576717620805632}
-      $0 \in \omega$.
-    \end{proposition}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{proposition}\printlabel{SET_THEORY_03_8807317141192704}
-      Let $n \in \omega$.
-      Then $\succ(n) \in \omega$.
-    \end{proposition}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{proposition}\printlabel{SET_THEORY_03_5057540872208384}
-      Every element of $\omega$ is an ordinal.
-    \end{proposition}
   \end{forthel}
 
   \begin{forthel}
@@ -118,6 +114,12 @@
       Therefore $k \in \omega'$.
       Contradiction.
     \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_03_5057540872208384}
+      Every element of $\omega$ is an ordinal.
+    \end{proposition}
   \end{forthel}
 
   \begin{forthel}
