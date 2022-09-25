@@ -466,9 +466,52 @@
 
   \begin{forthel}
     \begin{corollary}\printlabel{SET_THEORY_02_1042046129274880}
-      Let $A$ be a class such that every element of $A$ is an ordinal.
+      Let $A$ be a subclass of $\Ord$.
       If $A$ is nonempty then $A$ has a least element regarding ${<}$.
     \end{corollary}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{corollary}\printlabel{SET_THEORY_02_1991423647809536}
+      Let $A$ be a subclass of $\Ord$.
+      If $A$ is nonempty then $A$ has a least element regarding ${\in}$.
+    \end{corollary}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_03_8114657499807744}
+      ${<}$ is a strong wellorder on any ordinal.
+    \end{proposition}
+    \begin{proof}
+      Let $\alpha$ be an ordinal.
+      For all $\beta, \gamma \in \alpha$ we have $(\beta,\gamma) \in {<}$ iff
+      $\beta < \gamma$.
+
+      (1) ${<}$ is irreflexive on $\alpha$.
+      Indeed for all $\beta \in \alpha$ we have $\alpha \nless \alpha$.
+
+      (2) ${<}$ is transitive on $\alpha$.
+      Indeed for all $\beta, \gamma, \delta \in \alpha$ if $\beta < \gamma$ and
+      $\gamma < \delta$ then $\beta < \delta$.
+
+      (3) ${<}$ is connected on $\alpha$.
+      Indeed for any distinct $\beta, \gamma \in \alpha$ we have
+      $\beta < \gamma$ or $\gamma < \beta$.
+
+      Hence ${<}$ is a strict linear order on $\alpha$.
+
+      (4) ${<}$ is wellfounded on $\alpha$. \\
+      Proof.
+        Let $A$ be a nonempty subclass of $\alpha$.
+        Then we can take a least element $\beta$ of $A$ regarding ${<}$.
+        Indeed $A$ is a subclass of $\Ord$.
+      Qed.
+
+      Hence ${<}$ is strongly wellfounded on $\alpha$.
+      Indeed for any $\gamma \in \alpha$ we have
+      $\gamma = \{ \beta \in \Ord \mid (\beta,\gamma) \in {<} \}$.
+      Thus ${<}$ is a strong wellorder on $\alpha$.
+    \end{proof}
   \end{forthel}
 
   \begin{forthel}
