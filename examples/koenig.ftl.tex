@@ -4,8 +4,10 @@
 \usepackage[english]{babel}
 \usepackage{xurl}
 \usepackage{amssymb, mathtools}
+\usepackage{xr-hyper}
+\usepackage[foundations, settheory]{../lib/tex/naproche}
 
-\usepackage{../lib/tex/naproche}
+\externaldocument{set-theory/set-theory}
 
 \title{König's Theorem}
 \author{\Naproche formalization: \vspace{0.5em} \\
@@ -29,118 +31,60 @@ It was proved by Julius König in 1905 \cite[p. 177--180]{Koenig1905}.
 The proof is reminiscent of Cantor's diagonal argument for proving that
 $\kappa < 2^\kappa$.
 
-The formalization begins with a minimal axiomatic setup on cardinals,
-sufficient for the proof of the theorem.
-
-
-\section{ForTheL Setup}
+On mid-range hardware \Naproche needs approximately 2 Minutes to verify this
+formalization plus approximately 25 minutes to verify the library files it
+depends on.
 
 \begin{forthel}
-  [readtex \path{preliminaries.ftl.tex}]
-
-  Let $M, N$ denote sets.
-  Let $f$ denote a function.
+  [readtex \path{set-theory/sections/06_cardinals.ftl.tex}]
 
   Let $f_{i}$ stand for $f(i)$.
 \end{forthel}
 
 
-\section{Cardinals}
-
-\begin{forthel}
-  \begin{signature}
-    A cardinal is a set.
-  \end{signature}
-
-  Let $\kappa, \lambda, \mu$ denote cardinals.
-
-  \begin{signature}
-    $\kappa < \lambda$ is an atom.
-  \end{signature}
-
-  Let $\kappa$ is less than $\lambda$ stand for $\kappa < \lambda$.
-  Let $\kappa \leq \lambda$ stand for $\kappa = \lambda$ or $\kappa < \lambda$.
-
-  \begin{axiom}
-    If $\kappa < \lambda < \mu$ then $\kappa < \mu$.
-  \end{axiom}
-
-  \begin{axiom}
-    $\kappa < \lambda$ or $\lambda < \kappa$ or $\kappa = \lambda$.
-  \end{axiom}
-
-  \begin{signature}
-    The cardinality of $M$ is a cardinal.
-  \end{signature}
-
-  Let $|M|$ denote the cardinality of $M$.
-
-  \begin{axiom}
-    $|\kappa| = \kappa$.
-  \end{axiom}
-
-  \begin{axiom}
-    Assume $M$ is a subset of $\dom(f)$.
-    $|f[M]| \leq |M|$.
-  \end{axiom}
-
-  \begin{axiom}
-    Assume the cardinality of $N$ is less than the cardinality of $M$.
-    Then $M \setminus N$ has an element.
-  \end{axiom}
-
-  \begin{axiom}
-    Assume $|M| \leq |N|$.
-    Assume $M$ has an element.
-    There exists a function $f$ such that $N$ is the domain of $f$ and $M$ is
-    the image of $f$.
-  \end{axiom}
-\end{forthel}
-
-
-\section{Sums and Products of cardinals}
+\section*{Sums and Products of cardinals}
 
 \begin{forthel}
   Let $D$ denote a set.
 
-  \begin{definition}
+  \begin{definition*}
     A sequence of cardinals on $D$ is a function $\kappa$ such that
-    $\dom(\kappa) = D$ and $\kappa(i)$ is a cardinal for every element $i$ of
+    $\dom(\kappa) = D$ and $\kappa_{i}$ is a cardinal for every element $i$ of
     $D$.
-  \end{definition}
+  \end{definition*}
 
-  \begin{definition}
+  \begin{definition*}
     Let $\kappa$ be a sequence of cardinals on $D$.
     \[ \SumSet{\kappa}{D} = \class{(n,i) | \text{$i$ is an element of $D$ and
     $n$ is an element of $\kappa_{i}$}}. \]
-  \end{definition}
+  \end{definition*}
 
-  \begin{axiom}
+  \begin{axiom*}
     Let $\kappa$ be a sequence of cardinals on $D$.
     Then $\SumSet{\kappa}{D}$ is a set.
-  \end{axiom}
+  \end{axiom*}
 
-  \begin{definition}
+  \begin{definition*}
     Let $\kappa$ be a sequence of cardinals on $D$.
     \[ \Sum{\kappa}{D} = \left| \SumSet{\kappa}{D} \right|. \]
-  \end{definition}
+  \end{definition*}
 
-  \begin{definition}
+  \begin{definition*}
     Let $\kappa$ be a sequence of cardinals on $D$.
     \[ \ProdSet{\kappa}{D} = \class{f | \classtext{$f$ is a function and
     $\dom(f) = D$ and $f(i)$ is an element of $\kappa_{i}$ for every element
     $i$ of $D$}}. \]
-  \end{definition}
+  \end{definition*}
 
-  \begin{axiom}
+  \begin{axiom*}
     Let $\kappa$ be a sequence of cardinals on $D$.
     Then $\ProdSet{\kappa}{D}$ is a set.
-  \end{axiom}
+  \end{axiom*}
 
-  \begin{definition}
+  \begin{definition*}
     Let $\kappa$ be a sequence of cardinals on $D$.
     \[ \Prod{\kappa}{D} = \left| \ProdSet{\kappa}{D} \right|. \]
-  \end{definition}
+  \end{definition*}
 \end{forthel}
 
 König's Theorem requires some form of the axiom of choice.
@@ -150,11 +94,11 @@ The axiom of choice is also required to show that products of non-empty factors
 are themselves non-empty:
 
 \begin{forthel}
-  \begin{lemma}[Choice]
+  \begin{lemma*}[Choice]
     Let $\lambda$ be a sequence of cardinals on $D$.
     Assume that $\lambda_{i}$ has an element for every element $i$ of $D$.
     Then $\ProdSet{\lambda}{D}$ has an element.
-  \end{lemma}
+  \end{lemma*}
   \begin{proof}
     Define $f(i) =$ ``choose an element $v$ of $\lambda_{i}$ in $v$'' for $i$
     in $D$.
@@ -163,45 +107,54 @@ are themselves non-empty:
 \end{forthel}
 
 
-\section{König's theorem}
+\section*{König's theorem}
 
 \begin{forthel}
-  \begin{theorem}[König]\label{koenig}
+  \begin{theorem*}[König]\label{koenig}
     Let $\kappa, \lambda$ be sequences of cardinals on $D$.
     Assume that for every element $i$ of $D$ $\kappa_{i} < \lambda_{i}$.
     Then \[ \Sum{\kappa}{D} < \Prod{\lambda}{D}. \]
-  \end{theorem}
+  \end{theorem*}
   \begin{proof}[by contradiction]
     Assume the contrary.
     Then \[ \Prod{\lambda}{D} \leq \Sum{\kappa}{D}. \]
-    Take a function $G$ such that $\SumSet{\kappa}{D}$ is the domain of $G$ and
-    $\ProdSet{\lambda}{D}$ is the image of $G$.
-    Indeed $\ProdSet{\lambda}{D}$ has an element.
+    Take a map $G$ from $\SumSet{\kappa}{D}$ onto $\ProdSet{\lambda}{D}$.
+    Indeed $\ProdSet{\lambda}{D}$ is nonempty.
+    Take $\Lambda = \bigcup \range(\lambda)$.
+    Then $\Lambda$ is a set.
+    Indeed $\range(\lambda)$ is a set.
 
-    Define $\Delta(i) = \class{G(n,i)(i) | \text{$n$ is an element of
-    $\kappa_{i}$}}$ for $i$ in $D$.
+    Define $\Delta(i) = \{ G(n,i)(i) \in \Lambda \mid n \in \kappa_{i} \}$ for
+    $i \in D$.
 
     For every element $f$ of $\ProdSet{\lambda}{D}$ and every element $i$ of $D$
-    $f(i)$ is an element of $\lambda_{i}$.
-    For every element $i$ of $D$ $\lambda_{i}$ is a set.
-    For every element $i$ of $D$ and every element $d$ of $\Delta(i)$ we have
-    $d\in \lambda_{i}$.
-    For every element $i$ of $D$ $\Delta(i)$ is a set.
+    we have $f(i) \in \Lambda$.
 
     For every element $i$ of $D$ we have $|\Delta(i)| < \lambda_{i}$. \\
     Proof.
       Let $i$ be an element of $D$.
       Define $F(n) = G(n,i)(i)$ for $n$ in $\kappa_{i}$.
-      Then $F[\kappa(i)] = \Delta(i)$.
+      Then $F$ is a map from $\kappa_{i}$ to $\lambda_{i}$.
+      We have $\Delta(i) = \{ F(n) \mid n \in \kappa_{i} \}$.
+      Thus $F[\kappa_{i}] = \Delta(i)$.
+      Therefore $|\Delta(i)|
+        = |F[\kappa_{i}]|
+        \leq |\kappa_{i}|
+        = \kappa_{i}
+        < \lambda_{i}$.
+      Indeed $|F[\kappa_{i}]| \leq |\kappa_{i}|$
+      (by \cref{SET_THEORY_06_8113916590686208}).
+      Indeed $\kappa_{i}$ and $\lambda_{i}$ are sets.
     End.
 
     Define $f(i) =$ ``choose an element $v$ of $\lambda_{i} \setminus
-    \Delta(i)$ in $v$'' for $i$ in $D$.
+    \Delta(i)$ in $v$'' for $i \in D$.
+    Indeed $\lambda_{i} \setminus \Delta(i)$ is nonempty for each $i \in D$.
     Then $f$ is an element of $\ProdSet{\lambda}{D}$.
     Take an element $j$ of $D$ and an element $m$ of $\kappa_{j}$ such that
     $G(m,j) = f$.
-    $G(m,j)(j)$ is an element of $\Delta(j)$ and $f(j)$ is not an element of
-    $\Delta(j)$.
+    $G(m,j)(j)$ is an element of $\Delta(j)$ and
+    $f(j)$ is not an element of $\Delta(j)$.
     Contradiction.
   \end{proof}
 \end{forthel}
