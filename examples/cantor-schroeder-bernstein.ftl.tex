@@ -22,8 +22,9 @@ Marcel Schütz (2019 - 2022)}
   where the proof of the latter theorem is based on the former one, as in
   \cite[p. 530]{Schroeder2012}.
 
-  On mid-range hardware \Naproche needs approximately 9 Minutes to verify this
-  formalization, including the library files it depends on.
+  On mid-range hardware \Naproche needs approximately 3 Minutes to verify this
+  formalization plus approximately 7 minutes to verify the library files it
+  depends on.
 
   \begin{forthel}
     [readtex \path{foundations/sections/10_sets.ftl.tex}]
@@ -126,7 +127,7 @@ Marcel Schütz (2019 - 2022)}
           Consequently $h[u] \subseteq h[v]$.
         End.
 
-        Hence we can take a fixed point $c$ of $h$ (by \ref{KT}).
+        Hence we can take a fixed point $c$ of $h$ (by \nameref{KT}).
 
         (2) Define $F(u) = f(u)$ for $u \in c$.
 
