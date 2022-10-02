@@ -16,7 +16,7 @@
 
 \begin{document}
   \maketitle
-  
+
   \tableofcontents
 
   \begin{figure}[H]
@@ -31,31 +31,32 @@
   This is a library providing a foundation of mathematics based on a
   Kelley-Morse like class theory with urelements.
   It introduces common operations on classes like unions or intersections
-  (\cref{classes}) together with detailed proofs of their algebraic
-  properties (\cref{computation-laws-for-classes}), the symmetric
-  difference of two classes (\cref{symmetric-difference}) and the notions
-  of ordered pairs and Cartesian products (\cref{pairs-and-products}) as well as
-  proofs of the algebraic properties of the latter
-  (\cref{computation-laws-for-products}).
-  Moreover, it provides common operations on maps (\cref{maps}), various
-  properties of images and preimages (\cref{image-and-preimage}) and the notions
-  of injectivity, surjectivity, bijectivity
-  (\cref{injections-surjections-bijections}) and invertibility of maps
-  (\cref{invertible-maps}).
-  The library provides an axiom system characterizing sets (\cref{sets}) and,
-  furthermore, it covers the notions of binary relations
-  (\cref{binary-relations}), fixed-points of subset preserving maps
-  (\cref{fixed-points}), including and equinumerosity (\cref{equinumerosity}).
-  
+  (\cref{chapter:classes}) together with detailed proofs of their algebraic
+  properties (\cref{chapter:computation-laws-for-classes}), the symmetric
+  difference of two classes (\cref{chapter:symmetric-difference}) and the
+  notions of ordered pairs and Cartesian products
+  (\cref{chapter:pairs-and-products}) as well as proofs of the algebraic
+  properties of the latter (\cref{chapter:computation-laws-for-products}).
+  Moreover, it provides common operations on maps (\cref{chapter:maps}), various
+  properties of images and preimages (\cref{chapter:image-and-preimage}) and the
+  notions of injectivity, surjectivity, bijectivity
+  (\cref{chapter:injections-surjections-bijections}) and invertibility of maps
+  (\cref{chapter:invertible-maps}).
+  The library provides an axiom system characterizing sets (\cref{chapter:sets})
+  and, furthermore, it covers the notions of binary relations
+  (\cref{chapter:binary-relations}), fixed-points of subset preserving maps
+  (\cref{chapter:fixed-points}), including and equinumerosity
+  (\cref{chapter:equinumerosity}).
+
   As two famous results it includes the Knaster-Tarski fixed point theorem
-  (\cref{SET_THEORY_12_8420450166112256}) and the Cantor-Schröder-Bernstein
-  theorem (\cref{SET_THEORY_13_1913663275401216}).
+  (\cref{FOUNDATIONS_12_8420450166112256}) and the Cantor-Schröder-Bernstein
+  theorem (\cref{FOUNDATIONS_13_1913663275401216}).
 
   \paragraph*{Usage.}
   At the very beginning of each chapter you can find the name of its source
-  file, e.g. \path{foundations/sections/01_classes.ftl.tex} for \cref{classes}.
-  This filename can be used to import the chapter via \Naproche's
-  \texttt{readtex} instruction to another ForTheL text, e.g.:
+  file, e.g. \path{foundations/sections/01_classes.ftl.tex} for
+  \cref{chapter:classes}. This filename can be used to import the chapter via
+  \Naproche's \texttt{readtex} instruction to another ForTheL text, e.g.:
   \begin{center}
     \verb`[readtex \path{foundations/sections/01_classes.ftl.tex}]`
   \end{center}
@@ -67,64 +68,50 @@
 
   \begin{center}
     \begin{tabular}{c|c|c}
-      
+
       & \multicolumn{2}{c}{\textbf{Checking time}}
       \\
       \textbf{Chapter}
-      & \textbf{without dependencies}
-      & \textbf{with dependencies}
+      & \textbf{without dependencies}     & \textbf{with dependencies}
       \\ \hline
-      \ref{classes}
-      & 00:04 min
-      & 00:04 min
+      \ref{chapter:classes}
+      & 00:04 min                         & 00:04 min
       \\
-      \ref{computation-laws-for-classes}
-      & 00:12 min
-      & 00:16 min
+      \ref{chapter:computation-laws-for-classes}
+      & 00:12 min                         & 00:16 min
       \\
-      \ref{symmetric-difference}
-      & 00:32 min
-      & 00:48 min
+      \ref{chapter:symmetric-difference}
+      & 00:32 min                         & 00:48 min
       \\
-      \ref{pairs-and-products}
-      & 00:08 min
-      & 00:12 min
+      \ref{chapter:pairs-and-products}
+      & 00:08 min                         & 00:12 min
       \\
-      \ref{computation-laws-for-products}
-      & 01:36 min
-      & 01:56 min
+      \ref{chapter:computation-laws-for-products}
+      & 01:36 min                         & 01:56 min
       \\
-      \ref{maps}
-      & 01:13 min
-      & 01:25 min
+      \ref{chapter:maps}
+      & 01:13 min                         & 01:25 min
       \\
-      \ref{image-and-preimage}
-      & 01:28 min
-      & 02:53 min
+      \ref{chapter:image-and-preimage}
+      & 01:28 min                         & 02:53 min
       \\
-      \ref{injections-surjections-bijections}
-      & 00:38 min
-      & 02:03 min
+      \ref{chapter:injections-surjections-bijections}
+      & 00:38 min                         & 02:03 min
       \\
-      \ref{invertible-maps}
-      & 02:20 min
-      & 04:23 min
+      \ref{chapter:invertible-maps}
+      & 02:20 min                         & 04:23 min
       \\
-      \ref{sets}
-      & 02:17 min
-      & 06:40 min
+      \ref{chapter:sets}
+      & 02:17 min                         & 06:40 min
       \\
-      \ref{binary-relations}
-      & 00:14 min
-      & 06:54 min
+      \ref{chapter:binary-relations}
+      & 00:14 min                         & 06:54 min
       \\
-      \ref{fixed-points}
-      & 00:33 min
-      & 07:13 min
+      \ref{chapter:fixed-points}
+      & 00:33 min                         & 07:13 min
       \\
-      \ref{equinumerosity}
-      & 01:48 min
-      & 09:01 min
+      \ref{chapter:equinumerosity}
+      & 01:48 min                         & 09:01 min
     \end{tabular}
   \end{center}
 
