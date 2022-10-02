@@ -292,4 +292,27 @@
       Therefore $|x| < |\pow(x)|$.
     \end{proof}
   \end{forthel}
+
+  \begin{forthel}
+    \begin{theorem}\printlabel{SET_THEORY_06_8562942165385216}
+      For every ordinal $\alpha$ there exists a cardinal greater than $\alpha$.
+    \end{theorem}
+    \begin{proof}
+      Let $\alpha$ be an ordinal.
+      Take $\kappa = |\pow(\alpha)|$.
+      Then $\kappa > |\alpha|$.
+
+      Let us show that $\kappa > \alpha$.
+        Assume the contrary.
+        Then $|\pow(\alpha)|
+          = \kappa
+          \leq \alpha$.
+        Hence $\kappa
+          = |\pow(\alpha)|
+          = ||\pow(\alpha)||
+          \leq |\alpha|$.
+        Contradiction.
+      End.
+    \end{proof}
+  \end{forthel}
 \end{document}
