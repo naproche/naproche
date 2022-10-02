@@ -1,0 +1,517 @@
+\documentclass[../set-theory.tex]{subfiles}
+
+\begin{document}
+  \chapter{Finite and infinite sets}\label{chapter:finite-and-infinite-sets}
+
+  \filename{set-theory/sections/07_cardinals.ftl.tex}
+
+  \begin{forthel}
+    %[prove off][check off]
+
+    [readtex \path{set-theory/sections/03_finite-ordinals.ftl.tex}]
+
+    [readtex \path{set-theory/sections/06_cardinals.ftl.tex}]
+
+    %[prove on][check on]
+  \end{forthel}
+
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_07_6139396896063488}
+      $|\emptyset| = 0$.
+    \end{proposition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_07_836893598023680}
+      Let $a$ be an object.
+      Then $|\set{a}| = 1$.
+    \end{proposition}
+    \begin{proof}
+      Define $f(x) = 0$ for $x \in \set{a}$.
+      Then $f$ is a map from $\set{a}$ to $1$.
+      $f$ is injective and surjective onto $1$.
+      Hence $f$ is a bijection between $\set{a}$ and $1$.
+      Consequently $\set{a}$ and $1$ are equinumerous.
+      Thus $|\set{a}| = |1| = 1$.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_07_5465279026954240}
+      Let $a, b$ be distinct objects.
+      Then $|\set{a,b}| = 2$.
+    \end{proposition}
+    \begin{proof}
+      Define \[ f(x) =
+        \begin{cases}
+          0 & x = a
+          \\
+          1 & x = b
+        \end{cases} \]
+      for $x \in \set{a,b}$.
+      Then $f$ is a map from $\set{a,b}$ to $2$.
+      $f$ is injective and surjective onto $2$.
+      Hence $f$ is a bijection between $\set{a,b}$ and $2$.
+      Consequently $\set{a,b}$ and $2$ are equinumerous.
+      Thus $|\set{a,b}| = |2| = 2$.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{theorem}\printlabel{SET_THEORY_07_2948332552978432}
+      Let $n \in \omega$.
+      Then $|n| = n$.
+    \end{theorem}
+    \begin{proof}
+      Define $\Phi = \{ n' \in \omega \mid |n'| = n' \}$.
+
+      (1) $0 \in \Phi$.
+      Indeed $|0| = |\emptyset| = 0$.
+
+      (2) For all $n' \in \Phi$ we have $\succ(n') \in \Phi$. \\
+      Proof.
+        Let $n' \in \Phi$.
+        Then $|n'| = n'$.
+        We have $|\succ(n')| \leq \succ(n')$.
+
+        Let us show that $\succ(n') \leq |\succ(n')|$.
+          Assume the contrary.
+          Then $|\succ(n')| < \succ(n')$.
+          Take a bijection $f$ between $|\succ(n')|$ and $\succ(n')$.
+          $|\succ(n')|$ is nonzero.
+          Hence we can take a $m \in \omega$ such that $|\succ(n')| =
+          \succ(m)$.
+          Then $f^{-1}(n') \leq m$.
+
+          We can show that $f^{-1}(n') < m$.
+            Assume the contrary.
+            Then $f^{-1}(n') = m$.
+            $f \restriction m$ is a bijection between $m$ and $f[m]$ (by
+            \cref{FOUNDATIONS_08_647446231252992}).
+            Indeed $f$ is a map from $|\succ(n')|$ into $\succ(n')$ and
+            $m \subseteq |\succ(n')|$.
+            We have $f[m] \subseteq n'$ and $n' \subseteq f[m]$.
+            Hence $f[m] = n'$.
+            Thus $f \restriction m$ is a bijection between $m$ and $n'$.
+            Therefore $n'
+              = |n'|
+              \leq m
+              < |\succ(n')|
+              < \succ(n')$.
+            Consequently $m = n'$.
+            Then we have $\succ(n') = |\succ(n')| < \succ(n')$.
+            Contradiction.
+          End.
+
+          Define \[ g(i) =
+            \begin{cases}
+              f(i)  & : i \neq f^{-1}(n')
+              \\
+              f(m)  & : i = f^{-1}(n')
+            \end{cases} \]
+          for $i \in m$.
+
+          $g$ is a map from $m$ to $n'$.
+          Indeed we can show that $g(i) \in n'$ for each $i \in m$. \\
+          Proof.
+            Let $i \in m$.
+
+            Case $i \neq f^{-1}(n')$.
+              Then $g(i) = f(i) \in \succ(n')$.
+              If $g(i) = n'$ then $f(i) = n' = f(f^{-1}(n'))$.
+              Hence if $g(i) = n'$ then $i = f^{-1}(n')$.
+              Thus $g(i) \neq n'$.
+              Therefore $g(i) \in n'$.
+            End.
+
+            Case $i = f^{-1}(n')$.
+              Then $g(i)
+                = f(m)
+                \neq f(f^{-1}(n'))
+                = n'$.
+              Hence $g(i) \in n'$.
+            End.
+          Qed.
+
+          $g$ is surjective onto $n'$.
+          Indeed we can show that for all $k \in n'$ there exists a $l \in m$
+          such that $k = g(l)$. \\
+          Proof.
+            Let $k \in n'$.
+            Then $f^{-1}(k) \neq f^{-1}(n')$.
+
+            Case $f^{-1}(k) = m$.
+              Then $k
+                = f(f^{-1}(k))
+                = f(m)
+                = g(f^{-1}(n'))$.
+            End.
+
+            Case $f^{-1}(k) \neq m$.
+              Then $f^{-1}(k) \in m$.
+              Indeed $f^{-1}(k) \in |\succ(n')| = \succ(m) = m \cup \set{m}$.
+              Hence $k
+                = f(f^{-1}(k))
+                = g(f^{-1}(k))$.
+            End.
+          Qed.
+
+          $g$ is injective.
+          Indeed we can show that for all $i, j \in m$ if $i \neq j$ then
+          $g(i) \neq g(j)$. \\
+          Proof.
+            Let $i, j \in m$.
+            Assume $i \neq j$.
+
+            Case $i, j \neq f^{-1}(n')$.
+              Then $g(i)
+                = f(i)
+                \neq f(j)
+                = g(j)$.
+            End.
+
+            Case $i = f^{-1}(n')$.
+              Then $j \neq f^{-1}(n')$.
+              Hence $g(i)
+                = g(f^{-1}(n'))
+                = f(m)
+                \neq f(j)
+                = g(j)$.
+              Indeed $m \neq j$.
+            End.
+
+            Case $j = f^{-1}(n')$.
+              Then $i \neq f^{-1}(n')$.
+              Hence $g(i)
+                = f(i)
+                \neq f(m)
+                = g(f^{-1}(n'))
+                = g(j)$.
+              Indeed $i \neq m$.
+            End.
+          Qed.
+        End.
+      End.
+
+      Thus $\omega \subseteq \Phi$.
+      Consequently $n \in \Phi$.
+      Therefore $|n| = n$.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{corollary}\printlabel{SET_THEORY_07_7061392098066432}
+      Every element of $\omega$ is a cardinal.
+    \end{corollary}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_07_4952029518626816}
+      $|\omega| = \omega$.
+    \end{proposition}
+    \begin{proof}
+      We have $|\omega| \leq \omega$.
+
+      Let us show that $|\omega|$ is not less than $\omega$.
+        Assume the contrary.
+        Then $|\omega| \in \omega$.
+        Take $n = |\omega|$ and a bijection $f$ between $n$ and $\omega$.
+
+        Define \[ g(k) =
+          \begin{cases}
+            \succ(f(k)) & : k < n
+            \\
+            0           & : k = n
+          \end{cases} \]
+        for $k \in \succ(n)$.
+        Then $g$ is a map from $\succ(n)$ to $\omega$.
+
+        $g$ is injective.
+        Indeed we can show that for all $k, k' \in \succ(n)$ if $k \neq k'$
+        then $g(k) \neq g(k')$. \\
+        Proof.
+          Let $k, k' \in \succ(n)$.
+          Assume $k \neq k'$.
+
+          Case $k, k' < n$.
+            Then $f(k) \neq f(k')$.
+            Hence $g(k)
+              = \succ(f(k))
+              \neq \succ(f(k'))
+              = g(k')$.
+          End.
+
+          Case $k < n$ and $k' = n$.
+            Then $g(k)
+              = \succ(f(k))
+              \neq 0
+              = g(k')$.
+          End.
+
+          Case $k = n$ and $k' < n$.
+            Then $g(k)
+              = 0
+              \neq \succ(f(k'))
+              = g(k')$.
+          End.
+        Qed.
+
+        $g$ is surjective onto $\omega$.
+        Indeed we can show that for any $m \in \omega$ there exists a
+        $k \in \succ(n)$ such that $m = g(k)$. \\
+        Proof.
+          Let $m \in \omega$.
+          Then $f^{-1}(m) \in n$.
+
+          Case $m = 0$.
+            Then $m = g(n)$.
+          End.
+
+          Case $m \neq 0$.
+            Take $m' \in \omega$ such that $m = \succ(m')$.
+            Then $m
+              = \succ(m')
+              = \succ(f(f^{-1}(m')))
+              = g(f^{-1}(m'))$.
+            Indeed $f^{-1}(m') < n$.
+          End.
+        End.
+
+        Hence $g$ is a bijection between $\succ(n)$ and $\omega$.
+        Then we have $|n| = |\succ(n)|$.
+        Thus $n = \succ(n)$.
+      End.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{corollary}\printlabel{SET_THEORY_07_2717623053713408}
+      $\omega$ is a cardinal.
+    \end{corollary}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{SET_THEORY_07_5346658235711488}
+      Let $x$ be a set.
+      $x$ is finite iff $|x| < \omega$.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{SET_THEORY_07_8295412068777984}
+      Let $x$ be a set.
+      $x$ is infinite iff $x$ is not finite.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{SET_THEORY_07_8808604616359936}
+      Let $x$ be a set.
+      $x$ is countable iff $|x| \leq \omega$.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{SET_THEORY_07_2935263915409408}
+      Let $x$ be a set.
+      $x$ is uncountable iff $x$ is not countable.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{SET_THEORY_07_5679866426949632}
+      Let $x$ be a set.
+      $x$ is countably infinite iff $|x| = \omega$.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_07_3806229474312192}
+      Let $x$ be a set.
+      Then $x$ is finite iff $|x| = n$ for some $n \in \omega$.
+    \end{proposition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_07_3174577070931968}
+      Let $x$ be a set.
+      Then $x$ is infinite iff $|x| \geq \omega$.
+    \end{proposition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_07_4281623468048384}
+      Let $x$ be a set.
+      Then $x$ is uncountable iff $|x| > \omega$.
+    \end{proposition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{SET_THEORY_07_4231078585827328}
+      $\Card$ is the collection of all infinite cardinals.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_07_4285360123150336}
+      $\Card$ is a proper class.
+    \end{proposition}
+    \begin{proof}
+      Suppose that $\Card$ is a set.
+      Then $\bigcup \Card$ is a set.
+
+      Let us show that $\bigcup \Card$ contains every ordinal.
+        Let $\alpha$ be an ordinal.
+        Choose an infinite ordinal $\beta$ such that $\beta \geq \alpha$.
+        Choose a cardinal $\kappa$ greater than $\beta$.
+        Then $\alpha \in \kappa \in \Card$.
+        Hence $\alpha \in \bigcup \Card$.
+      End.
+
+      Therefore $\Ord \subseteq \bigcup \Card$.
+      Thus $\Ord$ is a set.
+      Contradiction.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_07_8189062544359424}
+      Let $\alpha$ be an infinite ordinal.
+      Then $|\succ(\alpha)| = |\alpha|$.
+    \end{proposition}
+    \begin{proof}
+      For any $\beta \in \succ(\alpha)$ we have
+      $\beta < \omega$ or $\omega \leq \beta < \alpha$ or $\beta = \alpha$.
+      Define \[ f(\beta) =
+        \begin{cases}
+          \succ(\beta)  & : \beta < \omega
+          \\
+          \beta         & : \omega \leq \beta < \alpha
+          \\
+          0             & : \beta = \alpha
+        \end{cases} \]
+      for $\beta \in \succ(\alpha)$.
+
+      Then $f$ is a map from $\succ(\alpha)$ to $\alpha$.
+      Indeed we can show that $f(\beta) \in \alpha$ for all
+      $\beta \in \succ(\alpha)$. \\
+      Proof.
+        Let $\beta \in \succ(\alpha)$.
+
+        Case $\beta < \omega$.
+          Then $f(\beta)
+            = \succ(\beta)
+            < \omega
+            \leq \alpha$.
+        End.
+
+        Case $\omega \leq \beta < \alpha$.
+          Then $f(\beta)
+            = \beta
+            < \alpha$.
+        End.
+
+        Case $\beta = \alpha$.
+          Then $f(\beta)
+            = 0
+            < \alpha$.
+        End.
+      Qed.
+
+      $f$ is surjective onto $\alpha$.
+      Indeed we can show that for any $\beta \in \alpha$ there exists a
+      $\gamma \in \succ(\alpha)$ such that $\beta = f(\gamma)$. \\
+      Proof.
+        Let $\beta \in \alpha$.
+        Then $\beta = 0$ or $0 < \beta < \omega$ or $\beta \geq \omega$.
+
+        Case $\beta = 0$.
+          Then $\beta = f(\alpha)$.
+        End.
+
+        Case $0 < \beta < \omega$.
+          Take an ordinal $\beta'$ such that $\beta = \succ(\beta')$.
+          Then $\beta' < \omega$.
+          Hence $\beta = f(\beta')$.
+        End.
+
+        Case $\beta \geq \omega$.
+          Then $\beta = f(\beta)$.
+        End.
+      Qed.
+
+      $f$ is injective.
+      Indeed we can show that for all $\beta, \gamma \in \succ(\alpha)$ if
+      $\beta \neq \gamma$ then $f(\beta) \neq f(\gamma)$. \\
+      Proof.
+        Let $\beta, \gamma \in \succ(\alpha)$.
+        Assume $\beta \neq \gamma$.
+
+        Case $\beta < \omega$.
+          If $\gamma = \alpha$ then
+          $f(\beta)
+            = \succ(\beta)
+            \neq 0
+            = f(\gamma)$.
+          If $\omega \leq \gamma < \alpha$ then
+          $f(\beta)
+            = \succ(\beta)
+            < \omega
+            \leq \gamma
+            = f(\gamma)$.
+        End.
+
+        Case $\omega \leq \beta < \alpha$.
+          If $\gamma = \alpha$ then
+          $f(\beta)
+            = \beta
+            \geq \omega
+            > 0
+            = f(\gamma)$.
+          If $\gamma < \omega$ then
+          $f(\beta)
+            = \beta
+            \geq \omega
+            > \succ(\gamma)
+            = f(\gamma)$.
+        End.
+
+        Case $\beta = \alpha$.
+          If $\gamma < \omega$ then
+          $f(\beta)
+            = 0
+            \neq \succ(\gamma)
+            = f(\gamma)$.
+          If $\omega \leq \gamma < \alpha$ then
+          $f(\beta)
+            = 0
+            < \omega
+            \leq \gamma
+            = f(\gamma)$.
+        End.
+      Qed.
+
+      Hence $f$ is a bijection between $\succ(\alpha)$ and $\alpha$.
+      Therefore $\succ(\alpha)$ and $\alpha$ are equinumerous.
+      Consequently $|\succ(\alpha)| = |\alpha|$.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_07_8700732632989696}
+      Every infinite cardinal is a limit ordinal.
+    \end{proposition}
+    \begin{proof}
+      Let $\kappa$ be an infinite cardinal.
+      Suppose that $\kappa$ is not a limit ordinal.
+      $\kappa \neq 0$.
+      Hence $\kappa$ is a successor ordinal.
+      Thus we can take an ordinal $\alpha$ such that $\kappa = \succ(\alpha)$.
+      We have $\alpha > \kappa \geq \omega$.
+      Hence $|\succ(\alpha)| = |\alpha|$.
+      Thus $\alpha < |\kappa|$ and $\kappa$ is equinumerous to $\kappa$.
+      Contradiction.
+    \end{proof}
+  \end{forthel}
+\end{document}
