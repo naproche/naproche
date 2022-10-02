@@ -4,7 +4,7 @@
 \usepackage[english]{babel}
 \usepackage{xurl}
 \usepackage{csquotes}
-\usepackage[settheory]{../lib/tex/naproche}
+\usepackage[foundations, settheory]{../lib/tex/naproche}
 
 \title{Paradoxes}
 \author{Marcel Schütz}
@@ -14,19 +14,23 @@
   \maketitle
 
   \noindent This is a small collection of some famous (mathematical) paradoxes.
-  On mid-range hardware \Naproche needs approximately 7 minutes to check it
-  (including checking the library files it depends on, which takes by far the
-  largest part of the time).
+  On mid-range hardware \Naproche needs approximately 15 seconds to check it,
+  plus approximately 25 minutes to check the library files it depends on.
 
   \begin{forthel}
-    [readtex \path{set-theory/sections/02_ordinals.ftl.tex}]
+    [readtex \path{vocabulary.ftl.tex}]
+
+    [readtex \path{macros.ftl.tex}]
+
+    [readtex \path{axioms.ftl.tex}]
   \end{forthel}
+
 
   \section*{The Drinker Paradox}
 
-  The Drinker Paradox is a principle of classical predicate logic popularised by
-  the logician Raymond Smullyan in his 1978 book \textit{What Is the Name of
-  this Book?} which can be stated as
+  The \emph{Drinker Paradox} is a principle of classical predicate logic
+  popularised by the logician Raymond Smullyan in his 1978 book \textit{What Is
+  the Name of this Book?} which can be stated as:
 
   \begin{quotation}
     \noindent There is someone in the pub such that, if he is drinking then
@@ -80,21 +84,20 @@
 
   \section*{Russell's Paradox}
 
-  Russell's Paradox is a set-theoretical paradox discovered by Bertrand Russell
-  in 1901 which shows that every set theory with an unrestricted comprehension
-  principle leads to contradictions.
+  \emph{Russell's Paradox} is a set-theoretical paradox discovered by Bertrand
+  Russell in 1901 which shows that every set theory with an unrestricted
+  comprehension principle leads to contradictions.
   Using \Naproche's ontology of classes and sets and its inbuilt axiom of class
   comprehension we can formalize this paradox as follows.
 
   \begin{forthel}
     \begin{theorem*}
-      If every class is a set then we have a contradiction.
+      There exists a class that is not a set.
     \end{theorem*}
     \begin{proof}
       Define $R = \class{x | \text{$x$ is a set such that $x \notin x$}}$.
-      Assume that every class is a set.
-      Then $R$ is a set.
-      Hence $R \in R$ iff $R \notin R$.
+      Assume that $R$ is a set.
+      Then $R \in R$ iff $R \notin R$.
       Contradiction.
     \end{proof}
   \end{forthel}
@@ -102,8 +105,8 @@
 
   \section*{The Barber Paradox}
 
-  The Barber Paradox is a puzzle illustrating Russell's Paradox, formulated by
-  Bertrand Russell in 1918 with the following words:
+  The \emph{Barber Paradox} is a puzzle illustrating Russell's Paradox,
+  formulated by Bertrand Russell in 1918 with the following words:
 
   \begin{quotation}
     \noindent You can define the barber as \enquote{one who shaves all those,
@@ -137,22 +140,80 @@
   \end{forthel}
 
 
-  \section*{The Burali-Forti Paradox}
+  \section*{Burali-Forti's Paradox}
 
-  The Burali-Forti paradox, named after Cesare Burali-Forti, demonstates that
-  the assumption of the collection $\Ord$ of all all ordinal numbers being a set
-  leads to contradictions.
+  \emph{Burali-Forti's paradox}, named after Cesare Burali-Forti, demonstates
+  that the assumption of the collection $\Ord$ of all all ordinal numbers being
+  a set leads to contradictions.
+
+  \begin{forthel}
+    [readtex \path{set-theory/sections/02_ordinals.ftl.tex}]
+  \end{forthel}
 
   \begin{forthel}
     \begin{theorem*}
-      If $\Ord$ is a set then we have a contradiction.
+      $\Ord$ is not a set.
+    \end{theorem*}
+    \begin{proof}[by contradiction]
+      Assume that $\Ord$ is a set.
+      $\Ord$ is transitive and every element of $\Ord$ is transitive.
+      Hence $\Ord$ is an ordinal.
+      Thus $\Ord \in \Ord$.
+      Contradiction.
+    \end{proof}
+  \end{forthel}
+
+
+  \section*{Cantor's Paradoxes}
+
+  Similar to Burali-Forti's Paradox, \emph{Cantor's First Paradox}, discovered
+  by Georg Cantor in 1897, states that the collection of all cardinal numbers
+  cannot be a set.
+
+  \begin{forthel}
+    [readtex \path{set-theory/sections/06_cardinals.ftl.tex}]
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{theorem*}
+      Let $C$ be the collection of all cardinals.
+      $C$ is not a set.
     \end{theorem*}
     \begin{proof}
-      $\Ord$ is transitive and every element of $\Ord$ is transitive.
-      Assume that $\Ord$ is a set.
-      Then $\Ord$ is an ordinal.
-      Hence $\Ord \in \Ord$.
+      Assume the contrary.
+      Then $\bigcup C$ is a set.
+
+      Let us show that $\bigcup C$ contains every ordinal.
+        Let $\alpha$ be an ordinal.
+        Choose a cardinal $\kappa$ greater than $\alpha$.
+        Then $\alpha \in \kappa \in C$.
+        Hence $\alpha \in \bigcup C$.
+      End.
+
+      Therefore $\Ord \subseteq \bigcup C$.
+      Thus $\Ord$ is a set.
       Contradiction.
+    \end{proof}
+  \end{forthel}
+
+  \emph{Cantor's Second Paradox} denotes the observation that the collection
+  of all sets cannot be a set itself.
+  It was shown by Cantor in 1899 via his famous theorem stating that the
+  cardinality of any set is strictly smaller than the cardinality of its
+  powerset.
+
+  \begin{forthel}
+    \begin{theorem*}
+      Let $V$ be the collection of all sets.
+      $V$ is not a set.
+    \end{theorem*}
+    \begin{proof}
+      Assume the contrary.
+      Then $\pow(V)$ is a set.
+      Hence $\pow(V)$ is a subset of $V$.
+      Thus $|\pow(V)| \leq |V|$.
+      Contradiction.
+      Indeed $|x| < |\pow(x)|$ for any set $x$.
     \end{proof}
   \end{forthel}
 \end{document}
