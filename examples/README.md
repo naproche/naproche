@@ -51,6 +51,8 @@ The examples are chosen to demonstrate possibilities of the current Naproche whi
 
 * tarski - Tarski fixpoint theorem for lattices
 
+* zermelo - Zermelo's well-ordering theorem
+
 The further development of Naproche will focus on the `.ftl.tex` format in order to build readable libraries of computer-verifiable mathematics. The classical `.ftl` format will be kept up for some time since it allows rapid experiments without worrying about LaTeX particulars. Over time, however, the formats will diverge, as we are going to extract semantic context out of typesetting information (parsing depending on LaTeX text versus math mode, matrix notation, ...).
 
 
@@ -68,7 +70,7 @@ For example, an Intel Pentium N3710 (quad-core mobile CPU from 2016, 6 W TDP) wi
 still check most examples without the accomodations outlined below.
 
 On weaker systems successful checking of texts may require stopping other resource-heavy processes or even adding intermediate proof steps.
-One can also increase the time-out for the external ATP 
+One can also increase the time-out for the external ATP
 or the internal reasoner by Naproche commands like
 `[timelimit XXX]` (default = 5 sec) or `[checktime XXX]` (default = 1 sec) resp..
 These commands can be inserted into the formalization where required.

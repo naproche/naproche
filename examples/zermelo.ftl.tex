@@ -1,0 +1,190 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[foundations, settheory]{../lib/tex/naproche}
+
+
+\title{Zermelo's Well-ordering Theorem}
+\author{\Naproche formalization: \vspace{0.5em} \\
+Marcel Schütz (2022)}
+\date{}
+
+\begin{document}
+  \maketitle
+
+  \noindent This is a formalization of \textit{Zermelo's Well-ordering Theorem},
+  i.e. of the assertion that under the assumption of the axiom of choice every
+  set is equinumerous to some ordinal number, where an ordinal number is
+  regarded as a transitive set whose elements are transitive sets as well.
+  The proof of this theorem presented here is oriented on \cite{Koepke2018}.
+
+  On mid-range hardware \Naproche needs approximately 4 Minutes to verify this
+  formalization plus approximately 15 minutes to verify the library files it
+  depends on.
+
+  \begin{forthel}
+    [readtex \path{foundations/sections/13_equinumerosity.ftl.tex}]
+
+    [readtex \path{set-theory/sections/04_recursion.ftl.tex}]
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition*}
+      Let $X$ be a system of nonempty sets.
+      A choice function for $X$ is a map $g$ such that $\dom(g) = X$ and
+      $g(x) \in x$ for any $x \in X$.
+    \end{definition*}
+
+    \begin{axiom*}[Choice]
+      Let $X$ be a system of nonempty sets.
+      Then there exists a choice function for $X$.
+    \end{axiom*}
+  \end{forthel}
+
+  \noindent In the following, for any class $A$, we write $A^{< \infty}$ to
+  denote the collection of all maps $f : \alpha \to A$ for some ordinal
+  $\alpha$.
+  Moreover, for any map $G : A^{< \infty} \to A$ we say that a map $F : \Ord \to
+  A$, where $\Ord$ denotes the class of all ordinals, is recursive regarding $G$
+  if $F(\alpha) = G(F \restriction \alpha)$ for all $\alpha \in \Ord$.
+
+  \begin{forthel}
+    \begin{theorem*}[Zermelo]
+      Every set is equinumerous to some ordinal.
+    \end{theorem*}
+    \begin{proof}
+      Let $x$ be a set.
+      Consider a choice function $g$ for $\pow(x) \setminus \set{\emptyset}$.
+      For any $F \in (x \cup \set{x})^{< \infty}$ if
+      $x \setminus \range(F) \neq \emptyset$ then $x \setminus \range(F) \in
+      \dom(g)$.
+      Indeed $x \setminus \range(F)$ is a subset of $x$ for any $F \in
+      (x \cup \set{x})^{< \infty}$.
+      Define \[ G(F) =
+        \begin{cases}
+          g(x \setminus \range(F))
+          & : x \setminus \range(F) \neq \emptyset
+          \\
+          x
+          & : x \setminus \range(F) = \emptyset
+        \end{cases} \]
+      for $F \in (x \cup \set{x})^{< \infty}$.
+      Then for any $F \in (x \cup \set{x})^{< \infty}$ if
+      $x \setminus \range(F) \neq \emptyset$ then
+      $G(F) \in x \setminus \range(F)$.
+      $G$ is a map from $(x \cup \set{x})^{< \infty}$ to $x \cup \set{x}$.
+      Indeed we can show that for any $F \in (x \cup \set{x})^{< \infty}$ we
+      have $G(F) \in x \cup \set{x}$.
+        Let $F \in (x \cup \set{x})^{< \infty}$.
+        If $x \setminus \range(F) \neq \emptyset$ then
+        $G(F) \in x \setminus \range(F)$.
+        If $x \setminus \range(F) = \emptyset$ then $G(F) = x$.
+        Hence $G(F) \in x \cup \set{x}$.
+      End.
+      Hence we can take a map $F$ from $\Ord$ to $x \cup \set{x}$ that is
+      recursive regarding $G$.
+      For any ordinal $\alpha$ we have $F \restriction \alpha \in
+      (x \cup \set{x})^{< \infty}$.
+
+      For any $\alpha \in \Ord$ we have
+      \[ x \setminus F[\alpha] \neq \emptyset \implies
+      F(\alpha) \in x \setminus F[\alpha] \]
+      and
+      \[ x \setminus F[\alpha] = \emptyset \implies F(\alpha) = x. \]
+      Proof.
+        Let $\alpha \in \Ord$.
+        We have $F[\alpha] = \{ F(\beta) \mid \beta \in \alpha \}$.
+        Hence $F[\alpha] = \{ G(F \restriction \beta) \mid \beta \in \alpha \}$.
+        We have $\range(F \restriction \alpha) =
+        \{ F(\beta) \mid \beta \in \alpha \}$.
+        Thus $\range(F \restriction \alpha) = F[\alpha]$.
+
+        Case $x \setminus F[\alpha] \neq \emptyset$.
+          Then $x \setminus \range(F \restriction \alpha) \neq \emptyset$.
+          Hence $F(\alpha)
+            = G(F \restriction \alpha)
+            \in x \setminus \range(F \restriction \alpha)
+            = x \setminus F[\alpha]$.
+        End.
+
+        Case $x \setminus F[\alpha] \neq \emptyset$.
+          Then $x \setminus \range(F \restriction \alpha) = \emptyset$.
+          Hence $F(\alpha)
+            = G(F \restriction \alpha)
+            = x$.
+        End.
+      Qed.
+
+      (1) For any ordinals $\alpha, \beta$ such that $\alpha < \beta$ and
+      $F(\beta) \neq x$ we have $F(\alpha), F(\beta) \in x$ and $F(\alpha) \neq
+      F(\beta)$. \\
+      Proof.
+        Let $\alpha, \beta \in \Ord$.
+        Assume $\alpha < \beta$ and $F(\beta) \neq x$.
+        Then $x \setminus F[\beta] \neq \emptyset$.
+        (a) Hence $F(\beta) \in x \setminus F[\beta]$.
+        We have $F[\alpha] \subseteq F[\beta]$.
+        Thus $x \setminus F[\alpha] \neq \emptyset$.
+        (b) Therefore $F(\alpha) \in x \setminus F[\alpha]$.
+        Consequently $F(\alpha), F(\beta) \in x$ (by a, b).
+        We have $F(\alpha) \in F[\beta]$ and $F(\beta) \notin F[\beta]$.
+        Thus $F(\alpha) \neq F(\beta)$.
+      Qed.
+
+      (2) There exists an ordinal $\alpha$ such that $F(\alpha) = x$. \\
+      Proof.
+        Assume the contrary.
+        Then $F$ is a map from $\Ord$ to $x$.
+
+        Let us show that $F$ is injective.
+          Let $\alpha, \beta \in \Ord$.
+          Assume $\alpha \neq \beta$.
+          Then $\alpha < \beta$ or $\beta < \alpha$.
+          Hence $F(\alpha) \neq F(\beta)$ (by 1).
+          Indeed $F(\alpha), F(\beta) \neq x$.
+        End.
+
+        Thus $F$ is a map from some proper class into some set.
+        Contradiction.
+      Qed.
+
+      Define $\Phi = \{ \alpha \in \Ord \mid F(\alpha) = x \}$.
+      $\Phi$ is nonempty.
+      Hence we can take a least element $\alpha$ of $\Phi$ regarding ${\in}$.
+      Take $f = F \restriction \alpha$.
+      Then $f$ is a map from $\alpha$ to $x$.
+      Indeed for no $\beta \in \alpha$ we have $F(\beta) = x$.
+      Indeed for all $\beta \in \alpha$ we have $(\beta, \alpha) \in {\in}$.
+
+      (3) $f$ is surjective onto $x$. \\
+      Proof.
+        $x \setminus F[\alpha] = \emptyset$.
+        Hence $\range(f)
+          = f[\alpha]
+          = F[\alpha]
+          = x$.
+      Qed.
+
+      (4) $f$ is injective. \\
+      Proof.
+        Let $\beta, \gamma \in \alpha$.
+        Assume $\beta \neq \gamma$.
+        We have $f(\beta), f(\gamma) \neq x$.
+        Hence $f(\beta) \neq f(\gamma)$ (by 1).
+        Indeed $\beta < \gamma$ or $\gamma < \beta$.
+      Qed.
+
+      Therefore $f$ is a bijection between $\alpha$ and $x$.
+      Consequently $x$ and $\alpha$ are equinumerous.
+    \end{proof}
+  \end{forthel}
+
+  \begin{thebibliography}{1}
+    \bibitem{Koepke2018} Peter Koepke,
+    \textit{Set Theory};
+    lecture notes,
+    winter 2018/19,
+    University of Bonn
+  \end{thebibliography}
+\end{document}

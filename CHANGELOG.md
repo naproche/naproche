@@ -65,6 +65,9 @@ variant of ForTheL, respectively.
 
 ### Changes on the example files
 
+  * **New:** `zermelo.ftl.tex`, a formalization of Zermelo's well-ordering
+    theorem.
+
   * **Changed:** The set theory library (now stored at `examples/foundations`)
     was completely rewritten to provides better support for classes.
     Moreover, the paths of the source files of all chapters and the labels of
