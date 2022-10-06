@@ -359,12 +359,12 @@
       Then $x \cup y$ is a set.
     \end{proposition}
     \begin{proof}
-      %Define $X = \set{x,y}$. %!
-      Take a set $X$ such that $X = \set{x,y}$.
-      $\bigcup X$ is a set (by \cref{FOUNDATIONS_10_5536459412996096}).
+      Take $X = \set{x,y}$.
+      Then $X$ is a set.
+      Hence $\bigcup X$ is a set (by \cref{FOUNDATIONS_10_5536459412996096}).
       Indeed $X$ is a system of sets.
       We have $x \cup y = \bigcup X$.
-      Hence $x \cup y$ is a set.
+      Thus $x \cup y$ is a set.
     \end{proof}
   \end{forthel}
 
@@ -474,8 +474,8 @@
       Let us show that for any $a \in x$ and any $b \in y$ we have
       $f(\set{\set{a}, \set{a,b}}) = (a,b)$.
         Let $a \in x$ and $b \in y$.
-        %Define $p = \set{\set{a}, \set{a,b}}$. %!
-        Consider an object $p$ such that $p = \set{\set{a}, \set{a,b}}$.
+        Take $p = \set{\set{a}, \set{a,b}}$.
+        Then $p$ is a set.
         Then we can choose $a' \in x$ and $b' \in y$ such that $p =
         \set{\set{a'}, \set{a',b'}}$ and $l(p) = a'$.
         Then $a = a'$ and $b = b'$.
