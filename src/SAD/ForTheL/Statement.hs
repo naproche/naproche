@@ -582,7 +582,7 @@ lambdaIn = do
   vsDecl <- makeDecls vs
   elementOf
   dom <- ld_dom
-  let df_head f = foldr ((.) . dAll) (Imp (t `mkElem` mkDom f)) vsDecl
+  let df_head f = foldr ((.) . (\x g -> dAll x (mkObject (mkVar (declName x)) `Imp` g))) (Imp (t `mkElem` mkDom f)) vsDecl
   return (t, df_head, \f -> dom f t vsDecl)
   where
     ld_dom = trm <|> setTrm
