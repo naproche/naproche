@@ -492,9 +492,7 @@ mapNotion :: FTL Formula
 mapNotion = sVar <**> (wordMap <|> (token "=" >> lambda))
   where
   wordMap = do
-    token "("
-    t <- pair
-    token ")"
+    t <- parenthesised $ twoArguments </> oneArgument
     token "="
     vs <- fvToVarSet <$> freeVars t
     def <- addDecl (Set.map posVarName vs) lambdaBody
@@ -577,15 +575,9 @@ lambda = do
   where
     ld_head = finish $ symbol "\\" >> lambdaIn
 
-pair :: FTL Formula
-pair = sVar </> pr
-  where
-    pr = do [l,r] <- symbolPattern pair pairPattern; return $ mkPair l r
-    pairPattern = [Symbol "(", Vr, Symbol ",", Vr, Symbol ")"]
-
 lambdaIn :: FTL (Formula, Formula -> Formula -> Formula, Formula -> Formula)
 lambdaIn = do
-  t <- pair
+  t <- oneArgument </> parenthesised twoArguments
   vs <- fvToVarSet <$> freeVars t
   vsDecl <- makeDecls vs
   elementOf
@@ -599,6 +591,17 @@ lambdaIn = do
     setTrm = do
       (ap, _) <- symbClassNotation
       return $ \f t -> foldr dAll (Iff (t `mkElem` mkDom f) (ap t))
+
+-- | Parse a single variable
+oneArgument :: FTL Formula
+oneArgument = sVar
+
+-- | Parse two variables, separated by a comma
+twoArguments :: FTL Formula
+twoArguments = do
+  [l,r] <- symbolPattern sVar [Vr, Symbol ",", Vr]
+  return $ mkPair l r
+
 
 ---- chain tools
 

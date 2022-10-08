@@ -13,6 +13,9 @@ variant of ForTheL, respectively.
 
 ### Changes on ForTheL
 
+  * **Changed:** The old syntax `Define f((x,y)) = ...` for low-level map
+    definitions with two arguments is replaced by `Define f(x,y) = ...`.    
+
   * **New:** In FTL-TeX unnumbered top-level environments are now supported via
 
     ```
