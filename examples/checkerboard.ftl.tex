@@ -46,7 +46,7 @@ There have been several formalization of the Checkerboard problem before. A
 survey article by Manfred Kerber and Martin Pollet called \emph{A Tough Nut
 for Mathematical Knowledge Management} lists a couple of formalizations.
 Our formalization is based on a set-theoretical formalization by John McCarthy.
-
+Checking takes 2 or 3 minutes on a modest laptop.
 
 % Hidden because we have not discussed it yet.
 % Maybe this can be mentioned as an area for improvement in the subsequent section?
@@ -96,7 +96,9 @@ Our formalization is based on a set-theoretical formalization by John McCarthy.
     For every element $x$ of $A$ $H(F(x))$ is an object.
     Define $J(x) = H(F(x))$ for $x$ in $A$.
     For every element $y$ of $C$ $G(I(y))$ is an object.
+[timelimit 10]
     $J : A\leftrightarrow C$. Indeed define $K(y) = G(I(y))$ for $y$ in $C$.
+[timelimit 3]
 \end{proof}
 
 \begin{definition}
