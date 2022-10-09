@@ -92,7 +92,10 @@ Proof.
     For every element x of A H(F(x)) is an object.
     Define J(x) = H(F(x)) for x in A.
     For every element y of C G(I(y)) is an object.
-    J : A <-> C. Indeed define K(y) = G(I(y)) for y in C.
+    Define K(y) = G(I(y)) for y in C.
+    K: C -> A.
+    K retracts J and K sections J.
+    J: A <-> C.
 End.
 
 
