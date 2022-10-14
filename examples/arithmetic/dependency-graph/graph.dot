@@ -1,54 +1,29 @@
 digraph Sections {
-  vocab [label = "Vocabulary"]
-  macros [label = "Macros"]
 
-  subgraph cluster_1 {
-    arith_01 [label = "1.1 The Peano axioms"]
-    arith_02 [label = "1.2 Addition"]
-    arith_03 [label = "1.3 Multiplication"]
-    arith_04 [label = "1.4 Exponentiation"]
-    arith_05 [label = "1.5 Factorial"]
-  }
+    foundations_10 [label = "Foundations: 10 Sets", color = "gray", fontcolor = "gray"]
+    foundations_11 [label = "Foundations: 11 Binary relations", color = "gray", fontcolor = "gray"]
 
-  subgraph cluster_2 {
-    ord_01 [label = "2.1 Ordering"]
-    ord_02 [label = "2.2 Ordering and addition"]
-    ord_03 [label = "2.3 Ordering and multiplication"]
-    ord_04 [label = "2.4 Ordering and exponentiation"]
-    ord_05 [label = "2.5 Induction"]
-    ord_06 [label = "2.6 Standard exercises"]
-    ord_07 [label = "2.7 Subtraction"]
-  }
+    arithmetic_01 [label = "1 Natural numbers"]
+    arithmetic_02 [label = "2 Recursion"]
+    arithmetic_03 [label = "3 Addition"]
+    arithmetic_04 [label = "4 Ordering"]
+    arithmetic_05 [label = "5 Subtraction"]
+    arithmetic_06 [label = "6 Multiplication"]
+    arithmetic_07 [label = "7 Divisibility"]
+    arithmetic_08 [label = "8 Euclidean division"]
+    arithmetic_09 [label = "9 Exponentiation"]
+    arithmetic_10 [label = "10 Prime numbers"]
 
-  subgraph cluster_3 {
-    div_01 [label = "3.1 Divisibility"]
-    div_02 [label = "3.2 Euclidean division"]
-    div_03 [label = "3.3 Modular arithmetic"]
-    div_04 [label = "3.4 Primes"]
-    div_05 [label = "3.5 Division"]
-    div_06 [label = "3.6 Binomial coefficients"]
-    div_07 [label = "3.7 Even and odd numbers"]
-  }
-
-  /* 1.1 */ vocab, macros                             -> arith_01
-  /* 1.2 */ arith_01                                  -> arith_02
-  /* 1.3 */ arith_02                                  -> arith_03
-  /* 1.4 */ arith_03                                  -> arith_04
-  /* 1.5 */ arith_03                                  -> arith_05
-
-  /* 2.1 */ arith_02                                  -> ord_01
-  /* 2.2 */ ord_01                                    -> ord_02
-  /* 2.3 */ arith_03, ord_02                          -> ord_03
-  /* 2.4 */ arith_04, ord_03                          -> ord_04
-  /* 2.5 */ ord_01                                    -> ord_05
-  /* 2.6 */ arith_04, arith_05, ord_04, ord_05        -> ord_06
-  /* 2.7 */ arith_03, ord_01                          -> ord_07
-
-  /* 3.1 */ arith_03, ord_03, ord_04                  -> div_01
-  /* 3.2 */ ord_03                                    -> div_02
-  /* 3.3 */ div_02                                    -> div_03
-  /* 3.4 */ arith_04, ord_04, ord_05, div_01, div_02  -> div_04
-  /* 3.5 */ ord_07, div_01                            -> div_05
-  /* 3.6 */ arith_05, ord_05, div_05                  -> div_06
-  /* 3.7 */ ord_07, div_01                            -> div_07
+    foundations_10  -> arithmetic_01    [color = "gray"]
+    arithmetic_01   -> arithmetic_02
+    arithmetic_02   -> arithmetic_03
+    foundations_11  -> arithmetic_04    [color = "gray"]
+    arithmetic_03   -> arithmetic_04
+    arithmetic_04   -> arithmetic_05
+    arithmetic_05   -> arithmetic_06
+    arithmetic_06   -> arithmetic_07
+    arithmetic_06   -> arithmetic_08
+    arithmetic_06   -> arithmetic_09
+    arithmetic_07   -> arithmetic_10
+    arithmetic_08   -> arithmetic_10
 }

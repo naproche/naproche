@@ -1,89 +1,113 @@
-\documentclass{article}
+\documentclass[12pt,oneside]{book}
 
-\usepackage[english]{babel}
-\usepackage{amssymb}
-\usepackage{xurl}
-\usepackage{hyperref}
-\usepackage{subfiles}
-\usepackage[super]{nth}
-\usepackage{csquotes}
-\usepackage[arithmetic]{../../lib/tex/naproche}
+\usepackage[foundations, arithmetic]{../../lib/tex/naproche}
+\usepackage{../../lib/tex/libraries}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
 
-\hypersetup{
-  colorlinks=true,
-  linkcolor=blue,
-  urlcolor=blue
-}
 
 \title{Arithmetic}
 \author{Marcel Schütz}
-\date{2021}
+\date{2022}
 
 \begin{document}
   \maketitle
 
-  \begin{abstract}
-    This is a formalization of Peano Arithmetic with addition, multiplication,
-    exponentiation and factorial.
-    These operations are introduced axiomatically and are accompanied with
-    detailed proofs of their common computation laws.
-    Moreover, the standard ordering on the natural numbers is given, together
-    with proofs of its behaviour with respect to the mentioned operations.
-    Furthermore, the notion of divisibility is introduced which finally leads
-    to some results of basic number theory.
-
-    This text can be seen as a collection of basic results from undergraduate
-    mathematics or serve as a foundation for more sophisticated formalizations.
-  \end{abstract}
-
   \tableofcontents
 
-  \newpage
-  \part{Arithmetic}
-
-  \subfile{sections/01_arithmetic/01_peano-axioms.ftl.tex}
-
-  \subfile{sections/01_arithmetic/02_addition.ftl.tex}
-
-  \subfile{sections/01_arithmetic/03_multiplication.ftl.tex}
-
-  \subfile{sections/01_arithmetic/04_exponentiation.ftl.tex}
-
-  \subfile{sections/01_arithmetic/05_factorial.ftl.tex}
+  \paragraph*{}
+  \begin{figure}[H]
+    \centering
+    \fbox{\includegraphics[width=0.9\textwidth]{./dependency-graph/graph.png}}
+    \caption*{Interdependencies of the chapters}
+  \end{figure}
 
 
-  \newpage
-  \part{Ordering}
+  \section*{Introduction}
 
-  \subfile{sections/02_ordering/01_ordering.ftl.tex}
+  This is a library providing basic notions of natural numbers arithmetic.
+  It introduces the natural numbers on the basis of the Peano
+  Axioms (\cref{chapter:natural-numbers}) and uses Dedekind's Recursion Theorem
+  (\cref{chapter:recursion}) to define common arithmetical operations on them.
+  A first example of such operations is given by addition
+  (\cref{chapter:addition}), on the basis of which the standard ordering on the
+  natural numbers is defined (\cref{chapter:ordering}) and also a (partial)
+  subtraction operation (\cref{chapter:subtraction}).
+  Another example of arithmetical operations is provided by multiplication
+  (\cref{chapter:multiplication}) which is further used to define the notions of
+  divisibility (\cref{chapter:divisibility}) and Euclidean division
+  (\cref{chapter:euclidean-division}).
+  Moreover, an exponentiation operation is defined
+  (\cref{chapter:exponentiation}) and the notion of prime numbers is introduced
+  (\cref{chapter:primes}).
 
-  \subfile{sections/02_ordering/02_ordering-and-addition.ftl.tex}
 
-  \subfile{sections/02_ordering/03_ordering-and-multiplication.ftl.tex}
+  \paragraph*{Usage.}
+  At the very beginning of each chapter you can find the name of its source
+  file, e.g. \path{arithmetic/sections/01_natural-numbers.ftl.tex} for
+  \cref{chapter:natural-numbers}.
+  This filename can be used to import the chapter via \Naproche's
+  \texttt{readtex} instruction to another ForTheL text, e.g.:
 
-  \subfile{sections/02_ordering/04_ordering-and-exponentiation.ftl.tex}
+  \begin{center}
+    \verb`[readtex \path{arithmetic/sections/01_natural-numbers.ftl.tex}]`
+  \end{center}
 
-  \subfile{sections/02_ordering/05_induction.ftl.tex}
+  \paragraph*{Checking times.}
+  The checking times for each of the chapters may vary from computer to
+  computer, but on mid-range hardware they are likely to be similar to those
+  given in table below:
 
-  \subfile{sections/02_ordering/06_standard-exercises.ftl.tex}
+  \begin{center}
+    \begin{tabular}{c|c|c}
 
-  \subfile{sections/02_ordering/07_subtraction.ftl.tex}
+      & \multicolumn{2}{c}{\textbf{Checking time}}
+      \\
+      \textbf{Chapter}
+      & \textbf{without dependencies}     & \textbf{with dependencies}
+      \\ \hline
+      \ref{chapter:natural-numbers}
+      & 00:15 min                         & 06:55 min
+      \\
+      \ref{chapter:recursion}
+      & 02:25 min                         & 09:20 min
+      \\
+      \ref{chapter:addition}
+      & 01:55 min                         & 11:15 min
+      \\
+      \ref{chapter:ordering}
+      & 03:05 min                         & 14:35 min
+      \\
+      \ref{chapter:subtraction}
+      & 00:50 min                         & 15:25 min
+      \\
+      \ref{chapter:multiplication}
+      & 05:35 min                         & 21:00 min
+      \\
+      \ref{chapter:divisibility}
+      & 00:45 min                         & 21:45 min
+      \\
+      \ref{chapter:euclidean-division}
+      & 04:00 min                         & 25:00 min
+      \\
+      \ref{chapter:exponentiation}
+      & 07:55 min                         & 28:55 min
+      \\
+      \ref{chapter:primes}
+      & 03:30 min                         & 29:15 min
+    \end{tabular}
+  \end{center}
 
 
-  \newpage
-  \part{Divisibility}
-
-  \subfile{sections/03_divisibility/01_divisibility.ftl.tex}
-
-  \subfile{sections/03_divisibility/02_euclidean-division.ftl.tex}
-
-  \subfile{sections/03_divisibility/03_modular-arithmetic.ftl.tex}
-
-  \subfile{sections/03_divisibility/04_primes.ftl.tex}
-
-  \subfile{sections/03_divisibility/05_division.ftl.tex}
-
-  \subfile{sections/03_divisibility/06_binomial-coefficient.ftl.tex}
-
-  \subfile{sections/03_divisibility/07_even-and-odd-numbers.ftl.tex}
+  \subfile{sections/01_natural-numbers.ftl.tex}
+  \subfile{sections/02_recursion.ftl.tex}
+  \subfile{sections/03_addition.ftl.tex}
+  \subfile{sections/04_ordering.ftl.tex}
+  \subfile{sections/05_subtraction.ftl.tex}
+  \subfile{sections/06_multiplication.ftl.tex}
+  \subfile{sections/07_divisibility.ftl.tex}
+  \subfile{sections/08_euclidean-division.ftl.tex}
+  \subfile{sections/09_exponentiation.ftl.tex}
+  \subfile{sections/10_primes.ftl.tex}
 \end{document}
