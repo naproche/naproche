@@ -90,8 +90,11 @@ variant of ForTheL, respectively.
   * **New:** New files `axioms.ftl` and `axioms.ftl.tex` that list Naproche's
     built-in axioms.
 
-  * **New:** New sections about division, binomial coefficients and even and odd
-    numbers in arithmetic library.
+  * **New:** The arithmetic library was connected to the foundations library to
+    provide more robust definitions of the arithmetical operations it provides.
+    Moreover, the paths of the source files of all chapters and the labels of
+    any definitions, theorems etc. are now displayed in the PDF, making
+    importing and referencing a bit easier.
 
 --------------------------------------------------------------------------------
 
