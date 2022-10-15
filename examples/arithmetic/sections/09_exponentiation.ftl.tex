@@ -163,7 +163,7 @@
       Then \[ 1^{n} = 1. \]
     \end{proposition}
     \begin{proof}
-      Define \[ \Phi = \class{n' \in \Nat | 1^{n'} = 1}. \]
+      Define $\Phi = \{ n' \in \Nat \mid 1^{n'} = 1 \}$.
 
       (1) $\Phi$ contains $0$.
 
@@ -217,8 +217,7 @@
       Then \[ k^{n + m} = k^{n} \cdot k^{m}. \]
     \end{proposition}
     \begin{proof}
-      Define \[ \Phi = \class{m' \in \Nat | k^{n + m'} = k^{n} \cdot
-      k^{m'}}. \]
+      Define $\Phi = \{ m' \in \Nat \mid k^{n + m'} = k^{n} \cdot k^{m'} \}$.
 
       (1) $\Phi$ contains $0$. \\
       Indeed $k^{n + 0}
@@ -252,8 +251,7 @@
       Then \[ n^{m \cdot k} = (n^{m})^{k}. \]
     \end{proposition}
     \begin{proof}
-      Define \[ \Phi = \class{k' \in \Nat | n^{m \cdot k'} =
-      (n^{m})^{k'}}. \]
+      Define $\Phi = \{ k' \in \Nat \mid n^{m \cdot k'} = (n^{m})^{k'} \}$.
 
       (1) $\Phi$ contains $0$.
       Indeed $(n^{m})^{0}
@@ -286,8 +284,8 @@
       Then \[ (n \cdot m)^{k} = n^{k} \cdot m^{k}. \]
     \end{proposition}
     \begin{proof}
-      Define \[ \Phi = \class{k' \in \Nat | (n \cdot m)^{k'} =
-      n^{k'} \cdot m^{k'}}. \]
+      Define $\Phi = \{ k' \in \Nat \mid (n \cdot m)^{k'} =
+      n^{k'} \cdot m^{k'} \}$.
 
       (1) $\Phi$ contains $0$.
       Indeed $((n \cdot m)^{0})
@@ -332,8 +330,8 @@
     \end{proposition}
     \begin{proof}
       Case $n^{m} = 0$.
-        Define \[ \Phi = \class{m' \in \Nat | \text{if $n^{m'} = 0$ then $n = 0$
-        and $m' \neq 0$}}. \]
+        Define $\Phi = \{ m' \in \Nat \mid$ if $n^{m'} = 0$ then $n = 0$ and
+        $m' \neq 0 \}$.
 
         (1) $\Phi$ contains $0$.
         Indeed if $n^{0} = 0$ then we have a contradiction.

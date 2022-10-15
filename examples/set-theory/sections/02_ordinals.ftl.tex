@@ -272,8 +272,8 @@
       $\alpha' > \beta'$}}. \]
       $A$ is nonempty.
       Hence we can take a least element $\alpha'$ of $A$ regarding ${\in}$.
-      Define \[ B = \class{\beta' \in \Ord | \text{neither $\alpha' < \beta'$
-      nor $\alpha' = \beta'$ nor $\alpha' > \beta'$}}. \]
+      Define \[ B = \{ \beta' \in \Ord \mid \text{neither $\alpha' < \beta'$
+      nor $\alpha' = \beta'$ nor $\alpha' > \beta'$} \}. \]
       $B$ is nonempty.
       Hence we can take a least element $\beta'$ of $B$ regarding ${\in}$.
 
@@ -426,8 +426,8 @@
 
   \begin{forthel}
     \begin{definition}\printlabel{SET_THEORY_02_4059354166722560}
-      \[ {<} = \class{(\alpha, \beta) | \text{$\alpha$ and $\beta$ are ordinals
-      such that $\alpha < \beta$}}. \]
+      \[ {<} = \{ (\alpha, \beta) \mid \text{$\alpha$ and $\beta$ are ordinals
+      such that $\alpha < \beta$} \}. \]
     \end{definition}
   \end{forthel}
 
@@ -460,8 +460,8 @@
       Qed.
 
       Hence ${<}$ is strongly wellfounded on $\Ord$.
-      Indeed for any $\beta \in \Ord$ we have $\beta = \class{\alpha \in \Ord |
-      (\alpha,\beta) \in {<}}$.
+      Indeed for any $\beta \in \Ord$ we have $\beta = \{ \alpha \in \Ord \mid
+      (\alpha,\beta) \in {<} \}$.
       Thus ${<}$ is a strong wellorder on $\Ord$.
     \end{proof}
   \end{forthel}
@@ -517,6 +517,9 @@
     \end{proof}
   \end{forthel}
 
+  \noindent \textbf{Note:} In the proof below
+  \ref{FOUNDATIONS_11_2812087589928960} refers to the Foundations library!
+
   \begin{forthel}
     \begin{theorem}\printlabel{SET_THEORY_02_8493935460614144}
       Let $\Phi$ be a class.
@@ -525,8 +528,8 @@
       Then $\Phi$ contains every ordinal.
     \end{theorem}
     \begin{proof}
-      Define $B = \class{x | \text{$x$ is a set and if $x \in \Ord$ then
-      $x \in \Phi$}}$.
+      Define $B = \{ x \mid x$ is a set and if $x \in \Ord$ then
+      $x \in \Phi \}$.
 
       Let us show that for all sets $x$ if $B$ contains every element of $x$
       that is a set then $B$ contains $x$.
@@ -542,7 +545,7 @@
         End.
       End.
 
-      [prover vampire] %! For some reason E cannot prove this...
+      [prover vampire]
       Hence $B$ contains every set (by \ref{FOUNDATIONS_11_2812087589928960}).
       Thus $\Phi$ contains every ordinal.
     \end{proof}
@@ -581,7 +584,7 @@
         End.
       End.
 
-      [prover vampire] %! For some reason E cannot prove this...
+      [prover vampire]
       Thus $\Phi$ contains every ordinal (by
       \ref{SET_THEORY_02_8493935460614144}).
     \end{proof}

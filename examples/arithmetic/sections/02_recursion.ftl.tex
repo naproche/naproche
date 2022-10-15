@@ -23,18 +23,12 @@
     \end{definition}
   \end{forthel}
 
-  \begin{theorem*}[Dedekind]
-    Let $A$ be a set and $a \in A$ and $f : A \to A$.
-    Then there exists a unique $\varphi : \Nat \to A$ such that $\varphi$ is
-    recursively defined by $a$ and $f$.
-  \end{theorem*}
-
   \begin{forthel}
-    \begin{proposition}\printlabel{ARITHMETIC_02_2489427471368192}
+    \begin{theorem}[Dedekind]\printlabel{ARITHMETIC_02_2489427471368192}
       Let $A$ be a set and $a \in A$ and $f : A \to A$.
       Then there exists a $\varphi : \Nat \to A$ that is recursively defined by
       $a$ and $f$.
-    \end{proposition}
+    \end{theorem}
     \begin{proof}
       Define \[ \Phi = \class{H \in \pow(\Nat \times A) | \classtext{
       $(0, a) \in H$ and for all $n \in \Nat$ and all $x \in A$ if
@@ -42,6 +36,7 @@
 
       Let us show that $\bigcap \Phi \in \Phi$. \\
       Proof.
+
         (1) $\bigcap \Phi \in \pow(\Nat \times A)$. \\
         Proof.
           We have $\Nat \times A \in \Phi$.
@@ -71,8 +66,8 @@
       Let us show that for any $n \in \Nat$ there exists an $x \in A$ such
       that $(n, x) \in \bigcap \Phi$. \\
       Proof.
-        Define \[ \Psi = \class{n \in \Nat | \text{there exists an
-        $x \in A$ such that $(n, x) \in \bigcap \Phi$}}. \]
+        Define $\Psi = \{ n \in \Nat \mid$ there exists an $x \in A$ such that
+        $(n, x) \in \bigcap \Phi \}$.
 
         (1) $0$ is contained in $\Psi$.
         Indeed $(0, a) \in \bigcap \Phi$.
@@ -90,8 +85,8 @@
       Let us show that for all $n \in \Nat$ and all $x, y \in A$ if
       $(n, x), (n, y) \in \bigcap \Phi$ then $x = y$. \\
       Proof.
-        (a) Define \[ \Theta = \class{n \in \Nat | \text{for all $x, y \in A$ if
-        $(n, x), (n, y) \in \bigcap \Phi$ then $x = y$}}. \]
+        (a) Define $\Theta = \{ n \in \Nat \mid$ for all $x, y \in A$ if
+        $(n, x), (n, y) \in \bigcap \Phi$ then $x = y \}$.
 
         (1) $\Theta$ contains $0$. \\
         Proof.
@@ -186,7 +181,7 @@
                 Assume $(m,z) \in H$.
                 Then $(m,z) \in \bigcap \Phi$.
                 Hence $(\succ(m),f(z)) \in \bigcap \Phi$.
-                We have $(\succ(m),f(z)) \neq (\succ(n),x)$.
+                $(\succ(m),f(z)) \neq (\succ(n),x)$.
                 Therefore $(\succ(m),f(z)) \in H$.
               Qed.
 
@@ -213,7 +208,7 @@
                 Assume $(m,z) \in H$.
                 Then $(m,z) \in \bigcap \Phi$.
                 Hence $(\succ(m),f(z)) \in \bigcap \Phi$.
-                We have $(\succ(m),f(z)) \neq (\succ(n),y)$.
+                $(\succ(m),f(z)) \neq (\succ(n),y)$.
                 Therefore $(\succ(m),f(z)) \in H$.
               Qed.
 
@@ -258,14 +253,14 @@
       Then $\varphi = \varphi'$.
     \end{proposition}
     \begin{proof}
-      Define $\Xi = \class{n \in \Nat | \varphi(n) = \varphi'(n)}$.
+      Define $\Phi = \{ n \in \Nat \mid \varphi(n) = \varphi'(n) \}$.
 
-      (1) $\Xi$ contains $0$.
+      (1) $\Phi$ contains $0$.
       Indeed $\varphi(0) = a = \varphi'(0)$.
 
-      (2) For all $n \in \Xi$ we have $\succ(n) \in \Xi$. \\
+      (2) For all $n \in \Phi$ we have $\succ(n) \in \Phi$. \\
       Proof.
-        Let $n \in \Xi$.
+        Let $n \in \Phi$.
         Then $\varphi(n) = \varphi'(n)$.
         Hence $\varphi(\succ(n))
           = f(\varphi(n))
@@ -273,7 +268,7 @@
           = \varphi'(\succ(n))$.
       Qed.
 
-      Thus $\Xi$ contains every natural number.
+      Thus $\Phi$ contains every natural number.
       Consequently $\varphi(n) = \varphi'(n)$ for each $n \in \Nat$.
     \end{proof}
   \end{forthel}

@@ -215,7 +215,7 @@
       Let $A$ be a class and $R$ be a binary relation.
       $R$ is strongly wellfounded on $A$ iff $R$ is wellfounded on $A$ and for
       all $b \in A$ there exists a set $X$ such that
-      \[ X = \class{a \in A | (a,b) \in R}. \]
+      \[ X = \{ a \in A \mid (a,b) \in R \}. \]
     \end{definition}
   \end{forthel}
 
@@ -240,7 +240,7 @@
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_11_4800525813940224}
-      \[ {\in} = \class{(a,x) | \text{$x$ is a set that contains $a$}}. \]
+      \[ {\in} = \{ (a,x) \mid \text{$x$ is a set that contains $a$} \}. \]
     \end{definition}
   \end{forthel}
 
@@ -260,11 +260,11 @@
       Qed.
 
       (2) For all $x \in X$ there exists a set $Y$ such that
-      $Y = \class{y \in X | (y,x) \in {\in}}$. \\
+      $Y = \{ y \in X \mid (y,x) \in {\in} \}$. \\
       Proof.
         Let $x \in X$.
-        Define $Y = \class{y \in X | (y,x) \in {\in}}$.
-        Then $Y = \class{y \in X | y \in x}$.
+        Define $Y = \{ y \in X \mid (y,x) \in {\in} \}$.
+        Then $Y = \{ y \in X \mid y \in x \}$.
         Hence $Y$ is a subclass of $x$.
         Thus $Y$ is a set.
       Qed.
@@ -286,7 +286,7 @@
     \end{proposition}
     \begin{proof}
       Assume the contrary.
-      Define $M = \class{x | \text{$x$ is a set such that $x \notin \Phi$}}$.
+      Define $M = \{ x \mid x$ is a set such that $x \notin \Phi \}$.
       Then $M$ is nonempty.
       Hence we can take a least element $x$ of $M$ regarding ${\in}$.
       Then $x$ is a set such that every element of $x$ that is a set is

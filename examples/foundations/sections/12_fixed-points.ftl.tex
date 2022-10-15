@@ -32,7 +32,7 @@
     \begin{definition}\printlabel{FOUNDATIONS_12_3290499861446656}
       Let $f$ be a map between systems of sets.
       $f$ is subset preserving iff for all $x, y \in \dom(f)$
-      we have \[ x \subseteq y \implies f(x) \subseteq f(y). \]
+      \[ x \subseteq y \implies f(x) \subseteq f(y). \]
     \end{definition}
   \end{forthel}
 
@@ -43,8 +43,7 @@
       Then $f$ has a fixed point.
     \end{theorem}
     \begin{proof}
-      (1) Define $A = \class{y | \text{$y \subseteq x$ and
-      $y \subseteq f(y)$}}$.
+      (1) Define $A = \{ y \mid y \subseteq x$ and $y \subseteq f(y) \}$.
       Then $A$ is a subset of $\pow(x)$.
       We have $\bigcup A \in \pow(x)$.
 

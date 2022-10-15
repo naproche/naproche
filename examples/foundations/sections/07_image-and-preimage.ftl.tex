@@ -16,7 +16,7 @@
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_07_5919649206108160}
       Let $A, B$ be classes and $f : A \to B$ and $X \subseteq A$.
-      Then \[ f_{*}(X) = \class{ f(x) | x \in X }. \]
+      Then \[ f_{*}(X) = \{ f(x) \mid x \in X \}. \]
     \end{proposition}
   \end{forthel}
 
@@ -54,7 +54,7 @@
       Then \[ f(a) \in Y \iff a \in f^{*}(Y). \]
     \end{proposition}
     \begin{proof}
-      We have $f^{*}(Y) = \class{ x \in A | f(x) \in Y }$.
+      We have $f^{*}(Y) = \{ x \in A \mid f(x) \in Y \}$.
       Hence $a \in f^{*}(Y)$ iff $a \in A$ and $f(a) \in Y$.
       Then we have the thesis.
     \end{proof}
@@ -76,7 +76,7 @@
       Then \[ f^{*}(B) = A. \]
     \end{proposition}
     \begin{proof}
-      We have $f^{*}(B) = \class{ a \in A | f(a) \in B }$.
+      We have $f^{*}(B) = \{ a \in A \mid f(a) \in B \}$.
       $f(a) \in B$ for all $a \in A$.
       Hence the thesis.
     \end{proof}
@@ -113,7 +113,7 @@
       Then \[ f^{*}(f_{*}(A)) = A. \]
     \end{proposition}
     \begin{proof}
-      $f^{*}(f_{*}(A)) = \class{ a \in A | f(a) \in f_{*}(A) }$.
+      $f^{*}(f_{*}(A)) = \{ a \in A \mid f(a) \in f_{*}(A) \}$.
       For all $a \in A$ we have $f(a) \in f_{*}(A)$.
       Hence every element of $f^{*}(f_{*}(A))$ is contained in $A$ and every
       element of $A$ is contained in $f^{*}(f_{*}(A))$.
@@ -249,11 +249,11 @@
       Then \[ (g \circ f)_{*}(X) = g_{*}(f_{*}(X)). \]
     \end{proposition}
     \begin{proof}
-      $((g \circ f)_{*}(X)) = \class{ g(f(a)) | a \in X }$. %!
+      $((g \circ f)_{*}(X)) = \{ g(f(a)) \mid a \in X \}$. %!
       $f_{*}(X)$ is a subclass of $B$.
-      We have $g_{*}(f_{*}(X)) = \class{ g(b) | \text{$b \in f_{*}(X)$} }$ and
-      $f_{*}(X) = \class{ f(a) | a \in X }$.
-      Thus $g_{*}(f_{*}(X)) = \class{ g(f(a)) | a \in X }$.
+      We have $g_{*}(f_{*}(X)) = \{ g(b) \mid \text{$b \in f_{*}(X)$} \}$ and
+      $f_{*}(X) = \{ f(a) \mid a \in X \}$.
+      Thus $g_{*}(f_{*}(X)) = \{ g(f(a)) \mid a \in X \}$.
       Therefore $(g \circ f)_{*}(X) = g_{*}(f_{*}(X))$.
     \end{proof}
   \end{forthel}
@@ -265,10 +265,10 @@
       Then \[ (g \circ f)^{*}(Z) = f^{*}(g^{*}(Z)). \]
     \end{proposition}
     \begin{proof}
-      $((g \circ f)^{*}(Z)) = \class{ a \in A | g(f(a)) \in Z }$.
-      We have $g^{*}(Z) = \class{ b \in B | g(b) \in Z }$ and
-      $f^{*}(g^{*}(Z)) = \class{ a \in A | f(a) \in g^{*}(Z) }$.
-      Hence $f^{*}(g^{*}(Z)) = \class{ a \in A | g(f(a)) \in Z }$.
+      $((g \circ f)^{*}(Z)) = \{ a \in A \mid g(f(a)) \in Z \}$.
+      We have $g^{*}(Z) = \{ b \in B \mid g(b) \in Z \}$ and
+      $f^{*}(g^{*}(Z)) = \{ a \in A \mid f(a) \in g^{*}(Z) \}$.
+      Hence $f^{*}(g^{*}(Z)) = \{ a \in A \mid g(f(a)) \in Z \}$.
       Thus $(g \circ f)^{*}(Z) = f^{*}(g^{*}(Z))$.
     \end{proof}
   \end{forthel}

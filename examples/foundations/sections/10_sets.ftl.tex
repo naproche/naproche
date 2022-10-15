@@ -41,7 +41,7 @@
     \begin{definition}\printlabel{FOUNDATIONS_10_1448589907722240}
       Let $A$ be a class.
       The powerclass of $A$ is
-      \[ \class{ x | \text{$x$ is a subset of $A$} }. \]
+      \[ \{ x \mid \text{$x$ is a subset of $A$} \}. \]
     \end{definition}
 
     Let $\pow(A)$ stand for the powerclass of $A$.
@@ -113,7 +113,7 @@
     \begin{definition}\printlabel{FOUNDATIONS_10_541772562300928}
       Let $X$ be a system of sets.
       The union over $X$ is
-      \[ \class{ a | \text{$a \in x$ for some $x \in X$} }. \]
+      \[ \{ a \mid \text{$a \in x$ for some $x \in X$} \}. \]
     \end{definition}
 
     Let $\bigcup X$ stand for the union over $X$.
@@ -124,8 +124,7 @@
       \[ \bigcup \emptyset = \emptyset. \]
     \end{proposition}
     \begin{proof}
-      $\bigcup \emptyset = \class{ a | \text{$a \in x$ for some
-      $x \in \emptyset$} }$.
+      $\bigcup \emptyset = \{ a \mid a \in x$ for some $x \in \emptyset \}$.
       $\emptyset$ has no elements.
       Hence there is no object $a$ such that $a \in x$ for some
       $x \in \emptyset$.
@@ -169,7 +168,7 @@
     \begin{definition}\printlabel{FOUNDATIONS_10_2659345095458816}
       Let $X$ be a system of sets.
       The intersection over $X$ is
-      \[ \class{ a | \text{$a \in x$ for all $x \in X$} }. \]
+      \[ \{ a \mid \text{$a \in x$ for all $x \in X$} \}. \]
     \end{definition}
 
     Let $\bigcap X$ stand for the intersection over $X$.
@@ -180,7 +179,7 @@
       $\bigcap \emptyset$ is the class of all objects.
     \end{proposition}
     \begin{proof}
-      Define $V = \class{ x | \text{$x$ is an object} }$.
+      Define $V = \{ x \mid x$ is an object $\}$.
       We have $\bigcap \emptyset \subseteq V$.
       Indeed every element of $\bigcap \emptyset$ is an object.
 
@@ -332,7 +331,7 @@
     \end{proposition}
     \begin{proof}
       Take a set $x$ (by \cref{FOUNDATIONS_10_2362039748001792}).
-      Define $A = \class{y \in x | y \neq y}$.
+      Define $A = \{ y \in x \mid y \neq y \}$.
       Then $A$ is a set (by \cref{FOUNDATIONS_10_2263707272871936}).
       We have $A = \emptyset$.
       Hence $\emptyset$ is a set.
@@ -397,8 +396,7 @@
     \end{proposition}
     \begin{proof}
       $\set{a}$ and $\set{a,b}$ are sets for each $a \in x$ and each $b \in y$.
-      Define $P = \class{\set{\set{a}, \set{a,b}} | \text{$a \in x$ and
-      $b \in y$}}$.
+      Define $P = \{ \set{\set{a}, \set{a,b}} \mid a \in x$ and $b \in y \}$.
 
       (1) $P$ is a set. \\
       Proof.
@@ -590,8 +588,8 @@
       all $b, b' \in y$ such that $(a,b), (a,b') \in F$ we have $b = b' \}$.
 
       [skipfail on] % Proof task seems to be too difficult for Naproche %!!
-      Define $h(F) = \fun a \in x.$ choose $b \in y$ such that
-      $(a,b) \in F$ in $b$ for $F \in R$.
+      Define $h(F) = \fun a \in x.$ ``choose $b \in y$ such that
+      $(a,b) \in F$ in $b$'' for $F \in R$.
       [skipfail off]
 
       Let us show that $[x \to y] \subseteq \range(h)$.

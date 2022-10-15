@@ -145,8 +145,8 @@
       Then \[ n \cdot (m + k) = (n \cdot m) + (n \cdot k). \]
     \end{proposition}
     \begin{proof}
-      Define \[ \Phi = \class{k' \in \Nat | n \cdot (m + k') =
-      (n \cdot m) + (n \cdot k')}. \]
+      Define $\Phi = \{ k' \in \Nat \mid n \cdot (m + k') =
+      (n \cdot m) + (n \cdot k') \}$.
 
       (1) $0$ is an element of $\Phi$.
       Indeed $n \cdot (m + 0)
@@ -179,8 +179,8 @@
       Then \[ (n + m) \cdot k = (n \cdot k) + (m \cdot k). \]
     \end{proposition}
     \begin{proof}
-      Define \[ \Phi = \class{k' \in \Nat | (n + m) \cdot k' =
-      (n \cdot k') + (m \cdot k')}. \]
+      Define $\Phi = \{ k' \in \Nat \mid (n + m) \cdot k' =
+      (n \cdot k') + (m \cdot k') \}$.
 
       (1) $0$ belongs to $\Phi$.
       Indeed $(n + m) \cdot 0
@@ -248,8 +248,8 @@
       Then \[ n \cdot (m \cdot k) = (n \cdot m) \cdot k. \]
     \end{proposition}
     \begin{proof}
-      Define \[ \Phi = \class{k' \in \Nat | n \cdot (m \cdot k') =
-      (n \cdot m) \cdot k'}. \]
+      Define $\Phi = \{ k' \in \Nat \mid n \cdot (m \cdot k') =
+      (n \cdot m) \cdot k' \}$.
 
       (1) $0$ is contained in $\Phi$.
       Indeed $n \cdot (m \cdot 0)
@@ -283,11 +283,11 @@
       Then \[ n \cdot m = m \cdot n. \]
     \end{proposition}
     \begin{proof}
-      Define \[ \Phi = \class{m' \in \Nat | n \cdot m' = m' \cdot n}. \]
+      Define $\Phi = \{ m' \in \Nat \mid n \cdot m' = m' \cdot n \}$.
 
       (1) $0$ is contained in $\Phi$. \\
       Proof.
-        Define \[ \Psi = \class{n' \in \Nat | n' \cdot 0 = 0 \cdot n'}. \]
+        Define $\Psi = \{ n' \in \Nat \mid n' \cdot 0 = 0 \cdot n' \}$.
 
         (1a) $0$ is contained in $\Psi$.
 
@@ -309,7 +309,7 @@
 
       (2) $1$ belongs to $\Phi$. \\
       Proof.
-        Define \[ \Theta = \class{n' \in \Nat | n' \cdot 1 = 1 \cdot n'}. \]
+        Define $\Theta = \{ n' \in \Nat \mid n' \cdot 1 = 1 \cdot n' \}$.
 
         (2a) $0$ is contained in $\Theta$.
 
@@ -377,8 +377,8 @@
       Then \[ n \cdot k = m \cdot k \implies n = m. \]
     \end{proposition}
     \begin{proof}
-      Define \[ \Phi = \class{n' \in \Nat | \text{for all $m' \in \Nat$ if
-      $n' \cdot k = m' \cdot k$ and $k \neq 0$ then $n' = m'$}}. \]
+      Define $\Phi = \{ n' \in \Nat \mid$ for all $m' \in \Nat$ if
+      $n' \cdot k = m' \cdot k$ and $k \neq 0$ then $n' = m' \}$.
 
       (1) $0$ is contained in $\Phi$. \\
       Proof.

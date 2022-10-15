@@ -184,7 +184,7 @@
       Then \[ n + (m + k) = (n + m) + k. \]
     \end{proposition}
     \begin{proof}
-      Define \[ \Phi = \class{ k' \in \Nat | n + (m + k') = (n + m) + k'}. \]
+      Define $\Phi = \{ k' \in \Nat \mid n + (m + k') = (n + m) + k' \}$.
 
       (1) $0$ is contained in $\Phi$.
       Indeed $n + (m + 0) = n + m = (n + m) + 0$.
@@ -216,11 +216,11 @@
       Then \[ n + m = m + n. \]
     \end{proposition}
     \begin{proof}
-      Define \[ \Phi = \class{m' \in \Nat | n + m' = m' + n}. \]
+      Define $\Phi = \{ m' \in \Nat \mid n + m' = m' + n \}$.
 
       (1) $0$ is an element of $\Phi$. \\
       Proof.
-        Define \[ \Psi = \class{n' \in \Nat | n' + 0 = 0 + n'}. \]
+        Define $\Psi = \{ n' \in \Nat \mid n' + 0 = 0 + n' \}$.
 
         (1a) $0$ belongs to $\Psi$.
 
@@ -243,7 +243,7 @@
 
       Let us show that (2) $n + 1 = 1 + n$. \\
       Proof.
-        Define \[ \Theta = \class{n' \in \Nat | n' + 1 = 1 + n'}. \]
+        Define $\Theta = \{ n' \in \Nat \mid n' + 1 = 1 + n' \}$.
 
         (2a) $0$ is an element of $\Theta$.
 
@@ -290,8 +290,7 @@
       Then \[ n + k = m + k \implies n = m. \]
     \end{proposition}
     \begin{proof}
-      Define \[ \Phi = \class{k' \in \Nat | \text{if $n + k' = m + k'$ then
-      $n = m$}}. \]
+      Define $\Phi = \{ k' \in \Nat \mid$ if $n + k' = m + k'$ then $n = m \}$.
 
       (1) $0$ is an element of $\Phi$.
 
