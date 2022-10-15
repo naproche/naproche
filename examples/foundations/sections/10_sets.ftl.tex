@@ -587,10 +587,11 @@
       exists a $b \in y$ such that $(a,b) \in F$) and for all $a \in x$ and
       all $b, b' \in y$ such that $(a,b), (a,b') \in F$ we have $b = b' \}$.
 
-      [skipfail on] % Proof task seems to be too difficult for Naproche %!!
+      [prover vampire][timelimit 5]
+      Every element of $R$ is a set. % Needed for ontological checking
       Define $h(F) = \fun a \in x.$ ``choose $b \in y$ such that
       $(a,b) \in F$ in $b$'' for $F \in R$.
-      [skipfail off]
+      [prover eprover][/timelimit]
 
       Let us show that $[x \to y] \subseteq \range(h)$.
         Let $f \in [x \to y]$.
