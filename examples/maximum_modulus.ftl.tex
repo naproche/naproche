@@ -2,7 +2,6 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage{amssymb}
 \usepackage{../lib/tex/naproche}
 
 \title{Maximum modulus principle}
@@ -14,12 +13,12 @@ Adrian De Lon (2021), Peter Koepke (2021)}
 \newcommand{\image}[2]{#1^{\to}[#2]}
 
 \begin{document}
-  \pagenumbering{gobble}
+\pagenumbering{gobble}
 
-  \maketitle
+\maketitle
 
 
-  \section{Introduction}
+\section{Introduction}
 
 We formalize that the maximum modulus principle in complex analysis is
 implied by the open mapping theorem and the identity theorem.
@@ -31,136 +30,140 @@ The formalization checks in under one minute on a modest laptop.
 We use general set theoretic preliminaries:
 
 \begin{forthel}
-    [readtex preliminaries.ftl.tex]
+  [readtex preliminaries.ftl.tex]
 \end{forthel}
 
 \section{Real and complex numbers}
 
 \begin{forthel}
 \begin{signature}
-      A complex number is a mathematical object.
+  A complex number is a mathematical object.
 \end{signature}
 
 Let $z, w$ denote complex numbers.
 
 \begin{definition}
-$\mathbb{C}$ is the collection of all complex numbers.
+  $\mathbb{C}$ is the collection of all complex numbers.
 \end{definition}
 
 \begin{signature}
-      A real number is a complex number.
+  A real number is a complex number.
 \end{signature}
 
 Let $x,y$ denote real numbers.
 
 \begin{signature}
-      $|z|$ is a real number.
+  $|z|$ is a real number.
 \end{signature}
 
 \begin{signature}
-      $x$ is positive is an atom.
+  $x$ is positive is an atom.
 \end{signature}
 
 Let $\varepsilon, \delta$ denote positive real numbers.
 
-    \begin{signature}
-      $x < y$ is an atom.
-    \end{signature}
-    Let $x > y$ stand for $y < x$.
-    Let $x \leq y$ stand for $x = y$ or $x < y$.
+\begin{signature}
+  $x < y$ is an atom.
+\end{signature}
+Let $x > y$ stand for $y < x$.
+Let $x \leq y$ stand for $x = y$ or $x < y$.
 
-    \begin{axiom}
-      If $x < y$ then not $y < x$.
-    \end{axiom}
-  \end{forthel}
+\begin{axiom}
+  If $x < y$ then not $y < x$.
+\end{axiom}
+\end{forthel}
 
-  \section{Open balls}
+\section{Open balls}
 
-  \begin{forthel}
+\begin{forthel}
+\begin{signature}
+  $\Ball{\varepsilon}{z}$ is a subset of $\mathbb{C}$ that contains $z$.
+\end{signature}
 
-    \begin{signature}
-      $\Ball{\varepsilon}{z}$ is a subset of $\mathbb{C}$ that contains $z$.
-    \end{signature}
-
-    \begin{axiom}
-      $|z| < |w|$ for some element $w$ of $\Ball{\varepsilon}{z}$.
-    \end{axiom}
+\begin{axiom}
+  $|z| < |w|$ for some element $w$ of $\Ball{\varepsilon}{z}$.
+\end{axiom}
 
 Let $M$ denote a subset of $\mathbb{C}$.
 
-    \begin{definition}
-      $M$ is open iff for every element $z$ of $M$ there exists $\varepsilon$ such that
-        $\Ball{\varepsilon}{z}$ is a subset of $M$.
-    \end{definition}
+\begin{definition}
+  $M$ is open iff for every element $z$ of $M$ there exists $\varepsilon$ such that
+  $\Ball{\varepsilon}{z}$ is a subset of $M$.
+\end{definition}
 
-    \begin{axiom}
-      $\Ball{\varepsilon}{z}$ is open.
-    \end{axiom}
+\begin{axiom}
+  $\Ball{\varepsilon}{z}$ is open.
+\end{axiom}
 
-\begin{signature} A region is an open subset of $\mathbb{C}$.
+\begin{signature}
+  A region is an open subset of $\mathbb{C}$.
 \end{signature}
 
-\begin{signature} Let $M$ be a region. $M$ is simply connected is an atom.
+\begin{signature}
+  Let $M$ be a region.
+  $M$ is simply connected is an atom.
 \end{signature}
 \end{forthel}
+
 
 \section{Holomorphic functions}
 
 \begin{forthel}
-    \begin{signature}
-      A holomorphic function is a function $f$ such that $\dom(f) \subseteq \mathbb{C}$
-and $f[\dom(f)] \subseteq \mathbb{C}$.
-    \end{signature}
+\begin{signature}
+  A holomorphic function is a function $f$ such that $\dom(f) \subseteq \mathbb{C}$
+  and $f[\dom(f)] \subseteq \mathbb{C}$.
+\end{signature}
 
 Let $f$ denote a holomorphic function.
 
-    \begin{definition}
-      A local maximal point of $f$ is an element $z$ of the domain of $f$ such that there exists 
-$\varepsilon$ such that $\Ball{\varepsilon}{z}$ is a subset of the domain of $f$ and 
-$|f(w)| \leq |f(z)|$ for every element $w$ of $\Ball{\varepsilon}{z}$.
-    \end{definition}
+\begin{definition}
+  A local maximal point of $f$ is an element $z$ of the domain of $f$ such that there exists
+  $\varepsilon$ such that $\Ball{\varepsilon}{z}$ is a subset of the domain of $f$ and
+  $|f(w)| \leq |f(z)|$ for every element $w$ of $\Ball{\varepsilon}{z}$.
+\end{definition}
 
-    \begin{definition}
-      Let $U$ be a subset of the domain of $f$. $f$ is constant on $U$ iff there exists 
-$z$ such that $f(w) = z$ for every element $w$ of $U$.
-    \end{definition}
+\begin{definition}
+  Let $U$ be a subset of the domain of $f$. $f$ is constant on $U$ iff there exists
+  $z$ such that $f(w) = z$ for every element $w$ of $U$.
+\end{definition}
 
-    Let $f$ is constant stand for $f$ is constant on the domain of $f$.
+Let $f$ is constant stand for $f$ is constant on the domain of $f$.
 
-    \begin{axiom}[Open Mapping Theorem]
-      Assume $f$ is a holomorphic function and $\Ball{\varepsilon}{z}$ is a subset of the domain of $f$.
-      If $f$ is not constant on $\Ball{\varepsilon}{z}$
-        then $f[\Ball{\varepsilon}{z}]$ is open.
-    \end{axiom}
+\begin{axiom}[Open Mapping Theorem]
+  Assume $f$ is a holomorphic function and $\Ball{\varepsilon}{z}$ is a subset of the domain of $f$.
+  If $f$ is not constant on $\Ball{\varepsilon}{z}$
+  then $f[\Ball{\varepsilon}{z}]$ is open.
+\end{axiom}
 
-    \begin{axiom}[Identity theorem]
-      Assume $f$ is a holomorphic function and the domain of $f$ is a region.
-      Assume that $\Ball{\varepsilon}{z}$ is a subset of the domain of $f$.
-      If $f$ is constant on $\Ball{\varepsilon}{z}$ then $f$ is constant.
-    \end{axiom}
+\begin{axiom}[Identity theorem]
+  Assume $f$ is a holomorphic function and the domain of $f$ is a region.
+  Assume that $\Ball{\varepsilon}{z}$ is a subset of the domain of $f$.
+  If $f$ is constant on $\Ball{\varepsilon}{z}$ then $f$ is constant.
+\end{axiom}
 
-    \begin{proposition}[Maximum modulus principle]
-      Assume $f$ is a holomorphic function and the domain of $f$ is a region.
-      If $f$ has a local maximal point then $f$ is constant.
-    \end{proposition}
-    \begin{proof}
-      Let $z$ be a local maximal point of $f$.
-      Take $\varepsilon$ such that
-        $\Ball{\varepsilon}{z}$ is a subset of $\dom(f)$
-        and $|f(w)| \leq |f(z)|$ for every element $w$ of $\Ball{\varepsilon}{z}$.
+\begin{proposition}[Maximum modulus principle]
+  Assume $f$ is a holomorphic function and the domain of $f$ is a region.
+  If $f$ has a local maximal point then $f$ is constant.
+\end{proposition}
+\begin{proof}
+  Let $z$ be a local maximal point of $f$.
+  Take $\varepsilon$ such that
+  $\Ball{\varepsilon}{z}$ is a subset of $\dom(f)$
+  and $|f(w)| \leq |f(z)|$ for every element $w$ of $\Ball{\varepsilon}{z}$.
 
-      Let us show that $f$ is constant on $\Ball{\varepsilon}{z}$.
-      Proof by contradiction.
-        Assume the contrary.
-        Then $f[\Ball{\varepsilon}{z}]$ is open.
-        We can take $\delta$ such that
-          $\Ball{\delta}{f(z)}$ is a subset of $f[\Ball{\varepsilon}{z}]$.
-        Therefore there exists an element $w$ of $\Ball{\varepsilon}{z}$ such that
-          $|f(z)| < |f(w)|$. Contradiction.
-    	End.
+  Let us show that $f$ is constant on $\Ball{\varepsilon}{z}$.
+  Proof by contradiction.
+    Assume the contrary.
+    Then $f[\Ball{\varepsilon}{z}]$ is open.
+    We can take $\delta$ such that
+    $\Ball{\delta}{f(z)}$ is a subset of $f[\Ball{\varepsilon}{z}]$.
+    Therefore there exists an element $w$ of $\Ball{\varepsilon}{z}$ such that
+    $|f(z)| < |f(w)|$.
+    Contradiction.
+  End.
 
-      Hence $f$ is constant.
-    \end{proof}
-  \end{forthel}
+  Hence $f$ is constant.
+\end{proof}
+\end{forthel}
 
 \end{document}

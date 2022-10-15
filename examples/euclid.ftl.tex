@@ -1,9 +1,8 @@
 \documentclass[11pt]{article}
-\usepackage{amssymb}
 \usepackage{../lib/tex/naproche}
 
 \author{\Naproche{} Formalization: Peter Koepke\\
-   University of Bonn}
+University of Bonn}
 
 \title{Euclid's Proof
 of the Infinitude of Primes}
@@ -18,7 +17,7 @@ of the Infinitude of Primes}
 \maketitle
 
 This paper contains a standard proof of Euclid's theorem
-that there are infinitely many prime numbers, 
+that there are infinitely many prime numbers,
 following the first proof given in \emph{Proofs from THE BOOK}
 by Martin Aigner and Günter M. Ziegler, Springer Verlag.
 Before the proof we
@@ -28,6 +27,8 @@ introduce some set theoretic background and define
 finite sets, sequences and products.
 Checking the formalization takes about one minute on a modest
 laptop.
+
+
 \section{Importing Standard Preliminaries}
 
 \begin{forthel}
@@ -39,79 +40,96 @@ laptop.
 
 \begin{forthel}
 
-\begin{signature}  A natural number is a mathematical object.
+\begin{signature}
+A natural number is a mathematical object.
 \end{signature}
 
 Let $i,k,l,m,n,p,q,r$ denote natural numbers.
 
-\begin{definition} $\mathbb{N}$ is the
-collection of natural numbers.
+\begin{definition}
+$\mathbb{N}$ is the collection of natural numbers.
 \end{definition}
 
-\begin{signature} $0$ is a natural number.
+\begin{signature}
+$0$ is a natural number.
 \end{signature}
 
 Let $x$ is nonzero stand for $x \neq 0$.
 
-\begin{signature} $1$ is a nonzero natural number.
+\begin{signature}
+$1$ is a nonzero natural number.
 \end{signature}
 
-\begin{signature} $m + n$ is a natural number.
+\begin{signature}
+$m + n$ is a natural number.
 \end{signature}
 
-\begin{signature} $m * n$ is a natural number.
+\begin{signature}
+$m * n$ is a natural number.
 \end{signature}
 
-\begin{axiom} $m + n = n + m$.
+\begin{axiom}
+$m + n = n + m$.
 \end{axiom}
 
-\begin{axiom} $(m + n) + l = m + (n + l)$.
+\begin{axiom}
+$(m + n) + l = m + (n + l)$.
 \end{axiom}
 
-\begin{axiom}  $m + 0 = m = 0 + m$.
+\begin{axiom}
+$m + 0 = m = 0 + m$.
 \end{axiom}
 
-\begin{axiom} $m * n = n * m$.
+\begin{axiom}
+$m * n = n * m$.
 \end{axiom}
 
-\begin{axiom} $(m * n) * l = m * (n * l)$.
+\begin{axiom}
+$(m * n) * l = m * (n * l)$.
 \end{axiom}
 
-\begin{axiom} $m * 1 = m = 1 * m$.
+\begin{axiom}
+$m * 1 = m = 1 * m$.
 \end{axiom}
 
-\begin{axiom} $m * 0 = 0 = 0 * m$.
+\begin{axiom}
+$m * 0 = 0 = 0 * m$.
 \end{axiom}
 
-\begin{axiom} $m * (n + l) = (m * n) + (m * l)$ and
-                $(n + l) * m = (n * m) + (l * m)$.
+\begin{axiom}
+$m * (n + l) = (m * n) + (m * l)$ and
+$(n + l) * m = (n * m) + (l * m)$.
 \end{axiom}
 
-\begin{axiom} If $l + m = l + n$ or $m + l = n + l$
-then $m = n$.
+\begin{axiom}
+If $l + m = l + n$ or $m + l = n + l$ then $m = n$.
 \end{axiom}
 
-\begin{axiom} Assume that $l$ is nonzero.
+\begin{axiom}
+Assume that $l$ is nonzero.
 If $l * m = l * n$ or $m * l = n * l$ then $m = n$.
 \end{axiom}
 
-\begin{axiom} If $m + n = 0$ then $m = 0$ and $n = 0$.
+\begin{axiom}
+If $m + n = 0$ then $m = 0$ and $n = 0$.
 \end{axiom}
 
 \end{forthel}
+
 
 \section{The Natural Order}
 
 \begin{forthel}
 
-\begin{definition} $m \leq n$ iff
-there exists a natural number $l$ such that
-$m + l = n$.
+\begin{definition}
+$m \leq n$ iff
+there exists a natural number $l$ such that $m + l = n$.
 \end{definition}
 
 Let $m < n$ stand for $m \leq n$ and $m \neq n$.
 
-\begin{definition} Assume that $n \leq m$.
+\begin{definition}
+Assume that $n \leq m$.
 $m - n$ is a natural number $l$ such that $n + l  = m$.
 \end{definition}
 
@@ -121,11 +139,12 @@ The following three lemmas show that $\leq$ is a partial order:
 
 \begin{forthel}
 
-\begin{lemma} $m \leq m$.
+\begin{lemma}
+$m \leq m$.
 \end{lemma}
 
-\begin{lemma} If $m \leq n \leq m$
-then $m = n$.
+\begin{lemma}
+If $m \leq n \leq m$ then $m = n$.
 \end{lemma}
 \begin{proof}
 Let $m \leq n \leq m$.
@@ -135,22 +154,26 @@ Then $m = m + (k + l)$ and $k + l = 0$ and $k = 0$.
 Hence $m = n$.
 \end{proof}
 
-\begin{lemma} If $m \leq n \leq l$
-then  $m \leq l$.
+\begin{lemma}
+If $m \leq n \leq l$ then  $m \leq l$.
 \end{lemma}
 
-\begin{axiom} $m \leq n$ or $n < m$.
+\begin{axiom}
+$m \leq n$ or $n < m$.
 \end{axiom}
 
-\begin{lemma} Assume that $l < n$.
-  Then $m + l < m + n$ and $l + m < n + m$.
+\begin{lemma}
+Assume that $l < n$.
+Then $m + l < m + n$ and $l + m < n + m$.
 \end{lemma}
 
-\begin{lemma} Assume that $m$ is nonzero and $l < n$.
-  Then $m * l < m * n$ and $l * m < n * m$.
+\begin{lemma}
+Assume that $m$ is nonzero and $l < n$.
+Then $m * l < m * n$ and $l * m < n * m$.
 \end{lemma}
 
 \end{forthel}
+
 
 \section{Induction}
 
@@ -161,38 +184,46 @@ $\prec$-predecessors of $m$ satisfy $P$, then $P$ holds everywhere.
 Induction along $<$ is ensured by:
 
 \begin{forthel}
-\begin{axiom} If $n < m$ then $n \prec m$.
+
+\begin{axiom}
+If $n < m$ then $n \prec m$.
 \end{axiom}
 
-\begin{lemma} For every natural number $n$ $n = 0$ or $1 \leq n$.
+\begin{lemma}
+For every natural number $n$ $n = 0$ or $1 \leq n$.
 \end{lemma}
 \begin{proof}[by induction]
 \end{proof}
 
-\begin{lemma} Let $m \neq 0$. Then $n \leq n * m$.
+\begin{lemma}
+Let $m \neq 0$. Then $n \leq n * m$.
 \end{lemma}
-\begin{proof} $1 \leq m$.
+\begin{proof}
+$1 \leq m$.
 \end{proof}
 
 \end{forthel}
+
 
 \section{Division}
 
 \begin{forthel}
 
 \begin{definition}
-  $n$ divides $m$ iff for some $l$ $m = n * l$.
+$n$ divides $m$ iff for some $l$ $m = n * l$.
 \end{definition}
 
 Let $x | y$ denote $x$ divides $y$.
-Let a divisor of $x$ denote a natural number
-that divides $x$.
+Let a divisor of $x$ denote a natural number that divides $x$.
 
-\begin{lemma} Assume $l | m | n$. Then $l | n$.
+\begin{lemma}
+Assume $l | m | n$.
+Then $l | n$.
 \end{lemma}
 
-
-\begin{lemma} Let $l | m$ and $l | m + n$. Then $l | n$.
+\begin{lemma}
+Let $l | m$ and $l | m + n$.
+Then $l | n$.
 \end{lemma}
 \begin{proof}
 Assume that $l$ is nonzero.
@@ -211,10 +242,13 @@ We have $(l * p) + (l * r) = l * q = m + n = (l * p) + n$.
 Hence $n = l * r$.
 \end{proof}
 
-\begin{lemma} Let $m | n \neq 0$. Then $m \leq n$.
+\begin{lemma}
+Let $m | n \neq 0$.
+Then $m \leq n$.
 \end{lemma}
 
 \end{forthel}
+
 
 \section{Primes}
 
@@ -224,52 +258,63 @@ Let $x$ is nontrivial stand for $x \neq 0$ and $x \neq 1$.
 
 \begin{definition}
 $n$ is prime iff $n$ is nontrivial and
-    for every divisor $m$ of $n$ $m = 1$ or $m = n$.
+for every divisor $m$ of $n$ $m = 1$ or $m = n$.
 \end{definition}
 
-\begin{lemma} Every nontrivial $m$ has a prime divisor.
+\begin{lemma}
+Every nontrivial $m$ has a prime divisor.
 \end{lemma}
 \begin{proof}[by induction on $m$]
 \end{proof}
 
 \end{forthel}
 
+
 \section{Finite Sequences and Products}
 
 \begin{forthel}
-\begin{definition} $\Seq{m}{n}$ is the class of
+
+\begin{definition}
+$\Seq{m}{n}$ is the class of
 natural numbers $i$ such that $m \leq i \leq n$.
 \end{definition}
 
-\begin{axiom} $\Seq{m}{n}$ is a set. \end{axiom}
-
 \begin{axiom}
-Assume $F$ is a function and $x \in \dom(F)$. Then $F(x)$ is an object.
+$\Seq{m}{n}$ is a set.
 \end{axiom}
 
-\begin{definition} A sequence of length $n$ is a
+\begin{axiom}
+Assume $F$ is a function and $x \in \dom(F)$.
+Then $F(x)$ is an object.
+\end{axiom}
+
+\begin{definition}
+A sequence of length $n$ is a
 function $F$ such that $\dom(F) = \Seq{1}{n}$.
 \end{definition}
 
 Let $F_{i}$ stand for $F(i)$.
 
-\begin{definition} Let $F$ be a sequence of length $n$.
+\begin{definition}
+Let $F$ be a sequence of length $n$.
 $\FinSet{F}{1}{n} = \{ F_{i} | i \in \dom(F)\}$.
 \end{definition}
 
-\begin{signature} Let $F$ be a sequence of length $n$
+\begin{signature}
+Let $F$ be a sequence of length $n$
 such that $\FinSet{F}{1}{n} \subseteq \mathbb{N}$.
 $\Prod{F}{1}{n}$ is a natural number.
 \end{signature}
 
-\begin{axiom}[Factorproperty] Let $F$ be a sequence of length $n$
+\begin{axiom}[Factorproperty]
+Let $F$ be a sequence of length $n$
 such that $F(i)$ is a nonzero natural number for every $i \in \dom(F)$.
 Then $\Prod{F}{1}{n}$ is nonzero and
 $F(i)$ divides $\Prod{F}{1}{n}$ for every $i \in \dom(F)$.
 \end{axiom}
 
-
 \end{forthel}
+
 
 \section{Finite and Infinite Sets}
 
@@ -277,21 +322,25 @@ $F(i)$ divides $\Prod{F}{1}{n}$ for every $i \in \dom(F)$.
 
 Let $S$ denote a class.
 
-\begin{definition} $S$ is finite iff
+\begin{definition}
+$S$ is finite iff
 $S = \FinSet{s}{1}{n}$ for some natural number $n$ and some function $s$ that is
 a sequence of length $n$.
 \end{definition}
 
-\begin{definition} $S$ is infinite iff $S$ is not finite.
+\begin{definition}
+$S$ is infinite iff $S$ is not finite.
 \end{definition}
 
 \end{forthel}
+
 
 \section{Euclid's Theorem}
 
 \begin{forthel}
 
-\begin{signature} $\Primes$ is the collection of prime natural numbers.
+\begin{signature}
+$\Primes$ is the collection of prime natural numbers.
 \end{signature}
 
 \begin{theorem}[Euclid]
@@ -305,7 +354,8 @@ $p_{i}$ is a nonzero natural number for every
 $i \in  \dom(p)$.
 Consider $n=\Prod{p}{1}{r}+1$.
 [dump on]
-$\Prod{p}{1}{r}$ is nonzero (by Factorproperty). $n$ is nontrivial.
+$\Prod{p}{1}{r}$ is nonzero (by Factorproperty).
+$n$ is nontrivial.
 Take a prime divisor $q$ of $n$.
 
 Let us show that $q \neq p_{i}$ for all $i$ such that
@@ -317,10 +367,12 @@ $1 \leq i \leq r$.
 $q$ is a divisor of $n$.
 $q$ is a divisor of $\Prod{p}{1}{r}$
 (by Factorproperty, 1).
-Thus $q$ divides $1$. Contradiction. qed.
+Thus $q$ divides $1$.
+Contradiction. qed.
 
 Hence $\FinSet{p}{1}{r}$ is not the class of prime natural numbers.
 \end{proof}
+
 \end{forthel}
 
 \end{document}

@@ -2,7 +2,6 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage{amssymb}
 \usepackage{../lib/tex/naproche-puzzle}
 
 \title{Murder at Dreadsbury Mansion (Pelletier Problem 55)}
@@ -10,18 +9,20 @@
 \date{2018 and 2021}
 
 \begin{document}
-  \pagenumbering{gobble}
+\pagenumbering{gobble}
 
-  \maketitle
+\maketitle
+
+
 \section{Introduction}
 
-Murder at Dreadsbury Mansion is a logic puzzle from 
+Murder at Dreadsbury Mansion is a logic puzzle from
 Francis Jeffry Pelletier, Seventy-Five Problems for Testing
 Automatic Theorem Provers, Journal of Automated Reasoning 2 (1986) 191--216.
 We quote the original text in the third section below where it can
 be compared directly with our formalization.
 
-We imitate the language of the puzzle by 
+We imitate the language of the puzzle by
 adding nouns and other phrases to the input language ForTheL of the \Naproche{} system.
 We then formulate the problem in a somewhat un-grammatical language
 which resembles the original text.
@@ -48,11 +49,12 @@ Agatha killed herself.
 \end{theorem}
 \end{verbatim}
 
-The \LaTeX{} output of the formalization, on a light-grey background, was 
+The \LaTeX{} output of the formalization, on a light-grey background, was
 achieved by redefining the printout of signature,
-axiom and theorem environments: signature and axiom have no 
+axiom and theorem environments: signature and axiom have no
 visible effects, and
 the theorem environment prints out as ``Therefore: ...''.
+
 
 \section{The Language of Dreadsbury}
 
@@ -62,26 +64,32 @@ In natural language the word ``killed'' could be introduced by writing
 common nouns (``a person'') to specify the variable slots. Instead
 we use variables that are pre-typed as ``a person''. To stay close
 to the natural language the variables are called ``APerson'' and
-``another person'' and we introduce ``killed'' by 
+``another person'' and we introduce ``killed'' by
 ``APerson killed anotherPerson is an atom.''
 Note that in FortheL a basic sentence is called an ``atom''. \\
 
 \begin{forthel}
 
-[synonym live/-s][synonym herself/himself/themselves]
+[synonym live/-s]
+[synonym herself/himself/themselves]
 [synonym person/-s]
 
 \begin{signature}
 A person is a notion.
 \end{signature}
+
 Let one, aPerson, APerson, anotherPerson  stand for persons.
+
 \begin{signature}
 Aunt Agatha is a person.
 \end{signature}
+
 Let Agatha stand for Aunt Agatha.
+
 \begin{signature}
 The butler is a person.
 \end{signature}
+
 \begin{signature}
 Charles is a person.
 \end{signature}
@@ -93,6 +101,7 @@ APerson lives in Dreadsbury mansion is an atom.
 \begin{signature}
 APerson killed anotherPerson is an atom.
 \end{signature}
+
 Let P killed themselves stand for P killed P.
 Let Q was killed by P stand for P killed Q.
 Let a victim of P stand for a person that was killed by P.
@@ -101,6 +110,7 @@ Let a killer stand for a person that killed some person.
 \begin{signature}
 APerson hates anotherPerson is an atom.
 \end{signature}
+
 Let Q is hated by P stand for P hates Q.
 
 \begin{signature}
@@ -108,8 +118,12 @@ APerson is richer than anotherPerson is an atom.
 \end{signature}
 
 \end{forthel}
+
+
 \section{The Case}
+
 We juxtapose the original text of the puzzle with our formalization:
+
 \begin{quotation}
 Someone who lives in Dreadsbury Mansion killed Aunt Agatha.
 Agatha, the butler, and Charles live in Dreadsbury Mansion, and are the only
@@ -118,39 +132,52 @@ his victim. Charles hates no one that Aunt Agatha hates. Agatha hates everyone
 except the butler. The butler hates everyone not richer than Aunt Agatha. The
 butler hates everyone Agatha hates. No one hates everyone. Agatha is not the
 butler. Therefore: Agatha killed herself.
-\end{quotation} 
+\end{quotation}
+
+
 \begin{forthel}
 
 \begin{axiom}
 Some one that lives in Dreadsbury mansion killed Aunt Agatha.
 \end{axiom}
+
 \begin{axiom}
 Agatha, the butler and Charles live in Dreadsbury mansion and
 for every Person P that lives in Dreadsbury mansion P is Aunt Agatha
 or P is the butler or P is Charles.
 \end{axiom}
+
 \begin{axiom}
 Every killer X hates every victim of X and is not richer than any victim of X.
 \end{axiom}
+
 \begin{axiom}
 Charles hates no one that is hated by Aunt Agatha.
 \end{axiom}
+
 \begin{axiom}
 Agatha hates every one that is not the butler.
 \end{axiom}
+
 \begin{axiom}
 The butler hates every one that is not richer than Aunt Agatha.
 \end{axiom}
+
 \begin{axiom}
 The butler hates every one that is hated by Agatha.
 \end{axiom}
+
 \begin{axiom}
 No one hates every person.
 \end{axiom}
+
 \begin{axiom}
 Agatha is not the butler.
 \end{axiom}
+
 \end{forthel}
+
+
 \section{The Solution}
 
 \begin{forthel}
@@ -158,7 +185,6 @@ Agatha is not the butler.
 \begin{theorem}
 Agatha killed herself.
 \end{theorem}
-
 
 \end{forthel}
 

@@ -2,7 +2,6 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage{amssymb}
 \usepackage{../lib/tex/naproche-puzzle}
 
 \title{Dwarfs and Hats}
@@ -10,11 +9,14 @@
 \date{2018 and 2021}
 
 \begin{document}
-  \pagenumbering{gobble}
+\pagenumbering{gobble}
 
-  \maketitle
+\maketitle
+
 \section{Introduction}
-We present a formalized solution in \Naproche of a simple ``hat problem'':  
+
+We present a formalized solution in \Naproche of a simple ``hat problem'':
+
 \begin{quotation}
 The two dwarfs Sigbert and Tormund are on an expedition and get captured
 by an indigenous tribe. In order to be released they are given the following
@@ -25,7 +27,9 @@ his hat.
 The two may agree on a strategy before they are placed in the room. How can they manage
 to be released?
 \end{quotation}
+
 We use some \LaTeX{} techniques described in the "agatha" files.
+
 
 \section{Dwarf Ontology}
 
@@ -36,43 +40,59 @@ We use some \LaTeX{} techniques described in the "agatha" files.
 \begin{signature}
 A dwarf is a notion.
 \end{signature}
+
 \begin{signature}
 Sigbert is a dwarf.
 \end{signature}
+
 \begin{signature}
 Tormund is a dwarf.
 \end{signature}
+
 Let aDwarf, ADwarf denote dwarfs.
 
-\begin{signature} A hat is a notion.
+\begin{signature}
+A hat is a notion.
 \end{signature}
+
 Let aHat denote a hat.
+
 \begin{signature}
 The hat of aDwarf is a hat.
 \end{signature}
 
-\begin{signature} A color is a notion.
+\begin{signature}
+A color is a notion.
 \end{signature}
+
 \begin{signature}
 White is a color.
 \end{signature}
+
 \begin{signature}
 Black is a color.
 \end{signature}
+
 Let aColor denote a color.
+
 \begin{signature}
 The opposite color of aColor is a color.
 \end{signature}
+
 \begin{axiom}
 The opposite color of White is Black.
 \end{axiom}
+
 \begin{axiom}
 The opposite color of Black is White.
 \end{axiom}
-\begin{signature} The color of aHat is a color.
+
+\begin{signature}
+The color of aHat is a color.
 \end{signature}
+
 \begin{axiom}
-The color of the hat of aDwarf is White or 
+The color of the hat of aDwarf is White or
 the color of the hat of aDwarf is Black.
 \end{axiom}
 
@@ -87,19 +107,22 @@ of the hat of ADwarf.
 
 \end{forthel}
 
+
 \section{The Challenge}
 
 \begin{forthel}
 
-\begin{definition} Both dwarfs get released iff some Dwarf names theColor
-of his hat.
+\begin{definition}
+Both dwarfs get released iff some Dwarf names theColor of his hat.
 \end{definition}
 
 \end{forthel}
 
+
 \section{The Strategy of the Dwarfs}
 
 \begin{forthel}
+
 \begin{axiom}
 Sigbert names the opposite color of the color of the hat of Tormund.
 \end{axiom}
@@ -110,6 +133,7 @@ Tormund names the color of the hat of Sigbert.
 
 \end{forthel}
 
+
 \section{Release!}
 
 \begin{forthel}
@@ -119,4 +143,5 @@ Both dwarfs get released.
 \end{theorem}
 
 \end{forthel}
+
 \end{document}
