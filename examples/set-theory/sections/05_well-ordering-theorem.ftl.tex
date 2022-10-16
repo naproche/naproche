@@ -22,8 +22,9 @@
     \end{theorem}
     \begin{proof}
       Let $x$ be a set.
-      [prover vampire] % E cannot solve the proof task of the following definition
-      Every element of $(x \cup \set{x})^{< \infty}$ is a map. % Vampire needs this for ontological checking
+
+      [prover vampire]
+      Every element of $(x \cup \set{x})^{< \infty}$ is a map. % Needed for ontological checking
       Define \[ G(F) =
         \begin{cases}
           \text{choose $u \in x \setminus \range(F)$ in $u$}
@@ -34,6 +35,7 @@
         \end{cases} \]
       for $F \in (x \cup \set{x})^{< \infty}$.
       [prover eprover]
+
       Then $G$ is a map from $(x \cup \set{x})^{< \infty}$ to $x \cup \set{x}$.
       Indeed we can show that for any $F \in (x \cup \set{x})^{< \infty}$ we
       have $G(F) \in x \cup \set{x}$.

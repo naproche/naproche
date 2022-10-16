@@ -194,7 +194,7 @@
         End.
       End.
 
-      Thus $\omega \subseteq \Phi$.
+      Thus $\omega \subseteq \Phi$ (by \cref{SET_THEORY_03_344585425387520}).
       Consequently $n \in \Phi$.
       Therefore $|n| = n$.
     \end{proof}
@@ -236,24 +236,18 @@
 
           Case $k, k' < n$.
             Then $f(k) \neq f(k')$.
-            Hence $g(k)
-              = \succ(f(k))
-              \neq \succ(f(k'))
-              = g(k')$.
+            Hence $\succ(f(k)) \neq \succ(f(k'))$.
+            Thus $g(k) \neq g(k')$.
           End.
 
           Case $k < n$ and $k' = n$.
-            Then $g(k)
-              = \succ(f(k))
-              \neq 0
-              = g(k')$.
+            We have $\succ(f(k)) \neq 0$.
+            Hence $g(k) \neq g(k')$.
           End.
 
           Case $k = n$ and $k' < n$.
-            Then $g(k)
-              = 0
-              \neq \succ(f(k'))
-              = g(k')$.
+            We have $\succ(f(k')) \neq 0$.
+            Hence $g(k) \neq g(k')$.
           End.
         Qed.
 
@@ -338,6 +332,9 @@
       Let $x$ be a set.
       Then $x$ is infinite iff $|x| \geq \omega$.
     \end{proposition}
+    \begin{proof}
+      $|x| \geq \omega$ iff $|x| \nless \omega$.
+    \end{proof}
   \end{forthel}
 
   \begin{forthel}
