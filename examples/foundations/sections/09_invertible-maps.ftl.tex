@@ -123,13 +123,13 @@
     \begin{proposition}\printlabel{FOUNDATIONS_09_8414736098000896}
       Let $A, B$ be classes and $f : A \onto B$.
       Assume that $f$ is invertible.
-      Then $f^{-1}$ is an invertible map from $B$ onto $A$ such that
+      Then $f^{-1}$ is an invertible surjective map from $B$ onto $A$ such that
       \[ (f^{-1})^{-1} = f. \]
     \end{proposition}
     \begin{proof}
       $f^{-1}$ is a map from $B$ to $A$.
       Indeed $\range(f) = B$ and $\dom(f) = A$.
-      $f^{-1}$ is a map onto $A$.
+      $f^{-1}$ is surjective onto $A$.
       Indeed for any $a \in A$ we have $f^{-1}(f(a)) = a$.
       $f^{-1}$ is the inverse of $f$.
       Thus $f \circ f^{-1} = \id_{B}$ and $f^{-1} \circ f = \id_{A}$.
@@ -144,7 +144,7 @@
       Then \[ f \circ f^{-1} = \id_{B} \] and \[ f^{-1} \circ f = \id_{A}. \]
     \end{proposition}
     \begin{proof}
-      $f^{-1}$ is a map from $B$ onto $A$ .
+      $f^{-1}$ is a surjective map from $B$ onto $A$ .
       $f^{-1}$ is the inverse of $f$.
     \end{proof}
   \end{forthel}
@@ -181,15 +181,17 @@
       \[ (g \circ f)^{-1} = f^{-1} \circ g^{-1}. \]
     \end{proposition}
     \begin{proof}
-      $f^{-1}$ is a map from $B$ onto $A$.
-      $g^{-1}$ is a map from $C$ onto $B$.
+      $f^{-1}$ is a surjective map from $B$ onto $A$.
+      $g^{-1}$ is a surjective map from $C$ onto $B$.
       Take $h = f^{-1} \circ g^{-1}$.
-      Then $h$ is a map from $C$ onto $A$.
+      Then $h$ is a surjective map from $C$ onto $A$
+      (by \cref{FOUNDATIONS_08_8542698338254848}).
       $g \circ f$ is a map from $A$ to $C$.
 
       Let us show that $((g \circ f) \circ h) = \id_{C}$.
         We have $f \circ (f^{-1} \circ g^{-1}) = (f \circ f^{-1}) \circ g^{-1}$.
-        Indeed $f \circ (f^{-1} \circ g^{-1})$ and $(f \circ f^{-1}) \circ g^{-1}$ are maps from $C$.
+        Indeed $f \circ (f^{-1} \circ g^{-1})$ and
+        $(f \circ f^{-1}) \circ g^{-1}$ are maps of $C$.
         $f \circ h$ is a map from $C$ to $B$.
         Hence
         \[  (g \circ f) \circ h                           \]
@@ -215,8 +217,8 @@
       End.
 
       Thus $h$ is the inverse of $g \circ f$.
-      Indeed $g \circ f$ is a map from $A$ onto $C$ and $h$ is a map from $C$
-      onto $A$.
+      Indeed $g \circ f$ is a surjective map from $A$ onto $C$ and $h$ is a
+      surjective map from $C$ onto $A$.
     \end{proof}
   \end{forthel}
 
@@ -228,9 +230,9 @@
       \[ (f\restriction X)^{-1} = f^{-1} \restriction (f_{*}(X)). \]
     \end{proposition}
     \begin{proof}
-      $f \restriction X$ is a map from $X$ onto $f_{*}(X)$.
+      $f \restriction X$ is a surjective map from $X$ onto $f_{*}(X)$.
       Take $g = f^{-1} \restriction (f_{*}(X))$.
-      Then $g$ is a map from $f_{*}(X)$.
+      Then $g$ is a map of $f_{*}(X)$.
 
       Let us show that $X \subseteq \range(g)$.
         Let $a \in X$.
@@ -252,7 +254,7 @@
       End.
 
       Hence $\range(g) = X$.
-      Thus $g$ is a map onto $X$.
+      Thus $g$ is a surjective map onto $X$.
 
       Let us show that $g((f \restriction X)(a)) = a$ for all $a \in X$.
         Let $a \in X$.
@@ -339,7 +341,7 @@
         $b \in B$.
         Then $g$ is a map from $B$ to $A$.
         For all $a \in A$ we have $a = g(f(a))$.
-        Hence $g$ is a map from $B$ onto $A$.
+        Hence $g$ is a surjective map from $B$ onto $A$.
         For all $a \in A$ we have $g(f(a)) = a$.
         For all $b \in B$ we have $f(g(b)) = b$.
         Hence $g$ is the inverse of $f$.
@@ -354,10 +356,9 @@
       Then $f^{-1}$ is a bijection between $B$ and $A$.
     \end{corollary}
     \begin{proof}
-      $f^{-1}$ is a map from $B$ onto $A$.
+      $f^{-1}$ is a surjective map from $B$ onto $A$.
       $f^{-1}$ is invertible.
       Hence $f^{-1}$ is injective.
-      Thus $f^{-1}$ is a map from $B$ into $A$.
       Therefore $f^{-1}$ is a bijection between $B$ and $A$.
     \end{proof}
   \end{forthel}
@@ -421,7 +422,7 @@
       Then $f$ is a permutation of $A$.
     \end{proposition}
     \begin{proof}
-      $f$ is an invertible map from $A$ onto $A$.
+      $f$ is an invertible map of $A$ that surjects onto $A$.
       Hence $f$ is a bijection between $A$ and $A$.
       Thus $f$ is a permutation of $A$.
     \end{proof}

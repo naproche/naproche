@@ -55,16 +55,20 @@
       Then $x$ and $y$ are equinumerous iff $|x| = |y|$.
     \end{proposition}
     \begin{proof}
+      [prover vampire]
+
       Case $x$ and $y$ are equinumerous.
         Take a bijection $f$ between $x$ and $y$.
         Consider a bijection $g$ between $y$ and $|y|$.
-        Then $g \circ f$ is a bijection between $x$ and $|y|$.
+        Then $g \circ f$ is a bijection between $x$ and $|y|$
+        (by \cref{FOUNDATIONS_08_6435206693126144}).
         Hence $x$ and $|y|$ are equinumerous.
         Thus $|y| \geq |x|$.
 
         $f^{-1}$ is a bijection between $y$ and $x$.
         Consider a bijection $h$ between $x$ and $|x|$.
-        Then $h \circ f^{-1}$ is a bijection between $y$ and $|x|$.
+        Then $h \circ f^{-1}$ is a bijection between $y$ and $|x|$
+        (by \cref{FOUNDATIONS_08_6435206693126144}).
         Hence $y$ and $|x|$ are equinumerous.
         Thus $|x| \geq |y|$.
 
@@ -81,6 +85,8 @@
   \end{forthel}
 
   \begin{forthel}
+    [checktime 2]
+    
     \begin{proposition}\printlabel{SET_THEORY_06_5513850721927168}
       Let $x, y$ be sets and $f : x \into y$ and $a \subseteq x$.
       Then $|f[a]| = |a|$.
@@ -90,6 +96,8 @@
       $f[a]$ is a set.
       Hence $|a| = |f[a]|$.
     \end{proof}
+
+    [/checktime]
   \end{forthel}
 
   \begin{forthel}
@@ -101,8 +109,8 @@
       Assume $|x| > \kappa$.
       Then $\kappa \subseteq |x|$.
       Take a bijection $f$ between $|x|$ and $x$.
-      Then $f \restriction \kappa$ is a map from $\kappa$ into $x$.
-      $\id_{x}$ is a map from $x$ into $\kappa$.
+      Then $f \restriction \kappa$ is an injective map from $\kappa$ to $x$.
+      $\id_{x}$ is an injective map from $x$ to $\kappa$.
       Hence $x$ and $\kappa$ are equinumerous (by
       \cref{FOUNDATIONS_13_1913663275401216}).
       Indeed $x$ is a set.
@@ -114,18 +122,18 @@
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_06_407116133171200}
       Let $x, y$ be sets.
-      Then there exists a map from $x$ into $y$ iff $|x| \leq |y|$.
+      Then there exists an injective map from $x$ to $y$ iff $|x| \leq |y|$.
     \end{proposition}
     \begin{proof}
-      Case there exists a map from $x$ into $y$.
-        Consider a map $f$ from $x$ into $y$.
+      Case there exists an injective map from $x$ to $y$.
+        Consider an injective map $f$ from $x$ to $y$.
         Take a bijection $g$ from $|x|$ to $x$ and a bijection $h$ from $y$ to
         $|y|$.
-        Then $g$ is a map from $|x|$ into $x$ and $h$ is a map from $y$ into
-        $|y|$.
+        Then $g$ is an injective map from $|x|$ to $x$ and $h$ is an injective
+        map from $y$ to $|y|$.
         [prover vampire]
-        Hence $h \circ f$ is a map from $x$ into $|y|$.
-        Thus $(h \circ f) \circ g$ is a map from $|x|$ into $|y|$.
+        Hence $h \circ f$ is an injective map from $x$ to $|y|$.
+        Thus $(h \circ f) \circ g$ is an injective map from $|x|$ to $|y|$.
         [prover eprover]
         Therefore $|x|
           = ||x||
@@ -138,11 +146,11 @@
         Take a bijection $g$ from $x$ to $|x|$ and a bijection $h$ from $|y|$ to
         $y$.
         We have $|x| \subseteq |y|$.
-        Hence $g$ is a map from $x$ into $|y|$.
+        Hence $g$ is an injective map from $x$ to $|y|$.
         Take $f = h \circ g$.
         [prover vampire]
-        Then $f$ is a map from $x$ into $y$.
-        Indeed $h$ is a map from $|y|$ into $y$.
+        Then $f$ is an injective map from $x$ to $y$.
+        Indeed $h$ is an injective map from $|y|$ to $y$.
       End.
     \end{proof}
   \end{forthel}
@@ -154,7 +162,7 @@
     \end{corollary}
     \begin{proof}
       Define $f(v) = v$ for $v \in y$.
-      Then $f$ is a map from $y$ into $x$.
+      Then $f$ is an injective map from $y$ to $x$.
       Hence $|y| \leq |x|$.
     \end{proof}
   \end{forthel}
@@ -162,14 +170,14 @@
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_06_192336220913664}
       Let $x, y$ be nonempty sets.
-      Then there exists a map from $x$ onto $y$ iff $|x| \geq |y|$.
+      Then there exists a surjective map from $x$ onto $y$ iff $|x| \geq |y|$.
     \end{proposition}
     \begin{proof}
-      Case there exists a map from $x$ onto $y$.
-        Consider a map $f$ from $x$ onto $y$.
+      Case there exists a surjective map from $x$ onto $y$.
+        Consider a surjective map $f$ from $x$ onto $y$.
         Define $g(v) =$ ``choose $u \in x$ such that $f(u) = v$ in $u$'' for
         $v \in y$.
-        Then $g$ is a map from $y$ into $x$.
+        Then $g$ is an injective map from $y$ to $x$.
         Indeed we can show that $g$ is injective.
           Let $v, v' \in y$.
           Assume $g(v) = g(v')$.
@@ -186,7 +194,7 @@
       End.
 
       Case $|x| \geq |y|$.
-        Then we can take a map $f$ from $y$ into $x$.
+        Then we can take an injective map $f$ from $y$ to $x$.
         Then $f^{-1}$ is a bijection between $\range(f)$ and $y$.
         Consider an element $z$ of $y$.
         Define \[ g(u) =
@@ -195,7 +203,7 @@
             z         & : u \notin \range(f)
           \end{cases} \]
         for $u \in x$.
-        Then $g$ is a map from $x$ onto $y$.
+        Then $g$ is a surjective map from $x$ onto $y$.
         Indeed we can show that every element of $y$ is a value of $g$.
           Let $v \in y$.
           Then $f(v) \in \range(f)$.
@@ -206,27 +214,36 @@
   \end{forthel}
 
   \begin{forthel}
+    [checktime 2]
+
     \begin{proposition}\printlabel{SET_THEORY_06_8113916590686208}
       Let $x, y$ be sets and $f : x \to y$ and $a \subseteq x$.
       Then $|f[a]| \leq |a|$.
     \end{proposition}
     \begin{proof}
-      $f \restriction a$ is a map from $a$ onto $f[a]$.
-      $f[a]$ is a set.
-      Hence $|f[a]| \leq |a|$.
+      Case $a$ is empty. Obvious.
+
+      Case $a$ is nonempty.
+        $f \restriction a$ is a surjective map from $a$ onto $f[a]$ and $f[a]$
+        is nonempty.
+        Hence $|f[a]| \leq |a|$ (by \cref{SET_THEORY_06_192336220913664}).
+        Indeed $a$ and $f[a]$ are sets.
+      End.
     \end{proof}
+
+    [/checktime]
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_06_5843717288099840}
       Let $x, y$ be nonempty sets.
-      $|x| < |y|$ iff there exists a map from $x$ into $y$ and there exists no
-      map from $x$ onto $y$.
+      $|x| < |y|$ iff there exists an injective map from $x$ to $y$ and there
+      exists no surjective map from $x$ onto $y$.
     \end{proposition}
     \begin{proof}
-      There exists a map from $x$ into $y$ and there exists no map from $x$ onto
-      $y$ iff $|x| \leq |y|$ and $|x| \ngeq |y|$ (by
-      \cref{SET_THEORY_06_407116133171200},
+      There exists an injective map from $x$ to $y$ and there exists no
+      surjective map from $x$ onto $y$ iff $|x| \leq |y|$ and $|x| \ngeq |y|$
+      (by \cref{SET_THEORY_06_407116133171200},
       \cref{SET_THEORY_06_192336220913664}).
       $|x| \leq |y|$ and $|x| \ngeq |y|$ iff $|x| \leq |y|$ and $|x| \neq |y|$.
       $|x| \leq |y|$ and $|x| \neq |y|$ iff $|x| < |y|$.
@@ -239,8 +256,13 @@
       Then $|f^{*}(b)| \geq |b|$.
     \end{proposition}
     \begin{proof}
-      $f \restriction f^{*}(b)$ is a map from $f^{*}(b)$ onto $b$.
-      Hence $|f^{*}(b)| \geq |b|$.
+      Case $b$ is empty. Obvious.
+      
+      Case $b$ is nonempty.
+        $f \restriction f^{*}(b)$ is a surjective map from $f^{*}(b)$ onto $b$.
+        Hence $|f^{*}(b)| \geq |b|$ (by \cref{SET_THEORY_06_192336220913664}).
+        Indeed $b$ and $f^{*}(b)$ are nonempty sets.
+      End.
     \end{proof}
   \end{forthel}
 
@@ -278,9 +300,9 @@
       Then \[ |x| < |\pow(x)|. \]
     \end{theorem}
     \begin{proof}
-      Let us show that there exists no map from $x$ onto $\pow(x)$.
+      Let us show that there exists no surjective map from $x$ onto $\pow(x)$.
         Assume the contrary.
-        Take a map $f$ from $x$ onto $\pow(x)$.
+        Take a surjective map $f$ from $x$ onto $\pow(x)$.
         Define $C = \{ u \in x \mid u \notin f(u) \}$.
         Then $C \in \pow(x)$.
         Hence we can take a $u \in x$ such that $f(u) = C$.

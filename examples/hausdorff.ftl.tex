@@ -2,7 +2,10 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
+\usepackage{xr}
 \usepackage[foundations, settheory]{../lib/tex/naproche}
+
+\externaldocument{set-theory/set-theory}
 
 \newcommand{\surjects}{\twoheadrightarrow}
 
@@ -90,11 +93,12 @@ Adrian De Lon (2021)}
       Assume the contrary.
       Take a cofinal subset $x$ of $\kappa^{+}$ such that $|x| \neq \kappa^{+}$.
       Then $|x| \leq \kappa$.
-      Take a map $f$ from $\kappa$ onto $x$.
-      Indeed $x$ has an element and $|\kappa| = \kappa$.
+      Take a surjective map $f$ from $\kappa$ onto $x$
+      (by \ref{SET_THEORY_06_192336220913664}).
+      Indeed $x$ and $\kappa$ are nonempty and $|\kappa| = \kappa$.
       Then $f(\xi) \in \kappa^{+}$ for all $\xi \in \kappa$.
-      For all $z \in \kappa^{+}$ if $z$ has an element then there exists a map
-      $h$ from $\kappa$ onto $z$.
+      For all $z \in \kappa^{+}$ if $z$ has an element then there exists a
+      surjective map $h$ from $\kappa$ onto $z$.
       Indeed $\kappa$ is nonempty.
 
       Define \[ g(z) =
@@ -110,8 +114,8 @@ Adrian De Lon (2021)}
       Let us show that for all $\xi, \zeta \in \kappa$ $g(f(\xi))$ is a map such
       that $\zeta \in \dom(g(f(\xi)))$.
         Let $\xi, \zeta \in \kappa$.
-        If $f(\xi)$ has an element then $g(f(\xi))$ is a map from $\kappa$ onto
-        $f(\xi)$.
+        If $f(\xi)$ has an element then $g(f(\xi))$ is a surjective map from
+        $\kappa$ onto $f(\xi)$.
         If $f(\xi)$ has no element then $g(f(\xi)) = 0^{\kappa}$.
         Hence $\dom(g(f(\xi))) = \kappa$.
         Therefore $\zeta \in \dom(g(f(\xi)))$.
@@ -122,8 +126,7 @@ Adrian De Lon (2021)}
       Define $h(\xi,\zeta) = g(f(\xi))(\zeta)$ for $(\xi,\zeta) \in \kappa
       \times \kappa$.
 
-      Let us show that $h$ is a map from $\kappa \times \kappa$ onto
-      $\kappa^{+}$.
+      Let us show that $h$ is surjective onto $\kappa^{+}$.
 
         Every element of $\kappa^{+}$ is an element of $h[\kappa \times
         \kappa]$. \\
@@ -131,7 +134,7 @@ Adrian De Lon (2021)}
           Let $n$ be an element of $\kappa^{+}$.
           Take an element $\xi$ of $\kappa$ such that $n < f(\xi)$.
           Take an element $\zeta$ of $\kappa$ such that $g(f(\xi))(\zeta) = n$.
-          Indeed $g(f(\xi))$ is a map from $\kappa$ onto $f(\xi)$.
+          Indeed $g(f(\xi))$ is a surjective map from $\kappa$ onto $f(\xi)$.
           Then $n = h(\xi,\zeta)$.
         End.
 
@@ -145,7 +148,7 @@ Adrian De Lon (2021)}
           Every element of $f(a)$ is an element of $\kappa^{+}$.
 
           Case $f(a)$ has an element.
-            Then $g(f(a))$ is a map from $\kappa$ onto $f(a)$.
+            Then $g(f(a))$ is a surjective map from $\kappa$ onto $f(a)$.
             Hence $n \in f(a) \in \kappa^{+}$.
             Thus $n \in \kappa^{+}$.
           End.
@@ -156,9 +159,15 @@ Adrian De Lon (2021)}
             Thus $n \in \kappa^{+}$.
           End.
         End.
+
+        Hence $\range(h) = h[\kappa \times \kappa] = \kappa^{+}$.
       End.
 
-      Therefore $\kappa^{+} \leq \kappa$.
+      Therefore $|\kappa^{+}| \leq |\kappa \times \kappa|$
+      (by \ref{SET_THEORY_06_192336220913664}).
+      Indeed $\kappa \times \kappa$ and $\kappa^{+}$ are nonempty sets and $h$
+      is a surjective map from $\kappa \times \kappa$ to $\kappa^{+}$.
+      Consequently $\kappa^{+} \leq \kappa$.
       Contradiction.
     \end{proof}
   \end{forthel}
