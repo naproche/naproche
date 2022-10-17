@@ -24,6 +24,12 @@ text \<open>
   (koepke@math.uni-bonn.de). The source code repository is
   \<^url>\<open>https://github.com/naproche/naproche\<close>
 
+  The homepage of the Isabelle/Naproche system is located at
+  \<^url>\<open>https://naproche.github.io/\<close>. It includes general information, a tutorial,
+  and features a web interface for Naproche, which can be used to try Naproche
+  on any device (even mobile phones). The web interface is located at
+  \<^url>\<open>https://naproche.github.io/try\<close>.
+
   The Naproche system is part of the long-term Naproche (Natural Proof
   Checking) project with Bernhard Schröder, at the Universities of Bonn and
   Duisburg-Essen (\<^url>\<open>http://naproche.net\<close>). Andrei Paskevich kindly let us
