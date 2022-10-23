@@ -9,7 +9,7 @@ directly be typeset by LaTeX using appropriate preambles and style files.
 Some examples are formalized in both formats.
 
 The examples are chosen to demonstrate possibilities of the current Naproche
-which is included as a component in the Isabelle 2021-1 platform. A main
+which is included as a component in the Isabelle2022 platform. A main
 emphasis is on the presentation of naturally readable formalizations in LaTeX
 for which we also include PDF-printouts. Putting arbitrary LaTeX material around
 the actual formalizations allows a literary style of documents which includes
