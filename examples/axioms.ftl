@@ -37,6 +37,14 @@ Assume that every element of X is an element of Y and every element of Y is an
 element of X.
 Then X = Y.
 
+Lemma. Let X be a set and Y be a class.
+Assume that every element of Y is an element of X.
+Then Y is a set.
+Proof.
+  Define Z = {x in X | x is an element of Y}.
+  Then Z is a set and Z = Y.
+Qed.
+
 
 # Maps
 # ----

@@ -11,6 +11,15 @@ variant of ForTheL, respectively.
 
 ## Current development version
 
+### Changes on the example files
+
+  * **New:** Naproche's built-in separation principle was added to `axioms.ftl`
+    and `axioms.ftl.tex`.
+
+--------------------------------------------------------------------------------
+
+## naproche-20221024 (Isabelle 2022)
+
 ### Changes on ForTheL
 
   * **Changed:** The old syntax `Define f((x,y)) = ...` for low-level map
