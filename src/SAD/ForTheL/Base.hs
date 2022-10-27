@@ -464,10 +464,13 @@ hidden = do
 var :: FTL PosVar
 var = do
   pos <- getPos
-  v <- satisfy (\s -> Text.all isAlphaNum s && isAlpha (Text.head s))
+  v <- satisfy (\s -> isPlainVarName s || isTexVarName s)
   primes <- Text.concat . fmap (const "'") <$> many (symbolNotAfterSpace "'")
   let v' = v <> primes
   return (PosVar (VarConstant v') pos)
+  where
+    isPlainVarName s = Text.all isAlphaNum s && isAlpha (Text.head s)
+    isTexVarName s = Text.head s == '\\' && Text.tail s `elem` greek
 
 
 -- ** Pretyped Variables
@@ -601,6 +604,31 @@ such = tokenOf' ["such", "so"]
 -- | @"in" | "\\in"@
 elementOf :: FTL ()
 elementOf = token' "in" <|> texCommand "in"
+
+
+-- * Greek letters
+
+greek :: [Text]
+greek = lowerGreek ++ varGreek ++ upperGreek
+
+lowerGreek :: [Text]
+lowerGreek = [
+    "alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta",
+    "iota", "kappa", "lambda", "mu", "nu", "xi", "omicron", "pi",
+    "rho", "sigma", "tau", "upsilon", "phi", "chi", "psi", "omega"
+  ]
+
+varGreek :: [Text]
+varGreek = [
+    "varbeta", "varepsilon", "vartheta", "varkappa", "varpi",
+    "varvarpi", "varrho", "varvarrho", "varsigma", "varphi"
+  ]
+
+upperGreek :: [Text]
+upperGreek = [
+    "Gamma", "Delta", "Theta", "Lambda", "Xi", "Pi",
+    "Sigma", "Upsilon", "Phi", "Psi", "Omega"
+  ]
 
 
 -- * Show function

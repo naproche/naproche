@@ -19,9 +19,6 @@ module SAD.Parser.Token (
   -- * Tokenizing ForTheL texts
   , tokenize
 
-  -- * Greek letters
-  , greek
-
   -- * Helper functions
   , reportComments
   , composeTokens
@@ -224,11 +221,15 @@ tokenize Tex startPos = procToken OutsideForthelEnv startPos NoWhiteSpaceBefore
           | Text.head rest `elem` ['{', '}'] ->
             procToken InsideForthelEnv (Position.symbol_explode_string "\\" currentPos) NoWhiteSpaceBefore rest
         -- TeX command
-        Just ('\\', rest) -> newToks ++ toks
+        Just ('\\', rest) -> case name of
+          "left" -> toks
+          "middle" -> toks
+          "right" -> toks
+          _ -> tok : toks
           where
             (name, rest') = Text.span isAlpha rest
             newPos = Position.symbol_explode (Text.cons '\\' name) currentPos
-            newToks = expandTexCmd name (currentPos, newPos) whitespaceBefore
+            tok = makeTokenRange (Text.cons '\\' name) (currentPos, newPos) whitespaceBefore
             toks = procToken InsideForthelEnv newPos NoWhiteSpaceBefore rest'
         -- Symbolic token
         Just (c, cs) -> tok:toks
@@ -237,100 +238,6 @@ tokenize Tex startPos = procToken OutsideForthelEnv startPos NoWhiteSpaceBefore
             tok  = makeToken text currentPos whitespaceBefore
             toks = procToken InsideForthelEnv (Position.symbol_explode text currentPos) NoWhiteSpaceBefore cs
 
-
-expandTexCmd :: Text -> Position.Range -> TokenType -> [Token]
--- Logical symbols
-expandTexCmd "wedge" range whiteSpaceBefore = makeSymbolTokens ["/","\\"] range whiteSpaceBefore
-expandTexCmd "vee" range whiteSpaceBefore = makeSymbolTokens ["\\","/"] range whiteSpaceBefore
-expandTexCmd "implies" range whiteSpaceBefore = makeSymbolTokens ["=",">"] range whiteSpaceBefore
-expandTexCmd "iff" range whiteSpaceBefore = makeSymbolTokens ["<", "=",">"] range whiteSpaceBefore
-expandTexCmd "forall" range whiteSpaceBefore = [makeTokenRange "forall" range whiteSpaceBefore]
-expandTexCmd "exists" range whiteSpaceBefore = [makeTokenRange "exists" range whiteSpaceBefore]
--- Special commands
-expandTexCmd "mid" range whiteSpaceBefore = [makeTokenRange "|" range whiteSpaceBefore]
-expandTexCmd "rightarrow" range whiteSpaceBefore = makeSymbolTokens ["-",">"] range whiteSpaceBefore
-expandTexCmd "fun" range whiteSpaceBefore = [makeTokenRange "\\" range whiteSpaceBefore]
--- Grouping commands (simply tokenize away "\left", "\middle" and "\right")
-expandTexCmd "left" range whiteSpaceBefore = []
-expandTexCmd "middle" range whiteSpaceBefore = []
-expandTexCmd "right" range whiteSpaceBefore = []
-
--- All tokens starting with `\` are treated as symbols by the parser. But there are tex commands,
--- that we don't want to treat as symbols in our patterns, for example greek letters. Thus we expand this fixed
--- list of tex commands here so that they don't use `\`. Note that the fact that this is designed this way makes
--- it conceptually impossible for the user to configure which tex commands are treated as words on the fly.
-
--- Tex words
-expandTexCmd s range whiteSpaceBefore | s `elem` greek = [makeTokenRange ("tex" <> s) range whiteSpaceBefore]
--- If this is not a predefined command to be expanded, just leave the backslash so that it gets treated as a symbol.
-expandTexCmd s range whiteSpaceBefore = [makeTokenRange (Text.cons '\\' s) range whiteSpaceBefore]
-
--- | LaTeX commands for greek letters, e.g. @alpha@, @varphi@, @Gamma@.
--- Used to denote variables in ForTheL's LaTeX dialect.
-greek :: [Text]
-greek = lowerGreek ++ varGreek ++ upperGreek
-
-lowerGreek :: [Text]
-lowerGreek = [
-    "alpha"
-  , "beta"
-  , "gamma"
-  , "delta"
-  , "epsilon"
-  , "zeta"
-  , "eta"
-  , "theta"
-  , "iota"
-  , "kappa"
-  , "lambda"
-  , "mu"
-  , "nu"
-  , "xi"
-  , "omicron"
-  , "pi"
-  , "rho"
-  , "sigma"
-  , "tau"
-  , "upsilon"
-  , "phi"
-  , "chi"
-  , "psi"
-  , "omega"
-  ]
-
-varGreek :: [Text]
-varGreek = [
-    "varbeta"
-  , "varepsilon"
-  , "vartheta"
-  , "varkappa"
-  , "varpi"
-  , "varvarpi"
-  , "varrho"
-  , "varvarrho"
-  , "varsigma"
-  , "varphi"
-  ]
-
-upperGreek :: [Text]
-upperGreek = [
-    "Gamma"
-  , "Delta"
-  , "Theta"
-  , "Lambda"
-  , "Xi"
-  , "Pi"
-  , "Sigma"
-  , "Upsilon"
-  , "Phi"
-  , "Psi"
-  , "Omega"
-  ]
-
-makeSymbolTokens :: [Text] -> Position.Range -> TokenType -> [Token]
-makeSymbolTokens (s:symbols) range whiteSpaceBefore =
-  makeTokenRange s range whiteSpaceBefore : makeSymbolTokens symbols range NoWhiteSpaceBefore
-makeSymbolTokens [] _ _ = []
 
 -- | Markup report for comments
 reportComments :: Token -> Maybe Position.Report

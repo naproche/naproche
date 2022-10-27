@@ -317,4 +317,5 @@ singleLetterVariable = do
     deVar (VarConstant s) = s
     deVar _ = error "SAD.ForTheL.Pattern.singleLetterVariable: other variable"
     isSingleLetter :: Text -> Bool
-    isSingleLetter x = Text.null (Text.tail x) || x `elem` fmap ("tex" <>) greek
+    isSingleLetter x = Text.null (Text.tail x) || isTexVarName x
+    isTexVarName s = Text.head s == '\\' && Text.tail s `elem` greek

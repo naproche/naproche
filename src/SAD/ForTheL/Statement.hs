@@ -317,19 +317,27 @@ symbolicTerm = fmap ((,) id) sTerm
 symbolicFormula :: FTL Formula
 symbolicFormula  = biimplication
   where
-    biimplication = implication >>= binary Iff (symbol "<=>" >> implication)
-    implication   = disjunction >>= binary Imp (symbol "=>"  >> implication)
-    disjunction   = conjunction >>= binary Or  (symbol "\\/" >> disjunction)
-    conjunction   = nonbinary   >>= binary And (symbol "/\\" >> conjunction)
-    universal     = liftA2 (quantified dAll Imp) (token' "forall" >> (declared =<< symNotion)) nonbinary
-    existential   = liftA2 (quantified dExi And) (token' "exists" >> (declared =<<symNotion)) nonbinary
+    biimplication = implication >>= binary Iff (symbolicIff >> implication)
+    implication   = disjunction >>= binary Imp (symbolicImp >> implication)
+    disjunction   = conjunction >>= binary Or  (symbolicOr >> disjunction)
+    conjunction   = nonbinary   >>= binary And (symbolicAnd >> conjunction)
+    universal     = liftA2 (quantified dAll Imp) (symbolicAll >> (declared =<< symNotion)) nonbinary
+    existential   = liftA2 (quantified dExi And) (symbolicExists >> (declared =<<symNotion)) nonbinary
     nonbinary     = universal -|- existential -|- negation -|- separated -|- atomic
-    negation      = Not <$> (token' "not" >> nonbinary)
+    negation      = Not <$> (symbolicNot >> nonbinary)
     separated     = token' ":" >> symbolicFormula
 
     quantified quant op (_, f, v) = flip (foldr quant) v . op f
 
     binary op p f = optLL1 f $ fmap (op f) p
+
+    symbolicIff = symbol "<=>" <|> token "\\iff"
+    symbolicImp = symbol "=>" <|> token "\\implies"
+    symbolicOr = symbol "\\/" <|> token "\\vee"
+    symbolicAnd = symbol "/\\" <|> token "\\wedge"
+    symbolicAll = token' "forall" <|> token "\\forall"
+    symbolicExists = token' "exists" <|> token "\\exists"
+    symbolicNot = token' "not" <|> token "\\neg"
 
     atomic = relation -|- parenthesised (optInText statement)
       where
@@ -454,7 +462,7 @@ symbClassNotation = texClass </> cndClass </> finiteSet
     -- Set-builder notation, e.g. "{x in X | x is less than y}"
     cndClass = braced $ do
       (tag, c, t, mkColl) <- optInText sepFrom
-      st <- (token "|" <|> token ":") >> optInText statement
+      st <- (token "|" <|> token ":" <|> token "\\mid") >> optInText statement
       vs <- freeVars t
       vsDecl <- makeDecls $ fvToVarSet vs;
       nm <- if isVar t then pure $ PosVar (varName t) (varPosition t) else hidden
@@ -573,7 +581,7 @@ lambda = do
   df <- addDecl vs lambdaBody
   return $ \f -> mkMap f `And` Tag Domain (dom f) `And` (df_head f $ df $ mkApp f t)
   where
-    ld_head = finish $ symbol "\\" >> lambdaIn
+    ld_head = finish $ (symbol "\\" <|> token "\\fun") >> lambdaIn
 
 lambdaIn :: FTL (Formula, Formula -> Formula -> Formula, Formula -> Formula)
 lambdaIn = do
