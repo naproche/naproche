@@ -28,6 +28,6 @@ x86_64-windows/
 *.xdv
 
 # Exceptions
-!examples/set-theory/arithmetic.aux
-!examples/set-theory/foundations.aux
+!examples/arithmetic/arithmetic.aux
+!examples/foundations/foundations.aux
 !examples/set-theory/set-theory.aux
