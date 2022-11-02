@@ -24,7 +24,7 @@ Marcel Schütz (2021 - 2022)}
   \noindent This is a formalization of Furstenberg's topological proof of the
   infinitude of primes \cite[p. 353]{Furstenberg1955}.
   On mid-range hardware \Naproche needs approximately 5 Minutes to verify this
-  formalization plus approximately 30 minutes to verify the library files it
+  formalization plus approximately 40 minutes to verify the library files it
   depends on.
 
   \begin{forthel}
@@ -32,7 +32,7 @@ Marcel Schütz (2021 - 2022)}
 
     [readtex \path{arithmetic/sections/10_primes.ftl.tex}]
 
-    [readtex \path{foundations/sections/13_equinumerosity.ftl.tex}]
+    [readtex \path{arithmetic/sections/11_cardinality.ftl.tex}]
 
     %[prove on][check on]
   \end{forthel}
@@ -84,7 +84,7 @@ Marcel Schütz (2021 - 2022)}
     \end{definition}
   \end{forthel}
 
-  We can show that the open sets form a topology on $\Nat$.
+  We can show that the open sets indeed form a topology on $\Nat$.
 
   \begin{forthel}
     \begin{lemma}
@@ -124,18 +124,8 @@ Marcel Schütz (2021 - 2022)}
   \end{forthel}
 
   Now that we have a topology of open sets on $\Nat$, we can continue
-  with a characterization of closed sets.
-  Their key property is that they are closed under \textit{finite} unions.
-  Since we cannot provide a proper definition of finiteness in the context of
-  this formalization, we cannot prove this closedness condition.
-  All we can do is to prove that the union of \textit{two} closed sets remains
-  closed.
-  Having shown this little fact we will introduce the notion of finiteness
-  axiomatically and state that every finite union of closed sets is indeed
-  closed.
-  Actually this condition plus the fact that sets which are equinumerous to an
-  infinite set are also infinite is all we need to know about the notion of
-  finiteness to prove that there are infinitely many primes.
+  with a characterization of closed sets whose key property is that they are
+  closed under finite unions.
 
   \begin{forthel}
     \begin{definition}
@@ -149,34 +139,37 @@ Marcel Schütz (2021 - 2022)}
     \end{definition}
 
     \begin{lemma}
-      Let $A,B$ be closed subsets of $\Nat$.
-      Then $A \cup B$ is closed.
+      Every system of closed sets is a set.
     \end{lemma}
     \begin{proof}
-      % The LHS of the following equation must be put in parentheses due to a
-      % bug in Naproche's parser.
-      We have $((A \cup B)^{\complement}) = A^{\complement} \cap B^{\complement}$.
-      $A^{\complement}$ and $B^{\complement}$ are open.
-      Hence $A^{\complement} \cap B^{\complement}$ is open.
-      Thus $A \cup B$ is closed.
+      Let $S$ be a system of closed sets.
+      Then $S \subseteq \pow(\Nat)$.
+      $\pow(\Nat)$ is a set.
+      Hence $S$ is a set.
     \end{proof}
 
-    \begin{signature}
-      Let $X$ be a class.
-      $X$ is finite is an atom.
-    \end{signature}
-
-    Let $X$ is infinite stand for $X$ is not finite.
-
-    \begin{axiom}
+    \begin{lemma}
       Let $S$ be a finite system of closed sets.
       Then $\bigcup S$ is closed.
-    \end{axiom}
+    \end{lemma}
+    \begin{proof}
+      Define $C = \{ X \mid X$ is a closed subset of $\Nat \}$.
 
-    \begin{axiom}
-      Let $X, Y$ be classes.
-      If $X$ is infinite and $X$ is equinumerous to $Y$ then $Y$ is infinite.
-    \end{axiom}
+      Let us show that $A \cup B \in C$ for any $A, B \in C$.
+        Let $A, B \in C$.
+        Then $A, B$ are closed subsets of $\Nat$.
+        % The LHS of the following equation must be put in parentheses due to a
+        % bug in Naproche's parser.
+        We have $((A \cup B)^{\complement}) = A^{\complement} \cap B^{\complement}$.
+        $A^{\complement}$ and $B^{\complement}$ are open.
+        Hence $A^{\complement} \cap B^{\complement}$ is open.
+        Thus $A \cup B$ is a closed subset of $\Nat$.
+      End.
+
+      Therefore $C$ is closed under finite unions.
+      Consequently $\bigcup S \in C$.
+      Indeed $S$ is a subset of $C$.
+    \end{proof}
   \end{forthel}
 
   An important step towards Furstenberg's proof is to show that arithmetic
@@ -280,8 +273,11 @@ Marcel Schütz (2021 - 2022)}
 
       Hence For all $n \in \Nat$ we have $n \in (\bigcup \Ps)^{\complement}$ iff
       $n$ has no prime divisor.
+      $1$ has no prime divisor and any natural number having no prime
+      divisor is equal to $1$.
       Therefore $(\bigcup \Ps)^{\complement} = \set{1}$.
-      Indeed any natural number having no prime divisor is equal to $1$.
+      Indeed $((\bigcup \Ps)^{\complement}) \subseteq \set{1}$ and $\set{1}
+      \subseteq (\bigcup \Ps)^{\complement}$. %!
 
       $\Ps$ is infinite. \\
       Proof by contradiction.
