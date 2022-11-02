@@ -16,6 +16,8 @@ variant of ForTheL, respectively.
   * **New:** Naproche's built-in separation principle was added to `axioms.ftl`
     and `axioms.ftl.tex`.
 
+  * **New:** New chapter about cardinality in the arithmetic library.
+
 --------------------------------------------------------------------------------
 
 ## naproche-20221024 (Isabelle 2022)

@@ -2,6 +2,7 @@ digraph Sections {
 
     foundations_10 [label = "Foundations: 10 Sets", color = "gray", fontcolor = "gray"]
     foundations_11 [label = "Foundations: 11 Binary relations", color = "gray", fontcolor = "gray"]
+    foundations_13 [label = "Foundations: 13 Equinumerosity", color = "gray", fontcolor = "gray"]
 
     arithmetic_01 [label = "1 Natural numbers"]
     arithmetic_02 [label = "2 Recursion"]
@@ -13,6 +14,7 @@ digraph Sections {
     arithmetic_08 [label = "8 Euclidean division"]
     arithmetic_09 [label = "9 Exponentiation"]
     arithmetic_10 [label = "10 Prime numbers"]
+    arithmetic_11 [label = "11 Cardinality"]
 
     foundations_10  -> arithmetic_01    [color = "gray"]
     arithmetic_01   -> arithmetic_02
@@ -26,4 +28,6 @@ digraph Sections {
     arithmetic_06   -> arithmetic_09
     arithmetic_07   -> arithmetic_10
     arithmetic_08   -> arithmetic_10
+    foundations_13  -> arithmetic_11
+    arithmetic_04   -> arithmetic_11
 }
