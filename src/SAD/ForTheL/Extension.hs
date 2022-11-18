@@ -1,9 +1,10 @@
-{-
-Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
+-- |
+-- Authors: Andrei Paskevich (2001 - 2008),
+--          Steffen Frerix (2017 - 2018)
+--
+-- Extending the language: definitions, signature extensions, pretypings,
+-- macros and synonyms.
 
-Extending the language: definitions, signature extensions, pretypings,
-macros and synonyms.
--}
 
 {-# LANGUAGE OverloadedStrings #-}
 
@@ -11,13 +12,18 @@ module SAD.ForTheL.Extension (
   pretypeVariable,
   introduceMacro,
   defExtend,
-  sigExtend)
-  where
+  sigExtend
+) where
 
+import Control.Monad
+import qualified Data.Set as Set
+import Control.Applicative
+import Control.Monad.State.Class (get, modify)
+import Data.Text.Lazy (Text)
+import qualified Data.Text.Lazy as Text
 
 import SAD.Data.Formula
 import SAD.Data.Text.Block (ProofText (..))
-
 import SAD.ForTheL.Base
 import SAD.ForTheL.Statement
 import SAD.ForTheL.Pattern
@@ -26,13 +32,6 @@ import SAD.Parser.Primitives
 import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Data.Text.Decl
-
-import Control.Monad
-import qualified Data.Set as Set
-import Control.Applicative
-import Control.Monad.State.Class (get, modify)
-import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
 
 import qualified Isabelle.Position as Position
 

@@ -1,14 +1,13 @@
-{-
-Authors: Steffen Frerix (2017 - 2018)
-
-Unification of literals.
--}
-
+-- |
+-- Authors: Steffen Frerix (2017 - 2018)
+--
+-- Unification of literals.
 
 
 module SAD.Prove.Unify (unify) where
 
 import Control.Monad
+
 import SAD.Data.Formula
 
 
@@ -24,9 +23,9 @@ unify _ Bot = mzero
 unify Top Top = return id
 unify Top _ = mzero
 unify _ Top = mzero
-unify l r = do 
+unify l r = do
   let la = ltAtomic l; ra = ltAtomic r
-  guard (isTrm la && isTrm ra && trmId la == trmId ra) 
+  guard (isTrm la && isTrm ra && trmId la == trmId ra)
   unif $ zip (trmArgs la) (trmArgs ra)
 
 {- implementation of a standard unification algorithm -}

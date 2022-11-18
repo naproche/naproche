@@ -1,8 +1,8 @@
-{-
-Authors: Makarius Wenzel (2021)
+-- |
+-- Authors: Makarius Wenzel (2021)
+--
+-- External provers.
 
-External provers.
--}
 
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE NamedFieldPuns #-}
@@ -12,11 +12,11 @@ module Naproche.Prover (
   Prover, Status (..), get_name, run, status, run_status,
   verbose, timeout, memory_limit, by_contradiction,
   list, find, eprover, eproververb, spass, vampire
-)
-where
+) where
 
 import qualified Data.List as List
 import Control.Monad (when)
+
 import qualified Isabelle.Bytes as Bytes
 import Isabelle.Bytes (Bytes)
 import qualified Isabelle.Value as Value
@@ -110,7 +110,7 @@ memory_limit memory_limit prover = prover { _memory_limit = memory_limit }
 
 by_contradiction :: Bool -> Prover -> Prover
 by_contradiction by_contradiction prover = prover { _by_contradiction = by_contradiction }
-  
+
 print_seconds :: Time -> Bytes
 print_seconds = Value.print_int . round . Time.get_seconds
 
@@ -127,7 +127,7 @@ prover_command args prover input = do
     Bash.input input $
     Bash.timeout (_timeout prover) $
     Bash.script (Bash.strings (exe : args))
-  
+
 prover_status :: Prover_Status
 prover_status prover result =
   let
@@ -181,7 +181,7 @@ eprover_command prover = prover_command args prover
       ["--memory-limit=" <> Value.print_int _memory_limit | _memory_limit > 0]
 
 eprover_messages :: Messages
-eprover_messages = 
+eprover_messages =
   Messages {
     _contradiction = ["# SZS status ContradictoryAxioms"],
     _success = ["# SZS status Theorem"],
@@ -206,7 +206,7 @@ eproververb_command prover = prover_command args prover
       ["--cpu-limit=" <> print_seconds _timeout | _timeout > Time.zero] ++
       ["--memory-limit=" <> Value.print_int _memory_limit | _memory_limit > 0]
 
-  
+
 {- spass -}
 
 spass :: Prover
@@ -231,8 +231,8 @@ spass_messages =
       _unknown = ["SPASS beiseite: Ran out of time."]
           -- "SPASS beiseite: Maximal number of loops exceeded."
     }
-      
-      
+
+
 {- vampire -}
 
 vampire :: Prover

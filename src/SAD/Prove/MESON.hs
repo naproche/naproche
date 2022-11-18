@@ -1,11 +1,18 @@
-{-
-Authors: Steffen Frerix (2017 - 2018), Makarius Wenzel (2022)
+-- |
+-- Authors: Steffen Frerix (2017 - 2018),
+--          Makarius Wenzel (2022)
+--
+-- An implementation of the MESON algorithm.
 
-An implementation of the MESON algorithm.
--}
 
-module SAD.Prove.MESON (Cache, init_cache, prune_cache, prove, contras, addRules)
-where
+module SAD.Prove.MESON (
+  Cache,
+  init_cache,
+  prune_cache,
+  prove,
+  contras,
+  addRules
+) where
 
 import Control.Monad
 import Control.Exception (evaluate)
@@ -21,6 +28,7 @@ import SAD.Helpers (notNull)
 import qualified SAD.Data.Text.Context as Context
 import SAD.Data.Structures.DisTree (DisTree)
 import qualified SAD.Data.Structures.DisTree as DisTree
+
 import qualified Isabelle.Cache as Cache
 import qualified Isabelle.Time as Time
 import Isabelle.Library (fold_rev)
@@ -179,7 +187,7 @@ prove cache n lowLevelContext positives negatives goal =
       let (skf, nm) = skolemize m $ simplify f
       in  (concatMap contrapositives . transformToCNF) skf ++
           makeContrapositives nm fs
-    
+
     start t@Trm{} = pure $ MR [ltNeg t] Bot
     start t@(Not Trm{}) = pure $ MR [ltNeg t] Bot
     start _ = []

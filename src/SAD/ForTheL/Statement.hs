@@ -1,21 +1,28 @@
-{-
-Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
+-- |
+-- Authors: Andrei Paskevich (2001 - 2008),
+--          Steffen Frerix (2017 - 2018)
+--
+--Syntax of ForThel statements.
 
-Syntax of ForThel statements.
--}
 
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.ForTheL.Statement
-  ( statement
-  , sTerm
-  , anotion
-  , dig
-  , choice
-  , classNotion
-  , mapNotion
-  ) where
+module SAD.ForTheL.Statement (
+  statement,
+  sTerm,
+  anotion,
+  dig,
+  choice,
+  classNotion,
+  mapNotion
+) where
 
+
+import Data.Set (Set)
+import Data.Function ((&))
+import Control.Applicative (liftA2, (<**>), Alternative(..))
+import Control.Monad (guard)
+import qualified Data.Set as Set
 
 import SAD.Data.Formula
 import SAD.Data.Text.Decl
@@ -23,15 +30,7 @@ import SAD.ForTheL.Base
 import SAD.ForTheL.Reports (markupToken, markupTokenOf)
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives (token, token', symbol, tokenOf')
-
 import qualified SAD.ForTheL.Reports as Reports
-
-import Data.Set (Set)
-import Data.Function ((&))
-import Control.Applicative (liftA2, (<**>), Alternative(..))
-import Control.Monad (guard)
-
-import qualified Data.Set as Set
 
 
 statement :: FTL Formula

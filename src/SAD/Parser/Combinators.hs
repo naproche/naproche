@@ -1,19 +1,13 @@
-{-|
-License     : GPL 3
-Maintainer  : Steffen Frerix (2017 - 2018)
+-- |
+-- Authors: Steffen Frerix (2017 - 2018)
+--
+-- Parser combinators.
 
-Parser combinators
--}
 
 {-# LANGUAGE TupleSections #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Parser.Combinators where
-
-import SAD.Parser.Base
-import SAD.Parser.Token
-import SAD.Parser.Error
-import SAD.Parser.Primitives
 
 import Control.Applicative
 import Control.Monad
@@ -22,6 +16,11 @@ import Data.Maybe (isNothing, mapMaybe)
 import Debug.Trace
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
+
+import SAD.Parser.Base
+import SAD.Parser.Token
+import SAD.Parser.Error
+import SAD.Parser.Primitives
 
 import qualified Isabelle.Position as Position
 

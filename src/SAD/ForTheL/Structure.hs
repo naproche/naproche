@@ -1,10 +1,9 @@
-{-|
-License     : GPL 3
-Maintainer  : Andrei Paskevich (2001 - 2008),
-              Steffen Frerix (2017 - 2018)
+-- |
+-- Authors: Andrei Paskevich (2001 - 2008),
+--          Steffen Frerix (2017 - 2018)
+--
+-- Syntax of ForTheL sections.
 
-Syntax of ForTheL sections.
--}
 
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -27,12 +26,10 @@ import SAD.ForTheL.Statement
 import SAD.ForTheL.Extension
 import SAD.ForTheL.Instruction
 import SAD.ForTheL.Reports
-
 import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Parser.Token
 import SAD.Parser.Primitives
-
 import SAD.Data.Instr
 import SAD.Data.Text.Block (Block(Block), ProofText(..), Section(..))
 import qualified SAD.Data.Text.Block as Block

@@ -1,8 +1,8 @@
-{-
-Authors: Makarius Wenzel (2018, 2021)
+-- |
+-- Authors: Makarius Wenzel (2018, 2021)
+--
+-- Formal output messages, with PIDE (Prover IDE) support.
 
-Formal output messages, with PIDE (Prover IDE) support.
--}
 
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TupleSections #-}
@@ -16,12 +16,12 @@ module SAD.Core.Message (
   outputMain, outputExport, outputForTheL, outputParser, outputReasoner,
   outputThesis, outputSimplifier, outputTranslate,
   errorExport, errorParser
-)
-where
+) where
 
 import Prelude hiding (error)
 import Control.Monad (when)
 import Data.Maybe (catMaybes, mapMaybe)
+
 import qualified Isabelle.Bytes as Bytes
 import Isabelle.Bytes (Bytes)
 import qualified Isabelle.Position as Position

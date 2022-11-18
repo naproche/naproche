@@ -1,13 +1,15 @@
-{-
-Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018), Makarius Wenzel (2018, 2022)
+-- |
+-- Authors: Andrei Paskevich (2001 - 2008),
+--          Steffen Frerix (2017 - 2018),
+--          Makarius Wenzel (2018, 2022)
+--
+-- Instruction datatype and core functions.
 
-Instruction datatype and core functions.
--}
 
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.Data.Instr
-  (ParserKind(..), Instr(..), Drop(..), Command(..), Argument(..),
+module SAD.Data.Instr (
+  ParserKind(..), Instr(..), Drop(..), Command(..), Argument(..),
   getInstr, addInstr, dropInstr,
   timelimitParam, memorylimitParam, depthlimitParam, checktimeParam, checkdepthParam,
   proveParam, checkParam, checkconsistencyParam, symsignParam, infoParam, thesisParam,
@@ -18,11 +20,12 @@ module SAD.Data.Instr
   helpParam, serverParam, onlytranslateParam,
   libraryParam, proverParam, initParam, theoryParam,
   keywordsCommand, keywordsSynonym, keywordsLimit, keywordsFlag, keywordsArgument,
-  keywordsDropLimit, keywordsDropFlag)
-where
+  keywordsDropLimit, keywordsDropFlag
+) where
 
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Lazy
+
 import Isabelle.Bytes (Bytes)
 import Isabelle.Library
 

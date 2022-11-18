@@ -1,32 +1,32 @@
-{-
-Authors: Steffen Frerix (2017 - 2018)
+-- |
+-- Authors: Steffen Frerix (2017 - 2018)
+--
+-- Message and Parse Error data type and core functions.
 
-Message and Parse Error data type and core functions.
--}
 
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.Parser.Error
-  ( ParseError(..),
-    newErrorMessage,
-    newErrorUnknown,
-    (<+>),
-    setExpectMessage,
-    unexpectError,
-    newMessage,
-    newUnexpect,
-    newExpect,
-    newWellFormednessMessage )
-  where
-
-import SAD.Helpers (notNull, nubOrd)
-import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+module SAD.Parser.Error (
+  ParseError(..),
+  newErrorMessage,
+  newErrorUnknown,
+  (<+>),
+  setExpectMessage,
+  unexpectError,
+  newMessage,
+  newUnexpect,
+  newExpect,
+  newWellFormednessMessage
+) where
 
 import Data.List (intercalate)
 import Data.Ord (comparing)
+import Data.Text.Lazy (Text)
+import qualified Data.Text.Lazy as Text
 
+import SAD.Helpers (notNull, nubOrd)
 import SAD.Core.Message (show_position)
+
 import qualified Isabelle.Position as Position
 
 

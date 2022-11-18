@@ -1,50 +1,50 @@
-{-
-Authors: Steffen Frerix (2018), Makarius Wenzel (2018)
+-- |
+-- Authors: Steffen Frerix (2018),
+--          Makarius Wenzel (2018)
+--
+-- PIDE markup reports for ForTheL text elements.
 
-PIDE markup reports for ForTheL text elements.
--}
 
 {-# LANGUAGE TupleSections #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.ForTheL.Reports
-  ( addMarkup
-  , markupToken
-  , markupTokenOf
-  , getMarkupToken
-  , getMarkupTokenOf
-  , or
-  , neitherNor
-  , conjunctiveAnd
-  , whenWhere
-  , ifThen
-  , macroLet
-  , synonymLet
-  , addDropReport
-  , addInstrReport
-  , addPretypingReport
-  , addMacroReport
-  , addBlockReports
-  , sectionHeader
-  , lowlevelHeader
-  , proofStart
-  , byAnnotation
-  , proofEnd
-  ) where
+module SAD.ForTheL.Reports (
+  addMarkup,
+  markupToken,
+  markupTokenOf,
+  getMarkupToken,
+  getMarkupTokenOf,
+  or,
+  neitherNor,
+  conjunctiveAnd,
+  whenWhere,
+  ifThen,
+  macroLet,
+  synonymLet,
+  addDropReport,
+  addInstrReport,
+  addPretypingReport,
+  addMacroReport,
+  addBlockReports,
+  sectionHeader,
+  lowlevelHeader,
+  proofStart,
+  byAnnotation,
+  proofEnd
+) where
 
 import Prelude hiding (or)
 import Control.Monad.State.Class (modify)
 import Data.List hiding (or)
-import SAD.Helpers (nubOrd)
 import Data.Set (Set)
-import SAD.ForTheL.Base
 
+import SAD.Helpers (nubOrd)
+import SAD.ForTheL.Base
 import SAD.Data.Text.Block (Block)
 import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Text.Decl
 import Data.Text.Lazy (Text)
 import SAD.Data.Formula
-
 import SAD.Parser.Base
 import SAD.Parser.Primitives
 

@@ -1,3 +1,10 @@
+-- |
+-- Authors: Andrei Paskevich (2001 - 2008),
+--          Steffen Frerix (2017 - 2018)
+--
+-- TODO: Add description.
+
+
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE GADTs #-}
 
@@ -17,14 +24,7 @@ module SAD.Data.Text.Block (
   file,
   parseErrors,
   canDeclare
-  )
-where
-
-import SAD.Data.Formula
-import SAD.Data.Instr
-import SAD.Parser.Token
-import SAD.Data.Text.Decl
-import SAD.Parser.Error (ParseError)
+) where
 
 import Data.Set (Set)
 import qualified Data.Set as Set
@@ -32,9 +32,16 @@ import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 import Data.Maybe (fromMaybe)
 
+import SAD.Data.Formula
+import SAD.Data.Instr
+import SAD.Parser.Token
+import SAD.Data.Text.Decl
+import SAD.Parser.Error (ParseError)
+
 import qualified Isabelle.Bytes as Bytes
 import qualified Isabelle.Position as Position
 import Isabelle.Library (make_text)
+
 
 data ProofText =
     ProofTextBlock Block

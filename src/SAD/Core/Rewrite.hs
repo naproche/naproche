@@ -1,28 +1,16 @@
-{-
-Authors: Steffen Frerix (2017 - 2018)
+-- |
+-- Authors: Steffen Frerix (2017 - 2018)
+--
+-- Term rewriting: extraction of rules and proof of equlities.
 
-Term rewriting: extraction of rules and proof of equlities.
--}
 
 {-# LANGUAGE FlexibleContexts #-}
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 
-module SAD.Core.Rewrite (equalityReasoning, lpoGe) where
-
-import SAD.Core.Base
-import SAD.Core.Reason
-import SAD.Data.Formula
-import SAD.Data.Instr
-import SAD.Data.Rules (Rule)
-import SAD.Data.Text.Context (Context)
-import SAD.Helpers (notNull)
-
-import SAD.Export.Representation
-
-import qualified SAD.Core.Message as Message
-import qualified SAD.Data.Rules as Rule
-import qualified SAD.Data.Text.Block as Block (body, link, position)
-import qualified SAD.Data.Text.Context as Context
+module SAD.Core.Rewrite (
+  equalityReasoning,
+  lpoGe
+) where
 
 import Data.List
 import qualified Data.Set as Set
@@ -31,6 +19,20 @@ import Data.Either
 import Control.Monad.Reader
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
+
+import SAD.Core.Base
+import SAD.Core.Reason
+import SAD.Data.Formula
+import SAD.Data.Instr
+import SAD.Data.Rules (Rule)
+import SAD.Data.Text.Context (Context)
+import SAD.Helpers (notNull)
+import SAD.Export.Representation
+import qualified SAD.Core.Message as Message
+import qualified SAD.Data.Rules as Rule
+import qualified SAD.Data.Text.Block as Block (body, link, position)
+import qualified SAD.Data.Text.Context as Context
+
 import Isabelle.Library ()
 import qualified Isabelle.Position as Position
 

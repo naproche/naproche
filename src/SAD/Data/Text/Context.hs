@@ -1,23 +1,32 @@
-module SAD.Data.Text.Context
-  ( Context(..)
-  , MRule(..)
-  , name
-  , setFormula
-  , isLowLevel
-  , link
-  , head
-  , isAssumption
-  , declaredNames
-  , isTopLevel
-  ) where
+-- |
+-- Authors: Andrei Paskevich (2001 - 2008),
+--          Steffen Frerix (2017 - 2018)
+--
+-- TODO: Add description.
+
+
+module SAD.Data.Text.Context (
+  Context(..),
+  MRule(..),
+  name,
+  setFormula,
+  isLowLevel,
+  link,
+  head,
+  isAssumption,
+  declaredNames,
+  isTopLevel
+) where
 
 import Prelude hiding (head, tail)
 import qualified Prelude (head, tail)
+import Data.Text.Lazy (Text)
+import Data.Set (Set)
+
 import SAD.Data.Text.Block (Section(..))
 import qualified SAD.Data.Text.Block as Block
 import SAD.Data.Formula (Formula, VariableName)
-import Data.Text.Lazy (Text)
-import Data.Set (Set)
+
 
 data Context = Context {
   formula        :: Formula,  -- formula of the context

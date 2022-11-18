@@ -1,20 +1,24 @@
-{-
-Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
+-- |
+-- Authors: Andrei Paskevich (2001 - 2008),
+--          Steffen Frerix (2017 - 2018)
+--
+-- The reasoner handles proof tasks.
+--
+-- Trivial proof tasks can be discharged quickly without calling an external
+-- prover. Non-trivial proof tasks are exported to an external prover. If the
+-- direct proof by an external prover fails, the reasoner expands some
+-- definitions and tries again.
 
-The reasoner handles proof tasks.
-
-Trivial proof tasks can be discharged quickly without calling an external prover.
-Non-trivial proof tasks are exported to an external prover. If the direct proof
-by an external prover fails, the reasoner expands some definitions and tries again.
--}
 
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 {-# LANGUAGE FlexibleContexts #-}
 
 module SAD.Core.Reason (
   withContext,
-  proveThesis', proveThesis,
-  reduceWithEvidence, trivialByEvidence,
+  proveThesis',
+  proveThesis,
+  reduceWithEvidence,
+  trivialByEvidence,
   trivialityCheck
 ) where
 
@@ -23,12 +27,10 @@ import Data.Maybe (fromJust, fromMaybe, maybeToList)
 import Data.Monoid (Sum, getSum)
 import Data.Functor ((<&>))
 import System.Timeout (timeout)
-
 import qualified Control.Monad.Writer as W
 import qualified Data.Map as Map
 import qualified Data.Set as Set
 import qualified Data.Text.Lazy as Text
-import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
 
 import SAD.Core.Base
 import SAD.Data.Definition
@@ -38,7 +40,6 @@ import SAD.Data.Text.Context (Context(Context))
 import SAD.Data.Text.Decl (newDecl)
 import qualified SAD.Export.Prover as Prover
 import qualified SAD.Prove.MESON as MESON
-
 import qualified SAD.Core.Message as Message
 import qualified SAD.Data.Definition as Definition
 import SAD.Data.Structures.DisTree (DisTree)
@@ -49,6 +50,8 @@ import qualified SAD.Data.Formula.HOL as HOL
 
 import qualified Isabelle.Position as Position
 import qualified Isabelle.Bytes as Bytes
+import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
+
 import qualified Naproche.Program as Program
 import qualified Naproche.Prover as Prover
 

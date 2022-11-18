@@ -1,17 +1,19 @@
-{-
-Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018), Makarius Wenzel (2018)
+-- |
+-- Authors: Andrei Paskevich (2001 - 2008),
+--          Steffen Frerix (2017 - 2018),
+--          Makarius Wenzel (2018)
+--
+-- Syntax of ForThel Instructions.
 
-Syntax of ForThel Instructions.
--}
 
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.ForTheL.Instruction
-  ( instr
-  , instrDrop
-  , instrExit
-  , instrRead
-  ) where
+module SAD.ForTheL.Instruction (
+  instr,
+  instrDrop,
+  instrExit,
+  instrRead
+) where
 
 import Control.Monad
 import Control.Applicative ((<|>))
@@ -19,18 +21,17 @@ import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 
 import SAD.Data.Instr
-
 import SAD.ForTheL.Base
-
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
 import SAD.ForTheL.Reports
 import SAD.Parser.Token
-import qualified Naproche.Param as Param
 
 import qualified Isabelle.Value as Value
 import qualified Isabelle.Position as Position
 import Isabelle.Library
+
+import qualified Naproche.Param as Param
 
 
 instrPos :: (Position.T -> FTL ()) -> FTL a -> FTL (Position.T, a)

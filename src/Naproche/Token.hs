@@ -1,10 +1,6 @@
-{-# LANGUAGE DeriveAnyClass #-}
-{-# LANGUAGE BlockArguments #-}
-{-# LANGUAGE MultiWayIf #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE ImportQualifiedPost #-}
-
 -- |
+-- Authors: Adrian De Lon (2021)
+--
 -- This module defines the Naproche lexer and its associated data types.
 -- The lexer takes 'Text' as input and produces chunks (list of lists)
 -- of tokens annotated with positional information. This information is
@@ -16,12 +12,17 @@
 --
 -- Throughout we make the assumption that the input is wellformed LaTeX markup:
 -- for instance, braces are assumed to be balanced.
---
+
+
+{-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE BlockArguments #-}
+{-# LANGUAGE MultiWayIf #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ImportQualifiedPost #-}
+
 module Naproche.Token where
 
-
 import Control.Monad.State.Strict
-import Naproche.Helpers (guardM)
 import Data.Void (Void)
 import Data.Foldable
 import Data.Function (on)
@@ -31,10 +32,12 @@ import Text.Megaparsec hiding (State)
 import Text.Megaparsec.Char qualified as Char
 import Text.Megaparsec.Char.Lexer qualified as Lexer
 import Data.String (IsString(..))
-import Isabelle.Bytes (Bytes)
-import Isabelle.Library (make_bytes)
 import Data.Char
 
+import Isabelle.Bytes (Bytes)
+import Isabelle.Library (make_bytes)
+
+import Naproche.Helpers (guardM)
 
 
 runLexer :: String -> Text -> Either (ParseErrorBundle Text Void) [[Located Tok]]

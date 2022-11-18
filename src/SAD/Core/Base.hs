@@ -1,41 +1,41 @@
-{-
-Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
+-- |
+-- Authors: Andrei Paskevich (2001 - 2008),
+--          Steffen Frerix (2017 - 2018)
+--
+-- Verifier state monad and common functions.
 
-Verifier state monad and common functions.
--}
 
 {-# LANGUAGE PolymorphicComponents #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE OverloadedStrings #-}
 
+module SAD.Core.Base (
+  CRM,
+  readTrackers,
+  modifyTrackers,
+  justIO,
+  (<|>),
 
-module SAD.Core.Base
-  ( CRM
-  , readTrackers
-  , modifyTrackers
-  , justIO
-  , (<|>)
+  retrieveContext,
+  initVState,
+  defForm,
+  getDef,
 
-  , retrieveContext
-  , initVState
-  , defForm
-  , getDef
+  VState(..), VerifyMonad, runVerifyMonad,
 
-  , VState(..), VerifyMonad, runVerifyMonad
+  Tracker(..), Timer(..), Counter(..),
+  sumCounter,
+  sumTimer,
+  maximalTimer,
+  showTimeDiff,
+  timeWith,
 
-  , Tracker(..), Timer(..), Counter(..)
-  , sumCounter
-  , sumTimer
-  , maximalTimer
-  , showTimeDiff
-  , timeWith
+  getInstruction, addInstruction, dropInstruction,
+  addToTimer, addToCounter, incrementCounter,
+  guardInstruction, whenInstruction,
 
-  , getInstruction, addInstruction, dropInstruction
-  , addToTimer, addToCounter, incrementCounter
-  , guardInstruction, whenInstruction
-
-  , reasonLog, simpLog, thesisLog, translateLog
-  ) where
+  reasonLog, simpLog, thesisLog, translateLog
+) where
 
 import Control.Applicative (Alternative(..))
 import Control.Monad.Reader
@@ -44,7 +44,6 @@ import Data.IORef
 import Data.Maybe (isJust, fromJust)
 import Data.Text.Lazy (Text)
 import Data.Time (NominalDiffTime, getCurrentTime, diffUTCTime)
-
 import qualified Data.Set as Set
 import qualified Data.Map as Map
 
@@ -56,7 +55,6 @@ import SAD.Data.Text.Block (Block)
 import SAD.Data.Text.Context (Context(Context), MRule(..))
 import qualified SAD.Prove.MESON as MESON
 import qualified SAD.Export.Prover as Prover
-
 import qualified SAD.Core.Message as Message
 import SAD.Data.Structures.DisTree (DisTree)
 import qualified SAD.Data.Structures.DisTree as DisTree

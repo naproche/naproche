@@ -1,8 +1,8 @@
-{-
-Authors: Makarius Wenzel (2021)
+-- |
+-- Authors: Makarius Wenzel (2021)
+--
+-- The Naproche logic within Isabelle/HOL.
 
-The Naproche logic within Isabelle/HOL.
--}
 
 {-# LANGUAGE OverloadedStrings #-}
 
@@ -10,8 +10,7 @@ module SAD.Data.Formula.HOL (
   base_type, prop_type, export_formula,
   cert_terms, cert_term, print_terms, print_term,
   Sequent, make_sequent, encode_sequent, print_sequents, print_sequent, export_sequent
-)
-where
+) where
 
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict (Map)
@@ -30,12 +29,13 @@ import Isabelle.Term ((--->))
 import qualified Isabelle.HOL as Isabelle
 import qualified Isabelle.Naproche as Isabelle
 import Isabelle.Library
-import qualified Naproche.Program as Program
 import qualified Isabelle.YXML as YXML
 import qualified Isabelle.XML.Encode as Encode
 import qualified Isabelle.Position as Position
 import qualified Isabelle.Term_XML.Encode as Encode
 import qualified Isabelle.Term_XML.Decode as Decode
+
+import qualified Naproche.Program as Program
 
 
 {- export formula -}

@@ -1,8 +1,8 @@
-{-
-Authors: Makarius Wenzel (2022)
+-- |
+-- Authors: Makarius Wenzel (2022)
+--
+-- Typed parameters, stored via plain bytes.
 
-Typed parameters, stored via plain bytes.
--}
 
 {-# LANGUAGE OverloadedStrings #-}
 
@@ -11,11 +11,11 @@ module Naproche.Param (
   T, name, unnamed, description, description_default,
   bytes, bool, flag, nat, int, real,
   Env, empty, parse, get, put
-)
-where
+) where
 
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict (Map)
+
 import Isabelle.Bytes (Bytes)
 import qualified Isabelle.Value as Value
 import Isabelle.Library
@@ -24,7 +24,7 @@ import Isabelle.Library
 {- flags -}
 
 print_flag :: Bool -> Bytes
-print_flag True = "on" 
+print_flag True = "on"
 print_flag False = "off"
 
 parse_flag :: Bytes -> Maybe Bool
@@ -63,7 +63,7 @@ instance Show (T a) where show = make_string . name
 
 bytes :: Bytes -> Bytes -> Bytes -> T Bytes
 bytes = Param id Just
-  
+
 bool :: Bytes -> Bytes -> Bool -> T Bool
 bool = Param Value.print_bool Value.parse_bool
 

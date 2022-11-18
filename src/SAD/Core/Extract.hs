@@ -1,9 +1,9 @@
-{-
-Authors: Steffen Frerix (2017 - 2018)
+-- |
+-- Authors: Steffen Frerix (2017 - 2018)
+--
+-- Extraction of various information from formulas: definitions,
+-- map evaluations, elementhood conditions for classes
 
-Extraction of various information from formulas: definitions,
-map evaluations, elementhood conditions for classes
--}
 
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 {-# LANGUAGE FlexibleContexts #-}
@@ -16,6 +16,13 @@ module SAD.Core.Extract (
   extractRewriteRule
 ) where
 
+import qualified Data.Map as Map
+import Data.List
+import Data.Maybe
+import Control.Monad.State
+import Control.Monad.Reader
+import qualified Data.Text.Lazy as Text
+
 import SAD.Data.Formula
 import SAD.Data.Definition
 import SAD.Data.Text.Context (Context)
@@ -27,13 +34,6 @@ import SAD.Data.Structures.DisTree (DisTree)
 import qualified SAD.Data.Structures.DisTree as DisTree
 import SAD.Data.Text.Decl
 
-
-import qualified Data.Map as Map
-import Data.List
-import Data.Maybe
-import Control.Monad.State
-import Control.Monad.Reader
-import qualified Data.Text.Lazy as Text
 
 -- Definition extraction
 

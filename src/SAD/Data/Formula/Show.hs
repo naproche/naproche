@@ -1,3 +1,10 @@
+-- |
+-- Authors: Andrei Paskevich (2001 - 2008),
+--          Steffen Frerix (2017 - 2018)
+--
+-- TODO: Add description.
+
+
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 {-# LANGUAGE OverloadedStrings #-}
 
@@ -6,17 +13,18 @@ module SAD.Data.Formula.Show (
   commaSeparated,
   symEncode,
   symChars
-  -- also exports show instance for Formula
-  )where
+) where
+
+import Data.Text.Lazy (Text)
+import qualified Data.Text.Lazy as Text
 
 import SAD.Data.Formula.Base
 import SAD.Data.VarName
 import SAD.Data.Terms
 import SAD.Export.Representation (toLazyText, represent)
+
 import qualified Isabelle.Position as Position
 
-import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
 
 -- show instances
 

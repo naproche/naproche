@@ -1,25 +1,28 @@
-{-
-Authors: Steffen Frerix (2017 - 2018)
+-- |
+-- Authors: Steffen Frerix (2017 - 2018)
+--
+-- Normalization of formulas.
 
-Normalization of formulas.
--}
 
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 
-module SAD.Prove.Normalize  (
+module SAD.Prove.Normalize (
   simplify,
-  dec, inc,
+  dec,
+  inc,
   skolemize,
   transformToCNF,
-  assm_nf, impl, ontoPrep,
+  assm_nf,
+  impl,
+  ontoPrep,
   isSkolem
-  ) where
-
-import SAD.Data.Formula
+) where
 
 import Data.List
 import qualified Data.Text.Lazy as Text
+
+import SAD.Data.Formula
 import SAD.Data.Text.Decl
 
 import qualified Isabelle.Position as Position

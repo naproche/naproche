@@ -1,11 +1,10 @@
-{-|
-License     : GPL 3
-Maintainer  : Andrei Paskevich (2001 - 2008),
-              Steffen Frerix (2017 - 2018)
+-- |
+-- Authors: Andrei Paskevich (2001 - 2008),
+--          Steffen Frerix (2017 - 2018)
+--
+-- FoTheL state and state management, parsing of primitives, operations on
+-- variables and macro expressions.
 
-FoTheL state and state management, parsing of primitives, operations on
-variables and macro expressions.
--}
 
 {-# LANGUAGE OverloadedStrings #-}
 
@@ -23,16 +22,14 @@ import Data.List (unionBy)
 
 import SAD.Data.Formula
 import SAD.Data.Instr(ParserKind(..))
-
 import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
-
 import SAD.Data.Text.Decl
-
 import SAD.Export.Representation (represent, toLazyText)
 
 import qualified Isabelle.Position as Position
+
 import Naproche.Program as Program
 
 

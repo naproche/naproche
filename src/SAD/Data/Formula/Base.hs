@@ -1,8 +1,9 @@
-{-
-Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
+-- |
+-- Authors: Andrei Paskevich (2001 - 2008),
+--          Steffen Frerix (2017 - 2018)
+--
+-- Core functions on formulas.
 
-Core functions on formulas.
--}
 
 {-# LANGUAGE NamedFieldPuns #-}
 
@@ -12,18 +13,18 @@ import Data.Maybe
 import qualified Data.Monoid as Monoid
 import Control.Monad.Identity
 import Control.Applicative
+import Data.Text.Lazy (Text)
+import qualified Data.Text.Lazy as Text
+import qualified Data.Map as Map
 
 import SAD.Data.Tag (Tag)
 import SAD.Data.Terms
 import SAD.Data.Text.Decl (Decl)
 import SAD.Data.VarName
-import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
 import SAD.Export.Representation
 
 import qualified Isabelle.Position as Position
 
-import qualified Data.Map as Map
 
 data Formula =
   All Decl Formula        | Exi Decl Formula |

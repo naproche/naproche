@@ -1,40 +1,38 @@
-{-
-Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
+-- |
+-- Authors: Andrei Paskevich (2001 - 2008),
+--          Steffen Frerix (2017 - 2018)
+--
+-- Pattern parsing and pattern state management.
 
-Pattern parsing and pattern state management.
--}
 
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 
-module SAD.ForTheL.Pattern
-  ( knownVariable
-  , newPrdPattern
-  , addExpr
-  , unnamedNotion
-  , singleLetterVariable
-  , newNotionPattern
-  ) where
+module SAD.ForTheL.Pattern (
+  knownVariable,
+  newPrdPattern,
+  addExpr,
+  unnamedNotion,
+  singleLetterVariable,
+  newNotionPattern
+) where
 
 
 import Control.Monad.State.Class (put, gets)
-
-import SAD.ForTheL.Base
-
-import SAD.Parser.Combinators
-import SAD.Parser.Token
-import SAD.Parser.Primitives
-
-import SAD.Data.Formula
-
 import qualified Data.Set as Set
-
 import Data.List
 import Data.Char
 import Control.Applicative
 import Control.Monad
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
+
+import SAD.ForTheL.Base
+import SAD.Parser.Combinators
+import SAD.Parser.Token
+import SAD.Parser.Primitives
+import SAD.Data.Formula
+
 
 -- add expressions to the state of ForTheL
 

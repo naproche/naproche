@@ -1,14 +1,16 @@
-{-|
-License     : GPL 3
-Maintainer  : Andrei Paskevich (2001 - 2008),
-              Steffen Frerix (2017 - 2018)
+-- |
+-- Authors: Andrei Paskevich (2001 - 2008),
+--          Steffen Frerix (2017 - 2018)
+--
+-- Main text reading functions.
 
-Main text reading functions.
--}
 
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 
-module SAD.Import.Reader (readInit, readProofText) where
+module SAD.Import.Reader (
+  readInit,
+  readProofText
+) where
 
 import Data.Maybe
 import Control.Monad

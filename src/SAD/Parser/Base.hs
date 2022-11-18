@@ -1,8 +1,8 @@
-{-
-Authors: Steffen Frerix (2017 - 2018)
+-- |
+-- Authors: Steffen Frerix (2017 - 2018)
+--
+-- Parser datatype and monad instance.
 
-Parser datatype and monad instance.
--}
 
 {-# LANGUAGE PolymorphicComponents #-}
 {-# LANGUAGE FlexibleInstances #-}
@@ -11,33 +11,32 @@ Parser datatype and monad instance.
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE BlockArguments #-}
 
-module SAD.Parser.Base
-  ( Parser(..),
-    Continuation,
-    EmptyFail,
-    ConsumedFail,
-    State (..),
-    stPosition,
-    ParseResult (..),
-    Reply (..),
-    runP,
-    getInput,
-    getPos,
-    getTokens)
-  where
+module SAD.Parser.Base (
+  Parser(..),
+  Continuation,
+  EmptyFail,
+  ConsumedFail,
+  State (..),
+  stPosition,
+  ParseResult (..),
+  Reply (..),
+  runP,
+  getInput,
+  getPos,
+  getTokens
+) where
 
 import Control.Monad
 import qualified Control.Monad.Fail as Fail
 import Control.Applicative
 import Control.Monad.State.Class (MonadState(put, get))
-import SAD.Helpers (notNull)
+import Data.List
+import qualified Data.Text.Lazy as Text
 
+import SAD.Helpers (notNull)
 import SAD.Parser.Token
 import SAD.Parser.Error
 import SAD.Data.Instr (ParserKind)
-
-import Data.List
-import qualified Data.Text.Lazy as Text
 
 import qualified Isabelle.Position as Position
 

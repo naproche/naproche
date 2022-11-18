@@ -1,3 +1,9 @@
+-- |
+-- Authors: Anton Lorenzen (2019)
+--
+-- TODO: Add description.
+
+
 module SAD.Data.Pattern where
 
 import Data.Text.Lazy (Text)

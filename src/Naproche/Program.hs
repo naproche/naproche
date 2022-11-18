@@ -1,8 +1,8 @@
-{-
-Authors: Makarius Wenzel (2021)
+-- |
+-- Authors: Makarius Wenzel (2021)
+--
+-- Naproche program context: Console or PIDE.
 
-Naproche program context: Console or PIDE.
--}
 
 module Naproche.Program (
   Context, console, is_pide, check_pide,
@@ -12,8 +12,7 @@ module Naproche.Program (
   exit_thread, init_console, init_pide, thread_context,
   Error (..), print_error, error,
   serials, serial
-)
-where
+) where
 
 import Prelude hiding (error)
 import Data.Maybe (fromMaybe, mapMaybe)
@@ -28,8 +27,8 @@ import Control.Monad (when, unless, replicateM)
 import qualified Control.Concurrent as Concurrent
 import qualified Control.Exception as Exception
 import Control.Exception (Exception)
-
 import Network.Socket (Socket)
+
 import qualified Isabelle.Bytes as Bytes
 import Isabelle.Bytes (Bytes)
 import qualified Isabelle.Byte_Message as Byte_Message
@@ -155,12 +154,12 @@ update_threads f = do
 
 exit_thread :: IO ()
 exit_thread = update_threads Map.delete
-    
+
 init_thread :: Context -> IO Context
 init_thread context = do
   update_threads (`Map.insert` context)
   return context
-  
+
 init_console :: IO Context
 init_console = init_thread Console
 

@@ -1,13 +1,19 @@
+-- |
+-- Authors: Anton Lorenzen (2020)
+--
+-- TODO: Add description.
+
+
 {-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Structures.Translate where
 
-
-import SAD.Structures.Formula
 import Data.Text.Lazy (Text, pack)
 
+import SAD.Structures.Formula
 import qualified SAD.Structures.Type as Type
 import SAD.Structures.Type ((-->), (/\), (\/), (<@>))
+
 
 translateDoc :: Document -> [Type.Decl]
 translateDoc (Document decls) =

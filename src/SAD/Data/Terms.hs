@@ -1,3 +1,9 @@
+-- |
+-- Authors: Anton Lorenzen (2019)
+--
+-- TODO: Add description.
+
+
 {-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Data.Terms where
@@ -5,7 +11,9 @@ module SAD.Data.Terms where
 import Debug.Trace
 import Data.Text.Lazy (Text)
 import Data.Text.Lazy.Builder (fromLazyText, fromString)
+
 import SAD.Export.Representation
+
 
 data TermName
   = TermName Text

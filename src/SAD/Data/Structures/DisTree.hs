@@ -1,30 +1,32 @@
-{-
-Authors: Steffen Frerix (2017 - 2018)
+-- |
+-- Authors: Steffen Frerix (2017 - 2018)
+--
+-- Discrimination tree data structure.
 
-Discrimination tree data structure.
--}
 
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 
 module SAD.Data.Structures.DisTree (
   DisTree,
   empty,
-  insert, insertBy,
+  insert,
+  insertBy,
   lookup,
   find,
   showTree
-  ) where
-
--- Discrimination tree for unification
-
-import SAD.Data.Formula (Formula(..))
+) where
 
 import Prelude hiding (lookup, head)
 import qualified Data.List as List
 import Data.Maybe
+import Data.Text.Lazy (Text)
+
+import SAD.Data.Formula (Formula(..))
 import SAD.Data.Terms (TermId)
 import SAD.Data.VarName
-import Data.Text.Lazy (Text)
+
+
+-- Discrimination tree for unification
 
 data DTree a =
   Node {struct :: Struct, children :: [DTree a]} |
@@ -127,7 +129,7 @@ lookup key (DT nodes) = mbConcat $ dive nodes [key]
     dive [Leaf values] [] = [values]
     dive [] [] = [[]]
 
-    mbArgs Variable = const [] 
+    mbArgs Variable = const []
     mbArgs _ = args
 
     mbConcat [] = Nothing
@@ -148,7 +150,7 @@ showTree (DT xs) = "\n" ++ unlines (recursor xs)
     recursor [] = []
     recursor [Leaf value] = ["L " ++ show value]
     recursor (node:rest) = helper node ++ recursor rest
-    
+
     helper (Node struct children) =
       let ([head],stringChildren) = splitAt 1 $ recursor children
           sn = show struct

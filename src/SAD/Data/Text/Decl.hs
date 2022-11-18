@@ -1,16 +1,20 @@
-{-
-Authors: Steffen Frerix (2018)
+-- |
+-- Authors: Steffen Frerix (2018)
+--
+-- Variable declarations.
 
-Variable declarations.
--}
 
 module SAD.Data.Text.Decl (
-  Decl(..), Serial,
-  newDecl, positionedDecl
-  ) where
+  Decl(..),
+  Serial,
+  newDecl,
+  positionedDecl
+) where
 
 import SAD.Data.VarName
+
 import qualified Isabelle.Position as Position
+
 
 -- | >0, with 0 as undefined
 type Serial = Int

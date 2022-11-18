@@ -1,8 +1,9 @@
-{-
-Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
+-- |
+-- Authors: Andrei Paskevich (2001 - 2008),
+--          Steffen Frerix (2017 - 2018)
+--
+-- Well-definedness check and evidence collection.
 
-Well-definedness check and evidence collection.
--}
 
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -12,7 +13,6 @@ module SAD.Core.Check (fillDef) where
 import Data.Maybe (fromMaybe)
 import Data.Either (lefts,rights, isRight)
 import Control.Monad.Reader
-
 import qualified Data.Text.Lazy as Text
 
 import SAD.Core.Base
@@ -21,7 +21,6 @@ import SAD.Data.Definition hiding (Guards)
 import SAD.Data.Formula
 import SAD.Data.Instr
 import SAD.Data.Text.Context (Context)
-
 import qualified SAD.Core.Message as Message
 import qualified SAD.Data.Text.Block as Block (link, position)
 import qualified SAD.Data.Text.Context as Context

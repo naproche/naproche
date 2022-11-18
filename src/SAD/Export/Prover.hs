@@ -1,17 +1,30 @@
-{-
-Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018), Makarius Wenzel (2018, 2021)
+-- |
+-- Authors: Andrei Paskevich (2001 - 2008),
+--          Steffen Frerix (2017 - 2018),
+--          Makarius Wenzel (2018, 2021)
+--
+-- Prover interface: export a proof task to an external prover.
 
-Prover interface: export a proof task to an external prover.
--}
 
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.Export.Prover (Cache, init_cache, prune_cache, export)
-where
+module SAD.Export.Prover (
+  Cache,
+  init_cache,
+  prune_cache,
+  export
+) where
 
 import Control.Monad (when)
 import Control.Exception (SomeException, try, throw)
 import Data.Maybe (fromJust, isNothing)
+
+import SAD.Data.Instr
+import SAD.Data.Text.Context (Context, branch)
+import qualified SAD.Data.Text.Block as Block
+import qualified SAD.Core.Message as Message
+import qualified SAD.Export.TPTP as TPTP
+import qualified SAD.Data.Formula.HOL as HOL
 
 import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
 import qualified Isabelle.Position as Position
@@ -22,14 +35,6 @@ import qualified Isabelle.Markup as Markup
 import qualified Isabelle.Process_Result as Process_Result
 import qualified Isabelle.Cache as Cache
 import Isabelle.Library
-
-import SAD.Data.Instr
-import SAD.Data.Text.Context (Context, branch)
-import qualified SAD.Data.Text.Block as Block
-
-import qualified SAD.Core.Message as Message
-import qualified SAD.Export.TPTP as TPTP
-import qualified SAD.Data.Formula.HOL as HOL
 
 import qualified Naproche.Program as Program
 import qualified Naproche.Prover as Prover

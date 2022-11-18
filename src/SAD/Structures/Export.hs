@@ -1,10 +1,17 @@
+-- |
+-- Authors: Anton Lorenzen (2020)
+--
+-- TODO: Add description.
+
+
 {-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Structures.Export where
 
+import Data.Text.Lazy (Text, intercalate)
+
 import SAD.Structures.Type (Expr(..), Decl(..), Constr(..))
 
-import Data.Text.Lazy (Text, intercalate)
 
 class Exportable e where
   export :: e -> Text

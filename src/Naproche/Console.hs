@@ -1,13 +1,15 @@
-{-
-Authors: Makarius Wenzel (2021)
+-- |
+-- Authors: Makarius Wenzel (2021)
+--
+-- Access to physical console.
 
-Access to physical console.
--}
 
 module Naproche.Console (
-  setup, stdout, stderr, exit
-)
-where
+  setup,
+  stdout,
+  stderr,
+  exit
+) where
 
 import qualified System.IO as IO
 import qualified System.Exit as Exit
@@ -24,7 +26,7 @@ setup = do
 
 stdout :: STRING a => a -> IO ()
 stdout = IO.putStrLn . make_string
-  
+
 stderr :: STRING a => a -> IO ()
 stderr = IO.hPutStrLn IO.stderr . make_string
 

@@ -1,21 +1,19 @@
-{-|
-License     : GPL 3
-Maintainer  : Steffen Frerix (2017 - 2018)
+-- |
+-- Authors: Steffen Frerix (2017 - 2018)
+--
+-- Generation of proof tasks for low-level map and class definitions and choices.
 
-Generation of proof tasks for low-level map and class definitions and choices.
--}
 
 {-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Core.ProofTask (generateProofTask) where
 
-import SAD.Data.Formula
-
-import SAD.Data.Text.Block (Section(..))
-import SAD.Prove.Normalize
 import Data.Set (Set)
 import qualified Data.Text.Lazy as Text
 
+import SAD.Data.Formula
+import SAD.Data.Text.Block (Section(..))
+import SAD.Prove.Normalize
 import SAD.Data.Text.Decl
 
 

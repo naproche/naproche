@@ -1,21 +1,19 @@
-{-
-Author: Annika Hennes (2019)
+-- |
+-- Author: Annika Hennes (2019)
+--
+-- Executes Knuth-Bendix completion on a term rewriting system
 
-Executes Knuth-Bendix completion on a term rewriting system
--}
 
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.Core.Completion
-  (Equation(..), toFormula, completeAndSimplify, isConfluent, rewriter
-  , allCriticalPairs
-  ) where
-
-import SAD.Data.Formula
-import SAD.Core.Rewrite
-import SAD.Prove.Unify
-
-import SAD.Helpers
+module SAD.Core.Completion (
+  Equation(..),
+  toFormula,
+  completeAndSimplify,
+  isConfluent,
+  rewriter,
+  allCriticalPairs
+) where
 
 import Data.List
 import Data.Maybe
@@ -24,6 +22,12 @@ import qualified Data.Map as Map
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 import qualified Data.Set as Set
+
+import SAD.Data.Formula
+import SAD.Core.Rewrite
+import SAD.Prove.Unify
+import SAD.Helpers
+
 
 data Equation = Equation Formula Formula
   deriving (Eq, Ord)

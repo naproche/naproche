@@ -1,15 +1,14 @@
-{-
-Authors: Makarius Wenzel (2021)
+-- |
+-- Authors: Makarius Wenzel (2021)
+--
+-- System process support for Naproche: with and without Isabelle/PIDE.
 
-System process support for Naproche: with and without Isabelle/PIDE.
--}
 
 {-# LANGUAGE OverloadedStrings #-}
 
 module Naproche.System (
   is_windows, bash_process
-)
-where
+) where
 
 import Data.Maybe (fromJust)
 import qualified System.IO as IO
@@ -20,8 +19,8 @@ import qualified Control.Exception as Exception
 import Control.Exception (catch)
 import Control.Monad (when)
 import qualified Data.ByteString as ByteString
-
 import qualified System.Info as Info
+
 import qualified Isabelle.Bash as Bash
 import qualified Isabelle.Bytes as Bytes
 import qualified Isabelle.Timing as Timing
@@ -60,7 +59,7 @@ bash_process context params = do
 
           ByteString.hPut tmp_handle (Bytes.unmake $ env <> script)
           IO.hClose tmp_handle
-      
+
           let create_proc =
                 (Process.proc "bash" [tmp_name])
                   {Process.std_in = Process.CreatePipe,

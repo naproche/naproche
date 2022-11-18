@@ -1,6 +1,13 @@
+-- |
+-- Authors: Aanton Lorenzen (2020)
+--
+-- TODO: Add description.
+
+
 module SAD.Structures.Formula where
 
 import Data.Text.Lazy (Text)
+
 
 data Document = Document [Declaration] deriving Show
 

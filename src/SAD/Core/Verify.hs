@@ -1,15 +1,16 @@
-{-
-Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018), Makarius Wenzel (2021 - 2022)
+-- |
+-- Authors: Andrei Paskevich (2001 - 2008),
+--          Steffen Frerix (2017 - 2018),
+--          Makarius Wenzel (2021 - 2022)
+--
+--Main verification loop.
 
-Main verification loop.
--}
 
 module SAD.Core.Verify (verifyRoot) where
 
 import Data.IORef (readIORef)
 import Data.Maybe (isJust)
 import Control.Monad.Reader
-
 import qualified Data.Text.Lazy as Text
 
 import SAD.Core.Base
@@ -24,7 +25,6 @@ import SAD.Data.Instr
 import SAD.Data.Text.Block (Block(Block), ProofText(..), Section(..))
 import SAD.Data.Text.Context (Context(Context))
 import SAD.Helpers (notNull)
-
 import qualified SAD.Core.Message as Message
 import qualified SAD.Data.Tag as Tag
 import qualified SAD.Data.Text.Block as Block

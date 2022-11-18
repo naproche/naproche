@@ -1,6 +1,13 @@
+-- |
+-- Authors: Anton Lorenzen (2020)
+--
+-- TODO: Add description.
+
+
 module SAD.Structures.Type where
 
 import Data.Text.Lazy (Text)
+
 
 data Expr
 

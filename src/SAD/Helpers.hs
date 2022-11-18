@@ -1,10 +1,20 @@
-module SAD.Helpers
-  (notNull
-  , nubOrd, nubOrdBy, nubOrdOn
-  ) where
+-- |
+-- Authors: Adrian De Lon (2019),
+--          Anton Lorenzen (2019)
+--
+-- Helper functions.
+
+
+module SAD.Helpers (
+  notNull,
+  nubOrd,
+  nubOrdBy,
+  nubOrdOn
+) where
 
 import Control.Arrow
 import Data.Function
+
 
 -- | Returns @False@ if the list is empty and @True@ otherwise.
 notNull :: [a] -> Bool

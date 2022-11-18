@@ -1,10 +1,18 @@
+-- |
+-- Authors: Andrei Paskevich (2001 - 2008),
+--          Steffen Frerix (2017 - 2018)
+--
+-- TODO: Add description.
+
+
 module SAD.Data.Definition where
+
+import Data.Map (Map)
 
 import SAD.Data.Formula (Formula, TermId)
 import SAD.Data.Structures.DisTree (DisTree)
 import qualified SAD.Data.Structures.DisTree as DisTree
 
-import Data.Map (Map)
 
 data DefType = Signature | Definition
   deriving (Eq, Show)

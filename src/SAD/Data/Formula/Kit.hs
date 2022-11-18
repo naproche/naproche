@@ -1,10 +1,9 @@
-{-|
-License     : GPL 3
-Maintainer  : Andrei Paskevich (2001 - 2008),
-              Steffen Frerix (2017 - 2018)
+-- |
+--Authors: Andrei Paskevich (2001 - 2008),
+--         Steffen Frerix (2017 - 2018)
+--
+-- Various functions on formulas.
 
-Various functions on formulas.
--}
 
 {-# LANGUAGE OverloadedStrings #-}
 
@@ -12,6 +11,7 @@ module SAD.Data.Formula.Kit where
 
 import Control.Monad
 import Data.Maybe
+import qualified Data.Map as Map
 
 import SAD.Data.Formula.Base
 import SAD.Data.Tag
@@ -21,7 +21,6 @@ import SAD.Data.VarName
 
 import qualified Isabelle.Position as Position
 
-import qualified Data.Map as Map
 
 -- * Alpha-beta normalization
 

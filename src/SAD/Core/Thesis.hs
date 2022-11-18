@@ -1,24 +1,15 @@
-{-
-Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018)
+-- |
+-- Authors: Andrei Paskevich (2001 - 2008),
+--          Steffen Frerix (2017 - 2018)
+--
+-- Maintain the current thesis.
 
-Maintain the current thesis.
--}
 
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 
 module SAD.Core.Thesis (inferNewThesis) where
 
-
-import SAD.Core.Base
-import SAD.Core.Reason
-import SAD.Data.Definition (Definitions)
-import SAD.Data.Formula
-
-import SAD.Data.Text.Context (Context)
-import SAD.Helpers (notNull)
 import qualified Data.Text.Lazy as Text
-import qualified SAD.Data.Text.Context as Context
-
 import Control.Applicative
 import Control.Monad
 import Control.Monad.Trans.Class
@@ -28,6 +19,14 @@ import Data.Maybe
 import qualified Data.Map as Map
 import Data.Set (Set)
 import qualified Data.Set as Set
+
+import SAD.Core.Base
+import SAD.Core.Reason
+import SAD.Data.Definition (Definitions)
+import SAD.Data.Formula
+import SAD.Data.Text.Context (Context)
+import SAD.Helpers (notNull)
+import qualified SAD.Data.Text.Context as Context
 
 
 -- Infer new thesis

@@ -1,47 +1,46 @@
-{-|
-License     : GPL 3
-Maintainer  : Steffen Frerix (2017 - 2018)
+-- |
+-- Authors: Steffen Frerix (2017 - 2018)
+--
+-- Primitive parsers
 
-Primitive parsers
--}
 
 {-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Parser.Primitives (
-    -- * Primitive Token operations
-    tokenPrim
-  , tokenGuard
-  , eof
-  , inspectError
-  , mapInput
+  -- * Primitive Token operations
+  tokenPrim,
+  tokenGuard,
+  eof,
+  inspectError,
+  mapInput,
 
   -- * Useful macros
-  , satisfy
-  , anyToken
-  , word
-  , symb
-  , token
-  , token'
-  , tokenPos'
-  , tokenOf
-  , tokenOf'
-  , getToken
-  , getToken'
-  , getTokenOf
-  , getTokenOf'
-  , symbol
-  , symbolNotAfterSpace
-  ) where
-
-import SAD.Parser.Base
-import SAD.Parser.Error
-import SAD.Parser.Token
-import SAD.Data.Formula.Show (symChars)
+  satisfy,
+  anyToken,
+  word,
+  symb,
+  token,
+  token',
+  tokenPos',
+  tokenOf,
+  tokenOf',
+  getToken,
+  getToken',
+  getTokenOf,
+  getTokenOf',
+  symbol,
+  symbolNotAfterSpace
+) where
 
 import Data.Char (isAlpha)
 import Control.Monad (void, guard)
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
+
+import SAD.Parser.Base
+import SAD.Parser.Error
+import SAD.Parser.Token
+import SAD.Data.Formula.Show (symChars)
 
 import qualified Isabelle.Position as Position
 

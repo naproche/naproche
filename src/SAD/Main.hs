@@ -1,8 +1,10 @@
-{-
-Authors: Andrei Paskevich (2001 - 2008), Steffen Frerix (2017 - 2018), Makarius Wenzel (2018)
+-- |
+-- Authors: Andrei Paskevich (2001 - 2008),
+--          Steffen Frerix (2017 - 2018),
+--          Makarius Wenzel (2018)
+--
+-- Main application entry point: console or server mode.
 
-Main application entry point: console or server mode.
--}
 
 {-# LANGUAGE TupleSections #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -14,13 +16,17 @@ import Data.Char (toLower)
 import Data.Time (UTCTime, addUTCTime, getCurrentTime, diffUTCTime)
 import Data.List (isSuffixOf)
 import Data.Maybe (mapMaybe)
-
 import qualified Control.Exception as Exception
 import Control.Exception (catch)
 import qualified Data.Text.Lazy as Text
 import qualified System.Console.GetOpt as GetOpt
 import qualified System.Environment as Environment
 import Network.Socket (Socket)
+
+import qualified SAD.Prove.MESON as MESON
+import qualified SAD.Export.Prover as Prover
+import SAD.Data.Instr
+import SAD.API
 
 import qualified Isabelle.Bytes as Bytes
 import Isabelle.Bytes (Bytes)
@@ -34,11 +40,6 @@ import qualified Isabelle.Position as Position
 import qualified Isabelle.YXML as YXML
 import qualified Isabelle.Process_Result as Process_Result
 import Isabelle.Library
-
-import qualified SAD.Prove.MESON as MESON
-import qualified SAD.Export.Prover as Prover
-import SAD.Data.Instr
-import SAD.API
 
 import qualified Naproche.Program as Program
 import qualified Naproche.Console as Console

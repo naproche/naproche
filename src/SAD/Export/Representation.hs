@@ -1,15 +1,22 @@
+-- |
+-- Authors: Anton Lorenzen (2019)
+--
+-- TODO: Add description.
+
+
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.Export.Representation
-  ( Representation(..)
-  , buildParens
-  , buildArgumentsWith
-  , commaSeparated
-  , Builder.toLazyText
-  )where
+module SAD.Export.Representation (
+  Representation(..),
+  buildParens,
+  buildArgumentsWith,
+  commaSeparated,
+  Builder.toLazyText
+) where
 
 import Data.Text.Lazy.Builder (Builder)
 import qualified Data.Text.Lazy.Builder as Builder
+
 
 class Representation a where
   represent :: a -> Builder

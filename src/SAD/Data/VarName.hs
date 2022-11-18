@@ -1,17 +1,26 @@
+-- |
+-- Authors: Anton Lorenzen (2019)
+--
+-- TODO: Add description.
+
+
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 
-module SAD.Data.VarName
-  ( VariableName(..)
-  , FV, unitFV, bindVar, excludeVars
-  , excludeSet
-  , IsVar(..)
-  , fvToVarSet
-  , fvFromVarSet
-  , isVarHole
-  , PosVar(..)
-  ) where
+module SAD.Data.VarName (
+  VariableName(..),
+  FV,
+  unitFV,
+  bindVar,
+  excludeVars,
+  excludeSet,
+  IsVar(..),
+  fvToVarSet,
+  fvFromVarSet,
+  isVarHole,
+  PosVar(..)
+) where
 
 import Data.Set (Set)
 import qualified Data.Set as Set
@@ -19,13 +28,16 @@ import GHC.Magic (oneShot)
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as Text
 import qualified Data.Text.Lazy.Builder as Builder
-import SAD.Core.Message (show_position)
-import SAD.Export.Representation
-import qualified Isabelle.Position as Position
 import Data.Function (on)
 
+import SAD.Core.Message (show_position)
+import SAD.Export.Representation
+
+import qualified Isabelle.Position as Position
+
+
 -- These names may not reflect what the constructors are used for..
-data VariableName 
+data VariableName
   = VarConstant Text     -- ^ previously starting with x
   | VarHole Text         -- ^ previously starting with ?
   | VarSlot              -- ^ previously !

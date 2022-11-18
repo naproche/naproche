@@ -1,39 +1,38 @@
-{-|
-License     : GPL 3
-Maintainer  : Andrei Paskevich (2001 - 2008),
-              Steffen Frerix (2017 - 2018)
+-- |
+-- Author: Andrei Paskevich (2001 - 2008),
+--         Steffen Frerix (2017 - 2018)
+--
+-- Tokenization of input.
 
-Tokenization of input
--}
 
 {-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Parser.Token (
-    -- * Tokens
-    Token (tokenType, tokenPos, tokenText)
-  , TokenType (..)
-  , tokensRange
-  , showToken
-  , isProperToken
+  -- * Tokens
+  Token (tokenType, tokenPos, tokenText),
+  TokenType (..),
+  tokensRange,
+  showToken,
+  isProperToken,
 
   -- * Tokenizing ForTheL texts
-  , tokenize
+  tokenize,
 
   -- * Helper functions
-  , reportComments
-  , composeTokens
-  , isEOF
-  , noTokens
-  ) where
+  reportComments,
+  composeTokens,
+  isEOF,
+  noTokens
+) where
+
+import Data.Char
+import Data.Text.Lazy (Text)
+import qualified Data.Text.Lazy as Text
 
 import SAD.Data.Instr (ParserKind(..))
 
 import qualified Isabelle.Position as Position
 import qualified Isabelle.Markup as Markup
-
-import Data.Char
-import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
 
 
 -- | A token of a ForTheL text

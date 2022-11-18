@@ -1,17 +1,18 @@
-{-
-Authors: Makarius Wenzel (2021)
+-- |
+-- Authors: Makarius Wenzel (2021)
+--
+-- Support for TPTP syntax.
+--
+-- See also http://www.tptp.org/TPTP/SyntaxBNF.html
 
-Support for TPTP syntax.
-
-See also http://www.tptp.org/TPTP/SyntaxBNF.html
--}
 
 {-# LANGUAGE OverloadedStrings #-}
 
 module Naproche.TPTP (
-  is_lower_word, is_upper_word, atomic_word
-)
-where
+  is_lower_word,
+  is_upper_word,
+  atomic_word
+) where
 
 import qualified Isabelle.Bytes as Bytes
 import Isabelle.Bytes (Bytes)
