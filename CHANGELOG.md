@@ -3,8 +3,8 @@
 A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
 2021-1)
 
-**NOTE:** In the following, "FTL" and "FTL-TeX" refer to the ASCII and TeX
-variant of ForTheL, respectively.
+**NOTE:** In the following, "FTL" and "TEX" refer to the ASCII and the TeX
+dialect of ForTheL, respectively.
 
 
 --------------------------------------------------------------------------------
@@ -27,7 +27,7 @@ variant of ForTheL, respectively.
   * **Changed:** The old syntax `Define f((x,y)) = ...` for low-level map
     definitions with two arguments is replaced by `Define f(x,y) = ...`.    
 
-  * **New:** In FTL-TeX unnumbered top-level environments are now supported via
+  * **New:** (TEX) Unnumbered top-level environments are now supported via
 
     ```
     \begin{<environment-name>*}
@@ -57,16 +57,16 @@ variant of ForTheL, respectively.
   * **New:** To reference top-level sections you can now use `\cref` besides
     `\ref` and `\nameref`.
 
-  * **New:** In FTL-TeX `\left`, `\middle` and `\right` are tokenized away.
+  * **New:** (TEX) `\left`, `\middle` and `\right` are tokenized away.
 
-  * **Changed:** FTL-TeX does no longer provide primitive expressions inherited
-    from FTL (e.g. `!=` or `-<-`).
+  * **Changed:** (TEX) Primitive expressions inherited from FTL (e.g. `!=` or
+    `-<-`) are no longer provided.
 
-  * **Changed:** In FTL-TeX a proof method for proofs of top-level theorems is
+  * **Changed:** (TEX)Aa proof method for proofs of top-level theorems is
     now given via `\begin{proof}[by <method>]` instead of
     `\begin{proof} Proof by <method>.`.
 
-  * **Fixed:** In FTL-TeX `#` is a regular character now.
+  * **Fixed:** (TEX) `#` is a regular character now.
 
 
 ### Changes on the ontology of Naproche:
@@ -207,8 +207,8 @@ variant of ForTheL, respectively.
 
 ### Changes on ForTheL:
 
-  * **New:** In FTL-TeX, top-level sections can now be labeled with the
-    `\label{...}` command.
+  * **New:** (TEX) Top-level sections can now be labeled with the `\label{...}`
+    command.
     There are now four ways the header of a top-level section can look like:
 
       - **Name and identifier:**
@@ -243,23 +243,23 @@ variant of ForTheL, respectively.
         ```
         Just a top-level section without name and label.
 
-  * **New:** In FTL-TeX, references to named assertions now support LaTeX's
+  * **New:** (TEX) References to named assertions now support LaTeX's
     `\ref{...}` and `\nameref{...}` commands.
     I.e. you can now refer to an assertion also via `(by \ref{<identifier>})` or
     `(by \nameref{<identifier>})` besides `(by <identifier>)`, where
     `<identifier>` is the assertion's label.
 
-  * **New:** In FTL-TeX, arguments of argument instructions can be wrapped in
+  * **New:** (TEX) Arguments of argument instructions can be wrapped in
     `\path{...}`, e.g. `[read \path{some/forthel/text.ftl}]`
 
-  * **New:** In FTL-TeX, an alternative syntax for class terms is availabel
-    now: `\class{... | ...}`.
+  * **New:** (TEX) An alternative syntax for class terms is available now:
+    `\class{... | ...}`.
     In Naproche it behaves exactly as the common `\{ ... \mid ... \}` notation,
     but in LaTeX (when using the style file `naproche.sty`) it provides
     additional support for flexible sizes of the braces and the vertical bar.
 
-  * **New:** In FTL-TeX, expressions of the following kinds can be enclosed
-    within `\text{...}`:
+  * **New:** (TEX) Expressions of the following kinds can be enclosed within
+    `\text{...}`:
 
       - Function bodies, e.g.:
         ```
@@ -298,7 +298,7 @@ variant of ForTheL, respectively.
       - `the class of subsets of x`
       - `the class of all sets x such that x is not an element of x`
 
-  * **New:** In FTL-TeX, `\[` and `\]` are a new kind of whitetokens, i.e. like
+  * **New:** (TEX) `\[` and `\]` are a new kind of whitetokens, i.e. like
     `$` they are completely ignored by Naproche.
 
   * **Changed:** `_` and `"` are regular characters now, i.e. they are treated
@@ -307,9 +307,8 @@ variant of ForTheL, respectively.
   * **Changed:** Notion separation in descriptive class terms (e.g. something
     like `{set x | ...}`) is no longer supported.
 
-  * **New:** In FTL-TeX, in case splits in low-level map definitions the
-    function value and the case condition can be separated by an optional `:`,
-    e.g.:
+  * **New:** (TEX) In case splits in low-level map definitions the function
+    value and the case condition can be separated by an optional `:`, e.g.:
     ```
     Define \[ f(x) =
     \begin{cases}
