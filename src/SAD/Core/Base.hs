@@ -44,8 +44,8 @@ import Data.IORef
 import Data.Maybe (isJust, fromJust)
 import Data.Text.Lazy (Text)
 import Data.Time (NominalDiffTime, getCurrentTime, diffUTCTime)
-import qualified Data.Set as Set
-import qualified Data.Map as Map
+import Data.Set qualified as Set
+import Data.Map qualified as Map
 
 import SAD.Data.Definition
 import SAD.Data.Formula
@@ -53,18 +53,18 @@ import SAD.Data.Instr
 import SAD.Data.Rules (Rule)
 import SAD.Data.Text.Block (Block)
 import SAD.Data.Text.Context (Context(Context), MRule(..))
-import qualified SAD.Prove.MESON as MESON
-import qualified SAD.Export.Prover as Prover
-import qualified SAD.Core.Message as Message
+import SAD.Prove.MESON qualified as MESON
+import SAD.Export.Prover qualified as Prover
+import SAD.Core.Message qualified as Message
 import SAD.Data.Structures.DisTree (DisTree)
-import qualified SAD.Data.Structures.DisTree as DisTree
-import qualified SAD.Data.Text.Context as Context (name)
+import SAD.Data.Structures.DisTree qualified as DisTree
+import SAD.Data.Text.Context qualified as Context (name)
 
-import qualified Isabelle.Bytes as Bytes
-import qualified Isabelle.Position as Position
+import Isabelle.Bytes qualified as Bytes
+import Isabelle.Position qualified as Position
 import Isabelle.Library (BYTES, make_bytes)
 
-import qualified Naproche.Param as Param
+import Naproche.Param qualified as Param
 
 
 -- | All of these counters are for gathering statistics to print out later

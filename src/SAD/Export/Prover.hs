@@ -21,23 +21,23 @@ import Data.Maybe (fromJust, isNothing)
 
 import SAD.Data.Instr
 import SAD.Data.Text.Context (Context, branch)
-import qualified SAD.Data.Text.Block as Block
-import qualified SAD.Core.Message as Message
-import qualified SAD.Export.TPTP as TPTP
-import qualified SAD.Data.Formula.HOL as HOL
+import SAD.Data.Text.Block qualified as Block
+import SAD.Core.Message qualified as Message
+import SAD.Export.TPTP qualified as TPTP
+import SAD.Data.Formula.HOL qualified as HOL
 
-import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
-import qualified Isabelle.Position as Position
-import qualified Isabelle.Time as Time
+import Isabelle.Isabelle_Thread qualified as Isabelle_Thread
+import Isabelle.Position qualified as Position
+import Isabelle.Time qualified as Time
 import Isabelle.Bytes (Bytes)
-import qualified Isabelle.Bytes as Bytes
-import qualified Isabelle.Markup as Markup
-import qualified Isabelle.Process_Result as Process_Result
-import qualified Isabelle.Cache as Cache
+import Isabelle.Bytes qualified as Bytes
+import Isabelle.Markup qualified as Markup
+import Isabelle.Process_Result qualified as Process_Result
+import Isabelle.Cache qualified as Cache
 import Isabelle.Library
 
-import qualified Naproche.Program as Program
-import qualified Naproche.Prover as Prover
+import Naproche.Program qualified as Program
+import Naproche.Prover qualified as Prover
 
 
 type Cache = Cache.T (Bytes, Int, Int, Bool, Bytes) Process_Result.T

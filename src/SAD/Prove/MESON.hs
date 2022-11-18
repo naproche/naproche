@@ -18,19 +18,19 @@ import Control.Monad
 import Control.Exception (evaluate)
 import Data.List
 import Data.Maybe
-import qualified Data.Text.Lazy as Text
+import Data.Text.Lazy qualified as Text
 
 import SAD.Data.Formula
 import SAD.Prove.Unify
 import SAD.Prove.Normalize
 import SAD.Data.Text.Context (Context, MRule(MR, conclusion))
 import SAD.Helpers (notNull)
-import qualified SAD.Data.Text.Context as Context
+import SAD.Data.Text.Context qualified as Context
 import SAD.Data.Structures.DisTree (DisTree)
-import qualified SAD.Data.Structures.DisTree as DisTree
+import SAD.Data.Structures.DisTree qualified as DisTree
 
-import qualified Isabelle.Cache as Cache
-import qualified Isabelle.Time as Time
+import Isabelle.Cache qualified as Cache
+import Isabelle.Time qualified as Time
 import Isabelle.Library (fold_rev)
 
 

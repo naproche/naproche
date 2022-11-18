@@ -27,18 +27,18 @@ module SAD.Parser.Base (
 ) where
 
 import Control.Monad
-import qualified Control.Monad.Fail as Fail
+import Control.Monad.Fail qualified as Fail
 import Control.Applicative
 import Control.Monad.State.Class (MonadState(put, get))
 import Data.List
-import qualified Data.Text.Lazy as Text
+import Data.Text.Lazy qualified as Text
 
 import SAD.Helpers (notNull)
 import SAD.Parser.Token
 import SAD.Parser.Error
 import SAD.Data.Instr (ParserKind)
 
-import qualified Isabelle.Position as Position
+import Isabelle.Position qualified as Position
 
 
 -- | Parser state

@@ -16,14 +16,14 @@ module SAD.Data.Formula.Show (
 ) where
 
 import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text.Lazy qualified as Text
 
 import SAD.Data.Formula.Base
 import SAD.Data.VarName
 import SAD.Data.Terms
 import SAD.Export.Representation (toLazyText, represent)
 
-import qualified Isabelle.Position as Position
+import Isabelle.Position qualified as Position
 
 
 -- show instances

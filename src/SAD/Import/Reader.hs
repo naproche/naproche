@@ -17,7 +17,7 @@ import Control.Monad
 import System.IO.Error
 import Control.Exception
 import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text.Lazy qualified as Text
 
 import SAD.Data.Text.Block
 import SAD.Data.Instr as Instr
@@ -32,15 +32,15 @@ import SAD.Parser.Token
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
 import SAD.Parser.Error
-import qualified SAD.Core.Message as Message
+import SAD.Core.Message qualified as Message
 
-import qualified Isabelle.File as File
+import Isabelle.File qualified as File
 import Isabelle.Library (make_bytes, make_string, make_text, show_bytes)
 import Isabelle.Position as Position
 import Isabelle.Bytes (Bytes)
-import qualified Isabelle.Bytes as Bytes
+import Isabelle.Bytes qualified as Bytes
 
-import qualified Naproche.Program as Program
+import Naproche.Program qualified as Program
 
 
 -- * Init file parsing

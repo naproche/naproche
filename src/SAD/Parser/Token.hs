@@ -27,12 +27,12 @@ module SAD.Parser.Token (
 
 import Data.Char
 import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text.Lazy qualified as Text
 
 import SAD.Data.Instr (ParserKind(..))
 
-import qualified Isabelle.Position as Position
-import qualified Isabelle.Markup as Markup
+import Isabelle.Position qualified as Position
+import Isabelle.Markup qualified as Markup
 
 
 -- | A token of a ForTheL text

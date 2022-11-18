@@ -12,7 +12,7 @@ module SAD.Data.Formula.HOL (
   Sequent, make_sequent, encode_sequent, print_sequents, print_sequent, export_sequent
 ) where
 
-import qualified Data.Map.Strict as Map
+import Data.Map.Strict qualified as Map
 import Data.Map.Strict (Map)
 
 import SAD.Data.VarName (VariableName (..))
@@ -22,20 +22,20 @@ import SAD.Data.Formula.Base
 import SAD.Data.Text.Context (Context, formula)
 
 import Isabelle.Bytes (Bytes)
-import qualified Isabelle.Value as Value
-import qualified Isabelle.Name as Isabelle
-import qualified Isabelle.Term as Isabelle
+import Isabelle.Value qualified as Value
+import Isabelle.Name qualified as Isabelle
+import Isabelle.Term qualified as Isabelle
 import Isabelle.Term ((--->))
-import qualified Isabelle.HOL as Isabelle
-import qualified Isabelle.Naproche as Isabelle
+import Isabelle.HOL qualified as Isabelle
+import Isabelle.Naproche qualified as Isabelle
 import Isabelle.Library
-import qualified Isabelle.YXML as YXML
-import qualified Isabelle.XML.Encode as Encode
-import qualified Isabelle.Position as Position
-import qualified Isabelle.Term_XML.Encode as Encode
-import qualified Isabelle.Term_XML.Decode as Decode
+import Isabelle.YXML qualified as YXML
+import Isabelle.XML.Encode qualified as Encode
+import Isabelle.Position qualified as Position
+import Isabelle.Term_XML.Encode qualified as Encode
+import Isabelle.Term_XML.Decode qualified as Decode
 
-import qualified Naproche.Program as Program
+import Naproche.Program qualified as Program
 
 
 {- export formula -}

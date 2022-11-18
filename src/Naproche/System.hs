@@ -11,26 +11,26 @@ module Naproche.System (
 ) where
 
 import Data.Maybe (fromJust)
-import qualified System.IO as IO
-import qualified System.IO.Temp as Temp
-import qualified System.Process as Process
-import qualified System.Exit as Exit
-import qualified Control.Exception as Exception
+import System.IO qualified as IO
+import System.IO.Temp qualified as Temp
+import System.Process qualified as Process
+import System.Exit qualified as Exit
+import Control.Exception qualified as Exception
 import Control.Exception (catch)
 import Control.Monad (when)
-import qualified Data.ByteString as ByteString
-import qualified System.Info as Info
+import Data.ByteString qualified as ByteString
+import System.Info qualified as Info
 
-import qualified Isabelle.Bash as Bash
-import qualified Isabelle.Bytes as Bytes
-import qualified Isabelle.Timing as Timing
-import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
-import qualified Isabelle.Isabelle_System as Isabelle_System
-import qualified Isabelle.Process_Result as Process_Result
-import qualified Isabelle.UTF8 as UTF8
+import Isabelle.Bash qualified as Bash
+import Isabelle.Bytes qualified as Bytes
+import Isabelle.Timing qualified as Timing
+import Isabelle.Isabelle_Thread qualified as Isabelle_Thread
+import Isabelle.Isabelle_System qualified as Isabelle_System
+import Isabelle.Process_Result qualified as Process_Result
+import Isabelle.UTF8 qualified as UTF8
 import Isabelle.Library
 
-import qualified Naproche.Program as Program
+import Naproche.Program qualified as Program
 
 
 is_windows :: Bool

@@ -13,12 +13,12 @@ module SAD.Core.Rewrite (
 ) where
 
 import Data.List
-import qualified Data.Set as Set
+import Data.Set qualified as Set
 import Control.Monad.State
 import Data.Either
 import Control.Monad.Reader
 import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text.Lazy qualified as Text
 
 import SAD.Core.Base
 import SAD.Core.Reason
@@ -28,13 +28,13 @@ import SAD.Data.Rules (Rule)
 import SAD.Data.Text.Context (Context)
 import SAD.Helpers (notNull)
 import SAD.Export.Representation
-import qualified SAD.Core.Message as Message
-import qualified SAD.Data.Rules as Rule
-import qualified SAD.Data.Text.Block as Block (body, link, position)
-import qualified SAD.Data.Text.Context as Context
+import SAD.Core.Message qualified as Message
+import SAD.Data.Rules qualified as Rule
+import SAD.Data.Text.Block qualified as Block (body, link, position)
+import SAD.Data.Text.Context qualified as Context
 
 import Isabelle.Library ()
-import qualified Isabelle.Position as Position
+import Isabelle.Position qualified as Position
 
 
 -- Lexicographic path ordering

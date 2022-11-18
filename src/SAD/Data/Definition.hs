@@ -11,7 +11,7 @@ import Data.Map (Map)
 
 import SAD.Data.Formula (Formula, TermId)
 import SAD.Data.Structures.DisTree (DisTree)
-import qualified SAD.Data.Structures.DisTree as DisTree
+import SAD.Data.Structures.DisTree qualified as DisTree
 
 
 data DefType = Signature | Definition

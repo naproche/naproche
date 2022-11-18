@@ -17,8 +17,8 @@ import Control.Applicative
 import Control.Monad
 import Control.Monad.State.Class (modify)
 import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
-import qualified Data.Set as Set
+import Data.Text.Lazy qualified as Text
+import Data.Set qualified as Set
 import Data.Set (Set)
 
 import SAD.ForTheL.Base
@@ -32,9 +32,9 @@ import SAD.Parser.Token
 import SAD.Parser.Primitives
 import SAD.Data.Instr
 import SAD.Data.Text.Block (Block(Block), ProofText(..), Section(..))
-import qualified SAD.Data.Text.Block as Block
+import SAD.Data.Text.Block qualified as Block
 import SAD.Data.Formula
-import qualified SAD.Data.Tag as Tag
+import SAD.Data.Tag qualified as Tag
 import SAD.Data.Text.Decl
 
 

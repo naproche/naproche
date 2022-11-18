@@ -24,13 +24,13 @@ module SAD.Data.Instr (
 ) where
 
 import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Lazy
+import Data.Text.Lazy qualified as Lazy
 
 import Isabelle.Bytes (Bytes)
 import Isabelle.Library
 
-import qualified Naproche.Param as Param
-import qualified Naproche.Prover as Prover
+import Naproche.Param qualified as Param
+import Naproche.Prover qualified as Prover
 
 
 -- Instruction types

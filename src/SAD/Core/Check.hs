@@ -13,7 +13,7 @@ module SAD.Core.Check (fillDef) where
 import Data.Maybe (fromMaybe)
 import Data.Either (lefts,rights, isRight)
 import Control.Monad.Reader
-import qualified Data.Text.Lazy as Text
+import Data.Text.Lazy qualified as Text
 
 import SAD.Core.Base
 import SAD.Core.Reason as Reason
@@ -21,11 +21,11 @@ import SAD.Data.Definition hiding (Guards)
 import SAD.Data.Formula
 import SAD.Data.Instr
 import SAD.Data.Text.Context (Context)
-import qualified SAD.Core.Message as Message
-import qualified SAD.Data.Text.Block as Block (link, position)
-import qualified SAD.Data.Text.Context as Context
+import SAD.Core.Message qualified as Message
+import SAD.Data.Text.Block qualified as Block (link, position)
+import SAD.Data.Text.Context qualified as Context
 
-import qualified Isabelle.Position as Position
+import Isabelle.Position qualified as Position
 
 
 {- check definitions and fortify terms with evidences in a formula -}

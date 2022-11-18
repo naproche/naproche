@@ -14,7 +14,7 @@ module Naproche.TPTP (
   atomic_word
 ) where
 
-import qualified Isabelle.Bytes as Bytes
+import Isabelle.Bytes qualified as Bytes
 import Isabelle.Bytes (Bytes)
 
 

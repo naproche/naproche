@@ -27,9 +27,9 @@ module SAD.Data.Text.Block (
 ) where
 
 import Data.Set (Set)
-import qualified Data.Set as Set
+import Data.Set qualified as Set
 import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text.Lazy qualified as Text
 import Data.Maybe (fromMaybe)
 
 import SAD.Data.Formula
@@ -38,8 +38,8 @@ import SAD.Parser.Token
 import SAD.Data.Text.Decl
 import SAD.Parser.Error (ParseError)
 
-import qualified Isabelle.Bytes as Bytes
-import qualified Isabelle.Position as Position
+import Isabelle.Bytes qualified as Bytes
+import Isabelle.Position qualified as Position
 import Isabelle.Library (make_text)
 
 

@@ -22,17 +22,17 @@ import Prelude hiding (error)
 import Control.Monad (when)
 import Data.Maybe (catMaybes, mapMaybe)
 
-import qualified Isabelle.Bytes as Bytes
+import Isabelle.Bytes qualified as Bytes
 import Isabelle.Bytes (Bytes)
-import qualified Isabelle.Position as Position
-import qualified Isabelle.Value as Value
-import qualified Isabelle.Markup as Markup
-import qualified Isabelle.XML as XML
-import qualified Isabelle.YXML as YXML
-import qualified Isabelle.Naproche as Naproche
+import Isabelle.Position qualified as Position
+import Isabelle.Value qualified as Value
+import Isabelle.Markup qualified as Markup
+import Isabelle.XML qualified as XML
+import Isabelle.YXML qualified as YXML
+import Isabelle.Naproche qualified as Naproche
 import Isabelle.Library
 
-import qualified Naproche.Program as Program
+import Naproche.Program qualified as Program
 
 
 -- PIDE markup reports

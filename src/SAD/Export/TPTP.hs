@@ -10,17 +10,17 @@
 module SAD.Export.TPTP (output) where
 
 import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text.Lazy qualified as Text
 import Data.Text.Lazy.Builder (Builder)
-import qualified Data.Text.Lazy.Builder as Builder
+import Data.Text.Lazy.Builder qualified as Builder
 
 import SAD.Data.Formula (Formula(..), showTrName, TermName(..))
 import SAD.Data.Text.Block (Block(Block))
-import qualified SAD.Data.Text.Block as Block
+import SAD.Data.Text.Block qualified as Block
 import SAD.Data.Text.Context (Context(..))
 import SAD.Export.Representation
 
-import qualified Isabelle.Position as Position
+import Isabelle.Position qualified as Position
 import Isabelle.Library
 
 import Naproche.TPTP (atomic_word)

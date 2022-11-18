@@ -16,11 +16,11 @@ module SAD.ForTheL.Extension (
 ) where
 
 import Control.Monad
-import qualified Data.Set as Set
+import Data.Set qualified as Set
 import Control.Applicative
 import Control.Monad.State.Class (get, modify)
 import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text.Lazy qualified as Text
 
 import SAD.Data.Formula
 import SAD.Data.Text.Block (ProofText (..))
@@ -33,7 +33,7 @@ import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Data.Text.Decl
 
-import qualified Isabelle.Position as Position
+import Isabelle.Position qualified as Position
 
 
 -- definitions and signature extensions

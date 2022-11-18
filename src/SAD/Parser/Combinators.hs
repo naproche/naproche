@@ -15,14 +15,14 @@ import Data.Ord (comparing)
 import Data.Maybe (isNothing, mapMaybe)
 import Debug.Trace
 import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text.Lazy qualified as Text
 
 import SAD.Parser.Base
 import SAD.Parser.Token
 import SAD.Parser.Error
 import SAD.Parser.Primitives
 
-import qualified Isabelle.Position as Position
+import Isabelle.Position qualified as Position
 
 
 -- * Choices

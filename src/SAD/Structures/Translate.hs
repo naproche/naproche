@@ -11,7 +11,7 @@ module SAD.Structures.Translate where
 import Data.Text.Lazy (Text, pack)
 
 import SAD.Structures.Formula
-import qualified SAD.Structures.Type as Type
+import SAD.Structures.Type qualified as Type
 import SAD.Structures.Type ((-->), (/\), (\/), (<@>))
 
 

@@ -23,17 +23,17 @@ module SAD.Data.VarName (
 ) where
 
 import Data.Set (Set)
-import qualified Data.Set as Set
+import Data.Set qualified as Set
 import GHC.Magic (oneShot)
 import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
-import qualified Data.Text.Lazy.Builder as Builder
+import Data.Text.Lazy qualified as Text
+import Data.Text.Lazy.Builder qualified as Builder
 import Data.Function (on)
 
 import SAD.Core.Message (show_position)
 import SAD.Export.Representation
 
-import qualified Isabelle.Position as Position
+import Isabelle.Position qualified as Position
 
 
 -- These names may not reflect what the constructors are used for..

@@ -13,7 +13,7 @@ module SAD.Data.Text.Decl (
 
 import SAD.Data.VarName
 
-import qualified Isabelle.Position as Position
+import Isabelle.Position qualified as Position
 
 
 -- | >0, with 0 as undefined

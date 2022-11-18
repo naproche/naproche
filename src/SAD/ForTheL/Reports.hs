@@ -41,7 +41,7 @@ import Data.Set (Set)
 import SAD.Helpers (nubOrd)
 import SAD.ForTheL.Base
 import SAD.Data.Text.Block (Block)
-import qualified SAD.Data.Text.Block as Block
+import SAD.Data.Text.Block qualified as Block
 import SAD.Data.Text.Decl
 import Data.Text.Lazy (Text)
 import SAD.Data.Formula
@@ -49,10 +49,10 @@ import SAD.Parser.Base
 import SAD.Parser.Primitives
 
 import Isabelle.Library (make_bytes)
-import qualified Isabelle.Markup as Markup
-import qualified Isabelle.Position as Position
+import Isabelle.Markup qualified as Markup
+import Isabelle.Position qualified as Position
 
-import qualified Naproche.Program as Program
+import Naproche.Program qualified as Program
 
 
 addReports :: [Position.Report] -> FTL ()

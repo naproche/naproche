@@ -19,13 +19,13 @@ module SAD.ForTheL.Pattern (
 
 
 import Control.Monad.State.Class (put, gets)
-import qualified Data.Set as Set
+import Data.Set qualified as Set
 import Data.List
 import Data.Char
 import Control.Applicative
 import Control.Monad
 import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text.Lazy qualified as Text
 
 import SAD.ForTheL.Base
 import SAD.Parser.Combinators

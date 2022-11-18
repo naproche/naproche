@@ -10,12 +10,12 @@
 module SAD.Data.Formula.Base where
 
 import Data.Maybe
-import qualified Data.Monoid as Monoid
+import Data.Monoid qualified as Monoid
 import Control.Monad.Identity
 import Control.Applicative
 import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
-import qualified Data.Map as Map
+import Data.Text.Lazy qualified as Text
+import Data.Map qualified as Map
 
 import SAD.Data.Tag (Tag)
 import SAD.Data.Terms
@@ -23,7 +23,7 @@ import SAD.Data.Text.Decl (Decl)
 import SAD.Data.VarName
 import SAD.Export.Representation
 
-import qualified Isabelle.Position as Position
+import Isabelle.Position qualified as Position
 
 
 data Formula =

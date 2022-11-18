@@ -16,34 +16,34 @@ import Data.Char (toLower)
 import Data.Time (UTCTime, addUTCTime, getCurrentTime, diffUTCTime)
 import Data.List (isSuffixOf)
 import Data.Maybe (mapMaybe)
-import qualified Control.Exception as Exception
+import Control.Exception qualified as Exception
 import Control.Exception (catch)
-import qualified Data.Text.Lazy as Text
-import qualified System.Console.GetOpt as GetOpt
-import qualified System.Environment as Environment
+import Data.Text.Lazy qualified as Text
+import System.Console.GetOpt qualified as GetOpt
+import System.Environment qualified as Environment
 import Network.Socket (Socket)
 
-import qualified SAD.Prove.MESON as MESON
-import qualified SAD.Export.Prover as Prover
+import SAD.Prove.MESON qualified as MESON
+import SAD.Export.Prover qualified as Prover
 import SAD.Data.Instr
 import SAD.API
 
-import qualified Isabelle.Bytes as Bytes
+import Isabelle.Bytes qualified as Bytes
 import Isabelle.Bytes (Bytes)
-import qualified Isabelle.Byte_Message as Byte_Message
-import qualified Isabelle.Naproche as Naproche
-import qualified Isabelle.Server as Server
-import qualified Isabelle.Options as Options
-import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
-import qualified Isabelle.UUID as UUID
-import qualified Isabelle.Position as Position
-import qualified Isabelle.YXML as YXML
-import qualified Isabelle.Process_Result as Process_Result
+import Isabelle.Byte_Message qualified as Byte_Message
+import Isabelle.Naproche qualified as Naproche
+import Isabelle.Server qualified as Server
+import Isabelle.Options qualified as Options
+import Isabelle.Isabelle_Thread qualified as Isabelle_Thread
+import Isabelle.UUID qualified as UUID
+import Isabelle.Position qualified as Position
+import Isabelle.YXML qualified as YXML
+import Isabelle.Process_Result qualified as Process_Result
 import Isabelle.Library
 
-import qualified Naproche.Program as Program
-import qualified Naproche.Console as Console
-import qualified Naproche.Param as Param
+import Naproche.Program qualified as Program
+import Naproche.Console qualified as Console
+import Naproche.Param qualified as Param
 
 
 main :: IO ()

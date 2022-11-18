@@ -18,7 +18,7 @@ module SAD.ForTheL.Instruction (
 import Control.Monad
 import Control.Applicative ((<|>))
 import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text.Lazy qualified as Text
 
 import SAD.Data.Instr
 import SAD.ForTheL.Base
@@ -27,11 +27,11 @@ import SAD.Parser.Primitives
 import SAD.ForTheL.Reports
 import SAD.Parser.Token
 
-import qualified Isabelle.Value as Value
-import qualified Isabelle.Position as Position
+import Isabelle.Value qualified as Value
+import Isabelle.Position qualified as Position
 import Isabelle.Library
 
-import qualified Naproche.Param as Param
+import Naproche.Param qualified as Param
 
 
 instrPos :: (Position.T -> FTL ()) -> FTL a -> FTL (Position.T, a)

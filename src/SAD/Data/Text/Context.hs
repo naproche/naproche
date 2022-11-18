@@ -19,12 +19,12 @@ module SAD.Data.Text.Context (
 ) where
 
 import Prelude hiding (head, tail)
-import qualified Prelude (head, tail)
+import Prelude qualified (head, tail)
 import Data.Text.Lazy (Text)
 import Data.Set (Set)
 
 import SAD.Data.Text.Block (Section(..))
-import qualified SAD.Data.Text.Block as Block
+import SAD.Data.Text.Block qualified as Block
 import SAD.Data.Formula (Formula, VariableName)
 
 

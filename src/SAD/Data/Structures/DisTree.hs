@@ -17,7 +17,7 @@ module SAD.Data.Structures.DisTree (
 ) where
 
 import Prelude hiding (lookup, head)
-import qualified Data.List as List
+import Data.List qualified as List
 import Data.Maybe
 import Data.Text.Lazy (Text)
 

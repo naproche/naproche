@@ -49,6 +49,7 @@ default-extensions:
   - LambdaCase
   - PartialTypeSignatures
   - ScopedTypeVariables
+  - ImportQualifiedPost
 
 ghc-options:
   - -O2

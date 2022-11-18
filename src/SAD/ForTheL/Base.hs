@@ -15,9 +15,9 @@ import Control.Monad
 import Control.Monad.State.Class (gets, modify)
 import Data.Char (isAlpha, isAlphaNum)
 import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text.Lazy qualified as Text
 import Data.Set (Set)
-import qualified Data.Set as Set
+import Data.Set qualified as Set
 import Data.List (unionBy)
 
 import SAD.Data.Formula
@@ -28,7 +28,7 @@ import SAD.Parser.Primitives
 import SAD.Data.Text.Decl
 import SAD.Export.Representation (represent, toLazyText)
 
-import qualified Isabelle.Position as Position
+import Isabelle.Position qualified as Position
 
 import Naproche.Program as Program
 

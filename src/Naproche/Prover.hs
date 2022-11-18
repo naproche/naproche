@@ -14,21 +14,21 @@ module Naproche.Prover (
   list, find, eprover, eproververb, spass, vampire
 ) where
 
-import qualified Data.List as List
+import Data.List qualified as List
 import Control.Monad (when)
 
-import qualified Isabelle.Bytes as Bytes
+import Isabelle.Bytes qualified as Bytes
 import Isabelle.Bytes (Bytes)
-import qualified Isabelle.Value as Value
-import qualified Isabelle.Bash as Bash
-import qualified Isabelle.Process_Result as Process_Result
-import qualified Isabelle.Time as Time
-import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
+import Isabelle.Value qualified as Value
+import Isabelle.Bash qualified as Bash
+import Isabelle.Process_Result qualified as Process_Result
+import Isabelle.Time qualified as Time
+import Isabelle.Isabelle_Thread qualified as Isabelle_Thread
 import Isabelle.Time (Time)
 import Isabelle.Library
 
-import qualified Naproche.Program as Program
-import qualified Naproche.System as System
+import Naproche.Program qualified as Program
+import Naproche.System qualified as System
 
 
 {- type Prover -}

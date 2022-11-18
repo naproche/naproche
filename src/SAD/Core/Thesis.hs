@@ -9,16 +9,16 @@
 
 module SAD.Core.Thesis (inferNewThesis) where
 
-import qualified Data.Text.Lazy as Text
+import Data.Text.Lazy qualified as Text
 import Control.Applicative
 import Control.Monad
 import Control.Monad.Trans.Class
 import Control.Monad.Trans.State
 import Data.List
 import Data.Maybe
-import qualified Data.Map as Map
+import Data.Map qualified as Map
 import Data.Set (Set)
-import qualified Data.Set as Set
+import Data.Set qualified as Set
 
 import SAD.Core.Base
 import SAD.Core.Reason
@@ -26,7 +26,7 @@ import SAD.Data.Definition (Definitions)
 import SAD.Data.Formula
 import SAD.Data.Text.Context (Context)
 import SAD.Helpers (notNull)
-import qualified SAD.Data.Text.Context as Context
+import SAD.Data.Text.Context qualified as Context
 
 
 -- Infer new thesis

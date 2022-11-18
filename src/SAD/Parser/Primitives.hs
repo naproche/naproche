@@ -35,14 +35,14 @@ module SAD.Parser.Primitives (
 import Data.Char (isAlpha)
 import Control.Monad (void, guard)
 import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
+import Data.Text.Lazy qualified as Text
 
 import SAD.Parser.Base
 import SAD.Parser.Error
 import SAD.Parser.Token
 import SAD.Data.Formula.Show (symChars)
 
-import qualified Isabelle.Position as Position
+import Isabelle.Position qualified as Position
 
 
 -- | Parse the current token or return an @EmptyFail@

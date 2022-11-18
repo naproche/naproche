@@ -11,7 +11,7 @@ module SAD.Data.Formula.Kit where
 
 import Control.Monad
 import Data.Maybe
-import qualified Data.Map as Map
+import Data.Map qualified as Map
 
 import SAD.Data.Formula.Base
 import SAD.Data.Tag
@@ -19,7 +19,7 @@ import SAD.Data.Text.Decl
 import SAD.Data.Terms
 import SAD.Data.VarName
 
-import qualified Isabelle.Position as Position
+import Isabelle.Position qualified as Position
 
 
 -- * Alpha-beta normalization

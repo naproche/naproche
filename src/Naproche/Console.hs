@@ -11,10 +11,10 @@ module Naproche.Console (
   exit
 ) where
 
-import qualified System.IO as IO
-import qualified System.Exit as Exit
+import System.IO qualified as IO
+import System.Exit qualified as Exit
 
-import qualified Isabelle.UTF8 as UTF8
+import Isabelle.UTF8 qualified as UTF8
 import Isabelle.Library
 
 

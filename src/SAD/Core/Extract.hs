@@ -16,22 +16,22 @@ module SAD.Core.Extract (
   extractRewriteRule
 ) where
 
-import qualified Data.Map as Map
+import Data.Map qualified as Map
 import Data.List
 import Data.Maybe
 import Control.Monad.State
 import Control.Monad.Reader
-import qualified Data.Text.Lazy as Text
+import Data.Text.Lazy qualified as Text
 
 import SAD.Data.Formula
 import SAD.Data.Definition
 import SAD.Data.Text.Context (Context)
-import qualified SAD.Data.Text.Context as Context (formula, name)
+import SAD.Data.Text.Context qualified as Context (formula, name)
 import SAD.Data.Rules (Rule(Rule))
-import qualified SAD.Data.Rules as Rule
+import SAD.Data.Rules qualified as Rule
 import SAD.Prove.Normalize
 import SAD.Data.Structures.DisTree (DisTree)
-import qualified SAD.Data.Structures.DisTree as DisTree
+import SAD.Data.Structures.DisTree qualified as DisTree
 import SAD.Data.Text.Decl
 
 

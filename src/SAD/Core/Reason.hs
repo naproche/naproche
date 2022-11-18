@@ -27,10 +27,10 @@ import Data.Maybe (fromJust, fromMaybe, maybeToList)
 import Data.Monoid (Sum, getSum)
 import Data.Functor ((<&>))
 import System.Timeout (timeout)
-import qualified Control.Monad.Writer as W
-import qualified Data.Map as Map
-import qualified Data.Set as Set
-import qualified Data.Text.Lazy as Text
+import Control.Monad.Writer qualified as W
+import Data.Map qualified as Map
+import Data.Set qualified as Set
+import Data.Text.Lazy qualified as Text
 
 import SAD.Core.Base
 import SAD.Data.Definition
@@ -38,22 +38,22 @@ import SAD.Data.Formula
 import SAD.Data.Instr
 import SAD.Data.Text.Context (Context(Context))
 import SAD.Data.Text.Decl (newDecl)
-import qualified SAD.Export.Prover as Prover
-import qualified SAD.Prove.MESON as MESON
-import qualified SAD.Core.Message as Message
-import qualified SAD.Data.Definition as Definition
+import SAD.Export.Prover qualified as Prover
+import SAD.Prove.MESON qualified as MESON
+import SAD.Core.Message qualified as Message
+import SAD.Data.Definition qualified as Definition
 import SAD.Data.Structures.DisTree (DisTree)
-import qualified SAD.Data.Structures.DisTree as DisTree
-import qualified SAD.Data.Text.Block as Block
-import qualified SAD.Data.Text.Context as Context
-import qualified SAD.Data.Formula.HOL as HOL
+import SAD.Data.Structures.DisTree qualified as DisTree
+import SAD.Data.Text.Block qualified as Block
+import SAD.Data.Text.Context qualified as Context
+import SAD.Data.Formula.HOL qualified as HOL
 
-import qualified Isabelle.Position as Position
-import qualified Isabelle.Bytes as Bytes
-import qualified Isabelle.Isabelle_Thread as Isabelle_Thread
+import Isabelle.Position qualified as Position
+import Isabelle.Bytes qualified as Bytes
+import Isabelle.Isabelle_Thread qualified as Isabelle_Thread
 
-import qualified Naproche.Program as Program
-import qualified Naproche.Prover as Prover
+import Naproche.Program qualified as Program
+import Naproche.Prover qualified as Prover
 
 
 -- Reasoner

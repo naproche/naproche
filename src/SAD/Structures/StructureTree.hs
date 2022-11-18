@@ -11,14 +11,14 @@
 module SAD.Structures.StructureTree where
 
 import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as T
+import Data.Text.Lazy qualified as T
 import Data.Tree
-import qualified Data.Text.Lazy as Text
+import Data.Text.Lazy qualified as Text
 
 import SAD.Data.Formula as Formula
-import qualified SAD.Structures.Formula as F
-import qualified SAD.Structures.Export as E
-import qualified SAD.Structures.Translate as T
+import SAD.Structures.Formula qualified as F
+import SAD.Structures.Export qualified as E
+import SAD.Structures.Translate qualified as T
 import SAD.Data.Text.Block
 import SAD.Data.Text.Decl
 import SAD.Core.Message (show_position)

@@ -18,10 +18,10 @@ module SAD.Core.Completion (
 import Data.List
 import Data.Maybe
 import Data.Function (on)
-import qualified Data.Map as Map
+import Data.Map qualified as Map
 import Data.Text.Lazy (Text)
-import qualified Data.Text.Lazy as Text
-import qualified Data.Set as Set
+import Data.Text.Lazy qualified as Text
+import Data.Set qualified as Set
 
 import SAD.Data.Formula
 import SAD.Core.Rewrite

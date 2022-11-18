@@ -11,7 +11,7 @@ module SAD.Core.Verify (verifyRoot) where
 import Data.IORef (readIORef)
 import Data.Maybe (isJust)
 import Control.Monad.Reader
-import qualified Data.Text.Lazy as Text
+import Data.Text.Lazy qualified as Text
 
 import SAD.Core.Base
 import SAD.Core.Check (fillDef)
@@ -25,15 +25,15 @@ import SAD.Data.Instr
 import SAD.Data.Text.Block (Block(Block), ProofText(..), Section(..))
 import SAD.Data.Text.Context (Context(Context))
 import SAD.Helpers (notNull)
-import qualified SAD.Core.Message as Message
-import qualified SAD.Data.Tag as Tag
-import qualified SAD.Data.Text.Block as Block
-import qualified SAD.Data.Text.Context as Context
-import qualified SAD.Prove.MESON as MESON
-import qualified SAD.Export.Prover as Prover
+import SAD.Core.Message qualified as Message
+import SAD.Data.Tag qualified as Tag
+import SAD.Data.Text.Block qualified as Block
+import SAD.Data.Text.Context qualified as Context
+import SAD.Prove.MESON qualified as MESON
+import SAD.Export.Prover qualified as Prover
 
 import Isabelle.Library (trim_line, make_bytes)
-import qualified Isabelle.Position as Position
+import Isabelle.Position qualified as Position
 
 
 -- | verify proof text (document root)

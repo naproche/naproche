@@ -15,7 +15,7 @@ module SAD.Export.Representation (
 ) where
 
 import Data.Text.Lazy.Builder (Builder)
-import qualified Data.Text.Lazy.Builder as Builder
+import Data.Text.Lazy.Builder qualified as Builder
 
 
 class Representation a where

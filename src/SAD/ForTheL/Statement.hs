@@ -22,7 +22,7 @@ import Data.Set (Set)
 import Data.Function ((&))
 import Control.Applicative (liftA2, (<**>), Alternative(..))
 import Control.Monad (guard)
-import qualified Data.Set as Set
+import Data.Set qualified as Set
 
 import SAD.Data.Formula
 import SAD.Data.Text.Decl
@@ -30,7 +30,7 @@ import SAD.ForTheL.Base
 import SAD.ForTheL.Reports (markupToken, markupTokenOf)
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives (token, token', symbol, tokenOf')
-import qualified SAD.ForTheL.Reports as Reports
+import SAD.ForTheL.Reports qualified as Reports
 
 
 statement :: FTL Formula

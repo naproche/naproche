@@ -20,12 +20,12 @@ module SAD.Prove.Normalize (
 ) where
 
 import Data.List
-import qualified Data.Text.Lazy as Text
+import Data.Text.Lazy qualified as Text
 
 import SAD.Data.Formula
 import SAD.Data.Text.Decl
 
-import qualified Isabelle.Position as Position
+import Isabelle.Position qualified as Position
 
 
 -- simplification : push down negation, replace implication and equivalence

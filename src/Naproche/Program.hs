@@ -17,28 +17,28 @@ module Naproche.Program (
 import Prelude hiding (error)
 import Data.Maybe (fromMaybe, mapMaybe)
 import Data.IORef (IORef)
-import qualified Data.IORef as IORef
+import Data.IORef qualified as IORef
 import System.IO.Unsafe (unsafePerformIO)
 import Data.Map.Strict (Map)
-import qualified Data.Map.Strict as Map
-import qualified Data.ByteString.Char8 as Char8
+import Data.Map.Strict qualified as Map
+import Data.ByteString.Char8 qualified as Char8
 import Control.Concurrent (ThreadId)
 import Control.Monad (when, unless, replicateM)
-import qualified Control.Concurrent as Concurrent
-import qualified Control.Exception as Exception
+import Control.Concurrent qualified as Concurrent
+import Control.Exception qualified as Exception
 import Control.Exception (Exception)
 import Network.Socket (Socket)
 
-import qualified Isabelle.Bytes as Bytes
+import Isabelle.Bytes qualified as Bytes
 import Isabelle.Bytes (Bytes)
-import qualified Isabelle.Byte_Message as Byte_Message
-import qualified Isabelle.Value as Value
-import qualified Isabelle.Position as Position
-import qualified Isabelle.Options as Options
-import qualified Isabelle.XML.Encode as Encode
-import qualified Isabelle.XML.Decode as Decode
-import qualified Isabelle.YXML as YXML
-import qualified Isabelle.Naproche as Naproche
+import Isabelle.Byte_Message qualified as Byte_Message
+import Isabelle.Value qualified as Value
+import Isabelle.Position qualified as Position
+import Isabelle.Options qualified as Options
+import Isabelle.XML.Encode qualified as Encode
+import Isabelle.XML.Decode qualified as Decode
+import Isabelle.YXML qualified as YXML
+import Isabelle.Naproche qualified as Naproche
 import Isabelle.Library
 
 
