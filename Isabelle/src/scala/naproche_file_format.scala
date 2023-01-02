@@ -60,7 +60,7 @@ class Naproche_File_Format extends File_Format {
   override def theory_suffix: String = "forthel_file"
   override def theory_content(name: String): String =
     "theory " + quote(if (detect_tex(name)) "tex" else "ftl") +
-    " imports Naproche.Naproche begin forthel_file " + quote(name) + " end"
+    " imports Naproche.Naproche begin forthel_file " + quote("../" + name) + " end"
   override def theory_excluded(name: String): Boolean = name == "tex" || name == "ftl"
 
   override def start(session: Session): File_Format.Agent = {
