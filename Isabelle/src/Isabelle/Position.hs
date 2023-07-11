@@ -45,6 +45,7 @@ data T =
     _column :: Int,
     _offset :: Int,
     _end_offset :: Int,
+    _label :: Bytes,
     _file :: Bytes,
     _id :: Bytes }
   deriving (Eq, Ord)
@@ -68,6 +69,9 @@ column_of = maybe_valid . _column
 offset_of = maybe_valid . _offset
 end_offset_of = maybe_valid . _end_offset
 
+label_of :: T -> Maybe Bytes
+label_of = proper_string . _label
+
 file_of :: T -> Maybe Bytes
 file_of = proper_string . _file
 
@@ -78,10 +82,13 @@ id_of = proper_string . _id
 {- make position -}
 
 start :: T
-start = Position 1 1 1 0 Bytes.empty Bytes.empty
+start = Position 1 1 1 0 Bytes.empty Bytes.empty Bytes.empty
 
 none :: T
-none = Position 0 0 0 0 Bytes.empty Bytes.empty
+none = Position 0 0 0 0 Bytes.empty Bytes.empty Bytes.empty
+
+label :: Bytes -> T -> T
+label label pos = pos { _label = label }
 
 put_file :: Bytes -> T -> T
 put_file file pos = pos { _file = file }
@@ -154,6 +161,7 @@ of_properties props =
     _line = get_int props Markup.lineN,
     _offset = get_int props Markup.offsetN,
     _end_offset = get_int props Markup.end_offsetN,
+    _label = get_string props Markup.labelN,
     _file = get_string props Markup.fileN,
     _id = get_string props Markup.idN }
 
@@ -168,6 +176,7 @@ properties_of pos =
   int_entry Markup.lineN (_line pos) ++
   int_entry Markup.offsetN (_offset pos) ++
   int_entry Markup.end_offsetN (_end_offset pos) ++
+  string_entry Markup.labelN (_label pos) ++
   string_entry Markup.fileN (_file pos) ++
   string_entry Markup.idN (_id pos)
 

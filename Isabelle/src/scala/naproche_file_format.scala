@@ -40,8 +40,8 @@ object Naproche_File_Format {
 
     override def prover_options(options: Options): Options =
       options +
-        ("naproche_server_address", server_info.get.address) +
-        ("naproche_server_password", server_info.get.password)
+        ("naproche_server_address=" + server_info.get.address) +
+        ("naproche_server_password=" + server_info.get.password)
 
     override def stop(): Unit = {
       process.terminate()

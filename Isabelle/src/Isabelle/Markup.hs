@@ -21,12 +21,10 @@ module Isabelle.Markup (
 
   completionN, completion, no_completionN, no_completion,
 
-  lineN, end_lineN, offsetN, end_offsetN, fileN, idN, positionN, position,
+  lineN, end_lineN, offsetN, end_offsetN, labelN, fileN, idN, positionN, position,
   position_properties, def_name,
 
   expressionN, expression,
-
-  citationN, citation,
 
   pathN, path, urlN, url, docN, doc,
 
@@ -157,7 +155,8 @@ offsetN, end_offsetN :: Bytes
 offsetN = "offset"
 end_offsetN = "end_offset"
 
-fileN, idN :: Bytes
+labelN, fileN, idN :: Bytes
+labelN = "label"
 fileN = "file"
 idN = "id"
 
@@ -167,7 +166,7 @@ position :: T
 position = markup_elem positionN
 
 position_properties :: [Bytes]
-position_properties = [lineN, offsetN, end_offsetN, fileN, idN]
+position_properties = [lineN, offsetN, end_offsetN, labelN, fileN, idN]
 
 
 {- position "def" names -}
@@ -192,14 +191,6 @@ expressionN = "expression"
 
 expression :: Bytes -> T
 expression kind = (expressionN, if kind == "" then [] else [(kindN, kind)])
-
-
-{- citation -}
-
-citationN :: Bytes
-citationN = "citation"
-citation :: Bytes -> T
-citation = markup_string nameN citationN
 
 
 {- external resources -}
