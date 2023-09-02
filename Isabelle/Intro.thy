@@ -17,12 +17,15 @@ section \<open>Isabelle/Naproche\<close>
 text \<open>
   The Isabelle/Naproche system provides interactive editing and concurrent
   automatic checking of mathematical texts, written in the controlled natural
-  language ForTheL. ForTheL files in \<^verbatim>\<open>.ftl.tex\<close> format use LaTeX symbols and
-  constructs, and may be turned into \<^verbatim>\<open>.pdf\<close> files that resemble ordinary
-  mathematical texts. The development of the Naproche proof checker is carried
-  out at the University of Bonn, coordinated by Peter Koepke
-  (koepke@math.uni-bonn.de). The source code repository is
-  \<^url>\<open>https://github.com/naproche/naproche\<close>
+  language ForTheL. Input files are parsed and transformed into a series of
+  first-order proof tasks to be discharged by external ATPs. Naproche employs
+  the provers E and Vampire that are components of Isabelle.
+
+  ForTheL files in \<^verbatim>\<open>.ftl.tex\<close> format use LaTeX symbols and constructs, and
+  may be turned into \<^verbatim>\<open>.pdf\<close> files that resemble ordinary mathematical texts.
+  The development of the Naproche proof checker is carried out at the
+  University of Bonn, coordinated by Peter Koepke (koepke@math.uni-bonn.de).
+  The source code repository is \<^url>\<open>https://github.com/naproche/naproche\<close>
 
   The homepage of the Isabelle/Naproche system is located at
   \<^url>\<open>https://naproche.github.io/\<close>. It includes general information, a tutorial,
@@ -67,6 +70,15 @@ section \<open>Examples\<close>
 text \<open>
   The folder \<^dir>\<open>$NAPROCHE_HOME/examples\<close> contains a selection of
   formalizations which demonstrate the naturalness and coverage of Naproche.
+  These examples have been checked successfully on mid-range consumer laptops.
+  Checking times vary from a few seconds to up to half an hour, depending on
+  the number and difficulty of proof tasks sent out to an ATP. Checking,
+  however, may fail, because ATP proof searches are restricted by wallclock
+  timeouts and depend significantly on system speeds and states. It may be
+  necessary to increase the standard ATP timeout of 3 seconds to X = 10, 20,
+  or more seconds by inserting \<^verbatim>\<open>[timelimit X]\<close> commands. In stubborn cases,
+  one can try to insert further proof steps.
+
   The Isabelle/jEdit Prover IDE can check \<^verbatim>\<open>.ftl\<close> and \<^verbatim>\<open>.ftl.tex\<close> files;
   corresponding \<^verbatim>\<open>.pdf\<close> files have been produced by regular \<^verbatim>\<open>pdflatex\<close>. Some
   of the examples have been taken over from SAD and are rewritten in the LaTeX
