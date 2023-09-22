@@ -24,3 +24,7 @@ x86_64-windows/
 *.toc
 *.ftl.synctex(busy)
 *.xdv
+*.bbl
+*.bcf
+*.blg
+*.run.xml
