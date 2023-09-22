@@ -11,7 +11,21 @@ dialect of ForTheL, respectively.
 
 ## Current development version
 
+### Changes on ForTheL
+
+* **Changed:** The following keywords are no longer allowed as variable names
+  to avoid certain ambiguity errors:
+
+  `is`, `be`, `are`, `does`, `do`, `has`, `have`, `that`, `with`, `of`,
+  `having`, `such`, `so`, `if`, `iff`, `when`, `and`, `or`
+
+--------------------------------------------------------------------------------
+
+## naproche-20230902 (Isabelle 2023)
+
 ### Changes on the example files
+
+  * **New:** New formalization of Wiedijk's "100 Theorems" (`100_theorems.ftl.tex`)
 
   * **New:** Naproche's built-in separation principle was added to `axioms.ftl`
     and `axioms.ftl.tex`.
@@ -62,14 +76,14 @@ dialect of ForTheL, respectively.
   * **Changed:** (TEX) Primitive expressions inherited from FTL (e.g. `!=` or
     `-<-`) are no longer provided.
 
-  * **Changed:** (TEX)Aa proof method for proofs of top-level theorems is
+  * **Changed:** (TEX) A proof method for proofs of top-level theorems is
     now given via `\begin{proof}[by <method>]` instead of
     `\begin{proof} Proof by <method>.`.
 
   * **Fixed:** (TEX) `#` is a regular character now.
 
 
-### Changes on the ontology of Naproche:
+### Changes on the ontology of Naproche
 
   * **Fixed:** The translation of low-level function definitions now ensures
     that the arguments of defined functions are objects. This is in particular
@@ -111,7 +125,7 @@ dialect of ForTheL, respectively.
 
 ## naproche-20211211 (Isabelle 2021-1)
 
-### Changes on the ontology of Naproche:
+### Changes on the ontology of Naproche
 
   * **New:** `collection` is a new synonym for `class`.
 
@@ -136,58 +150,42 @@ dialect of ForTheL, respectively.
 
       - Functions are maps which are objects:
         ```
-
-        ––––––––––––––––––––––––––––––––––––––––––
         Γ ⊢ aFunction(f) ⟷ (aMap(f) ∧ aObject(f))
         ```
 
       - Sets are classes which are objects:
         ```
-
-        –––––––––––––––––––––––––––––––––––––––
         Γ ⊢ aSet(x) ⟷ (aClass(x) ∧ aObject(x))
         ```
 
       - Elements of classes are objects:
         ```
-        Γ ⊢ aElementOf(x,X)
-        –––––––––––––––––––
-        Γ ⊢ aObject(x)
+        (Γ ⊢ aElementOf(x,X)) ⟹ (Γ ⊢ aObject(x))
         ```
 
       - Domains are classes:
         ```
-
-        ––––––––––––––––––
         Γ ⊢ aClass(Dom(f))
         ```
 
       - Ordered pairs are objects:
         ```
-
-        ––––––––––––––––––
         Γ ⊢ aObject((x,y))
         ```
 
       - Values of maps are objects:
         ```
-
-        –––––––––––––––––
         Γ ⊢ aObject(f(x))
         ```
 
       * Class extensionality:
         ```
-        Γ ⊢ aClass(X) ∧ aClass(Y)
-        –––––––––––––––––––––––––––––––––––––––––––––––––––
-        Γ ⊢ ∀x(aElementOf(x,X) ⟷ aElementOf(x,Y)) ⟶ X = Y
+        (Γ ⊢ aClass(X) ∧ aClass(Y)) ⟹ (Γ ⊢ ∀x(aElementOf(x,X) ⟷ aElementOf(x,Y)) ⟶ X = Y)
         ```
 
       * Map extensionality:
         ```
-        Γ ⊢ aMap(f) ∧ aMap(g)
-        ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
-        Γ ⊢ (Dom(f) = Dom(g) ∧ ∀x(aElementOf(x,Dom(f)) ⟶ f(x) = g(x))) ⟶ f = g
+        (Γ ⊢ aMap(f) ∧ aMap(g)) ⟹ (Γ ⊢ (Dom(f) = Dom(g) ∧ ∀x(aElementOf(x,Dom(f)) ⟶ f(x) = g(x))) ⟶ f = g)
         ```
 
     Note that set and function extensionality are still built-in.
@@ -205,7 +203,7 @@ dialect of ForTheL, respectively.
     throwing errors when used in low-level class and map definitions.
 
 
-### Changes on ForTheL:
+### Changes on ForTheL
 
   * **New:** (TEX) Top-level sections can now be labeled with the `\label{...}`
     command.
@@ -319,7 +317,7 @@ dialect of ForTheL, respectively.
     ```
 
 
-### Changes on the example files:
+### Changes on the example files
 
   * **New:** Additional example files in `examples`:
 
@@ -361,7 +359,7 @@ dialect of ForTheL, respectively.
       - `regular_successor.ftl`, `regular_successor.ftl.tex`
 
 
-### Changes on the LaTeX styles:
+### Changes on the LaTeX styles
 
   * **New:** Additional style files:
 
@@ -379,7 +377,7 @@ dialect of ForTheL, respectively.
     `\text{...}` command is no longer supported.
 
 
-### Misc changes:
+### Misc changes
 
   * **Changed:** The test file directory `examples/test` is moved to
   `test/examples`.
