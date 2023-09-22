@@ -9,7 +9,6 @@ x86_64-linux/
 x86_64-windows/
 
 # Ignore profiling output
-*.aux
 *.hp
 *.prof
 *.ps
@@ -17,7 +16,6 @@ x86_64-windows/
 
 # TEX-related files.
 *.fdb_latexmk
-*.aux
 *.pdf
 *.log
 *.fls
@@ -26,8 +24,3 @@ x86_64-windows/
 *.toc
 *.ftl.synctex(busy)
 *.xdv
-
-# Exceptions
-!examples/arithmetic/arithmetic.aux
-!examples/foundations/foundations.aux
-!examples/set-theory/set-theory.aux
