@@ -461,7 +461,7 @@ hidden = do
 var :: FTL PosVar
 var = do
   pos <- getPos
-  v <- satisfy (\s -> isPlainVarName s || isTexVarName s)
+  v <- satisfy (\s -> s `notElem` keywords && (isPlainVarName s || isTexVarName s))
   primes <- Text.concat . fmap (const "'") <$> many (symbolNotAfterSpace "'")
   let v' = v <> primes
   return (PosVar (VarConstant v') pos)
@@ -601,6 +601,29 @@ such = tokenOf' ["such", "so"]
 -- | @"in" | "\\in"@
 elementOf :: FTL ()
 elementOf = token' "in" <|> texCommand "in"
+
+-- | Keywords not allowed as variable names
+keywords :: [Text]
+keywords = [
+    "is",
+    "be",
+    "are",
+    "does",
+    "do",
+    "has",
+    "have",
+    "that",
+    "with",
+    "of",
+    "having",
+    "such",
+    "so",
+    "if",
+    "iff",
+    "when",
+    "and",
+    "or"
+  ]
 
 
 -- * Greek letters
