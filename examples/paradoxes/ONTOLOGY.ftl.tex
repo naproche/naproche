@@ -1,0 +1,45 @@
+\begin{forthel}
+  [readtex \path{vocabulary.ftl.tex}]
+  [readtex \path{macros.ftl.tex}]
+  [readtex \path{axioms.ftl.tex}]
+\end{forthel}
+
+\begin{forthel}
+  \begin{signature*}
+    A person is a notion.
+  \end{signature*}
+
+  \begin{signature*}
+    A man is a person.
+  \end{signature*}
+
+  \begin{signature*}
+    Let $P, P'$ be persons.
+    $P$ shaves $P'$ is an atom.
+  \end{signature*}
+
+  Let $P$ shaves himself stand for $P$ shaves $P$.
+
+  \begin{signature*}
+    Let $P$ be a person.
+    $P$ is drinking is an atom.
+  \end{signature*}
+
+  \begin{signature*}
+    Let $P$ be a person and $A$ be an object.
+    $P$ is inside $A$ is a relation.
+  \end{signature*}
+
+  \begin{signature*}
+    A proposition is an object.
+  \end{signature*}
+
+  \begin{signature*}
+    Let $p$ be a proposition.
+    $p$ is true is an atom.
+  \end{signature*}
+
+  \begin{definition*}
+    A system of propositions is a class $P$ such that every element of $P$ is a proposition.
+  \end{definition*}
+\end{forthel}

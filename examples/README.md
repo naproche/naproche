@@ -23,6 +23,24 @@ spectrum reaches from recreational puzzles to undergraduate-level theorems:
 
 * geometry - beginnings of Tarski geometry
 
+* paradoxes - some well-known mathematical and logical paradoxes
+
+  - barber - The Barber Paradox
+
+  - burali-forti - Burali-Forti's Paradox
+
+  - cantor_1 - Cantor's First Paradox
+
+  - cantor_2 - Cantor's Second Paradox
+
+  - drinker - The Drinker Paradox
+
+  - hilbert - Hilbert's Paradox
+
+  - russell-myhill - The Russell-Myhill Paradox
+
+  - russell - Russell's Paradox
+
 * set-theory - elementary set theory
 
 * agatha - a logic puzzle set in "Dreadsbury Mansion"

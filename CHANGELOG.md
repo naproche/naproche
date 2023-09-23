@@ -11,6 +11,13 @@ dialect of ForTheL, respectively.
 
 ## Current development version
 
+### Changes on the example files
+
+  * **New:** New formalization of Hilbert's Paradox.
+
+  * **Changed:** Paradoxes have been moved to `examples/paradoxes/`.
+
+
 ### Changes on ForTheL
 
   * **Changed:** The following keywords are no longer allowed as variable names

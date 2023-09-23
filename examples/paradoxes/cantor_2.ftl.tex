@@ -1,0 +1,40 @@
+\documentclass[english]{article}
+\usepackage[type={CC},modifier={zero},version={1.0},imagemodifier=-80x15]{doclicense}
+\usepackage{biblatex}
+\usepackage{xr}
+\usepackage[foundations]{../../lib/tex/naproche}
+\addbibresource{REFERENCES.bib}
+\externaldocument{../set-theory/set-theory}
+\begin{document}
+\title{Cantor's Second Paradox in \Naproche}
+\author{Marcel Schütz}
+\date{2023}
+\pagenumbering{gobble}
+\maketitle
+
+\noindent \emph{Cantor's Second Paradox} denotes the observation that the collection of all \href{https://en.wikipedia.org/wiki/Set_(mathematics)}{sets} cannot be a \href{https://en.wikipedia.org/wiki/Set_(mathematics)}{set} itself.
+It was shown by \href{https://en.wikipedia.org/wiki/Georg_Cantor}{Georg Cantor} in 1899 via his famous theorem stating that the \href{https://en.wikipedia.org/wiki/Cardinality}{cardinality} of any \href{https://en.wikipedia.org/wiki/Set_(mathematics)}{set} is strictly smaller than the \href{https://en.wikipedia.org/wiki/Cardinality}{cardinality} of its \href{https://en.wikipedia.org/wiki/Power_set}{powerset} \cite[chapter 163]{Cantor1991}.
+
+\begin{forthel}
+  %[prove off][check off]
+  [readtex \path{set-theory/sections/06_cardinals.ftl.tex}]
+  %[prove on][check on]
+
+  \begin{theorem*}[Cantor's Second Paradox]\label{cantor_paradox_2}
+    There exists no set that contains all sets.
+  \end{theorem*}
+  \begin{proof}
+    Assume the contrary.
+    Consider a set $V$ that contains all sets.
+    Then $\pow(V)$ is a set.
+    Hence $\pow(V)$ is a subset of $V$.
+    Thus $|\pow(V)| \leq |V|$.
+    Contradiction.
+    Indeed $|x| < |\pow(x)|$ for any set $x$ (by \nameref{SET_THEORY_06_914271456198656}).
+  \end{proof}
+\end{forthel}
+
+\printbibliography
+\vfill
+\doclicenseThis
+\end{document}

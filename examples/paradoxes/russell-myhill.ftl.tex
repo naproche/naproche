@@ -1,0 +1,44 @@
+\documentclass[english]{article}
+\usepackage[type={CC},modifier={zero},version={1.0},imagemodifier=-80x15]{doclicense}
+\usepackage{biblatex}
+\usepackage{../../lib/tex/naproche}
+\addbibresource{REFERENCES.bib}
+\begin{document}
+\title{The Russell-Myhill Paradox in \Naproche}
+\author{Marcel Schütz}
+\date{2023}
+\pagenumbering{gobble}
+\maketitle
+
+\noindent The \href{https://en.wikipedia.org/wiki/John_Myhill#Contributions}{\emph{Russell-Myhill Paradox}} is a paradox discovered by \href{https://en.wikipedia.org/wiki/Bertrand_Russell}{Bertrand Russell} which states that two systems of \href{https://en.wikipedia.org/wiki/Proposition}{propositions} with the same so-called \emph{logical product} are not necessarily equal.
+It was discussed in \href{https://en.wikipedia.org/wiki/Bertrand_Russell}{Russell's} 1903 \href{https://en.wikipedia.org/wiki/The_Principles_of_Mathematics}{\emph{Principles of Mathematics}} \cite[Appendix B]{Russell1903} and rediscovered in 1958 by \href{https://en.wikipedia.org/wiki/John_Myhill}{John Myhill} \cite{Myhill1958}.
+
+\begin{forthel}
+  [readtex \path{paradoxes/ONTOLOGY.ftl.tex}]
+
+  \begin{signature*}
+    Let $P$ be a system of propositions.
+    The logical product of $P$ is a proposition $p$ such that $p$ is true iff every element of $P$ is true.
+  \end{signature*}
+
+  Let $\sqcap P$ denote the logical product of $P$.
+
+  \begin{theorem*}[Russell-Myhill Paradox]\label{russell_myhill_paradox}
+    It is wrong that
+    \[ \sqcap P = \sqcap Q \implies P = Q \]
+    for all systems of propositions $P, Q$.
+  \end{theorem*}
+  \begin{proof}
+    Assume the contrary.
+    Define $Q = \{ q \mid$ there exists a system of propositions $P$ such that $q = \sqcap P$ and $q \notin P \}$.
+    Consider $q = \sqcap Q$.
+    Then for any system of propositions $P$ such that $\sqcap q = P$ we have $P = Q$.
+    Hence $q \in Q$ iff $q \notin Q$.
+    Contradiction.
+  \end{proof}
+\end{forthel}
+
+\printbibliography
+\vfill
+\doclicenseThis
+\end{document}
