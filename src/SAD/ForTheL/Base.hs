@@ -566,7 +566,7 @@ the = token' "the"
 iff :: FTL ()
 iff = token' "iff" <|> mapM_ token' ["if", "and", "only", "if"] <|> mapM_ token' ["when", "and", "only", "when"]
 
--- | Q"that"@
+-- | @"that"@
 that :: FTL ()
 that = token' "that"
 
