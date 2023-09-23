@@ -13,11 +13,11 @@ dialect of ForTheL, respectively.
 
 ### Changes on ForTheL
 
-* **Changed:** The following keywords are no longer allowed as variable names
-  to avoid certain ambiguity errors:
+  * **Changed:** The following keywords are no longer allowed as variable names
+    to avoid certain ambiguity errors:
 
-  `is`, `be`, `are`, `does`, `do`, `has`, `have`, `that`, `with`, `of`,
-  `having`, `such`, `so`, `if`, `iff`, `when`, `and`, `or`
+    `is`, `be`, `are`, `does`, `do`, `has`, `have`, `that`, `with`, `of`,
+    `having`, `such`, `so`, `if`, `iff`, `when`, `and`, `or`
 
 --------------------------------------------------------------------------------
 
