@@ -225,14 +225,14 @@ gnotion :: FTL (Formula -> Formula, Formula, Set PosVar)
   -> FTL Formula -> FTL (Formula -> Formula, Formula, Set PosVar)
 gnotion nt ra = do
   ls <- fmap reverse la; (q, f, vs) <- nt;
-  rs <- opt [] $ fmap (:[]) $ ra <|> rc
+  rc <- opt [] $ fmap (:[]) (conjChain isPredicate)
+  rs <- opt [] $ fmap (:[]) $ ra <|> thatClause
   -- we can use <|> here because every ra in use begins with "such"
-  return (q, foldr1 And $ f : ls ++ rs, vs)
+  return (q, foldr1 And $ f : ls ++ rc ++ rs, vs)
   where
     la = opt [] $ liftA2 (:) lc la
     lc = predicate primUnAdj </> multiPredicate primMultiUnAdj
-    rc = (that >> conjChain doesPredicate <?> "that clause") <|>
-      conjChain isPredicate
+    thatClause = that >> conjChain doesPredicate <?> "that clause"
 
 
 anotion :: FTL (Formula -> Formula, Formula)
