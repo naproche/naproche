@@ -1,0 +1,10 @@
+*.sms
+*.sref
+
+.img/
+errors/
+export/
+content/
+narration/
+relational/
+xhtml/

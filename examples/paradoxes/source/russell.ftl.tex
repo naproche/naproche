@@ -1,0 +1,33 @@
+\documentclass{stex}
+\libinput{preamble}
+\begin{document}
+\title{Russell's Paradox in \Naproche}
+\author{Marcel Schütz}
+\date{2023}
+\maketitle
+\begin{smodule}{russell}
+\usemodule{mod?bertrand-russell}
+\usemodule{mod?russell-paradox}
+\begin{sparagraph}
+  \vardef{phivar}[args=1]{\maincomp{\varphi}\dobrackets{#1}}
+  \vardef{xvar}{x}
+  \emph{\sn{Russell's Paradox}} is a set-theoretical paradox discovered by \sr{Russell}{Bertrand Russell} around 1902 \cite[chapter XV]{Frege1980} which shows that there exist statements $\phivar!$ whose extension $\{\xvar\mid\phivar{\xvar}\}$ cannot constitute a set – or in other words: Not every class is a set.
+\end{sparagraph}
+
+\begin{forthel}
+  [readtex \path{paradoxes/source/preliminaries/ontology.ftl.tex}]
+
+  \begin{theorem*}[Russell's Paradox]\label{russell_paradox}
+    It is wrong that every class is a set.
+  \end{theorem*}
+  \begin{proof}
+    Assume the contrary.
+    Define $R = \{ x \mid x$ is a set such that $x \notin x \}$.
+    Then $R$ is a set.
+    Hence $R \in R$ iff $R \notin R$.
+    Contradiction.
+  \end{proof}
+\end{forthel}
+\end{smodule}
+\printbibliography
+\end{document}

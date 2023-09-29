@@ -15,7 +15,8 @@ dialect of ForTheL, respectively.
 
   * **New:** New formalization of Hilbert's Paradox.
 
-  * **Changed:** Paradoxes have been moved to `examples/paradoxes/`.
+  * **Changed:** Paradoxes have been moved to `examples/paradoxes/` which
+    constitutes an sTeX archive.
 
 
 ### Changes on ForTheL

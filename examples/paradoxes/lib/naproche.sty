@@ -1,0 +1,145 @@
+\NeedsTeXFormat{LaTeX2e}
+
+\RequirePackage{amsmath}
+\RequirePackage{amsthm}
+\RequirePackage{amsfonts}
+\RequirePackage{etoolbox}
+\RequirePackage{xspace}
+\RequirePackage{xcolor}
+\RequirePackage{mdframed}
+\RequirePackage{hyperref}
+\RequirePackage{cleveref}
+\RequirePackage[nolabel, inline]{showlabels}
+
+
+% Links
+% =====
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  urlcolor=blue
+}
+
+
+% Printable labels
+% ================
+
+% `\printlabel' behaves exactly as `\label' but its argument is printed in the
+% PDF.
+\showlabels{printlabel}
+\newcommand{\printlabel}[1]{\label{#1}}
+
+
+% Top-level sections
+% ==================
+
+% Numbered environments for top-level sections
+\newtheoremstyle{formalized}% name of the style to be used
+    {4pt}% measure of space to leave above the theorem. E.g.: 3pt
+    {4pt}% measure of space to leave below the theorem. E.g.: 3pt
+    {\normalfont} % name of font to use in the body of the theorem
+    {0pt}% measure of space to indent
+    {\bfseries}% name of head font
+    {}% punctuation between head and body
+    { }% space after theorem head; " " = normal inter-word space
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}.}
+
+% Unnumbered environments for top-level sections
+\newtheoremstyle{unnumbered}% name of the style to be used
+  {4pt}% measure of space to leave above the theorem. E.g.: 3pt
+  {4pt}% measure of space to leave below the theorem. E.g.: 3pt
+  {\normalfont} % name of font to use in the body of the theorem
+  {0pt}% measure of space to indent
+  {\bfseries}% name of head font
+  {}% punctuation between head and body
+  { }% space after theorem head; " " = normal inter-word space
+  {\thmname{#1}\thmnote{ (#3)}.}
+
+\theoremstyle{formalized}
+\newcounter{theoremcount}
+
+\newtheorem{axiom}[theoremcount]{Axiom}
+\newtheorem{corollary}[theoremcount]{Corollary}
+\newtheorem{definition}[theoremcount]{Definition}
+\newtheorem{fact}[theoremcount]{Fact}
+\newtheorem{lemma}[theoremcount]{Lemma}
+\newtheorem{proposition}[theoremcount]{Proposition}
+\newtheorem{remark}[theoremcount]{Remark}
+\newtheorem{signature}[theoremcount]{Signature}
+\newtheorem{theorem}[theoremcount]{Theorem}
+
+\newtheorem*{definition*}{Definition}
+\newtheorem*{signature*}{Signature}
+\newtheorem*{axiom*}{Axiom}
+\newtheorem*{theorem*}{Theorem}
+\newtheorem*{proposition*}{Proposition}
+\newtheorem*{lemma*}{Lemma}
+\newtheorem*{corollary*}{Corollary}
+
+
+% ForTheL environment
+% ===================
+
+\newenvironment{forthel}{%
+  \begin{mdframed}[backgroundcolor=lightgray!30, linecolor=lightgray!30]%
+  \setlength{\parindent}{0pt}%
+}{%
+  \end{mdframed}%
+}
+
+
+% Proofs
+% ======
+
+\usepackage{amssymb,amsthm}
+\renewcommand{\qedsymbol}{\ensuremath{\Box}}
+
+\renewenvironment{proof}[1][\unskip]{%
+  \noindent\textit{Proof#1. }%
+  \relax%
+}
+{%
+  \qedsymbol
+}
+
+
+% Comprehension terms
+% ===================
+
+\RequirePackage{linegoal}
+
+% Gets the left-hand and right-hand side, resp., of an expression of the form
+% "foo|bar"
+\def\getfirst#1|#2\relax{#1}
+\def\getsecond#1|#2\relax{#2}
+
+% Comprehension term: "\class{... | ...}".
+% Naproche allows to enclose the RHS within "\text{...}", e.g.
+% "\class{x | \text{$x$ is greater than $y$}}".
+% Use "\classtext{...}" instead of "\text{...}" to enable automatic line breaks
+% in the RHS.
+\newcommand{\class}[1]{%
+  \left\{%
+  \getfirst#1\relax%
+  ~\middle\vert~%
+  \linebreak[1]%
+  \getsecond#1\relax%
+  \right\}%
+}
+
+\newcommand{\classtext}[1]{\parbox{\linegoal}{#1}}
+
+
+% Predefined symbols
+% ==================
+
+\newcommand{\dom}{\operatorname{dom}}
+\newcommand{\fun}{\mathrm{\lambda}}
+
+
+% Naproche logo
+% =============
+
+\newcommand{\Naproche}{\ensuremath{\mathbb{N}}aproche\xspace}
+

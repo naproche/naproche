@@ -1,16 +1,16 @@
-\documentclass[english]{article}
-\usepackage[type={CC},modifier={zero},version={1.0},imagemodifier=-80x15]{doclicense}
-\usepackage{biblatex}
-\usepackage[foundations]{../../lib/tex/naproche}
-\addbibresource{REFERENCES.bib}
+\documentclass{stex}
+\libinput{preamble}
 \begin{document}
 \title{Hilbert's Paradox in \Naproche}
 \author{Marcel Schütz}
 \date{2023}
-\pagenumbering{gobble}
 \maketitle
-
-\noindent \href{https://en.wikipedia.org/wiki/Von_Neumann_universe#Hilbert's_paradox}{\emph{Hilbert's paradox}}, discovered around 1900 by \href{https://en.wikipedia.org/wiki/David_Hilbert}{David Hilbert}, demonstates that there cannot exists a \href{https://en.wikipedia.org/wiki/Set_(mathematics)}{set} that is closed under \href{https://en.wikipedia.org/wiki/Power_set}{powersets} and under \href{https://en.wikipedia.org/wiki/Union_(set_theory)}{unions} of arbitrary \href{https://en.wikipedia.org/wiki/Subset}{subsets} \cite{PeckhausKahl2002}.
+\begin{smodule}{hilbert}
+\usemodule{mod?david-hilbert}
+\usemodule{mod?hilbert-paradox}
+\begin{sparagraph}
+  \emph{\sn{Hilbert's Paradox}}, discovered around 1900 by \sr{Hilbert}{David Hilbert}, demonstates that there cannot exists a set that is closed under powerset and under union of arbitrary subset \cite{PeckhausKahl2002}.
+\end{sparagraph}
 
 \begin{forthel}
   %[prove off][check off]
@@ -30,7 +30,7 @@
   \begin{theorem*}[Hilbert's Paradox]\label{hilbert_paradox}
     There exists no system of sets that is closed under powersets and closed under unions.
   \end{theorem*}
-  \begin{proof}[by contradiction]
+  \begin{proof}[ by contradiction]
     Assume the contrary.
     Consider a system of sets $S$ that is closed under powersets and closed under unions.
     We have $S \subseteq S$.
@@ -40,13 +40,15 @@
   \end{proof}
 \end{forthel}
 
-\noindent Using \href{https://en.wikipedia.org/wiki/Von_Neumann_universe#Hilbert's_paradox}{Hilbert's paradox} it can further be shown that there exists no \href{https://en.wikipedia.org/wiki/Universal_set}{universal set}.
+\begin{sparagraph}
+  Using \sn{Hilbert's Paradox} it can further be shown that there exists no universal set.
+\end{sparagraph}
 
 \begin{forthel}
   \begin{corollary*}
     There exists no set that contains all sets.
   \end{corollary*}
-  \begin{proof}[by contradiction]
+  \begin{proof}[ by contradiction]
     Assume the contrary.
     Consider a set $X$ that contains all sets.
     Define $V = \{ x \in X \mid x$ is a set$\}$.
@@ -54,8 +56,6 @@
     Hence $V$ is not a set (by \nameref{hilbert_paradox}).
   \end{proof}
 \end{forthel}
-
+\end{smodule}
 \printbibliography
-\vfill
-\doclicenseThis
 \end{document}

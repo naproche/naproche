@@ -1,24 +1,24 @@
-\documentclass[english]{article}
-\usepackage[type={CC},modifier={zero},version={1.0},imagemodifier=-80x15]{doclicense}
-\usepackage{biblatex}
+\documentclass{stex}
+\libinput{preamble}
 \usepackage{xr}
-\usepackage[settheory]{../../lib/tex/naproche}
-\addbibresource{REFERENCES.bib}
 \externaldocument{burali-forti.ftl}
 \begin{document}
 \title{Cantor's First Paradox in \Naproche}
 \author{Marcel Schütz}
 \date{2023}
-\pagenumbering{gobble}
 \maketitle
-
-\noindent \href{https://en.wikipedia.org/wiki/Cantor%27s_paradox}{\emph{Cantor's First Paradox}}, discovered by \href{https://en.wikipedia.org/wiki/Georg_Cantor}{Georg Cantor} in 1897, states that there cannot exists a \href{https://en.wikipedia.org/wiki/Set_(mathematics)}{set} that contains all \href{https://en.wikipedia.org/wiki/Cardinal_number}{cardinal numbers} \cite[chapter 156]{Cantor1991}.
+\begin{smodule}{cantor-1}
+\usemodule{mod?georg-cantor}
+\usemodule{mod?cantor-paradox-1}
+\begin{sparagraph}
+  \emph{\sn{Cantor's First Paradox}}, discovered by \sr{Cantor}{Georg Cantor} in 1897, states that there cannot exists a set that contains all cardinal numbers \cite[chapter 156]{Cantor1991}.
+\end{sparagraph}
 
 \begin{forthel}
   %[prove off][check off]
   [readtex \path{set-theory/sections/06_cardinals.ftl.tex}]
 
-  [readtex \path{paradoxes/burali-forti.ftl.tex}]
+  [readtex \path{paradoxes/source/burali-forti.ftl.tex}]
   %[prove on][check on]
 
   \begin{theorem*}[Cantor's First Paradox]\label{cantor_paradox_1}
@@ -43,8 +43,6 @@
     Indeed $O$ contains every ordinal.
   \end{proof}
 \end{forthel}
-
+\end{smodule}
 \printbibliography
-\vfill
-\doclicenseThis
 \end{document}

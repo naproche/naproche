@@ -1,0 +1,13 @@
+\documentclass{stex}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{russell-paradox}
+\usemodule{mod?bertrand-russell}
+\symdecl*{Russell's Paradox}
+\begin{sparagraph}[style=symdoc]
+  \vardef{phivar}[args=1]{\maincomp{\varphi}\dobrackets{#1}}
+  \vardef{xvar}{x}
+  \definame{Russell's Paradox} is a set-theoretical paradox discovered by \sr{Russell}{Bertrand Russell} around 1902 which shows that there exist statements $\phivar!$ whose extension $\{\xvar\mid\phivar{\xvar}\}$ cannot constitute a set.
+\end{sparagraph}
+\end{smodule}
+\end{document}

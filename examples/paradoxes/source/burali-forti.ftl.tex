@@ -1,0 +1,34 @@
+\documentclass{stex}
+\libinput{preamble}
+\begin{document}
+\title{Burali-Forti's Paradox in \Naproche}
+\author{Marcel Schütz}
+\date{2023}
+\maketitle
+\begin{smodule}{burali-forti}
+\usemodule{mod?burali-forti-paradox}
+\usemodule{mod?cesare-burali-forti}
+\begin{sparagraph}
+  \emph{\sn{Burali-Forti's Paradox}}, named after \sr{Burali-Forti}{Cesare Burali-Forti}, demonstates that there cannot exists a set that contains all ordinal number \cite{BuraliForti1897}.
+\end{sparagraph}
+
+\begin{forthel}
+  %[prove off][check off]
+  [readtex \path{set-theory/sections/02_ordinals.ftl.tex}]
+  %[prove on][check on]
+
+  \begin{theorem*}[Burali-Forti's Paradox]\label{burali_forti_paradox}
+    There exists no set that contains all ordinals.
+  \end{theorem*}
+  \begin{proof}[ by contradiction]
+    Assume the contrary.
+    Consider a set $O$ that contains all ordinals.
+    Then $O$ is transitive and every element of $O$ is transitive.
+    Hence $O$ is an ordinal.
+    Thus $O \in O$.
+    Contradiction.
+  \end{proof}
+\end{forthel}
+\end{smodule}
+\printbibliography
+\end{document}
