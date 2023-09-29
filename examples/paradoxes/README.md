@@ -1,4 +1,4 @@
-# Mathematical Paradoxes
+# Paradoxes
 
 A collection of well-known mathematical and logical paradoxes.
 
@@ -24,24 +24,32 @@ A collection of well-known mathematical and logical paradoxes.
 
 ## Usage
 
-...
+This directory forms an sTeX archive.
+To be able to convert the `.tex` files in the `source` directory to PDF or HTML,
+follow the below instructions.
 
-Mount your `naproche` directory to your `MathHub` directory (a simple symlink
-might not suffice), e.g. via
+1.  Set up sTeX and a local `MathHub` directory as described in section *1
+    Introduction & Setup* of [The sTeX3 Package Collection][sTeX-doc].
 
-```
-mount <path-to-naproche> <path-to-MathHub>/naproche
-```
+2.  Mount your `naproche` directory to your `MathHub` directory (a simple
+    symlink might not suffice), e.g. via
 
-where `<path-to-naproche` and `<path-to-MathHub` have to be replaced with the
-(absolute) paths to your `naproche` and `MathHub` directory, respectively.
+    ```
+    mount <path-to-naproche> <path-to-MathHub>/naproche
+    ```
 
-**Optional:** To automatically your `naproche` directory to your `MathHub`
-directory at boot you can add the following line to your `/etc/fstab`:
+    where `<path-to-naproche>` and `<path-to-MathHub>` have to be replaced with
+    the (absolute) paths to your `naproche` and `MathHub` directory,
+    respectively.
 
-```
-<path-to-naproche> <path-to-MathHub>/naproche none bind
-```
+    **Optional:** To automatically mount your `naproche` directory to your
+    `MathHub` directory at boot you can add the following line to your
+    `/etc/fstab` (again with the appropriate replacements for
+    `<path-to-naproche>` and `<path-to-MathHub>`):
+
+    ```
+    <path-to-naproche> <path-to-MathHub>/naproche none bind
+    ```
 
 
 ## Copyright
@@ -50,4 +58,5 @@ All formalizations in this directory (and its subdirectories) are licensed under
 a [Creative Commons “CC0 1.0 Universal”][CC0] license.
 
 
+[sTeX-doc]: <https://github.com/slatex/sTeX/blob/main/doc/stex-doc.pdf>
 [CC0]: <https://creativecommons.org/publicdomain/zero/1.0/deed.en>
