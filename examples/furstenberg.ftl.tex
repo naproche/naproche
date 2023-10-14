@@ -2,9 +2,17 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[british]{babel}
-\usepackage{xr}
-\usepackage[foundations, arithmetic]{../lib/tex/naproche}
 
+\usepackage{meta-inf/lib/naproche-logo}
+\usepackage{meta-inf/lib/naproche}
+\input{foundations/lib/preamble}
+\input{arithmetic/lib/preamble}
+
+\usepackage{biblatex}
+\usepackage{csquotes}
+\addbibresource{meta-inf/lib/references.bib}
+
+\usepackage{xr}
 \externaldocument{arithmetic/arithmetic}
 
 \newcommand{\N}{\mathrm{N}}
@@ -294,9 +302,5 @@ Marcel Schütz (2021 - 2022)}
     \end{proof}
   \end{forthel}
 
-  \begin{thebibliography}{1}
-    \bibitem{Furstenberg1955} Harry Furstenberg (1955),
-      \textit{On the Infinitude of Primes};
-      The American Mathematical Monthly, vol. 62, no. 5
-  \end{thebibliography}
+  \printbibliography
 \end{document}

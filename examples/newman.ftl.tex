@@ -2,7 +2,8 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage{../lib/tex/naproche}
+\usepackage{meta-inf/lib/naproche-logo}
+\usepackage{meta-inf/lib/naproche}
 
 \newcommand{\reduces}[1]{\to_{#1}}
 \newcommand{\reducesTC}[1]{\to_{#1}^{+}}
@@ -110,7 +111,7 @@ Adrian De Lon (typesetting, 2021)}
         Take $w$ such that $u,v \reducesTCR{R} w$.
         Take a normal form $d$ of $w$ in $R$.
 
-        $b \reducesTCR{R} d$. Indeed take $x$ such that $b,d \reducesTCR{R} x$. 
+        $b \reducesTCR{R} d$. Indeed take $x$ such that $b,d \reducesTCR{R} x$.
         $c \reducesTCR{R} d$. Indeed take $y$ such that $c,d \reducesTCR{R} y$.
       End.
     \end{proof}

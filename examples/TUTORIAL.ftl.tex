@@ -2,7 +2,8 @@
 \usepackage{amssymb}
 \usepackage{exercises}
 \usepackage{url}
-\usepackage{../lib/tex/naproche}
+\usepackage{meta-inf/lib/naproche-logo}
+\usepackage{meta-inf/lib/naproche}
 
 \author{Peter Koepke\\University of Bonn}
 
@@ -14,6 +15,12 @@
 \newcommand{\Seq}[2]{\{#1,\dots,#2\}}
 \newcommand{\Finset}[3]{\{#1_{#2},\dots,#1_{#3}\}}
 \newcommand{\Primes}{\mathbb{P}}
+
+\newenvironment{greybox}{
+  \begin{forthel}
+}{
+  \end{forthel}
+}
 
 \maketitle
 
@@ -30,37 +37,37 @@ running \Naproche{} server.
 
 Ideally, a user edits a mathematical text in \LaTeX{}, and
 \Naproche{} automatically checks the correctness of those parts which are
-in \verb+\begin+\verb+{forthel}+ ... \verb+\end{forthel}+ 
+in \verb+\begin+\verb+{forthel}+ ... \verb+\end{forthel}+
 environments and gives
 feedback to the user, similar to a continuous spellchecker.
 Although that goal is still far away, the current \Naproche{} offers
-the possibility to write university-level mathematical texts 
+the possibility to write university-level mathematical texts
 in a natural language and style whose ForTheL segments are logically
 verified by \Naproche{}. In this tutorial and in example texts
 which are distributed together with \Naproche{} these segments
 are typeset on a grey background.
 
-\Naproche{} is a derivative of the ground-breaking System 
-for Automated Deduction (SAD). \Naproche{} still supports the 
-ASCII format \path{.ftl} of SAD which allows rapid 
+\Naproche{} is a derivative of the ground-breaking System
+for Automated Deduction (SAD). \Naproche{} still supports the
+ASCII format \path{.ftl} of SAD which allows rapid
 experiments without worrying about LaTeX particulars, and we
-use that format for a Quick Start and some exercises. 
+use that format for a Quick Start and some exercises.
 
 This tutorial is an introduction to the principles and
-use of the \Naproche{} prover. After the Quick Start and 
-some general information we explain 
+use of the \Naproche{} prover. After the Quick Start and
+some general information we explain
 ForTheL commands and statements and the structuring of ForTheL texts
-along a proof of the infinitude of primes. Actually the tutorial is 
-a version of Euclid's proof, preceded by 
+along a proof of the infinitude of primes. Actually the tutorial is
+a version of Euclid's proof, preceded by
 necessary number-theoretic and set-theoretic preliminaries.
 After studying this material, a reader should be able to understand the
 other example texts and start writing similar formalizations.
 Let us, however, warn the reader that writing formally complete
-and unambiguous mathematical texts in a readable natural language 
+and unambiguous mathematical texts in a readable natural language
 is subtle and requires ample exercise, as one may already guess by
 looking at legal texts.
 
-We suggest that the tutorial is read as pdf and simultaneously followed 
+We suggest that the tutorial is read as pdf and simultaneously followed
 interactively in the Isabelle
 PIDE (Proof Interactive Development Environment), with the source
 \path{TUTORIAL.ftl.tex} opened in one buffer, using other buffers
@@ -152,7 +159,7 @@ a natural number. This can be seen in the translation:
 \verb+((HeadTerm :: v0 = 0) implies aNaturalNumber(v0))+.
 
 \item \verb/Signature. Assume that k,l are natural numbers./\\
-\verb/k + l is a natural number./\\ 
+\verb/k + l is a natural number./\\
 generates an
 internal binary function symbol \verb/+/. The translation
 shows that the (universally quantified) variables \verb/k/ and
@@ -189,11 +196,11 @@ the first-order format TPTP:
 fof(m_,hypothesis,( ! [W0] : (aNaturalNumber(W0) => aObject(W0)))).
 fof(m_,hypothesis,aNaturalNumber(sz0)).
 fof(m_,hypothesis,aNaturalNumber(sz1)).
-fof(m_,hypothesis,( ! [W0] : ( ! [W1] : ((aNaturalNumber(W0) & 
+fof(m_,hypothesis,( ! [W0] : ( ! [W1] : ((aNaturalNumber(W0) &
       aNaturalNumber(W1)) => aNaturalNumber(sdtpldt(W0,W1)))))).
 fof(m_,hypothesis,((sz2 = sdtpldt(sz1,sz1)) & ( ! [W0] :
       ((W0 = sdtpldt(sz1,sz1)) => (W0 = sz2))))).
-fof(m_,hypothesis,((sz3 = sdtpldt(sz2,sz1)) & ( ! [W0] : 
+fof(m_,hypothesis,((sz3 = sdtpldt(sz2,sz1)) & ( ! [W0] :
       ((W0 = sdtpldt(sz2,sz1)) => (W0 = sz3))))).
 fof(m_,hypothesis,( ! [W0] : ( ! [W1] : ( ! [W2] :
       (((aNaturalNumber(W0) & aNaturalNumber(W1)) & aNaturalNumber(W2))
@@ -785,7 +792,7 @@ prove the binomial formula for $(m+n)^2$.
 Definitions of functions and constants usually contain
 implicit postulates corresponding to the existence
 and uniquess-properties of function values and constants. In
-the above definition of the difference ($-$), the condition for 
+the above definition of the difference ($-$), the condition for
 $l$ should be
 satisfiable by a unique natural number. This is however \textit{not}
 checked by \Naproche, so that the well-definedness of the
@@ -916,7 +923,7 @@ been treated right. E.g., although the number $0$ is quite
 uninteresting for the study of prime numbers, we still have to
 deal with $0$-cases or explicitly request that terms are
 nonzero. If a text with non-trivial mathematical content checks
-unexpectedly fast then one should become suspicious, because 
+unexpectedly fast then one should become suspicious, because
 eprover may exploit a contradiction to prove every proposition via
 \textit{ex falso quodlibet}.
 
@@ -925,16 +932,16 @@ To find inconsistencies it is helpful to try to prove
 \noindent in various places of a text. If the lemma is validated by
 \Naproche{} then one has to investigate further. Contradiction-
 lemmas can be quickly de-activated by commenting out
-with \verb+%+.. They can also be used to force rechecking of 
+with \verb+%+.. They can also be used to force rechecking of
 the text: uncomment
-the lemma and then comment it again; this will lead to rechecking 
+the lemma and then comment it again; this will lead to rechecking
 from the position of the lemma onwards.
 
 
 \section{Linear and Discrete Orders}
 
 We need more axiomatic assumptions for the ordering of the natural numbers. The axioms
-so far do not guarantee that the ordering is linear. 
+so far do not guarantee that the ordering is linear.
 So we continue:
 
 \begin{forthel}
@@ -960,9 +967,9 @@ symbol $\prec$ for a universal inductive relation: if
 the property $P$ is \textit{inductive} along $\prec$, i.e., if at any
 point $m$ property $P$ is inherited at $m$ provided all
 $\prec$-predecessors of $m$ satisfy $P$, then $P$ holds everywhere.
-More formally the general induction principle for the relation 
+More formally the general induction principle for the relation
 $\prec$ reads:
-\begin{quotation} 
+\begin{quotation}
 To prove $\forall k \phi(k)$, it suffices to prove
 inductivity along $\prec$:
 $$\forall v_0 (\forall v_1 (v_1 \prec v_0 \rightarrow \phi(v_1))
@@ -1004,7 +1011,7 @@ implies (v0 = 0 or 1\leq v0)))
 The formula expresses that the property ``$n = 0$ or $1 \leq n$''
 is \textit{inductive}. Proving the universal formula
 ``For every $n$ $n = 0$ or $1 \leq n$'' has been reduced to
-proving inductivity. In this case the inductivity task can be 
+proving inductivity. In this case the inductivity task can be
 carried out automatically by
 eprover.
 
@@ -1127,7 +1134,7 @@ property. Again there are variants:
 [let us $\mid$ we can] (choose $\mid$ take $\mid$ consider).
 \item ``Let us show that $p \leq q$.'' claims that the statement
 $p \leq q$ holds and announces a subsequent proof.
-Alternatives: [let us $\mid$ we can] 
+Alternatives: [let us $\mid$ we can]
 (prove $\mid$ show $\mid$ demonstrate) (that).
 \item ``Proof by contradiction'' denotes the start of an indirect
 proof. It is recommended to explicitly mark indirect proofs.
@@ -1296,12 +1303,12 @@ This translates to
 \begin{verbatim}
 forall v0 ((HeadTerm :: v0 = \Seq{m}{n}) iff ((aClass(v0) and
 (aSet(\mathbb{N}) implies aSet(v0))) and
-forall v1 (aElementOf(v1,v0) iff ((aElementOf(v1,\mathbb{N}) 
+forall v1 (aElementOf(v1,v0) iff ((aElementOf(v1,\mathbb{N})
 and (m\leq v1 and v1\leq n)) and aObject(v1)))))
 \end{verbatim}
 
 Note that the second line of the translation contains an instance
-of the axiom of separation: if the class that bounds 
+of the axiom of separation: if the class that bounds
 the variable $i$ is a set then
 the resulting class is a set. Thus:
 
@@ -1310,7 +1317,7 @@ the resulting class is a set. Thus:
 \end{lemma}
 \end{forthel}
 
-The notation $\Seq{m}{n}$ indicates the notational and 
+The notation $\Seq{m}{n}$ indicates the notational and
 typographical potential
 for \Naproche{} texts if one uses appropriate \LaTeX macros.
 

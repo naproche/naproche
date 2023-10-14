@@ -1,0 +1,28 @@
+% Top-level sections
+% ==================
+
+\newenvironment{signature}{\unskip}{\unskip}
+\newenvironment{axiom}{\unskip}{\unskip}
+\newenvironment{definition}{\unskip}{\unskip}
+\newenvironment{theorem}{\unskip Therefore:}{}
+
+
+% ForTheL environment
+% ===================
+
+\usepackage[most]{tcolorbox}
+
+\definecolor{block-gray}{gray}{0.95}
+
+\newtcolorbox{grayblock}{
+  arc=0mm,
+  colframe=block-gray,
+  colback=block-gray,
+  grow to right by=0mm,
+  grow to left by=0mm,
+  boxrule=0pt,
+  boxsep=0pt,
+  breakable
+}
+
+\newenvironment{forthel}{\begin{grayblock}}{\end{grayblock}}

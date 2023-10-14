@@ -51,6 +51,12 @@ follow the below instructions.
     <path-to-naproche> <path-to-MathHub>/naproche none bind
     ```
 
+To be able to successfully compile the `.tex` files in the `source` directory
+to, e.g., PDF or HTML make sure to run the respective compiler (e.g.
+[pdfTeX][pdfTeX] or [RusTeX][RusTeX]) from within the
+`<path-to-MathHub>/naproche` directory and not from within the
+`<path-to-naproche>` directory.
+
 
 ## Copyright
 
@@ -60,3 +66,5 @@ a [Creative Commons “CC0 1.0 Universal”][CC0] license.
 
 [sTeX-doc]: <https://github.com/slatex/sTeX/blob/main/doc/stex-doc.pdf>
 [CC0]: <https://creativecommons.org/publicdomain/zero/1.0/deed.en>
+[pdfTeX]: <https://tug.org/applications/pdftex/index.html>
+[RusTeX]: <https://github.com/slatex/RusTeX>

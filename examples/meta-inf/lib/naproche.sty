@@ -81,26 +81,20 @@
 % ForTheL environment
 % ===================
 
+% Space between paragraphs in forthel environments
+\newlength{\ftlparskip}
+\setlength{\ftlparskip}{0.5em}
+
 \newenvironment{forthel}{%
   \begin{mdframed}[backgroundcolor=lightgray!30, linecolor=lightgray!30]%
+  \rmfamily%
+  \setbool{forthel}{true}%
   \setlength{\parindent}{0pt}%
+  \setlength{\parskip}{\ftlparskip}%
 }{%
   \end{mdframed}%
-}
-
-
-% Proofs
-% ======
-
-\usepackage{amssymb,amsthm}
-\renewcommand{\qedsymbol}{\ensuremath{\Box}}
-
-\renewenvironment{proof}[1][\unskip]{%
-  \noindent\textit{Proof#1. }%
-  \relax%
-}
-{%
-  \qedsymbol
+  \rmfamily%
+  \setbool{forthel}{false}%
 }
 
 
@@ -131,6 +125,25 @@
 \newcommand{\classtext}[1]{\parbox{\linegoal}{#1}}
 
 
+% More visible line breaks in proofs.
+% ===================================
+
+\newbool{forthel}
+
+% Set length of \parskip to \ftlparskip in proofs in ForTheL environments.
+%
+% NOTE: "\vspace*{-\parskip}" is necessary to avoid additional space between
+% theorem and proof
+\renewenvironment{proof}[1][\unskip]{%
+  \ifbool{forthel}{\setlength{\parskip}{\ftlparskip}\vspace*{-\parskip}}%
+  \noindent\textit{Proof\xspace#1. }%
+  \relax%
+}
+{%
+  \hfill\qed
+}
+
+
 % Predefined symbols
 % ==================
 
@@ -138,8 +151,21 @@
 \newcommand{\fun}{\mathrm{\lambda}}
 
 
-% Naproche logo
-% =============
+% Options
+% =======
 
-\newcommand{\Naproche}{\ensuremath{\mathbb{N}}aproche\xspace}
-
+\DeclareOption{numberswithinsection}{%
+    \counterwithin{theoremcount}{section}
+}
+\DeclareOption{numberswithinsubsection}{%
+    \counterwithin{theoremcount}{subsection}
+}
+\DeclareOption{unmarked}{%
+  \renewenvironment{forthel}{%
+    \setbool{forthel}{true}%
+  }{%
+    \setbool{forthel}{false}%
+  }
+}
+\DeclareOption*{\PackageWarning{naproche}{Unknown ‘\CurrentOption’}}
+\ProcessOptions\relax

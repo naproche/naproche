@@ -1,6 +1,9 @@
+# sTeX related files
 *.sms
 *.sref
+*.xhtml
 
+# sTeX archive specific directories
 .img/
 errors/
 export/

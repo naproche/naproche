@@ -1,11 +1,19 @@
 \documentclass{article}
 
 \usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
-\usepackage{mathtools}
-\usepackage{xr}
-\usepackage[foundations, settheory]{../lib/tex/naproche}
+\usepackage[british]{babel}
+\usepackage{mathtools} % for `\bigtimes`
 
+\usepackage{meta-inf/lib/naproche-logo}
+\usepackage{meta-inf/lib/naproche}
+\input{foundations/lib/preamble}
+\input{set-theory/lib/preamble}
+
+\usepackage{biblatex}
+\usepackage{csquotes}
+\addbibresource{meta-inf/lib/references.bib}
+
+\usepackage{xr}
 \externaldocument{set-theory/set-theory}
 
 \title{König's Theorem}
@@ -163,10 +171,5 @@ are themselves non-empty:
   \end{proof}
 \end{forthel}
 
-\begin{thebibliography}{1}
-  \bibitem{Koenig1905} Julius König,
-  \textit{Zum Kontinuumsproblem};
-  Mathematische Annalen 60 (1905)
-\end{thebibliography}
-
+\printbibliography
 \end{document}

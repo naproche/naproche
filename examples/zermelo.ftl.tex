@@ -2,8 +2,15 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage[foundations, settheory]{../lib/tex/naproche}
 
+\usepackage{meta-inf/lib/naproche-logo}
+\usepackage{meta-inf/lib/naproche}
+\input{foundations/lib/preamble}
+\input{set-theory/lib/preamble}
+
+\usepackage{biblatex}
+\usepackage{csquotes}
+\addbibresource{meta-inf/lib/references.bib}
 
 \title{Zermelo's Well-ordering Theorem}
 \author{\Naproche formalization: \vspace{0.5em} \\
@@ -184,11 +191,5 @@ Marcel Schütz (2022)}
     \end{proof}
   \end{forthel}
 
-  \begin{thebibliography}{1}
-    \bibitem{Koepke2018} Peter Koepke,
-    \textit{Set Theory};
-    lecture notes,
-    winter 2018/19,
-    University of Bonn
-  \end{thebibliography}
+  \printbibliography
 \end{document}

@@ -2,7 +2,8 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage{../lib/tex/naproche}
+\usepackage{meta-inf/lib/naproche-logo}
+\usepackage{meta-inf/lib/naproche}
 
 \newcommand{\imp}{\supset}
 \newcommand{\deducible}{\vdash}
@@ -20,7 +21,7 @@
 \maketitle
 
 The basic rules of the calculus are given as axioms.
-Then further derived rules are proven as propositions. 
+Then further derived rules are proven as propositions.
 
 \section{The implicational propositional calculus}
 
@@ -60,7 +61,7 @@ Let $P$ is deducible stand for $\deducible P$.
 \end{proposition}
 \begin{proof}
     (1) $\deducible Q\imp (P\imp Q)$ (by Implosion).
-    
+
     (2) $\deducible P\imp Q$ (by Detachment, 0, 1).
 \end{proof}
 
@@ -70,9 +71,9 @@ Let $P$ is deducible stand for $\deducible P$.
 \end{proposition}
 \begin{proof}
     (1) $\deducible P\imp (Q\imp R)$ (by Weakening, 0).
-    
+
     (2) $\deducible (P\imp (Q\imp R))\imp ((P\imp Q)\imp (P\imp R))$ (by Chain).
-     
+
     (3) $\deducible (P\imp Q)\imp (P\imp R)$ (by Detachment, 1, 2).
 \end{proof}
 
@@ -84,7 +85,7 @@ Let $P$ is deducible stand for $\deducible P$.
 \end{proposition}
 \begin{proof}
     (1) $\deducible (P\imp Q)\imp (P\imp R)$ (by Weakening of implication, 0).
-    
+
     (2) $\deducible P\imp R$  (by Detachment, 0, 1).
 \end{proof}
 
@@ -93,13 +94,13 @@ Let $P$ is deducible stand for $\deducible P$.
 \end{proposition}
 \begin{proof}
     (1) $\deducible (P\imp ((P\imp P)\imp P))\imp ((P\imp (P\imp P))\imp (P\imp P))$ (by Chain).
-    
+
     (2) $\deducible P\imp ((P\imp P)\imp P)$ (by Implosion).
-    
+
     (3) $\deducible (P\imp (P\imp P))\imp (P\imp P)$ (by 1, 2, Detachment).
-    
+
     (4) $\deducible P\imp (P\imp P)$ (by Implosion).
-    
+
     (5) $\deducible P\imp P$ (by 3, 4, Detachment).
 \end{proof}
 
@@ -109,11 +110,11 @@ Let $P$ is deducible stand for $\deducible P$.
 \end{proposition}
 \begin{proof}
     (1) $\deducible (P\imp (P\imp Q))\imp ((P\imp P)\imp (P\imp Q))$ (by Chain).
-    
+
     (2) $\deducible (P\imp P)\imp (P\imp Q)$ (by 0, 1, Detachment).
-    
+
     (3) $\deducible P\imp P$  (by Identity).
-    
+
     (4) $\deducible P\imp Q$  (by 2, 3, Detachment).
 \end{proof}
 \end{forthel}

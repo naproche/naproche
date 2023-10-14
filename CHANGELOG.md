@@ -18,6 +18,15 @@ dialect of ForTheL, respectively.
   * **Changed:** Paradoxes have been moved to `examples/paradoxes/` which
     constitutes an sTeX archive.
 
+  * **Changed:** Puzzles have been moved to `examples/puzzles/` which
+    constitutes an sTeX archive.
+
+  * **Changed:** Style files have been moved from `lib/tex/` to
+    `examples/meta-inf/lib` to facilitate their usage with sTeX.
+
+  * **New:** Common Bibtex file `examples/meta-inf/lib/references.bib` for all
+    example files.
+
 
 ### Changes on ForTheL
 

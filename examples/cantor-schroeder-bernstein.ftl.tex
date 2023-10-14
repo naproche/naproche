@@ -1,9 +1,16 @@
 \documentclass{article}
 
 \usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
-\usepackage[foundations]{../lib/tex/naproche}
+\usepackage[british]{babel}
 
+\usepackage{meta-inf/lib/naproche-logo}
+\usepackage{meta-inf/lib/naproche-logo}
+\usepackage{meta-inf/lib/naproche}
+\input{foundations/lib/preamble}
+
+\usepackage{biblatex}
+\usepackage{csquotes}
+\addbibresource{meta-inf/lib/references.bib}
 
 \title{The Knaster-Tarski fixed point theorem and \\
 the Cantor-Schröder-Bernstein Theorem}
@@ -222,9 +229,5 @@ Marcel Schütz (2019 - 2022)}
     \end{proof}
   \end{forthel}
 
-  \begin{thebibliography}{1}
-    \bibitem{Schroeder2012} Bernd S. W. Schröder,
-      \textit{The fixed point property for ordered sets};
-      Springer, \textit{Arabian Journal of Mathematics}, vol. 1, p. 529--547
-  \end{thebibliography}
+  \printbibliography
 \end{document}

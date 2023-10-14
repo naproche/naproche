@@ -3,13 +3,13 @@
 \RequirePackage{amsmath}
 \RequirePackage{amsthm}
 \RequirePackage{amsfonts}
-\RequirePackage{etoolbox}
-\RequirePackage{xspace}
+%\RequirePackage{etoolbox}
+%\RequirePackage{xspace}
 \RequirePackage{xcolor}
 \RequirePackage{mdframed}
 \RequirePackage{hyperref}
 \RequirePackage{cleveref}
-\RequirePackage[nolabel, inline]{showlabels}
+%\RequirePackage[nolabel, inline]{showlabels}
 
 
 % Links
@@ -27,8 +27,8 @@
 
 % `\printlabel' behaves exactly as `\label' but its argument is printed in the
 % PDF.
-\showlabels{printlabel}
-\newcommand{\printlabel}[1]{\label{#1}}
+%\showlabels{printlabel}
+%\newcommand{\printlabel}[1]{\label{#1}}
 
 
 % Top-level sections
@@ -82,75 +82,98 @@
 % ===================
 
 % Space between paragraphs in forthel environments
-\newlength{\ftlparskip}
-\setlength{\ftlparskip}{0.5em}
+%\newlength{\ftlparskip}
+%\setlength{\ftlparskip}{0.5em}
+
+
+\RequirePackage{environ}
+
+\RequirePackage[most]{tcolorbox}
+\tcbset{
+    %frame code={}
+    %center title,
+    %left=0pt,
+    %right=0pt,
+    %top=0pt,
+    %bottom=0pt,
+    colback=gray!30,
+    %colframe=white,
+    %width=\dimexpr\textwidth\relax,
+    %enlarge left by=0mm,
+    %boxsep=5pt,
+    %arc=0pt,outer arc=0pt,
+    }
 
 % ForTheL environment
-\newenvironment{forthel}{%
-  \begin{mdframed}[backgroundcolor=lightgray!30, linecolor=lightgray!30]%
+\NewEnviron{forthel}{%
+  %\begin{mdframed}[backgroundcolor=lightgray!30, linecolor=lightgray!30]%
   \rmfamily%
-  \setbool{forthel}{true}%
+  %\setbool{forthel}{true}%
   \setlength{\parindent}{0pt}%
-  \setlength{\parskip}{\ftlparskip}%
-}{%
-  \end{mdframed}%
-  \rmfamily%
-  \setbool{forthel}{false}%
+  %\setlength{\parskip}{\ftlparskip}%
+  \begin{tcolorbox}
+    \BODY
+    %\vspace{1ex}
+  \end{tcolorbox}
 }
 
 % Wrapper for ForTheL environments. Warning: In the PDF it looks exactly like
 % an ordinary ForTheL environment, but its content is not checked by Naproche.
 % So use it wisely!
-\newenvironment{greybox}{
-  \begin{forthel}
-}{
-  \end{forthel}
-}
+%\newenvironment{greybox}{
+%  \begin{forthel}
+%}{
+%  \end{forthel}
+%}
 
 
 % Comprehension terms
 % ===================
 
-\RequirePackage{linegoal}
+%\RequirePackage{linegoal}
 
 % Gets the left-hand and right-hand side, resp., of an expression of the form
 % "foo|bar"
-\def\getfirst#1|#2\relax{#1}
-\def\getsecond#1|#2\relax{#2}
+%\def\getfirst#1|#2\relax{#1}
+%\def\getsecond#1|#2\relax{#2}
 
 % Comprehension term: "\class{... | ...}".
 % Naproche allows to enclose the RHS within "\text{...}", e.g.
 % "\class{x | \text{$x$ is greater than $y$}}".
 % Use "\classtext{...}" instead of "\text{...}" to enable automatic line breaks
 % in the RHS.
-\newcommand{\class}[1]{%
-  \left\{%
-  \getfirst#1\relax%
-  ~\middle\vert~%
-  \linebreak[1]%
-  \getsecond#1\relax%
-  \right\}%
-}
+%\newcommand{\class}[1]{%
+%  \left\{%
+%  \getfirst#1\relax%
+%  ~\middle\vert~%
+%  \linebreak[1]%
+%  \getsecond#1\relax%
+%  \right\}%
+%}
 
-\newcommand{\classtext}[1]{\parbox{\linegoal}{#1}}
+%\newcommand{\classtext}[1]{\parbox{\linegoal}{#1}}
 
 
 % More visible line breaks in proofs.
 % ===================================
 
-\newbool{forthel}
+%\newbool{forthel}
+
+\usepackage{amssymb}
+\renewcommand{\qedsymbol}{\ensuremath{\Box}}
 
 % Set length of \parskip to \ftlparskip in proofs in ForTheL environments.
 %
 % NOTE: "\vspace*{-\parskip}" is necessary to avoid additional space between
 % theorem and proof
-\renewenvironment{proof}[1][\unskip]{%
-  \ifbool{forthel}{\setlength{\parskip}{\ftlparskip}\vspace*{-\parskip}}%
-  \noindent\textit{Proof\xspace#1. }%
+\renewenvironment{proof}[1][]{%
+  %\ifbool{forthel}{\setlength{\parskip}{\ftlparskip}\vspace*{-\parskip}}%
+  \noindent\textit{Proof#1. }%
   \relax%
 }
 {%
-  \hfill\qed
+  \hfill\qed\\
+  \textrm{}
 }
 
 
@@ -164,107 +187,107 @@
 % Naproche logo
 % =============
 
-\newcommand{\Naproche}{\ensuremath{\mathbb{N}}aproche\xspace}
+%\newcommand{\Naproche}{\ensuremath{\mathbb{N}}aproche\xspace}
 
 
 % Options
 % =======
 
-\newbool{foundations}
-\newbool{arithmetic}
-\newbool{settheory}
+%\newbool{foundations}
+%\newbool{arithmetic}
+%\newbool{settheory}
 
-\DeclareOption{numberswithinsection}{%
-    \counterwithin{theoremcount}{section}
-}
-\DeclareOption{numberswithinsubsection}{%
-    \counterwithin{theoremcount}{subsection}
-}
-\DeclareOption{unmarked}{%
-  \renewenvironment{forthel}{%
-    \setbool{forthel}{true}%
-  }{%
-    \setbool{forthel}{false}%
-  }
-}
-\DeclareOption{foundations}{%
-    \setbool{foundations}{true}
-}
-\DeclareOption{arithmetic}{%
-    \setbool{arithmetic}{true}
-}
-\DeclareOption{settheory}{%
-    \setbool{settheory}{true}
-}
-\DeclareOption*{\PackageWarning{naproche}{Unknown ‘\CurrentOption’}}
-\ProcessOptions\relax
+%\DeclareOption{numberswithinsection}{%
+%    \counterwithin{theoremcount}{section}
+%}
+%\DeclareOption{numberswithinsubsection}{%
+%    \counterwithin{theoremcount}{subsection}
+%}
+%\DeclareOption{unmarked}{%
+%  \renewenvironment{forthel}{%
+%    \setbool{forthel}{true}%
+%  }{%
+%    \setbool{forthel}{false}%
+%  }
+%}
+%\DeclareOption{foundations}{%
+%    \setbool{foundations}{true}
+%}
+%\DeclareOption{arithmetic}{%
+%    \setbool{arithmetic}{true}
+%}
+%\DeclareOption{settheory}{%
+%    \setbool{settheory}{true}
+%}
+%\DeclareOption*{\PackageWarning{naproche}{Unknown ‘\CurrentOption’}}
+%\ProcessOptions\relax
 
 
 % Foundations library
 % ===================
 
-\iffoundations
-    \RequirePackage{amssymb, pgffor}
-
-    \DeclareMathOperator{\id}{id}
-    \DeclareMathOperator{\range}{range}
-
-    \newcommand{\symdiff}{\mathop{\triangle}}
-    \newcommand{\pow}{\mathcal{P}}
-    \newcommand{\onto}{\twoheadrightarrow}
-    \newcommand{\into}{\hookrightarrow}
-
-    % E.g. `\set{1, 2, 3, 4}` prints the numbers 1, 2, 3 and 4 as a comma
-    % separated list which is enclosed within curly braces.
-    \def\set#1{%
-      \ensuremath{%
-        \{%
-        \foreach[count=\i] \x in {#1}{%
-          \ifnum\i>1,\,\fi%
-          \x%
-        }%
-        \}
-      }%
-    }
-\fi
+%\iffoundations
+%    \RequirePackage{amssymb, pgffor}
+%
+%    \DeclareMathOperator{\id}{id}
+%    \DeclareMathOperator{\range}{range}
+%
+%    \newcommand{\symdiff}{\mathop{\triangle}}
+%    \newcommand{\pow}{\mathcal{P}}
+%    \newcommand{\onto}{\twoheadrightarrow}
+%    \newcommand{\into}{\hookrightarrow}
+%
+%    % E.g. `\set{1, 2, 3, 4}` prints the numbers 1, 2, 3 and 4 as a comma
+%    % separated list which is enclosed within curly braces.
+%    \def\set#1{%
+%      \ensuremath{%
+%        \{%
+%        \foreach[count=\i] \x in {#1}{%
+%          \ifnum\i>1,\,\fi%
+%          \x%
+%        }%
+%        \}
+%      }%
+%    }
+%\fi
 
 
 % Arithmetic library
 % ==================
 
-\ifarithmetic
-    \RequirePackage{amssymb}
-
-    \newcommand{\Nat}{\mathbb{N}}
-    \newcommand{\Prime}{\mathbb{P}}
-
-    \let\succ\relax
-    \let\exp\relax
-
-    \DeclareMathOperator{\succ}{succ}
-    \DeclareMathOperator{\pred}{pred}
-    \DeclareMathOperator{\add}{add}
-    \DeclareMathOperator{\mul}{mul}
-    \DeclareMathOperator{\exp}{exp}
-    \DeclareMathOperator{\fac}{fac}
-
-    \renewcommand{\div}{\mathop{\operatorname{div}}}
-    \renewcommand{\mod}{\mathop{\operatorname{mod}}}
-\fi
+%\ifarithmetic
+%    \RequirePackage{amssymb}
+%
+%    \newcommand{\Nat}{\mathbb{N}}
+%    \newcommand{\Prime}{\mathbb{P}}
+%
+%    \let\succ\relax
+%    \let\exp\relax
+%
+%    \DeclareMathOperator{\succ}{succ}
+%    \DeclareMathOperator{\pred}{pred}
+%    \DeclareMathOperator{\add}{add}
+%    \DeclareMathOperator{\mul}{mul}
+%    \DeclareMathOperator{\exp}{exp}
+%    \DeclareMathOperator{\fac}{fac}
+%
+%    \renewcommand{\div}{\mathop{\operatorname{div}}}
+%    \renewcommand{\mod}{\mathop{\operatorname{mod}}}
+%\fi
 
 
 % Set theory library
 % ==================
 
-\ifsettheory
-    \RequirePackage{amssymb}
-
-    \let\succ\relax
-
-    \DeclareMathOperator{\succ}{succ}
-    \DeclareMathOperator{\pred}{pred}
-
-    \newcommand{\V}{\mathbf{V}}
-    \newcommand{\Ord}{\mathbf{Ord}}
-    \newcommand{\Card}{\mathbf{Card}}
-\fi
+%\ifsettheory
+%    \RequirePackage{amssymb}
+%
+%    \let\succ\relax
+%
+%    \DeclareMathOperator{\succ}{succ}
+%    \DeclareMathOperator{\pred}{pred}
+%
+%    \newcommand{\V}{\mathbf{V}}
+%    \newcommand{\Ord}{\mathbf{Ord}}
+%    \newcommand{\Card}{\mathbf{Card}}
+%\fi

@@ -1,10 +1,18 @@
 \documentclass{article}
 
 \usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
-\usepackage{xr}
-\usepackage[foundations, settheory]{../lib/tex/naproche}
+\usepackage[british]{babel}
 
+\usepackage{meta-inf/lib/naproche-logo}
+\usepackage{meta-inf/lib/naproche}
+\input{foundations/lib/preamble}
+\input{set-theory/lib/preamble}
+
+\usepackage{biblatex}
+\usepackage{csquotes}
+\addbibresource{meta-inf/lib/references.bib}
+
+\usepackage{xr}
 \externaldocument{set-theory/set-theory}
 
 \newcommand{\surjects}{\twoheadrightarrow}
@@ -172,9 +180,5 @@ Adrian De Lon (2021)}
     \end{proof}
   \end{forthel}
 
-  \begin{thebibliography}{1}
-    \bibitem{Hausdorff1908} Felix Hausdorff (1908),
-      \textit{Grundzüge einer Theorie der geordneten Mengen};
-      Teubner, \textit{Mathematische Annalen}, vol.~65, p.~435--505
-  \end{thebibliography}
+  \printbibliography
 \end{document}

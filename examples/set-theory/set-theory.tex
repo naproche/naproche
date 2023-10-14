@@ -1,14 +1,21 @@
 \documentclass[12pt,oneside]{book}
 
-\usepackage[foundations, settheory]{../../lib/tex/naproche}
-\usepackage{../../lib/tex/libraries}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+\usepackage{../meta-inf/lib/naproche-logo}
+\usepackage{../meta-inf/lib/naproche}
+\usepackage{../meta-inf/lib/libraries}
+\input{lib/preamble}
+\input{../foundations/lib/preamble}
+
+\usepackage{xr}
+\externaldocument{../foundations/foundations}
+
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{caption}
 \usepackage[nobottomtitles]{titlesec}
-\usepackage{xr}
-
-\externaldocument{../foundations/foundations}
 
 
 \title{Set theory}

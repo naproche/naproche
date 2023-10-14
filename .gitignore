@@ -14,7 +14,7 @@ x86_64-windows/
 *.ps
 .DS_Store
 
-# TEX-related files.
+# TEX-related files
 *.fdb_latexmk
 *.pdf
 *.log
@@ -28,3 +28,9 @@ x86_64-windows/
 *.bcf
 *.blg
 *.run.xml
+*.sref
+*.xhtml
+
+# Special settings for sTeX archives
+examples/paradoxes/source/*.aux
+examples/puzzles/source/*.aux
