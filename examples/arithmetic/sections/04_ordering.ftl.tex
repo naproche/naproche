@@ -21,13 +21,13 @@
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_04_1926295512416256}
       Let $n, m$ be natural numbers.
-      $n < m$ iff there exists a nonzero natural number $k$ such that
-      $m = n + k$.
+      $n \less m$ iff there exists a nonzero natural number $k$ such that
+      $m = n \plus k$.
     \end{definition}
 
-    Let $n$ is less than $m$ stand for $n < m$.
-    Let $n > m$ stand for $m < n$.
-    Let $n$ is greater than $m$ stand for $n > m$.
+    Let $n$ is less than $m$ stand for $n \less m$.
+    Let $n \gtr m$ stand for $m \less n$.
+    Let $n$ is greater than $m$ stand for $n \gtr m$.
     Let $n \nless m$ stand for $n$ is not less than $m$.
     Let $n \ngtr m$ stand for $n$ is not greater than $m$.
   \end{forthel}
@@ -35,28 +35,28 @@
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_04_3668680374222848}
       Let $n$ be a natural number.
-      $\Nat_{< n} = \{ k \in \Nat \mid k < n \}$.
+      $\NatLess{n} = \{ k \in \Nat \mid k \less n \}$.
     \end{definition}
   \end{forthel}
 
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_04_3670333934534656}
       Let $n$ be a natural number.
-      $\Nat_{> n} = \{ k \in \Nat \mid k > n \}$.
+      $\NatGtr{n} = \{ k \in \Nat \mid k \gtr n \}$.
     \end{definition}
   \end{forthel}
 
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_04_7916616566177792}
       Let $n$ be a natural number.
-      $n$ is positive iff $n > 0$.
+      $n$ is positive iff $n \gtr 0$.
     \end{definition}
   \end{forthel}
 
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_04_4593841531256832}
       Let $n, m$ be natural numbers.
-      $n \leq m$ iff there exists a natural number $k$ such that $m = n + k$.
+      $n \leq m$ iff there exists a natural number $k$ such that $m = n \plus k$.
     \end{definition}
 
     Let $n$ is less than or equal to $m$ stand for $n \leq m$.
@@ -69,34 +69,34 @@
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_04_72501526790144}
       Let $n$ be a natural number.
-      $\Nat_{\leq n} = \{ k \in \Nat \mid k \leq n \}$.
+      $\NatLeq{n} = \{ k \in \Nat \mid k \leq n \}$.
     \end{definition}
   \end{forthel}
 
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_04_1706933421604864}
       Let $n$ be a natural number.
-      $\Nat_{\geq n} = \{ k \in \Nat \mid k \geq n \}$.
+      $\NatGeq{n} = \{ k \in \Nat \mid k \geq n \}$.
     \end{definition}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_04_5385415374667776}
       Let $n, m$ be natural numbers.
-      $n \leq m$ iff $n < m$ or $n = m$.
+      $n \leq m$ iff $n \less m$ or $n = m$.
     \end{proposition}
     \begin{proof}
       Case $n \leq m$.
-        Take a natural number $k$ such that $m = n + k$.
-        If $k = 0$ then $n = m$. If $k \neq 0$ then $n < m$.
+        Take a natural number $k$ such that $m = n \plus k$.
+        If $k = 0$ then $n = m$. If $k \neq 0$ then $n \less m$.
       End.
 
-      Case $n < m$ or $n = m$.
-        If $n < m$ then there is a positive natural number $k$ such that
-        $m = n + k$.
-        If $n = m$ then $m = n + 0$.
-        Thus if $n < m$ then there is a natural number $k$ such that
-        $m = n + k$.
+      Case $n \less m$ or $n = m$.
+        If $n \less m$ then there is a positive natural number $k$ such that
+        $m = n \plus k$.
+        If $n = m$ then $m = n \plus 0$.
+        Thus if $n \less m$ then there is a natural number $k$ such that
+        $m = n \plus k$.
       End.
     \end{proof}
   \end{forthel}
@@ -122,15 +122,15 @@
     \end{proposition}
     \begin{proof}
       Case $n$ is positive.
-        Take a positive natural number $k$ such that $n = 0 + k = k$.
+        Take a positive natural number $k$ such that $n = 0 \plus k = k$.
         Then we have $n \neq 0$.
       End.
 
       Case $n$ is nonzero.
-        Take a natural number $k$ such that $n = k + 1$.
-        Then $n = 0 + (k + 1)$.
-        $k + 1$ is positive.
-        Hence $0 < n$.
+        Take a natural number $k$ such that $n = k \plus 1$.
+        Then $n = 0 \plus (k \plus 1)$.
+        $k \plus 1$ is positive.
+        Hence $0 \less n$.
       End.
     \end{proof}
   \end{forthel}
@@ -145,7 +145,7 @@
     \end{proposition}
     \begin{proof}
       Assume the contrary.
-      Then we can take a positive natural number $k$ such that $n = n + k$.
+      Then we can take a positive natural number $k$ such that $n = n \plus k$.
       Then we have $0 = k$.
       Contradiction.
     \end{proof}
@@ -154,11 +154,11 @@
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_04_8266284905005056}
       Let $n, m$ be natural numbers.
-      Then \[ n < m \implies n \neq m. \]
+      Then \[ n \less m \implies n \neq m. \]
     \end{proposition}
     \begin{proof}
-      Assume $n < m$.
-      Take a positive natural number $k$ such that $m = n + k$.
+      Assume $n \less m$.
+      Take a positive natural number $k$ such that $m = n \plus k$.
       If $n = m$ then $k = 0$.
       Hence $n \neq m$.
     \end{proof}
@@ -171,13 +171,13 @@
     \end{proposition}
     \begin{proof}
       Assume $n \leq m$ and $m \leq n$.
-      Take natural numbers $k, l$ such that $m = n + k$ and $n = m + l$.
+      Take natural numbers $k, l$ such that $m = n \plus k$ and $n = m \plus l$.
       Then $m
-        = (m + l) + k
-        = m + (l + k)$.
-      Hence $l + k = 0$.
+        = (m \plus l) \plus k
+        = m \plus (l \plus k)$.
+      Hence $l \plus k = 0$.
       Thus $l = 0 = k$.
-      Indeed if $l \neq 0$ or $k \neq 0$ then $l + k$ is the direct successor of
+      Indeed if $l \neq 0$ or $k \neq 0$ then $l \plus k$ is the direct successor of
       some natural number.
       Therefore $m = n$.
     \end{proof}
@@ -186,17 +186,17 @@
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_04_6413905244979200}
       Let $n, m, k$ be natural numbers.
-      Then \[ n < m < k \implies n < k. \]
+      Then \[ n \less m \less k \implies n \less k. \]
     \end{proposition}
     \begin{proof}
-      Assume $n < m < k$.
-      Take a positive natural number $a$ such that $m = n + a$.
-      Take a positive natural number $b$ such that $k = m + b$.
+      Assume $n \less m \less k$.
+      Take a positive natural number $a$ such that $m = n \plus a$.
+      Take a positive natural number $b$ such that $k = m \plus b$.
       Then $k
-        = (n + a) + b
-        = n + (a + b)$.
-      $a + b$ is positive.
-      Hence $n < k$.
+        = (n \plus a) \plus b
+        = n \plus (a \plus b)$.
+      $a \plus b$ is positive.
+      Hence $n \less k$.
     \end{proof}
   \end{forthel}
 
@@ -208,58 +208,58 @@
     \begin{proof}
       Assume $n \leq m \leq k$.
       Case $n = m = k$. Obvious.
-      Case $n = m < k$. Obvious.
-      Case $n < m = k$. Obvious.
-      Case $n < m < k$. Obvious.
+      Case $n = m \less k$. Obvious.
+      Case $n \less m = k$. Obvious.
+      Case $n \less m \less k$. Obvious.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_04_5098403656630272}
       Let $n, m, k$ be natural numbers.
-      Then \[ n \leq m < k \implies n < k. \]
+      Then \[ n \leq m \less k \implies n \less k. \]
     \end{proposition}
     \begin{proof}
-      Assume $n \leq m < k$.
-      If $n = m$ then $n < k$.
-      If $n < m$ then $n < k$.
+      Assume $n \leq m \less k$.
+      If $n = m$ then $n \less k$.
+      If $n \less m$ then $n \less k$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_04_4809599527944192}
       Let $n, m, k$ be natural numbers.
-      Then \[ n < m \leq k \implies n < k. \]
+      Then \[ n \less m \leq k \implies n \less k. \]
     \end{proposition}
     \begin{proof}
-      Assume $n < m \leq k$.
-      If $m = k$ then $n < k$.
-      If $m < k$ then $n < k$.
+      Assume $n \less m \leq k$.
+      If $m = k$ then $n \less k$.
+      If $m \less k$ then $n \less k$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_04_8584998051381248}
       Let $n, m$ be natural numbers.
-      Then \[ n < m \implies n + 1 \leq m. \]
+      Then \[ n \less m \implies n \plus 1 \leq m. \]
     \end{proposition}
     \begin{proof}
-      Assume $n < m$.
-      Take a positive natural number $k$ such that $m = n + k$.
+      Assume $n \less m$.
+      Take a positive natural number $k$ such that $m = n \plus k$.
 
       Case $k = 1$.
-        Then $m = n + 1$.
-        Hence $n + 1 \leq m$.
+        Then $m = n \plus 1$.
+        Hence $n \plus 1 \leq m$.
       End.
 
       Case $k \neq 1$.
-        Then we can take a natural number $l$ such that $k = l + 1$.
+        Then we can take a natural number $l$ such that $k = l \plus 1$.
         Then $m
-          = n + (l + 1)
-          = (n + l) + 1
-          = (n + 1) + l$.
+          = n \plus (l \plus 1)
+          = (n \plus l) \plus 1
+          = (n \plus 1) \plus l$.
         $l$ is positive.
-        Thus $n + 1 < m$.
+        Thus $n \plus 1 \less m$.
       End.
     \end{proof}
   \end{forthel}
@@ -267,36 +267,36 @@
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_04_8201937860165632}
       Let $n, m$ be natural numbers.
-      Then $n < m$ or $n = m$ or $n > m$.
+      Then $n \less m$ or $n = m$ or $n \gtr m$.
     \end{proposition}
     \begin{proof}
-      Define $\Phi = \{ m' \in \Nat \mid n < m'$ or $n = m'$ or $n > m' \}$.
+      Define $\Phi = \{ m' \in \Nat \mid n \less m'$ or $n = m'$ or $n \gtr m' \}$.
 
       (1) $\Phi$ contains $0$.
 
-      (2) For all $m' \in \Phi$ we have $m' + 1 \in \Phi$. \\
+      (2) For all $m' \in \Phi$ we have $m' \plus 1 \in \Phi$. \\
       Proof.
         Let $m' \in \Phi$.
 
-        Case $n < m'$. Obvious.
+        Case $n \less m'$. Obvious.
 
         Case $n = m'$. Obvious.
 
-        Case $n > m'$.
-          Take a positive natural number $k$ such that $n = m' + k$.
+        Case $n \gtr m'$.
+          Take a positive natural number $k$ such that $n = m' \plus k$.
 
           Case $k = 1$. Obvious.
 
           Case$k \neq 1$.
-            Take a natural number $l$ such that $n = (m' + 1) + l$.
-            Hence $n > m' + 1$.
+            Take a natural number $l$ such that $n = (m' \plus 1) \plus l$.
+            Hence $n \gtr m' \plus 1$.
             Indeed $l$ is positive.
           End.
         Qed.
       Qed.
 
       Thus every natural number is contained in $\Phi$.
-      Therefore $n < m$ or $n = m$ or $n > m$.
+      Therefore $n \less m$ or $n = m$ or $n \gtr m$.
     \end{proof}
   \end{forthel}
 
@@ -307,12 +307,12 @@
     \end{proposition}
     \begin{proof}
       Case $n \nless m$.
-        Then $n = m$ or $n > m$.
+        Then $n = m$ or $n \gtr m$.
         Hence $n \geq m$.
       End.
 
       Case $n \geq m$.
-        Assume $n < m$.
+        Assume $n \less m$.
         Then $n \leq m$.
         Hence $n = m$.
         Contradiction.
@@ -326,57 +326,57 @@
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_04_7006203091615744}
       Let $n, m$ be natural numbers.
-      Then \[ n < m \leq n + 1 \implies m = n + 1. \]
+      Then \[ n \less m \leq n \plus 1 \implies m = n \plus 1. \]
     \end{proposition}
     \begin{proof}
-      Assume $n < m \leq n + 1$.
-      Take a positive natural number $k$ such that $m = n + k$.
-      Take a natural number $l$ such that $n + 1 = m + l$.
-      Then $n + 1
-        = m + l
-        = (n + k) + l
-        = n + (k + l)$.
-      Hence $k + l = 1$.
+      Assume $n \less m \leq n \plus 1$.
+      Take a positive natural number $k$ such that $m = n \plus k$.
+      Take a natural number $l$ such that $n \plus 1 = m \plus l$.
+      Then $n \plus 1
+        = m \plus l
+        = (n \plus k) \plus l
+        = n \plus (k \plus l)$.
+      Hence $k \plus l = 1$.
 
       We have $l = 0$. \\
       Proof.
         Assume the contrary.
-        Then $k,l > 0$.
+        Then $k,l \gtr 0$.
 
         Case $k,l = 1$.
-          Then $k + l
+          Then $k \plus l
             = 2
             \neq 1$.
           Contradiction.
         End.
 
         Case $k = 1 and l \neq 1$.
-          Then $l > 1$.
-          Hence $k + l
-            > 1 + l
-            > 1$.
+          Then $l \gtr 1$.
+          Hence $k \plus l
+            \gtr 1 \plus l
+            \gtr 1$.
           Contradiction.
         End.
 
         Case $k \neq 1 and l = 1$.
-          Then $k > 1$.
-          Hence $k + l
-            > k + 1
-            > 1$.
+          Then $k \gtr 1$.
+          Hence $k \plus l
+            \gtr k \plus 1
+            \gtr 1$.
           Contradiction.
         End.
 
         Case $k, l \neq 1$.
-          Take natural numbers $a, b$ such that $k = a + 1$ and $l = b + 1$.
+          Take natural numbers $a, b$ such that $k = a \plus 1$ and $l = b \plus 1$.
           Indeed $k, l \neq 0$.
-          Hence $k = a + 1$ and $l = b + 1$.
-          Thus $k, l > 1$. Indeed $a, b$ are positive.
+          Hence $k = a \plus 1$ and $l = b \plus 1$.
+          Thus $k, l \gtr 1$. Indeed $a, b$ are positive.
         End.
       Qed.
 
-      Then we have $n + 1
-        = m + l
-        = m + 0
+      Then we have $n \plus 1
+        = m \plus l
+        = m \plus 0
         = m$.
     \end{proof}
   \end{forthel}
@@ -384,15 +384,15 @@
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_04_8792330561650688}
       Let $n, m$ be natural numbers.
-      Then \[ n \leq m < n + 1 \implies n = m. \]
+      Then \[ n \leq m \less n \plus 1 \implies n = m. \]
     \end{proposition}
     \begin{proof}
-      Assume $n \leq m < n + 1$.
+      Assume $n \leq m \less n \plus 1$.
 
       Case $n = m$. Obvious.
 
-      Case $n < m$.
-        Then $n < m \leq n + 1$.
+      Case $n \less m$.
+        Then $n \less m \leq n \plus 1$.
         Hence $n = m$.
       End.
     \end{proof}
@@ -401,14 +401,14 @@
   \begin{forthel}
     \begin{corollary}\printlabel{ARITHMETIC_04_1802826644717568}
       Let $n$ be a natural number.
-      There is no natural number $m$ such that $n < m < n + 1$.
+      There is no natural number $m$ such that $n \less m \less n \plus 1$.
     \end{corollary}
     \begin{proof}
       Assume the contrary.
-      Take a natural number $m$ such that $n < m < n + 1$.
-      Then $n < m \leq n + 1$ and $n \leq m < n + 1$.
-      Hence $m = n + 1$ and $m = n$.
-      Hence $n = n + 1$.
+      Take a natural number $m$ such that $n \less m \less n \plus 1$.
+      Then $n \less m \leq n \plus 1$ and $n \leq m \less n \plus 1$.
+      Hence $m = n \plus 1$ and $m = n$.
+      Hence $n = n \plus 1$.
       Contradiction.
     \end{proof}
   \end{forthel}
@@ -416,14 +416,14 @@
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_04_990407185924096}
       Let $n$ be a natural number.
-      Then \[ n + 1 \geq 1. \]
+      Then \[ n \plus 1 \geq 1. \]
     \end{proposition}
     \begin{proof}
       Case $n = 0$. Obvious.
 
       Case $n \neq 0$.
-        Then $n > 0$.
-        Hence $n + 1 > 0 + 1 = 1$.
+        Then $n \gtr 0$.
+        Hence $n \plus 1 \gtr 0 \plus 1 = 1$.
       End.
     \end{proof}
   \end{forthel}
@@ -434,26 +434,26 @@
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_04_7354062662008832}
       Let $n, m, k$ be natural numbers.
-      Then \[ n < m \iff n + k < m + k. \]
+      Then \[ n \less m \iff n \plus k \less m \plus k. \]
     \end{proposition}
     \begin{proof}
-      Case $n < m$.
-        Take a positive natural number $l$ such that $m = n + l$.
-        Then $m + k
-          = (n + l) + k
-          = (n + k) + l$.
-        Hence $n + k < m + k$.
+      Case $n \less m$.
+        Take a positive natural number $l$ such that $m = n \plus l$.
+        Then $m \plus k
+          = (n \plus l) \plus k
+          = (n \plus k) \plus l$.
+        Hence $n \plus k \less m \plus k$.
       End.
 
-      Case $n + k < m + k$.
-        Take a positive natural number $l$ such that $m + k = (n + k) + l$.
-        $(n + k) + l
-          = n + (k + l)
-          = n + (l + k)
-          = (n + l) + k$.
-        Hence $m + k = (n + l) + k$.
-        Thus $m = n + l$.
-        Therefore $n < m$.
+      Case $n \plus k \less m \plus k$.
+        Take a positive natural number $l$ such that $m \plus k = (n \plus k) \plus l$.
+        $(n \plus k) \plus l
+          = n \plus (k \plus l)
+          = n \plus (l \plus k)
+          = (n \plus l) \plus k$.
+        Hence $m \plus k = (n \plus l) \plus k$.
+        Thus $m = n \plus l$.
+        Therefore $n \less m$.
       End.
     \end{proof}
   \end{forthel}
@@ -461,25 +461,25 @@
   \begin{forthel}
     \begin{corollary}\printlabel{ARITHMETIC_04_1901366129721344}
       Let $n, m, k$ be natural numbers.
-      Then \[ n < m \iff k + n < k + m. \]
+      Then \[ n \less m \iff k \plus n \less k \plus m. \]
     \end{corollary}
     \begin{proof}
-      We have $k + n = n + k$ and $k + m = m + k$.
-      Hence $k + n < k + m$ iff $n + k < m + k$.
+      We have $k \plus n = n \plus k$ and $k \plus m = m \plus k$.
+      Hence $k \plus n \less k \plus m$ iff $n \plus k \less m \plus k$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{corollary}\printlabel{ARITHMETIC_04_4203390999461888}
       Let $n, m, k$ be natural numbers.
-      Then \[ n \leq m \iff k + n \leq k + m. \]
+      Then \[ n \leq m \iff k \plus n \leq k \plus m. \]
     \end{corollary}
   \end{forthel}
 
   \begin{forthel}
     \begin{corollary}\printlabel{ARITHMETIC_04_5512590832697344}
       Let $n, m, k$ be natural numbers.
-      Then \[ n \leq m \iff n + k \leq m + k. \]
+      Then \[ n \leq m \iff n \plus k \leq m \plus k. \]
     \end{corollary}
   \end{forthel}
 
@@ -488,22 +488,22 @@
 
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_04_4059354166722560}
-      \[ {<} = \{ (n, m) \mid \text{$n$ and $m$ are natural numbers such that
-      $n < m$} \}. \]
+      \[ \LessRel = \{ (n, m) \mid \text{$n$ and $m$ are natural numbers such that
+      $n \less m$} \}. \]
     \end{definition}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_04_5933477660721152}
       Let $A$ be a nonempty subclass of $\Nat$.
-      Let $n, m$ be least elements of $A$ regarding ${<}$.
+      Let $n, m$ be least elements of $A$ regarding $\LessRel$.
       Then $n = m$.
     \end{proposition}
     \begin{proof}
       Assume $n \neq m$.
-      Then $n < m$ or $m < n$.
-      If $n < m$ then $n \notin A$.
-      If $m < n$ then $m \notin A$.
+      Then $n \less m$ or $m \less n$.
+      If $n \less m$ then $n \notin A$.
+      If $m \less n$ then $m \notin A$.
       Hence $n, m \notin A$.
       Contradiction.
       Therefore $n = m$.
@@ -513,18 +513,18 @@
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_04_272317502455808}
       Let $A$ be a nonempty subclass of $\Nat$.
-      Then $A$ has a least element regarding ${<}$.
+      Then $A$ has a least element regarding $\LessRel$.
     \end{proposition}
     \begin{proof}
       Assume the contrary.
 
       Let us show that for each $n \in A$ there exists a $m \in A$ such that
-      $m < n$.
+      $m \less n$.
         Let $n \in A$.
-        $A$ has no least element regarding ${<}$.
-        Assume that there exists no $m \in A$ such that $m < n$.
+        $A$ has no least element regarding $\LessRel$.
+        Assume that there exists no $m \in A$ such that $m \less n$.
         Then $n \leq m$ for all $m \in A$.
-        Hence $n$ is a least element of $A$ regarding ${<}$.
+        Hence $n$ is a least element of $A$ regarding $\LessRel$.
         Contradiction.
       End.
 
@@ -537,15 +537,15 @@
         Thus $0 \in \Phi$.
       Qed.
 
-      (2) For all $n \in \Phi$ we have $n + 1 \in \Phi$. \\
+      (2) For all $n \in \Phi$ we have $n \plus 1 \in \Phi$. \\
       Proof.
         Let $n \in \Phi$.
         Then $n$ is less than any element of $A$.
-        Assume that $\Phi$ does not contain $n + 1$.
-        Then we can take an $m \in A$ such that $n + 1 \nless m$.
-        Then $n < m \leq n + 1$.
-        Hence $m = n + 1$.
-        Thus $n + 1$ is a least element of $A$ regarding ${<}$.
+        Assume that $\Phi$ does not contain $n \plus 1$.
+        Then we can take an $m \in A$ such that $n \plus 1 \nless m$.
+        Then $n \less m \leq n \plus 1$.
+        Hence $m = n \plus 1$.
+        Thus $n \plus 1$ is a least element of $A$ regarding $\LessRel$.
         Contradiction.
       Qed.
 
@@ -558,25 +558,25 @@
 
   \begin{forthel}
     \begin{corollary}\printlabel{ARITHMETIC_04_4280275783647232}
-      ${<}$ is a wellorder on every nonempty subclass of $\Nat$.
+      $\LessRel$ is a wellorder on every nonempty subclass of $\Nat$.
     \end{corollary}
     \begin{proof}
       Let $A$ be a nonempty subclass of $\Nat$.
-      For any $n, m \in A$ we have $(n, m) \in {<}$ iff $n < m$.
+      For any $n, m \in A$ we have $(n, m) \in \LessRel$ iff $n \less m$.
 
-      (1) ${<}$ is irreflexive on $A$.
+      (1) $\LessRel$ is irreflexive on $A$.
       Indeed for any $n \in A$ we have $n \nless n$.
 
-      (2) ${<}$ is transitive on $A$.
-      Indeed for any $n, m, k \in A$ if $n < m$ and $m < k$ then $n < k$.
+      (2) $\LessRel$ is transitive on $A$.
+      Indeed for any $n, m, k \in A$ if $n \less m$ and $m \less k$ then $n \less k$.
 
-      (3) ${<}$ is connected on $A$.
-      Indeed for any distinct $n, m \in A$ we have $n < m$ or $m < n$.
+      (3) $\LessRel$ is connected on $A$.
+      Indeed for any distinct $n, m \in A$ we have $n \less m$ or $m \less n$.
 
-      Hence ${<}$ is a strict linear order on $A$.
-      ${<}$ is wellfounded on $A$.
-      Indeed every nonempty subclass of $A$ has a least element regarding ${<}$.
-      Thus ${<}$ is a wellorder on $A$.
+      Hence $\LessRel$ is a strict linear order on $A$.
+      $\LessRel$ is wellfounded on $A$.
+      Indeed every nonempty subclass of $A$ has a least element regarding $\LessRel$.
+      Thus $\LessRel$ is a wellorder on $A$.
     \end{proof}
   \end{forthel}
 
@@ -595,7 +595,7 @@
       Take a natural number $n$ that is not contained in $A$.
       Then $n$ is contained in $\Nat \setminus A$.
       Hence we can take a least element $m$ of $\Nat \setminus A$ regarding
-      ${<}$.
+      $\LessRel$.
       Then $\Nat \setminus A$ does not contain any predecessor of $m$.
       Therefore $A$ contains all predecessors of $m$.
       Consequently $A$ contains $m$.
@@ -607,8 +607,8 @@
     \begin{theorem}\printlabel{ARITHMETIC_04_4976599269113856}
       Let $A$ be a class.
       Let $k$ be a natural number such that $k \in A$.
-      Assume that for all $n \in \Nat_{\geq k}$ if $n \in A$ then $n + 1 \in A$.
-      Then for all $n \in \Nat_{\geq k}$ we have $n \in A$.
+      Assume that for all $n \in \NatGeq{k}$ if $n \in A$ then $n \plus 1 \in A$.
+      Then for all $n \in \NatGeq{k}$ we have $n \in A$.
     \end{theorem}
     \begin{proof}
       Define $\Phi = \{n \in \Nat \mid$ if $n \geq k$ then $n \in A \}$.
@@ -616,29 +616,29 @@
       (1) $\Phi$ contains $0$.
       Indeed if $0 \geq k$ then $0 = k \in A$.
 
-      (2) For all $n \in \Phi$ we have $n + 1 \in \Phi$. \\
+      (2) For all $n \in \Phi$ we have $n \plus 1 \in \Phi$. \\
       Proof.
         Let $n \in \Phi$.
 
-        Let us show that if $n + 1 \geq k$ then $n + 1 \in A$.
-          Assume $n + 1 \geq k$.
+        Let us show that if $n \plus 1 \geq k$ then $n \plus 1 \in A$.
+          Assume $n \plus 1 \geq k$.
 
-          Case $n < k$.
-            Then $n + 1 = k$.
-            Hence $n + 1 \in A$.
+          Case $n \less k$.
+            Then $n \plus 1 = k$.
+            Hence $n \plus 1 \in A$.
           End.
 
           Case $n \geq k$.
             Then $n \in A$.
-            Hence $n + 1 \in A$.
+            Hence $n \plus 1 \in A$.
           End.
         End.
 
-        Therefore $n + 1 \in \Phi$.
+        Therefore $n \plus 1 \in \Phi$.
       Qed.
 
       Thus $\Phi$ contains every natural number.
-      Consequently for all $n \in \Nat_{\geq k}$ we have $n \in A$.
+      Consequently for all $n \in \NatGeq{k}$ we have $n \in A$.
     \end{proof}
   \end{forthel}
 \end{document}

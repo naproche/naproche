@@ -24,74 +24,74 @@
       Let $x$ be a set.
 
       [prover vampire]
-      Every element of $(x \cup \set{x})^{< \infty}$ is a map. % Needed for ontological checking
+      Every element of $\unboundedEnum{x \cup \set{x}}$ is a map. % Needed for ontological checking
       Define \[ G(F) =
         \begin{cases}
-          \text{choose $u \in x \setminus \range(F)$ in $u$}
-          & : x \setminus \range(F) \neq \emptyset
+          \text{choose $u \in x \setminus \range{F}$ in $u$}
+          & : x \setminus \range{F} \neq \emptyset
           \\
           x
-          & : x \setminus \range(F) = \emptyset
+          & : x \setminus \range{F} = \emptyset
         \end{cases} \]
-      for $F \in (x \cup \set{x})^{< \infty}$.
+      for $F \in \unboundedEnum{x \cup \set{x}}$.
       [prover eprover]
 
-      Then $G$ is a map from $(x \cup \set{x})^{< \infty}$ to $x \cup \set{x}$.
-      Indeed we can show that for any $F \in (x \cup \set{x})^{< \infty}$ we
+      Then $G$ is a map from $\unboundedEnum{x \cup \set{x}}$ to $x \cup \set{x}$.
+      Indeed we can show that for any $F \in \unboundedEnum}$ we
       have $G(F) \in x \cup \set{x}$.
-        Let $F \in (x \cup \set{x})^{< \infty}$.
-        If $x \setminus \range(F) \neq \emptyset$ then
-        $G(F) \in x \setminus \range(F)$.
-        If $x \setminus \range(F) = \emptyset$ then $G(F) = x$.
+        Let $F \in \unboundedEnum{x \cup \set{x}}$.
+        If $x \setminus \range{F} \neq \emptyset$ then
+        $G(F) \in x \setminus \range{F}$.
+        If $x \setminus \range{F} = \emptyset$ then $G(F) = x$.
         Hence $G(F) \in x \cup \set{x}$.
       End.
       Hence we can take a map $F$ from $\Ord$ to $x \cup \set{x}$ that is
       recursive regarding $G$.
       For any ordinal $\alpha$ we have $F \restriction \alpha \in
-      (x \cup \set{x})^{< \infty}$.
+      \unboundedEnum{x \cup \set{x}}$.
 
       For any $\alpha \in \Ord$
-      \[ x \setminus F[\alpha] \neq \emptyset \implies
-      F(\alpha) \in x \setminus F[\alpha] \]
+      \[ x \setminus \image{F}(\alpha) \neq \emptyset \implies
+      F(\alpha) \in x \setminus \image{F}(\alpha) \]
       and
-      \[ x \setminus F[\alpha] = \emptyset \implies F(\alpha) = x. \]
+      \[ x \setminus \image{F}(\alpha) = \emptyset \implies F(\alpha) = x. \]
       Proof.
         Let $\alpha \in \Ord$.
-        We have $F[\alpha] = \{ F(\beta) \mid \beta \in \alpha \}$.
-        Hence $F[\alpha] = \{ G(F \restriction \beta) \mid \beta \in \alpha \}$.
-        We have $\range(F \restriction \alpha) =
+        We have $\image{F}(\alpha) = \{ F(\beta) \mid \beta \in \alpha \}$.
+        Hence $\image{F}(\alpha) = \{ G(F \restriction \beta) \mid \beta \in \alpha \}$.
+        We have $\range{F \restriction \alpha} =
         \{ F(\beta) \mid \beta \in \alpha \}$.
-        Thus $\range(F \restriction \alpha) = F[\alpha]$.
+        Thus $\range{F \restriction \alpha} = \image{F}(\alpha)$.
 
-        Case $x \setminus F[\alpha] \neq \emptyset$.
-          Then $x \setminus \range(F \restriction \alpha) \neq \emptyset$.
+        Case $x \setminus \image{F}(\alpha) \neq \emptyset$.
+          Then $x \setminus \range{F \restriction \alpha} \neq \emptyset$.
           Hence $F(\alpha)
             = G(F \restriction \alpha)
-            \in x \setminus \range(F \restriction \alpha)
-            = x \setminus F[\alpha]$.
+            \in x \setminus \range{F \restriction \alpha}
+            = x \setminus \image{F}(\alpha)$.
         End.
 
-        Case $x \setminus F[\alpha] \neq \emptyset$.
-          Then $x \setminus \range(F \restriction \alpha) = \emptyset$.
+        Case $x \setminus \image{F}(\alpha) \neq \emptyset$.
+          Then $x \setminus \range{F \restriction \alpha} = \emptyset$.
           Hence $F(\alpha)
             = G(F \restriction \alpha)
             = x$.
         End.
       Qed.
 
-      (1) For any ordinals $\alpha, \beta$ such that $\alpha < \beta$ and
+      (1) For any ordinals $\alpha, \beta$ such that $\alpha \less \beta$ and
       $F(\beta) \neq x$ we have $F(\alpha), F(\beta) \in x$ and $F(\alpha) \neq
       F(\beta)$. \\
       Proof.
         Let $\alpha, \beta \in \Ord$.
-        Assume $\alpha < \beta$ and $F(\beta) \neq x$.
-        Then $x \setminus F[\beta] \neq \emptyset$.
-        (a) Hence $F(\beta) \in x \setminus F[\beta]$.
-        We have $F[\alpha] \subseteq F[\beta]$.
-        Thus $x \setminus F[\alpha] \neq \emptyset$.
-        (b) Therefore $F(\alpha) \in x \setminus F[\alpha]$.
+        Assume $\alpha \less \beta$ and $F(\beta) \neq x$.
+        Then $x \setminus \image{F}(\beta) \neq \emptyset$.
+        (a) Hence $F(\beta) \in x \setminus \image{F}(\beta)$.
+        We have $\image{F}(\alpha) \subseteq \image{F}(\beta)$.
+        Thus $x \setminus \image{F}(\alpha) \neq \emptyset$.
+        (b) Therefore $F(\alpha) \in x \setminus \image{F}(\alpha)$.
         Consequently $F(\alpha), F(\beta) \in x$ (by a, b).
-        We have $F(\alpha) \in F[\beta]$ and $F(\beta) \notin F[\beta]$.
+        We have $F(\alpha) \in \image{F}(\beta)$ and $F(\beta) \notin \image{F}(\beta)$.
         Thus $F(\alpha) \neq F(\beta)$.
       Qed.
 
@@ -103,7 +103,7 @@
         Let us show that $F$ is injective.
           Let $\alpha, \beta \in \Ord$.
           Assume $\alpha \neq \beta$.
-          Then $\alpha < \beta$ or $\beta < \alpha$.
+          Then $\alpha \less \beta$ or $\beta \less \alpha$.
           Hence $F(\alpha) \neq F(\beta)$ (by 1).
           Indeed $F(\alpha), F(\beta) \neq x$.
         End.
@@ -122,10 +122,10 @@
 
       (3) $f$ is surjective onto $x$. \\
       Proof.
-        $x \setminus F[\alpha] = \emptyset$.
-        Hence $\range(f)
-          = f[\alpha]
-          = F[\alpha]
+        $x \setminus \image{F}(\alpha) = \emptyset$.
+        Hence $\range{f}
+          = \image{f}(\alpha)
+          = \image{F}(\alpha)
           = x$.
       Qed.
 
@@ -135,7 +135,7 @@
         Assume $\beta \neq \gamma$.
         We have $f(\beta), f(\gamma) \neq x$.
         Hence $f(\beta) \neq f(\gamma)$ (by 1).
-        Indeed $\beta < \gamma$ or $\gamma < \beta$.
+        Indeed $\beta \less \gamma$ or $\gamma \less \beta$.
       Qed.
 
       Therefore $f$ is a bijection between $\alpha$ and $x$.
@@ -151,25 +151,25 @@
       Let $x$ be a set.
       Choose an ordinal $\alpha$ that is equinumerous to $x$.
       Take a bijection $f$ between $x$ and $\alpha$.
-      Define $R = \{ (u,v) \mid u, v \in x$ and $f(u) < f(v) \}$.
+      Define $R = \{ (u,v) \mid u, v \in x$ and $f(u) \less f(v) \}$.
 
       Let us show that $R$ is a strong wellorder on $x$.
-        ${<}$ is a strong wellorder on $\alpha$.
-        For all $u, v \in x$ we have $(u, v) \in R$ iff $f(u) < f(v)$.
+        $\LessRel$ is a strong wellorder on $\alpha$.
+        For all $u, v \in x$ we have $(u, v) \in R$ iff $f(u) \less f(v)$.
 
         (1) $R$ is irreflexive on $x$.
         Indeed for all $u \in x$ we have $f(u) \nless f(u)$.
 
         (2) $R$ is transitive on $x$.
-        Indeed for all $u, v, w \in x$ if $f(u) < f(v)$ and $f(v) < f(w)$ then
-        $f(u) < f(w)$.
+        Indeed for all $u, v, w \in x$ if $f(u) \less f(v)$ and $f(v) \less f(w)$ then
+        $f(u) \less f(w)$.
 
         (3) $R$ is connected on $x$. \\
         Proof.
           Let $u, v \in x$.
           Assume $u \neq v$.
           Then $f(u) \neq f(v)$.
-          Hence $f(u) < f(v)$ or $f(v) < f(u)$ (by
+          Hence $f(u) \less f(v)$ or $f(v) \less f(u)$ (by
           \cref{SET_THEORY_02_1718825707896832}).
           Indeed $f(u), f(v)$ are ordinals.
         Qed.
@@ -179,10 +179,10 @@
         (4) $R$ is wellfounded on $x$. \\
         Proof.
           Let $A$ be a nonempty subclass of $x$.
-          Then we can take a least element $\beta$ of $f[A]$ regarding
-          ${<}$.
-          Indeed $f[A]$ is a nonempty subclass of $\alpha$.
-          Then $f^{-1}(\beta)$ is a least element of $A$ regarding $R$.
+          Then we can take a least element $\beta$ of $\image{f}(A)$ regarding
+          $\LessRel$.
+          Indeed $\image{f}(A)$ is a nonempty subclass of $\alpha$.
+          Then $\inverse{f}(\beta)$ is a least element of $A$ regarding $R$.
         Qed.
 
         We can show that for all $v \in x$ there exists a set $y$ such that

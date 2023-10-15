@@ -1,9 +1,12 @@
-\usepackage{amssymb}
+\renewcommand{\succ}[1]{\mathrm{succ}\left(#1\right)}
+\newcommand{\pred}[1]{\mathrm{pred}\left(#1\right)}
 
-\let\succ\relax
-
-\DeclareMathOperator{\succ}{succ}
-\DeclareMathOperator{\pred}{pred}
+\newcommand{\less}{<}
+\newcommand{\gtr}{>}
+\newcommand{\LessRel}{\ulcorner\less\urcorner}
+\newcommand{\boundedEnum}[2]{\left(#1\right)^{\less#2}}
+\newcommand{\unboundedEnum}[1]{\left(#1\right)^{\less\infty}}
+\newcommand{\card}[1]{\left\vert#1\right\vert}
 
 \newcommand{\V}{\mathbf{V}}
 \newcommand{\Ord}{\mathbf{Ord}}

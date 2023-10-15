@@ -28,7 +28,7 @@
       Then $A$ is equinumerous to $A$.
     \end{proposition}
     \begin{proof}
-      $\id_{A}$ is a bijection between $A$ and $A$.
+      $\id{A}$ is a bijection between $A$ and $A$.
     \end{proof}
   \end{forthel}
 
@@ -40,7 +40,7 @@
     \begin{proof}
       Assume that $A$ and $B$ are equinumerous.
       Take a bijection $f$ between $A$ and $B$.
-      Then $f^{-1}$ is a bijection between $B$ and $A$.
+      Then $\inverse{f}$ is a bijection between $B$ and $A$.
       Hence $B$ and $A$ are equinumerous.
     \end{proof}
   \end{forthel}
@@ -70,8 +70,8 @@
     \begin{proof}
       Case $x$ and $y$ are equinumerous.
         Take a bijection $f$ between $x$ and $y$.
-        Then $f^{-1}$ is a bijection between $y$ and $x$.
-        Hence $f$ is an injective map from $x$ to $y$ and $f^{-1}$ is an
+        Then $\inverse{f}$ is a bijection between $y$ and $x$.
+        Hence $f$ is an injective map from $x$ to $y$ and $\inverse{f}$ is an
         injective map from $y$ to $x$.
       End.
 
@@ -79,23 +79,23 @@
       injective map from $y$ to $x$.
         Take an injective map $f$ from $x$ to $y$.
         Take an injective map $g$ from $y$ to $x$.
-        We have $y \setminus f[a] \subseteq y$ for any $a \in \pow(x)$.
+        We have $y \setminus \image{f}(a) \subseteq y$ for any $a \in \pow{x}$.
 
-        (1) Define $h(a) = x \setminus g[y \setminus f[a]]$ for $a \in \pow(x)$.
+        (1) Define $h(a) = x \setminus \image{g}(y \setminus \image{f}(a))$ for $a \in \pow{x}$.
 
-        $h$ is a map from $\pow(x)$ to $\pow(x)$.
+        $h$ is a map from $\pow{x}$ to $\pow{x}$.
         Indeed $h(a)$ is a subset of $x$ for each subset $a$ of $x$.
 
         Let us show that $h$ is subset preserving.
           Let $u, v$ be subsets of $x$.
           Assume $u \subseteq v$.
-          Then $f[u] \subseteq f[v]$.
-          Hence $y \setminus f[v] \subseteq y \setminus f[u]$.
-          Thus $g[y \setminus f[v]] \subseteq g[y \setminus f[u]]$.
-          Indeed $y \setminus f[v]$ and $y \setminus f[u]$ are subsets of $y$.
-          Therefore $x \setminus g[y \setminus f[u]] \subseteq
-          x \setminus g[y \setminus f[v]]$.
-          Consequently $h[u] \subseteq h[v]$.
+          Then $\image{f}(u) \subseteq \image{f}(v)$.
+          Hence $y \setminus \image{f}(v) \subseteq y \setminus \image{f}(u)$.
+          Thus $\image{g}(y \setminus \image{f}(v)) \subseteq \image{g}(y \setminus \image{f}(u))$.
+          Indeed $y \setminus \image{f}(v)$ and $y \setminus \image{f}(u)$ are subsets of $y$.
+          Therefore $x \setminus \image{g}(y \setminus \image{f}(u)) \subseteq
+          x \setminus \image{g}(y \setminus \image{f}(v))$.
+          Consequently $\image{h}(u) \subseteq \image{h}(v)$.
         End.
 
         Hence we can take a fixed point $c$ of $h$ (by
@@ -103,15 +103,15 @@
 
         (2) Define $F(u) = f(u)$ for $u \in c$.
 
-        We have $c = h(c)$ iff $x \setminus c = g[y \setminus f[c]]$.
-        $g^{-1}$ is a bijection between $\range(g)$ and $y$.
-        Thus $x \setminus c = g[y \setminus f[c]] \subseteq \range(g)$.
-        Therefore $x \setminus c$ is a subset of $\dom(g^{-1})$.
+        We have $c = h(c)$ iff $x \setminus c = \image{g}(y \setminus \image{f}(c))$.
+        $\inverse{g}$ is a bijection between $\range{g}$ and $y$.
+        Thus $x \setminus c = \image{g}(y \setminus \image{f}(c)) \subseteq \range{g}$.
+        Therefore $x \setminus c$ is a subset of $\dom(\inverse{g})$.
 
-        (3) Define $G(u) = g^{-1}(u)$ for $u \in x \setminus c$.
+        (3) Define $G(u) = \inverse{g}(u)$ for $u \in x \setminus c$.
 
-        $F$ is a bijection between $c$ and $\range(F)$.
-        $G$ is a bijection between $x \setminus c$ and $\range(G)$.
+        $F$ is a bijection between $c$ and $\range{F}$.
+        $G$ is a bijection between $x \setminus c$ and $\range{G}$.
 
         Define \[ H(u) =
           \begin{cases}
@@ -128,7 +128,7 @@
             Let $v$ be a value of $H$.
             Take $u \in x$ such that $H(u) = v$.
             If $u \in c$ then $v = H(u) = F(u) = f(u) \in y$.
-            If $u \notin c$ then $v = H(u) = G(u) = g^{-1}(u) \in y$.
+            If $u \notin c$ then $v = H(u) = G(u) = \inverse{g}(u) \in y$.
           End.
         End.
 
@@ -136,14 +136,14 @@
         Indeed we can show that every element of $y$ is a value of $H$.
           Let $v \in y$.
 
-          Case $v \in f[c]$.
+          Case $v \in \image{f}(c)$.
             Take $u \in c$ such that $f(u) = v$.
             Then $F(u) = v$.
           End.
 
-          Case $v \notin f[c]$.
-            Then $v \in y \setminus f[c]$.
-            Hence $g(v) \in g[y \setminus f[c]]$.
+          Case $v \notin \image{f}(c)$.
+            Then $v \in y \setminus \image{f}(c)$.
+            Hence $g(v) \in \image{g}(y \setminus \image{f}(c))$.
             Thus $g(v) \in x \setminus h(c)$.
             We have $g(v) \in x \setminus c$.
             Therefore we can take $u \in x \setminus c$ such that $G(u) = v$.
@@ -171,15 +171,15 @@
 
           Case $u \in c$ and $v \notin c$.
             Then $H(u) = F(u)$ and $H(v) = G(v)$.
-            Hence $v \in g[y \setminus f[c]]$.
-            We have $G(v) \in y \setminus F[c]$.
+            Hence $v \in \image{g}(y \setminus \image{f}(c))$.
+            We have $G(v) \in y \setminus \image{F}(c)$.
             Thus $G(v) \neq F(u)$.
           End.
 
           Case $u \notin c$ and $v \in c$.
             Then $H(u) = G(u)$ and $H(v) = F(v)$.
-            Hence $u \in g[y \setminus f[c]]$.
-            We have $G(u) \in y \setminus f[c]$.
+            Hence $u \in \image{g}(y \setminus \image{f}(c))$.
+            We have $G(u) \in y \setminus \image{f}(c)$.
             Thus $G(u) \neq F(v)$.
           End.
         End.

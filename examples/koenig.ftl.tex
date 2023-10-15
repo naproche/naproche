@@ -36,7 +36,7 @@ University of Bonn}
 arithmetic of cardinals.
 It was proved by Julius König in 1905 \cite[p. 177--180]{Koenig1905}.
 The proof is reminiscent of Cantor's diagonal argument for proving that
-$\kappa < 2^\kappa$.
+$\kappa \less 2^\kappa$.
 
 On mid-range hardware \Naproche needs approximately 2 Minutes to verify this
 formalization plus approximately 25 minutes to verify the library files it
@@ -77,7 +77,7 @@ depends on.
 
   \begin{definition*}
     Let $\kappa$ be a sequence of cardinals on $D$.
-    \[ \Sum{\kappa}{D} = \left| \SumSet{\kappa}{D} \right|. \]
+    \[ \Sum{\kappa}{D} = \card{\SumSet{\kappa}{D}}. \]
   \end{definition*}
 
   \begin{definition*}
@@ -94,7 +94,7 @@ depends on.
 
   \begin{definition*}
     Let $\kappa$ be a sequence of cardinals on $D$.
-    \[ \Prod{\kappa}{D} = \left| \ProdSet{\kappa}{D} \right|. \]
+    \[ \Prod{\kappa}{D} = \card{\ProdSet{\kappa}{D}}. \]
   \end{definition*}
 \end{forthel}
 
@@ -123,8 +123,8 @@ are themselves non-empty:
 \begin{forthel}
   \begin{theorem*}[König]\label{koenig}
     Let $\kappa, \lambda$ be sequences of cardinals on $D$.
-    Assume that for every element $i$ of $D$ $\kappa_{i} < \lambda_{i}$.
-    Then \[ \Sum{\kappa}{D} < \Prod{\lambda}{D}. \]
+    Assume that for every element $i$ of $D$ $\kappa_{i} \less \lambda_{i}$.
+    Then \[ \Sum{\kappa}{D} \less \Prod{\lambda}{D}. \]
   \end{theorem*}
   \begin{proof}[by contradiction]
     Assume the contrary.
@@ -132,9 +132,9 @@ are themselves non-empty:
     Take a surjective map $G$ from $\SumSet{\kappa}{D}$ to
     $\ProdSet{\lambda}{D}$.
     Indeed $\ProdSet{\lambda}{D}$ and $\Sum{\kappa}{D}$ are nonempty sets.
-    Take $\Lambda = \bigcup \range(\lambda)$.
+    Take $\Lambda = \bigcup \range{\lambda}$.
     Then $\Lambda$ is a set.
-    Indeed $\range(\lambda)$ is a set.
+    Indeed $\range{\lambda}$ is a set.
 
     Define $\Delta(i) = \{ G(n,i)(i) \in \Lambda \mid n \in \kappa_{i} \}$ for
     $i \in D$.
@@ -142,19 +142,19 @@ are themselves non-empty:
     For every element $f$ of $\ProdSet{\lambda}{D}$ and every element $i$ of $D$
     we have $f(i) \in \Lambda$.
 
-    For every element $i$ of $D$ we have $|\Delta(i)| < \lambda_{i}$. \\
+    For every element $i$ of $D$ we have $\card{\Delta(i)} \less \lambda_{i}$. \\
     Proof.
       Let $i$ be an element of $D$.
       Define $F(n) = G(n,i)(i)$ for $n$ in $\kappa_{i}$.
       Then $F$ is a map from $\kappa_{i}$ to $\lambda_{i}$.
       We have $\Delta(i) = \{ F(n) \mid n \in \kappa_{i} \}$.
-      Thus $F[\kappa_{i}] = \Delta(i)$.
-      Therefore $|\Delta(i)|
-        = |F[\kappa_{i}]|
-        \leq |\kappa_{i}|
+      Thus $\image{F}(\kappa_{i}) = \Delta(i)$.
+      Therefore $\card{\Delta(i)}
+        = \card{\image{F}(\kappa_{i})}
+        \leq \card{\kappa_{i}}
         = \kappa_{i}
-        < \lambda_{i}$.
-      Indeed $|F[\kappa_{i}]| \leq |\kappa_{i}|$
+        \less \lambda_{i}$.
+      Indeed $\card{\image{F}(\kappa_{i})} \leq \card{\kappa_{i}}$
       (by \cref{SET_THEORY_06_8113916590686208}).
       Indeed $\kappa_{i}$ and $\lambda_{i}$ are sets.
     End.

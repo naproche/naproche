@@ -1,13 +1,16 @@
 \usepackage{amssymb}
 \usepackage{pgffor}
 
-\DeclareMathOperator{\id}{id}
-\DeclareMathOperator{\range}{range}
-
+\newcommand{\id}[1]{\mathrm{id}_{#1}}
+\newcommand{\range}[1]{\mathrm{range}\left(#1\right)}
 \newcommand{\symdiff}{\mathop{\triangle}}
-\newcommand{\pow}{\mathcal{P}}
+\newcommand{\pow}[1]{\mathcal{P}\left(#1\right)}
 \newcommand{\onto}{\twoheadrightarrow}
 \newcommand{\into}{\hookrightarrow}
+\newcommand{\image}[1]{\left(#1\right)_{*}}
+\newcommand{\preimage}[1]{\left(#1\right)^{*}}
+\newcommand{\inverse}[1]{\left(#1\right)^{-1}}
+\newcommand{\funspace}[2]{[#1\to#2]}
 
 % E.g. `\set{1, 2, 3, 4}` prints the numbers 1, 2, 3 and 4 as a comma
 % separated list which is enclosed within curly braces.

@@ -44,7 +44,7 @@
       \[ \{ x \mid \text{$x$ is a subset of $A$} \}. \]
     \end{definition}
 
-    Let $\pow(A)$ stand for the powerclass of $A$.
+    Let $\pow{A}$ stand for the powerclass of $A$.
   \end{forthel}
 
 
@@ -81,7 +81,7 @@
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_10_7546016869908480}
       Let $A$ be a class.
-      Then $\pow(A)$ is a system of subsets of $A$.
+      Then $\pow{A}$ is a system of subsets of $A$.
     \end{proposition}
   \end{forthel}
 
@@ -228,12 +228,12 @@
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_10_5119110467813376}
       Let $x, y$ be sets.
-      $[x \to y]$ is the class of all maps from $x$ to $y$.
+      $\funspace{x}{y}$ is the class of all maps from $x$ to $y$.
     \end{definition}
 
     \begin{proposition}\printlabel{FOUNDATIONS_10_3702893448265728}
       Let $x, y$ be sets.
-      Then every element of $[x \to y]$ is a function.
+      Then every element of $\funspace{x}{y}$ is a function.
     \end{proposition}
   \end{forthel}
 
@@ -287,10 +287,10 @@
   \begin{forthel}
     \begin{axiom}[Powerset Axiom]\printlabel{FOUNDATIONS_10_5862230203564032}
       Let $x$ be a set.
-      Then $\pow(x)$ is a set.
+      Then $\pow{x}$ is a set.
     \end{axiom}
 
-    Let the powerset of $x$ stand for $\pow(x)$.
+    Let the powerset of $x$ stand for $\pow{x}$.
   \end{forthel}
 
   \begin{forthel}
@@ -311,7 +311,7 @@
   \begin{forthel}
     \begin{axiom}[Replacement Axiom]\printlabel{FOUNDATIONS_10_8142956584239104}
       Let $f$ be a map and $x$ be a set.
-      Then $f[x]$ is a set.
+      Then $\image{f}(x)$ is a set.
     \end{axiom}
   \end{forthel}
 
@@ -403,17 +403,17 @@
 
       (1) $P$ is a set. \\
       Proof.
-        Let us show that $P \subseteq \pow(\pow(x \cup y))$.
+        Let us show that $P \subseteq \pow{\pow{x \cup y}}$.
           Let $p \in P$.
           Consider $a \in x$ and $b \in y$ such that
           $p = \set{\set{a},\set{a,b}}$.
           Then $a, b \in x \cup y$.
-          Hence $\set{a}, \set{a,b} \in \pow(x \cup y)$.
-          Thus $\set{\set{a}, \set{a,b}} \in \pow(\pow(x \cup y))$.
+          Hence $\set{a}, \set{a,b} \in \pow{x \cup y}$.
+          Thus $\set{\set{a}, \set{a,b}} \in \pow{\pow{x \cup y}}$.
         End.
 
         $x \cup y$ is a set.
-        Consequently $\pow(\pow(x \cup y))$ is a set (by
+        Consequently $\pow{\pow{x \cup y}}$ is a set (by
         \cref{FOUNDATIONS_10_5862230203564032}).
         Therefore $P$ is a set (by \cref{FOUNDATIONS_10_2263707272871936}).
       Qed.
@@ -488,21 +488,21 @@
         Therefore $f(p) = (a,b)$.
       End.
 
-      (2) $x \times y = f[P]$. \\
+      (2) $x \times y = \image{f}(P)$. \\
       Proof.
         For all $p \in P$ we have $l(p) \in x$ and $r(p) \in y$.
         Hence $f(p) \in x \times y$ for all $p \in P$.
-        Therefore $f[P] \subseteq x \times y$.
+        Therefore $\image{f}(P) \subseteq x \times y$.
 
-        Let us show that $x \times y \subseteq f[P]$.
+        Let us show that $x \times y \subseteq \image{f}(P)$.
           Let $z \in x \times y$.
           Take $a \in x$ and $b \in y$ such that $z = (a,b)$.
           Then $(a,b) = f(\set{\set{a}, \set{a,b}})$.
           Hence there exists a $p \in P$ such that $(a,b) = f(p)$.
-          Thus $(a,b) \in f[P]$.
+          Thus $(a,b) \in \image{f}(P)$.
         End.
 
-        Consequently $x \times y = f[P]$.
+        Consequently $x \times y = \image{f}(P)$.
       Qed.
 
       Thus $x \times y$ is the image of some set under some map.
@@ -525,11 +525,11 @@
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_10_7598384349184000}
       Let $f$ be a map such that $\dom(f)$ is a set.
-      Then $\range(f)$ is a set.
+      Then $\range{f}$ is a set.
     \end{proposition}
     \begin{proof}
-      $\range(f) = f_{*}(\dom(f))$ and $f_{*}(\dom(f))$ is a set.
-      Hence $\range(f)$ is a set (by \cref{FOUNDATIONS_10_8142956584239104}).
+      $\range{f} = \image{f}(\dom(f))$ and $\image{f}(\dom(f))$ is a set.
+      Hence $\range{f}$ is a set (by \cref{FOUNDATIONS_10_8142956584239104}).
     \end{proof}
   \end{forthel}
 
@@ -541,8 +541,8 @@
     \end{proposition}
     \begin{proof}
       Consider an injective map $f$ from $A$ to $x$.
-      Then $f^{-1}$ is a bijection between $\range(f)$ and $A$.
-      $\range(f)$ is a set and $A$ is the image of $\range(f)$ under $f^{-1}$.
+      Then $f^{-1}$ is a bijection between $\range{f}$ and $A$.
+      $\range{f}$ is a set and $A$ is the image of $\range{f}$ under $f^{-1}$.
       Thus $A$ is a set (by \cref{FOUNDATIONS_10_8142956584239104}).
     \end{proof}
   \end{forthel}
@@ -583,10 +583,10 @@
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_10_4105036244189184}
       Let $x, y$ be sets.
-      Then $[x \to y]$ is a set.
+      Then $\funspace{x}{y}$ is a set.
     \end{proposition}
     \begin{proof}
-      Define $R = \{ F \in \pow(x \times y) \mid$ (for all $a \in x$ there
+      Define $R = \{ F \in \pow{x \times y} \mid$ (for all $a \in x$ there
       exists a $b \in y$ such that $(a,b) \in F$) and for all $a \in x$ and
       all $b, b' \in y$ such that $(a,b), (a,b') \in F$ we have $b = b' \}$.
 
@@ -596,16 +596,16 @@
       $(a,b) \in F$ in $b$'' for $F \in R$.
       [prover eprover][/timelimit]
 
-      Let us show that $[x \to y] \subseteq \range(h)$.
-        Let $f \in [x \to y]$.
+      Let us show that $\funspace{x}{y} \subseteq \range{h}$.
+        Let $f \in \funspace{x}{y}$.
         Define $F = \{ (a,f(a)) \mid a \in x \}$.
 
         Then $F \in R$. \\
         Proof.
           Define $g(a) = (a,f(a))$ for $a \in x$.
-          Then $F = \range(g)$.
+          Then $F = \range{g}$.
           Hence $F$ is a set.
-          Thus $F \in \pow(x \times y)$.
+          Thus $F \in \pow{x \times y}$.
           Indeed $F \subseteq x \times y$.
 
           (1) For all $a \in x$ there exists a $b \in y$ such that $(a,b) \in F$.
@@ -617,10 +617,10 @@
         We have $\dom(f) = x = \dom(h(F))$.
         For each $a \in x$ we have $h(F)(a) = f(a)$.
         Hence $f = h(F)$.
-        Thus $f \in \range(h)$.
+        Thus $f \in \range{h}$.
       End.
 
-      Therefore $[x \to y]$ is a set.
+      Therefore $\funspace{x}{y}$ is a set.
       Indeed $R$ is a set.
     \end{proof}
   \end{forthel}

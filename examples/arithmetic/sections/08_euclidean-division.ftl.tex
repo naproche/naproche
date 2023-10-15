@@ -20,147 +20,147 @@
     \begin{theorem}\printlabel{ARITHMETIC_08_7743986617810944}
       Let $n, m$ be natural numbers such that $m \neq 0$.
       Then there exist natural numbers $q, r$ such that
-      \[ n = (m \cdot q) + r \] and $r < m$.
+      \[ n = (m \cdot q) \plus r \] and $r \less m$.
     \end{theorem}
     \begin{proof}
       Define $\Phi = \{ n' \in \Nat \mid$ there exist natural numbers $q, r$
-      such that $r < m$ and $n' = (m \cdot q) + r \}$.
+      such that $r \less m$ and $n' = (m \cdot q) \plus r \}$.
 
       (1) $\Phi$ contains $0$.
       Proof.
         Take $q = 0$ and $r = 0$.
-        Then $r < m$ and $0 = (m \cdot q) + r$.
+        Then $r \less m$ and $0 = (m \cdot q) \plus r$.
         Hence $0 \in \Phi$.
       Qed.
 
-      (2) For all $n' \in \Phi$ we have $n' + 1 \in \Phi$.
+      (2) For all $n' \in \Phi$ we have $n' \plus 1 \in \Phi$.
       Proof.
         Let $n' \in \Phi$.
 
-        Let us show that there exist natural numbers $q, r$ such that $r < m$
-        and $n' + 1 = (m \cdot q) + r$.
-          Take natural numbers $q', r'$ such that $r' < m$ and
-          $n' = (m \cdot q') + r'$.
-          We have $r' + 1 < m$ or $r' + 1 = m$.
+        Let us show that there exist natural numbers $q, r$ such that $r \less m$
+        and $n' \plus 1 = (m \cdot q) \plus r$.
+          Take natural numbers $q', r'$ such that $r' \less m$ and
+          $n' = (m \cdot q') \plus r'$.
+          We have $r' \plus 1 \less m$ or $r' \plus 1 = m$.
 
-          Case $r' + 1 < m$.
-            Take $q = q' + 0$ and $r = r' + 1$. %!
-            Then $r < m$ and $n' + 1
-              = ((q' \cdot m) + r') + 1
-              = (q' \cdot m) + (r' + 1)
-              = (q \cdot m) + r$.
+          Case $r' \plus 1 \less m$.
+            Take $q = q' \plus 0$ and $r = r' \plus 1$. %!
+            Then $r \less m$ and $n' \plus 1
+              = ((q' \cdot m) \plus r') \plus 1
+              = (q' \cdot m) \plus (r' \plus 1)
+              = (q \cdot m) \plus r$.
           End.
 
-          Case $r' + 1 = m$.
-            Take  $q = q' + 1$ and $r = 0$.
-            Then $r < m$ and
-            $n' + 1
-              = ((q' \cdot m) + r') + 1
-              = (q' \cdot m) + (r' + 1)
-              = (q' \cdot m) + m
-              = (q' \cdot m) + (1 \cdot m)
-              = (q' + 1) \cdot m
-              = (q \cdot m) + r$.
+          Case $r' \plus 1 = m$.
+            Take  $q = q' \plus 1$ and $r = 0$.
+            Then $r \less m$ and
+            $n' \plus 1
+              = ((q' \cdot m) \plus r') \plus 1
+              = (q' \cdot m) \plus (r' \plus 1)
+              = (q' \cdot m) \plus m
+              = (q' \cdot m) \plus (1 \cdot m)
+              = (q' \plus 1) \cdot m
+              = (q \cdot m) \plus r$.
           End.
         End.
 
-        Hence $n' + 1 \in \Phi$.
+        Hence $n' \plus 1 \in \Phi$.
       Qed.
 
       Then $\Phi$ contains every natural number.
-      Thus there exist natural numbers $q, r$ such that $n = (m \cdot q) + r$
-      and $r < m$.
+      Thus there exist natural numbers $q, r$ such that $n = (m \cdot q) \plus r$
+      and $r \less m$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_08_7801804481888256}
       Let $n, m$ be natural numbers such that $m \neq 0$.
-      Let $q, r$ be natural numbers such that $(m \cdot q) + r = n$ and $r < m$.
-      Let $q', r'$ be natural numbers such that $(m \cdot q') + r' = n$ and
-      $r' < m$.
+      Let $q, r$ be natural numbers such that $(m \cdot q) \plus r = n$ and $r \less m$.
+      Let $q', r'$ be natural numbers such that $(m \cdot q') \plus r' = n$ and
+      $r' \less m$.
       Then $q = q'$ and $r = r'$.
     \end{proposition}
     \begin{proof}
-      We have $(m \cdot q) + r = (m \cdot q') + r'$.
+      We have $(m \cdot q) \plus r = (m \cdot q') \plus r'$.
 
       Case $q \geq q'$ and $r \geq r'$.
-        (1) $((m \cdot q) + r) - r' = (m \cdot q) + (r - r')$
+        (1) $((m \cdot q) \plus r) \minus r' = (m \cdot q) \plus (r \minus r')$
         (by \cref{ARITHMETIC_05_7578468875239424}).
-        (2) $((m \cdot q') + r') - r'
-          = (m \cdot q') + (r' - r')
+        (2) $((m \cdot q') \plus r') \minus r'
+          = (m \cdot q') \plus (r' \minus r')
           = m \cdot q'$.
-        Hence $(m \cdot q) + (r - r') = m \cdot q'$.
-        Thus $((m \cdot q) - (m \cdot q')) + (r - r') = 0$.
-        Consequently $(m \cdot q) - (m \cdot q') = 0$ and $r - r' = 0$.
-        If $(m \cdot q) - (m \cdot q') = 0$ then $q - q' = 0$.
-        Therefore $q - q' = 0$ and $r - r' = 0$.
+        Hence $(m \cdot q) \plus (r \minus r') = m \cdot q'$.
+        Thus $((m \cdot q) \minus (m \cdot q')) \plus (r \minus r') = 0$.
+        Consequently $(m \cdot q) \minus (m \cdot q') = 0$ and $r \minus r' = 0$.
+        If $(m \cdot q) \minus (m \cdot q') = 0$ then $q \minus q' = 0$.
+        Therefore $q \minus q' = 0$ and $r \minus r' = 0$.
         Thus we have $q = q'$ and $r = r'$.
       End.
 
-      Case $q \geq q'$ and $r < r'$.
-        Take $q'' = q - q'$ and $r'' = r' - r$.
-        Then $(m \cdot (q' + q'')) + r = (m \cdot q') + (r + r'')$.
-        We have $(m \cdot q') + (r + r'')
-          = (m \cdot q') + (r'' + r)
-          = ((m \cdot q') + r'') + r$.
-        Hence $(m \cdot (q' + q'')) + r = ((m \cdot q') + r'') + r$.
-        Thus $m \cdot (q' + q'') = (m \cdot q') + r''$
+      Case $q \geq q'$ and $r \less r'$.
+        Take $q'' = q \minus q'$ and $r'' = r' \minus r$.
+        Then $(m \cdot (q' \plus q'')) \plus r = (m \cdot q') \plus (r \plus r'')$.
+        We have $(m \cdot q') \plus (r \plus r'')
+          = (m \cdot q') \plus (r'' \plus r)
+          = ((m \cdot q') \plus r'') \plus r$.
+        Hence $(m \cdot (q' \plus q'')) \plus r = ((m \cdot q') \plus r'') \plus r$.
+        Thus $m \cdot (q' \plus q'') = (m \cdot q') \plus r''$
         (by \cref{ARITHMETIC_03_3137702874578944}).
-        We have $m \cdot (q' + q'') = (m \cdot q') + (m \cdot q'')$.
-        Hence $(m \cdot q') + (m \cdot q'') = (m \cdot q') + r''$.
+        We have $m \cdot (q' \plus q'') = (m \cdot q') \plus (m \cdot q'')$.
+        Hence $(m \cdot q') \plus (m \cdot q'') = (m \cdot q') \plus r''$.
         [prover vampire]
         Thus $m \cdot q'' = r''$ (by \cref{ARITHMETIC_03_8445946379632640}).
-        Then we have $m \cdot q'' < m \cdot 1$.
+        Then we have $m \cdot q'' \less m \cdot 1$.
         Indeed $m \cdot q''
           = r''
           \leq r'
-          < m
+          \less m
           = m \cdot 1$.
-        Therefore $q'' < 1$ (by \cref{ARITHMETIC_06_5048640368279552}).
-        Consequently $q - q' = q'' = 0$.
+        Therefore $q'' \less 1$ (by \cref{ARITHMETIC_06_5048640368279552}).
+        Consequently $q \minus q' = q'' = 0$.
         Hence $q = q'$.
-        Thus $(m \cdot q) + r = (m \cdot q) + r'$.
+        Thus $(m \cdot q) \plus r = (m \cdot q) \plus r'$.
         Therefore $r = r'$.
       End.
 
-      Case $q < q'$ and $r \geq r'$.
-        Take $q'' = q' - q$ and $r'' = r - r'$.
-        Then $(m \cdot q) + (r' + r'') = (m \cdot (q + q'')) + r'$.
-        We have $(m \cdot q) + (r' + r'')
-          = (m \cdot q) + (r'' + r')
-          = ((m \cdot q) + r'') + r'$.
-        Hence $((m \cdot q) + r'') + r' = (m \cdot (q + q'')) + r'$.
-        Thus $(m \cdot q) + r'' = m \cdot (q + q'')$
+      Case $q \less q'$ and $r \geq r'$.
+        Take $q'' = q' \minus q$ and $r'' = r \minus r'$.
+        Then $(m \cdot q) \plus (r' \plus r'') = (m \cdot (q \plus q'')) \plus r'$.
+        We have $(m \cdot q) \plus (r' \plus r'')
+          = (m \cdot q) \plus (r'' \plus r')
+          = ((m \cdot q) \plus r'') \plus r'$.
+        Hence $((m \cdot q) \plus r'') \plus r' = (m \cdot (q \plus q'')) \plus r'$.
+        Thus $(m \cdot q) \plus r'' = m \cdot (q \plus q'')$
         (by \cref{ARITHMETIC_03_3137702874578944}).
-        We have $m \cdot (q + q'') = (m \cdot q) + (m \cdot q'')$.
-        Hence $(m \cdot q) + r'' = (m \cdot q) + (m \cdot q'')$.
+        We have $m \cdot (q \plus q'') = (m \cdot q) \plus (m \cdot q'')$.
+        Hence $(m \cdot q) \plus r'' = (m \cdot q) \plus (m \cdot q'')$.
         [prover vampire]
         Thus $r'' = m \cdot q''$.
-        Then we have $m \cdot q'' < m \cdot 1$.
+        Then we have $m \cdot q'' \less m \cdot 1$.
         Indeed $m \cdot q''
           = r''
           \leq r
-          < m
+          \less m
           = m \cdot 1$.
-        Therefore $q'' < 1$ (by \cref{ARITHMETIC_06_5048640368279552}).
-        Consequently $q' - q = q'' = 0$.
+        Therefore $q'' \less 1$ (by \cref{ARITHMETIC_06_5048640368279552}).
+        Consequently $q' \minus q = q'' = 0$.
         Hence $q' = q$.
-        Thus $(m \cdot q) + r = (m \cdot q) + r'$.
+        Thus $(m \cdot q) \plus r = (m \cdot q) \plus r'$.
         Therefore $r = r'$.
       End.
 
-      Case $q < q'$ and $r < r'$.
-        (1) $((m \cdot q') + r') - r = (m \cdot q') + (r' - r)$
+      Case $q \less q'$ and $r \less r'$.
+        (1) $((m \cdot q') \plus r') \minus r = (m \cdot q') \plus (r' \minus r)$
         (by \cref{ARITHMETIC_05_7578468875239424}).
-        (2) $((m \cdot q) + r) - r
-          = (m \cdot q) + (r - r)
+        (2) $((m \cdot q) \plus r) \minus r
+          = (m \cdot q) \plus (r \minus r)
           = m \cdot q$.
-        Hence $(m \cdot q') + (r' - r) = m \cdot q$.
-        Thus $((m \cdot q') - (m \cdot q)) + (r' - r) = 0$.
-        Consequently $(m \cdot q') - (m \cdot q) = 0$ and $r' - r = 0$.
-        If $(m \cdot q') - (m \cdot q) = 0$ then $q' - q = 0$.
-        Therefore $q' - q = 0$ and $r' - r = 0$.
+        Hence $(m \cdot q') \plus (r' \minus r) = m \cdot q$.
+        Thus $((m \cdot q') \minus (m \cdot q)) \plus (r' \minus r) = 0$.
+        Consequently $(m \cdot q') \minus (m \cdot q) = 0$ and $r' \minus r = 0$.
+        If $(m \cdot q') \minus (m \cdot q) = 0$ then $q' \minus q = 0$.
+        Therefore $q' \minus q = 0$ and $r' \minus r = 0$.
         Thus we have $q' = q$ and $r' = r$.
       End.
     \end{proof}
@@ -169,7 +169,7 @@
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_08_8621463798022144}
       Let $n, m$ be natural numbers such that $m \neq 0$.
-      $n \div m$ is the natural number $q$ such that $n = (m \cdot q) + r$ for
+      $n \div m$ is the natural number $q$ such that $n = (m \cdot q) \plus r$ for
       some natural number $r$ that is less than $m$.
     \end{definition}
 
@@ -179,8 +179,8 @@
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_08_3560980160184320}
       Let $n, m$ be natural numbers such that $m \neq 0$.
-      $n \mod m$ is the natural number $r$ such that $r < m$ and there exists a
-      natural number $q$ such that $n = (m \cdot q) + r$.
+      $n \mod m$ is the natural number $r$ such that $r \less m$ and there exists a
+      natural number $q$ such that $n = (m \cdot q) \plus r$.
     \end{definition}
 
     Let the remainder of $n$ over $m$ stand for $n \mod m$.
@@ -192,47 +192,47 @@
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_08_5448561831444480}
       Let $n, m, k$ be natural numbers such that $k \neq 0$.
-      $n \equiv m \pmod{k}$ iff $n \mod k = m \mod k$.
+      $\congruent{n}{m}{k}$ iff $n \mod k = m \mod k$.
     \end{definition}
 
-    Let $n$ and $m$ are congruent modulo $k$ stand for $n \equiv m \pmod{k}$.
+    Let $n$ and $m$ are congruent modulo $k$ stand for $\congruent{n}{m}{k}$.
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_08_3818318544764928}
       Let $n, k$ be natural numbers such that $k \neq 0$.
-      Then \[ n \equiv n \pmod{k}. \]
+      Then \[ \congruent{n}{n}{k}. \]
     \end{proposition}
     \begin{proof}
       We have $n \mod k = n \mod k$.
-      Hence $n \equiv n \pmod{k}$.
+      Hence $\congruent{n}{n}{k}$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_08_2337210737098752}
       Let $n, m, k$ be natural numbers such that $k \neq 0$.
-      Then \[ n \equiv m \pmod{k} \implies m \equiv n \pmod{k}. \]
+      Then \[ \congruent{n}{m}{k} \implies \congruent{m}{n}{k}. \]
     \end{proposition}
     \begin{proof}
-      Assume $n \equiv m \pmod{k}$.
+      Assume $\congruent{n}{m}{k}$.
       Then $n \mod k = m \mod k$.
       Hence $m \mod k = n \mod k$.
-      Thus $m \equiv n \pmod{k}$.
+      Thus $\congruent{m}{n}{k}$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_08_7464329746055168}
       Let $n, m, l, k$ be natural numbers such that $k \neq 0$.
-      Then \[ (\text{$n \equiv m \pmod{k}$ and $m \equiv l \pmod{k}$}) \implies
-      n \equiv l \pmod{k}. \]
+      Then \[ (\text{$\congruent{n}{m}{k}$ and $\congruent{m}{l}{k}$}) \implies
+      \congruent{n}{l}{k}. \]
     \end{proposition}
     \begin{proof}
-      Assume $n \equiv m \pmod{k}$ and $m \equiv l \pmod{k}$.
+      Assume $\congruent{n}{m}{k}$ and $\congruent{m}{l}{k}$.
       Then $n \mod k = m \mod k$ and $m \mod k = l \mod k$.
       Hence $n \mod k = l \mod k$.
-      Thus $n \equiv l \pmod{k}$.
+      Thus $\congruent{n}{l}{k}$.
     \end{proof}
   \end{forthel}
 
@@ -240,61 +240,61 @@
     \begin{proposition}\printlabel{ARITHMETIC_08_2034122983735296}
       Let $n, m, k$ be natural numbers such that $k \neq 0$.
       Assume $n \geq m$.
-      Then $n \equiv m \pmod{k}$ iff $n = (k \cdot x) + m$ for some natural
+      Then $\congruent{n}{m}{k}$ iff $n = (k \cdot x) \plus m$ for some natural
       number $x$.
     \end{proposition}
     \begin{proof}
-      Case $n \equiv m \pmod{k}$.
+      Case $\congruent{n}{m}{k}$.
         Then $n \mod k = m \mod k$.
-        Take a natural number $r$ such that $r < k$ and
+        Take a natural number $r$ such that $r \less k$ and
         $n \mod k = r = m \mod k$.
-        Take a nonzero natural number $l$ such that $k = r + l$.
-        Consider natural numbers $q,q'$ such that $n = (q \cdot k) + r$ and
-        $m = (q' \cdot k) + r$.
+        Take a nonzero natural number $l$ such that $k = r \plus l$.
+        Consider natural numbers $q,q'$ such that $n = (q \cdot k) \plus r$ and
+        $m = (q' \cdot k) \plus r$.
 
         Then $q \geq q'$. \\
         Proof.
           Assume the contrary.
-          Then $q < q'$.
-          Hence $q \cdot k < q' \cdot k$.
-          Thus $(q \cdot k) + r < (q' \cdot k) + r$
+          Then $q \less q'$.
+          Hence $q \cdot k \less q' \cdot k$.
+          Thus $(q \cdot k) \plus r \less (q' \cdot k) \plus r$
           (by \cref{ARITHMETIC_04_7354062662008832}).
           Indeed $q \cdot k$ and $q' \cdot k$ are natural numbers.
-          Therefore $n < m$.
+          Therefore $n \less m$.
           Contradiction.
         Qed.
 
-        Take a natural number $x$ such that $q = q' + x$.
+        Take a natural number $x$ such that $q = q' \plus x$.
 
-        Let us show that $n = (k \cdot x) + m$.
+        Let us show that $n = (k \cdot x) \plus m$.
           We have
-          \[  (k \cdot x) + m                       \]
-          \[    = (k \cdot x) + ((q' \cdot k) + r)  \]
-          \[    = ((k \cdot x) + (q' \cdot k)) + r  \]
-          \[    = ((k \cdot x) + (k \cdot q')) + r  \]
-          \[    = (k \cdot (q' + x)) + r            \]
-          \[    = (k \cdot q) + r                   \]
+          \[  (k \cdot x) \plus m                       \]
+          \[    = (k \cdot x) \plus ((q' \cdot k) \plus r)  \]
+          \[    = ((k \cdot x) \plus (q' \cdot k)) \plus r  \]
+          \[    = ((k \cdot x) \plus (k \cdot q')) \plus r  \]
+          \[    = (k \cdot (q' \plus x)) \plus r            \]
+          \[    = (k \cdot q) \plus r                   \]
           \[    = n.                                \]
         End.
       End.
 
-      Case $n = (k \cdot x) + m$ for some natural number $x$.
-        Consider a natural number $x$ such that $n = (k \cdot x) + m$.
+      Case $n = (k \cdot x) \plus m$ for some natural number $x$.
+        Consider a natural number $x$ such that $n = (k \cdot x) \plus m$.
         Take natural numbers $r, r'$ such that $n \mod k = r$ and
         $m \mod k = r'$.
-        Then $r, r' < k$.
-        Take natural numbers $q, q'$ such that $n = (k \cdot q) + r$ and
-        $m = (k \cdot q') + r'$.
+        Then $r, r' \less k$.
+        Take natural numbers $q, q'$ such that $n = (k \cdot q) \plus r$ and
+        $m = (k \cdot q') \plus r'$.
         Then
-        \[  (k \cdot q) + r                         \]
+        \[  (k \cdot q) \plus r                         \]
         \[    = n                                   \]
-        \[    = (k \cdot x) + m                     \]
-        \[    = (k \cdot x) + ((k \cdot q') + r')   \]
-        \[    = ((k \cdot x) + (k \cdot q')) + r'   \]
-        \[    = (k \cdot (x + q')) + r'.            \]
+        \[    = (k \cdot x) \plus m                     \]
+        \[    = (k \cdot x) \plus ((k \cdot q') \plus r')   \]
+        \[    = ((k \cdot x) \plus (k \cdot q')) \plus r'   \]
+        \[    = (k \cdot (x \plus q')) \plus r'.            \]
         Hence $r = r'$.
         Thus $n \mod k = m \mod k$.
-        Therefore $n \equiv m \pmod{k}$.
+        Therefore $\congruent{n}{m}{k}$.
       End.
     \end{proof}
   \end{forthel}
@@ -302,25 +302,25 @@
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_08_2988318228742144}
       Let $n, m, k, k'$ be natural numbers such that $k, k' \neq 0$.
-      Then \[ n \equiv m \pmod{k \cdot k'} \implies n \equiv m \pmod{k}. \]
+      Then \[ \congruent{n}{m}{k \cdot k'} \implies \congruent{n}{m}{k}. \]
     \end{proposition}
     \begin{proof}
-      Assume $n \equiv m \pmod{k \cdot k'}$.
+      Assume $\congruent{n}{m}{k \cdot k'}$.
 
       Case $n \geq m$.
         We can take a natural number $x$ such that
-        $n = ((k \cdot k') \cdot x) + m$.
-        Then $n = (k \cdot (k' \cdot x)) + m$.
-        Hence $n \equiv m \pmod{k}$.
+        $n = ((k \cdot k') \cdot x) \plus m$.
+        Then $n = (k \cdot (k' \cdot x)) \plus m$.
+        Hence $\congruent{n}{m}{k}$.
       End.
 
       Case $m \geq n$.
-        We have $m \equiv n \pmod{k \cdot k'}$.
+        We have $\congruent{m}{n}{k \cdot k'}$.
         Hence we can take a natural number $x$ such that
-        $m = ((k \cdot k') \cdot x) + n$.
-        Then $m = (k \cdot (k' \cdot x)) + n$.
-        Thus $m \equiv n \pmod{k}$.
-        Therefore $n \equiv m \pmod{k}$.
+        $m = ((k \cdot k') \cdot x) \plus n$.
+        Then $m = (k \cdot (k' \cdot x)) \plus n$.
+        Thus $\congruent{m}{n}{k}$.
+        Therefore $\congruent{n}{m}{k}$.
       End.
     \end{proof}
   \end{forthel}
@@ -328,33 +328,33 @@
   \begin{forthel}
     \begin{corollary}\printlabel{ARITHMETIC_08_5895145169879040}
       Let $n, m, k, k'$ be natural numbers such that $k, k' \neq 0$.
-      Then \[ n \equiv m \pmod{k \cdot k'} \implies n \equiv m \pmod{k'}. \]
+      Then \[ \congruent{n}{m}{k \cdot k'} \implies \congruent{n}{m}{k'}. \]
     \end{corollary}
     \begin{proof}
-      Assume $n \equiv m \pmod{k \cdot k'}$.
-      Then $n \equiv m \pmod{k' \cdot k}$.
-      Hence $n \equiv m \pmod{k'}$.
+      Assume $\congruent{n}{m}{k \cdot k'}$.
+      Then $\congruent{n}{m}{k' \cdot k}$.
+      Hence $\congruent{n}{m}{k'}$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_08_5984712287846400}
       Let $n, k$ be natural numbers such that $k \neq 0$.
-      Then \[ n + k \equiv n \pmod{k}. \]
+      Then \[ \congruent{n \plus k}{n}{k}. \]
     \end{proposition}
     \begin{proof}
-      Take $r = n \mod k$ and $r' = (n + k) \mod k$.
-      Consider a $q \in \Nat$ such that $n = (k \cdot q) + r$ and $r < k$.
-      Consider a $q' \in \Nat$ such that $n + k = (k \cdot q') + r'$ and
-      $r' < k$.
-      Then $(k \cdot q') + r'
-        = n + k
-        = ((k \cdot q) + r) + k
-        = (k + (k \cdot q)) + r
-        = (k \cdot (q + 1)) + r$.
+      Take $r = n \mod k$ and $r' = (n \plus k) \mod k$.
+      Consider a $q \in \Nat$ such that $n = (k \cdot q) \plus r$ and $r \less k$.
+      Consider a $q' \in \Nat$ such that $n \plus k = (k \cdot q') \plus r'$ and
+      $r' \less k$.
+      Then $(k \cdot q') \plus r'
+        = n \plus k
+        = ((k \cdot q) \plus r) \plus k
+        = (k \plus (k \cdot q)) \plus r
+        = (k \cdot (q \plus 1)) \plus r$.
       Hence $r = r'$.
-      Consequently $n \mod k = (n + k) \mod k$.
-      Thus $n + k \equiv n \pmod{k}$.
+      Consequently $n \mod k = (n \plus k) \mod k$.
+      Thus $\\congruent{n \plus k}{n}{k}$.
     \end{proof}
   \end{forthel}
 \end{document}

@@ -53,10 +53,10 @@ Marcel Schütz (2022)}
     \end{axiom*}
   \end{forthel}
 
-  \noindent In the following, for any class $A$, we write $A^{< \infty}$ to
+  \noindent In the following, for any class $A$, we write $\unboundedEnum{A}$ to
   denote the collection of all maps $f : \alpha \to A$ for some ordinal
   $\alpha$.
-  Moreover, for any map $G : A^{< \infty} \to A$ we say that a map $F : \Ord \to
+  Moreover, for any map $G : \unboundedEnum{A} \to A$ we say that a map $F : \Ord \to
   A$, where $\Ord$ denotes the class of all ordinals, is recursive regarding $G$
   if $F(\alpha) = G(F \restriction \alpha)$ for all $\alpha \in \Ord$.
 
@@ -66,80 +66,80 @@ Marcel Schütz (2022)}
     \end{theorem*}
     \begin{proof}
       Let $x$ be a set.
-      Consider a choice function $g$ for $\pow(x) \setminus \set{\emptyset}$.
-      For any $F \in (x \cup \set{x})^{< \infty}$ if
-      $x \setminus \range(F) \neq \emptyset$ then $x \setminus \range(F) \in
+      Consider a choice function $g$ for $\pow{x} \setminus \set{\emptyset}$.
+      For any $F \in \unboundedEnum{x \cup \set{x}}$ if
+      $x \setminus \range{F} \neq \emptyset$ then $x \setminus \range{F} \in
       \dom(g)$.
-      Indeed $x \setminus \range(F)$ is a subset of $x$ for any $F \in
-      (x \cup \set{x})^{< \infty}$.
+      Indeed $x \setminus \range{F}$ is a subset of $x$ for any $F \in
+      \unboundedEnum{x \cup \set{x}}$.
       Define \[ G(F) =
         \begin{cases}
-          g(x \setminus \range(F))
-          & : x \setminus \range(F) \neq \emptyset
+          g(x \setminus \range{F})
+          & : x \setminus \range{F} \neq \emptyset
           \\
           x
-          & : x \setminus \range(F) = \emptyset
+          & : x \setminus \range{F} = \emptyset
         \end{cases} \]
-      for $F \in (x \cup \set{x})^{< \infty}$.
-      Then for any $F \in (x \cup \set{x})^{< \infty}$ if
-      $x \setminus \range(F) \neq \emptyset$ then
-      $G(F) \in x \setminus \range(F)$.
-      $G$ is a map from $(x \cup \set{x})^{< \infty}$ to $x \cup \set{x}$.
-      Indeed we can show that for any $F \in (x \cup \set{x})^{< \infty}$ we
+      for $F \in \unboundedEnum{x \cup \set{x}}$.
+      Then for any $F \in \unboundedEnum{x \cup \set{x}}$ if
+      $x \setminus \range{F} \neq \emptyset$ then
+      $G(F) \in x \setminus \range{F}$.
+      $G$ is a map from $\unboundedEnum{x \cup \set{x}}$ to $x \cup \set{x}$.
+      Indeed we can show that for any $F \in \unboundedEnum{x \cup \set{x}}$ we
       have $G(F) \in x \cup \set{x}$.
-        Let $F \in (x \cup \set{x})^{< \infty}$.
-        If $x \setminus \range(F) \neq \emptyset$ then
-        $G(F) \in x \setminus \range(F)$.
-        If $x \setminus \range(F) = \emptyset$ then $G(F) = x$.
+        Let $F \in \unboundedEnum{x \cup \set{x}}$.
+        If $x \setminus \range{F} \neq \emptyset$ then
+        $G(F) \in x \setminus \range{F}$.
+        If $x \setminus \range{F} = \emptyset$ then $G(F) = x$.
         Hence $G(F) \in x \cup \set{x}$.
       End.
       Hence we can take a map $F$ from $\Ord$ to $x \cup \set{x}$ that is
       recursive regarding $G$.
       For any ordinal $\alpha$ we have $F \restriction \alpha \in
-      (x \cup \set{x})^{< \infty}$.
+      \unboundedEnum{x \cup \set{x}}$.
 
       For any $\alpha \in \Ord$ we have
-      \[ x \setminus F[\alpha] \neq \emptyset \implies
-      F(\alpha) \in x \setminus F[\alpha] \]
+      \[ x \setminus \image{F}(\alpha) \neq \emptyset \implies
+      F(\alpha) \in x \setminus \image{F}(\alpha) \]
       and
-      \[ x \setminus F[\alpha] = \emptyset \implies F(\alpha) = x. \]
+      \[ x \setminus \image{F}(\alpha) = \emptyset \implies F(\alpha) = x. \]
       Proof.
         Let $\alpha \in \Ord$.
-        We have $F[\alpha] = \{ F(\beta) \mid \beta \in \alpha \}$.
-        Hence $F[\alpha] = \{ G(F \restriction \beta) \mid \beta \in \alpha \}$.
-        We have $\range(F \restriction \alpha) =
+        We have $\image{F}(\alpha) = \{ F(\beta) \mid \beta \in \alpha \}$.
+        Hence $\image{F}(\alpha) = \{ G(F \restriction \beta) \mid \beta \in \alpha \}$.
+        We have $\range{F \restriction \alpha} =
         \{ F(\beta) \mid \beta \in \alpha \}$.
-        Thus $\range(F \restriction \alpha) = F[\alpha]$.
+        Thus $\range{F \restriction \alpha} = \image{F}(\alpha)$.
 
-        Case $x \setminus F[\alpha] \neq \emptyset$.
-          Then $x \setminus \range(F \restriction \alpha) \neq \emptyset$.
+        Case $x \setminus \image{F}(\alpha) \neq \emptyset$.
+          Then $x \setminus \range{F \restriction \alpha} \neq \emptyset$.
           Hence $F(\alpha)
             = G(F \restriction \alpha)
-            \in x \setminus \range(F \restriction \alpha)
-            = x \setminus F[\alpha]$.
+            \in x \setminus \range{F \restriction \alpha}
+            = x \setminus \image{F}(\alpha)$.
         End.
 
-        Case $x \setminus F[\alpha] \neq \emptyset$.
-          Then $x \setminus \range(F \restriction \alpha) = \emptyset$.
+        Case $x \setminus \image{F}(\alpha) \neq \emptyset$.
+          Then $x \setminus \range{F \restriction \alpha} = \emptyset$.
           Hence $F(\alpha)
             = G(F \restriction \alpha)
             = x$.
         End.
       Qed.
 
-      (1) For any ordinals $\alpha, \beta$ such that $\alpha < \beta$ and
+      (1) For any ordinals $\alpha, \beta$ such that $\alpha \less \beta$ and
       $F(\beta) \neq x$ we have $F(\alpha), F(\beta) \in x$ and $F(\alpha) \neq
       F(\beta)$. \\
       Proof.
         Let $\alpha, \beta \in \Ord$.
-        Assume $\alpha < \beta$ and $F(\beta) \neq x$.
-        Then $x \setminus F[\beta] \neq \emptyset$.
-        (a) Hence $F(\beta) \in x \setminus F[\beta]$.
-        We have $F[\alpha] \subseteq F[\beta]$.
-        Thus $x \setminus F[\alpha] \neq \emptyset$.
-        (b) Therefore $F(\alpha) \in x \setminus F[\alpha]$.
+        Assume $\alpha \less \beta$ and $F(\beta) \neq x$.
+        Then $x \setminus \image{F}(\beta) \neq \emptyset$.
+        (a) Hence $F(\beta) \in x \setminus \image{F}(\beta)$.
+        We have $\image{F}(\alpha) \subseteq \image{F}(\beta)$.
+        Thus $x \setminus \image{F}(\alpha) \neq \emptyset$.
+        (b) Therefore $F(\alpha) \in x \setminus \image{F}(\alpha)$.
         Consequently $F(\alpha), F(\beta) \in x$ (by a, b).
-        We have $F(\alpha) \in F[\beta]$ and $F(\beta) \notin F[\beta]$.
+        We have $F(\alpha) \in \image{F}(\beta)$ and $F(\beta) \notin \image{F}(\beta)$.
         Thus $F(\alpha) \neq F(\beta)$.
       Qed.
 
@@ -151,7 +151,7 @@ Marcel Schütz (2022)}
         Let us show that $F$ is injective.
           Let $\alpha, \beta \in \Ord$.
           Assume $\alpha \neq \beta$.
-          Then $\alpha < \beta$ or $\beta < \alpha$.
+          Then $\alpha \less \beta$ or $\beta \less \alpha$.
           Hence $F(\alpha) \neq F(\beta)$ (by 1).
           Indeed $F(\alpha), F(\beta) \neq x$.
         End.
@@ -170,10 +170,10 @@ Marcel Schütz (2022)}
 
       (3) $f$ is surjective onto $x$. \\
       Proof.
-        $x \setminus F[\alpha] = \emptyset$.
-        Hence $\range(f)
-          = f[\alpha]
-          = F[\alpha]
+        $x \setminus \image{F}(\alpha) = \emptyset$.
+        Hence $\range{f}
+          = \image{f}(\alpha)
+          = \image{F}(\alpha)
           = x$.
       Qed.
 
@@ -183,7 +183,7 @@ Marcel Schütz (2022)}
         Assume $\beta \neq \gamma$.
         We have $f(\beta), f(\gamma) \neq x$.
         Hence $f(\beta) \neq f(\gamma)$ (by 1).
-        Indeed $\beta < \gamma$ or $\gamma < \beta$.
+        Indeed $\beta \less \gamma$ or $\gamma \less \beta$.
       Qed.
 
       Therefore $f$ is a bijection between $\alpha$ and $x$.

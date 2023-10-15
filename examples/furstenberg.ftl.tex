@@ -3,26 +3,28 @@
 \usepackage[utf8]{inputenc}
 \usepackage[british]{babel}
 
-\usepackage{meta-inf/lib/naproche-logo}
-\usepackage{meta-inf/lib/naproche}
+\usepackage{meta\minusinf/lib/naproche\minuslogo}
+\usepackage{meta\minusinf/lib/naproche}
 \input{foundations/lib/preamble}
 \input{arithmetic/lib/preamble}
 
 \usepackage{biblatex}
 \usepackage{csquotes}
-\addbibresource{meta-inf/lib/references.bib}
+\addbibresource{meta\minusinf/lib/references.bib}
 
 \usepackage{xr}
 \externaldocument{arithmetic/arithmetic}
 
-\newcommand{\N}{\mathrm{N}}
+\let\oldcomplement\complement
+\renewcommand{\complement}[1]{\left(#1\right)^{\oldcomplement}}
+\newcommand{\arithseq}[2]{\mathrm{N}_{#1,#2}}
 \newcommand{\Int}{\mathbb{Z}}
 \newcommand{\Ps}{\mathrm{P}}
 
 \title{Furstenberg's proof of the infinitude of primes}
 \author{\Naproche formalization: \vspace{0.5em} \\
 Andrei Paskevich (2007), \\
-Marcel Schütz (2021 - 2022)}
+Marcel Schütz (2021 \minus 2022)}
 \date{}
 
 
@@ -31,7 +33,7 @@ Marcel Schütz (2021 - 2022)}
 
   \noindent This is a formalization of Furstenberg's topological proof of the
   infinitude of primes \cite[p. 353]{Furstenberg1955}.
-  On mid-range hardware \Naproche needs approximately 5 Minutes to verify this
+  On mid\minusrange hardware \Naproche needs approximately 5 Minutes to verify this
   formalization plus approximately 40 minutes to verify the library files it
   depends on.
 
@@ -57,10 +59,10 @@ Marcel Schütz (2021 - 2022)}
 
     \begin{definition}
       Let $A$ be a subset of $\Nat$.
-      $A^{\complement} = \Nat \setminus A$.
+      $\complement{A} = \Nat \setminus A$.
     \end{definition}
 
-    Let the complement of $A$ stand for $A^{\complement}$.
+    Let the complement of $A$ stand for $\complement{A}$.
 
     \begin{lemma}
       The complement of any subset of $\Nat$ is a subset of $\Nat$.
@@ -68,11 +70,11 @@ Marcel Schütz (2021 - 2022)}
   \end{forthel}
 
   Towards a suitable topology on $\Nat$ let us define \textit{arithmetic
-  sequences} $\N_{n, q}$ on $\Nat$.
+  sequences} $\arithseq{n}{q}$ on $\Nat$.
 
   \begin{forthel}
     \begin{definition}
-      $\N_{n, q} = \{ m \in \Nat \mid m \equiv n \pmod{q} \}$.
+      $\arithseq{n}{q} = \{ m \in \Nat \mid \congruent{m}{n}{q} \}$.
     \end{definition}
   \end{forthel}
 
@@ -83,7 +85,7 @@ Marcel Schütz (2021 - 2022)}
     \begin{definition}
       Let $U$ be a subset of $\Nat$.
       $U$ is open iff for any $n \in U$ there exists a $q$ such that
-      $\N_{n, q} \subseteq U$.
+      $\arithseq{n}{q} \subseteq U$.
     \end{definition}
 
     \begin{definition}
@@ -105,15 +107,15 @@ Marcel Schütz (2021 - 2022)}
     \end{lemma}
     \begin{proof}
       Let $n \in U \cap V$.
-      Take a $q$ such that $\N_{n, q} \subseteq U$.
-      Take a $p$ such that $\N_{n, p} \subseteq V$.
+      Take a $q$ such that $\arithseq{n}{q} \subseteq U$.
+      Take a $p$ such that $\arithseq{n}{p} \subseteq V$.
       Then $p \cdot q \neq 0$.
 
-      Let us show that $\N_{n, p \cdot q} \subseteq U \cap V$.
-        Let $m \in \N_{n, p \cdot q}$.
-        We have $m \equiv n \pmod{p \cdot q}$.
-        Hence $m \equiv n \pmod{p}$ and $m \equiv n \pmod{q}$.
-        Thus $m \in \N_{n, p}$ and $m \in \N_{n, q}$.
+      Let us show that $\arithseq{n}{p \cdot q} \subseteq U \cap V$.
+        Let $m \in \arithseq{n}{p \cdot q}$.
+        We have $congruent{m}{n}{p \cdot q}$.
+        Hence $congruent{m}{n}{p}$ and $congruent{m}{n}{q}$.
+        Thus $m \in \arithseq{n}{p}$ and $m \in \arithseq{n}{q}$.
         Therefore $m \in U$ and $m \in V$.
         Consequently $m \in U \cap V$.
       End.
@@ -126,8 +128,8 @@ Marcel Schütz (2021 - 2022)}
     \begin{proof}
       Let $n \in \bigcup S$.
       Take a set $M$ such that $n \in M \in S$.
-      Consider a $q$ such that $\N_{n, q} \subseteq M$.
-      Then $\N_{n, q} \subseteq \bigcup S$.
+      Consider a $q$ such that $\arithseq{n}{q} \subseteq M$.
+      Then $\arithseq{n}{q} \subseteq \bigcup S$.
     \end{proof}
   \end{forthel}
 
@@ -138,7 +140,7 @@ Marcel Schütz (2021 - 2022)}
   \begin{forthel}
     \begin{definition}
       Let $A$ be a subset of $\Nat$.
-      $A$ is closed iff $A^{\complement}$ is open.
+      $A$ is closed iff $\complement{A}$ is open.
     \end{definition}
 
     \begin{definition}
@@ -151,8 +153,8 @@ Marcel Schütz (2021 - 2022)}
     \end{lemma}
     \begin{proof}
       Let $S$ be a system of closed sets.
-      Then $S \subseteq \pow(\Nat)$.
-      $\pow(\Nat)$ is a set.
+      Then $S \subseteq \pow{\Nat}$.
+      $\pow{\Nat}$ is a set.
       Hence $S$ is a set.
     \end{proof}
 
@@ -168,9 +170,9 @@ Marcel Schütz (2021 - 2022)}
         Then $A, B$ are closed subsets of $\Nat$.
         % The LHS of the following equation must be put in parentheses due to a
         % bug in Naproche's parser.
-        We have $((A \cup B)^{\complement}) = A^{\complement} \cap B^{\complement}$.
-        $A^{\complement}$ and $B^{\complement}$ are open.
-        Hence $A^{\complement} \cap B^{\complement}$ is open.
+        We have $\complement{A \cup B} = \complement{A} \cap \complement{B}$.
+        $\complement{A}$ and $\complement{B}$ are open.
+        Hence $\complement{A} \cap \complement{B}$ is open.
         Thus $A \cup B$ is a closed subset of $\Nat$.
       End.
 
@@ -185,38 +187,38 @@ Marcel Schütz (2021 - 2022)}
 
   \begin{forthel}
     \begin{lemma}
-      $\N_{n, q}$ is closed.
+      $\arithseq{n}{q}$ is closed.
     \end{lemma}
     \begin{proof}
-      Let $m \in (\N_{n, q})^{\complement}$.
+      Let $m \in \complement{\arithseq{n}{q}}$.
 
-      Let us show that $\N_{m, q} \subseteq (\N_{n, q})^{\complement}$.
-        Let $k \in \N_{m, q}$.
-        Assume $k \notin (\N_{n, q})^{\complement}$.
-        Then $k \equiv m \pmod{q}$ and $n \equiv k \pmod{q}$.
-        Hence $m \equiv n \pmod{q}$.
-        Therefore $m \in \N_{n, q}$.
+      Let us show that $\arithseq{m}{q} \subseteq \complement{\arithseq{n}{q}}$.
+        Let $k \in \arithseq{m}{q}$.
+        Assume $k \notin \complement{\arithseq{n}{q}}$.
+        Then $congruent{k}{m}{q}$ and $congruent{n}{k}{q}$.
+        Hence $congruent{m}{n}{q}$.
+        Therefore $m \in \arithseq{n}{q}$.
         Contradiction.
       End.
     \end{proof}
   \end{forthel}
 
-  Identifying each prime number $p$ with the arithmetic sequence $\N_{0, p}$
+  Identifying each prime number $p$ with the arithmetic sequence $\arithseq{0}{p}$
   yields a bijection between the set $\Prime$ of all prime numbers and the set
-  $\Ps$ of all such sequences $\N_{0, p}$.
+  $\Ps$ of all such sequences $\arithseq{0}{p}$.
   Thus to show that there are infinitely many primes it suffices to show that
   $\Ps$ is infinite.
 
   \begin{forthel}
     \begin{definition}
-      $\Ps = \{ \N_{0, p} \mid p \in \Prime \}$.
+      $\Ps = \{ \arithseq{0}{p} \mid p \in \Prime \}$.
     \end{definition}
 
     \begin{lemma}
       $\Ps$ is a system of closed sets.
     \end{lemma}
     \begin{proof}
-      $\N_{0, p}$ is a closed subset of $\Nat$ for every $p \in \Prime$.
+      $\arithseq{0}{p}$ is a closed subset of $\Nat$ for every $p \in \Prime$.
     \end{proof}
 
     \begin{lemma}
@@ -224,20 +226,20 @@ Marcel Schütz (2021 - 2022)}
     \end{lemma}
     \begin{proof}
       (1) $\Ps$ is a set.
-      Indeed $\Ps \subseteq \pow(\Nat)$.
+      Indeed $\Ps \subseteq \pow{\Nat}$.
 
       (2) $\Ps$ is equinumerous to $\Prime$. \\
       Proof.
-        Define $f(p) = \N_{0,p}$ for $p \in \Prime$.
+        Define $f(p) = \arithseq{0}{p}$ for $p \in \Prime$.
 
         Let us show that $f$ is injective.
           Let $p, q \in \Prime$.
           Assume $f(p) = f(q)$.
-          Then $\N_{0, p} = \N_{0, q}$.
-          We have $\N_{0, p} = \{ m \in \Nat \mid m \equiv 0 \pmod{p} \}$ and
-          $\N_{0, q} = \{ m \in \Nat \mid m \equiv 0 \pmod{q} \}$.
-          Hence for all $m \in \Nat$ we have $m \equiv 0 \pmod{p}$ iff
-          $m \equiv 0 \pmod{q}$.
+          Then $\arithseq{0}{p} = \arithseq{0}{q}$.
+          We have $\arithseq{0}{p} = \{ m \in \Nat \mid congruent{m}{0}{p} \}$ and
+          $\arithseq{0}{q} = \{ m \in \Nat \mid congruent{m}{0}{q} \}$.
+          Hence for all $m \in \Nat$ we have $congruent{m}{0}{p}$ iff
+          $congruent{m}{0}{q}$.
           Thus for all $m \in \Nat$ we have $m \mod p = 0 \mod p$ iff
           $m \mod q = 0 \mod q$.
           We have $0 \mod p = 0 = 0 \mod q$.
@@ -265,38 +267,38 @@ Marcel Schütz (2021 - 2022)}
         Proof.
           Assume $n$ has a prime divisor.
           Take a prime divisor $p$ of $n$.
-          We have $\N_{0, p} \in \Ps$.
-          Hence $n \in \N_{0, p}$.
+          We have $\arithseq{0}{p} \in \Ps$.
+          Hence $n \in \arithseq{0}{p}$.
         Qed.
 
         If $n$ belongs to $\bigcup \Ps$ then $n$ has a prime divisor. \\
         Proof.
           Assume that $n$ belongs to $\bigcup \Ps$.
-          Take a prime number $r$ such that $n \in \N_{0, r}$.
-          Hence $n \equiv 0 \pmod{r}$.
+          Take a prime number $r$ such that $n \in \arithseq{0}{r}$.
+          Hence $congruent{n}{0}{r}$.
           Thus $n \mod r = 0 \mod r = 0$.
           Therefore $r$ is a prime divisor of $n$.
         Qed.
       End.
 
-      Hence For all $n \in \Nat$ we have $n \in (\bigcup \Ps)^{\complement}$ iff
+      Hence For all $n \in \Nat$ we have $n \in \complement{\bigcup \Ps}$ iff
       $n$ has no prime divisor.
       $1$ has no prime divisor and any natural number having no prime
       divisor is equal to $1$.
-      Therefore $(\bigcup \Ps)^{\complement} = \set{1}$.
-      Indeed $((\bigcup \Ps)^{\complement}) \subseteq \set{1}$ and $\set{1}
-      \subseteq (\bigcup \Ps)^{\complement}$. %!
+      Therefore $\complement{\bigcup \Ps} = \set{1}$.
+      Indeed $\complement{\bigcup \Ps} \subseteq \set{1}$ and $\set{1}
+      \subseteq \complement{\bigcup \Ps}$. %!
 
       $\Ps$ is infinite. \\
       Proof by contradiction.
         Assume that $\Ps$ is finite.
-        Then $\bigcup \Ps$ is closed and $(\bigcup \Ps)^{\complement}$ is open.
-        Take a $p$ such that $\N_{1, p} \subseteq (\bigcup \Ps)^{\complement}$.
-        $1 + p$ is an element of $\N_{1, p}$.
-        Indeed $1 + p \equiv 1 \pmod{p}$
+        Then $\bigcup \Ps$ is closed and $\complement{\bigcup \Ps}$ is open.
+        Take a $p$ such that $\arithseq{1}{p} \subseteq \complement{\bigcup \Ps}$.
+        $1 \plus p$ is an element of $\arithseq{1}{p}$.
+        Indeed $congruent{1 \plus p}{1}{p}$
         (by \ref{ARITHMETIC_08_5984712287846400}).
-        $1 + p$ is not equal to $1$.
-        Hence $1 + p \notin (\bigcup \Ps)^{\complement}$.
+        $1 \plus p$ is not equal to $1$.
+        Hence $1 \plus p \notin \complement{\bigcup \Ps}$.
         Contradiction.
       Qed.
     \end{proof}
