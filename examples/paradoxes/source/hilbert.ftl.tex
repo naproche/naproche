@@ -1,6 +1,6 @@
 \documentclass{stex}
 \libinput{preamble}
-\libinput{libraries/foundations}
+\libinput[naproche/examples/foundations]{preamble}
 \begin{document}
 \title{Hilbert's Paradox in \Naproche}
 \author{Marcel Schütz}
@@ -20,7 +20,7 @@
 
   \begin{definition*}
     Let $S$ be a system of sets.
-    $S$ is closed under powersets iff $\pow(x) \in S$ for all $x \in S$.
+    $S$ is closed under powersets iff $\pow{x} \in S$ for all $x \in S$.
   \end{definition*}
 
   \begin{definition*}
@@ -36,7 +36,7 @@
     Consider a system of sets $S$ that is closed under powersets and closed under unions.
     We have $S \subseteq S$.
     Hence $\bigcup S \in S$.
-    Thus $\pow(\bigcup S) \in S$.
+    Thus $\pow{\bigcup S} \in S$.
     Contradiction.
   \end{proof}
 \end{forthel}

@@ -1,6 +1,7 @@
 \documentclass{stex}
 \libinput{preamble}
-\libinput{libraries/foundations}
+\libinput[naproche/examples/foundations]{preamble}
+\libinput[naproche/examples/set-theory]{preamble}
 \usepackage{xr}
 \externaldocument{../../set-theory/set-theory}
 \begin{document}
@@ -27,11 +28,11 @@
   \begin{proof}
     Assume the contrary.
     Consider a set $V$ that contains all sets.
-    Then $\pow(V)$ is a set.
-    Hence $\pow(V)$ is a subset of $V$.
-    Thus $|\pow(V)| \leq |V|$.
+    Then $\pow{V}$ is a set.
+    Hence $\pow{V}$ is a subset of $V$.
+    Thus $\card{\pow{V}} \leq \card{V}$.
     Contradiction.
-    Indeed $|x| < |\pow(x)|$ for any set $x$ (by \nameref{SET_THEORY_06_914271456198656}).
+    Indeed $\card{x} \less \card{\pow{x}}$ for any set $x$ (by \nameref{SET_THEORY_06_914271456198656}).
   \end{proof}
 \end{forthel}
 \end{smodule}
