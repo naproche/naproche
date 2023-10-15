@@ -2,7 +2,8 @@
 
 ## "naproche"
 
-The `naproche` package provides basic support for typesetting Naproche formalizations in LaTeX.
+The `naproche` package provides basic support for typesetting Naproche
+formalizations in LaTeX.
 It is used by almost all example files that ship with Naproche and is the
 recommended one for custom formalizations.
 
@@ -126,11 +127,18 @@ typesets the Naproche logo.
 
 ## "libraries"
 
-The `libraries` package is used by Naproche's libraries to provide a document
-layout that is rather suitable for libraries than for stand-alone
-formalizations.
+The `libraries` package is used by Naproche's libraries (`examples/arithmetic`,
+`examples/foundations` and `examples/set-theory`) to provide a document layout
+that is more suitable for libraries than for small article-like formalizations.
+
+
+## "naproche-rustex" (experimental)
+
+Essentially the same as the package `naproche` but optimized for TeX-to-XHTML
+compilation via [RusTeX][3].
 
 
 
 [1]: <https://en.wikibooks.org/wiki/LaTeX/Installing_Extra_Packages#Manual_installation>
 [2]: <https://www.ctan.org/pkg/stex>
+[3]: <https://github.com/slatex/RusTeX>

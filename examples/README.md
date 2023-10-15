@@ -17,71 +17,75 @@ explanations and even graphics. The examples include single files as well as
 folders of formalizations that are interlinked by "`read`" commands. The
 spectrum reaches from recreational puzzles to undergraduate-level theorems:
 
-* arithmetic - elementary Peano arithmetic
+* `arithmetic/` - elementary Peano arithmetic
 
-* foundations - Kelley-Morse like foundations of mathematics
+* `foundations/` - Kelley-Morse like foundations of mathematics
 
-* geometry - beginnings of Tarski geometry
+* `geometry/` - beginnings of Tarski geometry
 
-* paradoxes - some well-known mathematical and logical paradoxes
+* `paradoxes/` - some well-known mathematical and logical paradoxes
 
-  - barber - The Barber Paradox
+  - `barber` - The Barber Paradox
 
-  - burali-forti - Burali-Forti's Paradox
+  - `burali-forti` - Burali-Forti's Paradox
 
-  - cantor_1 - Cantor's First Paradox
+  - `cantor_1` - Cantor's First Paradox
 
-  - cantor_2 - Cantor's Second Paradox
+  - `cantor_2` - Cantor's Second Paradox
 
-  - drinker - The Drinker Paradox
+  - `drinker` - The Drinker Paradox
 
-  - hilbert - Hilbert's Paradox
+  - `hilbert` - Hilbert's Paradox
 
-  - russell-myhill - The Russell-Myhill Paradox
+  - `russell-myhill` - The Russell-Myhill Paradox
 
-  - russell - Russell's Paradox
+  - `russell` - Russell's Paradox
 
-* set-theory - elementary set theory
+* `puzzles/` - some logic puzzles
 
-* agatha - a logic puzzle set in "Dreadsbury Mansion"
+  - `agatha` - a puzzle set in "Dreadsbury Mansion"
 
-* cantor - Cantor diagonal argument
+  - `dwarfs` - a "hat puzzle"
 
-* cantor-schroeder-bernstein - classical result in cardinality theory
+* `set-theory/` - elementary set theory
 
-* checkerboard - the mutilated checkerboard
+* `100_theorems` - some of Wiedijk's "100 Theorems"
 
-* chinese - Chinese remainder theorem
+* `cantor` - Cantor diagonal argument
 
-* dwarfs - a "hat puzzle"
+* `cantor-schroeder-bernstein` - classical result in cardinality theory
 
-* euclid - classical proof of infinity of primes
+* `checkerboard` - the mutilated checkerboard
 
-* furstenberg - topological proof of infinity of primes
+* `chinese` - Chinese remainder theorem
 
-* group - Naproche rendering of a Lean file on groups
+* `euclid` - classical proof of infinity of primes
 
-* hausdorff - theorem on the regularity of successor cardinals
+* `furstenberg` - topological proof of infinity of primes
 
-* hilbert-calculus - proving derivations in a Hilbert calculus
+* `group` - Naproche rendering of a Lean file on groups
 
-* koenig - theorem about sequences of cardinals
+* `hausdorff` - theorem on the regularity of successor cardinals
 
-* maximum_modulus - theorem from complex analysis
+* `hilbert-calculus` - proving derivations in a Hilbert calculus
 
-* newman - Newman's theorem on rewriting systems
+* `koenig` - theorem about sequences of cardinals
 
-* numbers - introduction of number systems for Rudin's Principles of Mathematical Analysis
+* `maximum_modulus` - theorem from complex analysis
 
-* paradoxes - collection of (mathematical) paradoxes
+* `newman` - Newman's theorem on rewriting systems
 
-* preliminaries - basic theory of classes and sets
+* `numbers` - introduction of number systems for Rudin's Principles of Mathematical Analysis
 
-* prime no square - irrationality of square roots
+* `preliminaries` - basic theory of classes and sets
 
-* tarski - Tarski fixpoint theorem for lattices
+* `prime_no_square` - irrationality of square roots
 
-* zermelo - Zermelo's well-ordering theorem
+* `tarski` - Tarski fixpoint theorem for lattices
+
+* `TUTORIAL` - Tutorial on how write proofs in Naproche
+
+* `zermelo` - Zermelo's well-ordering theorem
 
 The further development of Naproche will focus on the `.ftl.tex` format in order
 to build readable libraries of computer-verifiable mathematics. The classical
