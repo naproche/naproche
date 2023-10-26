@@ -1,4 +1,4 @@
-[read preliminaries.ftl]
+[read preliminaries/source/preliminaries.ftl]
 
 ### Complex and Real Numbers
 
@@ -28,7 +28,7 @@ Signature. Ball(eps,z) is a subset of CC that contains z.
 
 Axiom. |z| < |w| for some element w of Ball(eps,z).
 
-Definition. Let M be a subset of CC. M is open iff for every element z of M 
+Definition. Let M be a subset of CC. M is open iff for every element z of M
 there exists eps such that Ball(eps,z) is a subset of M.
 
 Axiom. Ball(eps,z) is open.
@@ -42,36 +42,36 @@ Signature. Let M be a region. M is simply connected is an atom.
 
 Let f denote a function. Let M denote a class.
 
-Definition. Let U be a subset of the domain of f. f is constant on U iff 
+Definition. Let U be a subset of the domain of f. f is constant on U iff
 there exists an object z such that f(w) = z for every element w of U.
 Let f is constant stand for f is constant on the domain of f.
 
-Signature. A holomorphic function is a function f such that 
+Signature. A holomorphic function is a function f such that
 Dom(f) \subseteq CC and f(w) \in CC for every element w of Dom(f).
 
 Let f denote a holomorphic function.
 
-Definition. A local maximal point of f is an element z of the domain of f such that there 
-exists eps such that Ball(eps,z) is a subset of the domain of f and 
+Definition. A local maximal point of f is an element z of the domain of f such that there
+exists eps such that Ball(eps,z) is a subset of the domain of f and
 |f(w)|=< |f(z)| for every element w of Ball(eps,z).
 
-Axiom Open_Mapping_Theorem. Assume f is a holomorphic function and Ball(eps,z) is a subset of the domain of f. 
+Axiom Open_Mapping_Theorem. Assume f is a holomorphic function and Ball(eps,z) is a subset of the domain of f.
 If f is not constant on Ball(eps,z) then f[Ball(eps,z)] is open.
 
 Axiom Identity_Theorem.
-Assume f is a holomorphic function and the domain of f is a simply connected region. 
-Assume that Ball(eps,z) is a subset of the domain of f. 
+Assume f is a holomorphic function and the domain of f is a simply connected region.
+Assume that Ball(eps,z) is a subset of the domain of f.
 If f is constant on Ball(eps,z) then f is constant.
 
 Theorem Maximum_principle.
-Assume f is a holomorphic function and the domain of f is a simply connected region. 
+Assume f is a holomorphic function and the domain of f is a simply connected region.
 If f has a local maximal point then f is constant.
 Proof.
-Let z be a local maximal point of f. Take eps such that 
+Let z be a local maximal point of f. Take eps such that
 Ball(eps,z) is a subset of Dom(f) and |f(w)| =< |f(z)| for every element w of Ball(eps,z).
 Let us show that f is constant on Ball(eps,z).
 	proof by contradiction.
-	Assume the contrary. Then f[Ball(eps,z)] is open. We can take delta such that 
+	Assume the contrary. Then f[Ball(eps,z)] is open. We can take delta such that
 Ball(delta, f(z)) is a subset of f[Ball(eps,z)].
 	Therefore there exists an element w of Ball(eps,z) such that |f(w)| > |f(z)|. Contradiction.
 	end.

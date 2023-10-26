@@ -13,6 +13,9 @@ dialect of ForTheL, respectively.
 
 ### Changes on the example files
 
+  * **Changed:** Preliminary files like `preliminaries.ftl(.tex)` or
+    `macros.ftl(.tex)` have been moved to `examples/preliminaries/`
+
   * **New:** New formalization of Hilbert's Paradox.
 
   * **Changed:** Paradoxes have been moved to `examples/paradoxes/` which

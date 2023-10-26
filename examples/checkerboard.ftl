@@ -1,5 +1,5 @@
-[read classes.ftl]
-[read vocabulary.ftl]
+[read preliminaries/source/classes.ftl]
+[read preliminaries/source/vocabulary.ftl]
 
 Signature. An integer is an object.
 
@@ -101,7 +101,7 @@ Proof.
     Thus i = 7.
 End.
 
-Lemma. 
+Lemma.
     let x be an element of the checkerboard.
     Swap (Swap x) = x.
 Proof.
@@ -220,7 +220,7 @@ End.
 
 Theorem.
     The mutilated checkerboard has no domino tiling.
-Proof by contradiction. 
+Proof by contradiction.
     Assume T is a domino tiling of Mutil.
     Mutil /\ Blck is equinumerous with Mutil /\ Wht.
     Mutil /\ Blck is equinumerous with Wht.

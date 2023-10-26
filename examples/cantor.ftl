@@ -1,6 +1,6 @@
 # Cantor's Theorem
 
-[read preliminaries.ftl]
+[read preliminaries/source/preliminaries.ftl]
 
 Definition. Let X be a set.
 A function of X is a function f such that Dom(f) = X.

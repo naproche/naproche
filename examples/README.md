@@ -41,6 +41,20 @@ spectrum reaches from recreational puzzles to undergraduate-level theorems:
 
   - `russell` - Russell's Paradox
 
+* `preliminaries/`
+
+  - `axioms` - must be imported to make the axioms that are hard-coded into
+    Naproche available to the prover
+
+  - `classes` - basic notions about classes and maps
+
+  - `macros` - common macros for the notions that are hard-coded into Naproche
+
+  - `preliminaries` - basic notions about classes and maps
+
+  - `vocabulary` - synonyms for most of the notions used in the example#
+    formalizations that ship with Naproche
+
 * `puzzles/` - some logic puzzles
 
   - `agatha` - a puzzle set in "Dreadsbury Mansion"
