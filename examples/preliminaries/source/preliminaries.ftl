@@ -1,6 +1,6 @@
-[read axioms.ftl]
-[read vocabulary.ftl]
-[read macros.ftl]
+[read preliminaries/source/axioms.ftl]
+[read preliminaries/source/vocabulary.ftl]
+[read preliminaries/source/macros.ftl]
 
 
 ### Sets and Classes
