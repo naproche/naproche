@@ -33,6 +33,8 @@ spectrum reaches from recreational puzzles to undergraduate-level theorems:
 
   - `cantor_2` - Cantor's Second Paradox
 
+  - `curry` - Curry's Paradox
+
   - `drinker` - The Drinker Paradox
 
   - `hilbert` - Hilbert's Paradox

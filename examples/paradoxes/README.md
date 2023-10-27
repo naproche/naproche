@@ -13,6 +13,8 @@ A collection of well-known mathematical and logical paradoxes.
 
   * [Cantor's Second Paradox](source/cantor_2.ftl.tex)
 
+  * [Curry's Paradox][source/curry.ftl.tex]
+
   * [The Drinker Paradox](source/drinker.ftl.tex)
 
   * [Hilbert's Paradox](source/hilbert.ftl.tex)
