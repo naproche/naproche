@@ -5,88 +5,93 @@
 % necessary to state them explicitly to make it easier for the reasoner to
 % access them.
 
+\documentclass{stex}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{axioms.ftl}
+  \begin{forthel}
+    % Sets
+    % ----
 
-\begin{forthel}
-  % Sets
-  % ----
+    \begin{lemma}
+      Let $X$ be a set.
+      Then $X$ is a class that is an object.
+    \end{lemma}
 
-  \begin{lemma}
-    Let $X$ be a set.
-    Then $X$ is a class that is an object.
-  \end{lemma}
-
-  \begin{lemma}
-    Let $X$ be a class that is an object.
-    Then $X$ is a set.
-  \end{lemma}
-
-
-  % Functions
-  % ---------
-
-  \begin{lemma}
-    Let $F$ be a function.
-    Then $F$ is a map that is an object.
-  \end{lemma}
-
-  \begin{lemma}
-    Let $F$ be a map that is an object.
-    Then $F$ is a function.
-  \end{lemma}
+    \begin{lemma}
+      Let $X$ be a class that is an object.
+      Then $X$ is a set.
+    \end{lemma}
 
 
-  % Classes
-  % --------
+    % Functions
+    % ---------
 
-  \begin{lemma}
-    Let $X$ be a class and $x$ be an element of $X$.
-    Then $x$ is an object.
-  \end{lemma}
+    \begin{lemma}
+      Let $F$ be a function.
+      Then $F$ is a map that is an object.
+    \end{lemma}
 
-  \begin{lemma}
-    Let $X, Y$ be classes.
-    Assume that every element of $X$ is an element of $Y$ and every element of
-    $Y$ is an element of $X$.
-    Then $X = Y$.
-  \end{lemma}
-
-  \begin{lemma}
-    Let $X$ be a set and $Y$ be a class.
-    Assume that every element of $Y$ is an element of $X$.
-    Then $Y$ is a set.
-  \end{lemma}
-  \begin{proof}
-    Define $Z = \{ x \in X \mid x$ is an element of $Y \}$.
-    Then $Z$ is a set and $Z = Y$.
-  \end{proof}
+    \begin{lemma}
+      Let $F$ be a map that is an object.
+      Then $F$ is a function.
+    \end{lemma}
 
 
-  % Maps
-  % ----
+    % Classes
+    % --------
 
-  \begin{lemma}
-    Let $F$ be a map.
-    Then $\dom(F)$ is a class.
-  \end{lemma}
+    \begin{lemma}
+      Let $X$ be a class and $x$ be an element of $X$.
+      Then $x$ is an object.
+    \end{lemma}
 
-  \begin{lemma}
-    Let $F$ be a map and $x$ be an element of $\dom(F)$.
-    Then $F(x)$ is an object.
-  \end{lemma}
+    \begin{lemma}
+      Let $X, Y$ be classes.
+      Assume that every element of $X$ is an element of $Y$ and every element of
+      $Y$ is an element of $X$.
+      Then $X = Y$.
+    \end{lemma}
 
-  \begin{lemma}
-    Let $F, G$ be maps.
-    Assume $\dom(F) = \dom(G)$ and for all elements $x$ of $\dom(F)$ we have
-    $F(x) = G(x)$.
-    Then $F = G$.
-  \end{lemma}
+    \begin{lemma}
+      Let $X$ be a set and $Y$ be a class.
+      Assume that every element of $Y$ is an element of $X$.
+      Then $Y$ is a set.
+    \end{lemma}
+    \begin{proof}
+      Define $Z = \{ x \in X \mid x$ is an element of $Y \}$.
+      Then $Z$ is a set and $Z = Y$.
+    \end{proof}
 
 
-  % Pairs
-  % -----
+    % Maps
+    % ----
 
-  \begin{lemma}
-    Let $x, y$ be objects.
-    Then $(x,y)$ is an object.
-  \end{lemma}
-\end{forthel}
+    \begin{lemma}
+      Let $F$ be a map.
+      Then $\dom(F)$ is a class.
+    \end{lemma}
+
+    \begin{lemma}
+      Let $F$ be a map and $x$ be an element of $\dom(F)$.
+      Then $F(x)$ is an object.
+    \end{lemma}
+
+    \begin{lemma}
+      Let $F, G$ be maps.
+      Assume $\dom(F) = \dom(G)$ and for all elements $x$ of $\dom(F)$ we have
+      $F(x) = G(x)$.
+      Then $F = G$.
+    \end{lemma}
+
+
+    % Pairs
+    % -----
+
+    \begin{lemma}
+      Let $x, y$ be objects.
+      Then $(x,y)$ is an object.
+    \end{lemma}
+  \end{forthel}
+\end{smodule}
+\end{document}

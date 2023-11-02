@@ -5,34 +5,39 @@
 % Naproche. It is intended to be imported to other ForTheL files to provide
 % these synonyms for them, rather that being considered as a stand-alone file.
 
+\documentclass{stex}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{macros.ftl}
+  \begin{forthel}
+    % Equality
+    % --------
 
-\begin{forthel}
-  % Equality
-  % --------
+    Let $x$ and $y$ agree stand for $x = y$.
+    Let $x$ agrees with $y$ stand for $x = y$.
+    Let $x$ and $y$ are distinct stand for $x \neq y$.
 
-  Let $x$ and $y$ agree stand for $x = y$.
-  Let $x$ agrees with $y$ stand for $x = y$.
-  Let $x$ and $y$ are distinct stand for $x \neq y$.
+    % Elementhood relation
+    % --------------------
 
-  % Elementhood relation
-  % --------------------
+    Let a member of $X$ stand for an element of $X$.
+    Let $x$ belongs to $X$ stand for $x$ is an element of $X$.
+    Let $X$ contains $x$ stand for $x$ is an element of $X$.
+    Let $x$ is contained in $X$ stand for $x$ is an element of $X$.
+    Let $x$ lies in $X$ stand for $x$ is an element of $X$.
+    Let $x$ is in $X$ stand for $x$ is an element of $X$.
 
-  Let a member of $X$ stand for an element of $X$.
-  Let $x$ belongs to $X$ stand for $x$ is an element of $X$.
-  Let $X$ contains $x$ stand for $x$ is an element of $X$.
-  Let $x$ is contained in $X$ stand for $x$ is an element of $X$.
-  Let $x$ lies in $X$ stand for $x$ is an element of $X$.
-  Let $x$ is in $X$ stand for $x$ is an element of $X$.
+    % Domain
+    % ------
 
-  % Domain
-  % ------
+    Let the domain of $f$ stand for $\dom(f)$.
+    Let $f$ is defined on $X$ stand for $\dom(f) = X$.
 
-  Let the domain of $f$ stand for $\dom(f)$.
-  Let $f$ is defined on $X$ stand for $\dom(f) = X$.
+    % Map application
+    % ---------------
 
-  % Map application
-  % ---------------
-
-  Let the value of $f$ at $x$ stand for $f(x)$.
-  Let $f(x,y)$ stand for $f((x,y))$.
-\end{forthel}
+    Let the value of $f$ at $x$ stand for $f(x)$.
+    Let $f(x,y)$ stand for $f((x,y))$.
+  \end{forthel}
+\end{smodule}
+\end{document}

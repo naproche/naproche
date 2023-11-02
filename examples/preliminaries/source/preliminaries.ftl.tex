@@ -1,13 +1,20 @@
-\documentclass[11pt]{article}
-\usepackage{../lib/tex/naproche}
+\documentclass{article}
+\usepackage{stex}
+\libinput{preamble}
 
 \author{Peter Koepke, University of Bonn}
-
 \title{Ontological Axioms for \Naproche}
+\date{}
 
 \begin{document}
 
 \maketitle
+
+\begin{smodule}{preliminaries.ftl}
+
+\importmodule{axioms.ftl}
+\importmodule{macros.ftl}
+\importmodule{vocabulary.ftl}
 
 \section{Basic Ideas}
 
@@ -213,5 +220,5 @@ of sets and classes.
     $f$.
   \end{definition}
 \end{forthel}
-
+\end{smodule}
 \end{document}
