@@ -1,0 +1,25 @@
+\documentclass{stex}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{empty-class-init-subclass.ftl}
+  \importmodule{mod?subclass.ftl}
+  \importmodule{mod?empty-class.ftl}
+
+  \begin{forthel}
+    [readtex \path{foundations/source/mod/subclass.ftl.tex}]
+
+    [readtex \path{foundations/source/mod/empty-class.ftl.tex}]
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{6931785090859008}
+      Let $A$ be a class.
+      Then \[ \emptyset \subseteq A. \]
+    \end{proposition}
+    \begin{proof}
+      $\emptyset$ has no elements.
+      Hence every element of $\emptyset$ is contained in $A$.
+    \end{proof}
+  \end{forthel}
+\end{smodule}
+\end{document}

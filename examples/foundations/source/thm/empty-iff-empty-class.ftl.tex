@@ -1,0 +1,36 @@
+\documentclass{stex}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{empty-iff-empty-class.ftl}
+  \importmodule{mod?subclass.ftl}
+  \importmodule{mod?empty-class.ftl}
+
+  \begin{forthel}
+    [readtex \path{foundations/source/mod/subclass.ftl.tex}]
+
+    [readtex \path{foundations/source/mod/empty-class.ftl.tex}]
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{2263153161273344}
+      Let $A$ be a class.
+      $A$ is empty iff $A = \emptyset$.
+    \end{proposition}
+    \begin{proof}
+      We can show that $\emptyset$ is empty.
+      Indeed any element $x$ of $\emptyset$ is nonequal to $x$.
+      Hence if $A = \emptyset$ then $A$ is empty.
+      If $A$ is empty then $A$ and $\emptyset$ have no elements.
+      Hence if $A$ is empty then $A \subseteq \emptyset$ and
+      $\emptyset \subseteq A$.
+      Thus if $A$ is empty then $A = \emptyset$.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{corollary}\printlabel{1495141426659328}
+      $\emptyset$ is empty.
+    \end{corollary}
+  \end{forthel}
+\end{smodule}
+\end{document}

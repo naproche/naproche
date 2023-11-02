@@ -1,0 +1,24 @@
+\documentclass{stex}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{subclass-trans.ftl}
+  \importmodule{mod?subclass.ftl}
+
+  \begin{forthel}
+    [readtex \path{foundations/source/mod/subclass.ftl.tex}]
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{3939677545431040}
+      Let $A, B, C$ be classes.
+      Then \[ (\text{$A \subseteq B$ and $B \subseteq C$}) \implies A \subseteq C. \]
+    \end{proposition}
+    \begin{proof}
+      Assume $A \subseteq B$ and $B \subseteq C$.
+      Then every element of $A$ is contained in $B$ and every element of $B$ is contained in $C$.
+      Hence every element of $A$ is contained in $C$.
+      Thus $A \subseteq C$.
+    \end{proof}
+  \end{forthel}
+\end{smodule}
+\end{document}

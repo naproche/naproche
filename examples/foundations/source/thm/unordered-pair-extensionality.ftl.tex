@@ -1,0 +1,25 @@
+\documentclass{stex}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{unordered-pair-extensionality.ftl}
+  \importmodule{mod?unordered-pair.ftl}
+
+  \begin{forthel}
+    [readtex \path{foundations/source/mod/unordered-pair.ftl.tex}]
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{6125259604361216}
+      Let $a, a', b, b'$ be objects.
+      Assume $\set{a, b} = \set{a', b'}$.
+      Then ($a = a'$ and $b = b'$) or ($a = b'$ and $b = a'$).
+    \end{proposition}
+    \begin{proof}
+      We have $a = a'$ or $a = b'$.
+      If $a = a'$ then $b = b'$.
+      If $a = b'$ then $b = a'$.
+      Hence ($a = a'$ and $b = b'$) or ($a = b'$ and $b = a'$).
+    \end{proof}
+  \end{forthel}
+\end{smodule}
+\end{document}

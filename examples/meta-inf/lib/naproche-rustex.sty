@@ -79,6 +79,10 @@
 % ForTheL environment
 % ===================
 
+% Space between paragraphs in forthel environments
+\newlength{\ftlparskip}
+\setlength{\ftlparskip}{0.5em}
+
 \RequirePackage{environ}
 
 \RequirePackage[most]{tcolorbox}
@@ -129,3 +133,26 @@
 
 \newcommand{\dom}{\operatorname{dom}}
 \newcommand{\fun}{\mathrm{\lambda}}
+
+
+% Comprehension terms
+% ===================
+
+% Gets the left-hand and right-hand side, resp., of an expression of the form
+% "foo|bar"
+\def\getfirst#1|#2\relax{#1}
+\def\getsecond#1|#2\relax{#2}
+
+% Comprehension term: "\class{... | ...}".
+% Naproche allows to enclose the RHS within "\text{...}", e.g.
+% "\class{x | \text{$x$ is greater than $y$}}".
+% Use "\classtext{...}" instead of "\text{...}" to enable automatic line breaks
+% in the RHS.
+\newcommand{\class}[1]{%
+  \left\{%
+  \getfirst#1\relax%
+  ~\middle\vert~%
+  \linebreak[1]%
+  \getsecond#1\relax%
+  \right\}%
+}

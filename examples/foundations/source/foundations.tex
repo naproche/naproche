@@ -1,0 +1,71 @@
+\documentclass[12pt,oneside]{book}
+
+\usepackage[lang=en]{stex}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage[nobottomtitles]{titlesec}
+
+\libinput{preamble}
+
+\setlength{\headheight}{15pt}
+
+
+% Header and footer
+
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\thepage}
+\fancyhead[L]{\thechapter\ \leftmark}
+\fancyfoot{}
+
+\title{Foundations of Mathematics}
+\author{Marcel Schütz}
+\date{2022}
+
+\begin{document}
+  \maketitle
+  \tableofcontents
+
+
+  \chapter{Classes}
+
+  \section{Sub- and superclasses}
+
+  \inputref{mod/subclass.ftl}
+  \inputref{thm/subclass-refl.ftl}
+  \inputref{thm/subclass-trans.ftl}
+  \inputref{thm/subclass-antisym.ftl}
+
+
+  \section{The empty class}
+
+  \inputref{mod/empty-class.ftl}
+  \inputref{thm/empty-iff-empty-class.ftl}
+  \inputref{thm/empty-class-init-subclass.ftl}
+
+
+  \section{Unordered pairs}
+
+  \inputref{mod/unordered-pair.ftl}
+  \inputref{mod/singleton-class.ftl}
+  \inputref{thm/unordered-pair-extensionality.ftl}
+  \inputref{thm/singleton-class-extensionality.ftl}
+  \inputref{mod/unique-element.ftl}
+  \inputref{thm/unique-element-iff-singleton.ftl}
+
+
+  \section{Unions, intersections, complements}
+
+  \inputref{mod/union.ftl}
+  \inputref{mod/intersection.ftl}
+  \inputref{mod/complement.ftl}
+
+
+  \section{Disjoint classes}
+
+  \inputref{mod/disjoint-classes.ftl}
+  \inputref{thm/disjoint-iff-empty-intersection.ftl}
+\end{document}

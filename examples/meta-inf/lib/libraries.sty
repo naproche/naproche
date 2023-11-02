@@ -1,7 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
 
-\RequirePackage[english]{babel}
-
 \RequirePackage{hyperref}
 \RequirePackage{xcolor}
 \RequirePackage{subfiles}
@@ -44,7 +42,7 @@
   backgroundcolor=lightgray!10,
   linecolor=black,
   innertopmargin=1em
-]{definition}{Definition}[chapter]
+]{definition}{Definition}%[chapter]
 \newmdtheoremenv[
   backgroundcolor=lightgray!10,
   linecolor=black,
@@ -75,17 +73,6 @@
   linecolor=black,
   innertopmargin=1em
 ]{corollary}[definition]{Corollary}
-
-
-% Header and footer
-
-\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
-
-\pagestyle{fancy}
-\fancyhf{}
-\fancyhead[R]{\thepage}
-\fancyhead[L]{\thechapter\ \leftmark}
-\fancyfoot{}
 
 
 % Imports
