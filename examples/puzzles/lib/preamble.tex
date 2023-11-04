@@ -10,22 +10,20 @@
 % ForTheL environment
 % ===================
 
-\usepackage[most]{tcolorbox}
+\RequirePackage{environ}
 
-\definecolor{block-gray}{gray}{0.95}
-
-\newtcolorbox{grayblock}{
-  arc=0mm,
-  colframe=block-gray,
-  colback=block-gray,
-  grow to right by=0mm,
-  grow to left by=0mm,
-  boxrule=0pt,
-  boxsep=0pt,
-  breakable
+\RequirePackage[most]{tcolorbox}
+\tcbset{
+  colback=gray!30,
+  colframe=gray!30,
+  arc=0pt,outer arc=0pt
 }
 
-\newenvironment{forthel}{\begin{grayblock}}{\end{grayblock}}
+\NewEnviron{forthel}{%
+  \begin{tcolorbox}
+    \BODY
+  \end{tcolorbox}
+}
 
 
 % Explicit variables
