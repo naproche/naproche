@@ -18,7 +18,7 @@ import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
 import Data.Set (Set)
 import Data.Set qualified as Set
-import Data.List (unionBy)
+import Data.List (unionBy, intersperse)
 
 import SAD.Data.Formula
 import SAD.Data.Instr(ParserKind(..))
@@ -461,13 +461,19 @@ hidden = do
 var :: FTL PosVar
 var = do
   pos <- getPos
-  v <- satisfy (\s -> s `notElem` keywords && (isPlainVarName s || isTexVarName s))
+  v <- satisfy (\s -> s `notElem` keywords && (isPlainVarName s || isTexVarName s)) <|> explicitVar
   primes <- Text.concat . fmap (const "'") <$> many (symbolNotAfterSpace "'")
   let v' = v <> primes
   return (PosVar (VarConstant v') pos)
   where
     isPlainVarName s = Text.all isAlphaNum s && isAlpha (Text.head s)
     isTexVarName s = Text.head s == '\\' && Text.tail s `elem` greek
+    explicitVar = do
+      texCommand "var" <|> texCommand "Var"
+      symbol "{"
+      varname <- chainLL1 word
+      symbol "}"
+      return $ "\\var{" <> Text.concat (intersperse " " varname) <> "}"
 
 
 -- ** Pretyped Variables

@@ -43,6 +43,12 @@ dialect of ForTheL, respectively.
     non-singleton and-chains must be enclosed within parentheses.
     Example: `n is less than 5 or (greater than 5 and prime)`.
 
+  * **New:** Variable names of the form `\var{<varname>}` are allowed, where
+    `<varname>` can consists of arbitrary (ASCII) letters and whitespaces.
+
+    ***Note:*** This is just intended as a temporary hack to make the puzzle
+    formalizations look a bit better.
+
 --------------------------------------------------------------------------------
 
 ## naproche-20230902 (Isabelle 2023)
