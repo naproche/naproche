@@ -557,12 +557,12 @@ byProofMethod = markupToken byAnnotation "by" >> (contradiction <|> caseAnalysis
 -- | Proof end (FTL):
 -- @"qed" | "end" | "trivial" | "obvious"@
 ftlProofEnd :: FTL ()
-ftlProofEnd = label "qed" $ markupTokenOf proofEnd ["qed", "end", "trivial", "obvious"]
+ftlProofEnd = markupTokenOf proofEnd ["qed", "end", "trivial", "obvious"] <?> "'qed'/'end'/'trivial'/'obvious'"
 
 -- | Proof end (TEX):
 -- @"\\end" "{" "proof" "}"@
 texProofEnd :: FTL ()
-texProofEnd = label "qed" . texEnd $ markupToken proofEnd "proof"
+texProofEnd = texEnd (markupToken proofEnd "proof") <?> "'\\end{proof}'"
 
 -- | Creation of induction thesis.
 indThesis :: Formula -> Scheme -> Scheme -> FTL Formula

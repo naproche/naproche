@@ -93,9 +93,9 @@ thesis = art >> (thes <|> contrary <|> contradiction)
 
 
 thereIs :: FTL Formula
-thereIs = label "there-is statement" $ there >> (noNotion -|- notions)
+thereIs = label "'there is' statement" $ there >> (noNotion -|- notions)
   where
-    noNotion = label "no-notion" $ do
+    noNotion = label "'no' notion" $ do
       token' "no"; (q, f, vs) <- declared =<< notion;
       return $ Not $ foldr mbdExi (q f) vs
     notions = fmap multExi $ art >> (declared =<< notion) `sepBy` comma
@@ -135,7 +135,7 @@ lateQuantifiers = optLL1 id quantifierChain
 
 
 doesPredicate :: FTL Formula
-doesPredicate = label "does predicate" $
+doesPredicate = label "'does' predicate" $
   (does >> (doP -|- multiDoP)) <|> hasP <|> isChain
   where
     doP = predicate primVer
@@ -146,7 +146,7 @@ doesPredicate = label "does predicate" $
 
 
 isPredicate :: FTL Formula
-isPredicate = label "is predicate" $
+isPredicate = label "'is' predicate" $
   pAdj -|- pMultiAdj -|- (with >> hasPredicate)
   where
     pAdj = predicate primAdj
@@ -154,7 +154,7 @@ isPredicate = label "is predicate" $
 
 
 isAPredicate :: FTL Formula
-isAPredicate = label "isA predicate" $ notNotion <|> notion
+isAPredicate = label "'is a' predicate" $ notNotion <|> notion
   -- Unlike the language description, we distinguish positive and negative
   -- rather than notions and fixed terms.
   where
@@ -165,7 +165,7 @@ isAPredicate = label "isA predicate" $ notNotion <|> notion
       optLLx (q $ Not f) $ fmap (q. Tag Dig . Not) unfinished
 
 hasPredicate :: FTL Formula
-hasPredicate = label "has predicate" $ noPossessive <|> possessive
+hasPredicate = label "'has' predicate" $ noPossessive <|> possessive
   where
     possessive = art >> common <|> nonbinary
     nonbinary = fmap (Tag Dig . multExi) $ (declared =<< possess) `sepBy` (comma >> art)
@@ -233,7 +233,7 @@ gnotion nt ra = do
   where
     la = opt [] $ liftA2 (:) lc la
     lc = predicate primUnAdj </> multiPredicate primMultiUnAdj
-    thatClause = that >> conjChain doesPredicate <?> "that clause"
+    thatClause = that >> conjChain doesPredicate <?> "'that' clause"
 
 
 anotion :: FTL (Formula -> Formula, Formula)
@@ -251,7 +251,7 @@ possess = label "possesive notion" $ gnotion (primOfNotion term) suchThatAttr >>
 
 
 suchThatAttr :: FTL Formula
-suchThatAttr = label "such-that attribute" $ such >> that >> statement
+suchThatAttr = label "'such that' attribute" $ such >> that >> statement
 
 digadd :: (a, Formula, c) -> (a, Formula, c)
 digadd (q, f, v) = (q, Tag Dig f, v)
@@ -302,9 +302,9 @@ quantifiedNotion = label "quantified notion" $
 
 
 definiteTerm :: FTL (Formula -> Formula, Formula)
-definiteTerm = label "definiteTerm" $  symbolicTerm -|- definiteNoun
+definiteTerm = label "definite term" $  symbolicTerm -|- definiteNoun
   where
-    definiteNoun = label "definiteNoun" $ optParenthesised (art >> primFun term)
+    definiteNoun = label "definite noun" $ optParenthesised (art >> primFun term)
 
 
 symbolicTerm :: FTL (a -> a, Formula)
