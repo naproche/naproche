@@ -27,14 +27,16 @@ The two may agree on a strategy before they are placed in the room. How can they
 to be released?
 \end{quotation}
 
-We use some \LaTeX{} techniques described in the "agatha" files.
+We use some \LaTeX{} techniques described in the “agatha” files.
 
 
 \section{Dwarf Ontology}
 
 \begin{forthel}
+[readtex \path{preliminaries/source/vocabulary.ftl.tex}]
+\end{forthel}
 
-[synonym dwarf/dwarfs]
+\begin{forthel}
 
 \begin{signature}
 A dwarf is a notion.
@@ -48,16 +50,16 @@ Sigbert is a dwarf.
 Tormund is a dwarf.
 \end{signature}
 
-Let aDwarf, ADwarf denote dwarfs.
+Let \var{a dwarf} denote dwarfs.
 
 \begin{signature}
 A hat is a notion.
 \end{signature}
 
-Let aHat denote a hat.
+Let \var{a hat} denote a hat.
 
 \begin{signature}
-The hat of aDwarf is a hat.
+The hat of \var{a dwarf} is a hat.
 \end{signature}
 
 \begin{signature}
@@ -72,10 +74,10 @@ White is a color.
 Black is a color.
 \end{signature}
 
-Let aColor denote a color.
+Let \var{a color} denote a color.
 
 \begin{signature}
-The opposite color of aColor is a color.
+The opposite color of \var{a color} is a color.
 \end{signature}
 
 \begin{axiom}
@@ -87,22 +89,20 @@ The opposite color of Black is White.
 \end{axiom}
 
 \begin{signature}
-The color of aHat is a color.
+The color of \var{a hat} is a color.
 \end{signature}
 
 \begin{axiom}
-The color of the hat of aDwarf is White or
-the color of the hat of aDwarf is Black.
+The color of the hat of \var{a dwarf} is White or Black.
 \end{axiom}
 
 \begin{signature}
-aDwarf names aColor is an atom.
+\Var{a dwarf} names \var{a color} is an atom.
 \end{signature}
 
-\begin{definition}
-ADwarf names theColor of his hat iff ADwarf names the color
-of the hat of ADwarf.
-\end{definition}
+\begin{signature}
+\Var{a dwarf} gets released is an atom.
+\end{signature}
 
 \end{forthel}
 
@@ -111,9 +111,9 @@ of the hat of ADwarf.
 
 \begin{forthel}
 
-\begin{definition}
-Both dwarfs get released iff some Dwarf names theColor of his hat.
-\end{definition}
+\begin{axiom}
+If some dwarf $D$ names the color of the hat of $D$ then all dwarfs get released.
+\end{axiom}
 
 \end{forthel}
 
@@ -138,7 +138,7 @@ Tormund names the color of the hat of Sigbert.
 \begin{forthel}
 
 \begin{theorem}
-Both dwarfs get released.
+All dwarfs get released.
 \end{theorem}
 
 \end{forthel}

@@ -1,3 +1,4 @@
+[synonym dwarf/dwarfs]
 Signature.
 A dwarf is a notion.
 
@@ -19,18 +20,17 @@ The hat of aDwarf is a hat.
 Signature. A color is a notion.
 
 Signature.
-white is a color.
+White is a color.
 
 Signature.
-black is a color.
+Black is a color.
 
 Let aColor denote a color.
 
 Signature. The color of aHat is a color.
 
 Axiom.
-The color of the hat of aDwarf is white or 
-the color of the hat of aDwarf is black.
+The color of the hat of aDwarf is Black or White.
 
 
 Signature.
@@ -40,13 +40,18 @@ Signature.
 The opposite color of aColor is a color.
 
 Axiom.
-The opposite color of white is black.
+The opposite color of White is Black.
 
 Axiom.
-The opposite color of black is white.
+The opposite color of Black is White.
 
-Definition. Both dwarfs get released iff some Dwarf D 
-names the color of the hat of D.
+[synonym get/-s]
+Signature.
+aDwarf gets released is an atom.
+
+
+Axiom.
+If some dwarf D names the color of the hat of D then all dwarfs get released.
 
 Axiom.
 Sigbert names the opposite color of the color of the hat of Tormund.
@@ -55,6 +60,6 @@ Axiom.
 Tormund names the color of the hat of Sigbert.
 
 Proposition.
-Both dwarfs get released.
+All dwarfs get released.
 
 
