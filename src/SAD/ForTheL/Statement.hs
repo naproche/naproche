@@ -141,7 +141,8 @@ doesPredicate = label "does predicate" $
     doP = predicate primVer
     multiDoP = multiPredicate primMultiVer
     hasP = has >> hasPredicate
-    isChain = is  >> conjChain (isAPredicate -|- isPredicate)
+    isChain = is >> properDisjChain (isP <|> parenthesised (conjChain isP)) </> conjChain isP
+    isP = isAPredicate -|- isPredicate
 
 
 isPredicate :: FTL Formula
@@ -619,6 +620,9 @@ multExi [] = Top
 
 conjChain :: FTL Formula -> FTL Formula
 conjChain = fmap (foldl1 And) . flip sepBy (token' "and")
+
+properDisjChain :: FTL Formula -> FTL Formula
+properDisjChain = fmap (foldl1 Or) . flip properSepBy (token' "or")
 
 quantifierChain :: FTL (Formula -> Formula)
 quantifierChain = fmap (foldl fld id) $ token' "for" >> quantifiedNotion `sepByLL1` comma

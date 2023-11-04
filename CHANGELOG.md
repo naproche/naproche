@@ -39,6 +39,10 @@ dialect of ForTheL, respectively.
     `is`, `be`, `are`, `does`, `do`, `has`, `have`, `that`, `with`, `of`,
     `having`, `such`, `so`, `if`, `iff`, `when`, `and`, `or`
 
+  * **New:** And-chains can be stringed together as or-chains, where
+    non-singleton and-chains must be enclosed within parentheses.
+    Example: `n is less than 5 or (greater than 5 and prime)`.
+
 --------------------------------------------------------------------------------
 
 ## naproche-20230902 (Isabelle 2023)
