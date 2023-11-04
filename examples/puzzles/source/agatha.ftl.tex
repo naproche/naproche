@@ -40,7 +40,7 @@ Aunt Agatha is a person.
 \end{signature}
 ...
 \begin{axiom}
-Some \var{one} that lives in Dreadsbury mansion killed Aunt Agatha.
+Some \variable{one} that lives in Dreadsbury mansion killed Aunt Agatha.
 \end{axiom}
 ...
 \begin{theorem}
@@ -62,9 +62,9 @@ In natural language the word ``killed'' could be introduced by writing
 ``A person killed a person is a sentence''. In ForTheL we cannot use
 common nouns (``a person'') to specify the variable slots. Instead
 we use variables that are pre-typed as ``a person''. To stay close
-to the natural language the variables are called ``\var{a person}'' and
-``\var{another person}'' and we introduce ``killed'' by
-``\var{a person} killed \var{another person} is an atom.''
+to the natural language the variables are called ``\variable{a person}'' and
+``\variable{another person}'' and we introduce ``killed'' by
+``\variable{a person} killed \variable{another person} is an atom.''
 Note that in FortheL a basic sentence is called an ``atom''.
 
 \begin{forthel}
@@ -78,7 +78,7 @@ Note that in FortheL a basic sentence is called an ``atom''.
 A person is a notion.
 \end{signature}
 
-Let \var{one}, \var{a person}, \var{another person} stand for persons.
+Let \variable{one}, \variable{a person}, \variable{another person} stand for persons.
 
 \begin{signature}
 Aunt Agatha is a person.
@@ -95,11 +95,11 @@ Charles is a person.
 \end{signature}
 
 \begin{signature}
-\Var{a person} lives in Dreadsbury mansion is an atom.
+\Variable{a person} lives in Dreadsbury mansion is an atom.
 \end{signature}
 
 \begin{signature}
-\Var{a person} killed \var{another person} is an atom.
+\Variable{a person} killed \variable{another person} is an atom.
 \end{signature}
 
 Let P killed themselves stand for P killed P.
@@ -108,13 +108,13 @@ Let a victim of P stand for a person that was killed by P.
 Let a killer stand for a person that killed some person.
 
 \begin{signature}
-\Var{a person} hates \var{another person} is an atom.
+\Variable{a person} hates \variable{another person} is an atom.
 \end{signature}
 
 Let Q is hated by P stand for P hates Q.
 
 \begin{signature}
-\Var{a person} is richer than \var{another person} is an atom.
+\Variable{a person} is richer than \variable{another person} is an atom.
 \end{signature}
 
 \end{forthel}
@@ -138,7 +138,7 @@ butler. Therefore: Agatha killed herself.
 \begin{forthel}
 
 \begin{axiom}
-Some \var{one} that lives in Dreadsbury mansion killed Aunt Agatha.
+Some \variable{one} that lives in Dreadsbury mansion killed Aunt Agatha.
 \end{axiom}
 
 \begin{axiom}
@@ -152,23 +152,23 @@ Every killer $X$ hates every victim of $X$ and is not richer than any victim of 
 \end{axiom}
 
 \begin{axiom}
-Charles hates no \var{one} that is hated by Aunt Agatha.
+Charles hates no \variable{one} that is hated by Aunt Agatha.
 \end{axiom}
 
 \begin{axiom}
-Agatha hates every \var{one} that is not the butler.
+Agatha hates every \variable{one} that is not the butler.
 \end{axiom}
 
 \begin{axiom}
-The butler hates every \var{one} that is not richer than Aunt Agatha.
+The butler hates every \variable{one} that is not richer than Aunt Agatha.
 \end{axiom}
 
 \begin{axiom}
-The butler hates every \var{one} that is hated by Agatha.
+The butler hates every \variable{one} that is hated by Agatha.
 \end{axiom}
 
 \begin{axiom}
-No \var{one} hates every person.
+No \variable{one} hates every person.
 \end{axiom}
 
 \begin{axiom}

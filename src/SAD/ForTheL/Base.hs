@@ -469,11 +469,11 @@ var = do
     isPlainVarName s = Text.all isAlphaNum s && isAlpha (Text.head s)
     isTexVarName s = Text.head s == '\\' && Text.tail s `elem` greek
     explicitVar = do
-      texCommand "var" <|> texCommand "Var"
+      texCommand "variable" <|> texCommand "Variable"
       symbol "{"
       varname <- chainLL1 word
       symbol "}"
-      return $ "\\var{" <> Text.concat (intersperse " " varname) <> "}"
+      return $ "\\variable{" <> Text.concat (intersperse " " varname) <> "}"
 
 
 -- ** Pretyped Variables
