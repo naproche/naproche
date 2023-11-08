@@ -1,14 +1,12 @@
-% Macros
-% ======
-
-% This is a collection of commonly used synonyms for notions hard-coded into
-% Naproche. It is intended to be imported to other ForTheL files to provide
-% these synonyms for them, rather that being considered as a stand-alone file.
-
 \documentclass{stex}
 \libinput{preamble}
 \begin{document}
 \begin{smodule}{macros.ftl}
+  \symdef{class}[args=2]{\left\{#1\;\vert|\;#2\right\}}
+  \symdef{apply}[args=ia]{#1(#2)}
+  \symdef{domain}[args=1]{\mathrm{dom}(#1)}
+  \symdef{tuple}[args=a]{(\argsep{#1}{,})}
+
   \begin{forthel}
     % Equality
     % --------
@@ -30,14 +28,14 @@
     % Domain
     % ------
 
-    Let the domain of $f$ stand for $\dom(f)$.
-    Let $f$ is defined on $X$ stand for $\dom(f) = X$.
+    Let the domain of $f$ stand for $\domain{f}$.
+    Let $f$ is defined on $X$ stand for $\domain{f} = X$.
 
     % Map application
     % ---------------
 
-    Let the value of $f$ at $x$ stand for $f(x)$.
-    Let $f(x,y)$ stand for $f((x,y))$.
+    Let the value of $f$ at $x$ stand for $\apply{f}{x}$.
+    Let $\apply{f}{x,y}$ stand for $\apply{f}{\tuple{x,y}}$.
   \end{forthel}
 \end{smodule}
 \end{document}

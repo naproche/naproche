@@ -471,7 +471,7 @@ symbClassNotation = texClass </> cndClass </> finiteSet
     -- "\class{$x \in X$ | $x$ is less than $y$}". Semantically identical to `cndClass`.
     texClass = texCommandWithArg "class" $ do
       (tag, c, t, mkColl) <- optInText sepFrom
-      st <- symbol "|" >> optInText statement <|> optInClasstext statement
+      st <- (symbol "|" <|> (symbol "}" >> symbol "{")) >> optInText statement <|> optInClasstext statement
       vs <- freeVars t
       vsDecl <- makeDecls $ fvToVarSet vs;
       nm <- if isVar t then pure $ PosVar (varName t) (varPosition t) else hidden

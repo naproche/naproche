@@ -165,6 +165,9 @@ initFState = FState
 --  * @... \\notin ...@ (predicate expression)
 --  * @... \\prec ...@ (predicate expression)
 --  * @\\dom(...)@ (function expression)
+--  * @\\domain{...}@ (function expression)
+--  * @\\tuple{...,...}@ (function expression)
+--  * @\\apply{...}{...}@ (function expression)
 --
 addInits :: ParserKind -> FState -> FState
 addInits dialect state@FState{symbNotionExpr = sn, cfnExpr = cfn, iprExpr = ipr} =
@@ -183,7 +186,10 @@ addInits dialect state@FState{symbNotionExpr = sn, cfnExpr = cfn, iprExpr = ipr}
           texElementOfSymbNotion
         ],
       cfnExpr = unionBy comparePatterns cfn [
-          texDomFunction
+          texDomFunction,
+          stexDomainFunction,
+          stexPairFunction,
+          stexApplicationFunction
         ],
       iprExpr = unionBy comparePatterns ipr [
           texInequalityPredicate,
@@ -212,6 +218,13 @@ addInits dialect state@FState{symbNotionExpr = sn, cfnExpr = cfn, iprExpr = ipr}
     texInPredicate = ([Symbol "\\in"], \(x:m:_) -> mkElem x m)
     -- "x \notin m"
     texNotinPredicate = ([Symbol "\\notin"], \(x:m:_) -> Not $ mkElem x m)
+
+    -- "\domain{f}"
+    stexDomainFunction = ([Symbol "\\domain", Symbol "{", Vr, Symbol "}"], \(f:_) -> mkDom f)
+    -- "\tuple{x,y}"
+    stexPairFunction = ([Symbol "\\tuple", Symbol "{", Vr, Symbol ",", Vr, Symbol "}"], \(x:y:_) -> mkPair x y)
+    -- "\apply{f}{x}"
+    stexApplicationFunction = ([Symbol "\\apply", Symbol "{", Vr, Symbol "}", Symbol "{", Vr, Symbol "}"], \(f:x:_) -> mkApp f x)
 
     -- Compare the pattern of two primitive expressions
     comparePatterns p p' = fst p == fst p'
