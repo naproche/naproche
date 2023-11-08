@@ -30,6 +30,9 @@ dialect of ForTheL, respectively.
   * **New:** Common Bibtex file `examples/meta-inf/lib/references.bib` for all
     example files.
 
+  * **Changed:** `examples/100_theorems.ftl.tex` has been moved to
+    `examples/100-theorems/` which constitutes an sTeX archive.
+
 
 ### Changes on ForTheL
 
