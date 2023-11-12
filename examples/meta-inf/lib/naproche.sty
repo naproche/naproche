@@ -110,24 +110,7 @@
 
 \RequirePackage{linegoal}
 
-% Gets the left-hand and right-hand side, resp., of an expression of the form
-% "foo|bar"
-\def\getfirst#1|#2\relax{#1}
-\def\getsecond#1|#2\relax{#2}
-
-% Comprehension term: "\class{... | ...}".
-% Naproche allows to enclose the RHS within "\text{...}", e.g.
-% "\class{x | \text{$x$ is greater than $y$}}".
-% Use "\classtext{...}" instead of "\text{...}" to enable automatic line breaks
-% in the RHS.
-\newcommand{\class}[1]{%
-  \left\{%
-  \getfirst#1\relax%
-  ~\middle\vert~%
-  \linebreak[1]%
-  \getsecond#1\relax%
-  \right\}%
-}
+\newcommand{\class}[2]{\left\{#1\;\middle\vert\;#2\right\}}
 
 \newcommand{\classtext}[1]{\parbox{\linegoal}{#1}}
 

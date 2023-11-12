@@ -9,120 +9,108 @@
 \author{Marcel Schütz}
 \date{2023}
 \maketitle
-\begin{smodule}{curry}
-\usemodule{mod?haskell-curry}
-\usemodule{mod?curry-paradox}
-\begin{sparagraph}
-  \noindent \emph{\sn{Curry's Paradox}} is a paradox described by \sr{Curry}{Haskell Curry} in 1942 \cite{Curry1942}.
+\begin{smodule}{curry.ftl}
+  \noindent \emph{Curry's Paradox} is a paradox described by Haskell Curry in 1942 \cite{Curry1942}.
   It allows the derivation of an arbitrary statement from a self-referential expression that presupposes its own validity.
-\end{sparagraph}
 
-\section*{Untyped $\lambda$-calculus}
+  \section*{Untyped $\lambda$-calculus}
 
-\begin{forthel}
-  %[prove off][check off]
+  \begin{forthel}
+    %[prove off][check off]
+    [readtex \path{arithmetic/sections/01_natural-numbers.ftl.tex}]
+    %[prove on][check on]
+  \end{forthel}
 
-  [readtex \path{arithmetic/sections/01_natural-numbers.ftl.tex}]
+  \noindent Our formalization of Curry's Paradox in \Naproche is based on an untyped $\lambda$-calculus:
 
-  %[prove on][check on]
-\end{forthel}
+  \begin{forthel}
+    \begin{signature*}
+      A expression is a notion.
+    \end{signature*}
 
-\begin{sparagraph}
-  \noindent Our formalization of \sn{Curry's Paradox} in \Naproche is based on an untyped $\lambda$-calculus:
-\end{sparagraph}
+    Let $A, B$ denote expressions.
 
-\begin{forthel}
-  \begin{signature*}
-    A expression is a notion.
-  \end{signature*}
+    \begin{signature*}
+      A variable is an expression.
+    \end{signature*}
 
-  Let $A, B$ denote expressions.
+    Let $n$ denote a natural number.
 
-  \begin{signature*}
-    A variable is an expression.
-  \end{signature*}
+    \begin{signature*}
+      $\var{n}$ is a variable.
+    \end{signature*}
 
-  Let $n$ denote a natural number.
+    \begin{signature*}[Abstraction]\label{abstraction}
+      $\abs{n}{A}$ is an expression.
+    \end{signature*}
 
-  \begin{signature*}
-    $\var{n}$ is a variable.
-  \end{signature*}
+    \begin{signature*}[Application]\label{application}
+      $\app{A}{B}$ is an expression.
+    \end{signature*}
 
-  \begin{signature*}[Abstraction]\label{abstraction}
-    $\abs{n}{A}$ is an expression.
-  \end{signature*}
-
-  \begin{signature*}[Application]\label{application}
-    $\app{A}{B}$ is an expression.
-  \end{signature*}
-
-  \begin{signature*}[Fixed-point combinator]\label{fixed_point_combinator}
-    $\fix$ is an expression such that
-    \[\app{\fix}{A} = \app{A}{\app{\fix}{A}}\]
-    for every expression $A$.
-  \end{signature*}
-\end{forthel}
+    \begin{signature*}[Fixed-point combinator]\label{fixed_point_combinator}
+      $\fix$ is an expression such that
+      \[\app{\fix}{A} = \app{A}{\app{\fix}{A}}\]
+      for every expression $A$.
+    \end{signature*}
+  \end{forthel}
 
 
-\section*{Propositional logic}
+  \section*{Propositional logic}
 
-\begin{sparagraph}
   \noindent We extend this $\lambda$-calculus by a fragment of propositional logic:
-\end{sparagraph}
 
-\begin{forthel}
-  \begin{signature*}[Implication]\label{implication}
-    $A \rightarrow B$ is an expression.
-  \end{signature*}
+  \begin{forthel}
+    \begin{signature*}[Implication]\label{implication}
+      $A \rightarrow B$ is an expression.
+    \end{signature*}
 
-  \begin{signature*}\label{truth}
-    $A$ is true is a relation.
-  \end{signature*}
+    \begin{signature*}\label{truth}
+      $A$ is true is a relation.
+    \end{signature*}
 
-  \begin{axiom}\label{beta_reduction}
-    $\app{\abs{n}{\var{n} \rightarrow B}}{A} = A \rightarrow B$.
-  \end{axiom}
+    \begin{axiom}\label{beta_reduction}
+      $\app{\abs{n}{\var{n} \rightarrow B}}{A} = A \rightarrow B$.
+    \end{axiom}
 
-  \begin{axiom}\label{reflexivity}
-    $A \rightarrow A$ is true.
-  \end{axiom}
+    \begin{axiom}\label{reflexivity}
+      $A \rightarrow A$ is true.
+    \end{axiom}
 
-  \begin{axiom}\label{modus_ponens}
-    If $A$ is true and $A \rightarrow B$ is true then $B$ is true.
-  \end{axiom}
+    \begin{axiom}\label{modus_ponens}
+      If $A$ is true and $A \rightarrow B$ is true then $B$ is true.
+    \end{axiom}
 
-  \begin{axiom}\label{strengthening}
-    If $A \rightarrow (A \rightarrow B)$ is true then $A \rightarrow B$ is true.
-  \end{axiom}
-\end{forthel}
+    \begin{axiom}\label{strengthening}
+      If $A \rightarrow (A \rightarrow B)$ is true then $A \rightarrow B$ is true.
+    \end{axiom}
+  \end{forthel}
 
 
-\section*{Curry's paradox}
+  \section*{Curry's paradox}
 
-\begin{sparagraph}
   \noindent Using the fixpoint combinator from above we can formulate a self-referential expression $X$ of the form “If $X$ is true then $A$ is true” for any arbitrary expression $A$ by defining $X = \app{\fix}{\abs{0}{\var{0} \rightarrow A}}$.
   From the existence of such an expression $X$ together with the above axioms we can then derive that any expression $A$ is true.
-\end{sparagraph}
 
-\begin{forthel}
-  \begin{theorem*}[Curry's paradox]\label{curry_paradox}
-    Every expression is true.
-  \end{theorem*}
-  \begin{proof}
-    Let $A$ be an expression.
-    Take $N = \abs{0}{\var{0} \rightarrow A}$ and $X = \app{\fix}{N}.$
+  \begin{forthel}
+    \begin{theorem*}[Curry's paradox]\label{curry_paradox}
+      Every expression is true.
+    \end{theorem*}
+    \begin{proof}
+      Let $A$ be an expression.
+      Take $N = \abs{0}{\var{0} \rightarrow A}$ and $X = \app{\fix}{N}.$
 
-    (1) Then $X = \app{N}{X} = X \rightarrow A$ (by \cref{beta_reduction}).
+      (1) Then $X = \app{N}{X} = X \rightarrow A$ (by \cref{beta_reduction}).
 
-    Hence $X \rightarrow (X \rightarrow A)$ is true (by 1, \cref{reflexivity}).
+      Hence $X \rightarrow (X \rightarrow A)$ is true (by 1, \cref{reflexivity}).
 
-    (2) Thus $X \rightarrow A$ is true (by \cref{strengthening}).
+      (2) Thus $X \rightarrow A$ is true (by \cref{strengthening}).
 
-    (3) Therefore $X$ is true (by 1, 2).
+      (3) Therefore $X$ is true (by 1, 2).
 
-    Consequently $A$ is true (by \cref{modus_ponens}, 2, 3).
-  \end{proof}
-\end{forthel}
+      Consequently $A$ is true (by \cref{modus_ponens}, 2, 3).
+    \end{proof}
+  \end{forthel}
 \end{smodule}
 \printbibliography
 \end{document}

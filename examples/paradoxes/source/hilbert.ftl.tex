@@ -6,57 +6,53 @@
 \author{Marcel Schütz}
 \date{2023}
 \maketitle
-\begin{smodule}{hilbert}
-\usemodule{mod?david-hilbert}
-\usemodule{mod?hilbert-paradox}
-\begin{sparagraph}
-  \noindent \emph{\sn{Hilbert's Paradox}}, discovered around 1900 by \sr{Hilbert}{David Hilbert}, demonstates that there cannot exists a set that is closed under powerset and under union of arbitrary subset \cite{PeckhausKahl2002}.
-\end{sparagraph}
+\begin{smodule}{hilbert.ftl}
+  \noindent \emph{Hilbert's Paradox}, discovered around 1900 by David Hilbert, demonstates that there cannot exists a set that is closed under powerset and under union of arbitrary subset \cite{PeckhausKahl2002}.
 
-\begin{forthel}
-  %[prove off][check off]
-  [readtex \path{foundations/sections/10_sets.ftl.tex}]
-  %[prove on][check on]
+  \begin{forthel}
+    %[prove off][check off]
+    [readtex \path{foundations/sections/10_sets.ftl.tex}]
+    %[prove on][check on]
+  \end{forthel}
 
-  \begin{definition*}
-    Let $S$ be a system of sets.
-    $S$ is closed under powersets iff $\pow{x} \in S$ for all $x \in S$.
-  \end{definition*}
+  \begin{forthel}
+    \begin{definition*}
+      Let $S$ be a system of sets.
+      $S$ is closed under powersets iff $\pow{x} \in S$ for all $x \in S$.
+    \end{definition*}
 
-  \begin{definition*}
-    Let $S$ be a system of sets.
-    $S$ is closed under unions iff $\bigcup X \in S$ for all $X \subseteq S$.
-  \end{definition*}
+    \begin{definition*}
+      Let $S$ be a system of sets.
+      $S$ is closed under unions iff $\bigcup X \in S$ for all $X \subseteq S$.
+    \end{definition*}
 
-  \begin{theorem*}[Hilbert's Paradox]\label{hilbert_paradox}
-    There exists no system of sets that is closed under powersets and closed under unions.
-  \end{theorem*}
-  \begin{proof}[ by contradiction]
-    Assume the contrary.
-    Consider a system of sets $S$ that is closed under powersets and closed under unions.
-    We have $S \subseteq S$.
-    Hence $\bigcup S \in S$.
-    Thus $\pow{\bigcup S} \in S$.
-    Contradiction.
-  \end{proof}
-\end{forthel}
+    \begin{theorem*}[Hilbert's Paradox]\label{hilbert_paradox}
+      There exists no system of sets that is closed under powersets and closed under unions.
+    \end{theorem*}
+    \begin{proof}[ by contradiction]
+      Assume the contrary.
+      Consider a system of sets $S$ that is closed under powersets and closed under unions.
+      We have $S \subseteq S$.
+      Hence $\bigcup S \in S$.
+      Thus $\pow{\bigcup S} \in S$.
+      Contradiction.
+    \end{proof}
+  \end{forthel}
 
-\begin{sparagraph}
-  \noindent Using \sn{Hilbert's Paradox} it can further be shown that there exists no universal set.
-\end{sparagraph}
+  \noindent Using Hilbert's Paradox it can further be shown that there exists no universal set.
 
-\begin{forthel}
-  \begin{corollary*}
-    There exists no set that contains all sets.
-  \end{corollary*}
-  \begin{proof}[ by contradiction]
-    Assume the contrary.
-    Consider a set $X$ that contains all sets.
-    Define $V = \{ x \in X \mid x$ is a set$\}$.
-    Then $V$ is closed under powersets and closed under unions.
-    Hence $V$ is not a set (by \nameref{hilbert_paradox}).
-  \end{proof}
-\end{forthel}
+  \begin{forthel}
+    \begin{corollary*}
+      There exists no set that contains all sets.
+    \end{corollary*}
+    \begin{proof}[ by contradiction]
+      Assume the contrary.
+      Consider a set $X$ that contains all sets.
+      Define $V = \class{x \in X}{\text{$x$ is a set}}$.
+      Then $V$ is closed under powersets and closed under unions.
+      Hence $V$ is not a set (by \nameref{hilbert_paradox}).
+    \end{proof}
+  \end{forthel}
 \end{smodule}
 \printbibliography
 \end{document}
