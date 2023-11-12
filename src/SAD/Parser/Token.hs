@@ -28,6 +28,7 @@ module SAD.Parser.Token (
 import Data.Char
 import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
+import Data.Maybe (fromMaybe)
 
 import SAD.Data.Instr (ParserKind(..))
 
@@ -165,11 +166,41 @@ tokenize Tex startPos = procToken OutsideForthelEnv startPos NoWhiteSpaceBefore
     -- When outside a forthel environment, ignore anything till the next
     -- occurence of "\begin{forthel}" and then switch to 'InsideForthelEnv' mode
     -- TODO: Handle commented "\begin{forthel}" expressions
-    procToken OutsideForthelEnv currentPos _ remainingText = toks
-      where
-        (ignoredText, rest) = Text.breakOn "\\begin{forthel}" remainingText
-        newPos = Position.symbol_explode (ignoredText <> "\\begin{forthel}") currentPos
-        toks = procToken InsideForthelEnv newPos WhiteSpaceBefore $ Text.drop (Text.length "\\begin{forthel}") rest
+    procToken OutsideForthelEnv currentPos _ remainingText =
+      case Text.uncons remainingText of
+        -- EOF
+        Nothing -> [EOF currentPos]
+        Just ('\\', rest)
+          | Text.isPrefixOf "inputref[naproche/examples/" rest ->
+              let (archive_name, rest') = Text.breakOn "]{" $ fromMaybe "" (Text.stripPrefix "inputref[naproche/examples/" rest)
+                  (file_name, _) = Text.breakOn "}" $ fromMaybe "" (Text.stripPrefix "]{" rest')
+                  token_text = "\\inputref[naproche/examples/" <> archive_name <> "]{" <> file_name <> "}"
+                  newPos = Position.symbol_explode_string (Text.unpack token_text) currentPos
+                  read_instruction = [
+                      makeToken "[" Position.none WhiteSpaceBefore,
+                      makeToken "readtex" Position.none NoWhiteSpaceBefore,
+                      makeToken (archive_name <> "/source/" <> file_name) currentPos WhiteSpaceBefore,
+                      makeToken "]" Position.none NoWhiteSpaceBefore
+                    ]
+                  toks = procToken OutsideForthelEnv newPos WhiteSpaceBefore $ Text.drop (Text.length token_text) remainingText
+              in read_instruction ++ toks
+          | Text.isPrefixOf "importmodule[naproche/examples/" rest ->
+              let (archive_name, rest') = Text.breakOn "]{" $ fromMaybe "" (Text.stripPrefix "importmodule[naproche/examples/" rest)
+                  (module_name, _) = Text.breakOn "}" $ fromMaybe "" (Text.stripPrefix "]{" rest')
+                  token_text = "\\importmodule[naproche/examples/" <> archive_name <> "]{" <> module_name <> "}"
+                  newPos = Position.symbol_explode_string (Text.unpack token_text) currentPos
+                  read_instruction = [
+                      makeToken "[" Position.none WhiteSpaceBefore,
+                      makeToken "readtex" Position.none NoWhiteSpaceBefore,
+                      makeToken (archive_name <> "/source/" <> Text.replace "?" "/" module_name <> ".tex") currentPos WhiteSpaceBefore,
+                      makeToken "]" Position.none NoWhiteSpaceBefore
+                    ]
+                  toks = procToken OutsideForthelEnv newPos WhiteSpaceBefore $ Text.drop (Text.length token_text) remainingText
+              in read_instruction ++ toks
+          | Text.isPrefixOf "begin{forthel}" rest ->
+              let newPos = Position.symbol_explode_string "\\begin{forthel}" currentPos
+              in procToken InsideForthelEnv newPos NoWhiteSpaceBefore $ Text.drop (Text.length "\\begin{forthel}") remainingText
+        Just (c, rest) -> procToken OutsideForthelEnv (Position.symbol_explode_string [c] currentPos) NoWhiteSpaceBefore rest
     -- When we reach an "\end{forthel}" expression inside a forthen environment,
     -- switch to 'OutsideForthelEnv' mode
     procToken InsideForthelEnv currentPos _ remainingText

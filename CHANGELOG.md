@@ -65,6 +65,13 @@ dialect of ForTheL, respectively.
     Appropriate LaTeX macros are provided by
     `[naproche/examples/preliminaries]macros.ftl`.
 
+  * **New:** Naproche loads and checks all files/modules that are imported via
+    `\importref[naproche/examples/<archive>]{<file>}` or
+    `\importmodule[naproche/examples/<archive>]{<module>}`.
+
+    ***Note:*** Needs to be improved as the current implementation is very
+    primitive.
+
 --------------------------------------------------------------------------------
 
 ## naproche-20230902 (Isabelle 2023)
