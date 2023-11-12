@@ -484,19 +484,13 @@ hidden = do
 var :: FTL PosVar
 var = do
   pos <- getPos
-  v <- satisfy (\s -> s `notElem` keywords && (isPlainVarName s || isTexVarName s)) <|> explicitVar
+  v <- satisfy (\s -> s `notElem` keywords && (isPlainVarName s || isTexVarName s))
   primes <- Text.concat . fmap (const "'") <$> many (symbolNotAfterSpace "'")
   let v' = v <> primes
   return (PosVar (VarConstant v') pos)
   where
     isPlainVarName s = Text.all isAlphaNum s && isAlpha (Text.head s)
     isTexVarName s = Text.head s == '\\' && Text.tail s `elem` greek
-    explicitVar = do
-      texCommand "variable" <|> texCommand "Variable"
-      symbol "{"
-      varname <- chainLL1 word
-      symbol "}"
-      return $ "\\variable{" <> Text.concat (intersperse " " varname) <> "}"
 
 
 -- ** Pretyped Variables

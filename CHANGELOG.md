@@ -46,14 +46,6 @@ dialect of ForTheL, respectively.
     non-singleton and-chains must be enclosed within parentheses.
     Example: `n is less than 5 or (greater than 5 and prime)`.
 
-  * **New:** Variable names of the form `\variable{<name>}` or
-    `\Variable{<name>}` (where the latter is intended to render the first letter
-    of `name` as an uppercase letter via TeX) are allowed, where `<name>` can
-    consists of arbitrary (ASCII) letters and whitespaces.
-
-    ***Note:*** This is just intended as a temporary hack to make the puzzle
-    formalizations look a bit better.
-
   * **New:** New notations for hardcoded expressions:
 
     - `\apply{f}{x}` for `f(x)`

@@ -8,139 +8,77 @@
 \date{2018 and 2021}
 
 \begin{document}
-\pagenumbering{gobble}
 
 \maketitle
 
-\section{Introduction}
+\begin{smodule}{dwarfs.ftl}
+  \section{Introduction}
 
-We present a formalized solution in \Naproche of a simple ``hat problem'':
+  We present a formalized solution in \Naproche of a simple “hat problem”:
 
-\begin{quotation}
-The two dwarfs Sigbert and Tormund are on an expedition and get captured
-by an indigenous tribe. In order to be released they are given the following
-challenge: Both of them will be placed in a room and will be given a hat. They
-can only see the hat the other dwarf is wearing. The hats are either white or black.
-Without further communication, one of the dwarfs must be able to name the color of
-his hat.
-The two may agree on a strategy before they are placed in the room. How can they manage
-to be released?
-\end{quotation}
-
-We use some \LaTeX{} techniques described in the “agatha” files.
-
-
-\section{Dwarf Ontology}
-
-\begin{forthel}
-[readtex \path{preliminaries/source/vocabulary.ftl.tex}]
-\end{forthel}
-
-\begin{forthel}
-
-\begin{signature}
-A dwarf is a notion.
-\end{signature}
-
-\begin{signature}
-Sigbert is a dwarf.
-\end{signature}
-
-\begin{signature}
-Tormund is a dwarf.
-\end{signature}
-
-Let \variable{a dwarf} denote dwarfs.
-
-\begin{signature}
-A hat is a notion.
-\end{signature}
-
-Let \variable{a hat} denote a hat.
-
-\begin{signature}
-The hat of \variable{a dwarf} is a hat.
-\end{signature}
-
-\begin{signature}
-A color is a notion.
-\end{signature}
-
-\begin{signature}
-White is a color.
-\end{signature}
-
-\begin{signature}
-Black is a color.
-\end{signature}
-
-Let \variable{a color} denote a color.
-
-\begin{signature}
-The opposite color of \variable{a color} is a color.
-\end{signature}
-
-\begin{axiom}
-The opposite color of White is Black.
-\end{axiom}
-
-\begin{axiom}
-The opposite color of Black is White.
-\end{axiom}
-
-\begin{signature}
-The color of \variable{a hat} is a color.
-\end{signature}
-
-\begin{axiom}
-The color of the hat of \variable{a dwarf} is White or Black.
-\end{axiom}
-
-\begin{signature}
-\Variable{a dwarf} names \variable{a color} is an atom.
-\end{signature}
-
-\begin{signature}
-\Variable{a dwarf} gets released is an atom.
-\end{signature}
-
-\end{forthel}
+  \begin{quotation}
+    \noindent The two dwarfs Sigbert and Tormund are on an expedition and get captured by an indigenous tribe.
+    In order to be released they are given the following challenge:
+    Both of them will be placed in a room and will be given a hat.
+    They can only see the hat the other dwarf is wearing.
+    The hats are either white or black.
+    Without further communication, one of the dwarfs must be able to name the color of his hat.
+    The two may agree on a strategy before they are placed in the room.
+    How can they manage to be released?
+  \end{quotation}
 
 
-\section{The Challenge}
+  \section{Dwarf Ontology}
 
-\begin{forthel}
+  \importmodule[naproche/examples/preliminaries]{everyday-ontology.ftl}
 
-\begin{axiom}
-If some dwarf $D$ names the color of the hat of $D$ then all dwarfs get released.
-\end{axiom}
-
-\end{forthel}
-
-
-\section{The Strategy of the Dwarfs}
-
-\begin{forthel}
-
-\begin{axiom}
-Sigbert names the opposite color of the color of the hat of Tormund.
-\end{axiom}
-
-\begin{axiom}
-Tormund names the color of the hat of Sigbert.
-\end{axiom}
-
-\end{forthel}
+  \begin{forthel}
+    \begin{signature}
+      Sigbert is a dwarf.
+    \end{signature}
+    \begin{signature}
+      Tormund is a dwarf.
+    \end{signature}
+    \begin{axiom}
+      The color of the hat of any dwarf is White or Black.
+    \end{axiom}
+    \begin{axiom}
+      The opposite color of White is Black.
+    \end{axiom}
+    \begin{axiom}
+      The opposite color of Black is White.
+    \end{axiom}
+  \end{forthel}
 
 
-\section{Release!}
+  \section{The Challenge}
 
-\begin{forthel}
+  \begin{forthel}
+    \begin{axiom}
+      If some dwarf $D$ names the color of the hat of $D$ then all dwarfs get released.
+    \end{axiom}
+  \end{forthel}
 
-\begin{theorem}
-All dwarfs get released.
-\end{theorem}
 
-\end{forthel}
+  \section{The Strategy of the Dwarfs}
+
+  \begin{forthel}
+    \begin{axiom}
+      Sigbert names the opposite color of the color of the hat of Tormund.
+    \end{axiom}
+    \begin{axiom}
+      Tormund names the color of the hat of Sigbert.
+    \end{axiom}
+  \end{forthel}
+
+
+  \section{Release!}
+
+  \begin{forthel}
+    \begin{theorem}
+      All dwarfs get released.
+    \end{theorem}
+  \end{forthel}
+\end{smodule}
 
 \end{document}
