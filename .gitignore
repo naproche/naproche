@@ -28,8 +28,18 @@ x86_64-windows/
 *.bcf
 *.blg
 *.run.xml
+
+# sTeX-related files and directories
 *.sref
+*.sms
 *.xhtml
+examples/*/export/*
+examples/*/errors/*
+examples/*/content/*
+examples/*/narration/*
+examples/*/relational/*
+examples/*/xhtml/*
+
 
 # Special settings for sTeX archives
 examples/paradoxes/source/*.aux
