@@ -35,6 +35,35 @@ Commands below assume the same current directory: repository clones
       isabelle_naproche/Admin/init -I Isabelle_Naproche -V ./naproche/Isabelle
       isabelle_naproche/bin/isabelle components -u ./naproche
 
+* using local eprover:
+  - Create the directory `naproche_e/$ISABELLE_PLATFORM64`.
+  - Create the file `naproche_e/etc/settings`:
+      # -*- shell-script -*- :mode=shellscript:
+
+      E_HOME="$COMPONENT/$ISABELLE_PLATFORM64"
+  - Copy the E executable to `naproche_e/$ISABELLE_PLATFORM64`.
+  - Add it as a component
+      isabelle_naproche/bin/isabelle components -u ./naproche_e
+  - In `$ISABELLE_HOME_USER/etc/components`, move the path corresponding to the `naproche_e` component above
+    the one corresponding to the `naproche` component.
+  - Verify that the path returend by
+      isabelle getenv NAPROCHE_EPROVER
+    points to `naproche_e/$ISABELLE_PLATFORM64/eprover`.
+
+* using local vampire:
+  - Create the directory `naproche_vampire/$ISABELLE_PLATFORM64`.
+  - Create the file `naproche_vampire/etc/settings`:
+      # -*- shell-script -*- :mode=shellscript:
+
+      VAMPIRE_HOME="$COMPONENT/$ISABELLE_PLATFORM64"
+  - Copy the E executable to `naproche_e/$ISABELLE_PLATFORM64`.
+  - Add it as a component
+      isabelle_naproche/bin/isabelle components -u ./naproche_e
+  - In `$ISABELLE_HOME_USER/etc/components`, move the path corresponding to the `naproche_vampire` component above
+    the one corresponding to the `naproche` component.
+  - Verify that the path returend by
+      isabelle getenv NAPROCHE_VAMPIRE
+    points to `naproche_vampire/$ISABELLE_PLATFORM64/vampire`.
 
 * later updates:
 
