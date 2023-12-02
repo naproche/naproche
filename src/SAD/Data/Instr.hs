@@ -151,7 +151,7 @@ textFlags@[proveParam, checkParam, checkconsistencyParam, symsignParam, infoPara
 textArgs :: [Param.T Bytes]
 libraryParam, proverParam :: Param.T Bytes
 textArgs@[libraryParam, proverParam] =
-  [Param.bytes "library" "place to look for library texts" "examples",
+  [Param.bytes "library" "place to look for library texts" "NAPROCHE_LIBRARY",
    Param.bytes "prover" "use prover NAME" (Prover.get_name Prover.eprover)]
 
 initParam, theoryParam :: Param.T Bytes

@@ -35,7 +35,7 @@ import SAD.Parser.Error
 import SAD.Core.Message qualified as Message
 
 import Isabelle.File qualified as File
-import Isabelle.Library (make_bytes, make_string, make_text, show_bytes)
+import Isabelle.Library (make_bytes, getenv, make_string, make_text, show_bytes)
 import Isabelle.Position as Position
 import Isabelle.Bytes (Bytes)
 import Isabelle.Bytes qualified as Bytes
@@ -70,7 +70,8 @@ readProofText :: Bytes          -- ^ path to library from where other ForTheL
               -> IO [ProofText]
 readProofText pathToLibrary text0 = do
   context <- Program.thread_context
-  (text, reports) <- reader pathToLibrary [] [initState context noTokens] text0
+  path <- getenv pathToLibrary
+  (text, reports) <- reader path [] [initState context noTokens] text0
   when (Program.is_pide context) $ Message.reports reports
   return text
 
