@@ -36,8 +36,8 @@ dialect of ForTheL, respectively.
 
 ### Changes on ForTheL
 
-  * **Fixed:** Comments outside ForTheL environments are now recognized by the
-    parser, i.e. commented out `forthel` environments and `importmodule`
+  * **Fixed:** (TEX) Comments outside ForTheL environments are now recognized by
+    the parser, i.e. commented out `forthel` environments and `importmodule`
     commands are ignored by the parser.
 
   * **Changed:** The following keywords are no longer allowed as variable names
@@ -50,7 +50,7 @@ dialect of ForTheL, respectively.
     non-singleton and-chains must be enclosed within parentheses.
     Example: `n is less than 5 or (greater than 5 and prime)`.
 
-  * **New:** New notations for hardcoded expressions:
+  * **New:** (TEX) New notations for hardcoded expressions:
 
     - `\apply{f}{x}` for `f(x)`
     - `\domain{f}` for `dom(f)`
@@ -61,8 +61,8 @@ dialect of ForTheL, respectively.
     Appropriate LaTeX macros are provided by
     `[naproche/examples/preliminaries]macros.ftl`.
 
-  * **New:** Naproche loads and checks all files/modules that are imported via
-    `\importref[naproche/examples/<archive>]{<file>}` or
+  * **New:** (TEX) Naproche loads and checks all files/modules that are imported
+    via `\importref[naproche/examples/<archive>]{<file>}` or
     `\importmodule[naproche/examples/<archive>]{<module>}`.
 
     ***Note:*** Needs to be improved as the current implementation is very
