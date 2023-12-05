@@ -43,7 +43,7 @@ import SAD.Data.Text.Decl
 -- | Parse a @.ftl@ or @.ftl.tex@ document:
 -- @{<topLevelBlock>} (<exitInstruction> | <EOF>)@
 forthel :: ParserKind -> FTL [ProofText]
-forthel dialect = repeatUntil (pure <$> topLevelBlock dialect)
+forthel dialect = repeatUntil ((pure <$> topLevelBlock dialect) <|> convention)
   (try (bracketExpression >>= exitInstruction) <|> (eof >> return []))
 
 -- | Parse a top-level block:
@@ -67,6 +67,20 @@ topLevelSection dialect =
 
 -- * Top-level sections
 
+convention :: FTL [ProofText]
+convention = do
+  texCommand "begin" <?> "\\begin"
+  symbol "{" <?> "{"
+  key <- getMarkupTokenOf sectionHeader ["fconvention"]
+  starred <- optLL1 False $ getMarkupToken sectionHeader "*" >> pure True
+  symbol "}" <?> "}"
+  conventions <- chainLL1 (try introduceMacro <|> pretypeVariable)
+  texCommand "end" <?> "\\end"
+  symbol "{" <?> "{"
+  getMarkupToken sectionHeader "fconvention" <?> "fconvention"
+  symbol "}" <?> "}"
+  return conventions
+
 -- | @beginTopLevelSection keywords@ parses @"\\begin" "{" <keyword> ["*"] "}"@,
 -- where @<keyword>@ is a member of @keywords@.
 beginTopLevelSection :: [Text] -> FTL (Text,Bool)
@@ -77,6 +91,43 @@ beginTopLevelSection keywords = do
   starred <- optLL1 False $ getMarkupToken sectionHeader "*" >> pure True
   symbol "}" <?> "}"
   return (key,starred)
+
+beginFTopLevelSection :: [Text] -> FTL (Text, Maybe Text)
+beginFTopLevelSection keywords = do
+  texCommand "begin" <?> "\\begin"
+  symbol "{" <?> "{"
+  key <- getMarkupTokenOf sectionHeader keywords
+  symbol "}" <?> "}"
+  -- Optional name and/or title:
+  label <- optLL1 Nothing $ do
+    symbol "[" <?> "["
+    -- Name (optional):
+    name <- optLL1 Nothing $ do
+      token "label" <?> "label"
+      symbol "=" <?> "="
+      Just <$> identifier
+    -- Title (optional):
+    optLL1 () $ do
+      case name of
+        Nothing -> token "title" <?> "title"
+        Just _ -> (symbol "," <?> ",") >> (token "title" <?> "title")
+      symbol "=" <?> "="
+      symbol "{" <?> "{"
+      optLL1 [] $ chainLL1 notClosingBrace
+      symbol "}" <?> "}"
+    symbol "]" <?> "]"
+    return name
+  return (key,label)
+  where
+    notClosingBrace = tokenPrim notCl
+    notCl t = let tk = showToken t in guard (tk /= "}") >> return tk
+
+endFTopLevelSection :: Text -> FTL ()
+endFTopLevelSection keyword = do
+  texCommand "end" <?> "\\end"
+  symbol "{" <?> "{"
+  getMarkupToken sectionHeader keyword <?> keyword
+  symbol "}" <?> "}"
 
 -- | @endTopLevelSection <key> <starred>@ parses either
 -- @"\\end" "{" <keyword> "}"@ or @"\\end" "{" <keyword> "*" "}"@ depending on
@@ -104,12 +155,19 @@ signature Ftl = do
   dot
   content <- signatureBody
   addMetadata Signature content label
-signature Tex = do
-  (keyword, starred) <- try $ beginTopLevelSection ["signature"]
-  label <- optionalEnvLabel
-  content <- signatureBody
-  endTopLevelSection keyword starred
-  addMetadata Signature content label
+signature Tex = sig <|> fsig
+  where
+    sig = do
+      (keyword, starred) <- try $ beginTopLevelSection ["signature"]
+      label <- optionalEnvLabel
+      content <- signatureBody
+      endTopLevelSection keyword starred
+      addMetadata Signature content label
+    fsig = do
+      (keyword,label) <- try $ beginFTopLevelSection ["fsignature"]
+      content <- signatureBody
+      endFTopLevelSection keyword
+      addMetadata Signature content label
 
 -- | Parse a signature:
 --
@@ -126,12 +184,19 @@ definition Ftl = do
   dot
   content <- definitionBody
   addMetadata Definition content label
-definition Tex = do
-  (keyword, starred) <- try $ beginTopLevelSection ["definition"]
-  label <- optionalEnvLabel
-  content <- definitionBody
-  endTopLevelSection keyword starred
-  addMetadata Definition content label
+definition Tex = def <|> fdef
+  where
+    def = do
+      (keyword, starred) <- try $ beginTopLevelSection ["definition"]
+      label <- optionalEnvLabel
+      content <- definitionBody
+      endTopLevelSection keyword starred
+      addMetadata Definition content label
+    fdef = do
+      (keyword,label) <- try $ beginFTopLevelSection ["fdefinition"]
+      content <- definitionBody
+      endFTopLevelSection keyword
+      addMetadata Definition content label
 
 -- | Parse a signature:
 --
@@ -148,12 +213,19 @@ axiom Ftl = do
   dot
   content <- axiomBody
   addMetadata Axiom content label
-axiom Tex = do
-  (keyword, starred) <- try $ beginTopLevelSection ["axiom"]
-  label <- optionalEnvLabel
-  content <- axiomBody
-  endTopLevelSection keyword starred
-  addMetadata Axiom content label
+axiom Tex = ax <|> fax
+  where
+    ax = do
+      (keyword, starred) <- try $ beginTopLevelSection ["axiom"]
+      label <- optionalEnvLabel
+      content <- axiomBody
+      endTopLevelSection keyword starred
+      addMetadata Axiom content label
+    fax = do
+      (keyword,label) <- try $ beginFTopLevelSection ["faxiom"]
+      content <- axiomBody
+      endFTopLevelSection keyword
+      addMetadata Axiom content label
 
 -- | Parse a signature:
 --
@@ -170,12 +242,19 @@ theorem Ftl = do
   dot
   content <- theoremBody
   addMetadata Theorem content label
-theorem Tex = do
-  (keyword, starred) <- try $ beginTopLevelSection ["theorem", "proposition", "lemma", "corollary"]
-  label <- optionalEnvLabel
-  content <- addAssumptions . texTopLevelProof $
-             pretypeSentence Affirmation (affirmationHeader >> statement) affirmVars finishWithOptLink <* endTopLevelSection keyword starred
-  addMetadata Theorem content label
+theorem Tex = thm <|> fthm
+  where
+    thm = do
+      (keyword, starred) <- try $ beginTopLevelSection ["theorem", "proposition", "lemma", "corollary"]
+      label <- optionalEnvLabel
+      content <- addAssumptions . texTopLevelProof $
+                 pretypeSentence Affirmation (affirmationHeader >> statement) affirmVars finishWithOptLink <* endTopLevelSection keyword starred
+      addMetadata Theorem content label
+    fthm = do
+      (keyword,label) <- try $ beginFTopLevelSection ["ftheorem", "fproposition", "flemma", "fcorollary"]
+      content <- addAssumptions . texTopLevelProof $
+                 pretypeSentence Affirmation (affirmationHeader >> statement) affirmVars finishWithOptLink <* endFTopLevelSection keyword
+      addMetadata Theorem content label
 
 -- | This is the last step when creating a proof text from a top-level section.
 -- We take some metadata and moreover read some metadata from the state and use

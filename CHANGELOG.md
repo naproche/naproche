@@ -36,6 +36,46 @@ dialect of ForTheL, respectively.
 
 ### Changes on ForTheL
 
+  * **New:** (TEX) Variable declarations and macros can be wrapped in
+    `fconvention` environments (both inside and outside of `forthel`
+    environments), e.g.:
+
+    ```
+    \begin{fconvention}
+      Let $A \cup B$ stand for the union of $A$ and $B$.
+
+      Let $n, m$ denote natural numbers.
+    \end{fconvention}
+    ```
+
+  * **New:** (TEX) Every top-level section has an `f`-variant, e.g.
+    `fdefinition` or `ftheorem` in addition to `definition` and `theorem`,
+    respectively.
+
+    These `f`-variants can (but do not have to) occur outside of `forthel`
+    environments such that we can, e.g., write
+    ```
+    \begin{fdefinition}
+      ...
+    \end{fdefinition}
+    ```
+    instead of:
+    ```
+    \begin{forthel}
+      \begin{definition}
+        ...
+      \end{definition}
+    \end{forthel}
+    ```
+
+    Moreover, the `f`-variants take an optional `label` and an optional `title`
+    argument, e.g.:
+    ```
+    \begin{ftheorem}[label=cantor_1891,title={Cantor's Theorem}]
+      ...
+    \end{ftheorem}
+    ```
+
   * **Fixed:** (TEX) Comments outside ForTheL environments are now recognized by
     the parser, i.e. commented out `forthel` environments and `importmodule`
     commands are ignored by the parser.

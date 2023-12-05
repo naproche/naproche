@@ -171,6 +171,7 @@ tokenize Tex startPos = procToken OutsideForthelEnv startPos NoWhiteSpaceBefore
         -- EOF
         Nothing -> [EOF currentPos]
         Just ('\\', rest)
+          -- Translate "\inputref" commands to "readtex" instructions (TODO: Improve this!):
           | Text.isPrefixOf "inputref[naproche/examples/" rest ->
               let (archive_name, rest') = Text.breakOn "]{" $ fromMaybe "" (Text.stripPrefix "inputref[naproche/examples/" rest)
                   (file_name, _) = Text.breakOn "}" $ fromMaybe "" (Text.stripPrefix "]{" rest')
@@ -184,6 +185,7 @@ tokenize Tex startPos = procToken OutsideForthelEnv startPos NoWhiteSpaceBefore
                     ]
                   toks = procToken OutsideForthelEnv newPos WhiteSpaceBefore $ Text.drop (Text.length token_text) remainingText
               in read_instruction ++ toks
+          -- Translate "\importmodule" commands to "readtex" instructions (TODO: Improve this!):
           | Text.isPrefixOf "importmodule[naproche/examples/" rest ->
               let (archive_name, rest') = Text.breakOn "]{" $ fromMaybe "" (Text.stripPrefix "importmodule[naproche/examples/" rest)
                   (module_name, _) = Text.breakOn "}" $ fromMaybe "" (Text.stripPrefix "]{" rest')
@@ -197,14 +199,36 @@ tokenize Tex startPos = procToken OutsideForthelEnv startPos NoWhiteSpaceBefore
                     ]
                   toks = procToken OutsideForthelEnv newPos WhiteSpaceBefore $ Text.drop (Text.length token_text) remainingText
               in read_instruction ++ toks
+          -- Tokenize the content of a forthel environment:
           | Text.isPrefixOf "begin{forthel}" rest ->
               let newPos = Position.symbol_explode_string "\\begin{forthel}" currentPos
               in procToken InsideForthelEnv newPos NoWhiteSpaceBefore $ Text.drop (Text.length "\\begin{forthel}") remainingText
+          -- Tokenize f-environments:
+          | Text.isPrefixOf "begin{fsignature}" rest -> tokenizeFEnv "fsignature" remainingText
+          | Text.isPrefixOf "begin{fdefinition}" rest -> tokenizeFEnv "fdefinition" remainingText
+          | Text.isPrefixOf "begin{faxiom}" rest -> tokenizeFEnv "faxiom" remainingText
+          | Text.isPrefixOf "begin{ftheorem}" rest -> tokenizeFEnv "ftheorem" remainingText
+          | Text.isPrefixOf "begin{flemma}" rest -> tokenizeFEnv "flemma" remainingText
+          | Text.isPrefixOf "begin{fproposition}" rest -> tokenizeFEnv "fproposition" remainingText
+          | Text.isPrefixOf "begin{fcorollary}" rest -> tokenizeFEnv "fcorollary" remainingText
+          | Text.isPrefixOf "begin{fconvention}" rest -> tokenizeFEnv "fconvention" remainingText
+          where
+            tokenizeFEnv envname text =
+              let (envWithoutEnd,restWithEnvEnd) = Text.breakOn ("\\end{" <> envname <> "}") text
+                  env = envWithoutEnd <> "\\end{" <> envname <> "}"
+                  rest = Text.drop (Text.length ("\\end{" <> envname <> "}")) restWithEnvEnd
+                  -- We tokenize the whole environment (including "begin" and "end" command) as if we were inside a forthel environment:
+                  envToks = procToken InsideForthelEnv currentPos NoWhiteSpaceBefore env
+                  newPos = Position.symbol_explode env currentPos
+                  restToks = procToken OutsideForthelEnv newPos NoWhiteSpaceBefore rest
+              in envToks ++ restToks
+        -- Ignore comments:
         Just ('%', rest) -> tok:toks
           where
             (comment, rest) = Text.break (== '\n') remainingText
             tok  = makeToken comment currentPos Comment
             toks = procToken OutsideForthelEnv (Position.symbol_explode comment currentPos) WhiteSpaceBefore rest
+        -- Ignore everything else:
         Just (c, rest) -> procToken OutsideForthelEnv (Position.symbol_explode_string [c] currentPos) NoWhiteSpaceBefore rest
     -- When we reach an "\end{forthel}" expression inside a forthen environment,
     -- switch to 'OutsideForthelEnv' mode
@@ -242,7 +266,7 @@ tokenize Tex startPos = procToken OutsideForthelEnv startPos NoWhiteSpaceBefore
     procToken InsideForthelEnv currentPos whitespaceBefore remainingText =
       case Text.uncons remainingText of
         -- EOF
-        Nothing -> [EOF currentPos]
+        Nothing -> []
         -- Inline math mode delimiter
         Just ('$', rest) -> procToken InsideForthelEnv (Position.symbol_explode_string "$" currentPos) WhiteSpaceBefore rest
         -- Comment
