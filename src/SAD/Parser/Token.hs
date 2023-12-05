@@ -200,6 +200,11 @@ tokenize Tex startPos = procToken OutsideForthelEnv startPos NoWhiteSpaceBefore
           | Text.isPrefixOf "begin{forthel}" rest ->
               let newPos = Position.symbol_explode_string "\\begin{forthel}" currentPos
               in procToken InsideForthelEnv newPos NoWhiteSpaceBefore $ Text.drop (Text.length "\\begin{forthel}") remainingText
+        Just ('%', rest) -> tok:toks
+          where
+            (comment, rest) = Text.break (== '\n') remainingText
+            tok  = makeToken comment currentPos Comment
+            toks = procToken OutsideForthelEnv (Position.symbol_explode comment currentPos) WhiteSpaceBefore rest
         Just (c, rest) -> procToken OutsideForthelEnv (Position.symbol_explode_string [c] currentPos) NoWhiteSpaceBefore rest
     -- When we reach an "\end{forthel}" expression inside a forthen environment,
     -- switch to 'OutsideForthelEnv' mode
