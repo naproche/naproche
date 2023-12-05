@@ -13,6 +13,10 @@ dialect of ForTheL, respectively.
 
 ### Changes on ForTheL
 
+  * **Fixed:** Comments outside ForTheL environments are now recognized by the
+    parser, i.e. commented out `forthel` environments and `importmodule`
+    commands are ignored by the parser.
+
 * **Changed:** The following keywords are no longer allowed as variable names
   to avoid certain ambiguity errors:
 
