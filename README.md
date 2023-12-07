@@ -38,9 +38,11 @@ Commands below assume the same current directory: repository clones
 * using local eprover:
   - Create the directory `naproche_e/$ISABELLE_PLATFORM64`.
   - Create the file `naproche_e/etc/settings`:
+      ```
       # -*- shell-script -*- :mode=shellscript:
 
       E_HOME="$COMPONENT/$ISABELLE_PLATFORM64"
+      ```
   - Copy the E executable to `naproche_e/$ISABELLE_PLATFORM64`.
   - Add it as a component
       isabelle_naproche/bin/isabelle components -u ./naproche_e
@@ -53,9 +55,11 @@ Commands below assume the same current directory: repository clones
 * using local vampire:
   - Create the directory `naproche_vampire/$ISABELLE_PLATFORM64`.
   - Create the file `naproche_vampire/etc/settings`:
+    ```
       # -*- shell-script -*- :mode=shellscript:
 
       VAMPIRE_HOME="$COMPONENT/$ISABELLE_PLATFORM64"
+      ```
   - Copy the E executable to `naproche_e/$ISABELLE_PLATFORM64`.
   - Add it as a component
       isabelle_naproche/bin/isabelle components -u ./naproche_e
