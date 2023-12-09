@@ -11,6 +11,18 @@ dialect of ForTheL, respectively.
 
 ## Current development version
 
+### Changes on the LaTeX styles
+
+  * **Changed:** Style files have been moved from `lib/tex/` to
+    `examples/meta-inf/lib` to facilitate their usage with sTeX.
+
+  * **New:** `naproche.sty` supports sTeX via the package option `stex`
+    (see [`examples/README.md`](examples/README.md) for details).
+
+  * **Changed:** Documentation of LaTeX styles for Naproche have been included
+    into [`examples/README.md`](examples/README.md).
+
+
 ### Changes on the example files
 
   * **Changed:** Preliminary files like `preliminaries.ftl(.tex)` or
@@ -24,9 +36,6 @@ dialect of ForTheL, respectively.
   * **Changed:** Puzzles have been moved to `examples/puzzles/` which
     constitutes an sTeX archive.
 
-  * **Changed:** Style files have been moved from `lib/tex/` to
-    `examples/meta-inf/lib` to facilitate their usage with sTeX.
-
   * **New:** Common Bibtex file `examples/meta-inf/lib/references.bib` for all
     example files.
 
@@ -36,8 +45,12 @@ dialect of ForTheL, respectively.
 
 ### Changes on ForTheL
 
+  * **New:** Top-level sections can be referred to via `(by \printref{...})`
+    within proofs (which just prints the label of the referenced section in the
+    PDF).
+
   * **New:** (TEX) Variable declarations and macros can be wrapped in
-    `fconvention` environments (both inside and outside of `forthel`
+    `fconvention` or `fconvention*` environments (both inside and outside of `forthel`
     environments), e.g.:
 
     ```
@@ -49,7 +62,7 @@ dialect of ForTheL, respectively.
     ```
 
   * **New:** (TEX) Every top-level section has an `f`-variant, e.g.
-    `fdefinition` or `ftheorem` in addition to `definition` and `theorem`,
+    `fdefinition` or `ftheorem*` in addition to `definition` and `theorem*`,
     respectively.
 
     These `f`-variants can (but do not have to) occur outside of `forthel`
@@ -102,11 +115,16 @@ dialect of ForTheL, respectively.
     `[naproche/examples/preliminaries]macros.ftl`.
 
   * **New:** (TEX) Naproche loads and checks all files/modules that are imported
-    via `\importref[naproche/examples/<archive>]{<file>}` or
-    `\importmodule[naproche/examples/<archive>]{<module>}`.
+    via `\importref[naproche/examples/<archive>]{<file>}`,
+    `\importmodule[naproche/examples/<archive>]{<module>}` or
+    `\usemodule[naproche/examples/<archive>]{<module>}`.
 
     ***Note:*** Needs to be improved as the current implementation is very
     primitive.
+
+  * **Changed:** Notation for comprehension terms has changed from
+    `\class{...}{...}` to `\compterm{...}{...}` (since for some reasons
+    `\class{...}{...}` does behaves strangely with sTeX (?))
 
 --------------------------------------------------------------------------------
 
