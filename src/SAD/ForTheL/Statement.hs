@@ -469,9 +469,9 @@ symbClassNotation = texClass </> cndClass </> finiteSet
       pure (\tr -> tag $ c tr `blAnd` mkObject tr `blAnd` mbEqu vsDecl tr t st, (nm, mkColl))
     -- Set-builder notation using a certain TeX macro, e.g.
     -- "\class{$x \in X$ | $x$ is less than $y$}". Semantically identical to `cndClass`.
-    texClass = texCommandWithArg "class" $ do
+    texClass = texCommandWithArg "compterm" $ do
       (tag, c, t, mkColl) <- optInText sepFrom
-      st <- (symbol "|" <|> (symbol "}" >> symbol "{")) >> optInText statement <|> optInClasstext statement
+      st <- (symbol "}" >> symbol "{") >> optInText statement <|> optInClasstext statement
       vs <- freeVars t
       vsDecl <- makeDecls $ fvToVarSet vs;
       nm <- if isVar t then pure $ PosVar (varName t) (varPosition t) else hidden
