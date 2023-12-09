@@ -1,16 +1,17 @@
 \documentclass{article}
+\usepackage[lang=english,supplements]{naproche}
 
-\usepackage[utf8]{inputenc}
-\usepackage[british]{babel}
-
-\usepackage{meta-inf/lib/naproche-logo}
-\usepackage{meta-inf/lib/naproche-logo}
-\usepackage{meta-inf/lib/naproche}
 \input{foundations/lib/preamble}
 
 \usepackage{biblatex}
 \usepackage{csquotes}
 \addbibresource{meta-inf/lib/references.bib}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  urlcolor=blue
+}
 
 \title{The Knaster-Tarski fixed point theorem and \\
 the Cantor-Schröder-Bernstein Theorem}
@@ -67,8 +68,7 @@ Marcel Schütz (2019 - 2022)}
       Then $h$ has a fixed point.
     \end{theorem*}
     \begin{proof}
-      (1) Define $A = \class{y | \text{$y \subseteq x$ and
-      $y \subseteq h(y)$}}$.
+      (1) Define $A = \compterm{y}{\text{$y \subseteq x$ and $y \subseteq h(y)$}}$.
       Then $A$ is a subset of $\pow{x}$.
       We have $\bigcup A \in \pow{x}$.
 

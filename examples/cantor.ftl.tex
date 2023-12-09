@@ -1,10 +1,5 @@
 \documentclass{article}
-
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
-
-\usepackage{meta-inf/lib/naproche-logo}
-\usepackage{meta-inf/lib/naproche}
+\usepackage[lang=english,supplements]{naproche}
 
 \title{Cantor's Theorem}
 \author{}
@@ -13,8 +8,6 @@
 \setlength{\parindent}{0em}
 
 \begin{document}
-  \pagenumbering{gobble}
-
   \maketitle
 
   In this document we give a proof of Cantor's Theorem:
@@ -41,7 +34,7 @@
 
     \begin{definition*}
       Let $f$ be a function and $Y$ be a set.
-      $f$ surjects onto $Y$ iff $Y = \class{f(x) | x \in \dom(f)}$.
+      $f$ surjects onto $Y$ iff $Y = \compterm{f(x)}{x \in \dom(f)}$.
     \end{definition*}
 
     Let a surjective function from $X$ to $Y$ stand for a function of $X$ that
@@ -68,7 +61,7 @@
       Assume the contrary.
       Take a surjective function $f$ from $M$ to the powerset of $M$.
       The value of $f$ at any element of $M$ is a set.
-      Define \[ N = \class{x \in M | \text{$x$ is not an element of $f(x)$}}. \]
+      Define \[ N = \compterm{x \in M}{\text{$x$ is not an element of $f(x)$}}. \]
       $N$ is a subset of $M$.
       Consider an element $z$ of $M$ such that $f(z) = N$.
       Then \[ z \in N \iff z \notin f(z) = N. \]

@@ -22,24 +22,10 @@
 % ForTheL environment
 % ===================
 
-\RequirePackage{environ}
+\usepackage{mdframed}
+\usepackage{xcolor}
 
-\RequirePackage[most]{tcolorbox}
-\tcbset{
-  colback=gray!30,
-  colframe=gray!30,
-  arc=0pt,outer arc=0pt
-}
-
-\NewEnviron{forthel}{%
-  \begin{tcolorbox}
-    \BODY
-  \end{tcolorbox}
-}
-
-
-% Explicit variables
-% ==================
-
-\newcommand{\variable}[1]{{\itshape#1}}
-\newcommand{\Variable}[1]{\variable{\MakeUppercase#1}}
+\newenvironment{forthel}{%
+  \begin{mdframed}[backgroundcolor=gray!20,linecolor=gray!20]%
+  \setlength{\parindent}{0pt}%
+}{\end{mdframed}}

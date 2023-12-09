@@ -1,19 +1,18 @@
 \documentclass{article}
+\usepackage[lang=english,supplements]{naproche}
 
-\usepackage[utf8]{inputenc}
-\usepackage[british]{babel}
-
-\usepackage{meta-inf/lib/naproche-logo}
-\usepackage{meta-inf/lib/naproche}
 \input{foundations/lib/preamble}
 \input{arithmetic/lib/preamble}
 
 \usepackage{biblatex}
 \usepackage{csquotes}
-\addbibresource{meta\minusinf/lib/references.bib}
+\addbibresource{meta-inf/lib/references.bib}
 
-\usepackage{xr}
-\externaldocument{arithmetic/arithmetic}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  urlcolor=blue
+}
 
 \let\oldcomplement\complement
 \renewcommand{\complement}[1]{\left(#1\right)^{\oldcomplement}}
@@ -24,7 +23,7 @@
 \title{Furstenberg's proof of the infinitude of primes}
 \author{\Naproche formalization: \vspace{0.5em} \\
 Andrei Paskevich (2007), \\
-Marcel Schütz (2021 \minus 2022)}
+Marcel Schütz (2021 - 2022)}
 \date{}
 
 
@@ -33,7 +32,7 @@ Marcel Schütz (2021 \minus 2022)}
 
   \noindent This is a formalization of Furstenberg's topological proof of the
   infinitude of primes \cite[p. 353]{Furstenberg1955}.
-  On mid\minusrange hardware \Naproche needs approximately 5 Minutes to verify this
+  On mid-range hardware \Naproche needs approximately 5 Minutes to verify this
   formalization plus approximately 40 minutes to verify the library files it
   depends on.
 
@@ -296,7 +295,7 @@ Marcel Schütz (2021 \minus 2022)}
         Take a $p$ such that $\arithseq{1}{p} \subseteq \complement{\bigcup \Ps}$.
         $1 \plus p$ is an element of $\arithseq{1}{p}$.
         Indeed $congruent{1 \plus p}{1}{p}$
-        (by \ref{ARITHMETIC_08_5984712287846400}).
+        (by \printfref{ARITHMETIC_08_5984712287846400}).
         $1 \plus p$ is not equal to $1$.
         Hence $1 \plus p \notin \complement{\bigcup \Ps}$.
         Contradiction.

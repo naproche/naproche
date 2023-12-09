@@ -1,11 +1,8 @@
 \documentclass{article}
+\usepackage[lang=english,supplements]{naproche}
 
-\usepackage[utf8]{inputenc}
-\usepackage[british]{babel}
 \usepackage{mathtools} % for `\bigtimes`
 
-\usepackage{meta-inf/lib/naproche-logo}
-\usepackage{meta-inf/lib/naproche}
 \input{foundations/lib/preamble}
 \input{set-theory/lib/preamble}
 
@@ -13,8 +10,11 @@
 \usepackage{csquotes}
 \addbibresource{meta-inf/lib/references.bib}
 
-\usepackage{xr}
-\externaldocument{set-theory/set-theory}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  urlcolor=blue
+}
 
 \title{König's Theorem}
 \author{\Naproche formalization: \vspace{0.5em} \\
@@ -66,7 +66,7 @@ depends on.
 
   \begin{definition*}
     Let $\kappa$ be a sequence of cardinals on $D$.
-    \[ \SumSet{\kappa}{D} = \class{(n,i) | \text{$i$ is an element of $D$ and
+    \[ \SumSet{\kappa}{D} = \compterm{(n,i) | \text{$i$ is an element of $D$ and
     $n$ is an element of $\kappa_{i}$}}. \]
   \end{definition*}
 
@@ -82,7 +82,7 @@ depends on.
 
   \begin{definition*}
     Let $\kappa$ be a sequence of cardinals on $D$.
-    \[ \ProdSet{\kappa}{D} = \class{f | \classtext{$f$ is a function and
+    \[ \ProdSet{\kappa}{D} = \compterm{f | \classtext{$f$ is a function and
     $\dom(f) = D$ and $f(i)$ is an element of $\kappa_{i}$ for every element
     $i$ of $D$}}. \]
   \end{definition*}
@@ -155,7 +155,7 @@ are themselves non-empty:
         = \kappa_{i}
         \less \lambda_{i}$.
       Indeed $\card{\image{F}(\kappa_{i})} \leq \card{\kappa_{i}}$
-      (by \cref{SET_THEORY_06_8113916590686208}).
+      (by \printref{SET_THEORY_06_8113916590686208}).
       Indeed $\kappa_{i}$ and $\lambda_{i}$ are sets.
     End.
 

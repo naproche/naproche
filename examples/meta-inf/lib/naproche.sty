@@ -1,73 +1,130 @@
 \NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{naproche}
 
-\RequirePackage{amsmath}
-\RequirePackage{amsthm}
-\RequirePackage{amsfonts}
-\RequirePackage{etoolbox}
-\RequirePackage{xspace}
-\RequirePackage{xcolor}
-\RequirePackage{mdframed}
-\RequirePackage{hyperref}
-\RequirePackage{cleveref}
-\RequirePackage[nolabel, inline]{showlabels}
+\RequirePackage{kvoptions}
 
 
-% Links
-% =====
+% Usage:
+% ======
 
-\hypersetup{
-  colorlinks=true,
-  linkcolor=blue,
-  urlcolor=blue
-}
+% TLDR: Add this directory to your `TEXINPUTS` variable.
+%
+% To do this add the line
+% `export TEXINPUTS="$(TEXINPUTS):<path to naproche dir>/examples/meta-inf/lib//:"`,
+% where `<path to naproche dir>` has to be replaced with the (absolute) path to
+% your `naproche` directory (e.g. `/home/yourname/naproche`),
+% to your `.bashrc` (or `.profile` or `.bash_profile` or ...).
+%
+% After that make your system aware of the change of the `TEXINPUTS` variable,
+% for instance bylogging out from your system and logging in again.
+%
+% Then you can use this package as usual by putting
+% `\usepackage[<options>]{naproche}` in the preamble of your LaTeX document,
+% where `<options>` is a comma-separated of any of the below options.
 
 
-% Printable labels
-% ================
+% Options:
+% ========
 
-% `\printlabel' behaves exactly as `\label' but its argument is printed in the
-% PDF.
-\showlabels{printlabel}
-\newcommand{\printlabel}[1]{\label{#1}}
+% * `lang=<language>`: Uses the Babel package with the option `<language>`
+%   (default: `english`)
+%
+% * `stex`: Uses the sTeX package
+%
+% * `supplements`: Load additioinal packages (`xurl`, `amsmath`, `hyperref`, `cleveref`)
+
+
+% Recommended additional packages
+
+% * `amsmath`
+% * `xurl`
+% * `hyperref`
+
+
+% Dependencies:
+% =============
+
+% * `amsfonts`
+% * `amsthm`
+% * `babel`
+% * `environ`
+% * `etoolbox`
+% * `kvoptions`
+% * `linegoal`
+% * `showlabels`
+% * `stex` (only if the option `stex` is set)
+% * `tcolorbox`
+% * `xspace`
+% * `mdframed`
+% * `xcolor`
+
+
+% Languages
+% =========
+
+\DeclareStringOption[english]{lang}
+\RequirePackage[\naproche@lang]{babel}
+
+
+% Naproche logo
+% =============
+
+\RequirePackage{naproche-logo}
 
 
 % Top-level sections
 % ==================
 
-% Numbered environments for top-level sections
-\newtheoremstyle{formalized}% name of the style to be used
-    {4pt}% measure of space to leave above the theorem. E.g.: 3pt
-    {4pt}% measure of space to leave below the theorem. E.g.: 3pt
-    {\normalfont} % name of font to use in the body of the theorem
-    {0pt}% measure of space to indent
-    {\bfseries}% name of head font
-    {}% punctuation between head and body
-    { }% space after theorem head; " " = normal inter-word space
-    {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}.}
+% Standard environment
+% --------------------
 
-% Unnumbered environments for top-level sections
-\newtheoremstyle{unnumbered}% name of the style to be used
-  {4pt}% measure of space to leave above the theorem. E.g.: 3pt
-  {4pt}% measure of space to leave below the theorem. E.g.: 3pt
-  {\normalfont} % name of font to use in the body of the theorem
-  {0pt}% measure of space to indent
-  {\bfseries}% name of head font
-  {}% punctuation between head and body
-  { }% space after theorem head; " " = normal inter-word space
+\RequirePackage{amsthm}
+
+% \newtheoremstyle
+%  {name}
+%  {space above the environment}
+%  {space below the environment}
+%  {body font}
+%  {indent space}
+%  {head font}
+%  {punctuation between head and body}
+%  {space after head}
+%  {head}
+
+% Numbered top-level sections
+\newtheoremstyle
+  {numbered}
+  {4pt}
+  {4pt}
+  {\normalfont}
+  {0pt}
+  {\bfseries}
+  {}
+  { }
+  {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}.}
+
+% Unnumbered top-level sections
+\newtheoremstyle
+  {unnumbered}
+  {4pt}
+  {4pt}
+  {\normalfont}
+  {0pt}
+  {\bfseries}
+  {}
+  { }
   {\thmname{#1}\thmnote{ (#3)}.}
 
-\theoremstyle{formalized}
+\theoremstyle{numbered}
 \newcounter{theoremcount}
 
-\newtheorem{axiom}[theoremcount]{Axiom}
-\newtheorem{corollary}[theoremcount]{Corollary}
 \newtheorem{definition}[theoremcount]{Definition}
-\newtheorem{fact}[theoremcount]{Fact}
-\newtheorem{lemma}[theoremcount]{Lemma}
-\newtheorem{proposition}[theoremcount]{Proposition}
-\newtheorem{remark}[theoremcount]{Remark}
 \newtheorem{signature}[theoremcount]{Signature}
+\newtheorem{axiom}[theoremcount]{Axiom}
 \newtheorem{theorem}[theoremcount]{Theorem}
+\newtheorem{proposition}[theoremcount]{Proposition}
+\newtheorem{lemma}[theoremcount]{Lemma}
+\newtheorem{corollary}[theoremcount]{Corollary}
 
 \newtheorem*{definition*}{Definition}
 \newtheorem*{signature*}{Signature}
@@ -78,47 +135,235 @@
 \newtheorem*{corollary*}{Corollary}
 
 
+% f-environments
+% --------------
+
+\RequirePackage{keyval}
+\RequirePackage{environ}
+
+\makeatletter
+\define@key{tls}{label}{\def\tls@label{#1}}
+\define@key{tls}{title}{\def\tls@title{#1}}
+
+\NewEnviron{fsignature}[1][]{
+  \setkeys{tls}{label=,title=,#1}
+  \begin{forthel}
+    \ifx\tls@title\@empty\begin{signature}\else\begin{signature}[\tls@title]\fi
+    \ifx\tls@label\@empty{}\else\label{\tls@label}\fi
+      \BODY
+    \end{signature}
+  \end{forthel}
+}
+\NewEnviron{fsignature*}[1][]{
+  \setkeys{tls}{label=,title=,#1}
+  \begin{forthel}
+    \ifx\tls@title\@empty\begin{signature*}\else\begin{signature*}[\tls@title]\fi
+    \ifx\tls@label\@empty{}\else\label{\tls@label}\fi
+      \BODY
+    \end{signature*}
+  \end{forthel}
+}
+\NewEnviron{fdefinition}[1][]{
+  \setkeys{tls}{label=,title=,#1}
+  \begin{forthel}
+    \ifx\tls@title\@empty\begin{definition}\else\begin{definition}[\tls@title]\fi
+    \ifx\tls@label\@empty{}\else\label{\tls@label}\fi
+      \BODY
+    \end{definition}
+  \end{forthel}
+}
+\NewEnviron{fdefinition*}[1][]{
+  \setkeys{tls}{label=,title=,#1}
+  \begin{forthel}
+    \ifx\tls@title\@empty\begin{definition*}\else\begin{definition*}[\tls@title]\fi
+    \ifx\tls@label\@empty{}\else\label{\tls@label}\fi
+      \BODY
+    \end{definition*}
+  \end{forthel}
+}
+\NewEnviron{faxiom}[1][]{
+  \setkeys{tls}{label=,title=,#1}
+  \begin{forthel}
+    \ifx\tls@title\@empty\begin{axiom}\else\begin{axiom}[\tls@title]\fi
+    \ifx\tls@label\@empty{}\else\label{\tls@label}\fi
+      \BODY
+    \end{axiom}
+  \end{forthel}
+}
+\NewEnviron{faxiom*}[1][]{
+  \setkeys{tls}{label=,title=,#1}
+  \begin{forthel}
+    \ifx\tls@title\@empty\begin{axiom*}\else\begin{axiom*}[\tls@title]\fi
+    \ifx\tls@label\@empty{}\else\label{\tls@label}\fi
+      \BODY
+    \end{axiom*}
+  \end{forthel}
+}
+\NewEnviron{ftheorem}[1][]{
+  \setkeys{tls}{label=,title=,#1}
+  \begin{forthel}
+    \ifx\tls@title\@empty\begin{theorem}\else\begin{theorem}[\tls@title]\fi
+    \ifx\tls@label\@empty{}\else\label{\tls@label}\fi
+      \BODY
+    \end{theorem}
+  \end{forthel}
+}
+\NewEnviron{ftheorem*}[1][]{
+  \setkeys{tls}{label=,title=,#1}
+  \begin{forthel}
+    \ifx\tls@title\@empty\begin{theorem*}\else\begin{theorem*}[\tls@title]\fi
+    \ifx\tls@label\@empty{}\else\label{\tls@label}\fi
+      \BODY
+    \end{theorem*}
+  \end{forthel}
+}
+\NewEnviron{fproposition}[1][]{
+  \setkeys{tls}{label=,title=,#1}
+  \begin{forthel}
+    \ifx\tls@title\@empty\begin{proposition}\else\begin{proposition}[\tls@title]\fi
+    \ifx\tls@label\@empty{}\else\label{\tls@label}\fi
+      \BODY
+    \end{proposition}
+  \end{forthel}
+}
+\NewEnviron{fproposition*}[1][]{
+  \setkeys{tls}{label=,title=,#1}
+  \begin{forthel}
+    \ifx\tls@title\@empty\begin{proposition*}\else\begin{proposition*}[\tls@title]\fi
+    \ifx\tls@label\@empty{}\else\label{\tls@label}\fi
+      \BODY
+    \end{proposition*}
+  \end{forthel}
+}
+\NewEnviron{flemma}[1][]{
+  \setkeys{tls}{label=,title=,#1}
+  \begin{forthel}
+    \ifx\tls@title\@empty\begin{lemma}\else\begin{lemma}[\tls@title]\fi
+    \ifx\tls@label\@empty{}\else\label{\tls@label}\fi
+      \BODY
+    \end{lemma}
+  \end{forthel}
+}
+\NewEnviron{flemma*}[1][]{
+  \setkeys{tls}{label=,title=,#1}
+  \begin{forthel}
+    \ifx\tls@title\@empty\begin{lemma*}\else\begin{lemma*}[\tls@title]\fi
+    \ifx\tls@label\@empty{}\else\label{\tls@label}\fi
+      \BODY
+    \end{lemma*}
+  \end{forthel}
+}
+\NewEnviron{fcorollary}[1][]{
+  \setkeys{tls}{label=,title=,#1}
+  \begin{forthel}
+    \ifx\tls@title\@empty\begin{corollary}\else\begin{corollary}[\tls@title]\fi
+    \ifx\tls@label\@empty{}\else\label{\tls@label}\fi
+      \BODY
+    \end{corollary}
+  \end{forthel}
+}
+\NewEnviron{fcorollary*}[1][]{
+  \setkeys{tls}{label=,title=,#1}
+  \begin{forthel}
+    \ifx\tls@title\@empty\begin{corollary*}\else\begin{corollary*}[\tls@title]\fi
+    \ifx\tls@label\@empty{}\else\label{\tls@label}\fi
+      \BODY
+    \end{corollary*}
+  \end{forthel}
+}
+\makeatother
+
+% f-conventions
+% -------------
+
+\newtheorem{convention}[theoremcount]{Convention}
+\newtheorem*{convention*}{Convention}
+
+\NewEnviron{fconvention}{
+  \begin{forthel}
+    \begin{convention}
+      \BODY
+    \end{convention}
+  \end{forthel}
+}
+
+\NewEnviron{fconvention*}{
+  \begin{forthel}
+    \begin{convention*}
+      \BODY
+    \end{convention*}
+  \end{forthel}
+}
+
+
 % ForTheL environment
 % ===================
+
+\RequirePackage{etoolbox}
+\RequirePackage{mdframed}
+\RequirePackage{xcolor}
+\newbool{forthel}
 
 % Space between paragraphs in forthel environments
 \newlength{\ftlparskip}
 \setlength{\ftlparskip}{0.5em}
 
-\RequirePackage{environ}
-
-\RequirePackage[most]{tcolorbox}
-\tcbset{
-  colback=gray!30,
-  colframe=gray!30,
-  arc=0pt,outer arc=0pt
-}
-
-\NewEnviron{forthel}{%
+\newenvironment{forthel}{%
+  \begin{mdframed}[backgroundcolor=gray!20,linecolor=gray!20]%
+  \rmfamily%
   \setbool{forthel}{true}%
   \setlength{\parindent}{0pt}%
   \setlength{\parskip}{\ftlparskip}%
-  \begin{tcolorbox}
-    \BODY
-  \end{tcolorbox}
+}{%
+  \end{mdframed}%
+  \rmfamily%
   \setbool{forthel}{false}%
 }
 
 
+% Hard-coded LaTeX stuff
+% ======================
+
+\newcommand{\dom}{\mathrm{dom}}
+\newcommand{\fun}{\mathrm{\lambda}}
+
+
 % Comprehension terms
-% ===================
+% -------------------
+
+\newcommand{\compterm}[2]{\left\{#1\;\middle\vert\;#2\right\}}
 
 \RequirePackage{linegoal}
-
-\newcommand{\class}[2]{\left\{#1\;\middle\vert\;#2\right\}}
-
 \newcommand{\classtext}[1]{\parbox{\linegoal}{#1}}
 
 
-% More visible line breaks in proofs.
-% ===================================
+% Explicit variables
+% ------------------
 
-\newbool{forthel}
+\newcommand{\variable}[1]{{\itshape#1}}
+\newcommand{\Variable}[1]{\variable{\MakeUppercase#1}}
+
+
+% Printed labels
+% --------------
+
+\RequirePackage[nolabel,inline]{showlabels}
+\showlabels{printlabel}
+\newcommand{\printlabel}[1]{\label{#1}}
+
+
+% Printed references
+% ------------------
+
+\RequirePackage{xurl}
+\newcommand{\printref}[1]{\path{#1}}
+
+
+% Proofs
+% ======
+
+% Standard proofs
+% ---------------
 
 % Set length of \parskip to \ftlparskip in proofs in ForTheL environments.
 %
@@ -129,40 +374,102 @@
   \noindent\textit{Proof\xspace#1. }%
   \relax%
 }
-{%
-  \hfill\qed
+{\hfill\qed}
+
+
+% f-proofs
+% --------
+
+\makeatletter
+\define@key{proof}{method}{\def\proof@method{#1}}
+
+\NewEnviron{fproof}[1][]{
+  \setkeys{proof}{method=,#1}
+  \begin{forthel}
+    \ifx
+      \proof@method\@empty{%
+        \setlength{\parskip}{\ftlparskip}\vspace*{-\parskip}%
+        \noindent\textit{Proof. }%
+      }
+    \else{%
+      \setlength{\parskip}{\ftlparskip}\vspace*{-\parskip}%
+      \noindent\textit{Proof by \proof@method. }%
+    }
+    \fi
+    \BODY
+    \hfill\qed
+  \end{forthel}
 }
+\makeatother
 
 
-% Explicit variables
-% ==================
+% sTeX
+% ====
 
-\newcommand{\variable}[1]{{\itshape#1}}
-\newcommand{\Variable}[1]{\variable{\MakeUppercase#1}}
-
-
-% Predefined symbols
-% ==================
-
-\newcommand{\dom}{\operatorname{dom}}
-\newcommand{\fun}{\mathrm{\lambda}}
-
-
-% Options
-% =======
-
-\DeclareOption{numberswithinsection}{%
-    \counterwithin{theoremcount}{section}
-}
-\DeclareOption{numberswithinsubsection}{%
-    \counterwithin{theoremcount}{subsection}
-}
-\DeclareOption{unmarked}{%
+\makeatletter
+\DeclareVoidOption{stex}{% Don't use blank lines in here!
+\RequirePackage{stex}
+% RusTeX-specific stuff:
+\ifstexhtml
+  % ForTheL environment:
+  \RequirePackage{environ}
+  \RequirePackage[most]{tcolorbox}
+  \tcbset{
+    colback=gray!20,
+    colframe=gray!20,
+    arc=0pt,outer arc=0pt
+  }
   \renewenvironment{forthel}{%
     \setbool{forthel}{true}%
+    \setlength{\parindent}{0pt}%
+    \setlength{\parskip}{\ftlparskip}%
+    \begin{tcolorbox}{}%
   }{%
+    \end{tcolorbox}%
+    \vspace{8pt}%
     \setbool{forthel}{false}%
   }
+  % Proofs:
+  \let\fproof\relax
+  \let\endfproof\relax
+  \define@key{proof}{method}{\def\proof@method{##1}}
+  \NewEnviron{fproof}[1][]{
+    \setkeys{proof}{method=,##1}
+    \begin{forthel}
+      \ifx
+        \proof@method\@empty{%
+          \setlength{\parskip}{\ftlparskip}\vspace*{-\parskip}%
+          \noindent\textit{Proof. }%
+        }
+      \else{%
+        \setlength{\parskip}{\ftlparskip}\vspace*{-\parskip}%
+        \noindent\textit{Proof by \proof@method. }%
+      }
+      \fi
+      \BODY
+      \hfill\ensuremath{\Box}
+    \end{forthel}
+  }
+% Pdflatex-specific stuff:
+\else
+\fi
 }
-\DeclareOption*{\PackageWarning{naproche}{Unknown ‘\CurrentOption’}}
-\ProcessOptions\relax
+\makeatother
+
+
+% Supplementary packages
+% ======================
+
+\DeclareVoidOption{supplements}{
+  \RequirePackage{xurl}
+  \RequirePackage{amsmath}
+  \RequirePackage{hyperref}
+  \RequirePackage{cleveref}
+}
+
+
+% Unknown package option
+% ======================
+
+\DeclareDefaultOption{\PackageWarning{naproche}{Unknown ‘\CurrentOption’}}
+\ProcessKeyvalOptions{naproche}

@@ -1,10 +1,6 @@
 \documentclass{article}
+\usepackage[lang=english,supplements]{naproche}
 
-\usepackage[utf8]{inputenc}
-\usepackage[british]{babel}
-
-\usepackage{meta-inf/lib/naproche-logo}
-\usepackage{meta-inf/lib/naproche}
 \input{foundations/lib/preamble}
 \input{set-theory/lib/preamble}
 
@@ -12,11 +8,14 @@
 \usepackage{csquotes}
 \addbibresource{meta-inf/lib/references.bib}
 
-\usepackage{xr}
-\externaldocument{set-theory/set-theory}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  urlcolor=blue
+}
 
 \newcommand{\surjects}{\twoheadrightarrow}
-\newcommand{\constzero}[1]{\constzero{#1}}
+\newcommand{\constzero}[1]{0^{#1}}
 \newcommand{\cardsucc}[1]{\left(#1\right)^{+}}
 
 \title{Regularity of successor cardinals}
@@ -104,7 +103,7 @@ Adrian De Lon (2021)}
       Take a cofinal subset $x$ of $\cardsucc{\kappa}$ such that $\card{x} \neq \cardsucc{\kappa}$.
       Then $\card{x} \leq \kappa$.
       Take a surjective map $f$ from $\kappa$ onto $x$
-      (by \ref{SET_THEORY_06_192336220913664}).
+      (by \printref{SET_THEORY_06_192336220913664}).
       Indeed $x$ and $\kappa$ are nonempty and $\card{\kappa} = \kappa$.
       Then $f(\xi) \in \cardsucc{\kappa}$ for all $\xi \in \kappa$.
       For all $z \in \cardsucc{\kappa}$ if $z$ has an element then there exists a
@@ -173,7 +172,7 @@ Adrian De Lon (2021)}
       End.
 
       Therefore $\card{\cardsucc{\kappa}} \leq \card{\kappa \times \kappa}$
-      (by \ref{SET_THEORY_06_192336220913664}).
+      (by \printref{SET_THEORY_06_192336220913664}).
       Indeed $\kappa \times \kappa$ and $\cardsucc{\kappa}$ are nonempty sets and $h$
       is a surjective map from $\kappa \times \kappa$ to $\cardsucc{\kappa}$.
       Consequently $\cardsucc{\kappa} \leq \kappa$.
