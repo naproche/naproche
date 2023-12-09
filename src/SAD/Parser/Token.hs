@@ -199,6 +199,20 @@ tokenize Tex startPos = procToken OutsideForthelEnv startPos NoWhiteSpaceBefore
                     ]
                   toks = procToken OutsideForthelEnv newPos WhiteSpaceBefore $ Text.drop (Text.length token_text) remainingText
               in read_instruction ++ toks
+          -- Translate "\usemodule" commands to "readtex" instructions (TODO: Improve this!):
+          | Text.isPrefixOf "usemodule[naproche/examples/" rest ->
+              let (archive_name, rest') = Text.breakOn "]{" $ fromMaybe "" (Text.stripPrefix "usemodule[naproche/examples/" rest)
+                  (module_name, _) = Text.breakOn "}" $ fromMaybe "" (Text.stripPrefix "]{" rest')
+                  token_text = "\\usemodule[naproche/examples/" <> archive_name <> "]{" <> module_name <> "}"
+                  newPos = Position.symbol_explode_string (Text.unpack token_text) currentPos
+                  read_instruction = [
+                      makeToken "[" Position.none WhiteSpaceBefore,
+                      makeToken "readtex" Position.none NoWhiteSpaceBefore,
+                      makeToken (archive_name <> "/source/" <> Text.replace "?" "/" module_name <> ".tex") currentPos WhiteSpaceBefore,
+                      makeToken "]" Position.none NoWhiteSpaceBefore
+                    ]
+                  toks = procToken OutsideForthelEnv newPos WhiteSpaceBefore $ Text.drop (Text.length token_text) remainingText
+              in read_instruction ++ toks
           -- Tokenize the content of a forthel environment:
           | Text.isPrefixOf "begin{forthel}" rest ->
               let newPos = Position.symbol_explode_string "\\begin{forthel}" currentPos
