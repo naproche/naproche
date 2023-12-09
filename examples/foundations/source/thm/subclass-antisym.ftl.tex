@@ -1,19 +1,18 @@
-\documentclass{stex}
+\documentclass{article}
+\usepackage[stex]{naproche}
 \libinput{preamble}
 \begin{document}
 \begin{smodule}{subclass-antisym.ftl}
   \importmodule[naproche/examples/foundations]{mod?subclass.ftl}
 
-  \begin{forthel}
-    \begin{proposition}\printlabel{7159957847801856}
-      Let $A, B$ be classes.
-      If $A \subseteq B$ and $B \subseteq A$ then $A = B$.
-    \end{proposition}
-    \begin{proof}
-      Assume $A \subseteq B$ and $B \subseteq A$.
-      Then every element of $A$ is contained in $B$ and every element of $B$ is contained in $A$.
-      Hence $A = B$.
-    \end{proof}
-  \end{forthel}
+  \begin{fproposition*}[label=7159957847801856]
+    Let $A, B$ be classes.
+    If $A \subseteq B$ and $B \subseteq A$ then $A = B$.
+  \end{fproposition*}
+  \begin{fproof*}
+    Assume $A \subseteq B$ and $B \subseteq A$.
+    Then every element of $A$ is contained in $B$ and every element of $B$ is contained in $A$.
+    Hence $A = B$.
+  \end{fproof*}
 \end{smodule}
 \end{document}

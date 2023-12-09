@@ -1,20 +1,19 @@
-\documentclass{stex}
+\documentclass{article}
+\usepackage[stex]{naproche}
 \libinput{preamble}
 \begin{document}
 \begin{smodule}{subclass-trans.ftl}
   \importmodule[naproche/examples/foundations]{mod?subclass.ftl}
 
-  \begin{forthel}
-    \begin{proposition}\printlabel{3939677545431040}
-      Let $A, B, C$ be classes.
-      If $A \subseteq B$ and $B \subseteq C$ then $A \subseteq C$.
-    \end{proposition}
-    \begin{proof}
-      Assume $A \subseteq B$ and $B \subseteq C$.
-      Then every element of $A$ is contained in $B$ and every element of $B$ is contained in $C$.
-      Hence every element of $A$ is contained in $C$.
-      Thus $A \subseteq C$.
-    \end{proof}
-  \end{forthel}
+  \begin{fproposition*}[label=3939677545431040]
+    Let $A, B, C$ be classes.
+    If $A \subseteq B$ and $B \subseteq C$ then $A \subseteq C$.
+  \end{fproposition*}
+  \begin{fproof*}
+    Assume $A \subseteq B$ and $B \subseteq C$.
+    Then every element of $A$ is contained in $B$ and every element of $B$ is contained in $C$.
+    Hence every element of $A$ is contained in $C$.
+    Thus $A \subseteq C$.
+  \end{fproof*}
 \end{smodule}
 \end{document}

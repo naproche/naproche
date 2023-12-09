@@ -1,4 +1,5 @@
-\documentclass{stex}
+\documentclass{article}
+\usepackage[stex]{naproche}
 \libinput{preamble}
 \begin{document}
 \begin{smodule}{disjoint-classes.ftl}
@@ -6,11 +7,9 @@
   \importmodule[naproche/examples/preliminaries]{axioms.ftl}
   \importmodule[naproche/examples/preliminaries]{macros.ftl}
 
-  \begin{forthel}
-    \begin{definition}\printlabel{4981913324355584}
-      Let $A, B$ be classes.
-      $A$ and $B$ are disjoint iff $A$ and $B$ have no common elements.
-    \end{definition}
-  \end{forthel}
+  \begin{fdefinition*}[label=4981913324355584]
+    Let $A, B$ be classes.
+    $A$ and $B$ are disjoint iff $A$ and $B$ have no common elements.
+  \end{fdefinition*}
 \end{smodule}
 \end{document}

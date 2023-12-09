@@ -1,18 +1,17 @@
-\documentclass{stex}
+\documentclass{article}
+\usepackage[stex]{naproche}
 \libinput{preamble}
 \begin{document}
 \begin{smodule}{subclass-refl.ftl}
   \importmodule[naproche/examples/foundations]{mod?subclass.ftl}
 
-  \begin{forthel}
-    \begin{proposition}\printlabel{5994555614691328}
-      Let $A$ be a class.
-      $A \subseteq A$.
-    \end{proposition}
-    \begin{proof}
-      Every element of $A$ is contained in $A$.
-      Therefore $A \subseteq A$.
-    \end{proof}
-  \end{forthel}
+  \begin{proposition}[label=5994555614691328]
+    Let $A$ be a class.
+    $A \subseteq A$.
+  \end{proposition}
+  \begin{fproof*}
+    Every element of $A$ is contained in $A$.
+    Therefore $A \subseteq A$.
+  \end{fproof*}
 \end{smodule}
 \end{document}

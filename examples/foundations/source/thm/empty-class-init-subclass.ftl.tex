@@ -1,19 +1,18 @@
-\documentclass{stex}
+\documentclass{article}
+\usepackage[stex]{naproche}
 \libinput{preamble}
 \begin{document}
 \begin{smodule}{empty-class-init-subclass.ftl}
   \importmodule[naproche/examples/foundations]{mod?subclass.ftl}
   \importmodule[naproche/examples/foundations]{mod?empty-class.ftl}
 
-  \begin{forthel}
-    \begin{proposition}\printlabel{6931785090859008}
-      Let $A$ be a class.
-      $\emptyset \subseteq A$.
-    \end{proposition}
-    \begin{proof}
-      $\emptyset$ has no elements.
-      Hence every element of $\emptyset$ is contained in $A$.
-    \end{proof}
-  \end{forthel}
+  \begin{fproposition*}[label=6931785090859008]
+    Let $A$ be a class.
+    $\emptyset \subseteq A$.
+  \end{fproposition*}
+  \begin{fproof*}
+    $\emptyset$ has no elements.
+    Hence every element of $\emptyset$ is contained in $A$.
+  \end{fproof*}
 \end{smodule}
 \end{document}

@@ -1,4 +1,5 @@
-\documentclass{stex}
+\documentclass{article}
+\usepackage[stex]{naproche}
 \libinput{preamble}
 \begin{document}
 \begin{smodule}{disjoint-iff-empty-intersection.ftl}
@@ -7,11 +8,9 @@
   \importmodule[naproche/examples/foundations]{mod?intersection.ftl}
   \importmodule[naproche/examples/foundations]{mod?disjoint-classes.ftl}
 
-  \begin{forthel}
-    \begin{proposition}\printlabel{1211191546347520}
-      Let $A, B$ be classes.
-      $A$ and $B$ are disjoint iff $A \cap B$ is empty.
-    \end{proposition}
-  \end{forthel}
+  \begin{fproposition*}[label=1211191546347520]
+    Let $A, B$ be classes.
+    $A$ and $B$ are disjoint iff $A \cap B$ is empty.
+  \end{fproposition*]
 \end{smodule}
 \end{document}

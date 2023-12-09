@@ -1,30 +1,27 @@
-\documentclass{stex}
+\documentclass{article}
+\usepackage[stex]{naproche}
 \libinput{preamble}
 \begin{document}
 \begin{smodule}{empty-iff-empty-class.ftl}
   \importmodule[naproche/examples/foundations]{mod?subclass.ftl}
   \importmodule[naproche/examples/foundations]{mod?empty-class.ftl}
 
-  \begin{forthel}
-    \begin{proposition}\printlabel{2263153161273344}
-      Let $A$ be a class.
-      $A$ is empty iff $A = \emptyset$.
-    \end{proposition}
-    \begin{proof}
-      We can show that $\emptyset$ is empty.
-      Indeed any element $x$ of $\emptyset$ is nonequal to $x$.
-      Hence if $A = \emptyset$ then $A$ is empty.
-      If $A$ is empty then $A$ and $\emptyset$ have no elements.
-      Hence if $A$ is empty then $A \subseteq \emptyset$ and
-      $\emptyset \subseteq A$.
-      Thus if $A$ is empty then $A = \emptyset$.
-    \end{proof}
-  \end{forthel}
+  \begin{fproposition*}[label=2263153161273344]
+    Let $A$ be a class.
+    $A$ is empty iff $A = \emptyset$.
+  \end{fproposition*}
+  \begin{fproof*}
+    We can show that $\emptyset$ is empty.
+    Indeed any element $x$ of $\emptyset$ is nonequal to $x$.
+    Hence if $A = \emptyset$ then $A$ is empty.
+    If $A$ is empty then $A$ and $\emptyset$ have no elements.
+    Hence if $A$ is empty then $A \subseteq \emptyset$ and
+    $\emptyset \subseteq A$.
+    Thus if $A$ is empty then $A = \emptyset$.
+  \end{fproof*}
 
-  \begin{forthel}
-    \begin{corollary}\printlabel{1495141426659328}
-      $\emptyset$ is empty.
-    \end{corollary}
-  \end{forthel}
+  \begin{fcorollary*}[label=1495141426659328]
+    $\emptyset$ is empty.
+  \end{fcorollary*}
 \end{smodule}
 \end{document}
