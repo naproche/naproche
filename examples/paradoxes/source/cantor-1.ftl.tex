@@ -1,46 +1,19 @@
 \documentclass{stex}
 \libinput{preamble}
+
 \usepackage{xr}
 \externaldocument{burali-forti.ftl}
-\begin{document}
+
 \title{Cantor's First Paradox in \Naproche}
 \author{Marcel Schütz}
 \date{2023}
+
+\begin{document}
 \maketitle
-\begin{smodule}{cantor-1.ftl}
-  \importmodule[naproche/examples/paradoxes]{burali-forti.ftl}
 
-  \noindent \emph{Cantor's First Paradox}, discovered by Georg Cantor in 1897, states that there cannot exists a set that contains all cardinal numbers \cite[chapter 156]{Cantor1991}.
+\noindent \emph{Cantor's First Paradox}, discovered by Georg Cantor in 1897, states that there cannot exists a set that contains all cardinal numbers \cite[chapter 156]{Cantor1991}.
 
-  \begin{forthel}
-    %[prove off][check off]
-    [readtex \path{set-theory/sections/06_cardinals.ftl.tex}]
-    %[prove on][check on]
-  \end{forthel}
+\inputref[naproche/examples/set-theory]{thm/cantor-paradox-1.ftl.tex}
 
-  \begin{forthel}
-    \begin{theorem*}[Cantor's First Paradox]\label{cantor_paradox_1}
-      There exists no set that contains all cardinals.
-    \end{theorem*}
-    \begin{proof}
-      Assume the contrary.
-      Consider a set $X$ that contains all cardinals.
-      Define $C = \class{\kappa \in X}{\text{$\kappa$ is a cardinal}}$.
-      Define $O = \class{\alpha}{\text{$\alpha$ is an ordinal}}$.
-
-      Let us show that $O \subseteq \bigcup C$.
-        Let $\alpha \in O$.
-        Choose a cardinal $\kappa$ greater than $\alpha$.
-        Then $\alpha \in \kappa \in C$.
-        Thus $\alpha \in \bigcup C$.
-      End.
-
-      $\bigcup C$ is a set.
-      Hence $O$ is a set.
-      Contradiction (by \nameref{burali_forti_paradox}).
-      Indeed $O$ contains every ordinal.
-    \end{proof}
-  \end{forthel}
-\end{smodule}
 \printbibliography
 \end{document}

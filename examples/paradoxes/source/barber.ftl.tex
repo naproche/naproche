@@ -1,31 +1,32 @@
 \documentclass{stex}
+
 \libinput{preamble}
-\begin{document}
+
 \title{The Barber Paradox in \Naproche}
 \author{Marcel Schütz}
 \date{2023}
+
+\begin{document}
 \maketitle
-\begin{smodule}{barber.ftl}
-  \importmodule[naproche/examples/preliminaries]{everyday-ontology.ftl}
 
-  \noindent The \emph{Barber Paradox} is a puzzle illustrating Russell's Paradox, formulated by Bertrand Russell in 1919 \cite[p. 355]{Russell1919}:
+\usemodule[naproche/examples/preliminaries]{everyday-ontology.ftl}
 
-  \begin{quotation}
-    \noindent You can define the barber as “one who shaves all those, and those only, who do not shave themselves”.
-    The question is, does the barber shave himself?
-  \end{quotation}
+\noindent The \emph{Barber Paradox} is a puzzle illustrating Russell's Paradox, formulated by Bertrand Russell in 1919 \cite[p. 355]{Russell1919}:
 
-  \noindent In \Naproche we can formalize this paradox as follows.
+\begin{quotation}
+  \noindent You can define the barber as “one who shaves all those, and those only, who do not shave themselves”.
+  The question is, does the barber shave himself?
+\end{quotation}
 
-  \begin{forthel}
-    \begin{signature*}
-      The barber is a man such that for any man $M$ the barber shaves $M$ iff $M$ does not shave himself.
-    \end{signature*}
+\noindent In \Naproche we can formalize this paradox as follows.
 
-    \begin{theorem*}[Barber Paradox]\label{barber_paradox}
-      The barber shaves himself iff the barber does not shave himself.
-    \end{theorem*}
-  \end{forthel}
-\end{smodule}
+\begin{fsignature*}
+  The barber is a man such that for any man $M$ the barber shaves $M$ iff $M$ does not shave himself.
+\end{fsignature*}
+
+\begin{ftheorem*}[label=barber_paradox,title=Barber Paradox]
+  The barber shaves himself iff the barber does not shave himself.
+\end{ftheorem*}
+
 \printbibliography
 \end{document}

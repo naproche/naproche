@@ -1,30 +1,19 @@
 \documentclass{stex}
 \libinput{preamble}
-\begin{document}
+
 \title{Russell's Paradox in \Naproche}
 \author{Marcel Schütz}
 \date{2023}
+
+\begin{document}
 \maketitle
-\begin{smodule}{russell.ftl}
-  \importmodule[naproche/examples/preliminaries]{everyday-ontology.ftl}
 
-  \vardef{phivar}[args=1]{\maincomp{\varphi}\dobrackets{#1}}
-  \vardef{xvar}{x}
+\vardef{phivar}[args=1]{\maincomp{\varphi}\dobrackets{#1}}
+\vardef{xvar}{x}
 
-  \noindent \emph{Russell's Paradox} is a set-theoretical paradox discovered by Bertrand Russell around 1902 \cite[chapter XV]{Frege1980} which shows that there exist statements $\phivar!$ whose extension $\class{\xvar}{\phivar{\xvar}}$ cannot constitute a set – or in other words: Not every class is a set.
+\noindent \emph{Russell's Paradox} is a set-theoretical paradox discovered by Bertrand Russell around 1902 \cite[chapter XV]{Frege1980} which shows that there exist statements $\phivar!$ whose extension $\compterm{\xvar}{\phivar{\xvar}}$ cannot constitute a set – or in other words: Not every class is a set.
 
-  \begin{forthel}
-    \begin{theorem*}[Russell's Paradox]\label{russell_paradox}
-      It is wrong that every class is a set.
-    \end{theorem*}
-    \begin{proof}
-      Assume the contrary.
-      Define \[R = \class{x}{\text{$x$ is a set such that $x \notin x$}}.\]
-      Then $R$ is a set.
-      Hence $R \in R$ iff $R \notin R$.
-      Contradiction.
-    \end{proof}
-  \end{forthel}
-\end{smodule}
+\inputref[naproche/examples/set-theory]{thm/russell-paradox.ftl.tex}
+
 \printbibliography
 \end{document}

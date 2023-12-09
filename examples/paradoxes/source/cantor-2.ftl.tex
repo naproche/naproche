@@ -2,37 +2,21 @@
 \libinput{preamble}
 \libinput[naproche/examples/foundations]{preamble}
 \libinput[naproche/examples/set-theory]{preamble}
+
 \usepackage{xr}
 \externaldocument{../../set-theory/set-theory}
-\begin{document}
+
 \title{Cantor's Second Paradox in \Naproche}
 \author{Marcel Schütz}
 \date{2023}
+
+\begin{document}
 \maketitle
-\begin{smodule}{cantor-2.ftl}
-  \noindent \emph{Cantor's Second Paradox} denotes the observation that the collection of all set cannot be a set itself.
-  It was shown by Georg Cantor in 1899 via his famous theorem stating that the cardinality of any set is strictly smaller than the cardinality of its powerset \cite[chapter 163]{Cantor1991}.
 
-  \begin{forthel}
-    %[prove off][check off]
-    [readtex \path{set-theory/sections/06_cardinals.ftl.tex}]
-    %[prove on][check on]
-  \end{forthel}
+\noindent \emph{Cantor's Second Paradox} denotes the observation that the collection of all set cannot be a set itself.
+It was shown by Georg Cantor in 1899 via his famous theorem stating that the cardinality of any set is strictly smaller than the cardinality of its powerset \cite[chapter 163]{Cantor1991}.
 
-  \begin{forthel}
-    \begin{theorem*}[Cantor's Second Paradox]\label{cantor_paradox_2}
-      There exists no set that contains all sets.
-    \end{theorem*}
-    \begin{proof}
-      Assume the contrary.
-      Consider a set $V$ that contains all sets.
-      Then $\pow{V}$ is a set.
-      Hence $\pow{V}$ is a subset of $V$.
-      Thus $\card{\pow{V}} \leq \card{V}$.
-      Contradiction.
-      Indeed $\card{x} \less \card{\pow{x}}$ for any set $x$ (by \nameref{SET_THEORY_06_914271456198656}).
-    \end{proof}
-  \end{forthel}
-\end{smodule}
+\inputref[naproche/examples/set-theory]{thm/cantor-paradox-2.ftl.tex}
+
 \printbibliography
 \end{document}
