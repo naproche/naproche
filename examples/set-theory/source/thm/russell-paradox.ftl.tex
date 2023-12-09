@@ -1,0 +1,18 @@
+\documentclass{article}
+\usepackage[lang=english,stex]{naproche}
+\usepackage{amstext}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{russell-paradox.ftl}
+  \begin{ftheorem*}[label=russell_paradox,title=Russell's Paradox]
+    It is wrong that every class is a set.
+  \end{ftheorem*}
+  \begin{fproof}
+    Assume the contrary.
+    Define \[R = \compterm{x}{\text{$x$ is a set such that $x \notin x$}}.\]
+    Then $R$ is a set.
+    Hence $R \in R$ iff $R \notin R$.
+    Contradiction.
+  \end{fproof}
+\end{smodule}
+\end{document}
