@@ -376,6 +376,7 @@ optLink = optLL1 [] $ parenthesised $ token' "by" >> identifiers
           texCommandWithArg "ref" identifier
       <|> texCommandWithArg "nameref" identifier
       <|> texCommandWithArg "cref" identifier
+      <|> texCommandWithArg "printref" identifier
       <|> identifier
 
 
