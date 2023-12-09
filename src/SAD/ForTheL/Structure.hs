@@ -101,26 +101,25 @@ beginFTopLevelSection keywords = do
   -- Optional name and/or title:
   label <- optLL1 Nothing $ do
     symbol "[" <?> "["
-    -- Name (optional):
-    name <- optLL1 Nothing $ do
+    -- Label (optional):
+    label' <- optLL1 Nothing $ do
       token "label" <?> "label"
       symbol "=" <?> "="
       Just <$> identifier
     -- Title (optional):
     optLL1 () $ do
-      case name of
+      case label' of
         Nothing -> token "title" <?> "title"
         Just _ -> (symbol "," <?> ",") >> (token "title" <?> "title")
       symbol "=" <?> "="
-      symbol "{" <?> "{"
-      optLL1 [] $ chainLL1 notClosingBrace
-      symbol "}" <?> "}"
+      optLL1 [] $ chainLL1 notDelimiter
+      return ()
     symbol "]" <?> "]"
-    return name
+    return label'
   return (key,label)
   where
-    notClosingBrace = tokenPrim notCl
-    notCl t = let tk = showToken t in guard (tk /= "}") >> return tk
+    notDelimiter = tokenPrim notCl
+    notCl t = let tk = showToken t in guard (tk /= "]" && tk /= ",") >> return tk
 
 endFTopLevelSection :: Text -> FTL ()
 endFTopLevelSection keyword = do
