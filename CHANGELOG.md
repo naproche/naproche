@@ -108,8 +108,8 @@ dialect of ForTheL, respectively.
     - `\apply{f}{x}` for `f(x)`
     - `\domain{f}` for `dom(f)`
     - `\tuple{x,y}` for `(x,y)`
-    - `\class{x}{φ}` for `{x | φ}`
-    - `\class{x \in X}{φ}` for `{x ∈ X | φ}`
+    - `\compterm{x}{φ}` for `{x | φ}`
+    - `\compterm{x \in X}{φ}` for `{x ∈ X | φ}`
 
     Appropriate LaTeX macros are provided by
     `[naproche/examples/preliminaries]macros.ftl`.
