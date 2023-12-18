@@ -1,0 +1,31 @@
+\documentclass{article}
+\usepackage[stex]{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[creators={Marcel Schütz}]{intersection-is-associative.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?intersection.ftl}
+  \importmodule[naproche/examples/foundations]{thm?subclass-antisym.ftl}
+
+  \begin{fproposition*}[label=3587256308727808]
+    Let $A, B, C$ be classes.
+    Then $(A \intersection B) \intersection C = A \intersection (B \intersection C)$.
+  \end{fproposition*}
+  \begin{fproof}
+    Let us show that $((A \intersection B) \intersection C) \subclass[eq] A \intersection (B \intersection C)$. %!
+      Let $x \in (A \intersection B) \intersection C$.
+      Then $x \in A \intersection B$ and $x \in C$.
+      Hence $x \in A$ and $x \in B$ and $x \in C$.
+      Thus $x \in A$ and $x \in (B \intersection C)$.
+      Therefore$ x \in A \intersection (B \intersection C)$.
+    End.
+
+    Let us show that $A \intersection (B \intersection C) \subclass[eq] (A \intersection B) \intersection C$.
+      Let $x \in A \intersection (B \intersection C)$.
+      Then $x \in A$ and $x \in B \intersection C$.
+      Hence $x \in A$ and $x \in B$ and $x \in C$.
+      Thus $x \in A \intersection B$ and $x \in C$.
+      Therefore $x \in (A \intersection B) \intersection C$.
+    End.
+  \end{fproof}
+\end{smodule}
+\end{document}

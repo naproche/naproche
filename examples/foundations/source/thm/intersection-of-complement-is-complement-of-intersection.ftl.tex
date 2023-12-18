@@ -1,0 +1,36 @@
+\documentclass{article}
+\usepackage[stex]{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[creators={Marcel Schütz}]{intersection-of-complement-is-complement-of-intersection.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?complement.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?intersection.ftl}
+  \importmodule[naproche/examples/foundations]{thm?subclass-antisym.ftl}
+
+  \begin{fproposition*}[label=5672367154003968]
+    Let $A, B, C$ be classes.
+    Then $A \intersection (B \complement C) = (A \intersection B) \complement (A \intersection C)$.
+  \end{fproposition*}
+  \begin{proof}
+    Let us show that $A \intersection (B \complement C) \subclass[eq]
+    (A \intersection B) \complement (A \intersection C)$.
+      Let $x \in A \intersection (B \complement C)$.
+      Then $x \in A$ and $x \in B \complement C$.
+      Hence $x \in A$ and $x \in B$.
+      Thus $x \in A \intersection B$ and $x \notin C$.
+      Therefore $x \notin A \intersection C$.
+      Then we have $x \in (A \intersection B) \complement (A \intersection C)$.
+    End.
+
+    Let us show that $((A \intersection B) \complement (A \intersection C)) \subclass[eq]
+    A \intersection (B \complement C)$. %!
+      Let $x \in (A \intersection B) \complement (A \intersection C)$.
+      Then $x \in A$ and $x \in B$.
+      $x \notin A \intersection C$.
+      Hence $x \notin C$.
+      Thus $x \in B \complement C$.
+      Therefore $x \in A \intersection (B \complement C)$.
+    End.
+  \end{proof}
+\end{smodule}
+\end{document}

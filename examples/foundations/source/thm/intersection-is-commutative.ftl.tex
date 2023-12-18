@@ -1,0 +1,29 @@
+\documentclass{article}
+\usepackage[stex]{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[creators={Marcel Schütz}]{intersection-is-commutative.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?intersection.ftl}
+  \importmodule[naproche/examples/foundations]{thm?subclass-antisym.ftl}
+
+  \begin{fproposition*}[label=8211920689561600]
+    Let $A, B$ be classes.
+    Then $A \intersection B = B \intersection A$.
+  \end{fproposition*}
+  \begin{fproof}
+    Let us show that $A \intersection B \subclass[eq] B \intersection A$.
+      Let $x \in A \intersection B$.
+      Then $x \in A$ and $x \in B$.
+      Hence $x \in B$ and $x \in A$.
+      Thus $x \in B \intersection A$.
+    End.
+
+    Let us show that $B \intersection A \subclass[eq] A \intersection B$.
+      Let $x \in B \intersection A$.
+      Then $x \in B$ and $x \in A$.
+      Hence $x \in A$ and $x \in B$.
+      Thus $x \in A \intersection B$.
+    End.
+  \end{fproof}
+\end{smodule}
+\end{document}

@@ -1,0 +1,19 @@
+\documentclass{article}
+\usepackage[stex]{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[creators={Marcel Schütz}]{union-extends-class-02.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?union.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?subclass.ftl}
+
+  \begin{fproposition*}[label=8894188219269120]
+    Let $A, B$ be classes.
+    Then $A \subclass[eq] B \union A$.
+  \end{fproposition*}
+  \begin{fproof}
+    Let $x \in A$.
+    Then $x \in B$ or $x \in A$.
+    Hence $x \in B \union A$.
+  \end{fproof}
+\end{smodule}
+\end{document}

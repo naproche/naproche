@@ -1,0 +1,24 @@
+\documentclass{article}
+\usepackage[stex]{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[creators={Marcel Schütz}]{subclass-equivalence-03.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?complement.ftl}
+  \importmodule[naproche/examples/foundations]{thm?subclass-antisym.ftl}
+
+  \begin{fproposition*}[label=1566063126904832]
+    Let $A, B$ be classes.
+    Then $B \subclass[eq] A \iff A \complement (A \complement B) = B$.
+  \end{fproposition*}
+  \begin{fproof}
+    Case $B \subclass[eq] A$. Obvious.
+
+    Case $A \complement (A \complement B) = B$.
+      Then every element of $B$ is an element of $A \complement
+      (A \complement B)$.
+      Thus every element of $B$ is an element of $A$.
+      Then we have the thesis.
+    End.
+  \end{fproof}
+\end{smodule}
+\end{document}

@@ -1,0 +1,31 @@
+\documentclass{article}
+\usepackage[stex]{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[creators={Marcel Schütz}]{union-is-associative.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?union.ftl}
+  \importmodule[naproche/examples/foundations]{thm?subclass-antisym.ftl}
+
+  \begin{fproposition*}[label=5573070641168384]
+    Let $A, B, C$ be classes.
+    Then $(A \union B) \union C = A \union (B \union C)$.
+  \end{fproposition*}
+  \begin{fproof}
+    Let us show that $((A \union B) \union C) \subseteq A \union (B \union C)$. %!
+      Let $x \in (A \union B) \union C$.
+      Then $x \in A \union B$ or $x \in C$.
+      Hence $x \in A$ or $x \in B$ or $x \in C$.
+      Thus $x \in A$ or $x \in (B \union C)$.
+      Therefore $x \in A \union (B \union C)$.
+    End.
+
+    Let us show that $A \union (B \union C) \subseteq (A \union B) \union C$.
+      Let $x \in A \union (B \union C)$.
+      Then $x \in A$ or $x \in B \union C$.
+      Hence $x \in A$ or $x \in B$ or $x \in C$.
+      Thus $x \in A \union B$ or $x \in C$.
+      Therefore $x \in (A \union B) \union C$.
+    End.
+  \end{fproof}
+\end{smodule}
+\end{document}

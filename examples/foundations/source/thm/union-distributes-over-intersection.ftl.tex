@@ -1,0 +1,34 @@
+\documentclass{article}
+\usepackage[stex]{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[creators={Marcel Schütz}]{union-distributes-over-intersection.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?intersection.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?union.ftl}
+  \importmodule[naproche/examples/foundations]{thm?subclass-antisym.ftl}
+
+  \begin{fproposition*}[label=5609225394847744]
+    Let $A, B, C$ be classes.
+    Then $A \union (B \intersection C) = (A \union B) \intersection (A \union C)$.
+  \end{fproposition*}
+  \begin{fproof}
+    Let us show that $A \union (B \intersection C) \subclass[eq] (A \union B) \intersection (A \union C)$.
+      Let $x \in A \union (B \intersection C)$.
+      Then $x \in A$ or $x \in B \intersection C$.
+      Hence $x \in A$ or ($x \in B$ and $x \in C$).
+      Thus ($x \in A$ or $x \in B$) and ($x \in$ A or $x \in C$).
+      Therefore $x \in A \union B$ and $x \in A \union C$.
+      Hence $x \in (A \union B) \intersection (A \union C)$.
+    End.
+
+    Let us show that $((A \union B) \intersection (A \union C)) \subclass[eq] A \union (B \intersection C)$. %!
+      Let $x \in (A \union B) \intersection (A \union C)$.
+      Then $x \in A \union B$ and $x \in A \union C$.
+      Hence ($x \in A$ or $x \in B$) and ($x \in A$ or $x \in C$).
+      Thus $x \in A$ or ($x \in B$ and $x \in C$).
+      Therefore $x \in A$ or $x \in B \intersection C$.
+      Hence $x \in A \union (B \intersection C)$.
+    End.
+  \end{fproof}
+\end{smodule}
+\end{document}

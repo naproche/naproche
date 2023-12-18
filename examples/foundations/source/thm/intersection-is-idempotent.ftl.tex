@@ -1,0 +1,18 @@
+\documentclass{article}
+\usepackage[stex]{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[creators={Marcel Schütz}]{intersection-is-idempotent.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?intersection.ftl}
+
+  \begin{fproposition*}[label=5333724497444864]
+    Let $A$ be a class.
+    Then $A \intersection A = A$.
+  \end{fproposition*}
+  \begin{fproof}
+    $A \intersection A = \compterm{x}{\text{$x \in A$ and $x \in A$}}$.
+    Hence $A \intersection A = \compterm{x}{x \in A}$.
+    Thus $A \intersection A = A$.
+  \end{fproof}
+\end{smodule}
+\end{document}
