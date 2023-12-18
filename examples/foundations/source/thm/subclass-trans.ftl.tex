@@ -2,18 +2,18 @@
 \usepackage[stex]{naproche}
 \libinput{preamble}
 \begin{document}
-\begin{smodule}{subclass-trans.ftl}
-  \importmodule[naproche/examples/foundations]{mod?subclass.ftl}
+\begin{smodule}[creators={Marcel Schütz}]{subclass-trans.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?subclass.ftl}
 
   \begin{fproposition*}[label=3939677545431040]
     Let $A, B, C$ be classes.
-    If $A \subseteq B$ and $B \subseteq C$ then $A \subseteq C$.
+    If $A \subclass[eq] B$ and $B \subclass[eq] C$ then $A \subclass[eq] C$.
   \end{fproposition*}
-  \begin{fproof*}
-    Assume $A \subseteq B$ and $B \subseteq C$.
+  \begin{fproof}
+    Assume $A \subclass[eq] B$ and $B \subclass[eq] C$.
     Then every element of $A$ is contained in $B$ and every element of $B$ is contained in $C$.
     Hence every element of $A$ is contained in $C$.
-    Thus $A \subseteq C$.
-  \end{fproof*}
+    Thus $A \subclass[eq] C$.
+  \end{fproof}
 \end{smodule}
 \end{document}

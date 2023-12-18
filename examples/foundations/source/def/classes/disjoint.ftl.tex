@@ -2,19 +2,18 @@
 \usepackage[stex]{naproche}
 \libinput{preamble}
 \begin{document}
-\begin{smodule}{complement.ftl}
+\begin{smodule}[creators={Marcel Schütz}]{disjoint.ftl}
   \importmodule[naproche/examples/preliminaries]{vocabulary.ftl}
   \importmodule[naproche/examples/preliminaries]{axioms.ftl}
   \importmodule[naproche/examples/preliminaries]{macros.ftl}
 
-  \begin{fdefinition*}[label=7620345041256448]
+  \begin{fdefinition*}[label=4981913324355584]
     Let $A, B$ be classes.
-    The complement of $B$ in $A$ is
-    \[\compterm{x}{\text{$x \in A$ and $x \notin B$}}.\]
+    $A$ and $B$ are disjoint iff $A$ and $B$ have no common elements.
   \end{fdefinition*}
 
   \begin{fconvention*}
-    Let $A \setminus B$ stand for the complement of $B$ in $A$.
+    Let $A$ is disjoint from $B$ stand for $A$ and $B$ are disjoint.
   \end{fconvention*}
 \end{smodule}
 \end{document}

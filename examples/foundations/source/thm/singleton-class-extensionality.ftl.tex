@@ -2,12 +2,12 @@
 \usepackage[stex]{naproche}
 \libinput{preamble}
 \begin{document}
-\begin{smodule}{singleton-class-extensionality.ftl}
-  \importmodule[naproche/examples/foundations]{mod?singleton-class.ftl}
+\begin{smodule}[creators={Marcel Schütz}]{singleton-class-extensionality.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?singleton-class.ftl}
 
   \begin{fproposition*}[label=6954678910713856]
     Let $a, a'$ be objects.
-    If $\set{a} = \set{a'}$ then $a = a'$.
+    If $\singleton{a} = \singleton{a'}$ then $a = a'$.
   \end{fproposition*}
 \end{smodule}
 \end{document}

@@ -2,19 +2,18 @@
 \usepackage[stex]{naproche}
 \libinput{preamble}
 \begin{document}
-\begin{smodule}{intersection.ftl}
+\begin{smodule}[creators={Marcel Schütz}]{empty.ftl}
   \importmodule[naproche/examples/preliminaries]{vocabulary.ftl}
   \importmodule[naproche/examples/preliminaries]{axioms.ftl}
   \importmodule[naproche/examples/preliminaries]{macros.ftl}
 
-  \begin{fdefinition*}[label=5744033011859456]
-    Let $A, B$ be classes.
-    The intersection of $A$ and $B$ is
-    \[\compterm{x}{\text{$x \in A$ and $x \in B$}}.\]
+  \begin{fdefinition*}[label=6252477624090624]
+    Let $A$ be a class.
+    $A$ is empty iff $A$ has no elements.
   \end{fdefinition*}
 
   \begin{fconvention*}
-    Let $A \cap B$ stand for the intersection of $A$ and $B$.
+    Let $A$ is nonempty stand for $A$ is not empty.
   \end{fconvention*}
 \end{smodule}
 \end{document}

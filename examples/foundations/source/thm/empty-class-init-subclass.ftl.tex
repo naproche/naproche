@@ -2,17 +2,17 @@
 \usepackage[stex]{naproche}
 \libinput{preamble}
 \begin{document}
-\begin{smodule}{empty-class-init-subclass.ftl}
-  \importmodule[naproche/examples/foundations]{mod?subclass.ftl}
-  \importmodule[naproche/examples/foundations]{mod?empty-class.ftl}
+\begin{smodule}[creators={Marcel Schütz}]{empty-class-init-subclass.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?subclass.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?empty-class.ftl}
 
   \begin{fproposition*}[label=6931785090859008]
     Let $A$ be a class.
-    $\emptyset \subseteq A$.
+    $\emptyclass \subclass[eq] A$.
   \end{fproposition*}
-  \begin{fproof*}
-    $\emptyset$ has no elements.
-    Hence every element of $\emptyset$ is contained in $A$.
-  \end{fproof*}
+  \begin{fproof}
+    $\emptyclass$ has no elements.
+    Hence every element of $\emptyclass$ is contained in $A$.
+  \end{fproof}
 \end{smodule}
 \end{document}

@@ -1,0 +1,22 @@
+\documentclass{article}
+\usepackage[stex]{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[creators={Marcel Schütz}]{union.ftl}
+  \importmodule[naproche/examples/preliminaries]{vocabulary.ftl}
+  \importmodule[naproche/examples/preliminaries]{axioms.ftl}
+  \importmodule[naproche/examples/preliminaries]{macros.ftl}
+
+  \symdef{union}{\cup}
+
+  \begin{definition}[label=2159753924968448]
+    Let $A, B$ be classes.
+    The union of $A$ and $B$ is
+    \[\compterm{x}{\text{$x \in A$ or $x \in B$}}.\]
+  \end{definition}
+
+  \begin{fconvention*}
+    Let $A \union B$ stand for the union of $A$ and $B$.
+  \end{fconvention*}
+\end{smodule}
+\end{document}

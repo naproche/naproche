@@ -2,16 +2,16 @@
 \usepackage[stex]{naproche}
 \libinput{preamble}
 \begin{document}
-\begin{smodule}{subclass-refl.ftl}
-  \importmodule[naproche/examples/foundations]{mod?subclass.ftl}
+\begin{smodule}[creators={Marcel Schütz}]{subclass-refl.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?subclass.ftl}
 
-  \begin{proposition}[label=5994555614691328]
+  \begin{fproposition*}[label=5994555614691328]
     Let $A$ be a class.
-    $A \subseteq A$.
-  \end{proposition}
-  \begin{fproof*}
+    $A \subclass[eq] A$.
+  \end{fproposition*}
+  \begin{fproof}
     Every element of $A$ is contained in $A$.
-    Therefore $A \subseteq A$.
-  \end{fproof*}
+    Therefore $A \subclass[eq] A$.
+  \end{fproof}
 \end{smodule}
 \end{document}
