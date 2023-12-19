@@ -1,14 +1,12 @@
 \documentclass{stex}
-\libinput{preamble}
+\usepackage{naproche}
 \begin{document}
 \begin{smodule}{class-extensionality.ftl}
-  \begin{forthel}
-    \begin{lemma}[Class Extensionality]
-      Let $X, Y$ be classes.
-      Assume that every element of $X$ is an element of $Y$ and every element of
-      $Y$ is an element of $X$.
-      Then $X = Y$.
-    \end{lemma}
-  \end{forthel}
+  \begin{flemma*}[Class Extensionality]
+    Let $X, Y$ be classes.
+    Assume that every element of $X$ is an element of $Y$ and every element of
+    $Y$ is an element of $X$.
+    Then $X = Y$.
+  \end{flemma*}
 \end{smodule}
 \end{document}

@@ -1,19 +1,15 @@
 \documentclass{stex}
-\libinput{preamble}
+\usepackage{naproche}
 \begin{document}
 \begin{smodule}{set-definition.ftl}
-  \begin{forthel}
-    \begin{lemma}
-      Let $X$ be a set.
-      Then $X$ is a class that is an object.
-    \end{lemma}
-  \end{forthel}
-  %
-  \begin{forthel}
-    \begin{lemma}
-      Let $X$ be a class that is an object.
-      Then $X$ is a set.
-    \end{lemma}
-  \end{forthel}
+  \begin{flemma*}
+    Let $X$ be a set.
+    Then $X$ is a class that is an object.
+  \end{flemma*}
+  
+  \begin{flemma*}
+    Let $X$ be a class that is an object.
+    Then $X$ is a set.
+  \end{flemma*}
 \end{smodule}
 \end{document}

@@ -1,19 +1,17 @@
 \documentclass{stex}
-\libinput{preamble}
+\usepackage{naproche}
 \begin{document}
 \begin{smodule}{subclasses-of-sets-are-sets.ftl}
   \importmodule[naproche/examples/preliminaries]{axioms?elements-of-classes-are-objects.ftl}
   %
-  \begin{forthel}
-    \begin{lemma}
-      Let $X$ be a set and $Y$ be a class.
-      Assume that every element of $Y$ is an element of $X$.
-      Then $Y$ is a set.
-    \end{lemma}
-    \begin{proof}
-      Define $Z = \class{x \in X}{\text{$x$ is an element of $Y$}}$.
-      Then $Z$ is a set and $Z = Y$.
-    \end{proof}
-  \end{forthel}
+  \begin{flemma*}
+    Let $X$ be a set and $Y$ be a class.
+    Assume that every element of $Y$ is an element of $X$.
+    Then $Y$ is a set.
+  \end{flemma*}
+  \begin{fproof}
+    Define $Z = \class{x \in X}{\text{$x$ is an element of $Y$}}$.
+    Then $Z$ is a set and $Z = Y$.
+  \end{fproof}
 \end{smodule}
 \end{document}

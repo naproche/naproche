@@ -1,19 +1,15 @@
 \documentclass{stex}
-\libinput{preamble}
+\usepackage{naproche}
 \begin{document}
 \begin{smodule}{function-definition.ftl}
-  \begin{forthel}
-    \begin{lemma}
-      Let $F$ be a function.
-      Then $F$ is a map that is an object.
-    \end{lemma}
-  \end{forthel}
-  %
-  \begin{forthel}
-    \begin{lemma}
-      Let $F$ be a map that is an object.
-      Then $F$ is a function.
-    \end{lemma}
-  \end{forthel}
+  \begin{flemma*}
+    Let $F$ be a function.
+    Then $F$ is a map that is an object.
+  \end{flemma*}
+
+  \begin{flemma*}
+    Let $F$ be a map that is an object.
+    Then $F$ is a function.
+  \end{flemma*}
 \end{smodule}
 \end{document}

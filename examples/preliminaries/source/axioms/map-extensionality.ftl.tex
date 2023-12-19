@@ -1,14 +1,12 @@
 \documentclass{stex}
-\libinput{preamble}
+\usepackage{naproche}
 \begin{document}
 \begin{smodule}{map-extensionality.ftl}
-  \begin{forthel}
-    \begin{lemma}[Map Extensionality]
-      Let $F, G$ be maps.
-      Assume $\dom(F) = \dom(G)$ and for all elements $x$ of $\dom(F)$ we have
-      $F(x) = G(x)$.
-      Then $F = G$.
-    \end{lemma}
-  \end{forthel}
+  \begin{flemma*}[Map Extensionality]
+    Let $F, G$ be maps.
+    Assume $\dom(F) = \dom(G)$ and for all elements $x$ of $\dom(F)$ we have
+    $F(x) = G(x)$.
+    Then $F = G$.
+  \end{flemma*}
 \end{smodule}
 \end{document}

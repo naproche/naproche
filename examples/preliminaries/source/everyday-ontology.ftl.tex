@@ -1,5 +1,5 @@
 \documentclass{stex}
-\libinput{preamble}
+\usepackage{naproche}
 \begin{document}
 \begin{smodule}{everyday-ontology.ftl}
   \importmodule[naproche/examples/preliminaries]{vocabulary.ftl}
@@ -8,157 +8,149 @@
 
   \section*{Places}
 
-  \begin{forthel}
-    \begin{signature*}
-      A place is an object.
-    \end{signature*}
-  \end{forthel}
+  \begin{fsignature*}
+    A place is an object.
+  \end{fsignature*}
 
 
   \section*{Persons}
 
-  \begin{forthel}
-    \begin{signature*}
-      A person is an object.
-    \end{signature*}
+  \begin{fsignature*}
+    A person is an object.
+  \end{fsignature*}
 
-    \begin{signature*}
-      A man is a person.
-    \end{signature*}
+  \begin{fsignature*}
+    A man is a person.
+  \end{fsignature*}
 
-    \begin{signature*}
-      Let $P, P'$ be persons.
-      $P$ shaves $P'$ is an atom.
-    \end{signature*}
+  \begin{fsignature*}
+    Let $P, P'$ be persons.
+    $P$ shaves $P'$ is an atom.
+  \end{fsignature*}
 
+  \begin{fconvention*}
     Let $P$ shaves himself stand for $P$ shaves $P$.
+  \end{fconvention*}
 
-    \begin{signature*}
-      Let $P$ be a person.
-      $P$ is drinking is an atom.
-    \end{signature*}
+  \begin{fsignature*}
+    Let $P$ be a person.
+    $P$ is drinking is an atom.
+  \end{fsignature*}
 
-    \begin{signature*}
-      Let $P$ be a person and $A$ be an object.
-      $P$ is inside $A$ is a relation.
-    \end{signature*}
+  \begin{fsignature*}
+    Let $P$ be a person and $A$ be an object.
+    $P$ is inside $A$ is a relation.
+  \end{fsignature*}
 
-    \begin{signature*}
-      Let $P, P'$ be persons.
-      $P$ killed $P'$ is a relation.
-    \end{signature*}
+  \begin{fsignature*}
+    Let $P, P'$ be persons.
+    $P$ killed $P'$ is a relation.
+  \end{fsignature*}
 
+  \begin{fconvention*}
     Let $P$ killed themselves stand for $P$ killed $P$.
     Let $Q$ was killed by $P$ stand for $P$ killed $Q$.
+  \end{fconvention*}
 
-    \begin{definition*}
-      Let $P$ be a person.
-      A victim of $P$ is a person that was killed by $P$.
-    \end{definition*}
+  \begin{fdefinition*}
+    Let $P$ be a person.
+    A victim of $P$ is a person that was killed by $P$.
+  \end{fdefinition*}
 
-    \begin{definition*}
-      A killer is a person that killed some person.
-    \end{definition*}
+  \begin{fdefinition*}
+    A killer is a person that killed some person.
+  \end{fdefinition*}
 
-    \begin{signature*}
-      Let $P, P'$ be persons.
-      $P$ hates $P'$ is a relation.
-    \end{signature*}
+  \begin{fsignature*}
+    Let $P, P'$ be persons.
+    $P$ hates $P'$ is a relation.
+  \end{fsignature*}
 
+  \begin{fconvention*}
     Let $Q$ is hated by $P$ stand for $P$ hates $Q$.
+  \end{fconvention*}
 
-    \begin{signature*}
-      Let $P$ be a person and $A$ be a place.
-      $P$ lives in $A$ is a relation.
-    \end{signature*}
+  \begin{fsignature*}
+    Let $P$ be a person and $A$ be a place.
+    $P$ lives in $A$ is a relation.
+  \end{fsignature*}
 
-    \begin{signature*}
-      Let $P, P'$ be persons.
-      $P$ is richer than $P'$ is a relation.
-    \end{signature*}
-  \end{forthel}
+  \begin{fsignature*}
+    Let $P, P'$ be persons.
+    $P$ is richer than $P'$ is a relation.
+  \end{fsignature*}
 
 
   \section*{Colors}
 
-  \begin{forthel}
-    \begin{signature*}
-      A color is an object.
-    \end{signature*}
+  \begin{fsignature*}
+    A color is an object.
+  \end{fsignature*}
 
-    \begin{signature*}
-      White is a color.
-    \end{signature*}
+  \begin{fsignature*}
+    White is a color.
+  \end{fsignature*}
 
-    \begin{signature*}
-      Black is a color.
-    \end{signature*}
+  \begin{fsignature*}
+    Black is a color.
+  \end{fsignature*}
 
-    \begin{signature*}
-      Let $A$ be an object.
-      The color of $A$ is a color.
-    \end{signature*}
+  \begin{fsignature*}
+    Let $A$ be an object.
+    The color of $A$ is a color.
+  \end{fsignature*}
 
-    \begin{signature*}
-      Let $C$ be a color.
-      The opposite color of $C$ is a color.
-    \end{signature*}
-  \end{forthel}
+  \begin{fsignature*}
+    Let $C$ be a color.
+    The opposite color of $C$ is a color.
+  \end{fsignature*}
 
 
   \section*{Dwarfs}
 
-  \begin{forthel}
-    \begin{signature*}
-      A dwarf is a person.
-    \end{signature*}
-  \end{forthel}
+  \begin{fsignature*}
+    A dwarf is a person.
+  \end{fsignature*}
 
 
   \section*{Things}
 
-  \begin{forthel}
-    \begin{signature*}
-      A hat is an object.
-    \end{signature*}
+  \begin{fsignature*}
+    A hat is an object.
+  \end{fsignature*}
 
-    \begin{signature*}
-      Let $P$ be a person.
-      The hat of $P$ is a hat.
-    \end{signature*}
-  \end{forthel}
+  \begin{fsignature*}
+    Let $P$ be a person.
+    The hat of $P$ is a hat.
+  \end{fsignature*}
 
 
   \section*{Acts}
 
-  \begin{forthel}
-    \begin{signature*}
-      Let $P$ be a person and $A$ be an object.
-      $P$ names $A$ is a relation.
-    \end{signature*}
+  \begin{fsignature*}
+    Let $P$ be a person and $A$ be an object.
+    $P$ names $A$ is a relation.
+  \end{fsignature*}
 
-    \begin{signature*}
-      Let $P$ be a person.
-      $P$ gets released is a relation.
-    \end{signature*}
-  \end{forthel}
+  \begin{fsignature*}
+    Let $P$ be a person.
+    $P$ gets released is a relation.
+  \end{fsignature*}
 
 
   \section*{Propositions}
 
-  \begin{forthel}
-    \begin{signature*}
-      A proposition is an object.
-    \end{signature*}
+  \begin{fsignature*}
+    A proposition is an object.
+  \end{fsignature*}
 
-    \begin{signature*}
-      Let $p$ be a proposition.
-      $p$ is true is an atom.
-    \end{signature*}
+  \begin{fsignature*}
+    Let $p$ be a proposition.
+    $p$ is true is an atom.
+  \end{fsignature*}
 
-    \begin{definition*}
-      A system of propositions is a class $P$ such that every element of $P$ is a proposition.
-    \end{definition*}
-  \end{forthel}
+  \begin{fdefinition*}
+    A system of propositions is a class $P$ such that every element of $P$ is a proposition.
+  \end{fdefinition*}
 \end{smodule}
 \end{document}
