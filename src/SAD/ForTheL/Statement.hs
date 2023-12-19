@@ -452,14 +452,20 @@ collection = label "class definition" $ symbClass <|> classOf
 
 
 symbClassNotation :: FTL (Formula -> Formula, (PosVar, Formula -> Formula))
-symbClassNotation = texClass </> cndClass </> finiteSet
+symbClassNotation = texClass </> texEnumSet </> cndClass </> enumSet
   where
-    -- Finite class, e.g. "{x, f(y), 5}"
-    finiteSet = braced $ do
+    -- Enumerative set notation
+    enumSet = braced $ do
       ts <- sTerm `sepByLL1` token ","
       h <- hidden
       pure (\tr -> mkObject tr `And` (foldr1 Or $ map (mkEquality tr) ts), (h, mkSet))
-    -- Set-builder notation, e.g. "{x in X | x is less than y}"
+    -- Enumerative set notation via the TeX macro `\set`.
+    -- Semantically identical to `enumSet`.
+    texEnumSet = texCommandWithArg "fset" $ do
+      ts <- sTerm `sepByLL1` token ","
+      h <- hidden
+      pure (\tr -> mkObject tr `And` (foldr1 Or $ map (mkEquality tr) ts), (h, mkSet))
+    -- Set-builder notation
     cndClass = braced $ do
       (tag, c, t, mkColl) <- optInText sepFrom
       st <- (token "|" <|> token ":" <|> token "\\mid") >> optInText statement
@@ -467,9 +473,9 @@ symbClassNotation = texClass </> cndClass </> finiteSet
       vsDecl <- makeDecls $ fvToVarSet vs;
       nm <- if isVar t then pure $ PosVar (varName t) (varPosition t) else hidden
       pure (\tr -> tag $ c tr `blAnd` mkObject tr `blAnd` mbEqu vsDecl tr t st, (nm, mkColl))
-    -- Set-builder notation using a certain TeX macro, e.g.
-    -- "\class{$x \in X$ | $x$ is less than $y$}". Semantically identical to `cndClass`.
-    texClass = texCommandWithArg "compterm" $ do
+    -- Set-builder notation via the TeX macro `\compterm`.
+    -- Semantically identical to `cndClass`.
+    texClass = texCommandWithArg "fclass" $ do
       (tag, c, t, mkColl) <- optInText sepFrom
       st <- (symbol "}" >> symbol "{") >> optInText statement <|> optInClasstext statement
       vs <- freeVars t

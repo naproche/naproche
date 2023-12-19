@@ -321,20 +321,18 @@
 }
 
 
-% Hard-coded LaTeX stuff
-% ======================
+% Hard-coded symbols
+% ==================
 
 \newcommand{\dom}{\mathrm{dom}}
 \newcommand{\fun}{\mathrm{\lambda}}
-
-
-% Comprehension terms
-% -------------------
-
-\newcommand{\compterm}[2]{\left\{#1\;\middle\vert\;#2\right\}}
+\newcommand{\fclass}[2]{\left\{#1\;\middle\vert\;#2\right\}}
 
 \RequirePackage{linegoal}
 \newcommand{\classtext}[1]{\parbox{\linegoal}{#1}}
+
+\RequirePackage{pgffor}
+\def\fset#1{\ensuremath{\{\foreach[count=\i]\x in {#1}{\ifnum\i>1,\,\fi\x}\}}}
 
 
 % Explicit variables

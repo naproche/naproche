@@ -103,16 +103,11 @@ dialect of ForTheL, respectively.
     non-singleton and-chains must be enclosed within parentheses.
     Example: `n is less than 5 or (greater than 5 and prime)`.
 
-  * **New:** (TEX) New notations for hardcoded expressions:
+  * **Changed:** (TEX) New notations for comprehension terms:
 
-    - `\apply{f}{x}` for `f(x)`
-    - `\domain{f}` for `dom(f)`
-    - `\tuple{x,y}` for `(x,y)`
-    - `\compterm{x}{φ}` for `{x | φ}`
-    - `\compterm{x \in X}{φ}` for `{x ∈ X | φ}`
-
-    Appropriate LaTeX macros are provided by
-    `[naproche/examples/preliminaries]macros.ftl`.
+    - `\fclass{x}{φ}` for `{x | φ}`
+    - `\fclass{x \in X}{φ}` for `{x ∈ X | φ}`
+    - `\fset{x₁,…,xₙ}` for `{x₁,…,xₙ}`
 
   * **New:** (TEX) Naproche loads and checks all files/modules that are imported
     via `\importref[naproche/examples/<archive>]{<file>}`,
@@ -121,10 +116,6 @@ dialect of ForTheL, respectively.
 
     ***Note:*** Needs to be improved as the current implementation is very
     primitive.
-
-  * **Changed:** Notation for comprehension terms has changed from
-    `\class{...}{...}` to `\compterm{...}{...}` (since for some reasons
-    `\class{...}{...}` does behaves strangely with sTeX (?))
 
 --------------------------------------------------------------------------------
 

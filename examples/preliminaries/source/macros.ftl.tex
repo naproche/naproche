@@ -1,41 +1,30 @@
 \documentclass{stex}
-\libinput{preamble}
+\usepackage{naproche}
 \begin{document}
 \begin{smodule}{macros.ftl}
-  \symdef{class}[args=2]{\left\{#1\;\vert|\;#2\right\}}
-  \symdef{apply}[args=ia]{#1(#2)}
-  \symdef{domain}[args=1]{\mathrm{dom}(#1)}
-  \symdef{tuple}[args=a]{(\argsep{#1}{,})}
-
   \begin{forthel}
-    % Equality
-    % --------
-
-    Let $x$ and $y$ agree stand for $x = y$.
-    Let $x$ agrees with $y$ stand for $x = y$.
+    Let $x$ and $y$ agree stand for $x = y$.\\
+    Let $x$ agrees with $y$ stand for $x = y$.\\
     Let $x$ and $y$ are distinct stand for $x \neq y$.
-
-    % Elementhood relation
-    % --------------------
-
-    Let a member of $X$ stand for an element of $X$.
-    Let $x$ belongs to $X$ stand for $x$ is an element of $X$.
-    Let $X$ contains $x$ stand for $x$ is an element of $X$.
-    Let $x$ is contained in $X$ stand for $x$ is an element of $X$.
-    Let $x$ lies in $X$ stand for $x$ is an element of $X$.
+  \end{forthel}
+  
+  \begin{forthel}
+    Let a member of $X$ stand for an element of $X$.\\
+    Let $x$ belongs to $X$ stand for $x$ is an element of $X$.\\
+    Let $X$ contains $x$ stand for $x$ is an element of $X$.\\
+    Let $x$ is contained in $X$ stand for $x$ is an element of $X$.\\
+    Let $x$ lies in $X$ stand for $x$ is an element of $X$.\\
     Let $x$ is in $X$ stand for $x$ is an element of $X$.
-
-    % Domain
-    % ------
-
-    Let the domain of $f$ stand for $\domain{f}$.
-    Let $f$ is defined on $X$ stand for $\domain{f} = X$.
-
-    % Map application
-    % ---------------
-
-    Let the value of $f$ at $x$ stand for $\apply{f}{x}$.
-    Let $\apply{f}{x,y}$ stand for $\apply{f}{\tuple{x,y}}$.
+  \end{forthel}
+  
+  \begin{forthel}
+    Let the domain of $f$ stand for $\dom(f)$.\\
+    Let $f$ is defined on $X$ stand for $\dom(f) = X$.
+  \end{forthel}
+  
+  \begin{forthel}
+    Let the value of $f$ at $x$ stand for $f(x)$.\\
+    Let $f(x,y)$ stand for $f((x,y))$.
   \end{forthel}
 \end{smodule}
 \end{document}
