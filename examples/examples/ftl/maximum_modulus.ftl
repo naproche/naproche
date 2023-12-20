@@ -1,4 +1,4 @@
-[read preliminaries/source/preliminaries.ftl]
+[read examples/ftl/preliminaries.ftl]
 
 ### Complex and Real Numbers
 

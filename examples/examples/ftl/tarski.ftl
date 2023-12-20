@@ -1,5 +1,5 @@
 [synonym set/-s] [synonym subset/-s] [synonym element/-s] [synonym belong/-s]
-[read preliminaries/source/macros.ftl]
+[read examples/ftl/macros.ftl]
 
 ##############################################################
 
