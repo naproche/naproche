@@ -19,6 +19,42 @@ spectrum reaches from recreational puzzles to undergraduate-level theorems:
 
 * `arithmetic/` - elementary Peano arithmetic
 
+* `examples/` - stand-alone example formalizations
+
+  - `cantor` - Cantor diagonal argument
+
+  - `cantor-schroeder-bernstein` - classical result in cardinality theory
+
+  - `checkerboard` - the mutilated checkerboard
+
+  - `chinese` - Chinese remainder theorem
+
+  - `euclid` - classical proof of infinity of primes
+
+  - `furstenberg` - topological proof of infinity of primes
+
+  - `group` - Naproche rendering of a Lean file on groups
+
+  - `hausdorff` - theorem on the regularity of successor cardinals
+
+  - `hilbert-calculus` - proving derivations in a Hilbert calculus
+
+  - `koenig` - theorem about sequences of cardinals
+
+  - `maximum_modulus` - theorem from complex analysis
+
+  - `newman` - Newman's theorem on rewriting systems
+
+  - `numbers` - introduction of number systems for Rudin's Principles of Mathematical Analysis
+
+  - `preliminaries` - basic theory of classes and sets
+
+  - `prime_no_square` - irrationality of square roots
+
+  - `tarski` - Tarski fixpoint theorem for lattices
+
+  - `zermelo` - Zermelo's well-ordering theorem
+
 * `foundations/` - Kelley-Morse like foundations of mathematics
 
 * `geometry/` - beginnings of Tarski geometry
@@ -67,41 +103,8 @@ spectrum reaches from recreational puzzles to undergraduate-level theorems:
 
 * `100_theorems` - some of Wiedijk's "100 Theorems"
 
-* `cantor` - Cantor diagonal argument
+* `tutorial` - Tutorial on how write proofs in Naproche
 
-* `cantor-schroeder-bernstein` - classical result in cardinality theory
-
-* `checkerboard` - the mutilated checkerboard
-
-* `chinese` - Chinese remainder theorem
-
-* `euclid` - classical proof of infinity of primes
-
-* `furstenberg` - topological proof of infinity of primes
-
-* `group` - Naproche rendering of a Lean file on groups
-
-* `hausdorff` - theorem on the regularity of successor cardinals
-
-* `hilbert-calculus` - proving derivations in a Hilbert calculus
-
-* `koenig` - theorem about sequences of cardinals
-
-* `maximum_modulus` - theorem from complex analysis
-
-* `newman` - Newman's theorem on rewriting systems
-
-* `numbers` - introduction of number systems for Rudin's Principles of Mathematical Analysis
-
-* `preliminaries` - basic theory of classes and sets
-
-* `prime_no_square` - irrationality of square roots
-
-* `tarski` - Tarski fixpoint theorem for lattices
-
-* `TUTORIAL` - Tutorial on how write proofs in Naproche
-
-* `zermelo` - Zermelo's well-ordering theorem
 
 The further development of Naproche will focus on the `.ftl.tex` format in order
 to build readable libraries of computer-verifiable mathematics. The classical

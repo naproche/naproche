@@ -25,6 +25,9 @@ dialect of ForTheL, respectively.
 
 ### Changes on the example files
 
+  * **Changed:** New directory structure for example files (all examples are now
+    contained in an sTeX archive)
+
   * **Changed:** Preliminary files like `preliminaries.ftl(.tex)` or
     `macros.ftl(.tex)` have been moved to `examples/preliminaries/`
 
