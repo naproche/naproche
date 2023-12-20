@@ -1,5 +1,5 @@
 \documentclass{article}
-\usepackage[stex]{naproche}
+\usepackage[stex,supplements]{naproche}
 
 \author{Peter Koepke, University of Bonn}
 \title{Ontological Axioms for \Naproche}
@@ -10,10 +10,6 @@
 \maketitle
 
 \begin{smodule}{preliminaries.ftl}
-
-\importmodule{axioms.ftl}
-\importmodule{macros.ftl}
-\importmodule{vocabulary.ftl}
 
 \section{Basic Ideas}
 
@@ -53,19 +49,15 @@ issue for the further development.
 \section{Importing Some Mathematical Language}
 
 We import singular/plural forms of words that will be used in
-our formalizations (\path{examples/vocabulary.ftl.tex}).
+our formalizations (\path{examples/preliminaries/source/vocabulary.ftl.tex}).
 In the long run this should be replaced by
 employing a proper English vocabulary. We also
 import some alternative formulations for
-useful mathematical phrases (\path{examples/macros.ftl.tex}).
+useful mathematical phrases (\path{examples/preliminaries/source/macros.ftl.tex}).
 
-\begin{forthel}
-  [readtex \path{preliminaries/source/axioms.ftl.tex}]
-
-  [readtex \path{preliminaries/source/vocabulary.ftl.tex}]
-
-  [readtex \path{preliminaries/source/macros.ftl.tex}]
-\end{forthel}
+\importmodule[naproche/examples/preliminaries]{vocabulary.ftl}
+\importmodule[naproche/examples/preliminaries]{macros.ftl}
+\importmodule[naproche/examples/preliminaries]{axioms.ftl}
 
 
 \section{Sets and Classes}
@@ -112,19 +104,19 @@ facts so that they can directly be accessed by the ATP.
   \end{axiom}
 
   \begin{definition}
-    The intersection of $S$ and $T$ is $\class{x \in S | x \in T}$.
+    The intersection of $S$ and $T$ is $\fclass{x \in S}{ \in T}$.
   \end{definition}
 
   Let $S \cap T$ stand for the intersection of $S$ and $T$.
 
   \begin{definition}
-    The union of $S$ and $T$ is $\class{x | x \in S \vee x \in T}$.
+    The union of $S$ and $T$ is $\fclass{x}{x \in S \vee x \in T}$.
   \end{definition}
 
   Let $S \cup T$ stand for the union of $S$ and $T$.
 
   \begin{definition}
-    The set difference of $S$ and $T$ is $\class{x \in S | x \notin T}$.
+    The set difference of $S$ and $T$ is $\fclass{x \in S}{x \notin T}$.
   \end{definition}
 
   Let $S \setminus T$ stand for the set difference of $S$ and $T$.
@@ -157,7 +149,7 @@ axiomatize them as objects.
   \end{axiom}
 
   \begin{definition}
-    $S \times T = \class{(x,y) | \text{$x \in S$ and $y \in T$}}$.
+    $S \times T = \fclass{(x,y)}{\text{$x \in S$ and $y \in T$}}$.
   \end{definition}
 
   \begin{axiom}
@@ -189,7 +181,7 @@ of sets and classes.
 
   \begin{definition}
     Assume $S$ is a subclass of the domain of $f$.
-    $f[S] = \class{f(x) | x \in S}$.
+    $f[S] = \fclass{f(x)}{x \in S}$.
   \end{definition}
 
   Let the image of $f$ stand for $f[\dom(f)]$.
