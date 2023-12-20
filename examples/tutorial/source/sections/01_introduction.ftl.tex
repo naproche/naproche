@@ -1,0 +1,56 @@
+\documentclass{stex}
+\libinput{preamble}
+\begin{document}
+
+\section{Introduction}
+
+\Naproche{} (Natural Proof Checking) is a mathematical proof assistant
+for texts in the input language ForTheL (Formula Theory Language).
+ForThel aims to approximate the
+language, structure and appearance of common mathematical texts;
+FortheL texts are checked by \Naproche{} for syntactic, ontological
+and logical correctness. \Naproche{} is a component of
+Isabelle PIDE (Proof Interactive Development Environment) which provides
+comfortable text editing and interactive checking through a continuously
+running \Naproche{} server.
+
+Ideally, a user edits a mathematical text in \LaTeX{}, and
+\Naproche{} automatically checks the correctness of those parts which are
+in \verb+\begin+\verb+{forthel}+ ... \verb+\end{forthel}+
+environments and gives
+feedback to the user, similar to a continuous spellchecker.
+Although that goal is still far away, the current \Naproche{} offers
+the possibility to write university-level mathematical texts
+in a natural language and style whose ForTheL segments are logically
+verified by \Naproche{}. In this tutorial and in example texts
+which are distributed together with \Naproche{} these segments
+are typeset on a grey background.
+
+\Naproche{} is a derivative of the ground-breaking System
+for Automated Deduction (SAD). \Naproche{} still supports the
+ASCII format \path{.ftl} of SAD which allows rapid
+experiments without worrying about LaTeX particulars, and we
+use that format for a Quick Start and some exercises.
+
+This tutorial is an introduction to the principles and
+use of the \Naproche{} prover. After the Quick Start and
+some general information we explain
+ForTheL commands and statements and the structuring of ForTheL texts
+along a proof of the infinitude of primes. Actually the tutorial is
+a version of Euclid's proof, preceded by
+necessary number-theoretic and set-theoretic preliminaries.
+After studying this material, a reader should be able to understand the
+other example texts and start writing similar formalizations.
+Let us, however, warn the reader that writing formally complete
+and unambiguous mathematical texts in a readable natural language
+is subtle and requires ample exercise, as one may already guess by
+looking at legal texts.
+
+We suggest that the tutorial is read as pdf and simultaneously followed
+interactively in the Isabelle
+PIDE (Proof Interactive Development Environment), with the source
+\path{TUTORIAL.ftl.tex} opened in one buffer, using other buffers
+for experiments and exercises. Moreover one may use a \LaTeX{} compiler
+for displaying \path{.ftl.tex} formalizations.
+
+\end{document}

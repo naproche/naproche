@@ -1,0 +1,79 @@
+\documentclass{stex}
+\libinput{preamble}
+\begin{document}
+
+\section{Sets and Classes}
+
+Some basic properties of sets and classes are built into \Naproche{}
+or are explicitly postulated in the \path{preliminaries.ftl.tex} file.
+We shall use these to express the infinitude of the collection of
+prime natural numbers.
+
+Arbitrary collections of objects can be defined naturally in ForTheL:
+
+\begin{forthel}
+\begin{definition} $\mathbb{N}$ is the
+collection of all natural numbers.
+\end{definition}
+\end{forthel}
+
+This translates as
+\begin{verbatim}
+forall v0 ((HeadTerm :: v0 = \mathbb{N}) iff
+(aClass(v0) and forall v1
+(aElementOf(v1,v0) iff (aNaturalNumber(v1) and aObject(v1)))))
+\end{verbatim}
+
+The \verb+aObject(v1)+ is part of the collection construct and ensures
+that only objects will be elements of the collection. Such collections
+are automatically registered as {\em classes} (\verb+aClass(v0)+).
+There are a few grammatical extensions and variants of this construct:
+in particular one could form the collection of all
+[terms] such that [condition], where [condition] is an arbitrary ForTheL
+statement.
+
+Classes can also be defined by abstraction terms, i.e., we could
+have defined alternatively:
+
+\begin{definition}
+$\mathbb{N} = \{n | n$ is a natural number$\}$.
+\end{definition}
+
+To work freely with the class of natural numbers one wants it be a
+{\em mathematical object} itself, i.e., a {\em set}. The axioms so far do not
+imply this, as one can check by trying to prove
+``$\mathbb{N}$ is a set.''
+So we postulate this as an axiom which is (equivalent to) the
+well-known axiom of infinity in set theory:
+
+\begin{forthel}
+\begin{axiom} $\mathbb{N}$ is a set.
+\end{axiom}
+\end{forthel}
+
+We define the set of prime numbers so that we can prove its infinity.
+
+\begin{forthel}
+\begin{definition}
+$\mathbb{P} = \{n | n$ is a prime natural number$\}$.
+\end{definition}
+\end{forthel}
+The axiom of separation from \path{preliminaries.ftl.tex} yields:
+\begin{forthel}
+\begin{lemma}
+$\mathbb{P}$ is a set.
+\end{lemma}
+\end{forthel}
+\noindent since $\mathbb{P}$ is a subclass of the {\em set} $\mathbb{N}$.
+
+\begin{exercise}
+Form the collection of all even numbers or of all square numbers and
+prove that these are sets.
+\end{exercise}
+
+\begin{exercise}
+Prove that the class $\{ x | x$ is a set and $x \notin x \}$ is \textit{not}
+a set.
+\end{exercise}
+
+\end{document}

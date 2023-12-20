@@ -1,0 +1,39 @@
+\documentclass{stex}
+\libinput{preamble}
+\begin{document}
+
+\section{Division}
+
+Prime (natural) numbers are defined via divisibility.
+
+\begin{forthel}
+
+\begin{definition}
+  $n$ divides $m$ iff for some $l$ $m = n * l$.
+\end{definition}
+
+Let $x | y$ denote $x$ divides $y$.
+Let a divisor of $x$ denote a natural number
+that divides $x$.
+
+\begin{lemma} Assume $l | m | n$. Then $l | n$.
+\end{lemma}
+
+\end{forthel}
+
+The definition is similar to the definition of $\leq$.
+Note, however, the possible syntactic variations:
+``there exists a natural number $l$ such that
+$m = n * l$''; it is also possible
+to put the quantifier after the property:
+``$n$ divides $m$ iff $m = n * l$ for some $l$''.
+
+Natural language has many mechanisms for putting
+information into sentences in a compact, un-formalistic way.
+Un-formalistic means, e.g., that natural language
+does not normally use brackets (...) in speech.
+``The syntax and semantics of the ForTheL language'' by Andrei
+Paskevich is still a good guide to most ForTheL constructs, although
+the language has been extended since then.
+
+\end{document}
