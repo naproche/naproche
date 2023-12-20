@@ -13,3 +13,6 @@
 \newcommand{\preimage}[1]{\left(#1\right)^{*}}
 \newcommand{\inverse}[1]{\left(#1\right)^{-1}}
 \newcommand{\funspace}[2]{[#1\to#2]}
+
+\RequirePackage{pgffor}
+\def\set#1{\ensuremath{\{\foreach[count=\i]\x in {#1}{\ifnum\i>1,\,\fi\x}\}}}
