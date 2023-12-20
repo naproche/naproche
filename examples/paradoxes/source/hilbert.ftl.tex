@@ -11,20 +11,11 @@
 
 \noindent \emph{Hilbert's Paradox}, discovered around 1900 by David Hilbert, demonstates that there cannot exists a set that is closed under powerset and under union of arbitrary subset \cite{PeckhausKahl2002}.
 
-\inputref[naproche/examples/set-theory]{thm/hilbert-paradox.ftl.tex}
+\inputref[naproche/examples/paradoxes]{mod/hilbert-paradox.ftl.tex}
 
 \noindent Using Hilbert's Paradox it can further be shown that there exists no universal set.
 
-\begin{fcorollary*}
-  There exists no set that contains all sets.
-\end{fcorollary*}
-\begin{fproof}[method=contradiction]
-  Assume the contrary.
-  Consider a set $X$ that contains all sets.
-  Define $V = \fclass{x \in X}{\text{$x$ is a set}}$.
-  Then $V$ is closed under powersets and closed under unions.
-  Hence $V$ is not a set (by \printref{hilbert_paradox}).
-\end{fproof}
+\inputref[naproche/examples/paradoxes]{mod/hilbert-no-universal-set.ftl.tex}
 
 \printbibliography
 \end{document}
