@@ -1,6 +1,4 @@
-\documentclass{article}
-\usepackage[lang=en]{stex}
-\libusepackage{naproche-logo}
+\documentclass{stex}
 \libinput{preamble}
 
 \title{Dwarfs and Hats}
@@ -11,74 +9,72 @@
 
 \maketitle
 
-\begin{smodule}{dwarfs.ftl}
-  \section{Introduction}
+\section{Introduction}
 
-  We present a formalized solution in \Naproche of a simple “hat problem”:
+We present a formalized solution in \Naproche of a simple “hat problem”:
 
-  \begin{quotation}
-    \noindent The two dwarfs Sigbert and Tormund are on an expedition and get captured by an indigenous tribe.
-    In order to be released they are given the following challenge:
-    Both of them will be placed in a room and will be given a hat.
-    They can only see the hat the other dwarf is wearing.
-    The hats are either white or black.
-    Without further communication, one of the dwarfs must be able to name the color of his hat.
-    The two may agree on a strategy before they are placed in the room.
-    How can they manage to be released?
-  \end{quotation}
-
-
-  \section{Dwarf Ontology}
-
-  \importmodule[naproche/examples/preliminaries]{everyday-ontology.ftl}
-
-  \begin{forthel}
-    \begin{signature}
-      Sigbert is a dwarf.
-    \end{signature}
-    \begin{signature}
-      Tormund is a dwarf.
-    \end{signature}
-    \begin{axiom}
-      The color of the hat of any dwarf is White or Black.
-    \end{axiom}
-    \begin{axiom}
-      The opposite color of White is Black.
-    \end{axiom}
-    \begin{axiom}
-      The opposite color of Black is White.
-    \end{axiom}
-  \end{forthel}
+\begin{quotation}
+  \noindent The two dwarfs Sigbert and Tormund are on an expedition and get captured by an indigenous tribe.
+  In order to be released they are given the following challenge:
+  Both of them will be placed in a room and will be given a hat.
+  They can only see the hat the other dwarf is wearing.
+  The hats are either white or black.
+  Without further communication, one of the dwarfs must be able to name the color of his hat.
+  The two may agree on a strategy before they are placed in the room.
+  How can they manage to be released?
+\end{quotation}
 
 
-  \section{The Challenge}
+\section{Dwarf Ontology}
 
-  \begin{forthel}
-    \begin{axiom}
-      If some dwarf $D$ names the color of the hat of $D$ then all dwarfs get released.
-    \end{axiom}
-  \end{forthel}
+\usemodule[naproche/examples/preliminaries]{everyday-ontology.ftl}
+
+\begin{forthel}
+  \begin{signature}
+    Sigbert is a dwarf.
+  \end{signature}
+  \begin{signature}
+    Tormund is a dwarf.
+  \end{signature}
+  \begin{axiom}
+    The color of the hat of any dwarf is White or Black.
+  \end{axiom}
+  \begin{axiom}
+    The opposite color of White is Black.
+  \end{axiom}
+  \begin{axiom}
+    The opposite color of Black is White.
+  \end{axiom}
+\end{forthel}
 
 
-  \section{The Strategy of the Dwarfs}
+\section{The Challenge}
 
-  \begin{forthel}
-    \begin{axiom}
-      Sigbert names the opposite color of the color of the hat of Tormund.
-    \end{axiom}
-    \begin{axiom}
-      Tormund names the color of the hat of Sigbert.
-    \end{axiom}
-  \end{forthel}
+\begin{forthel}
+  \begin{axiom}
+    If some dwarf $D$ names the color of the hat of $D$ then all dwarfs get released.
+  \end{axiom}
+\end{forthel}
 
 
-  \section{Release!}
+\section{The Strategy of the Dwarfs}
 
-  \begin{forthel}
-    \begin{theorem}
-      All dwarfs get released.
-    \end{theorem}
-  \end{forthel}
-\end{smodule}
+\begin{forthel}
+  \begin{axiom}
+    Sigbert names the opposite color of the color of the hat of Tormund.
+  \end{axiom}
+  \begin{axiom}
+    Tormund names the color of the hat of Sigbert.
+  \end{axiom}
+\end{forthel}
+
+
+\section{Release!}
+
+\begin{forthel}
+  \begin{theorem}
+    All dwarfs get released.
+  \end{theorem}
+\end{forthel}
 
 \end{document}
