@@ -1,18 +1,7 @@
-\documentclass{article}
-\usepackage[lang=english,supplements]{naproche}
-
-\input{foundations/lib/preamble}
-\input{set-theory/lib/preamble}
-
-\usepackage{biblatex}
-\usepackage{csquotes}
-\addbibresource{meta-inf/lib/references.bib}
-
-\hypersetup{
-  colorlinks=true,
-  linkcolor=blue,
-  urlcolor=blue
-}
+\documentclass{stex}
+\libinput{preamble}
+\libinput[naproche/examples/foundations]{preamble}
+\libinput[naproche/examples/set-theory]{preamble}
 
 \title{Zermelo's Well-ordering Theorem}
 \author{\Naproche formalization: \vspace{0.5em} \\

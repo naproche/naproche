@@ -1,20 +1,9 @@
-\documentclass{article}
-\usepackage[lang=english,supplements]{naproche}
+\documentclass{stex}
+\libinput{preamble}
+\libinput[naproche/examples/foundations]{preamble}
+\libinput[naproche/examples/set-theory]{preamble}
 
 \usepackage{mathtools} % for `\bigtimes`
-
-\input{foundations/lib/preamble}
-\input{set-theory/lib/preamble}
-
-\usepackage{biblatex}
-\usepackage{csquotes}
-\addbibresource{meta-inf/lib/references.bib}
-
-\hypersetup{
-  colorlinks=true,
-  linkcolor=blue,
-  urlcolor=blue
-}
 
 \title{König's Theorem}
 \author{\Naproche formalization: \vspace{0.5em} \\
@@ -66,7 +55,7 @@ depends on.
 
   \begin{definition*}
     Let $\kappa$ be a sequence of cardinals on $D$.
-    \[ \SumSet{\kappa}{D} = \fclass{(n,i) | \text{$i$ is an element of $D$ and
+    \[ \SumSet{\kappa}{D} = \fclass{(n,i)}{\text{$i$ is an element of $D$ and
     $n$ is an element of $\kappa_{i}$}}. \]
   \end{definition*}
 
@@ -82,7 +71,7 @@ depends on.
 
   \begin{definition*}
     Let $\kappa$ be a sequence of cardinals on $D$.
-    \[ \ProdSet{\kappa}{D} = \fclass{f | \classtext{$f$ is a function and
+    \[ \ProdSet{\kappa}{D} = \fclass{f}{\classtext{$f$ is a function and
     $\dom(f) = D$ and $f(i)$ is an element of $\kappa_{i}$ for every element
     $i$ of $D$}}. \]
   \end{definition*}
