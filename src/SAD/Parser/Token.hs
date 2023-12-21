@@ -227,7 +227,7 @@ tokenize Tex startPos = procToken OutsideForthelEnv startPos NoWhiteSpaceBefore
           | Text.isPrefixOf "begin{fcorollary}" rest -> tokenizeFEnv "fcorollary" remainingText
           | Text.isPrefixOf "begin{fconvention}" rest -> tokenizeFEnv "fconvention" remainingText
           | Text.isPrefixOf "begin{fsignature*}" rest -> tokenizeFEnv "fsignature*" remainingText
-          | Text.isPrefixOf "begin{fdefinition*}" rest -> tokenizeFEnv "fdefinition" remainingText
+          | Text.isPrefixOf "begin{fdefinition*}" rest -> tokenizeFEnv "fdefinition*" remainingText
           | Text.isPrefixOf "begin{faxiom*}" rest -> tokenizeFEnv "faxiom*" remainingText
           | Text.isPrefixOf "begin{ftheorem*}" rest -> tokenizeFEnv "ftheorem*" remainingText
           | Text.isPrefixOf "begin{flemma*}" rest -> tokenizeFEnv "flemma*" remainingText
