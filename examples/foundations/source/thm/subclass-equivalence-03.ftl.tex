@@ -8,14 +8,13 @@
 
   \begin{fproposition*}[label=1566063126904832]
     Let $A, B$ be classes.
-    Then $B \subclass[eq] A \iff A \complement (A \complement B) = B$.
+    Then $B \subclass[eq] A \iff \complement{A}{\complement{A}{B}} = B$.
   \end{fproposition*}
   \begin{fproof}
     Case $B \subclass[eq] A$. Obvious.
 
-    Case $A \complement (A \complement B) = B$.
-      Then every element of $B$ is an element of $A \complement
-      (A \complement B)$.
+    Case $\complement{A}{\complement{A}{B}} = B$.
+      Then every element of $B$ is an element of $\complement{A}{\complement{A}{B}}$.
       Thus every element of $B$ is an element of $A$.
       Then we have the thesis.
     End.

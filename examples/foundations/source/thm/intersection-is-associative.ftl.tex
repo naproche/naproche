@@ -8,23 +8,23 @@
 
   \begin{fproposition*}[label=3587256308727808]
     Let $A, B, C$ be classes.
-    Then $(A \intersection B) \intersection C = A \intersection (B \intersection C)$.
+    Then $\intersection{\intersection{A,B},C} = \intersection{A,\intersection{B,C}}$.
   \end{fproposition*}
   \begin{fproof}
-    Let us show that $((A \intersection B) \intersection C) \subclass[eq] A \intersection (B \intersection C)$. %!
-      Let $x \in (A \intersection B) \intersection C$.
-      Then $x \in A \intersection B$ and $x \in C$.
+    Let us show that $\intersection{\intersection{A,B},C} \subclass[eq] \intersection{A,\intersection{B,C}}$.
+      Let $x \in \intersection{\intersection{A,B},C}$.
+      Then $x \in \intersection{A,B}$ and $x \in C$.
       Hence $x \in A$ and $x \in B$ and $x \in C$.
-      Thus $x \in A$ and $x \in (B \intersection C)$.
-      Therefore$ x \in A \intersection (B \intersection C)$.
+      Thus $x \in A$ and $x \in \intersection{B,C}$.
+      Therefore$ x \in A \intersection{A,\intersection{B,C}}$.
     End.
 
-    Let us show that $A \intersection (B \intersection C) \subclass[eq] (A \intersection B) \intersection C$.
-      Let $x \in A \intersection (B \intersection C)$.
-      Then $x \in A$ and $x \in B \intersection C$.
+    Let us show that $\intersection{A,\intersection{B,C}} \subclass[eq] \intersection{\intersection{A,B},C}$.
+      Let $x \in \intersection{A,\intersection{B,C}}$.
+      Then $x \in A$ and $x \in \intersection{B,C}$.
       Hence $x \in A$ and $x \in B$ and $x \in C$.
-      Thus $x \in A \intersection B$ and $x \in C$.
-      Therefore $x \in (A \intersection B) \intersection C$.
+      Thus $x \in \intersection{A,B}$ and $x \in C$.
+      Therefore $x \in \intersection{\intersection{A,B},C}$.
     End.
   \end{fproof}
 \end{smodule}

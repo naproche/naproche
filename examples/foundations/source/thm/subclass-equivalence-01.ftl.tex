@@ -8,29 +8,29 @@
 
   \begin{fproposition*}[label=1190630472548352]
     Let $A, B$ be classes.
-    Then $A \subclass[eq] B \iff A \union B = B$.
+    Then $A \subclass[eq] B \iff \union{A,B} = B$.
   \end{fproposition*}
   \begin{fproof}
     Case $A \subclass[eq] B$.
 
-      Let us show that $A \union B \subclass[eq] B$.
-        Let $x \in A \union B$.
+      Let us show that $\union{A,B} \subclass[eq] B$.
+        Let $x \in \union{A,B}$.
         Then $x \in A$ or $x \in B$.
         If $x \in A$ then $x \in B$.
         Hence $x \in B$.
       End.
 
-      Let us show that $B \subclass[eq] A \union B$.
+      Let us show that $B \subclass[eq] \union{A,B}$.
         Let $x \in B$.
         Then $x \in A$ or $x \in B$.
-        Hence $x \in A \union B$.
+        Hence $x \in \union{A,B}$.
       End.
     End.
 
-    Case $A \union B = B$.
+    Case $\union{A,B} = B$.
       Let $x \in A$.
       Then $x \in A$ or $x \in B$.
-      Hence $x \in A \union B = B$.
+      Hence $x \in \union{A,B} = B$.
     End.
   \end{fproof}
 \end{smodule}

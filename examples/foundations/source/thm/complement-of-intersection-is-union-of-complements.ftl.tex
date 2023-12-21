@@ -10,30 +10,30 @@
 
   \begin{fproposition*}[label=2864251928576000]
     Let $A, B, C$ be classes.
-    Then $A \complement (B \intersection C) = (A \complement B) \union (A \complement C)$.
+    Then $\complement{A}{\intersection{B,C}} = \union{\complement{A}{B},\complement{A}{C}}$.
   \end{fproposition*}
   \begin{fproof}
-    Let us show that $A \complement (B \intersection C) \subclass[eq]
-    (A \complement B) \union (A \complement C)$.
-      Let $x \in A \complement (B \intersection C)$.
-      Then $x \in A$ and $x \notin B \intersection C$.
+    Let us show that $\complement{A}{\intersection{B,C}} \subclass[eq]
+    \union{\complement{A}{B},\complement{A}{C}}$.
+      Let $x \in \complement{A}{\intersection{B,C}}$.
+      Then $x \in A$ and $x \notin \intersection{B,C}$.
       Hence it is wrong that ($x \in B$ and $x \in C$).
       Thus $x \notin B$ or $x \notin C$.
       Therefore $x \in A$ and ($x \notin B$ or $x \notin C$).
       Then ($x \in A$ and $x \notin B$) or ($x \in A$ and $x \notin C$).
-      Hence $x \in A \complement B$ or $x \in A \complement C$.
-      Thus $x \in (A \complement B) \union (A \complement C)$.
+      Hence $x \in \complement{A}{B}$ or $x \in \complement{A}{C}$.
+      Thus $x \in \union{\complement{A}{B},\complement{A}{C}}$.
     End.
 
-    Let us show that $((A \complement B) \union (A \complement C)) \subclass[eq]
-    A \complement (B \intersection C)$. %!
-      Let $x \in (A \complement B) \union (A \complement C)$.
-      Then $x \in A \complement B$ or $x \in A \complement C$.
+    Let us show that $\union{\complement{A}{B},\complement{A}{C}} \subclass[eq]
+    \complement{A}{\intersection{B}{C}}$.
+      Let $x \in \union{\complement{A}{B},\complement{A}{C}}$.
+      Then $x \in \complement{A}{B}$ or $x \in \complement{A}{C}$.
       Hence ($x \in A$ and $x \notin B$) or ($x \in A$ and $x \notin C$).
       Thus $x \in A$ and ($x \notin B$ or $x \notin C$).
       Therefore $x \in A$ and not ($x \in B$ and $x \in C$).
-      Then $x \in A$ and not $x \in B \intersection C$.
-      Hence $x \in A \complement (B \intersection C)$.
+      Then $x \in A$ and not $x \in \intersection{B,C}$.
+      Hence $x \in \complement{A}{\intersection{B,C}}$.
     End.
   \end{fproof}
 \end{smodule}

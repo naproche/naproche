@@ -10,23 +10,23 @@
 
   \begin{fproposition*}[label=554506062397440]
     Let $A, B$ be classes.
-    Then $A \complement (A \complement B) = A \intersection B$.
+    Then $\complement{A}{\complement{A}{B}} = \intersection{A,B}$.
   \end{fproposition*}
   \begin{fproof}
-    Let us show that $A \complement (A \complement B) \subclass[eq] A \intersection B$.
-      Let $x \in A \complement (A \complement B)$.
-      Then $x \in A$ and $x \notin A \complement B$.
+    Let us show that $\complement{A}{\complement{A}{B}} \subclass[eq] \intersection{A,B}$.
+      Let $x \in \complement{A}{\complement{A}{B}}$.
+      Then $x \in A$ and $x \notin \complement{A}{B}$.
       Hence $x \notin A$ or $x \in B$.
       Thus $x \in B$.
-      Therefore $x \in A \intersection B$.
+      Therefore $x \in \intersection{A,B}$.
     End.
 
-    Let us show that $A \intersection B \subclass[eq] A \complement (A \complement B)$.
-      Let $x \in A \intersection B$.
+    Let us show that $\intersection{A,B} \subclass[eq] \complement{A}{\complement{A}{B}})$.
+      Let $x \in \intersection{A,B}$.
       Then $x \in A$ and $x \in B$.
       Hence $x \notin A$ or $x \in B$.
-      Thus $x \notin A \complement B$.
-      Therefore $x \in A \complement (A \complement B)$.
+      Thus $x \notin \complement{A}{B}$.
+      Therefore $x \in \complement{A}{\complement{A}{B}}$.
     End.
   \end{fproof}
 \end{smodule}

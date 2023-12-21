@@ -7,7 +7,7 @@
   \importmodule[naproche/examples/preliminaries]{axioms.ftl}
   \importmodule[naproche/examples/preliminaries]{macros.ftl}
 
-  \symdef{intersection}{\cap}
+  \symdef{intersection}[args=a]{\argsep{#1}{\mathop{\comp\cap}}}
 
   \begin{fdefinition*}[label=5744033011859456]
     Let $A, B$ be classes.
@@ -16,7 +16,7 @@
   \end{fdefinition*}
 
   \begin{fconvention*}
-    Let $A \intersection B$ stand for the intersection of $A$ and $B$.
+    Let $\intersection{A,B}$ stand for the intersection of $A$ and $B$.
   \end{fconvention*}
 \end{smodule}
 \end{document}

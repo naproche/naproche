@@ -8,28 +8,28 @@
 
   \begin{fproposition*}[label=4268206566932480]
     Let $A, B$ be classes.
-    Then $A \subclass[eq] B \iff A \intersection B = A$.
+    Then $A \subclass[eq] B \iff \intersection{A,B} = A$.
   \end{fproposition*}
   \begin{fproof}
     Case $A \subclass[eq] B$.
 
-      Let us show that $A \intersection B \subclass[eq] A$.
-        Let $x \in A \intersection B$.
+      Let us show that $\intersection{A,B} \subclass[eq] A$.
+        Let $x \in \intersection{A,B}$.
         Then $x \in A$ and $x \in B$.
         Hence $x \in A$.
       End.
 
-      Let us show that $A \subclass[eq] A \intersection B$.
+      Let us show that $A \subclass[eq] \intersection{A,B}$.
         Let $x \in A$.
         Then $x \in B$.
         Hence $x \in A$ and $x \in B$.
-        Thus $x \in A \intersection B$.
+        Thus $x \in \intersection{A,B}$.
       End.
     End.
 
-    Case $A \intersection B = A$.
+    Case $\intersection{A,B} = A$.
       Let $x \in A$.
-      Then $x \in A \intersection B$.
+      Then $x \in \intersection{A,B}$.
       Hence $x \in A$ and $x \in B$.
       Thus $x \in B$.
     End.

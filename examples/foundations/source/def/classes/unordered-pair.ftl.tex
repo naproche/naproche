@@ -7,7 +7,7 @@
   \importmodule[naproche/examples/preliminaries]{axioms.ftl}
   \importmodule[naproche/examples/preliminaries]{macros.ftl}
 
-  \symdef{upair}[args=a]{\comp\{\argsep{#1}{\comp,}\comp\}}
+  \symdef{upair}[args=2]{\comp\{#1\comp,#2\comp\}}
 
   \begin{fdefinition*}[label=3471035364016128]
     Let $a, b$ be objects.
@@ -16,11 +16,11 @@
   \end{fdefinition*}
 
   \begin{fconvention*}
-    Let $\upair{a,b}$ stand for the unordered pair of $a$ and $b$.
+    Let $\upair{a}{b}$ stand for the unordered pair of $a$ and $b$.
   \end{fconvention*}
 
   \begin{fdefinition*}[label=605432672419840]
-    An unordered pair is a class $A$ such that $A = \upair{a,b}$ for some distinct objects $a, b$.
+    An unordered pair is a class $A$ such that $A = \upair{a}{b}$ for some distinct objects $a, b$.
   \end{fdefinition*}
 \end{smodule}
 \end{document}

@@ -9,27 +9,25 @@
 
   \begin{fproposition*}[label=5672367154003968]
     Let $A, B, C$ be classes.
-    Then $A \intersection (B \complement C) = (A \intersection B) \complement (A \intersection C)$.
+    Then $\intersection{A,\complement{B}{C}} = \complement{\intersection{A,B}}{\intersection{A,C}}$.
   \end{fproposition*}
   \begin{proof}
-    Let us show that $A \intersection (B \complement C) \subclass[eq]
-    (A \intersection B) \complement (A \intersection C)$.
-      Let $x \in A \intersection (B \complement C)$.
-      Then $x \in A$ and $x \in B \complement C$.
+    Let us show that $\intersection{A,\complement{B}{C}} \subclass[eq] \complement{\intersection{A,B}}{\intersection{A,C}}$.
+      Let $x \in \intersection{A,\complement{B}{C}}$.
+      Then $x \in A$ and $x \in \complement{B}{C}$.
       Hence $x \in A$ and $x \in B$.
-      Thus $x \in A \intersection B$ and $x \notin C$.
-      Therefore $x \notin A \intersection C$.
-      Then we have $x \in (A \intersection B) \complement (A \intersection C)$.
+      Thus $x \in \intersection{A,B}$ and $x \notin C$.
+      Therefore $x \notin \intersection{A,C}$.
+      Then we have $x \in \complement{\intersection{A,B}}{\intersection{A,C}}$.
     End.
 
-    Let us show that $((A \intersection B) \complement (A \intersection C)) \subclass[eq]
-    A \intersection (B \complement C)$. %!
-      Let $x \in (A \intersection B) \complement (A \intersection C)$.
+    Let us show that $\complement{\intersection{A,B}}{\intersection{A,C}} \subclass[eq] \intersection{A,\complement{B}{C}}$.
+      Let $x \in \complement{\intersection{A,B}}{\intersection{A,C}}$.
       Then $x \in A$ and $x \in B$.
-      $x \notin A \intersection C$.
+      $x \notin \intersection{A,C}$.
       Hence $x \notin C$.
-      Thus $x \in B \complement C$.
-      Therefore $x \in A \intersection (B \complement C)$.
+      Thus $x \in \complement{B}{C}$.
+      Therefore $x \in \intersection{A,\complement{B}{C}}$.
     End.
   \end{proof}
 \end{smodule}

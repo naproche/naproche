@@ -9,25 +9,25 @@
 
   \begin{fproposition*}[label=5609225394847744]
     Let $A, B, C$ be classes.
-    Then $A \union (B \intersection C) = (A \union B) \intersection (A \union C)$.
+    Then $\union{A}{\intersection{B,C}} = \intersection{\union{A,B},\union{A,C}}$.
   \end{fproposition*}
   \begin{fproof}
-    Let us show that $A \union (B \intersection C) \subclass[eq] (A \union B) \intersection (A \union C)$.
-      Let $x \in A \union (B \intersection C)$.
-      Then $x \in A$ or $x \in B \intersection C$.
+    Let us show that $\union{A}{\intersection{B,C}} \subclass[eq] \intersection{\union{A,B},\union{A,C}}$.
+      Let $x \in \union{A}{\intersection{B,C}}$.
+      Then $x \in A$ or $x \in \intersection{B,C}$.
       Hence $x \in A$ or ($x \in B$ and $x \in C$).
       Thus ($x \in A$ or $x \in B$) and ($x \in$ A or $x \in C$).
-      Therefore $x \in A \union B$ and $x \in A \union C$.
-      Hence $x \in (A \union B) \intersection (A \union C)$.
+      Therefore $x \in \union{A,B}$ and $x \in \union{A,C}$.
+      Hence $x \in \intersection{\union{A,B},\union{A,C}}$.
     End.
 
-    Let us show that $((A \union B) \intersection (A \union C)) \subclass[eq] A \union (B \intersection C)$. %!
-      Let $x \in (A \union B) \intersection (A \union C)$.
-      Then $x \in A \union B$ and $x \in A \union C$.
+    Let us show that $\intersection{\union{A,B},\union{A,C}} \subclass[eq] \union{A}{\intersection{B,C}}$.
+      Let $x \in \intersection{\union{A,B},\union{A,C}}$.
+      Then $x \in \union{A,B}$ and $x \in \union{A,C}$.
       Hence ($x \in A$ or $x \in B$) and ($x \in A$ or $x \in C$).
       Thus $x \in A$ or ($x \in B$ and $x \in C$).
-      Therefore $x \in A$ or $x \in B \intersection C$.
-      Hence $x \in A \union (B \intersection C)$.
+      Therefore $x \in A$ or $x \in \intersection{B,C}$.
+      Hence $x \in \union{A}{\intersection{B,C}}$.
     End.
   \end{fproof}
 \end{smodule}

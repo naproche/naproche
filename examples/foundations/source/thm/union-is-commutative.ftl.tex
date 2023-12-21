@@ -8,21 +8,21 @@
 
   \begin{fproposition*}[label=5874937237602304]
     Let $A, B$ be classes.
-    Then $A \union B = B \union A$.
+    Then $\union{A,B} = \union{B,A}$.
   \end{fproposition*}
   \begin{fproof}
-    Let us show that $A \union B \subclass[eq] B \union A$.
-      Let $x \in A \union B$.
+    Let us show that $\union{A,B} \subclass[eq] \union{B,A}$.
+      Let $x \in \union{A,B}$.
       Then $x \in A$ or $x \in B$.
       Hence $x \in B$ or $x \in A$.
-      Thus $x \in B \union A$.
+      Thus $x \in \union{B,A}$.
     End.
 
-    Let us show that $B \union A \subclass[eq] A \union B$.
-      Let $x \in B \union A$.
+    Let us show that $\union{B,A} \subclass[eq] \union{A,B}$.
+      Let $x \in \union{B,A}$.
       Then $x \in B$ or $x \in A$.
       Hence $x \in A$ or $x \in B$.
-      Thus $x \in A \union B$.
+      Thus $x \in \union{A,B}$.
     End.
   \end{fproof}
 \end{smodule}

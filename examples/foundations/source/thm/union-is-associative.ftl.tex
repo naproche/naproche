@@ -8,23 +8,23 @@
 
   \begin{fproposition*}[label=5573070641168384]
     Let $A, B, C$ be classes.
-    Then $(A \union B) \union C = A \union (B \union C)$.
+    Then $\union{\union{A,B},C} = \union{A,\union{B,C}}$.
   \end{fproposition*}
   \begin{fproof}
-    Let us show that $((A \union B) \union C) \subseteq A \union (B \union C)$. %!
-      Let $x \in (A \union B) \union C$.
-      Then $x \in A \union B$ or $x \in C$.
+    Let us show that $\union{\union{A,B},C} \subclass[eq] \union{A,\union{B,C}}$.
+      Let $x \in \union{\union{A,B},C}$.
+      Then $x \in \union{A,B}$ or $x \in C$.
       Hence $x \in A$ or $x \in B$ or $x \in C$.
-      Thus $x \in A$ or $x \in (B \union C)$.
-      Therefore $x \in A \union (B \union C)$.
+      Thus $x \in A$ or $x \in \union{B,C}$.
+      Therefore $x \in \union{A,\union{B,C}}$.
     End.
 
-    Let us show that $A \union (B \union C) \subseteq (A \union B) \union C$.
-      Let $x \in A \union (B \union C)$.
-      Then $x \in A$ or $x \in B \union C$.
+    Let us show that $\union{A,\union{B,C}} \subclass[eq] \union{\union{A,B},C}$.
+      Let $x \in \union{A,\union{B,C}}$.
+      Then $x \in A$ or $x \in \union{B,C}$.
       Hence $x \in A$ or $x \in B$ or $x \in C$.
-      Thus $x \in A \union B$ or $x \in C$.
-      Therefore $x \in (A \union B) \union C$.
+      Thus $x \in \union{A,B}$ or $x \in C$.
+      Therefore $x \in \union{\union{A,B},C}$.
     End.
   \end{fproof}
 \end{smodule}
