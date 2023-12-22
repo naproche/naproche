@@ -2,17 +2,17 @@
 \usepackage[stex]{naproche}
 \libinput{preamble}
 \begin{document}
-\begin{smodule}[creators={Marcel Schütz}]{union-distributes-over-intersection.ftl}
+\begin{smodule}[creators={Marcel Schütz}]{union-left-distributes-over-intersection.ftl}
   \importmodule[naproche/examples/foundations]{def/classes?intersection.ftl}
   \importmodule[naproche/examples/foundations]{def/classes?union.ftl}
   \importmodule[naproche/examples/foundations]{thm?subclass-antisym.ftl}
 
   \begin{fproposition*}[label=5609225394847744]
     Let $A, B, C$ be classes.
-    Then $\union{A}{\intersection{B,C}} = \intersection{\union{A,B},\union{A,C}}$.
+    Then $\union{A,\intersection{B,C}} = \intersection{\union{A,B},\union{A,C}}$.
   \end{fproposition*}
   \begin{fproof}
-    Let us show that $\union{A}{\intersection{B,C}} \subclass[eq] \intersection{\union{A,B},\union{A,C}}$.
+    Let us show that $\union{A,\intersection{B,C}} \subclass[eq] \intersection{\union{A,B},\union{A,C}}$.
       Let $x \in \union{A}{\intersection{B,C}}$.
       Then $x \in A$ or $x \in \intersection{B,C}$.
       Hence $x \in A$ or ($x \in B$ and $x \in C$).
@@ -21,13 +21,13 @@
       Hence $x \in \intersection{\union{A,B},\union{A,C}}$.
     End.
 
-    Let us show that $\intersection{\union{A,B},\union{A,C}} \subclass[eq] \union{A}{\intersection{B,C}}$.
+    Let us show that $\intersection{\union{A,B},\union{A,C}} \subclass[eq] \union{A,\intersection{B,C}}$.
       Let $x \in \intersection{\union{A,B},\union{A,C}}$.
       Then $x \in \union{A,B}$ and $x \in \union{A,C}$.
       Hence ($x \in A$ or $x \in B$) and ($x \in A$ or $x \in C$).
       Thus $x \in A$ or ($x \in B$ and $x \in C$).
       Therefore $x \in A$ or $x \in \intersection{B,C}$.
-      Hence $x \in \union{A}{\intersection{B,C}}$.
+      Hence $x \in \union{A,\intersection{B,C}}$.
     End.
   \end{fproof}
 \end{smodule}

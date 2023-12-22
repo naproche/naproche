@@ -1,0 +1,21 @@
+\documentclass{article}
+\usepackage[stex]{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[creators={Marcel Schütz}]{union-right-distributes-over-intersection.ftl}
+  \importmodule[naproche/examples/foundations]{thm?intersection-left-distributes-over-union.ftl}
+  \importmodule[naproche/examples/foundations]{thm?intersection-is-commutative.ftl}
+  \importmodule[naproche/examples/foundations]{thm?union-is-commutative.ftl}
+
+  \begin{fproposition*}[label=3761728443645952]
+    Let $A, B, C$ be classes.
+    Then \[\union{\intersection{A,B},C} = \intersection{\union{A,C},\union{B,C}}.\]
+  \end{fproposition*}
+  \begin{fproof}
+    $\union{\intersection{A,B},C}
+      = \union{C,\intersection{A,B}}
+      = \intersection{\union{C,A},\union{C,B}}
+      = \intersection{\union{A,C},\union{B,C}}$.
+  \end{fproof}
+\end{smodule}
+\end{document}
