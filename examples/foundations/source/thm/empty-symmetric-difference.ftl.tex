@@ -1,0 +1,26 @@
+\documentclass{article}
+\usepackage[stex]{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[creators={Marcel Schütz}]{empty-symmetric-difference.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?symmetric-difference.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?empty-class.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?subclass.ftl}
+
+  \begin{fproposition*}[label=462183643217920]
+    Let $A, B$ be classes.
+    If $\symdiff{A}{B} = \emptyclass$ then $A = B$.
+  \end{fproposition*}
+  \begin{fproof}
+    Assume $\symdiff{A}{B} = \emptyclass$.
+    Then $\complement{\union{A,B}}{\intersection{A,B}}$ is empty.
+    Hence every element of $\union{A,B}$ is an element of $\intersection{A,B}$.
+    Thus for all objects $u$ if $u \in A$ or $u \in B$ then $u \in A$ and
+    $u \in B$.
+    Therefore every element of $A$ is an element of $B$.
+    Every element of $B$ is an element of $A$.
+    Hence $A \subclass[eq] B$ and $B \subclass[eq] A$.
+    Thus $A = B$.
+  \end{fproof}
+\end{smodule}
+\end{document}
