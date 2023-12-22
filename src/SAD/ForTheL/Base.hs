@@ -18,7 +18,7 @@ import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
 import Data.Set (Set)
 import Data.Set qualified as Set
-import Data.List (unionBy, intersperse)
+import Data.List (unionBy)
 
 import SAD.Data.Formula
 import SAD.Data.Instr(ParserKind(..))
