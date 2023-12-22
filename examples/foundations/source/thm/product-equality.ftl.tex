@@ -1,0 +1,33 @@
+\documentclass{article}
+\usepackage[stex]{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[creators={Marcel Schütz}]{product-equality.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?product.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?subclass.ftl}
+
+  \begin{fproposition*}[label=2811898749779968]
+    Let $A, A', B, B'$ be nonempty classes.
+    If $\prod{A,B} = \prod{A',B'}$ then $A = A'$ and $B = B'$.
+  \end{fproposition*}
+  \begin{fproof}
+    Assume $\prod{A,B} = \prod{A',B'}$.
+
+    (1) $A \subclass[eq] A'$ and $B \subclass[eq] B'$. \\
+    Proof.
+      Let $a \in A$ and $b \in B$.
+      Then $\tuple{a,b} \in \prod{A,B}$.
+      Hence $\tuple{a,b} \in \prod{A',B'}$.
+      Thus $a \in A'$ and $b \in B'$.
+    Qed.
+
+    (2) $A' \subclass[eq] A$ and $B' \subclass[eq] B$. \\
+    Proof.
+      Let $a \in A'$ and $b \in B'$.
+      Then $\tuple{a,b} \in \prod{A',B'}$.
+      Hence $\tuple{a,b} \in \prod{A,B}$.
+      Thus $a \in A$ and $b \in B$.
+    Qed.
+  \end{fproof}
+\end{smodule}
+\end{document}

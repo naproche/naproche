@@ -1,0 +1,34 @@
+\documentclass{article}
+\usepackage[stex]{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[creators={Marcel Schütz}]{intersection-of-products.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?product.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?intersection.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?subclass.ftl}
+
+  \begin{fproposition*}[label=6608396469927936]
+    Let $A, A', B, B'$ be classes.
+    Then \[\intersection{\prod{A,B},\prod{A',B'}} = \prod{\intersection{A,A'},\intersection{B,B'}}.\]
+  \end{fproposition*}
+  \begin{fproof}
+    Let us show that $\intersection{\prod{A,B},\prod{A',B'}} \subclass[eq] \prod{\intersection{A,A'},\intersection{B,B'}}$.
+      Let $x \in \intersection{\prod{A,B},\prod{A',B'}}$.
+      Then $x \in \prod{A,B}$ and $x \in \prod{A',B'}$.
+      Take objects $a, b$ such that $x = \tuple{a,b}$.
+      Then $a \in A, A'$ and $b \in B, B'$.
+      Hence $a \in \intersection{A,A'}$ and $b \in \intersection{B,B'}$.
+      Thus $x \in \prod{\intersection{A,A'},\intersection{B,B'}}$.
+    End.
+
+    Let us show that $\prod{\intersection{A,A'},\intersection{B,B'}} \subclass[eq] \intersection{\prod{A,B},\prod{A',B'}}$.
+      Let $x \in \prod{\intersection{A,A'},\intersection{B,B'}}$.
+      Take elements $a, b$ such that $x = \tuple{a,b}$.
+      Then $a \in \intersection{A,A'}$ and $b \in \intersection{B,B'}$.
+      Hence $a \in A, A'$ and $b \in B, B'$.
+      Thus $x \in \prod{A,B}$ and $x \in \prod{A',B'}$.
+      Therefore $x \in \intersection{\prod{A,B},\prod{A',B'}}$.
+    End.
+  \end{fproof}
+\end{smodule}
+\end{document}

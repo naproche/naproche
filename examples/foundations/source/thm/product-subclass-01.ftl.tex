@@ -1,0 +1,21 @@
+\documentclass{article}
+\usepackage[stex]{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[creators={Marcel Schütz}]{product-subclass-01.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?product.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?subclass.ftl}
+
+  \begin{fproposition*}[label=4524577426243584]
+    Let $A, B, C$ be classes.
+    If $A \subclass[eq] B$ then $\prod{A,C} \subclass[eq] \prod{B,C}$.
+  \end{fproposition*}
+  \begin{fproof}
+    Assume $A \subclass[eq] B$.
+    Let $x \in \prod{A,C}$.
+    Take $a \in A$ and $c \in C$ such that $x = \tuple{a,c}$.
+    Then $a \in B$.
+    Hence $\tuple{a,c} \in \prod{B,C}$.
+  \end{fproof}
+\end{smodule}
+\end{document}
