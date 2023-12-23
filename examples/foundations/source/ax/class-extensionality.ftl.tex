@@ -1,0 +1,13 @@
+\documentclass{article}
+\usepackage[stex]{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[creators={Marcel Schütz}]{class-extensionality.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?subclass.ftl}
+
+  \begin{faxiom*}[label=4436925823844352]
+    Let $A, B$ be classes.
+    If $A \subclass[eq] B$ and $B \subclass[eq] A$ then $A = B$.
+  \end{faxiom*}
+\end{smodule}
+\end{document}
