@@ -1,0 +1,14 @@
+\documentclass{article}
+\usepackage[stex]{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[creators={Marcel Schütz}]{equality.ftl}
+  \importmodule[naproche/examples/meta-inf]{hardcoded-symbols.ftl}
+
+  \begin{fconvention*}
+    Let $x$ and $y$ agree stand for $x = y$.\\
+    Let $x$ agrees with $y$ stand for $x = y$.\\
+    Let $x$ and $y$ are distinct stand for $x \neq y$.
+  \end{fconvention*}
+\end{smodule}
+\end{document}
