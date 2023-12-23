@@ -183,11 +183,13 @@ signature Tex = sig <|> fsig
       (keyword, starred) <- try $ beginTopLevelSection ["signature"]
       label <- optionalEnvLabel
       content <- signatureBody
+      optLL1 () $ void (chainLL1 introduceMacro)
       endTopLevelSection keyword starred
       addMetadata Signature content label
     fsig = do
       (keyword,label,starred) <- try $ beginFTopLevelSection ["fsignature"]
       content <- signatureBody
+      optLL1 () $ void (chainLL1 introduceMacro)
       endFTopLevelSection keyword starred
       addMetadata Signature content label
 
@@ -212,11 +214,13 @@ definition Tex = def <|> fdef
       (keyword, starred) <- try $ beginTopLevelSection ["definition"]
       label <- optionalEnvLabel
       content <- definitionBody
+      optLL1 () $ void (chainLL1 introduceMacro)
       endTopLevelSection keyword starred
       addMetadata Definition content label
     fdef = do
       (keyword,label,starred) <- try $ beginFTopLevelSection ["fdefinition"]
       content <- definitionBody
+      optLL1 () $ void (chainLL1 introduceMacro)
       endFTopLevelSection keyword starred
       addMetadata Definition content label
 
