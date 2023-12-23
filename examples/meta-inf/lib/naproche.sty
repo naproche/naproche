@@ -144,9 +144,10 @@
 \makeatletter
 \define@key{tls}{label}{\def\tls@label{#1}}
 \define@key{tls}{title}{\def\tls@title{#1}}
+\define@key{tls}{synonyms}{\def\tls@synonyms{#1}}
 
 \NewEnviron{fsignature}[1][]{
-  \setkeys{tls}{label=,title=,#1}
+  \setkeys{tls}{label=,title=,synonyms=,#1}
   \begin{forthel}
     \ifx\tls@title\@empty\begin{signature}\else\begin{signature}[\tls@title]\fi
     \ifx\tls@label\@empty{}\else\label{\tls@label}\fi
@@ -155,7 +156,7 @@
   \end{forthel}
 }
 \NewEnviron{fsignature*}[1][]{
-  \setkeys{tls}{label=,title=,#1}
+  \setkeys{tls}{label=,title=,synonyms=,#1}
   \begin{forthel}
     \ifx\tls@title\@empty\begin{signature*}\else\begin{signature*}[\tls@title]\fi
     \ifx\tls@label\@empty{}\else\label{\tls@label}\fi
@@ -164,7 +165,7 @@
   \end{forthel}
 }
 \NewEnviron{fdefinition}[1][]{
-  \setkeys{tls}{label=,title=,#1}
+  \setkeys{tls}{label=,title=,synonyms=,#1}
   \begin{forthel}
     \ifx\tls@title\@empty\begin{definition}\else\begin{definition}[\tls@title]\fi
     \ifx\tls@label\@empty{}\else\label{\tls@label}\fi
@@ -173,7 +174,7 @@
   \end{forthel}
 }
 \NewEnviron{fdefinition*}[1][]{
-  \setkeys{tls}{label=,title=,#1}
+  \setkeys{tls}{label=,title=,synonyms=,#1}
   \begin{forthel}
     \ifx\tls@title\@empty\begin{definition*}\else\begin{definition*}[\tls@title]\fi
     \ifx\tls@label\@empty{}\else\label{\tls@label}\fi
@@ -182,7 +183,7 @@
   \end{forthel}
 }
 \NewEnviron{faxiom}[1][]{
-  \setkeys{tls}{label=,title=,#1}
+  \setkeys{tls}{label=,title=,synonyms=,#1}
   \begin{forthel}
     \ifx\tls@title\@empty\begin{axiom}\else\begin{axiom}[\tls@title]\fi
     \ifx\tls@label\@empty{}\else\label{\tls@label}\fi
@@ -191,7 +192,7 @@
   \end{forthel}
 }
 \NewEnviron{faxiom*}[1][]{
-  \setkeys{tls}{label=,title=,#1}
+  \setkeys{tls}{label=,title=,synonyms=,#1}
   \begin{forthel}
     \ifx\tls@title\@empty\begin{axiom*}\else\begin{axiom*}[\tls@title]\fi
     \ifx\tls@label\@empty{}\else\label{\tls@label}\fi
@@ -200,7 +201,7 @@
   \end{forthel}
 }
 \NewEnviron{ftheorem}[1][]{
-  \setkeys{tls}{label=,title=,#1}
+  \setkeys{tls}{label=,title=,synonyms=,#1}
   \begin{forthel}
     \ifx\tls@title\@empty\begin{theorem}\else\begin{theorem}[\tls@title]\fi
     \ifx\tls@label\@empty{}\else\label{\tls@label}\fi
@@ -209,7 +210,7 @@
   \end{forthel}
 }
 \NewEnviron{ftheorem*}[1][]{
-  \setkeys{tls}{label=,title=,#1}
+  \setkeys{tls}{label=,title=,synonyms=,#1}
   \begin{forthel}
     \ifx\tls@title\@empty\begin{theorem*}\else\begin{theorem*}[\tls@title]\fi
     \ifx\tls@label\@empty{}\else\label{\tls@label}\fi
@@ -218,7 +219,7 @@
   \end{forthel}
 }
 \NewEnviron{fproposition}[1][]{
-  \setkeys{tls}{label=,title=,#1}
+  \setkeys{tls}{label=,title=,synonyms=,#1}
   \begin{forthel}
     \ifx\tls@title\@empty\begin{proposition}\else\begin{proposition}[\tls@title]\fi
     \ifx\tls@label\@empty{}\else\label{\tls@label}\fi
@@ -227,7 +228,7 @@
   \end{forthel}
 }
 \NewEnviron{fproposition*}[1][]{
-  \setkeys{tls}{label=,title=,#1}
+  \setkeys{tls}{label=,title=,synonyms=,#1}
   \begin{forthel}
     \ifx\tls@title\@empty\begin{proposition*}\else\begin{proposition*}[\tls@title]\fi
     \ifx\tls@label\@empty{}\else\label{\tls@label}\fi
@@ -236,7 +237,7 @@
   \end{forthel}
 }
 \NewEnviron{flemma}[1][]{
-  \setkeys{tls}{label=,title=,#1}
+  \setkeys{tls}{label=,title=,synonyms=,#1}
   \begin{forthel}
     \ifx\tls@title\@empty\begin{lemma}\else\begin{lemma}[\tls@title]\fi
     \ifx\tls@label\@empty{}\else\label{\tls@label}\fi
@@ -245,7 +246,7 @@
   \end{forthel}
 }
 \NewEnviron{flemma*}[1][]{
-  \setkeys{tls}{label=,title=,#1}
+  \setkeys{tls}{label=,title=,synonyms=,#1}
   \begin{forthel}
     \ifx\tls@title\@empty\begin{lemma*}\else\begin{lemma*}[\tls@title]\fi
     \ifx\tls@label\@empty{}\else\label{\tls@label}\fi
@@ -254,7 +255,7 @@
   \end{forthel}
 }
 \NewEnviron{fcorollary}[1][]{
-  \setkeys{tls}{label=,title=,#1}
+  \setkeys{tls}{label=,title=,synonyms=,#1}
   \begin{forthel}
     \ifx\tls@title\@empty\begin{corollary}\else\begin{corollary}[\tls@title]\fi
     \ifx\tls@label\@empty{}\else\label{\tls@label}\fi
@@ -263,7 +264,7 @@
   \end{forthel}
 }
 \NewEnviron{fcorollary*}[1][]{
-  \setkeys{tls}{label=,title=,#1}
+  \setkeys{tls}{label=,title=,synonyms=,#1}
   \begin{forthel}
     \ifx\tls@title\@empty\begin{corollary*}\else\begin{corollary*}[\tls@title]\fi
     \ifx\tls@label\@empty{}\else\label{\tls@label}\fi

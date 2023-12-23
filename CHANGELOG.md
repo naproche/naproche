@@ -84,12 +84,12 @@ dialect of ForTheL, respectively.
     \end{forthel}
     ```
 
-    Moreover, the `f`-variants take an optional `label` and an optional `title`
-    argument, e.g.:
+    Moreover, the `f`-variants take optional `label`, `title` and `synonyms`
+    arguments, e.g.:
     ```
-    \begin{ftheorem}[label=cantor_1891,title={Cantor's Theorem}]
+    \begin{fdefinition}[label=defOfSubset,title=Subset,synonyms={subset/-s,superset/-s}]
       ...
-    \end{ftheorem}
+    \end{fdefinition}
     ```
 
   * **Fixed:** (TEX) Comments outside ForTheL environments are now recognized by

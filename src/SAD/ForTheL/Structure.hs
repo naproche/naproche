@@ -37,6 +37,8 @@ import SAD.Data.Formula
 import SAD.Data.Tag qualified as Tag
 import SAD.Data.Text.Decl
 
+import Isabelle.Position qualified as Position
+
 
 -- * Parsing a ForTheL text
 
@@ -101,27 +103,45 @@ beginFTopLevelSection keywords = do
   starred <- optLL1 False $ getMarkupToken sectionHeader "*" >> pure True
   symbol "}" <?> "}"
   -- Optional name and/or title:
-  label <- optLL1 Nothing $ do
+  label <- optLLx Nothing $ do
     symbol "[" <?> "["
     -- Label (optional):
-    label' <- optLL1 Nothing $ do
+    label <- optLLx Nothing $ do
       token "label" <?> "label"
       symbol "=" <?> "="
       Just <$> identifier
     -- Title (optional):
-    optLL1 () $ do
-      case label' of
+    title <- optLLx Nothing $ do
+      case label of
         Nothing -> token "title" <?> "title"
         Just _ -> (symbol "," <?> ",") >> (token "title" <?> "title")
       symbol "=" <?> "="
-      optLL1 [] $ chainLL1 notDelimiter
-      return ()
+      Just <$> chainLL1 notDelimiter
+    synonyms <- optLLx Nothing $ do
+      case title of
+        Nothing -> case label of
+          Nothing -> token "synonyms" <?> "synonyms"
+          Just _ -> (symbol "," <?> ",") >> (token "synonyms" <?> "synonyms")
+        Just _ -> (symbol "," <?> ",") >> (token "synonyms" <?> "synonyms")
+      symbol "=" <?> "="
+      symbol "{" <?> "{"
+      syns <- sepByLL1  synonymBody (symbol ",")
+      symbol "}" <?> "}"
+      return $ Just syns
     symbol "]" <?> "]"
-    return label'
+    return label
   return (key,label,starred)
   where
     notDelimiter = tokenPrim notCl
     notCl t = let tk = showToken t in guard (tk /= "]" && tk /= ",") >> return tk
+    synonymBody = do
+      beginPos <- getPos
+      synonymList <- ap (pure Synonym) readWords
+      endPos <- getPos
+      let pos = Position.range_position (beginPos,endPos)
+      addDropReport pos
+      let syn = addSynonym $ ProofTextInstr pos synonymList
+      syn
 
 endFTopLevelSection :: Text -> Bool -> FTL ()
 endFTopLevelSection keyword starred = do
