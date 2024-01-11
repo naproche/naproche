@@ -22,7 +22,7 @@ import Data.Text.Lazy qualified as Text
 import SAD.Data.Text.Block
 import SAD.Data.Instr as Instr
     ( Argument(Text, File, Read),
-      ParserKind(Ftl),
+      ParserKind(..),
       Instr(GetArgument))
 import SAD.ForTheL.Base
 import SAD.ForTheL.Structure
@@ -32,6 +32,8 @@ import SAD.Parser.Token
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
 import SAD.Parser.Error
+import SAD.Parser.FTL.Lexer qualified as FTL
+import SAD.Parser.TEX.Lexer qualified as TEX
 import SAD.Core.Message qualified as Message
 
 import Isabelle.File qualified as File
@@ -50,7 +52,7 @@ readInit :: Bytes -> IO [(Position.T, Instr)]
 readInit file | Bytes.null file = return []
 readInit file = do
   input <- catch (File.read (make_string file)) $ Message.errorParser (Position.file_only $ make_bytes file) . make_bytes . ioeGetErrorString
-  let tokens = filter isProperToken $ tokenize Ftl (Position.file $ make_bytes file) $ Text.fromStrict $ make_text input
+  let tokens = filter isProperToken $ FTL.tokenize (Position.file $ make_bytes file) $ Text.fromStrict $ make_text input
   fst <$> launchParser instructionFile (initState Program.console tokens)
 
 instructionFile :: FTL [(Position.T, Instr)]
@@ -124,7 +126,9 @@ reader pathToLibrary doneFiles = go
 reader0 :: Position.T -> Text -> State FState -> IO ([ProofText], State FState)
 reader0 pos text pState = do
   let dialect = parserKind pState
-  let tokens = tokenize dialect pos text
+  let tokens = case dialect of
+                 Ftl -> FTL.tokenize pos text
+                 Tex -> TEX.tokenize pos text
   Message.reports $ mapMaybe reportComments tokens
   let properTokens = filter isProperToken tokens
       st = State (addInits dialect ((stUser pState) {tvrExpr = []})) properTokens dialect Position.none

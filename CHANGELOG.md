@@ -11,6 +11,12 @@ dialect of ForTheL, respectively.
 
 ## Current development version
 
+### Changes on the code base
+
+  * **Changed:** The FTL and TEX lexers have been separated and put into new
+    modules `SAD.Parser.FTL.Lexer` and `SAD.Parser.TEX.Lexer`.
+
+
 ### Changes on the LaTeX styles
 
   * **Changed:** Style files have been moved from `lib/tex/` to
