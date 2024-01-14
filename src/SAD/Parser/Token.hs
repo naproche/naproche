@@ -15,16 +15,15 @@ module SAD.Parser.Token (
   showToken,
   isProperToken,
   makeToken,
+  makeEOF,
 
   -- * Helper functions
-  isLexeme,
   reportComments,
   composeTokens,
   isEOF,
   noTokens
 ) where
 
-import Data.Char
 import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
 
@@ -57,6 +56,9 @@ makeToken :: Text -> Position.T -> TokenType -> Token
 makeToken tokenText tokenPos tokenType = let newPos = Position.symbol_explode tokenText tokenPos in
   Token tokenText (Position.range_position (tokenPos, newPos)) tokenType
 
+makeEOF :: Position.T -> Token
+makeEOF = EOF
+
 -- Get the end position of a token
 tokenEndPos :: Token -> Position.T
 tokenEndPos tok@Token{} = Position.symbol_explode (tokenText tok) (tokenPos tok)
@@ -79,9 +81,6 @@ isProperToken t@Token{} = case tokenType t of
   WhiteSpaceBefore -> True
   Comment -> False
 isProperToken EOF{} = True
-
-isLexeme :: Char -> Bool
-isLexeme c = isAscii c && isAlphaNum c
 
 -- | Markup report for comments
 reportComments :: Token -> Maybe Position.Report

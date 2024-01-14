@@ -32,8 +32,8 @@ import SAD.Parser.Token
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
 import SAD.Parser.Error
-import SAD.Parser.FTL.Lexer qualified as FTL
-import SAD.Parser.TEX.Lexer qualified as TEX
+import SAD.Lexer.FTL qualified as FTL
+import SAD.Lexer.TEX qualified as TEX
 import SAD.Core.Message qualified as Message
 
 import Isabelle.File qualified as File

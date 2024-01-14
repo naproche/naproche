@@ -8,14 +8,15 @@
 
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.Parser.TEX.Lexer (tokenize) where
+module SAD.Lexer.TEX (tokenize) where
 
 import Data.Char
 import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
 import Data.Maybe (fromMaybe)
 
-import SAD.Parser.Token (Token(..), TokenType(..), isLexeme, makeToken)
+import SAD.Parser.Token (Token(..), TokenType(..), makeToken)
+import SAD.Lexer.Primitives
 
 import Isabelle.Position qualified as Position
 
@@ -129,7 +130,7 @@ tokenize startPos = processToken OutsideForthelEnv startPos NoWhiteSpaceBefore
     processToken InsideForthelEnv currentPos whitespaceBefore remainingText
       | not (Text.null lexeme) = newTok : toks
       where
-        (lexeme, rest) = Text.span isLexeme remainingText
+        (lexeme, rest) = Text.span isAsciiAlphaNum remainingText
         newPos = Position.symbol_explode lexeme currentPos
         newTok = makeToken lexeme currentPos whitespaceBefore
         toks = processToken InsideForthelEnv newPos NoWhiteSpaceBefore rest

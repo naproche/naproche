@@ -13,8 +13,8 @@ dialect of ForTheL, respectively.
 
 ### Changes on the code base
 
-  * **Changed:** The FTL and TEX lexers have been separated and put into new
-    modules `SAD.Parser.FTL.Lexer` and `SAD.Parser.TEX.Lexer`.
+  * **Changed:** The FTL and TEX lexers have been separated and moved to
+    `src/SAD/Lexer/`
 
 
 ### Changes on the LaTeX styles
