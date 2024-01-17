@@ -27,6 +27,7 @@ import Data.Maybe (fromJust, fromMaybe, maybeToList)
 import Data.Monoid (Sum, getSum)
 import Data.Functor ((<&>))
 import System.Timeout (timeout)
+import Control.Monad (MonadPlus(..), guard, when, unless, msum, liftM2, liftM3)
 import Control.Monad.Writer qualified as W
 import Data.Map qualified as Map
 import Data.Set qualified as Set
