@@ -38,6 +38,7 @@ module SAD.Core.Base (
 ) where
 
 import Control.Applicative (Alternative(..))
+import Control.Monad (MonadPlus(..), liftM, ap, guard, when, unless)
 import Control.Monad.Reader
 import Control.Monad.State
 import Data.IORef
