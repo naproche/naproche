@@ -63,14 +63,15 @@ initState context tokens = State (initFState context) tokens Ftl Position.none
 -- * Reader loop
 
 -- | Parse one or more ForTheL texts
-readProofText :: Bytes          -- ^ path to library from where other ForTheL
+readProofText :: Bytes          -- ^ name of enviroment variable containing
+                                -- path to formalizations directory
                                 -- texts can be imported via @read(tex)@
                                 -- instructions (e.g. @$NAPROCHE_HOME/examples)
               -> [ProofText]    -- ^ ForTheL texts to be parsed
               -> IO [ProofText]
-readProofText pathToLibrary text0 = do
+readProofText variable text0 = do
   context <- Program.thread_context
-  path <- getenv pathToLibrary
+  path <- getenv variable
   (text, reports) <- reader path [] [initState context noTokens] text0
   when (Program.is_pide context) $ Message.reports reports
   return text
