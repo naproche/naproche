@@ -19,6 +19,7 @@ module SAD.Core.Extract (
 import Data.Map qualified as Map
 import Data.List
 import Data.Maybe
+import Control.Monad (MonadPlus(..), guard)
 import Control.Monad.State
 import Control.Monad.Reader
 import Data.Text.Lazy qualified as Text
