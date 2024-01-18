@@ -13,7 +13,7 @@ module SAD.ForTheL.Base where
 import Control.Applicative
 import Control.Monad
 import Control.Monad.State.Class (gets, modify)
-import Data.Char (isAlpha, isAlphaNum)
+import Data.Char (isAlpha, isDigit)
 import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
 import Data.Set (Set)
@@ -466,7 +466,7 @@ var = do
   let v' = v <> primes
   return (PosVar (VarConstant v') pos)
   where
-    isPlainVarName s = Text.all isAlphaNum s && isAlpha (Text.head s)
+    isPlainVarName s = isAlpha (Text.head s) && (Text.all isDigit . Text.tail) s
     isTexVarName s = Text.head s == '\\' && Text.tail s `elem` greek
 
 
