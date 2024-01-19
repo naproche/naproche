@@ -200,6 +200,17 @@ tokenize Tex startPos = procToken OutsideForthelEnv startPos NoWhiteSpaceBefore
           | Text.isPrefixOf "begin{forthel}" rest ->
               let newPos = Position.symbol_explode_string "\\begin{forthel}" currentPos
               in procToken InsideForthelEnv newPos NoWhiteSpaceBefore $ Text.drop (Text.length "\\begin{forthel}") remainingText
+          | Text.isPrefixOf "section{" rest ->
+              let (section_name, _) = Text.breakOn "}" $ fromMaybe "" (Text.stripPrefix "section{" rest)
+                  token_text = "\\section{" <> section_name <> "}"
+                  newPos = Position.symbol_explode_string (Text.unpack token_text) currentPos
+                  resetpretyping_instruction = [
+                    makeToken "[" Position.none WhiteSpaceBefore,
+                    makeToken "resetpretyping" currentPos NoWhiteSpaceBefore,
+                    makeToken "]" Position.none NoWhiteSpaceBefore
+                    ]
+                  toks = procToken OutsideForthelEnv newPos WhiteSpaceBefore $ Text.drop (Text.length token_text) remainingText
+                in resetpretyping_instruction ++ toks
         Just ('%', rest) -> tok:toks
           where
             (comment, rest) = Text.break (== '\n') remainingText

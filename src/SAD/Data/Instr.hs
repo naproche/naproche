@@ -60,7 +60,8 @@ data Drop =
 -- Instructions
 
 data Command =
-    PrintRules
+    ResetPretyping
+  | PrintRules
   | PrintThesis
   | PrintContext
   | PrintContextFiltered
@@ -179,7 +180,8 @@ onlytranslateParam = Param.flag "onlytranslate" "translate input text and exit" 
 
 keywordsCommand :: [(Command, Text)]
 keywordsCommand =
- [(PrintRules, "rules"),
+ [(ResetPretyping, "resetpretyping"),
+  (PrintRules, "rules"),
   (PrintThesis, "thesis"),
   (PrintContext, "context"),
   (PrintContextFiltered, "filter"),

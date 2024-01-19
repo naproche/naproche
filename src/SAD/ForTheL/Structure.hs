@@ -51,7 +51,7 @@ forthel dialect = repeatUntil (pure <$> topLevelBlock dialect)
 topLevelBlock :: ParserKind -> FTL ProofText
 topLevelBlock dialect =
       topLevelSection dialect
-  <|> (bracketExpression >>= addSynonym)
+  <|> (bracketExpression >>= addSynonym >>= resetPretyping)
   <|> try introduceMacro
   <|> pretypeVariable
 
@@ -205,6 +205,13 @@ addSynonym :: ProofText -> FTL ProofText
 addSynonym text = case text of
   ProofTextInstr _ (Synonym syms) | length syms > 1 ->
     modify (\st -> st {strSyms = syms : strSyms st}) >> return text
+  _ -> return text
+
+-- | If ProofText has ResetPretyping instruction, we reset the pretyping.
+resetPretyping :: ProofText -> FTL ProofText
+resetPretyping text = case text of
+  ProofTextInstr _ (Command ResetPretyping) ->
+    modify (\st -> st {tvrExpr = []}) >> return text
   _ -> return text
 
 -- | Succeeds if the ProofText consists of an exit instruction.
