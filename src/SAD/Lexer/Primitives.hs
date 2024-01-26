@@ -16,16 +16,43 @@ import SAD.Lexer.Base
 
 -- * Lexers
 
--- | One or more alphanumeric ASCII character
-asciiAlphaNum :: forall state. Lexer state Text
-asciiAlphaNum = Text.pack <$> some (satisfy isAsciiAlphaNum)
+-- | One or more alphanumeric ASCII characters
+asciiLexeme :: forall state. Lexer state Text
+asciiLexeme = Text.pack <$> some (satisfy isAsciiAlphaNum)
 
 -- | A single ASCII symbol
 asciiSymbol :: forall state. Lexer state Text
 asciiSymbol = Text.singleton <$> satisfy isAsciiSymbol
 
+-- | A single ASCII character
 asciiChar :: forall state. Lexer state Text
 asciiChar = Text.singleton <$> satisfy Char.isAscii
+
+
+-- | One or more alphanumeric ASCII characters such that the result does not
+-- match a given list of exceptions
+asciiLexemeExcept :: forall state. [String] -> Lexer state Text
+asciiLexemeExcept exceptions = do
+  result <- some (satisfy isAsciiAlphaNum)
+  if result `elem` exceptions
+    then empty
+    else return $ Text.pack result
+
+-- | A single ASCII symbol that does not match a given list of exceptions
+asciiSymbolExcept :: forall state. [Char] -> Lexer state Text
+asciiSymbolExcept exceptions = do
+  result <- satisfy isAsciiSymbol
+  if result `elem` exceptions
+    then empty
+    else return $ Text.singleton result
+
+-- | A single ASCII character that does not match a given list of exceptions
+asciiCharExcept :: forall state. [Char] -> Lexer state Text
+asciiCharExcept exceptions = do
+  result <- satisfy Char.isAscii
+  if result `elem` exceptions
+    then empty
+    else return $ Text.singleton result
 
 
 -- * Character Sets
