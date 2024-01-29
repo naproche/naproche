@@ -12,7 +12,6 @@ module SAD.Import.Reader (
   readProofText
 ) where
 
-import Data.Maybe
 import Control.Monad
 import System.IO.Error
 import Control.Exception
@@ -52,7 +51,7 @@ readInit :: Bytes -> IO [(Position.T, Instr)]
 readInit file | Bytes.null file = return []
 readInit file = do
   input <- catch (File.read (make_string file)) $ Message.errorParser (Position.file_only $ make_bytes file) . make_bytes . ioeGetErrorString
-  let tokens = filter isProperToken $ FTL.tokenize (Position.file $ make_bytes file) $ Text.fromStrict $ make_text input
+  tokens <- FTL.tokenize (Position.file $ make_bytes file) $ Text.fromStrict $ make_text input
   fst <$> launchParser instructionFile (initState Program.console tokens)
 
 instructionFile :: FTL [(Position.T, Instr)]
@@ -126,12 +125,10 @@ reader pathToLibrary doneFiles = go
 reader0 :: Position.T -> Text -> State FState -> IO ([ProofText], State FState)
 reader0 pos text pState = do
   let dialect = parserKind pState
-  let tokens = case dialect of
-                 Ftl -> FTL.tokenize pos text
-                 Tex -> TEX.tokenize pos text
-  Message.reports $ mapMaybe reportComments tokens
-  let properTokens = filter isProperToken tokens
-      st = State (addInits dialect ((stUser pState) {tvrExpr = []})) properTokens dialect Position.none
+  tokens <- case dialect of
+    Ftl -> FTL.tokenize pos text
+    Tex -> TEX.tokenize pos text
+  let st = State (addInits dialect ((stUser pState) {tvrExpr = []})) tokens dialect Position.none
   chooseParser st
 
 

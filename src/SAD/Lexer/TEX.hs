@@ -15,16 +15,31 @@ import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
 import Data.Maybe (fromMaybe)
 
-import SAD.Parser.Token (Token(..), TokenType(..), makeToken)
+import SAD.Parser.Token (Token(..), TokenType(..), makeToken, isProperToken)
 import SAD.Lexer.Primitives
+import SAD.Core.Message qualified as Message
 
 import Isabelle.Position qualified as Position
+import Isabelle.Markup qualified as Markup
 
 
 data ForthelState = InsideForthelEnv | OutsideForthelEnv deriving (Eq)
 
-tokenize :: Position.T -> Text -> [Token]
-tokenize startPos = processToken OutsideForthelEnv startPos NoWhiteSpaceBefore
+-- | Report all comments and remove them from a list of tokens.
+filterTex :: [Token] -> IO [Token]
+filterTex [] = pure []
+filterTex (token:rest) = if isProperToken token
+  then fmap (token :) (filterTex rest)
+  else do
+    Message.reports [(tokenPos token, Markup.comment1)]
+    filterTex rest
+
+-- | Split a TEX text (together with a starting position) into tokens,
+-- discarding all comments.
+tokenize :: Position.T -> Text -> IO [Token]
+tokenize startPos input = do
+  let tokens = processToken OutsideForthelEnv startPos NoWhiteSpaceBefore input
+  filterTex tokens
   where
     processToken :: ForthelState -> Position.T -> TokenType -> Text -> [Token]
     -- When outside a forthel environment, ignore anything till the next

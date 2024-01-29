@@ -14,30 +14,49 @@ import Control.Monad.State.Class
 import Text.Megaparsec hiding (Token, State, token)
 import Text.Megaparsec.Char
 
-import SAD.Parser.Token (Token, TokenType(..), makeToken, makeEOF)
+import SAD.Parser.Token (Token, TokenType(..), makeToken, makeEOF, tokenPos, isProperToken)
 import SAD.Lexer.Base
 import SAD.Lexer.Primitives qualified as Primitives
+import SAD.Core.Message qualified as Message
 
 import Isabelle.Position qualified as Position
+import Isabelle.Markup qualified as Markup
 
 
--- Split an FTL text (together with a starting position) into tokens
-tokenize :: Position.T -> Text -> [Token]
-tokenize pos text = let initState = LexerState{
+-- * Tokenizing FTL input
+
+-- | Split an FTL text (together with a starting position) into tokens,
+-- discarding all comments.
+tokenize :: Position.T -> Text -> IO [Token]
+tokenize pos text = let initState = LexerState {
     position = pos,
     whiteSpaceBefore = False
   } in
   case runLexer ftlText initState "input" text of
     Left _ -> error "Unknown lexing error."
-    Right tokens -> tokens
+    Right tokens -> filterFtl tokens
 
+-- | Report all comments and remove them from a list of tokens.
+filterFtl :: [Token] -> IO [Token]
+filterFtl [] = pure []
+filterFtl (token:rest) = if isProperToken token
+  then fmap (token :) (filterFtl rest)
+  else do
+    Message.reports [(tokenPos token, Markup.comment1)]
+    filterFtl rest
+
+
+-- * FTL-specific Lexer Type
+
+type FtlLexer result = Lexer LexerState result
 
 data LexerState = LexerState {
     position :: Position.T,   -- ^ Current position
     whiteSpaceBefore :: Bool  -- ^ Whether the current token is prepended by white space
   }
 
-type FtlLexer result = Lexer LexerState result
+
+-- * FTL Lexers
 
 -- | A ForTheL text in the FTL dialect: Arbitrary many tokens, interspersed with
 -- optional white space, until the end of the input text is reached.
