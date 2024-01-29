@@ -98,12 +98,12 @@ reader pathToLibrary doneFiles = go
           text <-
             catch (if Text.null file then getContents else make_string <$> File.read (Text.unpack file))
               (Message.errorParser (Position.file_only $ make_bytes file) . make_bytes . ioeGetErrorString)
-          (newProofText, newState) <- reader0 (Position.file $ make_bytes file) (Text.pack text) (pState {parserKind = parserKind'})
+          (newProofText, newState) <- parse (Position.file $ make_bytes file) (Text.pack text) (pState {parserKind = parserKind'})
           -- state from before reading is still here
           reader pathToLibrary (file:doneFiles) (newState:pState:states) newProofText
 
     go (pState:states) [ProofTextInstr _ (GetArgument (Text pk) text)] = do
-      (newProofText, newState) <- reader0 Position.start text (pState {parserKind = pk})
+      (newProofText, newState) <- parse Position.start text (pState {parserKind = pk})
       go (newState:pState:states) newProofText -- state from before reading is still here
 
     -- This says that we are only really processing the last instruction in a [ProofText].
@@ -122,16 +122,26 @@ reader pathToLibrary doneFiles = go
 
     go (state:_) [] = return ([], reports $ stUser state)
 
-reader0 :: Position.T -> Text -> State FState -> IO ([ProofText], State FState)
-reader0 pos text pState = do
-  let dialect = parserKind pState
+
+-- * Parsing
+
+-- | Parse a ForTheL Text with a given starting position and a parser state.
+parse :: Position.T -> Text -> State FState -> IO ([ProofText], State FState)
+parse startPos text parserState = do
+  let dialect = parserKind parserState
   tokens <- case dialect of
-    Ftl -> FTL.tokenize pos text
-    Tex -> TEX.tokenize pos text
-  let st = State (addInits dialect ((stUser pState) {tvrExpr = []})) tokens dialect Position.none
-  chooseParser st
+    Ftl -> FTL.tokenize startPos text
+    Tex -> TEX.tokenize startPos text
+  let initParserState = State {
+    stUser  = addInits dialect ((stUser parserState) {tvrExpr = []}),
+    stInput = tokens,
+    parserKind = dialect,
+    lastPosition = Position.none
+  }
+  chooseParser initParserState
 
-
+-- | Lauch the ForTheL parser wrt. the dialect given by in the current parser
+-- state.
 chooseParser :: State FState -> IO ([ProofText], State FState)
 chooseParser st = let dialect = parserKind st in
   launchParser (forthel dialect) st
