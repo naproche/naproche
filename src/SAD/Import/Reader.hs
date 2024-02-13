@@ -31,7 +31,7 @@ import SAD.Parser.Token
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
 import SAD.Parser.Error
-import SAD.Lexer.FTL qualified as FTL
+import SAD.Tokenizer.FTL qualified as FTL
 import SAD.Lexer.TEX qualified as TEX
 import SAD.Core.Message qualified as Message
 

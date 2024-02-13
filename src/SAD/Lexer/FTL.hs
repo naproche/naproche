@@ -4,62 +4,17 @@
 -- Lexing FTL input.
 
 
-{-# LANGUAGE OverloadedStrings #-}
-
-module SAD.Lexer.FTL (tokenize) where
+module SAD.Lexer.FTL (Lexeme(..), processLexemes) where
 
 import Data.Text.Lazy (Text)
-import Data.Text.Lazy qualified as Text
 import Control.Monad.State.Class
 import Text.Megaparsec hiding (Token, State, token)
 import Text.Megaparsec.Char
 
-import SAD.Parser.Token qualified as Token
 import SAD.Lexer.Base
 import SAD.Lexer.Char
-import SAD.Core.Message qualified as Message
 
 import Isabelle.Position qualified as Position
-import Isabelle.Markup qualified as Markup
-
-
--- * Tokenizing FTL input
-
--- | Split an FTL text (together with a starting position) into tokens,
--- discarding all comments.
-tokenize :: Position.T -> Text -> IO [Token.Token]
-tokenize pos text = let initState = LexerState {
-    position = pos,
-    whiteSpaceBefore = False
-  } in
-  case runLexer ftlText initState "input" text of
-    Left _ -> error "Unknown lexing error."
-    Right lexemes -> filterFtl lexemes
-
--- | Report all comments and remove them from a list of tokens.
-filterFtl :: [Lexeme] -> IO [Token.Token]
-filterFtl [] = pure []
-filterFtl (lexeme:rest) = do
-  mbToken <- lexemeToToken lexeme
-  case mbToken of
-    Nothing -> filterFtl rest
-    Just token -> fmap (token :) (filterFtl rest)
-
-lexemeToToken :: Lexeme -> IO (Maybe Token.Token)
-lexemeToToken (Comment _ pos) = do
-  Message.reports [(pos, Markup.comment1)]
-  return Nothing
-lexemeToToken (EOF pos) = pure $ Just $ Token.EOF pos
-lexemeToToken (Symbol char pos ws) = pure $ Just $ Token.Token {
-    Token.tokenText = Text.singleton char,
-    Token.tokenPos = pos,
-    Token.tokenType = if ws then Token.WhiteSpaceBefore else Token.NoWhiteSpaceBefore
-  }
-lexemeToToken (Lexeme text pos ws) = pure $ Just $ Token.Token {
-    Token.tokenText = Text.pack text,
-    Token.tokenPos = pos,
-    Token.tokenType = if ws then Token.WhiteSpaceBefore else Token.NoWhiteSpaceBefore
-  }
 
 
 -- * FTL-specific Lexer Type
@@ -76,6 +31,17 @@ data Lexeme =
   | Lexeme !String !Position.T !Bool
   | Comment !String !Position.T
   | EOF !Position.T
+
+-- | Lex an FTL text (together with a starting position) and pass the result to
+-- a given function.
+processLexemes :: Position.T -> Text -> ([Lexeme] -> a) -> a
+processLexemes pos text f = let initState = LexerState {
+    position = pos,
+    whiteSpaceBefore = False
+  } in
+  case runLexer ftlText initState "input" text of
+    Left _ -> error "Unknown lexing error."
+    Right lexemes -> f lexemes
 
 
 -- * FTL Lexers
