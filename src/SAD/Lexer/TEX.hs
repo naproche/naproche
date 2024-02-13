@@ -10,7 +10,6 @@
 
 module SAD.Lexer.TEX (tokenize) where
 
-import Data.Char
 import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
 import Data.Maybe (fromMaybe)
@@ -145,7 +144,7 @@ tokenize startPos input = do
     processToken InsideForthelEnv currentPos whitespaceBefore remainingText
       | not (Text.null lexeme) = newTok : toks
       where
-        (lexeme, rest) = Text.span isAsciiAlphaNum remainingText
+        (lexeme, rest) = Text.span isAlphaNum remainingText
         newPos = Position.symbol_explode lexeme currentPos
         newTok = makeToken lexeme currentPos whitespaceBefore
         toks = processToken InsideForthelEnv newPos NoWhiteSpaceBefore rest
@@ -200,7 +199,7 @@ tokenize startPos input = do
           "right" -> toks
           _ -> newTok : toks
           where
-            (name, rest') = Text.span isAlpha rest
+            (name, rest') = Text.span isLetter rest
             texCommand = Text.cons '\\' name
             newPos = Position.symbol_explode texCommand currentPos
             newTok = makeToken texCommand currentPos whitespaceBefore
