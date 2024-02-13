@@ -14,7 +14,7 @@ import Control.Monad.State.Class
 import Text.Megaparsec hiding (Token, State, token)
 import Text.Megaparsec.Char
 
-import SAD.Parser.Token (Token, TokenType(..), makeToken, makeEOF, tokenPos, isProperToken)
+import SAD.Parser.Token qualified as Token
 import SAD.Lexer.Base
 import SAD.Lexer.Primitives qualified as Primitives
 import SAD.Core.Message qualified as Message
@@ -27,23 +27,39 @@ import Isabelle.Markup qualified as Markup
 
 -- | Split an FTL text (together with a starting position) into tokens,
 -- discarding all comments.
-tokenize :: Position.T -> Text -> IO [Token]
+tokenize :: Position.T -> Text -> IO [Token.Token]
 tokenize pos text = let initState = LexerState {
     position = pos,
     whiteSpaceBefore = False
   } in
   case runLexer ftlText initState "input" text of
     Left _ -> error "Unknown lexing error."
-    Right tokens -> filterFtl tokens
+    Right lexemes -> filterFtl lexemes
 
 -- | Report all comments and remove them from a list of tokens.
-filterFtl :: [Token] -> IO [Token]
+filterFtl :: [Lexeme] -> IO [Token.Token]
 filterFtl [] = pure []
-filterFtl (token:rest) = if isProperToken token
-  then fmap (token :) (filterFtl rest)
-  else do
-    Message.reports [(tokenPos token, Markup.comment1)]
-    filterFtl rest
+filterFtl (lexeme:rest) = do
+  mbToken <- lexemeToToken lexeme
+  case mbToken of
+    Nothing -> filterFtl rest
+    Just token -> fmap (token :) (filterFtl rest)
+
+lexemeToToken :: Lexeme -> IO (Maybe Token.Token)
+lexemeToToken (Comment _ pos) = do
+  Message.reports [(pos, Markup.comment1)]
+  return Nothing
+lexemeToToken (EOF pos) = pure $ Just $ Token.EOF pos
+lexemeToToken (Symbol char pos ws) = pure $ Just $ Token.Token {
+    Token.tokenText = char,
+    Token.tokenPos = pos,
+    Token.tokenType = if ws then Token.WhiteSpaceBefore else Token.NoWhiteSpaceBefore
+  }
+lexemeToToken (Alphanum text pos ws) = pure $ Just $ Token.Token {
+    Token.tokenText = text,
+    Token.tokenPos = pos,
+    Token.tokenType = if ws then Token.WhiteSpaceBefore else Token.NoWhiteSpaceBefore
+  }
 
 
 -- * FTL-specific Lexer Type
@@ -51,69 +67,71 @@ filterFtl (token:rest) = if isProperToken token
 type FtlLexer result = Lexer LexerState result
 
 data LexerState = LexerState {
-    position :: Position.T,   -- ^ Current position
-    whiteSpaceBefore :: Bool  -- ^ Whether the current token is prepended by white space
+    position :: !Position.T,   -- ^ Current position
+    whiteSpaceBefore :: !Bool  -- ^ Whether the current token is prepended by white space
   }
+
+data Lexeme =
+    Symbol !Text !Position.T !Bool
+  | Alphanum !Text !Position.T !Bool
+  | Comment !Text !Position.T
+  | EOF !Position.T
 
 
 -- * FTL Lexers
 
 -- | A ForTheL text in the FTL dialect: Arbitrary many tokens, interspersed with
 -- optional white space, until the end of the input text is reached.
-ftlText :: FtlLexer [Token]
+ftlText :: FtlLexer [Lexeme]
 ftlText = do
   optional whiteSpace
-  tokens <- many (token <* optional whiteSpace)
-  eofToken <- endOfInput
-  return $ tokens ++ [eofToken]
-
--- | A token: A comment, lexeme or symbol.
-token :: FtlLexer Token
-token = comment <|> lexeme <|> symbol
+  lexemes <- many $ (comment <|> alphanum <|> symbol) <* optional whiteSpace
+  eofLexeme <- endOfInput
+  return $ lexemes ++ [eofLexeme]
 
 -- | A lexeme: Longest possible string of alpha-numeric ASCII characters.
-lexeme :: FtlLexer Token
-lexeme = label "lexeme" $ do
+alphanum :: FtlLexer Lexeme
+alphanum = label "alphanumeric token" $ do
   currentPosition <- gets position
   whiteSpaceBeforeCurrentToken <- gets whiteSpaceBefore
-  tokenText <- Primitives.asciiLexeme
-  let newPosition = Position.symbol_explode tokenText currentPosition
+  alphanumText <- Primitives.asciiLexeme
+  let newPosition = Position.symbol_explode alphanumText currentPosition
+      alphanumPosition = lexemePosition alphanumText currentPosition
       whiteSpaceBeforeNextToken = False
-      tokenType = if whiteSpaceBeforeCurrentToken then WhiteSpaceBefore else NoWhiteSpaceBefore
   put LexerState{position = newPosition, whiteSpaceBefore = whiteSpaceBeforeNextToken}
-  return $ makeToken tokenText currentPosition tokenType
+  return $ Alphanum alphanumText alphanumPosition whiteSpaceBeforeNextToken
 
 -- | A symbol: Any singleton ASCII symbol character.
-symbol :: FtlLexer Token
+symbol :: FtlLexer Lexeme
 symbol = label "symbol" $ do
   currentPosition <- gets position
   whiteSpaceBeforeCurrentToken <- gets whiteSpaceBefore
-  tokenText <- Primitives.asciiSymbol
-  let newPosition = Position.symbol_explode tokenText currentPosition
+  symbolText <- Primitives.asciiSymbol
+  let newPosition = Position.symbol_explode symbolText currentPosition
+      symbolPosition = lexemePosition symbolText currentPosition
       whiteSpaceBeforeNextToken = False
-      tokenType = if whiteSpaceBeforeCurrentToken then WhiteSpaceBefore else NoWhiteSpaceBefore
   put LexerState{position = newPosition, whiteSpaceBefore = whiteSpaceBeforeNextToken}
-  return $ makeToken tokenText currentPosition tokenType
+  return $ Symbol symbolText symbolPosition whiteSpaceBeforeCurrentToken
 
 -- | A line comment: Starts with '#' and ends at the next line break.
-comment :: FtlLexer Token
+comment :: FtlLexer Lexeme
 comment = label "comment" $ do
   currentPosition <- gets position
   commentSymbol <- Text.singleton <$> char '#'
   commentText <- Text.concat <$> manyTill Primitives.asciiChar newline
-  let tokenText = commentSymbol <> commentText <> "\n"
-      newPosition = Position.symbol_explode tokenText currentPosition
+  let lexemeText = commentSymbol <> commentText <> "\n"
+      newPosition = Position.symbol_explode lexemeText currentPosition
+      commentPosition = lexemePosition lexemeText currentPosition
       whiteSpaceBeforeNextToken = True
-      tokenType = Comment
   put LexerState{position = newPosition, whiteSpaceBefore = whiteSpaceBeforeNextToken}
-  return $ makeToken tokenText currentPosition tokenType
+  return $ Comment commentText commentPosition
 
 -- | The end of the input text.
-endOfInput :: FtlLexer Token
+endOfInput :: FtlLexer Lexeme
 endOfInput = label "end of input" $ do
   currentPosition <- gets position
   eof
-  return $ makeEOF currentPosition
+  return $ EOF currentPosition
 
 -- | White space: Longest possible string of ASCII space characters.
 whiteSpace :: FtlLexer ()
