@@ -15,7 +15,7 @@ import Data.Text.Lazy qualified as Text
 import Data.Maybe (fromMaybe)
 
 import SAD.Parser.Token (Token(..), TokenType(..), makeToken, isProperToken)
-import SAD.Lexer.Primitives
+import SAD.Lexer.Char
 import SAD.Core.Message qualified as Message
 
 import Isabelle.Position qualified as Position

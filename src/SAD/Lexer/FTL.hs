@@ -16,7 +16,7 @@ import Text.Megaparsec.Char
 
 import SAD.Parser.Token qualified as Token
 import SAD.Lexer.Base
-import SAD.Lexer.Primitives
+import SAD.Lexer.Char
 import SAD.Core.Message qualified as Message
 
 import Isabelle.Position qualified as Position

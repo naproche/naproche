@@ -1,10 +1,10 @@
 -- |
 -- Author: Marcel Schütz (2024)
 --
--- Lexer primitives.
+-- Character sets for lexing.
 
 
-module SAD.Lexer.Primitives where
+module SAD.Lexer.Char where
 
 
 -- * Character Sets
