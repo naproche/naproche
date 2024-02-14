@@ -8,6 +8,7 @@ module SAD.Tokenizer.FTL (tokenize) where
 
 import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
+import Text.Megaparsec.Error
 
 import SAD.Parser.Token qualified as Token
 import SAD.Lexer.FTL
@@ -21,8 +22,12 @@ import Isabelle.Markup qualified as Markup
 
 -- | Split an FTL text (together with a starting position) into tokens,
 -- discarding all comments.
-tokenize :: Position.T -> Text -> IO [Token.Token]
-tokenize pos text = processLexemes pos text filterFtl
+tokenize :: Position.T -> Text -> String -> IO [Token.Token]
+tokenize pos text label = processLexemes pos text label filterFtl handleError
+
+handleError :: ParseErrorBundle Text Error -> IO [Token.Token]
+handleError err = do
+  Message.errorLexer Position.none "Unknown lexing error"
 
 -- | Report all comments and remove them from a list of tokens.
 filterFtl :: [Lexeme] -> IO [Token.Token]

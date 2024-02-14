@@ -4,7 +4,7 @@
 -- Lexing FTL input.
 
 
-module SAD.Lexer.FTL (Lexeme(..), processLexemes) where
+module SAD.Lexer.FTL (Lexeme(..), Error(..), processLexemes) where
 
 import Data.Text.Lazy (Text)
 import Control.Monad.State.Class
@@ -19,7 +19,7 @@ import Isabelle.Position qualified as Position
 
 -- * FTL-specific Lexer Type
 
-type FtlLexer result = Lexer LexerState result
+type FtlLexer result = Lexer Error LexerState result
 
 data LexerState = LexerState {
     position :: !Position.T,   -- ^ Current position
@@ -32,16 +32,27 @@ data Lexeme =
   | Comment !String !Position.T
   | EOF !Position.T
 
--- | Lex an FTL text (together with a starting position) and pass the result to
--- a given function.
-processLexemes :: Position.T -> Text -> ([Lexeme] -> a) -> a
-processLexemes pos text f = let initState = LexerState {
+-- | Lex an FTL text and pass the result (either a list of lexemes or an error)
+-- to a given function.
+processLexemes :: Position.T                          -- ^ starting position of input text
+               -> Text                                -- ^ input text
+               -> String                              -- ^ label of input text (e.g. its file name)
+               -> ([Lexeme] -> a)                     -- ^ function to be applied to resulting lexemes when lexing succeeds
+               -> (ParseErrorBundle Text Error -> a)  -- ^ function to be applied to resulting error when lexing fails
+               -> a
+processLexemes pos text label f e = let initState = LexerState {
     position = pos,
     whiteSpaceBefore = False
   } in
-  case runLexer ftlText initState "input" text of
-    Left _ -> error "Unknown lexing error."
+  case runLexer ftlText initState label text of
+    Left err -> e err
     Right lexemes -> f lexemes
+
+
+-- * Errors
+
+data Error = InvalidChar !Char !Position.T
+  deriving (Eq, Ord)
 
 
 -- * FTL Lexers
