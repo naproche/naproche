@@ -51,7 +51,7 @@ readInit :: Bytes -> IO [(Position.T, Instr)]
 readInit file | Bytes.null file = return []
 readInit file = do
   input <- catch (File.read (make_string file)) $ Message.errorParser (Position.file_only $ make_bytes file) . make_bytes . ioeGetErrorString
-  tokens <- FTL.tokenize (Position.file $ make_bytes file) (Text.fromStrict $ make_text input) (make_string file)
+  tokens <- FTL.tokenizePIDE (Position.file $ make_bytes file) (Text.fromStrict $ make_text input) (make_string file)
   fst <$> launchParser instructionFile (initState Program.console tokens)
 
 instructionFile :: FTL [(Position.T, Instr)]
@@ -130,7 +130,7 @@ parse :: Position.T -> Text -> State FState -> IO ([ProofText], State FState)
 parse startPos text parserState = do
   let dialect = parserKind parserState
   tokens <- case dialect of
-    Ftl -> FTL.tokenize startPos text "input"
+    Ftl -> FTL.tokenizePIDE startPos text "input"
     Tex -> TEX.tokenize startPos text
   let initParserState = State {
     stUser  = addInits dialect ((stUser parserState) {tvrExpr = []}),

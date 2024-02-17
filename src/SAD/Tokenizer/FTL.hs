@@ -4,7 +4,7 @@
 -- Tokenizing FTL input.
 
 
-module SAD.Tokenizer.FTL (tokenize) where
+module SAD.Tokenizer.FTL (tokenize, tokenizePIDE) where
 
 import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
@@ -22,37 +22,58 @@ import Isabelle.Markup qualified as Markup
 
 -- | Split an FTL text (together with a starting position) into tokens,
 -- discarding all comments.
-tokenize :: Position.T -> Text -> String -> IO [Token.Token]
+tokenize :: Position.T -> Text -> String -> [Token.Token]
 tokenize pos text label = processLexemes pos text label filterFtl handleError
 
-handleError :: ParseErrorBundle Text Error -> IO [Token.Token]
-handleError err = do
+-- | Essentially the same as "tokenize" to be used inside a PIDE.
+tokenizePIDE :: Position.T -> Text -> String -> IO [Token.Token]
+tokenizePIDE pos text label = processLexemes pos text label filterFtlPIDE handleErrorPIDE
+
+handleError :: ParseErrorBundle Text Error -> [Token.Token]
+handleError err = error "Unknown lexing error"
+
+handleErrorPIDE :: ParseErrorBundle Text Error -> IO [Token.Token]
+handleErrorPIDE err = do
   Message.errorLexer Position.none "Unknown lexing error"
 
--- | Report all comments and remove them from a list of tokens.
-filterFtl :: [Lexeme] -> IO [Token.Token]
-filterFtl [] = pure []
-filterFtl (lexeme:rest) = do
-  mbToken <- lexemeToToken lexeme
+-- | Remove all comments from a list of tokens.
+filterFtl :: [Lexeme] -> [Token.Token]
+filterFtl [] = []
+filterFtl (lexeme:rest) = case lexemeToToken lexeme of
+  Nothing -> filterFtl rest
+  Just token -> token : filterFtl rest
+
+-- | Essentially the same as "filterFtl" to be used inside a PIDE.
+filterFtlPIDE :: [Lexeme] -> IO [Token.Token]
+filterFtlPIDE [] = pure []
+filterFtlPIDE (lexeme:rest) = do
+  mbToken <- lexemeToTokenPIDE lexeme
   case mbToken of
-    Nothing -> filterFtl rest
-    Just token -> fmap (token :) (filterFtl rest)
+    Nothing -> filterFtlPIDE rest
+    Just token -> fmap (token :) (filterFtlPIDE rest)
 
 -- | Transform a lexeme into a @Maybe@-wrapped token: If the lexeme is a comment,
--- it is reported and @Nothing@ is returned; otherwise @Just token@ is returned
--- for an appropriate token @token@.
-lexemeToToken :: Lexeme -> IO (Maybe Token.Token)
-lexemeToToken (Comment _ pos) = do
-  Message.reports [(pos, Markup.comment1)]
-  return Nothing
-lexemeToToken (EOF pos) = pure $ Just $ Token.EOF pos
-lexemeToToken (Symbol char pos ws) = pure $ Just $ Token.Token {
+-- @Nothing@ is returned; otherwise @Just token@ is returned for an appropriate
+-- token @token@.
+lexemeToToken :: Lexeme -> Maybe Token.Token
+lexemeToToken (Comment _ pos) = Nothing
+lexemeToToken (EOF pos) = Just $ Token.EOF pos
+lexemeToToken (Symbol char pos ws) = Just $ Token.Token {
     Token.tokenText = Text.singleton char,
     Token.tokenPos = pos,
     Token.tokenType = if ws then Token.WhiteSpaceBefore else Token.NoWhiteSpaceBefore
   }
-lexemeToToken (Lexeme text pos ws) = pure $ Just $ Token.Token {
+lexemeToToken (Lexeme text pos ws) = Just $ Token.Token {
     Token.tokenText = Text.pack text,
     Token.tokenPos = pos,
     Token.tokenType = if ws then Token.WhiteSpaceBefore else Token.NoWhiteSpaceBefore
   }
+
+-- | Essentially the same as "lexemeToToken" to be used inside a PIDE.
+lexemeToTokenPIDE :: Lexeme -> IO (Maybe Token.Token)
+lexemeToTokenPIDE (Comment _ pos) = do
+  Message.reports [(pos, Markup.comment1)]
+  return Nothing
+lexemeToTokenPIDE token@(EOF pos) = pure $ lexemeToToken token
+lexemeToTokenPIDE token@(Symbol char pos ws) = pure $ lexemeToToken token
+lexemeToTokenPIDE token@(Lexeme text pos ws) = pure $ lexemeToToken token
