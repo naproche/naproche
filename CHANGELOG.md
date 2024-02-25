@@ -14,7 +14,8 @@ dialect of ForTheL, respectively.
 ### Changes on the code base
 
   * **Changed:** The FTL and TEX lexers have been separated and moved to
-    `src/SAD/Lexer/`
+    `src/SAD/Lexer/`. Moreover, the FTL lexer has been rewritten using
+    Megaparsec.
 
 
 ### Changes on the LaTeX styles
