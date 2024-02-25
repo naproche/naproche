@@ -1,4 +1,8 @@
-[synonym dwarf/dwarfs]
+# Dwarfs
+# ======
+
+[read ftl/vocabulary.ftl]
+
 Signature.
 A dwarf is a notion.
 
@@ -10,14 +14,16 @@ Tormund is a dwarf.
 
 Let aDwarf denote a dwarf.
 
-Signature. A hat is a notion.
+Signature.
+A hat is a notion.
 
 Let aHat denote a hat.
 
 Signature.
 The hat of aDwarf is a hat.
 
-Signature. A color is a notion.
+Signature.
+A color is a notion.
 
 Signature.
 White is a color.
@@ -27,7 +33,8 @@ Black is a color.
 
 Let aColor denote a color.
 
-Signature. The color of aHat is a color.
+Signature.
+The color of aHat is a color.
 
 Axiom.
 The color of the hat of aDwarf is Black or White.
@@ -45,7 +52,7 @@ The opposite color of White is Black.
 Axiom.
 The opposite color of Black is White.
 
-[synonym get/-s]
+
 Signature.
 aDwarf gets released is an atom.
 

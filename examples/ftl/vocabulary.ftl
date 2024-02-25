@@ -1,3 +1,6 @@
+# Vocabulary
+# ==========
+
 # A list of singular/plural pairs for use in formalizations.
 
 [synonym belong/-s]
@@ -7,12 +10,14 @@
 [synonym divide/-s]
 [synonym divisor/-s]
 [synonym domino/-es]
-[synonym dwarf/dwarfs]
+[synonym dwarf/-s]
 [synonym element/-s]
 [synonym factor/-s]
 [synonym file/-s]
+[synonym formula/-s/-e]
 [synonym function/-s]
 [synonym get/-s]
+[synonym ideal/-s]
 [synonym infimum/infima]
 [synonym integer/-s]
 [synonym inverse/-s]
@@ -40,3 +45,4 @@
 [synonym supremum/suprema]
 [synonym surject/-s]
 [synonym system/-s]
+[synonym term/-s]
