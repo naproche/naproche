@@ -8,6 +8,7 @@ module SAD.Lexer.FTL (Lexeme(..), Error(..), processLexemes) where
 
 import Data.Text.Lazy (Text)
 import Control.Monad.State.Class
+import Control.Monad (void)
 import Text.Megaparsec hiding (Token, State, token)
 import Text.Megaparsec.Char
 
@@ -57,7 +58,7 @@ processLexemes pos text label f e = let initState = LexerState {
 ftlText :: FtlLexer [Lexeme]
 ftlText = do
   optional whiteSpace
-  lexemes <- many $ (comment <|> lexeme <|> symbol) <* optional whiteSpace
+  lexemes <- many $ (comment <|> lexeme <|> symbol <|> catchInvalidChar) <* optional whiteSpace
   eofLexeme <- endOfInput
   return $ lexemes ++ [eofLexeme]
 
@@ -96,7 +97,15 @@ comment :: FtlLexer Lexeme
 comment = do
   pos <- gets position
   char '#'
-  commentBody <- manyTill (satisfy isValidChar) newline
+  -- Consume as many characters as possible until either an invalid character,
+  -- a vertical space or the end of input is reached:
+  commentBody <- many (satisfy isCommentChar)
+  -- If an invalid character is reached, chatch it (at the position that has
+  -- been reached during the execution of the last line):
+  optional $ catchInvalidCharAt (Position.symbol_explode ('#' : commentBody) pos)
+  -- If no invalid character is reached, expect a vertical space or the end of
+  -- input:
+  void (satisfy isVerticalSpace) <|> lookAhead eof
   let comment = "#" ++ commentBody ++ "\n"
       newPos = Position.symbol_explode comment pos
       commentPosition = lexemePosition comment pos
@@ -125,3 +134,19 @@ whiteSpace = do
       position = newPos,
       whiteSpaceBefore = newWhiteSpaceBefore
     }
+
+-- | Catch an invalid character and report it together with a given position
+-- (which is intended to be the position of that character) as a lexing error.
+catchInvalidCharAt :: Position.T -> FtlLexer a
+catchInvalidCharAt pos = do
+  char <- satisfy isInvalidChar
+  let charPos = lexemePosition [char] pos
+      err = InvalidChar char charPos
+  customFailure err
+
+-- | Catch an invalid character and report it together with the current position
+-- (which is intended to be the position of that character) as a lexing error.
+catchInvalidChar :: FtlLexer a
+catchInvalidChar = do
+  pos <- gets position
+  catchInvalidCharAt pos

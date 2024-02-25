@@ -16,6 +16,13 @@ isValidChar c =
   || isSymbol c
   || isSpace c
 
+isCommentChar :: Char -> Bool
+isCommentChar c =
+     isLetter c
+  || isDigit c
+  || isSymbol c
+  || isHorizontalSpace c
+
 isInvalidChar :: Char -> Bool
 isInvalidChar c = not (isValidChar c)
 
@@ -35,7 +42,15 @@ isSymbol c =
   || between c '\x7b' '\x7e'
 
 isSpace :: Char -> Bool
-isSpace c = c `elem` ['\x0a', '\x20']
+isSpace c =
+     isHorizontalSpace c
+  || isVerticalSpace c
+
+isHorizontalSpace :: Char -> Bool
+isHorizontalSpace c = c == '\x20'
+
+isVerticalSpace :: Char -> Bool
+isVerticalSpace c = c == '\x0a'
 
 isAlphaNum :: Char -> Bool
 isAlphaNum c = isLetter c || isDigit c
