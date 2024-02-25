@@ -8,12 +8,11 @@ module SAD.Tokenizer.FTL (tokenize, tokenizePIDE) where
 
 import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
-import Text.Megaparsec.Error
 
 import SAD.Parser.Token qualified as Token
 import SAD.Lexer.FTL
+import SAD.Lexer.Error
 import SAD.Core.Message qualified as Message
-import Data.List.NonEmpty as NonEmpty
 
 import Isabelle.Position qualified as Position
 import Isabelle.Markup qualified as Markup
@@ -30,22 +29,6 @@ tokenize pos text label = processLexemes pos text label filterFtl handleError
 tokenizePIDE :: Position.T -> Text -> String -> IO [Token.Token]
 tokenizePIDE pos text label = processLexemes pos text label filterFtlPIDE handleErrorPIDE
 
--- | Stop execution if an error occured during lexing.
-handleError :: ParseErrorBundle Text Error -> a
-handleError errors = let (errorMsg, _) = showError errors in error errorMsg
-
--- | Report a lexing error.
-handleErrorPIDE :: ParseErrorBundle Text Error -> IO a
-handleErrorPIDE errors = do
-  let (errorMsg, errorPos) = showError errors
-  Message.errorLexer errorPos errorMsg
-
--- | Return an error message and the position of the first error that occured
--- during lexing.
-showError :: ParseErrorBundle Text Error -> (String, Position.T)
-showError (ParseErrorBundle parseErrors _) = case NonEmpty.head parseErrors of
-  TrivialError{} -> ("Trivial lexing error", Position.none)
-  FancyError _ errs -> ("Fancy lexing error", Position.none)
 
 -- | Remove all comments from a list of tokens.
 filterFtl :: [Lexeme] -> [Token.Token]

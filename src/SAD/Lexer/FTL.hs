@@ -13,6 +13,7 @@ import Text.Megaparsec.Char
 
 import SAD.Lexer.Base
 import SAD.Lexer.Char
+import SAD.Lexer.Error
 
 import Isabelle.Position qualified as Position
 
@@ -47,12 +48,6 @@ processLexemes pos text label f e = let initState = LexerState {
   case runLexer ftlText initState label text of
     Left err -> e err
     Right lexemes -> f lexemes
-
-
--- * Errors
-
-data Error = InvalidChar !Char !Position.T
-  deriving (Eq, Ord)
 
 
 -- * FTL Lexers
