@@ -10,6 +10,7 @@ import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
 
 import SAD.Parser.Token qualified as Token
+import SAD.Lexer.Base
 import SAD.Lexer.FTL
 import SAD.Lexer.Error
 import SAD.Core.Message qualified as Message
@@ -23,11 +24,11 @@ import Isabelle.Markup qualified as Markup
 -- | Split an FTL text (together with a starting position) into tokens,
 -- discarding all comments.
 tokenize :: Position.T -> Text -> String -> [Token.Token]
-tokenize pos text label = processLexemes pos text label filterFtl handleError
+tokenize pos text label = runLexer ftlText pos text label filterFtl handleError
 
 -- | Essentially the same as "tokenize" to be used inside a PIDE.
 tokenizePIDE :: Position.T -> Text -> String -> IO [Token.Token]
-tokenizePIDE pos text label = processLexemes pos text label filterFtlPIDE handleErrorPIDE
+tokenizePIDE pos text label = runLexer ftlText pos text label filterFtlPIDE handleErrorPIDE
 
 
 -- | Remove all comments from a list of tokens.

@@ -10,41 +10,37 @@ module SAD.Lexer.Char where
 -- * Character Sets
 
 isValidChar :: Char -> Bool
-isValidChar c =
-     isLetter c
-  || isDigit c
-  || isSymbol c
-  || isSpace c
+isValidChar =
+    isLetter
+  ∨ isDigit
+  ∨ isSymbol
+  ∨ isSpace
 
 isCommentChar :: Char -> Bool
-isCommentChar c =
-     isLetter c
-  || isDigit c
-  || isSymbol c
-  || isHorizontalSpace c
+isCommentChar =
+    isLetter
+  ∨ isDigit
+  ∨ isSymbol
+  ∨ isHorizontalSpace
 
 isInvalidChar :: Char -> Bool
 isInvalidChar c = not (isValidChar c)
 
 isLetter :: Char -> Bool
-isLetter c =
-     between c 'a' 'z'
-  || between c 'A' 'Z'
+isLetter = between 'a' 'z' ∨ between 'A' 'Z'
 
 isDigit :: Char -> Bool
-isDigit c = between c '0' '9'
+isDigit = between '0' '9'
 
 isSymbol :: Char -> Bool
-isSymbol c =
-     between c '\x21' '\x2f'
-  || between c '\x3a' '\x40'
-  || between c '\x5b' '\x60'
-  || between c '\x7b' '\x7e'
+isSymbol =
+    between '\x21' '\x2f'
+  ∨ between '\x3a' '\x40'
+  ∨ between '\x5b' '\x60'
+  ∨ between '\x7b' '\x7e'
 
 isSpace :: Char -> Bool
-isSpace c =
-     isHorizontalSpace c
-  || isVerticalSpace c
+isSpace = isHorizontalSpace ∨ isVerticalSpace
 
 isHorizontalSpace :: Char -> Bool
 isHorizontalSpace c = c == '\x20'
@@ -53,10 +49,14 @@ isVerticalSpace :: Char -> Bool
 isVerticalSpace c = c == '\x0a'
 
 isAlphaNum :: Char -> Bool
-isAlphaNum c = isLetter c || isDigit c
+isAlphaNum = isLetter ∨ isDigit
 
 
 -- * Helpers
 
-between :: Ord a => a -> a -> a -> Bool
-between x a b = a <= x && x <= b
+infixr ∨
+(∨) :: (Char -> Bool) -> (Char -> Bool) -> Char -> Bool
+(p ∨ q) c = p c || q c
+
+between :: Char -> Char -> Char -> Bool
+between min max x = min <= x && x <= max
