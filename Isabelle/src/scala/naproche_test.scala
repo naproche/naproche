@@ -21,7 +21,7 @@ object Naproche_Test {
   def run_tests(
     progress: Progress = new Progress,
     log_dir: Option[Path] = None,
-    max_jobs: Int = 1,
+    max_jobs: Option[Int] = None,
     timeout: Time = Time.zero
   ): Unit = {
     val file_format = new Naproche_File_Format
@@ -33,7 +33,7 @@ object Naproche_Test {
 
     val bad = Synchronized(List.empty[Path])
 
-    val executor = Executors.newFixedThreadPool(max_jobs max 1)
+    val executor = Executors.newFixedThreadPool(max_jobs.getOrElse(1) max 1)
     for (test <- tests) {
       executor.submit(new Runnable {
         def run(): Unit = {
@@ -102,8 +102,8 @@ object Naproche_Test {
   val isabelle_tool =
     Isabelle_Tool("naproche_test", "run Naproche tests", Scala_Project.here,
       { args =>
-        var log_dir : Option[Path] = None
-        var max_jobs = 1
+        var log_dir: Option[Path] = None
+        var max_jobs: Option[Int] = None
         var options = Options.init()
         var timeout = Time.zero
 
@@ -119,7 +119,7 @@ Usage: isabelle naproche_test
   Run Naproche tests.
 """,
           "D:" -> (arg => log_dir = Some(Path.explode(arg))),
-          "j:" -> (arg => max_jobs = Value.Int.parse(arg)),
+          "j:" -> (arg => max_jobs = Some(Value.Nat.parse(arg))),
           "o:" -> (arg => options = options + arg),
           "t:" -> (arg => timeout = Time.seconds(Value.Double.parse(arg))))
 
