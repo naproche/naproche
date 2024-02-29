@@ -16,6 +16,8 @@ import Text.Megaparsec
 import Text.Megaparsec.Char
 import Data.Map.Strict (Map)
 import Data.Map.Strict qualified as Map
+import Data.Set (Set)
+import Data.Set qualified as Set
 
 import SAD.Lexer.Base
 import SAD.Lexer.Char
@@ -33,19 +35,20 @@ data Lexeme =
     Symbol !Char !Position.T !Bool
   | Lexeme !String !Position.T !Bool
   | Comment !String !Position.T
+  | Macro !Command !Position.T
   | EOF !Position.T
 
 data FtlState = FtlState{
     position :: !Position.T,                        -- ^ Current position
     whiteSpaceBefore :: !Bool,                      -- ^ Whether the current token is prepended by white space
-    commentPrefixes :: ![Text],                     -- ^ Comment prefixes
+    commentPrefixes :: !(Set Text),                 -- ^ Comment prefixes
     delimiters :: !(Map String String),             -- ^ Pairs of opening and closing delimiters
     unclosedDelimiters :: ![(String, Position.T)],  -- ^ All left delimiters that currently lack a corresponding right delimiter
     unopenedDelimiters :: ![(String, Position.T)]   -- ^ All right delimiters that currently lack a corresponding left delimiter
   }
 
-defaultCommentPrefixes :: [Text]
-defaultCommentPrefixes = ["#"]
+defaultCommentPrefixes :: Set Text
+defaultCommentPrefixes = Set.singleton "#"
 
 defaultDelimiters :: Map String String
 defaultDelimiters = Map.fromList [
@@ -114,7 +117,8 @@ updateDelimiterState state string pos
 -- * Errors
 
 -- | A lexing error.
-data FtlError = InvalidChar !Char !Position.T
+data FtlError =
+    InvalidChar !Char !Position.T
   deriving (Eq, Ord)
 
 -- | Turn an error into a located error message.
@@ -195,6 +199,7 @@ ftlText = do
 
 properLexeme :: FtlLexer Lexeme
 properLexeme = choice[
+    macro,
     comment,
     lexeme,
     symbol,
@@ -242,7 +247,7 @@ comment = do
   state <- get
   let pos = position state
   commentPrefixes <- gets commentPrefixes
-  prefix <- Text.unpack <$> choice (map string commentPrefixes)
+  prefix <- Text.unpack <$> commentPrefix
   -- Consume as many characters as possible until either an invalid character,
   -- a vertical space or the end of input is reached:
   commentBody <- many (satisfy isCommentChar)
@@ -297,3 +302,133 @@ catchInvalidChar :: FtlLexer a
 catchInvalidChar = do
   pos <- gets position
   catchInvalidCharAt pos
+
+
+-- * Customizing the lexer
+
+data Command =
+    AddCommentPrefix !String
+  | DeleteCommentPrefix !String
+  | AddDelimiters !String !String
+  | DeleteDelimiters !String
+
+-- | Macros to customize the lexer.
+macro :: FtlLexer Lexeme
+macro = choice [
+    try addCommentPrefix,
+    try deleteCommentPrefix,
+    try addDelimiters,
+    try deleteDelimiters
+  ]
+
+-- | Add a new comment prefix.
+addCommentPrefix :: FtlLexer Lexeme
+addCommentPrefix = do
+  state <- get
+  let pos = position state
+  open <- Text.unpack <$> macroPrefix
+  sp1 <- some (satisfy isSpace)
+  string "add_comment_prefix"
+  sp2 <- some (satisfy isSpace)
+  commentPrefix <- some (satisfy isVisibleChar)
+  sp3 <- some (satisfy isSpace)
+  close <- Text.unpack <$> macroPostfix
+  let macro = open ++ sp1 ++ "add_comment_prefix" ++ sp2 ++ commentPrefix ++ sp3 ++ close
+      macroPos = getStringPosition macro pos
+      newPos = Position.symbol_explode macro pos
+      newCommentPrefixes = Set.insert (Text.pack commentPrefix) (commentPrefixes state)
+  put state{
+    position = newPos,
+    commentPrefixes = newCommentPrefixes
+  }
+  return $ Macro (AddCommentPrefix commentPrefix) macroPos
+
+-- | Delete a comment prefix.
+deleteCommentPrefix :: FtlLexer Lexeme
+deleteCommentPrefix = do
+  state <- get
+  let pos = position state
+  open <- Text.unpack <$> macroPrefix
+  sp1 <- some (satisfy isSpace)
+  string "delete_comment_prefix"
+  sp2 <- some (satisfy isSpace)
+  commentPrefix <- some (satisfy isVisibleChar)
+  sp3 <- some (satisfy isSpace)
+  close <- Text.unpack <$> macroPostfix
+  let macro = open ++ sp1 ++ "delete_comment_prefix" ++ sp2 ++ commentPrefix ++ sp3 ++ close
+      macroPos = getStringPosition macro pos
+      newPos = Position.symbol_explode macro pos
+      newCommentPrefixes = Set.delete (Text.pack commentPrefix) (commentPrefixes state)
+  put state{
+    position = newPos,
+    commentPrefixes = newCommentPrefixes
+  }
+  return $ Macro (DeleteCommentPrefix commentPrefix) macroPos
+
+-- | Add a new pair of delimiters.
+addDelimiters :: FtlLexer Lexeme
+addDelimiters = do
+  state <- get
+  let pos = position state
+  open <- Text.unpack <$> macroPrefix
+  sp1 <- some (satisfy isSpace)
+  string "add_delimiters"
+  sp2 <- some (satisfy isSpace)
+  leftDelimiter <- some (satisfy isVisibleChar)
+  sp3 <- some (satisfy isSpace)
+  rightDelimiter <- some (satisfy isVisibleChar)
+  sp4 <- some (satisfy isSpace)
+  close <- Text.unpack <$> macroPostfix
+  let macro = open ++ sp1 ++ "add_delimiters" ++ sp2 ++ leftDelimiter ++ sp3 ++ rightDelimiter ++ sp4 ++ close
+      macroPos = getStringPosition macro pos
+      newPos = Position.symbol_explode macro pos
+      newDelimiters = Map.insert leftDelimiter rightDelimiter (delimiters state)
+  put state{
+    position = newPos,
+    delimiters = newDelimiters
+  }
+  return $ Macro (AddDelimiters leftDelimiter rightDelimiter) macroPos
+
+-- | Delete an opening delimiter (and its associated closing delimiter).
+deleteDelimiters :: FtlLexer Lexeme
+deleteDelimiters = do
+  state <- get
+  let pos = position state
+  open <- Text.unpack <$> macroPrefix
+  sp1 <- some (satisfy isSpace)
+  string "delete_delimiters"
+  sp2 <- some (satisfy isSpace)
+  leftDelimiter <- some (satisfy isVisibleChar)
+  sp3 <- some (satisfy isSpace)
+  close <- Text.unpack <$> macroPostfix
+  let macro = open ++ sp1 ++ "delete_delimiters" ++ sp2 ++ leftDelimiter ++ sp3 ++ close
+      macroPos = getStringPosition macro pos
+      newPos = Position.symbol_explode macro pos
+      newDelimiters = Map.delete leftDelimiter (delimiters state)
+  put state{
+    position = newPos,
+    delimiters = newDelimiters
+  }
+  return $ Macro (DeleteDelimiters leftDelimiter) macroPos
+
+
+-- * Helpers
+
+commentPrefix :: FtlLexer Text
+commentPrefix = do
+  state <- get
+  choice (map string (Set.toList (commentPrefixes state)))
+
+macroPrefix :: FtlLexer Text
+macroPrefix = do
+  txt1 <- commentPrefix
+  txt2 <- char '['
+  txt3 <- commentPrefix
+  return $ txt1 <> Text.singleton txt2 <> txt3
+
+macroPostfix :: FtlLexer Text
+macroPostfix = do
+  txt1 <- commentPrefix
+  txt2 <- char ']'
+  txt3 <- commentPrefix
+  return $ txt1 <> Text.singleton txt2 <> txt3

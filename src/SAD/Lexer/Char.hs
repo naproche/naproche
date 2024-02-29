@@ -16,6 +16,12 @@ isValidChar =
   ∨ isSymbol
   ∨ isSpace
 
+isVisibleChar :: Char -> Bool
+isVisibleChar =
+    isLetter
+  ∨ isDigit
+  ∨ isSymbol
+
 isCommentChar :: Char -> Bool
 isCommentChar =
     isLetter

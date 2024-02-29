@@ -44,6 +44,8 @@ lexemeToToken (Lexeme text pos ws) =
         Token.tokenType = if ws then Token.WhiteSpaceBefore else Token.NoWhiteSpaceBefore
       }
   in [token]
+-- Macro:
+lexemeToToken (Macro command pos) = []
 
 
 tokenizeFtlPIDE :: [Lexeme] -> IO [Token.Token]
@@ -65,3 +67,7 @@ lexemeToTokenPIDE token@EOF{} = pure $ lexemeToToken token
 lexemeToTokenPIDE token@Symbol{} = pure $ lexemeToToken token
 -- Lexeme:
 lexemeToTokenPIDE token@Lexeme{} = pure $ lexemeToToken token
+-- Macro:
+lexemeToTokenPIDE (Macro command pos) = do
+  Message.reports [(pos, Markup.comment3)]
+  return []

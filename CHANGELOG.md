@@ -55,6 +55,31 @@ dialect of ForTheL, respectively.
 
 ### Changes on ForTheL
 
+  * **New:** (FTL) Mismatching brackets (or more generally: any mismatching
+    delimiters) throw a PIDE warning.
+
+  * **New:** (FTL) **New language feature:** Macros can be used to customize the
+    lexer from within a ForTheL text:
+
+    - `#[# add_comment_prefix ⟨string⟩ #]#` defines a new comment prefix
+      `⟨string⟩`, i.e. comments can now start with either `#` or with
+      `⟨string⟩`.
+
+    - `#[# delete_comment_prefix ⟨string⟩ #]#` un-defines a comment prefix.
+
+    - `#[# add_delimiters ⟨left⟩ ⟨right⟩ #]#` defines a new pair of delimiters
+      `⟨left⟩` and `⟨right⟩` that throw PIDE warnings when there is an opening
+      `⟨left⟩` without a closing `⟨right⟩` (and vice versa) in the input text.
+
+    - `#[# delete_delimiters ⟨left⟩ #]#` un-defines a pair of delimiters (i.e.
+      the explicitly given opening delimiter and its associated closing
+      delimiter).
+
+    (**Note:** This feature was just implemented as a proof of concept. Being
+    able to customizing the lexer from within a ForTheL text is not that useful
+    for the FTL dialect, but there are several situations in which such a
+    feature is desirable for the TeX dialect.)
+
   * **New:** Top-level sections can be referred to via `(by \printref{...})`
     within proofs (which just prints the label of the referenced section in the
     PDF).
