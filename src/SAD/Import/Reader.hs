@@ -31,8 +31,9 @@ import SAD.Parser.Token
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
 import SAD.Parser.Error
-import SAD.Tokenizer.FTL qualified as FTL
-import SAD.Lexer.TEX qualified as TEX
+import SAD.Lexer.FTL
+import SAD.Tokenizer.FTL
+import SAD.Lexer.TEX qualified as TexLexer
 import SAD.Core.Message qualified as Message
 
 import Isabelle.File qualified as File
@@ -51,7 +52,11 @@ readInit :: Bytes -> IO [(Position.T, Instr)]
 readInit file | Bytes.null file = return []
 readInit file = do
   input <- catch (File.read (make_string file)) $ Message.errorParser (Position.file_only $ make_bytes file) . make_bytes . ioeGetErrorString
-  tokens <- FTL.tokenizePIDE (Position.file $ make_bytes file) (Text.fromStrict $ make_text input) (make_string file)
+  let startPos = Position.file (make_bytes file)
+      text = Text.fromStrict $ make_text input
+      label = make_string file
+  lexemes <- lexFtlPIDE startPos text label
+  tokens <- tokenizeFtlPIDE lexemes
   fst <$> launchParser instructionFile (initState Program.console tokens)
 
 instructionFile :: FTL [(Position.T, Instr)]
@@ -130,8 +135,8 @@ parse :: Position.T -> Text -> State FState -> IO ([ProofText], State FState)
 parse startPos text parserState = do
   let dialect = parserKind parserState
   tokens <- case dialect of
-    Ftl -> FTL.tokenizePIDE startPos text "input"
-    Tex -> TEX.tokenize startPos text
+    Ftl -> lexFtlPIDE startPos text "input" >>= tokenizeFtlPIDE
+    Tex -> TexLexer.tokenize startPos text
   let initParserState = State {
     stUser  = addInits dialect ((stUser parserState) {tvrExpr = []}),
     stInput = tokens,

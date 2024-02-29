@@ -4,48 +4,34 @@
 -- Tokenizing FTL input.
 
 
-module SAD.Tokenizer.FTL (tokenize, tokenizePIDE) where
+module SAD.Tokenizer.FTL (tokenizeFtl, tokenizeFtlPIDE) where
 
-import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
 
 import SAD.Parser.Token qualified as Token
-import SAD.Lexer.Base
 import SAD.Lexer.FTL
-import SAD.Lexer.Error
 import SAD.Core.Message qualified as Message
 
-import Isabelle.Position qualified as Position
 import Isabelle.Markup qualified as Markup
 
 
 -- * Tokenizing FTL input
 
--- | Split an FTL text (together with a starting position) into tokens,
--- discarding all comments.
-tokenize :: Position.T -> Text -> String -> [Token.Token]
-tokenize pos text label = runLexer ftlText pos text label filterFtl handleError
-
--- | Essentially the same as "tokenize" to be used inside a PIDE.
-tokenizePIDE :: Position.T -> Text -> String -> IO [Token.Token]
-tokenizePIDE pos text label = runLexer ftlText pos text label filterFtlPIDE handleErrorPIDE
-
-
 -- | Remove all comments from a list of tokens.
-filterFtl :: [Lexeme] -> [Token.Token]
-filterFtl [] = []
-filterFtl (lexeme:rest) = case lexemeToToken lexeme of
-  Nothing -> filterFtl rest
-  Just token -> token : filterFtl rest
+tokenizeFtl :: [Lexeme] -> [Token.Token]
+tokenizeFtl [] = []
+tokenizeFtl (lexeme:rest) = case lexemeToToken lexeme of
+  Nothing -> tokenizeFtl rest
+  Just token -> token : tokenizeFtl rest
 
 -- | Essentially the same as "filterFtl" to be used inside a PIDE.
-filterFtlPIDE :: [Lexeme] -> IO [Token.Token]
-filterFtlPIDE [] = pure []
-filterFtlPIDE (lexeme:rest) = do
+tokenizeFtlPIDE :: [Lexeme] -> IO [Token.Token]
+tokenizeFtlPIDE [] = pure []
+tokenizeFtlPIDE (lexeme:rest) = do
   mbToken <- lexemeToTokenPIDE lexeme
   case mbToken of
-    Nothing -> filterFtlPIDE rest
-    Just token -> fmap (token :) (filterFtlPIDE rest)
+    Nothing -> tokenizeFtlPIDE rest
+    Just token -> fmap (token :) (tokenizeFtlPIDE rest)
 
 -- | Transform a lexeme into a @Maybe@-wrapped token: If the lexeme is a comment,
 -- @Nothing@ is returned; otherwise @Just token@ is returned for an appropriate
