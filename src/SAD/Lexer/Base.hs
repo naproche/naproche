@@ -17,12 +17,12 @@ type Lexer errorType stateType resultType = ParsecT errorType Text (State stateT
 
 -- | Run a lexer and pass the result (either a list of lexemes or an error)
 -- to a given function or error handler.
-runLexer :: Lexer errorType stateType [resultType]  -- ^ lexer to run
+runLexer :: Lexer errorType stateType resultType    -- ^ lexer to run
          -> stateType                               -- ^ initial state
          -> Position.T                              -- ^ starting position of input text
          -> Text                                    -- ^ input text
          -> String                                  -- ^ label of input text (e.g. its file name)
-         -> ([resultType] -> a)                     -- ^ function to be applied to resulting lexemes when lexing succeeds
+         -> (resultType -> a)                       -- ^ function to be applied to resulting lexemes when lexing succeeds
          -> (ParseErrorBundle Text errorType -> a)  -- ^ function to be applied to resulting error when lexing fails
          -> a
 runLexer lexer initState pos text label f e =

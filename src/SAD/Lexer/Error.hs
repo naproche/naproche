@@ -5,7 +5,6 @@
 
 
 module SAD.Lexer.Error (
-  LocatedErrMsg,
   handleError,
   handleErrorPIDE
 ) where
@@ -16,38 +15,33 @@ import Data.Set (Set)
 import Data.Set qualified as Set
 import Data.List.NonEmpty as NonEmpty
 
-import SAD.Core.Message qualified as Message
+import SAD.Core.Message (LocatedMsg, errorLexer)
 
 import Isabelle.Position qualified as Position
 
 
--- | A located error message, i.e. an error message together with the position
--- where the respective error occured.
-type LocatedErrMsg = (String, Position.T)
-
-
 -- | Stop execution if an error occured during lexing.
-handleError :: (error -> LocatedErrMsg) -> ParseErrorBundle Text error -> lexingResult
+handleError :: (error -> LocatedMsg) -> ParseErrorBundle Text error -> lexingResult
 handleError errorHandler errors =
   let (errorMsg, _) = showError errors errorHandler
   in error errorMsg
 
 -- | Report a lexing error.
-handleErrorPIDE :: (error -> LocatedErrMsg) -> ParseErrorBundle Text error -> IO lexingResult
+handleErrorPIDE :: (error -> LocatedMsg) -> ParseErrorBundle Text error -> IO lexingResult
 handleErrorPIDE errorHandler errors = do
   let (errorMsg, errorPos) = showError errors errorHandler
-  Message.errorLexer errorPos errorMsg
+  errorLexer errorPos errorMsg
 
 -- | Return an error message and the position of the first error that occured
 -- during lexing.
-showError :: ParseErrorBundle Text error -> (error -> LocatedErrMsg) -> LocatedErrMsg
+showError :: ParseErrorBundle Text error -> (error -> LocatedMsg) -> LocatedMsg
 showError (ParseErrorBundle parseErrors _) errorHandler = case NonEmpty.head parseErrors of
   TrivialError{} -> unknownError
   FancyError _ errs -> properError errorHandler errs
 
 -- | Located error message for an error that is not handled as a custom error
 -- of type "Error" during lexing.
-unknownError :: LocatedErrMsg
+unknownError :: LocatedMsg
 unknownError =
   let msg =
         "Unknown lexing error. " ++
@@ -57,14 +51,14 @@ unknownError =
   in (msg, pos)
 
 -- | Turn a set of lexing errors into a located error message.
-properError :: (error -> LocatedErrMsg) -> Set (ErrorFancy error) -> LocatedErrMsg
+properError :: (error -> LocatedMsg) -> Set (ErrorFancy error) -> LocatedMsg
 properError errorHandler errs =
   case Set.elems errs of
     [] -> unknownError
     err : _ -> fancyError errorHandler err
 
 -- | Turn a lexing error into a located error message.
-fancyError :: (error -> LocatedErrMsg) -> ErrorFancy error -> LocatedErrMsg
+fancyError :: (error -> LocatedMsg) -> ErrorFancy error -> LocatedMsg
 fancyError errorHandler err = case err of
   ErrorFail{} -> unknownError
   ErrorIndentation{} -> unknownError
