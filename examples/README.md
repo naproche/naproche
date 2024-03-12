@@ -17,53 +17,94 @@ explanations and even graphics. The examples include single files as well as
 folders of formalizations that are interlinked by "`read`" commands. The
 spectrum reaches from recreational puzzles to undergraduate-level theorems:
 
-* arithmetic - elementary Peano arithmetic
+* `arithmetic/` - elementary Peano arithmetic
 
-* foundations - Kelley-Morse like foundations of mathematics
+* `examples/` - stand-alone example formalizations
 
-* geometry - beginnings of Tarski geometry
+  - `cantor` - Cantor diagonal argument
 
-* set-theory - elementary set theory
+  - `cantor-schroeder-bernstein` - classical result in cardinality theory
 
-* agatha - a logic puzzle set in "Dreadsbury Mansion"
+  - `checkerboard` - the mutilated checkerboard
 
-* cantor - Cantor diagonal argument
+  - `chinese` - Chinese remainder theorem
 
-* cantor-schroeder-bernstein - classical result in cardinality theory
+  - `euclid` - classical proof of infinity of primes
 
-* checkerboard - the mutilated checkerboard
+  - `furstenberg` - topological proof of infinity of primes
 
-* chinese - Chinese remainder theorem
+  - `group` - Naproche rendering of a Lean file on groups
 
-* dwarfs - a "hat puzzle"
+  - `hausdorff` - theorem on the regularity of successor cardinals
 
-* euclid - classical proof of infinity of primes
+  - `hilbert-calculus` - proving derivations in a Hilbert calculus
 
-* furstenberg - topological proof of infinity of primes
+  - `koenig` - theorem about sequences of cardinals
 
-* group - Naproche rendering of a Lean file on groups
+  - `maximum_modulus` - theorem from complex analysis
 
-* hausdorff - theorem on the regularity of successor cardinals
+  - `newman` - Newman's theorem on rewriting systems
 
-* hilbert-calculus - proving derivations in a Hilbert calculus
+  - `numbers` - introduction of number systems for Rudin's Principles of Mathematical Analysis
 
-* koenig - theorem about sequences of cardinals
+  - `preliminaries` - basic theory of classes and sets
 
-* maximum_modulus - theorem from complex analysis
+  - `prime_no_square` - irrationality of square roots
 
-* newman - Newman's theorem on rewriting systems
+  - `tarski` - Tarski fixpoint theorem for lattices
 
-* numbers - introduction of number systems for Rudin's Principles of Mathematical Analysis
+  - `zermelo` - Zermelo's well-ordering theorem
 
-* paradoxes - collection of (mathematical) paradoxes
+* `foundations/` - Kelley-Morse like foundations of mathematics
 
-* preliminaries - basic theory of classes and sets
+* `geometry/` - beginnings of Tarski geometry
 
-* prime no square - irrationality of square roots
+* `paradoxes/` - some well-known mathematical and logical paradoxes
 
-* tarski - Tarski fixpoint theorem for lattices
+  - `barber` - The Barber Paradox
 
-* zermelo - Zermelo's well-ordering theorem
+  - `burali-forti` - Burali-Forti's Paradox
+
+  - `cantor_1` - Cantor's First Paradox
+
+  - `cantor_2` - Cantor's Second Paradox
+
+  - `curry` - Curry's Paradox
+
+  - `drinker` - The Drinker Paradox
+
+  - `hilbert` - Hilbert's Paradox
+
+  - `russell-myhill` - The Russell-Myhill Paradox
+
+  - `russell` - Russell's Paradox
+
+* `preliminaries/`
+
+  - `axioms` - must be imported to make the axioms that are hard-coded into
+    Naproche available to the prover
+
+  - `classes` - basic notions about classes and maps
+
+  - `macros` - common macros for the notions that are hard-coded into Naproche
+
+  - `preliminaries` - basic notions about classes and maps
+
+  - `vocabulary` - synonyms for most of the notions used in the example#
+    formalizations that ship with Naproche
+
+* `puzzles/` - some logic puzzles
+
+  - `agatha` - a puzzle set in "Dreadsbury Mansion"
+
+  - `dwarfs` - a "hat puzzle"
+
+* `set-theory/` - elementary set theory
+
+* `100_theorems` - some of Wiedijk's "100 Theorems"
+
+* `tutorial` - Tutorial on how write proofs in Naproche
+
 
 The further development of Naproche will focus on the `.ftl.tex` format in order
 to build readable libraries of computer-verifiable mathematics. The classical

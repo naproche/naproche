@@ -1,0 +1,35 @@
+\documentclass{article}
+\usepackage[stex]{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[creators={Marcel Schütz}]{product-left-distributes-over-union.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?product.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?union.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?subclass.ftl}
+
+  \begin{fproposition*}[label=3478802032230400]
+    Let $A, B, C$ be classes.
+    Then \[\prod{A,\union{B,C}} = \union{\prod{A,B},\prod{A,C}}.\]
+  \end{fproposition*}
+  \begin{fproof}
+    Let us show that $\prod{A,\union{B,C}} \subclass[eq] \union{\prod{A,B},\prod{A,C}}.$
+      Let $x \in \prod{A,\union{B,C}}$.
+      Take $y \in \union{B,C}$ and $a \in A$ such that $x = \tuple{a,y}$.
+      Then $y \in B$ or $y \in C$.
+      If $y \in B$ then $x \in \prod{A,B}$ and if $y \in C$ then $x \in \prod{A,C}$.
+      Hence $x \in \prod{A,B}$ or $x \in \prod{A,C}$.
+      Thus $x \in \union{\prod{A,B},\prod{A,C}}$.
+    End.
+
+    Let us show that $\union{\prod{A,B},\prod{A,C}} \subclass[eq]
+    \prod{\union{A,B},C}$.
+      Let $x \in \union{\prod{A,B},\prod{A,C}}$.
+      Then $x \in \prod{A,B}$ or $x \in \prod{A,C}$.
+      Take objects $y, a$ such that $x = \tuple{a,y}$.
+      Then ($y \in B$ or $y \in C$) and $a \in A$.
+      Hence $y \in \union{B,C}$.
+      Thus $x \in \prod{A,\union{B,C}}$.
+    End.
+  \end{fproof}
+\end{smodule}
+\end{document}

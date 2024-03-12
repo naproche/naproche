@@ -58,9 +58,9 @@ data FState = FState {
   notionExpr :: [Prim],         -- ^ notion expressions
   symbNotionExpr :: [Prim],     -- ^ symbolic notion expressions
 
-  cfnExpr :: [Prim],            -- ^ circumfix funxtion expressions
-  rfnExpr :: [Prim],            -- ^ right funxtion expressions
-  lfnExpr :: [Prim],            -- ^ left funxtion expressions
+  cfnExpr :: [Prim],            -- ^ circumfix function expressions
+  rfnExpr :: [Prim],            -- ^ right function expressions
+  lfnExpr :: [Prim],            -- ^ left function expressions
   ifnExpr :: [Prim],            -- ^ infix function expressions
 
   cprExpr :: [Prim],            -- ^ circumfix predicate expressions
@@ -120,62 +120,83 @@ initFState = FState
     primSymbNotions = [equalSymbNotion]
     primInfixPredicates = [equalityPredicate]
     circFunctions = [pairFunction]
-    rightFunctions = [applicationFunction]
+    rightFunctions = [
+        applicationFunction,
+        applicationPairFunction
+      ]
 
     -- "equal to x"
-    equalAdj = ([Word ["equal"], Word ["to"], Vr], mkTrm EqualityId TermEquality)
+    equalAdj = ([Word ["equal"], Word ["to"], Vr], \(x:y:_) -> mkEquality x y)
     -- "nonequal to x"
-    nonequalAdj = ([Word ["nonequal"], Word ["to"], Vr], Not . mkTrm EqualityId TermEquality)
+    nonequalAdj = ([Word ["nonequal"], Word ["to"], Vr], \(x:y:_) -> Not $ mkEquality x y)
     -- "a map f"
-    mapNotion = ([Word ["map", "maps"], Nm], mkMap . head)
+    mapNotion = ([Word ["map", "maps"], Nm], \(x:_) -> mkMap x)
     -- "a function f"
-    functionNotion = ([Word ["function", "functions"], Nm], mkFunction . head)
+    functionNotion = ([Word ["function", "functions"], Nm], \(x:_) -> mkFunction x)
     -- "a set X"
-    setNotion = ([Word ["set", "sets"], Nm], mkSet . head)
+    setNotion = ([Word ["set", "sets"], Nm], \(x:_) -> mkSet x)
     -- "a class X", "a collection X"
-    classNotion = ([Word ["class", "classes", "collection", "collections"], Nm], mkClass . head)
+    classNotion = ([Word ["class", "classes", "collection", "collections"], Nm], \(x:_) -> mkClass x)
     -- "an object X", "an element X"
-    objectNotion = ([Word ["object", "objects", "element", "elements"], Nm], mkObject . head)
+    objectNotion = ([Word ["object", "objects", "element", "elements"], Nm], \(x:_) -> mkObject x)
     -- "a mathematical object"
-    mathObjectNotion = ([Word ["mathematical"], Word ["object", "objects"], Nm], mkObject . head)
+    mathObjectNotion = ([Word ["mathematical"], Word ["object", "objects"], Nm], \(x:_) -> mkObject x)
     -- "an element x of X"
     elementOfNotion = ([Word ["element", "elements"], Nm, Word ["of"], Vr], \(x:m:_) -> mkElem x m)
     -- "= x"
-    equalSymbNotion = ([Symbol "=", Vr], mkTrm EqualityId TermEquality)
+    equalSymbNotion = ([Symbol "=", Vr], \(x:y:_) -> mkEquality x y)
     -- "x = y"
-    equalityPredicate = ([Symbol "="], mkTrm EqualityId TermEquality)
+    equalityPredicate = ([Symbol "="], \(x:y:_) -> mkEquality x y)
     -- "(x,y)"
     pairFunction = ([Symbol "(", Vr, Symbol ",", Vr, Symbol ")"], \(x:y:_) -> mkPair x y)
     -- "f(x)"
     applicationFunction = ([Symbol "(", Vr, Symbol ")"], \(f:x:_) -> mkApp f x)
+    -- "f(x,y)"
+    applicationPairFunction = ([Symbol "(", Vr, Symbol ",", Vr, Symbol ")"], \(f:x:y:_) -> mkApp f (mkPair x y))
 
 
 -- | Add primitive expressions to the state (without creating duplicates)
 -- depending on the ForTheL dialect. In FTL we add the following primitives:
 --
---  * @... "!=" ...@ (predicate expression)
---  * @... "-<-" ... (predicate expression)
---  * @"Dom" ...@ (function expression)
+--  * @... != ...@ (predicate expression)
+--  * @... -<- ... (predicate expression)
+--  * @Dom ...@ (function expression)
 --
 -- In TEX we add the following primitives:
 --
---  * @"\\in" ...@ (notion expression)
---  * @... "\\neq" ...@ (predicate expression)
---  * @... "\\in" ...@ (predicate expression)
---  * @... "\\notin" ...@ (predicate expression)
---  * @... "\\prec ...@ (predicate expression)
---  * @"\\dom" "(" ... ")"@ (function expression)
+--  * @\\in ...@ (notion expression)
+--  * @... \\neq ...@ (predicate expression)
+--  * @... \\in ...@ (predicate expression)
+--  * @... \\notin ...@ (predicate expression)
+--  * @... \\prec ...@ (predicate expression)
+--  * @\\dom(...)@ (function expression)
+--  * @\\domain{...}@ (function expression)
+--  * @\\tuple{...,...}@ (function expression)
+--  * @\\apply{...}{...}@ (function expression)
 --
 addInits :: ParserKind -> FState -> FState
 addInits dialect state@FState{symbNotionExpr = sn, cfnExpr = cfn, iprExpr = ipr} =
   case dialect of
     Ftl -> state {
-        cfnExpr = unionBy comparePatterns cfn [ftlDomFunction],
-        iprExpr = unionBy comparePatterns ipr [ftlInequalityPredicate, ftlInductionPredicate]
+        cfnExpr = unionBy comparePatterns cfn [
+            ftlDomFunction
+          ],
+        iprExpr = unionBy comparePatterns ipr [
+            ftlInequalityPredicate,
+            ftlInductionPredicate
+          ]
       }
     Tex -> state {
-      symbNotionExpr = unionBy comparePatterns sn [texElementOfSymbNotion],
-      cfnExpr = unionBy comparePatterns cfn [texDomFunction],
+      symbNotionExpr = unionBy comparePatterns sn [
+          texElementOfSymbNotion
+        ],
+      cfnExpr = unionBy comparePatterns cfn [
+          texDomFunction,
+          stexDomainFunction,
+          stexPairFunction,
+          stexApplicationFunction,
+          stexApplicationPairFunction
+        ],
       iprExpr = unionBy comparePatterns ipr [
           texInequalityPredicate,
           texInductionPredicate,
@@ -185,23 +206,33 @@ addInits dialect state@FState{symbNotionExpr = sn, cfnExpr = cfn, iprExpr = ipr}
       }
   where
     -- "Dom f"
-    ftlDomFunction = ([Symbol "Dom", Vr], mkDom . head)
+    ftlDomFunction = ([Symbol "Dom", Vr], \(f:_) -> mkDom f)
     -- "x != y"
-    ftlInequalityPredicate = ([Symbol "!", Symbol "="], Not . mkTrm EqualityId TermEquality)
+    ftlInequalityPredicate = ([Symbol "!", Symbol "="], \(x:y:_) -> Not $ mkEquality x y)
     -- "x -<- y"
-    ftlInductionPredicate = ([Symbol "-", Symbol "<", Symbol "-"], mkTrm LessId TermLess)
-    -- "\in X"
+    ftlInductionPredicate = ([Symbol "-", Symbol "<", Symbol "-"], \(x:y:_) -> Not $ mkLess x y)
+
+    -- "\in m"
     texElementOfSymbNotion = ([Symbol "\\in", Vr], \(x:m:_) -> mkElem x m)
     -- "\dom(f)"
-    texDomFunction = ([Symbol "\\dom", Symbol "(",Vr,Symbol ")"], mkDom . head)
+    texDomFunction = ([Symbol "\\dom", Symbol "(", Vr, Symbol ")"], \(x:_) -> mkDom x)
     -- "x \neq y"
-    texInequalityPredicate = ([Symbol "\\neq"], Not . mkTrm EqualityId TermEquality)
+    texInequalityPredicate = ([Symbol "\\neq"], \(x:y:_) -> Not $ mkEquality x y)
     -- "x \prec y"
-    texInductionPredicate = ([Symbol "\\prec"], mkTrm LessId TermLess)
-    -- "x \in X"
+    texInductionPredicate = ([Symbol "\\prec"], \(x:y:_) -> mkLess x y)
+    -- "x \in m"
     texInPredicate = ([Symbol "\\in"], \(x:m:_) -> mkElem x m)
-    -- "x \notin X"
+    -- "x \notin m"
     texNotinPredicate = ([Symbol "\\notin"], \(x:m:_) -> Not $ mkElem x m)
+
+    -- "\domain{f}"
+    stexDomainFunction = ([Symbol "\\domain", Symbol "{", Vr, Symbol "}"], \(f:_) -> mkDom f)
+    -- "\tuple{x,y}"
+    stexPairFunction = ([Symbol "\\tuple", Symbol "{", Vr, Symbol ",", Vr, Symbol "}"], \(x:y:_) -> mkPair x y)
+    -- "\apply{f}{x}"
+    stexApplicationFunction = ([Symbol "\\apply", Symbol "{", Vr, Symbol "}", Symbol "{", Vr, Symbol "}"], \(f:x:_) -> mkApp f x)
+    -- "\apply{f}{x,y}"
+    stexApplicationPairFunction = ([Symbol "\\apply", Symbol "{", Vr, Symbol "}", Symbol "{", Vr, Symbol ",", Vr, Symbol "}"], \(f:x:y:_) -> mkApp f (mkPair x y))
 
     -- Compare the pattern of two primitive expressions
     comparePatterns p p' = fst p == fst p'
@@ -566,7 +597,7 @@ the = token' "the"
 iff :: FTL ()
 iff = token' "iff" <|> mapM_ token' ["if", "and", "only", "if"] <|> mapM_ token' ["when", "and", "only", "when"]
 
--- | Q"that"@
+-- | @"that"@
 that :: FTL ()
 that = token' "that"
 

@@ -1,0 +1,74 @@
+\documentclass{stex}
+\libinput{preamble}
+\begin{document}
+
+\section{Induction}
+
+\Naproche{} has inherited an elegant treatment of induction
+from the SAD system. \Naproche{} has a special binary relation
+symbol $\prec$ for a universal inductive relation: if
+the property $P$ is \textit{inductive} along $\prec$, i.e., if at any
+point $m$ property $P$ is inherited at $m$ provided all
+$\prec$-predecessors of $m$ satisfy $P$, then $P$ holds everywhere.
+More formally the general induction principle for the relation
+$\prec$ reads:
+\begin{quotation}
+To prove $\forall k \phi(k)$, it suffices to prove
+inductivity along $\prec$:
+$$\forall v_0 (\forall v_1 (v_1 \prec v_0 \rightarrow \phi(v_1))
+\rightarrow \phi(v_0).$$
+\end{quotation}
+
+This modification of proof tasks
+is immediately carried out by the parser when it comes across the
+keyword ``proof by induction''.
+
+Induction along the relation $<$ on natural numbers is introduced
+axiomatically by embedding the $<$-relation into $\prec$:
+
+\begin{forthel}
+\begin{axiom} If $n < m$ then $n \prec m$.
+\end{axiom}
+\end{forthel}
+
+Let us consider a proof by induction that $\leq$ is
+a ``discrete'' order with nothing strictly between
+$0$ and $1$.
+
+\begin{forthel}
+\begin{lemma} For every $n$ $n = 0$ or $1 \leq n$.
+\end{lemma}
+\begin{proof}[by induction on $n$]
+\end{proof}
+\end{forthel}
+
+The automatic translation of the statement of the lemma is
+\begin{verbatim}
+forall v0 (aNaturalNumber(v0) implies
+((InductionHypothesis ::
+forall v1 (aNaturalNumber(v1) implies (iLess(v1,v0) implies
+(v1 = 0 or 1\leq v1))))
+implies (v0 = 0 or 1\leq v0)))
+\end{verbatim}
+
+The formula expresses that the property ``$n = 0$ or $1 \leq n$''
+is \textit{inductive}. Proving the universal formula
+``For every $n$ $n = 0$ or $1 \leq n$'' has been reduced to
+proving inductivity. In this case the inductivity task can be
+carried out automatically by
+eprover.
+
+Remark: It seems difficult to prove this inductivity by a short intuitive
+proof. Apparently the above axiomatization is not standard and should
+be replaced by an approach where the natural numbers are generated from
+$0$ by a $+1$-operation, expressed by using $n \prec n+1$ as
+induction axiom.
+
+With the previous lemma we can show:
+
+\begin{forthel}
+\begin{lemma} If $m \neq 0$ then $n \leq n * m$.
+\end{lemma}
+\end{forthel}
+
+\end{document}

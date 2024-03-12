@@ -1,0 +1,16 @@
+\documentclass{article}
+\usepackage[stex]{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[creators={Marcel Schütz}]{disjoint-iff-empty-intersection.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?empty.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?complement.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?intersection.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?disjoint.ftl}
+
+  \begin{fproposition*}[label=1211191546347520]
+    Let $A, B$ be classes.
+    $A$ and $B$ are disjoint iff $\intersection{A,B}$ is empty.
+  \end{fproposition*}
+\end{smodule}
+\end{document}

@@ -1,0 +1,31 @@
+\documentclass{article}
+\usepackage[stex]{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[creators={Marcel Schütz}]{subclass-equivalence-04.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?symmetric-difference.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?subclass.ftl}
+
+  \begin{fproposition*}[label=2556239837921280]
+    Let $A, B$ be classes.
+    Then \[A \subclass[eq] B \iff \symdiff{A}{B} = \complement{B}{A}.\]
+  \end{fproposition*}
+  \begin{fproof}
+    Case $A \subclass[eq] B$.
+      Then $\union{A,B} = B$ and $\intersection{A,B} = A$.
+      Hence the thesis.
+    End.
+
+    Case $\symdiff{A}{B} = \complement{B}{A}$.
+      Let $a \in A$.
+      Then $a \notin \complement{B}{A}$.
+      Hence $a \notin \symdiff{A}{B}$.
+      Thus $a \notin \union{A,B}$ or $a \in \intersection{A,B}$.
+      Indeed $\symdiff{A}{B} = \complement{\union{A,B}}{\intersection{A,B}}$.
+      If $a \notin \union{A,B}$ then we have a contradiction.
+      Therefore $a \in \intersection{A,B}$.
+      Then we have the thesis.
+    End.
+  \end{fproof}
+\end{smodule}
+\end{document}

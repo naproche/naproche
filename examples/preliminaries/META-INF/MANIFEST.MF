@@ -1,0 +1,4 @@
+id:naproche/examples/preliminaries
+ns:http://mathhub.info/naproche/examples/preliminaries
+narration-base:http://mathhub.info/naproche/examples/preliminaries
+url-base:https://stexmmt.mathhub.info/:sTeX

@@ -1,0 +1,113 @@
+\documentclass{stex}
+\libinput{preamble}
+\begin{document}
+
+\section{An Interactive Proof}
+
+The final contradiction in Euclid's proof will need:
+
+\begin{lemma} Let $l | m$ and $l | m + n$. Then $l | n$.
+\end{lemma}
+
+\Naproche{} does not find
+a proof on its own: depending on some default timeouts the
+proof search is abandoned, and the goal $l | n$ fails.
+In Isabelle-Naproche this is signaled in the output
+window, and the failed goal is underlined in red.
+
+So the user has to ``interactively'' supply a proof, which in a first
+approximation is a list
+of statements leading up to the claim, and which
+\Naproche{}'s ATP is able to prove successively.
+Proof statements can also introduce assumptions
+and new variables to the argument, and they can
+structure the proof.
+
+\begin{forthel}
+\begin{lemma} Let $l | m$ and $l | m + n$. Then $l | n$.
+\end{lemma}
+
+\begin{proof}
+Assume that $l$ is nonzero.
+Take a natural number $p$ such that $m = l * p$.
+Take a natural number $q$ such that $m + n = l * q$.
+
+Let us show that
+$p \leq q$.
+Proof by contradiction.
+Assume the contrary. Then $q < p$.
+$m+n = l * q < l * p = m$.
+Contradiction. qed.
+
+Take $r = q - p$.
+We have $(l * p) + (l * r) = l * q = m + n = (l * p) + n$.
+Hence $n = l * r$.
+\end{proof}
+
+\end{forthel}
+
+When \Naproche{} encounters a statement immediately followed by an
+explicit proof
+then \Naproche{} defers proving the statement and first goes through
+the proof. Since proofs may contain subproofs, this process may
+take place recursively.
+
+Proofs of a ``toplevel'' Lemma or Theorem use the
+
+\verb+\begin{proof}...\end{proof}+
+
+\noindent environment well-known from \LaTeX.
+In our proof there is also a ``lowlevel'' proof of $p \leq q$
+indicated by ``Let us show that''. We discuss some aspects of the
+proof:
+\begin{itemize}
+\item Most sentences in a proof are statements, or statements
+extended by constructs that organize the flow of the argument.
+\item ``Assume that $l$ is nonzero.'' is an assumption that introduces
+the premise ``$l$ is nonzero'' to the argument. Instead of ``Assume that''
+one could also use variants like
+[let us $\mid$ we can] (assume $\mid$ presume $\mid$ suppose) [that].
+\item ``Take $p$ such that $m = l * p$.'' introduces a new variable
+$p$ with a specific property to the argument. To verify this construct
+the prover has to show the existence of some object satisfying the
+property. Again there are variants:
+[let us $\mid$ we can] (choose $\mid$ take $\mid$ consider).
+\item ``Let us show that $p \leq q$.'' claims that the statement
+$p \leq q$ holds and announces a subsequent proof.
+Alternatives: [let us $\mid$ we can]
+(prove $\mid$ show $\mid$ demonstrate) (that).
+\item ``Proof by contradiction'' denotes the start of an indirect
+proof. It is recommended to explicitly mark indirect proofs.
+Note that in the example there is a ``lowlevel'' proof that
+uses a simple
+
+\verb+Proof [by ...](.) ... (qed. | end.)+
+
+\noindent environment instead of the \LaTeX proof environment.
+\item Other proof methods are ``by cases'' and ``by induction''.
+\item ``Assume the contrary.'': The contrary is the negation
+of the current thesis which in this case is the statement claimed
+just before. ``thesis'' denotes the current thesis, ``contradiction''
+stands for ``false''.
+\item ``Then $q < p$.'': Words like ``then'', ``hence'', ``thus'',
+``therefore'', ``consequently'' are filler words which are redundant
+for \Naproche{} but may help human readers to understand the text.
+\item ``$m+n = l * q < l * p = m$'': binary relations like ``$=$''
+or ``$<$'' can be chained. The statement means the conjunction
+of the single relations. These will be checked from
+left to right.
+\item ``Contradiction. qed.'': The indirect proof has reached the
+desired contradiction, and the (local) proof environment is closed by
+``qed.''.
+\end{itemize}
+
+\Naproche{} is able to prove the next lemma without an
+explicit proof in the text.
+
+\begin{forthel}
+
+\begin{lemma} Let $m | n \neq 0$. Then $m \leq n$.
+\end{lemma}
+\end{forthel}
+
+\end{document}

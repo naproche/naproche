@@ -1,0 +1,31 @@
+\documentclass{article}
+\usepackage[stex]{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[creators={Marcel Schütz}]{product-of-singletons.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?product.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?singleton-class.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?subclass.ftl}
+
+  \begin{fproposition*}[label=6150003963723776]
+    Let $a, b$ be objects.
+    Then \[\prod{\singleton{a},\singleton{b}} = \singleton{\tuple{a,b}}. \]
+  \end{fproposition*}
+  \begin{fproof}
+    Let us show that $\prod{\singleton{a},\singleton{b}} \subclass[eq] \singleton{\tuple{a,b}}$.
+      Let $c \in \prod{\singleton{a},\singleton{b}}$.
+      Take $a' \in \singleton{a}$ and $b' \in \singleton{b}$ such that $c = \tuple{a',b'}$.
+      We have $a' = a$ and $b' = b$.
+      Hence $c = \tuple{a,b}$.
+      Thus $c \in \singleton{\tuple{a,b}}$.
+    End.
+
+    Let us show that $\singleton{\tuple{a,b}} \subclass[eq] \prod{\singleton{a},\singleton{b}}$.
+      Let $c \in \singleton{\tuple{a,b}}$.
+      Then $c = \tuple{a,b}$.
+      We have $a \in \singleton{a}$ and $b \in \singleton{b}$.
+      Hence $c \in \prod{\singleton{a},\singleton{b}}$.
+    End.
+  \end{fproof}
+\end{smodule}
+\end{document}

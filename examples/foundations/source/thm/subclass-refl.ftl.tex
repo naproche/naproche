@@ -1,0 +1,17 @@
+\documentclass{article}
+\usepackage[stex]{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[creators={Marcel Schütz}]{subclass-refl.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?subclass.ftl}
+
+  \begin{fproposition*}[label=5994555614691328]
+    Let $A$ be a class.
+    $A \subclass[eq] A$.
+  \end{fproposition*}
+  \begin{fproof}
+    Every element of $A$ is contained in $A$.
+    Therefore $A \subclass[eq] A$.
+  \end{fproof}
+\end{smodule}
+\end{document}

@@ -1,0 +1,33 @@
+\documentclass{article}
+\usepackage[stex]{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[creators={Marcel Schütz}]{product-right-distributes-over-intersection.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?product.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?intersection.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?subclass.ftl}
+
+  \begin{fproposition*}[label=6227653050761216]
+    Let $A, B, C$ be classes.
+    Then \[\prod{\intersection{A,B},C} = \intersection{\prod{A,C},\prod{B,C}}.\]
+  \end{fproposition*}
+  \begin{fproof}
+    Let us show that $\prod{\intersection{A,B},C} \subclass[eq] \intersection{\prod{A,C},\prod{B,C}}$.
+      Let $x \in \prod{\intersection{A,B},C}$.
+      Take $y \in \intersection{A,C}$ and $c \in C$ such that $x = \tuple{y,c}$.
+      Then $y \in A$ and $y \in B$.
+      Hence $x \in \prod{A,C}$ and $x \in \prod{B,C}$.
+      Thus $x \in \intersection{\prod{A,C},\prod{B,C}}$.
+    End.
+
+    Let us show that $\intersection{\prod{A,C},\prod{B,C}} \subclass[eq] \prod{\intersection{A,B},C}$.
+      Let $x \in \intersection{\prod{A,C},\prod{B,C}}$.
+      Then $x \in \prod{A,C}$ and $x \in \prod{B,C}$.
+      Take objects $y, z$ such that $x = \tuple{y,z}$.
+      Then ($y \in A$ and $y \in B$) and $z \in C$.
+      Hence $y \in \intersection{A,C}$.
+      Thus $x \in \prod{\intersection{A,B},C}$.
+    End.
+  \end{fproof}
+\end{smodule}
+\end{document}

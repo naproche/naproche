@@ -16,46 +16,46 @@
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_07_5919649206108160}
       Let $A, B$ be classes and $f : A \to B$ and $X \subseteq A$.
-      Then \[ f_{*}(X) = \{ f(x) \mid x \in X \}. \]
+      Then \[ \image{f}(X) = \{ f(x) \mid x \in X \}. \]
     \end{proposition}
   \end{forthel}
 
   \begin{forthel}
     \begin{corollary}\printlabel{FOUNDATIONS_07_5543924730953728}
       Let $A, B$ be classes and $f : A \to B$.
-      Then \[ f_{*}(A) = \range(f). \]
+      Then \[ \image{f}(A) = \range{f}. \]
     \end{corollary}
   \end{forthel}
 
   \begin{forthel}
     \begin{corollary}\printlabel{FOUNDATIONS_07_1818812171157504}
       Let $A, B$ be classes and $f : A \to B$ and $X \subseteq A$.
-      Then \[ f_{*}(X) = \range(f \restriction X). \]
+      Then \[ \image{f}(X) = \range{f \restriction X}. \]
     \end{corollary}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_07_911395830890496}
       Let $A$ be a class and $X \subseteq A$.
-      Then \[ (\id_{A})_{*}(X) = X. \]
+      Then \[ \image{\id{A}}(X) = X. \]
     \end{proposition}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_07_3349817830932480}
       Let $B$ be a class and $Y \subseteq B$.
-      Then \[ (\id_{B})^{*}(Y) = Y. \]
+      Then \[ \preimage{\id{B}}(Y) = Y. \]
     \end{proposition}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_07_6362984433582080}
       Let $A, B$ be classes and $f : A \to B$ and $Y \subseteq B$ and $a \in A$.
-      Then \[ f(a) \in Y \iff a \in f^{*}(Y). \]
+      Then \[ f(a) \in Y \iff a \in \preimage{f}(Y). \]
     \end{proposition}
     \begin{proof}
-      We have $f^{*}(Y) = \{ x \in A \mid f(x) \in Y \}$.
-      Hence $a \in f^{*}(Y)$ iff $a \in A$ and $f(a) \in Y$.
+      We have $\preimage{f}(Y) = \{ x \in A \mid f(x) \in Y \}$.
+      Hence $a \in \preimage{f}(Y)$ iff $a \in A$ and $f(a) \in Y$.
       Then we have the thesis.
     \end{proof}
   \end{forthel}
@@ -63,20 +63,20 @@
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_07_6730546254184448}
       Let $A, B$ be classes and $f : A \to B$.
-      Then \[ f_{*}(A) \subseteq B. \]
+      Then \[ \image{f}(A) \subseteq B. \]
     \end{proposition}
     \begin{proof}
-      $f_{*}(A) = f_{*}(\dom(f)) = \range(f) \subseteq B$.
+      $\image{f}(A) = \image{f}(\dom(f)) = \range{f} \subseteq B$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_07_6541963008409600}
       Let $A, B$ be classes and $f : A \to B$.
-      Then \[ f^{*}(B) = A. \]
+      Then \[ \preimage{f}(B) = A. \]
     \end{proposition}
     \begin{proof}
-      We have $f^{*}(B) = \{ a \in A \mid f(a) \in B \}$.
+      We have $\preimage{f}(B) = \{ a \in A \mid f(a) \in B \}$.
       $f(a) \in B$ for all $a \in A$.
       Hence the thesis.
     \end{proof}
@@ -85,24 +85,24 @@
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_07_1913313581596672}
       Let $A, B$ be classes and $f : A \to B$.
-      Then \[ f_{*}(f^{*}(B)) = f_{*}(A). \]
+      Then \[ \image{f}(\preimage{f}(B)) = \image{f}(A). \]
     \end{proposition}
     \begin{proof}
-      Let us show that $f_{*}(f^{*}(B)) \subseteq f_{*}(A)$.
-        Let $b \in f_{*}(f^{*}(B))$.
-        Take $a \in f^{*}(B) \cap A$ such that $b = f(a)$.
+      Let us show that $\image{f}(\preimage{f}(B)) \subseteq \image{f}(A)$.
+        Let $b \in \image{f}(\preimage{f}(B))$.
+        Take $a \in \preimage{f}(B) \cap A$ such that $b = f(a)$.
         Then $a \in A$.
-        Hence $b \in f_{*}(A)$.
+        Hence $b \in \image{f}(A)$.
       End.
 
-      Let us show that $f_{*}(A) \subseteq f_{*}(f^{*}(B))$.
-        Let $b \in f_{*}(A)$.
+      Let us show that $\image{f}(A) \subseteq \image{f}(\preimage{f}(B))$.
+        Let $b \in \image{f}(A)$.
         Take $a \in A$ such that $b = f(a)$.
         We have $b \in B$.
-        Hence $a \in f^{*}(B)$.
-        Thus $f(a) \in f_{*}(f^{*}(B))$.
-        Indeed $f^{*}(B) \subseteq A$.
-        Therefore $b \in f_{*}(f^{*}(B))$.
+        Hence $a \in \preimage{f}(B)$.
+        Thus $f(a) \in \image{f}(\preimage{f}(B))$.
+        Indeed $\preimage{f}(B) \subseteq A$.
+        Therefore $b \in \image{f}(\preimage{f}(B))$.
       End.
     \end{proof}
   \end{forthel}
@@ -110,35 +110,35 @@
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_07_3819758101200896}
       Let $A, B$ be classes and $f : A \to B$.
-      Then \[ f^{*}(f_{*}(A)) = A. \]
+      Then \[ \preimage{f}(\image{f}(A)) = A. \]
     \end{proposition}
     \begin{proof}
-      $f^{*}(f_{*}(A)) = \{ a \in A \mid f(a) \in f_{*}(A) \}$.
-      For all $a \in A$ we have $f(a) \in f_{*}(A)$.
-      Hence every element of $f^{*}(f_{*}(A))$ is contained in $A$ and every
-      element of $A$ is contained in $f^{*}(f_{*}(A))$.
-      Thus $f^{*}(f_{*}(A)) = A$.
+      $\preimage{f}(\image{f}(A)) = \{ a \in A \mid f(a) \in \image{f}(A) \}$.
+      For all $a \in A$ we have $f(a) \in \image{f}(A)$.
+      Hence every element of $\preimage{f}(\image{f}(A))$ is contained in $A$ and every
+      element of $A$ is contained in $\preimage{f}(\image{f}(A))$.
+      Thus $\preimage{f}(\image{f}(A)) = A$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_07_7760514696347648}
       Let $A, B$ be classes and $f : A \to B$ and $Y \subseteq B$.
-      Then \[ f_{*}(f^{*}(Y)) = Y \cap f_{*}(A). \]
+      Then \[ \image{f}(\preimage{f}(Y)) = Y \cap \image{f}(A). \]
     \end{proposition}
     \begin{proof}
-      Let us show that $f_{*}(f^{*}(Y)) \subseteq Y \cap f_{*}(A)$.
-        Let $b \in f_{*}(f^{*}(Y))$.
-        Take $a \in f^{*}(Y)$ such that $b = f(a)$.
-        Then $f(a) \in Y \cap f_{*}(A)$.
-        Hence we have $b \in Y \cap f_{*}(A)$.
+      Let us show that $\image{f}(\preimage{f}(Y)) \subseteq Y \cap \image{f}(A)$.
+        Let $b \in \image{f}(\preimage{f}(Y))$.
+        Take $a \in \preimage{f}(Y)$ such that $b = f(a)$.
+        Then $f(a) \in Y \cap \image{f}(A)$.
+        Hence we have $b \in Y \cap \image{f}(A)$.
       End.
 
-      Let us show that $Y \cap f_{*}(A) \subseteq f_{*}(f^{*}(Y))$.
-        Let $b \in Y \cap f_{*}(A)$.
+      Let us show that $Y \cap \image{f}(A) \subseteq \image{f}(\preimage{f}(Y))$.
+        Let $b \in Y \cap \image{f}(A)$.
         Take $a \in A$ such that $b = f(a)$.
-        Then $a \in f^{*}(Y)$.
-        Hence $f(a) \in f_{*}(f^{*}(Y))$.
+        Then $a \in \preimage{f}(Y)$.
+        Hence $f(a) \in \image{f}(\preimage{f}(Y))$.
       End.
     \end{proof}
   \end{forthel}
@@ -146,39 +146,39 @@
   \begin{forthel}
     \begin{corollary}\printlabel{FOUNDATIONS_07_5585105345052672}
       Let $A, B$ be classes and $f : A \to B$ and $Y \subseteq B$.
-      Then \[ f_{*}(f^{*}(Y)) \subseteq Y. \]
+      Then \[ \image{f}(\preimage{f}(Y)) \subseteq Y. \]
     \end{corollary}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_07_4890896170483712}
       Let $A, B$ be classes and $f : A \to B$ and $X \subseteq A$.
-      Then \[ f^{*}(f_{*}(X)) \supseteq X. \]
+      Then \[ \preimage{f}(\image{f}(X)) \supseteq X. \]
     \end{proposition}
     \begin{proof}
       Let $a \in X$.
-      Then $f(a) \in f_{*}(X)$.
-      Hence $a \in f^{*}(f_{*}(X))$.
-      Indeed $f_{*}(X) \subseteq B$.
+      Then $f(a) \in \image{f}(X)$.
+      Hence $a \in \preimage{f}(\image{f}(X))$.
+      Indeed $\image{f}(X) \subseteq B$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_07_3318372355801088}
       Let $A, B$ be classes and $f : A \to B$ and $X \subseteq A$.
-      Then \[ f_{*}(X) = \emptyset \iff X = \emptyset. \]
+      Then \[ \image{f}(X) = \emptyset \iff X = \emptyset. \]
     \end{proposition}
     \begin{proof}
-      Case $f_{*}(X)$ is empty.
-        Then there is no $a \in X$ such that $f(a) \in f_{*}(X)$.
-        For all $a \in X$ we have $f(a) \in f_{*}(X)$.
+      Case $\image{f}(X)$ is empty.
+        Then there is no $a \in X$ such that $f(a) \in \image{f}(X)$.
+        For all $a \in X$ we have $f(a) \in \image{f}(X)$.
         Hence $X$ is empty.
       End.
 
       Case $X$ is empty.
-        For all $b \in f_{*}(X)$ we have $b = f(a)$ for some $a \in X$.
+        For all $b \in \image{f}(X)$ we have $b = f(a)$ for some $a \in X$.
         There is no $a \in X$.
-        Hence $f_{*}(X)$ is empty.
+        Hence $\image{f}(X)$ is empty.
       End.
     \end{proof}
   \end{forthel}
@@ -186,10 +186,10 @@
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_07_8597874786959360}
       Let $A, B$ be classes and $f : A \to B$ and $Y \subseteq B$.
-      Then \[ f^{*}(Y) = \emptyset \iff Y \subseteq B \setminus f_{*}(A). \]
+      Then \[ \preimage{f}(Y) = \emptyset \iff Y \subseteq B \setminus \image{f}(A). \]
     \end{proposition}
     \begin{proof}
-      Case $f^{*}(Y)$ is empty.
+      Case $\preimage{f}(Y)$ is empty.
         Let $b \in Y$.
         Then $b \in B$.
 
@@ -197,19 +197,19 @@
         Proof.
           Assume the contrary.
           Take $a \in A$ such that $b = f(a)$.
-          Then $a \in f^{*}(Y)$.
+          Then $a \in \preimage{f}(Y)$.
           Contradiction.
         Qed.
 
-        Hence $b \notin f_{*}(A)$.
-        Therefore $b \in B \setminus f_{*}(A)$.
+        Hence $b \notin \image{f}(A)$.
+        Therefore $b \in B \setminus \image{f}(A)$.
       End.
 
-      Case $Y \subseteq B \setminus f_{*}(A)$.
-        Then no element of $Y$ is an element of $f_{*}(A)$.
-        Assume that $f^{*}(Y)$ is nonempty.
-        Take $a \in f^{*}(Y)$.
-        Then $f(a) \in Y$ and $f(a) \in f_{*}(A)$.
+      Case $Y \subseteq B \setminus \image{f}(A)$.
+        Then no element of $Y$ is an element of $\image{f}(A)$.
+        Assume that $\preimage{f}(Y)$ is nonempty.
+        Take $a \in \preimage{f}(Y)$.
+        Then $f(a) \in Y$ and $f(a) \in \image{f}(A)$.
         Contradiction.
       End.
     \end{proof}
@@ -219,24 +219,24 @@
     \begin{proposition}\printlabel{FOUNDATIONS_07_6295504988143616}
       Let $A, B$ be classes and $f : A \to B$ and $X \subseteq A$ and
       $Y \subseteq B$.
-      Then \[ f_{*}(X) \cap Y = \emptyset \iff X \cap f^{*}(Y) = \emptyset. \]
+      Then \[ \image{f}(X) \cap Y = \emptyset \iff X \cap \preimage{f}(Y) = \emptyset. \]
     \end{proposition}
     \begin{proof}
-      Case $f_{*}(X) \cap Y$ is empty.
-        Assume that $X \cap f^{*}(Y)$ is nonempty.
-        Take $a \in X \cap f^{*}(Y)$.
-        Then $f(a) \in f_{*}(X)$ and $f(a) \in Y$.
-        Hence $f(a) \in f_{*}(X) \cap Y$.
+      Case $\image{f}(X) \cap Y$ is empty.
+        Assume that $X \cap \preimage{f}(Y)$ is nonempty.
+        Take $a \in X \cap \preimage{f}(Y)$.
+        Then $f(a) \in \image{f}(X)$ and $f(a) \in Y$.
+        Hence $f(a) \in \image{f}(X) \cap Y$.
         Contradiction.
       End.
 
-      Case $X \cap f^{*}(Y)$ is empty.
-        Assume that $f_{*}(X) \cap Y$ is nonempty.
-        Take $b \in f_{*}(X) \cap Y$.
+      Case $X \cap \preimage{f}(Y)$ is empty.
+        Assume that $\image{f}(X) \cap Y$ is nonempty.
+        Take $b \in \image{f}(X) \cap Y$.
         Consider a $a \in X$ such that $b = f(a)$.
-        Then $a \in f^{*}(Y)$.
+        Then $a \in \preimage{f}(Y)$.
         Indeed $b \in Y$.
-        Hence $a \in X \cap f^{*}(Y)$.
+        Hence $a \in X \cap \preimage{f}(Y)$.
         Contradiction.
       End.
     \end{proof}
@@ -246,15 +246,15 @@
     \begin{proposition}\printlabel{FOUNDATIONS_07_5628919411638272}
       Let $A, B, C$ be classes and $f : A \to B$ and $g : B \to C$ and
       $X \subseteq A$.
-      Then \[ (g \circ f)_{*}(X) = g_{*}(f_{*}(X)). \]
+      Then \[ \image{g \circ f}(X) = \image{g}(\image{f}(X)). \]
     \end{proposition}
     \begin{proof}
-      $((g \circ f)_{*}(X)) = \{ g(f(a)) \mid a \in X \}$. %!
-      $f_{*}(X)$ is a subclass of $B$.
-      We have $g_{*}(f_{*}(X)) = \{ g(b) \mid \text{$b \in f_{*}(X)$} \}$ and
-      $f_{*}(X) = \{ f(a) \mid a \in X \}$.
-      Thus $g_{*}(f_{*}(X)) = \{ g(f(a)) \mid a \in X \}$.
-      Therefore $(g \circ f)_{*}(X) = g_{*}(f_{*}(X))$.
+      $(\image{g \circ f}(X)) = \{ g(f(a)) \mid a \in X \}$. %!
+      $\image{f}(X)$ is a subclass of $B$.
+      We have $\image{g}(\image{f}(X)) = \{ g(b) \mid \text{$b \in \image{f}(X)$} \}$ and
+      $\image{f}(X) = \{ f(a) \mid a \in X \}$.
+      Thus $\image{g}(\image{f}(X)) = \{ g(f(a)) \mid a \in X \}$.
+      Therefore $\image{g \circ f}(X) = \image{g}(\image{f}(X))$.
     \end{proof}
   \end{forthel}
 
@@ -262,72 +262,72 @@
     \begin{proposition}\printlabel{FOUNDATIONS_07_6824917886566400}
       Let $A, B, C$ be classes and $f : A \to B$ and $g : B \to C$ and
       $Z \subseteq C$.
-      Then \[ (g \circ f)^{*}(Z) = f^{*}(g^{*}(Z)). \]
+      Then \[ \preimage{g \circ f}(Z) = \preimage{f}(\preimage{g}(Z)). \]
     \end{proposition}
     \begin{proof}
-      $((g \circ f)^{*}(Z)) = \{ a \in A \mid g(f(a)) \in Z \}$.
-      We have $g^{*}(Z) = \{ b \in B \mid g(b) \in Z \}$ and
-      $f^{*}(g^{*}(Z)) = \{ a \in A \mid f(a) \in g^{*}(Z) \}$.
-      Hence $f^{*}(g^{*}(Z)) = \{ a \in A \mid g(f(a)) \in Z \}$.
-      Thus $(g \circ f)^{*}(Z) = f^{*}(g^{*}(Z))$.
+      $(\preimage{g \circ f}(Z)) = \{ a \in A \mid g(f(a)) \in Z \}$.
+      We have $\preimage{g}(Z) = \{ b \in B \mid g(b) \in Z \}$ and
+      $\preimage{f}(\preimage{g}(Z)) = \{ a \in A \mid f(a) \in \preimage{g}(Z) \}$.
+      Hence $\preimage{f}(\preimage{g}(Z)) = \{ a \in A \mid g(f(a)) \in Z \}$.
+      Thus $\preimage{g \circ f}(Z) = \preimage{f}(\preimage{g}(Z))$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_07_7396318576115712}
       Let $A, B$ be classes and $f : A \to B$ and $X, X' \subseteq A$.
-      Then \[ X \subseteq X' \implies f_{*}(X) \subseteq f_{*}(X'). \]
+      Then \[ X \subseteq X' \implies \image{f}(X) \subseteq \image{f}(X'). \]
     \end{proposition}
     \begin{proof}
       Assume $X \subseteq X'$.
-      Let $b \in f_{*}(X)$.
+      Let $b \in \image{f}(X)$.
       Take $a \in X$ such that $f(a) = b$.
       Then $a \in X'$.
-      Hence $b = f(a) \in f_{*}(X')$.
+      Hence $b = f(a) \in \image{f}(X')$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_07_8376448628817920}
       Let $A, B$ be classes and $f : A \to B$ and $Y, Y' \subseteq B$.
-      Then \[ Y \subseteq Y' \implies f^{*}(Y) \subseteq f^{*}(Y'). \]
+      Then \[ Y \subseteq Y' \implies \preimage{f}(Y) \subseteq \preimage{f}(Y'). \]
     \end{proposition}
     \begin{proof}
       Assume $Y \subseteq Y'$.
-      Let $a \in f^{*}(Y)$.
+      Let $a \in \preimage{f}(Y)$.
       Then $f(a) \in Y$.
       Hence $f(a) \in Y'$.
-      Thus $a \in f^{*}(Y')$.
+      Thus $a \in \preimage{f}(Y')$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_07_4448961469349888}
       Let $A, B$ be classes and $f : A \to B$ and $X, X' \subseteq A$.
-      Then \[ f_{*}(X \cup X') = f_{*}(X) \cup f_{*}(X'). \]
+      Then \[ \image{f}(X \cup X') = \image{f}(X) \cup \image{f}(X'). \]
     \end{proposition}
     \begin{proof}
-      Let us show that $f_{*}(X \cup X') \subseteq f_{*}(X) \cup f_{*}(X')$.
-        Let $b \in f_{*}(X \cup X')$.
+      Let us show that $\image{f}(X \cup X') \subseteq \image{f}(X) \cup \image{f}(X')$.
+        Let $b \in \image{f}(X \cup X')$.
         Take $a \in X \cup X'$ such that $b = f(a)$.
         Then $a \in X$ or $a \in X'$.
-        Hence $f(a) \in f_{*}(X)$ or $f(a) \in f_{*}(X')$.
-        Thus $b = f(a) \in f_{*}(X) \cup f_{*}(X')$.
+        Hence $f(a) \in \image{f}(X)$ or $f(a) \in \image{f}(X')$.
+        Thus $b = f(a) \in \image{f}(X) \cup \image{f}(X')$.
       End.
 
-      Let us show that $f_{*}(X) \cup f_{*}(X') \subseteq f_{*}(X \cup X')$.
-        Let $b \in f_{*}(X) \cup f_{*}(X')$.
+      Let us show that $\image{f}(X) \cup \image{f}(X') \subseteq \image{f}(X \cup X')$.
+        Let $b \in \image{f}(X) \cup \image{f}(X')$.
 
-        Case $b \in f_{*}(X)$.
+        Case $b \in \image{f}(X)$.
           Take $a \in X$ such that $b = f(a)$.
           Then $a \in X \cup X'$.
-          Hence $b \in f_{*}(X \cup X')$.
+          Hence $b \in \image{f}(X \cup X')$.
         End.
 
-        Case $b \in f_{*}(X')$.
+        Case $b \in \image{f}(X')$.
           Take $a \in X'$ such that $b = f(a)$.
           Then $a \in X \cup X'$.
-          Hence $b \in f_{*}(X \cup X')$.
+          Hence $b \in \image{f}(X \cup X')$.
         End.
       End.
     \end{proof}
@@ -336,25 +336,25 @@
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_07_1547089051910144}
       Let $A, B$ be classes and $f : A \to B$ and $Y, Y' \subseteq B$.
-      Then \[ f^{*}(Y \cup Y') = f^{*}(Y) \cup f^{*}(Y'). \]
+      Then \[ \preimage{f}(Y \cup Y') = \preimage{f}(Y) \cup \preimage{f}(Y'). \]
     \end{proposition}
     \begin{proof}
-      Let us show that $f^{*}(Y \cup Y') \subseteq f^{*}(Y) \cup f^{*}(Y')$.
-        Let $a \in f^{*}(Y \cup Y')$.
+      Let us show that $\preimage{f}(Y \cup Y') \subseteq \preimage{f}(Y) \cup \preimage{f}(Y')$.
+        Let $a \in \preimage{f}(Y \cup Y')$.
         Then $f(a) \in Y \cup Y'$.
         Hence $f(a) \in Y$ or $f(a) \in Y'$.
-        If $f(a) \in Y$ then $a \in f^{*}(Y)$.
-        If $f(a) \in Y'$ then $a \in f^{*}(Y')$.
-        Thus $a \in f^{*}(Y) \cup f^{*}(Y')$.
+        If $f(a) \in Y$ then $a \in \preimage{f}(Y)$.
+        If $f(a) \in Y'$ then $a \in \preimage{f}(Y')$.
+        Thus $a \in \preimage{f}(Y) \cup \preimage{f}(Y')$.
       End.
 
-      Let us show that $f^{*}(Y) \cup f^{*}(Y') \subseteq f^{*}(Y \cup Y')$.
-        Let $a \in f^{*}(Y) \cup f^{*}(Y')$.
-        Then $a \in f^{*}(Y)$ or $a \in f^{*}(Y')$.
-        If $a \in f^{*}(Y)$ then $f(a) \in Y$.
-        If $a \in f^{*}(Y')$ then $f(a) \in Y'$.
+      Let us show that $\preimage{f}(Y) \cup \preimage{f}(Y') \subseteq \preimage{f}(Y \cup Y')$.
+        Let $a \in \preimage{f}(Y) \cup \preimage{f}(Y')$.
+        Then $a \in \preimage{f}(Y)$ or $a \in \preimage{f}(Y')$.
+        If $a \in \preimage{f}(Y)$ then $f(a) \in Y$.
+        If $a \in \preimage{f}(Y')$ then $f(a) \in Y'$.
         Hence $f(a) \in Y \cup Y'$.
-        Thus $a \in f^{*}(Y \cup Y')$.
+        Thus $a \in \preimage{f}(Y \cup Y')$.
       End.
     \end{proof}
   \end{forthel}
@@ -362,37 +362,37 @@
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_07_3966130473402368}
       Let $A, B$ be classes and $f : A \to B$ and $X, X' \subseteq A$.
-      Then \[ f_{*}(X \cap X') \subseteq f_{*}(X) \cap f_{*}(X'). \]
+      Then \[ \image{f}(X \cap X') \subseteq \image{f}(X) \cap \image{f}(X'). \]
     \end{proposition}
     \begin{proof}
-      Let $b \in f_{*}(X \cap X')$.
+      Let $b \in \image{f}(X \cap X')$.
       Take $a \in X \cap X'$ such that $b = f(a)$.
       Then $a \in X$ and $a \in X'$.
-      Hence $f(a) \in f_{*}(X)$ and $f(a) \in f_{*}(X')$.
-      Thus $b \in f_{*}(X) \cap f_{*}(X)$.
+      Hence $f(a) \in \image{f}(X)$ and $f(a) \in \image{f}(X')$.
+      Thus $b \in \image{f}(X) \cap \image{f}(X)$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_07_4021844428455936}
       Let $A, B$ be classes and $f : A \to B$ and $Y, Y' \subseteq B$.
-      Then \[ f^{*}(Y \cap Y') = f^{*}(Y) \cap f^{*}(Y'). \]
+      Then \[ \preimage{f}(Y \cap Y') = \preimage{f}(Y) \cap \preimage{f}(Y'). \]
     \end{proposition}
     \begin{proof}
-      Let us show that $f^{*}(Y \cap Y') \subseteq f^{*}(Y) \cap f^{*}(Y')$.
-        Let $a \in f^{*}(Y \cap Y')$.
+      Let us show that $\preimage{f}(Y \cap Y') \subseteq \preimage{f}(Y) \cap \preimage{f}(Y')$.
+        Let $a \in \preimage{f}(Y \cap Y')$.
         Then $f(a) \in Y \cap Y'$.
         Hence $f(a) \in Y$ and $f(a) \in Y'$.
-        Thus $a \in f^{*}(Y)$ and $a \in f^{*}(Y')$.
-        Therefore $a \in f^{*}(Y) \cap f^{*}(Y')$.
+        Thus $a \in \preimage{f}(Y)$ and $a \in \preimage{f}(Y')$.
+        Therefore $a \in \preimage{f}(Y) \cap \preimage{f}(Y')$.
       End.
 
-      Let us show that $f^{*}(Y) \cap f^{*}(Y') \subseteq f^{*}(Y \cap Y')$.
-        Let $a \in f^{*}(Y) \cap f^{*}(Y')$.
-        Then $a \in f^{*}(Y)$ and $a \in f^{*}(Y')$.
+      Let us show that $\preimage{f}(Y) \cap \preimage{f}(Y') \subseteq \preimage{f}(Y \cap Y')$.
+        Let $a \in \preimage{f}(Y) \cap \preimage{f}(Y')$.
+        Then $a \in \preimage{f}(Y)$ and $a \in \preimage{f}(Y')$.
         Hence $f(a) \in Y$ and $f(a) \in Y'$.
         Thus $f(a) \in Y \cap Y'$.
-        Therefore $a \in f^{*}(Y \cap Y')$.
+        Therefore $a \in \preimage{f}(Y \cap Y')$.
       End.
     \end{proof}
   \end{forthel}
@@ -400,41 +400,41 @@
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_07_8372256617005056}
       Let $A, B$ be classes and $f : A \to B$ and $X, X' \subseteq A$.
-      Then \[ f_{*}(X \setminus X') \supseteq f_{*}(X) \setminus f_{*}(X'). \]
+      Then \[ \image{f}(X \setminus X') \supseteq \image{f}(X) \setminus \image{f}(X'). \]
     \end{proposition}
     \begin{proof}
-      Let $b \in f_{*}(X) \setminus f_{*}(X')$.
-      Then $b \in f_{*}(X)$ and $b \notin f_{*}(X')$.
+      Let $b \in \image{f}(X) \setminus \image{f}(X')$.
+      Then $b \in \image{f}(X)$ and $b \notin \image{f}(X')$.
       Take $a \in X$ such that $b = f(a)$.
-      If $a \in X'$ then $b \in f_{*}(X')$.
+      If $a \in X'$ then $b \in \image{f}(X')$.
       Hence $a \notin X'$.
       Thus $a \in X \setminus X'$.
-      Therefore $b = f(a) \in f_{*}(X \setminus X')$.
+      Therefore $b = f(a) \in \image{f}(X \setminus X')$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_07_6552168641331200}
       Let $A, B$ be classes and $f : A \to B$ and $Y, Y' \subseteq B$.
-      Then \[ f^{*}(Y \setminus Y') = f^{*}(Y) \setminus f^{*}(Y'). \]
+      Then \[ \preimage{f}(Y \setminus Y') = \preimage{f}(Y) \setminus \preimage{f}(Y'). \]
     \end{proposition}
     \begin{proof}
-      Let us show that $f^{*}(Y \setminus Y') \subseteq
-      f^{*}(Y) \setminus f^{*}(Y')$.
-        Let $a \in f^{*}(Y \setminus Y')$.
+      Let us show that $\preimage{f}(Y \setminus Y') \subseteq
+      \preimage{f}(Y) \setminus \preimage{f}(Y')$.
+        Let $a \in \preimage{f}(Y \setminus Y')$.
         Then $f(a) \in Y \setminus Y'$.
         Hence $f(a) \in Y$ and $f(a) \notin Y'$.
-        Thus $a \in f^{*}(Y)$ and $a \notin f^{*}(Y')$.
-        Therefore $a \in f^{*}(Y) \setminus f^{*}(Y')$.
+        Thus $a \in \preimage{f}(Y)$ and $a \notin \preimage{f}(Y')$.
+        Therefore $a \in \preimage{f}(Y) \setminus \preimage{f}(Y')$.
       End.
 
-      Let us show that $f^{*}(Y) \setminus f^{*}(Y') \subseteq
-      f^{*}(Y \setminus Y')$.
-        Let $a \in f^{*}(Y) \setminus f^{*}(Y')$.
-        Then $a \in f^{*}(Y)$ and $a \notin f^{*}(Y')$.
+      Let us show that $\preimage{f}(Y) \setminus \preimage{f}(Y') \subseteq
+      \preimage{f}(Y \setminus Y')$.
+        Let $a \in \preimage{f}(Y) \setminus \preimage{f}(Y')$.
+        Then $a \in \preimage{f}(Y)$ and $a \notin \preimage{f}(Y')$.
         Hence $f(a) \in Y$ and $f(a) \notin Y'$.
         Thus $f(a) \in Y \setminus Y'$.
-        Therefore $a \in f^{*}(Y \setminus Y')$.
+        Therefore $a \in \preimage{f}(Y \setminus Y')$.
       End.
     \end{proof}
   \end{forthel}

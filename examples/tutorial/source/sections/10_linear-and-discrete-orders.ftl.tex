@@ -1,0 +1,26 @@
+\documentclass{stex}
+\libinput{preamble}
+\begin{document}
+
+\section{Linear and Discrete Orders}
+
+We need more axiomatic assumptions for the ordering of the natural numbers. The axioms
+so far do not guarantee that the ordering is linear.
+So we continue:
+
+\begin{forthel}
+
+\begin{axiom} $m \leq n$ or $n < m$.
+\end{axiom}
+
+\begin{lemma} Assume that $l < n$.
+  Then $m + l < m + n$ and $l + m < n + m$.
+\end{lemma}
+
+\begin{lemma} Assume that $m$ is nonzero and $l < n$.
+  Then $m * l < m * n$ and $l * m < n * m$.
+\end{lemma}
+
+\end{forthel}
+
+\end{document}

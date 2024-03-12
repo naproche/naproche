@@ -93,9 +93,9 @@ thesis = art >> (thes <|> contrary <|> contradiction)
 
 
 thereIs :: FTL Formula
-thereIs = label "there-is statement" $ there >> (noNotion -|- notions)
+thereIs = label "'there is' statement" $ there >> (noNotion -|- notions)
   where
-    noNotion = label "no-notion" $ do
+    noNotion = label "'no' notion" $ do
       token' "no"; (q, f, vs) <- declared =<< notion;
       return $ Not $ foldr mbdExi (q f) vs
     notions = fmap multExi $ art >> (declared =<< notion) `sepBy` comma
@@ -135,17 +135,18 @@ lateQuantifiers = optLL1 id quantifierChain
 
 
 doesPredicate :: FTL Formula
-doesPredicate = label "does predicate" $
+doesPredicate = label "'does' predicate" $
   (does >> (doP -|- multiDoP)) <|> hasP <|> isChain
   where
     doP = predicate primVer
     multiDoP = multiPredicate primMultiVer
     hasP = has >> hasPredicate
-    isChain = is  >> conjChain (isAPredicate -|- isPredicate)
+    isChain = is >> properDisjChain (isP <|> parenthesised (conjChain isP)) </> conjChain isP
+    isP = isAPredicate -|- isPredicate
 
 
 isPredicate :: FTL Formula
-isPredicate = label "is predicate" $
+isPredicate = label "'is' predicate" $
   pAdj -|- pMultiAdj -|- (with >> hasPredicate)
   where
     pAdj = predicate primAdj
@@ -153,7 +154,7 @@ isPredicate = label "is predicate" $
 
 
 isAPredicate :: FTL Formula
-isAPredicate = label "isA predicate" $ notNotion <|> notion
+isAPredicate = label "'is a' predicate" $ notNotion <|> notion
   -- Unlike the language description, we distinguish positive and negative
   -- rather than notions and fixed terms.
   where
@@ -164,7 +165,7 @@ isAPredicate = label "isA predicate" $ notNotion <|> notion
       optLLx (q $ Not f) $ fmap (q. Tag Dig . Not) unfinished
 
 hasPredicate :: FTL Formula
-hasPredicate = label "has predicate" $ noPossessive <|> possessive
+hasPredicate = label "'has' predicate" $ noPossessive <|> possessive
   where
     possessive = art >> common <|> nonbinary
     nonbinary = fmap (Tag Dig . multExi) $ (declared =<< possess) `sepBy` (comma >> art)
@@ -227,12 +228,14 @@ gnotion nt ra = do
   ls <- fmap reverse la; (q, f, vs) <- nt;
   rc <- opt [] $ fmap (:[]) (conjChain isPredicate)
   rs <- opt [] $ fmap (:[]) $ ra <|> thatClause
+  rc <- opt [] $ fmap (:[]) (conjChain isPredicate)
+  rs <- opt [] $ fmap (:[]) $ ra <|> thatClause
   -- we can use <|> here because every ra in use begins with "such"
   return (q, foldr1 And $ f : ls ++ rc ++ rs, vs)
   where
     la = opt [] $ liftA2 (:) lc la
     lc = predicate primUnAdj </> multiPredicate primMultiUnAdj
-    thatClause = that >> conjChain doesPredicate <?> "that clause"
+    thatClause = that >> conjChain doesPredicate <?> "'that' clause"
 
 
 anotion :: FTL (Formula -> Formula, Formula)
@@ -250,7 +253,7 @@ possess = label "possesive notion" $ gnotion (primOfNotion term) suchThatAttr >>
 
 
 suchThatAttr :: FTL Formula
-suchThatAttr = label "such-that attribute" $ such >> that >> statement
+suchThatAttr = label "'such that' attribute" $ such >> that >> statement
 
 digadd :: (a, Formula, c) -> (a, Formula, c)
 digadd (q, f, v) = (q, Tag Dig f, v)
@@ -301,9 +304,9 @@ quantifiedNotion = label "quantified notion" $
 
 
 definiteTerm :: FTL (Formula -> Formula, Formula)
-definiteTerm = label "definiteTerm" $  symbolicTerm -|- definiteNoun
+definiteTerm = label "definite term" $  symbolicTerm -|- definiteNoun
   where
-    definiteNoun = label "definiteNoun" $ optParenthesised (art >> primFun term)
+    definiteNoun = label "definite noun" $ optParenthesised (art >> primFun term)
 
 
 symbolicTerm :: FTL (a -> a, Formula)
@@ -451,14 +454,20 @@ collection = label "class definition" $ symbClass <|> classOf
 
 
 symbClassNotation :: FTL (Formula -> Formula, (PosVar, Formula -> Formula))
-symbClassNotation = texClass </> cndClass </> finiteSet
+symbClassNotation = texClass </> texEnumSet </> cndClass </> enumSet
   where
-    -- Finite class, e.g. "{x, f(y), 5}"
-    finiteSet = braced $ do
+    -- Enumerative set notation
+    enumSet = braced $ do
       ts <- sTerm `sepByLL1` token ","
       h <- hidden
       pure (\tr -> mkObject tr `And` (foldr1 Or $ map (mkEquality tr) ts), (h, mkSet))
-    -- Set-builder notation, e.g. "{x in X | x is less than y}"
+    -- Enumerative set notation via the TeX macro `\set`.
+    -- Semantically identical to `enumSet`.
+    texEnumSet = texCommandWithArg "fset" $ do
+      ts <- sTerm `sepByLL1` token ","
+      h <- hidden
+      pure (\tr -> mkObject tr `And` (foldr1 Or $ map (mkEquality tr) ts), (h, mkSet))
+    -- Set-builder notation
     cndClass = braced $ do
       (tag, c, t, mkColl) <- optInText sepFrom
       st <- (token "|" <|> token ":" <|> token "\\mid") >> optInText statement
@@ -466,11 +475,11 @@ symbClassNotation = texClass </> cndClass </> finiteSet
       vsDecl <- makeDecls $ fvToVarSet vs;
       nm <- if isVar t then pure $ PosVar (varName t) (varPosition t) else hidden
       pure (\tr -> tag $ c tr `blAnd` mkObject tr `blAnd` mbEqu vsDecl tr t st, (nm, mkColl))
-    -- Set-builder notation using a certain TeX macro, e.g.
-    -- "\class{$x \in X$ | $x$ is less than $y$}". Semantically identical to `cndClass`.
-    texClass = texCommandWithArg "class" $ do
+    -- Set-builder notation via the TeX macro `\compterm`.
+    -- Semantically identical to `cndClass`.
+    texClass = texCommandWithArg "fclass" $ do
       (tag, c, t, mkColl) <- optInText sepFrom
-      st <- symbol "|" >> optInText statement <|> optInClasstext statement
+      st <- (symbol "}" >> symbol "{") >> optInText statement <|> optInClasstext statement
       vs <- freeVars t
       vsDecl <- makeDecls $ fvToVarSet vs;
       nm <- if isVar t then pure $ PosVar (varName t) (varPosition t) else hidden
@@ -619,6 +628,9 @@ multExi [] = Top
 
 conjChain :: FTL Formula -> FTL Formula
 conjChain = fmap (foldl1 And) . flip sepBy (token' "and")
+
+properDisjChain :: FTL Formula -> FTL Formula
+properDisjChain = fmap (foldl1 Or) . flip properSepBy (token' "or")
 
 quantifierChain :: FTL (Formula -> Formula)
 quantifierChain = fmap (foldl fld id) $ token' "for" >> quantifiedNotion `sepByLL1` comma

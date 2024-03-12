@@ -1,0 +1,59 @@
+\documentclass{article}
+\usepackage[stex]{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[creators={Marcel Schütz}]{symmetric-difference-is-right-injective.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?symmetric-difference.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?subclass.ftl}
+
+  \begin{fproposition*}[label=6530966763864064]
+    Let $A, B, C$ be classes.
+    If $\symdiff{A}{B} = \symdiff{A}{C}$ then $B = C$.
+  \end{fproposition*}
+  \begin{fproof}
+    Assume $\symdiff{A}{B} = \symdiff{A}{C}$.
+
+    Let us show that $B \subclass[eq] C$.
+      Let $b \in B$.
+
+      Case $b \in A$.
+        Then $b \notin \symdiff{A}{B}$.
+        Hence $b \notin \symdiff{A}{C}$.
+        Therefore $b \in \intersection{A,C}$.
+        Indeed $\symdiff{A}{C} = \complement{\union{A,C}}{\intersection{A,C}}$.
+        Hence $b \in C$.
+      End.
+
+      Case $b \notin A$.
+        Then $b \in \symdiff{A}{B}$.
+        Indeed $b \in \union{A,B}$ and $b \notin \intersection{A,C}$.
+        Hence $b \in \symdiff{A}{C}$.
+        Thus $b \in \union{A,C}$ and $b \notin \intersection{A,C}$.
+        Therefore $b \in A$ or $b \in C$.
+        Then we have the thesis.
+      End.
+    End.
+
+    Let us show that $C \subclass[eq] B$.
+      Let $c \in C$.
+
+      Case $c \in A$.
+        Then $c \notin \symdiff{A}{C}$.
+        Hence $c \notin \symdiff{A}{B}$.
+        Therefore $c \in \intersection{A,B}$.
+        Indeed $c \notin \union{A,B}$ or $c \in \intersection{A,B}$.
+        Hence $c \in B$.
+      End.
+
+      Case $c \notin A$.
+        Then $c \in \symdiff{A}{C}$.
+        Indeed $c \in \union{A,C}$ and $c \notin \intersection{A,C}$.
+        Hence $c \in \symdiff{A}{B}$.
+        Thus $c \in \union{A,B}$ and $c \notin \intersection{A,B}$.
+        Therefore $c \in A$ or $c \in B$.
+        Then we have the thesis.
+      End.
+    End.
+  \end{fproof}
+\end{smodule}
+\end{document}

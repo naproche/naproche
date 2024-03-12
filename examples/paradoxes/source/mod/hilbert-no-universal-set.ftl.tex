@@ -1,0 +1,19 @@
+\documentclass{stex}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{hilbert-no-universal-set.ftl}
+  \importmodule[naproche/examples/paradoxes]{mod?hilbert-paradox.ftl}
+  \importmodule[naproche/examples/foundations]{def/classes?universal-class.ftl}
+
+  \begin{fproposition*}[label=hilbert_paradox_corollary]
+    There exists no universal set.
+  \end{fproposition*}
+  \begin{fproof}[method=contradiction]
+    Assume the contrary.
+    Consider a universal set $X$.
+    Define $V = \fclass{x \in X}{\text{$x$ is a set}}$.
+    Then $V$ is closed under powersets and closed under unions.
+    Hence $V$ is not a set (by \printref{hilbert_paradox}).
+  \end{fproof}
+\end{smodule}
+\end{document}
