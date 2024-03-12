@@ -18,14 +18,14 @@
 
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_07_6139396896063488}
-      $\card{\emptyset} = 0$.
+      $|\emptyset| = 0$.
     \end{proposition}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_07_836893598023680}
       Let $a$ be an object.
-      Then $\card{\set{a}} = 1$.
+      Then $|\set{a}| = 1$.
     \end{proposition}
     \begin{proof}
       Define $f(x) = 0$ for $x \in \set{a}$.
@@ -33,14 +33,14 @@
       $f$ is injective and surjective onto $1$.
       Hence $f$ is a bijection between $\set{a}$ and $1$.
       Consequently $\set{a}$ and $1$ are equinumerous.
-      Thus $\card{\set{a}} = \card{1} = 1$.
+      Thus $|\set{a}| = |1| = 1$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_07_5465279026954240}
       Let $a, b$ be distinct objects.
-      Then $\card{\set{a,b}} = 2$.
+      Then $|\set{a,b}| = 2$.
     \end{proposition}
     \begin{proof}
       Define \[ f(x) =
@@ -54,61 +54,61 @@
       $f$ is injective and surjective onto $2$.
       Hence $f$ is a bijection between $\set{a,b}$ and $2$.
       Consequently $\set{a,b}$ and $2$ are equinumerous.
-      Thus $\card{\set{a,b}} = \card{2} = 2$.
+      Thus $|\set{a,b}| = |2| = 2$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{theorem}\printlabel{SET_THEORY_07_2948332552978432}
       Let $n \in \omega$.
-      Then $\card{n} = n$.
+      Then $|n| = n$.
     \end{theorem}
     \begin{proof}
-      Define $\Phi = \{ n' \in \omega \mid \card{n'} = n' \}$.
+      Define $\Phi = \{ n' \in \omega \mid |n'| = n' \}$.
 
       (1) $0 \in \Phi$.
-      Indeed $\card{0} = \card{\emptyset} = 0$.
+      Indeed $|0| = |\emptyset| = 0$.
 
-      (2) For all $n' \in \Phi$ we have $\succ{n'} \in \Phi$. \\
+      (2) For all $n' \in \Phi$ we have $\succ(n') \in \Phi$. \\
       Proof.
         Let $n' \in \Phi$.
-        Then $\card{n'} = n'$.
-        We have $\card{\succ{n'}} \leq \succ{n'}$.
+        Then $|n'| = n'$.
+        We have $|\succ(n')| \leq \succ(n')$.
 
-        Let us show that $\succ{n'} \leq \card{\succ{n'}}$.
+        Let us show that $\succ(n') \leq |\succ(n')|$.
           Assume the contrary.
-          Then $\card{\succ{n'}} \less \succ{n'}$.
-          Take a bijection $f$ between $\card{\succ{n'}}$ and $\succ{n'}$.
-          $\card{\succ{n'}}$ is nonzero.
-          Hence we can take a $m \in \omega$ such that $\card{\succ{n'}} =
-          \succ{m}$.
-          Then $\inverse{f}(n') \leq m$.
+          Then $|\succ(n')| < \succ(n')$.
+          Take a bijection $f$ between $|\succ(n')|$ and $\succ(n')$.
+          $|\succ(n')|$ is nonzero.
+          Hence we can take a $m \in \omega$ such that $|\succ(n')| =
+          \succ(m)$.
+          Then $f^{-1}(n') \leq m$.
 
-          We can show that $\inverse{f}(n') \less m$.
+          We can show that $f^{-1}(n') < m$.
             Assume the contrary.
-            Then $\inverse{f}(n') = m$.
-            $f \restriction m$ is a bijection between $m$ and $\image{f}(m)$ (by
+            Then $f^{-1}(n') = m$.
+            $f \restriction m$ is a bijection between $m$ and $f[m]$ (by
             \cref{FOUNDATIONS_08_647446231252992}).
-            Indeed $f$ is an injective map from $\card{\succ{n'}}$ to $\succ{n'}$ and
-            $m \subseteq \card{\succ{n'}}$.
-            We have $\image{f}(m) \subseteq n'$ and $n' \subseteq \image{f}(m)$.
-            Hence $\image{f}(m) = n'$.
+            Indeed $f$ is an injective map from $|\succ(n')|$ to $\succ(n')$ and
+            $m \subseteq |\succ(n')|$.
+            We have $f[m] \subseteq n'$ and $n' \subseteq f[m]$.
+            Hence $f[m] = n'$.
             Thus $f \restriction m$ is a bijection between $m$ and $n'$.
             Therefore $n'
-              = \card{n'}
+              = |n'|
               \leq m
-              \less \card{\succ{n'}}
-              \less \succ{n'}$.
+              < |\succ(n')|
+              < \succ(n')$.
             Consequently $m = n'$.
-            Then we have $\succ{n'} = \card{\succ{n'}} \less \succ{n'}$.
+            Then we have $\succ(n') = |\succ(n')| < \succ(n')$.
             Contradiction.
           End.
 
           Define \[ g(i) =
             \begin{cases}
-              f(i)  & : i \neq \inverse{f}(n')
+              f(i)  & : i \neq f^{-1}(n')
               \\
-              f(m)  & : i = \inverse{f}(n')
+              f(m)  & : i = f^{-1}(n')
             \end{cases} \]
           for $i \in m$.
 
@@ -117,18 +117,18 @@
           Proof.
             Let $i \in m$.
 
-            Case $i \neq \inverse{f}(n')$.
-              Then $g(i) = f(i) \in \succ{n'}$.
-              If $g(i) = n'$ then $f(i) = n' = f(\inverse{f}(n'))$.
-              Hence if $g(i) = n'$ then $i = \inverse{f}(n')$.
+            Case $i \neq f^{-1}(n')$.
+              Then $g(i) = f(i) \in \succ(n')$.
+              If $g(i) = n'$ then $f(i) = n' = f(f^{-1}(n'))$.
+              Hence if $g(i) = n'$ then $i = f^{-1}(n')$.
               Thus $g(i) \neq n'$.
               Therefore $g(i) \in n'$.
             End.
 
-            Case $i = \inverse{f}(n')$.
+            Case $i = f^{-1}(n')$.
               Then $g(i)
                 = f(m)
-                \neq f(\inverse{f}(n'))
+                \neq f(f^{-1}(n'))
                 = n'$.
               Hence $g(i) \in n'$.
             End.
@@ -139,21 +139,21 @@
           such that $k = g(l)$. \\
           Proof.
             Let $k \in n'$.
-            Then $\inverse{f}(k) \neq \inverse{f}(n')$.
+            Then $f^{-1}(k) \neq f^{-1}(n')$.
 
-            Case $\inverse{f}(k) = m$.
+            Case $f^{-1}(k) = m$.
               Then $k
-                = f(\inverse{f}(k))
+                = f(f^{-1}(k))
                 = f(m)
-                = g(\inverse{f}(n'))$.
+                = g(f^{-1}(n'))$.
             End.
 
-            Case $\inverse{f}(k) \neq m$.
-              Then $\inverse{f}(k) \in m$.
-              Indeed $\inverse{f}(k) \in \card{\succ{n'}} = \succ{m} = m \cup \set{m}$.
+            Case $f^{-1}(k) \neq m$.
+              Then $f^{-1}(k) \in m$.
+              Indeed $f^{-1}(k) \in |\succ(n')| = \succ(m) = m \cup \set{m}$.
               Hence $k
-                = f(\inverse{f}(k))
-                = g(\inverse{f}(k))$.
+                = f(f^{-1}(k))
+                = g(f^{-1}(k))$.
             End.
           Qed.
 
@@ -164,29 +164,29 @@
             Let $i, j \in m$.
             Assume $i \neq j$.
 
-            Case $i, j \neq \inverse{f}(n')$.
+            Case $i, j \neq f^{-1}(n')$.
               Then $g(i)
                 = f(i)
                 \neq f(j)
                 = g(j)$.
             End.
 
-            Case $i = \inverse{f}(n')$.
-              Then $j \neq \inverse{f}(n')$.
+            Case $i = f^{-1}(n')$.
+              Then $j \neq f^{-1}(n')$.
               Hence $g(i)
-                = g(\inverse{f}(n'))
+                = g(f^{-1}(n'))
                 = f(m)
                 \neq f(j)
                 = g(j)$.
               Indeed $m \neq j$.
             End.
 
-            Case $j = \inverse{f}(n')$.
-              Then $i \neq \inverse{f}(n')$.
+            Case $j = f^{-1}(n')$.
+              Then $i \neq f^{-1}(n')$.
               Hence $g(i)
                 = f(i)
                 \neq f(m)
-                = g(\inverse{f}(n'))
+                = g(f^{-1}(n'))
                 = g(j)$.
               Indeed $i \neq m$.
             End.
@@ -196,7 +196,7 @@
 
       Thus $\omega \subseteq \Phi$ (by \cref{SET_THEORY_03_344585425387520}).
       Consequently $n \in \Phi$.
-      Therefore $\card{n} = n$.
+      Therefore $|n| = n$.
     \end{proof}
   \end{forthel}
 
@@ -208,73 +208,73 @@
 
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_07_4952029518626816}
-      $\card{\omega} = \omega$.
+      $|\omega| = \omega$.
     \end{proposition}
     \begin{proof}
-      We have $\card{\omega} \leq \omega$.
+      We have $|\omega| \leq \omega$.
 
-      Let us show that $\card{\omega}$ is not less than $\omega$.
+      Let us show that $|\omega|$ is not less than $\omega$.
         Assume the contrary.
-        Then $\card{\omega} \in \omega$.
-        Take $n = \card{\omega}$ and a bijection $f$ between $n$ and $\omega$.
+        Then $|\omega| \in \omega$.
+        Take $n = |\omega|$ and a bijection $f$ between $n$ and $\omega$.
 
         Define \[ g(k) =
           \begin{cases}
-            \succ{f(k)} & : k \less n
+            \succ(f(k)) & : k < n
             \\
             0           & : k = n
           \end{cases} \]
-        for $k \in \succ{n}$.
-        Then $g$ is a map from $\succ{n}$ to $\omega$.
+        for $k \in \succ(n)$.
+        Then $g$ is a map from $\succ(n)$ to $\omega$.
 
         $g$ is injective.
-        Indeed we can show that for all $k, k' \in \succ{n}$ if $k \neq k'$
+        Indeed we can show that for all $k, k' \in \succ(n)$ if $k \neq k'$
         then $g(k) \neq g(k')$. \\
         Proof.
-          Let $k, k' \in \succ{n}$.
+          Let $k, k' \in \succ(n)$.
           Assume $k \neq k'$.
 
-          Case $k, k' \less n$.
+          Case $k, k' < n$.
             Then $f(k) \neq f(k')$.
-            Hence $\succ{f(k)} \neq \succ{f(k')}$.
+            Hence $\succ(f(k)) \neq \succ(f(k'))$.
             Thus $g(k) \neq g(k')$.
           End.
 
-          Case $k \less n$ and $k' = n$.
-            We have $\succ{f(k)} \neq 0$.
+          Case $k < n$ and $k' = n$.
+            We have $\succ(f(k)) \neq 0$.
             Hence $g(k) \neq g(k')$.
           End.
 
-          Case $k = n$ and $k' \less n$.
-            We have $\succ{f(k')} \neq 0$.
+          Case $k = n$ and $k' < n$.
+            We have $\succ(f(k')) \neq 0$.
             Hence $g(k) \neq g(k')$.
           End.
         Qed.
 
         $g$ is surjective onto $\omega$.
         Indeed we can show that for any $m \in \omega$ there exists a
-        $k \in \succ{n}$ such that $m = g(k)$. \\
+        $k \in \succ(n)$ such that $m = g(k)$. \\
         Proof.
           Let $m \in \omega$.
-          Then $\inverse{f}(m) \in n$.
+          Then $f^{-1}(m) \in n$.
 
           Case $m = 0$.
             Then $m = g(n)$.
           End.
 
           Case $m \neq 0$.
-            Take $m' \in \omega$ such that $m = \succ{m'}$.
+            Take $m' \in \omega$ such that $m = \succ(m')$.
             Then $m
-              = \succ{m'}
-              = \succ{f(\inverse{f}(m'))}
-              = g(\inverse{f}(m'))$.
-            Indeed $\inverse{f}(m') \less n$.
+              = \succ(m')
+              = \succ(f(f^{-1}(m')))
+              = g(f^{-1}(m'))$.
+            Indeed $f^{-1}(m') < n$.
           End.
         End.
 
-        Hence $g$ is a bijection between $\succ{n}$ and $\omega$.
-        Then we have $\card{n} = \card{\succ{n}}$.
-        Thus $n = \succ{n}$.
+        Hence $g$ is a bijection between $\succ(n)$ and $\omega$.
+        Then we have $|n| = |\succ(n)|$.
+        Thus $n = \succ(n)$.
       End.
     \end{proof}
   \end{forthel}
@@ -288,7 +288,7 @@
   \begin{forthel}
     \begin{definition}\printlabel{SET_THEORY_07_5346658235711488}
       Let $x$ be a set.
-      $x$ is finite iff $\card{x} \less \omega$.
+      $x$ is finite iff $|x| < \omega$.
     \end{definition}
   \end{forthel}
 
@@ -302,7 +302,7 @@
   \begin{forthel}
     \begin{definition}\printlabel{SET_THEORY_07_8808604616359936}
       Let $x$ be a set.
-      $x$ is countable iff $\card{x} \leq \omega$.
+      $x$ is countable iff $|x| \leq \omega$.
     \end{definition}
   \end{forthel}
 
@@ -316,31 +316,31 @@
   \begin{forthel}
     \begin{definition}\printlabel{SET_THEORY_07_5679866426949632}
       Let $x$ be a set.
-      $x$ is countably infinite iff $\card{x} = \omega$.
+      $x$ is countably infinite iff $|x| = \omega$.
     \end{definition}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_07_3806229474312192}
       Let $x$ be a set.
-      Then $x$ is finite iff $\card{x} = n$ for some $n \in \omega$.
+      Then $x$ is finite iff $|x| = n$ for some $n \in \omega$.
     \end{proposition}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_07_3174577070931968}
       Let $x$ be a set.
-      Then $x$ is infinite iff $\card{x} \geq \omega$.
+      Then $x$ is infinite iff $|x| \geq \omega$.
     \end{proposition}
     \begin{proof}
-      $\card{x} \geq \omega$ iff $\card{x} \nless \omega$.
+      $|x| \geq \omega$ iff $|x| \nless \omega$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_07_4281623468048384}
       Let $x$ be a set.
-      Then $x$ is uncountable iff $\card{x} \gtr \omega$.
+      Then $x$ is uncountable iff $|x| > \omega$.
     \end{proposition}
   \end{forthel}
 
@@ -375,61 +375,61 @@
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_07_8189062544359424}
       Let $\alpha$ be an infinite ordinal.
-      Then $\card{\succ{\alpha}} = \card{\alpha}$.
+      Then $|\succ(\alpha)| = |\alpha|$.
     \end{proposition}
     \begin{proof}
-      For any $\beta \in \succ{\alpha}$ we have
-      $\beta \less \omega$ or $\omega \leq \beta \less \alpha$ or $\beta = \alpha$.
+      For any $\beta \in \succ(\alpha)$ we have
+      $\beta < \omega$ or $\omega \leq \beta < \alpha$ or $\beta = \alpha$.
       Define \[ f(\beta) =
         \begin{cases}
-          \succ{\beta}  & : \beta \less \omega
+          \succ(\beta)  & : \beta < \omega
           \\
-          \beta         & : \omega \leq \beta \less \alpha
+          \beta         & : \omega \leq \beta < \alpha
           \\
           0             & : \beta = \alpha
         \end{cases} \]
-      for $\beta \in \succ{\alpha}$.
+      for $\beta \in \succ(\alpha)$.
 
-      Then $f$ is a map from $\succ{\alpha}$ to $\alpha$.
+      Then $f$ is a map from $\succ(\alpha)$ to $\alpha$.
       Indeed we can show that $f(\beta) \in \alpha$ for all
-      $\beta \in \succ{\alpha}$. \\
+      $\beta \in \succ(\alpha)$. \\
       Proof.
-        Let $\beta \in \succ{\alpha}$.
+        Let $\beta \in \succ(\alpha)$.
 
-        Case $\beta \less \omega$.
+        Case $\beta < \omega$.
           Then $f(\beta)
-            = \succ{\beta}
-            \less \omega
+            = \succ(\beta)
+            < \omega
             \leq \alpha$.
         End.
 
-        Case $\omega \leq \beta \less \alpha$.
+        Case $\omega \leq \beta < \alpha$.
           Then $f(\beta)
             = \beta
-            \less \alpha$.
+            < \alpha$.
         End.
 
         Case $\beta = \alpha$.
           Then $f(\beta)
             = 0
-            \less \alpha$.
+            < \alpha$.
         End.
       Qed.
 
       $f$ is surjective onto $\alpha$.
       Indeed we can show that for any $\beta \in \alpha$ there exists a
-      $\gamma \in \succ{\alpha}$ such that $\beta = f(\gamma)$. \\
+      $\gamma \in \succ(\alpha)$ such that $\beta = f(\gamma)$. \\
       Proof.
         Let $\beta \in \alpha$.
-        Then $\beta = 0$ or $0 \less \beta \less \omega$ or $\beta \geq \omega$.
+        Then $\beta = 0$ or $0 < \beta < \omega$ or $\beta \geq \omega$.
 
         Case $\beta = 0$.
           Then $\beta = f(\alpha)$.
         End.
 
-        Case $0 \less \beta \less \omega$.
-          Take an ordinal $\beta'$ such that $\beta = \succ{\beta'}$.
-          Then $\beta' \less \omega$.
+        Case $0 < \beta < \omega$.
+          Take an ordinal $\beta'$ such that $\beta = \succ(\beta')$.
+          Then $\beta' < \omega$.
           Hence $\beta = f(\beta')$.
         End.
 
@@ -439,59 +439,59 @@
       Qed.
 
       $f$ is injective.
-      Indeed we can show that for all $\beta, \gamma \in \succ{\alpha}$ if
+      Indeed we can show that for all $\beta, \gamma \in \succ(\alpha)$ if
       $\beta \neq \gamma$ then $f(\beta) \neq f(\gamma)$. \\
       Proof.
-        Let $\beta, \gamma \in \succ{\alpha}$.
+        Let $\beta, \gamma \in \succ(\alpha)$.
         Assume $\beta \neq \gamma$.
 
-        Case $\beta \less \omega$.
+        Case $\beta < \omega$.
           If $\gamma = \alpha$ then
           $f(\beta)
-            = \succ{\beta}
+            = \succ(\beta)
             \neq 0
             = f(\gamma)$.
-          If $\omega \leq \gamma \less \alpha$ then
+          If $\omega \leq \gamma < \alpha$ then
           $f(\beta)
-            = \succ{\beta}
-            \less \omega
+            = \succ(\beta)
+            < \omega
             \leq \gamma
             = f(\gamma)$.
         End.
 
-        Case $\omega \leq \beta \less \alpha$.
+        Case $\omega \leq \beta < \alpha$.
           If $\gamma = \alpha$ then
           $f(\beta)
             = \beta
             \geq \omega
-            \gtr 0
+            > 0
             = f(\gamma)$.
-          If $\gamma \less \omega$ then
+          If $\gamma < \omega$ then
           $f(\beta)
             = \beta
             \geq \omega
-            \gtr \succ{\gamma}
+            > \succ(\gamma)
             = f(\gamma)$.
         End.
 
         Case $\beta = \alpha$.
-          If $\gamma \less \omega$ then
+          If $\gamma < \omega$ then
           $f(\beta)
             = 0
-            \neq \succ{\gamma}
+            \neq \succ(\gamma)
             = f(\gamma)$.
-          If $\omega \leq \gamma \less \alpha$ then
+          If $\omega \leq \gamma < \alpha$ then
           $f(\beta)
             = 0
-            \less \omega
+            < \omega
             \leq \gamma
             = f(\gamma)$.
         End.
       Qed.
 
-      Hence $f$ is a bijection between $\succ{\alpha}$ and $\alpha$.
-      Therefore $\succ{\alpha}$ and $\alpha$ are equinumerous.
-      Consequently $\card{\succ{\alpha}} = \card{\alpha}$.
+      Hence $f$ is a bijection between $\succ(\alpha)$ and $\alpha$.
+      Therefore $\succ(\alpha)$ and $\alpha$ are equinumerous.
+      Consequently $|\succ(\alpha)| = |\alpha|$.
     \end{proof}
   \end{forthel}
 
@@ -504,10 +504,10 @@
       Suppose that $\kappa$ is not a limit ordinal.
       $\kappa \neq 0$.
       Hence $\kappa$ is a successor ordinal.
-      Thus we can take an ordinal $\alpha$ such that $\kappa = \succ{\alpha}$.
-      We have $\alpha \gtr \kappa \geq \omega$.
-      Hence $\card{\succ{\alpha}} = \card{\alpha}$.
-      Thus $\alpha \less \card{\kappa}$ and $\kappa$ is equinumerous to $\kappa$.
+      Thus we can take an ordinal $\alpha$ such that $\kappa = \succ(\alpha)$.
+      We have $\alpha > \kappa \geq \omega$.
+      Hence $|\succ(\alpha)| = |\alpha|$.
+      Thus $\alpha < |\kappa|$ and $\kappa$ is equinumerous to $\kappa$.
       Contradiction.
     \end{proof}
   \end{forthel}

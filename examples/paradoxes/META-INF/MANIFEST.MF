@@ -1,4 +1,0 @@
-id:naproche/examples/paradoxes
-ns:http://mathhub.info/naproche/examples/paradoxes
-narration-base:http://mathhub.info/naproche/examples/paradoxes
-url-base:https://stexmmt.mathhub.info/:sTeX

@@ -1,4 +1,0 @@
-id:naproche/examples/examples
-ns:http://mathhub.info/naproche/examples/examples
-narration-base:http://mathhub.info/naproche/examples/examples
-url-base:https://stexmmt.mathhub.info/:sTeX

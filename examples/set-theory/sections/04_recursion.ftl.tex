@@ -17,7 +17,7 @@
   \begin{forthel}
     \begin{definition}\printlabel{SET_THEORY_04_7107446027845632}
       Let $A$ be a class and $\alpha$ be an ordinal.
-      \[ \boundedEnum{A}{\alpha} = \{ f \mid \text{$f$ is a map from $\beta$ to $A$
+      \[ A^{< \alpha} = \{ f \mid \text{$f$ is a map from $\beta$ to $A$
       for some ordinal $\beta$ less than $\alpha$} \}. \]
     \end{definition}
   \end{forthel}
@@ -25,7 +25,7 @@
   \begin{forthel}
     \begin{definition}\printlabel{SET_THEORY_04_1955917673267200}
       Let $A$ be a class.
-      \[ \unboundedEnum{A} = \{f \mid \text{$f$ is a map from $\alpha$ to $A$
+      \[ A^{< \infty} = \{f \mid \text{$f$ is a map from $\alpha$ to $A$
       for some ordinal $\alpha$} \}. \]
     \end{definition}
   \end{forthel}
@@ -34,13 +34,13 @@
     \begin{lemma}\printlabel{SET_THEORY_04_7841726894964736}
       Let $A$ be a class and $f$ be a map to $A$ such that $\dom(f)$ is a
       transitive subclass of $\Ord$ and $\alpha \in \dom(f)$.
-      Then $f \restriction \alpha \in \unboundedEnum{A}$.
+      Then $f \restriction \alpha \in A^{< \infty}$.
     \end{lemma}
   \end{forthel}
 
   \begin{forthel}
     \begin{definition}\printlabel{SET_THEORY_04_5597213870784512}
-      Let $H$ be a map and $G : \unboundedEnum{A} \to A$ for some class $A$ such
+      Let $H$ be a map and $G : A^{< \infty} \to A$ for some class $A$ such
       that $H$ is a map to $A$.
       $H$ is recursive regarding $G$ iff $\dom(H)$ is a transitive subclass of
       $\Ord$ and for all $\alpha \in \dom(H)$ we have
@@ -50,7 +50,7 @@
 
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_04_2876133366300672}
-      Let $A$ be a class and $G$ be a map from $\unboundedEnum{A}$ to $A$.
+      Let $A$ be a class and $G$ be a map from $A^{< \infty}$ to $A$.
       Let $H, H'$ be maps to $A$ that are recursive regarding $G$.
       Then \[ H(\alpha) = H'(\alpha) \]
       for all $\alpha \in \dom(H) \cap \dom(H')$.
@@ -93,7 +93,7 @@
 
   \begin{forthel}
     \begin{theorem}[Recursion Theorem]\printlabel{SET_THEORY_04_3600210873810944}
-      Let $A$ be a class and $G$ be a map from $\unboundedEnum{A}$ to $A$.
+      Let $A$ be a class and $G$ be a map from $A^{< \infty}$ to $A$.
       Then there exists a map $F$ from $\Ord$ to $A$ that is recursive
       regarding $G$.
     \end{theorem}
@@ -117,11 +117,11 @@
           We have $H' = H' \restriction \alpha$.
           Define \[ H(\beta) =
             \begin{cases}
-              H'(\beta)                 & : \beta \less \alpha \\
+              H'(\beta)                 & : \beta < \alpha \\
               G(H' \restriction \beta)  & : \beta = \alpha
             \end{cases} \]
-          for $\beta \in \succ{\alpha}$.
-          Then $H \restriction \beta \in \unboundedEnum{A}$ for all $\beta \in
+          for $\beta \in \succ(\alpha)$.
+          Then $H \restriction \beta \in A^{< \infty}$ for all $\beta \in
           \dom(H)$.
 
           (a) $\dom(H)$ is a transitive subclass of $\Ord$.
@@ -130,9 +130,9 @@
           G(H \restriction \beta)$. \\
           Proof.
             Let $\beta \in \dom(H)$.
-            Then $\beta \less \alpha$ or $\beta = \alpha$.
+            Then $\beta < \alpha$ or $\beta = \alpha$.
 
-            Case $\beta \less \alpha$.
+            Case $\beta < \alpha$.
               Choose a map $h$ to $A$ such that $h$ is recursive regarding $G$
               and $\beta \in \dom(h)$ and $H'(\beta) = h(\beta)$.
 
@@ -210,7 +210,7 @@
 
   \begin{forthel}
     \begin{theorem}\printlabel{SET_THEORY_04_1787371569807360}
-      Let $A$ be a class and $G$ be a map from $\unboundedEnum{A}$ to $A$.
+      Let $A$ be a class and $G$ be a map from $A^{< \infty}$ to $A$.
       Let $F, F'$ be maps from $\Ord$ to $A$ that are recursive regarding $G$.
       Then $F = F'$.
     \end{theorem}
@@ -230,11 +230,11 @@
     \begin{theorem}\printlabel{SET_THEORY_04_8446954438656000}
       Let $A$ be a class.
       Let $a \in A$ and $G : \Ord \times A \to A$ and
-      $H : \Ord \times \unboundedEnum{A} \to A$.
+      $H : \Ord \times A^{< \infty} \to A$.
       Then there exists a map $F$ from $\Ord$ to $A$ such that
       \[ F(0) = a \]
       and for all ordinals $\alpha$ we have
-      \[ F(\succ{\alpha}) = G(\alpha, F(\alpha)) \]
+      \[ F(\succ(\alpha)) = G(\alpha, F(\alpha)) \]
       and for all limit ordinals $\lambda$ we have
       \[ F(\lambda) = H(\lambda, F \restriction \lambda). \]
     \end{theorem}
@@ -244,27 +244,27 @@
           a
           & : \dom(f) = 0
           \\
-          G(\pred{\dom(f)}, f(\pred{\dom(f)}))
+          G(\pred(\dom(f)), f(\pred(\dom(f))))
           & : \text{$\dom(f)$ is a successor ordinal}
           \\
           H(\dom(f), f)
           & : \text{$\dom(f)$ is a limit ordinal}
         \end{cases} \]
-      for $f \in \unboundedEnum{A}$.
+      for $f \in A^{< \infty}$.
 
-      Then $J$ is a map from $\unboundedEnum{A}$ to $A$.
-      Indeed we can show that for any $f \in \unboundedEnum{A}$ we have $J(f) \in A$.
-        Let $f \in \unboundedEnum{A}$.
+      Then $J$ is a map from $A^{< \infty}$ to $A$.
+      Indeed we can show that for any $f \in A^{< \infty}$ we have $J(f) \in A$.
+        Let $f \in A^{< \infty}$.
         Take $\alpha \in \Ord$ such that $f : \alpha \to A$.
         If $\alpha = 0$ then $J(f) = a \in A$.
         If $\alpha$ is a successor ordinal then $J(f) =
-        G(\pred{\alpha}, f(\pred{\alpha})) \in A$.
+        G(\pred(\alpha), f(\pred(\alpha))) \in A$.
         If $\alpha$ is a limit ordinal then $J(f) = H(\alpha, f) \in A$.
       End.
 
       Hence we can take a map $F$ from $\Ord$ to $A$ that is recursive regarding
       $J$.
-      Then $F \restriction \alpha \in \unboundedEnum{A}$ for any ordinal $\alpha$.
+      Then $F \restriction \alpha \in A^{< \infty}$ for any ordinal $\alpha$.
 
       (1) $F(0) = a$. \\
       Proof.
@@ -273,14 +273,14 @@
           = a$.
       Qed.
 
-      (2) $F(\succ{\alpha}) = G(\alpha, F(\alpha))$ for all ordinals
+      (2) $F(\succ(\alpha)) = G(\alpha, F(\alpha))$ for all ordinals
       $\alpha$. \\
       Proof.
         Let $\alpha$ be an ordinal.
-        Then $F(\succ{\alpha})
-          = J(F \restriction \succ{\alpha})
-          = G(\pred{\succ{\alpha}}, (F \restriction \succ{\alpha})(\pred{\succ{\alpha}}))
-          = G(\alpha, (F \restriction \succ{\alpha})(\alpha))
+        Then $F(\succ(\alpha))
+          = J(F \restriction \succ(\alpha))
+          = G(\pred(\succ(\alpha)), (F \restriction \succ(\alpha))(\pred(\succ(\alpha))))
+          = G(\alpha, (F \restriction \succ(\alpha))(\alpha))
           = G(\alpha, F(\alpha))$.
       Qed.
 

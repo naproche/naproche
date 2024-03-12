@@ -1,4 +1,0 @@
-id:naproche/examples/100-theorems
-ns:http://mathhub.info/naproche/examples/100-theorems
-narration-base:http://mathhub.info/naproche/examples/100-theorems
-url-base:https://stexmmt.mathhub.info/:sTeX

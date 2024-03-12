@@ -16,31 +16,31 @@
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_05_8878757276286976}
       Let $n, m$ be natural numbers such that $n \geq m$.
-      $n \minus m$ is the natural number $k$ such that $n = m \plus k$.
+      $n - m$ is the natural number $k$ such that $n = m + k$.
     \end{definition}
 
-    Let the difference of $n$ and $m$ stand for $n \minus m$.
+    Let the difference of $n$ and $m$ stand for $n - m$.
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_05_874271710642176}
       Let $n, m$ be natural numbers such that $n \geq m$.
-      Then \[ n \minus m = 0 \iff n = m. \]
+      Then \[ n - m = 0 \iff n = m. \]
     \end{proposition}
     \begin{proof}
-      Case $n \minus m = 0$.
+      Case $n - m = 0$.
         Then $n
-          = (n \minus m) \plus m
-          = 0 \plus m
+          = (n - m) + m
+          = 0 + m
           = m$.
       End.
 
       Case $n = m$.
-        We have $(n \minus m) \plus m
+        We have $(n - m) + m
           = n
           = m
-          = 0 \plus m$.
-        Hence $n \minus m = 0$.
+          = 0 + m$.
+        Hence $n - m = 0$.
       End.
     \end{proof}
   \end{forthel}
@@ -48,46 +48,46 @@
   \begin{forthel}
     \begin{corollary}\printlabel{ARITHMETIC_05_8457713057005568}
       Let $n$ be a natural number.
-      Then \[ n \minus n = 0. \]
+      Then \[ n - n = 0. \]
     \end{corollary}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_05_8518521570983936}
       Let $n$ be a natural number.
-      Then \[ n \minus 0 = n. \]
+      Then \[ n - 0 = n. \]
     \end{proposition}
     \begin{proof}
       We have $n
-        = (n \minus 0) \plus 0
-        = n \minus 0$.
+        = (n - 0) + 0
+        = n - 0$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_05_4222566117933056}
       Let $n, m$ be natural numbers such that $n \geq m$.
-      Then \[ n \minus m \leq n. \]
+      Then \[ n - m \leq n. \]
     \end{proposition}
     \begin{proof}
-      We have $(n \minus m) \plus m = n$.
-      Hence $n \minus m \leq n$.
+      We have $(n - m) + m = n$.
+      Hence $n - m \leq n$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_05_1269537257291776}
       Let $n, m$ be natural numbers such that $n \geq m$.
-      Then \[ 0 \neq m \less n \implies n \minus m \less n. \]
+      Then \[ 0 \neq m < n \implies n - m < n. \]
     \end{proposition}
     \begin{proof}
-      Assume $0 \neq m \less n$.
-      Suppose $n \minus m \geq n$.
-      We have $(n \minus m) \plus m = n$.
-      Then $n \plus m
-        = (n \minus m) \plus m
+      Assume $0 \neq m < n$.
+      Suppose $n - m \geq n$.
+      We have $(n - m) + m = n$.
+      Then $n + m
+        = (n - m) + m
         = n
-        = n \plus 0$.
+        = n + 0$.
       Hence $m = 0$.
       Contradiction.
     \end{proof}
@@ -96,40 +96,40 @@
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_05_4767595811045376}
       Let $n, m, k$ be natural numbers such that $n \geq m$.
-      Then \[ (n \minus m) \plus k = (n \plus k) \minus m. \]
+      Then \[ (n - m) + k = (n + k) - m. \]
     \end{proposition}
     \begin{proof}
       We have
-      \[  ((n \minus m) \plus k) \plus m       \]
-      \[    = ((n \minus m) \plus m) \plus k   \]
-      \[    = n \plus k               \]
-      \[    = ((n \plus k) \minus m) \plus m.  \]
+      \[  ((n - m) + k) + m       \]
+      \[    = ((n - m) + m) + k   \]
+      \[    = n + k               \]
+      \[    = ((n + k) - m) + m.  \]
 
-      Hence $(n \minus m) \plus k = (n \plus k) \minus m$.
+      Hence $(n - m) + k = (n + k) - m$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{corollary}\printlabel{ARITHMETIC_05_7578468875239424}
       Let $n, m, k$ be natural numbers such that $n \geq m$.
-      Then \[ k \plus (n \minus m) = (k \plus n) \minus m. \]
+      Then \[ k + (n - m) = (k + n) - m. \]
     \end{corollary}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_05_7595909347016704}
-      Let $n, m, k$ be natural numbers such that $n \geq  m \plus k$.
-      Then \[ (n \minus m) \minus k = n \minus (m \plus k). \]
+      Let $n, m, k$ be natural numbers such that $n \geq  m + k$.
+      Then \[ (n - m) - k = n - (m + k). \]
     \end{proposition}
     \begin{proof}
       We have
-      \[  ((n \minus m) \minus k) \plus (m \plus k)       \]
-      \[    = (((n \minus m) \minus k) \plus k) \plus m   \]
-      \[    = (n \minus m) \plus m               \]
+      \[  ((n - m) - k) + (m + k)       \]
+      \[    = (((n - m) - k) + k) + m   \]
+      \[    = (n - m) + m               \]
       \[    = n                         \]
-      \[    = (n \minus (m \plus k)) \plus (m \plus k).  \]
+      \[    = (n - (m + k)) + (m + k).  \]
 
-      Hence $(n \minus m) \minus k = n \minus (m \plus k)$.
+      Hence $(n - m) - k = n - (m + k)$.
     \end{proof}
   \end{forthel}
 \end{document}

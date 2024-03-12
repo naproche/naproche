@@ -20,10 +20,10 @@
     \begin{lemma}\printlabel{ARITHMETIC_13_2103235571613696}
       There exists a $\varphi : \Nat \times \Nat \to \Nat$ such
       that for all $n \in \Nat$ we have $\varphi(n, 0) = 1$ and
-      $\varphi(n, m \plus 1) = \varphi(n,m) \cdot n$ for any $m \in \Nat$.
+      $\varphi(n, m + 1) = \varphi(n,m) \cdot n$ for any $m \in \Nat$.
     \end{lemma}
     \begin{proof}
-      Take $A = \funspace{\Nat}{\Nat}$.
+      Take $A = [\Nat \to \Nat]$.
       Define $a(n) = 1$ for $n \in \Nat$.
       Then $A$ is a set and $a \in A$.
 
@@ -50,19 +50,19 @@
           = 1$.
       Qed.
 
-      (2) For all $n, m \in \Nat$ we have $\varphi(n, m \plus 1) =
+      (2) For all $n, m \in \Nat$ we have $\varphi(n, m + 1) =
       \varphi(n,m) \cdot n$. \\
       Proof.
         Let $n, m \in \Nat$.
-        Then $\varphi(n, m \plus 1)
-          = \psi(m \plus 1)(n)
+        Then $\varphi(n, m + 1)
+          = \psi(m + 1)(n)
           = f(\psi(m))(n)
           = \psi(m)(n) \cdot n
           = \varphi(n,m) \cdot n$.
       Qed.
 
       Hence for all $n \in \Nat$ we have $\varphi(n, 0) = 1$ and
-      $\varphi(n, m \plus 1) = \varphi(n,m) \cdot n$ for any $m \in \Nat$.
+      $\varphi(n, m + 1) = \varphi(n,m) \cdot n$ for any $m \in \Nat$.
     \end{proof}
   \end{forthel}
 
@@ -70,9 +70,9 @@
     \begin{lemma}\printlabel{ARITHMETIC_13_2359278746730496}
       Let $\varphi, \varphi' : \Nat \times \Nat \to \Nat$.
       Assume that for all $n \in \Nat$ we have $\varphi(n, 0) = 1$ and
-      $\varphi(n, m \plus 1) = \varphi(n,m) \cdot n$ for any $m \in \Nat$.
+      $\varphi(n, m + 1) = \varphi(n,m) \cdot n$ for any $m \in \Nat$.
       Assume that for all $n \in \Nat$ we have $\varphi'(n, 0) = 1$ and
-      $\varphi'(n, m \plus 1) = \varphi'(n,m) \cdot n$ for any $m \in \Nat$.
+      $\varphi'(n, m + 1) = \varphi'(n,m) \cdot n$ for any $m \in \Nat$.
       Then $\varphi = \varphi'$.
     \end{lemma}
     \begin{proof}
@@ -82,17 +82,17 @@
       (1) $0 \in \Phi$.
       Indeed $\varphi(n,0) = 1 = \varphi'(n,0)$ for all $n \in \Nat$.
 
-      (2) For all $m \in \Phi$ we have $m \plus 1 \in \Phi$. \\
+      (2) For all $m \in \Phi$ we have $m + 1 \in \Phi$. \\
       Proof.
         Let $m \in \Phi$.
         Then $\varphi(n,m) = \varphi'(n,m)$ for all $n \in \Nat$.
         $\varphi(n,m), \varphi'(n,m)$ are natural numbers for all $n \in \Nat$. % Needed for ontological checking
-        Hence $\varphi(n, m \plus 1)
+        Hence $\varphi(n, m + 1)
           = \varphi(n,m) \cdot n
           = \varphi'(n,m) \cdot n
-          = \varphi'(n, m \plus 1)$
+          = \varphi'(n, m + 1)$
         for all $n \in \Nat$.
-        Thus $\varphi(n,m \plus 1) = \varphi'(n,m \plus 1)$ for all $n \in \Nat$.
+        Thus $\varphi(n,m + 1) = \varphi'(n,m + 1)$ for all $n \in \Nat$.
       Qed.
 
       Thus $\Phi$ contains every natural number.
@@ -103,11 +103,11 @@
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_13_3663815629602816}
       $\exp$ is the map from $\Nat \times \Nat$ to $\Nat$ such that for all
-      $n \in \Nat$ we have $\exp(n, 0) = 1$ and $\exp(n, m \plus 1) =
+      $n \in \Nat$ we have $\exp(n, 0) = 1$ and $\exp(n, m + 1) =
       \exp(n, m) \cdot n$ for any $m \in \Nat$.
     \end{definition}
 
-    Let $\power{n}{m}$ stand for $\exp(n,m)$.
+    Let $n^{m}$ stand for $\exp(n,m)$.
   \end{forthel}
 
   \begin{forthel}
@@ -120,21 +120,21 @@
   \begin{forthel}
     \begin{lemma}\printlabel{ARITHMETIC_13_4747809204994048}
       Let $n, m$ be natural numbers.
-      Then $\power{n}{m}$ is a natural number.
+      Then $n^{m}$ is a natural number.
     \end{lemma}
   \end{forthel}
 
   \begin{forthel}
     \begin{lemma}\printlabel{ARITHMETIC_13_5368818025103360}
       Let $n$ be a natural number.
-      Then $\power{n}{0} = 1$.
+      Then $n^{0} = 1$.
     \end{lemma}
   \end{forthel}
 
   \begin{forthel}
     \begin{lemma}\printlabel{ARITHMETIC_13_4140498660884480}
       Let $n, m$ be natural numbers.
-      Then $\power{n}{m \plus 1} = \power{n}{m} \cdot n$.
+      Then $n^{m + 1} = n^{m} \cdot n$.
     \end{lemma}
   \end{forthel}
 
@@ -147,13 +147,13 @@
     \begin{proposition}\printlabel{ARITHMETIC_13_4673644676513792}
       Let $n$ be a natural number.
       Assume $n \neq 0$.
-      Then \[ \power{0}{n} = 0. \]
+      Then \[ 0^{n} = 0. \]
     \end{proposition}
     \begin{proof}
-      Take a natural number $m$ such that $n = m \plus 1$.
-      Then $\power{0}{n}
-        = \power{0}{m \plus 1}
-        = \power{0}{m} \cdot 0
+      Take a natural number $m$ such that $n = m + 1$.
+      Then $0^{n}
+        = 0^{m + 1}
+        = 0^{m} \cdot 0
         = 0$.
     \end{proof}
   \end{forthel}
@@ -161,36 +161,36 @@
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_13_7376849881530368}
       Let $n$ be a natural number.
-      Then \[ \power{1}{n} = 1. \]
+      Then \[ 1^{n} = 1. \]
     \end{proposition}
     \begin{proof}
-      Define $\Phi = \{ n' \in \Nat \mid \power{1}{n'} = 1 \}$.
+      Define $\Phi = \{ n' \in \Nat \mid 1^{n'} = 1 \}$.
 
       (1) $\Phi$ contains $0$.
 
-      (2) For all $n' \in \Phi$ we have $n' \plus 1 \in \Phi$. \\
+      (2) For all $n' \in \Phi$ we have $n' + 1 \in \Phi$. \\
       Proof.
         Let $n' \in \Phi$.
-        Then $\power{1}{n' \plus 1}
-          = \power{1}{n'} \cdot 1
+        Then $1^{n' + 1}
+          = 1^{n'} \cdot 1
           = 1 \cdot 1
           = 1$.
       Qed.
 
       Hence every natural number is contained in $\Phi$.
-      Thus $\power{1}{n} = 1$.
+      Thus $1^{n} = 1$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_13_4975279749464064}
       Let $n$ be a natural number.
-      Then \[ \power{n}{1} = n. \]
+      Then \[ n^{1} = n. \]
     \end{proposition}
     \begin{proof}
-      We have $\power{n}{1}
-        = \power{n}{0 \plus 1}
-        = \power{n}{0} \cdot n
+      We have $n^{1}
+        = n^{0 + 1}
+        = n^{0} \cdot n
         = 1 \cdot n
         = n$.
     \end{proof}
@@ -199,12 +199,12 @@
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_13_8513812055457792}
       Let $n$ be a natural number.
-      Then \[ \power{n}{2} = n \cdot n. \]
+      Then \[ n^{2} = n \cdot n. \]
     \end{proposition}
     \begin{proof}
-      We have $\power{n}{2}
-        = \power{n}{1 \plus 1}
-        = \power{n}{1} \cdot n
+      We have $n^{2}
+        = n^{1 + 1}
+        = n^{1} \cdot n
         = n \cdot n$.
     \end{proof}
   \end{forthel}
@@ -215,31 +215,31 @@
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_13_8152207530655744}
       Let $n, m, k$ be natural numbers.
-      Then \[ \power{k}{n \plus m} = \power{k}{n} \cdot \power{k}{m}. \]
+      Then \[ k^{n + m} = k^{n} \cdot k^{m}. \]
     \end{proposition}
     \begin{proof}
-      Define $\Phi = \{ m' \in \Nat \mid \power{k}{n \plus m'} = \power{k}{n} \cdot \power{k}{m'} \}$.
+      Define $\Phi = \{ m' \in \Nat \mid k^{n + m'} = k^{n} \cdot k^{m'} \}$.
 
       (1) $\Phi$ contains $0$. \\
-      Indeed $\power{k}{n \plus 0}
-        = \power{k}{n}
-        = \power{k}{n} \cdot 1
-        = \power{k}{n} \cdot \power{k}{0}$.
+      Indeed $k^{n + 0}
+        = k^{n}
+        = k^{n} \cdot 1
+        = k^{n} \cdot k^{0}$.
 
-      (2) For all $m' \in \Phi$ we have $m' \plus 1 \in \Phi$. \\
+      (2) For all $m' \in \Phi$ we have $m' + 1 \in \Phi$. \\
       Proof.
         Let $m' \in \Phi$.
         Then
-        \[  \power{k}{n \plus (m' \plus 1)}                  \]
-        \[    = \power{k}{(n \plus m') \plus 1}              \]
-        \[    = \power{k}{n \plus m'} \cdot k            \]
-        \[    = (\power{k}{n} \cdot \power{k}{m'}) \cdot k  \]
-        \[    = \power{k}{n} \cdot (\power{k}{m'} \cdot k)  \]
-        \[    = \power{k}{n} \cdot \power{k}{m' \plus 1}.       \]
+        \[  k^{n + (m' + 1)}                  \]
+        \[    = k^{(n + m') + 1}              \]
+        \[    = k^{n + m'} \cdot k            \]
+        \[    = (k^{n} \cdot k^{m'}) \cdot k  \]
+        \[    = k^{n} \cdot (k^{m'} \cdot k)  \]
+        \[    = k^{n} \cdot k^{m' + 1}.       \]
       Qed.
 
       Hence every natural number is contained in $\Phi$.
-      Thus $\power{k}{n \plus m} = \power{k}{n} \cdot \power{k}{m}$.
+      Thus $k^{n + m} = k^{n} \cdot k^{m}$.
     \end{proof}
   \end{forthel}
 
@@ -249,30 +249,30 @@
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_13_7827956571308032}
       Let $n, m, k$ be natural numbers.
-      Then \[ \power{n}{m \cdot k} = \power{\power{n}{m}}{k}. \]
+      Then \[ n^{m \cdot k} = (n^{m})^{k}. \]
     \end{proposition}
     \begin{proof}
-      Define $\Phi = \{ k' \in \Nat \mid \power{n}{m \cdot k'} = \power{\power{n}{m}}{k'} \}$.
+      Define $\Phi = \{ k' \in \Nat \mid n^{m \cdot k'} = (n^{m})^{k'} \}$.
 
       (1) $\Phi$ contains $0$.
-      Indeed $\power{\power{n}{m}}{0}
+      Indeed $(n^{m})^{0}
         = 1
-        = \power{n}{0}
-        = \power{n}{m \cdot 0}$.
+        = n^{0}
+        = n^{m \cdot 0}$.
 
-      (2) For all $k' \in \Phi$ we have $k' \plus 1 \in \Phi$. \\
+      (2) For all $k' \in \Phi$ we have $k' + 1 \in \Phi$. \\
       Proof.
         Let $k' \in \Phi$.
         Then
-        \[  \power{\power{n}{m}}{k' \plus 1}                \]
-        \[    = \power{\power{n}{m}}{k'} \cdot \power{n}{m}    \]
-        \[    = \power{n}{m \cdot k'} \cdot \power{n}{m}  \]
-        \[    = \power{n}{(m \cdot k') \plus m}        \]
-        \[    = \power{n}{m \cdot (k' \plus 1)}.       \]
+        \[  (n^{m})^{k' + 1}                \]
+        \[    = (n^{m})^{k'} \cdot n^{m}    \]
+        \[    = n^{m \cdot k'} \cdot n^{m}  \]
+        \[    = n^{(m \cdot k') + m}        \]
+        \[    = n^{m \cdot (k' + 1)}.       \]
       Qed.
 
       Therefore every natural number is contained in $\Phi$.
-      Consequently $\power{n}{m \cdot k} = \power{\power{n}{m}}{k}$.
+      Consequently $n^{m \cdot k} = (n^{m})^{k}$.
     \end{proof}
   \end{forthel}
 
@@ -282,42 +282,42 @@
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_13_2563032276271104}
       Let $n, m, k$ be natural numbers.
-      Then \[ \power{n \cdot m}{k} = \power{n}{k} \cdot \power{m}{k}. \]
+      Then \[ (n \cdot m)^{k} = n^{k} \cdot m^{k}. \]
     \end{proposition}
     \begin{proof}
-      Define $\Phi = \{ k' \in \Nat \mid \power{n \cdot m}{k'} =
-      \power{n}{k'} \cdot \power{m}{k'} \}$.
+      Define $\Phi = \{ k' \in \Nat \mid (n \cdot m)^{k'} =
+      n^{k'} \cdot m^{k'} \}$.
 
       (1) $\Phi$ contains $0$.
-      Indeed $(\power{n \cdot m}{0})
+      Indeed $((n \cdot m)^{0})
         = 1
         = 1 \cdot 1
-        = \power{n}{0} \cdot \power{m}{0}$. %!
+        = n^{0} \cdot m^{0}$. %!
 
-      (2) For all $k' \in \Phi$ we have $k' \plus 1 \in \Phi$. \\
+      (2) For all $k' \in \Phi$ we have $k' + 1 \in \Phi$. \\
       Proof.
         Let $k' \in \Phi$.
 
-        Let us show that $(\power{n}{k'} \cdot \power{m}{k'}) \cdot (n \cdot m) =
-        (\power{n}{k'} \cdot n) \cdot (\power{m}{k'} \cdot m)$.
-          \[  (\power{n}{k'} \cdot \power{m}{k'}) \cdot (n \cdot m)       \]
-          \[    = ((\power{n}{k'} \cdot \power{m}{k'}) \cdot n) \cdot m   \]
-          \[    = (\power{n}{k'} \cdot (\power{m}{k'} \cdot n)) \cdot m   \]
-          \[    = (\power{n}{k'} \cdot (n \cdot \power{m}{k'})) \cdot m   \]
-          \[    = ((\power{n}{k'} \cdot n) \cdot \power{m}{k'}) \cdot m   \]
-          \[    = (\power{n}{k'} \cdot n) \cdot (\power{m}{k'} \cdot m).  \]
+        Let us show that $(n^{k'} \cdot m^{k'}) \cdot (n \cdot m) =
+        (n^{k'} \cdot n) \cdot (m^{k'} \cdot m)$.
+          \[  (n^{k'} \cdot m^{k'}) \cdot (n \cdot m)       \]
+          \[    = ((n^{k'} \cdot m^{k'}) \cdot n) \cdot m   \]
+          \[    = (n^{k'} \cdot (m^{k'} \cdot n)) \cdot m   \]
+          \[    = (n^{k'} \cdot (n \cdot m^{k'})) \cdot m   \]
+          \[    = ((n^{k'} \cdot n) \cdot m^{k'}) \cdot m   \]
+          \[    = (n^{k'} \cdot n) \cdot (m^{k'} \cdot m).  \]
         Qed.
 
         Hence
-        \[  \power{n \cdot m}{k' \plus 1}                          \]
-        \[    = \power{n \cdot m}{k'} \cdot (n \cdot m)        \]
-        \[    = (\power{n}{k'} \cdot \power{m}{k'}) \cdot (n \cdot m)   \]
-        \[    = (\power{n}{k'} \cdot n) \cdot (\power{m}{k'} \cdot m)   \]
-        \[    = \power{n}{k' \plus 1} \cdot \power{m}{k' \plus 1}.              \]
+        \[  (n \cdot m)^{k' + 1}                          \]
+        \[    = (n \cdot m)^{k'} \cdot (n \cdot m)        \]
+        \[    = (n^{k'} \cdot m^{k'}) \cdot (n \cdot m)   \]
+        \[    = (n^{k'} \cdot n) \cdot (m^{k'} \cdot m)   \]
+        \[    = n^{k' + 1} \cdot m^{k' + 1}.              \]
       Qed.
 
       Therefore every natural number is contained in $\Phi$.
-      Consequently $\power{n \cdot m}{k} = \power{n}{k} \cdot \power{m}{k}$.
+      Consequently $(n \cdot m)^{k} = n^{k} \cdot m^{k}$.
     \end{proof}
   \end{forthel}
 
@@ -327,26 +327,26 @@
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_13_3860221447372800}
       Let $n, m$ be natural numbers.
-      Then \[ \power{n}{m} = 0 \iff (\text{$n = 0$ and $m \neq 0$}). \]
+      Then \[ n^{m} = 0 \iff (\text{$n = 0$ and $m \neq 0$}). \]
     \end{proposition}
     \begin{proof}
-      Case $\power{n}{m} = 0$.
-        Define $\Phi = \{ m' \in \Nat \mid$ if $\power{n}{m'} = 0$ then $n = 0$ and
+      Case $n^{m} = 0$.
+        Define $\Phi = \{ m' \in \Nat \mid$ if $n^{m'} = 0$ then $n = 0$ and
         $m' \neq 0 \}$.
 
         (1) $\Phi$ contains $0$.
-        Indeed if $\power{n}{0} = 0$ then we have a contradiction.
+        Indeed if $n^{0} = 0$ then we have a contradiction.
 
-        (2) For all $m' \in \Phi$ we have $m' \plus 1 \in \Phi$. \\
+        (2) For all $m' \in \Phi$ we have $m' + 1 \in \Phi$. \\
         Proof.
           Let $m' \in \Phi$.
 
-          Let us show that if $\power{n}{m' \plus 1} = 0$ then $n = 0$ and $m' \plus 1 \neq 0$.
-            Assume $\power{n}{m' \plus 1} = 0$.
-            Then $0 = \power{n}{m' \plus 1} = \power{n}{m'} \cdot n$.
-            Hence $\power{n}{m'} = 0$ or $n = 0$.
-            We have $m' \plus 1 \neq 0$ and if $\power{n}{m'} = 0$ then $n = 0$.
-            Hence $n = 0$ and $m' \plus 1 \neq 0$.
+          Let us show that if $n^{m' + 1} = 0$ then $n = 0$ and $m' + 1 \neq 0$.
+            Assume $n^{m' + 1} = 0$.
+            Then $0 = n^{m' + 1} = n^{m'} \cdot n$.
+            Hence $n^{m'} = 0$ or $n = 0$.
+            We have $m' + 1 \neq 0$ and if $n^{m'} = 0$ then $n = 0$.
+            Hence $n = 0$ and $m' + 1 \neq 0$.
           End.
         Qed.
 
@@ -356,11 +356,11 @@
       End.
 
       Case $n = 0$ and $m \neq 0$.
-        Take a natural number $k$ such that $m = k \plus 1$.
-        Then $\power{n}{m}
-          = \power{n}{k \plus 1}
-          = \power{n}{k} \cdot n
-          = \power{0}{k} \cdot 0
+        Take a natural number $k$ such that $m = k + 1$.
+        Then $n^{m}
+          = n^{k + 1}
+          = n^{k} \cdot n
+          = 0^{k} \cdot 0
           = 0$.
       End.
     \end{proof}
@@ -373,12 +373,12 @@
     \begin{proposition}\printlabel{ARITHMETIC_13_3373702288769024}
       Let $n, m, k$ be natural numbers.
       Assume $k \neq 0$.
-      Then \[ n \less m \iff \power{n}{k} \less \power{m}{k}. \]
+      Then \[ n < m \iff n^{k} < m^{k}. \]
     \end{proposition}
     \begin{proof}
-      Case $n \less m$.
-        Define $\Phi = \{ k' \in \Nat \mid$ if $k' \gtr 1$ then
-        $\power{n}{k'} \less \power{m}{k'} \}$.
+      Case $n < m$.
+        Define $\Phi = \{ k' \in \Nat \mid$ if $k' > 1$ then
+        $n^{k'} < m^{k'} \}$.
 
         (1) $\Phi$ contains $0$.
 
@@ -390,103 +390,103 @@
 
           Case $n, m \neq 0$.
             Then $n \cdot n
-              \less n \cdot m
-              \less m \cdot m$.
-            Hence $\power{n}{2}
+              < n \cdot m
+              < m \cdot m$.
+            Hence $n^{2}
               = n \cdot n
-              \less n \cdot m
-              \less m \cdot m
-              = \power{m}{2}$.
+              < n \cdot m
+              < m \cdot m
+              = m^{2}$.
           End.
         Qed.
 
-        (4) For all $k' \in \Phi$ we have $k' \plus 1 \in \Phi$. \\
+        (4) For all $k' \in \Phi$ we have $k' + 1 \in \Phi$. \\
         Proof.
           Let $k' \in \Phi$.
 
-          Let us show that if $k' \plus 1 \gtr 1$ then
-          $\power{n}{k' \plus 1} \less \power{m}{k' \plus 1}$.
-            Assume $k' \plus 1 \gtr 1$.
-            Then $\power{n}{k'} \less \power{m}{k'}$.
-            Indeed $k' \neq 0$ and $if k' = 1$ then $\power{n}{k'} \less \power{m}{k'}$.
+          Let us show that if $k' + 1 > 1$ then
+          $n^{k' + 1} < m^{k' + 1}$.
+            Assume $k' + 1 > 1$.
+            Then $n^{k'} < m^{k'}$.
+            Indeed $k' \neq 0$ and $if k' = 1$ then $n^{k'} < m^{k'}$.
 
             Case $k' \leq 1$.
               Then $k' = 0$ or $k' = 1$.
-              Hence $k' \plus 1 = 1$ or $k' \plus 1 = 2$.
-              Thus $k' \plus 1 \in \Phi$.
-              Therefore $\power{n}{k' \plus 1} \less \power{m}{k' \plus 1}$.
+              Hence $k' + 1 = 1$ or $k' + 1 = 2$.
+              Thus $k' + 1 \in \Phi$.
+              Therefore $n^{k' + 1} < m^{k' + 1}$.
             End.
 
-            Case $k' \gtr 1$.
+            Case $k' > 1$.
               Case $n = 0$.
                 Then $m \neq 0$.
-                Hence $\power{n}{k' \plus 1}
+                Hence $n^{k' + 1}
                   = 0
-                  \less \power{m}{k'} \cdot m
-                  = \power{m}{k' \plus 1}$.
-                Thus $\power{n}{k' \plus 1} \less \power{m}{k' \plus 1}$.
+                  < m^{k'} \cdot m
+                  = m^{k' + 1}$.
+                Thus $n^{k' + 1} < m^{k' + 1}$.
               End.
 
               Case $n \neq 0$.
-                Then $\power{n}{k'} \cdot n
-                  \less \power{m}{k'} \cdot n
-                  \less \power{m}{k'} \cdot m$.
-                Indeed $\power{n}{k'} \less \power{m}{k'} \neq 0$.
-                Take $A = \power{n}{k' \plus 1}$ and $B = \power{m}{k' \plus 1}$. %!
+                Then $n^{k'} \cdot n
+                  < m^{k'} \cdot n
+                  < m^{k'} \cdot m$.
+                Indeed $n^{k'} < m^{k'} \neq 0$.
+                Take $A = n^{k' + 1}$ and $B = m^{k' + 1}$. %!
                 Then $A
-                  = \power{n}{k' \plus 1}
-                  = \power{n}{k'} \cdot n
-                  \less \power{m}{k'} \cdot n
-                  \less \power{m}{k'} \cdot m
-                  = \power{m}{k' \plus 1}
+                  = n^{k' + 1}
+                  = n^{k'} \cdot n
+                  < m^{k'} \cdot n
+                  < m^{k'} \cdot m
+                  = m^{k' + 1}
                   = B$.
-                Thus $\power{n}{k' \plus 1} = A \less B = \power{m}{k' \plus 1}$.
+                Thus $n^{k' + 1} = A < B = m^{k' + 1}$.
               End.
             End.
 
-            Hence $\power{n}{k' \plus 1} \less \power{m}{k' \plus 1}$.
-            Indeed $k' \leq 1$ or $k' \gtr 1$.
+            Hence $n^{k' + 1} < m^{k' + 1}$.
+            Indeed $k' \leq 1$ or $k' > 1$.
           End.
 
-          Thus $k' \plus 1 \in \Phi$.
+          Thus $k' + 1 \in \Phi$.
         Qed.
 
         Therefore every natural number is contained in $\Phi$.
-        Consequently $\power{n}{k} \less \power{m}{k}$.
+        Consequently $n^{k} < m^{k}$.
       End.
 
-      Case $\power{n}{k} \less \power{m}{k}$.
+      Case $n^{k} < m^{k}$.
         Define $\Psi = \{ k' \in \Nat \mid$ if $n \geq m$ then
-        $\power{n}{k'} \geq \power{m}{k'} \}$.
+        $n^{k'} \geq m^{k'} \}$.
 
         (1) $\Psi$ contains $0$.
 
-        (2) For all $k' \in \Psi$ we have $k' \plus 1 \in \Psi$. \\
+        (2) For all $k' \in \Psi$ we have $k' + 1 \in \Psi$. \\
         Proof.
           Let $k' \in \Psi$.
 
-          Let us show that if $n \geq m$ then $\power{n}{k' \plus 1} \geq \power{m}{k' \plus 1}$.
+          Let us show that if $n \geq m$ then $n^{k' + 1} \geq m^{k' + 1}$.
             Assume $n \geq m$.
-            Then $\power{n}{k'} \geq \power{m}{k'}$.
-            Hence $\power{n}{k'} \cdot n \geq \power{m}{k'} \cdot n \geq \power{m}{k'} \cdot m$.
-            Take $A = \power{n}{k' \plus 1}$ and $B = \power{m}{k' \plus 1}$. %!
+            Then $n^{k'} \geq m^{k'}$.
+            Hence $n^{k'} \cdot n \geq m^{k'} \cdot n \geq m^{k'} \cdot m$.
+            Take $A = n^{k' + 1}$ and $B = m^{k' + 1}$. %!
             Thus $A
-              = \power{n}{k' \plus 1}
-              = \power{n}{k'} \cdot n
-              \geq \power{m}{k'} \cdot n
-              \geq \power{m}{k'} \cdot m
-              = \power{m}{k' \plus 1}
+              = n^{k' + 1}
+              = n^{k'} \cdot n
+              \geq m^{k'} \cdot n
+              \geq m^{k'} \cdot m
+              = m^{k' + 1}
               = B$.
-            Therefore $\power{n}{k' \plus 1} = A \geq B = \power{m}{k' \plus 1}$.
+            Therefore $n^{k' + 1} = A \geq B = m^{k' + 1}$.
           End.
 
-          Hence $k' \plus 1 \in \Psi$.
+          Hence $k' + 1 \in \Psi$.
         Qed.
 
         Thus every natural number is contained in $\Psi$.
-        Therefore if $n \geq m$ then $\power{n}{k} \geq \power{m}{k}$.
+        Therefore if $n \geq m$ then $n^{k} \geq m^{k}$.
         [prover vampire]
-        Consequently $n \less m$.
+        Consequently $n < m$.
       End.
     \end{proof}
   \end{forthel}
@@ -495,15 +495,15 @@
     \begin{corollary}\printlabel{ARITHMETIC_13_2797602550579200}
       Let $n, m, k$ be natural numbers.
       Assume $k \neq 0$.
-      Then \[ \power{n}{k} = \power{m}{k} \implies n = m. \]
+      Then \[ n^{k} = m^{k} \implies n = m. \]
     \end{corollary}
     \begin{proof}
-      Assume $\power{n}{k} = \power{m}{k}$.
+      Assume $n^{k} = m^{k}$.
       Suppose $n \neq m$.
-      Then $n \less m$ or $m \less n$.
-      If $n \less m$ then $\power{n}{k} \less \power{m}{k}$.
-      If $m \less n$ then $\power{m}{k} \less \power{n}{k}$.
-      Thus $\power{n}{k} \neq \power{m}{k}$.
+      Then $n < m$ or $m < n$.
+      If $n < m$ then $n^{k} < m^{k}$.
+      If $m < n$ then $m^{k} < n^{k}$.
+      Thus $n^{k} \neq m^{k}$.
       Contradiction.
     \end{proof}
   \end{forthel}
@@ -512,105 +512,105 @@
     \begin{corollary}\printlabel{ARITHMETIC_13_6875081963732992}
       Let $n, m, k$ be natural numbers.
       Assume $k \neq 0$.
-      Then \[ \power{n}{k} \leq \power{m}{k} \iff n \leq m. \]
+      Then \[ n^{k} \leq m^{k} \iff n \leq m. \]
     \end{corollary}
     \begin{proof}
-      If $\power{n}{k} \less \power{m}{k}$ then $n \less m$.
-      If $\power{n}{k} = \power{m}{k}$ then $n = m$.
+      If $n^{k} < m^{k}$ then $n < m$.
+      If $n^{k} = m^{k}$ then $n = m$.
 
-      If $n \less m$ then $\power{n}{k} \less \power{m}{k}$.
-      If $n = m$ then $\power{n}{k} = \power{m}{k}$.
+      If $n < m$ then $n^{k} < m^{k}$.
+      If $n = m$ then $n^{k} = m^{k}$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_13_3349764703780864}
       Let $n, m, k$ be natural numbers.
-      Assume $k \gtr 1$.
-      Then \[ n \less m \iff \power{k}{n} \less \power{k}{m}. \]
+      Assume $k > 1$.
+      Then \[ n < m \iff k^{n} < k^{m}. \]
     \end{proposition}
     \begin{proof}
-      Case $n \less m$.
-        Define $\Phi = \{ m' \in \Nat \mid$ if $n \less m'$ then
-        $\power{k}{n} \less \power{k}{m'} \}$.
+      Case $n < m$.
+        Define $\Phi = \{ m' \in \Nat \mid$ if $n < m'$ then
+        $k^{n} < k^{m'} \}$.
 
         (1) $\Phi$ contains $0$.
 
-        (2) For all $m' \in \Phi$ we have $m' \plus 1 \in \Phi$. \\
+        (2) For all $m' \in \Phi$ we have $m' + 1 \in \Phi$. \\
         Proof.
           Let $m' \in \Phi$.
 
-          Let us show that if $n \less m' \plus 1$ then $\power{k}{n} \less \power{k}{m' \plus 1}$.
-            Assume $n \less m' \plus 1$.
+          Let us show that if $n < m' + 1$ then $k^{n} < k^{m' + 1}$.
+            Assume $n < m' + 1$.
             Then $n \leq m'$.
-            We have $\power{k}{m'} \cdot 1 \less \power{k}{m'} \cdot k$.
-            Indeed $\power{k}{m'} \neq 0$.
+            We have $k^{m'} \cdot 1 < k^{m'} \cdot k$.
+            Indeed $k^{m'} \neq 0$.
 
             Case $n = m'$.
-              Take $A = \power{k}{n}$ and $B = \power{k}{m' \plus 1}$. %!
+              Take $A = k^{n}$ and $B = k^{m' + 1}$. %!
               Then $A
-                = \power{k}{n}
-                = \power{k}{m'}
-                \less \power{k}{m'} \cdot k
-                = \power{k}{m' \plus 1}
+                = k^{n}
+                = k^{m'}
+                < k^{m'} \cdot k
+                = k^{m' + 1}
                 = B$.
-              Hence $\power{k}{n} = A \less B = \power{k}{m' \plus 1}$.
+              Hence $k^{n} = A < B = k^{m' + 1}$.
             End.
 
-            Case $n \less m'$.
-              Take $A = \power{k}{n}$ and $B = \power{k}{m' \plus 1}$. %!
+            Case $n < m'$.
+              Take $A = k^{n}$ and $B = k^{m' + 1}$. %!
               Then $A
-                = \power{k}{n}
-                \less \power{k}{m'}
-                \less \power{k}{m'} \cdot k
-                = \power{k}{m' \plus 1}
+                = k^{n}
+                < k^{m'}
+                < k^{m'} \cdot k
+                = k^{m' + 1}
                 = B$.
-              Hence $\power{k}{n} = A \less B = \power{k}{m' \plus 1}$.
+              Hence $k^{n} = A < B = k^{m' + 1}$.
             End.
           Qed.
         Qed.
 
         Hence every natural number is contained in $\Phi$.
-        Thus $\power{k}{n} \less \power{k}{m}$.
+        Thus $k^{n} < k^{m}$.
       End.
 
-      Case $\power{k}{n} \less \power{k}{m}$.
+      Case $k^{n} < k^{m}$.
         Define $\Psi = \{ n' \in \Nat \mid$ if $n' \geq m$ then
-        $\power{k}{n'} \geq \power{k}{m} \}$.
+        $k^{n'} \geq k^{m} \}$.
 
         (1) $0$ is contained in $\Psi$.
 
-        (2) For all $n' \in \Psi$ we have $n' \plus 1 \in \Psi$. \\
+        (2) For all $n' \in \Psi$ we have $n' + 1 \in \Psi$. \\
         Proof.
           Let $n' \in \Psi$.
 
-          Let us show that if $n' \plus 1 \geq m$ then $\power{k}{n' \plus 1} \geq \power{k}{m}$.
-            Assume $n' \plus 1 \geq m$.
+          Let us show that if $n' + 1 \geq m$ then $k^{n' + 1} \geq k^{m}$.
+            Assume $n' + 1 \geq m$.
 
-            Case $n' \plus 1 = m$. Obvious.
+            Case $n' + 1 = m$. Obvious.
 
-            Case $n' \plus 1 \gtr m$.
+            Case $n' + 1 > m$.
               Then $n' \geq m$.
-              Hence $\power{k}{n'} \geq \power{k}{m}$.
-              We have $\power{k}{n'} \cdot 1 \leq \power{k}{n'} \cdot k$.
-              Indeed $1 \leq k$ and $\power{k}{n'} \neq 0$.
-              Take $A = \power{k}{m}$ and $B = \power{k}{n' \plus 1}$. %!
+              Hence $k^{n'} \geq k^{m}$.
+              We have $k^{n'} \cdot 1 \leq k^{n'} \cdot k$.
+              Indeed $1 \leq k$ and $k^{n'} \neq 0$.
+              Take $A = k^{m}$ and $B = k^{n' + 1}$. %!
               Then $A
-                = \power{k}{m}
-                \leq \power{k}{n'}
-                = \power{k}{n'} \cdot 1
-                \leq \power{k}{n'} \cdot k
-                = \power{k}{n' \plus 1}
+                = k^{m}
+                \leq k^{n'}
+                = k^{n'} \cdot 1
+                \leq k^{n'} \cdot k
+                = k^{n' + 1}
                 = B$.
-              Hence $\power{k}{m} = A \leq B = \power{k}{n' \plus 1}$.
+              Hence $k^{m} = A \leq B = k^{n' + 1}$.
             End.
           Qed.
         Qed.
 
         Thus every natural number is contained in $\Psi$.
-        Therefore if $n \geq m$ then $\power{k}{n} \geq \power{k}{m}$.
+        Therefore if $n \geq m$ then $k^{n} \geq k^{m}$.
         [prover vampire]
-        Consequently $n \less m$.
+        Consequently $n < m$.
       End.
     \end{proof}
   \end{forthel}
@@ -618,16 +618,16 @@
   \begin{forthel}
     \begin{corollary}\printlabel{ARITHMETIC_13_6780506905509888}
       Let $n, m, k$ be natural numbers.
-      Assume $k \gtr 1$.
-      Then \[ \power{k}{n} = \power{k}{m} \implies n = m. \]
+      Assume $k > 1$.
+      Then \[ k^{n} = k^{m} \implies n = m. \]
     \end{corollary}
     \begin{proof}
-      Assume $\power{k}{n} = \power{k}{m}$.
+      Assume $k^{n} = k^{m}$.
       Suppose $n \neq m$.
-      Then $n \less m$ or $m \less n$.
-      If $n \less m$ then $\power{k}{n} \less \power{k}{m}$.
-      If $m \less n$ then $\power{k}{m} \less \power{k}{n}$.
-      Thus $\power{k}{n} \neq \power{k}{m}$.
+      Then $n < m$ or $m < n$.
+      If $n < m$ then $k^{n} < k^{m}$.
+      If $m < n$ then $k^{m} < k^{n}$.
+      Thus $k^{n} \neq k^{m}$.
       Contradiction.
     \end{proof}
   \end{forthel}
@@ -635,26 +635,26 @@
   \begin{forthel}
     \begin{corollary}\printlabel{ARITHMETIC_13_2876620253691904}
       Let $n, m, k$ be natural numbers.
-      Assume $k \gtr 1$.
-      Then \[ n \leq m \iff \power{k}{n} \leq \power{k}{m}. \]
+      Assume $k > 1$.
+      Then \[ n \leq m \iff k^{n} \leq k^{m}. \]
     \end{corollary}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_13_6984104377581568}
       Let $n$ be a natural number.
-      Then \[ \power{n \plus 1}{2} = (\power{n}{2} \plus (2 \cdot n)) \plus 1. \]
+      Then \[ (n + 1)^{2} = (n^{2} + (2 \cdot n)) + 1. \]
     \end{proposition}
     \begin{proof}
       We have
-      \[  \power{n \plus 1}{2}                       \]
-      \[    = (n \plus 1) \cdot (n \plus 1)         \]
-      \[    = ((n \plus 1) \cdot n) \plus (n \plus 1)   \]
-      \[    = ((n \cdot n) \plus n) \plus (n \plus 1)   \]
-      \[    = (\power{n}{2} \plus n) \plus (n \plus 1)         \]
-      \[    = ((\power{n}{2} \plus n) \plus n) \plus 1         \]
-      \[    = (\power{n}{2} \plus (n \plus n)) \plus 1         \]
-      \[    = (\power{n}{2} \plus (2 \cdot n)) \plus 1.    \]
+      \[  (n + 1)^{2}                       \]
+      \[    = (n + 1) \cdot (n + 1)         \]
+      \[    = ((n + 1) \cdot n) + (n + 1)   \]
+      \[    = ((n \cdot n) + n) + (n + 1)   \]
+      \[    = (n^{2} + n) + (n + 1)         \]
+      \[    = ((n^{2} + n) + n) + 1         \]
+      \[    = (n^{2} + (n + n)) + 1         \]
+      \[    = (n^{2} + (2 \cdot n)) + 1.    \]
     \end{proof}
   \end{forthel}
 
@@ -662,55 +662,55 @@
     \begin{proposition}\printlabel{ARITHMETIC_13_134060414337024}
       Let $n$ be a natural number.
       Assume $n \geq 3$.
-      Then \[ \power{n}{2} \gtr (2 \cdot n) \plus 1. \]
+      Then \[ n^{2} > (2 \cdot n) + 1. \]
     \end{proposition}
     \begin{proof}
-      Define $\Phi = \{ n' \in \NatGeq{3} \mid \power{n'}{2} \gtr (2 \cdot n') \plus 1 \}$.
+      Define $\Phi = \{ n' \in \Nat_{\geq 3} \mid n'^{2} > (2 \cdot n') + 1 \}$.
 
       (1) $\Phi$ contains $3$.
 
-      (2) For all $n' \in \Phi$ we have $n' \plus 1 \in \Phi$. \\
+      (2) For all $n' \in \Phi$ we have $n' + 1 \in \Phi$. \\
       Proof.
         Let $n' \in \Phi$.
         Then $n' \geq 3$.
 
-        (a) $(\power{n'}{2} \plus (2 \cdot n')) \plus 1
-        \gtr (((2 \cdot n') \plus 1) \plus (2 \cdot n')) \plus 1$.
-        Indeed $\power{n'}{2} \plus (2 \cdot n') \gtr ((2 \cdot n') \plus 1) \plus (2 \cdot n')$.
+        (a) $(n'^{2} + (2 \cdot n')) + 1
+        > (((2 \cdot n') + 1) + (2 \cdot n')) + 1$.
+        Indeed $n'^{2} + (2 \cdot n') > ((2 \cdot n') + 1) + (2 \cdot n')$.
 
-        (b) $(((2 \cdot n') \plus 1) \plus (2 \cdot n')) \plus 1
-        \gtr ((2 \cdot n') \plus (2 \cdot n')) \plus 1$. \\
+        (b) $(((2 \cdot n') + 1) + (2 \cdot n')) + 1
+        > ((2 \cdot n') + (2 \cdot n')) + 1$. \\
         Proof.
-          We have $((2 \cdot n') \plus 1) \plus (2 \cdot n')
-          \gtr (2 \cdot n') \plus (2 \cdot n')$.
-          Indeed $(2 \cdot n') \plus 1 \gtr 2 \cdot n'$.
+          We have $((2 \cdot n') + 1) + (2 \cdot n')
+          > (2 \cdot n') + (2 \cdot n')$.
+          Indeed $(2 \cdot n') + 1 > 2 \cdot n'$.
         Qed.
 
-        (c) $(2 \cdot (n' \plus n')) \plus 1 \gtr (2 \cdot (n' \plus 1)) \plus 1$. \\
+        (c) $(2 \cdot (n' + n')) + 1 > (2 \cdot (n' + 1)) + 1$. \\
         Proof.
-          We have $n' \plus n' \gtr n' \plus 1$ and $2 \neq 0$.
-          Thus $2 \cdot (n' \plus n') \gtr 2 \cdot (n' \plus 1)$
+          We have $n' + n' > n' + 1$ and $2 \neq 0$.
+          Thus $2 \cdot (n' + n') > 2 \cdot (n' + 1)$
           (by \cref{ARITHMETIC_06_5048640368279552}).
-          Indeed $n' \plus n'$ and $n' \plus 1$ are natural numbers.
+          Indeed $n' + n'$ and $n' + 1$ are natural numbers.
         Qed.
 
-        Take $A = \power{n' \plus 1}{2}$ and $B = (2 \cdot (n' \plus 1)) \plus 1$. %!
+        Take $A = (n' + 1)^{2}$ and $B = (2 \cdot (n' + 1)) + 1$. %!
         Then
         \[  A                                             \]
-        \[    = \power{n' \plus 1}{2}                              \]
-        \[    = (\power{n'}{2} \plus (2 \cdot n')) \plus 1               \]
-        \[    \gtr (((2 \cdot n') \plus 1) \plus (2 \cdot n')) \plus 1   \]  % (a)
-        \[    \gtr ((2 \cdot n') \plus (2 \cdot n')) \plus 1         \]  % (b)
-        \[    = (2 \cdot (n' \plus n')) \plus 1                   \]
-        \[    \gtr (2 \cdot (n' \plus 1)) \plus 1                    \]  % (c)
+        \[    = (n' + 1)^{2}                              \]
+        \[    = (n'^{2} + (2 \cdot n')) + 1               \]
+        \[    > (((2 \cdot n') + 1) + (2 \cdot n')) + 1   \]  % (a)
+        \[    > ((2 \cdot n') + (2 \cdot n')) + 1         \]  % (b)
+        \[    = (2 \cdot (n' + n')) + 1                   \]
+        \[    > (2 \cdot (n' + 1)) + 1                    \]  % (c)
         \[    = B.                                        \]
 
-        Thus $\power{n' \plus 1}{2} = A \gtr B = (2 \cdot (n' \plus 1)) \plus 1$.
+        Thus $(n' + 1)^{2} = A > B = (2 \cdot (n' + 1)) + 1$.
       Qed.
 
-      Therefore $\Phi$ contains every element of $\NatGeq{3}$
+      Therefore $\Phi$ contains every element of $\Nat_{\geq 3}$
       (by \cref{ARITHMETIC_04_4976599269113856}).
-      Consequently $\power{n}{2} \gtr (2 \cdot n) \plus 1$.
+      Consequently $n^{2} > (2 \cdot n) + 1$.
     \end{proof}
   \end{forthel}
 \end{document}

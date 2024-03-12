@@ -19,7 +19,7 @@
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_09_7776974319648768}
       Let $f$ be a map.
-      An inverse of $f$ is a map $g$ from $\range{f}$ to $\dom(f)$ such that
+      An inverse of $f$ is a map $g$ from $\range(f)$ to $\dom(f)$ such that
       \[ f(a) = b \iff g(b) = a \]
       for all $a \in \dom(f)$ and all $b \in \dom(g)$.
     \end{definition}
@@ -38,10 +38,10 @@
       Then $g = g'$.
     \end{lemma}
     \begin{proof}
-      We have $\dom(g) = \range{f} = \dom(g')$.
+      We have $\dom(g) = \range(f) = \dom(g')$.
 
-      Let us show that $g(b) = g'(b)$ for all $b \in \range{f}$.
-        Let $b \in \range{f}$.
+      Let us show that $g(b) = g'(b)$ for all $b \in \range(f)$.
+        Let $b \in \range(f)$.
         Take $a = g'(b)$.
         Then $g(b) = a$ iff $f(a) = b$.
         We have $f(a) = b$ iff $g'(b) = a$.
@@ -53,7 +53,7 @@
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_09_6458627204317184}
       Let $f$ be an invertible map.
-      $\inverse{f}$ is the inverse of $f$.
+      $f^{-1}$ is the inverse of $f$.
     \end{definition}
 
     Let $f$ is involutory stand for $f$ is the inverse of $f$.
@@ -66,8 +66,8 @@
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_09_7840743571849216}
       Let $A, B$ be classes and $f : A \onto B$ and $g : B \onto A$.
-      Then $g$ is the inverse of $f$ iff $g \circ f = \id{A}$ and $f \circ g =
-      \id{B}$.
+      Then $g$ is the inverse of $f$ iff $g \circ f = \id_{A}$ and $f \circ g =
+      \id_{B}$.
     \end{proposition}
     \begin{proof}
       Case $g$ is the inverse of $f$.
@@ -75,30 +75,30 @@
         $\dom(g \circ f)
           = \dom(f)
           = A
-          = \dom(\id{A})$.
+          = \dom(\id_{A})$.
         For all $a \in A$ we have
         $(g \circ f)(a)
           = g(f(a))
           = a$.
-        Hence $g \circ f = \id{A}$.
+        Hence $g \circ f = \id_{A}$.
 
         We have
         $\dom(f \circ g)
           = \dom(g)
           = B
-          = \dom(\id{B})$.
+          = \dom(\id_{B})$.
         For all $b \in B$ we have
         $(f \circ g)(b)
           = f(g(b))
           = b$.
-        Hence $f \circ g = \id{B}$.
+        Hence $f \circ g = \id_{B}$.
       End.
 
-      Case $g \circ f = \id{A}$ and $f \circ g = \id{B}$.
+      Case $g \circ f = \id_{A}$ and $f \circ g = \id_{B}$.
         Then $\dom(g)
           = B
-          = \range{f}$
-        and $\range{g}
+          = \range(f)$
+        and $\range(g)
           = A
           = \dom(f)$.
         Let $a \in \dom(f)$ and $b \in \dom(g)$.
@@ -106,13 +106,13 @@
         $g(b)
           = g(f(a))
           = (g \circ f)(a)
-          = \id{A}(a)
+          = \id_{A}(a)
           = a$.
         If $g(b) = a$ then
         $f(a)
           = f(g(b))
           = (f \circ g)(b)
-          = \id{B}(b)
+          = \id_{B}(b)
           = b$.
         Hence $f(a) = b$ iff $g(b) = a$.
       End.
@@ -123,17 +123,17 @@
     \begin{proposition}\printlabel{FOUNDATIONS_09_8414736098000896}
       Let $A, B$ be classes and $f : A \onto B$.
       Assume that $f$ is invertible.
-      Then $\inverse{f}$ is an invertible surjective map from $B$ onto $A$ such that
-      \[ \inverse{\inverse{f}} = f. \]
+      Then $f^{-1}$ is an invertible surjective map from $B$ onto $A$ such that
+      \[ (f^{-1})^{-1} = f. \]
     \end{proposition}
     \begin{proof}
-      $\inverse{f}$ is a map from $B$ to $A$.
-      Indeed $\range{f} = B$ and $\dom(f) = A$.
-      $\inverse{f}$ is surjective onto $A$.
-      Indeed for any $a \in A$ we have $\inverse{f}(f(a)) = a$.
-      $\inverse{f}$ is the inverse of $f$.
-      Thus $f \circ \inverse{f} = \id{B}$ and $\inverse{f} \circ f = \id{A}$.
-      Therefore $f$ is the inverse of $\inverse{f}$.
+      $f^{-1}$ is a map from $B$ to $A$.
+      Indeed $\range(f) = B$ and $\dom(f) = A$.
+      $f^{-1}$ is surjective onto $A$.
+      Indeed for any $a \in A$ we have $f^{-1}(f(a)) = a$.
+      $f^{-1}$ is the inverse of $f$.
+      Thus $f \circ f^{-1} = \id_{B}$ and $f^{-1} \circ f = \id_{A}$.
+      Therefore $f$ is the inverse of $f^{-1}$.
     \end{proof}
   \end{forthel}
 
@@ -141,11 +141,11 @@
     \begin{proposition}\printlabel{FOUNDATIONS_09_4577560740495360}
       Let $A, B$ be classes and $f : A \onto B$.
       Assume that $f$ is invertible.
-      Then \[ f \circ \inverse{f} = \id{B} \] and \[ \inverse{f} \circ f = \id{A}. \]
+      Then \[ f \circ f^{-1} = \id_{B} \] and \[ f^{-1} \circ f = \id_{A}. \]
     \end{proposition}
     \begin{proof}
-      $\inverse{f}$ is a surjective map from $B$ onto $A$ .
-      $\inverse{f}$ is the inverse of $f$.
+      $f^{-1}$ is a surjective map from $B$ onto $A$ .
+      $f^{-1}$ is the inverse of $f$.
     \end{proof}
   \end{forthel}
 
@@ -153,22 +153,22 @@
     \begin{proposition}\printlabel{FOUNDATIONS_09_4606651604664320}
       Let $A, B$ be classes and $f : A \onto B$ and $a \in A$.
       Assume that $f$ is invertible.
-      Then \[ \inverse{f}(f(a)) = a. \]
+      Then \[ f^{-1}(f(a)) = a. \]
     \end{proposition}
     \begin{proof}
-      We have $\inverse{f}(f(a)) = (\inverse{f} \circ f)(a) = \id{A}(a) = a$.
+      We have $f^{-1}(f(a)) = (f^{-1} \circ f)(a) = \id_{A}(a) = a$.
     \end{proof}
 
     \begin{proposition}
       Let $A, B$ be classes and $f : A \onto B$ and $b \in B$.
       Assume that $f$ is invertible.
-      Then \[ f(\inverse{f}(b)) = b. \]
+      Then \[ f(f^{-1}(b)) = b. \]
     \end{proposition}
     \begin{proof}
       We have
-      $f(\inverse{f}(b))
-        = (f \circ \inverse{f})(b)
-        = \id{B}(b)
+      $f(f^{-1}(b))
+        = (f \circ f^{-1})(b)
+        = \id_{B}(b)
         = b$.
     \end{proof}
   \end{forthel}
@@ -178,42 +178,42 @@
       Let $A, B, C$ be classes and $f : A \onto B$ and $g : B \onto C$.
       Assume that $f$ and $g$ are invertible.
       Then $g \circ f$ is invertible and
-      \[ \inverse{g \circ f} = \inverse{f} \circ \inverse{g}. \]
+      \[ (g \circ f)^{-1} = f^{-1} \circ g^{-1}. \]
     \end{proposition}
     \begin{proof}
-      $\inverse{f}$ is a surjective map from $B$ onto $A$.
-      $\inverse{g}$ is a surjective map from $C$ onto $B$.
-      Take $h = \inverse{f} \circ \inverse{g}$.
+      $f^{-1}$ is a surjective map from $B$ onto $A$.
+      $g^{-1}$ is a surjective map from $C$ onto $B$.
+      Take $h = f^{-1} \circ g^{-1}$.
       Then $h$ is a surjective map from $C$ onto $A$
       (by \cref{FOUNDATIONS_08_8542698338254848}).
       $g \circ f$ is a map from $A$ to $C$.
 
-      Let us show that $((g \circ f) \circ h) = \id{C}$.
-        We have $f \circ (\inverse{f} \circ \inverse{g}) = (f \circ \inverse{f}) \circ \inverse{g}$.
-        Indeed $f \circ (\inverse{f} \circ \inverse{g})$ and
-        $(f \circ \inverse{f}) \circ \inverse{g}$ are maps of $C$.
+      Let us show that $((g \circ f) \circ h) = \id_{C}$.
+        We have $f \circ (f^{-1} \circ g^{-1}) = (f \circ f^{-1}) \circ g^{-1}$.
+        Indeed $f \circ (f^{-1} \circ g^{-1})$ and
+        $(f \circ f^{-1}) \circ g^{-1}$ are maps of $C$.
         $f \circ h$ is a map from $C$ to $B$.
         Hence
         \[  (g \circ f) \circ h                           \]
         \[    = g \circ (f \circ h)                       \]
-        \[    = g \circ (f \circ (\inverse{f} \circ \inverse{g}))   \]
-        \[    = g \circ ((f \circ \inverse{f}) \circ \inverse{g})   \]
-        \[    = g \circ (\id{B} \circ \inverse{g})            \]
-        \[    = g \circ \inverse{g}                            \]
-        \[    = \id{C}.                                  \]
+        \[    = g \circ (f \circ (f^{-1} \circ g^{-1}))   \]
+        \[    = g \circ ((f \circ f^{-1}) \circ g^{-1})   \]
+        \[    = g \circ (\id_{B} \circ g^{-1})            \]
+        \[    = g \circ g^{-1}                            \]
+        \[    = \id_{C}.                                  \]
       End.
 
-      Let us show that $h \circ (g \circ f) = \id{A}$.
-        We have $(\inverse{f} \circ \inverse{g}) \circ g = \inverse{f} \circ (\inverse{g} \circ g)$.
+      Let us show that $h \circ (g \circ f) = \id_{A}$.
+        We have $(f^{-1} \circ g^{-1}) \circ g = f^{-1} \circ (g^{-1} \circ g)$.
         $g \circ f$ is a map from $A$ to $C$.
         Hence
         \[  h \circ (g \circ f)                           \]
         \[    = (h \circ g) \circ f                       \]
-        \[    = ((\inverse{f} \circ \inverse{g}) \circ g) \circ f   \]
-        \[    = (\inverse{f} \circ (\inverse{g} \circ g)) \circ f   \]
-        \[    = (\inverse{f} \circ \id{B}) \circ f            \]
-        \[    = \inverse{f} \circ f                            \]
-        \[    = \id{A}.                                  \]
+        \[    = ((f^{-1} \circ g^{-1}) \circ g) \circ f   \]
+        \[    = (f^{-1} \circ (g^{-1} \circ g)) \circ f   \]
+        \[    = (f^{-1} \circ \id_{B}) \circ f            \]
+        \[    = f^{-1} \circ f                            \]
+        \[    = \id_{A}.                                  \]
       End.
 
       Thus $h$ is the inverse of $g \circ f$.
@@ -227,51 +227,51 @@
       Let $A, B$ be classes and $f : A \onto B$ and $X \subseteq A$.
       Assume that $f$ is invertible.
       Then $f \restriction X$ is invertible and
-      \[ \inverse{f\restriction X} = \inverse{f} \restriction (\image{f}(X)). \]
+      \[ (f\restriction X)^{-1} = f^{-1} \restriction (f_{*}(X)). \]
     \end{proposition}
     \begin{proof}
-      $f \restriction X$ is a surjective map from $X$ onto $\image{f}(X)$.
-      Take $g = \inverse{f} \restriction (\image{f}(X))$.
-      Then $g$ is a map of $\image{f}(X)$.
+      $f \restriction X$ is a surjective map from $X$ onto $f_{*}(X)$.
+      Take $g = f^{-1} \restriction (f_{*}(X))$.
+      Then $g$ is a map of $f_{*}(X)$.
 
-      Let us show that $X \subseteq \range{g}$.
+      Let us show that $X \subseteq \range(g)$.
         Let $a \in X$.
-        Then $f(a) \in \image{f}(X)$.
-        Hence $g(f(a)) = \inverse{f}(f(a)) = a$.
+        Then $f(a) \in f_{*}(X)$.
+        Hence $g(f(a)) = f^{-1}(f(a)) = a$.
         Thus $a$ is a value of $g$.
       End.
 
-      Let us show that $\range{g} \subseteq X$.
-        Let $a \in \range{g}$.
-        Take $b \in \image{f}(X)$ such that $a = g(b)$.
+      Let us show that $\range(g) \subseteq X$.
+        Let $a \in \range(g)$.
+        Take $b \in f_{*}(X)$ such that $a = g(b)$.
         Take $c \in X$ such that $b = f(c)$.
         Then $a
-          = (\inverse{f} \restriction (\image{f}(X)))(b)
-          = \inverse{f}(b)
-          = \inverse{f}(f(c))
+          = (f^{-1} \restriction (f_{*}(X)))(b)
+          = f^{-1}(b)
+          = f^{-1}(f(c))
           = c$.
         Hence $a \in X$.
       End.
 
-      Hence $\range{g} = X$.
+      Hence $\range(g) = X$.
       Thus $g$ is a surjective map onto $X$.
 
       Let us show that $g((f \restriction X)(a)) = a$ for all $a \in X$.
         Let $a \in X$.
         Then $g((f \restriction X)(a))
           = g(f(a))
-          = (\inverse{f} \restriction (\image{f}(X)))(f(a))
-          = \inverse{f}(f(a))
+          = (f^{-1} \restriction (f_{*}(X)))(f(a))
+          = f^{-1}(f(a))
           = a$.
       End.
 
-      Let us show that $((f \restriction X)(g(b))) = b$ for all $b \in \image{f}(X)$.
-        Let $b \in \image{f}(X)$.
+      Let us show that $((f \restriction X)(g(b))) = b$ for all $b \in f_{*}(X)$.
+        Let $b \in f_{*}(X)$.
         Take $a \in X$ such that $b = f(a)$.
         We have $g(b)
           = g(f(a))
-          = (\inverse{f} \restriction (\image{f}(X)))(f(a))
-          = \inverse{f}(f(a))
+          = (f^{-1} \restriction (f_{*}(X)))(f(a))
+          = f^{-1}(f(a))
           = a$.
         Hence $(f \restriction X)(g(b))
           = (f \restriction X)(a)
@@ -279,8 +279,8 @@
           = b$.
       End.
 
-      Thus $g \circ (f \restriction X) = \id{X}$ and
-      $(f \restriction X) \circ g = \id{\image{f}(X)}$.
+      Thus $g \circ (f \restriction X) = \id_{X}$ and
+      $(f \restriction X) \circ g = \id_{f_{*}(X)}$.
       Therefore $g$ is the inverse of $f \restriction X$.
     \end{proof}
   \end{forthel}
@@ -289,24 +289,24 @@
     \begin{proposition}\printlabel{FOUNDATIONS_09_7726021377785856}
       Let $A, B$ be classes and $f : A \onto B$ and $Y \subseteq B$.
       Assume that $f$ is invertible.
-      Then \[ \preimage{f}(Y) = \image{\inverse{f}}(Y). \]
+      Then \[ f^{*}(Y) = (f^{-1})_{*}(Y). \]
     \end{proposition}
     \begin{proof}
-      We have $\image{\inverse{f}}(Y) = \{ \inverse{f}(b) \mid b \in Y \}$ and
-      $\preimage{f}(Y) = \{ a \in A \mid f(a) \in Y \}$.
+      We have $(f^{-1})_{*}(Y) = \{ f^{-1}(b) \mid b \in Y \}$ and
+      $f^{*}(Y) = \{ a \in A \mid f(a) \in Y \}$.
 
-      Let us show that $\preimage{f}(Y) \subseteq \image{\inverse{f}}(Y)$.
-        Let $a \in \preimage{f}(Y)$.
+      Let us show that $f^{*}(Y) \subseteq (f^{-1})_{*}(Y)$.
+        Let $a \in f^{*}(Y)$.
         Take $b \in Y$ such that $b = f(a)$.
-        Then $\inverse{f}(b) = \inverse{f}(f(a)) = a$.
-        Hence $a \in \image{\inverse{f}}(Y)$.
+        Then $f^{-1}(b) = f^{-1}(f(a)) = a$.
+        Hence $a \in (f^{-1})_{*}(Y)$.
       End.
 
-      Let us show that $\image{\inverse{f}}(Y) \subseteq \preimage{f}(Y)$.
-        Let $a \in \image{\inverse{f}}(Y)$.
-        Take $b \in Y$ such that $a = \inverse{f}(b)$.
-        Then $f(a) = f(\inverse{f}(b)) = b$.
-        Hence $a \in \preimage{f}(Y)$.
+      Let us show that $f^{-1}_{*}(Y) \subseteq f^{*}(Y)$.
+        Let $a \in f^{-1}_{*}(Y)$.
+        Take $b \in Y$ such that $a = f^{-1}(b)$.
+        Then $f(a) = f(f^{-1}(b)) = b$.
+        Hence $a \in f^{*}(Y)$.
       End.
     \end{proof}
   \end{forthel}
@@ -315,12 +315,12 @@
     \begin{corollary}\printlabel{FOUNDATIONS_09_8607784268464128}
       Let $A, B$ be classes and $f : A \onto B$ and $b \in B$.
       Assume that $f$ is invertible.
-      Then \[ \preimage{f}(\set{b}) = \set{\inverse{f}(b)}. \]
+      Then \[ f^{*}(\set{b}) = \set{f^{-1}(b)}. \]
     \end{corollary}
     \begin{proof}
-      $\preimage{f}(\set{b}) = \image{\inverse{f}}(\set{b})$.
-      We have $\image{\inverse{f}}(\set{b}) = \{ \inverse{f}(c) \mid c \in \set{b} \}$.
-      Hence $\image{\inverse{f}}(\set{b}) = \set{\inverse{f}(b)}$.
+      $f^{*}(\set{b}) = f^{-1}_{*}(\set{b})$.
+      We have $f^{-1}_{*}(\set{b}) = \{ f^{-1}(c) \mid c \in \set{b} \}$.
+      Hence $f^{-1}_{*}(\set{b}) = \set{f^{-1}(b)}$.
     \end{proof}
   \end{forthel}
 
@@ -333,7 +333,7 @@
       Case $f$ is invertible.
         Let $a, b \in A$.
         Assume $f(a) = f(b)$.
-        Then $a = \inverse{f}(f(a)) = \inverse{f}(f(b)) = b$.
+        Then $a = f^{-1}(f(a)) = f^{-1}(f(b)) = b$.
       End.
 
       Case $f$ is injective.
@@ -353,13 +353,13 @@
     \begin{corollary}\printlabel{FOUNDATIONS_09_5708971514003456}
       Let $A, B$ be classes and $f : A \onto B$.
       Assume that $f$ is invertible.
-      Then $\inverse{f}$ is a bijection between $B$ and $A$.
+      Then $f^{-1}$ is a bijection between $B$ and $A$.
     \end{corollary}
     \begin{proof}
-      $\inverse{f}$ is a surjective map from $B$ onto $A$.
-      $\inverse{f}$ is invertible.
-      Hence $\inverse{f}$ is injective.
-      Therefore $\inverse{f}$ is a bijection between $B$ and $A$.
+      $f^{-1}$ is a surjective map from $B$ onto $A$.
+      $f^{-1}$ is invertible.
+      Hence $f^{-1}$ is injective.
+      Therefore $f^{-1}$ is a bijection between $B$ and $A$.
     \end{proof}
   \end{forthel}
 
@@ -376,11 +376,11 @@
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_09_7944474185433088}
       Let $A$ be a class.
-      $\id{A}$ is an involution on $A$.
+      $\id_{A}$ is an involution on $A$.
     \end{proposition}
     \begin{proof}
-      We have $\id{A} \circ \id{A} = \id{A}$.
-      Hence $\id{A}$ is selfinverse.
+      We have $\id_{A} \circ \id_{A} = \id_{A}$.
+      Hence $\id_{A}$ is selfinverse.
     \end{proof}
   \end{forthel}
 
@@ -391,7 +391,7 @@
     \end{proposition}
     \begin{proof}
       Case $g \circ f$ is an involution on $A$.
-        Then $\inverse{g \circ f} = \inverse{f} \circ \inverse{g} = f \circ g$.
+        Then $(g \circ f)^{-1} = f^{-1} \circ g^{-1} = f \circ g$.
       End.
 
       Case $g \circ f = f \circ g$.
@@ -401,9 +401,9 @@
         \[    = (g \circ f) \circ (f \circ g)   \]
         \[    = ((g \circ f) \circ f) \circ g   \]
         \[    = (g \circ (f \circ f)) \circ g   \]
-        \[    = (g \circ \id{A}) \circ g       \]
+        \[    = (g \circ \id_{A}) \circ g       \]
         \[    = g \circ g                       \]
-        \[    = \id{A}.                        \]
+        \[    = \id_{A}.                        \]
         Thus $g \circ f$ is selfinverse.
       End.
     \end{proof}

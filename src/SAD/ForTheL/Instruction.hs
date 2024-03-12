@@ -12,8 +12,7 @@ module SAD.ForTheL.Instruction (
   instr,
   instrDrop,
   instrExit,
-  instrRead,
-  readWords
+  instrRead
 ) where
 
 import Control.Monad

@@ -1,4 +1,0 @@
-id:naproche/examples/foundations
-ns:http://mathhub.info/naproche/examples/foundations
-narration-base:http://mathhub.info/naproche/examples/foundations
-url-base:https://stexmmt.mathhub.info/:sTeX

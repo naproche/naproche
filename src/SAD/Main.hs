@@ -133,7 +133,7 @@ mainBody mesonCache proverCache opts0 text0 fileArg = do
   -- parse input text
   txts <- readProofText (getInstr libraryParam opts0) text0
 
-  case map toLower $ make_string $ getInstr theoryParam opts0 of
+  case map toLower $make_string $ getInstr theoryParam opts0 of
     "fol" -> do
       -- if -T / --onlytranslate is passed as an option, only print the translated text
       if getInstr onlytranslateParam opts0

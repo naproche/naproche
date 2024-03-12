@@ -97,7 +97,7 @@
   \begin{forthel}
     \begin{definition}\printlabel{SET_THEORY_02_8166925802668032}
       Let $\alpha$ be an ordinal.
-      $\succ{\alpha} = \alpha \cup \set{\alpha}$.
+      $\succ(\alpha) = \alpha \cup \set{\alpha}$.
     \end{definition}
   \end{forthel}
 
@@ -114,20 +114,20 @@
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_02_1624410224066560}
       Let $\alpha$ be an ordinal.
-      Then $\succ{\alpha}$ is an ordinal.
+      Then $\succ(\alpha)$ is an ordinal.
     \end{proposition}
     \begin{proof}
-      (1) $\succ{\alpha}$ is transitive. \\
+      (1) $\succ(\alpha)$ is transitive. \\
       Proof.
-        Let $x \in \succ{\alpha}$ and $y \in x$.
+        Let $x \in \succ(\alpha)$ and $y \in x$.
         Then $x \in \alpha$ or $x = \alpha$.
         Hence $y \in \alpha$.
-        Thus $y \in \succ{\alpha}$.
+        Thus $y \in \succ(\alpha)$.
       Qed.
 
-      (2) Every element of $\succ{\alpha}$ is transitive. \\
+      (2) Every element of $\succ(\alpha)$ is transitive. \\
       Proof.
-        Let $x \in \succ{\alpha}$.
+        Let $x \in \succ(\alpha)$.
         Then $x \in \alpha$ or $x = \alpha$.
         Hence $x$ is transitive.
         Indeed $\alpha$ is transitive and every element of $\alpha$ is
@@ -139,17 +139,17 @@
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_02_8651096763400192}
       Let $\alpha, \beta$ be ordinals.
-      If $\succ{\alpha} = \succ{\beta}$ then $\alpha = \beta$.
+      If $\succ(\alpha) = \succ(\beta)$ then $\alpha = \beta$.
     \end{proposition}
     \begin{proof}
-      Assume $\succ{\alpha} = \succ{\beta}$.
+      Assume $\succ(\alpha) = \succ(\beta)$.
 
       (1) $\alpha \subseteq \beta$. \\
       Proof.
         Let $\gamma \in \alpha$.
         Then $\gamma \in \alpha \cup \set{\alpha}
-          = \succ{\alpha}
-          = \succ{\beta}
+          = \succ(\alpha)
+          = \succ(\beta)
           = \beta \cup \set{\beta}$.
         Hence $\gamma \in \beta$ or $\gamma = \beta$.
         Assume $\gamma = \beta$.
@@ -167,8 +167,8 @@
       Proof.
         Let $\gamma \in \beta$.
         Then $\gamma \in \beta \cup \set{\beta}
-          = \succ{\beta}
-          = \succ{\alpha}
+          = \succ(\beta)
+          = \succ(\alpha)
           = \alpha \cup \set{\alpha}$.
         Hence $\gamma \in \alpha$ or $\gamma = \alpha$.
         Assume $\gamma = \alpha$.
@@ -193,18 +193,18 @@
       $\alpha$ is less than $\beta$ iff $\alpha \in \beta$.
     \end{definition}
 
-    Let $\alpha \less \beta$ stand for $\alpha$ is less than $\beta$.
-    Let $\alpha \nless \beta$ stand for not $\alpha \less \beta$.
+    Let $\alpha < \beta$ stand for $\alpha$ is less than $\beta$.
+    Let $\alpha \nless \beta$ stand for not $\alpha < \beta$.
 
-    Let $\alpha$ is greater than $\beta$ stand for $\beta \less \alpha$.
-    Let $\alpha \gtr \beta$ stand for $\beta \less \alpha$.
-    Let $\alpha \ngtr \beta$ stand for not $\alpha \gtr \beta$.
+    Let $\alpha$ is greater than $\beta$ stand for $\beta < \alpha$.
+    Let $\alpha > \beta$ stand for $\beta < \alpha$.
+    Let $\alpha \ngtr \beta$ stand for not $\alpha > \beta$.
   \end{forthel}
 
   \begin{forthel}
     \begin{definition}\printlabel{SET_THEORY_02_2639956210089984}
       Let $\alpha, \beta$ be ordinals.
-      $\alpha$ is less than or equal to $\beta$ iff $\alpha \less \beta$ or
+      $\alpha$ is less than or equal to $\beta$ iff $\alpha < \beta$ or
       $\alpha = \beta$.
     \end{definition}
 
@@ -224,10 +224,10 @@
     \end{proposition}
     \begin{proof}
       Case $\alpha \leq \beta$.
-        Then $\alpha \less \beta$ or $\alpha = \beta$.
+        Then $\alpha < \beta$ or $\alpha = \beta$.
         Let $x \in \alpha$.
-        If $\alpha \less \beta$ then $x \in \alpha \in \beta$.
-        Hence if $\alpha \less \beta$ then $x \in \beta$.
+        If $\alpha < \beta$ then $x \in \alpha \in \beta$.
+        Hence if $\alpha < \beta$ then $x \in \beta$.
         If $\alpha = \beta$ then $x \in \beta$.
         Thus $x \in \beta$.
       End.
@@ -240,7 +240,7 @@
       Then \[ \alpha \nless \alpha. \]
     \end{proposition}
     \begin{proof}
-      Assume $\alpha \less \alpha$.
+      Assume $\alpha < \alpha$.
       Then $\alpha \in \alpha$.
       Contradiction.
     \end{proof}
@@ -249,51 +249,51 @@
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_02_7098683017396224}
       Let $\alpha, \beta, \gamma$ be ordinals.
-      Then \[ (\text{$\alpha \less \beta$ and $\beta \less \gamma$}) \implies
-      \alpha \less \gamma. \]
+      Then \[ (\text{$\alpha < \beta$ and $\beta < \gamma$}) \implies
+      \alpha < \gamma. \]
     \end{proposition}
     \begin{proof}
-      Assume $\alpha \less \beta$ and $\beta \less \gamma$.
+      Assume $\alpha < \beta$ and $\beta < \gamma$.
       Then $\alpha \in \beta \in \gamma$.
       Hence $\alpha \in \gamma$.
-      Thus $\alpha \less \gamma$.
+      Thus $\alpha < \gamma$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_02_1718825707896832}
       Let $\alpha, \beta$ be ordinals.
-      Then $\alpha \less \beta$ or $\alpha = \beta$ or $\alpha \gtr \beta$.
+      Then $\alpha < \beta$ or $\alpha = \beta$ or $\alpha > \beta$.
     \end{proposition}
     \begin{proof}
       Assume the contrary.
       Define \[ A = \class{\alpha' \in \Ord | \classtext{there exists an ordinal
-      $\beta'$ such that neither $\alpha' \less \beta'$ nor $\alpha' = \beta'$ nor
-      $\alpha' \gtr \beta'$}}. \]
+      $\beta'$ such that neither $\alpha' < \beta'$ nor $\alpha' = \beta'$ nor
+      $\alpha' > \beta'$}}. \]
       $A$ is nonempty.
       Hence we can take a least element $\alpha'$ of $A$ regarding ${\in}$.
-      Define \[ B = \{ \beta' \in \Ord \mid \text{neither $\alpha' \less \beta'$
-      nor $\alpha' = \beta'$ nor $\alpha' \gtr \beta'$} \}. \]
+      Define \[ B = \{ \beta' \in \Ord \mid \text{neither $\alpha' < \beta'$
+      nor $\alpha' = \beta'$ nor $\alpha' > \beta'$} \}. \]
       $B$ is nonempty.
       Hence we can take a least element $\beta'$ of $B$ regarding ${\in}$.
 
       Let us show that $\alpha' \subseteq \beta'$.
         Let $a \in \alpha'$.
-        Then $a \less \beta'$ or $a = \beta'$ or $a \gtr \beta'$.
-        Indeed if neither $a \less \beta'$ nor $a = \beta'$ nor $a \gtr \beta'$ then
+        Then $a < \beta'$ or $a = \beta'$ or $a > \beta'$.
+        Indeed if neither $a < \beta'$ nor $a = \beta'$ nor $a > \beta'$ then
         $a \in A$.
-        If $a = \beta'$ then $\beta' \less \alpha'$.
-        If $a \gtr \beta'$ then $\beta' \less \alpha'$.
-        Hence $a \less \beta'$.
+        If $a = \beta'$ then $\beta' < \alpha'$.
+        If $a > \beta'$ then $\beta' < \alpha'$.
+        Hence $a < \beta'$.
         Thus $a \in \beta'$.
       End.
 
       Let us show that $\beta' \subseteq \alpha'$.
         Let $b \in \beta'$.
-        Then $b \less \alpha'$ or $b = \alpha'$ or $b \gtr \alpha'$.
-        If $b = \alpha'$ then $\alpha' \less \beta'$.
-        If $b \gtr \alpha'$ then $\alpha' \less \beta'$.
-        Hence $b \less \alpha'$.
+        Then $b < \alpha'$ or $b = \alpha'$ or $b > \alpha'$.
+        If $b = \alpha'$ then $\alpha' < \beta'$.
+        If $b > \alpha'$ then $\alpha' < \beta'$.
+        Hence $b < \alpha'$.
         Thus $b \in \alpha'$.
       End.
 
@@ -313,8 +313,8 @@
       Case $\alpha = \beta$. Trivial.
 
       Case $\alpha \neq \beta$.
-        Then $\alpha \less \beta$ or $\alpha \gtr \beta$.
-        Assume $\alpha \gtr \beta$.
+        Then $\alpha < \beta$ or $\alpha > \beta$.
+        Assume $\alpha > \beta$.
         Then $\beta \in \alpha$.
         Hence $\beta \in \beta$.
         Contradiction.
@@ -325,20 +325,20 @@
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_02_5689190964527104}
       Let $\alpha$ be an ordinal.
-      Then \[ \alpha \less \succ{\alpha}. \]
+      Then \[ \alpha < \succ(\alpha). \]
     \end{proposition}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_02_4064972025888768}
       Let $\alpha, \beta$ be ordinals.
-      Then \[ \beta \less \succ{\alpha} \implies \beta \leq \alpha. \]
+      Then \[ \beta < \succ(\alpha) \implies \beta \leq \alpha. \]
     \end{proposition}
     \begin{proof}
-      Assume $\beta \less \succ{\alpha}$.
-      Then $\beta \in \succ{\alpha} = \alpha \cup \set{\alpha}$.
+      Assume $\beta < \succ(\alpha)$.
+      Then $\beta \in \succ(\alpha) = \alpha \cup \set{\alpha}$.
       Hence $\beta \in \alpha$ or $\beta \in \set{\alpha}$.
-      Thus $\beta \less \alpha$ or $\beta = \alpha$.
+      Thus $\beta < \alpha$ or $\beta = \alpha$.
       Therefore $\beta \leq \alpha$.
     \end{proof}
   \end{forthel}
@@ -347,13 +347,13 @@
     \begin{proposition}\printlabel{SET_THEORY_02_8242798790705152}
       Let $\alpha$ be an ordinal.
       There exists no ordinal $\beta$ such that
-      $\alpha \less \beta \less \succ{\alpha}$.
+      $\alpha < \beta < \succ(\alpha)$.
     \end{proposition}
     \begin{proof}
       Assume the contrary.
-      Consider an ordinal $\beta$ such that $\alpha \less \beta \less \succ{\alpha}$.
-      Then $\beta \less \alpha$ or $\beta = \alpha$.
-      Hence $\alpha \less \alpha$.
+      Consider an ordinal $\beta$ such that $\alpha < \beta < \succ(\alpha)$.
+      Then $\beta < \alpha$ or $\beta = \alpha$.
+      Hence $\alpha < \alpha$.
       Contradiction.
     \end{proof}
   \end{forthel}
@@ -364,7 +364,7 @@
   \begin{forthel}
     \begin{definition}\printlabel{SET_THEORY_02_7129712109289472}
       A successor ordinal is an ordinal $\alpha$ such that
-      $\alpha = \succ{\beta}$ for some ordinal $\beta$.
+      $\alpha = \succ(\beta)$ for some ordinal $\beta$.
     \end{definition}
   \end{forthel}
 
@@ -372,11 +372,11 @@
     \begin{proposition}\printlabel{SET_THEORY_02_4240355610329088}
       Let $\alpha$ be an ordinal.
       There exists no ordinal $\beta$ such that
-      $\alpha \less \beta \less \succ{\alpha}$.
+      $\alpha < \beta < \succ(\alpha)$.
     \end{proposition}
     \begin{proof}
       Assume the contrary.
-      Choose an ordinal $\beta$ such that $\alpha \less \beta \less \succ{\alpha}$.
+      Choose an ordinal $\beta$ such that $\alpha < \beta < \succ(\alpha)$.
       Then $\alpha \in \beta \in \alpha \cup \set{\alpha}$.
       Hence $\beta \in \alpha$ or $\beta = \alpha$.
       Then $\alpha \in \alpha$.
@@ -387,7 +387,7 @@
   \begin{forthel}
     \begin{definition}\printlabel{SET_THEORY_02_735071524880384}
       Let $\alpha$ be a successor ordinal.
-      $\pred{\alpha}$ is the ordinal $\beta$ such that $\alpha = \succ{\beta}$.
+      $\pred(\alpha)$ is the ordinal $\beta$ such that $\alpha = \succ(\beta)$.
     \end{definition}
   \end{forthel}
 
@@ -401,10 +401,10 @@
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_02_4659024620421120}
       Let $\lambda$ be a limit ordinal and $\alpha \in \lambda$.
-      Then $\lambda$ contains $\succ{\alpha}$.
+      Then $\lambda$ contains $\succ(\alpha)$.
     \end{proposition}
     \begin{proof}
-      If $\succ{\alpha} \notin \lambda$ then $\alpha \less \lambda \less \succ{\alpha}$.
+      If $\succ(\alpha) \notin \lambda$ then $\alpha < \lambda < \succ(\alpha)$.
     \end{proof}
   \end{forthel}
 
@@ -426,50 +426,50 @@
 
   \begin{forthel}
     \begin{definition}\printlabel{SET_THEORY_02_4059354166722560}
-      \[ \LessRel = \{ (\alpha, \beta) \mid \text{$\alpha$ and $\beta$ are ordinals
-      such that $\alpha \less \beta$} \}. \]
+      \[ {<} = \{ (\alpha, \beta) \mid \text{$\alpha$ and $\beta$ are ordinals
+      such that $\alpha < \beta$} \}. \]
     \end{definition}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_02_4859038791630848}
-      $\LessRel$ is a strong wellorder on $\Ord$.
+      ${<}$ is a strong wellorder on $\Ord$.
     \end{proposition}
     \begin{proof}
-      For any ordinals $\alpha, \beta$ we have $(\alpha,\beta) \in \LessRel$ iff
-      $\alpha \less \beta$.
+      For any ordinals $\alpha, \beta$ we have $(\alpha,\beta) \in {<}$ iff
+      $\alpha < \beta$.
 
-      (1) $\LessRel$ is irreflexive on $\Ord$.
+      (1) ${<}$ is irreflexive on $\Ord$.
       Indeed for any ordinal $\alpha$ we have $\alpha \nless \alpha$.
 
-      (2) $\LessRel$ is transitive on $\Ord$.
-      Indeed for any ordinals $\alpha, \beta, \gamma$ if $\alpha \less \beta$ and
-      $\beta \less \gamma$ then $\alpha \less \gamma$.
+      (2) ${<}$ is transitive on $\Ord$.
+      Indeed for any ordinals $\alpha, \beta, \gamma$ if $\alpha < \beta$ and
+      $\beta < \gamma$ then $\alpha < \gamma$.
 
-      (3) $\LessRel$ is connected on $\Ord$.
-      Indeed for any distinct ordinals $\alpha, \beta$ we have $\alpha \less \beta$
-      or $\beta \less \alpha$.
+      (3) ${<}$ is connected on $\Ord$.
+      Indeed for any distinct ordinals $\alpha, \beta$ we have $\alpha < \beta$
+      or $\beta < \alpha$.
 
-      Hence $\LessRel$ is a strict linear order on $\Ord$.
+      Hence ${<}$ is a strict linear order on $\Ord$.
 
-      (4) $\LessRel$ is wellfounded on $\Ord$. \\
+      (4) ${<}$ is wellfounded on $\Ord$. \\
       Proof.
         Let $A$ be a nonempty subclass of $\Ord$.
         Then we can take a least element $\alpha$ of $A$ regarding ${\in}$.
-        Then $\alpha$ is a least element of $A$ regarding $\LessRel$.
+        Then $\alpha$ is a least element of $A$ regarding ${<}$.
       Qed.
 
-      Hence $\LessRel$ is strongly wellfounded on $\Ord$.
+      Hence ${<}$ is strongly wellfounded on $\Ord$.
       Indeed for any $\beta \in \Ord$ we have $\beta = \{ \alpha \in \Ord \mid
-      (\alpha,\beta) \in \LessRel \}$.
-      Thus $\LessRel$ is a strong wellorder on $\Ord$.
+      (\alpha,\beta) \in {<} \}$.
+      Thus ${<}$ is a strong wellorder on $\Ord$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{corollary}\printlabel{SET_THEORY_02_1042046129274880}
       Let $A$ be a subclass of $\Ord$.
-      If $A$ is nonempty then $A$ has a least element regarding $\LessRel$.
+      If $A$ is nonempty then $A$ has a least element regarding ${<}$.
     \end{corollary}
   \end{forthel}
 
@@ -482,37 +482,37 @@
 
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_03_8114657499807744}
-      $\LessRel$ is a strong wellorder on any ordinal.
+      ${<}$ is a strong wellorder on any ordinal.
     \end{proposition}
     \begin{proof}
       Let $\alpha$ be an ordinal.
-      For all $\beta, \gamma \in \alpha$ we have $(\beta,\gamma) \in \LessRel$ iff
-      $\beta \less \gamma$.
+      For all $\beta, \gamma \in \alpha$ we have $(\beta,\gamma) \in {<}$ iff
+      $\beta < \gamma$.
 
-      (1) $\LessRel$ is irreflexive on $\alpha$.
+      (1) ${<}$ is irreflexive on $\alpha$.
       Indeed for all $\beta \in \alpha$ we have $\alpha \nless \alpha$.
 
-      (2) $\LessRel$ is transitive on $\alpha$.
-      Indeed for all $\beta, \gamma, \delta \in \alpha$ if $\beta \less \gamma$ and
-      $\gamma \less \delta$ then $\beta \less \delta$.
+      (2) ${<}$ is transitive on $\alpha$.
+      Indeed for all $\beta, \gamma, \delta \in \alpha$ if $\beta < \gamma$ and
+      $\gamma < \delta$ then $\beta < \delta$.
 
-      (3) $\LessRel$ is connected on $\alpha$.
+      (3) ${<}$ is connected on $\alpha$.
       Indeed for any distinct $\beta, \gamma \in \alpha$ we have
-      $\beta \less \gamma$ or $\gamma \less \beta$.
+      $\beta < \gamma$ or $\gamma < \beta$.
 
-      Hence $\LessRel$ is a strict linear order on $\alpha$.
+      Hence ${<}$ is a strict linear order on $\alpha$.
 
-      (4) $\LessRel$ is wellfounded on $\alpha$. \\
+      (4) ${<}$ is wellfounded on $\alpha$. \\
       Proof.
         Let $A$ be a nonempty subclass of $\alpha$.
-        Then we can take a least element $\beta$ of $A$ regarding $\LessRel$.
+        Then we can take a least element $\beta$ of $A$ regarding ${<}$.
         Indeed $A$ is a subclass of $\Ord$.
       Qed.
 
-      Hence $\LessRel$ is strongly wellfounded on $\alpha$.
+      Hence ${<}$ is strongly wellfounded on $\alpha$.
       Indeed for any $\gamma \in \alpha$ we have
-      $\gamma = \{ \beta \in \Ord \mid (\beta,\gamma) \in \LessRel \}$.
-      Thus $\LessRel$ is a strong wellorder on $\alpha$.
+      $\gamma = \{ \beta \in \Ord \mid (\beta,\gamma) \in {<} \}$.
+      Thus ${<}$ is a strong wellorder on $\alpha$.
       [unfold off]
     \end{proof}
   \end{forthel}
@@ -556,7 +556,7 @@
       Let $\Phi$ be a class.
       (Initial case) Assume that $\Phi$ contains $0$.
       (Successor step) Assume that for all ordinals $\alpha$ if
-      $\alpha \in \Phi$ then $\succ{\alpha} \in \Phi$.
+      $\alpha \in \Phi$ then $\succ(\alpha) \in \Phi$.
       (Limit step) Assume that for all limit ordinals $\lambda$ if every
       ordinals less than $\lambda$ is contained in $\Phi$ then
       $\lambda \in \Phi$.
@@ -573,7 +573,7 @@
         Case $\alpha = 0$. Trivial.
 
         Case $\alpha$ is a successor ordinal.
-          Take an ordinal $\beta$ such that $\alpha = \succ{\beta}$.
+          Take an ordinal $\beta$ such that $\alpha = \succ(\beta)$.
           Then $\beta \in \Phi$.
           Hence $\alpha \in \Phi$ (by successor step).
         End.

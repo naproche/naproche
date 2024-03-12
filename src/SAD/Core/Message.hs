@@ -8,16 +8,14 @@
 {-# LANGUAGE TupleSections #-}
 
 module SAD.Core.Message (
-  LocatedMsg,
   reports_text, report_text, reports, report,
   console_position, show_position,
   origin_main, origin_export, origin_forthel, origin_parser,
   origin_reasoner, origin_simplifier, origin_thesis, origin_translate,
   Kind (..), output, error,
   outputMain, outputExport, outputForTheL, outputParser, outputReasoner,
-  outputThesis, outputSimplifier, outputTranslate, outputTokenizer,
-  errorExport, errorLexer, errorParser,
-  warningLexer
+  outputThesis, outputSimplifier, outputTranslate,
+  errorExport, errorParser
 ) where
 
 import Prelude hiding (error)
@@ -35,9 +33,6 @@ import Isabelle.Naproche qualified as Naproche
 import Isabelle.Library
 
 import Naproche.Program qualified as Program
-
-
-type LocatedMsg = (String, Position.T)
 
 
 -- PIDE markup reports
@@ -68,18 +63,15 @@ report pos markup = reports [(pos, markup)]
 -- message origin
 
 origin_main, origin_export, origin_forthel, origin_parser,
-  origin_reasoner, origin_simplifier, origin_thesis, origin_translate,
-  origin_tokenizer :: Bytes
+  origin_reasoner, origin_simplifier, origin_thesis, origin_translate :: Bytes
 origin_main = "Main"
 origin_export = "Export"
 origin_forthel = "ForTheL"
-origin_lexer = "Lexer"
 origin_parser = "Parser"
 origin_reasoner = "Reasoner"
 origin_simplifier = "Simplifier"
 origin_thesis = "Thesis"
 origin_translate = "Translation"
-origin_tokenizer = "Tokenizer"
 
 
 -- message kind
@@ -149,17 +141,11 @@ error origin pos text = do
   context <- Program.thread_context
   Program.error $ snd $ make_message context ERROR origin pos (make_bytes text)
 
-warning :: BYTES a => Bytes -> Position.T -> a -> IO ()
-warning origin pos text = do
-  context <- Program.thread_context
-  let (command, msg) = make_message context WARNING origin pos (make_bytes text)
-  Program.exchange_message0 context [command, msg]
-
 
 -- common messages
 
 outputMain, outputExport, outputForTheL, outputParser, outputReasoner,
-  outputSimplifier, outputThesis, outputTokenizer :: BYTES a => Kind -> Position.T -> a -> IO ()
+  outputSimplifier, outputThesis :: BYTES a => Kind -> Position.T -> a -> IO ()
 outputMain = output origin_main
 outputExport = output origin_export
 outputForTheL = output origin_forthel
@@ -167,15 +153,10 @@ outputParser = output origin_parser
 outputReasoner = output origin_reasoner
 outputSimplifier = output origin_simplifier
 outputThesis = output origin_thesis
-outputTokenizer = output origin_tokenizer
 
 outputTranslate :: BYTES a => Kind -> Position.T -> a -> IO ()
 outputTranslate = output origin_translate
 
-errorExport, errorLexer, errorParser :: BYTES a => Position.T -> a -> IO b
+errorExport, errorParser :: BYTES a => Position.T -> a -> IO b
 errorExport = error origin_export
-errorLexer = error origin_lexer
 errorParser = error origin_parser
-
-warningLexer :: BYTES a => Position.T -> a -> IO ()
-warningLexer = warning origin_lexer

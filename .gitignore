@@ -14,7 +14,7 @@ x86_64-windows/
 *.ps
 .DS_Store
 
-# TEX-related files
+# TEX-related files.
 *.fdb_latexmk
 *.pdf
 *.log
@@ -28,18 +28,3 @@ x86_64-windows/
 *.bcf
 *.blg
 *.run.xml
-*.aux
-
-# sTeX-related files and directories
-*.sref
-*.sms
-*.xhtml
-examples/*/export/*
-examples/*/errors/*
-examples/*/content/*
-examples/*/narration/*
-examples/*/relational/*
-examples/*/xhtml/*
-
-
-# Special settings for sTeX archives

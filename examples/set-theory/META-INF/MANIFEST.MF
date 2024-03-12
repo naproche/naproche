@@ -1,4 +1,0 @@
-id:naproche/examples/set-theory
-ns:http://mathhub.info/naproche/examples/set-theory
-narration-base:http://mathhub.info/naproche/examples/set-theory
-url-base:https://stexmmt.mathhub.info/:sTeX

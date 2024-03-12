@@ -1,4 +1,0 @@
-id:naproche/examples/puzzles
-ns:http://mathhub.info/naproche/examples/puzzles
-narration-base:http://mathhub.info/naproche/examples/puzzles
-url-base:https://stexmmt.mathhub.info/:sTeX

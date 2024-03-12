@@ -31,22 +31,22 @@
       \[ \{ f(a) \mid a \in \dom(f) \}. \]
     \end{definition}
 
-    Let $\range{f}$ stand for the range of $f$.
+    Let $\range(f)$ stand for the range of $f$.
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_06_6386349418479616}
       Let $f$ be a map and $b$ be an object.
-      $b$ is a value of $f$ iff $b \in \range{f}$.
+      $b$ is a value of $f$ iff $b \in \range(f)$.
     \end{proposition}
     \begin{proof}
       Case $b$ is a value of $f$.
         Take $a \in \dom(f)$ such that $b = f(a)$.
         $b$ is an object.
-        Hence $b \in \range{f}$.
+        Hence $b \in \range(f)$.
       End.
 
-      Case $b \in \range{f}$.
+      Case $b \in \range(f)$.
         Then $b$ is an object such that $b = f(a)$ for some $a \in \dom(f)$.
         Hence $b$ is a value of $f$.
       End.
@@ -59,13 +59,13 @@
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_06_1920902360989696}
       Let $A$ be a class.
-      % $\id{A}$ is the map defined on $A$ such that $\id{A}(a) = a$ for all
+      % $\id_{A}$ is the map defined on $A$ such that $\id_{A}(a) = a$ for all
       % $a \in A$. %!
-      $\id{A}$ is the map $h$ such that $h$ is defined on $A$ and $h(a) = a$
+      $\id_{A}$ is the map $h$ such that $h$ is defined on $A$ and $h(a) = a$
       for all $a \in A$.
     \end{definition}
 
-    Let the identity map on $A$ stand for $\id{A}$.
+    Let the identity map on $A$ stand for $\id_{A}$.
   \end{forthel}
 
 
@@ -74,7 +74,7 @@
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_06_7605717729017856}
       Let $f, g$ be maps.
-      Assume $\range{f} \subseteq \dom(g)$.
+      Assume $\range(f) \subseteq \dom(g)$.
       % $g \circ f$ is the map defined on $\dom(f)$ such that $(g \circ f)(a) =
       % g(f(a))$ for all $a \in \dom(f)$. %!
       $g \circ f$ is the map $h$ such that $h$ is defined on $\dom(f)$ and
@@ -102,7 +102,7 @@
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_06_2170189258948608}
       Let $A$ be a class and $X \subseteq A$.
-      Then $\id{A} \restriction X = \id{X}$.
+      Then $\id_{A} \restriction X = \id_{X}$.
     \end{proposition}
   \end{forthel}
 
@@ -117,7 +117,9 @@
     \end{definition}
 
     Let the direct image of $A$ under $f$ stand for the image of $A$ under $f$.
-    Let $\image{f}(A)$ stand for the image of $A$ under $f$.
+    Let $f_{*}(A)$ stand for the image of $A$ under $f$.
+
+    Let $f[A]$ stand for $f_{*}(A)$.
   \end{forthel}
 
   \begin{forthel}
@@ -129,7 +131,7 @@
 
     Let the inverse image of $B$ under $f$ stand for the preimage of $B$ under
     $f$.
-    Let $\preimage{f}(B)$ stand for the preimage of $B$ under $f$.
+    Let $f^{*}(B)$ stand for the preimage of $B$ under $f$.
   \end{forthel}
 
 
@@ -178,14 +180,14 @@
     \begin{proposition}
       Let $A, B$ be classes and $f$ be a map of $A$.
       Assume that $f(a) \in B$ for all $a \in A$.
-      Then $f$ is a map from $A$ to $B$ iff $\range{f} \subseteq B$.
+      Then $f$ is a map from $A$ to $B$ iff $\range(f) \subseteq B$.
     \end{proposition}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_06_5104361690628096}
       Let $A$ be a class.
-      Then $\id{A}$ is a map on $A$.
+      Then $\id_{A}$ is a map on $A$.
     \end{proposition}
   \end{forthel}
 
@@ -206,38 +208,38 @@
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_06_3964401904254976}
       Let $A, B$ be classes and $f : A \to B$.
-      Then \[ f \circ \id{A} = f = \id{B} \circ f. \]
+      Then \[ f \circ \id_{A} = f = \id_{B} \circ f. \]
     \end{proposition}
     \begin{proof}
-      $A$ is the domain of $f \circ \id{A}$ and the domain of $f$ and the
-      domain of $\id{B} \circ f$.
-      We have $(f \circ \id{A})(a)
-        = f(\id{A}(a))
+      $A$ is the domain of $f \circ \id_{A}$ and the domain of $f$ and the
+      domain of $\id_{B} \circ f$.
+      We have $(f \circ \id_{A})(a)
+        = f(\id_{A}(a))
         = f(a)
-        = \id{B}(f(a))
-        = (\id{B} \circ f)(a)$
+        = \id_{B}(f(a))
+        = (\id_{B} \circ f)(a)$
       for all $a \in A$.
-      Hence $f \circ \id{A}
+      Hence $f \circ \id_{A}
         = f
-        = \id{B} \circ f$.
+        = \id_{B} \circ f$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_06_3118771061391360}
       Let $A$ be a class and $X \subseteq A$.
-      Then \[ \id{A} \restriction X = \id{X}. \]
+      Then \[ \id_{A} \restriction X = \id_{X}. \]
     \end{proposition}
     \begin{proof}
-      We have $\dom(\id{A} \restriction X)
+      We have $\dom(\id_{A} \restriction X)
         = X
-        = \dom(\id{X})$.
-      $(\id{A} \restriction X)(a)
-        = \id{A}(a)
+        = \dom(\id_{X})$.
+      $(\id_{A} \restriction X)(a)
+        = \id_{A}(a)
         = a
-        = \id{X}(a)$
+        = \id_{X}(a)$
       for all $a \in X$.
-      Hence $\id{A} \restriction X = \id{X}$.
+      Hence $\id_{A} \restriction X = \id_{X}$.
     \end{proof}
   \end{forthel}
 

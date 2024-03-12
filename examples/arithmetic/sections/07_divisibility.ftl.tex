@@ -97,9 +97,9 @@
       Assume $n \mid 1$.
       Take a natural number $k$ such that $n \cdot k = 1$.
       Suppose $n \neq 1$.
-      Then $n \less 1$ or $n \gtr 1$.
+      Then $n < 1$ or $n > 1$.
 
-      Case $n \less 1$.
+      Case $n < 1$.
         Then $n = 0$.
         Hence $0
           = 0 \cdot k
@@ -108,7 +108,7 @@
         Contradiction.
       End.
 
-      Case $n \gtr 1$.
+      Case $n > 1$.
         We have $k \neq 0$.
         Indeed if $k = 0$ then
         $1
@@ -116,13 +116,13 @@
           = n \cdot 0
           = 0$.
         Hence $k \geq 1$.
-        Take a positive natural number $l$ such that $n = 1 \plus l$.
+        Take a positive natural number $l$ such that $n = 1 + l$.
         Then $1
-          \less 1 \plus l
+          < 1 + l
           = n
           = n \cdot 1
           \leq n \cdot k$.
-        Hence $1 \less n$.
+        Hence $1 < n$.
         Contradiction.
       End.
     \end{proof}
@@ -218,7 +218,7 @@
     \begin{proposition}\printlabel{ARITHMETIC_07_4700711333920768}
       Let $n, m, k$ be natural numbers.
       Then \[ (\text{$k \mid n$ and $k \mid m$}) \implies
-      (\text{$k \mid (n' \cdot n) \plus (m' \cdot m)$
+      (\text{$k \mid (n' \cdot n) + (m' \cdot m)$
       for all natural numbers $n', m'$}). \]
     \end{proposition}
     \begin{proof}
@@ -226,54 +226,54 @@
       Let $n', m'$ be natural numbers.
       Take natural numbers $l,l'$ such that $k \cdot l = n$ and $k \cdot l' = m$.
       Then
-      \[  k \cdot ((n' \cdot l) \plus (m' \cdot l'))                \]
-      \[    = (k \cdot (n' \cdot l)) \plus (k \cdot (m' \cdot l'))  \]
-      \[    = ((k \cdot n') \cdot l) \plus ((k \cdot m') \cdot l')  \]
-      \[    = (n' \cdot (k \cdot l)) \plus (m' \cdot (k \cdot l'))  \]
-      \[    = (n' \cdot n) \plus (m' \cdot m).                      \]
+      \[  k \cdot ((n' \cdot l) + (m' \cdot l'))                \]
+      \[    = (k \cdot (n' \cdot l)) + (k \cdot (m' \cdot l'))  \]
+      \[    = ((k \cdot n') \cdot l) + ((k \cdot m') \cdot l')  \]
+      \[    = (n' \cdot (k \cdot l)) + (m' \cdot (k \cdot l'))  \]
+      \[    = (n' \cdot n) + (m' \cdot m).                      \]
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{corollary}\printlabel{ARITHMETIC_07_1556786209357824}
       Let $n, m, k$ be natural numbers.
-      Then \[ (\text{$k \mid n$ and $k \mid m$}) \implies k \mid n \plus m. \]
+      Then \[ (\text{$k \mid n$ and $k \mid m$}) \implies k \mid n + m. \]
     \end{corollary}
     \begin{proof}
       Assume $k \mid n$ and $k \mid m$.
       Take $n' = 1$ and $m' = 1$.
-      Then $k \mid (n' \cdot n) \plus (m' \cdot m)$.
-      $(n' \cdot n) \plus (m' \cdot m) = n \plus m$.
-      Hence $k \mid n \plus m$.
+      Then $k \mid (n' \cdot n) + (m' \cdot m)$.
+      $(n' \cdot n) + (m' \cdot m) = n + m$.
+      Hence $k \mid n + m$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_07_1076947887063040}
       Let $n, m, k$ be natural numbers.
-      Then \[ (\text{$k \mid n$ and $k \mid n \plus m$}) \implies k \mid m. \]
+      Then \[ (\text{$k \mid n$ and $k \mid n + m$}) \implies k \mid m. \]
     \end{proposition}
     \begin{proof}
-      Assume $k \mid n$ and $k \mid n \plus m$.
+      Assume $k \mid n$ and $k \mid n + m$.
 
       Case $k = 0$. Obvious.
 
       Case $k \neq 0$.
         Take a natural number $l$ such that $n = k \cdot l$.
-        Take a natural number $l'$ such that $n \plus m = k \cdot l'$.
-        Then $(k \cdot l) \plus m = k \cdot l'$.
+        Take a natural number $l'$ such that $n + m = k \cdot l'$.
+        Then $(k \cdot l) + m = k \cdot l'$.
         We have $l' \geq l$.
-        Indeed if $l' \less l$ then
-        $n \plus m
+        Indeed if $l' < l$ then
+        $n + m
           = k \cdot l'
-          \less k \cdot l
+          < k \cdot l
           = n$.
-        Hence we can take a natural number $l''$ such that $l' = l \plus l''$.
-        Then $(k \cdot l) \plus m
+        Hence we can take a natural number $l''$ such that $l' = l + l''$.
+        Then $(k \cdot l) + m
           = k \cdot l'
-          = k \cdot (l \plus l'')
-          = (k \cdot l) \plus (k \cdot l'')$.
-        Indeed $k \cdot (l \plus l'') = (k \cdot l) \plus (k \cdot l'')$
+          = k \cdot (l + l'')
+          = (k \cdot l) + (k \cdot l'')$.
+        Indeed $k \cdot (l + l'') = (k \cdot l) + (k \cdot l'')$
         (by \cref{ARITHMETIC_06_9001524774567936}).
         Thus $m = (k \cdot l'')$.
         Therefore $k \mid m$.
@@ -295,13 +295,13 @@
         = m \cdot 0
         = 0$.
       Thus $k \geq 1$.
-      Assume $m \gtr n$.
+      Assume $m > n$.
       Then $n
         = m \cdot k
         \geq m \cdot 1
         = m
-        \gtr n$.
-      Hence $n \gtr n$.
+        > n$.
+      Hence $n > n$.
       Contradiction.
     \end{proof}
   \end{forthel}

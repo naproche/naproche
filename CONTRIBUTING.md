@@ -22,12 +22,10 @@ Abbrev | Meaning
 adj    | adjective
 aff    | affirm/affirmation
 asm    | assume/assumption
-char   | character
 cont   | continuation
 dec    | decrement
 decl   | declaration
 def    | definition
-eof    | end of file
 eps    | epsilon
 eq     | equal/equality
 err    | error
@@ -36,9 +34,7 @@ fun    | function
 hypo   | hypothesis
 inc    | increment
 instr  | instruction
-msg    | message
 pat    | pattern
-pos    | position
 predi  | predicate
 prim   | primitive
 sig    | signature

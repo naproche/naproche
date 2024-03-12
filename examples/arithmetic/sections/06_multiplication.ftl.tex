@@ -20,15 +20,15 @@
     \begin{lemma}\printlabel{ARITHMETIC_06_7897906468093952}
       There exists a $\varphi : \Nat \times \Nat \to \Nat$ such
       that for all $n \in \Nat$ we have $\varphi(n, 0) = 0$ and
-      $\varphi(n, m \plus 1) = \varphi(n,m) \plus n$ for any $m \in \Nat$.
+      $\varphi(n, m + 1) = \varphi(n,m) + n$ for any $m \in \Nat$.
     \end{lemma}
     \begin{proof}
-      Take $A = \funspace{\Nat}{\Nat}$.
+      Take $A = [\Nat \to \Nat]$.
       Define $a(n) = 0$ for $n \in \Nat$.
       Then $A$ is a set and $a \in A$.
 
       [skipfail on] % Wrong proof task %!!
-      Define $f(g) = \fun n \in \Nat. g(n) \plus n$ for $g \in A$.
+      Define $f(g) = \fun n \in \Nat. g(n) + n$ for $g \in A$.
       [skipfail off]
 
       Then $f : A \to A$.
@@ -50,15 +50,15 @@
           = 0$.
       Qed.
 
-      (2) For all $n, m \in \Nat$ we have $\varphi(n, m \plus 1) =
-      \varphi(n,m) \plus n$. \\
+      (2) For all $n, m \in \Nat$ we have $\varphi(n, m + 1) =
+      \varphi(n,m) + n$. \\
       Proof.
         Let $n, m \in \Nat$.
-        Then $\varphi(n, m \plus 1)
-          = \psi(m \plus 1)(n)
+        Then $\varphi(n, m + 1)
+          = \psi(m + 1)(n)
           = f(\psi(m))(n)
-          = \psi(m)(n) \plus n
-          = \varphi(n,m) \plus n$.
+          = \psi(m)(n) + n
+          = \varphi(n,m) + n$.
       Qed.
     \end{proof}
   \end{forthel}
@@ -67,9 +67,9 @@
     \begin{lemma}\printlabel{ARITHMETIC_06_2076592937369600}
       Let $\varphi, \varphi' : \Nat \times \Nat \to \Nat$.
       Assume that for all $n \in \Nat$ we have $\varphi(n, 0) = 0$ and
-      $\varphi(n, m \plus 1) = \varphi(n,m) \plus n$ for any $m \in \Nat$.
+      $\varphi(n, m + 1) = \varphi(n,m) + n$ for any $m \in \Nat$.
       Assume that for all $n \in \Nat$ we have $\varphi'(n, 0) = 0$ and
-      $\varphi'(n, m \plus 1) = \varphi'(n,m) \plus n$ for any $m \in \Nat$.
+      $\varphi'(n, m + 1) = \varphi'(n,m) + n$ for any $m \in \Nat$.
       Then $\varphi = \varphi'$.
     \end{lemma}
     \begin{proof}
@@ -79,14 +79,14 @@
       (1) $0 \in \Phi$.
       Indeed $\varphi(n,0) = 0 = \varphi'(n,0)$ for all $n \in \Nat$.
 
-      (2) For all $m \in \Phi$ we have $m \plus 1 \in \Phi$. \\
+      (2) For all $m \in \Phi$ we have $m + 1 \in \Phi$. \\
       Proof.
         Let $m \in \Phi$.
         Then $\varphi(n,m) = \varphi'(n,m)$ for all $n \in \Nat$.
-        Hence $\varphi(n, m \plus 1)
-          = \varphi(n,m) \plus n
-          = \varphi'(n,m) \plus n
-          = \varphi'(n, m \plus 1)$
+        Hence $\varphi(n, m + 1)
+          = \varphi(n,m) + n
+          = \varphi'(n,m) + n
+          = \varphi'(n, m + 1)$
         for all $n \in \Nat$.
       Qed.
 
@@ -98,8 +98,8 @@
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_06_6626346484629504}
       $\mul$ is the map from $\Nat \times \Nat$ to $\Nat$ such that for all
-      $n \in \Nat$ we have $\mul(n, 0) = 0$ and $\mul(n, m \plus 1) =
-      \mul(n, m) \plus n$ for any $m \in \Nat$.
+      $n \in \Nat$ we have $\mul(n, 0) = 0$ and $\mul(n, m + 1) =
+      \mul(n, m) + n$ for any $m \in \Nat$.
     \end{definition}
 
     Let $n \cdot m$ stand for $\mul(n, m)$.
@@ -130,7 +130,7 @@
   \begin{forthel}
     \begin{lemma}\printlabel{ARITHMETIC_06_2211275408932864}
       Let $n, m$ be natural numbers.
-      Then $n \cdot (m \plus 1) = (n \cdot m) \plus n$.
+      Then $n \cdot (m + 1) = (n \cdot m) + n$.
     \end{lemma}
   \end{forthel}
 
@@ -142,70 +142,70 @@
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_06_9001524774567936}
       Let $n, m, k$ be natural numbers.
-      Then \[ n \cdot (m \plus k) = (n \cdot m) \plus (n \cdot k). \]
+      Then \[ n \cdot (m + k) = (n \cdot m) + (n \cdot k). \]
     \end{proposition}
     \begin{proof}
-      Define $\Phi = \{ k' \in \Nat \mid n \cdot (m \plus k') =
-      (n \cdot m) \plus (n \cdot k') \}$.
+      Define $\Phi = \{ k' \in \Nat \mid n \cdot (m + k') =
+      (n \cdot m) + (n \cdot k') \}$.
 
       (1) $0$ is an element of $\Phi$.
-      Indeed $n \cdot (m \plus 0)
+      Indeed $n \cdot (m + 0)
         = n \cdot m
-        = (n \cdot m) \plus 0
-        = (n \cdot m) \plus (n \cdot 0)$.
+        = (n \cdot m) + 0
+        = (n \cdot m) + (n \cdot 0)$.
 
-      (2) For all $k' \in \Phi$ we have $k' \plus 1 \in \Phi$. \\
+      (2) For all $k' \in \Phi$ we have $k' + 1 \in \Phi$. \\
       Proof.
         Let $k'\in \Phi$.
         Then
-        \[  n \cdot (m \plus (k' \plus 1))                  \]
-        \[    = n \cdot ((m \plus k') \plus 1)              \]
-        \[    = (n \cdot (m \plus k')) \plus n              \]
-        \[    = ((n \cdot m) \plus (n \cdot k')) \plus n    \]
-        \[    = (n \cdot m) \plus ((n \cdot k') \plus n)    \]
-        \[    = (n \cdot m) \plus (n \cdot (k' \plus 1)).   \]
-        Hence $n \cdot (m \plus (k' \plus 1)) = (n \cdot m) \plus (n \cdot (k' \plus 1))$.
-        Thus $k' \plus 1 \in \Phi$.
+        \[  n \cdot (m + (k' + 1))                  \]
+        \[    = n \cdot ((m + k') + 1)              \]
+        \[    = (n \cdot (m + k')) + n              \]
+        \[    = ((n \cdot m) + (n \cdot k')) + n    \]
+        \[    = (n \cdot m) + ((n \cdot k') + n)    \]
+        \[    = (n \cdot m) + (n \cdot (k' + 1)).   \]
+        Hence $n \cdot (m + (k' + 1)) = (n \cdot m) + (n \cdot (k' + 1))$.
+        Thus $k' + 1 \in \Phi$.
       Qed.
 
       Thus every natural number is contained in $\Phi$.
-      Therefore $n \cdot (m \plus k) = (n \cdot m) \plus (n \cdot k)$.
+      Therefore $n \cdot (m + k) = (n \cdot m) + (n \cdot k)$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_06_5742967566368768}
       Let $n, m, k$ be natural numbers.
-      Then \[ (n \plus m) \cdot k = (n \cdot k) \plus (m \cdot k). \]
+      Then \[ (n + m) \cdot k = (n \cdot k) + (m \cdot k). \]
     \end{proposition}
     \begin{proof}
-      Define $\Phi = \{ k' \in \Nat \mid (n \plus m) \cdot k' =
-      (n \cdot k') \plus (m \cdot k') \}$.
+      Define $\Phi = \{ k' \in \Nat \mid (n + m) \cdot k' =
+      (n \cdot k') + (m \cdot k') \}$.
 
       (1) $0$ belongs to $\Phi$.
-      Indeed $(n \plus m) \cdot 0
+      Indeed $(n + m) \cdot 0
         = 0
-        = 0 \plus 0
-        = (n \cdot 0) \plus (m \cdot 0)$.
+        = 0 + 0
+        = (n \cdot 0) + (m \cdot 0)$.
 
-      (2) For all $k' \in \Phi$ we have $k' \plus 1 \in \Phi$. \\
+      (2) For all $k' \in \Phi$ we have $k' + 1 \in \Phi$. \\
       Proof.
         Let $k' \in \Phi$.
         Then
-        \[  (n \plus m) \cdot (k' \plus 1)                        \]
-        \[    = ((n \plus m) \cdot k') \plus (n \plus m)              \]
-        \[    = ((n \cdot k') \plus (m \cdot k')) \plus (n \plus m)   \]
-        \[    = (((n \cdot k') \plus (m \cdot k')) \plus n) \plus m   \]
-        \[    = ((n \cdot k') \plus ((m \cdot k') \plus n)) \plus m   \]
-        \[    = ((n \cdot k') \plus (n \plus (m \cdot k'))) \plus m   \]
-        \[    = (((n \cdot k') \plus n) \plus (m \cdot k')) \plus m   \]
-        \[    = ((n \cdot k') \plus n) \plus ((m \cdot k') \plus m)   \]
-        \[    = (n \cdot (k' \plus 1)) \plus (m \cdot (k' \plus 1)).  \]
-        Thus $(n \plus m) \cdot (k' \plus 1) = (n \cdot (k' \plus 1)) \plus (m \cdot (k' \plus 1))$.
+        \[  (n + m) \cdot (k' + 1)                        \]
+        \[    = ((n + m) \cdot k') + (n + m)              \]
+        \[    = ((n \cdot k') + (m \cdot k')) + (n + m)   \]
+        \[    = (((n \cdot k') + (m \cdot k')) + n) + m   \]
+        \[    = ((n \cdot k') + ((m \cdot k') + n)) + m   \]
+        \[    = ((n \cdot k') + (n + (m \cdot k'))) + m   \]
+        \[    = (((n \cdot k') + n) + (m \cdot k')) + m   \]
+        \[    = ((n \cdot k') + n) + ((m \cdot k') + m)   \]
+        \[    = (n \cdot (k' + 1)) + (m \cdot (k' + 1)).  \]
+        Thus $(n + m) \cdot (k' + 1) = (n \cdot (k' + 1)) + (m \cdot (k' + 1))$.
       Qed.
 
       Thus every natural number is an element of $\Phi$.
-      Therefore $(n \plus m) \cdot k = (n \cdot k) \plus (m \cdot k)$.
+      Therefore $(n + m) \cdot k = (n \cdot k) + (m \cdot k)$.
     \end{proof}
   \end{forthel}
 
@@ -219,9 +219,9 @@
     \end{proposition}
     \begin{proof}
       $n \cdot 1
-        = n \cdot (0 \plus 1)
-        = (n \cdot 0) \plus n
-        = 0 \plus n
+        = n \cdot (0 + 1)
+        = (n \cdot 0) + n
+        = 0 + n
         = n$.
     \end{proof}
   \end{forthel}
@@ -229,13 +229,13 @@
   \begin{forthel}
     \begin{corollary}\printlabel{ARITHMETIC_06_5679541582299136}
       Let $n$ be a natural number.
-      Then \[ n \cdot 2 = n \plus n. \]
+      Then \[ n \cdot 2 = n + n. \]
     \end{corollary}
     \begin{proof}
       $n \cdot 2
-        = n \cdot (1 \plus 1)
-        = (n \cdot 1) \plus n
-        = n \plus n$.
+        = n \cdot (1 + 1)
+        = (n \cdot 1) + n
+        = n + n$.
     \end{proof}
   \end{forthel}
 
@@ -257,16 +257,16 @@
         = 0
         = (n \cdot m) \cdot 0$.
 
-      (2) For all $k' \in \Phi$ we have $k' \plus 1 \in \Phi$. \\
+      (2) For all $k' \in \Phi$ we have $k' + 1 \in \Phi$. \\
       Proof.
         Let $k' \in \Phi$.
         Then
-        \[  n \cdot (m \cdot (k' \plus 1))                          \]
-        \[    = n \cdot ((m \cdot k') \plus m)                      \]
-        \[    = (n \cdot (m \cdot k')) \plus (n \cdot m)            \]
-        \[    = ((n \cdot m) \cdot k') \plus (n \cdot m)            \]
-        \[    = ((n \cdot m) \cdot k') \plus ((n \cdot m) \cdot 1)  \]
-        \[    = (n \cdot m) \cdot (k' \plus 1).                     \]
+        \[  n \cdot (m \cdot (k' + 1))                          \]
+        \[    = n \cdot ((m \cdot k') + m)                      \]
+        \[    = (n \cdot (m \cdot k')) + (n \cdot m)            \]
+        \[    = ((n \cdot m) \cdot k') + (n \cdot m)            \]
+        \[    = ((n \cdot m) \cdot k') + ((n \cdot m) \cdot 1)  \]
+        \[    = (n \cdot m) \cdot (k' + 1).                     \]
       Qed.
 
       Hence every natural number is contained in $\Phi$.
@@ -291,16 +291,16 @@
 
         (1a) $0$ is contained in $\Psi$.
 
-        (1b) For all $n' \in \Psi$ we have $n' \plus 1 \in \Psi$. \\
+        (1b) For all $n' \in \Psi$ we have $n' + 1 \in \Psi$. \\
         Proof.
           Let $n' \in \Psi$.
           Then
-          \[ (n' \plus 1) \cdot 0
+          \[ (n' + 1) \cdot 0
             = 0
             = n' \cdot 0
             = 0 \cdot n'
-            = (0 \cdot n') \plus 0
-            = 0 \cdot (n' \plus 1). \]
+            = (0 \cdot n') + 0
+            = 0 \cdot (n' + 1). \]
         Qed.
 
         Hence every natural number is contained in $\Psi$.
@@ -313,31 +313,31 @@
 
         (2a) $0$ is contained in $\Theta$.
 
-        (2b) For all $n' \in \Theta$ we have $n' \plus 1 \in \Theta$. \\
+        (2b) For all $n' \in \Theta$ we have $n' + 1 \in \Theta$. \\
         Proof.
           Let $n' \in \Theta$.
           Then
-          \[  (n' \plus 1) \cdot 1        \]
-          \[    = (n' \cdot 1) \plus 1    \]
-          \[    = (1 \cdot n') \plus 1    \]
-          \[    = 1 \cdot (n' \plus 1).   \]
+          \[  (n' + 1) \cdot 1        \]
+          \[    = (n' \cdot 1) + 1    \]
+          \[    = (1 \cdot n') + 1    \]
+          \[    = 1 \cdot (n' + 1).   \]
         Qed.
 
         Thus every natural number is contained in $\Theta$.
         Therefore $n \cdot 1 = 1 \cdot n$.
       Qed.
 
-      (3) For all $m' \in \Phi$ we have $m' \plus 1 \in \Phi$. \\
+      (3) For all $m' \in \Phi$ we have $m' + 1 \in \Phi$. \\
       Proof.
         Let $m' \in \Phi$.
         Then
-        \[  n \cdot (m' \plus 1)                \]
-        \[    = (n \cdot m') \plus (n \cdot 1)  \]
-        \[    = (m' \cdot n) \plus (1 \cdot n)  \]
-        \[    = (1 \cdot n) \plus (m' \cdot n)  \]
-        \[    = (1 \plus m') \cdot n            \]
-        \[    = (m' \plus 1) \cdot n.           \]
-        Indeed $((1 \cdot n) \plus (m' \cdot n)) = (1 \plus m') \cdot n$. %!
+        \[  n \cdot (m' + 1)                \]
+        \[    = (n \cdot m') + (n \cdot 1)  \]
+        \[    = (m' \cdot n) + (1 \cdot n)  \]
+        \[    = (1 \cdot n) + (m' \cdot n)  \]
+        \[    = (1 + m') \cdot n            \]
+        \[    = (m' + 1) \cdot n.           \]
+        Indeed $((1 \cdot n) + (m' \cdot n)) = (1 + m') \cdot n$. %!
       Qed.
 
       Hence every natural number is contained in $\Phi$.
@@ -355,14 +355,14 @@
     \end{proposition}
     \begin{proof}
       Suppose $n, m \neq 0$.
-      Take natural numbers $n', m'$ such that $n = (n' \plus 1)$ and $m = (m' \plus 1)$.
+      Take natural numbers $n', m'$ such that $n = (n' + 1)$ and $m = (m' + 1)$.
       Then
       \[  0                                     \]
       \[    = n \cdot m                         \]
-      \[    = (n' \plus 1) \cdot (m' \plus 1)           \]
-      \[    = ((n' \plus 1) \cdot m') \plus (n' \plus 1)    \]
-      \[    = (((n' \plus 1) \cdot m') \plus n') \plus 1.   \]
-      Hence $0 = k \plus 1$ for some natural number $k$.
+      \[    = (n' + 1) \cdot (m' + 1)           \]
+      \[    = ((n' + 1) \cdot m') + (n' + 1)    \]
+      \[    = (((n' + 1) \cdot m') + n') + 1.   \]
+      Hence $0 = k + 1$ for some natural number $k$.
       Contradiction.
     \end{proof}
   \end{forthel}
@@ -389,39 +389,39 @@
         Thus $m' = 0$.
       Qed.
 
-      (2) For all $n' \in \Phi$ we have $n' \plus 1 \in \Phi$. \\
+      (2) For all $n' \in \Phi$ we have $n' + 1 \in \Phi$. \\
       Proof.
         Let $n' \in \Phi$.
 
-        Let us show that for all $m' \in \Nat$ if $(n' \plus 1) \cdot k =
-        m' \cdot k$ and $k \neq 0$ then $n' \plus 1 = m'$.
+        Let us show that for all $m' \in \Nat$ if $(n' + 1) \cdot k =
+        m' \cdot k$ and $k \neq 0$ then $n' + 1 = m'$.
           Let $m' \in \Nat$.
-          Assume $(n' \plus 1) \cdot k = m' \cdot k$ and $k \neq 0$.
+          Assume $(n' + 1) \cdot k = m' \cdot k$ and $k \neq 0$.
 
           Case $m' = 0$.
-            Then $(n' \plus 1) \cdot k = 0$.
-            Hence $n' \plus 1 = 0$.
+            Then $(n' + 1) \cdot k = 0$.
+            Hence $n' + 1 = 0$.
             Contradiction.
           End.
 
           Case $m' \neq 0$.
-            Take a natural number $l$ such that $m' = l \plus 1$.
-            Then $(n' \plus 1) \cdot k = (l \plus 1) \cdot k$.
-            Hence $(n' \cdot k) \plus k
-              = (n' \cdot k) \plus (1 \cdot k)
-              = (n' \cdot k) \plus k
-              = (l \plus 1) \cdot k
-              = (l \cdot k) \plus (1 \cdot k)
-              = (l \cdot k) \plus k$.
+            Take a natural number $l$ such that $m' = l + 1$.
+            Then $(n' + 1) \cdot k = (l + 1) \cdot k$.
+            Hence $(n' \cdot k) + k
+              = (n' \cdot k) + (1 \cdot k)
+              = (n' \cdot k) + k
+              = (l + 1) \cdot k
+              = (l \cdot k) + (1 \cdot k)
+              = (l \cdot k) + k$.
             Thus $n' \cdot k = l \cdot k$.
             Then we have $n' = l$.
             Indeed if $n' \cdot k = l \cdot k$ and $k \neq 0$ then $n' = l$.
-            Therefore $n' \plus 1 = l \plus 1 = m'$.
+            Therefore $n' + 1 = l + 1 = m'$.
           End.
         End.
 
         [prover vampire]
-        Hence $n' \plus 1 \in \Phi$.
+        Hence $n' + 1 \in \Phi$.
       Qed.
 
       Thus every natural number is contained in $\Phi$.
@@ -450,39 +450,39 @@
     \begin{proposition}\printlabel{ARITHMETIC_06_8817333933965312}
       Let $n, m, k$ be natural numbers.
       Assume $k \neq 0$.
-      Then \[ n \less m \iff n \cdot k \less m \cdot k. \]
+      Then \[ n < m \iff n \cdot k < m \cdot k. \]
     \end{proposition}
     \begin{proof}
-      Case $n \cdot k \less m \cdot k$.
-        Define $\Phi = \{ n' \in \Nat \mid$ if $n' \cdot k \less m \cdot k$ then
-        $n' \less m \}$.
+      Case $n \cdot k < m \cdot k$.
+        Define $\Phi = \{ n' \in \Nat \mid$ if $n' \cdot k < m \cdot k$ then
+        $n' < m \}$.
 
         (1) $\Phi$ contains $0$.
 
-        (2) For all $n' \in \Phi$ we have $n' \plus 1 \in \Phi$. \\
+        (2) For all $n' \in \Phi$ we have $n' + 1 \in \Phi$. \\
         Proof.
           Let $n' \in \Phi$.
 
-          Let us show that if $(n' \plus 1) \cdot k \less m \cdot k$ then $n' \plus 1 \less m$.
-            Assume $(n' \plus 1) \cdot k \less m \cdot k$.
-            Then $(n' \cdot k) \plus k \less m \cdot k$.
-            Hence $n' \cdot k \less m \cdot k$.
-            Thus $n' \less m$.
-            Then $n' \plus 1 \leq m$.
-            If $n' \plus 1 = m$ then $(n' \plus 1) \cdot k = m \cdot k$.
-            Hence $n' \plus 1 \less m$.
+          Let us show that if $(n' + 1) \cdot k < m \cdot k$ then $n' + 1 < m$.
+            Assume $(n' + 1) \cdot k < m \cdot k$.
+            Then $(n' \cdot k) + k < m \cdot k$.
+            Hence $n' \cdot k < m \cdot k$.
+            Thus $n' < m$.
+            Then $n' + 1 \leq m$.
+            If $n' + 1 = m$ then $(n' + 1) \cdot k = m \cdot k$.
+            Hence $n' + 1 < m$.
           End.
         Qed.
 
         Therefore every natural number is contained in $\Phi$.
-        Consequently $n \less m$.
+        Consequently $n < m$.
       End.
 
-      Case $n \less m$.
-        Take a positive natural number $l$ such that $m = n \plus l$.
-        Then $m \cdot k = (n \plus l) \cdot k = (n \cdot k) \plus (l \cdot k)$.
+      Case $n < m$.
+        Take a positive natural number $l$ such that $m = n + l$.
+        Then $m \cdot k = (n + l) \cdot k = (n \cdot k) + (l \cdot k)$.
         $l \cdot k$ is positive.
-        Hence $n \cdot k \less m \cdot k$.
+        Hence $n \cdot k < m \cdot k$.
       End.
     \end{proof}
   \end{forthel}
@@ -491,48 +491,48 @@
     \begin{corollary}\printlabel{ARITHMETIC_06_5048640368279552}
       Let $n, m, k$ be natural numbers.
       Assume $k \neq 0$.
-      Then \[ n \less m \iff k \cdot n \less k \cdot m. \]
+      Then \[ n < m \iff k \cdot n < k \cdot m. \]
     \end{corollary}
     \begin{proof}
       We have $k \cdot n = n \cdot k$ and $k \cdot m = m \cdot k$.
-      Hence $k \cdot n \less k \cdot m$ iff $n \cdot k \less m \cdot k$.
+      Hence $k \cdot n < k \cdot m$ iff $n \cdot k < m \cdot k$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_06_1826268599287808}
       Let $n, m, k$ be natural numbers.
-      Then \[ n, m \gtr k \implies n \cdot m \gtr k. \]
+      Then \[ n, m > k \implies n \cdot m > k. \]
     \end{proposition}
     \begin{proof}
-      Define $\Phi = \{ n' \in \Nat \mid$ if $n', m \gtr k$ then $n' \cdot m \gtr k \}$.
+      Define $\Phi = \{ n' \in \Nat \mid$ if $n', m > k$ then $n' \cdot m > k \}$.
 
       (1) $\Phi$ contains $0$.
 
-      (2) For all $n' \in \Phi$ we have $n' \plus 1 \in \Phi$. \\
+      (2) For all $n' \in \Phi$ we have $n' + 1 \in \Phi$. \\
       Proof.
         Let $n' \in \Phi$.
 
-        Let us show that if $n' \plus 1, m \gtr k$ then $(n' \plus 1) \cdot m \gtr k$.
-          Assume $n' \plus 1, m \gtr k$.
-          Then $(n' \plus 1) \cdot m = (n' \cdot m) \plus m$.
+        Let us show that if $n' + 1, m > k$ then $(n' + 1) \cdot m > k$.
+          Assume $n' + 1, m > k$.
+          Then $(n' + 1) \cdot m = (n' \cdot m) + m$.
           If $n' = 0$ then
-          $(n' \cdot m) \plus m
-            = 0 \plus m
+          $(n' \cdot m) + m
+            = 0 + m
             = m
-            \gtr k$.
+            > k$.
           If $n' \neq 0$ then
-          $(n' \cdot m) \plus m
-            \gtr m
-            \gtr k$.
-          Indeed if $n' \neq 0$ then $n' \cdot m \gtr 0$.
-          Indeed $m \gtr 0$.
-          Hence $(n' \plus 1) \cdot m \gtr k$.
+          $(n' \cdot m) + m
+            > m
+            > k$.
+          Indeed if $n' \neq 0$ then $n' \cdot m > 0$.
+          Indeed $m > 0$.
+          Hence $(n' + 1) \cdot m > k$.
         Qed.
       Qed.
 
       Thus every natural number is contained in $\Phi$.
-      Therefore if $n, m \gtr k$ then $n \cdot m \gtr k$.
+      Therefore if $n, m > k$ then $n \cdot m > k$.
     \end{proof}
   \end{forthel}
 
@@ -569,21 +569,21 @@
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_06_8813409145454592}
       Let $n, m, k$ be natural numbers.
-      Assume $m \gtr 0$ and $k \gtr 1$.
-      Then $k \cdot m \gtr m$.
+      Assume $m > 0$ and $k > 1$.
+      Then $k \cdot m > m$.
     \end{proposition}
     \begin{proof}
-      Take a natural number $l$ such that $k = l \plus 2$.
+      Take a natural number $l$ such that $k = l + 2$.
       Then
       \[  k \cdot m                       \]
-      \[    = (l \plus 2) \cdot m             \]
-      \[    = (l \cdot m) \plus (2 \cdot m)   \]
-      \[    = (l \cdot m) \plus (m \plus m)       \]
-      \[    = ((l \cdot m) \plus m) \plus m       \]
-      \[    = ((l \plus 1) \cdot m) \plus m       \]
-      \[    \geq 1 \plus m                    \]
-      \[    \gtr m.                          \]
-      Indeed $((l \plus 1) \cdot m) \plus m \geq 1 \plus m$.
+      \[    = (l + 2) \cdot m             \]
+      \[    = (l \cdot m) + (2 \cdot m)   \]
+      \[    = (l \cdot m) + (m + m)       \]
+      \[    = ((l \cdot m) + m) + m       \]
+      \[    = ((l + 1) \cdot m) + m       \]
+      \[    \geq 1 + m                    \]
+      \[    > m.                          \]
+      Indeed $((l + 1) \cdot m) + m \geq 1 + m$.
     \end{proof}
   \end{forthel}
 
@@ -593,23 +593,23 @@
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_06_5458841930039296}
       Let $n, m, k$ be natural numbers such that $n \geq m$.
-      Then \[ (n \minus m) \cdot k = (n \cdot k) \minus (m \cdot k). \]
+      Then \[ (n - m) \cdot k = (n \cdot k) - (m \cdot k). \]
     \end{proposition}
     \begin{proof}
       We have
-      \[  ((n \minus m) \cdot k) \plus (m \cdot k)                 \]
-      \[    = ((n \minus m) \plus m) \cdot k                       \]
+      \[  ((n - m) \cdot k) + (m \cdot k)                 \]
+      \[    = ((n - m) + m) \cdot k                       \]
       \[    = n \cdot k                                   \]
-      \[    = ((n \cdot k) \minus (m \cdot k)) \plus (m \cdot k).  \]
+      \[    = ((n \cdot k) - (m \cdot k)) + (m \cdot k).  \]
 
-      Hence $(n \minus m) \cdot k = (n \cdot k) \minus (m \cdot k)$.
+      Hence $(n - m) \cdot k = (n \cdot k) - (m \cdot k)$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{corollary}\printlabel{ARITHMETIC_06_8461123277815808}
       Let $n, m, k$ be natural numbers such that $n \geq m$.
-      Then \[ k \cdot (n \minus m) = (k \cdot n) \minus (k \cdot m). \]
+      Then \[ k \cdot (n - m) = (k \cdot n) - (k \cdot m). \]
     \end{corollary}
   \end{forthel}
 \end{document}

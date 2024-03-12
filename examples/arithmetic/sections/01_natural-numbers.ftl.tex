@@ -40,10 +40,10 @@
   \begin{forthel}
     \begin{signature}\printlabel{ARITHMETIC_01_1567933815848960}
       Let $n$ be a natural number.
-      $\succ{n}$ is a natural number.
+      $\succ(n)$ is a natural number.
     \end{signature}
 
-    Let the direct successor of $n$ stand for $\succ{n}$.
+    Let the direct successor of $n$ stand for $\succ(n)$.
   \end{forthel}
 
 
@@ -52,13 +52,13 @@
   \begin{forthel}
     \begin{axiom}\printlabel{ARITHMETIC_01_3604163883696128}
       Let $n, m$ be natural numbers.
-      If $\succ{n} = \succ{m}$ then $n = m$.
+      If $\succ(n) = \succ(m)$ then $n = m$.
     \end{axiom}
   \end{forthel}
 
   \begin{forthel}
     \begin{axiom}\printlabel{ARITHMETIC_01_4454289938317312}
-      There exists no natural number $n$ such that $\succ{n} = 0$.
+      There exists no natural number $n$ such that $\succ(n) = 0$.
     \end{axiom}
   \end{forthel}
 
@@ -66,7 +66,7 @@
     \begin{axiom}\printlabel{ARITHMETIC_01_4764664342773760}
       Let $\Phi$ be a class.
       Assume $0 \in \Phi$ and for all natural numbers $n$ if $n \in \Phi$ then
-      $\succ{n} \in \Phi$.
+      $\succ(n) \in \Phi$.
       Then $\Phi$ contains every natural number.
     \end{axiom}
   \end{forthel}
@@ -77,38 +77,38 @@
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_01_4966080109871104}
       Let $n$ be a natural number.
-      Then $n = 0$ or $n = \succ{m}$ for some natural number $m$.
+      Then $n = 0$ or $n = \succ(m)$ for some natural number $m$.
     \end{proposition}
     \begin{proof}
-      Define $\Phi = \{ n' \in \Nat \mid n' = 0$ or $n' = \succ{m'}$ for some
+      Define $\Phi = \{ n' \in \Nat \mid n' = 0$ or $n' = \succ(m')$ for some
       natural number $m' \}$.
-      $0 \in \Phi$ and for all $n' \in  \Phi$ we have $\succ{n'} \in \Phi$.
+      $0 \in \Phi$ and for all $n' \in  \Phi$ we have $\succ(n') \in \Phi$.
       Hence every natural number is contained in $\Phi$.
-      Thus $n = 0$ or $n = \succ{m}$ for some natural number $m$.
+      Thus $n = 0$ or $n = \succ(m)$ for some natural number $m$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_01_5996049267163136}
       Let $n$ be a natural number.
-      Then $n \neq \succ{n}$.
+      Then $n \neq \succ(n)$.
     \end{proposition}
     \begin{proof}
-      Define $\Phi = \{ n' \in \Nat \mid n' \neq \succ{n'} \}$.
+      Define $\Phi = \{ n' \in \Nat \mid n' \neq \succ(n') \}$.
 
       (1) $0$ belongs to $\Phi$.
 
-      (2) For all $n' \in \Phi$ we have $\succ{n'} \in \Phi$. \\
+      (2) For all $n' \in \Phi$ we have $\succ(n') \in \Phi$. \\
       Proof.
         Let $n' \in \Phi$.
-        Then $n' \neq \succ{n'}$.
-        If $\succ{n'} = \succ{\succ{n'}}$ then $n' = \succ{n'}$.
-        Thus it is wrong that $\succ{n'} = \succ{\succ{n'}}$.
-        Hence $\succ{n'} \in \Phi$.
+        Then $n' \neq \succ(n')$.
+        If $\succ(n') = \succ(\succ(n'))$ then $n' = \succ(n')$.
+        Thus it is wrong that $\succ(n') = \succ(\succ(n'))$.
+        Hence $\succ(n') \in \Phi$.
       Qed.
 
       Therefore every natural number is an element of $\Phi$.
-      Consequently $n \neq \succ{n}$.
+      Consequently $n \neq \succ(n)$.
     \end{proof}
   \end{forthel}
 
@@ -117,11 +117,11 @@
       $\Nat$ is a set.
     \end{proposition}
     \begin{proof}
-      Define $f(n) = \succ{n}$ for $n \in \Nat$.
+      Define $f(n) = \succ(n)$ for $n \in \Nat$.
       Then $f$ is a map from $\Nat$ to $\Nat$.
       Hence we can take a subset $X$ of $\Nat$ that is inductive regarding
       $0$ and $f$.
-      Then $0 \in X$ and for all $n \in X$ we have $\succ{n} \in X$.
+      Then $0 \in X$ and for all $n \in X$ we have $\succ(n) \in X$.
       Hence $X$ contains every natural number.
       Thus we have $\Nat \subseteq X$ and $X \subseteq \Nat$.
       Therefore $\Nat = X$.
@@ -134,7 +134,7 @@
 
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_01_7540560137027584}
-      $1 = \succ{0}$.
+      $1 = \succ(0)$.
     \end{definition}
 
     Let one stand for $1$.
@@ -142,7 +142,7 @@
 
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_01_4584236572999680}
-      $2 = \succ{1}$.
+      $2 = \succ(1)$.
     \end{definition}
 
     Let two stand for $2$.
@@ -150,7 +150,7 @@
 
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_01_3836725109456896}
-      $3 = \succ{2}$.
+      $3 = \succ(2)$.
     \end{definition}
 
     Let three stand for $3$.
@@ -158,7 +158,7 @@
 
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_01_1709884968009728}
-      $4 = \succ{3}$.
+      $4 = \succ(3)$.
     \end{definition}
 
     Let four stand for $4$.
@@ -166,7 +166,7 @@
 
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_01_6734726333202432}
-      $5 = \succ{4}$.
+      $5 = \succ(4)$.
     \end{definition}
 
     Let five stand for $5$.
@@ -174,7 +174,7 @@
 
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_01_949139189792768}
-      $6 = \succ{5}$.
+      $6 = \succ(5)$.
     \end{definition}
 
     Let six stand for $6$.
@@ -182,7 +182,7 @@
 
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_01_7245471749767168}
-      $7 = \succ{6}$.
+      $7 = \succ(6)$.
     \end{definition}
 
     Let seven stand for $7$.
@@ -190,7 +190,7 @@
 
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_01_5658172888973312}
-      $8 = \succ{7}$.
+      $8 = \succ(7)$.
     \end{definition}
 
     Let eight stand for $8$.
@@ -198,7 +198,7 @@
 
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_01_7371844250238976}
-      $9 = \succ{8}$.
+      $9 = \succ(8)$.
     \end{definition}
 
     Let nine stand for $9$.

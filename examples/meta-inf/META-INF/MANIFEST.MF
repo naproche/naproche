@@ -1,4 +1,0 @@
-id:naproche/examples/meta-inf
-ns:http://mathhub.info/naproche/examples/meta-inf
-narration-base:http://mathhub.info/naproche/examples/meta-inf
-url-base:https://stexmmt.mathhub.info/:sTeX

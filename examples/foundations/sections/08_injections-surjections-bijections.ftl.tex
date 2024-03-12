@@ -19,7 +19,7 @@
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_08_8681187805495296}
       Let $f$ be a map and $B$ be a class.
-      $f$ is surjective onto $B$ iff $\range{f} = B$.
+      $f$ is surjective onto $B$ iff $\range(f) = B$.
     \end{definition}
 
     Let $f$ surjects onto $B$ stand for $f$ is surjective onto $B$.
@@ -45,21 +45,21 @@
     \end{proposition}
     \begin{proof}
       Case $f$ is surjective onto $B$.
-        Then $B = \range{f}$.
+        Then $B = \range(f)$.
         Let $b$ be an element of $B$.
-        Then $b \in \range{f}$.
+        Then $b \in \range(f)$.
         Hence $b$ is a value of $f$.
       End.
 
       Case every element of $B$ is a value of $f$.
-        Let us show that $B \subseteq \range{f}$.
+        Let us show that $B \subseteq \range(f)$.
           Let $b \in B$.
           Then $b$ is a value of $f$.
-          Hence $b \in \range{f}$.
+          Hence $b \in \range(f)$.
         End.
 
-        Let us show that $\range{f} \subseteq B$.
-          Let $b \in \range{f}$.
+        Let us show that $\range(f) \subseteq B$.
+          Let $b \in \range(f)$.
           Then $b$ is a value of $f$.
           Hence $b \in B$.
         End.
@@ -96,11 +96,11 @@
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_08_60881194975232}
       Let $A, B$ be classes and $f : A \into B$.
-      Then $f$ is a bijection between $A$ and $\range{f}$.
+      Then $f$ is a bijection between $A$ and $\range(f)$.
     \end{proposition}
     \begin{proof}
-      $f$ is injective and surjects onto $\range{f}$.
-      Hence $f$ is a bijection between $A$ and $\range{f}$.
+      $f$ is injective and surjects onto $\range(f)$.
+      Hence $f$ is a bijection between $A$ and $\range(f)$.
     \end{proof}
   \end{forthel}
 
@@ -117,22 +117,22 @@
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_08_7883784041005056}
       Let $A$ be a class.
-      Then $\id{A}$ is a permutation of $A$.
+      Then $\id_{A}$ is a permutation of $A$.
     \end{proposition}
     \begin{proof}
-      (1) $\id{A}$ is a map on $A$.
+      (1) $\id_{A}$ is a map on $A$.
 
-      (2) $\id{A}$ is surjective onto $A$. \\
+      (2) $\id_{A}$ is surjective onto $A$. \\
       Proof.
         Let $a \in A$.
-        Then $a = \id{A}(a)$.
-        Hence $a \in \range{\id{A}}$.
+        Then $a = \id_{A}(a)$.
+        Hence $a \in \range(\id_{A})$.
       Qed.
 
-      (3) $\id{A}$ is injective. \\
+      (3) $\id_{A}$ is injective. \\
       Proof.
         Let $a, a' \in A$.
-        Assume $\id{A}(a) = \id{A}(a')$.
+        Assume $\id_{A}(a) = \id_{A}(a')$.
         Then $a = a'$.
       Qed.
     \end{proof}
@@ -199,14 +199,14 @@
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_08_647446231252992}
       Let $A, B$ be classes and $f : A \into B$ and $X \subseteq A$.
-      Then $f \restriction X$ is a bijection between $X$ and $\image{f}(X)$.
+      Then $f \restriction X$ is a bijection between $X$ and $f_{*}(X)$.
     \end{proposition}
   \end{forthel}
 
   \begin{forthel}
     \begin{corollary}\printlabel{FOUNDATIONS_08_8159443759923200}
       Let $A, B$ be classes and $f : A \into B$.
-      Then $f$ is a bijection between $A$ and $\image{f}(A)$.
+      Then $f$ is a bijection between $A$ and $f_{*}(A)$.
     \end{corollary}
   \end{forthel}
 \end{document}

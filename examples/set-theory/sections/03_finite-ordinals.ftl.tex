@@ -18,7 +18,7 @@
     \begin{definition}\printlabel{SET_THEORY_03_4310076227584000}
       \[ \omega = \class{n \in \Ord | \classtext{$n \in X$ for every
       $X \subseteq \Ord$ such that $0 \in X$ and for all $x \in X$ we have
-      $\succ{x} \in X$}}. \]
+      $\succ(x) \in X$}}. \]
     \end{definition}
   \end{forthel}
 
@@ -31,7 +31,7 @@
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_03_8807317141192704}
       Let $n \in \omega$.
-      Then $\succ{n} \in \omega$.
+      Then $\succ(n) \in \omega$.
     \end{proposition}
   \end{forthel}
 
@@ -39,7 +39,7 @@
     \begin{proposition}\printlabel{SET_THEORY_03_344585425387520}
       Let $\Phi \subseteq \omega$.
       Assume that $0 \in \Phi$ and for every $x \in \Phi$ we have
-      $\succ{x} \in \Phi$.
+      $\succ(x) \in \Phi$.
       Then $\Phi = \omega$.
     \end{proposition}
     \begin{proof}
@@ -50,20 +50,20 @@
       (1) $0 \in \Phi'$.
       Indeed $0 \in \Phi$ and $0 \neq n$.
 
-      (2) For each $x \in \Phi'$ we have $\succ{x} \in \Phi'$. \\
+      (2) For each $x \in \Phi'$ we have $\succ(x) \in \Phi'$. \\
       Proof.
         Let $x \in \Phi'$.
-        Then $\succ{x} \in \Phi$.
+        Then $\succ(x) \in \Phi$.
 
-        Let us show that $\succ{x} \neq n$.
-          Assume $\succ{x} = n$.
+        Let us show that $\succ(x) \neq n$.
+          Assume $\succ(x) = n$.
           Then $x \notin \Phi$.
           Indeed $n \notin \Phi$ and if $x \in \Phi$ then
-          $n = \succ{x} \in \Phi$.
+          $n = \succ(x) \in \Phi$.
           Contradiction.
         End.
 
-        Thus $\succ{x} \in \Phi'$.
+        Thus $\succ(x) \in \Phi'$.
       Qed.
 
       Therefore every element of $\omega$ lies in $\Phi'$.
@@ -78,10 +78,10 @@
       $\omega$ is a set.
     \end{corollary}
     \begin{proof}
-      Define $f(n) = \succ{n}$ for $n \in \omega$.
+      Define $f(n) = \succ(n)$ for $n \in \omega$.
       Take a subset $X$ of $\omega$ that is inductive regarding $0$ and $f$.
       Indeed $f$ is a map from $\omega$ to $\omega$.
-      Then we have $0 \in X$ and for each $n \in X$ we have $\succ{n} \in X$.
+      Then we have $0 \in X$ and for each $n \in X$ we have $\succ(n) \in X$.
       Thus $X = \omega$.
       Therefore $\omega$ is a set.
     \end{proof}
@@ -90,11 +90,11 @@
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_03_5885789275684864}
       Let $n \in \omega$.
-      Then $n = 0$ or $n = \succ{m}$ for some $m \in \omega$.
+      Then $n = 0$ or $n = \succ(m)$ for some $m \in \omega$.
     \end{proposition}
     \begin{proof}
       Assume the contrary.
-      Consider a $k \in \omega$ such that neither $k = 0$ nor $k = \succ{m}$ for
+      Consider a $k \in \omega$ such that neither $k = 0$ nor $k = \succ(m)$ for
       some $m \in \omega$.
       Take a class $\omega'$ such that $\omega' = \omega \setminus \set{k}$. %!
       Then $\omega'$ is a set.
@@ -102,11 +102,11 @@
       (1) $0 \in \omega'$.
       Indeed $k \neq 0$.
 
-      (2) For all $m \in \omega'$ we have $\succ{m} \in \omega'$. \\
+      (2) For all $m \in \omega'$ we have $\succ(m) \in \omega'$. \\
       Proof.
         Let $m \in \omega'$.
-        Then $\succ{m} \neq k$.
-        Hence $\succ{m} \in \omega'$.
+        Then $\succ(m) \neq k$.
+        Hence $\succ(m) \in \omega'$.
       Qed.
 
       Thus every element of $\omega$ is contained in $\omega'$.
@@ -133,12 +133,12 @@
 
         (1) $0 \in \Phi$.
 
-        (2) For all $n \in \Phi$ we have $\succ{n} \in \Phi$. \\
+        (2) For all $n \in \Phi$ we have $\succ(n) \in \Phi$. \\
         Proof.
           Let $n \in \Phi$.
           Then every element of $n$ is contained in $\omega$.
-          Hence every element of $\succ{n}$ is contained in $\omega$.
-          Thus $\succ{n} \in \Phi$.
+          Hence every element of $\succ(n)$ is contained in $\omega$.
+          Thus $\succ(n) \in \Phi$.
         Qed.
 
         Therefore $\omega \subseteq \Phi$.
@@ -154,9 +154,9 @@
         Assume the contrary.
         We have $\omega \neq 0$.
         Hence $\omega$ is a successor ordinal.
-        Take an ordinal $\alpha$ such that $\succ{\alpha} = \omega$.
+        Take an ordinal $\alpha$ such that $\succ(\alpha) = \omega$.
         Then $\alpha \in \omega$.
-        Thus $\omega = \succ{\alpha} \in \omega$.
+        Thus $\omega = \succ(\alpha) \in \omega$.
         Contradiction.
       Qed.
     \end{proof}
@@ -169,9 +169,9 @@
     \end{proposition}
     \begin{proof}
       Assume the contrary.
-      Then $\lambda \less \omega$.
+      Then $\lambda < \omega$.
       Consequently $\lambda \in \omega$.
-      Hence $\lambda = 0$ or $\lambda = \succ{n}$ for some $n \in \omega$.
+      Hence $\lambda = 0$ or $\lambda = \succ(n)$ for some $n \in \omega$.
       Thus $\lambda$ is not a limit ordinal.
       Contradiction.
     \end{proof}
@@ -179,13 +179,13 @@
 
   \begin{forthel}
     \begin{definition}\printlabel{SET_THEORY_03_1991057988386816}
-      $1 = \succ{0}$.
+      $1 = \succ(0)$.
     \end{definition}
   \end{forthel}
 
   \begin{forthel}
     \begin{definition}\printlabel{SET_THEORY_03_5809204518453248}
-      $2 = \succ{1}$.
+      $2 = \succ(1)$.
     \end{definition}
   \end{forthel}
 

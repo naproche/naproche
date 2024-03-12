@@ -21,29 +21,29 @@
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_11_3625613501923328}
       Let $n, m$ be natural numbers.
-      $\fromto{n}{m} = \{ k \in \Nat \mid n \leq k \leq m \}$.
+      $\{ n, \dots, m \} = \{ k \in \Nat \mid n \leq k \leq m \}$.
     \end{definition}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_11_145331933151232}
       Let $n, m$ be natural numbers.
-      If $\fromto{1}{n} = \fromto{1}{m}$ then $n = m$.
+      If $\{ 1, \dots, n \} = \{ 1, \dots, m \}$ then $n = m$.
     \end{proposition}
     \begin{proof}
-      Assume $\fromto{1}{n} = \fromto{1}{m}$.
+      Assume $\{ 1, \dots, n \} = \{ 1, \dots, m \}$.
 
       Case $n = 0$.
-        Then $\fromto{1}{n} = \emptyset$.
-        Thus $\fromto{1}{m} = \emptyset$.
+        Then $\{ 1, \dots, n \} = \emptyset$.
+        Thus $\{ 1, \dots, m \} = \emptyset$.
         Hence there exists no $k \in \Nat$ such that $1 \leq k \leq m$.
         Therefore $m = 0$.
         Consequently $n = m$.
       End.
 
       Case $m = 0$.
-        Then $\fromto{1}{m} = \emptyset$.
-        Thus $\fromto{1}{n} = \emptyset$.
+        Then $\{ 1, \dots, m \} = \emptyset$.
+        Thus $\{ 1, \dots, n \} = \emptyset$.
         Hence there exists no $k \in \Nat$ such that $1 \leq k \leq n$.
         Therefore $n = 0$.
         Consequently $n = m$.
@@ -55,17 +55,17 @@
 
         Let us show by contradiction that $n = m$.
           Suppose $n \neq m$.
-          Then $n \gtr m$ or $m \gtr n$.
+          Then $n > m$ or $m > n$.
 
-          Case $n \gtr m$.
-            Take $k = m \plus 1$.
+          Case $n > m$.
+            Take $k = m + 1$.
             Then $k \leq n$ and $k \nleq m$.
             Hence it is wrong that $k \leq n$ iff $k \leq m$.
             Contradiction.
           End.
 
-          Case $m \gtr n$.
-            Take $k = n \plus 1$.
+          Case $m > n$.
+            Take $k = n + 1$.
             Then $k \leq m$ and $k \nleq m$.
             Hence it is wrong that $k \leq n$ iff $k \leq m$.
             Contradiction.
@@ -78,12 +78,12 @@
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_11_658708738605056}
       Let $n$ be a natural number.
-      Then $\fromto{1}{n \plus 1} = \fromto{1}{n} \cup \set{n \plus 1}$.
+      Then $\{ 1, \dots, n + 1 \} = \{ 1, \dots, n \} \cup \set{n + 1}$.
     \end{proposition}
     \begin{proof}
       We have
-      $\fromto{1}{n \plus 1} \subseteq \fromto{1}{n} \cup \set{n \plus 1}$ and
-      $\fromto{1}{n} \cup \set{n \plus 1} \subseteq \fromto{1}{n \plus 1}$.
+      $\{ 1, \dots, n + 1 \} \subseteq \{ 1, \dots, n \} \cup \set{n + 1}$ and
+      $\{ 1, \dots, n \} \cup \set{n + 1} \subseteq \{ 1, \dots, n + 1 \}$.
     \end{proof}
   \end{forthel}
 
@@ -96,7 +96,7 @@
     \begin{definition}\printlabel{ARITHMETIC_11_3694156977274880}
       Let $X$ be a class.
       $X$ is finite iff there exists a natural number $n$ such that $X$ is
-      equinumerous to $\fromto{1}{n}$.
+      equinumerous to $\{ 1, \dots, n \}$.
     \end{definition}
   \end{forthel}
 
@@ -107,9 +107,9 @@
     \end{proposition}
     \begin{proof}
       Assume that $X$ is finite and $Y$ is equinumerous to $X$.
-      Take a natural number $n$ and a bijection $f$ between $\fromto{1}{n}$
+      Take a natural number $n$ and a bijection $f$ between $\{ 1, \dots, n \}$
       and $X$ and a bijection $g$ between $X$ and $Y$.
-      Then $g \circ f$ is a bijection between $\fromto{1}{n}$ and $Y$
+      Then $g \circ f$ is a bijection between $\{ 1, \dots, n \}$ and $Y$
       (by \cref{FOUNDATIONS_08_6435206693126144}).
       Indeed $X, Y$ are classes.
       Hence $Y$ is finite.
@@ -153,36 +153,36 @@
       The cardinality of $X$ is the object $\kappa$ such that
 
       (if $X$ is finite then $\kappa$ is the natural number $n$ such that $X$ is
-      equinumerous to $\fromto{1}{n}$) and
+      equinumerous to $\{ 1, \dots, n \}$) and
 
       if $X$ is infinite then $\kappa = \infty$.
     \end{definition}
 
-    Let $\card{X}$ stand for the cardinality of $X$.
+    Let $|X|$ stand for the cardinality of $X$.
 
-    Let $X$ has finitely many elements stand for $\card{X} \in \Nat$.
-    Let $X$ has infinitely many elements stand for $\card{X} = \infty$.
+    Let $X$ has finitely many elements stand for $|X| \in \Nat$.
+    Let $X$ has infinitely many elements stand for $|X| = \infty$.
 
-    Let $X$ has exactly $n$ elements stand for $\card{X} = n$.
-    Let $X$ has at most $n$ elements stand for $\card{X} \leq n$.
-    Let $X$ has at least $n$ elements stand for $\card{X} \geq n$.
+    Let $X$ has exactly $n$ elements stand for $|X| = n$.
+    Let $X$ has at most $n$ elements stand for $|X| \leq n$.
+    Let $X$ has at least $n$ elements stand for $|X| \geq n$.
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_11_7260344969854976}
       Let $X$ be a class.
-      $X$ is empty iff $\card{X} = 0$.
+      $X$ is empty iff $|X| = 0$.
     \end{proposition}
     \begin{proof}
       Case $X$ is empty.
-        Then $X = \emptyset = \fromto{1}{0}$.
-        Hence $X$ is equinumerous to $\fromto{1}{0}$.
-        Thus $\card{X} = 0$.
+        Then $X = \emptyset = \{ 1, \dots, 0 \}$.
+        Hence $X$ is equinumerous to $\{ 1, \dots, 0 \}$.
+        Thus $|X| = 0$.
       End.
 
-      Case $\card{X} = 0$.
-        Then $X$ is equinumerous to $\fromto{1}{0}$.
-        $\fromto{1}{0} = \emptyset$.
+      Case $|X| = 0$.
+        Then $X$ is equinumerous to $\{ 1, \dots, 0 \}$.
+        $\{ 1, \dots, 0 \} = \emptyset$.
         Thus $X = \emptyset$.
       End.
     \end{proof}
@@ -191,20 +191,20 @@
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_11_963914846175232}
       Let $X$ be a class.
-      $X$ is a singleton class iff $\card{X} = 1$.
+      $X$ is a singleton class iff $|X| = 1$.
     \end{proposition}
     \begin{proof}
       Case $X$ is a singleton class.
         Consider an object $a$ such that $X = \set{a}$.
         Define $f(x) = 1$ for $x \in X$.
         Then $f$ is a bijection between $X$ and $\set{1}$.
-        We have $\set{1} = \fromto{1}{1}$.
-        Hence $\card{X} = 1$.
+        We have $\set{1} = \{ 1, \dots, 1 \}$.
+        Hence $|X| = 1$.
       End.
 
-      Case $\card{X} = 1$.
-        Take a bijection $f$ between $\fromto{1}{1}$ and $X$.
-        We have $\fromto{1}{1} = \set{1}$.
+      Case $|X| = 1$.
+        Take a bijection $f$ between $\{ 1, \dots, 1 \}$ and $X$.
+        We have $\{ 1, \dots, 1 \} = \set{1}$.
         Hence $X = \set{f(1)}$.
       End.
     \end{proof}
@@ -213,7 +213,7 @@
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_11_3151583407767552}
       Let $X$ be a class.
-      $X$ is an unordered pair iff $\card{X} = 2$.
+      $X$ is an unordered pair iff $|X| = 2$.
     \end{proposition}
     \begin{proof}
       Case $X$ is an unordered pair.
@@ -227,13 +227,13 @@
           \end{cases} \]
         for $x \in X$.
         Then $f$ is a bijection between $X$ and $\set{1, 2}$.
-        We have $\fromto{1}{2} = \set{1, 2}$.
-        Hence $\card{X} = 2$.
+        We have $\{ 1, \dots, 2 \} = \set{1, 2}$.
+        Hence $|X| = 2$.
       End.
 
-      Case $\card{X} = 2$.
-        Take a bijection $f$ between $\fromto{1}{2}$ and $X$.
-        We have $\fromto{1}{2} = \set{1, 2}$.
+      Case $|X| = 2$.
+        Take a bijection $f$ between $\{ 1, \dots, 2 \}$ and $X$.
+        We have $\{ 1, \dots, 2 \} = \set{1, 2}$.
         Hence $X = \set{f(1), f(2)}$.
       End.
     \end{proof}
@@ -392,49 +392,49 @@
 
       Case $U \cup V \in X$ for every $U, V \in X$.
         Define $\Phi = \{ n \in \Nat \mid \bigcup U \in X$ for every nonempty
-        subset $U$ of $X$ such that $\card{U} = n \}$.
+        subset $U$ of $X$ such that $|U| = n \}$.
 
         (1) $\Phi$ contains $0$.
 
-        (2) For every $n \in \Phi$ we have $n \plus 1 \in \Phi$. \\
+        (2) For every $n \in \Phi$ we have $n + 1 \in \Phi$. \\
         Proof.
           Let $n \in \Phi$.
           Then $\bigcup U \in X$ for every nonempty subset $U$ of $X$ such that
-          $\card{U} = n$.
+          $|U| = n$.
 
           Let us show that $\bigcup U \in X$ for every nonempty subset $U$ of
-          $X$ such that $\card{U} = n \plus 1$.
+          $X$ such that $|U| = n + 1$.
 
             Case $n = 0$. Obvious.
 
             Case $n \neq 0$.
-              Let $U$ be a nonempty subset of $X$ such that $\card{U} = n \plus 1$.
-              Take a bijection $f$ between $\fromto{1}{n \plus 1}$ and $U$.
-              We have $\fromto{1}{n \plus 1} = \fromto{1}{n} \cup \set{n \plus 1}$.
-              Take $V = \image{f}(\fromto{1}{n})$.
-              We have $\fromto{1}{n} \subseteq \fromto{1}{n \plus 1}$.
+              Let $U$ be a nonempty subset of $X$ such that $|U| = n + 1$.
+              Take a bijection $f$ between $\{1, \dots, n + 1 \}$ and $U$.
+              We have $\{ 1, \dots, n + 1 \} = \{ 1, \dots, n \} \cup \set{n + 1}$.
+              Take $V = f[\{ 1, \dots, n \}]$.
+              We have $\{ 1, \dots, n \} \subseteq \{ 1, \dots, n + 1 \}$.
 
               Let us show that $V \subseteq U$.
                 Let $x \in V$.
-                Take $k \in \fromto{1}{n}$ such that $x = f(k)$.
+                Take $k \in \{ 1, \dots, n \}$ such that $x = f(k)$.
                 Hence $x \in U$.
               End.
 
               $V$ is a nonempty set.
               Hence $V$ is a nonempty subset of $X$.
-              $U$ is a class and $f : \fromto{1}{n \plus 1} \into U$.
+              $U$ is a class and $f : \{ 1, \dots, n + 1 \} \into U$.
               [prover vampire]
-              Hence $f \restriction \fromto{1}{n}$ is a bijection between
-              $\fromto{1}{n}$ and $V$
+              Hence $f \restriction \{ 1, \dots, n \}$ is a bijection between
+              $\{ 1, \dots, n \}$ and $V$
               (by \cref{FOUNDATIONS_08_647446231252992}).
               [prover eprover]
-              Thus $\card{V} = n$.
+              Thus $|V| = n$.
               Consequently $\bigcup V \in X$.
-              We have $U = V \cup \set{f(n \plus 1)}$.
-              Indeed $U = \image{f}(\fromto{1}{n \plus 1})
-                = \image{f}(\fromto{1}{n} \cup \set{n \plus 1})
-                = \image{f}(\fromto{1}{n}) \cup \image{f}(\set{n \plus 1})
-                = \image{f}(\fromto{1}{n}) \cup \set{f(n \plus 1)}$.
+              We have $U = V \cup \set{f(n + 1)}$.
+              Indeed $U = f[\{ 1, \dots, n + 1 \}]
+                = f[\{ 1, \dots, n \} \cup \set{n + 1}]
+                = f[\{ 1, \dots, n \}] \cup f[\set{n + 1}]
+                = f[\{ 1, \dots, n \}] \cup \set{f(n + 1)}$.
 
               Let us show that $\bigcup (A \cup B) =
               (\bigcup A) \cup (\bigcup B)$ for any nonempty systems of sets
@@ -445,11 +445,11 @@
               End.
 
               Hence $\bigcup U
-                = \bigcup (V \cup \set{f(n \plus 1)})
-                = (\bigcup V) \cup (\bigcup \set{f(n \plus 1)})
-                = (\bigcup V) \cup f(n \plus 1)
+                = \bigcup (V \cup \set{f(n + 1)})
+                = (\bigcup V) \cup (\bigcup \set{f(n + 1)})
+                = (\bigcup V) \cup f(n + 1)
                 \in X$.
-              Indeed $V$ and $\set{f(n \plus 1)}$ are nonempty systems of sets.
+              Indeed $V$ and $\set{f(n + 1)}$ are nonempty systems of sets.
             End.
           End.
         Qed.
@@ -506,49 +506,49 @@
 
       Case $U \cap V \in X$ for every $U, V \in X$.
         Define $\Phi = \{ n \in \Nat \mid \bigcap U \in X$ for every nonempty
-        subset $U$ of $X$ such that $\card{U} = n \}$.
+        subset $U$ of $X$ such that $|U| = n \}$.
 
         (1) $\Phi$ contains $0$.
 
-        (2) For every $n \in \Phi$ we have $n \plus 1 \in \Phi$. \\
+        (2) For every $n \in \Phi$ we have $n + 1 \in \Phi$. \\
         Proof.
           Let $n \in \Phi$.
           Then $\bigcap U \in X$ for every nonempty subset $U$ of $X$ such that
-          $\card{U} = n$.
+          $|U| = n$.
 
           Let us show that $\bigcap U \in X$ for every nonempty subset $U$ of
-          $X$ such that $\card{U} = n \plus 1$.
+          $X$ such that $|U| = n + 1$.
 
             Case $n = 0$. Obvious.
 
             Case $n \neq 0$.
-              Let $U$ be a nonempty subset of $X$ such that $\card{U} = n \plus 1$.
-              Take a bijection $f$ between $\fromto{1}{n \plus 1}$ and $U$.
-              We have $\fromto{1}{n \plus 1} = \fromto{1}{n} \cup \set{n \plus 1}$.
-              Take $V = \image{f}(\fromto{1}{n})$.
-              We have $\fromto{1}{n} \subseteq \fromto{1}{n \plus 1}$.
+              Let $U$ be a nonempty subset of $X$ such that $|U| = n + 1$.
+              Take a bijection $f$ between $\{1, \dots, n + 1 \}$ and $U$.
+              We have $\{ 1, \dots, n + 1 \} = \{ 1, \dots, n \} \cup \set{n + 1}$.
+              Take $V = f[\{ 1, \dots, n \}]$.
+              We have $\{ 1, \dots, n \} \subseteq \{ 1, \dots, n + 1 \}$.
 
               Let us show that $V \subseteq U$.
                 Let $x \in V$.
-                Take $k \in \fromto{1}{n}$ such that $x = f(k)$.
+                Take $k \in \{ 1, \dots, n \}$ such that $x = f(k)$.
                 Hence $x \in U$.
               End.
 
               $V$ is a nonempty set.
               Hence $V$ is a nonempty subset of $X$.
-              $U$ is a class and $f : \fromto{1}{n \plus 1} \into U$.
+              $U$ is a class and $f : \{ 1, \dots, n + 1 \} \into U$.
               [prover vampire]
-              Hence $f \restriction \fromto{1}{n}$ is a bijection between
-              $\fromto{1}{n}$ and $V$
+              Hence $f \restriction \{ 1, \dots, n \}$ is a bijection between
+              $\{ 1, \dots, n \}$ and $V$
               (by \cref{FOUNDATIONS_08_647446231252992}).
               [prover eprover]
-              Thus $\card{V} = n$.
+              Thus $|V| = n$.
               Consequently $\bigcap V \in X$.
-              We have $U = V \cup \set{f(n \plus 1)}$.
-              Indeed $U = \image{f}(\fromto{1}{n \plus 1})
-                = \image{f}(\fromto{1}{n} \cup \set{n \plus 1})
-                = \image{f}(\fromto{1}{n}) \cup \image{f}(\set{n \plus 1})
-                = \image{f}(\fromto{1}{n}) \cup \set{f(n \plus 1)}$.
+              We have $U = V \cup \set{f(n + 1)}$.
+              Indeed $U = f[\{ 1, \dots, n + 1 \}]
+                = f[\{ 1, \dots, n \} \cup \set{n + 1}]
+                = f[\{ 1, \dots, n \}] \cup f[\set{n + 1}]
+                = f[\{ 1, \dots, n \}] \cup \set{f(n + 1)}$.
 
               Let us show that $\bigcap (A \cup B) =
               (\bigcap A) \cap (\bigcap B)$ for any nonempty systems of sets
@@ -559,11 +559,11 @@
               End.
 
               Hence $\bigcap U
-                = \bigcap (V \cup \set{f(n \plus 1)})
-                = (\bigcap V) \cap (\bigcap \set{f(n \plus 1)})
-                = (\bigcap V) \cap f(n \plus 1)
+                = \bigcap (V \cup \set{f(n + 1)})
+                = (\bigcap V) \cap (\bigcap \set{f(n + 1)})
+                = (\bigcap V) \cap f(n + 1)
                 \in X$.
-              Indeed $V$ and $\set{f(n \plus 1)}$ are nonempty systems of sets.
+              Indeed $V$ and $\set{f(n + 1)}$ are nonempty systems of sets.
             End.
           End.
         Qed.

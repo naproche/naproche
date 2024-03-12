@@ -10,7 +10,6 @@ module SAD.Core.Verify (verifyRoot) where
 
 import Data.IORef (readIORef)
 import Data.Maybe (isJust)
-import Control.Monad (when, unless)
 import Control.Monad.Reader
 import Data.Text.Lazy qualified as Text
 

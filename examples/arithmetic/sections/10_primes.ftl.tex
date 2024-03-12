@@ -35,7 +35,7 @@
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_10_5450464558579712}
       Let $n$ be a natural number.
-      $n$ is prime iff $n \gtr 1$ and $n$ has no nontrivial divisors.
+      $n$ is prime iff $n > 1$ and $n$ has no nontrivial divisors.
     \end{definition}
 
     Let $n$ is compound stand for $n$ is not prime.
@@ -57,13 +57,13 @@
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_10_8020087063707648}
       Let $n$ be a natural number.
-      $n$ is composite iff $n \gtr 1$ and $n$ has a nontrivial divisor.
+      $n$ is composite iff $n > 1$ and $n$ has a nontrivial divisor.
     \end{definition}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_10_7801379464675328}
-      Let $n$ be a natural number such that $n \gtr 1$.
+      Let $n$ be a natural number such that $n > 1$.
       Then $n$ is prime iff every divisor of $n$ is a trivial divisor of $n$.
     \end{proposition}
   \end{forthel}
@@ -75,14 +75,14 @@
     \begin{proof}
       Let us show that $2$ is prime.
         Let $k$ be a divisor of $2$.
-        Then $0 \less k \leq 2$.
+        Then $0 < k \leq 2$.
         Hence $k = 1$ or $k = 2$.
         Thus $k$ is a trivial divisor of $2$.
       End.
 
       Let us show that $3$ is prime.
         Let $k$ be a divisor of $3$.
-        Then $0 \less k \leq 3$.
+        Then $0 < k \leq 3$.
         Hence $k = 1$ or $k = 2$ or $k = 3$.
         $2$ does not divide $3$.
         Therefore $k = 1$ or $k = 3$.
@@ -91,7 +91,7 @@
 
       Let us show that $5$ is prime.
         Let $k$ be a divisor of $5$.
-        Then $0 \less k \leq 5$.
+        Then $0 < k \leq 5$.
         Hence $k = 1$ or $k = 2$ or $k = 3$ or $k = 4$ or $k = 5$.
         $2$ does not divide $5$.
         $3$ does not divide $5$.
@@ -105,7 +105,7 @@
 
       Let us show that $7$ is prime.
         Let $k$ be a divisor of $7$.
-        Then $0 \less k \leq 7$.
+        Then $0 < k \leq 7$.
         Hence $k = 1$ or $k = 2$ or $k = 3$ or $k = 4$ or $k = 5$ or $k = 6$ or
         $k = 7$.
         $2$ does not divide $7$.
@@ -146,11 +146,11 @@
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_10_3606185106210816}
-      Let $n$ be a natural number such that $n \gtr 1$.
+      Let $n$ be a natural number such that $n > 1$.
       Then $n$ has a prime divisor.
     \end{proposition}
     \begin{proof}
-      Define $\Phi = \{ n' \in \Nat \mid$ if $n' \gtr 1$ then $n'$ has a prime
+      Define $\Phi = \{ n' \in \Nat \mid$ if $n' > 1$ then $n'$ has a prime
       divisor $\}$.
 
       Let us show that for every $n' \in \Nat$ if $\Phi$ contains all
@@ -165,7 +165,7 @@
 
         Case $n'$ is composite.
           Take a nontrivial divisor $m$ of $n'$.
-          Then $1 \less m \less n'$.
+          Then $1 < m < n'$.
           $m$ is contained in $\Phi$.
           Hence we can take a prime divisor $p$ of $m$.
           Then we have $p \mid m \mid n'$.
@@ -245,25 +245,25 @@
         Define $\Phi = \{ k \in \Nat \mid k \neq 0$ and $p \mid k \cdot m \}$.
         Then $p \in \Phi$ and $n \in \Phi$.
         Hence $\Phi$ contains some natural number.
-        Thus we can take a least element $a$ of $\Phi$ regarding $\LessRel$.
+        Thus we can take a least element $a$ of $\Phi$ regarding ${<}$.
 
         Let us show that $a$ divides all elements of $\Phi$.
           Let $k \in \Phi$.
-          Take natural numbers $q, r$ such that $k = (a \cdot q) \plus r$ and
-          $r \less a$ (by \cref{ARITHMETIC_08_7743986617810944}).
+          Take natural numbers $q, r$ such that $k = (a \cdot q) + r$ and
+          $r < a$ (by \cref{ARITHMETIC_08_7743986617810944}).
           Indeed $a$ is nonzero.
           Then $k \cdot m
-            = ((q \cdot a) \plus r) \cdot m
-            = ((q \cdot a) \cdot m) \plus (r \cdot m)$.
+            = ((q \cdot a) + r) \cdot m
+            = ((q \cdot a) \cdot m) + (r \cdot m)$.
           We have $p \mid k \cdot m$.
-          Hence $p \mid ((q \cdot a) \cdot m) \plus (r \cdot m)$.
+          Hence $p \mid ((q \cdot a) \cdot m) + (r \cdot m)$.
 
           We can show that $p \mid r \cdot m$.
             We have $p \mid a \cdot m$.
             Hence $p \mid (q \cdot a) \cdot m$.
             Indeed $((q \cdot a) \cdot m) = q \cdot (a \cdot m)$. %!
             Take $A = (q \cdot a) \cdot m$ and $B = r \cdot m$. %!
-            Then $p \mid A \plus B$ and $p \mid A$.
+            Then $p \mid A + B$ and $p \mid A$.
             Thus $p \mid B$ (by \cref{ARITHMETIC_07_1076947887063040}).
             Indeed $p, A$ and $B$ are natural numbers.
             Consequently $p \mid r \cdot m$.

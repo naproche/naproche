@@ -22,12 +22,12 @@
       greater than or equal to $\kappa$.
     \end{definition}
 
-    Let $\card{x}$ stand for the cardinality of $x$.
+    Let $|x|$ stand for the cardinality of $x$.
   \end{forthel}
 
   \begin{forthel}
     \begin{definition}\printlabel{SET_THEORY_06_6818986081648640}
-      A cardinal number is an ordinal $\kappa$ such that $\kappa = \card{x}$ for some
+      A cardinal number is an ordinal $\kappa$ such that $\kappa = |x|$ for some
       set $x$.
     \end{definition}
 
@@ -37,47 +37,47 @@
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_06_2820082336006144}
       Let $\kappa$ be a cardinal.
-      Then $\card{\kappa} = \kappa$.
+      Then $|\kappa| = \kappa$.
     \end{proposition}
     \begin{proof}
       $\kappa$ is an ordinal that is equinumerous to $\kappa$.
-      Hence $\card{\kappa} \leq \kappa$.
-      Consider a set $x$ such that $\kappa = \card{x}$.
-      Then $\card{\kappa}$ is an ordinal that is equinumerous to $x$.
-      Hence $\kappa \leq \card{\kappa}$.
-      Thus $\card{\kappa} = \kappa$.
+      Hence $|\kappa| \leq \kappa$.
+      Consider a set $x$ such that $\kappa = |x|$.
+      Then $|\kappa|$ is an ordinal that is equinumerous to $x$.
+      Hence $\kappa \leq |\kappa|$.
+      Thus $|\kappa| = \kappa$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_06_6920913721229312}
       Let $x, y$ be sets.
-      Then $x$ and $y$ are equinumerous iff $\card{x} = \card{y}$.
+      Then $x$ and $y$ are equinumerous iff $|x| = |y|$.
     \end{proposition}
     \begin{proof}
       [prover vampire]
 
       Case $x$ and $y$ are equinumerous.
         Take a bijection $f$ between $x$ and $y$.
-        Consider a bijection $g$ between $y$ and $\card{y}$.
-        Then $g \circ f$ is a bijection between $x$ and $\card{y}$
+        Consider a bijection $g$ between $y$ and $|y|$.
+        Then $g \circ f$ is a bijection between $x$ and $|y|$
         (by \cref{FOUNDATIONS_08_6435206693126144}).
-        Hence $x$ and $\card{y}$ are equinumerous.
-        Thus $\card{y} \geq \card{x}$.
+        Hence $x$ and $|y|$ are equinumerous.
+        Thus $|y| \geq |x|$.
 
-        $\inverse{f}$ is a bijection between $y$ and $x$.
-        Consider a bijection $h$ between $x$ and $\card{x}$.
-        Then $h \circ \inverse{f}$ is a bijection between $y$ and $\card{x}$
+        $f^{-1}$ is a bijection between $y$ and $x$.
+        Consider a bijection $h$ between $x$ and $|x|$.
+        Then $h \circ f^{-1}$ is a bijection between $y$ and $|x|$
         (by \cref{FOUNDATIONS_08_6435206693126144}).
-        Hence $y$ and $\card{x}$ are equinumerous.
-        Thus $\card{x} \geq \card{y}$.
+        Hence $y$ and $|x|$ are equinumerous.
+        Thus $|x| \geq |y|$.
 
-        Therefore $\card{x} = \card{y}$.
+        Therefore $|x| = |y|$.
       End.
 
-      Case $\card{x} = \card{y}$.
-        Consider a bijection $f$ between $x$ and $\card{x}$ and a bijection $g$
-        between $\card{y}$ and $y$.
+      Case $|x| = |y|$.
+        Consider a bijection $f$ between $x$ and $|x|$ and a bijection $g$
+        between $|y|$ and $y$.
         Then $g \circ f$ is a bijection between $x$ and $y$.
         Hence $x$ and $y$ are equinumerous.
       End.
@@ -89,12 +89,12 @@
 
     \begin{proposition}\printlabel{SET_THEORY_06_5513850721927168}
       Let $x, y$ be sets and $f : x \into y$ and $a \subseteq x$.
-      Then $\card{\image{f}(a)} = \card{a}$.
+      Then $|f[a]| = |a|$.
     \end{proposition}
     \begin{proof}
-      $f \restriction a$ is a bijection between $a$ and $\image{f}(a)$.
-      $\image{f}(a)$ is a set.
-      Hence $\card{a} = \card{\image{f}(a)}$.
+      $f \restriction a$ is a bijection between $a$ and $f[a]$.
+      $f[a]$ is a set.
+      Hence $|a| = |f[a]|$.
     \end{proof}
 
     [/checktime]
@@ -103,18 +103,18 @@
   \begin{forthel}
     \begin{proposition}
       Let $\kappa$ be a cardinal and $x \subseteq \kappa$.
-      Then $\card{x} \leq \kappa$.
+      Then $|x| \leq \kappa$.
     \end{proposition}
     \begin{proof}
-      Assume $\card{x} \gtr \kappa$.
-      Then $\kappa \subseteq \card{x}$.
-      Take a bijection $f$ between $\card{x}$ and $x$.
+      Assume $|x| > \kappa$.
+      Then $\kappa \subseteq |x|$.
+      Take a bijection $f$ between $|x|$ and $x$.
       Then $f \restriction \kappa$ is an injective map from $\kappa$ to $x$.
-      $\id{x}$ is an injective map from $x$ to $\kappa$.
+      $\id_{x}$ is an injective map from $x$ to $\kappa$.
       Hence $x$ and $\kappa$ are equinumerous (by
       \cref{FOUNDATIONS_13_1913663275401216}).
       Indeed $x$ is a set.
-      Thus $\card{x} = \kappa$.
+      Thus $|x| = \kappa$.
       Contradiction.
     \end{proof}
   \end{forthel}
@@ -122,35 +122,35 @@
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_06_407116133171200}
       Let $x, y$ be sets.
-      Then there exists an injective map from $x$ to $y$ iff $\card{x} \leq \card{y}$.
+      Then there exists an injective map from $x$ to $y$ iff $|x| \leq |y|$.
     \end{proposition}
     \begin{proof}
       Case there exists an injective map from $x$ to $y$.
         Consider an injective map $f$ from $x$ to $y$.
-        Take a bijection $g$ from $\card{x}$ to $x$ and a bijection $h$ from $y$ to
-        $\card{y}$.
-        Then $g$ is an injective map from $\card{x}$ to $x$ and $h$ is an injective
-        map from $y$ to $\card{y}$.
+        Take a bijection $g$ from $|x|$ to $x$ and a bijection $h$ from $y$ to
+        $|y|$.
+        Then $g$ is an injective map from $|x|$ to $x$ and $h$ is an injective
+        map from $y$ to $|y|$.
         [prover vampire]
-        Hence $h \circ f$ is an injective map from $x$ to $\card{y}$.
-        Thus $(h \circ f) \circ g$ is an injective map from $\card{x}$ to $\card{y}$.
+        Hence $h \circ f$ is an injective map from $x$ to $|y|$.
+        Thus $(h \circ f) \circ g$ is an injective map from $|x|$ to $|y|$.
         [prover eprover]
-        Therefore $\card{x}
-          = \card{\card{x}}
-          = \card{\image{(h \circ f) \circ g}(\card{x})}$.
-        We have $\image{(h \circ f) \circ g}(\card{x}) \subseteq \card{y}$.
-        Hence $\card{x} \leq \card{y}$.
+        Therefore $|x|
+          = ||x||
+          = |((h \circ f) \circ g)[|x|]|$.
+        We have $((h \circ f) \circ g)[|x|] \subseteq |y|$.
+        Hence $|x| \leq |y|$.
       End.
 
-      Case $\card{x} \leq \card{y}$.
-        Take a bijection $g$ from $x$ to $\card{x}$ and a bijection $h$ from $\card{y}$ to
+      Case $|x| \leq |y|$.
+        Take a bijection $g$ from $x$ to $|x|$ and a bijection $h$ from $|y|$ to
         $y$.
-        We have $\card{x} \subseteq \card{y}$.
-        Hence $g$ is an injective map from $x$ to $\card{y}$.
+        We have $|x| \subseteq |y|$.
+        Hence $g$ is an injective map from $x$ to $|y|$.
         Take $f = h \circ g$.
         [prover vampire]
         Then $f$ is an injective map from $x$ to $y$.
-        Indeed $h$ is an injective map from $\card{y}$ to $y$.
+        Indeed $h$ is an injective map from $|y|$ to $y$.
       End.
     \end{proof}
   \end{forthel}
@@ -158,19 +158,19 @@
   \begin{forthel}
     \begin{corollary}\printlabel{SET_THEORY_06_4944303633727488}
       Let $x$ be a set and $y \subseteq x$.
-      Then $\card{y} \leq \card{x}$.
+      Then $|y| \leq |x|$.
     \end{corollary}
     \begin{proof}
       Define $f(v) = v$ for $v \in y$.
       Then $f$ is an injective map from $y$ to $x$.
-      Hence $\card{y} \leq \card{x}$.
+      Hence $|y| \leq |x|$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_06_192336220913664}
       Let $x, y$ be nonempty sets.
-      Then there exists a surjective map from $x$ onto $y$ iff $\card{x} \geq \card{y}$.
+      Then there exists a surjective map from $x$ onto $y$ iff $|x| \geq |y|$.
     \end{proposition}
     \begin{proof}
       Case there exists a surjective map from $x$ onto $y$.
@@ -190,24 +190,24 @@
             = f(u')
             = v'$.
         End.
-        Hence $\card{x} \geq \card{y}$.
+        Hence $|x| \geq |y|$.
       End.
 
-      Case $\card{x} \geq \card{y}$.
+      Case $|x| \geq |y|$.
         Then we can take an injective map $f$ from $y$ to $x$.
-        Then $\inverse{f}$ is a bijection between $\range{f}$ and $y$.
+        Then $f^{-1}$ is a bijection between $\range(f)$ and $y$.
         Consider an element $z$ of $y$.
         Define \[ g(u) =
           \begin{cases}
-            \inverse{f}(u) & : u \in \range{f} \\
-            z         & : u \notin \range{f}
+            f^{-1}(u) & : u \in \range(f) \\
+            z         & : u \notin \range(f)
           \end{cases} \]
         for $u \in x$.
         Then $g$ is a surjective map from $x$ onto $y$.
         Indeed we can show that every element of $y$ is a value of $g$.
           Let $v \in y$.
-          Then $f(v) \in \range{f}$.
-          Hence $g(f(v)) = \inverse{f}(f(v)) = v$.
+          Then $f(v) \in \range(f)$.
+          Hence $g(f(v)) = f^{-1}(f(v)) = v$.
         End.
       End.
     \end{proof}
@@ -218,16 +218,16 @@
 
     \begin{proposition}\printlabel{SET_THEORY_06_8113916590686208}
       Let $x, y$ be sets and $f : x \to y$ and $a \subseteq x$.
-      Then $\card{\image{f}(a)} \leq \card{a}$.
+      Then $|f[a]| \leq |a|$.
     \end{proposition}
     \begin{proof}
       Case $a$ is empty. Obvious.
 
       Case $a$ is nonempty.
-        $f \restriction a$ is a surjective map from $a$ onto $\image{f}(a)$ and $\image{f}(a)$
+        $f \restriction a$ is a surjective map from $a$ onto $f[a]$ and $f[a]$
         is nonempty.
-        Hence $\card{\image{f}(a)} \leq \card{a}$ (by \cref{SET_THEORY_06_192336220913664}).
-        Indeed $a$ and $\image{f}(a)$ are sets.
+        Hence $|f[a]| \leq |a|$ (by \cref{SET_THEORY_06_192336220913664}).
+        Indeed $a$ and $f[a]$ are sets.
       End.
     \end{proof}
 
@@ -237,59 +237,59 @@
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_06_5843717288099840}
       Let $x, y$ be nonempty sets.
-      $\card{x} \less \card{y}$ iff there exists an injective map from $x$ to $y$ and there
+      $|x| < |y|$ iff there exists an injective map from $x$ to $y$ and there
       exists no surjective map from $x$ onto $y$.
     \end{proposition}
     \begin{proof}
       There exists an injective map from $x$ to $y$ and there exists no
-      surjective map from $x$ onto $y$ iff $\card{x} \leq \card{y}$ and $\card{x} \ngeq \card{y}$
+      surjective map from $x$ onto $y$ iff $|x| \leq |y|$ and $|x| \ngeq |y|$
       (by \cref{SET_THEORY_06_407116133171200},
       \cref{SET_THEORY_06_192336220913664}).
-      $\card{x} \leq \card{y}$ and $\card{x} \ngeq \card{y}$ iff $\card{x} \leq \card{y}$ and $\card{x} \neq \card{y}$.
-      $\card{x} \leq \card{y}$ and $\card{x} \neq \card{y}$ iff $\card{x} \less \card{y}$.
+      $|x| \leq |y|$ and $|x| \ngeq |y|$ iff $|x| \leq |y|$ and $|x| \neq |y|$.
+      $|x| \leq |y|$ and $|x| \neq |y|$ iff $|x| < |y|$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_06_8300194126888960}
-      Let $x, y$ be sets and $f : x \to y$ and $b \subseteq \range{f}$.
-      Then $\card{\preimage{f}(b)} \geq \card{b}$.
+      Let $x, y$ be sets and $f : x \to y$ and $b \subseteq \range(f)$.
+      Then $|f^{*}(b)| \geq |b|$.
     \end{proposition}
     \begin{proof}
       Case $b$ is empty. Obvious.
 
       Case $b$ is nonempty.
-        $f \restriction \preimage{f}(b)$ is a surjective map from $\preimage{f}(b)$ onto $b$.
-        Hence $\card{\preimage{f}(b)} \geq \card{b}$ (by \cref{SET_THEORY_06_192336220913664}).
-        Indeed $b$ and $\preimage{f}(b)$ are nonempty sets.
+        $f \restriction f^{*}(b)$ is a surjective map from $f^{*}(b)$ onto $b$.
+        Hence $|f^{*}(b)| \geq |b|$ (by \cref{SET_THEORY_06_192336220913664}).
+        Indeed $b$ and $f^{*}(b)$ are nonempty sets.
       End.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_06_2993566311776256}
-      Let $x, y$ be sets and $f : x \into y$ and $b \subseteq \range{f}$.
-      Then $\card{\preimage{f}(b)} = \card{b}$.
+      Let $x, y$ be sets and $f : x \into y$ and $b \subseteq \range(f)$.
+      Then $|f^{*}(b)| = |b|$.
     \end{proposition}
     \begin{proof}
-      $f \restriction \preimage{f}(b)$ is a bijection between $\preimage{f}(b)$ and $b$.
+      $f \restriction f^{*}(b)$ is a bijection between $f^{*}(b)$ and $b$.
       Indeed $b
-        = \image{f}(\preimage{f}(b))
-        = \image{f \restriction \preimage{f}(b)}(\preimage{f}(b))
-        = \range{f \restriction \preimage{f}(b)}$.
-      Hence $\card{\preimage{f}(b)} = \card{b}$.
+        = f[f^{*}(b)]
+        = (f \restriction f^{*}(b))[f^{*}(b)]
+        = \range(f \restriction f^{*}(b))$.
+      Hence $|f^{*}(b)| = |b|$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_06_7746592696172544}
-      Let $x, y$ be sets such that $\card{y} \less \card{x}$.
+      Let $x, y$ be sets such that $|y| < |x|$.
       Then $x \setminus y$ is nonempty.
     \end{proposition}
     \begin{proof}
       Assume the contrary.
       Then $x \subseteq y$.
-      Hence $\card{x} \leq \card{y}$.
+      Hence $|x| \leq |y|$.
       Contradiction.
     \end{proof}
   \end{forthel}
@@ -297,21 +297,21 @@
   \begin{forthel}
     \begin{theorem}[Cantor's Theorem]\printlabel{SET_THEORY_06_914271456198656}
       Let $x$ be a set.
-      Then \[ \card{x} \less \card{\pow{x}}. \]
+      Then \[ |x| < |\pow(x)|. \]
     \end{theorem}
     \begin{proof}
-      Let us show that there exists no surjective map from $x$ onto $\pow{x}$.
+      Let us show that there exists no surjective map from $x$ onto $\pow(x)$.
         Assume the contrary.
-        Take a surjective map $f$ from $x$ onto $\pow{x}$.
+        Take a surjective map $f$ from $x$ onto $\pow(x)$.
         Define $C = \{ u \in x \mid u \notin f(u) \}$.
-        Then $C \in \pow{x}$.
+        Then $C \in \pow(x)$.
         Hence we can take a $u \in x$ such that $f(u) = C$.
         Then $u \in C$ iff $u \in f(u)$ iff $u \notin C$.
         Contradiction.
       End.
 
-      Thus $\card{x} \ngeq \card{\pow{x}}$.
-      Therefore $\card{x} \less \card{\pow{x}}$.
+      Thus $|x| \ngeq |\pow(x)|$.
+      Therefore $|x| < |\pow(x)|$.
     \end{proof}
   \end{forthel}
 
@@ -321,18 +321,18 @@
     \end{theorem}
     \begin{proof}
       Let $\alpha$ be an ordinal.
-      Take $\kappa = \card{\pow{\alpha}}$.
-      Then $\kappa \gtr \card{\alpha}$.
+      Take $\kappa = |\pow(\alpha)|$.
+      Then $\kappa > |\alpha|$.
 
-      Let us show that $\kappa \gtr \alpha$.
+      Let us show that $\kappa > \alpha$.
         Assume the contrary.
-        Then $\card{\pow{\alpha}}
+        Then $|\pow(\alpha)|
           = \kappa
           \leq \alpha$.
         Hence $\kappa
-          = \card{\pow{\alpha}}
-          = \card{\card{\pow{\alpha}}}
-          \leq \card{\alpha}$.
+          = |\pow(\alpha)|
+          = ||\pow(\alpha)||
+          \leq |\alpha|$.
         Contradiction.
       End.
     \end{proof}

@@ -38,7 +38,6 @@ module SAD.Core.Base (
 ) where
 
 import Control.Applicative (Alternative(..))
-import Control.Monad (MonadPlus(..), liftM, ap, guard, when, unless)
 import Control.Monad.Reader
 import Control.Monad.State
 import Data.IORef
@@ -52,8 +51,7 @@ import SAD.Data.Definition
 import SAD.Data.Formula
 import SAD.Data.Instr
 import SAD.Data.Rules (Rule)
-import SAD.Data.Text.Block (Block, makeBlock)
-import SAD.Data.Text.Block qualified as Block (Section(..))
+import SAD.Data.Text.Block (Block)
 import SAD.Data.Text.Context (Context(Context), MRule(..))
 import SAD.Prove.MESON qualified as MESON
 import SAD.Export.Prover qualified as Prover
@@ -61,7 +59,6 @@ import SAD.Core.Message qualified as Message
 import SAD.Data.Structures.DisTree (DisTree)
 import SAD.Data.Structures.DisTree qualified as DisTree
 import SAD.Data.Text.Context qualified as Context (name)
-import SAD.Data.Text.Decl (newDecl)
 
 import Isabelle.Bytes qualified as Bytes
 import Isabelle.Position qualified as Position
@@ -150,7 +147,7 @@ initVState mesonCache proverCache = do
     , evaluations     = DisTree.empty
     , currentThesis   = Context Bot [] []
     , currentBranch   = []
-    , currentContext  = initContext
+    , currentContext  = []
     , mesonRules      = (DisTree.empty, DisTree.empty)
     , definitions     = initDefinitions
     , guards          = initGuards
@@ -360,33 +357,6 @@ initGuards = foldr (`DisTree.insert` True) DisTree.empty [
   mkMap v0,
   mkElem v1 $ mkDom v0]
 
-
-initContext :: [Context]
-initContext = [
-    setContext,
-    functionContext,
-    domainContext,
-    elementContext,
-    applicationContext,
-    pairContext
-  ]
-
-makeInitContext :: Formula -> Context
-makeInitContext f = Context f [makeBlock f [] Block.Definition "" [] []] []
-
-setContext, functionContext, domainContext, elementContext, applicationContext, pairContext :: Context
-setContext = makeInitContext $
-  mkAll (VarHole "0") (mkSet v0 `Iff` (mkClass v0 `And` mkObject v0))
-functionContext = makeInitContext $
-  mkAll (VarHole "0") (mkFunction v0 `Iff` (mkMap v0 `And` mkObject v0))
-domainContext = makeInitContext $
-  mkAll (VarHole "0") (mkMap v0 `Imp` mkClass (mkDom v0))
-elementContext = makeInitContext $
-  mkAll (VarHole "0") (mkAll (VarHole "1") ((mkClass v0 `And` mkElem v1 v0) `Imp` mkObject v1))
-applicationContext = makeInitContext $
-  mkAll (VarHole "0") (mkAll (VarHole "1") ((mkMap v0 `And` mkElem v1 (mkDom v0)) `Imp` mkObject (mkApp v0 v1)))
-pairContext = makeInitContext $
- mkAll (VarHole "0") (mkAll (VarHole "1") ((mkObject v0 `And` mkObject v1) `Imp` mkObject (mkPair v0 v1)))
 
 -- retrieve definitional formula of a term
 defForm :: Definitions -> Formula -> Maybe Formula

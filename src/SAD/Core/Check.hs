@@ -12,7 +12,6 @@ module SAD.Core.Check (fillDef) where
 
 import Data.Maybe (fromMaybe)
 import Data.Either (lefts,rights, isRight)
-import Control.Monad (MonadPlus(..), guard)
 import Control.Monad.Reader
 import Data.Text.Lazy qualified as Text
 

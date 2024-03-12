@@ -14,7 +14,6 @@ module SAD.Core.Rewrite (
 
 import Data.List
 import Data.Set qualified as Set
-import Control.Monad (MonadPlus(..), guard, when, unless)
 import Control.Monad.State
 import Data.Either
 import Control.Monad.Reader

@@ -176,20 +176,20 @@ val _ = Theory.setup
 (* command loop *)
 
 fun command_loop streams state =
-  (case Exn.capture read_message streams of
-    Exn.Res NONE => state
-  | Exn.Res (SOME []) => command_loop streams state
-  | Exn.Res (SOME (name :: args)) =>
+  (case read_message streams of
+    NONE => state
+  | SOME [] => command_loop streams state
+  | SOME (name :: args) =>
       (case get_command (get_theory state) name of
         NONE => raise Fail ("Protocol error: bad Isabelle/Naproche command " ^ quote name)
       | SOME cmd =>
-          (case Exn.result cmd (args, state) of
+          (case Exn.interruptible_capture cmd (args, state) of
             Exn.Exn exn =>
               raise Fail ("Protocol error: failure of Isabelle/Naproche command " ^ quote name ^
                 "\n" ^ Runtime.exn_message (Runtime.exn_context (SOME (get_context state)) exn))
           | Exn.Res (result, state') =>
-              (write_message streams result; command_loop streams state')))
-  | Exn.Exn exn => (cancel state; Exn.reraise exn));
+              (write_message streams result; command_loop streams state'))))
+  handle exn => (cancel state; Exn.reraise exn);
 
 
 (* process ForTheL text *)
