@@ -28,52 +28,40 @@ Commands below assume the same current directory: repository clones
 `isabelle_naproche` and `naproche` are put side-by-side.
 
 * initial clone:
+  ```shell
+  hg clone https://isabelle.in.tum.de/repos/isabelle isabelle_naproche
+  git clone https://github.com/naproche/naproche.git naproche
 
-      hg clone https://isabelle.in.tum.de/repos/isabelle isabelle_naproche
-      git clone https://github.com/naproche/naproche.git naproche
-
-      isabelle_naproche/Admin/init -I Isabelle_Naproche -V ./naproche/Isabelle
-      isabelle_naproche/bin/isabelle components -u ./naproche
-
-* using local eprover:
-  - Create the directory `naproche_e/$ISABELLE_PLATFORM64`.
-  - Create the file `naproche_e/etc/settings`:
-      ```
-      # -*- shell-script -*- :mode=shellscript:
-
-      E_HOME="$COMPONENT/$ISABELLE_PLATFORM64"
-      ```
-  - Copy the E executable to `naproche_e/$ISABELLE_PLATFORM64`.
-  - Add it as a component
-      isabelle_naproche/bin/isabelle components -u ./naproche_e
-  - In `$ISABELLE_HOME_USER/etc/components`, move the path corresponding to the `naproche_e` component above
-    the one corresponding to the `naproche` component.
-  - Verify that the path returend by
-      isabelle getenv NAPROCHE_EPROVER
-    points to `naproche_e/$ISABELLE_PLATFORM64/eprover`.
-
-* using local vampire:
-  - Create the directory `naproche_vampire/$ISABELLE_PLATFORM64`.
-  - Create the file `naproche_vampire/etc/settings`:
-    ```
-      # -*- shell-script -*- :mode=shellscript:
-
-      VAMPIRE_HOME="$COMPONENT/$ISABELLE_PLATFORM64"
-      ```
-  - Copy the E executable to `naproche_e/$ISABELLE_PLATFORM64`.
-  - Add it as a component
-      isabelle_naproche/bin/isabelle components -u ./naproche_e
-  - In `$ISABELLE_HOME_USER/etc/components`, move the path corresponding to the `naproche_vampire` component above
-    the one corresponding to the `naproche` component.
-  - Verify that the path returend by
-      isabelle getenv NAPROCHE_VAMPIRE
-    points to `naproche_vampire/$ISABELLE_PLATFORM64/vampire`.
-
+  isabelle_naproche/Admin/init -I Isabelle_Naproche -V ./naproche/Isabelle
+  isabelle_naproche/bin/isabelle components -u ./naproche
+  ```
 * later updates:
+  ```shell
+  git --git-dir="./naproche/.git" pull
+  isabelle_naproche/Admin/init -V ./naproche/Isabelle
+  ```
+* using recent eprover:
+  since the eprover component of Isabelle is only updated so often, it might be desirable to use a more update to date version of the prover. In the following we assume that a compiled eprover executable is located at `eprover/PROVER/eprover`.
+  ```
+  export ISABELLE_PLATFORM64=$(isabelle getenv -b ISABELLE_PLATFORM64)
+  export ISABELLE_HOME_USER=$(isabelle getenv -b ISABELLE_HOME_USER)
+  mkdir -p naproche_e/$ISABELLE_PLATFORM64
+  cp eprover/PROVER/eprover naproche_e/$ISABELLE_PLATFORM64/
 
-      git --git-dir="./naproche/.git" pull
-      isabelle_naproche/Admin/init -V ./naproche/Isabelle
+  mkdir -p naproche_e/etc
+  cat > naproche_e/etc/settings << EOF
+  # -*- shell-script -*- :mode=shellscript:
 
+  E_HOME="\$COMPONENT/\$ISABELLE_PLATFORM64"
+  EOF
+
+  isabelle_naproche/bin/isabelle components -u ./naproche_e
+  ```
+  Open the document at `$ISABELLE_HOME_USER/etc/components` and move the path corresponding to the `naproche_e` component above that corresponding to the `naproche` component. Finally, verify that the path returend by
+  ```
+  isabelle getenv -b NAPROCHE_EPROVER
+  ```
+  points to `naproche_e/$ISABELLE_PLATFORM64/eprover`. 
 
 ### Development
 
