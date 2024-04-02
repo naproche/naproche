@@ -79,31 +79,44 @@ End.
 naproche_problems
 
 naproche_problem 1
-  by (metis assms(6) assms(7) assms(8))
-naproche_problem 2 using assms
-  by (metis assms(11) assms(12) assms(13) assms(3) assms(5) assms(7))
+  using assms(12) assms(13) assms(14) by auto
+
+naproche_problem 2
+  by (metis assms(11) assms(13) assms(14) assms(17) assms(18) assms(19) assms(9))
+
 naproche_problem 3
-  by (metis (no_types, lifting) assms(14) assms(16) assms(18) assms(5) assms(7))
+  by (metis assms(11) assms(13) assms(20) assms(22) assms(24))
+
 naproche_problem 4
-  by (metis assms(14) assms(16) assms(18) assms(5) assms(7))
+  by (metis assms(11) assms(13) assms(20) assms(22) assms(24))
+
 naproche_problem 5
-  by (metis (no_types, lifting) assms(10) assms(14) assms(15) assms(16) assms(19) assms(20))
+  using assms(16) assms(20) assms(21) assms(22) assms(25) assms(26) by blast
+
 naproche_problem 6
-  by (metis assms(13) assms(14) assms(15) assms(21))
+  by (simp add: assms(19) assms(20) assms(21) assms(27))
+
 naproche_problem 7
-  by (smt (verit, del_insts) assms(11) assms(12) assms(14) assms(15) assms(16) assms(17) assms(19) assms(21) assms(22) assms(5) assms(8))
+  by (smt (verit, del_insts) assms(11) assms(14) assms(17) assms(18) assms(20) assms(21) assms(22) assms(23) assms(25) assms(27) assms(28))
+
 naproche_problem 8
-  by (metis (no_types, lifting) assms(12) assms(14) assms(21) assms(22) assms(23) assms(5) assms(7))
+  by (metis assms(11) assms(13) assms(18) assms(20) assms(27) assms(28) assms(29))
+
 naproche_problem 9
-  by (smt (verit, del_insts) assms(11) assms(12) assms(14) assms(15) assms(16) assms(17) assms(20) assms(21) assms(22) assms(5) assms(8))
+  by (smt (verit, del_insts) assms(11) assms(14) assms(17) assms(18) assms(20) assms(21) assms(22) assms(23) assms(26) assms(27) assms(28))
+
 naproche_problem 10
-  by (metis assms(12) assms(14) assms(21) assms(22) assms(24) assms(5) assms(7))
+  by (metis assms(11) assms(13) assms(18) assms(20) assms(27) assms(28) assms(30))
+
 naproche_problem 11
-  by (metis (no_types, lifting))
+  by simp
+
 naproche_problem 12
-  by (metis (no_types, lifting) assms(14) assms(16) assms(18) assms(7))
+  using assms(13) assms(20) assms(22) assms(24) by blast
+
 naproche_problem 13
-  by (metis (mono_tags, lifting))
+  by simp
+
 
 
 subsection \<open>External text file\<close>
