@@ -62,8 +62,8 @@ object Naproche_Component {
     progress.echo("Copying " + Naproche.NAPROCHE_EXE_DIR.expand)
     Isabelle_System.copy_dir(Naproche.NAPROCHE_EXE_DIR, component_dir)
 
-    progress.echo("Copying " + Naproche.NAPROCHE_JAR.expand)
-    Isabelle_System.copy_file(Naproche.NAPROCHE_JAR, component_dir + Path.explode("Isabelle"))
+    progress.echo("Copying " + Naproche.jar.expand)
+    Isabelle_System.copy_file(Naproche.jar, component_dir + Path.explode("Isabelle"))
 
     File.change(component_dir + Path.explode("etc/build.props")) {
       s => s.replaceAll("no_build\\s*=.*", "no_build = true")

@@ -15,9 +15,6 @@ import java.util.concurrent.TimeUnit
 
 
 object Naproche_Test {
-  val naproche_home: Path = Path.explode("$NAPROCHE_HOME")
-  val examples: Path = naproche_home + Path.explode("examples")
-
   def run_tests(
     progress: Progress = new Progress,
     log_dir: Option[Path] = None,
@@ -26,10 +23,10 @@ object Naproche_Test {
   ): Unit = {
     val file_format = new Naproche_File_Format
 
-    def relative(file: JFile): Path = File.relative_path(examples, File.path(file)).get
+    def relative(file: JFile): Path = File.relative_path(Naproche.examples, File.path(file)).get
     def relative_name(file: JFile): String = relative(file).implode
     val tests =
-      File.find_files(examples.file, file => file_format.detect(file.getName)).sortBy(relative_name)
+      File.find_files(Naproche.examples.file, file => file_format.detect(file.getName)).sortBy(relative_name)
 
     val bad = Synchronized(List.empty[Path])
 
@@ -56,7 +53,7 @@ object Naproche_Test {
               Time.now() > start + timeout && { was_timeout = true; true }
             val result =
               Isabelle_System.bash(""""$NAPROCHE_EXE" -v -- """ + File.bash_platform_path(path),
-                cwd = naproche_home.file,
+                cwd = Naproche.NAPROCHE_HOME.file,
                 strict = false,
                 watchdog =
                   if (timeout == Time.zero) None
@@ -129,7 +126,7 @@ Usage: isabelle naproche_test
         val progress = new Console_Progress()
 
         val results =
-          Build.build(options, select_dirs = List(naproche_home),
+          Build.build(options, select_dirs = List(Naproche.NAPROCHE_HOME),
             progress = progress, max_jobs = max_jobs)
         if (!results.ok) sys.exit(results.rc)
 
