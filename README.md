@@ -94,8 +94,8 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
     HW + OS platform. The following reference platforms (x86_64) are
     used for Isabelle2022:
 
-      - Ubuntu Linux 16.04 LTS
-      - macOS 10.14 Mojave
+      - Ubuntu Linux 18.04 LTS
+      - macOS 11 Big Sur
       - Windows 10
 
 * Isabelle Prover IDE
