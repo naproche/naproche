@@ -83,6 +83,7 @@ verify (ProofTextInstr pos (Command cmd) : rest) = command cmd >> verify rest
       let topLevelContext = filter Context.isTopLevel context
       message $ "current filtered top-level context:\n" <>
         concatMap (\form -> "  " <> show (Context.formula form) <> "\n") (reverse topLevelContext)
+    command ResetPretyping = pure ()
     command _ = do
       message "unsupported instruction"
     message :: String -> VerifyMonad ()
