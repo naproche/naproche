@@ -349,6 +349,7 @@ If $A \setminus C = B \setminus C$ then $A = B$.
 %
 \begin{forthel}
 
+Let $S, T$ denote classes.
 Let $F$ stand for maps.
 
 \begin{definition}
@@ -495,8 +496,9 @@ Bijective maps and functions are the basis for cardinality
 theory.
 %
 \begin{forthel}
+Let $S, T, U$ denote classes.
+
 \begin{definition}
-Let $S, T$ be classes.
 $S$ and $T$ are equinumerous iff there exists a bijection between $S$ and
 $T$.
 \end{definition}
@@ -558,6 +560,7 @@ Russell's paradox \cite{Russell}.
 The proof is based on the important {\em diagonal argument}.
 
 \begin{forthel}
+Let $S$ denote a class.
 
 \begin{theorem}[Russell]
 There is a class that is not a set.
@@ -669,6 +672,8 @@ whenever $X$ and $Y$ are sets. But it is easier to postulate
 that as an axiom.
 % 
 \begin{forthel}
+  Let $S, T$ denote classes.
+
   \begin{definition}
     $S \times T = \class{(x,y) | \text{$x \in S$ and $y \in T$}}$.
   \end{definition}
@@ -1199,10 +1204,12 @@ interdefinable, the choice can noticably influence automatic
 proof searches. $\leq$ is a linear order:
 
 \begin{forthel}
+Let $x,y,z,w$ denote real numbers.
 
 \begin{signature}
 $x \leq y$ is an atom.
 \end{signature}
+
 
 Let $x \nleq y$ stand for not $x \leq y$.
 
@@ -1349,6 +1356,8 @@ necessary definitions.
 \begin{forthel}
 
 Let $E$ denote a subset of $\mathbb{R}$.
+Let $E$ denote a set.
+Let $x,a,b$ denote real numbers.
 
 \begin{definition}
 An upper bound of $E$ is a
@@ -1401,7 +1410,7 @@ of infima.
 $E^- = \{-x \in \mathbb{R} \mid x \in E\}$.
 \end{definition}
 
-\begin{lemma}
+\end{forthel}\begin{lemma}
 $E^-$ is a subset of $\mathbb{R}$.
 \end{lemma}
 [timelimit 5]
@@ -1410,7 +1419,8 @@ $x$ is an upper bound of $E$ iff $-x$ is a lower bound of $E^-$.
 \end{lemma}
 [timelimit 3]
 
-\begin{theorem} Assume that $E$ is a nonempty subset of $\mathbb{R}$
+\begin{theorem}
+Assume that $E$ is a nonempty subset of $\mathbb{R}$
 such that $E$ is bounded below.
 Then $E$ has an infimum.\end{theorem}
 \begin{proof}
@@ -1480,6 +1490,7 @@ The reals are "generated" from
 the rationals by suprema (or infima). We postulate:
 %
 \begin{forthel}
+
 \begin{axiom} Let $x$ be a real number.
 Then there exists a subset $A$ of $\mathbb{Q}$
 such that $A$ is bounded above and
@@ -1831,6 +1842,8 @@ expressing that $P$ is inherited from $\prec$-predecessors.
 Therefore we can describe $\prec$ by:
 %
 \begin{forthel}
+Let $n,m$ denote natural numbers.
+
 Let $m$ is inductively smaller than $n$ stand for $m \prec n$.
 \end{forthel}
 %
@@ -1871,6 +1884,7 @@ well-founded on $\mathbb{N}$: every nonempty subset
 of $\mathbb{N}$ has a minimal element:
 
 \begin{forthel}
+
 \begin{theorem}
 Let $X$ be a nonempty subset of $\mathbb{N}$.
 Then there is an element $n$ of $X$ such that
@@ -2132,13 +2146,11 @@ $\sumgeom{x}{n} =
 
 \section{Divisibility and Prime Numbers}
 
-
 We prove some divisibility properties that will be useful
 further on.
 
 \begin{forthel}
-
-Let $m,n$ denote integers.
+Let $m,n,l$ denote integers.
 
 \begin{definition}
 $n$ divides $m$ iff for some integer $l$ $m = n \cdot l$.
@@ -2306,6 +2318,7 @@ Then $d$ divides $n$. $n$ divides $d$. $d = n$.
 \section{Greatest Common Divisor Algorithm (\#69)}
 
 \begin{forthel}
+Let $m,n$ denote natural numbers.
 
 \begin{proposition}
 Let $m,n$ be natural numbers such that $m > n$.
@@ -2590,6 +2603,7 @@ End.
 \section{Irrationality of Roots of Prime Numbers (\#1)}
 
 \begin{forthel}
+Let $m,n$ denote natural numbers.
 
 \begin{lemma}
 The greatest common divisor of $n$ and $m$ is 0 iff $n = 0$ and $m = 0$.
@@ -3030,6 +3044,7 @@ Then $m1 \leq n1$ and $m \leq n$.
 \section{Finite Products}
 
 \begin{forthel}
+  Let $n$ denote a natural number.
 
 \begin{definition}
 A sequence of length $n$ is a

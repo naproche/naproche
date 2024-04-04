@@ -190,6 +190,9 @@ we introduce concepts of adjacency by first declaring new relations and then axi
 As usual, chaining of relation symbols indicates a conjunction.
 
 \begin{forthel}
+    Let $m, n, i, j, k, l$ denote coordinates.
+    Let $x, y, z$ denote squares.
+
     \begin{signature}
         Let $m$ be an integer. A neighbour of $m$ is an integer.
     \end{signature}
@@ -253,6 +256,8 @@ inventing new concepts and completely stay within the realm of squares,
 subsets of the checkerboard and dominoes.
 
 \begin{forthel}
+    Let $x, y, z$ denote squares.
+
     \begin{signature} $x$ is black is a relation. \end{signature}
     Let $x$ is white stand for $x$ is not black.
 
@@ -278,6 +283,8 @@ colours of a checkerboard by swapping the files $0$ and $1$, $2$ and $3$, etc..
 We formalize swapping by a first-order function symbol $\Swap{}$.
 
 \begin{forthel}
+    Let $m, n, i, j, k, l$ denote coordinates.
+
     \begin{signature}
         Let $x$ be an element of $\Checkerboard$.
         $\Swap{x}$ is an element of $\Checkerboard$.
