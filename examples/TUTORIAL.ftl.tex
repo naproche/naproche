@@ -693,6 +693,8 @@ We provide ourselves with another variable $l$,
 pretyped as a natural number.
 
 \begin{forthel}
+Let $m,n$ stand for natural numbers.
+
 \begin{axiom} $m + n = n + m$.
 \end{axiom}
 
@@ -748,6 +750,7 @@ Signature command in which a symbol is introduced plus
 an Axiom containing the defining property.
 
 \begin{forthel}
+Let $m,n$ stand for natural numbers.
 
 \begin{definition} $m \leq n$ iff
 there exists a natural number $l$ such that
@@ -820,6 +823,7 @@ propositions can be proved by the ATP without further intervention.
 The following three lemmas show that $\leq$ is a partial order:
 
 \begin{forthel}
+Let $l,m,n$ stand for natural numbers.
 
 \begin{lemma} $m \leq m$.
 \end{lemma}
@@ -938,6 +942,7 @@ so far do not guarantee that the ordering is linear.
 So we continue:
 
 \begin{forthel}
+Let $l,m,n$ stand for natural numbers.
 
 \begin{axiom} $m \leq n$ or $n < m$.
 \end{axiom}
@@ -977,6 +982,8 @@ Induction along the relation $<$ on natural numbers is introduced
 axiomatically by embedding the $<$-relation into $\prec$:
 
 \begin{forthel}
+Let $m,n$ stand for natural numbers.
+
 \begin{axiom} If $n < m$ then $n \prec m$.
 \end{axiom}
 \end{forthel}
@@ -1026,6 +1033,7 @@ With the previous lemma we can show:
 Prime (natural) numbers are defined via divisibility.
 
 \begin{forthel}
+Let $l,m,n$ stand for natural numbers.
 
 \begin{definition}
   $n$ divides $m$ iff for some $l$ $m = n * l$.
@@ -1077,6 +1085,8 @@ and new variables to the argument, and they can
 structure the proof.
 
 \begin{forthel}
+Let $l,m,n$ stand for natural numbers.
+
 \begin{lemma} Let $l | m$ and $l | m + n$. Then $l | n$.
 \end{lemma}
 
@@ -1170,7 +1180,7 @@ the adjective ``prime'' which will enable us
 to write ``prime natural number'' or ``prime divisor''.
 
 \begin{forthel}
-
+Let $m,n$ stand for natural numbers.
 Let $x$ is nontrivial stand for $x \neq 0$ and $x \neq 1$.
 
 \begin{definition}
@@ -1287,6 +1297,8 @@ We shall use natural numbers and bounded intervals
 of natural numbers to ``count'' the elements of sets.
 
 \begin{forthel}
+Let $m,n$ stand for natural numbers.
+
 \begin{definition} $\Seq{m}{n} = \{ i \in \mathbb{N} |
 m \leq i \leq n \}$.
 \end{definition}
