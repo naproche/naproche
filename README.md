@@ -110,16 +110,19 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
       ```
 
       Finally, we add the `e_naproche` component to Isabelle.
-      ```
+      ```shell
       isabelle_naproche/bin/isabelle components -u ./naproche_e
       ```
   
-  3. To ensure that Naproche does not fall back to the E Theorem Prover component bundled with Isabelle, we need to ensure that the `e_naproche` component is loaded before the `naproche` component. First, navigate to your Isabelle user home, which can be located using `isabelle_naproche/bin/isabelle getenv -b ISABELLE_HOME_USER`.
+  3. To ensure that Naproche does not fall back to the E Theorem Prover component bundled with Isabelle, we need to ensure that the `e_naproche` component is loaded before the `naproche` component. First, navigate to your Isabelle user home, which can be located using
+      ```shell
+      isabelle_naproche/bin/isabelle getenv -b ISABELLE_HOME_USER
+      ```
     
       Then edit the document at `etc/components`. Move the path pointing to the `e_naproche` component above that pointing to the `naproche` component.
   
       Finally, verify that the path returend by
-      ```
+      ```shell
       isabelle getenv -b NAPROCHE_EPROVER
       ```
       points to the `eprover` executable inside the `e_naproche` component.
