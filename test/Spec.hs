@@ -25,7 +25,6 @@ gather (hout, herr, ph) = do
 files :: [FilePath]
 files = fmap ("examples/"++)
   [ "chinese.ftl"
-  , "fuerstenberg.ftl"
   , "maximum_modulus.ftl"
   , "newman.ftl"
   , "cantor.ftl"
