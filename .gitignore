@@ -8,6 +8,7 @@ x86_64-darwin/
 x86_64-linux/
 x86_64-windows/
 .vscode
+dist-newstyle/
 
 # Ignore profiling output
 *.hp
