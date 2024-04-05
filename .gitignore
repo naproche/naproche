@@ -9,6 +9,7 @@ x86_64-linux/
 x86_64-windows/
 .vscode
 dist-newstyle/
+.envrc
 
 # Ignore profiling output
 *.hp
