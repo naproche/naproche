@@ -99,19 +99,19 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
 
       We then copy the `eprover` exutable into the component:
       ```shell
-      cp eprover/PROVER/eprover e_naproche/$ISABELLE_PLATFORM64/
+      cp eprover/PROVER/eprover e_naproche/$(isabelle_naproche/bin/isabelle getenv -b ISABELLE_PLATFORM64)/
       ```
 
       And create a document at `e_naproche/etc/settings` with the following content:
       ```plain
       # -*- shell-script -*- :mode=shellscript:
 
-      E_HOME="\$COMPONENT/\$ISABELLE_PLATFORM64"
+      E_HOME="$COMPONENT/$ISABELLE_PLATFORM64"
       ```
 
       Finally, we add the `e_naproche` component to Isabelle.
       ```shell
-      isabelle_naproche/bin/isabelle components -u ./naproche_e
+      isabelle_naproche/bin/isabelle components -u ./e_naproche
       ```
   
   3. To ensure that Naproche does not fall back to the E Theorem Prover component bundled with Isabelle, we need to ensure that the `e_naproche` component is loaded before the `naproche` component. First, navigate to your Isabelle user home, which can be located using
