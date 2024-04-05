@@ -47,7 +47,6 @@ texFiles = fmap ("examples/"++)
   , "tarski.ftl.tex"
   ] ++ fmap ("text/examples/"++)
   [ "read_test.ftl.tex"
-  , "lambda_term_test.ftl.tex"
   , "text.ftl.tex"
   , "varprime.ftl.tex"
   ]
