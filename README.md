@@ -29,10 +29,10 @@ Commands below assume the same current directory: repository clones
 
 * Initial clone:
   ```shell
-  hg clone https://isabelle.in.tum.de/repos/isabelle isabelle_naproche
+  hg clone https://isabelle.sketis.net/repos/isabelle-release isabelle_naproche
   git clone https://github.com/naproche/naproche.git naproche
 
-  isabelle_naproche/Admin/init -I Isabelle_Naproche -V ./naproche/Isabelle
+  isabelle_naproche/Admin/init -U https://isabelle.sketis.net/repos/isabelle-release -I Isabelle_Naproche -V ./naproche/Isabelle
   isabelle_naproche/bin/isabelle components -u ./naproche
   ```
 
@@ -70,10 +70,10 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
 
     The result is for the current repository version, and the underlying
     HW + OS platform. The following reference platforms (x86_64) are
-    used for Isabelle2022:
+    used for Isabelle2024:
     - Ubuntu Linux 18.04 LTS
     - macOS 11 Big Sur
-    - Windows 10
+    - Windows 10/11
 
 * Isabelle Prover IDE
   
@@ -135,7 +135,7 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
 
 * The Haskell Tool Stack: https://www.haskellstack.org
 
-* Install the E Theorem Prover (supported versions: 2.0 to 2.5) and
+* Install the E Theorem Prover and
   set the environment variable NAPROCHE_EPROVER to its executable
   path.
 
