@@ -29,13 +29,13 @@
 typeset into a readable pdf document, and which on the other hand can
 be input into the \Naproche{} natural language proof checker. \Naproche{} is part of the
 Isabelle prover IDE; installing the current version of Isabelle will also
-install \Naproche{}. Opening and editing a \verb+ftl.tex+ file like this one 
+install \Naproche{}. Opening and editing a \verb+ftl.tex+ file like this one
 in Isabelle will automatically start the inbuilt \Naproche{} proof checking.
 
 Apart from its mathematical content, the source file of about 3000
 lines is testing the limits of the present \Naproche{}
 system, its external automatic theorem provers (mostly E in our case),
-and the underlying hardware. The file has been checked successfully 
+and the underlying hardware. The file has been checked successfully
 in about half an hour on mid-range consumer
 laptops. Checking, however, may fail, because ATP proof searches
 are restricted by wallclock timeouts and depend significantly on system speed and state.
@@ -52,9 +52,9 @@ frequently. In stubborn cases, one has to insert further proof steps.}
 The \Naproche{} system (for \emph{Natural Proof Checking})
 checks the logical correctness of texts
 written in an input language ForTheL (for \emph{Formula Theory Language})
-which ideally reads like common mathematical language. Proofs and proof 
+which ideally reads like common mathematical language. Proofs and proof
 structures should resemble the
-style of undergraduate textbooks. 
+style of undergraduate textbooks.
 \Naproche{} is a \emph{natural proof assistant} intended to
 approximate and support ordinary mathematical practices.
 The inbuilt ontology of \Naproche{} corresponds to classical foundations
@@ -69,33 +69,33 @@ formalization examples. The current document is one of the examples, available
 in \verb+.ftl.tex+ format for proof-checking and \LaTeX{} typesetting, and
 as a typeset \verb+.pdf+ file.
 
-This document serves several purposes: to demonstrate the 
+This document serves several purposes: to demonstrate the
 \Naproche{} concept  within a longer formalization;
 to propose a logical and set-theoretical foundation for
 number systems in a build-up of mathematical notions
 with sets and classes, maps, relations and numbers;
 to prove several theorems from the well-known list of 100 theorems
 that F. Wiedijk has proposed as formalization benchmarks \cite{Wiedijk}.
- 
+
 In our approach the ordered field $\mathbb{R}$ of real numbers
 is postulated axiomatically. We then construe the structures of integer and
 rational numbers as substructures of $\mathbb{R}$:
 \[ \mathbb{R} \supseteq \mathbb{Q} \supseteq \mathbb{Z}
 \supseteq \mathbb{N}. \]
-This corresponds to the 
+This corresponds to the
 geometric intuition of a continuous line of numbers with
 distinguished elements $0$ and $1$, from which integer and rational numbers can
-be constructed. Technically, this has the advantage 
+be constructed. Technically, this has the advantage
 that real addition and multiplication
 can be {\em restricted} to those substructures, instead of {\em extending} operations
 to larger superstructures.
 
 We list the ten "Wiedijk Theorems" contained in this document and
 the authors of the respective formalizations. Most formalizations build on
-earlier versions, also by other authors, some are inherited from 
+earlier versions, also by other authors, some are inherited from
 \Naproche's predecessor system
-SAD (for \emph{System for Automated Deduction}) by A. Paskevich 
-and others \cite{SAD}. 
+SAD (for \emph{System for Automated Deduction}) by A. Paskevich
+and others \cite{SAD}.
 \begin{itemize}
 \item \#1: The Irrationality of the Square Root of 2\\
 Naproche formalization: Peter Koepke, Mateusz Marcol and Patrick Schäfer
@@ -121,28 +121,28 @@ Peter Koepke
 We shall continue to extend and improve the formalizations and upload
 new versions for inclusion into future releases of Isabelle.
 
-We view the present state of \Naproche{} and this paper as proof of 
+We view the present state of \Naproche{} and this paper as proof of
 concept for interactive theorem
-proving with natural language formalizations. 
+proving with natural language formalizations.
 To extend \Naproche{} to a powerful comprehensive
-system like Mizar or Isabelle should in principle be possible, 
+system like Mizar or Isabelle should in principle be possible,
 given sufficient time and manpower.
 We think, however, that it is more promising to equip established
-system with a natural language interface by adapting 
+system with a natural language interface by adapting
 \Naproche's translation techniques
 from natural mathematical language texts into formal logics.
 
 \section{Basic Notions}
 
 Some notions and their elementary properties are already
-built into \Naproche{} and its input language 
+built into \Naproche{} and its input language
 ForTheL. There are
-mathematical {\em objects}, and {\em sets} and 
+mathematical {\em objects}, and {\em sets} and
 {\em classes} that contain mathematical
 objects. Sets are classes which are objects themselves and
-can thus be used in further mathematical constructions. 
+can thus be used in further mathematical constructions.
 {\em Functions}
-and {\em maps} map objects to objects, where 
+and {\em maps} map objects to objects, where
 functions are those
 maps which are themselves objects.
 
@@ -154,7 +154,7 @@ foundations of mathematics. This is also advantageous
 for automated proving since it prevents proof searches to
 dig into mathematically irrelevant internal structurings.
 
-We begin by fixing some mathematical language. 
+We begin by fixing some mathematical language.
 We import singular/plural forms of words that will be used in
 our formalizations (\path{examples/vocabulary.ftl.tex}).
 In the long run this should be replaced by
@@ -170,8 +170,8 @@ useful mathematical phrases (\path{examples/macros.ftl.tex}).
 \end{forthel}
 
 
-On the basis of inbuilt assumptions we prove some 
-lemmas that illustrate the \Naproche{} ontology. 
+On the basis of inbuilt assumptions we prove some
+lemmas that illustrate the \Naproche{} ontology.
 Later we shall postulate further axioms known from the
 set theories of Kelley-Morse or Zermelo-Fraenkel.
 
@@ -179,8 +179,8 @@ The notions of set and class capture the naive intuition
 of set expressed by Georg Cantor:
 %
 \begin{quotation}
-\noindent A set is a collection of definite, distinguishable objects 
-of perception or thought conceived as a whole. 
+\noindent A set is a collection of definite, distinguishable objects
+of perception or thought conceived as a whole.
 The objects are called elements or members of the set.
 \end{quotation}
 %
@@ -294,7 +294,7 @@ $S$ is nonempty iff $S$ has an element.
   Let $S \cup T$ stand for the union of $S$ and $T$.
 
   \begin{definition}
-    The intersection of $S$ and $T$ is 
+    The intersection of $S$ and $T$ is
       $\class{x | x \in S \wedge x \in T}$.
   \end{definition}
 
@@ -325,7 +325,7 @@ We conclude with a few more definitions.
   \end{definition}
 
   \begin{definition}
-    A family of sets is a class $A$ such that every element of 
+    A family of sets is a class $A$ such that every element of
 $A$ is a set.
   \end{definition}
 
@@ -371,7 +371,7 @@ Let $F$ be a map. $\range(F) = F[\dom(F)]$.
   Let the image of $F$ stand for $F[\dom(F)]$.
 
 \begin{definition}
-    A map from $S$ to $T$ is a map $F$ such that $\dom(F) = S$ 
+    A map from $S$ to $T$ is a map $F$ such that $\dom(F) = S$
 and $F[S]  \subseteq T$.
   \end{definition}
 
@@ -396,10 +396,10 @@ Then $(F \circ G) \circ H = F \circ (G \circ H)$.
 \begin{proof}
 $\dom((F \circ G) \circ H) = \dom(H)$.
 $\dom(G \circ H) = \dom(H)$. Let $U = G \circ H$.
-$$\dom(F \circ (G \circ H)) = 
+$$\dom(F \circ (G \circ H)) =
 \dom(F \circ U) = \dom(U) = \dom(G \circ H) = \dom(H).$$
 
-For every $x \in \dom(H)$ we have  
+For every $x \in \dom(H)$ we have
 $$((F \circ G) \circ H)(x) = F(G(H(x))) =
 (F \circ (G \circ H))(x).$$
 \end{proof}
@@ -432,9 +432,9 @@ for all $x \in \dom(G)$.
 Let $F$ be a map. Then $F \circ (Id \upharpoonright \dom(F)) = F$.
 \end{lemma}
 \begin{proof} Consider $I = Id \upharpoonright \dom(F)$.
-$\dom(F \circ (Id \upharpoonright \dom(F))) = 
+$\dom(F \circ (Id \upharpoonright \dom(F))) =
 \dom(F \circ I) = \dom(I) = \dom(F)$.
-$(F \circ (Id \upharpoonright \dom(F)))(x) = F(x)$ 
+$(F \circ (Id \upharpoonright \dom(F)))(x) = F(x)$
 for all $x \in \dom(F)$.
 \end{proof}
 
@@ -461,7 +461,7 @@ Let $F,G$ be injective maps such that $\range(F) \subseteq \dom(G)$.
 Then $G \circ F$ is injective.
 \end{lemma}
 
-\begin{lemma} Let $S,T,U$ be classes. Let 
+\begin{lemma} Let $S,T,U$ be classes. Let
 $F$ be a surjection from $S$ onto $T$ and $G$ be
 a surjection from $T$ onto $U$. Then
 $G \circ F$ is a surjection from $S$ onto $U$.
@@ -474,7 +474,7 @@ and for all $v \in \dom(G)$ $G(v) \in \dom(F)$ and $F(G(v))=v$.
 \end{signature}
 
 \begin{lemma}
-Let $F$ be an injective map. Then 
+Let $F$ be an injective map. Then
 $\inv{F} : \range(F) \rightarrow \dom(F)$.
 \end{lemma}
 
@@ -529,7 +529,7 @@ Assume that $S \sim T \sim U$. Then $S \sim U$.
 \end{lemma}
 
 \begin{lemma}
-Let $A,B,C,D$ be classes such that $A$ and $B$ are disjoint and 
+Let $A,B,C,D$ be classes such that $A$ and $B$ are disjoint and
 $C$ and $D$ are disjoint. Assume that $A \sim C$ and $B \sim D$.
 Then $A \cup B \sim C \cup D$.
 \end{lemma}
@@ -555,7 +555,7 @@ $H$ is a bijection between $A \cup B$ and $C \cup D$.
 Many classes defined in mathematics are considered to be
 mathematical objects that can be used freely in further constructions.
 We defined sets to be classes that are objects. However, we cannot
-identify {\em all} classes with sets due to the famous 
+identify {\em all} classes with sets due to the famous
 Russell's paradox \cite{Russell}.
 The proof is based on the important {\em diagonal argument}.
 
@@ -573,13 +573,13 @@ Indeed if $R$ is a set then $$R \in R \iff R \notin R.$$
 \end{forthel}
 
 As a reaction to Russell's theorem, Ernst Zermelo, Abraham
-Fraenkel and others have formulated axioms which 
+Fraenkel and others have formulated axioms which
 postulate explicitly that certain classes are sets. We
 present the standard axioms without
 the axioms of infinity, choice and foundation. The infinity
-axiom will be introduced later by requiring that the 
+axiom will be introduced later by requiring that the
 (infinite) class
-of natural numbers is a set. The axioms of choice 
+of natural numbers is a set. The axioms of choice
 and foundation are not needed for our presentation.
 Note that the axiomatic strength introduced here corresponds
 to Kelley-Morse set theory, since classes can be formed using
@@ -629,7 +629,7 @@ Let $\pow(X)$ denote the powerset of $X$.
 \end{axiom}
 
 \begin{axiom}[Replacement Axiom]
-Let $F$ be a function.    
+Let $F$ be a function.
 Let $X$ be a subset of the domain of $F$.
 Then $F[X]$ is a set.
 \end{axiom}
@@ -650,7 +650,7 @@ axioms like:
 
 Since we prefer objects over sets if possible, we do not work
 with Kuratowski-style set-theoretical ordered pairs, but
-introduce them as objects. 
+introduce them as objects.
 \begin{forthel}
   \begin{lemma}
     Let $x, y$ be objects.
@@ -670,7 +670,7 @@ This allows to work with cartesian products. One could show
 from the Zermelo-Fraenkel axioms that $X \times Y$ is a set
 whenever $X$ and $Y$ are sets. But it is easier to postulate
 that as an axiom.
-% 
+%
 \begin{forthel}
   Let $S, T$ denote classes.
 
@@ -702,7 +702,7 @@ in foundational theories.
 
 \begin{forthel}
     \begin{theorem*}[Cantor]
-      Let $M$ be a set. Then there is 
+      Let $M$ be a set. Then there is
       no surjection from $M$ onto the powerset of $M$.
     \end{theorem*}
     \begin{proof}
@@ -720,7 +720,7 @@ in foundational theories.
 \section{The Knaster-Tarski Fixed Point Theorem}
 
 The Knaster-Tarski theorem is an important result in lattice theory \cite{Tarski, Knaster}.
-We prove the theorem for 
+We prove the theorem for
 the $\subseteq$-relation on sets, in order to apply it
 in the subsequent section.
 
@@ -731,7 +731,7 @@ in the subsequent section.
     \end{definition}
 
     \begin{definition}
-      A map between families of sets is a map from some family of 
+      A map between families of sets is a map from some family of
 sets to some
       family of sets.
     \end{definition}
@@ -754,7 +754,7 @@ Let $h$ be a map between families of sets.
 [timelimit 10]
       Then $A$ is a subset of $\pow(x)$ and
       $\bigcup A \in \pow(x)$.
-[timelimit 3] 
+[timelimit 3]
 
 (1) $\bigcup A \subseteq h(\bigcup A)$.
 
@@ -819,7 +819,7 @@ We base the proof on the Tarski-Knaster theorem, following
           Indeed $y \setminus f[v]$ and $y \setminus f[u]$ are subsets of $y$.
           Therefore $x \setminus g[y \setminus f[u]] \subseteq
           x \setminus g[y \setminus f[v]]$.
-          Consequently $h(u) \subseteq h(v)$. 
+          Consequently $h(u) \subseteq h(v)$.
         End.
 
         Hence we can take a fixed point $c$ of $h$ (by \nameref{KT}).
@@ -915,7 +915,7 @@ We base the proof on the Tarski-Knaster theorem, following
 
 \section{The Real Field}
 
-We introduce the real numbers with their  
+We introduce the real numbers with their
 arithmetical operations and postulate that
 they satisfy standard field axioms. This is a partial
 axiomatisation.
@@ -923,7 +923,7 @@ Only after the introduction
 of further axioms that specify the nested number systems
 \[ \mathbb{R} \supseteq \mathbb{Q} \supseteq \mathbb{Z}
 \supseteq \mathbb{N}. \]
-and the relations between the numbersystems will it be clear 
+and the relations between the numbersystems will it be clear
 that the reals introduced along this paper are isomorphic to
 the standard reals as completion of the rational numbers.
 
@@ -943,10 +943,10 @@ $\mathbb{R}$ is a set.
 \end{forthel}
 %
 Note that this axiom does not yet imply the existence of infinite sets,
-since under the axioms in this section $\mathbb{R}$ could still be some finite 
+since under the axioms in this section $\mathbb{R}$ could still be some finite
 field. The following are standard axioms for commutative fields, where the
-additive and multiplicative inverses are given by functions 
-$x \mapsto -x$ and $x \mapsto 1/x$. 
+additive and multiplicative inverses are given by functions
+$x \mapsto -x$ and $x \mapsto 1/x$.
 %
 \begin{forthel}
 Let $x,y,z,w$ denote real numbers.
@@ -1005,7 +1005,7 @@ $x \cdot (y + z) = (x \cdot y) + (x \cdot z)$.
 We continue by proving some consequencen of the axioms.
 The selection of lemmas follows the
 {\em Foundations of Real Analysis} by Walter Rudin \cite{Rudin}.
-Note that in rare cases we need to use double brackets 
+Note that in rare cases we need to use double brackets
 $((\dots))$ because
 of some parser bug.
 \begin{forthel}
@@ -1197,7 +1197,7 @@ that $2,3 \neq 0$.
 
 \section{The Real Ordered Field}
 
-We first introduce the weak order $\leq$ on $\mathbb{R}$ 
+We first introduce the weak order $\leq$ on $\mathbb{R}$
 instead of
 the strong orders $<$. Although these orders are easily
 interdefinable, the choice can noticably influence automatic
@@ -1287,7 +1287,7 @@ $1 > 0$.
 $x \leq y$ iff $-x \geq -y$.
 \end{proposition}
 \begin{proof}
-$x \leq y$ iff $x - y \leq 0$.  
+$x \leq y$ iff $x - y \leq 0$.
 $x - y \leq 0$ iff $-y = -x + (x - y) \leq -x$.
 \end{proof}
 
@@ -1333,7 +1333,7 @@ Assume $0 < x \leq y$.
 Then $1/y \leq 1/x$.
 \end{proposition}
 \begin{proof}[by contradiction]
-Assume the contrary. 
+Assume the contrary.
 Then not $1/y \leq 1/x$. Let $u = 1/y$ and $v = 1/x$.
 Then $1/y \geq 1/x$.
 Then $1/x < 1/y$.
@@ -1350,8 +1350,8 @@ Hence $1 < 1$. Contradiction.
 
 The real numbers are {\em complete}, which is often expressed
 via Dedekind cuts or Cauchy sequences. Here
-we use suprema and infima instead. We make the 
-necessary definitions. 
+we use suprema and infima instead. We make the
+necessary definitions.
 
 \begin{forthel}
 
@@ -1402,7 +1402,7 @@ Then $E$ has a supremum.
 \end{axiom}
 \end{forthel}
 %
-By symmetry, the existence of suprema implies the existence 
+By symmetry, the existence of suprema implies the existence
 of infima.
 %
 \begin{forthel}
@@ -1410,7 +1410,7 @@ of infima.
 $E^- = \{-x \in \mathbb{R} \mid x \in E\}$.
 \end{definition}
 
-\end{forthel}\begin{lemma}
+\begin{lemma}
 $E^-$ is a subset of $\mathbb{R}$.
 \end{lemma}
 [timelimit 5]
@@ -1431,10 +1431,10 @@ Take a supremum $b$ of $E^-$.
 (1) $-b$ is an infimum of $E$.
 
 Proof.
-$-b$ is a lower bound of $E$. 
+$-b$ is a lower bound of $E$.
 Let $c$ be a lower bound of $E$.
 Then $-c$ is an upper bound of $E^-$.
-Hence $b \leq -c$ and $c \leq -b$. 
+Hence $b \leq -c$ and $c \leq -b$.
 qed.
 \end{proof}
 \end{forthel}
@@ -1486,7 +1486,7 @@ $1/p$ is a rational number.
 \end{axiom}
 \end{forthel}
 %
-The reals are "generated" from 
+The reals are "generated" from
 the rationals by suprema (or infima). We postulate:
 %
 \begin{forthel}
@@ -1566,7 +1566,7 @@ $n \neq 0$ and $p = \frac{m}{n}$.
 \end{axiom}
 [timelimit 5]
 \begin{lemma}
-$$\mathbb{Q} = 
+$$\mathbb{Q} =
 \{\frac{m}{n} \mid m,n \in \mathbb{Z} \wedge n \neq 0\}.$$
 \end{lemma}
 \begin{proof}
@@ -1634,13 +1634,13 @@ of natural numbers.
 \end{definition}
 
 \begin{lemma}
-$\mathbb{N} \subseteq \mathbb{Z} \subseteq 
+$\mathbb{N} \subseteq \mathbb{Z} \subseteq
 \mathbb{Q} \subseteq \mathbb{R}$.
 \end{lemma}
 \end{forthel}
 %
 In particular we obtain the following theorem which
-in other set theoretic approaches is equivalent to 
+in other set theoretic approaches is equivalent to
 the Axiom of Infinity.
 %
 \begin{forthel}
@@ -1656,12 +1656,12 @@ are strictly ascending with respect to $\subseteq$.
 Let $x \subsetneq y$ stand for $x \subseteq y$ and $x \neq y$.
 
 \begin{theorem}
-$\mathbb{N} \subsetneq \mathbb{Z} \subsetneq 
+$\mathbb{N} \subsetneq \mathbb{Z} \subsetneq
 \mathbb{Q}$.
 \end{theorem}
 \begin{proof}
 $-1 \notin \mathbb{N}$. $-1 \in \mathbb{Z}$.
-$\frac{1}{2} \notin \mathbb{Z}$. 
+$\frac{1}{2} \notin \mathbb{Z}$.
 $\frac{1}{2} \in \mathbb{Q}$.
 \end{proof}
 
@@ -1673,8 +1673,8 @@ $\mathbb{Z} = \mathbb{N}^- \cup \mathbb{N}$.
 $\mathbb{N}^- \cap \mathbb{N} = \{0\}$.
 \end{lemma}
 \end{forthel}
-We shall later prove that $\mathbb{Q} \subsetneq \mathbb{R}$ 
-using the irrationality of $\sqrt{2}$. 
+We shall later prove that $\mathbb{Q} \subsetneq \mathbb{R}$
+using the irrationality of $\sqrt{2}$.
 The following closure
 properties show that $\mathbb{N}$ is something like
 a half-ring.
@@ -1698,7 +1698,7 @@ $l + m$ is a natural number.
 $l \cdot m$ is a natural number.
 \end{lemma}
 \end{forthel}
-Although we do not have additive inverses available in 
+Although we do not have additive inverses available in
 $\mathbb{N}$, we still have some cancellation properties
 known from rings.
 \begin{forthel}
@@ -1714,7 +1714,7 @@ If $l \cdot m = l \cdot n$ or $m \cdot l = n \cdot l$ then $m = n$.
 %
 Together with the principle of mathematical induction the next
 lemma expresses that $\mathbb{N}$ is an inductive type that
-is generated by $0$ and the successor operation $+1$. 
+is generated by $0$ and the successor operation $+1$.
 %
 \begin{forthel}
 \begin{lemma} Let $n$ be a natural number. Then
@@ -1752,7 +1752,7 @@ $n - m$ is a natural number. $m + (n-m) = (n - m) + m = n$.
 \end{proof}
 
 \begin{lemma}
-Assume there exists a natural number $l$ such 
+Assume there exists a natural number $l$ such
 that $m + l = n$. Then $m \leq n$.
 \end{lemma}
 
@@ -1793,9 +1793,9 @@ $a > b$. Then $-a < -b$. $-a + 1 \leq -b$. $-(-a + 1) \geq -(-b)$. $a - 1 \geq b
 \section{The Principle of Mathematical Induction (\#74)}
 
 We prove the second-order Peano axiom for all subsets of $\mathbb{N}$.
-This implies the principle of {\em complete induction}: to prove a 
+This implies the principle of {\em complete induction}: to prove a
 property $P(n)$ for all natural numbers $n$, prove $P(0)$ and
-the implication $P(n) \rightarrow P(n+1)$. 
+the implication $P(n) \rightarrow P(n+1)$.
 %
 \begin{forthel}
 
@@ -1838,7 +1838,7 @@ symbol $\prec$ which can be viewed as a universal inductive relation.
 The keyphrase {\em proof by induction} turns a universal
 claim $\forall x \ P(x)$ into the thesis
 $$\forall x (\forall y (y \prec x \rightarrow \ P(y)) \rightarrow P(x))$$
-expressing that $P$ is inherited from $\prec$-predecessors.  
+expressing that $P$ is inherited from $\prec$-predecessors.
 Therefore we can describe $\prec$ by:
 %
 \begin{forthel}
@@ -1873,13 +1873,13 @@ Let $n$ be a natural number.
 Case $n = 0$. Trivial.
 
 Case $n \neq 0$. Then take a natural number $m$ such that
-$n = m + 1$. $m$ is inductively smaller than $n$ and $P(m)$. 
+$n = m + 1$. $m$ is inductively smaller than $n$ and $P(m)$.
 Hence $P(n)$.
 Qed.
 \end{proof}
 \end{forthel}
 
-Induction also implies that the relation $<$ is 
+Induction also implies that the relation $<$ is
 well-founded on $\mathbb{N}$: every nonempty subset
 of $\mathbb{N}$ has a minimal element:
 
@@ -1950,7 +1950,7 @@ Take a natural number $m$ such that $m + 1 = n$. $m$ is inductively smaller than
 $$\sumarith{a}{d}{m} = m \cdot ( a + \frac{(m + 1) \cdot d}{2}).$$
 
 Then
-$$\sumarith{a}{d}{n} = 
+$$\sumarith{a}{d}{n} =
 (m \cdot ( a + \frac{(m + 1) \cdot d}{2})) + (a + (d \cdot (m + 1)))$$
 (by 1).
 
@@ -2065,7 +2065,7 @@ $(x + y)^{2} = (x^{2} + (2 \cdot (x \cdot y))) + y^{2}$.
 \end{lemma}
 \begin{proof}
 $(x + y) \cdot (x + y) =
-(x^{2} + (x \cdot y)) + ((y \cdot x) + y^{2}) = 
+(x^{2} + (x \cdot y)) + ((y \cdot x) + y^{2}) =
 (x^{2} + ((x \cdot y) + (y \cdot x))) + y^{2}$.
 \end{proof}
 
@@ -2102,7 +2102,7 @@ $\sumgeom{x}{0} = 0$.
 \end{axiom}
 
 \begin{axiom} Let $x$ be a real number and $n$ be
-a natural number. Then 
+a natural number. Then
 $\sumgeom{x}{n+1} = (\sumgeom{x}{n}) + x^{n}$.
 \end{axiom}
 
@@ -2120,24 +2120,24 @@ Let $n$ be a natural number.
 Case $n = 0$. Trivial.
 
 Case $n \neq 0$.
-Take a natural number $m$ such that $m + 1 = n$. 
+Take a natural number $m$ such that $m + 1 = n$.
 $m$ is inductively smaller than $m+1$ and
 $\sumgeom{x}{m} = \frac{1 - x^{m}}{1 - x}$.
 
 Let $a = x^{m}$ and $b = x^{n}$ and $c=1-x$.
 Then $a,b,c$ are real numbers and
 $\sumgeom{x}{n} =
-\frac{1 - x^{m}}{1 - x} + x^{m} = 
+\frac{1 - x^{m}}{1 - x} + x^{m} =
 \frac{1 - x^{m}}{1 - x} + \frac{x^{m} \cdot (1-x)}{1 - x} =
-\frac{1 - x^{m}}{1 - x} + \frac{(x^{m} \cdot 1) + (x^{m} \cdot (-x))}{1 - x} = 
+\frac{1 - x^{m}}{1 - x} + \frac{(x^{m} \cdot 1) + (x^{m} \cdot (-x))}{1 - x} =
 \frac{1 - x^{m}}{1 - x} + \frac{x^{m} + ((-x) \cdot x^{m})}{1 - x} =
 \frac{1 - x^{m}}{1 - x} + \frac{x^{m} + (-(x \cdot x^{m}))}{1 - x} =
-\frac{1 - x^{m}}{1 - x} + \frac{x^{m} - x^{n}}{1 - x} = 
+\frac{1 - x^{m}}{1 - x} + \frac{x^{m} - x^{n}}{1 - x} =
 \frac{1 - a}{c} + \frac{a - b}{c} =
-\frac{(1 - a) + (a - b)}{c} = 
-\frac{((1 - a) + a) - b}{c} = 
+\frac{(1 - a) + (a - b)}{c} =
+\frac{((1 - a) + a) - b}{c} =
 \frac{(1 + (-a + a)) - b}{c} =
-\frac{1 - b}{c} = 
+\frac{1 - b}{c} =
 \frac{1 - x^{n}}{1 - x}$. End.
 
 \end{proof}
@@ -2164,7 +2164,7 @@ Assume $l | m | n$.
 Then $l | n$.
 \end{lemma}
 \begin{proof}
-Take integers $u,v$ such that 
+Take integers $u,v$ such that
 $m = l \cdot u$ and $n = m \cdot v$.
 Then $n = l \cdot (u \cdot v)$.
 \end{proof}
@@ -2177,7 +2177,7 @@ Then $l | n$.
 Assume that $l$ is nonzero.
 Take an integers $p,q$ such that $m = l \cdot p$ and $m + n = l \cdot q$.
 Take $r = q - p$.
-We have 
+We have
 $(l \cdot p) + (l \cdot r) = l \cdot q = m + n = (l \cdot p) + n$.
 Hence $n = l \cdot r$.
 \end{proof}
@@ -2242,7 +2242,7 @@ for every natural number $m$ that divides $n$ $m = 1$ or $m = n$.
 \end{forthel}
 %
 Remarkably, the following theorem is proved automatically by
-just calling the method of induction, without further details.  
+just calling the method of induction, without further details.
 %
 \begin{forthel}
 [timelimit 10]
@@ -2282,9 +2282,9 @@ $z$ is the greatest common divisor of $z$ and $0$ or $-z$ is the greatest common
 \begin{proof}
 Let $d$ be the greatest common divisor of $z$ and $0$.
 
-Case $z$ is a natural number. $z$ is a common divisor of $z$ and $0$. 
+Case $z$ is a natural number. $z$ is a common divisor of $z$ and $0$.
   Then $d$ divides $z$. $z$ divides $d$. Thus $z = d$. End.
-  
+
 Case $z$ is not a natural number. Then $-z$ is a natural number and $-z$ is the greatest common divisor of $-z$ and $0$.
   $-z$ is a common divisor of $z$ and $0$. Then $-z$ divides $d$ and $d$ divides $-z$. $d = -z$.
 End.
@@ -2298,7 +2298,7 @@ the greatest common divisor of $m$ and $n$.
 \begin{proof}
 Let $d$ be the greatest common divisor of $n$ and $m$.
 Let $\delta$ be the greatest common divisor of $m$ and $n$.
-$d$ is a common divisor of $m$ and $n$. Thus $d$ divides $\delta$. 
+$d$ is a common divisor of $m$ and $n$. Thus $d$ divides $\delta$.
 $\delta$ is a common divisor of $n$ and $m$. Thus $\delta$ divides $d$. $\delta = d$.
 \end{proof}
 
@@ -2327,7 +2327,7 @@ Then $d$ is a divisor of $m-n$.
 \end{proposition}
 \begin{proof}
 Take natural numbers $u,v$ such that $m = d \cdot u$ and $n = d \cdot v$.
-Then $u \cdot d > v \cdot d$. Therefore $(u \cdot d) \cdot 1/d > (v \cdot d) \cdot 1/d$ 
+Then $u \cdot d > v \cdot d$. Therefore $(u \cdot d) \cdot 1/d > (v \cdot d) \cdot 1/d$
 and $u \cdot (d \cdot 1/d) > v \cdot (d \cdot 1/d)$.
 Thus $u > v$.
 Then $m - n =
@@ -2344,22 +2344,22 @@ Then $d$ is a divisor of $m$.
 Let $k$ be $m-n$. $k$ is a natural number.
 Take natural numbers $u,v$ such that $k = d \cdot u$ and $n = d \cdot v$.
 Then $m = k + n =
-(d \cdot u) + (d \cdot v) = 
+(d \cdot u) + (d \cdot v) =
 d \cdot (u + v)$.
 \end{proof}
 
 \begin{lemma}
 Let $m,n$ be natural numbers such that $m > n$. Then
-the greatest common divisor of $m$ and $n$ 
+the greatest common divisor of $m$ and $n$
 is the greatest common divisor of $m-n$ and $n$.
 \end{lemma}
 \begin{proof}
 Case n=0. Trivial.
 
 Case n > 0.
-Let $l$ be the greatest common divisor of $m$ and $n$ 
+Let $l$ be the greatest common divisor of $m$ and $n$
 and $k$ be the greatest common divisor of $m-n$ and $n$.
-$0$ not divides $n$. Then $l > 0$ and $k > 0$. 
+$0$ not divides $n$. Then $l > 0$ and $k > 0$.
 $l$ is a divisor of $m-n$ and $k$ is a divisor of $m$.
 Hence $l$ is a divisor of $k$ and $k$ is a divisor of $l$. Therefore $k=l$. End.
 \end{proof}
@@ -2367,7 +2367,7 @@ Hence $l$ is a divisor of $k$ and $k$ is a divisor of $l$. Therefore $k=l$. End.
 
 \begin{proposition}
 Let $m,n$ be natural numbers such that $m < n$. Then
-the greatest common divisor of $m$ and $n$ 
+the greatest common divisor of $m$ and $n$
 is the greatest common divisor of $n-m$ and $m$.
 \end{proposition}
 
@@ -2405,17 +2405,17 @@ Then $m+n$ is a natural number.
 Case $m + n =0$. Trivial.
 
 Case $m + n > 0$.
-If $m=0$ or $n=0$ then $\gcd(m,n)$ is 
+If $m=0$ or $n=0$ then $\gcd(m,n)$ is
 the greatest common divisor of $m$ and $n$.
 Assume $m>0$ and $n>0$.[timelimit 20]
 If $m \leq n$ then $m + (n-m)$ is inductively smaller than $m + n$ and
 $\gcd(m,n) = \gcd(m,n-m)$ and
-the greatest common divisor of $m$ and $n$ is 
+the greatest common divisor of $m$ and $n$ is
 the greatest common divisor of $m$ and $n-m$
 and the greatest common divisor of $m$ and $n$ is $\gcd(m,n)$. [timelimit 3]
 If $m > n$ then $(m-n) + n$ is inductively smaller than $m + n$ and
-$\gcd(m,n) = \gcd(m-n,n)$ and 
-the greatest common divisor of $m$ and $n$ is 
+$\gcd(m,n) = \gcd(m-n,n)$ and
+the greatest common divisor of $m$ and $n$ is
 the greatest common divisor of $m-n$ and $n$. End.
 \end{proof}
 \end{forthel}
@@ -2475,30 +2475,30 @@ Then $c \geq a$.
 Contradiction.
 End.
 
-Case $m - (k \cdot a) = a$. 
+Case $m - (k \cdot a) = a$.
 $k$ is a natural number.
-$0 = 
-a + (-a) = 
+$0 =
+a + (-a) =
 (m + (-(k \cdot a))) + (-a) =
-m + (-(k \cdot a) + (-a)) = 
-m + (-(k \cdot a) + ((-1) \cdot a)) = 
+m + (-(k \cdot a) + (-a)) =
+m + (-(k \cdot a) + ((-1) \cdot a)) =
 m + (((-k) \cdot a) + ((-1) \cdot a)) =
-m + (((-k)+(-1)) \cdot a) = 
+m + (((-k)+(-1)) \cdot a) =
 m + ((-k-1) \cdot a) =
-m - (-(-k-1) \cdot a)$. 
-$0 \leq m - (-(-k-1) \cdot a) < a$. 
-$-(-k-1)$ is a natural number. 
+m - (-(-k-1) \cdot a)$.
+$0 \leq m - (-(-k-1) \cdot a) < a$.
+$-(-k-1)$ is a natural number.
 Indeed $k$ is a natural number and $0 > ((-k) + (-1)) = (-k-1)$.
 Then there exist a natural number $l$ such that
 $0 \leq m - (-(-k-1) \cdot a) < a$.
 End.
 
 Case $m - (k \cdot a) < a$. Let $\nu = -(k \cdot a)$.
-$0 \leq \mu + \nu < m + \nu$. 
+$0 \leq \mu + \nu < m + \nu$.
 $0 \leq m - (k \cdot a)$.
 Then $k$ is a natural number such that
 $0 \leq  m - (k \cdot a) < a$. End.
-End. 
+End.
 \end{proof}
 
 \begin{lemma}
@@ -2509,7 +2509,7 @@ Then there exists an integer $k$ such that $0 \leq m - (k \cdot a) < a$.
 Case $m$ is a natural number. Then there exists a natural number $k$ such that $0 \leq m - (k \cdot a) < a$. End.
 
 Case $m$ is not a natural number. Let $\mu = -m$. Then $\mu$ is a natural number.
-Take a natural number $k$ such that $0 \leq \mu - (k \cdot a) < a$. Let $\kappa = -k$. 
+Take a natural number $k$ such that $0 \leq \mu - (k \cdot a) < a$. Let $\kappa = -k$.
 $\kappa$ is an integer and $0 \leq m - (\kappa \cdot a) < a$. End.
 \end{proof}
 
@@ -2517,34 +2517,34 @@ $\kappa$ is an integer and $0 \leq m - (\kappa \cdot a) < a$. End.
 
 \begin{theorem}[Bezout]
 Let $a,b$ be integers and $\delta$ be the greatest common divisor of $a$ and $b$.
-Then there exist integer $x$ and integer $y$ such that 
-$\delta = (a \cdot x) + (b \cdot y)$. 
+Then there exist integer $x$ and integer $y$ such that
+$\delta = (a \cdot x) + (b \cdot y)$.
 \end{theorem}
 \begin{proof}
 Case $a = 0$. The greatest common divisor of $b$ and $a$ is equal to $\delta$.
-  Then $\delta = b$ or $\delta = -b$. 1 and -1 are integers. 
-  If $\delta = b$ then $\delta = (a \cdot 1) + (b \cdot 1)$. If $\delta = -b$ then $\delta = (a \cdot 1) + (b \cdot -1)$. End. 
+  Then $\delta = b$ or $\delta = -b$. 1 and -1 are integers.
+  If $\delta = b$ then $\delta = (a \cdot 1) + (b \cdot 1)$. If $\delta = -b$ then $\delta = (a \cdot 1) + (b \cdot -1)$. End.
 
-Case $b = 0$. Then $\delta = a$ or $\delta = -a$. 1 and -1 are integers. 
-  If $\delta = a$ then $\delta = (a \cdot 1) + (b \cdot 1)$. If $\delta = -a$ then $\delta = (a \cdot -1) + (b \cdot 1)$. End. 
+Case $b = 0$. Then $\delta = a$ or $\delta = -a$. 1 and -1 are integers.
+  If $\delta = a$ then $\delta = (a \cdot 1) + (b \cdot 1)$. If $\delta = -a$ then $\delta = (a \cdot -1) + (b \cdot 1)$. End.
 
 Case $a \neq  0$ and $b \neq 0$.
   $0$ not divides $a$. Thus $\delta \neq 0$.
-  Define $S = \{ (a \cdot e) + (b \cdot f) \mid e,f$ are integers and 
+  Define $S = \{ (a \cdot e) + (b \cdot f) \mid e,f$ are integers and
   $(a \cdot e) + (b \cdot f) > 0\}$.
   $a > 0$ or $-a > 0$.
-  $((a \cdot 1) + (b \cdot 0)) > 0$ or $(a \cdot -1) + (b \cdot 0) > 0$. 
+  $((a \cdot 1) + (b \cdot 0)) > 0$ or $(a \cdot -1) + (b \cdot 0) > 0$.
   [timelimit 10] $((a \cdot 1) + (b \cdot 0)) \in S$ or $(a \cdot -1) + (b \cdot 0) \in S$. [timelimit 3]
   $S$ is nonempty.
 
   Let us show that $S \subseteq \mathbb{N}$.
     Indeed we can show that for all $s \in S$ $s \in \mathbb{N}$.
     Let $s \in S$.
-    Take integers $e,f$ such that $s = (a \cdot e) + (b \cdot f)$. 
+    Take integers $e,f$ such that $s = (a \cdot e) + (b \cdot f)$.
     $a \cdot e \in \mathbb{Z}$ and $b \cdot f \in \mathbb{Z}$. Thus $s$ is an integer.
-    $s > 0$. 
+    $s > 0$.
   End.
-    
+
 
   $S$ has an infimum.
   Take $d \in S$ such that $d$ is the infimum of $S$.
@@ -2553,7 +2553,7 @@ Case $a \neq  0$ and $b \neq 0$.
   Let us show that $d$ divides $a$.
     $d$ is a nonzero natural number and $a$ is an integers.
     Take an integer $k$ such that $0 \leq a - (k \cdot d) < d$. Let $r = a - (k \cdot d)$.
-    $r = a - (k \cdot d) = a - (k \cdot ((a \cdot e) + (b \cdot f))) 
+    $r = a - (k \cdot d) = a - (k \cdot ((a \cdot e) + (b \cdot f)))
     = a - ((k \cdot (a \cdot e)) + (k \cdot (b \cdot f)))
     = a + (-(k \cdot (a \cdot e)) - (k \cdot (b \cdot f)))$.
     Let $\phi = (-k \cdot e)$ and $\psi = (-k \cdot f)$.
@@ -2568,7 +2568,7 @@ Case $a \neq  0$ and $b \neq 0$.
   Let us show that $d$ divides $b$.
     $d$ is a nonzero natural number and $b$ is an integers.
     [timelimit 10] Take an integer $k$ such that $0 \leq b - (k \cdot d) < d$. [timelimit 3] Let $r = b - (k \cdot d)$.
-    $r = b - (k \cdot d) = b - (k \cdot ((a \cdot e) + (b \cdot f))) 
+    $r = b - (k \cdot d) = b - (k \cdot ((a \cdot e) + (b \cdot f)))
     = b - ((k \cdot (a \cdot e)) + (k \cdot (b \cdot f)))
     = b + (-(k \cdot (a \cdot e)) - (k \cdot (b \cdot f)))$.
     Let $\phi = (-k \cdot e)$ and $\psi = (-k \cdot f)$.
@@ -2591,7 +2591,7 @@ Case $a \neq  0$ and $b \neq 0$.
     = c \cdot ((u \cdot e) + (v \cdot f))$.
     $((u \cdot e) + (v \cdot f))$ is an integer. $c$ is a divisor of $d$ and $d$ is a divisor of $c$. Thus $d = c$.
   End.
-  
+
   Therefore $d = \delta$ and
   there exist integers $i,j$ such that $\delta = (a \cdot i) + (b \cdot j)$.
 End.
@@ -2610,7 +2610,7 @@ The greatest common divisor of $n$ and $m$ is 0 iff $n = 0$ and $m = 0$.
 \end{lemma}
 \begin{proof}
 Let us show that the greatest common divisor of 0 and 0 is 0.
-  Assume contrary. Let $d$ be the greatest common divisor of 0 and 0. 
+  Assume contrary. Let $d$ be the greatest common divisor of 0 and 0.
   0 is a divisor of 0 and 0 is not a divisor of $d$. Contradiction. End.
 
 Let us show that if the greatest common divisor of $n$ and $m$ is 0 then $n = 0$ and $m = 0$.
@@ -2633,28 +2633,28 @@ End.
       If $q$ is positive then there exist coprime natural numbers $m,n$ such that $m \cdot q = n$.
     \end{lemma}
 \begin{proof}
-Let $q$ be positive. 
+Let $q$ be positive.
 
 Let us show that there exists a natural number $a$ and nonzero natural number $b$ such that $q = \frac{a}{b}$.
   Take an integer $a$ and a nonzero integer $b$ such that $q = \frac{a}{b}$.
-  
+
   Case $a = 0$ or $a,b$ are natural numbers. Trivial.
-  
+
   Case ($a < 0$ and $b > 0$) or ($a > 0$ and $b < 0$). Then $\frac{a}{b} < 0$ and $q \geq 0$. Contradiction. End.
-  
+
   Case $a < 0$ and $b < 0$. Then $-a,-b \in \mathbb{N}$ and $q = \frac{-a}{-b}$. End.
 End.
 Take a natural number $a$ and a nontrivial natural number $b$ such that $q = \frac{a}{b}$.\\
 
-Take the greatest common divisor $d$ of $a$ and $b$. $b$ is nontrivial. Thus 0 not divides $b$ and $d$ is a nonzero natural number. 
+Take the greatest common divisor $d$ of $a$ and $b$. $b$ is nontrivial. Thus 0 not divides $b$ and $d$ is a nonzero natural number.
 Take $n = \frac{a}{d}$ and $m = \frac{b}{d}$. $n,m$ are natural numbers.\\
 
-Let us show that $n,m$ are coprime. 
+Let us show that $n,m$ are coprime.
 
   Assume contrary. The greatest common divisor of $n$ and $m$ is not 1. Take the greatest common divisor $\delta$ of $n$ and $m$.
   Take $p = d \cdot \delta$, $\nu = \frac{n}{\delta}$ and $\mu = \frac{m}{\delta}$. $p,\nu,\mu$ are natural numbers.
   $\nu \cdot p = \frac{n}{\delta} \cdot (\delta \cdot d) = n \cdot d = \frac{a}{d} \cdot d = a$ and
-  $\mu \cdot p = \frac{m}{\delta} \cdot (\delta \cdot d) = m \cdot d = \frac{b}{d} \cdot d = b$. 
+  $\mu \cdot p = \frac{m}{\delta} \cdot (\delta \cdot d) = m \cdot d = \frac{b}{d} \cdot d = b$.
   Thus $p$ divides $a$ and $p$ divides $b$. $\delta \neq 1$.
   Therefore$p$ not divides $d$ and $d$ is not the greatest common divisor of $a$ and $b$. Contradiction.
 End.\\
@@ -2663,7 +2663,7 @@ $q = \frac{n}{m}$ and $m \cdot q = n$.
 \end{proof}
 
     \begin{lemma}
-      If $p$ divides $n^{2}$ then $p$ divides $n$. 
+      If $p$ divides $n^{2}$ then $p$ divides $n$.
     \end{lemma}
     \begin{proof}
       Assume $p$ divides $n^{2}$ and $p$ not divides $n$. Thus the greatest common divisor of $p$ and $n$ is 1.
@@ -2694,36 +2694,36 @@ $q = \frac{n}{m}$ and $m \cdot q = n$.
   \end{forthel}
 
   \section{Finite and Infinite Sets}
-  
+
   \begin{forthel}
   Let $m,n,k$ denote natural numbers.
-  
+
   \begin{definition}
   $\Seq{m}{n}$ is the class of
   natural numbers $i$ such that $m \leq i \leq n$.
   \end{definition}
-  
+
   \begin{lemma}
   $\Seq{m}{n}$ is a set.
   \end{lemma}
-  
-  \begin{lemma} 
+
+  \begin{lemma}
   Assume that $m \leq n \leq k$.
   Then $\Seq{m}{n} \cup \Seq{n+1}{k} = \Seq{m}{k}$.
   \end{lemma}
   \begin{proof}
   $\Seq{m}{k} \subseteq \Seq{m}{n} \cup \Seq{n+1}{k}$.
   Proof.
-  Let $x \in \Seq{m}{k}$. $x$ is an integer. 
+  Let $x \in \Seq{m}{k}$. $x$ is an integer.
   $x \leq n$ or $n+1 \leq x$. Proof. Assume the contrary. Then $n < x < n+1$. $0 < x - n < 1$. End.
   $x \in \Seq{m}{n}$ or $x \in \Seq{n+1}{k}$. End.
   \end{proof}
-  
-  
+
+
   \begin{lemma} Assume that $m \leq n \leq k$.
   Then $\Seq{m}{n}$ and $\Seq{n+1}{k}$ are disjoint.
   \end{lemma}
-  
+
   \begin{lemma} Let $x \in \Seq{1}{n+1} \setminus \Seq{1}{n}$.
   Then $x = n+1$.
   \end{lemma}
@@ -2734,14 +2734,14 @@ $q = \frac{n}{m}$ and $m \cdot q = n$.
   $n < x < n+1$.
   $0 < x - n < 1$.
   \end{proof}
-  
+
   Let $S$ denote a class.
-  
+
   \begin{definition}
-  $S$ is finite iff $S$ and $\Seq{1}{n}$ are equinumerous for some 
+  $S$ is finite iff $S$ and $\Seq{1}{n}$ are equinumerous for some
   natural number $n$.
   \end{definition}
-  
+
   \begin{lemma}
   Let $S$ be finite. Then $S$ is a set.
   \end{lemma}
@@ -2756,32 +2756,32 @@ $q = \frac{n}{m}$ and $m \cdot q = n$.
   determined.
   %
   \begin{forthel}
-  
+
   \begin{lemma}
   For all natural numbers $n$
   for all natural numbers $m$
-  for all injective maps $f$ from 
+  for all injective maps $f$ from
   $\Seq{1}{m}$ to $\Seq{1}{n}$ we have $m \leq n$.
   \end{lemma}
   \begin{proof}[by induction on $n$]
   Let $n$ be a natural number.
   Let $m$ be a natural number.
   Let $f$ be an injective map from $\Seq{1}{m}$ to $\Seq{1}{n}$.
-  
-  Case $n=0$. $\Seq{1}{n} = \emptyset$. Then $\Seq{1}{m} = \emptyset$ and 
+
+  Case $n=0$. $\Seq{1}{n} = \emptyset$. Then $\Seq{1}{m} = \emptyset$ and
   $0 = m \leq n$. Qed.
-  
+
   Case $n \neq 0$.
   Take a natural number $n1$ such that $n = n1 + 1$.
-  
+
   Case $m = 0$. Then $m \leq n$. Trivial.
-  
+
   Case $m \neq 0$.
   Take a natural number $m1$ such that $m = m1 + 1$.
-  
+
   Case $f[\Seq{1}{m1}] \subseteq \Seq{1}{n1}$.
 
-  Let 
+  Let
 $$g = f \upharpoonright \Seq{1}{m1}.$$
   Let $C = \Seq{1}{m1}$. Let $D = \Seq{1}{n1}$.
   $f \upharpoonright \Seq{1}{m1}$ is an injective map.
@@ -2812,19 +2812,19 @@ $$g = f \upharpoonright \Seq{1}{m1}.$$
     f(m) & : j = i
     \end{cases} \]
   for $j \in \Seq{1}{m1}$.
-  $h$ is a map. $\dom(h) = \Seq{1}{m1}$. 
-  
+  $h$ is a map. $\dom(h) = \Seq{1}{m1}$.
+
   (2) $h$ is injective.
 
   Proof.
   Let $j,k$ be distinct elements of $\Seq{1}{m1}$.
   Let us show that $h(j) \neq h(k)$.
-  
+
   Case $j = i$.
   Then $k \neq i$. $k \neq m$. [timelimit 10]
   $h(j) = f(m) \neq f(k) = h(k)$. [timelimit 3]
   Qed.
-  
+
   Case $k = i$.
   Then $j \neq i$. $j \neq m$. [timelimit 10]
   $h(j) = f(j) \neq f(m) = h(k)$. [timelimit 3]
@@ -2833,9 +2833,9 @@ $$g = f \upharpoonright \Seq{1}{m1}.$$
   $h(j) = f(j) \neq f(k) = h(k)$. [timelimit 3]
   Qed.
   Qed.
-  
+
 (3)  $h[\Seq{1}{m1}] \subseteq \Seq{1}{n1}$.
-  
+
 Proof.
   Let $j \in \Seq{1}{m1}$.
   $h(j) \in \Seq{1}{n}$.
@@ -2844,7 +2844,7 @@ Proof.
   $h(j) = f(j) \in \Seq{1}{n}$ or $h(j) = f(m) \in \Seq{1}{n}$.
   [timelimit 3]
   Qed.
-  
+
   Let us show that  $h(j) \in \Seq{1}{n1}$.
 
   Proof.
@@ -2861,33 +2861,33 @@ End.
     $h(j) = f(j) \neq f(i) = n$.
   Qed.
   Qed.
-    
-(4) $h$ is an injective map from $\Seq{1}{m1}$ to $\Seq{1}{n1}$. 
-  
+
+(4) $h$ is an injective map from $\Seq{1}{m1}$ to $\Seq{1}{n1}$.
+
   $n1$ is inductively smaller than $n$.
 Then $m1 \leq n1$ and $m \leq n$.
   Qed.
   Qed.
   Qed.
   \end{proof}
-  
-  
+
+
   \begin{lemma}
   Let $n,m$ be natural numbers and
   $\Seq{1}{m} \sim \Seq{1}{n}$. Then $m = n$.
   \end{lemma}
   \begin{proof}
-  There is an injective map from 
+  There is an injective map from
   $\Seq{1}{m}$ to $\Seq{1}{n}$ and
-  there is an injective map from 
+  there is an injective map from
   $\Seq{1}{n}$ to $\Seq{1}{m}$. Then $m \leq n \leq m$.
   \end{proof}
-  
+
   \begin{signature}
   Let $x$ be a finite set. $|x|$ is the natural number $n$
   such that $x$ and $\Seq{1}{n}$ are equinumerous.
   \end{signature}
-  
+
   \begin{lemma} Let $x$ be a finite set.
   Let $x$ and $\Seq{1}{n}$ be equinumerous. Then
   $|x| = n$.
@@ -2895,11 +2895,11 @@ Then $m1 \leq n1$ and $m \leq n$.
   \begin{proof}
   $x \sim \Seq{1}{|x|}$ and $x \sim \Seq{1}{n}$. Thus $\Seq{1}{|x|} \sim \Seq{1}{n}$.
   \end{proof}
-  
+
   \begin{lemma}
   $|\Seq{1}{n}| = n$.
   \end{lemma}
-  
+
   \begin{lemma}
   Let $n,m,i$ be natural numbers.
   Then $\Seq{m}{n} \sim \Seq{m+i}{n+i}$.
@@ -2915,11 +2915,11 @@ Then $m1 \leq n1$ and $m \leq n$.
   $m  = (m + i) - i \leq u - i \leq (n + i) - i = n$.
 [timelimit 10]
   Hence $u - i \in \Seq{m}{n}$.
-[timelimit 3] $H(u-i) = u$ and 
+[timelimit 3] $H(u-i) = u$ and
   $u \in H[\Seq{m}{n}]$.
   Qed.
   \end{proof}
-  
+
   \begin{lemma}
   Let $x,y$ be disjoint finite sets.
   Then $x \cup y$ is a finite set and $|x \cup y| = |x| + |y|$.
@@ -2927,18 +2927,18 @@ Then $m1 \leq n1$ and $m \leq n$.
   \begin{proof}
   Let $m = |x|$ and $n = |y|$.
   $x \sim \Seq{1}{m}$.
-  Consider $u = \Seq{1}{n}$ and $v = \Seq{m}{m+n}$. 
+  Consider $u = \Seq{1}{n}$ and $v = \Seq{m}{m+n}$.
   $y \sim \Seq{1}{n} \sim \Seq{1+m}{n+m}$.
   $y \sim \Seq{m+1}{m+n}$.[timelimit 30]
   $x \cup y \sim \Seq{1}{m} \cup \Seq{m+1}{m+n} = \Seq{1}{|x|+|y|}$. [timelimit 3]
   $x \cup y \sim \Seq{1}{|x|+|y|}$.
   \end{proof}
-  
-  
+
+
   \begin{definition}
   $S$ is infinite iff $S$ is not finite.
   \end{definition}
-  
+
   \begin{definition}
   $S$ is denumerable iff $S$ and $\mathbb{N}$ are equinumerous.
   \end{definition}
@@ -2946,9 +2946,9 @@ Then $m1 \leq n1$ and $m \leq n$.
 
 
   \section{Number of Subsets of a Set (\#52)}
-  
+
   \begin{forthel}
-  
+
   \begin{lemma}
   Let $X$ be a finite set.
   $|X| = 0$ iff $X = \emptyset$.
@@ -2957,89 +2957,89 @@ Then $m1 \leq n1$ and $m \leq n$.
   Let us show that if $|X| = 0$ then $X = \emptyset$.
     Assume $|X| = 0$ and there exists an $x \in X$.
     Take $x \in X$ and bijection $g$ between $X$ and $\Seq{1}{0}$. Then $g(x) \in \Seq{1}{0} = \emptyset$. Contradiction. End.
-  
-  If $X = \emptyset$ then $|X| = 0$. 
+
+  If $X = \emptyset$ then $|X| = 0$.
   \end{proof}
-  
-  
+
+
   \begin{definition}
-  Let $Y$ be a nonempty set and $y \in Y$. 
+  Let $Y$ be a nonempty set and $y \in Y$.
   $\sset{y}{Y}$ is $\{\nu \in Y \mid \nu=y \}$.
   \end{definition}
-  
+
   \begin{theorem}
   For all finite sets $X$ and all natural numbers $n$ if $|X| = n$ then
   $\pow(X)$ is finite and $|\pow(X)| = 2^{n}$.
   \end{theorem}
   \begin{proof}[by induction on $n$]
   Let $X$ be a finite set and $n$ be a natural number. Assume $|X| = n$.
-  
-  Case $n = 0$. $\Seq{1}{0} = \emptyset$. Thus $X = \emptyset$. 
-    For all $x \in \pow(\emptyset)$ $x = \emptyset$. 
-    Define $h(x) = 1$ for $x \in \pow(\emptyset)$. 
+
+  Case $n = 0$. $\Seq{1}{0} = \emptyset$. Thus $X = \emptyset$.
+    For all $x \in \pow(\emptyset)$ $x = \emptyset$.
+    Define $h(x) = 1$ for $x \in \pow(\emptyset)$.
     $h$ is a bijection between $\pow(\emptyset)$ and $\Seq{1}{1}$.
     Hence $|\pow(X)| = 1$ and $2^{0} = 1$. End.\\
-  
+
   Case $n \neq 0$. Take a natural number $m$ such that $m = n - 1$. $m$ is inductively smaller than $n$.
     There exists a bijection between $X$ and $\Seq{1}{n}$ and $1 \in \Seq{1}{n}$. Thus $X$ is nonempty.
     Take a bijection $g$ between $X$ and $\Seq{1}{n}$. Take $\xi \in X$ such that $g(\xi) = n$.
-  
+
     Define $M = \{x \mid x \in \pow(X)$ and $\xi \in x\}$. Define $N = \{x \mid x \in \pow(X)$ and $\xi \notin x\}$.
     $M \cup N = \pow(X)$. $M,N$ are disjoint.
-  
+
     Take $Y = X \setminus \sset{\xi}{X}$. $Y \subseteq X$.
     Let us show that $Y$ is finite and $|Y| = m$.
       Take $f = g \upharpoonright Y$.
       $g$ is injective. Thus $f$ is injective.
-  
+
       Let us show that $f[Y] \subseteq \Seq{1}{m}$.
         $f[Y] \subseteq \Seq{1}{n}$ and $f(\gamma) = n$ for no $\gamma \in Y$.
         Thus $f[Y] \subseteq \Seq{1}{m}$. End.
-  
+
       (2) $f$ is a surjection from $Y$ onto $\Seq{1}{m}$.
       Indeed we can show that every element of $\Seq{1}{m}$ is a value of $f$.
         Let $y \in \Seq{1}{m}$. $\Seq{1}{m} \subseteq \Seq{1}{n}$. $g$ is a surjection from $X$ onto $\Seq{1}{n}$.
         Take $x \in X$ such that $g(x) = y$. $y \neq n$ and $x \neq \xi$. $x \in Y$ and $f(x) = g(x) = y$. End.
     QED.
-  
-  
+
+
     Let us show that $M$ and $N$ are finite and $|\pow(Y)| = |M| = |N|$.
       We can show that there exists a bijection between $M$ and $N$.
         Define $f(x) = x \setminus \sset{\xi}{X}$ for $x \in M$.
-    
+
         We can show that $f$ is injective.
           Let $x,y \in M$. Assume $f(x) = f(y)$. $\sset{\xi}{X} \subseteq x$ and $\sset{\xi}{X} \subseteq y$.
           $x \setminus \sset{\xi}{X} = y \setminus \sset{\xi}{X}$. Thus $x = y$. End.
-    
+
         We can show that $f[M] \subseteq N$.
           Let $x \in M$ and $y = f(x)$. $y = x \setminus \sset{\xi}{X}$. $y \subseteq X$ and $\xi \notin y$. Thus $y \in N$. End.
-  
+
         (2) $f$ is a surjection from $M$ onto $N$.
         Indeed we can show that every element of $N$ is a value of $f$.
-          Let $y \in N$ and $x = y \cup \sset{\xi}{X}$. $x \subseteq X$ and $\xi \in x$. $x \in M$. 
+          Let $y \in N$ and $x = y \cup \sset{\xi}{X}$. $x \subseteq X$ and $\xi \in x$. $x \in M$.
           $f(x) = (y \cup \sset{\xi}{X}) \setminus \sset{\xi}{X} = y \setminus \sset{\xi}{X} = y$. End.
-      End. 
-  
+      End.
+
       We can show that $\pow(Y) \subseteq N$.
         Let $y \in \pow(Y)$. $y \subseteq X$ and $\xi \notin y$. $y \in N$. End.
-        
+
       We can show that $N \subseteq \pow(Y)$.
         Let $y \in N$. $\xi \notin y$. $y \subseteq Y$. $y \in \pow(Y)$. End.
-        
-  
+
+
       $\pow(Y) = N$. $\pow(Y)$ is finite. $N$ is finite and $M$ is finite.
       Thus $|\pow(Y)| = |N| = |M|$.
     QED.
-  
+
     $|\pow(Y)| = 2^{m}$. Hence $|M| = |N| = 2^{m}$. $|M| + |N| = |M \cup N| = |\pow(X)|$. Let $w = 2^{m}$.
     $|M| + |N| = 2^{m} + 2^{m} = (1 \cdot 2^{m}) + (1 \cdot 2^{m}) = (1 + 1) \cdot 2^{m} =  2 \cdot 2^{m} = 2^{m+1} = 2^{n}$.
     Therefore $\pow(X)$ is finite and $|\pow(X)| = 2^{n}$.
   End.
   \end{proof}
-  
+
   \end{forthel}
-  
-  
+
+
 
 \section{Finite Products}
 
@@ -3092,7 +3092,7 @@ $\Primes$ is infinite.
 Assume that $\Primes$ is finite.
 Take a natural number $r$ such that $\Seq{1}{r}$ and $\Primes$ are equinumerous.
 Take a bijection $p$ between $\Seq{1}{r}$ and $\Primes$.
-$p$ is a sequence of length $r$ and 
+$p$ is a sequence of length $r$ and
 $\Primes = \FinSet{p}{1}{r}$.
 
 (1) $p_{i}$ is a nonzero natural number for every
@@ -3108,7 +3108,7 @@ Proof by contradiction.
 Take a natural number $i$ such that $1 \leq i \leq r$
 and $q=p_{i}$.
 $q$ is a divisor of $n$.
-$i \in \dom(p)$. 
+$i \in \dom(p)$.
 $p_{i}$ is a divisor of $\Prod{p}{1}{r}$
 (by Factorproperty, 1).
 Thus $q$ divides $1$. [timelimit 10]
@@ -3122,7 +3122,7 @@ Contradiction. qed.
 \bibitem{Isabelle} The Isabelle Proof Assistant. \url{https://isabelle.in.tum.de/}
 
 \bibitem{Knaster}
-B. Knaster. Un théorème sur les fonctions d'ensembles. With A. Tarski. 
+B. Knaster. Un théorème sur les fonctions d'ensembles. With A. Tarski.
 \textit{Ann. Soc. Polon. Math.} 6: 133–134, 1928.
 
 \bibitem{Naproche} The Naproche Natural Proof Checker. \url{https://naproche.github.io/}
@@ -3140,7 +3140,7 @@ Analysis}. McGraw Hill, 1953.
 Springer, \textit{Arabian Journal of Mathematics}, vol. 1, p. 529--547
 
 \bibitem{Tarski}
-Alfred Tarski. A lattice-theoretical fixpoint theorem and its applications. 
+Alfred Tarski. A lattice-theoretical fixpoint theorem and its applications.
 \textit{Pacific Journal of Mathematics}. 5:2: 285–309, 1955.
 
 \bibitem{Wiedijk} Freek Wiedijk. Formalizing 100 Theorems. \url{https://www.cs.ru.nl/~freek/100/}
