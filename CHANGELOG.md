@@ -9,7 +9,7 @@ dialect of ForTheL, respectively.
 
 --------------------------------------------------------------------------------
 
-## Current development version
+## naproche-202405xx (Isabelle 2024)
 
 ### Changes on ForTheL
 
