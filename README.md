@@ -1,4 +1,4 @@
-# Naproche-SAD
+# Naproche
 
 [![Build Status](https://travis-ci.com/anfelor/Naproche-SAD.svg?branch=master)](https://travis-ci.com/anfelor/Naproche-SAD)
 
