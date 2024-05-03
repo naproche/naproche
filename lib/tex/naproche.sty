@@ -10,6 +10,7 @@
 \RequirePackage{hyperref}
 \RequirePackage{cleveref}
 \RequirePackage[nolabel, inline]{showlabels}
+\RequirePackage{xurl}
 
 
 % Links
@@ -165,6 +166,13 @@
 % =============
 
 \newcommand{\Naproche}{\ensuremath{\mathbb{N}}aproche\xspace}
+
+
+% Hide imports
+% ============
+
+\usepackage{scontents}
+\newenvsc{imports}[store-env=imports,print-env=false]
 
 
 % Options
