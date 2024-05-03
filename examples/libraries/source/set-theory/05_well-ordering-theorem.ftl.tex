@@ -1,20 +1,24 @@
-\documentclass[../set-theory.tex]{subfiles}
-
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/set-theory}
 \begin{document}
-  \chapter{Zermelo's well-ordering theorem}\label{chapter:zermelo}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
 
-  \filename{set-theory/sections/05_well-ordering-theorem.ftl.tex}
+      [readtex \path{libraries/source/foundations/13_equinumerosity.ftl.tex}]
 
-  \begin{forthel}
-    %[prove off][check off]
+      [readtex \path{libraries/source/set-theory/04_recursion.ftl.tex}]
 
-    [readtex \path{foundations/sections/13_equinumerosity.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
-    [readtex \path{set-theory/sections/04_recursion.ftl.tex}]
 
-    %[prove on][check on]
-  \end{forthel}
-
+  \section{Zermelo's Well-Ordering Theorem}
 
   \begin{forthel}
     \begin{theorem}[Zermelo's Well-ordering Theorem]\printlabel{SET_THEORY_05_4227480655233024}

@@ -1,20 +1,24 @@
-\documentclass[../../set-theory/set-theory.tex]{subfiles}
-
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/set-theory}
 \begin{document}
-  \chapter{Ordinal numbers}\label{chapter:ordinals}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
 
-  \filename{set-theory/sections/02_ordinals.ftl.tex}
+      [readtex \path{libraries/source/foundations/11_binary-relations.ftl.tex}]
 
-  \begin{forthel}
-    %[prove off][check off]
+      [readtex \path{libraries/source/set-theory/01_transitive-classes.ftl.tex}]
 
-    [readtex \path{foundations/sections/11_binary-relations.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
-    [readtex \path{set-theory/sections/01_transitive-classes.ftl.tex}]
 
-    %[prove on][check on]
-  \end{forthel}
-
+  \section{Ordinal Numbers}
 
   \begin{forthel}
     \begin{definition}\printlabel{SET_THEORY_02_229593678086144}
@@ -84,7 +88,7 @@
   \end{forthel}
 
 
-  \section{Zero and successors}
+  \section{Zero and Successors}
 
   \begin{forthel}
     \begin{definition}\printlabel{SET_THEORY_02_8385964858671104}
@@ -185,7 +189,7 @@
   \end{forthel}
 
 
-  \section{The standard ordering of the ordinals}
+  \section{The Standard Ordering of the Ordinals}
 
   \begin{forthel}
     \begin{definition}\printlabel{SET_THEORY_02_6654252130762752}
@@ -359,7 +363,7 @@
   \end{forthel}
 
 
-  \section{Successor and limit ordinals}
+  \section{Successor and Limit Ordinals}
 
   \begin{forthel}
     \begin{definition}\printlabel{SET_THEORY_02_7129712109289472}
@@ -422,7 +426,7 @@
   \end{forthel}
 
 
-  \section{Transfinite induction}
+  \section{Transfinite Induction}
 
   \begin{forthel}
     \begin{definition}\printlabel{SET_THEORY_02_4059354166722560}

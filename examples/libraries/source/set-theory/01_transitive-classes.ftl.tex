@@ -1,18 +1,22 @@
-\documentclass[../../set-theory/set-theory.tex]{subfiles}
-
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/set-theory}
 \begin{document}
-  \chapter{Transitive classes}\label{chapter:transitive-classes}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
 
-  \filename{set-theory/sections/01_transitive-classes.ftl.tex}
+      [readtex \path{libraries/source/foundations/10_sets.ftl.tex}]
 
-  \begin{forthel}
-    %[prove off][check off]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
-    [readtex \path{foundations/sections/10_sets.ftl.tex}]
 
-    %[prove on][check on]
-  \end{forthel}
-
+  \section{Transitive Classes}
 
   \begin{forthel}
     \begin{definition}\printlabel{SET_THEORY_01_8167915266244608}

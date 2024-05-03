@@ -1,20 +1,24 @@
-\documentclass[../set-theory.tex]{subfiles}
-
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/set-theory}
 \begin{document}
-  \chapter{Finite and infinite sets}\label{chapter:finite-and-infinite-sets}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
 
-  \filename{set-theory/sections/07_cardinals.ftl.tex}
+      [readtex \path{libraries/source/set-theory/03_finite-ordinals.ftl.tex}]
 
-  \begin{forthel}
-    %[prove off][check off]
+      [readtex \path{libraries/source/set-theory/06_cardinals.ftl.tex}]
 
-    [readtex \path{set-theory/sections/03_finite-ordinals.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
-    [readtex \path{set-theory/sections/06_cardinals.ftl.tex}]
 
-    %[prove on][check on]
-  \end{forthel}
-
+  \section{Finite and Infinite Sets}
 
   \begin{forthel}
     \begin{proposition}\printlabel{SET_THEORY_07_6139396896063488}

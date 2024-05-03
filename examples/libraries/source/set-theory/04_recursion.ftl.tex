@@ -1,18 +1,22 @@
-\documentclass[../../set-theory/set-theory.tex]{subfiles}
-
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/set-theory}
 \begin{document}
-  \chapter{Recursion}\label{chapter:recursion}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
 
-  \filename{set-theory/sections/04_recursion.ftl.tex}
+      [readtex \path{libraries/source/set-theory/02_ordinals.ftl.tex}]
 
-  \begin{forthel}
-    %[prove off][check off]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
-    [readtex \path{set-theory/sections/02_ordinals.ftl.tex}]
 
-    %[prove on][check on]
-  \end{forthel}
-
+  \section{Recursion}
 
   \begin{forthel}
     \begin{definition}\printlabel{SET_THEORY_04_7107446027845632}

@@ -1,18 +1,22 @@
-\documentclass[../set-theory.tex]{subfiles}
-
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/set-theory}
 \begin{document}
-  \chapter{Cardinal numbers}\label{chapter:cardinals}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
 
-  \filename{set-theory/sections/06_cardinals.ftl.tex}
+      [readtex \path{libraries/source/set-theory/05_well-ordering-theorem.ftl.tex}]
 
-  \begin{forthel}
-    %[prove off][check off]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
-    [readtex \path{set-theory/sections/05_well-ordering-theorem.ftl.tex}]
 
-    %[prove on][check on]
-  \end{forthel}
-
+  \section{Cardinal Numbers}
 
   \begin{forthel}
     \begin{definition}\printlabel{SET_THEORY_06_8286266038681600}
