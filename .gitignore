@@ -31,3 +31,4 @@ dist-newstyle/
 *.bcf
 *.blg
 *.run.xml
+*.aux
