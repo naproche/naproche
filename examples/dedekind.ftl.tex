@@ -1,40 +1,51 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../../lib/tex/naproche}
-\input{../../lib/libraries}
-\input{../../lib/foundations}
-\input{../../lib/arithmetics}
+\documentclass{article}
+\usepackage[british]{babel}
+\usepackage{../lib/tex/naproche}
+\input{libraries/lib/foundations}
+\input{libraries/lib/arithmetics}
+
+\title{Dedekind's Recursion Theorem}
+\author{\Naproche formalization: \vspace{0.5em} \\
+Marcel Schütz}
+\date{2024}
+
 \begin{document}
+  \maketitle
+
+  \noindent This is a formalization of Dedekind's recursion theorem.
+  It states that for any function $f : A \to A$ and any $a \in A$
+  there exists a unique function
+  $\varphi : \Nat \to A$ that is \emph{recursively defined} by
+  $f$ and $a$, i.e. $\varphi(0) = a$ and
+  $\varphi(n + 1) = f(\varphi(n))$.
+  (cf. \cite{Ebbinghaus1991}).
+
   \begin{imports}
     \begin{forthel}
-      %[prove off][check off]
+      [prove off][check off]
       [readtex \path{libraries/source/arithmetics/01_natural-numbers.ftl.tex}]
-      %[prove on][check on]
+      [prove on][check on]
+      Let $n + 1$ stand for $\succ(n)$.
     \end{forthel}
   \end{imports}
 
-
-  \section{Recursion}
-
   \begin{forthel}
-    \begin{definition}\printlabel{ARITHMETIC_02_4608408013504512}
+    \begin{definition*}\label{ARITHMETIC_02_4608408013504512}
       Let $a$ be an object and $f$ be a map.
       Let $\varphi$ be a map from $\Nat$ to $\dom(f)$.
-      $\varphi$ is recursively defined by $a$ and $f$ iff $\varphi(0) = a$ and
-      $\varphi(\succ(n)) = f(\varphi(n))$ for every $n \in \Nat$.
-    \end{definition}
+      $\varphi$ is recursively defined by $a$ and $f$ iff $\varphi(0) = a$ and $\varphi(n + 1) = f(\varphi(n))$ for every $n \in \Nat$.
+    \end{definition*}
   \end{forthel}
 
   \begin{forthel}
-    \begin{theorem}[Dedekind's Recursion Theorem]\printlabel{ARITHMETIC_02_2489427471368192}
+    \begin{theorem*}[Dedekind's Recursion Theorem: Existence]\label{dedekind_existence}
       Let $A$ be a set and $a \in A$ and $f : A \to A$.
-      Then there exists a $\varphi : \Nat \to A$ that is recursively defined by
-      $a$ and $f$.
-    \end{theorem}
+      Then there exists a $\varphi : \Nat \to A$ that is recursively defined by $a$ and $f$.
+    \end{theorem*}
     \begin{proof}
       (a) Define \[ \Phi = \class{H \in \pow(\Nat \times A) | \classtext{
       $(0, a) \in H$ and for all $n \in \Nat$ and all $x \in A$ if
-      $(n, x) \in H$ then $(\succ(n), f(x)) \in H$}}. \]
+      $(n, x) \in H$ then $(n + 1, f(x)) \in H$}}. \]
 
       Let us show that $\bigcap \Phi \in \Phi$. \\
       Proof.
@@ -55,13 +66,13 @@
         Indeed $(0, a) \in \Nat \times A \in \Phi$.
 
         (3) For all $n \in \Nat$ and all $x \in A$ if $(n, x) \in
-        \bigcap \Phi$ then $(\succ(n), f(x)) \in \bigcap \Phi$. \\
+        \bigcap \Phi$ then $(n + 1, f(x)) \in \bigcap \Phi$. \\
         Proof.
           Let $n \in \Nat$ and $x \in A$.
           Assume $(n, x) \in \bigcap \Phi$.
           Then $(n, x)$ is contained in every element of $\Phi$.
-          Hence $(\succ(n), f(x))$ is contained in every element of $\Phi$.
-          Thus $(\succ(n), f(x)) \in \bigcap \Phi$.
+          Hence $(n + 1, f(x))$ is contained in every element of $\Phi$.
+          Thus $(n + 1, f(x)) \in \bigcap \Phi$.
         Qed.
 
         Therefore $\bigcap \Phi \in \Phi$ (by a).
@@ -76,12 +87,12 @@
         (1) $0$ is contained in $\Psi$.
         Indeed $(0, a) \in \bigcap \Phi$.
 
-        (2) For all $n \in \Psi$ we have $\succ(n) \in \Psi$. \\
+        (2) For all $n \in \Psi$ we have $n + 1 \in \Psi$. \\
         Proof.
           Let $n \in \Psi$.
           Take an $x \in A$ such that $(n, x) \in \bigcap \Phi$.
-          Then $(\succ(n), f(x)) \in \bigcap \Phi$.
-          Hence $\succ(n) \in \Psi$.
+          Then $(n + 1, f(x)) \in \bigcap \Phi$.
+          Hence $n + 1 \in \Psi$.
           Indeed $f(x) \in A$.
         Qed.
 
@@ -115,13 +126,13 @@
                   (2) $(0,a) \in H$.
 
                   (3) For all $n \in \Nat$ and all $b \in A$ if
-                  $(n,b) \in H$ then $(\succ(n), f(b)) \in H$. \\
+                  $(n,b) \in H$ then $(n + 1, f(b)) \in H$. \\
                   Proof.
                     Let $n \in \Nat$ and $b \in A$.
                     Assume $(n,b) \in H$.
-                    Then $(\succ(n), f(b)) \in \bigcap \Phi$.
-                    We have $(\succ(n), f(b)) \neq (0,x)$.
-                    Hence $(\succ(n), f(b)) \in H$.
+                    Then $(n + 1, f(b)) \in \bigcap \Phi$.
+                    We have $(n + 1, f(b)) \neq (0,x)$.
+                    Hence $(n + 1, f(b)) \in H$.
                   Qed.
 
                   Thus $H \in \Phi$ (by a).
@@ -142,13 +153,13 @@
                   (2) $(0,a) \in H$.
 
                   (3) For all $n \in \Nat$ and all $b \in A$ if
-                  $(n,b) \in H$ then $(\succ(n), f(b)) \in H$. \\
+                  $(n,b) \in H$ then $(n + 1, f(b)) \in H$. \\
                   Proof.
                     Let $n \in \Nat$ and $b \in A$.
                     Assume $(n,b) \in H$.
-                    Then $(\succ(n), f(b)) \in \bigcap \Phi$.
-                    We have $(\succ(n), f(b)) \neq (0,y)$.
-                    Hence $(\succ(n), f(b)) \in H$.
+                    Then $(n + 1, f(b)) \in \bigcap \Phi$.
+                    We have $(n + 1, f(b)) \neq (0,y)$.
+                    Hence $(n + 1, f(b)) \in H$.
                   Qed.
 
                   Thus $H \in \Phi$ (by a).
@@ -161,75 +172,75 @@
           End.
         Qed.
 
-        (2) For all $n \in \Theta$ we have $\succ(n) \in \Theta$. \\
+        (2) For all $n \in \Theta$ we have $n + 1 \in \Theta$. \\
         Proof.
           Let $n \in \Theta$.
           Then for all $x, y \in A$ if $(n, x), (n, y) \in \bigcap \Phi$ then
           $x = y$.
           Consider a $b \in A$ such that $(n,b) \in \bigcap \Phi$.
-          Then $(\succ(n), f(b)) \in \bigcap \Phi$.
+          Then $(n + 1, f(b)) \in \bigcap \Phi$.
 
-          Let us show that for all $x, y \in A$ if $(\succ(n), x),
-          (\succ(n), y) \in \bigcap \Phi$ then $x = f(b) = y$.
+          Let us show that for all $x, y \in A$ if $(n + 1, x),
+          (n + 1, y) \in \bigcap \Phi$ then $x = f(b) = y$.
             Let $x, y \in A$.
-            Assume $(\succ(n), x), (\succ(n), y) \in \bigcap \Phi$.
+            Assume $(n + 1, x), (n + 1, y) \in \bigcap \Phi$.
             Suppose $x \neq f(b)$ or $y \neq f(b)$.
 
             Case $x \neq f(b)$.
-              Take $H = (\bigcap \Phi) \setminus \set{(\succ(n),x)}$.
+              Take $H = (\bigcap \Phi) \setminus \set{(n + 1,x)}$.
 
               (i) $H \in \pow(\Nat \times A)$.
 
               (ii) $(0,a) \in H$.
               Indeed $(0,a) \in \bigcap \Phi$ and $(0,a) \notin
-              \set{(\succ(n),x)}$.
+              \set{(n + 1,x)}$.
 
               (iii) For all $m \in \Nat$ and all $z \in A$ if $(m,z) \in H$
-              then $(\succ(m),f(z)) \in H$. \\
+              then $(m + 1,f(z)) \in H$. \\
               Proof.
                 Let $m \in \Nat$ and $z \in A$.
                 Assume $(m,z) \in H$.
                 Then $(m,z) \in \bigcap \Phi$.
-                Hence $(\succ(m),f(z)) \in \bigcap \Phi$.
-                $(\succ(m),f(z)) \neq (\succ(n),x)$.
-                Indeed if $(\succ(m),f(z)) = (\succ(n),x)$ then $m = n$ and $f(z) = x$.
-                Therefore $(\succ(m),f(z)) \in H$.
+                Hence $(m + 1,f(z)) \in \bigcap \Phi$.
+                $(m + 1,f(z)) \neq (n + 1,x)$.
+                Indeed if $(m + 1,f(z)) = (n + 1,x)$ then $m = n$ and $f(z) = x$.
+                Therefore $(m + 1,f(z)) \in H$.
               Qed.
 
               [prover vampire]
               Thus $H \in \Phi$ (by a, i, ii, iii).
               [prover eprover]
               Therefore every element of $\bigcap \Phi$ is contained in $H$.
-              Consequently $(\succ(n),x) \in H$.
+              Consequently $(n + 1,x) \in H$.
               Contradiction.
             End.
 
             Case $y \neq f(b)$.
-              Take $H = (\bigcap \Phi) \setminus \set{(\succ(n),y)}$.
+              Take $H = (\bigcap \Phi) \setminus \set{(n + 1,y)}$.
 
               (i) $H \in \pow(\Nat \times A)$.
 
               (ii) $(0,a) \in H$.
               Indeed $(0,a) \in \bigcap \Phi$ and $(0,a) \notin
-              \set{(\succ(n),y)}$.
+              \set{(n + 1,y)}$.
 
               (iii) For all $m \in \Nat$ and all $z \in A$ if $(m,z) \in H$
-              then $(\succ(m),f(z)) \in H$. \\
+              then $(m + 1,f(z)) \in H$. \\
               Proof.
                 Let $m \in \Nat$ and $z \in A$.
                 Assume $(m,z) \in H$.
                 Then $(m,z) \in \bigcap \Phi$.
-                Hence $(\succ(m),f(z)) \in \bigcap \Phi$.
-                $(\succ(m),f(z)) \neq (\succ(n),y)$.
-                Indeed if $(\succ(m),f(z)) = (\succ(n),y)$ then $m = n$ and $f(z) = y$.
-                Therefore $(\succ(m),f(z)) \in H$.
+                Hence $(m + 1,f(z)) \in \bigcap \Phi$.
+                $(m + 1,f(z)) \neq (n + 1,y)$.
+                Indeed if $(m + 1,f(z)) = (n + 1,y)$ then $m = n$ and $f(z) = y$.
+                Therefore $(m + 1,f(z)) \in H$.
               Qed.
 
               [prover vampire]
               Thus $H \in \Phi$ (by a, i, ii, iii).
               [prover eprover]
               Therefore every element of $\bigcap \Phi$ is contained in $H$.
-              Consequently $(\succ(n),y) \in H$.
+              Consequently $(n + 1,y) \in H$.
               Contradiction.
             End.
 
@@ -237,7 +248,7 @@
             Consequently $x = f(b) = y$.
           End.
 
-          Therefore $\succ(n) \in \Theta$ (by a).
+          Therefore $n + 1 \in \Theta$ (by a).
         Qed.
 
         Consequently $n \in \Theta$ for every $n \in \Nat$ (by \cref{ARITHMETIC_01_4764664342773760}).
@@ -249,44 +260,50 @@
       (1) Then $\varphi$ is a map from $\Nat$ to $A$ and we have
       $\varphi(0) = a$.
 
-      (2) For all $n \in \Nat$ we have $\varphi(\succ(n)) =
+      (2) For all $n \in \Nat$ we have $\varphi(n + 1) =
       f(\varphi(n))$. \\
       Proof.
         Let $n \in \Nat$.
         Take $x \in A$ such that $\varphi(n) = x$.
         Then $(n, x) \in \bigcap \Phi$.
-        Hence $(\succ(n), f(\varphi(n))) = (\succ(n), f(x)) \in \bigcap \Phi$.
-        Thus $\varphi(\succ(n)) = f(\varphi(n))$ (by a).
+        Hence $(n + 1, f(\varphi(n))) = (n + 1, f(x)) \in \bigcap \Phi$.
+        Thus $\varphi(n + 1) = f(\varphi(n))$ (by a).
       Qed.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{ARITHMETIC_02_7510132520910848}
+    \begin{theorem*}[Dedekind's Recursion Theorem: Uniqueness]\label{dedekind_uniqueness}
       Let $A$ be a set and $a \in A$ and $f : A \to A$.
       Let $\varphi, \varphi' : \Nat \to A$.
       Assume that $\varphi$ and $\varphi'$ are recursively defined by $a$ and
       $f$.
       Then $\varphi = \varphi'$.
-    \end{proposition}
+    \end{theorem*}
     \begin{proof}
       Define $\Phi = \{ n \in \Nat \mid \varphi(n) = \varphi'(n) \}$.
 
       (1) $\Phi$ contains $0$.
       Indeed $\varphi(0) = a = \varphi'(0)$.
 
-      (2) For all $n \in \Phi$ we have $\succ(n) \in \Phi$. \\
+      (2) For all $n \in \Phi$ we have $n + 1 \in \Phi$. \\
       Proof.
         Let $n \in \Phi$.
         Then $\varphi(n) = \varphi'(n)$.
-        Hence $\varphi(\succ(n))
+        Hence $\varphi(n + 1)
           = f(\varphi(n))
           = f(\varphi'(n))
-          = \varphi'(\succ(n))$.
+          = \varphi'(n + 1)$.
       Qed.
 
       Thus $\Phi$ contains every natural number.
       Consequently $\varphi(n) = \varphi'(n)$ for each $n \in \Nat$.
     \end{proof}
   \end{forthel}
+
+  \begin{thebibliography}{1}
+    \bibitem{Ebbinghaus1991} Heinz-Dieter Ebbinghaus et. al. (1991),
+      \textit{Numbers};
+      Springer Science
+  \end{thebibliography}
 \end{document}
