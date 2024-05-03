@@ -8,9 +8,7 @@
   \begin{imports}
     \begin{forthel}
       %[prove off][check off]
-
       [readtex \path{libraries/source/arithmetics/02_recursion.ftl.tex}]
-
       %[prove on][check on]
     \end{forthel}
   \end{imports}
@@ -39,6 +37,7 @@
       $a$ and $f$ (by \cref{ARITHMETIC_02_2489427471368192}).
       Define $\varphi(n,m) = \psi(m)(n)$ for $(n,m) \in \Nat \times \Nat$.
       Then $\varphi$ is a map from $\Nat \times \Nat$ to $\Nat$.
+      Indeed $\varphi(n,m) \in \Nat$ for all $n, m \in \Nat$.
 
       (1) For all $n \in \Nat$ we have $\varphi(n,0) = n$. \\
       Proof.

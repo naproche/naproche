@@ -8,9 +8,7 @@
   \begin{imports}
     \begin{forthel}
       %[prove off][check off]
-
       [readtex \path{libraries/source/arithmetics/06_multiplication.ftl.tex}]
-
       %[prove on][check on]
     \end{forthel}
   \end{imports}
@@ -213,7 +211,7 @@
       Assume $k \cdot n \mid k \cdot m$.
       Take a natural number $l$ such that $(k \cdot n) \cdot l = k \cdot m$.
       Then $k \cdot (n \cdot l) = k \cdot m$.
-      Hence $n \cdot l = m$.
+      Hence $n \cdot l = m$ (by \cref{ARITHMETIC_06_8575191374364672}).
       Thus $n \mid m$.
     \end{proof}
   \end{forthel}
@@ -279,7 +277,10 @@
           = (k \cdot l) + (k \cdot l'')$.
         Indeed $k \cdot (l + l'') = (k \cdot l) + (k \cdot l'')$
         (by \cref{ARITHMETIC_06_9001524774567936}).
-        Thus $m = (k \cdot l'')$.
+        [prover vampire]
+        Thus $m = (k \cdot l'')$ (by \cref{ARITHMETIC_03_8445946379632640}).
+        Indeed $k \cdot l$ and $k \cdot l''$ are natural numbers.
+        [prover eprover]
         Therefore $k \mid m$.
       End.
     \end{proof}

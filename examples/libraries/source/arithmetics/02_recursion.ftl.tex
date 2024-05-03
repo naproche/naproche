@@ -8,9 +8,7 @@
   \begin{imports}
     \begin{forthel}
       %[prove off][check off]
-
       [readtex \path{libraries/source/arithmetics/01_natural-numbers.ftl.tex}]
-
       %[prove on][check on]
     \end{forthel}
   \end{imports}
@@ -34,7 +32,7 @@
       $a$ and $f$.
     \end{theorem}
     \begin{proof}
-      Define \[ \Phi = \class{H \in \pow(\Nat \times A) | \classtext{
+      (a) Define \[ \Phi = \class{H \in \pow(\Nat \times A) | \classtext{
       $(0, a) \in H$ and for all $n \in \Nat$ and all $x \in A$ if
       $(n, x) \in H$ then $(\succ(n), f(x)) \in H$}}. \]
 
@@ -65,6 +63,8 @@
           Hence $(\succ(n), f(x))$ is contained in every element of $\Phi$.
           Thus $(\succ(n), f(x)) \in \bigcap \Phi$.
         Qed.
+
+        Therefore $\bigcap \Phi \in \Phi$ (by a).
       Qed.
 
       Let us show that for any $n \in \Nat$ there exists an $x \in A$ such
@@ -84,12 +84,14 @@
           Hence $\succ(n) \in \Psi$.
           Indeed $f(x) \in A$.
         Qed.
+
+        Therefore $n \in \Psi$ for every $n \in \Nat$ (by \cref{ARITHMETIC_01_4764664342773760}).
       Qed.
 
       Let us show that for all $n \in \Nat$ and all $x, y \in A$ if
       $(n, x), (n, y) \in \bigcap \Phi$ then $x = y$. \\
       Proof.
-        (a) Define $\Theta = \{ n \in \Nat \mid$ for all $x, y \in A$ if
+        (b) Define $\Theta = \{ n \in \Nat \mid$ for all $x, y \in A$ if
         $(n, x), (n, y) \in \bigcap \Phi$ then $x = y \}$.
 
         (1) $\Theta$ contains $0$. \\
@@ -121,6 +123,8 @@
                     We have $(\succ(n), f(b)) \neq (0,x)$.
                     Hence $(\succ(n), f(b)) \in H$.
                   Qed.
+
+                  Thus $H \in \Phi$ (by a).
                 End.
 
                 Then $(0,x)$ is not contained in every member of $\Phi$.
@@ -146,6 +150,8 @@
                     We have $(\succ(n), f(b)) \neq (0,y)$.
                     Hence $(\succ(n), f(b)) \in H$.
                   Qed.
+
+                  Thus $H \in \Phi$ (by a).
                 End.
 
                 Then $(0,y)$ is not contained in every member of $\Phi$.
@@ -172,13 +178,13 @@
             Case $x \neq f(b)$.
               Take $H = (\bigcap \Phi) \setminus \set{(\succ(n),x)}$.
 
-              (a) $H \in \pow(\Nat \times A)$.
+              (i) $H \in \pow(\Nat \times A)$.
 
-              (b) $(0,a) \in H$.
+              (ii) $(0,a) \in H$.
               Indeed $(0,a) \in \bigcap \Phi$ and $(0,a) \notin
               \set{(\succ(n),x)}$.
 
-              (c) For all $m \in \Nat$ and all $z \in A$ if $(m,z) \in H$
+              (iii) For all $m \in \Nat$ and all $z \in A$ if $(m,z) \in H$
               then $(\succ(m),f(z)) \in H$. \\
               Proof.
                 Let $m \in \Nat$ and $z \in A$.
@@ -186,26 +192,28 @@
                 Then $(m,z) \in \bigcap \Phi$.
                 Hence $(\succ(m),f(z)) \in \bigcap \Phi$.
                 $(\succ(m),f(z)) \neq (\succ(n),x)$.
+                Indeed if $(\succ(m),f(z)) = (\succ(n),x)$ then $m = n$ and $f(z) = x$.
                 Therefore $(\succ(m),f(z)) \in H$.
               Qed.
 
-              Thus $H \in \Phi$.
+              [prover vampire]
+              Thus $H \in \Phi$ (by a, i, ii, iii).
+              [prover eprover]
               Therefore every element of $\bigcap \Phi$ is contained in $H$.
               Consequently $(\succ(n),x) \in H$.
               Contradiction.
             End.
 
             Case $y \neq f(b)$.
-              Take a class $H$ such that $H = (\bigcap \Phi) \setminus
-              \set{(\succ(n),y)}$.
+              Take $H = (\bigcap \Phi) \setminus \set{(\succ(n),y)}$.
 
-              (a) $H \in \pow(\Nat \times A)$.
+              (i) $H \in \pow(\Nat \times A)$.
 
-              (b) $(0,a) \in H$.
+              (ii) $(0,a) \in H$.
               Indeed $(0,a) \in \bigcap \Phi$ and $(0,a) \notin
               \set{(\succ(n),y)}$.
 
-              (c) For all $m \in \Nat$ and all $z \in A$ if $(m,z) \in H$
+              (iii) For all $m \in \Nat$ and all $z \in A$ if $(m,z) \in H$
               then $(\succ(m),f(z)) \in H$. \\
               Proof.
                 Let $m \in \Nat$ and $z \in A$.
@@ -213,10 +221,13 @@
                 Then $(m,z) \in \bigcap \Phi$.
                 Hence $(\succ(m),f(z)) \in \bigcap \Phi$.
                 $(\succ(m),f(z)) \neq (\succ(n),y)$.
+                Indeed if $(\succ(m),f(z)) = (\succ(n),y)$ then $m = n$ and $f(z) = y$.
                 Therefore $(\succ(m),f(z)) \in H$.
               Qed.
 
-              Thus $H \in \Phi$.
+              [prover vampire]
+              Thus $H \in \Phi$ (by a, i, ii, iii).
+              [prover eprover]
               Therefore every element of $\bigcap \Phi$ is contained in $H$.
               Consequently $(\succ(n),y) \in H$.
               Contradiction.
@@ -228,6 +239,8 @@
 
           Therefore $\succ(n) \in \Theta$ (by a).
         Qed.
+
+        Consequently $n \in \Theta$ for every $n \in \Nat$ (by \cref{ARITHMETIC_01_4764664342773760}).
       Qed.
 
       Define $\varphi(n) =$ ``choose $x \in A$ such that $(n, x) \in
@@ -243,7 +256,7 @@
         Take $x \in A$ such that $\varphi(n) = x$.
         Then $(n, x) \in \bigcap \Phi$.
         Hence $(\succ(n), f(\varphi(n))) = (\succ(n), f(x)) \in \bigcap \Phi$.
-        Thus $\varphi(\succ(n)) = f(\varphi(n))$.
+        Thus $\varphi(\succ(n)) = f(\varphi(n))$ (by a).
       Qed.
     \end{proof}
   \end{forthel}

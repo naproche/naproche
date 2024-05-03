@@ -8,9 +8,7 @@
   \begin{imports}
     \begin{forthel}
       %[prove off][check off]
-
       [readtex \path{libraries/source/arithmetics/06_multiplication.ftl.tex}]
-
       %[prove on][check on]
     \end{forthel}
   \end{imports}
@@ -25,7 +23,7 @@
       \[ n = (m \cdot q) + r \] and $r < m$.
     \end{theorem}
     \begin{proof}
-      Define $\Phi = \{ n' \in \Nat \mid$ there exist natural numbers $q, r$
+      (a) Define $\Phi = \{ n' \in \Nat \mid$ there exist natural numbers $q, r$
       such that $r < m$ and $n' = (m \cdot q) + r \}$.
 
       (1) $\Phi$ contains $0$.
@@ -41,8 +39,7 @@
 
         Let us show that there exist natural numbers $q, r$ such that $r < m$
         and $n' + 1 = (m \cdot q) + r$.
-          Take natural numbers $q', r'$ such that $r' < m$ and
-          $n' = (m \cdot q') + r'$.
+          Take natural numbers $q', r'$ such that $r' < m$ and $n' = (m \cdot q') + r'$ (by a).
           We have $r' + 1 < m$ or $r' + 1 = m$.
 
           Case $r' + 1 < m$.
@@ -69,9 +66,8 @@
         Hence $n' + 1 \in \Phi$.
       Qed.
 
-      Then $\Phi$ contains every natural number.
-      Thus there exist natural numbers $q, r$ such that $n = (m \cdot q) + r$
-      and $r < m$.
+      Then $\Phi$ contains every natural number (by \cref{ARITHMETIC_03_647949900054528}).
+      Thus there exist natural numbers $q, r$ such that $n = (m \cdot q) + r$ and $r < m$ (by a).
     \end{proof}
   \end{forthel}
 
@@ -87,8 +83,7 @@
       We have $(m \cdot q) + r = (m \cdot q') + r'$.
 
       Case $q \geq q'$ and $r \geq r'$.
-        (1) $((m \cdot q) + r) - r' = (m \cdot q) + (r - r')$
-        (by \cref{ARITHMETIC_05_7578468875239424}).
+        (1) $((m \cdot q) + r) - r' = (m \cdot q) + (r - r')$ (by \cref{ARITHMETIC_05_7578468875239424}).
         (2) $((m \cdot q') + r') - r'
           = (m \cdot q') + (r' - r')
           = m \cdot q'$.
@@ -107,11 +102,9 @@
           = (m \cdot q') + (r'' + r)
           = ((m \cdot q') + r'') + r$.
         Hence $(m \cdot (q' + q'')) + r = ((m \cdot q') + r'') + r$.
-        Thus $m \cdot (q' + q'') = (m \cdot q') + r''$
-        (by \cref{ARITHMETIC_03_3137702874578944}).
+        Thus $m \cdot (q' + q'') = (m \cdot q') + r''$ (by \cref{ARITHMETIC_03_3137702874578944}).
         We have $m \cdot (q' + q'') = (m \cdot q') + (m \cdot q'')$.
         Hence $(m \cdot q') + (m \cdot q'') = (m \cdot q') + r''$.
-        [prover vampire]
         Thus $m \cdot q'' = r''$ (by \cref{ARITHMETIC_03_8445946379632640}).
         Then we have $m \cdot q'' < m \cdot 1$.
         Indeed $m \cdot q''
@@ -133,12 +126,10 @@
           = (m \cdot q) + (r'' + r')
           = ((m \cdot q) + r'') + r'$.
         Hence $((m \cdot q) + r'') + r' = (m \cdot (q + q'')) + r'$.
-        Thus $(m \cdot q) + r'' = m \cdot (q + q'')$
-        (by \cref{ARITHMETIC_03_3137702874578944}).
+        Thus $(m \cdot q) + r'' = m \cdot (q + q'')$ (by \cref{ARITHMETIC_03_3137702874578944}).
         We have $m \cdot (q + q'') = (m \cdot q) + (m \cdot q'')$.
         Hence $(m \cdot q) + r'' = (m \cdot q) + (m \cdot q'')$.
-        [prover vampire]
-        Thus $r'' = m \cdot q''$.
+        Thus $r'' = m \cdot q''$ (by \cref{ARITHMETIC_03_8445946379632640}).
         Then we have $m \cdot q'' < m \cdot 1$.
         Indeed $m \cdot q''
           = r''
@@ -153,8 +144,7 @@
       End.
 
       Case $q < q'$ and $r < r'$.
-        (1) $((m \cdot q') + r') - r = (m \cdot q') + (r' - r)$
-        (by \cref{ARITHMETIC_05_7578468875239424}).
+        (1) $((m \cdot q') + r') - r = (m \cdot q') + (r' - r)$ (by \cref{ARITHMETIC_05_7578468875239424}).
         (2) $((m \cdot q) + r) - r
           = (m \cdot q) + (r - r)
           = m \cdot q$.

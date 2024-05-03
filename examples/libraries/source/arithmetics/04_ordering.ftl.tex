@@ -8,11 +8,8 @@
   \begin{imports}
     \begin{forthel}
       %[prove off][check off]
-
       [readtex \path{libraries/source/foundations/11_binary-relations.ftl.tex}]
-
       [readtex \path{libraries/source/arithmetics/03_addition.ftl.tex}]
-
       %[prove on][check on]
     \end{forthel}
   \end{imports}
@@ -175,6 +172,7 @@
       Assume $n \leq m$ and $m \leq n$.
       Take natural numbers $k, l$ such that $m = n + k$ and $n = m + l$.
       Then $m
+        = n + k
         = (m + l) + k
         = m + (l + k)$.
       Hence $l + k = 0$.
@@ -195,6 +193,7 @@
       Take a positive natural number $a$ such that $m = n + a$.
       Take a positive natural number $b$ such that $k = m + b$.
       Then $k
+        = m + b
         = (n + a) + b
         = n + (a + b)$.
       $a + b$ is positive.
@@ -297,7 +296,7 @@
         Qed.
       Qed.
 
-      Thus every natural number is contained in $\Phi$.
+      Thus every natural number is contained in $\Phi$ (by \cref{ARITHMETIC_03_647949900054528}).
       Therefore $n < m$ or $n = m$ or $n > m$.
     \end{proof}
   \end{forthel}
@@ -454,7 +453,7 @@
           = n + (l + k)
           = (n + l) + k$.
         Hence $m + k = (n + l) + k$.
-        Thus $m = n + l$.
+        Thus $m = n + l$ (by \cref{ARITHMETIC_03_3137702874578944}).
         Therefore $n < m$.
       End.
     \end{proof}
@@ -481,7 +480,8 @@
   \begin{forthel}
     \begin{corollary}\printlabel{ARITHMETIC_04_5512590832697344}
       Let $n, m, k$ be natural numbers.
-      Then \[ n \leq m \iff n + k \leq m + k. \]
+      Then \[ n \leq m \iff n + k \leq m + k \]
+      (by \cref{ARITHMETIC_04_4203390999461888}, ARITHMETIC_03_4029553232052224).
     \end{corollary}
   \end{forthel}
 
@@ -504,11 +504,9 @@
     \begin{proof}
       Assume $n \neq m$.
       Then $n < m$ or $m < n$.
-      If $n < m$ then $n \notin A$.
-      If $m < n$ then $m \notin A$.
-      Hence $n, m \notin A$.
+      Hence $(n, m) \in {<}$ or $(m, n) \in {<}$.
+      Thus $n$ and $m$ are not least elements of $A$ regarding ${<}$.
       Contradiction.
-      Therefore $n = m$.
     \end{proof}
   \end{forthel}
 
@@ -530,7 +528,7 @@
         Contradiction.
       End.
 
-      Define $\Phi = \{ n \in \Nat \mid n$ is less than any element of $A \}$.
+      (a) Define $\Phi = \{ n \in \Nat \mid n$ is less than any element of $A \}$.
 
       (1) $\Phi$ contains $0$. \\
       Proof.
@@ -544,14 +542,14 @@
         Let $n \in \Phi$.
         Then $n$ is less than any element of $A$.
         Assume that $\Phi$ does not contain $n + 1$.
-        Then we can take an $m \in A$ such that $n + 1 \nless m$.
+        Then we can take an $m \in A$ such that $n + 1 \nless m$ (by a).
         Then $n < m \leq n + 1$.
         Hence $m = n + 1$.
         Thus $n + 1$ is a least element of $A$ regarding ${<}$.
         Contradiction.
       Qed.
 
-      Then $\Phi$ contains every natural number.
+      Then $\Phi$ contains every natural number (by \cref{ARITHMETIC_03_647949900054528}).
       Therefore every natural number is less than any element of $A$.
       Consequently $A$ is empty.
       Contradiction.
@@ -564,7 +562,7 @@
     \end{corollary}
     \begin{proof}
       Let $A$ be a nonempty subclass of $\Nat$.
-      For any $n, m \in A$ we have $(n, m) \in {<}$ iff $n < m$.
+      For any $n, m \in A$ we have $(n, m) \in {<}$ iff $n < m$ (by \cref{ARITHMETIC_04_4059354166722560}).
 
       (1) ${<}$ is irreflexive on $A$.
       Indeed for any $n \in A$ we have $n \nless n$.
@@ -639,7 +637,7 @@
         Therefore $n + 1 \in \Phi$.
       Qed.
 
-      Thus $\Phi$ contains every natural number.
+      Thus $\Phi$ contains every natural number (by \cref{ARITHMETIC_03_647949900054528}).
       Consequently for all $n \in \Nat_{\geq k}$ we have $n \in A$.
     \end{proof}
   \end{forthel}

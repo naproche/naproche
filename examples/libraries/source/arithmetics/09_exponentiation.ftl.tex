@@ -8,9 +8,7 @@
   \begin{imports}
     \begin{forthel}
       %[prove off][check off]
-
       [readtex \path{libraries/source/arithmetics/06_multiplication.ftl.tex}]
-
       %[prove on][check on]
     \end{forthel}
   \end{imports}
@@ -19,6 +17,7 @@
   \section{Definition of Exponentiation}
 
   \begin{forthel}
+    [checktime 3]
     \begin{lemma}\printlabel{ARITHMETIC_13_2103235571613696}
       There exists a $\varphi : \Nat \times \Nat \to \Nat$ such
       that for all $n \in \Nat$ we have $\varphi(n, 0) = 1$ and
@@ -66,9 +65,11 @@
       Hence for all $n \in \Nat$ we have $\varphi(n, 0) = 1$ and
       $\varphi(n, m + 1) = \varphi(n,m) \cdot n$ for any $m \in \Nat$.
     \end{proof}
+    [/checktime]
   \end{forthel}
 
   \begin{forthel}
+    [checktime 3]
     \begin{lemma}\printlabel{ARITHMETIC_13_2359278746730496}
       Let $\varphi, \varphi' : \Nat \times \Nat \to \Nat$.
       Assume that for all $n \in \Nat$ we have $\varphi(n, 0) = 1$ and
@@ -97,17 +98,22 @@
         Thus $\varphi(n,m + 1) = \varphi'(n,m + 1)$ for all $n \in \Nat$.
       Qed.
 
-      Thus $\Phi$ contains every natural number.
+      Thus $\Phi$ contains every natural number (by \cref{ARITHMETIC_03_647949900054528}).
       Therefore $\varphi(n,m) = \varphi'(n,m)$ for all $n, m \in \Nat$.
+      Consequently $\varphi = \varphi'$.
+      Indeed $\varphi(a) = \varphi'(a)$ for all $a \in \Nat \times \Nat$.
     \end{proof}
+    [/checktime]
   \end{forthel}
 
   \begin{forthel}
+    [checktime 3]
     \begin{definition}\printlabel{ARITHMETIC_13_3663815629602816}
       $\exp$ is the map from $\Nat \times \Nat$ to $\Nat$ such that for all
       $n \in \Nat$ we have $\exp(n, 0) = 1$ and $\exp(n, m + 1) =
       \exp(n, m) \cdot n$ for any $m \in \Nat$.
     \end{definition}
+    [/checktime]
 
     Let $n^{m}$ stand for $\exp(n,m)$.
   \end{forthel}
@@ -157,6 +163,7 @@
         = 0^{m + 1}
         = 0^{m} \cdot 0
         = 0$.
+      Indeed $0^{m + 1} = 0^{m} \cdot 0$ (by \cref{ARITHMETIC_13_4140498660884480}).
     \end{proof}
   \end{forthel}
 
@@ -179,7 +186,7 @@
           = 1$.
       Qed.
 
-      Hence every natural number is contained in $\Phi$.
+      Hence every natural number is contained in $\Phi$ (by \cref{ARITHMETIC_03_647949900054528}).
       Thus $1^{n} = 1$.
     \end{proof}
   \end{forthel}
@@ -240,7 +247,7 @@
         \[    = k^{n} \cdot k^{m' + 1}.       \]
       Qed.
 
-      Hence every natural number is contained in $\Phi$.
+      Hence every natural number is contained in $\Phi$ (by \cref{ARITHMETIC_03_647949900054528}).
       Thus $k^{n + m} = k^{n} \cdot k^{m}$.
     \end{proof}
   \end{forthel}
@@ -273,7 +280,7 @@
         \[    = n^{m \cdot (k' + 1)}.       \]
       Qed.
 
-      Therefore every natural number is contained in $\Phi$.
+      Therefore every natural number is contained in $\Phi$ (by \cref{ARITHMETIC_03_647949900054528}).
       Consequently $n^{m \cdot k} = (n^{m})^{k}$.
     \end{proof}
   \end{forthel}
@@ -318,7 +325,7 @@
         \[    = n^{k' + 1} \cdot m^{k' + 1}.              \]
       Qed.
 
-      Therefore every natural number is contained in $\Phi$.
+      Therefore every natural number is contained in $\Phi$ (by \cref{ARITHMETIC_03_647949900054528}).
       Consequently $(n \cdot m)^{k} = n^{k} \cdot m^{k}$.
     \end{proof}
   \end{forthel}
@@ -352,7 +359,7 @@
           End.
         Qed.
 
-        Thus every natural number is contained in $\Phi$.
+        Thus every natural number is contained in $\Phi$ (by \cref{ARITHMETIC_03_647949900054528}).
         Consequently $m \in \Phi$.
         Therefore $n = 0$ and $m \neq 0$.
       End.
@@ -453,7 +460,7 @@
           Thus $k' + 1 \in \Phi$.
         Qed.
 
-        Therefore every natural number is contained in $\Phi$.
+        Therefore every natural number is contained in $\Phi$ (by \cref{ARITHMETIC_03_647949900054528}).
         Consequently $n^{k} < m^{k}$.
       End.
 
@@ -485,9 +492,8 @@
           Hence $k' + 1 \in \Psi$.
         Qed.
 
-        Thus every natural number is contained in $\Psi$.
+        Thus every natural number is contained in $\Psi$ (by \cref{ARITHMETIC_03_647949900054528}).
         Therefore if $n \geq m$ then $n^{k} \geq m^{k}$.
-        [prover vampire]
         Consequently $n < m$.
       End.
     \end{proof}
@@ -519,9 +525,13 @@
     \begin{proof}
       If $n^{k} < m^{k}$ then $n < m$.
       If $n^{k} = m^{k}$ then $n = m$.
+      [prover vampire]
+      Hence $n^{k} \leq m^{k} \implies n \leq m$.
+      [prover eprover]
 
       If $n < m$ then $n^{k} < m^{k}$.
       If $n = m$ then $n^{k} = m^{k}$.
+      Hence $n \leq m \implies n^{k} \leq m^{k}$.
     \end{proof}
   \end{forthel}
 
@@ -572,7 +582,7 @@
           Qed.
         Qed.
 
-        Hence every natural number is contained in $\Phi$.
+        Hence every natural number is contained in $\Phi$ (by \cref{ARITHMETIC_03_647949900054528}).
         Thus $k^{n} < k^{m}$.
       End.
 
@@ -609,7 +619,7 @@
           Qed.
         Qed.
 
-        Thus every natural number is contained in $\Psi$.
+        Thus every natural number is contained in $\Psi$ (by \cref{ARITHMETIC_03_647949900054528}).
         Therefore if $n \geq m$ then $k^{n} \geq k^{m}$.
         [prover vampire]
         Consequently $n < m$.
@@ -640,6 +650,14 @@
       Assume $k > 1$.
       Then \[ n \leq m \iff k^{n} \leq k^{m}. \]
     \end{corollary}
+    \begin{proof}
+      If $n \leq m$ then $k^{n} \leq k^{m}$.
+
+      Let us show that if $k^{n} \leq k^{m}$ then $n \leq m$.
+        Case $k^{n} = k^{m}$. Obvious (by \cref{ARITHMETIC_13_6780506905509888}).
+        Case $k^{n} < k^{m}$. Obvious.
+      End.
+    \end{proof}
   \end{forthel}
 
   \begin{forthel}
@@ -670,6 +688,7 @@
       Define $\Phi = \{ n' \in \Nat_{\geq 3} \mid n'^{2} > (2 \cdot n') + 1 \}$.
 
       (1) $\Phi$ contains $3$.
+      Indeed $3^{2} > (2 \cdot 3) + 1$.
 
       (2) For all $n' \in \Phi$ we have $n' + 1 \in \Phi$. \\
       Proof.
@@ -691,8 +710,7 @@
         (c) $(2 \cdot (n' + n')) + 1 > (2 \cdot (n' + 1)) + 1$. \\
         Proof.
           We have $n' + n' > n' + 1$ and $2 \neq 0$.
-          Thus $2 \cdot (n' + n') > 2 \cdot (n' + 1)$
-          (by \cref{ARITHMETIC_06_5048640368279552}).
+          Thus $2 \cdot (n' + n') > 2 \cdot (n' + 1)$ (by \cref{ARITHMETIC_06_5048640368279552}).
           Indeed $n' + n'$ and $n' + 1$ are natural numbers.
         Qed.
 
@@ -710,8 +728,9 @@
         Thus $(n' + 1)^{2} = A > B = (2 \cdot (n' + 1)) + 1$.
       Qed.
 
-      Therefore $\Phi$ contains every element of $\Nat_{\geq 3}$
-      (by \cref{ARITHMETIC_04_4976599269113856}).
+      [prover vampire]
+      Therefore $\Phi$ contains every element of $\Nat_{\geq 3}$ (by \cref{ARITHMETIC_04_4976599269113856}, 1, 2).
+      [prover eprover]
       Consequently $n^{2} > (2 \cdot n) + 1$.
     \end{proof}
   \end{forthel}

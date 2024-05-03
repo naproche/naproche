@@ -7,13 +7,10 @@
 \begin{document}
   \begin{imports}
     \begin{forthel}
-      %[prove off][check off]
-
+      [prove off][check off]
       [readtex \path{libraries/source/foundations/13_equinumerosity.ftl.tex}]
-
       [readtex \path{libraries/source/arithmetics/04_ordering.ftl.tex}]
-
-      %[prove on][check on]
+      [prove on][check on]
     \end{forthel}
   \end{imports}
 
@@ -237,6 +234,8 @@
         Take a bijection $f$ between $\{ 1, \dots, 2 \}$ and $X$.
         We have $\{ 1, \dots, 2 \} = \set{1, 2}$.
         Hence $X = \set{f(1), f(2)}$.
+        Thus $X$ is an unordered pair.
+        Indeed $f(1) \neq f(2)$.
       End.
     \end{proof}
   \end{forthel}
@@ -382,13 +381,14 @@
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_11_4164024962908160}
       Let $X$ be a system of sets.
-      $X$ is closed under finite unions iff $U \cup V \in X$ for every
-      $U, V \in X$.
+      $X$ is closed under finite unions iff $U \cup V \in X$ for every $U, V \in X$.
     \end{proposition}
     \begin{proof}
       Case $X$ is closed under finite unions.
         Let $U, V \in X$.
         Then $\set{U, V}$ is a nonempty finite subset of $X$.
+        Indeed $|\set{U, V}| = 1$ or $|\set{U, V}| = 2$ (by \cref{ARITHMETIC_11_963914846175232}, \cref{ARITHMETIC_11_3151583407767552}).
+        Indeed (if $U = V$ then $\set{U, V}$ is a singleton class) and (if $U \neq V$ then $\set{U, V}$ is an unordered pair).
         Hence $U \cup V = \bigcup \set{U, V} \in X$.
       End.
 
@@ -419,10 +419,18 @@
               Let us show that $V \subseteq U$.
                 Let $x \in V$.
                 Take $k \in \{ 1, \dots, n \}$ such that $x = f(k)$.
+                Indeed we can show that there exists a $k \in \{ 1, \dots, n \}$ such that $x = f(k)$.
+                  Assume the contrary.
+                  Then $x \neq f(k)$ for all $k \in \{ 1, \dots, n \}$.
+                  Hence $x \notin f[\{ 1, \dots, n \}] = V$.
+                  Contradiction.
+                End.
                 Hence $x \in U$.
               End.
 
               $V$ is a nonempty set.
+              Indeed $f(1) \in f[\{ 1, \dots, n \}]$.
+              Indeed $1 \in \{ 1, \dots, n \}$.
               Hence $V$ is a nonempty subset of $X$.
               $U$ is a class and $f : \{ 1, \dots, n + 1 \} \into U$.
               [prover vampire]
@@ -452,11 +460,12 @@
                 = (\bigcup V) \cup f(n + 1)
                 \in X$.
               Indeed $V$ and $\set{f(n + 1)}$ are nonempty systems of sets.
+              Indeed $f(n + 1)$ and $f(k)$ are sets for every $k \in \{ 1, \dots, n \}$.
             End.
           End.
         Qed.
 
-        Therefore $\Phi$ contains every natural number.
+        Therefore $\Phi$ contains every natural number (by \cref{ARITHMETIC_03_647949900054528}).
         Thus $\bigcup U \in X$ for every nonempty finite subset $U$ of $X$.
         Consequently $X$ is closed under finite unions.
       End.
@@ -496,13 +505,14 @@
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_11_1405012582334464}
       Let $X$ be a system of sets.
-      $X$ is closed under finite intersections iff $U \cap V \in X$ for every
-      $U, V \in X$.
+      $X$ is closed under finite intersections iff $U \cap V \in X$ for every $U, V \in X$.
     \end{proposition}
     \begin{proof}
       Case $X$ is closed under finite intersections.
         Let $U, V \in X$.
         Then $\set{U, V}$ is a nonempty finite subset of $X$.
+        Indeed $|\set{U, V}| = 1$ or $|\set{U, V}| = 2$ (by \cref{ARITHMETIC_11_963914846175232}, \cref{ARITHMETIC_11_3151583407767552}).
+        Indeed (if $U = V$ then $\set{U, V}$ is a singleton class) and (if $U \neq V$ then $\set{U, V}$ is an unordered pair).
         Hence $U \cap V = \bigcap \set{U, V} \in X$.
       End.
 
@@ -533,16 +543,25 @@
               Let us show that $V \subseteq U$.
                 Let $x \in V$.
                 Take $k \in \{ 1, \dots, n \}$ such that $x = f(k)$.
+                Indeed we can show that there exists a $k \in \{ 1, \dots, n \}$ such that $x = f(k)$.
+                  Assume the contrary.
+                  Then $x \neq f(k)$ for all $k \in \{ 1, \dots, n \}$.
+                  Hence $x \notin f[\{ 1, \dots, n \}] = V$.
+                  Contradiction.
+                End.
                 Hence $x \in U$.
               End.
 
               $V$ is a nonempty set.
+              Indeed $f(1) \in f[\{ 1, \dots, n \}]$.
+              Indeed $1 \in \{ 1, \dots, n \}$.
               Hence $V$ is a nonempty subset of $X$.
               $U$ is a class and $f : \{ 1, \dots, n + 1 \} \into U$.
               [prover vampire]
               Hence $f \restriction \{ 1, \dots, n \}$ is a bijection between
               $\{ 1, \dots, n \}$ and $V$
               (by \cref{FOUNDATIONS_08_647446231252992}).
+              Indeed $\{ 1, \dots, n \} \subseteq \{ 1, \dots, n + 1 \}$.
               [prover eprover]
               Thus $|V| = n$.
               Consequently $\bigcap V \in X$.
@@ -566,11 +585,12 @@
                 = (\bigcap V) \cap f(n + 1)
                 \in X$.
               Indeed $V$ and $\set{f(n + 1)}$ are nonempty systems of sets.
+              Indeed $f(n + 1)$ and $f(k)$ are sets for every $k \in \{ 1, \dots, n \}$.
             End.
           End.
         Qed.
 
-        Therefore $\Phi$ contains every natural number.
+        Therefore $\Phi$ contains every natural number (by \cref{ARITHMETIC_03_647949900054528}).
         Thus $\bigcap U \in X$ for every nonempty finite subset $U$ of $X$.
         Consequently $X$ is closed under finite intersections.
       End.

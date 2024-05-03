@@ -8,9 +8,7 @@
   \begin{imports}
     \begin{forthel}
       %[prove off][check off]
-
       [readtex \path{libraries/source/arithmetics/04_ordering.ftl.tex}]
-
       %[prove on][check on]
     \end{forthel}
   \end{imports}
@@ -122,6 +120,7 @@
   \end{forthel}
 
   \begin{forthel}
+    [checktime 3]
     \begin{proposition}\printlabel{ARITHMETIC_05_7595909347016704}
       Let $n, m, k$ be natural numbers such that $n \geq  m + k$.
       Then \[ (n - m) - k = n - (m + k). \]
@@ -136,5 +135,6 @@
 
       Hence $(n - m) - k = n - (m + k)$.
     \end{proof}
+    [/checktime]
   \end{forthel}
 \end{document}
