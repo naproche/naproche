@@ -1,17 +1,18 @@
-\documentclass[../../set-theory/set-theory.tex]{subfiles}
-
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
 \begin{document}
-  \chapter{Symmetric difference}\label{chapter:symmetric-difference}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
 
-  \filename{foundations/sections/03_symmetric-difference.ftl.tex}
+      [readtex \path{libraries/source/foundations/02_computation-laws-for-classes.ftl.tex}]
 
-  \begin{forthel}
-    %[prove off][check off]
-
-    [readtex \path{foundations/sections/02_computation-laws-for-classes.ftl.tex}]
-
-    %[prove on][check on]
-  \end{forthel}
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
 
   \section{Definitions}
@@ -60,9 +61,9 @@
   \end{forthel}
 
 
-  \section{Computation laws}
+  \section{Computation Laws}
 
-  \subsection*{Commutativity}
+  \subsection{Commutativity}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_03_4518372049944576}
@@ -78,7 +79,7 @@
   \end{forthel}
 
 
-  \subsection*{Associativity}
+  \subsection{Associativity}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_03_8680845204258816}
@@ -192,7 +193,7 @@
   \end{forthel}
 
 
-  \subsection*{Distributivity}
+  \subsection{Distributivity}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_03_4119141910839296}
@@ -214,7 +215,7 @@
   \end{forthel}
 
 
-  \subsection*{Miscellaneous rules}
+  \subsection{Miscellaneous Rules}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_03_7383417205293056}

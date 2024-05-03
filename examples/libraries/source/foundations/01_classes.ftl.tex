@@ -1,23 +1,21 @@
-\documentclass[../../set-theory/set-theory.tex]{subfiles}
-
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
 \begin{document}
-  \chapter{Classes}\label{chapter:classes}
+  \begin{imports}
+    \begin{forthel}
+      [readtex \path{vocabulary.ftl.tex}]
 
-  \filename{foundations/sections/01_classes.ftl.tex}
+      [readtex \path{axioms.ftl.tex}]
 
-
-  \section{Preliminaries}
-
-  \begin{forthel}
-    [readtex \path{vocabulary.ftl.tex}]
-
-    [readtex \path{axioms.ftl.tex}]
-
-    [readtex \path{macros.ftl.tex}]
-  \end{forthel}
+      [readtex \path{macros.ftl.tex}]
+    \end{forthel}
+  \end{imports}
 
 
-  \section{Sub- and superclasses}
+  \section{Sub- and Superclasses}
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_01_3275578358628352}
@@ -85,7 +83,7 @@
   \end{forthel}
 
 
-  \section{The empty class}
+  \section{The Empty Class}
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_01_6252477624090624}
@@ -136,7 +134,7 @@
   \end{forthel}
 
 
-  \section{Unordered pairs}
+  \section{Unordered Pairs}
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_01_3471035364016128}
@@ -209,7 +207,7 @@
   \end{forthel}
 
 
-  \section{Unions, intersections, complements}
+  \section{Unions, Intersections, Complements}
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_01_2159753924968448}
@@ -242,7 +240,7 @@
   \end{forthel}
 
 
-  \section{Disjoint classes}
+  \section{Disjoint Classes}
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_01_4981913324355584}

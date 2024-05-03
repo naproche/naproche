@@ -1,17 +1,21 @@
-\documentclass[../../set-theory/set-theory.tex]{subfiles}
-
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
 \begin{document}
-  \chapter{Computation laws for images and preimages}\label{chapter:image-and-preimage}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
 
-  \filename{foundations/sections/07_computation-laws-for-maps.ftl.tex}
+      [readtex \path{libraries/source/foundations/06_maps.ftl.tex}]
 
-  \begin{forthel}
-    %[prove off][check off]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
-    [readtex \path{foundations/sections/06_maps.ftl.tex}]
 
-    %[prove on][check on]
-  \end{forthel}
+  \section{Computation Laws for Images and Preimages}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_07_5919649206108160}

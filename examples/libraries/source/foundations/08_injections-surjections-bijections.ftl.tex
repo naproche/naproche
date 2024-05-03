@@ -1,20 +1,21 @@
-\documentclass[../../set-theory/set-theory.tex]{subfiles}
-
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
 \begin{document}
-  \chapter{Surjections, injections and bijections}\label{chapter:injections-surjections-bijections}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
 
-  \filename{foundations/sections/08_injections-surjections-bijections.ftl.tex}
+      [readtex \path{libraries/source/foundations/06_maps.ftl.tex}]
 
-  \begin{forthel}
-    %[prove off][check off]
-
-    [readtex \path{foundations/sections/06_maps.ftl.tex}]
-
-    %[prove on][check on]
-  \end{forthel}
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
 
-  \section{Surjective maps}
+  \section{Surjective Maps}
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_08_8681187805495296}
@@ -68,7 +69,7 @@
   \end{forthel}
 
 
-  \section{Injective maps}
+  \section{Injective Maps}
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_08_605931408719872}
@@ -81,7 +82,7 @@
   \end{forthel}
 
 
-  \section{Bijective maps}
+  \section{Bijective Maps}
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_08_3356670992318464}
@@ -112,7 +113,7 @@
   \end{forthel}
 
 
-  \section{Some basic facts}
+  \section{Some Basic Facts}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_08_7883784041005056}

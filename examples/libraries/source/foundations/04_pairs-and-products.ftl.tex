@@ -1,17 +1,18 @@
-\documentclass[../../set-theory/set-theory.tex]{subfiles}
-
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
 \begin{document}
-  \chapter{Ordered pairs and Cartesian products}\label{chapter:pairs-and-products}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
 
-  \filename{foundations/sections/04_pairs-and-products.ftl.tex}
+      [readtex \path{libraries/source/foundations/01_classes.ftl.tex}]
 
-  \begin{forthel}
-    %[prove off][check off]
-
-    [readtex \path{foundations/sections/01_classes.ftl.tex}]
-
-    %[prove on][check on]
-  \end{forthel}
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
 
   \section{Pairs}
@@ -54,7 +55,7 @@
   \end{forthel}
 
 
-  \section{Cartesian products}
+  \section{Cartesian Products}
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_04_2877806274936832}

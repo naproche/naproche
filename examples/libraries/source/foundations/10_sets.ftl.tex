@@ -1,20 +1,21 @@
-\documentclass[../../set-theory/set-theory.tex]{subfiles}
-
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
 \begin{document}
-  \chapter{Sets}\label{chapter:sets}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
 
-  \filename{foundations/sections/10_sets.ftl.tex}
+      [readtex \path{libraries/source/foundations/09_invertible-maps.ftl.tex}]
 
-  \begin{forthel}
-    %[prove off][check off]
-
-    [readtex \path{foundations/sections/09_invertible-maps.ftl.tex}]
-
-    %[prove on][check on]
-  \end{forthel}
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
 
-  \section{Sub- and supersets}
+  \section{Sub- and Supersets}
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_10_5530582838673408}
@@ -48,7 +49,7 @@
   \end{forthel}
 
 
-  \section{Systems of sets}
+  \section{Systems of Sets}
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_10_5805323570905088}
@@ -223,7 +224,7 @@
   \end{forthel}
 
 
-  \section{Classes of functions}
+  \section{Classes of Functions}
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_10_5119110467813376}
@@ -238,7 +239,7 @@
   \end{forthel}
 
 
-  \section{Axioms for mathematics}
+  \section{Axioms for Mathematics}
 
   \begin{forthel}
     \begin{definition}
@@ -323,7 +324,7 @@
   \end{forthel}
 
 
-  \section{Consequences of the axioms}
+  \section{Consequences of the Axioms}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_10_5891530432708608}
@@ -497,6 +498,7 @@
         Let us show that $x \times y \subseteq f[P]$.
           Let $z \in x \times y$.
           Take $a \in x$ and $b \in y$ such that $z = (a,b)$.
+          $\set{\set{a}, \set{a,b}} \in \dom(f)$. % Needed for ontological checking
           Then $(a,b) = f(\set{\set{a}, \set{a,b}})$.
           Hence there exists a $p \in P$ such that $(a,b) = f(p)$.
           Thus $(a,b) \in f[P]$.
@@ -590,10 +592,11 @@
       exists a $b \in y$ such that $(a,b) \in F$) and for all $a \in x$ and
       all $b, b' \in y$ such that $(a,b), (a,b') \in F$ we have $b = b' \}$.
 
-      [prover vampire][timelimit 10]
+      [prover vampire]
       Every element of $R$ is a set. % Needed for ontological checking
       Define $h(F) = \fun a \in x.$ ``choose $b \in y$ such that
       $(a,b) \in F$ in $b$'' for $F \in R$.
+      [prover eprover]
 
       Let us show that $[x \to y] \subseteq \range(h)$.
         Let $f \in [x \to y]$.
@@ -611,6 +614,10 @@
 
           (2) For all $a \in x$ and all $b, b' \in y$ such that $(a,b),
           (a,b') \in F$ we have $b = b'$.
+
+          [prover vampire]
+          Hence the thesis.
+          [prover eprover]
         End.
 
         We have $\dom(f) = x = \dom(h(F))$.

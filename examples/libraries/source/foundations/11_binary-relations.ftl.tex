@@ -1,28 +1,27 @@
-\documentclass[../../set-theory/set-theory.tex]{subfiles}
-
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
 \begin{document}
-  \chapter{Binary relations}\label{chapter:binary-relations}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
 
-  \filename{foundations/sections/11_binary-relations.ftl.tex}
+      [readtex \path{libraries/source/foundations/10_sets.ftl.tex}]
 
-  \begin{forthel}
-    %[prove off][check off]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
-    [readtex \path{foundations/sections/10_sets.ftl.tex}]
 
-    %[prove on][check on]
-  \end{forthel}
+  \section{Binary Relations}
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_11_6429308924985344}
       A binary relation is a class $R$ such that every element of $R$ is a pair.
     \end{definition}
   \end{forthel}
-
-
-  \section{Properties of relations}
-
-  \paragraph{Reflexivity}
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_11_1126092393938944}
@@ -31,18 +30,12 @@
     \end{definition}
   \end{forthel}
 
-
-  \paragraph{Irreflexivity}
-
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_11_365656446861312}
       Let $R$ be a binary relation and $A$ be a class.
       $R$ is irreflexive on $A$ iff for no $a \in A$ we have $(a,a) \in R$.
     \end{definition}
   \end{forthel}
-
-
-  \paragraph{Symmetry}
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_11_2056300137545728}
@@ -52,9 +45,6 @@
     \end{definition}
   \end{forthel}
 
-
-  \paragraph{Antisymmetry}
-
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_11_8301693043212288}
       Let $R$ be a binary relation and $A$ be a class.
@@ -62,9 +52,6 @@
       $(a,b) \notin R$ or $(b,a) \notin R$.
     \end{definition}
   \end{forthel}
-
-
-  \paragraph{Asymmetry}
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_11_6895428727472128}
@@ -74,9 +61,6 @@
     \end{definition}
   \end{forthel}
 
-
-  \paragraph{Transitivity}
-
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_11_5377309666181120}
       Let $R$ be a binary relation and $A$ be a class.
@@ -85,9 +69,6 @@
     \end{definition}
   \end{forthel}
 
-
-  \paragraph{Connectedness}
-
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_11_5902056743239680}
       Let $R$ be a binary relation and $A$ be a class.
@@ -95,9 +76,6 @@
       $(a,b) \in R$ or $(b,a) \in R$.
     \end{definition}
   \end{forthel}
-
-
-  \paragraph{Strong connectedness}
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_11_6492592562765824}
@@ -108,9 +86,7 @@
   \end{forthel}
 
 
-  \section{Order relations}
-
-  \paragraph{Preorders.}
+  \section{Order Relations}
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_11_4005024520732672}
@@ -119,9 +95,6 @@
       transitive on $A$.
     \end{definition}
   \end{forthel}
-
-
-  \paragraph{Partial orders.}
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_11_2162776243961856}
@@ -132,9 +105,6 @@
 
     Let $A$ is partially ordered by $R$ stand for $R$ is a partial order on $A$.
   \end{forthel}
-
-
-  \paragraph{Strict partial orders.}
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_11_4067384857985024}
@@ -158,9 +128,6 @@
     partial order on $A$.
   \end{forthel}
 
-
-  \paragraph{Total orders.}
-
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_11_5872706501214208}
       Let $A$ be a class.
@@ -172,9 +139,6 @@
     Let a linear order on $A$ stand for a total order on $A$.
     Let $A$ is linearly ordered by $R$ stand for $R$ is a linear order on $A$.
   \end{forthel}
-
-
-  \paragraph{Strict total orders.}
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_11_5840248768561152}
@@ -190,9 +154,6 @@
     Let $A$ is strictly linearly ordered by $R$ stand for $R$ is a strict
     linear order on $A$.
   \end{forthel}
-
-
-  \section{Well-founded relations}
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_11_2729326472593408}
@@ -236,7 +197,7 @@
   \end{forthel}
 
 
-  \section{Epsilon induction}
+  \section{Epsilon Induction}
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_11_4800525813940224}

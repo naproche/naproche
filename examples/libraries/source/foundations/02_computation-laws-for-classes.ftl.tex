@@ -1,20 +1,21 @@
-\documentclass[../../set-theory/set-theory.tex]{subfiles}
-
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
 \begin{document}
-  \chapter{Computation laws for classes}\label{chapter:computation-laws-for-classes}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
 
-  \filename{foundations/sections/02_computation-laws-for-classes.ftl.tex}
+      [readtex \path{libraries/source/foundations/01_classes.ftl.tex}]
 
-  \begin{forthel}
-    %[prove off][check off]
-
-    [readtex \path{foundations/sections/01_classes.ftl.tex}]
-
-    %[prove on][check on]
-  \end{forthel}
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
 
-  \section*{Commutativity of union and intersection}
+  \section{Commutativity of Union and Intersection}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_02_8446177632583680}
@@ -61,7 +62,7 @@
   \end{forthel}
 
 
-  \section*{Associativity of union and intersection}
+  \section{Associativity of Union and Intersection}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_02_3854032263184384}
@@ -112,7 +113,7 @@
   \end{forthel}
 
 
-  \section*{Distributivity of union and intersection}
+  \section{Distributivity of Union and Intersection}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_02_371139087958016}
@@ -167,7 +168,7 @@
   \end{forthel}
 
 
-  \section*{Idempocy laws for union and intersection}
+  \section{Idempocy Laws for Union and Intersection}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_02_2096996737351680}
@@ -194,7 +195,7 @@
   \end{forthel}
 
 
-  \section*{Distributivity of complement}
+  \section{Distributivity of Complement}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_02_5296031436636160}
@@ -259,7 +260,7 @@
   \end{forthel}
 
 
-  \section*{Subclass laws}
+  \section{Subclass Laws}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_02_3793981508943872}
@@ -347,7 +348,7 @@
   \end{forthel}
 
 
-  \section*{Complement laws}
+  \section{Complement Laws}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_02_7433299337150464}

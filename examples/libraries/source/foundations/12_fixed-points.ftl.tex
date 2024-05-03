@@ -1,18 +1,21 @@
-\documentclass[../../set-theory/set-theory.tex]{subfiles}
-
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
 \begin{document}
-  \chapter{Fixed points}\label{chapter:fixed-points}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
 
-  \filename{foundations/sections/12_fixed-points.ftl.tex}
+      [readtex \path{libraries/source/foundations/10_sets.ftl.tex}]
 
-  \begin{forthel}
-    %[prove off][check off]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
-    [readtex \path{foundations/sections/10_sets.ftl.tex}]
 
-    %[prove on][check on]
-  \end{forthel}
-
+  \section{Fixed Points}
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_12_2177076576649216}

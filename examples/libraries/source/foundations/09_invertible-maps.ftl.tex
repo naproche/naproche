@@ -1,20 +1,21 @@
-\documentclass[../../set-theory/set-theory.tex]{subfiles}
-
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
 \begin{document}
-  \chapter{Invertible maps and involutions}\label{chapter:invertible-maps}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
 
-  \filename{foundations/sections/09_invertible-maps.ftl.tex}
+      [readtex \path{libraries/source/foundations/08_injections-surjections-bijections.ftl.tex}]
 
-  \begin{forthel}
-    %[prove off][check off]
-
-    [readtex \path{foundations/sections/08_injections-surjections-bijections.ftl.tex}]
-
-    %[prove on][check on]
-  \end{forthel}
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
 
-  \section{Invertible maps}
+  \section{Invertible Maps}
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_09_7776974319648768}
@@ -61,7 +62,7 @@
   \end{forthel}
 
 
-  \section{Some basic facts about invertible maps}
+  \section{Some Basic Facts About Invertible Maps}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_09_7840743571849216}

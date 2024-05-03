@@ -1,22 +1,24 @@
-\documentclass[../../set-theory/set-theory.tex]{subfiles}
-
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
 \begin{document}
-  \chapter{Computation laws for Cartesian products}\label{chapter:computation-laws-for-products}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
 
-  \filename{foundations/sections/05_computation-laws-for-products.ftl.tex}
+      [readtex \path{libraries/source/foundations/02_computation-laws-for-classes.ftl.tex}]
 
-  \begin{forthel}
-    %[prove off][check off]
+      [readtex \path{libraries/source/foundations/04_pairs-and-products.ftl.tex}]
 
-    [readtex \path{foundations/sections/02_computation-laws-for-classes.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
-    [readtex \path{foundations/sections/04_pairs-and-products.ftl.tex}]
+  \section{Computation Laws for Cartesian Products}
 
-    %[prove on][check on]
-  \end{forthel}
-
-
-  \subsection*{Subclass laws}
+  \subsection{Subclass Laws}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_05_5719644021194752}
@@ -60,7 +62,7 @@
   \end{forthel}
 
 
-  \section*{Distributivity of product and union}
+  \section{Distributivity of Product and Union}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_05_8849658323402752}
@@ -120,7 +122,7 @@
   \end{forthel}
 
 
-  \subsection*{Distributivity of product and intersection}
+  \subsection{Distributivity of Product and Intersection}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_05_1249567930580992}
@@ -176,7 +178,7 @@
   \end{forthel}
 
 
-  \subsection*{Distributivity of product and complement}
+  \subsection{Distributivity of Product and Complement}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_05_6495329908162560}
@@ -233,7 +235,7 @@
   \end{forthel}
 
 
-  \subsection*{Equality law}
+  \subsection{Equality Law}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_05_2677218429894656}
@@ -274,7 +276,7 @@
   \end{forthel}
 
 
-  \subsection*{Intersections of products}
+  \subsection{Intersections of Products}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_05_4154592050806784}
@@ -306,7 +308,7 @@
   \end{forthel}
 
 
-  \subsection*{Unions of products}
+  \subsection{Unions of Products}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_05_7090174334861312}
@@ -325,7 +327,7 @@
   \end{forthel}
 
 
-  \subsection*{Complements of products}
+  \subsection{Complements of Products}
 
   \begin{forthel}
     \begin{proposition}\printlabel{FOUNDATIONS_05_5552125989879808}
@@ -354,7 +356,7 @@
         ((A \setminus A') \times B)$.
         Then $x \in (A \times (B \setminus B'))$ or
         $x \in ((A \setminus A') \times B)$.
-        Take elements $a,b$ such that $x = (a, b)$.
+        Take elements $a,b$ such that $x = (a, b)$ (by \cref{FOUNDATIONS_04_2877806274936832}).
         Then ($a \in A$ and $b \in B \setminus B'$) or
         ($a \in A \setminus A'$ and $b \in B$).
 
