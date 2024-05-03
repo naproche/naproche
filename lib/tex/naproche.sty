@@ -170,10 +170,6 @@
 % Options
 % =======
 
-\newbool{foundations}
-\newbool{arithmetic}
-\newbool{settheory}
-
 \DeclareOption{numberswithinsection}{%
     \counterwithin{theoremcount}{section}
 }
@@ -187,84 +183,5 @@
     \setbool{forthel}{false}%
   }
 }
-\DeclareOption{foundations}{%
-    \setbool{foundations}{true}
-}
-\DeclareOption{arithmetic}{%
-    \setbool{arithmetic}{true}
-}
-\DeclareOption{settheory}{%
-    \setbool{settheory}{true}
-}
 \DeclareOption*{\PackageWarning{naproche}{Unknown ‘\CurrentOption’}}
 \ProcessOptions\relax
-
-
-% Foundations library
-% ===================
-
-\iffoundations
-    \RequirePackage{amssymb, pgffor}
-
-    \DeclareMathOperator{\id}{id}
-    \DeclareMathOperator{\range}{range}
-
-    \newcommand{\symdiff}{\mathop{\triangle}}
-    \newcommand{\pow}{\mathcal{P}}
-    \newcommand{\onto}{\twoheadrightarrow}
-    \newcommand{\into}{\hookrightarrow}
-
-    % E.g. `\set{1, 2, 3, 4}` prints the numbers 1, 2, 3 and 4 as a comma
-    % separated list which is enclosed within curly braces.
-    \def\set#1{%
-      \ensuremath{%
-        \{%
-        \foreach[count=\i] \x in {#1}{%
-          \ifnum\i>1,\,\fi%
-          \x%
-        }%
-        \}
-      }%
-    }
-\fi
-
-
-% Arithmetic library
-% ==================
-
-\ifarithmetic
-    \RequirePackage{amssymb}
-
-    \newcommand{\Nat}{\mathbb{N}}
-    \newcommand{\Prime}{\mathbb{P}}
-
-    \let\succ\relax
-    \let\exp\relax
-
-    \DeclareMathOperator{\succ}{succ}
-    \DeclareMathOperator{\pred}{pred}
-    \DeclareMathOperator{\add}{add}
-    \DeclareMathOperator{\mul}{mul}
-    \DeclareMathOperator{\exp}{exp}
-    \DeclareMathOperator{\fac}{fac}
-
-    \renewcommand{\div}{\mathop{\operatorname{div}}}
-    \renewcommand{\mod}{\mathop{\operatorname{mod}}}
-\fi
-
-
-% Set theory library
-% ==================
-
-\ifsettheory
-    \RequirePackage{amssymb}
-
-    \let\succ\relax
-
-    \DeclareMathOperator{\succ}{succ}
-    \DeclareMathOperator{\pred}{pred}
-
-    \newcommand{\V}{\mathbf{V}}
-    \newcommand{\Ord}{\mathbf{Ord}}
-    \newcommand{\Card}{\mathbf{Card}}
-\fi

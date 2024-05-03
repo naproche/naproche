@@ -1,14 +1,3 @@
-\NeedsTeXFormat{LaTeX2e}
-
-\RequirePackage[english]{babel}
-
-\RequirePackage{hyperref}
-\RequirePackage{xcolor}
-\RequirePackage{subfiles}
-\RequirePackage{xurl}
-\RequirePackage{fancyhdr}
-
-
 % Top-level sections and proofs
 
 \newtheoremstyle{foundations}% name of the style to be used
@@ -44,7 +33,7 @@
   backgroundcolor=lightgray!10,
   linecolor=black,
   innertopmargin=1em
-]{definition}{Definition}[chapter]
+]{definition}{Definition}[section]
 \newmdtheoremenv[
   backgroundcolor=lightgray!10,
   linecolor=black,
@@ -77,27 +66,10 @@
 ]{corollary}[definition]{Corollary}
 
 
-% Header and footer
+% Hide imports
 
-\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
-
-\pagestyle{fancy}
-\fancyhf{}
-\fancyhead[R]{\thepage}
-\fancyhead[L]{\thechapter\ \leftmark}
-\fancyfoot{}
-
-
-% Imports
-
-\newcommand{\filename}[1]{
-  \footnotesize{\textbf{File:}}
-  \hfill
-  \footnotesize{\path{#1}}
-  \vspace{0.5em}
-  \hrule
-  \vspace{2em}
-}
+\usepackage{scontents}
+\newenvsc{imports}[store-env=imports,print-env=false]
 
 
 % Labels of top-level sections
