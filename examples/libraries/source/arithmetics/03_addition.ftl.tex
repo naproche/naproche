@@ -1,20 +1,22 @@
-\documentclass[../arithmetic.tex]{subfiles}
-
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/arithmetics}
 \begin{document}
-  \chapter{Addition}\label{chapter:addition}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
 
-  \filename{arithmetic/sections/03_addition.ftl.tex}
+      [readtex \path{libraries/source/arithmetics/02_recursion.ftl.tex}]
 
-  \begin{forthel}
-    %[prove off][check off]
-
-    [readtex \path{arithmetic/sections/02_recursion.ftl.tex}]
-
-    %[prove on][check on]
-  \end{forthel}
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
 
-  \section{Definition of addition}
+  \section{Definition of Addition}
 
   \begin{forthel}
     \begin{lemma}\printlabel{ARITHMETIC_03_722195546374144}
@@ -139,7 +141,7 @@
   \end{forthel}
 
 
-  \section{The Peano axioms and recursion, revisited}
+  \section{The Peano Axioms and Recursion, Revisited}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_03_3170769680990208}
@@ -174,9 +176,9 @@
   \end{forthel}
 
 
-  \section{Computation laws}
+  \section{Computation Laws}
 
-  \subsection*{Associativity}
+  \subsection{Associativity}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_03_3235893452210176}
@@ -208,7 +210,7 @@
   \end{forthel}
 
 
-  \subsection*{Commutativity}
+  \subsection{Commutativity}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_03_4029553232052224}
@@ -282,7 +284,7 @@
   \end{forthel}
 
 
-  \subsection*{Cancellation}
+  \subsection{Cancellation}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_03_3137702874578944}
@@ -322,7 +324,7 @@
   \end{forthel}
 
 
-  \subsection*{Zero sums}
+  \subsection{Zero Sums}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_03_3520602170195968}

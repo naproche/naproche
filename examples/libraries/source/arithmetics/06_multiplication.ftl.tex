@@ -1,20 +1,22 @@
-\documentclass[../arithmetic.tex]{subfiles}
-
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/arithmetics}
 \begin{document}
-  \chapter{Multiplication}\label{chapter:multiplication}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
 
-  \filename{arithmetic/sections/05_multiplication.ftl.tex}
+      [readtex \path{libraries/source/arithmetics/05_subtraction.ftl.tex}]
 
-  \begin{forthel}
-    %[prove off][check off]
-
-    [readtex \path{arithmetic/sections/05_subtraction.ftl.tex}]
-
-    %[prove on][check on]
-  \end{forthel}
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
 
-  \section{Definition of multiplication}
+  \section{Definition of Multiplication}
 
   \begin{forthel}
     \begin{lemma}\printlabel{ARITHMETIC_06_7897906468093952}
@@ -135,9 +137,9 @@
   \end{forthel}
 
 
-  \section{Computation laws}
+  \section{Computation Laws}
 
-  \subsection*{Distributivity}
+  \subsection{Distributivity}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_06_9001524774567936}
@@ -210,7 +212,7 @@
   \end{forthel}
 
 
-  \subsection*{Multiplication with $1$ and $2$}
+  \subsection{Multiplication with $1$ and $2$}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_06_2910559821365248}
@@ -240,7 +242,7 @@
   \end{forthel}
 
 
-  \subsection*{Associativity}
+  \subsection{Associativity}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_06_347295585402880}
@@ -275,7 +277,7 @@
   \end{forthel}
 
 
-  \subsection*{Commutativity}
+  \subsection{Commutativity}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_06_1764759896588288}
@@ -346,7 +348,7 @@
   \end{forthel}
 
 
-  \subsection*{Non-existence of zero-divisors}
+  \subsection{Non-Existence of Zero-Divisors}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_06_3843962875936768}
@@ -368,7 +370,7 @@
   \end{forthel}
 
 
-  \subsection*{Cancellation}
+  \subsection{Cancellation}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_06_31055184658432}
@@ -444,7 +446,7 @@
   \end{forthel}
 
 
-  \section{Ordering and multiplication}
+  \section{Ordering and Multiplication}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_06_8817333933965312}
@@ -588,7 +590,7 @@
   \end{forthel}
 
 
-  \section{Multiplication and subtraction}
+  \section{Multiplication and Subtraction}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_06_5458841930039296}

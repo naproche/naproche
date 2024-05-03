@@ -1,20 +1,22 @@
-\documentclass[../arithmetic.tex]{subfiles}
-
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/arithmetics}
 \begin{document}
-  \chapter{Exponentiation}\label{chapter:exponentiation}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
 
-  \filename{arithmetic/sections/13_exponentiation.ftl.tex}
+      [readtex \path{libraries/source/arithmetics/06_multiplication.ftl.tex}]
 
-  \begin{forthel}
-    %[prove off][check off]
-
-    [readtex \path{arithmetic/sections/06_multiplication.ftl.tex}]
-
-    %[prove on][check on]
-  \end{forthel}
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
 
-  \section{Definition of exponentiation}
+  \section{Definition of Exponentiation}
 
   \begin{forthel}
     \begin{lemma}\printlabel{ARITHMETIC_13_2103235571613696}
@@ -139,9 +141,9 @@
   \end{forthel}
 
 
-  \section{Computation laws}
+  \section{Computation Laws}
 
-  \subsection*{Exponentiation with $0$, $1$ and $2$}
+  \subsection{Exponentiation with $0$, $1$ and $2$}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_13_4673644676513792}
@@ -210,7 +212,7 @@
   \end{forthel}
 
 
-  \subsection*{Sums as exponents}
+  \subsection{Sums as Exponents}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_13_8152207530655744}
@@ -244,7 +246,7 @@
   \end{forthel}
 
 
-  \subsection*{Products as exponents}
+  \subsection{Products as Exponents}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_13_7827956571308032}
@@ -277,7 +279,7 @@
   \end{forthel}
 
 
-  \subsection*{Products as base}
+  \subsection{Products as Base}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_13_2563032276271104}
@@ -322,7 +324,7 @@
   \end{forthel}
 
 
-  \subsection*{Zeroes of exponentiation}
+  \subsection{Zeroes of Exponentiation}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_13_3860221447372800}
@@ -367,7 +369,7 @@
   \end{forthel}
 
 
-  \section{Ordering and exponentiation}
+  \section{Ordering and Exponentiation}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_13_3373702288769024}

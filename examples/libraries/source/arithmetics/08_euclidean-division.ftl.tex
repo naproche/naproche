@@ -1,20 +1,22 @@
-\documentclass[../arithmetic.tex]{subfiles}
-
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/arithmetics}
 \begin{document}
-  \chapter{Euclidean division}\label{chapter:euclidean-division}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
 
-  \filename{arithmetic/sections/08_euclidean-division.ftl.tex}
+      [readtex \path{libraries/source/arithmetics/06_multiplication.ftl.tex}]
 
-  \begin{forthel}
-    %[prove off][check off]
-
-    [readtex \path{arithmetic/sections/06_multiplication.ftl.tex}]
-
-    %[prove on][check on]
-  \end{forthel}
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
 
-  \section{Quotients and remainders}
+  \section{Quotients and Remainders}
 
   \begin{forthel}
     \begin{theorem}\printlabel{ARITHMETIC_08_7743986617810944}
@@ -187,7 +189,7 @@
   \end{forthel}
 
 
-  \section{Modular arithmetic}
+  \section{Modular Arithmetic}
 
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_08_5448561831444480}

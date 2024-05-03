@@ -1,17 +1,22 @@
-\documentclass[../arithmetic.tex]{subfiles}
-
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/arithmetics}
 \begin{document}
-  \chapter{Subtraction}\label{chapter:subtraction}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
 
-  \filename{arithmetic/sections/05_subtraction.ftl.tex}
+      [readtex \path{libraries/source/arithmetics/04_ordering.ftl.tex}]
 
-  \begin{forthel}
-    %[prove off][check off]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
-    [readtex \path{arithmetic/sections/04_ordering.ftl.tex}]
 
-    %[prove on][check on]
-  \end{forthel}
+  \section{Subtraction}
 
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_05_8878757276286976}

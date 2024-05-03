@@ -1,20 +1,24 @@
-\documentclass[../arithmetic.tex]{subfiles}
-
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/arithmetics}
 \begin{document}
-  \chapter{Prime numbers}\label{chapter:primes}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
 
-  \filename{arithmetic/sections/09_primes.ftl.tex}
+      [readtex \path{libraries/source/arithmetics/07_divisibility.ftl.tex}]
 
-  \begin{forthel}
-    %[prove off][check off]
+      [readtex \path{libraries/source/arithmetics/08_euclidean-division.ftl.tex}]
 
-    [readtex \path{arithmetic/sections/07_divisibility.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
-    [readtex \path{arithmetic/sections/08_euclidean-division.ftl.tex}]
 
-    %[prove on][check on]
-  \end{forthel}
-
+  \section{Prime Numbers}
 
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_10_5438991513944064}

@@ -1,22 +1,24 @@
-\documentclass[../arithmetic.tex]{subfiles}
-
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/arithmetics}
 \begin{document}
-  \chapter{Cardinality}\label{chapter:cardinality}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
 
-  \filename{arithmetic/sections/11_cardinality.ftl.tex}
+      [readtex \path{libraries/source/foundations/13_equinumerosity.ftl.tex}]
 
-  \begin{forthel}
-    %[prove off][check off]
+      [readtex \path{libraries/source/arithmetics/04_ordering.ftl.tex}]
 
-    [readtex \path{foundations/sections/13_equinumerosity.ftl.tex}]
-
-    [readtex \path{arithmetic/sections/04_ordering.ftl.tex}]
-
-    %[prove on][check on]
-  \end{forthel}
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
 
-  \section{Subsections of the natural numbers}
+  \section{Subsections of the Natural Numbers}
 
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_11_3625613501923328}
@@ -88,7 +90,7 @@
   \end{forthel}
 
 
-  \section{Finite and infinite sets}
+  \section{Finite and Infinite Sets}
 
   \paragraph{Finite sets}
 
@@ -240,7 +242,7 @@
   \end{forthel}
 
 
-  \section{Countable and uncountable sets}
+  \section{Countable and Uncountable Sets}
 
   \paragraph{Countably infinite sets}
 
@@ -315,7 +317,7 @@
   \end{forthel}
 
 
-  \section{Systems of sets}
+  \section{Systems of Sets}
 
   \paragraph{Definitions}
 

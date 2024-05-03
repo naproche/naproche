@@ -1,18 +1,22 @@
-\documentclass[../arithmetic.tex]{subfiles}
-
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/arithmetics}
 \begin{document}
-  \chapter{Recursion}\label{chapter:recursion}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
 
-  \filename{arithmetic/sections/02_recursion.ftl.tex}
+      [readtex \path{libraries/source/arithmetics/01_natural-numbers.ftl.tex}]
 
-  \begin{forthel}
-    %[prove off][check off]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
-    [readtex \path{arithmetic/sections/01_natural-numbers.ftl.tex}]
 
-    %[prove on][check on]
-  \end{forthel}
-
+  \section{Recursion}
 
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_02_4608408013504512}

@@ -1,20 +1,22 @@
-\documentclass[../arithmetic.tex]{subfiles}
-
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/arithmetics}
 \begin{document}
-  \chapter{Natural numbers}\label{chapter:natural-numbers}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
 
-  \filename{arithmetic/sections/01_natural-numbers.ftl.tex}
+      [readtex \path{libraries/source/foundations/10_sets.ftl.tex}]
 
-  \begin{forthel}
-    %[prove off][check off]
-
-    [readtex \path{foundations/sections/10_sets.ftl.tex}]
-
-    %[prove on][check on]
-  \end{forthel}
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
 
-  \section{The language of Peano Arithmetic}
+  \section{The Language of Peano Arithmetic}
 
   \begin{forthel}
     \begin{signature}\printlabel{ARITHMETIC_01_3074681254969344}
@@ -72,7 +74,7 @@
   \end{forthel}
 
 
-  \section{Immediate consequences}
+  \section{Immediate Consequences}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_01_4966080109871104}
@@ -130,7 +132,7 @@
   \end{forthel}
 
 
-  \section{Additional constants}
+  \section{Additional Constants}
 
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_01_7540560137027584}

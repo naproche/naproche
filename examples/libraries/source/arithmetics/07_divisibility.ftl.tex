@@ -1,18 +1,22 @@
-\documentclass[../arithmetic.tex]{subfiles}
-
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/arithmetics}
 \begin{document}
-  \chapter{Divisibility}\label{chapter:divisibility}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
 
-  \filename{arithmetic/sections/07_divisibility.ftl.tex}
+      [readtex \path{libraries/source/arithmetics/06_multiplication.ftl.tex}]
 
-  \begin{forthel}
-    %[prove off][check off]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
-    [readtex \path{arithmetic/sections/06_multiplication.ftl.tex}]
 
-    %[prove on][check on]
-  \end{forthel}
-
+  \section{Divisibility}
 
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_07_4239998993825792}

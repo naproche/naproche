@@ -1,22 +1,24 @@
-\documentclass[../arithmetic.tex]{subfiles}
-
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/arithmetics}
 \begin{document}
-  \chapter{Ordering}\label{chapter:ordering}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
 
-  \filename{arithmetic/sections/04_ordering.ftl.tex}
+      [readtex \path{libraries/source/foundations/11_binary-relations.ftl.tex}]
 
-  \begin{forthel}
-    %[prove off][check off]
+      [readtex \path{libraries/source/arithmetics/03_addition.ftl.tex}]
 
-    [readtex \path{foundations/sections/11_binary-relations.ftl.tex}]
-
-    [readtex \path{arithmetic/sections/03_addition.ftl.tex}]
-
-    %[prove on][check on]
-  \end{forthel}
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
 
-  \section{Definitions and immediate consequences}
+  \section{Definitions and Immediate Consequences}
 
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_04_1926295512416256}
@@ -136,7 +138,7 @@
   \end{forthel}
 
 
-  \section{Basic properties}
+  \section{Basic Properties}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_04_1037693395927040}
@@ -321,7 +323,7 @@
   \end{forthel}
 
 
-  \section{Ordering and successors}
+  \section{Ordering and Successors}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_04_7006203091615744}
@@ -429,7 +431,7 @@
   \end{forthel}
 
 
-  \section{Ordering and addition}
+  \section{Ordering and Addition}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_04_7354062662008832}
@@ -484,7 +486,7 @@
   \end{forthel}
 
 
-  \section{The natural numbers are well-ordered}
+  \section{The Natural Numbers are Well-Ordered}
 
   \begin{forthel}
     \begin{definition}\printlabel{ARITHMETIC_04_4059354166722560}
@@ -581,7 +583,7 @@
   \end{forthel}
 
 
-  \section{Induction revisited}
+  \section{Induction Revisited}
 
   \begin{forthel}
     \begin{theorem}\printlabel{ARITHMETIC_04_3609801697263616}
