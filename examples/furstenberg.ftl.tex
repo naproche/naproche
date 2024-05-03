@@ -1,9 +1,9 @@
 \documentclass{article}
-
-\usepackage[utf8]{inputenc}
 \usepackage[british]{babel}
 \usepackage{xr}
-\usepackage[foundations, arithmetic]{../lib/tex/naproche}
+\usepackage{../lib/tex/naproche}
+\input{libraries/lib/foundations}
+\input{libraries/lib/arithmetics}
 
 \externaldocument{arithmetic/arithmetic}
 
@@ -30,9 +30,9 @@ Marcel Schütz (2021 - 2022)}
   \begin{forthel}
     %[prove off][check off]
 
-    [readtex \path{arithmetic/sections/10_primes.ftl.tex}]
+    [readtex \path{libraries/source/arithmetics/10_primes.ftl.tex}]
 
-    [readtex \path{arithmetic/sections/11_cardinality.ftl.tex}]
+    [readtex \path{libraries/source/arithmetics/11_cardinality.ftl.tex}]
 
     %[prove on][check on]
   \end{forthel}

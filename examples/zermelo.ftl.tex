@@ -1,8 +1,8 @@
 \documentclass{article}
-
-\usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
-\usepackage[foundations, settheory]{../lib/tex/naproche}
+\usepackage{../lib/tex/naproche}
+\input{libraries/lib/foundations}
+\input{libraries/lib/set-theory}
 
 
 \title{Zermelo's Well-ordering Theorem}
@@ -26,9 +26,9 @@ Marcel Schütz (2022)}
   \begin{forthel}
     %[prove off][check off]
 
-    [readtex \path{foundations/sections/13_equinumerosity.ftl.tex}]
+    [readtex \path{libraries/source/foundations/13_equinumerosity.ftl.tex}]
 
-    [readtex \path{set-theory/sections/04_recursion.ftl.tex}]
+    [readtex \path{libraries/source/set-theory/04_recursion.ftl.tex}]
 
     %[prove on][check on]
   \end{forthel}

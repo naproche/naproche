@@ -1,10 +1,10 @@
 \documentclass{article}
-
-\usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{mathtools}
 \usepackage{xr}
-\usepackage[foundations, settheory]{../lib/tex/naproche}
+\usepackage{../lib/tex/naproche}
+\input{libraries/lib/foundations}
+\input{libraries/lib/set-theory}
 
 \externaldocument{set-theory/set-theory}
 
@@ -37,7 +37,7 @@ depends on.
 \begin{forthel}
   %[prove off][check off]
 
-  [readtex \path{set-theory/sections/06_cardinals.ftl.tex}]
+  [readtex \path{libraries/source/set-theory/06_cardinals.ftl.tex}]
 
   %[prove on][check on]
 
