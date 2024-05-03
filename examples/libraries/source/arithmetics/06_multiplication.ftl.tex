@@ -17,130 +17,26 @@
   \section{Definition of Multiplication}
 
   \begin{forthel}
-    [checktime 3]
-    \begin{lemma}\printlabel{ARITHMETIC_06_7897906468093952}
-      There exists a $\varphi : \Nat \times \Nat \to \Nat$ such
-      that for all $n \in \Nat$ we have $\varphi(n, 0) = 0$ and
-      $\varphi(n, m + 1) = \varphi(n,m) + n$ for any $m \in \Nat$.
-    \end{lemma}
-    \begin{proof}
-      Take $A = [\Nat \to \Nat]$.
-      Define $a(n) = 0$ for $n \in \Nat$.
-      Then $A$ is a set and $a \in A$.
+    \begin{signature}\printlabel{ARITHMETIC_06_6626346484629504}
+      Let $n, m$ be natural numbers.
+      $n \cdot m$ is a natural number.
+    \end{signature}
 
-      [skipfail on] % Wrong proof task %!!
-      Define $f(g) = \fun n \in \Nat. g(n) + n$ for $g \in A$.
-      [skipfail off]
-
-      Then $f : A \to A$.
-      Indeed $f(g)$ is a map from $\Nat$ to $\Nat$ for any $g \in A$.
-      Consider a $\psi : \Nat \to A$ such that $\psi$ is recursively defined by
-      $a$ and $f$ (by \cref{ARITHMETIC_02_2489427471368192}).
-      For any objects $n, m$ we have $(n,m) \in \Nat \times \Nat$ iff
-      $n, m \in \Nat$.
-      Define $\varphi(n,m) = \psi(m)(n)$ for $(n,m) \in \Nat \times \Nat$.
-      
-      (1) Then $\varphi$ is a map from $\Nat \times \Nat$ to $\Nat$.
-      Indeed $\varphi(n,m) \in \Nat$ for all $n, m \in \Nat$.
-
-      (2) For all $n \in \Nat$ we have $\varphi(n,0) = 0$. \\
-      Proof.
-        Let $n \in \Nat$.
-        Then $\varphi(n,0)
-          = \psi(0)(n)
-          = a(0)
-          = 0$.
-      Qed.
-
-      (3) For all $n, m \in \Nat$ we have $\varphi(n, m + 1) =
-      \varphi(n,m) + n$. \\
-      Proof.
-        Let $n, m \in \Nat$.
-        Then $\varphi(n, m + 1)
-          = \psi(m + 1)(n)
-          = f(\psi(m))(n)
-          = \psi(m)(n) + n
-          = \varphi(n,m) + n$.
-      Qed.
-
-      [prover vampire]
-      Hence the thesis (by 1, 2, 3).
-      [prover eprover]
-    \end{proof}
-    [/checktime]
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{lemma}\printlabel{ARITHMETIC_06_2076592937369600}
-      Let $\varphi, \varphi' : \Nat \times \Nat \to \Nat$.
-      Assume that for all $n \in \Nat$ we have $\varphi(n, 0) = 0$ and
-      $\varphi(n, m + 1) = \varphi(n,m) + n$ for any $m \in \Nat$.
-      Assume that for all $n \in \Nat$ we have $\varphi'(n, 0) = 0$ and
-      $\varphi'(n, m + 1) = \varphi'(n,m) + n$ for any $m \in \Nat$.
-      Then $\varphi = \varphi'$.
-    \end{lemma}
-    \begin{proof}
-      Define $\Phi = \{ m \in \Nat \mid \varphi(n,m) = \varphi'(n,m)$ for
-      all $n \in \Nat \}$.
-
-      (1) $0 \in \Phi$.
-      Indeed $\varphi(n,0) = 0 = \varphi'(n,0)$ for all $n \in \Nat$.
-
-      (2) For all $m \in \Phi$ we have $m + 1 \in \Phi$. \\
-      Proof.
-        Let $m \in \Phi$.
-        Then $\varphi(n,m) = \varphi'(n,m)$ for all $n \in \Nat$.
-        Hence $\varphi(n, m + 1)
-          = \varphi(n,m) + n
-          = \varphi'(n,m) + n
-          = \varphi'(n, m + 1)$
-        for all $n \in \Nat$.
-      Qed.
-
-      Thus $\Phi$ contains every natural number (by \cref{ARITHMETIC_03_647949900054528}).
-      Therefore $\varphi(n,m) = \varphi'(n,m)$ for all $n, m \in \Nat$.
-      Consequently $\varphi = \varphi'$.
-      Indeed $\varphi(a) = \varphi'(a)$ for all $a \in \Nat \times \Nat$.
-    \end{proof}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{definition}\printlabel{ARITHMETIC_06_6626346484629504}
-      $\mul$ is the map from $\Nat \times \Nat$ to $\Nat$ such that for all
-      $n \in \Nat$ we have $\mul(n, 0) = 0$ and $\mul(n, m + 1) =
-      \mul(n, m) + n$ for any $m \in \Nat$.
-    \end{definition}
-
-    Let $n \cdot m$ stand for $\mul(n, m)$.
     Let the product of $n$ and $m$ stand for $n \cdot m$.
   \end{forthel}
 
   \begin{forthel}
-    \begin{lemma}\printlabel{ARITHMETIC_06_1682857820946432}
-      Let $n, m$ be natural numbers.
-      Then $(n,m) \in \dom(\mul)$.
-    \end{lemma}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{lemma}\printlabel{ARITHMETIC_06_8420678923452416}
-      Let $n, m$ be natural numbers.
-      Then $n \cdot m$ is a natural number.
-    \end{lemma}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{lemma}\printlabel{ARITHMETIC_06_8941041092657152}
+    \begin{axiom}\printlabel{ARITHMETIC_06_8941041092657152}
       Let $n$ be a natural number.
       Then $n \cdot 0 = 0$.
-    \end{lemma}
+    \end{axiom}
   \end{forthel}
 
   \begin{forthel}
-    \begin{lemma}\printlabel{ARITHMETIC_06_2211275408932864}
+    \begin{axiom}\printlabel{ARITHMETIC_06_2211275408932864}
       Let $n, m$ be natural numbers.
       Then $n \cdot (m + 1) = (n \cdot m) + n$.
-    \end{lemma}
+    \end{axiom}
   \end{forthel}
 
 

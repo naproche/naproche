@@ -17,133 +17,24 @@
   \section{Definition of Exponentiation}
 
   \begin{forthel}
-    [checktime 3]
-    \begin{lemma}\printlabel{ARITHMETIC_13_2103235571613696}
-      There exists a $\varphi : \Nat \times \Nat \to \Nat$ such
-      that for all $n \in \Nat$ we have $\varphi(n, 0) = 1$ and
-      $\varphi(n, m + 1) = \varphi(n,m) \cdot n$ for any $m \in \Nat$.
-    \end{lemma}
-    \begin{proof}
-      Take $A = [\Nat \to \Nat]$.
-      Define $a(n) = 1$ for $n \in \Nat$.
-      Then $A$ is a set and $a \in A$.
-
-      [skipfail on] % Wrong proof task %!!
-      Define $f(g) = \fun n \in \Nat. g(n) \cdot n$ for $g \in A$.
-      [skipfail off]
-
-      Then $f : A \to A$.
-      Indeed $f(g)$ is a map from $\Nat$ to $\Nat$ for any $g \in A$.
-      Consider a $\psi : \Nat \to A$ such that $\psi$ is recursively defined by
-      $a$ and $f$ (by \cref{ARITHMETIC_02_2489427471368192}).
-      For any objects $n, m$ we have $(n,m) \in \Nat \times \Nat$ iff
-      $n, m \in \Nat$.
-      Define $\varphi(n,m) = \psi(m)(n)$ for $(n,m) \in \Nat \times \Nat$.
-      Then $\varphi$ is a map from $\Nat \times \Nat$ to $\Nat$.
-      Indeed $\varphi(n,m) \in \Nat$ for all $n, m \in \Nat$.
-
-      (1) For all $n \in \Nat$ we have $\varphi(n,0) = 1$. \\
-      Proof.
-        Let $n \in \Nat$.
-        Then $\varphi(n,0)
-          = \psi(0)(n)
-          = a(0)
-          = 1$.
-      Qed.
-
-      (2) For all $n, m \in \Nat$ we have $\varphi(n, m + 1) =
-      \varphi(n,m) \cdot n$. \\
-      Proof.
-        Let $n, m \in \Nat$.
-        Then $\varphi(n, m + 1)
-          = \psi(m + 1)(n)
-          = f(\psi(m))(n)
-          = \psi(m)(n) \cdot n
-          = \varphi(n,m) \cdot n$.
-      Qed.
-
-      Hence for all $n \in \Nat$ we have $\varphi(n, 0) = 1$ and
-      $\varphi(n, m + 1) = \varphi(n,m) \cdot n$ for any $m \in \Nat$.
-    \end{proof}
-    [/checktime]
-  \end{forthel}
-
-  \begin{forthel}
-    [checktime 3]
-    \begin{lemma}\printlabel{ARITHMETIC_13_2359278746730496}
-      Let $\varphi, \varphi' : \Nat \times \Nat \to \Nat$.
-      Assume that for all $n \in \Nat$ we have $\varphi(n, 0) = 1$ and
-      $\varphi(n, m + 1) = \varphi(n,m) \cdot n$ for any $m \in \Nat$.
-      Assume that for all $n \in \Nat$ we have $\varphi'(n, 0) = 1$ and
-      $\varphi'(n, m + 1) = \varphi'(n,m) \cdot n$ for any $m \in \Nat$.
-      Then $\varphi = \varphi'$.
-    \end{lemma}
-    \begin{proof}
-      Define $\Phi = \{ m \in \Nat \mid \varphi(n,m) = \varphi'(n,m)$ for
-      all $n \in \Nat \}$.
-
-      (1) $0 \in \Phi$.
-      Indeed $\varphi(n,0) = 1 = \varphi'(n,0)$ for all $n \in \Nat$.
-
-      (2) For all $m \in \Phi$ we have $m + 1 \in \Phi$. \\
-      Proof.
-        Let $m \in \Phi$.
-        Then $\varphi(n,m) = \varphi'(n,m)$ for all $n \in \Nat$.
-        $\varphi(n,m), \varphi'(n,m)$ are natural numbers for all $n \in \Nat$. % Needed for ontological checking
-        Hence $\varphi(n, m + 1)
-          = \varphi(n,m) \cdot n
-          = \varphi'(n,m) \cdot n
-          = \varphi'(n, m + 1)$
-        for all $n \in \Nat$.
-        Thus $\varphi(n,m + 1) = \varphi'(n,m + 1)$ for all $n \in \Nat$.
-      Qed.
-
-      Thus $\Phi$ contains every natural number (by \cref{ARITHMETIC_03_647949900054528}).
-      Therefore $\varphi(n,m) = \varphi'(n,m)$ for all $n, m \in \Nat$.
-      Consequently $\varphi = \varphi'$.
-      Indeed $\varphi(a) = \varphi'(a)$ for all $a \in \Nat \times \Nat$.
-    \end{proof}
-    [/checktime]
-  \end{forthel}
-
-  \begin{forthel}
-    [checktime 3]
-    \begin{definition}\printlabel{ARITHMETIC_13_3663815629602816}
-      $\exp$ is the map from $\Nat \times \Nat$ to $\Nat$ such that for all
-      $n \in \Nat$ we have $\exp(n, 0) = 1$ and $\exp(n, m + 1) =
-      \exp(n, m) \cdot n$ for any $m \in \Nat$.
-    \end{definition}
-    [/checktime]
-
-    Let $n^{m}$ stand for $\exp(n,m)$.
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{lemma}\printlabel{ARITHMETIC_13_5845266294898688}
+    \begin{signature}\printlabel{ARITHMETIC_13_3663815629602816}
       Let $n, m$ be natural numbers.
-      Then $(n,m) \in \dom(\exp)$.
-    \end{lemma}
+      $n^{m}$ is a natural number.
+    \end{signature}
   \end{forthel}
 
   \begin{forthel}
-    \begin{lemma}\printlabel{ARITHMETIC_13_4747809204994048}
-      Let $n, m$ be natural numbers.
-      Then $n^{m}$ is a natural number.
-    \end{lemma}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{lemma}\printlabel{ARITHMETIC_13_5368818025103360}
+    \begin{axiom}\printlabel{ARITHMETIC_13_5368818025103360}
       Let $n$ be a natural number.
       Then $n^{0} = 1$.
-    \end{lemma}
+    \end{axiom}
   \end{forthel}
 
   \begin{forthel}
-    \begin{lemma}\printlabel{ARITHMETIC_13_4140498660884480}
+    \begin{axiom}\printlabel{ARITHMETIC_13_4140498660884480}
       Let $n, m$ be natural numbers.
       Then $n^{m + 1} = n^{m} \cdot n$.
-    \end{lemma}
+    \end{axiom}
   \end{forthel}
 
 
