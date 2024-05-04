@@ -25,41 +25,24 @@ Marcel Schütz (2019 - 2022)}
   depends on.
 
   \begin{forthel}
-    %[prove off][check off]
+    [prove off][check off]
 
-    [readtex \path{libraries/source/foundations/10_sets.ftl.tex}]
+    [readtex \path{libraries/source/foundations/13_equinumerosity.ftl.tex}]
 
-    %[prove on][check on]
+    [prove on][check on]
   \end{forthel}
 
 
   \section*{The Knaster-Tarski fixed point theorem}
 
   \begin{forthel}
-    \begin{definition*}
-      Let $h$ be a map.
-      A fixed point of $h$ is an element $u$ of $\dom(h)$ such that $h(u) = u$.
-    \end{definition*}
-
-    \begin{definition*}
-      A map between systems of sets is a map from some system of sets to some
-      system of sets.
-    \end{definition*}
-
-    \begin{definition*}
-      Let $h$ be a map between systems of sets.
-      $h$ preserves subsets iff for all $u, v \in \dom(h)$
-      we have \[ u \subseteq v \implies h(u) \subseteq h(v). \]
-    \end{definition*}
-
-    \begin{theorem*}[Knaster-Tarski]\label{KT}
+    \begin{theorem*}[Knaster-Tarski]\label{knaster_tarski}
       Let $x$ be a set.
       Let $h$ be a map from $\pow(x)$ to $\pow(x)$ that preserves subsets.
       Then $h$ has a fixed point.
     \end{theorem*}
     \begin{proof}
-      (1) Define $A = \class{y | \text{$y \subseteq x$ and
-      $y \subseteq h(y)$}}$.
+      (1) Define $A = \class{y | \text{$y \subseteq x$ and $y \subseteq h(y)$}}$.
       Then $A$ is a subset of $\pow(x)$.
       We have $\bigcup A \in \pow(x)$.
 
@@ -87,13 +70,7 @@ Marcel Schütz (2019 - 2022)}
   \section*{The Cantor-Schröder-Bernstein theorem}
 
   \begin{forthel}
-    \begin{definition*}
-      Let $x, y$ be sets.
-      $x$ and $y$ are equinumerous iff there exists a bijection between $x$ and
-      $y$.
-    \end{definition*}
-
-    \begin{theorem*}[Cantor-Schröder-Bernstein]\label{CSB}
+    \begin{theorem*}[Cantor-Schröder-Bernstein]\label{cantor_schroeder_bernstein}
       Let $x,y$ be sets.
       $x$ and $y$ are equinumerous iff there exists a injective map from $x$ to
       $y$ and there exists an injective map from $y$ to $x$.
