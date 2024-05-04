@@ -8,7 +8,6 @@
   \begin{imports}
     \begin{forthel}
       %[prove off][check off]
-      [readtex \path{libraries/source/foundations/11_binary-relations.ftl.tex}]
       [readtex \path{libraries/source/arithmetics/03_addition.ftl.tex}]
       %[prove on][check on]
     \end{forthel}
@@ -480,51 +479,25 @@
   \begin{forthel}
     \begin{corollary}\printlabel{ARITHMETIC_04_5512590832697344}
       Let $n, m, k$ be natural numbers.
-      Then \[ n \leq m \iff n + k \leq m + k \]
-      (by \cref{ARITHMETIC_04_4203390999461888}, ARITHMETIC_03_4029553232052224).
+      Then \[ n \leq m \iff n + k \leq m + k. \]
     \end{corollary}
   \end{forthel}
 
 
-  \section{The Natural Numbers are Well-Ordered}
-
-  \begin{forthel}
-    \begin{definition}\printlabel{ARITHMETIC_04_4059354166722560}
-      \[ {<} = \{ (n, m) \mid \text{$n$ and $m$ are natural numbers such that
-      $n < m$} \}. \]
-    \end{definition}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{proposition}\printlabel{ARITHMETIC_04_5933477660721152}
-      Let $A$ be a nonempty subclass of $\Nat$.
-      Let $n, m$ be least elements of $A$ regarding ${<}$.
-      Then $n = m$.
-    \end{proposition}
-    \begin{proof}
-      Assume $n \neq m$.
-      Then $n < m$ or $m < n$.
-      Hence $(n, m) \in {<}$ or $(m, n) \in {<}$.
-      Thus $n$ and $m$ are not least elements of $A$ regarding ${<}$.
-      Contradiction.
-    \end{proof}
-  \end{forthel}
+  \section{Induction Revisited}
 
   \begin{forthel}
     \begin{proposition}\printlabel{ARITHMETIC_04_272317502455808}
       Let $A$ be a nonempty subclass of $\Nat$.
-      Then $A$ has a least element regarding ${<}$.
+      Then there exists a $m \in A$ such that $m \leq n$ for all $n \in A$.
     \end{proposition}
     \begin{proof}
       Assume the contrary.
 
-      Let us show that for each $n \in A$ there exists a $m \in A$ such that
-      $m < n$.
+      Let us show that for each $n \in A$ there exists a $m \in A$ such that $m < n$.
         Let $n \in A$.
-        $A$ has no least element regarding ${<}$.
         Assume that there exists no $m \in A$ such that $m < n$.
         Then $n \leq m$ for all $m \in A$.
-        Hence $n$ is a least element of $A$ regarding ${<}$.
         Contradiction.
       End.
 
@@ -545,57 +518,27 @@
         Then we can take an $m \in A$ such that $n + 1 \nless m$ (by a).
         Then $n < m \leq n + 1$.
         Hence $m = n + 1$.
-        Thus $n + 1$ is a least element of $A$ regarding ${<}$.
         Contradiction.
       Qed.
 
       Then $\Phi$ contains every natural number (by \cref{ARITHMETIC_03_647949900054528}).
       Therefore every natural number is less than any element of $A$.
-      Consequently $A$ is empty.
+      Consequently $A$ has no elements.
       Contradiction.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
-    \begin{corollary}\printlabel{ARITHMETIC_04_4280275783647232}
-      ${<}$ is a wellorder on every nonempty subclass of $\Nat$.
-    \end{corollary}
-    \begin{proof}
-      Let $A$ be a nonempty subclass of $\Nat$.
-      For any $n, m \in A$ we have $(n, m) \in {<}$ iff $n < m$ (by \cref{ARITHMETIC_04_4059354166722560}).
-
-      (1) ${<}$ is irreflexive on $A$.
-      Indeed for any $n \in A$ we have $n \nless n$.
-
-      (2) ${<}$ is transitive on $A$.
-      Indeed for any $n, m, k \in A$ if $n < m$ and $m < k$ then $n < k$.
-
-      (3) ${<}$ is connected on $A$.
-      Indeed for any distinct $n, m \in A$ we have $n < m$ or $m < n$.
-
-      Hence ${<}$ is a strict linear order on $A$.
-      ${<}$ is wellfounded on $A$.
-      Indeed every nonempty subclass of $A$ has a least element regarding ${<}$.
-      Thus ${<}$ is a wellorder on $A$.
-    \end{proof}
-  \end{forthel}
-
-
-  \section{Induction Revisited}
-
-  \begin{forthel}
     \begin{theorem}\printlabel{ARITHMETIC_04_3609801697263616}
       Let $A$ be a class.
-      Assume for all $n \in \Nat$ if $A$ contains all predecessors of $n$ then
-      $A$ contains $n$.
+      Assume for all $n \in \Nat$ if $A$ contains all predecessors of $n$ then $A$ contains $n$.
       Then $A$ contains every natural number.
     \end{theorem}
     \begin{proof}
       Assume the contrary.
       Take a natural number $n$ that is not contained in $A$.
       Then $n$ is contained in $\Nat \setminus A$.
-      Hence we can take a least element $m$ of $\Nat \setminus A$ regarding
-      ${<}$.
+      Hence we can take a $m \in \Nat \setminus A$ such that $m \leq k$ for all $k \in \Nat \setminus A$.
       Then $\Nat \setminus A$ does not contain any predecessor of $m$.
       Therefore $A$ contains all predecessors of $m$.
       Consequently $A$ contains $m$.

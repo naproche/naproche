@@ -8,7 +8,7 @@
   \begin{imports}
     \begin{forthel}
       %[prove off][check off]
-      [readtex \path{libraries/source/foundations/10_sets.ftl.tex}]
+      [readtex \path{libraries/source/foundations/01_classes.ftl.tex}]
       %[prove on][check on]
     \end{forthel}
   \end{imports}
@@ -109,23 +109,6 @@
 
       Therefore every natural number is an element of $\Phi$.
       Consequently $n \neq \succ(n)$.
-    \end{proof}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{proposition}\printlabel{ARITHMETIC_01_6115694068367360}
-      $\Nat$ is a set.
-    \end{proposition}
-    \begin{proof}
-      Define $f(n) = \succ(n)$ for $n \in \Nat$.
-      Then $f$ is a map from $\Nat$ to $\Nat$.
-      Hence we can take a subset $X$ of $\Nat$ that is inductive regarding
-      $0$ and $f$.
-      Then $0 \in X$ and for all $n \in X$ we have $\succ(n) \in X$.
-      Hence $X$ contains every natural number.
-      Thus we have $\Nat \subseteq X$ and $X \subseteq \Nat$.
-      Therefore $\Nat = X$.
-      Consequently $\Nat$ is a set.
     \end{proof}
   \end{forthel}
 

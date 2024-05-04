@@ -17,21 +17,21 @@
   \section{Definition of Exponentiation}
 
   \begin{forthel}
-    \begin{signature}\printlabel{ARITHMETIC_13_3663815629602816}
+    \begin{signature}\printlabel{ARITHMETIC_09_3663815629602816}
       Let $n, m$ be natural numbers.
       $n^{m}$ is a natural number.
     \end{signature}
   \end{forthel}
 
   \begin{forthel}
-    \begin{axiom}\printlabel{ARITHMETIC_13_5368818025103360}
+    \begin{axiom}\printlabel{ARITHMETIC_09_5368818025103360}
       Let $n$ be a natural number.
       Then $n^{0} = 1$.
     \end{axiom}
   \end{forthel}
 
   \begin{forthel}
-    \begin{axiom}\printlabel{ARITHMETIC_13_4140498660884480}
+    \begin{axiom}\printlabel{ARITHMETIC_09_4140498660884480}
       Let $n, m$ be natural numbers.
       Then $n^{m + 1} = n^{m} \cdot n$.
     \end{axiom}
@@ -43,7 +43,7 @@
   \subsection{Exponentiation with $0$, $1$ and $2$}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{ARITHMETIC_13_4673644676513792}
+    \begin{proposition}\printlabel{ARITHMETIC_09_4673644676513792}
       Let $n$ be a natural number.
       Assume $n \neq 0$.
       Then \[ 0^{n} = 0. \]
@@ -59,7 +59,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{ARITHMETIC_13_7376849881530368}
+    \begin{proposition}\printlabel{ARITHMETIC_09_7376849881530368}
       Let $n$ be a natural number.
       Then \[ 1^{n} = 1. \]
     \end{proposition}
@@ -83,7 +83,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{ARITHMETIC_13_4975279749464064}
+    \begin{proposition}\printlabel{ARITHMETIC_09_4975279749464064}
       Let $n$ be a natural number.
       Then \[ n^{1} = n. \]
     \end{proposition}
@@ -97,7 +97,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{ARITHMETIC_13_8513812055457792}
+    \begin{proposition}\printlabel{ARITHMETIC_09_8513812055457792}
       Let $n$ be a natural number.
       Then \[ n^{2} = n \cdot n. \]
     \end{proposition}
@@ -113,7 +113,7 @@
   \subsection{Sums as Exponents}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{ARITHMETIC_13_8152207530655744}
+    \begin{proposition}\printlabel{ARITHMETIC_09_8152207530655744}
       Let $n, m, k$ be natural numbers.
       Then \[ k^{n + m} = k^{n} \cdot k^{m}. \]
     \end{proposition}
@@ -147,7 +147,7 @@
   \subsection{Products as Exponents}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{ARITHMETIC_13_7827956571308032}
+    \begin{proposition}\printlabel{ARITHMETIC_09_7827956571308032}
       Let $n, m, k$ be natural numbers.
       Then \[ n^{m \cdot k} = (n^{m})^{k}. \]
     \end{proposition}
@@ -180,7 +180,7 @@
   \subsection{Products as Base}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{ARITHMETIC_13_2563032276271104}
+    \begin{proposition}\printlabel{ARITHMETIC_09_2563032276271104}
       Let $n, m, k$ be natural numbers.
       Then \[ (n \cdot m)^{k} = n^{k} \cdot m^{k}. \]
     \end{proposition}
@@ -225,7 +225,7 @@
   \subsection{Zeroes of Exponentiation}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{ARITHMETIC_13_3860221447372800}
+    \begin{proposition}\printlabel{ARITHMETIC_09_3860221447372800}
       Let $n, m$ be natural numbers.
       Then \[ n^{m} = 0 \iff (\text{$n = 0$ and $m \neq 0$}). \]
     \end{proposition}
@@ -270,7 +270,7 @@
   \section{Ordering and Exponentiation}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{ARITHMETIC_13_3373702288769024}
+    \begin{proposition}\printlabel{ARITHMETIC_09_3373702288769024}
       Let $n, m, k$ be natural numbers.
       Assume $k \neq 0$.
       Then \[ n < m \iff n^{k} < m^{k}. \]
@@ -340,7 +340,10 @@
                   < m^{k'} \cdot m
                   = m^{k' + 1}
                   = B$.
-                Thus $n^{k' + 1} = A < B = m^{k' + 1}$.
+                Take $X = m^{k'} \cdot n$ and $Y = m^{k'} \cdot m$.
+                Then $A < X < Y = B$.
+                Hence $A < B$.
+                Thus $n^{k' + 1} < m^{k' + 1}$.
               End.
             End.
 
@@ -391,7 +394,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{corollary}\printlabel{ARITHMETIC_13_2797602550579200}
+    \begin{corollary}\printlabel{ARITHMETIC_09_2797602550579200}
       Let $n, m, k$ be natural numbers.
       Assume $k \neq 0$.
       Then \[ n^{k} = m^{k} \implies n = m. \]
@@ -408,7 +411,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{corollary}\printlabel{ARITHMETIC_13_6875081963732992}
+    \begin{corollary}\printlabel{ARITHMETIC_09_6875081963732992}
       Let $n, m, k$ be natural numbers.
       Assume $k \neq 0$.
       Then \[ n^{k} \leq m^{k} \iff n \leq m. \]
@@ -416,18 +419,14 @@
     \begin{proof}
       If $n^{k} < m^{k}$ then $n < m$.
       If $n^{k} = m^{k}$ then $n = m$.
-      [prover vampire]
-      Hence $n^{k} \leq m^{k} \implies n \leq m$.
-      [prover eprover]
 
       If $n < m$ then $n^{k} < m^{k}$.
       If $n = m$ then $n^{k} = m^{k}$.
-      Hence $n \leq m \implies n^{k} \leq m^{k}$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{ARITHMETIC_13_3349764703780864}
+    \begin{proposition}\printlabel{ARITHMETIC_09_3349764703780864}
       Let $n, m, k$ be natural numbers.
       Assume $k > 1$.
       Then \[ n < m \iff k^{n} < k^{m}. \]
@@ -512,14 +511,13 @@
 
         Thus every natural number is contained in $\Psi$ (by \cref{ARITHMETIC_03_647949900054528}).
         Therefore if $n \geq m$ then $k^{n} \geq k^{m}$.
-        [prover vampire]
         Consequently $n < m$.
       End.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
-    \begin{corollary}\printlabel{ARITHMETIC_13_6780506905509888}
+    \begin{corollary}\printlabel{ARITHMETIC_09_6780506905509888}
       Let $n, m, k$ be natural numbers.
       Assume $k > 1$.
       Then \[ k^{n} = k^{m} \implies n = m. \]
@@ -536,7 +534,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{corollary}\printlabel{ARITHMETIC_13_2876620253691904}
+    \begin{corollary}\printlabel{ARITHMETIC_09_2876620253691904}
       Let $n, m, k$ be natural numbers.
       Assume $k > 1$.
       Then \[ n \leq m \iff k^{n} \leq k^{m}. \]
@@ -544,15 +542,13 @@
     \begin{proof}
       If $n \leq m$ then $k^{n} \leq k^{m}$.
 
-      Let us show that if $k^{n} \leq k^{m}$ then $n \leq m$.
-        Case $k^{n} = k^{m}$. Obvious (by \cref{ARITHMETIC_13_6780506905509888}).
-        Case $k^{n} < k^{m}$. Obvious.
-      End.
+      If $k^{n} = k^{m}$ then $n = m$.
+      If $k^{n} < k^{m}$ then $n < m$.
     \end{proof}
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{ARITHMETIC_13_6984104377581568}
+    \begin{proposition}\printlabel{ARITHMETIC_09_6984104377581568}
       Let $n$ be a natural number.
       Then \[ (n + 1)^{2} = (n^{2} + (2 \cdot n)) + 1. \]
     \end{proposition}
@@ -570,13 +566,13 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{ARITHMETIC_13_134060414337024}
+    \begin{proposition}\printlabel{ARITHMETIC_09_134060414337024}
       Let $n$ be a natural number.
       Assume $n \geq 3$.
       Then \[ n^{2} > (2 \cdot n) + 1. \]
     \end{proposition}
     \begin{proof}
-      Define $\Phi = \{ n' \in \Nat_{\geq 3} \mid n'^{2} > (2 \cdot n') + 1 \}$.
+      (a) Define $\Phi = \{ n' \in \Nat_{\geq 3} \mid n'^{2} > (2 \cdot n') + 1 \}$.
 
       (1) $\Phi$ contains $3$.
       Indeed $3^{2} > (2 \cdot 3) + 1$.
@@ -586,43 +582,86 @@
         Let $n' \in \Phi$.
         Then $n' \geq 3$.
 
-        (a) $(n'^{2} + (2 \cdot n')) + 1
-        > (((2 \cdot n') + 1) + (2 \cdot n')) + 1$.
-        Indeed $n'^{2} + (2 \cdot n') > ((2 \cdot n') + 1) + (2 \cdot n')$.
-
-        (b) $(((2 \cdot n') + 1) + (2 \cdot n')) + 1
-        > ((2 \cdot n') + (2 \cdot n')) + 1$. \\
+        Take $V = (n'^{2} + (2 \cdot n')) + 1$ and $W = (((2 \cdot n') + 1) + (2 \cdot n')) + 1$.
+        Then $V > W$. \\
         Proof.
-          We have $((2 \cdot n') + 1) + (2 \cdot n')
-          > (2 \cdot n') + (2 \cdot n')$.
+          We have $n'^{2} > (2 \cdot n') + 1$.
+          Hence $n'^{2} + (2 \cdot n') > ((2 \cdot n') + 1) + (2 \cdot n')$ (by \cref{ARITHMETIC_04_7354062662008832}).
+        Qed.
+
+        Take $X = ((2 \cdot n') + (2 \cdot n')) + 1$.
+        Then $W > X$. \\
+        Proof.
+          We have $((2 \cdot n') + 1) + (2 \cdot n') > (2 \cdot n') + (2 \cdot n')$.
           Indeed $(2 \cdot n') + 1 > 2 \cdot n'$.
         Qed.
 
-        (c) $(2 \cdot (n' + n')) + 1 > (2 \cdot (n' + 1)) + 1$. \\
+        Take $Y = (2 \cdot (n' + n')) + 1$ and $Z = (2 \cdot (n' + 1)) + 1$.
+        Then $Y > Z$. \\
         Proof.
           We have $n' + n' > n' + 1$ and $2 \neq 0$.
           Thus $2 \cdot (n' + n') > 2 \cdot (n' + 1)$ (by \cref{ARITHMETIC_06_5048640368279552}).
           Indeed $n' + n'$ and $n' + 1$ are natural numbers.
         Qed.
 
-        Take $A = (n' + 1)^{2}$ and $B = (2 \cdot (n' + 1)) + 1$. %!
-        Then
-        \[  A                                             \]
-        \[    = (n' + 1)^{2}                              \]
-        \[    = (n'^{2} + (2 \cdot n')) + 1               \]
-        \[    > (((2 \cdot n') + 1) + (2 \cdot n')) + 1   \]  % (a)
-        \[    > ((2 \cdot n') + (2 \cdot n')) + 1         \]  % (b)
-        \[    = (2 \cdot (n' + n')) + 1                   \]
-        \[    > (2 \cdot (n' + 1)) + 1                    \]  % (c)
-        \[    = B.                                        \]
-
-        Thus $(n' + 1)^{2} = A > B = (2 \cdot (n' + 1)) + 1$.
+        Then $(n' + 1)^{2} = V > W > X = Y > Z = (2 \cdot (n' + 1)) + 1$.
+        Hence $(n' + 1)^{2} > (2 \cdot (n' + 1)) + 1$.
       Qed.
 
-      [prover vampire]
       Therefore $\Phi$ contains every element of $\Nat_{\geq 3}$ (by \cref{ARITHMETIC_04_4976599269113856}, 1, 2).
-      [prover eprover]
-      Consequently $n^{2} > (2 \cdot n) + 1$.
+      Consequently $n^{2} > (2 \cdot n) + 1$ (by a).
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{ARITHMETIC_09_1097950367318016}
+      Let $n$ be a natural number.
+      Assume $n \geq 5$.
+      Then \[ 2^{n} > n^{2}. \]
+    \end{proposition}
+    \begin{proof}
+      (a) Define $\Phi = \{ n' \in \Nat_{\geq 5} \mid 2^{n'} > n'^{2} \}$.
+  
+      (1) $\Phi$ contains $5$.
+      Indeed we can show that $2^{5} > 5^{2}$.
+        We have $2^{5}
+          = 2 \cdot (2 \cdot (2 \cdot (2 \cdot 2)))
+          = 8 \cdot 4
+          = (5 + 3) \cdot 4
+          = (5 \cdot 4) + (3 \cdot 4)
+          = (5 \cdot 4) + ((5 \cdot 2) + 2)
+          = (5 \cdot (4 + 2)) + 2
+          = (5 \cdot 6) + 2
+          > 5 \cdot 6
+          > 5 \cdot 5
+          = 5^{2}$.
+      End.
+
+      (2) For all $n' \in \Phi$ we have $n' + 1 \in \Phi$. \\
+      Proof.
+        Let $n' \in \Phi$.
+        Then $n' \geq 5$ and $2^{n'} > n'^{2}$.
+  
+        Take $V = 2^{n'} \cdot 2$ and $W = n'^{2} \cdot 2$.
+        Then $V > W$.
+        Indeed $2 \neq 0$.
+  
+        Take $X = n'^{2} + n'^{2}$.
+        Then $W = X$.
+  
+        Take $Y = n'^{2} + ((2 \cdot n') + 1)$.
+        Then $X > Y$.
+        Indeed $n'^{2} > (2 \cdot n') + 1$.
+  
+        Take $Z = (n' + 1)^{2}$.
+        Then $Y = Z$.
+  
+        Then $2^{n' + 1} = V > W = X > Y = Z = (n' + 1)^{2}$.
+        Hence $2^{n' + 1} > (n' + 1)^{2}$.
+      Qed.
+  
+      Therefore $\Phi$ contains every element of $\Nat_{\geq 5}$ (by \cref{ARITHMETIC_04_4976599269113856}).
+      Consequently $2^{n} > n^{2}$ (by a).
     \end{proof}
   \end{forthel}
 \end{document}
