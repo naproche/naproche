@@ -1,0 +1,147 @@
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/arithmetics}
+\begin{document}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/arithmetics/13_exponentiation-and-divisibility.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+
+
+  \section{Division}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{ARITHMETIC_14_2313654268297915}
+      Let $n$ be a natural number and $m$ be a nonzero divisor of $n$.
+      $\frac{n}{m}$ is the natural number $k$ such that $k \cdot m = n$.
+    \end{definition}
+
+    Let the quotient of $n$ and $m$ stand for $\frac{n}{m}$.
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{ARITHMETIC_14_0843793254698710}
+      Let $n$ be a natural number.
+      \[ \frac{n}{1} = n. \]
+    \end{proposition}
+    \begin{proof}
+      We have $\frac{n}{1} = \frac{n}{1} \cdot 1 = n$.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{ARITHMETIC_14_1254235698632545}
+      Let $n$ be a natural number and $m$ be a nonzero divisor of $n$.
+      Then \[ \frac{n}{m} = 0 \iff n = 0. \]
+    \end{proposition}
+    \begin{proof}
+      Case $\frac{n}{m} = 0$.
+        Then $n = \frac{n}{m} \cdot m = 0 \cdot m = 0$.
+      End.
+
+      Case $n = 0$.
+        Then $\frac{n}{m} \cdot m = n = 0$.
+        Hence $\frac{n}{m} = 0$ or $m = 0$.
+        $m$ is nonzero.
+        Thus $\frac{n}{m} = 0$.
+      End.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{ARITHMETIC_14_5137961454123875}
+      Let $n, m, k$ be natural numbers such that $k$ is nonzero.
+      Assume $k \mid n,m$.
+      Then \[ \frac{n + m}{k} = \frac{n}{k} + \frac{m}{k}. \]
+    \end{proposition}
+    \begin{proof}
+      We have $\frac{n + m}{k} \cdot k = n + m$ and $\frac{n}{k} \cdot k = n$ and $\frac{m}{k} \cdot k = m$.
+      Hence
+      \[  \frac{n + m}{k} \cdot k
+          = \left( \frac{n}{k} \cdot k \right) + \left( \frac{m}{k} \cdot k \right)
+          = \left( \frac{n}{k} + \frac{m}{k} \right) \cdot k. \]
+      Thus $\frac{n + m}{k} = \frac{n}{k} + \frac{m}{k}$.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{ARITHMETIC_14_1203565412058488}
+      Let $n, m$ be natural numbers and $k$ be a nonzero divisor of $m$.
+      Then \[ \frac{n \cdot m}{k} = n \cdot \frac{m}{k}. \]
+    \end{proposition}
+    \begin{proof}
+      We have $\frac{n \cdot m}{k} \cdot k = n \cdot m$ and $\frac{m}{k} \cdot k = m$.
+      Hence
+      \[  \frac{n \cdot m}{k} \cdot k
+          = n \cdot \left( \frac{m}{k} \cdot k \right)
+          = \left( n \cdot \frac{m}{k} \right) \cdot k. \]
+      Thus $\frac{n \cdot m}{k} = n \cdot \frac{m}{k}$.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{corollary}\printlabel{ARITHMETIC_14_7985412544563256}
+      Let $n, m$ be natural numbers and $k$ be a nonzero divisor of $m$.
+      Then \[ \frac{n \cdot m}{k} = \frac{m}{k} \cdot n. \]
+    \end{corollary}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{corollary}\printlabel{ARITHMETIC_14_5446124202158602}
+      Let $n, m$ be natural numbers and $k$ be a nonzero divisor of $n$.
+      Then \[ \frac{n \cdot m}{k} = \frac{n}{k} \cdot m. \]
+    \end{corollary}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{corollary}\printlabel{ARITHMETIC_14_7751120023654896}
+      Let $n, m$ be natural numbers and $k$ be a nonzero divisor of $n$.
+      Then \[ \frac{n \cdot m}{k} = m \cdot \frac{n}{k}. \]
+    \end{corollary}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{ARITHMETIC_14_0531254868745988}
+      Let $n, k$ be natural numbers such that $k$ be nonzero and $m$ be a nonzero divisor of $n$.
+      Then \[ \frac{n \cdot k}{m \cdot k} = \frac{n}{m}. \]
+    \end{proposition}
+    \begin{proof}
+      We have $\frac{n \cdot k}{m \cdot k} \cdot (m \cdot k) = n \cdot k$.
+      Hence
+      \[  \left( \frac{n \cdot k}{m \cdot k} \cdot m \right) \cdot k
+          = \frac{n \cdot k}{m \cdot k} \cdot (m \cdot k)
+          = n \cdot k. \]
+      Thus $\frac{n \cdot k}{m \cdot k} \cdot m = n$.
+      Therefore $\frac{n}{m} = \frac{n \cdot k}{m \cdot k}$.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{corollary}\printlabel{ARITHMETIC_14_7954254458622034}
+      Let $n, k$ be natural numbers such that $k$ be nonzero and $m$ be a nonzero divisor of $n$.
+      Then \[ \frac{k \cdot n}{k \cdot m} = \frac{n}{m}. \]
+    \end{corollary}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{ARITHMETIC_14_2345102698451257}
+      Let $n, m, k$ be natural numbers such that $k$ is nonzero and $n \geq m$.
+      Then \[ \frac{k^{n}}{k^{m}} = k^{n - m}. \]
+    \end{proposition}
+    \begin{proof}
+      We have $k^{n} = k^{(n - m) + m} = k^{n - m} \cdot k^{m}$.
+      Hence
+      \[  \frac{k^{n}}{k^{m}}
+          = \frac{k^{n - m} \cdot k^{m}}{k^{m}}
+          = \frac{k^{n - m} \cdot k^{m}}{1 \cdot k^{m}}
+          = \frac{k^{n - m}}{1}
+          = k^{n - m}. \]
+    \end{proof}
+  \end{forthel}
+\end{document}
