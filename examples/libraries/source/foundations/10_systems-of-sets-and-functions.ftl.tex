@@ -1,0 +1,236 @@
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\begin{document}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+
+      [readtex \path{libraries/source/foundations/09_invertible-maps.ftl.tex}]
+
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+
+
+  \section{Sub- and Supersets}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{FOUNDATIONS_10_1346889551183872}
+      Let $A$ be a class.
+      A subset of $A$ is a subclass of $A$ that is a set.
+    \end{definition}
+
+    Let a superset of $A$ stand for a superclass of $A$ that is a set.
+    Let a proper subset of $A$ stand for a proper subclass of $A$ that is a set.
+    Let a proper superset of $A$ stand for a proper superclass of $A$ that is a
+    set.
+  \end{forthel}
+
+
+  \section{Powerclasses}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{FOUNDATIONS_10_1448589907722240}
+      Let $A$ be a class.
+      The powerclass of $A$ is
+      \[ \{ x \mid \text{$x$ is a subset of $A$} \}. \]
+    \end{definition}
+
+    Let $\pow(A)$ stand for the powerclass of $A$.
+  \end{forthel}
+
+
+  \section{Systems of Sets}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{FOUNDATIONS_10_5805323570905088}
+      A system of sets is a class $X$ such that every element of $X$ is a set.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{FOUNDATIONS_10_1631952387964928}
+      A system of nonempty sets is a class $X$ such that every element of $X$ is
+      a nonempty set.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{FOUNDATIONS_10_943381479948288}
+      Let $A$ be a class.
+      A system of subsets of $A$ is a class $X$ such that every element of $X$
+      is a subset of $A$.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{FOUNDATIONS_10_1394550966845440}
+      A map between systems of sets is a map from some system of sets to some
+      system of sets.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{FOUNDATIONS_10_3290499861446656}
+      Let $f$ be a map between systems of sets.
+      $f$ is subset preserving iff for all $x, y \in \dom(f)$
+      \[ x \subseteq y \implies f(x) \subseteq f(y). \]
+    \end{definition}
+
+    Let $f$ preserves subsets stand for $f$ is subset preserving.
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{FOUNDATIONS_10_8268633648136192}
+      Let $A$ be a class.
+      Then $\emptyset$ is a system of subsets of $A$.
+    \end{proposition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{FOUNDATIONS_10_7546016869908480}
+      Let $A$ be a class.
+      Then $\pow(A)$ is a system of subsets of $A$.
+    \end{proposition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}
+      Let $X, Y$ be systems of sets.
+      Then $X \cup Y$ is a system of sets.
+    \end{proposition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}
+      Let $X, Y$ be systems of sets.
+      Then $X \cap Y$ is a system of sets.
+    \end{proposition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}
+      Let $X, Y$ be systems of sets.
+      Then $X \setminus Y$ is a system of sets.
+    \end{proposition}
+  \end{forthel}
+
+
+  \section{Unions}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{FOUNDATIONS_10_541772562300928}
+      Let $X$ be a system of sets.
+      The union over $X$ is
+      \[ \{ a \mid \text{$a \in x$ for some $x \in X$} \}. \]
+    \end{definition}
+
+    Let $\bigcup X$ stand for the union over $X$.
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{FOUNDATIONS_10_4872701241982976}
+      \[ \bigcup \emptyset = \emptyset. \]
+    \end{proposition}
+    \begin{proof}
+      $\bigcup \emptyset = \{ a \mid a \in x$ for some $x \in \emptyset \}$.
+      $\emptyset$ has no elements.
+      Hence there is no object $a$ such that $a \in x$ for some
+      $x \in \emptyset$.
+      Thus $\bigcup \emptyset = \emptyset$.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{FOUNDATIONS_10_2559541585641472}
+      Let $x, y$ be sets.
+      Then \[ \bigcup \set{x, y} = x \cup y. \]
+    \end{proposition}
+    \begin{proof}
+      Let us show that $\bigcup \set{x, y} \subseteq x \cup y$.
+        Let $a \in \bigcup \set{x, y}$.
+        Then $a$ is contained in some element of $\set{x, y}$.
+        Hence $a \in x$ or $a \in y$.
+        Thus $a \in x \cup y$.
+      End.
+
+      Let us show that $x \cup y \subseteq \bigcup \set{x, y}$.
+        Let $a \in x \cup y$.
+        Then $a \in x$ or $a \in y$.
+        Hence $a$ is contained in some element of $\set{x, y}$.
+        Therefore $a \in \bigcup \set{x, y}$.
+      End.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{corollary}\printlabel{FOUNDATIONS_10_2157223832715264}
+      Let $x$ be a set.
+      Then \[ \bigcup \set{x} = x. \]
+    \end{corollary}
+  \end{forthel}
+
+
+  \section{Intersections}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{FOUNDATIONS_10_2659345095458816}
+      Let $X$ be a system of sets.
+      The intersection over $X$ is
+      \[ \{ a \mid \text{$a \in x$ for all $x \in X$} \}. \]
+    \end{definition}
+
+    Let $\bigcap X$ stand for the intersection over $X$.
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{FOUNDATIONS_10_2809770322952192}
+      $\bigcap \emptyset$ is the class of all objects.
+    \end{proposition}
+    \begin{proof}
+      Define $V = \{ x \mid x$ is an object $\}$.
+      We have $\bigcap \emptyset \subseteq V$.
+      Indeed every element of $\bigcap \emptyset$ is an object.
+
+      Let us show that $V \subseteq \bigcap \emptyset$.
+        Let $a \in V$.
+        Then $a$ is an object.
+        For every $x \in \emptyset$ we have $a \in x$.
+        Indeed $\emptyset$ has no elements.
+        Thus $a \in \bigcap \emptyset$.
+      End.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{FOUNDATIONS_10_7851827447988224}
+      Let $x, y$ be sets.
+      Then \[ \bigcap \set{x, y} = x \cap y. \]
+    \end{proposition}
+    \begin{proof}
+      Let us show that $\bigcap \set{x, y} \subseteq x \cap y$.
+        Let $a \in \bigcap \set{x, y}$.
+        Then $a$ is contained in every element of $\set{x, y}$.
+        Hence $a \in x$ and $a \in y$.
+        Thus $a \in x \cap y$.
+      End.
+
+      Let us show that $x \cap y \subseteq \bigcap \set{x, y}$.
+        Let $a \in x \cap y$.
+        Then $a \in x$ and $a \in y$.
+        Hence $a$ is contained in every element of $\set{x, y}$.
+        Therefore $a \in \bigcap \set{x, y}$.
+      End.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{corollary}\printlabel{FOUNDATIONS_10_7239895674257408}
+      Let $x$ be a set.
+      Then \[ \bigcap \set{x} = x. \]
+    \end{corollary}
+  \end{forthel}
+\end{document}

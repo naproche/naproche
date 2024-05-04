@@ -9,7 +9,7 @@
       %[prove off][check off]
 
       [readtex \path{libraries/source/foundations/04_pairs-and-products.ftl.tex}]
-
+      
       %[prove on][check on]
     \end{forthel}
   \end{imports}
@@ -143,6 +143,8 @@
       Let $A$ be a class.
       A map of $A$ is a map $f$ such that $\dom(f) = A$.
     \end{definition}
+
+    Let a function of $A$ stand for a map of $A$ that is a function.
   \end{forthel}
 
   \begin{forthel}
@@ -150,6 +152,8 @@
       Let $B$ be a class.
       A map to $B$ is a map $f$ such that $f(a) \in B$ for each $a \in \dom(f)$.
     \end{definition}
+
+    Let a function to $B$ stand for a map to $B$ that is a function.
   \end{forthel}
 
   \begin{forthel}
@@ -160,6 +164,8 @@
     \end{definition}
 
     Let $f: A \to B$ stand for $f$ is a map from $A$ to $B$.
+
+    Let a function from $A$ to $B$ stand for a map from $A$ to $B$ that is a function.
   \end{forthel}
 
   \begin{forthel}
@@ -167,6 +173,8 @@
       Let $A$ be a class.
       A map on $A$ is a map from $A$ to $A$.
     \end{definition}
+
+    Let a function on $A$ stand for a map on $A$ that is a function.
   \end{forthel}
 
   \begin{forthel}
@@ -265,6 +273,16 @@
 
       Hence $h \circ (g \circ f) = (h \circ g) \circ f$.
     \end{proof}
+  \end{forthel}
+
+
+  \section{Classes of Functions}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{FOUNDATIONS_06_5119110467813376}
+      Let $A, B$ be classes.
+      $[A \to B]$ is the class of all functions from $A$ to $B$.
+    \end{definition}
   \end{forthel}
 
 
