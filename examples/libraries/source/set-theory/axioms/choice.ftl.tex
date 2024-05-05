@@ -1,0 +1,24 @@
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\begin{document}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/foundations/systems-of-sets.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+
+
+  \section{Choice}
+
+  \begin{forthel}
+    \begin{axiom}[Axiom of Choice]\printlabel{FOUNDATIONS_10_1897613305577472}
+      Let $X$ be a system of nonempty sets.
+      Then there exists a map $f$ such that $\dom(f) = X$ and $f(x) \in x$ for any $x \in X$.
+    \end{axiom}
+  \end{forthel}
+\end{document}

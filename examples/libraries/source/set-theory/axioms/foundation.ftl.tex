@@ -1,0 +1,24 @@
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\begin{document}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/foundations/systems-of-sets.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+
+
+  \section{Foundation}
+
+  \begin{forthel}
+    \begin{axiom}[Foundation]\printlabel{FOUNDATIONS_10_1320008569323520}
+      Let $X$ be a nonempty system of sets.
+      Then $X$ has an element $x$ such that $X$ and $x$ are disjoint.
+    \end{axiom}
+  \end{forthel}
+\end{document}

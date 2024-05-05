@@ -1,0 +1,26 @@
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\begin{document}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/foundations/sub-and-supersets.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+
+
+  \section{Powerset}
+
+  \begin{forthel}
+    \begin{axiom}[Powerset Axiom]\printlabel{FOUNDATIONS_10_5862230203564032}
+      Let $x$ be a set.
+      Then $\pow(x)$ is a set.
+    \end{axiom}
+
+    Let the powerset of $x$ stand for $\pow(x)$.
+  \end{forthel}
+\end{document}

@@ -1,0 +1,37 @@
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\begin{document}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/foundations/classes.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+
+
+  \section*{Sub- and Supersets}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{FOUNDATIONS_10_1346889551183872}
+      Let $A$ be a class.
+      A subset of $A$ is a subclass of $A$ that is a set.
+    \end{definition}
+
+    Let a superset of $A$ stand for a superclass of $A$ that is a set.
+    Let a proper subset of $A$ stand for a proper subclass of $A$ that is a set.
+    Let a proper superset of $A$ stand for a proper superclass of $A$ that is a set.
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{FOUNDATIONS_10_1448589907722240}
+      Let $A$ be a class.
+      The powerclass of $A$ is $\{ x \mid x$ is a subset of $A \}$.
+    \end{definition}
+
+    Let $\pow(A)$ stand for the powerclass of $A$.
+  \end{forthel}
+\end{document}

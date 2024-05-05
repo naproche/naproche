@@ -1,0 +1,15 @@
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\begin{document}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/set-theory/zf.ftl.tex}]
+      [readtex \path{libraries/source/set-theory/axioms/choice.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+\end{document}

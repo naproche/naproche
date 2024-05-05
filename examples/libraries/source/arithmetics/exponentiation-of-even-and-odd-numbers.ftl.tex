@@ -1,0 +1,73 @@
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/arithmetics}
+\begin{document}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/arithmetics/exponentiation.ftl.tex}]
+      [readtex \path{libraries/source/arithmetics/even-and-odd-numbers.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+
+
+  \section*{Exponentiation of Even and Odd Numbers}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{ARITHMETIC_15_1023659658745214}
+      Let $n, m$ be natural numbers such that $m > 0$.
+      Assume that $n$ is even.
+      Then $n^{m}$ is even.
+    \end{proposition}
+    \begin{proof}
+      Take a natural number $k$ such that $n = 2 \cdot k$.
+      Consider a natural number $m'$ such that $m = m' + 1$.
+      Then $n^{m}
+        = (2 \cdot k)^{m}
+        = (2^{m} \cdot (k^{m}))
+        = (2^{m' + 1} \cdot (k^{m}))
+        = (2^{m'} \cdot 2) \cdot (k^{m})
+        = (2 \cdot 2^{m'}) \cdot (k^{m})
+        = 2 \cdot (2^{m'} \cdot (k^{m}))$.
+      Hence $n^{m}$ is even.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{ARITHMETIC_15_0021200236556985}
+      Let $n, m$ be natural numbers.
+      Assume that $n$ is odd.
+      Then $n^{m}$ is odd.
+    \end{proposition}
+    \begin{proof}
+      Define $\Phi = \{ m' \in \Nat \mid n^{m'}$ is odd $\}$.
+
+      (1) $\Phi$ contains $0$.
+      Indeed $n^{0} = 1$ and $1$ is odd.
+
+      (2) For all $m' \in \Phi$ we have $m' + 1 \in \Phi$. \\
+      Proof.
+        Let $m' \in \Phi$.
+        We have $n^{m' + 1} = n^{m'} \cdot n$.
+        $n^{m'}$ is odd.
+        Hence we can take a natural number $k$ such that $n^{m'} = (2 \cdot k) + 1$.
+        Then $n^{m' + 1}
+          = ((2 \cdot k) + 1) \cdot n
+          = ((2 \cdot k) \cdot n) + (1 \cdot n)
+          = ((2 \cdot k) \cdot n) + n
+          = (2 \cdot (k \cdot n)) + n$.
+        $2 \cdot (k \cdot n)$ is even and $n$ is odd.
+        Thus $(2 \cdot (k \cdot n)) + n$ is odd.
+        Therefore $n^{m' + 1}$ is odd.
+        Consequently $m' + 1 \in \Phi$.
+      Qed.
+
+      Hence $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).
+      Thus $n^{m}$ is odd.
+    \end{proof}
+  \end{forthel}
+\end{document}

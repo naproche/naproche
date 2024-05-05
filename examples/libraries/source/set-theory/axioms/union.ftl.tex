@@ -1,0 +1,24 @@
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\begin{document}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/foundations/systems-of-sets.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+
+
+  \section{Union}
+
+  \begin{forthel}
+    \begin{axiom}[Union Axiom]\printlabel{FOUNDATIONS_10_5536459412996096}
+      Let $X$ be a system of sets.
+      If $X$ is a set then $\bigcup X$ is a set.
+    \end{axiom}
+  \end{forthel}
+\end{document}

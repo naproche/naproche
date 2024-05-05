@@ -1,0 +1,33 @@
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\begin{document}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/foundations/maps.ftl.tex}]
+      [readtex \path{libraries/source/foundations/systems-of-sets.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+
+
+  \section*{Maps and Systems of Sets}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{FOUNDATIONS_10_1394550966845440}
+      A map between systems of sets is a map from some system of sets to some system of sets.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{FOUNDATIONS_10_3290499861446656}
+      Let $f$ be a map between systems of sets.
+      $f$ is subset preserving iff $x \subseteq y \implies f(x) \subseteq f(y)$ for all $x, y \in \dom(f)$.
+    \end{definition}
+
+    Let $f$ preserves subsets stand for $f$ is subset preserving.
+  \end{forthel}
+\end{document}
