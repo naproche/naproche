@@ -23,13 +23,15 @@
 }
 
 
-% Printable labels
-% ================
+% Printable labels and references
+% ===============================
 
 % `\printlabel' behaves exactly as `\label' but its argument is printed in the
 % PDF.
 \showlabels{printlabel}
 \newcommand{\printlabel}[1]{\label{#1}}
+
+\newcommand{\printref}[1]{\path{#1}}
 
 
 % Top-level sections
