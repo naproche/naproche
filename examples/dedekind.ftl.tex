@@ -22,15 +22,15 @@ Marcel Schütz}
 
   \begin{imports}
     \begin{forthel}
-      [prove off][check off]
-      [readtex \path{libraries/source/arithmetics/01_natural-numbers.ftl.tex}]
-      [prove on][check on]
-      Let $n + 1$ stand for $\succ(n)$.
+      %[prove off][check off]
+      [readtex \path{libraries/source/arithmetics/nat-is-a-set.ftl.tex}]
+      [readtex \path{libraries/source/set-theory/zf.ftl.tex}]
+      %[prove on][check on]
     \end{forthel}
   \end{imports}
 
   \begin{forthel}
-    \begin{definition*}\label{ARITHMETIC_02_4608408013504512}
+    \begin{definition*}
       Let $a$ be an object and $f$ be a map.
       Let $\varphi$ be a map from $\Nat$ to $\dom(f)$.
       $\varphi$ is recursively defined by $a$ and $f$ iff $\varphi(0) = a$ and $\varphi(n + 1) = f(\varphi(n))$ for every $n \in \Nat$.
@@ -43,20 +43,29 @@ Marcel Schütz}
       Then there exists a $\varphi : \Nat \to A$ that is recursively defined by $a$ and $f$.
     \end{theorem*}
     \begin{proof}
-      (a) Define \[ \Phi = \class{H \in \pow(\Nat \times A) | \classtext{
-      $(0, a) \in H$ and for all $n \in \Nat$ and all $x \in A$ if
-      $(n, x) \in H$ then $(n + 1, f(x)) \in H$}}. \]
+      (a) Define \[ \Phi = \class{H \in \pow(\Nat \times A) | \classtext{$(0, a) \in H$ and for all $n \in \Nat$ and all $x \in A$ if $(n, x) \in H$ then $(n + 1, f(x)) \in H$}}. \]
 
       Let us show that $\bigcap \Phi \in \Phi$. \\
       Proof.
+        (0) $\Nat \times A \in \Phi$. \\
+        Proof. \\
+          (i) $\Nat \times A \in \pow(\Nat \times A)$.
+
+          (ii) $(0,a) \in \Nat \times A$.
+
+          (iii) for all $n \in \Nat$ and all $x \in A$ if $(n, x) \in \Nat \times A$ then $(n + 1, f(x)) \in \Nat \times A$. \\
+          Proof.
+            Let $n \in \Nat$ and $x \in A$.
+            Assume $(n,x) \in \Nat \times A$.
+            We have $n + 1 \in \Nat$ and $f(x) \in A$.
+            Hence $(n + 1, f(x)) \in \Nat \times A$.
+          Qed.
+        Qed.
 
         (1) $\bigcap \Phi \in \pow(\Nat \times A)$. \\
         Proof.
-          We have $\Nat \times A \in \Phi$.
-          Hence $\Phi$ is nonempty.
           Any element of $\bigcap \Phi$ is contained in every element of $\Phi$.
-          Hence any element of $\bigcap \Phi$ is contained in
-          $\Nat \times A$.
+          Hence any element of $\bigcap \Phi$ is contained in $\Nat \times A$.
           Thus $\bigcap \Phi \subseteq \Nat \times A$.
           $\bigcap \Phi$ is a set.
           Hence $\bigcap \Phi$ is a subset of $\Nat \times A$.
@@ -96,7 +105,7 @@ Marcel Schütz}
           Indeed $f(x) \in A$.
         Qed.
 
-        Therefore $n \in \Psi$ for every $n \in \Nat$ (by \cref{ARITHMETIC_01_4764664342773760}).
+        Therefore $n \in \Psi$ for every $n \in \Nat$ (by \printref{ARITHMETIC_01_4764664342773760}).
       Qed.
 
       Let us show that for all $n \in \Nat$ and all $x, y \in A$ if
@@ -131,11 +140,14 @@ Marcel Schütz}
                     Let $n \in \Nat$ and $b \in A$.
                     Assume $(n,b) \in H$.
                     Then $(n + 1, f(b)) \in \bigcap \Phi$.
-                    We have $(n + 1, f(b)) \neq (0,x)$.
+                    We have $(n + 1, f(b)) \neq (0,x)$ (by \printref{FOUNDATIONS_04_8464577431863296}).
+                    Indeed $n + 1 \neq 0$.
                     Hence $(n + 1, f(b)) \in H$.
                   Qed.
 
+                  [prover vampire]
                   Thus $H \in \Phi$ (by a).
+                  [prover eprover]
                 End.
 
                 Then $(0,x)$ is not contained in every member of $\Phi$.
@@ -151,6 +163,7 @@ Marcel Schütz}
                   (1) $H \in \pow(\Nat \times A)$.
 
                   (2) $(0,a) \in H$.
+                  Indeed $(0,a) \neq (0,y)$.
 
                   (3) For all $n \in \Nat$ and all $b \in A$ if
                   $(n,b) \in H$ then $(n + 1, f(b)) \in H$. \\
@@ -158,11 +171,14 @@ Marcel Schütz}
                     Let $n \in \Nat$ and $b \in A$.
                     Assume $(n,b) \in H$.
                     Then $(n + 1, f(b)) \in \bigcap \Phi$.
-                    We have $(n + 1, f(b)) \neq (0,y)$.
+                    We have $(n + 1, f(b)) \neq (0,y)$ (by \printref{FOUNDATIONS_04_8464577431863296}).
+                    Indeed $n + 1 \neq 0$.
                     Hence $(n + 1, f(b)) \in H$.
                   Qed.
 
+                  [prover vampire]
                   Thus $H \in \Phi$ (by a).
+                  [prover eprover]
                 End.
 
                 Then $(0,y)$ is not contained in every member of $\Phi$.
@@ -202,8 +218,8 @@ Marcel Schütz}
                 Assume $(m,z) \in H$.
                 Then $(m,z) \in \bigcap \Phi$.
                 Hence $(m + 1,f(z)) \in \bigcap \Phi$.
-                $(m + 1,f(z)) \neq (n + 1,x)$.
-                Indeed if $(m + 1,f(z)) = (n + 1,x)$ then $m = n$ and $f(z) = x$.
+                $(m + 1,f(z)) \neq (n + 1,x)$ (by \printref{FOUNDATIONS_04_8464577431863296}).
+                Indeed if $(m + 1,f(z)) = (n + 1,x)$ then $m = n$ and $f(z) = x$ (by \printref{FOUNDATIONS_04_8464577431863296}, \printref{ARITHMETIC_01_3604163883696128}).
                 Therefore $(m + 1,f(z)) \in H$.
               Qed.
 
@@ -231,8 +247,8 @@ Marcel Schütz}
                 Assume $(m,z) \in H$.
                 Then $(m,z) \in \bigcap \Phi$.
                 Hence $(m + 1,f(z)) \in \bigcap \Phi$.
-                $(m + 1,f(z)) \neq (n + 1,y)$.
-                Indeed if $(m + 1,f(z)) = (n + 1,y)$ then $m = n$ and $f(z) = y$.
+                $(m + 1,f(z)) \neq (n + 1,y)$ (by \printref{FOUNDATIONS_04_8464577431863296}).
+                Indeed if $(m + 1,f(z)) = (n + 1,y)$ then $m = n$ and $f(z) = y$ (by \printref{FOUNDATIONS_04_8464577431863296}, \printref{ARITHMETIC_01_3604163883696128}).
                 Therefore $(m + 1,f(z)) \in H$.
               Qed.
 
@@ -251,7 +267,7 @@ Marcel Schütz}
           Therefore $n + 1 \in \Theta$ (by a).
         Qed.
 
-        Consequently $n \in \Theta$ for every $n \in \Nat$ (by \cref{ARITHMETIC_01_4764664342773760}).
+        Consequently $n \in \Theta$ for every $n \in \Nat$ (by \printref{ARITHMETIC_01_4764664342773760}).
       Qed.
 
       Define $\varphi(n) =$ ``choose $x \in A$ such that $(n, x) \in
