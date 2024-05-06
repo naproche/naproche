@@ -1,6 +1,5 @@
 \documentclass{article}
 \usepackage[british]{babel}
-\usepackage{xr}
 \usepackage{../lib/tex/naproche}
 \input{libraries/lib/foundations}
 \input{libraries/lib/arithmetics}
@@ -9,17 +8,14 @@
 \usepackage{csquotes}
 \addbibresource{meta-inf/lib/bibliography}
 
-\externaldocument{arithmetic/arithmetic}
-
 \newcommand{\N}{\mathrm{N}}
 \newcommand{\Int}{\mathbb{Z}}
 \newcommand{\Ps}{\mathrm{P}}
 
 \title{Furstenberg's proof of the infinitude of primes}
 \author{\Naproche formalization: \vspace{0.5em} \\
-Andrei Paskevich (2007), \\
-Marcel Schütz (2021 - 2022)}
-\date{}
+Andrei Paskevich, Marcel Schütz}
+\date{2024}
 
 
 \begin{document}
@@ -32,7 +28,7 @@ Marcel Schütz (2021 - 2022)}
   depends on.
 
   \begin{forthel}
-    [prove off][check off]
+    %[prove off][check off]
     [readtex \path{libraries/source/arithmetics/primes.ftl.tex}]
 
     [readtex \path{libraries/source/arithmetics/nat-is-a-set.ftl.tex}]
@@ -40,7 +36,7 @@ Marcel Schütz (2021 - 2022)}
     [readtex \path{libraries/source/set-theory/zf.ftl.tex}]
 
     [readtex \path{libraries/source/foundations/closure-under-finite-unions.ftl.tex}]
-    [prove on][check on]
+    %[prove on][check on]
   \end{forthel}
 
   The central idea of Furstenberg's proof is to define a certain topology on
@@ -55,10 +51,10 @@ Marcel Schütz (2021 - 2022)}
 
     \begin{definition}
       Let $A$ be a subset of $\Nat$.
-      $A^{\complement} = \Nat \setminus A$.
+      $A^\complement = \Nat \setminus A$.
     \end{definition}
 
-    Let the complement of $A$ stand for $A^{\complement}$.
+    Let the complement of $A$ stand for $A^\complement$.
 
     \begin{lemma}
       The complement of any subset of $\Nat$ is a subset of $\Nat$.
@@ -145,7 +141,7 @@ Marcel Schütz (2021 - 2022)}
   \begin{forthel}
     \begin{definition}
       Let $A$ be a subset of $\Nat$.
-      $A$ is closed iff $A^{\complement}$ is open.
+      $A$ is closed iff $A^\complement$ is open.
     \end{definition}
 
     \begin{definition}
@@ -173,9 +169,9 @@ Marcel Schütz (2021 - 2022)}
       Let us show that $A \cup B \in C$ for any $A, B \in C$.
         Let $A, B \in C$.
         Then $A, B$ are closed subsets of $\Nat$.
-        We have $((A \cup B)^{\complement}) = A^{\complement} \cap B^{\complement}$. %!
-        $A^{\complement}$ and $B^{\complement}$ are open.
-        Hence $A^{\complement} \cap B^{\complement}$ is open.
+        We have $((A \cup B)^\complement) = A^\complement \cap B^\complement$. %!
+        $A^\complement$ and $B^\complement$ are open.
+        Hence $A^\complement \cap B^\complement$ is open.
         Thus $A \cup B$ is a closed subset of $\Nat$.
       End.
 
@@ -193,11 +189,11 @@ Marcel Schütz (2021 - 2022)}
       $\N_{n, q}$ is closed.
     \end{lemma}
     \begin{proof}
-      Let $m \in (\N_{n, q})^{\complement}$.
+      Let $m \in (\N_{n, q})^\complement$.
 
-      Let us show that $\N_{m, q} \subseteq (\N_{n, q})^{\complement}$.
+      Let us show that $\N_{m, q} \subseteq (\N_{n, q})^\complement$.
         Let $k \in \N_{m, q}$.
-        Assume $k \notin (\N_{n, q})^{\complement}$.
+        Assume $k \notin (\N_{n, q})^\complement$.
         Then $k \equiv m \pmod{q}$ and $n \equiv k \pmod{q}$.
         Hence $m \equiv n \pmod{q}$.
         Therefore $m \in \N_{n, q}$.
@@ -241,14 +237,17 @@ Marcel Schütz (2021 - 2022)}
           Then $\N_{0, p} = \N_{0, q}$.
           We have $\N_{0, p} = \{ m \in \Nat \mid m \equiv 0 \pmod{p} \}$ and
           $\N_{0, q} = \{ m \in \Nat \mid m \equiv 0 \pmod{q} \}$.
-          Hence for all $m \in \Nat$ we have $m \equiv 0 \pmod{p}$ iff
-          $m \equiv 0 \pmod{q}$.
-          Thus for all $m \in \Nat$ we have $m \mod p = 0 \mod p$ iff
-          $m \mod q = 0 \mod q$.
-          We have $0 \mod p = 0 = 0 \mod q$.
-          Hence for all $m \in \Nat$ we have $m \mod p = 0$ iff $m \mod q = 0$.
-          Thus for all $m \in \Nat$ we have $p \mid m$ iff $q \mid m$.
-          Therefore $p = q$.
+
+          We can show that for all $m \in \Nat$ we have $p \mid m$ iff $q \mid m$.
+            Let $m \in \Nat$.
+            Then $m \equiv 0 \pmod{p}$ iff $m \equiv 0 \pmod{q}$.
+            Thus $m \mod p = 0 \mod p$ iff $m \mod q = 0 \mod q$.
+            We have $0 \mod p = 0 = 0 \mod q$.
+            Hence $m \mod p = 0$ iff $m \mod q = 0$.
+            Therefore $p \mid m$ iff $q \mid m$.
+          End.
+
+          Consequently $p = q$.
         End.
 
         $f$ is surjective onto $\Ps$.
@@ -284,24 +283,24 @@ Marcel Schütz (2021 - 2022)}
         Qed.
       End.
 
-      Hence For all $n \in \Nat$ we have $n \in (\bigcup \Ps)^{\complement}$ iff
+      Hence For all $n \in \Nat$ we have $n \in (\bigcup \Ps)^\complement$ iff
       $n$ has no prime divisor.
       $1$ has no prime divisor and any natural number having no prime
       divisor is equal to $1$.
-      Therefore $(\bigcup \Ps)^{\complement} = \set{1}$.
-      Indeed $((\bigcup \Ps)^{\complement}) \subseteq \set{1}$ and $\set{1}
-      \subseteq (\bigcup \Ps)^{\complement}$. %!
+      Therefore $(\bigcup \Ps)^\complement = \set{1}$.
+      Indeed $((\bigcup \Ps)^\complement) \subseteq \set{1}$ and $\set{1}
+      \subseteq (\bigcup \Ps)^\complement$. %!
 
       $\Ps$ is infinite. \\
       Proof by contradiction.
         Assume that $\Ps$ is finite.
-        Then $\bigcup \Ps$ is closed and $(\bigcup \Ps)^{\complement}$ is open.
-        Take a $p$ such that $\N_{1, p} \subseteq (\bigcup \Ps)^{\complement}$.
+        Then $\bigcup \Ps$ is closed and $(\bigcup \Ps)^\complement$ is open.
+        Take a $p$ such that $\N_{1, p} \subseteq (\bigcup \Ps)^\complement$.
         $1 + p$ is an element of $\N_{1, p}$.
         Indeed $1 + p \equiv 1 \pmod{p}$
-        (by \ref{ARITHMETIC_08_5984712287846400}).
+        (by \printref{ARITHMETIC_08_5984712287846400}).
         $1 + p$ is not equal to $1$.
-        Hence $1 + p \notin (\bigcup \Ps)^{\complement}$.
+        Hence $1 + p \notin (\bigcup \Ps)^\complement$.
         Contradiction.
       Qed.
     \end{proof}
