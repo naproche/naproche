@@ -1,4 +1,3 @@
-[read axioms.ftl]
 [read vocabulary.ftl]
 [read macros.ftl]
 
