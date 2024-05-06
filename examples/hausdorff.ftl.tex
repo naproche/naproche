@@ -5,6 +5,10 @@
 \input{libraries/lib/foundations}
 \input{libraries/lib/set-theory}
 
+\usepackage[backend=bibtex]{biblatex}
+\usepackage{csquotes}
+\addbibresource{meta-inf/lib/bibliography}
+
 \externaldocument{set-theory/set-theory}
 
 \newcommand{\surjects}{\twoheadrightarrow}
@@ -176,9 +180,5 @@ Adrian De Lon (2021)}
     \end{proof}
   \end{forthel}
 
-  \begin{thebibliography}{1}
-    \bibitem{Hausdorff1908} Felix Hausdorff (1908),
-      \textit{Grundzüge einer Theorie der geordneten Mengen};
-      Teubner, \textit{Mathematische Annalen}, vol.~65, p.~435--505
-  \end{thebibliography}
+  \printbibliography
 \end{document}

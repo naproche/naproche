@@ -10,6 +10,10 @@
 \usepackage{../lib/tex/naproche}
 \usepackage{bbm}
 
+\usepackage[backend=bibtex]{biblatex}
+\usepackage{csquotes}
+\addbibresource{meta-inf/lib/bibliography}
+
 \newcommand{\Checkerboard}{\mathbf{C}}
 \newcommand{\Corners}{\mathbf{C'}}
 \newcommand{\Mutilated}{\mathbf{M}}
@@ -484,14 +488,6 @@ derived from the definition of \textit{a domino tiling of\,[...]}.
     \end{proof}
 \end{forthel}
 
-\begin{thebibliography}{1}
-
-\bibitem{eprover} Stephan Schulz et al., \textit{E}, \url{https://eprover.org}
-
-\bibitem{Kelley1975} John L. Kelley, \textit{General Topology}, Springer, 1975
-
-\bibitem{Morse1965} Anthony Perry Morse, Trevor J McMinn, \textit{A theory of sets}, Academic press, 1965
-
-\end{thebibliography}
+\printbibliography
 
 \end{document}

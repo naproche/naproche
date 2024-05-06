@@ -4,6 +4,10 @@
 \input{libraries/lib/foundations}
 \input{libraries/lib/set-theory}
 
+\usepackage[backend=bibtex]{biblatex}
+\usepackage{csquotes}
+\addbibresource{meta-inf/lib/bibliography}
+
 
 \title{Zermelo's Well-ordering Theorem}
 \author{\Naproche formalization: \vspace{0.5em} \\
@@ -184,11 +188,5 @@ Marcel Schütz (2022)}
     \end{proof}
   \end{forthel}
 
-  \begin{thebibliography}{1}
-    \bibitem{Koepke2018} Peter Koepke,
-    \textit{Set Theory};
-    lecture notes,
-    winter 2018/19,
-    University of Bonn
-  \end{thebibliography}
+  \printbibliography
 \end{document}

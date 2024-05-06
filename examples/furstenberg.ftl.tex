@@ -5,6 +5,10 @@
 \input{libraries/lib/foundations}
 \input{libraries/lib/arithmetics}
 
+\usepackage[backend=bibtex]{biblatex}
+\usepackage{csquotes}
+\addbibresource{meta-inf/lib/bibliography}
+
 \externaldocument{arithmetic/arithmetic}
 
 \newcommand{\N}{\mathrm{N}}
@@ -28,13 +32,15 @@ Marcel Schütz (2021 - 2022)}
   depends on.
 
   \begin{forthel}
-    %[prove off][check off]
+    [prove off][check off]
+    [readtex \path{libraries/source/arithmetics/primes.ftl.tex}]
 
-    [readtex \path{libraries/source/arithmetics/10_primes.ftl.tex}]
+    [readtex \path{libraries/source/arithmetics/nat-is-a-set.ftl.tex}]
 
-    [readtex \path{libraries/source/arithmetics/11_cardinality.ftl.tex}]
+    [readtex \path{libraries/source/set-theory/zf.ftl.tex}]
 
-    %[prove on][check on]
+    [readtex \path{libraries/source/foundations/finite-and-infinite-classes.ftl.tex}]
+    [prove on][check on]
   \end{forthel}
 
   The central idea of Furstenberg's proof is to define a certain topology on
@@ -82,6 +88,15 @@ Marcel Schütz (2021 - 2022)}
       A system of open sets is a system of sets $S$ such that every element of
       $S$ is an open subset of $\Nat$.
     \end{definition}
+
+    \begin{lemma}
+      Every system of open sets is a set.
+    \end{lemma}
+    \begin{proof}
+      Let $S$ be a system of open sets.
+      Then $S \subseteq \pow(\Nat)$.
+      Hence $S$ is a set.
+    \end{proof}
   \end{forthel}
 
   We can show that the open sets indeed form a topology on $\Nat$.
@@ -158,9 +173,7 @@ Marcel Schütz (2021 - 2022)}
       Let us show that $A \cup B \in C$ for any $A, B \in C$.
         Let $A, B \in C$.
         Then $A, B$ are closed subsets of $\Nat$.
-        % The LHS of the following equation must be put in parentheses due to a
-        % bug in Naproche's parser.
-        We have $((A \cup B)^{\complement}) = A^{\complement} \cap B^{\complement}$.
+        We have $((A \cup B)^{\complement}) = A^{\complement} \cap B^{\complement}$. %!
         $A^{\complement}$ and $B^{\complement}$ are open.
         Hence $A^{\complement} \cap B^{\complement}$ is open.
         Thus $A \cup B$ is a closed subset of $\Nat$.
@@ -294,9 +307,5 @@ Marcel Schütz (2021 - 2022)}
     \end{proof}
   \end{forthel}
 
-  \begin{thebibliography}{1}
-    \bibitem{Furstenberg1955} Harry Furstenberg (1955),
-      \textit{On the Infinitude of Primes};
-      The American Mathematical Monthly, vol. 62, no. 5
-  \end{thebibliography}
+  \printbibliography
 \end{document}

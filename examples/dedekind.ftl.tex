@@ -4,6 +4,10 @@
 \input{libraries/lib/foundations}
 \input{libraries/lib/arithmetics}
 
+\usepackage[backend=bibtex]{biblatex}
+\usepackage{csquotes}
+\addbibresource{meta-inf/lib/bibliography}
+
 \title{Dedekind's Recursion Theorem}
 \author{\Naproche formalization: \vspace{0.5em} \\
 Marcel Schütz}
@@ -317,9 +321,5 @@ Marcel Schütz}
     \end{proof}
   \end{forthel}
 
-  \begin{thebibliography}{1}
-    \bibitem{Ebbinghaus1991} Heinz-Dieter Ebbinghaus et. al. (1991),
-      \textit{Numbers};
-      Springer Science
-  \end{thebibliography}
+  \printbibliography
 \end{document}

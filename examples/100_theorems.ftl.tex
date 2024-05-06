@@ -3,6 +3,10 @@
 \usepackage{../lib/tex/naproche}
 \usepackage{amssymb}
 
+\usepackage[backend=bibtex]{biblatex}
+\usepackage{csquotes}
+\addbibresource{meta-inf/lib/bibliography}
+
 \begin{document}
 
 \newcommand{\Prod}[3]{#1_{#2} \cdots #1_{#3}}
@@ -75,7 +79,7 @@ to propose a logical and set-theoretical foundation for
 number systems in a build-up of mathematical notions
 with sets and classes, maps, relations and numbers;
 to prove several theorems from the well-known list of 100 theorems
-that F. Wiedijk has proposed as formalization benchmarks \cite{Wiedijk}.
+that F. Wiedijk has proposed as formalization benchmarks \cite{Wiedijk_100Theorems}.
 
 In our approach the ordered field $\mathbb{R}$ of real numbers
 is postulated axiomatically. We then construe the structures of integer and
@@ -556,7 +560,7 @@ Many classes defined in mathematics are considered to be
 mathematical objects that can be used freely in further constructions.
 We defined sets to be classes that are objects. However, we cannot
 identify {\em all} classes with sets due to the famous
-Russell's paradox \cite{Russell}.
+Russell's paradox \cite{Russell1903}.
 The proof is based on the important {\em diagonal argument}.
 
 \begin{forthel}
@@ -719,7 +723,7 @@ in foundational theories.
 
 \section{The Knaster-Tarski Fixed Point Theorem}
 
-The Knaster-Tarski theorem is an important result in lattice theory \cite{Tarski, Knaster}.
+The Knaster-Tarski theorem is an important result in lattice theory \cite{Tarski1955, Knaster1928}.
 We prove the theorem for
 the $\subseteq$-relation on sets, in order to apply it
 in the subsequent section.
@@ -782,7 +786,7 @@ The Schröder-Bernstein theorem, also called the
 Cantor-Schröder-Bernstein theorem, is important for developing
 the theory of infinite cardinals without the axiom of choice.
 We base the proof on the Tarski-Knaster theorem, following
- \cite[p. 530]{Schroeder2012}.
+ \cite{Schroeder2012}.
 
  \begin{forthel}
 
@@ -1004,7 +1008,7 @@ $x \cdot (y + z) = (x \cdot y) + (x \cdot z)$.
 \end{forthel}
 We continue by proving some consequencen of the axioms.
 The selection of lemmas follows the
-{\em Foundations of Real Analysis} by Walter Rudin \cite{Rudin}.
+{\em Foundations of Real Analysis} by Walter Rudin \cite{Rudin1953}.
 Note that in rare cases we need to use double brackets
 $((\dots))$ because
 of some parser bug.
@@ -1264,7 +1268,7 @@ $x$ is nonnegative iff $x \geq 0$.
 $x \leq y$ iff $y \nless x$.
 \end{lemma}
 \end{forthel}
-We prove some lemmas, following Rudin \cite{Rudin}.
+We prove some lemmas, following Rudin \cite{Rudin1953}.
 \begin{forthel}
 
 \begin{lemma}0=0.\end{lemma}
@@ -3117,34 +3121,6 @@ Contradiction. qed.
 \end{proof}
 \end{forthel}
 
-\begin{thebibliography}{plain}
-
-\bibitem{Isabelle} The Isabelle Proof Assistant. \url{https://isabelle.in.tum.de/}
-
-\bibitem{Knaster}
-B. Knaster. Un théorème sur les fonctions d'ensembles. With A. Tarski.
-\textit{Ann. Soc. Polon. Math.} 6: 133–134, 1928.
-
-\bibitem{Naproche} The Naproche Natural Proof Checker. \url{https://naproche.github.io/}
-
-\bibitem{SAD} The SAD Proof Checker. \url{http://nevidal.org/sad.en.html}
-
-\bibitem{Rudin} Walter Rudin. \textit{Principles of Mathematical
-Analysis}. McGraw Hill, 1953.
-
-\bibitem{Russell} Bertrand Russell,
-{\em The Principles of Mathematics}, Cambridge 1903, {\S}100
-
-\bibitem{Schroeder2012} Bernd S. W. Schröder,
-\textit{The fixed point property for ordered sets};
-Springer, \textit{Arabian Journal of Mathematics}, vol. 1, p. 529--547
-
-\bibitem{Tarski}
-Alfred Tarski. A lattice-theoretical fixpoint theorem and its applications.
-\textit{Pacific Journal of Mathematics}. 5:2: 285–309, 1955.
-
-\bibitem{Wiedijk} Freek Wiedijk. Formalizing 100 Theorems. \url{https://www.cs.ru.nl/~freek/100/}
-
-\end{thebibliography}
+\printbibliography
 
 \end{document}

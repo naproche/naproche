@@ -3,6 +3,10 @@
 \usepackage{../lib/tex/naproche}
 \input{libraries/lib/foundations}
 
+\usepackage[backend=bibtex]{biblatex}
+\usepackage{csquotes}
+\addbibresource{meta-inf/lib/bibliography}
+
 \title{The Knaster-Tarski fixed point theorem and \\
 the Cantor-Schröder-Bernstein Theorem}
 \author{\Naproche formalization: \vspace{0.5em} \\
@@ -17,7 +21,7 @@ Alexander Holz, Marcel Schütz}
   point) and of the \textit{Cantor-Schröder-Bernstein Theorem} (i.e. of the
   fact that two sets are equinumerous iff they can be embedded into each other),
   where the proof of the latter theorem is based on the former one, as in
-  \cite[p. 530]{Schroeder2012}.
+  \cite{Schroeder2012}.
 
   \begin{forthel}
     %[prove off][check off]
@@ -192,9 +196,5 @@ Alexander Holz, Marcel Schütz}
     \end{proof}
   \end{forthel}
 
-  \begin{thebibliography}{1}
-    \bibitem{Schroeder2012} Bernd S. W. Schröder,
-      \textit{The fixed point property for ordered sets};
-      Springer, \textit{Arabian Journal of Mathematics}, vol. 1, p. 529--547
-  \end{thebibliography}
+  \printbibliography
 \end{document}

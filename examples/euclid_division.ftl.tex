@@ -4,6 +4,10 @@
 \input{libraries/lib/foundations}
 \input{libraries/lib/arithmetics}
 
+\usepackage[backend=bibtex]{biblatex}
+\usepackage{csquotes}
+\addbibresource{meta-inf/lib/bibliography}
+
 \title{Euclid's Division Theorem}
 \author{\Naproche formalization: \vspace{0.5em} \\
 Marcel Schütz}
@@ -174,9 +178,5 @@ Marcel Schütz}
     \end{proof}
   \end{forthel}
 
-  \begin{thebibliography}{1}
-    \bibitem{Burton2005} David M. Burton (2005),
-      \textit{Elementary Number Theory};
-      McGraw-Hill Higher Education
-  \end{thebibliography}
+  \printbibliography
 \end{document}

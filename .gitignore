@@ -32,3 +32,4 @@ dist-newstyle/
 *.blg
 *.run.xml
 *.aux
+*-blx.bib

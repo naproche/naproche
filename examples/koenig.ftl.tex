@@ -6,6 +6,10 @@
 \input{libraries/lib/foundations}
 \input{libraries/lib/set-theory}
 
+\usepackage[backend=bibtex]{biblatex}
+\usepackage{csquotes}
+\addbibresource{meta-inf/lib/bibliography}
+
 \externaldocument{set-theory/set-theory}
 
 \title{König's Theorem}
@@ -163,10 +167,5 @@ are themselves non-empty:
   \end{proof}
 \end{forthel}
 
-\begin{thebibliography}{1}
-  \bibitem{Koenig1905} Julius König,
-  \textit{Zum Kontinuumsproblem};
-  Mathematische Annalen 60 (1905)
-\end{thebibliography}
-
+\printbibliography
 \end{document}

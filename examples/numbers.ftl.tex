@@ -2,6 +2,10 @@
 \usepackage[english]{babel}
 \usepackage{../lib/tex/naproche}
 
+\usepackage[backend=bibtex]{biblatex}
+\usepackage{csquotes}
+\addbibresource{meta-inf/lib/bibliography}
+
 \begin{document}
 
 \title{Numbers for Rudin}
@@ -17,10 +21,10 @@ style of undergraduate textbooks. To test this
 idea we have formalized number systems that are
 assumed or developed in the first chapter of the
 \textit{Principles of Mathematical Analysis} by Walter Rudin
-\cite{Rudin} in the {\LaTeX} dialect of the input language ForTheL.
+\cite{Rudin1953} in the {\LaTeX} dialect of the input language ForTheL.
 
 Our approach parallels material
-on pages 1 to 9 of \cite{Rudin}.
+on pages 1 to 9 of \cite{Rudin1953}.
 The ordered field $\mathbb{R}$ of real numbers
 is postulated axiomatically. We construe the structures of integer and
 rational numbers as substructures of $\mathbb{R}$:
@@ -450,7 +454,7 @@ $\mathbb{Q}$ is a subset of $\mathbb{R}$.
 \end{forthel}
 
 
-Theorem 1.19 of \cite{Rudin} states that $\mathbb{Q}$ is a
+Theorem 1.19 of \cite{Rudin1953} states that $\mathbb{Q}$ is a
 subfield of $\mathbb{R}$. We require this axiomatically.
 
 
@@ -702,10 +706,6 @@ Let $p = \frac{m}{n}$. Then $p \in \mathbb{Q}$ and $x < p < y$.
 
 \end{forthel}
 
-
-\begin{thebibliography}{plain}
-\bibitem{Rudin} Walter Rudin. \textit{Principles of Mathematical
-Analysis}.
-\end{thebibliography}
+\printbibliography
 
 \end{document}
