@@ -1,0 +1,43 @@
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/lists}
+\input{../../lib/arithmetics}
+\begin{document}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/lists/length-of-concatenation.ftl.tex}]
+      [readtex \path{libraries/source/lists/reversion.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+
+
+  \section*{Length of Reversion}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{LISTS_LENGTHREV_4512036658964875}
+      $\length(\rev(L)) = \length(L)$ for any list $L$.
+    \end{proposition}
+    \begin{proof}[by induction on $L$]
+      Let $L$ be a list.
+      
+      Case $L = \nil$. Trivial.
+      
+      Case $L = a \cons L'$ for some object $a$ and some list $L'$.
+        Take an object $a$ and a list $L'$ such that $L = a \cons L'$.
+        Then $L' \prec L$.
+        Hence $\length(\rev(L')) = \length(L')$.
+        Thus $\length(\rev(L))
+          = \length(\rev(a \cons L'))
+          = \length(\rev(L') \concat [a])
+          = \length([a]) + \length(\rev(L'))
+          = 1 + \length(\rev(L'))
+          = 1 + \length(L')
+          = \length(L)$.
+      End.
+    \end{proof}
+  \end{forthel}
+\end{document}

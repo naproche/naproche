@@ -1,0 +1,59 @@
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/lists}
+\begin{document}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{meta-inf/source/vocabulary.ftl.tex}]
+      [readtex \path{meta-inf/source/macros.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+
+
+  \section*{Lists}
+
+  \begin{forthel}
+    \begin{signature}\printlabel{LISTS_LISTS_4578620297183232}
+      A list is an object.
+    \end{signature}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{signature}\printlabel{LISTS_LISTS_3703161885818880}
+      $\nil$ is a list.
+    \end{signature}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{signature}\printlabel{LISTS_LISTS_8050301789536256}
+      Let $a$ be an object and $L$ be a list.
+      $a \cons L$ is a list.
+    \end{signature}
+  \end{forthel}
+
+  \begin{forthel}
+    Let $[a]$ stand for $a \cons \nil$.
+    
+    Let $[a,b]$ stand for $a \cons [b]$.
+    
+    Let $[a,b,c]$ stand for $a \cons [b,c]$.
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{axiom}\printlabel{LISTS_LISTS_4512036658964875}
+      Let $L$ be a list.
+      Then $L = \nil$ or $L = a \cons L'$ for some object $a$ and some list $L'$.
+    \end{axiom}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{axiom}\printlabel{LISTS_LISTS_1021563255448756}
+      Let $a$ be an object and $L$ be a list.
+      Then $L \prec a \cons L$.
+    \end{axiom}
+  \end{forthel}
+\end{document}

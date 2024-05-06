@@ -27,13 +27,15 @@ dialect of ForTheL, respectively.
     at the beginning of each formalization.
 
   * **New:** All bibliography entries used in the `.tex` files are collected in
-    a global bibliography file `meta-inf/lib/bibliography.bib`.
+    a global bibliography file `examples/meta-inf/lib/bibliography.bib`.
 
   * **Changed:** The arithmetics, foundations and set theory libraries were
     moved to `examples/libraries/source/`.
 
   * **New:** A formalization of "Little Gauß' Theorem" was added
-    (`gauss.ftl.tex`).
+    (`examples/gauss.ftl.tex`).
+
+  * **New:** A library for lists was added (`examples/libraries/source/lists/`).
 
 
 ### Changes on ForTheL

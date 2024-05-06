@@ -1,0 +1,45 @@
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/lists}
+\input{../../lib/arithmetics}
+\begin{document}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/lists/length.ftl.tex}]
+      [readtex \path{libraries/source/lists/concatenation.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+
+
+  \section*{Length of Concatenation}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{LISTS_LENGTHCONCAT_4512036658964875}
+      $\length(L \concat L') = \length(L) + \length(L')$ for all lists $L, L'$.
+    \end{proposition}
+    \begin{proof}[by induction on $L$]
+      Let $L$ be a list.
+
+      Case $L = \nil$. Trivial.
+
+      Case $L = a \cons L''$ for some object $a$ and some list $L''$.
+        Take an object $a$ and a list $L''$ such that $L = a \cons L''$.
+        Then $L'' \prec L$.
+        Hence $\length(L'' \concat L') = \length(L'') + \length(L')$ for every list $L'$.
+        Thus $\length(L \concat L')
+          = \length((a \cons L'') \concat L')
+          = \length(a \cons (L'' \concat L'))
+          = \length(L'' \concat L') + 1
+          = (\length(L'') + \length(L')) + 1
+          = (\length(L'') + 1) + \length(L')
+          = \length(a \cons L'') + \length(L')
+          = \length(L) + \length(L')$
+        for every list $L'$.
+      End.
+    \end{proof}
+  \end{forthel}
+\end{document}
