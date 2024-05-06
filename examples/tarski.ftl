@@ -1,5 +1,5 @@
 [synonym set/-s] [synonym subset/-s] [synonym element/-s] [synonym belong/-s]
-[read macros.ftl]
+[read meta-inf/source/macros.ftl]
 
 ##############################################################
 
