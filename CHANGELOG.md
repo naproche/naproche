@@ -11,17 +11,39 @@ dialect of ForTheL, respectively.
 
 ## naproche-202405xx (Isabelle 2024)
 
+### Changes on the example files
+
+  * **Changed:** Dedekind's Recursion Theorem and Euclid's Division Theorem
+    were moved from the arithmetics library to stand-alone example files
+    (`dedekind.ftl.tex` and `euclid_division.ftl.tex`, resp.).
+
+  * **Changed:** `euclid.ftl.tex` was renamed to `euclid_primes.ftl.tex`.
+
+  * **Changed:** The files `macros.ftl`, `macros.ftl.tex`, `vocabulary.ftl` and
+    `vocabulary.ftl.tex` were moved to `examples/meta-inf/source/`
+
+  * **Changed:** The files `axioms.ftl` and `axioms.ftl.tex` were removed as it
+    is no longer necessary to state the in-built axioms of Naproche explicitly
+    at the beginning of each formalization.
+
+  * **New:** All bibliography entries used in the `.tex` files are collected in
+    a global bibliography file `meta-inf/lib/bibliography.bib`.
+
+  * **Changed:** The arithmetics, foundations and set theory libraries were
+    moved to `examples/libraries/source/`.
+
+
 ### Changes on ForTheL
 
   * **Fixed:** Comments outside ForTheL environments are now recognized by the
     parser, i.e. commented out `forthel` environments and `importmodule`
     commands are ignored by the parser.
 
-* **Changed:** The following keywords are no longer allowed as variable names
-  to avoid certain ambiguity errors:
+  * **Changed:** The following keywords are no longer allowed as variable names
+    to avoid certain ambiguity errors:
 
-  `is`, `be`, `are`, `does`, `do`, `has`, `have`, `that`, `with`, `of`,
-  `having`, `such`, `so`, `if`, `iff`, `when`, `and`, `or`
+    `is`, `be`, `are`, `does`, `do`, `has`, `have`, `that`, `with`, `of`,
+    `having`, `such`, `so`, `if`, `iff`, `when`, `and`, `or`
 
 --------------------------------------------------------------------------------
 
