@@ -1,0 +1,37 @@
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/arithmetics}
+\begin{document}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/foundations/countable-and-uncountable-classes.ftl.tex}]
+      [readtex \path{libraries/source/foundations/systems-of-sets.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+
+
+  \section*{Systems of Countable and Uncountable Sets}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{FOUNDATIONS_14_3786392159125504}
+      A system of countably infinite sets is a system of sets $X$ such that every element of $X$ is countably infinite.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{FOUNDATIONS_14_7341152585908224}
+      A system of countable sets is a system of sets $X$ such that every element of $X$ is countable.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{FOUNDATIONS_14_6106935677943808}
+      A system of uncountable sets is a system of sets $X$ such that every element of $X$ is uncountable.
+    \end{definition}
+  \end{forthel}
+\end{document}

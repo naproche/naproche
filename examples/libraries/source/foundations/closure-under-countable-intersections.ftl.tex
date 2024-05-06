@@ -1,0 +1,26 @@
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/arithmetics}
+\begin{document}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/foundations/systems-of-sets.ftl.tex}]
+      [readtex \path{libraries/source/foundations/countable-and-uncountable-classes.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+
+
+  \section*{Closure Under Countable Intersections}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{FOUNDATIONS_14_451771879129088}
+      Let $X$ be a system of sets.
+      $X$ is closed under countable intersections iff $\bigcap U \in X$ for every nonempty countable subset $U$ of $X$.
+    \end{definition}
+  \end{forthel}
+\end{document}

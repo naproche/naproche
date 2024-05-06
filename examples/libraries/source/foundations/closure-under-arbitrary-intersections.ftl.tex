@@ -1,0 +1,27 @@
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/arithmetics}
+\begin{document}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/foundations/systems-of-sets.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+
+
+  \section*{Closure Under Arbitrary Intersections}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{FOUNDATIONS_14_2369621166391296}
+      Let $X$ be a system of sets.
+      $X$ is closed under arbitrary intersections iff $\bigcap U \in X$ for every nonempty subset $U$ of $X$.
+    \end{definition}
+
+    Let $X$ is closed under intersections stand for $X$ is closed under arbitrary intersections.
+  \end{forthel}
+\end{document}

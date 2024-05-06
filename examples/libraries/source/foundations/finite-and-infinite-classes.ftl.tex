@@ -8,9 +8,8 @@
   \begin{imports}
     \begin{forthel}
       %[prove off][check off]
-      [readtex \path{libraries/source/arithmetics/ordering.ftl.tex}]
+      [readtex \path{libraries/source/foundations/segments-of-natural-numbers.ftl.tex}]
       [readtex \path{libraries/source/foundations/equinumerosity.ftl.tex}]
-      [readtex \path{libraries/source/foundations/systems-of-sets.ftl.tex}]
       %[prove on][check on]
     \end{forthel}
   \end{imports}
@@ -18,80 +17,7 @@
 
   \section*{Finite and Infinite Classes}
 
-  \subsection*{Segments of the Natural Numbers}
-
-  \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_14_3625613501923328}
-      Let $n, m$ be natural numbers.
-      $\{ n, \dots, m \} = \{ k \in \Nat \mid n \leq k \leq m \}$.
-    \end{definition}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_14_145331933151232}
-      Let $n, m$ be natural numbers.
-      If $\{ 1, \dots, n \} = \{ 1, \dots, m \}$ then $n = m$.
-    \end{proposition}
-    \begin{proof}
-      Assume $\{ 1, \dots, n \} = \{ 1, \dots, m \}$.
-
-      Case $n = 0$.
-        Then $\{ 1, \dots, n \} = \emptyset$.
-        Thus $\{ 1, \dots, m \} = \emptyset$.
-        Hence there exists no $k \in \Nat$ such that $1 \leq k \leq m$.
-        Therefore $m = 0$.
-        Consequently $n = m$.
-      End.
-
-      Case $m = 0$.
-        Then $\{ 1, \dots, m \} = \emptyset$.
-        Thus $\{ 1, \dots, n \} = \emptyset$.
-        Hence there exists no $k \in \Nat$ such that $1 \leq k \leq n$.
-        Therefore $n = 0$.
-        Consequently $n = m$.
-      End.
-
-      Case $n, m \geq 1$.
-        For all $k \in \Nat$ we have $1 \leq k \leq n$ iff $1 \leq k \leq m$.
-        Hence for all $k \in \Nat$ we have $k \leq n$ iff $k \leq m$.
-
-        Let us show by contradiction that $n = m$.
-          Suppose $n \neq m$.
-          Then $n > m$ or $m > n$.
-
-          Case $n > m$.
-            Take $k = m + 1$.
-            Then $k \leq n$ and $k \nleq m$.
-            Hence it is wrong that $k \leq n$ iff $k \leq m$.
-            Contradiction.
-          End.
-
-          Case $m > n$.
-            Take $k = n + 1$.
-            Then $k \leq m$ and $k \nleq m$.
-            Hence it is wrong that $k \leq n$ iff $k \leq m$.
-            Contradiction.
-          End.
-        End.
-      End.
-    \end{proof}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_14_658708738605056}
-      Let $n$ be a natural number.
-      Then $\{ 1, \dots, n + 1 \} = \{ 1, \dots, n \} \cup \set{n + 1}$.
-    \end{proposition}
-    \begin{proof}
-      We have
-      $\{ 1, \dots, n + 1 \} \subseteq \{ 1, \dots, n \} \cup \set{n + 1}$ and $\{ 1, \dots, n \} \cup \set{n + 1} \subseteq \{ 1, \dots, n + 1 \}$.
-    \end{proof}
-  \end{forthel}
-
-
-  \subsection*{Finite and Infinite Classes}
-
-  \subsubsection*{Finite Classes}
+  \subsection*{Finite Classes}
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_14_3694156977274880}
@@ -115,7 +41,7 @@
   \end{forthel}
 
 
-  \subsubsection*{Infinite Classes}
+  \subsection*{Infinite Classes}
 
   \begin{forthel}
     \begin{definition}\printlabel{FOUNDATIONS_14_6612510618681344}
@@ -134,153 +60,5 @@
       If $Y$ is finite then $X$ is finite.
       Hence if $X$ is infinite then $Y$ is infinite.
     \end{proof}
-  \end{forthel}
-
-
-  \subsubsection*{Countably Infinite Classes}
-
-  \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_14_6249029537103872}
-      Let $X$ be a class.
-      $X$ is countably infinite iff $X$ is equinumerous to $\Nat$.
-    \end{definition}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_14_803449379749888}
-      Let $X, Y$ be classes.
-      If $X$ is countably infinite and $Y$ is equinumerous to $X$ then $Y$ is countably infinite.
-    \end{proposition}
-    \begin{proof}
-      Assume that $X$ is countably infinite and $Y$ is equinumerous to $X$.
-      Take a bijection $f$ between $\Nat$ and $X$ and a bijection $g$ between $X$ and $Y$.
-      Then $g \circ f$ is a bijection between $\Nat$ and $Y$ (by \printref{FOUNDATIONS_08_6435206693126144}).
-      Indeed $X, Y$ are classes.
-      Hence $Y$ is countably infinite.
-    \end{proof}
-  \end{forthel}
-
-
-  \subsubsection*{Countable Classes}
-
-  \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_14_5412969443753984}
-      Let $X$ be a class.
-      $X$ is countable iff $X$ is finite or $X$ is countably infinite.
-    \end{definition}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_14_4182588499427328}
-      Let $X, Y$ be classes.
-      If $X$ is countable and $Y$ is equinumerous to $X$ then $Y$ is countable.
-    \end{proposition}
-    \begin{proof}
-      Assume that $X$ is countable and $Y$ is equinumerous to $X$.
-      If $X$ is finite then $Y$ is finite.
-      If $X$ is countably infinite then $Y$ is countably infinite.
-      Hence $Y$ is countable.
-    \end{proof}
-  \end{forthel}
-
-
-  \subsubsection*{Uncountable Classes}
-
-  \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_14_2411928395710464}
-      Let $X$ be a class.
-      $X$ is uncountable iff $X$ is not countable.
-    \end{definition}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_14_1073385358491648}
-      Let $X, Y$ be classes.
-      If $X$ is uncountable and $Y$ is equinumerous to $X$ then $Y$ is uncountable.
-    \end{proposition}
-    \begin{proof}
-      Assume that $Y$ is equinumerous to $X$.
-      If $Y$ is countable then $X$ is countable.
-      Hence if $X$ is uncountable then $Y$ is uncountable.
-    \end{proof}
-  \end{forthel}
-
-
-  \subsection*{Systems of Finite and Infinite Sets}
-
-  \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_14_1387314525765632}
-      A system of finite sets is a system of sets $X$ such that every element of $X$ is finite.
-    \end{definition}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_14_3786392159125504}
-      A system of countably infinite sets is a system of sets $X$ such that every element of $X$ is countably infinite.
-    \end{definition}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_14_7341152585908224}
-      A system of countable sets is a system of sets $X$ such that every element of $X$ is countable.
-    \end{definition}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_14_6106935677943808}
-      A system of uncountable sets is a system of sets $X$ such that every element of $X$ is uncountable.
-    \end{definition}
-  \end{forthel}
-
-
-  \subsubsection*{Closure Under Unions}
-
-  \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_14_3959378992431104}
-      Let $X$ be a system of sets.
-      $X$ is closed under arbitrary unions iff $\bigcup U \in X$ for every nonempty subset $U$ of $X$.
-    \end{definition}
-
-    Let $X$ is closed under unions stand for $X$ is closed under arbitrary unions.
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_14_2377279311183872}
-      Let $X$ be a system of sets.
-      $X$ is closed under countable unions iff $\bigcup U \in X$ for every nonempty countable subset $U$ of $ X$.
-    \end{definition}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_14_7040118193913856}
-      Let $X$ be a system of sets.
-      $X$ is closed under finite unions iff $\bigcup U \in X$ for every nonempty finite subset $U$ of $X$.
-    \end{definition}
-  \end{forthel}
-
-
-  \subsubsection*{Closure Under Intersections}
-
-  \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_14_2369621166391296}
-      Let $X$ be a system of sets.
-      $X$ is closed under arbitrary intersections iff $\bigcap U \in X$ for every nonempty subset $U$ of $X$.
-    \end{definition}
-
-    Let $X$ is closed under intersections stand for $X$ is closed under arbitrary intersections.
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_14_451771879129088}
-      Let $X$ be a system of sets.
-      $X$ is closed under countable intersections iff $\bigcap U \in X$ for every nonempty countable subset $U$ of $X$.
-    \end{definition}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_14_4297814324543488}
-      Let $X$ be a system of sets.
-      $X$ is closed under finite intersections iff $\bigcap U \in X$ for every nonempty finite subset $U$ of $X$.
-    \end{definition}
   \end{forthel}
 \end{document}
