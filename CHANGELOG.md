@@ -32,6 +32,9 @@ dialect of ForTheL, respectively.
   * **Changed:** The arithmetics, foundations and set theory libraries were
     moved to `examples/libraries/source/`.
 
+  * **New:** A formalization of "Little Gauß' Theorem" was added
+    (`gauss.ftl.tex`).
+
 
 ### Changes on ForTheL
 
