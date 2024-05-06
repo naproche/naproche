@@ -1,0 +1,54 @@
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/set-theory}
+\begin{document}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/set-theory/transitive-classes.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+
+
+  \section*{Ordinal Numbers}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{SET_THEORY_02_229593678086144}
+      An ordinal number is a transitive set $\alpha$ such that every element of $\alpha$ is a transitive set.
+    \end{definition}
+
+    Let an ordinal stand for an ordinal number.
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{SET_THEORY_02_5852994258075648}
+      $\Ord$ is the class of all ordinals.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_02_2358097091756032}
+      Let $\alpha$ be an ordinal.
+      Then every element of $\alpha$ is an ordinal.
+    \end{proposition}
+    \begin{proof}
+      Let $x$ be an element of $\alpha$.
+      Then $x$ is transitive.
+
+      Let us show that every element of $x$ is a subset of $x$.
+        Let $y$ be an element of $x$.
+        Then $y$ is a subset of $x$.
+        Let $z$ be an element of $y$.
+        Every element of $y$ is an element of $x$.
+        Hence $z$ is an element of $x$.
+      End.
+
+      Thus every element of $x$ is transitive.
+      Therefore $x$ is an ordinal.
+    \end{proof}
+  \end{forthel}
+\end{document}

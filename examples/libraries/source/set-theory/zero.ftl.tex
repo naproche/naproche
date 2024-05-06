@@ -1,0 +1,30 @@
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/set-theory}
+\begin{document}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/set-theory/ordinals.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+
+
+  \section*{Zero}
+
+  \begin{forthel}
+    Let $0$ stand for $\emptyset$.
+
+    Let $\alpha$ is nonzero stand for $\alpha \neq 0$.
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_02_8483196888940544}
+      $0$ is an ordinal.
+    \end{proposition}
+  \end{forthel}
+\end{document}
