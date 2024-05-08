@@ -1,76 +1,81 @@
 \documentclass{article}
-
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{../lib/tex/naproche}
+\input{libraries/lib/foundations}
+\input{libraries/lib/set-theory}
 
 \title{Cantor's Theorem}
-\author{}
-\date{}
-
-\setlength{\parindent}{0em}
+\author{\Naproche formalization: \vspace{0.5em} \\
+Marcel Schütz}
+\date{2024}
 
 \begin{document}
   \pagenumbering{gobble}
-
   \maketitle
 
-  In this document we give a proof of Cantor's Theorem:
-
-  \begin{theorem*}
-    There is no surjection from a set onto its powerset.
-  \end{theorem*}
-
-  Some basic notions and set-theoretic axioms used to formulate and prove it are
-  taken from:
-
-  \begin{forthel}
-    [readtex \path{preliminaries.ftl.tex}]
-  \end{forthel}
-
-  Moreover, we need to provide certain definitions concerning surjective
-  functions and the notion of powerset.
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/set-theory/cardinals-and-maps.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
   \begin{forthel}
-    \begin{definition*}
-      Let $X$ be a set.
-      A function of $X$ is a function $f$ such that $\dom(f) = X$.
-    \end{definition*}
-
-    \begin{definition*}
-      Let $f$ be a function and $Y$ be a set.
-      $f$ surjects onto $Y$ iff $Y = \class{f(x) | x \in \dom(f)}$.
-    \end{definition*}
-
-    Let a surjective function from $X$ to $Y$ stand for a function of $X$ that
-    surjects onto $Y$.
-
-    \begin{definition*}
-      Let $X$ be a set.
-      The powerset of $X$ is the collection of subsets of $X$.
-    \end{definition*}
-
-    \begin{axiom*}
-      The powerset of any set is a set.
-    \end{axiom*}
-  \end{forthel}
-
-  On this basis Cantor's theorem and its proof can be formalized as follows.
-
-  \begin{forthel}
-    \begin{theorem*}[Cantor]
-      Let $M$ be a set.
-      No function of $M$ surjects onto the powerset of $M$.
+    \begin{theorem*}[Cantor's Theorem]\label{cantor}
+      Let $x$ be a set.
+      There exists no surjective map from $x$ onto $\pow(x)$.
     \end{theorem*}
     \begin{proof}
       Assume the contrary.
-      Take a surjective function $f$ from $M$ to the powerset of $M$.
-      The value of $f$ at any element of $M$ is a set.
-      Define \[ N = \class{x \in M | \text{$x$ is not an element of $f(x)$}}. \]
-      $N$ is a subset of $M$.
-      Consider an element $z$ of $M$ such that $f(z) = N$.
-      Then \[ z \in N \iff z \notin f(z) = N. \]
+      Take a surjective map $f$ from $x$ onto $\pow(x)$.
+      Define $C = \{ u \in x \mid u \notin f(u) \}$.
+      Then $C \in \pow(x)$.
+      Hence we can take a $u \in x$ such that $f(u) = C$.
+      Then $u \in C$ iff $u \in f(u)$ iff $u \notin C$.
       Contradiction.
+    \end{proof}
+  \end{forthel}
+  
+  \begin{forthel}
+    \begin{corollary*}
+      Let $x$ be a set.
+      Then $|x| < |\pow(x)|$.
+    \end{corollary*}
+    \begin{proof}
+      Case $x$ is empty. Obvious.
+
+      Case $x$ is nonempty.
+        Assume the contrary.
+        Then $|x| \geq |\pow(x)|$.
+        Hence there exists a surjective map from $x$ onto $\pow(x)$ (by \printref{SET_THEORY_06_192336220913664}).
+        Indeed $\pow(x)$ is a nonempty set.
+        Contradiction (by \nameref{cantor}).
+      End.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{corollary*}
+      For every ordinal $\alpha$ there exists a cardinal greater than $\alpha$.
+    \end{corollary*}
+    \begin{proof}
+      Let $\alpha$ be an ordinal.
+      Take $\kappa = |\pow(\alpha)|$.
+      Then $\kappa > |\alpha|$.
+
+      Let us show that $\kappa > \alpha$.
+        Assume the contrary.
+        Then $|\pow(\alpha)|
+          = \kappa
+          \leq \alpha$.
+        Hence $\kappa
+          = |\pow(\alpha)|
+          = ||\pow(\alpha)||
+          \leq |\alpha|$.
+        Contradiction.
+      End.
     \end{proof}
   \end{forthel}
 \end{document}
