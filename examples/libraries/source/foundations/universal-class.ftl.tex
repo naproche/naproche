@@ -3,28 +3,23 @@
 \usepackage{../../../../lib/tex/naproche}
 \input{../../lib/libraries}
 \input{../../lib/foundations}
-\input{../../lib/set-theory}
 \begin{document}
   \begin{imports}
     \begin{forthel}
       %[prove off][check off]
-      [readtex \path{libraries/source/set-theory/ordinals.ftl.tex}]
+      [readtex \path{libraries/source/foundations/classes.ftl.tex}]
       %[prove on][check on]
     \end{forthel}
   \end{imports}
 
 
-  \section*{$0$}
+  \section*{The Universal Classes}
 
   \begin{forthel}
-    Let $0$ stand for $\emptyset$.
+    \begin{definition}\printlabel{FOUNDATIONS_10_9625487120366325}
+      The universal class is the collection of all sets.
+    \end{definition}
 
-    Let $\alpha$ is nonzero stand for $\alpha \neq 0$.
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{proposition}\printlabel{SET_THEORY_02_8483196888940544}
-      $0$ is an ordinal.
-    \end{proposition}
+    Let $\V$ stand for the universal class.
   \end{forthel}
 \end{document}

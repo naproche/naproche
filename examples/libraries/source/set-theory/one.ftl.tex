@@ -8,23 +8,24 @@
   \begin{imports}
     \begin{forthel}
       %[prove off][check off]
-      [readtex \path{libraries/source/set-theory/ordinals.ftl.tex}]
+      [readtex \path{libraries/source/set-theory/zero.ftl.tex}]
+      [readtex \path{libraries/source/set-theory/successors.ftl.tex}]
       %[prove on][check on]
     \end{forthel}
   \end{imports}
 
 
-  \section*{$0$}
+  \section*{$1$}
 
   \begin{forthel}
-    Let $0$ stand for $\emptyset$.
-
-    Let $\alpha$ is nonzero stand for $\alpha \neq 0$.
+    \begin{definition}\printlabel{SET_THEORY_03_1991057988386816}
+      $1 = \succ(0)$.
+    \end{definition}
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{SET_THEORY_02_8483196888940544}
-      $0$ is an ordinal.
+    \begin{proposition}\printlabel{SET_THEORY_03_4388003120152576}
+      $1 = \set{0}$.
     \end{proposition}
   \end{forthel}
 \end{document}

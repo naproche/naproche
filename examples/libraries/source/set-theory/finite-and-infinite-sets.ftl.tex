@@ -1,0 +1,56 @@
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/set-theory}
+\begin{document}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/set-theory/omega-is-cardinal.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+
+
+  \section*{Finite and Infinite Sets}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{SET_THEORY_07_5346658235711488}
+      Let $x$ be a set.
+      $x$ is finite iff $|x| < \omega$.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{SET_THEORY_07_8295412068777984}
+      Let $x$ be a set.
+      $x$ is infinite iff $x$ is not finite.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_07_3806229474312192}
+      Let $x$ be a set.
+      Then $x$ is finite iff $|x| = n$ for some $n \in \omega$.
+    \end{proposition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_07_3174577070931968}
+      Let $x$ be a set.
+      Then $x$ is infinite iff $|x| \geq \omega$.
+    \end{proposition}
+    \begin{proof}
+      $|x| \geq \omega$ iff $|x| \nless \omega$.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_07_9154385075632368}
+      $\omega$ is infinite.
+    \end{proposition}
+  \end{forthel}
+\end{document}
+\end{document}

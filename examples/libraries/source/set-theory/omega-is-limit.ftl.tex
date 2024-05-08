@@ -1,0 +1,59 @@
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/set-theory}
+\begin{document}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/set-theory/omega.ftl.tex}]
+      [readtex \path{libraries/source/set-theory/limits.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+
+
+  \section*{$\omega$ is a Limit Ordinal}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_03_764451995254784}
+      $\omega$ is a limit ordinal.
+    \end{proposition}
+    \begin{proof}
+      $\omega$ is transitive. \\
+      Proof.
+        Define $\Phi = \{ n \in \omega \mid$ for all $m \in n$ we have $m \in \omega \}$.
+
+        (1) $0 \in \Phi$.
+
+        (2) For all $n \in \Phi$ we have $\succ(n) \in \Phi$. \\
+        Proof.
+          Let $n \in \Phi$.
+          Then every element of $n$ is contained in $\omega$.
+          Hence every element of $\succ(n)$ is contained in $\omega$.
+          Thus $\succ(n) \in \Phi$.
+        Qed.
+
+        Therefore $\omega \subseteq \Phi$.
+        Consequently $\omega$ is transitive.
+      Qed.
+
+      Every element of $\omega$ is an ordinal.
+      Hence every element of $\omega$ is transitive.
+      Thus $\omega$ is an ordinal.
+
+      $\omega$ is a limit ordinal. \\
+      Proof.
+        Assume the contrary.
+        We have $\omega \neq 0$.
+        Hence $\omega$ is a successor ordinal.
+        Take an ordinal $\alpha$ such that $\succ(\alpha) = \omega$.
+        Then $\alpha \in \omega$.
+        Thus $\omega = \succ(\alpha) \in \omega$.
+        Contradiction.
+      Qed.
+    \end{proof}
+  \end{forthel}
+\end{document}

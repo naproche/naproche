@@ -1,0 +1,34 @@
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/set-theory}
+\begin{document}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/set-theory/omega-is-limit.ftl.tex}]
+      [readtex \path{libraries/source/set-theory/ordering.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+
+
+  \section*{$\omega$ is the Least Limit Ordinal}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_03_5517271459954688}
+      Let $\lambda$ be a limit ordinal.
+      Then \[ \omega \leq \lambda. \]
+    \end{proposition}
+    \begin{proof}
+      Assume the contrary.
+      Then $\lambda < \omega$.
+      Consequently $\lambda \in \omega$.
+      Hence $\lambda = 0$ or $\lambda = \succ(n)$ for some $n \in \omega$.
+      Thus $\lambda$ is not a limit ordinal.
+      Contradiction.
+    \end{proof}
+  \end{forthel}
+\end{document}

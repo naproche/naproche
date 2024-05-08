@@ -1,0 +1,47 @@
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/set-theory}
+\begin{document}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/set-theory/omega-is-limit.ftl.tex}]
+      [readtex \path{libraries/source/set-theory/cardinals.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+
+
+  \section*{Countable and Uncountable Sets}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{SET_THEORY_07_8808604616359936}
+      Let $x$ be a set.
+      $x$ is countable iff $|x| \leq \omega$.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{SET_THEORY_07_2935263915409408}
+      Let $x$ be a set.
+      $x$ is uncountable iff $x$ is not countable.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{SET_THEORY_07_5679866426949632}
+      Let $x$ be a set.
+      $x$ is countably infinite iff $|x| = \omega$.
+    \end{definition}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_07_4281623468048384}
+      Let $x$ be a set.
+      Then $x$ is uncountable iff $|x| > \omega$.
+    \end{proposition}
+  \end{forthel}
+\end{document}

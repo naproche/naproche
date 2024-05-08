@@ -1,0 +1,34 @@
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/set-theory}
+\begin{document}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/set-theory/one.ftl.tex}]
+      [readtex \path{libraries/source/set-theory/cardinals.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+
+
+  \section*{$1$-Element Sets}
+
+  \begin{forthel}
+    \begin{proposition}\printlabel{SET_THEORY_07_836893598023680}
+      Let $a$ be an object.
+      Then $|\set{a}| = 1$.
+    \end{proposition}
+    \begin{proof}
+      Define $f(x) = 0$ for $x \in \set{a}$.
+      Then $f$ is a map from $\set{a}$ to $1$.
+      $f$ is injective and surjective onto $1$.
+      Hence $f$ is a bijection between $\set{a}$ and $1$.
+      Consequently $\set{a}$ and $1$ are equinumerous.
+      Thus $|\set{a}| = |1| = 1$.
+    \end{proof}
+  \end{forthel}
+\end{document}
