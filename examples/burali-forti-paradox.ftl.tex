@@ -1,0 +1,48 @@
+\documentclass{article}
+\usepackage[english]{babel}
+\usepackage{csquotes}
+\usepackage{../lib/tex/naproche}
+\input{libraries/lib/foundations}
+\input{libraries/lib/set-theory}
+
+\usepackage[backend=bibtex]{biblatex}
+\usepackage{csquotes}
+\addbibresource{meta-inf/lib/bibliography}
+
+\title{Burali-Forti's Paradox}
+\author{\Naproche formalization: \vspace{0.5em} \\
+Marcel Schütz}
+\date{2024}
+
+\begin{document}
+  \maketitle
+
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/set-theory/ordinals.ftl.tex}]
+      [readtex \path{libraries/source/foundations/proper-classes.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+  
+  \noindent \emph{Burali-Forti's Paradox}, named after Cesare Burali-Forti, 
+  demonstates that there cannot exists a set that contains all ordinal number 
+  \cite{BuraliForti1897}.
+
+  \begin{forthel}
+    \begin{theorem*}[Burali-Forti's Paradox]\label{burali_forti_paradox}
+      $\Ord$ is a proper class.
+    \end{theorem*}
+    \begin{proof}
+      Assume the contrary.
+      $\Ord$ is transitive and every element of $\Ord$ is transitive.
+      Hence $\Ord$ is an ordinal.
+      Thus $\Ord \in \Ord$.
+      Contradiction.
+    \end{proof}
+  \end{forthel}
+
+
+  \printbibliography
+\end{document}
