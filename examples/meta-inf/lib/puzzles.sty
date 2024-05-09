@@ -1,0 +1,34 @@
+% Naproche logo
+% =============
+
+\RequirePackage{amsfonts}
+\RequirePackage{xspace}
+\newcommand{\Naproche}{\ensuremath{\mathbb{N}}aproche\xspace}
+
+
+% Hide imports
+% ============
+
+\RequirePackage{scontents}
+\newenvsc{imports}[store-env=imports,print-env=false]
+
+
+% Top-level sections
+% ==================
+
+\newenvironment{signature}{\unskip}{\unskip}
+\newenvironment{axiom}{\unskip}{\unskip}
+\newenvironment{definition}{\unskip}{\unskip}
+\newenvironment{theorem}{\unskip Therefore:}{}
+
+
+% ForTheL environment
+% ===================
+
+\RequirePackage{mdframed}
+\RequirePackage{xcolor}
+
+\newenvironment{forthel}{
+  \begin{mdframed}[backgroundcolor=gray!20,linecolor=gray!20]
+  \setlength{\parindent}{0pt}
+}{\end{mdframed}}
