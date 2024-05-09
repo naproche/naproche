@@ -1,4 +1,4 @@
-[synonym element/-s] [synonym system/-s] [synonym reduct/-s] [synonym term/-s]
+[read meta-inf/source/vocabulary.ftl]
 
 Signature Rewriting system.  A rewriting system is a notion.
 Signature Term. A term is an object.

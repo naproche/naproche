@@ -1,4 +1,4 @@
-[synonym set/-s] [synonym subset/-s] [synonym element/-s] [synonym belong/-s]
+[read meta-inf/source/vocabulary.ftl]
 [read meta-inf/source/macros.ftl]
 
 ##############################################################
@@ -23,8 +23,6 @@ Definition Subset.
 
 Axiom. Let T be a subclass of X. Then T is a set.
 
-[synonym function/-s] [synonym point/-s]
-
 
 Let f stand for a function.
 
@@ -44,7 +42,6 @@ Axiom ARefl. x <= x.
 Axiom ASymm. x <= y <= x => x = y.
 Axiom Trans. x <= y <= z => x <= z.
 
-[synonym bound/-s] [synonym supremum/suprema] [synonym infimum/infima] [synonym lattice/-s]
 
 Definition DefLB.   Let S be a subset of T.
     A lower bound of S in T is an element u of T

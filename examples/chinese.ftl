@@ -1,4 +1,4 @@
-[synonym element/-s]
+[read meta-inf/source/vocabulary.ftl]
 
 Let a,b,c,x,y,z,u,v,w denote elements.
 
@@ -41,8 +41,6 @@ Axiom Cancel.  x != 0 /\ y != 0 => x * y != 0.
 
 Axiom UnNeZr.  1 != 0.
 
-[synonym set/-s] [synonym belong/-s]
-
 Let X,Y,Z,U,V,W denote sets.
 
 Axiom. Every element of X is an element.
@@ -61,8 +59,6 @@ x << X, y << Y such that z = x + y.
 Definition DefSInt.
 X ** Y is a set such that for every element z (z << X ** Y) iff z << X
 and z << Y.
-
-[synonym ideal/-s]
 
 Definition DefIdeal.
 An ideal is a set X such that for every x << X
@@ -125,8 +121,6 @@ Proof.
 qed.
 
 
-[synonym number/-s]
-
 Signature NatSort.  A natural number is an object.
 
 Signature EucSort.  Let x be a nonzero element. |x| is a natural number.
@@ -135,8 +129,6 @@ Axiom Division.
 Let x, y be elements and y != 0. There exist elements q,r such that
         x = (q * y) + r and (r != 0 => |r| -<- |y|).
 
-
-[synonym divisor/-s] [synonym divide/-s]
 
 Definition DefDiv.  x divides y  iff  for some z (x * z = y).
 
