@@ -1,0 +1,66 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{../lib/tex/naproche}
+\input{libraries/lib/foundations}
+\input{libraries/lib/set-theory}
+
+\usepackage[backend=bibtex]{biblatex}
+\usepackage{csquotes}
+\addbibresource{meta-inf/lib/bibliography}
+
+\title{Hilbert's Paradox}
+\author{\Naproche formalization: \vspace{0.5em} \\
+Marcel Schütz}
+\date{2024}
+
+\begin{document}
+  \pagenumbering{gobble}
+  \maketitle
+
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/set-theory/zf.ftl.tex}]
+      [readtex \path{libraries/source/foundations/universal-class.ftl.tex}]
+      [readtex \path{libraries/source/foundations/proper-classes.ftl.tex}]
+      [readtex \path{libraries/source/foundations/closure-under-arbitrary-unions.ftl.tex}]
+      [readtex \path{libraries/source/foundations/closure-under-powersets.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+
+  \noindent \emph{Hilbert's Paradox}, discovered around 1900 by David Hilbert, 
+  demonstates that there cannot exists a set that is closed under powerset and 
+  under union of arbitrary subset \cite{PeckhausKahl2002}.
+
+  \begin{forthel}
+    \begin{theorem*}[Hilbert's Paradox]\label{hilbert_paradox}
+      There exists no system of sets that is closed under powersets and closed under unions.
+    \end{theorem*}
+    \begin{proof}
+      Assume the contrary.
+      Consider a system of sets $S$ that is closed under powersets and closed under unions.
+      We have $S \subseteq S$.
+      Hence $\bigcup S \in S$.
+      Thus $\pow(\bigcup S) \in S$.
+      Contradiction.
+    \end{proof}
+  \end{forthel}
+
+  \noindent Using Hilbert's Paradox it can further be shown that there exists 
+  no universal set.
+
+  \begin{forthel}
+    \begin{corollary*}\label{hilbert_paradox_corollary}
+      $\V$ is a proper class.
+    \end{corollary*}
+    \begin{proof}
+      Assume the contrary.
+      Then $\V$ is closed under powersets and closed under unions.
+      Contradiction (by \nameref{hilbert_paradox}).
+    \end{proof}
+  \end{forthel}
+
+  \printbibliography
+\end{document}

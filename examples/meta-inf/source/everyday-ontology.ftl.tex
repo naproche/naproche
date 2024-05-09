@@ -1,0 +1,170 @@
+% Everyday Ontology
+% =================
+
+\begin{forthel}
+  [readtex \path{meta-inf/source/vocabulary.ftl.tex}]
+\end{forthel}
+
+
+% Places
+% ------
+
+\begin{forthel}
+  \begin{signature*}
+    A place is an object.
+  \end{signature*}
+\end{forthel}
+
+
+% Persons
+% -------
+
+\begin{forthel}
+  \begin{signature*}
+    A person is an object.
+  \end{signature*}
+
+  \begin{signature*}
+    A man is a person.
+  \end{signature*}
+
+  \begin{signature*}
+    Let $P, P'$ be persons.
+    $P$ shaves $P'$ is an atom.
+  \end{signature*}
+
+  Let $P$ shaves himself stand for $P$ shaves $P$.
+
+
+  \begin{signature*}
+    Let $P$ be a person.
+    $P$ is drinking is an atom.
+  \end{signature*}
+
+  \begin{signature*}
+    Let $P$ be a person and $A$ be an object.
+    $P$ is inside $A$ is a relation.
+  \end{signature*}
+
+  \begin{signature*}
+    Let $P, P'$ be persons.
+    $P$ killed $P'$ is a relation.
+  \end{signature*}
+
+  Let $P$ killed themselves stand for $P$ killed $P$.
+  Let $Q$ was killed by $P$ stand for $P$ killed $Q$.
+
+  \begin{definition*}
+    Let $P$ be a person.
+    A victim of $P$ is a person that was killed by $P$.
+  \end{definition*}
+
+  \begin{definition*}
+    A killer is a person that killed some person.
+  \end{definition*}
+
+  \begin{signature*}
+    Let $P, P'$ be persons.
+    $P$ hates $P'$ is a relation.
+  \end{signature*}
+
+  Let $Q$ is hated by $P$ stand for $P$ hates $Q$.
+
+  \begin{signature*}
+    Let $P$ be a person and $A$ be a place.
+    $P$ lives in $A$ is a relation.
+  \end{signature*}
+
+  \begin{signature*}
+    Let $P, P'$ be persons.
+    $P$ is richer than $P'$ is a relation.
+  \end{signature*}
+\end{forthel}
+
+
+% Colors
+% ------
+
+\begin{forthel}
+  \begin{signature*}
+    A color is an object.
+  \end{signature*}
+
+  \begin{signature*}
+    White is a color.
+  \end{signature*}
+
+  \begin{signature*}
+    Black is a color.
+  \end{signature*}
+
+  \begin{signature*}
+    Let $A$ be an object.
+    The color of $A$ is a color.
+  \end{signature*}
+
+  \begin{signature*}
+    Let $C$ be a color.
+    The opposite color of $C$ is a color.
+  \end{signature*}
+\end{forthel}
+
+
+% Dwarfs
+% ------
+
+\begin{forthel}
+  \begin{signature*}
+    A dwarf is a person.
+  \end{signature*}
+\end{forthel}
+
+
+% Things
+% ------
+
+\begin{forthel}
+  \begin{signature*}
+    A hat is an object.
+  \end{signature*}
+
+  \begin{signature*}
+    Let $P$ be a person.
+    The hat of $P$ is a hat.
+  \end{signature*}
+\end{forthel}
+
+
+% Acts
+% ----
+
+\begin{forthel}
+  \begin{signature*}
+    Let $P$ be a person and $A$ be an object.
+    $P$ names $A$ is a relation.
+  \end{signature*}
+
+  \begin{signature*}
+    Let $P$ be a person.
+    $P$ gets released is a relation.
+  \end{signature*}
+\end{forthel}
+
+
+% Propositions
+% ------------
+
+\begin{forthel}
+  \begin{signature*}
+    A proposition is an object.
+  \end{signature*}
+
+  \begin{signature*}
+    Let $p$ be a proposition.
+    $p$ is true is an atom.
+  \end{signature*}
+
+  \begin{definition*}
+    A system of propositions is a class $P$ such that every element of $P$ is a proposition.
+  \end{definition*}
+\end{forthel}

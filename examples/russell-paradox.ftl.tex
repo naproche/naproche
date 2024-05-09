@@ -1,0 +1,41 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{../lib/tex/naproche}
+\input{libraries/lib/foundations}
+\input{libraries/lib/set-theory}
+
+\usepackage[backend=bibtex]{biblatex}
+\usepackage{csquotes}
+\addbibresource{meta-inf/lib/bibliography}
+
+\title{Russell's Paradox}
+\author{\Naproche formalization: \vspace{0.5em} \\
+Marcel Schütz}
+\date{2024}
+
+\begin{document}
+  \pagenumbering{gobble}
+  \maketitle
+
+  \noindent \emph{Russell's Paradox} is a set-theoretical paradox discovered by
+  Bertrand Russell around 1902 \cite[chapter XV]{Frege1980} which shows that 
+  there exist statements $\varphi$ whose extension
+  $\{x\mid\varphi(x)\}$ cannot constitute a set -- or in other words:
+  Not every class is a set.
+
+  \begin{forthel}
+    \begin{theorem*}[Russell's Paradox]\label{russell_paradox}
+      It is wrong that every class is a set.
+    \end{theorem*}
+    \begin{proof}
+      Assume the contrary.
+      Define $R = \{x \mid x$ is a set such that $x \notin x\}$.
+      Then $R$ is a set.
+      Hence $R \in R$ iff $R \notin R$.
+      Contradiction.
+    \end{proof}
+  \end{forthel}
+
+  \printbibliography
+\end{document}

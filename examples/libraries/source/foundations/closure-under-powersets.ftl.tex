@@ -9,18 +9,17 @@
     \begin{forthel}
       %[prove off][check off]
       [readtex \path{libraries/source/foundations/systems-of-sets.ftl.tex}]
-      [readtex \path{libraries/source/foundations/countable-and-uncountable-classes.ftl.tex}]
       %[prove on][check on]
     \end{forthel}
   \end{imports}
 
 
-  \section*{Closure Under Countable Intersections}
+  \section*{Closure Under Powersets}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_14_451771879129088}
+    \begin{definition}\printlabel{FOUNDATIONS_14_4652013578120594}
       Let $X$ be a system of sets.
-      $X$ is closed under countable intersections iff $\bigcap U \in X$ for every nonempty countable subclass $U$ of $X$.
+      $X$ is closed under powersets iff $\pow(U) \in X$ for every $U \in X$.
     \end{definition}
   \end{forthel}
 \end{document}
