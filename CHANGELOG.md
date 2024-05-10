@@ -13,6 +13,8 @@ dialect of ForTheL, respectively.
 
 ### Changes on the example files
 
+  * **Changed:** All examples were adapted to the new section wise variable pretyping.
+
   * **Changed:** Dedekind's Recursion Theorem and Euclid's Division Theorem
     were moved from the arithmetics library to stand-alone example files
     (`dedekind.ftl.tex` and `euclid_division.ftl.tex`, resp.).
@@ -39,6 +41,12 @@ dialect of ForTheL, respectively.
 
 
 ### Changes on ForTheL
+
+  * **New:** Variable pretyings can be reset using the new `[resetpretyping]` command.
+
+  * **New:** (TEX) `\section` triggers a reset of the variable pretypings. Thus the pretyping of variables is now per section and no longer for the whole document.
+
+  * **New:** Imports of formalizations using the `[read ..]` and `[readtex ..]` commands are now relative to the environment variable `NAPROCHE_FORMALIZATIONS`. For Isabelle/Naproche `NAPROCHE_FORMALIZATIONS` defaults to `$NAPROCHE_HOME/examples`, which resembles the old behavior. For command-line use, `NAPROCHE_FORMALIZATIONS` needs to be explicitly set to the examples folder of the Naproche checkout to mimic the old behavior.
 
   * **Fixed:** Comments outside ForTheL environments are now recognized by the
     parser, i.e. commented out `forthel` environments and `importmodule`
