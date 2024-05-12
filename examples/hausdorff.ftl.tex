@@ -1,6 +1,5 @@
 \documentclass{article}
 \usepackage[english]{babel}
-\usepackage{xr}
 \usepackage{../lib/tex/naproche}
 \input{libraries/lib/foundations}
 \input{libraries/lib/set-theory}
@@ -8,8 +7,6 @@
 \usepackage[backend=bibtex]{biblatex}
 \usepackage{csquotes}
 \addbibresource{meta-inf/lib/bibliography}
-
-\externaldocument{set-theory/set-theory}
 
 \newcommand{\surjects}{\twoheadrightarrow}
 
@@ -24,158 +21,115 @@ Adrian De Lon (2021)}
 
   \noindent This is a formalization of a theorem of Felix Hausdorff stating that
   successor cardinals are always regular.
-  On mid-range hardware \Naproche needs approximately 1:30 Minutes to verify it,
-  plus approximately 25 minutes to verify the library files it depends on.
 
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/set-theory/cardinals-and-maps.ftl.tex}]
+      [readtex \path{libraries/source/set-theory/successor-cardinals.ftl.tex}]
+      [readtex \path{libraries/source/set-theory/regular-cardinals.ftl.tex}]
+      [readtex \path{libraries/source/foundations/constant-maps.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
-  \section{Preliminaries}
+  In lack of a formalization in \Naproche of a proof of the fact that
+  $|X \times X| = |X|$ for every set $X$ which is required by the subsequent
+  proof of Hausdorff's Theorem, we add an axiom that ensures that this fact
+  holds in our theory:
 
   \begin{forthel}
-    %[prove off][check off]
-
-    [readtex \path{libraries/source/set-theory/06_cardinals.ftl.tex}]
-
-    %[prove on][check on]
-  \end{forthel}
-
-  \begin{forthel}
-    Let $X$ denote a set.
-    Let $\kappa$ denote a cardinal.
-
     \begin{axiom*}
-      $|X \times X| = |X|$.
+      $|X \times X| = |X|$ for every set $X$.
     \end{axiom*}
-
-    \begin{signature*}
-      $\kappa^{+}$ is a cardinal such that $\kappa < \kappa^{+}$ and there is no
-      cardinal $\nu$ such that $\kappa < \nu < \kappa^{+}$.
-    \end{signature*}
-
-    \begin{axiom*}
-      $|\alpha| \leq \kappa$ for every element $\alpha$ of $\kappa^{+}$.
-    \end{axiom*}
-
-    \begin{definition*}
-      The constant zero on $X$ is the function $f$ such that $\dom(f) = X$ and
-      $f(x) = 0$ for every $x \in X$.
-    \end{definition*}
-
-    Let $0^{X}$ stand for the constant zero on $X$.
   \end{forthel}
-
-
-  \section{Cofinality and regular cardinals}
-
-  \begin{forthel}
-    Let $\kappa$ denote a cardinal.
-
-    \begin{definition*}[Cofinality]
-      Let $Y$ be a subset of $\kappa$.
-      $Y$ is cofinal in $\kappa$ iff for every element $x$ of $\kappa$ there
-      exists an element $y$ of $Y$ such that $x < y$.
-    \end{definition*}
-
-    Let a cofinal subset of $\kappa$ stand for a subset of $\kappa$ that is
-    cofinal in $\kappa$.
-
-    \begin{definition*}
-      $\kappa$ is regular iff $|x| = \kappa$ for every cofinal subset $x$ of
-      $\kappa$.
-    \end{definition*}
-  \end{forthel}
-
-
-  \section{Hausdorff's theorem}
 
   The following result appears in \cite[p.~443]{Hausdorff1908},
-  where Hausdorff mentions that the proof is
-  \textit{``ganz einfach''} (\textit{``very simple''}) and can be skipped.
+  where Hausdorff mentions that the proof of the regularity of successor
+  cardinals is \textit{``ganz einfach''} (\textit{``very simple''})
+  and can be skipped.
 
   \begin{forthel}
-    Let $\kappa$ denote a cardinal.
-
     \begin{theorem*}[Hausdorff]
-      $\kappa^{+}$ is regular.
+      Let $\kappa$ be a cardinal.
+      Then $\kappa^+$ is regular.
     \end{theorem*}
     \begin{proof}[by contradiction]
       Assume the contrary.
-      Take a cofinal subset $x$ of $\kappa^{+}$ such that $|x| \neq \kappa^{+}$.
+      Take a cofinal subset $x$ of $\kappa^+$ such that $|x| \neq \kappa^+$.
       Then $|x| \leq \kappa$.
-      Take a surjective map $f$ from $\kappa$ onto $x$
-      (by \ref{SET_THEORY_06_192336220913664}).
+      Take a surjective map $f$ from $\kappa$ onto $x$ (by \printref{SET_THEORY_06_192336220913664}).
       Indeed $x$ and $\kappa$ are nonempty and $|\kappa| = \kappa$.
-      Then $f(\xi) \in \kappa^{+}$ for all $\xi \in \kappa$.
-      For all $z \in \kappa^{+}$ if $z$ has an element then there exists a
-      surjective map $h$ from $\kappa$ onto $z$.
-      Indeed $\kappa$ is nonempty.
+      Then $f(\xi) \in \kappa^+$ for all $\xi \in \kappa$.
+
+      Let us show that for all $z \in \kappa^+$ if $z$ is nonempty then there exists a surjective map from $\kappa$ onto $z$.
+        Let $z \in \kappa^+$.
+        Assume that $z$ is nonempty.
+        $\kappa$ is nonempty.
+        Hence the thesis (by \printref{SET_THEORY_06_192336220913664}).
+        Indeed $|\kappa| \geq |z|$.
+      End.
 
       Define \[ g(z) =
         \begin{cases}
           \text{choose $h : \kappa \onto z$ in $h$}
           & : \text{$z$ has an element}
           \\
-          \text{$0^{\kappa}$}
+          \text{$\const{\kappa}{0}$}
           & : \text{$z$ has no element}
         \end{cases}
-      \] for $z$ in $\kappa^{+}$.
+      \] for $z$ in $\kappa^+$.
 
-      Let us show that for all $\xi, \zeta \in \kappa$ $g(f(\xi))$ is a map such
-      that $\zeta \in \dom(g(f(\xi)))$.
+      Let us show that for all $\xi, \zeta \in \kappa$ $g(f(\xi))$ is a map such that $\zeta \in \dom(g(f(\xi)))$.
         Let $\xi, \zeta \in \kappa$.
-        If $f(\xi)$ has an element then $g(f(\xi))$ is a surjective map from
-        $\kappa$ onto $f(\xi)$.
-        If $f(\xi)$ has no element then $g(f(\xi)) = 0^{\kappa}$.
+        If $f(\xi)$ has an element then $g(f(\xi))$ is a surjective map from $\kappa$ onto $f(\xi)$.
+        If $f(\xi)$ has no element then $g(f(\xi)) = \const{\kappa}{0}$.
         Hence $\dom(g(f(\xi))) = \kappa$.
         Therefore $\zeta \in \dom(g(f(\xi)))$.
       End.
 
-      For all objects $\xi, \zeta$ we have $\xi, \zeta \in \kappa$ iff
-      $(\xi, \zeta) \in \kappa \times \kappa$.
-      Define $h(\xi,\zeta) = g(f(\xi))(\zeta)$ for $(\xi,\zeta) \in \kappa
-      \times \kappa$.
+      For all objects $\xi, \zeta$ we have $\xi, \zeta \in \kappa$ iff $(\xi, \zeta) \in \kappa \times \kappa$.
+      Define $h(\xi,\zeta) = g(f(\xi))(\zeta)$ for $(\xi,\zeta) \in \kappa \times \kappa$.
 
-      Let us show that $h$ is surjective onto $\kappa^{+}$.
+      Let us show that $h$ is surjective onto $\kappa^+$.
 
-        Every element of $\kappa^{+}$ is an element of $h[\kappa \times
-        \kappa]$. \\
+        Every element of $\kappa^+$ is an element of $h[\kappa \times \kappa]$. \\
         Proof.
-          Let $n$ be an element of $\kappa^{+}$.
+          Let $n$ be an element of $\kappa^+$.
           Take an element $\xi$ of $\kappa$ such that $n < f(\xi)$.
           Take an element $\zeta$ of $\kappa$ such that $g(f(\xi))(\zeta) = n$.
           Indeed $g(f(\xi))$ is a surjective map from $\kappa$ onto $f(\xi)$.
           Then $n = h(\xi,\zeta)$.
         End.
 
-        Every element of $h[\kappa \times \kappa]$ is an element of
-        $\kappa^{+}$. \\
+        Every element of $h[\kappa \times \kappa]$ is an element of $\kappa^+$. \\
         Proof.
           Let $n$ be an element of $h[\kappa \times \kappa]$.
           We can take elements $a, b$ of $\kappa$ such that $n = h(a,b)$.
           Then $n = g(f(a))(b)$.
-          $f(a)$ is an element of $\kappa^{+}$.
-          Every element of $f(a)$ is an element of $\kappa^{+}$.
+          Indeed $(a,b) \in \kappa \times \kappa$ and $h(a,b) = g(f(a))(b)$.
+          $f(a)$ is an element of $\kappa^+$.
+          Every element of $f(a)$ is an element of $\kappa^+$.
 
           Case $f(a)$ has an element.
             Then $g(f(a))$ is a surjective map from $\kappa$ onto $f(a)$.
-            Hence $n \in f(a) \in \kappa^{+}$.
-            Thus $n \in \kappa^{+}$.
+            Hence $n \in f(a) \in \kappa^+$.
+            Thus $n \in \kappa^+$.
           End.
 
           Case $f(a)$ has no element.
-            Then $g(f(a)) = 0^{\kappa}$.
+            Then $g(f(a)) = \const{\kappa}{0}$.
             Hence $n$ is the empty set.
-            Thus $n \in \kappa^{+}$.
+            Thus $n \in \kappa^+$.
           End.
         End.
 
-        Hence $\range(h) = h[\kappa \times \kappa] = \kappa^{+}$.
+        Hence $\range(h) = h[\kappa \times \kappa] = \kappa^+$.
       End.
 
-      Therefore $|\kappa^{+}| \leq |\kappa \times \kappa|$
-      (by \ref{SET_THEORY_06_192336220913664}).
-      Indeed $\kappa \times \kappa$ and $\kappa^{+}$ are nonempty sets and $h$
-      is a surjective map from $\kappa \times \kappa$ to $\kappa^{+}$.
-      Consequently $\kappa^{+} \leq \kappa$.
+      Therefore $|\kappa^+| \leq |\kappa \times \kappa|$ (by \printref{SET_THEORY_06_192336220913664}).
+      Indeed $\kappa \times \kappa$ and $\kappa^+$ are nonempty sets and $h$ is a surjective map from $\kappa \times \kappa$ to $\kappa^+$.
+      Consequently $\kappa^+ \leq \kappa$.
       Contradiction.
     \end{proof}
   \end{forthel}
