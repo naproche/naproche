@@ -1,3 +1,48 @@
+% This package provides basic support for typesetting Naproche formalizations
+% in LaTeX. It is used by almost all example files that ship with Naproche and
+% is the recommended one for custom formalizations.
+
+
+% Documentation (For End-Users)
+% =============================
+
+% Features
+% --------
+
+% * Content within the `forthel` environment is marked with a grey background.
+%
+% * Top-level environments for `axiom`, `definition`, `theorem`,
+%  `proposition`, `lemma`, `corollary`, `signature` and `proof`.
+%
+% * A length `ftlparskip` with which the space between paragraphs in proofs 
+%   within `forthel` environments can be controlled (default: 0.5em).
+%   Can be changed via `\setlength{\ftlparskip}{<new length>}`.
+%
+% * Alternative syntax for comprehension terms:
+%   `\class{... | ...}` behaves like `\{... \mid ...\}` with additional support
+%   for flexible sizes of the braces and the vertical bar.
+%
+% * `\classtext{...}` as an alternative for `\text{...}`. Can be used (in
+%   display math mode) in the RHS of `\class{... | ...}` to achieve automatic
+%   line breaks within a comprehension term.
+%
+% * Predefined symbols:
+%   - `\dom` for the domain of a map
+%   - `\fun` for lambda abstraction in low-level map definitions
+%
+% * `\Naproche`: The word "Naproche" with a 'blackbord N'
+
+
+% Additional Options
+% ------------------
+
+% `numberswithinsection`:     Reset theorem numbers for each section.
+% `numberswithinsubsection`:  Reset theorem numbers for each subsection.
+
+
+% Implementation (For Developers)
+% ===============================
+
 \NeedsTeXFormat{LaTeX2e}
 
 \RequirePackage{amsmath}
@@ -14,7 +59,7 @@
 
 
 % Links
-% =====
+% -----
 
 \hypersetup{
   colorlinks=true,
@@ -24,7 +69,7 @@
 
 
 % Printable labels and references
-% ===============================
+% -------------------------------
 
 % `\printlabel' behaves exactly as `\label' but its argument is printed in the
 % PDF.
@@ -35,7 +80,7 @@
 
 
 % Top-level sections
-% ==================
+% ------------------
 
 % Numbered environments for top-level sections
 \newtheoremstyle{formalized}% name of the style to be used
@@ -82,7 +127,7 @@
 
 
 % ForTheL environment
-% ===================
+% -------------------
 
 % Space between paragraphs in forthel environments
 \newlength{\ftlparskip}
@@ -112,7 +157,7 @@
 
 
 % Comprehension terms
-% ===================
+% -------------------
 
 \RequirePackage{linegoal}
 
@@ -138,8 +183,8 @@
 \newcommand{\classtext}[1]{\parbox{\linegoal}{#1}}
 
 
-% More visible line breaks in proofs.
-% ===================================
+% More visible line breaks in proofs
+% ----------------------------------
 
 \newbool{forthel}
 
@@ -158,27 +203,27 @@
 
 
 % Predefined symbols
-% ==================
+% ------------------
 
 \newcommand{\dom}{\operatorname{dom}}
 \newcommand{\fun}{\mathrm{\lambda}}
 
 
 % Naproche logo
-% =============
+% -------------
 
 \newcommand{\Naproche}{\ensuremath{\mathbb{N}}aproche\xspace}
 
 
 % Hide imports
-% ============
+% ------------
 
 \usepackage{scontents}
 \newenvsc{imports}[store-env=imports,print-env=false]
 
 
 % Options
-% =======
+% -------
 
 \DeclareOption{numberswithinsection}{%
     \counterwithin{theoremcount}{section}
