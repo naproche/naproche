@@ -17,53 +17,81 @@ explanations and even graphics. The examples include single files as well as
 folders of formalizations that are interlinked by "`read`" commands. The
 spectrum reaches from recreational puzzles to undergraduate-level theorems:
 
-* arithmetic - elementary Peano arithmetic
+* `geometry/` – beginnings of Tarski geometry
 
-* foundations - Kelley-Morse like foundations of mathematics
+* `libraries/` – libraries of basic mathematical notions and facts
 
-* geometry - beginnings of Tarski geometry
+  - `source/arithmetics/` – elementary Peano arithmetics
 
-* set-theory - elementary set theory
+  - `source/foundations/` – Kelley-Morse like foundations of mathematics
 
-* agatha - a logic puzzle set in "Dreadsbury Mansion"
+  - `source/set-theory/` – elementary set theory
 
-* cantor - Cantor diagonal argument
+* `100_theorems` – some of Wiedijk's "100 Theorems"
 
-* cantor-schroeder-bernstein - classical result in cardinality theory
+* `agatha` – a logic puzzle set in "Dreadsbury Mansion"
 
-* checkerboard - the mutilated checkerboard
+* `barber-paradox` – the barber paradox
 
-* chinese - Chinese remainder theorem
+* `burali-forti-paradox` – Burali-Forti's paradox
 
-* dwarfs - a "hat puzzle"
+* `cantor` – Cantor diagonal argument
 
-* euclid - classical proof of infinity of primes
+* `cantor-paradox` – Cantor's paradoxes
 
-* furstenberg - topological proof of infinity of primes
+* `cantor-schroeder-bernstein` – classical result in cardinality theory
 
-* group - Naproche rendering of a Lean file on groups
+* `checkerboard` – the mutilated checkerboard
 
-* hausdorff - theorem on the regularity of successor cardinals
+* `chinese` – Chinese remainder theorem
 
-* hilbert-calculus - proving derivations in a Hilbert calculus
+* `curry-paradox` – Curry's paradox
 
-* koenig - theorem about sequences of cardinals
+* `dedekind` – Dedekind's recursion theorem
 
-* maximum_modulus - theorem from complex analysis
+* `drinker-paradox` – the drinker paradox
 
-* newman - Newman's theorem on rewriting systems
+* `dwarfs` – a "hat puzzle"
 
-* numbers - introduction of number systems for Rudin's Principles of Mathematical Analysis
+* `euclid_division` – Euclid's division theorem
 
-* paradoxes - collection of (mathematical) paradoxes
+* `euclid_primes` – classical proof of infinity of primes
 
-* preliminaries - basic theory of classes and sets
+* `furstenberg` – topological proof of infinity of primes
 
-* prime no square - irrationality of square roots
+* `gauss` – sum of the first *n* positive integers
 
-* tarski - Tarski fixpoint theorem for lattices
+* `group.lean` – Naproche rendering of a Lean file on groups
 
-* zermelo - Zermelo's well-ordering theorem
+* `hausdorff` – theorem on the regularity of successor cardinals
+
+* `hilbert-calculus` – proving derivations in a Hilbert calculus
+
+* `hilbert-paradox` – Hilbert's paradox
+
+* `koenig` – theorem about sequences of cardinals
+
+* `maximum_modulus` – theorem from complex analysis
+
+* `newman` – Newman's theorem on rewriting systems
+
+* `numbers` – introduction of number systems for Rudin's Principles of Mathematical Analysis
+
+* `preliminaries` – basic theory of classes and sets
+
+* `prime_no_square` – irrationality of square roots
+
+* `russell-myhill-paradox` – the Russell-Myhill paradox
+
+* `russell-paradox` – Russell's paradox
+
+* `tarski` – Tarski's fixpoint theorem for lattices
+
+* `transfinite-recursion` – the transfinite recursion theorem
+
+* `TUTORIAL` – Naproche tutorial
+
+* `zermelo` – Zermelo's well-ordering theorem
 
 The further development of Naproche will focus on the `.ftl.tex` format in order
 to build readable libraries of computer-verifiable mathematics. The classical
