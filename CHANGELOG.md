@@ -13,11 +13,11 @@ dialect of ForTheL, respectively.
 
 ### Changes on the example files
 
-  * **Changed:** All examples were adapted to the new section wise variable pretyping.
+  * **Changed:** The LaTeX style file `naproche.sty` was moved to
+    `examples/meta-inf/lib/naproche.sty`.
 
-  * **Changed:** Dedekind's Recursion Theorem and Euclid's Division Theorem
-    were moved from the arithmetics library to stand-alone example files
-    (`dedekind.ftl.tex` and `euclid_division.ftl.tex`, resp.).
+  * **Changed:** All examples were adapted to the new section wise variable
+    pretyping.
 
   * **Changed:** `euclid.ftl.tex` was renamed to `euclid_primes.ftl.tex`.
 
@@ -34,19 +34,55 @@ dialect of ForTheL, respectively.
   * **Changed:** The arithmetics, foundations and set theory libraries were
     moved to `examples/libraries/source/`.
 
-  * **New:** A formalization of "Little Gauß' Theorem" was added
-    (`examples/gauss.ftl.tex`).
+  * **Changed:** Some formalizations were moved from the libraries to
+    stand-alone files:
 
-  * **New:** A library for lists was added (`examples/libraries/source/lists/`).
+    - Dedekind's Recursion Theorem: `dedekind.ftl.tex`
+    - Euclid's Division Theorem: `euclid_division.ftl.tex`
+    - Transfinite Recursion Theorem: `transfinite-recursion.ftl.tex`
+
+  * **Changed:** Paradoxes were moved to stand-alone files:
+
+    - Drinker Paradox: `drinker-paradox.ftl.tex`
+    - Russell's Paradox: `russell-paradox.ftl.tex`
+    - Russell-Myhill Paradox: `russell-myhill-paradox.ftl.tex`
+    - Barber Paradox: `barber-paradox.ftl.tex`
+    - Burali-Forti Paradox: `burali-forti-paradox.ftl.tex`
+    - Cantor's Paradoxes: `cantor-paradox.ftl.tex`
+
+  * **New:** New formalizations:
+  
+    - "Little Gauß' Theorem": `gauss.ftl.tex`
+    - Curry's Paradox: `curry-paradox.ftl.tex`
+    - Hilbert's Paradox: `hilbert-paradox.ftl.tex`
+    - Library about lists: `libraries/source/lists/`
+
+  * **Changed:** The following formalizations were revised:
+
+    - `agatha.ftl.tex`
+    - `cantor.ftl.tex`
+    - `dwarfs.ftl.tex`
+    - `furstenberg.ftl.tex`
+    - `hausdorff.ftl.tex`
+    - `koenig.ftl.tex`
+    - `zermelo.ftl.tex`
 
 
 ### Changes on ForTheL
 
-  * **New:** Variable pretyings can be reset using the new `[resetpretyping]` command.
+  * **New:** Variable pretyings can be reset using the new `[resetpretyping]`
+    command.
 
-  * **New:** (TEX) `\section` triggers a reset of the variable pretypings. Thus the pretyping of variables is now per section and no longer for the whole document.
+  * **New:** (TEX) `\section` triggers a reset of the variable pretypings. Thus
+    the pretyping of variables is now per section and no longer for the whole
+    document.
 
-  * **New:** Imports of formalizations using the `[read ..]` and `[readtex ..]` commands are now relative to the environment variable `NAPROCHE_FORMALIZATIONS`. For Isabelle/Naproche `NAPROCHE_FORMALIZATIONS` defaults to `$NAPROCHE_HOME/examples`, which resembles the old behavior. For command-line use, `NAPROCHE_FORMALIZATIONS` needs to be explicitly set to the examples folder of the Naproche checkout to mimic the old behavior.
+  * **New:** Imports of formalizations using the `[read ..]` and `[readtex ..]`
+    commands are now relative to the environment variable
+    `NAPROCHE_FORMALIZATIONS`. For Isabelle/Naproche `NAPROCHE_FORMALIZATIONS`
+    defaults to `$NAPROCHE_HOME/examples`, which resembles the old behavior. For
+    command-line use, `NAPROCHE_FORMALIZATIONS` needs to be explicitly set to
+    the examples folder of the Naproche checkout to mimic the old behavior.
 
   * **Fixed:** Comments outside ForTheL environments are now recognized by the
     parser, i.e. commented out `forthel` environments and `importmodule`
