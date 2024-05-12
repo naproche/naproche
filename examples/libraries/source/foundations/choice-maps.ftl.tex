@@ -1,0 +1,24 @@
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\begin{document}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/foundations/systems-of-sets.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+
+
+  \section*{Choice Maps}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{FOUNDATIONS_10_1352015487625913}
+      Let $X$ be a system of nonempty sets.
+      A choice map for $X$ is a map $g$ such that $\dom(g) = X$ and $g(x) \in x$ for any $x \in X$.
+    \end{definition}
+  \end{forthel}
+\end{document}
