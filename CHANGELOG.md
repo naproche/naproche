@@ -9,7 +9,7 @@ dialect of ForTheL, respectively.
 
 --------------------------------------------------------------------------------
 
-## naproche-202405xx (Isabelle 2024)
+## Current development version (Isabelle 2024)
 
 ### Changes on the example files
 
@@ -71,22 +71,21 @@ dialect of ForTheL, respectively.
 ### Changes on ForTheL
 
   * **New:** Variable pretyings can be reset using the new `[resetpretyping]`
-    command.
+    instruction.
 
   * **New:** (TEX) `\section` triggers a reset of the variable pretypings. Thus
     the pretyping of variables is now per section and no longer for the whole
     document.
 
   * **New:** Imports of formalizations using the `[read ..]` and `[readtex ..]`
-    commands are now relative to the environment variable
+    instruction are now relative to the environment variable
     `NAPROCHE_FORMALIZATIONS`. For Isabelle/Naproche `NAPROCHE_FORMALIZATIONS`
     defaults to `$NAPROCHE_HOME/examples`, which resembles the old behavior. For
     command-line use, `NAPROCHE_FORMALIZATIONS` needs to be explicitly set to
     the examples folder of the Naproche checkout to mimic the old behavior.
 
-  * **Fixed:** Comments outside ForTheL environments are now recognized by the
-    parser, i.e. commented out `forthel` environments and `importmodule`
-    commands are ignored by the parser.
+  * **Fixed:** (TEX) Commented out `forthel` environments are now ignored by the
+    parser.
 
   * **Changed:** The following keywords are no longer allowed as variable names
     to avoid certain ambiguity errors:
