@@ -1,0 +1,24 @@
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/set-theory}
+\begin{document}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/set-theory/successor-cardinals.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+
+
+  \section*{Weak Limit Cardinals}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{SET_THEORY_06_8945210236547450}
+      A weak limit cardinal is a cardinal number $\lambda$ such that $\lambda$ is not a successor cardinal and $\lambda \neq 0$.
+    \end{definition}
+  \end{forthel}
+\end{document}

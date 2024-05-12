@@ -1,0 +1,27 @@
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/set-theory}
+\begin{document}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/set-theory/cardinals.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+
+
+  \section*{Cofinality}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{SET_THEORY_06_5621203645212879}
+      Let $\kappa$ be a cardinal and $Y \subseteq \kappa$.
+      $Y$ is cofinal in $\kappa$ iff for every $x \in \kappa$ there exists a $y \in Y$ such that $x < y$.
+    \end{definition}
+
+    Let a cofinal subset of $\kappa$ stand for a subset of $\kappa$ that is cofinal in $\kappa$.
+  \end{forthel}
+\end{document}

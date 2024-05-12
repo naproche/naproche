@@ -1,0 +1,25 @@
+\documentclass[10pt]{article}
+\usepackage[english]{babel}
+\usepackage{../../../../lib/tex/naproche}
+\input{../../lib/libraries}
+\input{../../lib/foundations}
+\input{../../lib/set-theory}
+\begin{document}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/set-theory/cofinality.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+
+
+  \section*{Regular Cardinals}
+
+  \begin{forthel}
+    \begin{definition}\printlabel{SET_THEORY_06_6532641205487950}
+      Let $\kappa$ be a cardinal.
+      $\kappa$ is regular iff $|x| = \kappa$ for every cofinal subset $x$ of $\kappa$.
+    \end{definition}
+  \end{forthel}
+\end{document}
