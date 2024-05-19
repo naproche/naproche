@@ -6,7 +6,10 @@ Proof Checking of Natural Mathematical Documents, with optional support
 for Isabelle Prover IDE (Isabelle/PIDE – Isabelle/jEdit).
 
 
-NOTE: The subsequent explanations are for **development** of the tool, not for end-users!
+NOTE: The subsequent explanations are for **development** of the tool! Regular users may get a fully
+integrated version for Linux / macOS / Windows that is bundled with Isabelle: download and run the
+application from https://isabelle.in.tum.de and open $ISABELLE_NAPROCHE/Intro.thy in the
+Documentation panel.
 
 
 ## Isabelle/Naproche Prover IDE
