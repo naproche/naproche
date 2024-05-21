@@ -23,21 +23,17 @@ Andrei Paskevich, Marcel Schütz}
 
   \noindent This is a formalization of Furstenberg's topological proof of the
   infinitude of primes \cite[p. 353]{Furstenberg1955}.
-  On mid-range hardware \Naproche needs approximately 5 Minutes to verify this
-  formalization plus approximately 40 minutes to verify the library files it
-  depends on.
 
-  \begin{forthel}
-    %[prove off][check off]
-    [readtex \path{libraries/source/arithmetics/primes.ftl.tex}]
-
-    [readtex \path{libraries/source/arithmetics/nat-is-a-set.ftl.tex}]
-
-    [readtex \path{libraries/source/set-theory/zf.ftl.tex}]
-
-    [readtex \path{libraries/source/foundations/closure-under-finite-unions.ftl.tex}]
-    %[prove on][check on]
-  \end{forthel}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/arithmetics/primes.ftl.tex}]
+      [readtex \path{libraries/source/arithmetics/nat-is-a-set.ftl.tex}]
+      [readtex \path{libraries/source/set-theory/zf.ftl.tex}]
+      [readtex \path{libraries/source/foundations/closure-under-finite-unions.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
   The central idea of Furstenberg's proof is to define a certain topology on
   $\Nat$ from the properties of which we can deduce that the set of

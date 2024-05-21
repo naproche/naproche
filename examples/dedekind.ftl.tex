@@ -217,12 +217,15 @@ Marcel Schütz}
 
               (i) $H \in \pow(\Nat \times A)$.
 
-              (ii) $(0,a) \in H$.
-              Indeed $(0,a) \in \bigcap \Phi$ and $(0,a) \notin
-              \set{(n + 1,x)}$.
+              (ii) $(0,a) \in H$. \\
+              Proof.
+                $(0,a) \in \bigcap \Phi$.
+                $(0,a) \notin \set{(n + 1,x)}$.
+                Indeed $(0,a) \neq (n + 1,x)$ (by \printref{FOUNDATIONS_04_8464577431863296}).
+                Indeed $0 \neq n + 1$.
+              Qed.
 
-              (iii) For all $m \in \Nat$ and all $z \in A$ if $(m,z) \in H$
-              then $(m + 1,f(z)) \in H$. \\
+              (iii) For all $m \in \Nat$ and all $z \in A$ if $(m,z) \in H$ then $(m + 1,f(z)) \in H$. \\
               Proof.
                 Let $m \in \Nat$ and $z \in A$.
                 Assume $(m,z) \in H$.
@@ -230,6 +233,7 @@ Marcel Schütz}
                 Hence $(m + 1,f(z)) \in \bigcap \Phi$.
                 $(m + 1,f(z)) \neq (n + 1,x)$ (by \printref{FOUNDATIONS_04_8464577431863296}).
                 Indeed if $(m + 1,f(z)) = (n + 1,x)$ then $m = n$ and $f(z) = x$ (by \printref{FOUNDATIONS_04_8464577431863296}, \printref{ARITHMETIC_01_3604163883696128}).
+                Thus $(m + 1,f(z)) \notin \set{(n + 1,x)}$.
                 Therefore $(m + 1,f(z)) \in H$.
               Qed.
 
@@ -246,12 +250,15 @@ Marcel Schütz}
 
               (i) $H \in \pow(\Nat \times A)$.
 
-              (ii) $(0,a) \in H$.
-              Indeed $(0,a) \in \bigcap \Phi$ and $(0,a) \notin
-              \set{(n + 1,y)}$.
+              (ii) $(0,a) \in H$. \\
+              Proof.
+                $(0,a) \in \bigcap \Phi$.
+                $(0,a) \notin \set{(n + 1,y)}$.
+                Indeed $(0,a) \neq (n + 1,y)$ (by \printref{FOUNDATIONS_04_8464577431863296}).
+                Indeed $0 \neq n + 1$.
+              Qed.
 
-              (iii) For all $m \in \Nat$ and all $z \in A$ if $(m,z) \in H$
-              then $(m + 1,f(z)) \in H$. \\
+              (iii) For all $m \in \Nat$ and all $z \in A$ if $(m,z) \in H$ then $(m + 1,f(z)) \in H$. \\
               Proof.
                 Let $m \in \Nat$ and $z \in A$.
                 Assume $(m,z) \in H$.
@@ -259,6 +266,7 @@ Marcel Schütz}
                 Hence $(m + 1,f(z)) \in \bigcap \Phi$.
                 $(m + 1,f(z)) \neq (n + 1,y)$ (by \printref{FOUNDATIONS_04_8464577431863296}).
                 Indeed if $(m + 1,f(z)) = (n + 1,y)$ then $m = n$ and $f(z) = y$ (by \printref{FOUNDATIONS_04_8464577431863296}, \printref{ARITHMETIC_01_3604163883696128}).
+                Thus $(m + 1,f(z)) \notin \set{(n + 1,y)}$.
                 Therefore $(m + 1,f(z)) \in H$.
               Qed.
 
@@ -322,7 +330,7 @@ Marcel Schütz}
           = \varphi'(n + 1)$.
       Qed.
 
-      Thus $\Phi$ contains every natural number.
+      Thus $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).
       Consequently $\varphi(n) = \varphi'(n)$ for each $n \in \Nat$.
     \end{proof}
   \end{forthel}

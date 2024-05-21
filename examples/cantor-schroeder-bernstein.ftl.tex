@@ -29,15 +29,15 @@ Alexander Holz, Marcel Schütz}
   where the proof of the latter theorem is based on the former one, as in
   \cite{Schroeder2012}.
 
-  \begin{forthel}
-    %[prove off][check off]
-    [readtex \path{libraries/source/foundations/equinumerosity.ftl.tex}]
-
-    [readtex \path{libraries/source/foundations/maps-and-systems-of-sets.ftl.tex}]
-
-    [readtex \path{libraries/source/set-theory/zf.ftl.tex}]
-    %[prove on][check on]
-  \end{forthel}
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/foundations/equinumerosity.ftl.tex}]
+      [readtex \path{libraries/source/foundations/maps-and-systems-of-sets.ftl.tex}]
+      [readtex \path{libraries/source/set-theory/zf.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
 
 
   \section*{The Knaster-Tarski Fixed Point Theorem}
@@ -49,7 +49,7 @@ Alexander Holz, Marcel Schütz}
       Then $h$ has a fixed point.
     \end{theorem*}
     \begin{proof}
-      (1) Define $A = \class{y | \text{$y \subseteq x$ and $y \subseteq h(y)$}}$.
+      (1) Define $A = \{y \in \pow(x) \mid y \subseteq h(y)\}$.
       Then $A$ is a subset of $\pow(x)$.
       We have $\bigcup A \in \pow(x)$.
 
@@ -59,6 +59,7 @@ Alexander Holz, Marcel Schütz}
         Then $u \in h(y)$.
         We have $y \subseteq \bigcup A$.
         Hence $h(y) \subseteq h(\bigcup A)$.
+        Indeed $h$ is a subset preserving map between systems of sets and $y, \bigcup A \in \dom(h)$.
         Thus $h(y) \subseteq h(\bigcup A)$.
         Therefore $u \in h(\bigcup A)$.
       End.

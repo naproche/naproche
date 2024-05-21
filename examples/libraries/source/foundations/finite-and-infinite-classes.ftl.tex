@@ -122,9 +122,20 @@
         If $x = a$ then $g(x) = n + 1$.
       End.
 
-      (2) $g$ is injective.
+      (2) $g$ is injective. \\
+      Proof.
+        Let $x, y \in \dom(g)$.
+        Assume $x \neq y$.
+        
+        Case $x, y \in X$. Obvious.
 
-      (3) $g$ is surjective onto $\{ 1, \dots, n + 1 \}$. \\
+        Case $x \in X$ and $y = a$. Obvious.
+
+        Case $x = a$ and $y \in X$. Obvious.
+      Qed.
+
+      (3) $g$ is surjective onto $\{ 1, \dots, n + 1 \}$.
+      Indeed we can show that for every $k \in \{1, \dots, n + 1 \}$ there exists an $x \in \dom(g)$ such that $k = g(x)$. \\
       Proof.
         Let $k \in \{ 1, \dots, n + 1 \}$.
 
