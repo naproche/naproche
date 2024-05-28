@@ -1,6 +1,7 @@
 -- |
 -- Author: Andrei Paskevich (2001 - 2008),
 --         Steffen Frerix (2017 - 2018)
+--         Marcel Schütz (2024)
 --
 -- Tokenization of input.
 
@@ -11,30 +12,31 @@ module SAD.Parser.Token (
   -- * Tokens
   Token (tokenType, tokenPos, tokenText),
   TokenType (..),
+
+  -- * Converting Lexemes to Tokens
+  ftlLexemesToTokens,
+  texLexemesToTokens,
+
+  -- * Legacy Dependencies
   tokensRange,
   showToken,
-  isProperToken,
-
-  -- * Tokenizing ForTheL texts
-  tokenize,
-
-  -- * Helper functions
-  reportComments,
   composeTokens,
   isEOF,
   noTokens
 ) where
 
-import Data.Char
 import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
-import Data.Maybe (fromMaybe)
+import Flex.Lexer qualified as Flex
 
-import SAD.Data.Instr (ParserKind(..))
+import SAD.Parser.Lexer
+import SAD.Core.Message qualified as Message
 
 import Isabelle.Position qualified as Position
 import Isabelle.Markup qualified as Markup
 
+
+-- * Tokens
 
 -- | A token of a ForTheL text
 data Token =
@@ -56,16 +58,85 @@ data TokenType =
   | Comment             -- a comment
   deriving (Eq, Ord, Show)
 
--- Indicates whether the tokenizer is currently inside a forthel environment
-data TexState = InsideForthelEnv | OutsideForthelEnv deriving (Eq)
 
--- Generate a token with a given range
-makeTokenRange :: Text -> Position.Range -> TokenType -> Token
-makeTokenRange text range = Token text (Position.range_position range)
+-- * Converting Lexemes to Tokens
 
--- Generate a new token with a given starting position
-makeToken :: Text -> Position.T -> TokenType -> Token
-makeToken text pos = makeTokenRange text (pos, Position.symbol_explode text pos)
+-- * FTL
+
+-- | Convert an FTL lexeme together with a flag that indicates whether the
+-- lexeme is preceded by whitespace to a token. If the lexeme is a comment,
+-- throw an appropriate PIDE markup report.
+ftlLexemeToToken :: Flex.Lexeme PIDE_Pos -> Bool -> IO [Token]
+ftlLexemeToToken (Flex.Symbol char pos) whiteSpaceBefore = pure $
+  if whiteSpaceBefore
+    then [Token (Text.singleton char) (fromPIDEPos pos) WhiteSpaceBefore]
+    else [Token (Text.singleton char) (fromPIDEPos pos) NoWhiteSpaceBefore]
+ftlLexemeToToken (Flex.Word string pos) whiteSpaceBefore = pure $
+  if whiteSpaceBefore
+    then [Token (Text.pack string) (fromPIDEPos pos) WhiteSpaceBefore]
+    else [Token (Text.pack string) (fromPIDEPos pos) NoWhiteSpaceBefore]
+ftlLexemeToToken (Flex.Space pos) _ = pure []
+ftlLexemeToToken (Flex.Comment _ pos) _ = do
+  Message.reports [(fromPIDEPos pos, Markup.comment1)]
+  return []
+ftlLexemeToToken (Flex.EOF pos) _ = pure [EOF (fromPIDEPos pos)]
+
+-- | Convert a list of FTL lexemes to tokens and throw PIDE markup reports for
+-- all comments.
+ftlLexemesToTokens :: [Flex.Lexeme PIDE_Pos] -> IO [Token]
+ftlLexemesToTokens = toTokens False
+  where
+    toTokens whiteSpaceBefore (lex : lex' : rest) = case lex of
+      Flex.Symbol _ _ -> liftA2 (++)
+        (ftlLexemeToToken lex whiteSpaceBefore)
+        (toTokens False (lex' : rest))
+      Flex.Word _ _ -> liftA2 (++)
+        (ftlLexemeToToken lex whiteSpaceBefore)
+        (toTokens False (lex' : rest))
+      Flex.Space _ -> toTokens True (lex' : rest)
+      Flex.Comment _ _ -> liftA2 (++)
+        (ftlLexemeToToken lex whiteSpaceBefore)
+        (toTokens True (lex' : rest))
+      Flex.EOF _ -> ftlLexemeToToken lex whiteSpaceBefore
+    toTokens whiteSpaceBefore [lex] = ftlLexemeToToken lex whiteSpaceBefore
+    toTokens _ [] = pure []
+
+
+-- * TeX
+
+-- | Convert a TeX lexeme together with a flag that indicates whether the
+-- lexeme is preceded by whitespace to a token. If the lexeme is a comment,
+-- throw an appropriate PIDE markup report.
+texLexemeToToken :: TexLexeme -> Bool -> IO [Token]
+texLexemeToToken (TexWord text pos) whiteSpaceBefore = pure $
+  if whiteSpaceBefore
+    then [Token text (fromPIDEPos pos) WhiteSpaceBefore]
+    else [Token text (fromPIDEPos pos) NoWhiteSpaceBefore]
+texLexemeToToken (TexSpace pos) _ = pure []
+texLexemeToToken (TexComment _ pos) _ = do
+  Message.reports [(fromPIDEPos pos, Markup.comment1)]
+  return []
+texLexemeToToken (TexEOF pos) _ = pure [EOF (fromPIDEPos pos)]
+
+-- | Convert a list of TeX lexemes to tokens and throw PIDE markup reports for
+-- all comments.
+texLexemesToTokens :: [TexLexeme] -> IO [Token]
+texLexemesToTokens = toTokens False
+  where
+    toTokens whiteSpaceBefore (lex : lex' : rest) = case lex of
+      TexWord _ _ -> liftA2 (++)
+        (texLexemeToToken lex whiteSpaceBefore)
+        (toTokens False (lex' : rest))
+      TexSpace _ -> toTokens True (lex' : rest)
+      TexComment _ _ -> liftA2 (++)
+        (texLexemeToToken lex whiteSpaceBefore)
+        (toTokens True (lex' : rest))
+      TexEOF _ -> texLexemeToToken lex whiteSpaceBefore
+    toTokens whiteSpaceBefore [lex] = texLexemeToToken lex whiteSpaceBefore
+    toTokens _ [] = pure []
+
+
+-- * Legacy Dependencies
 
 -- Get the end position of a token
 tokenEndPos :: Token -> Position.T
@@ -81,216 +152,6 @@ tokensRange toks = Position.range (tokenPos $ head toks, tokenEndPos $ last toks
 showToken :: Token -> Text
 showToken t@Token{} = tokenText t
 showToken EOF{} = Text.pack "end of input"
-
--- | Determine whether a given token is /proper/, i.e. not a comment
-isProperToken :: Token -> Bool
-isProperToken t@Token{} = case tokenType t of
-  NoWhiteSpaceBefore -> True
-  WhiteSpaceBefore -> True
-  Comment -> False
-isProperToken EOF{} = True
-
-isLexeme :: Char -> Bool
-isLexeme c = isAscii c && isAlphaNum c
-
-
--- | Tokenize a ForTheL text (depending on a ForTheL dialect and a starting
--- position)
---
--- If @Dialect@ is chosen to be @FTL@ then the text is tokenized as follows:
---
---  * Any alphanumeric string becomes a token
---  * Any symbolic character becomes a token
---  * Everything from a @#@ to the next linebreak becomes a comment token
---  * Whitespaces are ignored
---
--- If @Dialect@ is chosen to be @TEX@ then the text is tokenized as follows
---
---  * Everything not enclosed within "@\\begin{forthel}@" and "@\\end{forthel}@"
---    is ignored
---  * Any alphanumeric string becomes a token
---  * Any symbolic character becomes a token
---  * LaTeX commands for logical symbols and certain special commands are first
---    converted to ASCII representations (e.g. @\\wedge@ to @/\\@) and then
---    tokenized by the above rules
---  * Any expression of the form @\\{@ or @\\}@ is transformed to @{@ or @}@,
---    resp. which then becomes a single token
---  * LaTeX commands for greek letters are also converted to alphanumeric
---    strings and then also tokenized by the above rules
---  * Everything from a @%@ to the next linebreak becomes a comment token
---  * Any whitespace and any expression of the form @\\\\@, @\\[@, @\\]@, @\\(@,
---    @\\)@, @$@, @\\left@, @\\middle@, @\\right@ is ignored
-tokenize :: ParserKind -> Position.T -> Text -> [Token]
-
--- Tokenize an FTL document
-tokenize Ftl startPos = procToken startPos NoWhiteSpaceBefore
-  where
-    -- Process a token
-    procToken :: Position.T -> TokenType -> Text -> [Token]
-    -- Process alphanumeric token
-    procToken currentPos whitespaceBefore remainingText
-      | not (Text.null lexeme) = tok:toks
-      where
-        (lexeme, rest) = Text.span isLexeme remainingText
-        tok  = makeToken lexeme currentPos whitespaceBefore
-        toks = procToken (Position.symbol_explode lexeme currentPos) NoWhiteSpaceBefore rest
-    -- Process whitespace
-    procToken currentPos _ remainingText
-      | not (Text.null white) = toks
-      where
-        (white, rest) = Text.span isSpace remainingText
-        toks = procToken (Position.symbol_explode white currentPos) WhiteSpaceBefore rest
-    -- Process EOF, comment or symbolic token
-    procToken currentPos whitespaceBefore remainingText =
-      case Text.uncons remainingText of
-        -- EOF
-        Nothing -> [EOF currentPos]
-        -- Comment
-        Just ('#', _) -> tok:toks
-          where
-            (comment, rest) = Text.break (== '\n') remainingText
-            tok  = makeToken comment currentPos Comment
-            toks = procToken (Position.symbol_explode comment currentPos) whitespaceBefore rest
-        -- Symbolic token
-        Just (c, cs) -> tok:toks
-          where
-            text = Text.singleton c
-            tok  = makeToken text currentPos whitespaceBefore
-            toks = procToken (Position.symbol_explode text currentPos) NoWhiteSpaceBefore cs
-
--- Tokenize an FTL-TeX document
-tokenize Tex startPos = procToken OutsideForthelEnv startPos NoWhiteSpaceBefore
-  where
-    -- Process a token
-    procToken :: TexState -> Position.T -> TokenType -> Text -> [Token]
-    -- When outside a forthel environment, ignore anything till the next
-    -- occurence of "\begin{forthel}" and then switch to 'InsideForthelEnv' mode
-    -- TODO: Handle commented "\begin{forthel}" expressions
-    procToken OutsideForthelEnv currentPos _ remainingText =
-      case Text.uncons remainingText of
-        -- EOF
-        Nothing -> [EOF currentPos]
-        Just ('\\', rest)
-          | Text.isPrefixOf "inputref[naproche/examples/" rest ->
-              let (archive_name, rest') = Text.breakOn "]{" $ fromMaybe "" (Text.stripPrefix "inputref[naproche/examples/" rest)
-                  (file_name, _) = Text.breakOn "}" $ fromMaybe "" (Text.stripPrefix "]{" rest')
-                  token_text = "\\inputref[naproche/examples/" <> archive_name <> "]{" <> file_name <> "}"
-                  newPos = Position.symbol_explode_string (Text.unpack token_text) currentPos
-                  read_instruction = [
-                      makeToken "[" Position.none WhiteSpaceBefore,
-                      makeToken "readtex" Position.none NoWhiteSpaceBefore,
-                      makeToken (archive_name <> "/source/" <> file_name) currentPos WhiteSpaceBefore,
-                      makeToken "]" Position.none NoWhiteSpaceBefore
-                    ]
-                  toks = procToken OutsideForthelEnv newPos WhiteSpaceBefore $ Text.drop (Text.length token_text) remainingText
-              in read_instruction ++ toks
-          | Text.isPrefixOf "importmodule[naproche/examples/" rest ->
-              let (archive_name, rest') = Text.breakOn "]{" $ fromMaybe "" (Text.stripPrefix "importmodule[naproche/examples/" rest)
-                  (module_name, _) = Text.breakOn "}" $ fromMaybe "" (Text.stripPrefix "]{" rest')
-                  token_text = "\\importmodule[naproche/examples/" <> archive_name <> "]{" <> module_name <> "}"
-                  newPos = Position.symbol_explode_string (Text.unpack token_text) currentPos
-                  read_instruction = [
-                      makeToken "[" Position.none WhiteSpaceBefore,
-                      makeToken "readtex" Position.none NoWhiteSpaceBefore,
-                      makeToken (archive_name <> "/source/" <> Text.replace "?" "/" module_name <> ".tex") currentPos WhiteSpaceBefore,
-                      makeToken "]" Position.none NoWhiteSpaceBefore
-                    ]
-                  toks = procToken OutsideForthelEnv newPos WhiteSpaceBefore $ Text.drop (Text.length token_text) remainingText
-              in read_instruction ++ toks
-          | Text.isPrefixOf "begin{forthel}" rest ->
-              let newPos = Position.symbol_explode_string "\\begin{forthel}" currentPos
-              in procToken InsideForthelEnv newPos NoWhiteSpaceBefore $ Text.drop (Text.length "\\begin{forthel}") remainingText
-          | Text.isPrefixOf "section{" rest ->
-              let (section_name, _) = Text.breakOn "}" $ fromMaybe "" (Text.stripPrefix "section{" rest)
-                  token_text = "\\section{" <> section_name <> "}"
-                  newPos = Position.symbol_explode_string (Text.unpack token_text) currentPos
-                  resetpretyping_instruction = [
-                    makeToken "[" Position.none WhiteSpaceBefore,
-                    makeToken "resetpretyping" currentPos NoWhiteSpaceBefore,
-                    makeToken "]" Position.none NoWhiteSpaceBefore
-                    ]
-                  toks = procToken OutsideForthelEnv newPos WhiteSpaceBefore $ Text.drop (Text.length token_text) remainingText
-                in resetpretyping_instruction ++ toks
-        Just ('%', rest) -> tok:toks
-          where
-            (comment, rest) = Text.break (== '\n') remainingText
-            tok  = makeToken comment currentPos Comment
-            toks = procToken OutsideForthelEnv (Position.symbol_explode comment currentPos) WhiteSpaceBefore rest
-        Just (c, rest) -> procToken OutsideForthelEnv (Position.symbol_explode_string [c] currentPos) NoWhiteSpaceBefore rest
-    -- When we reach an "\end{forthel}" expression inside a forthen environment,
-    -- switch to 'OutsideForthelEnv' mode
-    procToken InsideForthelEnv currentPos _ remainingText
-      | start == "\\end{forthel}" = toks
-      where
-        (start, rest) = Text.splitAt (Text.length "\\end{forthel}") remainingText
-        toks = procToken OutsideForthelEnv (Position.symbol_explode start currentPos) WhiteSpaceBefore rest
-    -- Process alphanumeric token
-    procToken InsideForthelEnv currentPos whitespaceBefore remainingText
-      | not (Text.null lexeme) = tok:toks
-      where
-        (lexeme, rest) = Text.span isLexeme remainingText
-        tok  = makeToken lexeme currentPos whitespaceBefore
-        toks = procToken InsideForthelEnv (Position.symbol_explode lexeme currentPos) NoWhiteSpaceBefore rest
-    -- Process whitespace
-    procToken InsideForthelEnv currentPos _ remainingText
-      | not (Text.null white) = toks
-      where
-        (white, rest) = Text.span isSpace remainingText
-        toks = procToken InsideForthelEnv (Position.symbol_explode white currentPos) WhiteSpaceBefore rest
-    -- Process line break
-    procToken InsideForthelEnv currentPos _ remainingText
-      | head == "\\\\" = toks
-      where
-        (head, rest) = Text.splitAt (Text.length "\\\\") remainingText
-        toks = procToken InsideForthelEnv (Position.symbol_explode head currentPos) WhiteSpaceBefore rest
-    -- Display style math mode delimiters
-    procToken InsideForthelEnv currentPos _ remainingText
-      | head `elem` ["\\[", "\\]", "\\(", "\\)"] = toks
-      where
-        (head, rest) = Text.splitAt 2 remainingText
-        toks = procToken InsideForthelEnv (Position.symbol_explode head currentPos) WhiteSpaceBefore rest
-    -- Process non-alphanumeric symbol or EOF
-    procToken InsideForthelEnv currentPos whitespaceBefore remainingText =
-      case Text.uncons remainingText of
-        -- EOF
-        Nothing -> [EOF currentPos]
-        -- Inline math mode delimiter
-        Just ('$', rest) -> procToken InsideForthelEnv (Position.symbol_explode_string "$" currentPos) WhiteSpaceBefore rest
-        -- Comment
-        Just ('%', _) -> tok:toks
-          where
-            (comment, rest) = Text.break (== '\n') remainingText
-            tok  = makeToken comment currentPos Comment
-            toks = procToken InsideForthelEnv (Position.symbol_explode comment currentPos) WhiteSpaceBefore rest
-        -- Escaped special character
-        Just ('\\', rest)
-          | Text.head rest `elem` ['{', '}'] ->
-            procToken InsideForthelEnv (Position.symbol_explode_string "\\" currentPos) NoWhiteSpaceBefore rest
-        -- TeX command
-        Just ('\\', rest) -> case name of
-          "left" -> toks
-          "middle" -> toks
-          "right" -> toks
-          _ -> tok : toks
-          where
-            (name, rest') = Text.span isAlpha rest
-            newPos = Position.symbol_explode (Text.cons '\\' name) currentPos
-            tok = makeTokenRange (Text.cons '\\' name) (currentPos, newPos) whitespaceBefore
-            toks = procToken InsideForthelEnv newPos NoWhiteSpaceBefore rest'
-        -- Symbolic token
-        Just (c, cs) -> tok:toks
-          where
-            text = Text.singleton c
-            tok  = makeToken text currentPos whitespaceBefore
-            toks = procToken InsideForthelEnv (Position.symbol_explode text currentPos) NoWhiteSpaceBefore cs
-
-
--- | Markup report for comments
-reportComments :: Token -> Maybe Position.Report
-reportComments t@Token{}
-  | isProperToken t = Nothing
-  | otherwise = Just (tokenPos t, Markup.comment1)
-reportComments EOF{} = Nothing
 
 -- | Append tokens separated by a single space if they were separated
 -- by whitespace before

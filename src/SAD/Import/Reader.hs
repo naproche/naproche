@@ -12,7 +12,6 @@ module SAD.Import.Reader (
   readProofText
 ) where
 
-import Data.Maybe
 import Control.Monad
 import System.IO.Error
 import Control.Exception
@@ -22,13 +21,14 @@ import Data.Text.Lazy qualified as Text
 import SAD.Data.Text.Block
 import SAD.Data.Instr as Instr
     ( Argument(Text, File, Read),
-      ParserKind(Ftl),
+      ParserKind(Ftl,Tex),
       Instr(GetArgument))
 import SAD.ForTheL.Base
 import SAD.ForTheL.Structure
 import SAD.Parser.Base
 import SAD.ForTheL.Instruction
-import SAD.Parser.Token
+import SAD.Parser.Lexer
+import SAD.Parser.Token (Token, ftlLexemesToTokens, texLexemesToTokens, noTokens)
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
 import SAD.Parser.Error
@@ -50,7 +50,10 @@ readInit :: Bytes -> IO [(Position.T, Instr)]
 readInit file | Bytes.null file = return []
 readInit file = do
   input <- catch (File.read (make_string file)) $ Message.errorParser (Position.file_only $ make_bytes file) . make_bytes . ioeGetErrorString
-  let tokens = filter isProperToken $ tokenize Ftl (Position.file $ make_bytes file) $ Text.fromStrict $ make_text input
+  let pos = Position.file $ make_bytes file
+      text = Text.fromStrict $ make_text input
+  lexemes <- lexFtl (PIDE_Pos pos) text ""
+  tokens <- ftlLexemesToTokens lexemes
   fst <$> launchParser instructionFile (initState Program.console tokens)
 
 instructionFile :: FTL [(Position.T, Instr)]
@@ -126,10 +129,14 @@ reader pathToLibrary doneFiles = go
 reader0 :: Position.T -> Text -> State FState -> IO ([ProofText], State FState)
 reader0 pos text pState = do
   let dialect = parserKind pState
-  let tokens = tokenize dialect pos text
-  Message.reports $ mapMaybe reportComments tokens
-  let properTokens = filter isProperToken tokens
-      st = State (addInits dialect ((stUser pState) {tvrExpr = []})) properTokens dialect Position.none
+  tokens <- case dialect of
+    Ftl -> lexFtl (PIDE_Pos pos) text "" >>= ftlLexemesToTokens
+    Tex -> lexTex (PIDE_Pos pos) text "" >>= texLexemesToTokens
+  let st = State
+        (addInits dialect ((stUser pState) {tvrExpr = []}))
+        tokens
+        dialect
+        Position.none
   chooseParser st
 
 
