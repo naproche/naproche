@@ -27,7 +27,7 @@ module SAD.Parser.Token (
 
 import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
-import Flex.Lexer qualified as Flex
+import Flex.Ftl qualified as Ftl
 
 import SAD.Parser.Lexer
 import SAD.Core.Message qualified as Message
@@ -66,38 +66,38 @@ data TokenType =
 -- | Convert an FTL lexeme together with a flag that indicates whether the
 -- lexeme is preceded by whitespace to a token. If the lexeme is a comment,
 -- throw an appropriate PIDE markup report.
-ftlLexemeToToken :: Flex.Lexeme PIDE_Pos -> Bool -> IO [Token]
-ftlLexemeToToken (Flex.Symbol char pos) whiteSpaceBefore = pure $
+ftlLexemeToToken :: Ftl.Lexeme PIDE_Pos -> Bool -> IO [Token]
+ftlLexemeToToken (Ftl.Symbol char pos) whiteSpaceBefore = pure $
   if whiteSpaceBefore
     then [Token (Text.singleton char) (fromPIDEPos pos) WhiteSpaceBefore]
     else [Token (Text.singleton char) (fromPIDEPos pos) NoWhiteSpaceBefore]
-ftlLexemeToToken (Flex.Word string pos) whiteSpaceBefore = pure $
+ftlLexemeToToken (Ftl.Word string pos) whiteSpaceBefore = pure $
   if whiteSpaceBefore
     then [Token (Text.pack string) (fromPIDEPos pos) WhiteSpaceBefore]
     else [Token (Text.pack string) (fromPIDEPos pos) NoWhiteSpaceBefore]
-ftlLexemeToToken (Flex.Space pos) _ = pure []
-ftlLexemeToToken (Flex.Comment _ pos) _ = do
+ftlLexemeToToken (Ftl.Space pos) _ = pure []
+ftlLexemeToToken (Ftl.Comment _ pos) _ = do
   Message.reports [(fromPIDEPos pos, Markup.comment1)]
   return []
-ftlLexemeToToken (Flex.EOF pos) _ = pure [EOF (fromPIDEPos pos)]
+ftlLexemeToToken (Ftl.EOF pos) _ = pure [EOF (fromPIDEPos pos)]
 
 -- | Convert a list of FTL lexemes to tokens and throw PIDE markup reports for
 -- all comments.
-ftlLexemesToTokens :: [Flex.Lexeme PIDE_Pos] -> IO [Token]
+ftlLexemesToTokens :: [Ftl.Lexeme PIDE_Pos] -> IO [Token]
 ftlLexemesToTokens = toTokens False
   where
     toTokens whiteSpaceBefore (lex : lex' : rest) = case lex of
-      Flex.Symbol _ _ -> liftA2 (++)
+      Ftl.Symbol _ _ -> liftA2 (++)
         (ftlLexemeToToken lex whiteSpaceBefore)
         (toTokens False (lex' : rest))
-      Flex.Word _ _ -> liftA2 (++)
+      Ftl.Word _ _ -> liftA2 (++)
         (ftlLexemeToToken lex whiteSpaceBefore)
         (toTokens False (lex' : rest))
-      Flex.Space _ -> toTokens True (lex' : rest)
-      Flex.Comment _ _ -> liftA2 (++)
+      Ftl.Space _ -> toTokens True (lex' : rest)
+      Ftl.Comment _ _ -> liftA2 (++)
         (ftlLexemeToToken lex whiteSpaceBefore)
         (toTokens True (lex' : rest))
-      Flex.EOF _ -> ftlLexemeToToken lex whiteSpaceBefore
+      Ftl.EOF _ -> ftlLexemeToToken lex whiteSpaceBefore
     toTokens whiteSpaceBefore [lex] = ftlLexemeToToken lex whiteSpaceBefore
     toTokens _ [] = pure []
 
