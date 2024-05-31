@@ -20,7 +20,6 @@ import Flex.Message qualified as Msg
 import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
 import Data.Char qualified as Char
-import Data.Map qualified as Map
 import Data.Maybe (fromMaybe)
 
 import SAD.Core.Message qualified as Message
@@ -57,10 +56,23 @@ instance Msg.Msg PIDE_Pos IO where
 
 -- * FTL
 
+initFtlState :: PIDE_Pos -> Ftl.LexingState PIDE_Pos
+initFtlState pos = Ftl.LexingState{
+    Ftl.position = pos,
+    -- ^ Initial position
+    Ftl.catCodes = Ftl.defaultCatCodes
+    -- ^ Initial category codes
+  }
+
+-- | Kind of line breaks that is recognized by the FTL lexer: @\\n@.
+ftlLineBreakType :: Ftl.LineBreakType
+ftlLineBreakType = Ftl.LF
+
 -- | @lexFtl pos text label@ lexes an FTL document @text@ with a label @label@
 -- (e.g. its file name) starting at position @pos@ in the document.
 lexFtl :: PIDE_Pos -> Text -> String -> IO [Ftl.Lexeme PIDE_Pos]
-lexFtl pos text label = Ftl.runLexer pos text label Ftl.defaultCatCodes pure
+lexFtl pos text label = Ftl.runLexer
+  pos text label (initFtlState pos) ftlLineBreakType
 
 
 -- * TeX
