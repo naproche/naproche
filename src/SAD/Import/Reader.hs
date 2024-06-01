@@ -52,7 +52,7 @@ readInit file = do
   input <- catch (File.read (make_string file)) $ Message.errorParser (Position.file_only $ make_bytes file) . make_bytes . ioeGetErrorString
   let pos = Position.file $ make_bytes file
       text = Text.fromStrict $ make_text input
-  lexemes <- lexFtl (PIDE_Pos pos) text ""
+  lexemes <- lexFtl (PIDE_Pos pos) text
   tokens <- ftlLexemesToTokens lexemes
   fst <$> launchParser instructionFile (initState Program.console tokens)
 
@@ -130,8 +130,8 @@ reader0 :: Position.T -> Text -> State FState -> IO ([ProofText], State FState)
 reader0 pos text pState = do
   let dialect = parserKind pState
   tokens <- case dialect of
-    Ftl -> lexFtl (PIDE_Pos pos) text "" >>= ftlLexemesToTokens
-    Tex -> lexTex (PIDE_Pos pos) text "" >>= texLexemesToTokens
+    Ftl -> lexFtl (PIDE_Pos pos) text >>= ftlLexemesToTokens
+    Tex -> lexTex (PIDE_Pos pos) text >>= texLexemesToTokens
   let st = State
         (addInits dialect ((stUser pState) {tvrExpr = []}))
         tokens

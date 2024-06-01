@@ -71,10 +71,10 @@ ftlLexemeToToken (Ftl.Symbol char pos) whiteSpaceBefore = pure $
   if whiteSpaceBefore
     then [Token (Text.singleton char) (fromPIDEPos pos) WhiteSpaceBefore]
     else [Token (Text.singleton char) (fromPIDEPos pos) NoWhiteSpaceBefore]
-ftlLexemeToToken (Ftl.Word string pos) whiteSpaceBefore = pure $
+ftlLexemeToToken (Ftl.Word text pos) whiteSpaceBefore = pure $
   if whiteSpaceBefore
-    then [Token (Text.pack string) (fromPIDEPos pos) WhiteSpaceBefore]
-    else [Token (Text.pack string) (fromPIDEPos pos) NoWhiteSpaceBefore]
+    then [Token text (fromPIDEPos pos) WhiteSpaceBefore]
+    else [Token text (fromPIDEPos pos) NoWhiteSpaceBefore]
 ftlLexemeToToken (Ftl.Space pos) _ = pure []
 ftlLexemeToToken (Ftl.Comment _ pos) _ = do
   Message.reports [(fromPIDEPos pos, Markup.comment1)]
