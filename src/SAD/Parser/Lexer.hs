@@ -80,7 +80,6 @@ data TexLexeme =
     TexWord Text PIDE_Pos
   | TexComment Text PIDE_Pos
   | TexSpace PIDE_Pos
-  | TexEOF PIDE_Pos
 
 -- Indicates whether the tokenizer is currently inside a forthel environment
 data TexState =
@@ -97,7 +96,7 @@ lexTex pos text = pure $ procToken OutsideForthelEnv pos text
     procToken OutsideForthelEnv currentPos remainingText =
       case Text.uncons remainingText of
         -- EOF
-        Nothing -> [TexEOF currentPos]
+        Nothing -> []
         Just ('\\', rest)
           | Text.isPrefixOf "begin{forthel}" rest ->
               let newPos = Pos.getNextPos "\\begin{forthel}" currentPos
@@ -171,7 +170,7 @@ lexTex pos text = pure $ procToken OutsideForthelEnv pos text
     procToken InsideForthelEnv currentPos remainingText =
       case Text.uncons remainingText of
         -- EOF
-        Nothing -> [TexEOF currentPos]
+        Nothing -> []
         -- Inline math mode delimiter
         Just ('$', rest) -> procToken InsideForthelEnv (Pos.getNextPos "$" currentPos) rest
         -- Comment

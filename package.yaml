@@ -43,6 +43,7 @@ dependencies:
 - transformers
 - uuid
 - flex
+- extra
 
 default-extensions:
   - GeneralizedNewtypeDeriving

@@ -23,6 +23,7 @@ module SAD.Parser.Base (
   runP,
   getInput,
   getPos,
+  getLastPos,
   getTokens
 ) where
 
@@ -203,6 +204,11 @@ getInput = Parser \st ok _ _ ->
 getPos :: Parser st Position.T
 getPos = Parser \st ok _ _ ->
   ok (newErrorUnknown (stPosition st)) [PR (stPosition st) st] []
+
+-- | Get the @stPosition@ as a @ParseResult@.
+getLastPos :: Parser st Position.T
+getLastPos = Parser \st ok _ _ ->
+  ok (newErrorUnknown (stPosition st)) [PR (lastPosition st) st] []
 
 -- | Get the tokens before the current @stPosition@ as a @ParseResult@.
 getTokens :: [Token] -> Parser st [Token]
