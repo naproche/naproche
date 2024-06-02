@@ -68,8 +68,8 @@ data FState = FState {
   lprExpr :: [Prim],            -- ^ left predicate expressions
   iprExpr :: [Prim],            -- ^ infix predicate expressions
 
-  tvrExpr :: [TVar],
-  strSyms :: [[Text]],
+  tvrExpr :: [TVar],            -- ^ pretyped variables
+  strSyms :: [[Text]],          -- ^ synonyms
   varDecl :: Set VariableName,
 
   idCount :: Int,
