@@ -101,18 +101,22 @@ lexTex pos text = pure $ procToken OutsideForthelEnv pos text
           | Text.isPrefixOf "begin{forthel}" rest ->
               let newPos = Pos.getNextPos "\\begin{forthel}" currentPos
               in procToken InsideForthelEnv newPos $ Text.drop (Text.length "\\begin{forthel}") remainingText
-          | Text.isPrefixOf "section{" rest ->
-              let (section_name, _) = Text.breakOn "}" $ fromMaybe "" (Text.stripPrefix "section{" rest)
-                  token_text = "\\section{" <> section_name <> "}"
-                  newPos = Pos.getNextPos token_text currentPos
-                  tokPos = Pos.getPosOf token_text currentPos
-                  resetpretyping_instruction = [
-                      TexWord "[" Pos.noPos,
-                      TexWord "resetpretyping" tokPos,
-                      TexWord "]" Pos.noPos
-                    ]
-                  toks = procToken OutsideForthelEnv newPos $ Text.drop (Text.length token_text) remainingText
-                in resetpretyping_instruction ++ toks
+          | Text.isPrefixOf "section" rest ->
+              let rest' = Text.drop (Text.length "section") rest
+              in  if Text.null rest' || not (Char.isAlpha (Text.head rest'))
+                  then 
+                    let sectionCommand = "\\section"
+                        newRest = Text.drop (Text.length sectionCommand) rest
+                        newPos = Pos.getNextPos sectionCommand currentPos
+                        tokPos = Pos.getPosOf sectionCommand currentPos
+                        tok = TexWord sectionCommand tokPos
+                        toks = procToken OutsideForthelEnv newPos newRest
+                    in tok:toks
+                  else 
+                    let (commandName, rest'') = Text.span Char.isAlpha rest
+                        command = "\\" <> commandName
+                        newPos = Pos.getNextPos command currentPos
+                    in  procToken OutsideForthelEnv newPos rest''
         Just ('%', rest) -> tok:toks
           where
             (comment, rest) = Text.break (== '\n') remainingText

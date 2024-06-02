@@ -40,6 +40,8 @@ import SAD.Data.Formula
 import SAD.Data.Tag qualified as Tag
 import SAD.Data.Text.Decl
 
+import Isabelle.Position qualified as Position
+
 
 -- * Parsing a ForTheL text
 
@@ -73,7 +75,8 @@ forthelTex = repeatUntil (pure <$> topLevelBlockTex)
 -- @<topLevelSection> | <instruction> | <macro> | <pretyping>@
 topLevelBlockTex :: FTL ProofText
 topLevelBlockTex =
-      topLevelSectionTex
+      try section
+  <|> topLevelSectionTex
   <|> (bracketExpression >>= addSynonym >>= resetPretyping)
   <|> try introduceMacro
   <|> pretypeVariable
@@ -225,6 +228,17 @@ addMetadata kind content optLabel = do
   let block = Block.makeBlock (mkVar (VarHole "")) content kind label [] tokens
   addBlockReports block
   return $ ProofTextBlock block
+
+
+-- * Resetting variable pretypings at new sections (TEX)
+
+-- Reset all pretyped variables at a @\\section@ command.
+section :: FTL ProofText
+section = do
+  pos <- tokenPos' "\\section"
+  -- Reset all pretyped variables:
+  modify (\st -> st {tvrExpr = []})
+  return $ ProofTextInstr pos (Command ResetPretyping)
 
 
 -- * Bracket expressions (aka instructions)
