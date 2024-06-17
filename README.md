@@ -16,7 +16,7 @@ Documentation panel.
 
 ### Prerequisites
 
-Ensure that `curl`, `git`, and `hg` (Mercurial) are installed:
+Ensure that `curl`, `git`, `make`, and `hg` (Mercurial) are installed:
 
   * Linux: e.g. `sudo apt install curl git mercurial`
 
