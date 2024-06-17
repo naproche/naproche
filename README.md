@@ -16,13 +16,13 @@ Documentation panel.
 
 ### Prerequisites
 
-Ensure that `curl`, `git`, `make`, and `hg` (Mercurial) are installed:
+Ensure that `curl`, `gcc`, `git`, `make`, and `hg` (Mercurial) are installed:
 
-  * Linux: e.g. `sudo apt install curl git mercurial`
+  * Linux: e.g. `sudo apt install curl gcc git make mercurial`
 
   * macOS: e.g. `brew install mercurial` or download from https://www.mercurial-scm.org
 
-  * Windows: use Cygwin64 with packages `curl`, `git`, and `mercurial` (via Cygwin setup-x86_64.exe)
+  * Windows: use Cygwin64 with packages `curl`, `gcc-core`, `git`, `make`, and `mercurial` (via Cygwin setup-x86_64.exe)
 
 
 ### Repository management
