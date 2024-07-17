@@ -14,13 +14,16 @@ module SAD.Parser.Lexer (
   lexTex
 ) where
 
-import Flex.Ftl qualified as Ftl
-import Flex.Position qualified as Pos
-import Flex.Message qualified as Msg
-import Data.Text.Lazy (Text)
-import Data.Text.Lazy qualified as Text
+import FTLex.Ftl qualified as Ftl
+import FTLex.Base
+import FTLex.Position qualified as Pos
+import FTLex.Message qualified as Msg
+import Data.Text (Text)
+import Data.Text qualified as Text
 import Data.Char qualified as Char
-import Data.Maybe (fromMaybe)
+import Data.Text.Encoding (encodeUtf8)
+import Data.Set (Set)
+import Data.Set qualified as Set
 
 import SAD.Core.Message qualified as Message
 
@@ -48,6 +51,9 @@ instance Pos.Pos PIDE_Pos where
     let newPos = Position.symbol_explode text pos
     in PIDE_Pos $ Position.range_position (pos, newPos)
 
+  showPos :: PIDE_Pos -> Text
+  showPos _ = "position information not provided"
+
 
 instance Msg.Msg PIDE_Pos IO where
   errorLexer :: PIDE_Pos -> Text -> IO a
@@ -60,18 +66,21 @@ initFtlState :: PIDE_Pos -> Ftl.LexingState PIDE_Pos
 initFtlState pos = Ftl.LexingState{
     Ftl.position = pos,
     -- ^ Initial position
-    Ftl.catCodes = Ftl.defaultCatCodes
+    Ftl.catCodes = Ftl.defaultCatCodes ftlUnicodeBlocks,
     -- ^ Initial category codes
+    Ftl.unicodeBlocks = ftlUnicodeBlocks
+    -- ^ Supported Unicode blocks
   }
 
--- | Kind of line breaks that is recognized by the FTL lexer: @\\n@.
-ftlLineBreakType :: Ftl.LineBreakType
-ftlLineBreakType = Ftl.LF
+-- | Unicode blocks whose characters are recognized by the FTL lexer:
+-- * Basic Latin
+ftlUnicodeBlocks :: Set UnicodeBlock
+ftlUnicodeBlocks = Set.singleton BasicLatin
 
 -- | @lexFtl pos text label@ lexes an FTL document @text@ with a label @label@
 -- (e.g. its file name) starting at position @pos@ in the document.
 lexFtl :: PIDE_Pos -> Text -> IO [Ftl.Lexeme PIDE_Pos]
-lexFtl pos text = Ftl.runLexer pos text (initFtlState pos) ftlLineBreakType
+lexFtl pos text = Ftl.runLexer pos (encodeUtf8 text) UTF8 (initFtlState pos) LF
 
 
 -- * TeX

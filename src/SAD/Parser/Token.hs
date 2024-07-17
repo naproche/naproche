@@ -27,7 +27,7 @@ module SAD.Parser.Token (
 import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
 import Control.Monad.Extra (concatMapM)
-import Flex.Ftl qualified as Ftl
+import FTLex.Ftl qualified as Ftl
 
 import SAD.Parser.Lexer
 import SAD.Core.Message qualified as Message
@@ -64,7 +64,7 @@ ftlLexemesToTokens lexemes = do
     toTokens (Ftl.Symbol char _ pos) =
       pure [Token (Text.singleton char) (fromPIDEPos pos)]
     toTokens (Ftl.Word text _ pos) =
-      pure [Token text (fromPIDEPos pos)]
+      pure [Token (Text.fromStrict text) (fromPIDEPos pos)]
     toTokens (Ftl.Space _ _) = pure []
     toTokens (Ftl.Comment _ _ pos) = do
       Message.reports [(fromPIDEPos pos, Markup.comment1)]
@@ -78,7 +78,7 @@ texLexemesToTokens lexemes = do
   return $ tokens ++ [EOF Position.none]
   where
     toTokens (TexWord text pos) =
-      pure [Token text (fromPIDEPos pos)]
+      pure [Token (Text.fromStrict text) (fromPIDEPos pos)]
     toTokens (TexSpace _) = pure []
     toTokens (TexComment _ pos) = do
       Message.reports [(fromPIDEPos pos, Markup.comment1)]

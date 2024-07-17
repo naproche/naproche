@@ -42,7 +42,7 @@ dependencies:
 - time
 - transformers
 - uuid
-- flex
+- ftlex
 - extra
 
 default-extensions:
