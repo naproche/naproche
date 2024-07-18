@@ -28,6 +28,9 @@ import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
 import Control.Monad.Extra (concatMapM)
 import FTLex.Ftl qualified as Ftl
+import FTLex.Tex qualified as Tex
+import Data.List qualified as List
+import Data.Char qualified as Char
 
 import SAD.Parser.Lexer
 import SAD.Core.Message qualified as Message
@@ -54,6 +57,8 @@ instance Show Token where
 
 -- * Converting Lexemes to Tokens
 
+-- ** FTL
+
 -- | Convert a list of FTL lexemes to tokens and throw PIDE markup reports for
 -- all comments.
 ftlLexemesToTokens :: [Ftl.Lexeme PIDE_Pos] -> IO [Token]
@@ -70,19 +75,136 @@ ftlLexemesToTokens lexemes = do
       Message.reports [(fromPIDEPos pos, Markup.comment1)]
       return []
 
+
+-- ** TeX
+
+data TexState =
+    InsideForthelEnv
+  | OutsideForthelEnv
+  deriving (Eq)
+
 -- | Convert a list of TeX lexemes to tokens and throw PIDE markup reports for
 -- all comments.
-texLexemesToTokens :: [TexLexeme] -> IO [Token]
-texLexemesToTokens lexemes = do
-  tokens <- concatMapM toTokens lexemes
-  return $ tokens ++ [EOF Position.none]
+texLexemesToTokens :: [Tex.Lexeme PIDE_Pos] -> IO [Token]
+texLexemesToTokens = procToken OutsideForthelEnv
   where
-    toTokens (TexWord text pos) =
-      pure [Token (Text.fromStrict text) (fromPIDEPos pos)]
-    toTokens (TexSpace _) = pure []
-    toTokens (TexComment _ pos) = do
-      Message.reports [(fromPIDEPos pos, Markup.comment1)]
-      return []
+    procToken :: TexState -> [Tex.Lexeme PIDE_Pos] -> IO [Token]
+    procToken OutsideForthelEnv remainingLexemes =
+      case remainingLexemes of
+        -- EOF:
+        [] -> pure [EOF Position.none]
+        -- "\begin{forthel}":
+        Tex.ControlWord{Tex.ctrlWordContent = "begin"} :
+          Tex.Character{Tex.charCatCode = Tex.BeginGroupCat} :
+          Tex.Character{Tex.charContent = 'f'} :
+          Tex.Character{Tex.charContent = 'o'} :
+          Tex.Character{Tex.charContent = 'r'} :
+          Tex.Character{Tex.charContent = 't'} :
+          Tex.Character{Tex.charContent = 'h'} :
+          Tex.Character{Tex.charContent = 'e'} :
+          Tex.Character{Tex.charContent = 'l'} :
+          Tex.Character{Tex.charCatCode = Tex.EndGroupCat} :
+          rest ->
+            procToken InsideForthelEnv rest
+        -- "\section":
+        Tex.ControlWord{Tex.ctrlWordContent = "section", Tex.sourcePos = PIDE_Pos pos} : rest ->
+          let
+            tokens = pure [Token{tokenText = "\\" <> "section", tokenPos = pos}]
+            remainingTokens = procToken OutsideForthelEnv rest
+          in liftA2 (++) tokens remainingTokens
+        -- Comment:
+        Tex.Comment{Tex.sourcePos = PIDE_Pos pos} : rest -> do
+          Message.reports [(pos, Markup.comment1)]
+          procToken OutsideForthelEnv rest
+        -- Anything else:
+        _ : rest ->
+          procToken OutsideForthelEnv rest
+    procToken InsideForthelEnv remainingLexemes =
+      case remainingLexemes of
+        -- EOF:
+        [] -> Message.errorTokenizer Position.none ("File ended with un-closed 'forthel' environment." :: Text)
+        -- "\end{forthel}":
+        Tex.ControlWord{Tex.ctrlWordContent = "end"} :
+          Tex.Character{Tex.charCatCode = Tex.BeginGroupCat} :
+          Tex.Character{Tex.charContent = 'f'} :
+          Tex.Character{Tex.charContent = 'o'} :
+          Tex.Character{Tex.charContent = 'r'} :
+          Tex.Character{Tex.charContent = 't'} :
+          Tex.Character{Tex.charContent = 'h'} :
+          Tex.Character{Tex.charContent = 'e'} :
+          Tex.Character{Tex.charContent = 'l'} :
+          Tex.Character{Tex.charCatCode = Tex.EndGroupCat} :
+          rest ->
+            procToken OutsideForthelEnv rest
+        -- Comment:
+        Tex.Comment{Tex.sourcePos = PIDE_Pos pos} : rest -> do
+          Message.reports [(pos, Markup.comment1)]
+          procToken InsideForthelEnv rest
+        -- Skipped text:
+        Tex.Skipped{} : rest ->
+          procToken InsideForthelEnv rest
+        -- Parameter:
+        Tex.Parameter{Tex.sourcePos = PIDE_Pos pos} : _ ->
+          Message.errorTokenizer pos ("Parameter inside 'forthel' environment." :: Text)
+        -- Control space:
+        Tex.ControlSpace{} : rest ->
+          procToken InsideForthelEnv rest
+        -- Control symbol:
+        Tex.ControlSymbol{Tex.ctrlSymbolContent = symbol, Tex.sourcePos = PIDE_Pos pos} : rest ->
+          let
+            tokens = case symbol of
+              '\\' -> pure []
+              '[' -> pure []
+              ']' -> pure []
+              '(' -> pure []
+              ')' -> pure []
+              '{' -> pure [Token{tokenText = "{", tokenPos = pos}]
+              '}' -> pure [Token{tokenText = "}", tokenPos = pos}]
+              _ -> pure [Token{tokenText = "\\" <> Text.singleton symbol, tokenPos = pos}]
+            remainingTokens = procToken InsideForthelEnv rest
+          in liftA2 (++) tokens remainingTokens
+        -- Control word:
+        Tex.ControlWord{Tex.ctrlWordContent = word, Tex.sourcePos = PIDE_Pos pos} : rest ->
+          let
+            tokens = case word of
+              "left" -> pure []
+              "middle" -> pure []
+              "right" -> pure []
+              "par" -> pure []
+              _ -> pure [Token{tokenText = "\\" <> Text.fromStrict word, tokenPos = pos}]
+            remainingTokens = procToken InsideForthelEnv rest
+          in liftA2 (++) tokens remainingTokens
+        -- Character:
+        lex@Tex.Character{Tex.charContent = char, Tex.charCatCode = catCode, Tex.sourcePos = PIDE_Pos pos} : rest ->
+          if Char.isAlphaNum char
+            then let
+                (alphaNums, rest') = List.span isAlphaNumLex (lex : rest)
+                tokens = pure [makeAlphaNumToken alphaNums]
+                remainingTokens = procToken InsideForthelEnv rest'
+              in liftA2 (++) tokens remainingTokens
+            else let
+                tokens = case catCode of
+                  Tex.MathShiftCat -> pure []
+                  Tex.EndOfLineCat -> pure []
+                  Tex.SpaceCat -> pure []
+                  _ -> pure [Token{tokenText = Text.singleton char, tokenPos = pos}]
+                remainingTokens = procToken InsideForthelEnv rest
+              in liftA2 (++) tokens remainingTokens
+
+    makeAlphaNumToken :: [Tex.Lexeme PIDE_Pos] -> Token
+    makeAlphaNumToken alphaNumLexemes =
+      let
+        text = Text.pack $ map Tex.charContent alphaNumLexemes
+        positions = map (fromPIDEPos . Tex.sourcePos) alphaNumLexemes
+        lastLexeme = last alphaNumLexemes
+        nextPos = Position.symbol_explode (Text.singleton . Tex.charContent $ lastLexeme) (fromPIDEPos . Tex.sourcePos $ lastLexeme)
+        pos = Position.range_position (head positions, nextPos)
+      in
+        Token{tokenText = text, tokenPos = pos}
+
+    isAlphaNumLex :: Tex.Lexeme PIDE_Pos -> Bool
+    isAlphaNumLex Tex.Character{Tex.charContent = char} = Char.isAlphaNum char
+    isAlphaNumLex _ = False
 
 
 -- * Legacy Dependencies
