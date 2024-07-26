@@ -1,0 +1,90 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{meta-inf/lib/naproche}
+\input{libraries/lib/foundations}
+\input{libraries/lib/set-theory}
+
+\usepackage[
+  type=CC,
+  modifier=by-nc-sa,
+  version=4.0,
+]{doclicense}
+
+\title{Cantor's Theorem}
+\author{\Naproche formalization: \vspace{0.5em} \\
+Marcel Schütz}
+\date{2024}
+
+\begin{document}
+  \pagenumbering{gobble}
+  \maketitle
+
+  \begin{imports}
+    \begin{forthel}
+      %[prove off][check off]
+      [readtex \path{libraries/source/set-theory/cardinals-and-maps.ftl.tex}]
+      %[prove on][check on]
+    \end{forthel}
+  \end{imports}
+
+  \begin{forthel}
+    \begin{theorem*}[Cantor's Theorem]\label{cantor}
+      Let $x$ be a set.
+      There exists no surjective map from $x$ onto $\pow(x)$.
+    \end{theorem*}
+    \begin{proof}
+      Assume the contrary.
+      Take a surjective map $f$ from $x$ onto $\pow(x)$.
+      Define $C = \{ u \in x \mid u \notin f(u) \}$.
+      Then $C \in \pow(x)$.
+      Hence we can take a $u \in x$ such that $f(u) = C$.
+      Then $u \in C$ iff $u \in f(u)$ iff $u \notin C$.
+      Contradiction.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{corollary*}
+      Let $x$ be a set.
+      Then $|x| < |\pow(x)|$.
+    \end{corollary*}
+    \begin{proof}
+      Case $x$ is empty. Obvious.
+
+      Case $x$ is nonempty.
+        Assume the contrary.
+        Then $|x| \geq |\pow(x)|$.
+        Hence there exists a surjective map from $x$ onto $\pow(x)$ (by \printref{SET_THEORY_06_192336220913664}).
+        Indeed $\pow(x)$ is a nonempty set.
+        Contradiction (by \nameref{cantor}).
+      End.
+    \end{proof}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{corollary*}
+      For every ordinal $\alpha$ there exists a cardinal greater than $\alpha$.
+    \end{corollary*}
+    \begin{proof}
+      Let $\alpha$ be an ordinal.
+      Take $\kappa = |\pow(\alpha)|$.
+      Then $\kappa > |\alpha|$.
+
+      Let us show that $\kappa > \alpha$.
+        Assume the contrary.
+        Then $|\pow(\alpha)|
+          = \kappa
+          \leq \alpha$.
+        Hence $\kappa
+          = |\pow(\alpha)|
+          = ||\pow(\alpha)||
+          \leq |\alpha|$.
+        Contradiction.
+      End.
+    \end{proof}
+  \end{forthel}
+
+  \section*{Copyright}
+  \doclicenseThis
+\end{document}
