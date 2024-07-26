@@ -3,7 +3,6 @@
 --
 -- Lexing
 
-{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 
 module SAD.Parser.Lexer (
@@ -19,7 +18,7 @@ import FTLex.Base
 import FTLex.Position qualified as Pos
 import FTLex.Message qualified as Msg
 import Data.Text (Text)
-import Data.Text.Encoding (encodeUtf8, decodeUtf8)
+import Data.Text.Encoding (decodeUtf8)
 import Data.Set qualified as Set
 
 import SAD.Core.Message qualified as Message
@@ -62,8 +61,8 @@ instance Msg.Msg PIDE_Pos IO where
 
 -- | @lexFtl pos text@ lexes an FTL document @text@ starting at position @pos@
 -- in the document.
-lexFtl :: PIDE_Pos -> Text -> IO [Ftl.Lexeme PIDE_Pos]
-lexFtl pos text = Ftl.runLexer pos (encodeUtf8 text) UTF8 (Ftl.initState pos blocks) LF
+lexFtl :: PIDE_Pos -> Bytes.Bytes -> IO [Ftl.Lexeme PIDE_Pos]
+lexFtl pos bytes = Ftl.runLexer pos (Bytes.unmake bytes) UTF8 (Ftl.initState pos blocks) LF
   where
     blocks = Set.fromList [BasicLatin, Latin1Supplement]
 
@@ -72,7 +71,7 @@ lexFtl pos text = Ftl.runLexer pos (encodeUtf8 text) UTF8 (Ftl.initState pos blo
 
 -- | @lexTex pos text@ lexes a TEX document @text@ starting at position @pos@
 -- in the document.
-lexTex :: PIDE_Pos -> Text -> IO [Tex.Lexeme PIDE_Pos]
-lexTex pos text = Tex.runLexer pos (encodeUtf8 text) UTF8 (Tex.initState pos blocks) LF
+lexTex :: PIDE_Pos -> Bytes.Bytes -> IO [Tex.Lexeme PIDE_Pos]
+lexTex pos bytes = Tex.runLexer pos (Bytes.unmake bytes) UTF8 (Tex.initState pos blocks) LF
   where
     blocks = Set.fromList [BasicLatin, Latin1Supplement]
