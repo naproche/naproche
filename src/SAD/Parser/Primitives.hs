@@ -44,6 +44,8 @@ import SAD.Data.Formula.Show (symChars)
 
 import Isabelle.Position qualified as Position
 
+import Control.Monad.State.Class (modify, get, gets)
+
 
 -- | Parse the current token or return an @EmptyFail@
 -- if the input is empty, eof or the supplied test functions returns @Nothing@.
@@ -180,6 +182,11 @@ symbol = mapM_ (token . Text.singleton) . Text.unpack
 -- | Same as 'symbol' but the token to be parsed must not be prepended by a
 -- white token.
 symbolNotAfterSpace :: Text -> Parser st ()
-symbolNotAfterSpace s = tokenGuard notAfterSpace (symbol s)
-  where
-    notAfterSpace tok = tokenType tok == NoWhiteSpaceBefore
+symbolNotAfterSpace s = do
+  lastPos <- getLastPos
+  let notAfterSpace tok = case Position.offset_of (tokenPos tok) of
+        Just n -> case Position.offset_of lastPos of
+          Just m -> n == m + 1
+          Nothing -> False
+        Nothing -> False
+  tokenGuard notAfterSpace (symbol s)

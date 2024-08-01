@@ -12,7 +12,6 @@ module SAD.Import.Reader (
   readProofText
 ) where
 
-import Data.Maybe
 import Control.Monad
 import System.IO.Error
 import Control.Exception
@@ -22,20 +21,21 @@ import Data.Text.Lazy qualified as Text
 import SAD.Data.Text.Block
 import SAD.Data.Instr as Instr
     ( Argument(Text, File, Read),
-      ParserKind(Ftl),
+      ParserKind(Ftl,Tex),
       Instr(GetArgument))
 import SAD.ForTheL.Base
 import SAD.ForTheL.Structure
 import SAD.Parser.Base
 import SAD.ForTheL.Instruction
-import SAD.Parser.Token
+import SAD.Parser.Lexer
+import SAD.Parser.Token (Token, ftlLexemesToTokens, texLexemesToTokens, noTokens)
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
 import SAD.Parser.Error
 import SAD.Core.Message qualified as Message
 
 import Isabelle.File qualified as File
-import Isabelle.Library (make_bytes, getenv, make_string, make_text, show_bytes)
+import Isabelle.Library (make_bytes, getenv, make_string, show_bytes)
 import Isabelle.Position as Position
 import Isabelle.Bytes (Bytes)
 import Isabelle.Bytes qualified as Bytes
@@ -50,7 +50,9 @@ readInit :: Bytes -> IO [(Position.T, Instr)]
 readInit file | Bytes.null file = return []
 readInit file = do
   input <- catch (File.read (make_string file)) $ Message.errorParser (Position.file_only $ make_bytes file) . make_bytes . ioeGetErrorString
-  let tokens = filter isProperToken $ tokenize Ftl (Position.file $ make_bytes file) $ Text.fromStrict $ make_text input
+  let pos = Position.file $ make_bytes file
+  lexemes <- lexFtl (PIDE_Pos pos) input
+  tokens <- ftlLexemesToTokens lexemes
   fst <$> launchParser instructionFile (initState Program.console tokens)
 
 instructionFile :: FTL [(Position.T, Instr)]
@@ -99,12 +101,12 @@ reader pathToLibrary doneFiles = go
           text <-
             catch (if Text.null file then getContents else make_string <$> File.read (Text.unpack file))
               (Message.errorParser (Position.file_only $ make_bytes file) . make_bytes . ioeGetErrorString)
-          (newProofText, newState) <- reader0 (Position.file $ make_bytes file) (Text.pack text) (pState {parserKind = parserKind'})
+          (newProofText, newState) <- reader0 (Position.file $ make_bytes file) (make_bytes text) (pState {parserKind = parserKind'})
           -- state from before reading is still here
           reader pathToLibrary (file:doneFiles) (newState:pState:states) newProofText
 
     go (pState:states) [ProofTextInstr _ (GetArgument (Text pk) text)] = do
-      (newProofText, newState) <- reader0 Position.start text (pState {parserKind = pk})
+      (newProofText, newState) <- reader0 Position.start (make_bytes text) (pState {parserKind = pk})
       go (newState:pState:states) newProofText -- state from before reading is still here
 
     -- This says that we are only really processing the last instruction in a [ProofText].
@@ -123,19 +125,26 @@ reader pathToLibrary doneFiles = go
 
     go (state:_) [] = return ([], reports $ stUser state)
 
-reader0 :: Position.T -> Text -> State FState -> IO ([ProofText], State FState)
-reader0 pos text pState = do
+reader0 :: Position.T -> Bytes -> State FState -> IO ([ProofText], State FState)
+reader0 pos bytes pState = do
   let dialect = parserKind pState
-  let tokens = tokenize dialect pos text
-  Message.reports $ mapMaybe reportComments tokens
-  let properTokens = filter isProperToken tokens
-      st = State (addInits dialect ((stUser pState) {tvrExpr = []})) properTokens dialect Position.none
+  tokens <- case dialect of
+    Ftl -> lexFtl (PIDE_Pos pos) bytes >>= ftlLexemesToTokens
+    Tex -> lexTex (PIDE_Pos pos) bytes >>= texLexemesToTokens
+  let st = State
+        (addInits dialect ((stUser pState) {tvrExpr = []}))
+        tokens
+        dialect
+        Position.none
   chooseParser st
 
 
 chooseParser :: State FState -> IO ([ProofText], State FState)
-chooseParser st = let dialect = parserKind st in
-  launchParser (forthel dialect) st
+chooseParser st =
+  let parser = case parserKind st of
+        Ftl -> forthelFtl
+        Tex -> forthelTex
+  in launchParser parser st
 
 -- Launch a parser in the IO monad.
 launchParser :: Parser st a -> State st -> IO (a, State st)

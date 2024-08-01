@@ -42,6 +42,8 @@ dependencies:
 - time
 - transformers
 - uuid
+- ftlex
+- extra
 
 default-extensions:
   - GeneralizedNewtypeDeriving

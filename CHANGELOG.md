@@ -11,7 +11,11 @@ dialect of ForTheL, respectively.
 
 ## Current development version
 
+### Changes on the parser
 
+  * **Changed:** A separate lexing stage was added to the parser before its
+    tokenizing stage (for both FTL and TEX), where the FTL lexing stage is based
+    on the [FLex](https://github.com/mcearl/flex) library.
 
 --------------------------------------------------------------------------------
 

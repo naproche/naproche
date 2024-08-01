@@ -15,7 +15,7 @@ module SAD.Core.Message (
   Kind (..), output, error,
   outputMain, outputExport, outputForTheL, outputParser, outputReasoner,
   outputThesis, outputSimplifier, outputTranslate,
-  errorExport, errorParser
+  errorExport, errorParser, errorLexer, errorTokenizer
 ) where
 
 import Prelude hiding (error)
@@ -63,7 +63,8 @@ report pos markup = reports [(pos, markup)]
 -- message origin
 
 origin_main, origin_export, origin_forthel, origin_parser,
-  origin_reasoner, origin_simplifier, origin_thesis, origin_translate :: Bytes
+  origin_reasoner, origin_simplifier, origin_thesis, origin_translate,
+  origin_lexer, origin_tokenizer :: Bytes
 origin_main = "Main"
 origin_export = "Export"
 origin_forthel = "ForTheL"
@@ -72,6 +73,8 @@ origin_reasoner = "Reasoner"
 origin_simplifier = "Simplifier"
 origin_thesis = "Thesis"
 origin_translate = "Translation"
+origin_lexer = "Lexer"
+origin_tokenizer = "Tokenizer"
 
 
 -- message kind
@@ -157,6 +160,8 @@ outputThesis = output origin_thesis
 outputTranslate :: BYTES a => Kind -> Position.T -> a -> IO ()
 outputTranslate = output origin_translate
 
-errorExport, errorParser :: BYTES a => Position.T -> a -> IO b
+errorExport, errorParser, errorLexer, errorTokenizer :: BYTES a => Position.T -> a -> IO b
 errorExport = error origin_export
 errorParser = error origin_parser
+errorLexer = error origin_lexer
+errorTokenizer = error origin_tokenizer
