@@ -1,11 +1,16 @@
 ## Questions ##
 
-* Is there a remaining purpose of the init.opt file (prelude for parameters)?
+* Is there a remaining purpose of the `init.opt` file (prelude for parameters)?
   It dilutes the notion of default values for parameters and "drop" instructions.
   In the past it might have been useful to specify the prover executable, but
   this is now done via environment variables like NAPROCHE_EPROVER.
 
-* Is there a purpose for DropCommand instructions?
+  => No (cf. *TODO* section).
+
+* Is there a purpose for `DropCommand` instructions?
+
+  => No (cf. *TODO* section).
+
 
 ## TODO ##
 
@@ -26,6 +31,10 @@
   pro-forma serial numbers produced during parsing.
 
 * More robust treatment of prover errors (return code): genuine error vs. timeout!?
+
+* Remove `init.opt` file (cf. *Questions* section).
+
+* Remove `DropCommand` instructions (cf. *Questions* section).
 
 
 # Isabelle/Naproche integration
@@ -58,3 +67,10 @@
 
 * Disambiguate chains of existential quantifications: currently writing something
   along the line of `there exist x,y,z such that ...` results in an ambiguity error.
+
+* Handle math mode delimiters during parsing instead of during tokenizing.
+
+* Add TeX commands for instructions.
+
+* Add a variant of the `read`/`readtex` instructions that reads a file without
+  checking it.
