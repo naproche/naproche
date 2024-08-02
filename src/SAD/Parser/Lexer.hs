@@ -68,14 +68,14 @@ instance Msg.Msg PIDE_Pos IO where
 lexFtl :: PIDE_Pos -> Bytes.Bytes -> IO [Ftl.Lexeme PIDE_Pos]
 lexFtl pos bytes = do
   text <- pideDecode bytes
-  Ftl.runLexer pos text (Ftl.initState pos codeBlocks) LF
+  Ftl.runLexer pos text (Ftl.initState pos codeBlocks)
 
 -- | @lexTex pos text@ lexes a TEX document @text@ starting at position @pos@
 -- in the document.
 lexTex :: PIDE_Pos -> Bytes.Bytes -> IO [Tex.Lexeme PIDE_Pos]
 lexTex pos bytes = do
   text <- pideDecode bytes
-  Tex.runLexer pos text (Tex.initState pos codeBlocks) LF
+  Tex.runLexer pos text (Tex.initState pos codeBlocks)
 
 
 -- * Misc
