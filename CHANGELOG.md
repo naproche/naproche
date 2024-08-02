@@ -17,6 +17,34 @@ dialect of ForTheL, respectively.
     tokenizing stage (for both FTL and TEX), that are based on the
     [FLex](https://github.com/mcearl/flex) library.
 
+
+### Changes on ForTheL
+
+  * **New:** In `definition` and `signature` environments and in
+  `let ... stand for` expressions newly introduced notions can be wrapped in an
+  `\emph{...}` command. Examples:
+
+  ```
+  \begin{definition}
+    $x$ is \emph{empty} iff $x$ has no elements.
+  \end{definition}
+  
+  \begin{signature}
+    A \emph{natural number} is a notion.
+  \end{signature}
+
+  Let an \emph{integer} stand for a natural number.
+
+  \begin{signature}
+    A \emph{function from $A$ to $B$} is a set.
+  \end{signature}
+
+  \begin{signature}
+    $n$ \emph{divides $m$} is an atom.
+  \end{signature}
+  ```
+
+
 --------------------------------------------------------------------------------
 
 ## naproche-20240519 (Isabelle 2024)
