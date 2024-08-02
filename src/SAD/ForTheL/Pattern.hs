@@ -201,17 +201,17 @@ newPrdPattern tvr = multi </> unary </> newSymbPattern tvr
 
     unaryAdj = do
       is
-      (t, vs) <- patHead unknownAlpha tvr
+      (t, vs) <- optInTexArg "emph" $ patHead unknownAlpha tvr
       return (TermUnaryAdjective t, vs)
     multiAdj = do
       is
-      (t, vs) <- patHead unknownAlpha tvr
+      (t, vs) <- optInTexArg "emph" $ patHead unknownAlpha tvr
       return (TermMultiAdjective t, vs)
     unaryVerb = do
-      (t, vs) <- patHead unknownAlpha tvr
+      (t, vs) <- optInTexArg "emph" $ patHead unknownAlpha tvr
       return (TermUnaryVerb t, vs)
     multiVerb = do
-      (t, vs) <- patHead unknownAlpha tvr
+      (t, vs) <- optInTexArg "emph" $ patHead unknownAlpha tvr
       return (TermMultiVerb t, vs)
 
 newNotionPattern :: FTL PosVar -> FTL (Formula, PosVar)
@@ -219,11 +219,11 @@ newNotionPattern tvr = (notion <|> function) </> unnamedNotion tvr
   where
     notion = do
       an
-      (t, v:vs) <- patName unknownAlpha tvr
+      (t, v:vs) <- optInTexArg "emph" $ patName unknownAlpha tvr
       return (mkTrm NewId (TermNotion t) $ map pVar (v:vs), v)
     function = do
       the
-      (t, v:vs) <- patName unknownAlpha tvr
+      (t, v:vs) <- optInTexArg "emph" $ patName unknownAlpha tvr
       return (mkEquality (pVar v) $ mkTrm NewId (TermNotion t) $ map pVar vs, v)
 
 unnamedNotion :: FTL PosVar -> FTL (Formula, PosVar)
@@ -231,11 +231,11 @@ unnamedNotion tvr = (notion <|> function) </> (newSymbPattern tvr >>= equ)
   where
     notion = do
       an
-      (t, v:vs) <- patNoName unknownAlpha tvr
+      (t, v:vs) <- optInTexArg "emph" $ patNoName unknownAlpha tvr
       return (mkTrm NewId (TermNotion t) $ map pVar (v:vs), v)
     function = do
       the
-      (t, v:vs) <- patNoName unknownAlpha tvr
+      (t, v:vs) <- optInTexArg "emph" $ patNoName unknownAlpha tvr
       return (mkEquality (pVar v) $ mkTrm NewId (TermNotion t) $ map pVar vs, v)
     equ t = do
       v <- hidden
