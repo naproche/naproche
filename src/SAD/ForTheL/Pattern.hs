@@ -104,8 +104,11 @@ addExpr Trm{trmName = TermEquality, trmArgs = [_, t]} eq@Trm {trmName = TermEqua
     (pt, nf) = extractSymbPattern (giveId p n t) f
     fm = substs nf $ map varName vs
     -- classification of pattern
-    csm = lsm && rsm; lsm = notVr (head pt); rsm = notVr (last pt)
-    notVr Vr = False; notVr _ = True
+    csm = lsm && rsm
+    lsm = notVr (head pt)
+    rsm = notVr (last pt)
+    notVr Vr = False
+    notVr _ = True
     -- add to the right category
     ns | csm = st {cfnExpr = (pt, fm) : cfnExpr st}
        | lsm = st {lfnExpr = (init pt, fm) : lfnExpr st}
@@ -121,8 +124,11 @@ addExpr t@Trm{trmName = s, trmArgs = vs} f p st =
     (pt, nf) = extractSymbPattern (giveId p n t) f
     fm = substs nf $ map varName vs
     -- classification of pattern
-    csm = lsm && rsm; lsm = notVr (head pt); rsm = notVr (last pt)
-    notVr Vr = False; notVr _ = True
+    csm = lsm && rsm
+    lsm = notVr (head pt)
+    rsm = notVr (last pt)
+    notVr Vr = False
+    notVr _ = True
     -- add the pattern to the right category
     ns | csm = st {cprExpr = (pt, fm) : cprExpr st}
        | lsm = st {lprExpr = (init pt, fm) : lprExpr st}
@@ -185,38 +191,55 @@ newPrdPattern :: FTL PosVar -> FTL Formula
 newPrdPattern tvr = multi </> unary </> newSymbPattern tvr
   where
     unary = do
-      v <- tvr; (t, vs) <- unaryAdj -|- unaryVerb
+      v <- tvr
+      (t, vs) <- unaryAdj -|- unaryVerb
       return $ mkTrm NewId t $ map pVar (v:vs)
     multi = do
-      (u,v) <- liftM2 (,) tvr (comma >> tvr);
+      (u,v) <- liftM2 (,) tvr (comma >> tvr)
       (t, vs) <- multiAdj -|- multiVerb
       return $ mkTrm NewId t $ map pVar (u:v:vs)
 
-    unaryAdj = do is; (t, vs) <- patHead unknownAlpha tvr; return (TermUnaryAdjective t, vs)
-    multiAdj = do is; (t, vs) <- patHead unknownAlpha tvr; return (TermMultiAdjective t, vs)
-    unaryVerb = do (t, vs) <- patHead unknownAlpha tvr; return (TermUnaryVerb t, vs)
-    multiVerb = do (t, vs) <- patHead unknownAlpha tvr; return (TermMultiVerb t, vs)
+    unaryAdj = do
+      is
+      (t, vs) <- patHead unknownAlpha tvr
+      return (TermUnaryAdjective t, vs)
+    multiAdj = do
+      is
+      (t, vs) <- patHead unknownAlpha tvr
+      return (TermMultiAdjective t, vs)
+    unaryVerb = do
+      (t, vs) <- patHead unknownAlpha tvr
+      return (TermUnaryVerb t, vs)
+    multiVerb = do
+      (t, vs) <- patHead unknownAlpha tvr
+      return (TermMultiVerb t, vs)
 
 newNotionPattern :: FTL PosVar -> FTL (Formula, PosVar)
 newNotionPattern tvr = (notion <|> function) </> unnamedNotion tvr
   where
     notion = do
-      an; (t, v:vs) <- patName unknownAlpha tvr
+      an
+      (t, v:vs) <- patName unknownAlpha tvr
       return (mkTrm NewId (TermNotion t) $ map pVar (v:vs), v)
     function = do
-      the; (t, v:vs) <- patName unknownAlpha tvr
+      the
+      (t, v:vs) <- patName unknownAlpha tvr
       return (mkEquality (pVar v) $ mkTrm NewId (TermNotion t) $ map pVar vs, v)
 
 unnamedNotion :: FTL PosVar -> FTL (Formula, PosVar)
 unnamedNotion tvr = (notion <|> function) </> (newSymbPattern tvr >>= equ)
   where
     notion = do
-      an; (t, v:vs) <- patNoName unknownAlpha tvr
+      an
+      (t, v:vs) <- patNoName unknownAlpha tvr
       return (mkTrm NewId (TermNotion t) $ map pVar (v:vs), v)
     function = do
-      the; (t, v:vs) <- patNoName unknownAlpha tvr
+      the
+      (t, v:vs) <- patNoName unknownAlpha tvr
       return (mkEquality (pVar v) $ mkTrm NewId (TermNotion t) $ map pVar vs, v)
-    equ t = do v <- hidden; return (mkEquality (pVar v) t, v)
+    equ t = do
+      v <- hidden
+      return (mkEquality (pVar v) t, v)
 
 
 newSymbPattern :: FTL PosVar -> FTL Formula
@@ -265,14 +288,16 @@ patName lxm tvr = do
 
 patNoName :: FTL Text -> FTL PosVar -> FTL (Text, [PosVar])
 patNoName lxm tvr = do
-  l <- Text.unwords <$> chain lxm; n <- hidden
+  l <- Text.unwords <$> chain lxm
+  n <- hidden
   (ls, vs) <- opt ("", []) $ patShort lxm tvr
   return (l <> " . " <> ls, n:vs)
   where
     --patShort is a kind of buffer that ensures that a variable does not directly
     --follow the name of the notion
     patShort lxm tvr = do
-      l <- lxm; (ls, vs) <- patTail lxm tvr
+      l <- lxm
+      (ls, vs) <- patTail lxm tvr
       return (l <> " " <> ls, vs)
 
 
@@ -294,7 +319,8 @@ unknownAlphaNum :: FTL Text
 unknownAlphaNum = failing knownVariable >> tokenPrim isWord
   where
     isWord t =
-      let tk = showToken t; ltk = Text.toCaseFold tk
+      let tk = showToken t
+          ltk = Text.toCaseFold tk
       in guard (Text.all isAlphaNum tk && ltk `Set.notMember` keylist) >> return tk
     keylist = Set.fromList ["a","an","the","is","are","be"]
 
@@ -308,7 +334,7 @@ knownVariable = do
 
 singleLetterVariable :: FTL PosVar
 singleLetterVariable = do
-  v <- var;
+  v <- var
   guard $ isSingleLetter $ deVar $ posVarName v
   return v
   where
