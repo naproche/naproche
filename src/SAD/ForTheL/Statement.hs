@@ -20,7 +20,7 @@ module SAD.ForTheL.Statement (
 
 import Data.Set (Set)
 import Data.Function ((&))
-import Control.Applicative (liftA2, (<**>), Alternative(..))
+import Control.Applicative ((<**>), Alternative(..))
 import Control.Monad (guard)
 import Data.Set qualified as Set
 
