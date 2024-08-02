@@ -133,6 +133,10 @@ texCommandWithArg name arg = do
   texCommand name
   braced arg
 
+-- | @optInTexArg macroName p@ runs either @p@, or @"\\" <macroname> "{" <p> "}"@.
+optInTexArg :: Text -> Parser st a -> Parser st a
+optInTexArg macroName p = try p <|> texCommandWithArg macroName p
+
 -- | @texBegin env@ parses @"\\begin" "{" <env> "}"@.
 texBegin :: Parser st a -> Parser st a
 texBegin = texCommandWithArg "begin"
