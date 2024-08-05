@@ -167,7 +167,7 @@ stack build
 stack test
 ```
 
-### Manual checking of proof files
+#### Manual checking of proof files
 
 ```shell
 stack exec Naproche-SAD -- OPTIONS FILE
@@ -208,7 +208,7 @@ If you are developing Naproche and want to add Haddock annotations to the source
 
 ## References
 
-This program is based on the [System for Automated Deduction (SAD)][sad] by
+Naproche is based on the [System for Automated Deduction (SAD)][sad] by
 [Andrei Paskevich][andrei-paskevich].
 You can find more resources in our [CONTRIBUTING.md](CONTRIBUTING.md).
 
