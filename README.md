@@ -4,6 +4,15 @@ Proof Checking of Natural Mathematical Documents, with optional support
 for [Isabelle Prover IDE (Isabelle/PIDE – Isabelle/jEdit)][isabelle-jedit].
 
 
+## Table of Contents
+
+1.  [For End-Users](#for-end-users)
+2.  [For Developers](#for-developers)
+3.  [Changelog](#changelog)
+4.  [License](#license)
+5.  [References](#references)
+
+
 ## For End-Users
 
 You can get a fully integrated version of Naproche for Linux, macOS and Windows
