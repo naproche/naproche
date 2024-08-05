@@ -84,12 +84,12 @@ instance Functor (Parser st) where
       new ok err emptyOk consumedOk = ok err (map (fmap f) emptyOk) (map (fmap f) consumedOk)
 
 instance Applicative (Parser st) where
-  pure = return
+  pure x = Parser \st ok _ _ ->
+      ok (newErrorUnknown (stPosition st)) [PR x st] []
   (<*>) = ap
 
 instance Monad (Parser st) where
-  return x = Parser \st ok _ _ ->
-      ok (newErrorUnknown (stPosition st)) [PR x st] []
+  return  = pure
 
   p >>= f = Parser \st ok consumedFail emptyFail ->
     let pok = tryParses f ok consumedFail emptyFail

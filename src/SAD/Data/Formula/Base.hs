@@ -14,7 +14,6 @@ module SAD.Data.Formula.Base where
 import Data.Maybe
 import Data.Monoid qualified as Monoid
 import Control.Monad.Identity
-import Control.Applicative
 import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
 import Data.Map qualified as Map

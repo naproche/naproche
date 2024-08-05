@@ -11,7 +11,7 @@ module SAD.Structures.Formula where
 import Data.Text.Lazy (Text)
 
 
-data Document = Document [Declaration] deriving Show
+newtype Document = Document [Declaration] deriving Show
 
 data Declaration
   = Hypothesis Text [Assumption]

@@ -42,8 +42,6 @@ import SAD.Data.Formula
 import SAD.Data.Tag qualified as Tag
 import SAD.Data.Text.Decl
 
-import Isabelle.Position qualified as Position
-
 
 -- * Parsing a ForTheL text
 
@@ -548,7 +546,7 @@ llDefnVars dvs f
   | x `elem` dvs = Just $ "Defined variable is already in use: " <> showVar x
   | otherwise = affirmVars (Set.insert x dvs) f
   where
-    [x] = Set.elems $ declNames mempty f
+    x = head . Set.elems $ declNames mempty f
 
 assumeVars dvs f = affirmVars (declNames dvs f <> dvs) f
 

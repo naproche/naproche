@@ -268,17 +268,17 @@ instance Ord a => Semigroup (VariationMonad a) where
   a <> b = VariationMonad $ \s -> runVM a s <> runVM b s
 
 instance Ord a => Monoid (VariationMonad a) where
-  mempty = VariationMonad $ \s -> []
+  mempty = VariationMonad $ const []
 
 instance Functor VariationMonad where
   fmap = liftM
 
 instance Applicative VariationMonad where
-  pure  = return
+  pure r = VariationMonad $ \ s -> [(s, r)]
   (<*>) = ap
 
 instance Monad VariationMonad where
-  return r = VariationMonad $ \ s -> [(s, r)]
+  return  = pure
   m >>= k  = VariationMonad $ \ s -> concatMap apply (runVM m s)
     where apply (s, r) = runVM (k r) s
 
@@ -287,7 +287,7 @@ instance Alternative VariationMonad where
   (<|>) = mplus
 
 instance MonadPlus VariationMonad where
-  mzero     = VariationMonad $ \ _ -> []
+  mzero     = VariationMonad $ const []
   mplus m k = VariationMonad $ \ s -> runVM m s ++ runVM k s
 
 -- special reduction of function thesis
@@ -325,11 +325,11 @@ instance Functor ChangeInfo where
   fmap = liftM
 
 instance Applicative ChangeInfo where
-  pure = return
+  pure a = Change a False
   (<*>) = ap
 
 instance Monad ChangeInfo where
-  return a = Change a False
+  return = pure
   Change a p >>= f = let Change b q = f a in Change b (p || q)
 
 changed :: a -> ChangeInfo a -- declare a change to an object

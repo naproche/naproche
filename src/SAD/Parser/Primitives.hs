@@ -46,8 +46,6 @@ import SAD.Data.Formula.Show (symChars)
 
 import Isabelle.Position qualified as Position
 
-import Control.Monad.State.Class (modify, get, gets)
-
 
 -- | Parse the current token or return an @EmptyFail@
 -- if the input is empty, eof or the supplied test functions returns @Nothing@.
