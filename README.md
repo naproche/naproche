@@ -1,20 +1,22 @@
 # Naproche
 
-[![Build Status](https://travis-ci.com/anfelor/Naproche-SAD.svg?branch=master)](https://travis-ci.com/anfelor/Naproche-SAD)
-
 Proof Checking of Natural Mathematical Documents, with optional support
-for Isabelle Prover IDE (Isabelle/PIDE – Isabelle/jEdit).
+for [Isabelle Prover IDE (Isabelle/PIDE – Isabelle/jEdit)][isabelle-jedit].
 
 
-NOTE: The subsequent explanations are for **development** of the tool! Regular users may get a fully
-integrated version for Linux / macOS / Windows that is bundled with Isabelle: download and run the
-application from https://isabelle.in.tum.de and open $ISABELLE_NAPROCHE/Intro.thy in the
-Documentation panel.
+## For End-Users
+
+You can get a fully integrated version of Naproche for Linux, macOS and Windows
+that is bundled with [Isabelle][isabelle]: Download and run the application from
+<https://isabelle.in.tum.de> and open the file `$ISABELLE_NAPROCHE/Intro.thy` in
+its `Documentation` panel.
 
 
-## Isabelle/Naproche Prover IDE
+## For Developers
 
-### Prerequisites
+### Isabelle/Naproche Prover IDE
+
+#### Prerequisites
 
 Ensure that `curl`, `gcc`, `git`, `make`, and `hg` (Mercurial) are installed:
 
@@ -25,7 +27,7 @@ Ensure that `curl`, `gcc`, `git`, `make`, and `hg` (Mercurial) are installed:
   * Windows: use Cygwin64 with packages `curl`, `gcc-core`, `git`, `make`, and `mercurial` (via Cygwin setup-x86_64.exe)
 
 
-### Repository management
+#### Repository management
 
 Commands below assume the same current directory: repository clones
 `isabelle_naproche` and `naproche` are put side-by-side.
@@ -45,7 +47,7 @@ Commands below assume the same current directory: repository clones
   isabelle_naproche/Admin/init -V ./naproche/Isabelle
   ```
 
-### Development
+#### Development
 
 * Isabelle executable: there is no need to have `isabelle_naproche/bin/isabelle`
 in the PATH, but it is convenient to put it into a standard place once, e.g.:
@@ -131,9 +133,10 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
       points to the `eprover` executable inside the `e_naproche` component.
 
 
-## Low-level command-line tool (without Isabelle)
+### Low-level command-line tool (without Isabelle)
 
-### Prerequisites
+#### Prerequisites
+
 * Supported OS platforms: Linux, macOS, Windows (e.g. with Cygwin terminal)
 
 * The Haskell Tool Stack: https://www.haskellstack.org
@@ -152,7 +155,8 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
   https://marketplace.visualstudio.com/items?itemName=haskell.haskell
 
 
-### Build and test
+#### Build and test
+
 ```shell
 cd .../naproche  #repository
 
@@ -164,6 +168,7 @@ stack test
 ```
 
 ### Manual checking of proof files
+
 ```shell
 stack exec Naproche-SAD -- OPTIONS FILE
 ```
@@ -171,17 +176,17 @@ stack exec Naproche-SAD -- OPTIONS FILE
 It may be necessary to allow the E Prover more time by appending `-t SECONDS`
 
 
-## Documentation
+### Documentation
 
-You can use the tool [Haddock][1] to automatically generate documentation of
-Naproche's source code.
+You can use the tool [Haddock][haddock] to automatically generate documentation
+of Naproche's source code.
 Just run the following command:
 
 ```shell
 stack haddock
 ```
 
-To access this documentation via a local [Hoogle][2] server, proceed the
+To access this documentation via a local [Hoogle][hoogle] server, proceed the
 following steps:
 
 1.  Generate a local Hoogle database.
@@ -201,12 +206,16 @@ If you are developing Naproche and want to add Haddock annotations to the source
 <https://haskell-haddock.readthedocs.io/en/latest/markup.html>
 
 
-## Reference ##
+## References
 
-This program is based on the System for Automated Deduction (SAD) by
-Andrei Paskevich, see https://github.com/tertium/SAD.
+This program is based on the [System for Automated Deduction (SAD)][sad] by
+[Andrei Paskevich][andrei-paskevich].
 You can find more resources in our [CONTRIBUTING.md](CONTRIBUTING.md).
 
 
-[1]: <https://haskell-haddock.readthedocs.io/en/latest/>
-[2]: <https://wiki.haskell.org/Hoogle>
+[haddock]: <https://haskell-haddock.readthedocs.io/en/latest/>
+[hoogle]: <https://wiki.haskell.org/Hoogle>
+[isabelle]: <https://isabelle.in.tum.de/>
+[sad]: <https://github.com/tertium/SAD>
+[andrei-paskevich]: <http://www.tertium.org/>
+[isabelle-jedit]: <https://isabelle.in.tum.de/dist/doc/jedit.pdf>
