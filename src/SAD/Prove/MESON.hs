@@ -1,6 +1,10 @@
 -- |
--- Authors: Steffen Frerix (2017 - 2018),
---          Makarius Wenzel (2022)
+-- Module      : SAD.Prove.MESON
+-- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
+--               (c) 2017 - 2018, Steffen Frerix,
+--               (c) 2022, Makarius Wenzel,
+--               (c) 2024, Marcel Schütz
+-- License     : GPL-3
 --
 -- An implementation of the MESON algorithm.
 

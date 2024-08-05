@@ -1,5 +1,7 @@
 -- |
--- Authors: Makarius Wenzel (2021)
+-- Module      : SAD.Data.Formula.HOL
+-- Copyright   : (c) 2021, 
+-- License     : GPL-3
 --
 -- The Naproche logic within Isabelle/HOL.
 

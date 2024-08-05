@@ -1,5 +1,7 @@
 -- |
--- Authors: Steffen Frerix (2017 - 2018)
+-- Module      : SAD.Core.Rewrite
+-- Copyright   : (c) 2017 - 2018, Steffen Frerix
+-- License     : GPL-3
 --
 -- Term rewriting: extraction of rules and proof of equlities.
 

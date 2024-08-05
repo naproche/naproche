@@ -1,5 +1,7 @@
 -- |
--- Authors: Steffen Frerix (2017 - 2018)
+-- Module      : SAD.Data.Structures.DisTree
+-- Copyright   : (c) 2017 - 2018, Steffen Frerix
+-- License     : GPL-3
 --
 -- Discrimination tree data structure.
 

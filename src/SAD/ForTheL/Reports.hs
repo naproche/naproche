@@ -1,6 +1,8 @@
 -- |
--- Authors: Steffen Frerix (2018),
---          Makarius Wenzel (2018)
+-- Module      : SAD.ForTheL.Reports
+-- Copyright   : (c) 2017 - 2018, Steffen Frerix,
+--               (c) 2018, Makarius Wenzel
+-- License     : GPL-3
 --
 -- PIDE markup reports for ForTheL text elements.
 

@@ -1,5 +1,7 @@
 -- |
--- Authors: Steffen Frerix (2017 - 2018)
+-- Module      : SAD.Core.Extract
+-- Copyright   : (c) 2017 - 2018, Steffen Frerix
+-- License     : GPL-3
 --
 -- Extraction of various information from formulas: definitions,
 -- map evaluations, elementhood conditions for classes

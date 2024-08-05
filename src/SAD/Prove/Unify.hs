@@ -1,5 +1,7 @@
 -- |
--- Authors: Steffen Frerix (2017 - 2018)
+-- Module      : SAD.Prove.Unify
+-- Copyright   : (c) 2017 - 2018, Steffen Frerix
+-- License     : GPL-3
 --
 -- Unification of literals.
 

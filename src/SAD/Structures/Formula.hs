@@ -1,5 +1,7 @@
 -- |
--- Authors: Aanton Lorenzen (2020)
+-- Module      : SAD.Structures.Formula
+-- Copyright   : (c) 2020, Anton Lorenzen
+-- License     : GPL-3
 --
 -- TODO: Add description.
 

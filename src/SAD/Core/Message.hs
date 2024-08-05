@@ -1,5 +1,7 @@
 -- |
--- Authors: Makarius Wenzel (2018, 2021)
+-- Module      : SAD.Core.Message
+-- Copyright   : (c) 2018, 2021, Makarius Wenzel
+-- License     : GPL-3
 --
 -- Formal output messages, with PIDE (Prover IDE) support.
 

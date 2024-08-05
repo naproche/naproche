@@ -1,5 +1,7 @@
 -- |
--- Authors: Anton Lorenzen (2020)
+-- Module      : SAD.Structures.Export
+-- Copyright   : (c) 2020, Anton Lorenzen
+-- License     : GPL-3
 --
 -- TODO: Add description.
 

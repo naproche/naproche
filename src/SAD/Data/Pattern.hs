@@ -1,5 +1,7 @@
 -- |
--- Authors: Anton Lorenzen (2019)
+-- Module      : SAD.Data.Pattern
+-- Copyright   : (c) 2019, Anton Lorenzen
+-- License     : GPL-3
 --
 -- TODO: Add description.
 

@@ -1,5 +1,7 @@
 -- |
--- Author: Annika Hennes (2019)
+-- Module      : SAD.Core.Completion
+-- Copyright   : (c) 2019, Annika Hennes
+-- License     : GPL-3
 --
 -- Executes Knuth-Bendix completion on a term rewriting system
 

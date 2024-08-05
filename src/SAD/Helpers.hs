@@ -1,6 +1,8 @@
 -- |
--- Authors: Adrian De Lon (2019),
---          Anton Lorenzen (2019)
+-- Module      : SAD.Helpers
+-- Copyright   : (c) 2019, Adrian De Lon,
+--               (c) 2019, Anton Lorenzen
+-- License     : GPL-3
 --
 -- Helper functions.
 

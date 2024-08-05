@@ -1,6 +1,8 @@
 -- |
--- Authors: Andrei Paskevich (2001 - 2008),
---          Steffen Frerix (2017 - 2018)
+-- Module      : SAD.ForTheL.Extension
+-- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
+--               (c) 2017 - 2018, Steffen Frerix
+-- License     : GPL-3
 --
 -- Extending the language: definitions, signature extensions, pretypings,
 -- macros and synonyms.

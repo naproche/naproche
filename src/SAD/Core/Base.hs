@@ -1,6 +1,8 @@
 -- |
--- Authors: Andrei Paskevich (2001 - 2008),
---          Steffen Frerix (2017 - 2018)
+-- Module      : SAD.Core.Base
+-- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
+--               (c) 2017 - 2018, Steffen Frerix
+-- License     : GPL-3
 --
 -- Verifier state monad and common functions.
 

@@ -1,5 +1,7 @@
 -- |
--- Authors: Steffen Frerix (2018)
+-- Module      : SAD.Data.Text.Decl
+-- Copyright   : (c) 2018, Steffen Frerix
+-- License     : GPL-3
 --
 -- Variable declarations.
 

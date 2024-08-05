@@ -1,5 +1,7 @@
 -- |
--- Authors: Marcel Schütz (2024)
+-- Module      : SAD.Parser.Lexer
+-- Copyright   : (c) 2024, Marcel Schütz
+-- License     : GPL-3
 --
 -- Lexing
 

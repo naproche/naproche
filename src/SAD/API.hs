@@ -1,5 +1,7 @@
 -- |
--- Authors: Anton Lorenzen (2019)
+-- Module      : SAD.API
+-- Copyright   : (c) 2019, Anton Lorenzen
+-- License     : GPL-3
 --
 -- This is a re-export of the relevant parts of SAD's API which means that the
 -- rest can remain out of the 'exposed-modules'. That allows us to detect

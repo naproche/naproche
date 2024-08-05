@@ -1,7 +1,9 @@
 -- |
--- Author: Andrei Paskevich (2001 - 2008),
---         Steffen Frerix (2017 - 2018)
---         Marcel Schütz (2024)
+-- Module      : SAD.Parser.Token
+-- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
+--               (c) 2017 - 2018, Steffen Frerix,
+--               (c) 2024, Marcel Schütz
+-- License     : GPL-3
 --
 -- Tokenization of input.
 

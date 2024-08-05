@@ -1,7 +1,9 @@
 -- |
--- Authors: Andrei Paskevich (2001 - 2008),
---          Steffen Frerix (2017 - 2018),
---          Makarius Wenzel (2018)
+-- Module      : SAD.ForTheL.Instruction
+-- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
+--               (c) 2017 - 2018, Steffen Frerix,
+--               (c) 2018, Makarius Wenzel
+-- License     : GPL-3
 --
 -- Syntax of ForThel Instructions.
 
