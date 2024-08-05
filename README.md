@@ -206,6 +206,22 @@ If you are developing Naproche and want to add Haddock annotations to the source
 <https://haskell-haddock.readthedocs.io/en/latest/markup.html>
 
 
+### To Dos
+
+See [TODO.md](TODO.md) for a list of pending to-dos.
+
+
+## Changelog
+
+See [CHANGELOG.md](CHAMGELOG.md) for a changelog of Naproche.
+
+
+## License
+
+Naproche is licensed under the [GPL-3][gpl-3]. See [LICENSE.md](LICENSE.md) for
+details.
+
+
 ## References
 
 Naproche is based on the [System for Automated Deduction (SAD)][sad] by
@@ -219,3 +235,4 @@ You can find more resources in our [CONTRIBUTING.md](CONTRIBUTING.md).
 [sad]: <https://github.com/tertium/SAD>
 [andrei-paskevich]: <http://www.tertium.org/>
 [isabelle-jedit]: <https://isabelle.in.tum.de/dist/doc/jedit.pdf>
+[gpl-3]: <https://www.gnu.org/licenses/gpl-3.0.en.html>
