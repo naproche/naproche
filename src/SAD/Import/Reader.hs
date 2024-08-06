@@ -10,7 +10,6 @@
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 
 module SAD.Import.Reader (
-  readInit,
   readProofText
 ) where
 
@@ -28,11 +27,8 @@ import SAD.Data.Instr as Instr
 import SAD.ForTheL.Base
 import SAD.ForTheL.Structure
 import SAD.Parser.Base
-import SAD.ForTheL.Instruction
 import SAD.Parser.Lexer
 import SAD.Parser.Token (Token, ftlLexemesToTokens, texLexemesToTokens, noTokens)
-import SAD.Parser.Combinators
-import SAD.Parser.Primitives
 import SAD.Parser.Error
 import SAD.Core.Message qualified as Message
 
@@ -40,28 +36,8 @@ import Isabelle.File qualified as File
 import Isabelle.Library (make_bytes, getenv, make_string, show_bytes)
 import Isabelle.Position as Position
 import Isabelle.Bytes (Bytes)
-import Isabelle.Bytes qualified as Bytes
 
 import Naproche.Program qualified as Program
-
-
--- * Init file parsing
-
--- | Parse initial instructions (e.g. @$NAPROCHE_HOME/init.opt@)
-readInit :: Bytes -> IO [(Position.T, Instr)]
-readInit file | Bytes.null file = return []
-readInit file = do
-  input <- catch (File.read (make_string file)) $ Message.errorParser (Position.file_only $ make_bytes file) . make_bytes . ioeGetErrorString
-  let pos = Position.file $ make_bytes file
-  lexemes <- lexFtl (PIDE_Pos pos) input
-  tokens <- ftlLexemesToTokens lexemes
-  fst <$> launchParser instructionFile (initState Program.console tokens)
-
-instructionFile :: FTL [(Position.T, Instr)]
-instructionFile = after (optLL1 [] $ chainLL1 instr) eof
-
-initState :: Program.Context -> [Token] -> State FState
-initState context tokens = State (initFState context) tokens Ftl Position.none
 
 
 -- * Reader loop
@@ -154,3 +130,6 @@ launchParser parser state =
   case runP parser state of
     Error err -> Message.errorParser (errorPos err) (show_bytes err)
     Ok [PR a st] -> return (a, st)
+
+initState :: Program.Context -> [Token] -> State FState
+initState context tokens = State (initFState context) tokens Ftl Position.none

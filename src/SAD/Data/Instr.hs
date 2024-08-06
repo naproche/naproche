@@ -127,7 +127,7 @@ textFlags@[proveParam, checkParam, checkconsistencyParam, symsignParam, infoPara
   translationParam, texParam] =
    [Param.flag "prove" "prove goals in the text" True,
     Param.flag "check" "check symbols for definedness" True,
-    Param.flag "checkconsistency" "check that no contradictory axioms occur" True,
+    Param.flag "checkconsistency" "check that no contradictory axioms occur" False,
     Param.flag "symsign" "prevent ill-typed unification" True,
     Param.flag "info" "collect \"evidence\" literals" True,
     Param.flag "thesis" "maintain current thesis" True,

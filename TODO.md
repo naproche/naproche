@@ -1,12 +1,5 @@
 ## Questions ##
 
-* Is there a remaining purpose of the `init.opt` file (prelude for parameters)?
-  It dilutes the notion of default values for parameters and "drop" instructions.
-  In the past it might have been useful to specify the prover executable, but
-  this is now done via environment variables like NAPROCHE_EPROVER.
-
-  => No (cf. *TODO* section).
-
 * Is there a purpose for `DropCommand` instructions?
 
   => No (cf. *TODO* section).
@@ -31,8 +24,6 @@
   pro-forma serial numbers produced during parsing.
 
 * More robust treatment of prover errors (return code): genuine error vs. timeout!?
-
-* Remove `init.opt` file (cf. *Questions* section).
 
 * Remove `DropCommand` instructions (cf. *Questions* section).
 

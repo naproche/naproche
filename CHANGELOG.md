@@ -45,6 +45,11 @@ dialect of ForTheL, respectively.
   ```
 
 
+### Misc
+
+  * **Removed:** The (deprecated) `init.opt` file was removed.
+
+
 --------------------------------------------------------------------------------
 
 ## naproche-20240519 (Isabelle 2024)

@@ -242,8 +242,7 @@ readArgs args = do
   let fail msgs = errorWithoutStackTrace (unlines (map trim_line msgs))
   unless (null errs) $ fail errs
 
-  initFile <- readInit (getInstr initParam instrs)
-  let initialOpts = initFile ++ map (Position.none,) instrs
+  let initialOpts = map (Position.none,) instrs
 
   let revInitialOpts = reverse initialOpts
   let useTexArg = getInstr texParam $ map snd revInitialOpts
