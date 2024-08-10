@@ -49,6 +49,9 @@ dialect of ForTheL, respectively.
 
   * **Removed:** The (deprecated) `init.opt` file was removed.
 
+  * **New:** Instructions etc. regarding Haskell have been added/moved to
+    `CONTRIBUTING.md`.
+
 
 --------------------------------------------------------------------------------
 

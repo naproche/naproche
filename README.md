@@ -185,41 +185,6 @@ stack exec Naproche-SAD -- OPTIONS FILE
 It may be necessary to allow the E Prover more time by appending `-t SECONDS`
 
 
-### Documentation
-
-You can use the tool [Haddock][haddock] to automatically generate documentation
-of Naproche's source code.
-Just run the following command:
-
-```shell
-stack haddock
-```
-
-To access this documentation via a local [Hoogle][hoogle] server, proceed the
-following steps:
-
-1.  Generate a local Hoogle database.
-    ```shell
-    stack hoogle -- generate --local
-    ```
-
-2. Start a local Hoogle server.
-    ```shell
-    stack hoogle -- server --local --port=8080
-    ```
-
-Now you can access the documentation with your favourite web browser at
-<http://localhost:8080>.
-
-If you are developing Naproche and want to add Haddock annotations to the source files, have a look at this guide:
-<https://haskell-haddock.readthedocs.io/en/latest/markup.html>
-
-
-### To Dos
-
-See [TODO.md](TODO.md) for a list of pending to-dos.
-
-
 ## Changelog
 
 See [CHANGELOG.md](CHAMGELOG.md) for a changelog of Naproche.
@@ -238,8 +203,6 @@ Naproche is based on the [System for Automated Deduction (SAD)][sad] by
 You can find more resources in our [CONTRIBUTING.md](CONTRIBUTING.md).
 
 
-[haddock]: <https://haskell-haddock.readthedocs.io/en/latest/>
-[hoogle]: <https://wiki.haskell.org/Hoogle>
 [isabelle]: <https://isabelle.in.tum.de/>
 [sad]: <https://github.com/tertium/SAD>
 [andrei-paskevich]: <http://www.tertium.org/>
