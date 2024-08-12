@@ -52,6 +52,8 @@ dialect of ForTheL, respectively.
   * **New:** Instructions etc. regarding Haskell have been added/moved to
     `CONTRIBUTING.md`.
 
+  * **Removed:** The (meanigless) drop instructions for commands were removed.
+
 
 --------------------------------------------------------------------------------
 

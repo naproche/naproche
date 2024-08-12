@@ -112,9 +112,8 @@ readWords = shortHand </> chainLL1 word
   variant w = token "-" >> fmap (w <>) word
 
 readInstrDrop :: FTL Drop
-readInstrDrop = readInstrCommand -|- readInstrLimit -|- readInstrBool
+readInstrDrop = readInstrLimit -|- readInstrBool
   where
-    readInstrCommand = fmap DropCommand (readKeywords keywordsCommand)
     readInstrLimit = readKeywords keywordsDropLimit
     readInstrBool = readKeywords keywordsDropFlag
 

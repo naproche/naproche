@@ -1,12 +1,3 @@
-## Questions ##
-
-* Is there a purpose for `DropCommand` instructions?
-
-  => No (cf. *TODO* section).
-
-
-## TODO ##
-
 # General
 
 * Discontinue symEncode / symDecode!? TPTP can handle arbitrary names via
@@ -24,8 +15,6 @@
   pro-forma serial numbers produced during parsing.
 
 * More robust treatment of prover errors (return code): genuine error vs. timeout!?
-
-* Remove `DropCommand` instructions (cf. *Questions* section).
 
 
 # Isabelle/Naproche integration

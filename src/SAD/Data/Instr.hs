@@ -52,8 +52,7 @@ data Instr =
   deriving (Eq, Ord, Show)
 
 data Drop =
-    DropCommand Command
-  | DropBool (Param.T Bool)
+    DropBool (Param.T Bool)
   | DropInt (Param.T Int)
   | DropBytes (Param.T Bytes)
   deriving (Eq, Ord, Show)
@@ -95,7 +94,6 @@ addInstr (GetArgument (Read _) _) = id
 addInstr i = (:) i
 
 dropInstr :: Drop -> [Instr] -> [Instr]
-dropInstr (DropCommand m) (Command n : rs) | n == m = rs
 dropInstr (DropBool p) (SetBool p' _ : rs) | p == p' = rs
 dropInstr (DropInt p) (SetInt p' _ : rs) | p == p' = rs
 dropInstr (DropBytes p) (SetBytes p' _ : rs) | p == p' = rs
