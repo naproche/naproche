@@ -51,3 +51,5 @@
 
 * Add a variant of the `read`/`readtex` instructions that reads a file without
   checking it.
+
+* Add LaTeX environments for subproofs, cases etc.
