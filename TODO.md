@@ -3,9 +3,6 @@
 * Discontinue symEncode / symDecode!? TPTP can handle arbitrary names via
   single quoted string literals.
 
-* E prover 2.6 (re-used from Isabelle) breaks examples/koenig.ftl.tex while examples/koenig.ftl
-  still works. What is going on here?
-
 * Discontinue used TermEmpty!?
 
 * Prefer compact Isabelle.Bytes (ShortByteString) for symbolic names,
@@ -22,7 +19,7 @@
 * Clarify connection (or non-connection) of Isabelle.Pretty vs. Hackage prettyprinter (1.7.0).
 
 
-# PIDE markup reports #
+# PIDE markup reports
 
 * def/ref markup fact names (!?)
 
@@ -31,7 +28,7 @@
 * more robust parsing: recover from errors (e.g. via ProofTextError construction) (!??)
 
 
-# General #
+# General
 
 * formulate underlying logic + set-theory in Isabelle (syntax only, no rules):
   thus formulas can be pretty-printed via Isabelle notation
@@ -43,7 +40,7 @@
 * parallel checking: internal and/or external provers (??)
 
 
-# Misc #
+# Misc
 
 * Disambiguate chains of existential quantifications: currently writing something
   along the line of `there exist x,y,z such that ...` results in an ambiguity error.
