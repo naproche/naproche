@@ -57,6 +57,9 @@ dialect of ForTheL, respectively.
   * **Changed:** Symbolic term names are no longer encoded as strings of
     ASCII-letters.
 
+  * **Changed:** Formulas are now pretty printed by using symbolic notation of
+    logical symbols.
+
 
 --------------------------------------------------------------------------------
 
