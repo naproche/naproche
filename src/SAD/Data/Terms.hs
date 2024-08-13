@@ -44,9 +44,9 @@ termObject = TermNotion "Object"
 termElement = TermNotion "ElementOf"
 
 termApplication, termDomain, termPair :: TermName
-termApplication = TermName "mkApp" -- ".(.)"
-termDomain = TermName "mkDom"
-termPair = TermName "mkPair" -- "(.,.)"
+termApplication = TermSymbolic ".(.)"
+termDomain = TermSymbolic "Dom(.)"
+termPair = TermSymbolic "(.,.)"
 
 termSplit :: TermName -> (Text -> TermName, Text)
 termSplit (TermNotion t) = (TermNotion, t)

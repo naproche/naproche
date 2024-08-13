@@ -180,8 +180,8 @@ extractSymbPattern t@Trm {trmName = TermName s, trmArgs = vs} f = (pt, nf)
     getPattern "__VAR__" = Vr
     getPattern w = Symbol w
 
-    getName (Symbol s:ls) = symEncode s <> getName ls
-    getName (Vr:ls) = symEncode "." <> getName ls
+    getName (Symbol s:ls) = s <> getName ls
+    getName (Vr:ls) = "." <> getName ls
     getName [] = ""
 
 

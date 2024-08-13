@@ -54,6 +54,9 @@ dialect of ForTheL, respectively.
 
   * **Removed:** The (meanigless) drop instructions for commands were removed.
 
+  * **Changed:** Symbolic term names are no longer encoded as strings of
+    ASCII-letters.
+
 
 --------------------------------------------------------------------------------
 

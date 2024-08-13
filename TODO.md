@@ -1,8 +1,5 @@
 # General
 
-* Discontinue symEncode / symDecode!? TPTP can handle arbitrary names via
-  single quoted string literals.
-
 * Discontinue used TermEmpty!?
 
 * Prefer compact Isabelle.Bytes (ShortByteString) for symbolic names,

@@ -4,19 +4,14 @@
 --               (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
 --
--- TODO: Add description.
+-- Show instance for formulas.
 
 
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.Data.Formula.Show (
-  showArgumentsWith,
-  commaSeparated,
-  symEncode
-) where
+module SAD.Data.Formula.Show () where
 
-import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
 
 import SAD.Data.Formula.Base
@@ -25,9 +20,8 @@ import SAD.Data.Terms
 import SAD.Export.Representation (toLazyText, represent)
 
 import Isabelle.Position qualified as Position
+import SAD.Helpers
 
-
--- show instances
 
 instance Show Formula where
   showsPrec p = showFormula p 0
@@ -49,22 +43,15 @@ showFormula p d = dive
 
     dive t@Trm{trmName = TermThesis} = showString "thesis"
     dive t@Trm{trmName = TermEquality, trmArgs = [l,r]} = showInfix " = " l r
-    dive t@Trm{trmName = TermSymbolic tName, trmArgs = tArgs} = decode (Text.unpack tName) tArgs p d
+    dive t@Trm{trmName = TermSymbolic tName, trmArgs = tArgs} = substitute (Text.unpack tName) tArgs p d
     dive t@Trm{trmName = TermThe tName, trmArgs = tArgs} =
           showString ("the" <> Text.unpack tName) . showArguments tArgs
-    dive t@Trm{trmName = TermName "mkApp", trmArgs = [f,x]} = showString $ showArgument f ++ "(" ++ showArgument x ++ ")"
-    dive t@Trm{trmName = TermName "mkDom", trmArgs = [f]} = showString $ "Dom(" ++ showArgument f ++ ")"
-    dive t@Trm{trmName = TermName "mkPair", trmArgs = [x,y]} = showString $ "(" ++ showArgument x ++ "," ++ showArgument y ++ ")"
     dive t@Trm{trmName = tName, trmArgs = tArgs} = showString (Text.unpack $ toLazyText $ represent tName) . showArguments tArgs
     dive v@Var{varName = VarConstant s} = showString (Text.unpack s)
     dive v@Var{varName = vName} = showString $ Text.unpack $ toLazyText $ represent vName
     dive Ind {indIndex = i }
       | i < d = showChar 'v' . shows (d - i - 1)
       | otherwise = showChar 'v' . showChar '?' . showString (show i)
-
-    showArgument t
-      | p == 1 = "..."
-      | otherwise = showFormula (p - 1) d t ""
 
     showArguments _ | p == 1 = showString "(...)"
     showArguments ts =
@@ -86,118 +73,17 @@ commaSeparated showTerm [] = id
 commaSeparated showTerm [t] = showTerm t
 commaSeparated showTerm (t:ts) = showTerm t . showChar ',' . commaSeparated showTerm ts
 
--- decoding of symbolic names
-
-decode :: String -> [Formula] -> Int -> Int -> ShowS
-decode s [] _ _ = showString (symDecode s)
-decode s (t:ts) p d = dec s
+-- | Substitute all @.@ characters in a string by given terms.
+substitute :: String -> [Formula] -> Int -> Int -> ShowS
+substitute s [] _ _ = showString s
+substitute s (t : ts) p d = dec s
   where
-    dec ('b':'q':cs) = showChar '`' . dec cs
-    dec ('t':'l':cs) = showChar '~' . dec cs
-    dec ('e':'x':cs) = showChar '!' . dec cs
-    dec ('a':'t':cs) = showChar '@' . dec cs
-    dec ('d':'l':cs) = showChar '$' . dec cs
-    dec ('p':'c':cs) = showChar '%' . dec cs
-    dec ('c':'f':cs) = showChar '^' . dec cs
-    dec ('e':'t':cs) = showChar '&' . dec cs
-    dec ('a':'s':cs) = showChar '*' . dec cs
-    dec ('l':'p':cs) = showChar '(' . dec cs
-    dec ('r':'p':cs) = showChar ')' . dec cs
-    dec ('m':'n':cs) = showChar '-' . dec cs
-    dec ('p':'l':cs) = showChar '+' . dec cs
-    dec ('e':'q':cs) = showChar '=' . dec cs
-    dec ('l':'b':cs) = showChar '[' . dec cs
-    dec ('r':'b':cs) = showChar ']' . dec cs
-    dec ('l':'c':cs) = showChar '{' . dec cs
-    dec ('r':'c':cs) = showChar '}' . dec cs
-    dec ('c':'l':cs) = showChar ':' . dec cs
-    dec ('q':'t':cs) = showChar '\'' . dec cs
-    dec ('d':'q':cs) = showChar '"' . dec cs
-    dec ('l':'s':cs) = showChar '<' . dec cs
-    dec ('g':'t':cs) = showChar '>' . dec cs
-    dec ('s':'l':cs) = showChar '/' . dec cs
-    dec ('q':'u':cs) = showChar '?' . dec cs
-    dec ('b':'s':cs) = showChar '\\' . dec cs
-    dec ('b':'r':cs) = showChar '|' . dec cs
-    dec ('s':'c':cs) = showChar ';' . dec cs
-    dec ('c':'m':cs) = showChar ',' . dec cs
-    dec ('u':'s':cs) = showChar '_' . dec cs
-    dec ('h':'s':cs) = showChar '#' . dec cs
-    dec ('d':'t':cs) =
-      showParen (ambig t) (showFormula p d t) . decode cs ts p d
-    dec ('z':c:cs@('d':'t':_)) = showChar c . showChar ' ' . dec cs
-    dec ('z':c:cs)   = showChar c . dec cs
-    dec cs@(':':_)   = showString cs
-    dec []           = showString ""
-    dec _            = showString s
+    dec ('.' : cs) = showParen (ambig t) (showFormula p d t) . substitute cs ts p d
+    dec (c : cs@('.' : _)) | isAsciiLetter c = showChar c . showChar ' ' . dec cs
+    dec (c : cs) = showChar c . dec cs
+    dec [] = showString ""
 
-
-    ambig Trm {trmName = TermSymbolic tName} | "dt" `Text.isPrefixOf` tName = not $ appPattern (Text.drop 3 tName)
     ambig Trm {trmName = TermSymbolic tName} =
-      snd (Text.splitAt (Text.length tName - 2) tName) == "dt"
+      ("." `Text.isPrefixOf` tName && Text.drop 2 tName /= "(.)") ||
+      "." `Text.isSuffixOf` tName
     ambig _ = False
-
-    -- map application: "(.)"
-    appPattern "lpdtrp" = True
-    appPattern _ = False
-
-
-
--- Symbolic names
-
-symEncode :: Text -> Text
-symEncode = Text.concat . map chc . Text.chunksOf 1
-  where
-    chc :: Text -> Text
-    chc "`" = "bq" ; chc "~"  = "tl" ; chc "!" = "ex"
-    chc "@" = "at" ; chc "$"  = "dl" ; chc "%" = "pc"
-    chc "^" = "cf" ; chc "&"  = "et" ; chc "*" = "as"
-    chc "(" = "lp" ; chc ")"  = "rp" ; chc "-" = "mn"
-    chc "+" = "pl" ; chc "="  = "eq" ; chc "[" = "lb"
-    chc "]" = "rb" ; chc "{"  = "lc" ; chc "}" = "rc"
-    chc ":" = "cl" ; chc "\'" = "qt" ; chc "\"" = "dq"
-    chc "<" = "ls" ; chc ">"  = "gt" ; chc "/" = "sl"
-    chc "?" = "qu" ; chc "\\" = "bs" ; chc "|" = "br"
-    chc ";" = "sc" ; chc ","  = "cm" ; chc "." = "dt"
-    chc "_" = "us" ; chc "#"  = "hs"
-    chc c   = Text.cons 'z' c
-
-symDecode :: String -> String
-symDecode s = sname [] s
-  where
-    sname ac ('b':'q':cs) = sname ('`':ac) cs
-    sname ac ('t':'l':cs) = sname ('~':ac) cs
-    sname ac ('e':'x':cs) = sname ('!':ac) cs
-    sname ac ('a':'t':cs) = sname ('@':ac) cs
-    sname ac ('d':'l':cs) = sname ('$':ac) cs
-    sname ac ('p':'c':cs) = sname ('%':ac) cs
-    sname ac ('c':'f':cs) = sname ('^':ac) cs
-    sname ac ('e':'t':cs) = sname ('&':ac) cs
-    sname ac ('a':'s':cs) = sname ('*':ac) cs
-    sname ac ('l':'p':cs) = sname ('(':ac) cs
-    sname ac ('r':'p':cs) = sname (')':ac) cs
-    sname ac ('m':'n':cs) = sname ('-':ac) cs
-    sname ac ('p':'l':cs) = sname ('+':ac) cs
-    sname ac ('e':'q':cs) = sname ('=':ac) cs
-    sname ac ('l':'b':cs) = sname ('[':ac) cs
-    sname ac ('r':'b':cs) = sname (']':ac) cs
-    sname ac ('l':'c':cs) = sname ('{':ac) cs
-    sname ac ('r':'c':cs) = sname ('}':ac) cs
-    sname ac ('c':'l':cs) = sname (':':ac) cs
-    sname ac ('q':'t':cs) = sname ('\'':ac) cs
-    sname ac ('d':'q':cs) = sname ('"':ac) cs
-    sname ac ('l':'s':cs) = sname ('<':ac) cs
-    sname ac ('g':'t':cs) = sname ('>':ac) cs
-    sname ac ('s':'l':cs) = sname ('/':ac) cs
-    sname ac ('q':'u':cs) = sname ('?':ac) cs
-    sname ac ('b':'s':cs) = sname ('\\':ac) cs
-    sname ac ('b':'r':cs) = sname ('|':ac) cs
-    sname ac ('s':'c':cs) = sname (';':ac) cs
-    sname ac ('c':'m':cs) = sname (',':ac) cs
-    sname ac ('d':'t':cs) = sname ('.':ac) cs
-    sname ac ('u':'s':cs) = sname ('_':ac) cs
-    sname ac ('h':'s':cs) = sname ('#':ac) cs
-    sname ac ('z':c:cs)   = sname (c:ac) cs
-    sname ac cs@(':':_)   = reverse ac ++ cs
-    sname ac []           = reverse ac
-    sname _ _             = s
