@@ -13,8 +13,7 @@
 module SAD.Data.Formula.Show (
   showArgumentsWith,
   commaSeparated,
-  symEncode,
-  symChars
+  symEncode
 ) where
 
 import Data.Text.Lazy (Text)
@@ -145,9 +144,6 @@ decode s (t:ts) p d = dec s
 
 
 -- Symbolic names
-
-symChars :: String
-symChars = "`~!@$%^&*()-+=[]{}:'\"<>/?\\|;,_#"
 
 symEncode :: Text -> Text
 symEncode = Text.concat . map chc . Text.chunksOf 1

@@ -34,7 +34,6 @@ module SAD.Parser.Primitives (
   symbolNotAfterSpace
 ) where
 
-import Data.Char (isAlpha)
 import Control.Monad (void, guard)
 import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
@@ -42,7 +41,7 @@ import Data.Text.Lazy qualified as Text
 import SAD.Parser.Base
 import SAD.Parser.Error
 import SAD.Parser.Token
-import SAD.Data.Formula.Show (symChars)
+import SAD.Helpers
 
 import Isabelle.Position qualified as Position
 
@@ -115,15 +114,15 @@ anyToken = tokenPrim (Just . showToken)
 
 -- | Parses a token that is a word (i.e. consists of only alphabetic characters).
 word :: Parser st Text
-word = satisfy $ \tk -> Text.all isAlpha tk
+word = satisfy $ \tk -> Text.all isAsciiLetter tk
 
 -- | Parse a symbolic token, i.e. a TeX command or a single symbolic character
 symb :: Parser st Text
 symb = tokenPrim $ \tok ->
   let t = showToken tok
   in case Text.uncons t of
-    Just ('\\', rest) | Text.all isAlpha rest -> Just ("\\" <> rest)
-    Just (c, "") -> guard (c `elem` symChars) >> return t
+    Just ('\\', rest) | Text.all isAsciiLetter rest -> Just t
+    Just (c, "") | isAsciiSymbol c && not (isAsciiPeriod c) -> Just t
     _ -> Nothing
 
 

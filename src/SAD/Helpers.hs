@@ -11,11 +11,17 @@ module SAD.Helpers (
   notNull,
   nubOrd,
   nubOrdBy,
-  nubOrdOn
+  nubOrdOn,
+  isAsciiSymbol,
+  isAsciiDigit,
+  isAsciiLetter,
+  isAsciiAlphaNum,
+  isAsciiPeriod
 ) where
 
 import Control.Arrow
 import Data.Function
+import Data.Char qualified as Char
 
 
 -- | Returns @False@ if the list is empty and @True@ otherwise.
@@ -90,3 +96,22 @@ balance (T R a x (T R b y c)) z d = T R (T B a x b) y (T B c z d)
 balance a x (T R b y (T R c z d)) = T R (T B a x b) y (T B c z d)
 balance a x (T R (T R b y c) z d) = T R (T B a x b) y (T B c z d)
 balance a x b = T B a x b
+
+isAsciiSymbol :: Char -> Bool
+isAsciiSymbol c = --c `elem` "`~!@$%^&*()-+=[]{}:'\"<>/?\\|;,_#"
+     ('\x0021' <= c && c <= '\x002F')
+  || ('\x003A' <= c && c <= '\x0040')
+  || ('\x005B' <= c && c <= '\x0060')
+  || ('\x007B' <= c && c <= '\x007E')
+
+isAsciiDigit :: Char -> Bool
+isAsciiDigit = Char.isDigit
+
+isAsciiLetter :: Char -> Bool
+isAsciiLetter c = Char.isAsciiUpper c || Char.isAsciiLower c
+
+isAsciiAlphaNum :: Char -> Bool
+isAsciiAlphaNum c = isAsciiLetter c || isAsciiDigit c
+
+isAsciiPeriod :: Char -> Bool
+isAsciiPeriod c = c == '\x002E'

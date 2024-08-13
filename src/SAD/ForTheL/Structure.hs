@@ -17,7 +17,6 @@ module SAD.ForTheL.Structure (
 
 import Data.List
 import Data.Maybe
-import Data.Char (isAlphaNum)
 import Control.Applicative
 import Control.Monad
 import Control.Monad.State.Class (modify)
@@ -41,6 +40,7 @@ import SAD.Data.Text.Block qualified as Block
 import SAD.Data.Formula
 import SAD.Data.Tag qualified as Tag
 import SAD.Data.Text.Decl
+import SAD.Helpers
 
 
 -- * Parsing a ForTheL text
@@ -328,7 +328,7 @@ identifier :: FTL Text
 identifier = Text.toCaseFold . Text.concat <$> many (tokenPrim notSymb)
   where
     notSymb t = case Text.uncons (showToken t) of
-      Just (c, "") -> guard (isAlphaNum c || c == '_') >> return (Text.singleton c)
+      Just (c, "") -> guard (isAsciiAlphaNum c || c == '_') >> return (Text.singleton c)
       _ -> return (showToken t)
 
 

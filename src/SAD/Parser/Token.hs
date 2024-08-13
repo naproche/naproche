@@ -32,10 +32,10 @@ import Control.Monad.Extra (concatMapM)
 import FTLex.Ftl qualified as Ftl
 import FTLex.Tex qualified as Tex
 import Data.List qualified as List
-import Data.Char qualified as Char
 
 import SAD.Parser.Lexer
 import SAD.Core.Message qualified as Message
+import SAD.Helpers
 
 import Isabelle.Position qualified as Position
 import Isabelle.Markup qualified as Markup
@@ -178,7 +178,7 @@ texLexemesToTokens = procToken OutsideForthelEnv
           in liftA2 (++) tokens remainingTokens
         -- Character:
         lex@Tex.Character{Tex.charContent = char, Tex.charCatCode = catCode, Tex.sourcePos = PIDE_Pos pos} : rest ->
-          if Char.isAlphaNum char
+          if isAsciiAlphaNum char
             then let
                 (alphaNums, rest') = List.span isAlphaNumLex (lex : rest)
                 tokens = pure [makeAlphaNumToken alphaNums]
@@ -205,7 +205,7 @@ texLexemesToTokens = procToken OutsideForthelEnv
         Token{tokenText = text, tokenPos = pos}
 
     isAlphaNumLex :: Tex.Lexeme PIDE_Pos -> Bool
-    isAlphaNumLex Tex.Character{Tex.charContent = char} = Char.isAlphaNum char
+    isAlphaNumLex Tex.Character{Tex.charContent = char} = isAsciiAlphaNum char
     isAlphaNumLex _ = False
 
 

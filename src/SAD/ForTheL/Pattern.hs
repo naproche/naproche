@@ -23,7 +23,7 @@ module SAD.ForTheL.Pattern (
 import Control.Monad.State.Class (put, gets)
 import Data.Set qualified as Set
 import Data.List
-import Data.Char
+import Data.Char (toUpper)
 import Control.Applicative
 import Control.Monad
 import Data.Text.Lazy (Text)
@@ -34,6 +34,7 @@ import SAD.Parser.Combinators
 import SAD.Parser.Token
 import SAD.Parser.Primitives
 import SAD.Data.Formula
+import SAD.Helpers
 
 
 -- add expressions to the state of ForTheL
@@ -309,7 +310,7 @@ patNoName lxm tvr = do
 unknownAlpha :: FTL Text
 unknownAlpha = do
   l <- unknownAlphaNum
-  guard $ Text.all isAlpha l
+  guard $ Text.all isAsciiLetter l
   return $ Text.toCaseFold l
 
 slexem :: FTL Text
@@ -323,7 +324,7 @@ unknownAlphaNum = failing knownVariable >> tokenPrim isWord
     isWord t =
       let tk = showToken t
           ltk = Text.toCaseFold tk
-      in guard (Text.all isAlphaNum tk && ltk `Set.notMember` keylist) >> return tk
+      in guard (Text.all isAsciiAlphaNum tk && ltk `Set.notMember` keylist) >> return tk
     keylist = Set.fromList ["a","an","the","is","are","be"]
 
 knownVariable :: FTL PosVar
