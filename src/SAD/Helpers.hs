@@ -97,8 +97,11 @@ balance a x (T R b y (T R c z d)) = T R (T B a x b) y (T B c z d)
 balance a x (T R (T R b y c) z d) = T R (T B a x b) y (T B c z d)
 balance a x b = T B a x b
 
+
+-- * Character Categories
+
 isAsciiSymbol :: Char -> Bool
-isAsciiSymbol c = --c `elem` "`~!@$%^&*()-+=[]{}:'\"<>/?\\|;,_#"
+isAsciiSymbol c =
      ('\x0021' <= c && c <= '\x002F')
   || ('\x003A' <= c && c <= '\x0040')
   || ('\x005B' <= c && c <= '\x0060')
