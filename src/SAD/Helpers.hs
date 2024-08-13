@@ -16,7 +16,8 @@ module SAD.Helpers (
   isAsciiDigit,
   isAsciiLetter,
   isAsciiAlphaNum,
-  isAsciiPeriod
+  isAsciiPeriod,
+  parenIf
 ) where
 
 import Control.Arrow
@@ -118,3 +119,10 @@ isAsciiAlphaNum c = isAsciiLetter c || isAsciiDigit c
 
 isAsciiPeriod :: Char -> Bool
 isAsciiPeriod c = c == '\x002E'
+
+
+-- * String Operations
+
+-- | Wrap a string in parentheses if a predicate holds true.
+parenIf :: Bool -> String -> String
+parenIf pred string = if pred then "(" ++ string ++ ")" else string
