@@ -29,16 +29,17 @@ instance Show Formula where
 showFormula :: Int -> Int -> Formula -> ShowS
 showFormula p d = dive
   where
-    dive (All _ f) = showString "forall " . showBinder f
-    dive (Exi _ f) = showString "exists " . showBinder f
-    dive (Iff f g) = showParen True $ showInfix " iff "     f g
-    dive (Imp f g) = showParen True $ showInfix " implies " f g
-    dive (Or  f g) = showParen True $ showInfix " or "      f g
-    dive (And f g) = showParen True $ showInfix " and "     f g
-    dive (Tag a f) = showParen True $ shows a . showString " :: " . dive f
-    dive (Not f)   = showString "not " . dive f
-    dive Top       = showString "truth"
-    dive Bot       = showString "contradiction"
+    dive (All _ f) = showString "\\<forall>" . showBinder f
+    dive (Exi _ f) = showString "\\<exists>" . showBinder f
+    dive (Iff f g) = showParen True $ showInfix " \\<Longleftrightarrow> " f g
+    dive (Imp f g) = showParen True $ showInfix " \\<Longrightarrow> " f g
+    dive (Or  f g) = showParen True $ showInfix " \\<or> " f g
+    dive (And f g) = showParen True $ showInfix " \\<and> " f g
+    dive (Tag a f) = showParen True $ shows a . showString " \\<Colon> " . dive f
+    dive (Not Trm{trmName = TermEquality, trmArgs = [l,r]}) = showInfix " \\<noteq> " l r
+    dive (Not f)   = showString "\\<not>" . dive f
+    dive Top       = showString "\\<top>"
+    dive Bot       = showString "\\<bottom>"
     dive ThisT     = showString "ThisT"
 
     dive t@Trm{trmName = TermThesis} = showString "thesis"
@@ -58,7 +59,7 @@ showFormula p d = dive
       let showTerm = showFormula (p - 1) d
       in  showArgumentsWith showTerm ts
 
-    showBinder f = showFormula p (d + 1) (Ind 0 Position.none) . showChar ' ' .
+    showBinder f = showFormula p (d + 1) (Ind 0 Position.none) . showChar '.' .
       showFormula p (d + 1) f
 
     showInfix operator f g = dive f . showString operator . dive g
