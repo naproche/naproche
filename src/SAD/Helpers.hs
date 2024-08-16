@@ -12,12 +12,15 @@ module SAD.Helpers (
   nubOrd,
   nubOrdBy,
   nubOrdOn,
+  
   isAsciiSymbol,
   isAsciiDigit,
   isAsciiLetter,
   isAsciiAlphaNum,
   isAsciiPeriod,
-  parenIf
+
+  parens,
+  parensIf
 ) where
 
 import Control.Arrow
@@ -123,6 +126,11 @@ isAsciiPeriod c = c == '\x002E'
 
 -- * String Operations
 
--- | Wrap a string in parentheses if a predicate holds true.
-parenIf :: Bool -> String -> String
-parenIf pred string = if pred then "(" ++ string ++ ")" else string
+-- | Wrap a string in parentheses.
+parens :: String -> String
+parens string = "(" ++ string ++ ")"
+
+-- | Wrap a string in parentheses if a predicate holds true, otherwise return
+-- the string unmodified.
+parensIf :: Bool -> String -> String
+parensIf pred string = if pred then parens string else string

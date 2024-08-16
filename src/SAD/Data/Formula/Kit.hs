@@ -284,6 +284,11 @@ isAll :: Formula -> Bool
 isAll (All _ _) = True
 isAll _ = False
 
+-- | Check whether a formula is a tagged formula
+isTag :: Formula -> Bool
+isTag (Tag _ _) = True
+isTag _ = False
+
 
 -- ** Atomic formulas
 
