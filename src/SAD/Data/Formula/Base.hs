@@ -27,21 +27,48 @@ import SAD.Export.Representation
 import Isabelle.Position qualified as Position
 
 
-data Formula =
-  All Decl Formula        | Exi Decl Formula |
-  Iff Formula Formula     | Imp Formula Formula     |
-  Or  Formula Formula     | And Formula Formula     |
-  Tag Tag Formula         | Not Formula             |
-  Top                     | Bot                     |
-  Trm { trmName :: TermName, trmArgs :: [Formula],
-        trmInfo :: [Formula], trId   :: TermId}         |
-  -- | Free variables 'Var'.
-  Var { varName :: VariableName, varInfo :: [Formula], varPosition :: Position.T } |
-  -- | This is used for representing bound variables through de Brujin indices.
-  -- @Ind n indPosition@ tells us that the variable corresponding
-  -- to this index has been quantified over at the @n@th quantifier one meets if one
-  -- traverses the formula from the inside to the outside.
-  Ind { indIndex :: Int, indPosition :: Position.T } | ThisT
+-- | A first-order formula, term or de Brujin index
+data Formula = 
+    All Decl Formula
+    -- ^ Universally quantified formula.
+  | Exi Decl Formula
+    -- ^ Existentially quantified formula.
+  | Iff Formula Formula
+    -- ^ Equivalence.
+  | Imp Formula Formula
+    -- ^ Implication.
+  | Or  Formula Formula
+    -- ^ Disjunction.
+  | And Formula Formula
+    -- ^ Conjunction.
+  | Tag Tag Formula
+    -- ^ Tagged formula.
+  | Not Formula
+    -- ^ Negation.
+  | Top
+    -- ^ True.
+  | Bot
+    -- ^ False.
+  | Trm{
+      trmName :: TermName,  -- ^ Name
+      trmArgs :: [Formula], -- ^ Arguments
+      trmInfo :: [Formula], -- ^ TODO: Add description.
+      trId :: TermId        -- ^ TODO: Add description.
+    }
+    -- ^ Atomic formula or term.
+  | Var{
+      varName :: VariableName,  -- ^ Name
+      varInfo :: [Formula],     -- ^ TODO: Add description.
+      varPosition :: Position.T -- ^ Position
+    }
+    -- ^ Free variable.
+  | Ind{
+      indIndex :: Int,          -- ^ Index (starting with 0)
+      indPosition :: Position.T -- ^ Position
+    }
+    -- ^ De Brujin index.
+  | ThisT
+    -- ^ TODO: Add description.
   deriving (Eq, Ord)
 
 trmId :: Formula -> TermId
