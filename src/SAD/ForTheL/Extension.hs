@@ -29,7 +29,8 @@ import SAD.Data.Text.Block (ProofText (..))
 import SAD.ForTheL.Base
 import SAD.ForTheL.Statement
 import SAD.ForTheL.Pattern
-import SAD.ForTheL.Reports
+import SAD.ForTheL.Reports (markupToken, markupTokenSeqOf, addPretypingReport, addMacroReport)
+import SAD.ForTheL.Reports qualified as Reports
 import SAD.Parser.Primitives
 import SAD.Parser.Base
 import SAD.Parser.Combinators
@@ -51,7 +52,7 @@ defPredicat = do
   return $ Iff (Tag HeadTerm f) g
   where
     defn = do f <- newPredicat; equiv; g <- statement; return (f,g)
-    equiv = iff <|> symbol "<=>"
+    equiv = markupTokenSeqOf Reports.defIff iffPhrases <|> symbol "<=>"
 
 defNotion :: FTL Formula
 defNotion = do
@@ -65,7 +66,7 @@ defNotion = do
       return ((n,h),u)
 
     isOrEq = token' "=" <|> isEq
-    isEq   = is >> optLL1 () (token' "equal" >> token' "to")
+    isEq   = token' "is" >> optLL1 () (token' "equal" >> token' "to")
     trm Trm {trmName = TermEquality, trmArgs = [_,t]} = t; trm t = t
 
 
@@ -76,8 +77,8 @@ sigPredicat = do
   return $ Imp (Tag HeadTerm f) g
   where
     sig    = do f <- newPredicat; imp; g <- statement </> noInfo; return (f,g)
-    imp    = token' "is" <|> token' "implies" <|> symbol "=>"
-    noInfo = art >> tokenOf' ["atom", "relation"] >> return Top
+    imp    = token' "is" <|> markupToken Reports.sigImp "implies" <|> symbol "=>"
+    noInfo = (tokenSeq' ["an", "atom"] </> tokenSeq' ["a", "relation"]) >> return Top
 
 
 sigNotion :: FTL Formula
@@ -88,14 +89,14 @@ sigNotion = do
   where
     sig = do
       (n, u) <- newNotion
-      is
+      token' "is"
       (q, f) <- anotion -|- noInfo
       let v = pVar u
       h <- (replace v (trm n) . q) <$> dig f [v]
       return ((n,h),u)
 
     noInfo =
-      art >> tokenOf' ["notion", "constant"] >> return (id,Top)
+      (tokenSeq' ["a", "notion"] </> tokenSeq' ["a", "constant"]) >> return (id,Top)
     trm Trm {trmName = TermEquality, trmArgs = [_,t]} = t; trm t = t
 
 newPredicat :: FTL Formula
@@ -152,7 +153,7 @@ pretypeVariable = do
   return $ ProofTextPretyping pos (fst tv)
   where
     typeVar = do
-      pos1 <- getPos; markupToken synonymLet "let"; vs <- varList; standFor
+      pos1 <- getPos; markupToken Reports.synonymLet "let"; vs <- varList; markupTokenSeqOf Reports.synonymLet standForPhrases
       when (Set.size vs == 0) $ fail "empty variable list in let binding"
       (g, pos2) <- wellFormedCheck (freeOrOverlapping mempty . fst) holedNotion
       let pos = Position.range_position (pos1, pos2)
@@ -171,7 +172,7 @@ pretypeVariable = do
 introduceMacro :: FTL ProofText
 introduceMacro = do
   pos1 <- getPos
-  markupToken macroLet "let"
+  markupToken Reports.macroLet "let"
   (pos2, (f, g)) <- narrow2 (prd -|- notion)
   let pos = Position.range_position (pos1, pos2)
   addMacroReport pos
@@ -182,13 +183,13 @@ introduceMacro = do
     prd, notion :: FTL (Position.T, (Formula, Formula))
     prd = wellFormedCheck (prdVars . snd) $ do
       f <- newPrdPattern singleLetterVariable
-      standFor
+      markupTokenSeqOf Reports.macroLet standForPhrases
       g <- statement
       (_, pos2) <- dot
       return (pos2, (f, g))
     notion = wellFormedCheck (funVars . snd) $ do
       (n, u) <- unnamedNotion singleLetterVariable
-      standFor
+      markupTokenSeqOf Reports.macroLet standForPhrases
       (q, f) <- anotion
       (_, pos2) <- dot
       h <- q <$> dig f [pVar u]

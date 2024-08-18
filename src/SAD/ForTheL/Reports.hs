@@ -14,6 +14,8 @@ module SAD.ForTheL.Reports (
   addMarkup,
   markupToken,
   markupTokenOf,
+  markupTokenSeq,
+  markupTokenSeqOf,
   getMarkupToken,
   getMarkupTokenOf,
   or,
@@ -21,6 +23,7 @@ module SAD.ForTheL.Reports (
   conjunctiveAnd,
   whenWhere,
   ifThen,
+  ifAndOnlyIf,
   macroLet,
   synonymLet,
   addDropReport,
@@ -32,10 +35,14 @@ module SAD.ForTheL.Reports (
   lowlevelHeader,
   proofStart,
   byAnnotation,
-  proofEnd
+  proofEnd,
+  defIff,
+  sigImp,
+  reference
 ) where
 
 import Prelude hiding (or)
+import Control.Applicative
 import Control.Monad.State.Class (modify)
 import Data.List hiding (or)
 import Data.Set (Set)
@@ -77,8 +84,14 @@ addMarkup markup parser = do
 markupToken :: Markup.T -> Text -> FTL ()
 markupToken markup = addMarkup markup . token'
 
+markupTokenSeq :: Markup.T -> [Text] -> FTL ()
+markupTokenSeq markup = mapM_ $ addMarkup markup . token'
+
 markupTokenOf :: Markup.T -> [Text] -> FTL ()
 markupTokenOf markup = addMarkup markup . tokenOf'
+
+markupTokenSeqOf :: Markup.T -> [[Text]] -> FTL ()
+markupTokenSeqOf markup = foldr ((<|>) . mapM_ (addMarkup markup . token')) empty
 
 getMarkupToken :: Markup.T -> Text -> FTL Text
 getMarkupToken markup = addMarkup markup . getToken'
@@ -170,6 +183,8 @@ byAnnotation :: Markup.T
 byAnnotation = Markup.keyword2
 ifThen :: Markup.T
 ifThen = Markup.keyword2
+ifAndOnlyIf :: Markup.T
+ifAndOnlyIf = Markup.keyword2
 conjunctiveAnd :: Markup.T
 conjunctiveAnd = Markup.keyword2 -- as opposed to listing "and"
 neitherNor :: Markup.T
@@ -178,3 +193,9 @@ whenWhere :: Markup.T
 whenWhere = Markup.keyword2
 or :: Markup.T
 or = Markup.keyword2
+defIff :: Markup.T
+defIff = Markup.keyword2
+sigImp :: Markup.T
+sigImp = Markup.keyword2
+reference :: Markup.T
+reference = Markup.keyword2

@@ -544,65 +544,18 @@ freeOrOverlapping vs f
 
 -- * Macro expressions
 
--- | @"," | "and"@
-comma :: FTL ()
-comma = tokenOf' [",", "and"]
+iffPhrases :: [[Text]]
+iffPhrases = [
+    ["iff"],
+    ["if", "and", "only", "if"],
+    ["when", "and", "only", "when"]
+  ]
 
--- | @"is" | "be" | "are"@
-is :: FTL ()
-is = tokenOf' ["is", "be", "are"]
-
--- | An article
-art :: FTL ()
-art = opt () $ tokenOf' ["a", "an", "the"]
-
--- | An indefinite article
-an :: FTL ()
-an = tokenOf' ["a", "an"]
-
--- | A definite article
-the :: FTL ()
-the = token' "the"
-
--- | @"iff" | "if and only if" | "when and only when"@
-iff :: FTL ()
-iff = token' "iff" <|> mapM_ token' ["if", "and", "only", "if"] <|> mapM_ token' ["when", "and", "only", "when"]
-
--- | Q"that"@
-that :: FTL ()
-that = token' "that"
-
--- | @"denote" | "stand for"@
-standFor :: FTL ()
-standFor = token' "denote" <|> (token' "stand" >> token' "for")
-
--- | @"->"@
-arrow :: FTL ()
-arrow = symbol "->"
-
--- | @"there" ("is" | "are" | "exist" | "exists")@
-there :: FTL ()
-there = token' "there" >> tokenOf' ["is", "are", "exist", "exists"]
-
--- | @"does" | "do"@
-does :: FTL ()
-does = opt () $ tokenOf' ["does", "do"]
-
--- | @"has" | "have"@
-has :: FTL ()
-has = tokenOf' ["has" , "have"]
-
--- | @"with" | "of" | "having"@
-with :: FTL ()
-with = tokenOf' ["with", "of", "having"]
-
--- | @"such" | "so"@
-such :: FTL ()
-such = tokenOf' ["such", "so"]
-
--- | @"in" | "\\in"@
-elementOf :: FTL ()
-elementOf = token' "in" <|> texCommand "in"
+standForPhrases :: [[Text]]
+standForPhrases = [
+    ["denote"],
+    ["stand", "for"]
+  ]
 
 -- | Keywords not allowed as variable names
 keywords :: [Text]

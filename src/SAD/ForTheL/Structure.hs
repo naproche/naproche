@@ -29,7 +29,8 @@ import SAD.ForTheL.Base
 import SAD.ForTheL.Statement
 import SAD.ForTheL.Extension
 import SAD.ForTheL.Instruction
-import SAD.ForTheL.Reports
+import SAD.ForTheL.Reports (addBlockReports, getMarkupToken, getMarkupTokenOf, markupToken, markupTokenOf, markupTokenSeqOf)
+import qualified SAD.ForTheL.Reports as Reports
 import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Parser.Token
@@ -99,7 +100,7 @@ topLevelSectionFtl =
 -- @"signature" [<identifier>] "." <signatureBody>@
 signatureFtl :: FTL ProofText
 signatureFtl = do
-  markupToken sectionHeader "signature"
+  markupToken Reports.sectionHeader "signature"
   label <- optLL1 Nothing (Just <$> identifier)
   dot
   content <- signatureBody
@@ -109,7 +110,7 @@ signatureFtl = do
 -- @"definition" [<identifier>] "." <definitionBody>@
 definitionFtl :: FTL ProofText
 definitionFtl = do
-  markupToken sectionHeader "definition"
+  markupToken Reports.sectionHeader "definition"
   label <- optLL1 Nothing (Just <$> identifier)
   dot
   content <- definitionBody
@@ -119,7 +120,7 @@ definitionFtl = do
 -- @"axiom" [<identifier>] "." <axiomBody>@
 axiomFtl :: FTL ProofText
 axiomFtl = do
-  markupToken sectionHeader "axiom"
+  markupToken Reports.sectionHeader "axiom"
   label <- optLL1 Nothing (Just <$> identifier)
   dot
   content <- axiomBody
@@ -130,7 +131,7 @@ axiomFtl = do
 -- <theoremBody>@
 theoremFtl :: FTL ProofText
 theoremFtl = do
-  markupTokenOf sectionHeader ["theorem", "proposition", "lemma", "corollary"]
+  markupTokenOf Reports.sectionHeader ["theorem", "proposition", "lemma", "corollary"]
   label <- optLL1 Nothing (Just <$> identifier)
   dot
   content <- theoremBody
@@ -154,8 +155,8 @@ beginTopLevelSection :: [Text] -> FTL (Text,Bool)
 beginTopLevelSection keywords = do
   texCommand "begin" <?> "\\begin"
   symbol "{" <?> "{"
-  key <- getMarkupTokenOf sectionHeader keywords
-  starred <- optLL1 False $ getMarkupToken sectionHeader "*" >> pure True
+  key <- getMarkupTokenOf Reports.sectionHeader keywords
+  starred <- optLL1 False $ getMarkupToken Reports.sectionHeader "*" >> pure True
   symbol "}" <?> "}"
   return (key,starred)
 
@@ -166,8 +167,8 @@ endTopLevelSection :: Text -> Bool -> FTL ()
 endTopLevelSection keyword starred = do
   texCommand "end" <?> "\\end"
   symbol "{" <?> "{"
-  getMarkupToken sectionHeader keyword <?> keyword
-  when starred (markupToken sectionHeader "*" <?> "*")
+  getMarkupToken Reports.sectionHeader keyword <?> keyword
+  when starred (markupToken Reports.sectionHeader "*" <?> "*")
   symbol "}" <?> "}"
 
 -- | Parse a signature (TEX):
@@ -344,9 +345,9 @@ finishWithoutLink = finish $ return []
 
 -- | Parses an optionsl link expression, i.e. "(by ...)"
 optLink :: FTL [Text]
-optLink = optLL1 [] $ parenthesised $ token' "by" >> identifiers
+optLink = optLL1 [] $ parenthesised $ markupToken Reports.reference "by" >> identifiers
   where
-    identifiers = reference `sepByLL1` comma
+    identifiers = reference `sepByLL1` tokenOf' [",", "and"]
     reference =
           texCommandWithArg "ref" identifier
       <|> texCommandWithArg "nameref" identifier
@@ -449,19 +450,17 @@ hence = optLL1 () $ tokenOf' ["then", "hence", "thus", "therefore", "consequentl
 
 -- | @[ ("let" "us") | ("we" "can") ]@
 letUs :: FTL ()
-letUs = optLL1 () $ (mu "let" >> mu "us") <|> (mu "we" >> mu "can")
-  where
-    mu = markupToken lowlevelHeader
+letUs = optLL1 () $ markupTokenSeqOf Reports.lowlevelHeader [["let",  "us"], ["we", "can"]]
 
 -- | Header for choice expressions:
 -- @[ <hence> ] [ <letUs> ] ("choose" | "take" | "consider")@
 choiceHeader :: FTL ()
-choiceHeader = hence >> letUs >> markupTokenOf lowlevelHeader ["choose", "take", "consider"]
+choiceHeader = hence >> letUs >> markupTokenOf Reports.lowlevelHeader ["choose", "take", "consider"]
 
 -- | Header for case hypothesis:
 -- @"case"@
 caseHeader :: FTL ()
-caseHeader = markupToken lowlevelHeader "case"
+caseHeader = markupToken Reports.proofStart "case"
 
 -- | Header for affirmation:
 -- @<hence>@
@@ -471,14 +470,14 @@ affirmationHeader = hence
 -- | Header for assumption:
 -- @"let" | (<letUs> ("assume" | "presume" | "suppose") ["that"])
 assumptionHeader :: FTL ()
-assumptionHeader = lus </> markupToken lowlevelHeader "let"
+assumptionHeader = lus </> markupToken Reports.lowlevelHeader "let"
   where
-    lus = letUs >> markupTokenOf lowlevelHeader ["assume", "presume", "suppose"] >> optLL1 () that
+    lus = letUs >> markupTokenOf Reports.lowlevelHeader ["assume", "presume", "suppose"] >> optLL1 () (token' "that")
 
 -- | Low-leve definition header:
 -- @"define"@
 lowLevelDefinitionHeader :: FTL ()
-lowLevelDefinitionHeader = markupToken lowlevelHeader "define"
+lowLevelDefinitionHeader = markupToken Reports.lowlevelHeader "define"
 
 
 -- * Generic sentence parser
@@ -570,23 +569,23 @@ data Scheme =
 letUsShowThat :: FTL Scheme
 letUsShowThat = do
   letUs
-  markupTokenOf lowlevelHeader ["prove", "show", "demonstrate"]
+  markupTokenOf Reports.lowlevelHeader ["prove", "show", "demonstrate"]
   method <- optLL1 Raw byProofMethod
-  markupToken lowlevelHeader "that"
+  markupToken Reports.lowlevelHeader "that"
   return method
 
 -- | Confirmation header (FTL):
 -- @"indeed"@
 ftlConfirmationHeader :: FTL Scheme
 ftlConfirmationHeader = do
-  markupToken proofStart "indeed"
+  markupToken Reports.proofStart "indeed"
   return Short
 
 -- | Proof header (FTL)
 -- @"proof" [<byProofMethod>] "."@
 ftlProofHeader :: FTL Scheme
 ftlProofHeader = do
-  markupToken proofStart "proof"
+  markupToken Reports.proofStart "proof"
   method <- optLL1 Raw byProofMethod
   dot
   return method
@@ -595,7 +594,7 @@ ftlProofHeader = do
 -- @"\\begin" "{" "proof" "}" ["[" <byProofMethod> "]"]
 texProofHeader :: FTL Scheme
 texProofHeader = do
-  texBegin (markupToken proofStart "proof")
+  texBegin (markupToken Reports.proofStart "proof")
   optLL1 Raw $ do
     symbolNotAfterSpace "["
     method <- byProofMethod
@@ -605,7 +604,7 @@ texProofHeader = do
 -- | Proof method:
 -- @"by" ("contradiction" | "case" "analysis" | "induction" ["on" <sTerm>])
 byProofMethod :: FTL Scheme
-byProofMethod = markupToken byAnnotation "by" >> (contradiction <|> caseAnalysis <|> induction)
+byProofMethod = markupToken Reports.byAnnotation "by" >> (contradiction <|> caseAnalysis <|> induction)
   where
     contradiction = token' "contradiction" >> return Contradiction
     caseAnalysis = token' "case" >> token' "analysis" >> return Raw
@@ -614,12 +613,12 @@ byProofMethod = markupToken byAnnotation "by" >> (contradiction <|> caseAnalysis
 -- | Proof end (FTL):
 -- @"qed" | "end" | "trivial" | "obvious"@
 ftlProofEnd :: FTL ()
-ftlProofEnd = label "qed" $ markupTokenOf proofEnd ["qed", "end", "trivial", "obvious"]
+ftlProofEnd = label "qed" $ markupTokenOf Reports.proofEnd ["qed", "end", "trivial", "obvious"]
 
 -- | Proof end (TEX):
 -- @"\\end" "{" "proof" "}"@
 texProofEnd :: FTL ()
-texProofEnd = label "qed" . texEnd $ markupToken proofEnd "proof"
+texProofEnd = label "qed" . texEnd $ markupToken Reports.proofEnd "proof"
 
 -- | Creation of induction thesis.
 indThesis :: Formula -> Scheme -> Scheme -> FTL Formula

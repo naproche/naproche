@@ -29,9 +29,9 @@ import Data.Set qualified as Set
 import SAD.Data.Formula
 import SAD.Data.Text.Decl
 import SAD.ForTheL.Base
-import SAD.ForTheL.Reports (markupToken, markupTokenOf)
+import SAD.ForTheL.Reports (markupToken, markupTokenOf, markupTokenSeqOf)
 import SAD.Parser.Combinators
-import SAD.Parser.Primitives (token, token', symbol, tokenOf')
+import SAD.Parser.Primitives (token, token', symbol, tokenOf', tokenSeq')
 import SAD.ForTheL.Reports qualified as Reports
 
 
@@ -46,7 +46,7 @@ headed = quantifiedStatement <|> ifThenStatement <|> wrongStatement
       (markupToken Reports.ifThen "if" >> statement)
       (markupToken Reports.ifThen "then" >> statement)
     wrongStatement =
-      mapM_ token' ["it", "is", "wrong", "that"] >> fmap Not statement
+      tokenSeq' ["it", "is", "wrong", "that"] >> fmap Not statement
 
 
 chained :: FTL Formula
@@ -73,7 +73,7 @@ chainEnd f = optLL1 f $ and_st <|> or_st <|> iff_st <|> where_st
   where
     and_st = fmap (And f) $ markupToken Reports.conjunctiveAnd "and" >> headed
     or_st = fmap (Or f) $ markupToken Reports.or "or" >> headed
-    iff_st = fmap (Iff f) $ iff >> statement
+    iff_st = fmap (Iff f) $ markupTokenSeqOf Reports.ifAndOnlyIf iffPhrases >> statement
     where_st = do
       markupTokenOf Reports.whenWhere ["when", "where"]; y <- statement
       return $ foldr mkAll (Imp y f) (declNames mempty y)
@@ -87,20 +87,20 @@ atomic = label "atomic statement"
 
 
 thesis :: FTL Formula
-thesis = art >> (thes <|> contrary <|> contradiction)
+thesis = (thes </> contrary) <|> contradiction
   where
-    thes = token' "thesis" >> return mkThesis
-    contrary = token' "contrary" >> return (Not mkThesis)
-    contradiction = token' "contradiction" >> return Bot
+    thes = tokenSeq' ["the", "thesis"] >> return mkThesis
+    contrary = tokenSeq' ["the", "contrary"] >> return (Not mkThesis)
+    contradiction = opt() (token' "a") >> token' "contradiction" >> return Bot
 
 
 thereIs :: FTL Formula
-thereIs = label "there-is statement" $ there >> (noNotion -|- notions)
+thereIs = label "there-is statement" $ token' "there" >> tokenOf' ["is", "are", "exist", "exists"] >> (noNotion -|- notions)
   where
     noNotion = label "no-notion" $ do
       token' "no"; (q, f, vs) <- declared =<< notion;
       return $ Not $ foldr mbdExi (q f) vs
-    notions = fmap multExi $ art >> (declared =<< notion) `sepBy` comma
+    notions = fmap multExi $ opt () (tokenOf' ["a", "an"]) >> (declared =<< notion) `sepBy` tokenOf' [",", "and"]
 
 
 simple :: FTL Formula
@@ -138,17 +138,17 @@ lateQuantifiers = optLL1 id quantifierChain
 
 doesPredicate :: FTL Formula
 doesPredicate = label "does predicate" $
-  (does >> (doP -|- multiDoP)) <|> hasP <|> isChain
+  (opt () (tokenOf' ["does", "do"]) >> (doP -|- multiDoP)) <|> hasP <|> isChain
   where
     doP = predicate primVer
     multiDoP = multiPredicate primMultiVer
-    hasP = has >> hasPredicate
-    isChain = is  >> conjChain (isAPredicate -|- isPredicate)
+    hasP = tokenOf' ["has" , "have"] >> hasPredicate
+    isChain = tokenOf' ["is", "are", "be"] >> conjChain (isAPredicate -|- isPredicate)
 
 
 isPredicate :: FTL Formula
 isPredicate = label "is predicate" $
-  pAdj -|- pMultiAdj -|- (with >> hasPredicate)
+  pAdj -|- pMultiAdj -|- (tokenOf' ["with", "of", "having"] >> hasPredicate)
   where
     pAdj = predicate primAdj
     pMultiAdj = multiPredicate primMultiAdj
@@ -168,10 +168,10 @@ isAPredicate = label "isA predicate" $ notNotion <|> notion
 hasPredicate :: FTL Formula
 hasPredicate = label "has predicate" $ noPossessive <|> possessive
   where
-    possessive = art >> common <|> nonbinary
-    nonbinary = fmap (Tag Dig . multExi) $ (declared =<< possess) `sepBy` (comma >> art)
+    possessive = opt () (tokenOf' ["a", "an"]) >> common <|> nonbinary
+    nonbinary = fmap (Tag Dig . multExi) $ (declared =<< possess) `sepBy` (tokenOf' [",", "and"] >> opt () (tokenOf' ["a", "an"]))
     common = token' "common" >>
-      fmap multExi (fmap digadd (declared =<< possess) `sepBy` comma)
+      fmap multExi (fmap digadd (declared =<< possess) `sepBy` tokenOf' [",", "and"])
 
     noPossessive = nUnary -|- nCommon
     nUnary = do
@@ -234,12 +234,12 @@ gnotion nt ra = do
   where
     la = opt [] $ liftA2 (:) lc la
     lc = predicate primUnAdj </> multiPredicate primMultiUnAdj
-    thatClause = that >> conjChain doesPredicate <?> "that clause"
+    thatClause = token' "that" >> conjChain doesPredicate <?> "that clause"
 
 
 anotion :: FTL (Formula -> Formula, Formula)
 anotion = label "notion (at most one name)" $
-  art >> gnotion baseNotion rat >>= single >>= hole
+  opt () (tokenOf' ["a", "an", "the"]) >> gnotion baseNotion rat >>= single >>= hole
   where
     hole (q, f, v) = return (q, subst (mkVar (VarHole "")) (posVarName v) f)
     rat = fmap (Tag Dig) suchThatAttr
@@ -252,7 +252,7 @@ possess = label "possesive notion" $ gnotion (primOfNotion term) suchThatAttr >>
 
 
 suchThatAttr :: FTL Formula
-suchThatAttr = label "such-that attribute" $ such >> that >> statement
+suchThatAttr = label "such-that attribute" $ tokenOf' ["such", "so"] >> token' "that" >> statement
 
 digadd :: (a, Formula, c) -> (a, Formula, c)
 digadd (q, f, v) = (q, Tag Dig f, v)
@@ -269,7 +269,7 @@ single (q, f, vs) = case Set.elems vs of
 
 terms :: FTL (Formula -> Formula, [Formula])
 terms = label "terms" $
-  foldl1 alg <$> (subTerm `sepBy` comma)
+  foldl1 alg <$> (subTerm `sepBy` tokenOf' [",", "and"])
   where
     subTerm = quantifiedNotion -|- fmap toMulti definiteTerm
     toMulti (q, t) = (q, [t])
@@ -305,7 +305,7 @@ quantifiedNotion = label "quantified notion" $
 definiteTerm :: FTL (Formula -> Formula, Formula)
 definiteTerm = label "definiteTerm" $  symbolicTerm -|- definiteNoun
   where
-    definiteNoun = label "definiteNoun" $ optParenthesised (art >> primFun term)
+    definiteNoun = label "definiteNoun" $ optParenthesised (opt () (token' "the") >> primFun term)
 
 
 symbolicTerm :: FTL (a -> a, Formula)
@@ -418,7 +418,7 @@ classEquality = twoClassTerms </> oneClassTerm
 -- Choice
 
 choice :: FTL Formula
-choice = fmap (foldl1 And) $ (art >> takeLongest namedNotion) `sepByLL1` comma
+choice = fmap (foldl1 And) $ (opt () (tokenOf' ["a", "an", "the"]) >> takeLongest namedNotion) `sepByLL1` tokenOf' [",", "and"]
   where
     namedNotion = label "named notion" $ do
       (q, f, vs) <- notion; guard (all isExplicitName $ map posVarName $ Set.toList vs); return $ q f
@@ -487,7 +487,7 @@ symbClassNotation = texClass </> cndClass </> finiteSet
 
     classSep = do
       t <- sTerm
-      elementOf
+      token' "in" <|> texCommand "in"
       clssTrm <- (Left <$> sTerm) </> (Right <$> symbClassNotation)
       case clssTrm of
         Left s -> pure (id, flip mkElem s, t, \v -> mkClass v `And` (mkSet s `Imp` mkSet v))
@@ -531,7 +531,7 @@ cases = do
     ld_case = do
       optLL1 () (token' "case")
       condition <- statement
-      arrow
+      symbol "->"
       c <- chooseInTerm
       return (Tag Condition . Imp condition . c)
 
@@ -553,15 +553,15 @@ texCases = do
 
 chooseInTerm :: FTL (Formula -> Formula)
 chooseInTerm = optInText $ do
-  chs <- optLL1 [] $ after (ld_choice `sepByLL1` token ",") elementOf
+  chs <- optLL1 [] $ after (ld_choice `sepByLL1` token ",") (token' "in" <|> texCommand "in")
   f   <- term -|- defTerm; return $ flip (foldr ($)) chs . f
   where
     ld_choice = chc <|> def
     chc = do
-      token' "choose"; (q, f, vs) <- art >> notion >>= declared
+      markupToken Reports.lowlevelHeader "choose"; (q, f, vs) <- opt () (tokenOf' ["a", "an"]) >> notion >>= declared
       return $ flip (foldr dExi) vs . And (q f)
     def = do
-      token' "define"; x <- var; xDecl <- makeDecl x; token "="
+      markupToken Reports.lowlevelHeader "define"; x <- var; xDecl <- makeDecl x; token "="
       ap <- ld_class <|> lambda
       return $ dExi xDecl . And (Tag Defined $ ap $ pVar x)
 
@@ -589,7 +589,7 @@ lambdaIn = do
   t <- oneArgument </> parenthesised twoArguments
   vs <- fvToVarSet <$> freeVars t
   vsDecl <- makeDecls vs
-  elementOf
+  token' "in" <|> texCommand "in"
   dom <- ld_dom
   let df_head f = foldr ((.) . (\x g -> dAll x (mkObject (mkVar (declName x)) `Imp` g))) (Imp (t `mkElem` mkDom f)) vsDecl
   return (t, df_head, \f -> dom f t vsDecl)
@@ -623,7 +623,7 @@ conjChain :: FTL Formula -> FTL Formula
 conjChain = fmap (foldl1 And) . flip sepBy (token' "and")
 
 quantifierChain :: FTL (Formula -> Formula)
-quantifierChain = fmap (foldl fld id) $ token' "for" >> quantifiedNotion `sepByLL1` comma
+quantifierChain = fmap (foldl fld id) $ token' "for" >> quantifiedNotion `sepByLL1` tokenOf' [",", "and"]
 -- we can use LL1 here, since there must always follow a parser belonging to the
 -- same non-terminal
   where

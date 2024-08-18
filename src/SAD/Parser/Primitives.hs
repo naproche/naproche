@@ -26,6 +26,10 @@ module SAD.Parser.Primitives (
   tokenPos',
   tokenOf,
   tokenOf',
+  tokenSeq,
+  tokenSeq',
+  tokenSeqOf,
+  tokenSeqOf',
   getToken,
   getToken',
   getTokenOf,
@@ -34,6 +38,7 @@ module SAD.Parser.Primitives (
   symbolNotAfterSpace
 ) where
 
+import Control.Applicative
 import Control.Monad (void, guard)
 import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
@@ -151,11 +156,30 @@ tokenPos' s = do
 tokenOf :: [Text] -> Parser st ()
 tokenOf = void . getTokenOf
 
+-- | A sequence of tokens.
+tokenSeq :: [Text] -> Parser st ()
+tokenSeq = mapM_ token
+
+-- | @tokenSeqOf tokSeqs@ succeeds iff one of the token sequences in @tokSeq@
+-- can be consumed.
+tokenSeqOf :: [[Text]] -> Parser st ()
+tokenSeqOf = foldr ((<|>) . tokenOf) empty
+
 -- | Case-insensitive version of @tokenOf@. All arguments are assumed to be in
 -- folded case.
 {-# INLINE tokenOf' #-}
 tokenOf' :: [Text] -> Parser st ()
 tokenOf' = void . getTokenOf'
+
+-- | Case-insensitive version of @tokenSeq@. All arguments are assumed to be
+-- in folded case.
+tokenSeq' :: [Text] -> Parser st ()
+tokenSeq' = mapM_ token'
+
+-- | Case-insensitive version of @tokenSeqOf@. All arguments are assumed to be
+-- in folded case.
+tokenSeqOf' :: [[Text]] -> Parser st ()
+tokenSeqOf' = foldr ((<|>) . mapM_ token') empty
 
 getToken :: Text -> Parser st Text
 getToken = satisfy . (==)
