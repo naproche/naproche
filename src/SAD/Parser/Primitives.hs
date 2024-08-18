@@ -184,8 +184,8 @@ symbolNotAfterSpace :: Text -> Parser st ()
 symbolNotAfterSpace s = do
   lastPos <- getLastPos
   let notAfterSpace tok = case Position.offset_of (tokenPos tok) of
-        Just n -> case Position.offset_of lastPos of
-          Just m -> n == m + 1
+        Just n -> case Position.end_offset_of lastPos of
+          Just m -> n == m
           Nothing -> False
         Nothing -> False
   tokenGuard notAfterSpace (symbol s)
