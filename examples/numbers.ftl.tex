@@ -284,7 +284,7 @@ If $x \neq 0$ then $x \cdot x > 0$.
 \end{proposition}
 \begin{proof}
 Let $x \neq 0$.
-Case $x > 0$. Then thesis. end.
+Case $x > 0$. Then the thesis. end.
 Case $x < 0$. Then $ -x > 0$. end.
 \end{proof}
 
@@ -594,27 +594,27 @@ Then $A = \mathbb{N}$.
 
 \begin{proof}
 Let us show that every element of $\mathbb{N}$ is an element of $A$.
-	Let $n \in \mathbb{N}$.
-	Assume the contrary.
-	Define $F = \{  j \in \mathbb{N} \mid j \notin A\}$.
-	$F$ is nonempty. $F$ is bounded below.
+  Let $n \in \mathbb{N}$.
+  Assume the contrary.
+  Define $F = \{  j \in \mathbb{N} \mid j \notin A\}$.
+  $F$ is nonempty. $F$ is bounded below.
   Take a greatest lower bound $a$ of $F$.
-	Let us show that $a+1$ is a lower bound of $F$.
-		Let $x \in F$. $x - 1 \in \mathbb{Z}$.
+  Let us show that $a+1$ is a lower bound of $F$.
+    Let $x \in F$. $x - 1 \in \mathbb{Z}$.
 
-		Case $x - 1 < 0$. Then $0 < x < 1$. Contradiction. end.
+    Case $x - 1 < 0$. Then $0 < x < 1$. Contradiction. end.
 
-		Case $x - 1 = 0$. Then $x = 1$ and $1 \notin A$. Contradiction. end.
+    Case $x - 1 = 0$. Then $x = 1$ and $1 \notin A$. Contradiction. end.
 
-		Case $x - 1 > 0$. Then $x - 1 \in \mathbb{N}$.
+    Case $x - 1 > 0$. Then $x - 1 \in \mathbb{N}$.
       $x - 1 \notin A$. Indeed $(x - 1) + 1 = x \notin A$. $x - 1 \in F$.
-			$a \leq x - 1$.
-			$a + 1 \leq (x - 1) + 1 = x$.
-		end.
-	end.
+      $a \leq x - 1$.
+      $a + 1 \leq (x - 1) + 1 = x$.
+    end.
+  end.
 
-	Then $a+1 > a$.
-	Contradiction.
+  Then $a+1 > a$.
+  Contradiction.
 end.
 \end{proof}
 

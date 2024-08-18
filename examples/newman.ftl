@@ -44,14 +44,14 @@ Let R be a rewriting system.
     Let us demonstrate by induction that for all a,b,c
     such that a -R*> b,c there exists d such that b,c -R*> d.
         Let a,b,c be terms.
-        Let us show that if a -R+> b,c then thesis.
+        Let us show that if a -R+> b,c then the thesis.
             Assume a -R+> b,c.
 
             Take u such that a -R> u -R*> b.
             Take v such that a -R> v -R*> c.
             Take w such that u,v -R*> w.
             Take a normal form d of w in R.
-    
+
             b -R*> d. Indeed take x such that b,d -R*> x.
             c -R*> d. Indeed take y such that c,d -R*> y.
         End.

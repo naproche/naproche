@@ -36,9 +36,9 @@
 
   \begin{imports}
     \begin{forthel}
-      %[prove off][check off]
+      [prove off][check off]
       [readtex \path{libraries/source/arithmetics/natural-numbers.ftl.tex}]
-      %[prove on][check on]
+      [prove on][check on]
     \end{forthel}
   \end{imports}
 
@@ -47,10 +47,10 @@
 
   \begin{forthel}
     \begin{signature*}
-      A expression is a notion.
+      An expression is a notion.
     \end{signature*}
   
-    Let $A, B$ denote expressions.
+    Let $E, E'$ denote expressions.
   
     \begin{signature*}
       A variable is an expression.
@@ -63,17 +63,17 @@
     \end{signature*}
   
     \begin{signature*}[Abstraction]\label{abstraction}
-      $\abs{n}{A}$ is an expression.
+      $\abs{n}{E}$ is an expression.
     \end{signature*}
   
     \begin{signature*}[Application]\label{application}
-      $\app{A}{B}$ is an expression.
+      $\app{E}{E'}$ is an expression.
     \end{signature*}
   
     \begin{signature*}[Fixed-point combinator]\label{fixed_point_combinator}
       $\fix$ is an expression such that
-      \[\app{\fix}{A} = \app{A}{\app{\fix}{A}}\]
-      for every expression $A$.
+      \[\app{\fix}{E} = \app{E}{\app{\fix}{E}}\]
+      for every expression $E$.
     \end{signature*}
   \end{forthel}
 
@@ -83,29 +83,32 @@
   \noindent We extend this $\lambda$-calculus by a fragment of propositional
   logic:
 
-  \begin{forthel}
+  \begin{forthel}  
+    Let $E, E'$ denote expressions.
+    Let $n$ stand for a natural number.
+
     \begin{signature*}[Implication]\label{implication}
-      $A \rightarrow B$ is an expression.
+      $E \rightarrow E'$ is an expression.
     \end{signature*}
   
     \begin{signature*}[Truth]\label{truth}
-      $A$ is true is a relation.
+      $E$ is true is a relation.
     \end{signature*}
   
     \begin{axiom*}[$\beta$-reduction]\label{beta_reduction}
-      $\app{\abs{n}{\var{n} \rightarrow B}}{A} = A \rightarrow B$.
+      $\app{\abs{n}{\var{n} \rightarrow E'}}{E} = E \rightarrow E'$.
     \end{axiom*}
   
     \begin{axiom*}[Reflexivity]\label{reflexivity}
-      $A \rightarrow A$ is true.
+      $E \rightarrow E$ is true.
     \end{axiom*}
   
     \begin{axiom*}[Modus Ponens]\label{modus_ponens}
-      If $A$ is true and $A \rightarrow B$ is true then $B$ is true.
+      If $E$ is true and $E \rightarrow E'$ is true then $E'$ is true.
     \end{axiom*}
   
     \begin{axiom*}[Strengthening]\label{strengthening}
-      If $A \rightarrow (A \rightarrow B)$ is true then $A \rightarrow B$ is true.
+      If $E \rightarrow (E \rightarrow E')$ is true then $E \rightarrow E'$ is true.
     \end{axiom*}
   \end{forthel}
 
@@ -113,29 +116,29 @@
   \section*{Curry's paradox}
 
   \noindent Using the fixpoint combinator from above we can formulate a 
-  self-referential expression $X$ of the form ``If $X$ is true then $A$ is
-  true'' for any arbitrary expression $A$ by defining
-  $X = \app{\fix}{\abs{0}{\var{0} \rightarrow A}}$.
+  self-referential expression $X$ of the form ``If $X$ is true then $E$ is
+  true'' for any arbitrary expression $E$ by defining
+  $X = \app{\fix}{\abs{0}{\var{0} \rightarrow E}}$.
   From the existence of such an expression $X$ together with the above axioms 
-  we can then derive that any expression $A$ is true.
+  we can then derive that any expression $E$ is true.
 
   \begin{forthel}
     \begin{theorem*}[Curry's paradox]\label{curry_paradox}
       Every expression is true.
     \end{theorem*}
     \begin{proof}
-      Let $A$ be an expression.
-      Take $N = \abs{0}{\var{0} \rightarrow A}$ and $X = \app{\fix}{N}.$
+      Let $E$ be an expression.
+      Take $N = \abs{0}{\var{0} \rightarrow E}$ and $X = \app{\fix}{N}.$
   
-      (1) Then $X = \app{N}{X} = X \rightarrow A$ (by \nameref{beta_reduction}).
+      (1) Then $X = \app{N}{X} = X \rightarrow E$ (by \nameref{beta_reduction}).
   
-      Hence $X \rightarrow (X \rightarrow A)$ is true (by 1, \nameref{reflexivity}).
+      Hence $X \rightarrow (X \rightarrow E)$ is true (by 1, \nameref{reflexivity}).
   
-      (2) Thus $X \rightarrow A$ is true (by \nameref{strengthening}).
+      (2) Thus $X \rightarrow E$ is true (by \nameref{strengthening}).
   
       (3) Therefore $X$ is true (by 1, 2).
   
-      Consequently $A$ is true (by \nameref{modus_ponens}, 2, 3).
+      Consequently $E$ is true (by \nameref{modus_ponens}, 2, 3).
     \end{proof}
   \end{forthel}
 

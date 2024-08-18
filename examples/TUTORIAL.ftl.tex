@@ -393,8 +393,10 @@ small bibliography whilst still being a correct ForTheL formalization.
 \begin{exercise}
 Write a formalization of the real numbers as a ring in a language
 that has $+,\cdot,-,0,1$. You may use the ASCII format (observe that
-in that format, lines starting with a \verb+#+ are interpreted
-as comment).
+in that format, lines starting with a \texttt{\#} % We must escape '#'
+% (and hence use \texttt instead of \verb) since otherwise FTLex would
+% interpret '#' as a parameter character with a missing number.
+are interpreted as comment).
 \end{exercise}
 
 

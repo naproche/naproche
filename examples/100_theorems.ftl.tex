@@ -1780,7 +1780,7 @@ Let $a,b$ be integers such that $a < b$.
 Then $a + 1 \leq b$.
 \end{lemma}
 \begin{proof}
-Assume contrary. Let $c = a+1$. $c>b$.
+Assume the contrary. Let $c = a+1$. $c>b$.
 Then $a < b < a + 1$. Thus $a - a = 0 < b - a < (a + 1) - a = 1$. Then $b - a$ is an integer
 and $0 < b - a < 1$. Contradiction.
 \end{proof}
@@ -1811,27 +1811,27 @@ Then $A = \mathbb{N}$.
 
 \begin{proof}
 Let us show that every element of $\mathbb{N}$ is an element of $A$.
-	Let $n \in \mathbb{N}$.
-	Assume the contrary.
-	Define $F = \{  j \in \mathbb{N} \mid j \notin A\}$.
-	$F$ is nonempty. $F$ is bounded below.
+  Let $n \in \mathbb{N}$.
+  Assume the contrary.
+  Define $F = \{  j \in \mathbb{N} \mid j \notin A\}$.
+  $F$ is nonempty. $F$ is bounded below.
   Take an infimum $a$ of $F$.
-	Let us show that $a+1$ is a lower bound of $F$.
-		Let $x \in F$. $x - 1 \in \mathbb{Z}$.
+  Let us show that $a+1$ is a lower bound of $F$.
+    Let $x \in F$. $x - 1 \in \mathbb{Z}$.
 
-		Case $x - 1 < 0$. Then $0 < x < 1$. Contradiction. End.
+    Case $x - 1 < 0$. Then $0 < x < 1$. Contradiction. End.
 
-		Case $x - 1 = 0$. Then $x = 1$ and $1 \notin A$. Contradiction. End.
+    Case $x - 1 = 0$. Then $x = 1$ and $1 \notin A$. Contradiction. End.
 
-		Case $x - 1 > 0$. Then $x - 1 \in \mathbb{N}$.
+    Case $x - 1 > 0$. Then $x - 1 \in \mathbb{N}$.
       $x - 1 \notin A$. Indeed $(x - 1) + 1 = x \notin A$. $x - 1 \in F$.
-			$a \leq x - 1$.
-			$a + 1 \leq (x - 1) + 1 = x$.
-		End.
-	End.
+      $a \leq x - 1$.
+      $a + 1 \leq (x - 1) + 1 = x$.
+    End.
+  End.
 
-	Then $a+1 > a$.
-	Contradiction.
+  Then $a+1 > a$.
+  Contradiction.
 End.
 \end{proof}
 \end{forthel}
@@ -2221,7 +2221,7 @@ Let $k$ be a divisor of $m$.
 Then $k \leq m$.
 \end{lemma}
 \begin{proof}
-Assume contrary.
+Assume the contrary.
 Then there is a natural number $l$ such that
 $l > 0$ and $m = l \cdot k$.
 \end{proof}
@@ -2465,7 +2465,7 @@ Take a natural number $k$ such that $0 \leq \mu - (k \cdot a) < a$.
 Then $\mu < m$ and $0 \leq \mu - (k \cdot a) <  a$.
 
 Let us show that $m - (k \cdot a) = a$ or $m - (k \cdot a) < a$.
-Assume contrary.
+Assume the contrary.
 Let $b = m - (k \cdot a)$ and $c = (m-1) - (k \cdot a)$.
 $(m-1) - (k \cdot a) < a$.
 If not $b = a$ and not $b < a$ then $b > a$.
@@ -2614,7 +2614,7 @@ The greatest common divisor of $n$ and $m$ is 0 iff $n = 0$ and $m = 0$.
 \end{lemma}
 \begin{proof}
 Let us show that the greatest common divisor of 0 and 0 is 0.
-  Assume contrary. Let $d$ be the greatest common divisor of 0 and 0.
+  Assume the contrary. Let $d$ be the greatest common divisor of 0 and 0.
   0 is a divisor of 0 and 0 is not a divisor of $d$. Contradiction. End.
 
 Let us show that if the greatest common divisor of $n$ and $m$ is 0 then $n = 0$ and $m = 0$.
@@ -2655,7 +2655,7 @@ Take $n = \frac{a}{d}$ and $m = \frac{b}{d}$. $n,m$ are natural numbers.\\
 
 Let us show that $n,m$ are coprime.
 
-  Assume contrary. The greatest common divisor of $n$ and $m$ is not 1. Take the greatest common divisor $\delta$ of $n$ and $m$.
+  Assume the contrary. The greatest common divisor of $n$ and $m$ is not 1. Take the greatest common divisor $\delta$ of $n$ and $m$.
   Take $p = d \cdot \delta$, $\nu = \frac{n}{\delta}$ and $\mu = \frac{m}{\delta}$. $p,\nu,\mu$ are natural numbers.
   $\nu \cdot p = \frac{n}{\delta} \cdot (\delta \cdot d) = n \cdot d = \frac{a}{d} \cdot d = a$ and
   $\mu \cdot p = \frac{m}{\delta} \cdot (\delta \cdot d) = m \cdot d = \frac{b}{d} \cdot d = b$.
