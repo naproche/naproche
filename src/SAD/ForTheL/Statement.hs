@@ -69,11 +69,12 @@ chained = label "chained statement" $ (andOr <|> neitherNor) >>= chainEnd
 
 
 chainEnd :: Formula -> FTL Formula
-chainEnd f = optLL1 f $ and_st <|> or_st <|> iff_st <|> where_st
+chainEnd f = optLL1 f $ and_st <|> or_st <|> iff_st <|> imp_st <|> where_st
   where
     and_st = fmap (And f) $ markupToken Reports.conjunctiveAnd "and" >> headed
     or_st = fmap (Or f) $ markupToken Reports.or "or" >> headed
     iff_st = fmap (Iff f) $ markupTokenSeqOf Reports.ifAndOnlyIf iffPhrases >> statement
+    imp_st = fmap (Imp f) $ markupToken Reports.ifThen "implies" >> opt () (token' "that") >> statement
     where_st = do
       markupTokenOf Reports.whenWhere ["when", "where"]; y <- statement
       return $ foldr mkAll (Imp y f) (declNames mempty y)

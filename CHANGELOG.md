@@ -44,6 +44,9 @@ dialect of ForTheL, respectively.
     \end{signature}
     ```
 
+  * **New:** Instead of `if A then B` we can now also write `A implies B` or
+    `A implies that B`.
+
 
 ### Misc
 
