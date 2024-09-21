@@ -23,6 +23,10 @@ its `Documentation` panel.
 
 ## For Developers
 
+See [CONTRIBUTING.md](CONTRIBUTING.md) for a more detailed and beginner-friendly
+version of the below instructions.
+
+
 ### Isabelle/Naproche Prover IDE
 
 #### Prerequisites
