@@ -345,4 +345,4 @@ singleLetterVariable = do
     deVar _ = error "SAD.ForTheL.Pattern.singleLetterVariable: other variable"
     isSingleLetter :: Text -> Bool
     isSingleLetter x = Text.null (Text.tail x) || isTexVarName x
-    isTexVarName s = Text.head s == '\\' && Text.tail s `elem` greek
+    isTexVarName s = Text.head s == '\\' && all isAsciiLetter (Text.unpack . Text.tail $ s)

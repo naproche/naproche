@@ -29,6 +29,7 @@ import SAD.Parser.Combinators
 import SAD.Parser.Primitives
 import SAD.Data.Text.Decl
 import SAD.Export.Representation (represent, toLazyText)
+import SAD.Helpers(isAsciiLetter)
 
 import Isabelle.Position qualified as Position
 
@@ -465,11 +466,12 @@ var = do
   pos <- getPos
   v <- satisfy (\s -> s `notElem` keywords && (isPlainVarName s || isTexVarName s))
   primes <- Text.concat . fmap (const "'") <$> many (symbolNotAfterSpace "'")
+  optLLx () (symbol "!")
   let v' = v <> primes
   return (PosVar (VarConstant v') pos)
   where
     isPlainVarName s = Text.all isAlphaNum s && isAlpha (Text.head s)
-    isTexVarName s = Text.head s == '\\' && Text.tail s `elem` greek
+    isTexVarName s = Text.head s == '\\' && all isAsciiLetter (Text.unpack . Text.tail $ s)
 
 
 -- ** Pretyped Variables
