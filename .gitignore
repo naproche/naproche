@@ -33,3 +33,6 @@ dist-newstyle/
 *.run.xml
 *.aux
 *-blx.bib
+*.sref
+*.upa
+*.upb

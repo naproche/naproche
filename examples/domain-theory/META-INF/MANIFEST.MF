@@ -1,0 +1,6 @@
+
+id:naproche/domain-theory
+ns:http://mathhub.info/naproche/domain-theory
+narration-base:http://mathhub.info/naproche/domain-theory
+url-base:https://stexmmt.mathhub.info/:sTeX
+format:stex

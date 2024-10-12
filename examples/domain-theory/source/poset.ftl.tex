@@ -1,0 +1,115 @@
+\documentclass{stex}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{poset}
+  \begin{mathstructure}{poset}
+    \symdef{univ}{X}
+    \symdef{lleq}[args=2]{#1\mathrel{\maincomp\leq}#2}
+    \symdef{lgeq}[args=2]{#1\mathrel{\maincomp\geq}#2}
+    \symdef{lless}[args=2]{#1\mathrel{\maincomp<}#2}
+    \symdef{lmore}[args=2]{#1\mathrel{\maincomp>}#2}
+  \end{mathstructure}
+
+  \section{Posets}
+  \vardef{Pvar}[return=\poset]{\mathcal P}
+
+  \begin{forthel}
+    [readtex \path{meta-inf/source/vocabulary.ftl.tex}]
+  \end{forthel}
+  
+  \begin{forthel}
+    \begin{signature}
+      A \emph{partially ordered set} is a notion.
+    \end{signature}
+
+    Let a \emph{poset} stand for a partially ordered set.
+
+    Let $\Pvar!$ denote a poset.
+  \end{forthel}
+  
+  \subsection{Universe}
+  
+  \begin{forthel}
+    \begin{signature}
+      Let $\Pvar!$ be a poset.
+      $\Pvar{univ}$ is a set.
+    \end{signature}
+  \end{forthel}
+  
+  \subsection{Order Relation}
+  
+  \begin{forthel}
+    \begin{signature}
+      Let $x,y\in\Pvar{univ}$.
+      $\Pvar{lleq}{x}{y}$ is a relation.
+    \end{signature}
+
+    Let $\Pvar{lgeq}{x}{y}$ stand for $\Pvar{lleq}{y}{x}$.
+
+    Let $\Pvar{lless}{x}{y}$ stand for $\Pvar{lleq}{x}{y}$ and $x\neq y$.
+
+    Let $\Pvar{lmore}{x}{y}$ stand for $\Pvar{lgeq}{x}{y}$ and $x\neq y$.
+
+    \begin{axiom}[Reflexivity]
+      Let $x\in\Pvar{univ}$.
+      Then $\Pvar{lleq}{x}{x}$.
+    \end{axiom}
+
+    \begin{axiom}[Antisymmetry]
+      Let $x,y\in\Pvar{univ}$.
+      If $\Pvar{lleq}{x}{y}$ and $\Pvar{lleq}{y}{x}$ then $x=y$.
+    \end{axiom}
+
+    \begin{axiom}[Transitivity]
+      Let $x,y,z\in\Pvar{univ}$.
+      If $\Pvar{lleq}{x}{y}$ and $\Pvar{lleq}{y}{z}$ then $\Pvar{lleq}{x}{z}$.
+    \end{axiom}
+  \end{forthel}
+
+  \subsection{Upper and Lower Bounds}
+
+  \begin{forthel}
+    \begin{definition}
+      Let $x,y\in\Pvar{univ}$.
+      An \emph{upper bound of $x$ and $y$ in $\Pvar!$} is an element $u$ of $\Pvar{univ}$ such that $\Pvar{lgeq}{u}{x}$ and $\Pvar{lgeq}{u}{y}$.
+    \end{definition}
+    
+    \begin{definition}
+      Let $x,y\in\Pvar{univ}$.
+      A \emph{lower bound of $x$ and $y$ in $\Pvar!$} is an element $u$ of $\Pvar{univ}$ such that $\Pvar{lleq}{u}{x}$ and $\Pvar{lleq}{u}{y}$.
+    \end{definition}
+  \end{forthel}
+
+  \subsection{Joins and Meets}
+
+  \begin{forthel}
+    \begin{definition}
+      Let $x,y\in\Pvar{univ}$.
+      A \emph{join of $x$ and $y$ in $\Pvar!$} is an upper bound $j$ of $x$ and $y$ in $\Pvar!$ such that for any upper bound $u$ of $x$ and $y$ in $\Pvar!$ we have $\Pvar{lleq}{j}{u}$.
+    \end{definition}
+
+    Let a \emph{least upper bound of $x$ and $y$ in $\Pvar!$} stand for a join of $x$ and $y$ in $\Pvar!$.
+
+    Let a \emph{supremum of $x$ and $y$ in $\Pvar!$} stand for a join of $x$ and $y$ in $\Pvar!$.
+
+    \begin{definition}
+      Let $x,y\in\Pvar{univ}$.
+      A \emph{meet of $x$ and $y$ in $\Pvar!$} is a lower bound $m$ of $x$ and $y$ in $\Pvar!$ such that for any lower bound $l$ of $x$ and $y$ in $\Pvar!$ we have $\Pvar{lgeq}{m}{l}$.
+    \end{definition}
+
+    Let a \emph{greatest lower bound of $x$ and $y$ in $\Pvar!$} stand for a meet of $x$ and $y$ in $\Pvar!$.
+
+    Let a \emph{infimum of $x$ and $y$ in $\Pvar!$} stand for a meet of $x$ and $y$ in $\Pvar!$.
+
+    \begin{proposition}
+      Let $x,y\in\Pvar{univ}$ and $j,j'$ be joins of $x$ and $y$ in $\Pvar!$.
+      Then $j=j'$.
+    \end{proposition}
+
+    \begin{proposition}
+      Let $x,y\in\Pvar{univ}$ and $m,m'$ be meets of $x$ and $y$ in $\Pvar!$.
+      Then $m=m'$.
+    \end{proposition}
+  \end{forthel}
+\end{smodule}
+\end{document}

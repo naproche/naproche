@@ -1,0 +1,75 @@
+\documentclass{stex}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{lattices}
+  \importmodule{poset.ftl?poset}
+
+  \begin{extstructure}{lattice}{poset}
+    \symdef{join}[args=2]{#1\mathop{\maincomp\vee}#2}
+    \symdef{meet}[args=2]{#1\mathop{\maincomp\wedge}#2}
+  \end{extstructure}
+
+  \section{Lattices}
+  \vardef{Lvar}[return=\lattice]{\mathcal L}
+
+  \begin{forthel}
+    [readtex \path{domain-theory/source/poset.ftl.tex}]
+  \end{forthel}
+  
+  \begin{forthel}
+    \begin{signature}
+      A \emph{lattice} is a poset.
+    \end{signature}
+
+    Let $\Lvar!$ denote a lattice.
+  \end{forthel}
+  
+  \subsection{Joins and Meets}
+  
+  \begin{forthel}
+    \begin{signature}
+      Let $x,y\in\Lvar{univ}$.
+      $\Lvar{join}{x}{y}$ is a join of $x$ and $y$ in $\Lvar!$.
+    \end{signature}
+
+    \begin{signature}
+      Let $x,y\in\Lvar{univ}$.
+      $\Lvar{meet}{x}{y}$ is a meet of $x$ and $y$ in $\Lvar!$.
+    \end{signature}
+  \end{forthel}
+
+  \subsection{Properties of Joins and Meets}
+
+  \begin{forthel}
+    \begin{proposition}
+      Let $x\in\Lvar{univ}$.
+      $\Lvar{join}{x}{x}=x$.
+    \end{proposition}
+
+    \begin{proposition}
+      Let $x\in\Lvar{univ}$.
+      $\Lvar{meet}{x}{x}=x$.
+    \end{proposition}
+
+    \begin{proposition}
+      Let $x,y\in\Lvar{univ}$.
+      $\Lvar{join}{x}{\Lvar{meet}{x}{y}}=x$.
+    \end{proposition}
+
+    \begin{proposition}
+      Let $x,y\in\Lvar{univ}$.
+      $\Lvar{meet}{x}{\Lvar{join}{x}{y}}=x$.
+    \end{proposition}
+
+    \begin{proposition}
+      Let $x,y\in\Lvar{univ}$.
+      $\Lvar{lleq}{x}{y}$ iff $x=\Lvar{meet}{x}{y}$.
+    \end{proposition}
+
+    \begin{proposition}
+      Let $x,y\in\Lvar{univ}$.
+      $\Lvar{lleq}{x}{y}$ iff $y=\Lvar{join}{x}{y}$.
+    \end{proposition}
+  \end{forthel}
+\end{smodule}
+\end{document}
