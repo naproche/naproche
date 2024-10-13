@@ -5,8 +5,8 @@
   \importmodule{poset.ftl?poset}
 
   \begin{extstructure}{lattice}{poset}
-    \symdef{join}[args=2]{#1\mathop{\maincomp\vee}#2}
-    \symdef{meet}[args=2]{#1\mathop{\maincomp\wedge}#2}
+    \symdef{join}[args=2,prec=\infprec;\neginfprec x\neginfprec]{#1\mathop{\maincomp\vee}#2}
+    \symdef{meet}[args=2,prec=\infprec;\neginfprec x\neginfprec]{#1\mathop{\maincomp\wedge}#2}
   \end{extstructure}
 
   \section{Lattices}
