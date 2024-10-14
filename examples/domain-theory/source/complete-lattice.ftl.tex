@@ -1,0 +1,103 @@
+\documentclass{stex}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{complete-lattice}
+  \importmodule{lattice.ftl?lattice}
+
+  \begin{extstructure}{complattice}[complete lattice]{lattice}
+    \symdef{Join}[args=1]{\mathop{\maincomp\bigvee}#1}
+    \symdef{Meet}[args=1]{\mathop{\maincomp\bigwedge}#1}
+    \symdef{greatest}{\top}
+    \symdef{least}{\bot}
+  \end{extstructure}
+
+  \section{Complete Lattices}
+  \vardef{Lvar}[return=\complattice]{\mathcal L}
+
+  \begin{forthel}
+    [readtex \path{domain-theory/source/lattice.ftl.tex}]
+  \end{forthel}
+  
+  \begin{forthel}
+    \begin{signature}
+      A \emph{complete lattice} is a lattice.
+    \end{signature}
+
+    Let $\Lvar!$ denote a complete lattice.
+  \end{forthel}
+  
+  \subsection{Joins and Meets}
+
+  \subsubsection{Joins}
+  
+  \begin{forthel}
+    \begin{signature}
+      Let $A\subseteq\Lvar{univ}$.
+      $\Lvar{Join}{A}$ is a join of $A$ in $\Lvar!$.
+    \end{signature}
+    
+    \begin{proposition}
+      Let $x\in\Lvar{univ}$.
+      $\Lvar{Join}{\set{x}}=x$.
+    \end{proposition}
+    
+    \begin{proposition}
+      Let $x,y\in\Lvar{univ}$.
+      $\Lvar{Join}{\set{x,y}}=\Lvar{join}{x}{y}$.
+    \end{proposition}
+  \end{forthel}
+
+  \subsubsection{Meets}
+
+  \begin{forthel}
+    \begin{signature}
+      Let $A\subseteq\Lvar{univ}$.
+      $\Lvar{Meet}{A}$ is a meet of $A$ in $\Lvar!$.
+    \end{signature}
+    
+    \begin{proposition}
+      Let $x\in\Lvar{univ}$.
+      $\Lvar{Meet}{\set{x}}=x$.
+    \end{proposition}
+    
+    \begin{proposition}
+      Let $x,y\in\Lvar{univ}$.
+      $\Lvar{Meet}{\set{x,y}}=\Lvar{meet}{x}{y}$.
+    \end{proposition}
+  \end{forthel}
+
+  \subsection{Greatest and Least Elements}
+
+  \subsubsection{Greatest Elements}
+
+  \begin{forthel}
+    \begin{definition}
+      $\Lvar{greatest}=\Lvar{Join}{\Lvar{univ}}$.
+    \end{definition}
+
+    \begin{proposition}
+      $\Lvar{greatest}=\Lvar{Meet}{\emptyset}$.
+    \end{proposition}
+
+    \begin{proposition}
+      $\Lvar{greatest}$ is a greatest element of $\Lvar!$.
+    \end{proposition}
+  \end{forthel}
+
+  \subsubsection{Least Elements}
+
+  \begin{forthel}
+    \begin{definition}
+      $\Lvar{least}=\Lvar{Join}{\emptyset}$.
+    \end{definition}
+
+    \begin{proposition}
+      $\Lvar{least}=\Lvar{Meet}{\Lvar{univ}}$.
+    \end{proposition}
+
+    \begin{proposition}
+      $\Lvar{least}$ is a least element of $\Lvar!$.
+    \end{proposition}
+  \end{forthel}
+\end{smodule}
+\end{document}

@@ -14,7 +14,7 @@
   \vardef{Pvar}[return=\poset]{\mathcal P}
 
   \begin{forthel}
-    [readtex \path{meta-inf/source/vocabulary.ftl.tex}]
+    [readtex \path{libraries/source/foundations/classes.ftl.tex}]
   \end{forthel}
   
   \begin{forthel}
@@ -68,6 +68,8 @@
 
   \subsection{Upper and Lower Bounds}
 
+  \subsubsection{Upper Bounds}
+
   \begin{forthel}
     \begin{definition}
       Let $x,y\in\Pvar{univ}$.
@@ -75,12 +77,28 @@
     \end{definition}
     
     \begin{definition}
+      Let $X\subseteq\Pvar{univ}$.
+      An \emph{upper bound of $X$ in $\Pvar!$} is an element $u$ of $\Pvar{univ}$ such that $\Pvar{lgeq}{u}{x}$ for all $x\in X$.
+    \end{definition}
+  \end{forthel}
+
+  \subsubsection{Lower Bounds}
+
+  \begin{forthel}    
+    \begin{definition}
       Let $x,y\in\Pvar{univ}$.
-      A \emph{lower bound of $x$ and $y$ in $\Pvar!$} is an element $u$ of $\Pvar{univ}$ such that $\Pvar{lleq}{u}{x}$ and $\Pvar{lleq}{u}{y}$.
+      A \emph{lower bound of $x$ and $y$ in $\Pvar!$} is an element $l$ of $\Pvar{univ}$ such that $\Pvar{lleq}{l}{x}$ and $\Pvar{lleq}{l}{y}$.
+    \end{definition}
+    
+    \begin{definition}
+      Let $X\subseteq\Pvar{univ}$.
+      A \emph{lower bound of $X$ in $\Pvar!$} is an element $l$ of $\Pvar{univ}$ such that $\Pvar{lleq}{l}{x}$ for all $x\in X$.
     \end{definition}
   \end{forthel}
 
   \subsection{Joins and Meets}
+
+  \subsubsection{Joins}
 
   \begin{forthel}
     \begin{definition}
@@ -92,6 +110,29 @@
 
     Let a \emph{supremum of $x$ and $y$ in $\Pvar!$} stand for a join of $x$ and $y$ in $\Pvar!$.
 
+    \begin{proposition}
+      Let $x,y\in\Pvar{univ}$ and $j,j'$ be joins of $x$ and $y$ in $\Pvar!$.
+      Then $j=j'$.
+    \end{proposition}
+    
+    \begin{definition}
+      Let $X\subseteq\Pvar{univ}$.
+      A \emph{join of $X$ in $\Pvar!$} is an upper bound $j$ of $X$ in $\Pvar!$ such that for any upper bound $u$ of $X$ in $\Pvar!$ we have $\Pvar{lleq}{j}{u}$.
+    \end{definition}
+
+    Let a \emph{least upper bound of $X$ in $\Pvar!$} stand for a join of $X$ in $\Pvar!$.
+
+    Let a \emph{supremum of $X$ in $\Pvar!$} stand for a join of $X$ in $\Pvar!$.
+
+    \begin{proposition}
+      Let $X\subseteq\Pvar{univ}$ and $j,j'$ be joins of $X$ in $\Pvar!$.
+      Then $j=j'$.
+    \end{proposition}
+  \end{forthel}
+
+  \subsubsection{Meets}
+
+  \begin{forthel}
     \begin{definition}
       Let $x,y\in\Pvar{univ}$.
       A \emph{meet of $x$ and $y$ in $\Pvar!$} is a lower bound $m$ of $x$ and $y$ in $\Pvar!$ such that for any lower bound $l$ of $x$ and $y$ in $\Pvar!$ we have $\Pvar{lgeq}{m}{l}$.
@@ -102,13 +143,50 @@
     Let a \emph{infimum of $x$ and $y$ in $\Pvar!$} stand for a meet of $x$ and $y$ in $\Pvar!$.
 
     \begin{proposition}
-      Let $x,y\in\Pvar{univ}$ and $j,j'$ be joins of $x$ and $y$ in $\Pvar!$.
-      Then $j=j'$.
-    \end{proposition}
-
-    \begin{proposition}
       Let $x,y\in\Pvar{univ}$ and $m,m'$ be meets of $x$ and $y$ in $\Pvar!$.
       Then $m=m'$.
+    \end{proposition}
+    
+    \begin{definition}
+      Let $X\subseteq\Pvar{univ}$.
+      A \emph{meet of $X$ in $\Pvar!$} is a lower bound $m$ of $X$ in $\Pvar!$ such that for any lower bound $l$ of $X$ in $\Pvar!$ we have $\Pvar{lgeq}{m}{l}$.
+    \end{definition}
+
+    Let a \emph{least upper bound of $X$ in $\Pvar!$} stand for a meet of $X$ in $\Pvar!$.
+
+    Let a \emph{supremum of $X$ in $\Pvar!$} stand for a meet of $X$ in $\Pvar!$.
+
+    \begin{proposition}
+      Let $X\subseteq\Pvar{univ}$ and $m,m'$ be joins of $X$ in $\Pvar!$.
+      Then $m=m'$.
+    \end{proposition}
+  \end{forthel}
+
+  \subsection{Greatest and Least Elements}
+
+  \subsubsection{Greatest Elements}
+
+  \begin{forthel}
+    \begin{definition}
+      A \emph{greatest element of $\Pvar!$} is an element $g$ of $\Pvar{univ}$ such that $\Pvar{lgeq}{g}{x}$ for all $x\in\Pvar{univ}$.
+    \end{definition}
+
+    \begin{proposition}
+      Let $g,g'$ be greatest elements of $\Pvar!$.
+      Then $g=g'$.
+    \end{proposition}
+  \end{forthel}
+
+  \subsubsection{Least Elements}
+
+  \begin{forthel}
+    \begin{definition}
+      A \emph{least element of $\Pvar!$} is an element $l$ of $\Pvar{univ}$ such that $\Pvar{lleq}{l}{x}$ for all $x\in\Pvar{univ}$.
+    \end{definition}
+
+    \begin{proposition}
+      Let $l,l'$ be greatest elements of $\Pvar!$.
+      Then $l=l'$.
     \end{proposition}
   \end{forthel}
 \end{smodule}
