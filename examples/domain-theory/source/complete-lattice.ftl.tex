@@ -4,15 +4,26 @@
 \begin{smodule}{complete-lattice}
   \importmodule{lattice.ftl?lattice}
 
+  \STEXexport{
+    \let\Join\relax
+    
+    \newcommand\Join[1]{\csname#1\endcsname{clJoin}}
+    \newcommand\Meet[1]{\csname#1\endcsname{clMeet}}
+    \newcommand\greatest[1]{\csname#1\endcsname{clgreatest}}
+    \newcommand\least[1]{\csname#1\endcsname{clleast}}
+  }
+
   \begin{extstructure}{complattice}[complete lattice]{lattice}
-    \symdef{Join}[args=1]{\mathop{\maincomp\bigvee}#1}
-    \symdef{Meet}[args=1]{\mathop{\maincomp\bigwedge}#1}
-    \symdef{greatest}{\top}
-    \symdef{least}{\bot}
+    \symdef{clJoin}[op=\bigvee]{\bigvee\,}
+    \symdef{clMeet}[op=\bigwedge]{\bigwedge\,}
+    \symdef{clgreatest}{\top}
+    \symdef{clleast}{\bot}
   \end{extstructure}
 
+  \vardef{Lvarx}[return={\complattice[comp=##1]}]{\mathcal L}
+  \newcommand\Lvar[1]{\ifthenelse{\isempty{#1}}{\Lvarx{}[puniv,pleq,clJoin,clMeet]}{\Lvarx{#1}}}
+
   \section{Complete Lattices}
-  \vardef{Lvar}[return=\complattice]{\mathcal L}
 
   \begin{forthel}
     [readtex \path{domain-theory/source/lattice.ftl.tex}]
@@ -23,7 +34,7 @@
       A \emph{complete lattice} is a lattice.
     \end{signature}
 
-    Let $\Lvar!$ denote a complete lattice.
+    Let $\Lvar{}$ denote a complete lattice.
   \end{forthel}
   
   \subsection{Joins and Meets}
@@ -32,18 +43,18 @@
   
   \begin{forthel}
     \begin{signature}
-      Let $A\subseteq\Lvar{univ}$.
-      $\Lvar{Join}{A}$ is a join of $A$ in $\Lvar!$.
+      Let $A \subseteq \univ{Lvar}$.
+      $\Join{Lvar} A$ is a join of $A$ in $\Lvar{}$.
     \end{signature}
     
     \begin{proposition}
-      Let $x\in\Lvar{univ}$.
-      $\Lvar{Join}{\set{x}}=x$.
+      Let $x \in \univ{Lvar}$.
+      $\Join{Lvar} \set{x} = x$.
     \end{proposition}
     
     \begin{proposition}
-      Let $x,y\in\Lvar{univ}$.
-      $\Lvar{Join}{\set{x,y}}=\Lvar{join}{x}{y}$.
+      Let $x, y \in \univ{Lvar}$.
+      $\Join{Lvar} \set{x,y} = x \join{Lvar} y$.
     \end{proposition}
   \end{forthel}
 
@@ -51,18 +62,18 @@
 
   \begin{forthel}
     \begin{signature}
-      Let $A\subseteq\Lvar{univ}$.
-      $\Lvar{Meet}{A}$ is a meet of $A$ in $\Lvar!$.
+      Let $A \subseteq \univ{Lvar}$.
+      $\Meet{Lvar} A$ is a meet of $A$ in $\Lvar{}$.
     \end{signature}
     
     \begin{proposition}
-      Let $x\in\Lvar{univ}$.
-      $\Lvar{Meet}{\set{x}}=x$.
+      Let $x \in \univ{Lvar}$.
+      $\Meet{Lvar} \set{x} = x$.
     \end{proposition}
     
     \begin{proposition}
-      Let $x,y\in\Lvar{univ}$.
-      $\Lvar{Meet}{\set{x,y}}=\Lvar{meet}{x}{y}$.
+      Let $x, y \in \univ{Lvar}$.
+      $\Meet{Lvar} \set{x,y} = x \meet{Lvar} y$.
     \end{proposition}
   \end{forthel}
 
@@ -72,15 +83,15 @@
 
   \begin{forthel}
     \begin{definition}
-      $\Lvar{greatest}=\Lvar{Join}{\Lvar{univ}}$.
+      $\greatest{Lvar} = \Join{Lvar} \univ{Lvar}$.
     \end{definition}
 
     \begin{proposition}
-      $\Lvar{greatest}=\Lvar{Meet}{\emptyset}$.
+      $\greatest{Lvar} = \Meet{Lvar} \emptyset$.
     \end{proposition}
 
     \begin{proposition}
-      $\Lvar{greatest}$ is a greatest element of $\Lvar!$.
+      $\greatest{Lvar}$ is a greatest element of $\Lvar{}$.
     \end{proposition}
   \end{forthel}
 
@@ -88,15 +99,15 @@
 
   \begin{forthel}
     \begin{definition}
-      $\Lvar{least}=\Lvar{Join}{\emptyset}$.
+      $\least{Lvar} = \Join{Lvar} \emptyset$.
     \end{definition}
 
     \begin{proposition}
-      $\Lvar{least}=\Lvar{Meet}{\Lvar{univ}}$.
+      $\least{Lvar} = \Meet{Lvar} \univ{Lvar}$.
     \end{proposition}
 
     \begin{proposition}
-      $\Lvar{least}$ is a least element of $\Lvar!$.
+      $\least{Lvar}$ is a least element of $\Lvar{}$.
     \end{proposition}
   \end{forthel}
 \end{smodule}

@@ -4,13 +4,20 @@
 \begin{smodule}{lattice}
   \importmodule{poset.ftl?poset}
 
+  \STEXexport{
+    \newcommand\join[1]{\csname#1\endcsname{ljoin}}
+    \newcommand\meet[1]{\csname#1\endcsname{lmeet}}
+  }
+
   \begin{extstructure}{lattice}{poset}
-    \symdef{join}[args=2,prec=\infprec;\neginfprec x\neginfprec]{#1\mathop{\maincomp\vee}#2}
-    \symdef{meet}[args=2,prec=\infprec;\neginfprec x\neginfprec]{#1\mathop{\maincomp\wedge}#2}
+    \symdef{ljoin}[op=\vee]{\,\vee\,}
+    \symdef{lmeet}[op=\wedge]{\,\wedge\,}
   \end{extstructure}
 
+  \vardef{Lvarx}[return={\lattice[comp=##1]}]{\mathcal L}
+  \newcommand\Lvar[1]{\ifthenelse{\isempty{#1}}{\Lvarx{}[puniv,pleq,ljoin,lmeet]}{\Lvarx{#1}}}
+
   \section{Lattices}
-  \vardef{Lvar}[return=\lattice]{\mathcal L}
 
   \begin{forthel}
     [readtex \path{domain-theory/source/poset.ftl.tex}]
@@ -21,20 +28,20 @@
       A \emph{lattice} is a poset.
     \end{signature}
 
-    Let $\Lvar!$ denote a lattice.
+    Let $\Lvar{}$ denote a lattice.
   \end{forthel}
   
   \subsection{Joins and Meets}
   
   \begin{forthel}
     \begin{signature}
-      Let $x,y\in\Lvar{univ}$.
-      $\Lvar{join}{x}{y}$ is a join of $x$ and $y$ in $\Lvar!$.
+      Let $x, y \in \univ{Lvar}$.
+      $x \join{Lvar} y$ is a join of $x$ and $y$ in $\Lvar{}$.
     \end{signature}
 
     \begin{signature}
-      Let $x,y\in\Lvar{univ}$.
-      $\Lvar{meet}{x}{y}$ is a meet of $x$ and $y$ in $\Lvar!$.
+      Let $x, y \in \univ{Lvar}$.
+      $x \meet{Lvar} y$ is a meet of $x$ and $y$ in $\Lvar{}$.
     \end{signature}
   \end{forthel}
 
@@ -42,33 +49,33 @@
 
   \begin{forthel}
     \begin{proposition}
-      Let $x\in\Lvar{univ}$.
-      $\Lvar{join}{x}{x}=x$.
+      Let $x \in \univ{Lvar}$.
+      $x \join{Lvar} x = x$.
     \end{proposition}
 
     \begin{proposition}
-      Let $x\in\Lvar{univ}$.
-      $\Lvar{meet}{x}{x}=x$.
+      Let $x \in \univ{Lvar}$.
+      $x \meet{Lvar} x = x$.
     \end{proposition}
 
     \begin{proposition}
-      Let $x,y\in\Lvar{univ}$.
-      $\Lvar{join}{x}{\Lvar{meet}{x}{y}}=x$.
+      Let $x, y \in \univ{Lvar}$.
+      $x \join{Lvar} (x \meet{Lvar} y) = x$.
     \end{proposition}
 
     \begin{proposition}
-      Let $x,y\in\Lvar{univ}$.
-      $\Lvar{meet}{x}{\Lvar{join}{x}{y}}=x$.
+      Let $x, y \in \univ{Lvar}$.
+      $x \meet{Lvar} (x \join{Lvar} y) = x$.
     \end{proposition}
 
     \begin{proposition}
-      Let $x,y\in\Lvar{univ}$.
-      $\Lvar{lleq}{x}{y}$ iff $x=\Lvar{meet}{x}{y}$.
+      Let $x, y \in \univ{Lvar}$.
+      $x \leq{Lvar} y$ iff $x = x \meet{Lvar} y$.
     \end{proposition}
 
     \begin{proposition}
-      Let $x,y\in\Lvar{univ}$.
-      $\Lvar{lleq}{x}{y}$ iff $y=\Lvar{join}{x}{y}$.
+      Let $x, y \in \univ{Lvar}$.
+      $x \leq{Lvar}y$ iff $y = x \join{Lvar} y$.
     \end{proposition}
   \end{forthel}
 \end{smodule}
