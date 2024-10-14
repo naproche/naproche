@@ -344,5 +344,5 @@ singleLetterVariable = do
     deVar (VarConstant s) = s
     deVar _ = error "SAD.ForTheL.Pattern.singleLetterVariable: other variable"
     isSingleLetter :: Text -> Bool
-    isSingleLetter x = Text.null (Text.tail x) || isTexVarName x
+    isSingleLetter x = Text.null (Text.tail x) || isTexVarName x || "var" `Text.isSuffixOf` x
     isTexVarName s = Text.head s == '\\' && all isAsciiLetter (Text.unpack . Text.tail $ s)

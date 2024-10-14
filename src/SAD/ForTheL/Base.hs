@@ -464,17 +464,19 @@ hidden = do
 var :: FTL PosVar
 var = do
   pos <- getPos
-  v <- satisfy (\s -> s `notElem` keywords && (isPlainVarName s || isTexVarName s))
+  v <- satisfy (\s -> s `notElem` keywords && (isPlainVarName s)) <|> varCommand
   primes <- Text.concat . fmap (const "'") <$> many (symbolNotAfterSpace "'")
-  optLLx () (symbol "!")
   let v' = v <> primes
   return (PosVar (VarConstant v') pos)
   where
     isPlainVarName s = Text.all isAlphaNum s && isAlpha (Text.head s)
     isTexVarName s = Text.head s == '\\' &&
       all isAsciiLetter (Text.unpack . Text.tail $ s) &&
-      Text.isSuffixOf "var" s -- to reduce ambiguity errors with ordinary TeX commands
-
+      (Text.isSuffixOf "var" s || s `elem` greek)
+    varCommand = do
+      command <- satisfy isTexVarName
+      optLLx () (symbol "{}") -- for sTeX variables that return a mathstructure
+      return $ Text.tail command
 
 -- ** Pretyped Variables
 
