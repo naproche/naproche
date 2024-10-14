@@ -471,7 +471,9 @@ var = do
   return (PosVar (VarConstant v') pos)
   where
     isPlainVarName s = Text.all isAlphaNum s && isAlpha (Text.head s)
-    isTexVarName s = Text.head s == '\\' && all isAsciiLetter (Text.unpack . Text.tail $ s)
+    isTexVarName s = Text.head s == '\\' &&
+      all isAsciiLetter (Text.unpack . Text.tail $ s) &&
+      Text.isSuffixOf "var" s -- to reduce ambiguity errors with ordinary TeX commands
 
 
 -- ** Pretyped Variables
