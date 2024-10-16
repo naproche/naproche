@@ -27,6 +27,7 @@ import SAD.Data.Instr(ParserKind(..))
 import SAD.Parser.Base
 import SAD.Parser.Combinators
 import SAD.Parser.Primitives
+import SAD.Parser.Token (showToken)
 import SAD.Data.Text.Decl
 import SAD.Export.Representation (represent, toLazyText)
 import SAD.Helpers(isAsciiLetter)
@@ -464,19 +465,42 @@ hidden = do
 var :: FTL PosVar
 var = do
   pos <- getPos
-  v <- satisfy (\s -> s `notElem` keywords && (isPlainVarName s)) <|> varCommand
-  primes <- Text.concat . fmap (const "'") <$> many (symbolNotAfterSpace "'")
-  let v' = v <> primes
-  return (PosVar (VarConstant v') pos)
+  v <- plainVarName <|> (greekVarName </> structVarName)
+  return (PosVar (VarConstant v) pos)
   where
-    isPlainVarName s = Text.all isAlphaNum s && isAlpha (Text.head s)
-    isTexVarName s = Text.head s == '\\' &&
-      all isAsciiLetter (Text.unpack . Text.tail $ s) &&
-      (Text.isSuffixOf "var" s || s `elem` greek)
-    varCommand = do
-      command <- satisfy isTexVarName
-      optLLx () (symbol "{}") -- for sTeX variables that return a mathstructure
-      return $ Text.tail command
+    plainVarName = do
+      v <- satisfy $ \s -> and [
+          Text.all isAlphaNum s,
+          isAlpha (Text.head s),
+          s `notElem` keywords
+        ]
+      primes <- Text.concat . fmap (const "'") <$> many (symbolNotAfterSpace "'")
+      return $ v <> primes
+    greekVarName = do
+      command <- satisfy $ \s -> and [
+          Text.head s == '\\',
+          Text.tail s `elem` greek
+        ]
+      primes <- Text.concat . fmap (const "'") <$> many (symbolNotAfterSpace "'")
+      return $ command <> primes
+    structVarName = do
+      command <- satisfy $ \s -> and [
+          Text.head s == '\\',
+          all isAsciiLetter (Text.unpack . Text.tail $ s),
+          Text.isSuffixOf "var" s
+        ]
+      (symbol "!" >> optLLx () (do
+          symbol "=" <|> texCommand "coloneq"
+          satisfy (== command)
+          symbol "{}"
+          optLLx () $ do
+            symbol "["
+            chainLL1 notClosingBrk
+            symbol "]"
+        )) </> opt () (symbol "{}")
+      return command
+    notClosingBrk = tokenPrim notCl
+    notCl t = let tk = showToken t in guard (tk /= "]") >> return tk
 
 -- ** Pretyped Variables
 

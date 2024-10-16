@@ -7,24 +7,17 @@
     \let\leq\relax
     \let\oldgeq\geq
     \let\geq\relax
-
-    \newcommand\univ[1]{\csname#1\endcsname{puniv}}
-    \newcommand\leq[1]{\csname#1\endcsname{pleq}}
-    \newcommand\geq[1]{\csname#1\endcsname{pgeq}}
-    \newcommand\less[1]{\csname#1\endcsname{pless}}
-    \newcommand\more[1]{\csname#1\endcsname{pmore}}
   }
 
   \begin{mathstructure}{poset}
-    \symdef{puniv}{X}
-    \symdef{pleq}[op=\oldleq]{\;\oldleq\;}
-    \symdef{pgeq}[op=\oldgeq]{\;\oldgeq\;}
-    \symdef{pless}[op=<]{\;<\;}
-    \symdef{pmore}[op=>]{\;>\;}
+    \symdef{univ}{X}
+    \symdef{leq}[op=\oldleq]{\;\oldleq\;}
+    \symdef{geq}[op=\oldgeq]{\;\oldgeq\;}
+    \symdef{less}[op=<]{\;<\;}
+    \symdef{more}[op=>]{\;>\;}
   \end{mathstructure}
 
-  \vardef{Pvarx}[return={\poset[comp=##1]}]{\mathcal P}
-  \newcommand\Pvar[1]{\ifthenelse{\isempty{#1}}{\Pvarx{}[puniv,pleq]}{\Pvarx{#1}}}
+  \vardef{Pvar}[return={\poset[comp=##1]}]{\mathcal P}
 
   \section{Posets}
 
@@ -33,52 +26,52 @@
   \end{forthel}
   
   \begin{forthel}
-    \begin{signature}
+    \begin{signature*}
       A \emph{partially ordered set} is a notion.
-    \end{signature}
+    \end{signature*}
 
     Let a \emph{poset} stand for a partially ordered set.
 
-    Let $\Pvar{}$ denote a poset.
+    Let $\Pvar! = \Pvar{}[univ,leq]$ denote a poset.
   \end{forthel}
   
   \subsection{Universe}
   
   \begin{forthel}
-    \begin{signature}
-      Let $\Pvar{}$ be a poset.
-      $\univ{Pvar}$ is a set.
-    \end{signature}
+    \begin{signature*}
+      Let $\Pvar!$ be a poset.
+      $\Pvar{univ}$ is a set.
+    \end{signature*}
   \end{forthel}
   
   \subsection{Order Relation}
   
   \begin{forthel}
-    \begin{signature}
-      Let $x, y \in \univ{Pvar}$.
-      $x \leq{Pvar} y$ is a relation.
-    \end{signature}
+    \begin{signature*}
+      Let $x, y \in \Pvar{univ}$.
+      $x {\Pvar{leq}} y$ is a relation.
+    \end{signature*}
 
-    Let $x \geq{Pvar} y$ stand for $y \leq{Pvar} x$.
+    Let $x {\Pvar{geq}} y$ stand for $y {\Pvar{leq}} x$.
 
-    Let $x \less{Pvar} y$ stand for $x \leq{Pvar} y$ and $x\neq y$.
+    Let $x {\Pvar{less}} y$ stand for $x {\Pvar{leq}} y$ and $x\neq y$.
 
-    Let $x \more{Pvar} y$ stand for $x \geq{Pvar} y$ and $x\neq y$.
+    Let $x {\Pvar{more}} y$ stand for $x {\Pvar{geq}} y$ and $x\neq y$.
 
-    \begin{axiom}[Reflexivity]
-      Let $x \in \univ{Pvar}$.
-      Then $x \leq{Pvar} x$.
-    \end{axiom}
+    \begin{axiom*}[Reflexivity]
+      Let $x \in \Pvar{univ}$.
+      Then $x {\Pvar{leq}} x$.
+    \end{axiom*}
 
-    \begin{axiom}[Antisymmetry]
-      Let $x, y \in \univ{Pvar}$.
-      If $x \leq{Pvar} y$ and $y \leq{Pvar} x$ then $x=y$.
-    \end{axiom}
+    \begin{axiom*}[Antisymmetry]
+      Let $x, y \in \Pvar{univ}$.
+      If $x {\Pvar{leq}} y$ and $y {\Pvar{leq}} x$ then $x=y$.
+    \end{axiom*}
 
-    \begin{axiom}[Transitivity]
-      Let $x, y, z \in \univ{Pvar}$.
-      If $x \leq{Pvar} y$ and $y \leq{Pvar} z$ then $x \leq{Pvar} z$.
-    \end{axiom}
+    \begin{axiom*}[Transitivity]
+      Let $x, y, z \in \Pvar{univ}$.
+      If $x {\Pvar{leq}} y$ and $y {\Pvar{leq}} z$ then $x {\Pvar{leq}} z$.
+    \end{axiom*}
   \end{forthel}
 
   \subsection{Upper and Lower Bounds}
@@ -86,29 +79,29 @@
   \subsubsection{Upper Bounds}
 
   \begin{forthel}
-    \begin{definition}
-      Let $x, y \in \univ{Pvar}$.
-      An \emph{upper bound of $x$ and $y$ in $\Pvar{}$} is an element $u$ of $\univ{Pvar}$ such that $u \geq{Pvar} x$ and $u \geq{Pvar} y$.
-    \end{definition}
+    \begin{definition*}
+      Let $x, y \in \Pvar{univ}$.
+      An \emph{upper bound of $x$ and $y$ in $\Pvar!$} is an element $u$ of $\Pvar{univ}$ such that $u {\Pvar{geq}} x$ and $u {\Pvar{geq}} y$.
+    \end{definition*}
     
-    \begin{definition}
-      Let $A \subseteq \univ{Pvar}$.
-      An \emph{upper bound of $A$ in $\Pvar{}$} is an element $u$ of $\univ{Pvar}$ such that $u \geq{Pvar} x$ for all $x \in A$.
-    \end{definition}
+    \begin{definition*}
+      Let $A \subseteq \Pvar{univ}$.
+      An \emph{upper bound of $A$ in $\Pvar!$} is an element $u$ of $\Pvar{univ}$ such that $u {\Pvar{geq}} x$ for all $x \in A$.
+    \end{definition*}
   \end{forthel}
 
   \subsubsection{Lower Bounds}
 
   \begin{forthel}    
-    \begin{definition}
-      Let $x, y \in \univ{Pvar}$.
-      A \emph{lower bound of $x$ and $y$ in $\Pvar{}$} is an element $l$ of $\univ{Pvar}$ such that $l \leq{Pvar} x$ and $l \leq{Pvar} y$.
-    \end{definition}
+    \begin{definition*}
+      Let $x, y \in \Pvar{univ}$.
+      A \emph{lower bound of $x$ and $y$ in $\Pvar!$} is an element $l$ of $\Pvar{univ}$ such that $l {\Pvar{leq}} x$ and $l {\Pvar{leq}} y$.
+    \end{definition*}
     
-    \begin{definition}
-      Let $A \subseteq \univ{Pvar}$.
-      A \emph{lower bound of $A$ in $\Pvar{}$} is an element $l$ of $\univ{Pvar}$ such that $l \leq{Pvar} x$ for all $x \in A$.
-    \end{definition}
+    \begin{definition*}
+      Let $A \subseteq \Pvar{univ}$.
+      A \emph{lower bound of $A$ in $\Pvar!$} is an element $l$ of $\Pvar{univ}$ such that $l {\Pvar{leq}} x$ for all $x \in A$.
+    \end{definition*}
   \end{forthel}
 
   \subsection{Joins and Meets}
@@ -116,65 +109,65 @@
   \subsubsection{Joins}
 
   \begin{forthel}
-    \begin{definition}
-      Let $x, y \in \univ{Pvar}$.
-      A \emph{join of $x$ and $y$ in $\Pvar{}$} is an upper bound $j$ of $x$ and $y$ in $\Pvar{}$ such that for any upper bound $u$ of $x$ and $y$ in $\Pvar{}$ we have $j \leq{Pvar} u$.
-    \end{definition}
+    \begin{definition*}
+      Let $x, y \in \Pvar{univ}$.
+      A \emph{join of $x$ and $y$ in $\Pvar!$} is an upper bound $j$ of $x$ and $y$ in $\Pvar!$ such that for any upper bound $u$ of $x$ and $y$ in $\Pvar!$ we have $j {\Pvar{leq}} u$.
+    \end{definition*}
 
-    Let a \emph{least upper bound of $x$ and $y$ in $\Pvar{}$} stand for a join of $x$ and $y$ in $\Pvar{}$.
+    Let a \emph{least upper bound of $x$ and $y$ in $\Pvar!$} stand for a join of $x$ and $y$ in $\Pvar!$.
 
-    Let a \emph{supremum of $x$ and $y$ in $\Pvar{}$} stand for a join of $x$ and $y$ in $\Pvar{}$.
+    Let a \emph{supremum of $x$ and $y$ in $\Pvar!$} stand for a join of $x$ and $y$ in $\Pvar!$.
 
-    \begin{proposition}
-      Let $x, y \in \univ{Pvar}$ and $j, j'$ be joins of $x$ and $y$ in $\Pvar{}$.
+    \begin{proposition*}
+      Let $x, y \in \Pvar{univ}$ and $j, j'$ be joins of $x$ and $y$ in $\Pvar!$.
       Then $j = j'$.
-    \end{proposition}
+    \end{proposition*}
     
-    \begin{definition}
-      Let $A \subseteq \univ{Pvar}$.
-      A \emph{join of $A$ in $\Pvar{}$} is an upper bound $j$ of $A$ in $\Pvar{}$ such that for any upper bound $u$ of $A$ in $\Pvar{}$ we have $j \leq{Pvar} u$.
-    \end{definition}
+    \begin{definition*}
+      Let $A \subseteq \Pvar{univ}$.
+      A \emph{join of $A$ in $\Pvar!$} is an upper bound $j$ of $A$ in $\Pvar!$ such that for any upper bound $u$ of $A$ in $\Pvar!$ we have $j {\Pvar{leq}} u$.
+    \end{definition*}
 
-    Let a \emph{least upper bound of $A$ in $\Pvar{}$} stand for a join of $A$ in $\Pvar{}$.
+    Let a \emph{least upper bound of $A$ in $\Pvar!$} stand for a join of $A$ in $\Pvar!$.
 
-    Let a \emph{supremum of $A$ in $\Pvar{}$} stand for a join of $A$ in $\Pvar{}$.
+    Let a \emph{supremum of $A$ in $\Pvar!$} stand for a join of $A$ in $\Pvar!$.
 
-    \begin{proposition}
-      Let $A \subseteq \univ{Pvar}$ and $j, j'$ be joins of $A$ in $\Pvar{}$.
+    \begin{proposition*}
+      Let $A \subseteq \Pvar{univ}$ and $j, j'$ be joins of $A$ in $\Pvar!$.
       Then $j = j'$.
-    \end{proposition}
+    \end{proposition*}
   \end{forthel}
 
   \subsubsection{Meets}
 
   \begin{forthel}
-    \begin{definition}
-      Let $x, y \in \univ{Pvar}$.
-      A \emph{meet of $x$ and $y$ in $\Pvar{}$} is a lower bound $m$ of $x$ and $y$ in $\Pvar{}$ such that for any lower bound $l$ of $x$ and $y$ in $\Pvar{}$ we have $m \geq{Pvar} l$.
-    \end{definition}
+    \begin{definition*}
+      Let $x, y \in \Pvar{univ}$.
+      A \emph{meet of $x$ and $y$ in $\Pvar!$} is a lower bound $m$ of $x$ and $y$ in $\Pvar!$ such that for any lower bound $l$ of $x$ and $y$ in $\Pvar!$ we have $m {\Pvar{geq}} l$.
+    \end{definition*}
 
-    Let a \emph{greatest lower bound of $x$ and $y$ in $\Pvar{}$} stand for a meet of $x$ and $y$ in $\Pvar{}$.
+    Let a \emph{greatest lower bound of $x$ and $y$ in $\Pvar!$} stand for a meet of $x$ and $y$ in $\Pvar!$.
 
-    Let a \emph{infimum of $x$ and $y$ in $\Pvar{}$} stand for a meet of $x$ and $y$ in $\Pvar{}$.
+    Let a \emph{infimum of $x$ and $y$ in $\Pvar!$} stand for a meet of $x$ and $y$ in $\Pvar!$.
 
-    \begin{proposition}
-      Let $x, y \in \univ{Pvar}$ and $m, m'$ be meets of $x$ and $y$ in $\Pvar{}$.
+    \begin{proposition*}
+      Let $x, y \in \Pvar{univ}$ and $m, m'$ be meets of $x$ and $y$ in $\Pvar!$.
       Then $m = m'$.
-    \end{proposition}
+    \end{proposition*}
     
-    \begin{definition}
-      Let $A \subseteq \univ{Pvar}$.
-      A \emph{meet of $A$ in $\Pvar{}$} is a lower bound $m$ of $A$ in $\Pvar{}$ such that for any lower bound $l$ of $A$ in $\Pvar{}$ we have $m \geq{Pvar} l$.
-    \end{definition}
+    \begin{definition*}
+      Let $A \subseteq \Pvar{univ}$.
+      A \emph{meet of $A$ in $\Pvar!$} is a lower bound $m$ of $A$ in $\Pvar!$ such that for any lower bound $l$ of $A$ in $\Pvar!$ we have $m {\Pvar{geq}} l$.
+    \end{definition*}
 
-    Let a \emph{least upper bound of $A$ in $\Pvar{}$} stand for a meet of $A$ in $\Pvar{}$.
+    Let a \emph{least upper bound of $A$ in $\Pvar!$} stand for a meet of $A$ in $\Pvar!$.
 
-    Let a \emph{supremum of $A$ in $\Pvar{}$} stand for a meet of $A$ in $\Pvar{}$.
+    Let a \emph{supremum of $A$ in $\Pvar!$} stand for a meet of $A$ in $\Pvar!$.
 
-    \begin{proposition}
-      Let $A \subseteq \univ{Pvar}$ and $m, m'$ be joins of $A$ in $\Pvar{}$.
+    \begin{proposition*}
+      Let $A \subseteq \Pvar{univ}$ and $m, m'$ be joins of $A$ in $\Pvar!$.
       Then $m = m'$.
-    \end{proposition}
+    \end{proposition*}
   \end{forthel}
 
   \subsection{Greatest and Least Elements}
@@ -182,27 +175,27 @@
   \subsubsection{Greatest Elements}
 
   \begin{forthel}
-    \begin{definition}
-      A \emph{greatest element of $\Pvar{}$} is an element $g$ of $\univ{Pvar}$ such that $g \geq{Pvar} x$ for all $x \in \univ{Pvar}$.
-    \end{definition}
+    \begin{definition*}
+      A \emph{greatest element of $\Pvar!$} is an element $g$ of $\Pvar{univ}$ such that $g {\Pvar{geq}} x$ for all $x \in \Pvar{univ}$.
+    \end{definition*}
 
-    \begin{proposition}
-      Let $g, g'$ be greatest elements of $\Pvar{}$.
+    \begin{proposition*}
+      Let $g, g'$ be greatest elements of $\Pvar!$.
       Then $g = g'$.
-    \end{proposition}
+    \end{proposition*}
   \end{forthel}
 
   \subsubsection{Least Elements}
 
   \begin{forthel}
-    \begin{definition}
-      A \emph{least element of $\Pvar{}$} is an element $l$ of $\univ{Pvar}$ such that $l \leq{Pvar} x$ for all $x \in \univ{Pvar}$.
-    \end{definition}
+    \begin{definition*}
+      A \emph{least element of $\Pvar!$} is an element $l$ of $\Pvar{univ}$ such that $l {\Pvar{leq}} x$ for all $x \in \Pvar{univ}$.
+    \end{definition*}
 
-    \begin{proposition}
-      Let $l, l'$ be greatest elements of $\Pvar{}$.
+    \begin{proposition*}
+      Let $l, l'$ be greatest elements of $\Pvar!$.
       Then $l = l'$.
-    \end{proposition}
+    \end{proposition*}
   \end{forthel}
 \end{smodule}
 \end{document}
