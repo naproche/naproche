@@ -489,16 +489,19 @@ var = do
           all isAsciiLetter (Text.unpack . Text.tail $ s),
           Text.isSuffixOf "var" s
         ]
-      (symbol "!" >> optLLx () (do
-          symbol "=" <|> texCommand "coloneq"
-          satisfy (== command)
-          symbol "{}"
-          optLLx () $ do
-            symbol "["
-            chainLL1 notClosingBrk
-            symbol "]"
-        )) </> opt () (symbol "{}")
+      optLLx () $ components </> (notation >> optLLx () (eqComponents command))
       return command
+    components = do
+      symbol "{}"
+      optLLx () $ do
+        symbol "["
+        chainLL1 notClosingBrk
+        symbol "]"
+    notation = symbol "!"
+    eqComponents command = do
+      symbol "=" <|> texCommand "coloneq"
+      satisfy (== command)
+      components
     notClosingBrk = tokenPrim notCl
     notCl t = let tk = showToken t in guard (tk /= "]") >> return tk
 
