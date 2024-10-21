@@ -24,6 +24,7 @@ import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
 import Data.Set qualified as Set
 import Data.Set (Set)
+import Data.Functor ((<&>))
 
 import SAD.ForTheL.Base
 import SAD.ForTheL.Statement
@@ -69,18 +70,18 @@ topLevelBlockFtl =
 -- | Parse a @.ftl.tex@ document:
 -- @{<topLevelBlock>} (<exitInstruction> | <EOF>)@
 forthelTex :: FTL [ProofText]
-forthelTex = repeatUntil (pure <$> topLevelBlockTex)
+forthelTex = repeatUntil topLevelBlockTex
   (try (bracketExpression >>= exitInstruction) <|> (eof >> return []))
 
 -- | Parse a top-level block (TEX):
 -- @<topLevelSection> | <instruction> | <macro> | <pretyping>@
-topLevelBlockTex :: FTL ProofText
+topLevelBlockTex :: FTL [ProofText]
 topLevelBlockTex =
-      try section
+      try (section <&> singleton)
   <|> topLevelSectionTex
-  <|> (bracketExpression >>= addSynonym >>= resetPretyping)
-  <|> try introduceMacro
-  <|> pretypeVariable
+  <|> ((bracketExpression >>= addSynonym >>= resetPretyping) <&> singleton)
+  <|> try (introduceMacro <&> singleton)
+  <|> (pretypeVariable <&> singleton)
 
 
 -- * Top-level sections
@@ -142,12 +143,12 @@ theoremFtl = do
 
 -- | Parse a top-level section:
 -- @<signature> | <definition> | <axiom> | <theorem>@
-topLevelSectionTex :: FTL ProofText
+topLevelSectionTex :: FTL [ProofText]
 topLevelSectionTex =
-      signatureTex
-  <|> definitionTex
-  <|> axiomTex
-  <|> theoremTex
+      ((signatureTex <&> singleton) -|- structSignatureTex)
+  <|> (definitionTex <&> singleton)
+  <|> (axiomTex <&> singleton)
+  <|> (theoremTex <&> singleton)
 
 -- | @beginTopLevelSection keywords@ parses @"\\begin" "{" <keyword> ["*"] "}"@,
 -- where @<keyword>@ is a member of @keywords@.
@@ -181,6 +182,28 @@ signatureTex = do
   content <- signatureBody
   endTopLevelSection keyword starred
   addMetadata Signature content label
+
+structSignatureTex :: FTL [ProofText]
+structSignatureTex = do
+  (keyword, starred) <- try $ beginTopLevelSection ["signature"]
+  structLabel <- optionalEnvLabel
+  structContent <- structSignatureBody
+  structMetadata <- addMetadata Signature structContent structLabel
+  texCommand "begin" <?> "\\begin"
+  symbol "{" <?> "{"
+  env <- getTokenOf ["itemize", "enumerate"] <?> "\"itemize\" or \"enumerate\""
+  symbol "}" <?> "}"
+  compMetadata <- chainLL1 $ do
+    texCommand "item" <?> "\\item"
+    compLabel <- optLL1 Nothing $ Just <$> texCommandWithArg "label" identifier
+    compContent <- signatureBody </> definitionBody </> axiomBody
+    addMetadata Signature compContent compLabel
+  texCommand "end" <?> "\\end"
+  symbol "{" <?> "{"
+  token env <?> env
+  symbol "}" <?> "}"
+  endTopLevelSection keyword starred
+  return $ structMetadata : compMetadata
 
 -- | Parse a definition (TEX):
 -- @"\\begin" "{" "definition" "}" ["[" <name> "]"] [<label>] <definitionBody>
@@ -276,6 +299,18 @@ exitInstruction text = case text of
 
 signatureBody :: FTL [ProofText]
 signatureBody = addAssumptions $ pretype $ pretypeSentence Posit sigExtend defVars finishWithoutLink
+
+structSignatureBody :: FTL [ProofText]
+structSignatureBody = addAssumptions $ pretype $ pretypeSentence Posit structSigExtend defVars structFinish
+  where
+    structFinish = do
+      token' "with"
+        <|> token' "having"
+        <|> tokenSeq' ["consisting", "of"]
+        <|> tokenOf' ["that", "which"] *> (token' "has" <|> tokenSeq' ["consists", "of"])
+      tokenSeq' ["the", "following", "components"]
+      symbol "." <|> symbol ":"
+      return []
 
 definitionBody :: FTL [ProofText]
 definitionBody = addAssumptions $ pretype $ pretypeSentence Posit defExtend defVars finishWithoutLink

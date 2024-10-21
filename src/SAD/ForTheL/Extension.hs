@@ -14,7 +14,8 @@ module SAD.ForTheL.Extension (
   pretypeVariable,
   introduceMacro,
   defExtend,
-  sigExtend
+  sigExtend,
+  structSigExtend
 ) where
 
 import Control.Monad
@@ -45,6 +46,8 @@ defExtend :: FTL Formula
 defExtend = defPredicat -|- defNotion
 sigExtend :: FTL Formula
 sigExtend = sigPredicat -|- sigNotion
+structSigExtend :: FTL Formula
+structSigExtend = sigStructure
 
 defPredicat :: FTL Formula
 defPredicat = do
@@ -97,6 +100,23 @@ sigNotion = do
 
     noInfo =
       (tokenSeq' ["a", "notion"] </> tokenSeq' ["a", "constant"]) >> return (id,Top)
+    trm Trm {trmName = TermEquality, trmArgs = [_,t]} = t; trm t = t
+
+sigStructure :: FTL Formula
+sigStructure = do
+  ((n,h),u) <- wellFormedCheck (notionVars . fst) sig
+  uDecl <- makeDecl u
+  return $ dAll uDecl $ Imp (Tag HeadTerm n) h
+  where
+    sig = do
+      (n, u) <- newNotion
+      token' "is"
+      token' "a"
+      token' "structure"
+      var
+      let v = pVar u
+      h <- replace v (trm n) <$> dig Top [v]
+      return ((n,h),u)
     trm Trm {trmName = TermEquality, trmArgs = [_,t]} = t; trm t = t
 
 newPredicat :: FTL Formula
