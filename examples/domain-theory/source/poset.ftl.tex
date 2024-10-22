@@ -24,54 +24,39 @@
   \begin{forthel}     
     [readtex \path{libraries/source/foundations/classes.ftl.tex}]
   \end{forthel}
+
+  \subsection{Definition}
   
   \begin{forthel}
     \begin{signature*}
-      A \emph{partially ordered set} is a notion.
+      A \emph{partially ordered set $\Pvar{}[univ,leq]$} is a structure with the following properties:
+      \begin{itemize}
+        \item \label{postUnivSig}
+          $\Pvar{univ}$ is a set.
+
+        \item \label{posetLeqSig}
+          Let $x, y \in \Pvar{univ}$. $x {\Pvar{leq}} y$ is a relation.
+
+        \item \label{posetReflAx}
+          For all $x \in \Pvar{univ}$ it holds that $x {\Pvar{leq}} x$.
+
+        \item \label{posetTransAx}
+          For all $x, y, z \in \Pvar{univ}$ it holds that $x {\Pvar{leq}} y {\Pvar{leq}} z$ implies $x {\Pvar{leq}} z$.
+
+        \item \label{posetAntisymAx}
+          For all $x, y \in \Pvar{univ}$ it holds that $x {\Pvar{leq}} y$ and $y {\Pvar{leq}} x$ implies $x=y$.
+      \end{itemize}
     \end{signature*}
 
     Let a \emph{poset} stand for a partially ordered set.
 
     Let $\Pvar! = \Pvar{}[univ,leq]$ denote a poset.
-  \end{forthel}
-  
-  \subsection{Universe}
-  
-  \begin{forthel}
-    \begin{signature*}
-      Let $\Pvar!$ be a poset.
-      $\Pvar{univ}$ is a set.
-    \end{signature*}
-  \end{forthel}
-  
-  \subsection{Order Relation}
-  
-  \begin{forthel}
-    \begin{signature*}
-      Let $x, y \in \Pvar{univ}$.
-      $x {\Pvar{leq}} y$ is a relation.
-    \end{signature*}
 
     Let $x {\Pvar{geq}} y$ stand for $y {\Pvar{leq}} x$.
 
     Let $x {\Pvar{less}} y$ stand for $x {\Pvar{leq}} y$ and $x\neq y$.
 
     Let $x {\Pvar{more}} y$ stand for $x {\Pvar{geq}} y$ and $x\neq y$.
-
-    \begin{axiom*}[Reflexivity]
-      Let $x \in \Pvar{univ}$.
-      Then $x {\Pvar{leq}} x$.
-    \end{axiom*}
-
-    \begin{axiom*}[Antisymmetry]
-      Let $x, y \in \Pvar{univ}$.
-      If $x {\Pvar{leq}} y$ and $y {\Pvar{leq}} x$ then $x=y$.
-    \end{axiom*}
-
-    \begin{axiom*}[Transitivity]
-      Let $x, y, z \in \Pvar{univ}$.
-      If $x {\Pvar{leq}} y$ and $y {\Pvar{leq}} z$ then $x {\Pvar{leq}} z$.
-    \end{axiom*}
   \end{forthel}
 
   \subsection{Upper and Lower Bounds}

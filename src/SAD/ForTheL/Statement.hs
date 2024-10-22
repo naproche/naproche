@@ -31,7 +31,7 @@ import SAD.Data.Text.Decl
 import SAD.ForTheL.Base
 import SAD.ForTheL.Reports (markupToken, markupTokenOf, markupTokenSeqOf)
 import SAD.Parser.Combinators
-import SAD.Parser.Primitives (token, token', symbol, tokenOf', tokenSeq')
+import SAD.Parser.Primitives (token, token', symbol, tokenOf', tokenSeq', tokenSeqOf')
 import SAD.ForTheL.Reports qualified as Reports
 
 
@@ -45,7 +45,7 @@ headed = quantifiedStatement <|> ifThenStatement <|> wrongStatement
     ifThenStatement = liftA2 Imp
       (markupToken Reports.ifThen "if" >> statement)
       (markupToken Reports.ifThen "then" >> statement)
-    wrongStatement =
+    wrongStatement = try $
       tokenSeq' ["it", "is", "wrong", "that"] >> fmap Not statement
 
 
@@ -84,7 +84,10 @@ atomic :: FTL Formula
 atomic = label "atomic statement"
   thereIs <|> (simple </> (weHave >> symbolicStatement <|> thesis))
   where
-    weHave = optLL1 () $ token' "we" >> token' "have"
+    weHave = optLL1 () $ tokenSeqOf' [
+        ["we", "have"],
+        ["it", "holds", "that"]
+      ]
 
 
 thesis :: FTL Formula

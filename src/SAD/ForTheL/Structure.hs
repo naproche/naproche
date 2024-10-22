@@ -25,6 +25,7 @@ import Data.Text.Lazy qualified as Text
 import Data.Set qualified as Set
 import Data.Set (Set)
 import Data.Functor ((<&>))
+import Data.Foldable (foldr')
 
 import SAD.ForTheL.Base
 import SAD.ForTheL.Statement
@@ -145,10 +146,10 @@ theoremFtl = do
 -- @<signature> | <definition> | <axiom> | <theorem>@
 topLevelSectionTex :: FTL [ProofText]
 topLevelSectionTex =
-      ((signatureTex <&> singleton) -|- structSignatureTex)
-  <|> (definitionTex <&> singleton)
-  <|> (axiomTex <&> singleton)
-  <|> (theoremTex <&> singleton)
+      signatureTex
+  <|> definitionTex
+  <|> axiomTex
+  <|> theoremTex
 
 -- | @beginTopLevelSection keywords@ parses @"\\begin" "{" <keyword> ["*"] "}"@,
 -- where @<keyword>@ is a member of @keywords@.
@@ -175,66 +176,82 @@ endTopLevelSection keyword starred = do
 -- | Parse a signature (TEX):
 -- @"\\begin" "{" "signature" "}" ["[" <name> "]"] [<label>] <signatureBody>
 -- "\\end" "{" "signature" "}"@
-signatureTex :: FTL ProofText
+signatureTex :: FTL [ProofText]
 signatureTex = do
   (keyword, starred) <- try $ beginTopLevelSection ["signature"]
   label <- optionalEnvLabel
-  content <- signatureBody
+  result <- sig label </> structSig label
   endTopLevelSection keyword starred
-  addMetadata Signature content label
-
-structSignatureTex :: FTL [ProofText]
-structSignatureTex = do
-  (keyword, starred) <- try $ beginTopLevelSection ["signature"]
-  structLabel <- optionalEnvLabel
-  structContent <- structSignatureBody
-  structMetadata <- addMetadata Signature structContent structLabel
-  texCommand "begin" <?> "\\begin"
-  symbol "{" <?> "{"
-  env <- getTokenOf ["itemize", "enumerate"] <?> "\"itemize\" or \"enumerate\""
-  symbol "}" <?> "}"
-  compMetadata <- chainLL1 $ do
-    texCommand "item" <?> "\\item"
-    compLabel <- optLL1 Nothing $ Just <$> texCommandWithArg "label" identifier
-    compContent <- signatureBody </> definitionBody </> axiomBody
-    addMetadata Signature compContent compLabel
-  texCommand "end" <?> "\\end"
-  symbol "{" <?> "{"
-  token env <?> env
-  symbol "}" <?> "}"
-  endTopLevelSection keyword starred
-  return $ structMetadata : compMetadata
+  return result
+  where
+    sig label = do
+      content <- signatureBody
+      proofText <- addMetadata Signature content label
+      return [proofText]
+    structSig label = do
+      (structVarAssumption, structContent) <- structSignatureBody
+      structMetadata <- addMetadata Signature structContent label
+      texCommand "begin" <?> "\\begin"
+      symbol "{" <?> "{"
+      env <- getTokenOf ["itemize", "enumerate"] <?> "\"itemize\" or \"enumerate\""
+      symbol "}" <?> "}"
+      compMetadata <- chainLL1 $ do
+        texCommand "item" <?> "\\item"
+        inlineSig structVarAssumption </> inlineDef structVarAssumption </> inlineAx structVarAssumption
+      texCommand "end" <?> "\\end"
+      symbol "{" <?> "{"
+      token env <?> env
+      symbol "}" <?> "}"
+      return $ structMetadata : compMetadata
+    inlineSig assumptions = do
+      label <- optCompLabel
+      content <- foldr' (pretypeBefore . pure) signatureBody assumptions
+      addMetadata Signature content label
+    inlineDef assumptions = do
+      label <- optCompLabel
+      content <- foldr' (pretypeBefore . pure) definitionBody assumptions
+      addMetadata Definition content label
+    inlineAx assumptions = do
+      label <- optCompLabel
+      content <- foldr' (pretypeBefore . pure) axiomBody assumptions
+      addMetadata Axiom content label
+    optCompLabel = opt Nothing $ do
+      label <- texCommandWithArg "label" identifier
+      return (Just label)
 
 -- | Parse a definition (TEX):
 -- @"\\begin" "{" "definition" "}" ["[" <name> "]"] [<label>] <definitionBody>
 -- "\\end" "{" "definition" "}"@
-definitionTex :: FTL ProofText
+definitionTex :: FTL [ProofText]
 definitionTex = do
   (keyword, starred) <- try $ beginTopLevelSection ["definition"]
   label <- optionalEnvLabel
   content <- definitionBody
   endTopLevelSection keyword starred
-  addMetadata Definition content label
+  proofText <- addMetadata Definition content label
+  return [proofText]
 
 -- | Parse an axiom (TEX):
 -- @"\\begin" "{" "axiom" "}" ["[" <name> "]"] [<label>] <axiomBody>
 -- "\\end" "{" "axiom" "}"@
-axiomTex :: FTL ProofText
+axiomTex :: FTL [ProofText]
 axiomTex = do
   (keyword, starred) <- try $ beginTopLevelSection ["axiom"]
   label <- optionalEnvLabel
   content <- axiomBody
   endTopLevelSection keyword starred
-  addMetadata Axiom content label
+  proofText <- addMetadata Axiom content label
+  return [proofText]
 
 -- | Parse a theorem (TEX)
-theoremTex :: FTL ProofText
+theoremTex :: FTL [ProofText]
 theoremTex = do
   (keyword, starred) <- try $ beginTopLevelSection ["theorem", "proposition", "lemma", "corollary"]
   label <- optionalEnvLabel
   content <- addAssumptions . texTopLevelProof $
              pretypeSentence Affirmation (affirmationHeader >> statement) affirmVars finishWithOptLink <* endTopLevelSection keyword starred
-  addMetadata Theorem content label
+  proofText <- addMetadata Theorem content label
+  return [proofText]
 
 
 -- ** Adding meta data
@@ -300,15 +317,15 @@ exitInstruction text = case text of
 signatureBody :: FTL [ProofText]
 signatureBody = addAssumptions $ pretype $ pretypeSentence Posit sigExtend defVars finishWithoutLink
 
-structSignatureBody :: FTL [ProofText]
-structSignatureBody = addAssumptions $ pretype $ pretypeSentence Posit structSigExtend defVars structFinish
+structSignatureBody :: FTL ([Block], [ProofText])
+structSignatureBody = do
+  (varForm, pSent) <- pretypeSentence' Posit structSigExtend defVars structFinish
+  structProofText <- addAssumptions $ pretype $ pure pSent
+  varAssumption <- pretypeSentence Assumption (pure varForm) assumeVars (pure [])
+  return ([varAssumption], structProofText)
   where
     structFinish = do
-      token' "with"
-        <|> token' "having"
-        <|> tokenSeq' ["consisting", "of"]
-        <|> tokenOf' ["that", "which"] *> (token' "has" <|> tokenSeq' ["consists", "of"])
-      tokenSeq' ["the", "following", "components"]
+      tokenSeq' ["with", "the", "following", "properties"]
       symbol "." <|> symbol ":"
       return []
 
@@ -529,6 +546,18 @@ statementBlock kind p mbLink = do
   toks <- getTokens inp
   return $ Block.makeBlock fr [] kind nm link toks
 
+statementBlock' :: Section
+                -> FTL (a, Formula)
+                -> FTL [Text]
+                -> FTL (a, Block)
+statementBlock' kind p mbLink = do
+  nm <- optLLx "__" (parenthesised identifier)
+  inp <- getInput
+  (x, fr) <- p
+  link <- mbLink
+  toks <- getTokens inp
+  return (x, Block.makeBlock fr [] kind nm link toks)
+
 
 pretypeSentence :: Section
                 -> FTL Formula
@@ -544,6 +573,30 @@ pretypeSentence kind p wfVars mbLink = narrow $ do
   addBlockReports nbl
   return nbl {Block.formula = Block.formula bl}
   where
+    wf dvs tvr bl =
+      let fr = Block.formula bl
+          nvs = Set.intersection tvr $ fvToVarSet $ excludeSet (free fr) dvs
+      in  wfVars (nvs <> dvs) fr
+
+pretypeSentence' :: Section
+                 -> FTL (a, Formula)
+                 -> (Set VariableName -> Formula -> Maybe Text)
+                 -> FTL [Text]
+                 -> FTL (a, Block)
+pretypeSentence' kind p wfVars mbLink = do
+    (x, bl) <- prtp
+    bl' <- narrow (pure bl)
+    return (x, bl')
+  where
+    prtp = do
+      dvs <- getDecl
+      tvr <- fmap (Set.unions . map fst) getPretyped
+      (x, bl') <- statementBlock' kind p mbLink
+      bl <- wellFormedCheck (wf dvs tvr) $ pure bl'
+      newDecl <- bindings dvs $ Block.formula bl
+      let nbl = if Block.canDeclare kind then bl {Block.declaredVariables = newDecl} else bl
+      addBlockReports nbl
+      return (x, nbl {Block.formula = Block.formula bl})
     wf dvs tvr bl =
       let fr = Block.formula bl
           nvs = Set.intersection tvr $ fvToVarSet $ excludeSet (free fr) dvs

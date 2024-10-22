@@ -23,24 +23,35 @@
     [readtex \path{domain-theory/source/lattice.ftl.tex}]
   \end{forthel}
   
+  \subsection{Definition}
+
   \begin{forthel}
     \begin{signature*}
-      A \emph{complete lattice} is a lattice.
+      A \emph{complete lattice} is a lattice $\Lvar{}[univ,leq,meet,join,Meet,Join]$.
     \end{signature*}
-
-    Let $\Lvar! = \Lvar{}[univ,leq,Meet,Join]$ denote a complete lattice.
   \end{forthel}
   
-  \subsection{Joins and Meets}
-
-  \subsubsection{Joins}
-  
   \begin{forthel}
     \begin{signature*}
-      Let $A \subseteq \Lvar{univ}$.
+      Let $\Lvar! = \Lvar{}[univ,leq,meet,join,Meet,Join]$ be a complete lattice and $A \subseteq \Lvar{univ}$.
       ${\Lvar{Join}} A$ is a join of $A$ in $\Lvar!$.
     \end{signature*}
+  \end{forthel}
+
+  \begin{forthel}
+    \begin{signature*}
+      Let $\Lvar! = \Lvar{}[univ,leq,meet,join,Meet,Join]$ be a complete lattice and $A \subseteq \Lvar{univ}$.
+      ${\Lvar{Meet}} A$ is a meet of $A$ in $\Lvar!$.
+    \end{signature*}
+  \end{forthel}
+
+  \subsection{Properties}
+
+  \begin{forthel}
+    Let $\Lvar! = \Lvar{}[univ,leq,meet,join,Meet,Join]$ denote a complete lattice.
+  \end{forthel}
     
+  \begin{forthel}
     \begin{proposition*}
       Let $x \in \Lvar{univ}$.
       ${\Lvar{Join}} \set{x} = x$.
@@ -55,10 +66,7 @@
   \subsubsection{Meets}
 
   \begin{forthel}
-    \begin{signature*}
-      Let $A \subseteq \Lvar{univ}$.
-      ${\Lvar{Meet}} A$ is a meet of $A$ in $\Lvar!$.
-    \end{signature*}
+    
     
     \begin{proposition*}
       Let $x \in \Lvar{univ}$.

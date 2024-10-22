@@ -17,24 +17,22 @@
     [readtex \path{domain-theory/source/poset.ftl.tex}]
   \end{forthel}
   
+  \subsection{Definition}
+
   \begin{forthel}
     \begin{signature*}
-      A \emph{lattice} is a poset.
+      A \emph{lattice} is a poset $\Lvar{}[univ,leq,join,meet]$.
     \end{signature*}
-
-    Let $\Lvar! = \Lvar{}[univ,leq,join,meet]$ denote a lattice.
   \end{forthel}
   
-  \subsection{Joins and Meets}
-  
   \begin{forthel}
     \begin{signature*}
-      Let $x, y \in \Lvar{univ}$.
+      Let $\Lvar! = \Lvar{}[univ,leq,join,meet]$ be a lattice and $x, y \in \Lvar{univ}$.
       $x {\Lvar{join}} y$ is a join of $x$ and $y$ in $\Lvar!$.
     \end{signature*}
 
     \begin{signature*}
-      Let $x, y \in \Lvar{univ}$.
+      Let $\Lvar! = \Lvar{}[univ,leq,join,meet]$ be a lattice and $x, y \in \Lvar{univ}$.
       $x {\Lvar{meet}} y$ is a meet of $x$ and $y$ in $\Lvar!$.
     \end{signature*}
   \end{forthel}
@@ -42,6 +40,8 @@
   \subsection{Properties of Joins and Meets}
 
   \begin{forthel}
+    Let $\Lvar{}[univ,leq,join,meet]$ denote a lattice.
+
     \begin{proposition*}
       Let $x \in \Lvar{univ}$.
       $x {\Lvar{join}} x = x$.
