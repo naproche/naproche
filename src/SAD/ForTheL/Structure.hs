@@ -215,7 +215,7 @@ signatureTex = do
       label <- optCompLabel
       content <- foldr' (pretypeBefore . pure) axiomBody assumptions
       addMetadata Axiom content label
-    optCompLabel = opt Nothing $ do
+    optCompLabel = optLL1 Nothing $ do
       label <- texCommandWithArg "label" identifier
       return (Just label)
 

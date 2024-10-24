@@ -27,21 +27,20 @@
 
   \begin{forthel}
     \begin{signature*}
-      A \emph{complete lattice} is a lattice $\Lvar{}[univ,leq,meet,join,Meet,Join]$.
-    \end{signature*}
-  \end{forthel}
-  
-  \begin{forthel}
-    \begin{signature*}
-      Let $\Lvar! = \Lvar{}[univ,leq,meet,join,Meet,Join]$ be a complete lattice and $A \subseteq \Lvar{univ}$.
-      ${\Lvar{Join}} A$ is a join of $A$ in $\Lvar!$.
-    \end{signature*}
-  \end{forthel}
+      A \emph{complete lattice $\Lvar! = \Lvar{}[univ,leq,meet,join,Meet,Join]$} is a structure with the following properties:
 
-  \begin{forthel}
-    \begin{signature*}
-      Let $\Lvar! = \Lvar{}[univ,leq,meet,join,Meet,Join]$ be a complete lattice and $A \subseteq \Lvar{univ}$.
-      ${\Lvar{Meet}} A$ is a meet of $A$ in $\Lvar!$.
+      \begin{itemize}
+        \item \label{compLatticeSig}
+          $\Lvar!$ is a lattice.
+
+        \item \label{compLatticeJoinSig}
+          Let $A \subseteq \Lvar{univ}$.
+          ${\Lvar{Join}} A$ is a join of $A$ in $\Lvar!$.
+
+        \item \label{compLatticeMeetSig}
+          Let $A \subseteq \Lvar{univ}$.
+          ${\Lvar{Meet}} A$ is a meet of $A$ in $\Lvar!$.
+      \end{itemize}
     \end{signature*}
   \end{forthel}
 
@@ -66,8 +65,6 @@
   \subsubsection{Meets}
 
   \begin{forthel}
-    
-    
     \begin{proposition*}
       Let $x \in \Lvar{univ}$.
       ${\Lvar{Meet}} \set{x} = x$.

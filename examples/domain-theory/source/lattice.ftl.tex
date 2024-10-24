@@ -21,19 +21,20 @@
 
   \begin{forthel}
     \begin{signature*}
-      A \emph{lattice} is a poset $\Lvar{}[univ,leq,join,meet]$.
-    \end{signature*}
-  \end{forthel}
-  
-  \begin{forthel}
-    \begin{signature*}
-      Let $\Lvar! = \Lvar{}[univ,leq,join,meet]$ be a lattice and $x, y \in \Lvar{univ}$.
-      $x {\Lvar{join}} y$ is a join of $x$ and $y$ in $\Lvar!$.
-    \end{signature*}
+      A \emph{lattice $\Lvar! = \Lvar{}[univ,leq,join,meet]$} is a structure with the following properties:
+      
+      \begin{itemize}
+        \item \label{latticeSig}
+          $\Lvar!$ is a poset.
+        
+        \item \label{latticeJoinSig}
+          Let $x, y \in \Lvar{univ}$.
+          $x {\Lvar{join}} y$ is a join of $x$ and $y$ in $\Lvar!$.
 
-    \begin{signature*}
-      Let $\Lvar! = \Lvar{}[univ,leq,join,meet]$ be a lattice and $x, y \in \Lvar{univ}$.
-      $x {\Lvar{meet}} y$ is a meet of $x$ and $y$ in $\Lvar!$.
+        \item \label{latticeMeetSig}
+          Let $x, y \in \Lvar{univ}$.
+          $x {\Lvar{meet}} y$ is a meet of $x$ and $y$ in $\Lvar!$.
+      \end{itemize}
     \end{signature*}
   \end{forthel}
 
