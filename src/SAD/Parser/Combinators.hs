@@ -162,6 +162,14 @@ bracketed p = snd <$> enclosed "[" "]" p
 braced :: Parser st a -> Parser st a
 braced p = snd <$> enclosed "{" "}" p
 
+-- | @braced p@ parses @"{" <p> "}"@.
+bracedOrTexBraced :: Parser st a -> Parser st a
+bracedOrTexBraced p = do
+  token' "{" <|> token' "\\{"
+  result <- p
+  token' "}" <|> token' "\\}"
+  return result
+
 -- | @optParenthesised p@ parses @<p> | "(" <p> ")"@.
 optParenthesised :: Parser st a -> Parser st a
 optParenthesised p = p -|- parenthesised p

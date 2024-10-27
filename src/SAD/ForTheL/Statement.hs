@@ -460,12 +460,12 @@ symbClassNotation :: FTL (Formula -> Formula, (PosVar, Formula -> Formula))
 symbClassNotation = texClass </> cndClass </> finiteSet
   where
     -- Finite class, e.g. "{x, f(y), 5}"
-    finiteSet = braced $ do
+    finiteSet = bracedOrTexBraced $ do
       ts <- sTerm `sepByLL1` token ","
       h <- hidden
       pure (\tr -> mkObject tr `And` (foldr1 Or $ map (mkEquality tr) ts), (h, mkSet))
     -- Set-builder notation, e.g. "{x in X | x is less than y}"
-    cndClass = braced $ do
+    cndClass = bracedOrTexBraced $ do
       (tag, c, t, mkColl) <- optInText sepFrom
       st <- (token "|" <|> token ":" <|> token "\\mid") >> optInText statement
       vs <- freeVars t
