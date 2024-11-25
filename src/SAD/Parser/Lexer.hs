@@ -9,8 +9,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Parser.Lexer (
-  PIDE_Pos(..),
-  fromPIDEPos,
+  FtlLexeme,
+  TexLexeme,
   lexFtl,
   lexTex
 ) where
@@ -35,46 +35,42 @@ import FTLex.Position (noPos)
 
 -- * PIDE Setup
 
-newtype PIDE_Pos = PIDE_Pos Position.T deriving (Eq, Ord)
+instance Pos.Pos Position.T where
+  noPos :: Position.T
+  noPos = Position.none
 
-fromPIDEPos :: PIDE_Pos -> Position.T
-fromPIDEPos (PIDE_Pos pos) = pos
+  getNextPos :: Text -> Position.T -> Position.T
+  getNextPos = Position.symbol_explode
 
-
-instance Pos.Pos PIDE_Pos where
-  noPos :: PIDE_Pos
-  noPos = PIDE_Pos Position.none
-
-  getNextPos :: Text -> PIDE_Pos -> PIDE_Pos
-  getNextPos text (PIDE_Pos pos) =
-    PIDE_Pos $ Position.symbol_explode text pos
-
-  getPosOf :: Text -> PIDE_Pos -> PIDE_Pos
-  getPosOf text (PIDE_Pos pos) =
+  getPosOf :: Text -> Position.T -> Position.T
+  getPosOf text pos =
     let newPos = Position.symbol_explode text pos
-    in PIDE_Pos $ Position.range_position (pos, newPos)
+    in Position.range_position (pos, newPos)
 
-  showPos :: PIDE_Pos -> Text
-  showPos (PIDE_Pos pos) = Library.make_text . Position.here $ pos
+  showPos :: Position.T -> Text
+  showPos = Library.make_text . Position.here
 
 
-instance Msg.Msg PIDE_Pos IO where
-  errorLexer :: PIDE_Pos -> Text -> IO a
-  errorLexer (PIDE_Pos pos) = Message.errorLexer pos
+instance Msg.Msg Position.T IO where
+  errorLexer :: Position.T -> Text -> IO a
+  errorLexer = Message.errorLexer
 
 
 -- * Lexing
 
+type FtlLexeme = Ftl.Lexeme Position.T
+type TexLexeme = Tex.Lexeme Position.T
+
 -- | @lexFtl pos text@ lexes an FTL document @text@ starting at position @pos@
 -- in the document.
-lexFtl :: PIDE_Pos -> Bytes.Bytes -> IO [Ftl.Lexeme PIDE_Pos]
+lexFtl :: Position.T -> Bytes.Bytes -> IO [FtlLexeme]
 lexFtl pos bytes = do
   text <- pideDecode bytes
   Ftl.runLexer pos text (Ftl.initState pos codeBlocks)
 
 -- | @lexTex pos text@ lexes a TEX document @text@ starting at position @pos@
 -- in the document.
-lexTex :: PIDE_Pos -> Bytes.Bytes -> IO [Tex.Lexeme PIDE_Pos]
+lexTex :: Position.T -> Bytes.Bytes -> IO [TexLexeme]
 lexTex pos bytes = do
   text <- pideDecode bytes
   Tex.runLexer pos text (Tex.initState pos codeBlocks)
@@ -539,5 +535,5 @@ pideDecode bytes = do
     decode "\\<^doc>" = pure '\x01F4D3'
     decode "\\<^action>" = pure '\x00261b'
     decode [c] = pure c
-    decode str = Message.errorLexer (fromPIDEPos noPos) $
+    decode str = Message.errorLexer noPos $
       "The input text contains an invalid character sequence \"" <> str <> "\"."

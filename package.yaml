@@ -60,6 +60,7 @@ ghc-options:
   - -fno-warn-unused-do-bind
   - -fno-warn-unused-matches
   - -fno-warn-name-shadowing
+  - -fno-warn-orphans
 
 library:
   source-dirs:

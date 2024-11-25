@@ -107,8 +107,8 @@ reader0 :: Position.T -> Bytes -> State FState -> IO ([ProofText], State FState)
 reader0 pos bytes pState = do
   let dialect = parserKind pState
   tokens <- case dialect of
-    Ftl -> lexFtl (PIDE_Pos pos) bytes >>= ftlLexemesToTokens
-    Tex -> lexTex (PIDE_Pos pos) bytes >>= texLexemesToTokens
+    Ftl -> lexFtl pos bytes >>= ftlLexemesToTokens
+    Tex -> lexTex pos bytes >>= texLexemesToTokens
   let st = State
         (addInits dialect ((stUser pState) {tvrExpr = []}))
         tokens

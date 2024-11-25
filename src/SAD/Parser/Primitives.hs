@@ -126,7 +126,9 @@ symb :: Parser st Text
 symb = tokenPrim $ \tok ->
   let t = showToken tok
   in case Text.uncons t of
-    Just ('\\', rest) | Text.all isAsciiLetter rest -> Just t
+    Just ('\\', rest)
+      | Text.all isAsciiLetter rest -> Just t
+      | Text.length rest == 1 && Text.all isAsciiSymbol rest -> Just t
     Just (c, "") | isAsciiSymbol c && not (isAsciiPeriod c) -> Just t
     _ -> Nothing
 
