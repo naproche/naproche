@@ -1008,7 +1008,7 @@ $x \cdot (y + z) = (x \cdot y) + (x \cdot z)$.
 \end{forthel}
 We continue by proving some consequencen of the axioms.
 The selection of lemmas follows the
-{\em Foundations of Real Analysis} by Walter Rudin \cite{Rudin1953}.
+{\em Foundations of Real Analysis} by Walter Rudin \cite{Rudin'953}.
 Note that in rare cases we need to use double brackets
 $((\dots))$ because
 of some parser bug.
@@ -1268,7 +1268,7 @@ $x$ is nonnegative iff $x \geq 0$.
 $x \leq y$ iff $y \nless x$.
 \end{lemma}
 \end{forthel}
-We prove some lemmas, following Rudin \cite{Rudin1953}.
+We prove some lemmas, following Rudin \cite{Rudin'953}.
 \begin{forthel}
 
 \begin{lemma}0=0.\end{lemma}
@@ -2776,52 +2776,52 @@ $q = \frac{n}{m}$ and $m \cdot q = n$.
   $0 = m \leq n$. Qed.
 
   Case $n \neq 0$.
-  Take a natural number $n1$ such that $n = n1 + 1$.
+  Take a natural number $n'$ such that $n = n' + 1$.
 
   Case $m = 0$. Then $m \leq n$. Trivial.
 
   Case $m \neq 0$.
-  Take a natural number $m1$ such that $m = m1 + 1$.
+  Take a natural number $m'$ such that $m = m' + 1$.
 
-  Case $f[\Seq{1}{m1}] \subseteq \Seq{1}{n1}$.
+  Case $f[\Seq{1}{m'}] \subseteq \Seq{1}{n'}$.
 
   Let
-$$g = f \upharpoonright \Seq{1}{m1}.$$
-  Let $C = \Seq{1}{m1}$. Let $D = \Seq{1}{n1}$.
-  $f \upharpoonright \Seq{1}{m1}$ is an injective map.
-  $\dom(f \upharpoonright \Seq{1}{m1}) = \Seq{1}{m1}$.
-  $f[\Seq{1}{m1}] \subseteq \Seq{1}{n1}$.
+$$g = f \upharpoonright \Seq{1}{m'}.$$
+  Let $C = \Seq{1}{m'}$. Let $D = \Seq{1}{n'}$.
+  $f \upharpoonright \Seq{1}{m'}$ is an injective map.
+  $\dom(f \upharpoonright \Seq{1}{m'}) = \Seq{1}{m'}$.
+  $f[\Seq{1}{m'}] \subseteq \Seq{1}{n'}$.
   $g$ is a map
   from $C$ to $D$.
 
-  (1) $f \upharpoonright \Seq{1}{m1}$ is an injective map
-  from $\Seq{1}{m1}$ to $\Seq{1}{n1}$.
+  (1) $f \upharpoonright \Seq{1}{m'}$ is an injective map
+  from $\Seq{1}{m'}$ to $\Seq{1}{n'}$.
 
-  $n1$ is inductively smaller than $n$.
+  $n'$ is inductively smaller than $n$.
 [timelimit 10] %%%
-  $m1 \leq n1$ and $m \leq n$. Qed.
+  $m' \leq n'$ and $m \leq n$. Qed.
 [timelimit 3] %%%
 
-  Case not $f[\Seq{1}{m1}] \subseteq \Seq{1}{n1}$.
+  Case not $f[\Seq{1}{m'}] \subseteq \Seq{1}{n'}$.
 
-  Take $w \in f[\Seq{1}{m1}]$ such that $w \notin \Seq{1}{n1}$.
-  $w \in f[\Seq{1}{m1}] \subseteq f[\Seq{1}{m}] \subseteq \Seq{1}{n}$.
-  $w \in \Seq{1}{n1+1} \setminus \Seq{1}{n1}$.
+  Take $w \in f[\Seq{1}{m'}]$ such that $w \notin \Seq{1}{n'}$.
+  $w \in f[\Seq{1}{m'}] \subseteq f[\Seq{1}{m}] \subseteq \Seq{1}{n}$.
+  $w \in \Seq{1}{n'+1} \setminus \Seq{1}{n'}$.
   $w = n$.
-  Take $i \in \Seq{1}{m1}$ such that $f(i) = w$.
+  Take $i \in \Seq{1}{m'}$ such that $f(i) = w$.
   Define
   \[h(j) =
     \begin{cases}
     f(j)  & : j \neq i \\
     f(m) & : j = i
     \end{cases} \]
-  for $j \in \Seq{1}{m1}$.
-  $h$ is a map. $\dom(h) = \Seq{1}{m1}$.
+  for $j \in \Seq{1}{m'}$.
+  $h$ is a map. $\dom(h) = \Seq{1}{m'}$.
 
   (2) $h$ is injective.
 
   Proof.
-  Let $j,k$ be distinct elements of $\Seq{1}{m1}$.
+  Let $j,k$ be distinct elements of $\Seq{1}{m'}$.
   Let us show that $h(j) \neq h(k)$.
 
   Case $j = i$.
@@ -2838,10 +2838,10 @@ $$g = f \upharpoonright \Seq{1}{m1}.$$
   Qed.
   Qed.
 
-(3)  $h[\Seq{1}{m1}] \subseteq \Seq{1}{n1}$.
+(3)  $h[\Seq{1}{m'}] \subseteq \Seq{1}{n'}$.
 
 Proof.
-  Let $j \in \Seq{1}{m1}$.
+  Let $j \in \Seq{1}{m'}$.
   $h(j) \in \Seq{1}{n}$.
   Proof.
   [timelimit 30]
@@ -2849,7 +2849,7 @@ Proof.
   [timelimit 3]
   Qed.
 
-  Let us show that  $h(j) \in \Seq{1}{n1}$.
+  Let us show that  $h(j) \in \Seq{1}{n'}$.
 
   Proof.
 [timelimit 10]
@@ -2866,10 +2866,10 @@ End.
   Qed.
   Qed.
 
-(4) $h$ is an injective map from $\Seq{1}{m1}$ to $\Seq{1}{n1}$.
+(4) $h$ is an injective map from $\Seq{1}{m'}$ to $\Seq{1}{n'}$.
 
-  $n1$ is inductively smaller than $n$.
-Then $m1 \leq n1$ and $m \leq n$.
+  $n'$ is inductively smaller than $n$.
+Then $m' \leq n'$ and $m \leq n$.
   Qed.
   Qed.
   Qed.
