@@ -3,20 +3,13 @@
 -- Copyright   : (c) 2024, Marcel Schütz
 -- License     : GPL-3
 --
--- Lexing
+-- Generic lexing setup
 
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.Parser.Lexer (
-  FtlLexeme,
-  TexLexeme,
-  lexFtl,
-  lexTex
-) where
+module SAD.Parser.Lexer where
 
-import FTLex.Ftl qualified as Ftl
-import FTLex.Tex qualified as Tex
 import FTLex.Base
 import FTLex.Position qualified as Pos
 import FTLex.Message qualified as Msg
@@ -54,26 +47,6 @@ instance Pos.Pos Position.T where
 instance Msg.Msg Position.T IO where
   errorLexer :: Position.T -> Text -> IO a
   errorLexer = Message.errorLexer
-
-
--- * Lexing
-
-type FtlLexeme = Ftl.Lexeme Position.T
-type TexLexeme = Tex.Lexeme Position.T
-
--- | @lexFtl pos text@ lexes an FTL document @text@ starting at position @pos@
--- in the document.
-lexFtl :: Position.T -> Bytes.Bytes -> IO [FtlLexeme]
-lexFtl pos bytes = do
-  text <- pideDecode bytes
-  Ftl.runLexer pos text (Ftl.initState pos codeBlocks)
-
--- | @lexTex pos text@ lexes a TEX document @text@ starting at position @pos@
--- in the document.
-lexTex :: Position.T -> Bytes.Bytes -> IO [TexLexeme]
-lexTex pos bytes = do
-  text <- pideDecode bytes
-  Tex.runLexer pos text (Tex.initState pos codeBlocks)
 
 
 -- * Misc

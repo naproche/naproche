@@ -27,8 +27,11 @@ import SAD.Data.Instr as Instr
 import SAD.ForTheL.Base
 import SAD.ForTheL.Structure
 import SAD.Parser.Base
-import SAD.Parser.Lexer
-import SAD.Parser.Token (Token, ftlLexemesToTokens, texLexemesToTokens, noTokens)
+import SAD.Parser.FTL.Lexer qualified as FTL
+import SAD.Parser.TEX.Lexer qualified as TEX
+import SAD.Parser.FTL.Token qualified as FTL
+import SAD.Parser.TEX.Token qualified as TEX
+import SAD.Parser.Token (Token, noTokens)
 import SAD.Parser.Error
 import SAD.Core.Message qualified as Message
 
@@ -107,8 +110,8 @@ reader0 :: Position.T -> Bytes -> State FState -> IO ([ProofText], State FState)
 reader0 pos bytes pState = do
   let dialect = parserKind pState
   tokens <- case dialect of
-    Ftl -> lexFtl pos bytes >>= ftlLexemesToTokens
-    Tex -> lexTex pos bytes >>= texLexemesToTokens
+    Ftl -> FTL.lex pos bytes >>= FTL.tokenize
+    Tex -> TEX.lex pos bytes >>= TEX.tokenize
   let st = State
         (addInits dialect ((stUser pState) {tvrExpr = []}))
         tokens
