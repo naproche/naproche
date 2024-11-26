@@ -17,7 +17,7 @@
   \subsection*{Sub- and Superclasses}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_01_3275578358628352}
+    \begin{definition}[id=FOUNDATIONS_01_3275578358628352,printid]
       Let $A$ be a class.
       A subclass of $A$ is a class $B$ such that every element of $B$ is an
       element of $A$.
@@ -41,7 +41,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_01_5994555614691328}
+    \begin{proposition}[id=FOUNDATIONS_01_5994555614691328,printid]
       Let $A$ be a class.
       Then $A \subseteq A$.
     \end{proposition}
@@ -52,7 +52,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_01_3939677545431040}
+    \begin{proposition}[id=FOUNDATIONS_01_3939677545431040,printid]
       Let $A, B, C$ be classes.
       If $A \subseteq B$ and $B \subseteq C$ then $A \subseteq C$.
     \end{proposition}
@@ -65,7 +65,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_01_7159957847801856}
+    \begin{proposition}[id=FOUNDATIONS_01_7159957847801856,printid]
       Let $A, B$ be classes.
       If $A \subseteq B$ and $B \subseteq A$ then $A = B$.
     \end{proposition}
@@ -80,7 +80,7 @@
   \subsection*{The Empty Class}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_01_6252477624090624}
+    \begin{definition}[id=FOUNDATIONS_01_6252477624090624,printid]
       Let $A$ be a class.
       $A$ is empty iff $A$ has no elements.
     \end{definition}
@@ -89,13 +89,13 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_01_7939928493129728}
+    \begin{definition}[id=FOUNDATIONS_01_7939928493129728,printid]
       $\emptyset = \{ x \mid x \neq x \}$.
     \end{definition}
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_01_2263153161273344}
+    \begin{proposition}[id=FOUNDATIONS_01_2263153161273344,printid]
       Let $A$ be a class.
       $A$ is empty iff $A = \emptyset$.
     \end{proposition}
@@ -110,13 +110,13 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{corollary}\printlabel{FOUNDATIONS_01_1495141426659328}
+    \begin{corollary}[id=FOUNDATIONS_01_1495141426659328,printid]
       $\emptyset$ is empty.
     \end{corollary}
   \end{forthel}
 
   \begin{forthel}
-    \begin{corollary}\printlabel{FOUNDATIONS_01_6931785090859008}
+    \begin{corollary}[id=FOUNDATIONS_01_6931785090859008,printid]
       Let $A$ be a class.
       Then $\emptyset \subseteq A$.
     \end{corollary}
@@ -130,7 +130,7 @@
   \subsection*{Unordered Pairs}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_01_3471035364016128}
+    \begin{definition}[id=FOUNDATIONS_01_3471035364016128,printid]
       Let $a, b$ be objects.
       The unordered pair of $a$ and $b$ is $\{ x \mid x = a$ or $x = b \}$.
     \end{definition}
@@ -139,13 +139,13 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_01_605432672419840}
+    \begin{definition}[id=FOUNDATIONS_01_605432672419840,printid]
       An unordered pair is a class $A$ such that $A = \set{a, b}$ for some distinct objects $a, b$.
     \end{definition}
   \end{forthel}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_01_1160414603771904}
+    \begin{definition}[id=FOUNDATIONS_01_1160414603771904,printid]
       Let $a$ be an object.
       The singleton class of $a$ is $\{ x \mid x = a \}$.
     \end{definition}
@@ -154,13 +154,13 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_01_6786618161627136}
+    \begin{definition}[id=FOUNDATIONS_01_6786618161627136,printid]
       A singleton class is a class $A$ such that $A = \set{a}$ for some object $a$.
     \end{definition}
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_01_6125259604361216}
+    \begin{proposition}[id=FOUNDATIONS_01_6125259604361216,printid]
       Let $a, a', b, b'$ be objects.
       Assume $\set{a, b} = \set{a', b'}$.
       Then ($a = a'$ and $b = b'$) or ($a = b'$ and $b = a'$).
@@ -174,7 +174,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{corollary}\printlabel{FOUNDATIONS_01_6954678910713856}
+    \begin{corollary}[id=FOUNDATIONS_01_6954678910713856,printid]
       Let $a, a'$ be objects.
       If $\set{a} = \set{a'}$ then $a = a'$.
     \end{corollary}
@@ -198,7 +198,7 @@
   \subsection*{Unions, Intersections, Complements}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_01_2159753924968448}
+    \begin{definition}[id=FOUNDATIONS_01_2159753924968448,printid]
       Let $A, B$ be classes.
       The union of $A$ and $B$ is $\{ x \mid x \in A$ or $x \in B \}$.
     \end{definition}
@@ -207,7 +207,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_01_5744033011859456}
+    \begin{definition}[id=FOUNDATIONS_01_5744033011859456,printid]
       Let $A, B$ be classes.
       The intersection of $A$ and $B$ is $\{ x \mid x \in A$ and $x \in B \}$.
     \end{definition}
@@ -216,7 +216,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_01_7620345041256448}
+    \begin{definition}[id=FOUNDATIONS_01_7620345041256448,printid]
       Let $A, B$ be classes.
       The complement of $B$ in $A$ is $\{ x \mid x \in A$ and $x \notin B \}$.
     \end{definition}
@@ -228,14 +228,14 @@
   \subsection*{Disjoint Classes}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_01_4981913324355584}
+    \begin{definition}[id=FOUNDATIONS_01_4981913324355584,printid]
       Let $A, B$ be classes.
       $A$ and $B$ are disjoint iff $A$ and $B$ have no common elements.
     \end{definition}
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_01_1211191546347520}
+    \begin{proposition}[id=FOUNDATIONS_01_1211191546347520,printid]
       Let $A, B$ be classes.
       Then $A$ and $B$ are disjoint iff $A \cap B$ is empty.
     \end{proposition}

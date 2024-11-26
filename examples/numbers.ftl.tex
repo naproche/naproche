@@ -59,7 +59,7 @@ Let $x$ is in $A$ denote $x$ is an element of $A$.
 
 %\begin{lemma} $A = A$. \end{lemma}
 
-\begin{definition}[1 3]
+\begin{definition}[title=1 3]
 $A$ is nonempty iff $A$ has an element.
 \end{definition}
 
@@ -83,30 +83,30 @@ $\mathbb{R}$ is a set.
 \end{axiom}
 
 
-\begin{signature}[1 12 A1]
+\begin{signature}[title=1 12 A1]
 $x + y$ is a real number.
 \end{signature}
 Let the sum of $x$ and $y$ stand for $x + y$.
 
-\begin{signature}[1 12 M1]
+\begin{signature}[title=1 12 M1]
 $x \cdot y$ is a real number.
 \end{signature}
 Let the product of $x$ and $y$ denote $x \cdot y$.
 
-\begin{signature}[1 5]
+\begin{signature}[title=1 5]
 $x < y$ is an atom.
 \end{signature}
 Let $x > y$ stand for $y < x$.
 Let $x \leq y$ stand for $x < y \vee x = y$.
 Let $x \geq y$ stand for $y \leq x$.
 
-\begin{axiom}[1 5 i]
+\begin{axiom}[title=1 5 i]
 $(x < y \wedge x \neq y) \wedge not y < x$
 or $not x < y \wedge x = y \wedge not y < x$
 or $not x < y \wedge x \neq y \wedge y < x$.
 \end{axiom}
 
-\begin{axiom}[1 5 ii]
+\begin{axiom}[title=1 5 ii]
 If $x < y$ and $y < z$ then $x < z$.
 \end{axiom}
 
@@ -114,50 +114,50 @@ If $x < y$ and $y < z$ then $x < z$.
 $x \leq y$ iff not $x > y$.
 \end{proposition}
 
-\begin{axiom}[1 12 A2]
+\begin{axiom}[title=1 12 A2]
 $x + y = y + x$.
 \end{axiom}
 
-\begin{axiom}[1 12 A3]
+\begin{axiom}[title=1 12 A3]
 $(x + y) + z = x + (y + z)$.
 \end{axiom}
 
-\begin{signature}[1 12 A4]
+\begin{signature}[title=1 12 A4]
 $0$ is a real number such that
 for every real number $x$ $x + 0 = x$.
 \end{signature}
 
-\begin{signature}[1 12 A5]
+\begin{signature}[title=1 12 A5]
 $-x$ is a real number such that $x + (-x) = 0$.
 \end{signature}
 
-\begin{axiom}[1 12 M2]
+\begin{axiom}[title=1 12 M2]
 $x \cdot y = y \cdot x$.
 \end{axiom}
 
-\begin{axiom}[1 12 M3]
+\begin{axiom}[title=1 12 M3]
 $((x \cdot y)) \cdot z = x \cdot (y \cdot z)$.
 \end{axiom}
 
-\begin{signature}[1 12 M4]
+\begin{signature}[title=1 12 M4]
 $1$ is a real number such that $1 \neq 0$ and
 for every real number $x$ $1 \cdot x = x$.
 \end{signature}
 
-\begin{signature}[1 12 M5]
+\begin{signature}[title=1 12 M5]
 Assume $x \neq 0$. $1/x$ is a real number
 such that $x \cdot (1/x) = 1$.
 \end{signature}
 
-\begin{axiom}[1 12 D]
+\begin{axiom}[title=1 12 D]
 $x \cdot (y + z) = (x \cdot y) + (x \cdot z)$.
 \end{axiom}
 
-\begin{proposition}[Dist1]
+\begin{proposition}[title=Dist 1]
 $((y \cdot x)) + (z \cdot x) = (y + z) \cdot x$.
 \end{proposition}
 
-\begin{proposition}[1 14 a]
+\begin{proposition}[title=1 14 a]
 If $x + y = x + z$ then $y = z$.
 \end{proposition}
 \begin{proof}
@@ -165,20 +165,20 @@ Assume $x + y = x + z$.
 Then \[ y = (-x+x) + y = -x + (x+y) = -x + (x+z) = (-x+x) + z = z. \]
 \end{proof}
 
-\begin{proposition}[1 14 b]
+\begin{proposition}[title=1 14 b]
 If $x + y = x$ then $y = 0$.
 \end{proposition}
 
-\begin{proposition}[1 14 c]
+\begin{proposition}[title=1 14 c]
 If $x + y = 0$ then $y = -x$.
 \end{proposition}
 
-\begin{proposition}[1 14 d]
+\begin{proposition}[title=1 14 d]
 $-(-x) = x$.
 \end{proposition}
 
 
-\begin{proposition}[1 15 a]
+\begin{proposition}[title=1 15 a]
 If $x \neq 0$ and $x \cdot y = x \cdot z$
 then $y = z$.
 \end{proposition}
@@ -188,27 +188,27 @@ Let $x \neq 0$ and $x \cdot y = x \cdot z$.
 (1/x) \cdot (x \cdot z) = ((1/x) \cdot x) \cdot z = 1 \cdot z = z. \]
 \end{proof}
 
-\begin{proposition}[1 15 b]
+\begin{proposition}[title=1 15 b]
 If $x \neq 0$ and $x \cdot y = x$ then $y = 1$.
 \end{proposition}
 
-\begin{proposition}[1 15 c]
+\begin{proposition}[title=1 15 c]
 If $x \neq 0$ and $x \cdot y = 1$ then $y = 1/x$.
 \end{proposition}
 
-\begin{proposition}[1 15 d]
+\begin{proposition}[title=1 15 d]
 If $x \neq 0$ then $1/(1/x) = x$.
 \end{proposition}
 
-\begin{proposition}[1 16 a]
+\begin{proposition}[title=1 16 a]
 $0 \cdot x = 0$.
 \end{proposition}
 
-\begin{proposition}[1 16 b]
+\begin{proposition}[title=1 16 b]
 If $x \neq 0$ and $y \neq 0$ then $x \cdot y \neq 0$.
 \end{proposition}
 
-\begin{proposition}[1 16 c]
+\begin{proposition}[title=1 16 c]
 $(-x) \cdot y = -(x \cdot y)$.
 \end{proposition}
 \begin{proof}
@@ -220,7 +220,7 @@ $((x \cdot y)) + ((-x \cdot y)) = (x + (-x)) \cdot y
 $-x = -1 \cdot x$.
 \end{proposition}
 
-\begin{proposition}[1 16d]
+\begin{proposition}[title=1 16d]
 $(-x) \cdot (-y) = x \cdot y$.
 \end{proposition}
 \begin{proof}
@@ -239,11 +239,11 @@ Let $\frac{x}{y}$ stand for $x \cdot (1/y)$.
 \begin{forthel}
 Let $x,y,z$ denote real numbers.
 
-\begin{axiom}[1 17 i]
+\begin{axiom}[title=1 17 i]
 If $y < z$ then $x + y < x + z$ and $y + x < z + x$.
 \end{axiom}
 
-\begin{axiom}[1 17 ii]
+\begin{axiom}[title=1 17 ii]
 If $x > 0$ and $y > 0$ then $x \cdot y > 0$.
 \end{axiom}
 
@@ -256,11 +256,11 @@ $x$ is negative iff $x < 0$.
 \end{definition}
 
 
-\begin{proposition}[1 18 a]
+\begin{proposition}[title=1 18 a]
 $x > 0$ iff $-x < 0$.
 \end{proposition}
 
-\begin{proposition}[1 18 b]
+\begin{proposition}[title=1 18 b]
 If $x > 0$ and $y < z$ then
 $x \cdot y < x \cdot z$.
 \end{proposition}
@@ -273,13 +273,13 @@ $((x \cdot (z - y))) + (x \cdot y)  > 0 + (x \cdot y)$ (by 1 17i).
 $0 + (x \cdot y) = x \cdot y$.
 \end{proof}
 
-\begin{proposition}[1 18 bb]
+\begin{proposition}[title=1 18 bb]
 If $x > 0$ and $y < z$ then
 $y \cdot x < z \cdot x$.
 \end{proposition}
 
 
-\begin{proposition}[1 18 d]
+\begin{proposition}[title=1 18 d]
 If $x \neq 0$ then $x \cdot x > 0$.
 \end{proposition}
 \begin{proof}
@@ -288,7 +288,7 @@ Case $x > 0$. Then the thesis. end.
 Case $x < 0$. Then $ -x > 0$. end.
 \end{proof}
 
-\begin{proposition}[1 18 dd]
+\begin{proposition}[title=1 18 dd]
 $1 > 0$.
 \end{proposition}
 
@@ -303,7 +303,7 @@ $(-y)+(-(-x)) < 0 \iff (-y)-(-x) < 0$.
 $(-y)-(-x) < 0 \iff -y < -x$.
 \end{proof}
 
-\begin{proposition}[1 18 c]
+\begin{proposition}[title=1 18 c]
 If $x < 0$ and $y < z$ then
 $x \cdot y > x \cdot z$.
 \end{proposition}
@@ -314,7 +314,7 @@ $(-x)\cdot y < (-x)\cdot z$ (by 1 18b).
 $-(x\cdot y) < -(x\cdot z)$.
 \end{proof}
 
-\begin{proposition}[1 18 cc]
+\begin{proposition}[title=1 18 cc]
 If $x < 0$ and $y < z$ then
 $y \cdot x > z \cdot x$.
 \end{proposition}
@@ -327,11 +327,11 @@ $x + 1 > x$.
 $x - 1 < x$.
 \end{proposition}
 
-\begin{proposition}[1 18 e]
+\begin{proposition}[title=1 18 e]
 If $0 < y$ then $0 < 1/y$.
 \end{proposition}
 
-\begin{proposition}[1 18 ee]
+\begin{proposition}[title=1 18 ee]
 Assume $0 < x < y$.
 Then $1/y < 1/x$.
 \end{proposition}
@@ -358,40 +358,40 @@ Hence $1/y < 1/x$ (by 1 5 i).
 Let $x,y,z$ denote real numbers.
 Let $E$ denote a subset of $\mathbb{R}$.
 
-\begin{definition}[1 7]
+\begin{definition}[title=1 7]
 An upper bound of $E$ is a
 real number $b$ such that for all elements $x$ of $E$ $x \leq b$.
 \end{definition}
 
-\begin{definition}[1 7a]
+\begin{definition}[title=1 7a]
 $E$ is bounded above iff
 $E$ has an upper bound.
 \end{definition}
 
-\begin{definition}[1 7b]
+\begin{definition}[title=1 7b]
 A lower bound of $E$ is a
 real number $b$ such that for all elements $x$ of $E$ $x \geq b$.
 \end{definition}
 
-\begin{definition}[1 7c]
+\begin{definition}[title=1 7c]
 $E$ is bounded below iff
 $E$ has a lower bound.
 \end{definition}
 
-\begin{definition}[1 8]
+\begin{definition}[title=1 8]
 A least upper bound of $E$ is a real number $a$ such that
 $a$ is an upper bound of $E$ and for all $x$ if $x < a$ then $x$
 is not an upper bound of $E$.
 \end{definition}
 
-\begin{definition}[1 8a]
+\begin{definition}[title=1 8a]
 Let $E$ be bounded below.
 A greatest lower bound of $E$ is a real number $a$ such that
 $a$ is a lower bound of $E$ and for all $x$ if $x > a$ then $x$ is
 not a lower bound of $E$.
 \end{definition}
 
-\begin{axiom}[1 19]
+\begin{axiom}[title=1 19]
 Assume that $E$ is nonempty and bounded above.
 Then $E$ has a least upper bound.
 \end{axiom}
@@ -408,7 +408,7 @@ $E^-$ is a subset of $\mathbb{R}$.
 $x$ is an upper bound of $E$ iff $-x$ is a lower bound of $E^-$.
 \end{lemma}
 
-\begin{theorem}[1 11] Assume that $E$ is a nonempty subset of $\mathbb{R}$
+\begin{theorem}[title=1 11] Assume that $E$ is a nonempty subset of $\mathbb{R}$
 such that $E$ is bounded below.
 Then $E$ has a greatest lower bound.\end{theorem}
 \begin{proof}
@@ -430,7 +430,7 @@ end.
 Let $x$ denote a real number.
 Let $A$ denote a set.
 
-\begin{signature}[1 19a]
+\begin{signature}[title=1 19a]
 A rational number is a real number.
 \end{signature}
 
@@ -525,7 +525,7 @@ There exist $a$ and $b$ such that
 $a \neq 0 \wedge p = \frac{b}{a}$.
 \end{axiom}
 
-\begin{theorem}[Archimedes1]
+\begin{theorem}[title=Archimedes 1]
 $\mathbb{Z}$ is not bounded above.
 \end{theorem}
 \begin{proof}
@@ -550,7 +550,7 @@ Then $-m$ is an upper bound of $\mathbb{Z}$.
 Contradiction.
 \end{proof}
 
-\begin{theorem}[Archimedes2]
+\begin{theorem}[title=Archimedes 2]
 Let $x$ be a real number.
 Then there is an integer $a$
 such that $x < a$.\end{theorem}
@@ -583,10 +583,10 @@ $\{x\} = \{y \in \mathbb{R} \mid y = x\}$.
 \end{definition}
 
 \begin{lemma}
-$\mathbb{Z} = (\mathbb{N}^- \cup {0}) \cup \mathbb{N}$.
+$\mathbb{Z} = (\mathbb{N}^- \cup \{0\}) \cup \mathbb{N}$.
 \end{lemma}
 
-\begin{theorem}[Induction Theorem]
+\begin{theorem}[title=Induction Theorem]
 Assume $A \subseteq \mathbb{N}$
 and $1 \in A$ and for all $n \in A$ $n + 1 \in A$.
 Then $A = \mathbb{N}$.
@@ -669,7 +669,7 @@ Contradiction.
 \begin{forthel}
 Let $x,y$ denote a real number.
 
-\begin{theorem}[1 20 a]
+\begin{theorem}[title=1 20 a]
 Let $x > 0$.
 Then there is a
 positive integer $n$ such that \[ n \cdot x > y. \]
@@ -680,7 +680,7 @@ Take a positive integer $n$ such that $n > a$.
 $n > \frac{y}{x}$ and $n \cdot x > (\frac{y}{x}) \cdot x = y$.
 \end{proof}
 
-\begin{theorem}[1 20 b]
+\begin{theorem}[title=1 20 b]
 Let $x < y$. Then there exists
 $p \in \mathbb{Q}$ such that $x < p < y$.
 \end{theorem}

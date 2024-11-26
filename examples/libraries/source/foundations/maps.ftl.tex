@@ -18,14 +18,14 @@
   \subsection*{Range}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_06_4284980337311744}
+    \begin{definition}[id=FOUNDATIONS_06_4284980337311744,printid]
       Let $f$ be a map.
       A value of $f$ is an object $b$ such that $b = f(a)$ for some $a \in \dom(f)$.
     \end{definition}
   \end{forthel}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_06_1938831225913344}
+    \begin{definition}[id=FOUNDATIONS_06_1938831225913344,printid]
       Let $f$ be a map.
       The range of $f$ is $\{ f(a) \mid a \in \dom(f) \}$.
     \end{definition}
@@ -34,7 +34,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_06_6386349418479616}
+    \begin{proposition}[id=FOUNDATIONS_06_6386349418479616,printid]
       Let $f$ be a map and $b$ be an object.
       $b$ is a value of $f$ iff $b \in \range(f)$.
     \end{proposition}
@@ -56,7 +56,7 @@
   \subsection*{Identity Map}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_06_1920902360989696}
+    \begin{definition}[id=FOUNDATIONS_06_1920902360989696,printid]
       Let $A$ be a class.
       $\id_{A}$ is the map defined on $A$ such that $\id_{A}(a) = a$ for all $a \in A$.
     \end{definition}
@@ -68,7 +68,7 @@
   \subsection*{Composition}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_06_7605717729017856}
+    \begin{definition}[id=FOUNDATIONS_06_7605717729017856,printid]
       Let $f, g$ be maps.
       Assume $\range(f) \subseteq \dom(g)$.
       $g \circ f$ is the map defined on $\dom(f)$ such that $(g \circ f)(a) = g(f(a))$ for all $a \in \dom(f)$.
@@ -81,7 +81,7 @@
   \subsection*{Restriction}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_06_7095412741636096}
+    \begin{definition}[id=FOUNDATIONS_06_7095412741636096,printid]
       Let $f$ be a map and $X \subseteq \dom(f)$.
       $f \restriction X$ is the map defined on $X$ such that $(f \restriction X)(a) = f(a)$ for all $a \in X$.
     \end{definition}
@@ -90,7 +90,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_06_2170189258948608}
+    \begin{proposition}[id=FOUNDATIONS_06_2170189258948608,printid]
       Let $A$ be a class and $X \subseteq A$.
       Then $\id_{A} \restriction X = \id_{X}$.
     \end{proposition}
@@ -100,7 +100,7 @@
   \subsection*{Image and Preimage}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_06_3038237683613696}
+    \begin{definition}[id=FOUNDATIONS_06_3038237683613696,printid]
       Let $f$ be a map and $A$ be a class.
       The image of $A$ under $f$ is $\{ f(a) \mid a \in \dom(f) \cap A \}$.
     \end{definition}
@@ -112,7 +112,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_06_4563167805964288}
+    \begin{definition}[id=FOUNDATIONS_06_4563167805964288,printid]
       Let $f$ be a map and $B$ be a class.
       The preimage of $B$ under $f$ is $\{ a \in \dom(f) \mid f(a) \in B \}$.
     \end{definition}
@@ -125,7 +125,7 @@
   \subsection*{Maps Between Classes}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_06_6934038600220672}
+    \begin{definition}[id=FOUNDATIONS_06_6934038600220672,printid]
       Let $A$ be a class.
       A map of $A$ is a map $f$ such that $\dom(f) = A$.
     \end{definition}
@@ -134,7 +134,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_06_7725375157174272}
+    \begin{definition}[id=FOUNDATIONS_06_7725375157174272,printid]
       Let $B$ be a class.
       A map to $B$ is a map $f$ such that $f(a) \in B$ for each $a \in \dom(f)$.
     \end{definition}
@@ -143,7 +143,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_06_2823507398361088}
+    \begin{definition}[id=FOUNDATIONS_06_2823507398361088,printid]
       Let $A, B$ be classes.
       A map from $A$ to $B$ is a map $f$ such that $\dom(f) = A$ and $f(a) \in B$ for each $a \in A$.
     \end{definition}
@@ -154,7 +154,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_06_3390734908522496}
+    \begin{definition}[id=FOUNDATIONS_06_3390734908522496,printid]
       Let $A$ be a class.
       A map on $A$ is a map from $A$ to $A$.
     \end{definition}
@@ -163,7 +163,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_06_3312973569327104}
+    \begin{proposition}[id=FOUNDATIONS_06_3312973569327104,printid]
       Let $A, B$ be classes and $f, g : A \to B$.
       Assume that $f(a) = g(a)$ for all $a \in A$.
       Then $f = g$.
@@ -179,28 +179,28 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_06_5104361690628096}
+    \begin{proposition}[id=FOUNDATIONS_06_5104361690628096,printid]
       Let $A$ be a class.
       Then $\id_{A}$ is a map on $A$.
     \end{proposition}
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_06_1706446651654144}
+    \begin{proposition}[id=FOUNDATIONS_06_1706446651654144,printid]
       Let $A, B, C$ be classes and $f : A \to B$ and $g : B \to C$.
       Then $g \circ f : A \to C$.
     \end{proposition}
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_06_4078561256275968}
+    \begin{proposition}[id=FOUNDATIONS_06_4078561256275968,printid]
       Let $A, B$ be classes and $f : A \to B$ and $X \subseteq A$.
       Then $f \restriction X : X \to B$.
     \end{proposition}
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_06_3964401904254976}
+    \begin{proposition}[id=FOUNDATIONS_06_3964401904254976,printid]
       Let $A, B$ be classes and $f : A \to B$.
       Then $f \circ \id_{A} = f = \id_{B} \circ f$.
     \end{proposition}
@@ -219,7 +219,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_06_3118771061391360}
+    \begin{proposition}[id=FOUNDATIONS_06_3118771061391360,printid]
       Let $A$ be a class and $X \subseteq A$.
       Then $\id_{A} \restriction X = \id_{X}$.
     \end{proposition}
@@ -237,7 +237,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_06_6866147389472768}
+    \begin{proposition}[id=FOUNDATIONS_06_6866147389472768,printid]
       Let $A, B, C, D$ be classes and $f : A \to B$ and $g : B \to C$ and $h : C \to D$.
       Then $h \circ (g \circ f) = (h \circ g) \circ f$.
     \end{proposition}
@@ -261,7 +261,7 @@
   \subsection*{Classes of Functions}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_06_5119110467813376}
+    \begin{definition}[id=FOUNDATIONS_06_5119110467813376,printid]
       Let $A, B$ be classes.
       $[A \to B]$ is the class of all functions from $A$ to $B$.
     \end{definition}
@@ -271,7 +271,7 @@
   \subsection*{Fixed Points}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_06_2177076576649216}
+    \begin{definition}[id=FOUNDATIONS_06_2177076576649216,printid]
       Let $f$ be a map.
       A fixed point of $f$ is an element $x$ of $\dom(f)$ such that $f(x) = x$.
     \end{definition}

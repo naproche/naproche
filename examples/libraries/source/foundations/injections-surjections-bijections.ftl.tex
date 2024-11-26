@@ -18,7 +18,7 @@
   \subsection*{Surjective Maps}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_08_8681187805495296}
+    \begin{definition}[id=FOUNDATIONS_08_8681187805495296,printid]
       Let $f$ be a map and $B$ be a class.
       $f$ is surjective onto $B$ iff $\range(f) = B$.
     \end{definition}
@@ -28,7 +28,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_08_4195237329108992}
+    \begin{definition}[id=FOUNDATIONS_08_4195237329108992,printid]
       Let $A, B$ be classes.
       A surjective map from $A$ to $B$ is a map of $A$ that is surjective onto $B$.
     \end{definition}
@@ -38,7 +38,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_08_1974205941809152}
+    \begin{proposition}[id=FOUNDATIONS_08_1974205941809152,printid]
       Let $B$ be a class and $f$ be a map to $B$.
       $f$ is surjective onto $B$ iff every element of $B$ is a value of $f$.
     \end{proposition}
@@ -70,7 +70,7 @@
   \subsection*{Injective Maps}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_08_605931408719872}
+    \begin{definition}[id=FOUNDATIONS_08_605931408719872,printid]
       Let $f$ be a map.
       $f$ is injective iff for all $a, a' \in \dom(f)$ if $f(a) = f(a')$ then $a = a'$.
     \end{definition}
@@ -82,7 +82,7 @@
   \subsection*{Bijective Maps}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_08_3356670992318464}
+    \begin{definition}[id=FOUNDATIONS_08_3356670992318464,printid]
       Let $A, B$ be classes.
       A bijection between $A$ and $B$ is an injective map from $A$ to $B$ that is surjective onto $B$.
     \end{definition}
@@ -91,7 +91,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_08_60881194975232}
+    \begin{proposition}[id=FOUNDATIONS_08_60881194975232,printid]
       Let $A, B$ be classes and $f : A \into B$.
       Then $f$ is a bijection between $A$ and $\range(f)$.
     \end{proposition}
@@ -102,7 +102,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_08_8188451318923264}
+    \begin{definition}[id=FOUNDATIONS_08_8188451318923264,printid]
       Let $A$ be a class.
       A permutation of $A$ is a bijection between $A$ and $A$.
     \end{definition}
@@ -112,7 +112,7 @@
   \subsection*{Basic Properties}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_08_7883784041005056}
+    \begin{proposition}[id=FOUNDATIONS_08_7883784041005056,printid]
       Let $A$ be a class.
       Then $\id_{A}$ is a permutation of $A$.
     \end{proposition}
@@ -136,7 +136,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_08_8542698338254848}
+    \begin{proposition}[id=FOUNDATIONS_08_8542698338254848,printid]
       Let $A, B, C$ be classes and $f : A \onto B$ and $g : B \onto C$.
       Then $g \circ f$ is a surjective map from $A$ onto $C$.
     \end{proposition}
@@ -153,7 +153,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_08_3367836856614912}
+    \begin{proposition}[id=FOUNDATIONS_08_3367836856614912,printid]
       Let $A, B, C$ be classes and $f : A \into B$ and $g : B \into C$.
       Then $g \circ f$ is an injective map from $A$ to $C$.
     \end{proposition}
@@ -172,7 +172,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{corollary}\printlabel{FOUNDATIONS_08_6435206693126144}
+    \begin{corollary}[id=FOUNDATIONS_08_6435206693126144,printid]
       Let $A, B, C$ be classes.
       Let $f$ be a bijection between $A$ and $B$ and $g$ be a bijection between $B$ and $C$.
       Then $g \circ f$ is a bijection between $A$ and $C$.
@@ -184,7 +184,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_08_2621531811217408}
+    \begin{proposition}[id=FOUNDATIONS_08_2621531811217408,printid]
       Let $A, B$ be classes and $f : A \into B$ and $X \subseteq A$.
       Then $f \restriction X$ is injective.
     \end{proposition}
@@ -197,14 +197,14 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_08_647446231252992}
+    \begin{proposition}[id=FOUNDATIONS_08_647446231252992,printid]
       Let $A, B$ be classes and $f : A \into B$ and $X \subseteq A$.
       Then $f \restriction X$ is a bijection between $X$ and $f_{*}(X)$.
     \end{proposition}
   \end{forthel}
 
   \begin{forthel}
-    \begin{corollary}\printlabel{FOUNDATIONS_08_8159443759923200}
+    \begin{corollary}[id=FOUNDATIONS_08_8159443759923200,printid]
       Let $A, B$ be classes and $f : A \into B$.
       Then $f$ is a bijection between $A$ and $f_{*}(A)$.
     \end{corollary}

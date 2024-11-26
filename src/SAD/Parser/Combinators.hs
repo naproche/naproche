@@ -174,6 +174,10 @@ bracedOrTexBraced p = do
 optParenthesised :: Parser st a -> Parser st a
 optParenthesised p = p -|- parenthesised p
 
+-- | @optBraced p@ parses @<p> | "{" <p> "}"@.
+optBraced :: Parser st a -> Parser st a
+optBraced p = p -|- braced p
+
 
 -- ** Dots
 

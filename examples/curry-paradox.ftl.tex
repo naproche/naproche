@@ -62,15 +62,15 @@
       $\var{n}$ is a variable.
     \end{signature*}
   
-    \begin{signature*}[Abstraction]\label{abstraction}
+    \begin{signature*}[title=Abstraction,id=abstraction]
       $\abs{n}{E}$ is an expression.
     \end{signature*}
   
-    \begin{signature*}[Application]\label{application}
+    \begin{signature*}[title=Application,id=application]
       $\app{E}{E'}$ is an expression.
     \end{signature*}
   
-    \begin{signature*}[Fixed-point combinator]\label{fixed_point_combinator}
+    \begin{signature*}[title=Fixed-point combinator,id=fixed_point_combinator]
       $\fix$ is an expression such that
       \[\app{\fix}{E} = \app{E}{\app{\fix}{E}}\]
       for every expression $E$.
@@ -87,27 +87,27 @@
     Let $E, E'$ denote expressions.
     Let $n$ stand for a natural number.
 
-    \begin{signature*}[Implication]\label{implication}
+    \begin{signature*}[title=Implication,id=implication]
       $E \rightarrow E'$ is an expression.
     \end{signature*}
   
-    \begin{signature*}[Truth]\label{truth}
+    \begin{signature*}[title=Truth,id=truth]
       $E$ is true is a relation.
     \end{signature*}
   
-    \begin{axiom*}[$\beta$-reduction]\label{beta_reduction}
+    \begin{axiom*}[title=$\beta$-reduction,id=beta_reduction]
       $\app{\abs{n}{\var{n} \rightarrow E'}}{E} = E \rightarrow E'$.
     \end{axiom*}
   
-    \begin{axiom*}[Reflexivity]\label{reflexivity}
+    \begin{axiom*}[title=Reflexivity,id=reflexivity]
       $E \rightarrow E$ is true.
     \end{axiom*}
   
-    \begin{axiom*}[Modus Ponens]\label{modus_ponens}
+    \begin{axiom*}[title=Modus Ponens,id=modus_ponens]
       If $E$ is true and $E \rightarrow E'$ is true then $E'$ is true.
     \end{axiom*}
   
-    \begin{axiom*}[Strengthening]\label{strengthening}
+    \begin{axiom*}[title=Strengthening,id=strengthening]
       If $E \rightarrow (E \rightarrow E')$ is true then $E \rightarrow E'$ is true.
     \end{axiom*}
   \end{forthel}
@@ -123,7 +123,7 @@
   we can then derive that any expression $E$ is true.
 
   \begin{forthel}
-    \begin{theorem*}[Curry's paradox]\label{curry_paradox}
+    \begin{theorem*}[title=Curry's paradox,id=curry_paradox]
       Every expression is true.
     \end{theorem*}
     \begin{proof}

@@ -16,28 +16,28 @@
   \section*{Concatenation}
 
   \begin{forthel}
-    \begin{signature}\printlabel{LISTS_CONCAT_4578620297183232}
+    \begin{signature}[id=LISTS_CONCAT_4578620297183232,printid]
       Let $L, L'$ be lists.
       $L \concat L'$ is a list.
     \end{signature}
   \end{forthel}
 
   \begin{forthel}
-    \begin{axiom}\printlabel{LISTS_CONCAT_3703161885818880}
+    \begin{axiom}[id=LISTS_CONCAT_3703161885818880,printid]
       Let $L$ be a list.
       Then $\nil \concat L = L$.
     \end{axiom}
   \end{forthel}
 
   \begin{forthel}
-    \begin{axiom}\printlabel{LISTS_CONCAT_8050301789536256}
+    \begin{axiom}[id=LISTS_CONCAT_8050301789536256,printid]
       Let $a$ be an object and $L, L'$ be lists.
       Then $(a \cons L) \concat L' = a \cons (L \concat L')$.
     \end{axiom}
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{LISTS_CONCAT_4512036658964875}
+    \begin{proposition}[id=LISTS_CONCAT_4512036658964875,printid]
       $L \concat \nil = L$ for every list $L$.
     \end{proposition}
     \begin{proof}[by induction on $L$]
@@ -59,7 +59,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{LISTS_CONCAT_1021563255448756}
+    \begin{proposition}[id=LISTS_CONCAT_1021563255448756,printid]
       $L \concat (L' \concat L'') = (L \concat L') \concat L''$ for any lists $L, L', L''$.
     \end{proposition}
     \begin{proof}[by induction on $L$]

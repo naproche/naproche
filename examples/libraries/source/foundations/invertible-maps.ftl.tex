@@ -18,21 +18,21 @@
   \subsection*{Definitions}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_09_7776974319648768}
+    \begin{definition}[id=FOUNDATIONS_09_7776974319648768,printid]
       Let $f$ be a map.
       An inverse of $f$ is a map $g$ from $\range(f)$ to $\dom(f)$ such that $f(a) = b \iff g(b) = a$ for all $a \in \dom(f)$ and all $b \in \dom(g)$.
     \end{definition}
   \end{forthel}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_09_3430350086733824}
+    \begin{definition}[id=FOUNDATIONS_09_3430350086733824,printid]
       Let $f$ be a map.
       $f$ is invertible iff $f$ has an inverse.
     \end{definition}
   \end{forthel}
 
   \begin{forthel}
-    \begin{lemma}\printlabel{FOUNDATIONS_09_5108611793551360}
+    \begin{lemma}[id=FOUNDATIONS_09_5108611793551360,printid]
       Let $f$ be a map and $g, g'$ be inverses of $f$.
       Then $g = g'$.
     \end{lemma}
@@ -50,7 +50,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_09_6458627204317184}
+    \begin{definition}[id=FOUNDATIONS_09_6458627204317184,printid]
       Let $f$ be an invertible map.
       $f^{-1}$ is the inverse of $f$.
     \end{definition}
@@ -63,7 +63,7 @@
   \subsection*{Basic Properties}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_09_7840743571849216}
+    \begin{proposition}[id=FOUNDATIONS_09_7840743571849216,printid]
       Let $A, B$ be classes and $f : A \onto B$ and $g : B \onto A$.
       Then $g$ is the inverse of $f$ iff $g \circ f = \id_{A}$ and $f \circ g = \id_{B}$.
     \end{proposition}
@@ -118,7 +118,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_09_8414736098000896}
+    \begin{proposition}[id=FOUNDATIONS_09_8414736098000896,printid]
       Let $A, B$ be classes and $f : A \onto B$.
       Assume that $f$ is invertible.
       Then $f^{-1}$ is an invertible surjective map from $B$ onto $A$ such that $(f^{-1})^{-1} = f$.
@@ -135,7 +135,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_09_4577560740495360}
+    \begin{proposition}[id=FOUNDATIONS_09_4577560740495360,printid]
       Let $A, B$ be classes and $f : A \onto B$.
       Assume that $f$ is invertible.
       Then $f \circ f^{-1} = \id_{B}$ and $f^{-1} \circ f = \id_{A}$.
@@ -147,7 +147,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_09_4606651604664320}
+    \begin{proposition}[id=FOUNDATIONS_09_4606651604664320,printid]
       Let $A, B$ be classes and $f : A \onto B$ and $a \in A$.
       Assume that $f$ is invertible.
       Then $f^{-1}(f(a)) = a$.
@@ -171,7 +171,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_09_7619151963095040}
+    \begin{proposition}[id=FOUNDATIONS_09_7619151963095040,printid]
       Let $A, B, C$ be classes and $f : A \onto B$ and $g : B \onto C$.
       Assume that $f$ and $g$ are invertible.
       Then $g \circ f$ is invertible and $(g \circ f)^{-1} = f^{-1} \circ g^{-1}$.
@@ -216,7 +216,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_09_6374884963778560}
+    \begin{proposition}[id=FOUNDATIONS_09_6374884963778560,printid]
       Let $A, B$ be classes and $f : A \onto B$ and $X \subseteq A$.
       Assume that $f$ is invertible.
       Then $f \restriction X$ is invertible and $(f\restriction X)^{-1} = f^{-1} \restriction (f_{*}(X))$.
@@ -277,7 +277,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_09_7726021377785856}
+    \begin{proposition}[id=FOUNDATIONS_09_7726021377785856,printid]
       Let $A, B$ be classes and $f : A \onto B$ and $Y \subseteq B$.
       Assume that $f$ is invertible.
       Then \[ f^{*}(Y) = (f^{-1})_{*}(Y). \]
@@ -302,7 +302,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{corollary}\printlabel{FOUNDATIONS_09_8607784268464128}
+    \begin{corollary}[id=FOUNDATIONS_09_8607784268464128,printid]
       Let $A, B$ be classes and $f : A \onto B$ and $b \in B$.
       Assume that $f$ is invertible.
       Then \[ f^{*}(\set{b}) = \set{f^{-1}(b)}. \]
@@ -315,7 +315,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_09_6777575974109184}
+    \begin{proposition}[id=FOUNDATIONS_09_6777575974109184,printid]
       Let $A, B$ be classes and $f : A \onto B$.
       Then $f$ is invertible iff $f$ is injective.
     \end{proposition}
@@ -340,7 +340,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{corollary}\printlabel{FOUNDATIONS_09_5708971514003456}
+    \begin{corollary}[id=FOUNDATIONS_09_5708971514003456,printid]
       Let $A, B$ be classes and $f : A \onto B$.
       Assume that $f$ is invertible.
       Then $f^{-1}$ is a bijection between $B$ and $A$.
@@ -357,14 +357,14 @@
   \subsection*{Involutions}
 
   \begin{forthel}
-    \begin{definition}\printlabel{FOUNDATIONS_09_7282039688527872}
+    \begin{definition}[id=FOUNDATIONS_09_7282039688527872,printid]
       Let $A$ be a class.
       An involution on $A$ is a selfinverse map $f$ on $A$.
     \end{definition}
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_09_7944474185433088}
+    \begin{proposition}[id=FOUNDATIONS_09_7944474185433088,printid]
       Let $A$ be a class.
       $\id_{A}$ is an involution on $A$.
     \end{proposition}
@@ -375,7 +375,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_09_6897019612299264}
+    \begin{proposition}[id=FOUNDATIONS_09_6897019612299264,printid]
       Let $A$ be a class and $f, g$ be involutions on $A$.
       Then $g \circ f$ is an involution on $A$ iff $g \circ f = f \circ g$.
     \end{proposition}
@@ -404,14 +404,14 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{corollary}\printlabel{FOUNDATIONS_09_5958206868160512}
+    \begin{corollary}[id=FOUNDATIONS_09_5958206868160512,printid]
       Let $A$ be a class and $f$ be an involutions on $A$.
       Then $f \circ f$ is an involution on $A$.
     \end{corollary}
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{FOUNDATIONS_09_2314262743613440}
+    \begin{proposition}[id=FOUNDATIONS_09_2314262743613440,printid]
       Let $A$ be a class and $f$ be an involution on $A$.
       Then $f$ is a permutation of $A$.
     \end{proposition}

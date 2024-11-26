@@ -41,20 +41,20 @@ Let $P, Q, R, S$ denote formulas.
 \end{signature}
 Let $P$ is deducible stand for $\deducible P$.
 
-\begin{axiom}[Detachment]
+\begin{axiom}[id=Detachment]
     Suppose $\deducible P$ and $\deducible P \imp Q$.
     Then $\deducible Q$.
 \end{axiom}
 
-\begin{axiom}[Implosion]
+\begin{axiom}[id=Implosion]
     $\deducible P \imp (Q \imp P)$.
 \end{axiom}
 
-\begin{axiom}[Chain]
+\begin{axiom}[id=Chain]
     $\deducible (P \imp (Q \imp R)) \imp ((P \imp Q) \imp (P \imp R))$.
 \end{axiom}
 
-\begin{proposition}[Weakening]
+\begin{proposition}[id=Weakening]
     (0) Assume $\deducible Q$.
     Then $\deducible P\imp Q$.
 \end{proposition}
@@ -64,7 +64,7 @@ Let $P$ is deducible stand for $\deducible P$.
     (2) $\deducible P\imp Q$ (by Detachment, 0, 1).
 \end{proof}
 
-\begin{proposition}[Weakening of implication]
+\begin{proposition}[id=Weakening of implication]
     (0) Assume $\deducible Q\imp R$.
     Then $\deducible (P\imp Q)\imp (P \imp R)$.
 \end{proposition}
@@ -76,7 +76,7 @@ Let $P$ is deducible stand for $\deducible P$.
     (3) $\deducible (P\imp Q)\imp (P\imp R)$ (by Detachment, 1, 2).
 \end{proof}
 
-\begin{proposition}[Transitivity]
+\begin{proposition}[id=Transitivity]
     %Suppose $P\imp Q$ and $Q\imp R$ are deducible.
     %Then $P\imp R$ is deducible.
     (0) Suppose $\deducible P\imp Q$ and $\deducible Q\imp R$.
@@ -88,7 +88,7 @@ Let $P$ is deducible stand for $\deducible P$.
     (2) $\deducible P\imp R$  (by Detachment, 0, 1).
 \end{proof}
 
-\begin{proposition}[Identity]
+\begin{proposition}[id=Identity]
     $\deducible P\imp P$.
 \end{proposition}
 \begin{proof}
@@ -123,17 +123,17 @@ Let $P$ is deducible stand for $\deducible P$.
 \begin{forthel}
 Let $P, R$ denote formulas.
 
-\begin{signature}[Falsum]
+\begin{signature}[id=Falsum]
     $\falsum$ is a formula.
 \end{signature}
 
 Let $\negate$P stand for $P\imp\falsum$.
 
-\begin{axiom}[Double negation]
+\begin{axiom}[id=Double negation]
     $\deducible\negate\negate P\imp P$.
 \end{axiom}
 
-\begin{proposition}[Explosion]
+\begin{proposition}[id=Explosion]
     $\deducible \falsum\imp P$.
 \end{proposition}
 

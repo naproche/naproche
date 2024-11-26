@@ -199,7 +199,7 @@ Let $X$ be a class. Let $x$ be an element of $X$.
 Then $x$ is an object.
 \end{proposition}
 
-\begin{lemma}[Extensionality Axiom]
+\begin{lemma}[title=Extensionality Axiom]
     Let $X, Y$ be classes.
     Assume that every element of $X$ is an element of $Y$ and every element of
     $Y$ is an element of $X$.
@@ -222,7 +222,7 @@ domains and an application operator $\_ ( \_ )$.
     Then $F(x)$ is an object.
   \end{lemma}
 
-  \begin{lemma}[Map Extensionality]
+  \begin{lemma}[title=Map Extensionality]
     Let $F, G$ be maps.
     Assume $\dom(F) = \dom(G)$ and for all elements $x$ of $\dom(F)$ we have
     $F(x) = G(x)$.
@@ -566,7 +566,7 @@ The proof is based on the important {\em diagonal argument}.
 \begin{forthel}
 Let $S$ denote a class.
 
-\begin{theorem}[Russell]
+\begin{theorem}[title=Russell]
 There is a class that is not a set.
 \end{theorem}
 \begin{proof}
@@ -592,27 +592,27 @@ We begin by restating
 the axiom of extensionality.
 
 \begin{forthel}
-\begin{lemma}[Extensionality Axiom]
+\begin{lemma}[title=Extensionality Axiom]
     Let $X, Y$ be classes.
     Assume that every element of $X$ is an element of $Y$ and every element of
     $Y$ is an element of $X$.
     Then $X = Y$.
 \end{lemma}
 
-\begin{axiom}[Set Existence Axiom]
+\begin{axiom}[title=Set Existence Axiom]
 The empty class is a set.
 \end{axiom}
 
-\begin{axiom}[Pairing Axiom]
+\begin{axiom}[title=Pairing Axiom]
 Let $a,b$ be objects. Let $P = \{a,b\}$. Then $P$  is a set.
 \end{axiom}
 
-\begin{axiom}[Union Axiom]
+\begin{axiom}[title=Union Axiom]
 Let $F$ be a set that is a family of sets. Then
 $\bigcup F$ is a set.
 \end{axiom}
 
-\begin{axiom}[Separation Axiom]
+\begin{axiom}[title=Separation Axiom]
     Assume that $X$ is a set and $T$ is a subclass of $X$.
     Then $T$ is a set.
 \end{axiom}
@@ -628,11 +628,11 @@ A subset of $S$ is a set $X$ such that $X \subseteq S$.
 
 Let $\pow(X)$ denote the powerset of $X$.
 
-\begin{axiom}[Powerset Axiom]
+\begin{axiom}[title=Powerset Axiom]
   The powerset of any set is a set.
 \end{axiom}
 
-\begin{axiom}[Replacement Axiom]
+\begin{axiom}[title=Replacement Axiom]
 Let $F$ be a function.
 Let $X$ be a subset of the domain of $F$.
 Then $F[X]$ is a set.
@@ -705,7 +705,7 @@ its proof has become a powerful and standard proof principle mainly
 in foundational theories.
 
 \begin{forthel}
-    \begin{theorem*}[Cantor]
+    \begin{theorem*}[title=Cantor]
       Let $M$ be a set. Then there is
       no surjection from $M$ onto the powerset of $M$.
     \end{theorem*}
@@ -747,7 +747,7 @@ Let $h$ be a map between families of sets.
     \end{definition*}
 
 
-    \begin{theorem*}[Knaster-Tarski]\label{KT}
+    \begin{theorem*}[title=Knaster-Tarski,id=KT]
       Let $x$ be a set.
       Let $h$ be a map from $\pow(x)$ to $\pow(x)$ that preserves subsets.
       Then $h$ has a fixed point.
@@ -790,7 +790,7 @@ We base the proof on the Tarski-Knaster theorem, following
 
  \begin{forthel}
 
-   \begin{theorem*}[Cantor-Schröder-Bernstein]\label{CSB}
+   \begin{theorem*}[title=Cantor-Schröder-Bernstein,id=CSB]
       Let $x,y$ be sets.
       $x$ and $y$ are equinumerous iff there exists a injective map from $x$ to
       $y$ and there exists an injective map from $y$ to $x$.
@@ -1242,7 +1242,7 @@ The order makes $\mathbb{R}$ an ordered field:
 If $y \leq z$ then $x + y \leq x + z$ and $y + x \leq z + x$.
 \end{axiom}
 
-\begin{axiom}[1 17 ii]
+\begin{axiom}[title=1 17 ii]
 If $x \geq 0$ and $y \leq z$ then $x \cdot y \leq x \cdot z$.
 \end{axiom}
 \end{forthel}
@@ -1328,7 +1328,7 @@ If $0 < y$ then $0 < 1/y$.
 
 \begin{lemma} 0=0. \end{lemma}
 
-\begin{lemma}[syz]
+\begin{lemma}[title=syz]
 If not $x \leq y$ then $x \geq y$.
 \end{lemma}
 
@@ -1585,7 +1585,7 @@ of $\mathbb{R}$, it is somehow "large" in $\mathbb{R}$.
 %
 \begin{forthel}
 
-\begin{theorem}[Archimedes1]
+\begin{theorem}[title=Archimedes 1]
 $\mathbb{Z}$ is not bounded above.
 \end{theorem}
 \begin{proof}
@@ -1610,7 +1610,7 @@ Then $-x$ is an upper bound of $\mathbb{Z}$.
 Contradiction.
 \end{proof}
 
-\begin{theorem}[Archimedes2]
+\begin{theorem}[title=Archimedes 2]
 Let $x$ be a real number.
 Then there is an integer $a$
 such that $x < a$.\end{theorem}
@@ -1648,7 +1648,7 @@ in other set theoretic approaches is equivalent to
 the Axiom of Infinity.
 %
 \begin{forthel}
-\begin{theorem}[Axiom of Infinity]
+\begin{theorem}[title=Axiom of Infinity]
 $\mathbb{N}$ is a set.
 \end{theorem}
 \end{forthel}
@@ -1803,7 +1803,7 @@ the implication $P(n) \rightarrow P(n+1)$.
 %
 \begin{forthel}
 
-\begin{theorem}[Induction Theorem]
+\begin{theorem}[title=Induction Theorem]
 Assume $A \subseteq \mathbb{N}$
 and $0 \in A$ and for all $n \in A$ $n + 1 \in A$.
 Then $A = \mathbb{N}$.
@@ -1931,7 +1931,7 @@ $\sumarith{a}{d}{n}$ is a real number.
 $\sumarith{a}{d}{1} = a + d$.
 \end{axiom}
 
-\begin{axiom}[1]
+\begin{axiom}[title=1]
 $\sumarith{a}{d}{n+1} = \sumarith{a}{d}{n} + (a + (d \cdot (n + 1)))$.
 \end{axiom}
 
@@ -2519,7 +2519,7 @@ $\kappa$ is an integer and $0 \leq m - (\kappa \cdot a) < a$. End.
 
 
 
-\begin{theorem}[Bezout]
+\begin{theorem}[title=Bezout]
 Let $a,b$ be integers and $\delta$ be the greatest common divisor of $a$ and $b$.
 Then there exist integer $x$ and integer $y$ such that
 $\delta = (a \cdot x) + (b \cdot y)$.
@@ -2679,7 +2679,7 @@ $q = \frac{n}{m}$ and $m \cdot q = n$.
     \end{proof}
 
 
-    \begin{theorem}[Pythagoras]
+    \begin{theorem}[title=Pythagoras]
       $q^{2} = p$ for no positive rational number $q$.
     \end{theorem}
     \begin{proof}[by contradiction]
@@ -3072,7 +3072,7 @@ such that $\FinSet{F}{1}{n} \subseteq \mathbb{N}$.
 $\Prod{F}{1}{n}$ is a natural number.
 \end{signature}
 
-\begin{axiom}[Factorproperty]
+\begin{axiom}[title=Factorproperty]
 Let $F$ be a sequence of length $n$
 such that $F(i)$ is a nonzero natural number for every $i \in \dom(F)$.
 Then $\Prod{F}{1}{n}$ is nonzero and
@@ -3089,7 +3089,7 @@ $F(i)$ divides $\Prod{F}{1}{n}$ for every $i \in \dom(F)$.
 $\Primes$ is the collection of prime natural numbers.
 \end{signature}
 
-\begin{theorem}[Euclid]
+\begin{theorem}[title=Euclid]
 $\Primes$ is infinite.
 \end{theorem}
 \begin{proof}[by contradiction]

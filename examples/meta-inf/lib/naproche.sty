@@ -45,8 +45,8 @@
 
 \NeedsTeXFormat{LaTeX2e}
 
-\RequirePackage{amsmath}
-\RequirePackage{amsthm}
+\RequirePackage{stex}
+\RequirePackage{amsmath}  
 \RequirePackage{amsfonts}
 \RequirePackage{etoolbox}
 \RequirePackage{xspace}
@@ -54,8 +54,10 @@
 \RequirePackage{mdframed}
 \RequirePackage{hyperref}
 \RequirePackage{cleveref}
-\RequirePackage[nolabel, inline]{showlabels}
 \RequirePackage{xurl}
+\RequirePackage{keyval}
+\RequirePackage{environ}
+\RequirePackage{marginnote}
 
 
 % Links
@@ -68,13 +70,8 @@
 }
 
 
-% Printable labels and references
-% -------------------------------
-
-% `\printlabel' behaves exactly as `\label' but its argument is printed in the
-% PDF.
-\showlabels{printlabel}
-\newcommand{\printlabel}[1]{\label{#1}}
+% Printing labels
+% ---------------
 
 \newcommand{\printref}[1]{\path{#1}}
 
@@ -82,48 +79,80 @@
 % Top-level sections
 % ------------------
 
-% Numbered environments for top-level sections
-\newtheoremstyle{formalized}% name of the style to be used
-    {4pt}% measure of space to leave above the theorem. E.g.: 3pt
-    {4pt}% measure of space to leave below the theorem. E.g.: 3pt
-    {\normalfont} % name of font to use in the body of the theorem
-    {0pt}% measure of space to indent
-    {\bfseries}% name of head font
-    {}% punctuation between head and body
-    { }% space after theorem head; " " = normal inter-word space
-    {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}.}
-
-% Unnumbered environments for top-level sections
-\newtheoremstyle{unnumbered}% name of the style to be used
-  {4pt}% measure of space to leave above the theorem. E.g.: 3pt
-  {4pt}% measure of space to leave below the theorem. E.g.: 3pt
-  {\normalfont} % name of font to use in the body of the theorem
-  {0pt}% measure of space to indent
-  {\bfseries}% name of head font
-  {}% punctuation between head and body
-  { }% space after theorem head; " " = normal inter-word space
-  {\thmname{#1}\thmnote{ (#3)}.}
-
-\theoremstyle{formalized}
 \newcounter{theoremcount}
 
-\newtheorem{axiom}[theoremcount]{Axiom}
-\newtheorem{corollary}[theoremcount]{Corollary}
-\newtheorem{definition}[theoremcount]{Definition}
-\newtheorem{fact}[theoremcount]{Fact}
-\newtheorem{lemma}[theoremcount]{Lemma}
-\newtheorem{proposition}[theoremcount]{Proposition}
-\newtheorem{remark}[theoremcount]{Remark}
-\newtheorem{signature}[theoremcount]{Signature}
-\newtheorem{theorem}[theoremcount]{Theorem}
+\newbool{printid}
 
-\newtheorem*{definition*}{Definition}
-\newtheorem*{signature*}{Signature}
-\newtheorem*{axiom*}{Axiom}
-\newtheorem*{theorem*}{Theorem}
-\newtheorem*{proposition*}{Proposition}
-\newtheorem*{lemma*}{Lemma}
-\newtheorem*{corollary*}{Corollary}
+\newcommand\tlstitle{}
+\newcommand\tlsid{}
+\newcommand\tlsidname{}
+\newcommand\tlsidlabel{}
+
+\makeatletter
+\define@key{tlskeys}{forthel}[true]{\setbool{forthel}{\if\relax{#1}{false}\else#1\fi}}
+\define@key{tlskeys}{title}{\def\tlstitle{#1}}
+\define@key{tlskeys}{id}{\def\tlsid{#1}\def\tlsidname{\path{#1}\def\tlsidlabel{\label{#1}}}}
+\define@key{tlskeys}{printid}[true]{\setbool{printid}{\if\relax{#1}{false}\else#1\fi}}
+\makeatother
+
+\NewEnviron{definition}[1][]{\begin{tls}[#1]{Definition}\BODY\end{tls}}
+\NewEnviron{definition*}[1][]{\begin{tls*}[#1]{Definition}\BODY\end{tls*}}
+\NewEnviron{signature}[1][]{\begin{tls}[#1]{Signature}\BODY\end{tls}}
+\NewEnviron{signature*}[1][]{\begin{tls*}[#1]{Signature}\BODY\end{tls*}}
+\NewEnviron{axiom}[1][]{\begin{tls}[#1]{Axiom}\BODY\end{tls}}
+\NewEnviron{axiom*}[1][]{\begin{tls*}[#1]{Axiom}\BODY\end{tls*}}
+\NewEnviron{theorem}[1][]{\begin{tls}[#1]{Theorem}\BODY\end{tls}}
+\NewEnviron{theorem*}[1][]{\begin{tls*}[#1]{Theorem}\BODY\end{tls*}}
+\NewEnviron{proposition}[1][]{\begin{tls}[#1]{Proposition}\BODY\end{tls}}
+\NewEnviron{proposition*}[1][]{\begin{tls*}[#1]{Proposition}\BODY\end{tls*}}
+\NewEnviron{lemma}[1][]{\begin{tls}[#1]{Lemma}\BODY\end{tls}}
+\NewEnviron{lemma*}[1][]{\begin{tls*}[#1]{Lemma}\BODY\end{tls*}}
+\NewEnviron{corollary}[1][]{\begin{tls}[#1]{Corollary}\BODY\end{tls}}
+\NewEnviron{corollary*}[1][]{\begin{tls*}[#1]{Corollary}\BODY\end{tls*}}
+
+\newenvironment{tls*}[2][]{%
+  \setbool{currentforthel}{\ifbool{forthel}{true}{false}}% Save the current value of the `forthel' variable
+  \setkeys{tlskeys}{#1}%
+  \ifbool{currentforthel}{}\forthel%
+  \noindent\textbf{#2\if\relax\tlstitle\else{ (\tlstitle)}\fi. }%
+  \ifbool{printid}{\if\relax\tlsid\else\marginnote{\footnotesize\tlsidname}\fi}{}%
+}{%
+  \ifbool{currentforthel}{}\endforthel%
+  \setbool{forthel}{\ifbool{currentforthel}{true}{false}}% Reset the `forthel' variable
+  \renewcommand\tlstitle{}%
+  \renewcommand\tlsidname{}%
+  \renewcommand\tlsidlabel{}%
+}
+
+\newenvironment{tls}[2][]{%
+  \setbool{currentforthel}{\ifbool{forthel}{true}{false}}% Save the current value of the `forthel' variable
+  \setkeys{tlskeys}{#1}%
+  \ifbool{currentforthel}{}\forthel%
+  \refstepcounter{theoremcount}%
+  \if\relax\tlsid\else\tlsidlabel\fi%
+  \ifbool{printid}{\if\relax\tlsid\else\hfill{\footnotesize\tlsidname}\fi}{}%
+  \noindent\textbf{#2 \thetheoremcount\if\relax\tlstitle\else{ (\tlstitle)}\fi. }%
+}{%
+  \ifbool{currentforthel}{}\endforthel%
+  \setbool{forthel}{\ifbool{currentforthel}{true}{false}}% Reset the `forthel' variable
+  \renewcommand\tlstitle{}%
+  \renewcommand\tlsidname{}%
+  \renewcommand\tlsidlabel{}%
+}
+
+% Set length of \parskip to \ftlparskip in proofs in ForTheL environments.
+%
+% NOTE: "\vspace*{-\parskip}" is necessary to avoid additional space between
+% theorem and proof
+\newenvironment{proof}[1][\unskip]{%
+  \ifbool{forthel}{\setlength{\parskip}{\ftlparskip}}{}%
+  \par
+  \noindent\textit{Proof\xspace#1. }%
+  \relax%
+}
+{%
+  \strut\hfill\ensuremath\square
+}
 
 
 % ForTheL environment
@@ -132,6 +161,9 @@
 % Space between paragraphs in forthel environments
 \newlength{\ftlparskip}
 \setlength{\ftlparskip}{0.5em}
+
+\newbool{forthel}
+\newbool{currentforthel}  % the current value of the `forthel' variable
 
 % ForTheL environment
 \newenvironment{forthel}{%
@@ -181,25 +213,6 @@
 }
 
 \newcommand{\classtext}[1]{\parbox{\linegoal}{#1}}
-
-
-% More visible line breaks in proofs
-% ----------------------------------
-
-\newbool{forthel}
-
-% Set length of \parskip to \ftlparskip in proofs in ForTheL environments.
-%
-% NOTE: "\vspace*{-\parskip}" is necessary to avoid additional space between
-% theorem and proof
-\renewenvironment{proof}[1][\unskip]{%
-  \ifbool{forthel}{\setlength{\parskip}{\ftlparskip}\vspace*{-\parskip}}%
-  \noindent\textit{Proof\xspace#1. }%
-  \relax%
-}
-{%
-  \hfill\qed
-}
 
 
 % Predefined symbols

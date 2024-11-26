@@ -38,7 +38,7 @@
   i.e. \[F(\alpha) = G(F \restriction \alpha)\] for all ordinals $\alpha$.
 
   \begin{forthel}
-    \begin{lemma*}[Coincidence Lemma]\label{coincidence}
+    \begin{lemma*}[title=Coincidence Lemma,id=coincidence]
       Let $A$ be a class and $G$ be a map from $A^{< \infty}$ to $A$.
       Let $H, H'$ be maps to $A$ that are recursive regarding $G$.
       Then \[ H(\alpha) = H'(\alpha) \] for all $\alpha \in \dom(H) \cap \dom(H')$.
@@ -78,7 +78,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{theorem*}[Transfinite Recursion Theorem: Existence]\label{recursion_existence}
+    \begin{theorem*}[title=Transfinite Recursion Theorem: Existence,id=recursion_existence]
       Let $A$ be a class and $G$ be a map from $A^{< \infty}$ to $A$.
       Then there exists a map $F$ from $\Ord$ to $A$ that is recursive regarding $G$.
     \end{theorem*}
@@ -181,7 +181,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{theorem*}[Transfinite Recursion Theorem: Uniqueness]\label{recursion_uniqueness}
+    \begin{theorem*}[title=Transfinite Recursion Theorem: Uniqueness,id=recursion_uniqueness]
       Let $A$ be a class and $G$ be a map from $A^{< \infty}$ to $A$.
       Let $F, F'$ be maps from $\Ord$ to $A$ that are recursive regarding $G$.
       Then $F = F'$.
@@ -225,7 +225,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{corollary*}\label{recursion}
+    \begin{corollary*}[id=recursion]
       Let $A$ be a class.
       Let $a \in A$ and $G : \Ord \times A \to A$ and $H : \Ord \times A^{< \infty} \to A$.
       Then there exists a map $F$ from $\Ord$ to $A$ such that

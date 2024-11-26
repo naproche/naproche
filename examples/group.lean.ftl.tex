@@ -133,25 +133,25 @@ which we would like to implement in \Naproche{} as well. \\
 
 \begin{forthel}
 
-\begin{lemma}[mul left comm]
+\begin{lemma}[title=mul left comm]
 Let $\alpha$ be a commutative semigroup.
 Then for all $a,b,c : \alpha$
 $a *^{\alpha} (b *^{\alpha} c) = b *^{\alpha} (a *^{\alpha} c)$.
 \end{lemma}
 
-\begin{lemma}[mul right comm]
+\begin{lemma}[title=mul right comm]
 Let $\alpha$ be a commutative semigroup.
 Then for all $a,b,c : \alpha$
 $a *^{\alpha} (b *^{\alpha} c) = a *^{\alpha} (c *^{\alpha} b)$.
 \end{lemma}
 
-\begin{lemma}[mul left cancel iff]
+\begin{lemma}[title=mul left cancel iff]
 Let $\alpha$ be a semigroup with left cancellation.
 Then for all $a,b,c : \alpha$
 $a *^{\alpha} b = a *^{\alpha} c <=> b = c$.
 \end{lemma}
 
-\begin{lemma}[mul right cancel iff]
+\begin{lemma}[title=mul right cancel iff]
 Let $\alpha$ be a semigroup with right cancellation.
 Then for all $a,b,c : \alpha$
 $b *^{\alpha} a = c *^{\alpha} a <=> b = c$.
@@ -159,46 +159,46 @@ $b *^{\alpha} a = c *^{\alpha} a <=> b = c$.
 
 Let $\alpha$ denote a group.
 
-\begin{lemma}[inv mul cancel left]
+\begin{lemma}[title=inv mul cancel left]
 For all $a,b : \alpha$
 $a^{-1,\alpha} *^{\alpha} (a *^{\alpha} b) = b$.
 \end{lemma}
 
-\begin{lemma}[inv mul cancel right]
+\begin{lemma}[title=inv mul cancel right]
 For all $a,b : \alpha$
 $a *^{\alpha} (b^{-1,\alpha} *^{\alpha} b) = a$.
 \end{lemma}
 
-\begin{lemma}[inv eq of mul eq one]
+\begin{lemma}[title=inv eq of mul eq one]
 Let $a, b : \alpha$ and $a *^{\alpha} b = 1^{\alpha}$.
 Then $a^{-1,\alpha} = b$.
 \end{lemma}
 
-\begin{lemma}[one inv]
+\begin{lemma}[title=one inv]
 $(1^{\alpha})^{-1,\alpha} = 1^{\alpha}$.
 \end{lemma}
 
-\begin{lemma}[inv inv]
+\begin{lemma}[title=inv inv]
 Let $a : \alpha$.
 Then $(a^{-1,\alpha})^{-1,\alpha} = a$.
 \end{lemma}
 
-\begin{lemma}[mul right inv]
+\begin{lemma}[title=mul right inv]
 Let $a : \alpha$.
 Then $a *^{\alpha} a^{-1,\alpha} = 1^{\alpha}$.
 \end{lemma}
 
-\begin{lemma}[inv inj]
+\begin{lemma}[title=inv inj]
 Let $a,b : \alpha$ and $a^{-1,\alpha} = b^{-1,\alpha}$.
 Then $a = b$.
 \end{lemma}
 
-\begin{lemma}[group mul left cancel]
+\begin{lemma}[title=group mul left cancel]
 Let $a,b,c : \alpha$ and $a *^{\alpha} b = a *^{\alpha} c$.
 Then $b = c$.
 \end{lemma}
 
-\begin{lemma}[group mul right cancel]
+\begin{lemma}[title=group mul right cancel]
 Let $a,b,c : \alpha$ and $a *^{\alpha} b = c *^{\alpha} b$.
 Then $a = c$.
 \end{lemma}
@@ -207,18 +207,18 @@ $a = (a *^{\alpha} b) *^{\alpha} b^{-1,\alpha}
 = (c *^{\alpha} b) *^{\alpha} b^{-1,\alpha} = c$.
 \end{proof}
 
-\begin{lemma}[mul inv cancel left]
+\begin{lemma}[title=mul inv cancel left]
 Let $a,b : \alpha$.
 Then $a *^{\alpha} (a^{-1,\alpha} *^{\alpha} b) = b$.
 \end{lemma}
 
-\begin{lemma}[mul inv cancel right]
+\begin{lemma}[title=mul inv cancel right]
 Let $a,b : \alpha$.
 Then $(a *^{\alpha} b) *^{\alpha} b^{-1,\alpha} = a$.
 \end{lemma}
 
 
-\begin{lemma}[mul inv rev]
+\begin{lemma}[title=mul inv rev]
 Let $a,b : \alpha$.
 Then $(a *^{\alpha} b)^{-1,\alpha} = b^{-1,\alpha} *^{\alpha} a^{-1,\alpha}$.
 \end{lemma}
@@ -227,57 +227,57 @@ $(a *^{\alpha} b) *^{\alpha} (b^{-1,\alpha} *^{\alpha} a^{-1,\alpha})
 = 1^{\alpha}$.
 \end{proof}
 
-\begin{lemma}[eq inv of eq inv]
+\begin{lemma}[title=eq inv of eq inv]
 Let $a,b : \alpha$ and $a = b^{-1,\alpha}$.
 Then $b = a^{-1,\alpha}$.
 \end{lemma}
 
-\begin{lemma}[eq inv of mul eq one]
+\begin{lemma}[title=eq inv of mul eq one]
 Let $a,b : \alpha$ and $a *^{\alpha} b = 1^{\alpha}$.
 Then $a = b^{-1,\alpha}$.
 \end{lemma}
 
-\begin{lemma}[eq mul inv of mul eq]
+\begin{lemma}[title=eq mul inv of mul eq]
 Let $a,b,c : \alpha$ and $a *^{\alpha} c = b$.
 Then $a = b *^{\alpha} c^{-1,\alpha}$.
 \end{lemma}
 
-\begin{lemma}[eq inv mul of mul eq]
+\begin{lemma}[title=eq inv mul of mul eq]
 Let $a,b,c : \alpha$ and $b *^{\alpha} a = c$.
 Then $a = b^{-1,\alpha} *^{\alpha} c$.
 \end{lemma}
 
-\begin{lemma}[inv mul eq of eq mul]
+\begin{lemma}[title=inv mul eq of eq mul]
 Let $a,b,c : \alpha$ and $b = a *^{\alpha} c$.
 Then $a^{-1,\alpha} *^{\alpha} b = c$.
 \end{lemma}
 
-\begin{lemma}[mul inv eq of eq mul]
+\begin{lemma}[title=mul inv eq of eq mul]
 Let $a,b,c : \alpha$ and $a = c *^{\alpha} b$.
 Then $a *^{\alpha} b^{-1,\alpha} = c$.
 \end{lemma}
 
-\begin{lemma}[eq mul of mul inv eq]
+\begin{lemma}[title=eq mul of mul inv eq]
 Let $a,b,c : \alpha$ and $a *^{\alpha} c^{-1,\alpha} = b$.
 Then $a = b *^{\alpha} c$.
 \end{lemma}
 
-\begin{lemma}[eq mul of inv mul eq]
+\begin{lemma}[title=eq mul of inv mul eq]
 Let $a,b,c : \alpha$ and $b^{-1,\alpha} *^{\alpha} a = c$.
 Then $a = b *^{\alpha} c$.
 \end{lemma}
 
-\begin{lemma}[mul eq of eq inv mul]
+\begin{lemma}[title=mul eq of eq inv mul]
 Let $a,b,c : \alpha$ and $b = a^{-1,\alpha} *^{\alpha} c$.
 Then $a *^{\alpha} b = c$.
 \end{lemma}
 
-\begin{lemma}[mul eq of eq mul inv]
+\begin{lemma}[title=mul eq of eq mul inv]
 Let $a,b,c : \alpha$ and $a = c *^{\alpha} b^{-1,\alpha}$.
 Then $a *^{\alpha} b = c$.
 \end{lemma}
 
-\begin{lemma}[mul inv]
+\begin{lemma}[title=mul inv]
 Let $\alpha$ be a commutative group.
 Let $a,b : \alpha$.
 Then $(a *^{\alpha} b)^{-1,\alpha} = a^{-1,\alpha} *^{\alpha} b^{-1,\alpha}$.

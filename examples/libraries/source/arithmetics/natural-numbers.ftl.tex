@@ -19,19 +19,19 @@
   \subsection*{The Language of Natural Number Arithmetic}
 
   \begin{forthel}
-    \begin{signature}\printlabel{ARITHMETIC_01_3074681254969344}
+    \begin{signature}[id=ARITHMETIC_01_3074681254969344,printid]
       A natural number is an object.
     \end{signature}
   \end{forthel}
 
   \begin{forthel}
-    \begin{definition}\printlabel{ARITHMETIC_01_7367148418629632}
+    \begin{definition}[id=ARITHMETIC_01_7367148418629632,printid]
       $\Nat$ is the class of natural numbers.
     \end{definition}
   \end{forthel}
 
   \begin{forthel}
-    \begin{signature}\printlabel{ARITHMETIC_01_1567933815848960}
+    \begin{signature}[id=ARITHMETIC_01_1567933815848960,printid]
       Let $n, m$ be natural numbers.
       $n + m$ is a natural number.
     \end{signature}
@@ -40,7 +40,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{signature}\printlabel{ARITHMETIC_01_7633304715001856}
+    \begin{signature}[id=ARITHMETIC_01_7633304715001856,printid]
       $0$ is a natural number.
     \end{signature}
 
@@ -49,7 +49,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{signature}\printlabel{ARITHMETIC_01_1200254566985232}
+    \begin{signature}[id=ARITHMETIC_01_1200254566985232,printid]
       $1$ is a natural number.
     \end{signature}
 
@@ -58,7 +58,7 @@
   \end{forthel}
   
   \begin{forthel}
-    \begin{definition}\printlabel{ARITHMETIC_01_4584236572999680}
+    \begin{definition}[id=ARITHMETIC_01_4584236572999680,printid]
       $2 = 1 + 1$.
     \end{definition}
 
@@ -66,7 +66,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{definition}\printlabel{ARITHMETIC_01_3836725109456896}
+    \begin{definition}[id=ARITHMETIC_01_3836725109456896,printid]
       $3 = 2 + 1$.
     \end{definition}
 
@@ -74,7 +74,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{definition}\printlabel{ARITHMETIC_01_1709884968009728}
+    \begin{definition}[id=ARITHMETIC_01_1709884968009728,printid]
       $4 = 3 + 1$.
     \end{definition}
 
@@ -82,7 +82,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{definition}\printlabel{ARITHMETIC_01_6734726333202432}
+    \begin{definition}[id=ARITHMETIC_01_6734726333202432,printid]
       $5 = 4 + 1$.
     \end{definition}
 
@@ -90,7 +90,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{definition}\printlabel{ARITHMETIC_01_949139189792768}
+    \begin{definition}[id=ARITHMETIC_01_949139189792768,printid]
       $6 = 5 + 1$.
     \end{definition}
 
@@ -98,7 +98,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{definition}\printlabel{ARITHMETIC_01_7245471749767168}
+    \begin{definition}[id=ARITHMETIC_01_7245471749767168,printid]
       $7 = 6 + 1$.
     \end{definition}
 
@@ -106,7 +106,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{definition}\printlabel{ARITHMETIC_01_5658172888973312}
+    \begin{definition}[id=ARITHMETIC_01_5658172888973312,printid]
       $8 = 7 + 1$.
     \end{definition}
 
@@ -114,7 +114,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{definition}\printlabel{ARITHMETIC_01_7371844250238976}
+    \begin{definition}[id=ARITHMETIC_01_7371844250238976,printid]
       $9 = 8 + 1$.
     \end{definition}
 
@@ -125,20 +125,20 @@
   \subsection*{The Axioms of Natural Number Arithmetic}
 
   \begin{forthel}
-    \begin{axiom}\printlabel{ARITHMETIC_01_3604163883696128}
+    \begin{axiom}[id=ARITHMETIC_01_3604163883696128,printid]
       Let $n, m$ be natural numbers.
       If $n + 1 = m + 1$ then $n = m$.
     \end{axiom}
   \end{forthel}
 
   \begin{forthel}
-    \begin{axiom}\printlabel{ARITHMETIC_01_4454289938317312}
+    \begin{axiom}[id=ARITHMETIC_01_4454289938317312,printid]
       There exists no natural number $n$ such that $n + 1 = 0$.
     \end{axiom}
   \end{forthel}
 
   \begin{forthel}
-    \begin{axiom}[Induction]\printlabel{ARITHMETIC_01_4764664342773760}
+    \begin{axiom}[title=Induction,id=ARITHMETIC_01_4764664342773760,printid]
       Let $\Phi$ be a class.
       Assume $0 \in \Phi$ and for all natural numbers $n$ if $n \in \Phi$ then
       $n + 1 \in \Phi$.
@@ -147,20 +147,20 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{axiom}\printlabel{ARITHMETIC_03_5962332515874540}
+    \begin{axiom}[id=ARITHMETIC_03_5962332515874540,printid]
       Then $1 = 0 + 1$.
     \end{axiom}
   \end{forthel}
 
   \begin{forthel}
-    \begin{axiom}\printlabel{ARITHMETIC_03_4827955356237824}
+    \begin{axiom}[id=ARITHMETIC_03_4827955356237824,printid]
       Let $n$ be a natural number.
       Then $n + 0 = n$.
     \end{axiom}
   \end{forthel}
 
   \begin{forthel}
-    \begin{axiom}\printlabel{ARITHMETIC_03_4427935386238924}
+    \begin{axiom}[id=ARITHMETIC_03_4427935386238924,printid]
       Let $n, m$ be natural numbers.
       Then $n + (m + 1) = (n + m) + 1$.
     \end{axiom}
@@ -170,7 +170,7 @@
   \subsection*{Immediate Consequences of the Axioms}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{ARITHMETIC_01_4966080109871104}
+    \begin{proposition}[id=ARITHMETIC_01_4966080109871104,printid]
       Let $n$ be a natural number.
       Then $n = 0$ or $n = m + 1$ for some natural number $m$.
     \end{proposition}
@@ -183,7 +183,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{ARITHMETIC_01_5996049267163136}
+    \begin{proposition}[id=ARITHMETIC_01_5996049267163136,printid]
       Let $n$ be a natural number.
       Then $n \neq n + 1$.
     \end{proposition}
@@ -212,7 +212,7 @@
   \subsubsection*{Associativity}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{ARITHMETIC_03_3235893452210176}
+    \begin{proposition}[id=ARITHMETIC_03_3235893452210176,printid]
       Let $n, m, k$ be natural numbers.
       Then $n + (m + k) = (n + m) + k$.
     \end{proposition}
@@ -244,7 +244,7 @@
   \subsubsection*{Commutativity}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{ARITHMETIC_03_4029553232052224}
+    \begin{proposition}[id=ARITHMETIC_03_4029553232052224,printid]
       Let $n, m$ be natural numbers.
       Then $n + m = m + n$.
     \end{proposition}
@@ -318,7 +318,7 @@
   \subsubsection*{Cancellation}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{ARITHMETIC_03_3137702874578944}
+    \begin{proposition}[id=ARITHMETIC_03_3137702874578944,printid]
       Let $n, m, k$ be natural numbers.
       If $n + k = m + k$ then $n = m$.
     \end{proposition}
@@ -342,7 +342,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{corollary}\printlabel{ARITHMETIC_03_8445946379632640}
+    \begin{corollary}[id=ARITHMETIC_03_8445946379632640,printid]
       Let $n, m, k$ be natural numbers.
       If $k + n = k + m$ then $n = m$.
     \end{corollary}
@@ -358,7 +358,7 @@
   \subsubsection*{Zero Sums}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{ARITHMETIC_03_3520602170195968}
+    \begin{proposition}[id=ARITHMETIC_03_3520602170195968,printid]
       Let $n, m$ be natural numbers.
       If $n + m = 0$ then $n = 0$ and $m = 0$.
     \end{proposition}

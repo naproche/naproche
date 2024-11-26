@@ -89,7 +89,7 @@ The axiom of choice is also required to show that products of non-empty factors
 are themselves non-empty:
 
 \begin{forthel}
-  \begin{lemma*}[Choice]
+  \begin{lemma*}[title=Choice]
     Let $\lambda$ be a sequence of cardinals on $D$.
     Assume that $\lambda_{i}$ has an element for every element $i$ of $D$.
     Then $\ProdSet{\lambda}{D}$ has an element.
@@ -106,7 +106,7 @@ are themselves non-empty:
 \begin{forthel}
   Let $D$ denote a set.
 
-  \begin{theorem*}[König]\label{koenig}
+  \begin{theorem*}[title=König,id=koenig]
     Let $\kappa, \lambda$ be sequences of cardinals on $D$.
     Assume that for every element $i$ of $D$ $\kappa_{i} < \lambda_{i}$.
     Then \[ \Sum{\kappa}{D} < \Prod{\lambda}{D}. \]

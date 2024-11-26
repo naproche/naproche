@@ -23,6 +23,30 @@ dialect of ForTheL, respectively.
 
 ### Changes on ForTheL
 
+  * **New:** (TEX) The optional argument of top-level section environments can
+    now contain (any subset of) the following arguments, given as a
+    comma-separated list:
+
+    - `forthel`: Allows the top-level section to be recognized by the parser
+      even if it is not contained in a `forthel` environment. Note that if the
+      `forthel` argument is listed, it must be the first argument.
+
+    - `title=<title>`: Prints `<title>` as the title of the top-level section.
+
+    - `id=<id>`: Creates a label `<id>` which can be used to reference the
+      top-level section via `\ref` and friends. (Replaces `\label`)
+
+    - `printid`: Prints the value of the `id` argument (if given) at the
+      margin of the page. (Replaces `\printlabel`)
+
+    Example:
+
+    ```
+    \begin{axiom*}[forthel,title=Separation Axiom,id=sepAx,printid]
+      ...
+    \end{axiom*}
+    ```
+
   * **New:** In `definition` and `signature` environments and in
     `let ... stand for` expressions newly introduced notions can be wrapped in an
     `\emph{...}` command. Examples:

@@ -36,23 +36,23 @@
 
     Let $a,b,c,x,y,z,u,v,w$ denote elements.
 
-    \begin{signature}[SortsC]
+    \begin{signature}[id=SortsC]
       $0$ is an element.
     \end{signature}
 
-    \begin{signature}[SortsC]
+    \begin{signature}[id=SortsC]
       $1$ is an element.
     \end{signature}
 
-    \begin{signature}[Sortsu]
+    \begin{signature}[id=Sortsu]
       $-x$ is an element.
     \end{signature}
 
-    \begin{signature}[SortsB]
+    \begin{signature}[id=SortsB]
       $x + y$ is an element.
     \end{signature}
 
-    \begin{signature}[SortsB]
+    \begin{signature}[id=SortsB]
       $x \cdot y$ is an element.
     \end{signature}
 
@@ -65,23 +65,23 @@
   group.
 
   \begin{forthel}
-    \begin{axiom}[AddComm]
+    \begin{axiom}[id=AddComm]
       $x + y = y + x$.
     \end{axiom}
 
-    \begin{axiom}[AddAsso]
+    \begin{axiom}[id=AddAsso]
       $(x + y) + z = x + (y + z)$.
     \end{axiom}
 
-    \begin{axiom}[AddBubble]
+    \begin{axiom}[id=AddBubble]
       $x + (y + z) = y + (x + z)$.
     \end{axiom}
 
-    \begin{axiom}[AddZero]
+    \begin{axiom}[id=AddZero]
       $x + 0 = x = 0 + x$.
     \end{axiom}
 
-    \begin{axiom}[AddInvr]
+    \begin{axiom}[id=AddInvr]
       $x + (-x) = 0 = -x + x$.
     \end{axiom}
   \end{forthel}
@@ -98,11 +98,11 @@
   commutative monoid.
 
   \begin{forthel}
-    \begin{axiom}[MulComm]
+    \begin{axiom}[id=MulComm]
       $x \cdot y = y \cdot x$.
     \end{axiom}
 
-    \begin{axiom}[MulAsso]
+    \begin{axiom}[id=MulAsso]
       $x \cdot (y \cdot z) = (x \cdot y) \cdot z$.
 
       % NOTE: In the original ftl file the lhs and the rhs of the equation are
@@ -110,11 +110,11 @@
       % accepted by Naproche.
     \end{axiom}
 
-    \begin{axiom}[MulBubble]
+    \begin{axiom}[id=MulBubble]
       $x \cdot (y \cdot z) = y \cdot (x \cdot z)$.
     \end{axiom}
 
-    \begin{axiom}[MulUnit]
+    \begin{axiom}[id=MulUnit]
       $x \cdot 1 = x = 1 \cdot x$.
     \end{axiom}
   \end{forthel}
@@ -123,11 +123,11 @@
   \textit{MulAsso}. Now we ensure that the distribution laws hold.
 
   \begin{forthel}
-    \begin{axiom}[AMDistr1]
+    \begin{axiom}[id=AMDistr1]
       $x \cdot (y + z) = (x \cdot y) + (x \cdot z)$.
     \end{axiom}
 
-    \begin{axiom}[AMDistr2]
+    \begin{axiom}[id=AMDistr2]
       $(y + z) \cdot x = (y \cdot x) + (z \cdot x)$.
     \end{axiom}
   \end{forthel}
@@ -138,11 +138,11 @@
   leave the proof of this claim as an exercise for the reader.
 
   \begin{forthel}
-    \begin{axiom}[MulMnOne]
+    \begin{axiom}[id=MulMnOne]
       $(-1) \cdot x = -x = x \cdot (-1)$.
     \end{axiom}
 
-    \begin{lemma}[MulZero]
+    \begin{lemma}[id=MulZero]
       $x \cdot 0 = 0 = 0 \cdot x$.
     \end{lemma}
     \begin{proof}
@@ -165,11 +165,11 @@
   zero-divisors and our ring must not be trivial.
 
   \begin{forthel}
-    \begin{axiom}[Cancel]
+    \begin{axiom}[id=Cancel]
       $x \neq 0 \wedge y \neq 0 \implies x \cdot y \neq 0$.
     \end{axiom}
 
-    \begin{axiom}[UnNeZr]
+    \begin{axiom}[id=UnNeZr]
       $1 \neq 0$.
     \end{axiom}
   \end{forthel}
@@ -190,17 +190,17 @@
 
     Let $x$ belongs to $W$ denote $x$ is an element of $W$.
 
-    \begin{axiom}[SetEq]
+    \begin{axiom}[id=SetEq]
       If every element of $X$ belongs to $Y$ and every element of $Y$ belongs to
       $X$ then $X = Y$.
     \end{axiom}
 
-    \begin{definition}[DefSum]
+    \begin{definition}[id=DefSum]
       $X \oplus Y$ is a set such that for every element $z$ ($z \in X \oplus Y$)
       iff there exist $x \in X, y \in Y$ such that $z = x + y$.
     \end{definition}
 
-    \begin{definition}[DefSInt]
+    \begin{definition}[id=DefSInt]
       $X \cap Y$ is a set such that for every element $z$ ($z \in X \cap Y$) iff
       $z \in X$ and $z \in Y$.
     \end{definition}
@@ -214,7 +214,7 @@
   \begin{forthel}
     Let $a,b,c,x,y,z,u,v,w$ denote elements.
 
-    \begin{definition}[DefIdeal]
+    \begin{definition}[id=DefIdeal]
       An ideal is a set $X$ such that for every $x \in X$ we have
         $\forall y \in X (x + y \in X)$ and
         $\forall z (z \cdot x \in X)$.
@@ -226,7 +226,7 @@
   We can show that the sum and the intersection of two ideals is again an ideal.
 
   \begin{forthel}
-    \begin{lemma}[IdeSum]
+    \begin{lemma}[id=IdeSum]
       $I \oplus J$ is an ideal.
     \end{lemma}
     \begin{proof}
@@ -253,7 +253,7 @@
     \end{proof}
 
 
-    \begin{lemma}[IdeInt]
+    \begin{lemma}[id=IdeInt]
       $I \cap J$ is an ideal (by DefIdeal).
     \end{lemma}
     \begin{proof}
@@ -267,11 +267,11 @@
   some ideal.
 
   \begin{forthel}
-    \begin{definition}[DefMod]
+    \begin{definition}[id=DefMod]
       $x = y ~(\mod I)$ iff $x - y \in I$.
     \end{definition}
 
-    \begin{theorem}[ChineseRemainder]
+    \begin{theorem}[id=ChineseRemainder]
       Suppose that every element belongs to $I \oplus J$.
       Let $x, y$ be elements.
       There exists an element $w$ such that $w = x ~(\mod I)$ and
@@ -309,7 +309,7 @@
   \begin{forthel}
     Let $a,b,c,x,y,z,u,v,w$ denote elements.
 
-    \begin{signature}[NatSort]
+    \begin{signature}[id=NatSort]
       A natural number is an object.
     \end{signature}
 
@@ -318,11 +318,11 @@
   Now we can equip our domain with a Euclidean function $|\cdot|$.
 
   \begin{forthel}
-    \begin{signature}[EucSort]
+    \begin{signature}[id=EucSort]
       Let $x$ be a nonzero element. $|x|$ is a natural number.
     \end{signature}
 
-    \begin{axiom}[Division]
+    \begin{axiom}[id=Division]
       Let $x,y$ be elements and $y \neq 0$.
       There exist elements $q,r$ such that $x = (q \cdot y) + r$ and
       $(r \neq 0 \implies |r| \prec |y|)$.
@@ -339,23 +339,23 @@
   in particular, \textit{greatest common divisors} (\textit{gcd}s).
 
   \begin{forthel}
-    \begin{definition}[DefDiv]
+    \begin{definition}[id=DefDiv]
       $x$ divides $y$ iff for some $z$ $(x \cdot z = y)$.
     \end{definition}
 
     Let $x \mid y$ stand for $x$ divides $y$.
     Let $x$ is divided by $y$ stand for $y \mid x$.
 
-    \begin{definition}[DefDvs]
+    \begin{definition}[id=DefDvs]
       A divisor of $x$ is an element that divides $x$.
     \end{definition}
 
-    \begin{definition}[DefGCD]
+    \begin{definition}[id=DefGCD]
       A gcd of $x$ and $y$ is a common divisor $c$ of $x$ and $y$ such that any
       common divisor of $x$ and $y$ divides $c$.
     \end{definition}
 
-    \begin{definition}[DefRel]
+    \begin{definition}[id=DefRel]
       $x,y$ are relatively prime iff $1$ is a gcd of $x$ and $y$.
     \end{definition}
   \end{forthel}
@@ -366,13 +366,13 @@
   element, a so-called \textit{principal ideal}, is defined as follows.
 
   \begin{forthel}
-    \begin{definition}[DefPrIdeal]
+    \begin{definition}[id=DefPrIdeal]
       $\langle c \rangle$ is a set such that for every $z$ $z$ is an element of
       $\langle c \rangle$ iff there exists an element $x$ such that
       $z = c \cdot x$.
     \end{definition}
 
-    \begin{lemma}[PrIdeal]
+    \begin{lemma}[id=PrIdeal]
       $\langle c \rangle$ is an ideal.
     \end{lemma}
     \begin{proof}
@@ -411,7 +411,7 @@
   \[ \gcd(9,25) = 1 = -11 \cdot 9 + 4 \cdot 25. \]
 
   \begin{forthel}
-    \begin{theorem}[GCDin]
+    \begin{theorem}[id=GCDin]
       Let $a,b$ be elements.
       Assume that $a$ is nonzero or $b$ is nonzero.
       Let $c$ be a gcd of $a$ and $b$.

@@ -16,28 +16,28 @@
   \section*{Reversion}
 
   \begin{forthel}
-    \begin{signature}\printlabel{LISTS_REV_4578620297183232}
+    \begin{signature}[id=LISTS_REV_4578620297183232,printid]
       Let $L$ be a list.
       $\rev(L)$ is a list.
     \end{signature}
   \end{forthel}
 
   \begin{forthel}
-    \begin{axiom}\printlabel{LISTS_REV_3703161885818880}
+    \begin{axiom}[id=LISTS_REV_3703161885818880,printid]
       Let $L$ be a list.
       Then $\rev(\nil) = \nil$.
     \end{axiom}
   \end{forthel}
 
   \begin{forthel}
-    \begin{axiom}\printlabel{LISTS_REV_8050301789536256}
+    \begin{axiom}[id=LISTS_REV_8050301789536256,printid]
       Let $a$ be an object and $L$ be a list.
       Then $\rev(a \cons L) = \rev(L) \concat [a]$.
     \end{axiom}
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{LISTS_REV_4512036658964875}
+    \begin{proposition}[id=LISTS_REV_4512036658964875,printid]
       $\rev(L \concat L') = \rev(L') \concat \rev(L)$ for any lists $L, L'$.
     \end{proposition}
     \begin{proof}[by induction on $L$]
@@ -63,7 +63,7 @@
   \end{forthel}
 
   \begin{forthel}
-    \begin{proposition}\printlabel{LISTS_REV_1021563255448756}
+    \begin{proposition}[id=LISTS_REV_1021563255448756,printid]
       $\rev(\rev(L)) = L$ for every list $L$.
     \end{proposition}
     \begin{proof}[by induction on $L$]

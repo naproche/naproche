@@ -423,7 +423,37 @@ optLink = optLL1 [] $ parenthesised $ markupToken Reports.reference "by" >> iden
 --    In this case @<label>@ must be an identifier which is used as an idenfier
 --    of the top-level section it belongs to.
 --
-envLabel :: FTL Text
+envLabel :: FTL (Maybe Text)
+envLabel = do
+  symbolNotAfterSpace "["
+  tlsOptions <- sepBy tlsOption (symbol ",")
+  let mbLabelOption = find (\(key, val) -> key == "id") tlsOptions
+  let mbLabel = case mbLabelOption of
+        Nothing -> Nothing
+        Just (_, Nothing) -> Nothing
+        Just (_, Just label) -> Just label
+  symbol "]"
+  return mbLabel
+
+tlsOption :: FTL (Text, Maybe Text)
+tlsOption = do
+  key <- getTokenOf' ["forthel", "title", "id", "printid"]
+  case key of
+    "forthel" -> return (key, Nothing)
+    "title" -> do
+      symbol "="
+      optBraced $ chainLL1 notReservedChar
+      return (key, Nothing)
+    "id" -> do
+      symbol "="
+      label <- identifier
+      return (key, Just label)
+    "printid" -> return (key, Nothing)
+    _ -> return (key, Nothing)
+  where
+    notReservedChar = tokenPrim $ \t -> guard (showToken t `notElem` [",", "]"]) >> return t
+
+{-
 envLabel = try nameAndLabel <|> name <|> label
   where
     -- "[<name>]\label{<label>}"
@@ -445,10 +475,11 @@ envLabel = try nameAndLabel <|> name <|> label
 
     notClosingBrk = tokenPrim notCl
     notCl t = let tk = showToken t in guard (tk /= "]") >> return tk
+-}
 
 -- | Parse an optional environment label (TEX).
 optionalEnvLabel :: FTL (Maybe Text)
-optionalEnvLabel = optLLx Nothing (Just <$> envLabel)
+optionalEnvLabel = optLLx Nothing envLabel
 
 
 -- * Declaration management, typings and pretypings
