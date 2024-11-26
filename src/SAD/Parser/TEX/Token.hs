@@ -115,7 +115,7 @@ token = choice [
     controlSpace >>= skip,
     parameter >>= skipOutsideForthel,
     mathModeDelimiter >>= skip,
-    breakCommand >>= skip,
+    ignoredCommand >>= skip,
     group (concat <$> many (token <|> catchInvalidEnvEnd)),
     environment (concat <$> many (token <|> catchInvalidGroupEnd)),
     controlWord "section",
@@ -148,10 +148,13 @@ mathModeDelimiter = choice [
   ]
 
 -- | Parse a single break command.
-breakCommand :: Tokenizer [Token]
-breakCommand = choice [
+ignoredCommand :: Tokenizer [Token]
+ignoredCommand = choice [
     controlSymbol '\\',
-    controlWord "par"
+    controlWord "par",
+    controlWord "left",
+    controlWord "middle",
+    controlWord "right"
   ]
 
 -- | Parse a single symbol.
@@ -222,6 +225,10 @@ environment p = do
   when (envNameText == "forthel" && currentlyInsideForthel) $
     customFailure $ NestedForthel (tokensPos beginEnvCommand)
   when (envNameText == "forthel" && not currentlyInsideForthel) $ modify (\state -> state{insideForthel = True})
+  --
+  forthelFlag <- forthelKeyAhead
+  let tlsEnvWithForthelFlagOutsideForthelEnv = envNameText `elem` tlsEnvNames && forthelFlag && not currentlyInsideForthel
+  when tlsEnvWithForthelFlagOutsideForthelEnv $ modify (\state -> state{insideForthel = True})
   -- Run @p@:
   content <- p
   -- Throw an error if the end of the input is reached:
@@ -239,13 +246,33 @@ environment p = do
     customFailure $ InvalidEnvEnd (tokensPos endEnvCommand)
   -- If the environment name is "@forthel@" then unset the @insideForthel@ flag:
   when (envNameText == "forthel") $ modify (\state -> state{insideForthel = False})
+  -- If the environment is a TLS environment with set @forthel@ flag outside a
+  -- Forthel group, unset the @insideForthel@ flag:
+  when tlsEnvWithForthelFlagOutsideForthelEnv $ modify (\state -> state{insideForthel = False})
   -- If we are (still) inside a ForTheL group then return the tokens of the
   -- @\\begin{...}@ command, the result of @p@ and the tokens of the
   -- @\\end{...}@ command; otherwise return just the result of @p@:
   currentlyInsideForthel' <- gets insideForthel
-  if currentlyInsideForthel'
+  if currentlyInsideForthel' || tlsEnvWithForthelFlagOutsideForthelEnv
     then return $ beginEnvCommand ++ content ++ endEnvCommand
     else return content
+  where
+    tlsEnvNames = [
+        "signature",
+        "signature*",
+        "definition",
+        "definition*",
+        "axiom",
+        "axiom*",
+        "theorem",
+        "theorem*",
+        "lemma",
+        "lemma*",
+        "proposition",
+        "proposition*",
+        "corollary",
+        "corollary*"
+      ]
 
 -- | Parse an end-environment token and throw an error. Useful to catch
 -- unbalanced end-environment tokens.
@@ -456,6 +483,12 @@ anyControlSymbolExcept css = do
 
 
 -- ** Misc
+
+forthelKeyAhead :: Tokenizer Bool
+forthelKeyAhead = option False $ try $ lookAhead $ do
+  openingBracket <- char '['
+  word "forthel"
+  return True
 
 -- | Ignore the output of a tokenizer @p@. Intended to be used as @p >>= skip@
 -- to run @p@ but return the empty list instead of the result of @p@.
