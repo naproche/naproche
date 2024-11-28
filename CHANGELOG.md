@@ -23,6 +23,17 @@ dialect of ForTheL, respectively.
 
 ### Changes on ForTheL
 
+  * **New:** (TEX) A new command `\inlineforthel{...}` which behaves like the
+    `forthel` environment (i.e. in the PDF it renders its content with a gray
+    background and its content is parsed by Naproche), but to be used in-line.
+
+    Example:
+
+    ```
+    In the following, \inlineforthel{let $n$ and $m$ denote natural numbers} and
+    \inlineforthel{let $n\mid m$ stand for $n$ divides $m$}.
+    ```
+
   * **New:** (TEX) The optional argument of top-level section environments can
     now contain (any subset of) the following arguments, given as a
     comma-separated list:

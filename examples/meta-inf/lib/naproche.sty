@@ -155,8 +155,12 @@
 }
 
 
-% ForTheL environment
-% -------------------
+% ForTheL Environment and Inline ForTheL
+% --------------------------------------
+
+\RequirePackage{tcolorbox}
+\RequirePackage{soulpos}
+\colorlet{forthelgray}{lightgray!30}
 
 % Space between paragraphs in forthel environments
 \newlength{\ftlparskip}
@@ -167,7 +171,7 @@
 
 % ForTheL environment
 \newenvironment{forthel}{%
-  \begin{mdframed}[backgroundcolor=lightgray!30, linecolor=lightgray!30]%
+  \begin{mdframed}[backgroundcolor=forthelgray, linecolor=forthelgray]%
   \rmfamily%
   \setbool{forthel}{true}%
   \setlength{\parindent}{0pt}%
@@ -185,6 +189,25 @@
   \begin{forthel}
 }{
   \end{forthel}
+}
+
+\newtcbox\mybox{
+  on line,
+  arc=0pt,
+  outer arc=0pt,
+  colback=forthelgray,
+  colframe=forthelgray,
+  boxsep=0pt,
+  left=.2em,
+  right=.2em,
+  top=.2em,
+  bottom=.4em,
+  boxrule=0pt,
+  height=1.4em    
+}
+
+\ulposdef\inlineforthel[xoffset-start=.2em]{%
+  \mybox{\rule\ulwidth{0pt}}%      
 }
 
 

@@ -116,6 +116,7 @@ token = choice [
     parameter >>= skipOutsideForthel,
     mathModeDelimiter >>= skip,
     ignoredCommand >>= skip,
+    inlineForthel (concat <$> many token),
     group (concat <$> many (token <|> catchInvalidEnvEnd)),
     environment (concat <$> many (token <|> catchInvalidGroupEnd)),
     controlWord "section",
@@ -183,6 +184,19 @@ group p = do
   if insideForthel
     then return $ beginGroup ++ content ++ endGroup
     else return content
+
+-- | Parse an @\\inlineforthel{...}@ command, depending on a parser @p@ for the
+-- content of the argument of that command, and return the result of @p@.
+inlineForthel :: Tokenizer [Token] -> Tokenizer [Token]
+inlineForthel p = do
+  currentlyInsideForthel <- gets insideForthel
+  inlineforthelMacro <- controlWord "inlineforthel"
+  when currentlyInsideForthel $ customFailure $ NestedForthel (tokensPos inlineforthelMacro)
+  group $ do
+    modify (\state -> state{insideForthel = True})
+    content <- p
+    modify (\state -> state{insideForthel = False})
+    return content
 
 -- | Parse an end-group token and throw an error. Useful to catch unbalanced
 -- end-group tokens.
