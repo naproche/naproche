@@ -111,33 +111,38 @@
 \NewEnviron{corollary*}[1][]{\begin{tls*}[#1]{Corollary}\BODY\end{tls*}}
 
 \newenvironment{tls*}[2][]{%
-  \setbool{currentforthel}{\ifbool{forthel}{true}{false}}% Save the current value of the `forthel' variable
+  \par\addvspace{\baselineskip}
+  \setbool{forthelBeforeEnv}{\ifbool{forthel}{true}{false}}% Save the current value of the `forthel' variable
   \setkeys{tlskeys}{#1}%
-  \ifbool{currentforthel}{}\forthel%
+  \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\begin{forthel}}{}}%
+  \if\relax\tlsid\else\tlsidlabel\fi%
   \noindent\textbf{#2\if\relax\tlstitle\else{ (\tlstitle)}\fi. }%
   \ifbool{printid}{\if\relax\tlsid\else\marginnote{\footnotesize\tlsidname}\fi}{}%
 }{%
-  \ifbool{currentforthel}{}\endforthel%
-  \setbool{forthel}{\ifbool{currentforthel}{true}{false}}% Reset the `forthel' variable
+  \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\end{forthel}}{}}%
+  \setbool{forthel}{\ifbool{forthelBeforeEnv}{true}{false}}% Reset the `forthel' variable
   \renewcommand\tlstitle{}%
   \renewcommand\tlsidname{}%
   \renewcommand\tlsidlabel{}%
+  \par\addvspace{\baselineskip}
 }
 
 \newenvironment{tls}[2][]{%
-  \setbool{currentforthel}{\ifbool{forthel}{true}{false}}% Save the current value of the `forthel' variable
+  \par\addvspace{\baselineskip}
+  \setbool{forthelBeforeEnv}{\ifbool{forthel}{true}{false}}% Save the current value of the `forthel' variable
   \setkeys{tlskeys}{#1}%
-  \ifbool{currentforthel}{}\forthel%
+  \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\begin{forthel}}{}}%
   \refstepcounter{theoremcount}%
   \if\relax\tlsid\else\tlsidlabel\fi%
-  \ifbool{printid}{\if\relax\tlsid\else\hfill{\footnotesize\tlsidname}\fi}{}%
   \noindent\textbf{#2 \thetheoremcount\if\relax\tlstitle\else{ (\tlstitle)}\fi. }%
+  \ifbool{printid}{\if\relax\tlsid\else\marginnote{\footnotesize\tlsidname}\fi}{}%
 }{%
-  \ifbool{currentforthel}{}\endforthel%
-  \setbool{forthel}{\ifbool{currentforthel}{true}{false}}% Reset the `forthel' variable
+\ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\end{forthel}}{}}%
+  \setbool{forthel}{\ifbool{forthelBeforeEnv}{true}{false}}% Reset the `forthel' variable
   \renewcommand\tlstitle{}%
   \renewcommand\tlsidname{}%
   \renewcommand\tlsidlabel{}%
+  \par\addvspace{\baselineskip}
 }
 
 % Set length of \parskip to \ftlparskip in proofs in ForTheL environments.
@@ -167,7 +172,10 @@
 \setlength{\ftlparskip}{0.5em}
 
 \newbool{forthel}
-\newbool{currentforthel}  % the current value of the `forthel' variable
+\setbool{forthel}{false}
+
+\newbool{forthelBeforeEnv}
+\newbool{forthelInEnv}
 
 % ForTheL environment
 \newenvironment{forthel}{%
