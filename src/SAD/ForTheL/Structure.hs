@@ -181,8 +181,9 @@ signatureTex = do
   (keyword, starred) <- try $ beginTopLevelSection ["signature"]
   label <- optionalEnvLabel
   result <- sig label </> structSig label
+  macrosAndPretypings <- many (try introduceMacro <|> pretypeVariable)
   endTopLevelSection keyword starred
-  return result
+  return $ result ++ macrosAndPretypings
   where
     sig label = do
       content <- signatureBody
@@ -227,9 +228,10 @@ definitionTex = do
   (keyword, starred) <- try $ beginTopLevelSection ["definition"]
   label <- optionalEnvLabel
   content <- definitionBody
+  macrosAndPretypings <- many (try introduceMacro <|> pretypeVariable)
   endTopLevelSection keyword starred
   proofText <- addMetadata Definition content label
-  return [proofText]
+  return $ proofText : macrosAndPretypings
 
 -- | Parse an axiom (TEX):
 -- @"\\begin" "{" "axiom" "}" ["[" <name> "]"] [<label>] <axiomBody>
@@ -239,9 +241,10 @@ axiomTex = do
   (keyword, starred) <- try $ beginTopLevelSection ["axiom"]
   label <- optionalEnvLabel
   content <- axiomBody
+  macrosAndPretypings <- many (try introduceMacro <|> pretypeVariable)
   endTopLevelSection keyword starred
   proofText <- addMetadata Axiom content label
-  return [proofText]
+  return $ proofText : macrosAndPretypings
 
 -- | Parse a theorem (TEX)
 theoremTex :: FTL [ProofText]

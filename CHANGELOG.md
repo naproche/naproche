@@ -23,6 +23,24 @@ dialect of ForTheL, respectively.
 
 ### Changes on ForTheL
 
+  * **New:** (TEX) Macro introductions and variable pretypings can now occur
+    at the bottom of signature, definiton and axiom environments. (Theorem
+    environments are excluded only because of certain technical difficulties
+    involved in their implementation).
+
+    Example:
+
+    ```
+    \begin{definition}
+      An ordinal number is a transitive set $\alpha$ such that every element of
+      $\alpha$ is a transitive set.
+
+      Let an ordinal stand for an ordinal number.
+
+      Let $\alpha,\beta,\gamma$ denote ordinals.
+    \end{definition}
+    ```
+
   * **New:** (TEX) A new command `\inlineforthel{...}` which behaves like the
     `forthel` environment (i.e. in the PDF it renders its content with a gray
     background and its content is parsed by Naproche), but to be used in-line.
