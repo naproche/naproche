@@ -111,52 +111,59 @@
 \NewEnviron{corollary*}[1][]{\begin{tls*}[#1]{Corollary}\BODY\end{tls*}}
 
 \newenvironment{tls*}[2][]{%
-  \par\addvspace{\baselineskip}
   \setbool{forthelBeforeEnv}{\ifbool{forthel}{true}{false}}% Save the current value of the `forthel' variable
   \setkeys{tlskeys}{#1}%
-  \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\begin{forthel}}{}}%
+  \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\begin{forthel}}{\par\addvspace{\baselineskip}}}%
   \if\relax\tlsid\else\tlsidlabel\fi%
   \noindent\textbf{#2\if\relax\tlstitle\else{ (\tlstitle)}\fi. }%
   \ifbool{printid}{\if\relax\tlsid\else\marginnote{\footnotesize\tlsidname}\fi}{}%
 }{%
-  \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\end{forthel}}{}}%
+  \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\end{forthel}}{\par\addvspace{\baselineskip}}}%
   \setbool{forthel}{\ifbool{forthelBeforeEnv}{true}{false}}% Reset the `forthel' variable
   \renewcommand\tlstitle{}%
   \renewcommand\tlsidname{}%
   \renewcommand\tlsidlabel{}%
-  \par\addvspace{\baselineskip}
 }
 
 \newenvironment{tls}[2][]{%
-  \par\addvspace{\baselineskip}
   \setbool{forthelBeforeEnv}{\ifbool{forthel}{true}{false}}% Save the current value of the `forthel' variable
   \setkeys{tlskeys}{#1}%
-  \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\begin{forthel}}{}}%
+  \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\begin{forthel}}{\par\addvspace{\baselineskip}}}%
   \refstepcounter{theoremcount}%
   \if\relax\tlsid\else\tlsidlabel\fi%
   \noindent\textbf{#2 \thetheoremcount\if\relax\tlstitle\else{ (\tlstitle)}\fi. }%
   \ifbool{printid}{\if\relax\tlsid\else\marginnote{\footnotesize\tlsidname}\fi}{}%
 }{%
-\ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\end{forthel}}{}}%
+  \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\end{forthel}}{\par\addvspace{\baselineskip}}}%
   \setbool{forthel}{\ifbool{forthelBeforeEnv}{true}{false}}% Reset the `forthel' variable
   \renewcommand\tlstitle{}%
   \renewcommand\tlsidname{}%
   \renewcommand\tlsidlabel{}%
-  \par\addvspace{\baselineskip}
 }
+
+\newcommand\proofmethod{}
+
+\makeatletter
+\define@key{proofkeys}{forthel}[true]{\setbool{forthel}{\if\relax{#1}{false}\else#1\fi}}
+\define@key{proofkeys}{method}{\def\proofmethod{#1}}
+\makeatother
 
 % Set length of \parskip to \ftlparskip in proofs in ForTheL environments.
 %
 % NOTE: "\vspace*{-\parskip}" is necessary to avoid additional space between
 % theorem and proof
-\newenvironment{proof}[1][\unskip]{%
-  \ifbool{forthel}{\setlength{\parskip}{\ftlparskip}}{}%
-  \par
-  \noindent\textit{Proof\xspace#1. }%
+\newenvironment{proof}[1][]{%
+  \setbool{forthelBeforeEnv}{\ifbool{forthel}{true}{false}}% Save the current value of the `forthel' variable
+  \setkeys{proofkeys}{#1}%
+  \ifbool{forthelBeforeEnv}{\par}{\ifbool{forthel}{\begin{forthel}}{\par\addvspace{\baselineskip}}}%
+  \noindent\textit{Proof\if\relax\proofmethod\else\ by \proofmethod\fi. }%
   \relax%
 }
 {%
-  \strut\hfill\ensuremath\square
+  \strut\hfill\ensuremath\square%
+  \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\end{forthel}}{\par\addvspace{\baselineskip}}}%
+  \setbool{forthel}{\ifbool{forthelBeforeEnv}{true}{false}}% Reset the `forthel' variable
+  \renewcommand\proofmethod{}%
 }
 
 

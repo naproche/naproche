@@ -285,7 +285,8 @@ environment p = do
         "proposition",
         "proposition*",
         "corollary",
-        "corollary*"
+        "corollary*",
+        "proof"
       ]
 
 -- | Parse an end-environment token and throw an error. Useful to catch

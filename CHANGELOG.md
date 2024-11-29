@@ -23,6 +23,24 @@ dialect of ForTheL, respectively.
 
 ### Changes on ForTheL
 
+  * **New:** (TEX) The optional argument of proof environments can now contain
+    (any subset of) the following arguments, given as a comma-separated list:
+
+    - `forthel`: Allows the top-level section to be recognized by the parser
+      even if it is not contained in a `forthel` environment. Note that if the
+      `forthel` argument is listed, it must be the first argument.
+
+    - `method=<proof method>`: Passes `<proof method>` as proof method to the
+      checker.
+
+    Example:
+
+    ```
+    \begin{proof}[forthel,method=induction on $n$]
+      ...
+    \end{proof}
+    ```
+
   * **New:** (TEX) Macro introductions and variable pretypings can now occur
     at the bottom of signature, definiton and axiom environments. (Theorem
     environments are excluded only because of certain technical difficulties

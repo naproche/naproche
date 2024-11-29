@@ -179,7 +179,7 @@ endTopLevelSection keyword starred = do
 signatureTex :: FTL [ProofText]
 signatureTex = do
   (keyword, starred) <- try $ beginTopLevelSection ["signature"]
-  label <- optionalEnvLabel
+  label <- optTlsLabel
   result <- sig label </> structSig label
   macrosAndPretypings <- many (try introduceMacro <|> pretypeVariable)
   endTopLevelSection keyword starred
@@ -226,7 +226,7 @@ signatureTex = do
 definitionTex :: FTL [ProofText]
 definitionTex = do
   (keyword, starred) <- try $ beginTopLevelSection ["definition"]
-  label <- optionalEnvLabel
+  label <- optTlsLabel
   content <- definitionBody
   macrosAndPretypings <- many (try introduceMacro <|> pretypeVariable)
   endTopLevelSection keyword starred
@@ -239,7 +239,7 @@ definitionTex = do
 axiomTex :: FTL [ProofText]
 axiomTex = do
   (keyword, starred) <- try $ beginTopLevelSection ["axiom"]
-  label <- optionalEnvLabel
+  label <- optTlsLabel
   content <- axiomBody
   macrosAndPretypings <- many (try introduceMacro <|> pretypeVariable)
   endTopLevelSection keyword starred
@@ -250,7 +250,7 @@ axiomTex = do
 theoremTex :: FTL [ProofText]
 theoremTex = do
   (keyword, starred) <- try $ beginTopLevelSection ["theorem", "proposition", "lemma", "corollary"]
-  label <- optionalEnvLabel
+  label <- optTlsLabel
   content <- addAssumptions . texTopLevelProof $
              pretypeSentence Affirmation (affirmationHeader >> statement) affirmVars finishWithOptLink <* endTopLevelSection keyword starred
   proofText <- addMetadata Theorem content label
@@ -413,76 +413,50 @@ optLink = optLL1 [] $ parenthesised $ markupToken Reports.reference "by" >> iden
 
 -- ** Labels
 
--- | Parse an environment label (TEX), i.e. one of the following expressions:
---
---  * A name together with a label, i.e. "[<name>]\label{<label>}"
---    In this case @<name>@ can be any string while @<label>@ must be an
---    identifier which is used as an idenfier of the top-level section it
---    belongs to.
---  * Just a name, i.e. "[<name>]".
---    In this case @<name>@ must be an identifier which is used as an
---    idenfier of the top-level section it belongs to.
---  * Just a label, i.e. "\label{<label>}".
---    In this case @<label>@ must be an identifier which is used as an idenfier
---    of the top-level section it belongs to.
---
-envLabel :: FTL (Maybe Text)
-envLabel = do
+-- | An optional parameter for a top-level section environment.
+data TlsOption =
+    TlsForthel      -- @forthel@
+  | TlsTitle Text   -- @title=<title>@
+  | TlsId Text      -- @id=<label>@
+  | TlsPrintId      -- @printid@
+
+-- | Parse an environment label (TEX), i.e. a list of key-value pairs that
+-- might contain a pair with an @id@ key and return its value.
+tlsLabel :: FTL (Maybe Text)
+tlsLabel = do
   symbolNotAfterSpace "["
   tlsOptions <- sepBy tlsOption (symbol ",")
   let mbLabelOption = find (\(key, val) -> key == "id") tlsOptions
   let mbLabel = case mbLabelOption of
-        Nothing -> Nothing
-        Just (_, Nothing) -> Nothing
-        Just (_, Just label) -> Just label
+        Just (_, TlsId label) -> Just label
+        _ -> Nothing
   symbol "]"
   return mbLabel
 
-tlsOption :: FTL (Text, Maybe Text)
+-- | An option from the key-value list of the optional argument of a top-level
+-- section environment.
+tlsOption :: FTL (Text, TlsOption)
 tlsOption = do
   key <- getTokenOf' ["forthel", "title", "id", "printid"]
   case key of
-    "forthel" -> return (key, Nothing)
+    "forthel" -> return (key, TlsForthel)
     "title" -> do
       symbol "="
-      optBraced $ chainLL1 notReservedChar
-      return (key, Nothing)
+      title <- Text.fromStrict . tokensText <$> optBraced (chainLL1 notReservedChar)
+      return (key, TlsTitle title)
     "id" -> do
       symbol "="
       label <- identifier
-      return (key, Just label)
-    "printid" -> return (key, Nothing)
-    _ -> return (key, Nothing)
+      return (key, TlsId label)
+    "printid" -> return (key, TlsPrintId)
+    _ -> error "SAD.ForTheL.Structure.tlsOption: Unknown key. If you see this message, please file an issue."
   where
     notReservedChar = tokenPrim $ \t -> guard (showToken t `notElem` [",", "]"]) >> return t
 
-{-
-envLabel = try nameAndLabel <|> name <|> label
-  where
-    -- "[<name>]\label{<label>}"
-    nameAndLabel = do
-      symbolNotAfterSpace "["
-      chainLL1 notClosingBrk
-      symbol "]"
-      label
-    -- "[<name>]"
-    name = do
-      symbolNotAfterSpace "["
-      id <- identifier
-      symbol "]"
-      return id
-    -- "\label{<label>}"
-    label =
-          texCommandWithArg "label" identifier
-      <|> texCommandWithArg "printlabel" identifier
 
-    notClosingBrk = tokenPrim notCl
-    notCl t = let tk = showToken t in guard (tk /= "]") >> return tk
--}
-
--- | Parse an optional environment label (TEX).
-optionalEnvLabel :: FTL (Maybe Text)
-optionalEnvLabel = optLLx Nothing envLabel
+-- | Parse an optional top-leve section environment label (TEX).
+optTlsLabel :: FTL (Maybe Text)
+optTlsLabel = optLLx Nothing tlsLabel
 
 
 -- * Declaration management, typings and pretypings
@@ -712,21 +686,51 @@ ftlProofHeader = do
   dot
   return method
 
+-- | An optional parameter for a @proof@ environment.
+data ProofOption =
+    ProofForthel        -- @forthel@
+  | ProofMethod Scheme  -- @method=<proof method>@
+
 -- | Proof header (TEX):
 -- @"\\begin" "{" "proof" "}" ["[" <byProofMethod> "]"]
 texProofHeader :: FTL Scheme
 texProofHeader = do
   texBegin (markupToken Reports.proofStart "proof")
-  optLL1 Raw $ do
-    symbolNotAfterSpace "["
-    method <- byProofMethod
+  mbMbMethod <- optional $ do
+    symbol "["
+    proofOptions <- sepBy proofOption (symbol ",")
+    let mbMethodOption = find (\(key, val) -> key == "method") proofOptions
+    let mbMethod = case mbMethodOption of
+          Just (_, ProofMethod method) -> Just method
+          _ -> Nothing
     symbol "]"
-    return method
+    return mbMethod
+  case mbMbMethod of
+    Just (Just method) -> return method
+    _ -> return Raw
+
+-- | An option from the key-value list of the optional argument of a proof
+-- environment.
+proofOption :: FTL (Text, ProofOption)
+proofOption = do
+  key <- getTokenOf' ["forthel", "method"]
+  case key of
+    "forthel" -> return (key, ProofForthel)
+    "method" -> do
+      symbol "="
+      method <- optBraced proofMethod
+      return (key, ProofMethod method)
+    _ -> error "SAD.ForTheL.Structure.proofOption: Unknown key. If you see this message, please file an issue."
+
+-- | By proof method:
+-- @"by" <proof method>@
+byProofMethod :: FTL Scheme
+byProofMethod = markupToken Reports.byAnnotation "by" >> proofMethod
 
 -- | Proof method:
--- @"by" ("contradiction" | "case" "analysis" | "induction" ["on" <sTerm>])
-byProofMethod :: FTL Scheme
-byProofMethod = markupToken Reports.byAnnotation "by" >> (contradiction <|> caseAnalysis <|> induction)
+-- @"contradiction" | "case" "analysis" | "induction" ["on" <sTerm>]@
+proofMethod :: FTL Scheme
+proofMethod = contradiction <|> caseAnalysis <|> induction
   where
     contradiction = token' "contradiction" >> return Contradiction
     caseAnalysis = token' "case" >> token' "analysis" >> return Raw
