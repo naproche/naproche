@@ -23,6 +23,15 @@ dialect of ForTheL, respectively.
 
 ### Changes on ForTheL
 
+  * **New:** (TEX) `\text{...}` commands can occur anywhere in a ForTheL text
+    and only the content of their argument is processed by the parser.
+
+    Example:
+
+    ```
+    $A \cup B = \{ x \mid x \in A \text{ or } x \in B \}$.
+    ```
+
   * **New:** (TEX) The optional argument of proof environments can now contain
     (any subset of) the following arguments, given as a comma-separated list:
 

@@ -116,6 +116,7 @@ token = choice [
     parameter >>= skipOutsideForthel,
     mathModeDelimiter >>= skip,
     ignoredCommand >>= skip,
+    textCommand (concat <$> many token),
     inlineForthel (concat <$> many token),
     group (concat <$> many (token <|> catchInvalidEnvEnd)),
     environment (concat <$> many (token <|> catchInvalidGroupEnd)),
@@ -185,8 +186,23 @@ group p = do
     then return $ beginGroup ++ content ++ endGroup
     else return content
 
--- | Parse an @\\inlineforthel{...}@ command, depending on a parser @p@ for the
+-- | Parse a @\\text{...}@ command, depending on a parser @p@ for the
 -- content of the argument of that command, and return the result of @p@.
+textCommand :: Tokenizer [Token] -> Tokenizer [Token]
+textCommand p = do
+  textMacro <- controlWord "text"
+  beginGroup <- singleToken isBeginGroupCharLexeme
+  let beginGroupPos = tokensPos beginGroup
+  content <- p
+  -- Throw an error if the end of the input is reached:
+  ifEofFailWith $ UnclosedGroup beginGroupPos
+  endGroup <- singleToken isEndGroupCharLexeme
+  insideForthel <- gets insideForthel
+  return content
+
+-- | Parse an @\\inlineforthel{...}@ command, depending on a parser @p@ for the
+-- content of the argument of that command, and return the result of @p@, where
+-- @p@ is executed with the @insideForthel@ flag set.
 inlineForthel :: Tokenizer [Token] -> Tokenizer [Token]
 inlineForthel p = do
   currentlyInsideForthel <- gets insideForthel

@@ -344,7 +344,7 @@ symbolicFormula  = biimplication
     symbolicExists = token' "exists" <|> token "\\exists"
     symbolicNot = token' "not" <|> token "\\neg"
 
-    atomic = relation -|- parenthesised (optInText statement)
+    atomic = relation -|- parenthesised statement
       where
         relation = sChain </> primCpr sTerm
 
@@ -466,8 +466,8 @@ symbClassNotation = texClass </> cndClass </> finiteSet
       pure (\tr -> mkObject tr `And` (foldr1 Or $ map (mkEquality tr) ts), (h, mkSet))
     -- Set-builder notation, e.g. "{x in X | x is less than y}"
     cndClass = bracedOrTexBraced $ do
-      (tag, c, t, mkColl) <- optInText sepFrom
-      st <- (token "|" <|> token ":" <|> token "\\mid") >> optInText statement
+      (tag, c, t, mkColl) <- sepFrom
+      st <- (token "|" <|> token ":" <|> token "\\mid") >> statement
       vs <- freeVars t
       vsDecl <- makeDecls $ fvToVarSet vs;
       nm <- if isVar t then pure $ PosVar (varName t) (varPosition t) else hidden
@@ -475,8 +475,8 @@ symbClassNotation = texClass </> cndClass </> finiteSet
     -- Set-builder notation using a certain TeX macro, e.g.
     -- "\class{$x \in X$ | $x$ is less than $y$}". Semantically identical to `cndClass`.
     texClass = texCommandWithArg "class" $ do
-      (tag, c, t, mkColl) <- optInText sepFrom
-      st <- symbol "|" >> optInText statement <|> optInClasstext statement
+      (tag, c, t, mkColl) <- sepFrom
+      st <- symbol "|" >> statement <|> optInClasstext statement
       vs <- freeVars t
       vsDecl <- makeDecls $ fvToVarSet vs;
       nm <- if isVar t then pure $ PosVar (varName t) (varPosition t) else hidden
@@ -551,12 +551,12 @@ texCases = do
       value <- chooseInTerm
       symbol "&"
       optLL1 () (symbol ":")
-      condition <- optInText statement
+      condition <- statement
       return (Tag Condition . Imp condition . value)
 
 
 chooseInTerm :: FTL (Formula -> Formula)
-chooseInTerm = optInText $ do
+chooseInTerm = do
   chs <- optLL1 [] $ after (ld_choice `sepByLL1` token ",") (token' "in" <|> texCommand "in")
   f   <- term -|- defTerm; return $ flip (foldr ($)) chs . f
   where
@@ -632,9 +632,6 @@ quantifierChain = fmap (foldl fld id) $ token' "for" >> quantifiedNotion `sepByL
 -- same non-terminal
   where
     fld x (y, _) = x . y
-
-optInText :: FTL a -> FTL a
-optInText p = texCommandWithArg "text" p <|> p
 
 optInClasstext :: FTL a -> FTL a
 optInClasstext p = texCommandWithArg "classtext" p <|> p
