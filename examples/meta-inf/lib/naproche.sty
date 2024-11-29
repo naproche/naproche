@@ -179,6 +179,7 @@
 
 % ForTheL environment
 \newenvironment{forthel}{%
+  \par\addvspace{\baselineskip}
   \begin{mdframed}[backgroundcolor=forthelgray, linecolor=forthelgray]%
   \rmfamily%
   \setbool{forthel}{true}%
@@ -188,6 +189,7 @@
   \end{mdframed}%
   \rmfamily%
   \setbool{forthel}{false}%
+  \par\addvspace{\baselineskip}
 }
 
 % Wrapper for ForTheL environments. Warning: In the PDF it looks exactly like
