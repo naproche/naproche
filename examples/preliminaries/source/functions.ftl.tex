@@ -1,0 +1,166 @@
+\documentclass{article}
+\usepackage{naproche}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{functions}
+\importmodule{sets.ftl?sets}
+\STEXexport{
+  \let\oldcirc\circ
+  \let\circ\relax
+}
+\symdef{im}[args=2]{#1^{\comp*}\dobrackets{#2}}
+\symdef{preim}[args=2]{#1_{\comp*}\dobrackets{#2}}
+\symdef{fun}[args=3]{#1\comp:#2\rightarrow#3}
+\symdef{id}[args=1]{\maincomp{\textrm{id}}_{#1}}
+\symdef{circ}[op=\oldcirc]{\,\oldcirc\,}
+\symdef{restr}[args=2]{#1\comp{\big|}_{#2}}
+\symdef{inv}[args=1]{#1^{\comp{-1}}}
+
+
+\section{Functions and Maps}
+
+\begin{forthel}
+  [readtex \path{preliminaries/source/sets.ftl.tex}]
+
+  Let $A,B,C$ denote classes.
+\end{forthel}
+
+\begin{signature*}
+  A \emph{map} is a notion.
+\end{signature*}
+
+\begin{forthel}
+  Let $F,G,H$ denote maps.
+\end{forthel}
+
+\begin{definition*}
+  A \emph{function} is a map that is an object.
+\end{definition*}
+
+\begin{forthel}
+  Let $f, g, h$ denote functions.
+\end{forthel}
+
+\begin{signature*}
+  $\dom{F}$ is a class.
+\end{signature*}
+
+\begin{forthel}
+  Let the \emph{domain of $F$} stand for $\dom{F}$.
+\end{forthel}
+
+
+\subsection{Map Extensionality}
+
+\begin{axiom*}[forthel,title=Map Extensionality Axiom,id=MapExtensionalityAx,printid]
+  If $\dom{F}\eq \dom{G}$ and $\apply{F}{a}\eq \apply{G}{a}$ for all $a\in\dom{F}$ then $F\eq G$.
+\end{axiom*}
+
+
+\subsection{Image And Preimage}
+
+\begin{definition*}[forthel,id=ImageDef,printid]
+  Let $F$ be a map.
+  $\im{F}{A}=\{\apply{F}{a}\mid a\in\dom{F}\text{ and }a\in A\}$.
+
+  Let the \emph{image of $A$ under $F$} stand for $\im{F}{A}$.
+\end{definition*}
+
+\begin{definition*}[forthel,id=PreimageDef,printid]
+  $\preim{F}{B}=\{a\in\dom{F}\mid \apply{F}{a}\in B\}$.
+
+  Let the \emph{preimage of $B$ under $F$} stand for $\preim{F}{B}$.
+\end{definition*}
+
+
+\subsection{Maps Between Classes}
+
+\begin{definition*}[forthel,id=MapFromDef,printid]
+  A map of $A$ is a map $F$ such that $\dom{F}\eq A$.
+\end{definition*}
+
+\begin{definition*}[forthel,id=MapToDef,printid]
+  A map to $B$ is a map $F$ such that $\apply{F}{a}\in B$ for all $a\in\dom{F}$.
+\end{definition*}
+
+\begin{definition*}[forthel,id=MapFromToDef,printid]
+  A map from $A$ to $B$ is a map $F$ such that $\dom{F}\eq A$ and $\apply{F}{a}\in B$ for all $a\in\dom{F}$.
+\end{definition*}
+
+
+\subsection{Identity Maps}
+
+\begin{definition*}[forthel,id=IdentityMapDef,printid]
+  Let $A$ be a class.
+  $\id{A}$ is the map of $A$ such that $\apply{\id{A}}{a}\eq a$ for all $a\in A$.
+
+  Let the \emph{identity map on $A$} stand for $\id{A}$.
+\end{definition*}
+
+
+\subsection{Composition}
+
+\begin{definition*}[forthel,id=CompositionDef,printid]
+  Let $F,G$ be maps such that $\apply{F}{a}\in\dom{G}$ for all $a\in\dom{F}$.
+  $G\circ F$ is the map of $\dom{F}$ such that $G\circ F\eq\apply{G}{\apply{F}{a}}$ for all $a\in\dom{F}$.
+
+  Let the \emph{composition of $G$ and $F$} stand for $G\circ F$.
+\end{definition*}
+
+
+\subsection{Restriction}
+
+\begin{definition*}[forthel,id=RestrictionDef,printid]
+  Let $F$ be a map and $A\subseteq\dom{F}$.
+  $\restr{F}{A}$ is the map of $A$ such that $\restr{F}{A}\eq \apply{F}{a}$ for all $a\in A$.
+
+  Let the \emph{restriction of $F$ to $A$} stand for $\restr{F}{A}$.
+\end{definition*}
+
+
+\subsection{Invertible Maps}
+
+\begin{definition*}[forthel,id=InvertibleDef,printid]
+  An \emph{inverse of $F$} is a map $G$ such that $\apply{F}{a}\eq b\iff \apply{G}{b}\eq a$ for all $a\in\dom{F}$ and all $b\in\dom{G}$.
+
+  Let $F$ is \emph{invertible} stand for $F$ has an inverse.
+\end{definition*}
+
+\begin{definition*}[forthel,id=InverseMapDef,printid]
+  Let $F$ be invertible.
+  $\inv{F}$ is the inverse of $F$.
+\end{definition*}
+
+
+\subsection{Injective, Surjective and Bijective Maps}
+
+\begin{definition*}[forthel,id=InjectionDef,printid]
+  $F$ is \emph{injective} iff $\apply{F}{a}\eq\apply{F}{a'}\implies a\eq a'$ for all $a,a'\in\dom{F}$.
+\end{definition*}
+
+\begin{definition*}[forthel,id=SurjectionDef,printid]
+  $F$ is \emph{surjective onto $B$} iff for all $b\in B$ there exists an $a\in\dom{F}$ such that $b\eq \apply{F}{a}$.
+
+  Let an \emph{surjective map from $A$ to $B$} stand for a map of $A$ that is surjective onto $B$.
+\end{definition*}
+
+\begin{definition*}[forthel,id=BijectionDef,printid]
+  A \emph{bijection between $A$ and $B$} is an injective surjective map from $A$ to $B$.
+\end{definition*}
+
+\subsection{Equinumerosity}
+
+\begin{definition*}[forthel,id=EquinumerousDef,printid]
+  $A$ and $B$ are \emph{equinumerous} iff there exists a bijection between $A$ and $B$.
+\end{definition*}
+
+
+\subsection{Finite and Infinite Sets}
+
+\begin{definition*}[forthel,id=InfiniteDef,printid]
+  $A$ is \emph{infinite} iff there exists an injective map from $A$ to some proper subclass of $A$.
+
+  Let $A$ is \emph{finite} stand for $A$ is not infinite.
+\end{definition*}
+\end{smodule}
+\end{document}
