@@ -1,0 +1,23 @@
+\usepackage{amssymb}
+\usepackage{mathtools} % for \coloneq
+
+\usepackage{stex-highlighting}
+\renewcommand{\varemph}[1]{\textcolor{teal}{#1}}
+
+\usepackage[right=6cm,left=3cm,bottom=3cm,marginparwidth=5cm]{geometry}
+
+\usepackage{fancyhdr}
+\renewcommand{\sectionmark}[1]{\markboth{#1}{}} 
+\def\libarchive{}
+\pagestyle{fancy}
+\fancyhead[L]{\libarchive}
+\fancyhead[C]{\nouppercase\leftmark}  % section title
+\fancyhead[R]{\thepage}               % page number
+\fancyfoot[C]{}                       % No page number in footer
+
+\usepackage[nobottomtitles]{titlesec}
+\titlespacing*{\section}{0pt}{30pt}{0pt}
+\titlespacing*{\subsection}{0pt}{30pt}{0pt}
+\titlespacing*{\subsubsection}{0pt}{30pt}{0pt}
+
+\DeclareEmphSequence{\bfseries\itshape}
