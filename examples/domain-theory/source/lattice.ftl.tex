@@ -2,76 +2,92 @@
 \libinput{preamble}
 \begin{document}
 \begin{smodule}{lattice}
-  \importmodule{poset.ftl?poset}
+\importmodule{poset.ftl?poset}
 
-  \begin{extstructure}{lattice}{poset}
-    \symdef{join}[op=\vee]{\,\vee\,}
-    \symdef{meet}[op=\wedge]{\,\wedge\,}
-  \end{extstructure}
+\begin{extstructure}{lattice}{poset}
+  \symdef{join}[op=\vee]{\,\vee\,}
+  \symdef{meet}[op=\wedge]{\,\wedge\,}
+\end{extstructure}
 
-  \vardef{Lvar}[return={\lattice[comp=##1]}]{\mathcal L}
+\vardef{Lvar}[return={\lattice[comp=##1]}]{\mathcal L}
 
-  \section{Lattices}
+\section{Lattices}
 
-  \begin{forthel}
-    [readtex \path{domain-theory/source/poset.ftl.tex}]
-  \end{forthel}
+\begin{forthel}
+  [readtex \path{domain-theory/source/poset.ftl.tex}]
+\end{forthel}
+
+\subsection{Definition}
+
+\begin{signature*}[forthel,id=LatticeSig,printid]
+  A \emph{lattice $\Lvar{}[univ,leq,join,meet]$} is a structure with the following properties:
   
-  \subsection{Definition}
+  \begin{itemize}
+    \item\label{latticeSig}
+      $\Lvar{}[univ,leq]$ is a poset.
+    \item\label{latticeJoinSig}
+      Let $x,y\in\Lvar{univ}$.
+      $x{\Lvar{join}}y$ is a join of $x$ and $y$ in $\Lvar{}[univ,leq]$.
+    \item\label{latticeMeetSig}
+      Let $x,y\in\Lvar{univ}$.
+      $x{\Lvar{meet}}y$ is a meet of $x$ and $y$ in $\Lvar{}[univ,leq]$.
+  \end{itemize}
+\end{signature*}
 
-  \begin{forthel}
-    \begin{signature*}
-      A \emph{lattice $\Lvar! = \Lvar{}[univ,leq,join,meet]$} is a structure with the following properties:
-      
-      \begin{itemize}
-        \item \label{latticeSig}
-          $\Lvar!$ is a poset.
-        
-        \item \label{latticeJoinSig}
-          Let $x, y \in \Lvar{univ}$.
-          $x {\Lvar{join}} y$ is a join of $x$ and $y$ in $\Lvar!$.
+\subsection{Properties of Joins and Meets}
 
-        \item \label{latticeMeetSig}
-          Let $x, y \in \Lvar{univ}$.
-          $x {\Lvar{meet}} y$ is a meet of $x$ and $y$ in $\Lvar!$.
-      \end{itemize}
-    \end{signature*}
-  \end{forthel}
+\begin{forthel}
+  Let $\Lvar{}[univ,leq,join,meet]$ denote a lattice.
+\end{forthel}
 
-  \subsection{Properties of Joins and Meets}
+\begin{proposition*}[forthel,id=JoinIdempotenceThm,printid]
+  Let $x\in\Lvar{univ}$.
+  $x{\Lvar{join}}x\eq x$.
+\end{proposition*}
 
-  \begin{forthel}
-    Let $\Lvar{}[univ,leq,join,meet]$ denote a lattice.
+\begin{proposition*}[forthel,id=MeetIdempotenceThm,printid]
+  Let $x\in\Lvar{univ}$.
+  $x{\Lvar{meet}}x\eq x$.
+\end{proposition*}
 
-    \begin{proposition*}
-      Let $x \in \Lvar{univ}$.
-      $x {\Lvar{join}} x = x$.
-    \end{proposition*}
+\begin{proposition*}[forthel,id=JoinAbsorbsMeetThm,printid]
+  Let $x,y\in\Lvar{univ}$.
+  $x{\Lvar{join}}(x{\Lvar{meet}}y)\eq x$.
+\end{proposition*}
 
-    \begin{proposition*}
-      Let $x \in \Lvar{univ}$.
-      $x {\Lvar{meet}} x = x$.
-    \end{proposition*}
+\begin{proposition*}[forthel,id=MeetAbsorbsJoinThm,printid]
+  Let $x,y\in\Lvar{univ}$.
+  $x{\Lvar{meet}}(x{\Lvar{join}}y)\eq x$.
+\end{proposition*}
 
-    \begin{proposition*}
-      Let $x, y \in \Lvar{univ}$.
-      $x {\Lvar{join}} (x {\Lvar{meet}} y) = x$.
-    \end{proposition*}
+\begin{proposition*}[forthel,id=PrecedingIffJoinEqualsLargerOperandThm,printid]
+  Let $x,y\in\Lvar{univ}$.
+  $x{\Lvar{leq}}y$ iff $y\eq x{\Lvar{join}}y$.
+\end{proposition*}
 
-    \begin{proposition*}
-      Let $x, y \in \Lvar{univ}$.
-      $x {\Lvar{meet}} (x {\Lvar{join}} y) = x$.
-    \end{proposition*}
+\begin{proposition*}[forthel,id=PrecedingIffMeetEqualsLargerOperandThm,printid]
+  Let $x,y\in\Lvar{univ}$.
+  $x{\Lvar{leq}}y$ iff $x\eq x{\Lvar{meet}}y$.
+\end{proposition*}
 
-    \begin{proposition*}
-      Let $x, y \in \Lvar{univ}$.
-      $x {\Lvar{leq}} y$ iff $x = x {\Lvar{meet}} y$.
-    \end{proposition*}
+\begin{proposition*}[forthel,id=JoinIsCommutativeThm,printid]
+  Let $x,y\in\Lvar{univ}$.
+  $x{\Lvar{join}}y\eq y{\Lvar{join}}x$.
+\end{proposition*}
 
-    \begin{proposition*}
-      Let $x, y \in \Lvar{univ}$.
-      $x {\Lvar{leq}}y$ iff $y = x {\Lvar{join}} y$.
-    \end{proposition*}
-  \end{forthel}
+\begin{proposition*}[forthel,id=MeetIsCommutativeThm,printid]
+  Let $x,y\in\Lvar{univ}$.
+  $x{\Lvar{meet}}y\eq y{\Lvar{meet}}x$.
+\end{proposition*}
+
+\begin{proposition*}[forthel,id=JoinIsAssociativeThm,printid]
+  Let $x,y,z\in\Lvar{univ}$.
+  $x{\Lvar{join}}(y{\Lvar{join}}z)\eq (x{\Lvar{join}}y){\Lvar{join}}z$.
+\end{proposition*}
+
+\begin{proposition*}[forthel,id=MeetIsAssociativeThm,printid]
+  Let $x,y,z\in\Lvar{univ}$.
+  $x{\Lvar{meet}}(y{\Lvar{meet}}z)\eq (x{\Lvar{meet}}y){\Lvar{meet}}z$.
+\end{proposition*}
 \end{smodule}
 \end{document}

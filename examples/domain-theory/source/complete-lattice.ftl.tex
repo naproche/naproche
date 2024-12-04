@@ -2,112 +2,101 @@
 \libinput{preamble}
 \begin{document}
 \begin{smodule}{complete-lattice}
-  \importmodule{lattice.ftl?lattice}
+\importmodule{lattice.ftl?lattice}
+\STEXexport{
+  \let\Join\relax
+}
 
-  \STEXexport{
-    \let\Join\relax
-  }
+\begin{extstructure}{complattice}[complete lattice]{lattice}
+\symdef{Join}[op=\bigvee]{\bigvee\,}
+\symdef{Meet}[op=\bigwedge]{\bigwedge\,}
+\symdef{greatest}{\top}
+\symdef{least}{\bot}
+\end{extstructure}
 
-  \begin{extstructure}{complattice}[complete lattice]{lattice}
-    \symdef{Join}[op=\bigvee]{\bigvee\,}
-    \symdef{Meet}[op=\bigwedge]{\bigwedge\,}
-    \symdef{greatest}{\top}
-    \symdef{least}{\bot}
-  \end{extstructure}
+\vardef{Lvar}[return={\complattice[comp=##1]}]{\mathcal L}
 
-  \vardef{Lvar}[return={\complattice[comp=##1]}]{\mathcal L}
+\section{Complete Lattices}
 
-  \section{Complete Lattices}
+\begin{forthel}
+[readtex \path{domain-theory/source/lattice.ftl.tex}]
+\end{forthel}
 
-  \begin{forthel}
-    [readtex \path{domain-theory/source/lattice.ftl.tex}]
-  \end{forthel}
-  
-  \subsection{Definition}
+\subsection{Definition}
 
-  \begin{forthel}
-    \begin{signature*}
-      A \emph{complete lattice $\Lvar! = \Lvar{}[univ,leq,meet,join,Meet,Join]$} is a structure with the following properties:
+\begin{signature*}[forthel,id=CompleteLatticeSig,printid]
+  A \emph{complete lattice $\Lvar{}[univ,leq,meet,join,Meet,Join]$} is a structure with the following properties:
 
-      \begin{itemize}
-        \item \label{compLatticeSig}
-          $\Lvar!$ is a lattice.
+  \begin{itemize}
+    \item \label{compLatticeSig}
+      $\Lvar{}[univ,leq,meet,join]$ is a lattice.
 
-        \item \label{compLatticeJoinSig}
-          Let $A \subseteq \Lvar{univ}$.
-          ${\Lvar{Join}} A$ is a join of $A$ in $\Lvar!$.
+    \item \label{compLatticeJoinSig}
+      Let $A\subseteq\Lvar{univ}$.
+      ${\Lvar{Join}}A$ is a join of $A$ in $\Lvar{}[univ,leq]$.
 
-        \item \label{compLatticeMeetSig}
-          Let $A \subseteq \Lvar{univ}$.
-          ${\Lvar{Meet}} A$ is a meet of $A$ in $\Lvar!$.
-      \end{itemize}
-    \end{signature*}
-  \end{forthel}
+    \item \label{compLatticeMeetSig}
+      Let $A\subseteq\Lvar{univ}$.
+      ${\Lvar{Meet}}A$ is a meet of $A$ in $\Lvar{}[univ,leq]$.
+  \end{itemize}
+\end{signature*}
 
-  \subsection{Properties}
+\subsection{Properties}
 
-  \begin{forthel}
-    Let $\Lvar! = \Lvar{}[univ,leq,meet,join,Meet,Join]$ denote a complete lattice.
-  \end{forthel}
-    
-  \begin{forthel}
-    \begin{proposition*}
-      Let $x \in \Lvar{univ}$.
-      ${\Lvar{Join}} \set{x} = x$.
-    \end{proposition*}
-    
-    \begin{proposition*}
-      Let $x, y \in \Lvar{univ}$.
-      ${\Lvar{Join}} \set{x,y} = x {\Lvar{join}} y$.
-    \end{proposition*}
-  \end{forthel}
+\begin{forthel}
+Let $\Lvar!=\Lvar{}[univ,leq,meet,join,Meet,Join]$ denote a complete lattice.
+\end{forthel}
 
-  \subsubsection{Meets}
+\begin{proposition*}[forthel,id=JoinOfSingletonThm,printid]
+  Let $x\in\Lvar{univ}$.
+  ${\Lvar{Join}}\set{x}\eq x$.
+\end{proposition*}
 
-  \begin{forthel}
-    \begin{proposition*}
-      Let $x \in \Lvar{univ}$.
-      ${\Lvar{Meet}} \set{x} = x$.
-    \end{proposition*}
-    
-    \begin{proposition*}
-      Let $x, y \in \Lvar{univ}$.
-      ${\Lvar{Meet}} \set{x,y} = x {\Lvar{meet}} y$.
-    \end{proposition*}
-  \end{forthel}
+\begin{proposition*}[forthel,id=JoinOfPairThm,printid]
+  Let $x,y\in\Lvar{univ}$.
+  ${\Lvar{Join}}\set{x,y}\eq x{\Lvar{join}}y$.
+\end{proposition*}
 
-  \subsection{Greatest and Least Elements}
+\subsubsection{Meets}
 
-  \subsubsection{Greatest Elements}
+\begin{proposition*}[forthel,id=MeetOfSingletonThm,printid]
+  Let $x\in\Lvar{univ}$.
+  ${\Lvar{Meet}}\set{x}\eq x$.
+\end{proposition*}
 
-  \begin{forthel}
-    \begin{definition*}
-      ${\Lvar{greatest}} = {\Lvar{Join}} \Lvar{univ}$.
-    \end{definition*}
+\begin{proposition*}[forthel,id=MeetOfPairThm,printid]
+  Let $x,y\in\Lvar{univ}$.
+  ${\Lvar{Meet}}\set{x,y}\eq x{\Lvar{meet}}y$.
+\end{proposition*}
 
-    \begin{proposition*}
-      ${\Lvar{greatest}} = {\Lvar{Meet}} \emptyset$.
-    \end{proposition*}
+\subsection{Greatest and Least Elements}
 
-    \begin{proposition*}
-      ${\Lvar{greatest}}$ is a greatest element of $\Lvar!$.
-    \end{proposition*}
-  \end{forthel}
+\subsubsection{Greatest Elements}
 
-  \subsubsection{Least Elements}
+\begin{definition*}[forthel,id=CompleteLatticeGreatestDef,printid]
+  ${\Lvar{greatest}}={\Lvar{Join}}\Lvar{univ}$.
+\end{definition*}
 
-  \begin{forthel}
-    \begin{definition*}
-      ${\Lvar{least}} = {\Lvar{Join}} \emptyset$.
-    \end{definition*}
+\begin{proposition*}[forthel,id=GreatestIsMeetOfEmptystThm,printid]
+  ${\Lvar{greatest}}\eq{\Lvar{Meet}}\emptyset$.
+\end{proposition*}
 
-    \begin{proposition*}
-      ${\Lvar{least}} = {\Lvar{Meet}} \Lvar{univ}$.
-    \end{proposition*}
+\begin{proposition*}[forthel,id=GreatestIsGreatestElement,printid]
+  ${\Lvar{greatest}}$ is a greatest element of $\Lvar!$.
+\end{proposition*}
 
-    \begin{proposition*}
-      ${\Lvar{least}}$ is a least element of $\Lvar!$.
-    \end{proposition*}
-  \end{forthel}
+\subsubsection{Least Elements}
+
+\begin{definition*}[forthel,id=CompleteLatticeLeastDef,printid]
+  ${\Lvar{least}}={\Lvar{Join}}\emptyset$.
+\end{definition*}
+
+\begin{proposition*}[forthel,id=GreatestIsMeetOfUniverseThm,printid]
+  ${\Lvar{least}}\eq{\Lvar{Meet}}\Lvar{univ}$.
+\end{proposition*}
+
+\begin{proposition*}[forthel,id=LeastIsLeastElementThm,printid]
+  ${\Lvar{least}}$ is a least element of $\Lvar!$.
+\end{proposition*}
 \end{smodule}
 \end{document}
