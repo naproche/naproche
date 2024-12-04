@@ -163,6 +163,7 @@ ignoredCommand = choice [
 symbol :: Tokenizer [Token]
 symbol = anyCharOfCats [
     AlignTabCat,
+    ParamCharCat,
     SuperscriptCat,
     SubscriptCat,
     OtherCat,
