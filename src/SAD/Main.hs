@@ -3,9 +3,10 @@
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
 --               (c) 2017 - 2018, Steffen Frerix,
 --               (c) 2018, Makarius Wenzel
+--               (c) 2024, Marcel Schütz
 -- License     : GPL-3
 --
--- Main application entry point: console or server mode.
+-- Main application entry point: Terminal or PIDE mode.
 
 
 {-# LANGUAGE TupleSections #-}
@@ -14,21 +15,20 @@
 module SAD.Main where
 
 import Control.Monad (unless, when)
-import Data.Char (toLower)
-import Data.Time (UTCTime, addUTCTime, getCurrentTime, diffUTCTime)
-import Data.List (isSuffixOf)
+import Data.Time (addUTCTime, getCurrentTime, diffUTCTime)
 import Data.Maybe (mapMaybe)
 import Control.Exception qualified as Exception
 import Control.Exception (catch)
 import Data.Text.Lazy qualified as Text
 import System.Console.GetOpt qualified as GetOpt
 import System.Environment qualified as Environment
+import System.FilePath
 import Network.Socket (Socket)
 
 import SAD.Prove.MESON qualified as MESON
 import SAD.Export.Prover qualified as Prover
 import SAD.Data.Instr
-import SAD.API
+import SAD.API hiding (error)
 
 import Isabelle.Bytes qualified as Bytes
 import Isabelle.Bytes (Bytes)
@@ -51,42 +51,94 @@ import Naproche.Param qualified as Param
 main :: IO ()
 main  = do
   Console.setup
+  -- Get the initial arguments. When Naproche is run in a terminal, they are
+  -- given by the command line arguments that have been passed to Naproche by
+  -- the user; when Naproche is run in a PIDE, they are a fixed set of
+  -- arguments that are hard-coded into the PIDE integration.
+  args <- Environment.getArgs
+  (initInstrs, nonInstrArgs) <- readArgs args
+  -- Run Naproche either in PIDE or terminal mode, depending on whether the
+  -- server parameter is set to @True@ in the initial options. Note that unless
+  -- Naproche is run in a PIDE, it is set to @False@.
+  if getInstr serverParam initInstrs
+    then mainPIDE initInstrs
+    else mainTerminal initInstrs nonInstrArgs
 
-  -- command line and init file
-  args0 <- Environment.getArgs
-  (opts0, pk, fileArg) <- readArgs args0
-  text0 <- (map (uncurry ProofTextInstr) (reverse opts0) ++) <$> case fileArg of
-    Nothing -> do
-      stdin <- getContents
-      pure [ProofTextInstr Position.none $ GetArgument (Text pk) (Text.pack stdin)]
-    Just name -> do
-      pure [ProofTextInstr Position.none $ GetArgument (File pk) (Text.pack name)]
-  let opts1 = map snd opts0
 
+-- * Terminal Mode
+
+mainTerminal :: [Instr] -> [String] -> IO ()
+mainTerminal initInstrs nonInstrArgs = do
+  if getInstr helpParam initInstrs
+    then putStr $ GetOpt.usageInfo usageHeader options
+    else do
+      -- Initialize MESON and prover cache:
+      mesonCache <- MESON.init_cache
+      proverCache <- Prover.init_cache
+      -- Turn the initial instructions into proof texts:
+      let locatedInitInstrs = reverse $ map (Position.none,) initInstrs
+          initInstrProofTexts = map (uncurry ProofTextInstr) locatedInitInstrs
+      -- Get the input text (either via a given file path or if no file path is
+      -- provided via the stdin stream) as a proof text:
+      inputTextProofTexts <- case nonInstrArgs of
+        -- If a single non-instruction command line argument is given, regard it
+        -- as the path to the input text file and determine the ForTheL dialect
+        -- of its contents via its file name extension:
+        [filePath] -> do
+          let dialect = case takeExtensions filePath of
+                ".ftl" -> Ftl
+                ".ftl.tex" -> Tex
+                _ -> error "Invalid file name extension"
+          return [ProofTextInstr Position.none $ GetArgument (File dialect) (Text.pack filePath)]
+        -- If no non-instruction command line argument is given, regard the
+        -- content of the stdin stream as the input text. Determind the ForTheL
+        -- dialect of the text by whether the @tex@ flag is set in the command
+        -- line arguments or not.
+        [] -> do
+          text <- getContents
+          let tex = getInstr texParam initInstrs
+              dialect = if tex then Tex else Ftl
+          return [ProofTextInstr Position.none $ GetArgument (Text dialect) (Text.pack text)]
+        -- If more than one non-instruction command line arguments are given,
+        -- throw an error:
+        _ -> error "More than one file argument"
+      -- Append the input text proof text to the instruction proof texts:
+      let proofTexts = initInstrProofTexts ++ inputTextProofTexts
+      -- Verify the input text:
+      Program.init_console
+      resultCode <- do
+        (if getInstr onlytranslateParam initInstrs
+          then translateInputText proofTexts
+          else verifyInputText mesonCache proverCache proofTexts)
+        `catch` (\Exception.UserInterrupt -> do
+          Program.exit_thread
+          Console.stderr ("Interrupt" :: String)
+          return Process_Result.interrupt_rc)
+        `catch` (\(err :: Exception.SomeException) -> do
+          Program.exit_thread
+          Console.stderr (Exception.displayException err)
+          return Process_Result.error_rc)
+      Console.exit resultCode
+
+usageHeader :: String
+usageHeader =
+  "Usage: Naproche <options> <file>\n\n" ++
+  "  At most one file argument may be given; \"\" refers to stdin.\n\n" ++
+  "  FLAG may be {on|off} or {yes|no}.\n\n" ++
+  "  Options are:\n"
+
+
+-- * PIDE Mode
+
+mainPIDE :: [Instr] -> IO ()
+mainPIDE initInstrs = do
+  -- Initialize MESON and prover cache:
   mesonCache <- MESON.init_cache
   proverCache <- Prover.init_cache
+  Server.server (Server.publish_stdout "Naproche-SAD") $ pideServer mesonCache proverCache initInstrs
 
-  if getInstr helpParam opts1 then
-    putStr (GetOpt.usageInfo usageHeader options)
-  else -- main body with explicit error handling, notably for PIDE
-      (if getInstr serverParam opts1 then
-        Server.server (Server.publish_stdout "Naproche-SAD") (mainServer mesonCache proverCache args0)
-      else do
-        Program.init_console
-        rc <- do
-          mainBody mesonCache proverCache opts1 text0 fileArg
-            `catch` (\Exception.UserInterrupt -> do
-              Program.exit_thread
-              Console.stderr ("Interrupt" :: String)
-              return Process_Result.interrupt_rc)
-            `catch` (\(err :: Exception.SomeException) -> do
-              Program.exit_thread
-              Console.stderr (Exception.displayException err)
-              return 1)
-        Console.exit rc)
-
-mainServer :: MESON.Cache -> Prover.Cache -> [String] -> Socket -> IO ()
-mainServer mesonCache proverCache args0 socket =
+pideServer :: MESON.Cache -> Prover.Cache -> [Instr] -> Socket -> IO ()
+pideServer mesonCache proverCache initInstrs socket =
   let
     exchange_message0 = Byte_Message.exchange_message0 socket
     robust_error msg =
@@ -110,13 +162,17 @@ mainServer mesonCache proverCache args0 socket =
 
               let more_text = Text.pack $ make_string text
 
-              (opts0, pk, fileArg) <- readArgs (args0 ++ lines (make_string more_args))
-              let opts1 = map snd opts0
-              let text0 = map (uncurry ProofTextInstr) (reverse opts0)
-              let text1 = text0 ++ [ProofTextInstr Position.none (GetArgument (Text pk) more_text)]
+              (moreInstrs, nonInstrArgs) <- readArgs $ lines (make_string more_args)
+              let instrs = initInstrs ++ moreInstrs
+                  locatedInstrs = map (Position.none,) instrs
+                  instrProofTexts = map (uncurry ProofTextInstr) locatedInstrs
+                  tex = getInstr texParam instrs
+                  dialect = if tex then Tex else Ftl
+                  inputTextProofTexts = [ProofTextInstr Position.none (GetArgument (Text dialect) more_text)]
+              let proofTexts = instrProofTexts ++ inputTextProofTexts
 
               rc <- do
-                mainBody mesonCache proverCache opts1 text1 fileArg
+                verifyInputText mesonCache proverCache proofTexts
                   `catch` (\(err :: Program.Error) -> do
                     robust_error $ Program.print_error err
                     return 0)
@@ -128,71 +184,42 @@ mainServer mesonCache proverCache args0 socket =
 
         _ -> return ()
 
-mainBody :: MESON.Cache -> Prover.Cache -> [Instr] -> [ProofText] -> Maybe FilePath -> IO Int
-mainBody mesonCache proverCache opts0 text0 fileArg = do
+
+-- * Translating or Verifying the Input Text
+
+translateInputText :: [ProofText] -> IO Int
+translateInputText proofTexts = do
+  -- Get the starting time of the parsing process:
   startTime <- getCurrentTime
-
-  -- parse input text
-  txts <- readProofText "NAPROCHE_FORMALIZATIONS" text0
-
-  case map toLower $ make_string $ getInstr theoryParam opts0 of
-    "fol" -> do
-      -- if -T / --onlytranslate is passed as an option, only print the translated text
-      if getInstr onlytranslateParam opts0
-        then do { showTranslation txts startTime; return 0 }
-        else do
-          success <- proveFOL txts opts0 mesonCache proverCache startTime fileArg
-          MESON.prune_cache mesonCache
-          Prover.prune_cache proverCache
-          return (if success then 0 else 1)
-    "cic" -> return 0
-    "lean" -> do { exportLean txts; return 0 }
-    s -> errorWithoutStackTrace ("Bad theory (fol|cic|lean): " <> quote s)
-
-showTranslation :: [ProofText] -> UTCTime -> IO ()
-showTranslation txts startTime = do
-  let timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)
+  -- Parse the input text:
+  txts <- readProofText "NAPROCHE_FORMALIZATIONS" proofTexts
+  -- Translate the input text and print the result:
   mapM_ (\case ProofTextBlock bl -> print bl; _ -> return ()) txts
-
-  -- print statistics
+  -- Get the finish time of the translation process:
   finishTime <- getCurrentTime
+  -- Print the time it took to translate the input text:
+  let timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)
   outputMain TRACING Position.none $ make_bytes $ "total " <> timeDifference finishTime
+  return 0
 
-exportCiC :: ProofText -> IO ()
-exportCiC pt = do
-  case fmap (unlines . map ppForthelExpr) $ mapM toStatement $ extractBlocks pt of
-    Left t -> putStrLn $ Text.unpack t
-    Right s -> putStrLn s
-  return ()
-
-exportLean :: [ProofText] -> IO ()
-exportLean txts = do
-  case fmap toLeanCode $ mapM toStatement $ concatMap extractBlocks txts of
-    Left t -> putStrLn $ Text.unpack t
-    Right t -> putStrLn $ Text.unpack t
-  return ()
-
-proveFOL :: [ProofText] -> [Instr] -> MESON.Cache -> Prover.Cache -> UTCTime
-  -> Maybe FilePath -> IO Bool
-proveFOL txts opts0 mesonCache proverCache startTime fileArg = do
-  -- initialize reasoner state
+verifyInputText :: MESON.Cache -> Prover.Cache -> [ProofText] -> IO Int
+verifyInputText mesonCache proverCache proofTexts = do
+  -- Get the starting time of the parsing process:
+  startTime <- getCurrentTime
+  -- Parse the input text:
+  txts <- readProofText "NAPROCHE_FORMALIZATIONS" proofTexts
+  -- Get the starting time of the verification process:
   proveStart <- getCurrentTime
-
+  -- Verify the input text:
   (success, trackers) <- case concatMap parseErrors txts of
-    [] -> do
-      let file = maybe "" Text.pack fileArg
-      let filePos = Position.file_only $ make_bytes file
-      let txts' = ProofTextInstr Position.none (GetArgument (File Ftl) file) : txts
-      verifyRoot mesonCache proverCache filePos txts'
+    [] -> verifyRoot mesonCache proverCache Position.none txts
     err : _ -> do
       errorParser (errorPos err) (show_bytes err)
       pure (False, [])
-
+  -- Get the finish time of the verification process:
   finishTime <- getCurrentTime
-
   let accumulate = sumCounter trackers
-
-  -- print statistics
+  -- Print statistics:
   (outputMain TRACING Position.none . make_bytes) $
     "sections "       ++ show (accumulate Sections)
     ++ " - goals "    ++ show (accumulate Goals)
@@ -205,60 +232,43 @@ proveFOL txts opts0 mesonCache proverCache startTime fileArg = do
     ++ (case accumulate FailedEquations of
         0 -> ""
         n -> " - failed " ++ show n)
-
   let trivialChecks = accumulate TrivialChecks
-
   (outputMain TRACING Position.none . make_bytes) $
     "symbols "        ++ show (accumulate Symbols)
     ++ " - checks "   ++ show (sumCounter trackers HardChecks + trivialChecks)
     ++ " - trivial "  ++ show trivialChecks
     ++ " - proved "   ++ show (accumulate SuccessfulChecks)
     ++ " - unfolds "  ++ show (accumulate Unfolds)
-
   let proverTime     = sumTimer trackers ProofTimer
   let simplifyTime   = sumTimer trackers SimplifyTimer
   let proveFinish    = addUTCTime proverTime proveStart
   let simplifyFinish = addUTCTime simplifyTime proveFinish
-
   (outputMain TRACING Position.none . make_bytes) $
     "parser "           <> showTimeDiff (diffUTCTime proveStart startTime)
     <> " - reasoner "   <> showTimeDiff (diffUTCTime finishTime simplifyFinish)
     <> " - simplifier " <> showTimeDiff simplifyTime
     <> " - prover "     <> showTimeDiff proverTime
     <> "/" <> showTimeDiff (maximalTimer trackers SuccessTimer)
-
   (outputMain TRACING Position.none . make_bytes) $
     "total " <> showTimeDiff (diffUTCTime finishTime startTime)
+  -- Prune MESON and prover chaches:
+  MESON.prune_cache mesonCache
+  Prover.prune_cache proverCache
+  -- Return a result code:
+  return $ if success
+    then 0
+    else 1
 
-  return success
 
+-- * Arguments
 
--- Command line parsing
-
-readArgs :: [String] -> IO ([(Position.T, Instr)], ParserKind, Maybe FilePath)
+readArgs :: [String] -> IO ([Instr], [String])
 readArgs args = do
-  let (instrs, files, errs) = GetOpt.getOpt GetOpt.Permute options args
+  let (instrs, nonInstrArgs, errors) = GetOpt.getOpt GetOpt.Permute options args
 
-  let fail msgs = errorWithoutStackTrace (unlines (map trim_line msgs))
-  unless (null errs) $ fail errs
-
-  let initialOpts = map (Position.none,) instrs
-
-  let revInitialOpts = reverse initialOpts
-  let useTexArg = getInstr texParam $ map snd revInitialOpts
-  let fileArg =
-        case files of
-          [file] -> Just file
-          [] -> Nothing
-          _ -> fail ["More than one file argument\n"]
-  let parserKind =
-        if useTexArg || maybe False (\f -> ".tex.ftl" `isSuffixOf` f || ".ftl.tex" `isSuffixOf` f) fileArg
-        then Tex else Ftl
-  pure (revInitialOpts, parserKind, fileArg)
-
-usageHeader :: String
-usageHeader =
-  "\nUsage: Naproche-SAD <options...> <file...>\n\n  At most one file argument may be given; \"\" refers to stdin.\n\n  FLAG may be {on|off} or {yes|no}.\n\n  THEORY may be:\n    fol   (First-Order-Logic)\n    cic   (Calculus of inductive Constructions)\n    lean  (Lean Prover)\n\n  Options are:\n"
+  let fail msgs = errorWithoutStackTrace (unlines $ map trim_line msgs)
+  unless (null errors) $ fail errors
+  return (instrs, nonInstrArgs)
 
 optParam :: [Char] -> Param.T a -> GetOpt.ArgDescr b -> String -> GetOpt.OptDescr b
 optParam chars p = GetOpt.Option chars [name | not (null name)]

@@ -45,6 +45,7 @@ dependencies:
 - uuid
 - ftlex
 - extra
+- filepath
 
 default-extensions:
   - GeneralizedNewtypeDeriving
