@@ -7,12 +7,11 @@
 -- Main text reading functions.
 
 
-{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
-
 module SAD.Import.Reader (
   readProofText
 ) where
 
+import Prelude hiding (read, readFile)
 import Control.Monad
 import System.IO.Error
 import Control.Exception
@@ -32,11 +31,10 @@ import SAD.Parser.TEX.Lexer qualified as TEX
 import SAD.Parser.FTL.Token qualified as FTL
 import SAD.Parser.TEX.Token qualified as TEX
 import SAD.Parser.Token (Token, noTokens)
-import SAD.Parser.Error
 import SAD.Core.Message qualified as Message
 
 import Isabelle.File qualified as File
-import Isabelle.Library (make_bytes, getenv, make_string, show_bytes)
+import Isabelle.Library (make_bytes, getenv, make_string)
 import Isabelle.Position as Position
 import Isabelle.Bytes (Bytes)
 
@@ -76,18 +74,19 @@ reader pathToLibrary doneFiles = go
             (Message.errorParser pos "Trying to read the same file once in TEX format and once in FTL format.")
           Message.outputMain Message.WARNING pos
             (make_bytes ("Skipping already read file: " ++ show file))
-          (newProofText, newState) <- chooseParser pState
+          (newProofText, newState) <- parse pState
           go (newState:states) newProofText
       | otherwise = do
-          text <-
-            catch (if Text.null file then getContents else make_string <$> File.read (Text.unpack file))
+          let filePath = Text.unpack file
+          text <- Text.pack <$>
+            catch (if Text.null file then getContents else make_string <$> File.read filePath)
               (Message.errorParser (Position.file_only $ make_bytes file) . make_bytes . ioeGetErrorString)
-          (newProofText, newState) <- reader0 (Position.file $ make_bytes file) (make_bytes text) (pState {parserKind = parserKind'})
+          (newProofText, newState) <- readFile parserKind' filePath text pState
           -- state from before reading is still here
           reader pathToLibrary (file:doneFiles) (newState:pState:states) newProofText
 
     go (pState:states) [ProofTextInstr _ (GetArgument (Text pk) text)] = do
-      (newProofText, newState) <- reader0 Position.start (make_bytes text) (pState {parserKind = pk})
+      (newProofText, newState) <- readText pk text pState
       go (newState:pState:states) newProofText -- state from before reading is still here
 
     -- This says that we are only really processing the last instruction in a [ProofText].
@@ -101,38 +100,45 @@ reader pathToLibrary doneFiles = go
       let resetState = oldState {
             stUser = (stUser pState) {tvrExpr = tvrExpr $ stUser oldState}}
       -- Continue running a parser after eg. a read instruction was evaluated.
-      (newProofText, newState) <- chooseParser resetState
+      (newProofText, newState) <- parse resetState
       go (newState:rest) newProofText
 
     go (state:_) [] = return ([], reports $ stUser state)
 
-reader0 :: Position.T -> Bytes -> State FState -> IO ([ProofText], State FState)
-reader0 pos bytes pState = do
-  let dialect = parserKind pState
+    go _ _ = error $ "SAD.Parser.Base.reader: Invalid arguments for function \"go\". " <>
+      "If you see this message, please file an issue."
+
+read :: ParserKind -> Position.T -> Bytes -> State FState -> IO ([ProofText], State FState)
+read dialect pos bytes state = do
   tokens <- case dialect of
     Ftl -> FTL.lex pos bytes >>= FTL.tokenize
     Tex -> TEX.lex pos bytes >>= TEX.tokenize
-  let st = State
-        (addInits dialect ((stUser pState) {tvrExpr = []}))
-        tokens
-        dialect
-        Position.none
-  chooseParser st
+  let newState = State {
+        stUser = addInits dialect $ (stUser state) {tvrExpr = []},
+        stInput = tokens,
+        parserKind = dialect,
+        lastPosition = Position.none
+      }
+  parse newState
 
+-- | Read a text.
+readText :: ParserKind -> Text -> State FState -> IO ([ProofText], State FState)
+readText dialect text state =
+  read dialect Position.start (make_bytes text) (state {parserKind = dialect})
 
-chooseParser :: State FState -> IO ([ProofText], State FState)
-chooseParser st =
-  let parser = case parserKind st of
+-- | Read a file
+readFile :: ParserKind -> FilePath -> Text -> State FState -> IO ([ProofText], State FState)
+readFile dialect filePath text state =
+  read dialect (Position.file $ make_bytes filePath) (make_bytes text) (state {parserKind = dialect})
+
+-- | Parse (the tokens contained in) a state.
+parse :: State FState -> IO ([ProofText], State FState)
+parse state =
+  let dialect = parserKind state
+      parser = case dialect of
         Ftl -> forthelFtl
         Tex -> forthelTex
-  in launchParser parser st
-
--- Launch a parser in the IO monad.
-launchParser :: Parser st a -> State st -> IO (a, State st)
-launchParser parser state =
-  case runP parser state of
-    Error err -> Message.errorParser (errorPos err) (show_bytes err)
-    Ok [PR a st] -> return (a, st)
+  in launchParser parser state
 
 initState :: Program.Context -> [Token] -> State FState
 initState context tokens = State (initFState context) tokens Ftl Position.none

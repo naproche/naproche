@@ -16,6 +16,7 @@
 module SAD.Parser.Base (
   Parser(..),
   Continuation,
+  launchParser,
   EmptyFail,
   ConsumedFail,
   State (..),
@@ -40,8 +41,10 @@ import SAD.Helpers (notNull)
 import SAD.Parser.Token
 import SAD.Parser.Error
 import SAD.Data.Instr (ParserKind)
+import SAD.Core.Message (errorParser)
 
 import Isabelle.Position qualified as Position
+import Isabelle.Library (show_bytes)
 
 
 -- | Parser state
@@ -100,7 +103,14 @@ instance Fail.MonadFail (Parser st) where
   fail s = Parser \st _ _ emptyFail ->
     emptyFail $ newErrorMessage (newMessage (Text.pack s)) (stPosition st)
 
-
+-- Launch a parser in the IO monad.
+launchParser :: Parser st a -> State st -> IO (a, State st)
+launchParser parser state =
+  case runP parser state of
+    Error err -> errorParser (errorPos err) (show_bytes err)
+    Ok [PR a st] -> return (a, st)
+    Ok _ -> error $ "SAD.Parser.Base.launchParser: Invalid parsing result. " <>
+      "If you see this message, please file an issue."
 
 -- This function is simple, but unfriendly to read because of all the
 -- accumulators involved. A clearer definition would be welcome.
