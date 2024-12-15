@@ -2,7 +2,7 @@
 *.jar
 *.swp
 *~
-Naproche-SAD.cabal
+Naproche.cabal
 stack.yaml.lock
 x86_64-darwin/
 x86_64-linux/

@@ -415,15 +415,15 @@ val _ = Theory.setup
 (** Isabelle/Isar commands **)
 
 val _ =
-  Outer_Syntax.command \<^command_keyword>\<open>forthel\<close> "check Naproche-SAD text"
+  Outer_Syntax.command \<^command_keyword>\<open>forthel\<close> "check Naproche text"
     (Parse.embedded_position >> (Toplevel.theory o check_forthel {tex = false}));
 
 val _ =
-  Outer_Syntax.command \<^command_keyword>\<open>forthel_tex\<close> "check Naproche-SAD text (TeX)"
+  Outer_Syntax.command \<^command_keyword>\<open>forthel_tex\<close> "check Naproche text (TeX)"
     (Parse.embedded_position >> (Toplevel.theory o check_forthel {tex = true}));
 
 val _ =
-  Outer_Syntax.command \<^command_keyword>\<open>forthel_file\<close> "check Naproche-SAD text file"
+  Outer_Syntax.command \<^command_keyword>\<open>forthel_file\<close> "check Naproche text file"
     (Resources.provide_parse_file >> (fn get_file =>
       Toplevel.theory (fn thy =>
         let

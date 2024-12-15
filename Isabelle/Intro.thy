@@ -129,7 +129,7 @@ text \<open>
   The Isabelle/Naproche implementation integrates various tools and components
   as follows:
 
-    \<^item> \<^verbatim>\<open>Naproche-SAD\<close> as command-line tool and TCP server, written in
+    \<^item> \<^verbatim>\<open>Naproche\<close> as command-line tool and TCP server, written in
       Haskell: \<^dir>\<open>$NAPROCHE_HOME/src/Naproche\<close> and \<^dir>\<open>$NAPROCHE_HOME/src/SAD\<close>
 
     \<^item> Isabelle/Haskell modules to help connecting the main executable to the

@@ -1,4 +1,4 @@
-name:                Naproche-SAD
+name:                Naproche
 version:             0.1.0.0
 github:              "naproche-community/naproche"
 license:             GPL-3
@@ -91,7 +91,7 @@ library:
     - SAD.Parser.Token
 
 executables:
-  Naproche-SAD:
+  Naproche:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
@@ -99,13 +99,13 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - Naproche-SAD
+    - Naproche
     when:
     - condition: false
       other-modules: Paths_Naproche_SAD
 
 tests:
-  Naproche-SAD-test:
+  Naproche-test:
     main:                Spec.hs
     source-dirs:         test
     ghc-options:
@@ -113,4 +113,4 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - Naproche-SAD
+    - Naproche

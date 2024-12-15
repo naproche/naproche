@@ -183,7 +183,7 @@ stack test
 #### Manual checking of proof files
 
 ```shell
-stack exec Naproche-SAD -- OPTIONS FILE
+stack exec Naproche -- OPTIONS FILE
 ```
 
 It may be necessary to allow the E Prover more time by appending `-t SECONDS`

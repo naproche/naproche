@@ -133,6 +133,13 @@ dialect of ForTheL, respectively.
 
 ### Misc
 
+  * **Changed:** The Naproche executable has been renamed from `Naproche-SAD`
+    to `Naproche`.
+    
+    *NOTE:* You might have to delete the file `Naproche-SAD.cabal` which
+    has been generated when Naproche was compiled before this change to be able
+    to compile Naproche after this change as well.
+
   * **Removed:** The (deprecated) `init.opt` file was removed.
 
   * **New:** Instructions etc. regarding Haskell have been added/moved to

@@ -4,7 +4,7 @@ Authors: Makarius Wenzel (2018)
 Some Isabelle/Naproche examples for testing.
 *)
 
-section \<open>Naproche-SAD texts within the Isabelle context\<close>
+section \<open>Naproche texts within the Isabelle context\<close>
 
 theory Test
   imports Naproche.Naproche

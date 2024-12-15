@@ -22,7 +22,7 @@ object Naproche_File_Format {
         info <- Server.Info.parse(line)
       } yield info
 
-    private val process_result = Future.thread("Naproche-SAD") {
+    private val process_result = Future.thread("Naproche") {
       process.result(
         progress_stdout = (line) => if (debugging) Output.writeln(line),
         progress_stderr = (line) => if (debugging) Output.writeln(line),
@@ -33,7 +33,7 @@ object Naproche_File_Format {
       Thread.sleep(50)
       process.terminate()
       val errs = process_result.join.err_lines
-      error(cat_lines("Naproche-SAD server failure" :: errs))
+      error(cat_lines("Naproche server failure" :: errs))
     }
 
     override def toString: String = server_info.get.toString
