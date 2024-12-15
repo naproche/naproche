@@ -4,15 +4,6 @@ Proof Checking of Natural Mathematical Documents, with optional support
 for [Isabelle Prover IDE (Isabelle/PIDE – Isabelle/jEdit)][isabelle-jedit].
 
 
-## Table of Contents
-
-1.  [For End-Users](#for-end-users)
-2.  [For Developers](#for-developers)
-3.  [Changelog](#changelog)
-4.  [License](#license)
-5.  [References](#references)
-
-
 ## For End-Users
 
 You can get a fully integrated version of Naproche for Linux, macOS and Windows
@@ -22,10 +13,6 @@ its `Documentation` panel.
 
 
 ## For Developers
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for a more detailed and beginner-friendly
-version of the below instructions.
-
 
 ### Isabelle/Naproche Prover IDE
 
@@ -40,7 +27,7 @@ Ensure that `curl`, `gcc`, `git`, `make`, and `hg` (Mercurial) are installed:
   * Windows: use Cygwin64 with packages `curl`, `gcc-core`, `git`, `make`, and `mercurial` (via Cygwin setup-x86_64.exe)
 
 
-#### Repository management
+#### Repository Management
 
 Commands below assume the same current directory: repository clones
 `isabelle_naproche` and `naproche` are put side-by-side.
@@ -146,47 +133,42 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
       points to the `eprover` executable inside the `e_naproche` component.
 
 
-### Low-level command-line tool (without Isabelle)
+### Command Line Interface
 
 #### Prerequisites
 
 * Supported OS platforms: Linux, macOS, Windows (e.g. with Cygwin terminal)
 
-* The Haskell Tool Stack: https://www.haskellstack.org
+* Set the environment variables `NAPROCHE_EPROVER` and `NAPROCHE_VAMPIRE` to the
+  locations of the respective executables of E and Vampire that are bundled with
+  Isabelle, e.g.:
 
-* Install the E Theorem Prover and
-  set the environment variable NAPROCHE_EPROVER to its executable
-  path.
-
-  Note: the E prover executable bundled with Isabelle can be located
-  like this:
   ```shell
-  isabelle getenv -b NAPROCHE_EPROVER
+  export NAPROCHE_EPROVER="$(isabelle getenv -b NAPROCHE_EPROVER)"
+  export NAPROCHE_VAMPIRE="$(isabelle getenv -b NAPROCHE_VAMPIRE)"
   ```
 
-* Optional (for development): Haskell IDE within VSCode:
-  https://marketplace.visualstudio.com/items?itemName=haskell.haskell
 
-
-#### Build and test
+#### Build
 
 ```shell
-cd .../naproche  #repository
-
-stack clean
-
-stack build
-
-stack test
+isabelle naproche_build
 ```
 
-#### Manual checking of proof files
+This creates a binary `Naproche`, e.g. at `naproche/x86_64-linux/Naproche`.
+
+
+#### Run
 
 ```shell
-stack exec Naproche -- OPTIONS FILE
+Naproche [<options>] [<file>]
 ```
 
-It may be necessary to allow the E Prover more time by appending `-t SECONDS`
+* `<options>`: A list of options. Run `Naproche -h` for a list of all options.
+
+* `<file>`: A `.ftl` or `.ftl.tex` file. If no file is given, `stdin` is used
+  (where by default a ForTheL text in the FTL dialect is expected; to enter a
+  text in the TEX dialect, provide the option `--tex=on`).
 
 
 ## Changelog
