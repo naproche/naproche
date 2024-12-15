@@ -62,7 +62,7 @@ var    | variable
 ## To-Dos
 
 The file [TODO.md](TODO.md) contains a list of pending to-dos. When an item has
-been processed, plesase delete it from that list.
+been processed, please delete it from that list.
 
 
 [haskell]: <https://en.wikipedia.org/wiki/Haskell>
