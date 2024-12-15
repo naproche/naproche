@@ -22,6 +22,7 @@ import Control.Exception (catch)
 import Data.Text.Lazy qualified as Text
 import System.Console.GetOpt qualified as GetOpt
 import System.Environment qualified as Environment
+import System.IO
 import System.FilePath
 import Network.Socket (Socket)
 
@@ -95,9 +96,16 @@ mainTerminal initInstrs nonInstrArgs = do
         -- dialect of the text by whether the @tex@ flag is set in the command
         -- line arguments or not.
         [] -> do
-          text <- getContents
           let tex = getInstr texParam initInstrs
               dialect = if tex then Tex else Ftl
+              dialectStr = case dialect of
+                Tex -> "TEX"
+                Ftl -> "FTL"
+          hSetBuffering stdout LineBuffering
+          putStrLn $ "Enter a ForTheL text (in the " ++ dialectStr ++ " dialect)."
+            ++ " Type CTRL+D to finish your input.\n"
+          text <- getContents'
+          putStr "\n"
           return [ProofTextInstr Position.none $ GetArgument (Text dialect) (Text.pack text)]
         -- If more than one non-instruction command line arguments are given,
         -- throw an error:
@@ -195,6 +203,8 @@ translateInputText proofTexts = do
   txts <- readProofText "NAPROCHE_FORMALIZATIONS" proofTexts
   -- Translate the input text and print the result:
   mapM_ (\case ProofTextBlock bl -> print bl; _ -> return ()) txts
+  print proofTexts
+  print txts
   -- Get the finish time of the translation process:
   finishTime <- getCurrentTime
   -- Print the time it took to translate the input text:
