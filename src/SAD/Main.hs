@@ -19,7 +19,8 @@ import Data.Time (addUTCTime, getCurrentTime, diffUTCTime)
 import Data.Maybe (mapMaybe)
 import Control.Exception qualified as Exception
 import Control.Exception (catch)
-import Data.Text.Lazy qualified as Text
+import Data.Text qualified as Strict
+import Data.Text.Lazy qualified as Lazy
 import System.Console.GetOpt qualified as GetOpt
 import System.Environment qualified as Environment
 import System.IO
@@ -43,6 +44,7 @@ import Isabelle.Position qualified as Position
 import Isabelle.YXML qualified as YXML
 import Isabelle.Process_Result qualified as Process_Result
 import Isabelle.Library
+import Isabelle.File qualified as File
 
 import Naproche.Program qualified as Program
 import Naproche.Console qualified as Console
@@ -81,7 +83,7 @@ mainTerminal initInstrs nonInstrArgs = do
           initInstrProofTexts = map (uncurry ProofTextInstr) locatedInitInstrs
       -- Get the input text (either via a given file path or if no file path is
       -- provided via the stdin stream) as a proof text:
-      inputTextProofTexts <- case nonInstrArgs of
+      (dialect, inputText) <- case nonInstrArgs of
         -- If a single non-instruction command line argument is given, regard it
         -- as the path to the input text file and determine the ForTheL dialect
         -- of its contents via its file name extension:
@@ -90,7 +92,8 @@ mainTerminal initInstrs nonInstrArgs = do
                 ".ftl" -> Ftl
                 ".ftl.tex" -> Tex
                 _ -> error "Invalid file name extension"
-          return [ProofTextInstr Position.none $ GetArgument (File dialect) (Text.pack filePath)]
+          inputText <- make_text <$> File.read filePath
+          return (dialect, inputText)
         -- If no non-instruction command line argument is given, regard the
         -- content of the stdin stream as the input text. Determind the ForTheL
         -- dialect of the text by whether the @tex@ flag is set in the command
@@ -104,14 +107,15 @@ mainTerminal initInstrs nonInstrArgs = do
           hSetBuffering stdout LineBuffering
           putStrLn $ "Enter a ForTheL text (in the " ++ dialectStr ++ " dialect)."
             ++ " Type CTRL+D to finish your input.\n"
-          text <- getContents'
+          inputText <- Strict.pack <$> getContents'
           putStr "\n"
-          return [ProofTextInstr Position.none $ GetArgument (Text dialect) (Text.pack text)]
+          return (dialect, inputText)
         -- If more than one non-instruction command line arguments are given,
         -- throw an error:
         _ -> error "More than one file argument"
       -- Append the input text proof text to the instruction proof texts:
-      let proofTexts = initInstrProofTexts ++ inputTextProofTexts
+      let inputTextProofTexts = [ProofTextInstr Position.none $ GetArgument (Text dialect) (Lazy.fromStrict inputText)]
+          proofTexts = initInstrProofTexts ++ inputTextProofTexts
       -- Verify the input text:
       Program.init_console
       resultCode <- do
@@ -168,15 +172,13 @@ pideServer mesonCache proverCache initInstrs socket =
               thread_uuid <- Isabelle_Thread.my_uuid
               mapM_ (\uuid -> exchange_message0 [Naproche.threads_command, UUID.print uuid]) thread_uuid
 
-              let more_text = Text.pack $ make_string text
-
               (moreInstrs, nonInstrArgs) <- readArgs $ lines (make_string more_args)
               let instrs = initInstrs ++ moreInstrs
                   locatedInstrs = map (Position.none,) instrs
                   instrProofTexts = map (uncurry ProofTextInstr) locatedInstrs
                   tex = getInstr texParam instrs
                   dialect = if tex then Tex else Ftl
-                  inputTextProofTexts = [ProofTextInstr Position.none (GetArgument (Text dialect) more_text)]
+                  inputTextProofTexts = [ProofTextInstr Position.none (GetArgument (Text dialect) (Lazy.fromStrict . make_text $ text))]
               let proofTexts = instrProofTexts ++ inputTextProofTexts
 
               rc <- do
@@ -203,8 +205,6 @@ translateInputText proofTexts = do
   txts <- readProofText "NAPROCHE_FORMALIZATIONS" proofTexts
   -- Translate the input text and print the result:
   mapM_ (\case ProofTextBlock bl -> print bl; _ -> return ()) txts
-  print proofTexts
-  print txts
   -- Get the finish time of the translation process:
   finishTime <- getCurrentTime
   -- Print the time it took to translate the input text:
