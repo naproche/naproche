@@ -20,7 +20,10 @@ module SAD.Helpers (
   isAsciiPeriod,
 
   parens,
-  parensIf
+  parensIf,
+
+  failureMessage,
+  failWithMessage
 ) where
 
 import Control.Arrow
@@ -134,3 +137,13 @@ parens string = "(" ++ string ++ ")"
 -- the string unmodified.
 parensIf :: Bool -> String -> String
 parensIf pred string = if pred then parens string else string
+
+
+-- * Error Messages
+
+failureMessage :: String -> String -> String
+failureMessage functionId message = functionId ++ ": " ++ message ++
+    " If you see this message, please file an issue."
+
+failWithMessage :: String -> String -> a
+failWithMessage functionId message = error $ failureMessage functionId message

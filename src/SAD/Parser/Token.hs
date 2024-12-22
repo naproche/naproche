@@ -35,6 +35,7 @@ import Data.Set qualified as Set
 import Text.Megaparsec hiding (State, Pos, Token)
 
 import SAD.Core.Message qualified as Message
+import SAD.Helpers (failureMessage)
 
 import Isabelle.Position qualified as Position
 
@@ -70,8 +71,7 @@ showError (ParseErrorBundle parseErrors _) errorHandler = case NonEmpty.head par
 -- of type "Error" during tokenizing.
 unknownError :: (Text, Position.T)
 unknownError =
-  let msg = "SAD.Parser.Token.unknownError: Unknown tokenizing error. " <>
-            "If you see this message, please file an issue."
+  let msg = Text.pack $ failureMessage "SAD.Parser.Token.unknownError" "Unknown tokenizing error."
       pos = Position.none
   in (msg, pos)
 

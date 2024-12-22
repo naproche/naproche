@@ -27,6 +27,7 @@ import SAD.Parser.FTL.Token qualified as FTL
 import SAD.Parser.TEX.Token qualified as TEX
 import SAD.Parser.Token (Token, noTokens)
 import SAD.Core.Message qualified as Message
+import SAD.Helpers (failWithMessage)
 
 import Isabelle.File qualified as File
 import Isabelle.Library (make_bytes, getenv, make_string)
@@ -92,9 +93,7 @@ reader pathToLibrary doneFiles (pState : oldState : rest) [] = do
 
 reader _ _ (state : _) [] = return ([], reports $ stUser state)
 
-reader _ _ _ _ = error $
-  "SAD.Parser.Base.reader: Invalid arguments. " <>
-  "If you see this message, please file an issue."
+reader _ _ _ _ = failWithMessage "SAD.Parser.Base.reader" "Invalid arguments."
 
 -- | Consequtively lex, tokenize and parse a byte string.
 parse :: ParserKind -> Position.T -> Bytes -> State FState -> IO ([ProofText], State FState)

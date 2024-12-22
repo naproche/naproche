@@ -15,6 +15,7 @@ import Data.Text.Lazy (Text)
 import Data.Text.Lazy.Builder (fromLazyText, fromString)
 
 import SAD.Export.Representation
+import SAD.Helpers (failureMessage)
 
 
 data TermName
@@ -92,7 +93,7 @@ data TermId
 
 specialId :: Int -> TermId
 specialId n =
-  let msg =  "TermId: If you see this message, please file an issue."
+  let msg = failureMessage "SAD.Data.Terms.TermId" "Invalid term ID."
   in case n of
   ( -1) -> trace msg EqualityId
   ( -2) -> trace msg LessId

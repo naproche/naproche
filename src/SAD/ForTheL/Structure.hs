@@ -449,7 +449,7 @@ tlsOption = do
       label <- identifier
       return (key, TlsId label)
     "printid" -> return (key, TlsPrintId)
-    _ -> error "SAD.ForTheL.Structure.tlsOption: Unknown key. If you see this message, please file an issue."
+    _ -> failWithMessage "SAD.ForTheL.Structure.tlsOption" "Unknown key."
   where
     notReservedChar = tokenPrim $ \t -> guard (showToken t `notElem` [",", "]"]) >> return t
 
@@ -720,7 +720,7 @@ proofOption = do
       symbol "="
       method <- optBraced proofMethod
       return (key, ProofMethod method)
-    _ -> error "SAD.ForTheL.Structure.proofOption: Unknown key. If you see this message, please file an issue."
+    _ -> failWithMessage "SAD.ForTheL.Structure.proofOption" "Unknown key."
 
 -- | By proof method:
 -- @"by" <proof method>@
