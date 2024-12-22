@@ -48,7 +48,7 @@ instr :: FTL (Position.T, Instr)
 instr =
   instrPos addDropReport $ readInstr >>=
     (\case
-      GetArgument (Read _) _ -> fail "'read' and 'readtex' not allowed here"
+      GetRelativeFilePath _ _ -> fail "'read' and 'readtex' not allowed here"
       Command Exit -> fail "'exit' and 'quit' not allowed here"
       i -> return i)
 
@@ -57,7 +57,7 @@ instrRead :: FTL (Position.T, Instr)
 instrRead =
   instrPos addInstrReport $ readInstr >>=
     (\case
-      i@(GetArgument (Read _) _) -> return i
+      i@(GetRelativeFilePath _ _) -> return i
       _ -> mzero)
 
 instrExit :: FTL (Position.T, Instr)

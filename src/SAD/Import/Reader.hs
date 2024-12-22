@@ -6,22 +6,21 @@
 --
 -- Main text reading functions.
 
-
 module SAD.Import.Reader (
   readProofText
 ) where
 
 import Control.Monad
 import System.IO.Error
+import System.FilePath
 import Control.Exception
 import Data.Text.Lazy (Text)
-import Data.Text.Lazy qualified as Text
+import Data.List (isInfixOf)
 
 import SAD.Data.Text.Block
 import SAD.Data.Instr as Instr
-    ( Argument(Text, File, Read),
-      ParserKind(Ftl,Tex),
-      Instr(GetArgument))
+    ( ParserKind(Ftl, Tex),
+      Instr(GetRelativeFilePath, GetAbsoluteFilePath, GetText))
 import SAD.ForTheL.Base
 import SAD.ForTheL.Structure
 import SAD.Parser.Base
@@ -43,66 +42,62 @@ import Naproche.Program qualified as Program
 -- * Reader loop
 
 -- | Parse one or more ForTheL texts
-readProofText :: Bytes          -- ^ name of enviroment variable containing
-                                -- path to formalizations directory
-                                -- texts can be imported via @read(tex)@
-                                -- instructions (e.g. @$NAPROCHE_HOME/examples)
-              -> [ProofText]    -- ^ ForTheL texts to be parsed
-              -> IO [ProofText]
-readProofText variable text0 = do
+readProofText :: [ProofText] -> IO [ProofText]
+readProofText text0 = do
   context <- Program.thread_context
-  path <- getenv variable
-  (text, reports) <- reader path [] [initState context noTokens] text0
+  pathToLibrary <- getPathToLibrary
+  (text, reports) <- reader pathToLibrary [] [initState context noTokens] text0
   when (Program.is_pide context) $ Message.reports reports
   return text
 
-reader :: Bytes -> [Text] -> [State FState] -> [ProofText] -> IO ([ProofText], [Position.Report])
-reader pathToLibrary doneFiles = go
-  where
-    go stateList [ProofTextInstr pos (GetArgument (Read dialect) file)] = if Text.pack ".." `Text.isInfixOf` file
-      then Message.errorParser pos ("Illegal \"..\" in file name: " ++ show file)
-      else go stateList [ProofTextInstr pos $ GetArgument (File dialect) $
-            Text.pack (make_string pathToLibrary) <> Text.pack "/" <> file]
+reader :: FilePath -> [FilePath] -> [State FState] -> [ProofText] -> IO ([ProofText], [Position.Report])
+reader pathToLibrary doneFiles stateList [ProofTextInstr pos (GetRelativeFilePath dialect relativeFilePath)]
+  | ".." `isInfixOf` relativeFilePath =
+      Message.errorParser pos ("Illegal \"..\" in file name: " ++ relativeFilePath)
+  | otherwise =
+      let absoluteFilePath = pathToLibrary </> relativeFilePath
+          instr = GetAbsoluteFilePath dialect absoluteFilePath
+      in reader pathToLibrary doneFiles stateList [ProofTextInstr pos instr]
 
-    go (pState:states) [ProofTextInstr pos (GetArgument (File dialect) file)]
-      | file `elem` doneFiles = do
-          -- The parserKind of the state of the parser indicates whether the file was originally read with the .tex
-          -- or the .ftl parser. Now if, for example, we originally read the file with the .ftl format and now we
-          -- are reading the file again with the .tex format(by eg using '[readtex myfile.ftl]'), we want to throw an error.
-          when (parserKind pState /= dialect)
-            (Message.errorParser pos "Trying to read the same file once in TEX format and once in FTL format.")
-          Message.outputMain Message.WARNING pos
-            (make_bytes ("Skipping already read file: " ++ show file))
-          (newProofText, newState) <- parseState pState
-          go (newState:states) newProofText
-      | otherwise = do
-          let filePath = Text.unpack file
-          (newProofText, newState) <- parseFile dialect filePath pState
-          -- state from before reading is still here
-          reader pathToLibrary (file:doneFiles) (newState:pState:states) newProofText
+reader pathToLibrary doneFiles (pState : states) [ProofTextInstr pos (GetAbsoluteFilePath dialect absoluteFilePath)]
+  | absoluteFilePath `elem` doneFiles = do
+      -- The parserKind of the state of the parser indicates whether the file was originally read with the .tex
+      -- or the .ftl parser. Now if, for example, we originally read the file with the .ftl format and now we
+      -- are reading the file again with the .tex format(by eg using '[readtex myfile.ftl]'), we want to throw an error.
+      when (parserKind pState /= dialect)
+        (Message.errorParser pos "Trying to read the same file once in TEX format and once in FTL format.")
+      Message.outputMain Message.WARNING pos
+        (make_bytes ("Skipping already read file: " ++ absoluteFilePath))
+      (newProofText, newState) <- parseState pState
+      reader pathToLibrary doneFiles (newState:states) newProofText
+  | otherwise = do
+      (newProofText, newState) <- parseFile dialect absoluteFilePath pState
+      -- state from before reading is still here
+      reader pathToLibrary (absoluteFilePath : doneFiles) (newState:pState:states) newProofText
 
-    go (pState:states) [ProofTextInstr _ (GetArgument (Text dialect) text)] = do
-      (newProofText, newState) <- parseText dialect text pState
-      go (newState:pState:states) newProofText -- state from before reading is still here
+reader pathToLibrary doneFiles (pState : states) [ProofTextInstr _ (GetText dialect text)] = do
+  (newProofText, newState) <- parseText dialect text pState
+  reader pathToLibrary doneFiles (newState : pState : states) newProofText -- state from before reading is still here
 
-    -- This says that we are only really processing the last instruction in a [ProofText].
-    go stateList (t:restProofText) = do
-      (ts, ls) <- go stateList restProofText
-      return (t:ts, ls)
+-- This says that we are only really processing the last instruction in a [ProofText].
+reader pathToLibrary doneFiles stateList (t : restProofText) = do
+  (ts, ls) <- reader pathToLibrary doneFiles stateList restProofText
+  return (t : ts, ls)
 
-    go (pState:oldState:rest) [] = do
-      Message.outputParser Message.TRACING
-        (if null doneFiles then Position.none else Position.file_only $ make_bytes $ head doneFiles) "parsing successful"
-      let resetState = oldState {
-            stUser = (stUser pState) {tvrExpr = tvrExpr $ stUser oldState}}
-      -- Continue running a parser after eg. a read instruction was evaluated.
-      (newProofText, newState) <- parseState resetState
-      go (newState:rest) newProofText
+reader pathToLibrary doneFiles (pState : oldState : rest) [] = do
+  Message.outputParser Message.TRACING
+    (if null doneFiles then Position.none else Position.file_only $ make_bytes $ head doneFiles) "parsing successful"
+  let resetState = oldState {
+        stUser = (stUser pState) {tvrExpr = tvrExpr $ stUser oldState}}
+  -- Continue running a parser after eg. a read instruction was evaluated.
+  (newProofText, newState) <- parseState resetState
+  reader pathToLibrary doneFiles (newState : rest) newProofText
 
-    go (state:_) [] = return ([], reports $ stUser state)
+reader _ _ (state : _) [] = return ([], reports $ stUser state)
 
-    go _ _ = error $ "SAD.Parser.Base.reader: Invalid arguments for function \"go\". " <>
-      "If you see this message, please file an issue."
+reader _ _ _ _ = error $
+  "SAD.Parser.Base.reader: Invalid arguments. " <>
+  "If you see this message, please file an issue."
 
 -- | Parse a byte string.
 parseBytes :: ParserKind -> Position.T -> Bytes -> State FState -> IO ([ProofText], State FState)
@@ -119,10 +114,9 @@ parseBytes dialect pos bytes state = do
   parseState newState
 
 -- | Parse a text.
-parseText :: ParserKind -> Text -> State FState -> IO ([ProofText], State FState)
-parseText dialect text state =
-  let bytes = make_bytes text
-      pos = Position.start
+parseText :: ParserKind -> Bytes -> State FState -> IO ([ProofText], State FState)
+parseText dialect bytes state =
+  let pos = Position.start
   in parseBytes dialect pos bytes state{parserKind = dialect}
 
 -- | Parse a file (or the content of stdin if an empty file path is given).
@@ -145,3 +139,13 @@ parseState state =
 
 initState :: Program.Context -> [Token] -> State FState
 initState context tokens = State (initFState context) tokens Ftl Position.none
+
+-- | Get the path to the formalizations library.
+getPathToLibrary :: IO FilePath
+getPathToLibrary = make_string <$> getenv libraryEnvVar
+
+-- | The name of the environment variable that contains the path to the
+-- formalizations library.
+-- **NOTE:** This name must coincide with the one given in @etc/settings@!
+libraryEnvVar :: Bytes
+libraryEnvVar = make_bytes "NAPROCHE_FORMALIZATIONS"

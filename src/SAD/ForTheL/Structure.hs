@@ -310,7 +310,7 @@ resetPretyping text = case text of
 -- | Succeeds if the ProofText consists of an exit instruction.
 exitInstruction :: ProofText -> FTL [ProofText]
 exitInstruction text = case text of
-  ProofTextInstr _ (GetArgument (Read _) _) -> return [text]
+  ProofTextInstr _ (GetRelativeFilePath _ _) -> return [text]
   ProofTextInstr _ (Command Exit) -> return []
   _ -> failing (return ()) >> return [] -- Not sure how to properly throw an error.
 

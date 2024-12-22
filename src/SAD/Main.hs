@@ -92,7 +92,7 @@ mainTerminal initInstrs nonInstrArgs = do
                 ".ftl" -> Ftl
                 ".ftl.tex" -> Tex
                 _ -> error "Invalid file name extension"
-          inputText <- make_text <$> File.read filePath
+          inputText <- make_bytes <$> File.read filePath
           return (dialect, inputText)
         -- If no non-instruction command line argument is given, regard the
         -- content of the stdin stream as the input text. Determind the ForTheL
@@ -107,14 +107,14 @@ mainTerminal initInstrs nonInstrArgs = do
           hSetBuffering stdout LineBuffering
           putStrLn $ "Enter a ForTheL text (in the " ++ dialectStr ++ " dialect)."
             ++ " Type CTRL+D to finish your input.\n"
-          inputText <- Strict.pack <$> getContents'
+          inputText <- make_bytes <$> getContents'
           putStr "\n"
           return (dialect, inputText)
         -- If more than one non-instruction command line arguments are given,
         -- throw an error:
         _ -> error "More than one file argument"
       -- Append the input text proof text to the instruction proof texts:
-      let inputTextProofTexts = [ProofTextInstr Position.none $ GetArgument (Text dialect) (Lazy.fromStrict inputText)]
+      let inputTextProofTexts = [ProofTextInstr Position.none $ GetText dialect inputText]
           proofTexts = initInstrProofTexts ++ inputTextProofTexts
       -- Verify the input text:
       Program.init_console
@@ -178,7 +178,7 @@ pideServer mesonCache proverCache initInstrs socket =
                   instrProofTexts = map (uncurry ProofTextInstr) locatedInstrs
                   tex = getInstr texParam instrs
                   dialect = if tex then Tex else Ftl
-                  inputTextProofTexts = [ProofTextInstr Position.none (GetArgument (Text dialect) (Lazy.fromStrict . make_text $ text))]
+                  inputTextProofTexts = [ProofTextInstr Position.none (GetText dialect text)]
               let proofTexts = instrProofTexts ++ inputTextProofTexts
 
               rc <- do
@@ -202,7 +202,7 @@ translateInputText proofTexts = do
   -- Get the starting time of the parsing process:
   startTime <- getCurrentTime
   -- Parse the input text:
-  txts <- readProofText "NAPROCHE_FORMALIZATIONS" proofTexts
+  txts <- readProofText proofTexts
   -- Translate the input text and print the result:
   mapM_ (\case ProofTextBlock bl -> print bl; _ -> return ()) txts
   -- Get the finish time of the translation process:
@@ -217,7 +217,7 @@ verifyInputText mesonCache proverCache proofTexts = do
   -- Get the starting time of the parsing process:
   startTime <- getCurrentTime
   -- Parse the input text:
-  txts <- readProofText "NAPROCHE_FORMALIZATIONS" proofTexts
+  txts <- readProofText proofTexts
   -- Get the starting time of the verification process:
   proveStart <- getCurrentTime
   -- Verify the input text:

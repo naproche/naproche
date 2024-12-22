@@ -23,7 +23,7 @@ module SAD.API (
 import SAD.Core.Base (showTimeDiff, sumCounter, Counter(..), sumTimer, Timer(..), maximalTimer)
 import SAD.Core.Message
 import SAD.Core.Verify (verifyRoot)
-import SAD.Data.Instr (Instr(..), getInstr, Argument(..), ParserKind(..))
+import SAD.Data.Instr (Instr(..), getInstr, ParserKind(..))
 import SAD.Data.Text.Block (ProofText(..), parseErrors)
 import SAD.Import.Reader (readProofText)
 import SAD.Parser.Error (errorPos)

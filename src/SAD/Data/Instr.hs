@@ -11,7 +11,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Data.Instr (
-  ParserKind(..), Instr(..), Drop(..), Command(..), Argument(..),
+  ParserKind(..), Instr(..), Drop(..), Command(..),
   getInstr, addInstr, dropInstr,
   timelimitParam, memorylimitParam, depthlimitParam, checktimeParam, checkdepthParam,
   proveParam, checkParam, checkconsistencyParam, symsignParam, infoParam, thesisParam,
@@ -47,7 +47,9 @@ data Instr =
   | SetBool (Param.T Bool) Bool
   | SetInt (Param.T Int) Int
   | SetBytes (Param.T Bytes) Bytes
-  | GetArgument Argument Text
+  | GetRelativeFilePath ParserKind FilePath
+  | GetAbsoluteFilePath ParserKind FilePath
+  | GetText ParserKind Bytes
   | Verbose Bool
   deriving (Eq, Ord, Show)
 
@@ -69,13 +71,6 @@ data Command =
   | Exit
   deriving (Eq, Ord, Show)
 
-data Argument =
-    Text ParserKind    --  literal text
-  | File ParserKind    --  read file
-  | Read ParserKind    --  read library file
-  deriving (Eq, Ord, Show)
-
-
 -- instruction environment
 
 getInstr :: Param.T a -> [Instr] -> a
@@ -90,7 +85,7 @@ getInstr p = Param.get p . foldr instr Param.empty
 
 addInstr :: Instr -> [Instr] -> [Instr]
 addInstr (Synonym _) = id
-addInstr (GetArgument (Read _) _) = id
+addInstr (GetRelativeFilePath _ _) = id
 addInstr i = (:) i
 
 dropInstr :: Drop -> [Instr] -> [Instr]
@@ -208,6 +203,6 @@ keywordsDropFlag = map (paramKeyword DropBool) textFlags
 
 keywordsArgument :: [(Text -> Instr, Text)]
 keywordsArgument =
- [(GetArgument $ Read Ftl, "read"),
-  (GetArgument $ Read Tex, "readtex")] ++
+ [(GetRelativeFilePath Ftl . Lazy.unpack, "read"),
+  (GetRelativeFilePath Tex . Lazy.unpack, "readtex")] ++
   map (paramKeyword (\p -> SetBytes p . make_bytes)) textArgs
