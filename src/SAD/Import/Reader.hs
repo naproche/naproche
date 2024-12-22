@@ -14,13 +14,10 @@ import Control.Monad
 import System.IO.Error
 import System.FilePath
 import Control.Exception
-import Data.Text.Lazy (Text)
-import Data.List (isInfixOf)
+import Data.List
 
 import SAD.Data.Text.Block
-import SAD.Data.Instr as Instr
-    ( ParserKind(Ftl, Tex),
-      Instr(GetRelativeFilePath, GetAbsoluteFilePath, GetText))
+import SAD.Data.Instr
 import SAD.ForTheL.Base
 import SAD.ForTheL.Structure
 import SAD.Parser.Base
@@ -76,7 +73,7 @@ reader pathToLibrary doneFiles (pState : states) [ProofTextInstr pos (GetAbsolut
       reader pathToLibrary (absoluteFilePath : doneFiles) (newState:pState:states) newProofText
 
 reader pathToLibrary doneFiles (pState : states) [ProofTextInstr _ (GetText dialect text)] = do
-  (newProofText, newState) <- parseText dialect text pState
+  (newProofText, newState) <- parseBytes dialect text pState
   reader pathToLibrary doneFiles (newState : pState : states) newProofText -- state from before reading is still here
 
 -- This says that we are only really processing the last instruction in a [ProofText].
@@ -99,9 +96,9 @@ reader _ _ _ _ = error $
   "SAD.Parser.Base.reader: Invalid arguments. " <>
   "If you see this message, please file an issue."
 
--- | Parse a byte string.
-parseBytes :: ParserKind -> Position.T -> Bytes -> State FState -> IO ([ProofText], State FState)
-parseBytes dialect pos bytes state = do
+-- | Consequtively lex, tokenize and parse a byte string.
+parse :: ParserKind -> Position.T -> Bytes -> State FState -> IO ([ProofText], State FState)
+parse dialect pos bytes state = do
   tokens <- case dialect of
     Ftl -> FTL.lex pos bytes >>= FTL.tokenize
     Tex -> TEX.lex pos bytes >>= TEX.tokenize
@@ -113,11 +110,11 @@ parseBytes dialect pos bytes state = do
       }
   parseState newState
 
--- | Parse a text.
-parseText :: ParserKind -> Bytes -> State FState -> IO ([ProofText], State FState)
-parseText dialect bytes state =
+-- | Parse a byte string.
+parseBytes :: ParserKind -> Bytes -> State FState -> IO ([ProofText], State FState)
+parseBytes dialect bytes state =
   let pos = Position.start
-  in parseBytes dialect pos bytes state{parserKind = dialect}
+  in parse dialect pos bytes state{parserKind = dialect}
 
 -- | Parse a file (or the content of stdin if an empty file path is given).
 parseFile :: ParserKind -> FilePath -> State FState -> IO ([ProofText], State FState)
@@ -126,7 +123,7 @@ parseFile dialect filePath state = do
     (if null filePath then make_bytes <$> getContents else File.read filePath)
     (Message.errorParser (Position.file_only $ make_bytes filePath) . make_bytes . ioeGetErrorString)
   let pos = Position.file $ make_bytes filePath
-  parseBytes dialect pos bytes state{parserKind = dialect}
+  parse dialect pos bytes state{parserKind = dialect}
 
 -- | Parse (the tokens contained in) a state.
 parseState :: State FState -> IO ([ProofText], State FState)

@@ -19,8 +19,6 @@ import Data.Time (addUTCTime, getCurrentTime, diffUTCTime)
 import Data.Maybe (mapMaybe)
 import Control.Exception qualified as Exception
 import Control.Exception (catch)
-import Data.Text qualified as Strict
-import Data.Text.Lazy qualified as Lazy
 import System.Console.GetOpt qualified as GetOpt
 import System.Environment qualified as Environment
 import System.IO
