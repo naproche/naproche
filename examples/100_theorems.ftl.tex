@@ -1336,7 +1336,7 @@ If not $x \leq y$ then $x \geq y$.
 Assume $0 < x \leq y$.
 Then $1/y \leq 1/x$.
 \end{proposition}
-\begin{proof}[by contradiction]
+\begin{proof}[method=contradiction]
 Assume the contrary.
 Then not $1/y \leq 1/x$. Let $u = 1/y$ and $v = 1/x$.
 Then $1/y \geq 1/x$.
@@ -1614,7 +1614,7 @@ Contradiction.
 Let $x$ be a real number.
 Then there is an integer $a$
 such that $x < a$.\end{theorem}
-\begin{proof}[by contradiction]
+\begin{proof}[method=contradiction]
 Assume the contrary.
 Then $x$ is an upper bound of $\mathbb{Z}$.
 Contradiction.
@@ -1871,7 +1871,7 @@ Assume that $P(0)$ and for all natural numbers
 $n$ if $P(n)$ then  $P(n+1)$.
 Then $P(n)$ for all natural numbers $n$.
 \end{theorem}
-\begin{proof}[by induction]
+\begin{proof}[method=induction]
 Let $n$ be a natural number.
 
 Case $n = 0$. Trivial.
@@ -1943,7 +1943,7 @@ $\frac{a}{b} \cdot d = a \cdot \frac{d}{b}$.
 \begin{theorem} For all nonzero natural numbers $n$
 $$\sumarith{a}{d}{n} = n \cdot ( a + \frac{(n + 1) \cdot d}{2}).$$
 \end{theorem}
-\begin{proof}[by induction on $n$]
+\begin{proof}[method=induction on $n$]
 Let $n$ be a nonzero natural number.
 
 Case $n = 1$.
@@ -2034,7 +2034,7 @@ $x \cdot x^{i} = x^{i+1}$.
 Let $m$ be a natural number.
 For all natural numbers $n$ $m^{n}$ is a natural number.
 \end{lemma}
-\begin{proof}[by induction on $n$]
+\begin{proof}[method=induction on $n$]
 Let $n$ be a natural number.
 
 Case $n = 0$. $m^{0} = 1 \in \mathbb{N}$. End.
@@ -2047,7 +2047,7 @@ $m^{k}$ is a natural number. $m \cdot m^{k} = m^{k + 1} = m^{n}$. Thus $m^{n}$ i
 Let $m$ be a nonzero natural number.
 For all natural numbers $n$ $1 \leq m^{n}$.
 \end{lemma}
-\begin{proof}[by induction on $n$]
+\begin{proof}[method=induction on $n$]
 Let $n$ be a natural number.
 
 Case $n = 0$. $m^{0} = 1$. $1 \leq 1$. End.
@@ -2115,7 +2115,7 @@ $\sumgeom{x}{n+1} = (\sumgeom{x}{n}) + x^{n}$.
 $$\sumgeom{x}{n} = \frac{1 - x^{n}}{1 - x}$$
 for all natural numbers $n$.
 \end{theorem}
-\begin{proof}[by induction on $n$]
+\begin{proof}[method=induction on $n$]
 
 $1 - x \neq 0$.
 
@@ -2253,7 +2253,7 @@ just calling the method of induction, without further details.
 \begin{theorem}
 Every nontrivial natural number $m$ has a prime divisor.
 \end{theorem}
-\begin{proof}[by induction on $m$]
+\begin{proof}[method=induction on $m$]
 \end{proof}
 [timelimit 3]
 \end{forthel}
@@ -2402,7 +2402,7 @@ If $m = n$ then $\gcd(m,n) = \gcd(m-n,n)$.
 \begin{proposition}
 For all natural numbers $m,n$ the greatest common divisor of $m$ and $n$ is $\gcd(m,n)$.
 \end{proposition}
-\begin{proof}[by induction on $m+n$]
+\begin{proof}[method=induction on $m+n$]
 Let $m,n$ be natural numbers.
 Then $m+n$ is a natural number.
 
@@ -2453,7 +2453,7 @@ Let $a$ be nonzero natural number.
 For every natural number $m$ there exist
 a natural number $k$ such that $0 \leq m - (k \cdot a) < a$.
 \end{proposition}
-\begin{proof}[by induction on $m$]
+\begin{proof}[method=induction on $m$]
 Let $m$ be a natural number.
 
 Case $m = 0$.
@@ -2682,7 +2682,7 @@ $q = \frac{n}{m}$ and $m \cdot q = n$.
     \begin{theorem}[title=Pythagoras]
       $q^{2} = p$ for no positive rational number $q$.
     \end{theorem}
-    \begin{proof}[by contradiction]
+    \begin{proof}[method=contradiction]
       Assume the contrary.
       Take a positive rational number $q$ such that $p = q^{2}$.
       Take coprime natural numbers $m,n$ such that $m \cdot q = n$.
@@ -2767,7 +2767,7 @@ $q = \frac{n}{m}$ and $m \cdot q = n$.
   for all injective maps $f$ from
   $\Seq{1}{m}$ to $\Seq{1}{n}$ we have $m \leq n$.
   \end{lemma}
-  \begin{proof}[by induction on $n$]
+  \begin{proof}[method=induction on $n$]
   Let $n$ be a natural number.
   Let $m$ be a natural number.
   Let $f$ be an injective map from $\Seq{1}{m}$ to $\Seq{1}{n}$.
@@ -2975,7 +2975,7 @@ Then $m' \leq n'$ and $m \leq n$.
   For all finite sets $X$ and all natural numbers $n$ if $|X| = n$ then
   $\pow(X)$ is finite and $|\pow(X)| = 2^{n}$.
   \end{theorem}
-  \begin{proof}[by induction on $n$]
+  \begin{proof}[method=induction on $n$]
   Let $X$ be a finite set and $n$ be a natural number. Assume $|X| = n$.
 
   Case $n = 0$. $\Seq{1}{0} = \emptyset$. Thus $X = \emptyset$.
@@ -3092,7 +3092,7 @@ $\Primes$ is the collection of prime natural numbers.
 \begin{theorem}[title=Euclid]
 $\Primes$ is infinite.
 \end{theorem}
-\begin{proof}[by contradiction]
+\begin{proof}[method=contradiction]
 Assume that $\Primes$ is finite.
 Take a natural number $r$ such that $\Seq{1}{r}$ and $\Primes$ are equinumerous.
 Take a bijection $p$ between $\Seq{1}{r}$ and $\Primes$.
