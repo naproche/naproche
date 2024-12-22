@@ -137,25 +137,40 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
 
 #### Prerequisites
 
-* Supported OS platforms: Linux, macOS, Windows (e.g. with Cygwin terminal)
+* Supported OS platforms: Linux, macOS, Windows (e.g. with a [Cygwin][cygwin]
+  terminal or with [Windows Subsystem for Linux][wsl])
 
-* Set the environment variables `NAPROCHE_EPROVER` and `NAPROCHE_VAMPIRE` to the
-  locations of the respective executables of E and Vampire that are bundled with
-  Isabelle, e.g.:
+* Set the environment variables `NAPROCHE_EPROVER`, `NAPROCHE_SPASS` and
+  `NAPROCHE_VAMPIRE` to the locations of the respective executables of [E][e],
+  [SPASS][spass] and [Vampire][vampire] that are bundled with
+  Isabelle:
 
   ```shell
   export NAPROCHE_EPROVER="$(isabelle getenv -b NAPROCHE_EPROVER)"
+  export NAPROCHE_SPASS="$(isabelle getenv -b NAPROCHE_SPASS)"
   export NAPROCHE_VAMPIRE="$(isabelle getenv -b NAPROCHE_VAMPIRE)"
+  ```
+
+* Initialize the environment variable `NAPROCHE_FORMALIZATIONS`:
+
+  ```shell
+  export NAPROCHE_FORMALIZATIONS="$(isabelle getenv -b NAPROCHE_FORMALIZATIONS)"
   ```
 
 
 #### Build
 
-```shell
-isabelle naproche_build
-```
+* Build Naproche:
 
-This creates a binary `Naproche`, e.g. at `naproche/x86_64-linux/Naproche`.
+  ```shell
+  isabelle naproche_build
+  ```
+
+* Add Naproche to your path:
+
+  ```shell
+  export PATH="$PATH:$(isabelle getenv -b NAPROCHE_EXE_DIR)"
+  ```
 
 
 #### Run
@@ -194,3 +209,8 @@ You can find more resources in our [CONTRIBUTING.md](CONTRIBUTING.md).
 [andrei-paskevich]: <http://www.tertium.org/>
 [isabelle-jedit]: <https://isabelle.in.tum.de/dist/doc/jedit.pdf>
 [gpl-3]: <https://www.gnu.org/licenses/gpl-3.0.en.html>
+[e]: <https://wwwlehre.dhbw-stuttgart.de/~sschulz/E/E.html>
+[spass]: <https://www.mpi-inf.mpg.de/departments/automation-of-logic/software/spass-workbench>
+[vampire]: <https://vprover.github.io/>
+[cygwin]: <https://cygwin.com/>
+[wsl]: <https://learn.microsoft.com/en-us/windows/wsl/>
