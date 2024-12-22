@@ -11,7 +11,6 @@ module SAD.Import.Reader (
   readProofText
 ) where
 
-import Prelude hiding (read, readFile)
 import Control.Monad
 import System.IO.Error
 import Control.Exception
@@ -60,33 +59,30 @@ readProofText variable text0 = do
 reader :: Bytes -> [Text] -> [State FState] -> [ProofText] -> IO ([ProofText], [Position.Report])
 reader pathToLibrary doneFiles = go
   where
-    go stateList [ProofTextInstr pos (GetArgument (Read pk) file)] = if Text.pack ".." `Text.isInfixOf` file
+    go stateList [ProofTextInstr pos (GetArgument (Read dialect) file)] = if Text.pack ".." `Text.isInfixOf` file
       then Message.errorParser pos ("Illegal \"..\" in file name: " ++ show file)
-      else go stateList [ProofTextInstr pos $ GetArgument (File pk) $
+      else go stateList [ProofTextInstr pos $ GetArgument (File dialect) $
             Text.pack (make_string pathToLibrary) <> Text.pack "/" <> file]
 
-    go (pState:states) [ProofTextInstr pos (GetArgument (File parserKind') file)]
+    go (pState:states) [ProofTextInstr pos (GetArgument (File dialect) file)]
       | file `elem` doneFiles = do
           -- The parserKind of the state of the parser indicates whether the file was originally read with the .tex
           -- or the .ftl parser. Now if, for example, we originally read the file with the .ftl format and now we
           -- are reading the file again with the .tex format(by eg using '[readtex myfile.ftl]'), we want to throw an error.
-          when (parserKind pState /= parserKind')
+          when (parserKind pState /= dialect)
             (Message.errorParser pos "Trying to read the same file once in TEX format and once in FTL format.")
           Message.outputMain Message.WARNING pos
             (make_bytes ("Skipping already read file: " ++ show file))
-          (newProofText, newState) <- parse pState
+          (newProofText, newState) <- parseState pState
           go (newState:states) newProofText
       | otherwise = do
           let filePath = Text.unpack file
-          text <- Text.pack <$>
-            catch (if Text.null file then getContents else make_string <$> File.read filePath)
-              (Message.errorParser (Position.file_only $ make_bytes file) . make_bytes . ioeGetErrorString)
-          (newProofText, newState) <- readFile parserKind' filePath text pState
+          (newProofText, newState) <- parseFile dialect filePath pState
           -- state from before reading is still here
           reader pathToLibrary (file:doneFiles) (newState:pState:states) newProofText
 
-    go (pState:states) [ProofTextInstr _ (GetArgument (Text pk) text)] = do
-      (newProofText, newState) <- readText pk text pState
+    go (pState:states) [ProofTextInstr _ (GetArgument (Text dialect) text)] = do
+      (newProofText, newState) <- parseText dialect text pState
       go (newState:pState:states) newProofText -- state from before reading is still here
 
     -- This says that we are only really processing the last instruction in a [ProofText].
@@ -100,7 +96,7 @@ reader pathToLibrary doneFiles = go
       let resetState = oldState {
             stUser = (stUser pState) {tvrExpr = tvrExpr $ stUser oldState}}
       -- Continue running a parser after eg. a read instruction was evaluated.
-      (newProofText, newState) <- parse resetState
+      (newProofText, newState) <- parseState resetState
       go (newState:rest) newProofText
 
     go (state:_) [] = return ([], reports $ stUser state)
@@ -108,8 +104,9 @@ reader pathToLibrary doneFiles = go
     go _ _ = error $ "SAD.Parser.Base.reader: Invalid arguments for function \"go\". " <>
       "If you see this message, please file an issue."
 
-read :: ParserKind -> Position.T -> Bytes -> State FState -> IO ([ProofText], State FState)
-read dialect pos bytes state = do
+-- | Parse a byte string.
+parseBytes :: ParserKind -> Position.T -> Bytes -> State FState -> IO ([ProofText], State FState)
+parseBytes dialect pos bytes state = do
   tokens <- case dialect of
     Ftl -> FTL.lex pos bytes >>= FTL.tokenize
     Tex -> TEX.lex pos bytes >>= TEX.tokenize
@@ -119,21 +116,27 @@ read dialect pos bytes state = do
         parserKind = dialect,
         lastPosition = Position.none
       }
-  parse newState
+  parseState newState
 
--- | Read a text.
-readText :: ParserKind -> Text -> State FState -> IO ([ProofText], State FState)
-readText dialect text state =
-  read dialect Position.start (make_bytes text) (state {parserKind = dialect})
+-- | Parse a text.
+parseText :: ParserKind -> Text -> State FState -> IO ([ProofText], State FState)
+parseText dialect text state =
+  let bytes = make_bytes text
+      pos = Position.start
+  in parseBytes dialect pos bytes state{parserKind = dialect}
 
--- | Read a file
-readFile :: ParserKind -> FilePath -> Text -> State FState -> IO ([ProofText], State FState)
-readFile dialect filePath text state =
-  read dialect (Position.file $ make_bytes filePath) (make_bytes text) (state {parserKind = dialect})
+-- | Parse a file (or the content of stdin if an empty file path is given).
+parseFile :: ParserKind -> FilePath -> State FState -> IO ([ProofText], State FState)
+parseFile dialect filePath state = do
+  bytes <- catch
+    (if null filePath then make_bytes <$> getContents else File.read filePath)
+    (Message.errorParser (Position.file_only $ make_bytes filePath) . make_bytes . ioeGetErrorString)
+  let pos = Position.file $ make_bytes filePath
+  parseBytes dialect pos bytes state{parserKind = dialect}
 
 -- | Parse (the tokens contained in) a state.
-parse :: State FState -> IO ([ProofText], State FState)
-parse state =
+parseState :: State FState -> IO ([ProofText], State FState)
+parseState state =
   let dialect = parserKind state
       parser = case dialect of
         Ftl -> forthelFtl
