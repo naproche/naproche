@@ -47,9 +47,9 @@ data Instr =
   | SetBool (Param.T Bool) Bool
   | SetInt (Param.T Int) Int
   | SetBytes (Param.T Bytes) Bytes
-  | GetRelativeFilePath ParserKind FilePath
-  | GetAbsoluteFilePath ParserKind FilePath
-  | GetText ParserKind Bytes
+  | GetRelativeFilePath FilePath
+  | GetAbsoluteFilePath FilePath
+  | GetText Bytes
   | Verbose Bool
   deriving (Eq, Ord, Show)
 
@@ -85,7 +85,7 @@ getInstr p = Param.get p . foldr instr Param.empty
 
 addInstr :: Instr -> [Instr] -> [Instr]
 addInstr (Synonym _) = id
-addInstr (GetRelativeFilePath _ _) = id
+addInstr (GetRelativeFilePath _) = id
 addInstr i = (:) i
 
 dropInstr :: Drop -> [Instr] -> [Instr]
@@ -203,6 +203,5 @@ keywordsDropFlag = map (paramKeyword DropBool) textFlags
 
 keywordsArgument :: [(Text -> Instr, Text)]
 keywordsArgument =
- [(GetRelativeFilePath Ftl . Lazy.unpack, "read"),
-  (GetRelativeFilePath Tex . Lazy.unpack, "readtex")] ++
+ [(GetRelativeFilePath . Lazy.unpack, "read")] ++
   map (paramKeyword (\p -> SetBytes p . make_bytes)) textArgs

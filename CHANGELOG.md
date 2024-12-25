@@ -23,6 +23,13 @@ dialect of ForTheL, respectively.
 
 ### Changes on ForTheL
 
+  * **Changed:** The `readtex` instruction was renamed to `read`, i.e. instead
+    of two separate instructions `read` and `readtex` to import FTL and TEX
+    files, resp., there is only one instruction `read` now. Moreover, in FTL
+    texts, TEX texts can no longer be imported and, vice versa, in TEX texts,
+    FTL texts can no longer be imported. (This feature was never used and was
+    too error-prone since the FTL and TEX tokenizers are too different.)
+
   * **New:** (TEX) `\text{...}` commands can occur anywhere in a ForTheL text
     and only the content of their argument is processed by the parser.
 

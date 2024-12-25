@@ -46,7 +46,7 @@
 
 * Add TeX commands for instructions.
 
-* Add a variant of the `read`/`readtex` instructions that reads a file without
+* Add a variant of the `read` instructions that reads a file without
   checking it.
 
 * Add LaTeX environments for subproofs, cases etc.

@@ -112,14 +112,14 @@ mainTerminal initInstrs nonInstrArgs = do
         -- throw an error:
         _ -> error "More than one file argument"
       -- Append the input text proof text to the instruction proof texts:
-      let inputTextProofTexts = [ProofTextInstr Position.none $ GetText dialect inputText]
+      let inputTextProofTexts = [ProofTextInstr Position.none $ GetText inputText]
           proofTexts = initInstrProofTexts ++ inputTextProofTexts
       -- Verify the input text:
       Program.init_console
       resultCode <- do
         (if getInstr onlytranslateParam initInstrs
-          then translateInputText proofTexts
-          else verifyInputText mesonCache proverCache proofTexts)
+          then translateInputText dialect proofTexts
+          else verifyInputText dialect mesonCache proverCache proofTexts)
         `catch` (\Exception.UserInterrupt -> do
           Program.exit_thread
           Console.stderr ("Interrupt" :: String)
@@ -176,11 +176,11 @@ pideServer mesonCache proverCache initInstrs socket =
                   instrProofTexts = map (uncurry ProofTextInstr) locatedInstrs
                   tex = getInstr texParam instrs
                   dialect = if tex then Tex else Ftl
-                  inputTextProofTexts = [ProofTextInstr Position.none (GetText dialect text)]
+                  inputTextProofTexts = [ProofTextInstr Position.none (GetText text)]
               let proofTexts = instrProofTexts ++ inputTextProofTexts
 
               rc <- do
-                verifyInputText mesonCache proverCache proofTexts
+                verifyInputText dialect mesonCache proverCache proofTexts
                   `catch` (\(err :: Program.Error) -> do
                     robust_error $ Program.print_error err
                     return 0)
@@ -195,12 +195,12 @@ pideServer mesonCache proverCache initInstrs socket =
 
 -- * Translating or Verifying the Input Text
 
-translateInputText :: [ProofText] -> IO Int
-translateInputText proofTexts = do
+translateInputText :: ParserKind -> [ProofText] -> IO Int
+translateInputText dialect proofTexts = do
   -- Get the starting time of the parsing process:
   startTime <- getCurrentTime
   -- Parse the input text:
-  txts <- readProofText proofTexts
+  txts <- readProofText dialect proofTexts
   -- Translate the input text and print the result:
   mapM_ (\case ProofTextBlock bl -> print bl; _ -> return ()) txts
   -- Get the finish time of the translation process:
@@ -210,12 +210,12 @@ translateInputText proofTexts = do
   outputMain TRACING Position.none $ make_bytes $ "total " <> timeDifference finishTime
   return 0
 
-verifyInputText :: MESON.Cache -> Prover.Cache -> [ProofText] -> IO Int
-verifyInputText mesonCache proverCache proofTexts = do
+verifyInputText :: ParserKind -> MESON.Cache -> Prover.Cache -> [ProofText] -> IO Int
+verifyInputText dialect mesonCache proverCache proofTexts = do
   -- Get the starting time of the parsing process:
   startTime <- getCurrentTime
   -- Parse the input text:
-  txts <- readProofText proofTexts
+  txts <- readProofText dialect proofTexts
   -- Get the starting time of the verification process:
   proveStart <- getCurrentTime
   -- Verify the input text:

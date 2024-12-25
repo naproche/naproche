@@ -2,6 +2,7 @@
 -- Module      : SAD.Import.Reader
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
 --               (c) 2017 - 2018, Steffen Frerix
+--               (c) 2024, Marcel Schütz
 -- License     : GPL-3
 --
 -- Main text reading functions.
@@ -14,7 +15,6 @@ import Control.Monad
 import System.IO.Error
 import System.FilePath
 import Control.Exception
-import Data.List
 
 import SAD.Data.Text.Block
 import SAD.Data.Instr
@@ -40,60 +40,80 @@ import Naproche.Program qualified as Program
 -- * Reader loop
 
 -- | Parse one or more ForTheL texts
-readProofText :: [ProofText] -> IO [ProofText]
-readProofText text0 = do
+readProofText :: ParserKind -> [ProofText] -> IO [ProofText]
+readProofText dialect text0 = do
   context <- Program.thread_context
   pathToLibrary <- getPathToLibrary
-  (text, reports) <- reader pathToLibrary [] [initState context noTokens] text0
+  (text, reports) <- reader dialect pathToLibrary [] [initState context noTokens] text0
   when (Program.is_pide context) $ Message.reports reports
   return text
 
-reader :: FilePath -> [FilePath] -> [State FState] -> [ProofText] -> IO ([ProofText], [Position.Report])
-reader pathToLibrary doneFiles stateList [ProofTextInstr pos (GetRelativeFilePath dialect relativeFilePath)]
-  | ".." `isInfixOf` relativeFilePath =
-      Message.errorParser pos ("Illegal \"..\" in file name: " ++ relativeFilePath)
+reader :: ParserKind -> FilePath -> [FilePath] -> [State FState] -> [ProofText] -> IO ([ProofText], [Position.Report])
+-- Take a relative file path (i.e. relative to the library directory) and turn
+-- it into an absolute path.
+reader dialect pathToLibrary doneFiles stateList [ProofTextInstr pos (GetRelativeFilePath relativeFilePath)]
+  -- Catch "." as directory name in file path:
+  | "." `elem` splitDirectories relativeFilePath =
+      Message.errorParser pos $
+        "\".\" is not allowed as a directory name in a file path: " ++
+        relativeFilePath
+  -- Catch ".." as directory name in file path:
+  | ".." `elem` splitDirectories relativeFilePath =
+      Message.errorParser pos $
+        "\"..\" is not allowed as a directory name in a file path: " ++
+        relativeFilePath
+  -- Catch invalid file name extension:
+  | takeExtensions relativeFilePath `notElem` [".ftl", ".ftl.tex"] =
+      Message.errorParser pos $
+        "Invalid file name extension \"" ++ takeExtensions relativeFilePath ++
+        "\": " ++ relativeFilePath
+  -- Catch .ftl file read from within a text written in the TEX dialect:
+  | takeExtensions relativeFilePath == ".ftl" && dialect == Tex =
+      Message.errorParser pos $
+        "Invalid read instruction for a \".ftl\" file in a \".ftl.tex\" text: "
+        ++ relativeFilePath
+  -- Catch .ftl.tex file read from within a text written in the FTL dialect:
+  | takeExtensions relativeFilePath == ".ftl.tex" && dialect == Ftl =
+      Message.errorParser pos $
+        "Invalid read instruction for a \".ftl.tex\" file in a \".ftl\" text: "
+        ++ relativeFilePath
   | otherwise =
       let absoluteFilePath = pathToLibrary </> relativeFilePath
-          instr = GetAbsoluteFilePath dialect absoluteFilePath
-      in reader pathToLibrary doneFiles stateList [ProofTextInstr pos instr]
+          instr = GetAbsoluteFilePath absoluteFilePath
+      in reader dialect pathToLibrary doneFiles stateList [ProofTextInstr pos instr]
 
-reader pathToLibrary doneFiles (pState : states) [ProofTextInstr pos (GetAbsoluteFilePath dialect absoluteFilePath)]
+reader dialect pathToLibrary doneFiles (pState : states) [ProofTextInstr pos (GetAbsoluteFilePath absoluteFilePath)]
   | absoluteFilePath `elem` doneFiles = do
-      -- The parserKind of the state of the parser indicates whether the file was originally read with the .tex
-      -- or the .ftl parser. Now if, for example, we originally read the file with the .ftl format and now we
-      -- are reading the file again with the .tex format(by eg using '[readtex myfile.ftl]'), we want to throw an error.
-      when (parserKind pState /= dialect)
-        (Message.errorParser pos "Trying to read the same file once in TEX format and once in FTL format.")
       Message.outputMain Message.WARNING pos
         (make_bytes ("Skipping already read file: " ++ absoluteFilePath))
       (newProofText, newState) <- parseState pState
-      reader pathToLibrary doneFiles (newState:states) newProofText
+      reader dialect pathToLibrary doneFiles (newState:states) newProofText
   | otherwise = do
       (newProofText, newState) <- parseFile dialect absoluteFilePath pState
       -- state from before reading is still here
-      reader pathToLibrary (absoluteFilePath : doneFiles) (newState:pState:states) newProofText
+      reader dialect pathToLibrary (absoluteFilePath : doneFiles) (newState:pState:states) newProofText
 
-reader pathToLibrary doneFiles (pState : states) [ProofTextInstr _ (GetText dialect text)] = do
-  (newProofText, newState) <- parseBytes dialect text pState
-  reader pathToLibrary doneFiles (newState : pState : states) newProofText -- state from before reading is still here
+reader dialect pathToLibrary doneFiles (pState : states) [ProofTextInstr pos (GetText text)] = do
+    (newProofText, newState) <- parseBytes dialect text pState
+    reader dialect pathToLibrary doneFiles (newState : pState : states) newProofText -- state from before reading is still here
 
 -- This says that we are only really processing the last instruction in a [ProofText].
-reader pathToLibrary doneFiles stateList (t : restProofText) = do
-  (ts, ls) <- reader pathToLibrary doneFiles stateList restProofText
+reader dialect pathToLibrary doneFiles stateList (t : restProofText) = do
+  (ts, ls) <- reader dialect pathToLibrary doneFiles stateList restProofText
   return (t : ts, ls)
 
-reader pathToLibrary doneFiles (pState : oldState : rest) [] = do
+reader dialect pathToLibrary doneFiles (pState : oldState : rest) [] = do
   Message.outputParser Message.TRACING
     (if null doneFiles then Position.none else Position.file_only $ make_bytes $ head doneFiles) "parsing successful"
   let resetState = oldState {
         stUser = (stUser pState) {tvrExpr = tvrExpr $ stUser oldState}}
   -- Continue running a parser after eg. a read instruction was evaluated.
   (newProofText, newState) <- parseState resetState
-  reader pathToLibrary doneFiles (newState : rest) newProofText
+  reader dialect pathToLibrary doneFiles (newState : rest) newProofText
 
-reader _ _ (state : _) [] = return ([], reports $ stUser state)
+reader _ _ _ (state : _) [] = return ([], reports $ stUser state)
 
-reader _ _ _ _ = failWithMessage "SAD.Parser.Base.reader" "Invalid arguments."
+reader _ _ _ _ _ = failWithMessage "SAD.Parser.Base.reader" "Invalid arguments."
 
 -- | Consequtively lex, tokenize and parse a byte string.
 parse :: ParserKind -> Position.T -> Bytes -> State FState -> IO ([ProofText], State FState)
