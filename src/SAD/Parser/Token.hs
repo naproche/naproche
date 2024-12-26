@@ -12,10 +12,11 @@
 
 module SAD.Parser.Token (
   Token(..),
+  renderTokens,
 
   handleError,
   unknownError,
-  
+
   tokensRange,
   tokensPos,
   tokensText,
@@ -32,6 +33,7 @@ import Data.Text.Lazy qualified as Lazy
 import Data.List.NonEmpty qualified as NonEmpty
 import Data.Set (Set)
 import Data.Set qualified as Set
+import Data.List
 import Text.Megaparsec hiding (State, Pos, Token)
 
 import SAD.Core.Message qualified as Message
@@ -50,6 +52,22 @@ data Token =
     }
   | EOF { tokenPos :: Position.T }
   deriving (Eq, Ord)
+
+-- | Render a list of tokens.
+renderTokens :: [Token] -> String
+renderTokens tokens = intercalate "\n" $ map renderToken tokens
+
+-- | Render a token.
+renderToken :: Token -> String
+renderToken (Token text pos) =
+  "Token:\n" ++
+  "  Text: " ++ show text ++ "\n" ++
+  "  Position:\n" ++
+  "    Line: " ++ maybe (failureMessage "SAD.Parser.Token.renderToken" "Unknown token line") show (Position.line_of pos) ++ "\n" ++
+  "    Column: " ++ maybe (failureMessage "SAD.Parser.Token.renderToken" "Unknown token column") show (Position.column_of pos) ++ "\n" ++
+  "    Offset: " ++ maybe (failureMessage "SAD.Parser.Token.renderToken" "Unknown token offset") show (Position.offset_of pos) ++ "\n" ++
+  "    End-Offset: " ++ maybe (failureMessage "SAD.Parser.Token.renderToken" "Unknown token end-offset") show (Position.end_offset_of pos)
+renderToken EOF{} = ""
 
 
 -- * Error Handling

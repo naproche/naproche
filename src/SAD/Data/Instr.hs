@@ -19,8 +19,8 @@ module SAD.Data.Instr (
   printunfoldParam, printreasonParam, printproverParam, printfulltaskParam, dumpParam,
   printsimpParam, printthesisParam, unfoldParam, unfoldsfParam, unfoldlowParam, unfoldlowsfParam,
   translationParam, texParam,
-  helpParam, serverParam, onlytranslateParam,
-  proverParam, initParam, theoryParam,
+  helpParam, serverParam, onlytranslateParam, onlytokenizeParam,
+  modeParam, proverParam, initParam, theoryParam,
   keywordsCommand, keywordsSynonym, keywordsLimit, keywordsFlag, keywordsArgument,
   keywordsDropLimit, keywordsDropFlag
 ) where
@@ -145,9 +145,10 @@ textFlags@[proveParam, checkParam, checkconsistencyParam, symsignParam, infoPara
     Param.flag "tex" "parse passed file with forthel tex parser" False]
 
 textArgs :: [Param.T Bytes]
-proverParam :: Param.T Bytes
-textArgs@[proverParam] =
-  [Param.bytes "prover" "use prover NAME" (Prover.get_name Prover.eprover)]
+modeParam, proverParam :: Param.T Bytes
+textArgs@[modeParam, proverParam] =
+   [Param.bytes "mode" "run Naproche in mode MODE" "verify",
+    Param.bytes "prover" "use prover NAME" (Prover.get_name Prover.eprover)]
 
 initParam, theoryParam :: Param.T Bytes
 initParam = Param.bytes "init" "init file, empty to skip" "init.opt"
@@ -165,10 +166,11 @@ verboseFlags =
    printsimpParam,
    printthesisParam]
 
-helpParam, serverParam, onlytranslateParam :: Param.T Bool
+helpParam, serverParam, onlytranslateParam, onlytokenizeParam :: Param.T Bool
 helpParam = Param.flag "help" "show command-line help" False
 serverParam = Param.flag "server" "run in server mode" False
 onlytranslateParam = Param.flag "onlytranslate" "translate input text and exit" False
+onlytokenizeParam = Param.flag "onlytokenize" "translate input text and exit" False
 
 
 -- Keywords

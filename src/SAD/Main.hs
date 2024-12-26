@@ -29,6 +29,11 @@ import SAD.Prove.MESON qualified as MESON
 import SAD.Export.Prover qualified as Prover
 import SAD.Data.Instr
 import SAD.API hiding (error)
+import SAD.Parser.FTL.Lexer qualified as FTL
+import SAD.Parser.TEX.Lexer qualified as TEX
+import SAD.Parser.FTL.Token qualified as FTL
+import SAD.Parser.TEX.Token qualified as TEX
+import SAD.Parser.Token (renderTokens)
 
 import Isabelle.Bytes qualified as Bytes
 import Isabelle.Bytes (Bytes)
@@ -86,10 +91,11 @@ mainTerminal initInstrs nonInstrArgs = do
         -- as the path to the input text file and determine the ForTheL dialect
         -- of its contents via its file name extension:
         [filePath] -> do
-          let dialect = case takeExtensions filePath of
+          let fileNameExtension = takeExtensions filePath 
+          let dialect = case fileNameExtension of
                 ".ftl" -> Ftl
                 ".ftl.tex" -> Tex
-                _ -> error "Invalid file name extension"
+                _ -> error $ "Invalid file name extension: " ++ fileNameExtension
           inputText <- make_bytes <$> File.read filePath
           return (dialect, inputText)
         -- If no non-instruction command line argument is given, regard the
@@ -117,9 +123,12 @@ mainTerminal initInstrs nonInstrArgs = do
       -- Verify the input text:
       Program.init_console
       resultCode <- do
-        (if getInstr onlytranslateParam initInstrs
-          then translateInputText dialect proofTexts
-          else verifyInputText dialect mesonCache proverCache proofTexts)
+        let mode = getInstr modeParam initInstrs
+        (case mode of
+          "tokenize" -> tokenizeInputText dialect inputText
+          "translate" -> translateInputText dialect proofTexts
+          "verify" -> verifyInputText dialect mesonCache proverCache proofTexts
+          modeArg -> error $ "Invalid mode: " ++ make_string modeArg)
         `catch` (\Exception.UserInterrupt -> do
           Program.exit_thread
           Console.stderr ("Interrupt" :: String)
@@ -194,6 +203,22 @@ pideServer mesonCache proverCache initInstrs socket =
 
 
 -- * Translating or Verifying the Input Text
+
+tokenizeInputText :: ParserKind -> Bytes -> IO Int
+tokenizeInputText dialect bytes = do
+  -- Get the starting time of the parsing process:
+  startTime <- getCurrentTime
+  -- Lex and tokenize the input text:
+  tokens <- case dialect of
+    Ftl -> FTL.lex Position.start bytes >>= FTL.tokenize
+    Tex -> TEX.lex Position.start bytes >>= TEX.tokenize
+  putStrLn $ renderTokens tokens
+  -- Get the finish time of the translation process:
+  finishTime <- getCurrentTime
+  -- Print the time it took to translate the input text:
+  let timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)
+  outputMain TRACING Position.none $ make_bytes $ "total " <> timeDifference finishTime
+  return 0
 
 translateInputText :: ParserKind -> [ProofText] -> IO Int
 translateInputText dialect proofTexts = do
@@ -306,7 +331,7 @@ options :: [GetOpt.OptDescr Instr]
 options = [
   optSwitch "h" helpParam True "",
   optArgument "" initParam "FILE",
-  optSwitch "T" onlytranslateParam True "",
+  optArgument "M" modeParam "MODE",
   optFlag "" translationParam,
   optSwitch "" serverParam True "",
   optArgument "P" proverParam "NAME",
