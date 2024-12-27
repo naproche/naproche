@@ -9,6 +9,7 @@
 
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE GADTs #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module SAD.Data.Text.Block (
   ProofText(..),
@@ -34,11 +35,12 @@ import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
 import Data.Maybe (fromMaybe)
 
-import SAD.Data.Formula
+import SAD.Data.Formula hiding (CaseHypothesis)
 import SAD.Data.Instr
 import SAD.Parser.Token
 import SAD.Data.Text.Decl
 import SAD.Parser.Error (ParseError)
+import SAD.Export.TPTP qualified as TPTP
 
 import Isabelle.Bytes qualified as Bytes
 import Isabelle.Position qualified as Position
@@ -83,6 +85,20 @@ data Section =
   Assumption | Choice | Affirmation | Posit | LowDefinition |
   ProofByContradiction
   deriving (Eq, Ord, Show)
+
+renderSection :: Section -> String
+renderSection Definition = "Definition"
+renderSection Signature = "Signature"
+renderSection Axiom = "Axiom"
+renderSection Theorem = "Theorem"
+renderSection CaseHypothesis = "Case hypothesis"
+renderSection Assumption = "Assumption"
+renderSection Choice = "Choice"
+renderSection Affirmation = "Affirmation"
+renderSection Posit = "Posit"
+renderSection LowDefinition = "Low-level definition"
+renderSection ProofByContradiction = "Proof by contradiction"
+
 
 -- Composition
 
@@ -140,27 +156,39 @@ instance Show ProofText where
   showsPrec _ _ = id
 
 instance Show Block where
-  showsPrec p block@Block {body = body}
-    | null body = showForm p block
-    | isTopLevel block = showForm p block . showBody
-    | otherwise = showForm p block .
-        showIndent p . showString "proof.\n" . showBody .
-        showIndent p . showString "qed.\n"
+  showsPrec p block@Block {body = b, name = name, kind = kind}
+    | null b = showForm p block
+    | isTopLevel block = showString (renderSection kind ++ addName ++ ":\n") . showBlockForm (p + 1) block .
+        (if needsProof block
+          then if null b
+            then showIndent p . showString "Trivial:\n"
+            else let proof = last b in
+              case proof of
+                ProofTextBlock proofBlock -> showIndent p . showString "Proof:\n" . showProof (body proofBlock) . showIndent p . showString "Qed.\n"
+                _ -> id
+          else id)
+    -- | otherwise = showForm p block .
+    --     showIndent p . showString "Proof:\n" . showProof .
+    --     showIndent p . showString "Qed.\n"
+    | otherwise = error "foo!!!"
     where
-      showBody = foldr ((.) . showsPrec (p + 1)) id body
+      showProof proofTexts = foldr ((.) . showsPrec (p + 1)) id proofTexts
+      name' = Text.unpack name
+      addName = if null name' then "" else " (" ++ name' ++ ")"
 
 showForm :: Int -> Block -> String -> String
-showForm p block@Block {formula = formula, name = name} =
-  showIndent p . sform (isTopLevel block) (needsProof block) . dot
+showForm p block@Block {formula = formula, name = name, kind = kind} =
+  showIndent p . sform (needsProof block) . showString "\n"
   where
-    sform True  True  = showString $ "conjecture" ++ addName
-    sform True  False = showString $ "hypothesis" ++ addName
-    sform False False = showString "assume " . shows formula
-    sform False True  = shows formula
+    sform False = showString . Text.unpack $ TPTP.renderLogicFormula name TPTP.Hypothesis formula
+    sform True  = showString . Text.unpack $ TPTP.renderLogicFormula name TPTP.Conjecture formula
 
-    name' = Text.unpack name
-    addName = if null name' then "" else ' ':name'
-    dot = showString ".\n"
+showBlockForm :: Int -> Block -> String -> String
+showBlockForm p block =
+  showIndent p . sform (needsProof block) . showString "\n"
+  where
+    sform False = showString . Text.unpack $ TPTP.renderLogicFormula "" TPTP.Hypothesis (formulate block)
+    sform True  = showString . Text.unpack $ TPTP.renderLogicFormula "" TPTP.Conjecture (formulate block)
 
 showIndent :: Int -> ShowS
 showIndent n = showString $ replicate (n * 2) ' '

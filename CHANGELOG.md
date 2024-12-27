@@ -146,8 +146,7 @@ dialect of ForTheL, respectively.
     
     - `lex`: Naproche tries to lex the input text.
     - `tokenize`: Naproche tries to tokenize the input text.
-    - `translate`: Naproche tries to translate the input text as if the (old)
-      `--onlytranslate` flag were set
+    - `translate`: Naproche tries to translate the input text to TPTP.
     - `verify`: Naproch tries to verify the input text.
     
     If the `mode` parameter is not specified, Naproche behaves as if it were set

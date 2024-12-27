@@ -143,7 +143,8 @@ parensIf pred string = if pred then parens string else string
 
 failureMessage :: String -> String -> String
 failureMessage functionId message = functionId ++ ": " ++ message ++
-    " If you see this message, please file an issue."
+    " If you see this message, please file an issue at " ++
+    " <https://github.com/naproche/naproche/issues>."
 
 failWithMessage :: String -> String -> a
 failWithMessage functionId message = error $ failureMessage functionId message

@@ -4,65 +4,111 @@
 --               (c) 2017 - 2018, Steffen Frerix
 -- License     : GPL-3
 --
---Print proof task in TPTP syntax.
+-- Print proof task in TPTP syntax.
 
 
 {-# LANGUAGE OverloadedStrings #-}
 
-module SAD.Export.TPTP (output) where
+module SAD.Export.TPTP (
+  Role(..),
+  renderRole,
+  Sequent,
+  renderLogicFormula,
+  renderSequent
+) where
 
 import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
-import Data.Text.Lazy.Builder (Builder)
-import Data.Text.Lazy.Builder qualified as Builder
 
 import SAD.Data.Formula (Formula(..), showTrName, TermName(..))
-import SAD.Data.Text.Block (Block(Block))
-import SAD.Data.Text.Block qualified as Block
-import SAD.Data.Text.Context (Context(..))
-import SAD.Export.Representation
+import SAD.Helpers (failWithMessage)
 
 import Isabelle.Position qualified as Position
 import Isabelle.Library
 
 import Naproche.TPTP (atomic_word)
 
+data Role =
+    Axiom
+  | Hypothesis
+  | Definition
+  | Assumption
+  | Lemma
+  | Theorem
+  | Corollary
+  | Conjecture
+  | NegatedConjecture
+  | Plain
+  | Type
+  | Interpretation
+  | FiDomain
+  | FiFunctors
+  | FiPredicates
+  | Unknown
 
-output :: [Context] -> Context -> Text
-output contexts goal = toLazyText $
-  mconcat (map (tptpForm ",hypothesis,") $ reverse contexts)
-  <> tptpForm ",conjecture," goal
+-- | Render a role.
+renderRole :: Role -> Text
+renderRole Axiom = "axiom"
+renderRole Hypothesis = "hypothesis"
+renderRole Definition = "definition"
+renderRole Assumption = "assumption"
+renderRole Lemma = "lemma"
+renderRole Theorem = "theorem"
+renderRole Corollary = "corollary"
+renderRole Conjecture = "conjecture"
+renderRole NegatedConjecture = "negated_conjecture"
+renderRole Plain = "plain"
+renderRole Type = "type"
+renderRole Interpretation = "interpretation"
+renderRole FiDomain = "fi_domain"
+renderRole FiFunctors = "fi_functors"
+renderRole FiPredicates = "fi_predicates"
+renderRole Unknown = "unknown"
 
--- Formula print
-tptpForm :: Builder -> Context -> Builder
-tptpForm s (Context fr (Block { Block.name = m } : _) _) =
-  "fof(m"
-  <> (if Text.null m then "_" else Builder.fromLazyText m)
-  <> s <> tptpTerm 0 fr <> ").\n"
-tptpForm _ _ = ""
+type Sequent = ([Formula], [Formula])
 
-tptpName :: Formula -> Builder
-tptpName = Builder.fromText . make_text . atomic_word . make_bytes . showTrName
+-- | Render a formula.
+renderLogicFormula :: Text -> Role -> Formula -> Text
+renderLogicFormula name role formula =
+  "fof("
+  <> (if Text.null name then "_" else name)
+  <> ", " <> renderRole role <> ", "
+  <> tptpTerm 0 formula
+  <> ")."
 
-tptpTerm :: Int -> Formula -> Builder
+-- | Render a sequent.
+renderSequent :: Text -> Role -> Sequent -> Text
+renderSequent name role (premises, conclusions) =
+  "fof("
+  <> (if Text.null name then "_" else name)
+  <> ", " <> renderRole role <> ", ["
+  <> Text.intercalate ", " (map (tptpTerm 0) premises)
+  <> "] --> ["
+  <> Text.intercalate ", " (map (tptpTerm 0) conclusions)
+  <> "])."
+
+tptpName :: Formula -> Text
+tptpName = Text.fromStrict . make_text . atomic_word . make_bytes . showTrName
+
+tptpTerm :: Int -> Formula -> Text
 tptpTerm d = term
   where
-    term (All _ f)  = buildParens $ " ! " <> binder f
-    term (Exi _ f)  = buildParens $ " ? " <> binder f
+    term (All _ f)  =  "( ! " <> binder f <> ")"
+    term (Exi _ f)  = "( ? " <> binder f <> ")"
     term (Iff f g)  = sinfix " <=> " f g
     term (Imp f g)  = sinfix " => " f g
     term (Or  f g)  = sinfix " | " f g
     term (And f g)  = sinfix " & " f g
     term (Tag _ f)  = term f
-    term (Not f)    = buildParens $ " ~ " <> term f
+    term (Not f)    = "( ~ " <> term f <> ")"
     term Top        = "$true"
     term Bot        = "$false"
     term t@Trm {trmName = TermEquality} = let [l, r] = trmArgs t in sinfix " = " l r
-    term t@Trm {}   = tptpName t <> buildArgumentsWith term (trmArgs t)
+    term t@Trm {}   = tptpName t <> "(" <> Text.intercalate "," (map term $ trmArgs t) <> ")"
     term v@Var {}   = tptpName v
-    term i@Ind {}   = "W" <> Builder.fromString (show (d - 1 - indIndex i))
-    term ThisT      = error "SAD.Export.TPTP: Didn't expect ThisT here"
+    term i@Ind {}   = "W" <> Text.pack (show (d - 1 - indIndex i))
+    term ThisT      = failWithMessage "SAD.Export.TPTP" "Didn't expect ThisT here"
 
-    sinfix o f g  = buildParens $ term f <> o <> term g
+    sinfix o f g  = "(" <> term f <> o <> term g <> ")"
 
     binder f  = "[" <> tptpTerm (d + 1) (Ind 0 Position.none) <> "] : " <> tptpTerm (d + 1) f

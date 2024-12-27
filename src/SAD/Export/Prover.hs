@@ -22,10 +22,9 @@ import Control.Exception (SomeException, try, throw)
 import Data.Maybe (fromJust, isNothing)
 
 import SAD.Data.Instr
-import SAD.Data.Text.Context (Context, branch)
+import SAD.Data.Text.Context (Context, branch, output)
 import SAD.Data.Text.Block qualified as Block
 import SAD.Core.Message qualified as Message
-import SAD.Export.TPTP qualified as TPTP
 import SAD.Data.Formula.HOL qualified as HOL
 
 import Isabelle.Isabelle_Thread qualified as Isabelle_Thread
@@ -80,7 +79,7 @@ export cache pos iteration instrs context goal = do
 
   when (isNothing prover) $ Message.errorExport pos ("No prover named " <> quote proverName)
 
-  let task = make_bytes $ TPTP.output context goal
+  let task = make_bytes $ output context goal
   when (getInstr dumpParam instrs) $
     Message.output Bytes.empty Message.WRITELN pos task
 
