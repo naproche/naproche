@@ -141,12 +141,17 @@ dialect of ForTheL, respectively.
 ### Misc
 
   * **New:** The command line interface provides a new parameter
-    `--mode=<mode>`, where `<mode>` can be either `tokenize`, `translate` or
-    `verify`. If set to `tokenize`, Naproche tries to tokenize the input text;
-    if set to `translate`, Naproche tries to translate the input text as if the
-    (old) `--onlytranslate` flag were set; if set to `verify`, Naproch tries to
-    verify the input text. If the `mode` parameter is not specified, Naproche
-    behaves as if it were set to `verify`.
+    `--mode=<mode>`, where `<mode>` can be one of the following words which
+    determines the behaviour of Naproche:
+    
+    - `lex`: Naproche tries to lex the input text.
+    - `tokenize`: Naproche tries to tokenize the input text.
+    - `translate`: Naproche tries to translate the input text as if the (old)
+      `--onlytranslate` flag were set
+    - `verify`: Naproch tries to verify the input text.
+    
+    If the `mode` parameter is not specified, Naproche behaves as if it were set
+    to `verify`.
 
     NOTE: This change deprecates the `--onlytranslate`/`-T` flag.
 

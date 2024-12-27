@@ -63,10 +63,10 @@ renderToken (Token text pos) =
   "Token:\n" ++
   "  Text: " ++ show text ++ "\n" ++
   "  Position:\n" ++
-  "    Line: " ++ maybe (failureMessage "SAD.Parser.Token.renderToken" "Unknown token line") show (Position.line_of pos) ++ "\n" ++
-  "    Column: " ++ maybe (failureMessage "SAD.Parser.Token.renderToken" "Unknown token column") show (Position.column_of pos) ++ "\n" ++
-  "    Offset: " ++ maybe (failureMessage "SAD.Parser.Token.renderToken" "Unknown token offset") show (Position.offset_of pos) ++ "\n" ++
-  "    End-Offset: " ++ maybe (failureMessage "SAD.Parser.Token.renderToken" "Unknown token end-offset") show (Position.end_offset_of pos)
+  "    Line: " ++ maybe (failureMessage "SAD.Parser.Token.renderToken" "Unknown line") show (Position.line_of pos) ++ "\n" ++
+  "    Column: " ++ maybe (failureMessage "SAD.Parser.Token.renderToken" "Unknown column") show (Position.column_of pos) ++ "\n" ++
+  "    Offset: " ++ maybe (failureMessage "SAD.Parser.Token.renderToken" "Unknown offset") show (Position.offset_of pos) ++ "\n" ++
+  "    End-Offset: " ++ maybe (failureMessage "SAD.Parser.Token.renderToken" "Unknown end-offset") show (Position.end_offset_of pos)
 renderToken EOF{} = ""
 
 

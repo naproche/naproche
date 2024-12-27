@@ -125,6 +125,7 @@ mainTerminal initInstrs nonInstrArgs = do
       resultCode <- do
         let mode = getInstr modeParam initInstrs
         (case mode of
+          "lex" -> lexInputText dialect inputText
           "tokenize" -> tokenizeInputText dialect inputText
           "translate" -> translateInputText dialect proofTexts
           "verify" -> verifyInputText dialect mesonCache proverCache proofTexts
@@ -204,11 +205,29 @@ pideServer mesonCache proverCache initInstrs socket =
 
 -- * Translating or Verifying the Input Text
 
+lexInputText :: ParserKind -> Bytes -> IO Int
+lexInputText dialect bytes = do
+  -- Get the starting time of the parsing process:
+  startTime <- getCurrentTime
+  -- Lex the input text and print the result:
+  lexemes <- case dialect of
+    Ftl -> Left <$> FTL.lex Position.start bytes
+    Tex -> Right <$> TEX.lex Position.start bytes
+  putStrLn $ case lexemes of
+    Left ftlLexemes -> FTL.renderLexemes ftlLexemes
+    Right texLexemes -> TEX.renderLexemes texLexemes
+  -- Get the finish time of the translation process:
+  finishTime <- getCurrentTime
+  -- Print the time it took to translate the input text:
+  let timeDifference finishTime = showTimeDiff (diffUTCTime finishTime startTime)
+  outputMain TRACING Position.none $ make_bytes $ "total " <> timeDifference finishTime
+  return 0
+
 tokenizeInputText :: ParserKind -> Bytes -> IO Int
 tokenizeInputText dialect bytes = do
   -- Get the starting time of the parsing process:
   startTime <- getCurrentTime
-  -- Lex and tokenize the input text:
+  -- Lex and tokenize the input text and print the result:
   tokens <- case dialect of
     Ftl -> FTL.lex Position.start bytes >>= FTL.tokenize
     Tex -> TEX.lex Position.start bytes >>= TEX.tokenize
