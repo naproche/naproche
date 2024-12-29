@@ -15,7 +15,7 @@ dialect of ForTheL, respectively.
 
   * **Changed:** A separate lexing stage was added to the parser before its
     tokenizing stage (for both FTL and TEX), that are based on the
-    [FLex](https://github.com/mcearl/flex) library.
+    [FTLex](https://github.com/mcearl/ftlex) library.
 
   * **Changed:** The tokenizing stage of the parser is now based on
     `Megaparsec`.
