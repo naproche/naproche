@@ -21,7 +21,7 @@ module SAD.Data.Instr (
   translationParam, texParam,
   helpParam, serverParam, onlytranslateParam, onlytokenizeParam,
   modeParam, proverParam, initParam, theoryParam,
-  keywordsCommand, keywordsSynonym, keywordsLimit, keywordsFlag, keywordsArgument,
+  keywordsCommand, keywordsSynonym, keywordsLimit, keywordsFlag, keywordsArgument, keywordsModule,
   keywordsDropLimit, keywordsDropFlag
 ) where
 
@@ -49,6 +49,7 @@ data Instr =
   | SetBytes (Param.T Bytes) Bytes
   | GetRelativeFilePath FilePath
   | GetAbsoluteFilePath FilePath
+  | GetModule FilePath FilePath String
   | GetText Bytes
   | Verbose Bool
   deriving (Eq, Ord, Show)
@@ -86,6 +87,7 @@ getInstr p = Param.get p . foldr instr Param.empty
 addInstr :: Instr -> [Instr] -> [Instr]
 addInstr (Synonym _) = id
 addInstr (GetRelativeFilePath _) = id
+addInstr (GetModule _ _ _) = id
 addInstr i = (:) i
 
 dropInstr :: Drop -> [Instr] -> [Instr]
@@ -207,3 +209,8 @@ keywordsArgument :: [(Text -> Instr, Text)]
 keywordsArgument =
  [(GetRelativeFilePath . Lazy.unpack, "read")] ++
   map (paramKeyword (\p -> SetBytes p . make_bytes)) textArgs
+
+keywordsModule :: [((FilePath, FilePath, String) -> Instr, Text)]
+keywordsModule =
+  [(\(x,y,z) -> GetModule x y z, "importmodule"),
+   (\(x,y,z) -> GetModule x y z, "usemodule")]

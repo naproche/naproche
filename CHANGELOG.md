@@ -23,6 +23,28 @@ dialect of ForTheL, respectively.
 
 ### Changes on ForTheL
 
+  * **New:** A new instruction
+    `[importmodule <archive path>?<module path>?<module name>]` (where
+    the part `<module path>?` can be omitted and in TEX mode the part
+    `<archive path>?<module path>?<module name>` may be wrapped in a
+    `\path{...}` command) which mimics sTeX's `\importmodule` command by reading
+    the file
+    `$NAPROCHE_FORMALIZATIONS/<archive path>/source/<module path>/<module name>`
+    (in FTL mode) or
+    `$NAPROCHE_FORMALIZATIONS/<archive path>/source/<module path>/<module name>.tex`
+    (in TEX mode).
+
+    Examples:
+
+    ```
+    [importmodule meta-inf?vocabulary.ftl]
+
+    [importmodule \path{libraries?arithmetics?division.ftl}]
+    ```
+
+    NOTE: The syntax for this instruction is intended to be replaced by the
+    sTeX syntax `\importmodule[<archive path>]{<module path>?<module name>}`.
+
   * **Changed:** The `readtex` instruction was renamed to `read`, i.e. instead
     of two separate instructions `read` and `readtex` to import FTL and TEX
     files, resp., there is only one instruction `read` now. Moreover, in FTL

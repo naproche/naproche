@@ -49,6 +49,17 @@ readProofText dialect text0 = do
   return text
 
 reader :: ParserKind -> FilePath -> [FilePath] -> [State FState] -> [ProofText] -> IO ([ProofText], [Position.Report])
+-- Take an archive path, a module path and a module name, turn it into an
+-- absolute file path and continue the reader loop with a read instruction for
+-- this file path.
+reader dialect pathToLibrary doneFiles stateList [ProofTextInstr pos (GetModule archivePath modulePath moduleName)] =
+  let relativeFilePath = archivePath </> "source" </> modulePath </> moduleName
+      relativeFilePath' = case dialect of
+        Ftl -> relativeFilePath
+        Tex -> relativeFilePath <.> "tex"
+      absoluteFilePath = pathToLibrary </> relativeFilePath'
+      instr = GetAbsoluteFilePath absoluteFilePath
+  in reader dialect pathToLibrary doneFiles stateList [ProofTextInstr pos instr]
 -- Take a relative file path (i.e. relative to the library directory) and turn
 -- it into an absolute path.
 reader dialect pathToLibrary doneFiles stateList [ProofTextInstr pos (GetRelativeFilePath relativeFilePath)]

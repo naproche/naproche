@@ -20,6 +20,7 @@ module SAD.Parser.Primitives (
   satisfy,
   anyToken,
   word,
+  digit,
   symb,
   token,
   token',
@@ -120,6 +121,10 @@ anyToken = tokenPrim (Just . showToken)
 -- | Parses a token that is a word (i.e. consists of only alphabetic characters).
 word :: Parser st Text
 word = satisfy $ \tk -> Text.all isAsciiLetter tk
+
+-- | Parse a token that is a digit.
+digit :: Parser st Text
+digit = satisfy (\tk -> Text.length tk == 1 && isAsciiDigit (Text.head tk))
 
 -- | Parse a symbolic token, i.e. a TeX command or a single symbolic character
 symb :: Parser st Text

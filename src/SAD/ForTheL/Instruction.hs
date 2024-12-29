@@ -18,9 +18,10 @@ module SAD.ForTheL.Instruction (
 ) where
 
 import Control.Monad
-import Control.Applicative ((<|>))
+import Control.Applicative ((<|>), some)
 import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
+import System.FilePath hiding ((</>))
 
 import SAD.Data.Instr
 import SAD.ForTheL.Base
@@ -58,6 +59,7 @@ instrRead =
   instrPos addInstrReport $ readInstr >>=
     (\case
       i@(GetRelativeFilePath _) -> return i
+      i@(GetModule _ _ _) -> return i
       _ -> mzero)
 
 instrExit :: FTL (Position.T, Instr)
@@ -73,13 +75,14 @@ instrDrop = instrPos addInstrReport (token' "/" >> readInstrDrop)
 
 readInstr :: FTL Instr
 readInstr =
-  readInstrCommand -|- readInstrLimit -|- readInstrBool -|- readInstrText -|- readInstrSynonym
+  readInstrCommand -|- readInstrLimit -|- readInstrBool -|- readInstrText -|- readInstrSynonym -|- readInstrModule
   where
     readInstrCommand = fmap Command (readKeywords keywordsCommand)
     readInstrSynonym = ap (readKeywords keywordsSynonym) readWords
     readInstrLimit = ap (readKeywords keywordsLimit) readInt
     readInstrBool = ap (readKeywords keywordsFlag) readBool
     readInstrText = ap (readKeywords keywordsArgument) readText
+    readInstrModule = ap (readKeywords keywordsModule) readModule
 
 readInt :: FTL Int
 readInt = try $ do
@@ -101,6 +104,23 @@ readTexts = texCommandWithArg "path" (chainLL1 notClosingBrc) <|> chainLL1 notCl
     notClosingBrk = tokenPrim $ notCl "]"
     notClosingBrc = tokenPrim $ notCl "}"
     notCl str t = let tk = showToken t in guard (tk /= str) >> return tk
+
+readModule :: FTL (FilePath, FilePath, String)
+readModule = optInTexArg "path" $ do
+  fstComp <- sepBy pathComponent (symbol "/")
+  symbol "?"
+  sndComp <- sepBy pathComponent (symbol "/")
+  sep <- optLL1 False (symbol "?" >> return True)
+  mdTrdComp <- if sep
+    then Just <$> pathComponent
+    else pure Nothing
+  let modulePath = joinPath $ map Text.unpack fstComp
+      archivePath = joinPath $ if sep then map Text.unpack sndComp else [""]
+      moduleName = case mdTrdComp of Nothing -> Text.unpack (head sndComp); Just trdComp -> Text.unpack trdComp
+  return (modulePath, archivePath, moduleName)
+  where
+    pathComponent = Text.concat <$> some (word <|> digit <|> getToken "-" <|> getToken "_" <|> getToken ".")
+
 
 readWords :: FTL [Text]
 readWords = shortHand </> chainLL1 word
