@@ -19,7 +19,8 @@ import Control.Exception
 import SAD.Data.Text.Block
 import SAD.Data.Instr
 import SAD.ForTheL.Base
-import SAD.ForTheL.Structure
+import SAD.ForTheL.FTL.Structure qualified as FTL
+import SAD.ForTheL.TEX.Structure qualified as TEX
 import SAD.Parser.Base
 import SAD.Parser.FTL.Lexer qualified as FTL
 import SAD.Parser.TEX.Lexer qualified as TEX
@@ -160,8 +161,8 @@ parseState :: State FState -> IO ([ProofText], State FState)
 parseState state =
   let dialect = parserKind state
       parser = case dialect of
-        Ftl -> forthelFtl
-        Tex -> forthelTex
+        Ftl -> FTL.forthelText
+        Tex -> TEX.forthelText
   in launchParser parser state
 
 initState :: Program.Context -> [Token] -> State FState

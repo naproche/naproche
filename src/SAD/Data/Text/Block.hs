@@ -167,10 +167,9 @@ instance Show Block where
                 ProofTextBlock proofBlock -> showIndent p . showString "Proof:\n" . showProof (body proofBlock) . showIndent p . showString "Qed.\n"
                 _ -> id
           else id)
-    -- | otherwise = showForm p block .
-    --     showIndent p . showString "Proof:\n" . showProof .
-    --     showIndent p . showString "Qed.\n"
-    | otherwise = error "foo!!!"
+    | otherwise = showForm p block .
+        showIndent p . showString "Proof:\n" . showProof (body block) .
+        showIndent p . showString "Qed.\n"
     where
       showProof proofTexts = foldr ((.) . showsPrec (p + 1)) id proofTexts
       name' = Text.unpack name
