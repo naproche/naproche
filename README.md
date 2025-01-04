@@ -186,6 +186,45 @@ Naproche [<options>] [<file>]
   text in the TEX dialect, provide the option `--tex=on`).
 
 
+## Rendering the Formalizations as PDF
+
+### Prerequisites
+
+* Make sure that an up-to-date version of TeX Live is installed on your system.
+  (See <https://tug.org/texlive/quickinstall.html> for installation
+  instructions; to update an existing installation, run `tlmgr update --all`.)
+
+* Add the directory `naproche/examples/meta-inf/lib` to your `TEXINPUTS`
+  variable, e.g.:
+
+  ```shell
+  export TEXINPUTS="$(isabelle getenv -b NAPROCHE_FORMALIZATIONS)/meta-inf/lib//;$TEXINPUTS"
+  ```
+
+* Set the `MATHHUB` variable to `naproche/examples`, e.g.:
+
+  ```shell
+  export MATHHUB="$(isabelle getenv -b NAPROCHE_FORMALIZATIONS)"
+  ```
+
+
+### Build
+
+To build a file `<filename>.ftl.tex` in (any subdirectory of) the
+`naproche/examples` directory, run the following commands from within the
+directory in which that file lives:
+
+```shell
+STEX_WRITESMS=true pdflatex <filename>.ftl.tex
+bibtex <filename>.ftl
+STEX_USESMS=true pdflatex <filename>.ftl.tex
+STEX_USESMS=true pdflatex <filename>.ftl.tex
+```
+
+(The expressions `STEX_WRITESMS=true` and `STEX_USESMS=true` can be omitted but
+this might result in longer compilation times.)
+
+
 ## Changelog
 
 See [CHANGELOG.md](CHAMGELOG.md) for a changelog of Naproche.
