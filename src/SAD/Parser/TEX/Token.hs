@@ -60,6 +60,7 @@ data Error =
   | InvalidEnvEnd Position.T
   | InvalidGroupEnd Position.T
   | UnclosedGroup Position.T
+  | UnclosedBracketGroup Position.T
   | UnclosedEnv Position.T
   | Unexpected Position.T Text Text
   deriving (Eq, Ord)
@@ -77,6 +78,9 @@ makeErrMsg (InvalidGroupEnd pos) =
   in (msg, pos)
 makeErrMsg (UnclosedGroup pos) =
   let msg = "Unclosed group."
+  in (msg, pos)
+makeErrMsg (UnclosedBracketGroup pos) =
+  let msg = "Unclosed bracket group."
   in (msg, pos)
 makeErrMsg (UnclosedEnv pos) =
   let msg = "Unclosed environment."
@@ -118,6 +122,7 @@ token = choice [
     mathModeDelimiter >>= skip,
     ignoredCommand >>= skip,
     textCommand (concat <$> many token),
+    try importCommand,
     inlineForthel (concat <$> many token),
     group (concat <$> many (token <|> catchInvalidEnvEnd)),
     environment (concat <$> many (token <|> catchInvalidGroupEnd)),
@@ -188,11 +193,24 @@ group p = do
     then return $ beginGroup ++ content ++ endGroup
     else return content
 
--- | Parse a @\\text{...}@ command, depending on a parser @p@ for the
--- content of the argument of that command, and return the result of @p@.
-textCommand :: Tokenizer [Token] -> Tokenizer [Token]
-textCommand p = do
-  textMacro <- controlWord "text"
+-- | Parse a TeX group (depending on a parser @p@ for the content of the group).
+-- and return the tokens given by the begin-group lexeme, the result of @p@ and
+-- the end-group lexeme.
+group' :: Tokenizer [Token] -> Tokenizer [Token]
+group' p = do
+  beginGroup <- singleToken isBeginGroupCharLexeme
+  let beginGroupPos = tokensPos beginGroup
+  content <- p
+  -- Throw an error if the end of the input is reached:
+  ifEofFailWith $ UnclosedGroup beginGroupPos
+  endGroup <- singleToken isEndGroupCharLexeme
+  insideForthel <- gets insideForthel
+  return $ beginGroup ++ content ++ endGroup
+
+-- | Parse a TeX group (depending on a parser @p@ for the content of the group).
+-- and return the result of @p@.
+group'' :: Tokenizer [Token] -> Tokenizer [Token]
+group'' p = do
   beginGroup <- singleToken isBeginGroupCharLexeme
   let beginGroupPos = tokensPos beginGroup
   content <- p
@@ -201,6 +219,66 @@ textCommand p = do
   endGroup <- singleToken isEndGroupCharLexeme
   insideForthel <- gets insideForthel
   return content
+
+-- | Parse a bracket group (depending on a parser @p@ for the content of the#
+-- group), i.e. a string of the form @"[" <p> "]"@. If we are currently inside a
+-- ForTheL group, the tokens given by the opening bracket, the result of @p@ and
+-- the closing bracket are returned; otherwise only the result of @p@ is
+-- returned.
+bracketGroup :: Tokenizer [Token] -> Tokenizer [Token]
+bracketGroup p = do
+  beginGroup <- singleToken isBeginBracketGroupCharLexeme
+  let beginGroupPos = tokensPos beginGroup
+  content <- p
+  -- Throw an error if the end of the input is reached:
+  ifEofFailWith $ UnclosedBracketGroup beginGroupPos
+  endGroup <- singleToken isEndBracketGroupCharLexeme
+  insideForthel <- gets insideForthel
+  if insideForthel
+    then return $ beginGroup ++ content ++ endGroup
+    else return content
+
+-- | Parse a bracket group (depending on a parser @p@ for the content of the#
+-- group), i.e. a string of the form @"[" <p> "]"@ and return the tokens given
+-- by the opening bracket, the result of @p@ and the closing bracket.
+bracketGroup' :: Tokenizer [Token] -> Tokenizer [Token]
+bracketGroup' p = do
+  beginGroup <- singleToken isBeginBracketGroupCharLexeme
+  let beginGroupPos = tokensPos beginGroup
+  content <- p
+  -- Throw an error if the end of the input is reached:
+  ifEofFailWith $ UnclosedBracketGroup beginGroupPos
+  endGroup <- singleToken isEndBracketGroupCharLexeme
+  insideForthel <- gets insideForthel
+  return $ beginGroup ++ content ++ endGroup
+
+-- | Parse a bracket group (depending on a parser @p@ for the content of the#
+-- group), i.e. a string of the form @"[" <p> "]"@ and return the result of @p@.
+bracketGroup'' :: Tokenizer [Token] -> Tokenizer [Token]
+bracketGroup'' p = do
+  beginGroup <- singleToken isBeginBracketGroupCharLexeme
+  let beginGroupPos = tokensPos beginGroup
+  content <- p
+  -- Throw an error if the end of the input is reached:
+  ifEofFailWith $ UnclosedBracketGroup beginGroupPos
+  endGroup <- singleToken isEndBracketGroupCharLexeme
+  insideForthel <- gets insideForthel
+  return content
+
+-- | Parse a @\\text{...}@ command, depending on a parser @p@ for the
+-- content of the argument of that command, and return the result of @p@.
+textCommand :: Tokenizer [Token] -> Tokenizer [Token]
+textCommand p = do
+  controlWord "text"
+  group'' p
+
+-- | Parse a @\\importmodule[...]{...}@ or @\\usemodule[...]{...}@ command.
+importCommand :: Tokenizer [Token]
+importCommand = do
+  command <- anyControlWordOf ["importmodule", "usemodule"]
+  fstArg <- bracketGroup' $ concat <$> some (anyWord <|> char '/' <|> char '-' <|> char '_' <|> char '.')
+  sndArg <- group' $ concat <$> some (anyWord <|> char '/' <|> char '?' <|> char '-' <|> char '_' <|> char '.')
+  return $ command ++ fstArg ++ sndArg
 
 -- | Parse an @\\inlineforthel{...}@ command, depending on a parser @p@ for the
 -- content of the argument of that command, and return the result of @p@, where
@@ -516,6 +594,12 @@ anyControlSymbolExcept css = do
 
 
 -- ** Misc
+
+isBeginBracketGroupCharLexeme :: TEX.Lexeme -> Bool
+isBeginBracketGroupCharLexeme lexeme = isCharacterLexeme lexeme && charContent lexeme == '['
+
+isEndBracketGroupCharLexeme :: TEX.Lexeme -> Bool
+isEndBracketGroupCharLexeme lexeme = isCharacterLexeme lexeme && charContent lexeme == ']'
 
 forthelKeyAhead :: Tokenizer Bool
 forthelKeyAhead = option False $ try $ lookAhead $ do

@@ -18,6 +18,7 @@ import Data.Maybe (isNothing, mapMaybe)
 import Debug.Trace
 import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
+import System.FilePath hiding ((</>))
 
 import SAD.Parser.Base
 import SAD.Parser.Token
@@ -129,6 +130,9 @@ enclosed begin end p = do
 texCommand :: Text -> Parser st ()
 texCommand name = token ("\\" <> name)
 
+texCommandPos :: Text -> Parser st Position.T
+texCommandPos name = tokenPos' ("\\" <> name)
+
 -- | @texCommandWithArg name arg@ parses @"\\" <name> "{" <arg> "}"@.
 texCommandWithArg :: Text -> Parser st a -> Parser st a
 texCommandWithArg name arg = do
@@ -177,6 +181,17 @@ optParenthesised p = p -|- parenthesised p
 -- | @optBraced p@ parses @<p> | "{" <p> "}"@.
 optBraced :: Parser st a -> Parser st a
 optBraced p = p -|- braced p
+
+
+-- * File Paths
+
+pathComponent :: Parser st FilePath
+pathComponent = Text.unpack . Text.concat <$> some (word <|> digit <|> getToken "-" <|> getToken "_" <|> getToken ".")
+
+path :: Parser st FilePath
+path = do
+  pathComps <- sepBy pathComponent (symbol "/")
+  return $ joinPath pathComps
 
 
 -- ** Dots

@@ -23,6 +23,11 @@ dialect of ForTheL, respectively.
 
 ### Changes on ForTheL
 
+  * **New:** sTeX's `\importmodule[<archive path>]{<module path>?<module file>}`
+    and `\usemodule[<archive path>]{<module path>?<module file>}` instructions
+    are recognized by Naproche and behave like the new `importmodule`
+    instruction (see below).
+
   * **New:** A new instruction
     `[importmodule <archive path>?<module path>?<module name>]` (where
     the part `<module path>?` can be omitted and in TEX mode the part
@@ -41,9 +46,6 @@ dialect of ForTheL, respectively.
 
     [importmodule \path{libraries?arithmetics?division.ftl}]
     ```
-
-    NOTE: The syntax for this instruction is intended to be replaced by the
-    sTeX syntax `\importmodule[<archive path>]{<module path>?<module name>}`.
 
   * **Changed:** The `readtex` instruction was renamed to `read`, i.e. instead
     of two separate instructions `read` and `readtex` to import FTL and TEX

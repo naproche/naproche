@@ -18,10 +18,10 @@ module SAD.ForTheL.Instruction (
 ) where
 
 import Control.Monad
-import Control.Applicative ((<|>), some)
+import Control.Applicative ((<|>))
 import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
-import System.FilePath hiding ((</>))
+import Data.Maybe (fromMaybe)
 
 import SAD.Data.Instr
 import SAD.ForTheL.Base
@@ -107,19 +107,17 @@ readTexts = texCommandWithArg "path" (chainLL1 notClosingBrc) <|> chainLL1 notCl
 
 readModule :: FTL (FilePath, FilePath, String)
 readModule = optInTexArg "path" $ do
-  fstComp <- sepBy pathComponent (symbol "/")
+  fstComp <- path
   symbol "?"
-  sndComp <- sepBy pathComponent (symbol "/")
+  sndComp <- path
   sep <- optLL1 False (symbol "?" >> return True)
   mdTrdComp <- if sep
     then Just <$> pathComponent
     else pure Nothing
-  let modulePath = joinPath $ map Text.unpack fstComp
-      archivePath = joinPath $ if sep then map Text.unpack sndComp else [""]
-      moduleName = case mdTrdComp of Nothing -> Text.unpack (head sndComp); Just trdComp -> Text.unpack trdComp
+  let modulePath = fstComp
+      archivePath = if sep then sndComp else ""
+      moduleName = fromMaybe sndComp mdTrdComp
   return (modulePath, archivePath, moduleName)
-  where
-    pathComponent = Text.concat <$> some (word <|> digit <|> getToken "-" <|> getToken "_" <|> getToken ".")
 
 
 readWords :: FTL [Text]

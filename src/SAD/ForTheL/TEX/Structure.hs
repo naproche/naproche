@@ -21,6 +21,7 @@ import Data.Text.Lazy (Text)
 import Data.Text.Lazy qualified as Text
 import Data.Functor ((<&>))
 import Data.Foldable (foldr')
+import Data.Maybe (fromMaybe)
 
 import SAD.ForTheL.Structure
 import SAD.ForTheL.Base
@@ -40,6 +41,8 @@ import SAD.Data.Formula
 import SAD.Data.Tag qualified as Tag
 import SAD.Helpers
 
+import Isabelle.Position qualified as Position
+
 
 -- * Parsing a ForTheL text
 
@@ -47,13 +50,14 @@ import SAD.Helpers
 -- @{<topLevelBlock>} (<exitInstruction> | <EOF>)@
 forthelText :: FTL [ProofText]
 forthelText = repeatUntil topLevelBlock
-  (try (instruction >>= exitInstruction) <|> (eof >> return []))
+  (try ((instruction <|> importModule) >>= exitInstruction) <|> (eof >> return []))
 
 -- | Parse a top-level block (TEX):
 -- @<topLevelSection> | <instruction> | <macro> | <pretyping>@
 topLevelBlock :: FTL [ProofText]
 topLevelBlock =
       try (section <&> singleton)
+  <|> try (importModule <&> singleton)
   <|> topLevelSection
   <|> ((instruction >>= addSynonym >>= resetPretyping) <&> singleton)
   <|> try (introduceMacro <&> singleton)
@@ -220,6 +224,23 @@ section = do
   -- Reset all pretyped variables:
   modify (\st -> st {tvrExpr = []})
   return $ ProofTextInstr pos (Command ResetPretyping)
+
+
+-- * Importing Modules
+
+importModule :: FTL ProofText
+importModule = do
+  beginPos <- texCommandPos "importmodule" <|> texCommandPos "usemodule"
+  archivePath <- bracketed path
+  (sndArgRange, (modulePath, moduleName)) <- enclosed "{" "}" $ do
+    modulePath <- fromMaybe "" <$> optional (try $ path <* symbol "?")
+    moduleName <- pathComponent
+    return (modulePath, moduleName)
+  let instr = GetModule archivePath modulePath moduleName
+      endPos = snd sndArgRange
+      pos = Position.range_position (beginPos, Position.symbol_explode ("}" :: Text) endPos)
+  Reports.addInstrReport pos
+  return $ ProofTextInstr pos instr
 
 
 -- * Bracket expressions (aka instructions)
