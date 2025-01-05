@@ -385,7 +385,7 @@ topLevelProofHeader = do
   texBegin (markupToken Reports.proofStart "proof")
   mbMbMethod <- optional $ do
     symbol "["
-    proofOptions <- sepBy proofOption (symbol ",")
+    proofOptions <- sepBy0 proofOption (symbol ",")
     let mbMethodOption = find (\(key, val) -> key == "method") proofOptions
     let mbMethod = case mbMethodOption of
           Just (_, ProofMethod method) -> Just method

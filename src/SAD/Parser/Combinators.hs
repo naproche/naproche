@@ -67,12 +67,16 @@ p1 -|- p2 = Parser $ \st ok cerr eerr ->
 
 -- * Chain parsing combinators
 
--- | Parse @a@s interleaved by @sep@s keeping all intermediary results.
+-- | Parse one or more @a@s interleaved by @sep@s keeping all intermediary results.
 sepBy :: Parser st a -> Parser st sep -> Parser st [a]
 sepBy p sep = do
   a <- p
   as <- opt [] $ sep >> sepBy p sep
   pure $ a:as
+
+-- | Parse zero or more @a@s interleaved by @sep@s keeping all intermediary results.
+sepBy0 :: Parser st a -> Parser st sep -> Parser st [a]
+sepBy0 p sep = optLL1 [] (sepBy p sep)
 
 -- | Same as 'sepBy' but keep only the largest result.
 sepByLL1 :: Parser st a -> Parser st sep -> Parser st [a]
