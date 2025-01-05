@@ -162,6 +162,15 @@ dialect of ForTheL, respectively.
     `A implies that B`.
 
 
+### Changes on the LaTeX setup
+
+  * **New:** A new document class `naproche-library` for libraries.
+
+  * **Changed:** The package `puzzles` was merged into the package `naproche`
+    and can be invoked by importing the `naproche` package with the argument
+    `puzzle`.
+
+
 ### Misc
 
   * **New:** The command line interface provides a new parameter

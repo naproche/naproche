@@ -44,6 +44,7 @@
 % ===============================
 
 \NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{naproche}[2025/01/03 package naproche]
 
 \RequirePackage{stex}
 \RequirePackage{amsmath}  
@@ -268,13 +269,6 @@
 \newcommand{\Naproche}{\ensuremath{\mathbb{N}}aproche\xspace}
 
 
-% Hide imports
-% ------------
-
-\usepackage{scontents}
-\newenvsc{imports}[store-env=imports,print-env=false]
-
-
 % Options
 % -------
 
@@ -290,6 +284,25 @@
   }{%
     \setbool{forthel}{false}%
   }
+}
+\DeclareOption{puzzle}{%
+  \let\signature\relax
+  \let\endsignature\relax
+  \let\axiom\relax
+  \let\endaxiom\relax
+  \let\definition\relax
+  \let\enddefinition\relax
+  \let\theorem\relax
+  \let\endtheorem\relax
+  \newenvironment{signature}{\unskip}{\unskip}
+  \newenvironment{axiom}{\unskip}{\unskip}
+  \newenvironment{definition}{\unskip}{\unskip}
+  \newenvironment{theorem}{\unskip Therefore:}{}
+
+  \renewenvironment{forthel}{
+    \begin{mdframed}[backgroundcolor=gray!20,linecolor=gray!20]
+    \setlength{\parindent}{0pt}
+  }{\end{mdframed}}
 }
 \DeclareOption*{\PackageWarning{naproche}{Unknown ‘\CurrentOption’}}
 \ProcessOptions\relax
