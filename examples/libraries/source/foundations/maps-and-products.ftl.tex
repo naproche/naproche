@@ -1,34 +1,22 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../meta-inf/lib/naproche}
-\input{../../lib/libraries}
-\input{../../lib/foundations}
+\documentclass{naproche-library}
+\libinput{foundations-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/foundations/pairs-and-products.ftl.tex}]
-      [read \path{libraries/source/foundations/maps.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
-
+\begin{smodule}{maps-and-products.ftl}
+  \importmodule[libraries]{foundations?pairs-and-products.ftl}
+  \importmodule[libraries]{foundations?maps.ftl}
 
   \section*{Maps and Products}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_06_2754759509409792,printid]
-      Let $A, B, C$ be classes and $f$ be a map of $A \times B$.
-      Assume that $f(a,b) \in C$ for all $a \in A$ and all $b \in B$.
-      Then $f$ is a map from $A \times B$ to $C$.
-    \end{proposition}
-  \end{forthel}
+  \begin{proposition}[forthel,id=FOUNDATIONS_06_2754759509409792,printid]
+    Let $A, B, C$ be classes and $f$ be a map of $A \times B$.
+    Assume that $f(a,b) \in C$ for all $a \in A$ and all $b \in B$.
+    Then $f$ is a map from $A \times B$ to $C$.
+  \end{proposition}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_06_2304295212941312,printid]
-      Let $A, B, C$ be classes and $f$ be a map from $A \times B$ to $C$.
-      Let $a \in A$ and $b \in B$.
-      Then $f(a,b) \in C$.
-    \end{proposition}
-  \end{forthel}
+  \begin{proposition}[forthel,id=FOUNDATIONS_06_2304295212941312,printid]
+    Let $A, B, C$ be classes and $f$ be a map from $A \times B$ to $C$.
+    Let $a \in A$ and $b \in B$.
+    Then $f(a,b) \in C$.
+  \end{proposition}
+\end{smodule}
 \end{document}

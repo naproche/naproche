@@ -1,45 +1,34 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../meta-inf/lib/naproche}
-\input{../../lib/libraries}
-\input{../../lib/lists}
-\input{../../lib/arithmetics}
+\documentclass{naproche-library}
+\libinput{lists-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/lists/length.ftl.tex}]
-      [read \path{libraries/source/lists/concatenation.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
-
+\begin{smodule}{length-of-concatenation.ftl}
+  \importmodule[libraries]{lists?length.ftl}
+  \importmodule[libraries]{lists?concatenation.ftl}
 
   \section*{Length of Concatenation}
 
-  \begin{forthel}
-    \begin{proposition}[id=LISTS_LENGTHCONCAT_4512036658964875,printid]
-      $\length(L \concat L') = \length(L) + \length(L')$ for all lists $L, L'$.
-    \end{proposition}
-    \begin{proof}[method=induction on $L$]
-      Let $L$ be a list.
+  \begin{proposition}[forthel,id=LISTS_LENGTHCONCAT_4512036658964875,printid]
+    $\length(L \concat L') = \length(L) + \length(L')$ for all lists $L, L'$.
+  \end{proposition}
+  \begin{proof}[forthel,method=induction on $L$]
+    Let $L$ be a list.
 
-      Case $L = \nil$. Trivial.
+    Case $L = \nil$. Trivial.
 
-      Case $L = a \cons L''$ for some object $a$ and some list $L''$.
-        Take an object $a$ and a list $L''$ such that $L = a \cons L''$.
-        Then $L'' \prec L$.
-        Hence $\length(L'' \concat L') = \length(L'') + \length(L')$ for every list $L'$.
-        Thus $\length(L \concat L')
-          = \length((a \cons L'') \concat L')
-          = \length(a \cons (L'' \concat L'))
-          = \length(L'' \concat L') + 1
-          = (\length(L'') + \length(L')) + 1
-          = (\length(L'') + 1) + \length(L')
-          = \length(a \cons L'') + \length(L')
-          = \length(L) + \length(L')$
-        for every list $L'$.
-      End.
-    \end{proof}
-  \end{forthel}
+    Case $L = a \cons L''$ for some object $a$ and some list $L''$.
+      Take an object $a$ and a list $L''$ such that $L = a \cons L''$.
+      Then $L'' \prec L$.
+      Hence $\length(L'' \concat L') = \length(L'') + \length(L')$ for every list $L'$.
+      Thus $\length(L \concat L')
+        = \length((a \cons L'') \concat L')
+        = \length(a \cons (L'' \concat L'))
+        = \length(L'' \concat L') + 1
+        = (\length(L'') + \length(L')) + 1
+        = (\length(L'') + 1) + \length(L')
+        = \length(a \cons L'') + \length(L')
+        = \length(L) + \length(L')$
+      for every list $L'$.
+    End.
+  \end{proof}
+\end{smodule}
 \end{document}

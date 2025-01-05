@@ -1,48 +1,34 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../../meta-inf/lib/naproche}
-\input{../../../lib/libraries}
-\input{../../../lib/foundations}
+\documentclass{naproche-library}
+\libinput{set-theory-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/foundations/systems-of-sets.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
-
+\begin{smodule}{foundation.ftl}
+  \importmodule[libraries]{foundations?systems-of-sets.ftl}
 
   \section{Foundation}
 
-  \begin{forthel}
-    \begin{axiom}[title=Foundation,id=FOUNDATIONS_10_1320008569323520,printid]
-      Let $X$ be a nonempty system of sets.
-      Then $X$ has an element $x$ such that $X$ and $x$ are disjoint.
-    \end{axiom}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{corollary}[id=FOUNDATIONS_10_9532145874510315,printid]
-      Let $X$ be a nonempty system of sets.
-      Then $X$ has an element $x$ such that for no $y \in X$ we have $y \in x$.
-    \end{corollary}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_11_2812087589928960,printid]
-      Let $\Phi$ be a class.
-      Assume that for all sets $x$ if $\Phi$ contains every element of $x$ that is a set then $\Phi$ contains $x$.
-      Then $\Phi$ contains every set.
-    \end{proposition}
-    \begin{proof}
-      Assume the contrary.
-      Define $M = \{ x \mid x$ is a set such that $x \notin \Phi \}$.
-      Then $M$ is nonempty.
-      Hence we can take a $x \in M$ such that for no $y \in M$ we have $y \in x$.
-      Then $x$ is a set such that every element of $x$ that is a set is contained in $\Phi$.
-      Thus $\Phi$ contains $x$.
-      Contradiction.
-    \end{proof}
-  \end{forthel}
+  \begin{axiom}[forthel,title=Foundation,id=FOUNDATIONS_10_1320008569323520,printid]
+    Let $X$ be a nonempty system of sets.
+    Then $X$ has an element $x$ such that $X$ and $x$ are disjoint.
+  \end{axiom}
+  
+  \begin{corollary}[forthel,id=FOUNDATIONS_10_9532145874510315,printid]
+    Let $X$ be a nonempty system of sets.
+    Then $X$ has an element $x$ such that for no $y \in X$ we have $y \in x$.
+  \end{corollary}
+  
+  \begin{proposition}[forthel,id=FOUNDATIONS_11_2812087589928960,printid]
+    Let $\Phi$ be a class.
+    Assume that for all sets $x$ if $\Phi$ contains every element of $x$ that is a set then $\Phi$ contains $x$.
+    Then $\Phi$ contains every set.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Assume the contrary.
+    Define $M = \{ x \mid x$ is a set such that $x \notin \Phi \}$.
+    Then $M$ is nonempty.
+    Hence we can take a $x \in M$ such that for no $y \in M$ we have $y \in x$.
+    Then $x$ is a set such that every element of $x$ that is a set is contained in $\Phi$.
+    Thus $\Phi$ contains $x$.
+    Contradiction.
+  \end{proof}
+\end{smodule}
 \end{document}

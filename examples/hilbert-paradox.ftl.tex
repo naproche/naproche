@@ -1,13 +1,7 @@
 \documentclass{article}
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
-\usepackage{meta-inf/lib/naproche}
-\input{libraries/lib/foundations}
-\input{libraries/lib/set-theory}
-
-\usepackage[backend=bibtex]{biblatex}
-\usepackage{csquotes}
-\addbibresource{meta-inf/lib/bibliography}
+\usepackage{naproche}
+\libinput[meta-inf]{example-preamble}
+\libinput[libraries]{foundations-preamble}
 
 \title{Hilbert's Paradox}
 \author{\Naproche formalization:\\[0.5em]Marcel Schütz}
@@ -17,17 +11,11 @@
   \pagenumbering{gobble}
   \maketitle
 
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/set-theory/zf.ftl.tex}]
-      [read \path{libraries/source/foundations/universal-class.ftl.tex}]
-      [read \path{libraries/source/foundations/proper-classes.ftl.tex}]
-      [read \path{libraries/source/foundations/closure-under-arbitrary-unions.ftl.tex}]
-      [read \path{libraries/source/foundations/closure-under-powersets.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
+  \usemodule[libraries]{set-theory?zf.ftl}
+  \usemodule[libraries]{foundations?universal-class.ftl}
+  \usemodule[libraries]{foundations?proper-classes.ftl}
+  \usemodule[libraries]{foundations?closure-under-arbitrary-unions.ftl}
+  \usemodule[libraries]{foundations?closure-under-powersets.ftl}
 
   \noindent \emph{Hilbert's Paradox}, discovered around 1900 by David Hilbert, 
   demonstates that there cannot exists a set that is closed under powerset and 

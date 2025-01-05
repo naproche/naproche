@@ -1,12 +1,8 @@
 \documentclass{article}
-\usepackage[british]{babel}
-\usepackage{meta-inf/lib/naproche}
-\input{libraries/lib/foundations}
-\input{libraries/lib/arithmetics}
-
-\usepackage[backend=bibtex]{biblatex}
-\usepackage{csquotes}
-\addbibresource{meta-inf/lib/bibliography}
+\usepackage{naproche}
+\libinput[meta-inf]{example-preamble}
+\libinput[libraries]{foundations-preamble}
+\libinput[libraries]{arithmetics-preamble}
 
 \newcommand{\N}{\mathrm{N}}
 \newcommand{\Int}{\mathbb{Z}}
@@ -20,19 +16,13 @@
 \begin{document}
   \maketitle
 
+  \usemodule[libraries]{arithmetics?primes.ftl}
+  \usemodule[libraries]{arithmetics?nat-is-a-set.ftl}
+  \usemodule[libraries]{set-theory?zf.ftl}
+  \usemodule[libraries]{foundations?closure-under-finite-unions.ftl}
+
   \noindent This is a formalization of Furstenberg's topological proof of the
   infinitude of primes \cite[p. 353]{Furstenberg1955}.
-
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/arithmetics/primes.ftl.tex}]
-      [read \path{libraries/source/arithmetics/nat-is-a-set.ftl.tex}]
-      [read \path{libraries/source/set-theory/zf.ftl.tex}]
-      [read \path{libraries/source/foundations/closure-under-finite-unions.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
 
   The central idea of Furstenberg's proof is to define a certain topology on
   $\Nat$ from the properties of which we can deduce that the set of

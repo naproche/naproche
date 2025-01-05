@@ -1,19 +1,7 @@
 \documentclass{article}
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
-\usepackage{meta-inf/lib/naproche}
-\input{libraries/lib/foundations}
-\input{libraries/lib/set-theory}
-
-\usepackage[backend=bibtex]{biblatex}
-\usepackage{csquotes}
-\addbibresource{meta-inf/lib/bibliography}
-
-\usepackage[
-  type=CC,
-  modifier=by-nc-sa,
-  version=4.0,
-]{doclicense}
+\usepackage{naproche}
+\libinput[meta-inf]{example-preamble}
+\libinput[libraries]{foundations-preamble}
 
 \title{Cantor's Paradoxes}
 \author{\Naproche formalization: \\[0.5em]Marcel Schütz}
@@ -23,15 +11,12 @@
   \pagenumbering{gobble}
   \maketitle
 
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/set-theory/infinite-cardinals.ftl.tex}]
-      [read \path{libraries/source/foundations/universal-class.ftl.tex}]
-      [read \path{burali-forti-paradox.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
+  \usemodule[libraries]{set-theory?infinite-cardinals.ftl}
+  \usemodule[libraries]{foundations?universal-class.ftl}
+
+  \begin{forthel}
+    [read \path{burali-forti-paradox.ftl.tex}]
+  \end{forthel}
 
   \noindent \emph{Cantor's First Paradox}, discovered by Georg Cantor in 1897,
   states that the collection $\Card$ of all (infinite) cardinal numbers is a

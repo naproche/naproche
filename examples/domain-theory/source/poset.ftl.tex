@@ -1,8 +1,10 @@
-\documentclass{stex}
+\documentclass{naproche-library}
 \libinput{preamble}
 \begin{document}
 \begin{smodule}{poset.ftl}
+
 \importmodule[preliminaries]{sets.ftl}
+
 \STEXexport{
   \let\oldleq\leq
   \let\leq\relax
@@ -21,10 +23,6 @@
 \vardef{Pvar}[return={\poset[comp=##1]}]{\mathcal P}
 
 \section{Posets}
-
-\begin{forthel}     
-  [importmodule \path{preliminaries?sets.ftl}]
-\end{forthel}
 
 \subsection{Definition}
   

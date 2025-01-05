@@ -1,18 +1,8 @@
 \documentclass{article}
-\usepackage[british]{babel}
-\usepackage{meta-inf/lib/naproche}
-\input{libraries/lib/foundations}
-\input{libraries/lib/arithmetics}
-
-\usepackage[backend=bibtex]{biblatex}
-\usepackage{csquotes}
-\addbibresource{meta-inf/lib/bibliography}
-
-\usepackage[
-  type=CC,
-  modifier=by-nc-sa,
-  version=4.0,
-]{doclicense}
+\usepackage{naproche}
+\libinput[meta-inf]{example-preamble}
+\libinput[libraries]{foundations-preamble}
+\libinput[libraries]{arithmetics-preamble}
 
 \title{Euclid's Division Theorem}
 \author{\Naproche formalization:\\[0.5em]Marcel Schütz}
@@ -21,21 +11,15 @@
 \begin{document}
   \maketitle
 
+  \usemodule[libraries]{arithmetics?multiplication-and-ordering.ftl}
+  \usemodule[libraries]{arithmetics?subtraction.ftl}
+
   \noindent This is a formalization of Euclid's Division Theorem
   (within Peano Arithmetic) which states
   that for every pair of natural numbers $n$ and $m$ with $m \neq 0$ there
   exist unique natural numbers $q$ and $r$ such that
   \[n = mq + r\]
   with $r < m$  (cf. \cite[p. 17]{Burton2005}).
-
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/arithmetics/multiplication-and-ordering.ftl.tex}]
-      [read \path{libraries/source/arithmetics/subtraction.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
 
   \begin{forthel}
     \begin{theorem}[title=Euclid's Division Theorem: Existence,id=euclid_existence]

@@ -1,41 +1,32 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../meta-inf/lib/naproche}
-\input{../../lib/libraries}
-\input{../../lib/foundations}
-\input{../../lib/set-theory}
+\documentclass{naproche-library}
+\libinput{set-theory-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/set-theory/ordering.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
-
+\begin{smodule}{recursive-maps.ftl}
+  \importmodule[libraries]{set-theory?ordering.ftl}
 
   \section*{Recursive Maps}
 
-  \begin{forthel}
-    \begin{definition}[id=SET_THEORY_04_1955917673267200,printid]
-      Let $A$ be a class.
-      \[ A^{< \infty} = \{f \mid \text{$f$ is a map from $\alpha$ to $A$ for some ordinal $\alpha$} \}. \]
-    \end{definition}
-  \end{forthel}
+  \begin{definition}[forthel,id=SET_THEORY_04_1955917673267200,printid]
+    Let $A$ be a class.
+    \[ A^{< \infty} = \{f \mid \text{$f$ is a map from $\alpha$ to $A$ for some ordinal $\alpha$} \}. \]
+  \end{definition}
 
-  \begin{forthel}
-    \begin{proposition}[id=SET_THEORY_04_7841726894964736,printid]
-      Let $A$ be a class and $f$ be a map to $A$ such that $\dom(f)$ is a transitive subclass of $\Ord$ and $\alpha \in \dom(f)$.
-      Then $f \restriction \alpha \in A^{< \infty}$.
-    \end{proposition}
-  \end{forthel}
+  \begin{proposition}[forthel,id=SET_THEORY_04_7841726894964736,printid]
+    Let $A$ be a class and $f$ be a map to $A$ such that $\dom(f)$ is a transitive subclass of $\Ord$ and $\alpha \in \dom(f)$.
+    Then $f \restriction \alpha \in A^{< \infty}$.
+  \end{proposition}
 
   \begin{forthel}
     [prover vampire]
-    \begin{definition}[id=SET_THEORY_04_5597213870784512,printid]
-      Let $H$ be a map and $G : A^{< \infty} \to A$ for some class $A$ such that $H$ is a map to $A$.
-      $H$ is recursive regarding $G$ iff $\dom(H)$ is a transitive subclass of $\Ord$ and for all $\alpha \in \dom(H)$ we have \[ H(\alpha) = G(H \restriction \alpha). \]
-    \end{definition}
+  \end{forthel}
+
+  \begin{definition}[forthel,id=SET_THEORY_04_5597213870784512,printid]
+    Let $H$ be a map and $G : A^{< \infty} \to A$ for some class $A$ such that $H$ is a map to $A$.
+    $H$ is recursive regarding $G$ iff $\dom(H)$ is a transitive subclass of $\Ord$ and for all $\alpha \in \dom(H)$ we have \[ H(\alpha) = G(H \restriction \alpha). \]
+  \end{definition}
+
+  \begin{forthel}
     [prover eprover]
   \end{forthel}
+\end{smodule}
 \end{document}

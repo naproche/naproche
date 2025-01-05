@@ -1,24 +1,14 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../../meta-inf/lib/naproche}
-\input{../../../lib/libraries}
-\input{../../../lib/foundations}
+\documentclass{naproche-library}
+\libinput{set-theory-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/foundations/systems-of-sets.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
-
+\begin{smodule}{union.ftl}
+  \importmodule[libraries]{foundations?systems-of-sets.ftl}
 
   \section{Union}
 
-  \begin{forthel}
-    \begin{axiom}[title=Union Axiom,id=FOUNDATIONS_10_5536459412996096,printid]
-      Let $X$ be a system of sets.
-      If $X$ is a set then $\bigcup X$ is a set.
-    \end{axiom}
-  \end{forthel}
+  \begin{axiom}[forthel,title=Union Axiom,id=FOUNDATIONS_10_5536459412996096,printid]
+    Let $X$ be a system of sets.
+    If $X$ is a set then $\bigcup X$ is a set.
+  \end{axiom}
+\end{smodule}
 \end{document}

@@ -1,23 +1,13 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../meta-inf/lib/naproche}
-\input{../../lib/libraries}
-\input{../../lib/foundations}
+\documentclass{naproche-library}
+\libinput{foundations-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/foundations/classes.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
-
+\begin{smodule}{proper-classes.ftl}
+  \importmodule[libraries]{foundations?classes.ftl}
 
   \section*{Proper Classes}
 
-  \begin{forthel}
-    \begin{definition}[id=FOUNDATIONS_10_8452102365965847,printid]
-      A proper class is a class that is not a set.
-    \end{definition}
-  \end{forthel}
+  \begin{definition}[forthel,id=FOUNDATIONS_10_8452102365965847,printid]
+    A proper class is a class that is not a set.
+  \end{definition}
+\end{smodule}
 \end{document}

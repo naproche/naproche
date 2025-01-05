@@ -1,23 +1,13 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../../meta-inf/lib/naproche}
-\input{../../../lib/libraries}
-\input{../../../lib/foundations}
+\documentclass{naproche-library}
+\libinput{set-theory-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/foundations/classes.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
-
+\begin{smodule}{separation.ftl}
+  \importmodule[libraries]{foundations?classes.ftl}
 
   \section{Separation}
 
-  \begin{forthel}
-    \begin{axiom}[title=Separation Axiom,id=FOUNDATIONS_10_2263707272871936,printid]
-      Every subclass of any set is a set.
-    \end{axiom}
-  \end{forthel}
+  \begin{axiom}[forthel,title=Separation Axiom,id=FOUNDATIONS_10_2263707272871936,printid]
+    Every subclass of any set is a set.
+  \end{axiom}
+\end{smodule}
 \end{document}

@@ -1,34 +1,23 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../meta-inf/lib/naproche}
-\input{../../lib/libraries}
-\input{../../lib/foundations}
-\input{../../lib/set-theory}
+\documentclass{naproche-library}
+\libinput{set-theory-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/set-theory/omega-is-limit-ordinal.ftl.tex}]
-      [read \path{libraries/source/set-theory/ordering.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
-
+\begin{smodule}{omega-is-least-limit-ordinal.ftl}
+  \importmodule[libraries]{set-theory?omega-is-limit-ordinal.ftl}
+  \importmodule[libraries]{set-theory?ordering.ftl}
 
   \section*{$\omega$ is the Least Limit Ordinal}
 
-  \begin{forthel}
-    \begin{proposition}[id=SET_THEORY_03_5517271459954688,printid]
-      Let $\lambda$ be a limit ordinal.
-      Then \[ \omega \leq \lambda. \]
-    \end{proposition}
-    \begin{proof}
-      Assume the contrary.
-      Then $\lambda < \omega$.
-      Consequently $\lambda \in \omega$.
-      Hence $\lambda = 0$ or $\lambda = \succ(n)$ for some $n \in \omega$.
-      Thus $\lambda$ is not a limit ordinal.
-      Contradiction.
-    \end{proof}
-  \end{forthel}
+  \begin{proposition}[forthel,id=SET_THEORY_03_5517271459954688,printid]
+    Let $\lambda$ be a limit ordinal.
+    Then \[ \omega \leq \lambda. \]
+  \end{proposition}
+  \begin{proof}[forthel]
+    Assume the contrary.
+    Then $\lambda < \omega$.
+    Consequently $\lambda \in \omega$.
+    Hence $\lambda = 0$ or $\lambda = \succ(n)$ for some $n \in \omega$.
+    Thus $\lambda$ is not a limit ordinal.
+    Contradiction.
+  \end{proof}
+\end{smodule}
 \end{document}

@@ -1,24 +1,14 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../../meta-inf/lib/naproche}
-\input{../../../lib/libraries}
-\input{../../../lib/foundations}
+\documentclass{naproche-library}
+\libinput{set-theory-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/foundations/maps.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
-
+\begin{smodule}{replacement.ftl}
+  \importmodule[libraries]{foundations?maps.ftl}
 
   \section{Replacement}
 
-  \begin{forthel}
-    \begin{axiom}[title=Replacement Axiom,id=FOUNDATIONS_10_8142956584239104,printid]
-      Let $f$ be a map and $x$ be a set.
-      Then $f[x]$ is a set.
-    \end{axiom}
-  \end{forthel}
+  \begin{axiom}[forthel,title=Replacement Axiom,id=FOUNDATIONS_10_8142956584239104,printid]
+    Let $f$ be a map and $x$ be a set.
+    Then $f[x]$ is a set.
+  \end{axiom}
+\end{smodule}
 \end{document}

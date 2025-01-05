@@ -1,19 +1,6 @@
 \documentclass{article}
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
-\usepackage{meta-inf/lib/naproche}
-\input{libraries/lib/foundations}
-\input{libraries/lib/set-theory}
-
-\usepackage[backend=bibtex]{biblatex}
-\usepackage{csquotes}
-\addbibresource{meta-inf/lib/bibliography}
-
-\usepackage[
-  type=CC,
-  modifier=by-nc-sa,
-  version=4.0,
-]{doclicense}
+\usepackage{naproche}
+\libinput[meta-inf]{example-preamble}
 
 \title{The Barber Paradox}
 \author{\Naproche formalization:\\[0.5em]Marcel Schütz}
@@ -23,13 +10,7 @@
   \pagenumbering{gobble}
   \maketitle
 
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{meta-inf/source/everyday-ontology.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
+  \usemodule[meta-inf]{everyday-ontology.ftl}
 
   \noindent The \emph{Barber Paradox} is a puzzle illustrating Russell's
   Paradox, formulated by Bertrand Russell in 1919 \cite[p. 355]{Russell1919}:

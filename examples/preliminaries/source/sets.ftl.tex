@@ -1,10 +1,11 @@
-\documentclass{article}
-\usepackage{naproche}
+\documentclass{naproche-library}
 \libinput{preamble}
 \begin{document}
 \begin{smodule}{sets.ftl}
+
 \importmodule[meta-inf]{macros.ftl}
 \importmodule[meta-inf]{vocabulary.ftl}
+
 \STEXexport{
   \let\oldsubseteq\subseteq
   \let\subseteq\relax
@@ -50,12 +51,6 @@
 \symdef{bigcap}[op=\oldbigcap]{\oldbigcap\,}
 
 \section{Classes and Sets}
-
-\begin{forthel}
-  [importmodule \path{meta-inf?vocabulary.ftl}]
-
-  [importmodule \path{meta-inf?macros.ftl}]
-\end{forthel}
 
 \begin{signature*}
   A \emph{class} is a notion.

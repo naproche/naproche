@@ -1,88 +1,72 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../meta-inf/lib/naproche}
-\input{../../lib/libraries}
-\input{../../lib/lists}
+\documentclass{naproche-library}
+\libinput{lists-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/lists/concatenation.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
+\begin{smodule}{reversion.ftl}
+  \importmodule[libraries]{lists?concatenation.ftl}
 
+  \symdef{rev}{\textrm{rev}}
 
   \section*{Reversion}
 
-  \begin{forthel}
-    \begin{signature}[id=LISTS_REV_4578620297183232,printid]
-      Let $L$ be a list.
-      $\rev(L)$ is a list.
-    \end{signature}
-  \end{forthel}
+  \begin{signature}[forthel,id=LISTS_REV_4578620297183232,printid]
+    Let $L$ be a list.
+    $\rev(L)$ is a list.
+  \end{signature}
 
-  \begin{forthel}
-    \begin{axiom}[id=LISTS_REV_3703161885818880,printid]
-      Let $L$ be a list.
-      Then $\rev(\nil) = \nil$.
-    \end{axiom}
-  \end{forthel}
+  \begin{axiom}[forthel,id=LISTS_REV_3703161885818880,printid]
+    Let $L$ be a list.
+    Then $\rev(\nil) = \nil$.
+  \end{axiom}
 
-  \begin{forthel}
-    \begin{axiom}[id=LISTS_REV_8050301789536256,printid]
-      Let $a$ be an object and $L$ be a list.
-      Then $\rev(a \cons L) = \rev(L) \concat [a]$.
-    \end{axiom}
-  \end{forthel}
+  \begin{axiom}[forthel,id=LISTS_REV_8050301789536256,printid]
+    Let $a$ be an object and $L$ be a list.
+    Then $\rev(a \cons L) = \rev(L) \concat [a]$.
+  \end{axiom}
 
-  \begin{forthel}
-    \begin{proposition}[id=LISTS_REV_4512036658964875,printid]
-      $\rev(L \concat L') = \rev(L') \concat \rev(L)$ for any lists $L, L'$.
-    \end{proposition}
-    \begin{proof}[method=induction on $L$]
-      Let $L,L'$ be lists.
+  \begin{proposition}[forthel,id=LISTS_REV_4512036658964875,printid]
+    $\rev(L \concat L') = \rev(L') \concat \rev(L)$ for any lists $L, L'$.
+  \end{proposition}
+  \begin{proof}[forthel,method=induction on $L$]
+    Let $L,L'$ be lists.
 
-      Case $L = \nil$. Trivial.
+    Case $L = \nil$. Trivial.
 
-      Case $L = a \cons L''$ for some object $a$ and some list $L''$.
-        Take an object $a$ and a list $L''$ such that $L = a \cons L''$.
-        Then $L'' \prec L$.
-        Hence $\rev(L'' \concat L') = \rev(L') \concat \rev(L'')$.
-        Thus $\rev(L \concat L')
-          = \rev((a \cons L'') \concat L')
-          = \rev(a \cons (L'' \concat L'))
-          = \rev(L'' \concat L') \concat [a]
-          = (\rev(L') \concat \rev(L'')) \concat [a]
-          = \rev(L') \concat (\rev(L'') \concat [a])
-          = \rev(L') \concat \rev(a \cons L'')
-          = \rev(L') \concat \rev(L)$.
-        Indeed $(\rev(L') \concat \rev(L'')) \concat [a] = \rev(L') \concat (\rev(L'') \concat [a])$ (by \printref{LISTS_CONCAT_1021563255448756}).
-      End.
-    \end{proof}
-  \end{forthel}
+    Case $L = a \cons L''$ for some object $a$ and some list $L''$.
+      Take an object $a$ and a list $L''$ such that $L = a \cons L''$.
+      Then $L'' \prec L$.
+      Hence $\rev(L'' \concat L') = \rev(L') \concat \rev(L'')$.
+      Thus $\rev(L \concat L')
+        = \rev((a \cons L'') \concat L')
+        = \rev(a \cons (L'' \concat L'))
+        = \rev(L'' \concat L') \concat [a]
+        = (\rev(L') \concat \rev(L'')) \concat [a]
+        = \rev(L') \concat (\rev(L'') \concat [a])
+        = \rev(L') \concat \rev(a \cons L'')
+        = \rev(L') \concat \rev(L)$.
+      Indeed $(\rev(L') \concat \rev(L'')) \concat [a] = \rev(L') \concat (\rev(L'') \concat [a])$ (by \printref{LISTS_CONCAT_1021563255448756}).
+    End.
+  \end{proof}
 
-  \begin{forthel}
-    \begin{proposition}[id=LISTS_REV_1021563255448756,printid]
-      $\rev(\rev(L)) = L$ for every list $L$.
-    \end{proposition}
-    \begin{proof}[method=induction on $L$]
-      Let $L$ be a list.
+  \begin{proposition}[forthel,id=LISTS_REV_1021563255448756,printid]
+    $\rev(\rev(L)) = L$ for every list $L$.
+  \end{proposition}
+  \begin{proof}[forthel,method=induction on $L$]
+    Let $L$ be a list.
 
-      Case $L = \nil$. Trivial.
-    
-      Case $L = a \cons L'$ for some object $a$ and some list $L'$.
-        Take an object $a$ and a list $L'$ such that $L = a \cons L'$.
-        Then $L' \prec L$.
-        Hence $\rev(\rev(L')) = L'$.
-        Thus $\rev(\rev(L))
-          = \rev(\rev(a \cons L'))
-          = \rev(\rev(L') \concat [a])
-          = \rev([a]) \concat \rev(\rev(L'))
-          = a \cons \rev(\rev(L'))
-          = a \cons L'
-          = L$.
-      End.
-    \end{proof}
-  \end{forthel}
+    Case $L = \nil$. Trivial.
+  
+    Case $L = a \cons L'$ for some object $a$ and some list $L'$.
+      Take an object $a$ and a list $L'$ such that $L = a \cons L'$.
+      Then $L' \prec L$.
+      Hence $\rev(\rev(L')) = L'$.
+      Thus $\rev(\rev(L))
+        = \rev(\rev(a \cons L'))
+        = \rev(\rev(L') \concat [a])
+        = \rev([a]) \concat \rev(\rev(L'))
+        = a \cons \rev(\rev(L'))
+        = a \cons L'
+        = L$.
+    End.
+  \end{proof}
+\end{smodule}
 \end{document}

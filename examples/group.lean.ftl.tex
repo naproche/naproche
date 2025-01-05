@@ -1,8 +1,6 @@
 \documentclass{article}
-
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
-\usepackage{meta-inf/lib/naproche}
+\usepackage{naproche}
+\libinput[meta-inf]{example-preamble}
 
 \title{group.lean in \Naproche}
 \author{\Naproche Formalization: Peter Koepke}
@@ -12,6 +10,8 @@
 \pagenumbering{gobble}
 
 \maketitle
+
+\usemodule[meta-inf]{vocabulary.ftl}
 
 \noindent We give a ForTheL version of the ``multiplicative half'' of
 \path{https://github.com/leanprover/lean/blob/master/library/init/
@@ -33,8 +33,6 @@ use and adapt \Naproche{}'s soft types for abstract algebraic structures.
 \section{Defining Groups}
 
 \begin{forthel}
-
-[read \path{meta-inf/source/vocabulary.ftl.tex}]
 
 \begin{signature}
 A type is a set.

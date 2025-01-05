@@ -1,8 +1,6 @@
 \documentclass{article}
-
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
-\usepackage{meta-inf/lib/naproche}
+\usepackage{naproche}
+\libinput[meta-inf]{example-preamble}
 
 \title{Square roots of primes are irrational}
 \author{}
@@ -12,11 +10,11 @@
 
   \maketitle
 
+  \usemodule[meta-inf]{vocabulary.ftl}
+
   \section*{(Strictly) positive rational numbers}
 
   \begin{forthel}
-    [read \path{meta-inf/source/vocabulary.ftl.tex}]
-
     \begin{signature}
       A positive rational number is an object.
     \end{signature}

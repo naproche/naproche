@@ -1,348 +1,316 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../meta-inf/lib/naproche}
-\input{../../lib/libraries}
-\input{../../lib/foundations}
+\documentclass{naproche-library}
+\libinput{foundations-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/foundations/computation-laws-for-classes.ftl.tex}]
-      [read \path{libraries/source/foundations/pairs-and-products.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
-
+\begin{smodule}{computation-laws-for-products.ftl}
+  \importmodule[libraries]{foundations?computation-laws-for-classes.ftl}
+  \importmodule[libraries]{foundations?pairs-and-products.ftl}
 
   \section*{Computation Laws for Cartesian Products}
 
   \subsection*{Subclass Laws}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_05_5719644021194752,printid]
-      Let $A, B, C$ be classes.
-      IF $A \subseteq B$ then $A \times C \subseteq B \times C$.
-    \end{proposition}
-    \begin{proof}
-      Assume $A \subseteq B$.
-      Let $x \in A \times C$.
-      Take $a \in A$ and $c \in C$ such that $x = (a, c)$.
-      Then $a \in B$.
-      Hence $(a, c) \in B \times C$.
-    \end{proof}
-  \end{forthel}
+  \begin{proposition}[forthel,id=FOUNDATIONS_05_5719644021194752,printid]
+    Let $A, B, C$ be classes.
+    IF $A \subseteq B$ then $A \times C \subseteq B \times C$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Assume $A \subseteq B$.
+    Let $x \in A \times C$.
+    Take $a \in A$ and $c \in C$ such that $x = (a, c)$.
+    Then $a \in B$.
+    Hence $(a, c) \in B \times C$.
+  \end{proof}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_05_4888282951319552,printid]
-      Let $A, A', B, B'$ be classes.
-      Assume that $A$ and $A'$ are nonempty.
-      Then $(A \times A') \subseteq (B \times B')$ iff $A \subseteq B$ and $A' \subseteq B'$.
-    \end{proposition}
-    \begin{proof}
-      Case $(A \times A') \subseteq (B \times B')$.
-        Let us show that for all $a \in A$ and all $a' \in A'$ we have $a \in B$ and $a' \in B'$.
-          Let $a \in A$ and $a' \in A'$.
-          Then $(a, a') \in A \times A'$.
-          Hence $(a, a') \in B \times B'$.
-          Thus $a \in B$ and $a' \in B'$.
-        End.
-      End.
-
-      Case $A \subseteq B$ and $A' \subseteq B'$.
-        Let $x \in A \times A'$.
-        Take $a \in A$ and $a' \in A'$ such that $x = (a, a')$.
-        Then $a \in B$ and $a' \in B'$.
+  \begin{proposition}[forthel,id=FOUNDATIONS_05_4888282951319552,printid]
+    Let $A, A', B, B'$ be classes.
+    Assume that $A$ and $A'$ are nonempty.
+    Then $(A \times A') \subseteq (B \times B')$ iff $A \subseteq B$ and $A' \subseteq B'$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Case $(A \times A') \subseteq (B \times B')$.
+      Let us show that for all $a \in A$ and all $a' \in A'$ we have $a \in B$ and $a' \in B'$.
+        Let $a \in A$ and $a' \in A'$.
+        Then $(a, a') \in A \times A'$.
         Hence $(a, a') \in B \times B'$.
+        Thus $a \in B$ and $a' \in B'$.
       End.
-    \end{proof}
-  \end{forthel}
+    End.
+
+    Case $A \subseteq B$ and $A' \subseteq B'$.
+      Let $x \in A \times A'$.
+      Take $a \in A$ and $a' \in A'$ such that $x = (a, a')$.
+      Then $a \in B$ and $a' \in B'$.
+      Hence $(a, a') \in B \times B'$.
+    End.
+  \end{proof}
 
 
   \subsection*{Distributivity of Product and Union}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_05_8849658323402752,printid]
-      Let $A, B, C$ be classes.
-      Then $(A \cup B) \times C = (A \times C) \cup (B \times C)$.
-    \end{proposition}
-    \begin{proof}
-      Let us show that $((A \cup B) \times C) \subseteq (A \times C) \cup (B \times C).$ %!
-        Let $x \in (A \cup B) \times C$.
-        Take $y \in A \cup B$ and $c \in C$ such that $x = (y, c)$.
-        Then $y \in A$ or $y \in B$.
-        If $y \in A$ then $x \in A \times C$ and if $y \in B$ then $x \in B \times C$.
-        Hence $x \in A \times C$ or $x \in B \times C$.
-        Thus $x \in (A \times C) \cup (B \times C)$.
-      End.
+  \begin{proposition}[forthel,id=FOUNDATIONS_05_8849658323402752,printid]
+    Let $A, B, C$ be classes.
+    Then $(A \cup B) \times C = (A \times C) \cup (B \times C)$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Let us show that $((A \cup B) \times C) \subseteq (A \times C) \cup (B \times C).$ %!
+      Let $x \in (A \cup B) \times C$.
+      Take $y \in A \cup B$ and $c \in C$ such that $x = (y, c)$.
+      Then $y \in A$ or $y \in B$.
+      If $y \in A$ then $x \in A \times C$ and if $y \in B$ then $x \in B \times C$.
+      Hence $x \in A \times C$ or $x \in B \times C$.
+      Thus $x \in (A \times C) \cup (B \times C)$.
+    End.
 
-      Let us show that $((A \times C) \cup (B \times C)) \subseteq (A \cup B) \times C$. %!
-        Let $x \in (A \times C) \cup (B \times C)$.
-        Then $x \in A \times C$ or $x \in B \times C$.
-        Take objects $y, c$ such that $x = (y, c)$.
-        Then ($y \in A$ or $y \in B$) and $c \in C$.
-        Hence $y \in A \cup B$.
-        Thus $x \in (A \cup B) \times C$.
-      End.
-    \end{proof}
-  \end{forthel}
+    Let us show that $((A \times C) \cup (B \times C)) \subseteq (A \cup B) \times C$. %!
+      Let $x \in (A \times C) \cup (B \times C)$.
+      Then $x \in A \times C$ or $x \in B \times C$.
+      Take objects $y, c$ such that $x = (y, c)$.
+      Then ($y \in A$ or $y \in B$) and $c \in C$.
+      Hence $y \in A \cup B$.
+      Thus $x \in (A \cup B) \times C$.
+    End.
+  \end{proof}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_05_476526841692160,printid]
-      Let $A, B, C$ be classes.
-      Then $A \times (B \cup C) = (A \times B) \cup (A \times C)$.
-    \end{proposition}
-    \begin{proof}
-      Let us show that $A \times (B \cup C) \subseteq (A \times B) \cup (A \times C)$.
-        Let $x \in A \times (B \cup C)$.
-        Take $a \in A$ and $y \in B \cup C$ such that $x = (a, y)$.
-        Then $y \in B$ or $y \in C$.
-        Hence $x \in A \times B$ or $x \in A \times C$.
-        Indeed if $y \in B$ then $x \in A \times B$ and if $y \in C$ then $x \in A \times C$.
-        Thus $x \in (A \times B) \cup (A \times C)$.
-      End.
+  \begin{proposition}[forthel,id=FOUNDATIONS_05_476526841692160,printid]
+    Let $A, B, C$ be classes.
+    Then $A \times (B \cup C) = (A \times B) \cup (A \times C)$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Let us show that $A \times (B \cup C) \subseteq (A \times B) \cup (A \times C)$.
+      Let $x \in A \times (B \cup C)$.
+      Take $a \in A$ and $y \in B \cup C$ such that $x = (a, y)$.
+      Then $y \in B$ or $y \in C$.
+      Hence $x \in A \times B$ or $x \in A \times C$.
+      Indeed if $y \in B$ then $x \in A \times B$ and if $y \in C$ then $x \in A \times C$.
+      Thus $x \in (A \times B) \cup (A \times C)$.
+    End.
 
-      Let us show that $((A \times B) \cup (A \times C)) \subseteq A \times (B \cup C)$.
-        Let $x \in (A \times B) \cup (A \times C)$.
-        Then $x \in A \times B$ or $x \in A \times C$.
-        Take objects $a, y$ such that $x = (a, y)$.
-        Then $a \in A$ and ($y \in B$ or $y \in C$).
-        Hence $x \in A \times (B \cup C)$.
-      End.
-    \end{proof}
-  \end{forthel}
+    Let us show that $((A \times B) \cup (A \times C)) \subseteq A \times (B \cup C)$.
+      Let $x \in (A \times B) \cup (A \times C)$.
+      Then $x \in A \times B$ or $x \in A \times C$.
+      Take objects $a, y$ such that $x = (a, y)$.
+      Then $a \in A$ and ($y \in B$ or $y \in C$).
+      Hence $x \in A \times (B \cup C)$.
+    End.
+  \end{proof}
 
 
   \subsection*{Distributivity of Product and Intersection}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_05_1249567930580992,printid]
-      Let $A, B, C$ be classes.
-      Then $(A \cap B) \times C = (A \times C) \cap (B \times C)$.
-    \end{proposition}
-    \begin{proof}
-      Let us show that $((A \cap B) \times C) \subseteq (A \times C) \cap (B \times C)$. %!
-        Let $x \in (A \cap B) \times C$.
-        Take $y \in A \cap B$ and $c \in C$ such that $x = (y, c)$.
-        Then $y \in A$ and $y \in B$.
-        Hence $x \in A \times C$ and $x \in B \times C$.
-        Thus $x \in (A \times C) \cap (B \times C)$.
-      End.
+  \begin{proposition}[forthel,id=FOUNDATIONS_05_1249567930580992,printid]
+    Let $A, B, C$ be classes.
+    Then $(A \cap B) \times C = (A \times C) \cap (B \times C)$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Let us show that $((A \cap B) \times C) \subseteq (A \times C) \cap (B \times C)$. %!
+      Let $x \in (A \cap B) \times C$.
+      Take $y \in A \cap B$ and $c \in C$ such that $x = (y, c)$.
+      Then $y \in A$ and $y \in B$.
+      Hence $x \in A \times C$ and $x \in B \times C$.
+      Thus $x \in (A \times C) \cap (B \times C)$.
+    End.
 
-      Let us show that $((A \times C) \cap (B \times C)) \subseteq (A \cap B) \times C$. %!
-        Let $x \in (A \times C) \cap (B \times C)$.
-        Then $x \in A \times C$ and $x \in B \times C$.
-        Take objects $y, z$ such that $x = (y, z)$.
-        Then ($y \in A$ and $y \in B$) and $z \in C$.
-        Hence $y \in A \cap B$.
-        Thus $x \in (A \cap B) \times C$.
-      End.
-    \end{proof}
-  \end{forthel}
+    Let us show that $((A \times C) \cap (B \times C)) \subseteq (A \cap B) \times C$. %!
+      Let $x \in (A \times C) \cap (B \times C)$.
+      Then $x \in A \times C$ and $x \in B \times C$.
+      Take objects $y, z$ such that $x = (y, z)$.
+      Then ($y \in A$ and $y \in B$) and $z \in C$.
+      Hence $y \in A \cap B$.
+      Thus $x \in (A \cap B) \times C$.
+    End.
+  \end{proof}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_05_954964241285120,printid]
-      Let $A, B, C$ be classes.
-      Then $A \times (B \cap C) = (A \times B) \cap (A \times C)$.
-    \end{proposition}
-    \begin{proof}
-      Let us show that $A \times (B \cap C) \subseteq (A \times B) \cap (A \times C)$.
-        Let $x \in A \times (B \cap C)$.
-        Take $a \in A$ and $b \in B \cap C$ such that $x = (a, b)$.
-        Then $b \in B$ and $b \in C$.
-        Hence $x \in A \times B$ and $x \in A \times C$.
-        Thus $x \in (A \times B) \cap (A \times C)$.
-      End.
+  \begin{proposition}[forthel,id=FOUNDATIONS_05_954964241285120,printid]
+    Let $A, B, C$ be classes.
+    Then $A \times (B \cap C) = (A \times B) \cap (A \times C)$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Let us show that $A \times (B \cap C) \subseteq (A \times B) \cap (A \times C)$.
+      Let $x \in A \times (B \cap C)$.
+      Take $a \in A$ and $b \in B \cap C$ such that $x = (a, b)$.
+      Then $b \in B$ and $b \in C$.
+      Hence $x \in A \times B$ and $x \in A \times C$.
+      Thus $x \in (A \times B) \cap (A \times C)$.
+    End.
 
-      Let us show that $((A \times B) \cap (A \times C)) \subseteq A \times (B \cap C)$. %!
-        Let $x \in (A \times B) \cap (A \times C)$.
-        Then $x \in A \times B$ and $x \in A \times C$.
-        Take objects $y, z$ such that $x = (y, z)$.
-        Then $y \in A$ and ($z \in B$ and $z \in C$).
-        Hence $x \in A \times (B \cap C)$.
-      End.
-    \end{proof}
-  \end{forthel}
+    Let us show that $((A \times B) \cap (A \times C)) \subseteq A \times (B \cap C)$. %!
+      Let $x \in (A \times B) \cap (A \times C)$.
+      Then $x \in A \times B$ and $x \in A \times C$.
+      Take objects $y, z$ such that $x = (y, z)$.
+      Then $y \in A$ and ($z \in B$ and $z \in C$).
+      Hence $x \in A \times (B \cap C)$.
+    End.
+  \end{proof}
 
 
   \subsection*{Distributivity of Product and Complement}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_05_6495329908162560,printid]
-      Let $A, B, C$ be classes.
-      Then $(A \setminus B) \times C = (A \times C) \setminus (B \times C)$.
-    \end{proposition}
-    \begin{proof}
-      Let us show that $((A \setminus B) \times C) \subseteq (A \times C) \setminus (B \times C).$ %!
-        Let $x \in (A \setminus B) \times C$.
-        Take $a \in A \setminus B$ and $c \in C$ such that $x = (a, c)$.
-        Then $a \in A$ and $a \notin B$.
-        Hence $x \in A \times C$ and $x \notin B \times C$.
-        Thus $x \in (A \times C) \setminus (B \times C)$.
-      End.
+  \begin{proposition}[forthel,id=FOUNDATIONS_05_6495329908162560,printid]
+    Let $A, B, C$ be classes.
+    Then $(A \setminus B) \times C = (A \times C) \setminus (B \times C)$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Let us show that $((A \setminus B) \times C) \subseteq (A \times C) \setminus (B \times C).$ %!
+      Let $x \in (A \setminus B) \times C$.
+      Take $a \in A \setminus B$ and $c \in C$ such that $x = (a, c)$.
+      Then $a \in A$ and $a \notin B$.
+      Hence $x \in A \times C$ and $x \notin B \times C$.
+      Thus $x \in (A \times C) \setminus (B \times C)$.
+    End.
 
-      Let us show that $((A \times C) \setminus (B \times C)) \subseteq (A \setminus B) \times C$. %!
-        Let $x \in (A \times C) \setminus (B \times C)$.
-        Then $x \in A \times C$ and $x \notin B \times C$.
-        Take $a \in A$ and $c \in C$ such that $x = (a, c)$.
-        Then $a \notin B$.
-        Indeed if $a \in B$ then $x \in B \times C$.
-        Hence $a \in A \setminus B$.
-        Thus $x \in (A \setminus B) \times C$.
-      End.
-    \end{proof}
-  \end{forthel}
+    Let us show that $((A \times C) \setminus (B \times C)) \subseteq (A \setminus B) \times C$. %!
+      Let $x \in (A \times C) \setminus (B \times C)$.
+      Then $x \in A \times C$ and $x \notin B \times C$.
+      Take $a \in A$ and $c \in C$ such that $x = (a, c)$.
+      Then $a \notin B$.
+      Indeed if $a \in B$ then $x \in B \times C$.
+      Hence $a \in A \setminus B$.
+      Thus $x \in (A \setminus B) \times C$.
+    End.
+  \end{proof}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_05_3195639422779392,printid]
-      Let $A, B, C$ be classes.
-      Then $A \times (B \setminus C) = (A \times B) \setminus (A \times C)$.
-    \end{proposition}
-    \begin{proof}
-      Let us show that $A \times (B \setminus C) \subseteq (A \times B) \setminus (A \times C)$.
-        Let $x \in A \times (B \setminus C)$.
-        Take $a \in A$ and $b \in B \setminus C$ such that $x = (a, b)$.
-        Then $b \in B$ and $b \notin C$.
-        Hence $x \in A \times B$ and $x \notin A \times C$.
-        Thus $x \in (A \times B) \setminus (A \times C)$.
-      End.
+  \begin{proposition}[forthel,id=FOUNDATIONS_05_3195639422779392,printid]
+    Let $A, B, C$ be classes.
+    Then $A \times (B \setminus C) = (A \times B) \setminus (A \times C)$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Let us show that $A \times (B \setminus C) \subseteq (A \times B) \setminus (A \times C)$.
+      Let $x \in A \times (B \setminus C)$.
+      Take $a \in A$ and $b \in B \setminus C$ such that $x = (a, b)$.
+      Then $b \in B$ and $b \notin C$.
+      Hence $x \in A \times B$ and $x \notin A \times C$.
+      Thus $x \in (A \times B) \setminus (A \times C)$.
+    End.
 
-      Let us show that $((A \times B) \setminus (A \times C)) \subseteq A \times (B \setminus C)$. %!
-        Let $x \in (A \times B) \setminus (A \times C)$.
-        Then $x \in A \times B$ and $x \notin A \times C$.
-        Take objects $a, b$ such that $x = (a, b)$.
-        Then $a \in A$ and ($b \in B$ and $b \notin C$).
-        Hence $x \in A \times (B \setminus C)$.
-      End.
-    \end{proof}
-  \end{forthel}
+    Let us show that $((A \times B) \setminus (A \times C)) \subseteq A \times (B \setminus C)$. %!
+      Let $x \in (A \times B) \setminus (A \times C)$.
+      Then $x \in A \times B$ and $x \notin A \times C$.
+      Take objects $a, b$ such that $x = (a, b)$.
+      Then $a \in A$ and ($b \in B$ and $b \notin C$).
+      Hence $x \in A \times (B \setminus C)$.
+    End.
+  \end{proof}
 
 
   \subsection*{Equality Law}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_05_2677218429894656,printid]
-      Let $A, A', B, B'$ be classes.
-      Assume that $A$ and $A'$ are nonempty or $B$ and $B'$ are nonempty.
-      Then $(A \times A') = (B \times B')$ iff $A = B$ and $A' = B'$.
-    \end{proposition}
-    \begin{proof}
-      Case $A \times A' = B \times B'$.
-        Then $A$ and $A'$ are nonempty iff $B$ and $B'$ are nonempty.
+  \begin{proposition}[forthel,id=FOUNDATIONS_05_2677218429894656,printid]
+    Let $A, A', B, B'$ be classes.
+    Assume that $A$ and $A'$ are nonempty or $B$ and $B'$ are nonempty.
+    Then $(A \times A') = (B \times B')$ iff $A = B$ and $A' = B'$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Case $A \times A' = B \times B'$.
+      Then $A$ and $A'$ are nonempty iff $B$ and $B'$ are nonempty.
 
-        Let us show that for all $a \in A$ and all $a' \in A'$ we have $a \in B$ and $a' \in B'$.
-          Let $a \in A$ and $a' \in A'$.
-          Then $(a, a') \in A \times A'$.
-          Hence we can take $x \in B \times B'$ such that $x = (a, a')$.
-          Thus $a \in B$ and $a' \in B'$.
-        End.
-
-        Therefore $A \subseteq B$ and $A' \subseteq B'$.
-        Indeed $A$ and $A'$ are nonempty.
-
-        Let us show that for all $b \in B$ and all $b' \in B'$ we have $b \in A$ and $b' \in A'$.
-          Let $b \in B$ and $b' \in B'$.
-          Then $(b, b') \in B \times B'$.
-          Hence we can take $x \in A \times A'$ such that $x = (b, b')$.
-          Thus $(b, b') \in A \times A'$.
-        End.
-
-        Therefore $B \subseteq A$ and $B' \subseteq A'$.
-        Indeed $B$ and $B'$ are nonempty.
+      Let us show that for all $a \in A$ and all $a' \in A'$ we have $a \in B$ and $a' \in B'$.
+        Let $a \in A$ and $a' \in A'$.
+        Then $(a, a') \in A \times A'$.
+        Hence we can take $x \in B \times B'$ such that $x = (a, a')$.
+        Thus $a \in B$ and $a' \in B'$.
       End.
 
-      Case $A = B$ and $A' = B'$. Trivial.
-    \end{proof}
-  \end{forthel}
+      Therefore $A \subseteq B$ and $A' \subseteq B'$.
+      Indeed $A$ and $A'$ are nonempty.
+
+      Let us show that for all $b \in B$ and all $b' \in B'$ we have $b \in A$ and $b' \in A'$.
+        Let $b \in B$ and $b' \in B'$.
+        Then $(b, b') \in B \times B'$.
+        Hence we can take $x \in A \times A'$ such that $x = (b, b')$.
+        Thus $(b, b') \in A \times A'$.
+      End.
+
+      Therefore $B \subseteq A$ and $B' \subseteq A'$.
+      Indeed $B$ and $B'$ are nonempty.
+    End.
+
+    Case $A = B$ and $A' = B'$. Trivial.
+  \end{proof}
 
 
   \subsection*{Intersections of Products}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_05_4154592050806784,printid]
-      Let $A, A', B, B'$ be classes.
-      Then $(A \times B) \cap (A' \times B') = (A \cap A') \times (B \cap B')$.
-    \end{proposition}
-    \begin{proof}
-      Let us show that $((A \times B) \cap (A' \times B')) \subseteq (A \cap A') \times (B \cap B')$. %!
-        Let $x \in (A \times B) \cap (A' \times B')$.
-        Then $x \in A \times B$ and $x \in A' \times B'$.
-        Take objects $a, b$ such that $x = (a, b)$.
-        Then $a \in A, A'$ and $b \in B, B'$.
-        Hence $a \in A \cap A'$ and $b \in B \cap B'$.
-        Thus $x \in (A \cap A') \times (B \cap B')$.
-      End.
+  \begin{proposition}[forthel,id=FOUNDATIONS_05_4154592050806784,printid]
+    Let $A, A', B, B'$ be classes.
+    Then $(A \times B) \cap (A' \times B') = (A \cap A') \times (B \cap B')$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Let us show that $((A \times B) \cap (A' \times B')) \subseteq (A \cap A') \times (B \cap B')$. %!
+      Let $x \in (A \times B) \cap (A' \times B')$.
+      Then $x \in A \times B$ and $x \in A' \times B'$.
+      Take objects $a, b$ such that $x = (a, b)$.
+      Then $a \in A, A'$ and $b \in B, B'$.
+      Hence $a \in A \cap A'$ and $b \in B \cap B'$.
+      Thus $x \in (A \cap A') \times (B \cap B')$.
+    End.
 
-      Let us show that $(A \cap A') \times (B \cap B') \subseteq (A \times B) \cap (A' \times B')$.
-        Let $x \in (A \cap A') \times (B \cap B')$.
-        Take elements $a, b$ such that $x = (a, b)$.
-        Then $a \in A \cap A'$ and $b \in B \cap B'$.
-        Hence $a \in A, A'$ and $b \in B, B'$.
-        Thus $x \in A \times B$ and $x \in A' \times B'$.
-        Therefore $x \in (A \times B) \cap (A' \times B')$.
-      End.
-    \end{proof}
-  \end{forthel}
+    Let us show that $(A \cap A') \times (B \cap B') \subseteq (A \times B) \cap (A' \times B')$.
+      Let $x \in (A \cap A') \times (B \cap B')$.
+      Take elements $a, b$ such that $x = (a, b)$.
+      Then $a \in A \cap A'$ and $b \in B \cap B'$.
+      Hence $a \in A, A'$ and $b \in B, B'$.
+      Thus $x \in A \times B$ and $x \in A' \times B'$.
+      Therefore $x \in (A \times B) \cap (A' \times B')$.
+    End.
+  \end{proof}
 
 
   \subsection*{Unions of Products}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_05_7090174334861312,printid]
-      Let $A, A', B, B'$ be classes.
-      Then $(A \times B) \cup (A' \times B') \subseteq (A \cup A') \times (B \cup B')$.
-    \end{proposition}
-    \begin{proof}
-      Let $x \in (A \times B) \cup (A' \times B')$.
-      Then $x \in A \times B$ or $x \in A' \times B'$.
-      Take objects $a, b$ such that $x = (a, b)$.
-      Then ($a \in A$ or $a \in A'$) and ($b \in B$ or $b \in B'$).
-      Hence $a \in A \cup A'$ and $b \in B \cup B'$.
-      Thus $x \in (A \cup A') \times (B \cup B')$.
-    \end{proof}
-  \end{forthel}
+  \begin{proposition}[forthel,id=FOUNDATIONS_05_7090174334861312,printid]
+    Let $A, A', B, B'$ be classes.
+    Then $(A \times B) \cup (A' \times B') \subseteq (A \cup A') \times (B \cup B')$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Let $x \in (A \times B) \cup (A' \times B')$.
+    Then $x \in A \times B$ or $x \in A' \times B'$.
+    Take objects $a, b$ such that $x = (a, b)$.
+    Then ($a \in A$ or $a \in A'$) and ($b \in B$ or $b \in B'$).
+    Hence $a \in A \cup A'$ and $b \in B \cup B'$.
+    Thus $x \in (A \cup A') \times (B \cup B')$.
+  \end{proof}
 
 
   \subsection*{Complements of Products}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_05_5552125989879808,printid]
-      Let $A, A', B, B'$ be classes.
-      Then $(A \times B) \setminus (A' \times B') = (A \times (B \setminus B')) \cup ((A \setminus A') \times B)$.
-    \end{proposition}
-    \begin{proof}
-      Let us show that $((A \times B) \setminus (A' \times B')) \subseteq (A \times (B \setminus B')) \cup ((A \setminus A') \times B)$.
-        Let $x \in (A \times B) \setminus (A' \times B')$.
-        Then $x \in A \times B$ and $x \notin A' \times B'$.
-        Take $a \in A$ and $b \in B$ such that $x = (a, b)$.
-        Then it is wrong that $a \in A'$ and $b \in B'$.
-        Hence $a \notin A'$ or $b \notin B'$.
-        Thus $a \in A \setminus A'$ or $b \in B \setminus B'$.
-        Therefore $x \in A \times (B \setminus B')$ or $x \in (A \setminus A') \times B$.
-        Hence we have $x \in (A \times (B \setminus B')) \cup ((A \setminus A') \times B)$.
+  \begin{proposition}[forthel,id=FOUNDATIONS_05_5552125989879808,printid]
+    Let $A, A', B, B'$ be classes.
+    Then $(A \times B) \setminus (A' \times B') = (A \times (B \setminus B')) \cup ((A \setminus A') \times B)$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Let us show that $((A \times B) \setminus (A' \times B')) \subseteq (A \times (B \setminus B')) \cup ((A \setminus A') \times B)$.
+      Let $x \in (A \times B) \setminus (A' \times B')$.
+      Then $x \in A \times B$ and $x \notin A' \times B'$.
+      Take $a \in A$ and $b \in B$ such that $x = (a, b)$.
+      Then it is wrong that $a \in A'$ and $b \in B'$.
+      Hence $a \notin A'$ or $b \notin B'$.
+      Thus $a \in A \setminus A'$ or $b \in B \setminus B'$.
+      Therefore $x \in A \times (B \setminus B')$ or $x \in (A \setminus A') \times B$.
+      Hence we have $x \in (A \times (B \setminus B')) \cup ((A \setminus A') \times B)$.
+    End.
+
+    Let us show that $(A \times (B \setminus B')) \cup ((A \setminus A') \times B) \subseteq (A \times B) \setminus (A' \times B')$.
+      Let $x \in (A \times (B \setminus B')) \cup ((A \setminus A') \times B)$.
+      Then $x \in (A \times (B \setminus B'))$ or $x \in ((A \setminus A') \times B)$.
+      Take elements $a,b$ such that $x = (a, b)$ (by \printref{FOUNDATIONS_04_2877806274936832}).
+      Then ($a \in A$ and $b \in B \setminus B'$) or ($a \in A \setminus A'$ and $b \in B$).
+
+      Case $a \in A$ and $b \in B \setminus B'$.
+        Then $a \in A$ and $b \in B$.
+        Hence $x \in A \times B$.
+        We have $b \notin B'$.
+        Thus $x \notin A' \times B'$.
+        Therefore $x \in (A \times B) \setminus (A' \times B')$.
       End.
 
-      Let us show that $(A \times (B \setminus B')) \cup ((A \setminus A') \times B) \subseteq (A \times B) \setminus (A' \times B')$.
-        Let $x \in (A \times (B \setminus B')) \cup ((A \setminus A') \times B)$.
-        Then $x \in (A \times (B \setminus B'))$ or $x \in ((A \setminus A') \times B)$.
-        Take elements $a,b$ such that $x = (a, b)$ (by \printref{FOUNDATIONS_04_2877806274936832}).
-        Then ($a \in A$ and $b \in B \setminus B'$) or ($a \in A \setminus A'$ and $b \in B$).
-
-        Case $a \in A$ and $b \in B \setminus B'$.
-          Then $a \in A$ and $b \in B$.
-          Hence $x \in A \times B$.
-          We have $b \notin B'$.
-          Thus $x \notin A' \times B'$.
-          Therefore $x \in (A \times B) \setminus (A' \times B')$.
-        End.
-
-        Case $a \in A \setminus A'$ and $b \in B$.
-          Then $a \in A$ and $b \in B$.
-          Hence $x \in A \times B$.
-          We have $a \notin A'$.
-          Thus $x \notin A' \times B'$.
-          Therefore $x \in (A \times B) \setminus (A' \times B')$.
-        End.
+      Case $a \in A \setminus A'$ and $b \in B$.
+        Then $a \in A$ and $b \in B$.
+        Hence $x \in A \times B$.
+        We have $a \notin A'$.
+        Thus $x \notin A' \times B'$.
+        Therefore $x \in (A \times B) \setminus (A' \times B')$.
       End.
-    \end{proof}
-  \end{forthel}
+    End.
+  \end{proof}
+\end{smodule}
 \end{document}

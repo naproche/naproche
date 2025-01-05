@@ -1,26 +1,15 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../meta-inf/lib/naproche}
-\input{../../lib/libraries}
-\input{../../lib/foundations}
-\input{../../lib/arithmetics}
+\documentclass{naproche-library}
+\libinput{foundations-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/foundations/systems-of-sets.ftl.tex}]
-      [read \path{libraries/source/foundations/countable-and-uncountable-classes.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
-
+\begin{smodule}{closure-under-countable-unions.ftl}
+  \importmodule[libraries]{foundations?systems-of-sets.ftl}
+  \importmodule[libraries]{foundations?countable-and-uncountable-classes.ftl}
 
   \section*{Closure Under Countable Unions}
 
-  \begin{forthel}
-    \begin{definition}[id=FOUNDATIONS_14_2377279311183872,printid]
-      Let $X$ be a system of sets.
-      $X$ is closed under countable unions iff $\bigcup U \in X$ for every nonempty countable subclass $U$ of $ X$.
-    \end{definition}
-  \end{forthel}
+  \begin{definition}[forthel,id=FOUNDATIONS_14_2377279311183872,printid]
+    Let $X$ be a system of sets.
+    $X$ is closed under countable unions iff $\bigcup U \in X$ for every nonempty countable subclass $U$ of $ X$.
+  \end{definition}
+\end{smodule}
 \end{document}

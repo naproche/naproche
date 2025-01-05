@@ -1,13 +1,8 @@
 \documentclass{article}
-\usepackage[english]{babel}
-\usepackage{mathtools}
-\usepackage{meta-inf/lib/naproche}
-\input{libraries/lib/foundations}
-\input{libraries/lib/set-theory}
-
-\usepackage[backend=bibtex]{biblatex}
-\usepackage{csquotes}
-\addbibresource{meta-inf/lib/bibliography}
+\usepackage{naproche}
+\usepackage{mathtools} % for \bigtimes
+\libinput[meta-inf]{example-preamble}
+\libinput[libraries]{foundations-preamble}
 
 \title{König's Theorem}
 \author{\Naproche formalization:\\[0.5em]
@@ -25,19 +20,13 @@ University of Bonn}
 
 \maketitle
 
+\usemodule[libraries]{set-theory?cardinals-and-maps.ftl}
+
 \noindent König's Theorem is an important set-theoretical result about the
 arithmetic of cardinals.
 It was proved by Julius König in 1905 \cite[p. 177--180]{Koenig1905}.
 The proof is reminiscent of Cantor's diagonal argument for proving that
 $\kappa < 2^\kappa$.
-
-\begin{imports}
-  \begin{forthel}
-    %[prove off][check off]
-    [read \path{libraries/source/set-theory/cardinals-and-maps.ftl.tex}]
-    %[prove on][check on]
-  \end{forthel}
-\end{imports}
 
 
 \section*{Sums and Products of cardinals}

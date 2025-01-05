@@ -1,11 +1,6 @@
 \documentclass{article}
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
-\usepackage{meta-inf/lib/puzzles}
-
-\usepackage[backend=bibtex]{biblatex}
-\usepackage{csquotes}
-\addbibresource{meta-inf/lib/bibliography}
+\usepackage[puzzle]{naproche}
+\libinput[meta-inf]{example-preamble}
 
 \title{Murder at Dreadsbury Mansion (Pelletier Problem 55)}
 \author{\Naproche Formalization: Steffen Frerix and Peter Koepke}
@@ -55,11 +50,7 @@ achieved by redefining the printout of signature, axiom and theorem environments
 
 \section{The Language of Dreadsbury}
 
-\begin{imports}
-  \begin{forthel}
-    [read \path{meta-inf/source/everyday-ontology.ftl.tex}]
-  \end{forthel}
-\end{imports}
+\usemodule[meta-inf]{everyday-ontology.ftl}
 
 \begin{forthel}
   \begin{signature}

@@ -1,17 +1,7 @@
 \documentclass{article}
-\usepackage[english]{babel}
-\usepackage{meta-inf/lib/naproche}
-\input{libraries/lib/foundations}
-
-\usepackage[backend=bibtex]{biblatex}
-\usepackage{csquotes}
-\addbibresource{meta-inf/lib/bibliography}
-
-\usepackage[
-  type=CC,
-  modifier=by-nc-sa,
-  version=4.0,
-]{doclicense}
+\usepackage{naproche}
+\libinput[meta-inf]{example-preamble}
+\libinput[libraries]{foundations-preamble}
 
 \title{The Knaster-Tarski fixed point theorem and \\
 the Cantor-Schröder-Bernstein Theorem}
@@ -21,22 +11,16 @@ the Cantor-Schröder-Bernstein Theorem}
 \begin{document}
   \maketitle
 
+  \usemodule[libraries]{foundations?equinumerosity.ftl}
+  \usemodule[libraries]{foundations?maps-and-systems-of-sets.ftl}
+  \usemodule[libraries]{set-theory?zf.ftl}
+
   \noindent This is a formalization of the \textit{Knaster-Tarski Fixed Point
   Theorem} (i.e. of the assertion that every subset-preserving map has a fixed
   point) and of the \textit{Cantor-Schröder-Bernstein Theorem} (i.e. of the
   fact that two sets are equinumerous iff they can be embedded into each other),
   where the proof of the latter theorem is based on the former one, as in
   \cite{Schroeder2012}.
-
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/foundations/equinumerosity.ftl.tex}]
-      [read \path{libraries/source/foundations/maps-and-systems-of-sets.ftl.tex}]
-      [read \path{libraries/source/set-theory/zf.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
 
 
   \section*{The Knaster-Tarski Fixed Point Theorem}

@@ -1,7 +1,5 @@
-\documentclass{article}
-\usepackage{naproche}
-\usepackage{comment}
-\libinput{preamble}
+\documentclass{naproche-library}
+\libinput{meta-inf-preamble}
 \begin{document}
 \begin{smodule}{macros.ftl}
 \STEXexport{
@@ -20,7 +18,7 @@
 \symdef{pair}[args=2,op=(\cdot,\cdot)]{\comp(#1\comp,\,#2\comp)}
 \symdef{apply}[args=ia]{#1\dobrackets{\argsep{#2}{\comp,\,}}}
 
-\begin{comment}
+\STEXinvisible{
 \begin{forthel}
   Let $x\eq y$ stand for $x=y$.
   Let $\pair{x}{y}$ stand for $(x,y)$.
@@ -28,7 +26,7 @@
   Let $\apply{f}{x}$ stand for $f(x)$.
   Let $f(x,y)$ stand for $f((x,y))$.
 \end{forthel}
-\end{comment}
+}
 
 \section{Macros}
 

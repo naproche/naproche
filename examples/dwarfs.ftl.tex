@@ -1,11 +1,6 @@
 \documentclass{article}
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
-\usepackage{meta-inf/lib/puzzles}
-
-\usepackage[backend=bibtex]{biblatex}
-\usepackage{csquotes}
-\addbibresource{meta-inf/lib/bibliography}
+\usepackage[puzzle]{naproche}
+\libinput[meta-inf]{example-preamble}
 
 \title{Dwarfs and Hats}
 \author{\Naproche Formalization: Steffen Frerix and Peter Koepke}
@@ -14,6 +9,8 @@
 \begin{document}
 
 \maketitle
+
+\usemodule[meta-inf]{everyday-ontology.ftl}
 
 \section{Introduction}
 
@@ -32,12 +29,6 @@ We present a formalized solution in \Naproche of a simple ``hat problem'':
 
 
 \section{Dwarf Ontology}
-
-\begin{imports}
-  \begin{forthel}
-    [read \path{meta-inf/source/everyday-ontology.ftl.tex}]
-  \end{forthel}
-\end{imports}
 
 \begin{forthel}
   \begin{signature}

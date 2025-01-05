@@ -1,25 +1,14 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../meta-inf/lib/naproche}
-\input{../../lib/libraries}
-\input{../../lib/foundations}
-\input{../../lib/set-theory}
+\documentclass{naproche-library}
+\libinput{set-theory-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/set-theory/cofinality.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
-
+\begin{smodule}{regular-cardinals.ftl}
+  \importmodule[libraries]{set-theory?cofinality.ftl}
 
   \section*{Regular Cardinals}
 
-  \begin{forthel}
-    \begin{definition}[id=SET_THEORY_06_6532641205487950,printid]
-      Let $\kappa$ be a cardinal.
-      $\kappa$ is regular iff $|x| = \kappa$ for every cofinal subset $x$ of $\kappa$.
-    \end{definition}
-  \end{forthel}
+  \begin{definition}[forthel,id=SET_THEORY_06_6532641205487950,printid]
+    Let $\kappa$ be a cardinal.
+    $\kappa$ is regular iff $|x| = \kappa$ for every cofinal subset $x$ of $\kappa$.
+  \end{definition}
+\end{smodule}
 \end{document}

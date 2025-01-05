@@ -1,201 +1,175 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../meta-inf/lib/naproche}
-\input{../../lib/libraries}
-\input{../../lib/foundations}
-\input{../../lib/arithmetics}
+\documentclass{naproche-library}
+\libinput{arithmetics-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/arithmetics/multiplication-and-ordering.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
+\begin{smodule}{modular-arithmetics.ftl}
+  \importmodule[libraries]{arithmetics?multiplication-and-ordering.ftl}
 
+  \symdef{nil}{[]}
+  \symdef{cons}{\mathop{::}}
 
   \section*{Modular Arithmetics}
 
   \subsection*{Quotients and Remainders}
 
-  \begin{forthel}
-    \begin{definition}[id=ARITHMETIC_08_8621463798022144,printid]
-      Let $n, m$ be natural numbers such that $m \neq 0$.
-      $n \div m$ is the natural number $q$ such that $n = (m \cdot q) + r$ for some natural number $r$ that is less than $m$.
-    \end{definition}
+  \begin{definition}[forthel,id=ARITHMETIC_08_8621463798022144,printid]
+    Let $n, m$ be natural numbers such that $m \neq 0$.
+    $n \div m$ is the natural number $q$ such that $n = (m \cdot q) + r$ for some natural number $r$ that is less than $m$.
 
     Let the quotient of $n$ over $m$ stand for $n \div m$.
-  \end{forthel}
+  \end{definition}
 
-  \begin{forthel}
-    \begin{definition}[id=ARITHMETIC_08_3560980160184320,printid]
-      Let $n, m$ be natural numbers such that $m \neq 0$.
-      $n \mod m$ is the natural number $r$ such that $r < m$ and there exists a natural number $q$ such that $n = (m \cdot q) + r$.
-    \end{definition}
+  \begin{definition}[forthel,id=ARITHMETIC_08_3560980160184320,printid]
+    Let $n, m$ be natural numbers such that $m \neq 0$.
+    $n \mod m$ is the natural number $r$ such that $r < m$ and there exists a natural number $q$ such that $n = (m \cdot q) + r$.
 
     Let the remainder of $n$ over $m$ stand for $n \mod m$.
-  \end{forthel}
+  \end{definition}
 
 
   \subsection*{Basic Properties}
 
-  \begin{forthel}
-    \begin{definition}[id=ARITHMETIC_08_5448561831444480,printid]
-      Let $n, m, k$ be natural numbers such that $k \neq 0$.
-      $n \equiv m \pmod{k}$ iff $n \mod k = m \mod k$.
-    \end{definition}
+  \begin{definition}[forthel,id=ARITHMETIC_08_5448561831444480,printid]
+    Let $n, m, k$ be natural numbers such that $k \neq 0$.
+    $n \equiv m \pmod{k}$ iff $n \mod k = m \mod k$.
 
     Let $n$ and $m$ are congruent modulo $k$ stand for $n \equiv m \pmod{k}$.
-  \end{forthel}
+  \end{definition}
 
-  \begin{forthel}
-    \begin{proposition}[id=ARITHMETIC_08_3818318544764928,printid]
-      Let $n, k$ be natural numbers such that $k \neq 0$.
-      Then $n \equiv n \pmod{k}$.
-    \end{proposition}
-    \begin{proof}
-      We have $n \mod k = n \mod k$.
-      Hence $n \equiv n \pmod{k}$.
-    \end{proof}
-  \end{forthel}
+  \begin{proposition}[forthel,id=ARITHMETIC_08_3818318544764928,printid]
+    Let $n, k$ be natural numbers such that $k \neq 0$.
+    Then $n \equiv n \pmod{k}$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    We have $n \mod k = n \mod k$.
+    Hence $n \equiv n \pmod{k}$.
+  \end{proof}
 
-  \begin{forthel}
-    \begin{proposition}[id=ARITHMETIC_08_2337210737098752,printid]
-      Let $n, m, k$ be natural numbers such that $k \neq 0$.
-      If $n \equiv m \pmod{k}$ then $m \equiv n \pmod{k}$.
-    \end{proposition}
-    \begin{proof}
-      Assume $n \equiv m \pmod{k}$.
+  \begin{proposition}[forthel,id=ARITHMETIC_08_2337210737098752,printid]
+    Let $n, m, k$ be natural numbers such that $k \neq 0$.
+    If $n \equiv m \pmod{k}$ then $m \equiv n \pmod{k}$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Assume $n \equiv m \pmod{k}$.
+    Then $n \mod k = m \mod k$.
+    Hence $m \mod k = n \mod k$.
+    Thus $m \equiv n \pmod{k}$.
+  \end{proof}
+
+  \begin{proposition}[forthel,id=ARITHMETIC_08_7464329746055168,printid]
+    Let $n, m, l, k$ be natural numbers such that $k \neq 0$.
+    If $n \equiv m \pmod{k}$ and $m \equiv l \pmod{k}$ then $n \equiv l \pmod{k}$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Assume $n \equiv m \pmod{k}$ and $m \equiv l \pmod{k}$.
+    Then $n \mod k = m \mod k$ and $m \mod k = l \mod k$.
+    Hence $n \mod k = l \mod k$.
+    Thus $n \equiv l \pmod{k}$.
+  \end{proof}
+
+  \begin{proposition}[forthel,id=ARITHMETIC_08_2034122983735296,printid]
+    Let $n, m, k$ be natural numbers such that $k \neq 0$.
+    Assume $n \geq m$.
+    Then $n \equiv m \pmod{k}$ iff $n = (k \cdot x) + m$ for some natural number $x$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Case $n \equiv m \pmod{k}$.
       Then $n \mod k = m \mod k$.
-      Hence $m \mod k = n \mod k$.
-      Thus $m \equiv n \pmod{k}$.
-    \end{proof}
-  \end{forthel}
+      Take a natural number $r$ such that $r < k$ and $n \mod k = r = m \mod k$.
+      Take a nonzero natural number $l$ such that $k = r + l$.
+      Consider natural numbers $q,q'$ such that $n = (q \cdot k) + r$ and $m = (q' \cdot k) + r$.
 
-  \begin{forthel}
-    \begin{proposition}[id=ARITHMETIC_08_7464329746055168,printid]
-      Let $n, m, l, k$ be natural numbers such that $k \neq 0$.
-      If $n \equiv m \pmod{k}$ and $m \equiv l \pmod{k}$ then $n \equiv l \pmod{k}$.
-    \end{proposition}
-    \begin{proof}
-      Assume $n \equiv m \pmod{k}$ and $m \equiv l \pmod{k}$.
-      Then $n \mod k = m \mod k$ and $m \mod k = l \mod k$.
-      Hence $n \mod k = l \mod k$.
-      Thus $n \equiv l \pmod{k}$.
-    \end{proof}
-  \end{forthel}
+      Then $q \geq q'$. \\
+      Proof.
+        Assume the contrary.
+        Then $q < q'$.
+        Hence $q \cdot k < q' \cdot k$.
+        Thus $(q \cdot k) + r < (q' \cdot k) + r$ (by \printref{ARITHMETIC_04_7354062662008832}).
+        Indeed $q \cdot k$ and $q' \cdot k$ are natural numbers.
+        Therefore $n < m$.
+        Contradiction.
+      Qed.
 
-  \begin{forthel}
-    \begin{proposition}[id=ARITHMETIC_08_2034122983735296,printid]
-      Let $n, m, k$ be natural numbers such that $k \neq 0$.
-      Assume $n \geq m$.
-      Then $n \equiv m \pmod{k}$ iff $n = (k \cdot x) + m$ for some natural number $x$.
-    \end{proposition}
-    \begin{proof}
-      Case $n \equiv m \pmod{k}$.
-        Then $n \mod k = m \mod k$.
-        Take a natural number $r$ such that $r < k$ and $n \mod k = r = m \mod k$.
-        Take a nonzero natural number $l$ such that $k = r + l$.
-        Consider natural numbers $q,q'$ such that $n = (q \cdot k) + r$ and $m = (q' \cdot k) + r$.
+      Take a natural number $x$ such that $q = q' + x$.
 
-        Then $q \geq q'$. \\
-        Proof.
-          Assume the contrary.
-          Then $q < q'$.
-          Hence $q \cdot k < q' \cdot k$.
-          Thus $(q \cdot k) + r < (q' \cdot k) + r$ (by \printref{ARITHMETIC_04_7354062662008832}).
-          Indeed $q \cdot k$ and $q' \cdot k$ are natural numbers.
-          Therefore $n < m$.
-          Contradiction.
-        Qed.
-
-        Take a natural number $x$ such that $q = q' + x$.
-
-        Let us show that $n = (k \cdot x) + m$.
-          We have
-          \[  (k \cdot x) + m                       \]
-          \[    = (k \cdot x) + ((q' \cdot k) + r)  \]
-          \[    = ((k \cdot x) + (q' \cdot k)) + r  \]
-          \[    = ((k \cdot x) + (k \cdot q')) + r  \]
-          \[    = (k \cdot (q' + x)) + r            \]
-          \[    = (k \cdot q) + r                   \]
-          \[    = n.                                \]
-        End.
+      Let us show that $n = (k \cdot x) + m$.
+        We have
+        \[  (k \cdot x) + m                       \]
+        \[    = (k \cdot x) + ((q' \cdot k) + r)  \]
+        \[    = ((k \cdot x) + (q' \cdot k)) + r  \]
+        \[    = ((k \cdot x) + (k \cdot q')) + r  \]
+        \[    = (k \cdot (q' + x)) + r            \]
+        \[    = (k \cdot q) + r                   \]
+        \[    = n.                                \]
       End.
+    End.
 
-      Case $n = (k \cdot x) + m$ for some natural number $x$.
-        Consider a natural number $x$ such that $n = (k \cdot x) + m$.
-        Take natural numbers $r, r'$ such that $n \mod k = r$ and $m \mod k = r'$.
-        Then $r, r' < k$.
-        Take natural numbers $q, q'$ such that $n = (k \cdot q) + r$ and $m = (k \cdot q') + r'$.
-        Then
-        \[  (k \cdot q) + r                         \]
-        \[    = n                                   \]
-        \[    = (k \cdot x) + m                     \]
-        \[    = (k \cdot x) + ((k \cdot q') + r')   \]
-        \[    = ((k \cdot x) + (k \cdot q')) + r'   \]
-        \[    = (k \cdot (x + q')) + r'.            \]
-        Hence $r = r'$.
-        Thus $n \mod k = m \mod k$.
-        Therefore $n \equiv m \pmod{k}$.
-      End.
-    \end{proof}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{proposition}[id=ARITHMETIC_08_2988318228742144,printid]
-      Let $n, m, k, k'$ be natural numbers such that $k, k' \neq 0$.
-      If $n \equiv m \pmod{k \cdot k'}$ then $n \equiv m \pmod{k}$.
-    \end{proposition}
-    \begin{proof}
-      Assume $n \equiv m \pmod{k \cdot k'}$.
-
-      Case $n \geq m$.
-        We can take a natural number $x$ such that $n = ((k \cdot k') \cdot x) + m$.
-        Then $n = (k \cdot (k' \cdot x)) + m$.
-        Hence $n \equiv m \pmod{k}$.
-      End.
-
-      Case $m \geq n$.
-        We have $m \equiv n \pmod{k \cdot k'}$.
-        Hence we can take a natural number $x$ such that $m = ((k \cdot k') \cdot x) + n$.
-        Then $m = (k \cdot (k' \cdot x)) + n$.
-        Thus $m \equiv n \pmod{k}$.
-        Therefore $n \equiv m \pmod{k}$.
-      End.
-    \end{proof}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{corollary}[id=ARITHMETIC_08_5895145169879040,printid]
-      Let $n, m, k, k'$ be natural numbers such that $k, k' \neq 0$.
-      If $n \equiv m \pmod{k \cdot k'}$ then $n \equiv m \pmod{k'}$.
-    \end{corollary}
-    \begin{proof}
-      Assume $n \equiv m \pmod{k \cdot k'}$.
-      Then $n \equiv m \pmod{k' \cdot k}$.
-      Hence $n \equiv m \pmod{k'}$.
-    \end{proof}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{proposition}[id=ARITHMETIC_08_5984712287846400,printid]
-      Let $n, k$ be natural numbers such that $k \neq 0$.
-      Then $n + k \equiv n \pmod{k}$.
-    \end{proposition}
-    \begin{proof}
-      Take $r = n \mod k$ and $r' = (n + k) \mod k$.
-      Consider a $q \in \Nat$ such that $n = (k \cdot q) + r$ and $r < k$.
-      Consider a $q' \in \Nat$ such that $n + k = (k \cdot q') + r'$ and
-      $r' < k$.
-      Then $(k \cdot q') + r'
-        = n + k
-        = ((k \cdot q) + r) + k
-        = (k + (k \cdot q)) + r
-        = (k \cdot (q + 1)) + r$.
+    Case $n = (k \cdot x) + m$ for some natural number $x$.
+      Consider a natural number $x$ such that $n = (k \cdot x) + m$.
+      Take natural numbers $r, r'$ such that $n \mod k = r$ and $m \mod k = r'$.
+      Then $r, r' < k$.
+      Take natural numbers $q, q'$ such that $n = (k \cdot q) + r$ and $m = (k \cdot q') + r'$.
+      Then
+      \[  (k \cdot q) + r                         \]
+      \[    = n                                   \]
+      \[    = (k \cdot x) + m                     \]
+      \[    = (k \cdot x) + ((k \cdot q') + r')   \]
+      \[    = ((k \cdot x) + (k \cdot q')) + r'   \]
+      \[    = (k \cdot (x + q')) + r'.            \]
       Hence $r = r'$.
-      Consequently $n \mod k = (n + k) \mod k$.
-      Thus $n + k \equiv n \pmod{k}$.
-    \end{proof}
-  \end{forthel}
+      Thus $n \mod k = m \mod k$.
+      Therefore $n \equiv m \pmod{k}$.
+    End.
+  \end{proof}
+
+  \begin{proposition}[forthel,id=ARITHMETIC_08_2988318228742144,printid]
+    Let $n, m, k, k'$ be natural numbers such that $k, k' \neq 0$.
+    If $n \equiv m \pmod{k \cdot k'}$ then $n \equiv m \pmod{k}$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Assume $n \equiv m \pmod{k \cdot k'}$.
+
+    Case $n \geq m$.
+      We can take a natural number $x$ such that $n = ((k \cdot k') \cdot x) + m$.
+      Then $n = (k \cdot (k' \cdot x)) + m$.
+      Hence $n \equiv m \pmod{k}$.
+    End.
+
+    Case $m \geq n$.
+      We have $m \equiv n \pmod{k \cdot k'}$.
+      Hence we can take a natural number $x$ such that $m = ((k \cdot k') \cdot x) + n$.
+      Then $m = (k \cdot (k' \cdot x)) + n$.
+      Thus $m \equiv n \pmod{k}$.
+      Therefore $n \equiv m \pmod{k}$.
+    End.
+  \end{proof}
+
+  \begin{corollary}[forthel,id=ARITHMETIC_08_5895145169879040,printid]
+    Let $n, m, k, k'$ be natural numbers such that $k, k' \neq 0$.
+    If $n \equiv m \pmod{k \cdot k'}$ then $n \equiv m \pmod{k'}$.
+  \end{corollary}
+  \begin{proof}[forthel]
+    Assume $n \equiv m \pmod{k \cdot k'}$.
+    Then $n \equiv m \pmod{k' \cdot k}$.
+    Hence $n \equiv m \pmod{k'}$.
+  \end{proof}
+
+  \begin{proposition}[forthel,id=ARITHMETIC_08_5984712287846400,printid]
+    Let $n, k$ be natural numbers such that $k \neq 0$.
+    Then $n + k \equiv n \pmod{k}$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Take $r = n \mod k$ and $r' = (n + k) \mod k$.
+    Consider a $q \in \Nat$ such that $n = (k \cdot q) + r$ and $r < k$.
+    Consider a $q' \in \Nat$ such that $n + k = (k \cdot q') + r'$ and
+    $r' < k$.
+    Then $(k \cdot q') + r'
+      = n + k
+      = ((k \cdot q) + r) + k
+      = (k + (k \cdot q)) + r
+      = (k \cdot (q + 1)) + r$.
+    Hence $r = r'$.
+    Consequently $n \mod k = (n + k) \mod k$.
+    Thus $n + k \equiv n \pmod{k}$.
+  \end{proof}
+\end{smodule}
 \end{document}

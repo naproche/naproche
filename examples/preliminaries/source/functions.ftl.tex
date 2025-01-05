@@ -1,9 +1,10 @@
-\documentclass{article}
-\usepackage{naproche}
+\documentclass{naproche-library}
 \libinput{preamble}
 \begin{document}
 \begin{smodule}{functions}
-\importmodule{sets.ftl}
+
+\importmodule[preliminaries]{sets.ftl}
+
 \STEXexport{
   \let\oldcirc\circ
   \let\circ\relax
@@ -20,8 +21,6 @@
 \section{Functions and Maps}
 
 \begin{forthel}
-  [importmodule \path{preliminaries?sets.ftl}]
-
   Let $A,B,C$ denote classes.
 \end{forthel}
 

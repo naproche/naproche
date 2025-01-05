@@ -1,178 +1,155 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../meta-inf/lib/naproche}
-\input{../../lib/libraries}
-\input{../../lib/foundations}
-\input{../../lib/arithmetics}
+\documentclass{naproche-library}
+\libinput{arithmetics-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/arithmetics/divisibility.ftl.tex}]
-      [read \path{libraries/source/arithmetics/modular-arithmetics.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
+\begin{smodule}{primes.ftl}
+  \importmodule[libraries]{arithmetics?divisibility.ftl}
+  \importmodule[libraries]{arithmetics?modular-arithmetics.ftl}
 
+  \symdef{Prime}{\mathbb P}
 
   \section*{Prime Numbers}
 
-  \begin{forthel}
-    \begin{definition}[id=ARITHMETIC_10_5450464558579712,printid]
-      Let $n$ be a natural number.
-      $n$ is prime iff $n > 1$ and $n$ has no nontrivial divisors.
-    \end{definition}
+  \begin{definition}[forthel,id=ARITHMETIC_10_5450464558579712,printid]
+    Let $n$ be a natural number.
+    $n$ is prime iff $n > 1$ and $n$ has no nontrivial divisors.
 
     Let $n$ is compound stand for $n$ is not prime.
     Let a prime number stand for a natural number that is prime.
-  \end{forthel}
+  \end{definition}
 
-  \begin{forthel}
-    \begin{definition}[id=ARITHMETIC_10_3834705971511296,printid]
-      $\Prime$ is the class of all prime numbers.
-    \end{definition}
-  \end{forthel}
+  \begin{definition}[forthel,id=ARITHMETIC_10_3834705971511296,printid]
+    $\Prime$ is the class of all prime numbers.
+  \end{definition}
 
-  \begin{forthel}
-    \begin{proposition}[id=ARITHMETIC_10_7801379464675328,printid]
-      Let $n$ be a natural number such that $n > 1$.
-      Then $n$ is prime iff every divisor of $n$ is a trivial divisor of $n$.
-    \end{proposition}
-  \end{forthel}
+  \begin{proposition}[forthel,id=ARITHMETIC_10_7801379464675328,printid]
+    Let $n$ be a natural number such that $n > 1$.
+    Then $n$ is prime iff every divisor of $n$ is a trivial divisor of $n$.
+  \end{proposition}
 
-  \begin{forthel}
-    \begin{proposition}[id=ARITHMETIC_10_3606185106210816,printid]
-      Let $n$ be a natural number such that $n > 1$.
-      Then $n$ has a prime divisor.
-    \end{proposition}
-    \begin{proof}
-      Define $\Phi = \{ n' \in \Nat \mid$ if $n' > 1$ then $n'$ has a prime divisor $\}$.
+  \begin{proposition}[forthel,id=ARITHMETIC_10_3606185106210816,printid]
+    Let $n$ be a natural number such that $n > 1$.
+    Then $n$ has a prime divisor.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Define $\Phi = \{ n' \in \Nat \mid$ if $n' > 1$ then $n'$ has a prime divisor $\}$.
 
-      Let us show that for every $n' \in \Nat$ if $\Phi$ contains all
-      predecessors of $n'$ then $\Phi$ contains $n'$.
-        Let $n' \in \Nat$.
-        Assume that $\Phi$ contains all predecessors of $n'$.
-        We have $n' = 0$ or $n' = 1$ or $n'$ is prime or $n'$ is composite.
+    Let us show that for every $n' \in \Nat$ if $\Phi$ contains all
+    predecessors of $n'$ then $\Phi$ contains $n'$.
+      Let $n' \in \Nat$.
+      Assume that $\Phi$ contains all predecessors of $n'$.
+      We have $n' = 0$ or $n' = 1$ or $n'$ is prime or $n'$ is composite.
 
-        Case $n' = 0$ or $n' = 1$. Trivial.
+      Case $n' = 0$ or $n' = 1$. Trivial.
 
-        Case $n'$ is prime. Obvious.
+      Case $n'$ is prime. Obvious.
 
-        Case $n'$ is composite.
-          Take a nontrivial divisor $m$ of $n'$.
-          Then $1 < m < n'$.
-          $m$ is contained in $\Phi$.
-          Hence we can take a prime divisor $p$ of $m$.
-          Then we have $p \mid m \mid n'$.
-          Thus $p \mid n'$.
-          Therefore $p$ is a prime divisor of $n'$.
-        End.
+      Case $n'$ is composite.
+        Take a nontrivial divisor $m$ of $n'$.
+        Then $1 < m < n'$.
+        $m$ is contained in $\Phi$.
+        Hence we can take a prime divisor $p$ of $m$.
+        Then we have $p \mid m \mid n'$.
+        Thus $p \mid n'$.
+        Therefore $p$ is a prime divisor of $n'$.
       End.
+    End.
 
-      Thus every natural number belongs to $\Phi$ (by \printref{ARITHMETIC_04_3609801697263616}).
-    \end{proof}
-  \end{forthel}
+    Thus every natural number belongs to $\Phi$ (by \printref{ARITHMETIC_04_3609801697263616}).
+  \end{proof}
 
-  \begin{forthel}
-    \begin{definition}[id=ARITHMETIC_10_463197419077632,printid]
-      Let $n, m$ be natural numbers.
-      $n$ and $m$ are coprime iff for all nonzero natural numbers $k$ such that $k \mid n$ and $k \mid m$ we have $k = 1$.
-    \end{definition}
+  \begin{definition}[forthel,id=ARITHMETIC_10_463197419077632,printid]
+    Let $n, m$ be natural numbers.
+    $n$ and $m$ are coprime iff for all nonzero natural numbers $k$ such that $k \mid n$ and $k \mid m$ we have $k = 1$.
 
     Let $n$ and $m$ are relatively prime stand for $n$ and $m$ are coprime.
     Let $n$ and $m$ are mutually prime stand for $n$ and $m$ are coprime.
     Let $n$ is prime to $m$ stand for $n$ and $m$ are coprime.
-  \end{forthel}
+  \end{definition}
 
-  \begin{forthel}
-    \begin{proposition}[id=ARITHMETIC_10_5776394594287616,printid]
-      Let $n, m$ be natural numbers.
-      $n$ and $m$ are coprime iff $n$ and $m$ have no common prime divisor.
-    \end{proposition}
-    \begin{proof}
-      Case $n$ and $m$ are coprime.
-        Let $p$ be a prime number such that $p \mid n$ and $p \mid m$.
-        Then $p$ is nonzero and $p \neq 1$.
-        Contradiction.
-      End.
-
-      Case $n$ and $m$ have no common prime divisor.
-        Assume that $n$ and $m$ are not coprime.
-        Let $k$ be a nonzero natural number such that $k \mid n$ and $k \mid m$.
-        Assume that $k \neq 1$.
-        Consider a prime divisor $p$ of $k$.
-        Then $p \mid k \mid n,m$.
-        Hence $p \mid n$ and $p \mid m$.
-        Contradiction.
-      End.
-    \end{proof}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{proposition}[id=ARITHMETIC_10_7212152851005440,printid]
-      Let $n, m$ be natural numbers and $p$ be a prime number.
-      If $p$ does not divide $n$ then $p$ and $n$ are coprime.
-    \end{proposition}
-    \begin{proof}
-      Assume $p \nmid n$.
-      Suppose that $p$ and $n$ are not coprime.
-      Take a nonzero natural number $k$ such that $k \mid p$ and $k \mid n$.
-      Then $k = p$.
-      Hence $p \mid n$.
+  \begin{proposition}[forthel,id=ARITHMETIC_10_5776394594287616,printid]
+    Let $n, m$ be natural numbers.
+    $n$ and $m$ are coprime iff $n$ and $m$ have no common prime divisor.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Case $n$ and $m$ are coprime.
+      Let $p$ be a prime number such that $p \mid n$ and $p \mid m$.
+      Then $p$ is nonzero and $p \neq 1$.
       Contradiction.
-    \end{proof}
-  \end{forthel}
+    End.
 
-  \begin{forthel}
-    \begin{proposition}[id=ARITHMETIC_10_8313676557713408,printid]
-      Let $n, m$ be natural numbers and $p$ be a prime number.
-      If $p \mid n \cdot m$ then $p \mid n$ or $p \mid m$.
-    \end{proposition}
-    \begin{proof}
-      Assume $p \mid n \cdot m$.
+    Case $n$ and $m$ have no common prime divisor.
+      Assume that $n$ and $m$ are not coprime.
+      Let $k$ be a nonzero natural number such that $k \mid n$ and $k \mid m$.
+      Assume that $k \neq 1$.
+      Consider a prime divisor $p$ of $k$.
+      Then $p \mid k \mid n,m$.
+      Hence $p \mid n$ and $p \mid m$.
+      Contradiction.
+    End.
+  \end{proof}
 
-      Case $p \mid n$. Trivial.
+  \begin{proposition}[forthel,id=ARITHMETIC_10_7212152851005440,printid]
+    Let $n, m$ be natural numbers and $p$ be a prime number.
+    If $p$ does not divide $n$ then $p$ and $n$ are coprime.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Assume $p \nmid n$.
+    Suppose that $p$ and $n$ are not coprime.
+    Take a nonzero natural number $k$ such that $k \mid p$ and $k \mid n$.
+    Then $k = p$.
+    Hence $p \mid n$.
+    Contradiction.
+  \end{proof}
 
-      Case $p \nmid n$.
-        Define $\Phi = \{ k \in \Nat \mid k \neq 0$ and $p \mid k \cdot m \}$.
-        Then $p \in \Phi$ and $n \in \Phi$.
-        Hence $\Phi$ contains some natural number.
-        Thus we can take $a \in \Phi$ such that $a \leq k$ for all $k \in \Phi$.
+  \begin{proposition}[forthel,id=ARITHMETIC_10_8313676557713408,printid]
+    Let $n, m$ be natural numbers and $p$ be a prime number.
+    If $p \mid n \cdot m$ then $p \mid n$ or $p \mid m$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Assume $p \mid n \cdot m$.
 
-        Let us show that $a$ divides all elements of $\Phi$.
-          Let $k \in \Phi$.
-          Take natural numbers $q, r$ such that $k = (a \cdot q) + r$ and $r < a$ (by \printref{ARITHMETIC_08_7743986617810944}).
-          Indeed $a$ is nonzero.
-          Then $k \cdot m
-            = ((q \cdot a) + r) \cdot m
-            = ((q \cdot a) \cdot m) + (r \cdot m)$.
-          We have $p \mid k \cdot m$.
-          Hence $p \mid ((q \cdot a) \cdot m) + (r \cdot m)$.
+    Case $p \mid n$. Trivial.
 
-          We can show that $p \mid r \cdot m$.
-            We have $p \mid a \cdot m$.
-            Hence $p \mid (q \cdot a) \cdot m$.
-            Indeed $((q \cdot a) \cdot m) = q \cdot (a \cdot m)$. %!
-            Take $A = (q \cdot a) \cdot m$ and $B = r \cdot m$. %!
-            Then $p \mid A + B$ and $p \mid A$.
-            Thus $p \mid B$ (by \printref{ARITHMETIC_07_1076947887063040}).
-            Indeed $p, A$ and $B$ are natural numbers.
-            Consequently $p \mid r \cdot m$.
-          End.
+    Case $p \nmid n$.
+      Define $\Phi = \{ k \in \Nat \mid k \neq 0$ and $p \mid k \cdot m \}$.
+      Then $p \in \Phi$ and $n \in \Phi$.
+      Hence $\Phi$ contains some natural number.
+      Thus we can take $a \in \Phi$ such that $a \leq k$ for all $k \in \Phi$.
 
-          Therefore $r = 0$.
-          Indeed if $r \neq 0$ then $r$ is an element of $\Phi$ that is less than $a$.
-          Hence $k = q \cdot a$.
-          Thus $a$ divides $k$.
+      Let us show that $a$ divides all elements of $\Phi$.
+        Let $k \in \Phi$.
+        Take natural numbers $q, r$ such that $k = (a \cdot q) + r$ and $r < a$ (by \printref{ARITHMETIC_08_7743986617810944}).
+        Indeed $a$ is nonzero.
+        Then $k \cdot m
+          = ((q \cdot a) + r) \cdot m
+          = ((q \cdot a) \cdot m) + (r \cdot m)$.
+        We have $p \mid k \cdot m$.
+        Hence $p \mid ((q \cdot a) \cdot m) + (r \cdot m)$.
+
+        We can show that $p \mid r \cdot m$.
+          We have $p \mid a \cdot m$.
+          Hence $p \mid (q \cdot a) \cdot m$.
+          Indeed $((q \cdot a) \cdot m) = q \cdot (a \cdot m)$. %!
+          Take $A = (q \cdot a) \cdot m$ and $B = r \cdot m$. %!
+          Then $p \mid A + B$ and $p \mid A$.
+          Thus $p \mid B$ (by \printref{ARITHMETIC_07_1076947887063040}).
+          Indeed $p, A$ and $B$ are natural numbers.
+          Consequently $p \mid r \cdot m$.
         End.
 
-        Then we have $a \mid p$ and $a \mid n$.
-        Hence $a = p$ or $a = 1$.
-        Thus $a = 1$.
-        Indeed if $a = p$ then $p \mid n$.
-        Then $1 \in \Phi$.
-        Therefore $p \mid 1 \cdot m = m$.
+        Therefore $r = 0$.
+        Indeed if $r \neq 0$ then $r$ is an element of $\Phi$ that is less than $a$.
+        Hence $k = q \cdot a$.
+        Thus $a$ divides $k$.
       End.
-    \end{proof}
-  \end{forthel}
+
+      Then we have $a \mid p$ and $a \mid n$.
+      Hence $a = p$ or $a = 1$.
+      Thus $a = 1$.
+      Indeed if $a = p$ then $p \mid n$.
+      Then $1 \in \Phi$.
+      Therefore $p \mid 1 \cdot m = m$.
+    End.
+  \end{proof}
+\end{smodule}
 \end{document}

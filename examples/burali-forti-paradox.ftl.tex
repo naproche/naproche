@@ -1,19 +1,7 @@
 \documentclass{article}
-\usepackage[english]{babel}
-\usepackage{csquotes}
-\usepackage{meta-inf/lib/naproche}
-\input{libraries/lib/foundations}
-\input{libraries/lib/set-theory}
-
-\usepackage[backend=bibtex]{biblatex}
-\usepackage{csquotes}
-\addbibresource{meta-inf/lib/bibliography}
-
-\usepackage[
-  type=CC,
-  modifier=by-nc-sa,
-  version=4.0,
-]{doclicense}
+\usepackage{naproche}
+\libinput[meta-inf]{example-preamble}
+\libinput[libraries]{foundations-preamble}
 
 \title{Burali-Forti's Paradox}
 \author{\Naproche formalization:\\[0.5em]Marcel Schütz}
@@ -23,14 +11,8 @@
   \pagenumbering{gobble}
   \maketitle
 
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/set-theory/ordinals.ftl.tex}]
-      [read \path{libraries/source/foundations/proper-classes.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
+  \usemodule[libraries]{set-theory?ordinals.ftl}
+  \usemodule[libraries]{foundations?proper-classes.ftl}
   
   \noindent \emph{Burali-Forti's Paradox}, named after Cesare Burali-Forti, 
   demonstates that the collection $\Ord$ of all ordinal numbers is a

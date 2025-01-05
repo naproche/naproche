@@ -1,377 +1,319 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../meta-inf/lib/naproche}
-\input{../../lib/libraries}
-\input{../../lib/foundations}
-\input{../../lib/arithmetics}
+\documentclass{naproche-library}
+\libinput{arithmetics-preamble}
+\usepackage{amssymb}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/foundations/classes.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
+\begin{smodule}{natural-numbers.ftl}
+  \importmodule[libraries]{foundations?classes.ftl}
 
+  \symdef{Nat}{\mathbb N}
 
   \section*{Natural Numbers}
 
   \subsection*{The Language of Natural Number Arithmetic}
 
-  \begin{forthel}
-    \begin{signature}[id=ARITHMETIC_01_3074681254969344,printid]
-      A natural number is an object.
-    \end{signature}
-  \end{forthel}
+  \begin{signature}[forthel,id=ARITHMETIC_01_3074681254969344,printid]
+    A natural number is an object.
+  \end{signature}
 
-  \begin{forthel}
-    \begin{definition}[id=ARITHMETIC_01_7367148418629632,printid]
-      $\Nat$ is the class of natural numbers.
-    \end{definition}
-  \end{forthel}
+  \begin{definition}[forthel,id=ARITHMETIC_01_7367148418629632,printid]
+    $\Nat$ is the class of natural numbers.
+  \end{definition}
 
-  \begin{forthel}
-    \begin{signature}[id=ARITHMETIC_01_1567933815848960,printid]
-      Let $n, m$ be natural numbers.
-      $n + m$ is a natural number.
-    \end{signature}
+  \begin{signature}[forthel,id=ARITHMETIC_01_1567933815848960,printid]
+    Let $n, m$ be natural numbers.
+    $n + m$ is a natural number.
 
     Let the sum of $n$ and $m$ stand for $n + m$.
-  \end{forthel}
+  \end{signature}
 
-  \begin{forthel}
-    \begin{signature}[id=ARITHMETIC_01_7633304715001856,printid]
-      $0$ is a natural number.
-    \end{signature}
+  \begin{signature}[forthel,id=ARITHMETIC_01_7633304715001856,printid]
+    $0$ is a natural number.
 
     Let zero stand for $0$.
     Let $n$ is nonzero stand for $n \neq 0$.
-  \end{forthel}
+  \end{signature}
 
-  \begin{forthel}
-    \begin{signature}[id=ARITHMETIC_01_1200254566985232,printid]
-      $1$ is a natural number.
-    \end{signature}
+  \begin{signature}[forthel,id=ARITHMETIC_01_1200254566985232,printid]
+    $1$ is a natural number.
 
     Let one stand for $1$.
     Let the direct successor of $n$ stand for $n + 1$.
-  \end{forthel}
-  
-  \begin{forthel}
-    \begin{definition}[id=ARITHMETIC_01_4584236572999680,printid]
-      $2 = 1 + 1$.
-    \end{definition}
+  \end{signature}
+
+  \begin{definition}[forthel,id=ARITHMETIC_01_4584236572999680,printid]
+    $2 = 1 + 1$.
 
     Let two stand for $2$.
-  \end{forthel}
+  \end{definition}
 
-  \begin{forthel}
-    \begin{definition}[id=ARITHMETIC_01_3836725109456896,printid]
-      $3 = 2 + 1$.
-    \end{definition}
+  \begin{definition}[forthel,id=ARITHMETIC_01_3836725109456896,printid]
+    $3 = 2 + 1$.
 
     Let three stand for $3$.
-  \end{forthel}
+  \end{definition}
 
-  \begin{forthel}
-    \begin{definition}[id=ARITHMETIC_01_1709884968009728,printid]
-      $4 = 3 + 1$.
-    \end{definition}
+  \begin{definition}[forthel,id=ARITHMETIC_01_1709884968009728,printid]
+    $4 = 3 + 1$.
 
     Let four stand for $4$.
-  \end{forthel}
+  \end{definition}
 
-  \begin{forthel}
-    \begin{definition}[id=ARITHMETIC_01_6734726333202432,printid]
-      $5 = 4 + 1$.
-    \end{definition}
+  \begin{definition}[forthel,id=ARITHMETIC_01_6734726333202432,printid]
+    $5 = 4 + 1$.
 
     Let five stand for $5$.
-  \end{forthel}
+  \end{definition}
 
-  \begin{forthel}
-    \begin{definition}[id=ARITHMETIC_01_949139189792768,printid]
-      $6 = 5 + 1$.
-    \end{definition}
+  \begin{definition}[forthel,id=ARITHMETIC_01_949139189792768,printid]
+    $6 = 5 + 1$.
 
     Let six stand for $6$.
-  \end{forthel}
+  \end{definition}
 
-  \begin{forthel}
-    \begin{definition}[id=ARITHMETIC_01_7245471749767168,printid]
-      $7 = 6 + 1$.
-    \end{definition}
+  \begin{definition}[forthel,id=ARITHMETIC_01_7245471749767168,printid]
+    $7 = 6 + 1$.
 
     Let seven stand for $7$.
-  \end{forthel}
+  \end{definition}
 
-  \begin{forthel}
-    \begin{definition}[id=ARITHMETIC_01_5658172888973312,printid]
-      $8 = 7 + 1$.
-    \end{definition}
+  \begin{definition}[forthel,id=ARITHMETIC_01_5658172888973312,printid]
+    $8 = 7 + 1$.
 
     Let eight stand for $8$.
-  \end{forthel}
+  \end{definition}
 
-  \begin{forthel}
-    \begin{definition}[id=ARITHMETIC_01_7371844250238976,printid]
-      $9 = 8 + 1$.
-    \end{definition}
+  \begin{definition}[forthel,id=ARITHMETIC_01_7371844250238976,printid]
+    $9 = 8 + 1$.
 
     Let nine stand for $9$.
-  \end{forthel}
+  \end{definition}
 
 
   \subsection*{The Axioms of Natural Number Arithmetic}
 
-  \begin{forthel}
-    \begin{axiom}[id=ARITHMETIC_01_3604163883696128,printid]
-      Let $n, m$ be natural numbers.
-      If $n + 1 = m + 1$ then $n = m$.
-    \end{axiom}
-  \end{forthel}
+  \begin{axiom}[forthel,id=ARITHMETIC_01_3604163883696128,printid]
+    Let $n, m$ be natural numbers.
+    If $n + 1 = m + 1$ then $n = m$.
+  \end{axiom}
 
-  \begin{forthel}
-    \begin{axiom}[id=ARITHMETIC_01_4454289938317312,printid]
-      There exists no natural number $n$ such that $n + 1 = 0$.
-    \end{axiom}
-  \end{forthel}
+  \begin{axiom}[forthel,id=ARITHMETIC_01_4454289938317312,printid]
+    There exists no natural number $n$ such that $n + 1 = 0$.
+  \end{axiom}
 
-  \begin{forthel}
-    \begin{axiom}[title=Induction,id=ARITHMETIC_01_4764664342773760,printid]
-      Let $\Phi$ be a class.
-      Assume $0 \in \Phi$ and for all natural numbers $n$ if $n \in \Phi$ then
-      $n + 1 \in \Phi$.
-      Then $\Phi$ contains every natural number.
-    \end{axiom}
-  \end{forthel}
+  \begin{axiom}[forthel,title=Induction,id=ARITHMETIC_01_4764664342773760,printid]
+    Let $\Phi$ be a class.
+    Assume $0 \in \Phi$ and for all natural numbers $n$ if $n \in \Phi$ then
+    $n + 1 \in \Phi$.
+    Then $\Phi$ contains every natural number.
+  \end{axiom}
 
-  \begin{forthel}
-    \begin{axiom}[id=ARITHMETIC_03_5962332515874540,printid]
-      Then $1 = 0 + 1$.
-    \end{axiom}
-  \end{forthel}
+  \begin{axiom}[forthel,id=ARITHMETIC_03_5962332515874540,printid]
+    Then $1 = 0 + 1$.
+  \end{axiom}
 
-  \begin{forthel}
-    \begin{axiom}[id=ARITHMETIC_03_4827955356237824,printid]
-      Let $n$ be a natural number.
-      Then $n + 0 = n$.
-    \end{axiom}
-  \end{forthel}
+  \begin{axiom}[forthel,id=ARITHMETIC_03_4827955356237824,printid]
+    Let $n$ be a natural number.
+    Then $n + 0 = n$.
+  \end{axiom}
 
-  \begin{forthel}
-    \begin{axiom}[id=ARITHMETIC_03_4427935386238924,printid]
-      Let $n, m$ be natural numbers.
-      Then $n + (m + 1) = (n + m) + 1$.
-    \end{axiom}
-  \end{forthel}
+  \begin{axiom}[forthel,id=ARITHMETIC_03_4427935386238924,printid]
+    Let $n, m$ be natural numbers.
+    Then $n + (m + 1) = (n + m) + 1$.
+  \end{axiom}
 
 
   \subsection*{Immediate Consequences of the Axioms}
 
-  \begin{forthel}
-    \begin{proposition}[id=ARITHMETIC_01_4966080109871104,printid]
-      Let $n$ be a natural number.
-      Then $n = 0$ or $n = m + 1$ for some natural number $m$.
-    \end{proposition}
-    \begin{proof}
-      Define $\Phi = \{ n' \in \Nat \mid n' = 0$ or $n' = m' + 1$ for some natural number $m' \}$.
-      $0 \in \Phi$ and for all $n' \in  \Phi$ we have $n' + 1 \in \Phi$.
-      Hence every natural number is contained in $\Phi$.
-      Thus $n = 0$ or $n = m + 1$ for some natural number $m$.
-    \end{proof}
-  \end{forthel}
+  \begin{proposition}[forthel,id=ARITHMETIC_01_4966080109871104,printid]
+    Let $n$ be a natural number.
+    Then $n = 0$ or $n = m + 1$ for some natural number $m$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Define $\Phi = \{ n' \in \Nat \mid n' = 0$ or $n' = m' + 1$ for some natural number $m' \}$.
+    $0 \in \Phi$ and for all $n' \in  \Phi$ we have $n' + 1 \in \Phi$.
+    Hence every natural number is contained in $\Phi$.
+    Thus $n = 0$ or $n = m + 1$ for some natural number $m$.
+  \end{proof}
 
-  \begin{forthel}
-    \begin{proposition}[id=ARITHMETIC_01_5996049267163136,printid]
-      Let $n$ be a natural number.
-      Then $n \neq n + 1$.
-    \end{proposition}
-    \begin{proof}
-      Define $\Phi = \{ n' \in \Nat \mid n' \neq n' + 1 \}$.
+  \begin{proposition}[forthel,id=ARITHMETIC_01_5996049267163136,printid]
+    Let $n$ be a natural number.
+    Then $n \neq n + 1$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Define $\Phi = \{ n' \in \Nat \mid n' \neq n' + 1 \}$.
 
-      (1) $0$ belongs to $\Phi$.
+    (1) $0$ belongs to $\Phi$.
 
-      (2) For all $n' \in \Phi$ we have $n' + 1 \in \Phi$. \\
-      Proof.
-        Let $n' \in \Phi$.
-        Then $n' \neq n' + 1$.
-        If $n' + 1 = (n' + 1) + 1$ then $n' = n' + 1$.
-        Thus it is wrong that $n' + 1 = (n' + 1) + 1$.
-        Hence $n' + 1 \in \Phi$.
-      Qed.
+    (2) For all $n' \in \Phi$ we have $n' + 1 \in \Phi$. \\
+    Proof.
+      Let $n' \in \Phi$.
+      Then $n' \neq n' + 1$.
+      If $n' + 1 = (n' + 1) + 1$ then $n' = n' + 1$.
+      Thus it is wrong that $n' + 1 = (n' + 1) + 1$.
+      Hence $n' + 1 \in \Phi$.
+    Qed.
 
-      Therefore every natural number is an element of $\Phi$.
-      Consequently $n \neq n + 1$.
-    \end{proof}
-  \end{forthel}
+    Therefore every natural number is an element of $\Phi$.
+    Consequently $n \neq n + 1$.
+  \end{proof}
 
 
   \subsection*{Computation Laws for Addition}
 
   \subsubsection*{Associativity}
 
-  \begin{forthel}
-    \begin{proposition}[id=ARITHMETIC_03_3235893452210176,printid]
-      Let $n, m, k$ be natural numbers.
-      Then $n + (m + k) = (n + m) + k$.
-    \end{proposition}
-    \begin{proof}
-      Define $\Phi = \{ k' \in \Nat \mid n + (m + k') = (n + m) + k' \}$.
+  \begin{proposition}[forthel,id=ARITHMETIC_03_3235893452210176,printid]
+    Let $n, m, k$ be natural numbers.
+    Then $n + (m + k) = (n + m) + k$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Define $\Phi = \{ k' \in \Nat \mid n + (m + k') = (n + m) + k' \}$.
 
-      (1) $0$ is contained in $\Phi$.
-      Indeed $n + (m + 0) = n + m = (n + m) + 0$.
+    (1) $0$ is contained in $\Phi$.
+    Indeed $n + (m + 0) = n + m = (n + m) + 0$.
 
-      (2) For all $k' \in \Phi$ we have $k' + 1 \in \Phi$. \\
-      Proof.
-        Let $k' \in \Phi$.
-        Then $n + (m + k') = (n + m) + k'$.
-        Hence
-        \[  n + (m + (k' + 1))        \]
-        \[    = n + ((m + k') + 1)    \]
-        \[    = (n + (m + k')) + 1    \]
-        \[    = ((n + m) + k') + 1    \]
-        \[    = (n + m) + (k' + 1).   \]
-        Thus $k' + 1 \in \Phi$.
-      Qed.
+    (2) For all $k' \in \Phi$ we have $k' + 1 \in \Phi$. \\
+    Proof.
+      Let $k' \in \Phi$.
+      Then $n + (m + k') = (n + m) + k'$.
+      Hence
+      \[  n + (m + (k' + 1))        \]
+      \[    = n + ((m + k') + 1)    \]
+      \[    = (n + (m + k')) + 1    \]
+      \[    = ((n + m) + k') + 1    \]
+      \[    = (n + m) + (k' + 1).   \]
+      Thus $k' + 1 \in \Phi$.
+    Qed.
 
-      Thus every natural number is an element of $\Phi$.
-      Therefore $n + (m + k) = (n + m) + k$.
-    \end{proof}
-  \end{forthel}
+    Thus every natural number is an element of $\Phi$.
+    Therefore $n + (m + k) = (n + m) + k$.
+  \end{proof}
 
 
   \subsubsection*{Commutativity}
 
-  \begin{forthel}
-    \begin{proposition}[id=ARITHMETIC_03_4029553232052224,printid]
-      Let $n, m$ be natural numbers.
-      Then $n + m = m + n$.
-    \end{proposition}
-    \begin{proof}
-      Define $\Phi = \{ m' \in \Nat \mid n + m' = m' + n \}$.
+  \begin{proposition}[forthel,id=ARITHMETIC_03_4029553232052224,printid]
+    Let $n, m$ be natural numbers.
+    Then $n + m = m + n$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Define $\Phi = \{ m' \in \Nat \mid n + m' = m' + n \}$.
 
-      (1) $0$ is an element of $\Phi$. \\
+    (1) $0$ is an element of $\Phi$. \\
+    Proof.
+      Define $\Psi = \{ n' \in \Nat \mid n' + 0 = 0 + n' \}$.
+
+      (1a) $0$ belongs to $\Psi$.
+
+      (1b) For all $n' \in \Psi$ we have $n' + 1 \in \Psi$. \\
       Proof.
-        Define $\Psi = \{ n' \in \Nat \mid n' + 0 = 0 + n' \}$.
-
-        (1a) $0$ belongs to $\Psi$.
-
-        (1b) For all $n' \in \Psi$ we have $n' + 1 \in \Psi$. \\
-        Proof.
-          Let $n' \in \Psi$.
-          Then $n' + 0 = 0 + n'$.
-          Hence
-          \[  (n' + 1) + 0        \]
-          \[    = n' + 1          \]
-          \[    = (n' + 0) + 1    \]
-          \[    = (0 + n') + 1    \]
-          \[    = 0 + (n' + 1).   \]
-        Qed.
-
-        Hence every natural number belongs to $\Psi$.
-        Thus $n + 0 = 0 + n$.
-        Therefore $0$ is an element of $\Phi$.
-      Qed.
-
-      Let us show that (2) $n + 1 = 1 + n$. \\
-      Proof.
-        Define $\Theta = \{ n' \in \Nat \mid n' + 1 = 1 + n' \}$.
-
-        (2a) $0$ is an element of $\Theta$.
-
-        (2b) For all $n' \in \Theta$ we have $n' + 1 \in \Theta$. \\
-        Proof.
-          Let $n' \in \Theta$.
-          Then $n' + 1 = 1 + n'$.
-          Hence
-          \[  (n' + 1) + 1        \]
-          \[    = (1 + n') + 1    \]
-          \[    = 1 + (n' + 1).   \]
-          Thus $n' + 1 \in \Theta$.
-        Qed.
-
-        Thus every natural number belongs to $\Theta$.
-        Therefore $n + 1 = 1 + n$.
-      Qed.
-
-      (3) For all $m' \in \Phi$ we have $m' + 1 \in \Phi$. \\
-      Proof.
-        Let $m' \in \Phi$.
-        Then $n + m' = m' + n$.
+        Let $n' \in \Psi$.
+        Then $n' + 0 = 0 + n'$.
         Hence
-        \[  n + (m'  + 1)       \]
-        \[    = (n + m') + 1    \]
-        \[    = (m' + n) + 1    \]
-        \[    = m' + (n + 1)    \]
-        \[    = m' + (1 + n)    \]
-        \[    = (m' + 1) + n.   \]
-        Thus $m' + 1 \in \Phi$.
+        \[  (n' + 1) + 0        \]
+        \[    = n' + 1          \]
+        \[    = (n' + 0) + 1    \]
+        \[    = (0 + n') + 1    \]
+        \[    = 0 + (n' + 1).   \]
       Qed.
 
-      Thus every natural number is an element of $\Phi$.
-      Therefore $n + m = m + n$.
-    \end{proof}
-  \end{forthel}
+      Hence every natural number belongs to $\Psi$.
+      Thus $n + 0 = 0 + n$.
+      Therefore $0$ is an element of $\Phi$.
+    Qed.
+
+    Let us show that (2) $n + 1 = 1 + n$. \\
+    Proof.
+      Define $\Theta = \{ n' \in \Nat \mid n' + 1 = 1 + n' \}$.
+
+      (2a) $0$ is an element of $\Theta$.
+
+      (2b) For all $n' \in \Theta$ we have $n' + 1 \in \Theta$. \\
+      Proof.
+        Let $n' \in \Theta$.
+        Then $n' + 1 = 1 + n'$.
+        Hence
+        \[  (n' + 1) + 1        \]
+        \[    = (1 + n') + 1    \]
+        \[    = 1 + (n' + 1).   \]
+        Thus $n' + 1 \in \Theta$.
+      Qed.
+
+      Thus every natural number belongs to $\Theta$.
+      Therefore $n + 1 = 1 + n$.
+    Qed.
+
+    (3) For all $m' \in \Phi$ we have $m' + 1 \in \Phi$. \\
+    Proof.
+      Let $m' \in \Phi$.
+      Then $n + m' = m' + n$.
+      Hence
+      \[  n + (m'  + 1)       \]
+      \[    = (n + m') + 1    \]
+      \[    = (m' + n) + 1    \]
+      \[    = m' + (n + 1)    \]
+      \[    = m' + (1 + n)    \]
+      \[    = (m' + 1) + n.   \]
+      Thus $m' + 1 \in \Phi$.
+    Qed.
+
+    Thus every natural number is an element of $\Phi$.
+    Therefore $n + m = m + n$.
+  \end{proof}
 
 
   \subsubsection*{Cancellation}
 
-  \begin{forthel}
-    \begin{proposition}[id=ARITHMETIC_03_3137702874578944,printid]
-      Let $n, m, k$ be natural numbers.
-      If $n + k = m + k$ then $n = m$.
-    \end{proposition}
-    \begin{proof}
-      Define $\Phi = \{ k' \in \Nat \mid$ if $n + k' = m + k'$ then $n = m \}$.
+  \begin{proposition}[forthel,id=ARITHMETIC_03_3137702874578944,printid]
+    Let $n, m, k$ be natural numbers.
+    If $n + k = m + k$ then $n = m$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Define $\Phi = \{ k' \in \Nat \mid$ if $n + k' = m + k'$ then $n = m \}$.
 
-      (1) $0$ is an element of $\Phi$.
+    (1) $0$ is an element of $\Phi$.
 
-      (2) For all $k' \in \Phi$ we have $k' + 1 \in \Phi$. \\
-      Proof.
-        Let $k' \in \Phi$.
-        Suppose $n + (k' + 1) = m + (k' + 1)$.
-        Then $(n + k') + 1 = (m + k') + 1$.
-        Hence $n + k' = m + k'$.
-        Thus $n = m$.
-      Qed.
-
-      Therefore every natural number is an element of $\Phi$.
-      Consequently if $n + k = m + k$ then $n = m$.
-    \end{proof}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{corollary}[id=ARITHMETIC_03_8445946379632640,printid]
-      Let $n, m, k$ be natural numbers.
-      If $k + n = k + m$ then $n = m$.
-    \end{corollary}
-    \begin{proof}
-      Assume $k + n = k + m$.
-      We have $k + n = n + k$ and $k + m = m + k$.
-      Hence $n + k = m + k$.
+    (2) For all $k' \in \Phi$ we have $k' + 1 \in \Phi$. \\
+    Proof.
+      Let $k' \in \Phi$.
+      Suppose $n + (k' + 1) = m + (k' + 1)$.
+      Then $(n + k') + 1 = (m + k') + 1$.
+      Hence $n + k' = m + k'$.
       Thus $n = m$.
-    \end{proof}
-  \end{forthel}
+    Qed.
+
+    Therefore every natural number is an element of $\Phi$.
+    Consequently if $n + k = m + k$ then $n = m$.
+  \end{proof}
+
+  \begin{corollary}[forthel,id=ARITHMETIC_03_8445946379632640,printid]
+    Let $n, m, k$ be natural numbers.
+    If $k + n = k + m$ then $n = m$.
+  \end{corollary}
+  \begin{proof}[forthel]
+    Assume $k + n = k + m$.
+    We have $k + n = n + k$ and $k + m = m + k$.
+    Hence $n + k = m + k$.
+    Thus $n = m$.
+  \end{proof}
 
 
   \subsubsection*{Zero Sums}
 
-  \begin{forthel}
-    \begin{proposition}[id=ARITHMETIC_03_3520602170195968,printid]
-      Let $n, m$ be natural numbers.
-      If $n + m = 0$ then $n = 0$ and $m = 0$.
-    \end{proposition}
-    \begin{proof}
-      Assume $n + m = 0$.
-      Suppose $n \neq 0$ or $m \neq 0$.
-      Then we can take a $k \in \Nat$ such that $n = k + 1$ or $m = k + 1$.
-      Hence there exists a natural number $l$ such that
-      $n + m
-        = l + (k + 1)
-        = (l + k) + 1
-        \neq 0$.
-      Contradiction.
-    \end{proof}
-  \end{forthel}
+  \begin{proposition}[forthel,id=ARITHMETIC_03_3520602170195968,printid]
+    Let $n, m$ be natural numbers.
+    If $n + m = 0$ then $n = 0$ and $m = 0$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Assume $n + m = 0$.
+    Suppose $n \neq 0$ or $m \neq 0$.
+    Then we can take a $k \in \Nat$ such that $n = k + 1$ or $m = k + 1$.
+    Hence there exists a natural number $l$ such that
+    $n + m
+      = l + (k + 1)
+      = (l + k) + 1
+      \neq 0$.
+    Contradiction.
+  \end{proof}
+\end{smodule}
 \end{document}

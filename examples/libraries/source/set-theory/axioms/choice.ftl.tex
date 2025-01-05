@@ -1,24 +1,16 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../../meta-inf/lib/naproche}
-\input{../../../lib/libraries}
-\input{../../../lib/foundations}
+\documentclass{naproche-library}
+\libinput{set-theory-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/foundations/systems-of-sets.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
-
+\begin{smodule}{choice.ftl}
+  \importmodule[libraries]{foundations?systems-of-sets.ftl}
 
   \section{Choice}
 
-  \begin{forthel}
-    \begin{axiom}[title=Axiom of Choice,id=FOUNDATIONS_10_1897613305577472,printid]
-      Let $X$ be a system of nonempty sets.
-      Then there exists a map $f$ such that $\dom(f) = X$ and $f(x) \in x$ for any $x \in X$.
-    \end{axiom}
-  \end{forthel}
+  \begin{axiom}[forthel,title=Axiom of Choice,id=FOUNDATIONS_10_1897613305577472,printid]
+    Let $X$ be a system of nonempty sets.
+    Then there exists a map $f$ such that $\dom(f) = X$ and $f(x) \in x$ for any $x \in X$.
+  \end{axiom}
+
+  $\set{a,b,c}$
+\end{smodule}
 \end{document}

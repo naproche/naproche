@@ -1,31 +1,18 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../meta-inf/lib/naproche}
-\input{../../lib/libraries}
-\input{../../lib/foundations}
-\input{../../lib/set-theory}
+\documentclass{naproche-library}
+\libinput{set-theory-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/set-theory/zero.ftl.tex}]
-      [read \path{libraries/source/set-theory/successor-ordinals.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
-
+\begin{smodule}{one.ftl}
+  \importmodule[libraries]{set-theory?zero.ftl}
+  \importmodule[libraries]{set-theory?successor-ordinals.ftl}
 
   \section*{$1$}
 
-  \begin{forthel}
-    \begin{definition}[id=SET_THEORY_03_1991057988386816,printid]
-      $1 = \succ(0)$.
-    \end{definition}
-  \end{forthel}
+  \begin{definition}[forthel,id=SET_THEORY_03_1991057988386816,printid]
+    $1 = \succ(0)$.
+  \end{definition}
 
-  \begin{forthel}
-    \begin{proposition}[id=SET_THEORY_03_4388003120152576,printid]
-      $1 = \set{0}$.
-    \end{proposition}
-  \end{forthel}
+  \begin{proposition}[forthel,id=SET_THEORY_03_4388003120152576,printid]
+    $1 = \set{0}$.
+  \end{proposition}
+\end{smodule}
 \end{document}

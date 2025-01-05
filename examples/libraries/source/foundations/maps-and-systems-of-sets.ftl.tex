@@ -1,33 +1,21 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../meta-inf/lib/naproche}
-\input{../../lib/libraries}
-\input{../../lib/foundations}
+\documentclass{naproche-library}
+\libinput{foundations-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/foundations/maps.ftl.tex}]
-      [read \path{libraries/source/foundations/systems-of-sets.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
-
+\begin{smodule}{maps-and-systems-of-sets.ftl}
+  \importmodule[libraries]{foundations?maps.ftl}
+  \importmodule[libraries]{foundations?systems-of-sets.ftl}
 
   \section*{Maps and Systems of Sets}
 
-  \begin{forthel}
-    \begin{definition}[id=FOUNDATIONS_10_1394550966845440,printid]
-      A map between systems of sets is a map from some system of sets to some system of sets.
-    \end{definition}
-  \end{forthel}
+  \begin{definition}[forthel,id=FOUNDATIONS_10_1394550966845440,printid]
+    A map between systems of sets is a map from some system of sets to some system of sets.
+  \end{definition}
 
-  \begin{forthel}
-    \begin{definition}[id=FOUNDATIONS_10_3290499861446656,printid]
-      Let $f$ be a map between systems of sets.
-      $f$ is subset preserving iff $x \subseteq y \implies f(x) \subseteq f(y)$ for all $x, y \in \dom(f)$.
-    \end{definition}
+  \begin{definition}[forthel,id=FOUNDATIONS_10_3290499861446656,printid]
+    Let $f$ be a map between systems of sets.
+    $f$ is subset preserving iff $x \subseteq y \implies f(x) \subseteq f(y)$ for all $x, y \in \dom(f)$.
 
     Let $f$ preserves subsets stand for $f$ is subset preserving.
-  \end{forthel}
+  \end{definition}
+\end{smodule}
 \end{document}

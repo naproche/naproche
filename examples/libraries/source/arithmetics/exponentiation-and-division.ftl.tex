@@ -1,36 +1,25 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../meta-inf/lib/naproche}
-\input{../../lib/libraries}
-\input{../../lib/foundations}
-\input{../../lib/arithmetics}
+\documentclass{naproche-library}
+\libinput{arithmetics-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/arithmetics/division.ftl.tex}]
-      [read \path{libraries/source/arithmetics/exponentiation.ftl.tex}]
-      [read \path{libraries/source/arithmetics/subtraction.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
-
+\begin{smodule}{exponentiation-and-division.ftl}
+  \importmodule[libraries]{arithmetics?division.ftl}
+  \importmodule[libraries]{arithmetics?exponentiation.ftl}
+  \importmodule[libraries]{arithmetics?subtraction.ftl}
 
   \section*{Exponentiation and Division}
 
-  \begin{forthel}
-    \begin{proposition}[id=ARITHMETIC_14_2345102698451257,printid]
-      Let $n, m, k$ be natural numbers such that $k$ is nonzero and $n \geq m$.
-      Then \[\frac{k^{n}}{k^{m}} = k^{n - m}.\]
-    \end{proposition}
-    \begin{proof}
-      We have $k^{n} = k^{(n - m) + m} = k^{n - m} \cdot k^{m}$.
-      Hence
-      \[  \frac{k^{n}}{k^{m}}
-          = \frac{k^{n - m} \cdot k^{m}}{k^{m}}
-          = \frac{k^{n - m} \cdot k^{m}}{1 \cdot k^{m}}
-          = \frac{k^{n - m}}{1}
-          = k^{n - m}. \]
-    \end{proof}
-  \end{forthel}
+  \begin{proposition}[forthel,id=ARITHMETIC_14_2345102698451257,printid]
+    Let $n, m, k$ be natural numbers such that $k$ is nonzero and $n \geq m$.
+    Then \[\frac{k^{n}}{k^{m}} = k^{n - m}.\]
+  \end{proposition}
+  \begin{proof}[forthel]
+    We have $k^{n} = k^{(n - m) + m} = k^{n - m} \cdot k^{m}$.
+    Hence
+    \[  \frac{k^{n}}{k^{m}}
+        = \frac{k^{n - m} \cdot k^{m}}{k^{m}}
+        = \frac{k^{n - m} \cdot k^{m}}{1 \cdot k^{m}}
+        = \frac{k^{n - m}}{1}
+        = k^{n - m}. \]
+  \end{proof}
+\end{smodule}
 \end{document}

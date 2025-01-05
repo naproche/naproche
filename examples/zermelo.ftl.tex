@@ -1,19 +1,9 @@
 \documentclass{article}
-\usepackage[english]{babel}
-\usepackage{meta-inf/lib/naproche}
-\input{libraries/lib/foundations}
-\input{libraries/lib/set-theory}
+\usepackage{naproche}
+\libinput[meta-inf]{example-preamble}
+\libinput[libraries]{foundations-preamble}
 
-\usepackage[backend=bibtex]{biblatex}
-\usepackage{csquotes}
-\addbibresource{meta-inf/lib/bibliography}
-
-\usepackage[
-  type=CC,
-  modifier=by-nc-sa,
-  version=4.0,
-]{doclicense}
-
+\newcommand\Ord{\textbf{Ord}}
 
 \title{Zermelo's Well-ordering Theorem}
 \author{\Naproche formalization:\\[0.5em]Marcel Schütz}
@@ -22,22 +12,19 @@
 \begin{document}
   \maketitle
 
+  \usemodule[libraries]{foundations?equinumerosity.ftl}
+  \usemodule[libraries]{foundations?choice-maps.ftl}
+  \usemodule[libraries]{foundations?proper-classes.ftl}
+
   \noindent This is a formalization of \textit{Zermelo's Well-ordering Theorem},
   i.e. of the assertion that under the assumption of the axiom of choice every
   set is equinumerous to some ordinal number, where an ordinal number is
   regarded as a transitive set whose elements are transitive sets as well.
   The proof of this theorem presented here is oriented on \cite{Koepke2018}.
 
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/foundations/equinumerosity.ftl.tex}]
-      [read \path{libraries/source/foundations/choice-maps.ftl.tex}]
-      [read \path{libraries/source/foundations/proper-classes.ftl.tex}]
-      [read \path{transfinite-recursion.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
+  \begin{forthel}
+    [read \path{transfinite-recursion.ftl.tex}]
+  \end{forthel}
 
   \begin{forthel}
     \begin{axiom*}[title=Axiom of Choice]

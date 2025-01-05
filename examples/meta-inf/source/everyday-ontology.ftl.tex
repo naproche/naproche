@@ -1,20 +1,12 @@
-\documentclass{article}
-\usepackage{naproche}
-\usepackage{comment}
-\libinput{preamble}
+\documentclass{naproche-library}
+\libinput{meta-inf-preamble}
 \begin{document}
 \begin{smodule}{everyday-ontology.ftl}
-\importmodule{macros.ftl}
-\importmodule{vocabulary.ftl}
+
+\importmodule[meta-inf]{macros.ftl}
+\importmodule[meta-inf]{vocabulary.ftl}
 
 \section{Everyday Ontology}
-
-\begin{forthel}
-  [importmodule \path{meta-inf?macros.ftl}]
-
-  [importmodule \path{meta-inf?vocabulary.ftl}]
-\end{forthel}
-
 
 \subsection{Places}
 

@@ -1,8 +1,10 @@
-\documentclass{stex}
+\documentclass{naproche-library}
 \libinput{preamble}
 \begin{document}
 \begin{smodule}{complete-lattice.ftl}
-\importmodule{lattice.ftl}
+
+\importmodule[domain-theory]{lattice.ftl}
+
 \STEXexport{
   \let\Join\relax
 }
@@ -17,10 +19,6 @@
 \vardef{Lvar}[return={\complattice[comp=##1]}]{\mathcal L}
 
 \section{Complete Lattices}
-
-\begin{forthel}
-[importmodule \path{domain-theory?lattice.ftl}]
-\end{forthel}
 
 \subsection{Definition}
 

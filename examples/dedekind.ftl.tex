@@ -1,18 +1,8 @@
 \documentclass{article}
-\usepackage[british]{babel}
-\usepackage{meta-inf/lib/naproche}
-\input{libraries/lib/foundations}
-\input{libraries/lib/arithmetics}
-
-\usepackage[backend=bibtex]{biblatex}
-\usepackage{csquotes}
-\addbibresource{meta-inf/lib/bibliography}
-
-\usepackage[
-  type=CC,
-  modifier=by-nc-sa,
-  version=4.0,
-]{doclicense}
+\usepackage{naproche}
+\libinput[meta-inf]{example-preamble}
+\libinput[libraries]{foundations-preamble}
+\libinput[libraries]{arithmetics-preamble}
 
 \title{Dedekind's Recursion Theorem}
 \author{\Naproche formalization:\\[0.5em]Marcel Schütz}
@@ -21,6 +11,9 @@
 \begin{document}
   \maketitle
 
+  \usemodule[libraries]{arithmetics?nat-is-a-set.ftl}
+  \usemodule[libraries]{set-theory?zf.ftl}
+
   \noindent This is a formalization of Dedekind's recursion theorem.
   It states that for any function $f : A \to A$ and any $a \in A$
   there exists a unique function
@@ -28,15 +21,6 @@
   $f$ and $a$, i.e. $\varphi(0) = a$ and
   $\varphi(n + 1) = f(\varphi(n))$.
   (cf. \cite{Ebbinghaus1991}).
-
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/arithmetics/nat-is-a-set.ftl.tex}]
-      [read \path{libraries/source/set-theory/zf.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
 
   \begin{forthel}
     \begin{definition*}

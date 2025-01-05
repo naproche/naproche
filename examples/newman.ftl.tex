@@ -1,8 +1,6 @@
 \documentclass{article}
-
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
-\usepackage{meta-inf/lib/naproche}
+\usepackage{naproche}
+\libinput[meta-inf]{example-preamble}
 
 \newcommand{\reduces}[1]{\to_{#1}}
 \newcommand{\reducesTC}[1]{\to_{#1}^{+}}
@@ -20,9 +18,10 @@ Adrian De Lon (typesetting, 2021)}
   \pagenumbering{gobble}
 
   \maketitle
+  
+  \usemodule[meta-inf]{vocabulary.ftl}
 
   \begin{forthel}
-    [read \path{meta-inf/source/vocabulary.ftl.tex}]
 
     \begin{signature}
       An term is an object.

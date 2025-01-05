@@ -1,97 +1,84 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../meta-inf/lib/naproche}
-\input{../../lib/libraries}
-\input{../../lib/foundations}
-\input{../../lib/arithmetics}
+\documentclass{naproche-library}
+\libinput{arithmetics-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/arithmetics/factorial.ftl.tex}]
-      [read \path{libraries/source/arithmetics/exponentiation-and-ordering.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
-
+\begin{smodule}{factorial-and-exponentiation.ftl}
+  \importmodule[libraries]{arithmetics?factorial.ftl}
+  \importmodule[libraries]{arithmetics?exponentiation-and-ordering.ftl}
 
   \section*{Factorial and Exponentiation}
 
-  \begin{forthel}
-    \begin{proposition}[id=ARITHMETIC_12_8113296594960384,printid]
-      Let $n$ be a natural number.
-      Assume $n \geq 2$.
-      Then $n^{n} > n!$.
-    \end{proposition}
-    \begin{proof}
-      (a) Define $\Phi = \{ n' \in \Nat_{\geq 2} \mid n'^{n'} > n'! \}$.
-  
-      (1) $\Phi$ contains $2$.
-  
-      (2) For all $n' \in \Phi$ we have $n' + 1 \in \Phi$. \\
+  \begin{proposition}[forthel,id=ARITHMETIC_12_8113296594960384,printid]
+    Let $n$ be a natural number.
+    Assume $n \geq 2$.
+    Then $n^{n} > n!$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    (a) Define $\Phi = \{ n' \in \Nat_{\geq 2} \mid n'^{n'} > n'! \}$.
+
+    (1) $\Phi$ contains $2$.
+
+    (2) For all $n' \in \Phi$ we have $n' + 1 \in \Phi$. \\
+    Proof.
+      Let $n' \in \Phi$.
+      Then $n' \geq 2$.
+
+      Take $X = (n' + 1)^{n'} \cdot (n' + 1)$ and $Y = n'^{n'} \cdot (n' + 1)$.
+      Then $X > Y$. \\
       Proof.
-        Let $n' \in \Phi$.
-        Then $n' \geq 2$.
-  
-        Take $X = (n' + 1)^{n'} \cdot (n' + 1)$ and $Y = n'^{n'} \cdot (n' + 1)$.
-        Then $X > Y$. \\
-        Proof.
-          We have $n' + 1 > n'$ and $n' \neq 0$.
-          Thus $(n' + 1)^{n'} > n'^{n'}$.
-          $n' + 1$ is nonzero.
-          Hence $(n' + 1)^{n'} \cdot (n' + 1) > n'^{n'} \cdot (n' + 1)$.
-        Qed.
-  
-        Take $Z = n'! \cdot (n' + 1)$.
-        Then $Y > Z$.
-        Indeed $n'^{n'} > n'!$ and $n' + 1 \neq 0$.
-  
-        Hence $(n' + 1)^{n' + 1} = X > Y > Z = (n' + 1)!$.
-        Thus $(n' + 1)^{n' + 1} > (n' + 1)!$.
+        We have $n' + 1 > n'$ and $n' \neq 0$.
+        Thus $(n' + 1)^{n'} > n'^{n'}$.
+        $n' + 1$ is nonzero.
+        Hence $(n' + 1)^{n'} \cdot (n' + 1) > n'^{n'} \cdot (n' + 1)$.
       Qed.
-  
-      Therefore $\Phi$ contains every element of $\Nat_{\geq 2}$ (by \printref{ARITHMETIC_04_4976599269113856}).
-      Consequently $n^{n} > n!$ (by a).
-    \end{proof}
-  \end{forthel}
 
-  \begin{forthel}
-    \begin{proposition}[id=ARITHMETIC_12_5413271156817920,printid]
-      Let $n$ be a natural number.
-      Assume $n \geq 4$.
-      Then $n! > 2^{n}$.
-    \end{proposition}
-    \begin{proof}
-      (a) Define $\Phi = \{ n' \in \Nat_{\geq 4} \mid n'! > 2^{n'} \}$.
-  
-      (1) $\Phi$ contains $4$. \\
-      Proof.
-        \[  4!                                  \]
-        \[    = 4 \cdot (3 \cdot 2)             \]
-        \[    = 2 \cdot (2 \cdot (3 \cdot 2))   \]
-        \[    = 3 \cdot (2 \cdot (2 \cdot 2))   \]
-        \[    > 2 \cdot (2 \cdot (2 \cdot 2))   \]
-        \[    = 2^{4}.                          \]
-      Qed.
-  
-      (2) For all $n' \in \Phi$ we have $n' + 1 \in \Phi$. \\
-      Proof.
-        Let $n' \in \Phi$.
-        Then $n' \geq 4$ and $n'! > 2^{n'}$.
+      Take $Z = n'! \cdot (n' + 1)$.
+      Then $Y > Z$.
+      Indeed $n'^{n'} > n'!$ and $n' + 1 \neq 0$.
 
-        Take $X = n'! \cdot (n' + 1)$ and $Y = 2^{n'} \cdot (n' + 1)$.
-        Then $X > Y$.
+      Hence $(n' + 1)^{n' + 1} = X > Y > Z = (n' + 1)!$.
+      Thus $(n' + 1)^{n' + 1} > (n' + 1)!$.
+    Qed.
 
-        Take $Z = 2^{n'} \cdot 2$.
-        Then $Y > Z$ (by \printref{ARITHMETIC_06_5048640368279552}).
-        Indeed $n' + 1 > 2$ and $2^{n'} \neq 0$.
+    Therefore $\Phi$ contains every element of $\Nat_{\geq 2}$ (by \printref{ARITHMETIC_04_4976599269113856}).
+    Consequently $n^{n} > n!$ (by a).
+  \end{proof}
 
-        Hence $(n' + 1)! = X > Y > Z = 2^{n' + 1}$.
-        Thus $(n' + 1)! > 2^{n' + 1}$.
-      Qed.
-  
-      Therefore $\Phi$ contains every element of $\Nat_{\geq 4}$ (by \printref{ARITHMETIC_04_4976599269113856}).
-      Consequently $n! > 2^{n}$ (by a).
-    \end{proof}
-  \end{forthel}
+  \begin{proposition}[forthel,id=ARITHMETIC_12_5413271156817920,printid]
+    Let $n$ be a natural number.
+    Assume $n \geq 4$.
+    Then $n! > 2^{n}$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    (a) Define $\Phi = \{ n' \in \Nat_{\geq 4} \mid n'! > 2^{n'} \}$.
+
+    (1) $\Phi$ contains $4$. \\
+    Proof.
+      \[  4!                                  \]
+      \[    = 4 \cdot (3 \cdot 2)             \]
+      \[    = 2 \cdot (2 \cdot (3 \cdot 2))   \]
+      \[    = 3 \cdot (2 \cdot (2 \cdot 2))   \]
+      \[    > 2 \cdot (2 \cdot (2 \cdot 2))   \]
+      \[    = 2^{4}.                          \]
+    Qed.
+
+    (2) For all $n' \in \Phi$ we have $n' + 1 \in \Phi$. \\
+    Proof.
+      Let $n' \in \Phi$.
+      Then $n' \geq 4$ and $n'! > 2^{n'}$.
+
+      Take $X = n'! \cdot (n' + 1)$ and $Y = 2^{n'} \cdot (n' + 1)$.
+      Then $X > Y$.
+
+      Take $Z = 2^{n'} \cdot 2$.
+      Then $Y > Z$ (by \printref{ARITHMETIC_06_5048640368279552}).
+      Indeed $n' + 1 > 2$ and $2^{n'} \neq 0$.
+
+      Hence $(n' + 1)! = X > Y > Z = 2^{n' + 1}$.
+      Thus $(n' + 1)! > 2^{n' + 1}$.
+    Qed.
+
+    Therefore $\Phi$ contains every element of $\Nat_{\geq 4}$ (by \printref{ARITHMETIC_04_4976599269113856}).
+    Consequently $n! > 2^{n}$ (by a).
+  \end{proof}
+\end{smodule}
 \end{document}

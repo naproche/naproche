@@ -1,311 +1,279 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../meta-inf/lib/naproche}
-\input{../../lib/libraries}
-\input{../../lib/foundations}
+\documentclass{naproche-library}
+\libinput{set-theory-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/set-theory/axioms/set-existence.ftl.tex}]
-      [read \path{libraries/source/set-theory/axioms/separation.ftl.tex}]
-      [read \path{libraries/source/set-theory/axioms/pairing.ftl.tex}]
-      [read \path{libraries/source/set-theory/axioms/union.ftl.tex}]
-      [read \path{libraries/source/set-theory/axioms/powerset.ftl.tex}]
-      [read \path{libraries/source/set-theory/axioms/infinity.ftl.tex}]
-      [read \path{libraries/source/set-theory/axioms/replacement.ftl.tex}]
-      [read \path{libraries/source/set-theory/axioms/foundation.ftl.tex}]
-      [read \path{libraries/source/set-theory/axioms/function.ftl.tex}]
-      [read \path{libraries/source/foundations/pairs-and-products.ftl.tex}]
-      [read \path{libraries/source/foundations/invertible-maps.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
-
+\begin{smodule}{zf.ftl}
+  \importmodule[libraries]{set-theory/axioms?set-existence.ftl}
+  \importmodule[libraries]{set-theory/axioms?separation.ftl}
+  \importmodule[libraries]{set-theory/axioms?pairing.ftl}
+  \importmodule[libraries]{set-theory/axioms?union.ftl}
+  \importmodule[libraries]{set-theory/axioms?powerset.ftl}
+  \importmodule[libraries]{set-theory/axioms?infinity.ftl}
+  \importmodule[libraries]{set-theory/axioms?replacement.ftl}
+  \importmodule[libraries]{set-theory/axioms?foundation.ftl}
+  \importmodule[libraries]{set-theory/axioms?function.ftl}
+  \importmodule[libraries]{foundations?pairs-and-products.ftl}
+  \importmodule[libraries]{foundations?invertible-maps.ftl}
 
   \section*{ZFC}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_10_5891530432708608,printid]
-      $\emptyset$ is a set.
-    \end{proposition}
-    \begin{proof}
-      Take a set $x$ (by \printref{FOUNDATIONS_10_2362039748001792}).
-      Define $A = \{ y \in x \mid y \neq y \}$.
-      Then $A$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
-      We have $A = \emptyset$.
-      Hence $\emptyset$ is a set.
-    \end{proof}
-  \end{forthel}
+  \begin{proposition}[forthel,id=FOUNDATIONS_10_5891530432708608,printid]
+    $\emptyset$ is a set.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Take a set $x$ (by \printref{FOUNDATIONS_10_2362039748001792}).
+    Define $A = \{ y \in x \mid y \neq y \}$.
+    Then $A$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
+    We have $A = \emptyset$.
+    Hence $\emptyset$ is a set.
+  \end{proof}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_10_4052198354845696,printid]
-      Let $x, y$ be sets.
-      Then $x \cup y$ is a set.
-    \end{proposition}
-    \begin{proof}
-      Take $X = \set{x,y}$.
-      Then $X$ is a set.
-      Hence $\bigcup X$ is a set (by \printref{FOUNDATIONS_10_5536459412996096}).
-      Indeed $X$ is a system of sets.
-      We have $x \cup y = \bigcup X$.
-      Thus $x \cup y$ is a set.
-    \end{proof}
-  \end{forthel}
+  \begin{proposition}[forthel,id=FOUNDATIONS_10_4052198354845696,printid]
+    Let $x, y$ be sets.
+    Then $x \cup y$ is a set.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Take $X = \set{x,y}$.
+    Then $X$ is a set.
+    Hence $\bigcup X$ is a set (by \printref{FOUNDATIONS_10_5536459412996096}).
+    Indeed $X$ is a system of sets.
+    We have $x \cup y = \bigcup X$.
+    Thus $x \cup y$ is a set.
+  \end{proof}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_10_4475839687163904,printid]
-      Let $x, y$ be sets.
-      Then $x \cap y$ is a set.
-    \end{proposition}
-    \begin{proof}
-      We have $x \cap y \subseteq x$.
-      Hence $x \cap y$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
-    \end{proof}
-  \end{forthel}
+  \begin{proposition}[forthel,id=FOUNDATIONS_10_4475839687163904,printid]
+    Let $x, y$ be sets.
+    Then $x \cap y$ is a set.
+  \end{proposition}
+  \begin{proof}[forthel]
+    We have $x \cap y \subseteq x$.
+    Hence $x \cap y$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
+  \end{proof}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_10_7795203882614784,printid]
-      Let $x, y$ be sets.
-      Then $x \setminus y$ is a set.
-    \end{proposition}
-    \begin{proof}
-      We have $x \setminus y \subseteq x$.
-      Hence $x \setminus y$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
-    \end{proof}
-  \end{forthel}
+  \begin{proposition}[forthel,id=FOUNDATIONS_10_7795203882614784,printid]
+    Let $x, y$ be sets.
+    Then $x \setminus y$ is a set.
+  \end{proposition}
+  \begin{proof}[forthel]
+    We have $x \setminus y \subseteq x$.
+    Hence $x \setminus y$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
+  \end{proof}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_10_4458706448154624,printid]
-      Let $x, y$ be sets.
-      Then $x \times y$ is a set.
-    \end{proposition}
-    \begin{proof}
-      $\set{a}$ and $\set{a,b}$ are sets for each $a \in x$ and each $b \in y$.
-      Define $P = \{ \set{\set{a}, \set{a,b}} \mid a \in x$ and $b \in y \}$.
+  \begin{proposition}[forthel,id=FOUNDATIONS_10_4458706448154624,printid]
+    Let $x, y$ be sets.
+    Then $x \times y$ is a set.
+  \end{proposition}
+  \begin{proof}[forthel]
+    $\set{a}$ and $\set{a,b}$ are sets for each $a \in x$ and each $b \in y$.
+    Define $P = \{ \set{\set{a}, \set{a,b}} \mid a \in x$ and $b \in y \}$.
 
-      (1) $P$ is a set. \\
+    (1) $P$ is a set. \\
+    Proof.
+      Let us show that $P \subseteq \pow(\pow(x \cup y))$.
+        Let $p \in P$.
+        Consider $a \in x$ and $b \in y$ such that $p = \set{\set{a},\set{a,b}}$.
+        Then $a, b \in x \cup y$.
+        Hence $\set{a}, \set{a,b} \in \pow(x \cup y)$.
+        Thus $\set{\set{a}, \set{a,b}} \in \pow(\pow(x \cup y))$.
+      End.
+
+      $x \cup y$ is a set.
+      Consequently $\pow(\pow(x \cup y))$ is a set (by \printref{FOUNDATIONS_10_5862230203564032}).
+      Therefore $P$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
+    Qed.
+
+    Define $l(p) =$ ``choose $a \in x$, choose $b \in y$ such that $p = \set{\set{a}, \set{a,b}}$ in $a$'' for $p \in P$.
+    Define $r(p) =$ ``choose $a \in x$, choose $b \in y$ such that $p = \set{\set{a}, \set{a,b}}$ in $b$'' for $p \in P$.
+
+    Define $f(p) = (l(p), r(p))$ for $p \in P$.
+
+    Let us show that for any objects $u, u', v, v'$ if
+    $\set{\set{u}, \set{u,v}} = \set{\set{u'}, \set{u',v'}}$ then $u = u'$ and $v = v'$.
+      Let $u, u', v, v'$ be objects.
+      Assume $\set{\set{u}, \set{u,v}} = \set{\set{u'}, \set{u',v'}}$.
+      Then ($\set{u} = \set{u'}$ or $\set{u} = \set{u',v'}$) and ($\set{u,v} = \set{u'}$ or $\set{u,v} = \set{u',v'}$).
+      Thus ($\set{u} = \set{u'}$ and ($\set{u,v} = \set{u'}$ or $\set{u,v} = \set{u',v'}$)) or ($\set{u} = \set{u',v'}$ and ($\set{u,v} = \set{u'}$ or $\set{u,v} = \set{u',v'}$)).
+
+      Case $\set{u} = \set{u'}$ and ($\set{u,v} = \set{u'}$ or $\set{u,v} = \set{u',v'}$).
+        We have $\set{u} = \set{u'}$.
+        Hence $u = u'$.
+
+        Case $\set{u,v} = \set{u'}$.
+          Then $u = u'= v$.
+          Hence $\set{\set{u}, \set{u,u}} = \set{\set{u}, \set{u,v'}}$ (by 1).
+          Thus $\set{\set{u}} = \set{\set{u}, \set{u,v'}}$.
+          Therefore $\set{u} = \set{u,v'}$.
+          Consequently $v' = u = v$.
+        End.
+
+        Case $\set{u,v} = \set{u',v'}$.
+          Then $\set{u,v} = \set{u,v'}$.
+          Hence $v = v'$.
+        End.
+      End.
+
+      Case $\set{u} = \set{u',v'}$ and ($\set{u,v} = \set{u'}$ or $\set{u,v} = \set{u',v'}$).
+        We have $\set{u} = \set{u',v'}$.
+        Hence $u = u'$.
+
+        Case $\set{u,v} = \set{u'}$.
+          Then $u = v = u'$.
+          Hence $v = v'$.
+        End.
+
+        Case $\set{u,v} = \set{u',v'}$.
+          Then $\set{u,v} = \set{u,v'}$.
+          Hence $v = v'$.
+        End.
+      End.
+    End.
+
+    $\set{\set{a}, \set{a,b}} \in \dom(f)$ for any $a \in x$ and any $b \in y$. \\ % Needed for ontological checking
+    Proof.
+      Let $a \in x$ and $b \in y$.
+      Then $\set{\set{a}, \set{a,b}} \in P$.
+    Qed.
+
+    Let us show that for any $a \in x$ and any $b \in y$ we have $f(\set{\set{a}, \set{a,b}}) = (a,b)$.
+      Let $a \in x$ and $b \in y$.
+      Take $p = \set{\set{a}, \set{a,b}}$.
+      Then $p$ is a set.
+      Then we can choose $a' \in x$ and $b' \in y$ such that $p = \set{\set{a'}, \set{a',b'}}$ and $l(p) = a'$.
+      Then $a = a'$ and $b = b'$.
+      Hence $l(p) = a$.
+      Choose $a'' \in x$ and $b'' \in y$ such that $p = \set{\set{a''}, \set{a'',b''}}$ and $r(p) = b''$.
+      Then $a = a''$ and $b = b''$.
+      Thus $r(p) = b$.
+      Therefore $f(p) = (a,b)$.
+    End.
+
+    (2) $x \times y = f[P]$. \\
+    Proof.
+      For all $p \in P$ we have $l(p) \in x$ and $r(p) \in y$.
+      Hence $f(p) \in x \times y$ for all $p \in P$.
+      Therefore $f[P] \subseteq x \times y$.
+
+      Let us show that $x \times y \subseteq f[P]$.
+        Let $z \in x \times y$.
+        Take $a \in x$ and $b \in y$ such that $z = (a,b)$.
+        Then $(a,b) = f(\set{\set{a}, \set{a,b}})$.
+        Hence there exists a $p \in P$ such that $(a,b) = f(p)$.
+        Thus $(a,b) \in f[P]$.
+      End.
+
+      Consequently $x \times y = f[P]$.
+    Qed.
+
+    Thus $x \times y$ is the image of some set under some map.
+    Therefore $x \times y$ is a set (by \printref{FOUNDATIONS_10_8142956584239104}).
+  \end{proof}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_10_5486815207227392,printid]
+    Let $X$ be a nonempty system of sets.
+    Then $\bigcap X$ is a set.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Take an element $x$ of $X$.
+    Then $\bigcap X \subseteq x$.
+    Hence $\bigcap X$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
+  \end{proof}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_10_7598384349184000,printid]
+    Let $f$ be a map such that $\dom(f)$ is a set.
+    Then $\range(f)$ is a set.
+  \end{proposition}
+  \begin{proof}[forthel]
+    $\range(f) = f_{*}(\dom(f))$ and $f_{*}(\dom(f))$ is a set.
+    Hence $\range(f)$ is a set (by \printref{FOUNDATIONS_10_8142956584239104}).
+  \end{proof}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_10_8631339572002816,printid]
+    Let $A$ be a class and $x$ be a set.
+    Assume that there exists an injective map from $A$ to $x$.
+    Then $A$ is a set.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Consider an injective map $f$ from $A$ to $x$.
+    Then $f^{-1}$ is a bijection between $\range(f)$ and $A$.
+    $\range(f)$ is a set and $A$ is the image of $\range(f)$ under $f^{-1}$.
+    Indeed $\range(f) \subseteq x$.
+    Thus $A$ is a set (by \printref{FOUNDATIONS_10_8142956584239104}).
+  \end{proof}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_10_8812282138066944,printid]
+    There exist no sets $x, y$ such that $x \in y$ and $y \in x$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Assume the contrary.
+    Take sets $x,y$ such that $x \in y$ and $y \in x$.
+    Consider an element $z$ of $\set{x,y}$ such that $\set{x,y}$ and $z$ are disjoint (by \printref{FOUNDATIONS_10_1320008569323520}).
+    Indeed $\set{x,y}$ is a nonempty system of sets.
+    Then we have $z = x$ or $z = y$.
+
+    Case $z = x$.
+      Then $x$ and $\set{x,y}$ are disjoint.
+      Hence $y \notin x$.
+      Contradiction.
+    End.
+
+    Case $z = y$.
+      Then $y$ and $\set{x,y}$ are disjoint.
+      Hence $x \notin y$.
+      Contradiction.
+    End.
+  \end{proof}
+
+  \begin{corollary}[forthel,id=FOUNDATIONS_10_3086917813927936,printid]
+    Let $x$ be a set.
+    Then $x \notin x$.
+  \end{corollary}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_10_4589652321021547,printid]
+    Let $f, g$ be functions.
+    Assume that $\dom(f) = \dom(g)$ and $f(a) = g(a)$ for all $a \in \dom(f)$.
+    Then $f = g$.
+  \end{proposition}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_10_4105036244189184,printid]
+    Let $x, y$ be sets.
+    Then $[x \to y]$ is a set.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Define $R = \{ F \in \pow(x \times y) \mid$ (for all $a \in x$ there exists a $b \in y$ such that $(a,b) \in F$) and for all $a \in x$ and all $b, b' \in y$ such that $(a,b), (a,b') \in F$ we have $b = b' \}$.
+
+    [prover vampire]
+    Every element of $R$ is a set. % Needed for ontological checking
+    Define $h(F) = \fun a \in x.$ ``choose $b \in y$ such that $(a,b) \in F$ in $b$'' for $F \in R$.
+    [prover eprover]
+
+    Let us show that $[x \to y] \subseteq \range(h)$.
+      Let $f \in [x \to y]$.
+      Define $F = \{ (a,f(a)) \mid a \in x \}$.
+
+      Then $F \in R$. \\
       Proof.
-        Let us show that $P \subseteq \pow(\pow(x \cup y))$.
-          Let $p \in P$.
-          Consider $a \in x$ and $b \in y$ such that $p = \set{\set{a},\set{a,b}}$.
-          Then $a, b \in x \cup y$.
-          Hence $\set{a}, \set{a,b} \in \pow(x \cup y)$.
-          Thus $\set{\set{a}, \set{a,b}} \in \pow(\pow(x \cup y))$.
-        End.
+        Define $g(a) = (a,f(a))$ for $a \in x$.
+        Then $F = \range(g)$.
+        Hence $F$ is a set.
+        Thus $F \in \pow(x \times y)$.
+        Indeed $F \subseteq x \times y$.
 
-        $x \cup y$ is a set.
-        Consequently $\pow(\pow(x \cup y))$ is a set (by \printref{FOUNDATIONS_10_5862230203564032}).
-        Therefore $P$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
-      Qed.
+        (1) For all $a \in x$ there exists a $b \in y$ such that $(a,b) \in F$.
 
-      Define $l(p) =$ ``choose $a \in x$, choose $b \in y$ such that $p = \set{\set{a}, \set{a,b}}$ in $a$'' for $p \in P$.
-      Define $r(p) =$ ``choose $a \in x$, choose $b \in y$ such that $p = \set{\set{a}, \set{a,b}}$ in $b$'' for $p \in P$.
+        (2) For all $a \in x$ and all $b, b' \in y$ such that $(a,b),
+        (a,b') \in F$ we have $b = b'$.
 
-      Define $f(p) = (l(p), r(p))$ for $p \in P$.
-
-      Let us show that for any objects $u, u', v, v'$ if
-      $\set{\set{u}, \set{u,v}} = \set{\set{u'}, \set{u',v'}}$ then $u = u'$ and $v = v'$.
-        Let $u, u', v, v'$ be objects.
-        Assume $\set{\set{u}, \set{u,v}} = \set{\set{u'}, \set{u',v'}}$.
-        Then ($\set{u} = \set{u'}$ or $\set{u} = \set{u',v'}$) and ($\set{u,v} = \set{u'}$ or $\set{u,v} = \set{u',v'}$).
-        Thus ($\set{u} = \set{u'}$ and ($\set{u,v} = \set{u'}$ or $\set{u,v} = \set{u',v'}$)) or ($\set{u} = \set{u',v'}$ and ($\set{u,v} = \set{u'}$ or $\set{u,v} = \set{u',v'}$)).
-
-        Case $\set{u} = \set{u'}$ and ($\set{u,v} = \set{u'}$ or $\set{u,v} = \set{u',v'}$).
-          We have $\set{u} = \set{u'}$.
-          Hence $u = u'$.
-
-          Case $\set{u,v} = \set{u'}$.
-            Then $u = u'= v$.
-            Hence $\set{\set{u}, \set{u,u}} = \set{\set{u}, \set{u,v'}}$ (by 1).
-            Thus $\set{\set{u}} = \set{\set{u}, \set{u,v'}}$.
-            Therefore $\set{u} = \set{u,v'}$.
-            Consequently $v' = u = v$.
-          End.
-
-          Case $\set{u,v} = \set{u',v'}$.
-            Then $\set{u,v} = \set{u,v'}$.
-            Hence $v = v'$.
-          End.
-        End.
-
-        Case $\set{u} = \set{u',v'}$ and ($\set{u,v} = \set{u'}$ or $\set{u,v} = \set{u',v'}$).
-          We have $\set{u} = \set{u',v'}$.
-          Hence $u = u'$.
-
-          Case $\set{u,v} = \set{u'}$.
-            Then $u = v = u'$.
-            Hence $v = v'$.
-          End.
-
-          Case $\set{u,v} = \set{u',v'}$.
-            Then $\set{u,v} = \set{u,v'}$.
-            Hence $v = v'$.
-          End.
-        End.
+        [prover vampire]
+        Hence the thesis.
+        [prover eprover]
       End.
 
-      $\set{\set{a}, \set{a,b}} \in \dom(f)$ for any $a \in x$ and any $b \in y$. \\ % Needed for ontological checking
-      Proof.
-        Let $a \in x$ and $b \in y$.
-        Then $\set{\set{a}, \set{a,b}} \in P$.
-      Qed.
+      $\dom(f) = \dom(h(F))$ and for each $a \in \dom(f)$ we have $h(F)(a) = f(a)$.
+      Hence $f = h(F)$.
+      Thus $f \in \range(h)$.
+    End.
 
-      Let us show that for any $a \in x$ and any $b \in y$ we have $f(\set{\set{a}, \set{a,b}}) = (a,b)$.
-        Let $a \in x$ and $b \in y$.
-        Take $p = \set{\set{a}, \set{a,b}}$.
-        Then $p$ is a set.
-        Then we can choose $a' \in x$ and $b' \in y$ such that $p = \set{\set{a'}, \set{a',b'}}$ and $l(p) = a'$.
-        Then $a = a'$ and $b = b'$.
-        Hence $l(p) = a$.
-        Choose $a'' \in x$ and $b'' \in y$ such that $p = \set{\set{a''}, \set{a'',b''}}$ and $r(p) = b''$.
-        Then $a = a''$ and $b = b''$.
-        Thus $r(p) = b$.
-        Therefore $f(p) = (a,b)$.
-      End.
-
-      (2) $x \times y = f[P]$. \\
-      Proof.
-        For all $p \in P$ we have $l(p) \in x$ and $r(p) \in y$.
-        Hence $f(p) \in x \times y$ for all $p \in P$.
-        Therefore $f[P] \subseteq x \times y$.
-
-        Let us show that $x \times y \subseteq f[P]$.
-          Let $z \in x \times y$.
-          Take $a \in x$ and $b \in y$ such that $z = (a,b)$.
-          Then $(a,b) = f(\set{\set{a}, \set{a,b}})$.
-          Hence there exists a $p \in P$ such that $(a,b) = f(p)$.
-          Thus $(a,b) \in f[P]$.
-        End.
-
-        Consequently $x \times y = f[P]$.
-      Qed.
-
-      Thus $x \times y$ is the image of some set under some map.
-      Therefore $x \times y$ is a set (by \printref{FOUNDATIONS_10_8142956584239104}).
-    \end{proof}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_10_5486815207227392,printid]
-      Let $X$ be a nonempty system of sets.
-      Then $\bigcap X$ is a set.
-    \end{proposition}
-    \begin{proof}
-      Take an element $x$ of $X$.
-      Then $\bigcap X \subseteq x$.
-      Hence $\bigcap X$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
-    \end{proof}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_10_7598384349184000,printid]
-      Let $f$ be a map such that $\dom(f)$ is a set.
-      Then $\range(f)$ is a set.
-    \end{proposition}
-    \begin{proof}
-      $\range(f) = f_{*}(\dom(f))$ and $f_{*}(\dom(f))$ is a set.
-      Hence $\range(f)$ is a set (by \printref{FOUNDATIONS_10_8142956584239104}).
-    \end{proof}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_10_8631339572002816,printid]
-      Let $A$ be a class and $x$ be a set.
-      Assume that there exists an injective map from $A$ to $x$.
-      Then $A$ is a set.
-    \end{proposition}
-    \begin{proof}
-      Consider an injective map $f$ from $A$ to $x$.
-      Then $f^{-1}$ is a bijection between $\range(f)$ and $A$.
-      $\range(f)$ is a set and $A$ is the image of $\range(f)$ under $f^{-1}$.
-      Indeed $\range(f) \subseteq x$.
-      Thus $A$ is a set (by \printref{FOUNDATIONS_10_8142956584239104}).
-    \end{proof}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_10_8812282138066944,printid]
-      There exist no sets $x, y$ such that $x \in y$ and $y \in x$.
-    \end{proposition}
-    \begin{proof}
-      Assume the contrary.
-      Take sets $x,y$ such that $x \in y$ and $y \in x$.
-      Consider an element $z$ of $\set{x,y}$ such that $\set{x,y}$ and $z$ are disjoint (by \printref{FOUNDATIONS_10_1320008569323520}).
-      Indeed $\set{x,y}$ is a nonempty system of sets.
-      Then we have $z = x$ or $z = y$.
-
-      Case $z = x$.
-        Then $x$ and $\set{x,y}$ are disjoint.
-        Hence $y \notin x$.
-        Contradiction.
-      End.
-
-      Case $z = y$.
-        Then $y$ and $\set{x,y}$ are disjoint.
-        Hence $x \notin y$.
-        Contradiction.
-      End.
-    \end{proof}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{corollary}[id=FOUNDATIONS_10_3086917813927936,printid]
-      Let $x$ be a set.
-      Then $x \notin x$.
-    \end{corollary}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_10_4589652321021547,printid]
-      Let $f, g$ be functions.
-      Assume that $\dom(f) = \dom(g)$ and $f(a) = g(a)$ for all $a \in \dom(f)$.
-      Then $f = g$.
-    \end{proposition}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_10_4105036244189184,printid]
-      Let $x, y$ be sets.
-      Then $[x \to y]$ is a set.
-    \end{proposition}
-    \begin{proof}
-      Define $R = \{ F \in \pow(x \times y) \mid$ (for all $a \in x$ there exists a $b \in y$ such that $(a,b) \in F$) and for all $a \in x$ and all $b, b' \in y$ such that $(a,b), (a,b') \in F$ we have $b = b' \}$.
-
-      [prover vampire]
-      Every element of $R$ is a set. % Needed for ontological checking
-      Define $h(F) = \fun a \in x.$ ``choose $b \in y$ such that $(a,b) \in F$ in $b$'' for $F \in R$.
-      [prover eprover]
-
-      Let us show that $[x \to y] \subseteq \range(h)$.
-        Let $f \in [x \to y]$.
-        Define $F = \{ (a,f(a)) \mid a \in x \}$.
-
-        Then $F \in R$. \\
-        Proof.
-          Define $g(a) = (a,f(a))$ for $a \in x$.
-          Then $F = \range(g)$.
-          Hence $F$ is a set.
-          Thus $F \in \pow(x \times y)$.
-          Indeed $F \subseteq x \times y$.
-
-          (1) For all $a \in x$ there exists a $b \in y$ such that $(a,b) \in F$.
-
-          (2) For all $a \in x$ and all $b, b' \in y$ such that $(a,b),
-          (a,b') \in F$ we have $b = b'$.
-
-          [prover vampire]
-          Hence the thesis.
-          [prover eprover]
-        End.
-
-        $\dom(f) = \dom(h(F))$ and for each $a \in \dom(f)$ we have $h(F)(a) = f(a)$.
-        Hence $f = h(F)$.
-        Thus $f \in \range(h)$.
-      End.
-
-      Therefore $[x \to y]$ is a set.
-      Indeed $R$ is a set.
-    \end{proof}
-  \end{forthel}
+    Therefore $[x \to y]$ is a set.
+    Indeed $R$ is a set.
+  \end{proof}
+\end{smodule}
 \end{document}

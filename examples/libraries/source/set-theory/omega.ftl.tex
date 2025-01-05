@@ -1,126 +1,103 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../meta-inf/lib/naproche}
-\input{../../lib/libraries}
-\input{../../lib/foundations}
-\input{../../lib/set-theory}
+\documentclass{naproche-library}
+\libinput{set-theory-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/set-theory/zero.ftl.tex}]
-      [read \path{libraries/source/set-theory/successor-ordinals.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
-
+\begin{smodule}{omega.ftl}
+  \importmodule[libraries]{set-theory?zero.ftl}
+  \importmodule[libraries]{set-theory?successor-ordinals.ftl}
 
   \section*{Natural Numbers}
 
-  \begin{forthel}
-    \begin{definition}[id=SET_THEORY_03_4310076227584000,printid]
-      \[ \omega = \class{n \in \Ord | \classtext{$n \in X$ for every $X \subseteq \Ord$ such that $0 \in X$ and for all $x \in X$ we have $\succ(x) \in X$}}. \]
-    \end{definition}
+  \begin{definition}[forthel,id=SET_THEORY_03_4310076227584000,printid]
+    \[ \omega = \class{n \in \Ord | \classtext{$n \in X$ for every $X \subseteq \Ord$ such that $0 \in X$ and for all $x \in X$ we have $\succ(x) \in X$}}. \]
 
-    Let a natural number stand for an element of $\omega$.
-  \end{forthel}
+  Let a natural number stand for an element of $\omega$.
+  \end{definition}
 
-  \begin{forthel}
-    \begin{proposition}[id=SET_THEORY_03_3576717620805632,printid]
-      $0 \in \omega$.
-    \end{proposition}
-  \end{forthel}
+  \begin{proposition}[forthel,id=SET_THEORY_03_3576717620805632,printid]
+    $0 \in \omega$.
+  \end{proposition}
 
-  \begin{forthel}
-    \begin{proposition}[id=SET_THEORY_03_8807317141192704,printid]
-      Let $n \in \omega$.
-      Then $\succ(n) \in \omega$.
-    \end{proposition}
-  \end{forthel}
+  \begin{proposition}[forthel,id=SET_THEORY_03_8807317141192704,printid]
+    Let $n \in \omega$.
+    Then $\succ(n) \in \omega$.
+  \end{proposition}
 
-  \begin{forthel}
-    \begin{proposition}[id=SET_THEORY_03_344585425387520,printid]
-      Let $\Phi \subseteq \omega$.
-      Assume that $0 \in \Phi$ and for every $x \in \Phi$ we have
-      $\succ(x) \in \Phi$.
-      Then $\Phi = \omega$.
-    \end{proposition}
-    \begin{proof}
-      Suppose $\Phi \neq \omega$.
-      Consider an element $n$ of $\omega$ that is not contained in $\Phi$.
-      Take $\Phi' = \Phi \setminus \set{n}$.
+  \begin{proposition}[forthel,id=SET_THEORY_03_344585425387520,printid]
+    Let $\Phi \subseteq \omega$.
+    Assume that $0 \in \Phi$ and for every $x \in \Phi$ we have
+    $\succ(x) \in \Phi$.
+    Then $\Phi = \omega$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Suppose $\Phi \neq \omega$.
+    Consider an element $n$ of $\omega$ that is not contained in $\Phi$.
+    Take $\Phi' = \Phi \setminus \set{n}$.
 
-      (1) $0 \in \Phi'$.
-      Indeed $0 \in \Phi$ and $0 \neq n$.
+    (1) $0 \in \Phi'$.
+    Indeed $0 \in \Phi$ and $0 \neq n$.
 
-      (2) For each $x \in \Phi'$ we have $\succ(x) \in \Phi'$. \\
-      Proof.
-        Let $x \in \Phi'$.
-        Then $\succ(x) \in \Phi$.
+    (2) For each $x \in \Phi'$ we have $\succ(x) \in \Phi'$. \\
+    Proof.
+      Let $x \in \Phi'$.
+      Then $\succ(x) \in \Phi$.
 
-        Let us show that $\succ(x) \neq n$.
-          Assume $\succ(x) = n$.
-          Then $x \notin \Phi$.
-          Indeed $n \notin \Phi$ and if $x \in \Phi$ then
-          $n = \succ(x) \in \Phi$.
-          Contradiction.
-        End.
+      Let us show that $\succ(x) \neq n$.
+        Assume $\succ(x) = n$.
+        Then $x \notin \Phi$.
+        Indeed $n \notin \Phi$ and if $x \in \Phi$ then
+        $n = \succ(x) \in \Phi$.
+        Contradiction.
+      End.
 
-        Thus $\succ(x) \in \Phi'$.
-      Qed.
+      Thus $\succ(x) \in \Phi'$.
+    Qed.
 
-      Therefore every element of $\omega$ lies in $\Phi'$.
-      Indeed $\Phi' \subseteq \Ord$.
-      Consequently $n \in \Phi'$.
-      Contradiction.
-    \end{proof}
-  \end{forthel}
+    Therefore every element of $\omega$ lies in $\Phi'$.
+    Indeed $\Phi' \subseteq \Ord$.
+    Consequently $n \in \Phi'$.
+    Contradiction.
+  \end{proof}
 
-  \begin{forthel}
-    \begin{corollary}[id=SET_THEORY_03_4847727433220096,printid]
-      $\omega$ is a set.
-    \end{corollary}
-    \begin{proof}
-      Define $f(n) = \succ(n)$ for $n \in \omega$.
-      Take a subset $X$ of $\omega$ that is inductive regarding $0$ and $f$.
-      Indeed $f$ is a map from $\omega$ to $\omega$.
-      Then we have $0 \in X$ and for each $n \in X$ we have $\succ(n) \in X$.
-      Thus $X = \omega$.
-      Therefore $\omega$ is a set.
-    \end{proof}
-  \end{forthel}
+  \begin{corollary}[forthel,id=SET_THEORY_03_4847727433220096,printid]
+    $\omega$ is a set.
+  \end{corollary}
+  \begin{proof}[forthel]
+    Define $f(n) = \succ(n)$ for $n \in \omega$.
+    Take a subset $X$ of $\omega$ that is inductive regarding $0$ and $f$.
+    Indeed $f$ is a map from $\omega$ to $\omega$.
+    Then we have $0 \in X$ and for each $n \in X$ we have $\succ(n) \in X$.
+    Thus $X = \omega$.
+    Therefore $\omega$ is a set.
+  \end{proof}
 
-  \begin{forthel}
-    \begin{proposition}[id=SET_THEORY_03_5885789275684864,printid]
-      Let $n \in \omega$.
-      Then $n = 0$ or $n = \succ(m)$ for some $m \in \omega$.
-    \end{proposition}
-    \begin{proof}
-      Assume the contrary.
-      Consider a $k \in \omega$ such that neither $k = 0$ nor $k = \succ(m)$ for
-      some $m \in \omega$.
-      Take a class $\omega'$ such that $\omega' = \omega \setminus \set{k}$. %!
-      Then $\omega'$ is a set.
+  \begin{proposition}[forthel,id=SET_THEORY_03_5885789275684864,printid]
+    Let $n \in \omega$.
+    Then $n = 0$ or $n = \succ(m)$ for some $m \in \omega$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Assume the contrary.
+    Consider a $k \in \omega$ such that neither $k = 0$ nor $k = \succ(m)$ for
+    some $m \in \omega$.
+    Take a class $\omega'$ such that $\omega' = \omega \setminus \set{k}$. %!
+    Then $\omega'$ is a set.
 
-      (1) $0 \in \omega'$.
-      Indeed $k \neq 0$.
+    (1) $0 \in \omega'$.
+    Indeed $k \neq 0$.
 
-      (2) For all $m \in \omega'$ we have $\succ(m) \in \omega'$. \\
-      Proof.
-        Let $m \in \omega'$.
-        Then $\succ(m) \neq k$.
-        Hence $\succ(m) \in \omega'$.
-      Qed.
+    (2) For all $m \in \omega'$ we have $\succ(m) \in \omega'$. \\
+    Proof.
+      Let $m \in \omega'$.
+      Then $\succ(m) \neq k$.
+      Hence $\succ(m) \in \omega'$.
+    Qed.
 
-      Thus every element of $\omega$ is contained in $\omega'$.
-      Therefore $k \in \omega'$.
-      Contradiction.
-    \end{proof}
-  \end{forthel}
+    Thus every element of $\omega$ is contained in $\omega'$.
+    Therefore $k \in \omega'$.
+    Contradiction.
+  \end{proof}
 
-  \begin{forthel}
-    \begin{proposition}[id=SET_THEORY_03_5057540872208384,printid]
-      Every element of $\omega$ is an ordinal.
-    \end{proposition}
-  \end{forthel}
+  \begin{proposition}[forthel,id=SET_THEORY_03_5057540872208384,printid]
+    Every element of $\omega$ is an ordinal.
+  \end{proposition}
+\end{smodule}
 \end{document}

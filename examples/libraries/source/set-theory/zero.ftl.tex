@@ -1,18 +1,8 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../meta-inf/lib/naproche}
-\input{../../lib/libraries}
-\input{../../lib/foundations}
-\input{../../lib/set-theory}
+\documentclass{naproche-library}
+\libinput{set-theory-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/set-theory/ordinals.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
-
+\begin{smodule}{zero.ftl}
+  \importmodule[libraries]{set-theory?ordinals.ftl}
 
   \section*{$0$}
 
@@ -22,9 +12,8 @@
     Let $\alpha$ is nonzero stand for $\alpha \neq 0$.
   \end{forthel}
 
-  \begin{forthel}
-    \begin{proposition}[id=SET_THEORY_02_8483196888940544,printid]
-      $0$ is an ordinal.
-    \end{proposition}
-  \end{forthel}
+  \begin{proposition}[forthel,id=SET_THEORY_02_8483196888940544,printid]
+    $0$ is an ordinal.
+  \end{proposition}
+\end{smodule}
 \end{document}

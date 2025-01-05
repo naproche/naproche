@@ -1,19 +1,7 @@
 \documentclass{article}
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
-\usepackage{meta-inf/lib/naproche}
-\input{libraries/lib/foundations}
-\input{libraries/lib/set-theory}
-
-\usepackage[backend=bibtex]{biblatex}
-\usepackage{csquotes}
-\addbibresource{meta-inf/lib/bibliography}
-
-\usepackage[
-  type=CC,
-  modifier=by-nc-sa,
-  version=4.0,
-]{doclicense}
+\usepackage{naproche}
+\libinput[meta-inf]{example-preamble}
+\libinput[libraries]{foundations-preamble}
 
 \newcommand{\var}[1]{\textrm{v}_{#1}}
 \newcommand{\abs}[2]{\lambda\var{#1}.\ #2}
@@ -27,20 +15,14 @@
 \begin{document}
   \maketitle
 
+  \usemodule[libraries]{arithmetics?natural-numbers.ftl}
+
   \noindent \emph{Curry's Paradox} is a paradox described by Haskell Curry in 
   1942 \cite{Curry1942}.
   It allows the derivation of an arbitrary statement from a self-referential 
   expression that presupposes its own validity.
 
   \section*{Untyped $\lambda$-Calculus}
-
-  \begin{imports}
-    \begin{forthel}
-      [prove off][check off]
-      [read \path{libraries/source/arithmetics/natural-numbers.ftl.tex}]
-      [prove on][check on]
-    \end{forthel}
-  \end{imports}
 
   \noindent Our formalization of Curry's Paradox in \Naproche is based on an 
   untyped $\lambda$-calculus:

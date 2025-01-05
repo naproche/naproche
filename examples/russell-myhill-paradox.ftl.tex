@@ -1,19 +1,7 @@
 \documentclass{article}
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
-\usepackage{meta-inf/lib/naproche}
-\input{libraries/lib/foundations}
-\input{libraries/lib/set-theory}
-
-\usepackage[backend=bibtex]{biblatex}
-\usepackage{csquotes}
-\addbibresource{meta-inf/lib/bibliography}
-
-\usepackage[
-  type=CC,
-  modifier=by-nc-sa,
-  version=4.0,
-]{doclicense}
+\usepackage{naproche}
+\libinput[meta-inf]{example-preamble}
+\libinput[libraries]{foundations-preamble}
 
 \title{The Russell-Myhill Paradox\\[0.5em]Marcel Schütz}
 \date{2024}
@@ -22,13 +10,7 @@
   \pagenumbering{gobble}
   \maketitle
 
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{meta-inf/source/everyday-ontology.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
+  \usemodule[meta-inf]{everyday-ontology.ftl}
 
   \noindent The \emph{Russell-Myhill Paradox} is a paradox discovered by 
   Bertrand Russell which states that two systems of propositions with the same 

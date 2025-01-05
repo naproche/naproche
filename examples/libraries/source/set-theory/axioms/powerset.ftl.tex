@@ -1,26 +1,16 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../../meta-inf/lib/naproche}
-\input{../../../lib/libraries}
-\input{../../../lib/foundations}
+\documentclass{naproche-library}
+\libinput{set-theory-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/foundations/sub-and-supersets.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
-
+\begin{smodule}{powerset.ftl}
+  \importmodule[libraries]{foundations?sub-and-supersets.ftl}
 
   \section{Powerset}
 
-  \begin{forthel}
-    \begin{axiom}[title=Powerset Axiom,id=FOUNDATIONS_10_5862230203564032,printid]
-      Let $x$ be a set.
-      Then $\pow(x)$ is a set.
-    \end{axiom}
+  \begin{axiom}[forthel,title=Powerset Axiom,id=FOUNDATIONS_10_5862230203564032,printid]
+    Let $x$ be a set.
+    Then $\pow(x)$ is a set.
 
     Let the powerset of $x$ stand for $\pow(x)$.
-  \end{forthel}
+  \end{axiom}
+\end{smodule}
 \end{document}

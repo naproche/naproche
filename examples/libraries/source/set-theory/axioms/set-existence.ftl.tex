@@ -1,23 +1,13 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../../meta-inf/lib/naproche}
-\input{../../../lib/libraries}
-\input{../../../lib/foundations}
+\documentclass{naproche-library}
+\libinput{set-theory-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/foundations/classes.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
-
+\begin{smodule}{set-existence.ftl}
+  \importmodule[libraries]{foundations?classes.ftl}
 
   \section{Set Existence}
 
-  \begin{forthel}
-    \begin{axiom}[title=Set Existence Axiom,id=FOUNDATIONS_10_2362039748001792,printid]
-      There exists a set.
-    \end{axiom}
-  \end{forthel}
+  \begin{axiom}[forthel,title=Set Existence Axiom,id=FOUNDATIONS_10_2362039748001792,printid]
+    There exists a set.
+  \end{axiom}
+\end{smodule}
 \end{document}

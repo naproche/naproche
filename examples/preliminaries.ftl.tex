@@ -1,5 +1,6 @@
 \documentclass[11pt]{article}
-\usepackage{meta-inf/lib/naproche}
+\usepackage{naproche}
+\libinput[meta-inf]{example-preamble}
 
 \author{Peter Koepke, University of Bonn}
 
@@ -53,11 +54,8 @@ employing a proper English vocabulary. We also
 import some alternative formulations for
 useful mathematical phrases (\path{examples/macros.ftl.tex}).
 
-\begin{forthel}
-  [read \path{meta-inf/source/vocabulary.ftl.tex}]
-
-  [read \path{meta-inf/source/macros.ftl.tex}]
-\end{forthel}
+\usemodule[meta-inf]{vocabulary.ftl}
+\usemodule[meta-inf]{macros.ftl}
 
 
 \section{Sets and Classes}

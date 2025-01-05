@@ -1,42 +1,29 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../meta-inf/lib/naproche}
-\input{../../lib/libraries}
-\input{../../lib/foundations}
-\input{../../lib/arithmetics}
+\documentclass{naproche-library}
+\libinput{arithmetics-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/arithmetics/multiplication.ftl.tex}]
-      [read \path{libraries/source/arithmetics/subtraction.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
-
+\begin{smodule}{multiplication-and-subtraction.ftl}
+  \importmodule[libraries]{arithmetics?multiplication.ftl}
+  \importmodule[libraries]{arithmetics?subtraction.ftl}
 
   \section*{Multiplication and Subtraction}
 
-  \begin{forthel}
-    \begin{proposition}[id=ARITHMETIC_06_5458841930039296,printid]
-      Let $n, m, k$ be natural numbers such that $n \geq m$.
-      Then $(n - m) \cdot k = (n \cdot k) - (m \cdot k)$.
-    \end{proposition}
-    \begin{proof}
-      We have
-      \[  ((n - m) \cdot k) + (m \cdot k)                 \]
-      \[    = ((n - m) + m) \cdot k                       \]
-      \[    = n \cdot k                                   \]
-      \[    = ((n \cdot k) - (m \cdot k)) + (m \cdot k).  \]
+  \begin{proposition}[forthel,id=ARITHMETIC_06_5458841930039296,printid]
+    Let $n, m, k$ be natural numbers such that $n \geq m$.
+    Then $(n - m) \cdot k = (n \cdot k) - (m \cdot k)$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    We have
+    \[  ((n - m) \cdot k) + (m \cdot k)                 \]
+    \[    = ((n - m) + m) \cdot k                       \]
+    \[    = n \cdot k                                   \]
+    \[    = ((n \cdot k) - (m \cdot k)) + (m \cdot k).  \]
 
-      Hence $(n - m) \cdot k = (n \cdot k) - (m \cdot k)$.
-    \end{proof}
-  \end{forthel}
+    Hence $(n - m) \cdot k = (n \cdot k) - (m \cdot k)$.
+  \end{proof}
 
-  \begin{forthel}
-    \begin{corollary}[id=ARITHMETIC_06_8461123277815808,printid]
-      Let $n, m, k$ be natural numbers such that $n \geq m$.
-      Then $k \cdot (n - m) = (k \cdot n) - (k \cdot m)$.
-    \end{corollary}
-  \end{forthel}
+  \begin{corollary}[forthel,id=ARITHMETIC_06_8461123277815808,printid]
+    Let $n, m, k$ be natural numbers such that $n \geq m$.
+    Then $k \cdot (n - m) = (k \cdot n) - (k \cdot m)$.
+  \end{corollary}
+\end{smodule}
 \end{document}

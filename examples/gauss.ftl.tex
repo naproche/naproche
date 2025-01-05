@@ -1,14 +1,8 @@
 \documentclass{article}
-\usepackage[english]{babel}
-\usepackage{meta-inf/lib/naproche}
-\input{libraries/lib/foundations}
-\input{libraries/lib/arithmetics}
-
-\usepackage[
-  type=CC,
-  modifier=by-nc-sa,
-  version=4.0,
-]{doclicense}
+\usepackage{naproche}
+\libinput[meta-inf]{example-preamble}
+\libinput[libraries]{foundations-preamble}
+\libinput[libraries]{arithmetics-preamble}
 
 \newcommand{\gauss}{\mathcal{G}}
 
@@ -20,13 +14,7 @@
   \pagenumbering{gobble}
   \maketitle
 
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/arithmetics/multiplication.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
+  \usemodule[libraries]{arithmetics?multiplication.ftl}
 
   \noindent This is a formalization of ``Little Gauß' Theorem'', i.e. of
   the assertion that

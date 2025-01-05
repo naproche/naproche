@@ -1,34 +1,23 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../meta-inf/lib/naproche}
-\input{../../lib/libraries}
-\input{../../lib/foundations}
-\input{../../lib/set-theory}
+\documentclass{naproche-library}
+\libinput{set-theory-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/set-theory/one.ftl.tex}]
-      [read \path{libraries/source/set-theory/cardinals.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
-
+\begin{smodule}{one-element-sets.ftl}
+  \importmodule[libraries]{set-theory?one.ftl}
+  \importmodule[libraries]{set-theory?cardinals.ftl}
 
   \section*{$1$-Element Sets}
 
-  \begin{forthel}
-    \begin{proposition}[id=SET_THEORY_07_836893598023680,printid]
-      Let $a$ be an object.
-      Then $|\set{a}| = 1$.
-    \end{proposition}
-    \begin{proof}
-      Define $f(x) = 0$ for $x \in \set{a}$.
-      Then $f$ is a map from $\set{a}$ to $1$.
-      $f$ is injective and surjective onto $1$.
-      Hence $f$ is a bijection between $\set{a}$ and $1$.
-      Consequently $\set{a}$ and $1$ are equinumerous.
-      Thus $|\set{a}| = |1| = 1$.
-    \end{proof}
-  \end{forthel}
+  \begin{proposition}[forthel,id=SET_THEORY_07_836893598023680,printid]
+    Let $a$ be an object.
+    Then $|\set{a}| = 1$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Define $f(x) = 0$ for $x \in \set{a}$.
+    Then $f$ is a map from $\set{a}$ to $1$.
+    $f$ is injective and surjective onto $1$.
+    Hence $f$ is a bijection between $\set{a}$ and $1$.
+    Consequently $\set{a}$ and $1$ are equinumerous.
+    Thus $|\set{a}| = |1| = 1$.
+  \end{proof}
+\end{smodule}
 \end{document}

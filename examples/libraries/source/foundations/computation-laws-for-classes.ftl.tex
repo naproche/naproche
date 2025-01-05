@@ -1,439 +1,393 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../meta-inf/lib/naproche}
-\input{../../lib/libraries}
-\input{../../lib/foundations}
+\documentclass{naproche-library}
+\libinput{foundations-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/foundations/classes.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
-
+\begin{smodule}{computation-laws-for-classes.ftl}
+  \importmodule[libraries]{foundations?classes.ftl}
 
   \section*{Computation Laws For Classes}
 
   \subsection*{Commutativity of Union and Intersection}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_02_8446177632583680,printid]
-      Let $A, B$ be classes.
-      Then $A \cup B = B \cup A$.
-    \end{proposition}
-    \begin{proof}
-      Let us show that $A \cup B \subseteq B \cup A$.
-        Let $x \in A \cup B$.
-        Then $x \in A$ or $x \in B$.
-        Hence $x \in B$ or $x \in A$.
-        Thus $x \in B \cup A$.
-      End.
+  \begin{proposition}[forthel,id=FOUNDATIONS_02_8446177632583680,printid]
+    Let $A, B$ be classes.
+    Then $A \cup B = B \cup A$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Let us show that $A \cup B \subseteq B \cup A$.
+      Let $x \in A \cup B$.
+      Then $x \in A$ or $x \in B$.
+      Hence $x \in B$ or $x \in A$.
+      Thus $x \in B \cup A$.
+    End.
 
-      Let us show that $B \cup A \subseteq A \cup B$.
-        Let $x \in B \cup A$.
-        Then $x \in B$ or $x \in A$.
-        Hence $x \in A$ or $x \in B$.
-        Thus $x \in A \cup B$.
-      End.
-    \end{proof}
-  \end{forthel}
+    Let us show that $B \cup A \subseteq A \cup B$.
+      Let $x \in B \cup A$.
+      Then $x \in B$ or $x \in A$.
+      Hence $x \in A$ or $x \in B$.
+      Thus $x \in A \cup B$.
+    End.
+  \end{proof}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_02_7565102251245568,printid]
-      Let $A, B$ be classes.
-      Then $A \cap B = B \cap A$.
-    \end{proposition}
-    \begin{proof}
-      Let us show that $A \cap B \subseteq B \cap A$.
-        Let $x \in A \cap B$.
-        Then $x \in A$ and $x \in B$.
-        Hence $x \in B$ and $x \in A$.
-        Thus $x \in B \cap A$.
-      End.
+  \begin{proposition}[forthel,id=FOUNDATIONS_02_7565102251245568,printid]
+    Let $A, B$ be classes.
+    Then $A \cap B = B \cap A$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Let us show that $A \cap B \subseteq B \cap A$.
+      Let $x \in A \cap B$.
+      Then $x \in A$ and $x \in B$.
+      Hence $x \in B$ and $x \in A$.
+      Thus $x \in B \cap A$.
+    End.
 
-      Let us show that $B \cap A \subseteq A \cap B$.
-        Let $x \in B \cap A$.
-        Then $x \in B$ and $x \in A$.
-        Hence $x \in A$ and $x \in B$.
-        Thus $x \in A \cap B$.
-      End.
-    \end{proof}
-  \end{forthel}
+    Let us show that $B \cap A \subseteq A \cap B$.
+      Let $x \in B \cap A$.
+      Then $x \in B$ and $x \in A$.
+      Hence $x \in A$ and $x \in B$.
+      Thus $x \in A \cap B$.
+    End.
+  \end{proof}
 
 
   \subsection*{Associativity of Union and Intersection}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_02_3854032263184384,printid]
-      Let $A, B, C$ be classes.
-      Then $(A \cup B) \cup C = A \cup (B \cup C)$.
-    \end{proposition}
-    \begin{proof}
-      Let us show that $((A \cup B) \cup C) \subseteq A \cup (B \cup C)$. %!
-        Let $x \in (A \cup B) \cup C$.
-        Then $x \in A \cup B$ or $x \in C$.
-        Hence $x \in A$ or $x \in B$ or $x \in C$.
-        Thus $x \in A$ or $x \in (B \cup C)$.
-        Therefore $x \in A \cup (B \cup C)$.
-      End.
+  \begin{proposition}[forthel,id=FOUNDATIONS_02_3854032263184384,printid]
+    Let $A, B, C$ be classes.
+    Then $(A \cup B) \cup C = A \cup (B \cup C)$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Let us show that $((A \cup B) \cup C) \subseteq A \cup (B \cup C)$. %!
+      Let $x \in (A \cup B) \cup C$.
+      Then $x \in A \cup B$ or $x \in C$.
+      Hence $x \in A$ or $x \in B$ or $x \in C$.
+      Thus $x \in A$ or $x \in (B \cup C)$.
+      Therefore $x \in A \cup (B \cup C)$.
+    End.
 
-      Let us show that $A \cup (B \cup C) \subseteq (A \cup B) \cup C$.
-        Let $x \in A \cup (B \cup C)$.
-        Then $x \in A$ or $x \in B \cup C$.
-        Hence $x \in A$ or $x \in B$ or $x \in C$.
-        Thus $x \in A \cup B$ or $x \in C$.
-        Therefore $x \in (A \cup B) \cup C$.
-      End.
-    \end{proof}
-  \end{forthel}
+    Let us show that $A \cup (B \cup C) \subseteq (A \cup B) \cup C$.
+      Let $x \in A \cup (B \cup C)$.
+      Then $x \in A$ or $x \in B \cup C$.
+      Hence $x \in A$ or $x \in B$ or $x \in C$.
+      Thus $x \in A \cup B$ or $x \in C$.
+      Therefore $x \in (A \cup B) \cup C$.
+    End.
+  \end{proof}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_02_906751977193472,printid]
-      Let $A, B, C$ be classes.
-      Then $(A \cap B) \cap C = A \cap (B \cap C)$.
-    \end{proposition}
-    \begin{proof}
-      Let us show that $((A \cap B) \cap C) \subseteq A \cap (B \cap C)$. %!
-        Let $x \in (A \cap B) \cap C$.
-        Then $x \in A \cap B$ and $x \in C$.
-        Hence $x \in A$ and $x \in B$ and $x \in C$.
-        Thus $x \in A$ and $x \in (B \cap C)$.
-        Therefore$ x \in A \cap (B \cap C)$.
-      End.
+  \begin{proposition}[forthel,id=FOUNDATIONS_02_906751977193472,printid]
+    Let $A, B, C$ be classes.
+    Then $(A \cap B) \cap C = A \cap (B \cap C)$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Let us show that $((A \cap B) \cap C) \subseteq A \cap (B \cap C)$. %!
+      Let $x \in (A \cap B) \cap C$.
+      Then $x \in A \cap B$ and $x \in C$.
+      Hence $x \in A$ and $x \in B$ and $x \in C$.
+      Thus $x \in A$ and $x \in (B \cap C)$.
+      Therefore$ x \in A \cap (B \cap C)$.
+    End.
 
-      Let us show that $A \cap (B \cap C) \subseteq (A \cap B) \cap C$.
-        Let $x \in A \cap (B \cap C)$.
-        Then $x \in A$ and $x \in B \cap C$.
-        Hence $x \in A$ and $x \in B$ and $x \in C$.
-        Thus $x \in A \cap B$ and $x \in C$.
-        Therefore $x \in (A \cap B) \cap C$.
-      End.
-    \end{proof}
-  \end{forthel}
+    Let us show that $A \cap (B \cap C) \subseteq (A \cap B) \cap C$.
+      Let $x \in A \cap (B \cap C)$.
+      Then $x \in A$ and $x \in B \cap C$.
+      Hence $x \in A$ and $x \in B$ and $x \in C$.
+      Thus $x \in A \cap B$ and $x \in C$.
+      Therefore $x \in (A \cap B) \cap C$.
+    End.
+  \end{proof}
 
 
   \subsection*{Distributivity of Union and Intersection}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_02_371139087958016,printid]
-      Let $A, B, C$ be classes.
-      Then $A \cap (B \cup C) = (A \cap B) \cup (A \cap C)$.
-    \end{proposition}
-    \begin{proof}
-      Let us show that $A \cap (B \cup C) \subseteq (A \cap B) \cup (A \cap C)$.
-        Let $x \in A \cap (B \cup C)$.
-        Then $x \in A$ and $x \in B \cup C$.
-        Hence $x \in A$ and ($x \in B$ or $x \in C$).
-        Thus ($x \in A$ and $x \in B$) or ($x \in A$ and $x \in C$).
-        Therefore $x \in A \cap B$ or $x \in A \cap C$.
-        Hence $x \in (A \cap B) \cup (A \cap C)$.
-      End.
+  \begin{proposition}[forthel,id=FOUNDATIONS_02_371139087958016,printid]
+    Let $A, B, C$ be classes.
+    Then $A \cap (B \cup C) = (A \cap B) \cup (A \cap C)$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Let us show that $A \cap (B \cup C) \subseteq (A \cap B) \cup (A \cap C)$.
+      Let $x \in A \cap (B \cup C)$.
+      Then $x \in A$ and $x \in B \cup C$.
+      Hence $x \in A$ and ($x \in B$ or $x \in C$).
+      Thus ($x \in A$ and $x \in B$) or ($x \in A$ and $x \in C$).
+      Therefore $x \in A \cap B$ or $x \in A \cap C$.
+      Hence $x \in (A \cap B) \cup (A \cap C)$.
+    End.
 
-      Let us show that $((A \cap B) \cup (A \cap C)) \subseteq A \cap (B \cup C)$. %!
-        Let $x \in (A \cap B) \cup (A \cap C)$.
-        Then $x \in A \cap B$ or $x \in A \cap C$.
-        Hence ($x \in A$ and $x \in B$) or ($x \in A$ and $x \in C$).
-        Thus $x \in A$ and ($x \in B$ or $x \in C$).
-        Therefore $x \in A$ and $x \in B \cup C$.
-        Hence$ x \in A \cap (B \cup C)$.
-      End.
-    \end{proof}
-  \end{forthel}
+    Let us show that $((A \cap B) \cup (A \cap C)) \subseteq A \cap (B \cup C)$. %!
+      Let $x \in (A \cap B) \cup (A \cap C)$.
+      Then $x \in A \cap B$ or $x \in A \cap C$.
+      Hence ($x \in A$ and $x \in B$) or ($x \in A$ and $x \in C$).
+      Thus $x \in A$ and ($x \in B$ or $x \in C$).
+      Therefore $x \in A$ and $x \in B \cup C$.
+      Hence$ x \in A \cap (B \cup C)$.
+    End.
+  \end{proof}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_02_5937390721957888,printid]
-      Let $A, B, C$ be classes.
-      Then $A \cup (B \cap C) = (A \cup B) \cap (A \cup C)$.
-    \end{proposition}
-    \begin{proof}
-      Let us show that $A \cup (B \cap C) \subseteq (A \cup B) \cap (A \cup C)$.
-        Let $x \in A \cup (B \cap C)$.
-        Then $x \in A$ or $x \in B \cap C$.
-        Hence $x \in A$ or ($x \in B$ and $x \in C$).
-        Thus ($x \in A$ or $x \in B$) and ($x \in$ A or $x \in C$).
-        Therefore $x \in A \cup B$ and $x \in A \cup C$.
-        Hence $x \in (A \cup B) \cap (A \cup C)$.
-      End.
+  \begin{proposition}[forthel,id=FOUNDATIONS_02_5937390721957888,printid]
+    Let $A, B, C$ be classes.
+    Then $A \cup (B \cap C) = (A \cup B) \cap (A \cup C)$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Let us show that $A \cup (B \cap C) \subseteq (A \cup B) \cap (A \cup C)$.
+      Let $x \in A \cup (B \cap C)$.
+      Then $x \in A$ or $x \in B \cap C$.
+      Hence $x \in A$ or ($x \in B$ and $x \in C$).
+      Thus ($x \in A$ or $x \in B$) and ($x \in$ A or $x \in C$).
+      Therefore $x \in A \cup B$ and $x \in A \cup C$.
+      Hence $x \in (A \cup B) \cap (A \cup C)$.
+    End.
 
-      Let us show that $((A \cup B) \cap (A \cup C)) \subseteq A \cup (B \cap C)$. %!
-        Let $x \in (A \cup B) \cap (A \cup C)$.
-        Then $x \in A \cup B$ and $x \in A \cup C$.
-        Hence ($x \in A$ or $x \in B$) and ($x \in A$ or $x \in C$).
-        Thus $x \in A$ or ($x \in B$ and $x \in C$).
-        Therefore $x \in A$ or $x \in B \cap C$.
-        Hence $x \in A \cup (B \cap C)$.
-      End.
-    \end{proof}
-  \end{forthel}
+    Let us show that $((A \cup B) \cap (A \cup C)) \subseteq A \cup (B \cap C)$. %!
+      Let $x \in (A \cup B) \cap (A \cup C)$.
+      Then $x \in A \cup B$ and $x \in A \cup C$.
+      Hence ($x \in A$ or $x \in B$) and ($x \in A$ or $x \in C$).
+      Thus $x \in A$ or ($x \in B$ and $x \in C$).
+      Therefore $x \in A$ or $x \in B \cap C$.
+      Hence $x \in A \cup (B \cap C)$.
+    End.
+  \end{proof}
 
 
   \subsection*{Idempocy Laws for Union and Intersection}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_02_2096996737351680,printid]
-      Let $A$ be a class.
-      Then $A \cup A = A$.
-    \end{proposition}
-    \begin{proof}
-      $A \cup A = \{x \mid x \in A$ or $x \in A \}$.
-      Hence $A \cup A = \{ x \mid x \in A \}$.
-      Thus $A \cup A = A$.
-    \end{proof}
-  \end{forthel}
+  \begin{proposition}[forthel,id=FOUNDATIONS_02_2096996737351680,printid]
+    Let $A$ be a class.
+    Then $A \cup A = A$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    $A \cup A = \{x \mid x \in A$ or $x \in A \}$.
+    Hence $A \cup A = \{ x \mid x \in A \}$.
+    Thus $A \cup A = A$.
+  \end{proof}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_02_4053144145231872,printid]
-      Let $A$ be a class.
-      Then $A \cap A = A$.
-    \end{proposition}
-    \begin{proof}
-      $A \cap A = \{ x \mid x \in A$ and $x \in A \}$.
-      Hence $A \cap A = \{ x \mid x \in A \}$.
-      Thus $A \cap A = A$.
-    \end{proof}
-  \end{forthel}
+  \begin{proposition}[forthel,id=FOUNDATIONS_02_4053144145231872,printid]
+    Let $A$ be a class.
+    Then $A \cap A = A$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    $A \cap A = \{ x \mid x \in A$ and $x \in A \}$.
+    Hence $A \cap A = \{ x \mid x \in A \}$.
+    Thus $A \cap A = A$.
+  \end{proof}
 
 
   \subsection*{Distributivity of Complement}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_02_5296031436636160,printid]
-      Let $A, B, C$ be classes.
-      Then $A \setminus (B \cap C) = (A \setminus B) \cup (A \setminus C)$.
-    \end{proposition}
-    \begin{proof}
-      Let us show that $A \setminus (B \cap C) \subseteq (A \setminus B) \cup (A \setminus C)$.
-        Let $x \in A \setminus (B \cap C)$.
-        Then $x \in A$ and $x \notin B \cap C$.
-        Hence it is wrong that ($x \in B$ and $x \in C$).
-        Thus $x \notin B$ or $x \notin C$.
-        Therefore $x \in A$ and ($x \notin B$ or $x \notin C$).
-        Then ($x \in A$ and $x \notin B$) or ($x \in A$ and $x \notin C$).
-        Hence $x \in A \setminus B$ or $x \in A \setminus C$.
-        Thus $x \in (A \setminus B) \cup (A \setminus C)$.
-      End.
+  \begin{proposition}[forthel,id=FOUNDATIONS_02_5296031436636160,printid]
+    Let $A, B, C$ be classes.
+    Then $A \setminus (B \cap C) = (A \setminus B) \cup (A \setminus C)$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Let us show that $A \setminus (B \cap C) \subseteq (A \setminus B) \cup (A \setminus C)$.
+      Let $x \in A \setminus (B \cap C)$.
+      Then $x \in A$ and $x \notin B \cap C$.
+      Hence it is wrong that ($x \in B$ and $x \in C$).
+      Thus $x \notin B$ or $x \notin C$.
+      Therefore $x \in A$ and ($x \notin B$ or $x \notin C$).
+      Then ($x \in A$ and $x \notin B$) or ($x \in A$ and $x \notin C$).
+      Hence $x \in A \setminus B$ or $x \in A \setminus C$.
+      Thus $x \in (A \setminus B) \cup (A \setminus C)$.
+    End.
 
-      Let us show that $((A \setminus B) \cup (A \setminus C)) \subseteq A \setminus (B \cap C)$. %!
-        Let $x \in (A \setminus B) \cup (A \setminus C)$.
-        Then $x \in A \setminus B$ or $x \in A \setminus C$.
-        Hence ($x \in A$ and $x \notin B$) or ($x \in A$ and $x \notin C$).
-        Thus $x \in A$ and ($x \notin B$ or $x \notin C$).
-        Therefore $x \in A$ and not ($x \in B$ and $x \in C$).
-        Then $x \in A$ and not $x \in B \cap C$.
-        Hence $x \in A \setminus (B \cap C)$.
-      End.
-    \end{proof}
-  \end{forthel}
+    Let us show that $((A \setminus B) \cup (A \setminus C)) \subseteq A \setminus (B \cap C)$. %!
+      Let $x \in (A \setminus B) \cup (A \setminus C)$.
+      Then $x \in A \setminus B$ or $x \in A \setminus C$.
+      Hence ($x \in A$ and $x \notin B$) or ($x \in A$ and $x \notin C$).
+      Thus $x \in A$ and ($x \notin B$ or $x \notin C$).
+      Therefore $x \in A$ and not ($x \in B$ and $x \in C$).
+      Then $x \in A$ and not $x \in B \cap C$.
+      Hence $x \in A \setminus (B \cap C)$.
+    End.
+  \end{proof}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_02_2909554153095168,printid]
-      Let $A, B, C$ be classes.
-      Then $A \setminus (B \cup C) = (A \setminus B) \cap (A \setminus C)$.
-    \end{proposition}
-    \begin{proof}
-      Let us show that $A \setminus (B \cup C) \subseteq (A \setminus B) \cap (A \setminus C)$.
-        Let $x \in A \setminus (B \cup C)$.
-        Then $x \in A$ and $x \notin B \cup C$.
-        Hence it is wrong that ($x \in B$ or $x \in C$).
-        Thus $x \notin B$ and $x \notin C$.
-        Therefore $x \in A$ and ($x \notin B$ and $x \notin C$).
-        Then ($x \in A$ and $x \notin B$) and ($x \in A$ and $x \notin C$).
-        Hence $x \in A \setminus B$ and $x \in A \setminus C$.
-        Thus $x \in (A \setminus B) \cap (A \setminus C)$.
-      End.
+  \begin{proposition}[forthel,id=FOUNDATIONS_02_2909554153095168,printid]
+    Let $A, B, C$ be classes.
+    Then $A \setminus (B \cup C) = (A \setminus B) \cap (A \setminus C)$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Let us show that $A \setminus (B \cup C) \subseteq (A \setminus B) \cap (A \setminus C)$.
+      Let $x \in A \setminus (B \cup C)$.
+      Then $x \in A$ and $x \notin B \cup C$.
+      Hence it is wrong that ($x \in B$ or $x \in C$).
+      Thus $x \notin B$ and $x \notin C$.
+      Therefore $x \in A$ and ($x \notin B$ and $x \notin C$).
+      Then ($x \in A$ and $x \notin B$) and ($x \in A$ and $x \notin C$).
+      Hence $x \in A \setminus B$ and $x \in A \setminus C$.
+      Thus $x \in (A \setminus B) \cap (A \setminus C)$.
+    End.
 
-      Let us show that $((A \setminus B) \cap (A \setminus C)) \subseteq A \setminus (B \cup C)$. %!
-        Let $x \in (A \setminus B) \cap (A \setminus C)$.
-        Then $x \in A \setminus B$ and $x \in A \setminus C$.
-        Hence ($x \in A$ and $x \notin B$) and ($x \in A$ and $x \notin C$).
-        Thus $x \in A$ and ($x \notin B$ and $x \notin C$).
-        Therefore $x \in A$ and not ($x \in B$ or $x \in C$).
-        Then $x \in A$ and not $x \in B \cup C$.
-        Hence $x \in A \setminus (B \cup C)$.
-      End.
-    \end{proof}
-  \end{forthel}
+    Let us show that $((A \setminus B) \cap (A \setminus C)) \subseteq A \setminus (B \cup C)$. %!
+      Let $x \in (A \setminus B) \cap (A \setminus C)$.
+      Then $x \in A \setminus B$ and $x \in A \setminus C$.
+      Hence ($x \in A$ and $x \notin B$) and ($x \in A$ and $x \notin C$).
+      Thus $x \in A$ and ($x \notin B$ and $x \notin C$).
+      Therefore $x \in A$ and not ($x \in B$ or $x \in C$).
+      Then $x \in A$ and not $x \in B \cup C$.
+      Hence $x \in A \setminus (B \cup C)$.
+    End.
+  \end{proof}
 
 
   \subsection*{Subclass Laws}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_02_3793981508943872,printid]
-      Let $A, B$ be classes.
-      Then $A \subseteq A \cup B$.
-    \end{proposition}
-    \begin{proof}
+  \begin{proposition}[forthel,id=FOUNDATIONS_02_3793981508943872,printid]
+    Let $A, B$ be classes.
+    Then $A \subseteq A \cup B$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Let $x \in A$.
+    Then $x \in A$ or $x \in B$.
+    Hence $x \in A \cup B$.
+  \end{proof}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_02_1591517646946304,printid]
+    Let $A, B$ be classes.
+    Then $A \cap B \subseteq A$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Let $x \in A \cap B$.
+    Then $x \in A$ and $x \in B$.
+    Hence $x \in A$.
+  \end{proof}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_02_6657236858306560,printid]
+    Let $A, B$ be classes.
+    Then $A \subseteq B$ iff $A \cup B = B$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Case $A \subseteq B$.
+
+      Let us show that $A \cup B \subseteq B$.
+        Let $x \in A \cup B$.
+        Then $x \in A$ or $x \in B$.
+        If $x \in A$ then $x \in B$.
+        Hence $x \in B$.
+      End.
+
+      Let us show that $B \subseteq A \cup B$.
+        Let $x \in B$.
+        Then $x \in A$ or $x \in B$.
+        Hence $x \in A \cup B$.
+      End.
+    End.
+
+    Case $A \cup B = B$.
       Let $x \in A$.
       Then $x \in A$ or $x \in B$.
-      Hence $x \in A \cup B$.
-    \end{proof}
-  \end{forthel}
+      Hence $x \in A \cup B = B$.
+    End.
+  \end{proof}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_02_1591517646946304,printid]
-      Let $A, B$ be classes.
-      Then $A \cap B \subseteq A$.
-    \end{proposition}
-    \begin{proof}
-      Let $x \in A \cap B$.
-      Then $x \in A$ and $x \in B$.
-      Hence $x \in A$.
-    \end{proof}
-  \end{forthel}
+  \begin{proposition}[forthel,id=FOUNDATIONS_02_2356449346846720,printid]
+    Let $A, B$ be classes.
+    Then $A \subseteq B$ iff $A \cap B = A$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Case $A \subseteq B$.
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_02_6657236858306560,printid]
-      Let $A, B$ be classes.
-      Then $A \subseteq B$ iff $A \cup B = B$.
-    \end{proposition}
-    \begin{proof}
-      Case $A \subseteq B$.
-
-        Let us show that $A \cup B \subseteq B$.
-          Let $x \in A \cup B$.
-          Then $x \in A$ or $x \in B$.
-          If $x \in A$ then $x \in B$.
-          Hence $x \in B$.
-        End.
-
-        Let us show that $B \subseteq A \cup B$.
-          Let $x \in B$.
-          Then $x \in A$ or $x \in B$.
-          Hence $x \in A \cup B$.
-        End.
+      Let us show that $A \cap B \subseteq A$.
+        Let $x \in A \cap B$.
+        Then $x \in A$ and $x \in B$.
+        Hence $x \in A$.
       End.
 
-      Case $A \cup B = B$.
+      Let us show that $A \subseteq A \cap B$.
         Let $x \in A$.
-        Then $x \in A$ or $x \in B$.
-        Hence $x \in A \cup B = B$.
-      End.
-    \end{proof}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_02_2356449346846720,printid]
-      Let $A, B$ be classes.
-      Then $A \subseteq B$ iff $A \cap B = A$.
-    \end{proposition}
-    \begin{proof}
-      Case $A \subseteq B$.
-
-        Let us show that $A \cap B \subseteq A$.
-          Let $x \in A \cap B$.
-          Then $x \in A$ and $x \in B$.
-          Hence $x \in A$.
-        End.
-
-        Let us show that $A \subseteq A \cap B$.
-          Let $x \in A$.
-          Then $x \in B$.
-          Hence $x \in A$ and $x \in B$.
-          Thus $x \in A \cap B$.
-        End.
-      End.
-
-      Case $A \cap B = A$.
-        Let $x \in A$.
-        Then $x \in A \cap B$.
+        Then $x \in B$.
         Hence $x \in A$ and $x \in B$.
-        Thus $x \in B$.
+        Thus $x \in A \cap B$.
       End.
-    \end{proof}
-  \end{forthel}
+    End.
+
+    Case $A \cap B = A$.
+      Let $x \in A$.
+      Then $x \in A \cap B$.
+      Hence $x \in A$ and $x \in B$.
+      Thus $x \in B$.
+    End.
+  \end{proof}
 
 
   \subsection*{Complement Laws}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_02_7433299337150464,printid]
-      Let $A$ be a class.
-      Then $A \setminus A = \emptyset$.
-    \end{proposition}
-    \begin{proof}
-      $A \setminus A$ has no elements.
-      Indeed $A \setminus A = \{ x \mid x \in A$ and $x \notin A \}$.
-      Hence the thesis.
-    \end{proof}
-  \end{forthel}
+  \begin{proposition}[forthel,id=FOUNDATIONS_02_7433299337150464,printid]
+    Let $A$ be a class.
+    Then $A \setminus A = \emptyset$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    $A \setminus A$ has no elements.
+    Indeed $A \setminus A = \{ x \mid x \in A$ and $x \notin A \}$.
+    Hence the thesis.
+  \end{proof}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_02_3783696985358336,printid]
-      Let $A$ be a class.
-      Then $A \setminus \emptyset = A$.
-    \end{proposition}
-    \begin{proof}
-      $A \setminus \emptyset = \{ x \mid x \in A$ and $x \notin \emptyset \}$.
-      No element is an element of $\emptyset$.
-      Hence $A \setminus \emptyset = \{ x \mid x \in A \}$.
+  \begin{proposition}[forthel,id=FOUNDATIONS_02_3783696985358336,printid]
+    Let $A$ be a class.
+    Then $A \setminus \emptyset = A$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    $A \setminus \emptyset = \{ x \mid x \in A$ and $x \notin \emptyset \}$.
+    No element is an element of $\emptyset$.
+    Hence $A \setminus \emptyset = \{ x \mid x \in A \}$.
+    Then we have the thesis.
+  \end{proof}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_02_7083929257377792,printid]
+    Let $A, B$ be classes.
+    Then $A \setminus (A \setminus B) = A \cap B$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Let us show that $A \setminus (A \setminus B) \subseteq A \cap B$.
+      Let $x \in A \setminus (A \setminus B)$.
+      Then $x \in A$ and $x \notin A \setminus B$.
+      Hence $x \notin A$ or $x \in B$.
+      Thus $x \in B$.
+      Therefore $x \in A \cap B$.
+    End.
+
+    Let us show that $A \cap B \subseteq A \setminus (A \setminus B)$.
+      Let $x \in A \cap B$.
+      Then $x \in A$ and $x \in B$.
+      Hence $x \notin A$ or $x \in B$.
+      Thus $x \notin A \setminus B$.
+      Therefore $x \in A \setminus (A \setminus B)$.
+    End.
+  \end{proof}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_02_4938646769631232,printid]
+    Let $A, B$ be classes.
+    Then $B \subseteq A$ iff $A \setminus (A \setminus B) = B$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Case $B \subseteq A$. Obvious.
+
+    Case $A \setminus (A \setminus B) = B$.
+      Then every element of $B$ is an element of $A \setminus (A \setminus B)$.
+      Thus every element of $B$ is an element of $A$.
       Then we have the thesis.
-    \end{proof}
-  \end{forthel}
+    End.
+  \end{proof}
 
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_02_7083929257377792,printid]
-      Let $A, B$ be classes.
-      Then $A \setminus (A \setminus B) = A \cap B$.
-    \end{proposition}
-    \begin{proof}
-      Let us show that $A \setminus (A \setminus B) \subseteq A \cap B$.
-        Let $x \in A \setminus (A \setminus B)$.
-        Then $x \in A$ and $x \notin A \setminus B$.
-        Hence $x \notin A$ or $x \in B$.
-        Thus $x \in B$.
-        Therefore $x \in A \cap B$.
-      End.
+  \begin{proposition}[forthel,id=FOUNDATIONS_02_5811954316738560,printid]
+    Let $A, B, C$ be classes.
+    Then $A \cap (B \setminus C) = (A \cap B) \setminus (A \cap C)$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Let us show that $A \cap (B \setminus C) \subseteq (A \cap B) \setminus (A \cap C)$.
+      Let $x \in A \cap (B \setminus C)$.
+      Then $x \in A$ and $x \in B \setminus C$.
+      Hence $x \in A$ and $x \in B$.
+      Thus $x \in A \cap B$ and $x \notin C$.
+      Therefore $x \notin A \cap C$.
+      Then we have $x \in (A \cap B) \setminus (A \cap C)$.
+    End.
 
-      Let us show that $A \cap B \subseteq A \setminus (A \setminus B)$.
-        Let $x \in A \cap B$.
-        Then $x \in A$ and $x \in B$.
-        Hence $x \notin A$ or $x \in B$.
-        Thus $x \notin A \setminus B$.
-        Therefore $x \in A \setminus (A \setminus B)$.
-      End.
-    \end{proof}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_02_4938646769631232,printid]
-      Let $A, B$ be classes.
-      Then $B \subseteq A$ iff $A \setminus (A \setminus B) = B$.
-    \end{proposition}
-    \begin{proof}
-      Case $B \subseteq A$. Obvious.
-
-      Case $A \setminus (A \setminus B) = B$.
-        Then every element of $B$ is an element of $A \setminus (A \setminus B)$.
-        Thus every element of $B$ is an element of $A$.
-        Then we have the thesis.
-      End.
-    \end{proof}
-  \end{forthel}
-
-  \begin{forthel}
-    \begin{proposition}[id=FOUNDATIONS_02_5811954316738560,printid]
-      Let $A, B, C$ be classes.
-      Then $A \cap (B \setminus C) = (A \cap B) \setminus (A \cap C)$.
-    \end{proposition}
-    \begin{proof}
-      Let us show that $A \cap (B \setminus C) \subseteq (A \cap B) \setminus (A \cap C)$.
-        Let $x \in A \cap (B \setminus C)$.
-        Then $x \in A$ and $x \in B \setminus C$.
-        Hence $x \in A$ and $x \in B$.
-        Thus $x \in A \cap B$ and $x \notin C$.
-        Therefore $x \notin A \cap C$.
-        Then we have $x \in (A \cap B) \setminus (A \cap C)$.
-      End.
-
-      Let us show that $((A \cap B) \setminus (A \cap C)) \subseteq A \cap (B \setminus C)$. %!
-        Let $x \in (A \cap B) \setminus (A \cap C)$.
-        Then $x \in A$ and $x \in B$.
-        $x \notin A \cap C$.
-        Hence $x \notin C$.
-        Thus $x \in B \setminus C$.
-        Therefore $x \in A \cap (B \setminus C)$.
-      End.
-    \end{proof}
-  \end{forthel}
+    Let us show that $((A \cap B) \setminus (A \cap C)) \subseteq A \cap (B \setminus C)$. %!
+      Let $x \in (A \cap B) \setminus (A \cap C)$.
+      Then $x \in A$ and $x \in B$.
+      $x \notin A \cap C$.
+      Hence $x \notin C$.
+      Thus $x \in B \setminus C$.
+      Therefore $x \in A \cap (B \setminus C)$.
+    End.
+  \end{proof}
+\end{smodule}
 \end{document}

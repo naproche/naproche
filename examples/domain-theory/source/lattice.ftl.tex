@@ -1,8 +1,9 @@
-\documentclass{stex}
+\documentclass{naproche-library}
 \libinput{preamble}
 \begin{document}
 \begin{smodule}{lattice.ftl}
-\importmodule{poset.ftl}
+
+\importmodule[domain-theory]{poset.ftl}
 
 \begin{extstructure}{lattice}{poset}
   \symdef{join}[op=\vee]{\,\vee\,}
@@ -12,10 +13,6 @@
 \vardef{Lvar}[return={\lattice[comp=##1]}]{\mathcal L}
 
 \section{Lattices}
-
-\begin{forthel}
-  [importmodule \path{domain-theory?poset.ftl}]
-\end{forthel}
 
 \subsection{Definition}
 

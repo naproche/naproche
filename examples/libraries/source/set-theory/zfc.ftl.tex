@@ -1,15 +1,8 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../meta-inf/lib/naproche}
-\input{../../lib/libraries}
-\input{../../lib/foundations}
+\documentclass{naproche-library}
+\libinput{set-theory-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/set-theory/zf.ftl.tex}]
-      [read \path{libraries/source/set-theory/axioms/choice.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
+\begin{smodule}{zfc.ftl}
+  \importmodule[libraries]{set-theory?zf.ftl}
+  \importmodule[libraries]{set-theory/axioms?choice.ftl}  
+\end{smodule}
 \end{document}

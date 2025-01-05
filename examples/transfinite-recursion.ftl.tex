@@ -1,18 +1,7 @@
 \documentclass{article}
-\usepackage[british]{babel}
-\usepackage{meta-inf/lib/naproche}
-\input{libraries/lib/foundations}
-\input{libraries/lib/set-theory}
-
-\usepackage[backend=bibtex]{biblatex}
-\usepackage{csquotes}
-\addbibresource{meta-inf/lib/bibliography}
-
-\usepackage[
-  type=CC,
-  modifier=by-nc-sa,
-  version=4.0,
-]{doclicense}
+\usepackage{naproche}
+\libinput[meta-inf]{example-preamble}
+\libinput[libraries]{foundations-preamble}
 
 \title{Transfinite Recursion Theorem}
 \author{\Naproche formalization:\\[0.5em]Marcel Schütz}
@@ -21,14 +10,8 @@
 \begin{document}
   \maketitle
 
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/set-theory/transfinite-induction.ftl.tex}]
-      [read \path{libraries/source/set-theory/recursive-maps.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
+  \usemodule[libraries]{set-theory?transfinite-induction.ftl}
+  \usemodule[libraries]{set-theory?recursive-maps.ftl}
   
   \noindent This is a formalization of the \emph{Transfinite Recursion Theorem}
   (cf. \cite{Koepke2018}).
@@ -186,7 +169,7 @@
       Let $F, F'$ be maps from $\Ord$ to $A$ that are recursive regarding $G$.
       Then $F = F'$.
     \end{theorem*}
-    \begin{proof}
+    \begin{proof}[]
       [prover vampire]
       $F$ and $F'$ are recursive regarding $G$.
       Then $F(\alpha) = F'(\alpha)$ for all $\alpha \in \dom(F) \cap \dom(F')$ (by \nameref{coincidence}).

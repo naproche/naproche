@@ -1,27 +1,16 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../meta-inf/lib/naproche}
-\input{../../lib/libraries}
-\input{../../lib/foundations}
-\input{../../lib/set-theory}
+\documentclass{naproche-library}
+\libinput{set-theory-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/set-theory/cardinals.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
-
+\begin{smodule}{cofinality.ftl}
+  \importmodule[libraries]{set-theory?cardinals.ftl}
 
   \section*{Cofinality}
 
-  \begin{forthel}
-    \begin{definition}[id=SET_THEORY_06_5621203645212879,printid]
-      Let $\kappa$ be a cardinal and $Y \subseteq \kappa$.
-      $Y$ is cofinal in $\kappa$ iff for every $x \in \kappa$ there exists a $y \in Y$ such that $x < y$.
-    \end{definition}
+  \begin{definition}[forthel,id=SET_THEORY_06_5621203645212879,printid]
+    Let $\kappa$ be a cardinal and $Y \subseteq \kappa$.
+    $Y$ is cofinal in $\kappa$ iff for every $x \in \kappa$ there exists a $y \in Y$ such that $x < y$.
 
     Let a cofinal subset of $\kappa$ stand for a subset of $\kappa$ that is cofinal in $\kappa$.
-  \end{forthel}
+  \end{definition}
+\end{smodule}
 \end{document}

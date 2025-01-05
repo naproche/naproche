@@ -1,12 +1,7 @@
 \documentclass{article}
-\usepackage[english]{babel}
-\usepackage{meta-inf/lib/naproche}
-\input{libraries/lib/foundations}
-\input{libraries/lib/set-theory}
-
-\usepackage[backend=bibtex]{biblatex}
-\usepackage{csquotes}
-\addbibresource{meta-inf/lib/bibliography}
+\usepackage{naproche}
+\libinput[meta-inf]{example-preamble}
+\libinput[libraries]{foundations-preamble}
 
 \newcommand{\surjects}{\twoheadrightarrow}
 
@@ -19,19 +14,13 @@ Adrian De Lon (2021)}
 \begin{document}
   \maketitle
 
+  \usemodule[libraries]{set-theory?cardinals-and-maps.ftl}
+  \usemodule[libraries]{set-theory?successor-cardinals.ftl}
+  \usemodule[libraries]{set-theory?regular-cardinals.ftl}
+  \usemodule[libraries]{foundations?constant-maps.ftl}
+
   \noindent This is a formalization of a theorem of Felix Hausdorff stating that
   successor cardinals are always regular.
-
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/set-theory/cardinals-and-maps.ftl.tex}]
-      [read \path{libraries/source/set-theory/successor-cardinals.ftl.tex}]
-      [read \path{libraries/source/set-theory/regular-cardinals.ftl.tex}]
-      [read \path{libraries/source/foundations/constant-maps.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
 
   In lack of a formalization in \Naproche of a proof of the fact that
   $|X \times X| = |X|$ for every set $X$ which is required by the subsequent

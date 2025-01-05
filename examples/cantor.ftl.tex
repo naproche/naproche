@@ -1,15 +1,7 @@
 \documentclass{article}
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
-\usepackage{meta-inf/lib/naproche}
-\input{libraries/lib/foundations}
-\input{libraries/lib/set-theory}
-
-\usepackage[
-  type=CC,
-  modifier=by-nc-sa,
-  version=4.0,
-]{doclicense}
+\usepackage{naproche}
+\libinput[meta-inf]{example-preamble}
+\libinput[libraries]{foundations-preamble}
 
 \title{Cantor's Theorem}
 \author{\Naproche formalization: \vspace{0.5em} \\
@@ -20,13 +12,7 @@ Marcel Schütz}
   \pagenumbering{gobble}
   \maketitle
 
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/set-theory/cardinals-and-maps.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
+  \usemodule[libraries]{set-theory?cardinals-and-maps.ftl}
 
   \begin{forthel}
     \begin{theorem*}[title=Cantor's Theorem,id=cantor]

@@ -1,25 +1,14 @@
-\documentclass[10pt]{article}
-\usepackage[english]{babel}
-\usepackage{../../../meta-inf/lib/naproche}
-\input{../../lib/libraries}
-\input{../../lib/foundations}
-\input{../../lib/set-theory}
+\documentclass{naproche-library}
+\libinput{set-theory-preamble}
 \begin{document}
-  \begin{imports}
-    \begin{forthel}
-      %[prove off][check off]
-      [read \path{libraries/source/set-theory/zero.ftl.tex}]
-      [read \path{libraries/source/set-theory/cardinals.ftl.tex}]
-      %[prove on][check on]
-    \end{forthel}
-  \end{imports}
-
+\begin{smodule}{zero-element-sets.ftl}
+  \importmodule[libraries]{set-theory?zero.ftl}
+  \importmodule[libraries]{set-theory?cardinals.ftl}
 
   \section*{$0$-Element Sets}
 
-  \begin{forthel}
-    \begin{proposition}[id=SET_THEORY_07_6139396896063488,printid]
-      $|\emptyset| = 0$.
-    \end{proposition}
-  \end{forthel}
+  \begin{proposition}[forthel,id=SET_THEORY_07_6139396896063488,printid]
+    $|\emptyset| = 0$.
+  \end{proposition}
+\end{smodule}
 \end{document}

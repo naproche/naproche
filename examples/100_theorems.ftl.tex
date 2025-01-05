@@ -1,13 +1,6 @@
 \documentclass{article}
-\usepackage[english]{babel}
-\usepackage{meta-inf/lib/naproche}
-\usepackage{amssymb}
-
-\usepackage[backend=bibtex]{biblatex}
-\usepackage{csquotes}
-\addbibresource{meta-inf/lib/bibliography}
-
-\begin{document}
+\usepackage{naproche}
+\libinput[meta-inf]{example-preamble}
 
 \newcommand{\Prod}[3]{#1_{#2} \cdots #1_{#3}}
 \newcommand{\Seq}[2]{\{#1,\dots,#2\}}
@@ -18,14 +11,17 @@
 \newcommand{\inv}[1]{#1^{-1}}
 \newcommand{\sset}[2]{\{#1\}_{#2}}
 
-\title{Formalizing Sets and Numbers, and some of Wiedijk's
-"100 Theorems" in \Naproche{}}
+\begin{document}
 
+\title{Formalizing Sets and Numbers, and some of Wiedijk's
+``100 Theorems'' in \Naproche{}}
 \author{Peter Koepke, Mateusz Marcol and Patrick Schäfer\\
-\emph{Mathematical Institute, University of Bonn, Germany}
-}
+\emph{Mathematical Institute, University of Bonn, Germany}}
 
 \maketitle
+
+\usemodule[meta-inf]{vocabulary.ftl}
+\usemodule[meta-inf]{macros.ftl}
 
 \section*{Preliminary Remarks}
 
@@ -165,14 +161,6 @@ In the long run this should be replaced by
 employing a proper English vocabulary. We also
 import some alternative formulations for
 useful mathematical phrases (\path{examples/macros.ftl.tex}).
-
-\begin{forthel}
-\begin{lemma} Let $x$ be a set. Then $x=x$. \end{lemma}
-  [read \path{meta-inf/source/vocabulary.ftl.tex}]
-
-  [read \path{meta-inf/source/macros.ftl.tex}]
-\end{forthel}
-
 
 On the basis of inbuilt assumptions we prove some
 lemmas that illustrate the \Naproche{} ontology.
