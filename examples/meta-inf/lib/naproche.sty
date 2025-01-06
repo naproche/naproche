@@ -188,25 +188,42 @@
 % ForTheL environment
 \newenvironment{forthel}{%
   \par\addvspace{\baselineskip}
-  \begin{mdframed}[backgroundcolor=forthelgray, linecolor=forthelgray]%
+  \ifstexhtml%
+    \begin{stex_annotate_env}{style:class=forthel,rustex:block=true,rustex:sized=-20}
+  \else%
+    \begin{mdframed}[backgroundcolor=forthelgray,linecolor=forthelgray]%
+  \fi%
   \rmfamily%
   \setbool{forthel}{true}%
   \setlength{\parindent}{0pt}%
   \setlength{\parskip}{\ftlparskip}%
 }{%
-  \end{mdframed}%
+  \ifstexhtml%
+    \end{stex_annotate_env}%
+  \else%
+    \end{mdframed}%
+  \fi%
   \rmfamily%
   \setbool{forthel}{false}%
   \par\addvspace{\baselineskip}
 }
 
-% Wrapper for ForTheL environments. Warning: In the PDF it looks exactly like
-% an ordinary ForTheL environment, but its content is not checked by Naproche.
-% So use it wisely!
+% Wrapper for ForTheL environments. Warning: In the PDF/HTML it looks exactly
+% like an ordinary ForTheL environment, but its content is not checked by
+% Naproche. So use it wisely!
 \newenvironment{greybox}{
-  \begin{forthel}
+  \ifstexhtml
+    \begin{stex_annotate_env}{style:class=forthel,rustex:block=true,rustex:sized=-20}
+  \else
+    \begin{mdframed}[backgroundcolor=forthelgray,linecolor=forthelgray]
+  \fi
+  \setlength{\parindent}{0pt}
 }{
-  \end{forthel}
+  \ifstexhtml
+    \end{stex_annotate_env}
+  \else
+    \end{mdframed}
+  \fi
 }
 
 \newtcbox\mybox{
@@ -278,13 +295,6 @@
 \DeclareOption{numberswithinsubsection}{%
     \counterwithin{theoremcount}{subsection}
 }
-\DeclareOption{unmarked}{%
-  \renewenvironment{forthel}{%
-    \setbool{forthel}{true}%
-  }{%
-    \setbool{forthel}{false}%
-  }
-}
 \DeclareOption{puzzle}{%
   \let\signature\relax
   \let\endsignature\relax
@@ -300,9 +310,19 @@
   \newenvironment{theorem}{\unskip Therefore:}{}
 
   \renewenvironment{forthel}{
-    \begin{mdframed}[backgroundcolor=gray!20,linecolor=gray!20]
+    \ifstexhtml
+      \begin{stex_annotate_env}{style:class=forthel,rustex:block=true,rustex:sized=-20}
+    \else
+      \begin{mdframed}[backgroundcolor=forthelgray,linecolor=forthelgray]
+    \fi
     \setlength{\parindent}{0pt}
-  }{\end{mdframed}}
+  }{
+    \ifstexhtml
+      \end{stex_annotate_env}
+    \else
+      \end{mdframed}
+    \fi
+  }
 }
 \DeclareOption*{\PackageWarning{naproche}{Unknown ‘\CurrentOption’}}
 \ProcessOptions\relax

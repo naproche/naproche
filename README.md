@@ -186,13 +186,11 @@ Naproche [<options>] [<file>]
   text in the TEX dialect, provide the option `--tex=on`).
 
 
-## Rendering the Formalizations as PDF
+## Rendering the Formalizations as PDF or HTML
 
 ### Prerequisites
 
-* Make sure that an up-to-date version of TeX Live is installed on your system.
-  (See <https://tug.org/texlive/quickinstall.html> for installation
-  instructions; to update an existing installation, run `tlmgr update --all`.)
+* Make sure that an up-to-date version of [TeX Live][texlive] is in your `PATH`.
 
 * Add the directory `naproche/examples/meta-inf/lib` to your `TEXINPUTS`
   variable, e.g.:
@@ -207,22 +205,28 @@ Naproche [<options>] [<file>]
   export MATHHUB="$(isabelle getenv -b NAPROCHE_FORMALIZATIONS)"
   ```
 
+* (Optional – only required to render the formalizations as HTML.)
+  Make sure that an up-to-date version of [RusTeX][rustex] is in your `PATH`.
 
-### Build
 
-To build a file `<filename>.ftl.tex` in (any subdirectory of) the
-`naproche/examples` directory, run the following commands from within the
-directory in which that file lives:
+### Rendering as PDF
 
 ```shell
-STEX_WRITESMS=true pdflatex <filename>.ftl.tex
+pdflatex <filename>.ftl.tex
 bibtex <filename>.ftl
-STEX_USESMS=true pdflatex <filename>.ftl.tex
-STEX_USESMS=true pdflatex <filename>.ftl.tex
+pdflatex <filename>.ftl.tex
+pdflatex <filename>.ftl.tex
 ```
 
-(The expressions `STEX_WRITESMS=true` and `STEX_USESMS=true` can be omitted but
-this might result in longer compilation times.)
+
+### Rendering as HTML
+
+```shell
+rustex -i <filename>.ftl.tex -o <filename>.ftl.xhtml
+bibtex <filename>.ftl
+
+sed -i "s|</style>|</style>\n    <link rel=\"stylesheet\" href=\"$(isabelle getenv -b NAPROCHE_FORMALIZATIONS)/meta-inf/lib/lib.css\"/>\;|g" <filename>.ftl.xhtml
+```
 
 
 ## Changelog
@@ -253,3 +257,5 @@ You can find more resources in our [CONTRIBUTING.md](CONTRIBUTING.md).
 [vampire]: <https://vprover.github.io/>
 [cygwin]: <https://cygwin.com/>
 [wsl]: <https://learn.microsoft.com/en-us/windows/wsl/>
+[rustex]: <https://github.com/slatex/RusTeX>
+[texlive]: <https://tug.org/texlive/>

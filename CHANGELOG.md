@@ -164,6 +164,9 @@ dialect of ForTheL, respectively.
 
 ### Changes on the LaTeX setup
 
+  * **New:** The `naproche` package now supports to render Naproche
+    formalizations via RusTeX as HTML.
+
   * **New:** A new document class `naproche-library` for libraries.
 
   * **Changed:** The package `puzzles` was merged into the package `naproche`

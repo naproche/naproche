@@ -1,0 +1,13 @@
+.forthel {
+  border:2px solid lightgrey;
+  background-color:lightgrey;
+  width: var(--document-width);
+  min-width: var(--document-width);
+  padding:10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.rustex-body {
+  background-color:inherit;
+}
