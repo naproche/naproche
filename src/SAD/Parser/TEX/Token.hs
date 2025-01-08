@@ -122,7 +122,8 @@ token = choice [
     mathModeDelimiter >>= skip,
     ignoredCommand >>= skip,
     textCommand (concat <$> many token),
-    try importCommand,
+    importCommand,
+    inputCommand,
     inlineForthel (concat <$> many token),
     group (concat <$> many (token <|> catchInvalidEnvEnd)),
     environment (concat <$> many (token <|> catchInvalidGroupEnd)),
@@ -278,6 +279,14 @@ importCommand = do
   command <- anyControlWordOf ["importmodule", "usemodule"]
   fstArg <- bracketGroup' $ concat <$> some (anyWord <|> char '/' <|> char '-' <|> char '_' <|> char '.')
   sndArg <- group' $ concat <$> some (anyWord <|> char '/' <|> char '?' <|> char '-' <|> char '_' <|> char '.')
+  return $ command ++ fstArg ++ sndArg
+
+-- | Parse a @\\importmodule[...]{...}@ or @\\usemodule[...]{...}@ command.
+inputCommand :: Tokenizer [Token]
+inputCommand = do
+  command <- controlWord "inputref"
+  fstArg <- bracketGroup' $ concat <$> some (anyWord <|> char '/' <|> char '-' <|> char '_' <|> char '.')
+  sndArg <- group' $ concat <$> some (anyWord <|> char '/' <|> char '-' <|> char '_' <|> char '.')
   return $ command ++ fstArg ++ sndArg
 
 -- | Parse an @\\inlineforthel{...}@ command, depending on a parser @p@ for the

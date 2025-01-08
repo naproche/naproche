@@ -23,8 +23,12 @@ dialect of ForTheL, respectively.
 
 ### Changes on ForTheL
 
+  * **New:** sTeX's `\inputref[<archive path>]{<file path>}` commands
+    are recognized by Naproche and behave like the instruction
+    `[read <archive path>/source/<file path>]`.
+
   * **New:** sTeX's `\importmodule[<archive path>]{<module path>?<module file>}`
-    and `\usemodule[<archive path>]{<module path>?<module file>}` instructions
+    and `\usemodule[<archive path>]{<module path>?<module file>}` commands
     are recognized by Naproche and behave like the new `importmodule`
     instruction (see below).
 

@@ -22,6 +22,7 @@ import Data.Text.Lazy qualified as Text
 import Data.Functor ((<&>))
 import Data.Foldable (foldr')
 import Data.Maybe (fromMaybe)
+import System.FilePath hiding ((</>))
 
 import SAD.ForTheL.Structure
 import SAD.ForTheL.Base
@@ -50,7 +51,7 @@ import Isabelle.Position qualified as Position
 -- @{<topLevelBlock>} (<exitInstruction> | <EOF>)@
 forthelText :: FTL [ProofText]
 forthelText = repeatUntil topLevelBlock
-  (try ((instruction <|> importModule) >>= exitInstruction) <|> (eof >> return []))
+  (try ((instruction <|> importModule <|> inputFile) >>= exitInstruction) <|> (eof >> return []))
 
 -- | Parse a top-level block (TEX):
 -- @<topLevelSection> | <instruction> | <macro> | <pretyping>@
@@ -58,6 +59,7 @@ topLevelBlock :: FTL [ProofText]
 topLevelBlock =
       try (section <&> singleton)
   <|> try (importModule <&> singleton)
+  <|> try (inputFile <&> singleton)
   <|> topLevelSection
   <|> ((instruction >>= addSynonym >>= resetPretyping) <&> singleton)
   <|> try (introduceMacro <&> singleton)
@@ -237,8 +239,19 @@ importModule = do
     moduleName <- pathComponent
     return (modulePath, moduleName)
   let instr = GetModule archivePath modulePath moduleName
-      endPos = snd sndArgRange
-      pos = Position.range_position (beginPos, Position.symbol_explode ("}" :: Text) endPos)
+      endPos = Position.symbol_explode ("}" :: Text) $ snd sndArgRange
+      pos = Position.range_position (beginPos, endPos)
+  Reports.addInstrReport pos
+  return $ ProofTextInstr pos instr
+
+inputFile :: FTL ProofText
+inputFile = do
+  beginPos <- texCommandPos "inputref"
+  archivePath <- bracketed path
+  (filePathRange, filePath) <- enclosed "{" "}" path
+  let instr = GetRelativeFilePath $ joinPath [archivePath, "source", filePath]
+      endPos = Position.symbol_explode ("}" :: Text) $ snd filePathRange
+      pos = Position.range_position (beginPos, endPos)
   Reports.addInstrReport pos
   return $ ProofTextInstr pos instr
 
