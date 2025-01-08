@@ -4,6 +4,8 @@
 
 \RequirePackage{naproche}
 
+\setbool{printid}{true} % Print top-level section IDs on the document margin
+
 \RequirePackage{stex-highlighting}
 \newbool{emph}
 \setbool{emph}{false}

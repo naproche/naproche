@@ -83,6 +83,7 @@
 \newcounter{theoremcount}
 
 \newbool{printid}
+\setbool{printid}{false} % Set to true in naproche-library.cls
 
 \newcommand\tlstitle{}
 \newcommand\tlsid{}
@@ -93,7 +94,6 @@
 \define@key{tlskeys}{forthel}[true]{\setbool{forthel}{\if\relax{#1}{false}\else#1\fi}}
 \define@key{tlskeys}{title}{\def\tlstitle{#1}}
 \define@key{tlskeys}{id}{\def\tlsid{#1}\def\tlsidname{\path{#1}\def\tlsidlabel{\label{#1}}}}
-\define@key{tlskeys}{printid}[true]{\setbool{printid}{\if\relax{#1}{false}\else#1\fi}}
 \makeatother
 
 \NewEnviron{definition}[1][]{\begin{tls}[#1]{Definition}\BODY\end{tls}}

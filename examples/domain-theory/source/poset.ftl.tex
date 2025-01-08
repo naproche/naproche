@@ -26,7 +26,7 @@
 
 \subsection{Definition}
   
-\begin{signature*}[forthel,id=PosetSig,printid]
+\begin{signature*}[forthel,id=PosetSig]
   A \emph{partially ordered set $\Pvar{}[univ,leq]$} is a structure with the following properties:
 
   \begin{itemize}
@@ -56,24 +56,24 @@
 
 \subsubsection{Upper Bounds}
 
-\begin{definition*}[forthel,id=UpperBoundOfPairDef,printid]
+\begin{definition*}[forthel,id=UpperBoundOfPairDef]
   Let $x, y \in \Pvar{univ}$.
   An \emph{upper bound of $x$ and $y$ in $\Pvar!$} is an element $u$ of $\Pvar{univ}$ such that $u {\Pvar{geq}} x$ and $u {\Pvar{geq}} y$.
 \end{definition*}
     
-\begin{definition*}[forthel,id=UpperBoundOfSetDef,printid]
+\begin{definition*}[forthel,id=UpperBoundOfSetDef]
   Let $A \subseteq \Pvar{univ}$.
   An \emph{upper bound of $A$ in $\Pvar!$} is an element $u$ of $\Pvar{univ}$ such that $u {\Pvar{geq}} x$ for all $x \in A$.
 \end{definition*}
 
 \subsubsection{Lower Bounds}
   
-\begin{definition*}[forthel,id=LowerBoundOfPairDef,printid]
+\begin{definition*}[forthel,id=LowerBoundOfPairDef]
   Let $x, y \in \Pvar{univ}$.
   A \emph{lower bound of $x$ and $y$ in $\Pvar!$} is an element $l$ of $\Pvar{univ}$ such that $l {\Pvar{leq}} x$ and $l {\Pvar{leq}} y$.
 \end{definition*}
     
-\begin{definition*}[forthel,id=LowerBoundOfSetDef,printid]
+\begin{definition*}[forthel,id=LowerBoundOfSetDef]
   Let $A \subseteq \Pvar{univ}$.
   A \emph{lower bound of $A$ in $\Pvar!$} is an element $l$ of $\Pvar{univ}$ such that $l {\Pvar{leq}} x$ for all $x \in A$.
 \end{definition*}
@@ -82,7 +82,7 @@
 
 \subsubsection{Joins}
 
-\begin{definition*}[forthel,id=JoinOfPairDef,printid]
+\begin{definition*}[forthel,id=JoinOfPairDef]
   Let $x, y \in \Pvar{univ}$.
   A \emph{join of $x$ and $y$ in $\Pvar!$} is an upper bound $j$ of $x$ and $y$ in $\Pvar!$ such that for any upper bound $u$ of $x$ and $y$ in $\Pvar!$ we have $j {\Pvar{leq}} u$.
 
@@ -90,12 +90,12 @@
   Let a \emph{supremum of $x$ and $y$ in $\Pvar!$} stand for a join of $x$ and $y$ in $\Pvar!$.
 \end{definition*}
 
-\begin{proposition*}[forthel,id=JoinOfPairIsUniqueThm,printid]
+\begin{proposition*}[forthel,id=JoinOfPairIsUniqueThm]
   Let $x,y\in\Pvar{univ}$ and $j, j'$ be joins of $x$ and $y$ in $\Pvar!$.
   Then $j\eq j'$.
 \end{proposition*}
     
-\begin{definition*}[forthel,id=JoinOfSetDef,printid]
+\begin{definition*}[forthel,id=JoinOfSetDef]
   Let $A \subseteq \Pvar{univ}$.
   A \emph{join of $A$ in $\Pvar!$} is an upper bound $j$ of $A$ in $\Pvar!$ such that for any upper bound $u$ of $A$ in $\Pvar!$ we have $j {\Pvar{leq}} u$.
 
@@ -103,14 +103,14 @@
   Let a \emph{supremum of $A$ in $\Pvar!$} stand for a join of $A$ in $\Pvar!$.
 \end{definition*}
 
-\begin{proposition*}[forthel,id=JoinOfSetIsUniqueThm,printid]
+\begin{proposition*}[forthel,id=JoinOfSetIsUniqueThm]
   Let $A \subseteq \Pvar{univ}$ and $j, j'$ be joins of $A$ in $\Pvar!$.
   Then $j\eq j'$.
 \end{proposition*}
 
 \subsubsection{Meets}
 
-\begin{definition*}[forthel,id=MeetOfPairDef,printid]
+\begin{definition*}[forthel,id=MeetOfPairDef]
   Let $x, y \in \Pvar{univ}$.
   A \emph{meet of $x$ and $y$ in $\Pvar!$} is a lower bound $m$ of $x$ and $y$ in $\Pvar!$ such that for any lower bound $l$ of $x$ and $y$ in $\Pvar!$ we have $m {\Pvar{geq}} l$.
 
@@ -118,12 +118,12 @@
   Let a \emph{infimum of $x$ and $y$ in $\Pvar!$} stand for a meet of $x$ and $y$ in $\Pvar!$.
 \end{definition*}
 
-\begin{proposition*}[forthel,id=MeetOfPairIsUniqueThm,printid]
+\begin{proposition*}[forthel,id=MeetOfPairIsUniqueThm]
   Let $x, y \in \Pvar{univ}$ and $m, m'$ be meets of $x$ and $y$ in $\Pvar!$.
   Then $m\eq m'$.
 \end{proposition*}
     
-\begin{definition*}[forthel,id=MeetOfSetDef,printid]
+\begin{definition*}[forthel,id=MeetOfSetDef]
   Let $A \subseteq \Pvar{univ}$.
   A \emph{meet of $A$ in $\Pvar!$} is a lower bound $m$ of $A$ in $\Pvar!$ such that for any lower bound $l$ of $A$ in $\Pvar!$ we have $m {\Pvar{geq}} l$.
 
@@ -131,7 +131,7 @@
   Let a \emph{infimum of $A$ in $\Pvar!$} stand for a meet of $A$ in $\Pvar!$.
 \end{definition*}
 
-\begin{proposition*}[forthel,id=MeetOfSetIsUniqueThm,printid]
+\begin{proposition*}[forthel,id=MeetOfSetIsUniqueThm]
   Let $A \subseteq \Pvar{univ}$ and $m, m'$ be meets of $A$ in $\Pvar!$.
   Then $m\eq m'$.
 \end{proposition*}
@@ -140,22 +140,22 @@
 
 \subsubsection{Greatest Elements}
 
-\begin{definition*}[forthel,id=GreatestElementDef,printid]
+\begin{definition*}[forthel,id=GreatestElementDef]
   A \emph{greatest element of $\Pvar!$} is an element $g$ of $\Pvar{univ}$ such that $g {\Pvar{geq}} x$ for all $x \in \Pvar{univ}$.
 \end{definition*}
 
-\begin{proposition*}[forthel,id=GreatestElementIsUniqueThm,printid]
+\begin{proposition*}[forthel,id=GreatestElementIsUniqueThm]
   Let $g, g'$ be greatest elements of $\Pvar!$.
   Then $g\eq g'$.
 \end{proposition*}
 
 \subsubsection{Least Elements}
 
-\begin{definition*}[forthel,id=LeastElementDef,printid]
+\begin{definition*}[forthel,id=LeastElementDef]
   A \emph{least element of $\Pvar!$} is an element $l$ of $\Pvar{univ}$ such that $l {\Pvar{leq}} x$ for all $x \in \Pvar{univ}$.
 \end{definition*}
 
-\begin{proposition*}[forthel,id=LeastElementIsUniqueThm,printid]
+\begin{proposition*}[forthel,id=LeastElementIsUniqueThm]
   Let $l, l'$ be greatest elements of $\Pvar!$.
   Then $l\eq l'$.
 \end{proposition*}

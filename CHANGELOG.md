@@ -122,14 +122,13 @@ dialect of ForTheL, respectively.
 
     - `id=<id>`: Creates a label `<id>` which can be used to reference the
       top-level section via `\ref` and friends. (Replaces `\label`)
-
-    - `printid`: Prints the value of the `id` argument (if given) at the
-      margin of the page. (Replaces `\printlabel`)
+      (In the `naproche-library` document class, `<id>` is printed in the margin
+      of the document.)
 
     Example:
 
     ```
-    \begin{axiom*}[forthel,title=Separation Axiom,id=sepAx,printid]
+    \begin{axiom*}[forthel,title=Separation Axiom,id=sepAx]
       ...
     \end{axiom*}
     ```

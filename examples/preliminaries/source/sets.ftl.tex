@@ -75,7 +75,7 @@
 
 \subsection{Subclasses and Subsets}
 
-\begin{definition*}[forthel,id=SubclassDef,printid]
+\begin{definition*}[forthel,id=SubclassDef]
   A \emph{subclass of $A$} is a class $B$ such that every element of $B$ is an element of $A$.
   Let $B\subseteq A$ stand for $B$ is a subclass of $A$.
   Let $B\subset A$ stand for $B\subseteq A$.
@@ -94,11 +94,11 @@
   Let $B$ is \emph{included in $A$} stand for $B\subseteq A$.
 \end{definition*}
 
-\begin{axiom*}[forthel,title=Class Extensionality Axiom,id=ClassExtensionalityAx,printid]
+\begin{axiom*}[forthel,title=Class Extensionality Axiom,id=ClassExtensionalityAx]
   If $A\subseteq B$ and $B\subseteq A$ then $A\eq B$.
 \end{axiom*}
 
-\begin{definition*}[forthel,id=SubsetDef,printid]
+\begin{definition*}[forthel,id=SubsetDef]
   A \emph{subset of $A$} is a subclass of $A$ that is a set.
 
   Let a \emph{superset of $B$} stand for a class $A$ such that $B\subseteq A$.
@@ -108,49 +108,49 @@
   Let a \emph{proper superset of $B$} stand for a superset $A$ of $B$ such that $A \neq B$.
 \end{definition*}
 
-\begin{axiom*}[forthel,title=Separation Axiom,id=SeparationAx,printid]
+\begin{axiom*}[forthel,title=Separation Axiom,id=SeparationAx]
   If $B$ is a set and $A\subseteq B$ then $A$ is a set.
 \end{axiom*}
 
 
 \subsection{The Empty Set}
 
-\begin{definition*}[forthel,id=EmptyDef,printid]
+\begin{definition*}[forthel,id=EmptyDef]
   $A$ is \emph{empty} iff $A$ has no elements.
   Let $A$ is \emph{nonempty} stand for $A$ is not empty.
 \end{definition*}
 
-\begin{definition*}[forthel,id=EmptySetDef,printid]
+\begin{definition*}[forthel,id=EmptySetDef]
   $\emptyset=\{x\mid x\neq x\}$.
 \end{definition*}
 
-\begin{axiom*}[forthel,title=Empty Set Axiom,id=EmptySetAx,printid]
+\begin{axiom*}[forthel,title=Empty Set Axiom,id=EmptySetAx]
   $\emptyset$ is a set.
 \end{axiom*}
 
 
 \subsection{Unordered Pairs and Singletons}
 
-\begin{definition*}[forthel,id=UnorderedPairDef,printid]
+\begin{definition*}[forthel,id=UnorderedPairDef]
   $\set{a,b}=\{x\mid x\eq a\text{ or }x\eq b\}$.
 \end{definition*}
 
-\begin{axiom*}[forthel,title=Pairing Axiom,id=UnorderedPairAx,printid]
+\begin{axiom*}[forthel,title=Pairing Axiom,id=UnorderedPairAx]
   $\set{a,b}$ is a set.
 \end{axiom*}
 
-\begin{definition*}[forthel,id=SingletonDef,printid]
+\begin{definition*}[forthel,id=SingletonDef]
   $\set{a}=\{x\mid x\eq a\}$.
 \end{definition*}
 
-\begin{proposition*}[forthel,id=SingletonProp,printid]
+\begin{proposition*}[forthel,id=SingletonProp]
   $\set{a}$ is a set.
 \end{proposition*}
 
 
 \subsection{Systems of Sets}
 
-\begin{definition*}[forthel,id=SystemOfSetsDef,printid]
+\begin{definition*}[forthel,id=SystemOfSetsDef]
   A \emph{system of sets} is a class $X$ such that every element of $X$ is a set.
 \end{definition*}
 
@@ -158,34 +158,34 @@
   Let $X,Y,Z$ denote systems of sets.
 \end{forthel}
 
-\begin{definition*}[forthel,id=BigUnionDef,printid]
+\begin{definition*}[forthel,id=BigUnionDef]
   $\bigcup X=\{a\mid a\in x\text{ for some  }x\in X\}$.
   Let the \emph{union over $X$} stand for $\bigcup X$.
 \end{definition*}
 
-\begin{axiom*}[forthel,title=Union Axiom,id=BigUnionAx,printid]
+\begin{axiom*}[forthel,title=Union Axiom,id=BigUnionAx]
   If $X$ is a set then $\bigcup X$ is a set.
 \end{axiom*}
 
-\begin{definition*}[forthel,id=BigIntersectionDef,printid]
+\begin{definition*}[forthel,id=BigIntersectionDef]
   $\bigcap X=\{a\mid a\in x\text{ for all }x\in X\}$.
   Let the \emph{intersection over $X$} stand for $\bigcap X$.
 \end{definition*}
 
-\begin{proposition*}[forthel,id=BigIntersectionProp,printid]
+\begin{proposition*}[forthel,id=BigIntersectionProp]
   If $X$ is nonempty then $\bigcap X$ is a set.
 \end{proposition*}
 
 
 \subsection{Union, Intersection, Complement}
 
-\begin{definition*}[forthel,id=UnionDef,printid]
+\begin{definition*}[forthel,id=UnionDef]
   $A\cup B=\{x\mid x\in A\text{ or }x\in B\}$.
   Let the \emph{union of $A$ and $B$} stand for $A\cup B$.
 \end{definition*}
 
 \begin{forthel}
-  \begin{proposition*}[id=UnionProp,printid]
+  \begin{proposition*}[id=UnionProp]
     If $A$ and $B$ are sets then $A\cup B$ is a set.
   \end{proposition*}
   \begin{proof}
@@ -194,37 +194,37 @@
   \end{proof}
 \end{forthel}
 
-\begin{definition*}[forthel,id=IntersectionDef,printid]
+\begin{definition*}[forthel,id=IntersectionDef]
   $A\cap B=\{x\mid x\in A\text{ and }x\in B\}$.
   Let the \emph{intersection of $A$ and $B$} stand for $A\cap B$.
 \end{definition*}
 
-\begin{proposition*}[forthel,id=IntersectionProp,printid]
+\begin{proposition*}[forthel,id=IntersectionProp]
   If $A$ is a set or $B$ is a set then $A\cap B$ is a set.
 \end{proposition*}
 
-\begin{definition*}[forthel,id=ComplementDef,printid]
+\begin{definition*}[forthel,id=ComplementDef]
   $A\setminus B=\{x\mid x\in A\text{ and }x\notin B\}$.
   Let the \emph{complement of $B$ in $A$} stand for $A\setminus B$.
 \end{definition*}
 
-\begin{proposition*}[forthel,id=ComplementProp,printid]
+\begin{proposition*}[forthel,id=ComplementProp]
   If $A$ is a set then $A\setminus B$ is a set.
 \end{proposition*}
 
-\begin{definition*}[forthel,id=DisjointDef,printid]
+\begin{definition*}[forthel,id=DisjointDef]
   $A$ and $B$ are \emph{disjoint} iff $A$ and $B$ have no common elements.
 \end{definition*}
 
 
 \subsection{Powerclasses and Powersets}
 
-\begin{definition*}[forthel,id=PowerclassDef,printid]
+\begin{definition*}[forthel,id=PowerclassDef]
   $\pow{A}=\{x\mid x\subseteq A\}$.
   Let the \emph{powerclass of $A$} stand for $\pow{A}$.
 \end{definition*}
 
-\begin{axiom*}[forthel,title=Powerset Axiom,id=PowersetAx,printid]
+\begin{axiom*}[forthel,title=Powerset Axiom,id=PowersetAx]
   If $A$ is a set then $\pow{A}$ is a set.
   Let the \emph{powerset of $A$} stand for $\pow{A}$.
 \end{axiom*}
@@ -232,16 +232,16 @@
 
 \subsection{Ordered Pairs and Cartesian Products}
 
-\begin{axiom*}[forthel,title=Pair Extensionality Axiom,id=PairExtensionalityAx,printid]
+\begin{axiom*}[forthel,title=Pair Extensionality Axiom,id=PairExtensionalityAx]
   If $\pair{a}{b}\eq \pair{a'}{b'}$ then $a\eq a'$ and $b\eq b'$.
 \end{axiom*}
 
-\begin{definition*}[forthel,id=CartesianProductDef,printid]
+\begin{definition*}[forthel,id=CartesianProductDef]
   $A\times B=\{\pair{a}{b}\mid a\in A\text{ and }b\in B\}$.
   Let the \emph{Cartesian product of $A$ and $B$} stand for $A\times B$.
 \end{definition*}
 
-\begin{proposition*}[forthel,id=CartesianProductProp,printid]
+\begin{proposition*}[forthel,id=CartesianProductProp]
   $\pair{a}{b}\in A\times B$ iff $a\in A$ and $b\in B$.
 \end{proposition*}
 \end{smodule}

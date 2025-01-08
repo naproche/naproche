@@ -323,7 +323,6 @@ data TlsOption =
     TlsForthel      -- @forthel@
   | TlsTitle Text   -- @title=<title>@
   | TlsId Text      -- @id=<label>@
-  | TlsPrintId      -- @printid@
 
 -- | Parse an environment label (TEX), i.e. a list of key-value pairs that
 -- might contain a pair with an @id@ key and return its value.
@@ -342,7 +341,7 @@ tlsLabel = do
 -- section environment.
 tlsOption :: FTL (Text, TlsOption)
 tlsOption = do
-  key <- getTokenOf' ["forthel", "title", "id", "printid"]
+  key <- getTokenOf' ["forthel", "title", "id"]
   case key of
     "forthel" -> return (key, TlsForthel)
     "title" -> do
@@ -353,7 +352,6 @@ tlsOption = do
       symbol "="
       label <- identifier
       return (key, TlsId label)
-    "printid" -> return (key, TlsPrintId)
     _ -> failWithMessage "SAD.ForTheL.Structure.tlsOption" "Unknown key."
   where
     notReservedChar = tokenPrim $ \t -> guard (showToken t `notElem` [",", "]"]) >> return t

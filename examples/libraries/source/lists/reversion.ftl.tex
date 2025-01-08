@@ -8,22 +8,22 @@
 
   \section*{Reversion}
 
-  \begin{signature}[forthel,id=LISTS_REV_4578620297183232,printid]
+  \begin{signature}[forthel,id=LISTS_REV_4578620297183232]
     Let $L$ be a list.
     $\rev(L)$ is a list.
   \end{signature}
 
-  \begin{axiom}[forthel,id=LISTS_REV_3703161885818880,printid]
+  \begin{axiom}[forthel,id=LISTS_REV_3703161885818880]
     Let $L$ be a list.
     Then $\rev(\nil) = \nil$.
   \end{axiom}
 
-  \begin{axiom}[forthel,id=LISTS_REV_8050301789536256,printid]
+  \begin{axiom}[forthel,id=LISTS_REV_8050301789536256]
     Let $a$ be an object and $L$ be a list.
     Then $\rev(a \cons L) = \rev(L) \concat [a]$.
   \end{axiom}
 
-  \begin{proposition}[forthel,id=LISTS_REV_4512036658964875,printid]
+  \begin{proposition}[forthel,id=LISTS_REV_4512036658964875]
     $\rev(L \concat L') = \rev(L') \concat \rev(L)$ for any lists $L, L'$.
   \end{proposition}
   \begin{proof}[forthel,method=induction on $L$]
@@ -47,7 +47,7 @@
     End.
   \end{proof}
 
-  \begin{proposition}[forthel,id=LISTS_REV_1021563255448756,printid]
+  \begin{proposition}[forthel,id=LISTS_REV_1021563255448756]
     $\rev(\rev(L)) = L$ for every list $L$.
   \end{proposition}
   \begin{proof}[forthel,method=induction on $L$]

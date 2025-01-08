@@ -11,78 +11,78 @@
 
   \subsection*{The Language of Natural Number Arithmetic}
 
-  \begin{signature}[forthel,id=ARITHMETIC_01_3074681254969344,printid]
+  \begin{signature}[forthel,id=ARITHMETIC_01_3074681254969344]
     A natural number is an object.
   \end{signature}
 
-  \begin{definition}[forthel,id=ARITHMETIC_01_7367148418629632,printid]
+  \begin{definition}[forthel,id=ARITHMETIC_01_7367148418629632]
     $\Nat$ is the class of natural numbers.
   \end{definition}
 
-  \begin{signature}[forthel,id=ARITHMETIC_01_1567933815848960,printid]
+  \begin{signature}[forthel,id=ARITHMETIC_01_1567933815848960]
     Let $n, m$ be natural numbers.
     $n + m$ is a natural number.
 
     Let the sum of $n$ and $m$ stand for $n + m$.
   \end{signature}
 
-  \begin{signature}[forthel,id=ARITHMETIC_01_7633304715001856,printid]
+  \begin{signature}[forthel,id=ARITHMETIC_01_7633304715001856]
     $0$ is a natural number.
 
     Let zero stand for $0$.
     Let $n$ is nonzero stand for $n \neq 0$.
   \end{signature}
 
-  \begin{signature}[forthel,id=ARITHMETIC_01_1200254566985232,printid]
+  \begin{signature}[forthel,id=ARITHMETIC_01_1200254566985232]
     $1$ is a natural number.
 
     Let one stand for $1$.
     Let the direct successor of $n$ stand for $n + 1$.
   \end{signature}
 
-  \begin{definition}[forthel,id=ARITHMETIC_01_4584236572999680,printid]
+  \begin{definition}[forthel,id=ARITHMETIC_01_4584236572999680]
     $2 = 1 + 1$.
 
     Let two stand for $2$.
   \end{definition}
 
-  \begin{definition}[forthel,id=ARITHMETIC_01_3836725109456896,printid]
+  \begin{definition}[forthel,id=ARITHMETIC_01_3836725109456896]
     $3 = 2 + 1$.
 
     Let three stand for $3$.
   \end{definition}
 
-  \begin{definition}[forthel,id=ARITHMETIC_01_1709884968009728,printid]
+  \begin{definition}[forthel,id=ARITHMETIC_01_1709884968009728]
     $4 = 3 + 1$.
 
     Let four stand for $4$.
   \end{definition}
 
-  \begin{definition}[forthel,id=ARITHMETIC_01_6734726333202432,printid]
+  \begin{definition}[forthel,id=ARITHMETIC_01_6734726333202432]
     $5 = 4 + 1$.
 
     Let five stand for $5$.
   \end{definition}
 
-  \begin{definition}[forthel,id=ARITHMETIC_01_949139189792768,printid]
+  \begin{definition}[forthel,id=ARITHMETIC_01_949139189792768]
     $6 = 5 + 1$.
 
     Let six stand for $6$.
   \end{definition}
 
-  \begin{definition}[forthel,id=ARITHMETIC_01_7245471749767168,printid]
+  \begin{definition}[forthel,id=ARITHMETIC_01_7245471749767168]
     $7 = 6 + 1$.
 
     Let seven stand for $7$.
   \end{definition}
 
-  \begin{definition}[forthel,id=ARITHMETIC_01_5658172888973312,printid]
+  \begin{definition}[forthel,id=ARITHMETIC_01_5658172888973312]
     $8 = 7 + 1$.
 
     Let eight stand for $8$.
   \end{definition}
 
-  \begin{definition}[forthel,id=ARITHMETIC_01_7371844250238976,printid]
+  \begin{definition}[forthel,id=ARITHMETIC_01_7371844250238976]
     $9 = 8 + 1$.
 
     Let nine stand for $9$.
@@ -91,32 +91,32 @@
 
   \subsection*{The Axioms of Natural Number Arithmetic}
 
-  \begin{axiom}[forthel,id=ARITHMETIC_01_3604163883696128,printid]
+  \begin{axiom}[forthel,id=ARITHMETIC_01_3604163883696128]
     Let $n, m$ be natural numbers.
     If $n + 1 = m + 1$ then $n = m$.
   \end{axiom}
 
-  \begin{axiom}[forthel,id=ARITHMETIC_01_4454289938317312,printid]
+  \begin{axiom}[forthel,id=ARITHMETIC_01_4454289938317312]
     There exists no natural number $n$ such that $n + 1 = 0$.
   \end{axiom}
 
-  \begin{axiom}[forthel,title=Induction,id=ARITHMETIC_01_4764664342773760,printid]
+  \begin{axiom}[forthel,title=Induction,id=ARITHMETIC_01_4764664342773760]
     Let $\Phi$ be a class.
     Assume $0 \in \Phi$ and for all natural numbers $n$ if $n \in \Phi$ then
     $n + 1 \in \Phi$.
     Then $\Phi$ contains every natural number.
   \end{axiom}
 
-  \begin{axiom}[forthel,id=ARITHMETIC_03_5962332515874540,printid]
+  \begin{axiom}[forthel,id=ARITHMETIC_03_5962332515874540]
     Then $1 = 0 + 1$.
   \end{axiom}
 
-  \begin{axiom}[forthel,id=ARITHMETIC_03_4827955356237824,printid]
+  \begin{axiom}[forthel,id=ARITHMETIC_03_4827955356237824]
     Let $n$ be a natural number.
     Then $n + 0 = n$.
   \end{axiom}
 
-  \begin{axiom}[forthel,id=ARITHMETIC_03_4427935386238924,printid]
+  \begin{axiom}[forthel,id=ARITHMETIC_03_4427935386238924]
     Let $n, m$ be natural numbers.
     Then $n + (m + 1) = (n + m) + 1$.
   \end{axiom}
@@ -124,7 +124,7 @@
 
   \subsection*{Immediate Consequences of the Axioms}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_01_4966080109871104,printid]
+  \begin{proposition}[forthel,id=ARITHMETIC_01_4966080109871104]
     Let $n$ be a natural number.
     Then $n = 0$ or $n = m + 1$ for some natural number $m$.
   \end{proposition}
@@ -135,7 +135,7 @@
     Thus $n = 0$ or $n = m + 1$ for some natural number $m$.
   \end{proof}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_01_5996049267163136,printid]
+  \begin{proposition}[forthel,id=ARITHMETIC_01_5996049267163136]
     Let $n$ be a natural number.
     Then $n \neq n + 1$.
   \end{proposition}
@@ -162,7 +162,7 @@
 
   \subsubsection*{Associativity}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_03_3235893452210176,printid]
+  \begin{proposition}[forthel,id=ARITHMETIC_03_3235893452210176]
     Let $n, m, k$ be natural numbers.
     Then $n + (m + k) = (n + m) + k$.
   \end{proposition}
@@ -192,7 +192,7 @@
 
   \subsubsection*{Commutativity}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_03_4029553232052224,printid]
+  \begin{proposition}[forthel,id=ARITHMETIC_03_4029553232052224]
     Let $n, m$ be natural numbers.
     Then $n + m = m + n$.
   \end{proposition}
@@ -264,7 +264,7 @@
 
   \subsubsection*{Cancellation}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_03_3137702874578944,printid]
+  \begin{proposition}[forthel,id=ARITHMETIC_03_3137702874578944]
     Let $n, m, k$ be natural numbers.
     If $n + k = m + k$ then $n = m$.
   \end{proposition}
@@ -286,7 +286,7 @@
     Consequently if $n + k = m + k$ then $n = m$.
   \end{proof}
 
-  \begin{corollary}[forthel,id=ARITHMETIC_03_8445946379632640,printid]
+  \begin{corollary}[forthel,id=ARITHMETIC_03_8445946379632640]
     Let $n, m, k$ be natural numbers.
     If $k + n = k + m$ then $n = m$.
   \end{corollary}
@@ -300,7 +300,7 @@
 
   \subsubsection*{Zero Sums}
 
-  \begin{proposition}[forthel,id=ARITHMETIC_03_3520602170195968,printid]
+  \begin{proposition}[forthel,id=ARITHMETIC_03_3520602170195968]
     Let $n, m$ be natural numbers.
     If $n + m = 0$ then $n = 0$ and $m = 0$.
   \end{proposition}
