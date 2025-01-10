@@ -1,0 +1,39 @@
+\documentclass{naproche-library}
+\libinput{set-theory-preamble}
+\begin{document}
+\begin{smodule}{knaster-tarski.ftl}
+  \importmodule[libraries]{foundations?equinumerosity.ftl}
+  \importmodule[libraries]{foundations?maps-and-systems-of-sets.ftl}
+  \importmodule[libraries]{set-theory?zf.ftl}
+
+  \begin{theorem*}[forthel,title=Knaster-Tarski,id=knaster_tarski]
+    Let $x$ be a set.
+    Let $h$ be a map from $\pow(x)$ to $\pow(x)$ that preserves subsets.
+    Then $h$ has a fixed point.
+  \end{theorem*}
+  \begin{proof}[forthel]
+    (1) Define $A = \{y \in \pow(x) \mid y \subseteq h(y)\}$.
+    Then $A$ is a subset of $\pow(x)$.
+    We have $\bigcup A \in \pow(x)$.
+
+    Let us show that (2) $\bigcup A \subseteq h(\bigcup A)$.
+      Let $u \in \bigcup A$.
+      Take $y \in A$ such that $u \in y$.
+      Then $u \in h(y)$.
+      We have $y \subseteq \bigcup A$.
+      Hence $h(y) \subseteq h(\bigcup A)$.
+      Indeed $h$ is a subset preserving map between systems of sets and $y, \bigcup A \in \dom(h)$.
+      Thus $h(y) \subseteq h(\bigcup A)$.
+      Therefore $u \in h(\bigcup A)$.
+    End.
+
+    Then $h(\bigcup A) \in A$ (by 1).
+    Indeed $h(\bigcup A) \subseteq x$.
+    (3) Hence $h(\bigcup A) \subseteq \bigcup A$.
+    Indeed every element of $h(\bigcup A)$ is an element of some element of
+    $A$.
+
+    Thus $h(\bigcup A) = \bigcup A$ (by 2, 3).
+  \end{proof}
+\end{smodule}
+\end{document}

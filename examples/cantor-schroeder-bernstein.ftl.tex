@@ -1,12 +1,11 @@
 \documentclass{article}
 \usepackage{naproche}
 \libinput[meta-inf]{example-preamble}
-\libinput[libraries]{foundations-preamble}
 
 \title{The Knaster-Tarski fixed point theorem and \\
 the Cantor-Schröder-Bernstein Theorem}
 \author{\Naproche formalization:\\[0.5em]Alexander Holz, Marcel Schütz}
-\date{2024}
+\date{2018}
 
 \begin{document}
   \maketitle
@@ -22,170 +21,12 @@ the Cantor-Schröder-Bernstein Theorem}
   where the proof of the latter theorem is based on the former one, as in
   \cite{Schroeder2012}.
 
-
   \section*{The Knaster-Tarski Fixed Point Theorem}
-
-  \begin{forthel}
-    \begin{theorem*}[title=Knaster-Tarski,id=knaster_tarski]
-      Let $x$ be a set.
-      Let $h$ be a map from $\pow(x)$ to $\pow(x)$ that preserves subsets.
-      Then $h$ has a fixed point.
-    \end{theorem*}
-    \begin{proof}
-      (1) Define $A = \{y \in \pow(x) \mid y \subseteq h(y)\}$.
-      Then $A$ is a subset of $\pow(x)$.
-      We have $\bigcup A \in \pow(x)$.
-
-      Let us show that (2) $\bigcup A \subseteq h(\bigcup A)$.
-        Let $u \in \bigcup A$.
-        Take $y \in A$ such that $u \in y$.
-        Then $u \in h(y)$.
-        We have $y \subseteq \bigcup A$.
-        Hence $h(y) \subseteq h(\bigcup A)$.
-        Indeed $h$ is a subset preserving map between systems of sets and $y, \bigcup A \in \dom(h)$.
-        Thus $h(y) \subseteq h(\bigcup A)$.
-        Therefore $u \in h(\bigcup A)$.
-      End.
-
-      Then $h(\bigcup A) \in A$ (by 1).
-      Indeed $h(\bigcup A) \subseteq x$.
-      (3) Hence $h(\bigcup A) \subseteq \bigcup A$.
-      Indeed every element of $h(\bigcup A)$ is an element of some element of
-      $A$.
-
-      Thus $h(\bigcup A) = \bigcup A$ (by 2, 3).
-    \end{proof}
-  \end{forthel}
-
+  \inputref[libraries]{set-theory/knaster-tarski.ftl.tex}
 
   \section*{The Cantor-Schröder-Bernstein Theorem}
-
-  \begin{forthel}
-    \begin{theorem*}[title=Cantor-Schröder-Bernstein,id=cantor_schroeder_bernstein]
-      Let $x,y$ be sets.
-      $x$ and $y$ are equinumerous iff there exists a injective map from $x$ to $y$ and there exists an injective map from $y$ to $x$.
-    \end{theorem*}
-    \begin{proof}
-      Case $x$ and $y$ are equinumerous.
-        Take a bijection $f$ between $x$ and $y$.
-        Then $f^{-1}$ is a bijection between $y$ and $x$.
-        Hence $f$ is an injective map from $x$ to $y$ and $f^{-1}$ is an
-        injective map from $y$ to $x$.
-      End.
-
-      Case there exists an injective map from $x$ to $y$ and there exists an injective map from $y$ to $x$.
-        Take an injective map $f$ from $x$ to $y$.
-        Take an injective map $g$ from $y$ to $x$.
-        We have $y \setminus f[a] \subseteq y$ for any $a \in \pow(x)$.
-
-        (1) Define $h(a) = x \setminus g[y \setminus f[a]]$ for $a \in \pow(x)$.
-
-        $h$ is a map from $\pow(x)$ to $\pow(x)$.
-        Indeed $h(a)$ is a subset of $x$ for each subset $a$ of $x$.
-
-        Let us show that $h$ preserves subsets.
-          Let $u, v$ be subsets of $x$.
-          Assume $u \subseteq v$.
-          Then $f[u] \subseteq f[v]$.
-          Hence $y \setminus f[v] \subseteq y \setminus f[u]$.
-          Thus $g[y \setminus f[v]] \subseteq g[y \setminus f[u]]$.
-          Indeed $y \setminus f[v]$ and $y \setminus f[u]$ are subsets of $y$.
-          Therefore $x \setminus g[y \setminus f[u]] \subseteq x \setminus g[y \setminus f[v]]$.
-          Consequently $h[u] \subseteq h[v]$.
-        End.
-
-        Hence we can take a fixed point $c$ of $h$ (by \nameref{knaster_tarski}).
-
-        (2) Define $F(u) = f(u)$ for $u \in c$.
-
-        We have $c = h(c)$ iff $x \setminus c = g[y \setminus f[c]]$.
-        $g^{-1}$ is a bijection between $\range(g)$ and $y$.
-        Thus $x \setminus c = g[y \setminus f[c]] \subseteq \range(g)$.
-        Therefore $x \setminus c$ is a subset of $\dom(g^{-1})$.
-
-        (3) Define $G(u) = g^{-1}(u)$ for $u \in x \setminus c$.
-
-        $F$ is a bijection between $c$ and $\range(F)$.
-        $G$ is a bijection between $x \setminus c$ and $\range(G)$.
-
-        Define \[ H(u) =
-          \begin{cases}
-            F(u) & : u \in c \\
-            G(u) & : u \notin c
-          \end{cases} \]
-        for $u \in x$.
-
-        Let us show that $H$ is a map to $y$.
-          $\dom(H)$ is a set and every value of $H$ is an object.
-          Hence $H$ is a map.
-
-          Let us show that every value of $H$ lies in $y$.
-            Let $v$ be a value of $H$.
-            Take $u \in x$ such that $H(u) = v$.
-            If $u \in c$ then $v = H(u) = F(u) = f(u) \in y$.
-            If $u \notin c$ then $v = H(u) = G(u) = g^{-1}(u) \in y$.
-          End.
-        End.
-
-        (4) $H$ is surjective onto $y$.
-        Indeed we can show that every element of $y$ is a value of $H$.
-          Let $v \in y$.
-
-          Case $v \in f[c]$.
-            Take $u \in c$ such that $f(u) = v$.
-            Then $F(u) = v$.
-          End.
-
-          Case $v \notin f[c]$.
-            Then $v \in y \setminus f[c]$.
-            Hence $g(v) \in g[y \setminus f[c]]$.
-            Thus $g(v) \in x \setminus h(c)$.
-            We have $g(v) \in x \setminus c$.
-            Therefore we can take $u \in x \setminus c$ such that $G(u) = v$.
-            Then $v = H(u)$.
-          End.
-        End.
-
-        (5) $H$ is injective.
-        Indeed we can show that for all $u, v \in x$ if $u \neq v$ then $H(u) \neq H(v)$.
-          Let $u,v \in x$.
-          Assume $u \neq v$.
-
-          Case $u,v \in c$.
-            Then $H(u) = F(u)$ and $H(v) = F(v)$.
-            We have $F(u) \neq F(v)$.
-            Hence $H(u) \neq H(v)$.
-          End.
-
-          Case $u,v \notin c$.
-            Then $H(u) = G(u)$ and $H(v) = G(v)$.
-            We have $G(u) \neq G(v)$.
-            Hence $H(u) \neq H(v)$.
-          End.
-
-          Case $u \in c$ and $v \notin c$.
-            Then $H(u) = F(u)$ and $H(v) = G(v)$.
-            Hence $v \in g[y \setminus F[c]]$.
-            We have $G(v) = g^{-1}(v) \in y \setminus F[c]$.
-            Indeed $v = g(v')$ for some $v' \in y \setminus F[c]$.
-            Thus $G(v) \neq F(u)$.
-          End.
-
-          Case $u \notin c$ and $v \in c$.
-            Then $H(u) = G(u)$ and $H(v) = F(v)$.
-            Hence $u \in g[y \setminus F[c]]$.
-            We have $G(u) = g^{-1}(u) \in y \setminus F[c]$.
-            Indeed $u = g(u')$ for some $u' \in y \setminus F[c]$.
-            Thus $G(u) \neq F(v)$.
-          End.
-        End.
-
-        Consequently $H$ is a bijection between $x$ and $y$ (by 4, 5).
-        Therefore $x$ and $y$ are equinumerous.
-      End.
-    \end{proof}
-  \end{forthel}
+  \inputref[libraries]{set-theory/cantor-schroeder-bernstein.ftl.tex}
 
   \printbibliography
-  \printlicense[CcByNcSa]{2024}{Marcel Schütz}
+  \printlicense[CcByNcSa]{2018}{Alexander Holz, Marcel Schütz}
 \end{document}

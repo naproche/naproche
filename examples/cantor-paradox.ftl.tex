@@ -1,7 +1,10 @@
 \documentclass{article}
 \usepackage{naproche}
 \libinput[meta-inf]{example-preamble}
-\libinput[libraries]{foundations-preamble}
+\libinput[libraries]{set-theory-preamble}
+
+\newcommand\Card{\textbf{Card}}
+\newcommand\V{\mathbb V}
 
 \title{Cantor's Paradoxes}
 \author{\Naproche formalization: \\[0.5em]Marcel Schütz}
@@ -11,38 +14,11 @@
   \pagenumbering{gobble}
   \maketitle
 
-  \usemodule[libraries]{set-theory?infinite-cardinals.ftl}
-  \usemodule[libraries]{foundations?universal-class.ftl}
-
-  \begin{forthel}
-    [read \path{burali-forti-paradox.ftl.tex}]
-  \end{forthel}
-
   \noindent \emph{Cantor's First Paradox}, discovered by Georg Cantor in 1897,
   states that the collection $\Card$ of all (infinite) cardinal numbers is a
   proper class \cite[chapter 156]{Cantor1991}.
 
-  \begin{forthel}
-    \begin{theorem*}[title=Cantor's First Paradox,id=cantor_paradox_1]
-      $\Card$ is a proper class.
-    \end{theorem*}
-    \begin{proof}
-      Suppose that $\Card$ is a set.
-      Then $\bigcup \Card$ is a set.
-
-      Let us show that $\bigcup \Card$ contains every ordinal.
-        Let $\alpha$ be an ordinal.
-        Choose an infinite ordinal $\beta$ such that $\beta \geq \alpha$.
-        Choose a cardinal $\kappa$ greater than $\beta$.
-        Then $\alpha \in \kappa \in \Card$.
-        Hence $\alpha \in \bigcup \Card$.
-      End.
-
-      Therefore $\Ord \subseteq \bigcup \Card$.
-      Thus $\Ord$ is a set.
-      Contradiction.
-    \end{proof}
-  \end{forthel}
+  \inputref[libraries]{set-theory/cantor-paradox-1.ftl.tex}
 
   \emph{Cantor's Second Paradox} denotes the observation that the collection
   $\V$ of all set is a proper class.
@@ -50,19 +26,7 @@
   cardinality of any set is strictly smaller than the cardinality of its 
   powerset \cite[chapter 163]{Cantor1991}.
 
-  \begin{forthel}
-    \begin{theorem*}[title=Cantor's Second Paradox,id=cantor_paradox_2]
-      $\V$ is a proper class.
-    \end{theorem*}
-    \begin{proof}
-      Assume the contrary.
-      Then $\pow(\V)$ is a set.
-      Hence $\pow(\V)$ is a subset of $\V$.
-      Thus $|\pow(\V)| \leq |\V|$.
-      Contradiction.
-      Indeed $|x| < |\pow(x)|$ for any set $x$.
-    \end{proof}
-  \end{forthel}
+  \inputref[libraries]{set-theory/cantor-paradox-2.ftl.tex}
 
   \printbibliography
   \printlicense[CcByNcSa]{2024}{Marcel Schütz}

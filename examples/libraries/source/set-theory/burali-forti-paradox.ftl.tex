@@ -1,0 +1,19 @@
+\documentclass{naproche-library}
+\libinput{set-theory-preamble}
+\begin{document}
+\begin{smodule}{burali-forti-paradox.ftl}
+  \importmodule[libraries]{set-theory?ordinals.ftl}
+  \importmodule[libraries]{foundations?proper-classes.ftl}
+
+  \begin{theorem*}[forthel,title=Burali-Forti's Paradox,id=burali_forti_paradox]
+    $\Ord$ is a proper class.
+  \end{theorem*}
+  \begin{proof}[forthel]
+    Assume the contrary.
+    $\Ord$ is transitive and every element of $\Ord$ is transitive.
+    Hence $\Ord$ is an ordinal.
+    Thus $\Ord \in \Ord$.
+    Contradiction.
+  \end{proof}
+\end{smodule}
+\end{document}

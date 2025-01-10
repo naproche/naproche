@@ -17,18 +17,7 @@
   $\{x\mid\varphi(x)\}$ cannot constitute a set -- or in other words:
   Not every class is a set.
 
-  \begin{forthel}
-    \begin{theorem*}[title=Russell's Paradox,id=russell_paradox]
-      It is wrong that every class is a set.
-    \end{theorem*}
-    \begin{proof}
-      Assume the contrary.
-      Define $R = \{x \mid x$ is a set such that $x \notin x\}$.
-      Then $R$ is a set.
-      Hence $R \in R$ iff $R \notin R$.
-      Contradiction.
-    \end{proof}
-  \end{forthel}
+  \inputref[libraries]{foundations/russell-paradox.ftl.tex}
 
   \printbibliography
   \printlicense[CcByNcSa]{2024}{Marcel Schütz}

@@ -3,8 +3,30 @@
 \begin{document}
 \begin{smodule}{successor-cardinals.ftl}
   \importmodule[libraries]{set-theory?cardinals.ftl}
+  \importmodule[libraries]{set-theory?cantor.ftl}
 
   \section*{Successor Cardinals}
+  
+  \begin{lemma}[forthel,id=SET_THEORY_06_489264832709174]
+    For every ordinal $\alpha$ there exists a cardinal greater than $\alpha$.
+  \end{lemma}
+  \begin{proof}[forthel]
+    Let $\alpha$ be an ordinal.
+    Take $\kappa = |\pow(\alpha)|$.
+    Then $\kappa > |\alpha|$.
+
+    Let us show that $\kappa > \alpha$.
+      Assume the contrary.
+      Then $|\pow(\alpha)|
+        = \kappa
+        \leq \alpha$.
+      Hence $\kappa
+        = |\pow(\alpha)|
+        = ||\pow(\alpha)||
+        \leq |\alpha|$.
+      Contradiction.
+    End.
+  \end{proof}
 
   \begin{definition}[forthel,id=SET_THEORY_06_9568425123021254]
     Let $\kappa$ be a cardinal.

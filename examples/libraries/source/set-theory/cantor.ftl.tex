@@ -1,0 +1,24 @@
+\documentclass{naproche-library}
+\libinput{set-theory-preamble}
+\begin{document}
+\begin{smodule}{cantor.ftl}
+  \importmodule[libraries]{foundations?cantor.ftl}
+  \importmodule[libraries]{set-theory?cardinals-and-maps.ftl}
+  
+  \begin{theorem*}[forthel,title=Cantor's Theorem,id=cantor_389275382172394]
+    Let $x$ be a set.
+    Then $|x| < |\pow(x)|$.
+  \end{theorem*}
+  \begin{proof}[forthel]
+    Case $x$ is empty. Obvious.
+
+    Case $x$ is nonempty.
+      Assume the contrary.
+      Then $|x| \geq |\pow(x)|$.
+      Hence there exists a surjective map from $x$ onto $\pow(x)$ (by \printref{SET_THEORY_06_192336220913664}).
+      Indeed $\pow(x)$ is a nonempty set.
+      Contradiction (by \nameref{cantor_017529138285230}).
+    End.
+  \end{proof}
+\end{smodule}
+\end{document}

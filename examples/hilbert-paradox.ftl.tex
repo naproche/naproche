@@ -1,7 +1,9 @@
 \documentclass{article}
 \usepackage{naproche}
 \libinput[meta-inf]{example-preamble}
-\libinput[libraries]{foundations-preamble}
+\libinput[libraries]{set-theory-preamble}
+
+\newcommand\V{\mathbb V}
 
 \title{Hilbert's Paradox}
 \author{\Naproche formalization:\\[0.5em]Marcel Schütz}
@@ -11,43 +13,25 @@
   \pagenumbering{gobble}
   \maketitle
 
-  \usemodule[libraries]{set-theory?zf.ftl}
   \usemodule[libraries]{foundations?universal-class.ftl}
-  \usemodule[libraries]{foundations?proper-classes.ftl}
-  \usemodule[libraries]{foundations?closure-under-arbitrary-unions.ftl}
-  \usemodule[libraries]{foundations?closure-under-powersets.ftl}
 
   \noindent \emph{Hilbert's Paradox}, discovered around 1900 by David Hilbert, 
-  demonstates that there cannot exists a set that is closed under powerset and 
-  under union of arbitrary subset \cite{PeckhausKahl2002}.
+  demonstates that there cannot exists a set that is closed under powersets and 
+  under unions of arbitrary subsets \cite{PeckhausKahl2002}.
 
-  \begin{forthel}
-    \begin{theorem*}[title=Hilbert's Paradox,id=hilbert_paradox]
-      There exists no system of sets that is closed under powersets and closed under unions.
-    \end{theorem*}
-    \begin{proof}
-      Assume the contrary.
-      Consider a system of sets $S$ that is closed under powersets and closed under unions.
-      We have $S \subseteq S$.
-      Hence $\bigcup S \in S$.
-      Thus $\pow(\bigcup S) \in S$.
-      Contradiction.
-    \end{proof}
-  \end{forthel}
+  \inputref[libraries]{set-theory/hilbert-paradox.ftl.tex}
 
   \noindent Using Hilbert's Paradox it can further be shown that there exists 
-  no universal set.
+  no universal set, i.e. that the class $\V$ of all sets is a proper class:
 
-  \begin{forthel}
-    \begin{corollary*}[id=hilbert_paradox_corollary]
-      $\V$ is a proper class.
-    \end{corollary*}
-    \begin{proof}
-      Assume the contrary.
-      Then $\V$ is closed under powersets and closed under unions.
-      Contradiction (by \nameref{hilbert_paradox}).
-    \end{proof}
-  \end{forthel}
+  \begin{corollary*}[forthel,id=hilbert_paradox_corollary]
+    $\V$ is a proper class.
+  \end{corollary*}
+  \begin{proof}[forthel]
+    Assume the contrary.
+    Then $\V$ is closed under powersets and closed under unions.
+    Contradiction (by \nameref{hilbert_paradox}).
+  \end{proof}
 
   \printbibliography
   \printlicense[CcByNcSa]{2024}{Marcel Schütz}

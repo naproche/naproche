@@ -49,13 +49,9 @@ spectrum reaches from recreational puzzles to undergraduate-level theorems:
 
 * `curry-paradox` – Curry's paradox
 
-* `dedekind` – Dedekind's recursion theorem
-
 * `drinker-paradox` – the drinker paradox
 
 * `dwarfs` – a "hat puzzle"
-
-* `euclid_division` – Euclid's division theorem
 
 * `euclid_primes` – classical proof of infinity of primes
 

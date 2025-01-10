@@ -3,14 +3,13 @@
 \begin{document}
 \begin{smodule}{choice.ftl}
   \importmodule[libraries]{foundations?systems-of-sets.ftl}
+  \importmodule[libraries]{foundations?choice-maps.ftl}
 
   \section{Choice}
 
   \begin{axiom}[forthel,title=Axiom of Choice,id=FOUNDATIONS_10_1897613305577472]
     Let $X$ be a system of nonempty sets.
-    Then there exists a map $f$ such that $\dom(f) = X$ and $f(x) \in x$ for any $x \in X$.
+    Then there exists a choice map for $X$.
   \end{axiom}
-
-  $\set{a,b,c}$
 \end{smodule}
 \end{document}

@@ -1,0 +1,28 @@
+\documentclass{naproche-library}
+\libinput{set-theory-preamble}
+\begin{document}
+\begin{smodule}{cantor-paradox-1.ftl}
+  \importmodule[libraries]{set-theory?infinite-cardinals.ftl}
+  \importmodule[libraries]{set-theory?burali-forti-paradox.ftl}
+
+  \begin{theorem*}[forthel,title=Cantor's First Paradox,id=cantor_paradox_1]
+    $\Card$ is a proper class.
+  \end{theorem*}
+  \begin{proof}[forthel]
+    Suppose that $\Card$ is a set.
+    Then $\bigcup \Card$ is a set.
+
+    Let us show that $\bigcup \Card$ contains every ordinal.
+      Let $\alpha$ be an ordinal.
+      Choose an infinite ordinal $\beta$ such that $\beta \geq \alpha$.
+      Choose a cardinal $\kappa$ greater than $\beta$.
+      Then $\alpha \in \kappa \in \Card$.
+      Hence $\alpha \in \bigcup \Card$.
+    End.
+
+    Therefore $\Ord \subseteq \bigcup \Card$.
+    Thus $\Ord$ is a set.
+    Contradiction.
+  \end{proof}
+\end{smodule}
+\end{document}
