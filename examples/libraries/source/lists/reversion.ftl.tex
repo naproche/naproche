@@ -4,69 +4,69 @@
 \begin{smodule}{reversion.ftl}
   \importmodule[libraries]{lists?concatenation.ftl}
 
-  \symdef{rev}{\textrm{rev}}
+  \symdef{rev}{\textsf{rev}}
 
-  \section*{Reversion}
+  \begin{sfragment}{Reversion}
+    \begin{signature}[forthel,id=LISTS_REV_4578620297183232]
+      Let $L$ be a list.
+      $\rev(L)$ is a list.
+    \end{signature}
 
-  \begin{signature}[forthel,id=LISTS_REV_4578620297183232]
-    Let $L$ be a list.
-    $\rev(L)$ is a list.
-  \end{signature}
+    \begin{axiom}[forthel,id=LISTS_REV_3703161885818880]
+      Let $L$ be a list.
+      Then $\rev(\list{}) \eq \list{}$.
+    \end{axiom}
 
-  \begin{axiom}[forthel,id=LISTS_REV_3703161885818880]
-    Let $L$ be a list.
-    Then $\rev(\nil) = \nil$.
-  \end{axiom}
+    \begin{axiom}[forthel,id=LISTS_REV_8050301789536256]
+      Let $a$ be an object and $L$ be a list.
+      Then $\rev(a \cons L) \eq \rev(L) \concat \list{a}$.
+    \end{axiom}
 
-  \begin{axiom}[forthel,id=LISTS_REV_8050301789536256]
-    Let $a$ be an object and $L$ be a list.
-    Then $\rev(a \cons L) = \rev(L) \concat [a]$.
-  \end{axiom}
+    \begin{proposition}[forthel,id=LISTS_REV_4512036658964875]
+      $\rev(L \concat L') \eq \rev(L') \concat \rev(L)$ for any lists $L, L'$.
+    \end{proposition}
+    \begin{proof}[forthel,method=induction on $L$]
+      Let $L,L'$ be lists.
 
-  \begin{proposition}[forthel,id=LISTS_REV_4512036658964875]
-    $\rev(L \concat L') = \rev(L') \concat \rev(L)$ for any lists $L, L'$.
-  \end{proposition}
-  \begin{proof}[forthel,method=induction on $L$]
-    Let $L,L'$ be lists.
+      Case $L \eq \list{}$. Trivial.
 
-    Case $L = \nil$. Trivial.
+      Case $L \eq a \cons L''$ for some object $a$ and some list $L''$.
+        Take an object $a$ and a list $L''$ such that $L \eq a \cons L''$.
+        Then $L'' \prec L$.
+        Hence $\rev(L'' \concat L') \eq \rev(L') \concat \rev(L'')$.
+        Thus $\rev(L \concat L')
+          \eq \rev((a \cons L'') \concat L')
+          \eq \rev(a \cons (L'' \concat L'))
+          \eq \rev(L'' \concat L') \concat \list{a}
+          \eq (\rev(L') \concat \rev(L'')) \concat \list{a}
+          \eq \rev(L') \concat (\rev(L'') \concat \list{a})
+          \eq \rev(L') \concat \rev(a \cons L'')
+          \eq \rev(L') \concat \rev(L)$.
+        Indeed $(\rev(L') \concat \rev(L'')) \concat \list{a} \eq \rev(L') \concat (\rev(L'') \concat \list{a})$ (by \printref{LISTS_CONCAT_1021563255448756}).
+      End.
+    \end{proof}
 
-    Case $L = a \cons L''$ for some object $a$ and some list $L''$.
-      Take an object $a$ and a list $L''$ such that $L = a \cons L''$.
-      Then $L'' \prec L$.
-      Hence $\rev(L'' \concat L') = \rev(L') \concat \rev(L'')$.
-      Thus $\rev(L \concat L')
-        = \rev((a \cons L'') \concat L')
-        = \rev(a \cons (L'' \concat L'))
-        = \rev(L'' \concat L') \concat [a]
-        = (\rev(L') \concat \rev(L'')) \concat [a]
-        = \rev(L') \concat (\rev(L'') \concat [a])
-        = \rev(L') \concat \rev(a \cons L'')
-        = \rev(L') \concat \rev(L)$.
-      Indeed $(\rev(L') \concat \rev(L'')) \concat [a] = \rev(L') \concat (\rev(L'') \concat [a])$ (by \printref{LISTS_CONCAT_1021563255448756}).
-    End.
-  \end{proof}
+    \begin{proposition}[forthel,id=LISTS_REV_1021563255448756]
+      $\rev(\rev(L)) \eq L$ for every list $L$.
+    \end{proposition}
+    \begin{proof}[forthel,method=induction on $L$]
+      Let $L$ be a list.
 
-  \begin{proposition}[forthel,id=LISTS_REV_1021563255448756]
-    $\rev(\rev(L)) = L$ for every list $L$.
-  \end{proposition}
-  \begin{proof}[forthel,method=induction on $L$]
-    Let $L$ be a list.
-
-    Case $L = \nil$. Trivial.
-  
-    Case $L = a \cons L'$ for some object $a$ and some list $L'$.
-      Take an object $a$ and a list $L'$ such that $L = a \cons L'$.
-      Then $L' \prec L$.
-      Hence $\rev(\rev(L')) = L'$.
-      Thus $\rev(\rev(L))
-        = \rev(\rev(a \cons L'))
-        = \rev(\rev(L') \concat [a])
-        = \rev([a]) \concat \rev(\rev(L'))
-        = a \cons \rev(\rev(L'))
-        = a \cons L'
-        = L$.
-    End.
-  \end{proof}
+      Case $L \eq \list{}$. Trivial.
+    
+      Case $L \eq a \cons L'$ for some object $a$ and some list $L'$.
+        Take an object $a$ and a list $L'$ such that $L \eq a \cons L'$.
+        Then $L' \prec L$.
+        Hence $\rev(\rev(L')) \eq L'$.
+        Thus $\rev(\rev(L))
+          \eq \rev(\rev(a \cons L'))
+          \eq \rev(\rev(L') \concat \list{a})
+          \eq \rev(\list{a}) \concat \rev(\rev(L'))
+          \eq a \cons \rev(\rev(L'))
+          \eq a \cons L'
+          \eq L$.
+      End.
+    \end{proof}
+  \end{sfragment}
 \end{smodule}
 \end{document}

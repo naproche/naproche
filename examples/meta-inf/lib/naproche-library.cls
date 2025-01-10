@@ -29,3 +29,12 @@
 \titlespacing*{\section}{0pt}{30pt}{0pt}
 \titlespacing*{\subsection}{0pt}{30pt}{0pt}
 \titlespacing*{\subsubsection}{0pt}{30pt}{0pt}
+
+\DeclareOption{numberswithinsection}{%
+    \counterwithin{theoremcount}{section}
+}
+\DeclareOption{numberswithinsubsection}{%
+    \counterwithin{theoremcount}{subsection}
+}
+\DeclareOption*{\PackageWarning{naproche}{Unknown ‘\CurrentOption’}}
+\ProcessOptions\relax

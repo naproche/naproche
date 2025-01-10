@@ -5,38 +5,38 @@
   \importmodule[meta-inf]{vocabulary.ftl}
   \importmodule[meta-inf]{macros.ftl}
 
-  \symdef{nil}{[]}
-  \symdef{cons}{\mathop{::}}
+  \symdef{list}[args=a,op=[\,]]{\comp[\argsep{#1}{\comp,}\comp]}
+  \symdef{cons}[op=::]{\,{::}\,}
 
-  \section*{Lists}
+  \begin{sfragment}{Lists}
+    \begin{signature}[forthel,id=LISTS_LISTS_4578620297183232]
+      A list is an object.
+    \end{signature}
 
-  \begin{signature}[forthel,id=LISTS_LISTS_4578620297183232]
-    A list is an object.
-  \end{signature}
+    \begin{signature}[forthel,id=LISTS_LISTS_3703161885818880]
+      $\list{}$ is a list.
+    \end{signature}
 
-  \begin{signature}[forthel,id=LISTS_LISTS_3703161885818880]
-    $\nil$ is a list.
-  \end{signature}
+    \begin{signature}[forthel,id=LISTS_LISTS_8050301789536256]
+      Let $a$ be an object and $L$ be a list.
+      $a \cons L$ is a list.
 
-  \begin{signature}[forthel,id=LISTS_LISTS_8050301789536256]
-    Let $a$ be an object and $L$ be a list.
-    $a \cons L$ is a list.
+      Let $\list{a}$ stand for $a \cons \list{}$.
+      
+      Let $\list{a,b}$ stand for $a \cons \list{b}$.
+      
+      Let $\list{a,b,c}$ stand for $a \cons \list{b,c}$.
+    \end{signature}
 
-    Let $[a]$ stand for $a \cons \nil$.
-    
-    Let $[a,b]$ stand for $a \cons [b]$.
-    
-    Let $[a,b,c]$ stand for $a \cons [b,c]$.
-  \end{signature}
+    \begin{axiom}[forthel,id=LISTS_LISTS_4512036658964875]
+      Let $L$ be a list.
+      Then $L \eq \list{}$ or $L \eq a \cons L'$ for some object $a$ and some list $L'$.
+    \end{axiom}
 
-  \begin{axiom}[forthel,id=LISTS_LISTS_4512036658964875]
-    Let $L$ be a list.
-    Then $L = \nil$ or $L = a \cons L'$ for some object $a$ and some list $L'$.
-  \end{axiom}
-
-  \begin{axiom}[forthel,id=LISTS_LISTS_1021563255448756]
-    Let $a$ be an object and $L$ be a list.
-    Then $L \prec a \cons L$.
-  \end{axiom}
+    \begin{axiom}[forthel,id=LISTS_LISTS_1021563255448756]
+      Let $a$ be an object and $L$ be a list.
+      Then $L \prec a \cons L$.
+    \end{axiom}
+  \end{sfragment}
 \end{smodule}
 \end{document}
