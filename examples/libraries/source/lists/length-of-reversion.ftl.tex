@@ -18,13 +18,16 @@
         Take an object $a$ and a list $L'$ such that $L \eq a \cons L'$.
         Then $L' \prec L$.
         Hence $\length(\rev(L')) \eq \length(L')$.
-        Thus $\length(\rev(L))
-          \eq \length(\rev(a \cons L'))
-          \eq \length(\rev(L') \concat \list{a})
-          \eq \length(\list{a}) + \length(\rev(L'))
-          \eq 1 + \length(\rev(L'))
-          \eq 1 + \length(L')
-          \eq \length(L)$.
+        Thus
+        \begin{align*}
+          \length(\rev(L))
+            &\eq \length(\rev(a \cons L'))\\
+            &\eq \length(\rev(L') \concat \list{a})\\
+            &\eq \length(\list{a}) + \length(\rev(L'))\\
+            &\eq 1 + \length(\rev(L'))\\
+            &\eq 1 + \length(L')\\
+            &\eq \length(L)
+        \end{align*}.
       End.
     \end{proof}
   \end{sfragment}

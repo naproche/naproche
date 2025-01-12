@@ -34,14 +34,17 @@
         Take an object $a$ and a list $L''$ such that $L \eq a \cons L''$.
         Then $L'' \prec L$.
         Hence $\rev(L'' \concat L') \eq \rev(L') \concat \rev(L'')$.
-        Thus $\rev(L \concat L')
-          \eq \rev((a \cons L'') \concat L')
-          \eq \rev(a \cons (L'' \concat L'))
-          \eq \rev(L'' \concat L') \concat \list{a}
-          \eq (\rev(L') \concat \rev(L'')) \concat \list{a}
-          \eq \rev(L') \concat (\rev(L'') \concat \list{a})
-          \eq \rev(L') \concat \rev(a \cons L'')
-          \eq \rev(L') \concat \rev(L)$.
+        Thus
+        \begin{align*}
+          \rev(L \concat L')
+            &\eq \rev((a \cons L'') \concat L')\\
+            &\eq \rev(a \cons (L'' \concat L'))\\
+            &\eq \rev(L'' \concat L') \concat \list{a}\\
+            &\eq (\rev(L') \concat \rev(L'')) \concat \list{a}\\
+            &\eq \rev(L') \concat (\rev(L'') \concat \list{a})\\
+            &\eq \rev(L') \concat \rev(a \cons L'')\\
+            &\eq \rev(L') \concat \rev(L)
+        \end{align*}.
         Indeed $(\rev(L') \concat \rev(L'')) \concat \list{a} \eq \rev(L') \concat (\rev(L'') \concat \list{a})$ (by \printref{LISTS_CONCAT_1021563255448756}).
       End.
     \end{proof}
@@ -58,13 +61,16 @@
         Take an object $a$ and a list $L'$ such that $L \eq a \cons L'$.
         Then $L' \prec L$.
         Hence $\rev(\rev(L')) \eq L'$.
-        Thus $\rev(\rev(L))
-          \eq \rev(\rev(a \cons L'))
-          \eq \rev(\rev(L') \concat \list{a})
-          \eq \rev(\list{a}) \concat \rev(\rev(L'))
-          \eq a \cons \rev(\rev(L'))
-          \eq a \cons L'
-          \eq L$.
+        Thus
+        \begin{align*}
+          \rev(\rev(L))
+            &\eq \rev(\rev(a \cons L'))\\
+            &\eq \rev(\rev(L') \concat \list{a})\\
+            &\eq \rev(\list{a}) \concat \rev(\rev(L'))\\
+            &\eq a \cons \rev(\rev(L'))\\
+            &\eq a \cons L'\\
+            &\eq L
+        \end{align*}.
       End.
     \end{proof}
   \end{sfragment}

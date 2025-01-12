@@ -34,11 +34,14 @@
         Consider an object $a$ and a list $L'$ such that $L \eq a \cons L'$.
         Then $L' \prec L$.
         Hence $L' \concat \list{} \eq L'$.
-        Thus $L \concat \list{}
-          \eq (a \cons L') \concat \list{}
-          \eq a \cons (L' \concat \list{})
-          \eq a \cons L'
-          \eq L$.
+        Thus
+        \begin{align*}
+          L \concat \list{}
+            &\eq (a \cons L') \concat \list{}\\
+            &\eq a \cons (L' \concat \list{})\\
+            &\eq a \cons L'\\
+            &\eq L
+        \end{align*}.
       End.
     \end{proof}
 
@@ -56,13 +59,16 @@
         Let $L',L''$ be lists.
         Then $L''' \concat (L' \concat L'') \eq (L''' \concat L') \concat L''$.
         [prover vampire]
-        Thus $L \concat (L' \concat L'') 
-          \eq (a \cons L''') \concat (L' \concat L'')
-          \eq a \cons (L''' \concat (L' \concat L''))
-          \eq a \cons ((L''' \concat L') \concat L'')
-          \eq (a \cons (L''' \concat L')) \concat L''
-          \eq ((a \cons L''') \concat L') \concat L''
-          \eq (L \concat L') \concat L''$.
+        Thus
+        \begin{align*}
+          L \concat (L' \concat L'') 
+            &\eq (a \cons L''') \concat (L' \concat L'')\\
+            &\eq a \cons (L''' \concat (L' \concat L''))\\
+            &\eq a \cons ((L''' \concat L') \concat L'')\\
+            &\eq (a \cons (L''' \concat L')) \concat L''\\
+            &\eq ((a \cons L''') \concat L') \concat L''\\
+            &\eq (L \concat L') \concat L''
+        \end{align*}.
       End.
     \end{proof}
   \end{sfragment}
