@@ -66,7 +66,7 @@
     $\set{a}$ and $\set{a,b}$ are sets for each $a \in x$ and each $b \in y$.
     Define $P = \{ \set{\set{a}, \set{a,b}} \mid a \in x$ and $b \in y \}$.
 
-    (1) $P$ is a set. \\
+    (1) $P$ is a set. \newline
     Proof.
       Let us show that $P \subseteq \pow(\pow(x \cup y))$.
         Let $p \in P$.
@@ -127,7 +127,7 @@
       End.
     End.
 
-    $\set{\set{a}, \set{a,b}} \in \dom(f)$ for any $a \in x$ and any $b \in y$. \\ % Needed for ontological checking
+    $\set{\set{a}, \set{a,b}} \in \dom(f)$ for any $a \in x$ and any $b \in y$. \newline % Needed for ontological checking
     Proof.
       Let $a \in x$ and $b \in y$.
       Then $\set{\set{a}, \set{a,b}} \in P$.
@@ -146,7 +146,7 @@
       Therefore $f(p) = (a,b)$.
     End.
 
-    (2) $x \times y = f[P]$. \\
+    (2) $x \times y = f[P]$. \newline
     Proof.
       For all $p \in P$ we have $l(p) \in x$ and $r(p) \in y$.
       Hence $f(p) \in x \times y$ for all $p \in P$.
@@ -249,7 +249,7 @@
       Let $f \in [x \to y]$.
       Define $F = \{ (a,f(a)) \mid a \in x \}$.
 
-      Then $F \in R$. \\
+      Then $F \in R$. \newline
       Proof.
         Define $g(a) = (a,f(a))$ for $a \in x$.
         Then $F = \range(g)$.

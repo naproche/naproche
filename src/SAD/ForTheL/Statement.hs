@@ -542,7 +542,7 @@ cases = do
 texCases  :: FTL (Formula -> Formula)
 texCases = do
   texBegin (token "cases")
-  stanza <- many line -- `sepByLL1` (symbol "," *> symbol ",")
+  stanza <- sepBy line (token "\\\\")
   texEnd (token "cases")
   return $ \fx -> foldr1 And $ map ((&) fx) stanza
   where

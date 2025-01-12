@@ -23,6 +23,11 @@ dialect of ForTheL, respectively.
 
 ### Changes on ForTheL
 
+  * **Changed:** `\\` is no longer tokenized away (because it must occur in,
+    e.g., `cases` environments). As an alternative, `\newline` macros are
+    tokenized away instead (i.e. to insert a line break before, e.g., low-level
+    proofs, we must insert a `\newline` instead of a `\\` now).
+
   * **New:** sTeX's `\inputref[<archive path>]{<file path>}` commands
     are recognized by Naproche and behave like the instruction
     `[read <archive path>/source/<file path>]`.

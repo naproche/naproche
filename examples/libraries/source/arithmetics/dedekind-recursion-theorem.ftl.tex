@@ -18,15 +18,15 @@
   \begin{proof}[forthel]
     (a) Define \[ \Phi = \class{H \in \pow(\Nat \times A) | \classtext{$(0, a) \in H$ and for all $n \in \Nat$ and all $x \in A$ if $(n, x) \in H$ then $(n + 1, f(x)) \in H$}}. \]
 
-    Let us show that $\bigcap \Phi \in \Phi$. \\
+    Let us show that $\bigcap \Phi \in \Phi$. \newline
     Proof.
-      (0) $\Nat \times A \in \Phi$. \\
-      Proof. \\
+      (0) $\Nat \times A \in \Phi$. \newline
+      Proof. \newline
         (i) $\Nat \times A \in \pow(\Nat \times A)$.
 
         (ii) $(0,a) \in \Nat \times A$.
 
-        (iii) for all $n \in \Nat$ and all $x \in A$ if $(n, x) \in \Nat \times A$ then $(n + 1, f(x)) \in \Nat \times A$. \\
+        (iii) for all $n \in \Nat$ and all $x \in A$ if $(n, x) \in \Nat \times A$ then $(n + 1, f(x)) \in \Nat \times A$. \newline
         Proof.
           Let $n \in \Nat$ and $x \in A$.
           Assume $(n,x) \in \Nat \times A$.
@@ -35,7 +35,7 @@
         Qed.
       Qed.
 
-      (1) $\bigcap \Phi \in \pow(\Nat \times A)$. \\
+      (1) $\bigcap \Phi \in \pow(\Nat \times A)$. \newline
       Proof.
         Any element of $\bigcap \Phi$ is contained in every element of $\Phi$.
         Hence any element of $\bigcap \Phi$ is contained in $\Nat \times A$.
@@ -44,11 +44,11 @@
         Hence $\bigcap \Phi$ is a subset of $\Nat \times A$.
       Qed.
 
-      (2) $(0, a) \in \bigcap \Phi$. \\
+      (2) $(0, a) \in \bigcap \Phi$. \newline
       Indeed $(0, a) \in \Nat \times A \in \Phi$.
 
       (3) For all $n \in \Nat$ and all $x \in A$ if $(n, x) \in
-      \bigcap \Phi$ then $(n + 1, f(x)) \in \bigcap \Phi$. \\
+      \bigcap \Phi$ then $(n + 1, f(x)) \in \bigcap \Phi$. \newline
       Proof.
         Let $n \in \Nat$ and $x \in A$.
         Assume $(n, x) \in \bigcap \Phi$.
@@ -61,7 +61,7 @@
     Qed.
 
     Let us show that for any $n \in \Nat$ there exists an $x \in A$ such
-    that $(n, x) \in \bigcap \Phi$. \\
+    that $(n, x) \in \bigcap \Phi$. \newline
     Proof.
       Define $\Psi = \{ n \in \Nat \mid$ there exists an $x \in A$ such that
       $(n, x) \in \bigcap \Phi \}$.
@@ -69,7 +69,7 @@
       (1) $0$ is contained in $\Psi$.
       Indeed $(0, a) \in \bigcap \Phi$.
 
-      (2) For all $n \in \Psi$ we have $n + 1 \in \Psi$. \\
+      (2) For all $n \in \Psi$ we have $n + 1 \in \Psi$. \newline
       Proof.
         Let $n \in \Psi$.
         Take an $x \in A$ such that $(n, x) \in \bigcap \Phi$.
@@ -82,12 +82,12 @@
     Qed.
 
     Let us show that for all $n \in \Nat$ and all $x, y \in A$ if
-    $(n, x), (n, y) \in \bigcap \Phi$ then $x = y$. \\
+    $(n, x), (n, y) \in \bigcap \Phi$ then $x = y$. \newline
     Proof.
       (b) Define $\Theta = \{ n \in \Nat \mid$ for all $x, y \in A$ if
       $(n, x), (n, y) \in \bigcap \Phi$ then $x = y \}$.
 
-      (1) $\Theta$ contains $0$. \\
+      (1) $\Theta$ contains $0$. \newline
       Proof.
         Let us show that for all $x, y \in A$ if $(0, x), (0, y) \in
         \bigcap \Phi$ then $x = y$.
@@ -108,7 +108,7 @@
                 (2) $(0,a) \in H$.
 
                 (3) For all $n \in \Nat$ and all $b \in A$ if
-                $(n,b) \in H$ then $(n + 1, f(b)) \in H$. \\
+                $(n,b) \in H$ then $(n + 1, f(b)) \in H$. \newline
                 Proof.
                   Let $n \in \Nat$ and $b \in A$.
                   Assume $(n,b) \in H$.
@@ -139,7 +139,7 @@
                 Indeed $(0,a) \neq (0,y)$.
 
                 (3) For all $n \in \Nat$ and all $b \in A$ if
-                $(n,b) \in H$ then $(n + 1, f(b)) \in H$. \\
+                $(n,b) \in H$ then $(n + 1, f(b)) \in H$. \newline
                 Proof.
                   Let $n \in \Nat$ and $b \in A$.
                   Assume $(n,b) \in H$.
@@ -161,7 +161,7 @@
         End.
       Qed.
 
-      (2) For all $n \in \Theta$ we have $n + 1 \in \Theta$. \\
+      (2) For all $n \in \Theta$ we have $n + 1 \in \Theta$. \newline
       Proof.
         Let $n \in \Theta$.
         Then for all $x, y \in A$ if $(n, x), (n, y) \in \bigcap \Phi$ then
@@ -180,7 +180,7 @@
 
             (i) $H \in \pow(\Nat \times A)$.
 
-            (ii) $(0,a) \in H$. \\
+            (ii) $(0,a) \in H$. \newline
             Proof.
               $(0,a) \in \bigcap \Phi$.
               $(0,a) \notin \set{(n + 1,x)}$.
@@ -188,7 +188,7 @@
               Indeed $0 \neq n + 1$.
             Qed.
 
-            (iii) For all $m \in \Nat$ and all $z \in A$ if $(m,z) \in H$ then $(m + 1,f(z)) \in H$. \\
+            (iii) For all $m \in \Nat$ and all $z \in A$ if $(m,z) \in H$ then $(m + 1,f(z)) \in H$. \newline
             Proof.
               Let $m \in \Nat$ and $z \in A$.
               Assume $(m,z) \in H$.
@@ -213,7 +213,7 @@
 
             (i) $H \in \pow(\Nat \times A)$.
 
-            (ii) $(0,a) \in H$. \\
+            (ii) $(0,a) \in H$. \newline
             Proof.
               $(0,a) \in \bigcap \Phi$.
               $(0,a) \notin \set{(n + 1,y)}$.
@@ -221,7 +221,7 @@
               Indeed $0 \neq n + 1$.
             Qed.
 
-            (iii) For all $m \in \Nat$ and all $z \in A$ if $(m,z) \in H$ then $(m + 1,f(z)) \in H$. \\
+            (iii) For all $m \in \Nat$ and all $z \in A$ if $(m,z) \in H$ then $(m + 1,f(z)) \in H$. \newline
             Proof.
               Let $m \in \Nat$ and $z \in A$.
               Assume $(m,z) \in H$.
@@ -258,7 +258,7 @@
     $\varphi(0) = a$.
 
     (2) For all $n \in \Nat$ we have $\varphi(n + 1) =
-    f(\varphi(n))$. \\
+    f(\varphi(n))$. \newline
     Proof.
       Let $n \in \Nat$.
       Take $x \in A$ such that $\varphi(n) = x$.
@@ -281,7 +281,7 @@
     (1) $\Phi$ contains $0$.
     Indeed $\varphi(0) = a = \varphi'(0)$.
 
-    (2) For all $n \in \Phi$ we have $n + 1 \in \Phi$. \\
+    (2) For all $n \in \Phi$ we have $n + 1 \in \Phi$. \newline
     Proof.
       Let $n \in \Phi$.
       Then $\varphi(n) = \varphi'(n)$.

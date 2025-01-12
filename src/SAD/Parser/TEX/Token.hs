@@ -159,7 +159,7 @@ mathModeDelimiter = choice [
 -- | Parse a single break command.
 ignoredCommand :: Tokenizer [Token]
 ignoredCommand = choice [
-    controlSymbol '\\',
+    controlWord "newline",
     controlWord "par",
     controlWord "left",
     controlWord "middle",
