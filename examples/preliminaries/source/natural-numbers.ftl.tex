@@ -13,7 +13,7 @@
   \subsection{The Language of Natural Number Arithmetic}
 
   \begin{signature}[forthel,id=NatNumberSig]
-    A natural number is an object.
+    A \emph{natural number} is an object.
 
     Let $n,m,k$ denote natural numbers.
   \end{signature}
@@ -25,7 +25,7 @@
   \begin{signature}[forthel,id=PlusSig]
     $n\plus m$ is a natural number.
 
-    Let the sum of $n$ and $m$ stand for $n\plus m$.
+    Let the \emph{sum of $n$ and $m$} stand for $n\plus m$.
   \end{signature}
 
   \STEXinvisible{
@@ -37,97 +37,93 @@
   \begin{signature}[forthel,id=ZeroSig]
     $0$ is a natural number.
 
-    Let zero stand for $0$.
-    Let $n$ is nonzero stand for $n\neq0$.
+    Let \emph{zero} stand for $0$.
+    Let $n$ is \emph{nonzero} stand for $n\neq0$.
   \end{signature}
 
   \begin{signature}[forthel,id=OneSig]
     $1$ is a natural number.
 
-    Let one stand for $1$.
-    Let the direct successor of $n$ stand for $n\plus1$.
+    Let \emph{one} stand for $1$.
+    Let the \emph{direct successor of $n$} stand for $n\plus1$.
   \end{signature}
 
   \begin{definition}[forthel,id=TwoSig]
     $2=1\plus1$.
 
-    Let two stand for $2$.
+    Let \emph{two} stand for $2$.
   \end{definition}
 
   \begin{definition}[forthel,id=ThreeSig]
     $3=2\plus1$.
 
-    Let three stand for $3$.
+    Let \emph{three} stand for $3$.
   \end{definition}
 
   \begin{definition}[forthel,id=FourSig]
     $4=3\plus1$.
 
-    Let four stand for $4$.
+    Let \emph{four} stand for $4$.
   \end{definition}
 
   \begin{definition}[forthel,id=FiveSig]
     $5=4\plus1$.
 
-    Let five stand for $5$.
+    Let \emph{five} stand for $5$.
   \end{definition}
 
   \begin{definition}[forthel,id=SixSig]
     $6=5\plus1$.
 
-    Let six stand for $6$.
+    Let \emph{six} stand for $6$.
   \end{definition}
 
   \begin{definition}[forthel,id=SevenSig]
     $7=6\plus1$.
 
-    Let seven stand for $7$.
+    Let \emph{seven} stand for $7$.
   \end{definition}
 
   \begin{definition}[forthel,id=EightSig]
     $8=7\plus1$.
 
-    Let eight stand for $8$.
+    Let \emph{eight} stand for $8$.
   \end{definition}
 
   \begin{definition}[forthel,id=NineSig]
     $9=8\plus1$.
 
-    Let nine stand for $9$.
+    Let \emph{nine} stand for $9$.
   \end{definition}
 
 
   \subsection{The Axioms of Natural Number Arithmetic}
 
-  \begin{axiom}[forthel,id=NatIsSetAx]
+  \begin{axiom}[forthel,title=Infinity Axiom,id=NatIsSetAx]
     $\Nat$ is a set.
   \end{axiom}
 
-  \begin{axiom}[forthel,id=PlusIsInjectiveAx]
+  \begin{axiom}[forthel,title=Peano Axiom I,id=PlusIsInjectiveAx]
     If $n\plus1\eq m\plus1$ then $n\eq m$.
   \end{axiom}
 
-  \begin{axiom}[forthel,id=ZeroIsNoSuccessorAx]
+  \begin{axiom}[forthel,title=Peano Axiom II,id=ZeroIsNoSuccessorAx]
     There exists no natural number $n$ such that $n\plus1\eq0$.
   \end{axiom}
 
-  \begin{axiom}[forthel,id=NatNumberIsZeroOrSuccessorAx]
+  \begin{axiom}[forthel,title=Peano Axiom III,id=NatNumberIsZeroOrSuccessorAx]
     $n\eq0$ or $n\eq m\plus1$ for some natural number $m$.
   \end{axiom}
 
-  \begin{axiom}[forthel,title=Induction,id=InductionAx]
+  \begin{axiom}[forthel,title=Induction Axiom,id=InductionAx]
     $n\prec n\plus1$.
   \end{axiom}
 
-  \begin{axiom}[forthel,id=OneIsSuccessorOfZeroAx]
-    $1\eq0\plus1$.
-  \end{axiom}
-
-  \begin{axiom}[forthel,id=AdditionWithZeroAx]
+  \begin{axiom}[forthel,title=Addition Axiom I,id=AdditionWithZeroAx]
     $n\plus0\eq n$.
   \end{axiom}
 
-  \begin{axiom}[forthel,id=AdditionWithSuccessorAx]
+  \begin{axiom}[forthel,title=Addition Axiom II,id=AdditionWithSuccessorAx]
     $n\plus(m\plus1)\eq(n\plus m)\plus1$.
   \end{axiom}
 
@@ -139,8 +135,8 @@
   \end{proposition}
   \begin{proof}[forthel,method=induction on $n$]\end{proof}
 
-  \begin{proposition}[forthel,id=PlusCommutesWithZeroProp]
-    For all $n\in\Nat$ we have $0\plus n\eq n\plus0$.
+  \begin{proposition}[forthel,id=ZeroIsLeftIdentityOfPlusProp]
+    For all $n\in\Nat$ we have $0\plus n\eq n$.
   \end{proposition}
   \begin{proof}[forthel,method=induction on $n$]\end{proof}
 
