@@ -127,7 +127,8 @@ simple = label "simple statement" $ do
 -- the statement is returned as-is, otherwise the quantifiers are applied to the statement.
 --
 symbolicStatement :: FTL Formula
-symbolicStatement = (symbolicFormula -|- classEquality) <**> lateQuantifiers
+symbolicStatement = label "a symbolic statement" $
+  (symbolicFormula -|- classEquality -|- alignEnvironment) <**> lateQuantifiers
 
 -- |
 -- Parse late quantifiers yielding a quantifying function.
@@ -320,7 +321,7 @@ symbolicTerm = fmap ((,) id) sTerm
 
 
 symbolicFormula :: FTL Formula
-symbolicFormula  = biimplication
+symbolicFormula  = label "a symbolic formula" $ biimplication
   where
     biimplication = implication >>= binary Iff (symbolicIff >> implication)
     implication   = disjunction >>= binary Imp (symbolicImp >> implication)
@@ -395,7 +396,7 @@ sVar = fmap pVar var
 -- class term equations
 
 classEquality :: FTL Formula
-classEquality = twoClassTerms </> oneClassTerm
+classEquality = label "a class equality" $ twoClassTerms </> oneClassTerm
   where
     twoClassTerms = do
       cnd1 <- fmap stripClass symbClassNotation; token "="
@@ -416,6 +417,24 @@ classEquality = twoClassTerms </> oneClassTerm
       cnd <- fmap stripClass symbClassNotation
       return $ And (mkClass t) $ dAll hDecl $ Iff (mkElem hv t) (cnd hv)
 
+
+-- Align Environments
+
+alignEnvironment :: FTL Formula
+alignEnvironment = label "an \"align*\" environment" $ do
+  texBegin $ token "align" *> symbol "*"
+  headTerm <- sTerm
+  atomicRelations <- iTl headTerm
+  let conjunction = foldl1 And atomicRelations
+  texEnd $ token "align" *> symbol "*"
+  return conjunction
+  where
+    iTl :: Formula -> FTL [Formula]
+    iTl ls = label "iTl" $ do
+      symbol "&"
+      pr <- primIpr sTerm
+      rs <- sTerm
+      fmap (pr ls rs :) $ opt [] $ token "\\\\" >> iTl rs
 
 
 

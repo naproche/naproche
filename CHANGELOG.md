@@ -23,6 +23,22 @@ dialect of ForTheL, respectively.
 
 ### Changes on ForTheL
 
+  * **New:** Relation chains can now be typeset with the `align*` environment,
+    e.g.:
+
+    ```
+    We have
+    \begin{align*}
+      n \cdot (n + 1)
+        &= (n \cdot n) + n \\
+        &= n^2 + n
+    \end{align*}.
+    ```
+
+    Note the dot *after* the environment. In the future, Naproche should expect
+    it *inside* the environment instead, but implementing this would require
+    some fundamental changes on the parser.
+
   * **Changed:** `\\` is no longer tokenized away (because it must occur in,
     e.g., `cases` environments). As an alternative, `\newline` macros are
     tokenized away instead (i.e. to insert a line break before, e.g., low-level
