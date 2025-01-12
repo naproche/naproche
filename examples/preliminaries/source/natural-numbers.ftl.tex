@@ -1,0 +1,230 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}{natural-numbers.ftl}
+  \importmodule[meta-inf]{macros.ftl}
+  \importmodule[meta-inf]{vocabulary.ftl}
+
+  \symdef{Nat}{\mathbb N}
+  \symdef{plus}{\,+\,}
+
+  \section{Natural Numbers}
+
+  \subsection{The Language of Natural Number Arithmetic}
+
+  \begin{signature}[forthel,id=NatNumberSig]
+    A natural number is an object.
+
+    Let $n,m,k$ denote natural numbers.
+  \end{signature}
+
+  \begin{definition}[forthel,id=NatDef]
+    $\Nat$ is the class of natural numbers.
+  \end{definition}
+
+  \begin{signature}[forthel,id=PlusSig]
+    $n\plus m$ is a natural number.
+
+    Let the sum of $n$ and $m$ stand for $n\plus m$.
+  \end{signature}
+
+  \STEXinvisible{
+    \begin{forthel}
+      Let $n+m$ stand for $n\plus m$.
+    \end{forthel}
+  }
+
+  \begin{signature}[forthel,id=ZeroSig]
+    $0$ is a natural number.
+
+    Let zero stand for $0$.
+    Let $n$ is nonzero stand for $n\neq0$.
+  \end{signature}
+
+  \begin{signature}[forthel,id=OneSig]
+    $1$ is a natural number.
+
+    Let one stand for $1$.
+    Let the direct successor of $n$ stand for $n\plus1$.
+  \end{signature}
+
+  \begin{definition}[forthel,id=TwoSig]
+    $2=1\plus1$.
+
+    Let two stand for $2$.
+  \end{definition}
+
+  \begin{definition}[forthel,id=ThreeSig]
+    $3=2\plus1$.
+
+    Let three stand for $3$.
+  \end{definition}
+
+  \begin{definition}[forthel,id=FourSig]
+    $4=3\plus1$.
+
+    Let four stand for $4$.
+  \end{definition}
+
+  \begin{definition}[forthel,id=FiveSig]
+    $5=4\plus1$.
+
+    Let five stand for $5$.
+  \end{definition}
+
+  \begin{definition}[forthel,id=SixSig]
+    $6=5\plus1$.
+
+    Let six stand for $6$.
+  \end{definition}
+
+  \begin{definition}[forthel,id=SevenSig]
+    $7=6\plus1$.
+
+    Let seven stand for $7$.
+  \end{definition}
+
+  \begin{definition}[forthel,id=EightSig]
+    $8=7\plus1$.
+
+    Let eight stand for $8$.
+  \end{definition}
+
+  \begin{definition}[forthel,id=NineSig]
+    $9=8\plus1$.
+
+    Let nine stand for $9$.
+  \end{definition}
+
+
+  \subsection{The Axioms of Natural Number Arithmetic}
+
+  \begin{axiom}[forthel,id=NatIsSetAx]
+    $\Nat$ is a set.
+  \end{axiom}
+
+  \begin{axiom}[forthel,id=PlusIsInjectiveAx]
+    If $n\plus1\eq m\plus1$ then $n\eq m$.
+  \end{axiom}
+
+  \begin{axiom}[forthel,id=ZeroIsNoSuccessorAx]
+    There exists no natural number $n$ such that $n\plus1\eq0$.
+  \end{axiom}
+
+  \begin{axiom}[forthel,id=NatNumberIsZeroOrSuccessorAx]
+    $n\eq0$ or $n\eq m\plus1$ for some natural number $m$.
+  \end{axiom}
+
+  \begin{axiom}[forthel,title=Induction,id=InductionAx]
+    $n\prec n\plus1$.
+  \end{axiom}
+
+  \begin{axiom}[forthel,id=OneIsSuccessorOfZeroAx]
+    $1\eq0\plus1$.
+  \end{axiom}
+
+  \begin{axiom}[forthel,id=AdditionWithZeroAx]
+    $n\plus0\eq n$.
+  \end{axiom}
+
+  \begin{axiom}[forthel,id=AdditionWithSuccessorAx]
+    $n\plus(m\plus1)\eq(n\plus m)\plus1$.
+  \end{axiom}
+
+
+  \subsection{Immediate Consequences of the Axioms}
+
+  \begin{proposition}[forthel,id=NatNumberIsNotItsOwnSuccessorProp]
+    For all $n\in\Nat$ we have $n\neq n\plus1$.
+  \end{proposition}
+  \begin{proof}[forthel,method=induction on $n$]\end{proof}
+
+  \begin{proposition}[forthel,id=PlusCommutesWithZeroProp]
+    For all $n\in\Nat$ we have $0\plus n\eq n\plus0$.
+  \end{proposition}
+  \begin{proof}[forthel,method=induction on $n$]\end{proof}
+
+
+  \subsection{Computation Laws for Addition}
+
+  \begin{proposition}[forthel,title=Associativity,id=PlusIsAssociativeProp]
+    For all $k\in\Nat$ we have $n\plus(m\plus k)\eq(n\plus m)\plus k$.
+  \end{proposition}
+  \begin{proof}[forthel,method=induction on $k$]
+    Let $k\in\Nat$.
+
+    Case $k\eq0$. Obvious.
+
+    Case $k\neq0$.
+      Take $k'\in\Nat$ such that $k\eq k'\plus1$.
+      Then $k'\prec k$.
+      Hence $n\plus(m\plus k')\eq(n\plus m)\plus k'$.
+      Thus
+      \begin{align*}
+        n\plus(m\plus k)
+          &\eq n\plus(m\plus(k'\plus1))\\
+          &\eq n\plus((m\plus k')\plus1)\\
+          &\eq (n\plus(m\plus k'))\plus1\\
+          &\eq ((n\plus m)\plus k')\plus1\\
+          &\eq (n\plus m)\plus(k'\plus1)
+      \end{align*}.
+    End.
+  \end{proof}
+
+  \begin{proposition}[forthel,title=Commutativity,id=PlusIsCommutativeProp]
+    For all $n,m\in\Nat$ we have $n\plus m\eq m\plus n$.
+  \end{proposition}
+  \begin{proof}[forthel,method=induction on $m$]
+    We can show by induction on $n$ that for all $n\in\Nat$ we have $n\plus0\eq0\plus n$.
+    Obvious.
+
+    We can show by induction on $n$ that for all $n\in\Nat$ we have $n\plus1\eq1\plus n$.
+    Obvious.
+
+    Let $m\in\Nat$.
+
+    Case $m\eq0$. Trivial.
+
+    Case $m\neq0$.
+      Let $n\in\Nat$.
+      Take $m'\in\Nat$ such that $m\eq m'\plus1$.
+      Then $n\plus m'\eq m'\plus n$.
+      Hence
+      \begin{align*}
+        n\plus m
+          &\eq n\plus(m'\plus1)\\
+          &\eq (n\plus m')\plus1\\
+          &\eq (m'\plus n)\plus1\\
+          &\eq m'\plus(n\plus1)\\
+          &\eq m'\plus(1\plus n)\\
+          &\eq (m'\plus1)\plus n
+      \end{align*}.
+    End.
+  \end{proof}
+
+  \begin{proposition}[forthel,title=Right cancellation,id=PlusIsRightCancellativeProp]
+    For all $k\in\Nat$ if $n\plus k\eq m\plus k$ then $n\eq m$.
+  \end{proposition}
+  \begin{proof}[forthel,method=induction on $k$]
+    Let $k\in\Nat$.
+
+    Case $k\eq0$. Obvious.
+
+    Case $k\neq0$. Obvious.
+  \end{proof}
+
+  \begin{corollary}[forthel,title=Left cancellation,id=PlusIsLeftCancellativeProp]
+    If $k\plus n\eq k\plus m$ then $n\eq m$.
+  \end{corollary}
+  \begin{proof}[forthel]
+    Assume $k\plus n\eq k\plus m$.
+    We have $k\plus n\eq n\plus k$ and $k\plus m\eq m\plus k$.
+    Hence $n\plus k\eq m\plus k$.
+    Thus $n\eq m$.
+  \end{proof}
+
+  \begin{proposition}[forthel,id=ZeroSumImpliesZeroSummandsProp]
+    If $n\plus m\eq0$ then $n\eq0$ and $m\eq0$.
+  \end{proposition}
+\end{smodule}
+\end{document}
