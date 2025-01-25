@@ -47,6 +47,7 @@ data Term =
   | Bound Int
   | Abs (Name, Typ, Term)
   | App (Term, Term)
+  | OFCLASS (Typ, Name)
   deriving (Show, Eq, Ord)
 
 

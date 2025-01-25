@@ -11,7 +11,7 @@ See "$ISABELLE_HOME/src/Pure/term_xml.ML".
 
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 
-module Isabelle.Term_XML.Decode (indexname, sort, typ, typ_body, term)
+module Isabelle.Term_XML.Decode (indexname, sort, typ, term)
 where
 
 import Isabelle.Library
@@ -33,16 +33,17 @@ typ ty =
    \([a], b) -> TFree (a, sort b),
    \(a, b) -> TVar (indexname a, sort b)]
 
-typ_body :: T Typ
-typ_body [] = dummyT
-typ_body body = typ body
+var_type :: T Typ
+var_type [] = dummyT
+var_type body = typ body
 
 term :: T Term
 term t =
   t |> variant
    [\([a], b) -> Const (a, list typ b),
-    \([a], b) -> Free (a, typ_body b),
-    \(a, b) -> Var (indexname a, typ_body b),
+    \([a], b) -> Free (a, var_type b),
+    \(a, b) -> Var (indexname a, var_type b),
     \([], a) -> Bound (int a),
     \([a], b) -> let (c, d) = pair typ term b in Abs (a, c, d),
-    \([], a) -> App (pair term term a)]
+    \([], a) -> App (pair term term a),
+    \([a], b) -> OFCLASS (typ b, a)]

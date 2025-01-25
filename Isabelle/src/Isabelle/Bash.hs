@@ -52,7 +52,7 @@ string str =
             else "\\" <> Bytes.singleton b
 
 strings :: [Bytes] -> Bytes
-strings = space_implode " " . map string
+strings = implode_space . map string
 
 
 {- server parameters -}

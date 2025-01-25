@@ -84,4 +84,4 @@ instance Show Tree where
       show_tree (Text s) = Buffer.add (encode_text s)
 
       show_elem name atts =
-        space_implode " " (name : map (\(a, x) -> a <> "=\"" <> encode_text x <> "\"") atts)
+        implode_space (name : map (\(a, x) -> a <> "=\"" <> encode_text x <> "\"") atts)

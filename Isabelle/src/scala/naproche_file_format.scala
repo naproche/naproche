@@ -14,7 +14,7 @@ object Naproche_File_Format {
     private def debugging: Boolean = session_options.bool("naproche_server_debugging")
 
     private val process: Bash.Process =
-      Bash.process(""""$NAPROCHE_EXE" --server""", cwd = Path.explode("$NAPROCHE_HOME").file)
+      Bash.process(""""$NAPROCHE_EXE" --server""", cwd = Path.explode("$NAPROCHE_HOME"))
 
     private val server_info: Option[Server.Info] =
       for {

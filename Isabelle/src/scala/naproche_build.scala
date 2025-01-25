@@ -33,7 +33,7 @@ object Naproche_Build {
 
     progress.echo("Building executable program")
 
-    val cwd = Naproche.NAPROCHE_HOME.file
+    val cwd = Naproche.NAPROCHE_HOME
     progress.bash("isabelle ghc_stack build", cwd = cwd, echo = true).check
 
     val path = progress.bash("isabelle ghc_stack path --local-install-root", cwd = cwd).check.out

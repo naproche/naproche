@@ -32,7 +32,7 @@ object Naproche_Component {
     /* repository version */
 
     val version = {
-      val git_show = progress.bash("git show", cwd = Naproche.NAPROCHE_HOME.file).check
+      val git_show = progress.bash("git show", cwd = Naproche.NAPROCHE_HOME).check
       val opt_version =
         for {
           line <- git_show.out_lines.headOption
@@ -55,8 +55,8 @@ object Naproche_Component {
     Isabelle_System.with_tmp_file("archive", "tar") { archive =>
       progress.bash(
         "git archive --output=" + File.bash_path(archive) + " -- " + Bash.string(version),
-        cwd = Naproche.NAPROCHE_HOME.file).check
-      progress.bash("tar -x -f " + File.bash_path(archive), cwd = component_dir.file).check
+        cwd = Naproche.NAPROCHE_HOME).check
+      progress.bash("tar -x -f " + File.bash_path(archive), cwd = component_dir).check
     }
 
     progress.echo("Copying " + Naproche.NAPROCHE_EXE_DIR.expand)
@@ -104,7 +104,7 @@ object Naproche_Component {
         for (_ <- 1 to 2) {
           val result =
             progress.bash(Bash.string(tex_program) + " " + Bash.string(tex_name),
-              cwd = tex_path_absolute.dir.file)
+              cwd = tex_path_absolute.dir)
           if (!result.ok) {
             error(cat_lines("LaTeX failed:"
               :: result.out_lines.drop(result.out_lines.length - output_tail max 0)))
@@ -130,7 +130,7 @@ object Naproche_Component {
 
     progress.echo("Component archive " + (target_dir + component_archive))
     progress.bash("tar -czf " + File.bash_path(component_archive) + " " + Bash.string(component),
-      cwd = target_dir.file).check
+      cwd = target_dir).check
   }
 
 

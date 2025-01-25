@@ -53,11 +53,11 @@ object Naproche_Test {
               Time.now() > start + timeout && { was_timeout = true; true }
             val result =
               Isabelle_System.bash(""""$NAPROCHE_EXE" -v -- """ + File.bash_platform_path(path),
-                cwd = Naproche.NAPROCHE_HOME.file,
+                cwd = Naproche.NAPROCHE_HOME,
                 strict = false,
                 watchdog =
-                  if (timeout == Time.zero) None
-                  else Some((Time.seconds(0.1), _ => progress.stopped || check_timeout)))
+                  if (timeout == Time.zero) Bash.Watchdog.none
+                  else Bash.Watchdog(Time.seconds(0.1), _ => progress.stopped || check_timeout))
             val stop = Time.now()
             val timing = stop - start
 

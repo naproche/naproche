@@ -11,7 +11,7 @@ See "$ISABELLE_HOME/src/Pure/term_xml.ML".
 
 {-# LANGUAGE LambdaCase #-}
 
-module Isabelle.Term_XML.Encode (indexname, sort, typ, typ_body, term)
+module Isabelle.Term_XML.Encode (indexname, sort, typ, term)
 where
 
 import Isabelle.Library
@@ -31,15 +31,16 @@ typ ty =
     \case { TFree (a, b) -> Just ([a], sort b); _ -> Nothing },
     \case { TVar (a, b) -> Just (indexname a, sort b); _ -> Nothing }]
 
-typ_body :: T Typ
-typ_body ty = if is_dummyT ty then [] else typ ty
+var_type :: T Typ
+var_type ty = if is_dummyT ty then [] else typ ty
 
 term :: T Term
 term t =
   t |> variant
    [\case { Const (a, b) -> Just ([a], list typ b); _ -> Nothing },
-    \case { Free (a, b) -> Just ([a], typ_body b); _ -> Nothing },
-    \case { Var (a, b) -> Just (indexname a, typ_body b); _ -> Nothing },
+    \case { Free (a, b) -> Just ([a], var_type b); _ -> Nothing },
+    \case { Var (a, b) -> Just (indexname a, var_type b); _ -> Nothing },
     \case { Bound a -> Just ([], int a); _ -> Nothing },
     \case { Abs (a, b, c) -> Just ([a], pair typ term (b, c)); _ -> Nothing },
-    \case { App a -> Just ([], pair term term a); _ -> Nothing }]
+    \case { App a -> Just ([], pair term term a); _ -> Nothing },
+    \case { OFCLASS (a, b) -> Just ([b], typ a); _ -> Nothing }]
