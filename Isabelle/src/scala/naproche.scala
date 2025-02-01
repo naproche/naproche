@@ -19,10 +19,8 @@ object Naproche {
   val src: Path = NAPROCHE_HOME + Path.explode("src")
   val examples: Path = NAPROCHE_HOME + Path.explode("examples")
 
-  def NAPROCHE_FORMALIZATIONS: String =
-    Isabelle_System.getenv_strict("NAPROCHE_FORMALIZATIONS")
-
-  def TEXINPUTS: String = NAPROCHE_FORMALIZATIONS + "/meta-inf/lib//;"
+  def TEXINPUTS: String =
+    Isabelle_System.getenv_strict("NAPROCHE_FORMALIZATIONS") + "/meta-inf/lib//;"
 
   def platform: String = NAPROCHE_EXE_DIR.expand.base.implode
   val session = "Naproche"

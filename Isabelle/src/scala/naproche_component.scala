@@ -99,7 +99,7 @@ object Naproche_Component {
         val tex_program =
           split_lines(text).collectFirst({ case TeX_Program(prg) => prg }).getOrElse("pdflatex")
         val tex_env =
-          List("TEXINPUTS" -> Naproche.TEXINPUTS, "MATHHUB" -> Naproche.NAPROCHE_FORMALIZATIONS)
+          List("TEXINPUTS" -> Naproche.TEXINPUTS, "MATHHUB" -> examples_build.implode)
 
         val pdf_path = Path.explode(Library.try_unsuffix(".tex", tex_path.implode).get).pdf
 
