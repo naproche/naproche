@@ -76,6 +76,8 @@ object Naproche_Component {
 
     /* PDF documents */
 
+    var tex_failed = Set.empty[Path]
+
     if (pdf_documents) {
       val TeX_Program = """^% +!TEX +program += +(\w+) *$""".r
 
@@ -101,16 +103,19 @@ object Naproche_Component {
 
         progress.expose_interrupt()
         progress.echo("Building " + pdf_path + " with " + tex_program)
-        for (_ <- 1 to 2) {
+        for (_ <- 1 to 2 if !tex_failed(tex_path)) {
           val result =
             progress.bash(Bash.string(tex_program) + " " + Bash.string(tex_name),
               cwd = tex_path_absolute.dir)
           if (!result.ok) {
-            error(cat_lines("LaTeX failed:"
+            tex_failed += tex_path
+            progress.echo_error_message(cat_lines("LaTeX failed:"
               :: result.out_lines.drop(result.out_lines.length - output_tail max 0)))
           }
         }
-        Isabelle_System.copy_file(examples_build + pdf_path, examples + pdf_path.dir)
+        if (!tex_failed(tex_path)) {
+          Isabelle_System.copy_file(examples_build + pdf_path, examples + pdf_path.dir)
+        }
       }
     }
 
@@ -131,6 +136,14 @@ object Naproche_Component {
     progress.echo("Component archive " + (target_dir + component_archive))
     progress.bash("tar -czf " + File.bash_path(component_archive) + " " + Bash.string(component),
       cwd = target_dir).check
+
+
+    /* postponed TeX failures */
+
+    if (tex_failed.nonEmpty) {
+      error("LaTeX failed for " + tex_failed.size + " files:\n  " +
+        tex_failed.toList.map(_.implode).sorted.mkString("\n  "))
+    }
   }
 
 
