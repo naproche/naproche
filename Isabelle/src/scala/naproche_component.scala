@@ -93,11 +93,13 @@ object Naproche_Component {
         text = File.read(file)
         if text.containsSlice("\\documentclass")
       } {
-        val tex_path_absolute = File.path(file)
         val tex_path = relative(file)
+        val tex_dir = File.path(file).dir
         val tex_name = tex_path.base.implode
         val tex_program =
           split_lines(text).collectFirst({ case TeX_Program(prg) => prg }).getOrElse("pdflatex")
+        val tex_env =
+          List("TEXINPUTS" -> Naproche.TEXINPUTS, "MATHHUB" -> Naproche.NAPROCHE_FORMALIZATIONS)
 
         val pdf_path = Path.explode(Library.try_unsuffix(".tex", tex_path.implode).get).pdf
 
@@ -106,7 +108,7 @@ object Naproche_Component {
         for (_ <- 1 to 2 if !tex_failed(tex_path)) {
           val result =
             progress.bash(Bash.string(tex_program) + " " + Bash.string(tex_name),
-              cwd = tex_path_absolute.dir)
+              cwd = tex_dir, env = Isabelle_System.settings(tex_env))
           if (!result.ok) {
             tex_failed += tex_path
             progress.echo_error_message(cat_lines("LaTeX failed:"
