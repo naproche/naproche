@@ -241,8 +241,14 @@
   height=1.4em    
 }
 
-\ulposdef\inlineforthel[xoffset-start=.2em]{%
-  \mybox{\rule\ulwidth{0pt}}%      
+\ulposdef\inlineforthelbox[xoffset-start=.2em]{%
+  \mybox{\rule\ulwidth{0pt}}%
+}
+
+\newcommand\inlineforthel[1]{%
+  \setbool{forthel}{true}
+  \inlineforthelbox{#1}
+  \setbool{forthel}{false}
 }
 
 
