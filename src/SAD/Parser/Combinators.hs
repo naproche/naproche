@@ -145,7 +145,7 @@ texCommandWithArg name arg = do
 
 -- | @optInTexArg macroName p@ runs either @p@, or @"\\" <macroname> "{" <p> "}"@.
 optInTexArg :: Text -> Parser st a -> Parser st a
-optInTexArg macroName p = try p <|> texCommandWithArg macroName p
+optInTexArg macroName p = texCommandWithArg macroName p </> p
 
 -- | @texBegin env@ parses @"\\begin" "{" <env> "}"@.
 texBegin :: Parser st a -> Parser st a

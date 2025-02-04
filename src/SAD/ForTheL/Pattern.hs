@@ -191,7 +191,7 @@ extractSymbPattern t@Trm {trmName = TermName s, trmArgs = vs} f = (pt, nf)
 
 
 newPrdPattern :: FTL PosVar -> FTL Formula
-newPrdPattern tvr = multi </> unary </> newSymbPattern tvr
+newPrdPattern tvr = multi </> unary </> optInTexArg "emph" (newSymbPattern tvr)
   where
     unary = do
       v <- tvr
@@ -230,7 +230,7 @@ newNotionPattern tvr = (notion <|> function) </> unnamedNotion tvr
       return (mkEquality (pVar v) $ mkTrm NewId (TermNotion t) $ map pVar vs, v)
 
 unnamedNotion :: FTL PosVar -> FTL (Formula, PosVar)
-unnamedNotion tvr = (notion <|> function) </> (newSymbPattern tvr >>= equ)
+unnamedNotion tvr = (notion <|> function) </> (optInTexArg "emph" (newSymbPattern tvr) >>= equ)
   where
     notion = do
       tokenOf' ["a", "an"]
