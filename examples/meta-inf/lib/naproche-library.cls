@@ -11,8 +11,9 @@
 \setbool{emph}{false}
 \colorlet{emphcolor}{violet}
 \let\oldemph\emph
-\renewcommand\emph[1]{\setbool{emph}{true}\ifbool{forthel}{\textcolor{emphcolor}{\itshape#1}}{\oldemph{#1}}\setbool{emph}{false}}
-\renewcommand{\varemph}[1]{\ifbool{emph}{\textcolor{emphcolor}{#1}}{\textcolor{teal}{#1}}}
+\renewcommand\emph[1]{\setbool{emph}{true}\ifbool{forthel}{\textcolor{emphcolor}{\ifmmode#1\else\itshape#1\fi}}{\oldemph{#1}}\setbool{emph}{false}}
+\renewcommand\varemph[1]{\ifbool{emph}{\textcolor{emphcolor}{#1}}{\textcolor{teal}{#1}}}
+\renewcommand\compemph[1]{\ifbool{emph}{\textcolor{emphcolor}{#1}}{\textcolor{teal}{#1}}}
 
 \RequirePackage[right=6cm,left=3cm,bottom=3cm,marginparwidth=5cm]{geometry}
 
