@@ -1,0 +1,43 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Limit Ordinals]{limit-ordinals.ftl}
+\importmodule[libraries/set-theory]{zero.ftl}
+\importmodule[libraries/set-theory]{successor-ordinals.ftl}
+
+\begin{forthel}
+  Let $\lim x$ stand for $\bigcup x$.
+\end{forthel}
+
+\begin{proposition}[forthel,id=SET_THEORY_02_7202164443185152]
+  Let $x$ be a subset of $\Ord$.
+  Then $\lim x$ is an ordinal.
+\end{proposition}
+\begin{proof}[forthel]
+  (1) $\lim x$ is transitive. \newline
+  Proof.
+    Let $y \in \lim x$ and $z \in y$.
+    Take $w \in x$ such that $y \in w$.
+    Hence $w$ is transitive.
+    Thus $z \in w$.
+    Therefore $z \in \lim x$.
+  Qed.
+
+  (2) Every element of $\lim x$ is transitive. \newline
+  Proof.
+    Let $y \in \lim x$.
+    Let $z \in y$ and $v \in z$.
+    Take $w \in x$ such that $y \in w$.
+    Hence $w$ is an ordinal.
+    Thus $y$ is an ordinal.
+    Therefore $y$ is transitive.
+    Consequently $v \in y$.
+  Qed.
+\end{proof}
+
+\begin{definition}[forthel,id=SET_THEORY_02_7678388934279168]
+  A limit ordinal is an ordinal $\lambda$ such that neither $\lambda$ is a successor ordinal nor $\lambda = 0$.
+\end{definition}
+\end{smodule}
+\end{document}

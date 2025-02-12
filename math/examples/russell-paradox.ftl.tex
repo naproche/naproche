@@ -1,0 +1,29 @@
+\documentclass{article}
+\usepackage{naproche}
+\libinput[meta-inf]{example-preamble}
+\libinput[libraries/foundations]{preamble}
+
+\title{Russell's Paradox}
+\author{\Naproche formalization:\\[0.5em]Marcel Schütz}
+\date{2024}
+
+\begin{document}
+\begin{smodule}{russell-paradox.ftl}
+  \pagenumbering{gobble}
+  \maketitle
+
+  \usemodule[libraries/meta-inf]{vocabulary.ftl}
+  \usemodule[libraries/meta-inf]{macros.ftl}
+
+  \noindent \emph{Russell's Paradox} is a set-theoretical paradox discovered by
+  Bertrand Russell around 1902 \cite[chapter XV]{Frege1980} which shows that 
+  there exist statements $\varphi$ whose extension
+  $\{x\mid\varphi(x)\}$ cannot constitute a set -- or in other words:
+  Not every class is a set.
+
+  \inputref[libraries/foundations]{russell-paradox.ftl.tex}
+
+  \printbibliography
+  \printlicense[CcByNcSa]{2024}{Marcel Schütz}
+\end{smodule}
+\end{document}

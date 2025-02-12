@@ -1,0 +1,25 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Sub- and Supersets]{sub-and-supersets.ftl}
+\importmodule[libraries/foundations]{classes.ftl}
+\symdef{pow}{\mathcal{P}}
+
+\begin{definition}[forthel,id=FOUNDATIONS_10_1346889551183872]
+  Let $A$ be a class.
+  A subset of $A$ is a subclass of $A$ that is a set.
+
+  Let a superset of $A$ stand for a superclass of $A$ that is a set.
+  Let a proper subset of $A$ stand for a proper subclass of $A$ that is a set.
+  Let a proper superset of $A$ stand for a proper superclass of $A$ that is a set.
+\end{definition}
+
+\begin{definition}[forthel,id=FOUNDATIONS_10_1448589907722240]
+  Let $A$ be a class.
+  The powerclass of $A$ is $\{ x \mid x$ is a subset of $A \}$.
+
+  Let $\pow(A)$ stand for the powerclass of $A$.
+\end{definition}
+\end{smodule}
+\end{document}

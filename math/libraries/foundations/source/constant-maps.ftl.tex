@@ -1,0 +1,24 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Constant Maps]{constant-maps.ftl}
+\importmodule[libraries/foundations]{injections-surjections-bijections.ftl}
+\symdef{const}[args=2]{\textrm{const}_{#1}^{#2}}
+
+\begin{definition}[forthel,id=FOUNDATIONS_10_8421025698547475]
+  Let $f$ be a map.
+  $f$ is constant iff there exists an object $a$ such that $f(x) = a$ for all $x \in \dom(f)$.
+\end{definition}
+
+\begin{definition}[forthel,id=FOUNDATIONS_10_8915236485710212]
+  Let $A$ be a class and $a$ be an object.
+  $\const{A}{a}$ is the map $f$ such that $\dom(f) = A$ and $f(x) = a$ for all $x \in A$.
+\end{definition}
+
+\begin{proposition}[forthel,id=FOUNDATIONS_10_2031520012658454]
+  Let $A$ be a nonempty class and $a$ be an object.
+  $\const{A}{a}$ is a surjective map from $A$ onto $\set{a}$.
+\end{proposition}
+\end{smodule}
+\end{document}

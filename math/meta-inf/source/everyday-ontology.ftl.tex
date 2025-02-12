@@ -1,0 +1,141 @@
+\documentclass{naproche-library}
+\libinput{meta-inf-preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}{everyday-ontology.ftl}
+\importmodule[meta-inf]{macros.ftl}
+\importmodule[meta-inf]{vocabulary.ftl}
+
+\begin{sfragment}{Everyday Ontology}
+  \begin{sfragment}{Places}
+    \begin{signature*}[forthel]
+      A place is an object.
+    \end{signature*}
+  \end{sfragment}
+
+  \begin{sfragment}{Persons}
+    \begin{signature*}[forthel]
+      A person is an object.
+    \end{signature*}
+
+    \begin{signature*}[forthel]
+      A man is a person.
+    \end{signature*}
+
+    \begin{signature*}[forthel]
+      A dwarf is a person.
+    \end{signature*}
+
+    \begin{signature*}[forthel]
+      Let $P, P'$ be persons.
+      $P$ shaves $P'$ is an atom.
+      Let $P$ shaves himself stand for $P$ shaves $P$.
+    \end{signature*}
+
+    \begin{signature*}[forthel]
+      Let $P$ be a person.
+      $P$ is drinking is an atom.
+    \end{signature*}
+
+    \begin{signature*}[forthel]
+      Let $P$ be a person and $A$ be an object.
+      $P$ is inside $A$ is a relation.
+    \end{signature*}
+
+    \begin{signature*}[forthel]
+      Let $P, P'$ be persons.
+      $P$ killed $P'$ is a relation.
+      Let $P$ killed themselves stand for $P$ killed $P$.
+      Let $Q$ was killed by $P$ stand for $P$ killed $Q$.
+    \end{signature*}
+
+    \begin{definition*}[forthel]
+      Let $P$ be a person.
+      A victim of $P$ is a person that was killed by $P$.
+    \end{definition*}
+
+    \begin{definition*}[forthel]
+      A killer is a person that killed some person.
+    \end{definition*}
+
+    \begin{signature*}[forthel]
+      Let $P, P'$ be persons.
+      $P$ hates $P'$ is a relation.
+      Let $Q$ is hated by $P$ stand for $P$ hates $Q$.
+    \end{signature*}
+
+    \begin{signature*}[forthel]
+      Let $P$ be a person and $A$ be a place.
+      $P$ lives in $A$ is a relation.
+    \end{signature*}
+
+    \begin{signature*}[forthel]
+      Let $P, P'$ be persons.
+      $P$ is richer than $P'$ is a relation.
+    \end{signature*}
+  \end{sfragment}
+
+  \begin{sfragment}{Colors}
+    \begin{signature*}[forthel]
+      A color is an object.
+    \end{signature*}
+
+    \begin{signature*}[forthel]
+      White is a color.
+    \end{signature*}
+
+    \begin{signature*}[forthel]
+      Black is a color.
+    \end{signature*}
+
+    \begin{signature*}[forthel]
+      Let $A$ be an object.
+      The color of $A$ is a color.
+    \end{signature*}
+
+    \begin{signature*}[forthel]
+      Let $C$ be a color.
+      The opposite color of $C$ is a color.
+    \end{signature*}
+  \end{sfragment}
+
+  \begin{sfragment}{Things}
+    \begin{signature*}[forthel]
+      A hat is an object.
+    \end{signature*}
+
+    \begin{signature*}[forthel]
+      Let $P$ be a person.
+      The hat of $P$ is a hat.
+    \end{signature*}
+  \end{sfragment}
+
+  \begin{sfragment}{Acts}
+    \begin{signature*}[forthel]
+      Let $P$ be a person and $A$ be an object.
+      $P$ names $A$ is a relation.
+    \end{signature*}
+
+    \begin{signature*}[forthel]
+      Let $P$ be a person.
+      $P$ gets released is a relation.
+    \end{signature*}
+  \end{sfragment}
+
+  \begin{sfragment}{Propositions}
+    \begin{signature*}[forthel]
+      A proposition is an object.
+    \end{signature*}
+
+    \begin{signature*}[forthel]
+      Let $p$ be a proposition.
+      $p$ is true is an atom.
+    \end{signature*}
+
+    \begin{definition*}[forthel]
+      A system of propositions is a class $P$ such that every element of $P$ is a proposition.
+    \end{definition*}
+  \end{sfragment}
+\end{sfragment}
+\end{smodule}
+\end{document}

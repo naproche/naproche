@@ -1,0 +1,90 @@
+\documentclass{naproche-library}
+\libinput{set-theory-preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=$\omega$ is a Cardinal Number]{omega-is-cardinal.ftl}
+\importmodule[libraries/set-theory]{natural-numbers-are-cardinals.ftl}
+
+\begin{proposition}[forthel,id=SET_THEORY_07_4952029518626816]
+  $|\omega| = \omega$.
+\end{proposition}
+\begin{proof}[forthel]
+  We have $|\omega| \leq \omega$.
+
+  Let us show that $|\omega|$ is not less than $\omega$.
+    Assume the contrary.
+    Then $|\omega| \in \omega$.
+    Take $n = |\omega|$ and a bijection $f$ between $n$ and $\omega$.
+
+    Define \[ g(k) =
+      \begin{cases}
+        \succ(f(k)) & : k < n
+        \\
+        0           & : k = n
+      \end{cases} \]
+    for $k \in \succ(n)$.
+    Then $g$ is a map from $\succ(n)$ to $\omega$.
+    Indeed we can show that $g(k) \in \omega$ for all $k \in \succ(n)$.
+      Let $k \in \succ(n)$.
+      Case $k < n$. Obvious.
+      Case $k = n$. Obvious.
+    End.
+
+    $g$ is injective.
+    Indeed we can show that for all $k, k' \in \succ(n)$ if $k \neq k'$
+    then $g(k) \neq g(k')$. \newline
+    Proof.
+      Let $k, k' \in \succ(n)$.
+      Assume $k \neq k'$.
+
+      Case $k, k' < n$.
+        Then $f(k) \neq f(k')$.
+        Hence $\succ(f(k)) \neq \succ(f(k'))$.
+        Thus $g(k) \neq g(k')$.
+      End.
+
+      Case $k < n$ and $k' = n$.
+        We have $\succ(f(k)) \neq 0$.
+        Hence $g(k) \neq g(k')$.
+      End.
+
+      Case $k = n$ and $k' < n$.
+        We have $\succ(f(k')) \neq 0$.
+        Hence $g(k) \neq g(k')$.
+      End.
+    Qed.
+
+    $g$ is surjective onto $\omega$.
+    Indeed we can show that for any $m \in \omega$ there exists a $k \in \succ(n)$ such that $m = g(k)$. \newline
+    Proof.
+      Let $m \in \omega$.
+      Then $f^{-1}(m) \in n$.
+
+      Case $m = 0$.
+        Then $m = g(n)$.
+      End.
+
+      Case $m \neq 0$.
+        Take $m' \in \omega$ such that $m = \succ(m')$.
+        Then $m
+          = \succ(m')
+          = \succ(f(f^{-1}(m')))
+          = g(f^{-1}(m'))$.
+        Indeed $f(f^{-1}(m')) = m'$ and $f^{-1}(m') < n$.
+      End.
+    End.
+
+    Hence $g$ is a bijection between $\succ(n)$ and $\omega$.
+    Then we have $n
+      = |n|
+      = |\succ(n)|
+      = \succ(n)$.
+    Contradiction.
+  End.
+\end{proof}
+
+\begin{corollary}[forthel,id=SET_THEORY_07_2717623053713408]
+  $\omega$ is a cardinal.
+\end{corollary}
+\end{smodule}
+\end{document}

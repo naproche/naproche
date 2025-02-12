@@ -1,0 +1,39 @@
+\documentclass{article}
+\usepackage{naproche}
+\libinput[meta-inf]{example-preamble}
+\libinput[libraries/foundations]{preamble}
+\libinput[libraries/set-theory]{preamble}
+
+\title{Cantor's Theorem}
+\author{\Naproche formalization: \vspace{0.5em} \\
+Marcel Schütz}
+\date{2024}
+
+\begin{document}
+\begin{smodule}{cantor.ftl}
+  \maketitle
+
+  \usemodule[libraries/foundations]{injections-surjections-bijections.ftl}
+  \usemodule[libraries/set-theory]{cardinals-and-maps.ftl}
+
+  \noindent This is a formalization of \emph{Cantor's Theorem}
+  \cite{Cantor1891}, i.e. of the assertion that any set $x$ is strictly smaller
+  than its powerset $\pow(x)$
+  In an elementary version, this ``strictly smaller than'' relation can be
+  formalized via the notion of surjective maps:
+  
+  \begin{forthel}
+    \inputref[libraries/foundations]{cantor.ftl.tex}
+  \end{forthel}
+
+  Using the notion of the cardinality $|x|$ of a set $x$, the
+  ``strictly smaller than'' relation can alternatively be formalized as follows:
+
+  \begin{forthel}
+    \inputref[libraries/set-theory]{cantor.ftl.tex}
+  \end{forthel}
+
+  \printbibliography
+  \printlicense[CcByNcSa]{2024}{Marcel Schütz}
+\end{smodule}
+\end{document}

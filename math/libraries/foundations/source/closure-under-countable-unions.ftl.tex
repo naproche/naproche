@@ -1,0 +1,14 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Closure Under Countable Unions]{closure-under-countable-unions.ftl}
+\importmodule[libraries/foundations]{systems-of-sets.ftl}
+\importmodule[libraries/foundations]{countable-and-uncountable-classes.ftl}
+
+\begin{definition}[forthel,id=FOUNDATIONS_14_2377279311183872]
+  Let $X$ be a system of sets.
+  $X$ is closed under countable unions iff $\bigcup U \in X$ for every nonempty countable subclass $U$ of $ X$.
+\end{definition}
+\end{smodule}
+\end{document}

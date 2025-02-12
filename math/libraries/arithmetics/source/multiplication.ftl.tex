@@ -1,0 +1,308 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Multiplication]{multiplication.ftl}
+\importmodule[libraries/arithmetics]{natural-numbers.ftl}
+
+\begin{sfragment}{Definition}
+  \begin{signature}[forthel,id=ARITHMETIC_06_6626346484629504]
+    Let $n, m$ be natural numbers.
+    $n \cdot m$ is a natural number.
+
+    Let the product of $n$ and $m$ stand for $n \cdot m$.
+  \end{signature}
+
+  \begin{axiom}[forthel,id=ARITHMETIC_06_8941041092657152]
+    Let $n$ be a natural number.
+    Then $n \cdot 0 = 0$.
+  \end{axiom}
+
+  \begin{axiom}[forthel,id=ARITHMETIC_06_2211275408932864]
+    Let $n, m$ be natural numbers.
+    Then $n \cdot (m + 1) = (n \cdot m) + n$.
+  \end{axiom}
+\end{sfragment}
+
+\begin{sfragment}{Computation Laws}
+  \begin{sfragment}{Distributivity}
+    \begin{proposition}[forthel,id=ARITHMETIC_06_9001524774567936]
+      Let $n, m, k$ be natural numbers.
+      Then $n \cdot (m + k) = (n \cdot m) + (n \cdot k)$.
+    \end{proposition}
+    \begin{proof}[forthel]
+      Define $\Phi = \{ k' \in \Nat \mid n \cdot (m + k') = (n \cdot m) + (n \cdot k') \}$.
+
+      (1) $0$ is an element of $\Phi$.
+      Indeed $n \cdot (m + 0)
+        = n \cdot m
+        = (n \cdot m) + 0
+        = (n \cdot m) + (n \cdot 0)$.
+
+      (2) For all $k' \in \Phi$ we have $k' + 1 \in \Phi$. \newline
+      Proof.
+        Let $k'\in \Phi$.
+        Then
+        \[  n \cdot (m + (k' + 1))                  \]
+        \[    = n \cdot ((m + k') + 1)              \]
+        \[    = (n \cdot (m + k')) + n              \]
+        \[    = ((n \cdot m) + (n \cdot k')) + n    \]
+        \[    = (n \cdot m) + ((n \cdot k') + n)    \]
+        \[    = (n \cdot m) + (n \cdot (k' + 1)).   \]
+        Hence $n \cdot (m + (k' + 1)) = (n \cdot m) + (n \cdot (k' + 1))$.
+        Thus $k' + 1 \in \Phi$.
+      Qed.
+
+      Thus every natural number is contained in $\Phi$.
+      Therefore $n \cdot (m + k) = (n \cdot m) + (n \cdot k)$.
+    \end{proof}
+
+    \begin{proposition}[forthel,id=ARITHMETIC_06_5742967566368768]
+      Let $n, m, k$ be natural numbers.
+      Then $(n + m) \cdot k = (n \cdot k) + (m \cdot k)$.
+    \end{proposition}
+    \begin{proof}[forthel]
+      Define $\Phi = \{ k' \in \Nat \mid (n + m) \cdot k' = (n \cdot k') + (m \cdot k') \}$.
+
+      (1) $0$ belongs to $\Phi$.
+      Indeed $(n + m) \cdot 0
+        = 0
+        = 0 + 0
+        = (n \cdot 0) + (m \cdot 0)$.
+
+      (2) For all $k' \in \Phi$ we have $k' + 1 \in \Phi$. \newline
+      Proof.
+        Let $k' \in \Phi$.
+        Then
+        \[  (n + m) \cdot (k' + 1)                        \]
+        \[    = ((n + m) \cdot k') + (n + m)              \]
+        \[    = ((n \cdot k') + (m \cdot k')) + (n + m)   \]
+        \[    = (((n \cdot k') + (m \cdot k')) + n) + m   \]
+        \[    = ((n \cdot k') + ((m \cdot k') + n)) + m   \]
+        \[    = ((n \cdot k') + (n + (m \cdot k'))) + m   \]
+        \[    = (((n \cdot k') + n) + (m \cdot k')) + m   \]
+        \[    = ((n \cdot k') + n) + ((m \cdot k') + m)   \]
+        \[    = (n \cdot (k' + 1)) + (m \cdot (k' + 1)).  \]
+        Thus $(n + m) \cdot (k' + 1) = (n \cdot (k' + 1)) + (m \cdot (k' + 1))$.
+      Qed.
+
+      Thus every natural number is an element of $\Phi$.
+      Therefore $(n + m) \cdot k = (n \cdot k) + (m \cdot k)$.
+    \end{proof}
+  \end{sfragment}
+
+  \begin{sfragment}{Multiplication with $1$ and $2$}
+    \begin{proposition}[forthel,id=ARITHMETIC_06_2910559821365248]
+      Let $n$ be a natural number.
+      Then $n \cdot 1 = n$.
+    \end{proposition}
+    \begin{proof}[forthel]
+      $n \cdot 1
+        = n \cdot (0 + 1)
+        = (n \cdot 0) + n
+        = 0 + n
+        = n$.
+    \end{proof}
+
+    \begin{corollary}[forthel,id=ARITHMETIC_06_5679541582299136]
+      Let $n$ be a natural number.
+      Then $n \cdot 2 = n + n$.
+    \end{corollary}
+    \begin{proof}[forthel]
+      $n \cdot 2
+        = n \cdot (1 + 1)
+        = (n \cdot 1) + n
+        = n + n$.
+    \end{proof}
+  \end{sfragment}
+
+  \begin{sfragment}{Associativity}
+    \begin{proposition}[forthel,id=ARITHMETIC_06_347295585402880]
+      Let $n, m, k$ be natural numbers.
+      Then $n \cdot (m \cdot k) = (n \cdot m) \cdot k$.
+    \end{proposition}
+    \begin{proof}[forthel]
+      Define $\Phi = \{ k' \in \Nat \mid n \cdot (m \cdot k') = (n \cdot m) \cdot k' \}$.
+
+      (1) $0$ is contained in $\Phi$.
+      Indeed $n \cdot (m \cdot 0)
+        = n \cdot 0
+        = 0
+        = (n \cdot m) \cdot 0$.
+
+      (2) For all $k' \in \Phi$ we have $k' + 1 \in \Phi$. \newline
+      Proof.
+        Let $k' \in \Phi$.
+        Then
+        \[  n \cdot (m \cdot (k' + 1))                          \]
+        \[    = n \cdot ((m \cdot k') + m)                      \]
+        \[    = (n \cdot (m \cdot k')) + (n \cdot m)            \]
+        \[    = ((n \cdot m) \cdot k') + (n \cdot m)            \]
+        \[    = ((n \cdot m) \cdot k') + ((n \cdot m) \cdot 1)  \]
+        \[    = (n \cdot m) \cdot (k' + 1).                     \]
+      Qed.
+
+      Hence every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+      Thus $n \cdot (m \cdot k) = (n \cdot m) \cdot k$.
+    \end{proof}
+  \end{sfragment}
+
+  \begin{sfragment}{Commutativity}
+    \begin{proposition}[forthel,id=ARITHMETIC_06_1764759896588288]
+      Let $n, m$ be natural numbers.
+      Then \[ n \cdot m = m \cdot n. \]
+    \end{proposition}
+    \begin{proof}[forthel]
+      Define $\Phi = \{ m' \in \Nat \mid n \cdot m' = m' \cdot n \}$.
+
+      (1) $0$ is contained in $\Phi$. \newline
+      Proof.
+        Define $\Psi = \{ n' \in \Nat \mid n' \cdot 0 = 0 \cdot n' \}$.
+
+        (1a) $0$ is contained in $\Psi$.
+
+        (1b) For all $n' \in \Psi$ we have $n' + 1 \in \Psi$. \newline
+        Proof.
+          Let $n' \in \Psi$.
+          Then
+          \[ (n' + 1) \cdot 0
+            = 0
+            = n' \cdot 0
+            = 0 \cdot n'
+            = (0 \cdot n') + 0
+            = 0 \cdot (n' + 1). \]
+        Qed.
+
+        Hence every natural number is contained in $\Psi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+        Thus $n \cdot 0 = 0 \cdot n$.
+      Qed.
+
+      (2) $1$ belongs to $\Phi$. \newline
+      Proof.
+        Define $\Theta = \{ n' \in \Nat \mid n' \cdot 1 = 1 \cdot n' \}$.
+
+        (2a) $0$ is contained in $\Theta$.
+
+        (2b) For all $n' \in \Theta$ we have $n' + 1 \in \Theta$. \newline
+        Proof.
+          Let $n' \in \Theta$.
+          Then
+          \[  (n' + 1) \cdot 1        \]
+          \[    = (n' \cdot 1) + 1    \]
+          \[    = (1 \cdot n') + 1    \]
+          \[    = 1 \cdot (n' + 1).   \]
+        Qed.
+
+        Thus every natural number is contained in $\Theta$ (by \printref{ARITHMETIC_01_4764664342773760}).
+        Therefore $n \cdot 1 = 1 \cdot n$.
+      Qed.
+
+      (3) For all $m' \in \Phi$ we have $m' + 1 \in \Phi$. \newline
+      Proof.
+        Let $m' \in \Phi$.
+        Then
+        \[  n \cdot (m' + 1)                \]
+        \[    = (n \cdot m') + (n \cdot 1)  \]
+        \[    = (m' \cdot n) + (1 \cdot n)  \]
+        \[    = (1 \cdot n) + (m' \cdot n)  \]
+        \[    = (1 + m') \cdot n            \]
+        \[    = (m' + 1) \cdot n.           \]
+        Indeed $((1 \cdot n) + (m' \cdot n)) = (1 + m') \cdot n$. %!
+      Qed.
+
+      Hence every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+      Thus $n \cdot m = m \cdot n$.
+    \end{proof}
+  \end{sfragment}
+
+  \begin{sfragment}{Non-Existence of Zero-Divisors}
+    \begin{proposition}[forthel,id=ARITHMETIC_06_3843962875936768]
+      Let $n, m$ be natural numbers such that $n \cdot m = 0$.
+      Then $n = 0$ or $m = 0$.
+    \end{proposition}
+    \begin{proof}[forthel]
+      Suppose $n, m \neq 0$.
+      Take natural numbers $n', m'$ such that $n = (n' + 1)$ and $m = (m' + 1)$.
+      Then
+      \[  0                                     \]
+      \[    = n \cdot m                         \]
+      \[    = (n' + 1) \cdot (m' + 1)           \]
+      \[    = ((n' + 1) \cdot m') + (n' + 1)    \]
+      \[    = (((n' + 1) \cdot m') + n') + 1.   \]
+      Indeed $(n' + 1) \cdot (m' + 1) = ((n' + 1) \cdot m') + (n' + 1)$.
+      Hence $0 = k + 1$ for some natural number $k$.
+      Contradiction.
+    \end{proof}
+  \end{sfragment}
+
+  \begin{sfragment}{Cancellation}
+    \begin{proposition}[forthel,id=ARITHMETIC_06_31055184658432]
+      Let $n, m, k$ be natural numbers.
+      Assume $k \neq 0$.
+      If $n \cdot k = m \cdot k$ then $n = m$.
+    \end{proposition}
+    \begin{proof}[forthel]
+      Define $\Phi = \{ n' \in \Nat \mid$ for all $m' \in \Nat$ if $n' \cdot k = m' \cdot k$ and $k \neq 0$ then $n' = m' \}$.
+
+      (1) $0$ is contained in $\Phi$. \newline
+      Proof.
+        Let $m' \in \Nat$.
+        Assume $0 \cdot k = m' \cdot k$ and $k \neq 0$.
+        Then $m' \cdot k = 0$.
+        Hence $m' = 0$ or $k = 0$.
+        Thus $m' = 0$.
+      Qed.
+
+      (2) For all $n' \in \Phi$ we have $n' + 1 \in \Phi$. \newline
+      Proof.
+        Let $n' \in \Phi$.
+
+        Let us show that for all $m' \in \Nat$ if $(n' + 1) \cdot k = m' \cdot k$ and $k \neq 0$ then $n' + 1 = m'$.
+          Let $m' \in \Nat$.
+          Assume $(n' + 1) \cdot k = m' \cdot k$ and $k \neq 0$.
+
+          Case $m' = 0$.
+            Then $(n' + 1) \cdot k = 0$.
+            Hence $n' + 1 = 0$.
+            Contradiction.
+          End.
+
+          Case $m' \neq 0$.
+            Take a natural number $l$ such that $m' = l + 1$.
+            Then $(n' + 1) \cdot k = (l + 1) \cdot k$.
+            Hence $(n' \cdot k) + k
+              = (n' \cdot k) + (1 \cdot k)
+              = (n' \cdot k) + k
+              = (l + 1) \cdot k
+              = (l \cdot k) + (1 \cdot k)
+              = (l \cdot k) + k$.
+            Thus $n' \cdot k = l \cdot k$ (by \printref{ARITHMETIC_03_3137702874578944}).
+            Indeed $n' \cdot k$ and $l \cdot k$ are natural numbers.
+            Then we have $n' = l$.
+            Indeed if $n' \cdot k = l \cdot k$ and $k \neq 0$ then $n' = l$.
+            Therefore $n' + 1 = l + 1 = m'$.
+          End.
+        End.
+
+        Hence $n' + 1 \in \Phi$.
+      Qed.
+
+      Thus every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+      Therefore if $n \cdot k = m \cdot k$ then $n = m$.
+    \end{proof}
+
+    \begin{corollary}[forthel,id=ARITHMETIC_06_8575191374364672]
+      Let $n, m, k$ be natural numbers.
+      Assume $k \neq 0$.
+      If $k \cdot n = k \cdot m$ then $n = m$.
+    \end{corollary}
+    \begin{proof}[forthel]
+      Assume $k \cdot n = k \cdot m$.
+      We have $k \cdot n = n \cdot k$ and $k \cdot m = m \cdot k$.
+      Hence $n \cdot k = m \cdot k$.
+      Thus $n = m$ (by \printref{ARITHMETIC_06_31055184658432}).
+    \end{proof}
+  \end{sfragment}
+\end{sfragment}
+\end{smodule}
+\end{document}

@@ -1,0 +1,21 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=The Sets Form a Proper Class -- Cantor's Second Paradox]{the-sets-form-a-proper-class-2.ftl}
+\importmodule[libraries/set-theory]{the-cardinals-form-a-proper-class.ftl}
+\importmodule[libraries/foundations]{universal-class.ftl}
+
+\begin{theorem*}[forthel,title=Cantor's Second Paradox,id=cantor_paradox_2]
+  $\V$ is a proper class.
+\end{theorem*}
+\begin{proof}[forthel]
+  Assume the contrary.
+  Then $\pow(\V)$ is a set.
+  Hence $\pow(\V)$ is a subset of $\V$.
+  Thus $|\pow(\V)| \leq |\V|$.
+  Contradiction.
+  Indeed $|x| < |\pow(x)|$ for any set $x$.
+\end{proof}
+\end{smodule}
+\end{document}

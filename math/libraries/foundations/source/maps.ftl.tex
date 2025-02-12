@@ -1,0 +1,220 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Maps]{maps.ftl}
+\importmodule[libraries/foundations]{classes.ftl}
+\symdef{id}{\textrm{id}}
+\symdef{range}{\textrm{range}}
+\symdef{funspace}[args=2]{\comp[#1\,\comp\rightarrow\,#2\comp]}
+
+\begin{sfragment}{Range}
+  \begin{definition}[forthel,id=FOUNDATIONS_06_4284980337311744]
+    Let $f$ be a map.
+    A value of $f$ is an object $b$ such that $b = f(a)$ for some $a \in \dom(f)$.
+  \end{definition}
+
+  \begin{definition}[forthel,id=FOUNDATIONS_06_1938831225913344]
+    Let $f$ be a map.
+    The range of $f$ is $\{ f(a) \mid a \in \dom(f) \}$.
+
+    Let $\range(f)$ stand for the range of $f$.
+  \end{definition}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_06_6386349418479616]
+    Let $f$ be a map and $b$ be an object.
+    $b$ is a value of $f$ iff $b \in \range(f)$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Case $b$ is a value of $f$.
+      Take $a \in \dom(f)$ such that $b = f(a)$.
+      $b$ is an object.
+      Hence $b \in \range(f)$.
+    End.
+
+    Case $b \in \range(f)$.
+      Then $b$ is an object such that $b = f(a)$ for some $a \in \dom(f)$.
+      Hence $b$ is a value of $f$.
+    End.
+  \end{proof}
+\end{sfragment}
+
+\begin{sfragment}{Identity Map}
+  \begin{definition}[forthel,id=FOUNDATIONS_06_1920902360989696]
+    Let $A$ be a class.
+    $\id_{A}$ is the map defined on $A$ such that $\id_{A}(a) = a$ for all $a \in A$.
+
+    Let the identity map on $A$ stand for $\id_{A}$.
+  \end{definition}
+\end{sfragment}
+
+\begin{sfragment}{Composition}
+  \begin{definition}[forthel,id=FOUNDATIONS_06_7605717729017856]
+    Let $f, g$ be maps.
+    Assume $\range(f) \subseteq \dom(g)$.
+    $g \circ f$ is the map defined on $\dom(f)$ such that $(g \circ f)(a) = g(f(a))$ for all $a \in \dom(f)$.
+
+    Let the composition of $g$ and $f$ stand for $g \circ f$.
+  \end{definition}
+\end{sfragment}
+
+\begin{sfragment}{Restriction}
+  \begin{definition}[forthel,id=FOUNDATIONS_06_7095412741636096]
+    Let $f$ be a map and $X \subseteq \dom(f)$.
+    $f \restriction X$ is the map defined on $X$ such that $(f \restriction X)(a) = f(a)$ for all $a \in X$.
+
+    Let the restriction of $f$ to $X$ stand for $f \restriction X$.
+  \end{definition}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_06_2170189258948608]
+    Let $A$ be a class and $X \subseteq A$.
+    Then $\id_{A} \restriction X = \id_{X}$.
+  \end{proposition}
+\end{sfragment}
+
+\begin{sfragment}{Image and Preimage}
+  \begin{definition}[forthel,id=FOUNDATIONS_06_3038237683613696]
+    Let $f$ be a map and $A$ be a class.
+    The image of $A$ under $f$ is $\{ f(a) \mid a \in \dom(f) \cap A \}$.
+
+    Let the direct image of $A$ under $f$ stand for the image of $A$ under $f$.
+    Let $f_{*}(A)$ stand for the image of $A$ under $f$.
+
+    Let $f[A]$ stand for $f_{*}(A)$.
+  \end{definition}
+
+  \begin{definition}[forthel,id=FOUNDATIONS_06_4563167805964288]
+    Let $f$ be a map and $B$ be a class.
+    The preimage of $B$ under $f$ is $\{ a \in \dom(f) \mid f(a) \in B \}$.
+
+    Let the inverse image of $B$ under $f$ stand for the preimage of $B$ under $f$.
+    Let $f^{*}(B)$ stand for the preimage of $B$ under $f$.
+  \end{definition}
+\end{sfragment}
+
+\begin{sfragment}{Maps Between Classes}
+  \begin{definition}[forthel,id=FOUNDATIONS_06_6934038600220672]
+    Let $A$ be a class.
+    A map of $A$ is a map $f$ such that $\dom(f) = A$.
+
+    Let a function of $A$ stand for a map of $A$ that is a function.
+  \end{definition}
+
+  \begin{definition}[forthel,id=FOUNDATIONS_06_7725375157174272]
+    Let $B$ be a class.
+    A map to $B$ is a map $f$ such that $f(a) \in B$ for each $a \in \dom(f)$.
+
+    Let a function to $B$ stand for a map to $B$ that is a function.
+  \end{definition}
+
+  \begin{definition}[forthel,id=FOUNDATIONS_06_2823507398361088]
+    Let $A, B$ be classes.
+    A map from $A$ to $B$ is a map $f$ such that $\dom(f) = A$ and $f(a) \in B$ for each $a \in A$.
+
+    Let $f: A \to B$ stand for $f$ is a map from $A$ to $B$.
+
+    Let a function from $A$ to $B$ stand for a map from $A$ to $B$ that is a function.
+  \end{definition}
+
+  \begin{definition}[forthel,id=FOUNDATIONS_06_3390734908522496]
+    Let $A$ be a class.
+    A map on $A$ is a map from $A$ to $A$.
+
+    Let a function on $A$ stand for a map on $A$ that is a function.
+  \end{definition}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_06_3312973569327104]
+    Let $A, B$ be classes and $f, g : A \to B$.
+    Assume that $f(a) = g(a)$ for all $a \in A$.
+    Then $f = g$.
+  \end{proposition}
+
+  \begin{proposition}
+    Let $A, B$ be classes and $f$ be a map of $A$.
+    Assume that $f(a) \in B$ for all $a \in A$.
+    Then $f$ is a map from $A$ to $B$ iff $\range(f) \subseteq B$.
+  \end{proposition}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_06_5104361690628096]
+    Let $A$ be a class.
+    Then $\id_{A}$ is a map on $A$.
+  \end{proposition}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_06_1706446651654144]
+    Let $A, B, C$ be classes and $f : A \to B$ and $g : B \to C$.
+    Then $g \circ f : A \to C$.
+  \end{proposition}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_06_4078561256275968]
+    Let $A, B$ be classes and $f : A \to B$ and $X \subseteq A$.
+    Then $f \restriction X : X \to B$.
+  \end{proposition}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_06_3964401904254976]
+    Let $A, B$ be classes and $f : A \to B$.
+    Then $f \circ \id_{A} = f = \id_{B} \circ f$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    $A$ is the domain of $f \circ \id_{A}$ and the domain of $f$ and the domain of $\id_{B} \circ f$.
+    We have $(f \circ \id_{A})(a)
+      = f(\id_{A}(a))
+      = f(a)
+      = \id_{B}(f(a))
+      = (\id_{B} \circ f)(a)$
+    for all $a \in A$.
+    Hence $f \circ \id_{A}
+      = f
+      = \id_{B} \circ f$.
+  \end{proof}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_06_3118771061391360]
+    Let $A$ be a class and $X \subseteq A$.
+    Then $\id_{A} \restriction X = \id_{X}$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    We have $\dom(\id_{A} \restriction X)
+      = X
+      = \dom(\id_{X})$.
+    $(\id_{A} \restriction X)(a)
+      = \id_{A}(a)
+      = a
+      = \id_{X}(a)$
+    for all $a \in X$.
+    Hence $\id_{A} \restriction X = \id_{X}$.
+  \end{proof}
+
+  \begin{proposition}[forthel,id=FOUNDATIONS_06_6866147389472768]
+    Let $A, B, C, D$ be classes and $f : A \to B$ and $g : B \to C$ and $h : C \to D$.
+    Then $h \circ (g \circ f) = (h \circ g) \circ f$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    $h \circ (g \circ f)$ and $(h \circ g) \circ f$ are maps from $A$ to $D$.
+
+    Let us show that $(h \circ (g \circ f))(a) = ((h \circ g) \circ f)(a)$ for all $a \in A$.
+      Let $a \in A$.
+      Then $(h \circ (g \circ f))(a)
+        = h((g \circ f)(a))
+        = h(g(f(a)))
+        = (h \circ g)(f(a))
+        = ((h \circ g) \circ f)(a)$.
+    End.
+
+    Hence $h \circ (g \circ f) = (h \circ g) \circ f$.
+  \end{proof}
+\end{sfragment}
+
+\begin{sfragment}{Classes of Functions}
+  \begin{definition}[forthel,id=FOUNDATIONS_06_5119110467813376]
+    Let $A, B$ be classes.
+    $\funspace{A}{B}$ is the class of all functions from $A$ to $B$.
+  \end{definition}
+\end{sfragment}
+
+\begin{sfragment}{Fixed Points}
+  \begin{definition}[forthel,id=FOUNDATIONS_06_2177076576649216]
+    Let $f$ be a map.
+    A fixed point of $f$ is an element $x$ of $\dom(f)$ such that $f(x) = x$.
+  \end{definition}
+\end{sfragment}
+\end{smodule}
+\end{document}

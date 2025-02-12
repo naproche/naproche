@@ -1,0 +1,20 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Russell's Paradox]{russell-paradox.ftl}
+\importmodule[meta-inf]{vocabulary.ftl}
+\importmodule[meta-inf]{macros.ftl}
+
+\begin{theorem*}[forthel,title=Russell's Paradox,id=russell_paradox]
+  Not every class is a set.
+\end{theorem*}
+\begin{proof}[forthel]
+  Assume the contrary.
+  Define $R = \{x \mid x$ is a set such that $x \notin x\}$.
+  Then $R$ is a set.
+  Hence $R \in R$ iff $R \notin R$.
+  Contradiction.
+\end{proof}
+\end{smodule}
+\end{document}

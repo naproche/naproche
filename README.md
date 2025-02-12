@@ -192,14 +192,14 @@ Naproche [<options>] [<file>]
 
 * Make sure that an up-to-date version of [TeX Live][texlive] is in your `PATH`.
 
-* Add the directory `naproche/examples/meta-inf/lib` to your `TEXINPUTS`
+* Add the directory `naproche/math/meta-inf/lib` to your `TEXINPUTS`
   variable, e.g.:
 
   ```shell
   export TEXINPUTS="$(isabelle getenv -b NAPROCHE_FORMALIZATIONS)/meta-inf/lib//;$TEXINPUTS"
   ```
 
-* Set the `MATHHUB` variable to `naproche/examples`, e.g.:
+* Set the `MATHHUB` variable to `naproche/math`, e.g.:
 
   ```shell
   export MATHHUB="$(isabelle getenv -b NAPROCHE_FORMALIZATIONS)"

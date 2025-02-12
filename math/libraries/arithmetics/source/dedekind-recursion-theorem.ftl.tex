@@ -1,0 +1,299 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Dedekind's Recursion Theorem]{dedekind-recursion-theorem.ftl}
+\importmodule[libraries/arithmetics]{nat-is-a-set.ftl}
+\importmodule[libraries/set-theory]{zfc.ftl}
+
+\begin{definition*}[forthel,id=dedekind_209358491059836]
+  Let $a$ be an object and $f$ be a map.
+  Let $\varphi$ be a map from $\Nat$ to $\dom(f)$.
+  $\varphi$ is recursively defined by $a$ and $f$ iff $\varphi(0) = a$ and $\varphi(n + 1) = f(\varphi(n))$ for every $n \in \Nat$.
+\end{definition*}
+
+\begin{theorem*}[forthel,title=Dedekind's Recursion Theorem: Existence,id=dedekind_existence]
+  Let $A$ be a set and $a \in A$ and $f : A \to A$.
+  Then there exists a $\varphi : \Nat \to A$ that is recursively defined by $a$ and $f$.
+\end{theorem*}
+\begin{proof}[forthel]
+  (a) Define \[ \Phi = \class{H \in \pow(\Nat \times A) | \classtext{$(0, a) \in H$ and for all $n \in \Nat$ and all $x \in A$ if $(n, x) \in H$ then $(n + 1, f(x)) \in H$}}. \]
+
+  Let us show that $\bigcap \Phi \in \Phi$. \newline
+  Proof.
+    (0) $\Nat \times A \in \Phi$. \newline
+    Proof. \newline
+      (i) $\Nat \times A \in \pow(\Nat \times A)$.
+
+      (ii) $(0,a) \in \Nat \times A$.
+
+      (iii) for all $n \in \Nat$ and all $x \in A$ if $(n, x) \in \Nat \times A$ then $(n + 1, f(x)) \in \Nat \times A$. \newline
+      Proof.
+        Let $n \in \Nat$ and $x \in A$.
+        Assume $(n,x) \in \Nat \times A$.
+        We have $n + 1 \in \Nat$ and $f(x) \in A$.
+        Hence $(n + 1, f(x)) \in \Nat \times A$.
+      Qed.
+    Qed.
+
+    (1) $\bigcap \Phi \in \pow(\Nat \times A)$. \newline
+    Proof.
+      Any element of $\bigcap \Phi$ is contained in every element of $\Phi$.
+      Hence any element of $\bigcap \Phi$ is contained in $\Nat \times A$.
+      Thus $\bigcap \Phi \subseteq \Nat \times A$.
+      $\bigcap \Phi$ is a set.
+      Hence $\bigcap \Phi$ is a subset of $\Nat \times A$.
+    Qed.
+
+    (2) $(0, a) \in \bigcap \Phi$. \newline
+    Indeed $(0, a) \in \Nat \times A \in \Phi$.
+
+    (3) For all $n \in \Nat$ and all $x \in A$ if $(n, x) \in
+    \bigcap \Phi$ then $(n + 1, f(x)) \in \bigcap \Phi$. \newline
+    Proof.
+      Let $n \in \Nat$ and $x \in A$.
+      Assume $(n, x) \in \bigcap \Phi$.
+      Then $(n, x)$ is contained in every element of $\Phi$.
+      Hence $(n + 1, f(x))$ is contained in every element of $\Phi$.
+      Thus $(n + 1, f(x)) \in \bigcap \Phi$.
+    Qed.
+
+    Therefore $\bigcap \Phi \in \Phi$ (by a).
+  Qed.
+
+  Let us show that for any $n \in \Nat$ there exists an $x \in A$ such
+  that $(n, x) \in \bigcap \Phi$. \newline
+  Proof.
+    Define $\Psi = \{ n \in \Nat \mid$ there exists an $x \in A$ such that
+    $(n, x) \in \bigcap \Phi \}$.
+
+    (1) $0$ is contained in $\Psi$.
+    Indeed $(0, a) \in \bigcap \Phi$.
+
+    (2) For all $n \in \Psi$ we have $n + 1 \in \Psi$. \newline
+    Proof.
+      Let $n \in \Psi$.
+      Take an $x \in A$ such that $(n, x) \in \bigcap \Phi$.
+      Then $(n + 1, f(x)) \in \bigcap \Phi$.
+      Hence $n + 1 \in \Psi$.
+      Indeed $f(x) \in A$.
+    Qed.
+
+    Therefore $n \in \Psi$ for every $n \in \Nat$ (by \printref{ARITHMETIC_01_4764664342773760}).
+  Qed.
+
+  Let us show that for all $n \in \Nat$ and all $x, y \in A$ if
+  $(n, x), (n, y) \in \bigcap \Phi$ then $x = y$. \newline
+  Proof.
+    (b) Define $\Theta = \{ n \in \Nat \mid$ for all $x, y \in A$ if
+    $(n, x), (n, y) \in \bigcap \Phi$ then $x = y \}$.
+
+    (1) $\Theta$ contains $0$. \newline
+    Proof.
+      Let us show that for all $x, y \in A$ if $(0, x), (0, y) \in
+      \bigcap \Phi$ then $x = y$.
+        Let $x, y \in A$.
+        Assume $(0, x), (0, y) \in \bigcap \Phi$.
+
+        Let us show that $x, y = a$.
+          Assume $x \neq a$ or $y \neq a$.
+
+          Case $x \neq a$.
+            $(0,x), (0,a)$ are contained in every element of $\Phi$.
+            Then $(0,x), (0,a) \in \bigcap \Phi$.
+            Take $H = (\bigcap \Phi) \setminus \set{(0,x)}$.
+
+            Let us show that $H \in \Phi$.
+              (1) $H \in \pow(\Nat \times A)$.
+
+              (2) $(0,a) \in H$.
+
+              (3) For all $n \in \Nat$ and all $b \in A$ if
+              $(n,b) \in H$ then $(n + 1, f(b)) \in H$. \newline
+              Proof.
+                Let $n \in \Nat$ and $b \in A$.
+                Assume $(n,b) \in H$.
+                Then $(n + 1, f(b)) \in \bigcap \Phi$.
+                We have $(n + 1, f(b)) \neq (0,x)$ (by \printref{FOUNDATIONS_04_8464577431863296}).
+                Indeed $n + 1 \neq 0$.
+                Hence $(n + 1, f(b)) \in H$.
+              Qed.
+
+              [prover vampire]
+              Thus $H \in \Phi$ (by a).
+              [prover eprover]
+            End.
+
+            Then $(0,x)$ is not contained in every member of $\Phi$.
+            Contradiction.
+          End.
+
+          Case $y \neq a$.
+            $(0,y), (0,a)$ are contained in every element of $\Phi$.
+            Then $(0,y), (0,a) \in \bigcap \Phi$.
+            Take $H = (\bigcap \Phi) \setminus \set{(0,y)}$.
+
+            Let us show that $H \in \Phi$.
+              (1) $H \in \pow(\Nat \times A)$.
+
+              (2) $(0,a) \in H$.
+              Indeed $(0,a) \neq (0,y)$.
+
+              (3) For all $n \in \Nat$ and all $b \in A$ if
+              $(n,b) \in H$ then $(n + 1, f(b)) \in H$. \newline
+              Proof.
+                Let $n \in \Nat$ and $b \in A$.
+                Assume $(n,b) \in H$.
+                Then $(n + 1, f(b)) \in \bigcap \Phi$.
+                We have $(n + 1, f(b)) \neq (0,y)$ (by \printref{FOUNDATIONS_04_8464577431863296}).
+                Indeed $n + 1 \neq 0$.
+                Hence $(n + 1, f(b)) \in H$.
+              Qed.
+
+              [prover vampire]
+              Thus $H \in \Phi$ (by a).
+              [prover eprover]
+            End.
+
+            Then $(0,y)$ is not contained in every member of $\Phi$.
+            Contradiction.
+          End.
+        End.
+      End.
+    Qed.
+
+    (2) For all $n \in \Theta$ we have $n + 1 \in \Theta$. \newline
+    Proof.
+      Let $n \in \Theta$.
+      Then for all $x, y \in A$ if $(n, x), (n, y) \in \bigcap \Phi$ then
+      $x = y$.
+      Consider a $b \in A$ such that $(n,b) \in \bigcap \Phi$.
+      Then $(n + 1, f(b)) \in \bigcap \Phi$.
+
+      Let us show that for all $x, y \in A$ if $(n + 1, x),
+      (n + 1, y) \in \bigcap \Phi$ then $x = f(b) = y$.
+        Let $x, y \in A$.
+        Assume $(n + 1, x), (n + 1, y) \in \bigcap \Phi$.
+        Suppose $x \neq f(b)$ or $y \neq f(b)$.
+
+        Case $x \neq f(b)$.
+          Take $H = (\bigcap \Phi) \setminus \set{(n + 1,x)}$.
+
+          (i) $H \in \pow(\Nat \times A)$.
+
+          (ii) $(0,a) \in H$. \newline
+          Proof.
+            $(0,a) \in \bigcap \Phi$.
+            $(0,a) \notin \set{(n + 1,x)}$.
+            Indeed $(0,a) \neq (n + 1,x)$ (by \printref{FOUNDATIONS_04_8464577431863296}).
+            Indeed $0 \neq n + 1$.
+          Qed.
+
+          (iii) For all $m \in \Nat$ and all $z \in A$ if $(m,z) \in H$ then $(m + 1,f(z)) \in H$. \newline
+          Proof.
+            Let $m \in \Nat$ and $z \in A$.
+            Assume $(m,z) \in H$.
+            Then $(m,z) \in \bigcap \Phi$.
+            Hence $(m + 1,f(z)) \in \bigcap \Phi$.
+            $(m + 1,f(z)) \neq (n + 1,x)$ (by \printref{FOUNDATIONS_04_8464577431863296}).
+            Indeed if $(m + 1,f(z)) = (n + 1,x)$ then $m = n$ and $f(z) = x$ (by \printref{FOUNDATIONS_04_8464577431863296}, \printref{ARITHMETIC_01_3604163883696128}).
+            Thus $(m + 1,f(z)) \notin \set{(n + 1,x)}$.
+            Therefore $(m + 1,f(z)) \in H$.
+          Qed.
+
+          [prover vampire]
+          Thus $H \in \Phi$ (by a, i, ii, iii).
+          [prover eprover]
+          Therefore every element of $\bigcap \Phi$ is contained in $H$.
+          Consequently $(n + 1,x) \in H$.
+          Contradiction.
+        End.
+
+        Case $y \neq f(b)$.
+          Take $H = (\bigcap \Phi) \setminus \set{(n + 1,y)}$.
+
+          (i) $H \in \pow(\Nat \times A)$.
+
+          (ii) $(0,a) \in H$. \newline
+          Proof.
+            $(0,a) \in \bigcap \Phi$.
+            $(0,a) \notin \set{(n + 1,y)}$.
+            Indeed $(0,a) \neq (n + 1,y)$ (by \printref{FOUNDATIONS_04_8464577431863296}).
+            Indeed $0 \neq n + 1$.
+          Qed.
+
+          (iii) For all $m \in \Nat$ and all $z \in A$ if $(m,z) \in H$ then $(m + 1,f(z)) \in H$. \newline
+          Proof.
+            Let $m \in \Nat$ and $z \in A$.
+            Assume $(m,z) \in H$.
+            Then $(m,z) \in \bigcap \Phi$.
+            Hence $(m + 1,f(z)) \in \bigcap \Phi$.
+            $(m + 1,f(z)) \neq (n + 1,y)$ (by \printref{FOUNDATIONS_04_8464577431863296}).
+            Indeed if $(m + 1,f(z)) = (n + 1,y)$ then $m = n$ and $f(z) = y$ (by \printref{FOUNDATIONS_04_8464577431863296}, \printref{ARITHMETIC_01_3604163883696128}).
+            Thus $(m + 1,f(z)) \notin \set{(n + 1,y)}$.
+            Therefore $(m + 1,f(z)) \in H$.
+          Qed.
+
+          [prover vampire]
+          Thus $H \in \Phi$ (by a, i, ii, iii).
+          [prover eprover]
+          Therefore every element of $\bigcap \Phi$ is contained in $H$.
+          Consequently $(n + 1,y) \in H$.
+          Contradiction.
+        End.
+
+        Hence it is wrong that $x \neq f(b)$ or $y \neq f(b)$.
+        Consequently $x = f(b) = y$.
+      End.
+
+      Therefore $n + 1 \in \Theta$ (by a).
+    Qed.
+
+    Consequently $n \in \Theta$ for every $n \in \Nat$ (by \printref{ARITHMETIC_01_4764664342773760}).
+  Qed.
+
+  Define $\varphi(n) =$ ``choose $x \in A$ such that $(n, x) \in
+  \bigcap \Phi$ in $x$'' for $n \in \Nat$.
+
+  (1) Then $\varphi$ is a map from $\Nat$ to $A$ and we have
+  $\varphi(0) = a$.
+
+  (2) For all $n \in \Nat$ we have $\varphi(n + 1) =
+  f(\varphi(n))$. \newline
+  Proof.
+    Let $n \in \Nat$.
+    Take $x \in A$ such that $\varphi(n) = x$.
+    Then $(n, x) \in \bigcap \Phi$.
+    Hence $(n + 1, f(\varphi(n))) = (n + 1, f(x)) \in \bigcap \Phi$.
+    Thus $\varphi(n + 1) = f(\varphi(n))$ (by a).
+  Qed.
+\end{proof}
+
+\begin{theorem*}[forthel,title=Dedekind's Recursion Theorem: Uniqueness,id=dedekind_uniqueness]
+  Let $A$ be a set and $a \in A$ and $f : A \to A$.
+  Let $\varphi, \varphi' : \Nat \to A$.
+  Assume that $\varphi$ and $\varphi'$ are recursively defined by $a$ and
+  $f$.
+  Then $\varphi = \varphi'$.
+\end{theorem*}
+\begin{proof}[forthel]
+  Define $\Phi = \{ n \in \Nat \mid \varphi(n) = \varphi'(n) \}$.
+
+  (1) $\Phi$ contains $0$.
+  Indeed $\varphi(0) = a = \varphi'(0)$.
+
+  (2) For all $n \in \Phi$ we have $n + 1 \in \Phi$. \newline
+  Proof.
+    Let $n \in \Phi$.
+    Then $\varphi(n) = \varphi'(n)$.
+    Hence $\varphi(n + 1)
+      = f(\varphi(n))
+      = f(\varphi'(n))
+      = \varphi'(n + 1)$.
+  Qed.
+
+  Thus $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).
+  Consequently $\varphi(n) = \varphi'(n)$ for each $n \in \Nat$.
+\end{proof}
+\end{smodule}
+\end{document}

@@ -1,0 +1,13 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Regular Cardinals]{regular-cardinals.ftl}
+\importmodule[libraries/set-theory]{cofinality.ftl}
+
+\begin{definition}[forthel,id=SET_THEORY_06_6532641205487950]
+  Let $\kappa$ be a cardinal.
+  $\kappa$ is regular iff $|x| = \kappa$ for every cofinal subset $x$ of $\kappa$.
+\end{definition}
+\end{smodule}
+\end{document}

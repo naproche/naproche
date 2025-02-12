@@ -1,0 +1,24 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=The Natural Numbers Form a Set]{nat-is-a-set.ftl}
+\importmodule[libraries/arithmetics]{natural-numbers.ftl}
+\importmodule[libraries/set-theory]{axioms?infinity.ftl}
+
+\begin{proposition}[forthel,id=ARITHMETIC_07_4685510236547454]
+  $\Nat$ is a set.
+\end{proposition}
+\begin{proof}[forthel]
+  Define $f(n) = n + 1$ for $n \in \Nat$.
+  Then $f$ is a map from $\Nat$ to $\Nat$.
+  Hence we can take a subset $X$ of $\Nat$ that is inductive regarding
+  $0$ and $f$.
+  Then $0 \in X$ and for all $n \in X$ we have $n + 1 \in X$.
+  Hence $X$ contains every natural number.
+  Thus we have $\Nat \subseteq X$ and $X \subseteq \Nat$.
+  Therefore $\Nat = X$.
+  Consequently $\Nat$ is a set.
+\end{proof}
+\end{smodule}
+\end{document}

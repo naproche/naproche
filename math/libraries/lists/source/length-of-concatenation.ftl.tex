@@ -1,0 +1,36 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Length of Concatenation]{length-of-concatenation.ftl}
+\importmodule[libraries/lists]{length.ftl}
+\importmodule[libraries/lists]{concatenation.ftl}
+
+\begin{proposition}[forthel,id=LISTS_LENGTHCONCAT_4512036658964875]
+  $\length(L \concat L') \eq \length(L) + \length(L')$ for all lists $L, L'$.
+\end{proposition}
+\begin{proof}[forthel,method=induction on $L$]
+  Let $L$ be a list.
+
+  Case $L \eq \list{}$. Trivial.
+
+  Case $L \eq a \cons L''$ for some object $a$ and some list $L''$.
+    Take an object $a$ and a list $L''$ such that $L \eq a \cons L''$.
+    Then $L'' \prec L$.
+    Hence $\length(L'' \concat L') \eq \length(L'') + \length(L')$ for every list $L'$.
+    Thus
+    \begin{align*}
+      \length(L \concat L')
+        &\eq \length((a \cons L'') \concat L')\\
+        &\eq \length(a \cons (L'' \concat L'))\\
+        &\eq \length(L'' \concat L') + 1\\
+        &\eq (\length(L'') + \length(L')) + 1\\
+        &\eq (\length(L'') + 1) + \length(L')\\
+        &\eq \length(a \cons L'') + \length(L')\\
+        &\eq \length(L) + \length(L')
+    \end{align*}
+    for every list $L'$.
+  End.
+\end{proof}
+\end{smodule}
+\end{document}

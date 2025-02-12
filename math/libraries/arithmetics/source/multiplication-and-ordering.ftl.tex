@@ -1,0 +1,136 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Multiplication and Ordering]{multiplication-and-ordering.ftl}
+\importmodule[libraries/arithmetics]{multiplication.ftl}
+\importmodule[libraries/arithmetics]{ordering.ftl}
+
+\begin{proposition}[forthel,id=ARITHMETIC_06_8817333933965312]
+  Let $n, m, k$ be natural numbers.
+  Assume $k \neq 0$.
+  Then $n < m$ iff $n \cdot k < m \cdot k$.
+\end{proposition}
+\begin{proof}[forthel]
+  Case $n \cdot k < m \cdot k$.
+    Define $\Phi = \{ n' \in \Nat \mid$ if $n' \cdot k < m \cdot k$ then $n' < m \}$.
+
+    (1) $\Phi$ contains $0$.
+
+    (2) For all $n' \in \Phi$ we have $n' + 1 \in \Phi$. \newline
+    Proof.
+      Let $n' \in \Phi$.
+
+      Let us show that if $(n' + 1) \cdot k < m \cdot k$ then $n' + 1 < m$.
+        Assume $(n' + 1) \cdot k < m \cdot k$.
+        Then $(n' \cdot k) + k < m \cdot k$.
+        Hence $n' \cdot k < m \cdot k$.
+        Thus $n' < m$.
+        Then $n' + 1 \leq m$.
+        If $n' + 1 = m$ then $(n' + 1) \cdot k = m \cdot k$.
+        Hence $n' + 1 < m$.
+      End.
+    Qed.
+
+    Therefore every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+    Consequently $n < m$.
+  End.
+
+  Case $n < m$.
+    Take a positive natural number $l$ such that $m = n + l$.
+    Then $m \cdot k = (n + l) \cdot k = (n \cdot k) + (l \cdot k)$.
+    $l \cdot k$ is positive.
+    Hence $n \cdot k < m \cdot k$.
+  End.
+\end{proof}
+
+\begin{corollary}[forthel,id=ARITHMETIC_06_5048640368279552]
+  Let $n, m, k$ be natural numbers.
+  Assume $k \neq 0$.
+  Then $n < m$ iff $k \cdot n < k \cdot m$.
+\end{corollary}
+\begin{proof}[forthel]
+  The thesis (by \printref{ARITHMETIC_06_8817333933965312}, \printref{ARITHMETIC_06_1764759896588288}).
+\end{proof}
+
+\begin{proposition}[forthel,id=ARITHMETIC_06_1826268599287808]
+  Let $n, m, k$ be natural numbers.
+  If $n, m > k$ then $n \cdot m > k$.
+\end{proposition}
+\begin{proof}[forthel]
+  Define $\Phi = \{ n' \in \Nat \mid$ if $n', m > k$ then $n' \cdot m > k \}$.
+
+  (1) $\Phi$ contains $0$.
+
+  (2) For all $n' \in \Phi$ we have $n' + 1 \in \Phi$. \newline
+  Proof.
+    Let $n' \in \Phi$.
+
+    Let us show that if $n' + 1, m > k$ then $(n' + 1) \cdot m > k$.
+      Assume $n' + 1, m > k$.
+      Then $(n' + 1) \cdot m = (n' \cdot m) + m$.
+      If $n' = 0$ then
+      $(n' \cdot m) + m
+        = 0 + m
+        = m
+        > k$.
+      If $n' \neq 0$ then
+      $(n' \cdot m) + m
+        > m
+        > k$.
+      Indeed if $n' \neq 0$ then $n' \cdot m > 0$.
+      Indeed $m > 0$.
+      Hence $(n' + 1) \cdot m > k$.
+    Qed.
+  Qed.
+
+  Thus every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
+  Therefore if $n, m > k$ then $n \cdot m > k$.
+\end{proof}
+
+\begin{corollary}[forthel,id=ARITHMETIC_06_1751605544222720]
+  Let $n, m, k$ be natural numbers.
+  If $n \leq m$ then $k \cdot n \leq k \cdot m$.
+\end{corollary}
+
+\begin{corollary}[forthel,id=ARITHMETIC_06_3965209318260736]
+  Let $n, m, k$ be natural numbers.
+  Assume $k \neq 0$.
+  If $k \cdot n \leq k \cdot m$ then $n \leq m$.
+\end{corollary}
+\begin{proof}[forthel]
+  If $k \cdot n = k \cdot m$ then $n = m$ (by \printref{ARITHMETIC_06_8575191374364672}).
+  If $k \cdot n < k \cdot m$ then $n < m$ (by \printref{ARITHMETIC_06_5048640368279552}).
+\end{proof}
+
+\begin{corollary}[forthel,id=ARITHMETIC_06_8946886668976128]
+  Let $n, m, k$ be natural numbers.
+  If $n \leq m$ then $n \cdot k \leq m \cdot k$.
+\end{corollary}
+
+\begin{corollary}[forthel,id=ARITHMETIC_06_4374428949413888]
+  Let $n, m, k$ be natural numbers.
+  Assume $k \neq 0$.
+  If $n \cdot k \leq m \cdot k$ then $n \leq m$.
+\end{corollary}
+
+\begin{proposition}[forthel,id=ARITHMETIC_06_8813409145454592]
+  Let $n, m, k$ be natural numbers.
+  Assume $m > 0$ and $k > 1$.
+  Then $k \cdot m > m$.
+\end{proposition}
+\begin{proof}[forthel]
+  Take a natural number $l$ such that $k = l + 2$.
+  Then
+  \[  k \cdot m                       \]
+  \[    = (l + 2) \cdot m             \]
+  \[    = (l \cdot m) + (2 \cdot m)   \]
+  \[    = (l \cdot m) + (m + m)       \]
+  \[    = ((l \cdot m) + m) + m       \]
+  \[    = ((l + 1) \cdot m) + m       \]
+  \[    \geq 1 + m                    \]
+  \[    > m.                          \]
+  Indeed $((l + 1) \cdot m) + m \geq 1 + m$.
+\end{proof}
+\end{smodule}
+\end{document}

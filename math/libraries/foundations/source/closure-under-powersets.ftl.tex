@@ -1,0 +1,13 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Closure Under Powersets]{closure-under-powersets.ftl}
+\importmodule[libraries/foundations]{systems-of-sets.ftl}
+
+\begin{definition}[forthel,id=FOUNDATIONS_14_4652013578120594]
+  Let $X$ be a system of sets.
+  $X$ is closed under powersets iff $\pow(U) \in X$ for every $U \in X$.
+\end{definition}
+\end{smodule}
+\end{document}

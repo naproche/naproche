@@ -1,0 +1,152 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Posets]{poset.ftl}
+\importmodule[libraries/preliminaries]{sets.ftl}
+\STEXexport{
+  \let\oldleq\leq
+  \let\leq\relax
+  \let\oldgeq\geq
+  \let\geq\relax
+}
+\begin{mathstructure}{poset}
+  \symdef{univ}{X}
+  \symdef{leq}[op=\oldleq]{\;\oldleq\;}
+  \symdef{geq}[op=\oldgeq]{\;\oldgeq\;}
+  \symdef{less}[op=<]{\;<\;}
+  \symdef{more}[op=>]{\;>\;}
+\end{mathstructure}
+\vardef{Pvar}[return={\poset[comp=##1]}]{\mathcal P}
+
+\begin{sfragment}{Definition}
+  \begin{signature*}[forthel,id=PosetSig]
+    A \emph{partially ordered set $\Pvar{}[univ,leq]$} is a structure with the following properties:
+
+    \begin{itemize}
+      \item \label{posetUnivSig}
+        $\Pvar{univ}$ is a set.
+      \item \label{posetLeqSig}
+        Let $x, y \in \Pvar{univ}$. $x {\Pvar{leq}} y$ is a relation.
+      \item \label{posetReflAx}
+        For all $x \in \Pvar{univ}$ it holds that $x {\Pvar{leq}} x$.
+      \item \label{posetTransAx}
+        For all $x, y, z \in \Pvar{univ}$ it holds that $x {\Pvar{leq}} y {\Pvar{leq}} z$ implies $x {\Pvar{leq}} z$.
+      \item \label{posetAntisymAx}
+        For all $x, y \in \Pvar{univ}$ it holds that $x {\Pvar{leq}} y$ and $y {\Pvar{leq}} x$ implies $x\eq y$.
+    \end{itemize}
+
+    Let a \emph{poset} stand for a partially ordered set.
+    Let $\emph{x {\Pvar{geq}} y}$ stand for $y {\Pvar{leq}} x$.
+    Let $\emph{x {\Pvar{less}} y}$ stand for $x {\Pvar{leq}} y$ and $x\neq y$.
+    Let $\emph{x {\Pvar{more}} y}$ stand for $x {\Pvar{geq}} y$ and $x\neq y$.
+  \end{signature*}
+
+  \begin{forthel}
+    Let $\Pvar!=\Pvar{}[univ,leq]$ denote a poset.
+  \end{forthel}
+\end{sfragment}
+
+\begin{sfragment}{Upper Bounds}
+  \begin{definition*}[forthel,id=UpperBoundOfPairDef]
+    Let $x, y \in \Pvar{univ}$.
+    An \emph{upper bound of $x$ and $y$ in $\Pvar!$} is an element $u$ of $\Pvar{univ}$ such that $u {\Pvar{geq}} x$ and $u {\Pvar{geq}} y$.
+  \end{definition*}
+      
+  \begin{definition*}[forthel,id=UpperBoundOfSetDef]
+    Let $A \subseteq \Pvar{univ}$.
+    An \emph{upper bound of $A$ in $\Pvar!$} is an element $u$ of $\Pvar{univ}$ such that $u {\Pvar{geq}} x$ for all $x \in A$.
+  \end{definition*}
+\end{sfragment}
+
+\begin{sfragment}{Lower Bounds}
+  \begin{definition*}[forthel,id=LowerBoundOfPairDef]
+    Let $x, y \in \Pvar{univ}$.
+    A \emph{lower bound of $x$ and $y$ in $\Pvar!$} is an element $l$ of $\Pvar{univ}$ such that $l {\Pvar{leq}} x$ and $l {\Pvar{leq}} y$.
+  \end{definition*}
+      
+  \begin{definition*}[forthel,id=LowerBoundOfSetDef]
+    Let $A \subseteq \Pvar{univ}$.
+    A \emph{lower bound of $A$ in $\Pvar!$} is an element $l$ of $\Pvar{univ}$ such that $l {\Pvar{leq}} x$ for all $x \in A$.
+  \end{definition*}
+\end{sfragment}
+
+\begin{sfragment}{Joins}
+  \begin{definition*}[forthel,id=JoinOfPairDef]
+    Let $x, y \in \Pvar{univ}$.
+    A \emph{join of $x$ and $y$ in $\Pvar!$} is an upper bound $j$ of $x$ and $y$ in $\Pvar!$ such that for any upper bound $u$ of $x$ and $y$ in $\Pvar!$ we have $j {\Pvar{leq}} u$.
+
+    Let a \emph{least upper bound of $x$ and $y$ in $\Pvar!$} stand for a join of $x$ and $y$ in $\Pvar!$.
+    Let a \emph{supremum of $x$ and $y$ in $\Pvar!$} stand for a join of $x$ and $y$ in $\Pvar!$.
+  \end{definition*}
+
+  \begin{proposition*}[forthel,id=JoinOfPairIsUniqueThm]
+    Let $x,y\in\Pvar{univ}$ and $j, j'$ be joins of $x$ and $y$ in $\Pvar!$.
+    Then $j\eq j'$.
+  \end{proposition*}
+      
+  \begin{definition*}[forthel,id=JoinOfSetDef]
+    Let $A \subseteq \Pvar{univ}$.
+    A \emph{join of $A$ in $\Pvar!$} is an upper bound $j$ of $A$ in $\Pvar!$ such that for any upper bound $u$ of $A$ in $\Pvar!$ we have $j {\Pvar{leq}} u$.
+
+    Let a \emph{least upper bound of $A$ in $\Pvar!$} stand for a join of $A$ in $\Pvar!$.
+    Let a \emph{supremum of $A$ in $\Pvar!$} stand for a join of $A$ in $\Pvar!$.
+  \end{definition*}
+
+  \begin{proposition*}[forthel,id=JoinOfSetIsUniqueThm]
+    Let $A \subseteq \Pvar{univ}$ and $j, j'$ be joins of $A$ in $\Pvar!$.
+    Then $j\eq j'$.
+  \end{proposition*}
+\end{sfragment}
+
+\begin{sfragment}{Meets}
+  \begin{definition*}[forthel,id=MeetOfPairDef]
+    Let $x, y \in \Pvar{univ}$.
+    A \emph{meet of $x$ and $y$ in $\Pvar!$} is a lower bound $m$ of $x$ and $y$ in $\Pvar!$ such that for any lower bound $l$ of $x$ and $y$ in $\Pvar!$ we have $m {\Pvar{geq}} l$.
+
+    Let a \emph{greatest lower bound of $x$ and $y$ in $\Pvar!$} stand for a meet of $x$ and $y$ in $\Pvar!$.
+    Let a \emph{infimum of $x$ and $y$ in $\Pvar!$} stand for a meet of $x$ and $y$ in $\Pvar!$.
+  \end{definition*}
+
+  \begin{proposition*}[forthel,id=MeetOfPairIsUniqueThm]
+    Let $x, y \in \Pvar{univ}$ and $m, m'$ be meets of $x$ and $y$ in $\Pvar!$.
+    Then $m\eq m'$.
+  \end{proposition*}
+      
+  \begin{definition*}[forthel,id=MeetOfSetDef]
+    Let $A \subseteq \Pvar{univ}$.
+    A \emph{meet of $A$ in $\Pvar!$} is a lower bound $m$ of $A$ in $\Pvar!$ such that for any lower bound $l$ of $A$ in $\Pvar!$ we have $m {\Pvar{geq}} l$.
+
+    Let a \emph{least upper bound of $A$ in $\Pvar!$} stand for a meet of $A$ in $\Pvar!$.
+    Let a \emph{infimum of $A$ in $\Pvar!$} stand for a meet of $A$ in $\Pvar!$.
+  \end{definition*}
+
+  \begin{proposition*}[forthel,id=MeetOfSetIsUniqueThm]
+    Let $A \subseteq \Pvar{univ}$ and $m, m'$ be meets of $A$ in $\Pvar!$.
+    Then $m\eq m'$.
+  \end{proposition*}
+\end{sfragment}
+
+\begin{sfragment}{Greatest Elements}
+  \begin{definition*}[forthel,id=GreatestElementDef]
+    A \emph{greatest element of $\Pvar!$} is an element $g$ of $\Pvar{univ}$ such that $g {\Pvar{geq}} x$ for all $x \in \Pvar{univ}$.
+  \end{definition*}
+
+  \begin{proposition*}[forthel,id=GreatestElementIsUniqueThm]
+    Let $g, g'$ be greatest elements of $\Pvar!$.
+    Then $g\eq g'$.
+  \end{proposition*}
+\end{sfragment}
+
+\begin{sfragment}{Least Elements}
+  \begin{definition*}[forthel,id=LeastElementDef]
+    A \emph{least element of $\Pvar!$} is an element $l$ of $\Pvar{univ}$ such that $l {\Pvar{leq}} x$ for all $x \in \Pvar{univ}$.
+  \end{definition*}
+
+  \begin{proposition*}[forthel,id=LeastElementIsUniqueThm]
+    Let $l, l'$ be greatest elements of $\Pvar!$.
+    Then $l\eq l'$.
+  \end{proposition*}
+\end{sfragment}
+\end{smodule}
+\end{document}

@@ -186,6 +186,20 @@ dialect of ForTheL, respectively.
     `A implies that B`.
 
 
+### Changes on the example formalizations
+
+  * **Changed:** The formalizations that ship with Naproche are organized in a
+    new directory structure:
+
+    - `naproche/math/examples` contains stand-alone example formalizations.
+
+    - `naproche/math/libraries` contains structured libraries whose content is
+      intended to be imported in other formalizations.
+
+    - `naproche/math/meta-inf` contains files that (almost) all formalizations
+      depend on (both on the LaTeX and on the Naproche side).
+
+
 ### Changes on the LaTeX setup
 
   * **New:** The `naproche` package now supports to render Naproche

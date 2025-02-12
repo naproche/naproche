@@ -1,0 +1,149 @@
+\documentclass{article}
+\usepackage{naproche}
+\libinput[meta-inf]{example-preamble}
+
+\title{Knaster-Tarski fixed point theorem}
+\author{\Naproche{} Formalization: Andrei Paskevich, Steffen Frerix,\\
+Erik Sturzenhecker, and Peter Koepke}
+\date{2013 -- 2021}
+
+\begin{document}
+  \pagenumbering{gobble}
+
+  \maketitle
+
+  The Knaster-Tarski theorem is a result from lattice theory about fixed points
+  of monotone functions.
+  Bronis\l aw Knaster and Alfred Tarski established it in 1928 for the special
+  case of power set lattices (Knaster, B. with Tarski, A.: Un th\' eor\`eme sur
+  les fonctions d'ensembles, Ann. Soc. Polon. Math. vol. 6 (1928), 133-134).
+  This more general result was stated by Tarski in 1955 (Tarski, A.: A
+  lattice-theoretical fixpoint theorem and its applications, Pacific Journal of
+  Mathematics vol. 5 (1955), no. 2, 285-309).
+
+  Our formalization checks in about 45 seconds on a modest laptop.
+
+  \section{Preliminaries}
+  We first import a small $\mathbb{N}$aproche formalization of an ontology with
+  sets, functions, and objects:
+
+  \begin{forthel}
+    [read examples/preliminaries.ftl.tex]
+  \end{forthel}
+
+  \section{Partial Orders}
+  We work with a ``global'' order relation $\leq$.
+
+  \begin{forthel}
+    Let $x,y,z,u,v,w$ denote elements. Let $S,T$ denote sets.
+
+    \begin{signature}
+      $x \leq y$ is a relation.
+    \end{signature}
+
+    \begin{axiom}
+      $x \leq x$.
+    \end{axiom}
+
+    \begin{axiom}
+      $x \leq y \leq x \implies x = y$.
+    \end{axiom}
+
+    \begin{axiom}
+      $x \leq y \leq z \implies x \leq z$.
+    \end{axiom}
+
+    \begin{definition}
+      Let $S$ be a subset of $T$.
+      A lower bound of $S$ in $T$ is an element $u$ of $T$ such that $u \leq x$
+      for every $x \in S$.
+    \end{definition}
+
+    \begin{definition}
+      Let $S$ be a subset of $T$.
+      An upper bound of $S$ in $T$ is an element $u$ of $T$ such that $x \leq u$
+      for every $x \in S$.
+    \end{definition}
+
+    \begin{definition}
+      Let $S$ be a subset of $T$.
+      An infimum of $S$ in $T$ is an element $u$ of $T$ such that $u$ is a lower
+      bound of $S$ in $T$ and for every lower bound $v$ of $S$ in $T$ we have
+      $v \leq u$.
+    \end{definition}
+
+    \begin{definition}
+      Let $S$ be a subset of $T$.
+      A supremum of $S$ in $T$ is an element $u$ of $T$ such that $u$ is a upper
+      bound of $S$ in $T$ and for every upper bound $v$ of $S$ in $T$ we have
+      $u \leq v$.
+    \end{definition}
+
+    \begin{lemma}
+      Let $S$ be a subset of $T$. Let $u,v$ be suprema of $S$ in $T$.
+      Then $u = v$.
+    \end{lemma}
+
+    \begin{lemma}
+      Let $S$ be a subset of $T$. Let $u,v$ be infima of $S$ in $T$.
+      Then $u = v$.
+    \end{lemma}
+
+    \begin{definition}
+      A complete lattice is a set $S$ such that every subset of $S$ has an
+      infimum in $S$ and a supremum in $S$.
+    \end{definition}
+  \end{forthel}
+
+  \section{Functions}
+
+  \begin{forthel}
+    Let $f$ stand for a function.
+
+    \begin{definition}
+      A fixed point of $f$ is an element $x$ of $\dom(f)$ such that $f(x) = x$.
+    \end{definition}
+
+    \begin{definition}
+      $f$ is monotone iff for all $x,y \in \dom(f)$
+      $x \leq y \implies f(x) \leq f(y)$.
+    \end{definition}
+  \end{forthel}
+
+  \section{Knaster-Tarski theorem}
+
+  \begin{forthel}
+    Let $f$ stand for a function.
+
+    \begin{theorem}[title=KnasterTarski]
+      Let $U$ be a complete lattice.
+      Let $f:U \rightarrow U$ and $f$ be monotone.
+      Let $S$ be the class of fixed points of $f$.
+      Then $S$ is a complete lattice.
+    \end{theorem}
+    \begin{proof}
+      Let $T$ be a subset of $S$.
+      Let us show that $T$ has a supremum in $S$.  Define
+
+        \[ P = \{x \in U \mid \text{$f(x) \leq x$ and $x$ is an upper bound of
+        $T$ in $U$} \}. \]
+
+        Take an infimum $p$ of $P$ in $U$.
+        $f(p)$ is a lower bound of $P$ in $U$ and an upper bound of $T$ in $U$.
+        Hence $p$ is a fixed point of $f$ and a supremum of $T$ in $S$.
+      qed.
+
+      Let us show that $T$ has an infimum in $S$. Define
+
+        \[ Q = \{x \in U \mid \text{$x \leq f(x)$ and $x$ is a lower bound of
+        $T$ in $U$} \}. \]
+
+        Take a supremum $q$ of $Q$ in $U$.
+        $f(q)$ is an upper bound of $Q$ in $U$ and a lower bound of $T$ in $U$.
+        Hence $q$ is a fixed point of $f$.
+        $q$ is an infimum of $T$ in $S$.
+      qed.
+    \end{proof}
+  \end{forthel}
+
+\end{document}

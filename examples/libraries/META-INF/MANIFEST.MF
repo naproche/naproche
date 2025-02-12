@@ -1,3 +1,0 @@
-id: libraries
-ns: https://naproche.github.io/libraries
-narration-base: https://naproche.github.io/libraries

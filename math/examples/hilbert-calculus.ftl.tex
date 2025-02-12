@@ -1,0 +1,141 @@
+\documentclass{article}
+\usepackage{naproche}
+\libinput[meta-inf]{example-preamble}
+
+\newcommand{\imp}{\supset}
+\newcommand{\deducible}{\vdash}
+\newcommand{\falsum}{\bot}
+\newcommand{\negate}{\lnot}
+
+\title{A Hilbert-style calculus embedded into Naproche}
+\author{Adrian De Lon (2021)}
+\date{}
+
+
+\begin{document}
+\pagenumbering{gobble}
+
+\maketitle
+
+\usemodule[libraries/meta-inf]{vocabulary.ftl}
+
+The basic rules of the calculus are given as axioms.
+Then further derived rules are proven as propositions. 
+
+\section{The implicational propositional calculus}
+
+\begin{forthel}
+
+\begin{signature}
+    A formula is an object.
+\end{signature}
+Let $P, Q, R, S$ denote formulas.
+
+\begin{signature}
+    $P \imp Q$ is a formula.
+\end{signature}
+
+\begin{signature}
+    $\deducible P$ is a relation.
+\end{signature}
+Let $P$ is deducible stand for $\deducible P$.
+
+\begin{axiom}[id=Detachment]
+    Suppose $\deducible P$ and $\deducible P \imp Q$.
+    Then $\deducible Q$.
+\end{axiom}
+
+\begin{axiom}[id=Implosion]
+    $\deducible P \imp (Q \imp P)$.
+\end{axiom}
+
+\begin{axiom}[id=Chain]
+    $\deducible (P \imp (Q \imp R)) \imp ((P \imp Q) \imp (P \imp R))$.
+\end{axiom}
+
+\begin{proposition}[id=Weakening]
+    (0) Assume $\deducible Q$.
+    Then $\deducible P\imp Q$.
+\end{proposition}
+\begin{proof}
+    (1) $\deducible Q\imp (P\imp Q)$ (by Implosion).
+    
+    (2) $\deducible P\imp Q$ (by Detachment, 0, 1).
+\end{proof}
+
+\begin{proposition}[id=Weakening of implication]
+    (0) Assume $\deducible Q\imp R$.
+    Then $\deducible (P\imp Q)\imp (P \imp R)$.
+\end{proposition}
+\begin{proof}
+    (1) $\deducible P\imp (Q\imp R)$ (by Weakening, 0).
+    
+    (2) $\deducible (P\imp (Q\imp R))\imp ((P\imp Q)\imp (P\imp R))$ (by Chain).
+     
+    (3) $\deducible (P\imp Q)\imp (P\imp R)$ (by Detachment, 1, 2).
+\end{proof}
+
+\begin{proposition}[id=Transitivity]
+    %Suppose $P\imp Q$ and $Q\imp R$ are deducible.
+    %Then $P\imp R$ is deducible.
+    (0) Suppose $\deducible P\imp Q$ and $\deducible Q\imp R$.
+    Then $\deducible P\imp R$.
+\end{proposition}
+\begin{proof}
+    (1) $\deducible (P\imp Q)\imp (P\imp R)$ (by Weakening of implication, 0).
+    
+    (2) $\deducible P\imp R$  (by Detachment, 0, 1).
+\end{proof}
+
+\begin{proposition}[id=Identity]
+    $\deducible P\imp P$.
+\end{proposition}
+\begin{proof}
+    (1) $\deducible (P\imp ((P\imp P)\imp P))\imp ((P\imp (P\imp P))\imp (P\imp P))$ (by Chain).
+    
+    (2) $\deducible P\imp ((P\imp P)\imp P)$ (by Implosion).
+    
+    (3) $\deducible (P\imp (P\imp P))\imp (P\imp P)$ (by 1, 2, Detachment).
+    
+    (4) $\deducible P\imp (P\imp P)$ (by Implosion).
+    
+    (5) $\deducible P\imp P$ (by 3, 4, Detachment).
+\end{proof}
+
+\begin{proposition}
+    (0) Suppose $\deducible P\imp (P\imp Q)$.
+    Then $\deducible P\imp Q$.
+\end{proposition}
+\begin{proof}
+    (1) $\deducible (P\imp (P\imp Q))\imp ((P\imp P)\imp (P\imp Q))$ (by Chain).
+    
+    (2) $\deducible (P\imp P)\imp (P\imp Q)$ (by 0, 1, Detachment).
+    
+    (3) $\deducible P\imp P$  (by Identity).
+    
+    (4) $\deducible P\imp Q$  (by 2, 3, Detachment).
+\end{proof}
+\end{forthel}
+
+\section{Adding negation}
+
+\begin{forthel}
+Let $P, R$ denote formulas.
+
+\begin{signature}[id=Falsum]
+    $\falsum$ is a formula.
+\end{signature}
+
+Let $\negate$P stand for $P\imp\falsum$.
+
+\begin{axiom}[id=Double negation]
+    $\deducible\negate\negate P\imp P$.
+\end{axiom}
+
+\begin{proposition}[id=Explosion]
+    $\deducible \falsum\imp P$.
+\end{proposition}
+
+\end{forthel}
+
+\end{document}

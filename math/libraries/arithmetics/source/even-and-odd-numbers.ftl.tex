@@ -1,0 +1,296 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Even and Odd Numbers]{even-and-odd-numbers.ftl}
+\importmodule[libraries/arithmetics]{divisibility.ftl}
+\importmodule[libraries/arithmetics]{subtraction.ftl}
+
+\begin{sfragment}{Definition}
+  \begin{definition}[forthel,id=ARITHMETIC_15_4521358965847512]
+    Let $n$ be a natural number.
+    $n$ is even iff $n$ is divisible by $2$.
+  \end{definition}
+
+  \begin{definition}[forthel,id=ARITHMETIC_15_1023652125874596]
+    Let $n$ be a natural number.
+    $n$ is odd iff $n$ is not divisible by $2$.
+  \end{definition}
+
+  \begin{proposition}[forthel,id=ARITHMETIC_15_0236985458752156]
+    Let $n$ be a natural number.
+    $n$ is even iff $n = 2 \cdot m$ for some natural number $m$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Case $n$ is even.
+      Then $2$ divides $n$.
+      Hence $n = 2 \cdot m$ for some natural number $m$.
+    End.
+
+    Case $n = 2 \cdot m$ for some natural number $m$.
+      Then $2$ divides $n$.
+      Hence $2$ is even.
+    End.
+  \end{proof}
+
+  \begin{proposition}[forthel,id=ARITHMETIC_15_1023512547854265]
+    Let $n$ be a natural number.
+    $n$ is odd iff $n = (2 \cdot m) + 1$ for some natural number $m$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Case $n$ is odd.
+      (a) Define $\Phi = \{ n' \in \Nat \mid$ if $n'$ is odd then $n' = (2 \cdot m) + 1$ for some natural number $m \}$.
+
+      (1) $\Phi$ contains $0$.
+      Indeed $0$ is not odd.
+
+      (2) For all $n' \in \Phi$ we have $n' + 1 \in \Phi$. \newline
+      Proof.
+        Let $n' \in \Phi$.
+
+        Let us show that if $n' + 1$ is odd then $(n' + 1) = (2 \cdot m) + 1$ for some natural number $m$.
+          Assume that $n' + 1$ is odd.
+
+          Case $n'$ is even.
+            Take a natural number $m$ such that $n' = 2 \cdot m$.
+            Then $n' + 1 = (2 \cdot m) + 1$.
+          End.
+
+          Case $n'$ is odd.
+            Take a natural number $m$ such that $n' = (2 \cdot m) + 1$.
+            Then $n' + 1
+              = ((2 \cdot m) + 1) + 1
+              = (2 \cdot m) + (1 + 1)
+              = (2 \cdot m) + 2
+              = 2 \cdot (m + 1)$.
+            Hence $2$ divides $n'$.
+            Thus $n'$ is even.
+            Contradiction.
+          End.
+        End.
+      Qed.
+
+      Then $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).
+      Hence $n$ is odd iff $n = (2 \cdot m) + 1$ for some natural number $m$ (by a).
+    End.
+
+    Case $n = (2 \cdot m) + 1$ for some natural number $m$.
+      Consider a natural number $m$ such that $n = (2 \cdot m) + 1$.
+      Assume that $n$ is even.
+      Then we can take a natural number $k$ such that $n = 2 \cdot k$.
+      Then we have $2 \cdot k = (2 \cdot m) + 1$.
+      Hence $2$ divides $(2 \cdot m) + 1$.
+      Thus $2$ divides $1$.
+      Indeed $2$ divides $2 \cdot m$.
+      Contradiction.
+    End.
+  \end{proof}
+
+  \begin{proposition}[forthel,id=ARITHMETIC_15_1023652154254789]
+    Let $n$ be a natural number.
+    $n$ is odd iff $n = (2 \cdot m) - 1$ for some positive natural number $m$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Case $n$ is odd.
+      Consider a natural number $k$ such that $n = (2 \cdot k) + 1$.
+      Take $m = k + 1$.
+      Then $n
+        = (2 \cdot k) + 1
+        = (2 \cdot (k + 0)) + 1
+        = (2 \cdot (k + (1 - 1))) + 1
+        = (2 \cdot ((k + 1) - 1)) + 1
+        = (2 \cdot (m - 1)) + 1
+        = ((2 \cdot m) - (2 \cdot 1)) + 1
+        = ((2 \cdot m) - 2) + 1
+        = (2 \cdot m) - 1$.
+    End.
+
+    Case $n = (2 \cdot m) - 1$ for some positive natural number $m$.
+      Consider a positive natural number $m$ such that $n = (2 \cdot m) - 1$.
+      Take $k = m - 1$.
+      Then $n
+        = (2 \cdot m) - 1
+        = (2 \cdot (m + 0)) - 1
+        = (2 \cdot (m + (1 - 1))) - 1
+        = (2 \cdot ((m + 1) - 1)) - 1
+        = (2 \cdot ((m - 1) + 1)) - 1
+        = (2 \cdot (k + 1)) - 1
+        = ((2 \cdot k) + (2 \cdot 1)) - 1
+        = ((2 \cdot k) + 2) - 1
+        = (2 \cdot k) + (2 - 1)
+        = (2 \cdot k) + 1$.
+      Hence $n$ is odd.
+    End.
+  \end{proof}
+\end{sfragment}
+
+\begin{sfragment}{Addition of Even and Odd Numbers}
+  \begin{proposition}[forthel,id=ARITHMETIC_15_7845441256365256]
+    Let $n, m$ be natural numbers.
+    Assume that $n$ and $m$ are even.
+    Then $n + m$ is even.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Take natural numbers $k, l$ such that $n = 2 \cdot k$ and $m = 2 \cdot l$.
+    Then $n + m
+      = (2 \cdot k) + (2 \cdot l)
+      = 2 \cdot (k + l)$.
+    Hence $n + m$ is even.
+  \end{proof}
+
+  \begin{proposition}[forthel,id=ARITHMETIC_15_1023655256985478]
+    Let $n, m$ be natural numbers.
+    Assume that $n$ is even and $m$ is odd.
+    Then $n + m$ is odd.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Take natural numbers $k, l$ such that $n = 2 \cdot k$ and $m = (2 \cdot l) + 1$.
+    Then $n + m
+      = (2 \cdot k) + ((2 \cdot l) + 1)
+      = ((2 \cdot k) + (2 \cdot l)) + 1
+      = (2 \cdot (k + l)) + 1$.
+    Hence $n + m$ is odd.
+  \end{proof}
+
+  \begin{corollary}[forthel,id=ARITHMETIC_15_0125412589658745]
+    Let $n, m$ be natural numbers.
+    Assume that $n$ is odd and $m$ is even.
+    Then $n + m$ is odd.
+  \end{corollary}
+
+  \begin{proposition}[forthel,id=ARITHMETIC_15_1023659854785412]
+    Let $n, m$ be natural numbers.
+    Assume that $n$ and $m$ are odd.
+    Then $n + m$ is even.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Take natural numbers $k, l$ such that $n = (2 \cdot k) + 1$ and $m = (2 \cdot l) + 1$.
+    Then $n + m
+      = ((2 \cdot k) + 1) + ((2 \cdot l) + 1)
+      = (((2 \cdot k) + 1) + (2 \cdot l)) + 1
+      = ((2 \cdot k) + (1 + (2 \cdot l))) + 1
+      = ((2 \cdot k) + ((2 \cdot l) + 1)) + 1
+      = (((2 \cdot k) + (2 \cdot l)) + 1) + 1
+      = ((2 \cdot k) + (2 \cdot l)) + (1 + 1)
+      = ((2 \cdot k) + (2 \cdot l)) + 2
+      = (2 \cdot (k + l)) + 2
+      = 2 \cdot ((k + l) + 1)$.
+      Hence $n + m$ is even.
+  \end{proof}
+\end{sfragment}
+
+\begin{sfragment}{Subtraction of even and odd numbers}
+  \begin{proposition}[forthel,id=ARITHMETIC_15_8748569852145203]
+    Let $n, m$ be natural numbers such that $n \geq m$.
+    Assume that $n, m$ are even.
+    Then $n - m$ is even.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Take natural numbers $k, l$ such that $n = 2 \cdot k$ and $m = 2 \cdot l$.
+    Then $k \geq l$.
+    Hence $n - m
+      = (2 \cdot k) - (2 \cdot l)
+      = 2 \cdot (k - l)$.
+    Thus $n - m$ is even.
+  \end{proof}
+
+  \begin{proposition}[forthel,id=ARITHMETIC_15_0125412036589958]
+    Let $n, m$ be natural numbers such that $n \geq m$.
+    Assume that $n$ is even and $m$ is odd.
+    Then $n - m$ is odd.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Take natural numbers $k, l$ such that $n = 2 \cdot k$ and $m = (2 \cdot l) + 1$.
+    Then $k \geq l$ and $2 \cdot (k - l) \geq 1$.
+    Hence $n - m
+      = (2 \cdot k) - ((2 \cdot l) + 1)
+      = ((2 \cdot k) - (2 \cdot l)) - 1
+      = (2 \cdot (k - l)) - 1$.
+    Thus $n - m$ is odd.
+  \end{proof}
+
+  \begin{corollary}[forthel,id=ARITHMETIC_15_1021458745896523]
+    Let $n, m$ be natural numbers such that $n \geq m$.
+    Assume that $n$ is odd and $m$ is even.
+    Then $n - m$ is odd.
+  \end{corollary}
+  \begin{proof}[forthel]
+    Take natural numbers $k, l$ such that $n = (2 \cdot k) + 1$ and $m = 2 \cdot l$.
+    Then $k \geq l$.
+    Hence $n - m
+      = ((2 \cdot k) + 1) - (2 \cdot l)
+      = (1 + (2 \cdot k)) - (2 \cdot l)
+      = 1 + ((2 \cdot k) - (2 \cdot l))
+      = ((2 \cdot k) - (2 \cdot l)) + 1
+      = (2 \cdot (k - l)) + 1$.
+    Indeed $((2 \cdot k) - (2 \cdot l)) = 2 \cdot (k - l)$. %!
+    Thus $n - m$ is odd.
+  \end{proof}
+
+  \begin{proposition}[forthel,id=ARITHMETIC_15_0125478854587412]
+    Let $n, m$ be natural numbers such that $n \geq m$.
+    Assume that $n, m$ are odd.
+    Then $n - m$ is even.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Take natural numbers $k, l$ such that $n = (2 \cdot k) + 1$ and $m = (2 \cdot l) + 1$.
+    Then $k \geq l$.
+    Indeed $2 \cdot k \geq 2 \cdot l$.
+    Hence $1 + (2 \cdot k) \geq 2 \cdot l$.
+    Thus $n - m
+      = ((2 \cdot k) + 1) - ((2 \cdot l) + 1)
+      = ((1 + (2 \cdot k)) - (2 \cdot l)) - 1
+      = (1 + ((2 \cdot k) - (2 \cdot l))) - 1
+      = (1 + (2 \cdot (k - l))) - 1
+      = ((2 \cdot (k - l)) + 1) - 1
+      = 2 \cdot (k - l)$.
+    Indeed $((2 \cdot k) - (2 \cdot l)) = 2 \cdot (k - l)$. %!
+    Therefore $n - m$ is even.
+  \end{proof}
+\end{sfragment}
+
+\begin{sfragment}{Multiplication of Even and Odd Numbers}
+  \begin{proposition}[forthel,id=ARITHMETIC_15_0125698547589652]
+    Let $n, m$ be natural numbers.
+    Assume that $n$ is even or $n$ is even.
+    Then $n \cdot m$ is even.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Case $n$ is even.
+      Take a natural number $k$ such that $n = 2 \cdot k$.
+      Then $n \cdot m
+        = (2 \cdot k) \cdot m
+        = 2 \cdot (k \cdot m)$.
+      Hence $n \cdot m$ is even.
+    End.
+
+    Case $m$ is even.
+      Take a natural number $l$ such that $m = 2 \cdot l$.
+      Then $n \cdot m
+        = n \cdot (2 \cdot l)
+        = (n \cdot 2) \cdot l
+        = (2 \cdot n) \cdot l
+        = 2 \cdot (n \cdot l)$.
+      Hence $n \cdot m$ is even.
+    End.
+  \end{proof}
+
+  \begin{proposition}[forthel,id=ARITHMETIC_15_0236596587452145]
+    Let $n, m$ be natural numbers.
+    Assume that $n$ and $m$ are odd.
+    Then $n \cdot m$ is odd.
+  \end{proposition}
+  \begin{proof}[forthel]
+    Take natural numbers $k, l$ such that $n = (2 \cdot k) + 1$ and $m = (2 \cdot l) + 1$.
+    Then $n \cdot m
+      = ((2 \cdot k) + 1) \cdot m
+      = ((2 \cdot k) \cdot m) + (1 \cdot m)
+      = ((2 \cdot k) \cdot m) + m
+      = (2 \cdot (k \cdot m)) + m$.
+    $2 \cdot (k \cdot m)$ is even and $m$ is odd.
+    Hence $(2 \cdot (k \cdot m)) + m$ is odd.
+    Therefore $n \cdot m$ is odd.
+  \end{proof}
+\end{sfragment}
+\end{smodule}
+\end{document}

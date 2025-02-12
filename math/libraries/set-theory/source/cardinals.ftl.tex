@@ -1,0 +1,66 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Cardinal Numbers]{cardinals.ftl}
+\importmodule[libraries/set-theory]{axioms?choice.ftl}
+\importmodule[libraries/set-theory]{ordering.ftl}
+\importmodule[libraries/foundations]{equinumerosity.ftl}
+
+\begin{definition}[forthel,id=SET_THEORY_06_8286266038681600]
+  Let $x$ be a set.
+  The cardinality of $x$ is the ordinal $\kappa$ such that $\kappa$ is equinumerous to $x$ and every ordinal that is equinumerous to $x$ is greater than or equal to $\kappa$.
+
+  Let $|x|$ stand for the cardinality of $x$.
+\end{definition}
+
+\begin{definition}[forthel,id=SET_THEORY_06_6818986081648640]
+  A cardinal number is an ordinal $\kappa$ such that $\kappa = |x|$ for some
+  set $x$.
+
+  Let a cardinal stand for a cardinal number.
+\end{definition}
+
+\begin{proposition}[forthel,id=SET_THEORY_06_2820082336006144]
+  Let $\kappa$ be a cardinal.
+  Then $|\kappa| = \kappa$.
+\end{proposition}
+\begin{proof}[forthel]
+  $\kappa$ is an ordinal that is equinumerous to $\kappa$.
+  Hence $|\kappa| \leq \kappa$.
+  Consider a set $x$ such that $\kappa = |x|$.
+  Then $|\kappa|$ is an ordinal that is equinumerous to $x$.
+  Hence $\kappa \leq |\kappa|$.
+  Thus $|\kappa| = \kappa$.
+\end{proof}
+
+\begin{proposition}[forthel,id=SET_THEORY_06_6920913721229312]
+  Let $x, y$ be sets.
+  Then $x$ and $y$ are equinumerous iff $|x| = |y|$.
+\end{proposition}
+\begin{proof}[forthel]
+  Case $x$ and $y$ are equinumerous.
+    Take a bijection $f$ between $x$ and $y$.
+    Consider a bijection $g$ between $y$ and $|y|$.
+    Then $g \circ f$ is a bijection between $x$ and $|y|$ (by \printref{FOUNDATIONS_08_6435206693126144}).
+    Hence $x$ and $|y|$ are equinumerous.
+    Thus $|y| \geq |x|$.
+
+    $f^{-1}$ is a bijection between $y$ and $x$.
+    Consider a bijection $h$ between $x$ and $|x|$.
+    Then $h \circ f^{-1}$ is a bijection between $y$ and $|x|$ (by \printref{FOUNDATIONS_08_6435206693126144}).
+    Hence $y$ and $|x|$ are equinumerous.
+    Thus $|x| \geq |y|$.
+
+    Therefore $|x| = |y|$.
+  End.
+
+  Case $|x| = |y|$.
+    Consider a bijection $f$ between $x$ and $|x|$ and a bijection $g$
+    between $|y|$ and $y$.
+    Then $g \circ f$ is a bijection between $x$ and $y$.
+    Hence $x$ and $y$ are equinumerous.
+  End.
+\end{proof}
+\end{smodule}
+\end{document}

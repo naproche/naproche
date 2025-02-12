@@ -1,0 +1,216 @@
+\documentclass[11pt]{article}
+\usepackage{naproche}
+\libinput[meta-inf]{example-preamble}
+
+\author{Peter Koepke, University of Bonn}
+
+\title{Ontological Axioms for \Naproche}
+
+\begin{document}
+
+\maketitle
+
+\section{Basic Ideas}
+
+The natural proof assistant \Naproche is intended to
+approximate and support ordinary mathematical practices.
+\Naproche employs the controlled natural language ForTheL
+as its input language. Some ForTheL notions are already
+built into \Naproche, as well as some basic properties of
+these notions.
+There are
+mathematical objects, and sets and classes of mathematical
+objects. Sets are classes which are objects themselves and
+can thus be used in further mathematical constructions. Functions
+and maps map objects to objects, where functions are those
+maps which are objects.
+
+Modelling mathematical notions by objects corresponds
+to the intuition that numbers, points, etc. should
+not have internal set-theoretical
+structurings, contrary to purely set-theoretical
+foundations of mathematics. This is also advantageous
+for automated proving since it prevents proof searches to
+dig into non-informative internal structurings.
+
+As in common mathematics, sets and functions are required to
+satisfy separation and replacement properties known from the
+set theories of Kelley-Morse or Zermelo-Fraenkel.
+
+The ontology presented here is more hierarchical than
+ad-hoc first-order axiomatizations in some previous
+\Naproche formalizations. Sometimes
+this results in more complex and longer ontological checking tasks.
+Controlling the complexitiy of automated proofs will be a major
+issue for the further development.
+
+
+\section{Importing Some Mathematical Language}
+
+We import singular/plural forms of words that will be used in
+our formalizations (\path{examples/vocabulary.ftl.tex}).
+In the long run this should be replaced by
+employing a proper English vocabulary. We also
+import some alternative formulations for
+useful mathematical phrases (\path{examples/macros.ftl.tex}).
+
+\usemodule[libraries/meta-inf]{vocabulary.ftl}
+\usemodule[libraries/meta-inf]{macros.ftl}
+
+
+\section{Sets and Classes}
+
+The notions of \textit{classes} and \textit{sets} are already
+provided by \Naproche. Classes are usually defined by
+abstraction terms $\{\dots\mid\dots\}$. Since such terms need to be
+processed by the parser we cannot introduce them simply by first-order
+definitions but have to implement them in the software.
+That sets are classes which are objects, or extensionality can be proved
+from inbuilt assumptions, but it is important to reprove or restate such
+facts so that they can directly be accessed by the ATP.
+
+\begin{forthel}
+  Let $S, T$ denote classes.
+
+  \begin{definition}
+    The empty set is the set that has no elements.
+  \end{definition}
+
+  \begin{definition}
+    A subclass of $S$ is a class $T$ such that every $x \in T$ belongs to $S$.
+  \end{definition}
+
+  Let $T \subseteq S$ stand for $T$ is a subclass of $S$.
+
+  Let a proper subclass of $S$ stand for a subclass $T$ of $S$ such that $T \neq
+  S$.
+
+  \begin{lemma}[title=Class Extensionality]
+    If $S$ is a subclass of $T$ and $T$ is a subclass of $S$ then $S = T$.
+  \end{lemma}
+
+  \begin{definition}
+    A subset of $S$ is a set $X$ such that $X \subseteq S$.
+  \end{definition}
+
+  Let a proper subset of $S$ stand for a subset $X$ of $S$ such that $X \neq S$.
+
+  \begin{axiom}[title=Separation Axiom]
+    Assume that $X$ is a set.
+    Let $T$ be a subclass of $X$.
+    Then $T$ is a set.
+  \end{axiom}
+
+  \begin{definition}
+    The intersection of $S$ and $T$ is $\class{x \in S | x \in T}$.
+  \end{definition}
+
+  Let $S \cap T$ stand for the intersection of $S$ and $T$.
+
+  \begin{definition}
+    The union of $S$ and $T$ is $\class{x | x \in S \vee x \in T}$.
+  \end{definition}
+
+  Let $S \cup T$ stand for the union of $S$ and $T$.
+
+  \begin{definition}
+    The set difference of $S$ and $T$ is $\class{x \in S | x \notin T}$.
+  \end{definition}
+
+  Let $S \setminus T$ stand for the set difference of $S$ and $T$.
+
+  \begin{definition}
+    $S$ is disjoint from $T$ iff there is no element of $S$ that is an element
+    of $T$.
+  \end{definition}
+
+  \begin{definition}
+    A family is a set $F$ such that every element of $F$ is a set.
+  \end{definition}
+
+  \begin{definition}
+    A disjoint family is a family $F$ such that $X$ is disjoint from $Y$ for all
+    nonequal elements $X, Y$ of $F$.
+  \end{definition}
+\end{forthel}
+
+
+\section{Pairs and Products}
+
+Since we prefer objects over sets if possible, we do not work
+with Kuratowski-style set-theoretical ordered pairs, but
+axiomatize them as objects.
+
+\begin{forthel}
+  Let $S, T$ denote classes.
+
+  \begin{axiom}
+    For any objects $a, b, c, d$ if $(a,b) = (c,d)$ then $a = c$ and $b = d$.
+  \end{axiom}
+
+  \begin{definition}
+    $S \times T = \class{(x,y) | \text{$x \in S$ and $y \in T$}}$.
+  \end{definition}
+
+  \begin{axiom}
+    Let $X, Y$ be sets.
+    Then $X \times Y$ is a set.
+  \end{axiom}
+
+  \begin{lemma}
+    Let $x, y$ be objects.
+    If $(x,y)$ is an element of $S \times T$ then $x$ is an element of $S$ and
+    $y$ is an element of $T$.
+  \end{lemma}
+\end{forthel}
+
+
+\section{Functions and Maps}
+
+The treatment of functions and maps is similar to that
+of sets and classes.
+
+\begin{forthel}
+  Let $S, T$ denote classes.
+  Let $f$ stand for a map.
+
+  \begin{axiom}
+    Assume that $\dom(f)$ is a set and $f(x)$ is an object for any
+    $x \in \dom(f)$.
+    Then $f$ is a function.
+  \end{axiom}
+
+  \begin{definition}
+    Assume $S$ is a subclass of the domain of $f$.
+    $f[S] = \class{f(x) | x \in S}$.
+  \end{definition}
+
+  Let the image of $f$ stand for $f[\dom(f)]$.
+
+  \begin{definition}
+    $f$ maps elements of $S$ to elements of $T$ iff $\dom(f) = S$ and $f[S]
+    \subseteq T$.
+  \end{definition}
+
+  Let $f : S \rightarrow T$ stand for $f$ maps elements of $S$ to elements of
+  $T$.
+
+  \begin{axiom}[title=Replacement Axiom]
+    Let $X$ be a set.
+    Assume that $X$ is a subset of the domain of $f$.
+    Then $f[X]$ is a set.
+  \end{axiom}
+
+  Let $g$ retracts $f$ stand for $g(f(x)) = x$ for all elements $x$ of
+  $\dom(f)$.
+  Let $h$ sections $f$ stand for $f(h(y)) = y$ for all elements $y$ of
+  $\dom(h)$.
+
+  \begin{definition}
+    $f : S \leftrightarrow T$ iff $f : S \rightarrow T$ and there exists a map
+    $g$ such that $g : T \rightarrow S$ and $g$ retracts $f$ and $g$ sections
+    $f$.
+  \end{definition}
+\end{forthel}
+
+\end{document}

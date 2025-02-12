@@ -1,0 +1,152 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Infinite Cardinal Numbers]{infinite-cardinals.ftl}
+\importmodule[libraries/foundations]{proper-classes.ftl}
+\importmodule[libraries/set-theory]{finite-and-infinite-sets.ftl}
+\importmodule[libraries/set-theory]{cantor.ftl}
+\symdef{Card}{\textbf{Card}}
+
+\begin{definition}[forthel,id=SET_THEORY_07_4231078585827328]
+  $\Card$ is the collection of all infinite cardinals.
+\end{definition}
+
+\begin{proposition}[forthel,id=SET_THEORY_07_8189062544359424]
+  Let $\alpha$ be an infinite ordinal.
+  Then $|\succ(\alpha)| = |\alpha|$.
+\end{proposition}
+\begin{proof}[forthel]
+  For any $\beta \in \succ(\alpha)$ we have
+  $\beta < \omega$ or $\omega \leq \beta < \alpha$ or $\beta = \alpha$.
+  Define \[ f(\beta) =
+    \begin{cases}
+      \succ(\beta)  & : \beta < \omega
+      \\
+      \beta         & : \omega \leq \beta < \alpha
+      \\
+      0             & : \beta = \alpha
+    \end{cases} \]
+  for $\beta \in \succ(\alpha)$.
+
+  Then $f$ is a map from $\succ(\alpha)$ to $\alpha$.
+  Indeed we can show that $f(\beta) \in \alpha$ for all
+  $\beta \in \succ(\alpha)$. \newline
+  Proof.
+    Let $\beta \in \succ(\alpha)$.
+
+    Case $\beta < \omega$.
+      Then $f(\beta)
+        = \succ(\beta)
+        < \omega
+        \leq \alpha$.
+    End.
+
+    Case $\omega \leq \beta < \alpha$.
+      Then $f(\beta)
+        = \beta
+        < \alpha$.
+    End.
+
+    Case $\beta = \alpha$.
+      Then $f(\beta)
+        = 0
+        < \alpha$.
+    End.
+  Qed.
+
+  $f$ is surjective onto $\alpha$.
+  Indeed we can show that for any $\beta \in \alpha$ there exists a
+  $\gamma \in \succ(\alpha)$ such that $\beta = f(\gamma)$. \newline
+  Proof.
+    Let $\beta \in \alpha$.
+    Then $\beta = 0$ or $0 < \beta < \omega$ or $\beta \geq \omega$.
+
+    Case $\beta = 0$.
+      Then $\beta = f(\alpha)$.
+    End.
+
+    Case $0 < \beta < \omega$.
+      Take an ordinal $\beta'$ such that $\beta = \succ(\beta')$.
+      Then $\beta' < \omega$.
+      Hence $\beta = f(\beta')$.
+    End.
+
+    Case $\beta \geq \omega$.
+      Then $\beta = f(\beta)$.
+    End.
+  Qed.
+
+  $f$ is injective.
+  Indeed we can show that for all $\beta, \gamma \in \succ(\alpha)$ if
+  $\beta \neq \gamma$ then $f(\beta) \neq f(\gamma)$. \newline
+  Proof.
+    Let $\beta, \gamma \in \succ(\alpha)$.
+    Assume $\beta \neq \gamma$.
+
+    Case $\beta < \omega$.
+      If $\gamma = \alpha$ then
+      $f(\beta)
+        = \succ(\beta)
+        \neq 0
+        = f(\gamma)$.
+      If $\omega \leq \gamma < \alpha$ then
+      $f(\beta)
+        = \succ(\beta)
+        < \omega
+        \leq \gamma
+        = f(\gamma)$.
+    End.
+
+    Case $\omega \leq \beta < \alpha$.
+      If $\gamma = \alpha$ then
+      $f(\beta)
+        = \beta
+        \geq \omega
+        > 0
+        = f(\gamma)$.
+      If $\gamma < \omega$ then
+      $f(\beta)
+        = \beta
+        \geq \omega
+        > \succ(\gamma)
+        = f(\gamma)$.
+    End.
+
+    Case $\beta = \alpha$.
+      If $\gamma < \omega$ then
+      $f(\beta)
+        = 0
+        \neq \succ(\gamma)
+        = f(\gamma)$.
+      If $\omega \leq \gamma < \alpha$ then
+      $f(\beta)
+        = 0
+        < \omega
+        \leq \gamma
+        = f(\gamma)$.
+    End.
+  Qed.
+
+  Hence $f$ is a bijection between $\succ(\alpha)$ and $\alpha$.
+  Therefore $\succ(\alpha)$ and $\alpha$ are equinumerous.
+  Consequently $|\succ(\alpha)| = |\alpha|$.
+\end{proof}
+
+\begin{proposition}[forthel,id=SET_THEORY_07_8700732632989696]
+  Every infinite cardinal is a limit ordinal.
+\end{proposition}
+\begin{proof}[forthel]
+  Let $\kappa$ be an infinite cardinal.
+  Suppose that $\kappa$ is not a limit ordinal.
+  $\kappa \neq 0$.
+  Hence $\kappa$ is a successor ordinal.
+  Indeed $\kappa$ is an ordinal.
+  Thus we can take an ordinal $\alpha$ such that $\kappa = \succ(\alpha)$.
+  We have $\alpha > \kappa \geq \omega$.
+  Hence $|\succ(\alpha)| = |\alpha|$.
+  Thus $\alpha < |\kappa|$ and $\kappa$ is equinumerous to $\kappa$.
+  Contradiction.
+\end{proof}
+\end{smodule}
+\end{document}

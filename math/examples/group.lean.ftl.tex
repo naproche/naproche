@@ -1,0 +1,286 @@
+\documentclass{article}
+\usepackage{naproche}
+\libinput[meta-inf]{example-preamble}
+
+\title{group.lean in \Naproche}
+\author{\Naproche Formalization: Peter Koepke}
+\date{2021}
+
+\begin{document}
+\pagenumbering{gobble}
+
+\maketitle
+
+\usemodule[libraries/meta-inf]{vocabulary.ftl}
+
+\noindent We give a ForTheL version of the ``multiplicative half'' of
+\path{https://github.com/leanprover/lean/blob/master/library/init/
+algebra/group.lean} on basic concepts in group theory
+by J. Avigad and L. de Moura.
+Whereas the Lean formalization takes place within a sophisticated type system
+we suggest a simplistic approach in which types are naively viewed as sets.
+
+The purpose of this text is a comparison of the technical approach in Lean
+with the rather natural input language ForTheL of \Naproche{}.
+\Naproche{} allows to introduce new notions like ``type with multiplication''
+or ``group'' for which further structural components like a multiplication can
+be introduced and equipped with axioms. Since the mathematics of this
+text is very basic, \Naproche{} can prove most lemmas automatically without
+explicit proofs. The formalization given here motivates to further
+use and adapt \Naproche{}'s soft types for abstract algebraic structures.
+
+
+\section{Defining Groups}
+
+\begin{forthel}
+
+\begin{signature}
+A type is a set.
+\end{signature}
+
+Let $\alpha$ stand for a type.
+Let $a : t$ stand for $a$ is an element of $t$.
+
+\begin{signature}
+A type with multiplication is a type.
+\end{signature}
+
+\begin{signature}
+Let $\alpha$ be a type with multiplication and $a,b : \alpha$.
+$a *^{\alpha} b$ is an element of $\alpha$.
+\end{signature}
+
+\begin{definition}
+A semigroup is a type with multiplication $\alpha$
+such that for all $a,b,c : \alpha$
+$(a *^{\alpha} b) *^{\alpha} c = a *^{\alpha} (b *^{\alpha} c)$.
+\end{definition}
+
+\begin{definition}
+A commutative semigroup is a semigroup $\alpha$
+such that for all $a,b : \alpha$
+$a *^{\alpha} b = b *^{\alpha} a$.
+\end{definition}
+
+\begin{definition}
+A semigroup with left cancellation is a semigroup
+$\alpha$ such that for all $a,b,c : \alpha$
+$a *^{\alpha} b = a *^{\alpha} c => b = c$.
+\end{definition}
+
+\begin{definition}
+A semigroup with right cancellation is a semigroup
+$\alpha$ such that for all $a,b,c : \alpha$
+$a *^{\alpha} b = c *^{\alpha} b => a = c$.
+\end{definition}
+
+\begin{signature}
+A type with one is a type.
+\end{signature}
+
+\begin{signature}
+Assume $\alpha$ is a type with one. $1^{\alpha}$ is an
+element of $\alpha$.
+\end{signature}
+
+\begin{definition}
+A monoid is a semigroup $\alpha$ such that $\alpha$ is a type
+with one and
+$\forall a : \alpha 1^{\alpha} *^{\alpha} a = a$ and
+$\forall a : \alpha a *^{\alpha} 1^{\alpha} = a$.
+\end{definition}
+
+\begin{definition}
+A commutative monoid is a monoid that
+is a commutative semigroup.
+\end{definition}
+
+\begin{signature}
+A type with inverses is a type.
+\end{signature}
+
+\begin{signature}
+Assume $\alpha$ is a type with inverses and $a : \alpha$.
+$a^{-1,\alpha}$ is an element of $\alpha$.
+\end{signature}
+
+\begin{definition}
+A group is a monoid $\alpha$ such that $\alpha$ is a type
+with inverses and
+for all $a$ : $\alpha a^{-1,\alpha} *^{\alpha} a = 1^{\alpha}$.
+\end{definition}
+
+\begin{definition}
+A commutative group is a group that is a commutative
+monoid.
+\end{definition}
+
+\end{forthel}
+
+
+\section{Term Identities in Groups}
+
+We prove a number of simple algebraic consequences of the the
+group axioms. The formalizations would read even more natural
+if the dependence on a group $\alpha$ could be made implicit
+and one could write $a * a^{-1} = 1$ instead of
+$a *^{\alpha} a^{-1,\alpha} = 1^{\alpha}$.
+Lean's elaboration mechanism provides this important feature
+which we would like to implement in \Naproche{} as well. \\
+
+
+\begin{forthel}
+
+\begin{lemma}[title=mul left comm]
+Let $\alpha$ be a commutative semigroup.
+Then for all $a,b,c : \alpha$
+$a *^{\alpha} (b *^{\alpha} c) = b *^{\alpha} (a *^{\alpha} c)$.
+\end{lemma}
+
+\begin{lemma}[title=mul right comm]
+Let $\alpha$ be a commutative semigroup.
+Then for all $a,b,c : \alpha$
+$a *^{\alpha} (b *^{\alpha} c) = a *^{\alpha} (c *^{\alpha} b)$.
+\end{lemma}
+
+\begin{lemma}[title=mul left cancel iff]
+Let $\alpha$ be a semigroup with left cancellation.
+Then for all $a,b,c : \alpha$
+$a *^{\alpha} b = a *^{\alpha} c <=> b = c$.
+\end{lemma}
+
+\begin{lemma}[title=mul right cancel iff]
+Let $\alpha$ be a semigroup with right cancellation.
+Then for all $a,b,c : \alpha$
+$b *^{\alpha} a = c *^{\alpha} a <=> b = c$.
+\end{lemma}
+
+Let $\alpha$ denote a group.
+
+\begin{lemma}[title=inv mul cancel left]
+For all $a,b : \alpha$
+$a^{-1,\alpha} *^{\alpha} (a *^{\alpha} b) = b$.
+\end{lemma}
+
+\begin{lemma}[title=inv mul cancel right]
+For all $a,b : \alpha$
+$a *^{\alpha} (b^{-1,\alpha} *^{\alpha} b) = a$.
+\end{lemma}
+
+\begin{lemma}[title=inv eq of mul eq one]
+Let $a, b : \alpha$ and $a *^{\alpha} b = 1^{\alpha}$.
+Then $a^{-1,\alpha} = b$.
+\end{lemma}
+
+\begin{lemma}[title=one inv]
+$(1^{\alpha})^{-1,\alpha} = 1^{\alpha}$.
+\end{lemma}
+
+\begin{lemma}[title=inv inv]
+Let $a : \alpha$.
+Then $(a^{-1,\alpha})^{-1,\alpha} = a$.
+\end{lemma}
+
+\begin{lemma}[title=mul right inv]
+Let $a : \alpha$.
+Then $a *^{\alpha} a^{-1,\alpha} = 1^{\alpha}$.
+\end{lemma}
+
+\begin{lemma}[title=inv inj]
+Let $a,b : \alpha$ and $a^{-1,\alpha} = b^{-1,\alpha}$.
+Then $a = b$.
+\end{lemma}
+
+\begin{lemma}[title=group mul left cancel]
+Let $a,b,c : \alpha$ and $a *^{\alpha} b = a *^{\alpha} c$.
+Then $b = c$.
+\end{lemma}
+
+\begin{lemma}[title=group mul right cancel]
+Let $a,b,c : \alpha$ and $a *^{\alpha} b = c *^{\alpha} b$.
+Then $a = c$.
+\end{lemma}
+\begin{proof}
+$a = (a *^{\alpha} b) *^{\alpha} b^{-1,\alpha}
+= (c *^{\alpha} b) *^{\alpha} b^{-1,\alpha} = c$.
+\end{proof}
+
+\begin{lemma}[title=mul inv cancel left]
+Let $a,b : \alpha$.
+Then $a *^{\alpha} (a^{-1,\alpha} *^{\alpha} b) = b$.
+\end{lemma}
+
+\begin{lemma}[title=mul inv cancel right]
+Let $a,b : \alpha$.
+Then $(a *^{\alpha} b) *^{\alpha} b^{-1,\alpha} = a$.
+\end{lemma}
+
+
+\begin{lemma}[title=mul inv rev]
+Let $a,b : \alpha$.
+Then $(a *^{\alpha} b)^{-1,\alpha} = b^{-1,\alpha} *^{\alpha} a^{-1,\alpha}$.
+\end{lemma}
+\begin{proof}
+$(a *^{\alpha} b) *^{\alpha} (b^{-1,\alpha} *^{\alpha} a^{-1,\alpha})
+= 1^{\alpha}$.
+\end{proof}
+
+\begin{lemma}[title=eq inv of eq inv]
+Let $a,b : \alpha$ and $a = b^{-1,\alpha}$.
+Then $b = a^{-1,\alpha}$.
+\end{lemma}
+
+\begin{lemma}[title=eq inv of mul eq one]
+Let $a,b : \alpha$ and $a *^{\alpha} b = 1^{\alpha}$.
+Then $a = b^{-1,\alpha}$.
+\end{lemma}
+
+\begin{lemma}[title=eq mul inv of mul eq]
+Let $a,b,c : \alpha$ and $a *^{\alpha} c = b$.
+Then $a = b *^{\alpha} c^{-1,\alpha}$.
+\end{lemma}
+
+\begin{lemma}[title=eq inv mul of mul eq]
+Let $a,b,c : \alpha$ and $b *^{\alpha} a = c$.
+Then $a = b^{-1,\alpha} *^{\alpha} c$.
+\end{lemma}
+
+\begin{lemma}[title=inv mul eq of eq mul]
+Let $a,b,c : \alpha$ and $b = a *^{\alpha} c$.
+Then $a^{-1,\alpha} *^{\alpha} b = c$.
+\end{lemma}
+
+\begin{lemma}[title=mul inv eq of eq mul]
+Let $a,b,c : \alpha$ and $a = c *^{\alpha} b$.
+Then $a *^{\alpha} b^{-1,\alpha} = c$.
+\end{lemma}
+
+\begin{lemma}[title=eq mul of mul inv eq]
+Let $a,b,c : \alpha$ and $a *^{\alpha} c^{-1,\alpha} = b$.
+Then $a = b *^{\alpha} c$.
+\end{lemma}
+
+\begin{lemma}[title=eq mul of inv mul eq]
+Let $a,b,c : \alpha$ and $b^{-1,\alpha} *^{\alpha} a = c$.
+Then $a = b *^{\alpha} c$.
+\end{lemma}
+
+\begin{lemma}[title=mul eq of eq inv mul]
+Let $a,b,c : \alpha$ and $b = a^{-1,\alpha} *^{\alpha} c$.
+Then $a *^{\alpha} b = c$.
+\end{lemma}
+
+\begin{lemma}[title=mul eq of eq mul inv]
+Let $a,b,c : \alpha$ and $a = c *^{\alpha} b^{-1,\alpha}$.
+Then $a *^{\alpha} b = c$.
+\end{lemma}
+
+\begin{lemma}[title=mul inv]
+Let $\alpha$ be a commutative group.
+Let $a,b : \alpha$.
+Then $(a *^{\alpha} b)^{-1,\alpha} = a^{-1,\alpha} *^{\alpha} b^{-1,\alpha}$.
+\end{lemma}
+
+\end{forthel}
+
+\end{document}

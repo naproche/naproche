@@ -1,6 +1,0 @@
-
-id:preliminaries
-ns:http://mathhub.info/preliminaries
-narration-base:http://mathhub.info/preliminaries
-url-base:https://stexmmt.mathhub.info/:sTeX
-format:stex

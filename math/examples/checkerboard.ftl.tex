@@ -1,0 +1,487 @@
+\documentclass{article}
+\usepackage{naproche}
+\libinput[meta-inf]{example-preamble}
+
+\title{The mutilated checkerboard}
+\author{Naproche formalization and commentary:\\ Adrian De Lon, Peter Koepke, Anton Lorenzen}
+\date{2021}
+
+\usepackage{bbm}
+
+\newcommand{\Checkerboard}{\mathbf{C}}
+\newcommand{\Corners}{\mathbf{C'}}
+\newcommand{\Mutilated}{\mathbf{M}}
+\newcommand{\Black}{\mathbf{B}}
+\newcommand{\White}{\mathbf{W}}
+
+\newcommand{\Swap}[1]{\operatorname{Swap}#1}
+\newcommand{\Sw}[3]{\operatorname{Swap}_{#1}^{#2}(#3)}
+
+
+\begin{document}
+
+\maketitle
+
+
+
+
+
+\section{Introduction}
+
+Max Black proposed the mutilated checkerboard problem in his book
+\textit{Critical Thinking} (1946).
+%
+It was later discussed by Martin Gardner in his
+\textit{Scientific American} column, \textit{Mathematical Games}.
+%
+John McCarthy, one of the
+founders of Artificial Intelligence described it as a
+\textit{Tough Nut for Proof Procedures}
+and discussed fully automatic or interactive proofs of the solution.
+
+There have been several formalization of the Checkerboard problem before. A
+survey article by Manfred Kerber and Martin Pollet called \emph{A Tough Nut
+for Mathematical Knowledge Management} lists a couple of formalizations.
+Our formalization is based on a set-theoretical formalization by John McCarthy.
+Checking takes 2 or 3 minutes on a modest laptop.
+
+% Hidden because we have not discussed it yet.
+% Maybe this can be mentioned as an area for improvement in the subsequent section?
+\begin{comment}
+    \begin{forthel}
+        [read examples/preliminaries.ftl.tex]
+        [synonym coordinate/-s]
+        [synonym square/-s]
+        [synonym subset/-s]
+
+        Let $f : X\to Y$ stand for $f : X\rightarrow Y$.
+    \end{forthel}
+\end{comment}
+
+
+\section{Preliminaries about cardinality}
+
+
+\begin{forthel}
+
+\begin{definition}
+    Let $B, C$ be sets.
+    $B$ is equinumerous with $C$ iff there exists a map $F$ such that
+    $F : B\leftrightarrow C$.
+\end{definition}
+
+\begin{lemma}
+    Let $B, C$ be sets.
+    Assume that $B$ is equinumerous with $C$.
+    Then $C$ is equinumerous with $B$.
+\end{lemma}
+
+\begin{lemma}
+    Let $A, B, C$ be sets.
+    Assume $A$ is equinumerous with $B$.
+    Assume $B$ is equinumerous with $C$.
+    Then $A$ is equinumerous with $C$.
+\end{lemma}
+\begin{proof}
+    Take a map $F$ such that $F : A\leftrightarrow B$.
+    Take a map $G$ such that $G : B\rightarrow A$
+    and (for all elements $x$ of $A$ we have $G(F(x)) = x$) and
+    (for all elements $y$ of $B$ we have $F(G(y))=y$).
+    Take a map $H$ such that $H : B\leftrightarrow C$.
+    Take a map $I$ such that $I : C\rightarrow B$ and (for all elements $x$ of $B$ we have $I(H(x)) = x$) and
+    (for all elements $y$ of $C$ we have $H(I(y))=y$).
+    For every element $x$ of $A$ $H(F(x))$ is an object.
+    Define $J(x) = H(F(x))$ for $x$ in $A$.
+    For every element $y$ of $C$ $G(I(y))$ is an object.
+[timelimit 30]
+    $J : A\leftrightarrow C$. Indeed define $K(y) = G(I(y))$ for $y$ in $C$.
+[timelimit 3]
+\end{proof}
+
+\begin{definition}
+    Let $X$ be a set.
+    $X$ is Dedekind finite iff every proper subset of $X$
+    is not equinumerous with $X$.
+\end{definition}
+
+\end{forthel}
+
+
+
+
+\section{Setting up the checkerboard}
+
+We introduce integer constants
+to model checkerboards as a Cartesian product of the
+integers $0, 1, 2, \ldots, 7$.
+
+\begin{forthel}
+    \begin{signature} An integer is an object. \end{signature}
+
+    \begin{signature} $0$ is a integer. \end{signature}
+    \begin{signature} $1$ is a integer. \end{signature}
+    \begin{signature} $2$ is a integer. \end{signature}
+    \begin{signature} $3$ is a integer. \end{signature}
+    \begin{signature} $4$ is a integer. \end{signature}
+    \begin{signature} $5$ is a integer. \end{signature}
+    \begin{signature} $6$ is a integer. \end{signature}
+    \begin{signature} $7$ is a integer. \end{signature}
+
+    \begin{definition}
+        A coordinate is an integer $x$
+        such that $x = 0$ or $x = 1$ or $x = 2$ or $x = 3$ or $x = 4$
+        or $x = 5$ or $x = 6$ or $x = 7$.
+    \end{definition}
+
+    Let $m, n, i, j, k, l$ denote coordinates.
+
+    \begin{signature} A square is an object. \end{signature}
+    \begin{axiom} $(m, n)$ is a square. \end{axiom}
+    \begin{axiom}
+        Let $x$ be a square.
+        Then $x = (m,n)$ for some coordinate $m$ and some coordinate $n$.
+    \end{axiom}
+    Let $x, y, z$ denote squares.
+\end{forthel}
+
+
+The checkerboard is the Dedekind finite set containing all squares.
+
+\begin{forthel}
+    \begin{definition}
+        The checkerboard is the class of all squares.
+    \end{definition}
+
+    \begin{axiom} The checkerboard is a set. \end{axiom}
+
+    Let $\Checkerboard$ stand for the checkerboard.
+
+    \begin{axiom}
+        Every subset of the checkerboard is Dedekind finite.
+    \end{axiom}
+\end{forthel}
+
+
+\section{The Mutilated Checkerboard}
+
+Defining the mutilated checkerboard is straightforward:
+we simply remove the two corners.
+
+\begin{forthel}
+    \begin{definition}
+        $\Corners = \{ (0, 0), (7, 7) \}$.
+    \end{definition}
+
+    \begin{definition}
+        $\Mutilated = \Checkerboard \setminus \Corners$.
+    \end{definition}
+
+    Let the mutilated checkerboard stand for $\Mutilated$.
+\end{forthel}
+
+
+
+\section{Dominoes}
+
+To define dominoes,
+we introduce concepts of adjacency by first declaring new relations and then axiomatizing them.
+As usual, chaining of relation symbols indicates a conjunction.
+
+\begin{forthel}
+    Let $m, n, i, j, k, l$ denote coordinates.
+    Let $x, y, z$ denote squares.
+
+    \begin{signature}
+        Let $m$ be an integer. A neighbour of $m$ is an integer.
+    \end{signature}
+    Let $m\sim n$ stand for $m$ is a neighbour of $n$.
+
+    \begin{axiom}
+        If $m\sim n$ then $n\sim m$.
+    \end{axiom}
+    \begin{axiom}
+        $0\sim 1\sim 2\sim 3\sim 4\sim 5\sim 6\sim 7$.
+    \end{axiom}
+
+    \begin{definition}
+        $x$ is adjacent to $y$ iff
+        there exist integers $b, c, d, e$ such that
+        $x = (b, c)$ and $y = (d, e)$ and
+        (($b = d$  and $c\sim e$) or
+        ($b\sim d$ and $c = e$)).
+    \end{definition}
+
+    \begin{definition}
+        A domino is a set $D$ such that $D = \{x, y\}$ for some
+        adjacent squares $x, y$.
+    \end{definition}
+\end{forthel}
+
+
+
+\section{Domino Tilings}
+
+\begin{forthel}
+    \begin{definition}
+        A domino tiling is a disjoint family $T$
+        such that every element of $T$ is a domino.
+    \end{definition}
+
+    \begin{definition}
+        Let $A$ be a subset of the checkerboard.
+        A domino tiling of $A$ is a domino tiling $T$
+        such that for every square $x$
+        $x$ is an element of $A$ iff
+        $x$ is an element of some element of $T$.
+    \end{definition}
+\end{forthel}
+
+\noindent
+We shall prove that the mutilated checkerboard has no domino tiling.
+
+
+\section{Colours}
+
+We shall solve the mutilated checkerboard problem by a cardinality argument.
+Squares on an actual checkerboard are coloured black and white and we can count
+colours on dominoes and on the mutilated checkerboard $\Mutilated$.
+
+The introduction of colours can be viewed as a creative move typical of
+mathematics: changing perspectives and introducing aspects that are not part
+of the original problem. The mutilated checkerboard was first discussed under
+a cognition-theoretic perspective: can one solve the problem \emph{without}
+inventing new concepts and completely stay within the realm of squares,
+subsets of the checkerboard and dominoes.
+
+\begin{forthel}
+    Let $x, y, z$ denote squares.
+
+    \begin{signature} $x$ is black is a relation. \end{signature}
+    Let $x$ is white stand for $x$ is not black.
+
+    \begin{axiom} If $x$ is adjacent to $y$ then $x$ is black iff $y$ is white. \end{axiom}
+
+    \begin{axiom} $(0,0)$ is black. \end{axiom}
+    \begin{axiom} $(7,7)$ is black. \end{axiom}
+
+    \begin{definition} $\Black$ is the class of black elements of $\Checkerboard$. \end{definition}
+    \begin{definition} $\White$ is the class of white elements of $\Checkerboard$. \end{definition}
+
+    \begin{lemma} $\Black$ is a set. \end{lemma}
+    \begin{lemma} $\White$ is a set. \end{lemma}
+\end{forthel}
+
+
+\section{Counting Colours on Checkerboards}
+
+The original checkerboard has an equal number of black and white squares.
+Since our setup does not include numbers for counting, we rather work with
+equinumerosity. The following argument formalizes that we can invert the
+colours of a checkerboard by swapping the files $0$ and $1$, $2$ and $3$, etc..
+We formalize swapping by a first-order function symbol $\Swap{}$.
+
+\begin{forthel}
+    Let $m, n, i, j, k, l$ denote coordinates.
+
+    \begin{signature}
+        Let $x$ be an element of $\Checkerboard$.
+        $\Swap{x}$ is an element of $\Checkerboard$.
+    \end{signature}
+
+    \begin{axiom} $\Swap{(0, n)} = (1, n)$ and $\Swap{(1, n)} = (0, n)$. \end{axiom}
+
+    \begin{axiom} $\Swap{(2, n)} = (3, n)$ and $\Swap{(3, n)} = (2, n)$. \end{axiom}
+
+    \begin{axiom} $\Swap{(4, n)} = (5, n)$ and $\Swap{(5, n)} = (4, n)$. \end{axiom}
+
+    \begin{axiom} $\Swap{(6, n)} = (7, n)$ and $\Swap{(7, n)} = (6, n)$. \end{axiom}
+
+    \begin{lemma}
+        Let $x$ be an element of $\Checkerboard$.
+        $\Swap{x}$ is adjacent to $x$.
+    \end{lemma}
+    \begin{proof}
+        Take integers $i$, $j$ such that $x = (i, j)$.
+        Case $i = 0$. End.
+        Case $i = 1$. End.
+        Case $i = 2$. End.
+        Case $i = 3$. End.
+        Case $i = 4$. End.
+        Case $i = 5$. End.
+        Case $i = 6$. End.
+        Case $i = 7$. End.
+    \end{proof}
+\end{forthel}
+
+$\Swap{}$ is an involution.
+
+\begin{forthel}
+    \begin{lemma}
+        Let $x$ be an element of $\Checkerboard$.
+        $\Swap{(\Swap{x})} = x$.
+    \end{lemma}
+    \begin{proof}
+        Take integers $i$, $j$ such that $x = (i, j)$.
+        Case $i = 0$. End.
+        Case $i = 1$. End.
+        Case $i = 2$. End.
+        Case $i = 3$. End.
+        Case $i = 4$. End.
+        Case $i = 5$. End.
+        Case $i = 6$. End.
+        Case $i = 7$. End.
+    \end{proof}
+
+    \begin{lemma}
+        Let $x$ be an element of $\Checkerboard$.
+        $x$ is black iff $\Swap{x}$ is white.
+    \end{lemma}
+\end{forthel}
+
+Using $\Swap$ we can define a witness of $\Black \leftrightarrow \White$.
+
+\begin{forthel}
+    \begin{lemma}
+        $\Black$ is equinumerous with $\White$.
+    \end{lemma}
+    \begin{proof}
+        Define $F(x) = \Swap{x}$ for $x$ in $\Black$.
+        Define $G(x) = \Swap{x}$ for $x$ in $\White$.
+        $F(x)$ is white for all elements $x$ of $\dom(F)$.
+        $G(y)$ is black for all elements $y$ of $\dom(G)$.
+        Then $F : \Black \to \White$ and $G : \White \to \Black$.
+        For all elements $x$ of $\Black$ we have $G(F(x)) = x$.
+        For all elements $x$ of $\White$ we have $F(G(x)) = x$.
+        $F : \Black \leftrightarrow \White$.
+    \end{proof}
+\end{forthel}
+
+Given a domino tiling one can also swap the squares of each domino,
+leading to similar properties.
+
+\begin{forthel}
+    \begin{signature}
+        Let $A$ be a subset of the checkerboard.
+        Let $T$ be a domino tiling of $A$.
+        Let $x$ be an element of $A$.
+        $\Sw{T}{A}{x}$ is a square $y$ such that there is an element $D$ of $T$
+        such that $D = \{x,y\}$.
+    \end{signature}
+
+    \begin{lemma}
+        Let $A$ be a subset of the checkerboard.
+        Assume that $T$ is a domino tiling of $A$.
+        Let $x$ be an element of $A$.
+        Then $\Sw{T}{A}{x}$ is an element of $A$.
+    \end{lemma}
+    \begin{proof}
+        Let $y = \Sw{T}{A}{x}$.
+        Take an element $D$ of $T$ such that $D = \{x,y\}$.
+        Then $y$ is an element of $A$.
+    \end{proof}
+\end{forthel}
+
+
+Swapping dominoes is also an involution.
+
+\begin{forthel}
+    \begin{lemma}
+        Let $A$ be a subset of the checkerboard.
+        Assume that $T$ is a domino tiling of $A$.
+        Let $x$ be an element of $A$.
+        Then $\Sw{T}{A}{\Sw{T}{A}{x}} = x$.
+    \end{lemma}
+    \begin{proof}
+        Let $y = \Sw{T}{A}{x}$.
+        Take an element $Y$ of $T$ such that $Y = \{x, y\}$.
+        Let $z = \Sw{T}{A}{y}$.
+        Take an element $Z$ of $T$ such that $Z = \{y, z\}$.
+        Then $x = z$.
+    \end{proof}
+
+    \begin{lemma}
+        Let $A$ be a subset of the checkerboard.
+        Assume that $T$ is a domino tiling of $A$.
+        Let $x$ be a white element of $A$.
+        Then $\Sw{T}{A}{x}$ is black.
+    \end{lemma}
+    \begin{proof}
+        Let $y = \Sw{T}{A}{x}$.
+        Take an element $Y$ of $T$ such that $Y = \{x,y\}$.
+        Then $x$ is adjacent to $y$. Thus $y$ is black.
+    \end{proof}
+
+    \begin{lemma}
+        Let $A$ be a subset of the checkerboard.
+        Assume that $T$ is a domino tiling of $A$.
+        Let $x$ be a black element of $A$.
+        Then $\Sw{T}{A}{x}$ is white.
+    \end{lemma}
+    \begin{proof}
+        Let $y = \Sw{T}{A}{x}$.
+        Take an element $Y$ of $T$ such that $Y = \{x,y\}$.
+        Then $x$ is adjacent to $y$. Thus $y$ is white.
+    \end{proof}
+\end{forthel}
+
+\section{The Theorem}
+
+\noindent We can easily show that a domino tiling involves as many black as white squares.
+
+\begin{forthel}
+    \begin{lemma}
+        Let $A$ be a subset of the checkerboard.
+        Let $T$ be a domino tiling of $A$.
+        Then $A \cap \Black$ is
+        equinumerous with $A \cap \White$.
+    \end{lemma}
+    \begin{proof}
+        Define $F(x) = \Sw{T}{A}{x}$ for $x$ in $A \cap \Black$.
+        Define $G(x) = \Sw{T}{A}{x}$ for $x$ in $A \cap \White$.
+        $F: A \cap \Black \to A \cap \White$.
+        Indeed  $F: A \cap \Black \to \White$.
+        $G: A \cap \White \to A \cap \Black$.
+        Indeed  $G: A \cap \White \to \Black$.
+        For all elements $x$ of $A \cap \Black$ we have $G(F(x))=x$.
+        For all elements $x$ of $A \cap \White$ we have $F(G(x))=x$.
+        $F : A \cap \Black \leftrightarrow A \cap \White$.
+    \end{proof}
+\end{forthel}
+
+\noindent In mutilating the checkerboard, one only removes black squares
+
+\begin{forthel}
+  \begin{lemma}
+      $\Mutilated \cap \White = \White$.
+  \end{lemma}
+
+\begin{lemma}
+    $\Mutilated\cap\Black$ is a proper subset of $\Black$.
+\end{lemma}
+\begin{proof}
+    $(0,0)$ is an element of $\Black$.
+    $(0,0)$ is not an element of $\Mutilated$.
+    Thus $(0,0)$ is not an element of $\Mutilated\cap \Black$.
+\end{proof}
+\end{forthel}
+
+\noindent Now the theorem follows by putting together the previous cardinality properties.
+Note that the phrasing \textit{[...]\,has no domino tiling} in the theorem is automatically
+derived from the definition of \textit{a domino tiling of\,[...]}.
+
+\begin{forthel}
+    \begin{theorem}
+        The mutilated checkerboard has no domino tiling.
+    \end{theorem}
+    \begin{proof}[method=contradiction]
+        Assume $T$ is a domino tiling of $\Mutilated$.
+        $\Mutilated \cap \Black$ is equinumerous with $\Mutilated \cap \White$.
+        $\Mutilated \cap \Black$ is equinumerous with $\White$.
+        $\Mutilated \cap \Black$ is equinumerous with $\Black$.
+        Contradiction.
+    \end{proof}
+\end{forthel}
+
+\printbibliography
+
+\end{document}

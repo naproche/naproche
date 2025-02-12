@@ -1,0 +1,40 @@
+\documentclass{article}
+\usepackage{naproche}
+\libinput[meta-inf]{example-preamble}
+\libinput[libraries/foundations]{preamble}
+\libinput[libraries/set-theory]{preamble}
+
+\newcommand\Ord{\textbf{Ord}}
+
+\title{Zermelo's Well-ordering Theorem}
+\author{\Naproche formalization:\\[0.5em]Marcel Schütz}
+\date{2024}
+
+\begin{document}
+\begin{smodule}{zermelo.ftl}
+  \maketitle
+
+  \usemodule[libraries/foundations]{equinumerosity.ftl}
+  \usemodule[libraries/foundations]{choice-maps.ftl}
+  \usemodule[libraries/foundations]{proper-classes.ftl}
+  \usemodule[libraries/set-theory]{transfinite-recursion-1.ftl}
+
+  \noindent This is a formalization of \textit{Zermelo's Well-ordering Theorem},
+  i.e. of the assertion that under the assumption of the axiom of choice every
+  set is equinumerous to some ordinal number, where an ordinal number is
+  regarded as a transitive set whose elements are transitive sets as well.
+  The proof of this theorem presented here is oriented on \cite{Koepke2018}.
+
+  In the following, for any class $A$, we write $A^{< \infty}$ to
+  denote the collection of all maps $f : \alpha \to A$ for some ordinal
+  $\alpha$.
+  Moreover, for any map $G : A^{< \infty} \to A$ we say that a map $F : \Ord \to
+  A$, where $\Ord$ denotes the class of all ordinals, is recursive regarding $G$
+  if $F(\alpha) = G(F \restriction \alpha)$ for all $\alpha \in \Ord$.
+
+  \inputref[libraries/set-theory]{zermelo.ftl.tex}
+
+  \printbibliography
+  \printlicense[CcByNcSa]{2024}{Marcel Schütz}
+\end{smodule}
+\end{document}

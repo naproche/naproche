@@ -1,0 +1,18 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=The number $0$]{zero.ftl}
+\importmodule[libraries/set-theory]{ordinals.ftl}
+
+\begin{forthel}
+  Let $0$ stand for $\emptyset$.
+
+  Let $\alpha$ is nonzero stand for $\alpha \neq 0$.
+\end{forthel}
+
+\begin{proposition}[forthel,id=SET_THEORY_02_8483196888940544]
+  $0$ is an ordinal.
+\end{proposition}
+\end{smodule}
+\end{document}

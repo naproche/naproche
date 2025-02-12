@@ -1,0 +1,18 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=The Sets Form a Proper Class]{the-sets-form-a-proper-class-1.ftl}
+\importmodule[libraries/foundations]{universal-class.ftl}
+\importmodule[libraries/set-theory]{hilbert-paradox.ftl}
+
+\begin{corollary*}[forthel,id=hilbert_paradox_corollary]
+  $\V$ is a proper class.
+\end{corollary*}
+\begin{proof}[forthel]
+  Assume the contrary.
+  Then $\V$ is closed under powersets and closed under unions.
+  Contradiction (by \nameref{hilbert_paradox}).
+\end{proof}
+\end{smodule}
+\end{document}

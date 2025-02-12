@@ -1,0 +1,34 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Length of Reversion]{length-of-reversion.ftl}
+\importmodule[libraries/lists]{length-of-concatenation.ftl}
+\importmodule[libraries/lists]{reversion.ftl}
+
+\begin{proposition}[forthel,id=LISTS_LENGTHREV_4512036658964875]
+  $\length(\rev(L)) \eq \length(L)$ for any list $L$.
+\end{proposition}
+\begin{proof}[forthel,method=induction on $L$]
+  Let $L$ be a list.
+  
+  Case $L \eq \list{}$. Trivial.
+  
+  Case $L \eq a \cons L'$ for some object $a$ and some list $L'$.
+    Take an object $a$ and a list $L'$ such that $L \eq a \cons L'$.
+    Then $L' \prec L$.
+    Hence $\length(\rev(L')) \eq \length(L')$.
+    Thus
+    \begin{align*}
+      \length(\rev(L))
+        &\eq \length(\rev(a \cons L'))\\
+        &\eq \length(\rev(L') \concat \list{a})\\
+        &\eq \length(\list{a}) + \length(\rev(L'))\\
+        &\eq 1 + \length(\rev(L'))\\
+        &\eq 1 + \length(L')\\
+        &\eq \length(L)
+    \end{align*}.
+  End.
+\end{proof}
+\end{smodule}
+\end{document}

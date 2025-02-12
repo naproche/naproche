@@ -1,0 +1,130 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Functions and Maps]{functions.ftl}
+\importmodule[libraries/preliminaries]{sets.ftl}
+\STEXexport{
+  \let\oldcirc\circ
+  \let\circ\relax
+}
+\symdef{im}[args=2]{#1^{\comp*}\dobrackets{#2}}
+\symdef{preim}[args=2]{#1_{\comp*}\dobrackets{#2}}
+\symdef{fun}[args=3]{#1\comp:#2\rightarrow#3}
+\symdef{id}[args=1]{\maincomp{\textrm{id}}_{#1}}
+\symdef{circ}[op=\oldcirc]{\,\oldcirc\,}
+\symdef{restr}[args=2]{#1\comp{\big|}_{#2}}
+\symdef{inv}[args=1]{#1^{\comp{-1}}}
+
+\begin{forthel}
+  Let $A,B,C$ denote classes.
+
+  Let $F,G,H$ denote maps.
+\end{forthel}
+
+\begin{sfragment}{Map Extensionality}
+  \begin{axiom*}[forthel,title=Map Extensionality Axiom,id=MapExtensionalityAx]
+    If $\dom(F)\eq\dom(G)$ and $F(a)\eq G(a)$ for all $a\in\dom(F)$ then $F\eq G$.
+  \end{axiom*}
+\end{sfragment}
+
+\begin{sfragment}{Image And Preimage}
+  \begin{definition*}[forthel,id=ImageDef]
+    Let $F$ be a map.
+    $\emph{\im{F}{A}}=\{F(a)\mid a\in\dom(F)\text{ and }a\in A\}$.
+
+    Let the \emph{image of $A$ under $F$} stand for $\im{F}{A}$.
+  \end{definition*}
+
+  \begin{definition*}[forthel,id=PreimageDef]
+    $\emph{\preim{F}{B}}=\{a\in\dom(F)\mid F(a)\in B\}$.
+
+    Let the \emph{preimage of $B$ under $F$} stand for $\preim{F}{B}$.
+  \end{definition*}
+\end{sfragment}
+
+\begin{sfragment}{Maps Between Classes}
+  \begin{definition*}[forthel,id=MapFromDef]
+    A \emph{map of $A$} is a map $F$ such that $\dom(F)\eq A$.
+  \end{definition*}
+
+  \begin{definition*}[forthel,id=MapToDef]
+    A \emph{map to $B$} is a map $F$ such that $F(a)\in B$ for all $a\in\dom(F)$.
+  \end{definition*}
+
+  \begin{definition*}[forthel,id=MapFromToDef]
+    A \emph{map from $A$ to $B$} is a map $F$ such that $\dom(F)\eq A$ and $F(a)\in B$ for all $a\in\dom(F)$.
+  \end{definition*}
+\end{sfragment}
+
+\begin{sfragment}{Identity Maps}
+  \begin{definition*}[forthel,id=IdentityMapDef]
+    Let $A$ be a class.
+    $\emph{\id{A}}$ is the map of $A$ such that $\id{A}(a)eq a$ for all $a\in A$.
+
+    Let the \emph{identity map on $A$} stand for $\id{A}$.
+  \end{definition*}
+\end{sfragment}
+
+\begin{sfragment}{Composition}
+  \begin{definition*}[forthel,id=CompositionDef]
+    Let $F,G$ be maps such that $F(a)\in\dom(G)$ for all $a\in\dom(F)$.
+    $\emph{G\circ F}$ is the map of $\dom(F)$ such that $G\circ F\eq G(F(a))$ for all $a\in\dom(F)$.
+
+    Let the \emph{composition of $G$ and $F$} stand for $G\circ F$.
+  \end{definition*}
+\end{sfragment}
+
+\begin{sfragment}{Restriction}
+  \begin{definition*}[forthel,id=RestrictionDef]
+    Let $F$ be a map and $A\subseteq\dom(F)$.
+    $\emph{\restr{F}{A}}$ is the map of $A$ such that $\restr{F}{A}\eq F(a)$ for all $a\in A$.
+
+    Let the \emph{restriction of $F$ to $A$} stand for $\restr{F}{A}$.
+  \end{definition*}
+\end{sfragment}
+
+\begin{sfragment}{Invertible Maps}
+  \begin{definition*}[forthel,id=InvertibleDef]
+    An \emph{inverse of $F$} is a map $G$ such that $F(a)\eq b\iff G(b)\eq a$ for all $a\in\dom(F)$ and all $b\in\dom(G)$.
+
+    Let $F$ is \emph{invertible} stand for $F$ has an inverse.
+  \end{definition*}
+
+  \begin{definition*}[forthel,id=InverseMapDef]
+    Let $F$ be invertible.
+    $\emph{\inv{F}}$ is the inverse of $F$.
+  \end{definition*}
+\end{sfragment}
+
+\begin{sfragment}{Injective, Surjective and Bijective Maps}
+  \begin{definition*}[forthel,id=InjectionDef]
+    $F$ is \emph{injective} iff $F(a)\eq F(a')\implies a\eq a'$ for all $a,a'\in\dom(F)$.
+  \end{definition*}
+
+  \begin{definition*}[forthel,id=SurjectionDef]
+    $F$ is \emph{surjective onto $B$} iff for all $b\in B$ there exists an $a\in\dom(F)$ such that $b\eq F(a)$.
+
+    Let an \emph{surjective map from $A$ to $B$} stand for a map of $A$ that is surjective onto $B$.
+  \end{definition*}
+
+  \begin{definition*}[forthel,id=BijectionDef]
+    A \emph{bijection between $A$ and $B$} is an injective surjective map from $A$ to $B$.
+  \end{definition*}
+\end{sfragment}
+
+\begin{sfragment}{Equinumerosity}
+  \begin{definition*}[forthel,id=EquinumerousDef]
+    $A$ and $B$ are \emph{equinumerous} iff there exists a bijection between $A$ and $B$.
+  \end{definition*}
+\end{sfragment}
+
+\begin{sfragment}{Finite and Infinite Sets}
+  \begin{definition*}[forthel,id=InfiniteDef]
+    $A$ is \emph{infinite} iff there exists an injective map from $A$ to some proper subclass of $A$.
+
+    Let $A$ is \emph{finite} stand for $A$ is not infinite.
+  \end{definition*}
+\end{sfragment}
+\end{smodule}
+\end{document}
