@@ -200,7 +200,25 @@ dialect of ForTheL, respectively.
       depend on (both on the LaTeX and on the Naproche side).
 
 
-### Changes on the LaTeX setup
+### Changes on Naproche's LaTeX package
+
+  * **New:** Two commands `\showtlsnumbers` and `\hidetlsnumbers` to show and
+    hide, resp., the numbers of top-level sections. Useful to supress the
+    numbers of `inputref`ed top-level sections.
+
+    For instance if the file `some-archive/source/some-file.ftl.tex` consists of
+    the top-level section
+
+    ```
+    \begin{axiom}[title=Infinity]
+      There exists an infinite set.
+    \end{axiom}
+    ```
+
+    then `\inputref[some-archive]{some-file.ftl}` would be rendered as
+    "Axiom 1 (Infinity). There exists an infinite set.". If we prepend
+    `\hidetlsnumbers` to the `\inputref` command, it would be rendered as
+    "Axiom (Infinity). There exists an infinite set." (without the "1") instead.
 
   * **New:** The `naproche` package now supports to render Naproche
     formalizations via RusTeX as HTML.

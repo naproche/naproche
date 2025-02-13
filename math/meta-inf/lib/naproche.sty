@@ -84,6 +84,12 @@
 
 \newbool{printid}
 \setbool{printid}{false} % Set to true in naproche-library.cls
+\newbool{showtlsnumber}
+\setbool{showtlsnumber}{true}
+
+% Show/hide TLS numbers:
+\newcommand\showtlsnumbers{\setbool{showtlsnumber}{true}}
+\newcommand\hidetlsnumbers{\setbool{showtlsnumber}{false}}
 
 \newcommand\tlstitle{}
 \newcommand\tlsid{}
@@ -132,7 +138,7 @@
   \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\begin{forthel}}{\par\addvspace{\baselineskip}}}%
   \refstepcounter{theoremcount}%
   \if\relax\tlsid\else\tlsidlabel\fi%
-  \noindent\textbf{#2 \thetheoremcount\if\relax\tlstitle\else{ (\tlstitle)}\fi. }%
+  \noindent\textbf{#2\ifbool{showtlsnumber}{ \thetheoremcount}{}\if\relax\tlstitle\else{ (\tlstitle)}\fi. }%
   \ifbool{printid}{\if\relax\tlsid\else\marginnote{\footnotesize\tlsidname}\fi}{}%
 }{%
   \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\end{forthel}}{\par\addvspace{\baselineskip}}}%
