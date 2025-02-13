@@ -116,6 +116,8 @@
 \NewEnviron{lemma*}[1][]{\begin{tls*}[#1]{Lemma}\BODY\end{tls*}}
 \NewEnviron{corollary}[1][]{\begin{tls}[#1]{Corollary}\BODY\end{tls}}
 \NewEnviron{corollary*}[1][]{\begin{tls*}[#1]{Corollary}\BODY\end{tls*}}
+\NewEnviron{convention}[1][]{\begin{tls}[#1]{Convention}\BODY\end{tls}}
+\NewEnviron{convention*}[1][]{\begin{tls*}[#1]{Convention}\BODY\end{tls*}}
 
 \newenvironment{tls*}[2][]{%
   \setbool{forthelBeforeEnv}{\ifbool{forthel}{true}{false}}% Save the current value of the `forthel' variable

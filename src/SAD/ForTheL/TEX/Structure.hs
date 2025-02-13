@@ -76,6 +76,7 @@ topLevelSection =
   <|> definitionSection
   <|> axiomSection
   <|> theoremSection
+  <|> conventionSection
 
 -- | @beginTopLevelSection keywords@ parses @"\\begin" "{" <keyword> ["*"] "}"@,
 -- where @<keyword>@ is a member of @keywords@.
@@ -181,6 +182,17 @@ theoremSection = do
              pretypeSentence Affirmation (affirmationHeader >> statement) affirmVars finishWithOptLink <* endTopLevelSection keyword starred
   proofText <- addMetadata Theorem content label
   return [proofText]
+
+-- | Parse a convention (TEX):
+-- @"\\begin" "{" "convention" "}" (<introduceMacro> | <pretypeVariable>)+
+-- "\\end" "{" "convention" "}"@
+conventionSection :: FTL [ProofText]
+conventionSection = do
+  (keyword, starred) <- try $ beginTopLevelSection ["convention"]
+  optTlsLabel
+  macrosAndPretypings <- some (try introduceMacro <|> pretypeVariable)
+  endTopLevelSection keyword starred
+  return macrosAndPretypings
 
 
 -- * Top-level section bodies

@@ -23,6 +23,17 @@ dialect of ForTheL, respectively.
 
 ### Changes on ForTheL
 
+  * **New:** Macro introductions and variable pretypings can now be wrapped in
+    `convention` and `convention*` environments which are rendered in the same
+    style as the top-level sections, e.g.:
+
+    ```
+    \begin{convention}
+      Let $n,m$ denote natural numbers.
+      Let $n\mid m$ stand for $n$ divides $m$.
+    \end{convention}
+    ```
+
   * **New:** Relation chains can now be typeset with the `align*` environment,
     e.g.:
 

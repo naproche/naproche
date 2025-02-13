@@ -391,6 +391,8 @@ environment p = do
         "proposition*",
         "corollary",
         "corollary*",
+        "convention",
+        "convention*",
         "proof"
       ]
 
