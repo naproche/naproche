@@ -10,24 +10,24 @@
 \begin{sfragment}{Sub- and Superclasses}
   \begin{definition}[forthel,id=FOUNDATIONS_01_3275578358628352]
     Let $A$ be a class.
-    A subclass of $A$ is a class $B$ such that every element of $B$ is an
+    A \emph{subclass of $A$} is a class $B$ such that every element of $B$ is an
     element of $A$.
 
-    Let $B \subseteq A$ stand for $B$ is a subclass of $A$.
-    Let $B \subset A$ stand for $B \subseteq A$.
+    Let $\emph{B \subseteq A}$ stand for $B$ is a subclass of $A$.
+    Let $\emph{B \subset A}$ stand for $B \subseteq A$.
 
-    Let a superclass of $B$ stand for a class $A$ such that $B \subseteq A$.
-    Let $B \supseteq A$ stand for $B$ is a superclass of $A$.
-    Let $B \supset A$ stand for $B \subseteq A$.
+    Let a \emph{superclass of $B$} stand for a class $A$ such that $B \subseteq A$.
+    Let $\emph{B \supseteq A}$ stand for $B$ is a superclass of $A$.
+    Let $\emph{B \supset A}$ stand for $B \subseteq A$.
 
-    Let a proper subclass of $A$ stand for a subclass $B$ of $A$ such that $B \neq A$.
-    Let $B \subsetneq A$ stand for $B$ is a proper subclass of $A$.
+    Let a \emph{proper subclass of $A$} stand for a subclass $B$ of $A$ such that $B \neq A$.
+    Let $\emph{B \subsetneq A}$ stand for $B$ is a proper subclass of $A$.
 
-    Let a proper superclass of $B$ stand for a superclass $A$ of $B$ such that $A \neq B$.
-    Let $B \supsetneq A$ stand for $B$ is a proper superclass of $A$.
+    Let a \emph{proper superclass of $B$} stand for a superclass $A$ of $B$ such that $A \neq B$.
+    Let $\emph{B \supsetneq A}$ stand for $B$ is a proper superclass of $A$.
 
-    Let $A$ includes $B$ stand for $B \subseteq A$.
-    Let $B$ is included in $A$ stand for $B \subseteq A$.
+    Let \emph{$A$ includes $B$} stand for $B \subseteq A$.
+    Let $B$ is \emph{included in $A$} stand for $B \subseteq A$.
   \end{definition}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_01_5994555614691328]
@@ -64,13 +64,13 @@
 \begin{sfragment}{The Empty Class}
   \begin{definition}[forthel,id=FOUNDATIONS_01_6252477624090624]
     Let $A$ be a class.
-    $A$ is empty iff $A$ has no elements.
+    $A$ is \emph{empty} iff $A$ has no elements.
 
-    Let $A$ is nonempty stand for $A$ is not empty.
+    Let $A$ is \emph{nonempty} stand for $A$ is not empty.
   \end{definition}
 
   \begin{definition}[forthel,id=FOUNDATIONS_01_7939928493129728]
-    $\emptyset = \{ x \mid x \neq x \}$.
+    $\emph{\emptyset} = \{ x \mid x \neq x \}$.
   \end{definition}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_01_2263153161273344]
@@ -103,24 +103,24 @@
 \begin{sfragment}{Unordered Pairs}
   \begin{definition}[forthel,id=FOUNDATIONS_01_3471035364016128]
     Let $a, b$ be objects.
-    The unordered pair of $a$ and $b$ is $\{ x \mid x = a$ or $x = b \}$.
+    The \emph{unordered pair of $a$ and $b$} is $\{ x \mid x = a$ or $x = b \}$.
 
-    Let $\set{a, b}$ stand for the unordered pair of $a$ and $b$.
+    Let $\emph{\set{a, b}}$ stand for the unordered pair of $a$ and $b$.
   \end{definition}
 
   \begin{definition}[forthel,id=FOUNDATIONS_01_605432672419840]
-    An unordered pair is a class $A$ such that $A = \set{a, b}$ for some distinct objects $a, b$.
+    An \emph{unordered pair} is a class $A$ such that $A = \set{a, b}$ for some distinct objects $a, b$.
   \end{definition}
 
   \begin{definition}[forthel,id=FOUNDATIONS_01_1160414603771904]
     Let $a$ be an object.
-    The singleton class of $a$ is $\{ x \mid x = a \}$.
+    The \emph{singleton class of $a$} is $\{ x \mid x = a \}$.
 
-    Let $\set{a}$ stand for the singleton class of $a$.
+    Let $\emph{\set{a}}$ stand for the singleton class of $a$.
   \end{definition}
 
   \begin{definition}[forthel,id=FOUNDATIONS_01_6786618161627136]
-    A singleton class is a class $A$ such that $A = \set{a}$ for some object $a$.
+    A \emph{singleton class} is a class $A$ such that $A = \set{a}$ for some object $a$.
   \end{definition}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_01_6125259604361216]
@@ -142,7 +142,7 @@
 
   \begin{definition}[forthel,id=FOUNDATIONS_01_29867480293464351]
     Let $A$ be a class.
-    A unique element of $A$ is an element $a$ of $A$ such that for each $x \in A$ we have $x = a$.
+    A \emph{unique element of $A$} is an element $a$ of $A$ such that for each $x \in A$ we have $x = a$.
   \end{definition}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_01_0166348647163481]
@@ -154,30 +154,30 @@
 \begin{sfragment}{Unions, Intersections, Complements}
   \begin{definition}[forthel,id=FOUNDATIONS_01_2159753924968448]
     Let $A, B$ be classes.
-    The union of $A$ and $B$ is $\{ x \mid x \in A$ or $x \in B \}$.
+    The \emph{union of $A$ and $B$} is $\{ x \mid x \in A$ or $x \in B \}$.
 
-    Let $A \cup B$ stand for the union of $A$ and $B$.
+    Let $\emph{A \cup B}$ stand for the union of $A$ and $B$.
   \end{definition}
 
   \begin{definition}[forthel,id=FOUNDATIONS_01_5744033011859456]
     Let $A, B$ be classes.
-    The intersection of $A$ and $B$ is $\{ x \mid x \in A$ and $x \in B \}$.
+    The \emph{intersection of $A$ and $B$} is $\{ x \mid x \in A$ and $x \in B \}$.
 
-    Let $A \cap B$ stand for the intersection of $A$ and $B$.
+    Let $\emph{A \cap B}$ stand for the intersection of $A$ and $B$.
   \end{definition}
 
   \begin{definition}[forthel,id=FOUNDATIONS_01_7620345041256448]
     Let $A, B$ be classes.
-    The complement of $B$ in $A$ is $\{ x \mid x \in A$ and $x \notin B \}$.
+    The \emph{complement of $B$ in $A$} is $\{ x \mid x \in A$ and $x \notin B \}$.
 
-    Let $A \setminus B$ stand for the complement of $B$ in $A$.
+    Let $\emph{A \setminus B}$ stand for the complement of $B$ in $A$.
   \end{definition}
 \end{sfragment}
 
 \begin{sfragment}{Disjoint Classes}
   \begin{definition}[forthel,id=FOUNDATIONS_01_4981913324355584]
     Let $A, B$ be classes.
-    $A$ and $B$ are disjoint iff $A$ and $B$ have no common elements.
+    $A$ and $B$ are \emph{disjoint} iff $A$ and $B$ have no common elements.
   \end{definition}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_01_1211191546347520]
