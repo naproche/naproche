@@ -6,11 +6,11 @@
 \importmodule[libraries/set-theory]{transfinite-induction.ftl}
 \importmodule[libraries/set-theory]{recursive-maps.ftl}
   
-\begin{lemma*}[forthel,title=Coincidence Lemma,id=transfinite-recursion_coincidence]
+\begin{lemma}[forthel,title=Coincidence Lemma,id=transfinite-recursion_coincidence]
   Let $A$ be a class and $G$ be a map from $A^{< \infty}$ to $A$.
   Let $H, H'$ be maps to $A$ that are recursive regarding $G$.
   Then \[ H(\alpha) = H'(\alpha) \] for all $\alpha \in \dom(H) \cap \dom(H')$.
-\end{lemma*}
+\end{lemma}
 \begin{proof}[forthel]
   Define $\Phi = \{ \alpha \in \Ord \mid$ if
   $\alpha \in \dom(H) \cap \dom(H')$ then $H(\alpha) = H'(\alpha) \}$.

@@ -16,7 +16,7 @@
 \vardef{Lvar}[return={\complattice[comp=##1]}]{\mathcal L}
 
 \begin{sfragment}{Definition}
-  \begin{signature*}[forthel,id=CompleteLatticeSig]
+  \begin{signature}[forthel,id=CompleteLatticeSig]
     A \emph{complete lattice $\Lvar{}[univ,leq,meet,join,Meet,Join]$} is a structure with the following properties:
 
     \begin{itemize}
@@ -31,7 +31,7 @@
         Let $A\subseteq\Lvar{univ}$.
         ${\Lvar{Meet}}A$ is a meet of $A$ in $\Lvar{}[univ,leq]$.
     \end{itemize}
-  \end{signature*}
+  \end{signature}
 \end{sfragment}
 
 \begin{sfragment}{Joins}
@@ -39,55 +39,55 @@
   Let $\Lvar!=\Lvar{}[univ,leq,meet,join,Meet,Join]$ denote a complete lattice.
   \end{forthel}
 
-  \begin{proposition*}[forthel,id=JoinOfSingletonThm]
+  \begin{proposition}[forthel,id=JoinOfSingletonThm]
     Let $x\in\Lvar{univ}$.
     ${\Lvar{Join}}\set{x}\eq x$.
-  \end{proposition*}
+  \end{proposition}
 
-  \begin{proposition*}[forthel,id=JoinOfPairThm]
+  \begin{proposition}[forthel,id=JoinOfPairThm]
     Let $x,y\in\Lvar{univ}$.
     ${\Lvar{Join}}\set{x,y}\eq x{\Lvar{join}}y$.
-  \end{proposition*}
+  \end{proposition}
 \end{sfragment}
 
 \begin{sfragment}{Meets}
-  \begin{proposition*}[forthel,id=MeetOfSingletonThm]
+  \begin{proposition}[forthel,id=MeetOfSingletonThm]
     Let $x\in\Lvar{univ}$.
     ${\Lvar{Meet}}\set{x}\eq x$.
-  \end{proposition*}
+  \end{proposition}
 
-  \begin{proposition*}[forthel,id=MeetOfPairThm]
+  \begin{proposition}[forthel,id=MeetOfPairThm]
     Let $x,y\in\Lvar{univ}$.
     ${\Lvar{Meet}}\set{x,y}\eq x{\Lvar{meet}}y$.
-  \end{proposition*}
+  \end{proposition}
 \end{sfragment}
 
 \begin{sfragment}{Greatest Elements}
-  \begin{definition*}[forthel,id=CompleteLatticeGreatestDef]
+  \begin{definition}[forthel,id=CompleteLatticeGreatestDef]
     $\emph{{\Lvar{greatest}}}={\Lvar{Join}}\Lvar{univ}$.
-  \end{definition*}
+  \end{definition}
 
-  \begin{proposition*}[forthel,id=GreatestIsMeetOfEmptystThm]
+  \begin{proposition}[forthel,id=GreatestIsMeetOfEmptystThm]
     ${\Lvar{greatest}}\eq{\Lvar{Meet}}\emptyset$.
-  \end{proposition*}
+  \end{proposition}
 
-  \begin{proposition*}[forthel,id=GreatestIsGreatestElement]
+  \begin{proposition}[forthel,id=GreatestIsGreatestElement]
     ${\Lvar{greatest}}$ is a greatest element of $\Lvar!$.
-  \end{proposition*}
+  \end{proposition}
 \end{sfragment}
 
 \begin{sfragment}{Least Elements}
-  \begin{definition*}[forthel,id=CompleteLatticeLeastDef]
+  \begin{definition}[forthel,id=CompleteLatticeLeastDef]
     $\emph{{\Lvar{least}}}={\Lvar{Join}}\emptyset$.
-  \end{definition*}
+  \end{definition}
 
-  \begin{proposition*}[forthel,id=GreatestIsMeetOfUniverseThm]
+  \begin{proposition}[forthel,id=GreatestIsMeetOfUniverseThm]
     ${\Lvar{least}}\eq{\Lvar{Meet}}\Lvar{univ}$.
-  \end{proposition*}
+  \end{proposition}
 
-  \begin{proposition*}[forthel,id=LeastIsLeastElementThm]
+  \begin{proposition}[forthel,id=LeastIsLeastElementThm]
     ${\Lvar{least}}$ is a least element of $\Lvar!$.
-  \end{proposition*}
+  \end{proposition}
 \end{sfragment}
 \end{smodule}
 \end{document}

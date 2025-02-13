@@ -5,10 +5,10 @@
 \begin{smodule}[title=Transfinite Recursion I]{transfinite-recursion-1.ftl}
 \importmodule[libraries/set-theory]{coincidence-lemma.ftl}
   
-\begin{theorem*}[forthel,title=Transfinite Recursion Theorem: Existence,id=transfinite-recursion_existence]
+\begin{theorem}[forthel,title=Transfinite Recursion Theorem: Existence,id=transfinite-recursion_existence]
   Let $A$ be a class and $G$ be a map from $A^{< \infty}$ to $A$.
   Then there exists a map $F$ from $\Ord$ to $A$ that is recursive regarding $G$.
-\end{theorem*}
+\end{theorem}
 \begin{proof}[forthel]
   Every ordinal is contained in the domain of some map $H$ to $A$ such that $H$ is recursive regarding $G$. \newline
   Proof.
@@ -106,11 +106,11 @@
   Qed.
 \end{proof}
 
-\begin{theorem*}[forthel,title=Transfinite Recursion Theorem: Uniqueness,id=transfinite-recursion_uniqueness]
+\begin{theorem}[forthel,title=Transfinite Recursion Theorem: Uniqueness,id=transfinite-recursion_uniqueness]
   Let $A$ be a class and $G$ be a map from $A^{< \infty}$ to $A$.
   Let $F, F'$ be maps from $\Ord$ to $A$ that are recursive regarding $G$.
   Then $F = F'$.
-\end{theorem*}
+\end{theorem}
 \begin{proof}[forthel]
   [prover vampire]
   $F$ and $F'$ are recursive regarding $G$.

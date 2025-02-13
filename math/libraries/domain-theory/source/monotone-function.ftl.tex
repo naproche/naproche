@@ -25,7 +25,7 @@
 \vardef{Fvar}{f}
 \vardef{fvar}[return={\monfun[map=\Fvar,source=\Pvar,target=\Qvar]}]{f}
 
-\begin{signature*}[forthel]
+\begin{signature}[forthel]
   A \emph{monotone function $\fvar{}[fun]$} is a structure with the following properties:
   \begin{itemize}
     \item\label{monfunSourceSig}
@@ -40,23 +40,23 @@
   \end{itemize}
 
   Let $\fvar{}[fun]$ denote a monotone function.
-\end{signature*}
+\end{signature}
 
 \begin{sfragment}{Scott Continuity}
   \begin{forthel}
     Let $\Pvar!=\Pvar{}[univ,leq,meet,join]$ denote a poset.
   \end{forthel}
 
-  \begin{definition*}[forthel]
+  \begin{definition}[forthel]
     Let $X\subseteq\Pvar{univ}$.
     $X$ is \emph{directed in $\Pvar!$} iff every finite subclass of $X$ has an upper bound $u$ in $\Pvar!$ such that $u \in X$.
-  \end{definition*}
+  \end{definition}
 
-  \begin{definition*}[forthel]
+  \begin{definition}[forthel]
     Let $\fvar!$ be a monotone function such that $\fvar{source}!$ and $\fvar{target}!$ are complete lattices.
     $\fvar!$ is \emph{Scott continuous} iff for all $X\subseteq\fvar{source}{univ}$ that are directed in $\fvar{source}!$ we have
     \[\apply{\fvar{map}}{{\fvar{source}{Join}}X}\eq{\fvar{target}{Join}}\im{\fvar{map}}{X}.\]
-  \end{definition*}
+  \end{definition}
 \end{sfragment}
 \end{smodule}
 \end{document}

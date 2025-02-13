@@ -7,11 +7,11 @@
 \importmodule[libraries/foundations]{maps-and-systems-of-sets.ftl}
 \importmodule[libraries/set-theory]{zfc.ftl}
 
-\begin{theorem*}[forthel,title=Knaster-Tarski,id=knaster_tarski]
+\begin{theorem}[forthel,title=Knaster-Tarski,id=knaster_tarski]
   Let $x$ be a set.
   Let $h$ be a map from $\pow(x)$ to $\pow(x)$ that preserves subsets.
   Then $h$ has a fixed point.
-\end{theorem*}
+\end{theorem}
 \begin{proof}[forthel]
   (1) Define $A = \{y \in \pow(x) \mid y \subseteq h(y)\}$.
   Then $A$ is a subset of $\pow(x)$.

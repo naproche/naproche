@@ -6,16 +6,16 @@
 \importmodule[libraries/arithmetics]{nat-is-a-set.ftl}
 \importmodule[libraries/set-theory]{zfc.ftl}
 
-\begin{definition*}[forthel,id=dedekind_209358491059836]
+\begin{definition}[forthel,id=dedekind_209358491059836]
   Let $a$ be an object and $f$ be a map.
   Let $\varphi$ be a map from $\Nat$ to $\dom(f)$.
   $\varphi$ is \emph{recursively defined by $a$ and $f$} iff $\varphi(0) = a$ and $\varphi(n + 1) = f(\varphi(n))$ for every $n \in \Nat$.
-\end{definition*}
+\end{definition}
 
-\begin{theorem*}[forthel,title=Dedekind's Recursion Theorem: Existence,id=dedekind_existence]
+\begin{theorem}[forthel,title=Dedekind's Recursion Theorem: Existence,id=dedekind_existence]
   Let $A$ be a set and $a \in A$ and $f : A \to A$.
   Then there exists a $\varphi : \Nat \to A$ that is recursively defined by $a$ and $f$.
-\end{theorem*}
+\end{theorem}
 \begin{proof}[forthel]
   (a) Define \[ \Phi = \class{H \in \pow(\Nat \times A) | \classtext{$(0, a) \in H$ and for all $n \in \Nat$ and all $x \in A$ if $(n, x) \in H$ then $(n + 1, f(x)) \in H$}}. \]
 
@@ -269,13 +269,13 @@
   Qed.
 \end{proof}
 
-\begin{theorem*}[forthel,title=Dedekind's Recursion Theorem: Uniqueness,id=dedekind_uniqueness]
+\begin{theorem}[forthel,title=Dedekind's Recursion Theorem: Uniqueness,id=dedekind_uniqueness]
   Let $A$ be a set and $a \in A$ and $f : A \to A$.
   Let $\varphi, \varphi' : \Nat \to A$.
   Assume that $\varphi$ and $\varphi'$ are recursively defined by $a$ and
   $f$.
   Then $\varphi = \varphi'$.
-\end{theorem*}
+\end{theorem}
 \begin{proof}[forthel]
   Define $\Phi = \{ n \in \Nat \mid \varphi(n) = \varphi'(n) \}$.
 
