@@ -16,11 +16,11 @@
 \symdef{restr}[args=2]{#1\comp{\big|}_{#2}}
 \symdef{inv}[args=1]{#1^{\comp{-1}}}
 
-\begin{forthel}
+\begin{convention}[forthel]
   Let $A,B,C$ denote classes.
 
   Let $F,G,H$ denote maps.
-\end{forthel}
+\end{convention}
 
 \begin{sfragment}{Map Extensionality}
   \begin{axiom}[forthel,title=Map Extensionality Axiom,id=MapExtensionalityAx]
@@ -60,7 +60,7 @@
 \begin{sfragment}{Identity Maps}
   \begin{definition}[forthel,id=IdentityMapDef]
     Let $A$ be a class.
-    $\emph{\id{A}}$ is the map of $A$ such that $\id{A}(a)eq a$ for all $a\in A$.
+    $\emph{\id{A}}$ is the map of $A$ such that $\id{A}(a)\eq a$ for all $a\in A$.
 
     Let the \emph{identity map on $A$} stand for $\id{A}$.
   \end{definition}

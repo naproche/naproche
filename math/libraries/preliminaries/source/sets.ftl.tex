@@ -49,11 +49,11 @@
 \symdef{bigcup}[op=\oldbigcup]{\oldbigcup\,}
 \symdef{bigcap}[op=\oldbigcap]{\oldbigcap\,}
 
-\begin{forthel}
+\begin{convention}[forthel]
   Let $A,B,C$ denote classes.
 
   Let $a,a',b,b',c,c'$ denote objects.
-\end{forthel}
+\end{convention}
 
 \begin{sfragment}{Subclasses and Subsets}
   \begin{definition}[forthel,id=SubclassDef]
@@ -132,9 +132,9 @@
     A \emph{system of sets} is a class $X$ such that every element of $X$ is a set.
   \end{definition}
 
-  \begin{forthel}
+  \begin{convention}[forthel]
     Let $X,Y,Z$ denote systems of sets.
-  \end{forthel}
+  \end{convention}
 
   \begin{definition}[forthel,id=BigUnionDef]
     $\emph{\bigcup X}=\{a\mid a\in x\text{ for some  }x\in X\}$.
@@ -161,15 +161,13 @@
     Let the \emph{union of $A$ and $B$} stand for $A\cup B$.
   \end{definition}
 
-  \begin{forthel}
-    \begin{proposition}[id=UnionProp]
-      If $A$ and $B$ are sets then $A\cup B$ is a set.
-    \end{proposition}
-    \begin{proof}
-      Assume that $A$ and $B$ are sets.
-      Then $A\cup B\eq \bigcup\set{A,B}$.
-    \end{proof}
-  \end{forthel}
+  \begin{proposition}[id=UnionProp]
+    If $A$ and $B$ are sets then $A\cup B$ is a set.
+  \end{proposition}
+  \begin{proof}
+    Assume that $A$ and $B$ are sets.
+    Then $A\cup B\eq \bigcup\set{A,B}$.
+  \end{proof}
 
   \begin{definition}[forthel,id=IntersectionDef]
     $\emph{A\cap B}=\{x\mid x\in A\text{ and }x\in B\}$.
