@@ -6,78 +6,78 @@
 \importmodule[libraries/set-theory]{transfinite-recursion-1.ftl}
   
 \begin{lemma}[forthel,id=transfinite-recursion_029348573987483]
-  Let $A$ be a class and $\alpha$ be an ordinal and $F : \Ord \to A$.
-  Then $(\alpha, F(\alpha)) \in \Ord \times A$.
+  Let $A$ be a class and $\alpha$ be an ordinal and $F \FUNfromto{\Ord}{A}$.
+  Then $(\alpha, F(\alpha)) \in \Ord \SETprod A$.
 \end{lemma}
 
 \begin{lemma}[forthel,id=transfinite-recursion_570293857449281]
-  Let $A$ be a class and $\lambda$ be a limit ordinal and $F : \Ord \to A$.
-  Then $(\lambda, F \restriction \lambda) \in \Ord \times A^{< \infty}$.
+  Let $A$ be a class and $\lambda$ be a limit ordinal and $F \FUNfromto{\Ord}{A}$.
+  Then $(\lambda, F \FUNrest \lambda) \in \Ord \SETprod \ORDfunspace{A}$.
 \end{lemma}
 
 \begin{corollary}[forthel,id=transfinite-recursion_298647309184593]
   Let $A$ be a class.
-  Let $a \in A$ and $G : \Ord \times A \to A$ and $H : \Ord \times A^{< \infty} \to A$.
+  Let $a \in A$ and $G \FUNfromto{\Ord \SETprod A}{A}$ and $H \FUNfromto{\Ord \SETprod \ORDfunspace{A}}{A}$.
   Then there exists a map $F$ from $\Ord$ to $A$ such that
-  \[ F(0) = a \]
+  \[ F(\ORDzero) \eq a \]
   and for all ordinals $\alpha$ we have
-  \[ F(\succ(\alpha)) = G(\alpha, F(\alpha)) \]
+  \[ F(\ORDsucc(\alpha)) \eq G(\alpha, F(\alpha)) \]
   and for all limit ordinals $\lambda$ we have
-  \[ F(\lambda) = H(\lambda, F \restriction \lambda). \]
+  \[ F(\lambda) \eq H(\lambda, F \FUNrest \lambda). \]
 \end{corollary}
 \begin{proof}[forthel]
-  $(\pred(\dom(f)), f(\pred(\dom(f)))) \in \Ord \times A$ for all $f \in A^{< \infty}$ such that $\dom(f)$ is a successor ordinal.
+  $(\ORDpred(\dom(f)), f(\ORDpred(\dom(f)))) \in \Ord \SETprod A$ for all $f \in \ORDfunspace{A}$ such that $\dom(f)$ is a successor ordinal.
 
   Define  \[ J(f) =
     \begin{cases}
       a
-      & : \dom(f) = 0
+      & : \dom(f) \eq \ORDzero
       \\
-      G(\pred(\dom(f)), f(\pred(\dom(f))))
+      G(\ORDpred(\dom(f)), f(\ORDpred(\dom(f))))
       & : \text{$\dom(f)$ is a successor ordinal}
       \\
       H(\dom(f), f)
       & : \text{$\dom(f)$ is a limit ordinal}
     \end{cases} \]
-  for $f \in A^{< \infty}$.
+  for $f \in \ORDfunspace{A}$.
 
-  Then $J$ is a map from $A^{< \infty}$ to $A$.
-  Indeed we can show that for any $f \in A^{< \infty}$ we have $J(f) \in A$.
-    Let $f \in A^{< \infty}$.
-    Take $\alpha \in \Ord$ such that $f : \alpha \to A$.
-    If $\alpha = 0$ then $J(f) = a \in A$.
-    If $\alpha$ is a successor ordinal then $J(f) =
-    G(\pred(\alpha), f(\pred(\alpha))) \in A$.
+  Then $J$ is a map from $\ORDfunspace{A}$ to $A$.
+  Indeed we can show that for any $f \in \ORDfunspace{A}$ we have $J(f) \in A$.
+    Let $f \in \ORDfunspace{A}$.
+    Take $\alpha \in \Ord$ such that $f \FUNfromto{\alpha}{A}$.
+    If $\alpha \eq \ORDzero$ then $J(f) \eq a \in A$.
+    If $\alpha$ is a successor ordinal then $J(f) \eq
+    G(\ORDpred(\alpha), f(\ORDpred(\alpha))) \in A$.
     [prover vampire]
-    If $\alpha$ is a limit ordinal then $J(f) = H(\alpha, f) \in A$.
+    If $\alpha$ is a limit ordinal then $J(f) \eq H(\alpha, f) \in A$.
   End.
 
   Hence we can take a map $F$ from $\Ord$ to $A$ that is recursive regarding $J$.
-  Then $F \restriction \alpha \in A^{< \infty}$ for any ordinal $\alpha$.
+  Then $F \FUNrest \alpha \in \ORDfunspace{A}$ for any ordinal $\alpha$.
 
-  (1) $F(0) = a$. \newline
+  (1) $F(\ORDzero) \eq a$. \newline
   Proof.
-    $F(0)
-      = J(F \restriction 0)
-      = a$.
+    $F(\ORDzero)
+      \eq J(F \FUNrest \ORDzero)
+      \eq a$.
   Qed.
 
-  (2) $F(\succ(\alpha)) = G(\alpha, F(\alpha))$ for all ordinals $\alpha$. \newline
+  (2) $F(\ORDsucc(\alpha)) \eq G(\alpha, F(\alpha))$ for all ordinals $\alpha$. \newline
   Proof.
     Let $\alpha$ be an ordinal.
-    Then $F(\succ(\alpha))
-      = J(F \restriction \succ(\alpha))
-      = G(\pred(\succ(\alpha)), (F \restriction \succ(\alpha))(\pred(\succ(\alpha))))
-      = G(\alpha, (F \restriction \succ(\alpha))(\alpha))
-      = G(\alpha, F(\alpha))$.
+    Then $F(\ORDsucc(\alpha))
+      \eq J(F \FUNrest \ORDsucc(\alpha))
+      \eq G(\ORDpred(\ORDsucc(\alpha)), (F \FUNrest \ORDsucc(\alpha))(\ORDpred(\ORDsucc(\alpha))))
+      \eq G(\alpha, (F \FUNrest \ORDsucc(\alpha))(\alpha))
+      \eq G(\alpha, F(\alpha))$.
   Qed.
 
-  (3) $F(\lambda) = H(\lambda, F \restriction \lambda)$ for all limit ordinals $\lambda$. \newline
+  (3) $F(\lambda) \eq H(\lambda, F \FUNrest \lambda)$ for all limit ordinals $\lambda$. \newline
   Proof.
     Let $\lambda$ be a limit ordinal.
     Then $F(\lambda)
-      = J(F \restriction \lambda)
-      = H(\lambda, F \restriction \lambda)$.
+      \eq J(F \FUNrest \lambda)
+      \eq H(\lambda, F \FUNrest \lambda)$.
   Qed.
 
   Hence the thesis (by 1, 2, 3).

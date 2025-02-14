@@ -6,371 +6,371 @@
 \importmodule[libraries/foundations]{maps.ftl}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_5919649206108160]
-  Let $A, B$ be classes and $f : A \to B$ and $X \subseteq A$.
-  Then $f_{*}(X) = \{ f(x) \mid x \in X \}$.
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X \SETinclude A$.
+  Then $\FUNim{f}{X} \eq \{ f(x) \mid x \in X \}$.
 \end{proposition}
 
 \begin{corollary}[forthel,id=FOUNDATIONS_07_5543924730953728]
-  Let $A, B$ be classes and $f : A \to B$.
-  Then $f_{*}(A) = \range(f)$.
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$.
+  Then $\FUNim{f}{A} \eq \FUNrange(f)$.
 \end{corollary}
 
 \begin{corollary}[forthel,id=FOUNDATIONS_07_1818812171157504]
-  Let $A, B$ be classes and $f : A \to B$ and $X \subseteq A$.
-  Then $f_{*}(X) = \range(f \restriction X)$.
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X \SETinclude A$.
+  Then $\FUNim{f}{X} \eq \FUNrange(f \FUNrest X)$.
 \end{corollary}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_911395830890496]
-  Let $A$ be a class and $X \subseteq A$.
-  Then $(\id_{A})_{*}(X) = X$.
+  Let $A$ be a class and $X \SETinclude A$.
+  Then $\FUNim{\FUNid{A}}{X} \eq X$.
 \end{proposition}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_3349817830932480]
-  Let $B$ be a class and $Y \subseteq B$.
-  Then $(\id_{B})^{*}(Y) = Y$.
+  Let $B$ be a class and $Y \SETinclude B$.
+  Then $\FUNpreim{\FUNid{B}}{Y} \eq Y$.
 \end{proposition}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_6362984433582080]
-  Let $A, B$ be classes and $f : A \to B$ and $Y \subseteq B$ and $a \in A$.
-  Then $f(a) \in Y$ iff $a \in f^{*}(Y)$.
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $Y \SETinclude B$ and $a \in A$.
+  Then $f(a) \in Y$ iff $a \in \FUNpreim{f}{Y}$.
 \end{proposition}
 \begin{proof}[forthel]
-  We have $f^{*}(Y) = \{ x \in A \mid f(x) \in Y \}$.
-  Hence $a \in f^{*}(Y)$ iff $a \in A$ and $f(a) \in Y$.
+  We have $\FUNpreim{f}{Y} \eq \{ x \in A \mid f(x) \in Y \}$.
+  Hence $a \in \FUNpreim{f}{Y}$ iff $a \in A$ and $f(a) \in Y$.
   Then we have the thesis.
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_6730546254184448]
-  Let $A, B$ be classes and $f : A \to B$.
-  Then $f_{*}(A) \subseteq B$.
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$.
+  Then $\FUNim{f}{A} \SETinclude B$.
 \end{proposition}
 \begin{proof}[forthel]
-  $f_{*}(A)
-    = f_{*}(\dom(f))
-    = \range(f)
-    \subseteq B$.
+  $\FUNim{f}{A}
+    \eq \FUNim{f}{\dom(f)}
+    \eq \FUNrange(f)
+    \SETinclude B$.
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_6541963008409600]
-  Let $A, B$ be classes and $f : A \to B$.
-  Then $f^{*}(B) = A$.
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$.
+  Then $\FUNpreim{f}{B} \eq A$.
 \end{proposition}
 \begin{proof}[forthel]
-  We have $f^{*}(B) = \{ a \in A \mid f(a) \in B \}$.
+  We have $\FUNpreim{f}{B} \eq \{ a \in A \mid f(a) \in B \}$.
   $f(a) \in B$ for all $a \in A$.
   Hence the thesis.
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_1913313581596672]
-  Let $A, B$ be classes and $f : A \to B$.
-  Then $f_{*}(f^{*}(B)) = f_{*}(A)$.
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$.
+  Then $\FUNim{f}{\FUNpreim{f}{B}} \eq \FUNim{f}{A}$.
 \end{proposition}
 \begin{proof}[forthel]
-  Let us show that $f_{*}(f^{*}(B)) \subseteq f_{*}(A)$.
-    Let $b \in f_{*}(f^{*}(B))$.
-    Take $a \in f^{*}(B) \cap A$ such that $b = f(a)$.
+  Let us show that $\FUNim{f}{\FUNpreim{f}{B}} \SETinclude \FUNim{f}{A}$.
+    Let $b \in \FUNim{f}{\FUNpreim{f}{B}}$.
+    Take $a \in \FUNpreim{f}{B} \SETintersect A$ such that $b \eq f(a)$.
     Then $a \in A$.
-    Hence $b \in f_{*}(A)$.
+    Hence $b \in \FUNim{f}{A}$.
   End.
 
-  Let us show that $f_{*}(A) \subseteq f_{*}(f^{*}(B))$.
-    Let $b \in f_{*}(A)$.
-    Take $a \in A$ such that $b = f(a)$.
+  Let us show that $\FUNim{f}{A} \SETinclude \FUNim{f}{\FUNpreim{f}{B}}$.
+    Let $b \in \FUNim{f}{A}$.
+    Take $a \in A$ such that $b \eq f(a)$.
     We have $b \in B$.
-    Hence $a \in f^{*}(B)$.
-    Thus $f(a) \in f_{*}(f^{*}(B))$.
-    Indeed $f^{*}(B) \subseteq A$.
-    Therefore $b \in f_{*}(f^{*}(B))$.
+    Hence $a \in \FUNpreim{f}{B}$.
+    Thus $f(a) \in \FUNim{f}{\FUNpreim{f}{B}}$.
+    Indeed $\FUNpreim{f}{B} \SETinclude A$.
+    Therefore $b \in \FUNim{f}{\FUNpreim{f}{B}}$.
   End.
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_3819758101200896]
-  Let $A, B$ be classes and $f : A \to B$.
-  Then $f^{*}(f_{*}(A)) = A$.
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$.
+  Then $\FUNpreim{f}{\FUNim{f}{A}} \eq A$.
 \end{proposition}
 \begin{proof}[forthel]
-  $f^{*}(f_{*}(A)) = \{ a \in A \mid f(a) \in f_{*}(A) \}$.
-  For all $a \in A$ we have $f(a) \in f_{*}(A)$.
-  Hence every element of $f^{*}(f_{*}(A))$ is contained in $A$ and every element of $A$ is contained in $f^{*}(f_{*}(A))$.
-  Thus $f^{*}(f_{*}(A)) = A$.
+  $\FUNpreim{f}{\FUNim{f}{A}} \eq \{ a \in A \mid f(a) \in \FUNim{f}{A} \}$.
+  For all $a \in A$ we have $f(a) \in \FUNim{f}{A}$.
+  Hence every element of $\FUNpreim{f}{\FUNim{f}{A}}$ is contained in $A$ and every element of $A$ is contained in $\FUNpreim{f}{\FUNim{f}{A}}$.
+  Thus $\FUNpreim{f}{\FUNim{f}{A}} \eq A$.
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_7760514696347648]
-  Let $A, B$ be classes and $f : A \to B$ and $Y \subseteq B$.
-  Then $f_{*}(f^{*}(Y)) = Y \cap f_{*}(A)$.
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $Y \SETinclude B$.
+  Then $\FUNim{f}{\FUNpreim{f}{Y}} \eq Y \SETintersect \FUNim{f}{A}$.
 \end{proposition}
 \begin{proof}[forthel]
-  Let us show that $f_{*}(f^{*}(Y)) \subseteq Y \cap f_{*}(A)$.
-    Let $b \in f_{*}(f^{*}(Y))$.
-    Take $a \in f^{*}(Y)$ such that $b = f(a)$.
-    Then $f(a) \in Y \cap f_{*}(A)$.
-    Hence we have $b \in Y \cap f_{*}(A)$.
+  Let us show that $\FUNim{f}{\FUNpreim{f}{Y}} \SETinclude Y \SETintersect \FUNim{f}{A}$.
+    Let $b \in \FUNim{f}{\FUNpreim{f}{Y}}$.
+    Take $a \in \FUNpreim{f}{Y}$ such that $b \eq f(a)$.
+    Then $f(a) \in Y \SETintersect \FUNim{f}{A}$.
+    Hence we have $b \in Y \SETintersect \FUNim{f}{A}$.
   End.
 
-  Let us show that $Y \cap f_{*}(A) \subseteq f_{*}(f^{*}(Y))$.
-    Let $b \in Y \cap f_{*}(A)$.
-    Take $a \in A$ such that $b = f(a)$.
-    Then $a \in f^{*}(Y)$.
-    Hence $f(a) \in f_{*}(f^{*}(Y))$.
+  Let us show that $Y \SETintersect \FUNim{f}{A} \SETinclude \FUNim{f}{\FUNpreim{f}{Y}}$.
+    Let $b \in Y \SETintersect \FUNim{f}{A}$.
+    Take $a \in A$ such that $b \eq f(a)$.
+    Then $a \in \FUNpreim{f}{Y}$.
+    Hence $f(a) \in \FUNim{f}{\FUNpreim{f}{Y}}$.
   End.
 \end{proof}
 
 \begin{corollary}[forthel,id=FOUNDATIONS_07_5585105345052672]
-  Let $A, B$ be classes and $f : A \to B$ and $Y \subseteq B$.
-  Then $f_{*}(f^{*}(Y)) \subseteq Y$.
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $Y \SETinclude B$.
+  Then $\FUNim{f}{\FUNpreim{f}{Y}} \SETinclude Y$.
 \end{corollary}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_4890896170483712]
-  Let $A, B$ be classes and $f : A \to B$ and $X \subseteq A$.
-  Then $f^{*}(f_{*}(X)) \supseteq X$.
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X \SETinclude A$.
+  Then $\FUNpreim{f}{\FUNim{f}{X}} \supseteq X$.
 \end{proposition}
 \begin{proof}[forthel]
   Let $a \in X$.
-  Then $f(a) \in f_{*}(X)$.
-  Hence $a \in f^{*}(f_{*}(X))$.
-  Indeed $f_{*}(X) \subseteq B$.
+  Then $f(a) \in \FUNim{f}{X}$.
+  Hence $a \in \FUNpreim{f}{\FUNim{f}{X}}$.
+  Indeed $\FUNim{f}{X} \SETinclude B$.
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_3318372355801088]
-  Let $A, B$ be classes and $f : A \to B$ and $X \subseteq A$.
-  Then $f_{*}(X) = \emptyset$ iff $X = \emptyset$.
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X \SETinclude A$.
+  Then $\FUNim{f}{X} \eq \SETempty$ iff $X \eq \SETempty$.
 \end{proposition}
 \begin{proof}[forthel]
-  Case $f_{*}(X)$ is empty.
-    Then there is no $a \in X$ such that $f(a) \in f_{*}(X)$.
-    For all $a \in X$ we have $f(a) \in f_{*}(X)$.
+  Case $\FUNim{f}{X}$ is empty.
+    Then there is no $a \in X$ such that $f(a) \in \FUNim{f}{X}$.
+    For all $a \in X$ we have $f(a) \in \FUNim{f}{X}$.
     Hence $X$ is empty.
   End.
 
   Case $X$ is empty.
-    For all $b \in f_{*}(X)$ we have $b = f(a)$ for some $a \in X$.
+    For all $b \in \FUNim{f}{X}$ we have $b \eq f(a)$ for some $a \in X$.
     There is no $a \in X$.
-    Hence $f_{*}(X)$ is empty.
+    Hence $\FUNim{f}{X}$ is empty.
   End.
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_8597874786959360]
-  Let $A, B$ be classes and $f : A \to B$ and $Y \subseteq B$.
-  Then $f^{*}(Y) = \emptyset$ iff $Y \subseteq B \setminus f_{*}(A)$.
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $Y \SETinclude B$.
+  Then $\FUNpreim{f}{Y} \eq \SETempty$ iff $Y \SETinclude B \SETdiff \FUNim{f}{A}$.
 \end{proposition}
 \begin{proof}[forthel]
-  Case $f^{*}(Y)$ is empty.
+  Case $\FUNpreim{f}{Y}$ is empty.
     Let $b \in Y$.
     Then $b \in B$.
 
-    There is no $a \in A$ such that $b = f(a)$. \newline
+    There is no $a \in A$ such that $b \eq f(a)$. \newline
     Proof.
       Assume the contrary.
-      Take $a \in A$ such that $b = f(a)$.
-      Then $a \in f^{*}(Y)$.
+      Take $a \in A$ such that $b \eq f(a)$.
+      Then $a \in \FUNpreim{f}{Y}$.
       Contradiction.
     Qed.
 
-    Hence $b \notin f_{*}(A)$.
-    Therefore $b \in B \setminus f_{*}(A)$.
+    Hence $b \notin \FUNim{f}{A}$.
+    Therefore $b \in B \SETdiff \FUNim{f}{A}$.
   End.
 
-  Case $Y \subseteq B \setminus f_{*}(A)$.
-    Then no element of $Y$ is an element of $f_{*}(A)$.
-    Assume that $f^{*}(Y)$ is nonempty.
-    Take $a \in f^{*}(Y)$.
-    Then $f(a) \in Y$ and $f(a) \in f_{*}(A)$.
+  Case $Y \SETinclude B \SETdiff \FUNim{f}{A}$.
+    Then no element of $Y$ is an element of $\FUNim{f}{A}$.
+    Assume that $\FUNpreim{f}{Y}$ is nonempty.
+    Take $a \in \FUNpreim{f}{Y}$.
+    Then $f(a) \in Y$ and $f(a) \in \FUNim{f}{A}$.
     Contradiction.
   End.
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_6295504988143616]
-  Let $A, B$ be classes and $f : A \to B$ and $X \subseteq A$ and $Y \subseteq B$.
-  Then $f_{*}(X) \cap Y = \emptyset$ iff $X \cap f^{*}(Y) = \emptyset$.
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X \SETinclude A$ and $Y \SETinclude B$.
+  Then $\FUNim{f}{X} \SETintersect Y \eq \SETempty$ iff $X \SETintersect \FUNpreim{f}{Y} \eq \SETempty$.
 \end{proposition}
 \begin{proof}[forthel]
-  Case $f_{*}(X) \cap Y$ is empty.
-    Assume that $X \cap f^{*}(Y)$ is nonempty.
-    Take $a \in X \cap f^{*}(Y)$.
-    Then $f(a) \in f_{*}(X)$ and $f(a) \in Y$.
-    Hence $f(a) \in f_{*}(X) \cap Y$.
+  Case $\FUNim{f}{X} \SETintersect Y$ is empty.
+    Assume that $X \SETintersect \FUNpreim{f}{Y}$ is nonempty.
+    Take $a \in X \SETintersect \FUNpreim{f}{Y}$.
+    Then $f(a) \in \FUNim{f}{X}$ and $f(a) \in Y$.
+    Hence $f(a) \in \FUNim{f}{X} \SETintersect Y$.
     Contradiction.
   End.
 
-  Case $X \cap f^{*}(Y)$ is empty.
-    Assume that $f_{*}(X) \cap Y$ is nonempty.
-    Take $b \in f_{*}(X) \cap Y$.
-    Consider a $a \in X$ such that $b = f(a)$.
-    Then $a \in f^{*}(Y)$.
+  Case $X \SETintersect \FUNpreim{f}{Y}$ is empty.
+    Assume that $\FUNim{f}{X} \SETintersect Y$ is nonempty.
+    Take $b \in \FUNim{f}{X} \SETintersect Y$.
+    Consider a $a \in X$ such that $b \eq f(a)$.
+    Then $a \in \FUNpreim{f}{Y}$.
     Indeed $b \in Y$.
-    Hence $a \in X \cap f^{*}(Y)$.
+    Hence $a \in X \SETintersect \FUNpreim{f}{Y}$.
     Contradiction.
   End.
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_5628919411638272]
-  Let $A, B, C$ be classes and $f : A \to B$ and $g : B \to C$ and $X \subseteq A$.
-  Then $(g \circ f)_{*}(X) = g_{*}(f_{*}(X))$.
+  Let $A, B, C$ be classes and $f \FUNfromto{A}{B}$ and $g \FUNfromto{B}{C}$ and $X \SETinclude A$.
+  Then $\FUNim{g \FUNcomp f}{X} \eq \FUNim{g}{\FUNim{f}{X}}$.
 \end{proposition}
 \begin{proof}[forthel]
-  $((g \circ f)_{*}(X)) = \{ g(f(a)) \mid a \in X \}$. %!
-  $f_{*}(X)$ is a subclass of $B$.
-  We have $g_{*}(f_{*}(X)) = \{ g(b) \mid b \in f_{*}(X) \}$ and $f_{*}(X) = \{ f(a) \mid a \in X \}$.
-  Thus $g_{*}(f_{*}(X)) = \{ g(f(a)) \mid a \in X \}$.
-  Therefore $(g \circ f)_{*}(X) = g_{*}(f_{*}(X))$.
+  $\FUNim{g \FUNcomp f}{X} \eq \{ g(f(a)) \mid a \in X \}$.
+  $\FUNim{f}{X}$ is a subclass of $B$.
+  We have $\FUNim{g}{\FUNim{f}{X}} \eq \{ g(b) \mid b \in \FUNim{f}{X} \}$ and $\FUNim{f}{X} \eq \{ f(a) \mid a \in X \}$.
+  Thus $\FUNim{g}{\FUNim{f}{X}} \eq \{ g(f(a)) \mid a \in X \}$.
+  Therefore $\FUNim{g \FUNcomp f}{X} \eq \FUNim{g}{\FUNim{f}{X}}$.
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_6824917886566400]
-  Let $A, B, C$ be classes and $f : A \to B$ and $g : B \to C$ and $Z \subseteq C$.
-  Then $(g \circ f)^{*}(Z) = f^{*}(g^{*}(Z))$.
+  Let $A, B, C$ be classes and $f \FUNfromto{A}{B}$ and $g \FUNfromto{B}{C}$ and $Z \SETinclude C$.
+  Then $\FUNpreim{g \FUNcomp f}{Z} \eq \FUNpreim{f}{\FUNpreim{g}{Z}}$.
 \end{proposition}
 \begin{proof}[forthel]
-  $((g \circ f)^{*}(Z)) = \{ a \in A \mid g(f(a)) \in Z \}$.
-  We have $g^{*}(Z) = \{ b \in B \mid g(b) \in Z \}$ and $f^{*}(g^{*}(Z)) = \{ a \in A \mid f(a) \in g^{*}(Z) \}$.
-  Hence $f^{*}(g^{*}(Z)) = \{ a \in A \mid g(f(a)) \in Z \}$.
-  Thus $(g \circ f)^{*}(Z) = f^{*}(g^{*}(Z))$.
+  $\FUNpreim{g \FUNcomp f}{Z} \eq \{ a \in A \mid g(f(a)) \in Z \}$.
+  We have $\FUNpreim{g}{Z} \eq \{ b \in B \mid g(b) \in Z \}$ and $\FUNpreim{f}{\FUNpreim{g}{Z}} \eq \{ a \in A \mid f(a) \in \FUNpreim{g}{Z} \}$.
+  Hence $\FUNpreim{f}{\FUNpreim{g}{Z}} \eq \{ a \in A \mid g(f(a)) \in Z \}$.
+  Thus $\FUNpreim{g \FUNcomp f}{Z} \eq \FUNpreim{f}{\FUNpreim{g}{Z}}$.
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_7396318576115712]
-  Let $A, B$ be classes and $f : A \to B$ and $X, X' \subseteq A$.
-  If $X \subseteq X'$ then $f_{*}(X) \subseteq f_{*}(X')$.
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X, X' \SETinclude A$.
+  If $X \SETinclude X'$ then $\FUNim{f}{X} \SETinclude \FUNim{f}{X'}$.
 \end{proposition}
 \begin{proof}[forthel]
-  Assume $X \subseteq X'$.
-  Let $b \in f_{*}(X)$.
-  Take $a \in X$ such that $f(a) = b$.
+  Assume $X \SETinclude X'$.
+  Let $b \in \FUNim{f}{X}$.
+  Take $a \in X$ such that $f(a) \eq b$.
   Then $a \in X'$.
-  Hence $b = f(a) \in f_{*}(X')$.
+  Hence $b \eq f(a) \in \FUNim{f}{X'}$.
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_8376448628817920]
-  Let $A, B$ be classes and $f : A \to B$ and $Y, Y' \subseteq B$.
-  If $Y \subseteq Y'$ then $f^{*}(Y) \subseteq f^{*}(Y')$.
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $Y, Y' \SETinclude B$.
+  If $Y \SETinclude Y'$ then $\FUNpreim{f}{Y} \SETinclude \FUNpreim{f}{Y'}$.
 \end{proposition}
 \begin{proof}[forthel]
-  Assume $Y \subseteq Y'$.
-  Let $a \in f^{*}(Y)$.
+  Assume $Y \SETinclude Y'$.
+  Let $a \in \FUNpreim{f}{Y}$.
   Then $f(a) \in Y$.
   Hence $f(a) \in Y'$.
-  Thus $a \in f^{*}(Y')$.
+  Thus $a \in \FUNpreim{f}{Y'}$.
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_4448961469349888]
-  Let $A, B$ be classes and $f : A \to B$ and $X, X' \subseteq A$.
-  Then $f_{*}(X \cup X') = f_{*}(X) \cup f_{*}(X')$.
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X, X' \SETinclude A$.
+  Then $\FUNim{f}{X \SETunion X'} \eq \FUNim{f}{X} \SETunion \FUNim{f}{X'}$.
 \end{proposition}
 \begin{proof}[forthel]
-  Let us show that $f_{*}(X \cup X') \subseteq f_{*}(X) \cup f_{*}(X')$.
-    Let $b \in f_{*}(X \cup X')$.
-    Take $a \in X \cup X'$ such that $b = f(a)$.
+  Let us show that $\FUNim{f}{X \SETunion X'} \SETinclude \FUNim{f}{X} \SETunion \FUNim{f}{X'}$.
+    Let $b \in \FUNim{f}{X \SETunion X'}$.
+    Take $a \in X \SETunion X'$ such that $b \eq f(a)$.
     Then $a \in X$ or $a \in X'$.
-    Hence $f(a) \in f_{*}(X)$ or $f(a) \in f_{*}(X')$.
-    Thus $b = f(a) \in f_{*}(X) \cup f_{*}(X')$.
+    Hence $f(a) \in \FUNim{f}{X}$ or $f(a) \in \FUNim{f}{X'}$.
+    Thus $b \eq f(a) \in \FUNim{f}{X} \SETunion \FUNim{f}{X'}$.
   End.
 
-  Let us show that $f_{*}(X) \cup f_{*}(X') \subseteq f_{*}(X \cup X')$.
-    Let $b \in f_{*}(X) \cup f_{*}(X')$.
+  Let us show that $\FUNim{f}{X} \SETunion \FUNim{f}{X'} \SETinclude \FUNim{f}{X \SETunion X'}$.
+    Let $b \in \FUNim{f}{X} \SETunion \FUNim{f}{X'}$.
 
-    Case $b \in f_{*}(X)$.
-      Take $a \in X$ such that $b = f(a)$.
-      Then $a \in X \cup X'$.
-      Hence $b \in f_{*}(X \cup X')$.
+    Case $b \in \FUNim{f}{X}$.
+      Take $a \in X$ such that $b \eq f(a)$.
+      Then $a \in X \SETunion X'$.
+      Hence $b \in \FUNim{f}{X \SETunion X'}$.
     End.
 
-    Case $b \in f_{*}(X')$.
-      Take $a \in X'$ such that $b = f(a)$.
-      Then $a \in X \cup X'$.
-      Hence $b \in f_{*}(X \cup X')$.
+    Case $b \in \FUNim{f}{X'}$.
+      Take $a \in X'$ such that $b \eq f(a)$.
+      Then $a \in X \SETunion X'$.
+      Hence $b \in \FUNim{f}{X \SETunion X'}$.
     End.
   End.
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_1547089051910144]
-  Let $A, B$ be classes and $f : A \to B$ and $Y, Y' \subseteq B$.
-  Then $f^{*}(Y \cup Y') = f^{*}(Y) \cup f^{*}(Y')$.
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $Y, Y' \SETinclude B$.
+  Then $\FUNpreim{f}{Y \SETunion Y'} \eq \FUNpreim{f}{Y} \SETunion \FUNpreim{f}{Y'}$.
 \end{proposition}
 \begin{proof}[forthel]
-  Let us show that $f^{*}(Y \cup Y') \subseteq f^{*}(Y) \cup f^{*}(Y')$.
-    Let $a \in f^{*}(Y \cup Y')$.
-    Then $f(a) \in Y \cup Y'$.
+  Let us show that $\FUNpreim{f}{Y \SETunion Y'} \SETinclude \FUNpreim{f}{Y} \SETunion \FUNpreim{f}{Y'}$.
+    Let $a \in \FUNpreim{f}{Y \SETunion Y'}$.
+    Then $f(a) \in Y \SETunion Y'$.
     Hence $f(a) \in Y$ or $f(a) \in Y'$.
-    If $f(a) \in Y$ then $a \in f^{*}(Y)$.
-    If $f(a) \in Y'$ then $a \in f^{*}(Y')$.
-    Thus $a \in f^{*}(Y) \cup f^{*}(Y')$.
+    If $f(a) \in Y$ then $a \in \FUNpreim{f}{Y}$.
+    If $f(a) \in Y'$ then $a \in \FUNpreim{f}{Y'}$.
+    Thus $a \in \FUNpreim{f}{Y} \SETunion \FUNpreim{f}{Y'}$.
   End.
 
-  Let us show that $f^{*}(Y) \cup f^{*}(Y') \subseteq f^{*}(Y \cup Y')$.
-    Let $a \in f^{*}(Y) \cup f^{*}(Y')$.
-    Then $a \in f^{*}(Y)$ or $a \in f^{*}(Y')$.
-    If $a \in f^{*}(Y)$ then $f(a) \in Y$.
-    If $a \in f^{*}(Y')$ then $f(a) \in Y'$.
-    Hence $f(a) \in Y \cup Y'$.
-    Thus $a \in f^{*}(Y \cup Y')$.
+  Let us show that $\FUNpreim{f}{Y} \SETunion \FUNpreim{f}{Y'} \SETinclude \FUNpreim{f}{Y \SETunion Y'}$.
+    Let $a \in \FUNpreim{f}{Y} \SETunion \FUNpreim{f}{Y'}$.
+    Then $a \in \FUNpreim{f}{Y}$ or $a \in \FUNpreim{f}{Y'}$.
+    If $a \in \FUNpreim{f}{Y}$ then $f(a) \in Y$.
+    If $a \in \FUNpreim{f}{Y'}$ then $f(a) \in Y'$.
+    Hence $f(a) \in Y \SETunion Y'$.
+    Thus $a \in \FUNpreim{f}{Y \SETunion Y'}$.
   End.
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_3966130473402368]
-  Let $A, B$ be classes and $f : A \to B$ and $X, X' \subseteq A$.
-  Then $f_{*}(X \cap X') \subseteq f_{*}(X) \cap f_{*}(X')$.
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X, X' \SETinclude A$.
+  Then $\FUNim{f}{X \SETintersect X'} \SETinclude \FUNim{f}{X} \SETintersect \FUNim{f}{X'}$.
 \end{proposition}
 \begin{proof}[forthel]
-  Let $b \in f_{*}(X \cap X')$.
-  Take $a \in X \cap X'$ such that $b = f(a)$.
+  Let $b \in \FUNim{f}{X \SETintersect X'}$.
+  Take $a \in X \SETintersect X'$ such that $b \eq f(a)$.
   Then $a \in X$ and $a \in X'$.
-  Hence $f(a) \in f_{*}(X)$ and $f(a) \in f_{*}(X')$.
-  Thus $b \in f_{*}(X) \cap f_{*}(X)$.
+  Hence $f(a) \in \FUNim{f}{X}$ and $f(a) \in \FUNim{f}{X'}$.
+  Thus $b \in \FUNim{f}{X} \SETintersect \FUNim{f}{X}$.
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_4021844428455936]
-  Let $A, B$ be classes and $f : A \to B$ and $Y, Y' \subseteq B$.
-  Then $f^{*}(Y \cap Y') = f^{*}(Y) \cap f^{*}(Y')$.
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $Y, Y' \SETinclude B$.
+  Then $\FUNpreim{f}{Y \SETintersect Y'} \eq \FUNpreim{f}{Y} \SETintersect \FUNpreim{f}{Y'}$.
 \end{proposition}
 \begin{proof}[forthel]
-  Let us show that $f^{*}(Y \cap Y') \subseteq f^{*}(Y) \cap f^{*}(Y')$.
-    Let $a \in f^{*}(Y \cap Y')$.
-    Then $f(a) \in Y \cap Y'$.
+  Let us show that $\FUNpreim{f}{Y \SETintersect Y'} \SETinclude \FUNpreim{f}{Y} \SETintersect \FUNpreim{f}{Y'}$.
+    Let $a \in \FUNpreim{f}{Y \SETintersect Y'}$.
+    Then $f(a) \in Y \SETintersect Y'$.
     Hence $f(a) \in Y$ and $f(a) \in Y'$.
-    Thus $a \in f^{*}(Y)$ and $a \in f^{*}(Y')$.
-    Therefore $a \in f^{*}(Y) \cap f^{*}(Y')$.
+    Thus $a \in \FUNpreim{f}{Y}$ and $a \in \FUNpreim{f}{Y'}$.
+    Therefore $a \in \FUNpreim{f}{Y} \SETintersect \FUNpreim{f}{Y'}$.
   End.
 
-  Let us show that $f^{*}(Y) \cap f^{*}(Y') \subseteq f^{*}(Y \cap Y')$.
-    Let $a \in f^{*}(Y) \cap f^{*}(Y')$.
-    Then $a \in f^{*}(Y)$ and $a \in f^{*}(Y')$.
+  Let us show that $\FUNpreim{f}{Y} \SETintersect \FUNpreim{f}{Y'} \SETinclude \FUNpreim{f}{Y \SETintersect Y'}$.
+    Let $a \in \FUNpreim{f}{Y} \SETintersect \FUNpreim{f}{Y'}$.
+    Then $a \in \FUNpreim{f}{Y}$ and $a \in \FUNpreim{f}{Y'}$.
     Hence $f(a) \in Y$ and $f(a) \in Y'$.
-    Thus $f(a) \in Y \cap Y'$.
-    Therefore $a \in f^{*}(Y \cap Y')$.
+    Thus $f(a) \in Y \SETintersect Y'$.
+    Therefore $a \in \FUNpreim{f}{Y \SETintersect Y'}$.
   End.
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_8372256617005056]
-  Let $A, B$ be classes and $f : A \to B$ and $X, X' \subseteq A$.
-  Then $f_{*}(X \setminus X') \supseteq f_{*}(X) \setminus f_{*}(X')$.
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X, X' \SETinclude A$.
+  Then $\FUNim{f}{X \SETdiff X'} \supseteq \FUNim{f}{X} \SETdiff \FUNim{f}{X'}$.
 \end{proposition}
 \begin{proof}[forthel]
-  Let $b \in f_{*}(X) \setminus f_{*}(X')$.
-  Then $b \in f_{*}(X)$ and $b \notin f_{*}(X')$.
-  Take $a \in X$ such that $b = f(a)$.
-  If $a \in X'$ then $b \in f_{*}(X')$.
+  Let $b \in \FUNim{f}{X} \SETdiff \FUNim{f}{X'}$.
+  Then $b \in \FUNim{f}{X}$ and $b \notin \FUNim{f}{X'}$.
+  Take $a \in X$ such that $b \eq f(a)$.
+  If $a \in X'$ then $b \in \FUNim{f}{X'}$.
   Hence $a \notin X'$.
-  Thus $a \in X \setminus X'$.
-  Therefore $b = f(a) \in f_{*}(X \setminus X')$.
+  Thus $a \in X \SETdiff X'$.
+  Therefore $b \eq f(a) \in \FUNim{f}{X \SETdiff X'}$.
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_6552168641331200]
-  Let $A, B$ be classes and $f : A \to B$ and $Y, Y' \subseteq B$.
-  Then $f^{*}(Y \setminus Y') = f^{*}(Y) \setminus f^{*}(Y')$.
+  Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $Y, Y' \SETinclude B$.
+  Then $\FUNpreim{f}{Y \SETdiff Y'} \eq \FUNpreim{f}{Y} \SETdiff \FUNpreim{f}{Y'}$.
 \end{proposition}
 \begin{proof}[forthel]
-  Let us show that $f^{*}(Y \setminus Y') \subseteq f^{*}(Y) \setminus f^{*}(Y')$.
-    Let $a \in f^{*}(Y \setminus Y')$.
-    Then $f(a) \in Y \setminus Y'$.
+  Let us show that $\FUNpreim{f}{Y \SETdiff Y'} \SETinclude \FUNpreim{f}{Y} \SETdiff \FUNpreim{f}{Y'}$.
+    Let $a \in \FUNpreim{f}{Y \SETdiff Y'}$.
+    Then $f(a) \in Y \SETdiff Y'$.
     Hence $f(a) \in Y$ and $f(a) \notin Y'$.
-    Thus $a \in f^{*}(Y)$ and $a \notin f^{*}(Y')$.
-    Therefore $a \in f^{*}(Y) \setminus f^{*}(Y')$.
+    Thus $a \in \FUNpreim{f}{Y}$ and $a \notin \FUNpreim{f}{Y'}$.
+    Therefore $a \in \FUNpreim{f}{Y} \SETdiff \FUNpreim{f}{Y'}$.
   End.
 
-  Let us show that $f^{*}(Y) \setminus f^{*}(Y') \subseteq f^{*}(Y \setminus Y')$.
-    Let $a \in f^{*}(Y) \setminus f^{*}(Y')$.
-    Then $a \in f^{*}(Y)$ and $a \notin f^{*}(Y')$.
+  Let us show that $\FUNpreim{f}{Y} \SETdiff \FUNpreim{f}{Y'} \SETinclude \FUNpreim{f}{Y \SETdiff Y'}$.
+    Let $a \in \FUNpreim{f}{Y} \SETdiff \FUNpreim{f}{Y'}$.
+    Then $a \in \FUNpreim{f}{Y}$ and $a \notin \FUNpreim{f}{Y'}$.
     Hence $f(a) \in Y$ and $f(a) \notin Y'$.
-    Thus $f(a) \in Y \setminus Y'$.
-    Therefore $a \in f^{*}(Y \setminus Y')$.
+    Thus $f(a) \in Y \SETdiff Y'$.
+    Therefore $a \in \FUNpreim{f}{Y \SETdiff Y'}$.
   End.
 \end{proof}
 \end{smodule}

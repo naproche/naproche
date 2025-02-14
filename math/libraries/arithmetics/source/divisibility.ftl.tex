@@ -4,19 +4,21 @@
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Divisibility]{divisibility.ftl}
 \importmodule[libraries/arithmetics]{multiplication-and-ordering.ftl}
+\symdef{NATmid}{\,\mid\,}
+\symdef{NATnmid}{\,\not\mid\,}
 
 \begin{definition}[forthel,id=ARITHMETIC_07_4239998993825792]
   Let $n, m$ be natural numbers.
-  \emph{$n$ divides $m$} iff there exists a natural number $k$ such that $n \cdot k = m$.
+  \emph{$n$ divides $m$} iff there exists a natural number $k$ such that $n \NATmul k \eq m$.
 
   Let $m$ is \emph{divisible by $n$} stand for $n$ divides $m$.
-  Let $\emph{n \mid m}$ stand for $n$ divides $m$.
-  Let $\emph{n \nmid m}$ stand for $n$ does not divide $m$.
+  Let $\emph{n \NATmid m}$ stand for $n$ divides $m$.
+  Let $\emph{n \NATnmid m}$ stand for $n$ does not divide $m$.
 \end{definition}
 
 \begin{lemma}[forthel,id=ARITHMETIC_07_1478855118290944]
   Let $n, m$ be natural numbers.
-  $n$ divides $m$ iff there exists a natural number $k$ such that $k \cdot n = m$.
+  $n$ divides $m$ iff there exists a natural number $k$ such that $k \NATmul n \eq m$.
 \end{lemma}
 
 \begin{definition}[forthel,id=ARITHMETIC_07_1311437490225152]
@@ -28,248 +30,248 @@
 
 \begin{definition}[forthel,id=ARITHMETIC_10_5438991513944064]
   Let $n$ be a natural number.
-  A \emph{trivial divisor of $n$} is a divisor $m$ of $n$ such that $m = 1$ or $m = n$.
+  A \emph{trivial divisor of $n$} is a divisor $m$ of $n$ such that $m \eq \NATone$ or $m \eq n$.
 \end{definition}
 
 \begin{definition}[forthel,id=ARITHMETIC_10_8768240253665280]
   Let $n$ be a natural number.
-  A \emph{nontrivial divisor of $n$} is a divisor $m$ of $n$ such that $m \neq 1$ and $m \neq n$.
+  A \emph{nontrivial divisor of $n$} is a divisor $m$ of $n$ such that $m \neq \NATone$ and $m \neq n$.
 \end{definition}
 
 \begin{definition}[forthel,id=ARITHMETIC_10_8020087063707648]
   Let $n$ be a natural number.
-  $n$ is \emph{composite} iff $n > 1$ and $n$ has a nontrivial divisor.
+  $n$ is \emph{composite} iff $n \NATgtr \NATone$ and $n$ has a nontrivial divisor.
 \end{definition}
 
 \begin{proposition}[forthel,id=ARITHMETIC_07_2242720387039232]
   Let $n$ be a natural number.
-  Then $n \mid 0$.
+  Then $n \NATmid \NATzero$.
 \end{proposition}
 \begin{proof}[forthel]
-  We have $n \cdot 0 = 0$.
-  Hence $n \mid 0$.
+  We have $n \NATmul \NATzero \eq \NATzero$.
+  Hence $n \NATmid \NATzero$.
 \end{proof}
 
 \begin{proposition}[forthel,id=ARITHMETIC_07_8611150130315264]
   Let $n$ be a natural number.
-  If $0 \mid n$ then $n = 0$.
+  If $\NATzero \NATmid n$ then $n \eq \NATzero$.
 \end{proposition}
 \begin{proof}[forthel]
-  Assume $0 \mid n$.
-  Consider a natural number $k$ such that $0 \cdot k = n$.
-  Then $n = 0$.
+  Assume $\NATzero \NATmid n$.
+  Consider a natural number $k$ such that $\NATzero \NATmul k \eq n$.
+  Then $n \eq \NATzero$.
 \end{proof}
 
 \begin{proposition}[forthel,id=ARITHMETIC_07_1259086070939648]
   Let $n$ be a natural number.
-  Then $1 \mid n$.
+  Then $\NATone \NATmid n$.
 \end{proposition}
 \begin{proof}[forthel]
-  We have $1 \cdot n = n$.
-  Hence $1 \mid n$.
+  We have $\NATone \NATmul n \eq n$.
+  Hence $\NATone \NATmid n$.
 \end{proof}
 
 \begin{proposition}[forthel,id=ARITHMETIC_07_3944887330275328]
   Let $n$ be a natural number.
-  Then $n \mid n$.
+  Then $n \NATmid n$.
 \end{proposition}
 \begin{proof}[forthel]
-  We have $n \cdot 1 = n$.
-  Hence $n \mid n$.
+  We have $n \NATmul \NATone \eq n$.
+  Hence $n \NATmid n$.
 \end{proof}
 
 \begin{proposition}[forthel,id=ARITHMETIC_07_6917446193643520]
   Let $n$ be a natural number.
-  If $n \mid 1$ then $n = 1$.
+  If $n \NATmid \NATone$ then $n \eq \NATone$.
 \end{proposition}
 \begin{proof}[forthel]
-  Assume $n \mid 1$.
-  Take a natural number $k$ such that $n \cdot k = 1$.
-  Suppose $n \neq 1$.
-  Then $n < 1$ or $n > 1$.
+  Assume $n \NATmid \NATone$.
+  Take a natural number $k$ such that $n \NATmul k \eq \NATone$.
+  Suppose $n \neq \NATone$.
+  Then $n \NATless \NATone$ or $n \NATgtr \NATone$.
 
-  Case $n < 1$.
-    Then $n = 0$.
-    Hence $0
-      = 0 \cdot k
-      = n \cdot k
-      = 1$.
+  Case $n \NATless \NATone$.
+    Then $n \eq \NATzero$.
+    Hence $\NATzero
+      \eq \NATzero \NATmul k
+      \eq n \NATmul k
+      \eq \NATone$.
     Contradiction.
   End.
 
-  Case $n > 1$.
-    We have $k \neq 0$.
-    Indeed if $k = 0$ then
-    $1
-      = n \cdot k
-      = n \cdot 0
-      = 0$.
-    Hence $k \geq 1$.
-    Take a positive natural number $l$ such that $n = 1 + l$.
-    Then $1
-      < 1 + l
-      = n
-      = n \cdot 1
-      \leq n \cdot k$.
-    Hence $1 < n$.
+  Case $n \NATgtr \NATone$.
+    We have $k \neq \NATzero$.
+    Indeed if $k \eq \NATzero$ then
+    $\NATone
+      \eq n \NATmul k
+      \eq n \NATmul \NATzero
+      \eq \NATzero$.
+    Hence $k \NATgeq \NATone$.
+    Take a positive natural number $l$ such that $n \eq \NATone \NATplus l$.
+    Then $\NATone
+      \NATless \NATone \NATplus l
+      \eq n
+      \eq n \NATmul \NATone
+      \NATleq n \NATmul k$.
+    Hence $\NATone \NATless n$.
     Contradiction.
   End.
 \end{proof}
 
 \begin{proposition}[forthel,id=ARITHMETIC_07_7463519983239168]
   Let $n, m, k$ be natural numbers.
-  If $n \mid m$ then $n \mid m \cdot k$.
+  If $n \NATmid m$ then $n \NATmid m \NATmul k$.
 \end{proposition}
 \begin{proof}[forthel]
-  Assume $n \mid m$.
-  Take $l \in \Nat$ such that $n \cdot l = m$.
-  Then $n \cdot (l \cdot k)
-    = (n \cdot l) \cdot k
-    = m \cdot k$.
-  Hence $n \mid m \cdot k$.
+  Assume $n \NATmid m$.
+  Take $l \in \Nat$ such that $n \NATmul l \eq m$.
+  Then $n \NATmul (l \NATmul k)
+    \eq (n \NATmul l) \NATmul k
+    \eq m \NATmul k$.
+  Hence $n \NATmid m \NATmul k$.
 \end{proof}
 
 \begin{corollary}[forthel,id=ARITHMETIC_07_1588185794609152]
   Let $n, m, k$ be natural numbers.
-  If $n \mid m$ then $n \mid k \cdot m$.
+  If $n \NATmid m$ then $n \NATmid k \NATmul m$.
 \end{corollary}
 
 \begin{proposition}[forthel,id=ARITHMETIC_07_7863858316181504]
   Let $n, m, k$ be natural numbers.
-  If $n \mid m \mid k$ then $n \mid k$.
+  If $n \NATmid m \NATmid k$ then $n \NATmid k$.
 \end{proposition}
 \begin{proof}[forthel]
-  Assume $n \mid m$ and $m \mid k$.
-  Take natural numbers $l,l'$ such that $n \cdot l = m$ and $m \cdot l' = k$.
-  Then $n \cdot (l \cdot l')
-    = (n \cdot l) \cdot l'
-    = m \cdot l'
-    = k$.
-  Hence $n \mid k$.
+  Assume $n \NATmid m$ and $m \NATmid k$.
+  Take natural numbers $l,l'$ such that $n \NATmul l \eq m$ and $m \NATmul l' \eq k$.
+  Then $n \NATmul (l \NATmul l')
+    \eq (n \NATmul l) \NATmul l'
+    \eq m \NATmul l'
+    \eq k$.
+  Hence $n \NATmid k$.
 \end{proof}
 
 \begin{proposition}[forthel,id=ARITHMETIC_07_4933275640397824]
-  Let $n, m$ be natural numbers such that $n \neq 0$.
-  If $n \mid m$ and $m \mid n$ then $n = m$.
+  Let $n, m$ be natural numbers such that $n \neq \NATzero$.
+  If $n \NATmid m$ and $m \NATmid n$ then $n \eq m$.
 \end{proposition}
 \begin{proof}[forthel]
-  Assume $n \mid m$ and $m \mid n$.
-  Take natural numbers $k,k'$ such that $n \cdot k = m$ and $m \cdot k' = n$.
+  Assume $n \NATmid m$ and $m \NATmid n$.
+  Take natural numbers $k,k'$ such that $n \NATmul k \eq m$ and $m \NATmul k' \eq n$.
   Then $n
-    = m \cdot k'
-    = (n \cdot k) \cdot k'
-    = n \cdot (k \cdot k')$.
-  Hence $k \cdot k' = 1$.
-  Thus $k = 1 = k'$.
-  Therefore $n = m$.
+    \eq m \NATmul k'
+    \eq (n \NATmul k) \NATmul k'
+    \eq n \NATmul (k \NATmul k')$.
+  Hence $k \NATmul k' \eq \NATone$.
+  Thus $k \eq \NATone \eq k'$.
+  Therefore $n \eq m$.
 \end{proof}
 
 \begin{proposition}[forthel,id=ARITHMETIC_07_1283495225720832]
   Let $n, m, k$ be natural numbers.
-  If $n \mid m$ then $k \cdot n \mid k \cdot m$.
+  If $n \NATmid m$ then $k \NATmul n \NATmid k \NATmul m$.
 \end{proposition}
 \begin{proof}[forthel]
-  Assume $n \mid m$.
-  Take a natural number $l$ such that $n \cdot l = m$.
-  Then $(k \cdot n) \cdot l
-    = k \cdot (n \cdot l)
-    = k \cdot m$.
-  Hence $k \cdot n \mid k \cdot m$.
+  Assume $n \NATmid m$.
+  Take a natural number $l$ such that $n \NATmul l \eq m$.
+  Then $(k \NATmul n) \NATmul l
+    \eq k \NATmul (n \NATmul l)
+    \eq k \NATmul m$.
+  Hence $k \NATmul n \NATmid k \NATmul m$.
 \end{proof}
 
 \begin{proposition}[forthel,id=ARITHMETIC_07_6469492028735488]
   Let $n, m, k$ be natural numbers.
-  Assume $k \neq 0$.
-  If $k \cdot n \mid k \cdot m$ then $n \mid m$.
+  Assume $k \neq \NATzero$.
+  If $k \NATmul n \NATmid k \NATmul m$ then $n \NATmid m$.
 \end{proposition}
 \begin{proof}[forthel]
-  Assume $k \cdot n \mid k \cdot m$.
-  Take a natural number $l$ such that $(k \cdot n) \cdot l = k \cdot m$.
-  Then $k \cdot (n \cdot l) = k \cdot m$.
-  Hence $n \cdot l = m$ (by \printref{ARITHMETIC_06_8575191374364672}).
-  Thus $n \mid m$.
+  Assume $k \NATmul n \NATmid k \NATmul m$.
+  Take a natural number $l$ such that $(k \NATmul n) \NATmul l \eq k \NATmul m$.
+  Then $k \NATmul (n \NATmul l) \eq k \NATmul m$.
+  Hence $n \NATmul l \eq m$ (by \printref{ARITHMETIC_06_8575191374364672}).
+  Thus $n \NATmid m$.
 \end{proof}
 
 \begin{proposition}[forthel,id=ARITHMETIC_07_4700711333920768]
   Let $n, m, k$ be natural numbers.
-  If $k \mid n$ and $k \mid m$ then $k \mid (n' \cdot n) + (m' \cdot m)$
+  If $k \NATmid n$ and $k \NATmid m$ then $k \NATmid (n' \NATmul n) \NATplus (m' \NATmul m)$
   for all natural numbers $n', m'$.
 \end{proposition}
 \begin{proof}[forthel]
-  Assume $k \mid n$ and $k \mid m$.
+  Assume $k \NATmid n$ and $k \NATmid m$.
   Let $n', m'$ be natural numbers.
-  Take natural numbers $l,l'$ such that $k \cdot l = n$ and $k \cdot l' = m$.
+  Take natural numbers $l,l'$ such that $k \NATmul l \eq n$ and $k \NATmul l' \eq m$.
   Then
-  \[  k \cdot ((n' \cdot l) + (m' \cdot l'))                \]
-  \[    = (k \cdot (n' \cdot l)) + (k \cdot (m' \cdot l'))  \]
-  \[    = ((k \cdot n') \cdot l) + ((k \cdot m') \cdot l')  \]
-  \[    = (n' \cdot (k \cdot l)) + (m' \cdot (k \cdot l'))  \]
-  \[    = (n' \cdot n) + (m' \cdot m).                      \]
+  \[  k \NATmul ((n' \NATmul l) \NATplus (m' \NATmul l'))                \]
+  \[    \eq (k \NATmul (n' \NATmul l)) \NATplus (k \NATmul (m' \NATmul l'))  \]
+  \[    \eq ((k \NATmul n') \NATmul l) \NATplus ((k \NATmul m') \NATmul l')  \]
+  \[    \eq (n' \NATmul (k \NATmul l)) \NATplus (m' \NATmul (k \NATmul l'))  \]
+  \[    \eq (n' \NATmul n) \NATplus (m' \NATmul m).                      \]
 \end{proof}
 
 \begin{corollary}[forthel,id=ARITHMETIC_07_1556786209357824]
   Let $n, m, k$ be natural numbers.
-  If $k \mid n$ and $k \mid m$ then $k \mid n + m$.
+  If $k \NATmid n$ and $k \NATmid m$ then $k \NATmid n \NATplus m$.
 \end{corollary}
 \begin{proof}[forthel]
-  Assume $k \mid n$ and $k \mid m$.
-  Take $n' = 1$ and $m' = 1$.
-  Then $k \mid (n' \cdot n) + (m' \cdot m)$.
-  $(n' \cdot n) + (m' \cdot m) = n + m$.
-  Hence $k \mid n + m$.
+  Assume $k \NATmid n$ and $k \NATmid m$.
+  Take $n' \eq \NATone$ and $m' \eq \NATone$.
+  Then $k \NATmid (n' \NATmul n) \NATplus (m' \NATmul m)$.
+  $(n' \NATmul n) \NATplus (m' \NATmul m) \eq n \NATplus m$.
+  Hence $k \NATmid n \NATplus m$.
 \end{proof}
 
 \begin{proposition}[forthel,id=ARITHMETIC_07_1076947887063040]
   Let $n, m, k$ be natural numbers.
-  If $k \mid n$ and $k \mid n + m$ then $k \mid m$.
+  If $k \NATmid n$ and $k \NATmid n \NATplus m$ then $k \NATmid m$.
 \end{proposition}
 \begin{proof}[forthel]
-  Assume $k \mid n$ and $k \mid n + m$.
+  Assume $k \NATmid n$ and $k \NATmid n \NATplus m$.
 
-  Case $k = 0$. Obvious.
+  Case $k \eq \NATzero$. Obvious.
 
-  Case $k \neq 0$.
-    Take a natural number $l$ such that $n = k \cdot l$.
-    Take a natural number $l'$ such that $n + m = k \cdot l'$.
-    Then $(k \cdot l) + m = k \cdot l'$.
-    We have $l' \geq l$.
-    Indeed if $l' < l$ then
-    $n + m
-      = k \cdot l'
-      < k \cdot l
-      = n$ (by \printref{ARITHMETIC_06_5048640368279552}).
-    Hence we can take a natural number $l''$ such that $l' = l + l''$.
-    Then $(k \cdot l) + m
-      = k \cdot l'
-      = k \cdot (l + l'')
-      = (k \cdot l) + (k \cdot l'')$.
-    Indeed $k \cdot (l + l'') = (k \cdot l) + (k \cdot l'')$ (by \printref{ARITHMETIC_06_9001524774567936}).
-    Thus $m = (k \cdot l'')$ (by \printref{ARITHMETIC_03_8445946379632640}).
-    Indeed $k \cdot l$ and $k \cdot l''$ are natural numbers.
-    Therefore $k \mid m$.
+  Case $k \neq \NATzero$.
+    Take a natural number $l$ such that $n \eq k \NATmul l$.
+    Take a natural number $l'$ such that $n \NATplus m \eq k \NATmul l'$.
+    Then $(k \NATmul l) \NATplus m \eq k \NATmul l'$.
+    We have $l' \NATgeq l$.
+    Indeed if $l' \NATless l$ then
+    $n \NATplus m
+      \eq k \NATmul l'
+      \NATless k \NATmul l
+      \eq n$ (by \printref{ARITHMETIC_06_5048640368279552}).
+    Hence we can take a natural number $l''$ such that $l' \eq l \NATplus l''$.
+    Then $(k \NATmul l) \NATplus m
+      \eq k \NATmul l'
+      \eq k \NATmul (l \NATplus l'')
+      \eq (k \NATmul l) \NATplus (k \NATmul l'')$.
+    Indeed $k \NATmul (l \NATplus l'') \eq (k \NATmul l) \NATplus (k \NATmul l'')$ (by \printref{ARITHMETIC_06_9001524774567936}).
+    Thus $m \eq (k \NATmul l'')$ (by \printref{ARITHMETIC_03_8445946379632640}).
+    Indeed $k \NATmul l$ and $k \NATmul l''$ are natural numbers.
+    Therefore $k \NATmid m$.
   End.
 \end{proof}
 
 \begin{proposition}[forthel,id=ARITHMETIC_07_2187144577679360]
-  Let $n, m$ be natural numbers such that $n, m \neq 0$.
-  If $m \mid n$ then $m \leq n$.
+  Let $n, m$ be natural numbers such that $n, m \neq \NATzero$.
+  If $m \NATmid n$ then $m \NATleq n$.
 \end{proposition}
 \begin{proof}[forthel]
-  Assume $m \mid n$.
-  Take a natural number $k$ such that $m \cdot k = n$.
-  If $k = 0$ then
+  Assume $m \NATmid n$.
+  Take a natural number $k$ such that $m \NATmul k \eq n$.
+  If $k \eq \NATzero$ then
   $n
-    = m \cdot k
-    = m \cdot 0
-    = 0$.
-  Thus $k \geq 1$.
-  Assume $m > n$.
+    \eq m \NATmul k
+    \eq m \NATmul \NATzero
+    \eq \NATzero$.
+  Thus $k \NATgeq \NATone$.
+  Assume $m \NATgtr n$.
   Then $n
-    = m \cdot k
-    \geq m \cdot 1
-    = m
-    > n$.
-  Hence $n > n$.
+    \eq m \NATmul k
+    \NATgeq m \NATmul \NATone
+    \eq m
+    \NATgtr n$.
+  Hence $n \NATgtr n$.
   Contradiction.
 \end{proof}
 \end{smodule}

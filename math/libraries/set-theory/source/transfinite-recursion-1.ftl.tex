@@ -6,7 +6,7 @@
 \importmodule[libraries/set-theory]{coincidence-lemma.ftl}
   
 \begin{theorem}[forthel,title=Transfinite Recursion Theorem: Existence,id=transfinite-recursion_existence]
-  Let $A$ be a class and $G$ be a map from $A^{< \infty}$ to $A$.
+  Let $A$ be a class and $G$ be a map from $\ORDfunspace{A}$ to $A$.
   Then there exists a map $F$ from $\Ord$ to $A$ that is recursive regarding $G$.
 \end{theorem}
 \begin{proof}[forthel]
@@ -20,50 +20,50 @@
       Then for all $y \in \alpha$ there exists a map $h$ to $A$ such that $h$ is recursive regarding $G$ and $y \in \dom(h)$.
       Define $H'(y) =$ ``choose a map $h$ to $A$ such that $h$ is recursive regarding $G$ and $y \in \dom(h)$ in $h(y)$'' for $y \in \alpha$.
       Then $H'$ is a map from $\alpha$ to $A$.
-      We have $H' = H' \restriction \alpha$.
+      We have $H' \eq H' \FUNrest \alpha$.
       Define \[ H(\beta) =
         \begin{cases}
-          H'(\beta)                 & : \beta < \alpha \\
-          G(H' \restriction \beta)  & : \beta = \alpha
+          H'(\beta)                 & : \beta \ORDless \alpha \\
+          G(H' \FUNrest \beta)  & : \beta \eq \alpha
         \end{cases} \]
-      for $\beta \in \succ(\alpha)$.
+      for $\beta \in \ORDsucc(\alpha)$.
       
-      Let us show that $H \restriction \beta \in A^{< \infty}$ for all $\beta \in \dom(H)$.
+      Let us show that $H \FUNrest \beta \in \ORDfunspace{A}$ for all $\beta \in \dom(H)$.
         Let $\beta \in \dom(H)$.
-        $\dom(H \restriction \beta) = \beta$ and $(H \restriction \beta)(b) = H(b)$ for all $b \in \beta$.
+        $\dom(H \FUNrest \beta) \eq \beta$ and $(H \FUNrest \beta)(b) \eq H(b)$ for all $b \in \beta$.
         $H(b) \in A$ for all $b \in \beta$.
-        Hence $H \restriction \beta$ is a map from $\beta$ to $A$.
+        Hence $H \FUNrest \beta$ is a map from $\beta$ to $A$.
       End.
 
       (a) $\dom(H)$ is a transitive subclass of $\Ord$.
 
-      (b) For all $\beta \in \dom(H)$ we have $H(\beta) = G(H \restriction \beta)$. \newline
+      (b) For all $\beta \in \dom(H)$ we have $H(\beta) \eq G(H \FUNrest \beta)$. \newline
       Proof.
         Let $\beta \in \dom(H)$.
-        Then $\beta < \alpha$ or $\beta = \alpha$.
+        Then $\beta \ORDless \alpha$ or $\beta \eq \alpha$.
 
-        Case $\beta < \alpha$.
-          Choose a map $h$ to $A$ such that $h$ is recursive regarding $G$ and $\beta \in \dom(h)$ and $H'(\beta) = h(\beta)$.
+        Case $\beta \ORDless \alpha$.
+          Choose a map $h$ to $A$ such that $h$ is recursive regarding $G$ and $\beta \in \dom(h)$ and $H'(\beta) \eq h(\beta)$.
 
-          Let us show that for all $y \in \beta$ we have $h(y) = H(y)$.
+          Let us show that for all $y \in \beta$ we have $h(y) \eq H(y)$.
             Let $y \in \beta$.
-            Then $H(y) = H'(y)$.
-            Choose a map $h'$ to $A$ such that $h'$ is recursive regarding $G$ and $y \in \dom(h')$ and $H'(y) = h'(y)$.
+            Then $H(y) \eq H'(y)$.
+            Choose a map $h'$ to $A$ such that $h'$ is recursive regarding $G$ and $y \in \dom(h')$ and $H'(y) \eq h'(y)$.
             [prover vampire]
-            Then $h'(y) = h(y)$ (by \nameref{ransfinite-recursion_coincidence}).
-            Indeed $y \in \dom(h) \cap \dom(h')$.
+            Then $h'(y) \eq h(y)$ (by \nameref{ransfinite-recursion_coincidence}).
+            Indeed $y \in \dom(h) \SETintersect \dom(h')$.
           End.
 
-          Hence $h \restriction \beta = H \restriction \beta$.
+          Hence $h \FUNrest \beta \eq H \FUNrest \beta$.
           Thus $H(\beta)
-            = H'(\beta)
-            = h(\beta)
-            = G(h \restriction \beta)
-            = G(H \restriction \beta)$.
+            \eq H'(\beta)
+            \eq h(\beta)
+            \eq G(h \FUNrest \beta)
+            \eq G(H \FUNrest \beta)$.
         End.
 
-        Case $\beta = \alpha$.
-          We have $H \restriction \alpha = H' \restriction \alpha$.
+        Case $\beta \eq \alpha$.
+          We have $H \FUNrest \alpha \eq H' \FUNrest \alpha$.
         End.
       Qed.
 
@@ -83,41 +83,41 @@
   Proof.
     (a) $\dom(F)$ is a transitive subclass of $\Ord$.
 
-    (b) For all $\alpha \in \Ord$ we have $F(\alpha) = G(F \restriction \alpha)$. \newline
+    (b) For all $\alpha \in \Ord$ we have $F(\alpha) \eq G(F \FUNrest \alpha)$. \newline
     Proof.
       Let $\alpha \in \Ord$.
-      Choose a map $H$ to $A$ such that $H$ is recursive regarding $G$ and $\alpha \in \dom(H)$ and $F(\alpha) = H(\alpha)$.
+      Choose a map $H$ to $A$ such that $H$ is recursive regarding $G$ and $\alpha \in \dom(H)$ and $F(\alpha) \eq H(\alpha)$.
 
-      Let us show that $F(\beta) = H(\beta)$ for all $\beta \in \alpha$.
+      Let us show that $F(\beta) \eq H(\beta)$ for all $\beta \in \alpha$.
         Let $\beta \in \alpha$.
-        Choose a map $H'$ to $A$ such that $H'$ is recursive regarding $G$ and $\beta \in \dom(H')$ and $F(\beta) = H'(\beta)$.
+        Choose a map $H'$ to $A$ such that $H'$ is recursive regarding $G$ and $\beta \in \dom(H')$ and $F(\beta) \eq H'(\beta)$.
         [prover vampire]
-        Then $H(\beta) = H'(\beta)$ (by \nameref{ransfinite-recursion_coincidence}).
-        Indeed $\beta \in \dom(H) \cap \dom(H')$.
-        Therefore $F(\beta) = H'(\beta)$.
+        Then $H(\beta) \eq H'(\beta)$ (by \nameref{ransfinite-recursion_coincidence}).
+        Indeed $\beta \in \dom(H) \SETintersect \dom(H')$.
+        Therefore $F(\beta) \eq H'(\beta)$.
       End.
 
-      Hence $H \restriction \alpha = F \restriction \alpha$.
+      Hence $H \FUNrest \alpha \eq F \FUNrest \alpha$.
       Thus $F(\alpha)
-        = H(\alpha)
-        = G(H \restriction \alpha)
-        = G(F \restriction \alpha)$.
+        \eq H(\alpha)
+        \eq G(H \FUNrest \alpha)
+        \eq G(F \FUNrest \alpha)$.
     Qed.
   Qed.
 \end{proof}
 
 \begin{theorem}[forthel,title=Transfinite Recursion Theorem: Uniqueness,id=transfinite-recursion_uniqueness]
-  Let $A$ be a class and $G$ be a map from $A^{< \infty}$ to $A$.
+  Let $A$ be a class and $G$ be a map from $\ORDfunspace{A}$ to $A$.
   Let $F, F'$ be maps from $\Ord$ to $A$ that are recursive regarding $G$.
-  Then $F = F'$.
+  Then $F \eq F'$.
 \end{theorem}
 \begin{proof}[forthel]
   [prover vampire]
   $F$ and $F'$ are recursive regarding $G$.
-  Then $F(\alpha) = F'(\alpha)$ for all $\alpha \in \dom(F) \cap \dom(F')$ (by \nameref{ransfinite-recursion_coincidence}).
-  We have $\dom(F) = \Ord = \dom(F')$.
-  Hence $F(\alpha) = F'(\alpha)$ for all $\alpha \in \Ord$.
-  Thus $F = F'$.
+  Then $F(\alpha) \eq F'(\alpha)$ for all $\alpha \in \dom(F) \SETintersect \dom(F')$ (by \nameref{ransfinite-recursion_coincidence}).
+  We have $\dom(F) \eq \Ord \eq \dom(F')$.
+  Hence $F(\alpha) \eq F'(\alpha)$ for all $\alpha \in \Ord$.
+  Thus $F \eq F'$.
 \end{proof}
 \end{smodule}
 \end{document}

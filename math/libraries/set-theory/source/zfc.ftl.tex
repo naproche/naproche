@@ -23,167 +23,167 @@
   Take a set $x$ (by \printref{FOUNDATIONS_10_2362039748001792}).
   Define $A = \{ y \in x \mid y \neq y \}$.
   Then $A$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
-  We have $A = \emptyset$.
+  We have $A \eq \emptyset$.
   Hence $\emptyset$ is a set.
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_10_4052198354845696]
   Let $x, y$ be sets.
-  Then $x \cup y$ is a set.
+  Then $x \SETunion y$ is a set.
 \end{proposition}
 \begin{proof}[forthel]
-  Take $X = \set{x,y}$.
+  Take $X \eq \SETpair{x}{y}$.
   Then $X$ is a set.
-  Hence $\bigcup X$ is a set (by \printref{FOUNDATIONS_10_5536459412996096}).
+  Hence $\SETunionover X$ is a set (by \printref{FOUNDATIONS_10_5536459412996096}).
   Indeed $X$ is a system of sets.
-  We have $x \cup y = \bigcup X$.
-  Thus $x \cup y$ is a set.
+  We have $x \SETunion y \eq \SETunionover X$.
+  Thus $x \SETunion y$ is a set.
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_10_4475839687163904]
   Let $x, y$ be sets.
-  Then $x \cap y$ is a set.
+  Then $x \SETintersect y$ is a set.
 \end{proposition}
 \begin{proof}[forthel]
-  We have $x \cap y \subseteq x$.
-  Hence $x \cap y$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
+  We have $x \SETintersect y \SETinclude x$.
+  Hence $x \SETintersect y$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_10_7795203882614784]
   Let $x, y$ be sets.
-  Then $x \setminus y$ is a set.
+  Then $x \SETdiff y$ is a set.
 \end{proposition}
 \begin{proof}[forthel]
-  We have $x \setminus y \subseteq x$.
-  Hence $x \setminus y$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
+  We have $x \SETdiff y \SETinclude x$.
+  Hence $x \SETdiff y$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_10_4458706448154624]
   Let $x, y$ be sets.
-  Then $x \times y$ is a set.
+  Then $x \SETprod y$ is a set.
 \end{proposition}
 \begin{proof}[forthel]
-  $\set{a}$ and $\set{a,b}$ are sets for each $a \in x$ and each $b \in y$.
-  Define $P = \{ \set{\set{a}, \set{a,b}} \mid a \in x$ and $b \in y \}$.
+  $\SETsingleton{a}$ and $\SETpair{a}{b}$ are sets for each $a \in x$ and each $b \in y$.
+  Define $P = \{ \SETpair{\SETsingleton{a}}{\SETpair{a}{b}} \mid a \in x$ and $b \in y \}$.
 
   (1) $P$ is a set. \newline
   Proof.
-    Let us show that $P \subseteq \pow(\pow(x \cup y))$.
+    Let us show that $P \SETinclude \SETpow(\SETpow(x \SETunion y))$.
       Let $p \in P$.
-      Consider $a \in x$ and $b \in y$ such that $p = \set{\set{a},\set{a,b}}$.
-      Then $a, b \in x \cup y$.
-      Hence $\set{a}, \set{a,b} \in \pow(x \cup y)$.
-      Thus $\set{\set{a}, \set{a,b}} \in \pow(\pow(x \cup y))$.
+      Consider $a \in x$ and $b \in y$ such that $p \eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$.
+      Then $a, b \in x \SETunion y$.
+      Hence $\SETsingleton{a}, \SETpair{a}{b} \in \SETpow(x \SETunion y)$.
+      Thus $\SETpair{\SETsingleton{a}}{\SETpair{a}{b}} \in \SETpow(\SETpow(x \SETunion y))$.
     End.
 
-    $x \cup y$ is a set.
-    Consequently $\pow(\pow(x \cup y))$ is a set (by \printref{FOUNDATIONS_10_5862230203564032}).
+    $x \SETunion y$ is a set.
+    Consequently $\SETpow(\SETpow(x \SETunion y))$ is a set (by \printref{FOUNDATIONS_10_5862230203564032}).
     Therefore $P$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
   Qed.
 
-  Define $l(p) =$ ``choose $a \in x$, choose $b \in y$ such that $p = \set{\set{a}, \set{a,b}}$ in $a$'' for $p \in P$.
-  Define $r(p) =$ ``choose $a \in x$, choose $b \in y$ such that $p = \set{\set{a}, \set{a,b}}$ in $b$'' for $p \in P$.
+  Define $l(p) =$ ``choose $a \in x$, choose $b \in y$ such that $p \eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$ in $a$'' for $p \in P$.
+  Define $r(p) =$ ``choose $a \in x$, choose $b \in y$ such that $p \eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$ in $b$'' for $p \in P$.
 
   Define $f(p) = (l(p), r(p))$ for $p \in P$.
 
   Let us show that for any objects $u, u', v, v'$ if
-  $\set{\set{u}, \set{u,v}} = \set{\set{u'}, \set{u',v'}}$ then $u = u'$ and $v = v'$.
+  $\SETpair{\SETsingleton{u}}{\SETpair{u}{v}} \eq \SETpair{\SETsingleton{u'}}{\SETpair{u'}{v'}}$ then $u \eq u'$ and $v \eq v'$.
     Let $u, u', v, v'$ be objects.
-    Assume $\set{\set{u}, \set{u,v}} = \set{\set{u'}, \set{u',v'}}$.
-    Then ($\set{u} = \set{u'}$ or $\set{u} = \set{u',v'}$) and ($\set{u,v} = \set{u'}$ or $\set{u,v} = \set{u',v'}$).
-    Thus ($\set{u} = \set{u'}$ and ($\set{u,v} = \set{u'}$ or $\set{u,v} = \set{u',v'}$)) or ($\set{u} = \set{u',v'}$ and ($\set{u,v} = \set{u'}$ or $\set{u,v} = \set{u',v'}$)).
+    Assume $\SETpair{\SETsingleton{u}}{\SETpair{u}{v}} \eq \SETpair{\SETsingleton{u'}}{\SETpair{u'}{v'}}$.
+    Then ($\SETsingleton{u} \eq \SETsingleton{u'}$ or $\SETsingleton{u} \eq \SETpair{u'}{v'}$) and ($\SETpair{u}{v} \eq \SETsingleton{u'}$ or $\SETpair{u}{v} \eq \SETpair{u'}{v'}$).
+    Thus ($\SETsingleton{u} \eq \SETsingleton{u'}$ and ($\SETpair{u}{v} \eq \SETsingleton{u'}$ or $\SETpair{u}{v} \eq \SETpair{u'}{v'}$)) or ($\SETsingleton{u} \eq \SETpair{u'}{v'}$ and ($\SETpair{u}{v} \eq \SETsingleton{u'}$ or $\SETpair{u}{v} \eq \SETpair{u'}{v'}$)).
 
-    Case $\set{u} = \set{u'}$ and ($\set{u,v} = \set{u'}$ or $\set{u,v} = \set{u',v'}$).
-      We have $\set{u} = \set{u'}$.
-      Hence $u = u'$.
+    Case $\SETsingleton{u} \eq \SETsingleton{u'}$ and ($\SETpair{u}{v} \eq \SETsingleton{u'}$ or $\SETpair{u}{v} \eq \SETpair{u'}{v'}$).
+      We have $\SETsingleton{u} \eq \SETsingleton{u'}$.
+      Hence $u \eq u'$.
 
-      Case $\set{u,v} = \set{u'}$.
-        Then $u = u'= v$.
-        Hence $\set{\set{u}, \set{u,u}} = \set{\set{u}, \set{u,v'}}$ (by 1).
-        Thus $\set{\set{u}} = \set{\set{u}, \set{u,v'}}$.
-        Therefore $\set{u} = \set{u,v'}$.
-        Consequently $v' = u = v$.
+      Case $\SETpair{u}{v} \eq \SETsingleton{u'}$.
+        Then $u \eq u'\eq v$.
+        Hence $\SETpair{\SETsingleton{u}}{\SETpair{u}{u}} \eq \SETpair{\SETsingleton{u}}{\SETpair{u}{v'}}$ (by 1).
+        Thus $\SETsingleton{\SETsingleton{u}} \eq \SETpair{\SETsingleton{u}}{\SETpair{u}{v'}}$.
+        Therefore $\SETsingleton{u} \eq \SETpair{u}{v'}$.
+        Consequently $v' \eq u \eq v$.
       End.
 
-      Case $\set{u,v} = \set{u',v'}$.
-        Then $\set{u,v} = \set{u,v'}$.
-        Hence $v = v'$.
+      Case $\SETpair{u}{v} \eq \SETpair{u'}{v'}$.
+        Then $\SETpair{u}{v} \eq \SETpair{u}{v'}$.
+        Hence $v \eq v'$.
       End.
     End.
 
-    Case $\set{u} = \set{u',v'}$ and ($\set{u,v} = \set{u'}$ or $\set{u,v} = \set{u',v'}$).
-      We have $\set{u} = \set{u',v'}$.
-      Hence $u = u'$.
+    Case $\SETsingleton{u} \eq \SETpair{u'}{v'}$ and ($\SETpair{u}{v} \eq \SETsingleton{u'}$ or $\SETpair{u}{v} \eq \SETpair{u'}{v'}$).
+      We have $\SETsingleton{u} \eq \SETpair{u'}{v'}$.
+      Hence $u \eq u'$.
 
-      Case $\set{u,v} = \set{u'}$.
-        Then $u = v = u'$.
-        Hence $v = v'$.
+      Case $\SETpair{u}{v} \eq \SETsingleton{u'}$.
+        Then $u \eq v \eq u'$.
+        Hence $v \eq v'$.
       End.
 
-      Case $\set{u,v} = \set{u',v'}$.
-        Then $\set{u,v} = \set{u,v'}$.
-        Hence $v = v'$.
+      Case $\SETpair{u}{v} \eq \SETpair{u'}{v'}$.
+        Then $\SETpair{u}{v} \eq \SETpair{u}{v'}$.
+        Hence $v \eq v'$.
       End.
     End.
   End.
 
-  $\set{\set{a}, \set{a,b}} \in \dom(f)$ for any $a \in x$ and any $b \in y$. \newline % Needed for ontological checking
+  $\SETpair{\SETsingleton{a}}{\SETpair{a}{b}} \in \dom(f)$ for any $a \in x$ and any $b \in y$. \newline % Needed for ontological checking
   Proof.
     Let $a \in x$ and $b \in y$.
-    Then $\set{\set{a}, \set{a,b}} \in P$.
+    Then $\SETpair{\SETsingleton{a}}{\SETpair{a}{b}} \in P$.
   Qed.
 
-  Let us show that for any $a \in x$ and any $b \in y$ we have $f(\set{\set{a}, \set{a,b}}) = (a,b)$.
+  Let us show that for any $a \in x$ and any $b \in y$ we have $f(\SETpair{\SETsingleton{a}}{\SETpair{a}{b}}) \eq (a,b)$.
     Let $a \in x$ and $b \in y$.
-    Take $p = \set{\set{a}, \set{a,b}}$.
+    Take $p \eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$.
     Then $p$ is a set.
-    Then we can choose $a' \in x$ and $b' \in y$ such that $p = \set{\set{a'}, \set{a',b'}}$ and $l(p) = a'$.
-    Then $a = a'$ and $b = b'$.
-    Hence $l(p) = a$.
-    Choose $a'' \in x$ and $b'' \in y$ such that $p = \set{\set{a''}, \set{a'',b''}}$ and $r(p) = b''$.
-    Then $a = a''$ and $b = b''$.
-    Thus $r(p) = b$.
-    Therefore $f(p) = (a,b)$.
+    Then we can choose $a' \in x$ and $b' \in y$ such that $p \eq \SETpair{\SETsingleton{a'}}{\SETpair{a'}{b'}}$ and $l(p) \eq a'$.
+    Then $a \eq a'$ and $b \eq b'$.
+    Hence $l(p) \eq a$.
+    Choose $a'' \in x$ and $b'' \in y$ such that $p \eq \SETpair{\SETsingleton{a''}}{\SETpair{a''}{b''}}$ and $r(p) \eq b''$.
+    Then $a \eq a''$ and $b \eq b''$.
+    Thus $r(p) \eq b$.
+    Therefore $f(p) \eq (a,b)$.
   End.
 
-  (2) $x \times y = f[P]$. \newline
+  (2) $x \SETprod y \eq \FUNim{f}{P}$. \newline
   Proof.
     For all $p \in P$ we have $l(p) \in x$ and $r(p) \in y$.
-    Hence $f(p) \in x \times y$ for all $p \in P$.
-    Therefore $f[P] \subseteq x \times y$.
+    Hence $f(p) \in x \SETprod y$ for all $p \in P$.
+    Therefore $\FUNim{f}{P} \SETinclude x \SETprod y$.
 
-    Let us show that $x \times y \subseteq f[P]$.
-      Let $z \in x \times y$.
-      Take $a \in x$ and $b \in y$ such that $z = (a,b)$.
-      Then $(a,b) = f(\set{\set{a}, \set{a,b}})$.
-      Hence there exists a $p \in P$ such that $(a,b) = f(p)$.
-      Thus $(a,b) \in f[P]$.
+    Let us show that $x \SETprod y \SETinclude \FUNim{f}{P}$.
+      Let $z \in x \SETprod y$.
+      Take $a \in x$ and $b \in y$ such that $z \eq (a,b)$.
+      Then $(a,b) \eq f(\SETpair{\SETsingleton{a}}{\SETpair{a}{b}})$.
+      Hence there exists a $p \in P$ such that $(a,b) \eq f(p)$.
+      Thus $(a,b) \in \FUNim{f}{P}$.
     End.
 
-    Consequently $x \times y = f[P]$.
+    Consequently $x \SETprod y \eq \FUNim{f}{P}$.
   Qed.
 
-  Thus $x \times y$ is the image of some set under some map.
-  Therefore $x \times y$ is a set (by \printref{FOUNDATIONS_10_8142956584239104}).
+  Thus $x \SETprod y$ is the image of some set under some map.
+  Therefore $x \SETprod y$ is a set (by \printref{FOUNDATIONS_10_8142956584239104}).
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_10_5486815207227392]
   Let $X$ be a nonempty system of sets.
-  Then $\bigcap X$ is a set.
+  Then $\SETintersectover X$ is a set.
 \end{proposition}
 \begin{proof}[forthel]
   Take an element $x$ of $X$.
-  Then $\bigcap X \subseteq x$.
-  Hence $\bigcap X$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
+  Then $\SETintersectover X \SETinclude x$.
+  Hence $\SETintersectover X$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_10_7598384349184000]
   Let $f$ be a map such that $\dom(f)$ is a set.
-  Then $\range(f)$ is a set.
+  Then $\FUNrange(f)$ is a set.
 \end{proposition}
 \begin{proof}[forthel]
-  $\range(f) = f_{*}(\dom(f))$ and $f_{*}(\dom(f))$ is a set.
-  Hence $\range(f)$ is a set (by \printref{FOUNDATIONS_10_8142956584239104}).
+  $\FUNrange(f) \eq \FUNim{f}{\dom(f)}$ and $\FUNim{f}{\dom(f)}$ is a set.
+  Hence $\FUNrange(f)$ is a set (by \printref{FOUNDATIONS_10_8142956584239104}).
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_10_8631339572002816]
@@ -193,9 +193,9 @@
 \end{proposition}
 \begin{proof}[forthel]
   Consider an injective map $f$ from $A$ to $x$.
-  Then $f^{-1}$ is a bijection between $\range(f)$ and $A$.
-  $\range(f)$ is a set and $A$ is the image of $\range(f)$ under $f^{-1}$.
-  Indeed $\range(f) \subseteq x$.
+  Then $\FUNinv{f}$ is a bijection between $\FUNrange(f)$ and $A$.
+  $\FUNrange(f)$ is a set and $A$ is the image of $\FUNrange(f)$ under $\FUNinv{f}$.
+  Indeed $\FUNrange(f) \SETinclude x$.
   Thus $A$ is a set (by \printref{FOUNDATIONS_10_8142956584239104}).
 \end{proof}
 
@@ -205,18 +205,18 @@
 \begin{proof}[forthel]
   Assume the contrary.
   Take sets $x,y$ such that $x \in y$ and $y \in x$.
-  Consider an element $z$ of $\set{x,y}$ such that $\set{x,y}$ and $z$ are disjoint (by \printref{FOUNDATIONS_10_1320008569323520}).
-  Indeed $\set{x,y}$ is a nonempty system of sets.
-  Then we have $z = x$ or $z = y$.
+  Consider an element $z$ of $\SETpair{x}{y}$ such that $\SETpair{x}{y}$ and $z$ are disjoint (by \printref{FOUNDATIONS_10_1320008569323520}).
+  Indeed $\SETpair{x}{y}$ is a nonempty system of sets.
+  Then we have $z \eq x$ or $z \eq y$.
 
-  Case $z = x$.
-    Then $x$ and $\set{x,y}$ are disjoint.
+  Case $z \eq x$.
+    Then $x$ and $\SETpair{x}{y}$ are disjoint.
     Hence $y \notin x$.
     Contradiction.
   End.
 
-  Case $z = y$.
-    Then $y$ and $\set{x,y}$ are disjoint.
+  Case $z \eq y$.
+    Then $y$ and $\SETpair{x}{y}$ are disjoint.
     Hence $x \notin y$.
     Contradiction.
   End.
@@ -229,50 +229,50 @@
 
 \begin{proposition}[forthel,id=FOUNDATIONS_10_4589652321021547]
   Let $f, g$ be functions.
-  Assume that $\dom(f) = \dom(g)$ and $f(a) = g(a)$ for all $a \in \dom(f)$.
-  Then $f = g$.
+  Assume that $\dom(f) \eq \dom(g)$ and $f(a) \eq g(a)$ for all $a \in \dom(f)$.
+  Then $f \eq g$.
 \end{proposition}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_10_4105036244189184]
   Let $x, y$ be sets.
-  Then $\funspace{x}{y}$ is a set.
+  Then $\FUNfunspace{x}{y}$ is a set.
 \end{proposition}
 \begin{proof}[forthel]
-  Define $R = \{ F \in \pow(x \times y) \mid$ (for all $a \in x$ there exists a $b \in y$ such that $(a,b) \in F$) and for all $a \in x$ and all $b, b' \in y$ such that $(a,b), (a,b') \in F$ we have $b = b' \}$.
+  Define $R = \{ F \in \SETpow(x \SETprod y) \mid$ (for all $a \in x$ there exists a $b \in y$ such that $(a,b) \in F$) and for all $a \in x$ and all $b, b' \in y$ such that $(a,b), (a,b') \in F$ we have $b \eq b' \}$.
 
   [prover vampire]
   Every element of $R$ is a set. % Needed for ontological checking
   Define $h(F) = \fun a \in x.$ ``choose $b \in y$ such that $(a,b) \in F$ in $b$'' for $F \in R$.
   [prover eprover]
 
-  Let us show that $\funspace{x}{y} \subseteq \range(h)$.
-    Let $f \in \funspace{x}{y}$.
+  Let us show that $\FUNfunspace{x}{y} \SETinclude \FUNrange(h)$.
+    Let $f \in \FUNfunspace{x}{y}$.
     Define $F = \{ (a,f(a)) \mid a \in x \}$.
 
     Then $F \in R$. \newline
     Proof.
       Define $g(a) = (a,f(a))$ for $a \in x$.
-      Then $F = \range(g)$.
+      Then $F \eq \FUNrange(g)$.
       Hence $F$ is a set.
-      Thus $F \in \pow(x \times y)$.
-      Indeed $F \subseteq x \times y$.
+      Thus $F \in \SETpow(x \SETprod y)$.
+      Indeed $F \SETinclude x \SETprod y$.
 
       (1) For all $a \in x$ there exists a $b \in y$ such that $(a,b) \in F$.
 
       (2) For all $a \in x$ and all $b, b' \in y$ such that $(a,b),
-      (a,b') \in F$ we have $b = b'$.
+      (a,b') \in F$ we have $b \eq b'$.
 
       [prover vampire]
       Hence the thesis.
       [prover eprover]
     End.
 
-    $\dom(f) = \dom(h(F))$ and for each $a \in \dom(f)$ we have $h(F)(a) = f(a)$.
-    Hence $f = h(F)$.
-    Thus $f \in \range(h)$.
+    $\dom(f) \eq \dom(h(F))$ and for each $a \in \dom(f)$ we have $h(F)(a) \eq f(a)$.
+    Hence $f \eq h(F)$.
+    Thus $f \in \FUNrange(h)$.
   End.
 
-  Therefore $\funspace{x}{y}$ is a set.
+  Therefore $\FUNfunspace{x}{y}$ is a set.
   Indeed $R$ is a set.
 \end{proof}
 \end{smodule}

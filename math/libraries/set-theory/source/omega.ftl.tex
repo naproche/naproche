@@ -2,101 +2,102 @@
 \libinput{preamble}
 \begin{document}
 \IfInputref{}{\setsectionlevel{section}}
-\begin{smodule}[title=Natural Numbers]{omega.ftl}
+\begin{smodule}[title=The Ordinal $\omega$]{omega.ftl}
 \importmodule[libraries/set-theory]{zero.ftl}
 \importmodule[libraries/set-theory]{successor-ordinals.ftl}
+\symdef{ORDomega}{\omega}
 
 \begin{definition}[forthel,id=SET_THEORY_03_4310076227584000]
-  \[ \emph{\omega} = \class{n \in \Ord | \classtext{$n \in X$ for every $X \subseteq \Ord$ such that $0 \in X$ and for all $x \in X$ we have $\succ(x) \in X$}}. \]
+  \[ \emph{\ORDomega} = \class{n \in \Ord | \classtext{$n \in X$ for every $X \SETinclude \Ord$ such that $\ORDzero \in X$ and for all $x \in X$ we have $\ORDsucc(x) \in X$}}. \]
 
-Let a \emph{natural number} stand for an element of $\omega$.
+Let a \emph{natural number} stand for an element of $\ORDomega$.
 \end{definition}
 
 \begin{proposition}[forthel,id=SET_THEORY_03_3576717620805632]
-  $0 \in \omega$.
+  $\ORDzero \in \ORDomega$.
 \end{proposition}
 
 \begin{proposition}[forthel,id=SET_THEORY_03_8807317141192704]
-  Let $n \in \omega$.
-  Then $\succ(n) \in \omega$.
+  Let $n \in \ORDomega$.
+  Then $\ORDsucc(n) \in \ORDomega$.
 \end{proposition}
 
 \begin{proposition}[forthel,id=SET_THEORY_03_344585425387520]
-  Let $\Phi \subseteq \omega$.
-  Assume that $0 \in \Phi$ and for every $x \in \Phi$ we have
-  $\succ(x) \in \Phi$.
-  Then $\Phi = \omega$.
+  Let $\Phi \SETinclude \ORDomega$.
+  Assume that $\ORDzero \in \Phi$ and for every $x \in \Phi$ we have
+  $\ORDsucc(x) \in \Phi$.
+  Then $\Phi \eq \ORDomega$.
 \end{proposition}
 \begin{proof}[forthel]
-  Suppose $\Phi \neq \omega$.
-  Consider an element $n$ of $\omega$ that is not contained in $\Phi$.
-  Take $\Phi' = \Phi \setminus \set{n}$.
+  Suppose $\Phi \neq \ORDomega$.
+  Consider an element $n$ of $\ORDomega$ that is not contained in $\Phi$.
+  Take $\Phi' \eq \Phi \SETdiff \SETsingleton{n}$.
 
-  (1) $0 \in \Phi'$.
-  Indeed $0 \in \Phi$ and $0 \neq n$.
+  (1) $\ORDzero \in \Phi'$.
+  Indeed $\ORDzero \in \Phi$ and $\ORDzero \neq n$.
 
-  (2) For each $x \in \Phi'$ we have $\succ(x) \in \Phi'$. \newline
+  (2) For each $x \in \Phi'$ we have $\ORDsucc(x) \in \Phi'$. \newline
   Proof.
     Let $x \in \Phi'$.
-    Then $\succ(x) \in \Phi$.
+    Then $\ORDsucc(x) \in \Phi$.
 
-    Let us show that $\succ(x) \neq n$.
-      Assume $\succ(x) = n$.
+    Let us show that $\ORDsucc(x) \neq n$.
+      Assume $\ORDsucc(x) \eq n$.
       Then $x \notin \Phi$.
       Indeed $n \notin \Phi$ and if $x \in \Phi$ then
-      $n = \succ(x) \in \Phi$.
+      $n \eq \ORDsucc(x) \in \Phi$.
       Contradiction.
     End.
 
-    Thus $\succ(x) \in \Phi'$.
+    Thus $\ORDsucc(x) \in \Phi'$.
   Qed.
 
-  Therefore every element of $\omega$ lies in $\Phi'$.
-  Indeed $\Phi' \subseteq \Ord$.
+  Therefore every element of $\ORDomega$ lies in $\Phi'$.
+  Indeed $\Phi' \SETinclude \Ord$.
   Consequently $n \in \Phi'$.
   Contradiction.
 \end{proof}
 
 \begin{corollary}[forthel,id=SET_THEORY_03_4847727433220096]
-  $\omega$ is a set.
+  $\ORDomega$ is a set.
 \end{corollary}
 \begin{proof}[forthel]
-  Define $f(n) = \succ(n)$ for $n \in \omega$.
-  Take a subset $X$ of $\omega$ that is inductive regarding $0$ and $f$.
-  Indeed $f$ is a map from $\omega$ to $\omega$.
-  Then we have $0 \in X$ and for each $n \in X$ we have $\succ(n) \in X$.
-  Thus $X = \omega$.
-  Therefore $\omega$ is a set.
+  Define $f(n) = \ORDsucc(n)$ for $n \in \ORDomega$.
+  Take a subset $X$ of $\ORDomega$ that is inductive regarding $\ORDzero$ and $f$.
+  Indeed $f$ is a map from $\ORDomega$ to $\ORDomega$.
+  Then we have $\ORDzero \in X$ and for each $n \in X$ we have $\ORDsucc(n) \in X$.
+  Thus $X \eq \ORDomega$.
+  Therefore $\ORDomega$ is a set.
 \end{proof}
 
 \begin{proposition}[forthel,id=SET_THEORY_03_5885789275684864]
-  Let $n \in \omega$.
-  Then $n = 0$ or $n = \succ(m)$ for some $m \in \omega$.
+  Let $n \in \ORDomega$.
+  Then $n \eq \ORDzero$ or $n \eq \ORDsucc(m)$ for some $m \in \ORDomega$.
 \end{proposition}
 \begin{proof}[forthel]
   Assume the contrary.
-  Consider a $k \in \omega$ such that neither $k = 0$ nor $k = \succ(m)$ for
-  some $m \in \omega$.
-  Take a class $\omega'$ such that $\omega' = \omega \setminus \set{k}$. %!
-  Then $\omega'$ is a set.
+  Consider a $k \in \ORDomega$ such that neither $k \eq \ORDzero$ nor $k \eq \ORDsucc(m)$ for
+  some $m \in \ORDomega$.
+  Take a class $\ORDomega'$ such that $\ORDomega' \eq \ORDomega \SETdiff \SETsingleton{k}$. %!
+  Then $\ORDomega'$ is a set.
 
-  (1) $0 \in \omega'$.
-  Indeed $k \neq 0$.
+  (1) $\ORDzero \in \ORDomega'$.
+  Indeed $k \neq \ORDzero$.
 
-  (2) For all $m \in \omega'$ we have $\succ(m) \in \omega'$. \newline
+  (2) For all $m \in \ORDomega'$ we have $\ORDsucc(m) \in \ORDomega'$. \newline
   Proof.
-    Let $m \in \omega'$.
-    Then $\succ(m) \neq k$.
-    Hence $\succ(m) \in \omega'$.
+    Let $m \in \ORDomega'$.
+    Then $\ORDsucc(m) \neq k$.
+    Hence $\ORDsucc(m) \in \ORDomega'$.
   Qed.
 
-  Thus every element of $\omega$ is contained in $\omega'$.
-  Therefore $k \in \omega'$.
+  Thus every element of $\ORDomega$ is contained in $\ORDomega'$.
+  Therefore $k \in \ORDomega'$.
   Contradiction.
 \end{proof}
 
 \begin{proposition}[forthel,id=SET_THEORY_03_5057540872208384]
-  Every element of $\omega$ is an ordinal.
+  Every element of $\ORDomega$ is an ordinal.
 \end{proposition}
 \end{smodule}
 \end{document}

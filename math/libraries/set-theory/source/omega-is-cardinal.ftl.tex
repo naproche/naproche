@@ -6,85 +6,85 @@
 \importmodule[libraries/set-theory]{natural-numbers-are-cardinals.ftl}
 
 \begin{proposition}[forthel,id=SET_THEORY_07_4952029518626816]
-  $|\omega| = \omega$.
+  $\SETcard{\ORDomega} \eq \ORDomega$.
 \end{proposition}
 \begin{proof}[forthel]
-  We have $|\omega| \leq \omega$.
+  We have $\SETcard{\ORDomega} \ORDleq \ORDomega$.
 
-  Let us show that $|\omega|$ is not less than $\omega$.
+  Let us show that $\SETcard{\ORDomega}$ is not less than $\ORDomega$.
     Assume the contrary.
-    Then $|\omega| \in \omega$.
-    Take $n = |\omega|$ and a bijection $f$ between $n$ and $\omega$.
+    Then $\SETcard{\ORDomega} \in \ORDomega$.
+    Take $n \eq \SETcard{\ORDomega}$ and a bijection $f$ between $n$ and $\ORDomega$.
 
     Define \[ g(k) =
       \begin{cases}
-        \succ(f(k)) & : k < n
+        \ORDsucc(f(k)) & : k \ORDless n
         \\
-        0           & : k = n
+        \ORDzero           & : k \eq n
       \end{cases} \]
-    for $k \in \succ(n)$.
-    Then $g$ is a map from $\succ(n)$ to $\omega$.
-    Indeed we can show that $g(k) \in \omega$ for all $k \in \succ(n)$.
-      Let $k \in \succ(n)$.
-      Case $k < n$. Obvious.
-      Case $k = n$. Obvious.
+    for $k \in \ORDsucc(n)$.
+    Then $g$ is a map from $\ORDsucc(n)$ to $\ORDomega$.
+    Indeed we can show that $g(k) \in \ORDomega$ for all $k \in \ORDsucc(n)$.
+      Let $k \in \ORDsucc(n)$.
+      Case $k \ORDless n$. Obvious.
+      Case $k \eq n$. Obvious.
     End.
 
     $g$ is injective.
-    Indeed we can show that for all $k, k' \in \succ(n)$ if $k \neq k'$
+    Indeed we can show that for all $k, k' \in \ORDsucc(n)$ if $k \neq k'$
     then $g(k) \neq g(k')$. \newline
     Proof.
-      Let $k, k' \in \succ(n)$.
+      Let $k, k' \in \ORDsucc(n)$.
       Assume $k \neq k'$.
 
-      Case $k, k' < n$.
+      Case $k, k' \ORDless n$.
         Then $f(k) \neq f(k')$.
-        Hence $\succ(f(k)) \neq \succ(f(k'))$.
+        Hence $\ORDsucc(f(k)) \neq \ORDsucc(f(k'))$.
         Thus $g(k) \neq g(k')$.
       End.
 
-      Case $k < n$ and $k' = n$.
-        We have $\succ(f(k)) \neq 0$.
+      Case $k \ORDless n$ and $k' \eq n$.
+        We have $\ORDsucc(f(k)) \neq \ORDzero$.
         Hence $g(k) \neq g(k')$.
       End.
 
-      Case $k = n$ and $k' < n$.
-        We have $\succ(f(k')) \neq 0$.
+      Case $k \eq n$ and $k' \ORDless n$.
+        We have $\ORDsucc(f(k')) \neq \ORDzero$.
         Hence $g(k) \neq g(k')$.
       End.
     Qed.
 
-    $g$ is surjective onto $\omega$.
-    Indeed we can show that for any $m \in \omega$ there exists a $k \in \succ(n)$ such that $m = g(k)$. \newline
+    $g$ is surjective onto $\ORDomega$.
+    Indeed we can show that for any $m \in \ORDomega$ there exists a $k \in \ORDsucc(n)$ such that $m \eq g(k)$. \newline
     Proof.
-      Let $m \in \omega$.
-      Then $f^{-1}(m) \in n$.
+      Let $m \in \ORDomega$.
+      Then $\FUNinv{f}(m) \in n$.
 
-      Case $m = 0$.
-        Then $m = g(n)$.
+      Case $m \eq \ORDzero$.
+        Then $m \eq g(n)$.
       End.
 
-      Case $m \neq 0$.
-        Take $m' \in \omega$ such that $m = \succ(m')$.
+      Case $m \neq \ORDzero$.
+        Take $m' \in \ORDomega$ such that $m \eq \ORDsucc(m')$.
         Then $m
-          = \succ(m')
-          = \succ(f(f^{-1}(m')))
-          = g(f^{-1}(m'))$.
-        Indeed $f(f^{-1}(m')) = m'$ and $f^{-1}(m') < n$.
+          \eq \ORDsucc(m')
+          \eq \ORDsucc(f(\FUNinv{f}(m')))
+          \eq g(\FUNinv{f}(m'))$.
+        Indeed $f(\FUNinv{f}(m')) \eq m'$ and $\FUNinv{f}(m') \ORDless n$.
       End.
     End.
 
-    Hence $g$ is a bijection between $\succ(n)$ and $\omega$.
+    Hence $g$ is a bijection between $\ORDsucc(n)$ and $\ORDomega$.
     Then we have $n
-      = |n|
-      = |\succ(n)|
-      = \succ(n)$.
+      \eq \SETcard{n}
+      \eq \SETcard{\ORDsucc(n)}
+      \eq \ORDsucc(n)$.
     Contradiction.
   End.
 \end{proof}
 
 \begin{corollary}[forthel,id=SET_THEORY_07_2717623053713408]
-  $\omega$ is a cardinal.
+  $\ORDomega$ is a cardinal.
 \end{corollary}
 \end{smodule}
 \end{document}

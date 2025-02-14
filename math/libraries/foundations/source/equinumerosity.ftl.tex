@@ -15,7 +15,7 @@
   Then $A$ is equinumerous to $A$.
 \end{proposition}
 \begin{proof}[forthel]
-  $\id_{A}$ is a bijection between $A$ and $A$.
+  $\FUNid{A}$ is a bijection between $A$ and $A$.
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_13_8050301789536256]
@@ -25,7 +25,7 @@
 \begin{proof}[forthel]
   Assume that $A$ and $B$ are equinumerous.
   Take a bijection $f$ between $A$ and $B$.
-  Then $f^{-1}$ is a bijection between $B$ and $A$.
+  Then $\FUNinv{f}$ is a bijection between $B$ and $A$.
   Hence $B$ and $A$ are equinumerous.
 \end{proof}
 
@@ -36,7 +36,7 @@
 \begin{proof}[forthel]
   Assume that $A$ and $B$ are equinumerous and $B$ and $C$ are equinumerous.
   Take a bijection $f$ between $A$ and $B$ and a bijection $g$ between $B$ and $C$.
-  Then $g \circ f$ is a bijection between $A$ and $C$.
+  Then $g \FUNcomp f$ is a bijection between $A$ and $C$.
   Hence $A$ and $C$ are equinumerous.
 \end{proof}
 \end{smodule}

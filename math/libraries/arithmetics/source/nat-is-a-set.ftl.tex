@@ -10,14 +10,14 @@
   $\Nat$ is a set.
 \end{proposition}
 \begin{proof}[forthel]
-  Define $f(n) = n + 1$ for $n \in \Nat$.
+  Define $f(n) = n \NATplus \NATone$ for $n \in \Nat$.
   Then $f$ is a map from $\Nat$ to $\Nat$.
   Hence we can take a subset $X$ of $\Nat$ that is inductive regarding
-  $0$ and $f$.
-  Then $0 \in X$ and for all $n \in X$ we have $n + 1 \in X$.
+  $\NATzero$ and $f$.
+  Then $\NATzero \in X$ and for all $n \in X$ we have $n \NATplus \NATone \in X$.
   Hence $X$ contains every natural number.
-  Thus we have $\Nat \subseteq X$ and $X \subseteq \Nat$.
-  Therefore $\Nat = X$.
+  Thus we have $\Nat \SETinclude X$ and $X \SETinclude \Nat$.
+  Therefore $\Nat \eq X$.
   Consequently $\Nat$ is a set.
 \end{proof}
 \end{smodule}

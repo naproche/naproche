@@ -4,80 +4,80 @@
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Successor Ordinals]{successor-ordinals.ftl}
 \importmodule[libraries/set-theory]{ordinals.ftl}
-\symdef{succ}{\textrm{succ}}
-\symdef{pred}{\textrm{pred}}
+\symdef{ORDsucc}{\textrm{succ}}
+\symdef{ORDpred}{\textrm{pred}}
 
 \begin{definition}[forthel,id=SET_THEORY_02_8166925802668032]
   Let $\alpha$ be an ordinal.
-  $\emph{\succ(\alpha)} = \alpha \cup \set{\alpha}$.
+  $\emph{\ORDsucc(\alpha)} = \alpha \SETunion \SETsingleton{\alpha}$.
 \end{definition}
 
 \begin{proposition}[forthel,id=SET_THEORY_02_1624410224066560]
   Let $\alpha$ be an ordinal.
-  Then $\succ(\alpha)$ is an ordinal.
+  Then $\ORDsucc(\alpha)$ is an ordinal.
 \end{proposition}
 \begin{proof}[forthel]
-  (1) $\succ(\alpha)$ is transitive. \newline
+  (1) $\ORDsucc(\alpha)$ is transitive. \newline
   Proof.
-    Let $x \in \succ(\alpha)$ and $y \in x$.
-    Then $x \in \alpha$ or $x = \alpha$.
+    Let $x \in \ORDsucc(\alpha)$ and $y \in x$.
+    Then $x \in \alpha$ or $x \eq \alpha$.
     Hence $y \in \alpha$.
-    Thus $y \in \succ(\alpha)$.
+    Thus $y \in \ORDsucc(\alpha)$.
   Qed.
 
-  (2) Every element of $\succ(\alpha)$ is transitive. \newline
+  (2) Every element of $\ORDsucc(\alpha)$ is transitive. \newline
   Proof.
-    Let $x \in \succ(\alpha)$.
-    Then $x \in \alpha$ or $x = \alpha$.
+    Let $x \in \ORDsucc(\alpha)$.
+    Then $x \in \alpha$ or $x \eq \alpha$.
     Hence $x$ is transitive.
     Indeed $\alpha$ is transitive and every element of $\alpha$ is transitive.
   Qed.
 \end{proof}
 
 \begin{definition}[forthel,id=SET_THEORY_02_7129712109289472]
-  A \emph{successor ordinal} is an ordinal $\alpha$ such that $\alpha = \succ(\beta)$ for some ordinal $\beta$.
+  A \emph{successor ordinal} is an ordinal $\alpha$ such that $\alpha \eq \ORDsucc(\beta)$ for some ordinal $\beta$.
 \end{definition}
 
 \begin{proposition}[forthel,id=SET_THEORY_02_8651096763400192]
   Let $\alpha, \beta$ be ordinals.
-  If $\succ(\alpha) = \succ(\beta)$ then $\alpha = \beta$.
+  If $\ORDsucc(\alpha) \eq \ORDsucc(\beta)$ then $\alpha \eq \beta$.
 \end{proposition}
 \begin{proof}[forthel]
-  Assume $\succ(\alpha) = \succ(\beta)$.
+  Assume $\ORDsucc(\alpha) \eq \ORDsucc(\beta)$.
 
-  (1) $\alpha \subseteq \beta$. \newline
+  (1) $\alpha \SETinclude \beta$. \newline
   Proof.
     Let $\gamma \in \alpha$.
-    Then $\gamma \in \alpha \cup \set{\alpha}
-      = \succ(\alpha)
-      = \succ(\beta)
-      = \beta \cup \set{\beta}$.
-    Hence $\gamma \in \beta$ or $\gamma = \beta$.
-    Assume $\gamma = \beta$.
+    Then $\gamma \in \alpha \SETunion \SETsingleton{\alpha}
+      \eq \ORDsucc(\alpha)
+      \eq \ORDsucc(\beta)
+      \eq \beta \SETunion \SETsingleton{\beta}$.
+    Hence $\gamma \in \beta$ or $\gamma \eq \beta$.
+    Assume $\gamma \eq \beta$.
     Then $\beta \in \alpha$.
     Hence $\beta
-      = (\beta \cup \set{\beta}) \setminus \set{\gamma}
-      = (\alpha \cup \set{\alpha}) \setminus \set{\gamma}
-      = (\alpha \setminus \set{\gamma}) \cup \set{\alpha}$.
+      \eq (\beta \SETunion \SETsingleton{\beta}) \SETdiff \SETsingleton{\gamma}
+      \eq (\alpha \SETunion \SETsingleton{\alpha}) \SETdiff \SETsingleton{\gamma}
+      \eq (\alpha \SETdiff \SETsingleton{\gamma}) \SETunion \SETsingleton{\alpha}$.
     Therefore $\alpha \in \beta$.
     Consequently $\alpha \in \beta \in \alpha$.
     Contradiction.
   Qed.
 
-  (2) $\beta \subseteq \alpha$. \newline
+  (2) $\beta \SETinclude \alpha$. \newline
   Proof.
     Let $\gamma \in \beta$.
-    Then $\gamma \in \beta \cup \set{\beta}
-      = \succ(\beta)
-      = \succ(\alpha)
-      = \alpha \cup \set{\alpha}$.
-    Hence $\gamma \in \alpha$ or $\gamma = \alpha$.
-    Assume $\gamma = \alpha$.
+    Then $\gamma \in \beta \SETunion \SETsingleton{\beta}
+      \eq \ORDsucc(\beta)
+      \eq \ORDsucc(\alpha)
+      \eq \alpha \SETunion \SETsingleton{\alpha}$.
+    Hence $\gamma \in \alpha$ or $\gamma \eq \alpha$.
+    Assume $\gamma \eq \alpha$.
     Then $\alpha \in \beta$.
     Hence $\alpha
-      = (\alpha \cup \set{\alpha}) \setminus \set{\gamma}
-      = (\beta \cup \set{\beta}) \setminus \set{\gamma}
-      = (\beta \setminus \set{\gamma}) \cup \set{\beta}$.
+      \eq (\alpha \SETunion \SETsingleton{\alpha}) \SETdiff \SETsingleton{\gamma}
+      \eq (\beta \SETunion \SETsingleton{\beta}) \SETdiff \SETsingleton{\gamma}
+      \eq (\beta \SETdiff \SETsingleton{\gamma}) \SETunion \SETsingleton{\beta}$.
     Therefore $\beta \in \alpha$.
     Consequently $\beta \in \alpha \in \beta$.
     Contradiction.
@@ -86,7 +86,7 @@
 
 \begin{definition}[forthel,id=SET_THEORY_02_735071524880384]
   Let $\alpha$ be a successor ordinal.
-  $\emph{\pred(\alpha)}$ is the ordinal $\beta$ such that $\alpha = \succ(\beta)$.
+  $\emph{\ORDpred(\alpha)}$ is the ordinal $\beta$ such that $\alpha \eq \ORDsucc(\beta)$.
 \end{definition}
 \end{smodule}
 \end{document}

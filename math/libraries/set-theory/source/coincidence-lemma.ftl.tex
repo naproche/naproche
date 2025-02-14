@@ -7,33 +7,33 @@
 \importmodule[libraries/set-theory]{recursive-maps.ftl}
   
 \begin{lemma}[forthel,title=Coincidence Lemma,id=transfinite-recursion_coincidence]
-  Let $A$ be a class and $G$ be a map from $A^{< \infty}$ to $A$.
+  Let $A$ be a class and $G$ be a map from $\ORDfunspace{A}$ to $A$.
   Let $H, H'$ be maps to $A$ that are recursive regarding $G$.
-  Then \[ H(\alpha) = H'(\alpha) \] for all $\alpha \in \dom(H) \cap \dom(H')$.
+  Then \[ H(\alpha) \eq H'(\alpha) \] for all $\alpha \in \dom(H) \SETintersect \dom(H')$.
 \end{lemma}
 \begin{proof}[forthel]
   Define $\Phi = \{ \alpha \in \Ord \mid$ if
-  $\alpha \in \dom(H) \cap \dom(H')$ then $H(\alpha) = H'(\alpha) \}$.
+  $\alpha \in \dom(H) \SETintersect \dom(H')$ then $H(\alpha) \eq H'(\alpha) \}$.
 
   For all ordinals $\alpha$ if every ordinal less than $\alpha$ lies in $\Phi$ then $\alpha \in \Phi$. \newline
   Proof.
     Let $\alpha \in \Ord$.
     Assume that every $y \in \alpha$ lies in $\Phi$.
 
-    Let us show that if $\alpha \in \dom(H) \cap \dom(H')$ then
-    $H(\alpha) = H'(\alpha)$.
-      Suppose $\alpha \in \dom(H) \cap \dom(H')$.
-      Then $\alpha \subseteq \dom(H), \dom(H')$.
+    Let us show that if $\alpha \in \dom(H) \SETintersect \dom(H')$ then
+    $H(\alpha) \eq H'(\alpha)$.
+      Suppose $\alpha \in \dom(H) \SETintersect \dom(H')$.
+      Then $\alpha \SETinclude \dom(H), \dom(H')$.
       Indeed $\dom(H)$ and $\dom(H')$ are transitive classes.
-      Hence for all $y \in \alpha$ we have $y \in \dom(H) \cap \dom(H')$.
-      Thus $H(y) = H'(y)$ for all $y \in \alpha$.
-      Therefore $H \restriction \alpha = H' \restriction \alpha$.
+      Hence for all $y \in \alpha$ we have $y \in \dom(H) \SETintersect \dom(H')$.
+      Thus $H(y) \eq H'(y)$ for all $y \in \alpha$.
+      Therefore $H \FUNrest \alpha \eq H' \FUNrest \alpha$.
       $H$ and $H'$ are recursive regarding $G$.
-      We have $H \restriction \alpha, H' \restriction \alpha \in A^{< \infty}$.
+      We have $H \FUNrest \alpha, H' \FUNrest \alpha \in \ORDfunspace{A}$.
       Hence $H(\alpha)
-        = G(H \restriction \alpha)
-        = G(H' \restriction \alpha)
-        = H'(\alpha)$.
+        \eq G(H \FUNrest \alpha)
+        \eq G(H' \FUNrest \alpha)
+        \eq H'(\alpha)$.
     End.
 
     Thus $\alpha \in \Phi$.
@@ -41,7 +41,7 @@
 
   [prover vampire]
   Then $\Phi$ contains every ordinal (by \printref{SET_THEORY_02_8493935460614144}).
-  Therefore we have $H(\alpha) = H'(\alpha)$ for all $\alpha \in \dom(H) \cap \dom(H')$.
+  Therefore we have $H(\alpha) \eq H'(\alpha)$ for all $\alpha \in \dom(H) \SETintersect \dom(H')$.
 \end{proof}
 \end{smodule}
 \end{document}

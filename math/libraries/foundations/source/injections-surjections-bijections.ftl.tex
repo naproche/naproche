@@ -4,13 +4,13 @@
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title={Injective, Surjective and Bijective Maps}]{injections-surjections-bijections.ftl}
 \importmodule[libraries/foundations]{maps.ftl}
-\symdef{onto}{\twoheadrightarrow}
-\symdef{into}{\hookrightarrow}
+\symdef{FUNfromonto}[args=2]{\mathbin{\comp:}#1\mathbin{\comp\twoheadrightarrow}#2}
+\symdef{FUNfrominto}[args=2]{\mathbin{\comp:}#1\mathbin{\comp\hookrightarrow}#2}
 
 \begin{sfragment}{Surjective Maps}
   \begin{definition}[forthel,id=FOUNDATIONS_08_8681187805495296]
     Let $f$ be a map and $B$ be a class.
-    $f$ is \emph{surjective onto $B$} iff $\range(f) = B$.
+    $f$ is \emph{surjective onto $B$} iff $\FUNrange(f) \eq B$.
 
     Let \emph{$f$ surjects onto $B$} stand for $f$ is surjective onto $B$.
     Let a \emph{surjective map onto $B$} stand for a map that is surjective onto $B$.
@@ -21,7 +21,7 @@
     A \emph{surjective map from $A$ to $B$} is a map of $A$ that is surjective onto $B$.
 
     Let a \emph{surjective map from $A$ onto $B$} stand for a surjective map from $A$ to $B$.
-    Let $\emph{f: A \onto B}$ stand for $f$ is a surjective map from $A$ onto $B$.
+    Let $\emph{f \FUNfromonto{A}{B}}$ stand for $f$ is a surjective map from $A$ onto $B$.
   \end{definition}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_08_1974205941809152]
@@ -30,21 +30,21 @@
   \end{proposition}
   \begin{proof}[forthel]
     Case $f$ is surjective onto $B$.
-      Then $B = \range(f)$.
+      Then $B \eq \FUNrange(f)$.
       Let $b$ be an element of $B$.
-      Then $b \in \range(f)$.
+      Then $b \in \FUNrange(f)$.
       Hence $b$ is a value of $f$.
     End.
 
     Case every element of $B$ is a value of $f$.
-      Let us show that $B \subseteq \range(f)$.
+      Let us show that $B \SETinclude \FUNrange(f)$.
         Let $b \in B$.
         Then $b$ is a value of $f$.
-        Hence $b \in \range(f)$.
+        Hence $b \in \FUNrange(f)$.
       End.
 
-      Let us show that $\range(f) \subseteq B$.
-        Let $b \in \range(f)$.
+      Let us show that $\FUNrange(f) \SETinclude B$.
+        Let $b \in \FUNrange(f)$.
         Then $b$ is a value of $f$.
         Hence $b \in B$.
       End.
@@ -55,9 +55,9 @@
 \begin{sfragment}{Injective Maps}
   \begin{definition}[forthel,id=FOUNDATIONS_08_605931408719872]
     Let $f$ be a map.
-    $f$ is \emph{injective} iff for all $a, a' \in \dom(f)$ if $f(a) = f(a')$ then $a = a'$.
+    $f$ is \emph{injective} iff for all $a, a' \in \dom(f)$ if $f(a) \eq f(a')$ then $a \eq a'$.
 
-    Let $\emph{f: A \into B}$ stand for $f$ is an injective map from $A$ to $B$.
+    Let $\emph{f \FUNfrominto{A}{B}}$ stand for $f$ is an injective map from $A$ to $B$.
   \end{definition}
 \end{sfragment}
 
@@ -70,12 +70,12 @@
   \end{definition}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_08_60881194975232]
-    Let $A, B$ be classes and $f : A \into B$.
-    Then $f$ is a bijection between $A$ and $\range(f)$.
+    Let $A, B$ be classes and $f \FUNfrominto{A}{B}$.
+    Then $f$ is a bijection between $A$ and $\FUNrange(f)$.
   \end{proposition}
   \begin{proof}[forthel]
-    $f$ is injective and surjects onto $\range(f)$.
-    Hence $f$ is a bijection between $A$ and $\range(f)$.
+    $f$ is injective and surjects onto $\FUNrange(f)$.
+    Hence $f$ is a bijection between $A$ and $\FUNrange(f)$.
   \end{proof}
 
   \begin{definition}[forthel,id=FOUNDATIONS_08_8188451318923264]
@@ -87,87 +87,87 @@
 \begin{sfragment}{Basic Properties}
   \begin{proposition}[forthel,id=FOUNDATIONS_08_7883784041005056]
     Let $A$ be a class.
-    Then $\id_{A}$ is a permutation of $A$.
+    Then $\FUNid{A}$ is a permutation of $A$.
   \end{proposition}
   \begin{proof}[forthel]
-    (1) $\id_{A}$ is a map on $A$.
+    (1) $\FUNid{A}$ is a map on $A$.
 
-    (2) $\id_{A}$ is surjective onto $A$. \newline
+    (2) $\FUNid{A}$ is surjective onto $A$. \newline
     Proof.
       Let $a \in A$.
-      Then $a = \id_{A}(a)$.
-      Hence $a \in \range(\id_{A})$.
+      Then $a \eq \FUNid{A}(a)$.
+      Hence $a \in \FUNrange(\FUNid{A})$.
     Qed.
 
-    (3) $\id_{A}$ is injective. \newline
+    (3) $\FUNid{A}$ is injective. \newline
     Proof.
       Let $a, a' \in A$.
-      Assume $\id_{A}(a) = \id_{A}(a')$.
-      Then $a = a'$.
+      Assume $\FUNid{A}(a) \eq \FUNid{A}(a')$.
+      Then $a \eq a'$.
     Qed.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_08_8542698338254848]
-    Let $A, B, C$ be classes and $f : A \onto B$ and $g : B \onto C$.
-    Then $g \circ f$ is a surjective map from $A$ onto $C$.
+    Let $A, B, C$ be classes and $f \FUNfromonto{A}{B}$ and $g \FUNfromonto{B}{C}$.
+    Then $g \FUNcomp f$ is a surjective map from $A$ onto $C$.
   \end{proposition}
   \begin{proof}[forthel]
-    $g \circ f$ is a map of $A$.
+    $g \FUNcomp f$ is a map of $A$.
 
-    Let us show that $g \circ f$ is surjective onto $C$.
+    Let us show that $g \FUNcomp f$ is surjective onto $C$.
       Let $c \in C$.
-      Take $b \in B$ such that $c = g(b)$.
-      Take $a \in A$ such that $b = f(a)$.
-      Then $c = g(f(a)) = (g \circ f)(a)$.
+      Take $b \in B$ such that $c \eq g(b)$.
+      Take $a \in A$ such that $b \eq f(a)$.
+      Then $c \eq g(f(a)) \eq (g \FUNcomp f)(a)$.
     End.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_08_3367836856614912]
-    Let $A, B, C$ be classes and $f : A \into B$ and $g : B \into C$.
-    Then $g \circ f$ is an injective map from $A$ to $C$.
+    Let $A, B, C$ be classes and $f \FUNfrominto{A}{B}$ and $g \FUNfrominto{B}{C}$.
+    Then $g \FUNcomp f$ is an injective map from $A$ to $C$.
   \end{proposition}
   \begin{proof}[forthel]
-    $g \circ f$ is a map of $A$.
+    $g \FUNcomp f$ is a map of $A$.
 
-    Let us show that $g \circ f$ is injective.
+    Let us show that $g \FUNcomp f$ is injective.
       Let $a, a' \in A$.
-      Assume $(g \circ f)(a) = (g \circ f)(a')$.
-      Then $g(f(a)) = g(f(a'))$.
-      Hence $f(a) = f(a')$.
+      Assume $(g \FUNcomp f)(a) \eq (g \FUNcomp f)(a')$.
+      Then $g(f(a)) \eq g(f(a'))$.
+      Hence $f(a) \eq f(a')$.
       Indeed $f(a), f(a') \in B$.
-      Thus $a = a'$.
+      Thus $a \eq a'$.
     End.
   \end{proof}
 
   \begin{corollary}[forthel,id=FOUNDATIONS_08_6435206693126144]
     Let $A, B, C$ be classes.
     Let $f$ be a bijection between $A$ and $B$ and $g$ be a bijection between $B$ and $C$.
-    Then $g \circ f$ is a bijection between $A$ and $C$.
+    Then $g \FUNcomp f$ is a bijection between $A$ and $C$.
   \end{corollary}
   \begin{proof}[forthel]
-    $g \circ f$ is an injective map from $A$ to $C$ (by \printref{FOUNDATIONS_08_3367836856614912}).
-    $g \circ f$ is a surjective map from $A$ onto $C$ (by \printref{FOUNDATIONS_08_8542698338254848}).
+    $g \FUNcomp f$ is an injective map from $A$ to $C$ (by \printref{FOUNDATIONS_08_3367836856614912}).
+    $g \FUNcomp f$ is a surjective map from $A$ onto $C$ (by \printref{FOUNDATIONS_08_8542698338254848}).
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_08_2621531811217408]
-    Let $A, B$ be classes and $f : A \into B$ and $X \subseteq A$.
-    Then $f \restriction X$ is injective.
+    Let $A, B$ be classes and $f \FUNfrominto{A}{B}$ and $X \SETinclude A$.
+    Then $f \FUNrest X$ is injective.
   \end{proposition}
   \begin{proof}[forthel]
     Let $a, a' \in X$.
-    Assume $(f \restriction X)(a) = (f \restriction X)(a')$.
-    Then $f(a) = f(a')$.
-    Hence $a = a'$.
+    Assume $(f \FUNrest X)(a) \eq (f \FUNrest X)(a')$.
+    Then $f(a) \eq f(a')$.
+    Hence $a \eq a'$.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_08_647446231252992]
-    Let $A, B$ be classes and $f : A \into B$ and $X \subseteq A$.
-    Then $f \restriction X$ is a bijection between $X$ and $f_{*}(X)$.
+    Let $A, B$ be classes and $f \FUNfrominto{A}{B}$ and $X \SETinclude A$.
+    Then $f \FUNrest X$ is a bijection between $X$ and $\FUNim{f}{X}$.
   \end{proposition}
 
   \begin{corollary}[forthel,id=FOUNDATIONS_08_8159443759923200]
-    Let $A, B$ be classes and $f : A \into B$.
-    Then $f$ is a bijection between $A$ and $f_{*}(A)$.
+    Let $A, B$ be classes and $f \FUNfrominto{A}{B}$.
+    Then $f$ is a bijection between $A$ and $\FUNim{f}{A}$.
   \end{corollary}
 \end{sfragment}
 \end{smodule}

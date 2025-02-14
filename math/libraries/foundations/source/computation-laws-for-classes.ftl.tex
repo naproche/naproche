@@ -8,41 +8,41 @@
 \begin{sfragment}{Commutativity of Union and Intersection}
   \begin{proposition}[forthel,id=FOUNDATIONS_02_8446177632583680]
     Let $A, B$ be classes.
-    Then $A \cup B = B \cup A$.
+    Then $A \SETunion B \eq B \SETunion A$.
   \end{proposition}
   \begin{proof}[forthel]
-    Let us show that $A \cup B \subseteq B \cup A$.
-      Let $x \in A \cup B$.
+    Let us show that $A \SETunion B \SETinclude B \SETunion A$.
+      Let $x \in A \SETunion B$.
       Then $x \in A$ or $x \in B$.
       Hence $x \in B$ or $x \in A$.
-      Thus $x \in B \cup A$.
+      Thus $x \in B \SETunion A$.
     End.
 
-    Let us show that $B \cup A \subseteq A \cup B$.
-      Let $x \in B \cup A$.
+    Let us show that $B \SETunion A \SETinclude A \SETunion B$.
+      Let $x \in B \SETunion A$.
       Then $x \in B$ or $x \in A$.
       Hence $x \in A$ or $x \in B$.
-      Thus $x \in A \cup B$.
+      Thus $x \in A \SETunion B$.
     End.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_02_7565102251245568]
     Let $A, B$ be classes.
-    Then $A \cap B = B \cap A$.
+    Then $A \SETintersect B \eq B \SETintersect A$.
   \end{proposition}
   \begin{proof}[forthel]
-    Let us show that $A \cap B \subseteq B \cap A$.
-      Let $x \in A \cap B$.
+    Let us show that $A \SETintersect B \SETinclude B \SETintersect A$.
+      Let $x \in A \SETintersect B$.
       Then $x \in A$ and $x \in B$.
       Hence $x \in B$ and $x \in A$.
-      Thus $x \in B \cap A$.
+      Thus $x \in B \SETintersect A$.
     End.
 
-    Let us show that $B \cap A \subseteq A \cap B$.
-      Let $x \in B \cap A$.
+    Let us show that $B \SETintersect A \SETinclude A \SETintersect B$.
+      Let $x \in B \SETintersect A$.
       Then $x \in B$ and $x \in A$.
       Hence $x \in A$ and $x \in B$.
-      Thus $x \in A \cap B$.
+      Thus $x \in A \SETintersect B$.
     End.
   \end{proof}
 \end{sfragment}
@@ -50,45 +50,45 @@
 \begin{sfragment}{Associativity of Union and Intersection}
   \begin{proposition}[forthel,id=FOUNDATIONS_02_3854032263184384]
     Let $A, B, C$ be classes.
-    Then $(A \cup B) \cup C = A \cup (B \cup C)$.
+    Then $(A \SETunion B) \SETunion C \eq A \SETunion (B \SETunion C)$.
   \end{proposition}
   \begin{proof}[forthel]
-    Let us show that $((A \cup B) \cup C) \subseteq A \cup (B \cup C)$. %!
-      Let $x \in (A \cup B) \cup C$.
-      Then $x \in A \cup B$ or $x \in C$.
+    Let us show that $((A \SETunion B) \SETunion C) \SETinclude A \SETunion (B \SETunion C)$. %!
+      Let $x \in (A \SETunion B) \SETunion C$.
+      Then $x \in A \SETunion B$ or $x \in C$.
       Hence $x \in A$ or $x \in B$ or $x \in C$.
-      Thus $x \in A$ or $x \in (B \cup C)$.
-      Therefore $x \in A \cup (B \cup C)$.
+      Thus $x \in A$ or $x \in (B \SETunion C)$.
+      Therefore $x \in A \SETunion (B \SETunion C)$.
     End.
 
-    Let us show that $A \cup (B \cup C) \subseteq (A \cup B) \cup C$.
-      Let $x \in A \cup (B \cup C)$.
-      Then $x \in A$ or $x \in B \cup C$.
+    Let us show that $A \SETunion (B \SETunion C) \SETinclude (A \SETunion B) \SETunion C$.
+      Let $x \in A \SETunion (B \SETunion C)$.
+      Then $x \in A$ or $x \in B \SETunion C$.
       Hence $x \in A$ or $x \in B$ or $x \in C$.
-      Thus $x \in A \cup B$ or $x \in C$.
-      Therefore $x \in (A \cup B) \cup C$.
+      Thus $x \in A \SETunion B$ or $x \in C$.
+      Therefore $x \in (A \SETunion B) \SETunion C$.
     End.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_02_906751977193472]
     Let $A, B, C$ be classes.
-    Then $(A \cap B) \cap C = A \cap (B \cap C)$.
+    Then $(A \SETintersect B) \SETintersect C \eq A \SETintersect (B \SETintersect C)$.
   \end{proposition}
   \begin{proof}[forthel]
-    Let us show that $((A \cap B) \cap C) \subseteq A \cap (B \cap C)$. %!
-      Let $x \in (A \cap B) \cap C$.
-      Then $x \in A \cap B$ and $x \in C$.
+    Let us show that $((A \SETintersect B) \SETintersect C) \SETinclude A \SETintersect (B \SETintersect C)$. %!
+      Let $x \in (A \SETintersect B) \SETintersect C$.
+      Then $x \in A \SETintersect B$ and $x \in C$.
       Hence $x \in A$ and $x \in B$ and $x \in C$.
-      Thus $x \in A$ and $x \in (B \cap C)$.
-      Therefore$ x \in A \cap (B \cap C)$.
+      Thus $x \in A$ and $x \in (B \SETintersect C)$.
+      Therefore$ x \in A \SETintersect (B \SETintersect C)$.
     End.
 
-    Let us show that $A \cap (B \cap C) \subseteq (A \cap B) \cap C$.
-      Let $x \in A \cap (B \cap C)$.
-      Then $x \in A$ and $x \in B \cap C$.
+    Let us show that $A \SETintersect (B \SETintersect C) \SETinclude (A \SETintersect B) \SETintersect C$.
+      Let $x \in A \SETintersect (B \SETintersect C)$.
+      Then $x \in A$ and $x \in B \SETintersect C$.
       Hence $x \in A$ and $x \in B$ and $x \in C$.
-      Thus $x \in A \cap B$ and $x \in C$.
-      Therefore $x \in (A \cap B) \cap C$.
+      Thus $x \in A \SETintersect B$ and $x \in C$.
+      Therefore $x \in (A \SETintersect B) \SETintersect C$.
     End.
   \end{proof}
 \end{sfragment}
@@ -96,49 +96,49 @@
 \begin{sfragment}{Distributivity of Union and Intersection}
   \begin{proposition}[forthel,id=FOUNDATIONS_02_371139087958016]
     Let $A, B, C$ be classes.
-    Then $A \cap (B \cup C) = (A \cap B) \cup (A \cap C)$.
+    Then $A \SETintersect (B \SETunion C) \eq (A \SETintersect B) \SETunion (A \SETintersect C)$.
   \end{proposition}
   \begin{proof}[forthel]
-    Let us show that $A \cap (B \cup C) \subseteq (A \cap B) \cup (A \cap C)$.
-      Let $x \in A \cap (B \cup C)$.
-      Then $x \in A$ and $x \in B \cup C$.
+    Let us show that $A \SETintersect (B \SETunion C) \SETinclude (A \SETintersect B) \SETunion (A \SETintersect C)$.
+      Let $x \in A \SETintersect (B \SETunion C)$.
+      Then $x \in A$ and $x \in B \SETunion C$.
       Hence $x \in A$ and ($x \in B$ or $x \in C$).
       Thus ($x \in A$ and $x \in B$) or ($x \in A$ and $x \in C$).
-      Therefore $x \in A \cap B$ or $x \in A \cap C$.
-      Hence $x \in (A \cap B) \cup (A \cap C)$.
+      Therefore $x \in A \SETintersect B$ or $x \in A \SETintersect C$.
+      Hence $x \in (A \SETintersect B) \SETunion (A \SETintersect C)$.
     End.
 
-    Let us show that $((A \cap B) \cup (A \cap C)) \subseteq A \cap (B \cup C)$. %!
-      Let $x \in (A \cap B) \cup (A \cap C)$.
-      Then $x \in A \cap B$ or $x \in A \cap C$.
+    Let us show that $((A \SETintersect B) \SETunion (A \SETintersect C)) \SETinclude A \SETintersect (B \SETunion C)$. %!
+      Let $x \in (A \SETintersect B) \SETunion (A \SETintersect C)$.
+      Then $x \in A \SETintersect B$ or $x \in A \SETintersect C$.
       Hence ($x \in A$ and $x \in B$) or ($x \in A$ and $x \in C$).
       Thus $x \in A$ and ($x \in B$ or $x \in C$).
-      Therefore $x \in A$ and $x \in B \cup C$.
-      Hence$ x \in A \cap (B \cup C)$.
+      Therefore $x \in A$ and $x \in B \SETunion C$.
+      Hence$ x \in A \SETintersect (B \SETunion C)$.
     End.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_02_5937390721957888]
     Let $A, B, C$ be classes.
-    Then $A \cup (B \cap C) = (A \cup B) \cap (A \cup C)$.
+    Then $A \SETunion (B \SETintersect C) \eq (A \SETunion B) \SETintersect (A \SETunion C)$.
   \end{proposition}
   \begin{proof}[forthel]
-    Let us show that $A \cup (B \cap C) \subseteq (A \cup B) \cap (A \cup C)$.
-      Let $x \in A \cup (B \cap C)$.
-      Then $x \in A$ or $x \in B \cap C$.
+    Let us show that $A \SETunion (B \SETintersect C) \SETinclude (A \SETunion B) \SETintersect (A \SETunion C)$.
+      Let $x \in A \SETunion (B \SETintersect C)$.
+      Then $x \in A$ or $x \in B \SETintersect C$.
       Hence $x \in A$ or ($x \in B$ and $x \in C$).
       Thus ($x \in A$ or $x \in B$) and ($x \in$ A or $x \in C$).
-      Therefore $x \in A \cup B$ and $x \in A \cup C$.
-      Hence $x \in (A \cup B) \cap (A \cup C)$.
+      Therefore $x \in A \SETunion B$ and $x \in A \SETunion C$.
+      Hence $x \in (A \SETunion B) \SETintersect (A \SETunion C)$.
     End.
 
-    Let us show that $((A \cup B) \cap (A \cup C)) \subseteq A \cup (B \cap C)$. %!
-      Let $x \in (A \cup B) \cap (A \cup C)$.
-      Then $x \in A \cup B$ and $x \in A \cup C$.
+    Let us show that $((A \SETunion B) \SETintersect (A \SETunion C)) \SETinclude A \SETunion (B \SETintersect C)$. %!
+      Let $x \in (A \SETunion B) \SETintersect (A \SETunion C)$.
+      Then $x \in A \SETunion B$ and $x \in A \SETunion C$.
       Hence ($x \in A$ or $x \in B$) and ($x \in A$ or $x \in C$).
       Thus $x \in A$ or ($x \in B$ and $x \in C$).
-      Therefore $x \in A$ or $x \in B \cap C$.
-      Hence $x \in A \cup (B \cap C)$.
+      Therefore $x \in A$ or $x \in B \SETintersect C$.
+      Hence $x \in A \SETunion (B \SETintersect C)$.
     End.
   \end{proof}
 \end{sfragment}
@@ -146,77 +146,77 @@
 \begin{sfragment}{Idempocy Laws for Union and Intersection}
   \begin{proposition}[forthel,id=FOUNDATIONS_02_2096996737351680]
     Let $A$ be a class.
-    Then $A \cup A = A$.
+    Then $A \SETunion A \eq A$.
   \end{proposition}
   \begin{proof}[forthel]
-    $A \cup A = \{x \mid x \in A$ or $x \in A \}$.
-    Hence $A \cup A = \{ x \mid x \in A \}$.
-    Thus $A \cup A = A$.
+    $A \SETunion A \eq \{x \mid x \in A$ or $x \in A \}$.
+    Hence $A \SETunion A \eq \{ x \mid x \in A \}$.
+    Thus $A \SETunion A \eq A$.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_02_4053144145231872]
     Let $A$ be a class.
-    Then $A \cap A = A$.
+    Then $A \SETintersect A \eq A$.
   \end{proposition}
   \begin{proof}[forthel]
-    $A \cap A = \{ x \mid x \in A$ and $x \in A \}$.
-    Hence $A \cap A = \{ x \mid x \in A \}$.
-    Thus $A \cap A = A$.
+    $A \SETintersect A \eq \{ x \mid x \in A$ and $x \in A \}$.
+    Hence $A \SETintersect A \eq \{ x \mid x \in A \}$.
+    Thus $A \SETintersect A \eq A$.
   \end{proof}
 \end{sfragment}
 
 \begin{sfragment}{Distributivity of Complement}
   \begin{proposition}[forthel,id=FOUNDATIONS_02_5296031436636160]
     Let $A, B, C$ be classes.
-    Then $A \setminus (B \cap C) = (A \setminus B) \cup (A \setminus C)$.
+    Then $A \SETdiff (B \SETintersect C) \eq (A \SETdiff B) \SETunion (A \SETdiff C)$.
   \end{proposition}
   \begin{proof}[forthel]
-    Let us show that $A \setminus (B \cap C) \subseteq (A \setminus B) \cup (A \setminus C)$.
-      Let $x \in A \setminus (B \cap C)$.
-      Then $x \in A$ and $x \notin B \cap C$.
+    Let us show that $A \SETdiff (B \SETintersect C) \SETinclude (A \SETdiff B) \SETunion (A \SETdiff C)$.
+      Let $x \in A \SETdiff (B \SETintersect C)$.
+      Then $x \in A$ and $x \notin B \SETintersect C$.
       Hence it is wrong that ($x \in B$ and $x \in C$).
       Thus $x \notin B$ or $x \notin C$.
       Therefore $x \in A$ and ($x \notin B$ or $x \notin C$).
       Then ($x \in A$ and $x \notin B$) or ($x \in A$ and $x \notin C$).
-      Hence $x \in A \setminus B$ or $x \in A \setminus C$.
-      Thus $x \in (A \setminus B) \cup (A \setminus C)$.
+      Hence $x \in A \SETdiff B$ or $x \in A \SETdiff C$.
+      Thus $x \in (A \SETdiff B) \SETunion (A \SETdiff C)$.
     End.
 
-    Let us show that $((A \setminus B) \cup (A \setminus C)) \subseteq A \setminus (B \cap C)$. %!
-      Let $x \in (A \setminus B) \cup (A \setminus C)$.
-      Then $x \in A \setminus B$ or $x \in A \setminus C$.
+    Let us show that $((A \SETdiff B) \SETunion (A \SETdiff C)) \SETinclude A \SETdiff (B \SETintersect C)$. %!
+      Let $x \in (A \SETdiff B) \SETunion (A \SETdiff C)$.
+      Then $x \in A \SETdiff B$ or $x \in A \SETdiff C$.
       Hence ($x \in A$ and $x \notin B$) or ($x \in A$ and $x \notin C$).
       Thus $x \in A$ and ($x \notin B$ or $x \notin C$).
       Therefore $x \in A$ and not ($x \in B$ and $x \in C$).
-      Then $x \in A$ and not $x \in B \cap C$.
-      Hence $x \in A \setminus (B \cap C)$.
+      Then $x \in A$ and not $x \in B \SETintersect C$.
+      Hence $x \in A \SETdiff (B \SETintersect C)$.
     End.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_02_2909554153095168]
     Let $A, B, C$ be classes.
-    Then $A \setminus (B \cup C) = (A \setminus B) \cap (A \setminus C)$.
+    Then $A \SETdiff (B \SETunion C) \eq (A \SETdiff B) \SETintersect (A \SETdiff C)$.
   \end{proposition}
   \begin{proof}[forthel]
-    Let us show that $A \setminus (B \cup C) \subseteq (A \setminus B) \cap (A \setminus C)$.
-      Let $x \in A \setminus (B \cup C)$.
-      Then $x \in A$ and $x \notin B \cup C$.
+    Let us show that $A \SETdiff (B \SETunion C) \SETinclude (A \SETdiff B) \SETintersect (A \SETdiff C)$.
+      Let $x \in A \SETdiff (B \SETunion C)$.
+      Then $x \in A$ and $x \notin B \SETunion C$.
       Hence it is wrong that ($x \in B$ or $x \in C$).
       Thus $x \notin B$ and $x \notin C$.
       Therefore $x \in A$ and ($x \notin B$ and $x \notin C$).
       Then ($x \in A$ and $x \notin B$) and ($x \in A$ and $x \notin C$).
-      Hence $x \in A \setminus B$ and $x \in A \setminus C$.
-      Thus $x \in (A \setminus B) \cap (A \setminus C)$.
+      Hence $x \in A \SETdiff B$ and $x \in A \SETdiff C$.
+      Thus $x \in (A \SETdiff B) \SETintersect (A \SETdiff C)$.
     End.
 
-    Let us show that $((A \setminus B) \cap (A \setminus C)) \subseteq A \setminus (B \cup C)$. %!
-      Let $x \in (A \setminus B) \cap (A \setminus C)$.
-      Then $x \in A \setminus B$ and $x \in A \setminus C$.
+    Let us show that $((A \SETdiff B) \SETintersect (A \SETdiff C)) \SETinclude A \SETdiff (B \SETunion C)$. %!
+      Let $x \in (A \SETdiff B) \SETintersect (A \SETdiff C)$.
+      Then $x \in A \SETdiff B$ and $x \in A \SETdiff C$.
       Hence ($x \in A$ and $x \notin B$) and ($x \in A$ and $x \notin C$).
       Thus $x \in A$ and ($x \notin B$ and $x \notin C$).
       Therefore $x \in A$ and not ($x \in B$ or $x \in C$).
-      Then $x \in A$ and not $x \in B \cup C$.
-      Hence $x \in A \setminus (B \cup C)$.
+      Then $x \in A$ and not $x \in B \SETunion C$.
+      Hence $x \in A \SETdiff (B \SETunion C)$.
     End.
   \end{proof}
 \end{sfragment}
@@ -224,76 +224,76 @@
 \begin{sfragment}{Subclass Laws}
   \begin{proposition}[forthel,id=FOUNDATIONS_02_3793981508943872]
     Let $A, B$ be classes.
-    Then $A \subseteq A \cup B$.
+    Then $A \SETinclude A \SETunion B$.
   \end{proposition}
   \begin{proof}[forthel]
     Let $x \in A$.
     Then $x \in A$ or $x \in B$.
-    Hence $x \in A \cup B$.
+    Hence $x \in A \SETunion B$.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_02_1591517646946304]
     Let $A, B$ be classes.
-    Then $A \cap B \subseteq A$.
+    Then $A \SETintersect B \SETinclude A$.
   \end{proposition}
   \begin{proof}[forthel]
-    Let $x \in A \cap B$.
+    Let $x \in A \SETintersect B$.
     Then $x \in A$ and $x \in B$.
     Hence $x \in A$.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_02_6657236858306560]
     Let $A, B$ be classes.
-    Then $A \subseteq B$ iff $A \cup B = B$.
+    Then $A \SETinclude B$ iff $A \SETunion B \eq B$.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $A \subseteq B$.
+    Case $A \SETinclude B$.
 
-      Let us show that $A \cup B \subseteq B$.
-        Let $x \in A \cup B$.
+      Let us show that $A \SETunion B \SETinclude B$.
+        Let $x \in A \SETunion B$.
         Then $x \in A$ or $x \in B$.
         If $x \in A$ then $x \in B$.
         Hence $x \in B$.
       End.
 
-      Let us show that $B \subseteq A \cup B$.
+      Let us show that $B \SETinclude A \SETunion B$.
         Let $x \in B$.
         Then $x \in A$ or $x \in B$.
-        Hence $x \in A \cup B$.
+        Hence $x \in A \SETunion B$.
       End.
     End.
 
-    Case $A \cup B = B$.
+    Case $A \SETunion B \eq B$.
       Let $x \in A$.
       Then $x \in A$ or $x \in B$.
-      Hence $x \in A \cup B = B$.
+      Hence $x \in A \SETunion B \eq B$.
     End.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_02_2356449346846720]
     Let $A, B$ be classes.
-    Then $A \subseteq B$ iff $A \cap B = A$.
+    Then $A \SETinclude B$ iff $A \SETintersect B \eq A$.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $A \subseteq B$.
+    Case $A \SETinclude B$.
 
-      Let us show that $A \cap B \subseteq A$.
-        Let $x \in A \cap B$.
+      Let us show that $A \SETintersect B \SETinclude A$.
+        Let $x \in A \SETintersect B$.
         Then $x \in A$ and $x \in B$.
         Hence $x \in A$.
       End.
 
-      Let us show that $A \subseteq A \cap B$.
+      Let us show that $A \SETinclude A \SETintersect B$.
         Let $x \in A$.
         Then $x \in B$.
         Hence $x \in A$ and $x \in B$.
-        Thus $x \in A \cap B$.
+        Thus $x \in A \SETintersect B$.
       End.
     End.
 
-    Case $A \cap B = A$.
+    Case $A \SETintersect B \eq A$.
       Let $x \in A$.
-      Then $x \in A \cap B$.
+      Then $x \in A \SETintersect B$.
       Hence $x \in A$ and $x \in B$.
       Thus $x \in B$.
     End.
@@ -303,56 +303,56 @@
 \begin{sfragment}{Complement Laws}
   \begin{proposition}[forthel,id=FOUNDATIONS_02_7433299337150464]
     Let $A$ be a class.
-    Then $A \setminus A = \emptyset$.
+    Then $A \SETdiff A \eq \SETempty$.
   \end{proposition}
   \begin{proof}[forthel]
-    $A \setminus A$ has no elements.
-    Indeed $A \setminus A = \{ x \mid x \in A$ and $x \notin A \}$.
+    $A \SETdiff A$ has no elements.
+    Indeed $A \SETdiff A \eq \{ x \mid x \in A$ and $x \notin A \}$.
     Hence the thesis.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_02_3783696985358336]
     Let $A$ be a class.
-    Then $A \setminus \emptyset = A$.
+    Then $A \SETdiff \SETempty \eq A$.
   \end{proposition}
   \begin{proof}[forthel]
-    $A \setminus \emptyset = \{ x \mid x \in A$ and $x \notin \emptyset \}$.
-    No element is an element of $\emptyset$.
-    Hence $A \setminus \emptyset = \{ x \mid x \in A \}$.
+    $A \SETdiff \SETempty \eq \{ x \mid x \in A$ and $x \notin \SETempty \}$.
+    No element is an element of $\SETempty$.
+    Hence $A \SETdiff \SETempty \eq \{ x \mid x \in A \}$.
     Then we have the thesis.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_02_7083929257377792]
     Let $A, B$ be classes.
-    Then $A \setminus (A \setminus B) = A \cap B$.
+    Then $A \SETdiff (A \SETdiff B) \eq A \SETintersect B$.
   \end{proposition}
   \begin{proof}[forthel]
-    Let us show that $A \setminus (A \setminus B) \subseteq A \cap B$.
-      Let $x \in A \setminus (A \setminus B)$.
-      Then $x \in A$ and $x \notin A \setminus B$.
+    Let us show that $A \SETdiff (A \SETdiff B) \SETinclude A \SETintersect B$.
+      Let $x \in A \SETdiff (A \SETdiff B)$.
+      Then $x \in A$ and $x \notin A \SETdiff B$.
       Hence $x \notin A$ or $x \in B$.
       Thus $x \in B$.
-      Therefore $x \in A \cap B$.
+      Therefore $x \in A \SETintersect B$.
     End.
 
-    Let us show that $A \cap B \subseteq A \setminus (A \setminus B)$.
-      Let $x \in A \cap B$.
+    Let us show that $A \SETintersect B \SETinclude A \SETdiff (A \SETdiff B)$.
+      Let $x \in A \SETintersect B$.
       Then $x \in A$ and $x \in B$.
       Hence $x \notin A$ or $x \in B$.
-      Thus $x \notin A \setminus B$.
-      Therefore $x \in A \setminus (A \setminus B)$.
+      Thus $x \notin A \SETdiff B$.
+      Therefore $x \in A \SETdiff (A \SETdiff B)$.
     End.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_02_4938646769631232]
     Let $A, B$ be classes.
-    Then $B \subseteq A$ iff $A \setminus (A \setminus B) = B$.
+    Then $B \SETinclude A$ iff $A \SETdiff (A \SETdiff B) \eq B$.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $B \subseteq A$. Obvious.
+    Case $B \SETinclude A$. Obvious.
 
-    Case $A \setminus (A \setminus B) = B$.
-      Then every element of $B$ is an element of $A \setminus (A \setminus B)$.
+    Case $A \SETdiff (A \SETdiff B) \eq B$.
+      Then every element of $B$ is an element of $A \SETdiff (A \SETdiff B)$.
       Thus every element of $B$ is an element of $A$.
       Then we have the thesis.
     End.
@@ -360,25 +360,25 @@
 
   \begin{proposition}[forthel,id=FOUNDATIONS_02_5811954316738560]
     Let $A, B, C$ be classes.
-    Then $A \cap (B \setminus C) = (A \cap B) \setminus (A \cap C)$.
+    Then $A \SETintersect (B \SETdiff C) \eq (A \SETintersect B) \SETdiff (A \SETintersect C)$.
   \end{proposition}
   \begin{proof}[forthel]
-    Let us show that $A \cap (B \setminus C) \subseteq (A \cap B) \setminus (A \cap C)$.
-      Let $x \in A \cap (B \setminus C)$.
-      Then $x \in A$ and $x \in B \setminus C$.
+    Let us show that $A \SETintersect (B \SETdiff C) \SETinclude (A \SETintersect B) \SETdiff (A \SETintersect C)$.
+      Let $x \in A \SETintersect (B \SETdiff C)$.
+      Then $x \in A$ and $x \in B \SETdiff C$.
       Hence $x \in A$ and $x \in B$.
-      Thus $x \in A \cap B$ and $x \notin C$.
-      Therefore $x \notin A \cap C$.
-      Then we have $x \in (A \cap B) \setminus (A \cap C)$.
+      Thus $x \in A \SETintersect B$ and $x \notin C$.
+      Therefore $x \notin A \SETintersect C$.
+      Then we have $x \in (A \SETintersect B) \SETdiff (A \SETintersect C)$.
     End.
 
-    Let us show that $((A \cap B) \setminus (A \cap C)) \subseteq A \cap (B \setminus C)$. %!
-      Let $x \in (A \cap B) \setminus (A \cap C)$.
+    Let us show that $((A \SETintersect B) \SETdiff (A \SETintersect C)) \SETinclude A \SETintersect (B \SETdiff C)$. %!
+      Let $x \in (A \SETintersect B) \SETdiff (A \SETintersect C)$.
       Then $x \in A$ and $x \in B$.
-      $x \notin A \cap C$.
+      $x \notin A \SETintersect C$.
       Hence $x \notin C$.
-      Thus $x \in B \setminus C$.
-      Therefore $x \in A \cap (B \setminus C)$.
+      Thus $x \in B \SETdiff C$.
+      Therefore $x \in A \SETintersect (B \SETdiff C)$.
     End.
   \end{proof}
 \end{sfragment}

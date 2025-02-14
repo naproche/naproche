@@ -4,15 +4,16 @@
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Ordered Pairs and Cartesian Products]{pairs-and-products.ftl}
 \importmodule[libraries/foundations]{classes.ftl}
+\symdef{SETprod}{\,\times\,}
 
 \begin{sfragment}{Pairs}
   \begin{axiom}[forthel,id=FOUNDATIONS_04_8464577431863296]
     Let $a, a', b, b'$ be objects.
-    If $(a, b) = (a', b')$ then $a = a'$ and $b = b'$.
+    If $(a, b) \eq (a', b')$ then $a \eq a'$ and $b \eq b'$.
   \end{axiom}
 
   \begin{definition}[forthel,id=FOUNDATIONS_04_4782386822774784]
-    A \emph{pair} is an object $p$ such that $p = (a, b)$ for some objects $a, b$.
+    A \emph{pair} is an object $p$ such that $p \eq (a, b)$ for some objects $a, b$.
 
     Let an \emph{ordered pair} stand for a pair.
   \end{definition}
@@ -24,43 +25,43 @@
     The \emph{Cartesian product of $A$ and $B$} is $\{ (a, b) \mid a \in A$ and $b \in B \}$.
 
     Let the \emph{direct product of $A$ and $B$} stand for  the Cartesian product of $A$ and $B$.
-    Let $\emph{A \times B}$ stand for the Cartesian product of $A$ and $B$.
+    Let $\emph{A \SETprod B}$ stand for the Cartesian product of $A$ and $B$.
   \end{definition}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_04_1581118511906816]
     Let $A, B$ be classes and $a, b$ be objects.
-    Then $(a, b) \in A \times B$ iff $a \in A$ and $b \in B$.
+    Then $(a, b) \in A \SETprod B$ iff $a \in A$ and $b \in B$.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $(a, b) \in A \times B$.
-      We can take $a' \in A$ and $b' \in B$ such that $(a, b) = (a', b')$.
-      Then $a = a'$ and $b = b'$.
+    Case $(a, b) \in A \SETprod B$.
+      We can take $a' \in A$ and $b' \in B$ such that $(a, b) \eq (a', b')$.
+      Then $a \eq a'$ and $b \eq b'$.
       Hence $a \in A$ and $b \in B$.
     End.
 
     Case $a \in A$ and $b \in B$.
       $a$ and $a$ are objects.
       Hence $(a, b)$ is an object.
-      Therefore $(a, b) \in A \times B$.
+      Therefore $(a, b) \in A \SETprod B$.
     End.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_04_2198552029691904]
     Let $A, B$ be classes.
-    Then $A \times B$ is empty iff $A$ is empty or $B$ is empty.
+    Then $A \SETprod B$ is empty iff $A$ is empty or $B$ is empty.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $A \times B$ is empty.
+    Case $A \SETprod B$ is empty.
       Assume that $A$ and $B$ are nonempty.
       Then we can take an element $a$ of $A$ and an element $b$ of $B$.
-      Then $(a, b) \in A \times B$.
+      Then $(a, b) \in A \SETprod B$.
       Contradiction.
     End.
 
     Case $A$ is empty or $B$ is empty.
-      Assume that $A \times B$ is nonempty.
-      Then we can take an element $c$ of $A \times B$.
-      Then $c = (a, b)$ for some $a \in A$ and some $b \in B$.
+      Assume that $A \SETprod B$ is nonempty.
+      Then we can take an element $c$ of $A \SETprod B$.
+      Then $c \eq (a, b)$ for some $a \in A$ and some $b \in B$.
       Hence $A$ and $B$ are nonempty.
       Contradiction.
     End.
@@ -68,45 +69,45 @@
 
   \begin{proposition}[forthel,id=FOUNDATIONS_04_7971087096741888]
     Let $a, b$ be objects.
-    Then $\set{a} \times \set{b} = \set{(a, b)}$.
+    Then $\SETsingleton{a} \SETsingleton \SETsingleton{b} \eq \SETsingleton{(a, b)}$.
   \end{proposition}
   \begin{proof}[forthel]
-    Let us show that $\set{a} \times \set{b} \subseteq \set{(a, b)}$.
-      Let $c \in \set{a} \times \set{b}$.
-      Take $a' \in \set{a}$ and $b' \in \set{b}$ such that $c = (a', b')$.
-      We have $a' = a$ and $b' = b$.
-      Hence $c = (a, b)$.
-      Thus $c \in \set{(a, b)}$.
+    Let us show that $\SETsingleton{a} \SETprod \SETsingleton{b} \SETinclude \SETsingleton{(a, b)}$.
+      Let $c \in \SETsingleton{a} \SETprod \SETsingleton{b}$.
+      Take $a' \in \SETsingleton{a}$ and $b' \in \SETsingleton{b}$ such that $c \eq (a', b')$.
+      We have $a' \eq a$ and $b' \eq b$.
+      Hence $c \eq (a, b)$.
+      Thus $c \in \SETsingleton{(a, b)}$.
     End.
 
-    Let us show that $\set{(a, b)} \subseteq \set{a} \times \set{b}$.
-      Let $c \in \set{(a, b)}$.
-      Then $c = (a, b)$.
-      We have $a \in \set{a}$ and $b \in \set{b}$.
-      Hence $c \in \set{a} \times \set{b}$.
+    Let us show that $\SETsingleton{(a, b)} \SETinclude \SETsingleton{a} \SETprod \SETsingleton{b}$.
+      Let $c \in \SETsingleton{(a, b)}$.
+      Then $c \eq (a, b)$.
+      We have $a \in \SETsingleton{a}$ and $b \in \SETsingleton{b}$.
+      Hence $c \in \SETsingleton{a} \SETprod \SETsingleton{b}$.
     End.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_04_7456594440749056]
     Let $A, A', B, B'$ be nonempty classes.
-    If $A \times B = A' \times B'$ then $A = A'$ and $B = B'$.
+    If $A \SETprod B \eq A' \SETprod B'$ then $A \eq A'$ and $B \eq B'$.
   \end{proposition}
   \begin{proof}[forthel]
-    Assume $A \times B = A' \times B'$.
+    Assume $A \SETprod B \eq A' \SETprod B'$.
 
-    (1) $A \subseteq A'$ and $B \subseteq B'$. \newline
+    (1) $A \SETinclude A'$ and $B \SETinclude B'$. \newline
     Proof.
       Let $a \in A$ and $b \in B$.
-      Then $(a,b) \in A \times B$.
-      Hence $(a,b) \in A' \times B'$.
+      Then $(a,b) \in A \SETprod B$.
+      Hence $(a,b) \in A' \SETprod B'$.
       Thus $a \in A'$ and $b \in B'$.
     Qed.
 
-    (2) $A' \subseteq A$ and $B' \subseteq B$. \newline
+    (2) $A' \SETinclude A$ and $B' \SETinclude B$. \newline
     Proof.
       Let $a \in A'$ and $b \in B'$.
-      Then $(a,b) \in A' \times B'$.
-      Hence $(a,b) \in A \times B$.
+      Then $(a,b) \in A' \SETprod B'$.
+      Hence $(a,b) \in A \SETprod B$.
       Thus $a \in A$ and $b \in B$.
     Qed.
   \end{proof}

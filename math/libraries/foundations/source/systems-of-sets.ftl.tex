@@ -4,6 +4,8 @@
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Systems of Sets]{systems-of-sets.ftl}
 \importmodule[libraries/foundations]{sub-and-supersets.ftl}
+\symdef{SETunionover}{\bigcup\,}
+\symdef{SETintersectover}{\bigcap\,}
 
 \begin{definition}[forthel,id=FOUNDATIONS_10_5805323570905088]
   A \emph{system of sets} is a class $X$ such that every element of $X$ is a set.
@@ -20,27 +22,27 @@
 
 \begin{proposition}[forthel,id=FOUNDATIONS_10_8268633648136192]
   Let $A$ be a class.
-  Then $\emptyset$ is a system of subsets of $A$.
+  Then $\SETempty$ is a system of subsets of $A$.
 \end{proposition}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_10_7546016869908480]
   Let $A$ be a class.
-  Then $\pow(A)$ is a system of subsets of $A$.
+  Then $\SETpow(A)$ is a system of subsets of $A$.
 \end{proposition}
 
 \begin{proposition}
   Let $X, Y$ be systems of sets.
-  Then $X \cup Y$ is a system of sets.
+  Then $X \SETunion Y$ is a system of sets.
 \end{proposition}
 
 \begin{proposition}
   Let $X, Y$ be systems of sets.
-  Then $X \cap Y$ is a system of sets.
+  Then $X \SETintersect Y$ is a system of sets.
 \end{proposition}
 
 \begin{proposition}
   Let $X, Y$ be systems of sets.
-  Then $X \setminus Y$ is a system of sets.
+  Then $X \SETdiff Y$ is a system of sets.
 \end{proposition}
 
 \begin{sfragment}{Unions Over Systems of Sets}
@@ -48,42 +50,42 @@
     Let $X$ be a system of sets.
     The \emph{union over $X$} is $\{ a \mid a \in x$ for some $x \in X \}$.
 
-    Let $\emph{\bigcup X}$ stand for the union over $X$.
+    Let $\emph{\SETunionover X}$ stand for the union over $X$.
   \end{definition}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_10_4872701241982976]
-    $\bigcup \emptyset = \emptyset$.
+    $\SETunionover \SETempty \eq \SETempty$.
   \end{proposition}
   \begin{proof}[forthel]
-    $\bigcup \emptyset = \{ a \mid a \in x$ for some $x \in \emptyset \}$.
-    $\emptyset$ has no elements.
-    Hence there is no object $a$ such that $a \in x$ for some $x \in \emptyset$.
-    Thus $\bigcup \emptyset = \emptyset$.
+    $\SETunionover \SETempty \eq \{ a \mid a \in x$ for some $x \in \SETempty \}$.
+    $\SETempty$ has no elements.
+    Hence there is no object $a$ such that $a \in x$ for some $x \in \SETempty$.
+    Thus $\SETunionover \SETempty \eq \SETempty$.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_10_2559541585641472]
     Let $x, y$ be sets.
-    Then $\bigcup \set{x, y} = x \cup y$.
+    Then $\SETunionover \SETpair{x}{y} \eq x \SETunion y$.
   \end{proposition}
   \begin{proof}[forthel]
-    Let us show that $\bigcup \set{x, y} \subseteq x \cup y$.
-      Let $a \in \bigcup \set{x, y}$.
-      Then $a$ is contained in some element of $\set{x, y}$.
+    Let us show that $\SETunionover \SETpair{x}{y} \SETinclude x \SETunion y$.
+      Let $a \in \SETunionover \SETpair{x}{y}$.
+      Then $a$ is contained in some element of $\SETpair{x}{y}$.
       Hence $a \in x$ or $a \in y$.
-      Thus $a \in x \cup y$.
+      Thus $a \in x \SETunion y$.
     End.
 
-    Let us show that $x \cup y \subseteq \bigcup \set{x, y}$.
-      Let $a \in x \cup y$.
+    Let us show that $x \SETunion y \SETinclude \SETunionover \SETpair{x}{y}$.
+      Let $a \in x \SETunion y$.
       Then $a \in x$ or $a \in y$.
-      Hence $a$ is contained in some element of $\set{x, y}$.
-      Therefore $a \in \bigcup \set{x, y}$.
+      Hence $a$ is contained in some element of $\SETpair{x}{y}$.
+      Therefore $a \in \SETunionover \SETpair{x}{y}$.
     End.
   \end{proof}
 
   \begin{corollary}[forthel,id=FOUNDATIONS_10_2157223832715264]
     Let $x$ be a set.
-    Then $\bigcup \set{x} = x$.
+    Then $\SETunionover \SETsingleton{x} \eq x$.
   \end{corollary}
 \end{sfragment}
 
@@ -92,49 +94,49 @@
     Let $X$ be a system of sets.
     The \emph{intersection over $X$} is $\{ a \mid a \in x$ for all $x \in X \}$.
 
-    Let $\emph{\bigcap X}$ stand for the intersection over $X$.
+    Let $\emph{\SETintersectover X}$ stand for the intersection over $X$.
   \end{definition}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_10_2809770322952192]
-    $\bigcap \emptyset$ is the class of all objects.
+    $\SETintersectover \SETempty$ is the class of all objects.
   \end{proposition}
   \begin{proof}[forthel]
-    Define $V = \{ x \mid x$ is an object $\}$.
-    We have $\bigcap \emptyset \subseteq V$.
-    Indeed every element of $\bigcap \emptyset$ is an object.
+    Define $V \eq \{ x \mid x$ is an object $\}$.
+    We have $\SETintersectover \SETempty \SETinclude V$.
+    Indeed every element of $\SETintersectover \SETempty$ is an object.
 
-    Let us show that $V \subseteq \bigcap \emptyset$.
+    Let us show that $V \SETinclude \SETintersectover \SETempty$.
       Let $a \in V$.
       Then $a$ is an object.
-      For every $x \in \emptyset$ we have $a \in x$.
-      Indeed $\emptyset$ has no elements.
-      Thus $a \in \bigcap \emptyset$.
+      For every $x \in \SETempty$ we have $a \in x$.
+      Indeed $\SETempty$ has no elements.
+      Thus $a \in \SETintersectover \SETempty$.
     End.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_10_7851827447988224]
     Let $x, y$ be sets.
-    Then $\bigcap \set{x, y} = x \cap y$.
+    Then $\SETintersectover \SETpair{x}{y} \eq x \SETintersect y$.
   \end{proposition}
   \begin{proof}[forthel]
-    Let us show that $\bigcap \set{x, y} \subseteq x \cap y$.
-      Let $a \in \bigcap \set{x, y}$.
-      Then $a$ is contained in every element of $\set{x, y}$.
+    Let us show that $\SETintersectover \SETpair{x}{y} \SETinclude x \SETintersect y$.
+      Let $a \in \SETintersectover \SETpair{x}{y}$.
+      Then $a$ is contained in every element of $\SETpair{x}{y}$.
       Hence $a \in x$ and $a \in y$.
-      Thus $a \in x \cap y$.
+      Thus $a \in x \SETintersect y$.
     End.
 
-    Let us show that $x \cap y \subseteq \bigcap \set{x, y}$.
-      Let $a \in x \cap y$.
+    Let us show that $x \SETintersect y \SETinclude \SETintersectover \SETpair{x}{y}$.
+      Let $a \in x \SETintersect y$.
       Then $a \in x$ and $a \in y$.
-      Hence $a$ is contained in every element of $\set{x, y}$.
-      Therefore $a \in \bigcap \set{x, y}$.
+      Hence $a$ is contained in every element of $\SETpair{x}{y}$.
+      Therefore $a \in \SETintersectover \SETpair{x}{y}$.
     End.
   \end{proof}
 
   \begin{corollary}[forthel,id=FOUNDATIONS_10_7239895674257408]
     Let $x$ be a set.
-    Then $\bigcap \set{x} = x$.
+    Then $\SETintersectover \SETsingleton{x} \eq x$.
   \end{corollary}
 \end{sfragment}
 \end{smodule}

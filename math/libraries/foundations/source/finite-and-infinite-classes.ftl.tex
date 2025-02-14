@@ -9,7 +9,7 @@
 \begin{sfragment}{Finite Classes}
   \begin{definition}[forthel,id=FOUNDATIONS_14_3512046897512410]
     Let $X$ be a class and $n$ be a natural number.
-    \emph{$X$ has $n$ elements} iff $X$ is equinumerous to $\{ 1, \dots, n \}$.
+    \emph{$X$ has $n$ elements} iff $X$ is equinumerous to $\NATsegment{\NATone}{n}$.
   \end{definition}
 
   \begin{definition}[forthel,id=FOUNDATIONS_14_3694156977274880]
@@ -23,78 +23,78 @@
   \end{proposition}
   \begin{proof}[forthel]
     Assume that $X$ is finite and $Y$ is equinumerous to $X$.
-    Take a natural number $n$ and a bijection $f$ between $\{ 1, \dots, n \}$ and $X$ and a bijection $g$ between $X$ and $Y$.
-    Then $g \circ f$ is a bijection between $\{ 1, \dots, n \}$ and $Y$ (by \printref{FOUNDATIONS_08_6435206693126144}).
+    Take a natural number $n$ and a bijection $f$ between $\NATsegment{\NATone}{n}$ and $X$ and a bijection $g$ between $X$ and $Y$.
+    Then $g \FUNcomp f$ is a bijection between $\NATsegment{\NATone}{n}$ and $Y$ (by \printref{FOUNDATIONS_08_6435206693126144}).
     Indeed $X, Y$ are classes.
     Hence $Y$ is finite.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_14_5132547854597502]
     Let $X$ be a class.
-    $X$ has $0$ elements iff $X = \emptyset$.
+    $X$ has $\NATzero$ elements iff $X \eq \SETempty$.
   \end{proposition}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_14_6812054297034125]
     Let $X$ be a class.
-    $X$ has $1$ element iff $X = \set{a}$ for some object $a$.
+    $X$ has $\NATone$ element iff $X \eq \SETsingleton{a}$ for some object $a$.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $X$ has $1$ element.
-      Take a bijection $f$ between $\{ 1, \dots, 1 \}$ and $X$.
-      We have $\{ 1, \dots, 1 \} = \set{1}$.
-      Hence $X = \set{f(1)}$.
+    Case $X$ has $\NATone$ element.
+      Take a bijection $f$ between $\NATsegment{\NATone}{\NATone}$ and $X$.
+      We have $\NATsegment{\NATone}{\NATone} \eq \SETsingleton{\NATone}$.
+      Hence $X \eq \SETsingleton{f(\NATone)}$.
     End.
 
-    Case $X = \set{a}$ for some object $a$.
-      Consider an object $a$ such that $X = \set{a}$.
-      Define $f(x) = 1$ for $x \in \set{a}$.
-    Then $f$ is a bijection between $\set{a}$ and $\{ 1, \dots, 1 \}$.
+    Case $X \eq \SETsingleton{a}$ for some object $a$.
+      Consider an object $a$ such that $X \eq \SETsingleton{a}$.
+      Define $f(x) = \NATone$ for $x \in \SETsingleton{a}$.
+    Then $f$ is a bijection between $\SETsingleton{a}$ and $\NATsegment{\NATone}{\NATone}$.
     End.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_14_3468912675458910]
     Let $X$ be a class.
-    $X$ has $2$ elements iff $X = \set{a, b}$ for some distinct objects $a, b$.
+    $X$ has $\NATtwo$ elements iff $X \eq \SETpair{a}{b}$ for some distinct objects $a, b$.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $X$ has $2$ elements.
-      Take a bijection $f$ between $\{ 1, \dots, 2 \}$ and $X$.
-      We have $\{ 1, \dots, 2 \} = \set{1, 2}$.
-      Hence $X = \set{f(1), f(2)}$.
-      We have $f(1) \neq f(2)$.
+    Case $X$ has $\NATtwo$ elements.
+      Take a bijection $f$ between $\NATsegment{\NATone}{\NATtwo}$ and $X$.
+      We have $\NATsegment{\NATone}{\NATtwo} \eq \SETpair{\NATone}{\NATtwo}$.
+      Hence $X \eq \SETpair{f(\NATone)}{f(\NATtwo)}$.
+      We have $f(\NATone) \neq f(\NATtwo)$.
     End.
 
-    Case $X = \set{a, b}$ for some distinct objects $a, b$.
-      Consider distinct objects $a, b$ such that $X = \set{a, b}$.
+    Case $X \eq \SETpair{a}{b}$ for some distinct objects $a, b$.
+      Consider distinct objects $a, b$ such that $X \eq \SETpair{a}{b}$.
       Define \[f(x) =
         \begin{cases}
-          1 & : x = a \\
-          2 & x = b
+          \NATone & : x \eq a \\
+          \NATtwo & x \eq b
         \end{cases}\]
-      for $x \in \set{a, b}$.
-      Then $f$ is a bijection between $\set{a, b}$ and $\{ 1, \dots, 2 \}$.
-      Indeed $f$ is injective and surjective onto $\{ 1, \dots, 2 \}$.
+      for $x \in \SETpair{a}{b}$.
+      Then $f$ is a bijection between $\SETpair{a}{b}$ and $\NATsegment{\NATone}{\NATtwo}$.
+      Indeed $f$ is injective and surjective onto $\NATsegment{\NATone}{\NATtwo}$.
     End.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_14_0615204230800975]
     Let $n$ be a natural number and $X$ be a class that has $n$ elements and $a$ be an object such that $a \notin X$.
-    Then $X \cup \set{a}$ has $n + 1$ elements.
+    Then $X \SETunion \SETsingleton{a}$ has $n \NATplus \NATone$ elements.
   \end{proposition}
   \begin{proof}[forthel]
-    Take a bijection $f$ between $X$ and $\{ 1, \dots, n \}$.
+    Take a bijection $f$ between $X$ and $\NATsegment{\NATone}{n}$.
     Define \[g(x) =
       \begin{cases}
         f(x)  & : x \in X \\
-        n + 1 & : x = a
+        n \NATplus \NATone & : x \eq a
       \end{cases}\]
-    for $x \in X \cup \set{a}$.
+    for $x \in X \SETunion \SETsingleton{a}$.
 
-    (1) $g$ is a map from $X \cup \set{a}$ to $\{ 1, \dots, n + 1 \}$. \newline
-    Indeed we can show that $g(x) \in \{ 1, \dots, n + 1 \}$ for all $x \in X \cup \set{a}$.
-      Let $x \in X \cup \set{a}$.
-      If $x \in X$ then $g(x) \in \{ 1, \dots, n \}$.
-      If $x = a$ then $g(x) = n + 1$.
+    (1) $g$ is a map from $X \SETunion \SETsingleton{a}$ to $\NATsegment{\NATone}{n \NATplus \NATone}$. \newline
+    Indeed we can show that $g(x) \in \NATsegment{\NATone}{n \NATplus \NATone}$ for all $x \in X \SETunion \SETsingleton{a}$.
+      Let $x \in X \SETunion \SETsingleton{a}$.
+      If $x \in X$ then $g(x) \in \NATsegment{\NATone}{n}$.
+      If $x \eq a$ then $g(x) \eq n \NATplus \NATone$.
     End.
 
     (2) $g$ is injective. \newline
@@ -104,27 +104,27 @@
       
       Case $x, y \in X$. Obvious.
 
-      Case $x \in X$ and $y = a$. Obvious.
+      Case $x \in X$ and $y \eq a$. Obvious.
 
-      Case $x = a$ and $y \in X$. Obvious.
+      Case $x \eq a$ and $y \in X$. Obvious.
     Qed.
 
-    (3) $g$ is surjective onto $\{ 1, \dots, n + 1 \}$.
-    Indeed we can show that for every $k \in \{1, \dots, n + 1 \}$ there exists an $x \in \dom(g)$ such that $k = g(x)$. \newline
+    (3) $g$ is surjective onto $\NATsegment{\NATone}{n \NATplus \NATone}$.
+    Indeed we can show that for every $k \in \NATsegment{\NATone}{n \NATplus \NATone}$ there exists an $x \in \dom(g)$ such that $k \eq g(x)$. \newline
     Proof.
-      Let $k \in \{ 1, \dots, n + 1 \}$.
+      Let $k \in \NATsegment{\NATone}{n \NATplus \NATone}$.
 
-      Case $k \leq n$.
-        Then $k \in \{ 1, \dots, n \}$.
-        Hence we can take a $x \in X$ such that $k = f(x)$.
+      Case $k \NATleq n$.
+        Then $k \in \NATsegment{\NATone}{n}$.
+        Hence we can take a $x \in X$ such that $k \eq f(x)$.
       End.
 
-      Case $k = n + 1$.
-        Then $k = g(a)$.
+      Case $k \eq n \NATplus \NATone$.
+        Then $k \eq g(a)$.
       End.
     Qed.
 
-    Hence $g$ is a bijection between $X \cup \set{a}$ and $\{ 1, \dots, n + 1 \}$.
+    Hence $g$ is a bijection between $X \SETunion \SETsingleton{a}$ and $\NATsegment{\NATone}{n \NATplus \NATone}$.
   \end{proof}
 \end{sfragment}
 

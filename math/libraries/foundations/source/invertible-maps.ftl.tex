@@ -4,11 +4,12 @@
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Invertible Maps]{invertible-maps.ftl}
 \importmodule[libraries/foundations]{injections-surjections-bijections.ftl}
+\symdef{FUNinv}[args=1]{#1^{\comp{-1}}}
 
 \begin{sfragment}{Definitions}
   \begin{definition}[forthel,id=FOUNDATIONS_09_7776974319648768]
     Let $f$ be a map.
-    An \emph{inverse of $f$} is a map $g$ from $\range(f)$ to $\dom(f)$ such that $f(a) = b \iff g(b) = a$ for all $a \in \dom(f)$ and all $b \in \dom(g)$.
+    An \emph{inverse of $f$} is a map $g$ from $\FUNrange(f)$ to $\dom(f)$ such that $f(a) \eq b \iff g(b) \eq a$ for all $a \in \dom(f)$ and all $b \in \dom(g)$.
   \end{definition}
 
   \begin{definition}[forthel,id=FOUNDATIONS_09_3430350086733824]
@@ -18,23 +19,23 @@
 
   \begin{lemma}[forthel,id=FOUNDATIONS_09_5108611793551360]
     Let $f$ be a map and $g, g'$ be inverses of $f$.
-    Then $g = g'$.
+    Then $g \eq g'$.
   \end{lemma}
   \begin{proof}[forthel]
-    We have $\dom(g) = \range(f) = \dom(g')$.
+    We have $\dom(g) \eq \FUNrange(f) \eq \dom(g')$.
 
-    Let us show that $g(b) = g'(b)$ for all $b \in \range(f)$.
-      Let $b \in \range(f)$.
-      Take $a = g'(b)$.
-      Then $g(b) = a$ iff $f(a) = b$.
-      We have $f(a) = b$ iff $g'(b) = a$.
-      Thus $g(b) = g'(b)$.
+    Let us show that $g(b) \eq g'(b)$ for all $b \in \FUNrange(f)$.
+      Let $b \in \FUNrange(f)$.
+      Take $a \eq g'(b)$.
+      Then $g(b) \eq a$ iff $f(a) \eq b$.
+      We have $f(a) \eq b$ iff $g'(b) \eq a$.
+      Thus $g(b) \eq g'(b)$.
     End.
   \end{proof}
 
   \begin{definition}[forthel,id=FOUNDATIONS_09_6458627204317184]
     Let $f$ be an invertible map.
-    $\emph{f^{-1}}$ is the inverse of $f$.
+    $\emph{\FUNinv{f}}$ is the inverse of $f$.
 
     Let $f$ is \emph{involutory} stand for $f$ is the inverse of $f$.
     Let $f$ is \emph{selfinverse} stand for $f$ is the inverse of $f$.
@@ -43,274 +44,274 @@
 
 \begin{sfragment}{Basic Properties}
   \begin{proposition}[forthel,id=FOUNDATIONS_09_7840743571849216]
-    Let $A, B$ be classes and $f : A \onto B$ and $g : B \onto A$.
-    Then $g$ is the inverse of $f$ iff $g \circ f = \id_{A}$ and $f \circ g = \id_{B}$.
+    Let $A, B$ be classes and $f \FUNfromonto{A}{B}$ and $g \FUNfromonto{B}{A}$.
+    Then $g$ is the inverse of $f$ iff $g \FUNcomp f \eq \FUNid{A}$ and $f \FUNcomp g \eq \FUNid{B}$.
   \end{proposition}
   \begin{proof}[forthel]
     Case $g$ is the inverse of $f$.
       We have
-      $\dom(g \circ f)
-        = \dom(f)
-        = A
-        = \dom(\id_{A})$.
+      $\dom(g \FUNcomp f)
+        \eq \dom(f)
+        \eq A
+        \eq \dom(\FUNid{A})$.
       For all $a \in A$ we have
-      $(g \circ f)(a)
-        = g(f(a))
-        = a$.
-      Hence $g \circ f = \id_{A}$.
+      $(g \FUNcomp f)(a)
+        \eq g(f(a))
+        \eq a$.
+      Hence $g \FUNcomp f \eq \FUNid{A}$.
 
       We have
-      $\dom(f \circ g)
-        = \dom(g)
-        = B
-        = \dom(\id_{B})$.
+      $\dom(f \FUNcomp g)
+        \eq \dom(g)
+        \eq B
+        \eq \dom(\FUNid{B})$.
       For all $b \in B$ we have
-      $(f \circ g)(b)
-        = f(g(b))
-        = b$.
-      Hence $f \circ g = \id_{B}$.
+      $(f \FUNcomp g)(b)
+        \eq f(g(b))
+        \eq b$.
+      Hence $f \FUNcomp g \eq \FUNid{B}$.
     End.
 
-    Case $g \circ f = \id_{A}$ and $f \circ g = \id_{B}$.
+    Case $g \FUNcomp f \eq \FUNid{A}$ and $f \FUNcomp g \eq \FUNid{B}$.
       Then $\dom(g)
-        = B
-        = \range(f)$
-      and $\range(g)
-        = A
-        = \dom(f)$.
+        \eq B
+        \eq \FUNrange(f)$
+      and $\FUNrange(g)
+        \eq A
+        \eq \dom(f)$.
       Let $a \in \dom(f)$ and $b \in \dom(g)$.
-      If $f(a) = b$ then
+      If $f(a) \eq b$ then
       $g(b)
-        = g(f(a))
-        = (g \circ f)(a)
-        = \id_{A}(a)
-        = a$.
-      If $g(b) = a$ then
+        \eq g(f(a))
+        \eq (g \FUNcomp f)(a)
+        \eq \FUNid{A}(a)
+        \eq a$.
+      If $g(b) \eq a$ then
       $f(a)
-        = f(g(b))
-        = (f \circ g)(b)
-        = \id_{B}(b)
-        = b$.
-      Hence $f(a) = b$ iff $g(b) = a$.
+        \eq f(g(b))
+        \eq (f \FUNcomp g)(b)
+        \eq \FUNid{B}(b)
+        \eq b$.
+      Hence $f(a) \eq b$ iff $g(b) \eq a$.
     End.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_09_8414736098000896]
-    Let $A, B$ be classes and $f : A \onto B$.
+    Let $A, B$ be classes and $f \FUNfromonto{A}{B}$.
     Assume that $f$ is invertible.
-    Then $f^{-1}$ is an invertible surjective map from $B$ onto $A$ such that $(f^{-1})^{-1} = f$.
+    Then $\FUNinv{f}$ is an invertible surjective map from $B$ onto $A$ such that $\FUNinv{(\FUNinv{f})} \eq f$.
   \end{proposition}
   \begin{proof}[forthel]
-    $f^{-1}$ is a map from $B$ to $A$.
-    Indeed $\range(f) = B$ and $\dom(f) = A$.
-    $f^{-1}$ is surjective onto $A$.
-    Indeed for any $a \in A$ we have $f^{-1}(f(a)) = a$.
-    $f^{-1}$ is the inverse of $f$.
-    Thus $f \circ f^{-1} = \id_{B}$ and $f^{-1} \circ f = \id_{A}$.
-    Therefore $f$ is the inverse of $f^{-1}$.
+    $\FUNinv{f}$ is a map from $B$ to $A$.
+    Indeed $\FUNrange(f) \eq B$ and $\dom(f) \eq A$.
+    $\FUNinv{f}$ is surjective onto $A$.
+    Indeed for any $a \in A$ we have $\FUNinv{f}(f(a)) \eq a$.
+    $\FUNinv{f}$ is the inverse of $f$.
+    Thus $f \FUNcomp \FUNinv{f} \eq \FUNid{B}$ and $\FUNinv{f} \FUNcomp f \eq \FUNid{A}$.
+    Therefore $f$ is the inverse of $\FUNinv{f}$.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_09_4577560740495360]
-    Let $A, B$ be classes and $f : A \onto B$.
+    Let $A, B$ be classes and $f \FUNfromonto{A}{B}$.
     Assume that $f$ is invertible.
-    Then $f \circ f^{-1} = \id_{B}$ and $f^{-1} \circ f = \id_{A}$.
+    Then $f \FUNcomp \FUNinv{f} \eq \FUNid{B}$ and $\FUNinv{f} \FUNcomp f \eq \FUNid{A}$.
   \end{proposition}
   \begin{proof}[forthel]
-    $f^{-1}$ is a surjective map from $B$ onto $A$ .
-    $f^{-1}$ is the inverse of $f$.
+    $\FUNinv{f}$ is a surjective map from $B$ onto $A$ .
+    $\FUNinv{f}$ is the inverse of $f$.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_09_4606651604664320]
-    Let $A, B$ be classes and $f : A \onto B$ and $a \in A$.
+    Let $A, B$ be classes and $f \FUNfromonto{A}{B}$ and $a \in A$.
     Assume that $f$ is invertible.
-    Then $f^{-1}(f(a)) = a$.
+    Then $\FUNinv{f}(f(a)) \eq a$.
   \end{proposition}
   \begin{proof}[forthel]
-    We have $f^{-1}(f(a)) = (f^{-1} \circ f)(a) = \id_{A}(a) = a$.
+    We have $\FUNinv{f}(f(a)) \eq (\FUNinv{f} \FUNcomp f)(a) \eq \FUNid{A}(a) \eq a$.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_09_6093864386712935]
-    Let $A, B$ be classes and $f : A \onto B$ and $b \in B$.
+    Let $A, B$ be classes and $f \FUNfromonto{A}{B}$ and $b \in B$.
     Assume that $f$ is invertible.
-    Then $f(f^{-1}(b)) = b$.
+    Then $f(\FUNinv{f}(b)) \eq b$.
   \end{proposition}
   \begin{proof}[forthel]
     We have
-    $f(f^{-1}(b))
-      = (f \circ f^{-1})(b)
-      = \id_{B}(b)
-      = b$.
+    $f(\FUNinv{f}(b))
+      \eq (f \FUNcomp \FUNinv{f})(b)
+      \eq \FUNid{B}(b)
+      \eq b$.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_09_7619151963095040]
-    Let $A, B, C$ be classes and $f : A \onto B$ and $g : B \onto C$.
+    Let $A, B, C$ be classes and $f \FUNfromonto{A}{B}$ and $g \FUNfromonto{B}{C}$.
     Assume that $f$ and $g$ are invertible.
-    Then $g \circ f$ is invertible and $(g \circ f)^{-1} = f^{-1} \circ g^{-1}$.
+    Then $g \FUNcomp f$ is invertible and $\FUNinv{g \FUNcomp f} \eq \FUNinv{f} \FUNcomp \FUNinv{g}$.
   \end{proposition}
   \begin{proof}[forthel]
-    $f^{-1}$ is a surjective map from $B$ onto $A$.
-    $g^{-1}$ is a surjective map from $C$ onto $B$.
-    Take $h = f^{-1} \circ g^{-1}$.
+    $\FUNinv{f}$ is a surjective map from $B$ onto $A$.
+    $\FUNinv{g}$ is a surjective map from $C$ onto $B$.
+    Take $h \eq \FUNinv{f} \FUNcomp \FUNinv{g}$.
     Then $h$ is a surjective map from $C$ onto $A$ (by \printref{FOUNDATIONS_08_8542698338254848}).
-    $g \circ f$ is a map from $A$ to $C$.
+    $g \FUNcomp f$ is a map from $A$ to $C$.
 
-    Let us show that $((g \circ f) \circ h) = \id_{C}$.
-      We have $f \circ (f^{-1} \circ g^{-1}) = (f \circ f^{-1}) \circ g^{-1}$.
-      Indeed $f \circ (f^{-1} \circ g^{-1})$ and $(f \circ f^{-1}) \circ g^{-1}$ are maps of $C$.
-      $f \circ h$ is a map from $C$ to $B$.
+    Let us show that $((g \FUNcomp f) \FUNcomp h) \eq \FUNid{C}$.
+      We have $f \FUNcomp (\FUNinv{f} \FUNcomp \FUNinv{g}) \eq (f \FUNcomp \FUNinv{f}) \FUNcomp \FUNinv{g}$.
+      Indeed $f \FUNcomp (\FUNinv{f} \FUNcomp \FUNinv{g})$ and $(f \FUNcomp \FUNinv{f}) \FUNcomp \FUNinv{g}$ are maps of $C$.
+      $f \FUNcomp h$ is a map from $C$ to $B$.
       Hence
-      \[  (g \circ f) \circ h                           \]
-      \[    = g \circ (f \circ h)                       \]
-      \[    = g \circ (f \circ (f^{-1} \circ g^{-1}))   \]
-      \[    = g \circ ((f \circ f^{-1}) \circ g^{-1})   \]
-      \[    = g \circ (\id_{B} \circ g^{-1})            \]
-      \[    = g \circ g^{-1}                            \]
-      \[    = \id_{C}.                                  \]
+      \[  (g \FUNcomp f) \FUNcomp h                           \]
+      \[    \eq g \FUNcomp (f \FUNcomp h)                       \]
+      \[    \eq g \FUNcomp (f \FUNcomp (\FUNinv{f} \FUNcomp \FUNinv{g}))   \]
+      \[    \eq g \FUNcomp ((f \FUNcomp \FUNinv{f}) \FUNcomp \FUNinv{g})   \]
+      \[    \eq g \FUNcomp (\FUNid{B} \FUNcomp \FUNinv{g})            \]
+      \[    \eq g \FUNcomp \FUNinv{g}                            \]
+      \[    \eq \FUNid{C}.                                  \]
     End.
 
-    Let us show that $h \circ (g \circ f) = \id_{A}$.
-      We have $(f^{-1} \circ g^{-1}) \circ g = f^{-1} \circ (g^{-1} \circ g)$.
-      $g \circ f$ is a map from $A$ to $C$.
+    Let us show that $h \FUNcomp (g \FUNcomp f) \eq \FUNid{A}$.
+      We have $(\FUNinv{f} \FUNcomp \FUNinv{g}) \FUNcomp g \eq \FUNinv{f} \FUNcomp (\FUNinv{g} \FUNcomp g)$.
+      $g \FUNcomp f$ is a map from $A$ to $C$.
       Hence
-      \[  h \circ (g \circ f)                           \]
-      \[    = (h \circ g) \circ f                       \]
-      \[    = ((f^{-1} \circ g^{-1}) \circ g) \circ f   \]
-      \[    = (f^{-1} \circ (g^{-1} \circ g)) \circ f   \]
-      \[    = (f^{-1} \circ \id_{B}) \circ f            \]
-      \[    = f^{-1} \circ f                            \]
-      \[    = \id_{A}.                                  \]
+      \[  h \FUNcomp (g \FUNcomp f)                           \]
+      \[    \eq (h \FUNcomp g) \FUNcomp f                       \]
+      \[    \eq ((\FUNinv{f} \FUNcomp \FUNinv{g}) \FUNcomp g) \FUNcomp f   \]
+      \[    \eq (\FUNinv{f} \FUNcomp (\FUNinv{g} \FUNcomp g)) \FUNcomp f   \]
+      \[    \eq (\FUNinv{f} \FUNcomp \FUNid{B}) \FUNcomp f            \]
+      \[    \eq \FUNinv{f} \FUNcomp f                            \]
+      \[    \eq \FUNid{A}.                                  \]
     End.
 
-    Thus $h$ is the inverse of $g \circ f$.
-    Indeed $g \circ f$ is a surjective map from $A$ onto $C$ and $h$ is a surjective map from $C$ onto $A$.
+    Thus $h$ is the inverse of $g \FUNcomp f$.
+    Indeed $g \FUNcomp f$ is a surjective map from $A$ onto $C$ and $h$ is a surjective map from $C$ onto $A$.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_09_6374884963778560]
-    Let $A, B$ be classes and $f : A \onto B$ and $X \subseteq A$.
+    Let $A, B$ be classes and $f \FUNfromonto{A}{B}$ and $X \SETinclude A$.
     Assume that $f$ is invertible.
-    Then $f \restriction X$ is invertible and $(f\restriction X)^{-1} = f^{-1} \restriction (f_{*}(X))$.
+    Then $f \restriction X$ is invertible and $\FUNinv{f\restriction X} \eq \FUNinv{f} \restriction (\FUNim{f}{X})$.
   \end{proposition}
   \begin{proof}[forthel]
-    $f \restriction X$ is a surjective map from $X$ onto $f_{*}(X)$.
-    Take $g = f^{-1} \restriction (f_{*}(X))$.
-    Then $g$ is a map of $f_{*}(X)$.
+    $f \restriction X$ is a surjective map from $X$ onto $\FUNim{f}{X}$.
+    Take $g \eq \FUNinv{f} \restriction (\FUNim{f}{X})$.
+    Then $g$ is a map of $\FUNim{f}{X}$.
 
-    Let us show that $X \subseteq \range(g)$.
+    Let us show that $X \SETinclude \FUNrange(g)$.
       Let $a \in X$.
-      Then $f(a) \in f_{*}(X)$.
-      Hence $g(f(a)) = f^{-1}(f(a)) = a$.
+      Then $f(a) \in \FUNim{f}{X}$.
+      Hence $g(f(a)) \eq \FUNinv{f}(f(a)) \eq a$.
       Thus $a$ is a value of $g$.
     End.
 
-    Let us show that $\range(g) \subseteq X$.
-      Let $a \in \range(g)$.
-      Take $b \in f_{*}(X)$ such that $a = g(b)$.
-      Take $c \in X$ such that $b = f(c)$.
+    Let us show that $\FUNrange(g) \SETinclude X$.
+      Let $a \in \FUNrange(g)$.
+      Take $b \in \FUNim{f}{X}$ such that $a \eq g(b)$.
+      Take $c \in X$ such that $b \eq f(c)$.
       Then $a
-        = (f^{-1} \restriction (f_{*}(X)))(b)
-        = f^{-1}(b)
-        = f^{-1}(f(c))
-        = c$.
+        \eq (\FUNinv{f} \restriction (\FUNim{f}{X}))(b)
+        \eq \FUNinv{f}(b)
+        \eq \FUNinv{f}(f(c))
+        \eq c$.
       Hence $a \in X$.
     End.
 
-    Hence $\range(g) = X$.
+    Hence $\FUNrange(g) \eq X$.
     Thus $g$ is a surjective map onto $X$.
 
-    Let us show that $g((f \restriction X)(a)) = a$ for all $a \in X$.
+    Let us show that $g((f \restriction X)(a)) \eq a$ for all $a \in X$.
       Let $a \in X$.
       Then $g((f \restriction X)(a))
-        = g(f(a))
-        = (f^{-1} \restriction (f_{*}(X)))(f(a))
-        = f^{-1}(f(a))
-        = a$.
+        \eq g(f(a))
+        \eq (\FUNinv{f} \restriction (\FUNim{f}{X}))(f(a))
+        \eq \FUNinv{f}(f(a))
+        \eq a$.
     End.
 
-    Let us show that $((f \restriction X)(g(b))) = b$ for all $b \in f_{*}(X)$.
-      Let $b \in f_{*}(X)$.
-      Take $a \in X$ such that $b = f(a)$.
+    Let us show that $((f \restriction X)(g(b))) \eq b$ for all $b \in \FUNim{f}{X}$.
+      Let $b \in \FUNim{f}{X}$.
+      Take $a \in X$ such that $b \eq f(a)$.
       We have $g(b)
-        = g(f(a))
-        = (f^{-1} \restriction (f_{*}(X)))(f(a))
-        = f^{-1}(f(a))
-        = a$.
+        \eq g(f(a))
+        \eq (\FUNinv{f} \restriction (\FUNim{f}{X}))(f(a))
+        \eq \FUNinv{f}(f(a))
+        \eq a$.
       Hence $(f \restriction X)(g(b))
-        = (f \restriction X)(a)
-        = f(a)
-        = b$.
+        \eq (f \restriction X)(a)
+        \eq f(a)
+        \eq b$.
     End.
 
-    Thus $g \circ (f \restriction X) = \id_{X}$ and $(f \restriction X) \circ g = \id_{f_{*}(X)}$.
+    Thus $g \FUNcomp (f \restriction X) \eq \FUNid{X}$ and $(f \restriction X) \FUNcomp g \eq \FUNid{\FUNim{f}{X}}$.
     Therefore $g$ is the inverse of $f \restriction X$.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_09_7726021377785856]
-    Let $A, B$ be classes and $f : A \onto B$ and $Y \subseteq B$.
+    Let $A, B$ be classes and $f \FUNfromonto{A}{B}$ and $Y \SETinclude B$.
     Assume that $f$ is invertible.
-    Then \[ f^{*}(Y) = (f^{-1})_{*}(Y). \]
+    Then \[ \FUNpreim{f}{Y} \eq \FUNim{\FUNinv{f}}{Y}. \]
   \end{proposition}
   \begin{proof}[forthel]
-    We have $(f^{-1})_{*}(Y) = \{ f^{-1}(b) \mid b \in Y \}$ and $f^{*}(Y) = \{ a \in A \mid f(a) \in Y \}$.
+    We have $\FUNim{\FUNinv{f}}{Y} \eq \{ \FUNinv{f}(b) \mid b \in Y \}$ and $\FUNpreim{f}{Y} \eq \{ a \in A \mid f(a) \in Y \}$.
 
-    Let us show that $f^{*}(Y) \subseteq (f^{-1})_{*}(Y)$.
-      Let $a \in f^{*}(Y)$.
-      Take $b \in Y$ such that $b = f(a)$.
-      Then $f^{-1}(b) = f^{-1}(f(a)) = a$.
-      Hence $a \in (f^{-1})_{*}(Y)$.
+    Let us show that $\FUNpreim{f}{Y} \SETinclude \FUNim{\FUNinv{f}}{Y}$.
+      Let $a \in \FUNpreim{f}{Y}$.
+      Take $b \in Y$ such that $b \eq f(a)$.
+      Then $\FUNinv{f}(b) \eq \FUNinv{f}(f(a)) \eq a$.
+      Hence $a \in \FUNim{\FUNinv{f}}{Y}$.
     End.
 
-    Let us show that $f^{-1}_{*}(Y) \subseteq f^{*}(Y)$.
-      Let $a \in f^{-1}_{*}(Y)$.
-      Take $b \in Y$ such that $a = f^{-1}(b)$.
-      Then $f(a) = f(f^{-1}(b)) = b$.
-      Hence $a \in f^{*}(Y)$.
+    Let us show that $\FUNim{\FUNinv{f}}{Y} \SETinclude \FUNpreim{f}{Y}$.
+      Let $a \in \FUNim{\FUNinv{f}}{Y}$.
+      Take $b \in Y$ such that $a \eq \FUNinv{f}(b)$.
+      Then $f(a) \eq f(\FUNinv{f}(b)) \eq b$.
+      Hence $a \in \FUNpreim{f}{Y}$.
     End.
   \end{proof}
 
   \begin{corollary}[forthel,id=FOUNDATIONS_09_8607784268464128]
-    Let $A, B$ be classes and $f : A \onto B$ and $b \in B$.
+    Let $A, B$ be classes and $f \FUNfromonto{A}{B}$ and $b \in B$.
     Assume that $f$ is invertible.
-    Then \[ f^{*}(\set{b}) = \set{f^{-1}(b)}. \]
+    Then \[ \FUNpreim{f}{\SETsingleton{b}} \eq \SETsingleton{\FUNinv{f}(b)}. \]
   \end{corollary}
   \begin{proof}[forthel]
-    $f^{*}(\set{b}) = f^{-1}_{*}(\set{b})$.
-    We have $f^{-1}_{*}(\set{b}) = \{ f^{-1}(c) \mid c \in \set{b} \}$.
-    Hence $f^{-1}_{*}(\set{b}) = \set{f^{-1}(b)}$.
+    $\FUNpreim{f}{\SETsingleton{b}} \eq \FUNim{\FUNinv{f}}{\SETsingleton{b}}$.
+    We have $\FUNim{\FUNinv{f}}{\SETsingleton{b}} \eq \{ \FUNinv{f}(c) \mid c \in \SETsingleton{b} \}$.
+    Hence $\FUNim{\FUNinv{f}}{\SETsingleton{b}} \eq \SETsingleton{\FUNinv{f}(b)}$.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_09_6777575974109184]
-    Let $A, B$ be classes and $f : A \onto B$.
+    Let $A, B$ be classes and $f \FUNfromonto{A}{B}$.
     Then $f$ is invertible iff $f$ is injective.
   \end{proposition}
   \begin{proof}[forthel]
     Case $f$ is invertible.
       Let $a, b \in A$.
-      Assume $f(a) = f(b)$.
-      Then $a = f^{-1}(f(a)) = f^{-1}(f(b)) = b$.
+      Assume $f(a) \eq f(b)$.
+      Then $a \eq \FUNinv{f}(f(a)) \eq \FUNinv{f}(f(b)) \eq b$.
     End.
 
     Case $f$ is injective.
-      Define $g(b) =$ ``choose $a \in A$ such that $f(a) = b$ in $a$'' for
+      Define $g(b) =$ ``choose $a \in A$ such that $f(a) \eq b$ in $a$'' for
       $b \in B$.
       Then $g$ is a map from $B$ to $A$.
-      For all $a \in A$ we have $a = g(f(a))$.
+      For all $a \in A$ we have $a \eq g(f(a))$.
       Hence $g$ is a surjective map from $B$ onto $A$.
-      For all $a \in A$ we have $g(f(a)) = a$.
-      For all $b \in B$ we have $f(g(b)) = b$.
+      For all $a \in A$ we have $g(f(a)) \eq a$.
+      For all $b \in B$ we have $f(g(b)) \eq b$.
       Hence $g$ is the inverse of $f$.
     End.
   \end{proof}
 
   \begin{corollary}[forthel,id=FOUNDATIONS_09_5708971514003456]
-    Let $A, B$ be classes and $f : A \onto B$.
+    Let $A, B$ be classes and $f \FUNfromonto{A}{B}$.
     Assume that $f$ is invertible.
-    Then $f^{-1}$ is a bijection between $B$ and $A$.
+    Then $\FUNinv{f}$ is a bijection between $B$ and $A$.
   \end{corollary}
   \begin{proof}[forthel]
-    $f^{-1}$ is a surjective map from $B$ onto $A$.
-    $f^{-1}$ is invertible.
-    Hence $f^{-1}$ is injective.
-    Therefore $f^{-1}$ is a bijection between $B$ and $A$.
+    $\FUNinv{f}$ is a surjective map from $B$ onto $A$.
+    $\FUNinv{f}$ is invertible.
+    Hence $\FUNinv{f}$ is injective.
+    Therefore $\FUNinv{f}$ is a bijection between $B$ and $A$.
   \end{proof}
 \end{sfragment}
 
@@ -322,43 +323,43 @@
 
   \begin{proposition}[forthel,id=FOUNDATIONS_09_7944474185433088]
     Let $A$ be a class.
-    $\id_{A}$ is an involution on $A$.
+    $\FUNid{A}$ is an involution on $A$.
   \end{proposition}
   \begin{proof}[forthel]
-    We have $\id_{A} \circ \id_{A} = \id_{A}$.
-    Hence $\id_{A}$ is selfinverse.
+    We have $\FUNid{A} \FUNcomp \FUNid{A} \eq \FUNid{A}$.
+    Hence $\FUNid{A}$ is selfinverse.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_09_6897019612299264]
     Let $A$ be a class and $f, g$ be involutions on $A$.
-    Then $g \circ f$ is an involution on $A$ iff $g \circ f = f \circ g$.
+    Then $g \FUNcomp f$ is an involution on $A$ iff $g \FUNcomp f \eq f \FUNcomp g$.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $g \circ f$ is an involution on $A$.
-      Then $(g \circ f)^{-1}
-        = f^{-1} \circ g^{-1}
-        = f \circ g$
+    Case $g \FUNcomp f$ is an involution on $A$.
+      Then $\FUNinv{g \FUNcomp f}
+        \eq \FUNinv{f} \FUNcomp \FUNinv{g}
+        \eq f \FUNcomp g$
       (by \printref{FOUNDATIONS_09_7619151963095040}).
       Indeed $f$ and $g$ are invertible and surjective onto $A$.
     End.
 
-    Case $g \circ f = f \circ g$.
-      $f \circ f$, $f \circ g$ and $f \circ g$ are maps on $A$.
+    Case $g \FUNcomp f \eq f \FUNcomp g$.
+      $f \FUNcomp f$, $f \FUNcomp g$ and $f \FUNcomp g$ are maps on $A$.
       Hence
-      \[  (g \circ f) \circ (g \circ f)       \]
-      \[    = (g \circ f) \circ (f \circ g)   \]
-      \[    = ((g \circ f) \circ f) \circ g   \]
-      \[    = (g \circ (f \circ f)) \circ g   \]
-      \[    = (g \circ \id_{A}) \circ g       \]
-      \[    = g \circ g                       \]
-      \[    = \id_{A}.                        \]
-      Thus $g \circ f$ is selfinverse.
+      \[  (g \FUNcomp f) \FUNcomp (g \FUNcomp f)       \]
+      \[    \eq (g \FUNcomp f) \FUNcomp (f \FUNcomp g)   \]
+      \[    \eq ((g \FUNcomp f) \FUNcomp f) \FUNcomp g   \]
+      \[    \eq (g \FUNcomp (f \FUNcomp f)) \FUNcomp g   \]
+      \[    \eq (g \FUNcomp \FUNid{A}) \FUNcomp g       \]
+      \[    \eq g \FUNcomp g                       \]
+      \[    \eq \FUNid{A}.                        \]
+      Thus $g \FUNcomp f$ is selfinverse.
     End.
   \end{proof}
 
   \begin{corollary}[forthel,id=FOUNDATIONS_09_5958206868160512]
     Let $A$ be a class and $f$ be an involutions on $A$.
-    Then $f \circ f$ is an involution on $A$.
+    Then $f \FUNcomp f$ is an involution on $A$.
   \end{corollary}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_09_2314262743613440]

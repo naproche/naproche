@@ -6,7 +6,7 @@
 \importmodule[libraries/foundations]{proper-classes.ftl}
 \importmodule[libraries/set-theory]{finite-and-infinite-sets.ftl}
 \importmodule[libraries/set-theory]{cantor.ftl}
-\symdef{Card}{\textbf{Card}}
+\symdef{Card}{\mathbb C}
 
 \begin{definition}[forthel,id=SET_THEORY_07_4231078585827328]
   $\emph{\Card}$ is the collection of all infinite cardinals.
@@ -14,123 +14,123 @@
 
 \begin{proposition}[forthel,id=SET_THEORY_07_8189062544359424]
   Let $\alpha$ be an infinite ordinal.
-  Then $|\succ(\alpha)| = |\alpha|$.
+  Then $\SETcard{\ORDsucc(\alpha)} \eq \SETcard{\alpha}$.
 \end{proposition}
 \begin{proof}[forthel]
-  For any $\beta \in \succ(\alpha)$ we have
-  $\beta < \omega$ or $\omega \leq \beta < \alpha$ or $\beta = \alpha$.
+  For any $\beta \in \ORDsucc(\alpha)$ we have
+  $\beta \ORDless \ORDomega$ or $\ORDomega \ORDleq \beta \ORDless \alpha$ or $\beta \eq \alpha$.
   Define \[ f(\beta) =
     \begin{cases}
-      \succ(\beta)  & : \beta < \omega
+      \ORDsucc(\beta)  & : \beta \ORDless \ORDomega
       \\
-      \beta         & : \omega \leq \beta < \alpha
+      \beta         & : \ORDomega \ORDleq \beta \ORDless \alpha
       \\
-      0             & : \beta = \alpha
+      \ORDzero             & : \beta \eq \alpha
     \end{cases} \]
-  for $\beta \in \succ(\alpha)$.
+  for $\beta \in \ORDsucc(\alpha)$.
 
-  Then $f$ is a map from $\succ(\alpha)$ to $\alpha$.
+  Then $f$ is a map from $\ORDsucc(\alpha)$ to $\alpha$.
   Indeed we can show that $f(\beta) \in \alpha$ for all
-  $\beta \in \succ(\alpha)$. \newline
+  $\beta \in \ORDsucc(\alpha)$. \newline
   Proof.
-    Let $\beta \in \succ(\alpha)$.
+    Let $\beta \in \ORDsucc(\alpha)$.
 
-    Case $\beta < \omega$.
+    Case $\beta \ORDless \ORDomega$.
       Then $f(\beta)
-        = \succ(\beta)
-        < \omega
-        \leq \alpha$.
+        \eq \ORDsucc(\beta)
+        \ORDless \ORDomega
+        \ORDleq \alpha$.
     End.
 
-    Case $\omega \leq \beta < \alpha$.
+    Case $\ORDomega \ORDleq \beta \ORDless \alpha$.
       Then $f(\beta)
-        = \beta
-        < \alpha$.
+        \eq \beta
+        \ORDless \alpha$.
     End.
 
-    Case $\beta = \alpha$.
+    Case $\beta \eq \alpha$.
       Then $f(\beta)
-        = 0
-        < \alpha$.
+        \eq \ORDzero
+        \ORDless \alpha$.
     End.
   Qed.
 
   $f$ is surjective onto $\alpha$.
   Indeed we can show that for any $\beta \in \alpha$ there exists a
-  $\gamma \in \succ(\alpha)$ such that $\beta = f(\gamma)$. \newline
+  $\gamma \in \ORDsucc(\alpha)$ such that $\beta \eq f(\gamma)$. \newline
   Proof.
     Let $\beta \in \alpha$.
-    Then $\beta = 0$ or $0 < \beta < \omega$ or $\beta \geq \omega$.
+    Then $\beta \eq \ORDzero$ or $\ORDzero \ORDless \beta \ORDless \ORDomega$ or $\beta \ORDgeq \ORDomega$.
 
-    Case $\beta = 0$.
-      Then $\beta = f(\alpha)$.
+    Case $\beta \eq \ORDzero$.
+      Then $\beta \eq f(\alpha)$.
     End.
 
-    Case $0 < \beta < \omega$.
-      Take an ordinal $\beta'$ such that $\beta = \succ(\beta')$.
-      Then $\beta' < \omega$.
-      Hence $\beta = f(\beta')$.
+    Case $\ORDzero \ORDless \beta \ORDless \ORDomega$.
+      Take an ordinal $\beta'$ such that $\beta \eq \ORDsucc(\beta')$.
+      Then $\beta' \ORDless \ORDomega$.
+      Hence $\beta \eq f(\beta')$.
     End.
 
-    Case $\beta \geq \omega$.
-      Then $\beta = f(\beta)$.
+    Case $\beta \ORDgeq \ORDomega$.
+      Then $\beta \eq f(\beta)$.
     End.
   Qed.
 
   $f$ is injective.
-  Indeed we can show that for all $\beta, \gamma \in \succ(\alpha)$ if
+  Indeed we can show that for all $\beta, \gamma \in \ORDsucc(\alpha)$ if
   $\beta \neq \gamma$ then $f(\beta) \neq f(\gamma)$. \newline
   Proof.
-    Let $\beta, \gamma \in \succ(\alpha)$.
+    Let $\beta, \gamma \in \ORDsucc(\alpha)$.
     Assume $\beta \neq \gamma$.
 
-    Case $\beta < \omega$.
-      If $\gamma = \alpha$ then
+    Case $\beta \ORDless \ORDomega$.
+      If $\gamma \eq \alpha$ then
       $f(\beta)
-        = \succ(\beta)
-        \neq 0
-        = f(\gamma)$.
-      If $\omega \leq \gamma < \alpha$ then
+        \eq \ORDsucc(\beta)
+        \neq \ORDzero
+        \eq f(\gamma)$.
+      If $\ORDomega \ORDleq \gamma \ORDless \alpha$ then
       $f(\beta)
-        = \succ(\beta)
-        < \omega
-        \leq \gamma
-        = f(\gamma)$.
+        \eq \ORDsucc(\beta)
+        \ORDless \ORDomega
+        \ORDleq \gamma
+        \eq f(\gamma)$.
     End.
 
-    Case $\omega \leq \beta < \alpha$.
-      If $\gamma = \alpha$ then
+    Case $\ORDomega \ORDleq \beta \ORDless \alpha$.
+      If $\gamma \eq \alpha$ then
       $f(\beta)
-        = \beta
-        \geq \omega
-        > 0
-        = f(\gamma)$.
-      If $\gamma < \omega$ then
+        \eq \beta
+        \ORDgeq \ORDomega
+        \ORDgtr \ORDzero
+        \eq f(\gamma)$.
+      If $\gamma \ORDless \ORDomega$ then
       $f(\beta)
-        = \beta
-        \geq \omega
-        > \succ(\gamma)
-        = f(\gamma)$.
+        \eq \beta
+        \ORDgeq \ORDomega
+        \ORDgtr \ORDsucc(\gamma)
+        \eq f(\gamma)$.
     End.
 
-    Case $\beta = \alpha$.
-      If $\gamma < \omega$ then
+    Case $\beta \eq \alpha$.
+      If $\gamma \ORDless \ORDomega$ then
       $f(\beta)
-        = 0
-        \neq \succ(\gamma)
-        = f(\gamma)$.
-      If $\omega \leq \gamma < \alpha$ then
+        \eq \ORDzero
+        \neq \ORDsucc(\gamma)
+        \eq f(\gamma)$.
+      If $\ORDomega \ORDleq \gamma \ORDless \alpha$ then
       $f(\beta)
-        = 0
-        < \omega
-        \leq \gamma
-        = f(\gamma)$.
+        \eq \ORDzero
+        \ORDless \ORDomega
+        \ORDleq \gamma
+        \eq f(\gamma)$.
     End.
   Qed.
 
-  Hence $f$ is a bijection between $\succ(\alpha)$ and $\alpha$.
-  Therefore $\succ(\alpha)$ and $\alpha$ are equinumerous.
-  Consequently $|\succ(\alpha)| = |\alpha|$.
+  Hence $f$ is a bijection between $\ORDsucc(\alpha)$ and $\alpha$.
+  Therefore $\ORDsucc(\alpha)$ and $\alpha$ are equinumerous.
+  Consequently $\SETcard{\ORDsucc(\alpha)} \eq \SETcard{\alpha}$.
 \end{proof}
 
 \begin{proposition}[forthel,id=SET_THEORY_07_8700732632989696]
@@ -139,13 +139,13 @@
 \begin{proof}[forthel]
   Let $\kappa$ be an infinite cardinal.
   Suppose that $\kappa$ is not a limit ordinal.
-  $\kappa \neq 0$.
+  $\kappa \neq \ORDzero$.
   Hence $\kappa$ is a successor ordinal.
   Indeed $\kappa$ is an ordinal.
-  Thus we can take an ordinal $\alpha$ such that $\kappa = \succ(\alpha)$.
-  We have $\alpha > \kappa \geq \omega$.
-  Hence $|\succ(\alpha)| = |\alpha|$.
-  Thus $\alpha < |\kappa|$ and $\kappa$ is equinumerous to $\kappa$.
+  Thus we can take an ordinal $\alpha$ such that $\kappa \eq \ORDsucc(\alpha)$.
+  We have $\alpha \ORDgtr \kappa \ORDgeq \ORDomega$.
+  Hence $\SETcard{\ORDsucc(\alpha)} \eq \SETcard{\alpha}$.
+  Thus $\alpha \ORDless \SETcard{\kappa}$ and $\kappa$ is equinumerous to $\kappa$.
   Contradiction.
 \end{proof}
 \end{smodule}

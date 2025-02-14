@@ -7,144 +7,144 @@
 \importmodule[libraries/arithmetics]{subtraction.ftl}
 
 \begin{theorem}[forthel,title=Euclid's Division Theorem: Existence,id=euclid_existence]
-  Let $n, m$ be natural numbers such that $m \neq 0$.
+  Let $n, m$ be natural numbers such that $m \neq \NATzero$.
   Then there exist natural numbers $q, r$ such that
-  \[n = (m \cdot q) + r\]
-  and $r < m$.
+  \[n \eq (m \NATmul q) \NATplus r\]
+  and $r \NATless m$.
 \end{theorem}
 \begin{proof}[forthel]
-  (a) Define $\Phi = \{ n' \in \Nat \mid$ there exist natural numbers $q, r$ such that $r < m$ and $n' = (m \cdot q) + r \}$.
+  (a) Define $\Phi = \{ n' \in \Nat \mid$ there exist natural numbers $q, r$ such that $r \NATless m$ and $n' \eq (m \NATmul q) \NATplus r \}$.
 
-  (1) $\Phi$ contains $0$.
+  (1) $\Phi$ contains $\NATzero$.
   Proof.
-    Take $q = 0$ and $r = 0$.
-    Then $r < m$ and $0 = (m \cdot q) + r$.
-    Hence $0 \in \Phi$.
+    Take $q \eq \NATzero$ and $r \eq \NATzero$.
+    Then $r \NATless m$ and $\NATzero \eq (m \NATmul q) \NATplus r$.
+    Hence $\NATzero \in \Phi$.
   Qed.
 
-  (2) For all $n' \in \Phi$ we have $n' + 1 \in \Phi$.
+  (2) For all $n' \in \Phi$ we have $n' \NATplus \NATone \in \Phi$.
   Proof.
     Let $n' \in \Phi$.
 
-    Let us show that there exist natural numbers $q, r$ such that $r < m$ and $n' + 1 = (m \cdot q) + r$.
-      Take natural numbers $q', r'$ such that $r' < m$ and $n' = (m \cdot q') + r'$ (by a).
-      We have $r' + 1 < m$ or $r' + 1 = m$.
+    Let us show that there exist natural numbers $q, r$ such that $r \NATless m$ and $n' \NATplus \NATone \eq (m \NATmul q) \NATplus r$.
+      Take natural numbers $q', r'$ such that $r' \NATless m$ and $n' \eq (m \NATmul q') \NATplus r'$ (by a).
+      We have $r' \NATplus \NATone \NATless m$ or $r' \NATplus \NATone \eq m$.
 
-      Case $r' + 1 < m$.
-        Take $q = q' + 0$ and $r = r' + 1$. %!
-        Then $r < m$ and $n' + 1
-          = ((q' \cdot m) + r') + 1
-          = (q' \cdot m) + (r' + 1)
-          = (q \cdot m) + r$.
+      Case $r' \NATplus \NATone \NATless m$.
+        Take $q \eq q' \NATplus \NATzero$ and $r \eq r' \NATplus \NATone$. %!
+        Then $r \NATless m$ and $n' \NATplus \NATone
+          \eq ((q' \NATmul m) \NATplus r') \NATplus \NATone
+          \eq (q' \NATmul m) \NATplus (r' \NATplus \NATone)
+          \eq (q \NATmul m) \NATplus r$.
       End.
 
-      Case $r' + 1 = m$.
-        Take  $q = q' + 1$ and $r = 0$.
-        Then $r < m$ and
-        $n' + 1
-          = ((q' \cdot m) + r') + 1
-          = (q' \cdot m) + (r' + 1)
-          = (q' \cdot m) + m
-          = (q' \cdot m) + (1 \cdot m)
-          = (q' + 1) \cdot m
-          = (q \cdot m) + r$.
+      Case $r' \NATplus \NATone \eq m$.
+        Take  $q \eq q' \NATplus \NATone$ and $r \eq \NATzero$.
+        Then $r \NATless m$ and
+        $n' \NATplus \NATone
+          \eq ((q' \NATmul m) \NATplus r') \NATplus \NATone
+          \eq (q' \NATmul m) \NATplus (r' \NATplus \NATone)
+          \eq (q' \NATmul m) \NATplus m
+          \eq (q' \NATmul m) \NATplus (\NATone \NATmul m)
+          \eq (q' \NATplus \NATone) \NATmul m
+          \eq (q \NATmul m) \NATplus r$.
       End.
     End.
 
-    Hence $n' + 1 \in \Phi$.
+    Hence $n' \NATplus \NATone \in \Phi$.
   Qed.
 
   Then $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).
-  Thus there exist natural numbers $q, r$ such that $n = (m \cdot q) + r$ and $r < m$ (by a).
+  Thus there exist natural numbers $q, r$ such that $n \eq (m \NATmul q) \NATplus r$ and $r \NATless m$ (by a).
 \end{proof}
 
 \begin{theorem}[forthel,title=Euclid's Division Theorem: Uniqueness,id=euclid_uniqueness]
-  Let $n, m$ be natural numbers such that $m \neq 0$.
+  Let $n, m$ be natural numbers such that $m \neq \NATzero$.
   Let $q, r$ be natural numbers such that
-  \[n = (m \cdot q) + r\]
-  and $r < m$.
+  \[n \eq (m \NATmul q) \NATplus r\]
+  and $r \NATless m$.
   Let $q', r'$ be natural numbers such that
-  \[n = (m \cdot q') + r'\]
-  and $r' < m$.
-  Then $q = q'$ and $r = r'$.
+  \[n \eq (m \NATmul q') \NATplus r'\]
+  and $r' \NATless m$.
+  Then $q \eq q'$ and $r \eq r'$.
 \end{theorem}
 \begin{proof}[forthel]
-  We have $(m \cdot q) + r = (m \cdot q') + r'$.
+  We have $(m \NATmul q) \NATplus r \eq (m \NATmul q') \NATplus r'$.
 
-  Case $q \geq q'$ and $r \geq r'$.
-    (1) $((m \cdot q) + r) - r' = (m \cdot q) + (r - r')$ (by \printref{ARITHMETIC_05_7578468875239424}).
-    (2) $((m \cdot q') + r') - r'
-      = (m \cdot q') + (r' - r')
-      = m \cdot q'$.
-    Hence $(m \cdot q) + (r - r') = m \cdot q'$.
-    Thus $((m \cdot q) - (m \cdot q')) + (r - r') = 0$.
-    Consequently $(m \cdot q) - (m \cdot q') = 0$ and $r - r' = 0$.
-    If $(m \cdot q) - (m \cdot q') = 0$ then $q - q' = 0$.
-    Therefore $q - q' = 0$ and $r - r' = 0$.
-    Thus we have $q = q'$ and $r = r'$.
+  Case $q \NATgeq q'$ and $r \NATgeq r'$.
+    (1) $((m \NATmul q) \NATplus r) \NATsub r' \eq (m \NATmul q) \NATplus (r \NATsub r')$ (by \printref{ARITHMETIC_05_7578468875239424}).
+    (2) $((m \NATmul q') \NATplus r') \NATsub r'
+      \eq (m \NATmul q') \NATplus (r' \NATsub r')
+      \eq m \NATmul q'$.
+    Hence $(m \NATmul q) \NATplus (r \NATsub r') \eq m \NATmul q'$.
+    Thus $((m \NATmul q) \NATsub (m \NATmul q')) \NATplus (r \NATsub r') \eq \NATzero$.
+    Consequently $(m \NATmul q) \NATsub (m \NATmul q') \eq \NATzero$ and $r \NATsub r' \eq \NATzero$.
+    If $(m \NATmul q) \NATsub (m \NATmul q') \eq \NATzero$ then $q \NATsub q' \eq \NATzero$.
+    Therefore $q \NATsub q' \eq \NATzero$ and $r \NATsub r' \eq \NATzero$.
+    Thus we have $q \eq q'$ and $r \eq r'$.
   End.
 
-  Case $q \geq q'$ and $r < r'$.
-    Take $q'' = q - q'$ and $r'' = r' - r$.
-    Then $(m \cdot (q' + q'')) + r = (m \cdot q') + (r + r'')$.
-    We have $(m \cdot q') + (r + r'')
-      = (m \cdot q') + (r'' + r)
-      = ((m \cdot q') + r'') + r$.
-    Hence $(m \cdot (q' + q'')) + r = ((m \cdot q') + r'') + r$.
-    Thus $m \cdot (q' + q'') = (m \cdot q') + r''$ (by \printref{ARITHMETIC_03_3137702874578944}).
-    We have $m \cdot (q' + q'') = (m \cdot q') + (m \cdot q'')$.
-    Hence $(m \cdot q') + (m \cdot q'') = (m \cdot q') + r''$.
-    Thus $m \cdot q'' = r''$ (by \printref{ARITHMETIC_03_8445946379632640}).
-    Then we have $m \cdot q'' < m \cdot 1$.
-    Indeed $m \cdot q''
-      = r''
-      \leq r'
-      < m
-      = m \cdot 1$.
-    Therefore $q'' < 1$ (by \printref{ARITHMETIC_06_5048640368279552}).
-    Consequently $q - q' = q'' = 0$.
-    Hence $q = q'$.
-    Thus $(m \cdot q) + r = (m \cdot q) + r'$.
-    Therefore $r = r'$.
+  Case $q \NATgeq q'$ and $r \NATless r'$.
+    Take $q'' \eq q \NATsub q'$ and $r'' \eq r' \NATsub r$.
+    Then $(m \NATmul (q' \NATplus q'')) \NATplus r \eq (m \NATmul q') \NATplus (r \NATplus r'')$.
+    We have $(m \NATmul q') \NATplus (r \NATplus r'')
+      \eq (m \NATmul q') \NATplus (r'' \NATplus r)
+      \eq ((m \NATmul q') \NATplus r'') \NATplus r$.
+    Hence $(m \NATmul (q' \NATplus q'')) \NATplus r \eq ((m \NATmul q') \NATplus r'') \NATplus r$.
+    Thus $m \NATmul (q' \NATplus q'') \eq (m \NATmul q') \NATplus r''$ (by \printref{ARITHMETIC_03_3137702874578944}).
+    We have $m \NATmul (q' \NATplus q'') \eq (m \NATmul q') \NATplus (m \NATmul q'')$.
+    Hence $(m \NATmul q') \NATplus (m \NATmul q'') \eq (m \NATmul q') \NATplus r''$.
+    Thus $m \NATmul q'' \eq r''$ (by \printref{ARITHMETIC_03_8445946379632640}).
+    Then we have $m \NATmul q'' \NATless m \NATmul \NATone$.
+    Indeed $m \NATmul q''
+      \eq r''
+      \NATleq r'
+      \NATless m
+      \eq m \NATmul \NATone$.
+    Therefore $q'' \NATless \NATone$ (by \printref{ARITHMETIC_06_5048640368279552}).
+    Consequently $q \NATsub q' \eq q'' \eq \NATzero$.
+    Hence $q \eq q'$.
+    Thus $(m \NATmul q) \NATplus r \eq (m \NATmul q) \NATplus r'$.
+    Therefore $r \eq r'$.
   End.
 
-  Case $q < q'$ and $r \geq r'$.
-    Take $q'' = q' - q$ and $r'' = r - r'$.
-    Then $(m \cdot q) + (r' + r'') = (m \cdot (q + q'')) + r'$.
-    We have $(m \cdot q) + (r' + r'')
-      = (m \cdot q) + (r'' + r')
-      = ((m \cdot q) + r'') + r'$.
-    Hence $((m \cdot q) + r'') + r' = (m \cdot (q + q'')) + r'$.
-    Thus $(m \cdot q) + r'' = m \cdot (q + q'')$ (by \printref{ARITHMETIC_03_3137702874578944}).
-    We have $m \cdot (q + q'') = (m \cdot q) + (m \cdot q'')$.
-    Hence $(m \cdot q) + r'' = (m \cdot q) + (m \cdot q'')$.
-    Thus $r'' = m \cdot q''$ (by \printref{ARITHMETIC_03_8445946379632640}).
-    Then we have $m \cdot q'' < m \cdot 1$.
-    Indeed $m \cdot q''
-      = r''
-      \leq r
-      < m
-      = m \cdot 1$.
-    Therefore $q'' < 1$ (by \printref{ARITHMETIC_06_5048640368279552}).
-    Consequently $q' - q = q'' = 0$.
-    Hence $q' = q$.
-    Thus $(m \cdot q) + r = (m \cdot q) + r'$.
-    Therefore $r = r'$.
+  Case $q \NATless q'$ and $r \NATgeq r'$.
+    Take $q'' \eq q' \NATsub q$ and $r'' \eq r \NATsub r'$.
+    Then $(m \NATmul q) \NATplus (r' \NATplus r'') \eq (m \NATmul (q \NATplus q'')) \NATplus r'$.
+    We have $(m \NATmul q) \NATplus (r' \NATplus r'')
+      \eq (m \NATmul q) \NATplus (r'' \NATplus r')
+      \eq ((m \NATmul q) \NATplus r'') \NATplus r'$.
+    Hence $((m \NATmul q) \NATplus r'') \NATplus r' \eq (m \NATmul (q \NATplus q'')) \NATplus r'$.
+    Thus $(m \NATmul q) \NATplus r'' \eq m \NATmul (q \NATplus q'')$ (by \printref{ARITHMETIC_03_3137702874578944}).
+    We have $m \NATmul (q \NATplus q'') \eq (m \NATmul q) \NATplus (m \NATmul q'')$.
+    Hence $(m \NATmul q) \NATplus r'' \eq (m \NATmul q) \NATplus (m \NATmul q'')$.
+    Thus $r'' \eq m \NATmul q''$ (by \printref{ARITHMETIC_03_8445946379632640}).
+    Then we have $m \NATmul q'' \NATless m \NATmul \NATone$.
+    Indeed $m \NATmul q''
+      \eq r''
+      \NATleq r
+      \NATless m
+      \eq m \NATmul \NATone$.
+    Therefore $q'' \NATless \NATone$ (by \printref{ARITHMETIC_06_5048640368279552}).
+    Consequently $q' \NATsub q \eq q'' \eq \NATzero$.
+    Hence $q' \eq q$.
+    Thus $(m \NATmul q) \NATplus r \eq (m \NATmul q) \NATplus r'$.
+    Therefore $r \eq r'$.
   End.
 
-  Case $q < q'$ and $r < r'$.
-    (1) $((m \cdot q') + r') - r = (m \cdot q') + (r' - r)$ (by \printref{ARITHMETIC_05_7578468875239424}).
-    (2) $((m \cdot q) + r) - r
-      = (m \cdot q) + (r - r)
-      = m \cdot q$.
-    Hence $(m \cdot q') + (r' - r) = m \cdot q$.
-    Thus $((m \cdot q') - (m \cdot q)) + (r' - r)
-      = ((m \cdot q') + (r' - r)) - (m \cdot q)
-      = 0$.
-    Consequently $(m \cdot q') - (m \cdot q) = 0$ and $r' - r = 0$.
-    If $(m \cdot q') - (m \cdot q) = 0$ then $q' - q = 0$.
-    Therefore $q' - q = 0$ and $r' - r = 0$.
-    Thus we have $q' = q$ and $r' = r$.
+  Case $q \NATless q'$ and $r \NATless r'$.
+    (1) $((m \NATmul q') \NATplus r') \NATsub r \eq (m \NATmul q') \NATplus (r' \NATsub r)$ (by \printref{ARITHMETIC_05_7578468875239424}).
+    (2) $((m \NATmul q) \NATplus r) \NATsub r
+      \eq (m \NATmul q) \NATplus (r \NATsub r)
+      \eq m \NATmul q$.
+    Hence $(m \NATmul q') \NATplus (r' \NATsub r) \eq m \NATmul q$.
+    Thus $((m \NATmul q') \NATsub (m \NATmul q)) \NATplus (r' \NATsub r)
+      \eq ((m \NATmul q') \NATplus (r' \NATsub r)) \NATsub (m \NATmul q)
+      \eq \NATzero$.
+    Consequently $(m \NATmul q') \NATsub (m \NATmul q) \eq \NATzero$ and $r' \NATsub r \eq \NATzero$.
+    If $(m \NATmul q') \NATsub (m \NATmul q) \eq \NATzero$ then $q' \NATsub q \eq \NATzero$.
+    Therefore $q' \NATsub q \eq \NATzero$ and $r' \NATsub r \eq \NATzero$.
+    Thus we have $q' \eq q$ and $r' \eq r$.
   End.
 \end{proof}
 \end{smodule}

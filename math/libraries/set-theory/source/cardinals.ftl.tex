@@ -6,16 +6,17 @@
 \importmodule[libraries/set-theory]{axioms?choice.ftl}
 \importmodule[libraries/set-theory]{ordering.ftl}
 \importmodule[libraries/foundations]{equinumerosity.ftl}
+\symdef{SETcard}[args=1]{\comp|#1\comp|}
 
 \begin{definition}[forthel,id=SET_THEORY_06_8286266038681600]
   Let $x$ be a set.
   The \emph{cardinality of $x$} is the ordinal $\kappa$ such that $\kappa$ is equinumerous to $x$ and every ordinal that is equinumerous to $x$ is greater than or equal to $\kappa$.
 
-  Let $\emph{|x|}$ stand for the cardinality of $x$.
+  Let $\emph{\SETcard{x}}$ stand for the cardinality of $x$.
 \end{definition}
 
 \begin{definition}[forthel,id=SET_THEORY_06_6818986081648640]
-  A \emph{cardinal number} is an ordinal $\kappa$ such that $\kappa = |x|$ for some
+  A \emph{cardinal number} is an ordinal $\kappa$ such that $\kappa \eq \SETcard{x}$ for some
   set $x$.
 
   Let a \emph{cardinal} stand for a cardinal number.
@@ -23,42 +24,42 @@
 
 \begin{proposition}[forthel,id=SET_THEORY_06_2820082336006144]
   Let $\kappa$ be a cardinal.
-  Then $|\kappa| = \kappa$.
+  Then $\SETcard{\kappa} \eq \kappa$.
 \end{proposition}
 \begin{proof}[forthel]
   $\kappa$ is an ordinal that is equinumerous to $\kappa$.
-  Hence $|\kappa| \leq \kappa$.
-  Consider a set $x$ such that $\kappa = |x|$.
-  Then $|\kappa|$ is an ordinal that is equinumerous to $x$.
-  Hence $\kappa \leq |\kappa|$.
-  Thus $|\kappa| = \kappa$.
+  Hence $\SETcard{\kappa} \ORDleq \kappa$.
+  Consider a set $x$ such that $\kappa \eq \SETcard{x}$.
+  Then $\SETcard{\kappa}$ is an ordinal that is equinumerous to $x$.
+  Hence $\kappa \ORDleq \SETcard{\kappa}$.
+  Thus $\SETcard{\kappa} \eq \kappa$.
 \end{proof}
 
 \begin{proposition}[forthel,id=SET_THEORY_06_6920913721229312]
   Let $x, y$ be sets.
-  Then $x$ and $y$ are equinumerous iff $|x| = |y|$.
+  Then $x$ and $y$ are equinumerous iff $\SETcard{x} \eq \SETcard{y}$.
 \end{proposition}
 \begin{proof}[forthel]
   Case $x$ and $y$ are equinumerous.
     Take a bijection $f$ between $x$ and $y$.
-    Consider a bijection $g$ between $y$ and $|y|$.
-    Then $g \circ f$ is a bijection between $x$ and $|y|$ (by \printref{FOUNDATIONS_08_6435206693126144}).
-    Hence $x$ and $|y|$ are equinumerous.
-    Thus $|y| \geq |x|$.
+    Consider a bijection $g$ between $y$ and $\SETcard{y}$.
+    Then $g \FUNcomp f$ is a bijection between $x$ and $\SETcard{y}$ (by \printref{FOUNDATIONS_08_6435206693126144}).
+    Hence $x$ and $\SETcard{y}$ are equinumerous.
+    Thus $\SETcard{y} \ORDgeq \SETcard{x}$.
 
-    $f^{-1}$ is a bijection between $y$ and $x$.
-    Consider a bijection $h$ between $x$ and $|x|$.
-    Then $h \circ f^{-1}$ is a bijection between $y$ and $|x|$ (by \printref{FOUNDATIONS_08_6435206693126144}).
-    Hence $y$ and $|x|$ are equinumerous.
-    Thus $|x| \geq |y|$.
+    $\FUNinv{f}$ is a bijection between $y$ and $x$.
+    Consider a bijection $h$ between $x$ and $\SETcard{x}$.
+    Then $h \FUNcomp \FUNinv{f}$ is a bijection between $y$ and $\SETcard{x}$ (by \printref{FOUNDATIONS_08_6435206693126144}).
+    Hence $y$ and $\SETcard{x}$ are equinumerous.
+    Thus $\SETcard{x} \ORDgeq \SETcard{y}$.
 
-    Therefore $|x| = |y|$.
+    Therefore $\SETcard{x} \eq \SETcard{y}$.
   End.
 
-  Case $|x| = |y|$.
-    Consider a bijection $f$ between $x$ and $|x|$ and a bijection $g$
-    between $|y|$ and $y$.
-    Then $g \circ f$ is a bijection between $x$ and $y$.
+  Case $\SETcard{x} \eq \SETcard{y}$.
+    Consider a bijection $f$ between $x$ and $\SETcard{x}$ and a bijection $g$
+    between $\SETcard{y}$ and $y$.
+    Then $g \FUNcomp f$ is a bijection between $x$ and $y$.
     Hence $x$ and $y$ are equinumerous.
   End.
 \end{proof}

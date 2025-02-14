@@ -4,21 +4,22 @@
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Exponentiation]{exponentiation.ftl}
 \importmodule[libraries/arithmetics]{multiplication.ftl}
+\symdef{NATexp}[args=2]{{#1}^{#2}}
 
 \begin{sfragment}{Definition}
   \begin{signature}[forthel,id=ARITHMETIC_09_3663815629602816]
     Let $n, m$ be natural numbers.
-    $\emph{n^{m}}$ is a natural number.
+    $\emph{\NATexp{n}{m}}$ is a natural number.
   \end{signature}
 
   \begin{axiom}[forthel,id=ARITHMETIC_09_5368818025103360]
     Let $n$ be a natural number.
-    Then $n^{0} = 1$.
+    Then $\NATexp{n}{\NATzero} \eq \NATone$.
   \end{axiom}
 
   \begin{axiom}[forthel,id=ARITHMETIC_09_4140498660884480]
     Let $n, m$ be natural numbers.
-    Then $n^{m + 1} = n^{m} \cdot n$.
+    Then $\NATexp{n}{m \NATplus \NATone} \eq \NATexp{n}{m} \NATmul n$.
   \end{axiom}
 \end{sfragment}
 
@@ -26,202 +27,202 @@
   \begin{sfragment}{Exponentiation with $0$, $1$ and $2$}
     \begin{proposition}[forthel,id=ARITHMETIC_09_4673644676513792]
       Let $n$ be a natural number.
-      Assume $n \neq 0$.
-      Then $0^{n} = 0$.
+      Assume $n \neq \NATzero$.
+      Then $\NATexp{\NATzero}{n} \eq \NATzero$.
     \end{proposition}
     \begin{proof}[forthel]
-      Take a natural number $m$ such that $n = m + 1$.
-      Then $0^{n}
-        = 0^{m + 1}
-        = 0^{m} \cdot 0
-        = 0$.
-      Indeed $0^{m + 1} = 0^{m} \cdot 0$.
+      Take a natural number $m$ such that $n \eq m \NATplus \NATone$.
+      Then $\NATexp{\NATzero}{n}
+        \eq \NATexp{\NATzero}{m \NATplus \NATone}
+        \eq \NATexp{\NATzero}{m} \NATmul \NATzero
+        \eq \NATzero$.
+      Indeed $\NATexp{\NATzero}{m \NATplus \NATone} \eq \NATexp{\NATzero}{m} \NATmul \NATzero$.
     \end{proof}
 
     \begin{proposition}[forthel,id=ARITHMETIC_09_7376849881530368]
       Let $n$ be a natural number.
-      Then $1^{n} = 1$.
+      Then $\NATexp{\NATone}{n} \eq \NATone$.
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \{ n' \in \Nat \mid 1^{n'} = 1 \}$.
+      Define $\Phi = \{ n' \in \Nat \mid \NATexp{\NATone}{n'} \eq \NATone \}$.
 
-      (1) $\Phi$ contains $0$.
+      (1) $\Phi$ contains $\NATzero$.
 
-      (2) For all $n' \in \Phi$ we have $n' + 1 \in \Phi$. \newline
+      (2) For all $n' \in \Phi$ we have $n' \NATplus \NATone \in \Phi$. \newline
       Proof.
         Let $n' \in \Phi$.
-        Then $1^{n' + 1}
-          = 1^{n'} \cdot 1
-          = 1 \cdot 1
-          = 1$.
+        Then $\NATexp{\NATone}{n' \NATplus \NATone}
+          \eq \NATexp{\NATone}{n'} \NATmul \NATone
+          \eq \NATone \NATmul \NATone
+          \eq \NATone$.
       Qed.
 
       Hence every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
-      Thus $1^{n} = 1$.
+      Thus $\NATexp{\NATone}{n} \eq \NATone$.
     \end{proof}
 
     \begin{proposition}[forthel,id=ARITHMETIC_09_4975279749464064]
       Let $n$ be a natural number.
-      Then $n^{1} = n$.
+      Then $\NATexp{n}{\NATone} \eq n$.
     \end{proposition}
     \begin{proof}[forthel]
-      We have $n^{1}
-        = n^{0 + 1}
-        = n^{0} \cdot n
-        = 1 \cdot n
-        = n$.
+      We have $\NATexp{n}{\NATone}
+        \eq \NATexp{n}{\NATzero \NATplus \NATone}
+        \eq \NATexp{n}{\NATzero} \NATmul n
+        \eq \NATone \NATmul n
+        \eq n$.
     \end{proof}
 
     \begin{proposition}[forthel,id=ARITHMETIC_09_8513812055457792]
       Let $n$ be a natural number.
-      Then $n^{2} = n \cdot n$.
+      Then $\NATexp{n}{\NATtwo} \eq n \NATmul n$.
     \end{proposition}
     \begin{proof}[forthel]
-      We have $n^{2}
-        = n^{1 + 1}
-        = n^{1} \cdot n
-        = n \cdot n$.
+      We have $\NATexp{n}{\NATtwo}
+        \eq \NATexp{n}{\NATone \NATplus \NATone}
+        \eq \NATexp{n}{\NATone} \NATmul n
+        \eq n \NATmul n$.
     \end{proof}
   \end{sfragment}
 
   \begin{sfragment}{Sums as Exponents}
     \begin{proposition}[forthel,id=ARITHMETIC_09_8152207530655744]
       Let $n, m, k$ be natural numbers.
-      Then $k^{n + m} = k^{n} \cdot k^{m}$.
+      Then $\NATexp{k}{n \NATplus m} \eq \NATexp{k}{n} \NATmul \NATexp{k}{m}$.
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \{ m' \in \Nat \mid k^{n + m'} = k^{n} \cdot k^{m'} \}$.
+      Define $\Phi = \{ m' \in \Nat \mid \NATexp{k}{n \NATplus m'} \eq \NATexp{k}{n} \NATmul \NATexp{k}{m'} \}$.
 
-      (1) $\Phi$ contains $0$. \newline
-      Indeed $k^{n + 0}
-        = k^{n}
-        = k^{n} \cdot 1
-        = k^{n} \cdot k^{0}$.
+      (1) $\Phi$ contains $\NATzero$. \newline
+      Indeed $\NATexp{k}{n \NATplus \NATzero}
+        \eq \NATexp{k}{n}
+        \eq \NATexp{k}{n} \NATmul \NATone
+        \eq \NATexp{k}{n} \NATmul \NATexp{k}{\NATzero}$.
 
-      (2) For all $m' \in \Phi$ we have $m' + 1 \in \Phi$. \newline
+      (2) For all $m' \in \Phi$ we have $m' \NATplus \NATone \in \Phi$. \newline
       Proof.
         Let $m' \in \Phi$.
         Then
-        \[  k^{n + (m' + 1)}                  \]
-        \[    = k^{(n + m') + 1}              \]
-        \[    = k^{n + m'} \cdot k            \]
-        \[    = (k^{n} \cdot k^{m'}) \cdot k  \]
-        \[    = k^{n} \cdot (k^{m'} \cdot k)  \]
-        \[    = k^{n} \cdot k^{m' + 1}.       \]
+        \[  \NATexp{k}{n \NATplus (m' \NATplus \NATone)}                  \]
+        \[    \eq \NATexp{k}{(n \NATplus m') \NATplus \NATone}              \]
+        \[    \eq \NATexp{k}{n \NATplus m'} \NATmul k            \]
+        \[    \eq (\NATexp{k}{n} \NATmul \NATexp{k}{m'}) \NATmul k  \]
+        \[    \eq \NATexp{k}{n} \NATmul (\NATexp{k}{m'} \NATmul k)  \]
+        \[    \eq \NATexp{k}{n} \NATmul \NATexp{k}{m' \NATplus \NATone}.       \]
       Qed.
 
       Hence every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
-      Thus $k^{n + m} = k^{n} \cdot k^{m}$.
+      Thus $\NATexp{k}{n \NATplus m} \eq \NATexp{k}{n} \NATmul \NATexp{k}{m}$.
     \end{proof}
   \end{sfragment}
 
   \begin{sfragment}{Products as Exponents}
     \begin{proposition}[forthel,id=ARITHMETIC_09_7827956571308032]
       Let $n, m, k$ be natural numbers.
-      Then $n^{m \cdot k} = (n^{m})^{k}$.
+      Then $\NATexp{n}{m \NATmul k} \eq \NATexp{\NATexp{n}{m}}{k}$.
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \{ k' \in \Nat \mid n^{m \cdot k'} = (n^{m})^{k'} \}$.
+      Define $\Phi = \{ k' \in \Nat \mid \NATexp{n}{m \NATmul k'} \eq \NATexp{\NATexp{n}{m}}{k'} \}$.
 
-      (1) $\Phi$ contains $0$.
-      Indeed $(n^{m})^{0}
-        = 1
-        = n^{0}
-        = n^{m \cdot 0}$.
+      (1) $\Phi$ contains $\NATzero$.
+      Indeed $\NATexp{\NATexp{n}{m}}{\NATzero}
+        \eq \NATone
+        \eq \NATexp{n}{\NATzero}
+        \eq \NATexp{n}{m \NATmul \NATzero}$.
 
-      (2) For all $k' \in \Phi$ we have $k' + 1 \in \Phi$. \newline
+      (2) For all $k' \in \Phi$ we have $k' \NATplus \NATone \in \Phi$. \newline
       Proof.
         Let $k' \in \Phi$.
         Then
-        \[  (n^{m})^{k' + 1}                \]
-        \[    = (n^{m})^{k'} \cdot n^{m}    \]
-        \[    = n^{m \cdot k'} \cdot n^{m}  \]
-        \[    = n^{(m \cdot k') + m}        \]
-        \[    = n^{m \cdot (k' + 1)}.       \]
+        \[  \NATexp{\NATexp{n}{m}}{k' \NATplus \NATone}                \]
+        \[    \eq \NATexp{\NATexp{n}{m}}{k'} \NATmul \NATexp{n}{m}    \]
+        \[    \eq \NATexp{n}{m \NATmul k'} \NATmul \NATexp{n}{m}  \]
+        \[    \eq \NATexp{n}{(m \NATmul k') \NATplus m}        \]
+        \[    \eq \NATexp{n}{m \NATmul (k' \NATplus \NATone)}.       \]
       Qed.
 
       Therefore every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
-      Consequently $n^{m \cdot k} = (n^{m})^{k}$.
+      Consequently $\NATexp{n}{m \NATmul k} \eq \NATexp{\NATexp{n}{m}}{k}$.
     \end{proof}
   \end{sfragment}
 
   \begin{sfragment}{Products as Base}
     \begin{proposition}[forthel,id=ARITHMETIC_09_2563032276271104]
       Let $n, m, k$ be natural numbers.
-      Then $(n \cdot m)^{k} = n^{k} \cdot m^{k}$.
+      Then $\NATexp{n \NATmul m}{k} \eq \NATexp{n}{k} \NATmul \NATexp{m}{k}$.
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \{ k' \in \Nat \mid (n \cdot m)^{k'} = n^{k'} \cdot m^{k'} \}$.
+      Define $\Phi = \{ k' \in \Nat \mid \NATexp{n \NATmul m}{k'} \eq \NATexp{n}{k'} \NATmul \NATexp{m}{k'} \}$.
 
-      (1) $\Phi$ contains $0$.
-      Indeed $((n \cdot m)^{0})
-        = 1
-        = 1 \cdot 1
-        = n^{0} \cdot m^{0}$. %!
+      (1) $\Phi$ contains $\NATzero$.
+      Indeed $(\NATexp{n \NATmul m}{\NATzero})
+        \eq \NATone
+        \eq \NATone \NATmul \NATone
+        \eq \NATexp{n}{\NATzero} \NATmul \NATexp{m}{\NATzero}$. %!
 
-      (2) For all $k' \in \Phi$ we have $k' + 1 \in \Phi$. \newline
+      (2) For all $k' \in \Phi$ we have $k' \NATplus \NATone \in \Phi$. \newline
       Proof.
         Let $k' \in \Phi$.
 
-        Let us show that $(n^{k'} \cdot m^{k'}) \cdot (n \cdot m) = (n^{k'} \cdot n) \cdot (m^{k'} \cdot m)$.
-          \[  (n^{k'} \cdot m^{k'}) \cdot (n \cdot m)       \]
-          \[    = ((n^{k'} \cdot m^{k'}) \cdot n) \cdot m   \]
-          \[    = (n^{k'} \cdot (m^{k'} \cdot n)) \cdot m   \]
-          \[    = (n^{k'} \cdot (n \cdot m^{k'})) \cdot m   \]
-          \[    = ((n^{k'} \cdot n) \cdot m^{k'}) \cdot m   \]
-          \[    = (n^{k'} \cdot n) \cdot (m^{k'} \cdot m).  \]
+        Let us show that $(\NATexp{n}{k'} \NATmul \NATexp{m}{k'}) \NATmul (n \NATmul m) \eq (\NATexp{n}{k'} \NATmul n) \NATmul (\NATexp{m}{k'} \NATmul m)$.
+          \[  (\NATexp{n}{k'} \NATmul \NATexp{m}{k'}) \NATmul (n \NATmul m)       \]
+          \[    \eq ((\NATexp{n}{k'} \NATmul \NATexp{m}{k'}) \NATmul n) \NATmul m   \]
+          \[    \eq (\NATexp{n}{k'} \NATmul (\NATexp{m}{k'} \NATmul n)) \NATmul m   \]
+          \[    \eq (\NATexp{n}{k'} \NATmul (n \NATmul \NATexp{m}{k'})) \NATmul m   \]
+          \[    \eq ((\NATexp{n}{k'} \NATmul n) \NATmul \NATexp{m}{k'}) \NATmul m   \]
+          \[    \eq (\NATexp{n}{k'} \NATmul n) \NATmul (\NATexp{m}{k'} \NATmul m).  \]
         Qed.
 
         Hence
-        \[  (n \cdot m)^{k' + 1}                          \]
-        \[    = (n \cdot m)^{k'} \cdot (n \cdot m)        \]
-        \[    = (n^{k'} \cdot m^{k'}) \cdot (n \cdot m)   \]
-        \[    = (n^{k'} \cdot n) \cdot (m^{k'} \cdot m)   \]
-        \[    = n^{k' + 1} \cdot m^{k' + 1}.              \]
+        \[  \NATexp{n \NATmul m}{k' \NATplus \NATone}                          \]
+        \[    \eq \NATexp{n \NATmul m}{k'} \NATmul (n \NATmul m)        \]
+        \[    \eq (\NATexp{n}{k'} \NATmul \NATexp{m}{k'}) \NATmul (n \NATmul m)   \]
+        \[    \eq (\NATexp{n}{k'} \NATmul n) \NATmul (\NATexp{m}{k'} \NATmul m)   \]
+        \[    \eq \NATexp{n}{k' \NATplus \NATone} \NATmul \NATexp{m}{k' \NATplus \NATone}.              \]
       Qed.
 
       Therefore every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
-      Consequently $(n \cdot m)^{k} = n^{k} \cdot m^{k}$.
+      Consequently $\NATexp{n \NATmul m}{k} \eq \NATexp{n}{k} \NATmul \NATexp{m}{k}$.
     \end{proof}
   \end{sfragment}
 
   \begin{sfragment}{Zeroes of Exponentiation}
     \begin{proposition}[forthel,id=ARITHMETIC_09_3860221447372800]
       Let $n, m$ be natural numbers.
-      Then $n^{m} = 0$ iff $n = 0$ and $m \neq 0$.
+      Then $\NATexp{n}{m} \eq \NATzero$ iff $n \eq \NATzero$ and $m \neq \NATzero$.
     \end{proposition}
     \begin{proof}[forthel]
-      Case $n^{m} = 0$.
-        Define $\Phi = \{ m' \in \Nat \mid$ if $n^{m'} = 0$ then $n = 0$ and $m' \neq 0 \}$.
+      Case $\NATexp{n}{m} \eq \NATzero$.
+        Define $\Phi = \{ m' \in \Nat \mid$ if $\NATexp{n}{m'} \eq \NATzero$ then $n \eq \NATzero$ and $m' \neq \NATzero \}$.
 
-        (1) $\Phi$ contains $0$.
-        Indeed if $n^{0} = 0$ then we have a contradiction.
+        (1) $\Phi$ contains $\NATzero$.
+        Indeed if $\NATexp{n}{\NATzero} \eq \NATzero$ then we have a contradiction.
 
-        (2) For all $m' \in \Phi$ we have $m' + 1 \in \Phi$. \newline
+        (2) For all $m' \in \Phi$ we have $m' \NATplus \NATone \in \Phi$. \newline
         Proof.
           Let $m' \in \Phi$.
 
-          Let us show that if $n^{m' + 1} = 0$ then $n = 0$ and $m' + 1 \neq 0$.
-            Assume $n^{m' + 1} = 0$.
-            Then $0 = n^{m' + 1} = n^{m'} \cdot n$.
-            Hence $n^{m'} = 0$ or $n = 0$.
-            We have $m' + 1 \neq 0$ and if $n^{m'} = 0$ then $n = 0$.
-            Hence $n = 0$ and $m' + 1 \neq 0$.
+          Let us show that if $\NATexp{n}{m' \NATplus \NATone} \eq \NATzero$ then $n \eq \NATzero$ and $m' \NATplus \NATone \neq \NATzero$.
+            Assume $\NATexp{n}{m' \NATplus \NATone} \eq \NATzero$.
+            Then $\NATzero \eq \NATexp{n}{m' \NATplus \NATone} \eq \NATexp{n}{m'} \NATmul n$.
+            Hence $\NATexp{n}{m'} \eq \NATzero$ or $n \eq \NATzero$.
+            We have $m' \NATplus \NATone \neq \NATzero$ and if $\NATexp{n}{m'} \eq \NATzero$ then $n \eq \NATzero$.
+            Hence $n \eq \NATzero$ and $m' \NATplus \NATone \neq \NATzero$.
           End.
         Qed.
 
         Thus every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
         Consequently $m \in \Phi$.
-        Therefore $n = 0$ and $m \neq 0$.
+        Therefore $n \eq \NATzero$ and $m \neq \NATzero$.
       End.
 
-      Case $n = 0$ and $m \neq 0$.
-        Take a natural number $k$ such that $m = k + 1$.
-        Then $n^{m}
-          = n^{k + 1}
-          = n^{k} \cdot n
-          = 0^{k} \cdot 0
-          = 0$.
+      Case $n \eq \NATzero$ and $m \neq \NATzero$.
+        Take a natural number $k$ such that $m \eq k \NATplus \NATone$.
+        Then $\NATexp{n}{m}
+          \eq \NATexp{n}{k \NATplus \NATone}
+          \eq \NATexp{n}{k} \NATmul n
+          \eq \NATexp{\NATzero}{k} \NATmul \NATzero
+          \eq \NATzero$.
       End.
     \end{proof}
   \end{sfragment}

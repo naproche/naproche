@@ -4,166 +4,169 @@
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Modular Arithmetics]{modular-arithmetics.ftl}
 \importmodule[libraries/arithmetics]{multiplication-and-ordering.ftl}
+\symdef{NATdiv}{\,\textrm{div}\,}
+\symdef{NATmod}{\,\textrm{mod}\,}
+\symdef{NATcong}[args=3]{#1\mathrel{\comp\equiv}#2\;\comp{(\textrm{mod}}\,#3\comp)}
 
 \begin{sfragment}{Quotients and Remainders}
   \begin{definition}[forthel,id=ARITHMETIC_08_8621463798022144]
-    Let $n, m$ be natural numbers such that $m \neq 0$.
-    $\emph{n \div m}$ is the natural number $q$ such that $n = (m \cdot q) + r$ for some natural number $r$ that is less than $m$.
+    Let $n, m$ be natural numbers such that $m \neq \NATzero$.
+    $\emph{n \NATdiv m}$ is the natural number $q$ such that $n \eq (m \NATmul q) \NATplus r$ for some natural number $r$ that is less than $m$.
 
-    Let the \emph{quotient of $n$ over $m$} stand for $n \div m$.
+    Let the \emph{quotient of $n$ over $m$} stand for $n \NATdiv m$.
   \end{definition}
 
   \begin{definition}[forthel,id=ARITHMETIC_08_3560980160184320]
-    Let $n, m$ be natural numbers such that $m \neq 0$.
-    $\emph{n \mod m}$ is the natural number $r$ such that $r < m$ and there exists a natural number $q$ such that $n = (m \cdot q) + r$.
+    Let $n, m$ be natural numbers such that $m \neq \NATzero$.
+    $\emph{n \NATmod m}$ is the natural number $r$ such that $r \NATless m$ and there exists a natural number $q$ such that $n \eq (m \NATmul q) \NATplus r$.
 
-    Let the \emph{remainder of $n$ over $m$} stand for $n \mod m$.
+    Let the \emph{remainder of $n$ over $m$} stand for $n \NATmod m$.
   \end{definition}
 \end{sfragment}
 
 \begin{sfragment}{Basic Properties}
   \begin{definition}[forthel,id=ARITHMETIC_08_5448561831444480]
-    Let $n, m, k$ be natural numbers such that $k \neq 0$.
-    $\emph{n \equiv m \pmod{k}}$ iff $n \mod k = m \mod k$.
+    Let $n, m, k$ be natural numbers such that $k \neq \NATzero$.
+    $\emph{\NATcong{n}{m}{k}}$ iff $n \NATmod k \eq m \NATmod k$.
 
-    Let \emph{$n$ and $m$ are congruent modulo $k$} stand for $n \equiv m \pmod{k}$.
+    Let \emph{$n$ and $m$ are congruent modulo $k$} stand for $\NATcong{n}{m}{k}$.
   \end{definition}
 
   \begin{proposition}[forthel,id=ARITHMETIC_08_3818318544764928]
-    Let $n, k$ be natural numbers such that $k \neq 0$.
-    Then $n \equiv n \pmod{k}$.
+    Let $n, k$ be natural numbers such that $k \neq \NATzero$.
+    Then $\NATcong{n}{n}{k}$.
   \end{proposition}
   \begin{proof}[forthel]
-    We have $n \mod k = n \mod k$.
-    Hence $n \equiv n \pmod{k}$.
+    We have $n \NATmod k \eq n \NATmod k$.
+    Hence $\NATcong{n}{n}{k}$.
   \end{proof}
 
   \begin{proposition}[forthel,id=ARITHMETIC_08_2337210737098752]
-    Let $n, m, k$ be natural numbers such that $k \neq 0$.
-    If $n \equiv m \pmod{k}$ then $m \equiv n \pmod{k}$.
+    Let $n, m, k$ be natural numbers such that $k \neq \NATzero$.
+    If $\NATcong{n}{m}{k}$ then $\NATcong{m}{n}{k}$.
   \end{proposition}
   \begin{proof}[forthel]
-    Assume $n \equiv m \pmod{k}$.
-    Then $n \mod k = m \mod k$.
-    Hence $m \mod k = n \mod k$.
-    Thus $m \equiv n \pmod{k}$.
+    Assume $\NATcong{n}{m}{k}$.
+    Then $n \NATmod k \eq m \NATmod k$.
+    Hence $m \NATmod k \eq n \NATmod k$.
+    Thus $\NATcong{m}{n}{k}$.
   \end{proof}
 
   \begin{proposition}[forthel,id=ARITHMETIC_08_7464329746055168]
-    Let $n, m, l, k$ be natural numbers such that $k \neq 0$.
-    If $n \equiv m \pmod{k}$ and $m \equiv l \pmod{k}$ then $n \equiv l \pmod{k}$.
+    Let $n, m, l, k$ be natural numbers such that $k \neq \NATzero$.
+    If $\NATcong{n}{m}{k}$ and $\NATcong{m}{\NATone}{k}$ then $\NATcong{n}{\NATone}{k}$.
   \end{proposition}
   \begin{proof}[forthel]
-    Assume $n \equiv m \pmod{k}$ and $m \equiv l \pmod{k}$.
-    Then $n \mod k = m \mod k$ and $m \mod k = l \mod k$.
-    Hence $n \mod k = l \mod k$.
-    Thus $n \equiv l \pmod{k}$.
+    Assume $\NATcong{n}{m}{k}$ and $\NATcong{m}{\NATone}{k}$.
+    Then $n \NATmod k \eq m \NATmod k$ and $m \NATmod k \eq l \NATmod k$.
+    Hence $n \NATmod k \eq l \NATmod k$.
+    Thus $\NATcong{n}{\NATone}{k}$.
   \end{proof}
 
   \begin{proposition}[forthel,id=ARITHMETIC_08_2034122983735296]
-    Let $n, m, k$ be natural numbers such that $k \neq 0$.
-    Assume $n \geq m$.
-    Then $n \equiv m \pmod{k}$ iff $n = (k \cdot x) + m$ for some natural number $x$.
+    Let $n, m, k$ be natural numbers such that $k \neq \NATzero$.
+    Assume $n \NATgeq m$.
+    Then $\NATcong{n}{m}{k}$ iff $n \eq (k \NATmul x) \NATplus m$ for some natural number $x$.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $n \equiv m \pmod{k}$.
-      Then $n \mod k = m \mod k$.
-      Take a natural number $r$ such that $r < k$ and $n \mod k = r = m \mod k$.
-      Take a nonzero natural number $l$ such that $k = r + l$.
-      Consider natural numbers $q,q'$ such that $n = (q \cdot k) + r$ and $m = (q' \cdot k) + r$.
+    Case $\NATcong{n}{m}{k}$.
+      Then $n \NATmod k \eq m \NATmod k$.
+      Take a natural number $r$ such that $r \NATless k$ and $n \NATmod k \eq r \eq m \NATmod k$.
+      Take a nonzero natural number $l$ such that $k \eq r \NATplus l$.
+      Consider natural numbers $q,q'$ such that $n \eq (q \NATmul k) \NATplus r$ and $m \eq (q' \NATmul k) \NATplus r$.
 
-      Then $q \geq q'$. \newline
+      Then $q \NATgeq q'$. \newline
       Proof.
         Assume the contrary.
-        Then $q < q'$.
-        Hence $q \cdot k < q' \cdot k$.
-        Thus $(q \cdot k) + r < (q' \cdot k) + r$ (by \printref{ARITHMETIC_04_7354062662008832}).
-        Indeed $q \cdot k$ and $q' \cdot k$ are natural numbers.
-        Therefore $n < m$.
+        Then $q \NATless q'$.
+        Hence $q \NATmul k \NATless q' \NATmul k$.
+        Thus $(q \NATmul k) \NATplus r \NATless (q' \NATmul k) \NATplus r$ (by \printref{ARITHMETIC_04_7354062662008832}).
+        Indeed $q \NATmul k$ and $q' \NATmul k$ are natural numbers.
+        Therefore $n \NATless m$.
         Contradiction.
       Qed.
 
-      Take a natural number $x$ such that $q = q' + x$.
+      Take a natural number $x$ such that $q \eq q' \NATplus x$.
 
-      Let us show that $n = (k \cdot x) + m$.
+      Let us show that $n \eq (k \NATmul x) \NATplus m$.
         We have
-        \[  (k \cdot x) + m                       \]
-        \[    = (k \cdot x) + ((q' \cdot k) + r)  \]
-        \[    = ((k \cdot x) + (q' \cdot k)) + r  \]
-        \[    = ((k \cdot x) + (k \cdot q')) + r  \]
-        \[    = (k \cdot (q' + x)) + r            \]
-        \[    = (k \cdot q) + r                   \]
-        \[    = n.                                \]
+        \[  (k \NATmul x) \NATplus m                       \]
+        \[    \eq (k \NATmul x) \NATplus ((q' \NATmul k) \NATplus r)  \]
+        \[    \eq ((k \NATmul x) \NATplus (q' \NATmul k)) \NATplus r  \]
+        \[    \eq ((k \NATmul x) \NATplus (k \NATmul q')) \NATplus r  \]
+        \[    \eq (k \NATmul (q' \NATplus x)) \NATplus r            \]
+        \[    \eq (k \NATmul q) \NATplus r                   \]
+        \[    \eq n.                                \]
       End.
     End.
 
-    Case $n = (k \cdot x) + m$ for some natural number $x$.
-      Consider a natural number $x$ such that $n = (k \cdot x) + m$.
-      Take natural numbers $r, r'$ such that $n \mod k = r$ and $m \mod k = r'$.
-      Then $r, r' < k$.
-      Take natural numbers $q, q'$ such that $n = (k \cdot q) + r$ and $m = (k \cdot q') + r'$.
+    Case $n \eq (k \NATmul x) \NATplus m$ for some natural number $x$.
+      Consider a natural number $x$ such that $n \eq (k \NATmul x) \NATplus m$.
+      Take natural numbers $r, r'$ such that $n \NATmod k \eq r$ and $m \NATmod k \eq r'$.
+      Then $r, r' \NATless k$.
+      Take natural numbers $q, q'$ such that $n \eq (k \NATmul q) \NATplus r$ and $m \eq (k \NATmul q') \NATplus r'$.
       Then
-      \[  (k \cdot q) + r                         \]
-      \[    = n                                   \]
-      \[    = (k \cdot x) + m                     \]
-      \[    = (k \cdot x) + ((k \cdot q') + r')   \]
-      \[    = ((k \cdot x) + (k \cdot q')) + r'   \]
-      \[    = (k \cdot (x + q')) + r'.            \]
-      Hence $r = r'$.
-      Thus $n \mod k = m \mod k$.
-      Therefore $n \equiv m \pmod{k}$.
+      \[  (k \NATmul q) \NATplus r                         \]
+      \[    \eq n                                   \]
+      \[    \eq (k \NATmul x) \NATplus m                     \]
+      \[    \eq (k \NATmul x) \NATplus ((k \NATmul q') \NATplus r')   \]
+      \[    \eq ((k \NATmul x) \NATplus (k \NATmul q')) \NATplus r'   \]
+      \[    \eq (k \NATmul (x \NATplus q')) \NATplus r'.            \]
+      Hence $r \eq r'$.
+      Thus $n \NATmod k \eq m \NATmod k$.
+      Therefore $\NATcong{n}{m}{k}$.
     End.
   \end{proof}
 
   \begin{proposition}[forthel,id=ARITHMETIC_08_2988318228742144]
-    Let $n, m, k, k'$ be natural numbers such that $k, k' \neq 0$.
-    If $n \equiv m \pmod{k \cdot k'}$ then $n \equiv m \pmod{k}$.
+    Let $n, m, k, k'$ be natural numbers such that $k, k' \neq \NATzero$.
+    If $\NATcong{n}{m}{k \NATmul k'}$ then $\NATcong{n}{m}{k}$.
   \end{proposition}
   \begin{proof}[forthel]
-    Assume $n \equiv m \pmod{k \cdot k'}$.
+    Assume $\NATcong{n}{m}{k \NATmul k'}$.
 
-    Case $n \geq m$.
-      We can take a natural number $x$ such that $n = ((k \cdot k') \cdot x) + m$.
-      Then $n = (k \cdot (k' \cdot x)) + m$.
-      Hence $n \equiv m \pmod{k}$.
+    Case $n \NATgeq m$.
+      We can take a natural number $x$ such that $n \eq ((k \NATmul k') \NATmul x) \NATplus m$.
+      Then $n \eq (k \NATmul (k' \NATmul x)) \NATplus m$.
+      Hence $\NATcong{n}{m}{k}$.
     End.
 
-    Case $m \geq n$.
-      We have $m \equiv n \pmod{k \cdot k'}$.
-      Hence we can take a natural number $x$ such that $m = ((k \cdot k') \cdot x) + n$.
-      Then $m = (k \cdot (k' \cdot x)) + n$.
-      Thus $m \equiv n \pmod{k}$.
-      Therefore $n \equiv m \pmod{k}$.
+    Case $m \NATgeq n$.
+      We have $\NATcong{m}{n}{k \NATmul k'}$.
+      Hence we can take a natural number $x$ such that $m \eq ((k \NATmul k') \NATmul x) \NATplus n$.
+      Then $m \eq (k \NATmul (k' \NATmul x)) \NATplus n$.
+      Thus $\NATcong{m}{n}{k}$.
+      Therefore $\NATcong{n}{m}{k}$.
     End.
   \end{proof}
 
   \begin{corollary}[forthel,id=ARITHMETIC_08_5895145169879040]
-    Let $n, m, k, k'$ be natural numbers such that $k, k' \neq 0$.
-    If $n \equiv m \pmod{k \cdot k'}$ then $n \equiv m \pmod{k'}$.
+    Let $n, m, k, k'$ be natural numbers such that $k, k' \neq \NATzero$.
+    If $\NATcong{n}{m}{k \NATmul k'}$ then $\NATcong{n}{m}{k'}$.
   \end{corollary}
   \begin{proof}[forthel]
-    Assume $n \equiv m \pmod{k \cdot k'}$.
-    Then $n \equiv m \pmod{k' \cdot k}$.
-    Hence $n \equiv m \pmod{k'}$.
+    Assume $\NATcong{n}{m}{k \NATmul k'}$.
+    Then $\NATcong{n}{m}{k' \NATmul k}$.
+    Hence $\NATcong{n}{m}{k'}$.
   \end{proof}
 
   \begin{proposition}[forthel,id=ARITHMETIC_08_5984712287846400]
-    Let $n, k$ be natural numbers such that $k \neq 0$.
-    Then $n + k \equiv n \pmod{k}$.
+    Let $n, k$ be natural numbers such that $k \neq \NATzero$.
+    Then $\NATcong{n \NATplus k}{n}{k}$.
   \end{proposition}
   \begin{proof}[forthel]
-    Take $r = n \mod k$ and $r' = (n + k) \mod k$.
-    Consider a $q \in \Nat$ such that $n = (k \cdot q) + r$ and $r < k$.
-    Consider a $q' \in \Nat$ such that $n + k = (k \cdot q') + r'$ and
-    $r' < k$.
-    Then $(k \cdot q') + r'
-      = n + k
-      = ((k \cdot q) + r) + k
-      = (k + (k \cdot q)) + r
-      = (k \cdot (q + 1)) + r$.
-    Hence $r = r'$.
-    Consequently $n \mod k = (n + k) \mod k$.
-    Thus $n + k \equiv n \pmod{k}$.
+    Take $r \eq n \NATmod k$ and $r' \eq (n \NATplus k) \NATmod k$.
+    Consider a $q \in \Nat$ such that $n \eq (k \NATmul q) \NATplus r$ and $r \NATless k$.
+    Consider a $q' \in \Nat$ such that $n \NATplus k \eq (k \NATmul q') \NATplus r'$ and
+    $r' \NATless k$.
+    Then $(k \NATmul q') \NATplus r'
+      \eq n \NATplus k
+      \eq ((k \NATmul q) \NATplus r) \NATplus k
+      \eq (k \NATplus (k \NATmul q)) \NATplus r
+      \eq (k \NATmul (q \NATplus \NATone)) \NATplus r$.
+    Hence $r \eq r'$.
+    Consequently $n \NATmod k \eq (n \NATplus k) \NATmod k$.
+    Thus $\NATcong{n \NATplus k}{n}{k}$.
   \end{proof}
 \end{sfragment}
 \end{smodule}

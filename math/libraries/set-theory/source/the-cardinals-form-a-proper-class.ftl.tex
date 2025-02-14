@@ -11,17 +11,17 @@
 \end{theorem}
 \begin{proof}[forthel]
   Suppose that $\Card$ is a set.
-  Then $\bigcup \Card$ is a set.
+  Then $\SETunionover \Card$ is a set.
 
-  Let us show that $\bigcup \Card$ contains every ordinal.
+  Let us show that $\SETunionover \Card$ contains every ordinal.
     Let $\alpha$ be an ordinal.
-    Choose an infinite ordinal $\beta$ such that $\beta \geq \alpha$.
+    Choose an infinite ordinal $\beta$ such that $\beta \ORDgeq \alpha$.
     Choose a cardinal $\kappa$ greater than $\beta$.
     Then $\alpha \in \kappa \in \Card$.
-    Hence $\alpha \in \bigcup \Card$.
+    Hence $\alpha \in \SETunionover \Card$.
   End.
 
-  Therefore $\Ord \subseteq \bigcup \Card$.
+  Therefore $\Ord \SETinclude \SETunionover \Card$.
   Thus $\Ord$ is a set.
   Contradiction.
 \end{proof}

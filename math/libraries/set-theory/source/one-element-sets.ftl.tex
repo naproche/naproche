@@ -8,15 +8,15 @@
 
 \begin{proposition}[forthel,id=SET_THEORY_07_836893598023680]
   Let $a$ be an object.
-  Then $|\set{a}| = 1$.
+  Then $\SETcard{\SETsingleton{a}} \eq \ORDone$.
 \end{proposition}
 \begin{proof}[forthel]
-  Define $f(x) = 0$ for $x \in \set{a}$.
-  Then $f$ is a map from $\set{a}$ to $1$.
-  $f$ is injective and surjective onto $1$.
-  Hence $f$ is a bijection between $\set{a}$ and $1$.
-  Consequently $\set{a}$ and $1$ are equinumerous.
-  Thus $|\set{a}| = |1| = 1$.
+  Define $f(x) = \ORDzero$ for $x \in \SETsingleton{a}$.
+  Then $f$ is a map from $\SETsingleton{a}$ to $\ORDone$.
+  $f$ is injective and surjective onto $\ORDone$.
+  Hence $f$ is a bijection between $\SETsingleton{a}$ and $\ORDone$.
+  Consequently $\SETsingleton{a}$ and $\ORDone$ are equinumerous.
+  Thus $\SETcard{\SETsingleton{a}} \eq \SETcard{\ORDone} \eq \ORDone$.
 \end{proof}
 \end{smodule}
 \end{document}

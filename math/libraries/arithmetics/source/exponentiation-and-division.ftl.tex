@@ -8,17 +8,17 @@
 \importmodule[libraries/arithmetics]{subtraction.ftl}
 
 \begin{proposition}[forthel,id=ARITHMETIC_14_2345102698451257]
-  Let $n, m, k$ be natural numbers such that $k$ is nonzero and $n \geq m$.
-  Then \[\frac{k^{n}}{k^{m}} = k^{n - m}.\]
+  Let $n, m, k$ be natural numbers such that $k$ is nonzero and $n \NATgeq m$.
+  Then \[\NATfrac{\NATexp{k}{n}}{\NATexp{k}{m}} \eq \NATexp{k}{n \NATsub m}.\]
 \end{proposition}
 \begin{proof}[forthel]
-  We have $k^{n} = k^{(n - m) + m} = k^{n - m} \cdot k^{m}$.
+  We have $\NATexp{k}{n} \eq \NATexp{k}{(n \NATsub m) \NATplus m} \eq \NATexp{k}{n \NATsub m} \NATmul \NATexp{k}{m}$.
   Hence
-  \[  \frac{k^{n}}{k^{m}}
-      = \frac{k^{n - m} \cdot k^{m}}{k^{m}}
-      = \frac{k^{n - m} \cdot k^{m}}{1 \cdot k^{m}}
-      = \frac{k^{n - m}}{1}
-      = k^{n - m}. \]
+  \[  \NATfrac{\NATexp{k}{n}}{\NATexp{k}{m}}
+      \eq \NATfrac{\NATexp{k}{n \NATsub m} \NATmul \NATexp{k}{m}}{\NATexp{k}{m}}
+      \eq \NATfrac{\NATexp{k}{n \NATsub m} \NATmul \NATexp{k}{m}}{\NATone \NATmul \NATexp{k}{m}}
+      \eq \NATfrac{\NATexp{k}{n \NATsub m}}{\NATone}
+      \eq \NATexp{k}{n \NATsub m}. \]
 \end{proof}
 \end{smodule}
 \end{document}

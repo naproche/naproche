@@ -13,9 +13,9 @@
 \begin{proof}[forthel]
   Assume the contrary.
   Consider a system of sets $S$ that is closed under powersets and closed under unions.
-  We have $S \subseteq S$.
-  Hence $\bigcup S \in S$.
-  Thus $\pow(\bigcup S) \in S$.
+  We have $S \SETinclude S$.
+  Hence $\SETunionover S \in S$.
+  Thus $\SETpow(\SETunionover S) \in S$.
   Contradiction.
 \end{proof}
 \end{smodule}

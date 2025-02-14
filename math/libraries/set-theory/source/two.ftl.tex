@@ -4,13 +4,14 @@
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=The number $2$]{two.ftl}
 \importmodule[libraries/set-theory]{one.ftl}
+\symdef{ORDtwo}{2}
 
 \begin{definition}[forthel,id=SET_THEORY_03_5809204518453248]
-  $\emph{2} = \succ(1)$.
+  $\emph{\ORDtwo} = \ORDsucc(\ORDone)$.
 \end{definition}
 
 \begin{proposition}[forthel,id=SET_THEORY_03_930896899211264]
-  $2 = \set{0,1}$.
+  $\ORDtwo \eq \SETpair{\ORDzero}{\ORDone}$.
 \end{proposition}
 \end{smodule}
 \end{document}

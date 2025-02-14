@@ -7,53 +7,53 @@
 \importmodule[libraries/arithmetics]{even-and-odd-numbers.ftl}
 
 \begin{proposition}[forthel,id=ARITHMETIC_15_1023659658745214]
-  Let $n, m$ be natural numbers such that $m > 0$.
+  Let $n, m$ be natural numbers such that $m \NATgtr \NATzero$.
   Assume that $n$ is even.
-  Then $n^{m}$ is even.
+  Then $\NATexp{n}{m}$ is even.
 \end{proposition}
 \begin{proof}[forthel]
-  Take a natural number $k$ such that $n = 2 \cdot k$.
-  Consider a natural number $m'$ such that $m = m' + 1$.
-  Then $n^{m}
-    = (2 \cdot k)^{m}
-    = (2^{m} \cdot (k^{m}))
-    = (2^{m' + 1} \cdot (k^{m}))
-    = (2^{m'} \cdot 2) \cdot (k^{m})
-    = (2 \cdot 2^{m'}) \cdot (k^{m})
-    = 2 \cdot (2^{m'} \cdot (k^{m}))$.
-  Hence $n^{m}$ is even.
+  Take a natural number $k$ such that $n \eq \NATtwo \NATmul k$.
+  Consider a natural number $m'$ such that $m \eq m' \NATplus \NATone$.
+  Then $\NATexp{n}{m}
+    \eq \NATexp{\NATtwo \NATmul k}{m}
+    \eq (\NATexp{\NATtwo}{m} \NATmul (\NATexp{k}{m}))
+    \eq (\NATexp{\NATtwo}{m' \NATplus \NATone} \NATmul (\NATexp{k}{m}))
+    \eq (\NATexp{\NATtwo}{m'} \NATmul \NATtwo) \NATmul (\NATexp{k}{m})
+    \eq (\NATtwo \NATmul \NATexp{\NATtwo}{m'}) \NATmul (\NATexp{k}{m})
+    \eq \NATtwo \NATmul (\NATexp{\NATtwo}{m'} \NATmul (\NATexp{k}{m}))$.
+  Hence $\NATexp{n}{m}$ is even.
 \end{proof}
 
 \begin{proposition}[forthel,id=ARITHMETIC_15_0021200236556985]
   Let $n, m$ be natural numbers.
   Assume that $n$ is odd.
-  Then $n^{m}$ is odd.
+  Then $\NATexp{n}{m}$ is odd.
 \end{proposition}
 \begin{proof}[forthel]
-  Define $\Phi = \{ m' \in \Nat \mid n^{m'}$ is odd $\}$.
+  Define $\Phi = \{ m' \in \Nat \mid \NATexp{n}{m'}$ is odd $\}$.
 
-  (1) $\Phi$ contains $0$.
-  Indeed $n^{0} = 1$ and $1$ is odd.
+  (1) $\Phi$ contains $\NATzero$.
+  Indeed $\NATexp{n}{\NATzero} \eq \NATone$ and $\NATone$ is odd.
 
-  (2) For all $m' \in \Phi$ we have $m' + 1 \in \Phi$. \newline
+  (2) For all $m' \in \Phi$ we have $m' \NATplus \NATone \in \Phi$. \newline
   Proof.
     Let $m' \in \Phi$.
-    We have $n^{m' + 1} = n^{m'} \cdot n$.
-    $n^{m'}$ is odd.
-    Hence we can take a natural number $k$ such that $n^{m'} = (2 \cdot k) + 1$.
-    Then $n^{m' + 1}
-      = ((2 \cdot k) + 1) \cdot n
-      = ((2 \cdot k) \cdot n) + (1 \cdot n)
-      = ((2 \cdot k) \cdot n) + n
-      = (2 \cdot (k \cdot n)) + n$.
-    $2 \cdot (k \cdot n)$ is even and $n$ is odd.
-    Thus $(2 \cdot (k \cdot n)) + n$ is odd.
-    Therefore $n^{m' + 1}$ is odd.
-    Consequently $m' + 1 \in \Phi$.
+    We have $\NATexp{n}{m' \NATplus \NATone} \eq \NATexp{n}{m'} \NATmul n$.
+    $\NATexp{n}{m'}$ is odd.
+    Hence we can take a natural number $k$ such that $\NATexp{n}{m'} \eq (\NATtwo \NATmul k) \NATplus \NATone$.
+    Then $\NATexp{n}{m' \NATplus \NATone}
+      \eq ((\NATtwo \NATmul k) \NATplus \NATone) \NATmul n
+      \eq ((\NATtwo \NATmul k) \NATmul n) \NATplus (\NATone \NATmul n)
+      \eq ((\NATtwo \NATmul k) \NATmul n) \NATplus n
+      \eq (\NATtwo \NATmul (k \NATmul n)) \NATplus n$.
+    $\NATtwo \NATmul (k \NATmul n)$ is even and $n$ is odd.
+    Thus $(\NATtwo \NATmul (k \NATmul n)) \NATplus n$ is odd.
+    Therefore $\NATexp{n}{m' \NATplus \NATone}$ is odd.
+    Consequently $m' \NATplus \NATone \in \Phi$.
   Qed.
 
   Hence $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).
-  Thus $n^{m}$ is odd.
+  Thus $\NATexp{n}{m}$ is odd.
 \end{proof}
 \end{smodule}
 \end{document}

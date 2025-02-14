@@ -7,22 +7,22 @@
 \importmodule[libraries/arithmetics]{subtraction.ftl}
 
 \begin{proposition}[forthel,id=ARITHMETIC_06_5458841930039296]
-  Let $n, m, k$ be natural numbers such that $n \geq m$.
-  Then $(n - m) \cdot k = (n \cdot k) - (m \cdot k)$.
+  Let $n, m, k$ be natural numbers such that $n \NATgeq m$.
+  Then $(n \NATsub m) \NATmul k \eq (n \NATmul k) \NATsub (m \NATmul k)$.
 \end{proposition}
 \begin{proof}[forthel]
   We have
-  \[  ((n - m) \cdot k) + (m \cdot k)                 \]
-  \[    = ((n - m) + m) \cdot k                       \]
-  \[    = n \cdot k                                   \]
-  \[    = ((n \cdot k) - (m \cdot k)) + (m \cdot k).  \]
+  \[  ((n \NATsub m) \NATmul k) \NATplus (m \NATmul k)                 \]
+  \[    \eq ((n \NATsub m) \NATplus m) \NATmul k                       \]
+  \[    \eq n \NATmul k                                   \]
+  \[    \eq ((n \NATmul k) \NATsub (m \NATmul k)) \NATplus (m \NATmul k).  \]
 
-  Hence $(n - m) \cdot k = (n \cdot k) - (m \cdot k)$.
+  Hence $(n \NATsub m) \NATmul k \eq (n \NATmul k) \NATsub (m \NATmul k)$.
 \end{proof}
 
 \begin{corollary}[forthel,id=ARITHMETIC_06_8461123277815808]
-  Let $n, m, k$ be natural numbers such that $n \geq m$.
-  Then $k \cdot (n - m) = (k \cdot n) - (k \cdot m)$.
+  Let $n, m, k$ be natural numbers such that $n \NATgeq m$.
+  Then $k \NATmul (n \NATsub m) \eq (k \NATmul n) \NATsub (k \NATmul m)$.
 \end{corollary}
 \end{smodule}
 \end{document}

@@ -35,9 +35,9 @@
 \begin{theorem}[forthel,id=SET_THEORY_02_7892040431960064]
   Let $\Phi$ be a class.
   
-  (Initial case) Assume that $\Phi$ contains $0$.
+  (Initial case) Assume that $\Phi$ contains $\ORDzero$.
   
-  (Successor step) Assume that for all ordinals $\alpha$ if $\alpha \in \Phi$ then $\succ(\alpha) \in \Phi$.
+  (Successor step) Assume that for all ordinals $\alpha$ if $\alpha \in \Phi$ then $\ORDsucc(\alpha) \in \Phi$.
   
   (Limit step) Assume that for all limit ordinals $\lambda$ if every $\alpha \in \lambda$ is contained in $\Phi$ then $\lambda \in \Phi$.
   
@@ -47,14 +47,14 @@
   Let us show that for all ordinals $\alpha$ if $\Phi$ contains all ordinals
   less than $\alpha$ then $\Phi$ contains $\alpha$.
     Let $\alpha$ be an ordinal.
-    Then $\alpha = 0$ or $\alpha$ is a successor ordinal or $\alpha$ is a
+    Then $\alpha \eq \ORDzero$ or $\alpha$ is a successor ordinal or $\alpha$ is a
     limit ordinal.
     Assume that $\Phi$ contains all $\beta \in \alpha$.
 
-    Case $\alpha = 0$. Trivial.
+    Case $\alpha \eq \ORDzero$. Trivial.
 
     Case $\alpha$ is a successor ordinal.
-      Take an ordinal $\beta$ such that $\alpha = \succ(\beta)$.
+      Take an ordinal $\beta$ such that $\alpha \eq \ORDsucc(\beta)$.
       Then $\beta \in \Phi$.
       Hence $\alpha \in \Phi$ (by successor step).
     End.

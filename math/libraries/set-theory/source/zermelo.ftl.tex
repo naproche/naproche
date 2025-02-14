@@ -13,77 +13,77 @@
 \end{theorem}
 \begin{proof}[forthel]
   Let $x$ be a set.
-  Consider a choice map $g$ for $\pow(x) \setminus \set{\emptyset}$.
-  Take $A = x \cup \set{x}$.
-  Every $F \in A^{< \infty}$ is a map from some ordinal to $A$.
-  For any $F \in A^{< \infty}$ if $x \setminus \range(F) \neq \emptyset$ then $x \setminus \range(F) \in \dom(g)$.
-  Indeed $x \setminus \range(F)$ is a subset of $x$ for any $F \in A^{< \infty}$.
+  Consider a choice map $g$ for $\SETpow(x) \SETdiff \SETsingleton{\SETempty}$.
+  Take $A \eq x \SETunion \SETsingleton{x}$.
+  Every $F \in \ORDfunspace{A}$ is a map from some ordinal to $A$.
+  For any $F \in \ORDfunspace{A}$ if $x \SETdiff \FUNrange(F) \neq \SETempty$ then $x \SETdiff \FUNrange(F) \in \dom(g)$.
+  Indeed $x \SETdiff \FUNrange(F)$ is a subset of $x$ for any $F \in \ORDfunspace{A}$.
   Define \[ G(F) =
     \begin{cases}
-      g(x \setminus \range(F))
-      & : x \setminus \range(F) \neq \emptyset
+      g(x \SETdiff \FUNrange(F))
+      & : x \SETdiff \FUNrange(F) \neq \SETempty
       \\
       x
-      & : x \setminus \range(F) = \emptyset
+      & : x \SETdiff \FUNrange(F) \eq \SETempty
     \end{cases} \]
-  for $F \in A^{< \infty}$.
-  We can show that for any $F \in A^{< \infty}$ if $x \setminus \range(F) \neq \emptyset$ then $G(F) \in x \setminus \range(F)$.
-    Let $F \in A^{< \infty}$.
-    Assume $x \setminus \range(F) \neq \emptyset$.  
-    Then $G(F) \in x \setminus \range(F)$.
+  for $F \in \ORDfunspace{A}$.
+  We can show that for any $F \in \ORDfunspace{A}$ if $x \SETdiff \FUNrange(F) \neq \SETempty$ then $G(F) \in x \SETdiff \FUNrange(F)$.
+    Let $F \in \ORDfunspace{A}$.
+    Assume $x \SETdiff \FUNrange(F) \neq \SETempty$.  
+    Then $G(F) \in x \SETdiff \FUNrange(F)$.
   End.
-  $G$ is a map from $A^{< \infty}$ to $A$.
-  Indeed we can show that for any $F \in A^{< \infty}$ we have $G(F) \in A$.
-    Let $F \in A^{< \infty}$.
-    If $x \setminus \range(F) \neq \emptyset$ then $G(F) \in x \setminus \range(F)$.
-    If $x \setminus \range(F) = \emptyset$ then $G(F) = x$.
+  $G$ is a map from $\ORDfunspace{A}$ to $A$.
+  Indeed we can show that for any $F \in \ORDfunspace{A}$ we have $G(F) \in A$.
+    Let $F \in \ORDfunspace{A}$.
+    If $x \SETdiff \FUNrange(F) \neq \SETempty$ then $G(F) \in x \SETdiff \FUNrange(F)$.
+    If $x \SETdiff \FUNrange(F) \eq \SETempty$ then $G(F) \eq x$.
     Hence $G(F) \in A$.
   End.
   Hence we can take a map $F$ from $\Ord$ to $A$ that is recursive regarding $G$.
-  For any ordinal $\alpha$ we have $F \restriction \alpha \in A^{< \infty}$.
+  For any ordinal $\alpha$ we have $F \FUNrest \alpha \in \ORDfunspace{A}$.
 
   For any $\alpha \in \Ord$ we have
-  \[ x \setminus F[\alpha] \neq \emptyset \implies F(\alpha) \in x \setminus F[\alpha] \]
+  \[ x \SETdiff F[\alpha] \neq \SETempty \implies F(\alpha) \in x \SETdiff F[\alpha] \]
   and
-  \[ x \setminus F[\alpha] = \emptyset \implies F(\alpha) = x. \]
+  \[ x \SETdiff F[\alpha] \eq \SETempty \implies F(\alpha) \eq x. \]
   Proof.
     Let $\alpha \in \Ord$.
-    We have $F[\alpha] = \{ F(\beta) \mid \beta \in \alpha \}$.
-    Hence $F[\alpha] = \{ G(F \restriction \beta) \mid \beta \in \alpha \}$.
-    We have $\range(F \restriction \alpha) = \{ F(\beta) \mid \beta \in \alpha \}$.
-    Thus $\range(F \restriction \alpha) = F[\alpha]$.
+    We have $\FUNim{F}{\alpha} \eq \{ F(\beta) \mid \beta \in \alpha \}$.
+    Hence $\FUNim{F}{\alpha} \eq \{ G(F \FUNrest \beta) \mid \beta \in \alpha \}$.
+    We have $\FUNrange(F \FUNrest \alpha) \eq \{ F(\beta) \mid \beta \in \alpha \}$.
+    Thus $\FUNrange(F \FUNrest \alpha) \eq \FUNim{F}{\alpha}$.
 
-    Case $x \setminus F[\alpha] \neq \emptyset$.
-      Then $x \setminus \range(F \restriction \alpha) \neq \emptyset$.
+    Case $x \SETdiff \FUNim{F}{\alpha} \neq \SETempty$.
+      Then $x \SETdiff \FUNrange(F \FUNrest \alpha) \neq \SETempty$.
       Hence $F(\alpha)
-        = G(F \restriction \alpha)
-        \in x \setminus \range(F \restriction \alpha)
-        = x \setminus F[\alpha]$.
+        \eq G(F \FUNrest \alpha)
+        \in x \SETdiff \FUNrange(F \FUNrest \alpha)
+        \eq x \SETdiff F[\alpha]$.
     End.
 
-    Case $x \setminus F[\alpha] \neq \emptyset$.
-      Then $x \setminus \range(F \restriction \alpha) = \emptyset$.
+    Case $x \SETdiff \FUNim{F}{\alpha} \neq \SETempty$.
+      Then $x \SETdiff \FUNrange(F \FUNrest \alpha) \eq \SETempty$.
       Hence $F(\alpha)
-        = G(F \restriction \alpha)
-        = x$.
+        \eq G(F \FUNrest \alpha)
+        \eq x$.
     End.
   Qed.
 
-  (1) For any ordinals $\alpha, \beta$ such that $\alpha < \beta$ and $F(\beta) \neq x$ we have $F(\alpha), F(\beta) \in x$ and $F(\alpha) \neq F(\beta)$. \newline
+  (1) For any ordinals $\alpha, \beta$ such that $\alpha \ORDless \beta$ and $F(\beta) \neq x$ we have $F(\alpha), F(\beta) \in x$ and $F(\alpha) \neq F(\beta)$. \newline
   Proof.
     Let $\alpha, \beta \in \Ord$.
-    Assume $\alpha < \beta$ and $F(\beta) \neq x$.
-    Then $x \setminus F[\beta] \neq \emptyset$.
-    (a) Hence $F(\beta) \in x \setminus F[\beta]$.
-    We have $F[\alpha] \subseteq F[\beta]$.
-    Thus $x \setminus F[\alpha] \neq \emptyset$.
-    (b) Therefore $F(\alpha) \in x \setminus F[\alpha]$.
+    Assume $\alpha \ORDless \beta$ and $F(\beta) \neq x$.
+    Then $x \SETdiff \FUNim{F}{\beta} \neq \SETempty$.
+    (a) Hence $F(\beta) \in x \SETdiff \FUNim{F}{\beta}$.
+    We have $\FUNim{F}{\alpha} \SETinclude \FUNim{F}{\beta}$.
+    Thus $x \SETdiff \FUNim{F}{\alpha} \neq \SETempty$.
+    (b) Therefore $F(\alpha) \in x \SETdiff \FUNim{F}{\alpha}$.
     Consequently $F(\alpha), F(\beta) \in x$ (by a, b).
-    We have $F(\alpha) \in F[\beta]$ and $F(\beta) \notin F[\beta]$.
+    We have $F(\alpha) \in \FUNim{F}{\beta}$ and $F(\beta) \notin \FUNim{F}{\beta}$.
     Thus $F(\alpha) \neq F(\beta)$.
   Qed.
 
-  (2) There exists an ordinal $\alpha$ such that $F(\alpha) = x$. \newline
+  (2) There exists an ordinal $\alpha$ such that $F(\alpha) \eq x$. \newline
   Proof.
     Assume the contrary.
     Then $F$ is a map from $\Ord$ to $x$.
@@ -91,7 +91,7 @@
     Let us show that $F$ is injective.
       Let $\alpha, \beta \in \Ord$.
       Assume $\alpha \neq \beta$.
-      Then $\alpha < \beta$ or $\beta < \alpha$.
+      Then $\alpha \ORDless \beta$ or $\beta \ORDless \alpha$.
       Hence $F(\alpha) \neq F(\beta)$ (by 1).
       Indeed $F(\alpha), F(\beta) \neq x$.
     End.
@@ -100,23 +100,23 @@
     Contradiction.
   Qed.
 
-  Define $\Phi = \{ \alpha \in \Ord \mid F(\alpha) = x \}$.
+  Define $\Phi = \{ \alpha \in \Ord \mid F(\alpha) \eq x \}$.
   $\Phi$ is nonempty.
-  Let us show that we can take an $\alpha \in \Phi$ such that $\alpha \leq \beta$ for all $\beta \in \Phi$.
-    Take an $\alpha \in \Phi$ such that for no $\beta \in \Phi$ we have $\beta < \alpha$ (by \printref{FOUNDATIONS_10_9532145874510315}).
-    Then $\alpha \leq \beta$ for all $\beta \in \Phi$.
+  Let us show that we can take an $\alpha \in \Phi$ such that $\alpha \ORDleq \beta$ for all $\beta \in \Phi$.
+    Take an $\alpha \in \Phi$ such that for no $\beta \in \Phi$ we have $\beta \ORDless \alpha$ (by \printref{FOUNDATIONS_10_9532145874510315}).
+    Then $\alpha \ORDleq \beta$ for all $\beta \in \Phi$.
   End.
-  Take $f = F \restriction \alpha$.
+  Take $f \eq F \FUNrest \alpha$.
   Then $f$ is a map from $\alpha$ to $x$.
-  Indeed for no $\beta \in \alpha$ we have $F(\beta) = x$.
+  Indeed for no $\beta \in \alpha$ we have $F(\beta) \eq x$.
 
   (3) $f$ is surjective onto $x$. \newline
   Proof.
-    $x \setminus F[\alpha] = \emptyset$.
-    Hence $\range(f)
-      = f[\alpha]
-      = F[\alpha]
-      = x$.
+    $x \SETdiff \FUNim{F}{\alpha} \eq \SETempty$.
+    Hence $\FUNrange(f)
+      \eq \FUNim{f}{\alpha}
+      \eq \FUNim{F}{\alpha}
+      \eq x$.
   Qed.
 
   (4) $f$ is injective. \newline
@@ -125,7 +125,7 @@
     Assume $\beta \neq \gamma$.
     We have $f(\beta), f(\gamma) \neq x$.
     Hence $f(\beta) \neq f(\gamma)$ (by 1).
-    Indeed $\beta < \gamma$ or $\gamma < \beta$.
+    Indeed $\beta \ORDless \gamma$ or $\gamma \ORDless \beta$.
   Qed.
 
   Therefore $f$ is a bijection between $\alpha$ and $x$.

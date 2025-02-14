@@ -4,41 +4,42 @@
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Factorial]{factorial.ftl}
 \importmodule[libraries/arithmetics]{multiplication.ftl}
+\symdef{NATfac}[args=1]{#1\comp!}
 
 \begin{signature}[forthel,id=ARITHMETIC_12_0210357812531785]
   Let $n$ be a natural number.
-  $\emph{n!}$ is a natural number.
+  $\emph{\NATfac{n}}$ is a natural number.
 \end{signature}
 
 \begin{axiom}[forthel,id=ARITHMETIC_12_6945210541236989]
-  $0! = 1$.
+  $\NATfac{\NATzero} \eq \NATone$.
 \end{axiom}
 
 \begin{axiom}[forthel,id=ARITHMETIC_12_2312015846987452]
   Let $n$ be a natural number.
-  Then $(n + 1)! = n! \cdot (n + 1)$.
+  Then $\NATfac{n \NATplus \NATone} \eq \NATfac{n} \NATmul (n \NATplus \NATone)$.
 \end{axiom}
 
 \begin{proposition}[forthel,id=ARITHMETIC_12_6123519005949952]
   Let $n$ be a natural number.
-  Then $n! \neq 0$.
+  Then $\NATfac{n} \neq \NATzero$.
 \end{proposition}
 \begin{proof}[forthel]
-  Define $\Phi = \{n' \in \Nat \mid n'! \neq 0 \}$.
+  Define $\Phi = \{n' \in \Nat \mid \NATfac{n'} \neq \NATzero \}$.
 
-  (1) $\Phi$ contains $0$.
-  Indeed $0! = 1 \neq 0$.
+  (1) $\Phi$ contains $\NATzero$.
+  Indeed $\NATfac{\NATzero} \eq \NATone \neq \NATzero$.
 
-  (2) For all $n' \in \Phi$ we have $n' + 1 \in \Phi$. \newline
+  (2) For all $n' \in \Phi$ we have $n' \NATplus \NATone \in \Phi$. \newline
   Proof.
     Let $n' \in \Phi$.
-    We have $(n' + 1)! = (n' + 1) \cdot n'!$.
-    $n' + 1$ and $n'!$ are nonzero.
-    Hence $(n' + 1)! \neq 0$.
+    We have $\NATfac{n' \NATplus \NATone} \eq (n' \NATplus \NATone) \NATmul \NATfac{n'}$.
+    $n' \NATplus \NATone$ and $\NATfac{n'}$ are nonzero.
+    Hence $\NATfac{n' \NATplus \NATone} \neq \NATzero$.
   Qed.
 
   Thus $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).
-  Therefore $n! \neq 0$.
+  Therefore $\NATfac{n} \neq \NATzero$.
 \end{proof}
 \end{smodule}
 \end{document}

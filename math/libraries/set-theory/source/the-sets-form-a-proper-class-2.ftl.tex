@@ -7,15 +7,15 @@
 \importmodule[libraries/foundations]{universal-class.ftl}
 
 \begin{theorem}[forthel,title=Cantor's Second Paradox,id=cantor_paradox_2]
-  $\V$ is a proper class.
+  $\Set$ is a proper class.
 \end{theorem}
 \begin{proof}[forthel]
   Assume the contrary.
-  Then $\pow(\V)$ is a set.
-  Hence $\pow(\V)$ is a subset of $\V$.
-  Thus $|\pow(\V)| \leq |\V|$.
+  Then $\SETpow(\Set)$ is a set.
+  Hence $\SETpow(\Set)$ is a subset of $\Set$.
+  Thus $\SETcard{\SETpow(\Set)} \ORDleq \SETcard{\Set}$.
   Contradiction.
-  Indeed $|x| < |\pow(x)|$ for any set $x$.
+  Indeed $\SETcard{x} \ORDless \SETcard{\SETpow(x)}$ for any set $x$.
 \end{proof}
 \end{smodule}
 \end{document}

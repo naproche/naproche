@@ -25,22 +25,22 @@
 
 \begin{proposition}[forthel,id=SET_THEORY_01_6524117649981440]
   Let $X$ be a system of sets.
-  Then $X$ is transitive iff $\bigcup X \subseteq X$.
+  Then $X$ is transitive iff $\SETunionover X \SETinclude X$.
 \end{proposition}
 \begin{proof}[forthel]
   Case $X$ is transitive.
-    Let $x \in \bigcup X$.
+    Let $x \in \SETunionover X$.
     Take a member $y$ of $X$ such that $x \in y$.
     Then $y$ is a subset of $X$.
     Hence $x$ is an element of $X$.
   End.
 
-  Case $\bigcup X \subseteq X$.
+  Case $\SETunionover X \SETinclude X$.
     Let $x \in X$.
 
-    Let us show that $x \subseteq X$.
+    Let us show that $x \SETinclude X$.
       Let $y \in x$.
-      Then $y \in \bigcup X$.
+      Then $y \in \SETunionover X$.
       Hence $y \in X$.
     End.
   End.
@@ -48,83 +48,83 @@
 
 \begin{proposition}[forthel,id=SET_THEORY_01_620651482185728]
   Let $A$ be a transitive class.
-  Then $\bigcup A$ is transitive.
+  Then $\SETunionover A$ is transitive.
 \end{proposition}
 \begin{proof}[forthel]
-  Let $x \in \bigcup A$.
+  Let $x \in \SETunionover A$.
 
-  Let us show that $x \subseteq \bigcup A$.
+  Let us show that $x \SETinclude \SETunionover A$.
     Let $y \in x$.
     Take a member $z$ of $A$ such that $x \in z$.
-    Then $z \subseteq A$.
+    Then $z \SETinclude A$.
     Hence $x \in A$.
     Thus $y$ is an element of some member of $A$.
-    Therefore $y \in \bigcup A$.
+    Therefore $y \in \SETunionover A$.
   End.
 \end{proof}
 
 \begin{proposition}[forthel,id=SET_THEORY_01_6726468811882496]
   Let $X$ be a system of transitive sets.
-  Then $\bigcup X$ is transitive.
+  Then $\SETunionover X$ is transitive.
 \end{proposition}
 \begin{proof}[forthel]
-  Let $x \in \bigcup X$ and $y \in x$.
+  Let $x \in \SETunionover X$ and $y \in x$.
   Take $z \in X$ such that $x \in z$.
   Then $z$ is transitive.
-  Hence $x \subseteq z$.
+  Hence $x \SETinclude z$.
   Thus $y \in z$.
-  Therefore $y \in \bigcup X$.
+  Therefore $y \in \SETunionover X$.
 \end{proof}
 
 \begin{proposition}[forthel,id=SET_THEORY_01_4884401668227072]
   Let $X$ be a system of transitive sets.
-  Then $X \cup \bigcup X$ is transitive.
+  Then $X \SETunion \SETunionover X$ is transitive.
 \end{proposition}
 \begin{proof}[forthel]
-  Let $x \in X \cup \bigcup X$.
+  Let $x \in X \SETunion \SETunionover X$.
 
-  Let us show that $x \subseteq X \cup \bigcup X$.
+  Let us show that $x \SETinclude X \SETunion \SETunionover X$.
     Let $u \in x$.
-    We have $x \in X$ or $x \in \bigcup X$.
-    If $x \in X$then $u \in \bigcup X$.
-    If $x \in \bigcup X$ then $u \in \bigcup X$.
-    Indeed $\bigcup X$ is transitive.
-    Hence $u \in \bigcup X$.
-    Thus $u \in X \cup \bigcup X$.
+    We have $x \in X$ or $x \in \SETunionover X$.
+    If $x \in X$then $u \in \SETunionover X$.
+    If $x \in \SETunionover X$ then $u \in \SETunionover X$.
+    Indeed $\SETunionover X$ is transitive.
+    Hence $u \in \SETunionover X$.
+    Thus $u \in X \SETunion \SETunionover X$.
   End.
 \end{proof}
 
 \begin{proposition}[forthel,id=SET_THEORY_01_1399002962591744]
   Let $X$ be a system of sets.
-  Then $X$ is transitive iff $X \subseteq \pow(X)$.
+  Then $X$ is transitive iff $X \SETinclude \SETpow(X)$.
 \end{proposition}
 \begin{proof}[forthel]
   Case $X$ is transitive.
     Let $x \in X$.
-    Then $x \subseteq X$.
-    Hence $x \in \pow(X)$.
+    Then $x \SETinclude X$.
+    Hence $x \in \SETpow(X)$.
   End.
 
-  Case $X \subseteq \pow(X)$.
+  Case $X \SETinclude \SETpow(X)$.
     Let $x \in X$.
-    Then $x \in \pow(X)$.
-    Hence $x \subseteq X$.
+    Then $x \in \SETpow(X)$.
+    Hence $x \SETinclude X$.
   End.
 \end{proof}
 
 \begin{proposition}[forthel,id=SET_THEORY_01_6995689103949824]
   Let $A$ be a transitive class.
-  Then $\pow(A)$ is transitive.
+  Then $\SETpow(A)$ is transitive.
 \end{proposition}
 \begin{proof}[forthel]
-  Let $x \in \pow(A)$.
-  Then $x \subseteq A$.
+  Let $x \in \SETpow(A)$.
+  Then $x \SETinclude A$.
 
-  Let us show that $x \subseteq \pow(A)$.
+  Let us show that $x \SETinclude \SETpow(A)$.
     Let $y \in x$.
     Then $y \in A$.
-    Hence $y \subseteq A$.
-    Thus $y \in \pow(A)$.
+    Hence $y \SETinclude A$.
+    Thus $y \in \SETpow(A)$.
   End.
 \end{proof}
 \end{smodule}

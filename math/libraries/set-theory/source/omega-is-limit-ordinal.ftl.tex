@@ -7,39 +7,39 @@
 \importmodule[libraries/set-theory]{limit-ordinals.ftl}
 
 \begin{proposition}[forthel,id=SET_THEORY_03_764451995254784]
-  $\omega$ is a limit ordinal.
+  $\ORDomega$ is a limit ordinal.
 \end{proposition}
 \begin{proof}[forthel]
-  $\omega$ is transitive. \newline
+  $\ORDomega$ is transitive. \newline
   Proof.
-    Define $\Phi = \{ n \in \omega \mid$ for all $m \in n$ we have $m \in \omega \}$.
+    Define $\Phi = \{ n \in \ORDomega \mid$ for all $m \in n$ we have $m \in \ORDomega \}$.
 
-    (1) $0 \in \Phi$.
+    (1) $\ORDzero \in \Phi$.
 
-    (2) For all $n \in \Phi$ we have $\succ(n) \in \Phi$. \newline
+    (2) For all $n \in \Phi$ we have $\ORDsucc(n) \in \Phi$. \newline
     Proof.
       Let $n \in \Phi$.
-      Then every element of $n$ is contained in $\omega$.
-      Hence every element of $\succ(n)$ is contained in $\omega$.
-      Thus $\succ(n) \in \Phi$.
+      Then every element of $n$ is contained in $\ORDomega$.
+      Hence every element of $\ORDsucc(n)$ is contained in $\ORDomega$.
+      Thus $\ORDsucc(n) \in \Phi$.
     Qed.
 
-    Therefore $\omega \subseteq \Phi$.
-    Consequently $\omega$ is transitive.
+    Therefore $\ORDomega \SETinclude \Phi$.
+    Consequently $\ORDomega$ is transitive.
   Qed.
 
-  Every element of $\omega$ is an ordinal.
-  Hence every element of $\omega$ is transitive.
-  Thus $\omega$ is an ordinal.
+  Every element of $\ORDomega$ is an ordinal.
+  Hence every element of $\ORDomega$ is transitive.
+  Thus $\ORDomega$ is an ordinal.
 
-  $\omega$ is a limit ordinal. \newline
+  $\ORDomega$ is a limit ordinal. \newline
   Proof.
     Assume the contrary.
-    We have $\omega \neq 0$.
-    Hence $\omega$ is a successor ordinal.
-    Take an ordinal $\alpha$ such that $\succ(\alpha) = \omega$.
-    Then $\alpha \in \omega$.
-    Thus $\omega = \succ(\alpha) \in \omega$.
+    We have $\ORDomega \neq \ORDzero$.
+    Hence $\ORDomega$ is a successor ordinal.
+    Take an ordinal $\alpha$ such that $\ORDsucc(\alpha) \eq \ORDomega$.
+    Then $\alpha \in \ORDomega$.
+    Thus $\ORDomega \eq \ORDsucc(\alpha) \in \ORDomega$.
     Contradiction.
   Qed.
 \end{proof}

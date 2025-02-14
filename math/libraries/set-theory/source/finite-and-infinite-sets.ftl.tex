@@ -7,7 +7,7 @@
 
 \begin{definition}[forthel,id=SET_THEORY_07_5346658235711488]
   Let $x$ be a set.
-  $x$ is \emph{finite} iff $|x| < \omega$.
+  $x$ is \emph{finite} iff $\SETcard{x} \ORDless \ORDomega$.
 \end{definition}
 
 \begin{definition}[forthel,id=SET_THEORY_07_8295412068777984]
@@ -17,19 +17,19 @@
 
 \begin{proposition}[forthel,id=SET_THEORY_07_3806229474312192]
   Let $x$ be a set.
-  Then $x$ is finite iff $|x| = n$ for some $n \in \omega$.
+  Then $x$ is finite iff $\SETcard{x} \eq n$ for some $n \in \ORDomega$.
 \end{proposition}
 
 \begin{proposition}[forthel,id=SET_THEORY_07_3174577070931968]
   Let $x$ be a set.
-  Then $x$ is infinite iff $|x| \geq \omega$.
+  Then $x$ is infinite iff $\SETcard{x} \ORDgeq \ORDomega$.
 \end{proposition}
 \begin{proof}[forthel]
-  $|x| \geq \omega$ iff $|x| \nless \omega$.
+  $\SETcard{x} \ORDgeq \ORDomega$ iff $\SETcard{x} \ORDnless \ORDomega$.
 \end{proof}
 
 \begin{proposition}[forthel,id=SET_THEORY_07_9154385075632368]
-  $\omega$ is infinite.
+  $\ORDomega$ is infinite.
 \end{proposition}
 \end{smodule}
 \end{document}

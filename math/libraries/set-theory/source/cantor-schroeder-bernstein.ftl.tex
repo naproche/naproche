@@ -12,45 +12,45 @@
 \begin{proof}[forthel]
   Case $x$ and $y$ are equinumerous.
     Take a bijection $f$ between $x$ and $y$.
-    Then $f^{-1}$ is a bijection between $y$ and $x$.
-    Hence $f$ is an injective map from $x$ to $y$ and $f^{-1}$ is an
+    Then $\FUNinv{f}$ is a bijection between $y$ and $x$.
+    Hence $f$ is an injective map from $x$ to $y$ and $\FUNinv{f}$ is an
     injective map from $y$ to $x$.
   End.
 
   Case there exists an injective map from $x$ to $y$ and there exists an injective map from $y$ to $x$.
     Take an injective map $f$ from $x$ to $y$.
     Take an injective map $g$ from $y$ to $x$.
-    We have $y \setminus f[a] \subseteq y$ for any $a \in \pow(x)$.
+    We have $y \SETdiff \FUNim{f}{a} \SETinclude y$ for any $a \in \SETpow(x)$.
 
-    (1) Define $h(a) = x \setminus g[y \setminus f[a]]$ for $a \in \pow(x)$.
+    (1) Define $h(a) = x \SETdiff \FUNim{g}{y \SETdiff \FUNim{f}{a}}$ for $a \in \SETpow(x)$.
 
-    $h$ is a map from $\pow(x)$ to $\pow(x)$.
+    $h$ is a map from $\SETpow(x)$ to $\SETpow(x)$.
     Indeed $h(a)$ is a subset of $x$ for each subset $a$ of $x$.
 
     Let us show that $h$ preserves subsets.
       Let $u, v$ be subsets of $x$.
-      Assume $u \subseteq v$.
-      Then $f[u] \subseteq f[v]$.
-      Hence $y \setminus f[v] \subseteq y \setminus f[u]$.
-      Thus $g[y \setminus f[v]] \subseteq g[y \setminus f[u]]$.
-      Indeed $y \setminus f[v]$ and $y \setminus f[u]$ are subsets of $y$.
-      Therefore $x \setminus g[y \setminus f[u]] \subseteq x \setminus g[y \setminus f[v]]$.
-      Consequently $h[u] \subseteq h[v]$.
+      Assume $u \SETinclude v$.
+      Then $\FUNim{f}{u} \SETinclude \FUNim{f}{v}$.
+      Hence $y \SETdiff \FUNim{f}{v} \SETinclude y \SETdiff \FUNim{f}{u}$.
+      Thus $\FUNim{g}{y \SETdiff \FUNim{f}{v}} \SETinclude \FUNim{g}{y \SETdiff \FUNim{f}{u}}$.
+      Indeed $y \SETdiff \FUNim{f}{v}$ and $y \SETdiff \FUNim{f}{u}$ are subsets of $y$.
+      Therefore $x \SETdiff \FUNim{g}{y \SETdiff \FUNim{f}{u}} \SETinclude x \SETdiff \FUNim{g}{y \SETdiff \FUNim{f}{v}}$.
+      Consequently $\FUNim{h}{u} \SETinclude \FUNim{h}{v}$.
     End.
 
     Hence we can take a fixed point $c$ of $h$ (by \nameref{knaster_tarski}).
 
     (2) Define $F(u) = f(u)$ for $u \in c$.
 
-    We have $c = h(c)$ iff $x \setminus c = g[y \setminus f[c]]$.
-    $g^{-1}$ is a bijection between $\range(g)$ and $y$.
-    Thus $x \setminus c = g[y \setminus f[c]] \subseteq \range(g)$.
-    Therefore $x \setminus c$ is a subset of $\dom(g^{-1})$.
+    We have $c \eq h(c)$ iff $x \SETdiff c \eq \FUNim{g}{y \SETdiff \FUNim{f}{c}}$.
+    $\FUNinv{g}$ is a bijection between $\FUNrange(g)$ and $y$.
+    Thus $x \SETdiff c \eq \FUNim{g}{y \SETdiff \FUNim{f}{c}} \SETinclude \FUNrange(g)$.
+    Therefore $x \SETdiff c$ is a subset of $\dom(\FUNinv{g})$.
 
-    (3) Define $G(u) = g^{-1}(u)$ for $u \in x \setminus c$.
+    (3) Define $G(u) \eq \FUNinv{g}(u)$ for $u \in x \SETdiff c$.
 
-    $F$ is a bijection between $c$ and $\range(F)$.
-    $G$ is a bijection between $x \setminus c$ and $\range(G)$.
+    $F$ is a bijection between $c$ and $\FUNrange(F)$.
+    $G$ is a bijection between $x \SETdiff c$ and $\FUNrange(G)$.
 
     Define \[ H(u) =
       \begin{cases}
@@ -65,9 +65,9 @@
 
       Let us show that every value of $H$ lies in $y$.
         Let $v$ be a value of $H$.
-        Take $u \in x$ such that $H(u) = v$.
-        If $u \in c$ then $v = H(u) = F(u) = f(u) \in y$.
-        If $u \notin c$ then $v = H(u) = G(u) = g^{-1}(u) \in y$.
+        Take $u \in x$ such that $H(u) \eq v$.
+        If $u \in c$ then $v \eq H(u) \eq F(u) \eq f(u) \in y$.
+        If $u \notin c$ then $v \eq H(u) \eq G(u) \eq \FUNinv{g}(u) \in y$.
       End.
     End.
 
@@ -75,18 +75,18 @@
     Indeed we can show that every element of $y$ is a value of $H$.
       Let $v \in y$.
 
-      Case $v \in f[c]$.
-        Take $u \in c$ such that $f(u) = v$.
-        Then $F(u) = v$.
+      Case $v \in \FUNim{f}{c}$.
+        Take $u \in c$ such that $f(u) \eq v$.
+        Then $F(u) \eq v$.
       End.
 
-      Case $v \notin f[c]$.
-        Then $v \in y \setminus f[c]$.
-        Hence $g(v) \in g[y \setminus f[c]]$.
-        Thus $g(v) \in x \setminus h(c)$.
-        We have $g(v) \in x \setminus c$.
-        Therefore we can take $u \in x \setminus c$ such that $G(u) = v$.
-        Then $v = H(u)$.
+      Case $v \notin \FUNim{f}{c}$.
+        Then $v \in y \SETdiff \FUNim{f}{c}$.
+        Hence $g(v) \in \FUNim{g}{y \SETdiff \FUNim{f}{c}}$.
+        Thus $g(v) \in x \SETdiff h(c)$.
+        We have $g(v) \in x \SETdiff c$.
+        Therefore we can take $u \in x \SETdiff c$ such that $G(u) \eq v$.
+        Then $v \eq H(u)$.
       End.
     End.
 
@@ -96,30 +96,30 @@
       Assume $u \neq v$.
 
       Case $u,v \in c$.
-        Then $H(u) = F(u)$ and $H(v) = F(v)$.
+        Then $H(u) \eq F(u)$ and $H(v) \eq F(v)$.
         We have $F(u) \neq F(v)$.
         Hence $H(u) \neq H(v)$.
       End.
 
       Case $u,v \notin c$.
-        Then $H(u) = G(u)$ and $H(v) = G(v)$.
+        Then $H(u) \eq G(u)$ and $H(v) \eq G(v)$.
         We have $G(u) \neq G(v)$.
         Hence $H(u) \neq H(v)$.
       End.
 
       Case $u \in c$ and $v \notin c$.
-        Then $H(u) = F(u)$ and $H(v) = G(v)$.
-        Hence $v \in g[y \setminus F[c]]$.
-        We have $G(v) = g^{-1}(v) \in y \setminus F[c]$.
-        Indeed $v = g(v')$ for some $v' \in y \setminus F[c]$.
+        Then $H(u) \eq F(u)$ and $H(v) \eq G(v)$.
+        Hence $v \in \FUNim{g}{y \SETdiff \FUNim{F}{c}}$.
+        We have $G(v) \eq \FUNinv{g}(v) \in y \SETdiff \FUNim{F}{c}$.
+        Indeed $v \eq g(v')$ for some $v' \in y \SETdiff \FUNim{F}{c}$.
         Thus $G(v) \neq F(u)$.
       End.
 
       Case $u \notin c$ and $v \in c$.
-        Then $H(u) = G(u)$ and $H(v) = F(v)$.
-        Hence $u \in g[y \setminus F[c]]$.
-        We have $G(u) = g^{-1}(u) \in y \setminus F[c]$.
-        Indeed $u = g(u')$ for some $u' \in y \setminus F[c]$.
+        Then $H(u) \eq G(u)$ and $H(v) \eq F(v)$.
+        Hence $u \in \FUNim{g}{y \SETdiff \FUNim{F}{c}}$.
+        We have $G(u) \eq \FUNinv{g}(u) \in y \SETdiff \FUNim{F}{c}$.
+        Indeed $u \eq g(u')$ for some $u' \in y \SETdiff \FUNim{F}{c}$.
         Thus $G(u) \neq F(v)$.
       End.
     End.

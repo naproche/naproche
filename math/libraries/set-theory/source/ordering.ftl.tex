@@ -4,120 +4,128 @@
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=The Standard Ordering of the Ordinals]{ordering.ftl}
 \importmodule[libraries/set-theory]{limit-ordinals.ftl}
+\symdef{ORDless}{\;<\;}
+\symdef{ORDnless}{\;\not<\;}
+\symdef{ORDleq}{\;\leq\;}
+\symdef{ORDnleq}{\;\not\leq\;}
+\symdef{ORDgtr}{\;>\;}
+\symdef{ORDngtr}{\;\not>\;}
+\symdef{ORDgeq}{\;\geq\;}
+\symdef{ORDngeq}{\;\not\geq\;}
 
 \begin{definition}[forthel,id=SET_THEORY_02_6654252130762752]
   Let $\alpha, \beta$ be ordinals.
   $\alpha$ is \emph{less than $\beta$} iff $\alpha \in \beta$.
 
-  Let $\emph{\alpha < \beta}$ stand for $\alpha$ is less than $\beta$.
-  Let $\emph{\alpha \nless \beta}$ stand for not $\alpha < \beta$.
+  Let $\emph{\alpha \ORDless \beta}$ stand for $\alpha$ is less than $\beta$.
+  Let $\emph{\alpha \ORDnless \beta}$ stand for not $\alpha \ORDless \beta$.
 
-  Let $\alpha$ is \emph{greater than $\beta$} stand for $\beta < \alpha$.
-  Let $\emph{\alpha > \beta}$ stand for $\beta < \alpha$.
-  Let $\emph{\alpha \ngtr \beta}$ stand for not $\alpha > \beta$.
+  Let $\alpha$ is \emph{greater than $\beta$} stand for $\beta \ORDless \alpha$.
+  Let $\emph{\alpha \ORDgtr \beta}$ stand for $\beta \ORDless \alpha$.
+  Let $\emph{\alpha \ORDngtr \beta}$ stand for not $\alpha \ORDgtr \beta$.
 \end{definition}
 
 \begin{definition}[forthel,id=SET_THEORY_02_2639956210089984]
   Let $\alpha, \beta$ be ordinals.
-  $\alpha$ is \emph{less than or equal to $\beta$} iff $\alpha < \beta$ or $\alpha = \beta$.
+  $\alpha$ is \emph{less than or equal to $\beta$} iff $\alpha \ORDless \beta$ or $\alpha \eq \beta$.
 
-  Let $\emph{\alpha \leq \beta}$ stand for $\alpha$ is less than or equal to $\beta$.
-  Let $\emph{\alpha \nleq \beta}$ stand for not $\alpha \leq \beta$.
+  Let $\emph{\alpha \ORDleq \beta}$ stand for $\alpha$ is less than or equal to $\beta$.
+  Let $\emph{\alpha \ORDnleq \beta}$ stand for not $\alpha \ORDleq \beta$.
 
-  Let $\alpha$ is \emph{greater than or equal to $\beta$} stand for $\beta \leq \alpha$.
-  Let $\emph{\alpha \geq \beta}$ stand for $\beta \leq \alpha$.
-  Let $\emph{\alpha \ngeq \beta}$ stand for not $\alpha \geq \beta$.
+  Let $\alpha$ is \emph{greater than or equal to $\beta$} stand for $\beta \ORDleq \alpha$.
+  Let $\emph{\alpha \ORDgeq \beta}$ stand for $\beta \ORDleq \alpha$.
+  Let $\emph{\alpha \ORDngeq \beta}$ stand for not $\alpha \ORDgeq \beta$.
 \end{definition}
 
 \begin{proposition}[forthel,id=SET_THEORY_02_3089369577553920]
   Let $\alpha, \beta$ be ordinals.
-  If $\alpha \leq \beta$ then $\alpha \subseteq \beta$.
+  If $\alpha \ORDleq \beta$ then $\alpha \SETinclude \beta$.
 \end{proposition}
 \begin{proof}[forthel]
-  Case $\alpha \leq \beta$.
-    Then $\alpha < \beta$ or $\alpha = \beta$.
+  Case $\alpha \ORDleq \beta$.
+    Then $\alpha \ORDless \beta$ or $\alpha \eq \beta$.
     Let $x \in \alpha$.
-    If $\alpha < \beta$ then $x \in \alpha \in \beta$.
-    Hence if $\alpha < \beta$ then $x \in \beta$.
-    If $\alpha = \beta$ then $x \in \beta$.
+    If $\alpha \ORDless \beta$ then $x \in \alpha \in \beta$.
+    Hence if $\alpha \ORDless \beta$ then $x \in \beta$.
+    If $\alpha \eq \beta$ then $x \in \beta$.
     Thus $x \in \beta$.
   End.
 \end{proof}
 
 \begin{proposition}[forthel,id=SET_THEORY_02_6229364135952384]
   Let $\alpha$ be an ordinal.
-  Then $\alpha \nless \alpha$.
+  Then $\alpha \ORDnless \alpha$.
 \end{proposition}
 \begin{proof}[forthel]
-  Assume $\alpha < \alpha$.
+  Assume $\alpha \ORDless \alpha$.
   Then $\alpha \in \alpha$.
   Contradiction.
 \end{proof}
 
 \begin{proposition}[forthel,id=SET_THEORY_02_7098683017396224]
   Let $\alpha, \beta, \gamma$ be ordinals.
-  If $\alpha < \beta$ and $\beta < \gamma$ then $\alpha < \gamma$.
+  If $\alpha \ORDless \beta$ and $\beta \ORDless \gamma$ then $\alpha \ORDless \gamma$.
 \end{proposition}
 \begin{proof}[forthel]
-  Assume $\alpha < \beta$ and $\beta < \gamma$.
+  Assume $\alpha \ORDless \beta$ and $\beta \ORDless \gamma$.
   Then $\alpha \in \beta \in \gamma$.
   Hence $\alpha \in \gamma$.
-  Thus $\alpha < \gamma$.
+  Thus $\alpha \ORDless \gamma$.
 \end{proof}
 
 \begin{proposition}[forthel,id=SET_THEORY_02_1718825707896832]
   Let $\alpha, \beta$ be ordinals.
-  Then $\alpha < \beta$ or $\alpha = \beta$ or $\alpha > \beta$.
+  Then $\alpha \ORDless \beta$ or $\alpha \eq \beta$ or $\alpha \ORDgtr \beta$.
 \end{proposition}
 \begin{proof}[forthel]
   Assume the contrary.
   
-  Define $A = \{ \alpha' \in \Ord \mid$ there exists an ordinal $\beta'$ such that neither $\alpha' < \beta'$ nor $\alpha' = \beta'$ nor $\alpha' > \beta' \}$.
+  Define $A = \{ \alpha' \in \Ord \mid$ there exists an ordinal $\beta'$ such that neither $\alpha' \ORDless \beta'$ nor $\alpha' \eq \beta'$ nor $\alpha' \ORDgtr \beta' \}$.
   
   $A$ is nonempty.
-  Hence we can take a $\alpha' \in A$ such that for no $\gamma \in A$ we have $\gamma < \alpha'$.
+  Hence we can take a $\alpha' \in A$ such that for no $\gamma \in A$ we have $\gamma \ORDless \alpha'$.
   
-  Define $B = \{ \beta' \in \Ord \mid$ neither $\alpha' < \beta'$ nor $\alpha' = \beta'$ nor $\alpha' > \beta' \}$.
+  Define $B = \{ \beta' \in \Ord \mid$ neither $\alpha' \ORDless \beta'$ nor $\alpha' \eq \beta'$ nor $\alpha' \ORDgtr \beta' \}$.
   
   $B$ is nonempty.
-  Hence we can take a $\beta' \in B$ such that for no $\gamma \in B$ we have $\gamma < \beta'$.
+  Hence we can take a $\beta' \in B$ such that for no $\gamma \in B$ we have $\gamma \ORDless \beta'$.
 
-  Let us show that $\alpha' \subseteq \beta'$.
+  Let us show that $\alpha' \SETinclude \beta'$.
     Let $a \in \alpha'$.
-    Then $a < \beta'$ or $a = \beta'$ or $a > \beta'$.
-    Indeed if neither $a < \beta'$ nor $a = \beta'$ nor $a > \beta'$ then
+    Then $a \ORDless \beta'$ or $a \eq \beta'$ or $a \ORDgtr \beta'$.
+    Indeed if neither $a \ORDless \beta'$ nor $a \eq \beta'$ nor $a \ORDgtr \beta'$ then
     $a \in A$.
-    If $a = \beta'$ then $\beta' < \alpha'$.
-    If $a > \beta'$ then $\beta' < \alpha'$.
-    Hence $a < \beta'$.
+    If $a \eq \beta'$ then $\beta' \ORDless \alpha'$.
+    If $a \ORDgtr \beta'$ then $\beta' \ORDless \alpha'$.
+    Hence $a \ORDless \beta'$.
     Thus $a \in \beta'$.
   End.
 
-  Let us show that $\beta' \subseteq \alpha'$.
+  Let us show that $\beta' \SETinclude \alpha'$.
     Let $b \in \beta'$.
-    Then $b < \alpha'$ or $b = \alpha'$ or $b > \alpha'$.
-    If $b = \alpha'$ then $\alpha' < \beta'$.
-    If $b > \alpha'$ then $\alpha' < \beta'$.
-    Hence $b < \alpha'$.
+    Then $b \ORDless \alpha'$ or $b \eq \alpha'$ or $b \ORDgtr \alpha'$.
+    If $b \eq \alpha'$ then $\alpha' \ORDless \beta'$.
+    If $b \ORDgtr \alpha'$ then $\alpha' \ORDless \beta'$.
+    Hence $b \ORDless \alpha'$.
     Thus $b \in \alpha'$.
   End.
 
-  Hence $\alpha' = \beta'$.
+  Hence $\alpha' \eq \beta'$.
   Contradiction.
 \end{proof}
 
 \begin{proposition}[forthel,id=SET_THEORY_02_610496856195072]
   Let $\alpha, \beta$ be ordinals.
-  If $\alpha \subseteq \beta$ then $\alpha \leq \beta$.
+  If $\alpha \SETinclude \beta$ then $\alpha \ORDleq \beta$.
 \end{proposition}
 \begin{proof}[forthel]
-  Assume $\alpha \subseteq \beta$.
+  Assume $\alpha \SETinclude \beta$.
 
-  Case $\alpha = \beta$. Trivial.
+  Case $\alpha \eq \beta$. Trivial.
 
   Case $\alpha \neq \beta$.
-    Then $\alpha < \beta$ or $\alpha > \beta$.
-    Assume $\alpha > \beta$.
+    Then $\alpha \ORDless \beta$ or $\alpha \ORDgtr \beta$.
+    Assume $\alpha \ORDgtr \beta$.
     Then $\beta \in \alpha$.
     Hence $\beta \in \beta$.
     Contradiction.
@@ -126,52 +134,52 @@
 
 \begin{proposition}[forthel,id=SET_THEORY_02_5689190964527104]
   Let $\alpha$ be an ordinal.
-  Then $\alpha < \succ(\alpha)$.
+  Then $\alpha \ORDless \ORDsucc(\alpha)$.
 \end{proposition}
 
 \begin{proposition}[forthel,id=SET_THEORY_02_4064972025888768]
   Let $\alpha, \beta$ be ordinals.
-  If $\beta < \succ(\alpha)$ then $\beta \leq \alpha$.
+  If $\beta \ORDless \ORDsucc(\alpha)$ then $\beta \ORDleq \alpha$.
 \end{proposition}
 \begin{proof}[forthel]
-  Assume $\beta < \succ(\alpha)$.
-  Then $\beta \in \succ(\alpha) = \alpha \cup \set{\alpha}$.
-  Hence $\beta \in \alpha$ or $\beta \in \set{\alpha}$.
-  Thus $\beta < \alpha$ or $\beta = \alpha$.
-  Therefore $\beta \leq \alpha$.
+  Assume $\beta \ORDless \ORDsucc(\alpha)$.
+  Then $\beta \in \ORDsucc(\alpha) \eq \alpha \SETunion \SETsingleton{\alpha}$.
+  Hence $\beta \in \alpha$ or $\beta \in \SETsingleton{\alpha}$.
+  Thus $\beta \ORDless \alpha$ or $\beta \eq \alpha$.
+  Therefore $\beta \ORDleq \alpha$.
 \end{proof}
 
 \begin{proposition}[forthel,id=SET_THEORY_02_8242798790705152]
   Let $\alpha$ be an ordinal.
-  There exists no ordinal $\beta$ such that $\alpha < \beta < \succ(\alpha)$.
+  There exists no ordinal $\beta$ such that $\alpha \ORDless \beta \ORDless \ORDsucc(\alpha)$.
 \end{proposition}
 \begin{proof}[forthel]
   Assume the contrary.
-  Consider an ordinal $\beta$ such that $\alpha < \beta < \succ(\alpha)$.
-  Then $\beta < \alpha$ or $\beta = \alpha$.
-  Hence $\alpha < \alpha$.
+  Consider an ordinal $\beta$ such that $\alpha \ORDless \beta \ORDless \ORDsucc(\alpha)$.
+  Then $\beta \ORDless \alpha$ or $\beta \eq \alpha$.
+  Hence $\alpha \ORDless \alpha$.
   Contradiction.
 \end{proof}
 
 \begin{proposition}[forthel,id=SET_THEORY_02_4240355610329088]
   Let $\alpha$ be an ordinal.
-  There exists no ordinal $\beta$ such that $\alpha < \beta < \succ(\alpha)$.
+  There exists no ordinal $\beta$ such that $\alpha \ORDless \beta \ORDless \ORDsucc(\alpha)$.
 \end{proposition}
 \begin{proof}[forthel]
   Assume the contrary.
-  Choose an ordinal $\beta$ such that $\alpha < \beta < \succ(\alpha)$.
-  Then $\alpha \in \beta \in \alpha \cup \set{\alpha}$.
-  Hence $\beta \in \alpha$ or $\beta = \alpha$.
+  Choose an ordinal $\beta$ such that $\alpha \ORDless \beta \ORDless \ORDsucc(\alpha)$.
+  Then $\alpha \in \beta \in \alpha \SETunion \SETsingleton{\alpha}$.
+  Hence $\beta \in \alpha$ or $\beta \eq \alpha$.
   Then $\alpha \in \alpha$.
   Contradiction.
 \end{proof}
 
 \begin{proposition}[forthel,id=SET_THEORY_02_4659024620421120]
   Let $\lambda$ be a limit ordinal and $\alpha \in \lambda$.
-  Then $\lambda$ contains $\succ(\alpha)$.
+  Then $\lambda$ contains $\ORDsucc(\alpha)$.
 \end{proposition}
 \begin{proof}[forthel]
-  If $\succ(\alpha) \notin \lambda$ then $\alpha < \lambda < \succ(\alpha)$.
+  If $\ORDsucc(\alpha) \notin \lambda$ then $\alpha \ORDless \lambda \ORDless \ORDsucc(\alpha)$.
 \end{proof}
 \end{smodule}
 \end{document}

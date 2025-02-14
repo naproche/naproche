@@ -5,40 +5,41 @@
 \begin{smodule}[title=Successor Cardinals]{successor-cardinals.ftl}
 \importmodule[libraries/set-theory]{cardinals.ftl}
 \importmodule[libraries/set-theory]{cantor.ftl}
+\symdef{CARDsucc}[args=1]{#1^{\comp+}}
 
 \begin{lemma}[forthel,id=SET_THEORY_06_489264832709174]
   For every ordinal $\alpha$ there exists a cardinal greater than $\alpha$.
 \end{lemma}
 \begin{proof}[forthel]
   Let $\alpha$ be an ordinal.
-  Take $\kappa = |\pow(\alpha)|$.
-  Then $\kappa > |\alpha|$.
+  Take $\kappa \eq \SETcard{\SETpow(\alpha)}$.
+  Then $\kappa \ORDgtr \SETcard{\alpha}$.
 
-  Let us show that $\kappa > \alpha$.
+  Let us show that $\kappa \ORDgtr \alpha$.
     Assume the contrary.
-    Then $|\pow(\alpha)|
-      = \kappa
-      \leq \alpha$.
+    Then $\SETcard{\SETpow(\alpha)}
+      \eq \kappa
+      \ORDleq \alpha$.
     Hence $\kappa
-      = |\pow(\alpha)|
-      = ||\pow(\alpha)||
-      \leq |\alpha|$.
+      \eq \SETcard{\SETpow(\alpha)}
+      \eq \SETcard{\SETcard{\SETpow(\alpha)}}
+      \ORDleq \SETcard{\alpha}$.
     Contradiction.
   End.
 \end{proof}
 
 \begin{definition}[forthel,id=SET_THEORY_06_9568425123021254]
   Let $\kappa$ be a cardinal.
-  $\emph{\kappa^+}$ is the cardinal such that $\kappa < \kappa^+$ and there is no cardinal $\nu$ such that $\kappa < \nu < \kappa^+$.
+  $\emph{\CARDsucc{\kappa}}$ is the cardinal such that $\kappa \ORDless \CARDsucc{\kappa}$ and there is no cardinal $\nu$ such that $\kappa \ORDless \nu \ORDless \CARDsucc{\kappa}$.
 \end{definition}
 
 \begin{definition}[forthel,id=SET_THEORY_06_6818986081648640]
-  A \emph{successor cardinal} is a cardinal number $\kappa$ such that $\kappa = \nu^+$ for some cardinal number $\nu$.
+  A \emph{successor cardinal} is a cardinal number $\kappa$ such that $\kappa \eq \CARDsucc{\nu}$ for some cardinal number $\nu$.
 \end{definition}
 
 \begin{proposition}[forthel,id=SET_THEORY_06_5231202126545218]
   Let $\kappa$ be a cardinal.
-  Then $|\alpha| \leq \kappa$ for every $\alpha \in \kappa^+$.
+  Then $\SETcard{\alpha} \ORDleq \kappa$ for every $\alpha \in \CARDsucc{\kappa}$.
 \end{proposition}
 \end{smodule}
 \end{document}

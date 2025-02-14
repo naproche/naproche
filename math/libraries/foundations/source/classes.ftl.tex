@@ -5,7 +5,18 @@
 \begin{smodule}[title=Classes]{classes.ftl}
 \importmodule[meta-inf]{vocabulary.ftl}
 \importmodule[meta-inf]{macros.ftl}
-\symdef{set}[args=a]{\{\argsep{#1},\}}
+\symdef{SETinclude}{\;\subseteq\;}
+\notation{SETinclude}{\;\subset\;}
+\symdef{SETstrictinclude}{\;\subsetneq\;}
+\symdef{SETniclude}{\;\supseteq\;}
+\notation{SETniclude}{\;\supset\;}
+\symdef{SETstrictniclude}{\;\supsetneq\;}
+\symdef{SETempty}{\emptyset}
+\symdef{SETpair}[args=2]{\comp{\{}#1\comp,#2\comp{\}}}
+\symdef{SETsingleton}[args=1]{\comp{\{}#1\comp{\}}}
+\symdef{SETunion}{\,\cup\,}
+\symdef{SETintersect}{\,\cap\,}
+\symdef{SETdiff}{\,\setminus\,}
 
 \begin{sfragment}{Sub- and Superclasses}
   \begin{definition}[forthel,id=FOUNDATIONS_01_3275578358628352]
@@ -13,51 +24,49 @@
     A \emph{subclass of $A$} is a class $B$ such that every element of $B$ is an
     element of $A$.
 
-    Let $\emph{B \subseteq A}$ stand for $B$ is a subclass of $A$.
-    Let $\emph{B \subset A}$ stand for $B \subseteq A$.
+    Let $\emph{B \SETinclude A}$ stand for $B$ is a subclass of $A$.
 
-    Let a \emph{superclass of $B$} stand for a class $A$ such that $B \subseteq A$.
-    Let $\emph{B \supseteq A}$ stand for $B$ is a superclass of $A$.
-    Let $\emph{B \supset A}$ stand for $B \subseteq A$.
+    Let a \emph{superclass of $B$} stand for a class $A$ such that $B \SETinclude A$.
+    Let $\emph{B \SETniclude A}$ stand for $B$ is a superclass of $A$.
 
     Let a \emph{proper subclass of $A$} stand for a subclass $B$ of $A$ such that $B \neq A$.
-    Let $\emph{B \subsetneq A}$ stand for $B$ is a proper subclass of $A$.
+    Let $\emph{B \SETstrictinclude A}$ stand for $B$ is a proper subclass of $A$.
 
     Let a \emph{proper superclass of $B$} stand for a superclass $A$ of $B$ such that $A \neq B$.
-    Let $\emph{B \supsetneq A}$ stand for $B$ is a proper superclass of $A$.
+    Let $\emph{B \SETstrictniclude A}$ stand for $B$ is a proper superclass of $A$.
 
-    Let \emph{$A$ includes $B$} stand for $B \subseteq A$.
-    Let $B$ is \emph{included in $A$} stand for $B \subseteq A$.
+    Let \emph{$A$ includes $B$} stand for $B \SETinclude A$.
+    Let $B$ is \emph{included in $A$} stand for $B \SETinclude A$.
   \end{definition}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_01_5994555614691328]
     Let $A$ be a class.
-    Then $A \subseteq A$.
+    Then $A \SETinclude A$.
   \end{proposition}
   \begin{proof}[forthel]
     Every element of $A$ is contained in $A$.
-    Therefore $A \subseteq A$.
+    Therefore $A \SETinclude A$.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_01_3939677545431040]
     Let $A, B, C$ be classes.
-    If $A \subseteq B$ and $B \subseteq C$ then $A \subseteq C$.
+    If $A \SETinclude B$ and $B \SETinclude C$ then $A \SETinclude C$.
   \end{proposition}
   \begin{proof}[forthel]
-    Assume $A \subseteq B$ and $B \subseteq C$.
+    Assume $A \SETinclude B$ and $B \SETinclude C$.
     Then every element of $A$ is contained in $B$ and every element of $B$ is contained in $C$.
     Hence every element of $A$ is contained in $C$.
-    Thus $A \subseteq C$.
+    Thus $A \SETinclude C$.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_01_7159957847801856]
     Let $A, B$ be classes.
-    If $A \subseteq B$ and $B \subseteq A$ then $A = B$.
+    If $A \SETinclude B$ and $B \SETinclude A$ then $A \eq B$.
   \end{proposition}
   \begin{proof}[forthel]
-    Assume $A \subseteq B$ and $B \subseteq A$.
+    Assume $A \SETinclude B$ and $B \SETinclude A$.
     Then every element of $A$ is contained in $B$ and every element of $B$ is contained in $A$.
-    Hence $A = B$.
+    Hence $A \eq B$.
   \end{proof}
 \end{sfragment}
 
@@ -70,84 +79,84 @@
   \end{definition}
 
   \begin{definition}[forthel,id=FOUNDATIONS_01_7939928493129728]
-    $\emph{\emptyset} = \{ x \mid x \neq x \}$.
+    $\emph{\SETempty} = \{ x \mid x \neq x \}$.
   \end{definition}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_01_2263153161273344]
     Let $A$ be a class.
-    $A$ is empty iff $A = \emptyset$.
+    $A$ is empty iff $A \eq \SETempty$.
   \end{proposition}
   \begin{proof}[forthel]
-    We can show that $\emptyset$ is empty.
-    Indeed any element $x$ of $\emptyset$ is nonequal to $x$.
-    Hence if $A = \emptyset$ then $A$ is empty.
-    If $A$ is empty then $A$ and $\emptyset$ have no elements.
-    Hence if $A$ is empty then $A \subseteq \emptyset$ and $\emptyset \subseteq A$.
-    Thus if $A$ is empty then $A = \emptyset$.
+    We can show that $\SETempty$ is empty.
+    Indeed any element $x$ of $\SETempty$ is nonequal to $x$.
+    Hence if $A \eq \SETempty$ then $A$ is empty.
+    If $A$ is empty then $A$ and $\SETempty$ have no elements.
+    Hence if $A$ is empty then $A \SETinclude \SETempty$ and $\SETempty \SETinclude A$.
+    Thus if $A$ is empty then $A \eq \SETempty$.
   \end{proof}
 
   \begin{corollary}[forthel,id=FOUNDATIONS_01_1495141426659328]
-    $\emptyset$ is empty.
+    $\SETempty$ is empty.
   \end{corollary}
 
   \begin{corollary}[forthel,id=FOUNDATIONS_01_6931785090859008]
     Let $A$ be a class.
-    Then $\emptyset \subseteq A$.
+    Then $\SETempty \SETinclude A$.
   \end{corollary}
   \begin{proof}[forthel]
-    $\emptyset$ has no elements.
-    Hence every element of $\emptyset$ is contained in $A$.
+    $\SETempty$ has no elements.
+    Hence every element of $\SETempty$ is contained in $A$.
   \end{proof}
 \end{sfragment}
 
 \begin{sfragment}{Unordered Pairs}
   \begin{definition}[forthel,id=FOUNDATIONS_01_3471035364016128]
     Let $a, b$ be objects.
-    The \emph{unordered pair of $a$ and $b$} is $\{ x \mid x = a$ or $x = b \}$.
+    The \emph{unordered pair of $a$ and $b$} is $\{ x \mid x \eq a$ or $x \eq b \}$.
 
-    Let $\emph{\set{a, b}}$ stand for the unordered pair of $a$ and $b$.
+    Let $\emph{\SETpair{a}{b}}$ stand for the unordered pair of $a$ and $b$.
   \end{definition}
 
   \begin{definition}[forthel,id=FOUNDATIONS_01_605432672419840]
-    An \emph{unordered pair} is a class $A$ such that $A = \set{a, b}$ for some distinct objects $a, b$.
+    An \emph{unordered pair} is a class $A$ such that $A \eq \SETpair{a}{b}$ for some distinct objects $a, b$.
   \end{definition}
 
   \begin{definition}[forthel,id=FOUNDATIONS_01_1160414603771904]
     Let $a$ be an object.
-    The \emph{singleton class of $a$} is $\{ x \mid x = a \}$.
+    The \emph{singleton class of $a$} is $\{ x \mid x \eq a \}$.
 
-    Let $\emph{\set{a}}$ stand for the singleton class of $a$.
+    Let $\emph{\SETsingleton{a}}$ stand for the singleton class of $a$.
   \end{definition}
 
   \begin{definition}[forthel,id=FOUNDATIONS_01_6786618161627136]
-    A \emph{singleton class} is a class $A$ such that $A = \set{a}$ for some object $a$.
+    A \emph{singleton class} is a class $A$ such that $A \eq \SETsingleton{a}$ for some object $a$.
   \end{definition}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_01_6125259604361216]
     Let $a, a', b, b'$ be objects.
-    Assume $\set{a, b} = \set{a', b'}$.
-    Then ($a = a'$ and $b = b'$) or ($a = b'$ and $b = a'$).
+    Assume $\SETpair{a}{b} \eq \SETpair{a'}{b'}$.
+    Then ($a \eq a'$ and $b \eq b'$) or ($a \eq b'$ and $b \eq a'$).
   \end{proposition}
   \begin{proof}[forthel]
-    We have $a = a'$ or $a = b'$.
-    If $a = a'$ then $b = b'$.
-    If $a = b'$ then $b = a'$.
-    Hence ($a = a'$ and $b = b'$) or ($a = b'$ and $b = a'$).
+    We have $a \eq a'$ or $a \eq b'$.
+    If $a \eq a'$ then $b \eq b'$.
+    If $a \eq b'$ then $b \eq a'$.
+    Hence ($a \eq a'$ and $b \eq b'$) or ($a \eq b'$ and $b \eq a'$).
   \end{proof}
 
   \begin{corollary}[forthel,id=FOUNDATIONS_01_6954678910713856]
     Let $a, a'$ be objects.
-    If $\set{a} = \set{a'}$ then $a = a'$.
+    If $\SETsingleton{a} \eq \SETsingleton{a'}$ then $a \eq a'$.
   \end{corollary}
 
   \begin{definition}[forthel,id=FOUNDATIONS_01_29867480293464351]
     Let $A$ be a class.
-    A \emph{unique element of $A$} is an element $a$ of $A$ such that for each $x \in A$ we have $x = a$.
+    A \emph{unique element of $A$} is an element $a$ of $A$ such that for each $x \in A$ we have $x \eq a$.
   \end{definition}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_01_0166348647163481]
     Let $A$ be a class.
-    Then $A$ has a unique element iff $A = \set{a}$ for some object $a$.
+    Then $A$ has a unique element iff $A \eq \SETsingleton{a}$ for some object $a$.
   \end{proposition}
 \end{sfragment}
 
@@ -156,21 +165,21 @@
     Let $A, B$ be classes.
     The \emph{union of $A$ and $B$} is $\{ x \mid x \in A$ or $x \in B \}$.
 
-    Let $\emph{A \cup B}$ stand for the union of $A$ and $B$.
+    Let $\emph{A \SETunion B}$ stand for the union of $A$ and $B$.
   \end{definition}
 
   \begin{definition}[forthel,id=FOUNDATIONS_01_5744033011859456]
     Let $A, B$ be classes.
     The \emph{intersection of $A$ and $B$} is $\{ x \mid x \in A$ and $x \in B \}$.
 
-    Let $\emph{A \cap B}$ stand for the intersection of $A$ and $B$.
+    Let $\emph{A \SETintersect B}$ stand for the intersection of $A$ and $B$.
   \end{definition}
 
   \begin{definition}[forthel,id=FOUNDATIONS_01_7620345041256448]
     Let $A, B$ be classes.
     The \emph{complement of $B$ in $A$} is $\{ x \mid x \in A$ and $x \notin B \}$.
 
-    Let $\emph{A \setminus B}$ stand for the complement of $B$ in $A$.
+    Let $\emph{A \SETdiff B}$ stand for the complement of $B$ in $A$.
   \end{definition}
 \end{sfragment}
 
@@ -182,7 +191,7 @@
 
   \begin{proposition}[forthel,id=FOUNDATIONS_01_1211191546347520]
     Let $A, B$ be classes.
-    Then $A$ and $B$ are disjoint iff $A \cap B$ is empty.
+    Then $A$ and $B$ are disjoint iff $A \SETintersect B$ is empty.
   \end{proposition}
 \end{sfragment}
 \end{smodule}
