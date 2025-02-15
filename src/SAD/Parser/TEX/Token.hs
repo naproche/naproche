@@ -1,6 +1,6 @@
 -- |
 -- Module      : SAD.Parser.TEX.Token
--- Copyright   : (c) 2024, Marcel Schütz
+-- Copyright   : (c) 2024 - 2025, Marcel Schütz
 -- License     : GPL-3
 --
 -- Tokenization of input.
@@ -19,7 +19,7 @@ import Data.Functor ((<&>))
 import Data.Maybe qualified as Maybe
 import Control.Monad.Trans.State.Strict (evalState, State)
 import Control.Monad.State.Class (gets, modify)
-import Control.Monad (when)
+import Control.Monad (when, unless)
 import Text.Megaparsec hiding (State, Token, token)
 
 import SAD.Parser.Token
@@ -121,7 +121,10 @@ token = choice [
     parameter >>= skipOutsideForthel,
     mathModeDelimiter >>= skip,
     ignoredCommand >>= skip,
-    textCommand (concat <$> many token),
+    textCommand (concat <$> many token) >>= skipOutsideForthel,
+    urlCommand >>= skipOutsideForthel,
+    pathCommand >>= skipOutsideForthel,
+    verbCommand >>= skipOutsideForthel,
     importCommand,
     inputCommand,
     inlineForthel (concat <$> many token),
@@ -273,6 +276,71 @@ textCommand p = do
   controlWord "text"
   group'' p
 
+urlCommand :: Tokenizer [Token]
+urlCommand = do
+  macro <- controlWord "url"
+  -- Fail if the next lexeme is not a begin-group character lexeme:
+  nextLexeme <- lookAhead anySingle
+  let nextLexemePos = sourcePos nextLexeme
+      nextLexemeKind = showLexemeKind nextLexeme
+  unless (isBeginGroupCharLexeme nextLexeme) $ customFailure $ Unexpected nextLexemePos nextLexemeKind "a begin-group character"
+  -- Parse the next lexeme again, this time consuming it (where we can be sure
+  -- that it is a begin-group character lexeme):
+  argument <- group' . fmap concat . many $ choice [
+      controlSpace,
+      parameter,
+      anyCharExceptOfCats [EndGroupCat],
+      anyControlSymbol,
+      anyControlWord
+    ]
+  return $ macro ++ argument
+
+pathCommand :: Tokenizer [Token]
+pathCommand = do
+  macro <- controlWord "path"
+  -- Fail if the next lexeme is not a begin-group character lexeme:
+  nextLexeme <- lookAhead anySingle
+  let nextLexemePos = sourcePos nextLexeme
+      nextLexemeKind = showLexemeKind nextLexeme
+  unless (isBeginGroupCharLexeme nextLexeme) $ customFailure $ Unexpected nextLexemePos nextLexemeKind "a begin-group character"
+  -- Parse the next lexeme again, this time consuming it (where we can be sure
+  -- that it is a begin-group character lexeme):
+  argument <- group' . fmap concat . many $ choice [
+      controlSpace,
+      parameter,
+      anyCharExceptOfCats [EndGroupCat],
+      anyControlSymbol,
+      anyControlWord
+    ]
+  return $ macro ++ argument
+
+verbCommand :: Tokenizer [Token]
+verbCommand = do
+  macro <- controlWord "verb"
+  mbStar <- optional (char '*')
+  -- Fail if the next lexeme is not a character lexeme:
+  nextLexeme <- lookAhead anySingle
+  let nextLexemePos = sourcePos nextLexeme
+      nextLexemeKind = showLexemeKind nextLexeme
+  unless (isCharacterLexeme nextLexeme) $ customFailure $ Unexpected nextLexemePos nextLexemeKind "a character"
+  -- Parse the next lexeme again, this time consuming it (where we can be sure
+  -- that it is a character lexeme):
+  beginDelimiter <- anyChar
+  let delimiterChar = Text.head $ tokensText beginDelimiter
+      beginDelimiterPos = tokensPos beginDelimiter
+  content <- fmap concat . many $ choice [
+      controlSpace,
+      parameter,
+      anyCharExcept [delimiterChar],
+      anyControlSymbol,
+      anyControlWord
+    ]
+  -- Fail if the end of the input is reached before the closing delimiter
+  -- character:
+  ifEofFailWith $ UnclosedGroup beginDelimiterPos
+  endDelimiter <- char delimiterChar
+  return $ macro ++ Maybe.fromMaybe [] mbStar ++ beginDelimiter ++ content ++ endDelimiter
+
 -- | Parse a @\\importmodule[...]{...}@ or @\\usemodule[...]{...}@ command.
 importCommand :: Tokenizer [Token]
 importCommand = do
@@ -320,8 +388,8 @@ catchInvalidGroupEnd = do
 --
 -- * A @forthel@ environment is opened when the @insideForthel@ flag is already
 --   set.
--- * Theenvironment names in the @\\begin{...}@ and @\\end{...}@ commands do not
---   match.
+-- * The environment names in the @\\begin{...}@ and @\\end{...}@ commands do
+--   not match.
 -- 
 -- Moreover, when entering and leaving a @forthel@ environment, the
 -- @insideForthel@ flag is set and unset, respectively.
@@ -339,42 +407,70 @@ environment p = do
   let envNameText = tokensText envName
       beginEnvCommand = beginMacro ++ beginGroup ++ envName ++ endGroup
       beginEnvPos = tokensPos beginEnvCommand
-  -- If the environment name is @forthel@ then either fail (if the
-  -- @insideForthel@ flag is already set) or set the @insideForthel@ flag:
+  -- Fail if the environment name is @forthel@ and the @insideForthel@ flag is
+  -- already set:
   when (envNameText == "forthel" && currentlyInsideForthel) $
     customFailure $ NestedForthel (tokensPos beginEnvCommand)
-  when (envNameText == "forthel" && not currentlyInsideForthel) $ modify (\state -> state{insideForthel = True})
-  --
-  forthelFlag <- forthelKeyAhead
-  let tlsEnvWithForthelFlagOutsideForthelEnv = envNameText `elem` tlsEnvNames && forthelFlag && not currentlyInsideForthel
-  when tlsEnvWithForthelFlagOutsideForthelEnv $ modify (\state -> state{insideForthel = True})
-  -- Run @p@:
-  content <- p
-  -- Throw an error if the end of the input is reached:
-  ifEofFailWith $ UnclosedEnv beginEnvPos
-  -- Parse an @\\end{...}@ command:
-  endMacro <- controlWord "end"
-  beginGroup' <- catchUnexpected "a begin-group lexeme" $ singleToken isBeginGroupCharLexeme
-  envName' <- concat <$> some (someTokens isLetterCharLexeme <|> singleToken isOtherCharLexeme)
-  endGroup' <- catchUnexpected "an end-group lexeme" $ singleToken isEndGroupCharLexeme
-  let envNameText' = tokensText envName'
-      endEnvCommand = endMacro ++ beginGroup' ++ envName' ++ endGroup'
-  -- Check whether the environment of the @\\begin{...}@ and the @\\end{...}@
-  -- commands match:
-  when (envNameText' /= envNameText) $
-    customFailure $ InvalidEnvEnd (tokensPos endEnvCommand)
-  -- If the environment name is "@forthel@" then unset the @insideForthel@ flag:
-  when (envNameText == "forthel") $ modify (\state -> state{insideForthel = False})
-  -- If the environment is a TLS environment with set @forthel@ flag outside a
-  -- Forthel group, unset the @insideForthel@ flag:
-  when tlsEnvWithForthelFlagOutsideForthelEnv $ modify (\state -> state{insideForthel = False})
-  -- If we are (still) inside a ForTheL group then return the tokens of the
-  -- @\\begin{...}@ command, the result of @p@ and the tokens of the
-  -- @\\end{...}@ command; otherwise return just the result of @p@:
-  currentlyInsideForthel' <- gets insideForthel
-  if currentlyInsideForthel' || tlsEnvWithForthelFlagOutsideForthelEnv
-    then return $ beginEnvCommand ++ content ++ endEnvCommand
-    else return content
+  -- If the environment name is @verbatim@, consume anything until the next
+  -- @\\end{verbatim}@ command regardless of the given parser @p@:
+  if envNameText == "verbatim"
+    then do
+      content <- fmap concat . many $ choice [
+          controlSpace,
+          parameter,
+          anyChar,
+          anyControlSymbol,
+          anyControlWordExcept ["end"],
+          try nonVerbatimEndCommand
+        ]
+      -- Throw an error if the end of the input is reached:
+      ifEofFailWith $ UnclosedEnv beginEnvPos
+      -- Parse an @\\end{verbatim}@ command:
+      endMacro <- controlWord "end"
+      beginGroup' <- singleToken isBeginGroupCharLexeme
+      envName' <- word "verbatim"
+      endGroup' <- singleToken isEndGroupCharLexeme
+      let beginEnvCommand = beginMacro ++ beginGroup ++ envName ++ endGroup
+          endEnvCommand = endMacro ++ beginGroup' ++ envName' ++ endGroup'
+      if currentlyInsideForthel
+        then return $ beginEnvCommand ++ content ++ endEnvCommand
+        else return []
+    -- In any other case, parse the content of the environment via the given
+    -- parser @p@ (while keeping track of the @forthel@ flag):
+    else do
+      when (envNameText == "forthel" && not currentlyInsideForthel) $ modify (\state -> state{insideForthel = True})
+      -- Check if the @\\begin{...}@ command has an optional argument whose content
+      -- begins with the word @forthel@:
+      forthelFlag <- forthelKeyAhead
+      let tlsEnvWithForthelFlagOutsideForthelEnv = envNameText `elem` tlsEnvNames && forthelFlag && not currentlyInsideForthel
+      when tlsEnvWithForthelFlagOutsideForthelEnv $ modify (\state -> state{insideForthel = True})
+      -- Run @p@:
+      content <- p
+      -- Throw an error if the end of the input is reached:
+      ifEofFailWith $ UnclosedEnv beginEnvPos
+      -- Parse an @\\end{...}@ command:
+      endMacro <- controlWord "end"
+      beginGroup' <- catchUnexpected "a begin-group lexeme" $ singleToken isBeginGroupCharLexeme
+      envName' <- concat <$> some (someTokens isLetterCharLexeme <|> singleToken isOtherCharLexeme)
+      endGroup' <- catchUnexpected "an end-group lexeme" $ singleToken isEndGroupCharLexeme
+      let envNameText' = tokensText envName'
+          endEnvCommand = endMacro ++ beginGroup' ++ envName' ++ endGroup'
+      -- Check whether the environment of the @\\begin{...}@ and the @\\end{...}@
+      -- commands match:
+      when (envNameText' /= envNameText) $
+        customFailure $ InvalidEnvEnd (tokensPos endEnvCommand)
+      -- If the environment name is "@forthel@" then unset the @insideForthel@ flag:
+      when (envNameText == "forthel") $ modify (\state -> state{insideForthel = False})
+      -- If the environment is a TLS environment with set @forthel@ flag outside a
+      -- Forthel group, unset the @insideForthel@ flag:
+      when tlsEnvWithForthelFlagOutsideForthelEnv $ modify (\state -> state{insideForthel = False})
+      -- If we are (still) inside a ForTheL group then return the tokens of the
+      -- @\\begin{...}@ command, the result of @p@ and the tokens of the
+      -- @\\end{...}@ command; otherwise return just the result of @p@:
+      currentlyInsideForthel' <- gets insideForthel
+      if currentlyInsideForthel' || tlsEnvWithForthelFlagOutsideForthelEnv
+        then return $ beginEnvCommand ++ content ++ endEnvCommand
+        else return content
   where
     tlsEnvNames = [
         "signature",
@@ -395,6 +491,18 @@ environment p = do
         "convention*",
         "proof"
       ]
+    -- Parse any @\\end{...}@ command other than @\\end{verbatim}@.
+    nonVerbatimEndCommand :: Tokenizer [Token]
+    nonVerbatimEndCommand = do
+      endMacro <- controlWord "end"
+      beginGroup <- singleToken isBeginGroupCharLexeme
+      envName <- concat <$> some (someTokens isLetterCharLexeme <|> singleToken isOtherCharLexeme)
+      endGroup <- singleToken isEndGroupCharLexeme
+      let envNameText = tokensText envName
+          endEnvCommand = endMacro ++ beginGroup ++ envName ++ endGroup
+      if envNameText == "verbatim"
+        then empty
+        else return endEnvCommand
 
 -- | Parse an end-environment token and throw an error. Useful to catch
 -- unbalanced end-environment tokens.
@@ -440,8 +548,8 @@ charOf cs = do
   return [Token text pos]
 
 -- | Parse any character that does not match any character from a given list.
-charExcept :: [Char] -> Tokenizer [Token]
-charExcept cs = do
+anyCharExcept :: [Char] -> Tokenizer [Token]
+anyCharExcept cs = do
   charLexeme <- satisfy $ \lexeme ->
     isCharacterLexeme lexeme && charContent lexeme `notElem` cs
   let text = Text.singleton $ charContent charLexeme
@@ -680,3 +788,13 @@ mkTokens Parameter{paramNumber = n, sourcePos = p} =
   [Token ("#" <> Text.pack (show n)) p]
 mkTokens _ =
   []
+
+showLexemeKind :: Lexeme Position.T -> Text
+showLexemeKind lexeme = case lexeme of
+  Character{} -> "character lexeme"
+  ControlWord{} -> "control word lexeme"
+  ControlSymbol{} -> "control symbol lexeme"
+  ControlSpace{} -> "control space lexeme"
+  Parameter{} -> "parameter lexeme"
+  Skipped{} -> "skipped lexeme"
+  Comment{} -> "comment lexeme"

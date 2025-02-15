@@ -23,6 +23,19 @@ dialect of ForTheL, respectively.
 
 ### Changes on ForTheL
 
+  * **New:** Outside of `forthel` groups `verbatim` environments as well as
+    `\\url{...}`, `\\path{...}`, `\\verb<char>...<char>` and
+    `\\verb*<char>...<char>` commands (for any TeX character `<char>`) are
+    ignored by Naproche's parser. In particular no errors arise if invalid
+    ForTheL expressions or unbalanced braces or `\begin`/`\end` commands
+    occur in these environments/commands.
+    
+    *WARNING:* Unlike LaTeX, Naproche recognizes `%` characters in those
+    environments/commands as comment prefixes. E.g. even though
+    `\verb|foo%bar|` is a valid LaTeX expression, Naproche does not accept it as
+    it regards the subexpression `%bar|` as a comment and complains about the
+    group opened by `\verb|` not being closed.
+
   * **New:** Macro introductions and variable pretypings can now be wrapped in
     `convention` and `convention*` environments which are rendered in the same
     style as the top-level sections, e.g.:
