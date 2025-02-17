@@ -47,7 +47,7 @@
 \ProvidesPackage{naproche}[2025/01/03 package naproche]
 
 \RequirePackage{stex}
-\RequirePackage{amsmath}  
+\RequirePackage{amsmath,amssymb}  
 \RequirePackage{amsfonts}
 \RequirePackage{etoolbox}
 \RequirePackage{xspace}
@@ -59,6 +59,7 @@
 \RequirePackage{keyval}
 \RequirePackage{environ}
 \RequirePackage{marginnote}
+\RequirePackage{enumitem}
 
 
 % Links
@@ -157,10 +158,6 @@
 \define@key{proofkeys}{method}{\def\proofmethod{#1}}
 \makeatother
 
-% Set length of \parskip to \ftlparskip in proofs in ForTheL environments.
-%
-% NOTE: "\vspace*{-\parskip}" is necessary to avoid additional space between
-% theorem and proof
 \newenvironment{proof}[1][]{%
   \setbool{forthelBeforeEnv}{\ifbool{forthel}{true}{false}}% Save the current value of the `forthel' variable
   \setkeys{proofkeys}{#1}%
@@ -169,10 +166,19 @@
   \relax%
 }
 {%
-  \strut\hfill\ensuremath\square%
+  \strut\hfill\ensuremath\blacksquare%
   \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\end{forthel}}{\par\addvspace{\baselineskip}}}%
   \setbool{forthel}{\ifbool{forthelBeforeEnv}{true}{false}}% Reset the `forthel' variable
   \renewcommand\proofmethod{}%
+}
+
+\newenvironment{case}[1]{%
+  \begin{enumerate}[leftmargin=3mm,resume]
+  \item[]\textit{Case #1}%
+}
+{%
+  \ensuremath\square%
+  \end{enumerate}
 }
 
 

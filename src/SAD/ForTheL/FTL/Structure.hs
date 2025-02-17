@@ -10,7 +10,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module SAD.ForTheL.FTL.Structure (
-  forthelText
+  forthelText,
+
+  -- To be used in SAD.ForTheL.TEX.Structure for backward compatibility:
+  proofEnd,
+  caseHeader
 ) where
 
 import Control.Applicative
@@ -171,6 +175,11 @@ choose = sentence Choice (choiceHeader >> choice) assumeVars finishWithOptLink
 -- | Parse a case hypothesis.
 caseHypothesis :: FTL Block
 caseHypothesis = sentence Block.CaseHypothesis (caseHeader >> statement) affirmVars finishWithOptLink
+
+-- | Header for case hypothesis:
+-- @"case"@
+caseHeader :: FTL ()
+caseHeader = markupToken Reports.proofStart "case"
 
 -- | Parse an affirmation.
 affirmation :: FTL Block

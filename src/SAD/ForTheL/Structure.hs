@@ -131,11 +131,6 @@ letUs = optLL1 () $ markupTokenSeqOf Reports.lowlevelHeader [["let",  "us"], ["w
 choiceHeader :: FTL ()
 choiceHeader = hence >> letUs >> markupTokenOf Reports.lowlevelHeader ["choose", "take", "consider"]
 
--- | Header for case hypothesis:
--- @"case"@
-caseHeader :: FTL ()
-caseHeader = markupToken Reports.proofStart "case"
-
 -- | Header for affirmation:
 -- @<hence>@
 affirmationHeader :: FTL ()

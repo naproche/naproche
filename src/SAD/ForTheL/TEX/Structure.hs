@@ -25,6 +25,7 @@ import Data.Maybe (fromMaybe)
 import System.FilePath hiding ((</>))
 
 import SAD.ForTheL.Structure
+import SAD.ForTheL.FTL.Structure qualified as FTL -- for backward compatibility
 import SAD.ForTheL.Base
 import SAD.ForTheL.Statement
 import SAD.ForTheL.Extension
@@ -305,9 +306,14 @@ exitInstruction text = case text of
 choose :: FTL Block
 choose = sentence Choice (choiceHeader >> choice) assumeVars finishWithOptLink
 
--- | Parse a case hypothesis.
+-- | Parse a case hypothesis:
+-- @"\begin" "{" "case "}" "{" <statement> "." "}"@
 caseHypothesis :: FTL Block
-caseHypothesis = sentence Block.CaseHypothesis (caseHeader >> statement) affirmVars finishWithOptLink
+caseHypothesis = sentence Block.CaseHypothesis caseHypothesisStatement affirmVars (pure [])
+  where
+    caseHypothesisStatement = do
+      texBegin $ markupToken Reports.proofStart "case"
+      braced $ finish statement
 
 -- | Parse an affirmation.
 affirmation :: FTL Block
@@ -428,11 +434,6 @@ lowLevelProofHeader = do
   dot
   return method
 
--- | Proof end (FTL):
--- @"qed" | "end" | "trivial" | "obvious"@
-lowLevelProofEnd :: FTL ()
-lowLevelProofEnd = label "qed" $ markupTokenOf Reports.proofEnd ["qed", "end", "trivial", "obvious"]
-
 -- | An option from the key-value list of the optional argument of a proof
 -- environment.
 proofOption :: FTL (Text, ProofOption)
@@ -461,7 +462,7 @@ lowLevelProof p = do
   block <- p
   post <- optLL1 None (lowLevelProofHeader <|> confirmationHeader)
   nf <- indThesis (Block.formula block) pre post
-  addBody lowLevelProofEnd finishWithOptLink pre post $ block {Block.formula = nf}
+  addBody FTL.proofEnd finishWithOptLink pre post $ block {Block.formula = nf}
 
 -- | Parse a top-level proof:
 -- @[<letUsShowThat>] <affirmation> [<ftlProofHeader>]
@@ -505,7 +506,6 @@ confirmationBody block = do
   return block {Block.body = [ProofTextBlock pbl]}
 
 -- | Proof body + proof end + link
--- @
 proofBody :: FTL ()       -- ^ Proof end parser
           -> FTL [Text]   -- ^ Link parser
           -> Block
@@ -529,7 +529,7 @@ proofText qed =
     lowtext =
       narrow assumption </>
       lowLevelProof (narrow $ affirmation </> choose </> lowLevelDefinition) </>
-      caseDestinction
+      caseDestinction </> caseDestinction_old
     instruction =
       fmap (uncurry ProofTextDrop) instrDrop </>
       fmap (uncurry ProofTextInstr) instr
@@ -539,8 +539,11 @@ proofText qed =
 caseDestinction :: FTL Block
 caseDestinction = do
   bl@Block { Block.formula = fr } <- narrow caseHypothesis
-  proofBody lowLevelProofEnd finishWithOptLink $ bl {
+  proofBody caseDestinctionEnd (pure []) $ bl {
   Block.formula = Imp (Tag Tag.CaseHypothesis fr) mkThesis}
+
+caseDestinctionEnd :: FTL ()
+caseDestinctionEnd = texEnd (markupToken Reports.proofEnd "case")
 
 
 -- equality Chain
@@ -591,3 +594,16 @@ jumpToNextUnit = mapInput nextUnit
       | otherwise = nextUnit tks
     nextUnit [] = []
 
+
+-- Lecacy stuff
+
+-- | FTL-style case distinction (for backward compatibility only):
+-- @<caseHypothesis> <proofBody>@
+caseDestinction_old :: FTL Block
+caseDestinction_old = do
+  bl@Block { Block.formula = fr } <- narrow caseHypothesis_old
+  proofBody FTL.proofEnd finishWithOptLink $ bl {
+  Block.formula = Imp (Tag Tag.CaseHypothesis fr) mkThesis}
+
+caseHypothesis_old :: FTL Block
+caseHypothesis_old = sentence Block.CaseHypothesis (FTL.caseHeader >> statement) affirmVars finishWithOptLink

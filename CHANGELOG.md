@@ -23,6 +23,23 @@ dialect of ForTheL, respectively.
 
 ### Changes on ForTheL
 
+  * **New:** Case distinctions can now be written up via a LaTeX environment:
+
+    ```
+    \begin{case}{<case hypothesis>}
+      <proof text>
+    \end{case}
+    ```
+
+    E.g.:
+
+    ```
+    \begin{case}{$n$ is even.}
+      Then there exists a natural number $m$ such that $n = 2 \cdot m$.
+      ...
+    \end{case}
+    ```
+
   * **New:** Outside of `forthel` groups `verbatim` environments as well as
     `\\url{...}`, `\\path{...}`, `\\verb<char>...<char>` and
     `\\verb*<char>...<char>` commands (for any TeX character `<char>`) are
