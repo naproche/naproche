@@ -26,7 +26,7 @@
 
     Let us show that $g(b) \eq g'(b)$ for all $b \in \FUNrange(f)$.
       Let $b \in \FUNrange(f)$.
-      Take $a \eq g'(b)$.
+      Take $a = g'(b)$.
       Then $g(b) \eq a$ iff $f(a) \eq b$.
       We have $f(a) \eq b$ iff $g'(b) \eq a$.
       Thus $g(b) \eq g'(b)$.
@@ -151,7 +151,7 @@
   \begin{proof}[forthel]
     $\FUNinv{f}$ is a surjective map from $B$ onto $A$.
     $\FUNinv{g}$ is a surjective map from $C$ onto $B$.
-    Take $h \eq \FUNinv{f} \FUNcomp \FUNinv{g}$.
+    Take $h = \FUNinv{f} \FUNcomp \FUNinv{g}$.
     Then $h$ is a surjective map from $C$ onto $A$ (by \printref{FOUNDATIONS_08_8542698338254848}).
     $g \FUNcomp f$ is a map from $A$ to $C$.
 
@@ -189,11 +189,11 @@
   \begin{proposition}[forthel,id=FOUNDATIONS_09_6374884963778560]
     Let $A, B$ be classes and $f \FUNfromonto{A}{B}$ and $X \SETinclude A$.
     Assume that $f$ is invertible.
-    Then $f \restriction X$ is invertible and $\FUNinv{f\restriction X} \eq \FUNinv{f} \restriction (\FUNim{f}{X})$.
+    Then $f \FUNrest X$ is invertible and $\FUNinv{f\FUNrest X} \eq \FUNinv{f} \FUNrest (\FUNim{f}{X})$.
   \end{proposition}
   \begin{proof}[forthel]
-    $f \restriction X$ is a surjective map from $X$ onto $\FUNim{f}{X}$.
-    Take $g \eq \FUNinv{f} \restriction (\FUNim{f}{X})$.
+    $f \FUNrest X$ is a surjective map from $X$ onto $\FUNim{f}{X}$.
+    Take $g = \FUNinv{f} \FUNrest (\FUNim{f}{X})$.
     Then $g$ is a map of $\FUNim{f}{X}$.
 
     Let us show that $X \SETinclude \FUNrange(g)$.
@@ -208,7 +208,7 @@
       Take $b \in \FUNim{f}{X}$ such that $a \eq g(b)$.
       Take $c \in X$ such that $b \eq f(c)$.
       Then $a
-        \eq (\FUNinv{f} \restriction (\FUNim{f}{X}))(b)
+        \eq (\FUNinv{f} \FUNrest (\FUNim{f}{X}))(b)
         \eq \FUNinv{f}(b)
         \eq \FUNinv{f}(f(c))
         \eq c$.
@@ -218,31 +218,31 @@
     Hence $\FUNrange(g) \eq X$.
     Thus $g$ is a surjective map onto $X$.
 
-    Let us show that $g((f \restriction X)(a)) \eq a$ for all $a \in X$.
+    Let us show that $g((f \FUNrest X)(a)) \eq a$ for all $a \in X$.
       Let $a \in X$.
-      Then $g((f \restriction X)(a))
+      Then $g((f \FUNrest X)(a))
         \eq g(f(a))
-        \eq (\FUNinv{f} \restriction (\FUNim{f}{X}))(f(a))
+        \eq (\FUNinv{f} \FUNrest (\FUNim{f}{X}))(f(a))
         \eq \FUNinv{f}(f(a))
         \eq a$.
     End.
 
-    Let us show that $((f \restriction X)(g(b))) \eq b$ for all $b \in \FUNim{f}{X}$.
+    Let us show that $((f \FUNrest X)(g(b))) \eq b$ for all $b \in \FUNim{f}{X}$.
       Let $b \in \FUNim{f}{X}$.
       Take $a \in X$ such that $b \eq f(a)$.
       We have $g(b)
         \eq g(f(a))
-        \eq (\FUNinv{f} \restriction (\FUNim{f}{X}))(f(a))
+        \eq (\FUNinv{f} \FUNrest (\FUNim{f}{X}))(f(a))
         \eq \FUNinv{f}(f(a))
         \eq a$.
-      Hence $(f \restriction X)(g(b))
-        \eq (f \restriction X)(a)
+      Hence $(f \FUNrest X)(g(b))
+        \eq (f \FUNrest X)(a)
         \eq f(a)
         \eq b$.
     End.
 
-    Thus $g \FUNcomp (f \restriction X) \eq \FUNid{X}$ and $(f \restriction X) \FUNcomp g \eq \FUNid{\FUNim{f}{X}}$.
-    Therefore $g$ is the inverse of $f \restriction X$.
+    Thus $g \FUNcomp (f \FUNrest X) \eq \FUNid{X}$ and $(f \FUNrest X) \FUNcomp g \eq \FUNid{\FUNim{f}{X}}$.
+    Therefore $g$ is the inverse of $f \FUNrest X$.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_09_7726021377785856]
@@ -251,7 +251,7 @@
     Then \[ \FUNpreim{f}{Y} \eq \FUNim{\FUNinv{f}}{Y}. \]
   \end{proposition}
   \begin{proof}[forthel]
-    We have $\FUNim{\FUNinv{f}}{Y} \eq \{ \FUNinv{f}(b) \mid b \in Y \}$ and $\FUNpreim{f}{Y} \eq \{ a \in A \mid f(a) \in Y \}$.
+    We have $\FUNim{\FUNinv{f}}{Y} = \{ \FUNinv{f}(b) \mid b \in Y \}$ and $\FUNpreim{f}{Y} = \{ a \in A \mid f(a) \in Y \}$.
 
     Let us show that $\FUNpreim{f}{Y} \SETinclude \FUNim{\FUNinv{f}}{Y}$.
       Let $a \in \FUNpreim{f}{Y}$.
@@ -275,7 +275,7 @@
   \end{corollary}
   \begin{proof}[forthel]
     $\FUNpreim{f}{\SETsingleton{b}} \eq \FUNim{\FUNinv{f}}{\SETsingleton{b}}$.
-    We have $\FUNim{\FUNinv{f}}{\SETsingleton{b}} \eq \{ \FUNinv{f}(c) \mid c \in \SETsingleton{b} \}$.
+    We have $\FUNim{\FUNinv{f}}{\SETsingleton{b}} = \{ \FUNinv{f}(c) \mid c \in \SETsingleton{b} \}$.
     Hence $\FUNim{\FUNinv{f}}{\SETsingleton{b}} \eq \SETsingleton{\FUNinv{f}(b)}$.
   \end{proof}
 
@@ -318,7 +318,7 @@
 \begin{sfragment}*{Involutions}
   \begin{definition}[forthel,id=FOUNDATIONS_09_7282039688527872]
     Let $A$ be a class.
-    An \emph{involution} on $A$ is a selfinverse map $f$ on $A$.
+    An \emph{involution on $A$} is a selfinverse map $f$ on $A$.
   \end{definition}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_09_7944474185433088]

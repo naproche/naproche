@@ -17,14 +17,14 @@
 \importmodule[libraries/foundations]{invertible-maps.ftl}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_10_5891530432708608]
-  $\emptyset$ is a set.
+  $\SETempty$ is a set.
 \end{proposition}
 \begin{proof}[forthel]
   Take a set $x$ (by \printref{FOUNDATIONS_10_2362039748001792}).
   Define $A = \{ y \in x \mid y \neq y \}$.
   Then $A$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
-  We have $A \eq \emptyset$.
-  Hence $\emptyset$ is a set.
+  We have $A \eq \SETempty$.
+  Hence $\SETempty$ is a set.
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_10_4052198354845696]
@@ -32,7 +32,7 @@
   Then $x \SETunion y$ is a set.
 \end{proposition}
 \begin{proof}[forthel]
-  Take $X \eq \SETpair{x}{y}$.
+  Take $X = \SETpair{x}{y}$.
   Then $X$ is a set.
   Hence $\SETunionover X$ is a set (by \printref{FOUNDATIONS_10_5536459412996096}).
   Indeed $X$ is a system of sets.
@@ -135,7 +135,7 @@
 
   Let us show that for any $a \in x$ and any $b \in y$ we have $f(\SETpair{\SETsingleton{a}}{\SETpair{a}{b}}) \eq (a,b)$.
     Let $a \in x$ and $b \in y$.
-    Take $p \eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$.
+    Take $p = \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$.
     Then $p$ is a set.
     Then we can choose $a' \in x$ and $b' \in y$ such that $p \eq \SETpair{\SETsingleton{a'}}{\SETpair{a'}{b'}}$ and $l(p) \eq a'$.
     Then $a \eq a'$ and $b \eq b'$.

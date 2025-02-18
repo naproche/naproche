@@ -45,7 +45,7 @@
     Thus $(h \FUNcomp f) \FUNcomp g$ is an injective map from $\SETcard{x}$ to $\SETcard{y}$.
     Therefore $\SETcard{x}
       \eq \SETcard{\SETcard{x}}
-      \eq \SETcard{((h \FUNcomp f) \FUNcomp g)[\SETcard{x}]}$
+      \eq \SETcard{\FUNim{(h \FUNcomp f) \FUNcomp g}{\SETcard{x}}}$
     (by \printref{SET_THEORY_06_2820082336006144}, \printref{SET_THEORY_06_5513850721927168}).
     We have $\FUNim{(h \FUNcomp f) \FUNcomp g}{\SETcard{x}} \SETinclude \SETcard{y}$.
     Hence $\SETcard{x} \ORDleq \SETcard{y}$.
@@ -55,7 +55,7 @@
     Take a bijection $g$ from $x$ to $\SETcard{x}$ and a bijection $h$ from $\SETcard{y}$ to $y$.
     We have $\SETcard{x} \SETinclude \SETcard{y}$.
     Hence $g$ is an injective map from $x$ to $\SETcard{y}$.
-    Take $f \eq h \FUNcomp g$.
+    Take $f = h \FUNcomp g$.
     Then $f$ is an injective map from $x$ to $y$.
     Indeed $f$ is injective.
     Indeed $h$ is an injective map from $\SETcard{y}$ to $y$.
@@ -67,7 +67,7 @@
   Then $\SETcard{y} \ORDleq \SETcard{x}$.
 \end{corollary}
 \begin{proof}[forthel]
-  Define $f(v) \eq v$ for $v \in y$.
+  Define $f(v) = v$ for $v \in y$.
   Then $f$ is an injective map from $y$ to $x$.
   Hence $\SETcard{y} \ORDleq \SETcard{x}$.
 \end{proof}
