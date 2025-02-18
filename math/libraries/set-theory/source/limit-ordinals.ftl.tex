@@ -16,17 +16,17 @@
   Then $\ORDlim x$ is an ordinal.
 \end{proposition}
 \begin{proof}[forthel]
-  (1) $\ORDlim x$ is transitive. \newline
-  Proof.
+  (1) $\ORDlim x$ is transitive.
+  \begin{proof}
     Let $y \in \ORDlim x$ and $z \in y$.
     Take $w \in x$ such that $y \in w$.
     Hence $w$ is transitive.
     Thus $z \in w$.
     Therefore $z \in \ORDlim x$.
-  Qed.
+  \end{proof}
 
-  (2) Every element of $\ORDlim x$ is transitive. \newline
-  Proof.
+  (2) Every element of $\ORDlim x$ is transitive.
+  \begin{proof}
     Let $y \in \ORDlim x$.
     Let $z \in y$ and $v \in z$.
     Take $w \in x$ such that $y \in w$.
@@ -34,7 +34,7 @@
     Thus $y$ is an ordinal.
     Therefore $y$ is transitive.
     Consequently $v \in y$.
-  Qed.
+  \end{proof}
 \end{proof}
 
 \begin{definition}[forthel,id=SET_THEORY_02_7678388934279168]

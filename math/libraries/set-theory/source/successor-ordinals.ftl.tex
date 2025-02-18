@@ -17,21 +17,21 @@
   Then $\ORDsucc(\alpha)$ is an ordinal.
 \end{proposition}
 \begin{proof}[forthel]
-  (1) $\ORDsucc(\alpha)$ is transitive. \newline
-  Proof.
+  (1) $\ORDsucc(\alpha)$ is transitive.
+  \begin{proof}
     Let $x \in \ORDsucc(\alpha)$ and $y \in x$.
     Then $x \in \alpha$ or $x \eq \alpha$.
     Hence $y \in \alpha$.
     Thus $y \in \ORDsucc(\alpha)$.
-  Qed.
+  \end{proof}
 
-  (2) Every element of $\ORDsucc(\alpha)$ is transitive. \newline
-  Proof.
+  (2) Every element of $\ORDsucc(\alpha)$ is transitive.
+  \begin{proof}
     Let $x \in \ORDsucc(\alpha)$.
     Then $x \in \alpha$ or $x \eq \alpha$.
     Hence $x$ is transitive.
     Indeed $\alpha$ is transitive and every element of $\alpha$ is transitive.
-  Qed.
+  \end{proof}
 \end{proof}
 
 \begin{definition}[forthel,id=SET_THEORY_02_7129712109289472]
@@ -45,8 +45,8 @@
 \begin{proof}[forthel]
   Assume $\ORDsucc(\alpha) \eq \ORDsucc(\beta)$.
 
-  (1) $\alpha \SETinclude \beta$. \newline
-  Proof.
+  (1) $\alpha \SETinclude \beta$.
+  \begin{proof}
     Let $\gamma \in \alpha$.
     Then $\gamma \in \alpha \SETunion \SETsingleton{\alpha}
       \eq \ORDsucc(\alpha)
@@ -62,10 +62,10 @@
     Therefore $\alpha \in \beta$.
     Consequently $\alpha \in \beta \in \alpha$.
     Contradiction.
-  Qed.
+  \end{proof}
 
-  (2) $\beta \SETinclude \alpha$. \newline
-  Proof.
+  (2) $\beta \SETinclude \alpha$.
+  \begin{proof}
     Let $\gamma \in \beta$.
     Then $\gamma \in \beta \SETunion \SETsingleton{\beta}
       \eq \ORDsucc(\beta)
@@ -81,7 +81,7 @@
     Therefore $\beta \in \alpha$.
     Consequently $\beta \in \alpha \in \beta$.
     Contradiction.
-  Qed.
+  \end{proof}
 \end{proof}
 
 \begin{definition}[forthel,id=SET_THEORY_02_735071524880384]

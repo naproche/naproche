@@ -12,13 +12,13 @@
   Then $n \NATless m$ iff $n \NATmul k \NATless m \NATmul k$.
 \end{proposition}
 \begin{proof}[forthel]
-  Case $n \NATmul k \NATless m \NATmul k$.
+  \begin{case}{$n \NATmul k \NATless m \NATmul k$.}
     Define $\Phi = \{ n' \in \Nat \mid$ if $n' \NATmul k \NATless m \NATmul k$ then $n' \NATless m \}$.
 
     (1) $\Phi$ contains $\NATzero$.
 
-    (2) For all $n' \in \Phi$ we have $n' \NATplus \NATone \in \Phi$. \newline
-    Proof.
+    (2) For all $n' \in \Phi$ we have $n' \NATplus \NATone \in \Phi$.
+    \begin{proof}
       Let $n' \in \Phi$.
 
       Let us show that if $(n' \NATplus \NATone) \NATmul k \NATless m \NATmul k$ then $n' \NATplus \NATone \NATless m$.
@@ -30,18 +30,18 @@
         If $n' \NATplus \NATone \eq m$ then $(n' \NATplus \NATone) \NATmul k \eq m \NATmul k$.
         Hence $n' \NATplus \NATone \NATless m$.
       End.
-    Qed.
+    \end{proof}
 
     Therefore every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
     Consequently $n \NATless m$.
-  End.
+  \end{case}
 
-  Case $n \NATless m$.
+  \begin{case}{$n \NATless m$.}
     Take a positive natural number $l$ such that $m \eq n \NATplus l$.
     Then $m \NATmul k \eq (n \NATplus l) \NATmul k \eq (n \NATmul k) \NATplus (l \NATmul k)$.
     $l \NATmul k$ is positive.
     Hence $n \NATmul k \NATless m \NATmul k$.
-  End.
+  \end{case}
 \end{proof}
 
 \begin{corollary}[forthel,id=ARITHMETIC_06_5048640368279552]
@@ -62,8 +62,8 @@
 
   (1) $\Phi$ contains $\NATzero$.
 
-  (2) For all $n' \in \Phi$ we have $n' \NATplus \NATone \in \Phi$. \newline
-  Proof.
+  (2) For all $n' \in \Phi$ we have $n' \NATplus \NATone \in \Phi$.
+  \begin{proof}
     Let $n' \in \Phi$.
 
     Let us show that if $n' \NATplus \NATone, m \NATgtr k$ then $(n' \NATplus \NATone) \NATmul m \NATgtr k$.
@@ -81,8 +81,8 @@
       Indeed if $n' \neq \NATzero$ then $n' \NATmul m \NATgtr \NATzero$.
       Indeed $m \NATgtr \NATzero$.
       Hence $(n' \NATplus \NATone) \NATmul m \NATgtr k$.
-    Qed.
-  Qed.
+    End.
+  \end{proof}
 
   Thus every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
   Therefore if $n, m \NATgtr k$ then $n \NATmul m \NATgtr k$.

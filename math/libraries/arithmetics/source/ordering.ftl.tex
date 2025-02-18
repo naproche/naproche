@@ -12,10 +12,10 @@
 \symdef{NATnleq}{\;\not\leq\;}
 \symdef{NATgeq}{\;\geq\;}
 \symdef{NATngeq}{\;\not\geq\;}
-\symdef{Natlessthan}[args=1]{\mathbb{N}_{<#1}}
-\symdef{Natgtrthan}[args=1]{\mathbb{N}_{>#1}}
-\symdef{Natleqthan}[args=1]{\mathbb{N}_{\leq#1}}
-\symdef{Natgeqthan}[args=1]{\mathbb{N}_{\geq#1}}
+\symdef{Natlessthan}[args=1]{\comp{\mathbb{N}}_{\comp<#1}}
+\symdef{Natgtrthan}[args=1]{\comp[\mathbb{N}]_{\comp>#1}}
+\symdef{Natleqthan}[args=1]{\comp{\mathbb{N}}_{\comp\leq#1}}
+\symdef{Natgeqthan}[args=1]{\comp{\mathbb{N}}_{\comp\geq#1}}
 
 \begin{sfragment}{Definitions and Immediate Consequences}
   \begin{definition}[forthel,id=ARITHMETIC_04_1926295512416256]
@@ -70,16 +70,16 @@
     $n \NATleq m$ iff $n \NATless m$ or $n \eq m$.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $n \NATleq m$.
+    \begin{case}{$n \NATleq m$.}
       Take a natural number $k$ such that $m \eq n \NATplus k$.
       If $k \eq \NATzero$ then $n \eq m$. If $k \neq \NATzero$ then $n \NATless m$.
-    End.
+    \end{case}
 
-    Case $n \NATless m$ or $n \eq m$.
+    \begin{case}{$n \NATless m$ or $n \eq m$.}
       If $n \NATless m$ then there is a positive natural number $k$ such that $m \eq n \NATplus k$.
       If $n \eq m$ then $m \eq n \NATplus \NATzero$.
       Thus if $n \NATless m$ then there is a natural number $k$ such that $m \eq n \NATplus k$.
-    End.
+    \end{case}
   \end{proof}
 
   \begin{definition}[forthel,id=ARITHMETIC_04_6232154608500736]
@@ -97,17 +97,17 @@
     Then $n$ is positive iff $n$ is nonzero.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $n$ is positive.
+    \begin{case}{$n$ is positive.}
       Take a positive natural number $k$ such that $n \eq \NATzero \NATplus k \eq k$.
       Then we have $n \neq \NATzero$.
-    End.
+    \end{case}
 
-    Case $n$ is nonzero.
+    \begin{case}{$n$ is nonzero.}
       Take a natural number $k$ such that $n \eq k \NATplus \NATone$.
       Then $n \eq \NATzero \NATplus (k \NATplus \NATone)$.
       $k \NATplus \NATone$ is positive.
       Hence $\NATzero \NATless n$.
-    End.
+    \end{case}
   \end{proof}
 \end{sfragment}
 
@@ -174,10 +174,10 @@
   \end{proposition}
   \begin{proof}[forthel]
     Assume $n \NATleq m \NATleq k$.
-    Case $n \eq m \eq k$. Obvious.
-    Case $n \eq m \NATless k$. Obvious.
-    Case $n \NATless m \eq k$. Obvious.
-    Case $n \NATless m \NATless k$. Obvious.
+    \begin{case}{$n \eq m \eq k$.} \end{case}
+    \begin{case}{$n \eq m \NATless k$.} \end{case}
+    \begin{case}{$n \NATless m \eq k$.} \end{case}
+    \begin{case}{$n \NATless m \NATless k$.} \end{case}
   \end{proof}
 
   \begin{proposition}[forthel,id=ARITHMETIC_04_5098403656630272]
@@ -208,12 +208,12 @@
     Assume $n \NATless m$.
     Take a positive natural number $k$ such that $m \eq n \NATplus k$.
 
-    Case $k \eq \NATone$.
+    \begin{case}{$k \eq \NATone$.}
       Then $m \eq n \NATplus \NATone$.
       Hence $n \NATplus \NATone \NATleq m$.
-    End.
+    \end{case}
 
-    Case $k \neq \NATone$.
+    \begin{case}{$k \neq \NATone$.}
       Then we can take a natural number $l$ such that $k \eq l \NATplus \NATone$.
       Then $m
         \eq n \NATplus (l \NATplus \NATone)
@@ -221,7 +221,7 @@
         \eq (n \NATplus \NATone) \NATplus l$.
       $l$ is positive.
       Thus $n \NATplus \NATone \NATless m$.
-    End.
+    \end{case}
   \end{proof}
 
   \begin{proposition}[forthel,id=ARITHMETIC_04_8201937860165632]
@@ -233,26 +233,26 @@
 
     (1) $\Phi$ contains $\NATzero$.
 
-    (2) For all $m' \in \Phi$ we have $m' \NATplus \NATone \in \Phi$. \newline
-    Proof.
+    (2) For all $m' \in \Phi$ we have $m' \NATplus \NATone \in \Phi$.
+    \begin{proof}
       Let $m' \in \Phi$.
 
-      Case $n \NATless m'$. Obvious.
+      \begin{case}{$n \NATless m'$.} \end{case}
 
-      Case $n \eq m'$. Obvious.
+      \begin{case}{$n \eq m'$.} \end{case}
 
-      Case $n \NATgtr m'$.
+      \begin{case}{$n \NATgtr m'$.}
         Take a positive natural number $k$ such that $n \eq m' \NATplus k$.
 
-        Case $k \eq \NATone$. Obvious.
+        \begin{case}{$k \eq \NATone$.} \end{case}
 
-        Case$k \neq \NATone$.
+        \begin{case}{$k \neq \NATone$.}
           Take a natural number $l$ such that $n \eq (m' \NATplus \NATone) \NATplus l$.
           Hence $n \NATgtr m' \NATplus \NATone$.
           Indeed $l$ is positive.
-        End.
-      Qed.
-    Qed.
+        \end{case}
+      \end{case}
+    \end{proof}
 
     Thus every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
     Therefore $n \NATless m$ or $n \eq m$ or $n \NATgtr m$.
@@ -263,17 +263,17 @@
     Then $n \NATnless m$ iff $n \NATgeq m$.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $n \NATnless m$.
+    \begin{case}{$n \NATnless m$.}
       Then $n \eq m$ or $n \NATgtr m$.
       Hence $n \NATgeq m$.
-    End.
+    \end{case}
 
-    Case $n \NATgeq m$.
+    \begin{case}{$n \NATgeq m$.}
       Assume $n \NATless m$.
       Then $n \NATleq m$.
       Hence $n \eq m$.
       Contradiction.
-    End.
+    \end{case}
   \end{proof}
 \end{sfragment}
 
@@ -292,41 +292,41 @@
       \eq n \NATplus (k \NATplus l)$.
     Hence $k \NATplus l \eq \NATone$.
 
-    We have $l \eq \NATzero$. \newline
-    Proof.
+    We have $l \eq \NATzero$.
+    \begin{proof}
       Assume the contrary.
       Then $k,l \NATgtr \NATzero$.
 
-      Case $k,l \eq \NATone$.
+      \begin{case}{$k,l \eq \NATone$.}
         Then $k \NATplus l
           \eq \NATtwo
           \neq \NATone$.
         Contradiction.
-      End.
+      \end{case}
 
-      Case $k \eq \NATone and l \neq \NATone$.
+      \begin{case}{$k \eq \NATone and l \neq \NATone$.}
         Then $l \NATgtr \NATone$.
         Hence $k \NATplus l
           \NATgtr \NATone \NATplus l
           \NATgtr \NATone$.
         Contradiction.
-      End.
+      \end{case}
 
-      Case $k \neq \NATone and l \eq \NATone$.
+      \begin{case}{$k \neq \NATone and l \eq \NATone$.}
         Then $k \NATgtr \NATone$.
         Hence $k \NATplus l
           \NATgtr k \NATplus \NATone
           \NATgtr \NATone$.
         Contradiction.
-      End.
+      \end{case}
 
-      Case $k, l \neq \NATone$.
+      \begin{case}{$k, l \neq \NATone$.}
         Take natural numbers $a, b$ such that $k \eq a \NATplus \NATone$ and $l \eq b \NATplus \NATone$.
         Indeed $k, l \neq \NATzero$.
         Hence $k \eq a \NATplus \NATone$ and $l \eq b \NATplus \NATone$.
         Thus $k, l \NATgtr \NATone$. Indeed $a, b$ are positive.
-      End.
-    Qed.
+      \end{case}
+    \end{proof}
 
     Then we have $n \NATplus \NATone
       \eq m \NATplus l
@@ -341,12 +341,12 @@
   \begin{proof}[forthel]
     Assume $n \NATleq m \NATless n \NATplus \NATone$.
 
-    Case $n \eq m$. Obvious.
+    \begin{case}{$n \eq m$.} \end{case}
 
-    Case $n \NATless m$.
+    \begin{case}{$n \NATless m$.}
       Then $n \NATless m \NATleq n \NATplus \NATone$.
       Hence $n \eq m$.
-    End.
+    \end{case}
   \end{proof}
 
   \begin{corollary}[forthel,id=ARITHMETIC_04_1802826644717568]
@@ -367,12 +367,12 @@
     Then $n \NATplus \NATone \NATgeq \NATone$.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $n \eq \NATzero$. Obvious.
+    \begin{case}{$n \eq \NATzero$.} \end{case}
 
-    Case $n \neq \NATzero$.
+    \begin{case}{$n \neq \NATzero$.}
       Then $n \NATgtr \NATzero$.
       Hence $n \NATplus \NATone \NATgtr \NATzero \NATplus \NATone \eq \NATone$.
-    End.
+    \end{case}
   \end{proof}
 \end{sfragment}
 
@@ -382,15 +382,15 @@
     Then $n \NATless m$ iff $n \NATplus k \NATless m \NATplus k$.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $n \NATless m$.
+    \begin{case}{$n \NATless m$.}
       Take a positive natural number $l$ such that $m \eq n \NATplus l$.
       Then $m \NATplus k
         \eq (n \NATplus l) \NATplus k
         \eq (n \NATplus k) \NATplus l$.
       Hence $n \NATplus k \NATless m \NATplus k$.
-    End.
+    \end{case}
 
-    Case $n \NATplus k \NATless m \NATplus k$.
+    \begin{case}{$n \NATplus k \NATless m \NATplus k$.}
       Take a positive natural number $l$ such that $m \NATplus k \eq (n \NATplus k) \NATplus l$.
       $(n \NATplus k) \NATplus l
         \eq n \NATplus (k \NATplus l)
@@ -399,7 +399,7 @@
       Hence $m \NATplus k \eq (n \NATplus l) \NATplus k$.
       Thus $m \eq n \NATplus l$ (by \printref{ARITHMETIC_03_3137702874578944}).
       Therefore $n \NATless m$.
-    End.
+    \end{case}
   \end{proof}
 
   \begin{corollary}[forthel,id=ARITHMETIC_04_1901366129721344]
@@ -439,15 +439,15 @@
 
     (a) Define $\Phi = \{ n \in \Nat \mid n$ is less than any element of $A \}$.
 
-    (1) $\Phi$ contains $\NATzero$. \newline
-    Proof.
+    (1) $\Phi$ contains $\NATzero$.
+    \begin{proof}
       $\NATzero \notin A$.
       Hence $\NATzero$ is less than every element of $A$.
       Thus $\NATzero \in \Phi$.
-    Qed.
+    \end{proof}
 
-    (2) For all $n \in \Phi$ we have $n \NATplus \NATone \in \Phi$. \newline
-    Proof.
+    (2) For all $n \in \Phi$ we have $n \NATplus \NATone \in \Phi$.
+    \begin{proof}
       Let $n \in \Phi$.
       Then $n$ is less than any element of $A$.
       Assume that $\Phi$ does not contain $n \NATplus \NATone$.
@@ -455,7 +455,7 @@
       Then $n \NATless m \NATleq n \NATplus \NATone$.
       Hence $m \eq n \NATplus \NATone$.
       Contradiction.
-    Qed.
+    \end{proof}
 
     Then $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).
     Therefore every natural number is less than any element of $A$.
@@ -491,26 +491,26 @@
     (1) $\Phi$ contains $\NATzero$.
     Indeed if $\NATzero \NATgeq k$ then $\NATzero \eq k \in A$.
 
-    (2) For all $n \in \Phi$ we have $n \NATplus \NATone \in \Phi$. \newline
-    Proof.
+    (2) For all $n \in \Phi$ we have $n \NATplus \NATone \in \Phi$.
+    \begin{proof}
       Let $n \in \Phi$.
 
       Let us show that if $n \NATplus \NATone \NATgeq k$ then $n \NATplus \NATone \in A$.
         Assume $n \NATplus \NATone \NATgeq k$.
 
-        Case $n \NATless k$.
+        \begin{case}{$n \NATless k$.}
           Then $n \NATplus \NATone \eq k$.
           Hence $n \NATplus \NATone \in A$.
-        End.
+        \end{case}
 
-        Case $n \NATgeq k$.
+        \begin{case}{$n \NATgeq k$.}
           Then $n \in A$.
           Hence $n \NATplus \NATone \in A$.
-        End.
+        \end{case}
       End.
 
       Therefore $n \NATplus \NATone \in \Phi$.
-    Qed.
+    \end{proof}
 
     Thus $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).
     Consequently for all $n \in \Natgeqthan{k}$ we have $n \in A$.

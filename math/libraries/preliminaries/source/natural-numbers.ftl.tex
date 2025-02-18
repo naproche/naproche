@@ -146,9 +146,9 @@
   \begin{proof}[forthel,method=induction on $k$]
     Let $k\in\Nat$.
 
-    Case $k\eq\zero$. Obvious.
+    \begin{case}{$k\eq\zero$.}\end{case}
 
-    Case $k\neq\zero$.
+    \begin{case}{$k\neq\zero$.}
       Take $k'\in\Nat$ such that $k\eq k'\plus\one$.
       Then $k'\prec k$.
       Hence $n\plus(m\plus k')\eq(n\plus m)\plus k'$.
@@ -161,7 +161,7 @@
           &\eq ((n\plus m)\plus k')\plus\one\\
           &\eq (n\plus m)\plus(k'\plus\one)
       \end{align*}.
-    End.
+    \end{case}.
   \end{proof}
 
   \begin{proposition}[forthel,title=Commutativity,id=PlusIsCommutativeProp]
@@ -176,9 +176,9 @@
 
     Let $m\in\Nat$.
 
-    Case $m\eq\zero$. Trivial.
+    \begin{case}{$m\eq\zero$.}\end{case}
 
-    Case $m\neq\zero$.
+    \begin{case}{$m\neq\zero$.}
       Let $n\in\Nat$.
       Take $m'\in\Nat$ such that $m\eq m'\plus\one$.
       Then $n\plus m'\eq m'\plus n$.
@@ -192,7 +192,7 @@
           &\eq m'\plus(\one\plus n)\\
           &\eq (m'\plus\one)\plus n
       \end{align*}.
-    End.
+    \end{case}
   \end{proof}
 
   \begin{proposition}[forthel,title=Right cancellation,id=PlusIsRightCancellativeProp]
@@ -201,9 +201,9 @@
   \begin{proof}[forthel,method=induction on $k$]
     Let $k\in\Nat$.
 
-    Case $k\eq\zero$. Obvious.
+    \begin{case}{$k\eq\zero$.}\end{case}
 
-    Case $k\neq\zero$. Obvious.
+    \begin{case}{$k\neq\zero$.}\end{case}
   \end{proof}
 
   \begin{corollary}[forthel,title=Left cancellation,id=PlusIsLeftCancellativeProp]

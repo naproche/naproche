@@ -10,30 +10,30 @@
   $\ORDomega$ is a limit ordinal.
 \end{proposition}
 \begin{proof}[forthel]
-  $\ORDomega$ is transitive. \newline
-  Proof.
+  $\ORDomega$ is transitive.
+  \begin{proof}
     Define $\Phi = \{ n \in \ORDomega \mid$ for all $m \in n$ we have $m \in \ORDomega \}$.
 
     (1) $\ORDzero \in \Phi$.
 
-    (2) For all $n \in \Phi$ we have $\ORDsucc(n) \in \Phi$. \newline
-    Proof.
+    (2) For all $n \in \Phi$ we have $\ORDsucc(n) \in \Phi$.
+    \begin{proof}
       Let $n \in \Phi$.
       Then every element of $n$ is contained in $\ORDomega$.
       Hence every element of $\ORDsucc(n)$ is contained in $\ORDomega$.
       Thus $\ORDsucc(n) \in \Phi$.
-    Qed.
+    \end{proof}
 
     Therefore $\ORDomega \SETinclude \Phi$.
     Consequently $\ORDomega$ is transitive.
-  Qed.
+  \end{proof}
 
   Every element of $\ORDomega$ is an ordinal.
   Hence every element of $\ORDomega$ is transitive.
   Thus $\ORDomega$ is an ordinal.
 
-  $\ORDomega$ is a limit ordinal. \newline
-  Proof.
+  $\ORDomega$ is a limit ordinal.
+  \begin{proof}
     Assume the contrary.
     We have $\ORDomega \neq \ORDzero$.
     Hence $\ORDomega$ is a successor ordinal.
@@ -41,7 +41,7 @@
     Then $\alpha \in \ORDomega$.
     Thus $\ORDomega \eq \ORDsucc(\alpha) \in \ORDomega$.
     Contradiction.
-  Qed.
+  \end{proof}
 \end{proof}
 \end{smodule}
 \end{document}

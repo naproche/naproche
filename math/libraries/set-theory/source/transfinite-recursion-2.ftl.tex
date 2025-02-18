@@ -55,30 +55,30 @@
   Hence we can take a map $F$ from $\Ord$ to $A$ that is recursive regarding $J$.
   Then $F \FUNrest \alpha \in \ORDfunspace{A}$ for any ordinal $\alpha$.
 
-  (1) $F(\ORDzero) \eq a$. \newline
-  Proof.
+  (1) $F(\ORDzero) \eq a$.
+  \begin{proof}
     $F(\ORDzero)
       \eq J(F \FUNrest \ORDzero)
       \eq a$.
-  Qed.
+  \end{proof}
 
-  (2) $F(\ORDsucc(\alpha)) \eq G(\alpha, F(\alpha))$ for all ordinals $\alpha$. \newline
-  Proof.
+  (2) $F(\ORDsucc(\alpha)) \eq G(\alpha, F(\alpha))$ for all ordinals $\alpha$.
+  \begin{proof}
     Let $\alpha$ be an ordinal.
     Then $F(\ORDsucc(\alpha))
       \eq J(F \FUNrest \ORDsucc(\alpha))
       \eq G(\ORDpred(\ORDsucc(\alpha)), (F \FUNrest \ORDsucc(\alpha))(\ORDpred(\ORDsucc(\alpha))))
       \eq G(\alpha, (F \FUNrest \ORDsucc(\alpha))(\alpha))
       \eq G(\alpha, F(\alpha))$.
-  Qed.
+  \end{proof}
 
-  (3) $F(\lambda) \eq H(\lambda, F \FUNrest \lambda)$ for all limit ordinals $\lambda$. \newline
-  Proof.
+  (3) $F(\lambda) \eq H(\lambda, F \FUNrest \lambda)$ for all limit ordinals $\lambda$.
+  \begin{proof}
     Let $\lambda$ be a limit ordinal.
     Then $F(\lambda)
       \eq J(F \FUNrest \lambda)
       \eq H(\lambda, F \FUNrest \lambda)$.
-  Qed.
+  \end{proof}
 
   Hence the thesis (by 1, 2, 3).
 \end{proof}

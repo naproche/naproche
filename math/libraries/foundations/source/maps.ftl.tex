@@ -4,7 +4,7 @@
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Maps]{maps.ftl}
 \importmodule[libraries/foundations]{classes.ftl}
-\symdef{FUNid}{\textrm{id}}
+\symdef{FUNid}[args=1]{\comp{\textrm{id}}_{#1}}
 \symdef{FUNrange}{\textrm{range}}
 \symdef{FUNcomp}{\,\circ\,}
 \symdef{FUNrest}{\,\restriction\,}
@@ -35,16 +35,16 @@
     $b$ is a value of $f$ iff $b \in \FUNrange(f)$.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $b$ is a value of $f$.
+    \begin{case}{$b$ is a value of $f$.}
       Take $a \in \dom(f)$ such that $b \eq f(a)$.
       $b$ is an object.
       Hence $b \in \FUNrange(f)$.
-    End.
+    \end{case}
 
-    Case $b \in \FUNrange(f)$.
+    \begin{case}{$b \in \FUNrange(f)$.}
       Then $b$ is an object such that $b \eq f(a)$ for some $a \in \dom(f)$.
       Hence $b$ is a value of $f$.
-    End.
+    \end{case}
   \end{proof}
 \end{sfragment}
 

@@ -16,27 +16,27 @@
   $X$ is closed under finite intersections iff $U \SETintersect V \in X$ for every $U, V \in X$.
 \end{proposition}
 \begin{proof}[forthel]
-  Case $X$ is closed under finite intersections.
+  \begin{case}{$X$ is closed under finite intersections.}
     Let $U, V \in X$.
     Then $\SETpair{U}{V}$ is a nonempty finite subclass of $X$.
     Hence $U \SETintersect V \eq \SETintersectover \SETpair{U}{V} \in X$.
-  End.
+  \end{case}
 
-  Case $U \SETintersect V \in X$ for every $U, V \in X$.
+  \begin{case}{$U \SETintersect V \in X$ for every $U, V \in X$.}
     Define $\Phi = \{ n \in \Nat \mid \SETintersectover U \in X$ for every nonempty subclass $U$ of $X$ that has $n$ elements $\}$.
 
     (1) $\Phi$ contains $\NATzero$.
 
-    (2) For every $n \in \Phi$ we have $n \NATplus \NATone \in \Phi$. \newline
-    Proof.
+    (2) For every $n \in \Phi$ we have $n \NATplus \NATone \in \Phi$.
+    \begin{proof}
       Let $n \in \Phi$.
       Then $\SETintersectover U \in X$ for every nonempty subclass $U$ of $X$ that has $n$ elements.
 
       Let us show that $\SETintersectover U \in X$ for every nonempty subclass $U$ of $X$ that has $n \NATplus \NATone$ elements.
 
-        Case $n \eq \NATzero$. Obvious.
+        \begin{case}{$n \eq \NATzero$.} \end{case}
 
-        Case $n \neq \NATzero$.
+        \begin{case}{$n \neq \NATzero$.}
           Let $U$ be a nonempty subclass of $X$ such that $U$ has $n \NATplus \NATone$ elements.
           Take a bijection $f$ between $\NATsegment{\NATone}{n \NATplus \NATone}$ and $U$.
           We have $\NATsegment{\NATone}{n \NATplus \NATone} \eq \NATsegment{\NATone}{n} \SETunion \SETsingleton{n \NATplus \NATone}$.
@@ -63,7 +63,8 @@
           Thus $V$ has $n$ elements.
           Consequently $\SETintersectover V \in X$.
 
-          Let us show that $U \eq V \SETunion \SETsingleton{f(n \NATplus \NATone)}$. \newline
+          Let us show that $U \eq V \SETunion \SETsingleton{f(n \NATplus \NATone)}$.
+
             (1) $\FUNim{f}{A \SETunion B} \eq \FUNim{f}{A} \SETunion \FUNim{f}{B}$ for all $A, B \SETinclude \dom(f)$.
 
             (2) $\FUNim{f}{\SETsingleton{a}} \eq \SETsingleton{f(a)}$ for all $a \in \dom(f)$.
@@ -96,14 +97,14 @@
             \eq (\SETintersectover V) \SETintersect (\SETintersectover \SETsingleton{f(n \NATplus \NATone)})
             \eq (\SETintersectover V) \SETintersect f(n \NATplus \NATone)
             \in X$.
-        End.
+        \end{case}
       End.
-    Qed.
+    \end{proof}
 
     Therefore $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).
     Thus $\SETintersectover U \in X$ for every nonempty finite subclass $U$ of $X$.
     Consequently $X$ is closed under finite intersections.
-  End.
+  \end{case}
 \end{proof}
 \end{smodule}
 \end{document}

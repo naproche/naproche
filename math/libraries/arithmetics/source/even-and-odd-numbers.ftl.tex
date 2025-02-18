@@ -22,15 +22,15 @@
     $n$ is even iff $n \eq \NATtwo \NATmul m$ for some natural number $m$.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $n$ is even.
+    \begin{case}{$n$ is even.}
       Then $\NATtwo$ divides $n$.
       Hence $n \eq \NATtwo \NATmul m$ for some natural number $m$.
-    End.
+    \end{case}
 
-    Case $n \eq \NATtwo \NATmul m$ for some natural number $m$.
+    \begin{case}{$n \eq \NATtwo \NATmul m$ for some natural number $m$.}
       Then $\NATtwo$ divides $n$.
       Hence $\NATtwo$ is even.
-    End.
+    \end{case}
   \end{proof}
 
   \begin{proposition}[forthel,id=ARITHMETIC_15_1023512547854265]
@@ -38,25 +38,25 @@
     $n$ is odd iff $n \eq (\NATtwo \NATmul m) \NATplus \NATone$ for some natural number $m$.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $n$ is odd.
+    \begin{case}{$n$ is odd.}
       (a) Define $\Phi = \{ n' \in \Nat \mid$ if $n'$ is odd then $n' \eq (\NATtwo \NATmul m) \NATplus \NATone$ for some natural number $m \}$.
 
       (1) $\Phi$ contains $\NATzero$.
       Indeed $\NATzero$ is not odd.
 
-      (2) For all $n' \in \Phi$ we have $n' \NATplus \NATone \in \Phi$. \newline
-      Proof.
+      (2) For all $n' \in \Phi$ we have $n' \NATplus \NATone \in \Phi$. 
+      \begin{proof}
         Let $n' \in \Phi$.
 
         Let us show that if $n' \NATplus  \NATone$ is odd then $(n' \NATplus  \NATone) \eq (\NATtwo \NATmul m) \NATplus  \NATone$ for some natural number $m$.
           Assume that $n' \NATplus  \NATone$ is odd.
 
-          Case $n'$ is even.
+          \begin{case}{$n'$ is even.}
             Take a natural number $m$ such that $n' \eq \NATtwo \NATmul m$.
             Then $n' \NATplus \NATone \eq (\NATtwo \NATmul m) \NATplus  \NATone$.
-          End.
+          \end{case}
 
-          Case $n'$ is odd.
+          \begin{case}{$n'$ is odd.}
             Take a natural number $m$ such that $n' \eq (\NATtwo \NATmul m) \NATplus  \NATone$.
             Then $n' \NATplus  \NATone
               \eq ((\NATtwo \NATmul m) \NATplus  \NATone) \NATplus  \NATone
@@ -66,15 +66,15 @@
             Hence $\NATtwo$ divides $n'$.
             Thus $n'$ is even.
             Contradiction.
-          End.
+          \end{case}
         End.
-      Qed.
+      \end{proof}
 
       Then $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).
       Hence $n$ is odd iff $n \eq (\NATtwo \NATmul m) \NATplus  \NATone$ for some natural number $m$ (by a).
-    End.
+    \end{case}
 
-    Case $n \eq (\NATtwo \NATmul m) \NATplus  \NATone$ for some natural number $m$.
+    \begin{case}{$n \eq (\NATtwo \NATmul m) \NATplus  \NATone$ for some natural number $m$.}
       Consider a natural number $m$ such that $n \eq (\NATtwo \NATmul m) \NATplus  \NATone$.
       Assume that $n$ is even.
       Then we can take a natural number $k$ such that $n \eq \NATtwo \NATmul k$.
@@ -83,7 +83,7 @@
       Thus $\NATtwo$ divides $ \NATone$.
       Indeed $\NATtwo$ divides $\NATtwo \NATmul m$.
       Contradiction.
-    End.
+    \end{case}
   \end{proof}
 
   \begin{proposition}[forthel,id=ARITHMETIC_15_1023652154254789]
@@ -91,7 +91,7 @@
     $n$ is odd iff $n \eq (\NATtwo \NATmul m) \NATsub  \NATone$ for some positive natural number $m$.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $n$ is odd.
+    \begin{case}{$n$ is odd.}
       Consider a natural number $k$ such that $n \eq (\NATtwo \NATmul k) \NATplus  \NATone$.
       Take $m \eq k \NATplus  \NATone$.
       Then $n
@@ -103,9 +103,9 @@
         \eq ((\NATtwo \NATmul m) \NATsub (\NATtwo \NATmul  \NATone)) \NATplus  \NATone
         \eq ((\NATtwo \NATmul m) \NATsub \NATtwo) \NATplus  \NATone
         \eq (\NATtwo \NATmul m) \NATsub  \NATone$.
-    End.
+    \end{case}
 
-    Case $n \eq (\NATtwo \NATmul m) \NATsub  \NATone$ for some positive natural number $m$.
+    \begin{case}{$n \eq (\NATtwo \NATmul m) \NATsub  \NATone$ for some positive natural number $m$.}
       Consider a positive natural number $m$ such that $n \eq (\NATtwo \NATmul m) \NATsub  \NATone$.
       Take $k \eq m \NATsub  \NATone$.
       Then $n
@@ -120,7 +120,7 @@
         \eq (\NATtwo \NATmul k) \NATplus (\NATtwo \NATsub  \NATone)
         \eq (\NATtwo \NATmul k) \NATplus  \NATone$.
       Hence $n$ is odd.
-    End.
+    \end{case}
   \end{proof}
 \end{sfragment}
 
@@ -256,15 +256,15 @@
     Then $n \NATmul m$ is even.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $n$ is even.
+    \begin{case}{$n$ is even.}
       Take a natural number $k$ such that $n \eq \NATtwo \NATmul k$.
       Then $n \NATmul m
         \eq (\NATtwo \NATmul k) \NATmul m
         \eq \NATtwo \NATmul (k \NATmul m)$.
       Hence $n \NATmul m$ is even.
-    End.
+    \end{case}
 
-    Case $m$ is even.
+    \begin{case}{$m$ is even.}
       Take a natural number $l$ such that $m \eq \NATtwo \NATmul l$.
       Then $n \NATmul m
         \eq n \NATmul (\NATtwo \NATmul l)
@@ -272,7 +272,7 @@
         \eq (\NATtwo \NATmul n) \NATmul l
         \eq \NATtwo \NATmul (n \NATmul l)$.
       Hence $n \NATmul m$ is even.
-    End.
+    \end{case}
   \end{proof}
 
   \begin{proposition}[forthel,id=ARITHMETIC_15_0236596587452145]

@@ -26,53 +26,53 @@
     Then $g$ is a map from $\ORDsucc(n)$ to $\ORDomega$.
     Indeed we can show that $g(k) \in \ORDomega$ for all $k \in \ORDsucc(n)$.
       Let $k \in \ORDsucc(n)$.
-      Case $k \ORDless n$. Obvious.
-      Case $k \eq n$. Obvious.
+      \begin{case}{$k \ORDless n$.} \end{case}
+      \begin{case}{$k \eq n$.} \end{case}
     End.
 
     $g$ is injective.
     Indeed we can show that for all $k, k' \in \ORDsucc(n)$ if $k \neq k'$
-    then $g(k) \neq g(k')$. \newline
-    Proof.
+    then $g(k) \neq g(k')$. 
+    \begin{proof}
       Let $k, k' \in \ORDsucc(n)$.
       Assume $k \neq k'$.
 
-      Case $k, k' \ORDless n$.
+      \begin{case}{$k, k' \ORDless n$.}
         Then $f(k) \neq f(k')$.
         Hence $\ORDsucc(f(k)) \neq \ORDsucc(f(k'))$.
         Thus $g(k) \neq g(k')$.
-      End.
+      \end{case}
 
-      Case $k \ORDless n$ and $k' \eq n$.
+      \begin{case}{$k \ORDless n$ and $k' \eq n$.}
         We have $\ORDsucc(f(k)) \neq \ORDzero$.
         Hence $g(k) \neq g(k')$.
-      End.
+      \end{case}
 
-      Case $k \eq n$ and $k' \ORDless n$.
+      \begin{case}{$k \eq n$ and $k' \ORDless n$.}
         We have $\ORDsucc(f(k')) \neq \ORDzero$.
         Hence $g(k) \neq g(k')$.
-      End.
-    Qed.
+      \end{case}
+    \end{proof}
 
     $g$ is surjective onto $\ORDomega$.
-    Indeed we can show that for any $m \in \ORDomega$ there exists a $k \in \ORDsucc(n)$ such that $m \eq g(k)$. \newline
-    Proof.
+    Indeed we can show that for any $m \in \ORDomega$ there exists a $k \in \ORDsucc(n)$ such that $m \eq g(k)$.
+    \begin{proof}
       Let $m \in \ORDomega$.
       Then $\FUNinv{f}(m) \in n$.
 
-      Case $m \eq \ORDzero$.
+      \begin{case}{$m \eq \ORDzero$.}
         Then $m \eq g(n)$.
-      End.
+      \end{case}
 
-      Case $m \neq \ORDzero$.
+      \begin{case}{$m \neq \ORDzero$.}
         Take $m' \in \ORDomega$ such that $m \eq \ORDsucc(m')$.
         Then $m
           \eq \ORDsucc(m')
           \eq \ORDsucc(f(\FUNinv{f}(m')))
           \eq g(\FUNinv{f}(m'))$.
         Indeed $f(\FUNinv{f}(m')) \eq m'$ and $\FUNinv{f}(m') \ORDless n$.
-      End.
-    End.
+      \end{case}
+    \end{proof}
 
     Hence $g$ is a bijection between $\ORDsucc(n)$ and $\ORDomega$.
     Then we have $n

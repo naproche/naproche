@@ -46,31 +46,31 @@
   \[ x \SETdiff F[\alpha] \neq \SETempty \implies F(\alpha) \in x \SETdiff F[\alpha] \]
   and
   \[ x \SETdiff F[\alpha] \eq \SETempty \implies F(\alpha) \eq x. \]
-  Proof.
+  \begin{proof}
     Let $\alpha \in \Ord$.
     We have $\FUNim{F}{\alpha} \eq \{ F(\beta) \mid \beta \in \alpha \}$.
     Hence $\FUNim{F}{\alpha} \eq \{ G(F \FUNrest \beta) \mid \beta \in \alpha \}$.
     We have $\FUNrange(F \FUNrest \alpha) \eq \{ F(\beta) \mid \beta \in \alpha \}$.
     Thus $\FUNrange(F \FUNrest \alpha) \eq \FUNim{F}{\alpha}$.
 
-    Case $x \SETdiff \FUNim{F}{\alpha} \neq \SETempty$.
+    \begin{case}{$x \SETdiff \FUNim{F}{\alpha} \neq \SETempty$.}
       Then $x \SETdiff \FUNrange(F \FUNrest \alpha) \neq \SETempty$.
       Hence $F(\alpha)
         \eq G(F \FUNrest \alpha)
         \in x \SETdiff \FUNrange(F \FUNrest \alpha)
         \eq x \SETdiff F[\alpha]$.
-    End.
+    \end{case}
 
-    Case $x \SETdiff \FUNim{F}{\alpha} \neq \SETempty$.
+    \begin{case}{$x \SETdiff \FUNim{F}{\alpha} \neq \SETempty$.}
       Then $x \SETdiff \FUNrange(F \FUNrest \alpha) \eq \SETempty$.
       Hence $F(\alpha)
         \eq G(F \FUNrest \alpha)
         \eq x$.
-    End.
-  Qed.
+    \end{case}
+  \end{proof}
 
-  (1) For any ordinals $\alpha, \beta$ such that $\alpha \ORDless \beta$ and $F(\beta) \neq x$ we have $F(\alpha), F(\beta) \in x$ and $F(\alpha) \neq F(\beta)$. \newline
-  Proof.
+  (1) For any ordinals $\alpha, \beta$ such that $\alpha \ORDless \beta$ and $F(\beta) \neq x$ we have $F(\alpha), F(\beta) \in x$ and $F(\alpha) \neq F(\beta)$.
+  \begin{proof}
     Let $\alpha, \beta \in \Ord$.
     Assume $\alpha \ORDless \beta$ and $F(\beta) \neq x$.
     Then $x \SETdiff \FUNim{F}{\beta} \neq \SETempty$.
@@ -81,10 +81,10 @@
     Consequently $F(\alpha), F(\beta) \in x$ (by a, b).
     We have $F(\alpha) \in \FUNim{F}{\beta}$ and $F(\beta) \notin \FUNim{F}{\beta}$.
     Thus $F(\alpha) \neq F(\beta)$.
-  Qed.
+  \end{proof}
 
-  (2) There exists an ordinal $\alpha$ such that $F(\alpha) \eq x$. \newline
-  Proof.
+  (2) There exists an ordinal $\alpha$ such that $F(\alpha) \eq x$.
+  \begin{proof}
     Assume the contrary.
     Then $F$ is a map from $\Ord$ to $x$.
 
@@ -98,7 +98,7 @@
 
     Thus $F$ is an injective map from some proper class to some set.
     Contradiction.
-  Qed.
+  \end{proof}
 
   Define $\Phi = \{ \alpha \in \Ord \mid F(\alpha) \eq x \}$.
   $\Phi$ is nonempty.
@@ -110,23 +110,23 @@
   Then $f$ is a map from $\alpha$ to $x$.
   Indeed for no $\beta \in \alpha$ we have $F(\beta) \eq x$.
 
-  (3) $f$ is surjective onto $x$. \newline
-  Proof.
+  (3) $f$ is surjective onto $x$.
+  \begin{proof}
     $x \SETdiff \FUNim{F}{\alpha} \eq \SETempty$.
     Hence $\FUNrange(f)
       \eq \FUNim{f}{\alpha}
       \eq \FUNim{F}{\alpha}
       \eq x$.
-  Qed.
+  \end{proof}
 
-  (4) $f$ is injective. \newline
-  Proof.
+  (4) $f$ is injective.
+  \begin{proof}
     Let $\beta, \gamma \in \alpha$.
     Assume $\beta \neq \gamma$.
     We have $f(\beta), f(\gamma) \neq x$.
     Hence $f(\beta) \neq f(\gamma)$ (by 1).
     Indeed $\beta \ORDless \gamma$ or $\gamma \ORDless \beta$.
-  Qed.
+  \end{proof}
 
   Therefore $f$ is a bijection between $\alpha$ and $x$.
   Consequently $x$ and $\alpha$ are equinumerous.

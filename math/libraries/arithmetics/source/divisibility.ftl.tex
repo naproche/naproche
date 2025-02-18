@@ -5,15 +5,14 @@
 \begin{smodule}[title=Divisibility]{divisibility.ftl}
 \importmodule[libraries/arithmetics]{multiplication-and-ordering.ftl}
 \symdef{NATmid}{\,\mid\,}
-\symdef{NATnmid}{\,\not\mid\,}
+\symdef{NATnmid}{\,\nmid\,}
 
 \begin{definition}[forthel,id=ARITHMETIC_07_4239998993825792]
   Let $n, m$ be natural numbers.
-  \emph{$n$ divides $m$} iff there exists a natural number $k$ such that $n \NATmul k \eq m$.
+  $n$ \emph{divides $m$} iff there exists a natural number $k$ such that $n \NATmul k \eq m$.
 
   Let $m$ is \emph{divisible by $n$} stand for $n$ divides $m$.
   Let $\emph{n \NATmid m}$ stand for $n$ divides $m$.
-  Let $\emph{n \NATnmid m}$ stand for $n$ does not divide $m$.
 \end{definition}
 
 \begin{lemma}[forthel,id=ARITHMETIC_07_1478855118290944]
@@ -90,16 +89,16 @@
   Suppose $n \neq \NATone$.
   Then $n \NATless \NATone$ or $n \NATgtr \NATone$.
 
-  Case $n \NATless \NATone$.
+  \begin{case}{$n \NATless \NATone$.}
     Then $n \eq \NATzero$.
     Hence $\NATzero
       \eq \NATzero \NATmul k
       \eq n \NATmul k
       \eq \NATone$.
     Contradiction.
-  End.
+  \end{case}
 
-  Case $n \NATgtr \NATone$.
+  \begin{case}{$n \NATgtr \NATone$.}
     We have $k \neq \NATzero$.
     Indeed if $k \eq \NATzero$ then
     $\NATone
@@ -115,7 +114,7 @@
       \NATleq n \NATmul k$.
     Hence $\NATone \NATless n$.
     Contradiction.
-  End.
+  \end{case}
 \end{proof}
 
 \begin{proposition}[forthel,id=ARITHMETIC_07_7463519983239168]
@@ -228,9 +227,9 @@
 \begin{proof}[forthel]
   Assume $k \NATmid n$ and $k \NATmid n \NATplus m$.
 
-  Case $k \eq \NATzero$. Obvious.
+  \begin{case}{$k \eq \NATzero$.} \end{case}
 
-  Case $k \neq \NATzero$.
+  \begin{case}{$k \neq \NATzero$.}
     Take a natural number $l$ such that $n \eq k \NATmul l$.
     Take a natural number $l'$ such that $n \NATplus m \eq k \NATmul l'$.
     Then $(k \NATmul l) \NATplus m \eq k \NATmul l'$.
@@ -249,7 +248,7 @@
     Thus $m \eq (k \NATmul l'')$ (by \printref{ARITHMETIC_03_8445946379632640}).
     Indeed $k \NATmul l$ and $k \NATmul l''$ are natural numbers.
     Therefore $k \NATmid m$.
-  End.
+  \end{case}
 \end{proof}
 
 \begin{proposition}[forthel,id=ARITHMETIC_07_2187144577679360]

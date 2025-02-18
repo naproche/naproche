@@ -28,14 +28,14 @@
   Then $X$ is transitive iff $\SETunionover X \SETinclude X$.
 \end{proposition}
 \begin{proof}[forthel]
-  Case $X$ is transitive.
+  \begin{case}{$X$ is transitive.}
     Let $x \in \SETunionover X$.
     Take a member $y$ of $X$ such that $x \in y$.
     Then $y$ is a subset of $X$.
     Hence $x$ is an element of $X$.
-  End.
+  \end{case}
 
-  Case $\SETunionover X \SETinclude X$.
+  \begin{case}{$\SETunionover X \SETinclude X$.}
     Let $x \in X$.
 
     Let us show that $x \SETinclude X$.
@@ -43,7 +43,7 @@
       Then $y \in \SETunionover X$.
       Hence $y \in X$.
     End.
-  End.
+  \end{case}
 \end{proof}
 
 \begin{proposition}[forthel,id=SET_THEORY_01_620651482185728]
@@ -99,17 +99,17 @@
   Then $X$ is transitive iff $X \SETinclude \SETpow(X)$.
 \end{proposition}
 \begin{proof}[forthel]
-  Case $X$ is transitive.
+  \begin{case}{$X$ is transitive.}
     Let $x \in X$.
     Then $x \SETinclude X$.
     Hence $x \in \SETpow(X)$.
-  End.
+  \end{case}
 
-  Case $X \SETinclude \SETpow(X)$.
+  \begin{case}{$X \SETinclude \SETpow(X)$.}
     Let $x \in X$.
     Then $x \in \SETpow(X)$.
     Hence $x \SETinclude X$.
-  End.
+  \end{case}
 \end{proof}
 
 \begin{proposition}[forthel,id=SET_THEORY_01_6995689103949824]

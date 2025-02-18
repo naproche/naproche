@@ -40,7 +40,7 @@
   Then $x$ and $y$ are equinumerous iff $\SETcard{x} \eq \SETcard{y}$.
 \end{proposition}
 \begin{proof}[forthel]
-  Case $x$ and $y$ are equinumerous.
+  \begin{case}{$x$ and $y$ are equinumerous.}
     Take a bijection $f$ between $x$ and $y$.
     Consider a bijection $g$ between $y$ and $\SETcard{y}$.
     Then $g \FUNcomp f$ is a bijection between $x$ and $\SETcard{y}$ (by \printref{FOUNDATIONS_08_6435206693126144}).
@@ -54,14 +54,14 @@
     Thus $\SETcard{x} \ORDgeq \SETcard{y}$.
 
     Therefore $\SETcard{x} \eq \SETcard{y}$.
-  End.
+  \end{case}
 
-  Case $\SETcard{x} \eq \SETcard{y}$.
+  \begin{case}{$\SETcard{x} \eq \SETcard{y}$.}
     Consider a bijection $f$ between $x$ and $\SETcard{x}$ and a bijection $g$
     between $\SETcard{y}$ and $y$.
     Then $g \FUNcomp f$ is a bijection between $x$ and $y$.
     Hence $x$ and $y$ are equinumerous.
-  End.
+  \end{case}
 \end{proof}
 \end{smodule}
 \end{document}

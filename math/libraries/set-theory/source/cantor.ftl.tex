@@ -11,15 +11,15 @@
   Then $\SETcard{x} \ORDless \SETcard{\SETpow(x)}$.
 \end{theorem}
 \begin{proof}[forthel]
-  Case $x$ is empty. Obvious.
+  \begin{case}{$x$ is empty.} \end{case}
 
-  Case $x$ is nonempty.
+  \begin{case}{$x$ is nonempty.}
     Assume the contrary.
     Then $\SETcard{x} \ORDgeq \SETcard{\SETpow(x)}$.
     Hence there exists a surjective map from $x$ onto $\SETpow(x)$ (by \printref{SET_THEORY_06_192336220913664}).
     Indeed $\SETpow(x)$ is a nonempty set.
     Contradiction (by \nameref{cantor_017529138285230}).
-  End.
+  \end{case}
 \end{proof}
 \end{smodule}
 \end{document}

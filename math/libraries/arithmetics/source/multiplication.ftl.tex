@@ -40,8 +40,8 @@
         \eq (n \NATmul m) \NATplus \NATzero
         \eq (n \NATmul m) \NATplus (n \NATmul \NATzero)$.
 
-      (2) For all $k' \in \Phi$ we have $k' \NATplus \NATone \in \Phi$. \newline
-      Proof.
+      (2) For all $k' \in \Phi$ we have $k' \NATplus \NATone \in \Phi$. 
+      \begin{proof}
         Let $k'\in \Phi$.
         Then
         \[  n \NATmul (m \NATplus (k' \NATplus \NATone))                  \]
@@ -52,7 +52,7 @@
         \[    \eq (n \NATmul m) \NATplus (n \NATmul (k' \NATplus \NATone)).   \]
         Hence $n \NATmul (m \NATplus (k' \NATplus \NATone)) \eq (n \NATmul m) \NATplus (n \NATmul (k' \NATplus \NATone))$.
         Thus $k' \NATplus \NATone \in \Phi$.
-      Qed.
+      \end{proof}
 
       Thus every natural number is contained in $\Phi$.
       Therefore $n \NATmul (m \NATplus k) \eq (n \NATmul m) \NATplus (n \NATmul k)$.
@@ -71,8 +71,8 @@
         \eq \NATzero \NATplus \NATzero
         \eq (n \NATmul \NATzero) \NATplus (m \NATmul \NATzero)$.
 
-      (2) For all $k' \in \Phi$ we have $k' \NATplus \NATone \in \Phi$. \newline
-      Proof.
+      (2) For all $k' \in \Phi$ we have $k' \NATplus \NATone \in \Phi$.
+      \begin{proof}
         Let $k' \in \Phi$.
         Then
         \[  (n \NATplus m) \NATmul (k' \NATplus \NATone)                        \]
@@ -85,7 +85,7 @@
         \[    \eq ((n \NATmul k') \NATplus n) \NATplus ((m \NATmul k') \NATplus m)   \]
         \[    \eq (n \NATmul (k' \NATplus \NATone)) \NATplus (m \NATmul (k' \NATplus \NATone)).  \]
         Thus $(n \NATplus m) \NATmul (k' \NATplus \NATone) \eq (n \NATmul (k' \NATplus \NATone)) \NATplus (m \NATmul (k' \NATplus \NATone))$.
-      Qed.
+      \end{proof}
 
       Thus every natural number is an element of $\Phi$.
       Therefore $(n \NATplus m) \NATmul k \eq (n \NATmul k) \NATplus (m \NATmul k)$.
@@ -131,8 +131,8 @@
         \eq \NATzero
         \eq (n \NATmul m) \NATmul \NATzero$.
 
-      (2) For all $k' \in \Phi$ we have $k' \NATplus \NATone \in \Phi$. \newline
-      Proof.
+      (2) For all $k' \in \Phi$ we have $k' \NATplus \NATone \in \Phi$.
+      \begin{proof}
         Let $k' \in \Phi$.
         Then
         \[  n \NATmul (m \NATmul (k' \NATplus \NATone))                          \]
@@ -141,7 +141,7 @@
         \[    \eq ((n \NATmul m) \NATmul k') \NATplus (n \NATmul m)            \]
         \[    \eq ((n \NATmul m) \NATmul k') \NATplus ((n \NATmul m) \NATmul \NATone)  \]
         \[    \eq (n \NATmul m) \NATmul (k' \NATplus \NATone).                     \]
-      Qed.
+      \end{proof}
 
       Hence every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
       Thus $n \NATmul (m \NATmul k) \eq (n \NATmul m) \NATmul k$.
@@ -156,14 +156,14 @@
     \begin{proof}[forthel]
       Define $\Phi = \{ m' \in \Nat \mid n \NATmul m' \eq m' \NATmul n \}$.
 
-      (1) $\NATzero$ is contained in $\Phi$. \newline
-      Proof.
+      (1) $\NATzero$ is contained in $\Phi$.
+      \begin{proof}
         Define $\Psi = \{ n' \in \Nat \mid n' \NATmul \NATzero \eq \NATzero \NATmul n' \}$.
 
         (1a) $\NATzero$ is contained in $\Psi$.
 
-        (1b) For all $n' \in \Psi$ we have $n' \NATplus \NATone \in \Psi$. \newline
-        Proof.
+        (1b) For all $n' \in \Psi$ we have $n' \NATplus \NATone \in \Psi$.
+        \begin{proof}
           Let $n' \in \Psi$.
           Then
           \[ (n' \NATplus \NATone) \NATmul \NATzero
@@ -172,34 +172,34 @@
             \eq \NATzero \NATmul n'
             \eq (\NATzero \NATmul n') \NATplus \NATzero
             \eq \NATzero \NATmul (n' \NATplus \NATone). \]
-        Qed.
+        \end{proof}
 
         Hence every natural number is contained in $\Psi$ (by \printref{ARITHMETIC_01_4764664342773760}).
         Thus $n \NATmul \NATzero \eq \NATzero \NATmul n$.
-      Qed.
+      \end{proof}
 
-      (2) $\NATone$ belongs to $\Phi$. \newline
-      Proof.
+      (2) $\NATone$ belongs to $\Phi$.
+      \begin{proof}
         Define $\Theta = \{ n' \in \Nat \mid n' \NATmul \NATone \eq \NATone \NATmul n' \}$.
 
         (2a) $\NATzero$ is contained in $\Theta$.
 
-        (2b) For all $n' \in \Theta$ we have $n' \NATplus \NATone \in \Theta$. \newline
-        Proof.
+        (2b) For all $n' \in \Theta$ we have $n' \NATplus \NATone \in \Theta$.
+        \begin{proof}
           Let $n' \in \Theta$.
           Then
           \[  (n' \NATplus \NATone) \NATmul \NATone        \]
           \[    \eq (n' \NATmul \NATone) \NATplus \NATone    \]
           \[    \eq (\NATone \NATmul n') \NATplus \NATone    \]
           \[    \eq \NATone \NATmul (n' \NATplus \NATone).   \]
-        Qed.
+        \end{proof}
 
         Thus every natural number is contained in $\Theta$ (by \printref{ARITHMETIC_01_4764664342773760}).
         Therefore $n \NATmul \NATone \eq \NATone \NATmul n$.
-      Qed.
+      \end{proof}
 
-      (3) For all $m' \in \Phi$ we have $m' \NATplus \NATone \in \Phi$. \newline
-      Proof.
+      (3) For all $m' \in \Phi$ we have $m' \NATplus \NATone \in \Phi$.
+      \begin{proof}
         Let $m' \in \Phi$.
         Then
         \[  n \NATmul (m' \NATplus \NATone)                \]
@@ -209,7 +209,7 @@
         \[    \eq (\NATone \NATplus m') \NATmul n            \]
         \[    \eq (m' \NATplus \NATone) \NATmul n.           \]
         Indeed $((\NATone \NATmul n) \NATplus (m' \NATmul n)) \eq (\NATone \NATplus m') \NATmul n$. %!
-      Qed.
+      \end{proof}
 
       Hence every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
       Thus $n \NATmul m \eq m \NATmul n$.
@@ -245,30 +245,30 @@
     \begin{proof}[forthel]
       Define $\Phi = \{ n' \in \Nat \mid$ for all $m' \in \Nat$ if $n' \NATmul k \eq m' \NATmul k$ and $k \neq \NATzero$ then $n' \eq m' \}$.
 
-      (1) $\NATzero$ is contained in $\Phi$. \newline
-      Proof.
+      (1) $\NATzero$ is contained in $\Phi$.
+      \begin{proof}
         Let $m' \in \Nat$.
         Assume $\NATzero \NATmul k \eq m' \NATmul k$ and $k \neq \NATzero$.
         Then $m' \NATmul k \eq \NATzero$.
         Hence $m' \eq \NATzero$ or $k \eq \NATzero$.
         Thus $m' \eq \NATzero$.
-      Qed.
+      \end{proof}
 
-      (2) For all $n' \in \Phi$ we have $n' \NATplus \NATone \in \Phi$. \newline
-      Proof.
+      (2) For all $n' \in \Phi$ we have $n' \NATplus \NATone \in \Phi$. 
+      \begin{proof}
         Let $n' \in \Phi$.
 
         Let us show that for all $m' \in \Nat$ if $(n' \NATplus \NATone) \NATmul k \eq m' \NATmul k$ and $k \neq \NATzero$ then $n' \NATplus \NATone \eq m'$.
           Let $m' \in \Nat$.
           Assume $(n' \NATplus \NATone) \NATmul k \eq m' \NATmul k$ and $k \neq \NATzero$.
 
-          Case $m' \eq \NATzero$.
+          \begin{case}{$m' \eq \NATzero$.}
             Then $(n' \NATplus \NATone) \NATmul k \eq \NATzero$.
             Hence $n' \NATplus \NATone \eq \NATzero$.
             Contradiction.
-          End.
+          \end{case}
 
-          Case $m' \neq \NATzero$.
+          \begin{case}{$m' \neq \NATzero$.}
             Take a natural number $l$ such that $m' \eq l \NATplus \NATone$.
             Then $(n' \NATplus \NATone) \NATmul k \eq (l \NATplus \NATone) \NATmul k$.
             Hence $(n' \NATmul k) \NATplus k
@@ -282,11 +282,11 @@
             Then we have $n' \eq l$.
             Indeed if $n' \NATmul k \eq l \NATmul k$ and $k \neq \NATzero$ then $n' \eq l$.
             Therefore $n' \NATplus \NATone \eq l \NATplus \NATone \eq m'$.
-          End.
+          \end{case}
         End.
 
         Hence $n' \NATplus \NATone \in \Phi$.
-      Qed.
+      \end{proof}
 
       Thus every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
       Therefore if $n \NATmul k \eq m \NATmul k$ then $n \eq m$.

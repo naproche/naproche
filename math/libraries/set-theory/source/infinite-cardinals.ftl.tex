@@ -31,60 +31,60 @@
 
   Then $f$ is a map from $\ORDsucc(\alpha)$ to $\alpha$.
   Indeed we can show that $f(\beta) \in \alpha$ for all
-  $\beta \in \ORDsucc(\alpha)$. \newline
-  Proof.
+  $\beta \in \ORDsucc(\alpha)$.
+  \begin{proof}
     Let $\beta \in \ORDsucc(\alpha)$.
 
-    Case $\beta \ORDless \ORDomega$.
+    \begin{case}{$\beta \ORDless \ORDomega$.}
       Then $f(\beta)
         \eq \ORDsucc(\beta)
         \ORDless \ORDomega
         \ORDleq \alpha$.
-    End.
+    \end{case}
 
-    Case $\ORDomega \ORDleq \beta \ORDless \alpha$.
+    \begin{case}{$\ORDomega \ORDleq \beta \ORDless \alpha$.}
       Then $f(\beta)
         \eq \beta
         \ORDless \alpha$.
-    End.
+    \end{case}
 
-    Case $\beta \eq \alpha$.
+    \begin{case}{$\beta \eq \alpha$.}
       Then $f(\beta)
         \eq \ORDzero
         \ORDless \alpha$.
-    End.
-  Qed.
+    \end{case}
+  \end{proof}
 
   $f$ is surjective onto $\alpha$.
   Indeed we can show that for any $\beta \in \alpha$ there exists a
-  $\gamma \in \ORDsucc(\alpha)$ such that $\beta \eq f(\gamma)$. \newline
-  Proof.
+  $\gamma \in \ORDsucc(\alpha)$ such that $\beta \eq f(\gamma)$.
+  \begin{proof}
     Let $\beta \in \alpha$.
     Then $\beta \eq \ORDzero$ or $\ORDzero \ORDless \beta \ORDless \ORDomega$ or $\beta \ORDgeq \ORDomega$.
 
-    Case $\beta \eq \ORDzero$.
+    \begin{case}{$\beta \eq \ORDzero$.}
       Then $\beta \eq f(\alpha)$.
-    End.
+    \end{case}
 
-    Case $\ORDzero \ORDless \beta \ORDless \ORDomega$.
+    \begin{case}{$\ORDzero \ORDless \beta \ORDless \ORDomega$.}
       Take an ordinal $\beta'$ such that $\beta \eq \ORDsucc(\beta')$.
       Then $\beta' \ORDless \ORDomega$.
       Hence $\beta \eq f(\beta')$.
-    End.
+    \end{case}
 
-    Case $\beta \ORDgeq \ORDomega$.
+    \begin{case}{$\beta \ORDgeq \ORDomega$.}
       Then $\beta \eq f(\beta)$.
-    End.
-  Qed.
+    \end{case}
+  \end{proof}
 
   $f$ is injective.
   Indeed we can show that for all $\beta, \gamma \in \ORDsucc(\alpha)$ if
-  $\beta \neq \gamma$ then $f(\beta) \neq f(\gamma)$. \newline
-  Proof.
+  $\beta \neq \gamma$ then $f(\beta) \neq f(\gamma)$.
+  \begin{proof}
     Let $\beta, \gamma \in \ORDsucc(\alpha)$.
     Assume $\beta \neq \gamma$.
 
-    Case $\beta \ORDless \ORDomega$.
+    \begin{case}{$\beta \ORDless \ORDomega$.}
       If $\gamma \eq \alpha$ then
       $f(\beta)
         \eq \ORDsucc(\beta)
@@ -96,9 +96,9 @@
         \ORDless \ORDomega
         \ORDleq \gamma
         \eq f(\gamma)$.
-    End.
+    \end{case}
 
-    Case $\ORDomega \ORDleq \beta \ORDless \alpha$.
+    \begin{case}{$\ORDomega \ORDleq \beta \ORDless \alpha$.}
       If $\gamma \eq \alpha$ then
       $f(\beta)
         \eq \beta
@@ -111,9 +111,9 @@
         \ORDgeq \ORDomega
         \ORDgtr \ORDsucc(\gamma)
         \eq f(\gamma)$.
-    End.
+    \end{case}
 
-    Case $\beta \eq \alpha$.
+    \begin{case}{$\beta \eq \alpha$.}
       If $\gamma \ORDless \ORDomega$ then
       $f(\beta)
         \eq \ORDzero
@@ -125,8 +125,8 @@
         \ORDless \ORDomega
         \ORDleq \gamma
         \eq f(\gamma)$.
-    End.
-  Qed.
+    \end{case}
+  \end{proof}
 
   Hence $f$ is a bijection between $\ORDsucc(\alpha)$ and $\alpha$.
   Therefore $\ORDsucc(\alpha)$ and $\alpha$ are equinumerous.

@@ -72,92 +72,92 @@
       Let us show that (I) $X \SETinclude Y$.
         Let $x \in X$.
 
-        (I 1) Case $x \in ((A \SETdiff B) \SETunion (B \SETdiff A)) \SETdiff C$.
+        \begin{case}{$x \in ((A \SETdiff B) \SETunion (B \SETdiff A)) \SETdiff C$.}
           Then $x \notin C$.
 
-          (I 1a) Case $x \in A \SETdiff B$.
+          \begin{case}{$x \in A \SETdiff B$.}
             Then $x \notin B \SETdiff C$ and $x \notin C \SETdiff B$. $x \in A$.
             Hence $x \in A \SETdiff ((B \SETdiff C) \SETunion (C \SETdiff B))$.
             Thus $x \in Y$.
-          End.
+          \end{case}
 
-          (I 1b) Case $x \in B \SETdiff A$.
+          \begin{case}{$x \in B \SETdiff A$.}
             Then $x \in B \SETdiff C$.
             Hence $x \in (B \SETdiff C) \SETunion (C \SETdiff B)$. $x \notin A$.
             Thus $x \in ((B \SETdiff C) \SETunion (C \SETdiff B)) \SETdiff A$.
             Therefore $x \in Y$.
-          End.
-        End.
+          \end{case}
+        \end{case}
 
-        (I 2) Case $x \in C \SETdiff ((A \SETdiff B) \SETunion (B \SETdiff A))$.
+        \begin{case}{$x \in C \SETdiff ((A \SETdiff B) \SETunion (B \SETdiff A))$.}
           Then $x \in C$.
           $x \notin A \SETdiff B$ and $x \notin B \SETdiff A$.
           Hence not ($x \in A \SETdiff B$ or $x \in B \SETdiff A$).
           Thus not (($x \in A$ and $x \notin B$) or ($x \in B$ and $x \notin A$)).
           Therefore ($x \notin A$ or $x \in B$) and ($x \notin B$ or $x \in A$).
 
-          (I 2a) Case $x \in A$.
+          \begin{case}{$x \in A$.}
             Then $x \in B$.
             Hence $x \notin (B \SETdiff C) \SETunion (C \SETdiff B)$.
             Thus $x \in A \SETdiff ((B \SETdiff C) \SETunion (C \SETdiff B))$.
             Therefore $x \in Y$.
-          End.
+          \end{case}
 
-          (I 2b) Case $x \notin A$.
+          \begin{case}{$x \notin A$.}
             Then $x \notin B$.
             Hence $x \in C \SETdiff B$.
             Thus $x \in (B \SETdiff C) \SETunion (C \SETdiff B)$.
             Therefore $x \in ((B \SETdiff C) \SETunion (C \SETdiff B)) \SETdiff A$.
             Then we have $x \in Y$.
-          End.
-        End.
+          \end{case}
+        \end{case}
       End.
 
       Let us show that (II) $Y \SETinclude X$.
         Let $y \in Y$.
 
-        (II 1) Case $y \in A \SETdiff ((B \SETdiff C) \SETunion (C \SETdiff B))$.
+        \begin{case}{$y \in A \SETdiff ((B \SETdiff C) \SETunion (C \SETdiff B))$.}
           Then $y \in A$.
           $y \notin B \SETdiff C$ and $y \notin C \SETdiff B$.
           Hence not ($y \in B \SETdiff C$ or $y \in C \SETdiff B$).
           Thus not (($y \in B$ and $y \notin C$) or ($y \in C$ and $y \notin B$)).
           Therefore ($y \notin B$ or $y \in C$) and ($y \notin C$ or $y \in B$).
 
-          (II 1a) Case $y \in B$.
+          \begin{case}{$y \in B$.}
             Then $y \in C$.
             $y \notin A \SETdiff B$ and $y \notin B \SETdiff A$.
             Hence $y \notin (A \SETdiff B) \SETunion (B \SETdiff A)$.
             Thus $y \in C \SETdiff ((A \SETdiff B) \SETunion (B \SETdiff A))$.
             Therefore $y \in X$.
-          End.
+          \end{case}
 
-          (II 1b) Case $y \notin B$.
+          \begin{case}{$y \notin B$.}
             Then $y \notin C$.
             $y \in A \SETdiff B$.
             Hence $y \in (A \SETdiff B) \SETunion (B \SETdiff A)$.
             Thus $y \in ((A \SETdiff B) \SETunion (B \SETdiff A)) \SETdiff C$.
             Therefore $y \in X$.
-          End.
-        End.
+          \end{case}
+        \end{case}
 
-        (II 2) Case $y \in ((B \SETdiff C) \SETunion (C \SETdiff B)) \SETdiff A$.
+        \begin{case}{$y \in ((B \SETdiff C) \SETunion (C \SETdiff B)) \SETdiff A$.}
           Then $y \notin A$.
 
-          (II 2a) Case $y \in B \SETdiff C$.
+          \begin{case}{$y \in B \SETdiff C$.}
             Then $y \in B \SETdiff A$.
             Hence $y \in (A \SETdiff B) \SETunion (B \SETdiff A)$.
             Thus $y \in ((A \SETdiff B) \SETunion (B \SETdiff A)) \SETdiff C$.
             Therefore $y \in X$.
-          End.
+          \end{case}
 
-          (II 2b) Case $y \in C \SETdiff B$.
+          \begin{case}{$y \in C \SETdiff B$.}
             Then $y \in C$.
             $y \notin A \SETdiff B$ and $y \notin B \SETdiff A$.
             Hence $y \notin (A \SETdiff B) \SETunion (B \SETdiff A)$.
             Thus $y \in C \SETdiff ((A \SETdiff B) \SETunion (B \SETdiff A))$.
             Therefore $y \in X$.
-          End.
-        End.
+          \end{case}
+        \end{case}
       End.
     \end{proof}
   \end{sfragment}
@@ -187,12 +187,12 @@
       Then $A \SETinclude B \iff A \SETsymdiff B \eq B \SETdiff A$.
     \end{proposition}
     \begin{proof}[forthel]
-      Case $A \SETinclude B$.
+      \begin{case}{$A \SETinclude B$.}
         Then $A \SETunion B \eq B$ and $A \SETintersect B \eq A$.
         Hence the thesis.
-      End.
+      \end{case}
 
-      Case $A \SETsymdiff B \eq B \SETdiff A$.
+      \begin{case}{$A \SETsymdiff B \eq B \SETdiff A$.}
         Let $a \in A$.
         Then $a \notin B \SETdiff A$.
         Hence $a \notin A \SETsymdiff B$.
@@ -201,7 +201,7 @@
         If $a \notin A \SETunion B$ then we have a contradiction.
         Therefore $a \in A \SETintersect B$.
         Then we have the thesis.
-      End.
+      \end{case}
     \end{proof}
 
     \begin{proposition}[forthel,id=FOUNDATIONS_03_4490230937681920]
@@ -209,50 +209,50 @@
       Then $A \SETsymdiff B \eq A \SETsymdiff C \iff B \eq C$.
     \end{proposition}
     \begin{proof}[forthel]
-      Case $A \SETsymdiff B \eq A \SETsymdiff C$.
+      \begin{case}{$A \SETsymdiff B \eq A \SETsymdiff C$.}
 
         Let us show that $B \SETinclude C$.
           Let $b \in B$.
 
-          Case $b \in A$.
+          \begin{case}{$b \in A$.}
             Then $b \notin A \SETsymdiff B$.
             Hence $b \notin A \SETsymdiff C$.
             Therefore $b \in A \SETintersect C$.
             Indeed $A \SETsymdiff C \eq (A \SETunion C) \SETdiff (A \SETintersect C)$.
             Hence $b \in C$.
-          End.
+          \end{case}
 
-          Case $b \notin A$.
+          \begin{case}{$b \notin A$.}
             Then $b \in A \SETsymdiff B$.
             Indeed $b \in A \SETunion B$ and $b \notin A \SETintersect B$.
             Hence $b \in A \SETsymdiff C$.
             Thus $b \in A \SETunion C$ and $b \notin A \SETintersect C$.
             Therefore $b \in A$ or $b \in C$.
             Then we have the thesis.
-          End.
+          \end{case}
         End.
 
         Let us show that $C \SETinclude B$.
           Let $c \in C$.
 
-          Case $c \in A$.
+          \begin{case}{$c \in A$.}
             Then $c \notin A \SETsymdiff C$.
             Hence $c \notin A \SETsymdiff B$.
             Therefore $c \in A \SETintersect B$.
             Indeed $c \notin A \SETunion B$ or $c \in A \SETintersect B$.
             Hence $c \in B$.
-          End.
+          \end{case}
 
-          Case $c \notin A$.
+          \begin{case}{$c \notin A$.}
             Then $c \in A \SETsymdiff C$.
             Indeed $c \in A \SETunion C$ and $c \notin A \SETintersect C$.
             Hence $c \in A \SETsymdiff B$.
             Thus $c \in A \SETunion B$ and $c \notin A \SETintersect B$.
             Therefore $c \in A$ or $c \in B$.
             Then we have the thesis.
-          End.
+          \end{case}
         End.
-      End.
+      \end{case}
     \end{proof}
 
     \begin{proposition}[forthel,id=FOUNDATIONS_03_4578696040022016]
@@ -282,22 +282,22 @@
       Then $A \eq B \iff A \SETsymdiff B \eq \SETempty$.
     \end{proposition}
     \begin{proof}[forthel]
-      Case $A \eq B$.
+      \begin{case}{$A \eq B$.}
         Then $A \SETsymdiff B
           \eq (A \SETunion A) \SETdiff (A \SETintersect A)
           \eq A \SETdiff A
           \eq \SETempty.$
         Hence the thesis.
-      End.
+      \end{case}
 
-      Case $A \SETsymdiff B \eq \SETempty$.
+      \begin{case}{$A \SETsymdiff B \eq \SETempty$.}
         Then $(A \SETunion B) \SETdiff (A \SETintersect B)$ is empty.
         Hence every element of $A \SETunion B$ is an element of $A \SETintersect B$.
         Thus for all objects $u$ if $u \in A$ or $u \in B$ then $u \in A$ and $u \in B$.
         Therefore every element of $A$ is an element of $B$.
         Every element of $B$ is an element of $A$.
         Then we have the thesis.
-      End.
+      \end{case}
     \end{proof}
   \end{sfragment}
 \end{sfragment}

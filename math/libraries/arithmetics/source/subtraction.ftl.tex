@@ -18,20 +18,20 @@
   Then $n \NATsub m \eq \NATzero$ iff $n \eq m$.
 \end{proposition}
 \begin{proof}[forthel]
-  Case $n \NATsub m \eq \NATzero$.
+  \begin{case}{$n \NATsub m \eq \NATzero$.}
     Then $n
       \eq (n \NATsub m) \NATplus m
       \eq \NATzero \NATplus m
       \eq m$.
-  End.
+  \end{case}
 
-  Case $n \eq m$.
+  \begin{case}{$n \eq m$.}
     We have $(n \NATsub m) \NATplus m
       \eq n
       \eq m
       \eq \NATzero \NATplus m$.
     Hence $n \NATsub m \eq \NATzero$.
-  End.
+  \end{case}
 \end{proof}
 
 \begin{corollary}[forthel,id=ARITHMETIC_05_8457713057005568]

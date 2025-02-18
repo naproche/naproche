@@ -17,13 +17,13 @@
     Let $x$ be a set.
     Assume that every element of $x$ that is a set is contained in $B$.
 
-    Case $x \notin \Ord$. Trivial.
+    \begin{case}{$x \notin \Ord$.} \end{case}
 
-    Case $x \in \Ord$.
+    \begin{case}{$x \in \Ord$.}
       Then $\Phi$ contains all ordinals less than $x$.
       Hence $\Phi$ contains $x$.
       Thus $x \in B$.
-    End.
+    \end{case}
   End.
 
   [prover vampire]
@@ -51,18 +51,18 @@
     limit ordinal.
     Assume that $\Phi$ contains all $\beta \in \alpha$.
 
-    Case $\alpha \eq \ORDzero$. Trivial.
+    \begin{case}{$\alpha \eq \ORDzero$.} \end{case}
 
-    Case $\alpha$ is a successor ordinal.
+    \begin{case}{$\alpha$ is a successor ordinal.}
       Take an ordinal $\beta$ such that $\alpha \eq \ORDsucc(\beta)$.
       Then $\beta \in \Phi$.
       Hence $\alpha \in \Phi$ (by successor step).
-    End.
+    \end{case}
 
-    Case $\alpha$ is a limit ordinal.
+    \begin{case}{$\alpha$ is a limit ordinal.}
       Then $\beta \in \Phi$ for all ordinals $\beta$ less than $\alpha$.
       Hence $\alpha \in \Phi$ (by limit step).
-    End.
+    \end{case}
   End.
 
   [prover vampire]

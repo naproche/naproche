@@ -11,7 +11,7 @@
   Then $\NATexp{k}{n} \NATmid \NATexp{k}{m}$ iff $n \NATleq m$.
 \end{proposition}
 \begin{proof}[forthel]
-  Case $\NATexp{k}{n} \NATmid \NATexp{k}{m}$.
+  \begin{case}{$\NATexp{k}{n} \NATmid \NATexp{k}{m}$.}
     Assume $n \NATgtr m$.
     Take a nonzero natural number $l$ such that $n \eq m \NATplus l$.
     Then $\NATexp{k}{n}
@@ -21,15 +21,15 @@
     Thus $\NATexp{k}{m} \eq \NATexp{k}{n}$.
     Therefore $m \eq n$.
     Contradiction.
-  End.
+  \end{case}
 
-  Case $n \NATleq m$.
+  \begin{case}{$n \NATleq m$.}
     Take a natural number $l$ such that $m \eq n \NATplus l$.
     Then $\NATexp{k}{m}
       \eq \NATexp{k}{n \NATplus l}
       \eq \NATexp{k}{n} \NATmul \NATexp{k}{l}$.
     Hence $\NATexp{k}{n} \NATmid \NATexp{k}{m}$.
-  End.
+  \end{case}
 \end{proof}
 
 \begin{proposition}[forthel,id=ARITHMETIC_13_797196163219456]

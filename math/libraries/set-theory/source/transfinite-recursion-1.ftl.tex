@@ -10,8 +10,8 @@
   Then there exists a map $F$ from $\Ord$ to $A$ that is recursive regarding $G$.
 \end{theorem}
 \begin{proof}[forthel]
-  Every ordinal is contained in the domain of some map $H$ to $A$ such that $H$ is recursive regarding $G$. \newline
-  Proof.
+  Every ordinal is contained in the domain of some map $H$ to $A$ such that $H$ is recursive regarding $G$.
+  \begin{proof}
     Define \[ \Phi = \class{\alpha \in \Ord | \classtext{$\alpha$ is contained in the domain of some map to $A$ that is recursive regarding $G$}}. \]
 
     Let us show that for every ordinal $\alpha$ if every ordinal less than $\alpha$ lies in $\Phi$ then $\alpha \in \Phi$.
@@ -37,12 +37,12 @@
 
       (a) $\dom(H)$ is a transitive subclass of $\Ord$.
 
-      (b) For all $\beta \in \dom(H)$ we have $H(\beta) \eq G(H \FUNrest \beta)$. \newline
-      Proof.
+      (b) For all $\beta \in \dom(H)$ we have $H(\beta) \eq G(H \FUNrest \beta)$.
+      \begin{proof}
         Let $\beta \in \dom(H)$.
         Then $\beta \ORDless \alpha$ or $\beta \eq \alpha$.
 
-        Case $\beta \ORDless \alpha$.
+        \begin{case}{$\beta \ORDless \alpha$.}
           Choose a map $h$ to $A$ such that $h$ is recursive regarding $G$ and $\beta \in \dom(h)$ and $H'(\beta) \eq h(\beta)$.
 
           Let us show that for all $y \in \beta$ we have $h(y) \eq H(y)$.
@@ -60,12 +60,12 @@
             \eq h(\beta)
             \eq G(h \FUNrest \beta)
             \eq G(H \FUNrest \beta)$.
-        End.
+        \end{case}
 
-        Case $\beta \eq \alpha$.
+        \begin{case}{$\beta \eq \alpha$.}
           We have $H \FUNrest \alpha \eq H' \FUNrest \alpha$.
-        End.
-      Qed.
+        \end{case}
+      \end{proof}
 
       Hence $H$ is a map to $A$ such that $H$ is recursive regarding $G$ and $\alpha \in \dom(H)$.
       Thus $\alpha \in \Phi$.
@@ -74,17 +74,17 @@
     [prover vampire]
     Therefore $\Phi$ contains every ordinal (by \printref{SET_THEORY_02_8493935460614144}).
     Consequently every ordinal is contained in the domain of some map $H$ to $A$ such that $H$ is recursive regarding $G$.
-  Qed.
+  \end{proof}
 
   Define $F(\alpha) =$ ``choose a map $H$ to $A$ such that $H$ is recursive regarding $G$ and $\alpha \in \dom(H)$ in $H(\alpha)$'' for $\alpha \in \Ord$.
   Then $F$ is a map from $\Ord$ to $A$.
 
-  $F$ is recursive regarding $G$. \newline
-  Proof.
+  $F$ is recursive regarding $G$.
+  \begin{proof}
     (a) $\dom(F)$ is a transitive subclass of $\Ord$.
 
-    (b) For all $\alpha \in \Ord$ we have $F(\alpha) \eq G(F \FUNrest \alpha)$. \newline
-    Proof.
+    (b) For all $\alpha \in \Ord$ we have $F(\alpha) \eq G(F \FUNrest \alpha)$.
+    \begin{proof}
       Let $\alpha \in \Ord$.
       Choose a map $H$ to $A$ such that $H$ is recursive regarding $G$ and $\alpha \in \dom(H)$ and $F(\alpha) \eq H(\alpha)$.
 
@@ -102,8 +102,8 @@
         \eq H(\alpha)
         \eq G(H \FUNrest \alpha)
         \eq G(F \FUNrest \alpha)$.
-    Qed.
-  Qed.
+    \end{proof}
+  \end{proof}
 \end{proof}
 
 \begin{theorem}[forthel,title=Transfinite Recursion Theorem: Uniqueness,id=transfinite-recursion_uniqueness]

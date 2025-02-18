@@ -39,17 +39,17 @@
     $X$ has $\NATone$ element iff $X \eq \SETsingleton{a}$ for some object $a$.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $X$ has $\NATone$ element.
+    \begin{case}{$X$ has $\NATone$ element.}
       Take a bijection $f$ between $\NATsegment{\NATone}{\NATone}$ and $X$.
       We have $\NATsegment{\NATone}{\NATone} \eq \SETsingleton{\NATone}$.
       Hence $X \eq \SETsingleton{f(\NATone)}$.
-    End.
+    \end{case}
 
-    Case $X \eq \SETsingleton{a}$ for some object $a$.
+    \begin{case}{$X \eq \SETsingleton{a}$ for some object $a$.}
       Consider an object $a$ such that $X \eq \SETsingleton{a}$.
       Define $f(x) = \NATone$ for $x \in \SETsingleton{a}$.
-    Then $f$ is a bijection between $\SETsingleton{a}$ and $\NATsegment{\NATone}{\NATone}$.
-    End.
+      Then $f$ is a bijection between $\SETsingleton{a}$ and $\NATsegment{\NATone}{\NATone}$.
+    \end{case}
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_14_3468912675458910]
@@ -57,24 +57,24 @@
     $X$ has $\NATtwo$ elements iff $X \eq \SETpair{a}{b}$ for some distinct objects $a, b$.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $X$ has $\NATtwo$ elements.
+    \begin{case}{$X$ has $\NATtwo$ elements.}
       Take a bijection $f$ between $\NATsegment{\NATone}{\NATtwo}$ and $X$.
       We have $\NATsegment{\NATone}{\NATtwo} \eq \SETpair{\NATone}{\NATtwo}$.
       Hence $X \eq \SETpair{f(\NATone)}{f(\NATtwo)}$.
       We have $f(\NATone) \neq f(\NATtwo)$.
-    End.
+    \end{case}
 
-    Case $X \eq \SETpair{a}{b}$ for some distinct objects $a, b$.
+    \begin{case}{$X \eq \SETpair{a}{b}$ for some distinct objects $a, b$.}
       Consider distinct objects $a, b$ such that $X \eq \SETpair{a}{b}$.
       Define \[f(x) =
         \begin{cases}
           \NATone & : x \eq a \\
-          \NATtwo & x \eq b
+          \NATtwo & : x \eq b
         \end{cases}\]
       for $x \in \SETpair{a}{b}$.
       Then $f$ is a bijection between $\SETpair{a}{b}$ and $\NATsegment{\NATone}{\NATtwo}$.
       Indeed $f$ is injective and surjective onto $\NATsegment{\NATone}{\NATtwo}$.
-    End.
+    \end{case}
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_14_0615204230800975]
@@ -90,39 +90,39 @@
       \end{cases}\]
     for $x \in X \SETunion \SETsingleton{a}$.
 
-    (1) $g$ is a map from $X \SETunion \SETsingleton{a}$ to $\NATsegment{\NATone}{n \NATplus \NATone}$. \newline
+    (1) $g$ is a map from $X \SETunion \SETsingleton{a}$ to $\NATsegment{\NATone}{n \NATplus \NATone}$.
     Indeed we can show that $g(x) \in \NATsegment{\NATone}{n \NATplus \NATone}$ for all $x \in X \SETunion \SETsingleton{a}$.
       Let $x \in X \SETunion \SETsingleton{a}$.
       If $x \in X$ then $g(x) \in \NATsegment{\NATone}{n}$.
       If $x \eq a$ then $g(x) \eq n \NATplus \NATone$.
     End.
 
-    (2) $g$ is injective. \newline
-    Proof.
+    (2) $g$ is injective.
+    \begin{proof}
       Let $x, y \in \dom(g)$.
       Assume $x \neq y$.
       
-      Case $x, y \in X$. Obvious.
+      \begin{case}{$x, y \in X$.} \end{case}
 
-      Case $x \in X$ and $y \eq a$. Obvious.
+      \begin{case}{$x \in X$ and $y \eq a$.} \end{case}
 
-      Case $x \eq a$ and $y \in X$. Obvious.
-    Qed.
+      \begin{case}{$x \eq a$ and $y \in X$.} \end{case}
+    \end{proof}
 
     (3) $g$ is surjective onto $\NATsegment{\NATone}{n \NATplus \NATone}$.
-    Indeed we can show that for every $k \in \NATsegment{\NATone}{n \NATplus \NATone}$ there exists an $x \in \dom(g)$ such that $k \eq g(x)$. \newline
-    Proof.
+    Indeed we can show that for every $k \in \NATsegment{\NATone}{n \NATplus \NATone}$ there exists an $x \in \dom(g)$ such that $k \eq g(x)$.
+    \begin{proof}
       Let $k \in \NATsegment{\NATone}{n \NATplus \NATone}$.
 
-      Case $k \NATleq n$.
+      \begin{case}{$k \NATleq n$.}
         Then $k \in \NATsegment{\NATone}{n}$.
         Hence we can take a $x \in X$ such that $k \eq f(x)$.
-      End.
+      \end{case}
 
-      Case $k \eq n \NATplus \NATone$.
+      \begin{case}{$k \eq n \NATplus \NATone$.}
         Then $k \eq g(a)$.
-      End.
-    Qed.
+      \end{case}
+    \end{proof}
 
     Hence $g$ is a bijection between $X \SETunion \SETsingleton{a}$ and $\NATsegment{\NATone}{n \NATplus \NATone}$.
   \end{proof}

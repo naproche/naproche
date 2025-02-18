@@ -33,17 +33,17 @@
     Then $(a, b) \in A \SETprod B$ iff $a \in A$ and $b \in B$.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $(a, b) \in A \SETprod B$.
+    \begin{case}{$(a, b) \in A \SETprod B$.}
       We can take $a' \in A$ and $b' \in B$ such that $(a, b) \eq (a', b')$.
       Then $a \eq a'$ and $b \eq b'$.
       Hence $a \in A$ and $b \in B$.
-    End.
+    \end{case}
 
-    Case $a \in A$ and $b \in B$.
+    \begin{case}{$a \in A$ and $b \in B$.}
       $a$ and $a$ are objects.
       Hence $(a, b)$ is an object.
       Therefore $(a, b) \in A \SETprod B$.
-    End.
+    \end{case}
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_04_2198552029691904]
@@ -51,20 +51,20 @@
     Then $A \SETprod B$ is empty iff $A$ is empty or $B$ is empty.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $A \SETprod B$ is empty.
+    \begin{case}{$A \SETprod B$ is empty.}
       Assume that $A$ and $B$ are nonempty.
       Then we can take an element $a$ of $A$ and an element $b$ of $B$.
       Then $(a, b) \in A \SETprod B$.
       Contradiction.
-    End.
+    \end{case}
 
-    Case $A$ is empty or $B$ is empty.
+    \begin{case}{$A$ is empty or $B$ is empty.}
       Assume that $A \SETprod B$ is nonempty.
       Then we can take an element $c$ of $A \SETprod B$.
       Then $c \eq (a, b)$ for some $a \in A$ and some $b \in B$.
       Hence $A$ and $B$ are nonempty.
       Contradiction.
-    End.
+    \end{case}
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_04_7971087096741888]
@@ -95,21 +95,21 @@
   \begin{proof}[forthel]
     Assume $A \SETprod B \eq A' \SETprod B'$.
 
-    (1) $A \SETinclude A'$ and $B \SETinclude B'$. \newline
-    Proof.
+    (1) $A \SETinclude A'$ and $B \SETinclude B'$.
+    \begin{proof}
       Let $a \in A$ and $b \in B$.
       Then $(a,b) \in A \SETprod B$.
       Hence $(a,b) \in A' \SETprod B'$.
       Thus $a \in A'$ and $b \in B'$.
-    Qed.
+    \end{proof}
 
-    (2) $A' \SETinclude A$ and $B' \SETinclude B$. \newline
-    Proof.
+    (2) $A' \SETinclude A$ and $B' \SETinclude B$.
+    \begin{proof}
       Let $a \in A'$ and $b \in B'$.
       Then $(a,b) \in A' \SETprod B'$.
       Hence $(a,b) \in A \SETprod B$.
       Thus $a \in A$ and $b \in B$.
-    Qed.
+    \end{proof}
   \end{proof}
 \end{sfragment}
 \end{smodule}

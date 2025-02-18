@@ -42,14 +42,13 @@
   If $\alpha \ORDleq \beta$ then $\alpha \SETinclude \beta$.
 \end{proposition}
 \begin{proof}[forthel]
-  Case $\alpha \ORDleq \beta$.
-    Then $\alpha \ORDless \beta$ or $\alpha \eq \beta$.
-    Let $x \in \alpha$.
-    If $\alpha \ORDless \beta$ then $x \in \alpha \in \beta$.
-    Hence if $\alpha \ORDless \beta$ then $x \in \beta$.
-    If $\alpha \eq \beta$ then $x \in \beta$.
-    Thus $x \in \beta$.
-  End.
+  Assume $\alpha \ORDleq \beta$.
+  Then $\alpha \ORDless \beta$ or $\alpha \eq \beta$.
+  Let $x \in \alpha$.
+  If $\alpha \ORDless \beta$ then $x \in \alpha \in \beta$.
+  Hence if $\alpha \ORDless \beta$ then $x \in \beta$.
+  If $\alpha \eq \beta$ then $x \in \beta$.
+  Thus $x \in \beta$.
 \end{proof}
 
 \begin{proposition}[forthel,id=SET_THEORY_02_6229364135952384]
@@ -121,15 +120,15 @@
 \begin{proof}[forthel]
   Assume $\alpha \SETinclude \beta$.
 
-  Case $\alpha \eq \beta$. Trivial.
+  \begin{case}{$\alpha \eq \beta$.} \end{case}
 
-  Case $\alpha \neq \beta$.
+  \begin{case}{$\alpha \neq \beta$.}
     Then $\alpha \ORDless \beta$ or $\alpha \ORDgtr \beta$.
     Assume $\alpha \ORDgtr \beta$.
     Then $\beta \in \alpha$.
     Hence $\beta \in \beta$.
     Contradiction.
-  End.
+  \end{case}
 \end{proof}
 
 \begin{proposition}[forthel,id=SET_THEORY_02_5689190964527104]

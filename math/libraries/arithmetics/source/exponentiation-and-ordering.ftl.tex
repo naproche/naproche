@@ -12,18 +12,18 @@
   Then $n \NATless m$ iff $\NATexp{n}{k} \NATless \NATexp{m}{k}$.
 \end{proposition}
 \begin{proof}[forthel]
-  Case $n \NATless m$.
+  \begin{case}{$n \NATless m$.}
     Define $\Phi = \{ k' \in \Nat \mid$ if $k' \NATgtr \NATone$ then $\NATexp{n}{k'} \NATless \NATexp{m}{k'} \}$.
 
     (1) $\Phi$ contains $\NATzero$.
 
     (2) $\Phi$ contains $\NATone$.
 
-    (3) $\Phi$ contains $\NATtwo$. \newline
-    Proof.
-      Case $n \eq \NATzero$ or $m \eq \NATzero$. Obvious.
+    (3) $\Phi$ contains $\NATtwo$.
+    \begin{proof}
+      \begin{case}{$n \eq \NATzero$ or $m \eq \NATzero$.} \end{case}
 
-      Case $n, m \neq \NATzero$.
+      \begin{case}{$n, m \neq \NATzero$.}
         Then $n \NATmul n
           \NATless n \NATmul m
           \NATless m \NATmul m$.
@@ -32,11 +32,11 @@
           \NATless n \NATmul m
           \NATless m \NATmul m
           \eq \NATexp{m}{\NATtwo}$.
-      End.
-    Qed.
+      \end{case}
+    \end{proof}
 
-    (4) For all $k' \in \Phi$ we have $k' \NATplus \NATone \in \Phi$. \newline
-    Proof.
+    (4) For all $k' \in \Phi$ we have $k' \NATplus \NATone \in \Phi$.
+    \begin{proof}
       Let $k' \in \Phi$.
 
       Let us show that if $k' \NATplus \NATone \NATgtr \NATone$ then $\NATexp{n}{k' \NATplus \NATone} \NATless \NATexp{m}{k' \NATplus \NATone}$.
@@ -44,24 +44,24 @@
         Then $\NATexp{n}{k'} \NATless \NATexp{m}{k'}$.
         Indeed $k' \neq \NATzero$ and $if k' \eq \NATone$ then $\NATexp{n}{k'} \NATless \NATexp{m}{k'}$.
 
-        Case $k' \NATleq \NATone$.
+        \begin{case}{$k' \NATleq \NATone$.}
           Then $k' \eq \NATzero$ or $k' \eq \NATone$.
           Hence $k' \NATplus \NATone \eq \NATone$ or $k' \NATplus \NATone \eq \NATtwo$.
           Thus $k' \NATplus \NATone \in \Phi$.
           Therefore $\NATexp{n}{k' \NATplus \NATone} \NATless \NATexp{m}{k' \NATplus \NATone}$.
-        End.
+        \end{case}
 
-        Case $k' \NATgtr \NATone$.
-          Case $n \eq \NATzero$.
+        \begin{case}{$k' \NATgtr \NATone$.}
+          \begin{case}{$n \eq \NATzero$.}
             Then $m \neq \NATzero$.
             Hence $\NATexp{n}{k' \NATplus \NATone}
               \eq \NATzero
               \NATless \NATexp{m}{k'} \NATmul m
               \eq \NATexp{m}{k' \NATplus \NATone}$.
             Thus $\NATexp{n}{k' \NATplus \NATone} \NATless \NATexp{m}{k' \NATplus \NATone}$.
-          End.
+          \end{case}
 
-          Case $n \neq \NATzero$.
+          \begin{case}{$n \neq \NATzero$.}
             Then $\NATexp{n}{k'} \NATmul n
               \NATless \NATexp{m}{k'} \NATmul n
               \NATless \NATexp{m}{k'} \NATmul m$.
@@ -78,27 +78,27 @@
             Then $A \NATless X \NATless Y \eq B$.
             Hence $A \NATless B$.
             Thus $\NATexp{n}{k' \NATplus \NATone} \NATless \NATexp{m}{k' \NATplus \NATone}$.
-          End.
-        End.
+          \end{case}
+        \end{case}
 
         Hence $\NATexp{n}{k' \NATplus \NATone} \NATless \NATexp{m}{k' \NATplus \NATone}$.
         Indeed $k' \NATleq \NATone$ or $k' \NATgtr \NATone$.
       End.
 
       Thus $k' \NATplus \NATone \in \Phi$.
-    Qed.
+    \end{proof}
 
     Therefore every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
     Consequently $\NATexp{n}{k} \NATless \NATexp{m}{k}$.
-  End.
+  \end{case}
 
-  Case $\NATexp{n}{k} \NATless \NATexp{m}{k}$.
+  \begin{case}{$\NATexp{n}{k} \NATless \NATexp{m}{k}$.}
     Define $\Psi = \{ k' \in \Nat \mid$ if $n \NATgeq m$ then $\NATexp{n}{k'} \NATgeq \NATexp{m}{k'} \}$.
 
     (1) $\Psi$ contains $\NATzero$.
 
-    (2) For all $k' \in \Psi$ we have $k' \NATplus \NATone \in \Psi$. \newline
-    Proof.
+    (2) For all $k' \in \Psi$ we have $k' \NATplus \NATone \in \Psi$.
+    \begin{proof}
       Let $k' \in \Psi$.
 
       Let us show that if $n \NATgeq m$ then $\NATexp{n}{k' \NATplus \NATone} \NATgeq \NATexp{m}{k' \NATplus \NATone}$.
@@ -117,12 +117,12 @@
       End.
 
       Hence $k' \NATplus \NATone \in \Psi$.
-    Qed.
+    \end{proof}
 
     Thus every natural number is contained in $\Psi$ (by \printref{ARITHMETIC_01_4764664342773760}).
     Therefore if $n \NATgeq m$ then $\NATexp{n}{k} \NATgeq \NATexp{m}{k}$.
     Consequently $n \NATless m$.
-  End.
+  \end{case}
 \end{proof}
 
 \begin{corollary}[forthel,id=ARITHMETIC_09_2797602550579200]
@@ -159,13 +159,13 @@
   Then \[ n \NATless m \iff \NATexp{k}{n} \NATless \NATexp{k}{m}. \]
 \end{proposition}
 \begin{proof}[forthel]
-  Case $n \NATless m$.
+  \begin{case}{$n \NATless m$.}
     Define $\Phi = \{ m' \in \Nat \mid$ if $n \NATless m'$ then $\NATexp{k}{n} \NATless \NATexp{k}{m'} \}$.
 
     (1) $\Phi$ contains $\NATzero$.
 
-    (2) For all $m' \in \Phi$ we have $m' \NATplus \NATone \in \Phi$. \newline
-    Proof.
+    (2) For all $m' \in \Phi$ we have $m' \NATplus \NATone \in \Phi$.
+    \begin{proof}
       Let $m' \in \Phi$.
 
       Let us show that if $n \NATless m' \NATplus \NATone$ then $\NATexp{k}{n} \NATless \NATexp{k}{m' \NATplus \NATone}$.
@@ -174,7 +174,7 @@
         We have $\NATexp{k}{m'} \NATmul \NATone \NATless \NATexp{k}{m'} \NATmul k$.
         Indeed $\NATexp{k}{m'} \neq \NATzero$.
 
-        Case $n \eq m'$.
+        \begin{case}{$n \eq m'$.}
           Take $A \eq \NATexp{k}{n}$ and $B \eq \NATexp{k}{m' \NATplus \NATone}$. %!
           Then $A
             \eq \NATexp{k}{n}
@@ -183,9 +183,9 @@
             \eq \NATexp{k}{m' \NATplus \NATone}
             \eq B$.
           Hence $\NATexp{k}{n} \eq A \NATless B \eq \NATexp{k}{m' \NATplus \NATone}$.
-        End.
+        \end{case}
 
-        Case $n \NATless m'$.
+        \begin{case}{$n \NATless m'$.}
           Take $A \eq \NATexp{k}{n}$ and $B \eq \NATexp{k}{m' \NATplus \NATone}$. %!
           Then $A
             \eq \NATexp{k}{n}
@@ -194,30 +194,30 @@
             \eq \NATexp{k}{m' \NATplus \NATone}
             \eq B$.
           Hence $\NATexp{k}{n} \eq A \NATless B \eq \NATexp{k}{m' \NATplus \NATone}$.
-        End.
-      Qed.
-    Qed.
+        \end{case}
+      End.
+    \end{proof}
 
     Hence every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
     Thus $\NATexp{k}{n} \NATless \NATexp{k}{m}$.
-  End.
+  \end{case}
 
-  Case $\NATexp{k}{n} \NATless \NATexp{k}{m}$.
+  \begin{case}{$\NATexp{k}{n} \NATless \NATexp{k}{m}$.}
     Define $\Psi = \{ n' \in \Nat \mid$ if $n' \NATgeq m$ then
     $\NATexp{k}{n'} \NATgeq \NATexp{k}{m} \}$.
 
     (1) $\NATzero$ is contained in $\Psi$.
 
-    (2) For all $n' \in \Psi$ we have $n' \NATplus \NATone \in \Psi$. \newline
-    Proof.
+    (2) For all $n' \in \Psi$ we have $n' \NATplus \NATone \in \Psi$.
+    \begin{proof}
       Let $n' \in \Psi$.
 
       Let us show that if $n' \NATplus \NATone \NATgeq m$ then $\NATexp{k}{n' \NATplus \NATone} \NATgeq \NATexp{k}{m}$.
         Assume $n' \NATplus \NATone \NATgeq m$.
 
-        Case $n' \NATplus \NATone \eq m$. Obvious.
+        \begin{case}{$n' \NATplus \NATone \eq m$.} \end{case}
 
-        Case $n' \NATplus \NATone \NATgtr m$.
+        \begin{case}{$n' \NATplus \NATone \NATgtr m$.}
           Then $n' \NATgeq m$.
           Hence $\NATexp{k}{n'} \NATgeq \NATexp{k}{m}$.
           We have $\NATexp{k}{n'} \NATmul \NATone \NATleq \NATexp{k}{n'} \NATmul k$.
@@ -231,14 +231,14 @@
             \eq \NATexp{k}{n' \NATplus \NATone}
             \eq B$.
           Hence $\NATexp{k}{m} \eq A \NATleq B \eq \NATexp{k}{n' \NATplus \NATone}$.
-        End.
-      Qed.
-    Qed.
+        \end{case}
+      End.
+    \end{proof}
 
     Thus every natural number is contained in $\Psi$ (by \printref{ARITHMETIC_01_4764664342773760}).
     Therefore if $n \NATgeq m$ then $\NATexp{k}{n} \NATgeq \NATexp{k}{m}$.
     Consequently $n \NATless m$.
-  End.
+  \end{case}
 \end{proof}
 
 \begin{corollary}[forthel,id=ARITHMETIC_09_6780506905509888]
@@ -295,36 +295,36 @@
   (1) $\Phi$ contains $\NATthree$.
   Indeed $\NATexp{\NATthree}{\NATtwo} \NATgtr (\NATtwo \NATmul \NATthree) \NATplus \NATone$.
 
-  (2) For all $n' \in \Phi$ we have $n' \NATplus \NATone \in \Phi$. \newline
-  Proof.
+  (2) For all $n' \in \Phi$ we have $n' \NATplus \NATone \in \Phi$.
+  \begin{proof}
     Let $n' \in \Phi$.
     Then $n' \NATgeq \NATthree$.
 
     Take $V \eq (\NATexp{n'}{\NATtwo} \NATplus (\NATtwo \NATmul n')) \NATplus \NATone$ and $W \eq (((\NATtwo \NATmul n') \NATplus \NATone) \NATplus (\NATtwo \NATmul n')) \NATplus \NATone$.
-    Then $V \NATgtr W$. \newline
-    Proof.
+    Then $V \NATgtr W$.
+    \begin{proof}
       We have $\NATexp{n'}{\NATtwo} \NATgtr (\NATtwo \NATmul n') \NATplus \NATone$.
       Hence $\NATexp{n'}{\NATtwo} \NATplus (\NATtwo \NATmul n') \NATgtr ((\NATtwo \NATmul n') \NATplus \NATone) \NATplus (\NATtwo \NATmul n')$ (by \printref{ARITHMETIC_04_7354062662008832}).
-    Qed.
+    \end{proof}
 
     Take $X \eq ((\NATtwo \NATmul n') \NATplus (\NATtwo \NATmul n')) \NATplus \NATone$.
-    Then $W \NATgtr X$. \newline
-    Proof.
+    Then $W \NATgtr X$.
+    \begin{proof}
       We have $((\NATtwo \NATmul n') \NATplus \NATone) \NATplus (\NATtwo \NATmul n') \NATgtr (\NATtwo \NATmul n') \NATplus (\NATtwo \NATmul n')$.
       Indeed $(\NATtwo \NATmul n') \NATplus \NATone \NATgtr \NATtwo \NATmul n'$.
-    Qed.
+    \end{proof}
 
     Take $Y \eq (\NATtwo \NATmul (n' \NATplus n')) \NATplus \NATone$ and $Z \eq (\NATtwo \NATmul (n' \NATplus \NATone)) \NATplus \NATone$.
-    Then $Y \NATgtr Z$. \newline
-    Proof.
+    Then $Y \NATgtr Z$.
+    \begin{proof}
       We have $n' \NATplus n' \NATgtr n' \NATplus \NATone$ and $\NATtwo \neq \NATzero$.
       Thus $\NATtwo \NATmul (n' \NATplus n') \NATgtr \NATtwo \NATmul (n' \NATplus \NATone)$ (by \printref{ARITHMETIC_06_5048640368279552}).
       Indeed $n' \NATplus n'$ and $n' \NATplus \NATone$ are natural numbers.
-    Qed.
+    \end{proof}
 
     Then $\NATexp{n' \NATplus \NATone}{\NATtwo} \eq V \NATgtr W \NATgtr X \eq Y \NATgtr Z \eq (\NATtwo \NATmul (n' \NATplus \NATone)) \NATplus \NATone$.
     Hence $\NATexp{n' \NATplus \NATone}{\NATtwo} \NATgtr (\NATtwo \NATmul (n' \NATplus \NATone)) \NATplus \NATone$.
-  Qed.
+  \end{proof}
 
   Therefore $\Phi$ contains every element of $\Natgeqthan{\NATthree}$ (by \printref{ARITHMETIC_04_4976599269113856}, 1, 2).
   Consequently $\NATexp{n}{\NATtwo} \NATgtr (\NATtwo \NATmul n) \NATplus \NATone$ (by a).
@@ -354,8 +354,8 @@
     Indeed $((\NATfive \NATmul \NATfour) \NATplus ((\NATfive \NATmul \NATtwo) \NATplus \NATtwo)) \eq (\NATfive \NATmul (\NATfour \NATplus \NATtwo)) \NATplus \NATtwo$. %!
   End.
 
-  (2) For all $n' \in \Phi$ we have $n' \NATplus \NATone \in \Phi$. \newline
-  Proof.
+  (2) For all $n' \in \Phi$ we have $n' \NATplus \NATone \in \Phi$.
+  \begin{proof}
     Let $n' \in \Phi$.
     Then $n' \NATgeq \NATfive$ and $\NATexp{\NATtwo}{n'} \NATgtr \NATexp{n'}{\NATtwo}$.
 
@@ -375,7 +375,7 @@
 
     Then $\NATexp{\NATtwo}{n' \NATplus \NATone} \eq V \NATgtr W \eq X \NATgtr Y \eq Z \eq \NATexp{n' \NATplus \NATone}{\NATtwo}$.
     Hence $\NATexp{\NATtwo}{n' \NATplus \NATone} \NATgtr \NATexp{n' \NATplus \NATone}{\NATtwo}$.
-  Qed.
+  \end{proof}
 
   Therefore $\Phi$ contains every element of $\Natgeqthan{\NATfive}$ (by \printref{ARITHMETIC_04_4976599269113856}).
   Consequently $\NATexp{\NATtwo}{n} \NATgtr \NATexp{n}{\NATtwo}$ (by a).

@@ -16,29 +16,29 @@
   (a) Define $\Phi = \{ n' \in \Nat \mid$ there exist natural numbers $q, r$ such that $r \NATless m$ and $n' \eq (m \NATmul q) \NATplus r \}$.
 
   (1) $\Phi$ contains $\NATzero$.
-  Proof.
+  \begin{proof}
     Take $q \eq \NATzero$ and $r \eq \NATzero$.
     Then $r \NATless m$ and $\NATzero \eq (m \NATmul q) \NATplus r$.
     Hence $\NATzero \in \Phi$.
-  Qed.
+  \end{proof}
 
   (2) For all $n' \in \Phi$ we have $n' \NATplus \NATone \in \Phi$.
-  Proof.
+  \begin{proof}
     Let $n' \in \Phi$.
 
     Let us show that there exist natural numbers $q, r$ such that $r \NATless m$ and $n' \NATplus \NATone \eq (m \NATmul q) \NATplus r$.
       Take natural numbers $q', r'$ such that $r' \NATless m$ and $n' \eq (m \NATmul q') \NATplus r'$ (by a).
       We have $r' \NATplus \NATone \NATless m$ or $r' \NATplus \NATone \eq m$.
 
-      Case $r' \NATplus \NATone \NATless m$.
+      \begin{case}{$r' \NATplus \NATone \NATless m$.}
         Take $q \eq q' \NATplus \NATzero$ and $r \eq r' \NATplus \NATone$. %!
         Then $r \NATless m$ and $n' \NATplus \NATone
           \eq ((q' \NATmul m) \NATplus r') \NATplus \NATone
           \eq (q' \NATmul m) \NATplus (r' \NATplus \NATone)
           \eq (q \NATmul m) \NATplus r$.
-      End.
+      \end{case}
 
-      Case $r' \NATplus \NATone \eq m$.
+      \begin{case}{$r' \NATplus \NATone \eq m$.}
         Take  $q \eq q' \NATplus \NATone$ and $r \eq \NATzero$.
         Then $r \NATless m$ and
         $n' \NATplus \NATone
@@ -48,11 +48,11 @@
           \eq (q' \NATmul m) \NATplus (\NATone \NATmul m)
           \eq (q' \NATplus \NATone) \NATmul m
           \eq (q \NATmul m) \NATplus r$.
-      End.
+      \end{case}
     End.
 
     Hence $n' \NATplus \NATone \in \Phi$.
-  Qed.
+  \end{proof}
 
   Then $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).
   Thus there exist natural numbers $q, r$ such that $n \eq (m \NATmul q) \NATplus r$ and $r \NATless m$ (by a).
@@ -71,7 +71,7 @@
 \begin{proof}[forthel]
   We have $(m \NATmul q) \NATplus r \eq (m \NATmul q') \NATplus r'$.
 
-  Case $q \NATgeq q'$ and $r \NATgeq r'$.
+  \begin{case}{$q \NATgeq q'$ and $r \NATgeq r'$.}
     (1) $((m \NATmul q) \NATplus r) \NATsub r' \eq (m \NATmul q) \NATplus (r \NATsub r')$ (by \printref{ARITHMETIC_05_7578468875239424}).
     (2) $((m \NATmul q') \NATplus r') \NATsub r'
       \eq (m \NATmul q') \NATplus (r' \NATsub r')
@@ -82,9 +82,9 @@
     If $(m \NATmul q) \NATsub (m \NATmul q') \eq \NATzero$ then $q \NATsub q' \eq \NATzero$.
     Therefore $q \NATsub q' \eq \NATzero$ and $r \NATsub r' \eq \NATzero$.
     Thus we have $q \eq q'$ and $r \eq r'$.
-  End.
+  \end{case}
 
-  Case $q \NATgeq q'$ and $r \NATless r'$.
+  \begin{case}{$q \NATgeq q'$ and $r \NATless r'$.}
     Take $q'' \eq q \NATsub q'$ and $r'' \eq r' \NATsub r$.
     Then $(m \NATmul (q' \NATplus q'')) \NATplus r \eq (m \NATmul q') \NATplus (r \NATplus r'')$.
     We have $(m \NATmul q') \NATplus (r \NATplus r'')
@@ -106,9 +106,9 @@
     Hence $q \eq q'$.
     Thus $(m \NATmul q) \NATplus r \eq (m \NATmul q) \NATplus r'$.
     Therefore $r \eq r'$.
-  End.
+  \end{case}
 
-  Case $q \NATless q'$ and $r \NATgeq r'$.
+  \begin{case}{$q \NATless q'$ and $r \NATgeq r'$.}
     Take $q'' \eq q' \NATsub q$ and $r'' \eq r \NATsub r'$.
     Then $(m \NATmul q) \NATplus (r' \NATplus r'') \eq (m \NATmul (q \NATplus q'')) \NATplus r'$.
     We have $(m \NATmul q) \NATplus (r' \NATplus r'')
@@ -130,9 +130,9 @@
     Hence $q' \eq q$.
     Thus $(m \NATmul q) \NATplus r \eq (m \NATmul q) \NATplus r'$.
     Therefore $r \eq r'$.
-  End.
+  \end{case}
 
-  Case $q \NATless q'$ and $r \NATless r'$.
+  \begin{case}{$q \NATless q'$ and $r \NATless r'$.}
     (1) $((m \NATmul q') \NATplus r') \NATsub r \eq (m \NATmul q') \NATplus (r' \NATsub r)$ (by \printref{ARITHMETIC_05_7578468875239424}).
     (2) $((m \NATmul q) \NATplus r) \NATsub r
       \eq (m \NATmul q) \NATplus (r \NATsub r)
@@ -145,7 +145,7 @@
     If $(m \NATmul q') \NATsub (m \NATmul q) \eq \NATzero$ then $q' \NATsub q \eq \NATzero$.
     Therefore $q' \NATsub q \eq \NATzero$ and $r' \NATsub r \eq \NATzero$.
     Thus we have $q' \eq q$ and $r' \eq r$.
-  End.
+  \end{case}
 \end{proof}
 \end{smodule}
 \end{document}

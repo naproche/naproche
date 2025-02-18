@@ -136,17 +136,17 @@
   Then $\FUNim{f}{X} \eq \SETempty$ iff $X \eq \SETempty$.
 \end{proposition}
 \begin{proof}[forthel]
-  Case $\FUNim{f}{X}$ is empty.
+  \begin{case}{$\FUNim{f}{X}$ is empty.}
     Then there is no $a \in X$ such that $f(a) \in \FUNim{f}{X}$.
     For all $a \in X$ we have $f(a) \in \FUNim{f}{X}$.
     Hence $X$ is empty.
-  End.
+  \end{case}
 
-  Case $X$ is empty.
+  \begin{case}{$X$ is empty.}
     For all $b \in \FUNim{f}{X}$ we have $b \eq f(a)$ for some $a \in X$.
     There is no $a \in X$.
     Hence $\FUNim{f}{X}$ is empty.
-  End.
+  \end{case}
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_8597874786959360]
@@ -154,29 +154,29 @@
   Then $\FUNpreim{f}{Y} \eq \SETempty$ iff $Y \SETinclude B \SETdiff \FUNim{f}{A}$.
 \end{proposition}
 \begin{proof}[forthel]
-  Case $\FUNpreim{f}{Y}$ is empty.
+  \begin{case}{$\FUNpreim{f}{Y}$ is empty.}
     Let $b \in Y$.
     Then $b \in B$.
 
-    There is no $a \in A$ such that $b \eq f(a)$. \newline
-    Proof.
+    There is no $a \in A$ such that $b \eq f(a)$.
+    \begin{proof}
       Assume the contrary.
       Take $a \in A$ such that $b \eq f(a)$.
       Then $a \in \FUNpreim{f}{Y}$.
       Contradiction.
-    Qed.
+    \end{proof}
 
     Hence $b \notin \FUNim{f}{A}$.
     Therefore $b \in B \SETdiff \FUNim{f}{A}$.
-  End.
+  \end{case}
 
-  Case $Y \SETinclude B \SETdiff \FUNim{f}{A}$.
+  \begin{case}{$Y \SETinclude B \SETdiff \FUNim{f}{A}$.}
     Then no element of $Y$ is an element of $\FUNim{f}{A}$.
     Assume that $\FUNpreim{f}{Y}$ is nonempty.
     Take $a \in \FUNpreim{f}{Y}$.
     Then $f(a) \in Y$ and $f(a) \in \FUNim{f}{A}$.
     Contradiction.
-  End.
+  \end{case}
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_6295504988143616]
@@ -184,15 +184,15 @@
   Then $\FUNim{f}{X} \SETintersect Y \eq \SETempty$ iff $X \SETintersect \FUNpreim{f}{Y} \eq \SETempty$.
 \end{proposition}
 \begin{proof}[forthel]
-  Case $\FUNim{f}{X} \SETintersect Y$ is empty.
+  \begin{case}{$\FUNim{f}{X} \SETintersect Y$ is empty.}
     Assume that $X \SETintersect \FUNpreim{f}{Y}$ is nonempty.
     Take $a \in X \SETintersect \FUNpreim{f}{Y}$.
     Then $f(a) \in \FUNim{f}{X}$ and $f(a) \in Y$.
     Hence $f(a) \in \FUNim{f}{X} \SETintersect Y$.
     Contradiction.
-  End.
+  \end{case}
 
-  Case $X \SETintersect \FUNpreim{f}{Y}$ is empty.
+  \begin{case}{$X \SETintersect \FUNpreim{f}{Y}$ is empty.}
     Assume that $\FUNim{f}{X} \SETintersect Y$ is nonempty.
     Take $b \in \FUNim{f}{X} \SETintersect Y$.
     Consider a $a \in X$ such that $b \eq f(a)$.
@@ -200,7 +200,7 @@
     Indeed $b \in Y$.
     Hence $a \in X \SETintersect \FUNpreim{f}{Y}$.
     Contradiction.
-  End.
+  \end{case}
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_5628919411638272]
@@ -266,17 +266,17 @@
   Let us show that $\FUNim{f}{X} \SETunion \FUNim{f}{X'} \SETinclude \FUNim{f}{X \SETunion X'}$.
     Let $b \in \FUNim{f}{X} \SETunion \FUNim{f}{X'}$.
 
-    Case $b \in \FUNim{f}{X}$.
+    \begin{case}{$b \in \FUNim{f}{X}$.}
       Take $a \in X$ such that $b \eq f(a)$.
       Then $a \in X \SETunion X'$.
       Hence $b \in \FUNim{f}{X \SETunion X'}$.
-    End.
+    \end{case}
 
-    Case $b \in \FUNim{f}{X'}$.
+    \begin{case}{$b \in \FUNim{f}{X'}$.}
       Take $a \in X'$ such that $b \eq f(a)$.
       Then $a \in X \SETunion X'$.
       Hence $b \in \FUNim{f}{X \SETunion X'}$.
-    End.
+    \end{case}
   End.
 \end{proof}
 

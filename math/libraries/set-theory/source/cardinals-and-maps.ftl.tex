@@ -37,7 +37,7 @@
   Then there exists an injective map from $x$ to $y$ iff $\SETcard{x} \ORDleq \SETcard{y}$.
 \end{proposition}
 \begin{proof}[forthel]
-  Case there exists an injective map from $x$ to $y$.
+  \begin{case}{there exists an injective map from $x$ to $y$.}
     Consider an injective map $f$ from $x$ to $y$.
     Take a bijection $g$ from $\SETcard{x}$ to $x$ and a bijection $h$ from $y$ to $\SETcard{y}$.
     Then $g$ is an injective map from $\SETcard{x}$ to $x$ and $h$ is an injective map from $y$ to $\SETcard{y}$.
@@ -49,9 +49,9 @@
     (by \printref{SET_THEORY_06_2820082336006144}, \printref{SET_THEORY_06_5513850721927168}).
     We have $\FUNim{(h \FUNcomp f) \FUNcomp g}{\SETcard{x}} \SETinclude \SETcard{y}$.
     Hence $\SETcard{x} \ORDleq \SETcard{y}$.
-  End.
+  \end{case}
 
-  Case $\SETcard{x} \ORDleq \SETcard{y}$.
+  \begin{case}{$\SETcard{x} \ORDleq \SETcard{y}$.}
     Take a bijection $g$ from $x$ to $\SETcard{x}$ and a bijection $h$ from $\SETcard{y}$ to $y$.
     We have $\SETcard{x} \SETinclude \SETcard{y}$.
     Hence $g$ is an injective map from $x$ to $\SETcard{y}$.
@@ -59,7 +59,7 @@
     Then $f$ is an injective map from $x$ to $y$.
     Indeed $f$ is injective.
     Indeed $h$ is an injective map from $\SETcard{y}$ to $y$.
-  End.
+  \end{case}
 \end{proof}
 
 \begin{corollary}[forthel,id=SET_THEORY_06_4944303633727488]
@@ -88,7 +88,7 @@
   Then there exists a surjective map from $x$ onto $y$ iff $\SETcard{x} \ORDgeq \SETcard{y}$.
 \end{proposition}
 \begin{proof}[forthel]
-  Case there exists a surjective map from $x$ onto $y$.
+  \begin{case}{there exists a surjective map from $x$ onto $y$.}
     Consider a surjective map $f$ from $x$ onto $y$.
     Define $g(v) =$ ``choose $u \in x$ such that $f(u) \eq v$ in $u$'' for $v \in y$.
     Then $g$ is an injective map from $y$ to $x$.
@@ -105,9 +105,9 @@
         \eq v'$.
     End.
     Hence $\SETcard{x} \ORDgeq \SETcard{y}$.
-  End.
+  \end{case}
 
-  Case $\SETcard{x} \ORDgeq \SETcard{y}$.
+  \begin{case}{$\SETcard{x} \ORDgeq \SETcard{y}$.}
     Then we can take an injective map $f$ from $y$ to $x$.
     Then $\FUNinv{f}$ is a bijection between $\FUNrange(f)$ and $y$.
     Consider an element $z$ of $y$.
@@ -123,7 +123,7 @@
       Then $f(v) \in \FUNrange(f)$.
       Hence $g(f(v)) \eq \FUNinv{f}(f(v)) \eq v$.
     End.
-  End.
+  \end{case}
 \end{proof}
 
 \begin{proposition}[forthel,id=SET_THEORY_06_5843717288099840]
@@ -141,14 +141,14 @@
   Then $\SETcard{\FUNim{f}{a}} \ORDleq \SETcard{a}$.
 \end{proposition}
 \begin{proof}[forthel]
-  Case $a$ is empty. Obvious.
+  \begin{case}{$a$ is empty.} \end{case}
 
-  Case $a$ is nonempty.
+  \begin{case}{$a$ is nonempty.}
     $f \FUNrest a$ is a surjective map from $a$ onto $\FUNim{f}{a}$.
     $\FUNim{f}{a}$ is nonempty.
     Hence $\SETcard{\FUNim{f}{a}} \ORDleq \SETcard{a}$ (by \printref{SET_THEORY_06_192336220913664}).
     Indeed $a$ and $\FUNim{f}{a}$ are sets.
-  End.
+  \end{case}
 \end{proof}
 \end{smodule}
 \end{document}

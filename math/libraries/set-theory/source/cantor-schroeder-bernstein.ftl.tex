@@ -10,14 +10,14 @@
   $x$ and $y$ are equinumerous iff there exists a injective map from $x$ to $y$ and there exists an injective map from $y$ to $x$.
 \end{theorem}
 \begin{proof}[forthel]
-  Case $x$ and $y$ are equinumerous.
+  \begin{case}{$x$ and $y$ are equinumerous.}
     Take a bijection $f$ between $x$ and $y$.
     Then $\FUNinv{f}$ is a bijection between $y$ and $x$.
     Hence $f$ is an injective map from $x$ to $y$ and $\FUNinv{f}$ is an
     injective map from $y$ to $x$.
-  End.
+  \end{case}
 
-  Case there exists an injective map from $x$ to $y$ and there exists an injective map from $y$ to $x$.
+  \begin{case}{there exists an injective map from $x$ to $y$ and there exists an injective map from $y$ to $x$.}
     Take an injective map $f$ from $x$ to $y$.
     Take an injective map $g$ from $y$ to $x$.
     We have $y \SETdiff \FUNim{f}{a} \SETinclude y$ for any $a \in \SETpow(x)$.
@@ -75,19 +75,19 @@
     Indeed we can show that every element of $y$ is a value of $H$.
       Let $v \in y$.
 
-      Case $v \in \FUNim{f}{c}$.
+      \begin{case}{$v \in \FUNim{f}{c}$.}
         Take $u \in c$ such that $f(u) \eq v$.
         Then $F(u) \eq v$.
-      End.
+      \end{case}
 
-      Case $v \notin \FUNim{f}{c}$.
+      \begin{case}{$v \notin \FUNim{f}{c}$.}
         Then $v \in y \SETdiff \FUNim{f}{c}$.
         Hence $g(v) \in \FUNim{g}{y \SETdiff \FUNim{f}{c}}$.
         Thus $g(v) \in x \SETdiff h(c)$.
         We have $g(v) \in x \SETdiff c$.
         Therefore we can take $u \in x \SETdiff c$ such that $G(u) \eq v$.
         Then $v \eq H(u)$.
-      End.
+      \end{case}
     End.
 
     (5) $H$ is injective.
@@ -95,38 +95,38 @@
       Let $u,v \in x$.
       Assume $u \neq v$.
 
-      Case $u,v \in c$.
+      \begin{case}{$u,v \in c$.}
         Then $H(u) \eq F(u)$ and $H(v) \eq F(v)$.
         We have $F(u) \neq F(v)$.
         Hence $H(u) \neq H(v)$.
-      End.
+      \end{case}
 
-      Case $u,v \notin c$.
+      \begin{case}{$u,v \notin c$.}
         Then $H(u) \eq G(u)$ and $H(v) \eq G(v)$.
         We have $G(u) \neq G(v)$.
         Hence $H(u) \neq H(v)$.
-      End.
+      \end{case}
 
-      Case $u \in c$ and $v \notin c$.
+      \begin{case}{$u \in c$ and $v \notin c$.}
         Then $H(u) \eq F(u)$ and $H(v) \eq G(v)$.
         Hence $v \in \FUNim{g}{y \SETdiff \FUNim{F}{c}}$.
         We have $G(v) \eq \FUNinv{g}(v) \in y \SETdiff \FUNim{F}{c}$.
         Indeed $v \eq g(v')$ for some $v' \in y \SETdiff \FUNim{F}{c}$.
         Thus $G(v) \neq F(u)$.
-      End.
+      \end{case}
 
-      Case $u \notin c$ and $v \in c$.
+      \begin{case}{$u \notin c$ and $v \in c$.}
         Then $H(u) \eq G(u)$ and $H(v) \eq F(v)$.
         Hence $u \in \FUNim{g}{y \SETdiff \FUNim{F}{c}}$.
         We have $G(u) \eq \FUNinv{g}(u) \in y \SETdiff \FUNim{F}{c}$.
         Indeed $u \eq g(u')$ for some $u' \in y \SETdiff \FUNim{F}{c}$.
         Thus $G(u) \neq F(v)$.
-      End.
+      \end{case}
     End.
 
     Consequently $H$ is a bijection between $x$ and $y$ (by 4, 5).
     Therefore $x$ and $y$ are equinumerous.
-  End.
+    \end{case}
 \end{proof}
 \end{smodule}
 \end{document}

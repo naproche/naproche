@@ -247,7 +247,7 @@
     Then $A \SETinclude B$ iff $A \SETunion B \eq B$.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $A \SETinclude B$.
+    \begin{case}{$A \SETinclude B$.}
 
       Let us show that $A \SETunion B \SETinclude B$.
         Let $x \in A \SETunion B$.
@@ -261,13 +261,13 @@
         Then $x \in A$ or $x \in B$.
         Hence $x \in A \SETunion B$.
       End.
-    End.
+    \end{case}
 
-    Case $A \SETunion B \eq B$.
+    \begin{case}{$A \SETunion B \eq B$.}
       Let $x \in A$.
       Then $x \in A$ or $x \in B$.
       Hence $x \in A \SETunion B \eq B$.
-    End.
+    \end{case}
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_02_2356449346846720]
@@ -275,7 +275,7 @@
     Then $A \SETinclude B$ iff $A \SETintersect B \eq A$.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $A \SETinclude B$.
+    \begin{case}{$A \SETinclude B$.}
 
       Let us show that $A \SETintersect B \SETinclude A$.
         Let $x \in A \SETintersect B$.
@@ -289,14 +289,14 @@
         Hence $x \in A$ and $x \in B$.
         Thus $x \in A \SETintersect B$.
       End.
-    End.
+    \end{case}
 
-    Case $A \SETintersect B \eq A$.
+    \begin{case}{$A \SETintersect B \eq A$.}
       Let $x \in A$.
       Then $x \in A \SETintersect B$.
       Hence $x \in A$ and $x \in B$.
       Thus $x \in B$.
-    End.
+    \end{case}
   \end{proof}
 \end{sfragment}
 
@@ -349,13 +349,13 @@
     Then $B \SETinclude A$ iff $A \SETdiff (A \SETdiff B) \eq B$.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $B \SETinclude A$. Obvious.
+    \begin{case}{$B \SETinclude A$.} \end{case}
 
-    Case $A \SETdiff (A \SETdiff B) \eq B$.
+    \begin{case}{$A \SETdiff (A \SETdiff B) \eq B$.}
       Then every element of $B$ is an element of $A \SETdiff (A \SETdiff B)$.
       Thus every element of $B$ is an element of $A$.
       Then we have the thesis.
-    End.
+    \end{case}
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_02_5811954316738560]

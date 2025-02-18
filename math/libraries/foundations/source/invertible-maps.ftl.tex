@@ -48,7 +48,7 @@
     Then $g$ is the inverse of $f$ iff $g \FUNcomp f \eq \FUNid{A}$ and $f \FUNcomp g \eq \FUNid{B}$.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $g$ is the inverse of $f$.
+    \begin{case}{$g$ is the inverse of $f$.}
       We have
       $\dom(g \FUNcomp f)
         \eq \dom(f)
@@ -70,9 +70,9 @@
         \eq f(g(b))
         \eq b$.
       Hence $f \FUNcomp g \eq \FUNid{B}$.
-    End.
+    \end{case}
 
-    Case $g \FUNcomp f \eq \FUNid{A}$ and $f \FUNcomp g \eq \FUNid{B}$.
+    \begin{case}{$g \FUNcomp f \eq \FUNid{A}$ and $f \FUNcomp g \eq \FUNid{B}$.}
       Then $\dom(g)
         \eq B
         \eq \FUNrange(f)$
@@ -93,7 +93,7 @@
         \eq \FUNid{B}(b)
         \eq b$.
       Hence $f(a) \eq b$ iff $g(b) \eq a$.
-    End.
+    \end{case}
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_09_8414736098000896]
@@ -284,13 +284,13 @@
     Then $f$ is invertible iff $f$ is injective.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $f$ is invertible.
+    \begin{case}{$f$ is invertible.}
       Let $a, b \in A$.
       Assume $f(a) \eq f(b)$.
       Then $a \eq \FUNinv{f}(f(a)) \eq \FUNinv{f}(f(b)) \eq b$.
-    End.
+    \end{case}
 
-    Case $f$ is injective.
+    \begin{case}{$f$ is injective.}
       Define $g(b) =$ ``choose $a \in A$ such that $f(a) \eq b$ in $a$'' for
       $b \in B$.
       Then $g$ is a map from $B$ to $A$.
@@ -299,7 +299,7 @@
       For all $a \in A$ we have $g(f(a)) \eq a$.
       For all $b \in B$ we have $f(g(b)) \eq b$.
       Hence $g$ is the inverse of $f$.
-    End.
+    \end{case}
   \end{proof}
 
   \begin{corollary}[forthel,id=FOUNDATIONS_09_5708971514003456]
@@ -315,7 +315,7 @@
   \end{proof}
 \end{sfragment}
 
-\begin{sfragment}*{Involutions}
+\begin{sfragment}{Involutions}
   \begin{definition}[forthel,id=FOUNDATIONS_09_7282039688527872]
     Let $A$ be a class.
     An \emph{involution on $A$} is a selfinverse map $f$ on $A$.
@@ -335,15 +335,15 @@
     Then $g \FUNcomp f$ is an involution on $A$ iff $g \FUNcomp f \eq f \FUNcomp g$.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $g \FUNcomp f$ is an involution on $A$.
+    \begin{case}{$g \FUNcomp f$ is an involution on $A$.}
       Then $\FUNinv{g \FUNcomp f}
         \eq \FUNinv{f} \FUNcomp \FUNinv{g}
         \eq f \FUNcomp g$
       (by \printref{FOUNDATIONS_09_7619151963095040}).
       Indeed $f$ and $g$ are invertible and surjective onto $A$.
-    End.
+    \end{case}
 
-    Case $g \FUNcomp f \eq f \FUNcomp g$.
+    \begin{case}{$g \FUNcomp f \eq f \FUNcomp g$.}
       $f \FUNcomp f$, $f \FUNcomp g$ and $f \FUNcomp g$ are maps on $A$.
       Hence
       \[  (g \FUNcomp f) \FUNcomp (g \FUNcomp f)       \]
@@ -354,7 +354,7 @@
       \[    \eq g \FUNcomp g                       \]
       \[    \eq \FUNid{A}.                        \]
       Thus $g \FUNcomp f$ is selfinverse.
-    End.
+    \end{case}
   \end{proof}
 
   \begin{corollary}[forthel,id=FOUNDATIONS_09_5958206868160512]

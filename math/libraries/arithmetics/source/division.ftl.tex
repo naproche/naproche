@@ -28,21 +28,21 @@
   Then $\NATfrac{n}{m} \eq \NATzero$ iff $n \eq \NATzero$.
 \end{proposition}
 \begin{proof}[forthel]
-  Case $\NATfrac{n}{m} \eq \NATzero$.
+  \begin{case}{$\NATfrac{n}{m} \eq \NATzero$.}
     Then $n
       \eq \NATfrac{n}{m} \NATmul m
       \eq \NATzero \NATmul m
       \eq \NATzero$.
-  End.
+  \end{case}
 
-  Case $n \eq \NATzero$.
+  \begin{case}{$n \eq \NATzero$.}
     Then $\NATfrac{n}{m} \NATmul m
       \eq n
       \eq \NATzero$.
     Hence $\NATfrac{n}{m} \eq \NATzero$ or $m \eq \NATzero$.
     $m$ is nonzero.
     Thus $\NATfrac{n}{m} \eq \NATzero$.
-  End.
+  \end{case}
 \end{proof}
 
 \begin{proposition}[forthel,id=ARITHMETIC_14_5137961454123875]

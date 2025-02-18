@@ -2,7 +2,7 @@
 \libinput{preamble}
 \begin{document}
 \IfInputref{}{\setsectionlevel{section}}
-\begin{smodule}[title=Prime Numbers]{primes.ftl}
+\begin{smodule}[title=Prime Numbers]{primes.ftl}\inlineforthel{[prove off][check off]}
 \importmodule[libraries/arithmetics]{divisibility.ftl}
 \importmodule[libraries/arithmetics]{modular-arithmetics.ftl}
 \symdef{Prime}{\mathbb P}
@@ -37,11 +37,11 @@
     Assume that $\Phi$ contains all predecessors of $n'$.
     We have $n' \eq \NATzero$ or $n' \eq \NATone$ or $n'$ is prime or $n'$ is composite.
 
-    Case $n' \eq \NATzero$ or $n' \eq \NATone$. Trivial.
+    \begin{case}{$n' \eq \NATzero$ or $n' \eq \NATone$.} \end{case}
 
-    Case $n'$ is prime. Obvious.
+    \begin{case}{$n'$ is prime.} \end{case}
 
-    Case $n'$ is composite.
+    \begin{case}{$n'$ is composite.}
       Take a nontrivial divisor $m$ of $n'$.
       Then $\NATone \NATless m \NATless n'$.
       $m$ is contained in $\Phi$.
@@ -49,7 +49,7 @@
       Then we have $p \NATmid m \NATmid n'$.
       Thus $p \NATmid n'$.
       Therefore $p$ is a prime divisor of $n'$.
-    End.
+    \end{case}
   End.
 
   Thus every natural number belongs to $\Phi$ (by \printref{ARITHMETIC_04_3609801697263616}).
@@ -69,13 +69,13 @@
   $n$ and $m$ are coprime iff $n$ and $m$ have no common prime divisor.
 \end{proposition}
 \begin{proof}[forthel]
-  Case $n$ and $m$ are coprime.
+  \begin{case}{$n$ and $m$ are coprime.}
     Let $p$ be a prime number such that $p \NATmid n$ and $p \NATmid m$.
     Then $p$ is nonzero and $p \neq \NATone$.
     Contradiction.
-  End.
+  \end{case}
 
-  Case $n$ and $m$ have no common prime divisor.
+  \begin{case}{$n$ and $m$ have no common prime divisor.}
     Assume that $n$ and $m$ are not coprime.
     Let $k$ be a nonzero natural number such that $k \NATmid n$ and $k \NATmid m$.
     Assume that $k \neq \NATone$.
@@ -83,7 +83,7 @@
     Then $p \NATmid k \NATmid n,m$.
     Hence $p \NATmid n$ and $p \NATmid m$.
     Contradiction.
-  End.
+  \end{case}
 \end{proof}
 
 \begin{proposition}[forthel,id=ARITHMETIC_10_7212152851005440]
@@ -98,7 +98,7 @@
   Hence $p \NATmid n$.
   Contradiction.
 \end{proof}
-
+\inlineforthel{[quit]}
 \begin{proposition}[forthel,id=ARITHMETIC_10_8313676557713408]
   Let $n, m$ be natural numbers and $p$ be a prime number.
   If $p \NATmid n \NATmul m$ then $p \NATmid n$ or $p \NATmid m$.
@@ -106,9 +106,11 @@
 \begin{proof}[forthel]
   Assume $p \NATmid n \NATmul m$.
 
-  Case $p \NATmid n$. Trivial.
+  \begin{case}{$p \NATmid n$.}
+    Obvious.
+  \end{case}
 
-  Case $p \NATnmid n$.
+  \begin{case}{$p \NATnmid n$.}
     Define $\Phi = \{ k \in \Nat \mid k \neq \NATzero$ and $p \NATmid k \NATmul m \}$.
     Then $p \in \Phi$ and $n \in \Phi$.
     Hence $\Phi$ contains some natural number.
@@ -147,7 +149,7 @@
     Indeed if $a \eq p$ then $p \NATmid n$.
     Then $\NATone \in \Phi$.
     Therefore $p \NATmid \NATone \NATmul m \eq m$.
-  End.
+  \end{case}
 \end{proof}
 \end{smodule}
 \end{document}

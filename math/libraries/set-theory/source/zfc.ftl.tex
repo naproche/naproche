@@ -66,8 +66,8 @@
   $\SETsingleton{a}$ and $\SETpair{a}{b}$ are sets for each $a \in x$ and each $b \in y$.
   Define $P = \{ \SETpair{\SETsingleton{a}}{\SETpair{a}{b}} \mid a \in x$ and $b \in y \}$.
 
-  (1) $P$ is a set. \newline
-  Proof.
+  (1) $P$ is a set.
+  \begin{proof}
     Let us show that $P \SETinclude \SETpow(\SETpow(x \SETunion y))$.
       Let $p \in P$.
       Consider $a \in x$ and $b \in y$ such that $p \eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$.
@@ -79,7 +79,7 @@
     $x \SETunion y$ is a set.
     Consequently $\SETpow(\SETpow(x \SETunion y))$ is a set (by \printref{FOUNDATIONS_10_5862230203564032}).
     Therefore $P$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
-  Qed.
+  \end{proof}
 
   Define $l(p) =$ ``choose $a \in x$, choose $b \in y$ such that $p \eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$ in $a$'' for $p \in P$.
   Define $r(p) =$ ``choose $a \in x$, choose $b \in y$ such that $p \eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$ in $b$'' for $p \in P$.
@@ -93,45 +93,45 @@
     Then ($\SETsingleton{u} \eq \SETsingleton{u'}$ or $\SETsingleton{u} \eq \SETpair{u'}{v'}$) and ($\SETpair{u}{v} \eq \SETsingleton{u'}$ or $\SETpair{u}{v} \eq \SETpair{u'}{v'}$).
     Thus ($\SETsingleton{u} \eq \SETsingleton{u'}$ and ($\SETpair{u}{v} \eq \SETsingleton{u'}$ or $\SETpair{u}{v} \eq \SETpair{u'}{v'}$)) or ($\SETsingleton{u} \eq \SETpair{u'}{v'}$ and ($\SETpair{u}{v} \eq \SETsingleton{u'}$ or $\SETpair{u}{v} \eq \SETpair{u'}{v'}$)).
 
-    Case $\SETsingleton{u} \eq \SETsingleton{u'}$ and ($\SETpair{u}{v} \eq \SETsingleton{u'}$ or $\SETpair{u}{v} \eq \SETpair{u'}{v'}$).
+    \begin{case}{$\SETsingleton{u} \eq \SETsingleton{u'}$ and ($\SETpair{u}{v} \eq \SETsingleton{u'}$ or $\SETpair{u}{v} \eq \SETpair{u'}{v'}$).}
       We have $\SETsingleton{u} \eq \SETsingleton{u'}$.
       Hence $u \eq u'$.
 
-      Case $\SETpair{u}{v} \eq \SETsingleton{u'}$.
+      \begin{case}{$\SETpair{u}{v} \eq \SETsingleton{u'}$.}
         Then $u \eq u'\eq v$.
         Hence $\SETpair{\SETsingleton{u}}{\SETpair{u}{u}} \eq \SETpair{\SETsingleton{u}}{\SETpair{u}{v'}}$ (by 1).
         Thus $\SETsingleton{\SETsingleton{u}} \eq \SETpair{\SETsingleton{u}}{\SETpair{u}{v'}}$.
         Therefore $\SETsingleton{u} \eq \SETpair{u}{v'}$.
         Consequently $v' \eq u \eq v$.
-      End.
+      \end{case}
 
-      Case $\SETpair{u}{v} \eq \SETpair{u'}{v'}$.
+      \begin{case}{$\SETpair{u}{v} \eq \SETpair{u'}{v'}$.}
         Then $\SETpair{u}{v} \eq \SETpair{u}{v'}$.
         Hence $v \eq v'$.
-      End.
-    End.
+      \end{case}
+    \end{case}
 
-    Case $\SETsingleton{u} \eq \SETpair{u'}{v'}$ and ($\SETpair{u}{v} \eq \SETsingleton{u'}$ or $\SETpair{u}{v} \eq \SETpair{u'}{v'}$).
+    \begin{case}{$\SETsingleton{u} \eq \SETpair{u'}{v'}$ and ($\SETpair{u}{v} \eq \SETsingleton{u'}$ or $\SETpair{u}{v} \eq \SETpair{u'}{v'}$).}
       We have $\SETsingleton{u} \eq \SETpair{u'}{v'}$.
       Hence $u \eq u'$.
 
-      Case $\SETpair{u}{v} \eq \SETsingleton{u'}$.
+      \begin{case}{$\SETpair{u}{v} \eq \SETsingleton{u'}$.}
         Then $u \eq v \eq u'$.
         Hence $v \eq v'$.
-      End.
+      \end{case}
 
-      Case $\SETpair{u}{v} \eq \SETpair{u'}{v'}$.
+      \begin{case}{$\SETpair{u}{v} \eq \SETpair{u'}{v'}$.}
         Then $\SETpair{u}{v} \eq \SETpair{u}{v'}$.
         Hence $v \eq v'$.
-      End.
-    End.
+      \end{case}
+    \end{case}
   End.
 
-  $\SETpair{\SETsingleton{a}}{\SETpair{a}{b}} \in \dom(f)$ for any $a \in x$ and any $b \in y$. \newline % Needed for ontological checking
-  Proof.
+  $\SETpair{\SETsingleton{a}}{\SETpair{a}{b}} \in \dom(f)$ for any $a \in x$ and any $b \in y$. % Needed for ontological checking
+  \begin{proof}
     Let $a \in x$ and $b \in y$.
     Then $\SETpair{\SETsingleton{a}}{\SETpair{a}{b}} \in P$.
-  Qed.
+  \end{proof}
 
   Let us show that for any $a \in x$ and any $b \in y$ we have $f(\SETpair{\SETsingleton{a}}{\SETpair{a}{b}}) \eq (a,b)$.
     Let $a \in x$ and $b \in y$.
@@ -146,8 +146,8 @@
     Therefore $f(p) \eq (a,b)$.
   End.
 
-  (2) $x \SETprod y \eq \FUNim{f}{P}$. \newline
-  Proof.
+  (2) $x \SETprod y \eq \FUNim{f}{P}$.
+  \begin{proof}
     For all $p \in P$ we have $l(p) \in x$ and $r(p) \in y$.
     Hence $f(p) \in x \SETprod y$ for all $p \in P$.
     Therefore $\FUNim{f}{P} \SETinclude x \SETprod y$.
@@ -161,7 +161,7 @@
     End.
 
     Consequently $x \SETprod y \eq \FUNim{f}{P}$.
-  Qed.
+  \end{proof}
 
   Thus $x \SETprod y$ is the image of some set under some map.
   Therefore $x \SETprod y$ is a set (by \printref{FOUNDATIONS_10_8142956584239104}).
@@ -209,17 +209,17 @@
   Indeed $\SETpair{x}{y}$ is a nonempty system of sets.
   Then we have $z \eq x$ or $z \eq y$.
 
-  Case $z \eq x$.
+  \begin{case}{$z \eq x$.}
     Then $x$ and $\SETpair{x}{y}$ are disjoint.
     Hence $y \notin x$.
     Contradiction.
-  End.
+  \end{case}
 
-  Case $z \eq y$.
+  \begin{case}{$z \eq y$.}
     Then $y$ and $\SETpair{x}{y}$ are disjoint.
     Hence $x \notin y$.
     Contradiction.
-  End.
+  \end{case}
 \end{proof}
 
 \begin{corollary}[forthel,id=FOUNDATIONS_10_3086917813927936]
@@ -249,8 +249,8 @@
     Let $f \in \FUNfunspace{x}{y}$.
     Define $F = \{ (a,f(a)) \mid a \in x \}$.
 
-    Then $F \in R$. \newline
-    Proof.
+    Then $F \in R$.
+    \begin{proof}
       Define $g(a) = (a,f(a))$ for $a \in x$.
       Then $F \eq \FUNrange(g)$.
       Hence $F$ is a set.
@@ -265,7 +265,7 @@
       [prover vampire]
       Hence the thesis.
       [prover eprover]
-    End.
+    \end{proof}
 
     $\dom(f) \eq \dom(h(F))$ and for each $a \in \dom(f)$ we have $h(F)(a) \eq f(a)$.
     Hence $f \eq h(F)$.

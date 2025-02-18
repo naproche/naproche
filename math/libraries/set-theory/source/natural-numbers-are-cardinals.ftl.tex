@@ -16,8 +16,8 @@
   (1) $\ORDzero \in \Phi$.
   Indeed $\SETcard{\ORDzero} \eq \SETcard{\SETempty} \eq \ORDzero$.
 
-  (2) For all $n' \in \Phi$ we have $\ORDsucc(n') \in \Phi$. \newline
-  Proof.
+  (2) For all $n' \in \Phi$ we have $\ORDsucc(n') \in \Phi$.
+  \begin{proof}
     Let $n' \in \Phi$.
     Then $\SETcard{n'} \eq n'$.
     We have $\SETcard{\ORDsucc(n')} \ORDleq \ORDsucc(n')$.
@@ -59,66 +59,66 @@
       for $i \in m$.
 
       $g$ is a map from $m$ to $n'$.
-      Indeed we can show that $g(i) \in n'$ for each $i \in m$. \newline
-      Proof.
+      Indeed we can show that $g(i) \in n'$ for each $i \in m$.
+      \begin{proof}
         Let $i \in m$.
         We have $g(i) \in \ORDsucc(n')$.
         Indeed $f(i), f(m) \in \ORDsucc(n')$ and ($g(i) \eq f(i)$ or $g(i) \eq f(m)$).
         Hence if $g(i) \neq n'$ then $g(i) \in n'$.
 
-        Case $i \neq \FUNinv{f}(n')$.
+        \begin{case}{$i \neq \FUNinv{f}(n')$.}
           Then $g(i) \eq f(i) \in \ORDsucc(n')$.
           If $g(i) \eq n'$ then $f(i) \eq n' \eq f(\FUNinv{f}(n'))$.
           Hence if $g(i) \eq n'$ then $i \eq \FUNinv{f}(n')$.
           Thus $g(i) \neq n'$.
           Therefore $g(i) \in n'$.
-        End.
+        \end{case}
 
-        Case $i \eq \FUNinv{f}(n')$.
+        \begin{case}{$i \eq \FUNinv{f}(n')$.}
           Then $g(i)
             \eq f(m)
             \neq f(\FUNinv{f}(n'))
             \eq n'$.
           Hence $g(i) \in n'$.
-        End.
-      Qed.
+        \end{case}
+      \end{proof}
 
       $g$ is surjective onto $n'$.
-      Indeed we can show that for all $k \in n'$ there exists a $l \in m$ such that $k \eq g(l)$. \newline
-      Proof.
+      Indeed we can show that for all $k \in n'$ there exists a $l \in m$ such that $k \eq g(l)$.
+      \begin{proof}
         Let $k \in n'$.
         Then $\FUNinv{f}(k) \neq \FUNinv{f}(n')$.
 
-        Case $\FUNinv{f}(k) \eq m$.
+        \begin{case}{$\FUNinv{f}(k) \eq m$.}
           Then $k
             \eq f(\FUNinv{f}(k))
             \eq f(m)
             \eq g(\FUNinv{f}(n'))$.
-        End.
+        \end{case}
 
-        Case $\FUNinv{f}(k) \neq m$.
+        \begin{case}{$\FUNinv{f}(k) \neq m$.}
           Then $\FUNinv{f}(k) \in m$.
           Indeed $\FUNinv{f}(k) \in \SETcard{\ORDsucc(n')} \eq \ORDsucc(m) \eq m \SETunion \SETsingleton{m}$.
           Hence $k
             \eq f(\FUNinv{f}(k))
             \eq g(\FUNinv{f}(k))$.
-        End.
-      Qed.
+        \end{case}
+      \end{proof}
 
       $g$ is injective.
-      Indeed we can show that for all $i, j \in m$ if $i \neq j$ then $g(i) \neq g(j)$. \newline
-      Proof.
+      Indeed we can show that for all $i, j \in m$ if $i \neq j$ then $g(i) \neq g(j)$.
+      \begin{proof}
         Let $i, j \in m$.
         Assume $i \neq j$.
 
-        Case $i, j \neq \FUNinv{f}(n')$.
+        \begin{case}{$i, j \neq \FUNinv{f}(n')$.}
           Then $g(i)
             \eq f(i)
             \neq f(j)
             \eq g(j)$.
-        End.
+        \end{case}
 
-        Case $i \eq \FUNinv{f}(n')$.
+        \begin{case}{$i \eq \FUNinv{f}(n')$.}
           Then $j \neq \FUNinv{f}(n')$.
           Hence $g(i)
             \eq g(\FUNinv{f}(n'))
@@ -126,9 +126,9 @@
             \neq f(j)
             \eq g(j)$.
           Indeed $m \neq j$.
-        End.
+        \end{case}
 
-        Case $j \eq \FUNinv{f}(n')$.
+        \begin{case}{$j \eq \FUNinv{f}(n')$.}
           Then $i \neq \FUNinv{f}(n')$.
           Hence $g(i)
             \eq f(i)
@@ -136,10 +136,10 @@
             \eq g(\FUNinv{f}(n'))
             \eq g(j)$.
           Indeed $i \neq m$.
-        End.
-      Qed.
+        \end{case}
+      \end{proof}
     End.
-  End.
+  \end{proof}
 
   Thus $\ORDomega \SETinclude \Phi$ (by \printref{SET_THEORY_03_344585425387520}).
   Consequently $n \in \Phi$.
