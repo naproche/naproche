@@ -23,6 +23,24 @@ dialect of ForTheL, respectively.
 
 ### Changes on ForTheL
 
+  * **New:** Subproofs can now be wrapped in `proof` environments just like
+    top-level proofs, e.g.:
+
+    ```
+    \begin{lemma}
+      Every successor cardinal is regular.
+    \end{lemma}
+    \begin{proof}
+      Let $\kappa$ be a cardinal.
+      Assume that $\kappa$ is not regular.
+
+      Then there exists a map that is surjective onto $\kappa^+$.
+      \begin{proof}
+        ...
+      \end{proof}
+    \end{proof}
+    ```
+
   * **New:** Case distinctions can now be written up via a LaTeX environment:
 
     ```

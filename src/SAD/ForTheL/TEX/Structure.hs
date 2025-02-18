@@ -22,6 +22,7 @@ import Data.Text.Lazy qualified as Text
 import Data.Functor ((<&>))
 import Data.Foldable (foldr')
 import Data.Maybe (fromMaybe)
+import Data.Either.Extra (fromEither)
 import System.FilePath hiding ((</>))
 
 import SAD.ForTheL.Structure
@@ -29,7 +30,7 @@ import SAD.ForTheL.FTL.Structure qualified as FTL -- for backward compatibility
 import SAD.ForTheL.Base
 import SAD.ForTheL.Statement
 import SAD.ForTheL.Extension
-import SAD.ForTheL.Reports (getMarkupToken, getMarkupTokenOf, markupToken, markupTokenOf)
+import SAD.ForTheL.Reports (getMarkupToken, getMarkupTokenOf, markupToken)
 import SAD.ForTheL.Instruction
 import qualified SAD.ForTheL.Reports as Reports
 import SAD.Parser.Base
@@ -312,7 +313,7 @@ caseHypothesis :: FTL Block
 caseHypothesis = sentence Block.CaseHypothesis caseHypothesisStatement affirmVars (pure [])
   where
     caseHypothesisStatement = do
-      texBegin $ markupToken Reports.proofStart "case"
+      label "\"\\begin{case}\"" . texBegin $ markupToken Reports.proofStart "case"
       braced $ finish statement
 
 -- | Parse an affirmation.
@@ -404,14 +405,14 @@ data ProofOption =
 -- @"indeed"@
 confirmationHeader :: FTL Scheme
 confirmationHeader = do
-  markupToken Reports.proofStart "indeed"
+  label "\"indeed\"" $ markupToken Reports.proofStart "indeed"
   return Short
 
 -- | Proof header (TEX):
 -- @"\\begin" "{" "proof" "}" ["[" <byProofMethod> "]"]
-topLevelProofHeader :: FTL Scheme
-topLevelProofHeader = do
-  texBegin (markupToken Reports.proofStart "proof")
+proofHeader :: FTL Scheme
+proofHeader = do
+  proofStart
   mbMbMethod <- optional $ do
     symbol "["
     proofOptions <- sepBy0 proofOption (symbol ",")
@@ -424,15 +425,6 @@ topLevelProofHeader = do
   case mbMbMethod of
     Just (Just method) -> return method
     _ -> return Raw
-
--- | Proof header (FTL)
--- @"proof" [<byProofMethod>] "."@
-lowLevelProofHeader :: FTL Scheme
-lowLevelProofHeader = do
-  markupToken Reports.proofStart "proof"
-  method <- optLL1 Raw byProofMethod
-  dot
-  return method
 
 -- | An option from the key-value list of the optional argument of a proof
 -- environment.
@@ -447,10 +439,15 @@ proofOption = do
       return (key, ProofMethod method)
     _ -> failWithMessage "SAD.ForTheL.Structure.proofOption" "Unknown key."
 
--- | Proof end (TEX):
+-- | Proof start:
+-- @"\\begin" "{" "proof" "}"@
+proofStart :: FTL ()
+proofStart = label "\"\\begin{proof}\"" . texBegin $ markupToken Reports.proofStart "proof"
+
+-- | Proof end:
 -- @"\\end" "{" "proof" "}"@
-topLevelProofEnd :: FTL ()
-topLevelProofEnd = label "qed" . texEnd $ markupToken Reports.proofEnd "proof"
+proofEnd :: FTL ()
+proofEnd = label "\"\\end{proof}\"" . texEnd $ markupToken Reports.proofEnd "proof"
 
 
 -- ** Proof initiation
@@ -458,26 +455,35 @@ topLevelProofEnd = label "qed" . texEnd $ markupToken Reports.proofEnd "proof"
 -- | Parse a statement with an optional proof.
 lowLevelProof :: FTL Block -> FTL Block
 lowLevelProof p = do
-  pre <- optLLx None letUsShowThat
+  -- We use @Just@ and @Nothing@ to distinguish whether the proof belongs to a
+  -- "Let us show" expression or not.
+  mbPre <- optLLx Nothing (Just <$> letUsShowThat)
+  let pre = fromMaybe None mbPre
   block <- p
-  post <- optLL1 None (lowLevelProofHeader <|> confirmationHeader)
+  -- We use @Left@ and @Right@ to distinguish between the (legacy) FTL and the
+  -- TEX dialect to select the right parser for the proof end. In the case of a
+  -- confirmation header it does not matter if we wrap its result, namely the
+  -- method @Short@, in @Left@ or @Right@ since the function @addBody@ does not
+  -- run a proof end parser if the method is @Short@.
+  lrPost <- optLLx (Left None) ((Left <$> FTL.proofHeader) </> (Right <$> proofHeader) </> (Right <$> confirmationHeader))
+  let post = fromEither lrPost
   nf <- indThesis (Block.formula block) pre post
-  addBody FTL.proofEnd finishWithOptLink pre post $ block {Block.formula = nf}
+  let end = case lrPost of
+        Left _ -> finish FTL.proofEnd
+        Right _ -> proofEnd
+  addBody end (pure []) pre post $ block {Block.formula = nf}
 
 -- | Parse a top-level proof:
 -- @[<letUsShowThat>] <affirmation> [<ftlProofHeader>]
 topLevelProof :: FTL Block -> FTL [ProofText]
 topLevelProof p = do
-  pre <- optLLx None letUsShowThat
   bl <- p
-  post <- optLLx None topLevelProofHeader
+  post <- optLLx None proofHeader
   typeBlock <- pretyping bl
   let pretyped = Block.declaredNames typeBlock
-      link = pure []
-      qed = topLevelProofEnd
   nbl <- addDecl pretyped $ fmap ProofTextBlock $ do
-    nf <- indThesis (Block.formula bl) pre post
-    addBody qed link pre post $ bl {Block.formula = nf}
+    nf <- indThesis (Block.formula bl) None post
+    addBody proofEnd (pure []) None post $ bl {Block.formula = nf}
   return $ if null pretyped then [nbl] else [ProofTextBlock typeBlock, nbl]
 
 -- Takes proof end parser @qed@ and the link @link@ to insert after the proof body as parameters.
@@ -502,7 +508,10 @@ addBody qed link pre post b = proofBody qed link $ b {Block.kind = kind}
 -- @<assumption> | ((<affirmation> | <choose>) <proof>) | <lowLevelDefinition>@
 confirmationBody :: Block -> FTL Block
 confirmationBody block = do
-  pbl <- narrow assumption </> lowLevelProof (narrow $ affirmation </> choose) </> narrow lowLevelDefinition
+  pbl <-
+    narrow assumption </>
+    lowLevelProof (narrow $ affirmation </> choose) </>
+    narrow lowLevelDefinition
   return block {Block.body = [ProofTextBlock pbl]}
 
 -- | Proof body + proof end + link
@@ -543,7 +552,7 @@ caseDestinction = do
   Block.formula = Imp (Tag Tag.CaseHypothesis fr) mkThesis}
 
 caseDestinctionEnd :: FTL ()
-caseDestinctionEnd = texEnd (markupToken Reports.proofEnd "case")
+caseDestinctionEnd = label "\"\\end{case}\"" . texEnd $ markupToken Reports.proofEnd "case" 
 
 
 -- equality Chain
@@ -595,7 +604,7 @@ jumpToNextUnit = mapInput nextUnit
     nextUnit [] = []
 
 
--- Lecacy stuff
+-- Lecacy Parsers
 
 -- | FTL-style case distinction (for backward compatibility only):
 -- @<caseHypothesis> <proofBody>@
@@ -605,5 +614,7 @@ caseDestinction_old = do
   proofBody FTL.proofEnd finishWithOptLink $ bl {
   Block.formula = Imp (Tag Tag.CaseHypothesis fr) mkThesis}
 
+-- | FTL-style case hypothesis:
+-- @<statement> [ "by" <references> ] "."@
 caseHypothesis_old :: FTL Block
 caseHypothesis_old = sentence Block.CaseHypothesis (FTL.caseHeader >> statement) affirmVars finishWithOptLink

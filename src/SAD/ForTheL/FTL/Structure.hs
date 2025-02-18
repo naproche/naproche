@@ -13,6 +13,7 @@ module SAD.ForTheL.FTL.Structure (
   forthelText,
 
   -- To be used in SAD.ForTheL.TEX.Structure for backward compatibility:
+  proofHeader,
   proofEnd,
   caseHeader
 ) where

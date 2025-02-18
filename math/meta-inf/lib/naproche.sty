@@ -158,18 +158,25 @@
 \define@key{proofkeys}{method}{\def\proofmethod{#1}}
 \makeatother
 
+\newcounter{proofdepth}
+
 \newenvironment{proof}[1][]{%
   \setbool{forthelBeforeEnv}{\ifbool{forthel}{true}{false}}% Save the current value of the `forthel' variable
   \setkeys{proofkeys}{#1}%
   \ifbool{forthelBeforeEnv}{\par}{\ifbool{forthel}{\begin{forthel}}{\par\addvspace{\baselineskip}}}%
   \noindent\textit{Proof\if\relax\proofmethod\else\ by \proofmethod\fi. }%
   \relax%
+  % Reset the proof method so that it is not reused by subproofs:
+  \def\proofmethod{}%
+  \stepcounter{proofdepth}%
 }
 {%
-  \strut\hfill\ensuremath\blacksquare%
+  \ifnum\value{proofdepth}>1\ensuremath\square\else\strut\hfill\ensuremath\blacksquare\fi%
   \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\end{forthel}}{\par\addvspace{\baselineskip}}}%
   \setbool{forthel}{\ifbool{forthelBeforeEnv}{true}{false}}% Reset the `forthel' variable
-  \renewcommand\proofmethod{}%
+  % Reset the proof method so that it is not reused by following proofs:
+  \def\proofmethod{}%
+  \addtocounter{proofdepth}{-1}%
 }
 
 \newenvironment{case}[1]{%

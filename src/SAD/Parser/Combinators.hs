@@ -203,7 +203,7 @@ path = do
 -- | Parses @"."@.
 dot :: Parser st Position.Range
 dot = do
-  pos1 <- tokenPos' "." <?> "a dot"
+  pos1 <- tokenPos' "." <?> "\".\""
   return $ Position.range (pos1, Position.symbol_explode_string "." pos1)
 
 -- | @finish p@ parses @<p> "."@.
