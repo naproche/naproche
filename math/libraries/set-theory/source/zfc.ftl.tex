@@ -64,7 +64,7 @@
 \end{proposition}
 \begin{proof}[forthel]
   $\SETsingleton{a}$ and $\SETpair{a}{b}$ are sets for each $a \in x$ and each $b \in y$.
-  Define $P = \{ \SETpair{\SETsingleton{a}}{\SETpair{a}{b}} \mid a \in x$ and $b \in y \}$.
+  Define $P = \{ \SETpair{\SETsingleton{a}}{\SETpair{a}{b}} \mid a \in x\text{ and }b \in y \}$.
 
   (1) $P$ is a set.
   \begin{proof}
@@ -238,7 +238,7 @@
   Then $\FUNfunspace{x}{y}$ is a set.
 \end{proposition}
 \begin{proof}[forthel]
-  Define $R = \{ F \in \SETpow(x \SETprod y) \mid$ (for all $a \in x$ there exists a $b \in y$ such that $(a,b) \in F$) and for all $a \in x$ and all $b, b' \in y$ such that $(a,b), (a,b') \in F$ we have $b \eq b' \}$.
+  Define $R = \{ F \in \SETpow(x \SETprod y) \mid\text{ (for all }a \in x\text{ there exists a }b \in y\text{ such that }(a,b) \in F\text{) and for all }a \in x\text{ and all }b, b' \in y\text{ such that }(a,b), (a,b') \in F\text{ we have }b \eq b' \}$.
 
   [prover vampire]
   Every element of $R$ is a set. % Needed for ontological checking

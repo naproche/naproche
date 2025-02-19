@@ -229,7 +229,7 @@
     Then $n \NATless m$ or $n \eq m$ or $n \NATgtr m$.
   \end{proposition}
   \begin{proof}[forthel]
-    Define $\Phi = \{ m' \in \Nat \mid n \NATless m'$ or $n \eq m'$ or $n \NATgtr m' \}$.
+    Define $\Phi = \{ m' \in \Nat \mid n \NATless m'\text{ or }n \eq m'\text{ or }n \NATgtr m' \}$.
 
     (1) $\Phi$ contains $\NATzero$.
 
@@ -437,7 +437,7 @@
       Contradiction.
     End.
 
-    (a) Define $\Phi = \{ n \in \Nat \mid n$ is less than any element of $A \}$.
+    (a) Define $\Phi = \{ n \in \Nat \mid n\text{ is less than any element of }A \}$.
 
     (1) $\Phi$ contains $\NATzero$.
     \begin{proof}
@@ -486,7 +486,7 @@
     Then for all $n \in \Natgeqthan{k}$ we have $n \in A$.
   \end{theorem}
   \begin{proof}[forthel]
-    Define $\Phi = \{n \in \Nat \mid$ if $n \NATgeq k$ then $n \in A \}$.
+    Define $\Phi = \{n \in \Nat \mid\text{ if }n \NATgeq k\text{ then }n \in A \}$.
 
     (1) $\Phi$ contains $\NATzero$.
     Indeed if $\NATzero \NATgeq k$ then $\NATzero \eq k \in A$.

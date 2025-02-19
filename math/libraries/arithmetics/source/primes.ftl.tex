@@ -29,7 +29,7 @@
   Then $n$ has a prime divisor.
 \end{proposition}
 \begin{proof}[forthel]
-  Define $\Phi = \{ n' \in \Nat \mid$ if $n' \NATgtr \NATone$ then $n'$ has a prime divisor $\}$.
+  Define $\Phi = \{ n' \in \Nat \mid\text{ if }n' \NATgtr \NATone\text{ then }n'\text{ has a prime divisor}\}$.
 
   Let us show that for every $n' \in \Nat$ if $\Phi$ contains all
   predecessors of $n'$ then $\Phi$ contains $n'$.
@@ -111,7 +111,7 @@
   \end{case}
 
   \begin{case}{$p \NATnmid n$.}
-    Define $\Phi = \{ k \in \Nat \mid k \neq \NATzero$ and $p \NATmid k \NATmul m \}$.
+    Define $\Phi = \{ k \in \Nat \mid k \neq \NATzero\text{ and }p \NATmid k \NATmul m \}$.
     Then $p \in \Phi$ and $n \in \Phi$.
     Hence $\Phi$ contains some natural number.
     Thus we can take $a \in \Phi$ such that $a \NATleq k$ for all $k \in \Phi$.

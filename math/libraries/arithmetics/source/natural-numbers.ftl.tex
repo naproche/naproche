@@ -135,7 +135,7 @@
     Then $n \eq \NATzero$ or $n \eq m \NATplus \NATone$ for some natural number $m$.
   \end{proposition}
   \begin{proof}[forthel]
-    Define $\Phi = \{ n' \in \Nat \mid n' \eq \NATzero$ or $n' \eq m' \NATplus \NATone$ for some natural number $m' \}$.
+    Define $\Phi = \{ n' \in \Nat \mid n' \eq \NATzero\text{ or }n' \eq m' \NATplus \NATone\text{ for some natural number }m' \}$.
     $\NATzero \in \Phi$ and for all $n' \in  \Phi$ we have $n' \NATplus \NATone \in \Phi$.
     Hence every natural number is contained in $\Phi$.
     Thus $n \eq \NATzero$ or $n \eq m \NATplus \NATone$ for some natural number $m$.
@@ -271,7 +271,7 @@
       If $n \NATplus k \eq m \NATplus k$ then $n \eq m$.
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \{ k' \in \Nat \mid$ if $n \NATplus k' \eq m \NATplus k'$ then $n \eq m \}$.
+      Define $\Phi = \{ k' \in \Nat \mid\text{ if }n \NATplus k' \eq m \NATplus k'\text{ then }n \eq m \}$.
 
       (1) $\NATzero$ is an element of $\Phi$.
 

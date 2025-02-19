@@ -149,7 +149,7 @@
     Then $A \SETunion A \eq A$.
   \end{proposition}
   \begin{proof}[forthel]
-    $A \SETunion A \eq \{x \mid x \in A$ or $x \in A \}$.
+    $A \SETunion A \eq \{x \mid x \in A\text{ or }x \in A \}$.
     Hence $A \SETunion A \eq \{ x \mid x \in A \}$.
     Thus $A \SETunion A \eq A$.
   \end{proof}
@@ -159,7 +159,7 @@
     Then $A \SETintersect A \eq A$.
   \end{proposition}
   \begin{proof}[forthel]
-    $A \SETintersect A \eq \{ x \mid x \in A$ and $x \in A \}$.
+    $A \SETintersect A \eq \{ x \mid x \in A\text{ and }x \in A \}$.
     Hence $A \SETintersect A \eq \{ x \mid x \in A \}$.
     Thus $A \SETintersect A \eq A$.
   \end{proof}
@@ -307,7 +307,7 @@
   \end{proposition}
   \begin{proof}[forthel]
     $A \SETdiff A$ has no elements.
-    Indeed $A \SETdiff A \eq \{ x \mid x \in A$ and $x \notin A \}$.
+    Indeed $A \SETdiff A \eq \{ x \mid x \in A\text{ and }x \notin A \}$.
     Hence the thesis.
   \end{proof}
 
@@ -316,7 +316,7 @@
     Then $A \SETdiff \SETempty \eq A$.
   \end{proposition}
   \begin{proof}[forthel]
-    $A \SETdiff \SETempty \eq \{ x \mid x \in A$ and $x \notin \SETempty \}$.
+    $A \SETdiff \SETempty \eq \{ x \mid x \in A\text{ and }x \notin \SETempty \}$.
     No element is an element of $\SETempty$.
     Hence $A \SETdiff \SETempty \eq \{ x \mid x \in A \}$.
     Then we have the thesis.

@@ -13,7 +13,7 @@
 \end{proposition}
 \begin{proof}[forthel]
   \begin{case}{$n \NATless m$.}
-    Define $\Phi = \{ k' \in \Nat \mid$ if $k' \NATgtr \NATone$ then $\NATexp{n}{k'} \NATless \NATexp{m}{k'} \}$.
+    Define $\Phi = \{ k' \in \Nat \mid\text{ if }k' \NATgtr \NATone\text{ then }\NATexp{n}{k'} \NATless \NATexp{m}{k'} \}$.
 
     (1) $\Phi$ contains $\NATzero$.
 
@@ -93,7 +93,7 @@
   \end{case}
 
   \begin{case}{$\NATexp{n}{k} \NATless \NATexp{m}{k}$.}
-    Define $\Psi = \{ k' \in \Nat \mid$ if $n \NATgeq m$ then $\NATexp{n}{k'} \NATgeq \NATexp{m}{k'} \}$.
+    Define $\Psi = \{ k' \in \Nat \mid\text{ if }n \NATgeq m\text{ then }\NATexp{n}{k'} \NATgeq \NATexp{m}{k'} \}$.
 
     (1) $\Psi$ contains $\NATzero$.
 
@@ -160,7 +160,7 @@
 \end{proposition}
 \begin{proof}[forthel]
   \begin{case}{$n \NATless m$.}
-    Define $\Phi = \{ m' \in \Nat \mid$ if $n \NATless m'$ then $\NATexp{k}{n} \NATless \NATexp{k}{m'} \}$.
+    Define $\Phi = \{ m' \in \Nat \mid\text{ if }n \NATless m'\text{ then }\NATexp{k}{n} \NATless \NATexp{k}{m'} \}$.
 
     (1) $\Phi$ contains $\NATzero$.
 
@@ -203,8 +203,8 @@
   \end{case}
 
   \begin{case}{$\NATexp{k}{n} \NATless \NATexp{k}{m}$.}
-    Define $\Psi = \{ n' \in \Nat \mid$ if $n' \NATgeq m$ then
-    $\NATexp{k}{n'} \NATgeq \NATexp{k}{m} \}$.
+    Define $\Psi = \{ n' \in \Nat \mid\text{ if }n' \NATgeq m\text{ then }
+    \NATexp{k}{n'} \NATgeq \NATexp{k}{m} \}$.
 
     (1) $\NATzero$ is contained in $\Psi$.
 
