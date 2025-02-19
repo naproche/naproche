@@ -59,7 +59,6 @@
 \RequirePackage{keyval}
 \RequirePackage{environ}
 \RequirePackage{marginnote}
-\RequirePackage{enumitem}
 
 
 % Links
@@ -179,14 +178,22 @@
   \addtocounter{proofdepth}{-1}%
 }
 
+\makeatletter
+% to prevent \list from being redefined, e.g. by a \symdef:
+\let\@latexlist\list
+\let\@endlatexlist\endlist
 \newenvironment{case}[1]{%
-  \begin{enumerate}[leftmargin=3mm,resume]
-  \item[]\textit{Case #1}%
+  \@latexlist{}{
+    \setlength\leftmargin{1em}
+    \setlength\topsep{0cm}
+  }
+  \item\textit{Case #1}%
 }
 {%
   \ensuremath\square%
-  \end{enumerate}
+  \@endlatexlist
 }
+\makeatother
 
 
 % ForTheL Environment and Inline ForTheL
