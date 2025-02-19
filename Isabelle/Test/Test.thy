@@ -68,7 +68,7 @@ Let R be a rewriting system.
             Take v such that a -R> v -R*> c.
             Take w such that u,v -R*> w.
             Take a normal form d of w in R.
-    
+
             b -R*> d. Indeed take x such that b,d -R*> x.
             c -R*> d. Indeed take y such that c,d -R*> y.
         End.
@@ -123,7 +123,7 @@ subsection \<open>External text file\<close>
 
 declare [[naproche_prove = false]]
 
-forthel_file \<open>$NAPROCHE_HOME/examples/newman.ftl\<close>
-forthel_file \<open>$NAPROCHE_HOME/examples/newman.ftl.tex\<close>
+forthel_file \<open>$NAPROCHE_HOME/math/examples/newman.ftl\<close>
+forthel_file \<open>$NAPROCHE_HOME/math/examples/newman.ftl.tex\<close>
 
 end
