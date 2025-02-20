@@ -14,7 +14,7 @@ import java.io.{File => JFile}
 object Naproche_Component {
   val cleanup_names: List[String] = List("_config.yml")
   val cleanup_trees: List[String] =
-    List(".git", ".gitignore", ".travis.yml", "examples_pdf", "examples/test", "Isabelle/Admin")
+    List(".git", ".gitignore", ".travis.yml", "math_pdf", "examples/test", "Isabelle/Admin")
 
   val output_tail = 20
 
@@ -81,9 +81,15 @@ object Naproche_Component {
     if (pdf_documents) {
       val TeX_Program = """^% +!TEX +program += +(\w+) *$""".r
 
-      val examples = component_dir + Path.explode("examples")
-      val examples_build = component_dir + Path.explode("examples_pdf")
+      val examples = component_dir + Path.explode("math")
+      val examples_build = component_dir + Path.explode("math_pdf")
       Isabelle_System.copy_dir(examples, examples_build)
+      val currentDirectory = System.getProperty("user.dir")
+
+      // Value of the MATTHUB variable used by sTeX.
+      // `replaceAll("\"", "")` is used as a quick'n'dirty hack to remove the
+      // leading and trailing quotation mark produced by `toString`.
+      val mathhub = (Path.explode(currentDirectory) + examples_build).toString.replaceAll("\"", "")
 
       def relative(file: JFile): Path = File.relative_path(examples_build, File.path(file)).get
       def relative_name(file: JFile): String = relative(file).implode
@@ -99,7 +105,7 @@ object Naproche_Component {
         val tex_program =
           split_lines(text).collectFirst({ case TeX_Program(prg) => prg }).getOrElse("pdflatex")
         val tex_env =
-          List("TEXINPUTS" -> Naproche.TEXINPUTS, "MATHHUB" -> examples_build.implode)
+          List("TEXINPUTS" -> Naproche.TEXINPUTS, "MATHHUB" -> mathhub)
 
         val pdf_path = Path.explode(Library.try_unsuffix(".tex", tex_path.implode).get).pdf
 

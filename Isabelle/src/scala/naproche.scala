@@ -17,7 +17,7 @@ object Naproche {
   val NAPROCHE_EXE: Path = Path.explode("$NAPROCHE_EXE")
   val NAPROCHE_EXE_DIR: Path = Path.explode("$NAPROCHE_EXE_DIR")
   val src: Path = NAPROCHE_HOME + Path.explode("src")
-  val examples: Path = NAPROCHE_HOME + Path.explode("examples")
+  val examples: Path = NAPROCHE_HOME + Path.explode("math")
 
   def TEXINPUTS: String =
     Isabelle_System.getenv_strict("NAPROCHE_FORMALIZATIONS") + "/meta-inf/lib//;"
