@@ -1,3 +1,0 @@
-id: libraries/preliminaries
-ns: https://naproche.github.io/math/libraries/preliminaries
-narration-base: https://naproche.github.io/math/libraries/preliminaries
