@@ -18,7 +18,7 @@
 
   \usemodule[libraries/arithmetics]{primes.ftl}
   \usemodule[libraries/arithmetics]{nat-is-a-set.ftl}
-  \usemodule[libraries/set-theory]{zf.ftl}
+  \usemodule[libraries/set-theory]{zfc.ftl}
   \usemodule[libraries/foundations]{closure-under-finite-unions.ftl}
 
   \noindent This is a formalization of Furstenberg's topological proof of the
@@ -75,7 +75,7 @@
     \end{lemma}
     \begin{proof}
       Let $S$ be a system of open sets.
-      Then $S \subseteq \pow(\Nat)$.
+      Then $S \subseteq \SETpow(\Nat)$.
       Hence $S$ is a set.
     \end{proof}
   \end{forthel}
@@ -139,8 +139,8 @@
     \end{lemma}
     \begin{proof}
       Let $S$ be a system of closed sets.
-      Then $S \subseteq \pow(\Nat)$.
-      $\pow(\Nat)$ is a set.
+      Then $S \subseteq \SETpow(\Nat)$.
+      $\SETpow(\Nat)$ is a set.
       Hence $S$ is a set.
     \end{proof}
 
@@ -210,10 +210,10 @@
     \end{lemma}
     \begin{proof}
       (1) $\Ps$ is a set.
-      Indeed $\Ps \subseteq \pow(\Nat)$.
+      Indeed $\Ps \subseteq \SETpow(\Nat)$.
 
-      (2) $\Ps$ is equinumerous to $\Prime$. \newline
-      Proof.
+      (2) $\Ps$ is equinumerous to $\Prime$.
+      \begin{proof}
         Define $f(p) = \N_{0,p}$ for $p \in \Prime$.
 
         Let us show that $f$ is injective.
@@ -237,7 +237,7 @@
 
         $f$ is surjective onto $\Ps$.
         Thus $f$ is a bijection between $\Prime$ and $\Ps$.
-      Qed.
+      \end{proof}
     \end{proof}
 
     \begin{theorem}[title=Furstenberg]
@@ -250,34 +250,34 @@
       has a prime divisor.
         Let $n \in \Nat$.
 
-        If $n$ has a prime divisor then $n$ belongs to $\bigcup \Ps$. \newline
-        Proof.
+        If $n$ has a prime divisor then $n$ belongs to $\bigcup \Ps$.
+        \begin{proof}
           Assume $n$ has a prime divisor.
           Take a prime divisor $p$ of $n$.
           We have $\N_{0, p} \in \Ps$.
           Hence $n \in \N_{0, p}$.
-        Qed.
+        \end{proof}
 
-        If $n$ belongs to $\bigcup \Ps$ then $n$ has a prime divisor. \newline
-        Proof.
+        If $n$ belongs to $\bigcup \Ps$ then $n$ has a prime divisor.
+        \begin{proof}
           Assume that $n$ belongs to $\bigcup \Ps$.
           Take a prime number $r$ such that $n \in \N_{0, r}$.
           Hence $n \equiv 0 \pmod{r}$.
           Thus $n \mod r = 0 \mod r = 0$.
           Therefore $r$ is a prime divisor of $n$.
-        Qed.
+        \end{proof}
       End.
 
       Hence For all $n \in \Nat$ we have $n \in (\bigcup \Ps)^\complement$ iff
       $n$ has no prime divisor.
       $1$ has no prime divisor and any natural number having no prime
       divisor is equal to $1$.
-      Therefore $(\bigcup \Ps)^\complement = \set{1}$.
-      Indeed $((\bigcup \Ps)^\complement) \subseteq \set{1}$ and $\set{1}
+      Therefore $(\bigcup \Ps)^\complement = \SETsingleton{1}$.
+      Indeed $((\bigcup \Ps)^\complement) \subseteq \SETsingleton{1}$ and $\SETsingleton{1}
       \subseteq (\bigcup \Ps)^\complement$. %!
 
-      $\Ps$ is infinite. \newline
-      Proof by contradiction.
+      $\Ps$ is infinite.
+      \begin{proof}[method=contradiction]
         Assume that $\Ps$ is finite.
         Then $\bigcup \Ps$ is closed and $(\bigcup \Ps)^\complement$ is open.
         Take a $p$ such that $\N_{1, p} \subseteq (\bigcup \Ps)^\complement$.
@@ -287,7 +287,7 @@
         $1 + p$ is not equal to $1$.
         Hence $1 + p \notin (\bigcup \Ps)^\complement$.
         Contradiction.
-      Qed.
+      \end{proof}
     \end{proof}
   \end{forthel}
 

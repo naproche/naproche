@@ -105,9 +105,9 @@ are themselves non-empty:
     Then \[ \Prod{\lambda}{D} \leq \Sum{\kappa}{D}. \]
     Take a surjective map $G$ from $\SumSet{\kappa}{D}$ to $\ProdSet{\lambda}{D}$.
     Indeed $\ProdSet{\lambda}{D}$ and $\Sum{\kappa}{D}$ are nonempty sets.
-    Take $\Lambda = \bigcup \range(\lambda)$.
+    Take $\Lambda = \bigcup \FUNrange(\lambda)$.
     Then $\Lambda$ is a set.
-    Indeed $\range(\lambda)$ is a set.
+    Indeed $\FUNrange(\lambda)$ is a set.
 
     $(n,i) \in \dom(G)$ for every $i \in D$ and every $n \in \kappa_{i}$.
     $G(n,i) \in \ProdSet{\lambda}{D}$ for every $i \in D$ and every $n \in \kappa_{i}$.
@@ -117,8 +117,8 @@ are themselves non-empty:
 
     For every element $f$ of $\ProdSet{\lambda}{D}$ and every element $i$ of $D$ we have $f(i) \in \Lambda$.
 
-    For every element $i$ of $D$ we have $|\Delta(i)| < \lambda_{i}$. \newline
-    Proof.
+    For every element $i$ of $D$ we have $|\Delta(i)| < \lambda_{i}$.
+    \begin{proof}
       Let $i$ be an element of $D$.
       Define $F(n) = G(n,i)(i)$ for $n$ in $\kappa_{i}$.
       Then $F$ is a map from $\kappa_{i}$ to $\lambda_{i}$.
@@ -131,7 +131,7 @@ are themselves non-empty:
         < \lambda_{i}$.
       Indeed $|F[\kappa_{i}]| \leq |\kappa_{i}|$ (by \printref{SET_THEORY_06_8113916590686208}).
       Indeed $\kappa_{i}$ and $\lambda_{i}$ are sets.
-    End.
+    \end{proof}
 
     Define $f(i) =$ ``choose an element $v$ of $\lambda_{i} \setminus \Delta(i)$ in $v$'' for $i \in D$.
     Indeed $\lambda_{i} \setminus \Delta(i)$ is nonempty for each $i \in D$.

@@ -30,7 +30,7 @@
   operations, $+$ and $\cdot$.
 
   \begin{forthel}
-    \usemodule[libraries/meta-inf]{vocabulary.ftl}
+    \usemodule[meta-inf]{vocabulary.ftl}
 
     Let $a,b,c,x,y,z,u,v,w$ denote elements.
 
@@ -230,24 +230,24 @@
     \begin{proof}
       Let $x$ belong to ($I \oplus J$).
 
-      $\forall y \in (I \oplus J) (x + y) \in (I \oplus J)$. \newline
-      Proof.
+      $\forall y \in (I \oplus J) (x + y) \in (I \oplus J)$.
+      \begin{proof}
         Let $y \in (I \oplus J)$.
         (1) Take $k \in I$ and $l \in J$ such that $x = k + l$.
         (2) Take $m \in I$ and $n \in J$ such that $y = m + n$.
         $k + m$ belongs to $I$ and $l + n$ belongs to $J$.
         $x + y .= (k + m) + (l + n)$ (by 1, 2, AddComm,AddAsso,AddBubble).
         Therefore the thesis.
-      Qed.
+      \end{proof}
 
-      For every element $z$ $(z \cdot x) \in (I \oplus J)$. \newline
-      Proof.
+      For every element $z$ $(z \cdot x) \in (I \oplus J)$.
+      \begin{proof}
         Let $z$ be an element.
         (1) Take $k \in I$ and $l \in J$ such that $x = k + l$.
         $z \cdot k$ belongs to $I$ and $z \cdot l$ belongs to $J$.
         $z \cdot x .= (z \cdot k) + (z \cdot l)$ (by AMDistr1, 1).
         Therefore the thesis.
-      Qed.
+      \end{proof}
     \end{proof}
 
 
@@ -281,19 +281,19 @@
 
       Let us show that $w = x ~(\mod I)$ and $w = y ~(\mod J)$.
 
-        $w - x$ belongs to $I$. \newline
-        Proof.
+        $w - x$ belongs to $I$.
+        \begin{proof}
           $w - x = (y \cdot a) + ((x \cdot b) - x)$.
           $x \cdot (b - 1)$ belongs to $I$.
           $x \cdot (b - 1) = (x \cdot b) - x$.
-        Qed.
+        \end{proof}
 
-        $w - y$ belongs to $J$. \newline
-        Proof.
+        $w - y$ belongs to $J$.
+        \begin{proof}
           $w - y = (x \cdot b) + ((y \cdot a) - y)$.
           $y \cdot (a - 1)$ belongs to $J$.
           $y \cdot (a - 1) = (y \cdot a) - y$.
-        Qed.
+        \end{proof}
       End.
     \end{proof}
   \end{forthel}
@@ -376,22 +376,22 @@
     \begin{proof}
       Let $x$ belong to $\langle c \rangle$.
 
-      $\forall y \in \langle c \rangle x + y \in \langle c \rangle$. \newline
-      Proof.
+      $\forall y \in \langle c \rangle x + y \in \langle c \rangle$.
+      \begin{proof}
         Let $y \in \langle c \rangle$.
         (1) Take an element $u$ such that $c \cdot u = x$.
         (2) Take an element $v$ such that $c \cdot v = y$.
         $x + y .= c \cdot (u + v)$ (by 1, 2, AMDistr1).
         Therefore the thesis.
-      Qed.
+      \end{proof}
 
-      $\forall z z \cdot x \in \langle c \rangle$. \newline
-      Proof.
+      $\forall z z \cdot x \in \langle c \rangle$.
+      \begin{proof}
         Let $z$ be an element.
         (1) Take an element $u$ such that $c \cdot u = x$.
         $z \cdot x .= c \cdot (u \cdot z)$ (by 1, MulComm, MulAsso, MulBubble).
         Therefore the thesis.
-      Qed.
+      \end{proof}
     \end{proof}
   \end{forthel}
 
@@ -425,25 +425,25 @@
       $b \in \langle a \rangle \oplus \langle b \rangle$ (by AddZero).
 
       Take a nonzero $u \in I$ such that for no nonzero
-      $v \in I$ $(|v| \prec |u|)$. \newline
+      $v \in I$ $(|v| \prec |u|)$.
       Indeed we can show by induction on $|w|$ that for every nonzero $w \in I$
       there exists nonzero $u \in I$ such that for no nonzero
       $v \in I$ $(|v| \prec |u|)$.
       Obvious.
 
-      $u$ is a common divisor of $a$ and $b$. \newline
-      Proof by contradiction.
+      $u$ is a common divisor of $a$ and $b$.
+      \begin{proof}[method=contradiction]
         Assume the contrary.
 
-        For some elements $x,y$ $u = (a \cdot x) + (b \cdot y)$. \newline
-        Proof.
+        For some elements $x,y$ $u = (a \cdot x) + (b \cdot y)$.
+        \begin{proof}
           Take $k \in \langle a \rangle$ and $l \in \langle b \rangle$ such that
           $u = k + l$.
           Take elements $x,y$ such that ($k = a \cdot x$ and $l = b \cdot y$).
           Hence the thesis.
-        Qed.
+        \end{proof}
 
-        Case $u$ does not divide $a$.
+        \begin{case}{$u$ does not divide $a$.}
           Take elements $q,r$ such that $a = (q \cdot u) + r$ and
           ($r = 0 \vee |r| \prec |u|$) (by Division).
           $r$ is nonzero.
@@ -451,9 +451,9 @@
           $a$ belongs to $I$ (by AddZero).
           $r = - (q \cdot u) + a$.
           Hence $r$ belongs to $I$ (by DefIdeal).
-        End.
+        \end{case}
 
-        Case $u$ does not divide $b$.
+        \begin{case}{$u$ does not divide $b$.}
           Take elements $q,r$ such that $b = (q \cdot u) + r$ and
           ($r = 0 \vee |r| \prec |u|$) (by Division).
           $r$ is nonzero.
@@ -461,16 +461,16 @@
           $b$ belongs to $I$ (by AddZero).
           $r = - (q \cdot u) + b$.
           Hence $r$ belongs to $I$ (by DefIdeal).
-        End.
-      Qed.
+        \end{case}
+      \end{proof}
 
       Hence $u$ divides $c$.
 
-      Hence the thesis. \newline
-      Proof.
+      Hence the thesis.
+      \begin{proof}
         Take an element $z$ such that $c = z \cdot u$.
         Then $c \in I$ (by DefIdeal).
-      Qed.
+      \end{proof}
     \end{proof}
   \end{forthel}
 
