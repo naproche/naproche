@@ -10,6 +10,11 @@ x86_64-windows/
 .vscode
 dist-newstyle/
 .envrc
+.metals/
+.scala-build/
+
+# Created by render.sh
+tex/
 
 # Ignore profiling output
 *.hp
