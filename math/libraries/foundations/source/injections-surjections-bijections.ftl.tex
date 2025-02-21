@@ -29,14 +29,14 @@
     $f$ is surjective onto $B$ iff every element of $B$ is a value of $f$.
   \end{proposition}
   \begin{proof}[forthel]
-    Case $f$ is surjective onto $B$.
+    \begin{case}{$f$ is surjective onto $B$.}
       Then $B \eq \FUNrange(f)$.
       Let $b$ be an element of $B$.
       Then $b \in \FUNrange(f)$.
       Hence $b$ is a value of $f$.
-    End.
+    \end{case}
 
-    Case every element of $B$ is a value of $f$.
+    \begin{case}{every element of $B$ is a value of $f$.}
       Let us show that $B \SETinclude \FUNrange(f)$.
         Let $b \in B$.
         Then $b$ is a value of $f$.
@@ -48,7 +48,7 @@
         Then $b$ is a value of $f$.
         Hence $b \in B$.
       End.
-    End.
+    \end{case}
   \end{proof}
 \end{sfragment}
 
@@ -92,19 +92,19 @@
   \begin{proof}[forthel]
     (1) $\FUNid{A}$ is a map on $A$.
 
-    (2) $\FUNid{A}$ is surjective onto $A$. \newline
-    Proof.
+    (2) $\FUNid{A}$ is surjective onto $A$.
+    \begin{proof}
       Let $a \in A$.
       Then $a \eq \FUNid{A}(a)$.
       Hence $a \in \FUNrange(\FUNid{A})$.
-    Qed.
+    \end{proof}
 
-    (3) $\FUNid{A}$ is injective. \newline
-    Proof.
+    (3) $\FUNid{A}$ is injective.
+    \begin{proof}
       Let $a, a' \in A$.
       Assume $\FUNid{A}(a) \eq \FUNid{A}(a')$.
       Then $a \eq a'$.
-    Qed.
+    \end{proof}
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_08_8542698338254848]
