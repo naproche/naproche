@@ -84,12 +84,6 @@ object Naproche_Component {
       val math = component_dir + Path.explode("math")
       val math_pdf = component_dir + Path.explode("math_pdf")
       Isabelle_System.copy_dir(math, math_pdf)
-      val currentDirectory = System.getProperty("user.dir")
-
-      // Value of the MATTHUB variable used by sTeX.
-      // `replaceAll("\"", "")` is used as a quick'n'dirty hack to remove the
-      // leading and trailing quotation mark produced by `toString`.
-      val mathhub = (Path.explode(currentDirectory) + math_pdf).toString.replaceAll("\"", "")
 
       def relative(file: JFile): Path = File.relative_path(math_pdf, File.path(file)).get
       def relative_name(file: JFile): String = relative(file).implode
@@ -105,7 +99,7 @@ object Naproche_Component {
         val tex_program =
           split_lines(text).collectFirst({ case TeX_Program(prg) => prg }).getOrElse("pdflatex")
         val tex_env =
-          List("TEXINPUTS" -> Naproche.TEXINPUTS, "MATHHUB" -> mathhub)
+          List("TEXINPUTS" -> Naproche.TEXINPUTS, "MATHHUB" -> math_pdf.absolute.implode)
 
         val pdf_path = Path.explode(Library.try_unsuffix(".tex", tex_path.implode).get).pdf
 
