@@ -81,21 +81,21 @@ object Naproche_Component {
     if (pdf_documents) {
       val TeX_Program = """^% +!TEX +program += +(\w+) *$""".r
 
-      val examples = component_dir + Path.explode("math")
-      val examples_build = component_dir + Path.explode("math_pdf")
-      Isabelle_System.copy_dir(examples, examples_build)
+      val math = component_dir + Path.explode("math")
+      val math_pdf = component_dir + Path.explode("math_pdf")
+      Isabelle_System.copy_dir(math, math_pdf)
       val currentDirectory = System.getProperty("user.dir")
 
       // Value of the MATTHUB variable used by sTeX.
       // `replaceAll("\"", "")` is used as a quick'n'dirty hack to remove the
       // leading and trailing quotation mark produced by `toString`.
-      val mathhub = (Path.explode(currentDirectory) + examples_build).toString.replaceAll("\"", "")
+      val mathhub = (Path.explode(currentDirectory) + math_pdf).toString.replaceAll("\"", "")
 
-      def relative(file: JFile): Path = File.relative_path(examples_build, File.path(file)).get
+      def relative(file: JFile): Path = File.relative_path(math_pdf, File.path(file)).get
       def relative_name(file: JFile): String = relative(file).implode
 
       for {
-        file <- File.find_files(examples_build.file, _.getName.endsWith(".tex")).sortBy(relative_name)
+        file <- File.find_files(math_pdf.file, _.getName.endsWith(".tex")).sortBy(relative_name)
         text = File.read(file)
         if text.containsSlice("\\documentclass")
       } {
@@ -122,7 +122,7 @@ object Naproche_Component {
           }
         }
         if (!tex_failed(tex_path)) {
-          Isabelle_System.copy_file(examples_build + pdf_path, examples + pdf_path.dir)
+          Isabelle_System.copy_file(math_pdf + pdf_path, math + pdf_path.dir)
         }
       }
     }
