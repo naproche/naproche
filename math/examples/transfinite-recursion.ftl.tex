@@ -1,6 +1,6 @@
 \documentclass{article}
 \usepackage{naproche}
-\libinput[meta-inf]{example-preamble}
+\libinput[latex]{example-preamble}
 \libinput[libraries/foundations]{preamble}
 \libinput[libraries/set-theory]{preamble}
 
@@ -12,15 +12,15 @@
 \begin{smodule}{transfinite-recursion.ftl}
   \maketitle
 
-  \usemodule[libraries/set-theory]{transfinite-induction.ftl}
   \usemodule[libraries/set-theory]{recursive-maps.ftl}
   
   \noindent This is a formalization of the \emph{Transfinite Recursion Theorem}
   (cf. \cite{Koepke2018}).
-  It states that for any map $G : A^{< \infty} \to A$, where $A^{< \infty}$
-  denotes the class of all maps $\alpha \to A$ for some ordinal $\alpha$, there
-  exists a unique map $F: \Ord \to A$ that is \emph{recursive regarding} $G$,
-  i.e. \[F(\alpha) = G(F \restriction \alpha)\] for all ordinals $\alpha$.
+  It states that for any map $G \FUNfromto{\ORDfunspace{A}}{A}$, where
+  $\ORDfunspace{A}$ denotes the class of all maps $\alpha \to A$ for some
+  ordinal $\alpha$, there exists a unique map $F \FUNfromto{\Ord}{A}$ that is
+  \emph{recursive regarding} $G$, i.e. \[F(\alpha) \eq G(F \FUNrest \alpha)\] for
+  all ordinals $\alpha$.
 
   \inputref[libraries/set-theory]{coincidence-lemma.ftl.tex}
   
@@ -28,13 +28,13 @@
 
   As a corollary of the transfinite recursion theorem we get that we can
   define maps recursively on the ordinals by case distinction:
-  For given maps $G : \Ord \times A \to A$ and
-  $H : \Ord \times A^{< \infty} \to A$ and an element $a \in A$ we can define
-  a map $F : \Ord \to A$ by
+  For given maps $G \FUNfromto{\Ord \SETprod A}{A}$ and
+  $H \FUNfromto{\Ord \SETprod \ORDfunspace{A}}{A}$ and an element $a \in A$ we
+  can define a map $F \FUNfromto{\Ord}{A}$ by
   \begin{itemize}
-    \item $F(0) = a$,
-    \item $F(\succ(\alpha)) = G(\alpha, F(\alpha))$, and
-    \item $F(\lambda) = H(\lambda, F \restriction \lambda)$
+    \item $F(\ORDzero) = a$,
+    \item $F(\ORDsucc(\alpha)) = G(\alpha, F(\alpha))$, and
+    \item $F(\lambda) = H(\lambda, F \FUNrest \lambda)$
       for any limit ordinal $\lambda$.
   \end{itemize}
 

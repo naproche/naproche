@@ -1,5 +1,5 @@
-[read meta-inf/source/vocabulary.ftl]
-[read meta-inf/source/macros.ftl]
+[read examples/lang/vocabulary.ftl]
+[read examples/lang/macros.ftl]
 
 ##############################################################
 

@@ -1,6 +1,6 @@
 \documentclass{article}
 \usepackage{naproche}
-\libinput[meta-inf]{example-preamble}
+\libinput[latex]{example-preamble}
 \libinput[libraries/foundations]{preamble}
 \libinput[libraries/set-theory]{preamble}
 
@@ -12,10 +12,7 @@
 \begin{smodule}{hilbert-paradox.ftl}
   \pagenumbering{gobble}
   \maketitle
-
-  \usemodule[libraries/set-theory]{zfc.ftl}
-  \usemodule[libraries/foundations]{closure-under-arbitrary-unions.ftl}
-  \usemodule[libraries/foundations]{closure-under-powersets.ftl}
+  
   \usemodule[libraries/foundations]{universal-class.ftl}
 
   \noindent \emph{Hilbert's Paradox}, discovered around 1900 by David Hilbert, 

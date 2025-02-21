@@ -3,10 +3,11 @@
 \begin{document}
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Lists]{lists.ftl}
-\importmodule[meta-inf]{vocabulary.ftl}
-\importmodule[meta-inf]{macros.ftl}
+  \importmodule[libraries/foundations]{classes.ftl}
 \symdef{LISTlist}[args=a,op=[\,]]{\comp[\argsep{#1}{\comp,}\comp]}
 \symdef{LISTcons}[op=::]{\,{::}\,}
+
+\inlineforthel{[synonym list/-s]}
 
 \begin{signature}[forthel,id=LISTS_LISTS_4578620297183232]
   A \emph{list} is an object.

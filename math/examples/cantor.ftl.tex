@@ -1,6 +1,6 @@
 \documentclass{article}
 \usepackage{naproche}
-\libinput[meta-inf]{example-preamble}
+\libinput[latex]{example-preamble}
 \libinput[libraries/foundations]{preamble}
 \libinput[libraries/set-theory]{preamble}
 
@@ -14,8 +14,7 @@ Marcel Schütz}
   \maketitle
   \hidetlsnumbers
 
-  \usemodule[libraries/foundations]{injections-surjections-bijections.ftl}
-  \usemodule[libraries/set-theory]{cardinals-and-maps.ftl}
+  \usemodule[libraries/foundations]{sub-and-supersets.ftl}
 
   \noindent This is a formalization of \emph{Cantor's Theorem}
   \cite{Cantor1891}, i.e. of the assertion that any set $x$ is strictly smaller

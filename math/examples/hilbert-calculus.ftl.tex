@@ -1,6 +1,6 @@
 \documentclass{article}
 \usepackage{naproche}
-\libinput[meta-inf]{example-preamble}
+\libinput[latex]{example-preamble}
 
 \newcommand{\imp}{\supset}
 \newcommand{\deducible}{\vdash}
@@ -17,7 +17,9 @@
 
 \maketitle
 
-\usemodule[meta-inf]{vocabulary.ftl}
+\begin{forthel}
+    [read \path{examples/lang/vocabulary.ftl.tex}]
+\end{forthel}
 
 The basic rules of the calculus are given as axioms.
 Then further derived rules are proven as propositions. 

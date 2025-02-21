@@ -1,7 +1,7 @@
 \documentclass{article}
 \usepackage{naproche}
 \usepackage{mathtools} % for \bigtimes
-\libinput[meta-inf]{example-preamble}
+\libinput[latex]{example-preamble}
 \libinput[libraries/foundations]{preamble}
 
 \title{König's Theorem}
@@ -26,7 +26,7 @@ University of Bonn}
 arithmetic of cardinals.
 It was proved by Julius König in 1905 \cite[p. 177--180]{Koenig1905}.
 The proof is reminiscent of Cantor's diagonal argument for proving that
-$\kappa < 2^\kappa$.
+$\kappa \ORDless \ORDtwo^\kappa$.
 
 
 \section*{Sums and Products of cardinals}
@@ -97,12 +97,12 @@ are themselves non-empty:
 
   \begin{theorem*}[title=König,id=koenig]
     Let $\kappa, \lambda$ be sequences of cardinals on $D$.
-    Assume that for every element $i$ of $D$ $\kappa_{i} < \lambda_{i}$.
-    Then \[ \Sum{\kappa}{D} < \Prod{\lambda}{D}. \]
+    Assume that for every element $i$ of $D$ $\kappa_{i} \ORDless \lambda_{i}$.
+    Then \[ \Sum{\kappa}{D} \ORDless \Prod{\lambda}{D}. \]
   \end{theorem*}
   \begin{proof}[method=contradiction]
     Assume the contrary.
-    Then \[ \Prod{\lambda}{D} \leq \Sum{\kappa}{D}. \]
+    Then \[ \Prod{\lambda}{D} \ORDleq \Sum{\kappa}{D}. \]
     Take a surjective map $G$ from $\SumSet{\kappa}{D}$ to $\ProdSet{\lambda}{D}$.
     Indeed $\ProdSet{\lambda}{D}$ and $\Sum{\kappa}{D}$ are nonempty sets.
     Take $\Lambda = \bigcup \FUNrange(\lambda)$.
@@ -117,7 +117,7 @@ are themselves non-empty:
 
     For every element $f$ of $\ProdSet{\lambda}{D}$ and every element $i$ of $D$ we have $f(i) \in \Lambda$.
 
-    For every element $i$ of $D$ we have $|\Delta(i)| < \lambda_{i}$.
+    For every element $i$ of $D$ we have $|\Delta(i)| \ORDless \lambda_{i}$.
     \begin{proof}
       Let $i$ be an element of $D$.
       Define $F(n) = G(n,i)(i)$ for $n$ in $\kappa_{i}$.
@@ -126,15 +126,15 @@ are themselves non-empty:
       Thus $F[\kappa_{i}] = \Delta(i)$.
       Therefore $|\Delta(i)|
         = |F[\kappa_{i}]|
-        \leq |\kappa_{i}|
+        \ORDleq |\kappa_{i}|
         = \kappa_{i}
-        < \lambda_{i}$.
-      Indeed $|F[\kappa_{i}]| \leq |\kappa_{i}|$ (by \printref{SET_THEORY_06_8113916590686208}).
+        \ORDless \lambda_{i}$.
+      Indeed $|F[\kappa_{i}]| \ORDleq |\kappa_{i}|$ (by \printref{SET_THEORY_06_8113916590686208}).
       Indeed $\kappa_{i}$ and $\lambda_{i}$ are sets.
     \end{proof}
 
-    Define $f(i) =$ ``choose an element $v$ of $\lambda_{i} \setminus \Delta(i)$ in $v$'' for $i \in D$.
-    Indeed $\lambda_{i} \setminus \Delta(i)$ is nonempty for each $i \in D$.
+    Define $f(i) =$ ``choose an element $v$ of $\lambda_{i} \SETdiff \Delta(i)$ in $v$'' for $i \in D$.
+    Indeed $\lambda_{i} \SETdiff \Delta(i)$ is nonempty for each $i \in D$.
     Then $f$ is an element of $\ProdSet{\lambda}{D}$.
     Take an element $j$ of $D$ and an element $m$ of $\kappa_{j}$ such that $G(m,j) = f$.
     $G(m,j)(j)$ is an element of $\Delta(j)$ and $f(j)$ is not an element of $\Delta(j)$.

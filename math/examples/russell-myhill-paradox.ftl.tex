@@ -1,6 +1,6 @@
 \documentclass{article}
 \usepackage{naproche}
-\libinput[meta-inf]{example-preamble}
+\libinput[latex]{example-preamble}
 \libinput[libraries/foundations]{preamble}
 
 \title{The Russell-Myhill Paradox}
@@ -11,7 +11,9 @@
   \pagenumbering{gobble}
   \maketitle
 
-  \usemodule[meta-inf]{everyday-ontology.ftl}
+  \begin{forthel}
+    [read \path{examples/lang/everyday-ontology.ftl.tex}]
+  \end{forthel}
 
   \noindent The \emph{Russell-Myhill Paradox} is a paradox discovered by 
   Bertrand Russell which states that two systems of propositions with the same 

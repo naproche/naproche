@@ -1,6 +1,6 @@
 \documentclass{article}
 \usepackage{naproche}
-\libinput[meta-inf]{example-preamble}
+\libinput[latex]{example-preamble}
 
 \title{Square roots of primes are irrational}
 \author{}
@@ -10,7 +10,10 @@
 
   \maketitle
 
-  \usemodule[meta-inf]{vocabulary.ftl}
+  \begin{forthel}
+    [read \path{examples/lang/vocabulary.ftl.tex}]
+  \end{forthel}
+
 
   \section*{(Strictly) positive rational numbers}
 

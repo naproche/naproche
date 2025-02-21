@@ -1,6 +1,6 @@
 \documentclass{article}
 \usepackage{naproche}
-\libinput[meta-inf]{example-preamble}
+\libinput[latex]{example-preamble}
 
 \title{group.lean in \Naproche}
 \author{\Naproche Formalization: Peter Koepke}
@@ -11,7 +11,9 @@
 
 \maketitle
 
-\usemodule[meta-inf]{vocabulary.ftl}
+\begin{forthel}
+  [read \path{examples/lang/vocabulary.ftl.tex}]
+\end{forthel}
 
 \noindent We give a ForTheL version of the ``multiplicative half'' of
 \path{https://github.com/leanprover/lean/blob/master/library/init/

@@ -3,8 +3,25 @@
 \begin{document}
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Classes]{classes.ftl}
-\importmodule[meta-inf]{vocabulary.ftl}
-\importmodule[meta-inf]{macros.ftl}
+\STEXexport{
+  \let\oldin\in
+  \let\in\relax
+  \let\notin\relax
+  \let\oldneq\neq
+  \let\neq\relax
+  \let\dom\relax
+}
+\symdef{in}[op=\oldin]{\;\oldin\;}
+\symdef{notin}[op=\not\oldin]{\;\not\oldin\;}
+\symdef{eq}[op={=}]{\;=\;}
+\symdef{neq}[op=\oldneq]{\;\oldneq\;}
+\symdef{dom}{\mathrm{dom}}
+\symdef{pair}[args=2,op=(\cdot,\cdot)]{\comp(#1\comp,\,#2\comp)}
+\STEXinvisible{\inlineforthel{
+  Let $x\eq y$ stand for $x=y$.
+  Let $\pair{x}{y}$ stand for $(x,y)$.
+}}
+
 \symdef{SETinclude}{\;\subseteq\;}
 \notation{SETinclude}{\;\subset\;}
 \symdef{SETstrictinclude}{\;\subsetneq\;}
@@ -17,6 +34,8 @@
 \symdef{SETunion}{\,\cup\,}
 \symdef{SETintersect}{\,\cap\,}
 \symdef{SETdiff}{\,\setminus\,}
+
+\inlineforthel{[synonym subclass/-es][synonym superclass/-es][synonym include/-s]}
 
 \begin{sfragment}{Sub- and Superclasses}
   \begin{definition}[forthel,id=FOUNDATIONS_01_3275578358628352]
@@ -117,6 +136,8 @@
     Let the \emph{unordered pair of $a$ and $b$} stand for $\SETpair{a}{b}$.
   \end{definition}
 
+  \inlineforthel{[synonym pair/-s]}
+
   \begin{definition}[forthel,id=FOUNDATIONS_01_605432672419840]
     An \emph{unordered pair} is a class $A$ such that $A \eq \SETpair{a}{b}$ for some distinct objects $a, b$.
   \end{definition}
@@ -127,6 +148,8 @@
 
     Let the \emph{singleton class of $a$} stand for $\SETsingleton{a}$.
   \end{definition}
+
+  \inlineforthel{[synonym class/-es]}
 
   \begin{definition}[forthel,id=FOUNDATIONS_01_6786618161627136]
     A \emph{singleton class} is a class $A$ such that $A \eq \SETsingleton{a}$ for some object $a$.
@@ -148,6 +171,8 @@
     Let $a, a'$ be objects.
     If $\SETsingleton{a} \eq \SETsingleton{a'}$ then $a \eq a'$.
   \end{corollary}
+
+  \inlineforthel{[synonym element/-s]}
 
   \begin{definition}[forthel,id=FOUNDATIONS_01_29867480293464351]
     Let $A$ be a class.

@@ -1,6 +1,6 @@
 \documentclass{article}
 \usepackage{naproche}
-\libinput[meta-inf]{example-preamble}
+\libinput[latex]{example-preamble}
 \libinput[libraries/set-theory]{preamble}
 
 \title{The Knaster-Tarski fixed point theorem and \\
@@ -12,10 +12,6 @@ the Cantor-Schröder-Bernstein Theorem}
 \begin{smodule}{cantor-schroeder-bernstein.ftl}
   \maketitle
   \hidetlsnumbers
-
-  \usemodule[libraries/foundations]{equinumerosity.ftl}
-  \usemodule[libraries/foundations]{maps-and-systems-of-sets.ftl}
-  \usemodule[libraries/set-theory]{zfc.ftl}
 
   \noindent This is a formalization of the \textit{Knaster-Tarski Fixed Point
   Theorem} (i.e. of the assertion that every subset-preserving map has a fixed

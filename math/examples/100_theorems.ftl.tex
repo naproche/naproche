@@ -1,6 +1,6 @@
 \documentclass{article}
 \usepackage{naproche}
-\libinput[meta-inf]{example-preamble}
+\libinput[latex]{example-preamble}
 
 \newcommand{\Prod}[3]{#1_{#2} \cdots #1_{#3}}
 \newcommand{\Seq}[2]{\{#1,\dots,#2\}}
@@ -20,8 +20,10 @@
 
 \maketitle
 
-\usemodule[meta-inf]{vocabulary.ftl}
-\usemodule[meta-inf]{macros.ftl}
+\begin{forthel}
+  [read \path{examples/lang/vocabulary.ftl.tex}]
+  [read \path{examples/lang/macros.ftl.tex}]
+\end{forthel}
 
 \section*{Preliminary Remarks}
 

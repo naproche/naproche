@@ -1,3 +1,0 @@
-id: meta-inf
-ns: https://naproche.github.io/math/meta-inf
-narration-base: https://naproche.github.io/math/meta-inf

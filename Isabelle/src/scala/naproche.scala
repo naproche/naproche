@@ -20,7 +20,7 @@ object Naproche {
   val examples: Path = NAPROCHE_HOME + Path.explode("math")
 
   def TEXINPUTS: String =
-    Isabelle_System.getenv_strict("NAPROCHE_FORMALIZATIONS") + "/meta-inf/lib//;"
+    Isabelle_System.getenv_strict("NAPROCHE_FORMALIZATIONS") + "/latex/lib//;"
 
   def platform: String = NAPROCHE_EXE_DIR.expand.base.implode
   val session = "Naproche"

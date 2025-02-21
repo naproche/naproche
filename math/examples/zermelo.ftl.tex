@@ -1,6 +1,6 @@
 \documentclass{article}
 \usepackage{naproche}
-\libinput[meta-inf]{example-preamble}
+\libinput[latex]{example-preamble}
 \libinput[libraries/foundations]{preamble}
 \libinput[libraries/set-theory]{preamble}
 
@@ -15,10 +15,7 @@
   \maketitle
   \hidetlsnumbers
 
-  \usemodule[libraries/foundations]{equinumerosity.ftl}
-  \usemodule[libraries/foundations]{choice-maps.ftl}
-  \usemodule[libraries/foundations]{proper-classes.ftl}
-  \usemodule[libraries/set-theory]{transfinite-recursion-1.ftl}
+  \usemodule[libraries/set-theory]{recursive-maps.ftl}
 
   \noindent This is a formalization of \textit{Zermelo's Well-ordering Theorem},
   i.e. of the assertion that under the assumption of the axiom of choice every
@@ -26,12 +23,13 @@
   regarded as a transitive set whose elements are transitive sets as well.
   The proof of this theorem presented here is oriented on \cite{Koepke2018}.
 
-  In the following, for any class $A$, we write $A^{< \infty}$ to
-  denote the collection of all maps $f : \alpha \to A$ for some ordinal
+  In the following, for any class $A$, we write $\ORDfunspace{A}$ to
+  denote the collection of all maps $f \FUNfromto{\alpha}{A}$ for some ordinal
   $\alpha$.
-  Moreover, for any map $G : A^{< \infty} \to A$ we say that a map $F : \Ord \to
-  A$, where $\Ord$ denotes the class of all ordinals, is recursive regarding $G$
-  if $F(\alpha) = G(F \restriction \alpha)$ for all $\alpha \in \Ord$.
+  Moreover, for any map $G \FUNfromto{\ORDfunspace{A}}{A}$ we say that a map
+  $F \FUNfromto{\Ord}{A}$, where $\Ord$ denotes the class of all ordinals, is
+  recursive regarding $G$ if $F(\alpha) = G(F \FUNrest \alpha)$ for all
+  $\alpha \in \Ord$.
 
   \inputref[libraries/set-theory]{zermelo.ftl.tex}
 
