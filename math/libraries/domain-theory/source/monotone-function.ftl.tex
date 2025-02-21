@@ -1,0 +1,62 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Monotone Functions]{monotone-function.ftl}
+
+\importmodule[libraries/domain-theory]{complete-lattice.ftl}
+\importmodule[libraries/preliminaries]{functions.ftl}
+\newcounter{funnotationcounter}
+\newcommand{\funnotation}{
+  \ifnum\the\value{funnotationcounter}=1
+    \mathop{\comp:}
+  \else
+    \mathop{\comp\to}
+  \fi
+}
+\notation{mathstruct}[fun]{\setcounter{funnotationcounter}{1}\argsep{#1}{\funnotation\stepcounter{funnotationcounter}}}
+\begin{mathstructure}{monfun}
+  \symdef{map}{F}
+  \symdef{source}[return={\complattice}]{\mathcal P}
+  \symdef{target}[return={\complattice}]{\mathcal Q}
+\end{mathstructure}
+\vardef{Pvar}[return={\complattice}]{P}
+\vardef{Qvar}[return={\complattice}]{Q}
+\vardef{Fvar}{f}
+\vardef{fvar}[return={\monfun[map=\Fvar,source=\Pvar,target=\Qvar]}]{f}
+
+\begin{signature}[forthel]
+  A \emph{monotone function $\fvar{}[fun]$} is a structure with the following properties:
+  \begin{itemize}
+    \item\label{monfunSourceSig}
+      $\fvar{source}!$ is a poset.
+    \item\label{monfunTargetSig}
+      $\fvar{target}!$ is a poset.
+    \item\label{monfunMapSig}
+      $\fvar{map}$ is a map from $\fvar{source}{univ}$ to $\fvar{target}{univ}$.
+    \item\label{monfunMonAx}
+      Let $x,y\in\fvar{source}{univ}$.
+      Then $x{\fvar{source}{leq}}y$ implies $\apply{\fvar{map}}{x}{\fvar{target}{leq}}\apply{\fvar{map}}{y}$.
+  \end{itemize}
+
+  Let $\fvar{}[fun]$ denote a monotone function.
+\end{signature}
+
+\begin{sfragment}{Scott Continuity}
+  \begin{convention}[forthel]
+    Let $\Pvar!=\Pvar{}[univ,leq,meet,join]$ denote a poset.
+  \end{convention}
+
+  \begin{definition}[forthel]
+    Let $X\subseteq\Pvar{univ}$.
+    $X$ is \emph{directed in $\Pvar!$} iff every finite subclass of $X$ has an upper bound $u$ in $\Pvar!$ such that $u \in X$.
+  \end{definition}
+
+  \begin{definition}[forthel]
+    Let $\fvar!$ be a monotone function such that $\fvar{source}!$ and $\fvar{target}!$ are complete lattices.
+    $\fvar!$ is \emph{Scott continuous} iff for all $X\subseteq\fvar{source}{univ}$ that are directed in $\fvar{source}!$ we have
+    \[\apply{\fvar{map}}{{\fvar{source}{Join}}X}\eq{\fvar{target}{Join}}\im{\fvar{map}}{X}.\]
+  \end{definition}
+\end{sfragment}
+\end{smodule}
+\end{document}
