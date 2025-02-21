@@ -1,5 +1,5 @@
-[read libraries/meta-inf/source/vocabulary.ftl]
-[read libraries/meta-inf/source/macros.ftl]
+[read meta-inf/source/vocabulary.ftl]
+[read meta-inf/source/macros.ftl]
 
 
 ### Sets and Classes
