@@ -11,7 +11,7 @@
 
   \begin{definition}[forthel,id=FOUNDATIONS_09_7776974319648768]
     Let $f$ be a map.
-    An \emph{inverse of $f$} is a map $g$ from $\FUNrange(f)$ to $\dom(f)$ such that $f(a) \eq b \iff g(b) \eq a$ for all $a \in \dom(f)$ and all $b \in \dom(g)$.
+    An \emph{inverse of $f$} is a map $g$ from $\FUNrange(f)$ to $\FUNdom(f)$ such that $f(a) \eq b \iff g(b) \eq a$ for all $a \SETin \FUNdom(f)$ and all $b \SETin \FUNdom(g)$.
   \end{definition}
 
   \begin{definition}[forthel,id=FOUNDATIONS_09_3430350086733824]
@@ -24,10 +24,10 @@
     Then $g \eq g'$.
   \end{lemma}
   \begin{proof}[forthel]
-    We have $\dom(g) \eq \FUNrange(f) \eq \dom(g')$.
+    We have $\FUNdom(g) \eq \FUNrange(f) \eq \FUNdom(g')$.
 
-    Let us show that $g(b) \eq g'(b)$ for all $b \in \FUNrange(f)$.
-      Let $b \in \FUNrange(f)$.
+    Let us show that $g(b) \eq g'(b)$ for all $b \SETin \FUNrange(f)$.
+      Let $b \SETin \FUNrange(f)$.
       Take $a = g'(b)$.
       Then $g(b) \eq a$ iff $f(a) \eq b$.
       We have $f(a) \eq b$ iff $g'(b) \eq a$.
@@ -52,22 +52,22 @@
   \begin{proof}[forthel]
     \begin{case}{$g$ is the inverse of $f$.}
       We have
-      $\dom(g \FUNcomp f)
-        \eq \dom(f)
+      $\FUNdom(g \FUNcomp f)
+        \eq \FUNdom(f)
         \eq A
-        \eq \dom(\FUNid{A})$.
-      For all $a \in A$ we have
+        \eq \FUNdom(\FUNid{A})$.
+      For all $a \SETin A$ we have
       $(g \FUNcomp f)(a)
         \eq g(f(a))
         \eq a$.
       Hence $g \FUNcomp f \eq \FUNid{A}$.
 
       We have
-      $\dom(f \FUNcomp g)
-        \eq \dom(g)
+      $\FUNdom(f \FUNcomp g)
+        \eq \FUNdom(g)
         \eq B
-        \eq \dom(\FUNid{B})$.
-      For all $b \in B$ we have
+        \eq \FUNdom(\FUNid{B})$.
+      For all $b \SETin B$ we have
       $(f \FUNcomp g)(b)
         \eq f(g(b))
         \eq b$.
@@ -75,13 +75,13 @@
     \end{case}
 
     \begin{case}{$g \FUNcomp f \eq \FUNid{A}$ and $f \FUNcomp g \eq \FUNid{B}$.}
-      Then $\dom(g)
+      Then $\FUNdom(g)
         \eq B
         \eq \FUNrange(f)$
       and $\FUNrange(g)
         \eq A
-        \eq \dom(f)$.
-      Let $a \in \dom(f)$ and $b \in \dom(g)$.
+        \eq \FUNdom(f)$.
+      Let $a \SETin \FUNdom(f)$ and $b \SETin \FUNdom(g)$.
       If $f(a) \eq b$ then
       $g(b)
         \eq g(f(a))
@@ -105,9 +105,9 @@
   \end{proposition}
   \begin{proof}[forthel]
     $\FUNinv{f}$ is a map from $B$ to $A$.
-    Indeed $\FUNrange(f) \eq B$ and $\dom(f) \eq A$.
+    Indeed $\FUNrange(f) \eq B$ and $\FUNdom(f) \eq A$.
     $\FUNinv{f}$ is surjective onto $A$.
-    Indeed for any $a \in A$ we have $\FUNinv{f}(f(a)) \eq a$.
+    Indeed for any $a \SETin A$ we have $\FUNinv{f}(f(a)) \eq a$.
     $\FUNinv{f}$ is the inverse of $f$.
     Thus $f \FUNcomp \FUNinv{f} \eq \FUNid{B}$ and $\FUNinv{f} \FUNcomp f \eq \FUNid{A}$.
     Therefore $f$ is the inverse of $\FUNinv{f}$.
@@ -124,7 +124,7 @@
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_09_4606651604664320]
-    Let $A, B$ be classes and $f \FUNfromonto{A}{B}$ and $a \in A$.
+    Let $A, B$ be classes and $f \FUNfromonto{A}{B}$ and $a \SETin A$.
     Assume that $f$ is invertible.
     Then $\FUNinv{f}(f(a)) \eq a$.
   \end{proposition}
@@ -133,7 +133,7 @@
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_09_6093864386712935]
-    Let $A, B$ be classes and $f \FUNfromonto{A}{B}$ and $b \in B$.
+    Let $A, B$ be classes and $f \FUNfromonto{A}{B}$ and $b \SETin B$.
     Assume that $f$ is invertible.
     Then $f(\FUNinv{f}(b)) \eq b$.
   \end{proposition}
@@ -199,29 +199,29 @@
     Then $g$ is a map of $\FUNim{f}{X}$.
 
     Let us show that $X \SETinclude \FUNrange(g)$.
-      Let $a \in X$.
-      Then $f(a) \in \FUNim{f}{X}$.
+      Let $a \SETin X$.
+      Then $f(a) \SETin \FUNim{f}{X}$.
       Hence $g(f(a)) \eq \FUNinv{f}(f(a)) \eq a$.
       Thus $a$ is a value of $g$.
     End.
 
     Let us show that $\FUNrange(g) \SETinclude X$.
-      Let $a \in \FUNrange(g)$.
-      Take $b \in \FUNim{f}{X}$ such that $a \eq g(b)$.
-      Take $c \in X$ such that $b \eq f(c)$.
+      Let $a \SETin \FUNrange(g)$.
+      Take $b \SETin \FUNim{f}{X}$ such that $a \eq g(b)$.
+      Take $c \SETin X$ such that $b \eq f(c)$.
       Then $a
         \eq (\FUNinv{f} \FUNrest (\FUNim{f}{X}))(b)
         \eq \FUNinv{f}(b)
         \eq \FUNinv{f}(f(c))
         \eq c$.
-      Hence $a \in X$.
+      Hence $a \SETin X$.
     End.
 
     Hence $\FUNrange(g) \eq X$.
     Thus $g$ is a surjective map onto $X$.
 
-    Let us show that $g((f \FUNrest X)(a)) \eq a$ for all $a \in X$.
-      Let $a \in X$.
+    Let us show that $g((f \FUNrest X)(a)) \eq a$ for all $a \SETin X$.
+      Let $a \SETin X$.
       Then $g((f \FUNrest X)(a))
         \eq g(f(a))
         \eq (\FUNinv{f} \FUNrest (\FUNim{f}{X}))(f(a))
@@ -229,9 +229,9 @@
         \eq a$.
     End.
 
-    Let us show that $((f \FUNrest X)(g(b))) \eq b$ for all $b \in \FUNim{f}{X}$.
-      Let $b \in \FUNim{f}{X}$.
-      Take $a \in X$ such that $b \eq f(a)$.
+    Let us show that $((f \FUNrest X)(g(b))) \eq b$ for all $b \SETin \FUNim{f}{X}$.
+      Let $b \SETin \FUNim{f}{X}$.
+      Take $a \SETin X$ such that $b \eq f(a)$.
       We have $g(b)
         \eq g(f(a))
         \eq (\FUNinv{f} \FUNrest (\FUNim{f}{X}))(f(a))
@@ -253,31 +253,31 @@
     Then \[ \FUNpreim{f}{Y} \eq \FUNim{\FUNinv{f}}{Y}. \]
   \end{proposition}
   \begin{proof}[forthel]
-    We have $\FUNim{\FUNinv{f}}{Y} = \{ \FUNinv{f}(b) \mid b \in Y \}$ and $\FUNpreim{f}{Y} = \{ a \in A \mid f(a) \in Y \}$.
+    We have $\FUNim{\FUNinv{f}}{Y} = \{ \FUNinv{f}(b) \mid b \SETin Y \}$ and $\FUNpreim{f}{Y} = \{ a \SETin A \mid f(a) \SETin Y \}$.
 
     Let us show that $\FUNpreim{f}{Y} \SETinclude \FUNim{\FUNinv{f}}{Y}$.
-      Let $a \in \FUNpreim{f}{Y}$.
-      Take $b \in Y$ such that $b \eq f(a)$.
+      Let $a \SETin \FUNpreim{f}{Y}$.
+      Take $b \SETin Y$ such that $b \eq f(a)$.
       Then $\FUNinv{f}(b) \eq \FUNinv{f}(f(a)) \eq a$.
-      Hence $a \in \FUNim{\FUNinv{f}}{Y}$.
+      Hence $a \SETin \FUNim{\FUNinv{f}}{Y}$.
     End.
 
     Let us show that $\FUNim{\FUNinv{f}}{Y} \SETinclude \FUNpreim{f}{Y}$.
-      Let $a \in \FUNim{\FUNinv{f}}{Y}$.
-      Take $b \in Y$ such that $a \eq \FUNinv{f}(b)$.
+      Let $a \SETin \FUNim{\FUNinv{f}}{Y}$.
+      Take $b \SETin Y$ such that $a \eq \FUNinv{f}(b)$.
       Then $f(a) \eq f(\FUNinv{f}(b)) \eq b$.
-      Hence $a \in \FUNpreim{f}{Y}$.
+      Hence $a \SETin \FUNpreim{f}{Y}$.
     End.
   \end{proof}
 
   \begin{corollary}[forthel,id=FOUNDATIONS_09_8607784268464128]
-    Let $A, B$ be classes and $f \FUNfromonto{A}{B}$ and $b \in B$.
+    Let $A, B$ be classes and $f \FUNfromonto{A}{B}$ and $b \SETin B$.
     Assume that $f$ is invertible.
     Then \[ \FUNpreim{f}{\SETsingleton{b}} \eq \SETsingleton{\FUNinv{f}(b)}. \]
   \end{corollary}
   \begin{proof}[forthel]
     $\FUNpreim{f}{\SETsingleton{b}} \eq \FUNim{\FUNinv{f}}{\SETsingleton{b}}$.
-    We have $\FUNim{\FUNinv{f}}{\SETsingleton{b}} = \{ \FUNinv{f}(c) \mid c \in \SETsingleton{b} \}$.
+    We have $\FUNim{\FUNinv{f}}{\SETsingleton{b}} = \{ \FUNinv{f}(c) \mid c \SETin \SETsingleton{b} \}$.
     Hence $\FUNim{\FUNinv{f}}{\SETsingleton{b}} \eq \SETsingleton{\FUNinv{f}(b)}$.
   \end{proof}
 
@@ -287,19 +287,19 @@
   \end{proposition}
   \begin{proof}[forthel]
     \begin{case}{$f$ is invertible.}
-      Let $a, b \in A$.
+      Let $a, b \SETin A$.
       Assume $f(a) \eq f(b)$.
       Then $a \eq \FUNinv{f}(f(a)) \eq \FUNinv{f}(f(b)) \eq b$.
     \end{case}
 
     \begin{case}{$f$ is injective.}
-      Define $g(b) =$ ``choose $a \in A$ such that $f(a) \eq b$ in $a$'' for
-      $b \in B$.
+      Define $g(b) =$ ``choose $a \SETin A$ such that $f(a) \eq b$ in $a$'' for
+      $b \SETin B$.
       Then $g$ is a map from $B$ to $A$.
-      For all $a \in A$ we have $a \eq g(f(a))$.
+      For all $a \SETin A$ we have $a \eq g(f(a))$.
       Hence $g$ is a surjective map from $B$ onto $A$.
-      For all $a \in A$ we have $g(f(a)) \eq a$.
-      For all $b \in B$ we have $f(g(b)) \eq b$.
+      For all $a \SETin A$ we have $g(f(a)) \eq a$.
+      For all $b \SETin B$ we have $f(g(b)) \eq b$.
       Hence $g$ is the inverse of $f$.
     \end{case}
   \end{proof}

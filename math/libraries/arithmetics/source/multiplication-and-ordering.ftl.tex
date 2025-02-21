@@ -13,13 +13,13 @@
 \end{proposition}
 \begin{proof}[forthel]
   \begin{case}{$n \NATmul k \NATless m \NATmul k$.}
-    Define $\Phi = \{ n' \in \Nat \mid\text{ if }n' \NATmul k \NATless m \NATmul k\text{ then }n' \NATless m \}$.
+    Define $\Phi = \{ n' \SETin \Nat \mid\text{ if }n' \NATmul k \NATless m \NATmul k\text{ then }n' \NATless m \}$.
 
     (1) $\Phi$ contains $\NATzero$.
 
-    (2) For all $n' \in \Phi$ we have $n' \NATplus \NATone \in \Phi$.
+    (2) For all $n' \SETin \Phi$ we have $n' \NATplus \NATone \SETin \Phi$.
     \begin{proof}
-      Let $n' \in \Phi$.
+      Let $n' \SETin \Phi$.
 
       Let us show that if $(n' \NATplus \NATone) \NATmul k \NATless m \NATmul k$ then $n' \NATplus \NATone \NATless m$.
         Assume $(n' \NATplus \NATone) \NATmul k \NATless m \NATmul k$.
@@ -58,13 +58,13 @@
   If $n, m \NATgtr k$ then $n \NATmul m \NATgtr k$.
 \end{proposition}
 \begin{proof}[forthel]
-  Define $\Phi = \{ n' \in \Nat \mid\text{ if }n', m \NATgtr k\text{ then }n' \NATmul m \NATgtr k \}$.
+  Define $\Phi = \{ n' \SETin \Nat \mid\text{ if }n', m \NATgtr k\text{ then }n' \NATmul m \NATgtr k \}$.
 
   (1) $\Phi$ contains $\NATzero$.
 
-  (2) For all $n' \in \Phi$ we have $n' \NATplus \NATone \in \Phi$.
+  (2) For all $n' \SETin \Phi$ we have $n' \NATplus \NATone \SETin \Phi$.
   \begin{proof}
-    Let $n' \in \Phi$.
+    Let $n' \SETin \Phi$.
 
     Let us show that if $n' \NATplus \NATone, m \NATgtr k$ then $(n' \NATplus \NATone) \NATmul m \NATgtr k$.
       Assume $n' \NATplus \NATone, m \NATgtr k$.

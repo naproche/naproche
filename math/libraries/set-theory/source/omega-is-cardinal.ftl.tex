@@ -13,7 +13,7 @@
 
   Let us show that $\SETcard{\ORDomega}$ is not less than $\ORDomega$.
     Assume the contrary.
-    Then $\SETcard{\ORDomega} \in \ORDomega$.
+    Then $\SETcard{\ORDomega} \SETin \ORDomega$.
     Take $n \eq \SETcard{\ORDomega}$ and a bijection $f$ between $n$ and $\ORDomega$.
 
     Define \[ g(k) =
@@ -22,19 +22,19 @@
         \\
         \ORDzero           & : k \eq n
       \end{cases} \]
-    for $k \in \ORDsucc(n)$.
+    for $k \SETin \ORDsucc(n)$.
     Then $g$ is a map from $\ORDsucc(n)$ to $\ORDomega$.
-    Indeed we can show that $g(k) \in \ORDomega$ for all $k \in \ORDsucc(n)$.
-      Let $k \in \ORDsucc(n)$.
+    Indeed we can show that $g(k) \SETin \ORDomega$ for all $k \SETin \ORDsucc(n)$.
+      Let $k \SETin \ORDsucc(n)$.
       \begin{case}{$k \ORDless n$.} \end{case}
       \begin{case}{$k \eq n$.} \end{case}
     End.
 
     $g$ is injective.
-    Indeed we can show that for all $k, k' \in \ORDsucc(n)$ if $k \neq k'$
+    Indeed we can show that for all $k, k' \SETin \ORDsucc(n)$ if $k \neq k'$
     then $g(k) \neq g(k')$. 
     \begin{proof}
-      Let $k, k' \in \ORDsucc(n)$.
+      Let $k, k' \SETin \ORDsucc(n)$.
       Assume $k \neq k'$.
 
       \begin{case}{$k, k' \ORDless n$.}
@@ -55,17 +55,17 @@
     \end{proof}
 
     $g$ is surjective onto $\ORDomega$.
-    Indeed we can show that for any $m \in \ORDomega$ there exists a $k \in \ORDsucc(n)$ such that $m \eq g(k)$.
+    Indeed we can show that for any $m \SETin \ORDomega$ there exists a $k \SETin \ORDsucc(n)$ such that $m \eq g(k)$.
     \begin{proof}
-      Let $m \in \ORDomega$.
-      Then $\FUNinv{f}(m) \in n$.
+      Let $m \SETin \ORDomega$.
+      Then $\FUNinv{f}(m) \SETin n$.
 
       \begin{case}{$m \eq \ORDzero$.}
         Then $m \eq g(n)$.
       \end{case}
 
       \begin{case}{$m \neq \ORDzero$.}
-        Take $m' \in \ORDomega$ such that $m \eq \ORDsucc(m')$.
+        Take $m' \SETin \ORDomega$ such that $m \eq \ORDsucc(m')$.
         Then $m
           \eq \ORDsucc(m')
           \eq \ORDsucc(f(\FUNinv{f}(m')))

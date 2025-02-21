@@ -21,7 +21,7 @@
 \end{proposition}
 \begin{proof}[forthel]
   Take a set $x$ (by \printref{FOUNDATIONS_10_2362039748001792}).
-  Define $A = \{ y \in x \mid y \neq y \}$.
+  Define $A = \{ y \SETin x \mid y \neq y \}$.
   Then $A$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
   We have $A \eq \SETempty$.
   Hence $\SETempty$ is a set.
@@ -63,17 +63,17 @@
   Then $x \SETprod y$ is a set.
 \end{proposition}
 \begin{proof}[forthel]
-  $\SETsingleton{a}$ and $\SETpair{a}{b}$ are sets for each $a \in x$ and each $b \in y$.
-  Define $P = \{ \SETpair{\SETsingleton{a}}{\SETpair{a}{b}} \mid a \in x\text{ and }b \in y \}$.
+  $\SETsingleton{a}$ and $\SETpair{a}{b}$ are sets for each $a \SETin x$ and each $b \SETin y$.
+  Define $P = \{ \SETpair{\SETsingleton{a}}{\SETpair{a}{b}} \mid a \SETin x\text{ and }b \SETin y \}$.
 
   (1) $P$ is a set.
   \begin{proof}
     Let us show that $P \SETinclude \SETpow(\SETpow(x \SETunion y))$.
-      Let $p \in P$.
-      Consider $a \in x$ and $b \in y$ such that $p \eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$.
-      Then $a, b \in x \SETunion y$.
-      Hence $\SETsingleton{a}, \SETpair{a}{b} \in \SETpow(x \SETunion y)$.
-      Thus $\SETpair{\SETsingleton{a}}{\SETpair{a}{b}} \in \SETpow(\SETpow(x \SETunion y))$.
+      Let $p \SETin P$.
+      Consider $a \SETin x$ and $b \SETin y$ such that $p \eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$.
+      Then $a, b \SETin x \SETunion y$.
+      Hence $\SETsingleton{a}, \SETpair{a}{b} \SETin \SETpow(x \SETunion y)$.
+      Thus $\SETpair{\SETsingleton{a}}{\SETpair{a}{b}} \SETin \SETpow(\SETpow(x \SETunion y))$.
     End.
 
     $x \SETunion y$ is a set.
@@ -81,10 +81,10 @@
     Therefore $P$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
   \end{proof}
 
-  Define $l(p) =$ ``choose $a \in x$, choose $b \in y$ such that $p \eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$ in $a$'' for $p \in P$.
-  Define $r(p) =$ ``choose $a \in x$, choose $b \in y$ such that $p \eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$ in $b$'' for $p \in P$.
+  Define $l(p) =$ ``choose $a \SETin x$, choose $b \SETin y$ such that $p \eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$ in $a$'' for $p \SETin P$.
+  Define $r(p) =$ ``choose $a \SETin x$, choose $b \SETin y$ such that $p \eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$ in $b$'' for $p \SETin P$.
 
-  Define $f(p) = (l(p), r(p))$ for $p \in P$.
+  Define $f(p) = (l(p), r(p))$ for $p \SETin P$.
 
   Let us show that for any objects $u, u', v, v'$ if
   $\SETpair{\SETsingleton{u}}{\SETpair{u}{v}} \eq \SETpair{\SETsingleton{u'}}{\SETpair{u'}{v'}}$ then $u \eq u'$ and $v \eq v'$.
@@ -127,20 +127,20 @@
     \end{case}
   End.
 
-  $\SETpair{\SETsingleton{a}}{\SETpair{a}{b}} \in \dom(f)$ for any $a \in x$ and any $b \in y$. % Needed for ontological checking
+  $\SETpair{\SETsingleton{a}}{\SETpair{a}{b}} \SETin \FUNdom(f)$ for any $a \SETin x$ and any $b \SETin y$. % Needed for ontological checking
   \begin{proof}
-    Let $a \in x$ and $b \in y$.
-    Then $\SETpair{\SETsingleton{a}}{\SETpair{a}{b}} \in P$.
+    Let $a \SETin x$ and $b \SETin y$.
+    Then $\SETpair{\SETsingleton{a}}{\SETpair{a}{b}} \SETin P$.
   \end{proof}
 
-  Let us show that for any $a \in x$ and any $b \in y$ we have $f(\SETpair{\SETsingleton{a}}{\SETpair{a}{b}}) \eq (a,b)$.
-    Let $a \in x$ and $b \in y$.
+  Let us show that for any $a \SETin x$ and any $b \SETin y$ we have $f(\SETpair{\SETsingleton{a}}{\SETpair{a}{b}}) \eq (a,b)$.
+    Let $a \SETin x$ and $b \SETin y$.
     Take $p = \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$.
     Then $p$ is a set.
-    Then we can choose $a' \in x$ and $b' \in y$ such that $p \eq \SETpair{\SETsingleton{a'}}{\SETpair{a'}{b'}}$ and $l(p) \eq a'$.
+    Then we can choose $a' \SETin x$ and $b' \SETin y$ such that $p \eq \SETpair{\SETsingleton{a'}}{\SETpair{a'}{b'}}$ and $l(p) \eq a'$.
     Then $a \eq a'$ and $b \eq b'$.
     Hence $l(p) \eq a$.
-    Choose $a'' \in x$ and $b'' \in y$ such that $p \eq \SETpair{\SETsingleton{a''}}{\SETpair{a''}{b''}}$ and $r(p) \eq b''$.
+    Choose $a'' \SETin x$ and $b'' \SETin y$ such that $p \eq \SETpair{\SETsingleton{a''}}{\SETpair{a''}{b''}}$ and $r(p) \eq b''$.
     Then $a \eq a''$ and $b \eq b''$.
     Thus $r(p) \eq b$.
     Therefore $f(p) \eq (a,b)$.
@@ -148,16 +148,16 @@
 
   (2) $x \SETprod y \eq \FUNim{f}{P}$.
   \begin{proof}
-    For all $p \in P$ we have $l(p) \in x$ and $r(p) \in y$.
-    Hence $f(p) \in x \SETprod y$ for all $p \in P$.
+    For all $p \SETin P$ we have $l(p) \SETin x$ and $r(p) \SETin y$.
+    Hence $f(p) \SETin x \SETprod y$ for all $p \SETin P$.
     Therefore $\FUNim{f}{P} \SETinclude x \SETprod y$.
 
     Let us show that $x \SETprod y \SETinclude \FUNim{f}{P}$.
-      Let $z \in x \SETprod y$.
-      Take $a \in x$ and $b \in y$ such that $z \eq (a,b)$.
+      Let $z \SETin x \SETprod y$.
+      Take $a \SETin x$ and $b \SETin y$ such that $z \eq (a,b)$.
       Then $(a,b) \eq f(\SETpair{\SETsingleton{a}}{\SETpair{a}{b}})$.
-      Hence there exists a $p \in P$ such that $(a,b) \eq f(p)$.
-      Thus $(a,b) \in \FUNim{f}{P}$.
+      Hence there exists a $p \SETin P$ such that $(a,b) \eq f(p)$.
+      Thus $(a,b) \SETin \FUNim{f}{P}$.
     End.
 
     Consequently $x \SETprod y \eq \FUNim{f}{P}$.
@@ -178,11 +178,11 @@
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_10_7598384349184000]
-  Let $f$ be a map such that $\dom(f)$ is a set.
+  Let $f$ be a map such that $\FUNdom(f)$ is a set.
   Then $\FUNrange(f)$ is a set.
 \end{proposition}
 \begin{proof}[forthel]
-  $\FUNrange(f) \eq \FUNim{f}{\dom(f)}$ and $\FUNim{f}{\dom(f)}$ is a set.
+  $\FUNrange(f) \eq \FUNim{f}{\FUNdom(f)}$ and $\FUNim{f}{\FUNdom(f)}$ is a set.
   Hence $\FUNrange(f)$ is a set (by \printref{FOUNDATIONS_10_8142956584239104}).
 \end{proof}
 
@@ -200,36 +200,36 @@
 \end{proof}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_10_8812282138066944]
-  There exist no sets $x, y$ such that $x \in y$ and $y \in x$.
+  There exist no sets $x, y$ such that $x \SETin y$ and $y \SETin x$.
 \end{proposition}
 \begin{proof}[forthel]
   Assume the contrary.
-  Take sets $x,y$ such that $x \in y$ and $y \in x$.
+  Take sets $x,y$ such that $x \SETin y$ and $y \SETin x$.
   Consider an element $z$ of $\SETpair{x}{y}$ such that $\SETpair{x}{y}$ and $z$ are disjoint (by \printref{FOUNDATIONS_10_1320008569323520}).
   Indeed $\SETpair{x}{y}$ is a nonempty system of sets.
   Then we have $z \eq x$ or $z \eq y$.
 
   \begin{case}{$z \eq x$.}
     Then $x$ and $\SETpair{x}{y}$ are disjoint.
-    Hence $y \notin x$.
+    Hence $y \SETnotin x$.
     Contradiction.
   \end{case}
 
   \begin{case}{$z \eq y$.}
     Then $y$ and $\SETpair{x}{y}$ are disjoint.
-    Hence $x \notin y$.
+    Hence $x \SETnotin y$.
     Contradiction.
   \end{case}
 \end{proof}
 
 \begin{corollary}[forthel,id=FOUNDATIONS_10_3086917813927936]
   Let $x$ be a set.
-  Then $x \notin x$.
+  Then $x \SETnotin x$.
 \end{corollary}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_10_4589652321021547]
   Let $f, g$ be functions.
-  Assume that $\dom(f) \eq \dom(g)$ and $f(a) \eq g(a)$ for all $a \in \dom(f)$.
+  Assume that $\FUNdom(f) \eq \FUNdom(g)$ and $f(a) \eq g(a)$ for all $a \SETin \FUNdom(f)$.
   Then $f \eq g$.
 \end{proposition}
 
@@ -238,38 +238,38 @@
   Then $\FUNfunspace{x}{y}$ is a set.
 \end{proposition}
 \begin{proof}[forthel]
-  Define $R = \{ F \in \SETpow(x \SETprod y) \mid\text{ (for all }a \in x\text{ there exists a }b \in y\text{ such that }(a,b) \in F\text{) and for all }a \in x\text{ and all }b, b' \in y\text{ such that }(a,b), (a,b') \in F\text{ we have }b \eq b' \}$.
+  Define $R = \{ F \SETin \SETpow(x \SETprod y) \mid\text{ (for all }a \SETin x\text{ there exists a }b \SETin y\text{ such that }(a,b) \SETin F\text{) and for all }a \SETin x\text{ and all }b, b' \SETin y\text{ such that }(a,b), (a,b') \SETin F\text{ we have }b \eq b' \}$.
 
   [prover vampire]
   Every element of $R$ is a set. % Needed for ontological checking
-  Define $h(F) = \fun a \in x.$ ``choose $b \in y$ such that $(a,b) \in F$ in $b$'' for $F \in R$.
+  Define $h(F) = \fun a \SETin x.$ ``choose $b \SETin y$ such that $(a,b) \SETin F$ in $b$'' for $F \SETin R$.
   [prover eprover]
 
   Let us show that $\FUNfunspace{x}{y} \SETinclude \FUNrange(h)$.
-    Let $f \in \FUNfunspace{x}{y}$.
-    Define $F = \{ (a,f(a)) \mid a \in x \}$.
+    Let $f \SETin \FUNfunspace{x}{y}$.
+    Define $F = \{ (a,f(a)) \mid a \SETin x \}$.
 
-    Then $F \in R$.
+    Then $F \SETin R$.
     \begin{proof}
-      Define $g(a) = (a,f(a))$ for $a \in x$.
+      Define $g(a) = (a,f(a))$ for $a \SETin x$.
       Then $F \eq \FUNrange(g)$.
       Hence $F$ is a set.
-      Thus $F \in \SETpow(x \SETprod y)$.
+      Thus $F \SETin \SETpow(x \SETprod y)$.
       Indeed $F \SETinclude x \SETprod y$.
 
-      (1) For all $a \in x$ there exists a $b \in y$ such that $(a,b) \in F$.
+      (1) For all $a \SETin x$ there exists a $b \SETin y$ such that $(a,b) \SETin F$.
 
-      (2) For all $a \in x$ and all $b, b' \in y$ such that $(a,b),
-      (a,b') \in F$ we have $b \eq b'$.
+      (2) For all $a \SETin x$ and all $b, b' \SETin y$ such that $(a,b),
+      (a,b') \SETin F$ we have $b \eq b'$.
 
       [prover vampire]
       Hence the thesis.
       [prover eprover]
     \end{proof}
 
-    $\dom(f) \eq \dom(h(F))$ and for each $a \in \dom(f)$ we have $h(F)(a) \eq f(a)$.
+    $\FUNdom(f) \eq \FUNdom(h(F))$ and for each $a \SETin \FUNdom(f)$ we have $h(F)(a) \eq f(a)$.
     Hence $f \eq h(F)$.
-    Thus $f \in \FUNrange(h)$.
+    Thus $f \SETin \FUNrange(h)$.
   End.
 
   Therefore $\FUNfunspace{x}{y}$ is a set.

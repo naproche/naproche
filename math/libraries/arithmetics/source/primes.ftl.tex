@@ -31,11 +31,11 @@
   Then $n$ has a prime divisor.
 \end{proposition}
 \begin{proof}[forthel]
-  Define $\Phi = \{ n' \in \Nat \mid\text{ if }n' \NATgtr \NATone\text{ then }n'\text{ has a prime divisor}\}$.
+  Define $\Phi = \{ n' \SETin \Nat \mid\text{ if }n' \NATgtr \NATone\text{ then }n'\text{ has a prime divisor}\}$.
 
-  Let us show that for every $n' \in \Nat$ if $\Phi$ contains all
+  Let us show that for every $n' \SETin \Nat$ if $\Phi$ contains all
   predecessors of $n'$ then $\Phi$ contains $n'$.
-    Let $n' \in \Nat$.
+    Let $n' \SETin \Nat$.
     Assume that $\Phi$ contains all predecessors of $n'$.
     We have $n' \eq \NATzero$ or $n' \eq \NATone$ or $n'$ is prime or $n'$ is composite.
 
@@ -113,13 +113,13 @@
   \end{case}
 
   \begin{case}{$p \NATnmid n$.}
-    Define $\Phi = \{ k \in \Nat \mid k \neq \NATzero\text{ and }p \NATmid k \NATmul m \}$.
-    Then $p \in \Phi$ and $n \in \Phi$.
+    Define $\Phi = \{ k \SETin \Nat \mid k \neq \NATzero\text{ and }p \NATmid k \NATmul m \}$.
+    Then $p \SETin \Phi$ and $n \SETin \Phi$.
     Hence $\Phi$ contains some natural number.
-    Thus we can take $a \in \Phi$ such that $a \NATleq k$ for all $k \in \Phi$.
+    Thus we can take $a \SETin \Phi$ such that $a \NATleq k$ for all $k \SETin \Phi$.
 
     Let us show that $a$ divides all elements of $\Phi$.
-      Let $k \in \Phi$.
+      Let $k \SETin \Phi$.
       Take natural numbers $q, r$ such that $k \eq (a \NATmul q) \NATplus r$ and $r \NATless a$ (by \printref{ARITHMETIC_08_7743986617810944}).
       Indeed $a$ is nonzero.
       Then $k \NATmul m
@@ -149,7 +149,7 @@
     Hence $a \eq p$ or $a \eq \NATone$.
     Thus $a \eq \NATone$.
     Indeed if $a \eq p$ then $p \NATmid n$.
-    Then $\NATone \in \Phi$.
+    Then $\NATone \SETin \Phi$.
     Therefore $p \NATmid \NATone \NATmul m \eq m$.
   \end{case}
 \end{proof}

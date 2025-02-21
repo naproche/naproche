@@ -47,7 +47,7 @@
 
     \begin{case}{$X \eq \SETsingleton{a}$ for some object $a$.}
       Consider an object $a$ such that $X \eq \SETsingleton{a}$.
-      Define $f(x) = \NATone$ for $x \in \SETsingleton{a}$.
+      Define $f(x) = \NATone$ for $x \SETin \SETsingleton{a}$.
       Then $f$ is a bijection between $\SETsingleton{a}$ and $\NATsegment{\NATone}{\NATone}$.
     \end{case}
   \end{proof}
@@ -71,52 +71,52 @@
           \NATone & : x \eq a \\
           \NATtwo & : x \eq b
         \end{cases}\]
-      for $x \in \SETpair{a}{b}$.
+      for $x \SETin \SETpair{a}{b}$.
       Then $f$ is a bijection between $\SETpair{a}{b}$ and $\NATsegment{\NATone}{\NATtwo}$.
       Indeed $f$ is injective and surjective onto $\NATsegment{\NATone}{\NATtwo}$.
     \end{case}
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_14_0615204230800975]
-    Let $n$ be a natural number and $X$ be a class that has $n$ elements and $a$ be an object such that $a \notin X$.
+    Let $n$ be a natural number and $X$ be a class that has $n$ elements and $a$ be an object such that $a \SETnotin X$.
     Then $X \SETunion \SETsingleton{a}$ has $n \NATplus \NATone$ elements.
   \end{proposition}
   \begin{proof}[forthel]
     Take a bijection $f$ between $X$ and $\NATsegment{\NATone}{n}$.
     Define \[g(x) =
       \begin{cases}
-        f(x)  & : x \in X \\
+        f(x)  & : x \SETin X \\
         n \NATplus \NATone & : x \eq a
       \end{cases}\]
-    for $x \in X \SETunion \SETsingleton{a}$.
+    for $x \SETin X \SETunion \SETsingleton{a}$.
 
     (1) $g$ is a map from $X \SETunion \SETsingleton{a}$ to $\NATsegment{\NATone}{n \NATplus \NATone}$.
-    Indeed we can show that $g(x) \in \NATsegment{\NATone}{n \NATplus \NATone}$ for all $x \in X \SETunion \SETsingleton{a}$.
-      Let $x \in X \SETunion \SETsingleton{a}$.
-      If $x \in X$ then $g(x) \in \NATsegment{\NATone}{n}$.
+    Indeed we can show that $g(x) \SETin \NATsegment{\NATone}{n \NATplus \NATone}$ for all $x \SETin X \SETunion \SETsingleton{a}$.
+      Let $x \SETin X \SETunion \SETsingleton{a}$.
+      If $x \SETin X$ then $g(x) \SETin \NATsegment{\NATone}{n}$.
       If $x \eq a$ then $g(x) \eq n \NATplus \NATone$.
     End.
 
     (2) $g$ is injective.
     \begin{proof}
-      Let $x, y \in \dom(g)$.
+      Let $x, y \SETin \FUNdom(g)$.
       Assume $x \neq y$.
       
-      \begin{case}{$x, y \in X$.} \end{case}
+      \begin{case}{$x, y \SETin X$.} \end{case}
 
-      \begin{case}{$x \in X$ and $y \eq a$.} \end{case}
+      \begin{case}{$x \SETin X$ and $y \eq a$.} \end{case}
 
-      \begin{case}{$x \eq a$ and $y \in X$.} \end{case}
+      \begin{case}{$x \eq a$ and $y \SETin X$.} \end{case}
     \end{proof}
 
     (3) $g$ is surjective onto $\NATsegment{\NATone}{n \NATplus \NATone}$.
-    Indeed we can show that for every $k \in \NATsegment{\NATone}{n \NATplus \NATone}$ there exists an $x \in \dom(g)$ such that $k \eq g(x)$.
+    Indeed we can show that for every $k \SETin \NATsegment{\NATone}{n \NATplus \NATone}$ there exists an $x \SETin \FUNdom(g)$ such that $k \eq g(x)$.
     \begin{proof}
-      Let $k \in \NATsegment{\NATone}{n \NATplus \NATone}$.
+      Let $k \SETin \NATsegment{\NATone}{n \NATplus \NATone}$.
 
       \begin{case}{$k \NATleq n$.}
-        Then $k \in \NATsegment{\NATone}{n}$.
-        Hence we can take a $x \in X$ such that $k \eq f(x)$.
+        Then $k \SETin \NATsegment{\NATone}{n}$.
+        Hence we can take a $x \SETin X$ such that $k \eq f(x)$.
       \end{case}
 
       \begin{case}{$k \eq n \NATplus \NATone$.}

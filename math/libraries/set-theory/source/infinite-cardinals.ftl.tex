@@ -17,7 +17,7 @@
   Then $\SETcard{\ORDsucc(\alpha)} \eq \SETcard{\alpha}$.
 \end{proposition}
 \begin{proof}[forthel]
-  For any $\beta \in \ORDsucc(\alpha)$ we have
+  For any $\beta \SETin \ORDsucc(\alpha)$ we have
   $\beta \ORDless \ORDomega$ or $\ORDomega \ORDleq \beta \ORDless \alpha$ or $\beta \eq \alpha$.
   Define \[ f(\beta) =
     \begin{cases}
@@ -27,13 +27,13 @@
       \\
       \ORDzero             & : \beta \eq \alpha
     \end{cases} \]
-  for $\beta \in \ORDsucc(\alpha)$.
+  for $\beta \SETin \ORDsucc(\alpha)$.
 
   Then $f$ is a map from $\ORDsucc(\alpha)$ to $\alpha$.
-  Indeed we can show that $f(\beta) \in \alpha$ for all
-  $\beta \in \ORDsucc(\alpha)$.
+  Indeed we can show that $f(\beta) \SETin \alpha$ for all
+  $\beta \SETin \ORDsucc(\alpha)$.
   \begin{proof}
-    Let $\beta \in \ORDsucc(\alpha)$.
+    Let $\beta \SETin \ORDsucc(\alpha)$.
 
     \begin{case}{$\beta \ORDless \ORDomega$.}
       Then $f(\beta)
@@ -56,10 +56,10 @@
   \end{proof}
 
   $f$ is surjective onto $\alpha$.
-  Indeed we can show that for any $\beta \in \alpha$ there exists a
-  $\gamma \in \ORDsucc(\alpha)$ such that $\beta \eq f(\gamma)$.
+  Indeed we can show that for any $\beta \SETin \alpha$ there exists a
+  $\gamma \SETin \ORDsucc(\alpha)$ such that $\beta \eq f(\gamma)$.
   \begin{proof}
-    Let $\beta \in \alpha$.
+    Let $\beta \SETin \alpha$.
     Then $\beta \eq \ORDzero$ or $\ORDzero \ORDless \beta \ORDless \ORDomega$ or $\beta \ORDgeq \ORDomega$.
 
     \begin{case}{$\beta \eq \ORDzero$.}
@@ -78,10 +78,10 @@
   \end{proof}
 
   $f$ is injective.
-  Indeed we can show that for all $\beta, \gamma \in \ORDsucc(\alpha)$ if
+  Indeed we can show that for all $\beta, \gamma \SETin \ORDsucc(\alpha)$ if
   $\beta \neq \gamma$ then $f(\beta) \neq f(\gamma)$.
   \begin{proof}
-    Let $\beta, \gamma \in \ORDsucc(\alpha)$.
+    Let $\beta, \gamma \SETin \ORDsucc(\alpha)$.
     Assume $\beta \neq \gamma$.
 
     \begin{case}{$\beta \ORDless \ORDomega$.}

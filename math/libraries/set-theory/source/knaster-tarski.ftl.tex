@@ -13,22 +13,22 @@
   Then $h$ has a fixed point.
 \end{theorem}
 \begin{proof}[forthel]
-  (1) Define $A = \{y \in \SETpow(x) \mid y \SETinclude h(y)\}$.
+  (1) Define $A = \{y \SETin \SETpow(x) \mid y \SETinclude h(y)\}$.
   Then $A$ is a subset of $\SETpow(x)$.
-  We have $\SETunionover A \in \SETpow(x)$.
+  We have $\SETunionover A \SETin \SETpow(x)$.
 
   Let us show that (2) $\SETunionover A \SETinclude h(\SETunionover A)$.
-    Let $u \in \SETunionover A$.
-    Take $y \in A$ such that $u \in y$.
-    Then $u \in h(y)$.
+    Let $u \SETin \SETunionover A$.
+    Take $y \SETin A$ such that $u \SETin y$.
+    Then $u \SETin h(y)$.
     We have $y \SETinclude \SETunionover A$.
     Hence $h(y) \SETinclude h(\SETunionover A)$.
-    Indeed $h$ is a subset preserving map between systems of sets and $y, \SETunionover A \in \dom(h)$.
+    Indeed $h$ is a subset preserving map between systems of sets and $y, \SETunionover A \SETin \FUNdom(h)$.
     Thus $h(y) \SETinclude h(\SETunionover A)$.
-    Therefore $u \in h(\SETunionover A)$.
+    Therefore $u \SETin h(\SETunionover A)$.
   End.
 
-  Then $h(\SETunionover A) \in A$ (by 1).
+  Then $h(\SETunionover A) \SETin A$ (by 1).
   Indeed $h(\SETunionover A) \SETinclude x$.
   (3) Hence $h(\SETunionover A) \SETinclude \SETunionover A$.
   Indeed every element of $h(\SETunionover A)$ is an element of some element of

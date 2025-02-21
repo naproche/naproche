@@ -25,14 +25,14 @@
   Then $\NATfac{n} \neq \NATzero$.
 \end{proposition}
 \begin{proof}[forthel]
-  Define $\Phi = \{n' \in \Nat \mid \NATfac{n'} \neq \NATzero \}$.
+  Define $\Phi = \{n' \SETin \Nat \mid \NATfac{n'} \neq \NATzero \}$.
 
   (1) $\Phi$ contains $\NATzero$.
   Indeed $\NATfac{\NATzero} \eq \NATone \neq \NATzero$.
 
-  (2) For all $n' \in \Phi$ we have $n' \NATplus \NATone \in \Phi$.
+  (2) For all $n' \SETin \Phi$ we have $n' \NATplus \NATone \SETin \Phi$.
   \begin{proof}
-    Let $n' \in \Phi$.
+    Let $n' \SETin \Phi$.
     We have $\NATfac{n' \NATplus \NATone} \eq (n' \NATplus \NATone) \NATmul \NATfac{n'}$.
     $n' \NATplus \NATone$ and $\NATfac{n'}$ are nonzero.
     Hence $\NATfac{n' \NATplus \NATone} \neq \NATzero$.

@@ -15,7 +15,7 @@
 
 \begin{definition}[forthel,id=SET_THEORY_02_6654252130762752]
   Let $\alpha, \beta$ be ordinals.
-  $\emph{\alpha \ORDless \beta}$ iff $\alpha \in \beta$.
+  $\emph{\alpha \ORDless \beta}$ iff $\alpha \SETin \beta$.
 
   Let $\alpha$ is \emph{less than $\beta$} stand for $\alpha \ORDless \beta$.
   Let $\emph{\alpha \ORDnless \beta}$ stand for not $\alpha \ORDless \beta$.
@@ -44,11 +44,11 @@
 \begin{proof}[forthel]
   Assume $\alpha \ORDleq \beta$.
   Then $\alpha \ORDless \beta$ or $\alpha \eq \beta$.
-  Let $x \in \alpha$.
-  If $\alpha \ORDless \beta$ then $x \in \alpha \in \beta$.
-  Hence if $\alpha \ORDless \beta$ then $x \in \beta$.
-  If $\alpha \eq \beta$ then $x \in \beta$.
-  Thus $x \in \beta$.
+  Let $x \SETin \alpha$.
+  If $\alpha \ORDless \beta$ then $x \SETin \alpha \SETin \beta$.
+  Hence if $\alpha \ORDless \beta$ then $x \SETin \beta$.
+  If $\alpha \eq \beta$ then $x \SETin \beta$.
+  Thus $x \SETin \beta$.
 \end{proof}
 
 \begin{proposition}[forthel,id=SET_THEORY_02_6229364135952384]
@@ -57,7 +57,7 @@
 \end{proposition}
 \begin{proof}[forthel]
   Assume $\alpha \ORDless \alpha$.
-  Then $\alpha \in \alpha$.
+  Then $\alpha \SETin \alpha$.
   Contradiction.
 \end{proof}
 
@@ -67,8 +67,8 @@
 \end{proposition}
 \begin{proof}[forthel]
   Assume $\alpha \ORDless \beta$ and $\beta \ORDless \gamma$.
-  Then $\alpha \in \beta \in \gamma$.
-  Hence $\alpha \in \gamma$.
+  Then $\alpha \SETin \beta \SETin \gamma$.
+  Hence $\alpha \SETin \gamma$.
   Thus $\alpha \ORDless \gamma$.
 \end{proof}
 
@@ -79,34 +79,34 @@
 \begin{proof}[forthel]
   Assume the contrary.
   
-  Define $A = \{ \alpha' \in \Ord \mid\text{ there exists an ordinal }\beta'\text{ such that neither }\alpha' \ORDless \beta'\text{ nor }\alpha' \eq \beta'\text{ nor }\alpha' \ORDgtr \beta' \}$.
+  Define $A = \{ \alpha' \SETin \Ord \mid\text{ there exists an ordinal }\beta'\text{ such that neither }\alpha' \ORDless \beta'\text{ nor }\alpha' \eq \beta'\text{ nor }\alpha' \ORDgtr \beta' \}$.
   
   $A$ is nonempty.
-  Hence we can take a $\alpha' \in A$ such that for no $\gamma \in A$ we have $\gamma \ORDless \alpha'$.
+  Hence we can take a $\alpha' \SETin A$ such that for no $\gamma \SETin A$ we have $\gamma \ORDless \alpha'$.
   
-  Define $B = \{ \beta' \in \Ord \mid\text{ neither }\alpha' \ORDless \beta'\text{ nor }\alpha' \eq \beta'\text{ nor }\alpha' \ORDgtr \beta' \}$.
+  Define $B = \{ \beta' \SETin \Ord \mid\text{ neither }\alpha' \ORDless \beta'\text{ nor }\alpha' \eq \beta'\text{ nor }\alpha' \ORDgtr \beta' \}$.
   
   $B$ is nonempty.
-  Hence we can take a $\beta' \in B$ such that for no $\gamma \in B$ we have $\gamma \ORDless \beta'$.
+  Hence we can take a $\beta' \SETin B$ such that for no $\gamma \SETin B$ we have $\gamma \ORDless \beta'$.
 
   Let us show that $\alpha' \SETinclude \beta'$.
-    Let $a \in \alpha'$.
+    Let $a \SETin \alpha'$.
     Then $a \ORDless \beta'$ or $a \eq \beta'$ or $a \ORDgtr \beta'$.
     Indeed if neither $a \ORDless \beta'$ nor $a \eq \beta'$ nor $a \ORDgtr \beta'$ then
-    $a \in A$.
+    $a \SETin A$.
     If $a \eq \beta'$ then $\beta' \ORDless \alpha'$.
     If $a \ORDgtr \beta'$ then $\beta' \ORDless \alpha'$.
     Hence $a \ORDless \beta'$.
-    Thus $a \in \beta'$.
+    Thus $a \SETin \beta'$.
   End.
 
   Let us show that $\beta' \SETinclude \alpha'$.
-    Let $b \in \beta'$.
+    Let $b \SETin \beta'$.
     Then $b \ORDless \alpha'$ or $b \eq \alpha'$ or $b \ORDgtr \alpha'$.
     If $b \eq \alpha'$ then $\alpha' \ORDless \beta'$.
     If $b \ORDgtr \alpha'$ then $\alpha' \ORDless \beta'$.
     Hence $b \ORDless \alpha'$.
-    Thus $b \in \alpha'$.
+    Thus $b \SETin \alpha'$.
   End.
 
   Hence $\alpha' \eq \beta'$.
@@ -125,8 +125,8 @@
   \begin{case}{$\alpha \neq \beta$.}
     Then $\alpha \ORDless \beta$ or $\alpha \ORDgtr \beta$.
     Assume $\alpha \ORDgtr \beta$.
-    Then $\beta \in \alpha$.
-    Hence $\beta \in \beta$.
+    Then $\beta \SETin \alpha$.
+    Hence $\beta \SETin \beta$.
     Contradiction.
   \end{case}
 \end{proof}
@@ -142,8 +142,8 @@
 \end{proposition}
 \begin{proof}[forthel]
   Assume $\beta \ORDless \ORDsucc(\alpha)$.
-  Then $\beta \in \ORDsucc(\alpha) \eq \alpha \SETunion \SETsingleton{\alpha}$.
-  Hence $\beta \in \alpha$ or $\beta \in \SETsingleton{\alpha}$.
+  Then $\beta \SETin \ORDsucc(\alpha) \eq \alpha \SETunion \SETsingleton{\alpha}$.
+  Hence $\beta \SETin \alpha$ or $\beta \SETin \SETsingleton{\alpha}$.
   Thus $\beta \ORDless \alpha$ or $\beta \eq \alpha$.
   Therefore $\beta \ORDleq \alpha$.
 \end{proof}
@@ -167,18 +167,18 @@
 \begin{proof}[forthel]
   Assume the contrary.
   Choose an ordinal $\beta$ such that $\alpha \ORDless \beta \ORDless \ORDsucc(\alpha)$.
-  Then $\alpha \in \beta \in \alpha \SETunion \SETsingleton{\alpha}$.
-  Hence $\beta \in \alpha$ or $\beta \eq \alpha$.
-  Then $\alpha \in \alpha$.
+  Then $\alpha \SETin \beta \SETin \alpha \SETunion \SETsingleton{\alpha}$.
+  Hence $\beta \SETin \alpha$ or $\beta \eq \alpha$.
+  Then $\alpha \SETin \alpha$.
   Contradiction.
 \end{proof}
 
 \begin{proposition}[forthel,id=SET_THEORY_02_4659024620421120]
-  Let $\lambda$ be a limit ordinal and $\alpha \in \lambda$.
+  Let $\lambda$ be a limit ordinal and $\alpha \SETin \lambda$.
   Then $\lambda$ contains $\ORDsucc(\alpha)$.
 \end{proposition}
 \begin{proof}[forthel]
-  If $\ORDsucc(\alpha) \notin \lambda$ then $\alpha \ORDless \lambda \ORDless \ORDsucc(\alpha)$.
+  If $\ORDsucc(\alpha) \SETnotin \lambda$ then $\alpha \ORDless \lambda \ORDless \ORDsucc(\alpha)$.
 \end{proof}
 \end{smodule}
 \end{document}

@@ -111,8 +111,8 @@
 
   \begin{axiom}[forthel,title=Induction,id=ARITHMETIC_01_4764664342773760]
     Let $\Phi$ be a class.
-    Assume $\NATzero \in \Phi$ and for all natural numbers $n$ if $n \in \Phi$ then
-    $n \NATplus \NATone \in \Phi$.
+    Assume $\NATzero \SETin \Phi$ and for all natural numbers $n$ if $n \SETin \Phi$ then
+    $n \NATplus \NATone \SETin \Phi$.
     Then $\Phi$ contains every natural number.
   \end{axiom}
 
@@ -137,8 +137,8 @@
     Then $n \eq \NATzero$ or $n \eq m \NATplus \NATone$ for some natural number $m$.
   \end{proposition}
   \begin{proof}[forthel]
-    Define $\Phi = \{ n' \in \Nat \mid n' \eq \NATzero\text{ or }n' \eq m' \NATplus \NATone\text{ for some natural number }m' \}$.
-    $\NATzero \in \Phi$ and for all $n' \in  \Phi$ we have $n' \NATplus \NATone \in \Phi$.
+    Define $\Phi = \{ n' \SETin \Nat \mid n' \eq \NATzero\text{ or }n' \eq m' \NATplus \NATone\text{ for some natural number }m' \}$.
+    $\NATzero \SETin \Phi$ and for all $n' \SETin  \Phi$ we have $n' \NATplus \NATone \SETin \Phi$.
     Hence every natural number is contained in $\Phi$.
     Thus $n \eq \NATzero$ or $n \eq m \NATplus \NATone$ for some natural number $m$.
   \end{proof}
@@ -148,17 +148,17 @@
     Then $n \neq n \NATplus \NATone$.
   \end{proposition}
   \begin{proof}[forthel]
-    Define $\Phi = \{ n' \in \Nat \mid n' \neq n' \NATplus \NATone \}$.
+    Define $\Phi = \{ n' \SETin \Nat \mid n' \neq n' \NATplus \NATone \}$.
 
     (1) $\NATzero$ belongs to $\Phi$.
 
-    (2) For all $n' \in \Phi$ we have $n' \NATplus \NATone \in \Phi$.
+    (2) For all $n' \SETin \Phi$ we have $n' \NATplus \NATone \SETin \Phi$.
     \begin{proof}
-      Let $n' \in \Phi$.
+      Let $n' \SETin \Phi$.
       Then $n' \neq n' \NATplus \NATone$.
       If $n' \NATplus \NATone \eq (n' \NATplus \NATone) \NATplus \NATone$ then $n' \eq n' \NATplus \NATone$.
       Thus it is wrong that $n' \NATplus \NATone \eq (n' \NATplus \NATone) \NATplus \NATone$.
-      Hence $n' \NATplus \NATone \in \Phi$.
+      Hence $n' \NATplus \NATone \SETin \Phi$.
     \end{proof}
 
     Therefore every natural number is an element of $\Phi$.
@@ -173,14 +173,14 @@
       Then $n \NATplus (m \NATplus k) \eq (n \NATplus m) \NATplus k$.
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \{ k' \in \Nat \mid n \NATplus (m \NATplus k') \eq (n \NATplus m) \NATplus k' \}$.
+      Define $\Phi = \{ k' \SETin \Nat \mid n \NATplus (m \NATplus k') \eq (n \NATplus m) \NATplus k' \}$.
 
       (1) $\NATzero$ is contained in $\Phi$.
       Indeed $n \NATplus (m \NATplus \NATzero) \eq n \NATplus m \eq (n \NATplus m) \NATplus \NATzero$.
 
-      (2) For all $k' \in \Phi$ we have $k' \NATplus \NATone \in \Phi$.
+      (2) For all $k' \SETin \Phi$ we have $k' \NATplus \NATone \SETin \Phi$.
       \begin{proof}
-        Let $k' \in \Phi$.
+        Let $k' \SETin \Phi$.
         Then $n \NATplus (m \NATplus k') \eq (n \NATplus m) \NATplus k'$.
         Hence
         \[  n \NATplus (m \NATplus (k' \NATplus \NATone))        \]
@@ -188,7 +188,7 @@
         \[    \eq (n \NATplus (m \NATplus k')) \NATplus \NATone    \]
         \[    \eq ((n \NATplus m) \NATplus k') \NATplus \NATone    \]
         \[    \eq (n \NATplus m) \NATplus (k' \NATplus \NATone).   \]
-        Thus $k' \NATplus \NATone \in \Phi$.
+        Thus $k' \NATplus \NATone \SETin \Phi$.
       \end{proof}
 
       Thus every natural number is an element of $\Phi$.
@@ -202,17 +202,17 @@
       Then $n \NATplus m \eq m \NATplus n$.
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \{ m' \in \Nat \mid n \NATplus m' \eq m' \NATplus n \}$.
+      Define $\Phi = \{ m' \SETin \Nat \mid n \NATplus m' \eq m' \NATplus n \}$.
 
       (1) $\NATzero$ is an element of $\Phi$.
       \begin{proof}
-        Define $\Psi = \{ n' \in \Nat \mid n' \NATplus \NATzero \eq \NATzero \NATplus n' \}$.
+        Define $\Psi = \{ n' \SETin \Nat \mid n' \NATplus \NATzero \eq \NATzero \NATplus n' \}$.
 
         (1a) $\NATzero$ belongs to $\Psi$.
 
-        (1b) For all $n' \in \Psi$ we have $n' \NATplus \NATone \in \Psi$.
+        (1b) For all $n' \SETin \Psi$ we have $n' \NATplus \NATone \SETin \Psi$.
         \begin{proof}
-          Let $n' \in \Psi$.
+          Let $n' \SETin \Psi$.
           Then $n' \NATplus \NATzero \eq \NATzero \NATplus n'$.
           Hence
           \[  (n' \NATplus \NATone) \NATplus \NATzero        \]
@@ -229,28 +229,28 @@
 
       Let us show that (2) $n \NATplus \NATone \eq \NATone \NATplus n$.
       \begin{proof}
-        Define $\Theta = \{ n' \in \Nat \mid n' \NATplus \NATone \eq \NATone \NATplus n' \}$.
+        Define $\Theta = \{ n' \SETin \Nat \mid n' \NATplus \NATone \eq \NATone \NATplus n' \}$.
 
         (2a) $\NATzero$ is an element of $\Theta$.
 
-        (2b) For all $n' \in \Theta$ we have $n' \NATplus \NATone \in \Theta$.
+        (2b) For all $n' \SETin \Theta$ we have $n' \NATplus \NATone \SETin \Theta$.
         \begin{proof}
-          Let $n' \in \Theta$.
+          Let $n' \SETin \Theta$.
           Then $n' \NATplus \NATone \eq \NATone \NATplus n'$.
           Hence
           \[  (n' \NATplus \NATone) \NATplus \NATone        \]
           \[    \eq (\NATone \NATplus n') \NATplus \NATone    \]
           \[    \eq \NATone \NATplus (n' \NATplus \NATone).   \]
-          Thus $n' \NATplus \NATone \in \Theta$.
+          Thus $n' \NATplus \NATone \SETin \Theta$.
         \end{proof}
 
         Thus every natural number belongs to $\Theta$.
         Therefore $n \NATplus \NATone \eq \NATone \NATplus n$.
       \end{proof}
 
-      (3) For all $m' \in \Phi$ we have $m' \NATplus \NATone \in \Phi$.
+      (3) For all $m' \SETin \Phi$ we have $m' \NATplus \NATone \SETin \Phi$.
       \begin{proof}
-        Let $m' \in \Phi$.
+        Let $m' \SETin \Phi$.
         Then $n \NATplus m' \eq m' \NATplus n$.
         Hence
         \[  n \NATplus (m'  \NATplus \NATone)       \]
@@ -259,7 +259,7 @@
         \[    \eq m' \NATplus (n \NATplus \NATone)    \]
         \[    \eq m' \NATplus (\NATone \NATplus n)    \]
         \[    \eq (m' \NATplus \NATone) \NATplus n.   \]
-        Thus $m' \NATplus \NATone \in \Phi$.
+        Thus $m' \NATplus \NATone \SETin \Phi$.
       \end{proof}
 
       Thus every natural number is an element of $\Phi$.
@@ -273,13 +273,13 @@
       If $n \NATplus k \eq m \NATplus k$ then $n \eq m$.
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \{ k' \in \Nat \mid\text{ if }n \NATplus k' \eq m \NATplus k'\text{ then }n \eq m \}$.
+      Define $\Phi = \{ k' \SETin \Nat \mid\text{ if }n \NATplus k' \eq m \NATplus k'\text{ then }n \eq m \}$.
 
       (1) $\NATzero$ is an element of $\Phi$.
 
-      (2) For all $k' \in \Phi$ we have $k' \NATplus \NATone \in \Phi$.
+      (2) For all $k' \SETin \Phi$ we have $k' \NATplus \NATone \SETin \Phi$.
       \begin{proof}
-        Let $k' \in \Phi$.
+        Let $k' \SETin \Phi$.
         Suppose $n \NATplus (k' \NATplus \NATone) \eq m \NATplus (k' \NATplus \NATone)$.
         Then $(n \NATplus k') \NATplus \NATone \eq (m \NATplus k') \NATplus \NATone$.
         Hence $n \NATplus k' \eq m \NATplus k'$.
@@ -310,7 +310,7 @@
     \begin{proof}[forthel]
       Assume $n \NATplus m \eq \NATzero$.
       Suppose $n \neq \NATzero$ or $m \neq \NATzero$.
-      Then we can take a $k \in \Nat$ such that $n \eq k \NATplus \NATone$ or $m \eq k \NATplus \NATone$.
+      Then we can take a $k \SETin \Nat$ such that $n \eq k \NATplus \NATone$ or $m \eq k \NATplus \NATone$.
       Hence there exists a natural number $l$ such that
       $n \NATplus m
         \eq l \NATplus (k \NATplus \NATone)

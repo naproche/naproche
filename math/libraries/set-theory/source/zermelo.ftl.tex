@@ -15,9 +15,9 @@
   Let $x$ be a set.
   Consider a choice map $g$ for $\SETpow(x) \SETdiff \SETsingleton{\SETempty}$.
   Take $A \eq x \SETunion \SETsingleton{x}$.
-  Every $F \in \ORDfunspace{A}$ is a map from some ordinal to $A$.
-  For any $F \in \ORDfunspace{A}$ if $x \SETdiff \FUNrange(F) \neq \SETempty$ then $x \SETdiff \FUNrange(F) \in \dom(g)$.
-  Indeed $x \SETdiff \FUNrange(F)$ is a subset of $x$ for any $F \in \ORDfunspace{A}$.
+  Every $F \SETin \ORDfunspace{A}$ is a map from some ordinal to $A$.
+  For any $F \SETin \ORDfunspace{A}$ if $x \SETdiff \FUNrange(F) \neq \SETempty$ then $x \SETdiff \FUNrange(F) \SETin \FUNdom(g)$.
+  Indeed $x \SETdiff \FUNrange(F)$ is a subset of $x$ for any $F \SETin \ORDfunspace{A}$.
   Define \[ G(F) =
     \begin{cases}
       g(x \SETdiff \FUNrange(F))
@@ -26,38 +26,38 @@
       x
       & : x \SETdiff \FUNrange(F) \eq \SETempty
     \end{cases} \]
-  for $F \in \ORDfunspace{A}$.
-  We can show that for any $F \in \ORDfunspace{A}$ if $x \SETdiff \FUNrange(F) \neq \SETempty$ then $G(F) \in x \SETdiff \FUNrange(F)$.
-    Let $F \in \ORDfunspace{A}$.
+  for $F \SETin \ORDfunspace{A}$.
+  We can show that for any $F \SETin \ORDfunspace{A}$ if $x \SETdiff \FUNrange(F) \neq \SETempty$ then $G(F) \SETin x \SETdiff \FUNrange(F)$.
+    Let $F \SETin \ORDfunspace{A}$.
     Assume $x \SETdiff \FUNrange(F) \neq \SETempty$.  
-    Then $G(F) \in x \SETdiff \FUNrange(F)$.
+    Then $G(F) \SETin x \SETdiff \FUNrange(F)$.
   End.
   $G$ is a map from $\ORDfunspace{A}$ to $A$.
-  Indeed we can show that for any $F \in \ORDfunspace{A}$ we have $G(F) \in A$.
-    Let $F \in \ORDfunspace{A}$.
-    If $x \SETdiff \FUNrange(F) \neq \SETempty$ then $G(F) \in x \SETdiff \FUNrange(F)$.
+  Indeed we can show that for any $F \SETin \ORDfunspace{A}$ we have $G(F) \SETin A$.
+    Let $F \SETin \ORDfunspace{A}$.
+    If $x \SETdiff \FUNrange(F) \neq \SETempty$ then $G(F) \SETin x \SETdiff \FUNrange(F)$.
     If $x \SETdiff \FUNrange(F) \eq \SETempty$ then $G(F) \eq x$.
-    Hence $G(F) \in A$.
+    Hence $G(F) \SETin A$.
   End.
   Hence we can take a map $F$ from $\Ord$ to $A$ that is recursive regarding $G$.
-  For any ordinal $\alpha$ we have $F \FUNrest \alpha \in \ORDfunspace{A}$.
+  For any ordinal $\alpha$ we have $F \FUNrest \alpha \SETin \ORDfunspace{A}$.
 
-  For any $\alpha \in \Ord$ we have
-  \[ x \SETdiff F[\alpha] \neq \SETempty \implies F(\alpha) \in x \SETdiff F[\alpha] \]
+  For any $\alpha \SETin \Ord$ we have
+  \[ x \SETdiff F[\alpha] \neq \SETempty \implies F(\alpha) \SETin x \SETdiff F[\alpha] \]
   and
   \[ x \SETdiff F[\alpha] \eq \SETempty \implies F(\alpha) \eq x. \]
   \begin{proof}
-    Let $\alpha \in \Ord$.
-    We have $\FUNim{F}{\alpha} \eq \{ F(\beta) \mid \beta \in \alpha \}$.
-    Hence $\FUNim{F}{\alpha} \eq \{ G(F \FUNrest \beta) \mid \beta \in \alpha \}$.
-    We have $\FUNrange(F \FUNrest \alpha) \eq \{ F(\beta) \mid \beta \in \alpha \}$.
+    Let $\alpha \SETin \Ord$.
+    We have $\FUNim{F}{\alpha} \eq \{ F(\beta) \mid \beta \SETin \alpha \}$.
+    Hence $\FUNim{F}{\alpha} \eq \{ G(F \FUNrest \beta) \mid \beta \SETin \alpha \}$.
+    We have $\FUNrange(F \FUNrest \alpha) \eq \{ F(\beta) \mid \beta \SETin \alpha \}$.
     Thus $\FUNrange(F \FUNrest \alpha) \eq \FUNim{F}{\alpha}$.
 
     \begin{case}{$x \SETdiff \FUNim{F}{\alpha} \neq \SETempty$.}
       Then $x \SETdiff \FUNrange(F \FUNrest \alpha) \neq \SETempty$.
       Hence $F(\alpha)
         \eq G(F \FUNrest \alpha)
-        \in x \SETdiff \FUNrange(F \FUNrest \alpha)
+        \SETin x \SETdiff \FUNrange(F \FUNrest \alpha)
         \eq x \SETdiff F[\alpha]$.
     \end{case}
 
@@ -69,17 +69,17 @@
     \end{case}
   \end{proof}
 
-  (1) For any ordinals $\alpha, \beta$ such that $\alpha \ORDless \beta$ and $F(\beta) \neq x$ we have $F(\alpha), F(\beta) \in x$ and $F(\alpha) \neq F(\beta)$.
+  (1) For any ordinals $\alpha, \beta$ such that $\alpha \ORDless \beta$ and $F(\beta) \neq x$ we have $F(\alpha), F(\beta) \SETin x$ and $F(\alpha) \neq F(\beta)$.
   \begin{proof}
-    Let $\alpha, \beta \in \Ord$.
+    Let $\alpha, \beta \SETin \Ord$.
     Assume $\alpha \ORDless \beta$ and $F(\beta) \neq x$.
     Then $x \SETdiff \FUNim{F}{\beta} \neq \SETempty$.
-    (a) Hence $F(\beta) \in x \SETdiff \FUNim{F}{\beta}$.
+    (a) Hence $F(\beta) \SETin x \SETdiff \FUNim{F}{\beta}$.
     We have $\FUNim{F}{\alpha} \SETinclude \FUNim{F}{\beta}$.
     Thus $x \SETdiff \FUNim{F}{\alpha} \neq \SETempty$.
-    (b) Therefore $F(\alpha) \in x \SETdiff \FUNim{F}{\alpha}$.
-    Consequently $F(\alpha), F(\beta) \in x$ (by a, b).
-    We have $F(\alpha) \in \FUNim{F}{\beta}$ and $F(\beta) \notin \FUNim{F}{\beta}$.
+    (b) Therefore $F(\alpha) \SETin x \SETdiff \FUNim{F}{\alpha}$.
+    Consequently $F(\alpha), F(\beta) \SETin x$ (by a, b).
+    We have $F(\alpha) \SETin \FUNim{F}{\beta}$ and $F(\beta) \SETnotin \FUNim{F}{\beta}$.
     Thus $F(\alpha) \neq F(\beta)$.
   \end{proof}
 
@@ -89,7 +89,7 @@
     Then $F$ is a map from $\Ord$ to $x$.
 
     Let us show that $F$ is injective.
-      Let $\alpha, \beta \in \Ord$.
+      Let $\alpha, \beta \SETin \Ord$.
       Assume $\alpha \neq \beta$.
       Then $\alpha \ORDless \beta$ or $\beta \ORDless \alpha$.
       Hence $F(\alpha) \neq F(\beta)$ (by 1).
@@ -100,15 +100,15 @@
     Contradiction.
   \end{proof}
 
-  Define $\Phi = \{ \alpha \in \Ord \mid F(\alpha) \eq x \}$.
+  Define $\Phi = \{ \alpha \SETin \Ord \mid F(\alpha) \eq x \}$.
   $\Phi$ is nonempty.
-  Let us show that we can take an $\alpha \in \Phi$ such that $\alpha \ORDleq \beta$ for all $\beta \in \Phi$.
-    Take an $\alpha \in \Phi$ such that for no $\beta \in \Phi$ we have $\beta \ORDless \alpha$ (by \printref{FOUNDATIONS_10_9532145874510315}).
-    Then $\alpha \ORDleq \beta$ for all $\beta \in \Phi$.
+  Let us show that we can take an $\alpha \SETin \Phi$ such that $\alpha \ORDleq \beta$ for all $\beta \SETin \Phi$.
+    Take an $\alpha \SETin \Phi$ such that for no $\beta \SETin \Phi$ we have $\beta \ORDless \alpha$ (by \printref{FOUNDATIONS_10_9532145874510315}).
+    Then $\alpha \ORDleq \beta$ for all $\beta \SETin \Phi$.
   End.
   Take $f \eq F \FUNrest \alpha$.
   Then $f$ is a map from $\alpha$ to $x$.
-  Indeed for no $\beta \in \alpha$ we have $F(\beta) \eq x$.
+  Indeed for no $\beta \SETin \alpha$ we have $F(\beta) \eq x$.
 
   (3) $f$ is surjective onto $x$.
   \begin{proof}
@@ -121,7 +121,7 @@
 
   (4) $f$ is injective.
   \begin{proof}
-    Let $\beta, \gamma \in \alpha$.
+    Let $\beta, \gamma \SETin \alpha$.
     Assume $\beta \neq \gamma$.
     We have $f(\beta), f(\gamma) \neq x$.
     Hence $f(\beta) \neq f(\gamma)$ (by 1).

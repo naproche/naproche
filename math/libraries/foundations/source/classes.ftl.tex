@@ -3,25 +3,10 @@
 \begin{document}
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Classes]{classes.ftl}
-\STEXexport{
-  \let\oldin\in
-  \let\in\relax
-  \let\notin\relax
-  \let\oldneq\neq
-  \let\neq\relax
-  \let\dom\relax
-}
-\symdef{in}[op=\oldin]{\;\oldin\;}
-\symdef{notin}[op=\not\oldin]{\;\not\oldin\;}
-\symdef{eq}[op={=}]{\;=\;}
-\symdef{neq}[op=\oldneq]{\;\oldneq\;}
-\symdef{dom}{\mathrm{dom}}
-\symdef{pair}[args=2,op=(\cdot,\cdot)]{\comp(#1\comp,\,#2\comp)}
-\STEXinvisible{\inlineforthel{
-  Let $x\eq y$ stand for $x=y$.
-  Let $\pair{x}{y}$ stand for $(x,y)$.
-}}
-
+\symdef{eq}{\;=\;}
+\symdef{neq}{\;\neq\;}
+\symdef{SETin}{\;\in\;}
+\symdef{SETnotin}{\;\notin\;}
 \symdef{SETinclude}{\;\subseteq\;}
 \notation{SETinclude}{\;\subset\;}
 \symdef{SETstrictinclude}{\;\subsetneq\;}
@@ -35,9 +20,17 @@
 \symdef{SETintersect}{\,\cap\,}
 \symdef{SETdiff}{\,\setminus\,}
 
-\inlineforthel{[synonym subclass/-es][synonym superclass/-es][synonym include/-s]}
+\begin{sfragment}{Equality and Elementhood}
+  \begin{convention}
+    Let $x\SETin y$ stand for $x$ is an element of $y$.
+    Let $x\SETnotin y$ stand for $x$ is not an element of $y$.
+    Let $x\eq y$ stand for $x$ is equal to $y$.
+  \end{convention}
+\end{sfragment}
 
 \begin{sfragment}{Sub- and Superclasses}
+  \inlineforthel{[synonym subclass/-es][synonym superclass/-es][synonym include/-s]}
+
   \begin{definition}[forthel,id=FOUNDATIONS_01_3275578358628352]
     Let $A$ be a class.
     A \emph{subclass of $A$} is a class $B$ such that every element of $B$ is an
@@ -176,7 +169,7 @@
 
   \begin{definition}[forthel,id=FOUNDATIONS_01_29867480293464351]
     Let $A$ be a class.
-    A \emph{unique element of $A$} is an element $a$ of $A$ such that for each $x \in A$ we have $x \eq a$.
+    A \emph{unique element of $A$} is an element $a$ of $A$ such that for each $x \SETin A$ we have $x \eq a$.
   \end{definition}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_01_0166348647163481]
@@ -188,21 +181,21 @@
 \begin{sfragment}{Unions, Intersections, Complements}
   \begin{definition}[forthel,id=FOUNDATIONS_01_2159753924968448]
     Let $A, B$ be classes.
-    $\emph{A \SETunion B} = \{ x \mid x \in A\text{ or }x \in B \}$.
+    $\emph{A \SETunion B} = \{ x \mid x \SETin A\text{ or }x \SETin B \}$.
 
     Let the \emph{union of $A$ and $B$} stand for $A \SETunion B$.
   \end{definition}
 
   \begin{definition}[forthel,id=FOUNDATIONS_01_5744033011859456]
     Let $A, B$ be classes.
-    $\emph{A \SETintersect B} = \{ x \mid x \in A\text{ and }x \in B \}$.
+    $\emph{A \SETintersect B} = \{ x \mid x \SETin A\text{ and }x \SETin B \}$.
 
     Let the \emph{intersection of $A$ and $B$} stand for $A \SETintersect B$.
   \end{definition}
 
   \begin{definition}[forthel,id=FOUNDATIONS_01_7620345041256448]
     Let $A, B$ be classes.
-    $\emph{A \SETdiff B} = \{ x \mid x \in A\text{ and }x \notin B \}$.
+    $\emph{A \SETdiff B} = \{ x \mid x \SETin A\text{ and }x \SETnotin B \}$.
 
     Let the \emph{complement of $B$ in $A$} stand for $A \SETdiff B$.
   \end{definition}

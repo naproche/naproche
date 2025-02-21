@@ -4,6 +4,7 @@
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Maps]{maps.ftl}
 \importmodule[libraries/foundations]{classes.ftl}
+\symdef{FUNdom}{\textrm{dom}}
 \symdef{FUNid}[args=1]{\comp{\textrm{id}}_{#1}}
 \symdef{FUNrange}{\textrm{range}}
 \symdef{FUNcomp}{\,\circ\,}
@@ -16,35 +17,38 @@
 \notation{FUNpreim}[star]{#1^{\comp*}\dobrackets{#2}}
 \symdef{FUNfromto}[args=2]{\mathbin{\comp:}#1\mathbin{\comp\rightarrow}#2}
 \symdef{FUNfunspace}[args=2]{\comp[#1\mathbin{\comp\rightarrow}#2\comp]}
+\STEXinvisible{\inlineforthel{
+  Let $\FUNdom(f)$ stand for $\dom(f)$.
+}}
 
 \begin{sfragment}{Range}
   \inlineforthel{[synonym value/-s]}
 
   \begin{definition}[forthel,id=FOUNDATIONS_06_4284980337311744]
     Let $f$ be a map.
-    A \emph{value of $f$} is an object $b$ such that $b \eq f(a)$ for some $a \in \dom(f)$.
+    A \emph{value of $f$} is an object $b$ such that $b \eq f(a)$ for some $a \SETin \FUNdom(f)$.
   \end{definition}
 
   \begin{definition}[forthel,id=FOUNDATIONS_06_1938831225913344]
     Let $f$ be a map.
-    $\emph{\FUNrange(f)} = \{ f(a) \mid a \in \dom(f) \}$.
+    $\emph{\FUNrange(f)} = \{ f(a) \mid a \SETin \FUNdom(f) \}$.
 
     Let the \emph{range of $f$} stand for $\FUNrange(f)$.
   \end{definition}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_06_6386349418479616]
     Let $f$ be a map and $b$ be an object.
-    $b$ is a value of $f$ iff $b \in \FUNrange(f)$.
+    $b$ is a value of $f$ iff $b \SETin \FUNrange(f)$.
   \end{proposition}
   \begin{proof}[forthel]
     \begin{case}{$b$ is a value of $f$.}
-      Take $a \in \dom(f)$ such that $b \eq f(a)$.
+      Take $a \SETin \FUNdom(f)$ such that $b \eq f(a)$.
       $b$ is an object.
-      Hence $b \in \FUNrange(f)$.
+      Hence $b \SETin \FUNrange(f)$.
     \end{case}
 
-    \begin{case}{$b \in \FUNrange(f)$.}
-      Then $b$ is an object such that $b \eq f(a)$ for some $a \in \dom(f)$.
+    \begin{case}{$b \SETin \FUNrange(f)$.}
+      Then $b$ is an object such that $b \eq f(a)$ for some $a \SETin \FUNdom(f)$.
       Hence $b$ is a value of $f$.
     \end{case}
   \end{proof}
@@ -53,7 +57,7 @@
 \begin{sfragment}{Identity Map}
   \begin{definition}[forthel,id=FOUNDATIONS_06_1920902360989696]
     Let $A$ be a class.
-    $\emph{\FUNid{A}}$ is the map defined on $A$ such that $\FUNid{A}(a) \eq a$ for all $a \in A$.
+    $\emph{\FUNid{A}}$ is the map defined on $A$ such that $\FUNid{A}(a) \eq a$ for all $a \SETin A$.
 
     Let the \emph{identity map on $A$} stand for $\FUNid{A}$.
   \end{definition}
@@ -62,8 +66,8 @@
 \begin{sfragment}{Composition}
   \begin{definition}[forthel,id=FOUNDATIONS_06_7605717729017856]
     Let $f, g$ be maps.
-    Assume $\FUNrange(f) \SETinclude \dom(g)$.
-    $\emph{g \FUNcomp f}$ is the map defined on $\dom(f)$ such that $(g \FUNcomp f)(a) \eq g(f(a))$ for all $a \in \dom(f)$.
+    Assume $\FUNrange(f) \SETinclude \FUNdom(g)$.
+    $\emph{g \FUNcomp f}$ is the map defined on $\FUNdom(f)$ such that $(g \FUNcomp f)(a) \eq g(f(a))$ for all $a \SETin \FUNdom(f)$.
 
     Let the \emph{composition of $g$ and $f$} stand for $g \FUNcomp f$.
   \end{definition}
@@ -71,8 +75,8 @@
 
 \begin{sfragment}{Restriction}
   \begin{definition}[forthel,id=FOUNDATIONS_06_7095412741636096]
-    Let $f$ be a map and $X \SETinclude \dom(f)$.
-    $\emph{f \FUNrest X}$ is the map defined on $X$ such that $(f \FUNrest X)(a) \eq f(a)$ for all $a \in X$.
+    Let $f$ be a map and $X \SETinclude \FUNdom(f)$.
+    $\emph{f \FUNrest X}$ is the map defined on $X$ such that $(f \FUNrest X)(a) \eq f(a)$ for all $a \SETin X$.
 
     Let the \emph{restriction of $f$ to $X$} stand for $f \FUNrest X$.
   \end{definition}
@@ -86,7 +90,7 @@
 \begin{sfragment}{Image and Preimage}
   \begin{definition}[forthel,id=FOUNDATIONS_06_3038237683613696]
     Let $f$ be a map and $A$ be a class.
-    $\emph{\FUNim{f}{A}} = \{ f(a) \mid a \in \dom(f) \SETintersect A \}$.
+    $\emph{\FUNim{f}{A}} = \{ f(a) \mid a \SETin \FUNdom(f) \SETintersect A \}$.
 
     Let the \emph{image of $A$ under $f$} stand for $\FUNim{f}{A}$.
     Let the \emph{direct image of $A$ under $f$} stand for $\FUNim{f}{A}$.
@@ -94,7 +98,7 @@
 
   \begin{definition}[forthel,id=FOUNDATIONS_06_4563167805964288]
     Let $f$ be a map and $B$ be a class.
-    $\emph{\FUNpreim{f}{B}} = \{ a \in \dom(f) \mid f(a) \in B \}$.
+    $\emph{\FUNpreim{f}{B}} = \{ a \SETin \FUNdom(f) \mid f(a) \SETin B \}$.
 
     Let the \emph{preimage of $B$ under $f$} stand for $\FUNpreim{f}{B}$.
     Let the \emph{inverse image of $B$ under $f$} stand for $\FUNpreim{f}{B}$.
@@ -106,21 +110,21 @@
 
   \begin{definition}[forthel,id=FOUNDATIONS_06_6934038600220672]
     Let $A$ be a class.
-    A \emph{map of $A$} is a map $f$ such that $\dom(f) \eq A$.
+    A \emph{map of $A$} is a map $f$ such that $\FUNdom(f) \eq A$.
 
     Let a \emph{function of $A$} stand for a map of $A$ that is a function.
   \end{definition}
 
   \begin{definition}[forthel,id=FOUNDATIONS_06_7725375157174272]
     Let $B$ be a class.
-    A \emph{map to $B$} is a map $f$ such that $f(a) \in B$ for each $a \in \dom(f)$.
+    A \emph{map to $B$} is a map $f$ such that $f(a) \SETin B$ for each $a \SETin \FUNdom(f)$.
 
     Let a \emph{function to $B$} stand for a map to $B$ that is a function.
   \end{definition}
 
   \begin{definition}[forthel,id=FOUNDATIONS_06_2823507398361088]
     Let $A, B$ be classes.
-    A \emph{map from $A$ to $B$} is a map $f$ such that $\dom(f) \eq A$ and $f(a) \in B$ for each $a \in A$.
+    A \emph{map from $A$ to $B$} is a map $f$ such that $\FUNdom(f) \eq A$ and $f(a) \SETin B$ for each $a \SETin A$.
 
     Let $\emph{f \FUNfromto{A}{B}}$ stand for $f$ is a map from $A$ to $B$.
 
@@ -136,13 +140,13 @@
 
   \begin{proposition}[forthel,id=FOUNDATIONS_06_3312973569327104]
     Let $A, B$ be classes and $f, g \FUNfromto{A}{B}$.
-    Assume that $f(a) \eq g(a)$ for all $a \in A$.
+    Assume that $f(a) \eq g(a)$ for all $a \SETin A$.
     Then $f \eq g$.
   \end{proposition}
 
   \begin{proposition}
     Let $A, B$ be classes and $f$ be a map of $A$.
-    Assume that $f(a) \in B$ for all $a \in A$.
+    Assume that $f(a) \SETin B$ for all $a \SETin A$.
     Then $f$ is a map from $A$ to $B$ iff $\FUNrange(f) \SETinclude B$.
   \end{proposition}
 
@@ -172,7 +176,7 @@
       \eq f(a)
       \eq \FUNid{B}(f(a))
       \eq (\FUNid{B} \FUNcomp f)(a)$
-    for all $a \in A$.
+    for all $a \SETin A$.
     Hence $f \FUNcomp \FUNid{A}
       \eq f
       \eq \FUNid{B} \FUNcomp f$.
@@ -183,14 +187,14 @@
     Then $\FUNid{A} \FUNrest X \eq \FUNid{X}$.
   \end{proposition}
   \begin{proof}[forthel]
-    We have $\dom(\FUNid{A} \FUNrest X)
+    We have $\FUNdom(\FUNid{A} \FUNrest X)
       \eq X
-      \eq \dom(\FUNid{X})$.
+      \eq \FUNdom(\FUNid{X})$.
     $(\FUNid{A} \FUNrest X)(a)
       \eq \FUNid{A}(a)
       \eq a
       \eq \FUNid{X}(a)$
-    for all $a \in X$.
+    for all $a \SETin X$.
     Hence $\FUNid{A} \FUNrest X \eq \FUNid{X}$.
   \end{proof}
 
@@ -201,8 +205,8 @@
   \begin{proof}[forthel]
     $h \FUNcomp (g \FUNcomp f)$ and $(h \FUNcomp g) \FUNcomp f$ are maps from $A$ to $D$.
 
-    Let us show that $(h \FUNcomp (g \FUNcomp f))(a) \eq ((h \FUNcomp g) \FUNcomp f)(a)$ for all $a \in A$.
-      Let $a \in A$.
+    Let us show that $(h \FUNcomp (g \FUNcomp f))(a) \eq ((h \FUNcomp g) \FUNcomp f)(a)$ for all $a \SETin A$.
+      Let $a \SETin A$.
       Then $(h \FUNcomp (g \FUNcomp f))(a)
         \eq h((g \FUNcomp f)(a))
         \eq h(g(f(a)))
@@ -224,7 +228,7 @@
 \begin{sfragment}{Fixed Points}
   \begin{definition}[forthel,id=FOUNDATIONS_06_2177076576649216]
     Let $f$ be a map.
-    A \emph{fixed point of $f$} is an element $x$ of $\dom(f)$ such that $f(x) \eq x$.
+    A \emph{fixed point of $f$} is an element $x$ of $\FUNdom(f)$ such that $f(x) \eq x$.
   \end{definition}
 \end{sfragment}
 \end{smodule}

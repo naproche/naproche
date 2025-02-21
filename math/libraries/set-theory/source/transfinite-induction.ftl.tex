@@ -7,22 +7,22 @@
 
 \begin{theorem}[forthel,id=SET_THEORY_02_8493935460614144]
   Let $\Phi$ be a class.
-  Assume that for all ordinals $\alpha$ if $\Phi$ contains all $\beta \in \alpha$ then $\Phi$ contains $\alpha$.
+  Assume that for all ordinals $\alpha$ if $\Phi$ contains all $\beta \SETin \alpha$ then $\Phi$ contains $\alpha$.
   Then $\Phi$ contains every ordinal.
 \end{theorem}
 \begin{proof}[forthel]
-  Define $B = \{ x \mid x\text{ is a set and if }x \in \Ord\text{ then }x \in \Phi \}$.
+  Define $B = \{ x \mid x\text{ is a set and if }x \SETin \Ord\text{ then }x \SETin \Phi \}$.
 
   Let us show that for all sets $x$ if $B$ contains every element of $x$ that is a set then $B$ contains $x$.
     Let $x$ be a set.
     Assume that every element of $x$ that is a set is contained in $B$.
 
-    \begin{case}{$x \notin \Ord$.} \end{case}
+    \begin{case}{$x \SETnotin \Ord$.} \end{case}
 
-    \begin{case}{$x \in \Ord$.}
+    \begin{case}{$x \SETin \Ord$.}
       Then $\Phi$ contains all ordinals less than $x$.
       Hence $\Phi$ contains $x$.
-      Thus $x \in B$.
+      Thus $x \SETin B$.
     \end{case}
   End.
 
@@ -37,9 +37,9 @@
   
   (Initial case) Assume that $\Phi$ contains $\ORDzero$.
   
-  (Successor step) Assume that for all ordinals $\alpha$ if $\alpha \in \Phi$ then $\ORDsucc(\alpha) \in \Phi$.
+  (Successor step) Assume that for all ordinals $\alpha$ if $\alpha \SETin \Phi$ then $\ORDsucc(\alpha) \SETin \Phi$.
   
-  (Limit step) Assume that for all limit ordinals $\lambda$ if every $\alpha \in \lambda$ is contained in $\Phi$ then $\lambda \in \Phi$.
+  (Limit step) Assume that for all limit ordinals $\lambda$ if every $\alpha \SETin \lambda$ is contained in $\Phi$ then $\lambda \SETin \Phi$.
   
   Then $\Phi$ contains every ordinal.
 \end{theorem}
@@ -49,19 +49,19 @@
     Let $\alpha$ be an ordinal.
     Then $\alpha \eq \ORDzero$ or $\alpha$ is a successor ordinal or $\alpha$ is a
     limit ordinal.
-    Assume that $\Phi$ contains all $\beta \in \alpha$.
+    Assume that $\Phi$ contains all $\beta \SETin \alpha$.
 
     \begin{case}{$\alpha \eq \ORDzero$.} \end{case}
 
     \begin{case}{$\alpha$ is a successor ordinal.}
       Take an ordinal $\beta$ such that $\alpha \eq \ORDsucc(\beta)$.
-      Then $\beta \in \Phi$.
-      Hence $\alpha \in \Phi$ (by successor step).
+      Then $\beta \SETin \Phi$.
+      Hence $\alpha \SETin \Phi$ (by successor step).
     \end{case}
 
     \begin{case}{$\alpha$ is a limit ordinal.}
-      Then $\beta \in \Phi$ for all ordinals $\beta$ less than $\alpha$.
-      Hence $\alpha \in \Phi$ (by limit step).
+      Then $\beta \SETin \Phi$ for all ordinals $\beta$ less than $\alpha$.
+      Hence $\alpha \SETin \Phi$ (by limit step).
     \end{case}
   End.
 

@@ -13,7 +13,7 @@
 \end{proposition}
 \begin{proof}[forthel]
   \begin{case}{$n \NATless m$.}
-    Define $\Phi = \{ k' \in \Nat \mid\text{ if }k' \NATgtr \NATone\text{ then }\NATexp{n}{k'} \NATless \NATexp{m}{k'} \}$.
+    Define $\Phi = \{ k' \SETin \Nat \mid\text{ if }k' \NATgtr \NATone\text{ then }\NATexp{n}{k'} \NATless \NATexp{m}{k'} \}$.
 
     (1) $\Phi$ contains $\NATzero$.
 
@@ -35,9 +35,9 @@
       \end{case}
     \end{proof}
 
-    (4) For all $k' \in \Phi$ we have $k' \NATplus \NATone \in \Phi$.
+    (4) For all $k' \SETin \Phi$ we have $k' \NATplus \NATone \SETin \Phi$.
     \begin{proof}
-      Let $k' \in \Phi$.
+      Let $k' \SETin \Phi$.
 
       Let us show that if $k' \NATplus \NATone \NATgtr \NATone$ then $\NATexp{n}{k' \NATplus \NATone} \NATless \NATexp{m}{k' \NATplus \NATone}$.
         Assume $k' \NATplus \NATone \NATgtr \NATone$.
@@ -47,7 +47,7 @@
         \begin{case}{$k' \NATleq \NATone$.}
           Then $k' \eq \NATzero$ or $k' \eq \NATone$.
           Hence $k' \NATplus \NATone \eq \NATone$ or $k' \NATplus \NATone \eq \NATtwo$.
-          Thus $k' \NATplus \NATone \in \Phi$.
+          Thus $k' \NATplus \NATone \SETin \Phi$.
           Therefore $\NATexp{n}{k' \NATplus \NATone} \NATless \NATexp{m}{k' \NATplus \NATone}$.
         \end{case}
 
@@ -85,7 +85,7 @@
         Indeed $k' \NATleq \NATone$ or $k' \NATgtr \NATone$.
       End.
 
-      Thus $k' \NATplus \NATone \in \Phi$.
+      Thus $k' \NATplus \NATone \SETin \Phi$.
     \end{proof}
 
     Therefore every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
@@ -93,13 +93,13 @@
   \end{case}
 
   \begin{case}{$\NATexp{n}{k} \NATless \NATexp{m}{k}$.}
-    Define $\Psi = \{ k' \in \Nat \mid\text{ if }n \NATgeq m\text{ then }\NATexp{n}{k'} \NATgeq \NATexp{m}{k'} \}$.
+    Define $\Psi = \{ k' \SETin \Nat \mid\text{ if }n \NATgeq m\text{ then }\NATexp{n}{k'} \NATgeq \NATexp{m}{k'} \}$.
 
     (1) $\Psi$ contains $\NATzero$.
 
-    (2) For all $k' \in \Psi$ we have $k' \NATplus \NATone \in \Psi$.
+    (2) For all $k' \SETin \Psi$ we have $k' \NATplus \NATone \SETin \Psi$.
     \begin{proof}
-      Let $k' \in \Psi$.
+      Let $k' \SETin \Psi$.
 
       Let us show that if $n \NATgeq m$ then $\NATexp{n}{k' \NATplus \NATone} \NATgeq \NATexp{m}{k' \NATplus \NATone}$.
         Assume $n \NATgeq m$.
@@ -116,7 +116,7 @@
         Therefore $\NATexp{n}{k' \NATplus \NATone} \eq A \NATgeq B \eq \NATexp{m}{k' \NATplus \NATone}$.
       End.
 
-      Hence $k' \NATplus \NATone \in \Psi$.
+      Hence $k' \NATplus \NATone \SETin \Psi$.
     \end{proof}
 
     Thus every natural number is contained in $\Psi$ (by \printref{ARITHMETIC_01_4764664342773760}).
@@ -160,13 +160,13 @@
 \end{proposition}
 \begin{proof}[forthel]
   \begin{case}{$n \NATless m$.}
-    Define $\Phi = \{ m' \in \Nat \mid\text{ if }n \NATless m'\text{ then }\NATexp{k}{n} \NATless \NATexp{k}{m'} \}$.
+    Define $\Phi = \{ m' \SETin \Nat \mid\text{ if }n \NATless m'\text{ then }\NATexp{k}{n} \NATless \NATexp{k}{m'} \}$.
 
     (1) $\Phi$ contains $\NATzero$.
 
-    (2) For all $m' \in \Phi$ we have $m' \NATplus \NATone \in \Phi$.
+    (2) For all $m' \SETin \Phi$ we have $m' \NATplus \NATone \SETin \Phi$.
     \begin{proof}
-      Let $m' \in \Phi$.
+      Let $m' \SETin \Phi$.
 
       Let us show that if $n \NATless m' \NATplus \NATone$ then $\NATexp{k}{n} \NATless \NATexp{k}{m' \NATplus \NATone}$.
         Assume $n \NATless m' \NATplus \NATone$.
@@ -203,14 +203,14 @@
   \end{case}
 
   \begin{case}{$\NATexp{k}{n} \NATless \NATexp{k}{m}$.}
-    Define $\Psi = \{ n' \in \Nat \mid\text{ if }n' \NATgeq m\text{ then }
+    Define $\Psi = \{ n' \SETin \Nat \mid\text{ if }n' \NATgeq m\text{ then }
     \NATexp{k}{n'} \NATgeq \NATexp{k}{m} \}$.
 
     (1) $\NATzero$ is contained in $\Psi$.
 
-    (2) For all $n' \in \Psi$ we have $n' \NATplus \NATone \in \Psi$.
+    (2) For all $n' \SETin \Psi$ we have $n' \NATplus \NATone \SETin \Psi$.
     \begin{proof}
-      Let $n' \in \Psi$.
+      Let $n' \SETin \Psi$.
 
       Let us show that if $n' \NATplus \NATone \NATgeq m$ then $\NATexp{k}{n' \NATplus \NATone} \NATgeq \NATexp{k}{m}$.
         Assume $n' \NATplus \NATone \NATgeq m$.
@@ -290,14 +290,14 @@
   Then $\NATexp{n}{\NATtwo} \NATgtr (\NATtwo \NATmul n) \NATplus \NATone$.
 \end{proposition}
 \begin{proof}[forthel]
-  (a) Define $\Phi = \{ n' \in \Natgeqthan{\NATthree} \mid \NATexp{n'}{\NATtwo} \NATgtr (\NATtwo \NATmul n') \NATplus \NATone \}$.
+  (a) Define $\Phi = \{ n' \SETin \Natgeqthan{\NATthree} \mid \NATexp{n'}{\NATtwo} \NATgtr (\NATtwo \NATmul n') \NATplus \NATone \}$.
 
   (1) $\Phi$ contains $\NATthree$.
   Indeed $\NATexp{\NATthree}{\NATtwo} \NATgtr (\NATtwo \NATmul \NATthree) \NATplus \NATone$.
 
-  (2) For all $n' \in \Phi$ we have $n' \NATplus \NATone \in \Phi$.
+  (2) For all $n' \SETin \Phi$ we have $n' \NATplus \NATone \SETin \Phi$.
   \begin{proof}
-    Let $n' \in \Phi$.
+    Let $n' \SETin \Phi$.
     Then $n' \NATgeq \NATthree$.
 
     Take $V \eq (\NATexp{n'}{\NATtwo} \NATplus (\NATtwo \NATmul n')) \NATplus \NATone$ and $W \eq (((\NATtwo \NATmul n') \NATplus \NATone) \NATplus (\NATtwo \NATmul n')) \NATplus \NATone$.
@@ -336,7 +336,7 @@
   Then $\NATexp{\NATtwo}{n} \NATgtr \NATexp{n}{\NATtwo}$.
 \end{proposition}
 \begin{proof}[forthel]
-  (a) Define $\Phi = \{ n' \in \Natgeqthan{\NATfive} \mid \NATexp{\NATtwo}{n'} \NATgtr \NATexp{n'}{\NATtwo} \}$.
+  (a) Define $\Phi = \{ n' \SETin \Natgeqthan{\NATfive} \mid \NATexp{\NATtwo}{n'} \NATgtr \NATexp{n'}{\NATtwo} \}$.
 
   (1) $\Phi$ contains $\NATfive$.
   Indeed we can show that $\NATexp{\NATtwo}{\NATfive} \NATgtr \NATexp{\NATfive}{\NATtwo}$.
@@ -354,9 +354,9 @@
     Indeed $((\NATfive \NATmul \NATfour) \NATplus ((\NATfive \NATmul \NATtwo) \NATplus \NATtwo)) \eq (\NATfive \NATmul (\NATfour \NATplus \NATtwo)) \NATplus \NATtwo$. %!
   End.
 
-  (2) For all $n' \in \Phi$ we have $n' \NATplus \NATone \in \Phi$.
+  (2) For all $n' \SETin \Phi$ we have $n' \NATplus \NATone \SETin \Phi$.
   \begin{proof}
-    Let $n' \in \Phi$.
+    Let $n' \SETin \Phi$.
     Then $n' \NATgeq \NATfive$ and $\NATexp{\NATtwo}{n'} \NATgtr \NATexp{n'}{\NATtwo}$.
 
     Take $V \eq \NATexp{\NATtwo}{n'} \NATmul \NATtwo$ and $W \eq \NATexp{n'}{\NATtwo} \NATmul \NATtwo$.

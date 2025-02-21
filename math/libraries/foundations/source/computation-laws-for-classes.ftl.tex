@@ -12,17 +12,17 @@
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $A \SETunion B \SETinclude B \SETunion A$.
-      Let $x \in A \SETunion B$.
-      Then $x \in A$ or $x \in B$.
-      Hence $x \in B$ or $x \in A$.
-      Thus $x \in B \SETunion A$.
+      Let $x \SETin A \SETunion B$.
+      Then $x \SETin A$ or $x \SETin B$.
+      Hence $x \SETin B$ or $x \SETin A$.
+      Thus $x \SETin B \SETunion A$.
     End.
 
     Let us show that $B \SETunion A \SETinclude A \SETunion B$.
-      Let $x \in B \SETunion A$.
-      Then $x \in B$ or $x \in A$.
-      Hence $x \in A$ or $x \in B$.
-      Thus $x \in A \SETunion B$.
+      Let $x \SETin B \SETunion A$.
+      Then $x \SETin B$ or $x \SETin A$.
+      Hence $x \SETin A$ or $x \SETin B$.
+      Thus $x \SETin A \SETunion B$.
     End.
   \end{proof}
 
@@ -32,17 +32,17 @@
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $A \SETintersect B \SETinclude B \SETintersect A$.
-      Let $x \in A \SETintersect B$.
-      Then $x \in A$ and $x \in B$.
-      Hence $x \in B$ and $x \in A$.
-      Thus $x \in B \SETintersect A$.
+      Let $x \SETin A \SETintersect B$.
+      Then $x \SETin A$ and $x \SETin B$.
+      Hence $x \SETin B$ and $x \SETin A$.
+      Thus $x \SETin B \SETintersect A$.
     End.
 
     Let us show that $B \SETintersect A \SETinclude A \SETintersect B$.
-      Let $x \in B \SETintersect A$.
-      Then $x \in B$ and $x \in A$.
-      Hence $x \in A$ and $x \in B$.
-      Thus $x \in A \SETintersect B$.
+      Let $x \SETin B \SETintersect A$.
+      Then $x \SETin B$ and $x \SETin A$.
+      Hence $x \SETin A$ and $x \SETin B$.
+      Thus $x \SETin A \SETintersect B$.
     End.
   \end{proof}
 \end{sfragment}
@@ -54,19 +54,19 @@
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $((A \SETunion B) \SETunion C) \SETinclude A \SETunion (B \SETunion C)$. %!
-      Let $x \in (A \SETunion B) \SETunion C$.
-      Then $x \in A \SETunion B$ or $x \in C$.
-      Hence $x \in A$ or $x \in B$ or $x \in C$.
-      Thus $x \in A$ or $x \in (B \SETunion C)$.
-      Therefore $x \in A \SETunion (B \SETunion C)$.
+      Let $x \SETin (A \SETunion B) \SETunion C$.
+      Then $x \SETin A \SETunion B$ or $x \SETin C$.
+      Hence $x \SETin A$ or $x \SETin B$ or $x \SETin C$.
+      Thus $x \SETin A$ or $x \SETin (B \SETunion C)$.
+      Therefore $x \SETin A \SETunion (B \SETunion C)$.
     End.
 
     Let us show that $A \SETunion (B \SETunion C) \SETinclude (A \SETunion B) \SETunion C$.
-      Let $x \in A \SETunion (B \SETunion C)$.
-      Then $x \in A$ or $x \in B \SETunion C$.
-      Hence $x \in A$ or $x \in B$ or $x \in C$.
-      Thus $x \in A \SETunion B$ or $x \in C$.
-      Therefore $x \in (A \SETunion B) \SETunion C$.
+      Let $x \SETin A \SETunion (B \SETunion C)$.
+      Then $x \SETin A$ or $x \SETin B \SETunion C$.
+      Hence $x \SETin A$ or $x \SETin B$ or $x \SETin C$.
+      Thus $x \SETin A \SETunion B$ or $x \SETin C$.
+      Therefore $x \SETin (A \SETunion B) \SETunion C$.
     End.
   \end{proof}
 
@@ -76,19 +76,19 @@
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $((A \SETintersect B) \SETintersect C) \SETinclude A \SETintersect (B \SETintersect C)$. %!
-      Let $x \in (A \SETintersect B) \SETintersect C$.
-      Then $x \in A \SETintersect B$ and $x \in C$.
-      Hence $x \in A$ and $x \in B$ and $x \in C$.
-      Thus $x \in A$ and $x \in (B \SETintersect C)$.
-      Therefore$ x \in A \SETintersect (B \SETintersect C)$.
+      Let $x \SETin (A \SETintersect B) \SETintersect C$.
+      Then $x \SETin A \SETintersect B$ and $x \SETin C$.
+      Hence $x \SETin A$ and $x \SETin B$ and $x \SETin C$.
+      Thus $x \SETin A$ and $x \SETin (B \SETintersect C)$.
+      Therefore$ x \SETin A \SETintersect (B \SETintersect C)$.
     End.
 
     Let us show that $A \SETintersect (B \SETintersect C) \SETinclude (A \SETintersect B) \SETintersect C$.
-      Let $x \in A \SETintersect (B \SETintersect C)$.
-      Then $x \in A$ and $x \in B \SETintersect C$.
-      Hence $x \in A$ and $x \in B$ and $x \in C$.
-      Thus $x \in A \SETintersect B$ and $x \in C$.
-      Therefore $x \in (A \SETintersect B) \SETintersect C$.
+      Let $x \SETin A \SETintersect (B \SETintersect C)$.
+      Then $x \SETin A$ and $x \SETin B \SETintersect C$.
+      Hence $x \SETin A$ and $x \SETin B$ and $x \SETin C$.
+      Thus $x \SETin A \SETintersect B$ and $x \SETin C$.
+      Therefore $x \SETin (A \SETintersect B) \SETintersect C$.
     End.
   \end{proof}
 \end{sfragment}
@@ -100,21 +100,21 @@
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $A \SETintersect (B \SETunion C) \SETinclude (A \SETintersect B) \SETunion (A \SETintersect C)$.
-      Let $x \in A \SETintersect (B \SETunion C)$.
-      Then $x \in A$ and $x \in B \SETunion C$.
-      Hence $x \in A$ and ($x \in B$ or $x \in C$).
-      Thus ($x \in A$ and $x \in B$) or ($x \in A$ and $x \in C$).
-      Therefore $x \in A \SETintersect B$ or $x \in A \SETintersect C$.
-      Hence $x \in (A \SETintersect B) \SETunion (A \SETintersect C)$.
+      Let $x \SETin A \SETintersect (B \SETunion C)$.
+      Then $x \SETin A$ and $x \SETin B \SETunion C$.
+      Hence $x \SETin A$ and ($x \SETin B$ or $x \SETin C$).
+      Thus ($x \SETin A$ and $x \SETin B$) or ($x \SETin A$ and $x \SETin C$).
+      Therefore $x \SETin A \SETintersect B$ or $x \SETin A \SETintersect C$.
+      Hence $x \SETin (A \SETintersect B) \SETunion (A \SETintersect C)$.
     End.
 
     Let us show that $((A \SETintersect B) \SETunion (A \SETintersect C)) \SETinclude A \SETintersect (B \SETunion C)$. %!
-      Let $x \in (A \SETintersect B) \SETunion (A \SETintersect C)$.
-      Then $x \in A \SETintersect B$ or $x \in A \SETintersect C$.
-      Hence ($x \in A$ and $x \in B$) or ($x \in A$ and $x \in C$).
-      Thus $x \in A$ and ($x \in B$ or $x \in C$).
-      Therefore $x \in A$ and $x \in B \SETunion C$.
-      Hence$ x \in A \SETintersect (B \SETunion C)$.
+      Let $x \SETin (A \SETintersect B) \SETunion (A \SETintersect C)$.
+      Then $x \SETin A \SETintersect B$ or $x \SETin A \SETintersect C$.
+      Hence ($x \SETin A$ and $x \SETin B$) or ($x \SETin A$ and $x \SETin C$).
+      Thus $x \SETin A$ and ($x \SETin B$ or $x \SETin C$).
+      Therefore $x \SETin A$ and $x \SETin B \SETunion C$.
+      Hence$ x \SETin A \SETintersect (B \SETunion C)$.
     End.
   \end{proof}
 
@@ -124,21 +124,21 @@
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $A \SETunion (B \SETintersect C) \SETinclude (A \SETunion B) \SETintersect (A \SETunion C)$.
-      Let $x \in A \SETunion (B \SETintersect C)$.
-      Then $x \in A$ or $x \in B \SETintersect C$.
-      Hence $x \in A$ or ($x \in B$ and $x \in C$).
-      Thus ($x \in A$ or $x \in B$) and ($x \in$ A or $x \in C$).
-      Therefore $x \in A \SETunion B$ and $x \in A \SETunion C$.
-      Hence $x \in (A \SETunion B) \SETintersect (A \SETunion C)$.
+      Let $x \SETin A \SETunion (B \SETintersect C)$.
+      Then $x \SETin A$ or $x \SETin B \SETintersect C$.
+      Hence $x \SETin A$ or ($x \SETin B$ and $x \SETin C$).
+      Thus ($x \SETin A$ or $x \SETin B$) and ($x \SETin$ A or $x \SETin C$).
+      Therefore $x \SETin A \SETunion B$ and $x \SETin A \SETunion C$.
+      Hence $x \SETin (A \SETunion B) \SETintersect (A \SETunion C)$.
     End.
 
     Let us show that $((A \SETunion B) \SETintersect (A \SETunion C)) \SETinclude A \SETunion (B \SETintersect C)$. %!
-      Let $x \in (A \SETunion B) \SETintersect (A \SETunion C)$.
-      Then $x \in A \SETunion B$ and $x \in A \SETunion C$.
-      Hence ($x \in A$ or $x \in B$) and ($x \in A$ or $x \in C$).
-      Thus $x \in A$ or ($x \in B$ and $x \in C$).
-      Therefore $x \in A$ or $x \in B \SETintersect C$.
-      Hence $x \in A \SETunion (B \SETintersect C)$.
+      Let $x \SETin (A \SETunion B) \SETintersect (A \SETunion C)$.
+      Then $x \SETin A \SETunion B$ and $x \SETin A \SETunion C$.
+      Hence ($x \SETin A$ or $x \SETin B$) and ($x \SETin A$ or $x \SETin C$).
+      Thus $x \SETin A$ or ($x \SETin B$ and $x \SETin C$).
+      Therefore $x \SETin A$ or $x \SETin B \SETintersect C$.
+      Hence $x \SETin A \SETunion (B \SETintersect C)$.
     End.
   \end{proof}
 \end{sfragment}
@@ -149,8 +149,8 @@
     Then $A \SETunion A \eq A$.
   \end{proposition}
   \begin{proof}[forthel]
-    $A \SETunion A \eq \{x \mid x \in A\text{ or }x \in A \}$.
-    Hence $A \SETunion A \eq \{ x \mid x \in A \}$.
+    $A \SETunion A \eq \{x \mid x \SETin A\text{ or }x \SETin A \}$.
+    Hence $A \SETunion A \eq \{ x \mid x \SETin A \}$.
     Thus $A \SETunion A \eq A$.
   \end{proof}
 
@@ -159,8 +159,8 @@
     Then $A \SETintersect A \eq A$.
   \end{proposition}
   \begin{proof}[forthel]
-    $A \SETintersect A \eq \{ x \mid x \in A\text{ and }x \in A \}$.
-    Hence $A \SETintersect A \eq \{ x \mid x \in A \}$.
+    $A \SETintersect A \eq \{ x \mid x \SETin A\text{ and }x \SETin A \}$.
+    Hence $A \SETintersect A \eq \{ x \mid x \SETin A \}$.
     Thus $A \SETintersect A \eq A$.
   \end{proof}
 \end{sfragment}
@@ -172,24 +172,24 @@
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $A \SETdiff (B \SETintersect C) \SETinclude (A \SETdiff B) \SETunion (A \SETdiff C)$.
-      Let $x \in A \SETdiff (B \SETintersect C)$.
-      Then $x \in A$ and $x \notin B \SETintersect C$.
-      Hence it is wrong that ($x \in B$ and $x \in C$).
-      Thus $x \notin B$ or $x \notin C$.
-      Therefore $x \in A$ and ($x \notin B$ or $x \notin C$).
-      Then ($x \in A$ and $x \notin B$) or ($x \in A$ and $x \notin C$).
-      Hence $x \in A \SETdiff B$ or $x \in A \SETdiff C$.
-      Thus $x \in (A \SETdiff B) \SETunion (A \SETdiff C)$.
+      Let $x \SETin A \SETdiff (B \SETintersect C)$.
+      Then $x \SETin A$ and $x \SETnotin B \SETintersect C$.
+      Hence it is wrong that ($x \SETin B$ and $x \SETin C$).
+      Thus $x \SETnotin B$ or $x \SETnotin C$.
+      Therefore $x \SETin A$ and ($x \SETnotin B$ or $x \SETnotin C$).
+      Then ($x \SETin A$ and $x \SETnotin B$) or ($x \SETin A$ and $x \SETnotin C$).
+      Hence $x \SETin A \SETdiff B$ or $x \SETin A \SETdiff C$.
+      Thus $x \SETin (A \SETdiff B) \SETunion (A \SETdiff C)$.
     End.
 
     Let us show that $((A \SETdiff B) \SETunion (A \SETdiff C)) \SETinclude A \SETdiff (B \SETintersect C)$. %!
-      Let $x \in (A \SETdiff B) \SETunion (A \SETdiff C)$.
-      Then $x \in A \SETdiff B$ or $x \in A \SETdiff C$.
-      Hence ($x \in A$ and $x \notin B$) or ($x \in A$ and $x \notin C$).
-      Thus $x \in A$ and ($x \notin B$ or $x \notin C$).
-      Therefore $x \in A$ and not ($x \in B$ and $x \in C$).
-      Then $x \in A$ and not $x \in B \SETintersect C$.
-      Hence $x \in A \SETdiff (B \SETintersect C)$.
+      Let $x \SETin (A \SETdiff B) \SETunion (A \SETdiff C)$.
+      Then $x \SETin A \SETdiff B$ or $x \SETin A \SETdiff C$.
+      Hence ($x \SETin A$ and $x \SETnotin B$) or ($x \SETin A$ and $x \SETnotin C$).
+      Thus $x \SETin A$ and ($x \SETnotin B$ or $x \SETnotin C$).
+      Therefore $x \SETin A$ and not ($x \SETin B$ and $x \SETin C$).
+      Then $x \SETin A$ and not $x \SETin B \SETintersect C$.
+      Hence $x \SETin A \SETdiff (B \SETintersect C)$.
     End.
   \end{proof}
 
@@ -199,24 +199,24 @@
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $A \SETdiff (B \SETunion C) \SETinclude (A \SETdiff B) \SETintersect (A \SETdiff C)$.
-      Let $x \in A \SETdiff (B \SETunion C)$.
-      Then $x \in A$ and $x \notin B \SETunion C$.
-      Hence it is wrong that ($x \in B$ or $x \in C$).
-      Thus $x \notin B$ and $x \notin C$.
-      Therefore $x \in A$ and ($x \notin B$ and $x \notin C$).
-      Then ($x \in A$ and $x \notin B$) and ($x \in A$ and $x \notin C$).
-      Hence $x \in A \SETdiff B$ and $x \in A \SETdiff C$.
-      Thus $x \in (A \SETdiff B) \SETintersect (A \SETdiff C)$.
+      Let $x \SETin A \SETdiff (B \SETunion C)$.
+      Then $x \SETin A$ and $x \SETnotin B \SETunion C$.
+      Hence it is wrong that ($x \SETin B$ or $x \SETin C$).
+      Thus $x \SETnotin B$ and $x \SETnotin C$.
+      Therefore $x \SETin A$ and ($x \SETnotin B$ and $x \SETnotin C$).
+      Then ($x \SETin A$ and $x \SETnotin B$) and ($x \SETin A$ and $x \SETnotin C$).
+      Hence $x \SETin A \SETdiff B$ and $x \SETin A \SETdiff C$.
+      Thus $x \SETin (A \SETdiff B) \SETintersect (A \SETdiff C)$.
     End.
 
     Let us show that $((A \SETdiff B) \SETintersect (A \SETdiff C)) \SETinclude A \SETdiff (B \SETunion C)$. %!
-      Let $x \in (A \SETdiff B) \SETintersect (A \SETdiff C)$.
-      Then $x \in A \SETdiff B$ and $x \in A \SETdiff C$.
-      Hence ($x \in A$ and $x \notin B$) and ($x \in A$ and $x \notin C$).
-      Thus $x \in A$ and ($x \notin B$ and $x \notin C$).
-      Therefore $x \in A$ and not ($x \in B$ or $x \in C$).
-      Then $x \in A$ and not $x \in B \SETunion C$.
-      Hence $x \in A \SETdiff (B \SETunion C)$.
+      Let $x \SETin (A \SETdiff B) \SETintersect (A \SETdiff C)$.
+      Then $x \SETin A \SETdiff B$ and $x \SETin A \SETdiff C$.
+      Hence ($x \SETin A$ and $x \SETnotin B$) and ($x \SETin A$ and $x \SETnotin C$).
+      Thus $x \SETin A$ and ($x \SETnotin B$ and $x \SETnotin C$).
+      Therefore $x \SETin A$ and not ($x \SETin B$ or $x \SETin C$).
+      Then $x \SETin A$ and not $x \SETin B \SETunion C$.
+      Hence $x \SETin A \SETdiff (B \SETunion C)$.
     End.
   \end{proof}
 \end{sfragment}
@@ -227,9 +227,9 @@
     Then $A \SETinclude A \SETunion B$.
   \end{proposition}
   \begin{proof}[forthel]
-    Let $x \in A$.
-    Then $x \in A$ or $x \in B$.
-    Hence $x \in A \SETunion B$.
+    Let $x \SETin A$.
+    Then $x \SETin A$ or $x \SETin B$.
+    Hence $x \SETin A \SETunion B$.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_02_1591517646946304]
@@ -237,9 +237,9 @@
     Then $A \SETintersect B \SETinclude A$.
   \end{proposition}
   \begin{proof}[forthel]
-    Let $x \in A \SETintersect B$.
-    Then $x \in A$ and $x \in B$.
-    Hence $x \in A$.
+    Let $x \SETin A \SETintersect B$.
+    Then $x \SETin A$ and $x \SETin B$.
+    Hence $x \SETin A$.
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_02_6657236858306560]
@@ -250,23 +250,23 @@
     \begin{case}{$A \SETinclude B$.}
 
       Let us show that $A \SETunion B \SETinclude B$.
-        Let $x \in A \SETunion B$.
-        Then $x \in A$ or $x \in B$.
-        If $x \in A$ then $x \in B$.
-        Hence $x \in B$.
+        Let $x \SETin A \SETunion B$.
+        Then $x \SETin A$ or $x \SETin B$.
+        If $x \SETin A$ then $x \SETin B$.
+        Hence $x \SETin B$.
       End.
 
       Let us show that $B \SETinclude A \SETunion B$.
-        Let $x \in B$.
-        Then $x \in A$ or $x \in B$.
-        Hence $x \in A \SETunion B$.
+        Let $x \SETin B$.
+        Then $x \SETin A$ or $x \SETin B$.
+        Hence $x \SETin A \SETunion B$.
       End.
     \end{case}
 
     \begin{case}{$A \SETunion B \eq B$.}
-      Let $x \in A$.
-      Then $x \in A$ or $x \in B$.
-      Hence $x \in A \SETunion B \eq B$.
+      Let $x \SETin A$.
+      Then $x \SETin A$ or $x \SETin B$.
+      Hence $x \SETin A \SETunion B \eq B$.
     \end{case}
   \end{proof}
 
@@ -278,24 +278,24 @@
     \begin{case}{$A \SETinclude B$.}
 
       Let us show that $A \SETintersect B \SETinclude A$.
-        Let $x \in A \SETintersect B$.
-        Then $x \in A$ and $x \in B$.
-        Hence $x \in A$.
+        Let $x \SETin A \SETintersect B$.
+        Then $x \SETin A$ and $x \SETin B$.
+        Hence $x \SETin A$.
       End.
 
       Let us show that $A \SETinclude A \SETintersect B$.
-        Let $x \in A$.
-        Then $x \in B$.
-        Hence $x \in A$ and $x \in B$.
-        Thus $x \in A \SETintersect B$.
+        Let $x \SETin A$.
+        Then $x \SETin B$.
+        Hence $x \SETin A$ and $x \SETin B$.
+        Thus $x \SETin A \SETintersect B$.
       End.
     \end{case}
 
     \begin{case}{$A \SETintersect B \eq A$.}
-      Let $x \in A$.
-      Then $x \in A \SETintersect B$.
-      Hence $x \in A$ and $x \in B$.
-      Thus $x \in B$.
+      Let $x \SETin A$.
+      Then $x \SETin A \SETintersect B$.
+      Hence $x \SETin A$ and $x \SETin B$.
+      Thus $x \SETin B$.
     \end{case}
   \end{proof}
 \end{sfragment}
@@ -307,7 +307,7 @@
   \end{proposition}
   \begin{proof}[forthel]
     $A \SETdiff A$ has no elements.
-    Indeed $A \SETdiff A \eq \{ x \mid x \in A\text{ and }x \notin A \}$.
+    Indeed $A \SETdiff A \eq \{ x \mid x \SETin A\text{ and }x \SETnotin A \}$.
     Hence the thesis.
   \end{proof}
 
@@ -316,9 +316,9 @@
     Then $A \SETdiff \SETempty \eq A$.
   \end{proposition}
   \begin{proof}[forthel]
-    $A \SETdiff \SETempty \eq \{ x \mid x \in A\text{ and }x \notin \SETempty \}$.
+    $A \SETdiff \SETempty \eq \{ x \mid x \SETin A\text{ and }x \SETnotin \SETempty \}$.
     No element is an element of $\SETempty$.
-    Hence $A \SETdiff \SETempty \eq \{ x \mid x \in A \}$.
+    Hence $A \SETdiff \SETempty \eq \{ x \mid x \SETin A \}$.
     Then we have the thesis.
   \end{proof}
 
@@ -328,19 +328,19 @@
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $A \SETdiff (A \SETdiff B) \SETinclude A \SETintersect B$.
-      Let $x \in A \SETdiff (A \SETdiff B)$.
-      Then $x \in A$ and $x \notin A \SETdiff B$.
-      Hence $x \notin A$ or $x \in B$.
-      Thus $x \in B$.
-      Therefore $x \in A \SETintersect B$.
+      Let $x \SETin A \SETdiff (A \SETdiff B)$.
+      Then $x \SETin A$ and $x \SETnotin A \SETdiff B$.
+      Hence $x \SETnotin A$ or $x \SETin B$.
+      Thus $x \SETin B$.
+      Therefore $x \SETin A \SETintersect B$.
     End.
 
     Let us show that $A \SETintersect B \SETinclude A \SETdiff (A \SETdiff B)$.
-      Let $x \in A \SETintersect B$.
-      Then $x \in A$ and $x \in B$.
-      Hence $x \notin A$ or $x \in B$.
-      Thus $x \notin A \SETdiff B$.
-      Therefore $x \in A \SETdiff (A \SETdiff B)$.
+      Let $x \SETin A \SETintersect B$.
+      Then $x \SETin A$ and $x \SETin B$.
+      Hence $x \SETnotin A$ or $x \SETin B$.
+      Thus $x \SETnotin A \SETdiff B$.
+      Therefore $x \SETin A \SETdiff (A \SETdiff B)$.
     End.
   \end{proof}
 
@@ -364,21 +364,21 @@
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $A \SETintersect (B \SETdiff C) \SETinclude (A \SETintersect B) \SETdiff (A \SETintersect C)$.
-      Let $x \in A \SETintersect (B \SETdiff C)$.
-      Then $x \in A$ and $x \in B \SETdiff C$.
-      Hence $x \in A$ and $x \in B$.
-      Thus $x \in A \SETintersect B$ and $x \notin C$.
-      Therefore $x \notin A \SETintersect C$.
-      Then we have $x \in (A \SETintersect B) \SETdiff (A \SETintersect C)$.
+      Let $x \SETin A \SETintersect (B \SETdiff C)$.
+      Then $x \SETin A$ and $x \SETin B \SETdiff C$.
+      Hence $x \SETin A$ and $x \SETin B$.
+      Thus $x \SETin A \SETintersect B$ and $x \SETnotin C$.
+      Therefore $x \SETnotin A \SETintersect C$.
+      Then we have $x \SETin (A \SETintersect B) \SETdiff (A \SETintersect C)$.
     End.
 
     Let us show that $((A \SETintersect B) \SETdiff (A \SETintersect C)) \SETinclude A \SETintersect (B \SETdiff C)$. %!
-      Let $x \in (A \SETintersect B) \SETdiff (A \SETintersect C)$.
-      Then $x \in A$ and $x \in B$.
-      $x \notin A \SETintersect C$.
-      Hence $x \notin C$.
-      Thus $x \in B \SETdiff C$.
-      Therefore $x \in A \SETintersect (B \SETdiff C)$.
+      Let $x \SETin (A \SETintersect B) \SETdiff (A \SETintersect C)$.
+      Then $x \SETin A$ and $x \SETin B$.
+      $x \SETnotin A \SETintersect C$.
+      Hence $x \SETnotin C$.
+      Thus $x \SETin B \SETdiff C$.
+      Therefore $x \SETin A \SETintersect (B \SETdiff C)$.
     End.
   \end{proof}
 \end{sfragment}

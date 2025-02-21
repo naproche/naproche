@@ -44,13 +44,13 @@
       Then $\NATexp{\NATone}{n} \eq \NATone$.
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \{ n' \in \Nat \mid \NATexp{\NATone}{n'} \eq \NATone \}$.
+      Define $\Phi = \{ n' \SETin \Nat \mid \NATexp{\NATone}{n'} \eq \NATone \}$.
 
       (1) $\Phi$ contains $\NATzero$.
 
-      (2) For all $n' \in \Phi$ we have $n' \NATplus \NATone \in \Phi$.
+      (2) For all $n' \SETin \Phi$ we have $n' \NATplus \NATone \SETin \Phi$.
       \begin{proof}
-        Let $n' \in \Phi$.
+        Let $n' \SETin \Phi$.
         Then $\NATexp{\NATone}{n' \NATplus \NATone}
           \eq \NATexp{\NATone}{n'} \NATmul \NATone
           \eq \NATone \NATmul \NATone
@@ -91,7 +91,7 @@
       Then $\NATexp{k}{n \NATplus m} \eq \NATexp{k}{n} \NATmul \NATexp{k}{m}$.
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \{ m' \in \Nat \mid \NATexp{k}{n \NATplus m'} \eq \NATexp{k}{n} \NATmul \NATexp{k}{m'} \}$.
+      Define $\Phi = \{ m' \SETin \Nat \mid \NATexp{k}{n \NATplus m'} \eq \NATexp{k}{n} \NATmul \NATexp{k}{m'} \}$.
 
       (1) $\Phi$ contains $\NATzero$.
       Indeed $\NATexp{k}{n \NATplus \NATzero}
@@ -99,9 +99,9 @@
         \eq \NATexp{k}{n} \NATmul \NATone
         \eq \NATexp{k}{n} \NATmul \NATexp{k}{\NATzero}$.
 
-      (2) For all $m' \in \Phi$ we have $m' \NATplus \NATone \in \Phi$.
+      (2) For all $m' \SETin \Phi$ we have $m' \NATplus \NATone \SETin \Phi$.
       \begin{proof}
-        Let $m' \in \Phi$.
+        Let $m' \SETin \Phi$.
         Then
         \[  \NATexp{k}{n \NATplus (m' \NATplus \NATone)}                  \]
         \[    \eq \NATexp{k}{(n \NATplus m') \NATplus \NATone}              \]
@@ -122,7 +122,7 @@
       Then $\NATexp{n}{m \NATmul k} \eq \NATexp{\NATexp{n}{m}}{k}$.
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \{ k' \in \Nat \mid \NATexp{n}{m \NATmul k'} \eq \NATexp{\NATexp{n}{m}}{k'} \}$.
+      Define $\Phi = \{ k' \SETin \Nat \mid \NATexp{n}{m \NATmul k'} \eq \NATexp{\NATexp{n}{m}}{k'} \}$.
 
       (1) $\Phi$ contains $\NATzero$.
       Indeed $\NATexp{\NATexp{n}{m}}{\NATzero}
@@ -130,9 +130,9 @@
         \eq \NATexp{n}{\NATzero}
         \eq \NATexp{n}{m \NATmul \NATzero}$.
 
-      (2) For all $k' \in \Phi$ we have $k' \NATplus \NATone \in \Phi$.
+      (2) For all $k' \SETin \Phi$ we have $k' \NATplus \NATone \SETin \Phi$.
       \begin{proof}
-        Let $k' \in \Phi$.
+        Let $k' \SETin \Phi$.
         Then
         \[  \NATexp{\NATexp{n}{m}}{k' \NATplus \NATone}                \]
         \[    \eq \NATexp{\NATexp{n}{m}}{k'} \NATmul \NATexp{n}{m}    \]
@@ -152,7 +152,7 @@
       Then $\NATexp{n \NATmul m}{k} \eq \NATexp{n}{k} \NATmul \NATexp{m}{k}$.
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \{ k' \in \Nat \mid \NATexp{n \NATmul m}{k'} \eq \NATexp{n}{k'} \NATmul \NATexp{m}{k'} \}$.
+      Define $\Phi = \{ k' \SETin \Nat \mid \NATexp{n \NATmul m}{k'} \eq \NATexp{n}{k'} \NATmul \NATexp{m}{k'} \}$.
 
       (1) $\Phi$ contains $\NATzero$.
       Indeed $(\NATexp{n \NATmul m}{\NATzero})
@@ -160,9 +160,9 @@
         \eq \NATone \NATmul \NATone
         \eq \NATexp{n}{\NATzero} \NATmul \NATexp{m}{\NATzero}$. %!
 
-      (2) For all $k' \in \Phi$ we have $k' \NATplus \NATone \in \Phi$.
+      (2) For all $k' \SETin \Phi$ we have $k' \NATplus \NATone \SETin \Phi$.
       \begin{proof}
-        Let $k' \in \Phi$.
+        Let $k' \SETin \Phi$.
 
         Let us show that $(\NATexp{n}{k'} \NATmul \NATexp{m}{k'}) \NATmul (n \NATmul m) \eq (\NATexp{n}{k'} \NATmul n) \NATmul (\NATexp{m}{k'} \NATmul m)$.
           \[  (\NATexp{n}{k'} \NATmul \NATexp{m}{k'}) \NATmul (n \NATmul m)       \]
@@ -193,14 +193,14 @@
     \end{proposition}
     \begin{proof}[forthel]
       \begin{case}{$\NATexp{n}{m} \eq \NATzero$.}
-        Define $\Phi = \{ m' \in \Nat \mid\text{ if }\NATexp{n}{m'} \eq \NATzero\text{ then }n \eq \NATzero\text{ and }m' \neq \NATzero \}$.
+        Define $\Phi = \{ m' \SETin \Nat \mid\text{ if }\NATexp{n}{m'} \eq \NATzero\text{ then }n \eq \NATzero\text{ and }m' \neq \NATzero \}$.
 
         (1) $\Phi$ contains $\NATzero$.
         Indeed if $\NATexp{n}{\NATzero} \eq \NATzero$ then we have a contradiction.
 
-        (2) For all $m' \in \Phi$ we have $m' \NATplus \NATone \in \Phi$.
+        (2) For all $m' \SETin \Phi$ we have $m' \NATplus \NATone \SETin \Phi$.
         \begin{proof}
-          Let $m' \in \Phi$.
+          Let $m' \SETin \Phi$.
 
           Let us show that if $\NATexp{n}{m' \NATplus \NATone} \eq \NATzero$ then $n \eq \NATzero$ and $m' \NATplus \NATone \neq \NATzero$.
             Assume $\NATexp{n}{m' \NATplus \NATone} \eq \NATzero$.
@@ -212,7 +212,7 @@
         \end{proof}
 
         Thus every natural number is contained in $\Phi$ (by \printref{ARITHMETIC_01_4764664342773760}).
-        Consequently $m \in \Phi$.
+        Consequently $m \SETin \Phi$.
         Therefore $n \eq \NATzero$ and $m \neq \NATzero$.
       \end{case}
 

@@ -12,7 +12,7 @@
 
 \begin{proposition}[forthel,id=SET_THEORY_01_6964770955591680]
   Let $X$ be a system of sets.
-  Then $X$ is transitive iff for every $x \in X$ and every $y \in x$ we have $y \in X$.
+  Then $X$ is transitive iff for every $x \SETin X$ and every $y \SETin x$ we have $y \SETin X$.
 \end{proposition}
 
 \inlineforthel{[synonym system/-s]}
@@ -31,19 +31,19 @@
 \end{proposition}
 \begin{proof}[forthel]
   \begin{case}{$X$ is transitive.}
-    Let $x \in \SETunionover X$.
-    Take a member $y$ of $X$ such that $x \in y$.
+    Let $x \SETin \SETunionover X$.
+    Take a member $y$ of $X$ such that $x \SETin y$.
     Then $y$ is a subset of $X$.
     Hence $x$ is an element of $X$.
   \end{case}
 
   \begin{case}{$\SETunionover X \SETinclude X$.}
-    Let $x \in X$.
+    Let $x \SETin X$.
 
     Let us show that $x \SETinclude X$.
-      Let $y \in x$.
-      Then $y \in \SETunionover X$.
-      Hence $y \in X$.
+      Let $y \SETin x$.
+      Then $y \SETin \SETunionover X$.
+      Hence $y \SETin X$.
     End.
   \end{case}
 \end{proof}
@@ -53,15 +53,15 @@
   Then $\SETunionover A$ is transitive.
 \end{proposition}
 \begin{proof}[forthel]
-  Let $x \in \SETunionover A$.
+  Let $x \SETin \SETunionover A$.
 
   Let us show that $x \SETinclude \SETunionover A$.
-    Let $y \in x$.
-    Take a member $z$ of $A$ such that $x \in z$.
+    Let $y \SETin x$.
+    Take a member $z$ of $A$ such that $x \SETin z$.
     Then $z \SETinclude A$.
-    Hence $x \in A$.
+    Hence $x \SETin A$.
     Thus $y$ is an element of some member of $A$.
-    Therefore $y \in \SETunionover A$.
+    Therefore $y \SETin \SETunionover A$.
   End.
 \end{proof}
 
@@ -70,12 +70,12 @@
   Then $\SETunionover X$ is transitive.
 \end{proposition}
 \begin{proof}[forthel]
-  Let $x \in \SETunionover X$ and $y \in x$.
-  Take $z \in X$ such that $x \in z$.
+  Let $x \SETin \SETunionover X$ and $y \SETin x$.
+  Take $z \SETin X$ such that $x \SETin z$.
   Then $z$ is transitive.
   Hence $x \SETinclude z$.
-  Thus $y \in z$.
-  Therefore $y \in \SETunionover X$.
+  Thus $y \SETin z$.
+  Therefore $y \SETin \SETunionover X$.
 \end{proof}
 
 \begin{proposition}[forthel,id=SET_THEORY_01_4884401668227072]
@@ -83,16 +83,16 @@
   Then $X \SETunion \SETunionover X$ is transitive.
 \end{proposition}
 \begin{proof}[forthel]
-  Let $x \in X \SETunion \SETunionover X$.
+  Let $x \SETin X \SETunion \SETunionover X$.
 
   Let us show that $x \SETinclude X \SETunion \SETunionover X$.
-    Let $u \in x$.
-    We have $x \in X$ or $x \in \SETunionover X$.
-    If $x \in X$then $u \in \SETunionover X$.
-    If $x \in \SETunionover X$ then $u \in \SETunionover X$.
+    Let $u \SETin x$.
+    We have $x \SETin X$ or $x \SETin \SETunionover X$.
+    If $x \SETin X$then $u \SETin \SETunionover X$.
+    If $x \SETin \SETunionover X$ then $u \SETin \SETunionover X$.
     Indeed $\SETunionover X$ is transitive.
-    Hence $u \in \SETunionover X$.
-    Thus $u \in X \SETunion \SETunionover X$.
+    Hence $u \SETin \SETunionover X$.
+    Thus $u \SETin X \SETunion \SETunionover X$.
   End.
 \end{proof}
 
@@ -102,14 +102,14 @@
 \end{proposition}
 \begin{proof}[forthel]
   \begin{case}{$X$ is transitive.}
-    Let $x \in X$.
+    Let $x \SETin X$.
     Then $x \SETinclude X$.
-    Hence $x \in \SETpow(X)$.
+    Hence $x \SETin \SETpow(X)$.
   \end{case}
 
   \begin{case}{$X \SETinclude \SETpow(X)$.}
-    Let $x \in X$.
-    Then $x \in \SETpow(X)$.
+    Let $x \SETin X$.
+    Then $x \SETin \SETpow(X)$.
     Hence $x \SETinclude X$.
   \end{case}
 \end{proof}
@@ -119,14 +119,14 @@
   Then $\SETpow(A)$ is transitive.
 \end{proposition}
 \begin{proof}[forthel]
-  Let $x \in \SETpow(A)$.
+  Let $x \SETin \SETpow(A)$.
   Then $x \SETinclude A$.
 
   Let us show that $x \SETinclude \SETpow(A)$.
-    Let $y \in x$.
-    Then $y \in A$.
+    Let $y \SETin x$.
+    Then $y \SETin A$.
     Hence $y \SETinclude A$.
-    Thus $y \in \SETpow(A)$.
+    Thus $y \SETin \SETpow(A)$.
   End.
 \end{proof}
 \end{smodule}

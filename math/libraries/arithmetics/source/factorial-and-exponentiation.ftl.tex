@@ -12,13 +12,13 @@
   Then $\NATexp{n}{n} \NATgtr \NATfac{n}$.
 \end{proposition}
 \begin{proof}[forthel]
-  (a) Define $\Phi = \{ n' \in \NATgeq{\NATtwo} \mid \NATexp{n'}{n'} \NATgtr \NATfac{n'} \}$.
+  (a) Define $\Phi = \{ n' \SETin \NATgeq{\NATtwo} \mid \NATexp{n'}{n'} \NATgtr \NATfac{n'} \}$.
 
   (1) $\Phi$ contains $\NATtwo$.
 
-  (\NATtwo) For all $n' \in \Phi$ we have $n' \NATplus \NATone \in \Phi$.
+  (\NATtwo) For all $n' \SETin \Phi$ we have $n' \NATplus \NATone \SETin \Phi$.
   \begin{proof}
-    Let $n' \in \Phi$.
+    Let $n' \SETin \Phi$.
     Then $n' \NATgeq 2$.
 
     Take $X \eq \NATexp{n' \NATplus \NATone}{n'} \NATmul (n' \NATplus \NATone)$ and $Y \eq \NATexp{n'}{n'} \NATmul (n' \NATplus \NATone)$.
@@ -48,7 +48,7 @@
   Then $\NATfac{n} \NATgtr \NATexp{\NATtwo}{n}$.
 \end{proposition}
 \begin{proof}[forthel]
-  (a) Define $\Phi = \{ n' \in \NATgeq{\NATfour} \mid \NATfac{n'} \NATgtr \NATexp{\NATtwo}{n'} \}$.
+  (a) Define $\Phi = \{ n' \SETin \NATgeq{\NATfour} \mid \NATfac{n'} \NATgtr \NATexp{\NATtwo}{n'} \}$.
 
   (1) $\Phi$ contains $\NATfour$.
   \begin{proof}
@@ -60,9 +60,9 @@
     \[    \eq \NATexp{\NATtwo}{\NATfour}.                          \]
   \end{proof}
 
-  (2) For all $n' \in \Phi$ we have $n' \NATplus \NATone \in \Phi$.
+  (2) For all $n' \SETin \Phi$ we have $n' \NATplus \NATone \SETin \Phi$.
   \begin{proof}
-    Let $n' \in \Phi$.
+    Let $n' \SETin \Phi$.
     Then $n' \NATgeq \NATfour$ and $\NATfac{n'} \NATgtr \NATexp{\NATtwo}{n'}$.
 
     Take $X \eq \NATfac{n'} \NATmul (n' \NATplus \NATone)$ and $Y \eq \NATexp{\NATtwo}{n'} \NATmul (n' \NATplus \NATone)$.

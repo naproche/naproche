@@ -10,11 +10,11 @@
   $\Nat$ is a set.
 \end{proposition}
 \begin{proof}[forthel]
-  Define $f(n) = n \NATplus \NATone$ for $n \in \Nat$.
+  Define $f(n) = n \NATplus \NATone$ for $n \SETin \Nat$.
   Then $f$ is a map from $\Nat$ to $\Nat$.
   Hence we can take a subset $X$ of $\Nat$ that is inductive regarding
   $\NATzero$ and $f$.
-  Then $\NATzero \in X$ and for all $n \in X$ we have $n \NATplus \NATone \in X$.
+  Then $\NATzero \SETin X$ and for all $n \SETin X$ we have $n \NATplus \NATone \SETin X$.
   Hence $X$ contains every natural number.
   Thus we have $\Nat \SETinclude X$ and $X \SETinclude \Nat$.
   Therefore $\Nat \eq X$.

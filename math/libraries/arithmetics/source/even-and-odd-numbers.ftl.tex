@@ -39,14 +39,14 @@
   \end{proposition}
   \begin{proof}[forthel]
     \begin{case}{$n$ is odd.}
-      (a) Define $\Phi = \{ n' \in \Nat \mid \text{ if }n'\text{ is odd then }n' \eq (\NATtwo \NATmul m) \NATplus \NATone\text{ for some natural number }m \}$.
+      (a) Define $\Phi = \{ n' \SETin \Nat \mid \text{ if }n'\text{ is odd then }n' \eq (\NATtwo \NATmul m) \NATplus \NATone\text{ for some natural number }m \}$.
 
       (1) $\Phi$ contains $\NATzero$.
       Indeed $\NATzero$ is not odd.
 
-      (2) For all $n' \in \Phi$ we have $n' \NATplus \NATone \in \Phi$. 
+      (2) For all $n' \SETin \Phi$ we have $n' \NATplus \NATone \SETin \Phi$. 
       \begin{proof}
-        Let $n' \in \Phi$.
+        Let $n' \SETin \Phi$.
 
         Let us show that if $n' \NATplus  \NATone$ is odd then $(n' \NATplus  \NATone) \eq (\NATtwo \NATmul m) \NATplus  \NATone$ for some natural number $m$.
           Assume that $n' \NATplus  \NATone$ is odd.

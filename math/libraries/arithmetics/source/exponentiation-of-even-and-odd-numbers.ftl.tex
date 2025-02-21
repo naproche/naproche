@@ -30,14 +30,14 @@
   Then $\NATexp{n}{m}$ is odd.
 \end{proposition}
 \begin{proof}[forthel]
-  Define $\Phi = \{ m' \in \Nat \mid \NATexp{n}{m'}\text{ is odd}\}$.
+  Define $\Phi = \{ m' \SETin \Nat \mid \NATexp{n}{m'}\text{ is odd}\}$.
 
   (1) $\Phi$ contains $\NATzero$.
   Indeed $\NATexp{n}{\NATzero} \eq \NATone$ and $\NATone$ is odd.
 
-  (2) For all $m' \in \Phi$ we have $m' \NATplus \NATone \in \Phi$.
+  (2) For all $m' \SETin \Phi$ we have $m' \NATplus \NATone \SETin \Phi$.
   \begin{proof}
-    Let $m' \in \Phi$.
+    Let $m' \SETin \Phi$.
     We have $\NATexp{n}{m' \NATplus \NATone} \eq \NATexp{n}{m'} \NATmul n$.
     $\NATexp{n}{m'}$ is odd.
     Hence we can take a natural number $k$ such that $\NATexp{n}{m'} \eq (\NATtwo \NATmul k) \NATplus \NATone$.
@@ -49,7 +49,7 @@
     $\NATtwo \NATmul (k \NATmul n)$ is even and $n$ is odd.
     Thus $(\NATtwo \NATmul (k \NATmul n)) \NATplus n$ is odd.
     Therefore $\NATexp{n}{m' \NATplus \NATone}$ is odd.
-    Consequently $m' \NATplus \NATone \in \Phi$.
+    Consequently $m' \NATplus \NATone \SETin \Phi$.
   \end{proof}
 
   Hence $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).

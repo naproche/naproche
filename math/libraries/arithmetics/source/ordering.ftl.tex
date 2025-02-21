@@ -31,12 +31,12 @@
 
   \begin{definition}[forthel,id=ARITHMETIC_04_3668680374222848]
     Let $n$ be a natural number.
-    $\emph{\Natlessthan{n}} = \{ k \in \Nat \mid k \NATless n \}$.
+    $\emph{\Natlessthan{n}} = \{ k \SETin \Nat \mid k \NATless n \}$.
   \end{definition}
 
   \begin{definition}[forthel,id=ARITHMETIC_04_3670333934534656]
     Let $n$ be a natural number.
-    $\emph{\Natgtrthan{n}} = \{ k \in \Nat \mid k \NATgtr n \}$.
+    $\emph{\Natgtrthan{n}} = \{ k \SETin \Nat \mid k \NATgtr n \}$.
   \end{definition}
 
   \begin{definition}[forthel,id=ARITHMETIC_04_7916616566177792]
@@ -57,12 +57,12 @@
 
   \begin{definition}[forthel,id=ARITHMETIC_04_72501526790144]
     Let $n$ be a natural number.
-    $\emph{\Natleqthan{n}} = \{ k \in \Nat \mid k \NATleq n \}$.
+    $\emph{\Natleqthan{n}} = \{ k \SETin \Nat \mid k \NATleq n \}$.
   \end{definition}
 
   \begin{definition}[forthel,id=ARITHMETIC_04_1706933421604864]
     Let $n$ be a natural number.
-    $\emph{\Natgeqthan{n}} = \{ k \in \Nat \mid k \NATgeq n \}$.
+    $\emph{\Natgeqthan{n}} = \{ k \SETin \Nat \mid k \NATgeq n \}$.
   \end{definition}
 
   \begin{proposition}[forthel,id=ARITHMETIC_04_5385415374667776]
@@ -233,13 +233,13 @@
     Then $n \NATless m$ or $n \eq m$ or $n \NATgtr m$.
   \end{proposition}
   \begin{proof}[forthel]
-    Define $\Phi = \{ m' \in \Nat \mid n \NATless m'\text{ or }n \eq m'\text{ or }n \NATgtr m' \}$.
+    Define $\Phi = \{ m' \SETin \Nat \mid n \NATless m'\text{ or }n \eq m'\text{ or }n \NATgtr m' \}$.
 
     (1) $\Phi$ contains $\NATzero$.
 
-    (2) For all $m' \in \Phi$ we have $m' \NATplus \NATone \in \Phi$.
+    (2) For all $m' \SETin \Phi$ we have $m' \NATplus \NATone \SETin \Phi$.
     \begin{proof}
-      Let $m' \in \Phi$.
+      Let $m' \SETin \Phi$.
 
       \begin{case}{$n \NATless m'$.} \end{case}
 
@@ -429,33 +429,33 @@
 \begin{sfragment}{Induction Revisited}
   \begin{proposition}[forthel,id=ARITHMETIC_04_272317502455808]
     Let $A$ be a nonempty subclass of $\Nat$.
-    Then there exists a $m \in A$ such that $m \NATleq n$ for all $n \in A$.
+    Then there exists a $m \SETin A$ such that $m \NATleq n$ for all $n \SETin A$.
   \end{proposition}
   \begin{proof}[forthel]
     Assume the contrary.
 
-    Let us show that for each $n \in A$ there exists a $m \in A$ such that $m \NATless n$.
-      Let $n \in A$.
-      Assume that there exists no $m \in A$ such that $m \NATless n$.
-      Then $n \NATleq m$ for all $m \in A$.
+    Let us show that for each $n \SETin A$ there exists a $m \SETin A$ such that $m \NATless n$.
+      Let $n \SETin A$.
+      Assume that there exists no $m \SETin A$ such that $m \NATless n$.
+      Then $n \NATleq m$ for all $m \SETin A$.
       Contradiction.
     End.
 
-    (a) Define $\Phi = \{ n \in \Nat \mid n\text{ is less than any element of }A \}$.
+    (a) Define $\Phi = \{ n \SETin \Nat \mid n\text{ is less than any element of }A \}$.
 
     (1) $\Phi$ contains $\NATzero$.
     \begin{proof}
-      $\NATzero \notin A$.
+      $\NATzero \SETnotin A$.
       Hence $\NATzero$ is less than every element of $A$.
-      Thus $\NATzero \in \Phi$.
+      Thus $\NATzero \SETin \Phi$.
     \end{proof}
 
-    (2) For all $n \in \Phi$ we have $n \NATplus \NATone \in \Phi$.
+    (2) For all $n \SETin \Phi$ we have $n \NATplus \NATone \SETin \Phi$.
     \begin{proof}
-      Let $n \in \Phi$.
+      Let $n \SETin \Phi$.
       Then $n$ is less than any element of $A$.
       Assume that $\Phi$ does not contain $n \NATplus \NATone$.
-      Then we can take an $m \in A$ such that $n \NATplus \NATone \NATnless m$ (by a).
+      Then we can take an $m \SETin A$ such that $n \NATplus \NATone \NATnless m$ (by a).
       Then $n \NATless m \NATleq n \NATplus \NATone$.
       Hence $m \eq n \NATplus \NATone$.
       Contradiction.
@@ -469,14 +469,14 @@
 
   \begin{theorem}[forthel,id=ARITHMETIC_04_3609801697263616]
     Let $A$ be a class.
-    Assume for all $n \in \Nat$ if $A$ contains all predecessors of $n$ then $A$ contains $n$.
+    Assume for all $n \SETin \Nat$ if $A$ contains all predecessors of $n$ then $A$ contains $n$.
     Then $A$ contains every natural number.
   \end{theorem}
   \begin{proof}[forthel]
     Assume the contrary.
     Take a natural number $n$ that is not contained in $A$.
     Then $n$ is contained in $\Nat \SETdiff A$.
-    Hence we can take a $m \in \Nat \SETdiff A$ such that $m \NATleq k$ for all $k \in \Nat \SETdiff A$.
+    Hence we can take a $m \SETin \Nat \SETdiff A$ such that $m \NATleq k$ for all $k \SETin \Nat \SETdiff A$.
     Then $\Nat \SETdiff A$ does not contain any predecessor of $m$.
     Therefore $A$ contains all predecessors of $m$.
     Consequently $A$ contains $m$.
@@ -485,39 +485,39 @@
 
   \begin{theorem}[forthel,id=ARITHMETIC_04_4976599269113856]
     Let $A$ be a class.
-    Let $k$ be a natural number such that $k \in A$.
-    Assume that for all $n \in \Natgeqthan{k}$ if $n \in A$ then $n \NATplus \NATone \in A$.
-    Then for all $n \in \Natgeqthan{k}$ we have $n \in A$.
+    Let $k$ be a natural number such that $k \SETin A$.
+    Assume that for all $n \SETin \Natgeqthan{k}$ if $n \SETin A$ then $n \NATplus \NATone \SETin A$.
+    Then for all $n \SETin \Natgeqthan{k}$ we have $n \SETin A$.
   \end{theorem}
   \begin{proof}[forthel]
-    Define $\Phi = \{n \in \Nat \mid\text{ if }n \NATgeq k\text{ then }n \in A \}$.
+    Define $\Phi = \{n \SETin \Nat \mid\text{ if }n \NATgeq k\text{ then }n \SETin A \}$.
 
     (1) $\Phi$ contains $\NATzero$.
-    Indeed if $\NATzero \NATgeq k$ then $\NATzero \eq k \in A$.
+    Indeed if $\NATzero \NATgeq k$ then $\NATzero \eq k \SETin A$.
 
-    (2) For all $n \in \Phi$ we have $n \NATplus \NATone \in \Phi$.
+    (2) For all $n \SETin \Phi$ we have $n \NATplus \NATone \SETin \Phi$.
     \begin{proof}
-      Let $n \in \Phi$.
+      Let $n \SETin \Phi$.
 
-      Let us show that if $n \NATplus \NATone \NATgeq k$ then $n \NATplus \NATone \in A$.
+      Let us show that if $n \NATplus \NATone \NATgeq k$ then $n \NATplus \NATone \SETin A$.
         Assume $n \NATplus \NATone \NATgeq k$.
 
         \begin{case}{$n \NATless k$.}
           Then $n \NATplus \NATone \eq k$.
-          Hence $n \NATplus \NATone \in A$.
+          Hence $n \NATplus \NATone \SETin A$.
         \end{case}
 
         \begin{case}{$n \NATgeq k$.}
-          Then $n \in A$.
-          Hence $n \NATplus \NATone \in A$.
+          Then $n \SETin A$.
+          Hence $n \NATplus \NATone \SETin A$.
         \end{case}
       End.
 
-      Therefore $n \NATplus \NATone \in \Phi$.
+      Therefore $n \NATplus \NATone \SETin \Phi$.
     \end{proof}
 
     Thus $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).
-    Consequently for all $n \in \Natgeqthan{k}$ we have $n \in A$.
+    Consequently for all $n \SETin \Natgeqthan{k}$ we have $n \SETin A$.
   \end{proof}
 \end{sfragment}
 \end{smodule}

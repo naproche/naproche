@@ -13,18 +13,18 @@
   and $r \NATless m$.
 \end{theorem}
 \begin{proof}[forthel]
-  (a) Define $\Phi = \{ n' \in \Nat \mid \text{ there exist natural numbers }q, r\text{ such that }r \NATless m\text{ and }n' \eq (m \NATmul q) \NATplus r \}$.
+  (a) Define $\Phi = \{ n' \SETin \Nat \mid \text{ there exist natural numbers }q, r\text{ such that }r \NATless m\text{ and }n' \eq (m \NATmul q) \NATplus r \}$.
 
   (1) $\Phi$ contains $\NATzero$.
   \begin{proof}
     Take $q \eq \NATzero$ and $r \eq \NATzero$.
     Then $r \NATless m$ and $\NATzero \eq (m \NATmul q) \NATplus r$.
-    Hence $\NATzero \in \Phi$.
+    Hence $\NATzero \SETin \Phi$.
   \end{proof}
 
-  (2) For all $n' \in \Phi$ we have $n' \NATplus \NATone \in \Phi$.
+  (2) For all $n' \SETin \Phi$ we have $n' \NATplus \NATone \SETin \Phi$.
   \begin{proof}
-    Let $n' \in \Phi$.
+    Let $n' \SETin \Phi$.
 
     Let us show that there exist natural numbers $q, r$ such that $r \NATless m$ and $n' \NATplus \NATone \eq (m \NATmul q) \NATplus r$.
       Take natural numbers $q', r'$ such that $r' \NATless m$ and $n' \eq (m \NATmul q') \NATplus r'$ (by a).
@@ -51,7 +51,7 @@
       \end{case}
     End.
 
-    Hence $n' \NATplus \NATone \in \Phi$.
+    Hence $n' \NATplus \NATone \SETin \Phi$.
   \end{proof}
 
   Then $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).

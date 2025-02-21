@@ -8,7 +8,7 @@
 
 \begin{definition}[forthel,id=FOUNDATIONS_14_3625613501923328]
   Let $n, m$ be natural numbers.
-  $\emph{\NATsegment{n}{m}} = \{ k \in \Nat \mid n \NATleq k \NATleq m \}$.
+  $\emph{\NATsegment{n}{m}} = \{ k \SETin \Nat \mid n \NATleq k \NATleq m \}$.
 \end{definition}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_14_145331933151232]
@@ -21,7 +21,7 @@
   \begin{case}{$n \eq \NATzero$.}
     Then $\NATsegment{\NATone}{n} \eq \SETempty$.
     Thus $\NATsegment{\NATone}{m} \eq \SETempty$.
-    Hence there exists no $k \in \Nat$ such that $\NATone \NATleq k \NATleq m$.
+    Hence there exists no $k \SETin \Nat$ such that $\NATone \NATleq k \NATleq m$.
     Therefore $m \eq \NATzero$.
     Consequently $n \eq m$.
   \end{case}
@@ -29,14 +29,14 @@
   \begin{case}{$m \eq \NATzero$.}
     Then $\NATsegment{\NATone}{m} \eq \SETempty$.
     Thus $\NATsegment{\NATone}{n} \eq \SETempty$.
-    Hence there exists no $k \in \Nat$ such that $\NATone \NATleq k \NATleq n$.
+    Hence there exists no $k \SETin \Nat$ such that $\NATone \NATleq k \NATleq n$.
     Therefore $n \eq \NATzero$.
     Consequently $n \eq m$.
   \end{case}
 
   \begin{case}{$n, m \NATgeq \NATone$.}
-    For all $k \in \Nat$ we have $\NATone \NATleq k \NATleq n$ iff $\NATone \NATleq k \NATleq m$.
-    Hence for all $k \in \Nat$ we have $k \NATleq n$ iff $k \NATleq m$.
+    For all $k \SETin \Nat$ we have $\NATone \NATleq k \NATleq n$ iff $\NATone \NATleq k \NATleq m$.
+    Hence for all $k \SETin \Nat$ we have $k \NATleq n$ iff $k \NATleq m$.
 
     Let us show by contradiction that $n \eq m$.
       Suppose $n \neq m$.

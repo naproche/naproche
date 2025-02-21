@@ -12,13 +12,13 @@
 \begin{proof}[forthel]
   Every ordinal is contained in the domain of some map $H$ to $A$ such that $H$ is recursive regarding $G$.
   \begin{proof}
-    Define \[ \Phi = \class{\alpha \in \Ord | \classtext{$\alpha$ is contained in the domain of some map to $A$ that is recursive regarding $G$}}. \]
+    Define \[ \Phi = \class{\alpha \SETin \Ord | \classtext{$\alpha$ is contained in the domain of some map to $A$ that is recursive regarding $G$}}. \]
 
-    Let us show that for every ordinal $\alpha$ if every ordinal less than $\alpha$ lies in $\Phi$ then $\alpha \in \Phi$.
+    Let us show that for every ordinal $\alpha$ if every ordinal less than $\alpha$ lies in $\Phi$ then $\alpha \SETin \Phi$.
       Let $\alpha$ be an ordinal.
       Assume that every ordinal less than $\alpha$ lies in $\Phi$.
-      Then for all $y \in \alpha$ there exists a map $h$ to $A$ such that $h$ is recursive regarding $G$ and $y \in \dom(h)$.
-      Define $H'(y) =$ ``choose a map $h$ to $A$ such that $h$ is recursive regarding $G$ and $y \in \dom(h)$ in $h(y)$'' for $y \in \alpha$.
+      Then for all $y \SETin \alpha$ there exists a map $h$ to $A$ such that $h$ is recursive regarding $G$ and $y \SETin \FUNdom(h)$.
+      Define $H'(y) =$ ``choose a map $h$ to $A$ such that $h$ is recursive regarding $G$ and $y \SETin \FUNdom(h)$ in $h(y)$'' for $y \SETin \alpha$.
       Then $H'$ is a map from $\alpha$ to $A$.
       We have $H' \eq H' \FUNrest \alpha$.
       Define \[ H(\beta) =
@@ -26,32 +26,32 @@
           H'(\beta)                 & : \beta \ORDless \alpha \\
           G(H' \FUNrest \beta)  & : \beta \eq \alpha
         \end{cases} \]
-      for $\beta \in \ORDsucc(\alpha)$.
+      for $\beta \SETin \ORDsucc(\alpha)$.
       
-      Let us show that $H \FUNrest \beta \in \ORDfunspace{A}$ for all $\beta \in \dom(H)$.
-        Let $\beta \in \dom(H)$.
-        $\dom(H \FUNrest \beta) \eq \beta$ and $(H \FUNrest \beta)(b) \eq H(b)$ for all $b \in \beta$.
-        $H(b) \in A$ for all $b \in \beta$.
+      Let us show that $H \FUNrest \beta \SETin \ORDfunspace{A}$ for all $\beta \SETin \FUNdom(H)$.
+        Let $\beta \SETin \FUNdom(H)$.
+        $\FUNdom(H \FUNrest \beta) \eq \beta$ and $(H \FUNrest \beta)(b) \eq H(b)$ for all $b \SETin \beta$.
+        $H(b) \SETin A$ for all $b \SETin \beta$.
         Hence $H \FUNrest \beta$ is a map from $\beta$ to $A$.
       End.
 
-      (a) $\dom(H)$ is a transitive subclass of $\Ord$.
+      (a) $\FUNdom(H)$ is a transitive subclass of $\Ord$.
 
-      (b) For all $\beta \in \dom(H)$ we have $H(\beta) \eq G(H \FUNrest \beta)$.
+      (b) For all $\beta \SETin \FUNdom(H)$ we have $H(\beta) \eq G(H \FUNrest \beta)$.
       \begin{proof}
-        Let $\beta \in \dom(H)$.
+        Let $\beta \SETin \FUNdom(H)$.
         Then $\beta \ORDless \alpha$ or $\beta \eq \alpha$.
 
         \begin{case}{$\beta \ORDless \alpha$.}
-          Choose a map $h$ to $A$ such that $h$ is recursive regarding $G$ and $\beta \in \dom(h)$ and $H'(\beta) \eq h(\beta)$.
+          Choose a map $h$ to $A$ such that $h$ is recursive regarding $G$ and $\beta \SETin \FUNdom(h)$ and $H'(\beta) \eq h(\beta)$.
 
-          Let us show that for all $y \in \beta$ we have $h(y) \eq H(y)$.
-            Let $y \in \beta$.
+          Let us show that for all $y \SETin \beta$ we have $h(y) \eq H(y)$.
+            Let $y \SETin \beta$.
             Then $H(y) \eq H'(y)$.
-            Choose a map $h'$ to $A$ such that $h'$ is recursive regarding $G$ and $y \in \dom(h')$ and $H'(y) \eq h'(y)$.
+            Choose a map $h'$ to $A$ such that $h'$ is recursive regarding $G$ and $y \SETin \FUNdom(h')$ and $H'(y) \eq h'(y)$.
             [prover vampire]
             Then $h'(y) \eq h(y)$ (by \nameref{ransfinite-recursion_coincidence}).
-            Indeed $y \in \dom(h) \SETintersect \dom(h')$.
+            Indeed $y \SETin \FUNdom(h) \SETintersect \FUNdom(h')$.
           End.
 
           Hence $h \FUNrest \beta \eq H \FUNrest \beta$.
@@ -67,8 +67,8 @@
         \end{case}
       \end{proof}
 
-      Hence $H$ is a map to $A$ such that $H$ is recursive regarding $G$ and $\alpha \in \dom(H)$.
-      Thus $\alpha \in \Phi$.
+      Hence $H$ is a map to $A$ such that $H$ is recursive regarding $G$ and $\alpha \SETin \FUNdom(H)$.
+      Thus $\alpha \SETin \Phi$.
     End.
 
     [prover vampire]
@@ -76,24 +76,24 @@
     Consequently every ordinal is contained in the domain of some map $H$ to $A$ such that $H$ is recursive regarding $G$.
   \end{proof}
 
-  Define $F(\alpha) =$ ``choose a map $H$ to $A$ such that $H$ is recursive regarding $G$ and $\alpha \in \dom(H)$ in $H(\alpha)$'' for $\alpha \in \Ord$.
+  Define $F(\alpha) =$ ``choose a map $H$ to $A$ such that $H$ is recursive regarding $G$ and $\alpha \SETin \FUNdom(H)$ in $H(\alpha)$'' for $\alpha \SETin \Ord$.
   Then $F$ is a map from $\Ord$ to $A$.
 
   $F$ is recursive regarding $G$.
   \begin{proof}
-    (a) $\dom(F)$ is a transitive subclass of $\Ord$.
+    (a) $\FUNdom(F)$ is a transitive subclass of $\Ord$.
 
-    (b) For all $\alpha \in \Ord$ we have $F(\alpha) \eq G(F \FUNrest \alpha)$.
+    (b) For all $\alpha \SETin \Ord$ we have $F(\alpha) \eq G(F \FUNrest \alpha)$.
     \begin{proof}
-      Let $\alpha \in \Ord$.
-      Choose a map $H$ to $A$ such that $H$ is recursive regarding $G$ and $\alpha \in \dom(H)$ and $F(\alpha) \eq H(\alpha)$.
+      Let $\alpha \SETin \Ord$.
+      Choose a map $H$ to $A$ such that $H$ is recursive regarding $G$ and $\alpha \SETin \FUNdom(H)$ and $F(\alpha) \eq H(\alpha)$.
 
-      Let us show that $F(\beta) \eq H(\beta)$ for all $\beta \in \alpha$.
-        Let $\beta \in \alpha$.
-        Choose a map $H'$ to $A$ such that $H'$ is recursive regarding $G$ and $\beta \in \dom(H')$ and $F(\beta) \eq H'(\beta)$.
+      Let us show that $F(\beta) \eq H(\beta)$ for all $\beta \SETin \alpha$.
+        Let $\beta \SETin \alpha$.
+        Choose a map $H'$ to $A$ such that $H'$ is recursive regarding $G$ and $\beta \SETin \FUNdom(H')$ and $F(\beta) \eq H'(\beta)$.
         [prover vampire]
         Then $H(\beta) \eq H'(\beta)$ (by \nameref{ransfinite-recursion_coincidence}).
-        Indeed $\beta \in \dom(H) \SETintersect \dom(H')$.
+        Indeed $\beta \SETin \FUNdom(H) \SETintersect \FUNdom(H')$.
         Therefore $F(\beta) \eq H'(\beta)$.
       End.
 
@@ -114,9 +114,9 @@
 \begin{proof}[forthel]
   [prover vampire]
   $F$ and $F'$ are recursive regarding $G$.
-  Then $F(\alpha) \eq F'(\alpha)$ for all $\alpha \in \dom(F) \SETintersect \dom(F')$ (by \nameref{ransfinite-recursion_coincidence}).
-  We have $\dom(F) \eq \Ord \eq \dom(F')$.
-  Hence $F(\alpha) \eq F'(\alpha)$ for all $\alpha \in \Ord$.
+  Then $F(\alpha) \eq F'(\alpha)$ for all $\alpha \SETin \FUNdom(F) \SETintersect \FUNdom(F')$ (by \nameref{ransfinite-recursion_coincidence}).
+  We have $\FUNdom(F) \eq \Ord \eq \FUNdom(F')$.
+  Hence $F(\alpha) \eq F'(\alpha)$ for all $\alpha \SETin \Ord$.
   Thus $F \eq F'$.
 \end{proof}
 \end{smodule}

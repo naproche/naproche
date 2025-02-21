@@ -34,21 +34,21 @@
     \begin{case}{$f$ is surjective onto $B$.}
       Then $B \eq \FUNrange(f)$.
       Let $b$ be an element of $B$.
-      Then $b \in \FUNrange(f)$.
+      Then $b \SETin \FUNrange(f)$.
       Hence $b$ is a value of $f$.
     \end{case}
 
     \begin{case}{every element of $B$ is a value of $f$.}
       Let us show that $B \SETinclude \FUNrange(f)$.
-        Let $b \in B$.
+        Let $b \SETin B$.
         Then $b$ is a value of $f$.
-        Hence $b \in \FUNrange(f)$.
+        Hence $b \SETin \FUNrange(f)$.
       End.
 
       Let us show that $\FUNrange(f) \SETinclude B$.
-        Let $b \in \FUNrange(f)$.
+        Let $b \SETin \FUNrange(f)$.
         Then $b$ is a value of $f$.
-        Hence $b \in B$.
+        Hence $b \SETin B$.
       End.
     \end{case}
   \end{proof}
@@ -57,7 +57,7 @@
 \begin{sfragment}{Injective Maps}
   \begin{definition}[forthel,id=FOUNDATIONS_08_605931408719872]
     Let $f$ be a map.
-    $f$ is \emph{injective} iff for all $a, a' \in \dom(f)$ if $f(a) \eq f(a')$ then $a \eq a'$.
+    $f$ is \emph{injective} iff for all $a, a' \SETin \FUNdom(f)$ if $f(a) \eq f(a')$ then $a \eq a'$.
 
     Let $\emph{f \FUNfrominto{A}{B}}$ stand for $f$ is an injective map from $A$ to $B$.
   \end{definition}
@@ -100,14 +100,14 @@
 
     (2) $\FUNid{A}$ is surjective onto $A$.
     \begin{proof}
-      Let $a \in A$.
+      Let $a \SETin A$.
       Then $a \eq \FUNid{A}(a)$.
-      Hence $a \in \FUNrange(\FUNid{A})$.
+      Hence $a \SETin \FUNrange(\FUNid{A})$.
     \end{proof}
 
     (3) $\FUNid{A}$ is injective.
     \begin{proof}
-      Let $a, a' \in A$.
+      Let $a, a' \SETin A$.
       Assume $\FUNid{A}(a) \eq \FUNid{A}(a')$.
       Then $a \eq a'$.
     \end{proof}
@@ -121,9 +121,9 @@
     $g \FUNcomp f$ is a map of $A$.
 
     Let us show that $g \FUNcomp f$ is surjective onto $C$.
-      Let $c \in C$.
-      Take $b \in B$ such that $c \eq g(b)$.
-      Take $a \in A$ such that $b \eq f(a)$.
+      Let $c \SETin C$.
+      Take $b \SETin B$ such that $c \eq g(b)$.
+      Take $a \SETin A$ such that $b \eq f(a)$.
       Then $c \eq g(f(a)) \eq (g \FUNcomp f)(a)$.
     End.
   \end{proof}
@@ -136,11 +136,11 @@
     $g \FUNcomp f$ is a map of $A$.
 
     Let us show that $g \FUNcomp f$ is injective.
-      Let $a, a' \in A$.
+      Let $a, a' \SETin A$.
       Assume $(g \FUNcomp f)(a) \eq (g \FUNcomp f)(a')$.
       Then $g(f(a)) \eq g(f(a'))$.
       Hence $f(a) \eq f(a')$.
-      Indeed $f(a), f(a') \in B$.
+      Indeed $f(a), f(a') \SETin B$.
       Thus $a \eq a'$.
     End.
   \end{proof}
@@ -160,7 +160,7 @@
     Then $f \FUNrest X$ is injective.
   \end{proposition}
   \begin{proof}[forthel]
-    Let $a, a' \in X$.
+    Let $a, a' \SETin X$.
     Assume $(f \FUNrest X)(a) \eq (f \FUNrest X)(a')$.
     Then $f(a) \eq f(a')$.
     Hence $a \eq a'$.

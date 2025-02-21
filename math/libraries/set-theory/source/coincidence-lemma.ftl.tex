@@ -9,39 +9,39 @@
 \begin{lemma}[forthel,title=Coincidence Lemma,id=transfinite-recursion_coincidence]
   Let $A$ be a class and $G$ be a map from $\ORDfunspace{A}$ to $A$.
   Let $H, H'$ be maps to $A$ that are recursive regarding $G$.
-  Then \[ H(\alpha) \eq H'(\alpha) \] for all $\alpha \in \dom(H) \SETintersect \dom(H')$.
+  Then \[ H(\alpha) \eq H'(\alpha) \] for all $\alpha \SETin \FUNdom(H) \SETintersect \FUNdom(H')$.
 \end{lemma}
 \begin{proof}[forthel]
-  Define $\Phi = \{ \alpha \in \Ord \mid\text{ if }
-  \alpha \in \dom(H) \SETintersect \dom(H')\text{ then }H(\alpha) \eq H'(\alpha) \}$.
+  Define $\Phi = \{ \alpha \SETin \Ord \mid\text{ if }
+  \alpha \SETin \FUNdom(H) \SETintersect \FUNdom(H')\text{ then }H(\alpha) \eq H'(\alpha) \}$.
 
-  For all ordinals $\alpha$ if every ordinal less than $\alpha$ lies in $\Phi$ then $\alpha \in \Phi$.
+  For all ordinals $\alpha$ if every ordinal less than $\alpha$ lies in $\Phi$ then $\alpha \SETin \Phi$.
   \begin{proof}
-    Let $\alpha \in \Ord$.
-    Assume that every $y \in \alpha$ lies in $\Phi$.
+    Let $\alpha \SETin \Ord$.
+    Assume that every $y \SETin \alpha$ lies in $\Phi$.
 
-    Let us show that if $\alpha \in \dom(H) \SETintersect \dom(H')$ then
+    Let us show that if $\alpha \SETin \FUNdom(H) \SETintersect \FUNdom(H')$ then
     $H(\alpha) \eq H'(\alpha)$.
-      Suppose $\alpha \in \dom(H) \SETintersect \dom(H')$.
-      Then $\alpha \SETinclude \dom(H), \dom(H')$.
-      Indeed $\dom(H)$ and $\dom(H')$ are transitive classes.
-      Hence for all $y \in \alpha$ we have $y \in \dom(H) \SETintersect \dom(H')$.
-      Thus $H(y) \eq H'(y)$ for all $y \in \alpha$.
+      Suppose $\alpha \SETin \FUNdom(H) \SETintersect \FUNdom(H')$.
+      Then $\alpha \SETinclude \FUNdom(H), \FUNdom(H')$.
+      Indeed $\FUNdom(H)$ and $\FUNdom(H')$ are transitive classes.
+      Hence for all $y \SETin \alpha$ we have $y \SETin \FUNdom(H) \SETintersect \FUNdom(H')$.
+      Thus $H(y) \eq H'(y)$ for all $y \SETin \alpha$.
       Therefore $H \FUNrest \alpha \eq H' \FUNrest \alpha$.
       $H$ and $H'$ are recursive regarding $G$.
-      We have $H \FUNrest \alpha, H' \FUNrest \alpha \in \ORDfunspace{A}$.
+      We have $H \FUNrest \alpha, H' \FUNrest \alpha \SETin \ORDfunspace{A}$.
       Hence $H(\alpha)
         \eq G(H \FUNrest \alpha)
         \eq G(H' \FUNrest \alpha)
         \eq H'(\alpha)$.
     End.
 
-    Thus $\alpha \in \Phi$.
+    Thus $\alpha \SETin \Phi$.
   \end{proof}
 
   [prover vampire]
   Then $\Phi$ contains every ordinal (by \printref{SET_THEORY_02_8493935460614144}).
-  Therefore we have $H(\alpha) \eq H'(\alpha)$ for all $\alpha \in \dom(H) \SETintersect \dom(H')$.
+  Therefore we have $H(\alpha) \eq H'(\alpha)$ for all $\alpha \SETin \FUNdom(H) \SETintersect \FUNdom(H')$.
 \end{proof}
 \end{smodule}
 \end{document}

@@ -8,35 +8,35 @@
 
 \begin{definition}[forthel,id=dedekind_209358491059836]
   Let $a$ be an object and $f$ be a map.
-  Let $\varphi$ be a map from $\Nat$ to $\dom(f)$.
-  $\varphi$ is \emph{recursively defined by $a$ and $f$} iff $\varphi(\NATzero) = a$ and $\varphi(n \NATplus 1) = f(\varphi(n))$ for every $n \in \Nat$.
+  Let $\varphi$ be a map from $\Nat$ to $\FUNdom(f)$.
+  $\varphi$ is \emph{recursively defined by $a$ and $f$} iff $\varphi(\NATzero) = a$ and $\varphi(n \NATplus 1) = f(\varphi(n))$ for every $n \SETin \Nat$.
 \end{definition}
 
 \begin{theorem}[forthel,title=Dedekind's Recursion Theorem: Existence,id=dedekind_existence]
-  Let $A$ be a set and $a \in A$ and $f \FUNfromto{A}{A}$.
+  Let $A$ be a set and $a \SETin A$ and $f \FUNfromto{A}{A}$.
   Then there exists a $\varphi \FUNfromto{\Nat}{A}$ that is recursively defined by $a$ and $f$.
 \end{theorem}
 \begin{proof}[forthel]
-  (a) Define \[ \Phi = \class{H \in \SETpow(\Nat \SETprod A) | \classtext{$(\NATzero, a) \in H$ and for all $n \in \Nat$ and all $x \in A$ if $(n, x) \in H$ then $(n \NATplus 1, f(x)) \in H$}}. \]
+  (a) Define \[ \Phi = \class{H \SETin \SETpow(\Nat \SETprod A) | \classtext{$(\NATzero, a) \SETin H$ and for all $n \SETin \Nat$ and all $x \SETin A$ if $(n, x) \SETin H$ then $(n \NATplus 1, f(x)) \SETin H$}}. \]
 
-  Let us show that $\SETintersectover \Phi \in \Phi$.
+  Let us show that $\SETintersectover \Phi \SETin \Phi$.
   \begin{proof}
-    (\NATzero) $\Nat \SETprod A \in \Phi$.
+    (\NATzero) $\Nat \SETprod A \SETin \Phi$.
     \begin{proof}
-      (i) $\Nat \SETprod A \in \SETpow(\Nat \SETprod A)$.
+      (i) $\Nat \SETprod A \SETin \SETpow(\Nat \SETprod A)$.
 
-      (ii) $(\NATzero,a) \in \Nat \SETprod A$.
+      (ii) $(\NATzero,a) \SETin \Nat \SETprod A$.
 
-      (iii) for all $n \in \Nat$ and all $x \in A$ if $(n, x) \in \Nat \SETprod A$ then $(n \NATplus 1, f(x)) \in \Nat \SETprod A$.
+      (iii) for all $n \SETin \Nat$ and all $x \SETin A$ if $(n, x) \SETin \Nat \SETprod A$ then $(n \NATplus 1, f(x)) \SETin \Nat \SETprod A$.
       \begin{proof}
-        Let $n \in \Nat$ and $x \in A$.
-        Assume $(n,x) \in \Nat \SETprod A$.
-        We have $n \NATplus 1 \in \Nat$ and $f(x) \in A$.
-        Hence $(n \NATplus 1, f(x)) \in \Nat \SETprod A$.
+        Let $n \SETin \Nat$ and $x \SETin A$.
+        Assume $(n,x) \SETin \Nat \SETprod A$.
+        We have $n \NATplus 1 \SETin \Nat$ and $f(x) \SETin A$.
+        Hence $(n \NATplus 1, f(x)) \SETin \Nat \SETprod A$.
       \end{proof}
     \end{proof}
 
-    (1) $\SETintersectover \Phi \in \SETpow(\Nat \SETprod A)$.
+    (1) $\SETintersectover \Phi \SETin \SETpow(\Nat \SETprod A)$.
     \begin{proof}
       Any element of $\SETintersectover \Phi$ is contained in every element of $\Phi$.
       Hence any element of $\SETintersectover \Phi$ is contained in $\Nat \SETprod A$.
@@ -45,82 +45,82 @@
       Hence $\SETintersectover \Phi$ is a subset of $\Nat \SETprod A$.
     \end{proof}
 
-    (2) $(\NATzero, a) \in \SETintersectover \Phi$.
-    Indeed $(\NATzero, a) \in \Nat \SETprod A \in \Phi$.
+    (2) $(\NATzero, a) \SETin \SETintersectover \Phi$.
+    Indeed $(\NATzero, a) \SETin \Nat \SETprod A \SETin \Phi$.
 
-    (3) For all $n \in \Nat$ and all $x \in A$ if $(n, x) \in
-    \SETintersectover \Phi$ then $(n \NATplus 1, f(x)) \in \SETintersectover \Phi$.
+    (3) For all $n \SETin \Nat$ and all $x \SETin A$ if $(n, x) \SETin
+    \SETintersectover \Phi$ then $(n \NATplus 1, f(x)) \SETin \SETintersectover \Phi$.
     \begin{proof}
-      Let $n \in \Nat$ and $x \in A$.
-      Assume $(n, x) \in \SETintersectover \Phi$.
+      Let $n \SETin \Nat$ and $x \SETin A$.
+      Assume $(n, x) \SETin \SETintersectover \Phi$.
       Then $(n, x)$ is contained in every element of $\Phi$.
       Hence $(n \NATplus 1, f(x))$ is contained in every element of $\Phi$.
-      Thus $(n \NATplus 1, f(x)) \in \SETintersectover \Phi$.
+      Thus $(n \NATplus 1, f(x)) \SETin \SETintersectover \Phi$.
     \end{proof}
 
-    Therefore $\SETintersectover \Phi \in \Phi$ (by a).
+    Therefore $\SETintersectover \Phi \SETin \Phi$ (by a).
   \end{proof}
 
-  Let us show that for any $n \in \Nat$ there exists an $x \in A$ such
-  that $(n, x) \in \SETintersectover \Phi$.
+  Let us show that for any $n \SETin \Nat$ there exists an $x \SETin A$ such
+  that $(n, x) \SETin \SETintersectover \Phi$.
   \begin{proof}
-    Define $\Psi = \{ n \in \Nat \mid \text{ there exists an }x \in A\text{ such
-    that }(n, x) \in \SETintersectover \Phi \}$.
+    Define $\Psi = \{ n \SETin \Nat \mid \text{ there exists an }x \SETin A\text{ such
+    that }(n, x) \SETin \SETintersectover \Phi \}$.
 
     (1) $\NATzero$ is contained in $\Psi$.
-    Indeed $(\NATzero, a) \in \SETintersectover \Phi$.
+    Indeed $(\NATzero, a) \SETin \SETintersectover \Phi$.
 
-    (2) For all $n \in \Psi$ we have $n \NATplus 1 \in \Psi$.
+    (2) For all $n \SETin \Psi$ we have $n \NATplus 1 \SETin \Psi$.
     \begin{proof}
-      Let $n \in \Psi$.
-      Take an $x \in A$ such that $(n, x) \in \SETintersectover \Phi$.
-      Then $(n \NATplus 1, f(x)) \in \SETintersectover \Phi$.
-      Hence $n \NATplus 1 \in \Psi$.
-      Indeed $f(x) \in A$.
+      Let $n \SETin \Psi$.
+      Take an $x \SETin A$ such that $(n, x) \SETin \SETintersectover \Phi$.
+      Then $(n \NATplus 1, f(x)) \SETin \SETintersectover \Phi$.
+      Hence $n \NATplus 1 \SETin \Psi$.
+      Indeed $f(x) \SETin A$.
     \end{proof}
 
-    Therefore $n \in \Psi$ for every $n \in \Nat$ (by \printref{ARITHMETIC_01_4764664342773760}).
+    Therefore $n \SETin \Psi$ for every $n \SETin \Nat$ (by \printref{ARITHMETIC_01_4764664342773760}).
   \end{proof}
 
-  Let us show that for all $n \in \Nat$ and all $x, y \in A$ if
-  $(n, x), (n, y) \in \SETintersectover \Phi$ then $x \eq y$.
+  Let us show that for all $n \SETin \Nat$ and all $x, y \SETin A$ if
+  $(n, x), (n, y) \SETin \SETintersectover \Phi$ then $x \eq y$.
   \begin{proof}
-    (b) Define $\Theta = \{ n \in \Nat \mid \text{ for all }x, y \in A\text{ if }
-    (n, x), (n, y) \in \SETintersectover \Phi\text{ then }x \eq y \}$.
+    (b) Define $\Theta = \{ n \SETin \Nat \mid \text{ for all }x, y \SETin A\text{ if }
+    (n, x), (n, y) \SETin \SETintersectover \Phi\text{ then }x \eq y \}$.
 
     (1) $\Theta$ contains $\NATzero$.
     \begin{proof}
-      Let us show that for all $x, y \in A$ if $(\NATzero, x), (\NATzero, y) \in
+      Let us show that for all $x, y \SETin A$ if $(\NATzero, x), (\NATzero, y) \SETin
       \SETintersectover \Phi$ then $x \eq y$.
-        Let $x, y \in A$.
-        Assume $(\NATzero, x), (\NATzero, y) \in \SETintersectover \Phi$.
+        Let $x, y \SETin A$.
+        Assume $(\NATzero, x), (\NATzero, y) \SETin \SETintersectover \Phi$.
 
         Let us show that $x, y \eq a$.
           Assume $x \neq a$ or $y \neq a$.
 
           \begin{case}{$x \neq a$.}
             $(\NATzero,x), (\NATzero,a)$ are contained in every element of $\Phi$.
-            Then $(\NATzero,x), (\NATzero,a) \in \SETintersectover \Phi$.
+            Then $(\NATzero,x), (\NATzero,a) \SETin \SETintersectover \Phi$.
             Take $H \eq (\SETintersectover \Phi) \SETdiff \SETsingleton{(\NATzero,x)}$.
 
-            Let us show that $H \in \Phi$.
-              (1) $H \in \SETpow(\Nat \SETprod A)$.
+            Let us show that $H \SETin \Phi$.
+              (1) $H \SETin \SETpow(\Nat \SETprod A)$.
 
-              (2) $(\NATzero,a) \in H$.
+              (2) $(\NATzero,a) \SETin H$.
 
-              (3) For all $n \in \Nat$ and all $b \in A$ if
-              $(n,b) \in H$ then $(n \NATplus 1, f(b)) \in H$.
+              (3) For all $n \SETin \Nat$ and all $b \SETin A$ if
+              $(n,b) \SETin H$ then $(n \NATplus 1, f(b)) \SETin H$.
               \begin{proof}
-                Let $n \in \Nat$ and $b \in A$.
-                Assume $(n,b) \in H$.
-                Then $(n \NATplus 1, f(b)) \in \SETintersectover \Phi$.
+                Let $n \SETin \Nat$ and $b \SETin A$.
+                Assume $(n,b) \SETin H$.
+                Then $(n \NATplus 1, f(b)) \SETin \SETintersectover \Phi$.
                 We have $(n \NATplus 1, f(b)) \neq (\NATzero,x)$ (by \printref{FOUNDATIONS_04_8464577431863296}).
                 Indeed $n \NATplus 1 \neq \NATzero$.
-                Hence $(n \NATplus 1, f(b)) \in H$.
+                Hence $(n \NATplus 1, f(b)) \SETin H$.
               \end{proof}
 
               [prover vampire]
-              Thus $H \in \Phi$ (by a).
+              Thus $H \SETin \Phi$ (by a).
               [prover eprover]
             End.
 
@@ -130,28 +130,28 @@
 
           \begin{case}{$y \neq a$.}
             $(\NATzero,y), (\NATzero,a)$ are contained in every element of $\Phi$.
-            Then $(\NATzero,y), (\NATzero,a) \in \SETintersectover \Phi$.
+            Then $(\NATzero,y), (\NATzero,a) \SETin \SETintersectover \Phi$.
             Take $H \eq (\SETintersectover \Phi) \SETdiff \SETsingleton{(\NATzero,y)}$.
 
-            Let us show that $H \in \Phi$.
-              (1) $H \in \SETpow(\Nat \SETprod A)$.
+            Let us show that $H \SETin \Phi$.
+              (1) $H \SETin \SETpow(\Nat \SETprod A)$.
 
-              (2) $(\NATzero,a) \in H$.
+              (2) $(\NATzero,a) \SETin H$.
               Indeed $(\NATzero,a) \neq (\NATzero,y)$.
 
-              (3) For all $n \in \Nat$ and all $b \in A$ if
-              $(n,b) \in H$ then $(n \NATplus 1, f(b)) \in H$.
+              (3) For all $n \SETin \Nat$ and all $b \SETin A$ if
+              $(n,b) \SETin H$ then $(n \NATplus 1, f(b)) \SETin H$.
               \begin{proof}
-                Let $n \in \Nat$ and $b \in A$.
-                Assume $(n,b) \in H$.
-                Then $(n \NATplus 1, f(b)) \in \SETintersectover \Phi$.
+                Let $n \SETin \Nat$ and $b \SETin A$.
+                Assume $(n,b) \SETin H$.
+                Then $(n \NATplus 1, f(b)) \SETin \SETintersectover \Phi$.
                 We have $(n \NATplus 1, f(b)) \neq (\NATzero,y)$ (by \printref{FOUNDATIONS_04_8464577431863296}).
                 Indeed $n \NATplus 1 \neq \NATzero$.
-                Hence $(n \NATplus 1, f(b)) \in H$.
+                Hence $(n \NATplus 1, f(b)) \SETin H$.
               \end{proof}
 
               [prover vampire]
-              Thus $H \in \Phi$ (by a).
+              Thus $H \SETin \Phi$ (by a).
               [prover eprover]
             End.
 
@@ -162,83 +162,83 @@
       End.
     \end{proof}
 
-    (2) For all $n \in \Theta$ we have $n \NATplus 1 \in \Theta$.
+    (2) For all $n \SETin \Theta$ we have $n \NATplus 1 \SETin \Theta$.
     \begin{proof}
-      Let $n \in \Theta$.
-      Then for all $x, y \in A$ if $(n, x), (n, y) \in \SETintersectover \Phi$ then
+      Let $n \SETin \Theta$.
+      Then for all $x, y \SETin A$ if $(n, x), (n, y) \SETin \SETintersectover \Phi$ then
       $x \eq y$.
-      Consider a $b \in A$ such that $(n,b) \in \SETintersectover \Phi$.
-      Then $(n \NATplus 1, f(b)) \in \SETintersectover \Phi$.
+      Consider a $b \SETin A$ such that $(n,b) \SETin \SETintersectover \Phi$.
+      Then $(n \NATplus 1, f(b)) \SETin \SETintersectover \Phi$.
 
-      Let us show that for all $x, y \in A$ if $(n \NATplus 1, x),
-      (n \NATplus 1, y) \in \SETintersectover \Phi$ then $x \eq f(b) \eq y$.
-        Let $x, y \in A$.
-        Assume $(n \NATplus 1, x), (n \NATplus 1, y) \in \SETintersectover \Phi$.
+      Let us show that for all $x, y \SETin A$ if $(n \NATplus 1, x),
+      (n \NATplus 1, y) \SETin \SETintersectover \Phi$ then $x \eq f(b) \eq y$.
+        Let $x, y \SETin A$.
+        Assume $(n \NATplus 1, x), (n \NATplus 1, y) \SETin \SETintersectover \Phi$.
         Suppose $x \neq f(b)$ or $y \neq f(b)$.
 
         \begin{case}{$x \neq f(b)$.}
           Take $H \eq (\SETintersectover \Phi) \SETdiff \SETsingleton{(n \NATplus 1,x)}$.
 
-          (i) $H \in \SETpow(\Nat \SETprod A)$.
+          (i) $H \SETin \SETpow(\Nat \SETprod A)$.
 
-          (ii) $(\NATzero,a) \in H$.
+          (ii) $(\NATzero,a) \SETin H$.
           \begin{proof}
-            $(\NATzero,a) \in \SETintersectover \Phi$.
-            $(\NATzero,a) \notin \SETsingleton{(n \NATplus 1,x)}$.
+            $(\NATzero,a) \SETin \SETintersectover \Phi$.
+            $(\NATzero,a) \SETnotin \SETsingleton{(n \NATplus 1,x)}$.
             Indeed $(\NATzero,a) \neq (n \NATplus 1,x)$ (by \printref{FOUNDATIONS_04_8464577431863296}).
             Indeed $\NATzero \neq n \NATplus 1$.
           \end{proof}
 
-          (iii) For all $m \in \Nat$ and all $z \in A$ if $(m,z) \in H$ then $(m \NATplus 1,f(z)) \in H$.
+          (iii) For all $m \SETin \Nat$ and all $z \SETin A$ if $(m,z) \SETin H$ then $(m \NATplus 1,f(z)) \SETin H$.
           \begin{proof}
-            Let $m \in \Nat$ and $z \in A$.
-            Assume $(m,z) \in H$.
-            Then $(m,z) \in \SETintersectover \Phi$.
-            Hence $(m \NATplus 1,f(z)) \in \SETintersectover \Phi$.
+            Let $m \SETin \Nat$ and $z \SETin A$.
+            Assume $(m,z) \SETin H$.
+            Then $(m,z) \SETin \SETintersectover \Phi$.
+            Hence $(m \NATplus 1,f(z)) \SETin \SETintersectover \Phi$.
             $(m \NATplus 1,f(z)) \neq (n \NATplus 1,x)$ (by \printref{FOUNDATIONS_04_8464577431863296}).
             Indeed if $(m \NATplus 1,f(z)) \eq (n \NATplus 1,x)$ then $m \eq n$ and $f(z) \eq x$ (by \printref{FOUNDATIONS_04_8464577431863296}, \printref{ARITHMETIC_01_3604163883696128}).
-            Thus $(m \NATplus 1,f(z)) \notin \SETsingleton{(n \NATplus 1,x)}$.
-            Therefore $(m \NATplus 1,f(z)) \in H$.
+            Thus $(m \NATplus 1,f(z)) \SETnotin \SETsingleton{(n \NATplus 1,x)}$.
+            Therefore $(m \NATplus 1,f(z)) \SETin H$.
           \end{proof}
 
           [prover vampire]
-          Thus $H \in \Phi$ (by a, i, ii, iii).
+          Thus $H \SETin \Phi$ (by a, i, ii, iii).
           [prover eprover]
           Therefore every element of $\SETintersectover \Phi$ is contained in $H$.
-          Consequently $(n \NATplus 1,x) \in H$.
+          Consequently $(n \NATplus 1,x) \SETin H$.
           Contradiction.
         \end{case}
 
         \begin{case}{$y \neq f(b)$.}
           Take $H \eq (\SETintersectover \Phi) \SETdiff \SETsingleton{(n \NATplus 1,y)}$.
 
-          (i) $H \in \SETpow(\Nat \SETprod A)$.
+          (i) $H \SETin \SETpow(\Nat \SETprod A)$.
 
-          (ii) $(\NATzero,a) \in H$.
+          (ii) $(\NATzero,a) \SETin H$.
           \begin{proof}
-            $(\NATzero,a) \in \SETintersectover \Phi$.
-            $(\NATzero,a) \notin \SETsingleton{(n \NATplus 1,y)}$.
+            $(\NATzero,a) \SETin \SETintersectover \Phi$.
+            $(\NATzero,a) \SETnotin \SETsingleton{(n \NATplus 1,y)}$.
             Indeed $(\NATzero,a) \neq (n \NATplus 1,y)$ (by \printref{FOUNDATIONS_04_8464577431863296}).
             Indeed $\NATzero \neq n \NATplus 1$.
           \end{proof}
 
-          (iii) For all $m \in \Nat$ and all $z \in A$ if $(m,z) \in H$ then $(m \NATplus 1,f(z)) \in H$.
+          (iii) For all $m \SETin \Nat$ and all $z \SETin A$ if $(m,z) \SETin H$ then $(m \NATplus 1,f(z)) \SETin H$.
           \begin{proof}
-            Let $m \in \Nat$ and $z \in A$.
-            Assume $(m,z) \in H$.
-            Then $(m,z) \in \SETintersectover \Phi$.
-            Hence $(m \NATplus 1,f(z)) \in \SETintersectover \Phi$.
+            Let $m \SETin \Nat$ and $z \SETin A$.
+            Assume $(m,z) \SETin H$.
+            Then $(m,z) \SETin \SETintersectover \Phi$.
+            Hence $(m \NATplus 1,f(z)) \SETin \SETintersectover \Phi$.
             $(m \NATplus 1,f(z)) \neq (n \NATplus 1,y)$ (by \printref{FOUNDATIONS_04_8464577431863296}).
             Indeed if $(m \NATplus 1,f(z)) \eq (n \NATplus 1,y)$ then $m \eq n$ and $f(z) \eq y$ (by \printref{FOUNDATIONS_04_8464577431863296}, \printref{ARITHMETIC_01_3604163883696128}).
-            Thus $(m \NATplus 1,f(z)) \notin \SETsingleton{(n \NATplus 1,y)}$.
-            Therefore $(m \NATplus 1,f(z)) \in H$.
+            Thus $(m \NATplus 1,f(z)) \SETnotin \SETsingleton{(n \NATplus 1,y)}$.
+            Therefore $(m \NATplus 1,f(z)) \SETin H$.
           \end{proof}
 
           [prover vampire]
-          Thus $H \in \Phi$ (by a, i, ii, iii).
+          Thus $H \SETin \Phi$ (by a, i, ii, iii).
           [prover eprover]
           Therefore every element of $\SETintersectover \Phi$ is contained in $H$.
-          Consequently $(n \NATplus 1,y) \in H$.
+          Consequently $(n \NATplus 1,y) \SETin H$.
           Contradiction.
         \end{case}
 
@@ -246,45 +246,45 @@
         Consequently $x \eq f(b) \eq y$.
       End.
 
-      Therefore $n \NATplus 1 \in \Theta$ (by a).
+      Therefore $n \NATplus 1 \SETin \Theta$ (by a).
     \end{proof}
 
-    Consequently $n \in \Theta$ for every $n \in \Nat$ (by \printref{ARITHMETIC_01_4764664342773760}).
+    Consequently $n \SETin \Theta$ for every $n \SETin \Nat$ (by \printref{ARITHMETIC_01_4764664342773760}).
   \end{proof}
 
-  Define $\varphi(n) =$ ``choose $x \in A$ such that $(n, x) \in
-  \SETintersectover \Phi$ in $x$'' for $n \in \Nat$.
+  Define $\varphi(n) =$ ``choose $x \SETin A$ such that $(n, x) \SETin
+  \SETintersectover \Phi$ in $x$'' for $n \SETin \Nat$.
 
   (1) Then $\varphi$ is a map from $\Nat$ to $A$ and we have
   $\varphi(\NATzero) \eq a$.
 
-  (2) For all $n \in \Nat$ we have $\varphi(n \NATplus 1) \eq
+  (2) For all $n \SETin \Nat$ we have $\varphi(n \NATplus 1) \eq
   f(\varphi(n))$.
   \begin{proof}
-    Let $n \in \Nat$.
-    Take $x \in A$ such that $\varphi(n) \eq x$.
-    Then $(n, x) \in \SETintersectover \Phi$.
-    Hence $(n \NATplus 1, f(\varphi(n))) \eq (n \NATplus 1, f(x)) \in \SETintersectover \Phi$.
+    Let $n \SETin \Nat$.
+    Take $x \SETin A$ such that $\varphi(n) \eq x$.
+    Then $(n, x) \SETin \SETintersectover \Phi$.
+    Hence $(n \NATplus 1, f(\varphi(n))) \eq (n \NATplus 1, f(x)) \SETin \SETintersectover \Phi$.
     Thus $\varphi(n \NATplus 1) \eq f(\varphi(n))$ (by a).
   \end{proof}
 \end{proof}
 
 \begin{theorem}[forthel,title=Dedekind's Recursion Theorem: Uniqueness,id=dedekind_uniqueness]
-  Let $A$ be a set and $a \in A$ and $f \FUNfromto{A}{A}$.
+  Let $A$ be a set and $a \SETin A$ and $f \FUNfromto{A}{A}$.
   Let $\varphi, \varphi' \FUNfromto{\Nat}{A}$.
   Assume that $\varphi$ and $\varphi'$ are recursively defined by $a$ and
   $f$.
   Then $\varphi \eq \varphi'$.
 \end{theorem}
 \begin{proof}[forthel]
-  Define $\Phi = \{ n \in \Nat \mid \varphi(n) \eq \varphi'(n) \}$.
+  Define $\Phi = \{ n \SETin \Nat \mid \varphi(n) \eq \varphi'(n) \}$.
 
   (1) $\Phi$ contains $\NATzero$.
   Indeed $\varphi(\NATzero) \eq a \eq \varphi'(\NATzero)$.
 
-  (2) For all $n \in \Phi$ we have $n \NATplus 1 \in \Phi$.
+  (2) For all $n \SETin \Phi$ we have $n \NATplus 1 \SETin \Phi$.
   \begin{proof}
-    Let $n \in \Phi$.
+    Let $n \SETin \Phi$.
     Then $\varphi(n) \eq \varphi'(n)$.
     Hence $\varphi(n \NATplus 1)
       \eq f(\varphi(n))
@@ -293,7 +293,7 @@
     \end{proof}
 
   Thus $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).
-  Consequently $\varphi(n) \eq \varphi'(n)$ for each $n \in \Nat$.
+  Consequently $\varphi(n) \eq \varphi'(n)$ for each $n \SETin \Nat$.
 \end{proof}
 \end{smodule}
 \end{document}

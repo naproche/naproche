@@ -67,7 +67,7 @@
   Then $\SETcard{y} \ORDleq \SETcard{x}$.
 \end{corollary}
 \begin{proof}[forthel]
-  Define $f(v) = v$ for $v \in y$.
+  Define $f(v) = v$ for $v \SETin y$.
   Then $f$ is an injective map from $y$ to $x$.
   Hence $\SETcard{y} \ORDleq \SETcard{x}$.
 \end{proof}
@@ -90,13 +90,13 @@
 \begin{proof}[forthel]
   \begin{case}{there exists a surjective map from $x$ onto $y$.}
     Consider a surjective map $f$ from $x$ onto $y$.
-    Define $g(v) =$ ``choose $u \in x$ such that $f(u) \eq v$ in $u$'' for $v \in y$.
+    Define $g(v) =$ ``choose $u \SETin x$ such that $f(u) \eq v$ in $u$'' for $v \SETin y$.
     Then $g$ is an injective map from $y$ to $x$.
     Indeed we can show that $g$ is injective.
-      Let $v, v' \in y$.
+      Let $v, v' \SETin y$.
       Assume $g(v) \eq g(v')$.
-      Take $u \in x$ such that $f(u) \eq v$ and $g(v) \eq u$.
-      Take $u' \in x$ such that $f(u') \eq v'$ and $g(v') \eq u'$.
+      Take $u \SETin x$ such that $f(u) \eq v$ and $g(v) \eq u$.
+      Take $u' \SETin x$ such that $f(u') \eq v'$ and $g(v') \eq u'$.
       Then $v
         \eq f(u)
         \eq f(g(v))
@@ -113,14 +113,14 @@
     Consider an element $z$ of $y$.
     Define \[ g(u) =
       \begin{cases}
-        \FUNinv{f}(u) & : u \in \FUNrange(f) \\
-        z         & : u \notin \FUNrange(f)
+        \FUNinv{f}(u) & : u \SETin \FUNrange(f) \\
+        z         & : u \SETnotin \FUNrange(f)
       \end{cases} \]
-    for $u \in x$.
+    for $u \SETin x$.
     Then $g$ is a surjective map from $x$ onto $y$.
     Indeed we can show that every element of $y$ is a value of $g$.
-      Let $v \in y$.
-      Then $f(v) \in \FUNrange(f)$.
+      Let $v \SETin y$.
+      Then $f(v) \SETin \FUNrange(f)$.
       Hence $g(f(v)) \eq \FUNinv{f}(f(v)) \eq v$.
     End.
   \end{case}

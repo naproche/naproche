@@ -8,31 +8,31 @@
 
 \begin{definition}[forthel,id=FOUNDATIONS_14_4297814324543488]
   Let $X$ be a system of sets.
-  $X$ is \emph{closed under finite intersections} iff $\SETintersectover U \in X$ for every nonempty finite subclass $U$ of $X$.
+  $X$ is \emph{closed under finite intersections} iff $\SETintersectover U \SETin X$ for every nonempty finite subclass $U$ of $X$.
 \end{definition}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_17_1405012582334464]
   Let $X$ be a system of sets.
-  $X$ is closed under finite intersections iff $U \SETintersect V \in X$ for every $U, V \in X$.
+  $X$ is closed under finite intersections iff $U \SETintersect V \SETin X$ for every $U, V \SETin X$.
 \end{proposition}
 \begin{proof}[forthel]
   \begin{case}{$X$ is closed under finite intersections.}
-    Let $U, V \in X$.
+    Let $U, V \SETin X$.
     Then $\SETpair{U}{V}$ is a nonempty finite subclass of $X$.
-    Hence $U \SETintersect V \eq \SETintersectover \SETpair{U}{V} \in X$.
+    Hence $U \SETintersect V \eq \SETintersectover \SETpair{U}{V} \SETin X$.
   \end{case}
 
-  \begin{case}{$U \SETintersect V \in X$ for every $U, V \in X$.}
-    Define $\Phi = \{ n \in \Nat \mid \SETintersectover U \in X\text{ for every nonempty subclass }U\text{ of }X\text{ that has }n\text{ elements}\}$.
+  \begin{case}{$U \SETintersect V \SETin X$ for every $U, V \SETin X$.}
+    Define $\Phi = \{ n \SETin \Nat \mid \SETintersectover U \SETin X\text{ for every nonempty subclass }U\text{ of }X\text{ that has }n\text{ elements}\}$.
 
     (1) $\Phi$ contains $\NATzero$.
 
-    (2) For every $n \in \Phi$ we have $n \NATplus \NATone \in \Phi$.
+    (2) For every $n \SETin \Phi$ we have $n \NATplus \NATone \SETin \Phi$.
     \begin{proof}
-      Let $n \in \Phi$.
-      Then $\SETintersectover U \in X$ for every nonempty subclass $U$ of $X$ that has $n$ elements.
+      Let $n \SETin \Phi$.
+      Then $\SETintersectover U \SETin X$ for every nonempty subclass $U$ of $X$ that has $n$ elements.
 
-      Let us show that $\SETintersectover U \in X$ for every nonempty subclass $U$ of $X$ that has $n \NATplus \NATone$ elements.
+      Let us show that $\SETintersectover U \SETin X$ for every nonempty subclass $U$ of $X$ that has $n \NATplus \NATone$ elements.
 
         \begin{case}{$n \eq \NATzero$.} \end{case}
 
@@ -44,39 +44,39 @@
           We have $\NATsegment{\NATone}{n} \SETinclude \NATsegment{\NATone}{n \NATplus \NATone}$.
 
           Let us show that $V \SETinclude U$.
-            Let $x \in V$.
-            Take $k \in \NATsegment{\NATone}{n}$ such that $x \eq f(k)$.
-            Indeed we can show that there exists a $k \in \NATsegment{\NATone}{n}$ such that $x \eq f(k)$.
+            Let $x \SETin V$.
+            Take $k \SETin \NATsegment{\NATone}{n}$ such that $x \eq f(k)$.
+            Indeed we can show that there exists a $k \SETin \NATsegment{\NATone}{n}$ such that $x \eq f(k)$.
               Assume the contrary.
-              Then $x \neq f(k)$ for all $k \in \NATsegment{\NATone}{n}$.
-              Hence $x \notin \FUNim{f}{\NATsegment{\NATone}{n}} \eq V$.
+              Then $x \neq f(k)$ for all $k \SETin \NATsegment{\NATone}{n}$.
+              Hence $x \SETnotin \FUNim{f}{\NATsegment{\NATone}{n}} \eq V$.
               Contradiction.
             End.
-            Hence $x \in U$.
-            Indeed $x \in \FUNim{f}{\NATsegment{\NATone}{n \NATplus \NATone}}$.
+            Hence $x \SETin U$.
+            Indeed $x \SETin \FUNim{f}{\NATsegment{\NATone}{n \NATplus \NATone}}$.
           End.
 
           $V$ is nonempty.
-          Indeed $f(\NATone) \in \FUNim{f}{\NATsegment{\NATone}{n}}$.
-          Indeed $\NATone \in \NATsegment{\NATone}{n}$.
+          Indeed $f(\NATone) \SETin \FUNim{f}{\NATsegment{\NATone}{n}}$.
+          Indeed $\NATone \SETin \NATsegment{\NATone}{n}$.
           Hence $f \FUNrest \NATsegment{\NATone}{n}$ is a bijection between $\NATsegment{\NATone}{n}$ and $V$ (by \cref{FOUNDATIONS_08_647446231252992}).
           Thus $V$ has $n$ elements.
-          Consequently $\SETintersectover V \in X$.
+          Consequently $\SETintersectover V \SETin X$.
 
           Let us show that $U \eq V \SETunion \SETsingleton{f(n \NATplus \NATone)}$.
 
-            (1) $\FUNim{f}{A \SETunion B} \eq \FUNim{f}{A} \SETunion \FUNim{f}{B}$ for all $A, B \SETinclude \dom(f)$.
+            (1) $\FUNim{f}{A \SETunion B} \eq \FUNim{f}{A} \SETunion \FUNim{f}{B}$ for all $A, B \SETinclude \FUNdom(f)$.
 
-            (2) $\FUNim{f}{\SETsingleton{a}} \eq \SETsingleton{f(a)}$ for all $a \in \dom(f)$.
+            (2) $\FUNim{f}{\SETsingleton{a}} \eq \SETsingleton{f(a)}$ for all $a \SETin \FUNdom(f)$.
 
             Hence $U
-              \eq f[\dom(f)]
+              \eq f[\FUNdom(f)]
               \eq f[\NATsegment{\NATone}{n \NATplus \NATone}]
               \eq f[\NATsegment{\NATone}{n} \SETunion \SETsingleton{n \NATplus \NATone}]
               \eq f[\NATsegment{\NATone}{n}] \SETunion f[\SETsingleton{n \NATplus \NATone}]
               \eq f[\NATsegment{\NATone}{n}] \SETunion \SETsingleton{f(n \NATplus \NATone)}
               \eq V \SETunion \SETsingleton{f(n \NATplus \NATone)}$.
-            Indeed $n \NATplus \NATone \in \dom(f)$ and $\NATsegment{\NATone}{n}, \SETsingleton{\NATone \NATplus n} \SETinclude \dom(f)$.
+            Indeed $n \NATplus \NATone \SETin \FUNdom(f)$ and $\NATsegment{\NATone}{n}, \SETsingleton{\NATone \NATplus n} \SETinclude \FUNdom(f)$.
           End.
 
           Let us show that $\SETintersectover (A \SETunion B) \eq (\SETintersectover A) \SETintersect (\SETintersectover B)$ for any nonempty systems of sets $A, B$.
@@ -85,9 +85,9 @@
             $((\SETintersectover A) \SETintersect (\SETintersectover B)) \SETinclude \SETintersectover (A \SETunion B)$. %!
           End.
 
-          Let us show that $f(n \NATplus \NATone)$ and $f(k)$ are sets for every $k \in \NATsegment{\NATone}{n}$.
-            Let $k \in \NATsegment{\NATone}{n}$.
-            Then $f(k), f(n \NATplus \NATone) \in U$.
+          Let us show that $f(n \NATplus \NATone)$ and $f(k)$ are sets for every $k \SETin \NATsegment{\NATone}{n}$.
+            Let $k \SETin \NATsegment{\NATone}{n}$.
+            Then $f(k), f(n \NATplus \NATone) \SETin U$.
             Hence $f(k)$ and $f(n \NATplus \NATone)$ are sets.
           End.
 
@@ -96,13 +96,13 @@
             \eq \SETintersectover (V \SETunion \SETsingleton{f(n \NATplus \NATone)})
             \eq (\SETintersectover V) \SETintersect (\SETintersectover \SETsingleton{f(n \NATplus \NATone)})
             \eq (\SETintersectover V) \SETintersect f(n \NATplus \NATone)
-            \in X$.
+            \SETin X$.
         \end{case}
       End.
     \end{proof}
 
     Therefore $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).
-    Thus $\SETintersectover U \in X$ for every nonempty finite subclass $U$ of $X$.
+    Thus $\SETintersectover U \SETin X$ for every nonempty finite subclass $U$ of $X$.
     Consequently $X$ is closed under finite intersections.
   \end{case}
 \end{proof}

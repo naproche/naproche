@@ -10,24 +10,24 @@
 \inlineforthel{[synonym number/-s]}
 
 \begin{definition}[forthel,id=SET_THEORY_03_4310076227584000]
-  \[ \emph{\ORDomega} = \class{n \in \Ord | \classtext{$n \in X$ for every $X \SETinclude \Ord$ such that $\ORDzero \in X$ and for all $x \in X$ we have $\ORDsucc(x) \in X$}}. \]
+  \[ \emph{\ORDomega} = \class{n \SETin \Ord | \classtext{$n \SETin X$ for every $X \SETinclude \Ord$ such that $\ORDzero \SETin X$ and for all $x \SETin X$ we have $\ORDsucc(x) \SETin X$}}. \]
 
 Let a \emph{natural number} stand for an element of $\ORDomega$.
 \end{definition}
 
 \begin{proposition}[forthel,id=SET_THEORY_03_3576717620805632]
-  $\ORDzero \in \ORDomega$.
+  $\ORDzero \SETin \ORDomega$.
 \end{proposition}
 
 \begin{proposition}[forthel,id=SET_THEORY_03_8807317141192704]
-  Let $n \in \ORDomega$.
-  Then $\ORDsucc(n) \in \ORDomega$.
+  Let $n \SETin \ORDomega$.
+  Then $\ORDsucc(n) \SETin \ORDomega$.
 \end{proposition}
 
 \begin{proposition}[forthel,id=SET_THEORY_03_344585425387520]
   Let $\Phi \SETinclude \ORDomega$.
-  Assume that $\ORDzero \in \Phi$ and for every $x \in \Phi$ we have
-  $\ORDsucc(x) \in \Phi$.
+  Assume that $\ORDzero \SETin \Phi$ and for every $x \SETin \Phi$ we have
+  $\ORDsucc(x) \SETin \Phi$.
   Then $\Phi \eq \ORDomega$.
 \end{proposition}
 \begin{proof}[forthel]
@@ -35,28 +35,28 @@ Let a \emph{natural number} stand for an element of $\ORDomega$.
   Consider an element $n$ of $\ORDomega$ that is not contained in $\Phi$.
   Take $\Phi' \eq \Phi \SETdiff \SETsingleton{n}$.
 
-  (1) $\ORDzero \in \Phi'$.
-  Indeed $\ORDzero \in \Phi$ and $\ORDzero \neq n$.
+  (1) $\ORDzero \SETin \Phi'$.
+  Indeed $\ORDzero \SETin \Phi$ and $\ORDzero \neq n$.
 
-  (2) For each $x \in \Phi'$ we have $\ORDsucc(x) \in \Phi'$.
+  (2) For each $x \SETin \Phi'$ we have $\ORDsucc(x) \SETin \Phi'$.
   \begin{proof}
-    Let $x \in \Phi'$.
-    Then $\ORDsucc(x) \in \Phi$.
+    Let $x \SETin \Phi'$.
+    Then $\ORDsucc(x) \SETin \Phi$.
 
     Let us show that $\ORDsucc(x) \neq n$.
       Assume $\ORDsucc(x) \eq n$.
-      Then $x \notin \Phi$.
-      Indeed $n \notin \Phi$ and if $x \in \Phi$ then
-      $n \eq \ORDsucc(x) \in \Phi$.
+      Then $x \SETnotin \Phi$.
+      Indeed $n \SETnotin \Phi$ and if $x \SETin \Phi$ then
+      $n \eq \ORDsucc(x) \SETin \Phi$.
       Contradiction.
     End.
 
-    Thus $\ORDsucc(x) \in \Phi'$.
+    Thus $\ORDsucc(x) \SETin \Phi'$.
   \end{proof}
 
   Therefore every element of $\ORDomega$ lies in $\Phi'$.
   Indeed $\Phi' \SETinclude \Ord$.
-  Consequently $n \in \Phi'$.
+  Consequently $n \SETin \Phi'$.
   Contradiction.
 \end{proof}
 
@@ -64,37 +64,37 @@ Let a \emph{natural number} stand for an element of $\ORDomega$.
   $\ORDomega$ is a set.
 \end{corollary}
 \begin{proof}[forthel]
-  Define $f(n) = \ORDsucc(n)$ for $n \in \ORDomega$.
+  Define $f(n) = \ORDsucc(n)$ for $n \SETin \ORDomega$.
   Take a subset $X$ of $\ORDomega$ that is inductive regarding $\ORDzero$ and $f$.
   Indeed $f$ is a map from $\ORDomega$ to $\ORDomega$.
-  Then we have $\ORDzero \in X$ and for each $n \in X$ we have $\ORDsucc(n) \in X$.
+  Then we have $\ORDzero \SETin X$ and for each $n \SETin X$ we have $\ORDsucc(n) \SETin X$.
   Thus $X \eq \ORDomega$.
   Therefore $\ORDomega$ is a set.
 \end{proof}
 
 \begin{proposition}[forthel,id=SET_THEORY_03_5885789275684864]
-  Let $n \in \ORDomega$.
-  Then $n \eq \ORDzero$ or $n \eq \ORDsucc(m)$ for some $m \in \ORDomega$.
+  Let $n \SETin \ORDomega$.
+  Then $n \eq \ORDzero$ or $n \eq \ORDsucc(m)$ for some $m \SETin \ORDomega$.
 \end{proposition}
 \begin{proof}[forthel]
   Assume the contrary.
-  Consider a $k \in \ORDomega$ such that neither $k \eq \ORDzero$ nor $k \eq \ORDsucc(m)$ for
-  some $m \in \ORDomega$.
+  Consider a $k \SETin \ORDomega$ such that neither $k \eq \ORDzero$ nor $k \eq \ORDsucc(m)$ for
+  some $m \SETin \ORDomega$.
   Take a class $\ORDomega'$ such that $\ORDomega' \eq \ORDomega \SETdiff \SETsingleton{k}$. %!
   Then $\ORDomega'$ is a set.
 
-  (1) $\ORDzero \in \ORDomega'$.
+  (1) $\ORDzero \SETin \ORDomega'$.
   Indeed $k \neq \ORDzero$.
 
-  (2) For all $m \in \ORDomega'$ we have $\ORDsucc(m) \in \ORDomega'$.
+  (2) For all $m \SETin \ORDomega'$ we have $\ORDsucc(m) \SETin \ORDomega'$.
   \begin{proof}
-    Let $m \in \ORDomega'$.
+    Let $m \SETin \ORDomega'$.
     Then $\ORDsucc(m) \neq k$.
-    Hence $\ORDsucc(m) \in \ORDomega'$.
+    Hence $\ORDsucc(m) \SETin \ORDomega'$.
   \end{proof}
 
   Thus every element of $\ORDomega$ is contained in $\ORDomega'$.
-  Therefore $k \in \ORDomega'$.
+  Therefore $k \SETin \ORDomega'$.
   Contradiction.
 \end{proof}
 

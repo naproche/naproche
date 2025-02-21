@@ -50,7 +50,7 @@
 \begin{sfragment}{Unions Over Systems of Sets}
   \begin{definition}[forthel,id=FOUNDATIONS_10_541772562300928]
     Let $X$ be a system of sets.
-    The $\emph{\SETunionover X} \{ a \mid a \in x\text{ for some }x \in X \}$.
+    The $\emph{\SETunionover X} \{ a \mid a \SETin x\text{ for some }x \SETin X \}$.
 
     Let \emph{union over $X$} stand for $\SETunionover X$.
   \end{definition}
@@ -59,9 +59,9 @@
     $\SETunionover \SETempty \eq \SETempty$.
   \end{proposition}
   \begin{proof}[forthel]
-    $\SETunionover \SETempty = \{ a \mid a \in x\text{ for some }x \in \SETempty \}$.
+    $\SETunionover \SETempty = \{ a \mid a \SETin x\text{ for some }x \SETin \SETempty \}$.
     $\SETempty$ has no elements.
-    Hence there is no object $a$ such that $a \in x$ for some $x \in \SETempty$.
+    Hence there is no object $a$ such that $a \SETin x$ for some $x \SETin \SETempty$.
     Thus $\SETunionover \SETempty \eq \SETempty$.
   \end{proof}
 
@@ -71,17 +71,17 @@
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $\SETunionover \SETpair{x}{y} \SETinclude x \SETunion y$.
-      Let $a \in \SETunionover \SETpair{x}{y}$.
+      Let $a \SETin \SETunionover \SETpair{x}{y}$.
       Then $a$ is contained in some element of $\SETpair{x}{y}$.
-      Hence $a \in x$ or $a \in y$.
-      Thus $a \in x \SETunion y$.
+      Hence $a \SETin x$ or $a \SETin y$.
+      Thus $a \SETin x \SETunion y$.
     End.
 
     Let us show that $x \SETunion y \SETinclude \SETunionover \SETpair{x}{y}$.
-      Let $a \in x \SETunion y$.
-      Then $a \in x$ or $a \in y$.
+      Let $a \SETin x \SETunion y$.
+      Then $a \SETin x$ or $a \SETin y$.
       Hence $a$ is contained in some element of $\SETpair{x}{y}$.
-      Therefore $a \in \SETunionover \SETpair{x}{y}$.
+      Therefore $a \SETin \SETunionover \SETpair{x}{y}$.
     End.
   \end{proof}
 
@@ -94,7 +94,7 @@
 \begin{sfragment}{Intersections Over Systems of Sets}
   \begin{definition}[forthel,id=FOUNDATIONS_10_2659345095458816]
     Let $X$ be a system of sets.
-    $\emph{\SETintersectover X} = \{ a \mid a \in x\text{ for all }x \in X \}$.
+    $\emph{\SETintersectover X} = \{ a \mid a \SETin x\text{ for all }x \SETin X \}$.
 
     Let the \emph{intersection over $X$} stand for $\SETintersectover X$.
   \end{definition}
@@ -108,11 +108,11 @@
     Indeed every element of $\SETintersectover \SETempty$ is an object.
 
     Let us show that $V \SETinclude \SETintersectover \SETempty$.
-      Let $a \in V$.
+      Let $a \SETin V$.
       Then $a$ is an object.
-      For every $x \in \SETempty$ we have $a \in x$.
+      For every $x \SETin \SETempty$ we have $a \SETin x$.
       Indeed $\SETempty$ has no elements.
-      Thus $a \in \SETintersectover \SETempty$.
+      Thus $a \SETin \SETintersectover \SETempty$.
     End.
   \end{proof}
 
@@ -122,17 +122,17 @@
   \end{proposition}
   \begin{proof}[forthel]
     Let us show that $\SETintersectover \SETpair{x}{y} \SETinclude x \SETintersect y$.
-      Let $a \in \SETintersectover \SETpair{x}{y}$.
+      Let $a \SETin \SETintersectover \SETpair{x}{y}$.
       Then $a$ is contained in every element of $\SETpair{x}{y}$.
-      Hence $a \in x$ and $a \in y$.
-      Thus $a \in x \SETintersect y$.
+      Hence $a \SETin x$ and $a \SETin y$.
+      Thus $a \SETin x \SETintersect y$.
     End.
 
     Let us show that $x \SETintersect y \SETinclude \SETintersectover \SETpair{x}{y}$.
-      Let $a \in x \SETintersect y$.
-      Then $a \in x$ and $a \in y$.
+      Let $a \SETin x \SETintersect y$.
+      Then $a \SETin x$ and $a \SETin y$.
       Hence $a$ is contained in every element of $\SETpair{x}{y}$.
-      Therefore $a \in \SETintersectover \SETpair{x}{y}$.
+      Therefore $a \SETin \SETintersectover \SETpair{x}{y}$.
     End.
   \end{proof}
 

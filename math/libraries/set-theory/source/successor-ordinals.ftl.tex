@@ -19,16 +19,16 @@
 \begin{proof}[forthel]
   (1) $\ORDsucc(\alpha)$ is transitive.
   \begin{proof}
-    Let $x \in \ORDsucc(\alpha)$ and $y \in x$.
-    Then $x \in \alpha$ or $x \eq \alpha$.
-    Hence $y \in \alpha$.
-    Thus $y \in \ORDsucc(\alpha)$.
+    Let $x \SETin \ORDsucc(\alpha)$ and $y \SETin x$.
+    Then $x \SETin \alpha$ or $x \eq \alpha$.
+    Hence $y \SETin \alpha$.
+    Thus $y \SETin \ORDsucc(\alpha)$.
   \end{proof}
 
   (2) Every element of $\ORDsucc(\alpha)$ is transitive.
   \begin{proof}
-    Let $x \in \ORDsucc(\alpha)$.
-    Then $x \in \alpha$ or $x \eq \alpha$.
+    Let $x \SETin \ORDsucc(\alpha)$.
+    Then $x \SETin \alpha$ or $x \eq \alpha$.
     Hence $x$ is transitive.
     Indeed $\alpha$ is transitive and every element of $\alpha$ is transitive.
   \end{proof}
@@ -49,39 +49,39 @@
 
   (1) $\alpha \SETinclude \beta$.
   \begin{proof}
-    Let $\gamma \in \alpha$.
-    Then $\gamma \in \alpha \SETunion \SETsingleton{\alpha}
+    Let $\gamma \SETin \alpha$.
+    Then $\gamma \SETin \alpha \SETunion \SETsingleton{\alpha}
       \eq \ORDsucc(\alpha)
       \eq \ORDsucc(\beta)
       \eq \beta \SETunion \SETsingleton{\beta}$.
-    Hence $\gamma \in \beta$ or $\gamma \eq \beta$.
+    Hence $\gamma \SETin \beta$ or $\gamma \eq \beta$.
     Assume $\gamma \eq \beta$.
-    Then $\beta \in \alpha$.
+    Then $\beta \SETin \alpha$.
     Hence $\beta
       \eq (\beta \SETunion \SETsingleton{\beta}) \SETdiff \SETsingleton{\gamma}
       \eq (\alpha \SETunion \SETsingleton{\alpha}) \SETdiff \SETsingleton{\gamma}
       \eq (\alpha \SETdiff \SETsingleton{\gamma}) \SETunion \SETsingleton{\alpha}$.
-    Therefore $\alpha \in \beta$.
-    Consequently $\alpha \in \beta \in \alpha$.
+    Therefore $\alpha \SETin \beta$.
+    Consequently $\alpha \SETin \beta \SETin \alpha$.
     Contradiction.
   \end{proof}
 
   (2) $\beta \SETinclude \alpha$.
   \begin{proof}
-    Let $\gamma \in \beta$.
-    Then $\gamma \in \beta \SETunion \SETsingleton{\beta}
+    Let $\gamma \SETin \beta$.
+    Then $\gamma \SETin \beta \SETunion \SETsingleton{\beta}
       \eq \ORDsucc(\beta)
       \eq \ORDsucc(\alpha)
       \eq \alpha \SETunion \SETsingleton{\alpha}$.
-    Hence $\gamma \in \alpha$ or $\gamma \eq \alpha$.
+    Hence $\gamma \SETin \alpha$ or $\gamma \eq \alpha$.
     Assume $\gamma \eq \alpha$.
-    Then $\alpha \in \beta$.
+    Then $\alpha \SETin \beta$.
     Hence $\alpha
       \eq (\alpha \SETunion \SETsingleton{\alpha}) \SETdiff \SETsingleton{\gamma}
       \eq (\beta \SETunion \SETsingleton{\beta}) \SETdiff \SETsingleton{\gamma}
       \eq (\beta \SETdiff \SETsingleton{\gamma}) \SETunion \SETsingleton{\beta}$.
-    Therefore $\beta \in \alpha$.
-    Consequently $\beta \in \alpha \in \beta$.
+    Therefore $\beta \SETin \alpha$.
+    Consequently $\beta \SETin \alpha \SETin \beta$.
     Contradiction.
   \end{proof}
 \end{proof}
