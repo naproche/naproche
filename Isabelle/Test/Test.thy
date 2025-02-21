@@ -61,7 +61,7 @@ Let R be a rewriting system.
     Let us demonstrate by induction that for all a,b,c
     such that a -R*> b,c there exists d such that b,c -R*> d.
         Let a,b,c be terms.
-        Let us show that if a -R+> b,c then thesis.
+        Let us show that if a -R+> b,c then the thesis.
             Assume a -R+> b,c.
 
             Take u such that a -R> u -R*> b.
