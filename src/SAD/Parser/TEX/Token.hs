@@ -344,16 +344,16 @@ verbCommand = do
 importCommand :: Tokenizer [Token]
 importCommand = do
   command <- anyControlWordOf ["importmodule", "usemodule"]
-  fstArg <- bracketGroup' $ concat <$> some (anyWord <|> char '/' <|> char '-' <|> char '_' <|> char '.')
-  sndArg <- group' $ concat <$> some (anyWord <|> char '/' <|> char '?' <|> char '-' <|> char '_' <|> char '.')
+  fstArg <- bracketGroup' $ concat <$> some (anyWord <|> anyDigit <|> char '/' <|> char '-' <|> char '_' <|> char '.')
+  sndArg <- group' $ concat <$> some (anyWord <|> anyDigit <|> char '/' <|> char '?' <|> char '-' <|> char '_' <|> char '.')
   return $ command ++ fstArg ++ sndArg
 
 -- | Parse a @\\importmodule[...]{...}@ or @\\usemodule[...]{...}@ command.
 inputCommand :: Tokenizer [Token]
 inputCommand = do
   command <- controlWord "inputref"
-  fstArg <- bracketGroup' $ concat <$> some (anyWord <|> char '/' <|> char '-' <|> char '_' <|> char '.')
-  sndArg <- group' $ concat <$> some (anyWord <|> char '/' <|> char '-' <|> char '_' <|> char '.')
+  fstArg <- bracketGroup' $ concat <$> some (anyWord <|> anyDigit <|> char '/' <|> char '-' <|> char '_' <|> char '.')
+  sndArg <- group' $ concat <$> some (anyWord <|> anyDigit <|> char '/' <|> char '-' <|> char '_' <|> char '.')
   return $ command ++ fstArg ++ sndArg
 
 -- | Parse an @\\inlineforthel{...}@ command, depending on a parser @p@ for the
@@ -583,6 +583,12 @@ anyCharExceptOfCats catCodes = do
   let text = Text.singleton $ charContent charLexeme
       pos = sourcePos charLexeme
   return [Token text pos]
+
+
+-- ** Parsing Numbers
+
+anyDigit :: Tokenizer [Token]
+anyDigit = charOf ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
 
 -- ** Parsing Words
