@@ -3,8 +3,24 @@
 A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
 2021-1)
 
-**NOTE:** In the following, "FTL" and "TEX" refer to the ASCII and the TeX
-dialect of ForTheL, respectively.
+**NOTES:**
+
+* Each change is tagged with one of the following keywords:
+
+  - `Changed`: Something in the behaviour or  was changed in Naproche. Such
+    changes may break backward compatibility.
+
+  - `New`: A new feature was added to Naproche. In particular, new features
+    should not break backward compatibility.
+
+  - `Fixed`: A bug was fixed.
+
+  - `Removed`: A feature of Naproche or a component of its code base was
+    removed.
+
+* Additionally, each change can be annotated with the keywords `FTL` and `TEX`
+  which note that the change only affects the code/behaviour of Naproche w.r.t.
+  ForTheL texts written in the ASCII or in the TeX dialect of ForTheL, resp.
 
 
 --------------------------------------------------------------------------------
