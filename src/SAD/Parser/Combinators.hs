@@ -120,9 +120,9 @@ after p end = do
 -- returning the result of @p@ and its range.
 enclosed :: Text -> Text -> Parser st a -> Parser st (Position.Range, a)
 enclosed begin end p = do
-  beginPos <- tokenPos' begin
+  beginPos <- label ("\"" <> begin <> "\"") $ tokenPos' begin
   result <- p
-  endPos <- tokenPos' end
+  endPos <- label ("\"" <> end <> "\"") $ tokenPos' end
   return ((beginPos, endPos), result)
 
 
@@ -132,15 +132,15 @@ enclosed begin end p = do
 
 -- | @texCommand name@ parses @"\\" <name>@.
 texCommand :: Text -> Parser st ()
-texCommand name = token ("\\" <> name)
+texCommand name = label ("\"\\" <> name <> "\"") $ token ("\\" <> name)
 
 texCommandPos :: Text -> Parser st Position.T
-texCommandPos name = tokenPos' ("\\" <> name)
+texCommandPos name = label ("\"\\" <> name <> "\"") $ tokenPos' ("\\" <> name)
 
 -- | @texCommandWithArg name arg@ parses @"\\" <name> "{" <arg> "}"@.
 texCommandWithArg :: Text -> Parser st a -> Parser st a
 texCommandWithArg name arg = do
-  texCommand name
+  label ("\"" <> name <> "\"") $ texCommand name
   braced arg
 
 -- | @optInTexArg macroName p@ runs either @p@, or @"\\" <macroname> "{" <p> "}"@.
