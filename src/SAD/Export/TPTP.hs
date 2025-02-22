@@ -70,7 +70,7 @@ type Sequent = ([Formula], [Formula])
 -- | Render a formula.
 renderLogicFormula :: Text -> Role -> Formula -> Text
 renderLogicFormula name role formula =
-  "fof("
+  "fof(m"
   <> (if Text.null name then "_" else name)
   <> ", " <> renderRole role <> ", "
   <> tptpTerm 0 formula
@@ -79,7 +79,7 @@ renderLogicFormula name role formula =
 -- | Render a sequent.
 renderSequent :: Text -> Role -> Sequent -> Text
 renderSequent name role (premises, conclusions) =
-  "fof("
+  "fof(m"
   <> (if Text.null name then "_" else name)
   <> ", " <> renderRole role <> ", ["
   <> Text.intercalate ", " (map (tptpTerm 0) premises)
