@@ -337,7 +337,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
   \end{convention}
 
   \begin{forthel}
-    \begin{signature}[Congruence]
+    \begin{signature}[title=Congruence]
       $\Cong{a}{b}{c}{d}$ is a relation.
     \end{signature}
   \end{forthel}
@@ -351,7 +351,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
   \end{convention}
 
   \begin{forthel}
-    \begin{signature}[Betweenness]
+    \begin{signature}[title=Betweenness]
       $\Betw{a}{b}{c}$ is a relation.
     \end{signature}
   \end{forthel}
@@ -362,7 +362,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
   so we only need to consider three of the six permutations of three points in the definition of collinearity.
 
   \begin{forthel}
-    \begin{definition}[Collinearity]
+    \begin{definition}[title=Collinearity]
       $a$ is collinear with $b$ and $c$ iff $\Betw{a}{b}{c}$ or $\Betw{b}{c}{a}$ or $\Betw{c}{a}{b}$.
     \end{definition}
   \end{forthel}
@@ -371,21 +371,21 @@ including Gupta's result that outer Pasch follows from inner Pasch.
 
 
   \begin{forthel}
-    \begin{axiom}[Reflexivity of congruence] % SST A1
+    \begin{axiom}[title=Reflexivity of congruence] % SST A1
       We have $\Cong{a}{b}{b}{a}$.
     \end{axiom}
   \end{forthel}
 
 
   \begin{forthel}
-    \begin{axiom}[Pseudotransitivity of congruence] % SST A2
+    \begin{axiom}[title=Pseudotransitivity of congruence] % SST A2
       If $\Cong{c}{d}{a}{b}$ and $\Cong{c}{d}{e}{f}$ then $\Cong{a}{b}{e}{f}$.
     \end{axiom}
   \end{forthel}
 
 
   \begin{forthel}
-    \begin{axiom}[Identity of congruence] % SST A3
+    \begin{axiom}[title=Identity of congruence] % SST A3
       If $\Cong{a}{b}{c}{c}$ then $a = b$.
     \end{axiom}
   \end{forthel}
@@ -395,7 +395,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
   by a length specified by another segment $de$.
 
   \begin{forthel}
-    \begin{axiom}[Segment construction] % SST A4
+    \begin{axiom}[title=Segment construction] % SST A4
       There exists a point $c$ such that $\Betw{a}{b}{c}$ and $\Cong{b}{c}{d}{e}$.
     \end{axiom}
   \end{forthel}
@@ -455,7 +455,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
   \end{tikzpicture}
 
   \begin{forthel}
-    \begin{axiom}[Five segment axiom] % SST A5
+    \begin{axiom}[title=Five segment axiom] % SST A5
       If $\OFS{a}{b}{c}{d}{a'}{b'}{c'}{d'}$ and
       $a \neq b$ then $\Cong{c}{d}{c'}{d'}$.
     \end{axiom}
@@ -463,7 +463,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
 
 
   \begin{forthel} % SST A6
-    \begin{axiom}[Identity of betweenness]
+    \begin{axiom}[title=Identity of betweenness]
       If $\Betw{a}{b}{a}$ then $a = b$.
     \end{axiom}
   \end{forthel}
@@ -478,7 +478,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
 
 
   \begin{forthel}
-    \begin{axiom}[Inner Pasch] % SST A7
+    \begin{axiom}[title=Inner Pasch] % SST A7
       If $\Betw{x}{u}{z}$ and $\Betw{y}{v}{z}$ then there exists a point $w$
       such that $\Betw{u}{w}{y}$ and $\Betw{v}{w}{x}$.
     \end{axiom}
@@ -486,7 +486,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
 
 
   \begin{forthel}
-    \begin{axiom}[Lower dimension] % SST A8
+    \begin{axiom}[title=Lower dimension] % SST A8
       There exist points
       $\alpha, \beta, \gamma$ such that
       $\alpha$ is not collinear with $\beta$ and $\gamma$.
@@ -495,7 +495,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
 
 
   \begin{forthel}
-    \begin{axiom}[Upper dimension] % SST A9
+    \begin{axiom}[title=Upper dimension] % SST A9
       If $\Cong{x}{u}{x}{v}$ and $\Cong{y}{u}{y}{v}$
       and $\Cong{z}{u}{z}{v}$ and $u \neq v$
       then $x$ is collinear with $y$ and $z$.
@@ -504,7 +504,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
 
 
   \begin{forthel}
-    \begin{axiom}[Euclid]
+    \begin{axiom}[title=Euclid]
       Assume $x \neq r$.
       If $\Betw{x}{r}{v}$ and $\Betw{y}{r}{z}$
       then there exist points $s,t$ such that
@@ -537,7 +537,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
   \end{tikzpicture}
 
   \begin{forthel}
-    \begin{axiom}[Circle continuity]
+    \begin{axiom}[title=Circle continuity]
       Assume $\Betw{x}{a}{b}$ and $\Betw{x}{b}{c}$.
       Assume
         $\Cong{x}{a'}{x}{a}$ and
@@ -552,14 +552,14 @@ including Gupta's result that outer Pasch follows from inner Pasch.
 
 
   \begin{forthel}
-    \begin{lemma}[Reflexivity of congruence] % Satz 2.1
+    \begin{lemma}[title=Reflexivity of congruence] % Satz 2.1
       For all points $x, y$ we have $\Cong{x}{y}{x}{y}$.
     \end{lemma}
   \end{forthel}
 
 
   \begin{forthel}
-    \begin{lemma}[Symmetry of congruence] % Satz 2.2
+    \begin{lemma}[title=Symmetry of congruence] % Satz 2.2
       If $\Cong{x}{y}{v}{w}$
       then $\Cong{v}{w}{x}{y}$.
     \end{lemma}
@@ -567,14 +567,14 @@ including Gupta's result that outer Pasch follows from inner Pasch.
 
 
   \begin{forthel}
-    \begin{lemma}[Transitivity of congruence] % Satz 2.3
+    \begin{lemma}[title=Transitivity of congruence] % Satz 2.3
       If $\Cong{x}{y}{v}{w}$ and $\Cong{v}{w}{p}{q}$
       then $\Cong{x}{y}{p}{q}$.
     \end{lemma}
   \end{forthel}
 
   \begin{forthel}
-    \begin{lemma}[Congruence is independent of the order of the pairs] % Satz 2.4
+    \begin{lemma}[title=Congruence is independent of the order of the pairs] % Satz 2.4
       If $\Cong{x}{y}{v}{w}$
       then $\Cong{y}{x}{v}{w}$.
     \end{lemma}
@@ -586,14 +586,14 @@ including Gupta's result that outer Pasch follows from inner Pasch.
   \end{forthel}
 
   \begin{forthel}
-    \begin{lemma}[Zero segments are congruent] % Satz 2.8
+    \begin{lemma}[title=Zero segments are congruent] % Satz 2.8
       For all point $x, y$ we have $\Cong{x}{x}{y}{y}$.
     \end{lemma}
   \end{forthel}
 
 
   \begin{forthel}
-    \begin{lemma}[Concatenation of segments] % Satz 2.11
+    \begin{lemma}[title=Concatenation of segments] % Satz 2.11
       Assume $\Betw{x}{y}{z}$ and $\Betw{r}{v}{w}$.
       Assume $\Cong{x}{y}{r}{v}$ and $\Cong{y}{z}{v}{w}$.
       Then $\Cong{x}{z}{r}{w}$.
@@ -608,7 +608,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
 
 
   \begin{forthel}
-    \begin{lemma}[Uniqueness of segment construction] % Satz 2.12
+    \begin{lemma}[title=Uniqueness of segment construction] % Satz 2.12
       Assume $a \neq b$.
       Suppose $\Betw{a}{b}{c}$ and $\Cong{b}{c}{d}{e}$.
       Suppose $\Betw{a}{b}{c'}$ and $\Cong{b}{c'}{d}{e}$.
@@ -625,7 +625,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
 
 
   \begin{forthel}
-    \begin{lemma}[Right betweenness] % Satz 3.1
+    \begin{lemma}[title=Right betweenness] % Satz 3.1
       For all points $x, y$ we have $\Betw{x}{y}{y}$.
     \end{lemma}
   \end{forthel}
@@ -633,7 +633,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
 
 
   \begin{forthel}
-    \begin{lemma}[Symmetry of betweenness] % Satz 3.2
+    \begin{lemma}[title=Symmetry of betweenness] % Satz 3.2
       Assume $\Betw{x}{y}{z}$. Then $\Betw{z}{y}{x}$.
     \end{lemma}
   \end{forthel}
@@ -642,7 +642,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
   from right betweenness and symmetry of betweenness.
   %
   \begin{forthel}
-    \begin{lemma}[Left betweenness] % Satz 3.3
+    \begin{lemma}[title=Left betweenness] % Satz 3.3
       For all points $x, y$ we have  $\Betw{x}{x}{y}$.
     \end{lemma}
   \end{forthel}
@@ -788,7 +788,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
 
 
   \begin{forthel}
-    \begin{lemma}[Overlapping segments] % Satz 4.3
+    \begin{lemma}[title=Overlapping segments] % Satz 4.3
       Assume
       $\Betw{x}{y}{z}$ and
       $\Betw{r}{v}{w}$ and
@@ -1018,12 +1018,12 @@ including Gupta's result that outer Pasch follows from inner Pasch.
       $\Betw{c}{d}{e}$.
     \end{definition}
 
-    \begin{lemma}[Extension to quaternary betweenness] % Satz 3.12, specialized to $n = 3$ and $l = 1$.
+    \begin{lemma}[title=Extension to quaternary betweenness] % Satz 3.12, specialized to $n = 3$ and $l = 1$.
       If $\Betw{a}{b}{c}$ and $\Betw{a}{c}{d}$
       then $\BetwFour{a}{b}{c}{d}$.
     \end{lemma}
 
-    \begin{lemma}[Extension to quinary betweenness] % Satz 3.12, specialized to $n = 4$ and $l = 1$.
+    \begin{lemma}[title=Extension to quinary betweenness] % Satz 3.12, specialized to $n = 4$ and $l = 1$.
       If $\BetwFour{a}{b}{c}{d}$ and $\Betw{a}{d}{e}$
       then $\BetwFive{a}{b}{c}{d}{e}$.
     \end{lemma}
@@ -1054,7 +1054,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
   %   $\Betw{d}{e}{f}$.
   % \end{definition}
   %
-  % \begin{lemma}[BetwFiveToSix] % Satz 3.12, specialized to $n = 5$ and $l = 1$.
+  % \begin{lemma}[title=BetwFiveToSix] % Satz 3.12, specialized to $n = 5$ and $l = 1$.
   %   If $\BetwFive{a}{b}{c}{d}{e}$ and $\Betw{a}{e}{f}$
   %   then $\BetwSix{a}{b}{c}{d}{e}{f}$. %and (if $a\neq e$ then $\BetwSix{a}{b}{c}{d}{e}{f}$).
   % \end{lemma}
@@ -1092,7 +1092,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
       Then there exist points $s, t$ such that $\Betw{z}{q}{t}$ and $\Betw{r}{p}{s}$.
     \end{lemma}
 
-    % \begin{lemma}[SpecialCaseUniqueConstruct]
+    % \begin{lemma}[title=SpecialCaseUniqueConstruct]
     %   Assum $a\neq b$.
     %   Assume $\Betw{a}{b}{b'}$ and $\Betw{a}{b}{b'}$.
     %   Assume $\Cong{b}{b''}{b}{b'}$.
@@ -1119,7 +1119,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
   \end{tikzpicture}
 
   \begin{forthel}
-    \begin{theorem}[Outer Pasch] %[Gupta] % Satz 5.1
+    \begin{theorem}[title=Outer Pasch] %[Gupta] % Satz 5.1
       Assume $a \neq b$.
       Assume $\Betw{a}{b}{c}$ and $\Betw{a}{b}{d}$.
       Then $\Betw{a}{c}{d}$ or $\Betw{a}{d}{c}$.
@@ -1353,7 +1353,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
 
 
   \begin{forthel}
-    \begin{lemma}[Transitivity of congruence and comparison] % Satz 5.6 (first part)
+    \begin{lemma}[title=Transitivity of congruence and comparison] % Satz 5.6 (first part)
       Assume $\Cong{a}{b}{c}{d}$ and $\Leq{c}{d}{e}{f}$.
       Then $\Leq{a}{b}{e}{f}$.
     \end{lemma}
@@ -1361,7 +1361,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
       Take $x$ such that $\Betw{e}{x}{f}$ and $\Cong{c}{d}{e}{x}$.
     \end{proof}
 
-    \begin{lemma}[Transitivity of comparison and congruence] % Satz 5.6 (second part)
+    \begin{lemma}[title=Transitivity of comparison and congruence] % Satz 5.6 (second part)
       Assume $\Leq{a}{b}{c}{d}$ and $\Cong{c}{d}{e}{f}$.
       Then $\Leq{a}{b}{e}{f}$.
     \end{lemma}
@@ -1369,11 +1369,11 @@ including Gupta's result that outer Pasch follows from inner Pasch.
       Take $x$ such that $\Betw{a}{b}{x}$ and $\Cong{a}{x}{c}{d}$.
     \end{proof}
 
-    \begin{lemma}[Reflexivity of comparison] % Satz 5.7
+    \begin{lemma}[title=Reflexivity of comparison] % Satz 5.7
       For all points $a, b$ we have $\Leq{a}{b}{a}{b}$.
     \end{lemma}
 
-    \begin{lemma}[Transitivity of comparison] % Satz 5.8
+    \begin{lemma}[title=Transitivity of comparison] % Satz 5.8
       Assume $\Leq{a}{b}{c}{d}$ and $\Leq{c}{d}{e}{f}$.
       Then $\Leq{a}{b}{c}{d}$.
     \end{lemma}
@@ -1382,7 +1382,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
       Take $y$ such that $\Betw{c}{d}{y}$ and $\Cong{c}{y}{e}{f}$.
     \end{proof}
 
-    \begin{lemma}[Antisymmetry of comparison] % Satz 5.9
+    \begin{lemma}[title=Antisymmetry of comparison] % Satz 5.9
       Assume $\Leq{a}{b}{c}{d}$ and $\Leq{c}{d}{a}{b}$.
       Then $\Cong{a}{b}{c}{d}$.
     \end{lemma}
@@ -1393,7 +1393,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
       Thus $x = d = y$.
     \end{proof}
 
-    \begin{lemma}[Connexity of comparison] % Satz 5.10
+    \begin{lemma}[title=Connexity of comparison] % Satz 5.10
       Let $a, b, c, d$ be points.
       Then $\Leq{a}{b}{c}{d}$ or $\Leq{c}{d}{a}{b}$.
     \end{lemma}
@@ -1491,16 +1491,16 @@ including Gupta's result that outer Pasch follows from inner Pasch.
         $a$ is collinear with $u$ and $b$ and not $\Betw{a}{u}{b}$.
     \end{lemma}
 
-    \begin{lemma}[Reflexivity of relative equivalence]
+    \begin{lemma}[title=Reflexivity of relative equivalence]
       Suppose $a\neq u$.
       Then $\RelEquiv{a}{a}{u}$.
     \end{lemma}
 
-    \begin{lemma}[Symmetry of relative equivalence]
+    \begin{lemma}[title=Symmetry of relative equivalence]
       If $\RelEquiv{a}{b}{u}$ then $\RelEquiv{b}{a}{u}$.
     \end{lemma}
 
-    \begin{lemma}[Transitivity of relative equivalence]
+    \begin{lemma}[title=Transitivity of relative equivalence]
       Assume $\RelEquiv{a}{b}{u}$ and $\RelEquiv{b}{c}{u}$.
       Then $\RelEquiv{a}{c}{u}$.
     \end{lemma}
@@ -1581,7 +1581,7 @@ including Gupta's result that outer Pasch follows from inner Pasch.
 
   Donald Ervin Knuth (1984)
   \\ \textit{Literate programming}
-  \\ Oxford University Press, \textit{The Computer Journal}, vol.~27, no.~2, p.~97-–111
+  \\ Oxford University Press, \textit{The Computer Journal}, vol.~27, no.~2, p.~97--111
 
   Wolfram Schwabhäuser, Wanda Szmielew, Alfred Tarski (1983)
   \\ \textit{Metamathematische Methoden in der Geometrie}
