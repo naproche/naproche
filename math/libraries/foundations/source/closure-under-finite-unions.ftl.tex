@@ -23,7 +23,7 @@
   \end{case}
 
   \begin{case}{$U \SETunion V \SETin X$ for every $U, V \SETin X$.}
-    Define $\Phi = \{ n \SETin \Nat \mid \SETunionover U \SETin X\text{ for every nonempty subclass }U\text{ of }X\text{ that has }n\text{ elements}\}$.
+    Define $\Phi = \{ n \in \Nat \mid \SETunionover U \SETin X\text{ for every nonempty subclass }U\text{ of }X\text{ that has }n\text{ elements}\}$.
 
     (1) $\Phi$ contains $\NATzero$.
 
@@ -40,7 +40,7 @@
           Let $U$ be a nonempty subclass of $X$ such that $U$ has $n \NATplus \NATone$ elements.
           Take a bijection $f$ between $\NATsegment{\NATone}{n \NATplus \NATone}$ and $U$.
           We have $\NATsegment{\NATone}{n \NATplus \NATone} \eq \NATsegment{\NATone}{n} \SETunion \SETsingleton{n \NATplus \NATone}$.
-          Take $V \eq \FUNim{f}{\NATsegment{\NATone}{n}}$.
+          Take $V = \FUNim{f}{\NATsegment{\NATone}{n}}$.
           We have $\NATsegment{\NATone}{n} \SETinclude \NATsegment{\NATone}{n \NATplus \NATone}$.
 
           Let us show that $V \SETinclude U$.
@@ -70,11 +70,11 @@
             (2) $\FUNim{f}{\SETsingleton{a}} \eq \SETsingleton{f(a)}$ for all $a \SETin \FUNdom(f)$.
 
             Hence $U
-              \eq f[\FUNdom(f)]
-              \eq f[\NATsegment{\NATone}{n \NATplus \NATone}]
-              \eq f[\NATsegment{\NATone}{n} \SETunion \SETsingleton{n \NATplus \NATone}]
-              \eq f[\NATsegment{\NATone}{n}] \SETunion f[\SETsingleton{n \NATplus \NATone}]
-              \eq f[\NATsegment{\NATone}{n}] \SETunion \SETsingleton{f(n \NATplus \NATone)}
+              \eq \FUNim{f}{\FUNdom(f)}
+              \eq \FUNim{f}{\NATsegment{\NATone}{n \NATplus \NATone}}
+              \eq \FUNim{f}{\NATsegment{\NATone}{n} \SETunion \SETsingleton{n \NATplus \NATone}}
+              \eq \FUNim{f}{\NATsegment{\NATone}{n}} \SETunion \FUNim{f}{\SETsingleton{n \NATplus \NATone}}
+              \eq \FUNim{f}{\NATsegment{\NATone}{n}} \SETunion \SETsingleton{f(n \NATplus \NATone)}
               \eq V \SETunion \SETsingleton{f(n \NATplus \NATone)}$.
             Indeed $n \NATplus \NATone \SETin \FUNdom(f)$ and $\NATsegment{\NATone}{n}, \SETsingleton{\NATone \NATplus n} \SETinclude \FUNdom(f)$.
           End.

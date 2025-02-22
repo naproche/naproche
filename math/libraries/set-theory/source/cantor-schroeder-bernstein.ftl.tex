@@ -22,7 +22,7 @@
     Take an injective map $g$ from $y$ to $x$.
     We have $y \SETdiff \FUNim{f}{a} \SETinclude y$ for any $a \SETin \SETpow(x)$.
 
-    (1) Define $h(a) = x \SETdiff \FUNim{g}{y \SETdiff \FUNim{f}{a}}$ for $a \SETin \SETpow(x)$.
+    (1) Define $h(a) = x \SETdiff \FUNim{g}{y \SETdiff \FUNim{f}{a}}$ for $a \in \SETpow(x)$.
 
     $h$ is a map from $\SETpow(x)$ to $\SETpow(x)$.
     Indeed $h(a)$ is a subset of $x$ for each subset $a$ of $x$.
@@ -40,14 +40,14 @@
 
     Hence we can take a fixed point $c$ of $h$ (by \nameref{knaster_tarski}).
 
-    (2) Define $F(u) = f(u)$ for $u \SETin c$.
+    (2) Define $F(u) = f(u)$ for $u \in c$.
 
     We have $c \eq h(c)$ iff $x \SETdiff c \eq \FUNim{g}{y \SETdiff \FUNim{f}{c}}$.
     $\FUNinv{g}$ is a bijection between $\FUNrange(g)$ and $y$.
     Thus $x \SETdiff c \eq \FUNim{g}{y \SETdiff \FUNim{f}{c}} \SETinclude \FUNrange(g)$.
     Therefore $x \SETdiff c$ is a subset of $\FUNdom(\FUNinv{g})$.
 
-    (3) Define $G(u) = \FUNinv{g}(u)$ for $u \SETin x \SETdiff c$.
+    (3) Define $G(u) = \FUNinv{g}(u)$ for $u \in x \SETdiff c$.
 
     $F$ is a bijection between $c$ and $\FUNrange(F)$.
     $G$ is a bijection between $x \SETdiff c$ and $\FUNrange(G)$.
@@ -57,7 +57,7 @@
         F(u) & : u \SETin c \\
         G(u) & : u \SETnotin c
       \end{cases} \]
-    for $u \SETin x$.
+    for $u \in x$.
 
     Let us show that $H$ is a map to $y$.
       $\FUNdom(H)$ is a set and every value of $H$ is an object.

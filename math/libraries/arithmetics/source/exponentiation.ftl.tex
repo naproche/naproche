@@ -44,7 +44,7 @@
       Then $\NATexp{\NATone}{n} \eq \NATone$.
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \{ n' \SETin \Nat \mid \NATexp{\NATone}{n'} \eq \NATone \}$.
+      Define $\Phi = \{ n' \in \Nat \mid \NATexp{\NATone}{n'} \eq \NATone \}$.
 
       (1) $\Phi$ contains $\NATzero$.
 
@@ -91,7 +91,7 @@
       Then $\NATexp{k}{n \NATplus m} \eq \NATexp{k}{n} \NATmul \NATexp{k}{m}$.
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \{ m' \SETin \Nat \mid \NATexp{k}{n \NATplus m'} \eq \NATexp{k}{n} \NATmul \NATexp{k}{m'} \}$.
+      Define $\Phi = \{ m' \in \Nat \mid \NATexp{k}{n \NATplus m'} \eq \NATexp{k}{n} \NATmul \NATexp{k}{m'} \}$.
 
       (1) $\Phi$ contains $\NATzero$.
       Indeed $\NATexp{k}{n \NATplus \NATzero}
@@ -122,7 +122,7 @@
       Then $\NATexp{n}{m \NATmul k} \eq \NATexp{\NATexp{n}{m}}{k}$.
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \{ k' \SETin \Nat \mid \NATexp{n}{m \NATmul k'} \eq \NATexp{\NATexp{n}{m}}{k'} \}$.
+      Define $\Phi = \{ k' \in \Nat \mid \NATexp{n}{m \NATmul k'} \eq \NATexp{\NATexp{n}{m}}{k'} \}$.
 
       (1) $\Phi$ contains $\NATzero$.
       Indeed $\NATexp{\NATexp{n}{m}}{\NATzero}
@@ -152,7 +152,7 @@
       Then $\NATexp{n \NATmul m}{k} \eq \NATexp{n}{k} \NATmul \NATexp{m}{k}$.
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \{ k' \SETin \Nat \mid \NATexp{n \NATmul m}{k'} \eq \NATexp{n}{k'} \NATmul \NATexp{m}{k'} \}$.
+      Define $\Phi = \{ k' \in \Nat \mid \NATexp{n \NATmul m}{k'} \eq \NATexp{n}{k'} \NATmul \NATexp{m}{k'} \}$.
 
       (1) $\Phi$ contains $\NATzero$.
       Indeed $(\NATexp{n \NATmul m}{\NATzero})
@@ -193,7 +193,7 @@
     \end{proposition}
     \begin{proof}[forthel]
       \begin{case}{$\NATexp{n}{m} \eq \NATzero$.}
-        Define $\Phi = \{ m' \SETin \Nat \mid\text{ if }\NATexp{n}{m'} \eq \NATzero\text{ then }n \eq \NATzero\text{ and }m' \neq \NATzero \}$.
+        Define $\Phi = \{ m' \in \Nat \mid\text{ if }\NATexp{n}{m'} \eq \NATzero\text{ then }n \eq \NATzero\text{ and }m' \neq \NATzero \}$.
 
         (1) $\Phi$ contains $\NATzero$.
         Indeed if $\NATexp{n}{\NATzero} \eq \NATzero$ then we have a contradiction.

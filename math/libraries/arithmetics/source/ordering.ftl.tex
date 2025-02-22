@@ -31,12 +31,12 @@
 
   \begin{definition}[forthel,id=ARITHMETIC_04_3668680374222848]
     Let $n$ be a natural number.
-    $\emph{\Natlessthan{n}} = \{ k \SETin \Nat \mid k \NATless n \}$.
+    $\emph{\Natlessthan{n}} = \{ k \in \Nat \mid k \NATless n \}$.
   \end{definition}
 
   \begin{definition}[forthel,id=ARITHMETIC_04_3670333934534656]
     Let $n$ be a natural number.
-    $\emph{\Natgtrthan{n}} = \{ k \SETin \Nat \mid k \NATgtr n \}$.
+    $\emph{\Natgtrthan{n}} = \{ k \in \Nat \mid k \NATgtr n \}$.
   \end{definition}
 
   \begin{definition}[forthel,id=ARITHMETIC_04_7916616566177792]
@@ -57,12 +57,12 @@
 
   \begin{definition}[forthel,id=ARITHMETIC_04_72501526790144]
     Let $n$ be a natural number.
-    $\emph{\Natleqthan{n}} = \{ k \SETin \Nat \mid k \NATleq n \}$.
+    $\emph{\Natleqthan{n}} = \{ k \in \Nat \mid k \NATleq n \}$.
   \end{definition}
 
   \begin{definition}[forthel,id=ARITHMETIC_04_1706933421604864]
     Let $n$ be a natural number.
-    $\emph{\Natgeqthan{n}} = \{ k \SETin \Nat \mid k \NATgeq n \}$.
+    $\emph{\Natgeqthan{n}} = \{ k \in \Nat \mid k \NATgeq n \}$.
   \end{definition}
 
   \begin{proposition}[forthel,id=ARITHMETIC_04_5385415374667776]
@@ -233,7 +233,7 @@
     Then $n \NATless m$ or $n \eq m$ or $n \NATgtr m$.
   \end{proposition}
   \begin{proof}[forthel]
-    Define $\Phi = \{ m' \SETin \Nat \mid n \NATless m'\text{ or }n \eq m'\text{ or }n \NATgtr m' \}$.
+    Define $\Phi = \{ m' \in \Nat \mid n \NATless m'\text{ or }n \eq m'\text{ or }n \NATgtr m' \}$.
 
     (1) $\Phi$ contains $\NATzero$.
 
@@ -396,7 +396,7 @@
 
     \begin{case}{$n \NATplus k \NATless m \NATplus k$.}
       Take a positive natural number $l$ such that $m \NATplus k \eq (n \NATplus k) \NATplus l$.
-      $(n \NATplus k) \NATplus l
+      $((n \NATplus k) \NATplus l)
         \eq n \NATplus (k \NATplus l)
         \eq n \NATplus (l \NATplus k)
         \eq (n \NATplus l) \NATplus k$.
@@ -441,7 +441,7 @@
       Contradiction.
     End.
 
-    (a) Define $\Phi = \{ n \SETin \Nat \mid n\text{ is less than any element of }A \}$.
+    (a) Define $\Phi = \{ n \in \Nat \mid n\text{ is less than any element of }A \}$.
 
     (1) $\Phi$ contains $\NATzero$.
     \begin{proof}
@@ -490,7 +490,7 @@
     Then for all $n \SETin \Natgeqthan{k}$ we have $n \SETin A$.
   \end{theorem}
   \begin{proof}[forthel]
-    Define $\Phi = \{n \SETin \Nat \mid\text{ if }n \NATgeq k\text{ then }n \SETin A \}$.
+    Define $\Phi = \{n \in \Nat \mid\text{ if }n \NATgeq k\text{ then }n \SETin A \}$.
 
     (1) $\Phi$ contains $\NATzero$.
     Indeed if $\NATzero \NATgeq k$ then $\NATzero \eq k \SETin A$.

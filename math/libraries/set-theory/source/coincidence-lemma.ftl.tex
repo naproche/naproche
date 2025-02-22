@@ -6,13 +6,13 @@
 \importmodule[libraries/set-theory]{transfinite-induction.ftl}
 \importmodule[libraries/set-theory]{recursive-maps.ftl}
   
-\begin{lemma}[forthel,title=Coincidence Lemma,id=transfinite-recursion_coincidence]
+\begin{lemma}[forthel,title=Coincidence Lemma,id=transfinite_recursion_coincidence]
   Let $A$ be a class and $G$ be a map from $\ORDfunspace{A}$ to $A$.
   Let $H, H'$ be maps to $A$ that are recursive regarding $G$.
   Then \[ H(\alpha) \eq H'(\alpha) \] for all $\alpha \SETin \FUNdom(H) \SETintersect \FUNdom(H')$.
 \end{lemma}
 \begin{proof}[forthel]
-  Define $\Phi = \{ \alpha \SETin \Ord \mid\text{ if }
+  Define $\Phi = \{ \alpha \in \Ord \mid\text{ if }
   \alpha \SETin \FUNdom(H) \SETintersect \FUNdom(H')\text{ then }H(\alpha) \eq H'(\alpha) \}$.
 
   For all ordinals $\alpha$ if every ordinal less than $\alpha$ lies in $\Phi$ then $\alpha \SETin \Phi$.

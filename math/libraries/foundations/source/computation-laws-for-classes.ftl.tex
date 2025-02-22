@@ -149,8 +149,8 @@
     Then $A \SETunion A \eq A$.
   \end{proposition}
   \begin{proof}[forthel]
-    $A \SETunion A \eq \{x \mid x \SETin A\text{ or }x \SETin A \}$.
-    Hence $A \SETunion A \eq \{ x \mid x \SETin A \}$.
+    $A \SETunion A = \{x \mid x \SETin A\text{ or }x \SETin A \}$.
+    Hence $A \SETunion A = \{ x \mid x \SETin A \}$.
     Thus $A \SETunion A \eq A$.
   \end{proof}
 
@@ -159,8 +159,8 @@
     Then $A \SETintersect A \eq A$.
   \end{proposition}
   \begin{proof}[forthel]
-    $A \SETintersect A \eq \{ x \mid x \SETin A\text{ and }x \SETin A \}$.
-    Hence $A \SETintersect A \eq \{ x \mid x \SETin A \}$.
+    $A \SETintersect A = \{ x \mid x \SETin A\text{ and }x \SETin A \}$.
+    Hence $A \SETintersect A = \{ x \mid x \SETin A \}$.
     Thus $A \SETintersect A \eq A$.
   \end{proof}
 \end{sfragment}
@@ -307,7 +307,7 @@
   \end{proposition}
   \begin{proof}[forthel]
     $A \SETdiff A$ has no elements.
-    Indeed $A \SETdiff A \eq \{ x \mid x \SETin A\text{ and }x \SETnotin A \}$.
+    Indeed $A \SETdiff A = \{ x \mid x \SETin A\text{ and }x \SETnotin A \}$.
     Hence the thesis.
   \end{proof}
 
@@ -316,9 +316,9 @@
     Then $A \SETdiff \SETempty \eq A$.
   \end{proposition}
   \begin{proof}[forthel]
-    $A \SETdiff \SETempty \eq \{ x \mid x \SETin A\text{ and }x \SETnotin \SETempty \}$.
+    $A \SETdiff \SETempty = \{ x \mid x \SETin A\text{ and }x \SETnotin \SETempty \}$.
     No element is an element of $\SETempty$.
-    Hence $A \SETdiff \SETempty \eq \{ x \mid x \SETin A \}$.
+    Hence $A \SETdiff \SETempty = \{ x \mid x \SETin A \}$.
     Then we have the thesis.
   \end{proof}
 

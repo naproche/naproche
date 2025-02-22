@@ -13,11 +13,11 @@
   and $r \NATless m$.
 \end{theorem}
 \begin{proof}[forthel]
-  (a) Define $\Phi = \{ n' \SETin \Nat \mid \text{ there exist natural numbers }q, r\text{ such that }r \NATless m\text{ and }n' \eq (m \NATmul q) \NATplus r \}$.
+  (a) Define $\Phi = \{ n' \in \Nat \mid \text{ there exist natural numbers }q, r\text{ such that }r \NATless m\text{ and }n' \eq (m \NATmul q) \NATplus r \}$.
 
   (1) $\Phi$ contains $\NATzero$.
   \begin{proof}
-    Take $q \eq \NATzero$ and $r \eq \NATzero$.
+    Take $q = \NATzero$ and $r = \NATzero$.
     Then $r \NATless m$ and $\NATzero \eq (m \NATmul q) \NATplus r$.
     Hence $\NATzero \SETin \Phi$.
   \end{proof}
@@ -31,7 +31,7 @@
       We have $r' \NATplus \NATone \NATless m$ or $r' \NATplus \NATone \eq m$.
 
       \begin{case}{$r' \NATplus \NATone \NATless m$.}
-        Take $q \eq q' \NATplus \NATzero$ and $r \eq r' \NATplus \NATone$. %!
+        Take $q = q' \NATplus \NATzero$ and $r = r' \NATplus \NATone$. %!
         Then $r \NATless m$ and $n' \NATplus \NATone
           \eq ((q' \NATmul m) \NATplus r') \NATplus \NATone
           \eq (q' \NATmul m) \NATplus (r' \NATplus \NATone)
@@ -39,7 +39,7 @@
       \end{case}
 
       \begin{case}{$r' \NATplus \NATone \eq m$.}
-        Take  $q \eq q' \NATplus \NATone$ and $r \eq \NATzero$.
+        Take  $q = q' \NATplus \NATone$ and $r = \NATzero$.
         Then $r \NATless m$ and
         $n' \NATplus \NATone
           \eq ((q' \NATmul m) \NATplus r') \NATplus \NATone
@@ -85,7 +85,7 @@
   \end{case}
 
   \begin{case}{$q \NATgeq q'$ and $r \NATless r'$.}
-    Take $q'' \eq q \NATsub q'$ and $r'' \eq r' \NATsub r$.
+    Take $q'' = q \NATsub q'$ and $r'' = r' \NATsub r$.
     Then $(m \NATmul (q' \NATplus q'')) \NATplus r \eq (m \NATmul q') \NATplus (r \NATplus r'')$.
     We have $(m \NATmul q') \NATplus (r \NATplus r'')
       \eq (m \NATmul q') \NATplus (r'' \NATplus r)
@@ -109,7 +109,7 @@
   \end{case}
 
   \begin{case}{$q \NATless q'$ and $r \NATgeq r'$.}
-    Take $q'' \eq q' \NATsub q$ and $r'' \eq r \NATsub r'$.
+    Take $q'' = q' \NATsub q$ and $r'' = r \NATsub r'$.
     Then $(m \NATmul q) \NATplus (r' \NATplus r'') \eq (m \NATmul (q \NATplus q'')) \NATplus r'$.
     We have $(m \NATmul q) \NATplus (r' \NATplus r'')
       \eq (m \NATmul q) \NATplus (r'' \NATplus r')

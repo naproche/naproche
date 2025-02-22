@@ -253,7 +253,7 @@
     Then \[ \FUNpreim{f}{Y} \eq \FUNim{\FUNinv{f}}{Y}. \]
   \end{proposition}
   \begin{proof}[forthel]
-    We have $\FUNim{\FUNinv{f}}{Y} = \{ \FUNinv{f}(b) \mid b \SETin Y \}$ and $\FUNpreim{f}{Y} = \{ a \SETin A \mid f(a) \SETin Y \}$.
+    We have $\FUNim{\FUNinv{f}}{Y} = \{ \FUNinv{f}(b) \mid b \SETin Y \}$ and $\FUNpreim{f}{Y} = \{ a \in A \mid f(a) \SETin Y \}$.
 
     Let us show that $\FUNpreim{f}{Y} \SETinclude \FUNim{\FUNinv{f}}{Y}$.
       Let $a \SETin \FUNpreim{f}{Y}$.
@@ -294,7 +294,7 @@
 
     \begin{case}{$f$ is injective.}
       Define $g(b) =$ ``choose $a \SETin A$ such that $f(a) \eq b$ in $a$'' for
-      $b \SETin B$.
+      $b \in B$.
       Then $g$ is a map from $B$ to $A$.
       For all $a \SETin A$ we have $a \eq g(f(a))$.
       Hence $g$ is a surjective map from $B$ onto $A$.

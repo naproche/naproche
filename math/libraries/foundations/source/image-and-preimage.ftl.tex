@@ -7,7 +7,7 @@
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_5919649206108160]
   Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X \SETinclude A$.
-  Then $\FUNim{f}{X} \eq \{ f(x) \mid x \SETin X \}$.
+  Then $\FUNim{f}{X} = \{ f(x) \mid x \SETin X \}$.
 \end{proposition}
 
 \begin{corollary}[forthel,id=FOUNDATIONS_07_5543924730953728]
@@ -35,7 +35,7 @@
   Then $f(a) \SETin Y$ iff $a \SETin \FUNpreim{f}{Y}$.
 \end{proposition}
 \begin{proof}[forthel]
-  We have $\FUNpreim{f}{Y} \eq \{ x \SETin A \mid f(x) \SETin Y \}$.
+  We have $\FUNpreim{f}{Y} = \{ x \in A \mid f(x) \SETin Y \}$.
   Hence $a \SETin \FUNpreim{f}{Y}$ iff $a \SETin A$ and $f(a) \SETin Y$.
   Then we have the thesis.
 \end{proof}
@@ -56,7 +56,7 @@
   Then $\FUNpreim{f}{B} \eq A$.
 \end{proposition}
 \begin{proof}[forthel]
-  We have $\FUNpreim{f}{B} \eq \{ a \SETin A \mid f(a) \SETin B \}$.
+  We have $\FUNpreim{f}{B} = \{ a \in A \mid f(a) \SETin B \}$.
   $f(a) \SETin B$ for all $a \SETin A$.
   Hence the thesis.
 \end{proof}
@@ -89,7 +89,7 @@
   Then $\FUNpreim{f}{\FUNim{f}{A}} \eq A$.
 \end{proposition}
 \begin{proof}[forthel]
-  $\FUNpreim{f}{\FUNim{f}{A}} \eq \{ a \SETin A \mid f(a) \SETin \FUNim{f}{A} \}$.
+  $\FUNpreim{f}{\FUNim{f}{A}} = \{ a \in A \mid f(a) \SETin \FUNim{f}{A} \}$.
   For all $a \SETin A$ we have $f(a) \SETin \FUNim{f}{A}$.
   Hence every element of $\FUNpreim{f}{\FUNim{f}{A}}$ is contained in $A$ and every element of $A$ is contained in $\FUNpreim{f}{\FUNim{f}{A}}$.
   Thus $\FUNpreim{f}{\FUNim{f}{A}} \eq A$.
@@ -122,7 +122,7 @@
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_4890896170483712]
   Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X \SETinclude A$.
-  Then $\FUNpreim{f}{\FUNim{f}{X}} \supseteq X$.
+  Then $\FUNpreim{f}{\FUNim{f}{X}} \SETniclude X$.
 \end{proposition}
 \begin{proof}[forthel]
   Let $a \SETin X$.
@@ -208,10 +208,10 @@
   Then $\FUNim{g \FUNcomp f}{X} \eq \FUNim{g}{\FUNim{f}{X}}$.
 \end{proposition}
 \begin{proof}[forthel]
-  $\FUNim{g \FUNcomp f}{X} \eq \{ g(f(a)) \mid a \SETin X \}$.
+  $\FUNim{g \FUNcomp f}{X} = \{ g(f(a)) \mid a \SETin X \}$.
   $\FUNim{f}{X}$ is a subclass of $B$.
-  We have $\FUNim{g}{\FUNim{f}{X}} \eq \{ g(b) \mid b \SETin \FUNim{f}{X} \}\text{ and }\FUNim{f}{X} \eq \{ f(a) \mid a \SETin X \}$.
-  Thus $\FUNim{g}{\FUNim{f}{X}} \eq \{ g(f(a)) \mid a \SETin X \}$.
+  We have $\FUNim{g}{\FUNim{f}{X}} = \{ g(b) \mid b \SETin \FUNim{f}{X} \}\text{ and }\FUNim{f}{X} = \{ f(a) \mid a \SETin X \}$.
+  Thus $\FUNim{g}{\FUNim{f}{X}} = \{ g(f(a)) \mid a \SETin X \}$.
   Therefore $\FUNim{g \FUNcomp f}{X} \eq \FUNim{g}{\FUNim{f}{X}}$.
 \end{proof}
 
@@ -220,9 +220,9 @@
   Then $\FUNpreim{g \FUNcomp f}{Z} \eq \FUNpreim{f}{\FUNpreim{g}{Z}}$.
 \end{proposition}
 \begin{proof}[forthel]
-  $\FUNpreim{g \FUNcomp f}{Z} \eq \{ a \SETin A \mid g(f(a)) \SETin Z \}$.
-  We have $\FUNpreim{g}{Z} \eq \{ b \SETin B \mid g(b) \SETin Z \}$ and $\FUNpreim{f}{\FUNpreim{g}{Z}} \eq \{ a \SETin A \mid f(a) \SETin \FUNpreim{g}{Z} \}$.
-  Hence $\FUNpreim{f}{\FUNpreim{g}{Z}} \eq \{ a \SETin A \mid g(f(a)) \SETin Z \}$.
+  $\FUNpreim{g \FUNcomp f}{Z} = \{ a \in A \mid g(f(a)) \SETin Z \}$.
+  We have $\FUNpreim{g}{Z} = \{ b \in B \mid g(b) \SETin Z \}$ and $\FUNpreim{f}{\FUNpreim{g}{Z}} = \{ a \in A \mid f(a) \SETin \FUNpreim{g}{Z} \}$.
+  Hence $\FUNpreim{f}{\FUNpreim{g}{Z}} = \{ a \in A \mid g(f(a)) \SETin Z \}$.
   Thus $\FUNpreim{g \FUNcomp f}{Z} \eq \FUNpreim{f}{\FUNpreim{g}{Z}}$.
 \end{proof}
 
@@ -340,7 +340,7 @@
 
 \begin{proposition}[forthel,id=FOUNDATIONS_07_8372256617005056]
   Let $A, B$ be classes and $f \FUNfromto{A}{B}$ and $X, X' \SETinclude A$.
-  Then $\FUNim{f}{X \SETdiff X'} \supseteq \FUNim{f}{X} \SETdiff \FUNim{f}{X'}$.
+  Then $\FUNim{f}{X \SETdiff X'} \SETniclude \FUNim{f}{X} \SETdiff \FUNim{f}{X'}$.
 \end{proposition}
 \begin{proof}[forthel]
   Let $b \SETin \FUNim{f}{X} \SETdiff \FUNim{f}{X'}$.

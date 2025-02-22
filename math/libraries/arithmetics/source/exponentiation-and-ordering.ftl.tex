@@ -13,7 +13,7 @@
 \end{proposition}
 \begin{proof}[forthel]
   \begin{case}{$n \NATless m$.}
-    Define $\Phi = \{ k' \SETin \Nat \mid\text{ if }k' \NATgtr \NATone\text{ then }\NATexp{n}{k'} \NATless \NATexp{m}{k'} \}$.
+    Define $\Phi = \{ k' \in \Nat \mid\text{ if }k' \NATgtr \NATone\text{ then }\NATexp{n}{k'} \NATless \NATexp{m}{k'} \}$.
 
     (1) $\Phi$ contains $\NATzero$.
 
@@ -66,7 +66,7 @@
               \NATless \NATexp{m}{k'} \NATmul n
               \NATless \NATexp{m}{k'} \NATmul m$.
             Indeed $\NATexp{n}{k'} \NATless \NATexp{m}{k'} \neq \NATzero$.
-            Take $A \eq \NATexp{n}{k' \NATplus \NATone}$ and $B \eq \NATexp{m}{k' \NATplus \NATone}$. %!
+            Take $A = \NATexp{n}{k' \NATplus \NATone}$ and $B = \NATexp{m}{k' \NATplus \NATone}$. %!
             Then $A
               \eq \NATexp{n}{k' \NATplus \NATone}
               \eq \NATexp{n}{k'} \NATmul n
@@ -74,7 +74,7 @@
               \NATless \NATexp{m}{k'} \NATmul m
               \eq \NATexp{m}{k' \NATplus \NATone}
               \eq B$.
-            Take $X \eq \NATexp{m}{k'} \NATmul n$ and $Y \eq \NATexp{m}{k'} \NATmul m$.
+            Take $X = \NATexp{m}{k'} \NATmul n$ and $Y = \NATexp{m}{k'} \NATmul m$.
             Then $A \NATless X \NATless Y \eq B$.
             Hence $A \NATless B$.
             Thus $\NATexp{n}{k' \NATplus \NATone} \NATless \NATexp{m}{k' \NATplus \NATone}$.
@@ -93,7 +93,7 @@
   \end{case}
 
   \begin{case}{$\NATexp{n}{k} \NATless \NATexp{m}{k}$.}
-    Define $\Psi = \{ k' \SETin \Nat \mid\text{ if }n \NATgeq m\text{ then }\NATexp{n}{k'} \NATgeq \NATexp{m}{k'} \}$.
+    Define $\Psi = \{ k' \in \Nat \mid\text{ if }n \NATgeq m\text{ then }\NATexp{n}{k'} \NATgeq \NATexp{m}{k'} \}$.
 
     (1) $\Psi$ contains $\NATzero$.
 
@@ -105,7 +105,7 @@
         Assume $n \NATgeq m$.
         Then $\NATexp{n}{k'} \NATgeq \NATexp{m}{k'}$.
         Hence $\NATexp{n}{k'} \NATmul n \NATgeq \NATexp{m}{k'} \NATmul n \NATgeq \NATexp{m}{k'} \NATmul m$.
-        Take $A \eq \NATexp{n}{k' \NATplus \NATone}$ and $B \eq \NATexp{m}{k' \NATplus \NATone}$. %!
+        Take $A = \NATexp{n}{k' \NATplus \NATone}$ and $B = \NATexp{m}{k' \NATplus \NATone}$. %!
         Thus $A
           \eq \NATexp{n}{k' \NATplus \NATone}
           \eq \NATexp{n}{k'} \NATmul n
@@ -160,7 +160,7 @@
 \end{proposition}
 \begin{proof}[forthel]
   \begin{case}{$n \NATless m$.}
-    Define $\Phi = \{ m' \SETin \Nat \mid\text{ if }n \NATless m'\text{ then }\NATexp{k}{n} \NATless \NATexp{k}{m'} \}$.
+    Define $\Phi = \{ m' \in \Nat \mid\text{ if }n \NATless m'\text{ then }\NATexp{k}{n} \NATless \NATexp{k}{m'} \}$.
 
     (1) $\Phi$ contains $\NATzero$.
 
@@ -175,7 +175,7 @@
         Indeed $\NATexp{k}{m'} \neq \NATzero$.
 
         \begin{case}{$n \eq m'$.}
-          Take $A \eq \NATexp{k}{n}$ and $B \eq \NATexp{k}{m' \NATplus \NATone}$. %!
+          Take $A = \NATexp{k}{n}$ and $B = \NATexp{k}{m' \NATplus \NATone}$. %!
           Then $A
             \eq \NATexp{k}{n}
             \eq \NATexp{k}{m'}
@@ -186,7 +186,7 @@
         \end{case}
 
         \begin{case}{$n \NATless m'$.}
-          Take $A \eq \NATexp{k}{n}$ and $B \eq \NATexp{k}{m' \NATplus \NATone}$. %!
+          Take $A = \NATexp{k}{n}$ and $B = \NATexp{k}{m' \NATplus \NATone}$. %!
           Then $A
             \eq \NATexp{k}{n}
             \NATless \NATexp{k}{m'}
@@ -203,7 +203,7 @@
   \end{case}
 
   \begin{case}{$\NATexp{k}{n} \NATless \NATexp{k}{m}$.}
-    Define $\Psi = \{ n' \SETin \Nat \mid\text{ if }n' \NATgeq m\text{ then }
+    Define $\Psi = \{ n' \in \Nat \mid\text{ if }n' \NATgeq m\text{ then }
     \NATexp{k}{n'} \NATgeq \NATexp{k}{m} \}$.
 
     (1) $\NATzero$ is contained in $\Psi$.
@@ -222,7 +222,7 @@
           Hence $\NATexp{k}{n'} \NATgeq \NATexp{k}{m}$.
           We have $\NATexp{k}{n'} \NATmul \NATone \NATleq \NATexp{k}{n'} \NATmul k$.
           Indeed $\NATone \NATleq k$ and $\NATexp{k}{n'} \neq \NATzero$.
-          Take $A \eq \NATexp{k}{m}$ and $B \eq \NATexp{k}{n' \NATplus \NATone}$. %!
+          Take $A = \NATexp{k}{m}$ and $B = \NATexp{k}{n' \NATplus \NATone}$. %!
           Then $A
             \eq \NATexp{k}{m}
             \NATleq \NATexp{k}{n'}
@@ -290,7 +290,7 @@
   Then $\NATexp{n}{\NATtwo} \NATgtr (\NATtwo \NATmul n) \NATplus \NATone$.
 \end{proposition}
 \begin{proof}[forthel]
-  (a) Define $\Phi = \{ n' \SETin \Natgeqthan{\NATthree} \mid \NATexp{n'}{\NATtwo} \NATgtr (\NATtwo \NATmul n') \NATplus \NATone \}$.
+  (a) Define $\Phi = \{ n' \in \Natgeqthan{\NATthree} \mid \NATexp{n'}{\NATtwo} \NATgtr (\NATtwo \NATmul n') \NATplus \NATone \}$.
 
   (1) $\Phi$ contains $\NATthree$.
   Indeed $\NATexp{\NATthree}{\NATtwo} \NATgtr (\NATtwo \NATmul \NATthree) \NATplus \NATone$.
@@ -300,21 +300,21 @@
     Let $n' \SETin \Phi$.
     Then $n' \NATgeq \NATthree$.
 
-    Take $V \eq (\NATexp{n'}{\NATtwo} \NATplus (\NATtwo \NATmul n')) \NATplus \NATone$ and $W \eq (((\NATtwo \NATmul n') \NATplus \NATone) \NATplus (\NATtwo \NATmul n')) \NATplus \NATone$.
+    Take $V = (\NATexp{n'}{\NATtwo} \NATplus (\NATtwo \NATmul n')) \NATplus \NATone$ and $W = (((\NATtwo \NATmul n') \NATplus \NATone) \NATplus (\NATtwo \NATmul n')) \NATplus \NATone$.
     Then $V \NATgtr W$.
     \begin{proof}
       We have $\NATexp{n'}{\NATtwo} \NATgtr (\NATtwo \NATmul n') \NATplus \NATone$.
       Hence $\NATexp{n'}{\NATtwo} \NATplus (\NATtwo \NATmul n') \NATgtr ((\NATtwo \NATmul n') \NATplus \NATone) \NATplus (\NATtwo \NATmul n')$ (by \printref{ARITHMETIC_04_7354062662008832}).
     \end{proof}
 
-    Take $X \eq ((\NATtwo \NATmul n') \NATplus (\NATtwo \NATmul n')) \NATplus \NATone$.
+    Take $X = ((\NATtwo \NATmul n') \NATplus (\NATtwo \NATmul n')) \NATplus \NATone$.
     Then $W \NATgtr X$.
     \begin{proof}
       We have $((\NATtwo \NATmul n') \NATplus \NATone) \NATplus (\NATtwo \NATmul n') \NATgtr (\NATtwo \NATmul n') \NATplus (\NATtwo \NATmul n')$.
       Indeed $(\NATtwo \NATmul n') \NATplus \NATone \NATgtr \NATtwo \NATmul n'$.
     \end{proof}
 
-    Take $Y \eq (\NATtwo \NATmul (n' \NATplus n')) \NATplus \NATone$ and $Z \eq (\NATtwo \NATmul (n' \NATplus \NATone)) \NATplus \NATone$.
+    Take $Y = (\NATtwo \NATmul (n' \NATplus n')) \NATplus \NATone$ and $Z = (\NATtwo \NATmul (n' \NATplus \NATone)) \NATplus \NATone$.
     Then $Y \NATgtr Z$.
     \begin{proof}
       We have $n' \NATplus n' \NATgtr n' \NATplus \NATone$ and $\NATtwo \neq \NATzero$.
@@ -336,7 +336,7 @@
   Then $\NATexp{\NATtwo}{n} \NATgtr \NATexp{n}{\NATtwo}$.
 \end{proposition}
 \begin{proof}[forthel]
-  (a) Define $\Phi = \{ n' \SETin \Natgeqthan{\NATfive} \mid \NATexp{\NATtwo}{n'} \NATgtr \NATexp{n'}{\NATtwo} \}$.
+  (a) Define $\Phi = \{ n' \in \Natgeqthan{\NATfive} \mid \NATexp{\NATtwo}{n'} \NATgtr \NATexp{n'}{\NATtwo} \}$.
 
   (1) $\Phi$ contains $\NATfive$.
   Indeed we can show that $\NATexp{\NATtwo}{\NATfive} \NATgtr \NATexp{\NATfive}{\NATtwo}$.
@@ -359,18 +359,18 @@
     Let $n' \SETin \Phi$.
     Then $n' \NATgeq \NATfive$ and $\NATexp{\NATtwo}{n'} \NATgtr \NATexp{n'}{\NATtwo}$.
 
-    Take $V \eq \NATexp{\NATtwo}{n'} \NATmul \NATtwo$ and $W \eq \NATexp{n'}{\NATtwo} \NATmul \NATtwo$.
+    Take $V = \NATexp{\NATtwo}{n'} \NATmul \NATtwo$ and $W = \NATexp{n'}{\NATtwo} \NATmul \NATtwo$.
     Then $V \NATgtr W$.
     Indeed $\NATtwo \neq \NATzero$.
 
-    Take $X \eq \NATexp{n'}{\NATtwo} \NATplus \NATexp{n'}{\NATtwo}$.
+    Take $X = \NATexp{n'}{\NATtwo} \NATplus \NATexp{n'}{\NATtwo}$.
     Then $W \eq X$.
 
-    Take $Y \eq \NATexp{n'}{\NATtwo} \NATplus ((\NATtwo \NATmul n') \NATplus \NATone)$.
+    Take $Y = \NATexp{n'}{\NATtwo} \NATplus ((\NATtwo \NATmul n') \NATplus \NATone)$.
     Then $X \NATgtr Y$.
     Indeed $\NATexp{n'}{\NATtwo} \NATgtr (\NATtwo \NATmul n') \NATplus \NATone$.
 
-    Take $Z \eq \NATexp{n' \NATplus \NATone}{\NATtwo}$.
+    Take $Z = \NATexp{n' \NATplus \NATone}{\NATtwo}$.
     Then $Y \eq Z$.
 
     Then $\NATexp{\NATtwo}{n' \NATplus \NATone} \eq V \NATgtr W \eq X \NATgtr Y \eq Z \eq \NATexp{n' \NATplus \NATone}{\NATtwo}$.

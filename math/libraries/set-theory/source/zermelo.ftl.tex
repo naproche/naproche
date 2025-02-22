@@ -14,7 +14,7 @@
 \begin{proof}[forthel]
   Let $x$ be a set.
   Consider a choice map $g$ for $\SETpow(x) \SETdiff \SETsingleton{\SETempty}$.
-  Take $A \eq x \SETunion \SETsingleton{x}$.
+  Take $A = x \SETunion \SETsingleton{x}$.
   Every $F \SETin \ORDfunspace{A}$ is a map from some ordinal to $A$.
   For any $F \SETin \ORDfunspace{A}$ if $x \SETdiff \FUNrange(F) \neq \SETempty$ then $x \SETdiff \FUNrange(F) \SETin \FUNdom(g)$.
   Indeed $x \SETdiff \FUNrange(F)$ is a subset of $x$ for any $F \SETin \ORDfunspace{A}$.
@@ -26,7 +26,7 @@
       x
       & : x \SETdiff \FUNrange(F) \eq \SETempty
     \end{cases} \]
-  for $F \SETin \ORDfunspace{A}$.
+  for $F \in \ORDfunspace{A}$.
   We can show that for any $F \SETin \ORDfunspace{A}$ if $x \SETdiff \FUNrange(F) \neq \SETempty$ then $G(F) \SETin x \SETdiff \FUNrange(F)$.
     Let $F \SETin \ORDfunspace{A}$.
     Assume $x \SETdiff \FUNrange(F) \neq \SETempty$.  
@@ -43,14 +43,14 @@
   For any ordinal $\alpha$ we have $F \FUNrest \alpha \SETin \ORDfunspace{A}$.
 
   For any $\alpha \SETin \Ord$ we have
-  \[ x \SETdiff F[\alpha] \neq \SETempty \implies F(\alpha) \SETin x \SETdiff F[\alpha] \]
+  \[ x \SETdiff \FUNim{F}{\alpha} \neq \SETempty \implies F(\alpha) \SETin x \SETdiff \FUNim{F}{\alpha} \]
   and
-  \[ x \SETdiff F[\alpha] \eq \SETempty \implies F(\alpha) \eq x. \]
+  \[ x \SETdiff \FUNim{F}{\alpha} \eq \SETempty \implies F(\alpha) \eq x. \]
   \begin{proof}
     Let $\alpha \SETin \Ord$.
-    We have $\FUNim{F}{\alpha} \eq \{ F(\beta) \mid \beta \SETin \alpha \}$.
-    Hence $\FUNim{F}{\alpha} \eq \{ G(F \FUNrest \beta) \mid \beta \SETin \alpha \}$.
-    We have $\FUNrange(F \FUNrest \alpha) \eq \{ F(\beta) \mid \beta \SETin \alpha \}$.
+    We have $\FUNim{F}{\alpha} = \{ F(\beta) \mid \beta \SETin \alpha \}$.
+    Hence $\FUNim{F}{\alpha} = \{ G(F \FUNrest \beta) \mid \beta \SETin \alpha \}$.
+    We have $\FUNrange(F \FUNrest \alpha) = \{ F(\beta) \mid \beta \SETin \alpha \}$.
     Thus $\FUNrange(F \FUNrest \alpha) \eq \FUNim{F}{\alpha}$.
 
     \begin{case}{$x \SETdiff \FUNim{F}{\alpha} \neq \SETempty$.}
@@ -58,7 +58,7 @@
       Hence $F(\alpha)
         \eq G(F \FUNrest \alpha)
         \SETin x \SETdiff \FUNrange(F \FUNrest \alpha)
-        \eq x \SETdiff F[\alpha]$.
+        \eq x \SETdiff \FUNim{F}{\alpha}$.
     \end{case}
 
     \begin{case}{$x \SETdiff \FUNim{F}{\alpha} \neq \SETempty$.}
@@ -100,13 +100,13 @@
     Contradiction.
   \end{proof}
 
-  Define $\Phi = \{ \alpha \SETin \Ord \mid F(\alpha) \eq x \}$.
+  Define $\Phi = \{ \alpha \in \Ord \mid F(\alpha) \eq x \}$.
   $\Phi$ is nonempty.
   Let us show that we can take an $\alpha \SETin \Phi$ such that $\alpha \ORDleq \beta$ for all $\beta \SETin \Phi$.
     Take an $\alpha \SETin \Phi$ such that for no $\beta \SETin \Phi$ we have $\beta \ORDless \alpha$ (by \printref{FOUNDATIONS_10_9532145874510315}).
     Then $\alpha \ORDleq \beta$ for all $\beta \SETin \Phi$.
   End.
-  Take $f \eq F \FUNrest \alpha$.
+  Take $f = F \FUNrest \alpha$.
   Then $f$ is a map from $\alpha$ to $x$.
   Indeed for no $\beta \SETin \alpha$ we have $F(\beta) \eq x$.
 

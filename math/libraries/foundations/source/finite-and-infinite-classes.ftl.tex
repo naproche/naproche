@@ -7,9 +7,11 @@
 \importmodule[libraries/foundations]{equinumerosity.ftl}
 
 \begin{sfragment}{Finite Classes}
+  \inlineforthel{[synonym elements/-s]}
+
   \begin{definition}[forthel,id=FOUNDATIONS_14_3512046897512410]
     Let $X$ be a class and $n$ be a natural number.
-    \emph{$X$ has $n$ elements} iff $X$ is equinumerous to $\NATsegment{\NATone}{n}$.
+    $X$ \emph{has $n$ elements} iff $X$ is equinumerous to $\NATsegment{\NATone}{n}$.
   \end{definition}
 
   \begin{definition}[forthel,id=FOUNDATIONS_14_3694156977274880]
@@ -31,15 +33,15 @@
 
   \begin{proposition}[forthel,id=FOUNDATIONS_14_5132547854597502]
     Let $X$ be a class.
-    $X$ has $\NATzero$ elements iff $X \eq \SETempty$.
+    $X$ has zero elements iff $X \eq \SETempty$.
   \end{proposition}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_14_6812054297034125]
     Let $X$ be a class.
-    $X$ has $\NATone$ element iff $X \eq \SETsingleton{a}$ for some object $a$.
+    $X$ has one element iff $X \eq \SETsingleton{a}$ for some object $a$.
   \end{proposition}
   \begin{proof}[forthel]
-    \begin{case}{$X$ has $\NATone$ element.}
+    \begin{case}{$X$ has one element.}
       Take a bijection $f$ between $\NATsegment{\NATone}{\NATone}$ and $X$.
       We have $\NATsegment{\NATone}{\NATone} \eq \SETsingleton{\NATone}$.
       Hence $X \eq \SETsingleton{f(\NATone)}$.
@@ -47,17 +49,17 @@
 
     \begin{case}{$X \eq \SETsingleton{a}$ for some object $a$.}
       Consider an object $a$ such that $X \eq \SETsingleton{a}$.
-      Define $f(x) = \NATone$ for $x \SETin \SETsingleton{a}$.
+      Define $f(x) = \NATone$ for $x \in \SETsingleton{a}$.
       Then $f$ is a bijection between $\SETsingleton{a}$ and $\NATsegment{\NATone}{\NATone}$.
     \end{case}
   \end{proof}
 
   \begin{proposition}[forthel,id=FOUNDATIONS_14_3468912675458910]
     Let $X$ be a class.
-    $X$ has $\NATtwo$ elements iff $X \eq \SETpair{a}{b}$ for some distinct objects $a, b$.
+    $X$ has two elements iff $X \eq \SETpair{a}{b}$ for some distinct objects $a, b$.
   \end{proposition}
   \begin{proof}[forthel]
-    \begin{case}{$X$ has $\NATtwo$ elements.}
+    \begin{case}{$X$ has two elements.}
       Take a bijection $f$ between $\NATsegment{\NATone}{\NATtwo}$ and $X$.
       We have $\NATsegment{\NATone}{\NATtwo} \eq \SETpair{\NATone}{\NATtwo}$.
       Hence $X \eq \SETpair{f(\NATone)}{f(\NATtwo)}$.
@@ -71,7 +73,7 @@
           \NATone & : x \eq a \\
           \NATtwo & : x \eq b
         \end{cases}\]
-      for $x \SETin \SETpair{a}{b}$.
+      for $x \in \SETpair{a}{b}$.
       Then $f$ is a bijection between $\SETpair{a}{b}$ and $\NATsegment{\NATone}{\NATtwo}$.
       Indeed $f$ is injective and surjective onto $\NATsegment{\NATone}{\NATtwo}$.
     \end{case}
@@ -88,7 +90,7 @@
         f(x)  & : x \SETin X \\
         n \NATplus \NATone & : x \eq a
       \end{cases}\]
-    for $x \SETin X \SETunion \SETsingleton{a}$.
+    for $x \in X \SETunion \SETsingleton{a}$.
 
     (1) $g$ is a map from $X \SETunion \SETsingleton{a}$ to $\NATsegment{\NATone}{n \NATplus \NATone}$.
     Indeed we can show that $g(x) \SETin \NATsegment{\NATone}{n \NATplus \NATone}$ for all $x \SETin X \SETunion \SETsingleton{a}$.

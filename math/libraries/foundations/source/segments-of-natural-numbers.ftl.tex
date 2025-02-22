@@ -8,7 +8,7 @@
 
 \begin{definition}[forthel,id=FOUNDATIONS_14_3625613501923328]
   Let $n, m$ be natural numbers.
-  $\emph{\NATsegment{n}{m}} = \{ k \SETin \Nat \mid n \NATleq k \NATleq m \}$.
+  $\emph{\NATsegment{n}{m}} = \{ k \in \Nat \mid n \NATleq k \NATleq m \}$.
 \end{definition}
 
 \begin{proposition}[forthel,id=FOUNDATIONS_14_145331933151232]
@@ -43,15 +43,15 @@
       Then $n \NATgtr m$ or $m \NATgtr n$.
 
       \begin{case}{$n \NATgtr m$.}
-        Take $k \eq m \NATplus \NATone$.
-        Then $k \NATleq n$ and $k \nleq m$.
+        Take $k = m \NATplus \NATone$.
+        Then $k \NATleq n$ and $k \NATnleq m$.
         Hence it is wrong that $k \NATleq n$ iff $k \NATleq m$.
         Contradiction.
       \end{case}
 
       \begin{case}{$m \NATgtr n$.}
-        Take $k \eq n \NATplus \NATone$.
-        Then $k \NATleq m$ and $k \nleq m$.
+        Take $k = n \NATplus \NATone$.
+        Then $k \NATleq m$ and $k \NATnleq m$.
         Hence it is wrong that $k \NATleq n$ iff $k \NATleq m$.
         Contradiction.
       \end{case}

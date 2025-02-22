@@ -5,20 +5,20 @@
 \begin{smodule}[title=Transfinite Recursion I]{transfinite-recursion-1.ftl}
 \importmodule[libraries/set-theory]{coincidence-lemma.ftl}
   
-\begin{theorem}[forthel,title=Transfinite Recursion Theorem: Existence,id=transfinite-recursion_existence]
+\begin{theorem}[forthel,title=Transfinite Recursion Theorem: Existence,id=transfinite_recursion_existence]
   Let $A$ be a class and $G$ be a map from $\ORDfunspace{A}$ to $A$.
   Then there exists a map $F$ from $\Ord$ to $A$ that is recursive regarding $G$.
 \end{theorem}
 \begin{proof}[forthel]
   Every ordinal is contained in the domain of some map $H$ to $A$ such that $H$ is recursive regarding $G$.
   \begin{proof}
-    Define \[ \Phi = \class{\alpha \SETin \Ord | \classtext{$\alpha$ is contained in the domain of some map to $A$ that is recursive regarding $G$}}. \]
+    Define \[ \Phi = \class{\alpha \in \Ord | \classtext{$\alpha$ is contained in the domain of some map to $A$ that is recursive regarding $G$}}. \]
 
     Let us show that for every ordinal $\alpha$ if every ordinal less than $\alpha$ lies in $\Phi$ then $\alpha \SETin \Phi$.
       Let $\alpha$ be an ordinal.
       Assume that every ordinal less than $\alpha$ lies in $\Phi$.
       Then for all $y \SETin \alpha$ there exists a map $h$ to $A$ such that $h$ is recursive regarding $G$ and $y \SETin \FUNdom(h)$.
-      Define $H'(y) =$ ``choose a map $h$ to $A$ such that $h$ is recursive regarding $G$ and $y \SETin \FUNdom(h)$ in $h(y)$'' for $y \SETin \alpha$.
+      Define $H'(y) =$ ``choose a map $h$ to $A$ such that $h$ is recursive regarding $G$ and $y \SETin \FUNdom(h)$ in $h(y)$'' for $y \in \alpha$.
       Then $H'$ is a map from $\alpha$ to $A$.
       We have $H' \eq H' \FUNrest \alpha$.
       Define \[ H(\beta) =
@@ -26,7 +26,7 @@
           H'(\beta)                 & : \beta \ORDless \alpha \\
           G(H' \FUNrest \beta)  & : \beta \eq \alpha
         \end{cases} \]
-      for $\beta \SETin \ORDsucc(\alpha)$.
+      for $\beta \in \ORDsucc(\alpha)$.
       
       Let us show that $H \FUNrest \beta \SETin \ORDfunspace{A}$ for all $\beta \SETin \FUNdom(H)$.
         Let $\beta \SETin \FUNdom(H)$.
@@ -50,7 +50,7 @@
             Then $H(y) \eq H'(y)$.
             Choose a map $h'$ to $A$ such that $h'$ is recursive regarding $G$ and $y \SETin \FUNdom(h')$ and $H'(y) \eq h'(y)$.
             [prover vampire]
-            Then $h'(y) \eq h(y)$ (by \nameref{ransfinite-recursion_coincidence}).
+            Then $h'(y) \eq h(y)$ (by \nameref{ransfinite_recursion_coincidence}).
             Indeed $y \SETin \FUNdom(h) \SETintersect \FUNdom(h')$.
           End.
 
@@ -76,7 +76,7 @@
     Consequently every ordinal is contained in the domain of some map $H$ to $A$ such that $H$ is recursive regarding $G$.
   \end{proof}
 
-  Define $F(\alpha) =$ ``choose a map $H$ to $A$ such that $H$ is recursive regarding $G$ and $\alpha \SETin \FUNdom(H)$ in $H(\alpha)$'' for $\alpha \SETin \Ord$.
+  Define $F(\alpha) =$ ``choose a map $H$ to $A$ such that $H$ is recursive regarding $G$ and $\alpha \SETin \FUNdom(H)$ in $H(\alpha)$'' for $\alpha \in \Ord$.
   Then $F$ is a map from $\Ord$ to $A$.
 
   $F$ is recursive regarding $G$.
@@ -92,7 +92,7 @@
         Let $\beta \SETin \alpha$.
         Choose a map $H'$ to $A$ such that $H'$ is recursive regarding $G$ and $\beta \SETin \FUNdom(H')$ and $F(\beta) \eq H'(\beta)$.
         [prover vampire]
-        Then $H(\beta) \eq H'(\beta)$ (by \nameref{ransfinite-recursion_coincidence}).
+        Then $H(\beta) \eq H'(\beta)$ (by \nameref{ransfinite_recursion_coincidence}).
         Indeed $\beta \SETin \FUNdom(H) \SETintersect \FUNdom(H')$.
         Therefore $F(\beta) \eq H'(\beta)$.
       End.
@@ -106,7 +106,7 @@
   \end{proof}
 \end{proof}
 
-\begin{theorem}[forthel,title=Transfinite Recursion Theorem: Uniqueness,id=transfinite-recursion_uniqueness]
+\begin{theorem}[forthel,title=Transfinite Recursion Theorem: Uniqueness,id=transfinite_recursion_uniqueness]
   Let $A$ be a class and $G$ be a map from $\ORDfunspace{A}$ to $A$.
   Let $F, F'$ be maps from $\Ord$ to $A$ that are recursive regarding $G$.
   Then $F \eq F'$.
@@ -114,7 +114,7 @@
 \begin{proof}[forthel]
   [prover vampire]
   $F$ and $F'$ are recursive regarding $G$.
-  Then $F(\alpha) \eq F'(\alpha)$ for all $\alpha \SETin \FUNdom(F) \SETintersect \FUNdom(F')$ (by \nameref{ransfinite-recursion_coincidence}).
+  Then $F(\alpha) \eq F'(\alpha)$ for all $\alpha \SETin \FUNdom(F) \SETintersect \FUNdom(F')$ (by \nameref{transfinite_recursion_coincidence}).
   We have $\FUNdom(F) \eq \Ord \eq \FUNdom(F')$.
   Hence $F(\alpha) \eq F'(\alpha)$ for all $\alpha \SETin \Ord$.
   Thus $F \eq F'$.

@@ -34,7 +34,7 @@
       Then $n \NATmul (m \NATplus k) \eq (n \NATmul m) \NATplus (n \NATmul k)$.
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \{ k' \SETin \Nat \mid n \NATmul (m \NATplus k') \eq (n \NATmul m) \NATplus (n \NATmul k') \}$.
+      Define $\Phi = \{ k' \in \Nat \mid n \NATmul (m \NATplus k') \eq (n \NATmul m) \NATplus (n \NATmul k') \}$.
 
       (1) $\NATzero$ is an element of $\Phi$.
       Indeed $n \NATmul (m \NATplus \NATzero)
@@ -65,10 +65,10 @@
       Then $(n \NATplus m) \NATmul k \eq (n \NATmul k) \NATplus (m \NATmul k)$.
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \{ k' \SETin \Nat \mid (n \NATplus m) \NATmul k' \eq (n \NATmul k') \NATplus (m \NATmul k') \}$.
+      Define $\Phi = \{ k' \in \Nat \mid (n \NATplus m) \NATmul k' \eq (n \NATmul k') \NATplus (m \NATmul k') \}$.
 
       (1) $\NATzero$ belongs to $\Phi$.
-      Indeed $(n \NATplus m) \NATmul \NATzero
+      Indeed $((n \NATplus m) \NATmul \NATzero)
         \eq \NATzero
         \eq \NATzero \NATplus \NATzero
         \eq (n \NATmul \NATzero) \NATplus (m \NATmul \NATzero)$.
@@ -125,7 +125,7 @@
       Then $n \NATmul (m \NATmul k) \eq (n \NATmul m) \NATmul k$.
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \{ k' \SETin \Nat \mid n \NATmul (m \NATmul k') \eq (n \NATmul m) \NATmul k' \}$.
+      Define $\Phi = \{ k' \in \Nat \mid n \NATmul (m \NATmul k') \eq (n \NATmul m) \NATmul k' \}$.
 
       (1) $\NATzero$ is contained in $\Phi$.
       Indeed $n \NATmul (m \NATmul \NATzero)
@@ -156,11 +156,11 @@
       Then \[ n \NATmul m \eq m \NATmul n. \]
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \{ m' \SETin \Nat \mid n \NATmul m' \eq m' \NATmul n \}$.
+      Define $\Phi = \{ m' \in \Nat \mid n \NATmul m' \eq m' \NATmul n \}$.
 
       (1) $\NATzero$ is contained in $\Phi$.
       \begin{proof}
-        Define $\Psi = \{ n' \SETin \Nat \mid n' \NATmul \NATzero \eq \NATzero \NATmul n' \}$.
+        Define $\Psi = \{ n' \in \Nat \mid n' \NATmul \NATzero \eq \NATzero \NATmul n' \}$.
 
         (1a) $\NATzero$ is contained in $\Psi$.
 
@@ -182,7 +182,7 @@
 
       (2) $\NATone$ belongs to $\Phi$.
       \begin{proof}
-        Define $\Theta = \{ n' \SETin \Nat \mid n' \NATmul \NATone \eq \NATone \NATmul n' \}$.
+        Define $\Theta = \{ n' \in \Nat \mid n' \NATmul \NATone \eq \NATone \NATmul n' \}$.
 
         (2a) $\NATzero$ is contained in $\Theta$.
 
@@ -245,7 +245,7 @@
       If $n \NATmul k \eq m \NATmul k$ then $n \eq m$.
     \end{proposition}
     \begin{proof}[forthel]
-      Define $\Phi = \{ n' \SETin \Nat \mid\text{ for all }m' \SETin \Nat\text{ if }n' \NATmul k \eq m' \NATmul k\text{ and }k \neq \NATzero\text{ then }n' \eq m' \}$.
+      Define $\Phi = \{ n' \in \Nat \mid\text{ for all }m' \SETin \Nat\text{ if }n' \NATmul k \eq m' \NATmul k\text{ and }k \neq \NATzero\text{ then }n' \eq m' \}$.
 
       (1) $\NATzero$ is contained in $\Phi$.
       \begin{proof}

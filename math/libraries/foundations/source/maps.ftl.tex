@@ -17,9 +17,24 @@
 \notation{FUNpreim}[star]{#1^{\comp*}\dobrackets{#2}}
 \symdef{FUNfromto}[args=2]{\mathbin{\comp:}#1\mathbin{\comp\rightarrow}#2}
 \symdef{FUNfunspace}[args=2]{\comp[#1\mathbin{\comp\rightarrow}#2\comp]}
-\STEXinvisible{\inlineforthel{
-  Let $\FUNdom(f)$ stand for $\dom(f)$.
-}}
+
+\begin{sfragment}{Domain}
+  \STEXinvisible{\inlineforthel{Let $\FUNdom(f)$ stand for $\dom(f)$.}}
+
+  \begin{convention}[forthel]
+    Let the \emph{domain of $f$} stand for $\FUNdom(f)$.
+    Let $f$ is \emph{defined on $X$} stand for $\FUNdom(f) = X$.
+  \end{convention}
+\end{sfragment}
+
+\begin{sfragment}{Application}
+  \inlineforthel{[synonym value/-s]}
+
+  \begin{convention}[forthel]
+    Let the \emph{value of $f$ at $x$} stand for $f(x)$.
+    Let $\emph{f(x,y)}$ stand for $f((x,y))$.
+  \end{convention}
+\end{sfragment}
 
 \begin{sfragment}{Range}
   \inlineforthel{[synonym value/-s]}
@@ -98,7 +113,7 @@
 
   \begin{definition}[forthel,id=FOUNDATIONS_06_4563167805964288]
     Let $f$ be a map and $B$ be a class.
-    $\emph{\FUNpreim{f}{B}} = \{ a \SETin \FUNdom(f) \mid f(a) \SETin B \}$.
+    $\emph{\FUNpreim{f}{B}} = \{ a \in \FUNdom(f) \mid f(a) \SETin B \}$.
 
     Let the \emph{preimage of $B$ under $f$} stand for $\FUNpreim{f}{B}$.
     Let the \emph{inverse image of $B$ under $f$} stand for $\FUNpreim{f}{B}$.

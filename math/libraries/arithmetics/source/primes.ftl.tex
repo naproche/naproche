@@ -31,7 +31,7 @@
   Then $n$ has a prime divisor.
 \end{proposition}
 \begin{proof}[forthel]
-  Define $\Phi = \{ n' \SETin \Nat \mid\text{ if }n' \NATgtr \NATone\text{ then }n'\text{ has a prime divisor}\}$.
+  Define $\Phi = \{ n' \in \Nat \mid\text{ if }n' \NATgtr \NATone\text{ then }n'\text{ has a prime divisor}\}$.
 
   Let us show that for every $n' \SETin \Nat$ if $\Phi$ contains all
   predecessors of $n'$ then $\Phi$ contains $n'$.
@@ -100,7 +100,7 @@
   Hence $p \NATmid n$.
   Contradiction.
 \end{proof}
-\inlineforthel{[quit]}
+
 \begin{proposition}[forthel,id=ARITHMETIC_10_8313676557713408]
   Let $n, m$ be natural numbers and $p$ be a prime number.
   If $p \NATmid n \NATmul m$ then $p \NATmid n$ or $p \NATmid m$.
@@ -108,12 +108,10 @@
 \begin{proof}[forthel]
   Assume $p \NATmid n \NATmul m$.
 
-  \begin{case}{$p \NATmid n$.}
-    Obvious.
-  \end{case}
+  \begin{case}{$p \NATmid n$.} \end{case}
 
   \begin{case}{$p \NATnmid n$.}
-    Define $\Phi = \{ k \SETin \Nat \mid k \neq \NATzero\text{ and }p \NATmid k \NATmul m \}$.
+    Define $\Phi = \{ k \in \Nat \mid k \neq \NATzero\text{ and }p \NATmid k \NATmul m \}$.
     Then $p \SETin \Phi$ and $n \SETin \Phi$.
     Hence $\Phi$ contains some natural number.
     Thus we can take $a \SETin \Phi$ such that $a \NATleq k$ for all $k \SETin \Phi$.
@@ -132,7 +130,7 @@
         We have $p \NATmid a \NATmul m$.
         Hence $p \NATmid (q \NATmul a) \NATmul m$.
         Indeed $((q \NATmul a) \NATmul m) \eq q \NATmul (a \NATmul m)$. %!
-        Take $A \eq (q \NATmul a) \NATmul m$ and $B \eq r \NATmul m$. %!
+        Take $A = (q \NATmul a) \NATmul m$ and $B = r \NATmul m$. %!
         Then $p \NATmid A \NATplus B$ and $p \NATmid A$.
         Thus $p \NATmid B$ (by \printref{ARITHMETIC_07_1076947887063040}).
         Indeed $p, A$ and $B$ are natural numbers.

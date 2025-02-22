@@ -21,7 +21,7 @@
 \end{proposition}
 \begin{proof}[forthel]
   Take a set $x$ (by \printref{FOUNDATIONS_10_2362039748001792}).
-  Define $A = \{ y \SETin x \mid y \neq y \}$.
+  Define $A = \{ y \in x \mid y \neq y \}$.
   Then $A$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
   We have $A \eq \SETempty$.
   Hence $\SETempty$ is a set.
@@ -81,10 +81,10 @@
     Therefore $P$ is a set (by \printref{FOUNDATIONS_10_2263707272871936}).
   \end{proof}
 
-  Define $l(p) =$ ``choose $a \SETin x$, choose $b \SETin y$ such that $p \eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$ in $a$'' for $p \SETin P$.
-  Define $r(p) =$ ``choose $a \SETin x$, choose $b \SETin y$ such that $p \eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$ in $b$'' for $p \SETin P$.
+  Define $l(p) =$ ``choose $a \SETin x$, choose $b \SETin y$ such that $p \eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$ in $a$'' for $p \in P$.
+  Define $r(p) =$ ``choose $a \SETin x$, choose $b \SETin y$ such that $p \eq \SETpair{\SETsingleton{a}}{\SETpair{a}{b}}$ in $b$'' for $p \in P$.
 
-  Define $f(p) = (l(p), r(p))$ for $p \SETin P$.
+  Define $f(p) = (l(p), r(p))$ for $p \in P$.
 
   Let us show that for any objects $u, u', v, v'$ if
   $\SETpair{\SETsingleton{u}}{\SETpair{u}{v}} \eq \SETpair{\SETsingleton{u'}}{\SETpair{u'}{v'}}$ then $u \eq u'$ and $v \eq v'$.
@@ -238,11 +238,11 @@
   Then $\FUNfunspace{x}{y}$ is a set.
 \end{proposition}
 \begin{proof}[forthel]
-  Define $R = \{ F \SETin \SETpow(x \SETprod y) \mid\text{ (for all }a \SETin x\text{ there exists a }b \SETin y\text{ such that }(a,b) \SETin F\text{) and for all }a \SETin x\text{ and all }b, b' \SETin y\text{ such that }(a,b), (a,b') \SETin F\text{ we have }b \eq b' \}$.
+  Define $R = \{ F \in \SETpow(x \SETprod y) \mid\text{ (for all }a \SETin x\text{ there exists a }b \SETin y\text{ such that }(a,b) \SETin F\text{) and for all }a \SETin x\text{ and all }b, b' \SETin y\text{ such that }(a,b), (a,b') \SETin F\text{ we have }b \eq b' \}$.
 
   [prover vampire]
   Every element of $R$ is a set. % Needed for ontological checking
-  Define $h(F) = \fun a \SETin x.$ ``choose $b \SETin y$ such that $(a,b) \SETin F$ in $b$'' for $F \SETin R$.
+  Define $h(F) = \fun a \in x.$ ``choose $b \SETin y$ such that $(a,b) \SETin F$ in $b$'' for $F \in R$.
   [prover eprover]
 
   Let us show that $\FUNfunspace{x}{y} \SETinclude \FUNrange(h)$.
@@ -251,7 +251,7 @@
 
     Then $F \SETin R$.
     \begin{proof}
-      Define $g(a) = (a,f(a))$ for $a \SETin x$.
+      Define $g(a) = (a,f(a))$ for $a \in x$.
       Then $F \eq \FUNrange(g)$.
       Hence $F$ is a set.
       Thus $F \SETin \SETpow(x \SETprod y)$.

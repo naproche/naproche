@@ -12,16 +12,16 @@
   Then $\NATexp{n}{n} \NATgtr \NATfac{n}$.
 \end{proposition}
 \begin{proof}[forthel]
-  (a) Define $\Phi = \{ n' \SETin \NATgeq{\NATtwo} \mid \NATexp{n'}{n'} \NATgtr \NATfac{n'} \}$.
+  (a) Define $\Phi = \{ n' \in \Natgeqthan{\NATtwo} \mid \NATexp{n'}{n'} \NATgtr \NATfac{n'} \}$.
 
   (1) $\Phi$ contains $\NATtwo$.
 
-  (\NATtwo) For all $n' \SETin \Phi$ we have $n' \NATplus \NATone \SETin \Phi$.
+  (2) For all $n' \SETin \Phi$ we have $n' \NATplus \NATone \SETin \Phi$.
   \begin{proof}
     Let $n' \SETin \Phi$.
-    Then $n' \NATgeq 2$.
+    Then $n' \NATgeq \NATtwo$.
 
-    Take $X \eq \NATexp{n' \NATplus \NATone}{n'} \NATmul (n' \NATplus \NATone)$ and $Y \eq \NATexp{n'}{n'} \NATmul (n' \NATplus \NATone)$.
+    Take $X = \NATexp{n' \NATplus \NATone}{n'} \NATmul (n' \NATplus \NATone)$ and $Y = \NATexp{n'}{n'} \NATmul (n' \NATplus \NATone)$.
     Then $X \NATgtr Y$.
     \begin{proof}
       We have $n' \NATplus \NATone \NATgtr n'$ and $n' \neq \NATzero$.
@@ -30,7 +30,7 @@
       Hence $\NATexp{n' \NATplus \NATone}{n'} \NATmul (n' \NATplus \NATone) \NATgtr \NATexp{n'}{n'} \NATmul (n' \NATplus \NATone)$.
     \end{proof}
 
-    Take $Z \eq \NATfac{n'} \NATmul (n' \NATplus \NATone)$.
+    Take $Z = \NATfac{n'} \NATmul (n' \NATplus \NATone)$.
     Then $Y \NATgtr Z$.
     Indeed $\NATexp{n'}{n'} \NATgtr \NATfac{n'}$ and $n' \NATplus \NATone \neq \NATzero$.
 
@@ -38,7 +38,7 @@
     Thus $\NATexp{n' \NATplus \NATone}{n' \NATplus \NATone} \NATgtr \NATfac{n' \NATplus \NATone}$.
   \end{proof}
 
-  Therefore $\Phi$ contains every element of $\NATgeq{\NATtwo}$ (by \printref{ARITHMETIC_04_4976599269113856}).
+  Therefore $\Phi$ contains every element of $\Natgeqthan{\NATtwo}$ (by \printref{ARITHMETIC_04_4976599269113856}).
   Consequently $\NATexp{n}{n} \NATgtr \NATfac{n}$ (by a).
 \end{proof}
 
@@ -48,7 +48,7 @@
   Then $\NATfac{n} \NATgtr \NATexp{\NATtwo}{n}$.
 \end{proposition}
 \begin{proof}[forthel]
-  (a) Define $\Phi = \{ n' \SETin \NATgeq{\NATfour} \mid \NATfac{n'} \NATgtr \NATexp{\NATtwo}{n'} \}$.
+  (a) Define $\Phi = \{ n' \in \Natgeqthan{\NATfour} \mid \NATfac{n'} \NATgtr \NATexp{\NATtwo}{n'} \}$.
 
   (1) $\Phi$ contains $\NATfour$.
   \begin{proof}
@@ -65,10 +65,10 @@
     Let $n' \SETin \Phi$.
     Then $n' \NATgeq \NATfour$ and $\NATfac{n'} \NATgtr \NATexp{\NATtwo}{n'}$.
 
-    Take $X \eq \NATfac{n'} \NATmul (n' \NATplus \NATone)$ and $Y \eq \NATexp{\NATtwo}{n'} \NATmul (n' \NATplus \NATone)$.
+    Take $X = \NATfac{n'} \NATmul (n' \NATplus \NATone)$ and $Y = \NATexp{\NATtwo}{n'} \NATmul (n' \NATplus \NATone)$.
     Then $X \NATgtr Y$.
 
-    Take $Z \eq \NATexp{\NATtwo}{n'} \NATmul \NATtwo$.
+    Take $Z = \NATexp{\NATtwo}{n'} \NATmul \NATtwo$.
     Then $Y \NATgtr Z$ (by \printref{ARITHMETIC_06_5048640368279552}).
     Indeed $n' \NATplus \NATone \NATgtr \NATtwo$ and $\NATexp{\NATtwo}{n'} \neq \NATzero$.
 
@@ -76,7 +76,7 @@
     Thus $\NATfac{n' \NATplus \NATone} \NATgtr \NATexp{\NATtwo}{n' \NATplus \NATone}$.
   \end{proof}
 
-  Therefore $\Phi$ contains every element of $\NATgeq{\NATfour}$ (by \printref{ARITHMETIC_04_4976599269113856}).
+  Therefore $\Phi$ contains every element of $\Natgeqthan{\NATfour}$ (by \printref{ARITHMETIC_04_4976599269113856}).
   Consequently $\NATfac{n} \NATgtr \NATexp{\NATtwo}{n}$ (by a).
 \end{proof}
 \end{smodule}

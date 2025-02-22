@@ -4,18 +4,18 @@
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Transfinite Recursion II]{transfinite-recursion-2.ftl}
 \importmodule[libraries/set-theory]{transfinite-recursion-1.ftl}
-  
-\begin{lemma}[forthel,id=transfinite-recursion_029348573987483]
+
+\begin{lemma}[forthel,id=transfinite_recursion_029348573987483]
   Let $A$ be a class and $\alpha$ be an ordinal and $F \FUNfromto{\Ord}{A}$.
   Then $(\alpha, F(\alpha)) \SETin \Ord \SETprod A$.
 \end{lemma}
 
-\begin{lemma}[forthel,id=transfinite-recursion_570293857449281]
+\begin{lemma}[forthel,id=transfinite_recursion_570293857449281]
   Let $A$ be a class and $\lambda$ be a limit ordinal and $F \FUNfromto{\Ord}{A}$.
   Then $(\lambda, F \FUNrest \lambda) \SETin \Ord \SETprod \ORDfunspace{A}$.
 \end{lemma}
 
-\begin{corollary}[forthel,id=transfinite-recursion_298647309184593]
+\begin{corollary}[forthel,id=transfinite_recursion_298647309184593]
   Let $A$ be a class.
   Let $a \SETin A$ and $G \FUNfromto{\Ord \SETprod A}{A}$ and $H \FUNfromto{\Ord \SETprod \ORDfunspace{A}}{A}$.
   Then there exists a map $F$ from $\Ord$ to $A$ such that
@@ -39,7 +39,7 @@
       H(\FUNdom(f), f)
       & : \text{$\FUNdom(f)$ is a limit ordinal}
     \end{cases} \]
-  for $f \SETin \ORDfunspace{A}$.
+  for $f \in \ORDfunspace{A}$.
 
   Then $J$ is a map from $\ORDfunspace{A}$ to $A$.
   Indeed we can show that for any $f \SETin \ORDfunspace{A}$ we have $J(f) \SETin A$.
