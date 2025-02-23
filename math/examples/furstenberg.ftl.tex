@@ -36,7 +36,7 @@
 
     \begin{definition}
       Let $A$ be a subset of $\Nat$.
-      $A^\complement = \Nat \setminus A$.
+      $A^\complement = \Nat \SETdiff A$.
     \end{definition}
 
     Let the complement of $A$ stand for $A^\complement$.
@@ -51,7 +51,7 @@
 
   \begin{forthel}
     \begin{definition}
-      $\N_{n, q} = \{ m \in \Nat \mid m \equiv n \pmod{q} \}$.
+      $\N_{n, q} = \{ m \in \Nat \mid \NATcong{m}{n}{q} \}$.
     \end{definition}
   \end{forthel}
 
@@ -62,7 +62,7 @@
     \begin{definition}
       Let $U$ be a subset of $\Nat$.
       $U$ is open iff for any $n \in U$ there exists a $q$ such that
-      $\N_{n, q} \subseteq U$.
+      $\N_{n, q} \SETinclude U$.
     \end{definition}
 
     \begin{definition}
@@ -75,7 +75,7 @@
     \end{lemma}
     \begin{proof}
       Let $S$ be a system of open sets.
-      Then $S \subseteq \SETpow(\Nat)$.
+      Then $S \SETinclude \SETpow(\Nat)$.
       Hence $S$ is a set.
     \end{proof}
   \end{forthel}
@@ -84,38 +84,38 @@
 
   \begin{forthel}
     \begin{lemma}
-      $\Nat$ and $\emptyset$ are open.
+      $\Nat$ and $\SETempty$ are open.
     \end{lemma}
 
     \begin{lemma}
       Let $U,V$ be open subsets of $\Nat$.
-      Then $U \cap V$ is open.
+      Then $U \SETintersect V$ is open.
     \end{lemma}
     \begin{proof}
-      Let $n \in U \cap V$.
-      Take a $q$ such that $\N_{n, q} \subseteq U$.
-      Take a $p$ such that $\N_{n, p} \subseteq V$.
-      Then $p \cdot q \neq 0$.
+      Let $n \in U \SETintersect V$.
+      Take a $q$ such that $\N_{n, q} \SETinclude U$.
+      Take a $p$ such that $\N_{n, p} \SETinclude V$.
+      Then $p \NATmul q \neq \NATzero$.
 
-      Let us show that $\N_{n, p \cdot q} \subseteq U \cap V$.
-        Let $m \in \N_{n, p \cdot q}$.
-        We have $m \equiv n \pmod{p \cdot q}$.
-        Hence $m \equiv n \pmod{p}$ and $m \equiv n \pmod{q}$.
+      Let us show that $\N_{n, p \NATmul q} \SETinclude U \SETintersect V$.
+        Let $m \in \N_{n, p \NATmul q}$.
+        We have $\NATcong{m}{n}{p \NATmul q}$.
+        Hence $\NATcong{m}{n}{p}$ and $\NATcong{m}{n}{q}$.
         Thus $m \in \N_{n, p}$ and $m \in \N_{n, q}$.
         Therefore $m \in U$ and $m \in V$.
-        Consequently $m \in U \cap V$.
+        Consequently $m \in U \SETintersect V$.
       End.
     \end{proof}
 
     \begin{lemma}
       Let $S$ be a system of open sets.
-      Then $\bigcup S$ is open.
+      Then $\SETunionover S$ is open.
     \end{lemma}
     \begin{proof}
-      Let $n \in \bigcup S$.
+      Let $n \in \SETunionover S$.
       Take a set $M$ such that $n \in M \in S$.
-      Consider a $q$ such that $\N_{n, q} \subseteq M$.
-      Then $\N_{n, q} \subseteq \bigcup S$.
+      Consider a $q$ such that $\N_{n, q} \SETinclude M$.
+      Then $\N_{n, q} \SETinclude \SETunionover S$.
     \end{proof}
   \end{forthel}
 
@@ -139,29 +139,29 @@
     \end{lemma}
     \begin{proof}
       Let $S$ be a system of closed sets.
-      Then $S \subseteq \SETpow(\Nat)$.
+      Then $S \SETinclude \SETpow(\Nat)$.
       $\SETpow(\Nat)$ is a set.
       Hence $S$ is a set.
     \end{proof}
 
     \begin{lemma}
       Let $S$ be a finite system of closed sets.
-      Then $\bigcup S$ is closed.
+      Then $\SETunionover S$ is closed.
     \end{lemma}
     \begin{proof}
-      Define $C = \{ X \mid X$ is a closed subset of $\Nat \}$.
+      Define $C = \{ X \mid X \text{ is a closed subset of } \Nat \}$.
 
-      Let us show that $A \cup B \in C$ for any $A, B \in C$.
+      Let us show that $A \SETunion B \in C$ for any $A, B \in C$.
         Let $A, B \in C$.
         Then $A, B$ are closed subsets of $\Nat$.
-        We have $((A \cup B)^\complement) = A^\complement \cap B^\complement$. %!
+        We have $((A \SETunion B)^\complement) = A^\complement \SETintersect B^\complement$. %!
         $A^\complement$ and $B^\complement$ are open.
-        Hence $A^\complement \cap B^\complement$ is open.
-        Thus $A \cup B$ is a closed subset of $\Nat$.
+        Hence $A^\complement \SETintersect B^\complement$ is open.
+        Thus $A \SETunion B$ is a closed subset of $\Nat$.
       End.
 
       Therefore $C$ is closed under finite unions.
-      Consequently $\bigcup S \in C$.
+      Consequently $\SETunionover S \in C$.
       Indeed $S$ is a subset of $C$.
     \end{proof}
   \end{forthel}
@@ -176,11 +176,11 @@
     \begin{proof}
       Let $m \in (\N_{n, q})^\complement$.
 
-      Let us show that $\N_{m, q} \subseteq (\N_{n, q})^\complement$.
+      Let us show that $\N_{m, q} \SETinclude (\N_{n, q})^\complement$.
         Let $k \in \N_{m, q}$.
         Assume $k \notin (\N_{n, q})^\complement$.
-        Then $k \equiv m \pmod{q}$ and $n \equiv k \pmod{q}$.
-        Hence $m \equiv n \pmod{q}$.
+        Then $\NATcong{k}{m}{q}$ and $\NATcong{n}}{k}{q}$.
+        Hence $\NATcong{m}{n}{q}$.
         Therefore $m \in \N_{n, q}$.
         Contradiction.
       End.
@@ -195,14 +195,14 @@
 
   \begin{forthel}
     \begin{definition}
-      $\Ps = \{ \N_{0, p} \mid p \in \Prime \}$.
+      $\Ps = \{ \N_{\NATzero, p} \mid p \in \Prime \}$.
     \end{definition}
 
     \begin{lemma}
       $\Ps$ is a system of closed sets.
     \end{lemma}
     \begin{proof}
-      $\N_{0, p}$ is a closed subset of $\Nat$ for every $p \in \Prime$.
+      $\N_{\NATzero, p}$ is a closed subset of $\Nat$ for every $p \in \Prime$.
     \end{proof}
 
     \begin{lemma}
@@ -210,26 +210,26 @@
     \end{lemma}
     \begin{proof}
       (1) $\Ps$ is a set.
-      Indeed $\Ps \subseteq \SETpow(\Nat)$.
+      Indeed $\Ps \SETinclude \SETpow(\Nat)$.
 
       (2) $\Ps$ is equinumerous to $\Prime$.
       \begin{proof}
-        Define $f(p) = \N_{0,p}$ for $p \in \Prime$.
+        Define $f(p) = \N_{\NATzero,p}$ for $p \in \Prime$.
 
         Let us show that $f$ is injective.
           Let $p, q \in \Prime$.
           Assume $f(p) = f(q)$.
-          Then $\N_{0, p} = \N_{0, q}$.
-          We have $\N_{0, p} = \{ m \in \Nat \mid m \equiv 0 \pmod{p} \}$ and
-          $\N_{0, q} = \{ m \in \Nat \mid m \equiv 0 \pmod{q} \}$.
+          Then $\N_{\NATzero, p} = \N_{\NATzero, q}$.
+          We have $\N_{\NATzero, p} = \{ m \in \Nat \mid \NATcong{m}{\NATzero}{p} \}$ and
+          $\N_{\NATzero, q} = \{ m \in \Nat \mid \NATcong{m}{\NATzero}{q} \}$.
 
-          We can show that for all $m \in \Nat$ we have $p \mid m$ iff $q \mid m$.
+          We can show that for all $m \in \Nat$ we have $p \NATmid m$ iff $q \NATmid m$.
             Let $m \in \Nat$.
-            Then $m \equiv 0 \pmod{p}$ iff $m \equiv 0 \pmod{q}$.
-            Thus $m \mod p = 0 \mod p$ iff $m \mod q = 0 \mod q$.
-            We have $0 \mod p = 0 = 0 \mod q$.
-            Hence $m \mod p = 0$ iff $m \mod q = 0$.
-            Therefore $p \mid m$ iff $q \mid m$.
+            Then $\NATcong{m}{\NATzero}{p}$ iff $\NATcong{m}{\NATzero}{q}$.
+            Thus $m \NATmod p = \NATzero \NATmod p$ iff $m \NATmod q = \NATzero \NATmod q$.
+            We have $\NATzero \NATmod p = \NATzero = \NATzero \NATmod q$.
+            Hence $m \NATmod p = \NATzero$ iff $m \NATmod q = \NATzero$.
+            Therefore $p \NATmid m$ iff $q \NATmid m$.
           End.
 
           Consequently $p = q$.
@@ -244,48 +244,48 @@
       $\Prime$ is infinite.
     \end{theorem}
     \begin{proof}
-      $\bigcup \Ps$ is a subset of $\Nat$.
+      $\SETunionover \Ps$ is a subset of $\Nat$.
 
-      Let us show that for any $n \in \Nat$ we have $n \in \bigcup \Ps$ iff $n$
+      Let us show that for any $n \in \Nat$ we have $n \in \SETunionover \Ps$ iff $n$
       has a prime divisor.
         Let $n \in \Nat$.
 
-        If $n$ has a prime divisor then $n$ belongs to $\bigcup \Ps$.
+        If $n$ has a prime divisor then $n$ belongs to $\SETunionover \Ps$.
         \begin{proof}
           Assume $n$ has a prime divisor.
           Take a prime divisor $p$ of $n$.
-          We have $\N_{0, p} \in \Ps$.
-          Hence $n \in \N_{0, p}$.
+          We have $\N_{\NATzero, p} \in \Ps$.
+          Hence $n \in \N_{\NATzero, p}$.
         \end{proof}
 
-        If $n$ belongs to $\bigcup \Ps$ then $n$ has a prime divisor.
+        If $n$ belongs to $\SETunionover \Ps$ then $n$ has a prime divisor.
         \begin{proof}
-          Assume that $n$ belongs to $\bigcup \Ps$.
-          Take a prime number $r$ such that $n \in \N_{0, r}$.
-          Hence $n \equiv 0 \pmod{r}$.
-          Thus $n \mod r = 0 \mod r = 0$.
+          Assume that $n$ belongs to $\SETunionover \Ps$.
+          Take a prime number $r$ such that $n \in \N_{\NATzero, r}$.
+          Hence $\NATcong{n}{\NATzero}{r}$.
+          Thus $n \NATmod r = \NATzero \NATmod r = \NATzero$.
           Therefore $r$ is a prime divisor of $n$.
         \end{proof}
       End.
 
-      Hence For all $n \in \Nat$ we have $n \in (\bigcup \Ps)^\complement$ iff
+      Hence For all $n \in \Nat$ we have $n \in (\SETunionover \Ps)^\complement$ iff
       $n$ has no prime divisor.
-      $1$ has no prime divisor and any natural number having no prime
-      divisor is equal to $1$.
-      Therefore $(\bigcup \Ps)^\complement = \SETsingleton{1}$.
-      Indeed $((\bigcup \Ps)^\complement) \subseteq \SETsingleton{1}$ and $\SETsingleton{1}
-      \subseteq (\bigcup \Ps)^\complement$. %!
+      $\NATone$ has no prime divisor and any natural number having no prime
+      divisor is equal to $\NATone$.
+      Therefore $(\SETunionover \Ps)^\complement = \SETsingleton{\NATone}$.
+      Indeed $((\SETunionover \Ps)^\complement) \SETinclude \SETsingleton{\NATone}$ and $\SETsingleton{\NATone}
+      \SETinclude (\SETunionover \Ps)^\complement$. %!
 
       $\Ps$ is infinite.
       \begin{proof}[method=contradiction]
         Assume that $\Ps$ is finite.
-        Then $\bigcup \Ps$ is closed and $(\bigcup \Ps)^\complement$ is open.
-        Take a $p$ such that $\N_{1, p} \subseteq (\bigcup \Ps)^\complement$.
-        $1 + p$ is an element of $\N_{1, p}$.
-        Indeed $1 + p \equiv 1 \pmod{p}$
+        Then $\SETunionover \Ps$ is closed and $(\SETunionover \Ps)^\complement$ is open.
+        Take a $p$ such that $\N_{\NATone, p} \SETinclude (\SETunionover \Ps)^\complement$.
+        $\NATone \NATplus p$ is an element of $\N_{\NATone, p}$.
+        Indeed $\NATcong{\NATone \NATplus p}{\NATone}{p}$
         (by \printref{ARITHMETIC_08_5984712287846400}).
-        $1 + p$ is not equal to $1$.
-        Hence $1 + p \notin (\bigcup \Ps)^\complement$.
+        $\NATone \NATplus p$ is not equal to $\NATone$.
+        Hence $\NATone \NATplus p \notin (\SETunionover \Ps)^\complement$.
         Contradiction.
       \end{proof}
     \end{proof}

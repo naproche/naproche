@@ -28,6 +28,8 @@
   untyped $\lambda$-calculus:
 
   \begin{forthel}
+    [synonym expression/-s]
+
     \begin{signature*}
       An expression is a notion.
     \end{signature*}
@@ -100,7 +102,7 @@
   \noindent Using the fixpoint combinator from above we can formulate a 
   self-referential expression $X$ of the form ``If $X$ is true then $E$ is
   true'' for any arbitrary expression $E$ by defining
-  $X = \app{\fix}{\abs{0}{\var{0} \rightarrow E}}$.
+  $X = \app{\fix}{\abs{\NATzero}{\var{\NATzero} \rightarrow E}}$.
   From the existence of such an expression $X$ together with the above axioms 
   we can then derive that any expression $E$ is true.
 
@@ -110,7 +112,7 @@
     \end{theorem*}
     \begin{proof}
       Let $E$ be an expression.
-      Take $N = \abs{0}{\var{0} \rightarrow E}$ and $X = \app{\fix}{N}.$
+      Take $N = \abs{\NATzero}{\var{\NATzero} \rightarrow E}$ and $X = \app{\fix}{N}.$
   
       (1) Then $X = \app{N}{X} = X \rightarrow E$ (by \nameref{beta_reduction}).
   

@@ -18,11 +18,11 @@
 
   \noindent This is a formalization of ``Little Gauß' Theorem'', i.e. of
   the assertion that
-  \[\sum_{k=0}^n k = \frac{k(k + 1)}2\]
+  \[\sum_{k=\NATzero}^n k = \frac{k(k \NATplus \NATone)}\NATtwo\]
   for all $n \in \Nat$.
-  In \Naproche we can define the sum $\sum_{n=0}^k n$ by the function
-  $\gauss : \Nat \to \Nat$ with $\gauss(0) = 0$ and
-  $\gauss(n + 1) = \gauss(n) + (n + 1)$:
+  In \Naproche we can define the sum $\sum_{n=\NATzero}^k n$ by the function
+  $\gauss \FUNfromto{\Nat}{\Nat}$ with $\gauss(\NATzero) = \NATzero$ and
+  $\gauss(n \NATplus \NATone) = \gauss(n) \NATplus (n \NATplus \NATone)$:
 
   \begin{forthel}
     \begin{signature*}
@@ -31,12 +31,12 @@
     \end{signature*}
 
     \begin{axiom*}
-      $\gauss(0) = 0$.
+      $\gauss(\NATzero) = \NATzero$.
     \end{axiom*}
 
     \begin{axiom*}
       Let $n$ be a natural number.
-      Then $\gauss(n + 1) = \gauss(n) + (n + 1)$.
+      Then $\gauss(n \NATplus \NATone) = \gauss(n) \NATplus (n \NATplus \NATone)$.
     \end{axiom*}
   \end{forthel}
 
@@ -45,29 +45,29 @@
   \begin{forthel}
     \begin{theorem*}[title=Little Gauß,id=little_gauss]
       For all natural numbers $n$ we have
-      \[2 \cdot \gauss(n) = n \cdot (n + 1).\]
+      \[\NATtwo \NATmul \gauss(n) = n \NATmul (n \NATplus \NATone).\]
     \end{theorem*}
     \begin{proof}
-      Define $\Phi = \{n \in \Nat \mid 2 \cdot \gauss(n) = n \cdot (n + 1)\}$.
+      Define $\Phi = \{n \in \Nat \mid \NATtwo \NATmul \gauss(n) = n \NATmul (n \NATplus \NATone)\}$.
 
-      (1) $0 \in \Phi$.
+      (1) $\NATzero \in \Phi$.
 
-      (2) For all $n \in \Phi$ we have $n + 1 \in \Phi$.
+      (2) For all $n \in \Phi$ we have $n \NATplus \NATone \in \Phi$.
       \begin{proof}
         Let $n \in \Phi$.
-        Then $2 \cdot \gauss(n) = n \cdot (n + 1)$.
-        Hence $2 \cdot \gauss(n + 1)
-          = 2 \cdot (\gauss(n) + (n + 1))
-          = (2 \cdot \gauss(n)) + (2 \cdot (n + 1))
-          = (n \cdot (n + 1)) + (2 \cdot (n + 1))
-          = ((n + 1) \cdot n) + ((n + 1) \cdot 2)
-          = (n + 1) \cdot (n + 2)
-          = (n + 1) \cdot ((n + 1) + 1)$.
-        Therefore $n + 1 \in \Phi$.
+        Then $\NATtwo \NATmul \gauss(n) = n \NATmul (n \NATplus \NATone)$.
+        Hence $\NATtwo \NATmul \gauss(n \NATplus \NATone)
+          = \NATtwo \NATmul (\gauss(n) \NATplus (n \NATplus \NATone))
+          = (\NATtwo \NATmul \gauss(n)) \NATplus (\NATtwo \NATmul (n \NATplus \NATone))
+          = (n \NATmul (n \NATplus \NATone)) \NATplus (\NATtwo \NATmul (n \NATplus \NATone))
+          = ((n \NATplus \NATone) \NATmul n) \NATplus ((n \NATplus \NATone) \NATmul \NATtwo)
+          = (n \NATplus \NATone) \NATmul (n \NATplus \NATtwo)
+          = (n \NATplus \NATone) \NATmul ((n \NATplus \NATone) \NATplus \NATone)$.
+        Therefore $n \NATplus \NATone \in \Phi$.
       \end{proof}
 
       Thus $\Phi$ contains every natural number.
-      Consequently $2 \cdot \gauss(n) = n \cdot (n + 1)$ for every $n \in \Nat$.
+      Consequently $\NATtwo \NATmul \gauss(n) = n \NATmul (n \NATplus \NATone)$ for every $n \in \Nat$.
     \end{proof}
   \end{forthel}
   \printlicense[CcByNcSa]{2024}{Christian Schöner, Marcel Schütz}
