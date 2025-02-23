@@ -69,11 +69,6 @@ filterTokens tokens warnings = do
 
 data Error =
     NestedForthel Position.T
-  | InvalidEnvEnd Position.T
-  | InvalidGroupEnd Position.T
-  | UnclosedGroup Position.T
-  | UnclosedBracketGroup Position.T
-  | UnclosedEnv Position.T
   | Unexpected Position.T Text Text
   deriving (Eq, Ord)
 
@@ -81,21 +76,6 @@ data Error =
 makeErrMsg :: Error -> (Text, Position.T)
 makeErrMsg (NestedForthel pos) =
   let msg = "Illegal nesting of \"forthel\" groups."
-  in (msg, pos)
-makeErrMsg (InvalidEnvEnd pos) =
-  let msg = "Invalid environment ending."
-  in (msg, pos)
-makeErrMsg (InvalidGroupEnd pos) =
-  let msg = "Invalid group ending."
-  in (msg, pos)
-makeErrMsg (UnclosedGroup pos) =
-  let msg = "Unclosed group."
-  in (msg, pos)
-makeErrMsg (UnclosedBracketGroup pos) =
-  let msg = "Unclosed bracket group."
-  in (msg, pos)
-makeErrMsg (UnclosedEnv pos) =
-  let msg = "Unclosed environment."
   in (msg, pos)
 makeErrMsg (Unexpected pos unexp exp) =
   let msg = "Unexpected " <> unexp <> ". Expected " <> exp <> "."
@@ -209,12 +189,19 @@ group p = do
   let beginGroupPos = tokensPos (fst beginGroup)
   content <- p
   -- Throw an error if the end of the input is reached:
-  ifEofFailWith $ UnclosedGroup beginGroupPos
-  endGroup <- singleToken isEndGroupCharLexeme
-  insideForthel <- gets insideForthel
-  if insideForthel
-    then return $ concatTokWarn [beginGroup, content, endGroup]
-    else return content
+  (_, warning) <- ifEofAddWarning $ Warning "LaTeX: Missing \"}\" character" beginGroupPos
+  if null warning
+  then do
+    endGroup <- singleToken isEndGroupCharLexeme
+    insideForthel <- gets insideForthel
+    if insideForthel
+      then return $ concatTokWarn [beginGroup, content, endGroup]
+      else return content
+    else do
+      insideForthel <- gets insideForthel
+      if insideForthel
+        then return $ concatTokWarn [beginGroup, content]
+        else return (fst content, snd content ++ warning)
 
 -- | Parse a TeX group (depending on a parser @p@ for the content of the group).
 -- and return the tokens given by the begin-group lexeme, the result of @p@ and
@@ -225,10 +212,15 @@ group' p = do
   let beginGroupPos = tokensPos (fst beginGroup)
   content <- p
   -- Throw an error if the end of the input is reached:
-  ifEofFailWith $ UnclosedGroup beginGroupPos
-  endGroup <- singleToken isEndGroupCharLexeme
-  insideForthel <- gets insideForthel
-  return $ concatTokWarn [beginGroup, content, endGroup]
+  (_, warning) <- ifEofAddWarning $ Warning "LaTeX: Missing \"}\" character" beginGroupPos
+  if null warning
+    then do
+      endGroup <- singleToken isEndGroupCharLexeme
+      insideForthel <- gets insideForthel
+      return $ concatTokWarn [beginGroup, content, endGroup]
+    else do
+      insideForthel <- gets insideForthel
+      return $ concatTokWarn [beginGroup, (fst content, snd content ++ warning)]
 
 -- | Parse a TeX group (depending on a parser @p@ for the content of the group).
 -- and return the result of @p@.
@@ -238,10 +230,12 @@ group'' p = do
   let beginGroupPos = tokensPos (fst beginGroup)
   content <- p
   -- Throw an error if the end of the input is reached:
-  ifEofFailWith $ UnclosedGroup beginGroupPos
-  endGroup <- singleToken isEndGroupCharLexeme
+  (_, warning) <- ifEofAddWarning $ Warning "LaTeX: Missing \"}\" character" beginGroupPos
+  if null warning
+    then singleToken isEndGroupCharLexeme
+    else empty
   insideForthel <- gets insideForthel
-  return content
+  return (fst content, snd content ++ warning)
 
 -- | Parse a bracket group (depending on a parser @p@ for the content of the#
 -- group), i.e. a string of the form @"[" <p> "]"@. If we are currently inside a
@@ -254,12 +248,19 @@ bracketGroup p = do
   let beginGroupPos = tokensPos (fst beginGroup)
   content <- p
   -- Throw an error if the end of the input is reached:
-  ifEofFailWith $ UnclosedBracketGroup beginGroupPos
-  endGroup <- singleToken isEndBracketGroupCharLexeme
-  insideForthel <- gets insideForthel
-  if insideForthel
-    then return $ concatTokWarn [beginGroup, content, endGroup]
-    else return content
+  (_, warning) <- ifEofAddWarning $ Warning "LaTeX: Missing \"]\" character" beginGroupPos
+  if null warning
+    then do
+      endGroup <- singleToken isEndBracketGroupCharLexeme
+      insideForthel <- gets insideForthel
+      if insideForthel
+        then return $ concatTokWarn [beginGroup, content, endGroup]
+        else return content
+    else do
+      insideForthel <- gets insideForthel
+      if insideForthel
+        then return $ concatTokWarn [beginGroup, content]
+        else return (fst content, snd content ++ warning)
 
 -- | Parse a bracket group (depending on a parser @p@ for the content of the#
 -- group), i.e. a string of the form @"[" <p> "]"@ and return the tokens given
@@ -270,10 +271,15 @@ bracketGroup' p = do
   let beginGroupPos = tokensPos (fst beginGroup)
   content <- p
   -- Throw an error if the end of the input is reached:
-  ifEofFailWith $ UnclosedBracketGroup beginGroupPos
-  endGroup <- singleToken isEndBracketGroupCharLexeme
-  insideForthel <- gets insideForthel
-  return $ concatTokWarn [beginGroup, content, endGroup]
+  (_, warning) <- ifEofAddWarning $ Warning "LaTeX: Missing \"]\" character" beginGroupPos
+  if null warning
+  then do
+    endGroup <- singleToken isEndBracketGroupCharLexeme
+    insideForthel <- gets insideForthel
+    return $ concatTokWarn [beginGroup, content, endGroup]
+  else do
+    insideForthel <- gets insideForthel
+    return $ concatTokWarn [beginGroup, (fst content, snd content ++ warning)]
 
 -- | Parse a bracket group (depending on a parser @p@ for the content of the#
 -- group), i.e. a string of the form @"[" <p> "]"@ and return the result of @p@.
@@ -283,10 +289,12 @@ bracketGroup'' p = do
   let beginGroupPos = tokensPos (fst beginGroup)
   content <- p
   -- Throw an error if the end of the input is reached:
-  ifEofFailWith $ UnclosedBracketGroup beginGroupPos
-  endGroup <- singleToken isEndBracketGroupCharLexeme
+  (_, warning) <- ifEofAddWarning $ Warning "LaTeX: Missing \"]\" character" beginGroupPos
+  if null warning
+    then singleToken isEndBracketGroupCharLexeme
+    else empty
   insideForthel <- gets insideForthel
-  return content
+  return (fst content, snd content ++ warning)
 
 -- | Parse a @\\text{...}@ command, depending on a parser @p@ for the
 -- content of the argument of that command, and return the result of @p@.
@@ -356,7 +364,7 @@ verbCommand = do
     ]
   -- Fail if the end of the input is reached before the closing delimiter
   -- character:
-  ifEofFailWith $ UnclosedGroup beginDelimiterPos
+  ifEofAddWarning $ Warning ("LaTeX: Missing \"" <> Text.singleton delimiterChar <> "\" character") beginDelimiterPos
   endDelimiter <- char' delimiterChar
   return $ concatTokWarn [macro, Maybe.fromMaybe ([], []) mbStar, beginDelimiter, content, endDelimiter]
 
@@ -392,11 +400,12 @@ inlineForthel p = do
 
 -- | Parse an end-group token and throw an error. Useful to catch unbalanced
 -- end-group tokens.
-catchInvalidGroupEnd :: Tokenizer a
+catchInvalidGroupEnd :: Tokenizer ([Token], [Warning])
 catchInvalidGroupEnd = do
   endGroup <- singleToken isEndGroupCharLexeme
   let pos = tokensPos (fst endGroup)
-  customFailure $ InvalidGroupEnd pos
+  let warning = Warning "LaTeX: Missing \"{\" character" pos
+  return ([], [warning])
 
 -- | Parse a TeX environment (depending on a parser @p@ for the content of the
 -- environment). If we are currently inside a ForTheL group, the tokens given by
@@ -443,7 +452,7 @@ environment p = do
           try nonVerbatimEndCommand
         ]
       -- Throw an error if the end of the input is reached:
-      ifEofFailWith $ UnclosedEnv beginEnvPos
+      ifEofAddWarning $ Warning ("LaTeX: Missing \"\\end{" <> envNameText <> "}\".") beginEnvPos
       -- Parse an @\\end{verbatim}@ command:
       endMacro <- controlWord' "end"
       beginGroup' <- singleToken isBeginGroupCharLexeme
@@ -466,30 +475,38 @@ environment p = do
       -- Run @p@:
       content <- p
       -- Throw an error if the end of the input is reached:
-      ifEofFailWith $ UnclosedEnv beginEnvPos
-      -- Parse an @\\end{...}@ command:
-      endMacro <- controlWord' "end"
-      beginGroup' <- catchUnexpected "a begin-group lexeme" $ singleToken isBeginGroupCharLexeme
-      envName' <- concatUnzip <$> some (someTokens isLetterCharLexeme <|> singleToken isOtherCharLexeme)
-      endGroup' <- catchUnexpected "an end-group lexeme" $ singleToken isEndGroupCharLexeme
-      let envNameText' = tokensText (fst envName')
-          endEnvCommand = concatTokWarn [endMacro, beginGroup', envName', endGroup']
-      -- Check whether the environment of the @\\begin{...}@ and the @\\end{...}@
-      -- commands match:
-      when (envNameText' /= envNameText) $
-        customFailure $ InvalidEnvEnd (tokensPos (fst endEnvCommand))
-      -- If the environment name is "@forthel@" then unset the @insideForthel@ flag:
-      when (envNameText == "forthel") $ modify (\state -> state{insideForthel = False})
-      -- If the environment is a TLS environment with set @forthel@ flag outside a
-      -- Forthel group, unset the @insideForthel@ flag:
-      when tlsEnvWithForthelFlagOutsideForthelEnv $ modify (\state -> state{insideForthel = False})
-      -- If we are (still) inside a ForTheL group then return the tokens of the
-      -- @\\begin{...}@ command, the result of @p@ and the tokens of the
-      -- @\\end{...}@ command; otherwise return just the result of @p@:
-      currentlyInsideForthel' <- gets insideForthel
-      if currentlyInsideForthel' || tlsEnvWithForthelFlagOutsideForthelEnv
-        then return $ concatTokWarn [beginEnvCommand, content, endEnvCommand]
-        else return content
+      (_, warning_1) <- ifEofAddWarning $ Warning ("LaTeX: Missing \"\\end{" <> envNameText <> "}\".") beginEnvPos
+      if null warning_1
+        then do 
+          -- Parse an @\\end{...}@ command:
+          endMacro <- controlWord' "end"
+          beginGroup' <- catchUnexpected "a begin-group lexeme" $ singleToken isBeginGroupCharLexeme
+          envName' <- concatUnzip <$> some (someTokens isLetterCharLexeme <|> singleToken isOtherCharLexeme)
+          endGroup' <- catchUnexpected "an end-group lexeme" $ singleToken isEndGroupCharLexeme
+          let envNameText' = tokensText (fst envName')
+              endEnvCommand = concatTokWarn [endMacro, beginGroup', envName', endGroup']
+          -- Check whether the environment of the @\\begin{...}@ and the @\\end{...}@
+          -- commands match:
+          let warning_2 = if envNameText' /= envNameText
+                then [Warning ("LaTeX: Unexpected \"\\begin{" <> envNameText' <> "}\". \"\\end{" <> envNameText <> "}\" expected.") (tokensPos (fst endEnvCommand))]
+                else []
+          -- If the environment name is "@forthel@" then unset the @insideForthel@ flag:
+          when (envNameText == "forthel") $ modify (\state -> state{insideForthel = False})
+          -- If the environment is a TLS environment with set @forthel@ flag outside a
+          -- Forthel group, unset the @insideForthel@ flag:
+          when tlsEnvWithForthelFlagOutsideForthelEnv $ modify (\state -> state{insideForthel = False})
+          -- If we are (still) inside a ForTheL group then return the tokens of the
+          -- @\\begin{...}@ command, the result of @p@ and the tokens of the
+          -- @\\end{...}@ command; otherwise return just the result of @p@:
+          currentlyInsideForthel' <- gets insideForthel
+          if (currentlyInsideForthel' || tlsEnvWithForthelFlagOutsideForthelEnv) && envNameText /= "forthel"
+            then return $ concatTokWarn [beginEnvCommand, content, endEnvCommand, ([], warning_2)]
+            else return (fst content, snd content ++ warning_2)
+        else do
+          currentlyInsideForthel' <- gets insideForthel
+          if (currentlyInsideForthel' || tlsEnvWithForthelFlagOutsideForthelEnv) && envNameText /= "forthel"
+            then return $ concatTokWarn [beginEnvCommand, content, ([], warning_1)]
+            else return (fst content, snd content ++ warning_1)
   where
     tlsEnvNames = [
         "signature",
@@ -525,7 +542,7 @@ environment p = do
 
 -- | Parse an end-environment token and throw an error. Useful to catch
 -- unbalanced end-environment tokens.
-catchInvalidEnvEnd :: Tokenizer a
+catchInvalidEnvEnd :: Tokenizer ([Token], [Warning])
 catchInvalidEnvEnd = do
   endMacro <- controlWord' "end"
   beginGroup <- singleToken isBeginGroupCharLexeme
@@ -533,7 +550,9 @@ catchInvalidEnvEnd = do
   endGroup <- singleToken isEndGroupCharLexeme
   let command = concatTokWarn [endMacro, beginGroup, envName, endGroup]
       pos = tokensPos (fst command)
-  customFailure $ InvalidEnvEnd pos
+      envNameText = tokensText (fst envName)
+  let warning = Warning ("LaTeX: Missing \"\\begin{" <> envNameText <> "}\".") pos
+  return ([], [warning])
 
 
 -- * Primitives
@@ -916,11 +935,13 @@ skipOutsideForthel' tokens = do
     then return (tokens, [])
     else return ([], [])
 
--- | If the end of the input is reached, fail with a custom error.
-ifEofFailWith :: Error -> Tokenizer ()
-ifEofFailWith error = do
+-- | If the end of the input is reached, return a warning.
+ifEofAddWarning :: Warning -> Tokenizer ([Token], [Warning])
+ifEofAddWarning warning = do
   isEof <- Maybe.isJust <$> optional eof
-  when isEof (customFailure error)
+  if isEof
+    then return ([], [warning])
+    else return ([], [])
 
 -- | Catch an unexpected lexeme. Trys a parser @p@; if @p@ fails, an error is
 -- thrown marking the current lexeme as unexpected and outputs which token was
