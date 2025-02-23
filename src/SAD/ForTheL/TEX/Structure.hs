@@ -310,11 +310,9 @@ choose = sentence Choice (choiceHeader >> choice) assumeVars finishWithOptLink
 -- | Parse a case hypothesis:
 -- @"\begin" "{" "case "}" "{" <statement> "." "}"@
 caseHypothesis :: FTL Block
-caseHypothesis = sentence Block.CaseHypothesis caseHypothesisStatement affirmVars (pure [])
-  where
-    caseHypothesisStatement = do
-      label "\"\\begin{case}\"" . texBegin $ markupToken Reports.proofStart "case"
-      braced $ finish statement
+caseHypothesis = do
+  label "\"\\begin{case}\"" . texBegin $ markupToken Reports.proofStart "case"
+  braced $ sentence Block.CaseHypothesis (finish statement) affirmVars (pure [])
 
 -- | Parse an affirmation.
 affirmation :: FTL Block
@@ -552,7 +550,7 @@ caseDestinction = do
   Block.formula = Imp (Tag Tag.CaseHypothesis fr) mkThesis}
 
 caseDestinctionEnd :: FTL ()
-caseDestinctionEnd = label "\"\\end{case}\"" . texEnd $ markupToken Reports.proofEnd "case" 
+caseDestinctionEnd = label "\"\\end{case}\"" . texEnd $ markupToken Reports.proofEnd "case"
 
 
 -- equality Chain
