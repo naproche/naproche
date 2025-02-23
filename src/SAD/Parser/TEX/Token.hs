@@ -17,6 +17,7 @@ import Data.Text qualified as Text
 import FTLex.Tex hiding (initState)
 import Data.Functor ((<&>))
 import Data.Maybe qualified as Maybe
+import Data.List.Extra (concatUnzip)
 import Control.Monad.Trans.State.Strict (evalState, State)
 import Control.Monad.State.Class (gets, modify)
 import Control.Monad (when, unless)
@@ -39,7 +40,7 @@ tokenize lexemes = do
   filteredLexems <- filterLexemes lexemes
   case evalState (runParserT document "" filteredLexems) initState of
     Left err -> handleError makeErrMsg err
-    Right tokens -> return tokens
+    Right (tokens, warnings) -> filterTokens tokens warnings
 
 -- | Take a list @l@ of lexemes, report all comment lexemes and remove them as
 -- well as all skipped lexemes from @l@.
@@ -53,7 +54,18 @@ filterLexemes (l : ls) = case l of
   _ -> fmap (l :) (filterLexemes ls)
 
 
--- * Tokenizing Errors
+-- | Take a list of tokens and a list of warnings, report all warnings and
+-- return the tokens.
+filterTokens :: [Token] -> [Warning] -> IO [Token]
+filterTokens tokens warnings = do
+  reportWarnings warnings
+  return tokens
+  where
+  reportWarnings = foldr ((>>) . reportWarning) (return ())
+  reportWarning (Warning text pos) = Message.outputTokenizer Message.WARNING pos text
+
+
+-- * Tokenizing Errors and Warnings
 
 data Error =
     NestedForthel Position.T
@@ -107,115 +119,123 @@ initState = TokenizingState {
 type Tokenizer a = ParsecT Error [TEX.Lexeme] (State TokenizingState) a
 
 -- | Parse a whole TEX document.
-document :: Tokenizer [Token]
+document :: Tokenizer ([Token], [Warning])
 document = do
-  tokens <- concat <$> many (token <|> catchInvalidGroupEnd <|> catchInvalidEnvEnd)
+  (tokens, warnings) <- concatUnzip <$> many (token <|> catchInvalidGroupEnd <|> catchInvalidEnvEnd)
   eof
-  return $ tokens ++ [EOF Position.none]
+  return (tokens ++ [EOF Position.none], warnings)
 
 -- | Parse a single token.
-token :: Tokenizer [Token]
+token :: Tokenizer ([Token], [Warning])
 token = choice [
     space >>= skip,
     controlSpace >>= skip,
     parameter >>= skipOutsideForthel,
     mathModeDelimiter >>= skip,
     ignoredCommand >>= skip,
-    textCommand (concat <$> many token) >>= skipOutsideForthel,
+    textCommand (concatUnzip <$> many token) >>= skipOutsideForthel,
     urlCommand >>= skipOutsideForthel,
     pathCommand >>= skipOutsideForthel,
     verbCommand >>= skipOutsideForthel,
     importCommand,
     inputCommand,
-    inlineForthel (concat <$> many token),
-    group (concat <$> many (token <|> catchInvalidEnvEnd)),
-    environment (concat <$> many (token <|> catchInvalidGroupEnd)),
-    controlWord "section",
-    anyControlWordExcept ["begin", "end"] >>= skipOutsideForthel,
-    anyControlSymbol >>= skipOutsideForthel,
-    anyWord >>= skipOutsideForthel,
+    inlineForthel (concatUnzip <$> many token),
+    group (concatUnzip <$> many (token <|> catchInvalidEnvEnd)),
+    environment (concatUnzip <$> many (token <|> catchInvalidGroupEnd)),
+    controlWord' "section",
+    anyControlWordExcept ["begin", "end"] >>= skipOutsideForthel',
+    anyControlSymbol >>= skipOutsideForthel',
+    anyWord >>= skipOutsideForthel',
     symbol >>= skipOutsideForthel
   ]
 
 -- | Parse a space.
-space :: Tokenizer [Token]
-space = anyCharOfCats [EndOfLineCat, SpaceCat]
+space :: Tokenizer ([Token], [Warning])
+space = do
+  tokens <- anyCharOfCats [EndOfLineCat, SpaceCat]
+  return (tokens, [])
 
 -- | Parse a control space.
-controlSpace :: Tokenizer [Token]
+controlSpace :: Tokenizer ([Token], [Warning])
 controlSpace = singleToken isControlSpaceLexeme
 
 -- | Parse a single parameter lexeme.
-parameter :: Tokenizer [Token]
+parameter :: Tokenizer ([Token], [Warning])
 parameter = singleToken isParameterLexeme
 
 -- | Parse a single math mode delimiter.
-mathModeDelimiter :: Tokenizer [Token]
-mathModeDelimiter = choice [
-    anyCharOfCat MathShiftCat,
-    controlSymbol '(',
-    controlSymbol ')',
-    controlSymbol '[',
-    controlSymbol ']'
-  ]
+mathModeDelimiter :: Tokenizer ([Token], [Warning])
+mathModeDelimiter = do
+  tokens <- choice [
+      anyCharOfCat MathShiftCat,
+      controlSymbol '(',
+      controlSymbol ')',
+      controlSymbol '[',
+      controlSymbol ']'
+    ]
+  return (tokens, [])
 
 -- | Parse a single break command.
-ignoredCommand :: Tokenizer [Token]
-ignoredCommand = choice [
-    controlWord "par",
-    controlWord "left",
-    controlWord "middle",
-    controlWord "right"
-  ]
+ignoredCommand :: Tokenizer ([Token], [Warning])
+ignoredCommand = do
+  tokens <- choice [
+      controlWord "par",
+      controlWord "left",
+      controlWord "middle",
+      controlWord "right"
+    ]
+  return (tokens, [])
 
 -- | Parse a single symbol.
-symbol :: Tokenizer [Token]
-symbol = anyCharOfCats [
-    AlignTabCat,
-    ParamCharCat,
-    SuperscriptCat,
-    SubscriptCat,
-    OtherCat,
-    ActiveCat
-  ]
+symbol :: Tokenizer ([Token], [Warning])
+symbol = do
+  tokens <- anyCharOfCats [
+      AlignTabCat,
+      ParamCharCat,
+      SuperscriptCat,
+      SubscriptCat,
+      OtherCat,
+      ActiveCat
+    ]
+  return (tokens, [])
 
 -- | Parse a TeX group (depending on a parser @p@ for the content of the group).
 -- If we are currently inside a ForTheL group, the tokens given by the
 -- begin-group lexeme, the result of @p@ and the end-group lexeme are returned;
 -- otherwise only the result of @p@ is returned.
-group :: Tokenizer [Token] -> Tokenizer [Token]
+group :: Tokenizer ([Token], [Warning]) -> Tokenizer ([Token], [Warning])
 group p = do
   beginGroup <- singleToken isBeginGroupCharLexeme
-  let beginGroupPos = tokensPos beginGroup
+  let beginGroupPos = tokensPos (fst beginGroup)
   content <- p
   -- Throw an error if the end of the input is reached:
   ifEofFailWith $ UnclosedGroup beginGroupPos
   endGroup <- singleToken isEndGroupCharLexeme
   insideForthel <- gets insideForthel
   if insideForthel
-    then return $ beginGroup ++ content ++ endGroup
+    then return $ concatTokWarn [beginGroup, content, endGroup]
     else return content
 
 -- | Parse a TeX group (depending on a parser @p@ for the content of the group).
 -- and return the tokens given by the begin-group lexeme, the result of @p@ and
 -- the end-group lexeme.
-group' :: Tokenizer [Token] -> Tokenizer [Token]
+group' :: Tokenizer ([Token], [Warning]) -> Tokenizer ([Token], [Warning])
 group' p = do
   beginGroup <- singleToken isBeginGroupCharLexeme
-  let beginGroupPos = tokensPos beginGroup
+  let beginGroupPos = tokensPos (fst beginGroup)
   content <- p
   -- Throw an error if the end of the input is reached:
   ifEofFailWith $ UnclosedGroup beginGroupPos
   endGroup <- singleToken isEndGroupCharLexeme
   insideForthel <- gets insideForthel
-  return $ beginGroup ++ content ++ endGroup
+  return $ concatTokWarn [beginGroup, content, endGroup]
 
 -- | Parse a TeX group (depending on a parser @p@ for the content of the group).
 -- and return the result of @p@.
-group'' :: Tokenizer [Token] -> Tokenizer [Token]
+group'' :: Tokenizer ([Token], [Warning]) -> Tokenizer ([Token], [Warning])
 group'' p = do
   beginGroup <- singleToken isBeginGroupCharLexeme
-  let beginGroupPos = tokensPos beginGroup
+  let beginGroupPos = tokensPos (fst beginGroup)
   content <- p
   -- Throw an error if the end of the input is reached:
   ifEofFailWith $ UnclosedGroup beginGroupPos
@@ -228,39 +248,39 @@ group'' p = do
 -- ForTheL group, the tokens given by the opening bracket, the result of @p@ and
 -- the closing bracket are returned; otherwise only the result of @p@ is
 -- returned.
-bracketGroup :: Tokenizer [Token] -> Tokenizer [Token]
+bracketGroup :: Tokenizer ([Token], [Warning]) -> Tokenizer ([Token], [Warning])
 bracketGroup p = do
   beginGroup <- singleToken isBeginBracketGroupCharLexeme
-  let beginGroupPos = tokensPos beginGroup
+  let beginGroupPos = tokensPos (fst beginGroup)
   content <- p
   -- Throw an error if the end of the input is reached:
   ifEofFailWith $ UnclosedBracketGroup beginGroupPos
   endGroup <- singleToken isEndBracketGroupCharLexeme
   insideForthel <- gets insideForthel
   if insideForthel
-    then return $ beginGroup ++ content ++ endGroup
+    then return $ concatTokWarn [beginGroup, content, endGroup]
     else return content
 
 -- | Parse a bracket group (depending on a parser @p@ for the content of the#
 -- group), i.e. a string of the form @"[" <p> "]"@ and return the tokens given
 -- by the opening bracket, the result of @p@ and the closing bracket.
-bracketGroup' :: Tokenizer [Token] -> Tokenizer [Token]
+bracketGroup' :: Tokenizer ([Token], [Warning]) -> Tokenizer ([Token], [Warning])
 bracketGroup' p = do
   beginGroup <- singleToken isBeginBracketGroupCharLexeme
-  let beginGroupPos = tokensPos beginGroup
+  let beginGroupPos = tokensPos (fst beginGroup)
   content <- p
   -- Throw an error if the end of the input is reached:
   ifEofFailWith $ UnclosedBracketGroup beginGroupPos
   endGroup <- singleToken isEndBracketGroupCharLexeme
   insideForthel <- gets insideForthel
-  return $ beginGroup ++ content ++ endGroup
+  return $ concatTokWarn [beginGroup, content, endGroup]
 
 -- | Parse a bracket group (depending on a parser @p@ for the content of the#
 -- group), i.e. a string of the form @"[" <p> "]"@ and return the result of @p@.
-bracketGroup'' :: Tokenizer [Token] -> Tokenizer [Token]
+bracketGroup'' :: Tokenizer ([Token], [Warning]) -> Tokenizer ([Token], [Warning])
 bracketGroup'' p = do
   beginGroup <- singleToken isBeginBracketGroupCharLexeme
-  let beginGroupPos = tokensPos beginGroup
+  let beginGroupPos = tokensPos (fst beginGroup)
   content <- p
   -- Throw an error if the end of the input is reached:
   ifEofFailWith $ UnclosedBracketGroup beginGroupPos
@@ -270,14 +290,14 @@ bracketGroup'' p = do
 
 -- | Parse a @\\text{...}@ command, depending on a parser @p@ for the
 -- content of the argument of that command, and return the result of @p@.
-textCommand :: Tokenizer [Token] -> Tokenizer [Token]
+textCommand :: Tokenizer ([Token], [Warning]) -> Tokenizer ([Token], [Warning])
 textCommand p = do
   controlWord "text"
   group'' p
 
-urlCommand :: Tokenizer [Token]
+urlCommand :: Tokenizer ([Token], [Warning])
 urlCommand = do
-  macro <- controlWord "url"
+  macro <- controlWord' "url"
   -- Fail if the next lexeme is not a begin-group character lexeme:
   nextLexeme <- lookAhead anySingle
   let nextLexemePos = sourcePos nextLexeme
@@ -285,18 +305,18 @@ urlCommand = do
   unless (isBeginGroupCharLexeme nextLexeme) $ customFailure $ Unexpected nextLexemePos nextLexemeKind "a begin-group character"
   -- Parse the next lexeme again, this time consuming it (where we can be sure
   -- that it is a begin-group character lexeme):
-  argument <- group' . fmap concat . many $ choice [
+  argument <- group' . fmap concatUnzip . many $ choice [
       controlSpace,
       parameter,
-      anyCharExceptOfCats [EndGroupCat],
-      anyControlSymbol,
-      anyControlWord
+      anyCharExceptOfCats' [EndGroupCat],
+      anyControlSymbol',
+      anyControlWord'
     ]
-  return $ macro ++ argument
+  return $ concatTokWarn [macro, argument]
 
-pathCommand :: Tokenizer [Token]
+pathCommand :: Tokenizer ([Token], [Warning])
 pathCommand = do
-  macro <- controlWord "path"
+  macro <- controlWord' "path"
   -- Fail if the next lexeme is not a begin-group character lexeme:
   nextLexeme <- lookAhead anySingle
   let nextLexemePos = sourcePos nextLexeme
@@ -304,19 +324,19 @@ pathCommand = do
   unless (isBeginGroupCharLexeme nextLexeme) $ customFailure $ Unexpected nextLexemePos nextLexemeKind "a begin-group character"
   -- Parse the next lexeme again, this time consuming it (where we can be sure
   -- that it is a begin-group character lexeme):
-  argument <- group' . fmap concat . many $ choice [
+  argument <- group' . fmap concatUnzip . many $ choice [
       controlSpace,
       parameter,
-      anyCharExceptOfCats [EndGroupCat],
-      anyControlSymbol,
-      anyControlWord
+      anyCharExceptOfCats' [EndGroupCat],
+      anyControlSymbol',
+      anyControlWord'
     ]
-  return $ macro ++ argument
+  return $ concatTokWarn [macro, argument]
 
-verbCommand :: Tokenizer [Token]
+verbCommand :: Tokenizer ([Token], [Warning])
 verbCommand = do
-  macro <- controlWord "verb"
-  mbStar <- optional (char '*')
+  macro <- controlWord' "verb"
+  mbStar <- optional (char' '*')
   -- Fail if the next lexeme is not a character lexeme:
   nextLexeme <- lookAhead anySingle
   let nextLexemePos = sourcePos nextLexeme
@@ -324,42 +344,42 @@ verbCommand = do
   unless (isCharacterLexeme nextLexeme) $ customFailure $ Unexpected nextLexemePos nextLexemeKind "a character"
   -- Parse the next lexeme again, this time consuming it (where we can be sure
   -- that it is a character lexeme):
-  beginDelimiter <- anyChar
-  let delimiterChar = Text.head $ tokensText beginDelimiter
-      beginDelimiterPos = tokensPos beginDelimiter
-  content <- fmap concat . many $ choice [
+  beginDelimiter <- anyChar'
+  let delimiterChar = Text.head $ tokensText (fst beginDelimiter)
+      beginDelimiterPos = tokensPos (fst beginDelimiter)
+  content <- fmap concatUnzip . many $ choice [
       controlSpace,
       parameter,
-      anyCharExcept [delimiterChar],
-      anyControlSymbol,
-      anyControlWord
+      anyCharExcept' [delimiterChar],
+      anyControlSymbol',
+      anyControlWord'
     ]
   -- Fail if the end of the input is reached before the closing delimiter
   -- character:
   ifEofFailWith $ UnclosedGroup beginDelimiterPos
-  endDelimiter <- char delimiterChar
-  return $ macro ++ Maybe.fromMaybe [] mbStar ++ beginDelimiter ++ content ++ endDelimiter
+  endDelimiter <- char' delimiterChar
+  return $ concatTokWarn [macro, Maybe.fromMaybe ([], []) mbStar, beginDelimiter, content, endDelimiter]
 
 -- | Parse a @\\importmodule[...]{...}@ or @\\usemodule[...]{...}@ command.
-importCommand :: Tokenizer [Token]
+importCommand :: Tokenizer ([Token], [Warning])
 importCommand = do
-  command <- anyControlWordOf ["importmodule", "usemodule"]
-  fstArg <- bracketGroup' $ concat <$> some (anyWord <|> anyDigit <|> char '/' <|> char '-' <|> char '_' <|> char '.')
-  sndArg <- group' $ concat <$> some (anyWord <|> anyDigit <|> char '/' <|> char '?' <|> char '-' <|> char '_' <|> char '.')
-  return $ command ++ fstArg ++ sndArg
+  command <- anyControlWordOf' ["importmodule", "usemodule"]
+  fstArg <- bracketGroup' $ concatUnzip <$> some (anyWord' <|> anyDigit' <|> char' '/' <|> char' '-' <|> char' '_' <|> char' '.')
+  sndArg <- group' $ concatUnzip <$> some (anyWord' <|> anyDigit' <|> char' '/' <|> char' '?' <|> char' '-' <|> char' '_' <|> char' '.')
+  return $ concatTokWarn [command, fstArg, sndArg]
 
 -- | Parse a @\\importmodule[...]{...}@ or @\\usemodule[...]{...}@ command.
-inputCommand :: Tokenizer [Token]
+inputCommand :: Tokenizer ([Token], [Warning])
 inputCommand = do
-  command <- controlWord "inputref"
-  fstArg <- bracketGroup' $ concat <$> some (anyWord <|> anyDigit <|> char '/' <|> char '-' <|> char '_' <|> char '.')
-  sndArg <- group' $ concat <$> some (anyWord <|> anyDigit <|> char '/' <|> char '-' <|> char '_' <|> char '.')
-  return $ command ++ fstArg ++ sndArg
+  command <- controlWord' "inputref"
+  fstArg <- bracketGroup' $ concatUnzip <$> some (anyWord' <|> anyDigit' <|> char' '/' <|> char' '-' <|> char' '_' <|> char' '.')
+  sndArg <- group' $ concatUnzip <$> some (anyWord' <|> anyDigit' <|> char' '/' <|> char' '-' <|> char' '_' <|> char' '.')
+  return $ concatTokWarn [command, fstArg, sndArg]
 
 -- | Parse an @\\inlineforthel{...}@ command, depending on a parser @p@ for the
 -- content of the argument of that command, and return the result of @p@, where
 -- @p@ is executed with the @insideForthel@ flag set.
-inlineForthel :: Tokenizer [Token] -> Tokenizer [Token]
+inlineForthel :: Tokenizer ([Token], [Warning]) -> Tokenizer ([Token], [Warning])
 inlineForthel p = do
   currentlyInsideForthel <- gets insideForthel
   inlineforthelMacro <- controlWord "inlineforthel"
@@ -375,7 +395,7 @@ inlineForthel p = do
 catchInvalidGroupEnd :: Tokenizer a
 catchInvalidGroupEnd = do
   endGroup <- singleToken isEndGroupCharLexeme
-  let pos = tokensPos endGroup
+  let pos = tokensPos (fst endGroup)
   customFailure $ InvalidGroupEnd pos
 
 -- | Parse a TeX environment (depending on a parser @p@ for the content of the
@@ -395,45 +415,45 @@ catchInvalidGroupEnd = do
 --
 -- NOTE: The control word tokenizer must not succeed at @\\begin@ or @\\end@
 --       macros!
-environment :: Tokenizer [Token] -> Tokenizer [Token]
+environment :: Tokenizer ([Token], [Warning]) -> Tokenizer ([Token], [Warning])
 environment p = do
   currentlyInsideForthel <- gets insideForthel
   -- Parse a @\\begin{...}@ command:
-  beginMacro <- controlWord "begin"
+  beginMacro <- controlWord' "begin"
   beginGroup <- catchUnexpected "a begin-group lexeme" $ singleToken isBeginGroupCharLexeme
-  envName <- concat <$> some (someTokens isLetterCharLexeme <|> singleToken isOtherCharLexeme)
+  envName <- concatUnzip <$> some (someTokens isLetterCharLexeme <|> singleToken isOtherCharLexeme)
   endGroup <- catchUnexpected "an end-group lexeme" $ singleToken isEndGroupCharLexeme
-  let envNameText = tokensText envName
-      beginEnvCommand = beginMacro ++ beginGroup ++ envName ++ endGroup
-      beginEnvPos = tokensPos beginEnvCommand
+  let envNameText = tokensText (fst envName)
+      beginEnvCommand = concatTokWarn [beginMacro, beginGroup, envName, endGroup]
+      beginEnvPos = tokensPos (fst beginEnvCommand)
   -- Fail if the environment name is @forthel@ and the @insideForthel@ flag is
   -- already set:
   when (envNameText == "forthel" && currentlyInsideForthel) $
-    customFailure $ NestedForthel (tokensPos beginEnvCommand)
+    customFailure $ NestedForthel (tokensPos (fst beginEnvCommand))
   -- If the environment name is @verbatim@, consume anything until the next
   -- @\\end{verbatim}@ command regardless of the given parser @p@:
   if envNameText == "verbatim"
     then do
-      content <- fmap concat . many $ choice [
+      content <- fmap concatUnzip . many $ choice [
           controlSpace,
           parameter,
-          anyChar,
-          anyControlSymbol,
-          anyControlWordExcept ["end"],
+          anyChar',
+          anyControlSymbol',
+          anyControlWordExcept' ["end"],
           try nonVerbatimEndCommand
         ]
       -- Throw an error if the end of the input is reached:
       ifEofFailWith $ UnclosedEnv beginEnvPos
       -- Parse an @\\end{verbatim}@ command:
-      endMacro <- controlWord "end"
+      endMacro <- controlWord' "end"
       beginGroup' <- singleToken isBeginGroupCharLexeme
-      envName' <- word "verbatim"
+      envName' <- word' "verbatim"
       endGroup' <- singleToken isEndGroupCharLexeme
-      let beginEnvCommand = beginMacro ++ beginGroup ++ envName ++ endGroup
-          endEnvCommand = endMacro ++ beginGroup' ++ envName' ++ endGroup'
+      let beginEnvCommand = concatTokWarn [beginMacro, beginGroup, envName, endGroup]
+          endEnvCommand = concatTokWarn [endMacro, beginGroup', envName', endGroup']
       if currentlyInsideForthel
-        then return $ beginEnvCommand ++ content ++ endEnvCommand
-        else return []
+        then return $ concatTokWarn [beginEnvCommand, content, endEnvCommand]
+        else return ([], [])
     -- In any other case, parse the content of the environment via the given
     -- parser @p@ (while keeping track of the @forthel@ flag):
     else do
@@ -448,16 +468,16 @@ environment p = do
       -- Throw an error if the end of the input is reached:
       ifEofFailWith $ UnclosedEnv beginEnvPos
       -- Parse an @\\end{...}@ command:
-      endMacro <- controlWord "end"
+      endMacro <- controlWord' "end"
       beginGroup' <- catchUnexpected "a begin-group lexeme" $ singleToken isBeginGroupCharLexeme
-      envName' <- concat <$> some (someTokens isLetterCharLexeme <|> singleToken isOtherCharLexeme)
+      envName' <- concatUnzip <$> some (someTokens isLetterCharLexeme <|> singleToken isOtherCharLexeme)
       endGroup' <- catchUnexpected "an end-group lexeme" $ singleToken isEndGroupCharLexeme
-      let envNameText' = tokensText envName'
-          endEnvCommand = endMacro ++ beginGroup' ++ envName' ++ endGroup'
+      let envNameText' = tokensText (fst envName')
+          endEnvCommand = concatTokWarn [endMacro, beginGroup', envName', endGroup']
       -- Check whether the environment of the @\\begin{...}@ and the @\\end{...}@
       -- commands match:
       when (envNameText' /= envNameText) $
-        customFailure $ InvalidEnvEnd (tokensPos endEnvCommand)
+        customFailure $ InvalidEnvEnd (tokensPos (fst endEnvCommand))
       -- If the environment name is "@forthel@" then unset the @insideForthel@ flag:
       when (envNameText == "forthel") $ modify (\state -> state{insideForthel = False})
       -- If the environment is a TLS environment with set @forthel@ flag outside a
@@ -468,7 +488,7 @@ environment p = do
       -- @\\end{...}@ command; otherwise return just the result of @p@:
       currentlyInsideForthel' <- gets insideForthel
       if currentlyInsideForthel' || tlsEnvWithForthelFlagOutsideForthelEnv
-        then return $ beginEnvCommand ++ content ++ endEnvCommand
+        then return $ concatTokWarn [beginEnvCommand, content, endEnvCommand]
         else return content
   where
     tlsEnvNames = [
@@ -491,14 +511,14 @@ environment p = do
         "proof"
       ]
     -- Parse any @\\end{...}@ command other than @\\end{verbatim}@.
-    nonVerbatimEndCommand :: Tokenizer [Token]
+    nonVerbatimEndCommand :: Tokenizer ([Token], [Warning])
     nonVerbatimEndCommand = do
-      endMacro <- controlWord "end"
+      endMacro <- controlWord' "end"
       beginGroup <- singleToken isBeginGroupCharLexeme
-      envName <- concat <$> some (someTokens isLetterCharLexeme <|> singleToken isOtherCharLexeme)
+      envName <- concatUnzip <$> some (someTokens isLetterCharLexeme <|> singleToken isOtherCharLexeme)
       endGroup <- singleToken isEndGroupCharLexeme
-      let envNameText = tokensText envName
-          endEnvCommand = endMacro ++ beginGroup ++ envName ++ endGroup
+      let envNameText = tokensText (fst envName)
+          endEnvCommand = concatTokWarn [endMacro, beginGroup, envName, endGroup]
       if envNameText == "verbatim"
         then empty
         else return endEnvCommand
@@ -507,12 +527,12 @@ environment p = do
 -- unbalanced end-environment tokens.
 catchInvalidEnvEnd :: Tokenizer a
 catchInvalidEnvEnd = do
-  endMacro <- controlWord "end"
+  endMacro <- controlWord' "end"
   beginGroup <- singleToken isBeginGroupCharLexeme
-  envName <- concat <$> some (someTokens isLetterCharLexeme <|> singleToken isOtherCharLexeme)
+  envName <- concatUnzip <$> some (someTokens isLetterCharLexeme <|> singleToken isOtherCharLexeme)
   endGroup <- singleToken isEndGroupCharLexeme
-  let command = endMacro ++ beginGroup ++ envName ++ endGroup
-      pos = tokensPos command
+  let command = concatTokWarn [endMacro, beginGroup, envName, endGroup]
+      pos = tokensPos (fst command)
   customFailure $ InvalidEnvEnd pos
 
 
@@ -529,6 +549,13 @@ char c = do
       pos = sourcePos charLexeme
   return [Token text pos]
 
+-- | The same as @char@, but returns an additional empty list of
+-- warnings.
+char' :: Char -> Tokenizer ([Token], [Warning])
+char' c = do
+  tokens <- char c
+  return (tokens, [])
+
 -- | Parse any character.
 anyChar :: Tokenizer [Token]
 anyChar = do
@@ -536,6 +563,13 @@ anyChar = do
   let text = Text.singleton $ charContent charLexeme
       pos = sourcePos charLexeme
   return [Token text pos]
+
+-- | The same as @anyChar@, but returns an additional empty list of
+-- warnings.
+anyChar' :: Tokenizer ([Token], [Warning])
+anyChar' = do
+  tokens <- anyChar
+  return (tokens, [])
 
 -- | Parse any character that matches any character from a given list.
 charOf :: [Char] -> Tokenizer [Token]
@@ -546,6 +580,13 @@ charOf cs = do
       pos = sourcePos charLexeme
   return [Token text pos]
 
+-- | The same as @char@, but returns an additional empty list of
+-- warnings.
+charOf' :: [Char] -> Tokenizer ([Token], [Warning])
+charOf' cs = do
+  tokens <- charOf cs
+  return (tokens, [])
+
 -- | Parse any character that does not match any character from a given list.
 anyCharExcept :: [Char] -> Tokenizer [Token]
 anyCharExcept cs = do
@@ -555,6 +596,13 @@ anyCharExcept cs = do
       pos = sourcePos charLexeme
   return [Token text pos]
 
+-- | The same as @anyCharExcept@, but returns an additional empty list of
+-- warnings.
+anyCharExcept' :: [Char] -> Tokenizer ([Token], [Warning])
+anyCharExcept' cs = do
+  tokens <- anyCharExcept cs
+  return (tokens, [])
+
 -- | Parse any character whose cagetory code matches a given category code.
 anyCharOfCat :: CatCode -> Tokenizer [Token]
 anyCharOfCat catCode = do
@@ -563,6 +611,13 @@ anyCharOfCat catCode = do
   let text = Text.singleton $ charContent charLexeme
       pos = sourcePos charLexeme
   return [Token text pos]
+
+-- | The same as @anyCharOfCat@, but returns an additional empty list of
+-- warnings.
+anyCharOfCat' :: CatCode -> Tokenizer ([Token], [Warning])
+anyCharOfCat' catCode = do
+  tokens <- anyCharOfCat catCode
+  return (tokens, [])
 
 -- | Parse any character whose cagetory code matches any category code from a
 -- given list.
@@ -574,6 +629,13 @@ anyCharOfCats catCodes = do
       pos = sourcePos charLexeme
   return [Token text pos]
 
+-- | The same as @anyCharOfCats@, but returns an additional empty list of
+-- warnings.
+anyCharOfCats' :: [CatCode] -> Tokenizer ([Token], [Warning])
+anyCharOfCats' catCodes = do
+  tokens <- anyCharOfCats catCodes
+  return (tokens, [])
+
 -- | Parse any character whose cagetory code does not match any category code
 -- from a given list.
 anyCharExceptOfCats :: [CatCode] -> Tokenizer [Token]
@@ -584,11 +646,25 @@ anyCharExceptOfCats catCodes = do
       pos = sourcePos charLexeme
   return [Token text pos]
 
+-- | The same as @anyCharExceptOfCats@, but returns an additional empty list of
+-- warnings.
+anyCharExceptOfCats' :: [CatCode] -> Tokenizer ([Token], [Warning])
+anyCharExceptOfCats' catCodes = do
+  tokens <- anyCharExceptOfCats catCodes
+  return (tokens, [])
+
 
 -- ** Parsing Numbers
 
 anyDigit :: Tokenizer [Token]
 anyDigit = charOf ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+
+-- | The same as @anyDigit@, but returns an additional empty list of
+-- warnings.
+anyDigit' :: Tokenizer ([Token], [Warning])
+anyDigit' = do
+  tokens <- anyDigit
+  return (tokens, [])
 
 
 -- ** Parsing Words
@@ -603,6 +679,13 @@ word w = do
     then return [Token text pos]
     else empty
 
+-- | The same as @word@, but returns an additional empty list of
+-- warnings.
+word' :: Text -> Tokenizer ([Token], [Warning])
+word' w = do
+  tokens <- word w
+  return (tokens, [])
+
 -- | Parse any word.
 anyWord :: Tokenizer [Token]
 anyWord = do
@@ -610,6 +693,13 @@ anyWord = do
   let text = Text.concat $ map tokenText wordLexeme
       pos = Position.range_position $ tokensRange wordLexeme
   return [Token text pos]
+
+-- | The same as @anyWord@, but returns an additional empty list of
+-- warnings.
+anyWord' :: Tokenizer ([Token], [Warning])
+anyWord' = do
+  tokens <- anyWord
+  return (tokens, [])
 
 -- | Parse any word. Fails if the result does not match any string from a given
 -- list.
@@ -622,6 +712,13 @@ anyWordOf ws = do
     then return [Token text pos]
     else empty
 
+-- | The same as @anyWordOf@, but returns an additional empty list of
+-- warnings.
+anyWordOf' :: [Text] -> Tokenizer ([Token], [Warning])
+anyWordOf' ws = do
+  tokens <- anyWordOf ws
+  return (tokens, [])
+
 -- | Parse any word. Fails if the result matches any string from a given list.
 anyWordExcept :: [Text] -> Tokenizer [Token]
 anyWordExcept ws = do
@@ -631,6 +728,13 @@ anyWordExcept ws = do
   if text `notElem` ws
     then return [Token text pos]
     else empty
+
+-- | The same as @anyWordExcept@, but returns an additional empty list of
+-- warnings.
+anyWordExcept' :: [Text] -> Tokenizer ([Token], [Warning])
+anyWordExcept' ws = do
+  tokens <- anyWordExcept ws
+  return (tokens, [])
 
 
 -- ** Parsing Control Words
@@ -645,6 +749,13 @@ controlWord cw = do
       pos = sourcePos ctrlWordLexeme
   return [Token text pos]
 
+-- | The same as @controlWord@, but returns an additional empty list of
+-- warnings.
+controlWord' :: Text -> Tokenizer ([Token], [Warning])
+controlWord' cw = do
+  tokens <- controlWord cw
+  return (tokens, [])
+
 -- | Parse any control word.
 anyControlWord :: Tokenizer [Token]
 anyControlWord = do
@@ -653,6 +764,13 @@ anyControlWord = do
       text = "\\" <> word
       pos = sourcePos ctrlWordLexeme
   return [Token text pos]
+
+-- | The same as @anyControlWord@, but returns an additional empty list of
+-- warnings.
+anyControlWord' :: Tokenizer ([Token], [Warning])
+anyControlWord' = do
+  tokens <- anyControlWord
+  return (tokens, [])
 
 -- | Parse a control word that matches any string from a given list.
 anyControlWordOf :: [Text] -> Tokenizer [Token]
@@ -664,6 +782,13 @@ anyControlWordOf cws = do
       pos = sourcePos ctrlWordLexeme
   return [Token text pos]
 
+-- | The same as @anyControlWordOf@, but returns an additional empty list of
+-- warnings.
+anyControlWordOf' :: [Text] -> Tokenizer ([Token], [Warning])
+anyControlWordOf' cws = do
+  tokens <- anyControlWordOf cws
+  return (tokens, [])
+
 -- | Parse a control word that does not match any string from a given list.
 anyControlWordExcept :: [Text] -> Tokenizer [Token]
 anyControlWordExcept cws = do
@@ -673,6 +798,13 @@ anyControlWordExcept cws = do
       text = "\\" <> word
       pos = sourcePos ctrlWordLexeme
   return [Token text pos]
+
+-- | The same as @anyControlWordExcept@, but returns an additional empty list of
+-- warnings.
+anyControlWordExcept' :: [Text] -> Tokenizer ([Token], [Warning])
+anyControlWordExcept' cws = do
+  tokens <- anyControlWordExcept cws
+  return (tokens, [])
 
 
 -- ** Control Symbols
@@ -687,6 +819,13 @@ controlSymbol cs = do
       pos = sourcePos ctrlSymbolLexeme
   return [Token text pos]
 
+-- | The same as @controlSymbol@, but returns an additional empty list of
+-- warnings.
+controlSymbol' :: Char -> Tokenizer ([Token], [Warning])
+controlSymbol' cs = do
+  tokens <- controlSymbol cs
+  return (tokens, [])
+
 -- | Parse any control symbol.
 anyControlSymbol :: Tokenizer [Token]
 anyControlSymbol = do
@@ -695,6 +834,13 @@ anyControlSymbol = do
       text = "\\" <> symbol
       pos = sourcePos ctrlSymbolLexeme
   return [Token text pos]
+
+-- | The same as @anyControlSymbol@, but returns an additional empty list of
+-- warnings.
+anyControlSymbol' :: Tokenizer ([Token], [Warning])
+anyControlSymbol' = do
+  tokens <- anyControlSymbol
+  return (tokens, [])
 
 -- | Parse a control symbol that matches any character from a given list.
 anyControlSymbolOf :: [Char] -> Tokenizer [Token]
@@ -706,6 +852,13 @@ anyControlSymbolOf css = do
       pos = sourcePos ctrlSymbolLexeme
   return [Token text pos]
 
+-- | The same as @anyControlSymbolOf@, but returns an additional empty list of
+-- warnings.
+anyControlSymbolOf' :: [Char] -> Tokenizer ([Token], [Warning])
+anyControlSymbolOf' css  = do
+  tokens <- anyControlSymbolOf css
+  return (tokens, [])
+
 -- | Parse a control symbol that does not match any character from a given list.
 anyControlSymbolExcept :: [Char] -> Tokenizer [Token]
 anyControlSymbolExcept css = do
@@ -715,6 +868,13 @@ anyControlSymbolExcept css = do
       text = "\\" <> symbol
       pos = sourcePos ctrlSymbolLexeme
   return [Token text pos]
+
+-- | The same as @anyControlSymbolExcept@, but returns an additional empty list of
+-- warnings.
+anyControlSymbolExcept' :: [Char] -> Tokenizer ([Token], [Warning])
+anyControlSymbolExcept' css  = do
+  tokens <- anyControlSymbolExcept css
+  return (tokens, [])
 
 
 -- ** Misc
@@ -733,19 +893,28 @@ forthelKeyAhead = option False $ try $ lookAhead $ do
 
 -- | Ignore the output of a tokenizer @p@. Intended to be used as @p >>= skip@
 -- to run @p@ but return the empty list instead of the result of @p@.
-skip :: [Token] -> Tokenizer [Token]
-skip _ = return []
+skip :: ([Token], [Warning]) -> Tokenizer ([Token], [Warning])
+skip (_, warnings) = return ([], warnings)
 
 -- | Ignore the output of a tokenizer @p@ if we are currently outside a ForTheL
 -- block. Intended to be used as @p >>= skipOutsideForthel@ to run @p@ and
 -- return either the empty list or the result of @p@ depending on whether we are
 -- outside or inside a ForTheL block.
-skipOutsideForthel :: [Token] -> Tokenizer [Token]
-skipOutsideForthel tokens = do
+skipOutsideForthel :: ([Token], [Warning]) -> Tokenizer ([Token], [Warning])
+skipOutsideForthel (tokens, warnings) = do
   insideForthel <- gets insideForthel
   if insideForthel
-    then return tokens
-    else return []
+    then return (tokens, warnings)
+    else return ([], warnings)
+
+-- | The same as @skipOutsideForthel@, but does not take a list of warnings as
+-- argument.
+skipOutsideForthel' :: [Token] -> Tokenizer ([Token], [Warning])
+skipOutsideForthel' tokens = do
+  insideForthel <- gets insideForthel
+  if insideForthel
+    then return (tokens, [])
+    else return ([], [])
 
 -- | If the end of the input is reached, fail with a custom error.
 ifEofFailWith :: Error -> Tokenizer ()
@@ -769,16 +938,18 @@ catchUnexpected exp p = try p <|> do
   customFailure $ Unexpected pos unexp exp
 
 -- | Parse a single lexeme that satisfies a given property.
-singleToken :: (TEX.Lexeme -> Bool) -> Tokenizer [Token]
-singleToken prop = satisfy prop <&> mkTokens
+singleToken :: (TEX.Lexeme -> Bool) -> Tokenizer ([Token], [Warning])
+singleToken prop = do
+  tokens <- satisfy prop <&> mkTokens
+  return (tokens, [])
 
 -- | Parse one or more lexemes that satisfy a given property and merge them into
 -- a single token.
-someTokens :: (TEX.Lexeme -> Bool) -> Tokenizer [Token]
+someTokens :: (TEX.Lexeme -> Bool) -> Tokenizer ([Token], [Warning])
 someTokens prop = do
   lexemes <- some (satisfy prop)
   let token = mergeTokens (concatMap mkTokens lexemes)
-  return [token]
+  return ([token], [])
 
 -- | Turn a lexeme into a (possibly empty) list of tokens.
 mkTokens :: TEX.Lexeme -> [Token]

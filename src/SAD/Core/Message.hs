@@ -16,7 +16,7 @@ module SAD.Core.Message (
   origin_reasoner, origin_simplifier, origin_thesis, origin_translate,
   Kind (..), output, error,
   outputMain, outputExport, outputForTheL, outputParser, outputReasoner,
-  outputThesis, outputSimplifier, outputTranslate,
+  outputThesis, outputSimplifier, outputTranslate, outputTokenizer,
   errorExport, errorParser, errorLexer, errorTokenizer
 ) where
 
@@ -150,7 +150,7 @@ error origin pos text = do
 -- common messages
 
 outputMain, outputExport, outputForTheL, outputParser, outputReasoner,
-  outputSimplifier, outputThesis :: BYTES a => Kind -> Position.T -> a -> IO ()
+  outputSimplifier, outputThesis, outputTokenizer :: BYTES a => Kind -> Position.T -> a -> IO ()
 outputMain = output origin_main
 outputExport = output origin_export
 outputForTheL = output origin_forthel
@@ -158,6 +158,7 @@ outputParser = output origin_parser
 outputReasoner = output origin_reasoner
 outputSimplifier = output origin_simplifier
 outputThesis = output origin_thesis
+outputTokenizer = output origin_tokenizer
 
 outputTranslate :: BYTES a => Kind -> Position.T -> a -> IO ()
 outputTranslate = output origin_translate
