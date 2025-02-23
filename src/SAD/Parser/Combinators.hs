@@ -140,7 +140,7 @@ texCommandPos name = label ("\"\\" <> name <> "\"") $ tokenPos' ("\\" <> name)
 -- | @texCommandWithArg name arg@ parses @"\\" <name> "{" <arg> "}"@.
 texCommandWithArg :: Text -> Parser st a -> Parser st a
 texCommandWithArg name arg = do
-  label ("\"" <> name <> "\"") $ texCommand name
+  texCommand name
   braced arg
 
 -- | @optInTexArg macroName p@ runs either @p@, or @"\\" <macroname> "{" <p> "}"@.
