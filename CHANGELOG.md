@@ -307,6 +307,15 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
 
 ### Misc
 
+  * **Changed:** ForTheL texts that are imported are no longer checked for
+    logical or ontological correctness which makes importing files significantly
+    faster.
+
+    *NOTE:* This does *not* bypass the test for any imported file when running
+    `isabelle naproche_test`: Since `isabelle naproche_test` tests *every* file
+    in the `math` directory, every file that *can* be imported will be
+    tested at some point.
+
   * **New:** The command line interface provides a new parameter
     `--mode=<mode>`, where `<mode>` can be one of the following words which
     determines the behaviour of Naproche:

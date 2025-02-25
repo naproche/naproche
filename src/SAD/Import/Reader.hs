@@ -45,25 +45,40 @@ readProofText :: ParserKind -> [ProofText] -> IO [ProofText]
 readProofText dialect text0 = do
   context <- Program.thread_context
   pathToLibrary <- getPathToLibrary
-  (text, reports) <- reader dialect pathToLibrary [] [initState context noTokens] text0
+  (text, reports) <- reader 0 dialect pathToLibrary [] [initState context noTokens] text0
   when (Program.is_pide context) $ Message.reports reports
   return text
 
-reader :: ParserKind -> FilePath -> [FilePath] -> [State FState] -> [ProofText] -> IO ([ProofText], [Position.Report])
+reader :: Int -> ParserKind -> FilePath -> [FilePath] -> [State FState] -> [ProofText] -> IO ([ProofText], [Position.Report])
 -- Take an archive path, a module path and a module name, turn it into an
 -- absolute file path and continue the reader loop with a read instruction for
 -- this file path.
-reader dialect pathToLibrary doneFiles stateList [ProofTextInstr pos (GetModule archivePath modulePath moduleName)] =
+-- Moreover, we track the depth of the imported modules (where depth 0 means
+-- that we are currently not in an imported module), where we disable the
+-- logical and ontological checking at depth > 0.
+reader depth dialect pathToLibrary doneFiles stateList [ProofTextInstr pos (GetModule archivePath modulePath moduleName)] =
   let relativeFilePath = archivePath </> "source" </> modulePath </> moduleName
       relativeFilePath' = case dialect of
         Ftl -> relativeFilePath
         Tex -> relativeFilePath <.> "tex"
       absoluteFilePath = pathToLibrary </> relativeFilePath'
       instr = GetAbsoluteFilePath absoluteFilePath
-  in reader dialect pathToLibrary doneFiles stateList [ProofTextInstr pos instr]
+  in do
+    (proofTexts, reports) <- reader (depth + 1) dialect pathToLibrary doneFiles stateList [ProofTextInstr pos instr]
+    let proofTexts' = if depth == 0
+          then [
+              ProofTextInstr Position.none (SetBool proveParam False),
+              ProofTextInstr Position.none (SetBool checkParam False)
+            ] ++ proofTexts ++ [
+              ProofTextInstr Position.none (SetBool proveParam True),
+              ProofTextInstr Position.none (SetBool checkParam True)
+            ]
+          else proofTexts
+    return (proofTexts', reports)
+  --in reader depth dialect pathToLibrary doneFiles stateList proofText
 -- Take a relative file path (i.e. relative to the library directory) and turn
 -- it into an absolute path.
-reader dialect pathToLibrary doneFiles stateList [ProofTextInstr pos (GetRelativeFilePath relativeFilePath)]
+reader depth dialect pathToLibrary doneFiles stateList [ProofTextInstr pos (GetRelativeFilePath relativeFilePath)]
   -- Catch "." as directory name in file path:
   | "." `elem` splitDirectories relativeFilePath =
       Message.errorParser pos $
@@ -92,40 +107,65 @@ reader dialect pathToLibrary doneFiles stateList [ProofTextInstr pos (GetRelativ
   | otherwise =
       let absoluteFilePath = pathToLibrary </> relativeFilePath
           instr = GetAbsoluteFilePath absoluteFilePath
-      in reader dialect pathToLibrary doneFiles stateList [ProofTextInstr pos instr]
+      in do
+        (proofTexts, reports) <- reader (depth + 1) dialect pathToLibrary doneFiles stateList [ProofTextInstr pos instr]
+        let proofTexts' = if depth == 0
+            then [
+                ProofTextInstr Position.none (SetBool proveParam False),
+                ProofTextInstr Position.none (SetBool checkParam False)
+              ] ++ proofTexts ++ [
+                ProofTextInstr Position.none (SetBool proveParam True),
+                ProofTextInstr Position.none (SetBool checkParam True)
+              ]
+            else proofTexts
+        return (proofTexts', reports)
 
-reader dialect pathToLibrary doneFiles (pState : states) [ProofTextInstr pos (GetAbsoluteFilePath absoluteFilePath)]
+reader depth dialect pathToLibrary doneFiles (pState : states) [ProofTextInstr pos (GetAbsoluteFilePath absoluteFilePath)]
   | absoluteFilePath `elem` doneFiles = do
       Message.outputMain Message.WARNING pos
         (make_bytes ("Skipping already read file: " ++ absoluteFilePath))
       (newProofText, newState) <- parseState pState
-      reader dialect pathToLibrary doneFiles (newState:states) newProofText
+      reader (depth - 1) dialect pathToLibrary doneFiles (newState:states) newProofText
   | otherwise = do
       (newProofText, newState) <- parseFile dialect absoluteFilePath pState
+      let newProofText' = if depth > 0
+          then [
+              ProofTextInstr Position.none (SetBool proveParam False),
+              ProofTextInstr Position.none (SetBool checkParam False)
+            ] ++ newProofText
+          else newProofText
       -- state from before reading is still here
-      reader dialect pathToLibrary (absoluteFilePath : doneFiles) (newState:pState:states) newProofText
+      reader depth dialect pathToLibrary (absoluteFilePath : doneFiles) (newState:pState:states) newProofText'
 
-reader dialect pathToLibrary doneFiles (pState : states) [ProofTextInstr pos (GetText text)] = do
+reader depth dialect pathToLibrary doneFiles (pState : states) [ProofTextInstr pos (GetText text)] = do
     (newProofText, newState) <- parseBytes dialect text pState
-    reader dialect pathToLibrary doneFiles (newState : pState : states) newProofText -- state from before reading is still here
+    reader depth dialect pathToLibrary doneFiles (newState : pState : states) newProofText -- state from before reading is still here
 
 -- This says that we are only really processing the last instruction in a [ProofText].
-reader dialect pathToLibrary doneFiles stateList (t : restProofText) = do
-  (ts, ls) <- reader dialect pathToLibrary doneFiles stateList restProofText
+reader depth dialect pathToLibrary doneFiles stateList (t : restProofText) = do
+  (ts, ls) <- reader depth dialect pathToLibrary doneFiles stateList restProofText
   return (t : ts, ls)
 
-reader dialect pathToLibrary doneFiles (pState : oldState : rest) [] = do
+reader depth dialect pathToLibrary doneFiles (pState : oldState : rest) [] = do
   Message.outputParser Message.TRACING
     (if null doneFiles then Position.none else Position.file_only $ make_bytes $ head doneFiles) "parsing successful"
   let resetState = oldState {
         stUser = (stUser pState) {tvrExpr = tvrExpr $ stUser oldState}}
   -- Continue running a parser after eg. a read instruction was evaluated.
   (newProofText, newState) <- parseState resetState
-  reader dialect pathToLibrary doneFiles (newState : rest) newProofText
+  (newProofText', reports) <- reader (if depth == 0 then 0 else depth - 1) dialect pathToLibrary doneFiles (newState : rest) newProofText
+  let newProofText'' = if depth == 1
+        then [
+            ProofTextInstr Position.none (SetBool proveParam True),
+            ProofTextInstr Position.none (SetBool checkParam True)
+          ] ++ newProofText'
+        else newProofText'
+  return (newProofText'', reports)
 
-reader _ _ _ (state : _) [] = return ([], reports $ stUser state)
 
-reader _ _ _ _ _ = failWithMessage "SAD.Parser.Base.reader" "Invalid arguments."
+reader _ _ _ _ (state : _) [] = return ([], reports $ stUser state)
+
+reader _ _ _ _ _ _ = failWithMessage "SAD.Parser.Base.reader" "Invalid arguments."
 
 -- | Consequtively lex, tokenize and parse a byte string.
 parse :: ParserKind -> Position.T -> Bytes -> State FState -> IO ([ProofText], State FState)
