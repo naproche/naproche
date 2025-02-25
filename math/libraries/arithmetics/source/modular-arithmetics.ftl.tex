@@ -53,13 +53,13 @@
   \end{proof}
 
   \begin{proposition}[forthel,id=ARITHMETIC_08_7464329746055168]
-    Let $n, m, l, k$ be natural numbers such that $k \neq \NATzero$.
+    Let $n, m, k$ be natural numbers such that $k \neq \NATzero$.
     If $\NATcong{n}{m}{k}$ and $\NATcong{m}{\NATone}{k}$ then $\NATcong{n}{\NATone}{k}$.
   \end{proposition}
   \begin{proof}[forthel]
     Assume $\NATcong{n}{m}{k}$ and $\NATcong{m}{\NATone}{k}$.
-    Then $n \NATmod k \eq m \NATmod k$ and $m \NATmod k \eq l \NATmod k$.
-    Hence $n \NATmod k \eq l \NATmod k$.
+    Then $n \NATmod k \eq m \NATmod k$ and $m \NATmod k \eq \NATone \NATmod k$.
+    Hence $n \NATmod k \eq \NATone \NATmod k$.
     Thus $\NATcong{n}{\NATone}{k}$.
   \end{proof}
 

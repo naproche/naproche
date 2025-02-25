@@ -931,7 +931,7 @@ To find inconsistencies it is helpful to try to prove
 \noindent in various places of a text. If the lemma is validated by
 \Naproche{} then one has to investigate further. Contradiction-
 lemmas can be quickly de-activated by commenting out
-with \verb+%+.. They can also be used to force rechecking of 
+with \texttt{\%}. They can also be used to force rechecking of 
 the text: uncomment
 the lemma and then comment it again; this will lead to rechecking 
 from the position of the lemma onwards.
@@ -1385,7 +1385,7 @@ such that $\Finset{F}{1}{n} \subseteq \mathbb{N}$.
 $\Prod{F}{1}{n}$ is a natural number.
 \end{signature}
 
-\begin{axiom}[title=Factorproperty] Let $F$ be a sequence of length $n$
+\begin{axiom}[id=Factorproperty] Let $F$ be a sequence of length $n$
 such that $F(i)$ is a nonzero natural number for every $i \in \dom(F)$.
 Then $\Prod{F}{1}{n}$ is nonzero and
 $F(i)$ divides $\Prod{F}{1}{n}$ for every $i \in \dom(F)$.
