@@ -17,6 +17,7 @@ module SAD.Main where
 import Control.Monad (unless, when)
 import Data.Time (addUTCTime, getCurrentTime, diffUTCTime)
 import Data.Maybe (mapMaybe)
+import Data.List.Split (wordsBy)
 import Control.Exception qualified as Exception
 import Control.Exception (catch)
 import System.Console.GetOpt qualified as GetOpt
@@ -91,11 +92,12 @@ mainTerminal initInstrs nonInstrArgs = do
         -- as the path to the input text file and determine the ForTheL dialect
         -- of its contents via its file name extension:
         [filePath] -> do
-          let fileNameExtension = takeExtensions filePath 
-          let dialect = case fileNameExtension of
-                ".ftl" -> Ftl
-                ".ftl.tex" -> Tex
-                _ -> error $ "Invalid file name extension: " ++ fileNameExtension
+          let fileNameExteisionStr = takeExtensions filePath
+              fileNameExtensions = wordsBy isExtSeparator fileNameExteisionStr
+          let dialect = case reverse fileNameExtensions of
+                "ftl" : _ -> Ftl
+                "tex" : "ftl" : _ -> Tex
+                _ -> error $ "Invalid file name extension: " ++ fileNameExteisionStr
           inputText <- make_bytes <$> File.read filePath
           return (dialect, inputText)
         -- If no non-instruction command line argument is given, regard the
