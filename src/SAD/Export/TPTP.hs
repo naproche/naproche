@@ -104,7 +104,9 @@ tptpTerm d = term
     term Top        = "$true"
     term Bot        = "$false"
     term t@Trm {trmName = TermEquality} = let [l, r] = trmArgs t in sinfix " = " l r
-    term t@Trm {}   = tptpName t <> "(" <> Text.intercalate "," (map term $ trmArgs t) <> ")"
+    term t@Trm {}
+      | null (trmArgs t) = tptpName t
+      | otherwise = tptpName t <> "(" <> Text.intercalate "," (map term $ trmArgs t) <> ")"
     term v@Var {}   = tptpName v
     term i@Ind {}   = "W" <> Text.pack (show (d - 1 - indIndex i))
     term ThisT      = failWithMessage "SAD.Export.TPTP" "Didn't expect ThisT here"
