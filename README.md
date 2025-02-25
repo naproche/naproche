@@ -18,9 +18,9 @@ its `Documentation` panel.
 
 #### Prerequisites
 
-Ensure that `curl`, `gcc`, `git`, `make`, and `hg` (Mercurial) are installed:
+Ensure that `curl`, `g++`, `gcc`, `git`, `gmp`, `make`, and `hg` (Mercurial) are installed:
 
-  * Linux: e.g. `sudo apt install curl gcc git make mercurial`
+  * Linux: e.g. `sudo apt install curl g++ gcc git libgmp-dev make mercurial`
 
   * macOS: e.g. `brew install mercurial` or download from https://www.mercurial-scm.org
 
