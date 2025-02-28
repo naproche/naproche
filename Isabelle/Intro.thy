@@ -68,7 +68,7 @@ text \<open>
 section \<open>Examples\<close>
 
 text \<open>
-  The folder \<^dir>\<open>$NAPROCHE_HOME/examples\<close> contains a selection of
+  The folder \<^dir>\<open>$NAPROCHE_HOME/math\<close> contains a selection of
   formalizations which demonstrate the naturalness and coverage of Naproche.
   These examples have been checked successfully on mid-range consumer laptops.
   Checking times vary from a few seconds to up to half an hour, depending on
@@ -84,11 +84,11 @@ text \<open>
   of the examples have been taken over from SAD and are rewritten in the LaTeX
   dialect \<^verbatim>\<open>.ftl.tex\<close>. For example:
 
-    \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/tarski.ftl\<close>
+    \<^enum> \<^file>\<open>$NAPROCHE_HOME/math/examples/tarski.ftl\<close>
 
-    \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/tarski.ftl.tex\<close>
+    \<^enum> \<^file>\<open>$NAPROCHE_HOME/math/examples/tarski.ftl.tex\<close>
 
-    \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/tarski.ftl.pdf\<close>
+    \<^enum> \<^file>\<open>$NAPROCHE_HOME/math/examples/tarski.ftl.pdf\<close>
 
   In LaTeX mode, only material in \begin{forthel} ... \end{forthel}
   environments is fed to the parser and proof checker. Putting comments
@@ -96,7 +96,7 @@ text \<open>
   forthel environments are accentuated in the pdf output by, e.g., a light
   gray background. See
 
-    \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/checkerboard.ftl.tex\<close>
+    \<^enum> \<^file>\<open>$NAPROCHE_HOME/math/examples/puzzles/checkerboard.ftl.tex\<close>
 
   which is a chapter from a conference submission on a proof-checked
   formalization of the Mutilated Checkerboard Problem in Naproche.
@@ -108,12 +108,12 @@ section \<open>Tutorial\<close>
 text \<open>
   A brief introduction to Naproche is contained in
 
-    \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/TUTORIAL.ftl.pdf\<close>.
+    \<^enum> \<^file>\<open>$NAPROCHE_HOME/math/TUTORIAL.ftl.pdf\<close>.
 
   Practical formalization experiments can carried out by playing with the
   source code of the tutorial which itself is a proof-checked ForTheL text:
 
-    \<^enum> \<^file>\<open>$NAPROCHE_HOME/examples/TUTORIAL.ftl.tex\<close>.
+    \<^enum> \<^file>\<open>$NAPROCHE_HOME/math/TUTORIAL.ftl.tex\<close>.
 
   Andrei Paskevich's ``The syntax and semantics of the ForTheL language''
 
