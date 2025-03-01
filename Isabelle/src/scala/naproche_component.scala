@@ -89,7 +89,7 @@ object Naproche_Component {
       def relative_name(file: JFile): String = relative(file).implode
 
       progress.echo("Setting up TeX Live locally at " + Naproche.NAPROCHE_HOME.expand.implode + "/tex/texlive.")
-      progress.echo("(This may take some time in case TeX Live is not installed locally yet.)")
+      progress.echo("(This may take up to one hour in case TeX Live is not installed locally yet.)")
       progress.bash(Naproche.NAPROCHE_EXE.expand.implode + " --mode=render_setup_c")
 
       for {

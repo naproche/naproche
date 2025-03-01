@@ -335,7 +335,7 @@ verifyInputText dialect mesonCache proverCache proofTexts = do
 
 renderSetup :: Program.Context -> Bool -> IO Int
 renderSetup context requireUserInteraction = do
-  putStrLn "[Warning] This is an experimental feature. Please be gentle.\n"
+  when requireUserInteraction $ putStrLn "[Warning] This is an experimental feature. Please be gentle.\n"
   formalizationsDirectoryPath <- getFormalizationsDirectoryPath context
   texDirectoryPath <- getTexDirectoryPath context
   texliveDirectoryPath <- getTexliveDirectoryPath context
@@ -372,7 +372,7 @@ renderSetup context requireUserInteraction = do
       setCurrentDirectory texliveDir
       callCommand $ "perl ./install-tl" ++
         " --scheme=full" ++
-        " --texdir=" ++ (texDirectoryPath </> texliveDir </> texliveYear) ++
+        " --texdir=" ++ (texliveDirectoryPath </> texliveYear) ++
         " --texuserdir=" ++ (texDirectoryPath </> ".texlive") ++ texliveYear ++
         " --texmfhome=" ++ (texDirectoryPath </> "texmf") ++
         " --texmfconfig=" ++ (texDirectoryPath </> ".texlive") ++ (texliveYear </> "texmf-config") ++

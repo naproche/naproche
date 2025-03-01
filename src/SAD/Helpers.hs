@@ -192,8 +192,6 @@ getTexDirectoryPath context = if Program.is_pide context
 
 -- | Get the path to the TeX Live directory.
 getTexliveDirectoryPath :: Program.Context -> IO FilePath
-getTexliveDirectoryPath context = if Program.is_pide context
-   then make_string <$> getenv (make_bytes "NAPROCHE_TEX")
-   else do
-        naprocheDirectoryPath <- getNaprocheDirectoryPath context
-        return $ naprocheDirectoryPath </> "tex" </> "texlive"
+getTexliveDirectoryPath context = do
+    texDirectoryPath <- getTexDirectoryPath context
+    return $ texDirectoryPath </> "texlive"
