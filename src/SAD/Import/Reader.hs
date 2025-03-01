@@ -28,10 +28,10 @@ import SAD.Parser.FTL.Token qualified as FTL
 import SAD.Parser.TEX.Token qualified as TEX
 import SAD.Parser.Token (Token, noTokens)
 import SAD.Core.Message qualified as Message
-import SAD.Helpers (failWithMessage)
+import SAD.Helpers (failWithMessage, getFormalizationsDirectoryPath)
 
 import Isabelle.File qualified as File
-import Isabelle.Library (make_bytes, getenv, make_string)
+import Isabelle.Library (make_bytes)
 import Isabelle.Position as Position
 import Isabelle.Bytes (Bytes)
 
@@ -44,7 +44,7 @@ import Naproche.Program qualified as Program
 readProofText :: ParserKind -> [ProofText] -> IO [ProofText]
 readProofText dialect text0 = do
   context <- Program.thread_context
-  pathToLibrary <- getPathToLibrary
+  pathToLibrary <- getFormalizationsDirectoryPath context
   (text, reports) <- reader 0 dialect pathToLibrary [] [initState context noTokens] text0
   when (Program.is_pide context) $ Message.reports reports
   return text
@@ -208,12 +208,4 @@ parseState state =
 initState :: Program.Context -> [Token] -> State FState
 initState context tokens = State (initFState context) tokens Ftl Position.none
 
--- | Get the path to the formalizations library.
-getPathToLibrary :: IO FilePath
-getPathToLibrary = make_string <$> getenv libraryEnvVar
 
--- | The name of the environment variable that contains the path to the
--- formalizations library.
--- **NOTE:** This name must coincide with the one given in @etc/settings@!
-libraryEnvVar :: Bytes
-libraryEnvVar = make_bytes "NAPROCHE_FORMALIZATIONS"

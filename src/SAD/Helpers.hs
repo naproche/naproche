@@ -23,12 +23,24 @@ module SAD.Helpers (
   parensIf,
 
   failureMessage,
-  failWithMessage
+  failWithMessage,
+
+  getNaprocheDirectoryPath,
+  getFormalizationsDirectoryPath,
+  getTexDirectoryPath,
+  getTexliveDirectoryPath
 ) where
 
 import Control.Arrow
 import Data.Function
 import Data.Char qualified as Char
+import System.Environment (getExecutablePath)
+import Data.List.Extra (dropEnd)
+import System.FilePath
+
+import Naproche.Program qualified as Program
+
+import Isabelle.Library (make_bytes, getenv, make_string)
 
 
 -- | Returns @False@ if the list is empty and @True@ otherwise.
@@ -148,3 +160,40 @@ failureMessage functionId message = functionId ++ ": " ++ message ++
 
 failWithMessage :: String -> String -> a
 failWithMessage functionId message = error $ failureMessage functionId message
+
+
+-- *
+
+-- | Get the path to the naproche directory.
+getNaprocheDirectoryPath :: Program.Context -> IO FilePath
+getNaprocheDirectoryPath context = if Program.is_pide context
+   then make_string <$> getenv (make_bytes "NAPROCHE_HOME")
+   else do
+    executablePath <- getExecutablePath
+    let executablePathComps = splitPath executablePath -- e.g. ".../naproche/x86_64-linux/Naproche"
+        naprocheHomePathComps = dropEnd 2 executablePathComps
+    return $ joinPath naprocheHomePathComps
+
+-- | Get the path to the formalizations directory.
+getFormalizationsDirectoryPath :: Program.Context -> IO FilePath
+getFormalizationsDirectoryPath context = if Program.is_pide context
+   then make_string <$> getenv (make_bytes "NAPROCHE_FORMALIZATIONS")
+   else do
+        naprocheDirectoryPath <- getNaprocheDirectoryPath context
+        return $ naprocheDirectoryPath </> "math"
+
+-- | Get the path to the TeX directory.
+getTexDirectoryPath :: Program.Context -> IO FilePath
+getTexDirectoryPath context = if Program.is_pide context
+   then make_string <$> getenv (make_bytes "NAPROCHE_TEX")
+   else do
+        naprocheDirectoryPath <- getNaprocheDirectoryPath context
+        return $ naprocheDirectoryPath </> "tex"
+
+-- | Get the path to the TeX Live directory.
+getTexliveDirectoryPath :: Program.Context -> IO FilePath
+getTexliveDirectoryPath context = if Program.is_pide context
+   then make_string <$> getenv (make_bytes "NAPROCHE_TEX")
+   else do
+        naprocheDirectoryPath <- getNaprocheDirectoryPath context
+        return $ naprocheDirectoryPath </> "tex" </> "texlive"

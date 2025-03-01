@@ -46,6 +46,7 @@ dependencies:
 - ftlex
 - extra
 - filepath
+- directory
 
 default-extensions:
   - GeneralizedNewtypeDeriving

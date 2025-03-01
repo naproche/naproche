@@ -3,7 +3,7 @@
 -- Copyright   : (c) 2001 - 2008, Andrei Paskevich,
 --               (c) 2017 - 2018, Steffen Frerix,
 --               (c) 2018, Makarius Wenzel
---               (c) 2024, Marcel Schütz
+--               (c) 2024 - 2025, Marcel Schütz
 -- License     : GPL-3
 --
 -- Main application entry point: Terminal or PIDE mode.
@@ -18,12 +18,16 @@ import Control.Monad (unless, when)
 import Data.Time (addUTCTime, getCurrentTime, diffUTCTime)
 import Data.Maybe (mapMaybe)
 import Data.List.Split (wordsBy)
+import Data.List (isPrefixOf)
+import Data.List.Extra (takeEnd)
 import Control.Exception qualified as Exception
 import Control.Exception (catch)
 import System.Console.GetOpt qualified as GetOpt
 import System.Environment qualified as Environment
 import System.IO
 import System.FilePath
+import System.Directory
+import System.Process (callCommand)
 import Network.Socket (Socket)
 
 import SAD.Prove.MESON qualified as MESON
@@ -35,6 +39,7 @@ import SAD.Parser.TEX.Lexer qualified as TEX
 import SAD.Parser.FTL.Token qualified as FTL
 import SAD.Parser.TEX.Token qualified as TEX
 import SAD.Parser.Token (renderTokens)
+import SAD.Helpers (getFormalizationsDirectoryPath, getTexDirectoryPath, getTexliveDirectoryPath)
 
 import Isabelle.Bytes qualified as Bytes
 import Isabelle.Bytes (Bytes)
@@ -85,53 +90,68 @@ mainTerminal initInstrs nonInstrArgs = do
       -- Turn the initial instructions into proof texts:
       let locatedInitInstrs = reverse $ map (Position.none,) initInstrs
           initInstrProofTexts = map (uncurry ProofTextInstr) locatedInitInstrs
+          mode = getInstr modeParam initInstrs
       -- Get the input text (either via a given file path or if no file path is
       -- provided via the stdin stream) as a proof text:
-      (dialect, inputText) <- case nonInstrArgs of
-        -- If a single non-instruction command line argument is given, regard it
-        -- as the path to the input text file and determine the ForTheL dialect
-        -- of its contents via its file name extension:
-        [filePath] -> do
-          let fileNameExteisionStr = takeExtensions filePath
-              fileNameExtensions = wordsBy isExtSeparator fileNameExteisionStr
-          let dialect = case reverse fileNameExtensions of
-                "ftl" : _ -> Ftl
-                "tex" : "ftl" : _ -> Tex
-                _ -> error $ "Invalid file name extension: " ++ fileNameExteisionStr
-          inputText <- make_bytes <$> File.read filePath
-          return (dialect, inputText)
-        -- If no non-instruction command line argument is given, regard the
-        -- content of the stdin stream as the input text. Determind the ForTheL
-        -- dialect of the text by whether the @tex@ flag is set in the command
-        -- line arguments or not.
-        [] -> do
-          let tex = getInstr texParam initInstrs
-              dialect = if tex then Tex else Ftl
-              dialectStr = case dialect of
-                Tex -> "TEX"
-                Ftl -> "FTL"
-          hSetBuffering stdout LineBuffering
-          putStrLn $ "Enter a ForTheL text (in the " ++ dialectStr ++ " dialect)."
-            ++ " Type CTRL+D to finish your input.\n"
-          inputText <- make_bytes <$> getContents'
-          putStr "\n"
-          return (dialect, inputText)
-        -- If more than one non-instruction command line arguments are given,
-        -- throw an error:
-        _ -> error "More than one file argument"
+      (dialect, inputText, mbInputPath) <- case mode of
+        -- In "render_setup" or "render_setup_c" mode we do not need any other
+        -- argument and in particular do not want to open the text input
+        -- interface.
+        "render_setup" -> return (Ftl, "", Nothing)
+        "render_setup_c" -> return (Ftl, "", Nothing)
+        _ -> do
+          case nonInstrArgs of
+            -- If a single non-instruction command line argument is given, regard it
+            -- as the path to the input text file and determine the ForTheL dialect
+            -- of its contents via its file name extension:
+            [filePath] -> do
+              let fileNameExteisionStr = takeExtensions filePath
+                  fileNameExtensions = wordsBy isExtSeparator fileNameExteisionStr
+              let dialect = case reverse fileNameExtensions of
+                    "ftl" : _ -> Ftl
+                    "tex" : "ftl" : _ -> Tex
+                    _ -> error $ "Invalid file name extension: " ++ fileNameExteisionStr
+              inputText <- make_bytes <$> File.read filePath
+              return (dialect, inputText, Just filePath)
+            -- If no non-instruction command line argument is given, regard the
+            -- content of the stdin stream as the input text. Determind the ForTheL
+            -- dialect of the text by whether the @tex@ flag is set in the command
+            -- line arguments or not.
+            [] -> do
+              let tex = getInstr texParam initInstrs
+                  dialect = if tex then Tex else Ftl
+                  dialectStr = case dialect of
+                    Tex -> "TEX"
+                    Ftl -> "FTL"
+              hSetBuffering stdout LineBuffering
+              putStrLn $ "Enter a ForTheL text (in the " ++ dialectStr ++ " dialect)."
+                ++ " Type CTRL+D to finish your input.\n"
+              inputText <- make_bytes <$> getContents'
+              putStr "\n"
+              return (dialect, inputText, Nothing)
+            -- If more than one non-instruction command line arguments are given,
+            -- throw an error:
+            _ -> error "More than one file argument"
       -- Append the input text proof text to the instruction proof texts:
       let inputTextProofTexts = [ProofTextInstr Position.none $ GetText inputText]
           proofTexts = initInstrProofTexts ++ inputTextProofTexts
       -- Verify the input text:
       Program.init_console
+      context <- Program.thread_context
       resultCode <- do
-        let mode = getInstr modeParam initInstrs
         (case mode of
           "lex" -> lexInputText dialect inputText
           "tokenize" -> tokenizeInputText dialect inputText
           "translate" -> translateInputText dialect proofTexts
           "verify" -> verifyInputText dialect mesonCache proverCache proofTexts
-          modeArg -> error $ "Invalid mode: " ++ make_string modeArg)
+          "render" -> case mbInputPath of
+            Nothing -> putStrLn "Unable to render input text: No input file given." >> return 1
+            Just inputPath -> case dialect of
+              Ftl -> putStrLn "Unable to render input text: No \".ftl.tex\" file given." >> return 1
+              Tex -> renderInputFile context inputPath
+          "render_setup" -> renderSetup context True    -- To be used by a (human) user
+          "render_setup_c" -> renderSetup context False -- To be used by @isabelle naproche_component -P@
+          modeArg -> putStrLn ("Invalid mode: " ++ make_string modeArg) >> return 1)
         `catch` (\Exception.UserInterrupt -> do
           Program.exit_thread
           Console.stderr ("Interrupt" :: String)
@@ -312,6 +332,126 @@ verifyInputText dialect mesonCache proverCache proofTexts = do
   return $ if success
     then 0
     else 1
+
+renderSetup :: Program.Context -> Bool -> IO Int
+renderSetup context requireUserInteraction = do
+  putStrLn "[Warning] This is an experimental feature. Please be gentle.\n"
+  formalizationsDirectoryPath <- getFormalizationsDirectoryPath context
+  texDirectoryPath <- getTexDirectoryPath context
+  texliveDirectoryPath <- getTexliveDirectoryPath context
+  texDirectoryExists <- doesDirectoryExist texDirectoryPath
+  unless texDirectoryExists $ createDirectory texDirectoryPath
+  texliveDirectoryExists <- doesDirectoryExist texliveDirectoryPath
+  unless texliveDirectoryExists (createDirectory texliveDirectoryPath)
+  texDirContent <- listDirectory texliveDirectoryPath
+  when (null texDirContent) (removeDirectory texliveDirectoryPath)
+  doInstall <- if requireUserInteraction
+    then do
+      putStrLn "[Info] No local TeX Live installation found.\n"
+      putStrLn "Do you want to install TeX Live locally now?"
+      putStrLn "(This will not interfere with any existing installation of TeX"
+      putStrLn "Live on your system, but the installation may take a while and"
+      putStrLn "will occupy about 8.3 GiB of disk space -- if you do not have"
+      putStrLn "that much disk space available, do not continue!)"
+      putStr "(y/N) "
+      hFlush stdout
+      userInput <- getLine
+      case userInput of
+        "y" -> return True
+        _ -> return False
+    else return True
+  if doInstall
+    then do
+      createDirectory texliveDirectoryPath
+      setCurrentDirectory texDirectoryPath
+      callCommand "wget https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz"
+      callCommand "zcat < install-tl-unx.tar.gz | tar xf -"
+      texDirContent <- listDirectory texDirectoryPath
+      let texliveDir = head $ filter ("install-tl-20" `isPrefixOf`) texDirContent
+      let texliveYear = take 4 $ takeEnd 8 texliveDir -- install-tl-YYYYMMDD ~> YYYY
+      setCurrentDirectory texliveDir
+      callCommand $ "perl ./install-tl" ++
+        " --scheme=full" ++
+        " --texdir=" ++ (texDirectoryPath </> texliveDir </> texliveYear) ++
+        " --texuserdir=" ++ (texDirectoryPath </> ".texlive") ++ texliveYear ++
+        " --texmfhome=" ++ (texDirectoryPath </> "texmf") ++
+        " --texmfconfig=" ++ (texDirectoryPath </> ".texlive") ++ (texliveYear </> "texmf-config") ++
+        " --texmfvar=" ++ (texDirectoryPath </> ".texlive") ++ (texliveYear </> "texmf-var") ++
+        " --no-interaction"
+      return 0
+    else return 0
+
+renderInputFile :: Program.Context -> FilePath -> IO Int
+renderInputFile context inputPath = do
+  putStrLn "[Warning] This is an experimental feature. Please be gentle.\n"
+  formalizationsDirectoryPath <- getFormalizationsDirectoryPath context
+  texDirectoryPath <- getTexDirectoryPath context
+  texliveDirectoryPath <- getTexliveDirectoryPath context
+
+  -- Check whether TeX Live is already installed in the Naproche repository.
+  -- If not, install it.
+  texDirectoryExists <- doesDirectoryExist texDirectoryPath
+  unless texDirectoryExists $ createDirectory texDirectoryPath
+  texliveDirectoryExists <- doesDirectoryExist texliveDirectoryPath
+  mbTexliveDir <- if texliveDirectoryExists
+    then do
+      texDirContent <- listDirectory texliveDirectoryPath
+      if null texDirContent
+        then do
+          removeDirectory texliveDirectoryPath
+          putStrLn "[Error] No local TeX Live installation found.\n"
+          putStrLn "        (Consider to run \"Naproche --render_setup\" to install"
+          putStrLn "        it locally.)"
+          Console.exit 1
+          return Nothing
+        else do
+          let texliveYear = maximum texDirContent
+          return . Just $ texliveDirectoryPath </> texliveYear
+    else do
+      putStrLn "[Error] No local TeX Live installation found.\n"
+      putStrLn "        (Consider to run \"Naproche --render_setup\" to install"
+      putStrLn "        it locally.)"
+      Console.exit 1
+      return Nothing
+  case mbTexliveDir of
+    Nothing -> return 1
+    Just texliveDir -> do
+      texliveBinDir <- head <$> listDirectory (texliveDir </> "bin")
+
+      -- Paths to pdflatex and bibtex:
+      let pdflatexBin = texliveDir </> "bin" </> texliveBinDir </> "pdflatex"
+          bibtexBin = texliveDir </> "bin" </> texliveBinDir </> "bibtex"
+      putStrLn $ "[Info] Path to pdflatex:   " ++ pdflatexBin
+      putStrLn $ "[Info] Path to bibtex:     " ++ bibtexBin
+
+      -- MATHHUB and TEXINPUTS variables.
+      -- Depending on whether @Naproche --mode=render@ is called by
+      -- @isabelle naproche_component -P@ or not, we must adapt the
+      -- @MATHHUB@ variable accordingly: In the former case we must set it to
+      -- @<naproche component directory>/math_pdf@ and in the latter one to
+      -- @naproche/math@. If the @NAPROCHECOMP@ variable is set (which is done by
+      -- @isabelle naproche_component -P@), we are in the former case, where its
+      -- content is the absolute path to the directory
+      -- @<naproche component directory>@.
+      mbNaprochecompVar <- Environment.lookupEnv "NAPROCHECOMP"
+      let mathhubVar = case mbNaprochecompVar of
+            Nothing -> formalizationsDirectoryPath
+            Just componentDir -> componentDir </> "math_pdf"
+          texinputsVar = formalizationsDirectoryPath </> "latex" </> "lib//;" 
+      putStrLn $ "[Info] MATHHUB variable:   " ++ mathhubVar
+      putStrLn $ "[Info] TEXINPUTS variable: " ++ texinputsVar
+
+      -- Render the input file as PDF:
+      let inputDir = takeDirectory inputPath
+          inputFile = takeFileName inputPath
+          inputFileBase = takeBaseName inputFile
+      setCurrentDirectory inputDir
+      callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_WRITESMS=true " ++ pdflatexBin ++ " " ++ inputFile
+      callCommand $ bibtexBin ++ " " ++ inputFileBase ++ " | true" -- succeed even if bibtex fails
+      callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
+      callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
+
+      return 0
 
 
 -- * Arguments

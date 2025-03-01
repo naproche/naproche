@@ -324,6 +324,13 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
     - `tokenize`: Naproche tries to tokenize the input text.
     - `translate`: Naproche tries to translate the input text to TPTP.
     - `verify`: Naproch tries to verify the input text.
+    - `render`: Render the input text (if given as a file) with pdflatex and
+      bibtex to PDF. (Used by `isabelle naproche_component -P`.)
+    - `render_setup`: Install TeX Live locally to `tex/texlive` which is then
+      used in the `render` mode.
+    - `render_setup_c`: The same as `render_setup`, but works without human
+      interaction. (Used by `isabelle naproche_component -P`; not intended to
+      be used by human users.)
     
     If the `mode` parameter is not specified, Naproche behaves as if it were set
     to `verify`.
