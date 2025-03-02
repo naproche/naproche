@@ -24,8 +24,6 @@ math
 │
 ├── examples
 │   │
-│   ├── geometry ........................ beginnings of Tarski geometry
-│   │
 │   ├── lang
 │   │   │
 │   │   ├── everyday-ontology ........... a simple ontology of notions used in every-day language
@@ -59,8 +57,6 @@ math
 │   │   ├── checkerboard ................ the mutilated checkerboard
 │   │   │
 │   │   └── dwarfs ...................... a "hat puzzle"
-│   │
-│   ├── 100_theorems .................... some of Wiedijk's "100 Theorems"
 │   │
 │   ├── cantor-schroeder-bernstein ...... classical result in cardinality theory
 │   │
