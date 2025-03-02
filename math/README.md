@@ -17,69 +17,103 @@ explanations and even graphics. The examples include single files as well as
 folders of formalizations that are interlinked by "`read`" commands. The
 spectrum reaches from recreational puzzles to undergraduate-level theorems:
 
-* `geometry` – beginnings of Tarski geometry
-
-* `100_theorems` – some of Wiedijk's "100 Theorems"
-
-* `agatha` – a logic puzzle set in "Dreadsbury Mansion"
-
-* `barber-paradox` – the barber paradox
-
-* `burali-forti-paradox` – Burali-Forti's paradox
-
-* `cantor` – Cantor diagonal argument
-
-* `cantor-paradox` – Cantor's paradoxes
-
-* `cantor-schroeder-bernstein` – classical result in cardinality theory
-
-* `checkerboard` – the mutilated checkerboard
-
-* `chinese` – Chinese remainder theorem
-
-* `curry-paradox` – Curry's paradox
-
-* `drinker-paradox` – the drinker paradox
-
-* `dwarfs` – a "hat puzzle"
-
-* `euclid_primes` – classical proof of infinity of primes
-
-* `furstenberg` – topological proof of infinity of primes
-
-* `gauss` – sum of the first *n* positive integers
-
-* `group.lean` – Naproche rendering of a Lean file on groups
-
-* `hausdorff` – theorem on the regularity of successor cardinals
-
-* `hilbert-calculus` – proving derivations in a Hilbert calculus
-
-* `hilbert-paradox` – Hilbert's paradox
-
-* `koenig` – theorem about sequences of cardinals
-
-* `maximum_modulus` – theorem from complex analysis
-
-* `newman` – Newman's theorem on rewriting systems
-
-* `numbers` – introduction of number systems for Rudin's Principles of Mathematical Analysis
-
-* `preliminaries` – basic theory of classes and sets
-
-* `prime_no_square` – irrationality of square roots
-
-* `russell-myhill-paradox` – the Russell-Myhill paradox
-
-* `russell-paradox` – Russell's paradox
-
-* `tarski` – Tarski's fixpoint theorem for lattices
-
-* `transfinite-recursion` – the transfinite recursion theorem
-
-* `TUTORIAL` – Naproche tutorial
-
-* `zermelo` – Zermelo's well-ordering theorem
+```
+math
+│
+├── TUTORIAL ............................ Naproche tutorial
+│
+├── examples
+│   │
+│   ├── geometry ........................ beginnings of Tarski geometry
+│   │
+│   ├── lang
+│   │   │
+│   │   ├── everyday-ontology ........... a simple ontology of notions used in every-day language
+│   │   │
+│   │   ├── macros ...................... additional macros for symbols that are hard-coded into Naproche
+│   │   │
+│   │   └── vocabulary .................. singular/plural pairs of terms used in Naproche formalizations
+│   │
+│   ├── paradoxes
+│   │   │
+│   │   ├── barber-paradox .............. the barber paradox
+│   │   │
+│   │   ├── burali-forti-paradox ........ Burali-Forti's paradox
+│   │   │
+│   │   ├── cantor-paradox .............. Cantor's paradoxes
+│   │   │
+│   │   ├── curry-paradox ............... Curry's paradox
+│   │   │
+│   │   ├── drinker-paradox ............. the drinker paradox
+│   │   │
+│   │   ├── hilbert-paradox ............. Hilbert's paradox
+│   │   │
+│   │   ├── russell-myhill-paradox ...... the Russell-Myhill paradox
+│   │   │
+│   │   └── russell-paradox ............. Russell's paradox
+│   │
+│   ├── puzzles
+│   │   │
+│   │   ├── agatha ...................... a logic puzzle set in "Dreadsbury Mansion"
+│   │   │
+│   │   ├── checkerboard ................ the mutilated checkerboard
+│   │   │
+│   │   └── dwarfs ...................... a "hat puzzle"
+│   │
+│   ├── 100_theorems .................... some of Wiedijk's "100 Theorems"
+│   │
+│   ├── cantor-schroeder-bernstein ...... classical result in cardinality theory
+│   │
+│   ├── cantor .......................... Cantor's diagonal argument
+│   │
+│   ├── chinese ......................... Chinese remainder theorem
+│   │
+│   ├── classes ......................... basic theory of classes and sets
+│   │
+│   ├── euclid_primes ................... classical proof of infinity of primes
+│   │
+│   ├── furstenberg ..................... Furstenberg's topological proof of infinity of primes
+│   │
+│   ├── gauss ........................... sum of the first *n* positive integers
+│   │
+│   ├── group.lean ...................... Naproche rendering of a Lean file on groups
+│   │
+│   ├── hausdorff ....................... theorem on the regularity of successor cardinals
+│   │
+│   ├── hilbert-calculus ................ proving derivations in a Hilbert calculus
+│   │
+│   ├── koenig .......................... Kőnig's theorem about sequences of cardinals
+│   │
+│   ├── maximum_modulus ................. theorem from complex analysis
+│   │
+│   ├── newman .......................... Newman's theorem on rewriting systems
+│   │
+│   ├── numbers ......................... introduction of number systems for Rudin's Principles of Mathematical Analysis
+│   │
+│   ├── perfectoidrings ................. perfectoid rings
+│   │
+│   ├── preliminaries ................... basic theory of classes and sets
+│   │
+│   ├── prime_no_square ................. irrationality of square roots
+│   │
+│   ├── tarski .......................... Tarski's fixpoint theorem for lattices
+│   │
+│   ├── transfinite-recursion ........... the transfinite recursion theorem
+│   │
+│   └── zermelo ......................... Zermelo's well-ordering theorem
+│
+├── latex ............................... LaTeX style and bibliography files used in Naproche formalizations
+│
+└── libraries
+    │
+    ├── arithmetics ..................... basic notions and results concerning natural numbers
+    │
+    ├── foundations ..................... basic notions and results concerning sets and functions
+    │
+    ├── lists ........................... basic notions and results concerning lists
+    │
+    └── set-theory ...................... basic notions and results concerning ordinal and cardinal numbers
+```
 
 The further development of Naproche will focus on the `.ftl.tex` format in order
 to build readable libraries of computer-verifiable mathematics. The classical
