@@ -9,10 +9,10 @@
 \usepackage[backend=bibtex]{biblatex}
 \addmhbibresource[latex]{bibliography}
 
-\title{A Natural Language Formalization of Perfectoid Rings in 
-\Naproche}
+\title{A Natural Language Formalization of Perfectoid Rings in \Naproche}
 \author{Peter Koepke\\
 University of Bonn}
+\date{2025}
 
 
 \newcommand{\val}[2]{#1_{#2}}
@@ -25,32 +25,31 @@ University of Bonn}
 \newcommand{\FinSet}[3]{\{#1_{#2},\dots,#1_{#3}\}}
 \newcommand{\Prod}[3]{\prod^{#3}_{i=#2} {#1}_i}
 
-
-\newcommand{\mycomment}[1]{}
-
 \begin{document}
 
 \maketitle
 
-\abstract{The formalization of P. Scholze's \emph{perfectoid spaces} 
-\cite{Scholze2012}
-in the Lean proof assistant \cite{Lean}
-by K. Buzzard, J. Commelin, and P. Massot \cite{BuzzardCommelinMassot2019} is a milestone in bringing 
-formal mathematics closer towards leading research-level mathematics. 
-The Lean formalization, however, is not ``readable'' by mathematicians, 
-since Lean resembles - and indeed is - a programming language 
-for building proofs from proof commands.
+\begin{abstract}
+   The formalization of P. Scholze's \emph{perfectoid spaces} 
+   \cite{Scholze2012}
+   in the Lean proof assistant \cite{Lean}
+   by K. Buzzard, J. Commelin, and P. Massot \cite{BuzzardCommelinMassot2019} is a milestone in bringing 
+   formal mathematics closer towards leading research-level mathematics. 
+   The Lean formalization, however, is not ``readable'' by mathematicians, 
+   since Lean resembles -- and indeed is -- a programming language 
+   for building proofs from proof commands.
 
-The \Naproche proof system
-\cite{DeLonKoepkeLorenzenMartiSchuetzWenzel2021}, in contrast, accepts and checks 
-readable texts written in a 
-(controlled) natural mathematical language, with natural proof structurings. 
-In this article we present a \Naproche formalization of perfectoid \emph{rings} 
-which are main components of perfectoid spaces. We partly follow the structure 
-of the mentioned Lean formalization. Our formalization can be loaded 
-into Isabelle 2024 
-(see \cite{Isabelle}) which then automatically calls the \Naproche proof checking 
-component of the Isabelle distribution.}
+   The \Naproche proof system
+   \cite{DeLonKoepkeLorenzenMartiSchuetzWenzel2021}, in contrast, accepts and checks 
+   readable texts written in a 
+   (controlled) natural mathematical language, with natural proof structurings. 
+   In this article we present a \Naproche formalization of perfectoid \emph{rings} 
+   which are main components of perfectoid spaces. We partly follow the structure 
+   of the mentioned Lean formalization. Our formalization can be loaded 
+   into Isabelle 2025
+   (see \cite{Isabelle}) which then automatically calls the \Naproche proof checking 
+   component of the Isabelle distribution.
+\end{abstract}
 
 \newpage
 \tableofcontents
