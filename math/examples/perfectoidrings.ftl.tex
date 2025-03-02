@@ -1,0 +1,3546 @@
+\documentclass[11pt]{article}
+\usepackage[english]{babel}
+
+\usepackage{ifthen}
+\usepackage{xstring}
+
+\usepackage{naproche}
+
+\usepackage[backend=bibtex]{biblatex}
+\addmhbibresource[latex]{bibliography}
+
+\title{A Natural Language Formalization of Perfectoid Rings in 
+\Naproche}
+\author{Peter Koepke\\
+University of Bonn}
+
+
+\newcommand{\val}[2]{#1_{#2}}
+\newcommand{\card}[1]{\operatorname{card}(#1)}
+\newcommand{\powers}[2]{\{{#1}^{n,#2} \mid n \in \mathbb{N}\}}
+\newcommand{\poww}[3]{\{{#1}^{i} \cdot {#2}^{j} \mid i,j \in \mathbb{N}\}}
+\newcommand{\Powers}[2]{\{{#1}^{n,#2} \mid n \in \mathbb{N}\}}
+\newcommand{\neigh}[2]{N^{#2}_{#1}}
+\newcommand{\Seq}[2]{\{#1,\dots,#2\}}
+\newcommand{\FinSet}[3]{\{#1_{#2},\dots,#1_{#3}\}}
+\newcommand{\Prod}[3]{\prod^{#3}_{i=#2} {#1}_i}
+
+
+\newcommand{\mycomment}[1]{}
+
+\begin{document}
+
+\maketitle
+
+\abstract{The formalization of P. Scholze's \emph{perfectoid spaces} 
+\cite{Scholze2012}
+in the Lean proof assistant \cite{Lean}
+by K. Buzzard, J. Commelin, and P. Massot \cite{BuzzardCommelinMassot2019} is a milestone in bringing 
+formal mathematics closer towards leading research-level mathematics. 
+The Lean formalization, however, is not ``readable'' by mathematicians, 
+since Lean resembles - and indeed is - a programming language 
+for building proofs from proof commands.
+
+The \Naproche proof system
+\cite{DeLonKoepkeLorenzenMartiSchuetzWenzel2021}, in contrast, accepts and checks 
+readable texts written in a 
+(controlled) natural mathematical language, with natural proof structurings. 
+In this article we present a \Naproche formalization of perfectoid \emph{rings} 
+which are main components of perfectoid spaces. We partly follow the structure 
+of the mentioned Lean formalization. Our formalization can be loaded 
+into Isabelle 2024 
+(see \cite{Isabelle}) which then automatically calls the \Naproche proof checking 
+component of the Isabelle distribution.}
+
+\newpage
+\tableofcontents
+\newpage
+
+\section*{Introduction}
+
+We define \textit{perfectoid rings} in the proof assistant \Naproche \cite{DeLonKoepkeLorenzenMartiSchuetzWenzel2021} 
+with the intention to closely approximate the mathematical 
+\textit{language} 
+of Definition 3.1 of
+P. Scholze's \cite{Scholze2022}:
+\begin{quote}
+\textbf{Definition 3.1} A Tate ring $R$ is perfectoid if $R$ is complete, uniform,
+i.e. $R^o \subset R$ is bounded, and there exists a
+pseudo-uniformizer $\varpi \in R$ such that $\varpi^p | p$ in $R^o$ and the
+Frobenius map
+\[\Phi: R^o/\varpi \rightarrow R^o/\varpi^p : x \mapsto x^p\]
+is an isomorphism.
+\end{quote}
+Such a definition requires a long chain of intermediate definitions
+and propositions, starting from first principles.
+
+\Naproche (for Natural Proof Checking) uses the (extendible) 
+controlled natural language ForTheL (for Formula Theory Language)
+as its
+input language (see also \cite{Paskevich2007}). 
+\Naproche can be viewed as a system that
+transforms ForTheL statements into proof tasks that are sent out
+to an external automated theorem prover (ATP). In this article we
+mostly use the E first-order prover \cite{Eprover} but also Vampire \cite{Vampire}.
+A ForTheL text is correct if
+all generated proof tasks can be discharged automatically. 
+
+Our text is logically self-contained; theories 
+about sets, functions, natural numbers, groups, rings, and topology are
+developed as far as required for the final definitions. 
+Ideally foundational theories would be provided by some library
+but the existing libraries and library mechanisms in \Naproche 
+are still rudimentary.
+
+We make
+several simplifying assumptions:
+all groups will be commutative and written additively;
+rings will be commutative containing a \textit{one}.
+We circumvent some ``higher'' constructions like quotients of rings,
+and express a property like
+\[\Phi : R^o / \varpi \cong R^o / \varpi^{p}\]
+via congruences mod $\varpi$ and mod $\varpi^{p}$, respectivly.
+
+
+This text is written as a file 
+\texttt{perfectoidring.ftl.tex}
+in the \LaTeX{} dialect of \Naproche and
+typeset by pdf-\LaTeX. The formal parts are printed on a grey background. 
+Everything else
+is interpreted as ``literate'' commentary that is not subject to the 
+logical checking by the system.
+\texttt{perfectoidring.ftl.tex}
+can be checked in the \Naproche program by opening the file in Isabelle
+\cite{Isabelle}.
+This is a major computational task: each statement generates several
+first-order proof tasks each of which can take several seconds of
+ATP proving. To check the whole document may require half an hour, 
+depending on the available processing power.
+
+\part{Preliminaries}
+
+Our formalization takes place in a  standard mathematical environment. 
+\Naproche supports usual mathematical arguments whilst avoiding explicit and tedious foundational
+subleties. Nevertheless, \Naproche is a formal system and the logical foundations
+have to be set up unambiguously and consistently.
+
+Initially the environment contains 
+mathematical \textit{objects} and collections of objects, called \textit{classes}. Classes can
+be formed as abstraction terms $\{x\mid\phi\}$ where $\phi$ is a mathematical
+statement about the variable $x$. Classes which are objects themselves are 
+\textit{sets}. Similarly, \textit{maps} send object to objects, and a \textit{function}
+is a map which is an object.
+Some basic theory of sets and functions is built into \Naproche. Further properties
+are postulated axiomatically in this section. Later we shall introduce more types 
+of objects like numbers or structures 
+by \textbf{Signature}, \textbf{Definition} and \textbf{Axiom} commands.
+
+We begin by expanding the ForTheL input language by some
+singular/plural pairs (vocabulary) and some alternative phrases 
+for mathematical properties (macros). These are imported from
+library files.
+
+
+\begin{forthel}
+
+
+
+[memorylimit 8000]
+
+
+[read examples/lang/vocabulary.ftl.tex]
+
+[read examples/lang/macros.ftl.tex]
+
+\end{forthel}
+
+\section{Sets and Functions}
+Our foundations correspond to the system of Kelley-Morse set theory (KM), 
+but without the axiom of choice. The axiom of infinity will be stated after
+the introduction of natural numbers.
+New notions and axioms in
+this article are \textit{conservative} over classical Kelley-Morse set theory and 
+could in principle be reduced to definitions and propositions within
+KM, as is usual when developing mathematics in set theories.
+
+\subsection{Axioms}
+
+In this article, axioms are postulated for various reasons. Set-theoretical
+axioms provide the general mathematical background. Arithmetical axioms 
+characterize 
+number systems which are not embedded into set theory. This correponds to
+widespread intuitions and also focusses proof search on the domains under
+consideration. Some axioms conveniently state facts that could be 
+proved with some effort outside the core development of the article. 
+Other axioms are used to define classes of structures like groups or 
+topological spaces. Finally we use axioms in inductive definitions
+of data types and functions, although this should eventually been done
+with better definition mechanisms. 
+
+The following axioms express that certain ``small'' classes of axioms are sets.
+
+\newcommand{\sing}[1]{\{#1\}}
+\newcommand{\unp}[2]{\{#1,#2\}}
+
+\begin{forthel}
+
+\begin{proposition} Every set is a class. \end{proposition}
+
+Let $u,v,w$ denote mathematical objects.
+
+\begin{definition} $\emptyset = \{u | u \neq u\}$.
+\end{definition}
+Let the empty set denote $\emptyset$.
+
+\begin{axiom}[title = Set Existence] $\emptyset$ is a set. \end{axiom}
+
+\begin{definition}
+$\sing{u} = \{v | v = u\}$.
+\end{definition}
+Let the singleton of $u$ denote $\sing{u}$.
+
+
+\begin{definition}
+$\unp{u}{v} = \{w | w = u$ or $w = v\}$.
+\end{definition}
+Let the unordered pair of $u$ and $v$ denote $\unp{u}{v}$.
+
+\begin{axiom}[title = Pairs]
+$\unp{u}{v}$ is a set.
+\end{axiom}
+
+\begin{lemma}
+$\sing{u}$ is a set.
+\end{lemma}
+
+Let $X,Y,Z$ denote sets.
+
+\begin{definition} Assume that every element of $Z$ is a set.
+$\bigcup Z = \{x | x \in z$ for some $z \in Z\}$.
+\end{definition}
+Let the union of $Z$ denote $\bigcup Z$.
+
+\begin{axiom}[title = Union] 
+Let $Z$ be a set such that every element of $Z$ is a set.
+Then $\bigcup Z$ is a set.
+\end{axiom}
+
+\begin{definition} Let $C$ be a class. A subset of $C$ is a set $X$ such
+that every element of $X$ is an element of $C$.
+\end{definition}
+
+Let $X \subseteq C$ stand for $X$ is a subset of $C$. 
+
+\begin{axiom}[title = Powerset] Let $X$ be a set. Let $Y$ be a class such that
+every element of $Y$ is a subset of $X$. Then $Y$ is a set.
+\end{axiom}
+
+\begin{axiom}[title = Separation]
+Let $X$ be a set. Let $Y$ be a class such that every element
+of $Y$ is an element of $X$.
+Then $Y$ is a set.
+\end{axiom}
+
+\end{forthel}
+Further strength is gained through maps and functions.
+
+\begin{forthel}
+
+\begin{proposition}
+Assume $F$ is a map and $x \in \dom(F)$.
+Then $F(x)$ is an object.
+\end{proposition}
+
+\begin{axiom}
+Assume that $F$ is a function. Then $\dom(F)$ is a set.
+\end{axiom}
+Let the domain of $F$ denote $\dom(F)$.
+
+\begin{axiom}
+Assume that $F$ is a map and $\dom(F)$ is a set.
+Then $F$ is a function.
+\end{axiom}
+
+\begin{axiom}[title = Replacement]
+Assume that $F$ is a map and $X$ is a set such that $X \subseteq \dom(F)$.
+Then there is a set $Y$ such that $Y = \{F(x) \mid x \in X\}$.
+\end{axiom}
+
+\end{forthel}
+\subsection{Miscellanous Notions and Properties}
+\begin{forthel}
+
+\begin{lemma} $\emptyset$ and $X$  are subsets of  $X$. \end{lemma}
+
+\begin{lemma} Let $Z$ be a set such that every element of $Z$ is a set.
+Let $z \in Z$. Then $z \subseteq \bigcup Z$.
+\end{lemma}
+\begin{proof}
+Let $x \in z$. Then $x \in \bigcup Z$.
+\end{proof}
+
+\begin{lemma} Let $Y$, $Z$ be sets such that every element of $Z$ 
+is a subset of $Y$. Then $\bigcup Z$ is a subset of $Y$.
+\end{lemma}
+
+\begin{definition}
+$X \cup Y = \{x | x \in X$ or $x \in Y\}$. 
+\end{definition}
+Let the union of $X$ and $Y$ denote $X \cup Y$.
+
+\begin{lemma}
+Let $X,Y \subseteq Z$. Then $X \cup Y \subseteq Z$.
+\end{lemma}
+
+\begin{definition} Let $Z$ be a set such that every element of $Z$ is a set.
+$\bigcap Z = \{x | x \in z$ for all $z \in Z\}$.
+\end{definition}
+Let the intersection of $Z$ stand for $\bigcap Z$. 
+
+\begin{definition} $X \cap Y = \{x \in X | x \in Y\}$. \end{definition}
+Let the intersection of $X$ and $Y$ denote $X \cap Y$. 
+
+\begin{lemma} $X \cap Y$ is a set. \end{lemma}
+
+\begin{definition} $X$ is nonempty iff $X \neq \emptyset$.
+\end{definition}
+
+\begin{lemma} Let $Z$ be a nonempty set such that every element of $Z$ is a set.
+Then $\bigcap Z$ is a set.
+\end{lemma}
+
+\begin{lemma} Let $Z$ be a nonempty set such that every element of $Z$
+is a set. Assume that $Y$ is a subset
+of every element of $Z$. Then $Y$ is a subset of $\bigcap Z$.
+\end{lemma}
+\begin{proof}
+Let $y$ be an element of $Y$.
+$y$ is an element of every element of $Z$.
+Thus $y$ is an element of $\bigcap Z$.
+\end{proof}
+\end{forthel}
+
+\section{Natural Numbers}
+
+We introduce the notion (or type) of natural numbers. Together with
+an induction axiom to be stated later, the natural numbers can be understood as the inductive type
+generated by $0$ and $+ 1$.
+
+In this chapter we proceed towards prime numbers and divisibility properties of 
+factorials and binomial coefficients.   
+
+\subsection{Axioms}
+
+\begin{forthel}
+
+\begin{signature}
+A natural number is a mathematical object.
+\end{signature}
+
+Let $n,m,k,l,i,j$ denote natural numbers.
+
+\begin{definition}
+$\mathbb{N}$ is the collection of natural numbers.
+\end{definition}
+
+\begin{axiom}[title = Axiom of Infinity]
+$\mathbb{N}$ is a set.
+\end{axiom}
+
+\begin{signature}
+$0$ is a natural number.
+\end{signature}
+
+Let $x$ is nonzero stand for $x \neq 0$.
+
+\begin{signature}
+$1$ is a nonzero natural number.
+\end{signature}
+
+\begin{signature}
+$m + n$ is a natural number.
+\end{signature}
+
+\begin{axiom} If $n$ is a nonzero natural number then
+$n = m + 1$ for some natural number $m$.
+\end{axiom}
+
+\end{forthel}
+
+We postulate basic arithmetic properties of $\mathbb{N}$ axiomatically,
+although they could also be proved inductively. 
+
+\begin{forthel}
+
+\begin{signature}
+$m * n$ is a natural number.
+\end{signature}
+
+\begin{axiom}
+$m + n = n + m$.
+\end{axiom}
+
+\begin{axiom}
+$(m + n) + l = m + (n + l)$.
+\end{axiom}
+
+\begin{axiom}
+$m + 0 = m = 0 + m$.
+\end{axiom}
+
+\begin{axiom}
+$m * n = n * m$.
+\end{axiom}
+
+\begin{axiom}
+$(m * n) * l = m * (n * l)$.
+\end{axiom}
+
+\begin{axiom}
+$m * 1 = m = 1 * m$.
+\end{axiom}
+
+\begin{axiom}
+$m * 0 = 0 = 0 * m$.
+\end{axiom}
+
+\begin{axiom}
+$m * (n + l) = (m * n) + (m * l)$ and
+$(n + l) * m = (n * m) + (l * m)$.
+\end{axiom}
+
+\begin{axiom}
+If $l + m = l + n$ or $m + l = n + l$ then $m = n$.
+\end{axiom}
+
+\begin{axiom}
+Assume that $l$ is nonzero.
+If $l * m = l * n$ or $m * l = n * l$ then $m = n$.
+\end{axiom}
+
+\begin{axiom}
+If $m + n = 0$ then $m = 0$ and $n = 0$.
+\end{axiom}
+
+\end{forthel}
+
+We name two more natural number:
+
+\begin{forthel}
+
+\begin{definition}
+$2 = 1 + 1$.
+\end{definition}
+
+\begin{definition}
+$3 = 2 + 1$.
+\end{definition}
+
+\end{forthel}
+
+\subsubsection{Some Equalities}
+
+Since \Naproche is weak on term-rewriting, some complex, yet trivial equalities are stated
+here for later use.
+
+\begin{forthel}
+
+\begin{lemma}
+Let $u,v,w,x,y$ be natural numbers. 
+Then $y + (u * (v * (w * x))) = y + (v * ((u * w) * x))$.
+\end{lemma}
+\begin{proof}
+$(u * (v * (w * x))) = (v * ((u * w) * x))$.
+\end{proof}
+
+\begin{lemma}
+Let $u,v,w,x,y$ be natural numbers. Then  $(u * (v * (w * x))) + y = (v * (w * (u * x))) + y$.
+\end{lemma}
+
+
+\end{forthel}
+
+
+\subsection{The Natural Order}
+
+\begin{forthel}
+
+\begin{definition}
+$m \leq n$ iff
+there exists a natural number $l$ such that $m + l = n$.
+\end{definition}
+
+Let $m < n$ stand for $m \leq n$ and $m \neq n$.
+Let $n > m$ stand for $m < n$.
+Let $n \geq m$ stand for $m \leq n$.
+
+
+\begin{definition}
+Assume that $n \leq m$.
+$m - n$ is a natural number $l$ such that $n + l  = m$.
+\end{definition}
+
+\end{forthel}
+
+The following three lemmas show that $\leq$ is a partial order:
+
+\begin{forthel}
+
+\begin{lemma}
+$m \leq m$.
+\end{lemma}
+
+\begin{lemma}
+If $m \leq n \leq m$ then $m = n$.
+\end{lemma}
+\begin{proof}
+Let $m \leq n \leq m$.
+Take natural numbers $k,l$ such that
+$n = m + k$ and $m = n + l$.
+Then $m = m + (k + l)$ and $k + l = 0$ and $k = 0$.
+Hence $m = n$.
+\end{proof}
+
+\begin{lemma}
+If $m \leq n \leq l$ then  $m \leq l$.
+\end{lemma}
+\end{forthel}
+We postulate axiomatically, that $\leq$ is a \textit{linear} order which interacts
+with the arithmetical operations.
+\begin{forthel}
+\begin{axiom}
+$m \leq n$ or $n < m$.
+\end{axiom}
+
+\begin{lemma}
+Assume that $l < n$.
+Then $m + l < m + n$ and $l + m < n + m$.
+\end{lemma}
+
+\begin{lemma}
+Assume that $m$ is nonzero and $l < n$.
+Then $m * l < m * n$ and $l * m < n * m$.
+\end{lemma}
+\end{forthel}
+
+
+\subsection{Induction}
+
+\Naproche provides an in-built binary relation
+symbol $\prec$ as a universal inductive relation: if 
+
+\begin{quote}
+at any
+point $m$ property $P$ holds at $m$ provided all
+$\prec$-predecessors of $m$ satisfy $P$ (inheritance property)
+\end{quote} 
+then 
+\begin{quote}
+$P$ holds everywhere.
+\end{quote}
+
+\Naproche has a proof tactic ``by induction [on ...]'', which 
+reduces the inductive proof goal ``$P$ holds everywhere'' 
+to proving the inheritance property for $P$.
+
+Initially, there is no specification of $\prec$.
+The induction proof method for some concrete relation 
+is made available by embedding that relation
+into $\prec$. Therefore we axiomatically embed the natural
+order into $\prec$.
+
+\begin{forthel}
+\begin{axiom}
+If $m < n$ then $m \prec n$.
+\end{axiom}
+
+Let $m$ is inductively smaller than $n$ stand for $m \prec n$.
+
+\end{forthel}
+
+\begin{forthel}
+
+\begin{lemma}
+For every natural number $n$: $n = 0$ or $1 \leq n$.
+\end{lemma}
+\begin{proof}[method = induction]
+Let $n$ be a natural number.
+Case $n = 0$. Trivial.
+
+Take $n' = n - 1$. 
+\end{proof}
+
+\begin{lemma}
+If $m \leq n+1$ then $m \leq n$ or $m = n+1$.
+\end{lemma}
+
+
+\begin{lemma}
+Let $m \neq 0$. Then $n \leq n * m$.
+\end{lemma}
+\begin{proof}
+$1 \leq m$.
+\end{proof}
+\end{forthel}
+
+Here are some intuitive facts about the numbers $0,1,2,3$:
+
+\begin{forthel}
+\begin{lemma}
+If $m \leq 0$ then $m = 0$.
+\end{lemma}
+
+\begin{lemma}
+If $m \leq 1$ then $m = 0$ or $m = 1$.
+\end{lemma}
+
+\begin{lemma}
+If $m \leq 2$ then $m = 0$ or $m = 1$ or $m = 2$.
+\end{lemma}
+
+\begin{lemma}
+$0 < 1 < 2 < 3$.
+\end{lemma}
+
+\end{forthel}
+
+
+\subsection{Division}
+
+\begin{forthel}
+
+\begin{definition}
+$n$ divides $m$ iff for some $l$: $m = n * l$.
+\end{definition}
+
+Let $x | y$ denote $x$ divides $y$.
+Let a divisor of $x$ denote a natural number that divides $x$.
+
+\begin{lemma}
+Assume $l | m | n$.
+Then $l | n$.
+\end{lemma}
+
+\begin{lemma}
+Let $l | m$ and $l | m + n$.
+Then $l | n$.
+\end{lemma}
+\begin{proof}
+Assume that $l$ is nonzero.
+Take a natural number $q$ such that $m = l * q$.
+Take a natural number $r$ such that $m + n = l * r$.
+
+Let us show that
+$q \leq r$.
+
+Proof by contradiction.
+Assume the contrary. Then $r < q$.
+$m+n = l * r < l * q = m$.
+Contradiction. qed.
+
+Take $s = r - q$.
+We have $(l * q) + (l * s) = l * r = m + n = (l * q) + n$.
+Hence $n = l * s$.
+\end{proof}
+
+\begin{lemma}
+Let $m | n \neq 0$.
+Then $m \leq n$.
+\end{lemma}
+
+\begin{definition} $n$ is even iff $2$ divides $n$.
+\end{definition}
+
+Let $n$ is odd stand for $n$ is not even.
+
+\begin{lemma}
+For all natural numbers $n$ $n$ is even or $n = (2 * m) + 1$ for some $m$.
+\end{lemma}
+\begin{proof}[method = induction]
+Let $n$ be a natural number.
+
+Case $n = 0$. Trivial.
+
+Take $n' = n - 1$.
+
+Case $n'$ is even. Take a natural number $m'$ such that $n' = 2 * m'$.
+Then $n = (2 * m) + 1$ for some $m$. qed.
+
+Take a natural number $m'$ such that $n' = (2 * m') + 1$.
+Then $n = ((2 * m') + 1) + 1 = 2 * (m' + 1)$.
+Hence $n$ is even.
+
+\end{proof}
+
+\end{forthel}
+
+
+\subsection{Primes}
+
+\begin{forthel}
+
+Let $p,d$ denote natural numbers.
+
+Let $n$ is nontrivial stand for $n \neq 0$ and $n \neq 1$.
+
+\begin{definition}
+$p$ is prime iff $p$ is nontrivial and
+for every divisor $d$ of $p$ $d = 1$ or $d = p$.
+\end{definition}
+Let a prime number stand for a natural number that is prime.
+
+\begin{lemma} $2$ is prime.
+\end{lemma}
+
+\begin{lemma}
+Every even prime number is equal to $2$.
+\end{lemma}
+
+\begin{lemma} $3$ is prime.
+\end{lemma}
+
+\begin{lemma}
+Every nontrivial $n$ has a prime divisor.
+\end{lemma}
+\begin{proof}[method = induction]
+Let $n$ be a nontrivial natural number.
+Assume that $n$ is not prime.
+Take a divisor $m$ of $n$ such that $m \neq 1$ and $m \neq n$.
+$m$ is inductively smaller than $n$.
+Every prime divisor of $m$ is a prime divisor of $n$.
+\end{proof}
+
+\end{forthel}
+
+The following states that every prime number is a 
+\textit{prime element} in the ring of integers. A proof of
+the property was carried out in another \Naproche
+formalization.
+
+\begin{forthel}
+\begin{axiom}[title = Euclids Lemma]
+Let $p$ be a prime number and $p | m * n$.
+Then $p | m$ or $p | n$. 
+\end{axiom}
+
+\end{forthel}
+
+
+\subsection{Binomial Coefficients}
+
+\newcommand{\cho}[2]{{#1 \choose #2}}
+
+We introduce factorials $n!$ and binomial coefficients
+$\cho{n}{i}$ together with some divisibility properties
+which will be used later in connection with
+Frobenius homomorphisms.
+
+\newcommand{\fac}[1]{#1 !}
+
+\begin{forthel}
+
+\begin{signature}
+$\fac{n}$ is a natural number.
+\end{signature}
+
+\begin{axiom}
+$\fac{0} = 1$.
+\end{axiom}
+
+\begin{axiom}
+$\fac{(n+1)} = (n+1) * \fac{n}$.
+\end{axiom}
+
+\begin{lemma} Let $n \neq 0$. Then $n | \fac{n}$.
+\end{lemma}
+\begin{proof}
+Take $m = n - 1$.
+Then $\fac{n} = n * \fac{m}$.
+\end{proof}
+
+\begin{lemma}
+Let $p$ be a prime number.
+For all $k$ if $k < p$ then $p$ does not divide $\fac{k}$.
+\end{lemma}
+\begin{proof}[method = induction on $k$]
+Let $k$ be a natural number.
+Case $k = 0$. Trivial.
+Let $k < p$.
+Take $l = k - 1$.
+Then $p$ does not divide $k$. $p$ does not divide $\fac{l}$.
+$p$ does not divide $k * \fac{l}$.
+\end{proof}
+
+\begin{signature}
+$\cho{n}{i}$ is a natural number.
+\end{signature}
+
+\begin{axiom}
+$\cho{n}{0} = 1$.
+\end{axiom}
+
+\begin{axiom}
+$\cho{0}{i} = 0$ for all $i$ such that $i \geq 1$.
+\end{axiom}
+
+\begin{axiom} Let $i \geq 1$.
+$\cho{n+1}{i} = \cho{n}{i} + \cho{n}{i-1}$.
+\end{axiom}
+
+\begin{theorem} For all natural numbers $n$ and 
+all natural numbers $i$
+if $i \geq n + 1$ then $\cho{n}{i} = 0$.
+\end{theorem}
+\begin{proof}[method = induction on n]
+Let $n$ be a natural number.
+Case $n = 0$. Trivial.
+
+Take a natural number $n'$ such that $n = n' + 1$.
+Let $i$ be a natural number such that $i \geq n + 1$.
+Then $\cho{n}{i} = \cho{n'}{i} + \cho{n'}{i-1} = 0 + 0 = 0$.
+\end{proof}
+
+
+\begin{theorem} For all $n$
+$\cho{n}{n} = 1$.
+\end{theorem}
+\begin{proof}[method = induction]
+Let $n$ be a natural number.
+Case $n = 0$. Trivial.
+
+Take a natural number $m$ such that $n = m + 1$.
+Then $\cho{n}{n} = \cho{m}{n} + \cho{m}{m} = 0 + 1 = 1$.
+
+\end{proof}
+
+\begin{lemma} For all natural numbers $n$ and all natural numbers $i$ 
+such that  $0 \leq i \leq n$
+\[\fac{n} = \cho{n}{i} * (\fac{i} * \fac{(n-i)}).\]
+\end{lemma}
+
+\begin{proof}[method = induction on $n$]
+Let $n$ be a natural number.
+Let $i$ be a natural number such that $0 \leq i \leq n$.
+
+Case $n = 0$. Trivial.
+
+Take $m = n - 1$.  
+
+For all natural numbers $j$ such that $0 \leq j \leq m$ $\fac{m} = 
+\cho{m}{j} * (\fac{j} * \fac{(m-j)})$.
+Indeed $m$ is inductively smaller than $n$.
+
+Case $i = 0$. Trivial.
+
+Case $i = n$. Trivial.
+
+$i - 1 \leq m$ and $m - (i-1) = n - i$. $m - i$ is a natural number. 
+$n - i = (m - i) + 1$.
+
+Then
+
+$\fac{n} = n * \fac{m} = ((n-i) + i) * \fac{m} = ((n-i) * \fac{m}) + (i * \fac{m})$
+
+$= ((n-i) * \fac{m}) + (i * (\cho{m}{i-1} * (\fac{(i-1)} * \fac{(m - (i-1))})))$
+
+$= ((n-i) * \fac{m}) + (\cho{m}{i-1} * ((i * \fac{(i-1)}) * \fac{(m - (i-1))}))$
+
+$=  ((n-i) * \fac{m}) + (\cho{m}{i-1} * (\fac{i} * \fac{(m - (i-1))}))$
+
+$=  ((n-i) * \fac{m}) + (\cho{m}{i-1} * (\fac{i} * \fac{(n-i)}))$
+
+$= ((n-i) * (\cho{m}{i} * (\fac{i} * \fac{(m-i)}))) + (\cho{m}{i-1} * (\fac{i} * \fac{(n-i)}))$
+
+$= ((\cho{m}{i} * (\fac{i} * ((n-i) * \fac{(m-i)})))) + (\cho{m}{i-1} * (\fac{i} * \fac{(n-i)}))$
+
+$= ((\cho{m}{i} * (\fac{i} * \fac{(n-i)}))) + (\cho{m}{i-1} * (\fac{i} * \fac{(n-i)}))$
+
+$= (\cho{m}{i} + \cho{m}{i-1}) * (\fac{i} * \fac{(n-i)}) $
+
+$=  \cho{n}{i} * (\fac{i} * \fac{(n-i)})$.
+
+Indeed $\cho{n}{i} = \cho{m}{i} + \cho{m}{i-1}$.
+
+\end{proof}
+
+
+\begin{lemma}
+Let $p$ be a prime number.
+Let $0 < k < p$. Then
+$p$ divides $\cho{p}{k}$.
+\end{lemma}
+\begin{proof}
+$\fac{p} = \cho{p}{k} * (\fac{k} * \fac{(p-k)})$.
+$p$ divides $\fac{p}$.
+$p$ does not divide $\fac{k}$.
+$p$ does not divide $\fac{(p-k)}$.
+$p$ does not divide $\fac{k} * \fac{(p-k)}$.
+Hence 
+$p$ divides $\cho{p}{k}$.
+\end{proof}
+
+\end{forthel}
+
+
+\section{Finite Sequences and Sets}
+
+We can get standard notations in the pretty-printed
+text by employing \LaTeX{} macros as ForTheL terms.
+The notation $\Seq{m}{n}$ can be generated 
+from the ForTheL function pattern
+\verb+\Seq{m}{n}+ 
+by the 
+macro:
+\begin{verbatim}
+\newcommand{\Seq}[2]{\{#1,\dots,#2\}}
+\end{verbatim}.
+
+\begin{forthel}
+
+Let $m,n,i$ denote natural numbers.
+
+\begin{definition}
+$\Seq{m}{n}$ is the collection of
+natural numbers $i$ such that $m \leq i \leq n$.
+\end{definition}
+
+\begin{lemma}
+$\Seq{m}{n}$ is a set.
+\end{lemma}
+
+\begin{lemma}
+$\Seq{1}{0} = \emptyset$.
+\end{lemma}
+
+\begin{lemma}
+Let $m \leq n$. Then $\Seq{1}{m} \subseteq \Seq{1}{n}$.
+\end{lemma}
+
+\begin{lemma}
+$\Seq{1}{n} \cup \sing{n+1} = \Seq{1}{n+1}$.
+\end{lemma}
+\begin{proof}
+
+(1) $\Seq{1}{n} \cup \sing{n+1} \subseteq \Seq{1}{n+1}$.
+
+Proof. $\Seq{1}{n} \subseteq \Seq{1}{n+1}$.
+$\sing{n+1} \subseteq \Seq{1}{n+1}$.
+Qed.
+
+(2) $\Seq{1}{n+1} \subseteq \Seq{1}{n} \cup \sing{n+1}$.
+
+Proof.
+Let $m \in \Seq{1}{n+1}$. $1 \leq m \leq n+1$. Let us show that 
+$m \in \Seq{1}{n} \cup \sing{n+1}$.
+
+Case $m \leq n$. Trivial.
+
+$m = n+1$. Trivial.
+
+Qed.
+
+\end{proof}
+
+\begin{definition}
+A sequence of length $n$ is a
+map $a$ such that $\dom(a) = \Seq{1}{n}$.
+\end{definition}
+
+Let $a$ denote a map.
+Let $a_{i}$ stand for $a(i)$.
+
+\begin{definition}
+Let $\Seq{1}{n} \subseteq \dom(a)$.
+\[\FinSet{a}{1}{n} = \{ a_{i} \mid i \in \Seq{1}{n}\}.\]
+\end{definition}
+
+
+\begin{lemma}
+Assume that $\Seq{1}{n} \subseteq \dom(a)$.
+Then $\FinSet{a}{1}{n}$ is a set.
+\end{lemma}
+\begin{proof}
+Consider $X = \Seq{1}{n}$. $X$ is a set such that $X \subseteq \dom(a)$.
+[timelimit 10]
+Take a set $Y$ such that $Y = \{ a_{i} | i \in X\}$.
+[timelimit 3]
+$Y = \FinSet{a}{1}{n}$.
+\end{proof}
+
+
+\begin{lemma}
+Assume that $\Seq{1}{n} \subseteq \dom(a)$.
+Let $m \leq n$. Then $\Seq{1}{m} \subseteq \dom(a)$ and
+$\FinSet{a}{1}{m} \subseteq \FinSet{a}{1}{n}$.
+\end{lemma}
+
+\begin{lemma}
+$\FinSet{a}{1}{0} = \emptyset$.
+\end{lemma}
+
+\begin{lemma}
+Assume that $\Seq{1}{n+1} \subseteq \dom(a)$. 
+
+Then
+$\FinSet{a}{1}{n}$, $\sing{a_{n+1}}$ are sets and
+\[\FinSet{a}{1}{n} \cup \sing{a_{n+1}} = \FinSet{a}{1}{n+1}.\]
+\end{lemma}
+\begin{proof}
+$n+1 \in \dom(a)$.
+$\sing{a_{n+1}}$ is a set and $\FinSet{a}{1}{n}$ is a set.
+
+(1) $\FinSet{a}{1}{n} \cup \sing{a_{n+1}} \subseteq \FinSet{a}{1}{n+1}$.
+
+Proof.
+$\FinSet{a}{1}{n} \subseteq \FinSet{a}{1}{n+1}$.
+$\sing{a_{n+1}}  \subseteq \FinSet{a}{1}{n+1}$.
+Qed.
+
+(2) $\FinSet{a}{1}{n+1} \subseteq \FinSet{a}{1}{n} \cup \sing{a_{n+1}}$.
+
+Proof.
+Let $x \in \FinSet{a}{1}{n+1}$. Take $m \in \Seq{1}{n+1}$ such that
+$x = a_{m}$. Let us show that $x \in \FinSet{a}{1}{n} \cup \sing{a_{n+1}}$.
+
+$m \in \Seq{1}{n} \cup \sing{n+1}$.
+
+Case $m \in \Seq{1}{n}$. Trivial.
+
+$m \in \sing{n+1}$. Then $m = n+1$. Trivial.
+Qed.
+
+\end{proof}
+
+\begin{definition} Let $A$ be a class.
+$A$ is finite iff
+$A = \FinSet{a}{1}{n}$ for some natural number $n$ and some map $a$ such 
+that $\Seq{1}{n} \subseteq \dom(a)$.
+\end{definition}
+
+\begin{lemma}
+$\emptyset$ is finite.
+\end{lemma}
+\begin{proof}
+Define $a(x) = x$ for $x \in \Seq{1}{0}$.
+Then $\FinSet{a}{1}{0} = \emptyset$.
+\end{proof}
+
+\begin{lemma}
+Let $u$ be an object. Then
+$\sing{u}$ is finite.
+\end{lemma}
+\begin{proof}
+Define $a(x) = u$ for $x \in \Seq{1}{1}$.
+Then $\FinSet{a}{1}{1} = \sing{u}$. 
+\end{proof}
+
+\begin{lemma}
+For every object $u$:
+$u \in \Seq{1}{2}$ iff $u = 1$ or $u = 2$.
+\end{lemma}
+
+\begin{lemma}
+Let $u,v$ be objects. Then
+$\unp{u}{v}$ is finite.
+\end{lemma}
+
+\begin{proof}
+Define
+$  a(x) =
+    \begin{cases}
+    u  & : x = 1 \\
+    v  & : x = 2
+    \end{cases} $
+  for $x \in \Seq{1}{2}$.
+
+Then $\FinSet{a}{1}{2} = \unp{u}{v}$. 
+\end{proof}
+
+\begin{definition} Let $C$ be a class.
+$C$ is infinite iff $C$ is not finite.
+\end{definition}
+
+\end{forthel}
+
+\section{(Additive) Groups}
+
+It is common to define structures as an underlying set with further
+structural elements that ``belong'' to that set: ``a group is a set with
+\dots''. This naive approach to structures is employed here.
+It works alright as long as one
+does not consider two different structures of the same kind on the
+same underlying set. In general one will need stronger structure mechanisms as 
+provided in other proof systems.
+  
+\subsection{Axioms}
+
+\begin{forthel}
+[synonym group/-s]
+\begin{signature} A group is a set. \end{signature}
+
+Let an additive group stand for group.
+
+Let $G$ denote a group.
+
+\begin{signature} $0^{G}$ is an element of $G$.
+\end{signature}
+
+\begin{signature} Let $x,y \in G$. $x +^{G} y$ is an element of $G$. \end{signature}
+
+\begin{signature} Let $x \in G$. $-^{G} x$ is an element of $G$. \end{signature}
+
+\begin{axiom}[id = Associativity, title = Associativity] $(x +^{G} y) +^{G} z = x +^{G} (y +^{G} z)$ for all $x,y,z \in G$.
+\end{axiom} 
+\begin{axiom} $x +^{G} 0^{G} = x$ for all $x \in G$.
+\end{axiom}
+\begin{axiom} $x +^{G} (-^{G} x) = 0^{G}$ for all $x \in G$.
+\end{axiom}
+\begin{axiom} $x +^{G} y = y +^{G} x$ for all $x,y \in G$.
+\end{axiom}
+
+Let $x -^{G} y$ stand for $x +^{G} (-^{G} y)$.
+
+\begin{lemma}
+$ -^{G} (-^{G} x) = x$ for all $x \in G$.
+\end{lemma}
+\begin{proof}
+Let $x \in G$.
+$ -^{G} (-^{G} x) =  -^{G} (-^{G} x) +^{G} (-^{G} x +^{G} x)
+=  (-^{G} (-^{G} x) +^{G} -^{G} x) +^{G} x = x$.
+\end{proof}
+\end{forthel}
+Since \Naproche does not provide automatic type elaboration the obvious 
+group parameter $G$ has to be carried along in the \LaTeX{} source.
+In the \LaTeX{} output, however, we can hide it by 
+some \LaTeX{} trickery:
+\begin{verbatim}
+\catcode`^\active
+\def^#1{\ifthenelse{\equal{#1}{G}} {\unskip} {\sp{#1}}}
+\end{verbatim}
+
+The first command makes the symbol \verb|^|
+active as a possible macro name.
+The second line defines the macro
+\verb|^{...}|: if the argument is $G$, it is
+discarded. Otherwise we treat it as a superscript. Since \verb|^| is 
+used as a macro symbol, we generate the superscript instead by 
+the \LaTeX{} command \verb|\sp{ }|.
+The definition of the macro requires to \verb|\usepackage{ifthen}|.
+\catcode`^\active
+\def^#1{\ifthenelse{\equal{#1}{G}} {\unskip} {\sp{#1}}}
+The previous lemma and proof then print out more concisely as:
+
+\begin{forthel}
+\begin{lemma}
+$ -^{G} (-^{G} x) = x$ for all $x \in G$.
+\end{lemma}
+\begin{proof}
+Let $x \in G$.
+$ -^{G} (-^{G} x) =  -^{G} (-^{G} x) +^{G} (-^{G} x +^{G} x)
+=  (-^{G} (-^{G} x) +^{G} -^{G} x) +^{G} x = x$.
+\end{proof}
+
+\begin{lemma}
+Let $x,y \in G$. Then $-^{G} (x +^{G} y) =-^{G} x -^{G} y$.
+\end{lemma}
+\begin{proof}
+$(x +^{G} y) +^{G} (-^{G} x -^{G} y) = 0^{G}$.
+\end{proof}
+
+\end{forthel}
+
+
+
+\subsection{Subgroups}
+
+We define subgroups and the subgroup generated by some set of generators.
+
+\begin{forthel}
+
+Let $G$ denote a group. 
+
+[synonym subgroup/-s]
+
+\begin{definition} A subgroup of $G$ is a subset $H$ of $G$ such that
+$0^{G} \in H$ and for all $x,y \in H$ 
+
+$x +^{G} y \in H$ and $-^{G} x \in H$.
+\end{definition}
+
+\end{forthel}
+Since we shall later consider subgroups of rings where we also have a multiplication,
+we also use the adjective ``additive'':
+\begin{forthel}
+
+Let an additive subgroup of $G$ stand for a subgroup of $G$.
+
+\begin{lemma} $G$ is a subgroup of $G$. \end{lemma}
+
+\begin{lemma} $\sing{0^{G}}$ is a subgroup of $G$.
+\end{lemma}
+
+\begin{proof}
+Let $x,y \in \sing{0^{G}}$. Then $x,y = 0^{G}$.
+$x +^{G} y = 0^{G} \in \sing{0^{G}}$ and $-^{G} x = 0^{G} \in \sing{0^{G}}$.
+\end{proof}
+
+\begin{lemma} Let $F$ be a nonempty set such that every element of $F$ is a subgroup of $G$.
+Then $\bigcap F$ is a subgroup of $G$.
+\end{lemma}
+
+\begin{definition}
+Let $A$ be a subset of $G$.
+$[A]^{G} = \{x \in G \mid x \in H$ for all subgroups $H$ of $G$ 
+such that $A \subseteq H\}$.
+\end{definition}
+
+\begin{lemma}
+Let $A$ be a subset of $G$. Then $[A]^{G}$ is a subgroup of $G$ such
+that $A \subseteq [A]^{G}$.
+\end{lemma}
+\begin{proof}
+
+(1) $[A]^{G}$ is a subset of $G$.
+
+(2) $0^{G} \in [A]^{G}$.
+
+(3) $x +^{G} y \in [A]^{G}$ for all $x,y \in [A]^{G}$.
+
+(4) $-^{G} x \in [A]^{G}$ for all $x \in [A]^{G}$.
+
+Hence $[A]^{G}$ is a subgroup of $G$.
+
+Let $x \in A$. 
+Then $x \in [A]^{G}$.
+\end{proof}
+
+Let the additive closure of $A$ in $G$ stand for $[A]^{G}$.
+
+\begin{definition}
+Let $C \subseteq G$ and $c \in G$.
+$c \oplus^{G} C = \{c +^{G} d \mid d \in C\}$.
+\end{definition}
+\end{forthel}
+
+\section{Rings}
+\subsection{Axioms}
+
+We shall only consider commutative rings with $1$.
+After defining a group as a \emph{set} with further structure, we can now
+define a ring as a \emph{group} together with multiplication and a $1$.
+
+
+\begin{forthel}
+
+\begin{signature} A ring is an additive group. \end{signature}
+Let $R$ denote a ring.
+
+\begin{signature} $1^{R}$ is an element of $R$ such that $1^{R} \neq 0^{R}$.
+\end{signature}
+
+\begin{signature} Let $x,y \in R$. $x \cdot^{R} y$ is an element of $R$. \end{signature}
+
+\begin{axiom} $(x \cdot^{R} y) \cdot^{R} z = x \cdot^{R} (y \cdot^{R} z)$ 
+for all $x,y,z \in R$.
+\end{axiom} 
+\begin{axiom} $x \cdot^{R} 1^{R} = x$ for all $x \in R$.
+\end{axiom}
+\begin{axiom}[title = Commutativity]
+$x \cdot^{R} y = y \cdot^{R} x$ for all $x,y \in R$.
+\end{axiom}
+\begin{axiom}[title = Distributivity]  Let $x,y,z \in R$.
+$(x +^{R} y) \cdot^{R} z = (x \cdot^{R} z) +^{R} (y \cdot^{R} z)$.
+\end{axiom}
+\end{forthel}
+Again readability is improved if we hide the recurring superscript $^R$
+by the above method.
+\catcode`^\active
+\def^#1{\ifthenelse{\equal{#1}{R}} {\unskip} {\sp{#1}}}
+
+
+\begin{forthel}
+
+[timelimit 5]
+\begin{lemma} 
+$z \cdot^{R} (x +^{R} y) = (z \cdot^{R} x) +^{R} (z \cdot^{R} y)$ 
+for all $x,y,z \in R$.
+\end{lemma}
+\begin{proof}
+Let $x,y,z \in R$.
+$z \cdot^{R} (x +^{R} y) = 
+(x +^{R} y) \cdot^{R} z = (x \cdot^{R} z) +^{R} (y \cdot^{R} z)$
+$= (z \cdot^{R} x) +^{R} (z \cdot^{R} y)$. 
+Indeed consider $v = x \cdot^{R} z$.
+\end{proof}
+
+\begin{lemma} $ 0^{R} \cdot^{R} x = 0^{R}$ for all $x \in R$. \end{lemma}
+\begin{proof} Let $x \in R$.
+$ (0^{R} \cdot^{R} x) +^{R} x = (0^{R} \cdot^{R} x) +^{R} (1^{R} \cdot^{R} x) 
+= (0^{R} +^{R} 1^{R}) \cdot^{R} x =  1^{R} \cdot^{R} x = x $.
+$ 0^{R} \cdot^{R} x = (0^{R} \cdot^{R} x) +^{R} ((-^{R}x) +^{R} x) = 0^{R}$.
+\end{proof}
+[timelimit 10]
+\begin{lemma}
+$ (-^{R} 1^{R}) \cdot^{R} x = -^{R} x$ for all $x \in R$. 
+\end{lemma}
+\begin{proof}
+Let $x \in R$.
+$ (-^{R} 1^{R}) \cdot^{R} x = 
+((-^{R} 1^{R}) \cdot^{R} x) +^{R} (x +^{R} (-^{R} x)) =
+(((-^{R} 1^{R}) \cdot^{R} x) +^{R} x) +^{R} (-^{R} x) =
+(((-^{R} 1^{R}) \cdot^{R} x) +^{R} (1^{R} \cdot^{R} x)) +^{R} (-^{R} x)$.
+\end{proof}
+[timelimit 3]
+
+\begin{lemma}
+$-^{R}( x \cdot^{R} y) = (-^{R}  x) \cdot^{R} y$ for all $x,y \in R$.
+\end{lemma}
+\begin{proof} Let $x,y \in R$.
+$-^{R}( x \cdot^{R} y) = (-^{R}1^{R}) \cdot^{R} ( x \cdot^{R} y)$.
+\end{proof}
+
+\begin{lemma}
+$ (-^{R} 1^{R}) \cdot^{R} (-^{R} 1^{R}) = 1^{R}$.
+\end{lemma}
+
+\begin{lemma}
+$x -^{R} (x -^{R} y) = y$ for all $x,y \in R$.
+\end{lemma}
+
+[timelimit 8]
+\begin{lemma}  Let $x,y,z \in R$.
+$(x -^{R} y) \cdot^{R} z = (x \cdot^{R} z) -^{R} (y \cdot^{R} z)$.
+\end{lemma}
+
+\begin{proof} 
+Take $u = -^{R} y$. $u \in R$.
+
+$(x +^{R} (-^{R} y)) \cdot^{R} z $
+
+$= (x +^{R} u) \cdot^{R} z $.
+
+$(x +^{R} u) \cdot^{R} z $
+
+
+$= (x \cdot^{R} z) +^{R} (u \cdot^{R} z)$
+
+
+$= (x \cdot^{R} z) +^{R} ((-^{R} y) \cdot^{R} z)$.
+
+
+\end{proof}
+[timelimit 3]
+\end{forthel}
+
+\subsection{Subrings}
+\begin{forthel}
+
+Let $R$ denote a ring. 
+
+\begin{definition} Let $A$ be a subset of $R$. $A$ is closed under
+multiplication in $R$ iff $x \cdot^{R} y \in A$ for all $x,y \in A$.
+\end{definition}
+
+
+\begin{definition} A subring of $R$ is an additive subgroup $S$ of $R$ such that
+$1^{R} \in S$ and $S$ is closed under multiplication in $R$.
+\end{definition}
+
+\begin{lemma} $R$ is a subring of $R$. \end{lemma}
+
+\end{forthel}
+
+\subsection{Operations on Subsets of Rings}
+\renewcommand{\ast}{\cdot}
+\renewcommand{\star}{\ }
+
+
+\begin{forthel}
+
+Let $R$ denote a ring.
+
+\begin{definition}
+Let $B,C \subseteq R$.
+$B \star^{R} C = \{b \cdot^{R} c \in R | b \in B$ and $c \in C\}$.
+\end{definition} 
+
+\begin{definition}
+Let $B,C \subseteq R$. 
+$B \ast^{R} C = [B \star^{R} C]^{R}$.
+\end{definition}
+
+\end{forthel}
+We iterate the formation of additive closures of pointwise products:
+\begin{forthel}
+
+Let $n$ denote natural numbers.
+
+\begin{signature}
+Let $B \subseteq R$ and $n \geq 1$.
+$B^{n,R,subset}$ is a subset of $R$.
+\end{signature}
+
+\begin{axiom}
+Let $B \subseteq R$. $B^{1,R,subset} = B$.
+\end{axiom}
+
+\begin{axiom}
+Let $B \subseteq R$ and $n \geq 1$.
+$B^{n+1,R,subset} = B^{n,R,subset} \ast^{R} B$. 
+\end{axiom}
+
+\begin{lemma}
+Let $B \subseteq R$. Then
+$B^{n,R,subset}$ is a subgroup of $R$ 
+where $n$ is a natural number and $n > 1$.
+\end{lemma}
+\begin{proof}[method = induction on $n$]
+
+Let $n$ be a natural number.
+
+CASE $n \leq 1$. trivial.
+
+Take a natural number $m$ such that $n = m + 1$.
+Then $B^{n,R,subset} = B^{m,R,subset} \ast^{R} B$ and
+$B^{n,R,subset}$ is a subgroup of $R$.
+\end{proof}
+
+
+\begin{definition} Let $B \subseteq R$.
+$\Powers{B}{R} = \{B^{n,R,subset} | n \in \mathbb{N}$ and $n \geq 1\} $.
+\end{definition}
+
+\begin{lemma}
+Let $B \subseteq R$. Then $\Powers{B}{R}$ is a set.
+\end{lemma}
+\begin{proof} $\mathbb{N}$ is a set.
+\end{proof}
+
+\end{forthel}
+
+\subsection{Divisibility}
+
+\begin{forthel}
+
+Let $R$ denote a ring.
+
+\begin{definition}
+A unit in $R$ is an element $x$ of $R$ such that $x \cdot^{R} y = 1^{R}$
+for some element $y$ of $R$. 
+\end{definition}
+
+\begin{definition} Let $X$ be a subset of $R$. Let $x,y \in R$. 
+$x$ divides $y$ in $X$ within $R$ iff 
+$x \cdot^{R} z = y$ for some element $z$ of $X$.
+\end{definition}
+
+Let $x | y$ in $X$ within $R$ stand for $x$ divides $y$ in $X$ within $R$.
+
+\begin{lemma} Let $S$ be a subring of $R$.
+Let $x,y,z \in R$. Let $x | y$ in $S$ within $R$ and $y | z$ in $S$ within $R$.
+Then $x | z$ in $S$ within $R$.
+\end{lemma}
+
+\begin{lemma} Let $S$ be a subring of $R$.
+Let $x,y,z \in R$. Let $x | y$ in $S$ within $R$ and $x | z$ in $S$ within $R$.
+Then $x | (y +^{R} z)$ in $S$ within $R$.
+\end{lemma}
+\begin{proof}
+Take an element $u$ of $S$ such that $x \cdot^{R} u = y$.
+Take an element $v$ of $S$ such that $x \cdot^{R} v = z$.
+Then $x \cdot^{R} (u +^{R} v) = y +^{R} z$ and $u +^{R} v \in S$. 
+\end{proof}
+
+\begin{lemma} Let $S$ be a subring of $R$.
+Let $x,y\in R$. Let $x | y$ in $S$ within $R$.
+Then $x | (-^{R} y)$ in $S$ within $R$.
+\end{lemma}
+
+\begin{lemma} Let $S$ be a subring of $R$.
+Let $x,y,z \in R$. Let $x | y$ in $S$ within $R$ and $x | z$ in $S$ within $R$.
+Then $x | (y -^{R} z)$ in $S$ within $R$.
+\end{lemma}
+\begin{proof}
+$x | (-^{R} z)$ in $S$ within $R$.
+\end{proof}
+
+\end{forthel}
+\subsection{Congruences}
+\begin{forthel}
+Let $x \equiv_{S} y$ mod $a$ within $R$ stand for $a$ divides $x-^{R} y$ in $S$ within $R$.
+
+\end{forthel}
+We show that for $S$ being a subring of $R$ and $a \in S$, $\equiv_{S}$ mod $a$ is an equivalence relation and
+a congruence relation on $S$.
+
+\begin{forthel}
+
+\begin{lemma}
+Let $S$ be a subring of $R$ and $a \in S$.
+$x \equiv_{S} x$ mod $a$ within $R$ for all $x \in S$.
+\end{lemma}
+
+\begin{lemma}
+Let $S$ be a subring of $R$ and $a \in S$.
+Let $x,y$ be elements of $S$ such that
+$x \equiv_{S} y$ mod $a$ within $R$. 
+Then $y \equiv_{S} x$ mod $a$ within $R$.
+\end{lemma}
+\begin{proof}
+$a$ divides  $x-^{R} y$ in $S$ within $R$.
+$a$ divides  $-^{R}(x-^{R} y)$ in $S$ within $R$.
+$y -^{R} x = -^{R}(x -^{R} y)$.
+\end{proof}
+
+\begin{lemma}
+Let $S$ be a subring of $R$ and $a \in S$.
+Let $x,y,z$ be elements of $S$ such that
+$x \equiv_{S} y$ mod $a$ within $R$
+and $y \equiv_{S} z$ mod $a$ within $R$. 
+Then $x \equiv_{S} z$ mod $a$ within $R$.
+\end{lemma}
+\begin{proof}
+Take $u \in S$ such that $x -^{R} y = a \cdot^{R} u$.
+Take $v \in S$ such that $y -^{R} z = a \cdot^{R} v$.
+Then
+ $x -^{R} z =  
+((x -^{R} y) +^{R} y) -^{R} z =
+(x -^{R} y) +^{R} (y -^{R} z) =
+(a \cdot^{R} u) +^{R} (a \cdot^{R} v) =
+a \cdot^{R} (u +^{R} v)
+$.
+\end{proof}
+
+[timelimit 6]
+\begin{lemma}
+Let $S$ be a subring of $R$ and $a \in S$.
+Let $x,x',y,y'$ be elements of $S$ such that
+$x \equiv_{S} x'$ mod $a$ within $R$
+and $y \equiv_{S} y'$ mod $a$ within $R$. 
+Then $x +^{R} y \equiv_{S} x' +^{R} y'$ mod $a$ within $R$.
+\end{lemma}
+\begin{proof}
+Take $u \in S$ such that $x -^{R} x' = a \cdot^{R} u$.
+Take $v \in S$ such that $y -^{R} y' = a \cdot^{R} v$.
+Then
+$(x +^{R} y) -^{R} (x' +^{R} y')  =  (x +^{R} y) +^{R} (-^{R} x' +^{R} -^{R} y')
+= ((x +^{R} y) -^{R} x') -^{R} y' 
+= (x +^{R} (y -^{R} x')) -^{R} y'
+= ((x -^{R} x') +^{R} y) -^{R} y'
+= (x -^{R} x') +^{R} (y -^{R} y')
+= (a \cdot^{R} u) +^{R} (a \cdot^{R} v)$.
+
+\end{proof}
+[timelimit 3]
+
+\begin{lemma}
+Let $S$ be a subring of $R$ and $a \in S$.
+Let $x,x'$ be elements of $S$ such that
+$x \equiv_{S} x'$ mod $a$ within $R$. 
+Then $(-^{R}x) \equiv_{S} (-^{R}x')$ mod $a$ within $R$.
+\end{lemma}
+\begin{proof}
+Take $z \in S$ such that $x -^{R} x' = a \cdot^{R} z$.
+
+$(-^{R} 1^{R}) \cdot^{R} (x -^{R} x') = (-^{R} 1^{R}) \cdot^{R} (a \cdot^{R} z)$.
+$(-^{R}x) -^{R} (-^{R}x') =
+((-^{R} 1^{R}) \cdot^{R} x) -^{R} ((-^{R} 1^{R}) \cdot^{R} x') =
+(-^{R} 1^{R}) \cdot^{R} (a \cdot^{R} z)$.
+\end{proof}
+
+\begin{lemma}
+Let $S$ be a subring of $R$ and $a \in S$.
+Let $x,x',y,y'$ be elements of $S$ such that
+$x \equiv_{S} x'$ mod $a$ within $R$
+and $y \equiv_{S} y'$ mod $a$ within $R$. 
+Then $x \cdot^{R} y \equiv_{S} x' \cdot^{R} y'$ mod $a$ within $R$.
+\end{lemma}
+\begin{proof}
+Take $u \in S$ such that $x -^{R} x' = a \cdot^{R} u$.
+Take $v \in S$ such that $y -^{R} y' = a \cdot^{R} v$.
+
+$x \cdot^{R} y = (x \cdot^{R} y) +^{R} 0^{R}$
+
+$= (x \cdot^{R} y) +^{R} (-^{R} (x' \cdot^{R} y) +^{R} (x' \cdot^{R} y))$
+
+$= ((x \cdot^{R} y) -^{R} (x' \cdot^{R} y)) +^{R} (x' \cdot^{R} y)$
+
+$= ((x -^{R} x') \cdot^{R} y) +^{R} (x' \cdot^{R} y)$.
+
+
+$(x' \cdot^{R} y) -^{R} (x' \cdot^{R} y') = x' \cdot^{R} (y -^{R} y')$.
+
+[timelimit 10]
+
+Hence
+
+$(x \cdot^{R} y) -^{R} (x' \cdot^{R} y') = $
+ 
+$ (((x -^{R} x') \cdot^{R} y) +^{R} (x' \cdot^{R} y)) -^{R} (x' \cdot^{R} y')$ 
+
+$ = ((x -^{R} x') \cdot^{R} y) +^{R} ((x' \cdot^{R} y) -^{R} (x' \cdot^{R} y'))$
+
+(by Associativity).
+
+$(x \cdot^{R} y) -^{R} (x' \cdot^{R} y') = $
+
+$((x -^{R} x') \cdot^{R} y) +^{R} ((x' \cdot^{R} y) -^{R} (x' \cdot^{R} y'))$ 
+
+$ = ((x -^{R} x') \cdot^{R} y) +^{R} (x' \cdot^{R} (y -^{R} y'))$
+
+$ = ((a \cdot^{R} u) \cdot^{R} y) +^{R} (x' \cdot^{R} (a \cdot^{R} v))$
+
+$ = ((a \cdot^{R} u) \cdot^{R} y) +^{R} ((x' \cdot^{R} a) \cdot^{R} v)$
+
+$ = (a \cdot^{R} (u \cdot^{R} y)) +^{R} ((a \cdot^{R} x') \cdot^{R} v)$
+
+$ = (a \cdot^{R} (u \cdot^{R} y)) +^{R} (a \cdot^{R} (x' \cdot^{R} v))$
+
+$ = a \cdot^{R} ((u \cdot^{R} y) +^{R} (x' \cdot^{R} v))$.
+
+[timelimit 3]
+
+$a$ divides $(x \cdot^{R} y) -^{R} (x' \cdot^{R} y')$
+in $S$ within $R$. Indeed
+$(u \cdot^{R} y) +^{R} (x' \cdot^{R} v) \in S$.
+\end{proof}
+
+\end{forthel}
+We could now define equivalence sets 
+
+$[x]=\{x' \in S \mid x' \equiv_{S} x $ mod $a\}$
+
+\noindent and form a quotient
+\[S/a = \{[x]\mid x \in S\}.\]
+But as we shall not continue working with the quotients in this article
+we will only consider congruences mod $a$. To talk about 
+quotient rings that have distinguished elements $0,1$ with 
+$0 \neq 1$, we show:
+\begin{forthel}
+\begin{lemma}
+Let $S$ be a subring of $R$ and $a \in S$.
+Assume that $a$ does not divide $1^{R}$ in $S$ within $R$.
+Then not $0^{R} \equiv_{S} 1^{R}$ mod $a$ within $R$.
+\end{lemma}
+
+
+\end{forthel}
+
+\subsection{Embedding Natural Numbers into a Ring}
+
+Natural numbers are represented in a ring $R$ as sums of $1^{R}$'s.
+As \Naproche does not yet provide recursive function definitions,
+we work axiomatically: the notation or function symbol $n^{[R]}$ is
+introduced into the language, and then two axioms postulate the initial case
+and the successor case of the recursion.
+
+Finite powers of ring elements are introduced in a similar way.
+
+\begin{forthel}
+
+Let $m$ denote natural numbers.
+
+Let $R$ denote a ring.
+
+\begin{signature} Let $n$ be a natural number. $n^{[R]}$ is an element of $R$.
+\end{signature}
+
+\begin{axiom} $0^{[R]} = 0^{R}$.
+\end{axiom}
+
+\begin{axiom} $(n+1)^{[R]} = n^{[R]} +^{R} 1^{R}$.
+\end{axiom}
+
+\begin{lemma}
+$1^{[R]} = 1^{R}$.
+\end{lemma}
+
+\begin{lemma}
+Let $S$ be a subring of $R$. Then $n^{[R]} \in S$ for all $n$.
+\end{lemma}
+\begin{proof}[method = induction]
+Let $n$ be a natural number.
+
+Case $n = 0$. Trivial.
+
+Take $m = n - 1$. Then $n^{[R]} = m^{[R]} +^{R} 1^{R} \in S$.
+\end{proof}
+
+\begin{lemma}
+For all $n$ we have
+$(m + n)^{[R]} = m^{[R]} +^{R} n^{[R]}$.
+\end{lemma}
+\begin{proof}[method = induction]
+Let $n$ be a natural number.
+
+Case $n = 0$. Trivial.
+
+Take $l = n - 1$.
+
+$(m + n)^{[R]} = 
+((m + l) + 1)^{[R]} =
+(m + l)^{[R]} +^{R} 1^{R} =
+(m^{[R]} +^{R} l^{[R]}) +^{R} 1^{R} =
+m^{[R]} +^{R} n^{[R]}$.
+\end{proof}
+
+\begin{lemma}
+For all $n$ we have
+$(m * n)^{[R]} = m^{[R]} \cdot^{R} n^{[R]}$.
+\end{lemma}
+\begin{proof}[method = induction]
+Let $n$ be a natural number.
+
+Case $n = 0$. Trivial.
+
+Take $l = n - 1$.
+
+$(m * n)^{[R]} = 
+((m * l) + m)^{[R]} =
+(m * l)^{[R]} +^{R} m^{[R]} =
+(m^{[R]} \cdot^{R} l^{[R]}) +^{R} m^{[R]} =
+(m^{[R]} \cdot^{R} l^{[R]}) +^{R} (m^{[R]} \cdot^{R} 1^{R}) =
+m^{[R]} \cdot^{R} (l + 1)^{[R]}$.
+\end{proof}
+
+\begin{lemma}
+Let $S$ be a subring of $R$. Let $m$ divide $n$. Then
+$m^{[R]}$ divides $n^{[R]}$ in $S$ within $R$.
+\end{lemma}
+
+\begin{lemma}
+Let $S$ be a subring of $R$ and $x \in S$.
+Then $x \equiv_{S} -^{R}x$ mod $(2^{[R]})$ within $R$.
+\end{lemma}
+\begin{proof}
+$x -^{R} (-^{R}x) = x +^{R} x = (1^{R} +^{R} 1^{R}) \cdot^{R} x = 2^{[R]} \cdot^{R} x$.
+\end{proof}
+\end{forthel}
+
+\subsection{Exponentiation}
+
+Exponentiation in $R$ is defined by recursive axioms that specify the
+new function symbol \verb|x^{n,R}| which prints as $x^{n,R}$. 
+\begin{forthel}
+
+\begin{signature} Let $x \in R$. $x^{n,R}$ is an element of $R$.
+\end{signature}
+
+\begin{axiom} Let $x \in R$. Then $x^{0,R} = 1^{R}$.
+\end{axiom}
+
+\begin{axiom} Let $x \in R$. Then $x^{n+1,R} = x^{n,R} \cdot^{R} x$.
+\end{axiom}
+\end{forthel}
+If the parameter $R$ is understood from the context one would like to turn
+$R$ into an implicit parameter and hide \verb|,R|. Since we also want to
+remove superscripts \verb|^{R}| we redefine the ``macro'' \verb|^|.
+
+\begin{verbatim}
+\catcode`^\active
+
+\def^#1{\ifthenelse{\equal{#1}{R}} {\unskip} 
+{{\IfEndWith{#1}{,R}{\sp{\StrBefore{#1}{,R}}}{\sp{#1}}}}}
+\end{verbatim}
+
+\catcode`^\active
+
+\def^#1{\ifthenelse{\equal{#1}{R}} {\unskip} 
+       {{\IfEndWith{#1}{,R}{\sp{\StrBefore{#1}{,R}}}{\sp{#1}}}}}
+
+\noindent The string operations in this macro require to 
+\verb|\usepackage{xstring}|.
+
+\begin{forthel}
+\begin{lemma} Assume that $n \neq 0$. Then $0^{R}^{n,R} = 0^{R}$. \end{lemma}
+\begin{proof}
+Take $m$ such that
+$n = m + 1$. Then $0^{R}^{m+1,R} = 0^{R}^{m,R} \cdot^{R} 0^{R}
+= 0^{R}$.
+\end{proof}
+
+\begin{lemma}
+Assume that $x \in R$. Then for all natural numbers $n$
+
+(if $n$ is even then $(-^{R}x)^{n,R} = x^{n,R}$)
+and 
+
+(if $n$ is odd then $(-^{R}x)^{n,R} = -^{R}(x^{n,R})$).
+\end{lemma}
+\begin{proof}[method = induction]
+Let $n$ be a natural number.
+
+(1) Case $n = 0$. Trivial.
+
+Take $m = n - 1$.
+
+(2a) Case $n$ is even. 
+
+$m$ is inductively smaller than $n$ and odd.
+$(-^{R}x)^{m,R} = -^{R}(x^{m,R})$.
+$(-^{R}x)^{n,R} = (-^{R}x)^{m,R} \cdot^{R} (-^{R}x) = (-^{R}(x^{m,R})) \cdot^{R} (-^{R}x)
+= (x^{m,R}) \cdot^{R} x = x^{n,R}$.
+End.
+
+(2b) Case $n$ is odd. 
+
+$m$ is inductively smaller than $n$ and even.
+$(-^{R}x)^{m,R} = x^{m,R}$.
+$(-^{R}x)^{n,R} = (-^{R}x)^{m,R} \cdot^{R} (-^{R}x) = (x^{m,R}) \cdot^{R} (-^{R}x)
+= -^{R} ((x^{m,R}) \cdot^{R} x) = -^{R}(x^{n,R})$.
+End.
+
+\end{proof}
+
+\begin{lemma} For all natural numbers $n$ we have $1^{R}^{n,R} = 1^{R}$. \end{lemma}
+\begin{proof}[method = induction on $n$]
+\end{proof}
+
+\begin{lemma} Let $n$ be a natural numbers. Then $(-^{R} 1^{R})^{n,R} = 1^{R}$
+or $(-^{R} 1^{R})^{n,R} = -^{R} 1^{R}$. 
+\end{lemma}
+\begin{proof}
+\end{proof}
+
+\begin{lemma} Let $x \in R$ and $m$ be a natural number.
+For all natural numbers $n$
+we have
+$x^{m,R} \cdot^{R} x^{n,R} = x^{m + n,R}$.
+\end{lemma}
+\begin{proof}[method = induction on $n$]
+Let $n$ be a natural number.
+
+CASE $n = 0$. Trivial.
+
+Take a natural number $k$ such that $n = k + 1$.
+Then
+
+$x^{m,R} \cdot^{R} x^{n,R} = $
+
+$x^{m,R} \cdot^{R} x^{k+1,R} = $
+
+$x^{m,R} \cdot^{R} (x^{k,R} \cdot^{R} x) = $
+
+$(x^{m,R} \cdot^{R} x^{k,R}) \cdot^{R} x = $
+
+$x^{m + k,R} \cdot^{R} x = $
+
+$x^{(m + k)+1,R} = x^{m+n,R}.$
+\end{proof}
+
+\begin{lemma} Let $x \in R$ and $m$ be a natural number.
+For all natural numbers $n$
+we have
+$(x^{m,R})^{n,R} = x^{m * n,R}$.
+\end{lemma}
+\begin{proof}[method = induction on $n$]
+Let $n$ be a natural number.
+
+CASE $n = 0$. Trivial.
+
+Take a natural number $k$ such that $n = k + 1$. Then
+$(x^{m,R})^{n,R} =
+(x^{m,R})^{k+1,R} =
+(x^{m,R})^{k,R} \cdot^{R} (x^{m,R})$.
+\end{proof}
+
+\begin{lemma} Let $x,y \in R$. For all natural numbers
+$n$ we have
+$(x \cdot^{R} y)^{n,R} = (x^{n,R} \cdot^{R} y^{n,R})$.
+\end{lemma}
+\begin{proof}[method = induction on $n$]
+Let $n$ be a natural number.
+
+CASE $n = 0$. Trivial.
+
+Take $m$ such that $n = m + 1$.
+$(x \cdot^{R} y)^{n,R} =
+(x \cdot^{R} y)^{m+1,R} =
+(x \cdot^{R} y)^{m,R} \cdot^{R} (x \cdot^{R} y).$
+
+$(x^{m,R} \cdot^{R} y^{m,R}) \cdot^{R} (x \cdot^{R} y) =
+(x^{m,R} \cdot^{R} x) \cdot^{R} ( y^{m,R} \cdot^{R} y)$.
+\end{proof}
+
+\begin{definition} Let $x \in R$. $\powers{x}{R} = \{x^{n,R} | n \in \mathbb{N} \} $.
+\end{definition}
+
+\begin{lemma} $\powers{x}{R}$ is a set for every $x \in R$.
+\end{lemma}
+
+[timelimit 11]
+\begin{lemma} Let $x \in R$. Then
+$\powers{x}{R}$ is a subset of $R$ that is closed under multiplication in $R$.
+\end{lemma}
+[timelimit 3]
+
+\begin{lemma}
+Let $A$ be a subset of $R$ that is closed under multiplication in $R$.
+Then the additive closure of $A$ in $R$ is closed under multiplication in $R$.
+\end{lemma}
+
+\begin{proof}
+Define $B = \{b \in R \mid b \cdot^{R} a \in [A]^{R}$ for all $a \in A\}$.
+
+(1) $B$ is a subset of $R$.
+
+(2) $0^{R} \in B$.
+
+(3) $x +^{R} y \in B$ for all $x,y \in B$.
+
+Proof.
+Let $x,y \in B$.
+Let $a \in A$. Then $x \cdot^{R} a, y \cdot^{R} a \in [A]^{R}$.
+Then $(x +^{R} y) \cdot^{R} a = (x \cdot^{R} a) +^{R} (y \cdot^{R} a) \in [A]^{R}$.
+Qed.
+
+(4) $-^{R} x \in B$ for all $x \in B$.
+
+Proof.
+Let $x \in B$.
+Let $a \in A$. Then $x \cdot^{R} a \in [A]^{R}$.
+Then $(-^{R} x) \cdot^{R} a = -^{R} (x\cdot^{R} a) \in [A]^{R}$.
+Qed.
+
+(5) $B$ is a subgroup of $R$.
+
+(6) $A \subseteq B$. Indeed $A$ is closed under multiplication in $R$.
+
+(7) $[A]^{R} \subseteq B$.
+
+(8) For all $b \in [A]^{R}$ and all $a \in A$ $b \cdot^{R} a \in [A]^{R}$.
+
+(9) For all $a \in A$ and all $b \in [A]^{R}$  $a \cdot^{R} b \in [A]^{R}$.
+
+Define $C = \{c \in R \mid c \cdot^{R} a \in [A]^{R}$ for all $a \in [A]^{R}\}$.
+
+(10) $C$ is a subset of $R$.
+
+(11) $0^{R} \in C$.
+
+(12) $x +^{R} y \in C$ for all $x,y \in C$.
+
+Proof.
+Let $x,y \in C$.
+Let $a \in [A]^{R}$. Then $x \cdot^{R} a, y \cdot^{R} a \in [A]^{R}$.
+Then $(x +^{R} y) \cdot^{R} a = (x \cdot^{R} a) +^{R} (y \cdot^{R} a) \in [A]^{R}$.
+Qed.
+
+(13) $-^{R} x \in C$ for all $x \in C$.
+
+Proof.
+Let $x \in C$.
+Let $a \in [A]^{R}$. Then $x \cdot^{R} a \in [A]^{R}$.
+Then $(-^{R} x) \cdot^{R} a = -^{R} (x\cdot^{R} a) \in [A]^{R}$.
+Qed.
+
+(14) $C$ is a subgroup of $R$.
+
+(15) $A \subseteq C$ (by 9). 
+
+(16) $[A]^{R} \subseteq C$.
+
+(17) For all $b \in [A]^{R}$ and all $a \in [A]^{R}$ $b \cdot^{R} a \in [A]^{R}$.
+
+\end{proof}
+\end{forthel}
+
+\section{Binomial Properties in Rings}
+
+\subsection{Binomial Coefficients}
+
+As natural numbers, the binomial coefficients can be 
+canonically embedded 
+into a ring $R$ together with their recursive properties.
+
+\begin{forthel}
+
+Let $R$ denote a ring.
+Let $n,m,k,l,i,j$ denote natural numbers.
+
+\begin{lemma}
+$\cho{n}{0}^{[R]} = 1^{R}$.
+\end{lemma}
+
+\begin{lemma}
+$\cho{0}{i}^{[R]} = 0^{R}$ for all $i$ such that $i \geq 1$.
+\end{lemma}
+
+\begin{lemma} Let $i \geq 1$.
+$\cho{n+1}{i}^{[R]} = \cho{n}{i}^{[R]} +^{R} \cho{n}{i-1}^{[R]}$.
+\end{lemma}
+
+\begin{lemma}
+If $i \geq n + 1$ then $\cho{n}{i}^{[R]} = 0^{R}$.
+\end{lemma}
+
+\begin{theorem} 
+$\cho{n}{n}^{[R]} = 1^{R}$.
+\end{theorem}
+
+\begin{lemma} Let $S$ be a subring of $R$.
+Let $p$ be a prime number.
+Let $0 < i < p$. Then
+$p^{[R]}$ divides $\cho{p}{i}^{[R]}$ in $S$ within $R$.
+\end{lemma}
+
+\end{forthel}
+
+\subsection{Binomial Sums}
+
+We shall deal with ``partial'' binomial sums of the form
+\[\sum_{i=0}^m {n \choose i} x^{n-i} y^{i}.\]
+We view the summation as a first-order function symbol in the 
+arguments $m,n,x,y,R$ and specify the function axiomatically.
+
+\newcommand{\binsum}[5]{{\sum}_{i = 0}^{{#1}} {#2 \choose i} #3^{#2 - i} #4^{i}}
+
+\begin{forthel}
+
+\begin{signature} Let $x,y \in R$.
+\[\binsum{k}{m}{x}{y}{R}\] is an element of $R$.
+\end{signature}
+
+\begin{axiom} Let $m$ be a natural number and $x,y \in R$.
+Then 
+\[\binsum{0}{m}{x}{y}{R} = x^{m,R}.\]
+\end{axiom}
+
+\begin{axiom}[id = Summation recursion, title = Summation recursion]
+Let $1 \leq k \leq m$ and $x,y \in R$. 
+Then 
+
+$\binsum{k}{m}{x}{y}{R} = $
+
+$(\binsum{k-1}{m}{x}{y}{R}) +^{R} 
+(\cho{m}{k}^{[R]} \cdot^{R} (x^{m - k,R} \cdot^{R} y^{k,R}))$. 
+\end{axiom}
+\end{forthel}
+The remaining algebraic proofs in this section will be rather tedious since 
+\Naproche so far does not have efficient term rewriting or an inbuilt ring theory.
+\begin{forthel}
+
+\begin{lemma}
+Let $x,y \in R$. For all natural numbers $m$ if $m \leq n$ then
+
+$(\binsum{m}{n}{x}{y}{R}) \cdot^{R} (x +^{R} y) =$
+
+$(\binsum{m}{n+1}{x}{y}{R}) +^{R} 
+(\cho{n}{m}^{[R]} \cdot^{R} (x^{n-m,R} \cdot^{R} y^{m+1,R})).$
+\end{lemma}
+
+\begin{proof}[method = induction]
+Let $m$ be a natural number such that $m \leq n$.
+
+Case $m = 0$. 
+
+$(\binsum{0}{n}{x}{y}{R}) \cdot^{R} (x +^{R} y) =$
+
+$x^{n,R} \cdot^{R} (x +^{R} y) =$
+
+$(x^{n,R} \cdot^{R} x) +^{R} (x^{n,R} \cdot^{R} y) =$
+
+$x^{n+1,R} +^{R} (x^{n,R} \cdot^{R} y) =$
+
+$(\binsum{0}{n+1}{x}{y}{R}) +^{R} (1^{R} \cdot^{R}(x^{n,R} \cdot^{R} y)) =$
+
+$(\binsum{0}{n+1}{x}{y}{R}) +^{R} (\cho{n}{0}^{[R]} \cdot^{R}(x^{n-0,R} \cdot^{R} y)) =$
+
+$(\binsum{0}{n+1}{x}{y}{R}) +^{R} (\cho{n}{0}^{[R]} \cdot^{R}(x^{n-0,R} \cdot^{R} y^{0+1,R}))$.
+
+Indeed $y = 1^{R} \cdot^{R} y$.
+
+End.
+
+Take $m' = m-1$.
+
+[timelimit 30]
+
+$(\binsum{m}{n}{x}{y}{R}) \cdot^{R} (x +^{R} y) = $
+
+$((\binsum{m-1}{n}{x}{y}{R}) +^{R} 
+(\cho{n}{m}^{[R]} \cdot^{R} (x^{n - m,R} \cdot^{R} y^{m,R}))) \cdot^{R} (x +^{R} y)$.
+
+[timelimit 3]
+
+$((\binsum{m-1}{n}{x}{y}{R}) +^{R} 
+(\cho{n}{m}^{[R]} \cdot^{R} (x^{n - m,R} \cdot^{R} y^{m,R}))) \cdot^{R} (x +^{R} y) =$
+
+$ ((\binsum{m'}{n}{x}{y}{R}) \cdot^{R} (x +^{R} y)) +^{R} 
+((\cho{n}{m}^{[R]} \cdot^{R} (x^{n - m,R} \cdot^{R} y^{m,R})) \cdot^{R} (x +^{R} y)) =$
+
+$ ((\binsum{m'}{n+1}{x}{y}{R}) +^{R} (\cho{n}{m'}^{[R]} \cdot^{R} (x^{n-m',R} \cdot^{R} y^{m'+1,R}))) $
+$ +^{R} ((\cho{n}{m}^{[R]} \cdot^{R} (x^{n - m,R} \cdot^{R} y^{m,R})) \cdot^{R} (x +^{R} y)) =$
+
+$ ((\binsum{m'}{n+1}{x}{y}{R}) +^{R} (\cho{n}{m'}^{[R]} \cdot^{R} (x^{n-m',R} \cdot^{R} y^{m'+1,R}))) $
+$ +^{R} 
+(((\cho{n}{m}^{[R]} \cdot^{R} (x^{n - m,R} \cdot^{R} y^{m,R})) \cdot^{R} x)
+   +^{R} ((\cho{n}{m}^{[R]} \cdot^{R} (x^{n - m,R} \cdot^{R} y^{m,R})) \cdot^{R} y)) $.
+
+[timelimit 20]
+
+$ ((\binsum{m'}{n+1}{x}{y}{R}) +^{R} (\cho{n}{m'}^{[R]} \cdot^{R} (x^{n-m',R} \cdot^{R} y^{m'+1,R}))) $
+$ +^{R} 
+(((\cho{n}{m}^{[R]} \cdot^{R} (x^{n - m,R} \cdot^{R} y^{m,R})) \cdot^{R} x)
+   +^{R} ((\cho{n}{m}^{[R]} \cdot^{R} (x^{n - m,R} \cdot^{R} y^{m,R})) \cdot^{R} y)) =$
+
+$ ((\binsum{m'}{n+1}{x}{y}{R}) +^{R} ((\cho{n}{m'}^{[R]} \cdot^{R} (x^{n-m',R} \cdot^{R} y^{m'+1,R})) $
+$ +^{R} 
+((\cho{n}{m}^{[R]} \cdot^{R} (x^{n - m,R} \cdot^{R} y^{m,R})) \cdot^{R} x)))
+   +^{R} ((\cho{n}{m}^{[R]} \cdot^{R} (x^{n - m,R} \cdot^{R} y^{m,R})) \cdot^{R} y) $.
+
+$(\cho{n}{m}^{[R]} \cdot^{R} (x^{n - m,R} \cdot^{R} y^{m,R})) \cdot^{R} y =
+\cho{n}{m}^{[R]} \cdot^{R} ((x^{n - m,R} \cdot^{R} y^{m,R}) \cdot^{R} y) =
+\cho{n}{m}^{[R]} \cdot^{R} (x^{n - m,R} \cdot^{R} y^{m+1,R})$.
+
+
+$ ((\binsum{m'}{n+1}{x}{y}{R}) +^{R} ((\cho{n}{m'}^{[R]} \cdot^{R} (x^{n-m',R} \cdot^{R} y^{m'+1,R})) $
+$ +^{R} 
+((\cho{n}{m}^{[R]} \cdot^{R} (x^{n - m,R} \cdot^{R} y^{m,R})) \cdot^{R} x)))
+   +^{R} ((\cho{n}{m}^{[R]} \cdot^{R} (x^{n - m,R} \cdot^{R} y^{m,R})) \cdot^{R} y) =$
+
+$ ((\binsum{m'}{n+1}{x}{y}{R}) +^{R} ((\cho{n}{m'}^{[R]} \cdot^{R} (x^{n-m',R} \cdot^{R} y^{m'+1,R})) $
+$ +^{R} 
+((\cho{n}{m}^{[R]} \cdot^{R} (x^{n - m,R} \cdot^{R} y^{m,R})) \cdot^{R} x)))
+   +^{R} (\cho{n}{m}^{[R]} \cdot^{R} (x^{n - m,R} \cdot^{R} y^{m+1,R})) $.
+
+$x^{n-m',R} \cdot^{R} y^{m'+1,R} = x^{(n+1)-m,R} \cdot^{R} y^{m,R}.$
+
+$\cho{n}{m'}^{[R]} \cdot^{R} (x^{n-m',R} \cdot^{R} y^{m'+1,R}) = 
+\cho{n}{m'}^{[R]} \cdot^{R} (x^{(n+1)-m,R} \cdot^{R} y^{m,R})$.
+
+$(\cho{n}{m}^{[R]} \cdot^{R} (x^{n - m,R} \cdot^{R} y^{m,R})) \cdot^{R} x = $
+
+$\cho{n}{m}^{[R]} \cdot^{R} ((x^{n - m,R} \cdot^{R} y^{m,R}) \cdot^{R} x)$.
+
+$(x^{n - m,R} \cdot^{R} y^{m,R}) \cdot^{R} x = 
+x^{n - m,R} \cdot^{R} (y^{m,R} \cdot^{R} x) =
+x^{n - m,R} \cdot^{R} (x \cdot^{R} y^{m,R}) =
+(x^{n - m,R} \cdot^{R} x) \cdot^{R} y^{m,R}$.
+
+$(n - m) + 1 = (n + 1) - m$.
+
+$(x^{n - m,R} \cdot^{R} x) \cdot^{R} y^{m,R} =$
+$x^{(n+1)-m,R} \cdot^{R} y^{m,R}$.
+
+$(\cho{n}{m}^{[R]} \cdot^{R} (x^{n - m,R} \cdot^{R} y^{m,R})) \cdot^{R} x = $
+
+$\cho{n}{m}^{[R]} \cdot^{R} (x^{(n+1) - m,R} \cdot^{R} y^{m,R})$.
+
+$x^{n-m',R} \cdot^{R} y^{m'+1,R} = x^{(n+1)-m,R} \cdot^{R} y^{m,R}.$
+
+$ ((\binsum{m'}{n+1}{x}{y}{R}) +^{R} ((\cho{n}{m'}^{[R]} \cdot^{R} (x^{n-m',R} \cdot^{R} y^{m'+1,R})) $
+$ +^{R} 
+((\cho{n}{m}^{[R]} \cdot^{R} (x^{n - m,R} \cdot^{R} y^{m,R})) \cdot^{R} x)))
+   +^{R} (\cho{n}{m}^{[R]} \cdot^{R} (x^{n - m,R} \cdot^{R} y^{m+1,R})) = $
+
+$ ((\binsum{m'}{n+1}{x}{y}{R}) +^{R} ((\cho{n}{m'}^{[R]} \cdot^{R} (x^{(n+1)-m,R} \cdot^{R} y^{m,R})) $
+$ +^{R} 
+(\cho{n}{m}^{[R]} \cdot^{R} (x^{(n+1) - m,R} \cdot^{R} y^{m,R}))))
+   +^{R} (\cho{n}{m}^{[R]} \cdot^{R} (x^{n - m,R} \cdot^{R} y^{m+1,R})) =$
+
+$ ((\binsum{m'}{n+1}{x}{y}{R}) +^{R} ((\cho{n}{m'}^{[R]} +^{R}  \cho{n}{m}^{[R]} )\cdot^{R} (x^{(n+1)-m,R} \cdot^{R} y^{m,R}) $
+$  ))
+   +^{R} (\cho{n}{m}^{[R]} \cdot^{R} (x^{n - m,R} \cdot^{R} y^{m+1,R})) $.
+
+$\cho{n}{m'}^{[R]} +^{R}  \cho{n}{m}^{[R]} = \cho{n+1}{m}^{[R]}$.
+
+
+
+$ \binsum{m}{n+1}{x}{y}{R} =$
+$(\binsum{m'}{n+1}{x}{y}{R}) +^{R} (\cho{n+1}{m}^{[R]} \cdot^{R} (x^{(n+1)-m,R} \cdot^{R} y^{m,R}))$.
+
+
+
+$ ((\binsum{m'}{n+1}{x}{y}{R}) +^{R} ((\cho{n}{m'}^{[R]} +^{R}  \cho{n}{m}^{[R]} )\cdot^{R} (x^{(n+1)-m,R} \cdot^{R} y^{m,R}) $
+$  ))
+   +^{R} (\cho{n}{m}^{[R]} \cdot^{R} (x^{n - m,R} \cdot^{R} y^{m+1,R})) =$
+
+
+$ ((\binsum{m'}{n+1}{x}{y}{R}) +^{R} (\cho{n+1}{m}^{[R]} \cdot^{R} (x^{(n+1)-m,R} \cdot^{R} y^{m,R}) $
+$  ))
+   +^{R} (\cho{n}{m}^{[R]} \cdot^{R} (x^{n - m,R} \cdot^{R} y^{m+1,R})) =$
+
+$ (\binsum{m}{n+1}{x}{y}{R}) $
+$  +^{R} (\cho{n}{m}^{[R]} \cdot^{R} (x^{n - m,R} \cdot^{R} y^{m+1,R})) $.
+
+
+
+
+\end{proof}
+
+\begin{theorem}
+Let $x,y \in R$. For all natural numbers $n$ we have
+\[(x +^{R} y)^{n,R} = \binsum{n}{n}{x}{y}{R}.\]
+\end{theorem}
+\begin{proof}[method = induction]
+Let $n$ be a natural number.
+
+Case $n = 0$. Trivial.
+
+Take $n' = n-1$.
+
+$(x +^{R} y)^{n,R} =$
+
+$(x +^{R} y)^{n',R} \cdot^{R} (x +^{R} y) =$
+
+$\binsum{n'}{n'}{x}{y}{R} \cdot^{R} (x +^{R} y) =$
+
+$(\binsum{n'}{n'+1}{x}{y}{R}) +^{R} (\cho{n'}{n'}^{[R]} \cdot^{R} (x^{n'-n',R} \cdot^{R} y^{n'+1,R})) =$
+
+$(\binsum{n-1}{n}{x}{y}{R}) +^{R} (\cho{n}{n}^{[R]} \cdot^{R} (x^{n-n,R} \cdot^{R} y^{n,R})).$
+
+[timelimit 8]
+
+
+$(\binsum{n-1}{n}{x}{y}{R}) +^{R} (\cho{n}{n}^{[R]} \cdot^{R} (x^{n-n,R} \cdot^{R} y^{n,R})) =$
+
+$\binsum{n}{n}{x}{y}{R}$ (by summation recursion).
+
+[timelimit 3]
+
+\end{proof}
+
+\end{forthel}
+
+\subsection{Divisibility} 
+
+\begin{forthel}
+
+\begin{lemma} Let $S$ be a subring of $R$.
+Let $x,y,z \in S$. Let $x | y$ in $S$ within $R$.
+Then $x | (y \cdot^{R} z)$ in $S$ within $R$.
+\end{lemma}
+
+\begin{lemma} Let $S$ be a subring of $R$.
+Let $x \in S$. For all natural numbers $n$
+$x^{n,R} \in S$.
+\end{lemma}
+\begin{proof}[method = induction]
+Let $n$ be a natural number.
+
+Case $n=0$. Trivial.
+
+Take $n'=n-1$.
+$x^{n',R} \in S$.
+$x^{n,R} = x^{n',R} \cdot^{R} x \in S$.
+\end{proof}
+
+
+\begin{lemma} Let $p$ be a prime number.
+Let $S$ be a subring of $R$ and $x,y \in S$. 
+Then for all natural numbers $m$ if $m < p$ then
+$\binsum{m}{p}{x}{y}{R} \equiv_{S} x^{p,R}$ mod $p^{[R]}$ within $R$.
+\end{lemma}
+
+\begin{proof}[method = induction]
+Let $m$ be a natural number such that $m < p$.
+
+Case $m = 0$. Trivial.
+
+Take $m' = m - 1$.
+
+(f1) $\binsum{m'}{p}{x}{y}{R} \equiv_{S} x^{p,R}$ mod $p^{[R]}$ within $R$.
+
+
+$p^{[R]}$ divides $\cho{p}{m}^{[R]}$ in $S$ within
+$R$.
+
+$x^{p - m,R} \in S$.
+
+$p^{[R]}$ divides $(\cho{p}{m}^{[R]} \cdot^{R} (x^{p - m,R} \cdot^{R} y^{m,R}))$ in $S$ within
+$R$.
+
+(f2) $(\cho{p}{m}^{[R]} \cdot^{R} (x^{p - m,R} \cdot^{R} y^{m,R})) \equiv_{S} 0^{R}$ mod $p^{[R]}$ within $R$.
+
+
+
+
+$(\binsum{m-1}{p}{x}{y}{R}) +^{R} (\cho{p}{m}^{[R]} \cdot^{R} (x^{p - m,R} \cdot^{R} y^{m,R}))  
+\equiv_{S} x^{p,R}$ mod $p^{[R]}$ within $R$.
+
+Proof.
+Take $a = \binsum{m-1}{p}{x}{y}{R}$. 
+Take $b = (\cho{p}{m}^{[R]} \cdot^{R} (x^{p - m,R} \cdot^{R} y^{m,R}))$.
+Take $c = x^{p,R}$.
+$a \equiv_{S} c$ mod $p^{[R]}$ within $R$.
+$b \equiv_{S} 0^{R}$ mod $p^{[R]}$ within $R$.
+$b \in S$.
+$a +^{R} b \equiv_{S} c $ mod $p^{[R]}$ within $R$.
+Qed.
+
+$\binsum{m}{p}{x}{y}{R}  
+\equiv_{S} x^{p,R} $ mod $p^{[R]}$ within $R$.
+
+Proof. $m \leq p$. 
+
+[timelimit 30]
+
+$\binsum{m}{p}{x}{y}{R} = 
+(\binsum{m-1}{p}{x}{y}{R}) +^{R} (\cho{p}{m}^{[R]} \cdot^{R} (x^{p - m,R} \cdot^{R} y^{m,R}))$.
+[timelimit 3]
+
+QED.
+
+[timelimit 3]
+
+\end{proof}
+
+\begin{lemma} Let $p$ be a prime number.
+Let $S$ be a subring of $R$ and $x,y \in S$. 
+Then $(x +^{R} y)^{p,R} \equiv_{S} x^{p,R} +^{R} y^{p,R}$ mod $p^{[R]}$ within $R$.
+\end{lemma}
+
+\begin{proof} $p \geq 1$.
+
+[timelimit 30]
+
+$(x +^{R} y)^{p,R} =  \binsum{p}{p}{x}{y}{R} =$
+
+$ (\binsum{p-1}{p}{x}{y}{R}) +^{R} (\cho{p}{p}^{[R]} \cdot^{R} (x^{p - p,R} \cdot^{R} y^{p,R})) =$
+
+$ (\binsum{p-1}{p}{x}{y}{R}) +^{R} y^{p,R}$.
+
+Indeed $\cho{p}{p}^{[R]} \cdot^{R} (x^{p - p,R} \cdot^{R} y^{p,R}) = y^{p,R}$.
+
+$ \binsum{p-1}{p}{x}{y}{R} \equiv_{S} x^{p,R}$ mod $p^{[R]}$ within $R$.
+
+$ \binsum{p-1}{p}{x}{y}{R} +^{R} y^{p,R} \equiv_{S} x^{p,R} +^{R} y^{p,R}$ mod $p^{[R]}$ within $R$.
+
+Proof.
+Take $a = \binsum{p-1}{p}{x}{y}{R}$.
+Take $b = x^{p,R}$. 
+
+$a \equiv_{S} b $ mod $p^{[R]}$ within $R$.
+
+Take $c = y^{p,R}$.
+
+$a +^{R} y^{p,R} \equiv_{S} b +^{R} y^{p,R} $ mod $p^{[R]}$ within $R$.
+Qed.
+[timelimit 3]
+\end{proof}
+
+\begin{lemma} Let $p$ be a prime number.
+Let $S$ be a subring of $R$ and $x,y \in S$. 
+Then $(x -^{R} y)^{p,R} \equiv_{S} x^{p,R} -^{R} y^{p,R}$ mod $p^{[R]}$ within $R$.
+\end{lemma}
+\begin{proof}
+
+Case $p$ is even. Then $p$ is equal to $2$.
+
+$(x -^{R} y)^{2,R} \equiv_{S} x^{2,R} +^{R} (-^{R}y)^{2,R}$ mod $2^{[R]}$ within $R$.
+
+$(x -^{R} y)^{2,R} \equiv_{S} x^{2,R} +^{R} y^{2,R}$ mod $2^{[R]}$ within $R$.
+
+$x^{2,R} +^{R} y^{2,R} \equiv_{S} x^{2,R} -^{R} y^{2,R}$ mod $2^{[R]}$ within $R$.
+Indeed $y^{2,R} \equiv_{S} -^{R}(y^{2,R})$ mod $2^{[R]}$ within $R$.
+
+$(x -^{R} y)^{2,R}$, $x^{2,R} +^{R} y^{2,R}$, 
+$x^{2,R} -^{R} y^{2,R} \in S$.
+
+Hence $(x -^{R} y)^{2,R} \equiv_{S} x^{2,R} -^{R} y^{2,R}$ mod $2^{[R]}$ within $R$.
+
+End. 
+
+$p$ is odd.
+
+$(x -^{R} y)^{p,R} \equiv_{S} x^{p,R} +^{R} (-^{R}y)^{p,R}$ mod $p^{[R]}$ within $R$.
+
+$(x -^{R} y)^{p,R} \equiv_{S} x^{p,R} -^{R} y^{p,R}$ mod $p^{[R]}$ within $R$.
+\end{proof}
+\end{forthel}
+
+\section{Topological Spaces}
+
+We present some initial definitions of set-theoretic topology.
+
+\subsection{Topological Axioms}
+
+\begin{forthel}
+
+\begin{signature}
+A topological space is a set.
+\end{signature}
+
+Let $T$ denote a topological space.
+
+\begin{signature} Assume that $T$ is a topological space and $X$ is a subset of $T$.
+$X$ is open in $T$ is an atom.
+\end{signature}
+
+\begin{definition}
+An open subset of $T$ is a subset of $T$ that is open in $T$.
+\end{definition}
+
+\begin{axiom} $T$ is open in $T$. \end{axiom}
+
+\begin{axiom} Let $X$ be an open subsets of $T$ and $Y$ be an open subset of $T$.
+Then $X \cap Y$ is open in $T$.
+\end{axiom}
+
+\begin{axiom} Let $Z$ be a set such that every element of $Z$
+is an open subset of $T$. Then $\bigcup Z$ is open in $T$.
+\end{axiom}
+
+\begin{lemma} $\emptyset$ is open in $T$. \end{lemma}
+\begin{proof} $\emptyset = \bigcup \emptyset$. \end{proof}
+
+\end{forthel}
+\subsection{Convergence}
+
+For the notions of convergence and completeness we follow Wedhorn 
+\cite{Wedhhorn2019}, 5.4.
+
+\begin{forthel}
+
+[synonym neighborhood/-s]
+
+\begin{definition} Let $x \in T$. A neighborhood of $x$ in $T$
+is a subset $V$ of $T$ such that there is a subset $U$ of $V$  
+such that $U$ is open in $T$ and $x \in U$.
+\end{definition}
+
+\begin{lemma} Let $x \in T$. Let $V,V'$ be neighborhoods of $x$ in $T$.
+Then $V \cap V'$ is a neighborhood of $x$ in $T$.
+\end{lemma}
+\begin{proof} Take a subset $U$ of $V$ such that $U$ is open
+in $T$ and $x \in U$.
+Take a subset $U'$ of $V'$ such that $U'$ is open
+in $T$ and $x \in U'$.
+Then $U \cap U'$ is open in $T$.
+$x \in U \cap U' \subseteq V \cap V'$.
+\end{proof}
+
+\begin{lemma}
+Let $x$ be an element of $T$. Let $U,V$ be subsets of $T$
+such that $U$ is a neighborhood of
+$x$ in $T$ and $U \subseteq V$.
+Then $V$ is a neighborhood of $x$ in $T$.
+\end{lemma}
+
+\end{forthel}
+A topology is determined by its neighborhoods.
+\begin{forthel}
+
+\begin{lemma} Let $A \subseteq T$. Then $A$ is open in $T$ iff
+for every $x \in A$ there exists a neighborhood $V$ of
+$x$ in $T$ such that $V \subseteq A$.
+\end{lemma}
+
+\begin{proof}
+Case $A$ is open in $T$. Obvious.
+
+Case For every $x \in A$ there exists a neighborhood $V$ of
+$x$ in $T$ such that $V \subseteq A$.
+For every $x \in A$ there exists a subset $U$ of $A$ such
+that $U$ is open in $T$ and $x \in U$.
+Define $Z = \{U \mid U \subseteq A$ and $U$ is open in $T\}$.
+$Z$ is a set.
+Every element of $Z$ is a subset
+of $T$ that is open in $T$.
+$\bigcup Z \subseteq A$.
+
+$A = \bigcup Z$. 
+
+Proof. Let $x$ be an element of $A$. Take
+an element $U$ of $Z$ such that
+$x \in U$. $U \subseteq \bigcup Z$.
+qed.
+
+Hence $A$ is open in $T$. Indeed every element of $Z$ is an open subset of $T$.
+qed.
+\end{proof}
+
+\begin{definition} $T$ is Hausdorff iff for all distinct elements
+$x,y$ of $T$ 
+there are sets $A$, $B$ such that $A$ is a neighborhood of $x$ in $T$ 
+and $B$ is a neighborhood of $y$ in $T$ and
+$A \cap B = \emptyset$.
+\end{definition}
+
+\begin{definition}
+A filter basis on $T$ is a nonempty set $B$ such that
+every element of $B$ is a nonempty subset of $T$ and
+for all elements $X,Y$ of $B$ there exists an element $Z$ of $B$
+such that  $Z \subseteq X \cap Y$.
+\end{definition}
+
+\begin{definition}
+Let $B$ be a filter basis on $T$ and $x \in T$.
+$B$ converges to $x$ in $T$ iff for every 
+neighborhood $U$ of $x$ in $T$ 
+there exists an element $X$ of $B$ such that $X \subseteq U$.
+\end{definition}
+
+\begin{definition}
+Let $B$ be a filter basis on $T$.
+$B$ converges in $T$ iff 
+$B$ converges to some element of $T$ in $T$.
+\end{definition}
+
+\begin{definition} Let $x$ be an element of $T$.
+The neighborhood filter of $x$ in $T$ is the collection of neighborhoods of $x$ in $T$.
+\end{definition}
+
+Let $\neigh{x}{T}$ denote the neighborhood filter of $x$ in $T$.
+
+\begin{lemma}
+$\neigh{x}{T}$ is a set for all $x \in T$.
+\end{lemma}
+
+\begin{lemma}
+Let $x$ be an element of $T$. $\neigh{x}{T}$ is a filter basis on $T$ that converges
+to $x$ in $T$.
+\end{lemma}
+
+\end{forthel}
+
+\section{Topological Groups}
+
+A topological group requires its operations to be topologically continuous. 
+
+\begin{forthel}
+
+Let $G$ denote a group that is a topological space.
+
+\end{forthel}
+
+Let us now hide the parameter $G$ as we did previously.
+\catcode`^\active
+\def^#1{\ifthenelse{\equal{#1}{G}} {\unskip} {\sp{#1}}}
+(Note that $R$ is no longer ``hidden'').
+
+\begin{forthel}
+
+\begin{definition}
+Let $x,x' \in G$. $G$ is additively continuous at $x$ and $x'$ iff
+for every neighborhood $U$ of $x +^{G} x'$ in $G$
+there are subsets $V,V'$ of $G$ such that 
+$V$ is a neighborhood of $x$ in $G$ and $V'$ is a neighborhood
+of $x'$ in $G$ and for all $v \in V$ for all $v' \in V'$ 
+$v +^{G} v' \in U$.
+\end{definition}
+
+\begin{definition}
+$G$ is additively continuous iff $G$ is additively continuous at
+$x$ and $x'$ for all $x,x' \in G$.
+\end{definition}
+
+\begin{definition}
+Let $x \in G$. $G$ is negation continuous at $x$ iff
+for every neighborhood $U$ of $-^{G} x$ in $G$
+there exists a neighborhood $V$ of $x$ in $G$ such that 
+$-^{G} v \in U$ for all $v \in V$.
+\end{definition}
+
+\begin{definition}
+$G$ is negation continuous iff $G$ is negation continuous at $x$
+for every $x \in G$.
+\end{definition}
+
+\begin{definition}[title = Topological group]
+A topological group is a group $G$ such that $G$ is a topological space
+and $G$ is additively continuous and negation continuous.
+\end{definition}
+
+Let $G$ denote a topological group.
+
+\begin{definition}
+A fundamental system of neighborhoods of $G$ is a subset $F$ of $\neigh{0^{G}}{G}$ such
+that for every neighborhood $U$ of $0^{G}$ in $G$ there exists $V \in F$ such that
+$V \subseteq U$.
+\end{definition}
+
+\begin{definition}
+A fundamental system of open neighborhoods of $G$ is 
+a fundamental system of neighborhoods $F$ of $G$ such
+that every element of $F$ is open in $G$.
+\end{definition}
+
+
+\begin{proposition}
+$\neigh{0^{G}}{G}$ is a fundamental system of neighborhoods of $G$.
+\end{proposition}
+
+\begin{definition}
+$G$ is nonarchimedean iff every neighborhood $U$ of $0^{G}$ in $G$
+has a subset $S$ that is a subgroup of $G$ and open in $G$.
+\end{definition}
+
+\begin{lemma}
+Let $B$ be a subgroup of $G$ that is a neighborhood of $0^{G}$ in $G$.
+Then $B$ is open in $G$.
+\end{lemma}
+\begin{proof} 
+Let $x \in B$. 
+$G$ is additively continuous at $x$ and $-^{G} x$.
+$B$ is a neighborhood of 
+$x +^{G} (-^{G} x)$ in $G$.
+[timelimit 10]
+Take subsets $V,V'$ of $G$ such that 
+$V$ is a neighborhood of $x$ in $G$ and $V'$ is a neighborhood
+of $-^{G} x$ in $G$ and for all $v \in V$, all $v' \in V'$ 
+$v +^{G} v' \in B$.
+[timelimit 3]
+
+(1) $V \subseteq B$.
+Proof. Let $v \in V$.
+Then $v +^{G} (-^{G} x) \in B$.
+$v = (v +^{G} (-^{G} x)) +^{G} x \in B$.
+end.
+\end{proof}
+
+
+\end{forthel}
+
+\subsection{Completeness}
+
+\begin{forthel}
+Let $G$ denote a topological group.
+
+\begin{definition}
+Let $B$ be a filter basis on $G$. $B$ is Cauchy in $G$ iff
+for every neighborhood $U$ of $0^{G}$ in $G$ there exists
+$A \in B$ such that $x -^{G} y \in U$ 
+for all $x,y \in A$.
+\end{definition}
+
+\begin{definition}
+$G$ is complete iff $G$ is Hausdorff and every filter basis on $G$ 
+that is Cauchy in $G$ converges in $G$.
+\end{definition}
+
+\end{forthel}
+
+\section{Topological Rings}
+
+A topological ring has continuous multiplication.
+
+\begin{forthel}
+
+
+Let $R$ denote a ring that is a topological space.
+\end{forthel}
+Let us hide \verb|^{R}| and \verb|,R}| as we have done before.
+\catcode`^\active
+\def^#1{\ifthenelse{\equal{#1}{R}} {\unskip} 
+       {{\IfEndWith{#1}{,R}{\sp{\StrBefore{#1}{,R}}}{\sp{#1}}}}}
+
+\begin{forthel}
+
+\begin{definition}
+Let $x,x' \in R$. $R$ is multiplicatively continuous at $x$ and $x'$ iff
+for every neighborhood $U$ of $x \cdot^{R} x'$ in $R$
+there are subsets $V,V'$ of $R$ such that 
+$V$ is a neighborhood of $x$ in $R$ and $V'$ is a neighborhood
+of $x'$ in $R$ and for all $v \in V$ for all $v' \in V'$ 
+$v \cdot^{R} v' \in U$.
+\end{definition}
+
+\begin{definition}
+$R$ is multiplicatively continuous iff $R$ is multiplicatively continuous at
+$x$ and $x'$ for all $x,x' \in R$.
+\end{definition}
+
+\begin{definition}[title = Topological ring]
+A topological ring is a ring $R$ such that $R$ is a topological group
+and $R$ is multiplicatively continuous.
+\end{definition}
+
+\end{forthel}
+
+\part{Perfectoid Rings}
+
+\section{Boundedness}
+
+This chapter corrresponds to parts of the file \verb+power_bounded.lean+
+in the Lean formalization of perfectoid spaces \cite{Lean} which contains
+the theory of topologically nilpotent, bounded, and power-bounded
+elements and subsets of topological rings. The line numbers ``L ...'' after
+some definitions and theorems refer to that file.
+We also use material from \cite{Wedhhorn2019}.
+We omit those parts that depend on an adic topology on $R$, since this
+will not be needed in our definition of perfectoid rings.
+Initially we do not require a connection between the
+algebraic and the topological structure on $R$.
+
+\begin{forthel}
+Let $R$ denote a ring that is a topological space.
+
+%42
+\begin{definition}[title = L 42] Assume that $B$ is a subset of $R$.
+$B$ is bounded in $R$ iff for all neighborhoods $U$ of $0^{R}$
+in $R$ there exists a neighborhood $V$ of $0^{R}$ in $R$ such that
+$v \cdot^{R} b \in U$ where $v \in V$ and $b \in B$.
+\end{definition}
+
+\end{forthel}
+The last condition can be expressed by products of sets:
+\begin{forthel}
+%48
+\begin{lemma}[title = L 48] Assume that $B$ is a subset of $R$.
+$B$ is bounded in $R$ if and only if for all neighborhoods $U$ of $0^{R}$
+in $R$ there exists a neighborhood $V$ of $0^{R}$ in $R$ such that
+$V \star^{R} B \subseteq U$.
+\end{lemma}
+\begin{proof}
+CASE $B$ is bounded in $R$.
+Let $U$ be a neighborhood of $0^{R}$ in $R$.
+Take a neighborhood $V$ of $0^{R}$ in $R$ such that
+$v \cdot^{R} b \in U$ where $v \in V$ and $b \in B$.
+Then $V \star^{R} B \subseteq U$.
+end.
+
+CASE For every neighborhood $U$ of $0^{R}$
+in $R$ there exists a neighborhood $V$ of $0^{R}$ in $R$ such that
+$V \star^{R} B \subseteq U$.
+
+Let us show that $B$ is bounded in $R$. 
+Let $U$ be a neighborhood of $0^{R}$ in $R$.
+Take a neighborhood $V$ of $0^{R}$ in $R$ such that
+$V \star^{R} B \subseteq U$.
+Then $v \cdot^{R} b \in U$ where $v \in V$ and $b \in B$.
+end.
+end.
+\end{proof}
+
+\end{forthel}
+Now we strengthen our assumptions on $R$ to:
+\begin{forthel}
+%58
+Let $R$ denote a topological ring.
+
+%91
+\begin{lemma}[title = L 91] Let $R$ be nonarchimedean and $B \subseteq R$.
+Then $B$ is bounded in $R$ iff for all neighborhoods
+$U$ of $0^{R}$ in $R$ there exists a subgroup $V$ of $R$ such
+that $V$ is open in $R$ and the additive closure of
+$V \star^{R} B$ in $R$ is a subset of $U$.
+\end{lemma}
+
+\begin{proof}
+CASE $B$ is bounded in $R$.
+Let $U$ be a neighborhood of $0^{R}$ in $R$.
+Take a subset $U'$ of $U$ such that $U'$ is a subgroup of $R$ and open in $R$.
+$U'$ is a neighborhood of $0^{R}$ in $R$.
+Take a neighborhood $V'$ of $0^{R}$ in $R$ such that $V' \star^{R} B \subseteq U'$.
+Take a subset $V$ of $V'$ such that $V$ is a subgroup of $R$ and open in $R$.
+Then $V \star^{R} B \subseteq U'$.
+The additive closure of $V \star^{R} B$ in $R$ is a subset of $U'$.
+end.
+
+CASE For all neighborhoods
+$U$ of $0^{R}$ in $R$ there exists a subgroup $V$ of $R$ such
+that $V$ is open in $R$ and the additive closure of
+$V \star^{R} B$ in $R$ is a subset of $U$.
+Let $U$ be a neighborhood of $0^{R}$ in $R$.
+Take a subgroup $V$ of $R$ such
+that $V$ is open in $R$ and the additive closure of
+$V \star^{R} B$ in $R$ is a subset of $U$.
+$V$ is a neighborhood of $0^{R}$ in $R$.
+$V \star^{R} B \subseteq R$.
+$V \star^{R} B$ is a subset of the additive closure of
+$V \star^{R} B$ in $R$.
+Then $V \star^{R} B \subseteq U$.
+end.
+\end{proof}
+
+\begin{definition} A bounded subset of $R$ is a subset of $R$ that is bounded in $R$.
+\end{definition}
+
+\begin{lemma}
+$\emptyset$ is a bounded subset of $R$.
+\end{lemma}
+
+\begin{lemma}[title = Boundedness of Singletons]
+Let $r \in R$. Then $\sing{r}$ is bounded in $R$.
+\end{lemma}
+\begin{proof}
+Let $U$ be a neighborhood of $0^{R} \cdot^{R} r$
+in $R$.
+$R$ is multiplicatively continuous at $0^{R}$ and $r$.
+[timelimit 10]
+Take $V,V' \subseteq R$ such that 
+$V$ is a neighborhood of $0^{R}$ in $R$ and $V'$ is a neighborhood
+of $r$ in $R$ and for all $v \in V$ for all $v' \in V'$ 
+$v \cdot^{R} v' \in U$.
+[timelimit 3]
+Then $V \star^{R} \sing{r} \subseteq U$.
+\end{proof}
+
+\begin{lemma}
+Let $B,B'$ be subsets of $R$ that are bounded in $R$.
+Then $B \cup B'$ is bounded in $R$.
+\end{lemma}
+\begin{proof}
+Let $U$ be a neighborhood of $0^{R}$ in $R$.
+Take a neighborhood $V$ of $0^{R}$ in $R$ such that
+$v \cdot^{R} b \in U$ where $v \in V$ and $b \in B$.
+Take a neighborhood $V'$ of $0^{R}$ in $R$ such that
+$v \cdot^{R} b \in U$ where $v \in V'$ and $b \in B'$.
+$V \cap V'$ is a neighborhood of $0^{R}$ in $R$.
+$v \cdot^{R} b \in U$ where $v \in V \cap V'$ and 
+$b \in B \cup B'$.
+\end{proof}
+
+\begin{lemma} For every natural number $n$
+for every map $s$ such that 
+$\Seq{1}{n} \subseteq \dom(s)$ and $\FinSet{s}{1}{n} \subseteq R$
+$\FinSet{s}{1}{n}$ is bounded in $R$.
+\end{lemma}
+\begin{proof}[method = induction]
+Let $n$ be a natural number.
+Let $s$ be a map such that 
+$\Seq{1}{n} \subseteq \dom(s)$ and $\FinSet{s}{1}{n} \subseteq R$.
+
+CASE $n = 0$. trivial.
+
+Take a natural number $m$ such that $n = m +1$. $m \prec n$.
+$\Seq{1}{m} \subseteq \dom(s)$. $\FinSet{s}{1}{m} \subseteq R$.
+$\FinSet{s}{1}{m}$ is bounded in $R$.
+
+$\FinSet{s}{1}{m+1} = \FinSet{s}{1}{m} \cup \sing{s_{m+1}}$.
+$\sing{s_{m+1}}$ is a bounded subset of $R$.
+Hence $\FinSet{s}{1}{m+1}$ is bounded in $R$.
+\end{proof}
+
+\begin{lemma}[title = 5 28 1]
+Every finite subset of $R$ is bounded in $R$.
+\end{lemma}
+
+\begin{lemma}
+Let $r,s \in R$. Then $\unp{r}{s}$ is bounded in $R$.
+\end{lemma}
+\begin{proof}
+$\unp{r}{s}$ is a finite subset of $R$.
+\end{proof}
+
+%136
+\begin{lemma}[title = L 136]
+Every subset of every bounded subset of $R$ is a bounded subset of $R$.
+\end{lemma}
+\begin{proof}
+Let $B$ be a bounded subset of $R$.
+Let $A \subseteq B$.
+Let $U$ be a neighborhood of $0^{R}$ in $R$.
+Take a neighborhood $V$ of $0^{R}$ in $R$ such that $V \star^{R} B \subseteq U$.
+Then $V \star^{R} A \subseteq V \star^{R} B \subseteq U$.
+$V \star^{R} A \subseteq U$.
+\end{proof}
+\end{forthel}
+
+The corresponding lemma and its proof in \verb+power_bounded.lean+ read:
+\begin{verbatim}
+lemma subset {S1 S2 : set R} 
+(h : S1 \subset S2) (H : is_bounded S2) : 
+is_bounded S1 :=
+begin
+  intros U hU,
+  rcases H U hU with <V, hV1, hV2>,
+  use [V, hV1],
+  intros v hv b hb,
+  exact hV2 _ hv _ (h hb),
+end
+\end{verbatim} 
+
+\begin{forthel}
+
+% Following was proved in Lean by induction on the build-up of the
+% additive closure, which is not available to us.
+
+%\begin{lemma}
+%Assume that $R$ be nonarchimedean and $T$ is a bounded subset of $R$.
+%Then the additive closure of $T$ in $R$ is bounded in $R$.
+%\end{lemma}
+
+%179
+\begin{definition}[title = L 179]
+Let $r$ be an element of $R$. $r$ is powerbounded in $R$ iff $\powers{r}{R}$ is 
+bounded in $R$.
+\end{definition}
+
+\begin{lemma}
+Let $r$ be an element of $R$. Then $r$ is powerbounded in $R$
+iff for all neighborhoods $U$ of $0^{R}$ in $R$ there exists
+a neighborhood $V$ of $0^{R}$ in $R$ such that
+$v \cdot^{R} r^{n,R} \in U$ where $v \in V$ and $n$ is
+a natural number.
+\end{lemma}
+
+\begin{proof}
+CASE $r$ is powerbounded in $R$.
+Let $U$ be a neighborhood of $0^{R}$ in $R$.
+Take a neighborhood $V$ of $0^{R}$ in $R$ such that
+$V \star^{R} \powers{r}{R} \subseteq U$.
+Indeed $\powers{r}{R}$ is bounded in $R$.
+Assume $w \in V$. Let $m$ be a natural number.
+Then $r^{m,R} \in \powers{r}{R}$.
+$w \cdot^{R} r^{m,R} \in V \star^{R} \powers{r}{R} \subseteq U$.
+
+end.
+
+CASE For all neighborhoods $U$ of $0^{R}$ in $R$ there exists
+a neighborhood $V$ of $0^{R}$ in $R$ such that
+$v \cdot^{R} r^{n,R} \in U$ where $v \in V$ and $n$ is
+a natural number.
+
+(1) $\powers{r}{R}$ is bounded in $R$.
+
+Proof.
+Let $U$ be a neighborhood of $0^{R}$ in $R$.
+Take a neighborhood $V$ of $0^{R}$ in $R$ such that
+$v \cdot^{R} r^{n,R} \in U$ where $v \in V$ and $n$ is a natural number.
+qed.
+end.
+\end{proof}
+
+%189
+\begin{lemma}[title = L 189]
+$0^{R}$ is powerbounded in $R$.
+\end{lemma}
+%199
+\begin{lemma}[title = L 199]
+$1^{R}$ is powerbounded in $R$.
+\end{lemma}
+
+\begin{lemma}
+$-^{R} 1^{R}$ is powerbounded in $R$.
+\end{lemma}
+\begin{proof} 
+$\unp{-^{R} 1^{R}}{1^{R}}$ is bounded in $R$.
+$\powers{-^{R} 1^{R}}{R} \subseteq \unp{-^{R} 1^{R}}{1^{R}}$.
+[timelimit 20]
+Hence $\powers{-^{R} 1^{R}}{R}$ is bounded in $R$.
+[timelimit 3]
+\end{proof}
+
+%248
+\begin{lemma}[title = L 248]
+Let $a,b$ be elements of $R$ that are powerbounded in $R$.
+Then $a\cdot^{R} b$ is powerbounded in $R$.
+\end{lemma}
+\begin{proof}
+Let $U$ be a neighborhood of $0^{R}$ in $R$.
+[timelimit 10]
+Take a neighborhood $V$ of $0^{R}$ in $R$ such that
+$v \cdot^{R} b^{n,R} \in U$ where $v \in V$ and $n$ is a natural number.
+[timelimit 15]
+Take a neighborhood $W$ of $0^{R}$ in $R$ such that
+$w \cdot^{R} a^{n,R} \in V$ where $w \in W$ and $n$ is a natural number.
+[timelimit 3]
+
+(1) $w \cdot^{R} (a \cdot^{R} b)^{n,R} \in U$ where 
+$w \in W$ and $n$ is a natural number.
+
+Proof. Let $w \in W$ and $n$ be a natural number.
+$w \cdot^{R} a^{n,R} \in V$.
+
+$w \cdot^{R} (a \cdot^{R} b)^{n,R} =
+%
+w  \cdot^{R} (a^{n,R} \cdot^{R} b^{n,R})= 
+%
+(w \cdot^{R} a^{n,R}) \cdot^{R} b^{n,R} \in U$. 
+
+qed. 
+\end{proof}
+
+\begin{lemma}[title = L 290]
+Let $R$ be nonarchimedean.
+Let $a,b$ be elements of $R$ that are powerbounded in $R$.
+Then $a +^{R} b$ is powerbounded in $R$.
+\end{lemma}
+\begin{proof}
+Let $U$ be a neighborhood of $0^{R}$ in $R$.
+Take a subset $U'$ of $U$ that is a subgroup of $R$ and open in $R$.
+$U'$ is a neighborhood of $0^{R}$ in $R$.
+[timelimit 30]
+Take a neighborhood $V$ of $0^{R}$ in $R$ such that
+$v \cdot^{R} b^{n,R} \in U'$ where $v \in V$ and $n$ is a natural number.
+[timelimit 30]
+Take a neighborhood $W$ of $0^{R}$ in $R$ such that
+$w \cdot^{R} a^{m,R} \in V$ where $w \in W$ and $m$ is a natural number.
+[timelimit 3]
+(1) $w \cdot^{R} (a^{m,R} \cdot^{R} b^{n,R}) \in U'$ where 
+$w \in W$ and $m,n$ are natural numbers.
+
+Proof. Let $w \in W$ and $m,n$ be natural numbers.
+
+$w \cdot^{R} a^{m,R} \in V$ and
+$w \cdot^{R} (a^{m,R} \cdot^{R} b^{n,R}) =
+(w \cdot^{R} a^{m,R}) \cdot^{R} b^{n,R} \in U$.
+ 
+qed.
+
+Define $G = \{x \in R \mid w \cdot^{R} x \in U'$ for all $w \in W\}$.
+
+(3) $G$ is a subgroup of $R$. 
+
+Proof.
+ 
+(a) $0^{R} \in G$.
+
+(b) For all $x,y \in G$ $x +^{R} y \in G$.
+
+Proof. Let $x,y \in G$.
+Let $w \in W$. Then
+$w \cdot^{R} (x +^{R} y)
+= (w \cdot^{R} x) +^{R} (w \cdot^{R} y) \in U'$.
+
+qed.
+
+(c) For all $x \in G$ $-^{R} x \in G$.
+
+Proof. Let $x \in G$. Let $w \in W$.
+
+$w \cdot^{R} (-^{R} x) = 
+w \cdot^{R} ((-^{R} 1^{R}) \cdot^{R} x) =
+(-^{R} 1^{R}) \cdot^{R} (w \cdot^{R} x) =
+-^{R} (w \cdot^{R} x)
+$.
+
+qed.
+
+qed.
+
+Define $Z = \{a^{m,R} \cdot^{R} b^{n,R} \mid m,n \in \mathbb{N}\}$.
+
+(2) $Z$ is a subset of $G$ that is closed under multiplication in $R$.
+
+Proof.
+Let $u,v \in Z$.
+Take $m,n \in \mathbb{N}$ such that
+$u = a^{m,R} \cdot^{R} b^{n,R}$.
+Take $m',n' \in \mathbb{N}$ such that
+$v = a^{m',R} \cdot^{R} b^{n',R}$.
+Then
+$u \cdot^{R} v = 
+(a^{m,R} \cdot^{R} b^{n,R}) \cdot^{R} (a^{m',R} \cdot^{R} b^{n',R}) =$
+
+$(a^{m,R} \cdot^{R} a^{m',R}) \cdot^{R} (b^{n,R} \cdot^{R} b^{n',R}) =$
+
+$a^{m+m',R} \cdot^{R} b^{n+n',R} \in Z$.
+
+Hence $u \cdot^{R} v \in Z$.
+Qed.
+
+(3) $1^{R},a,b \in Z$.
+Proof.
+$1^{R} = a^{0,R} \cdot^{R} b^{0,R}$.
+$a = a^{1,R} \cdot^{R} b^{0,R}$.
+$b = a^{0,R} \cdot^{R} b^{1,R}$.
+Qed.
+
+(4) $Z \subseteq G$.
+
+(5) $[Z]^{R} \subseteq G$.
+
+(6) $[Z]^{R}$ is closed under multiplication in $R$.
+
+(7) For all natural numbers $n$ $(a +^{R} b)^{n,R} \in [Z]^{R}$.
+Proof by induction. Let $n$ be a natural number.
+Case $n = 0$. Trivial.
+
+$a +^{R} b \in [Z]^{R}$.
+
+Let $m = n - 1$. Then $(a +^{R} b)^{m,R} \in [Z]^{R}$.
+
+$(a +^{R} b)^{n,R} = (a +^{R} b)^{m+1,R}
+= (a +^{R} b)^{m,R} \cdot^{R} (a +^{R} b) \in [Z]^{R}$.
+Qed.
+
+(8) For all natural numbers $n$ $(a +^{R} b)^{n,R} \in G$.
+
+(9) For all natural numbers $n$ and all $w \in W$ 
+$w \cdot^{R} (a +^{R} b)^{n,R} \in U'$ .
+
+\end{proof}
+
+%342
+\begin{lemma}[title = L 342]
+Let $a$ be an element of $R$ that is powerbounded in $R$.
+Then $-^{R} a$ is powerbounded in $R$.
+\end{lemma}
+\begin{proof}
+$-^{R} a = (-^{R} 1^{R}) \cdot^{R} a$.
+\end{proof}
+
+%310
+\begin{definition}[title = L 310]  $R^o = \{x \in R \mid  x$ is powerbounded in $R\}$. 
+\end{definition}
+
+\begin{lemma} $R^o$ is a subset of $R$. \end{lemma}
+
+%320
+\begin{lemma}[title = L 320]
+$0^{R} \in R^o$.
+\end{lemma}
+
+%322
+\begin{lemma}[title = L 322] 
+$1^{R} \in R^o$.
+\end{lemma}
+
+%324
+\begin{lemma}[title = L 324]
+Let $a,b \in R^o$. Then $a \cdot^{R} b \in R^o$.
+\end{lemma}
+
+\begin{lemma}[title = L 324]
+Let $a \in R^o$. Then $a^{n,R} \in R^o$ for all $n \in \mathbb{N}$.
+\end{lemma}
+
+\begin{proof}[method = induction]
+Let $n \in \mathbb{N}$.
+
+Case $n = 0$. Trivial.
+
+Take $m = n - 1$. $m$ is inductively smaller than $n$ and $a^{m,R} \in R^o$.
+Hence $a^{n,R} = a^{m,R} \cdot^{R} a \in R^o$.
+\end{proof}
+
+%337
+\begin{lemma}[title = L 337] Let $R$ be nonarchimedean.
+Let $a,b \in R^o$. Then $a +^{R} b \in R^o$.
+\end{lemma}
+
+%342
+\begin{lemma}[title = L 342]
+Let $a \in R^o$. Then $-^{R} a \in R^o$.
+\end{lemma}
+
+%365
+\begin{lemma}[title = L 365] Let $R$ be nonarchimedean. Then
+$R^o$ is a subgroup of $R$.
+\end{lemma}
+
+%371
+\begin{lemma}[title = L 371] Let $R$ be nonarchimedean. Then
+$R^o$ is a subring of $R$.
+\end{lemma}
+
+
+%380
+\begin{definition}[title =  380]
+$R$ is uniform iff $R^o$ is a bounded subset of $R$.
+\end{definition}
+
+\end{forthel}
+\subsection{Topological Nilpotency}
+\begin{forthel}
+
+
+%30
+\begin{definition}[title = L 30] Let $r$ be an element of $R$. $r$ is topologically
+nilpotent in $R$ iff for all neighborhoods $U$ of $0^{R}$ in $R$
+there exists a natural number $N$ such that $r^{n,R} \in U$ 
+for all natural numbers $n$
+such that $n > N$.
+\end{definition}
+
+\end{forthel}
+For example:
+\begin{forthel}
+
+\begin{lemma}
+$0^{R}$ is topologically nilpotent in $R$.
+\end{lemma}
+
+[timelimit 20]
+\begin{lemma} Assume that $R$ is Hausdorff.
+$1^{R}$ is not topologically nilpotent in $R$.
+\end{lemma}
+\begin{proof}
+Take sets $A,B$ such that $A$ is a neighborhood of $0^{R}$ in $R$
+and $B$ is a neighborhood of $1^{R}$ in $R$ and
+$A \cap B = \emptyset$.
+\end{proof}
+[timelimit 3]
+
+[prove on][check on]
+\end{forthel}
+
+\begin{definition}
+Let $x,x' \in R$. $R$ is multiplicatively continuous at $x$ and $x'$ iff
+for every neighborhood $U$ of $x \cdot^{R} x'$ in $R$
+there are subsets $V,V'$ of $R$ such that 
+$V$ is a neighborhood of $x$ in $R$ and $V'$ is a neighborhood
+of $x'$ in $R$ and for all $v \in V$ for all $v' \in V'$ 
+$v \cdot^{R} v' \in U$.
+\end{definition}
+
+\begin{forthel}
+
+\begin{theorem}
+Let $r$ be an element of $R$ that is topologically nilpotent in $R$.
+Then $r$ is powerbounded in $R$.
+\end{theorem}
+\begin{proof}
+
+Let $U$ be a neighborhood of $0^{R}$ in $R$.
+
+Take $h = 0^{R}$. Take $h' = 0^{R}$.
+$U$ is a neighborhood of $0^{R} \cdot^{R} 0^{R}$ in $R$.
+$R$ is multiplicatively continuous at $h$ and $h'$ and
+$U$ is a neighborhood of $h \cdot^{R} h'$ in $R$.
+[prover vampire]
+[timelimit 30]
+Take subsets $V,V'$ of $R$ such that
+$V$ is a neighborhood of $0^{R}$ in $R$ and
+$V'$ is a neighborhood of $0^{R}$ in $R$ and
+for all $v \in V$ for all $v' \in V'$ 
+$v \cdot^{R} v' \in U$.  
+[timelimit 3]
+[prover eprover]
+
+Take a natural number $N$ such that $r^{n,R} \in V$ 
+for all natural numbers $n$ such that $n > N$.
+Define $X = \{r^{n,R} \mid n \in \mathbb{N}$ and $1 \leq n \leq N\}$.
+
+(1) $X$ is finite.
+
+Proof. Define $s(n)= r^{n,R}$ for $n \in \Seq{1}{N}$.
+[timelimit 5]
+$X = \FinSet{s}{1}{N}$.
+[timelimit 3]
+qed.
+[timelimit 10]
+$X$ is bounded in $R$.
+Take a neighborhood $V''$ of $0^{R}$ in $R$ such that
+$v'' \cdot^{R} x \in U$ where $v'' \in V''$ and $x \in X$.
+Let $W = U \cap (V' \cap V'')$. 
+[timelimit 5]$W$ is a neighborhood
+of $0^{R}$ in $R$. Indeed $V' \cap V''$ is a neighborhood
+of $0^{R}$ in $R$.
+[timelimit 3]
+
+(2) $w \cdot^{R} x \in U$ where $w \in W$ and $x \in \powers{r}{R}$.
+    
+\end{proof}
+
+\begin{lemma}
+Let $a,b$ be elements of $R$ such that $a$ is topologically nilpotent in $R$ and
+$b$ is powerbounded in $R$.
+Then $a\cdot^{R} b$ is topologically nilpotent in $R$.
+\end{lemma}
+\begin{proof}
+Let $U$ be a neighborhood of $0^{R}$ in $R$.
+[timelimit 10]
+Take a neighborhood $V$ of $0^{R}$ in $R$ such that
+$v \cdot^{R} b^{n,R} \in U$ where $v \in V$ and $n$ is a natural number.
+[timelimit 15]
+Take a natural number $N$ such that
+$a^{n,R} \in V$ for all natural numbers $n$ such that $n > N$.
+[timelimit 3]
+
+(1) $(a \cdot^{R} b)^{n,R} \in U$ for all natural numbers $n$ such that $n > N$.
+
+Proof. Let $n$ be a natural number such that $n > N$.
+
+$(a \cdot^{R} b)^{n,R} = a^{n,R} \cdot^{R} b^{n,R} \in U$. 
+
+qed. 
+\end{proof}
+
+\begin{lemma} Let $R$ be Hausdorff.
+Let $a$ be an element of $R$ that is topologically nilpotent in $R$.
+Then $a$ does not divide $1^{R}$ in $R^o$ within $R$.
+\end{lemma}
+\begin{proof}
+Assume the contrary. 
+Take $b \in R^o$ such that $a \cdot^{R} b = 1^{R}$.
+Then  $a \cdot^{R} b$ is topologically nilpotent in $R$.
+Contradiction.
+\end{proof}
+
+\end{forthel}
+
+\section{Huber rings}
+\begin{forthel}
+
+Let $R$ denote a topological ring.
+\end{forthel}
+The following is the original definition of f-adic ring by R. Huber \cite{Huber1993}:
+\begin{forthel}
+
+\begin{definition}
+A Huber ring is a topological ring $R$ such that for some subset $U$ of $R$
+and some finite subset $T$ of $U$ 
+$\Powers{U}{R}$ is a fundamental system of neighborhoods of $R$ and
+$T \ast^{R} U = U \ast^{R} U \subseteq U$. 
+\end{definition}
+
+\begin{lemma}
+Let $R$ be a Huber ring. Then $R$ is nonarchimedean.
+\end{lemma}
+\begin{proof}
+Take a subset $U$ of $R$
+such that $U \ast^{R} U \subseteq U$ and 
+$\Powers{U}{R}$ is a fundamental system of neighborhoods of $R$.
+Let $V$ be a neighborhood of $0^{R}$ in $R$.
+Take $B \in \Powers{U}{R}$ such that $B \subseteq V$.
+$B$ is a neighborhood of $0^{R}$ in $R$.
+Take $n \in \mathbb{N}$ such that $n \geq 1$ and $B = U^{n,R,subset}$.
+
+Case $n > 1$.
+Then $B$ is a subgroup of $R$ that is open in $R$.
+end.
+
+$n = 1$. $B = U$. $U \ast^{R} U $ is a subgroup
+of $R$ that is open in $R$.
+$U \ast^{R} U \subseteq U = B \subseteq V$.
+\end{proof}
+
+\begin{lemma}
+Let $R$ be a Huber ring. Then $R^o$ is a subring of $R$.
+\end{lemma}
+\end{forthel}
+
+\section{Tate Rings}
+
+\begin{forthel}
+
+Let $R$ denote a topological ring.
+
+%23
+\begin{definition}
+A pseudouniformizer of $R$ is
+a unit in $R$ that is topologically nilpotent in $R$.
+\end{definition}
+
+%45
+
+[timelimit 10]
+\begin{lemma}
+Let $\varpi$ be a pseudouniformizer of $R$.
+Then $\varpi$ is powerbounded in $R$.
+\end{lemma}
+[timelimit 3]
+%76
+\begin{definition}
+A Tate ring is a Huber ring that has a pseudouniformizer.
+\end{definition} 
+
+\end{forthel} 
+\section{Frobenius}
+Normally we would use (set-theoretic) quotients by principal ideals in $R^o$
+for the definition of perfectoid rings, and then Frobenius-style maps on
+those quotient rings.
+Instead we define a global map $\Phi^R$, $x \mapsto x^{p,R}$ and consider
+whether it induces maps between such quotients. This
+can be expressed by calculations modulo the generators of the ideals. 
+A complete formalization would have to prove certain well-definednesses
+which we assume for simplicity.
+
+We define the Frobenius Map as a function symbol of the logic, dependent
+on the Ring and a fixed prime number $p$.
+
+\begin{forthel}
+Let $R$ denote a Huber ring.
+
+%24
+\begin{signature} $p$ is a prime number. 
+\end{signature}
+
+\begin{definition}
+Let $x \in R$. $\Phi^{R} (x) = x^{p,R}$. 
+\end{definition}
+
+\begin{lemma}
+Let $x \in R^o$. Then $\Phi^{R}(x) \in R^o$.
+\end{lemma}
+
+\end{forthel} $\Phi^{R}$ is called a Frobenius map. 
+
+$\Phi^{R}$ maps the subring of power-bounded elements into itself.
+To show further structural properties we use congruence properties that
+we have proved before:
+
+\begin{lemma*}
+Let $S$ be a subring of $R$ and $x,y$ be elements of $S$.
+Then 
+
+$(x +^{R} y)^{p,R} \equiv_{S} 
+x^{p,R} +^{R} y^{p,R}$ mod $p^{[R]}$ within $R$ 
+
+and
+
+$(x -^{R} y)^{p,R} \equiv_{S} 
+x^{p,R} -^{R} y^{p,R}$ mod $p^{[R]}$ within $R$ 
+\end{lemma*}
+
+\begin{forthel}
+
+\begin{lemma}Let $\varpi$ be an element of $R^o$ such that
+$(\varpi^{p,R}) | p^{[R]}$ in $R^o$ within $R$.
+Let $x,y$ be elements of $R^o$ such that
+
+$x \equiv_{R^o} y$ mod $\varpi$ within $R$.
+
+Then 
+
+$\Phi^{R}(x) \equiv_{R^o} \Phi^{R}(y)$ mod $\varpi^{p,R}$ within $R$.
+\end{lemma}
+\begin{proof}
+$\varpi$ divides $x -^{R} y$ in $R^o$ within $R$.
+$\varpi^{p,R}$ divides $(x -^{R} y)^{p,R}$ in $R^o$ within $R$.
+$p^{[R]}$ divides $(x -^{R} y)^{p,R} -^{R} (x^{p,R} -^{R} y^{p,R})$ in $R^o$ within $R$.
+Let $t = (x -^{R} y)^{p,R} -^{R} (x^{p,R} -^{R} y^{p,R})$.
+Then $\varpi^{p,R}$ divides $-^{R} t$ in $R^o$ within $R$.
+$\varpi^{p,R}$ divides $(x -^{R} y)^{p,R} -^{R} t$ in $R^o$ within $R$.
+$\varpi^{p,R}$ divides $x^{p,R} -^{R} y^{p,R}$ in $R^o$ within $R$.
+Indeed $(x -^{R} y)^{p,R} -^{R} t = x^{p,R} -^{R} y^{p,R}$.
+\end{proof}
+
+\end{forthel}
+
+We show that this map also respects the ring operations modulo 
+$\varpi$ and $\varpi^{p,R}$.
+
+\begin{forthel}
+
+\begin{lemma}
+$\Phi^{R}(0^{R}) = 0^{R}$.
+\end{lemma}
+
+\begin{lemma}
+$\Phi^{R}(1^{R}) = 1^{R}$.
+\end{lemma}
+
+\begin{lemma} 
+Let $\varpi$ be an element of $R^o$ such that
+$(\varpi^{p,R}) | p^{[R]}$ in $R^o$ within $R$.
+Let $x,y$ be elements of $R^o$.
+Then 
+
+$\Phi^{R}(x +^{R} y) \equiv_{R^o} 
+\Phi^{R}(x) +^{R} \Phi^{R}(y)$ mod $\varpi^{p,R}$ within $R$.
+\end{lemma}
+\begin{proof}
+$p^{[R]}$ divides $(x +^{R} y)^{p,R} -^{R} 
+(x^{p,R} +^{R} y^{p,R})$ in $R^o$ within $R$.
+Then
+$\varpi^{p,R}$ divides $(x +^{R} y)^{p,R} -^{R} 
+(x^{p,R} +^{R} y^{p,R})$ in $R^o$ within $R$.
+
+\end{proof}
+
+\begin{lemma} 
+Let $\varpi$ be an element of $R^o$ such that
+$(\varpi^{p,R}) | p^{[R]}$ in $R^o$ within $R$.
+Let $x$ be an element of $R^o$.
+Then 
+
+$\Phi^{R}(-^{R} x) \equiv_{R^o} 
+-^{R} \Phi^{R}(x)$ mod $\varpi^{p,R}$ within $R$.
+\end{lemma}
+\begin{proof}
+
+$\Phi^{R}(x +^{R} (-^{R}x)) \equiv_{R^o} 
+\Phi^{R}(x) +^{R} \Phi^{R}(-^{R}x)$ mod $\varpi^{p,R}$ within $R$.
+
+$\varpi^{p,R}$ divides $0^{R} -^{R} (\Phi^{R}(x) +^{R} \Phi^{R}(-^{R}x))$ in $R^o$ within $R$.
+[timelimit 10]
+$\varpi^{p,R}$ divides $-^{R} \Phi^{R}(x) -^{R} \Phi^{R}(-^{R}x)$ in $R^o$ within $R$.
+[timelimit 3]
+\end{proof}
+
+\begin{lemma} Let $\varpi$ be an element of $R^o$ such that
+$(\varpi^{p,R}) | p^{[R]}$ in $R^o$ within $R$.
+Let $x,y$ be elements of $R^o$.
+Then 
+
+$\Phi^{R}(x \cdot^{R} y) \equiv_{R^o} 
+\Phi^{R}(x) \cdot^{R} \Phi^{R}(y)$ mod $\varpi^{p,R}$ within $R$.
+\end{lemma}
+\begin{proof}
+$\Phi^{R}(x \cdot^{R} y) =
+(x \cdot^{R} y)^{p,R} =
+x^{p,R} \cdot^{R} y^{p,R} =
+\Phi^{R}(x) \cdot^{R} \Phi^{R}(y)$.
+\end{proof}
+
+\end{forthel}
+A perfectoid ring requires the Frobenius map to be an isomorphism
+So far we have established that it is a homomorphism.
+To express the crucial isomorphism  property one would ordinarily 
+apply a general predicate for ring congruence to the rings
+$R^o/a$ and $R^o/b$. To cut things short, we do use the notation
+$\Phi^{R} : S / a \cong T / b$ with 
+\LaTeX{} source 
+\begin{quotation}
+\verb|$\Phi^{R} : S / a \cong T / b$|
+\end{quotation}
+but we define its meaning as a ``bijection'' in terms of congruences using the 
+parameters $S,a,T,b$.
+\begin{forthel}
+
+\begin{definition} Let $S,T \subseteq R$. Let $a \in S$ and $b \in T$. 
+$\Phi^{R} : S / a \cong T / b$
+iff
+(for every $x,y \in S$ if 
+$\Phi^{R}(x) \equiv_{T} \Phi^{R}(y)$ mod $b$ within $R$ 
+then $x \equiv_{S} y$ mod $a$ within $R$)
+and
+(for every $z \in T$ there exists $w \in S$ such that 
+$z \equiv_{T} \Phi^{R}(w)$ mod $b$ within $R$).
+\end{definition}
+
+\end{forthel}
+
+\section{Perfectoid rings}
+
+Now all ingredients are prepared and we are able to define
+perfectoid rings in \Naproche:
+
+\begin{forthel}
+
+Let $R$ denote a Tate ring.
+
+\begin{lemma}
+Let $R$ be complete and $\varpi$ be a pseudouniformizer of $R$.
+Then $\varpi, \varpi^{p,R}$ do not divide $1^{R}$ in $R^o$ within $R$.
+\end{lemma}
+\begin{proof}
+$\varpi$ does not divide $1^{R}$ in $R^o$ within $R$.
+
+Assume that $\varpi^{p,R}$ divides $1^{R}$ in $R^o$ within $R$.
+Take $b \in R^o$ such that $\varpi^{p,R} \cdot^{R} b = 1^{R}$.
+Let $q = p -1$. Then  $\varpi^{p,R} = \varpi \cdot^{R} \varpi^{q,R}$.
+$ \varpi \cdot^{R} (\varpi^{q,R} \cdot^{R} b) =
+(\varpi \cdot^{R} \varpi^{q,R}) \cdot^{R} b =
+1^{R}$.
+[timelimit 6] 
+Then $\varpi$ divides $1^{R}$ in $R^o$ within $R$. Indeed 
+$\varpi^{q,R} \in R^o$.
+[timelimit 3]
+\end{proof}
+\end{forthel}
+
+In this case the quotients $R^o/\varpi$ and $R^o/\varpi^{p,R}$ are well-defined
+rings, and one can define:
+\begin{forthel}
+\begin{definition}
+$R$ is perfectoid iff $R$ is complete and uniform and there
+exists a pseudouniformizer $\varpi$ of $R$ such that    
+$\varpi^{p,R} | p^{[R]}$ in $R^o$ within $R$
+and 
+\[\Phi^{R} : R^o / \varpi \cong R^o / \varpi^{p,R}.\]
+\end{definition}
+
+\end{forthel}
+
+For comparison we repeat P. Scholze's definition:
+
+\begin{quote}
+\textbf{Definition 3.1} A Tate ring $R$ is perfectoid if $R$ is complete, uniform,
+i.e. $R^o \subset R$ is bounded, and there exists a
+pseudo-uniformizer $\varpi \in R$ such that $\varpi^p | p$ in $R^o$ and the
+Frobenius map
+\[\Phi: R^o/\varpi \rightarrow R^o/\varpi^p : x \mapsto x^p\]
+is an isomorphism.
+\end{quote}
+
+\printbibliography
+
+\end{document}
+

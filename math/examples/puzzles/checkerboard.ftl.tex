@@ -1,6 +1,6 @@
 \documentclass{article}
 \usepackage{naproche}
-\libinput[latex]{example-preamble}
+\usepackage[english]{babel}
 
 \title{The mutilated checkerboard}
 \author{Naproche formalization and commentary:\\ Adrian De Lon, Peter Koepke, Anton Lorenzen}
@@ -45,9 +45,7 @@ for Mathematical Knowledge Management} lists a couple of formalizations.
 Our formalization is based on a set-theoretical formalization by John McCarthy.
 Checking takes 2 or 3 minutes on a modest laptop.
 
-% Hidden because we have not discussed it yet.
-% Maybe this can be mentioned as an area for improvement in the subsequent section?
-\begin{comment}
+
     \begin{forthel}
         [read examples/preliminaries.ftl.tex]
         [synonym coordinate/-s]
@@ -56,7 +54,6 @@ Checking takes 2 or 3 minutes on a modest laptop.
 
         Let $f : X\to Y$ stand for $f : X\rightarrow Y$.
     \end{forthel}
-\end{comment}
 
 
 \section{Preliminaries about cardinality}
@@ -95,7 +92,7 @@ Checking takes 2 or 3 minutes on a modest laptop.
     For every element $y$ of $C$ $G(I(y))$ is an object.
 [timelimit 30]
     $J : A\leftrightarrow C$. Indeed define $K(y) = G(I(y))$ for $y$ in $C$.
-[timelimit 3]
+[/timelimit]
 \end{proof}
 
 \begin{definition}
@@ -408,7 +405,10 @@ Swapping dominoes is also an involution.
     \begin{proof}
         Let $y = \Sw{T}{A}{x}$.
         Take an element $Y$ of $T$ such that $Y = \{x,y\}$.
-        Then $x$ is adjacent to $y$. Thus $y$ is black.
+        [timelimit 10]
+        Then $x$ is adjacent to $y$. 
+        [/timelimit]
+        Thus $y$ is black.
     \end{proof}
 
     \begin{lemma}
@@ -420,7 +420,10 @@ Swapping dominoes is also an involution.
     \begin{proof}
         Let $y = \Sw{T}{A}{x}$.
         Take an element $Y$ of $T$ such that $Y = \{x,y\}$.
-        Then $x$ is adjacent to $y$. Thus $y$ is white.
+        [timelimit 10]
+        Then $x$ is adjacent to $y$. 
+        [/timelimit]
+        Thus $y$ is white.
     \end{proof}
 \end{forthel}
 
@@ -481,7 +484,5 @@ derived from the definition of \textit{a domino tiling of\,[...]}.
         Contradiction.
     \end{proof}
 \end{forthel}
-
-\printbibliography
 
 \end{document}
