@@ -176,12 +176,12 @@ are themselves non-empty:
   \begin{proof}[method=contradiction]
     Assume the contrary.
     Then \[ \Prod{\lambda}{D} \leq \Sum{\kappa}{D}. \]
-    [unfoldlow off]
+    [unfoldlow off][prover vampire]
     Take a function $G$ such that $\SumSet{\kappa}{D}$ is the domain of $G$ and
     $\ProdSet{\lambda}{D}$ is the image of $G$.
     Indeed $\ProdSet{\lambda}{D}$ and $\ProdSet{\lambda}{D}$ are sets and
     $\ProdSet{\lambda}{D}$ has an element.
-    [unfoldlow on]
+    [unfoldlow on][prover eprover]
 
     Define $\Delta(i) = \class{G(n,i)(i) | \text{$n$ is an element of
     $\kappa_{i}$}}$ for $i$ in $D$.

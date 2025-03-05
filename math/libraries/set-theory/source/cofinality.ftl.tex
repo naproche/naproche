@@ -4,6 +4,7 @@
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Cofinality]{cofinality.ftl}
 \importmodule[libraries/set-theory]{cardinals.ftl}
+\importmodule[libraries/set-theory]{finite-and-infinite-sets.ftl}
 
 \inlineforthel{[synonym subset/-s]}
 
@@ -13,5 +14,22 @@
 
   Let a \emph{cofinal subset of $\kappa$} stand for a subset of $\kappa$ that is cofinal in $\kappa$.
 \end{definition}
+
+\begin{proposition}[forthel,id=SET_THEORY_06_1092835738982753]
+  $\SETempty$ is cofinal in $\ORDzero$.
+\end{proposition}
+
+\begin{proposition}[forthel,id=SET_THEORY_06_7029348571092835]
+  Let $n$ be a nonzero finite cardinal.
+  Then $n$ has no cofinal subset.
+\end{proposition}
+\begin{proof}[forthel]
+  Assume the contrary.
+  Consider a cofinal subset $Y$ of $n$.
+  We have $\ORDpred(n) \SETin n$.
+  Hence we can take a $y \SETin Y$ such that $\ORDpred(n) \ORDless y$.
+  Then $y \ORDgeq n$.
+  Contradiction.
+\end{proof}
 \end{smodule}
 \end{document}

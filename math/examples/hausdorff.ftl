@@ -38,14 +38,18 @@ Let a \leq b stand for a = b or a < b.
 
 Signature. A cardinal is an ordinal.
 
-Let kappa, mu, nu denote cardinals.
+Let mu, nu denote cardinals.
+
+Signature. mu is infinite is an atom.
+
+Let kappa denote an infinite cardinal.
 
 Signature Cardinality. |X| is a cardinal.
 
 Axiom Existence of surjection. Assume X has an element.
-|X| \leq |Y| iff there exists a function f such that Dom(f) = Y and f[Y] = X.
+|X| \leq |Y| iff there exists a function that is surjective from Y onto X.
 
-Axiom. |X \times X| = |X|.
+Axiom Hessenberg. |kappa \times kappa| = kappa.
 
 
 Axiom. |kappa| = kappa.
@@ -53,7 +57,7 @@ Axiom. |kappa| = kappa.
 Axiom. Let Y be a subset of X.
 |Y| \leq |X|.
 
-Signature. Succ(kappa) is a cardinal.
+Signature. Succ(kappa) is an infinite cardinal.
 
 Axiom. kappa < Succ(kappa).
 
@@ -74,7 +78,7 @@ Let 0^X stand for the constant zero on X.
 
 ### Cofinality and regular cardinals
 
-Definition Cofinality. Let kappa be a cardinal.
+Definition Cofinality.
 Let Y be a subset of kappa.
 Y is cofinal in kappa iff for every element x of kappa there exists an element
 y of Y such that x < y.
@@ -140,6 +144,6 @@ Proof by contradiction.
     End.
   End.
 
-  Therefore Succ(kappa) \leq kappa.
+  Therefore Succ(kappa) \leq |kappa \times kappa| = kappa.
   Contradiction.
 Qed.

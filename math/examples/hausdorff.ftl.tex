@@ -74,7 +74,13 @@
       A cardinal is an ordinal.
     \end{signature}
 
-    Let $\kappa, \mu, \nu$ denote cardinals.
+    Let $\mu, \nu$ denote cardinals.
+
+    \begin{signature}
+      $\mu$ is infinite is an atom.
+    \end{signature}
+
+    Let $\kappa$ denote an infinite cardinal.
 
     \begin{signature}[id=Cardinality]
       $|X|$ is a cardinal.
@@ -82,12 +88,11 @@
 
     \begin{axiom}[title=existence of surjection,id=existence_of_surjection]
       Assume $X$ has an element.
-      $|X| \leq |Y|$ iff there exists a function $f$ such that $\dom(f) = Y$
-      and $f[Y] = X$.
+      $|X| \leq |Y|$ iff there exists a function that is surjective from $Y$ onto $X$.
     \end{axiom}
 
-    \begin{axiom}
-      $|X \times X| = |X|$.
+    \begin{axiom}[title=Hessenberg]
+      $|\kappa \times \kappa| = \kappa$.
     \end{axiom}
 
     \begin{axiom}
@@ -100,8 +105,8 @@
     \end{axiom}
 
     \begin{signature}
-      Let $\kappa$ be a cardinal.
-      $\kappa^{+}$ is a cardinal.
+      Let $\kappa$ be an infinite cardinal.
+      $\kappa^{+}$ is an infinite cardinal.
     \end{signature}
 
     \begin{axiom}
@@ -137,10 +142,9 @@
   \section{Cofinality and regular cardinals}
 
   \begin{forthel}
-    Let $\kappa$ denote a cardinal.
+    Let $\kappa$ denote an infinite cardinal.
 
     \begin{definition}[id=Cofinality]
-      Let $\kappa$ be a cardinal.
       Let $Y$ be a subset of $\kappa$.
       $Y$ is cofinal in $\kappa$ iff for every element $x$ of $\kappa$ there
       exists an element $y$ of $Y$ such that $x < y$.
@@ -164,7 +168,7 @@
 
   \begin{forthel}
     \begin{theorem}[title=Hausdorff]
-      Let $\kappa$ be a cardinal.
+      Let $\kappa$ be an infinite cardinal.
       Then $\kappa^{+}$ is regular.
     \end{theorem}
     \begin{proof}[method=contradiction]
@@ -230,7 +234,7 @@
         End.
       End.
 
-      Therefore $\kappa^{+} \leq \kappa$.
+      Therefore $\kappa^{+} \leq |\kappa \times \kappa| = \kappa$.
       Contradiction.
     \end{proof}
   \end{forthel}
