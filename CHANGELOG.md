@@ -271,8 +271,11 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
     - `naproche/math/libraries` contains structured libraries whose content is
       intended to be imported in other formalizations.
 
-    - `naproche/math/meta-inf` contains files that (almost) all formalizations
-      depend on (both on the LaTeX and on the Naproche side).
+    - `naproche/math/archive` contains example formalizations that depend on
+      the files in `naproche/math/libraries`.
+
+    - `naproche/math/latex` contains files that are required to translate the
+      formalizations in `naproche/math` to PDF and HTML.
 
 
 ### Changes on Naproche's LaTeX package
@@ -325,12 +328,7 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
     - `translate`: Naproche tries to translate the input text to TPTP.
     - `verify`: Naproch tries to verify the input text.
     - `render`: Render the input text (if given as a file) with pdflatex and
-      bibtex to PDF. (Used by `isabelle naproche_component -P`.)
-    - `render_setup`: Install TeX Live locally to `tex/texlive` which is then
-      used in the `render` mode.
-    - `render_setup_c`: The same as `render_setup`, but works without human
-      interaction. (Used by `isabelle naproche_component -P`; not intended to
-      be used by human users.)
+      bibtex to PDF.
     
     If the `mode` parameter is not specified, Naproche behaves as if it were set
     to `verify`.
