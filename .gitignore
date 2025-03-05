@@ -13,9 +13,6 @@ dist-newstyle/
 .metals/
 .scala-build/
 
-# Created by render.sh
-tex/
-
 # Ignore profiling output
 *.hp
 *.prof

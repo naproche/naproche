@@ -18,8 +18,6 @@ import Control.Monad (unless, when)
 import Data.Time (addUTCTime, getCurrentTime, diffUTCTime)
 import Data.Maybe (mapMaybe)
 import Data.List.Split (wordsBy)
-import Data.List (isPrefixOf)
-import Data.List.Extra (takeEnd)
 import Control.Exception qualified as Exception
 import Control.Exception (catch)
 import System.Console.GetOpt qualified as GetOpt
@@ -149,8 +147,6 @@ mainTerminal initInstrs nonInstrArgs = do
             Just inputPath -> case dialect of
               Ftl -> putStrLn "Unable to render input text: No \".ftl.tex\" file given." >> return 1
               Tex -> renderInputFile context inputPath
-          "render_setup" -> renderSetup context True    -- To be used by a (human) user
-          "render_setup_c" -> renderSetup context False -- To be used by @isabelle naproche_component -P@
           modeArg -> putStrLn ("Invalid mode: " ++ make_string modeArg) >> return 1)
         `catch` (\Exception.UserInterrupt -> do
           Program.exit_thread
@@ -333,125 +329,32 @@ verifyInputText dialect mesonCache proverCache proofTexts = do
     then 0
     else 1
 
-renderSetup :: Program.Context -> Bool -> IO Int
-renderSetup context requireUserInteraction = do
-  when requireUserInteraction $ putStrLn "[Warning] This is an experimental feature. Please be gentle.\n"
-  formalizationsDirectoryPath <- getFormalizationsDirectoryPath context
-  texDirectoryPath <- getTexDirectoryPath context
-  texliveDirectoryPath <- getTexliveDirectoryPath context
-  texDirectoryExists <- doesDirectoryExist texDirectoryPath
-  unless texDirectoryExists $ createDirectory texDirectoryPath
-  texliveDirectoryExists <- doesDirectoryExist texliveDirectoryPath
-  unless texliveDirectoryExists (createDirectory texliveDirectoryPath)
-  texDirContent <- listDirectory texliveDirectoryPath
-  when (null texDirContent) (removeDirectory texliveDirectoryPath)
-  doInstall <- if requireUserInteraction
-    then do
-      putStrLn "[Info] No local TeX Live installation found.\n"
-      putStrLn "Do you want to install TeX Live locally now?"
-      putStrLn "(This will not interfere with any existing installation of TeX"
-      putStrLn "Live on your system, but the installation may take a while and"
-      putStrLn "will occupy about 8.3 GiB of disk space -- if you do not have"
-      putStrLn "that much disk space available, do not continue!)"
-      putStr "(y/N) "
-      hFlush stdout
-      userInput <- getLine
-      case userInput of
-        "y" -> return True
-        _ -> return False
-    else return True
-  if doInstall
-    then do
-      createDirectory texliveDirectoryPath
-      setCurrentDirectory texDirectoryPath
-      callCommand "wget https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz"
-      callCommand "zcat < install-tl-unx.tar.gz | tar xf -"
-      texDirContent <- listDirectory texDirectoryPath
-      let texliveDir = head $ filter ("install-tl-20" `isPrefixOf`) texDirContent
-      let texliveYear = take 4 $ takeEnd 8 texliveDir -- install-tl-YYYYMMDD ~> YYYY
-      setCurrentDirectory texliveDir
-      callCommand $ "perl ./install-tl" ++
-        " --scheme=full" ++
-        " --texdir=" ++ (texliveDirectoryPath </> texliveYear) ++
-        " --texuserdir=" ++ (texDirectoryPath </> ".texlive") ++ texliveYear ++
-        " --texmfhome=" ++ (texDirectoryPath </> "texmf") ++
-        " --texmfconfig=" ++ (texDirectoryPath </> ".texlive") ++ (texliveYear </> "texmf-config") ++
-        " --texmfvar=" ++ (texDirectoryPath </> ".texlive") ++ (texliveYear </> "texmf-var") ++
-        " --no-interaction"
-      return 0
-    else return 0
-
 renderInputFile :: Program.Context -> FilePath -> IO Int
 renderInputFile context inputPath = do
   putStrLn "[Warning] This is an experimental feature. Please be gentle.\n"
   formalizationsDirectoryPath <- getFormalizationsDirectoryPath context
-  texDirectoryPath <- getTexDirectoryPath context
-  texliveDirectoryPath <- getTexliveDirectoryPath context
 
-  -- Check whether TeX Live is already installed in the Naproche repository.
-  -- If not, install it.
-  texDirectoryExists <- doesDirectoryExist texDirectoryPath
-  unless texDirectoryExists $ createDirectory texDirectoryPath
-  texliveDirectoryExists <- doesDirectoryExist texliveDirectoryPath
-  mbTexliveDir <- if texliveDirectoryExists
-    then do
-      texDirContent <- listDirectory texliveDirectoryPath
-      if null texDirContent
-        then do
-          removeDirectory texliveDirectoryPath
-          putStrLn "[Error] No local TeX Live installation found.\n"
-          putStrLn "        (Consider to run \"Naproche --render_setup\" to install"
-          putStrLn "        it locally.)"
-          Console.exit 1
-          return Nothing
-        else do
-          let texliveYear = maximum texDirContent
-          return . Just $ texliveDirectoryPath </> texliveYear
-    else do
-      putStrLn "[Error] No local TeX Live installation found.\n"
-      putStrLn "        (Consider to run \"Naproche --render_setup\" to install"
-      putStrLn "        it locally.)"
-      Console.exit 1
-      return Nothing
-  case mbTexliveDir of
-    Nothing -> return 1
-    Just texliveDir -> do
-      texliveBinDir <- head <$> listDirectory (texliveDir </> "bin")
+  -- set the paths to pdflatex and bibtex, and the MATHHUB and TEXINPUTS variable:
+  let pdflatexBin = "pdflatex"
+      bibtexBin = "bibtex"
+      mathhubVar = formalizationsDirectoryPath
+      texinputsVar = formalizationsDirectoryPath </> "latex" </> "lib//;" 
+  putStrLn $ "[Info] Path to pdflatex:   " ++ pdflatexBin
+  putStrLn $ "[Info] Path to bibtex:     " ++ bibtexBin
+  putStrLn $ "[Info] MATHHUB variable:   " ++ mathhubVar
+  putStrLn $ "[Info] TEXINPUTS variable: " ++ texinputsVar
 
-      -- Paths to pdflatex and bibtex:
-      let pdflatexBin = texliveDir </> "bin" </> texliveBinDir </> "pdflatex"
-          bibtexBin = texliveDir </> "bin" </> texliveBinDir </> "bibtex"
-      putStrLn $ "[Info] Path to pdflatex:   " ++ pdflatexBin
-      putStrLn $ "[Info] Path to bibtex:     " ++ bibtexBin
+  -- Render the input file as PDF:
+  let inputDir = takeDirectory inputPath
+      inputFile = takeFileName inputPath
+      inputFileBase = takeBaseName inputFile
+  setCurrentDirectory inputDir
+  callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_WRITESMS=true " ++ pdflatexBin ++ " " ++ inputFile
+  callCommand $ bibtexBin ++ " " ++ inputFileBase ++ " | true" -- succeed even if bibtex fails
+  callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
+  callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
 
-      -- MATHHUB and TEXINPUTS variables.
-      -- Depending on whether @Naproche --mode=render@ is called by
-      -- @isabelle naproche_component -P@ or not, we must adapt the
-      -- @MATHHUB@ variable accordingly: In the former case we must set it to
-      -- @<naproche component directory>/math_pdf@ and in the latter one to
-      -- @naproche/math@. If the @NAPROCHECOMP@ variable is set (which is done by
-      -- @isabelle naproche_component -P@), we are in the former case, where its
-      -- content is the absolute path to the directory
-      -- @<naproche component directory>@.
-      mbNaprochecompVar <- Environment.lookupEnv "NAPROCHECOMP"
-      let mathhubVar = case mbNaprochecompVar of
-            Nothing -> formalizationsDirectoryPath
-            Just componentDir -> componentDir </> "math_pdf"
-          texinputsVar = formalizationsDirectoryPath </> "latex" </> "lib//;" 
-      putStrLn $ "[Info] MATHHUB variable:   " ++ mathhubVar
-      putStrLn $ "[Info] TEXINPUTS variable: " ++ texinputsVar
-
-      -- Render the input file as PDF:
-      let inputDir = takeDirectory inputPath
-          inputFile = takeFileName inputPath
-          inputFileBase = takeBaseName inputFile
-      setCurrentDirectory inputDir
-      callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_WRITESMS=true " ++ pdflatexBin ++ " " ++ inputFile
-      callCommand $ bibtexBin ++ " " ++ inputFileBase ++ " | true" -- succeed even if bibtex fails
-      callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
-      callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
-
-      return 0
+  return 0
 
 
 -- * Arguments
