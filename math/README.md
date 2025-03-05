@@ -18,13 +18,35 @@ folders of formalizations that are interlinked by "`read`" commands. The
 spectrum reaches from recreational puzzles to undergraduate-level theorems:
 
 ```
-math
+math .................................... Naproche formalizations
 │
 ├── TUTORIAL ............................ Naproche tutorial
 │
-├── examples
+├── archive ............................. Formalizations based on Naproche libraries and sTeX
 │   │
-│   ├── lang
+│   ├── burali-forti-paradox ............ Burali-Forti's paradox
+│   │
+│   ├── cantor-paradox .................. Cantor's paradoxes
+│   │
+│   ├── cantor-schroeder-bernstein ...... classical result in cardinality theory
+│   │
+│   ├── cantor .......................... Cantor's diagonal argument
+│   │
+│   ├── furstenberg ..................... Furstenberg's topological proof of infinity of primes
+│   │
+│   ├── hausdorff ....................... theorem on the regularity of successor cardinals
+│   │
+│   ├── hilbert-paradox ................. Hilbert's paradox
+│   │
+│   ├── koenig .......................... Kőnig's theorem about sequences of cardinals
+│   │
+│   ├── transfinite-recursion ........... the transfinite recursion theorem
+│   │
+│   └── zermelo ......................... Zermelo's well-ordering theorem
+│
+├── examples ............................ Stand-alone formalizations
+│   │
+│   ├── lang ............................ language preliminaries
 │   │   │
 │   │   ├── everyday-ontology ........... a simple ontology of notions used in every-day language
 │   │   │
@@ -32,25 +54,19 @@ math
 │   │   │
 │   │   └── vocabulary .................. singular/plural pairs of terms used in Naproche formalizations
 │   │
-│   ├── paradoxes
+│   ├── paradoxes ....................... mathematical paradoxes
 │   │   │
 │   │   ├── barber-paradox .............. the barber paradox
-│   │   │
-│   │   ├── burali-forti-paradox ........ Burali-Forti's paradox
-│   │   │
-│   │   ├── cantor-paradox .............. Cantor's paradoxes
 │   │   │
 │   │   ├── curry-paradox ............... Curry's paradox
 │   │   │
 │   │   ├── drinker-paradox ............. the drinker paradox
 │   │   │
-│   │   ├── hilbert-paradox ............. Hilbert's paradox
-│   │   │
 │   │   ├── russell-myhill-paradox ...... the Russell-Myhill paradox
 │   │   │
 │   │   └── russell-paradox ............. Russell's paradox
 │   │
-│   ├── puzzles
+│   ├── puzzles ......................... logic puzzles
 │   │   │
 │   │   ├── agatha ...................... a logic puzzle set in "Dreadsbury Mansion"
 │   │   │
@@ -58,7 +74,7 @@ math
 │   │   │
 │   │   └── dwarfs ...................... a "hat puzzle"
 │   │
-│   ├── cantor-schroeder-bernstein ...... classical result in cardinality theory
+│   ├── 100_theorems .................... some of Wiedijk's "100 Theorems"
 │   │
 │   ├── cantor .......................... Cantor's diagonal argument
 │   │
@@ -71,6 +87,8 @@ math
 │   ├── furstenberg ..................... Furstenberg's topological proof of infinity of primes
 │   │
 │   ├── gauss ........................... sum of the first *n* positive integers
+│   │
+│   ├── geometry ........................ beginnings of Tarski geometry
 │   │
 │   ├── group.lean ...................... Naproche rendering of a Lean file on groups
 │   │
@@ -92,15 +110,11 @@ math
 │   │
 │   ├── prime_no_square ................. irrationality of square roots
 │   │
-│   ├── tarski .......................... Tarski's fixpoint theorem for lattices
-│   │
-│   ├── transfinite-recursion ........... the transfinite recursion theorem
-│   │
-│   └── zermelo ......................... Zermelo's well-ordering theorem
+│   └── tarski .......................... Tarski's fixpoint theorem for lattices
 │
 ├── latex ............................... LaTeX style and bibliography files used in Naproche formalizations
 │
-└── libraries
+└── libraries ........................... Naproche libraries based on sTeX
     │
     ├── arithmetics ..................... basic notions and results concerning natural numbers
     │

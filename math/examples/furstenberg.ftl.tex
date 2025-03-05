@@ -1,295 +1,454 @@
-\documentclass{article}
-\usepackage{naproche}
-\libinput[latex]{example-preamble}
-\libinput[libraries/foundations]{preamble}
-\libinput[libraries/arithmetics]{preamble}
+\documentclass[english]{article}
+\usepackage{../latex/lib/naproche}
+\addbibresource{../latex/lib/bibliography}
 
-\newcommand{\N}{\mathrm{N}}
+\renewcommand{\mod}{\text{mod }}
 \newcommand{\Int}{\mathbb{Z}}
-\newcommand{\Ps}{\mathrm{P}}
 
-\title{Furstenberg's proof of the infinitude of primes}
-\author{\Naproche formalization:\\[0.5em]Andrei Paskevich, Marcel Schütz}
-\date{2024}
+\title{Furstenberg's Proof of the Infinitude of Primes}
+\author{Andrei Paskevich et. al.}
+\date{2007 - 2021}
 
 
 \begin{document}
   \maketitle
 
-  \usemodule[libraries/arithmetics]{primes.ftl}
-  \usemodule[libraries/arithmetics]{nat-is-a-set.ftl}
-  \usemodule[libraries/set-theory]{zfc.ftl}
-  \usemodule[libraries/foundations]{closure-under-finite-unions.ftl}
+  Furstenberg's proof of the infinitude of primes is a topological proof of the fact that there are
+  infinitely many primes. It was published 1955 while Furstenberg was still an undergraduate
+  student \cite{Furstenberg1955}.
 
-  \noindent This is a formalization of Furstenberg's topological proof of the
-  infinitude of primes \cite[p. 353]{Furstenberg1955}.
+  \section{Integers}
 
-  The central idea of Furstenberg's proof is to define a certain topology on
-  $\Nat$ from the properties of which we can deduce that the set of
-  primes is infinite.\footnote{Actually, Furstenberg's proof makes use of a
-  topology on $\Int$. But this topology can as well be restricted to
-  $\Nat$ without substantially changing the proof.}
+  The central idea of Furstenberg's proof is to define a certain topology on $\Int$ from the
+  properties of which we can deduce that the set of primes is infinite. So first we have to
+  introduce the ring $\Int$ of integers. In fact, we do not need to give a full axiomatization of
+  integer arithmetic; it suffices to assume that $\Int$ is an integral domain.
+
+  Let us start by introducing the signature of the ring of integers.
 
   \begin{forthel}
-    Let $n, m, k$ denote natural numbers.
-    Let $p, q$ denote nonzero natural numbers.
+    [read \path{examples/preliminaries.ftl.tex}]
 
-    \begin{definition}
-      Let $A$ be a subset of $\Nat$.
-      $A^\complement = \Nat \SETdiff A$.
-    \end{definition}
+    \begin{signature}[id=Integers]
+      An integer is an object.
+    \end{signature}
 
-    Let the complement of $A$ stand for $A^\complement$.
+    Let $a,b,c,d,i,j,k,l,m,n$ stand for integers.
 
-    \begin{lemma}
-      The complement of any subset of $\Nat$ is a subset of $\Nat$.
-    \end{lemma}
+    \begin{signature}[id=IntZero]
+      $0$ is an integer.
+    \end{signature}
+
+    \begin{signature}[id=IntOne]
+      $1$ is an integer.
+    \end{signature}
+
+    \begin{signature}[id=IntNeg]
+      $-a$ is an integer.
+    \end{signature}
+
+    \begin{signature}[id=IntPlus]
+      $a + b$ is an integer.
+    \end{signature}
+
+    \begin{signature}[id=IntMult]
+      $a \cdot b$ is an integer.
+    \end{signature}
+
+    Let $a - b$ stand for $a + (-b)$.
   \end{forthel}
 
-  Towards a suitable topology on $\Nat$ let us define \textit{arithmetic
-  sequences} $\N_{n, q}$ on $\Nat$.
+  Moreover, we assume $(\Int, 0, +, -)$ to be an abelian group and $(\Int, 1, \cdot)$ to be a
+  commutative monoid which satisfy the distribution laws.
 
   \begin{forthel}
-    \begin{definition}
-      $\N_{n, q} = \{ m \in \Nat \mid \NATcong{m}{n}{q} \}$.
-    \end{definition}
-  \end{forthel}
+    \begin{axiom}[id=AddAsso]
+      $a + (b + c) = (a + b) + c$.
+    \end{axiom}
 
-  This allows us to define the \textit{evenly spaced natural number
-  topology} on $\Nat$, whose open sets are defined as follows.
+    \begin{axiom}[id=AddComm]
+      $a + b = b + a$.
+    \end{axiom}
 
-  \begin{forthel}
-    \begin{definition}
-      Let $U$ be a subset of $\Nat$.
-      $U$ is open iff for any $n \in U$ there exists a $q$ such that
-      $\N_{n, q} \SETinclude U$.
-    \end{definition}
+    \begin{axiom}[id=AddZero]
+      $a + 0 = a = 0 + a$.
+    \end{axiom}
 
-    \begin{definition}
-      A system of open sets is a system of sets $S$ such that every element of
-      $S$ is an open subset of $\Nat$.
-    \end{definition}
+    \begin{axiom}[id=AddNeg]
+      $a - a = 0 = -a + a$.
+    \end{axiom}
 
-    \begin{lemma}
-      Every system of open sets is a set.
+    \begin{axiom}[id=MulAsso]
+      $a \cdot (b \cdot c) = (a \cdot b) \cdot c$.
+    \end{axiom}
+
+    \begin{axiom}[id=MulComm]
+      $a \cdot b = b \cdot a$.
+    \end{axiom}
+
+    \begin{axiom}[id=MulOne]
+      $a \cdot 1 = a = 1 \cdot a$.
+    \end{axiom}
+
+    \begin{axiom}[id=Distrib]
+      $a \cdot (b + c) = (a \cdot b) + (a \cdot c)$ and$ (a + b) \cdot c = (a \cdot c) + (b \cdot c)$.
+    \end{axiom}
+
+    \begin{lemma}[id=MulZero]
+      $a \cdot 0 = 0 = 0 \cdot a$.
     \end{lemma}
     \begin{proof}
-      Let $S$ be a system of open sets.
-      Then $S \SETinclude \SETpow(\Nat)$.
-      Hence $S$ is a set.
+      $a \cdot 0 = a \cdot (1 - 1) = a - a = 0$.
+    \end{proof}
+
+    \begin{lemma}[id=MulMinOne]
+      $-1 \cdot a = -a = a \cdot -1$.
+    \end{lemma}
+    \begin{proof}
+      $(-1 \cdot a) + a = 0$.
     \end{proof}
   \end{forthel}
 
-  We can show that the open sets indeed form a topology on $\Nat$.
+  Furthermore, we assume that our ring is not trivial and that there are no non-trivial zero
+  divisors.
 
   \begin{forthel}
-    \begin{lemma}
-      $\Nat$ and $\SETempty$ are open.
-    \end{lemma}
+    \begin{axiom}[id=NonTriv]
+      $0 \neq 1$.
+    \end{axiom}
+
+    \begin{axiom}[id=ZeroDiv]
+      $a \neq 0 \wedge b \neq 0 \implies a \cdot b \neq 0$.
+    \end{axiom}
 
     \begin{lemma}
-      Let $U,V$ be open subsets of $\Nat$.
-      Then $U \SETintersect V$ is open.
+      $-(-a)$ is an integer.
+    \end{lemma}
+  \end{forthel}
+
+  Let us continue with the notion of divisors and congruency.
+
+  \begin{forthel}
+    Let $a$ is nonzero stand for $a \neq 0$.
+    Let $p,q$ stand for nonzero integers.
+
+    \begin{definition}[id=Divisor]
+      A divisor of $b$ is a nonzero integer $a$ such that for some $n$ $(a \cdot n = b)$.
+    \end{definition}
+
+    Let $a$ divides $b$ stand for $a$ is a divisor of $b$.
+    Let $a \mid b$ stand for $a$ is a divisor of $b$.
+
+    \begin{definition}[id=EquMod]
+      $a = b ~(\mod q)$ iff $q \mid a-b$.
+    \end{definition}
+
+    \begin{lemma}[id=EquModRef]
+      $a = a ~(\mod q)$.
+    \end{lemma}
+
+    \begin{lemma}[id=EquModSym]
+      $a = b ~(\mod q) \implies b = a ~(\mod q)$.
     \end{lemma}
     \begin{proof}
-      Let $n \in U \SETintersect V$.
-      Take a $q$ such that $\N_{n, q} \SETinclude U$.
-      Take a $p$ such that $\N_{n, p} \SETinclude V$.
-      Then $p \NATmul q \neq \NATzero$.
+      Assume that $a = b ~(\mod q)$.
 
-      Let us show that $\N_{n, p \NATmul q} \SETinclude U \SETintersect V$.
-        Let $m \in \N_{n, p \NATmul q}$.
-        We have $\NATcong{m}{n}{p \NATmul q}$.
-        Hence $\NATcong{m}{n}{p}$ and $\NATcong{m}{n}{q}$.
-        Thus $m \in \N_{n, p}$ and $m \in \N_{n, q}$.
-        Therefore $m \in U$ and $m \in V$.
-        Consequently $m \in U \SETintersect V$.
+      (1) Take $n$ such that $q \cdot n = a - b$.
+
+      $q \cdot (-n) .= (-1) \cdot (q \cdot n)$ (by MulMinOne, MulAsso, MulComm) $.= (-1) \cdot (a - b)$ (by 1).
+    \end{proof}
+
+    \begin{lemma}[id=EquModTrn]
+      $a = b ~(\mod q) \wedge b = c ~(\mod q) \implies a = c ~(\mod q)$.
+    \end{lemma}
+    \begin{proof}
+      Assume that $a = b ~(\mod q) \wedge b = c ~(\mod q)$.
+      Take $n$ such that $q \cdot n = a - b$.
+      Take $m$ such that $q \cdot m = b - c$.
+      We have $q \cdot (n + m) = a - c$.
+    \end{proof}
+
+    \begin{lemma}[id=EquModMul]
+      $a = b ~(\mod p \cdot q) \implies a = b ~(\mod p) \wedge a = b ~(\mod q)$.
+    \end{lemma}
+    \begin{proof}
+      Assume that $a = b ~(\mod p \cdot q)$.
+      Take $m$ such that $(p \cdot q) \cdot m = a - b$.
+      We have $p \cdot (q \cdot m) = a - b = q \cdot (p \cdot m)$.
+    \end{proof}
+  \end{forthel}
+
+  Note that up to now every finite field could be a model of our theory. But since we want to prove
+  that there are \textit{infinitely} many primes we must eventually add some axiom which eliminates
+  such models.
+
+  This is done by introducing the notion of prime integers. All we need to know about them for
+  Furstenberg's proof is that every integer $n$ has a prime divisor iff $n \neq 1$ and $n \neq -1$.
+
+  \begin{forthel}
+    \begin{signature}[id=Prime]
+      $a$ is prime is an atom.
+    \end{signature}
+
+    Let a prime stand for a prime nonzero integer.
+
+    \begin{axiom}[id=PrimeDivisor]
+      $n$ has a prime divisor iff $n \neq 1 \wedge n \neq -1$.
+    \end{axiom}
+  \end{forthel}
+
+  Let us assume that some finite field is a model of our current theory. Recall that in any finite
+  field every non-zero element is a divisor of $1$. Let us rephrase axiom \textit{PrimeDivisor}:
+
+  \begin{center}
+    $n$ has no prime divisor iff $n = 1 \vee n = -1$.
+  \end{center}
+
+  Then we immediately see that $1$ has no prime divisor. But since every non-zero element is a
+  divisor of $1$, no non-zero element is prime. Hence $0$ has also no prime divisor (recall that any
+  divisor must be non-zero). But then, again by the axiom, we get $0 = 1 \vee 0 = -1$, a
+  contradiction (by \textit{NonTriv}).
+
+  \section{Finite classes}
+
+  Another important notion is that of finite subsets of $\Int$. We leave the characterization of
+  what it means for a set to be finite for the next sections.
+
+  \begin{forthel}
+    Let $S,T$ stand for classes.
+
+    \begin{signature}[id=FinSet]
+      $S$ is finite is an atom.
+    \end{signature}
+
+    Let $S$ is infinite stand for $S$ is not finite.
+  \end{forthel}
+
+
+  \section{Sets of integers}
+
+  Since Furstenberg's proof is a topological proof we have to define unions, intersections and also
+  complements of sets.
+
+  \begin{forthel}
+    \begin{definition}
+      $\Int$ is the class of integers.
+    \end{definition}
+
+    \begin{axiom}
+      $\Int$ is a set.
+    \end{axiom}
+
+    Let $A,B,C,D$ stand for subclasses of $\Int$.
+
+    \begin{definition}[id=IntegerSets]
+      A family of integer sets is a class $S$ such that every element of $S$ is a subset of $\Int$.
+    \end{definition}
+
+    \begin{definition}[id=UnionSet]
+      Let $S$ be a family of integer sets.
+      $\bigcup S = \{ x \in \Int \mid x \text{ belongs to some element of } S \}$.
+    \end{definition}
+
+    \begin{lemma}
+      Let $S$ be a family of integer sets.
+      $\bigcup S$ is a subset of $\Int$.
+    \end{lemma}
+
+    \begin{definition}[id=Complement]
+      $\overline{A} = \{ x \in \Int \mid x \text{ does not belong to } A \}$.
+    \end{definition}
+
+    \begin{lemma}
+      $\overline{A}$ is a subset of $\Int$.
+    \end{lemma}
+   \end{forthel}
+
+
+  \section{Introducing topology}
+
+  In our next step towards a suitable topology on $\Int$ let us define arithmetic sequences, i.e.
+  sets of the form $q \Int + a$.
+
+  \begin{forthel}
+    Let $a,b,c$ denote integers.
+    Let $p,q$ stand for nonzero integers.
+    Let $A,B,C$ stand for subsets of $\Int$.
+
+    \begin{definition}[id=ArSeq]
+      $q \Int + a = \{ b \in \Int \mid b = a ~(\mod q) \}$.
+    \end{definition}
+
+    \begin{lemma}
+      $q \Int + a$ is a set.
+    \end{lemma}
+  \end{forthel}
+
+  This allows us to define the so-called \textit{evenly spaced integer topology} where its open sets
+  are defined as follows:
+
+  \begin{forthel}
+    \begin{definition}[id=Open]
+      $A$ is open iff $A = \Int$ or for any $a \in A$ there exists $q$ such that
+      $q \Int + a \subseteq A$.
+    \end{definition}
+  \end{forthel}
+
+  Note that we have declared $q$ as a \textit{non-zero} integer. Otherwise, every set $A$ would be
+  open since $0 \Int + a = \{ a \} \subseteq A$ for every $a \in A$.
+
+  \begin{forthel}
+    \begin{definition}[id=Closed]
+      $A$ is closed iff $\overline{A}$ is open.
+    \end{definition}
+
+    \begin{definition}[id=OpenIntegerSets]
+      An family of open sets is a family of integer sets $S$ such that every element of $S$ is open.
+    \end{definition}
+  \end{forthel}
+
+  We can easily check that the open sets really form a topology on $\Int$.
+
+  \begin{forthel}
+    \begin{lemma}[id=UnionOpen]
+      Let $S$ be an family of open sets.
+      $\bigcup S$ is open.
+    \end{lemma}
+    \begin{proof}
+      Let $x \in \bigcup S$.
+      Take a set $M$ such that ($M$ is an element of $S$ and $x \in M$).
+      Take $q$ such that $q \Int + x \subseteq M$.
+      Then $q \Int + x \subseteq \bigcup S$.
+    \end{proof}
+
+    \begin{lemma}[id=InterOpen]
+      Let $A,B$ be open subsets of $\Int$.
+      Then $A \cap B$ is a subset of $\Int$ and $A \cap B$ is open.
+    \end{lemma}
+    \begin{proof}
+      $A \cap B$ is a subset of $\Int$.
+      Let $x \in A \cap B$.
+      Then $x$ is an integer.
+      Take $q$ such that $q \Int + x \subseteq A$.
+      Take $p$ such that $p \Int + x \subseteq B$.
+
+      Let us show that $p \cdot q$ is a nonzero integer and $(p \cdot q) \Int + x \subseteq A \cap B$.
+        $p \cdot q$ is a nonzero integer.
+        Let $a \in (p \cdot q) \Int + x$.
+
+        $a \in p \Int + x$ and $a \in q \Int + x$. \newline
+        Proof.
+          $x$ is an integer and $a = x ~(\mod p \cdot q)$.
+          $a = x ~(\mod p)$ and $a = x ~(\mod q)$ (by EquModMul).
+        Qed.
+
+        Therefore $a \in A$ and $a \in B$.
+        Hence $a \in A \cap B$.
       End.
     \end{proof}
 
-    \begin{lemma}
-      Let $S$ be a system of open sets.
-      Then $\SETunionover S$ is open.
+    \begin{lemma}[id=UnionClosed]
+      Let $A,B$ be closed subsets of $\Int$.
+      $A \cup B$ is closed.
     \end{lemma}
     \begin{proof}
-      Let $n \in \SETunionover S$.
-      Take a set $M$ such that $n \in M \in S$.
-      Consider a $q$ such that $\N_{n, q} \SETinclude M$.
-      Then $\N_{n, q} \SETinclude \SETunionover S$.
+      We have $\overline{A}, \overline{B} \subseteq \Int$.
+      $\overline{A \cup B} = \overline{A} \cap \overline{B}$.
     \end{proof}
   \end{forthel}
 
-  Now that we have a topology of open sets on $\Nat$, we can continue
-  with a characterization of closed sets whose key property is that they are
-  closed under finite unions.
+  Now we state a consequence of finiteness:
 
   \begin{forthel}
-    \begin{definition}
-      Let $A$ be a subset of $\Nat$.
-      $A$ is closed iff $A^\complement$ is open.
-    \end{definition}
-
-    \begin{definition}
-      A system of closed sets is a system of sets $S$ such that every element of
-      $S$ is a closed subset of $\Nat$.
-    \end{definition}
-
-    \begin{lemma}
-      Every system of closed sets is a set.
-    \end{lemma}
-    \begin{proof}
-      Let $S$ be a system of closed sets.
-      Then $S \SETinclude \SETpow(\Nat)$.
-      $\SETpow(\Nat)$ is a set.
-      Hence $S$ is a set.
-    \end{proof}
-
-    \begin{lemma}
-      Let $S$ be a finite system of closed sets.
-      Then $\SETunionover S$ is closed.
-    \end{lemma}
-    \begin{proof}
-      Define $C = \{ X \mid X \text{ is a closed subset of } \Nat \}$.
-
-      Let us show that $A \SETunion B \in C$ for any $A, B \in C$.
-        Let $A, B \in C$.
-        Then $A, B$ are closed subsets of $\Nat$.
-        We have $((A \SETunion B)^\complement) = A^\complement \SETintersect B^\complement$. %!
-        $A^\complement$ and $B^\complement$ are open.
-        Hence $A^\complement \SETintersect B^\complement$ is open.
-        Thus $A \SETunion B$ is a closed subset of $\Nat$.
-      End.
-
-      Therefore $C$ is closed under finite unions.
-      Consequently $\SETunionover S \in C$.
-      Indeed $S$ is a subset of $C$.
-    \end{proof}
+    \begin{axiom}[id=UnionSClosed]
+      Let $S$ be a finite family of integer sets such that all elements of $S$ are closed subsets of $\Int$.
+      $\bigcup S$ is closed.
+    \end{axiom}
   \end{forthel}
 
-  An important step towards Furstenberg's proof is to show that arithmetic
-  sequences are closed.
+  This characterization allows us to prove that a family $S$ of closed sets is infinite by assuming
+  $S$ to be finite and deriving a contradiction from this assumption together with the statement
+  that $\bigcup S$ is closed. In Furstenberg's proof we will use this method to show that the family
+  $\{ r \Int \mid r \text{ is prime} \}$ is infinite. To use the above argument we thus have to
+  prove that any $r \Int$ -- or more general any $q \Int + a$ -- is closed.
 
   \begin{forthel}
-    \begin{lemma}
-      $\N_{n, q}$ is closed.
+    \begin{lemma}[id=ArSeqClosed]
+      $q \Int + a$ is a closed subset of $\Int$.
     \end{lemma}
-    \begin{proof}
-      Let $m \in (\N_{n, q})^\complement$.
+    \begin{proof}[method=contradiction]
+      $q \Int + a$ is a subset of $\Int$.
+      Let $b \in \overline{q \Int + a}$.
 
-      Let us show that $\N_{m, q} \SETinclude (\N_{n, q})^\complement$.
-        Let $k \in \N_{m, q}$.
-        Assume $k \notin (\N_{n, q})^\complement$.
-        Then $\NATcong{k}{m}{q}$ and $\NATcong{n}{k}{q}$.
-        Hence $\NATcong{m}{n}{q}$.
-        Therefore $m \in \N_{n, q}$.
+      Let us show that $q \Int + b \subseteq \overline{q \Int + a}$.
+        Let $c \in q \Int + b$.
+        Assume not $c \in \overline{q \Int + a}$.
+        Then $c = b ~(\mod q)$ and $a = c ~(\mod q)$.
+        Hence $b = a ~(\mod q)$.
+        Therefore $b \in q \Int + a$.
         Contradiction.
       End.
     \end{proof}
   \end{forthel}
 
-  Identifying each prime number $p$ with the arithmetic sequence $\N_{0, p}$
-  yields a bijection between the set $\Prime$ of all prime numbers and the set
-  $\Ps$ of all such sequences $\N_{0, p}$.
-  Thus to show that there are infinitely many primes it suffices to show that
-  $\Ps$ is infinite.
+  To prove that there are infinitely many primes we identify a prime number $r$ with the set
+  $r \Int$ and show that the set $S = \{r \Int \mid r \textrm{ is a prime} \}$ is infinite. It is
+  easy to see that $\bigcup S = \{ \text{integer } n \mid n \text{ has a prime divisor} \} =
+  \Int \setminus \{ 1, -1 \}$. So if $S$ is finite then $\bigcup S$ is closed
+  (by \textit{UnionClosed}) and hence $\{ 1, -1 \}$ is open. But then some arithmetic sequence
+  $p \Int + 1$ (where $p$ is non-zero) is contained in $\{ 1, -1 \}$ which obviously cannot be.
 
   \begin{forthel}
-    \begin{definition}
-      $\Ps = \{ \N_{\NATzero, p} \mid p \in \Prime \}$.
-    \end{definition}
-
-    \begin{lemma}
-      $\Ps$ is a system of closed sets.
-    \end{lemma}
-    \begin{proof}
-      $\N_{\NATzero, p}$ is a closed subset of $\Nat$ for every $p \in \Prime$.
-    \end{proof}
-
-    \begin{lemma}
-      $\Ps$ is a set that is equinumerous to $\Prime$.
-    \end{lemma}
-    \begin{proof}
-      (1) $\Ps$ is a set.
-      Indeed $\Ps \SETinclude \SETpow(\Nat)$.
-
-      (2) $\Ps$ is equinumerous to $\Prime$.
-      \begin{proof}
-        Define $f(p) = \N_{\NATzero,p}$ for $p \in \Prime$.
-
-        Let us show that $f$ is injective.
-          Let $p, q \in \Prime$.
-          Assume $f(p) = f(q)$.
-          Then $\N_{\NATzero, p} = \N_{\NATzero, q}$.
-          We have $\N_{\NATzero, p} = \{ m \in \Nat \mid \NATcong{m}{\NATzero}{p} \}$ and
-          $\N_{\NATzero, q} = \{ m \in \Nat \mid \NATcong{m}{\NATzero}{q} \}$.
-
-          We can show that for all $m \in \Nat$ we have $p \NATmid m$ iff $q \NATmid m$.
-            Let $m \in \Nat$.
-            Then $\NATcong{m}{\NATzero}{p}$ iff $\NATcong{m}{\NATzero}{q}$.
-            Thus $m \NATmod p = \NATzero \NATmod p$ iff $m \NATmod q = \NATzero \NATmod q$.
-            We have $\NATzero \NATmod p = \NATzero = \NATzero \NATmod q$.
-            Hence $m \NATmod p = \NATzero$ iff $m \NATmod q = \NATzero$.
-            Therefore $p \NATmid m$ iff $q \NATmid m$.
-          End.
-
-          Consequently $p = q$.
-        End.
-
-        $f$ is surjective onto $\Ps$.
-        Thus $f$ is a bijection between $\Prime$ and $\Ps$.
-      \end{proof}
-    \end{proof}
-
-    \begin{theorem}[title=Furstenberg]
-      $\Prime$ is infinite.
+    \begin{theorem}[title=Fuerstenberg]
+      Let $S = \{ r \Int + 0 \mid r \text{ is a prime} \}$.
+      $S$ is infinite.
     \end{theorem}
-    \begin{proof}
-      $\SETunionover \Ps$ is a subset of $\Nat$.
+    \begin{proof}[method=contradiction]
+      $S$ is a family of integer sets.
 
-      Let us show that for any $n \in \Nat$ we have $n \in \SETunionover \Ps$ iff $n$
-      has a prime divisor.
-        Let $n \in \Nat$.
+      We have $\overline{\bigcup S} = \{ 1, -1 \}$. \newline
+      Proof.
+        Let us show that for any integer $n$ $n$ belongs to $\bigcup S$ iff $n$ has a prime divisor.
+          Let $n$ be an integer.
 
-        If $n$ has a prime divisor then $n$ belongs to $\SETunionover \Ps$.
-        \begin{proof}
-          Assume $n$ has a prime divisor.
-          Take a prime divisor $p$ of $n$.
-          We have $\N_{\NATzero, p} \in \Ps$.
-          Hence $n \in \N_{\NATzero, p}$.
-        \end{proof}
+          If $n$ has a prime divisor then $n$ belongs to $\bigcup S$. \newline
+          Proof.
+            Assume $n$ has a prime divisor.
+            Take a prime divisor $p$ of $n$.
+            $p \Int + 0 \in S$.
+            $n \in p \Int + 0$.
+          Qed.
 
-        If $n$ belongs to $\SETunionover \Ps$ then $n$ has a prime divisor.
-        \begin{proof}
-          Assume that $n$ belongs to $\SETunionover \Ps$.
-          Take a prime number $r$ such that $n \in \N_{\NATzero, r}$.
-          Hence $\NATcong{n}{\NATzero}{r}$.
-          Thus $n \NATmod r = \NATzero \NATmod r = \NATzero$.
-          Therefore $r$ is a prime divisor of $n$.
-        \end{proof}
-      End.
+          If $n$ belongs to $\bigcup S$ then $n$ has a prime divisor. \newline
+          Proof.
+            Assume $n$ belongs to $\bigcup S$.
+            Take a prime $r$ such that $n \in r \Int + 0$.
+            Then $r$ is a prime divisor of $n$.
+          Qed.
+        End.
+      Qed.
 
-      Hence For all $n \in \Nat$ we have $n \in (\SETunionover \Ps)^\complement$ iff
-      $n$ has no prime divisor.
-      $\NATone$ has no prime divisor and any natural number having no prime
-      divisor is equal to $\NATone$.
-      Therefore $(\SETunionover \Ps)^\complement = \SETsingleton{\NATone}$.
-      Indeed $((\SETunionover \Ps)^\complement) \SETinclude \SETsingleton{\NATone}$ and $\SETsingleton{\NATone}
-      \SETinclude (\SETunionover \Ps)^\complement$. %!
+      Assume that $S$ is finite.
+      Then $\bigcup S$ is closed and $\overline{\bigcup S}$ is open.
 
-      $\Ps$ is infinite.
-      \begin{proof}[method=contradiction]
-        Assume that $\Ps$ is finite.
-        Then $\SETunionover \Ps$ is closed and $(\SETunionover \Ps)^\complement$ is open.
-        Take a $p$ such that $\N_{\NATone, p} \SETinclude (\SETunionover \Ps)^\complement$.
-        $\NATone \NATplus p$ is an element of $\N_{\NATone, p}$.
-        Indeed $\NATcong{\NATone \NATplus p}{\NATone}{p}$
-        (by \printref{ARITHMETIC_08_5984712287846400}).
-        $\NATone \NATplus p$ is not equal to $\NATone$.
-        Hence $\NATone \NATplus p \notin (\SETunionover \Ps)^\complement$.
-        Contradiction.
-      \end{proof}
+      Take $p$ such that $p \Int + 1 \subseteq \overline{\bigcup S}$.
+
+      $p \Int + 1$ has an element $x$ such that neither $x = 1$ nor $x = -1$. \newline
+      Proof.
+        $1 + p$ and $1 - p$ are integers.
+        $1 + p$ and $1 - p$ belong to $p \Int + 1$.
+        Indeed $1 + p = 1 ~(\mod p)$ and $1 - p = 1 ~(\mod p)$.
+        $1 + p \neq  1 \wedge 1 - p \neq  1$.
+        $1 + p \neq -1 \vee 1 - p \neq -1$.
+      Qed.
+
+      We have a contradiction.
     \end{proof}
   \end{forthel}
 
-  \printbibliography
+  Note that we cannot define $q \Int$ as $q \Int + 0$ in our formalization since then any term of
+  the form $q \Int + a$ would be ambiguous: It could either be interpreted as $q \Int + a$ or as
+  $(q \Int + 0) + a$. This is a result of some kind of overloading of the symbol $+$. We use $+$ on
+  the one hand to denote integer addition and on the other hand it is part of the operator
+  $\cdot ~ \Int + ~ \cdot$.
 \end{document}

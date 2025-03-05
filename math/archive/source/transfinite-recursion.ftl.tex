@@ -1,0 +1,270 @@
+\documentclass{article}
+\usepackage{naproche}
+\libinput{preamble}
+
+\title{Transfinite Recursion Theorem}
+\author{\Naproche formalization:\\[0.5em]Marcel Schütz}
+\date{2024}
+
+\begin{document}
+\begin{smodule}{transfinite-recursion.ftl}
+\maketitle
+
+\importmodule[libraries/set-theory]{transfinite-induction.ftl}
+\importmodule[libraries/set-theory]{recursive-maps.ftl}
+
+\noindent This is a formalization of the \emph{Transfinite Recursion Theorem}
+(cf. \cite{Koepke2018}).
+It states that for any map $G \FUNfromto{\ORDfunspace{A}}{A}$, where
+$\ORDfunspace{A}$ denotes the class of all maps $\alpha \to A$ for some
+ordinal $\alpha$, there exists a unique map $F \FUNfromto{\Ord}{A}$ that is
+\emph{recursive regarding} $G$, i.e. \[F(\alpha) \eq G(F \FUNrest \alpha)\] for
+all ordinals $\alpha$.
+
+\begin{lemma}[forthel,title=Coincidence Lemma,id=transfinite_recursion_coincidence]
+  Let $A$ be a class and $G$ be a map from $\ORDfunspace{A}$ to $A$.
+  Let $H, H'$ be maps to $A$ that are recursive regarding $G$.
+  Then \[ H(\alpha) \eq H'(\alpha) \] for all $\alpha \SETin \FUNdom(H) \SETintersect \FUNdom(H')$.
+\end{lemma}
+\begin{proof}[forthel]
+  Define $\Phi = \{ \alpha \in \Ord \mid\text{ if }
+  \alpha \SETin \FUNdom(H) \SETintersect \FUNdom(H')\text{ then }H(\alpha) \eq H'(\alpha) \}$.
+
+  For all ordinals $\alpha$ if every ordinal less than $\alpha$ lies in $\Phi$ then $\alpha \SETin \Phi$.
+  \begin{proof}
+    Let $\alpha \SETin \Ord$.
+    Assume that every $y \SETin \alpha$ lies in $\Phi$.
+
+    Let us show that if $\alpha \SETin \FUNdom(H) \SETintersect \FUNdom(H')$ then
+    $H(\alpha) \eq H'(\alpha)$.
+      Suppose $\alpha \SETin \FUNdom(H) \SETintersect \FUNdom(H')$.
+      Then $\alpha \SETinclude \FUNdom(H), \FUNdom(H')$.
+      Indeed $\FUNdom(H)$ and $\FUNdom(H')$ are transitive classes.
+      Hence for all $y \SETin \alpha$ we have $y \SETin \FUNdom(H) \SETintersect \FUNdom(H')$.
+      Thus $H(y) \eq H'(y)$ for all $y \SETin \alpha$.
+      Therefore $H \FUNrest \alpha \eq H' \FUNrest \alpha$.
+      $H$ and $H'$ are recursive regarding $G$.
+      We have $H \FUNrest \alpha, H' \FUNrest \alpha \SETin \ORDfunspace{A}$.
+      Hence $H(\alpha)
+        \eq G(H \FUNrest \alpha)
+        \eq G(H' \FUNrest \alpha)
+        \eq H'(\alpha)$.
+    End.
+
+    Thus $\alpha \SETin \Phi$.
+  \end{proof}
+
+  [prover vampire]
+  Then $\Phi$ contains every ordinal (by \printref{SET_THEORY_02_8493935460614144}).
+  Therefore we have $H(\alpha) \eq H'(\alpha)$ for all $\alpha \SETin \FUNdom(H) \SETintersect \FUNdom(H')$.
+\end{proof}
+
+\begin{theorem}[forthel,title=Transfinite Recursion Theorem: Existence,id=transfinite_recursion_existence]
+  Let $A$ be a class and $G$ be a map from $\ORDfunspace{A}$ to $A$.
+  Then there exists a map $F$ from $\Ord$ to $A$ that is recursive regarding $G$.
+\end{theorem}
+\begin{proof}[forthel]
+  Every ordinal is contained in the domain of some map $H$ to $A$ such that $H$ is recursive regarding $G$.
+  \begin{proof}
+    Define \[ \Phi = \class{\alpha \in \Ord | \classtext{$\alpha$ is contained in the domain of some map to $A$ that is recursive regarding $G$}}. \]
+
+    Let us show that for every ordinal $\alpha$ if every ordinal less than $\alpha$ lies in $\Phi$ then $\alpha \SETin \Phi$.
+      Let $\alpha$ be an ordinal.
+      Assume that every ordinal less than $\alpha$ lies in $\Phi$.
+      Then for all $y \SETin \alpha$ there exists a map $h$ to $A$ such that $h$ is recursive regarding $G$ and $y \SETin \FUNdom(h)$.
+      Define $H'(y) =$ ``choose a map $h$ to $A$ such that $h$ is recursive regarding $G$ and $y \SETin \FUNdom(h)$ in $h(y)$'' for $y \in \alpha$.
+      Then $H'$ is a map from $\alpha$ to $A$.
+      We have $H' \eq H' \FUNrest \alpha$.
+      Define \[ H(\beta) =
+        \begin{cases}
+          H'(\beta)                 & : \beta \ORDless \alpha \\
+          G(H' \FUNrest \beta)  & : \beta \eq \alpha
+        \end{cases} \]
+      for $\beta \in \ORDsucc(\alpha)$.
+      
+      Let us show that $H \FUNrest \beta \SETin \ORDfunspace{A}$ for all $\beta \SETin \FUNdom(H)$.
+        Let $\beta \SETin \FUNdom(H)$.
+        $\FUNdom(H \FUNrest \beta) \eq \beta$ and $(H \FUNrest \beta)(b) \eq H(b)$ for all $b \SETin \beta$.
+        $H(b) \SETin A$ for all $b \SETin \beta$.
+        Hence $H \FUNrest \beta$ is a map from $\beta$ to $A$.
+      End.
+
+      (a) $\FUNdom(H)$ is a transitive subclass of $\Ord$.
+
+      (b) For all $\beta \SETin \FUNdom(H)$ we have $H(\beta) \eq G(H \FUNrest \beta)$.
+      \begin{proof}
+        Let $\beta \SETin \FUNdom(H)$.
+        Then $\beta \ORDless \alpha$ or $\beta \eq \alpha$.
+
+        \begin{case}{$\beta \ORDless \alpha$.}
+          Choose a map $h$ to $A$ such that $h$ is recursive regarding $G$ and $\beta \SETin \FUNdom(h)$ and $H'(\beta) \eq h(\beta)$.
+
+          Let us show that for all $y \SETin \beta$ we have $h(y) \eq H(y)$.
+            Let $y \SETin \beta$.
+            Then $H(y) \eq H'(y)$.
+            Choose a map $h'$ to $A$ such that $h'$ is recursive regarding $G$ and $y \SETin \FUNdom(h')$ and $H'(y) \eq h'(y)$.
+            [prover vampire]
+            Then $h'(y) \eq h(y)$ (by \nameref{transfinite_recursion_coincidence}).
+            Indeed $y \SETin \FUNdom(h) \SETintersect \FUNdom(h')$.
+          End.
+
+          Hence $h \FUNrest \beta \eq H \FUNrest \beta$.
+          Thus $H(\beta)
+            \eq H'(\beta)
+            \eq h(\beta)
+            \eq G(h \FUNrest \beta)
+            \eq G(H \FUNrest \beta)$.
+        \end{case}
+
+        \begin{case}{$\beta \eq \alpha$.}
+          We have $H \FUNrest \alpha \eq H' \FUNrest \alpha$.
+        \end{case}
+      \end{proof}
+
+      Hence $H$ is a map to $A$ such that $H$ is recursive regarding $G$ and $\alpha \SETin \FUNdom(H)$.
+      Thus $\alpha \SETin \Phi$.
+    End.
+
+    [prover vampire]
+    Therefore $\Phi$ contains every ordinal (by \printref{SET_THEORY_02_8493935460614144}).
+    Consequently every ordinal is contained in the domain of some map $H$ to $A$ such that $H$ is recursive regarding $G$.
+  \end{proof}
+
+  Define $F(\alpha) =$ ``choose a map $H$ to $A$ such that $H$ is recursive regarding $G$ and $\alpha \SETin \FUNdom(H)$ in $H(\alpha)$'' for $\alpha \in \Ord$.
+  Then $F$ is a map from $\Ord$ to $A$.
+
+  $F$ is recursive regarding $G$.
+  \begin{proof}
+    (a) $\FUNdom(F)$ is a transitive subclass of $\Ord$.
+
+    (b) For all $\alpha \SETin \Ord$ we have $F(\alpha) \eq G(F \FUNrest \alpha)$.
+    \begin{proof}
+      Let $\alpha \SETin \Ord$.
+      Choose a map $H$ to $A$ such that $H$ is recursive regarding $G$ and $\alpha \SETin \FUNdom(H)$ and $F(\alpha) \eq H(\alpha)$.
+
+      Let us show that $F(\beta) \eq H(\beta)$ for all $\beta \SETin \alpha$.
+        Let $\beta \SETin \alpha$.
+        Choose a map $H'$ to $A$ such that $H'$ is recursive regarding $G$ and $\beta \SETin \FUNdom(H')$ and $F(\beta) \eq H'(\beta)$.
+        [prover vampire]
+        Then $H(\beta) \eq H'(\beta)$ (by \nameref{transfinite_recursion_coincidence}).
+        Indeed $\beta \SETin \FUNdom(H) \SETintersect \FUNdom(H')$.
+        Therefore $F(\beta) \eq H'(\beta)$.
+      End.
+
+      Hence $H \FUNrest \alpha \eq F \FUNrest \alpha$.
+      Thus $F(\alpha)
+        \eq H(\alpha)
+        \eq G(H \FUNrest \alpha)
+        \eq G(F \FUNrest \alpha)$.
+    \end{proof}
+  \end{proof}
+\end{proof}
+
+\begin{theorem}[forthel,title=Transfinite Recursion Theorem: Uniqueness,id=transfinite_recursion_uniqueness]
+  Let $A$ be a class and $G$ be a map from $\ORDfunspace{A}$ to $A$.
+  Let $F, F'$ be maps from $\Ord$ to $A$ that are recursive regarding $G$.
+  Then $F \eq F'$.
+\end{theorem}
+\begin{proof}[forthel]
+  [prover vampire]
+  $F$ and $F'$ are recursive regarding $G$.
+  Then $F(\alpha) \eq F'(\alpha)$ for all $\alpha \SETin \FUNdom(F) \SETintersect \FUNdom(F')$ (by \nameref{transfinite_recursion_coincidence}).
+  We have $\FUNdom(F) \eq \Ord \eq \FUNdom(F')$.
+  Hence $F(\alpha) \eq F'(\alpha)$ for all $\alpha \SETin \Ord$.
+  Thus $F \eq F'$.
+\end{proof}
+
+As a corollary of the transfinite recursion theorem we get that we can
+define maps recursively on the ordinals by case distinction:
+For given maps $G \FUNfromto{\Ord \SETprod A}{A}$ and
+$H \FUNfromto{\Ord \SETprod \ORDfunspace{A}}{A}$ and an element $a \in A$ we
+can define a map $F \FUNfromto{\Ord}{A}$ by
+\begin{itemize}
+  \item $F(\ORDzero) = a$,
+  \item $F(\ORDsucc(\alpha)) = G(\alpha, F(\alpha))$, and
+  \item $F(\lambda) = H(\lambda, F \FUNrest \lambda)$
+    for any limit ordinal $\lambda$.
+\end{itemize}
+
+\begin{lemma}[forthel,id=transfinite_recursion_029348573987483]
+  Let $A$ be a class and $\alpha$ be an ordinal and $F \FUNfromto{\Ord}{A}$.
+  Then $(\alpha, F(\alpha)) \SETin \Ord \SETprod A$.
+\end{lemma}
+
+\begin{lemma}[forthel,id=transfinite_recursion_570293857449281]
+  Let $A$ be a class and $\lambda$ be a limit ordinal and $F \FUNfromto{\Ord}{A}$.
+  Then $(\lambda, F \FUNrest \lambda) \SETin \Ord \SETprod \ORDfunspace{A}$.
+\end{lemma}
+
+\begin{corollary}[forthel,id=transfinite_recursion_298647309184593]
+  Let $A$ be a class.
+  Let $a \SETin A$ and $G \FUNfromto{\Ord \SETprod A}{A}$ and $H \FUNfromto{\Ord \SETprod \ORDfunspace{A}}{A}$.
+  Then there exists a map $F$ from $\Ord$ to $A$ such that
+  \[ F(\ORDzero) \eq a \]
+  and for all ordinals $\alpha$ we have
+  \[ F(\ORDsucc(\alpha)) \eq G(\alpha, F(\alpha)) \]
+  and for all limit ordinals $\lambda$ we have
+  \[ F(\lambda) \eq H(\lambda, F \FUNrest \lambda). \]
+\end{corollary}
+\begin{proof}[forthel]
+  $(\ORDpred(\FUNdom(f)), f(\ORDpred(\FUNdom(f)))) \SETin \Ord \SETprod A$ for all $f \SETin \ORDfunspace{A}$ such that $\FUNdom(f)$ is a successor ordinal.
+
+  Define  \[ J(f) =
+    \begin{cases}
+      a
+      & : \FUNdom(f) \eq \ORDzero
+      \\
+      G(\ORDpred(\FUNdom(f)), f(\ORDpred(\FUNdom(f))))
+      & : \text{$\FUNdom(f)$ is a successor ordinal}
+      \\
+      H(\FUNdom(f), f)
+      & : \text{$\FUNdom(f)$ is a limit ordinal}
+    \end{cases} \]
+  for $f \in \ORDfunspace{A}$.
+
+  Then $J$ is a map from $\ORDfunspace{A}$ to $A$.
+  Indeed we can show that for any $f \SETin \ORDfunspace{A}$ we have $J(f) \SETin A$.
+    Let $f \SETin \ORDfunspace{A}$.
+    Take $\alpha \SETin \Ord$ such that $f \FUNfromto{\alpha}{A}$.
+    If $\alpha \eq \ORDzero$ then $J(f) \eq a \SETin A$.
+    If $\alpha$ is a successor ordinal then $J(f) \eq
+    G(\ORDpred(\alpha), f(\ORDpred(\alpha))) \SETin A$.
+    [prover vampire]
+    If $\alpha$ is a limit ordinal then $J(f) \eq H(\alpha, f) \SETin A$.
+  End.
+
+  Hence we can take a map $F$ from $\Ord$ to $A$ that is recursive regarding $J$.
+  Then $F \FUNrest \alpha \SETin \ORDfunspace{A}$ for any ordinal $\alpha$.
+
+  (1) $F(\ORDzero) \eq a$.
+  \begin{proof}
+    $F(\ORDzero)
+      \eq J(F \FUNrest \ORDzero)
+      \eq a$.
+  \end{proof}
+
+  (2) $F(\ORDsucc(\alpha)) \eq G(\alpha, F(\alpha))$ for all ordinals $\alpha$.
+  \begin{proof}
+    Let $\alpha$ be an ordinal.
+    Then $F(\ORDsucc(\alpha))
+      \eq J(F \FUNrest \ORDsucc(\alpha))
+      \eq G(\ORDpred(\ORDsucc(\alpha)), (F \FUNrest \ORDsucc(\alpha))(\ORDpred(\ORDsucc(\alpha))))
+      \eq G(\alpha, (F \FUNrest \ORDsucc(\alpha))(\alpha))
+      \eq G(\alpha, F(\alpha))$.
+  \end{proof}
+
+  (3) $F(\lambda) \eq H(\lambda, F \FUNrest \lambda)$ for all limit ordinals $\lambda$.
+  \begin{proof}
+    Let $\lambda$ be a limit ordinal.
+    Then $F(\lambda)
+      \eq J(F \FUNrest \lambda)
+      \eq H(\lambda, F \FUNrest \lambda)$.
+  \end{proof}
+
+  Hence the thesis (by 1, 2, 3).
+\end{proof}
+
+\printbibliography
+\printlicense[CcByNcSa]{2024}{Marcel Schütz}
+\end{smodule}
+\end{document}

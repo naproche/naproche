@@ -1,0 +1,64 @@
+\documentclass{article}
+\usepackage{naproche}
+\libinput{preamble}
+
+\title{Cantor's Paradoxes}
+\author{\Naproche formalization: \\[0.5em]Marcel Schütz}
+\date{2024}
+
+\begin{document}
+\begin{smodule}{cantor-paradox.ftl}
+\pagenumbering{gobble}
+\maketitle
+
+\importmodule[libraries/set-theory]{infinite-cardinals.ftl}
+\importmodule[archive]{burali-forti-paradox.ftl}
+\importmodule[libraries/set-theory]{successor-cardinals.ftl}
+\importmodule[libraries/foundations]{universal-class.ftl}
+
+\noindent \emph{Cantor's First Paradox}, discovered by Georg Cantor in 1897,
+states that the collection $\Card$ of all (infinite) cardinal numbers is a
+proper class \cite[chapter 156]{Cantor1991}.
+
+\begin{theorem}[forthel,title=Cantor's First Paradox,id=cantor_paradox_1]
+  $\Card$ is a proper class.
+\end{theorem}
+\begin{proof}[forthel]
+  Suppose that $\Card$ is a set.
+  Then $\SETunionover \Card$ is a set.
+
+  Let us show that $\SETunionover \Card$ contains every ordinal.
+    Let $\alpha$ be an ordinal.
+    Choose an infinite ordinal $\beta$ such that $\beta \ORDgeq \alpha$.
+    Choose a cardinal $\kappa$ greater than $\beta$.
+    Then $\alpha \SETin \kappa \SETin \Card$.
+    Hence $\alpha \SETin \SETunionover \Card$.
+  End.
+
+  Therefore $\Ord \SETinclude \SETunionover \Card$.
+  Thus $\Ord$ is a set.
+  Contradiction.
+\end{proof}
+
+\emph{Cantor's Second Paradox} denotes the observation that the collection
+$\Set$ of all set is a proper class.
+It was shown by Georg Cantor in 1899 via his famous theorem stating that the
+cardinality of any set is strictly smaller than the cardinality of its 
+powerset \cite[chapter 163]{Cantor1991}.
+
+\begin{theorem}[forthel,title=Cantor's Second Paradox,id=cantor_paradox_2]
+  $\Set$ is a proper class.
+\end{theorem}
+\begin{proof}[forthel]
+  Assume the contrary.
+  Then $\SETpow(\Set)$ is a set.
+  Hence $\SETpow(\Set)$ is a subset of $\Set$.
+  Thus $\SETcard{\SETpow(\Set)} \ORDleq \SETcard{\Set}$.
+  Contradiction.
+  Indeed $\SETcard{x} \ORDless \SETcard{\SETpow(x)}$ for any set $x$.
+\end{proof}
+
+\printbibliography
+\printlicense[CcByNcSa]{2024}{Marcel Schütz}
+\end{smodule}
+\end{document}

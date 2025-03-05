@@ -1,8 +1,5 @@
-\documentclass{article}
-\usepackage{naproche}
-\libinput[latex]{example-preamble}
-\libinput[libraries/foundations]{preamble}
-\libinput[libraries/arithmetics]{preamble}
+\documentclass[english]{article}
+\usepackage{../latex/lib/naproche}
 
 \newcommand{\gauss}{\mathcal{G}}
 
@@ -11,64 +8,184 @@
 \date{2024}
 
 \begin{document}
-  \pagenumbering{gobble}
-  \maketitle
+\begin{smodule}{gauss.ftl}
+\pagenumbering{gobble}
+\maketitle
 
-  \usemodule[libraries/arithmetics]{multiplication.ftl}
+\noindent This is a formalization of ``Little Gauß' Theorem'', i.e. of
+the assertion that
+\[\sum_{k = 0}^n k = \frac{k(k + 1)}2\]
+for all $n \in \mathbb{N}$.
 
-  \noindent This is a formalization of ``Little Gauß' Theorem'', i.e. of
-  the assertion that
-  \[\sum_{k=\NATzero}^n k = \frac{k(k \NATplus \NATone)}\NATtwo\]
-  for all $n \in \Nat$.
-  In \Naproche we can define the sum $\sum_{n=\NATzero}^k n$ by the function
-  $\gauss : \Nat \to \Nat$ with $\gauss(\NATzero) = \NATzero$ and
-  $\gauss(n \NATplus \NATone) = \gauss(n) \NATplus (n \NATplus \NATone)$:
+\section{Natural Numbers}
 
-  \begin{forthel}
-    \begin{signature*}
-      Let $n$ be a natural number.
-      $\gauss(n)$ is a natural number.
-    \end{signature*}
+\begin{forthel}
+  [read \path{examples/preliminaries.ftl.tex}]
 
-    \begin{axiom*}
-      $\gauss(\NATzero) = \NATzero$.
-    \end{axiom*}
+  \begin{signature}
+    A natural number is an object.
 
-    \begin{axiom*}
-      Let $n$ be a natural number.
-      Then $\gauss(n \NATplus \NATone) = \gauss(n) \NATplus (n \NATplus \NATone)$.
-    \end{axiom*}
-  \end{forthel}
+    Let $n, m, k$ denote natural numbers.
+  \end{signature}
 
-  \noindent Then the theorem can be stated as follows.
+  \begin{definition}
+    $\mathbb{N}$ is the class of all natural numbers.
+  \end{definition}
 
-  \begin{forthel}
-    \begin{theorem*}[title=Little Gauß,id=little_gauss]
-      For all natural numbers $n$ we have
-      \[\NATtwo \NATmul \gauss(n) = n \NATmul (n \NATplus \NATone).\]
-    \end{theorem*}
-    \begin{proof}
-      Define $\Phi = \{n \in \Nat \mid \NATtwo \NATmul \gauss(n) = n \NATmul (n \NATplus \NATone)\}$.
+  \begin{axiom}[title=Infinity Axiom]
+    $\mathbb{N}$ is a set.
+  \end{axiom}
 
-      (1) $\NATzero \in \Phi$.
+  \begin{signature}
+    $0$ is a natural number.
 
-      (2) For all $n \in \Phi$ we have $n \NATplus \NATone \in \Phi$.
-      \begin{proof}
-        Let $n \in \Phi$.
-        Then $\NATtwo \NATmul \gauss(n) = n \NATmul (n \NATplus \NATone)$.
-        Hence $\NATtwo \NATmul \gauss(n \NATplus \NATone)
-          = \NATtwo \NATmul (\gauss(n) \NATplus (n \NATplus \NATone))
-          = (\NATtwo \NATmul \gauss(n)) \NATplus (\NATtwo \NATmul (n \NATplus \NATone))
-          = (n \NATmul (n \NATplus \NATone)) \NATplus (\NATtwo \NATmul (n \NATplus \NATone))
-          = ((n \NATplus \NATone) \NATmul n) \NATplus ((n \NATplus \NATone) \NATmul \NATtwo)
-          = (n \NATplus \NATone) \NATmul (n \NATplus \NATtwo)
-          = (n \NATplus \NATone) \NATmul ((n \NATplus \NATone) \NATplus \NATone)$.
-        Therefore $n \NATplus \NATone \in \Phi$.
-      \end{proof}
+    Let $n$ is nonzero stand for $n \neq 0$.
+  \end{signature}
 
-      Thus $\Phi$ contains every natural number.
-      Consequently $\NATtwo \NATmul \gauss(n) = n \NATmul (n \NATplus \NATone)$ for every $n \in \Nat$.
-    \end{proof}
-  \end{forthel}
-  \printlicense[CcByNcSa]{2024}{Christian Schöner, Marcel Schütz}
+  \begin{signature}
+    $1$ is a natural number.
+  \end{signature}
+\end{forthel}
+
+
+\subsection{Addition}
+
+\begin{forthel}
+  \begin{signature}
+    $n + m$ is a natural number.
+  \end{signature}
+
+  \begin{axiom}[title=Addition Axiom I]
+    $n + 0 = n$.
+  \end{axiom}
+
+  \begin{axiom}[title=Addition Axiom II]
+    $n + (m + 1) = (n + m) + 1$.
+  \end{axiom}
+
+  \begin{axiom}[title=Commutativity of Addition]
+    $n + m = m + n$.
+  \end{axiom}
+
+  \begin{axiom}[title=Associativity of Addition]
+    $n + (m + k) = (n + m) + k$.
+  \end{axiom}
+\end{forthel}
+
+
+\subsection{Multiplication}
+
+\begin{forthel}
+  \begin{signature}
+    $n \cdot m$ is a natural number.
+  \end{signature}
+
+  \begin{axiom}
+    $n \cdot 0 = 0$.
+  \end{axiom}
+
+  \begin{axiom}
+    $n \cdot (m + 1) = (n \cdot m) + n$.
+  \end{axiom}
+
+  \begin{axiom}[title=Commutativity of Multiplication]
+    $n \cdot m = m \cdot n$.
+  \end{axiom}
+
+  \begin{axiom}[title=Associativity of Multiplication]
+    $n \cdot (m \cdot k) = (n \cdot m) \cdot k$.
+  \end{axiom}
+
+  \begin{axiom}[title=Left Distributivity]
+    $n \cdot (m + k) = (n \cdot m) + (n \cdot k)$.
+  \end{axiom}
+
+  \begin{axiom}[title=Right Distributivity]
+    $(n + m) \cdot k = (n \cdot k) + (m \cdot k)$.
+  \end{axiom}
+\end{forthel}
+
+
+\subsection{The Peano Axioms}
+
+\begin{forthel}
+  \begin{axiom}[title=Peano Axiom I]
+    If $n + 1 =  m + 1$ then $n = m$.
+  \end{axiom}
+
+  \begin{axiom}[title=Peano Axiom II]
+    There exists no natural number $n$ such that $n + 1 = 0$.
+  \end{axiom}
+
+  \begin{axiom}[title=Peano Axiom III]
+    $n = 0$ or $n = m + 1$ for some natural number $m$.
+  \end{axiom}
+
+  \begin{axiom}[title=Induction Axiom]
+    $n \prec n + 1$.
+  \end{axiom}
+\end{forthel}
+
+
+\subsection{Additional Numbers}
+
+\begin{forthel}
+  \begin{definition}
+    $2 = 1 + 1$.
+  \end{definition}
+\end{forthel}
+
+
+\section{Little Gauß' Theorem}
+
+In \Naproche we can define the sum $\sum_{n = 0}^k n$ by the function
+$\gauss : \mathbb{N} \to \mathbb{N}$ with $\gauss(0) = 0$ and
+$\gauss(n + 1) = \gauss(n) + (n + 1)$:
+
+\begin{forthel}
+  Let $n$ denote a natural number.
+
+  \begin{signature*}
+    $\gauss(n)$ is a natural number.
+  \end{signature*}
+
+  \begin{axiom*}
+    $\gauss(0) = 0$.
+  \end{axiom*}
+
+  \begin{axiom*}
+    $\gauss(n + 1) = \gauss(n) + (n + 1)$.
+  \end{axiom*}
+\end{forthel}
+
+\noindent Then the theorem can be stated as follows.
+
+\begin{forthel}
+  \begin{theorem*}[title=Little Gauß,id=little_gauss]
+    For all natural numbers $n$ we have
+    \[2 \cdot \gauss(n) = n \cdot (n + 1).\]
+  \end{theorem*}
+  \begin{proof}[method=induction on $n$]
+    Let $n$ be a natural number.
+
+    \begin{case}{$n = 0$.} \end{case}
+
+    \begin{case}{$n \neq 0$.}
+      Take a $m \in \mathbb{N}$ such that $n = m + 1$.
+      Then $2 \cdot \gauss(m) = m \cdot n$.
+      Hence
+      \begin{align*}
+            2 \cdot \gauss(n)
+        & = 2 \cdot (\gauss(m) + n)           \\
+        & = (2 \cdot \gauss(m)) + (2 \cdot n) \\
+        & = (m \cdot n) + (2 \cdot n)         \\
+        & = (m + 2) \cdot n                   \\
+        & = n \cdot (n + 1)
+      \end{align*}.
+    \end{case}
+  \end{proof}
+\end{forthel}
+
+\printlicense[CcByNcSa]{2024}{Christian Schöner, Marcel Schütz}
+\end{smodule}
 \end{document}

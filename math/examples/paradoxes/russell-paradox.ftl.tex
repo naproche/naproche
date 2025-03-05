@@ -1,27 +1,34 @@
-\documentclass{article}
-\usepackage{naproche}
-\libinput[latex]{example-preamble}
-\libinput[libraries/foundations]{preamble}
+\documentclass[english]{article}
+\usepackage{../../latex/lib/naproche}
+\addbibresource{../../latex/lib/bibliography}
 
 \title{Russell's Paradox}
 \author{\Naproche formalization:\\[0.5em]Marcel Schütz}
 \date{2024}
 
 \begin{document}
-\begin{smodule}{russell-paradox.ftl}
-  \pagenumbering{gobble}
-  \maketitle
-  \hidetlsnumbers
+\pagenumbering{gobble}
+\maketitle
 
-  \noindent \emph{Russell's Paradox} is a set-theoretical paradox discovered by
-  Bertrand Russell around 1902 \cite[chapter XV]{Frege1980} which shows that 
-  there exist statements $\varphi$ whose extension
-  $\{x\mid\varphi(x)\}$ cannot constitute a set -- or in other words:
-  Not every class is a set.
+\noindent \emph{Russell's Paradox} is a set-theoretical paradox discovered by
+Bertrand Russell around 1902 \cite[chapter XV]{Frege1980} which shows that 
+there exist statements $\varphi$ whose extension
+$\{x\mid\varphi(x)\}$ cannot constitute a set -- or in other words:
+Not every class is a set.
 
-  \inputref[libraries/foundations]{russell-paradox.ftl.tex}
+\begin{forthel}
+  \begin{theorem}[title=Russell's Paradox]
+    There exists a class that is not a set.
+  \end{theorem}
+  \begin{proof}[forthel]
+    Assume the contrary.
+    Define $R = \{x \mid x \text{ is a set such that } x \in x\}$.
+    Then $R$ is a set.
+    Hence $R \in R$ iff $R \notin R$.
+    Contradiction.
+  \end{proof}
+\end{forthel}
 
-  \printbibliography
-  \printlicense[CcByNcSa]{2024}{Marcel Schütz}
-\end{smodule}
+\printbibliography
+\printlicense[CcByNcSa]{2024}{Marcel Schütz}
 \end{document}

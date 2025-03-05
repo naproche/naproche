@@ -1,12 +1,35 @@
-\documentclass{naproche-library}
+\documentclass{article}
+\usepackage{naproche}
 \libinput{preamble}
+
+\newcommand\Ord{\textbf{Ord}}
+
+\title{Zermelo's Well-ordering Theorem}
+\author{\Naproche formalization:\\[0.5em]Marcel Schütz}
+\date{2024}
+
 \begin{document}
-\IfInputref{}{\setsectionlevel{section}}
-\begin{smodule}[title=Zermelo's Well-Ordering Theorem]{zermelo.ftl}
+\begin{smodule}{zermelo-wellordering.ftl}
+\maketitle
+
 \importmodule[libraries/foundations]{equinumerosity.ftl}
 \importmodule[libraries/foundations]{choice-maps.ftl}
 \importmodule[libraries/foundations]{proper-classes.ftl}
-\importmodule[libraries/set-theory]{transfinite-recursion-1.ftl}
+\importmodule[archive]{transfinite-recursion.ftl}
+
+\noindent This is a formalization of \textit{Zermelo's Well-ordering Theorem},
+i.e. of the assertion that under the assumption of the axiom of choice every
+set is equinumerous to some ordinal number, where an ordinal number is
+regarded as a transitive set whose elements are transitive sets as well.
+The proof of this theorem presented here is oriented on \cite{Koepke2018}.
+
+In the following, for any class $A$, we write $\ORDfunspace{A}$ to
+denote the collection of all maps $f \FUNfromto{\alpha}{A}$ for some ordinal
+$\alpha$.
+Moreover, for any map $G \FUNfromto{\ORDfunspace{A}}{A}$ we say that a map
+$F \FUNfromto{\Ord}{A}$, where $\Ord$ denotes the class of all ordinals, is
+recursive regarding $G$ if $F(\alpha) = G(F \FUNrest \alpha)$ for all
+$\alpha \in \Ord$.
 
 \begin{theorem}[forthel,title=Zermelo's Well-Ordering Theorem,id=zermelo]
   Every set is equinumerous to some ordinal.
@@ -131,5 +154,8 @@
   Therefore $f$ is a bijection between $\alpha$ and $x$.
   Consequently $x$ and $\alpha$ are equinumerous.
 \end{proof}
+
+\printbibliography
+\printlicense[CcByNcSa]{2024}{Marcel Schütz}
 \end{smodule}
 \end{document}

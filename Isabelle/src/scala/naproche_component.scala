@@ -79,18 +79,14 @@ object Naproche_Component {
     var tex_failed = Set.empty[Path]
 
     if (pdf_documents) {
+      val TeX_Program = """^% +!TEX +program += +(\w+) *$""".r
+
       val math = component_dir + Path.explode("math")
       val math_pdf = component_dir + Path.explode("math_pdf")
       Isabelle_System.copy_dir(math, math_pdf)
 
-      val naprochecomp_env = List("NAPROCHECOMP" -> component_dir.absolute.implode)
-
       def relative(file: JFile): Path = File.relative_path(math_pdf, File.path(file)).get
       def relative_name(file: JFile): String = relative(file).implode
-
-      progress.echo("Setting up TeX Live locally at " + Naproche.NAPROCHE_HOME.expand.implode + "/tex/texlive.")
-      progress.echo("(This may take up to one hour in case TeX Live is not installed locally yet.)")
-      progress.bash(Naproche.NAPROCHE_EXE.expand.implode + " --mode=render_setup_c")
 
       for {
         file <- File.find_files(math_pdf.file, _.getName.endsWith(".tex")).sortBy(relative_name)
@@ -100,22 +96,52 @@ object Naproche_Component {
         val tex_path = relative(file)
         val tex_dir = File.path(file).dir
         val tex_name = tex_path.base.implode
+        val tex_program =
+          split_lines(text).collectFirst({ case TeX_Program(prg) => prg }).getOrElse("pdflatex")
+        val bibtex_program = "bibtex"
+        val bibtex_env =
+          List("TEXINPUTS" -> Naproche.TEXINPUTS)
+        val tex_env_writesms =
+          List("TEXINPUTS" -> Naproche.TEXINPUTS, "MATHHUB" -> math_pdf.absolute.implode, "STEX_WRITESMS" -> "true")
+        val tex_env_usesms =
+          List("TEXINPUTS" -> Naproche.TEXINPUTS, "MATHHUB" -> math_pdf.absolute.implode, "STEX_USESMS" -> "true")
 
         val pdf_path = Path.explode(Library.try_unsuffix(".tex", tex_path.implode).get).pdf
+        val raw_file = Library.try_unsuffix(".tex", tex_name).get
+        val raw_path = Library.try_unsuffix(".tex", tex_path.implode).get
+        val bbl_path = Path.explode(raw_path + ".bbl")
 
         progress.expose_interrupt()
-        progress.echo("Building " + pdf_path)
+        progress.echo("Building " + pdf_path + " with " + tex_program + " (1st run)")
         val result =
-          progress.bash(Naproche.NAPROCHE_EXE.expand.implode + " --mode=render " + Bash.string(tex_name),
-            cwd = tex_dir, env = Isabelle_System.settings(naprochecomp_env))
+          progress.bash(Bash.string(tex_program) + " " + Bash.string(tex_name),
+            cwd = tex_dir, env = Isabelle_System.settings(tex_env_writesms))
         if (!result.ok) {
           tex_failed += tex_path
           progress.echo_error_message(cat_lines("LaTeX failed:"
             :: result.out_lines.drop(result.out_lines.length - output_tail max 0)))
-        } 
+        } else {
+          progress.echo("Building " + bbl_path + " with " + bibtex_program)
+          progress.bash(Bash.string(bibtex_program) + " " + Bash.string(raw_file),
+            cwd = tex_dir, env = Isabelle_System.settings(bibtex_env))
+          progress.echo("Building " + pdf_path + " with " + tex_program + " (2nd run)")
+          val result =
+            progress.bash(Bash.string(tex_program) + " " + Bash.string(tex_name),
+              cwd = tex_dir, env = Isabelle_System.settings(tex_env_usesms))
+          if (!result.ok) {
+            tex_failed += tex_path
+            progress.echo_error_message(cat_lines("LaTeX failed:"
+              :: result.out_lines.drop(result.out_lines.length - output_tail max 0)))
+          } else {
+            progress.echo("Building " + pdf_path + " with " + tex_program + " (3rd run)")
+            val result =
+              progress.bash(Bash.string(tex_program) + " " + Bash.string(tex_name),
+                cwd = tex_dir, env = Isabelle_System.settings(tex_env_usesms))
+          }
+        }
         if (!tex_failed(tex_path)) {
           Isabelle_System.copy_file(math_pdf + pdf_path, math + pdf_path.dir)
-       }
+        }
       }
     }
 

@@ -46,19 +46,73 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{naproche}[2025/01/03 package naproche]
 
-\RequirePackage{stex}
-\RequirePackage{amsmath,amssymb}  
-\RequirePackage{amsfonts}
+\IfFileExists{stex.sty}{\RequirePackage{stex}}{}
+\RequirePackage{amsmath,amssymb,amsfonts}
 \RequirePackage{etoolbox}
 \RequirePackage{xspace}
 \RequirePackage{xcolor}
-\RequirePackage{mdframed}
 \RequirePackage{hyperref}
 \RequirePackage{cleveref}
 \RequirePackage{xurl}
 \RequirePackage{keyval}
 \RequirePackage{environ}
-\RequirePackage{marginnote}
+\IfFileExists{marginnote.sty}{\RequirePackage{marginnote}}{}
+\IfFileExists{mdframed.sty}{\RequirePackage{mdframed}}{}
+
+
+% Bibliography
+% ------------
+
+\usepackage[backend=bibtex]{biblatex}
+\usepackage{csquotes}
+
+
+% Licenses
+% --------
+
+\RequirePackage{xstring}
+
+\newcommand\printlicense[3][CcZero]{\section*{License}
+  \textcopyright\,#2, #3. This work is licensed under a
+  \IfStrEqCase{#1}{
+    {CcZero}{\href
+      {https://creativecommons.org/publicdomain/zero/1.0/}
+      {Creative Commons ``CC0 1.0 Universal''}
+      (CC0 1.0)
+    }
+    {CcBy}{\href
+      {https://creativecommons.org/licenses/by/4.0/}
+      {Creative Commons ``Attribution 4.0 International''}
+      (CC BY 4.0)
+    }
+    {CcBySa}{\href
+      {https://creativecommons.org/licenses/by-sa/4.0/}
+      {Creative Commons ``Attribution-ShareAlike 4.0 International''}
+      (CC BY-SA 4.0)
+    }
+    {CcByNc}{\href
+      {https://creativecommons.org/licenses/by-nc/4.0/}
+      {Creative Commons ``Attribution-NonCommercial 4.0 International''}
+      (CC BY-NC 4.0)
+    }
+    {CcByNcSa}{\href
+      {https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en}
+      {Creative Commons ``Attribution-NonCommercial-ShareAlike 4.0 International''}
+      (CC BY-NC-SA 4.0)
+    }
+    {CcByNd}{\href
+      {https://creativecommons.org/licenses/by-nd/4.0/}
+      {Creative Commons ``Attribution-NoDerivatives 4.0 International''}
+      (CC BY-ND 4.0)
+    }
+    {CcByNcNd}{\href
+      {https://creativecommons.org/licenses/by-nc-nd/4.0/}
+      {Creative Commons ``Attribution-NonCommercial-NoDerivatives 4.0 International''}
+      (CC BY-NC-ND 4.0)
+    }
+  }
+  license.
+}
 
 
 % Links
@@ -125,9 +179,11 @@
   \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\begin{forthel}}{\par\addvspace{\baselineskip}}}%
   \if\relax\tlsid\else\tlsidlabel\fi%
   \noindent\textbf{#2\if\relax\tlstitle\else{ (\tlstitle)}\fi. }%
-  \ifbool{printid}{\if\relax\tlsid\else\marginnote{\footnotesize\tlsidname}\fi}{}%
+  \IfFileExists{marginnote.sty}{%
+    \ifbool{printid}{\if\relax\tlsid\else\marginnote{\footnotesize\tlsidname}\fi}{}%
+  }{}%
 }{%
-  \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\end{forthel}}{\par\addvspace{\baselineskip}}}%
+  \ifbool{forthelBeforeEnv}{\par}{\ifbool{forthel}{\end{forthel}}{\par\addvspace{\baselineskip}}}%
   \setbool{forthel}{\ifbool{forthelBeforeEnv}{true}{false}}% Reset the `forthel' variable
   \renewcommand\tlstitle{}%
   \renewcommand\tlsidname{}%
@@ -141,9 +197,11 @@
   \refstepcounter{theoremcount}%
   \if\relax\tlsid\else\tlsidlabel\fi%
   \noindent\textbf{#2\ifbool{showtlsnumber}{ \thetheoremcount}{}\if\relax\tlstitle\else{ (\tlstitle)}\fi. }%
-  \ifbool{printid}{\if\relax\tlsid\else\marginnote{\footnotesize\tlsidname}\fi}{}%
+  \IfFileExists{marginnote.sty}{%
+    \ifbool{printid}{\if\relax\tlsid\else\marginnote{\footnotesize\tlsidname}\fi}{}%
+  }{}%
 }{%
-  \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\end{forthel}}{\par\addvspace{\baselineskip}}}%
+  \ifbool{forthelBeforeEnv}{\par}{\ifbool{forthel}{\end{forthel}}{\par\addvspace{\baselineskip}}}%
   \setbool{forthel}{\ifbool{forthelBeforeEnv}{true}{false}}% Reset the `forthel' variable
   \renewcommand\tlstitle{}%
   \renewcommand\tlsidname{}%
@@ -196,11 +254,9 @@
 \makeatother
 
 
-% ForTheL Environment and Inline ForTheL
-% --------------------------------------
+% ForTheL Environment
+% -------------------
 
-\RequirePackage{tcolorbox}
-\RequirePackage{soulpos}
 \colorlet{forthelgray}{lightgray!30}
 
 % Space between paragraphs in forthel environments
@@ -216,21 +272,55 @@
 % ForTheL environment
 \newenvironment{forthel}{%
   \par\addvspace{\baselineskip}
-  \ifstexhtml%
+  \IfFileExists{stex.sty}{%
+  \ifstexhtml
     \begin{stex_annotate_env}{style:class=forthel,rustex:block=true,rustex:sized=-20}
-  \else%
-    \begin{mdframed}[backgroundcolor=forthelgray,linecolor=forthelgray]%
-  \fi%
+  \else
+    \IfFileExists{mdframed.sty}{%
+      \begin{mdframed}[backgroundcolor=forthelgray,linecolor=forthelgray]%
+    }{%
+      \PackageWarning{naproche}{%
+        Package mdframed not installed,\MessageBreak
+        therefore using verbatim fallback for\MessageBreak
+        forthel environment%
+      }%
+      \noindent\texttt{\char`\\begin\char`\{forthel\char`\}}\\%
+    }%
+  \fi
+  }{%
+    \IfFileExists{mdframed.sty}{%
+      \begin{mdframed}[backgroundcolor=forthelgray,linecolor=forthelgray]%
+    }{%
+      \PackageWarning{naproche}{%
+        Package mdframed not installed,\MessageBreak
+        therefore using verbatim fallback for\MessageBreak
+        forthel environment%
+      }%
+      \noindent\texttt{\char`\\begin\char`\{forthel\char`\}}\\%
+    }
+  }%
   \rmfamily%
   \setbool{forthel}{true}%
   \setlength{\parindent}{0pt}%
   \setlength{\parskip}{\ftlparskip}%
 }{%
-  \ifstexhtml%
-    \end{stex_annotate_env}%
-  \else%
-    \end{mdframed}%
-  \fi%
+  \IfFileExists{stex.sty}{%
+    \ifstexhtml
+      \end{stex_annotate_env}%
+    \else
+      \IfFileExists{mdframed.sty}{%
+        \end{mdframed}
+      }{%
+        \\\noindent\texttt{\char`\\end\char`\{forthel\char`\}}\\[\parskip]%
+      }
+    \fi
+    }{%
+    \IfFileExists{mdframed.sty}{%
+      \end{mdframed}
+    }{%
+      \\\noindent\texttt{\char`\\end\char`\{forthel\char`\}}\\[\parskip]%
+    }
+  }
   \rmfamily%
   \setbool{forthel}{false}%
   \par\addvspace{\baselineskip}
@@ -240,52 +330,117 @@
 % like an ordinary ForTheL environment, but its content is not checked by
 % Naproche. So use it wisely!
 \newenvironment{greybox}{
-  \ifstexhtml
-    \begin{stex_annotate_env}{style:class=forthel,rustex:block=true,rustex:sized=-20}
-  \else
-    \begin{mdframed}[backgroundcolor=forthelgray,linecolor=forthelgray]
-  \fi
+  \IfFileExists{stex.sty}{
+    \ifstexhtml
+        \begin{stex_annotate_env}{style:class=forthel,rustex:block=true,rustex:sized=-20}
+      \else
+        \IfFileExists{mdframed.sty}{%
+          \begin{mdframed}[backgroundcolor=forthelgray,linecolor=forthelgray]
+        }{%
+          \PackageWarning{naproche}{%
+            Package mdframed not installed,\MessageBreak
+            therefore using verbatim fallback for\MessageBreak
+            forthel environment%
+          }%
+          \noindent\texttt{\char`\\begin\char`\{forthel\char`\}}\\%
+        }
+      \fi
+  }{%
+    \IfFileExists{mdframed.sty}{%
+      \begin{mdframed}[backgroundcolor=forthelgray,linecolor=forthelgray]%
+    }{%
+      \PackageWarning{naproche}{%
+        Package mdframed not installed,\MessageBreak
+        therefore using verbatim fallback for\MessageBreak
+        forthel environment%
+      }%
+      \noindent\texttt{\char`\\begin\char`\{forthel\char`\}}\\%
+    }%
+  }%
   \setlength{\parindent}{0pt}
 }{
-  \ifstexhtml
-    \end{stex_annotate_env}
-  \else
-    \end{mdframed}
-  \fi
+  \IfFileExists{stex.sty}{%
+    \ifstexhtml
+      \end{stex_annotate_env}%
+    \else
+      \IfFileExists{mdframed.sty}{%
+        \end{mdframed}
+      }{%
+        \\\noindent\texttt{\char`\\end\char`\{forthel\char`\}}\\[\parskip]%
+      }
+    \fi
+  }{%
+    \IfFileExists{mdframed.sty}{%
+      \end{mdframed}
+    }{%
+      \\\noindent\texttt{\char`\\end\char`\{forthel\char`\}}\\[\parskip]%
+    }
+  }
 }
 
-\newtcbox\mybox{
-  on line,
-  arc=0pt,
-  outer arc=0pt,
-  colback=forthelgray,
-  colframe=forthelgray,
-  boxsep=0pt,
-  left=.2em,
-  right=.2em,
-  top=.2em,
-  bottom=.4em,
-  boxrule=0pt,
-  height=1.4em    
-}
 
-\ulposdef\inlineforthelbox[xoffset-start=.2em]{%
-  \mybox{\rule\ulwidth{0pt}}%
-}
+% Inline ForTheL Command
+% ----------------------
+
+\IfFileExists{tcolorbox.sty}{
+  \RequirePackage{tcolorbox}
+}{}
+
+\IfFileExists{soulpos.sty}{
+  \RequirePackage{soulpos}
+}{}
+
+\IfFileExists{tcolorbox.sty}{
+  %\AtBeginDocument{
+    \newtcbox\ftlbox{
+      on line,
+      arc=0pt,
+      outer arc=0pt,
+      colback=forthelgray,
+      colframe=forthelgray,
+      boxsep=0pt,
+      left=.2em,
+      right=.2em,
+      top=.2em,
+      bottom=.4em,
+      boxrule=0pt,
+      height=1.4em    
+    }
+  %}
+}{}
+
+\IfFileExists{tcolorbox.sty}{
+  \IfFileExists{soulpos.sty}{
+    \ulposdef\inlineforthelbox[xoffset-start=.2em]{%
+      \ftlbox{\rule\ulwidth{0pt}}%
+    }
+  }{}
+}{}
 
 \newcommand\inlineforthel[1]{%
-  \setbool{forthel}{true}
-  \inlineforthelbox{#1}
-  \setbool{forthel}{false}
+  \setbool{forthel}{true}%
+  \IfFileExists{tcolorbox.sty}{\IfFileExists{soulpos.sty}{%
+    \inlineforthelbox{#1}}{}%
+  }{%
+  \PackageWarning{naproche}{%
+    Package tcolorbox or soulpos not installed,\MessageBreak
+    therefore using verbatim fallback for\MessageBreak
+    \protect\inlineforthel\space command%
+  }%
+    \texttt{\char`\\inlineforthel\char`\{}#1\texttt{\char`\}}%
+  }%
+  \setbool{forthel}{false}%
 }
 
 
 % Comprehension terms
 % -------------------
 
-\RequirePackage{linegoal}
+\IfFileExists{linegoal.sty}{
+  \RequirePackage{linegoal}
+}{}
 
-% Gets the left-hand and right-hand side, resp., of an expression of the form
+% Gets the left-hanqd and right-hand side, resp., of an expression of the form
 % "foo|bar"
 \def\getfirst#1|#2\relax{#1}
 \def\getsecond#1|#2\relax{#2}
@@ -304,7 +459,18 @@
   \right\}%
 }
 
-\newcommand{\classtext}[1]{\parbox{\linegoal}{#1}}
+\newcommand{\classtext}[1]{%
+  \IfFileExists{linegoal.sty}{%
+    \parbox{\linegoal}{#1}%
+  }{%
+    \PackageWarning{naproche}{%
+      Package linegoal not installed, therefore\MessageBreak
+      using verbatim fallback for \protect\classtext\space\MessageBreak
+      command%
+    }%
+    \texttt{\char`\\classtext\char`\{}#1\texttt{\char`\}}%
+  }%
+}
 
 
 % Predefined symbols
@@ -344,18 +510,52 @@
   \newenvironment{theorem}{\unskip Therefore:}{}
 
   \renewenvironment{forthel}{
-    \ifstexhtml
-      \begin{stex_annotate_env}{style:class=forthel,rustex:block=true,rustex:sized=-20}
-    \else
-      \begin{mdframed}[backgroundcolor=forthelgray,linecolor=forthelgray]
-    \fi
+    \IfFileExists{stex.sty}{
+      \ifstexhtml
+        \begin{stex_annotate_env}{style:class=forthel,rustex:block=true,rustex:sized=-20}
+      \else
+        \IfFileExists{mdframed.sty}{%
+          \begin{mdframed}[backgroundcolor=forthelgray,linecolor=forthelgray]
+        }{%
+          \PackageWarning{naproche}{%
+            Package mdframed not installed,\MessageBreak
+            therefore using verbatim fallback for\MessageBreak
+            forthel environment%
+          }%
+          \noindent\texttt{\char`\\begin\char`\{forthel\char`\}}\\%
+        }
+      \fi
+    }{%
+      \IfFileExists{mdframed.sty}{%
+        \begin{mdframed}[backgroundcolor=forthelgray,linecolor=forthelgray]
+      }{%
+        \PackageWarning{naproche}{%
+          Package mdframed not installed,\MessageBreak
+          therefore using verbatim fallback for\MessageBreak
+          forthel environment%
+        }%
+        \noindent\texttt{\char`\\begin\char`\{forthel\char`\}}\\%
+      }
+    }
     \setlength{\parindent}{0pt}
   }{
-    \ifstexhtml
-      \end{stex_annotate_env}
-    \else
-      \end{mdframed}
-    \fi
+    \IfFileExists{stex.sty}{%
+      \ifstexhtml
+        \end{stex_annotate_env}%
+      \else
+        \IfFileExists{mdframed.sty}{%
+          \end{mdframed}
+        }{%
+          \\\noindent\texttt{\char`\\end\char`\{forthel\char`\}}\\[\parskip]%
+        }
+      \fi
+    }{%
+      \IfFileExists{mdframed.sty}{%
+        \end{mdframed}
+      }{%
+        \\\noindent\texttt{\char`\\end\char`\{forthel\char`\}}\\[\parskip]%
+      }
+    }
   }
 }
 \DeclareOption*{\PackageWarning{naproche}{Unknown ‘\CurrentOption’}}

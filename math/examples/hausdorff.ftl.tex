@@ -1,124 +1,236 @@
-\documentclass{article}
-\usepackage{naproche}
-\libinput[latex]{example-preamble}
-\libinput[libraries/foundations]{preamble}
+\documentclass[english]{article}
+\usepackage{../latex/lib/naproche}
+\addbibresource{../latex/lib/bibliography}
+
+\newcommand{\surjects}{\twoheadrightarrow}
 
 \title{Regularity of successor cardinals}
-\author{\Naproche formalization:\\[0.5em]
-Steffen Frerix (2018), \\
-Adrian De Lon (2021)}
-\date{}
+\author{Steffen Frerix (2018), Adrian De Lon (2021)}
+\date{2018}
 
 \begin{document}
   \maketitle
 
-  \usemodule[libraries/set-theory]{cardinals-and-maps.ftl}
-  \usemodule[libraries/set-theory]{successor-cardinals.ftl}
-  \usemodule[libraries/set-theory]{regular-cardinals.ftl}
-  \usemodule[libraries/foundations]{constant-maps.ftl}
 
-  \noindent This is a formalization of a theorem of Felix Hausdorff stating that
-  successor cardinals are always regular.
-
-  In lack of a formalization in \Naproche of a proof of the fact that
-  $\SETcard{X \times X} = \SETcard{X}$ for every set $X$ which is required by the subsequent
-  proof of Hausdorff's Theorem, we add an axiom that ensures that this fact
-  holds in our theory:
+  \section{Preliminaries}
 
   \begin{forthel}
-    \begin{axiom*}
-      $\SETcard{X \SETprod X} = \SETcard{X}$ for every set $X$.
-    \end{axiom*}
+    [read \path{examples/preliminaries.ftl.tex}]
+
+    Let $x, y, X, Y$ denote sets.
+    Let $f$ denote a function.
+
+    Let $f$ is surjective from $X$ onto $Y$ stand for $\dom(f) = X$ and $f[X] = Y$.
+
+    Let $f : X \surjects Y$ stand for $f$ is surjective from $X$ onto $Y$.
+
+    Let $X$ is nonempty stand for $X$ has an element.
   \end{forthel}
 
-  The following result appears in \cite[p.~443]{Hausdorff1908},
-  where Hausdorff mentions that the proof of the regularity of successor
-  cardinals is \textit{``ganz einfach''} (\textit{``very simple''})
-  and can be skipped.
+
+  \section{Ordinals}
 
   \begin{forthel}
-    \begin{theorem*}[title=Hausdorff]
+    Let $x, y$ denote sets.
+
+    \begin{signature}
+      An ordinal is a set.
+    \end{signature}
+
+    Let $\alpha, \beta$ denote ordinals.
+
+    \begin{axiom}
+      Every element of $\alpha$ is an ordinal.
+    \end{axiom}
+
+    \begin{axiom}[id=Transitivity]
+      Let $x \in y \in \alpha$.
+      Then $x \in \alpha$.
+    \end{axiom}
+
+    \begin{signature}
+      Let $\alpha, \beta$ be ordinals.
+      $\alpha < \beta$ is a relation.
+    \end{signature}
+
+    \begin{axiom}
+      $\alpha < \beta$ or $\beta < \alpha$ or $\beta = \alpha$.
+    \end{axiom}
+
+    \begin{axiom}
+      If $\alpha < \beta$ then $\alpha$ is an element of $\beta$.
+    \end{axiom}
+
+    Let $a \leq b$ stand for $a = b$ or $a < b$.
+  \end{forthel}
+
+
+  \section{Cardinals}
+
+  \begin{forthel}
+    Let $X, Y$ denote sets.
+
+    \begin{signature}
+      A cardinal is an ordinal.
+    \end{signature}
+
+    Let $\kappa, \mu, \nu$ denote cardinals.
+
+    \begin{signature}[id=Cardinality]
+      $|X|$ is a cardinal.
+    \end{signature}
+
+    \begin{axiom}[title=existence of surjection,id=existence_of_surjection]
+      Assume $X$ has an element.
+      $|X| \leq |Y|$ iff there exists a function $f$ such that $\dom(f) = Y$
+      and $f[Y] = X$.
+    \end{axiom}
+
+    \begin{axiom}
+      $|X \times X| = |X|$.
+    \end{axiom}
+
+    \begin{axiom}
+      $|\kappa| = \kappa$.
+    \end{axiom}
+
+    \begin{axiom}
+      Let $Y$ be a subset of $X$.
+      $|Y| \leq |X|$.
+    \end{axiom}
+
+    \begin{signature}
       Let $\kappa$ be a cardinal.
-      Then $\CARDsucc{\kappa}$ is regular.
-    \end{theorem*}
+      $\kappa^{+}$ is a cardinal.
+    \end{signature}
+
+    \begin{axiom}
+      $\kappa < \kappa^{+}$.
+    \end{axiom}
+
+    \begin{axiom}
+      $|\alpha| \leq \kappa$ for every element $\alpha$ of $\kappa^{+}$.
+    \end{axiom}
+
+    \begin{axiom}
+      For no cardinals $\mu, \nu$ we have $\mu < \nu$ and $\nu < \mu$.
+    \end{axiom}
+
+    \begin{axiom}
+      There is no cardinal $\nu$ such that $\kappa < \nu < \kappa^{+}$.
+    \end{axiom}
+
+    \begin{axiom}
+      The empty set is a cardinal $\eta$ such that $\eta$ is an element of
+      every nonempty ordinal.
+    \end{axiom}
+
+    \begin{definition}
+      The constant zero on $X$ is the function $f$ such that $\dom(f) = X$ and
+      $f(x)$ is the empty set for every element $x$ of $X$.
+    \end{definition}
+
+    Let $0^{X}$ stand for the constant zero on $X$.
+  \end{forthel}
+
+
+  \section{Cofinality and regular cardinals}
+
+  \begin{forthel}
+    Let $\kappa$ denote a cardinal.
+
+    \begin{definition}[id=Cofinality]
+      Let $\kappa$ be a cardinal.
+      Let $Y$ be a subset of $\kappa$.
+      $Y$ is cofinal in $\kappa$ iff for every element $x$ of $\kappa$ there
+      exists an element $y$ of $Y$ such that $x < y$.
+    \end{definition}
+
+    Let a cofinal subset of $\kappa$ stand for a subset of $\kappa$ that is
+    cofinal in $\kappa$.
+
+    \begin{definition}
+      $\kappa$ is regular iff $|x| = \kappa$ for every cofinal subset $x$ of
+      $\kappa$.
+    \end{definition}
+  \end{forthel}
+
+
+  \section{Hausdorff's theorem}
+
+  The following result appears in \cite[p.~443]{Hausdorff1908},
+  where Hausdorff mentions that the proof is
+  \textit{``ganz einfach''} (\textit{``very simple''}) and can be skipped.
+
+  \begin{forthel}
+    \begin{theorem}[title=Hausdorff]
+      Let $\kappa$ be a cardinal.
+      Then $\kappa^{+}$ is regular.
+    \end{theorem}
     \begin{proof}[method=contradiction]
       Assume the contrary.
-      Take a cofinal subset $x$ of $\CARDsucc{\kappa}$ such that $\SETcard{x} \neq \CARDsucc{\kappa}$.
-      Then $\SETcard{x} \ORDleq \kappa$.
-      Take a surjective map $f$ from $\kappa$ onto $x$ (by \printref{SET_THEORY_06_192336220913664}).
-      Indeed $x$ and $\kappa$ are nonempty and $\SETcard{\kappa} = \kappa$.
-      Then $f(\xi) \in \CARDsucc{\kappa}$ for all $\xi \in \kappa$.
-
-      Let us show that for all $z \in \CARDsucc{\kappa}$ if $z$ is nonempty then there exists a surjective map from $\kappa$ onto $z$.
-        Let $z \in \CARDsucc{\kappa}$.
-        Assume that $z$ is nonempty.
-        $\kappa$ is nonempty.
-        Hence the thesis (by \printref{SET_THEORY_06_192336220913664}).
-        Indeed $\SETcard{\kappa} \ORDgeq \SETcard{z}$.
-      End.
+      Take a cofinal subset $x$ of $\kappa^{+}$ such that $|x| \neq \kappa^{+}$.
+      Then $|x| \leq \kappa$.
+      Take a function $f$ that is surjective from $\kappa$ onto $x$ (by
+      \nameref{existence_of_surjection}).
+      Indeed $x$ has an element and $|\kappa| = \kappa$.
 
       Define \[ g(z) =
         \begin{cases}
-          \text{choose $h \FUNfromonto{\kappa}{z}$ in $h$}
+          \text{choose a function $h$ such that $h : \kappa \surjects z$ in $h$}
           & : \text{$z$ has an element}
           \\
-          \text{$\FUNconst{\kappa}{\ORDzero}$}
+          \text{$0^{\kappa}$}
           & : \text{$z$ has no element}
         \end{cases}
-      \] for $z$ in $\CARDsucc{\kappa}$.
+      \] for $z$ in $\kappa^{+}$.
 
-      Let us show that for all $\xi, \zeta \in \kappa$ $g(f(\xi))$ is a map such that $\zeta \in \dom(g(f(\xi)))$.
-        Let $\xi, \zeta \in \kappa$.
-        If $f(\xi)$ has an element then $g(f(\xi))$ is a surjective map from $\kappa$ onto $f(\xi)$.
-        If $f(\xi)$ has no element then $g(f(\xi)) = \FUNconst{\kappa}{\ORDzero}$.
-        Hence $\dom(g(f(\xi))) = \kappa$.
-        Therefore $\zeta \in \dom(g(f(\xi)))$.
-      End.
+      For all $\xi, \zeta \in \kappa$ $g(f(\xi))$ is a map such that $\zeta \in
+      \dom(g(f(\xi)))$.
+      Define $h(\xi,\zeta) = g(f(\xi))(\zeta)$ for $(\xi,\zeta)$ in $\kappa
+      \times \kappa$.
 
-      For all objects $\xi, \zeta$ we have $\xi, \zeta \in \kappa$ iff $(\xi, \zeta) \in \kappa \SETprod \kappa$.
-      Define $h(\xi,\zeta) = g(f(\xi))(\zeta)$ for $(\xi,\zeta) \in \kappa \SETprod \kappa$.
+      Let us show that $h$ is surjective from $\kappa \times \kappa$ onto
+      $\kappa^{+}$.
 
-      Let us show that $h$ is surjective onto $\CARDsucc{\kappa}$.
-
-        Every element of $\CARDsucc{\kappa}$ is an element of $\FUNim{h}{\kappa \SETprod \kappa}$.
-        \begin{proof}
-          Let $n$ be an element of $\CARDsucc{\kappa}$.
-          Take an element $\xi$ of $\kappa$ such that $n \ORDless f(\xi)$.
+        Every element of $\kappa^{+}$ is an element of $h[\kappa \times
+        \kappa]$. \newline
+        Proof.
+          Let $n$ be an element of $\kappa^{+}$.
+          Take an element $\xi$ of $\kappa$ such that $n < f(\xi)$.
           Take an element $\zeta$ of $\kappa$ such that $g(f(\xi))(\zeta) = n$.
-          Indeed $g(f(\xi))$ is a surjective map from $\kappa$ onto $f(\xi)$.
+          Indeed $g(f(\xi))$ is a function that is surjective from $\kappa$ onto
+          $f(\xi)$.
           Then $n = h(\xi,\zeta)$.
-        \end{proof}
+          Therefore the thesis.
+          Indeed $(\xi,\zeta)$ is an element of $\kappa \times \kappa$.
+        End.
 
-        Every element of $\FUNim{h}{\kappa \SETprod \kappa}$ is an element of $\CARDsucc{\kappa}$.
-        \begin{proof}
-          Let $n$ be an element of $\FUNim{h}{\kappa \SETprod \kappa}$.
+        Every element of $h[\kappa \times \kappa]$ is an element of
+        $\kappa^{+}$. \newline
+        Proof.
+          Let $n$ be an element of $h[\kappa \times \kappa]$.
           We can take elements $a, b$ of $\kappa$ such that $n = h(a,b)$.
-          Indeed $\FUNim{h}{\kappa \SETprod \kappa} = \{h(a,b) \mid a,b \in \kappa\}$.
-          Indeed $\kappa \SETprod \kappa = \{(a,b) \mid a,b \in \kappa\}$.
           Then $n = g(f(a))(b)$.
-          Indeed $(a,b) \in \kappa \SETprod \kappa$ and $h(a,b) = g(f(a))(b)$.
-          $f(a)$ is an element of $\CARDsucc{\kappa}$.
-          Every element of $f(a)$ is an element of $\CARDsucc{\kappa}$.
+          $f(a)$ is an element of $\kappa^{+}$.
+          Every element of $f(a)$ is an element of $\kappa^{+}$.
 
-          \begin{case}{$f(a)$ has an element.}
-            Then $g(f(a))$ is a surjective map from $\kappa$ onto $f(a)$.
-            Hence $n \in f(a) \in \CARDsucc{\kappa}$.
-            Thus $n \in \CARDsucc{\kappa}$.
-          \end{case}
+          Case $f(a)$ has an element.
+            Then $g(f(a))$ is a function that is surjective from $\kappa$ onto
+            $f(a)$.
+            Hence $n \in f(a) \in \kappa^{+}$.
+            Thus $n \in \kappa^{+}$.
+          End.
 
-          \begin{case}{$f(a)$ has no element.}
-            Then $g(f(a)) = \FUNconst{\kappa}{\ORDzero}$.
+          Case $f(a)$ has no element.
+            Then $g(f(a)) = 0^{\kappa}$.
             Hence $n$ is the empty set.
-            Thus $n \in \CARDsucc{\kappa}$.
-          \end{case}
-        \end{proof}
-
-        Hence $\FUNrange(h) = \FUNim{h}{\kappa \SETprod \kappa} = \CARDsucc{\kappa}$.
+            Thus $n \in \kappa^{+}$.
+          End.
+        End.
       End.
 
-      Therefore $\SETcard{\CARDsucc{\kappa}} \ORDleq \SETcard{\kappa \SETprod \kappa}$ (by \printref{SET_THEORY_06_192336220913664}).
-      Indeed $\kappa \SETprod \kappa$ and $\CARDsucc{\kappa}$ are nonempty sets and $h$ is a surjective map from $\kappa \SETprod \kappa$ to $\CARDsucc{\kappa}$.
-      Consequently $\CARDsucc{\kappa} \ORDleq \kappa$.
+      Therefore $\kappa^{+} \leq \kappa$.
       Contradiction.
     \end{proof}
   \end{forthel}

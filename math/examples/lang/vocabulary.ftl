@@ -34,6 +34,7 @@
 [synonym sequence/-s]
 [synonym shave/-s]
 [synonym square/-s]
+[synonym subclass/-es]
 [synonym subset/-s]
 [synonym successor/-s]
 [synonym superset/-s]

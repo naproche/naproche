@@ -160,6 +160,7 @@ ignoredCommand :: Tokenizer ([Token], [Warning])
 ignoredCommand = do
   tokens <- choice [
       controlWord "par",
+      controlWord "newline",
       controlWord "left",
       controlWord "middle",
       controlWord "right"

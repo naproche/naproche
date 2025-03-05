@@ -1,0 +1,294 @@
+\documentclass{article}
+\usepackage{naproche}
+\libinput{preamble}
+
+\newcommand{\N}{\mathrm{N}}
+\newcommand{\Int}{\mathbb{Z}}
+\newcommand{\Ps}{\mathrm{P}}
+
+\title{Furstenberg's proof of the infinitude of primes}
+\author{\Naproche formalization:\\[0.5em]Andrei Paskevich, Marcel Schütz}
+\date{2024}
+
+\begin{document}
+\begin{smodule}{furstenberg.ftl}
+\maketitle
+
+\importmodule[libraries/arithmetics]{primes.ftl}
+\importmodule[libraries/arithmetics]{nat-is-a-set.ftl}
+\importmodule[libraries/set-theory]{zfc.ftl}
+\importmodule[libraries/foundations]{closure-under-finite-unions.ftl}
+
+\noindent This is a formalization of Furstenberg's topological proof of the
+infinitude of primes \cite[p. 353]{Furstenberg1955}.
+
+The central idea of Furstenberg's proof is to define a certain topology on
+$\Nat$ from the properties of which we can deduce that the set of
+primes is infinite.\footnote{Actually, Furstenberg's proof makes use of a
+topology on $\Int$. But this topology can as well be restricted to
+$\Nat$ without substantially changing the proof.}
+
+\begin{forthel}
+  Let $n, m, k$ denote natural numbers.
+  Let $p, q$ denote nonzero natural numbers.
+
+  \begin{definition}
+    Let $A$ be a subset of $\Nat$.
+    $A^\complement = \Nat \SETdiff A$.
+  \end{definition}
+
+  Let the complement of $A$ stand for $A^\complement$.
+
+  \begin{lemma}
+    The complement of any subset of $\Nat$ is a subset of $\Nat$.
+  \end{lemma}
+\end{forthel}
+
+Towards a suitable topology on $\Nat$ let us define \textit{arithmetic
+sequences} $\N_{n, q}$ on $\Nat$.
+
+\begin{forthel}
+  \begin{definition}
+    $\N_{n, q} = \{ m \in \Nat \mid \NATcong{m}{n}{q} \}$.
+  \end{definition}
+\end{forthel}
+
+This allows us to define the \textit{evenly spaced natural number
+topology} on $\Nat$, whose open sets are defined as follows.
+
+\begin{forthel}
+  \begin{definition}
+    Let $U$ be a subset of $\Nat$.
+    $U$ is open iff for any $n \in U$ there exists a $q$ such that
+    $\N_{n, q} \SETinclude U$.
+  \end{definition}
+
+  \begin{definition}
+    A system of open sets is a system of sets $S$ such that every element of
+    $S$ is an open subset of $\Nat$.
+  \end{definition}
+
+  \begin{lemma}
+    Every system of open sets is a set.
+  \end{lemma}
+  \begin{proof}
+    Let $S$ be a system of open sets.
+    Then $S \SETinclude \SETpow(\Nat)$.
+    Hence $S$ is a set.
+  \end{proof}
+\end{forthel}
+
+We can show that the open sets indeed form a topology on $\Nat$.
+
+\begin{forthel}
+  \begin{lemma}
+    $\Nat$ and $\SETempty$ are open.
+  \end{lemma}
+
+  \begin{lemma}
+    Let $U,V$ be open subsets of $\Nat$.
+    Then $U \SETintersect V$ is open.
+  \end{lemma}
+  \begin{proof}
+    Let $n \in U \SETintersect V$.
+    Take a $q$ such that $\N_{n, q} \SETinclude U$.
+    Take a $p$ such that $\N_{n, p} \SETinclude V$.
+    Then $p \NATmul q \neq \NATzero$.
+
+    Let us show that $\N_{n, p \NATmul q} \SETinclude U \SETintersect V$.
+      Let $m \in \N_{n, p \NATmul q}$.
+      We have $\NATcong{m}{n}{p \NATmul q}$.
+      Hence $\NATcong{m}{n}{p}$ and $\NATcong{m}{n}{q}$.
+      Thus $m \in \N_{n, p}$ and $m \in \N_{n, q}$.
+      Therefore $m \in U$ and $m \in V$.
+      Consequently $m \in U \SETintersect V$.
+    End.
+  \end{proof}
+
+  \begin{lemma}
+    Let $S$ be a system of open sets.
+    Then $\SETunionover S$ is open.
+  \end{lemma}
+  \begin{proof}
+    Let $n \in \SETunionover S$.
+    Take a set $M$ such that $n \in M \in S$.
+    Consider a $q$ such that $\N_{n, q} \SETinclude M$.
+    Then $\N_{n, q} \SETinclude \SETunionover S$.
+  \end{proof}
+\end{forthel}
+
+Now that we have a topology of open sets on $\Nat$, we can continue
+with a characterization of closed sets whose key property is that they are
+closed under finite unions.
+
+\begin{forthel}
+  \begin{definition}
+    Let $A$ be a subset of $\Nat$.
+    $A$ is closed iff $A^\complement$ is open.
+  \end{definition}
+
+  \begin{definition}
+    A system of closed sets is a system of sets $S$ such that every element of
+    $S$ is a closed subset of $\Nat$.
+  \end{definition}
+
+  \begin{lemma}
+    Every system of closed sets is a set.
+  \end{lemma}
+  \begin{proof}
+    Let $S$ be a system of closed sets.
+    Then $S \SETinclude \SETpow(\Nat)$.
+    $\SETpow(\Nat)$ is a set.
+    Hence $S$ is a set.
+  \end{proof}
+
+  \begin{lemma}
+    Let $S$ be a finite system of closed sets.
+    Then $\SETunionover S$ is closed.
+  \end{lemma}
+  \begin{proof}
+    Define $C = \{ X \mid X \text{ is a closed subset of } \Nat \}$.
+
+    Let us show that $A \SETunion B \in C$ for any $A, B \in C$.
+      Let $A, B \in C$.
+      Then $A, B$ are closed subsets of $\Nat$.
+      We have $((A \SETunion B)^\complement) = A^\complement \SETintersect B^\complement$. %!
+      $A^\complement$ and $B^\complement$ are open.
+      Hence $A^\complement \SETintersect B^\complement$ is open.
+      Thus $A \SETunion B$ is a closed subset of $\Nat$.
+    End.
+
+    Therefore $C$ is closed under finite unions.
+    Consequently $\SETunionover S \in C$.
+    Indeed $S$ is a subset of $C$.
+  \end{proof}
+\end{forthel}
+
+An important step towards Furstenberg's proof is to show that arithmetic
+sequences are closed.
+
+\begin{forthel}
+  \begin{lemma}
+    $\N_{n, q}$ is closed.
+  \end{lemma}
+  \begin{proof}
+    Let $m \in (\N_{n, q})^\complement$.
+
+    Let us show that $\N_{m, q} \SETinclude (\N_{n, q})^\complement$.
+      Let $k \in \N_{m, q}$.
+      Assume $k \notin (\N_{n, q})^\complement$.
+      Then $\NATcong{k}{m}{q}$ and $\NATcong{n}{k}{q}$.
+      Hence $\NATcong{m}{n}{q}$.
+      Therefore $m \in \N_{n, q}$.
+      Contradiction.
+    End.
+  \end{proof}
+\end{forthel}
+
+Identifying each prime number $p$ with the arithmetic sequence $\N_{0, p}$
+yields a bijection between the set $\Prime$ of all prime numbers and the set
+$\Ps$ of all such sequences $\N_{0, p}$.
+Thus to show that there are infinitely many primes it suffices to show that
+$\Ps$ is infinite.
+
+\begin{forthel}
+  \begin{definition}
+    $\Ps = \{ \N_{\NATzero, p} \mid p \in \Prime \}$.
+  \end{definition}
+
+  \begin{lemma}
+    $\Ps$ is a system of closed sets.
+  \end{lemma}
+  \begin{proof}
+    $\N_{\NATzero, p}$ is a closed subset of $\Nat$ for every $p \in \Prime$.
+  \end{proof}
+
+  \begin{lemma}
+    $\Ps$ is a set that is equinumerous to $\Prime$.
+  \end{lemma}
+  \begin{proof}
+    (1) $\Ps$ is a set.
+    Indeed $\Ps \SETinclude \SETpow(\Nat)$.
+
+    (2) $\Ps$ is equinumerous to $\Prime$.
+    \begin{proof}
+      Define $f(p) = \N_{\NATzero,p}$ for $p \in \Prime$.
+
+      Let us show that $f$ is injective.
+        Let $p, q \in \Prime$.
+        Assume $f(p) = f(q)$.
+        Then $\N_{\NATzero, p} = \N_{\NATzero, q}$.
+        We have $\N_{\NATzero, p} = \{ m \in \Nat \mid \NATcong{m}{\NATzero}{p} \}$ and
+        $\N_{\NATzero, q} = \{ m \in \Nat \mid \NATcong{m}{\NATzero}{q} \}$.
+
+        We can show that for all $m \in \Nat$ we have $p \NATmid m$ iff $q \NATmid m$.
+          Let $m \in \Nat$.
+          Then $\NATcong{m}{\NATzero}{p}$ iff $\NATcong{m}{\NATzero}{q}$.
+          Thus $m \NATmod p = \NATzero \NATmod p$ iff $m \NATmod q = \NATzero \NATmod q$.
+          We have $\NATzero \NATmod p = \NATzero = \NATzero \NATmod q$.
+          Hence $m \NATmod p = \NATzero$ iff $m \NATmod q = \NATzero$.
+          Therefore $p \NATmid m$ iff $q \NATmid m$.
+        End.
+
+        Consequently $p = q$.
+      End.
+
+      $f$ is surjective onto $\Ps$.
+      Thus $f$ is a bijection between $\Prime$ and $\Ps$.
+    \end{proof}
+  \end{proof}
+
+  \begin{theorem}[title=Furstenberg]
+    $\Prime$ is infinite.
+  \end{theorem}
+  \begin{proof}
+    $\SETunionover \Ps$ is a subset of $\Nat$.
+
+    Let us show that for any $n \in \Nat$ we have $n \in \SETunionover \Ps$ iff $n$
+    has a prime divisor.
+      Let $n \in \Nat$.
+
+      If $n$ has a prime divisor then $n$ belongs to $\SETunionover \Ps$.
+      \begin{proof}
+        Assume $n$ has a prime divisor.
+        Take a prime divisor $p$ of $n$.
+        We have $\N_{\NATzero, p} \in \Ps$.
+        Hence $n \in \N_{\NATzero, p}$.
+      \end{proof}
+
+      If $n$ belongs to $\SETunionover \Ps$ then $n$ has a prime divisor.
+      \begin{proof}
+        Assume that $n$ belongs to $\SETunionover \Ps$.
+        Take a prime number $r$ such that $n \in \N_{\NATzero, r}$.
+        Hence $\NATcong{n}{\NATzero}{r}$.
+        Thus $n \NATmod r = \NATzero \NATmod r = \NATzero$.
+        Therefore $r$ is a prime divisor of $n$.
+      \end{proof}
+    End.
+
+    Hence For all $n \in \Nat$ we have $n \in (\SETunionover \Ps)^\complement$ iff
+    $n$ has no prime divisor.
+    $\NATone$ has no prime divisor and any natural number having no prime
+    divisor is equal to $\NATone$.
+    Therefore $(\SETunionover \Ps)^\complement = \SETsingleton{\NATone}$.
+    Indeed $((\SETunionover \Ps)^\complement) \SETinclude \SETsingleton{\NATone}$ and $\SETsingleton{\NATone}
+    \SETinclude (\SETunionover \Ps)^\complement$. %!
+
+    $\Ps$ is infinite.
+    \begin{proof}[method=contradiction]
+      Assume that $\Ps$ is finite.
+      Then $\SETunionover \Ps$ is closed and $(\SETunionover \Ps)^\complement$ is open.
+      Take a $p$ such that $\N_{\NATone, p} \SETinclude (\SETunionover \Ps)^\complement$.
+      $\NATone \NATplus p$ is an element of $\N_{\NATone, p}$.
+      Indeed $\NATcong{\NATone \NATplus p}{\NATone}{p}$
+      (by \printref{ARITHMETIC_08_5984712287846400}).
+      $\NATone \NATplus p$ is not equal to $\NATone$.
+      Hence $\NATone \NATplus p \notin (\SETunionover \Ps)^\complement$.
+      Contradiction.
+    \end{proof}
+  \end{proof}
+\end{forthel}
+
+\printbibliography
+\end{smodule}
+\end{document}
