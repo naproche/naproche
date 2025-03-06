@@ -25,27 +25,24 @@ University of Bonn}
 
 \maketitle
 
-\begin{abstract}
-   The formalization of P. Scholze's \emph{perfectoid spaces} 
-   \cite{Scholze2012}
-   in the Lean proof assistant \cite{Lean}
-   by K. Buzzard, J. Commelin, and P. Massot \cite{BuzzardCommelinMassot2019} is a milestone in bringing 
-   formal mathematics closer towards leading research-level mathematics. 
-   The Lean formalization, however, is not ``readable'' by mathematicians, 
-   since Lean resembles -- and indeed is -- a programming language 
-   for building proofs from proof commands.
+\abstract{The formalization of P. Scholze's {\em perfectoid spaces} 
+\cite{Scholze2012}
+in the Lean proof assistant \cite{Lean}
+by K. Buzzard, J. Commelin, and P. Massot \cite{BuzzardCommelinMassot2019} was a milestone in bringing 
+formal mathematics closer towards leading research-level mathematics. 
+The Lean formalization, however, is not ``readable'' by mathematicians, 
+since Lean resembles - and indeed is - a programming language 
+for building proofs from proof commands.
 
-   The \Naproche proof system
-   \cite{DeLonKoepkeLorenzenMartiSchuetzWenzel2021}, in contrast, accepts and checks 
-   readable texts written in a 
-   (controlled) natural mathematical language, with natural proof structurings. 
-   In this article we present a \Naproche formalization of perfectoid \emph{rings} 
-   which are main components of perfectoid spaces. We partly follow the structure 
-   of the mentioned Lean formalization. Our formalization can be loaded 
-   into Isabelle 2025
-   (see \cite{Isabelle}) which then automatically calls the \Naproche proof checking 
-   component of the Isabelle distribution.
-\end{abstract}
+The \Naproche{} proof system
+\cite{DeLonKoepkeLorenzenMartiSchuetzWenzel2021}, in contrast, accepts and checks 
+readable texts written in a 
+(controlled) natural mathematical language, with familiar proof structurings. 
+In this article we present a \Naproche{} formalization of perfectoid {\it rings} 
+which are main components of perfectoid spaces. We partly follow mentioned Lean formalization. Our formalization can be loaded 
+within Isabelle 2025 
+(see \cite{Isabelle}) which then automatically calls the \Naproche{} proof checking 
+component of the Isabelle distribution.}
 
 \newpage
 \tableofcontents
@@ -53,70 +50,82 @@ University of Bonn}
 
 \section*{Introduction}
 
-We define \textit{perfectoid rings} in the proof assistant \Naproche \cite{DeLonKoepkeLorenzenMartiSchuetzWenzel2021} 
+We define \textit{perfectoid rings} in the proof assistant \Naproche{} \cite{DeLonKoepkeLorenzenMartiSchuetzWenzel2021} 
 with the intention to closely approximate the mathematical 
 \textit{language} 
 of Definition 3.1 of
-P. Scholze's \cite{Scholze2022}:
+P. Scholze's \cite{Scholze2012}:
 \begin{quote}
-\textbf{Definition 3.1} A Tate ring $R$ is perfectoid if $R$ is complete, uniform,
+{\bf Definition 3.1} A Tate ring $R$ is perfectoid if $R$ is complete, uniform,
 i.e. $R^o \subset R$ is bounded, and there exists a
 pseudo-uniformizer $\varpi \in R$ such that $\varpi^p | p$ in $R^o$ and the
 Frobenius map
-\[\Phi: R^o/\varpi \rightarrow R^o/\varpi^p : x \mapsto x^p\]
+$$\Phi: R^o/\varpi \rightarrow R^o/\varpi^p : x \mapsto x^p$$
 is an isomorphism.
 \end{quote}
-Such a definition requires a long chain of intermediate definitions
-and propositions, starting from first principles.
 
-\Naproche (for Natural Proof Checking) uses the (extendible) 
+\Naproche{} (for Natural Proof Checking) uses the
 controlled natural language ForTheL (for Formula Theory Language)
 as its
-input language (see also \cite{Paskevich2007}). 
-\Naproche can be viewed as a system that
+input language (see also \cite{Paskevich2007})
+which is a subset of \LaTeX{}.
+\Naproche{} can be viewed as a system that
 transforms ForTheL statements into proof tasks that are sent out
-to an external automated theorem prover (ATP). In this article we
-mostly use the E first-order prover \cite{Eprover} but also Vampire \cite{Vampire}.
+to an external automated theorem prover (ATP). We mostly use the E first-order prover \cite{Eprover} but also Vampire \cite{Vampire}.
 A ForTheL text is correct if
-all generated proof tasks can be discharged automatically. 
+all generated proof tasks can be discharged automatically.
 
-Our text is logically self-contained; theories 
+In our formalization, the (\LaTeX{} rendering of the) definition of perfectoid ring reads:
+%
+\begin{quote}
+{\bf Definition 291.}
+$R$ is perfectoid iff $R$ is complete and uniform and there
+exists a pseudouniformizer $\varpi$ of $R$ such that    
+$\varpi^{p,R} | p^{[R]}$ in $R^o$ within $R$
+and 
+$$\Phi^{R} : R^o / \varpi \cong R^o / \varpi^{p,R}.$$
+\end{quote}
+
+Such a definition requires a long chain of intermediate definitions
+and propositions, starting from first principles.
+The formalization is logically self-contained; theories 
 about sets, functions, natural numbers, groups, rings, and topology are
-developed as far as required for the final definitions. 
+developed as far as required for the intermediate and final definitions. 
 Ideally foundational theories would be provided by some library
-but the existing libraries and library mechanisms in \Naproche 
+but the existing libraries and library mechanisms in \Naproche{} 
 are still rudimentary.
 
 We make
 several simplifying assumptions:
 all groups will be commutative and written additively;
-rings will be commutative containing a \textit{one}.
-We circumvent some ``higher'' constructions like quotients of rings,
+rings will be commutative containing a one.
+We circumvent some "higher" constructions like quotients of rings,
 and express a property like
-\[\Phi : R^o / \varpi \cong R^o / \varpi^{p}\]
+$$\Phi : R^o / \varpi \cong R^o / \varpi^{p}$$
 via congruences mod $\varpi$ and mod $\varpi^{p}$, respectivly.
 
 
 This text is written as a file 
 \texttt{perfectoidring.ftl.tex}
-in the \LaTeX{} dialect of \Naproche and
+in the \LaTeX{} dialect of \Naproche{} and
 typeset by pdf-\LaTeX. The formal parts are printed on a grey background. 
 Everything else
-is interpreted as ``literate'' commentary that is not subject to the 
+is interpreted as "literate" commentary that is not subject to the 
 logical checking by the system.
 \texttt{perfectoidring.ftl.tex}
-can be checked in the \Naproche program by opening the file in Isabelle
+can be checked in the \Naproche{} program by opening the file in the Isabelle generic 
+proof assistant
 \cite{Isabelle}.
-This is a major computational task: each statement generates several
+\Naproche{} proof checking constitutes a major computational task: each statement generates several
 first-order proof tasks each of which can take several seconds of
 ATP proving. To check the whole document may require half an hour, 
 depending on the available processing power.
 
 \part{Preliminaries}
 
-Our formalization takes place in a  standard mathematical environment. 
-\Naproche supports usual mathematical arguments whilst avoiding explicit and tedious foundational
-subleties. Nevertheless, \Naproche is a formal system and the logical foundations
+Our formalization takes place in a familiar mathematical environment. 
+\Naproche{} supports standard proof arguments whilst avoiding explicit and tedious foundational
+subleties. Nevertheless, \Naproche{} is a formal system and the logical foundations
 have to be set up unambiguously and consistently.
 
 Initially the environment contains 
@@ -125,12 +134,24 @@ be formed as abstraction terms $\{x\mid\phi\}$ where $\phi$ is a mathematical
 statement about the variable $x$. Classes which are objects themselves are 
 \textit{sets}. Similarly, \textit{maps} send object to objects, and a \textit{function}
 is a map which is an object.
-Some basic theory of sets and functions is built into \Naproche. Further properties
-are postulated axiomatically in this section. Later we shall introduce more types 
+Some basic theory of sets and functions is built into \Naproche{}. Further properties
+are postulated axiomatically in the next section. Later we shall introduce more types 
 of objects like numbers or structures 
 by \textbf{Signature}, \textbf{Definition} and \textbf{Axiom} commands.
 
-We begin by expanding the ForTheL input language by some
+We do not require all mathematical objects to be sets. Natural numbers, e.g., are introduced as objects
+of type ``natural number'' and characterized by arithmetical axioms. This correponds to
+widespread intuitions that numbers are ``atomic'' objects.
+This focusses proof search on the domains under
+consideration.
+
+For convenience we also state some axioms which with some effort could be proved as lemmas. 
+Other axioms are used to define classes of structures like groups or 
+topological spaces. Finally we use axioms for inductive definitions
+of data types and functions, since we do not have
+definition mechanisms by recursion.
+
+We start now by expanding our mathematical language by some
 singular/plural pairs (vocabulary) and some alternative phrases 
 for mathematical properties (macros). These are imported from
 library files.
@@ -138,41 +159,36 @@ library files.
 
 \begin{forthel}
 
+[read examples/aux/vocabulary.ftl.tex]
 
+[read examples/aux/macros.ftl.tex]
 
 [memorylimit 8000]
 
-
-[read examples/lang/vocabulary.ftl.tex]
-
-[read examples/lang/macros.ftl.tex]
-
+%%%%%%%%%[prove off][check off]
 \end{forthel}
+%
+The "memorylimit" instruction lets \Naproche{} use up to 8000 Megabytes of working memory per prover
+call, the default being 2048.
+The grey background marks the strict formalization
+embedded in the text and is produced by
+a
+\verb+\+\verb+begin{forthel}+ ...
+\verb+\+\verb+end{forthel}+-environment.
+
 
 \section{Sets and Functions}
-Our foundations correspond to the system of Kelley-Morse set theory (KM), 
-but without the axiom of choice. The axiom of infinity will be stated after
+Our foundations correspond to a system of Kelley-Morse set theory with atoms 
+but without the axiom of choice 
+(see \cite{Kelley1975}). The axiom of infinity will be stated after
 the introduction of natural numbers.
-New notions and axioms in
-this article are \textit{conservative} over classical Kelley-Morse set theory and 
+New notions and axioms will be \textit{conservative} over classical Kelley-Morse set theory and 
 could in principle be reduced to definitions and propositions within
-KM, as is usual when developing mathematics in set theories.
+Kelley-Morse set theory, as is usual when developing mathematics in set theories.
 
 \subsection{Axioms}
-
-In this article, axioms are postulated for various reasons. Set-theoretical
-axioms provide the general mathematical background. Arithmetical axioms 
-characterize 
-number systems which are not embedded into set theory. This correponds to
-widespread intuitions and also focusses proof search on the domains under
-consideration. Some axioms conveniently state facts that could be 
-proved with some effort outside the core development of the article. 
-Other axioms are used to define classes of structures like groups or 
-topological spaces. Finally we use axioms in inductive definitions
-of data types and functions, although this should eventually been done
-with better definition mechanisms. 
-
-The following axioms express that certain ``small'' classes of axioms are sets.
+%
+The following axioms express that certain "small" classes of axioms are sets.
 
 \newcommand{\sing}[1]{\{#1\}}
 \newcommand{\unp}[2]{\{#1,#2\}}
@@ -237,7 +253,7 @@ Then $Y$ is a set.
 \end{axiom}
 
 \end{forthel}
-Further strength is gained through maps and functions.
+Further strength is gained using maps and functions.
 
 \begin{forthel}
 
@@ -435,8 +451,8 @@ $3 = 2 + 1$.
 
 \subsubsection{Some Equalities}
 
-Since \Naproche is weak on term-rewriting, some complex, yet trivial equalities are stated
-here for later use.
+Since \Naproche{} is weak on algebraic manipulations, we 
+state two complex equalities for later use.
 
 \begin{forthel}
 
@@ -500,8 +516,7 @@ Hence $m = n$.
 If $m \leq n \leq l$ then  $m \leq l$.
 \end{lemma}
 \end{forthel}
-We postulate axiomatically, that $\leq$ is a \textit{linear} order which interacts
-with the arithmetical operations.
+We axiomatically postulate monotonicity properties for the arithmetical operations.
 \begin{forthel}
 \begin{axiom}
 $m \leq n$ or $n < m$.
@@ -521,21 +536,21 @@ Then $m * l < m * n$ and $l * m < n * m$.
 
 \subsection{Induction}
 
-\Naproche provides an in-built binary relation
+\Naproche{} provides an in-built binary relation
 symbol $\prec$ as a universal inductive relation: if 
 
 \begin{quote}
-at any
+inheritance property: at any
 point $m$ property $P$ holds at $m$ provided all
-$\prec$-predecessors of $m$ satisfy $P$ (inheritance property)
+$\prec$-predecessors of $m$ satisfy $P$ 
 \end{quote} 
 then 
 \begin{quote}
 $P$ holds everywhere.
 \end{quote}
 
-\Naproche has a proof tactic ``by induction [on ...]'', which 
-reduces the inductive proof goal ``$P$ holds everywhere'' 
+\Naproche{} has a proof tactic "by induction [on ...]", which 
+reduces the inductive proof goal "$P$ holds everywhere" 
 to proving the inheritance property for $P$.
 
 Initially, there is no specification of $\prec$.
@@ -704,22 +719,77 @@ Take a divisor $m$ of $n$ such that $m \neq 1$ and $m \neq n$.
 $m$ is inductively smaller than $n$.
 Every prime divisor of $m$ is a prime divisor of $n$.
 \end{proof}
-
 \end{forthel}
 
-The following states that every prime number is a 
-\textit{prime element} in the ring of integers. A proof of
-the property was carried out in another \Naproche
-formalization.
+\subsection{Euclid's Lemma}
+
+We need that prime numbers are prime 
+elements in the ring of integers, or the halfring of natural numbers.
+The following argument is taken over almost verbatim from 
+the Wikipedia article on Euclid's Lemma
+\cite{Wikipedia_EuclidsLemma}.
+
 
 \begin{forthel}
-\begin{axiom}[title = Euclids Lemma]
-Let $p$ be a prime number and $p | m * n$.
-Then $p | m$ or $p | n$. 
-\end{axiom}
+\begin{definition}
+$m$ and $n$ are coprime iff every common divisor of $m$ and $n$ is equal to $1$. 
+\end{definition}
+
+\begin{lemma}
+If $m$ and $m$ are coprime then $m = 1$.
+\end{lemma}
+
+Let $a,b$ denote natural numbers.
+
+\begin{lemma}
+For all nonzero natural numbers $n,a,b$
+if $n | a * b$ and $n$ and $a$ are coprime then $n$ divides $b$.
+\end{lemma}
+
+\begin{proof}[method = induction on $a * b$]
+
+Let $n,a,b$ be nonzero natural numbers such that $n | a * b$ and $n$ and $a$ are coprime.
+Take a natural number $q$ such that $n * q = a * b$.
+
+
+Case $n = a$. Then $n = 1$ and $n | b$. qed.
+
+Case $a > n$. Then $q \geq b$.
+
+$$n * (q - b) = (n * q) - (n * b) = (a * b) - (n * b) = (a - n) * b.$$
+%
+Thus $n$ divides $(a - n) * b$.
+$n$ and $a - n$ are coprime.
+$(a - n) * b <  a * b$.
+$(a - n) * b$ is inductively smaller than $a * b$.
+Thus $n$ divides $b$.
+qed.
+
+Hence $n > a$ and $b \geq q$.
+$$(n - a) * q = (n * q) - (a * q) = (a * b) - (a * q) = a * (b - q).$$
+$n - a$ divides $a * (b - q)$.
+$n - a$ and $a$ are coprime.
+$a * (b - q) < a * b$.
+$a * (b - q)$ is inductively smaller than $a * b$.
+Thus $n - a$ divides $b - q$.
+
+Take a natural number $r$ such that $b - q = r * (n - a)$.
+
+$(n - a) * q = (n * q) - (a * q) = (a * b) - (a * q)
+= a * (b - q) = a * (r * (n - a)) = (a * r) * (n - a)$.
+
+$n - a \neq 0$ and $q = a * r$.
+
+$a * (n * r) = n * (a * r) = n * q = a * b$.
+
+Then $n * r = b$ and $n$ divides $b$.
+\end{proof}
+
+\begin{theorem}[title = Euclids Lemma]
+Let $p$ be a prime number and $p | m * n$. Then $p | m$ or $p | n$.
+\end{theorem}
 
 \end{forthel}
-
 
 \subsection{Binomial Coefficients}
 
@@ -807,10 +877,19 @@ Take a natural number $m$ such that $n = m + 1$.
 Then $\cho{n}{n} = \cho{m}{n} + \cho{m}{m} = 0 + 1 = 1$.
 
 \end{proof}
-
+\end{forthel}
+%
+The next property would normally be expressed as
+%
+$$\cho{n}{i} = \frac{\fac{n}}{\fac{i} * \fac{(n-i)}}.$$
+%
+Since we don't have rational numbers available we
+reformulate the property within the natural numbers.
+%
+\begin{forthel}
 \begin{lemma} For all natural numbers $n$ and all natural numbers $i$ 
 such that  $0 \leq i \leq n$
-\[\fac{n} = \cho{n}{i} * (\fac{i} * \fac{(n-i)}).\]
+$$\fac{n} = \cho{n}{i} * (\fac{i} * \fac{(n-i)}).$$
 \end{lemma}
 
 \begin{proof}[method = induction on $n$]
@@ -946,7 +1025,7 @@ Let $a_{i}$ stand for $a(i)$.
 
 \begin{definition}
 Let $\Seq{1}{n} \subseteq \dom(a)$.
-\[\FinSet{a}{1}{n} = \{ a_{i} \mid i \in \Seq{1}{n}\}.\]
+$$\FinSet{a}{1}{n} = \{ a_{i} \mid i \in \Seq{1}{n}\}.$$
 \end{definition}
 
 
@@ -978,7 +1057,7 @@ Assume that $\Seq{1}{n+1} \subseteq \dom(a)$.
 
 Then
 $\FinSet{a}{1}{n}$, $\sing{a_{n+1}}$ are sets and
-\[\FinSet{a}{1}{n} \cup \sing{a_{n+1}} = \FinSet{a}{1}{n+1}.\]
+$$\FinSet{a}{1}{n} \cup \sing{a_{n+1}} = \FinSet{a}{1}{n+1}.$$
 \end{lemma}
 \begin{proof}
 $n+1 \in \dom(a)$.
@@ -1060,8 +1139,8 @@ $C$ is infinite iff $C$ is not finite.
 \section{(Additive) Groups}
 
 It is common to define structures as an underlying set with further
-structural elements that ``belong'' to that set: ``a group is a set with
-\dots''. This naive approach to structures is employed here.
+structural elements that "belong" to that set: "a group is a set with
+\dots". This naive approach to structures is employed here.
 It works alright as long as one
 does not consider two different structures of the same kind on the
 same underlying set. In general one will need stronger structure mechanisms as 
@@ -1070,6 +1149,7 @@ provided in other proof systems.
 \subsection{Axioms}
 
 \begin{forthel}
+%[prove off][check off]
 [synonym group/-s]
 \begin{signature} A group is a set. \end{signature}
 
@@ -1104,9 +1184,9 @@ $ -^{G} (-^{G} x) =  -^{G} (-^{G} x) +^{G} (-^{G} x +^{G} x)
 =  (-^{G} (-^{G} x) +^{G} -^{G} x) +^{G} x = x$.
 \end{proof}
 \end{forthel}
-Since \Naproche does not provide automatic type elaboration the obvious 
+Since \Naproche{} does not provide automatic type elaboration the obvious 
 group parameter $G$ has to be carried along in the \LaTeX{} source.
-In the \LaTeX{} output, however, we can hide it by 
+In the \LaTeX{} \textit{output}, however, we can hide it by 
 some \LaTeX{} trickery:
 \begin{verbatim}
 \catcode`^\active
@@ -1148,7 +1228,7 @@ $(x +^{G} y) +^{G} (-^{G} x -^{G} y) = 0^{G}$.
 
 \subsection{Subgroups}
 
-We define subgroups and the subgroup generated by some set of generators.
+We define subgroups and the subgroup generated by a set of generators.
 
 \begin{forthel}
 
@@ -1164,7 +1244,7 @@ $x +^{G} y \in H$ and $-^{G} x \in H$.
 
 \end{forthel}
 Since we shall later consider subgroups of rings where we also have a multiplication,
-we also use the adjective ``additive'':
+we also use the adjective "additive":
 \begin{forthel}
 
 Let an additive subgroup of $G$ stand for a subgroup of $G$.
@@ -1221,8 +1301,8 @@ $c \oplus^{G} C = \{c +^{G} d \mid d \in C\}$.
 \subsection{Axioms}
 
 We shall only consider commutative rings with $1$.
-After defining a group as a \emph{set} with further structure, we can now
-define a ring as a \emph{group} together with multiplication and a $1$.
+After defining a group as a {\it set} with further structure, we can now
+define a ring as a {\it group} together with multiplication and a $1$.
 
 
 \begin{forthel}
@@ -1602,12 +1682,14 @@ $(u \cdot^{R} y) +^{R} (x' \cdot^{R} v) \in S$.
 
 \end{forthel}
 We could now define equivalence sets 
-
-$[x]=\{x' \in S \mid x' \equiv_{S} x $ mod $a\}$
-
-\noindent and form a quotient
-\[S/a = \{[x]\mid x \in S\}.\]
-But as we shall not continue working with the quotients in this article
+%
+$$[x]=\{x' \in S \mid x' \equiv_{S} x \ mod \ a\}$$
+%
+and form a quotient
+%
+$$ S/a = \{[x]\mid x \in S\}.$$
+%
+But as we shall not continue working with quotients in this article
 we will only consider congruences mod $a$. To talk about 
 quotient rings that have distinguished elements $0,1$ with 
 $0 \neq 1$, we show:
@@ -1624,7 +1706,7 @@ Then not $0^{R} \equiv_{S} 1^{R}$ mod $a$ within $R$.
 \subsection{Embedding Natural Numbers into a Ring}
 
 Natural numbers are represented in a ring $R$ as sums of $1^{R}$'s.
-As \Naproche does not yet provide recursive function definitions,
+As \Naproche{} does not yet provide recursive function definitions,
 we work axiomatically: the notation or function symbol $n^{[R]}$ is
 introduced into the language, and then two axioms postulate the initial case
 and the successor case of the recursion.
@@ -1710,6 +1792,7 @@ Then $x \equiv_{S} -^{R}x$ mod $(2^{[R]})$ within $R$.
 \begin{proof}
 $x -^{R} (-^{R}x) = x +^{R} x = (1^{R} +^{R} 1^{R}) \cdot^{R} x = 2^{[R]} \cdot^{R} x$.
 \end{proof}
+%[prove off][check off]
 \end{forthel}
 
 \subsection{Exponentiation}
@@ -1729,7 +1812,7 @@ new function symbol \verb|x^{n,R}| which prints as $x^{n,R}$.
 \end{forthel}
 If the parameter $R$ is understood from the context one would like to turn
 $R$ into an implicit parameter and hide \verb|,R|. Since we also want to
-remove superscripts \verb|^{R}| we redefine the ``macro'' \verb|^|.
+remove superscripts \verb|^{R}| we redefine the "macro" \verb|^|.
 
 \begin{verbatim}
 \catcode`^\active
@@ -1753,7 +1836,13 @@ Take $m$ such that
 $n = m + 1$. Then $0^{R}^{m+1,R} = 0^{R}^{m,R} \cdot^{R} 0^{R}
 = 0^{R}$.
 \end{proof}
-
+\end{forthel}
+%
+The statement of the next lemma requires brackets $(\dots)$ for
+disambiguation. It should be possible to extend the ForTheL grammar in
+order to eliminate those brackets.
+%
+\begin{forthel}
 \begin{lemma}
 Assume that $x \in R$. Then for all natural numbers $n$
 
@@ -1983,8 +2072,10 @@ $p^{[R]}$ divides $\cho{p}{i}^{[R]}$ in $S$ within $R$.
 
 \subsection{Binomial Sums}
 
-We shall deal with ``partial'' binomial sums of the form
-\[\sum_{i=0}^m {n \choose i} x^{n-i} y^{i}.\]
+We shall deal with "partial" binomial sums of the form
+%
+$$\sum_{i=0}^m {n \choose i} x^{n-i} y^{i}.$$
+%
 We view the summation as a first-order function symbol in the 
 arguments $m,n,x,y,R$ and specify the function axiomatically.
 
@@ -1993,12 +2084,12 @@ arguments $m,n,x,y,R$ and specify the function axiomatically.
 \begin{forthel}
 
 \begin{signature} Let $x,y \in R$.
-\[\binsum{k}{m}{x}{y}{R}\] is an element of $R$.
+$$\binsum{k}{m}{x}{y}{R}$$ is an element of $R$.
 \end{signature}
 
 \begin{axiom} Let $m$ be a natural number and $x,y \in R$.
 Then 
-\[\binsum{0}{m}{x}{y}{R} = x^{m,R}.\]
+$$\binsum{0}{m}{x}{y}{R} = x^{m,R}.$$
 \end{axiom}
 
 \begin{axiom}[id = Summation recursion, title = Summation recursion]
@@ -2011,8 +2102,8 @@ $(\binsum{k-1}{m}{x}{y}{R}) +^{R}
 (\cho{m}{k}^{[R]} \cdot^{R} (x^{m - k,R} \cdot^{R} y^{k,R}))$. 
 \end{axiom}
 \end{forthel}
-The remaining algebraic proofs in this section will be rather tedious since 
-\Naproche so far does not have efficient term rewriting or an inbuilt ring theory.
+The following proofs in this section will be tedious since 
+\Naproche{} so far does not have efficient term rewriting or an inbuilt ring theory.
 \begin{forthel}
 
 \begin{lemma}
@@ -2143,6 +2234,7 @@ $\cho{n}{m'}^{[R]} +^{R}  \cho{n}{m}^{[R]} = \cho{n+1}{m}^{[R]}$.
 
 
 $ \binsum{m}{n+1}{x}{y}{R} =$
+
 $(\binsum{m'}{n+1}{x}{y}{R}) +^{R} (\cho{n+1}{m}^{[R]} \cdot^{R} (x^{(n+1)-m,R} \cdot^{R} y^{m,R}))$.
 
 
@@ -2159,14 +2251,15 @@ $  ))
 $ (\binsum{m}{n+1}{x}{y}{R}) $
 $  +^{R} (\cho{n}{m}^{[R]} \cdot^{R} (x^{n - m,R} \cdot^{R} y^{m+1,R})) $.
 
-
-
-
 \end{proof}
-
+\end{forthel}
+%
+This leads to the standard binomial formula:
+%
+\begin{forthel}
 \begin{theorem}
 Let $x,y \in R$. For all natural numbers $n$ we have
-\[(x +^{R} y)^{n,R} = \binsum{n}{n}{x}{y}{R}.\]
+$$(x +^{R} y)^{n,R} = \binsum{n}{n}{x}{y}{R}.$$
 \end{theorem}
 \begin{proof}[method = induction]
 Let $n$ be a natural number.
@@ -2264,6 +2357,10 @@ $b \in S$.
 $a +^{R} b \equiv_{S} c $ mod $p^{[R]}$ within $R$.
 Qed.
 
+%(f3) $(\binsum{m-1}{p}{x}{y}{R}) +^{R} (\cho{p}{m}^{[R]} \cdot^{R} (x^{p - m,R} \cdot^{R} y^{m,R}))  
+%\equiv_{S} x^{p,R}$ mod $p^{[R]}$ within $R$.
+
+
 $\binsum{m}{p}{x}{y}{R}  
 \equiv_{S} x^{p,R} $ mod $p^{[R]}$ within $R$.
 
@@ -2280,7 +2377,10 @@ QED.
 [timelimit 3]
 
 \end{proof}
-
+\end{forthel}
+The following lemma will be used later to show that the Frobenius
+map is an additive homomorphism.
+\begin{forthel}
 \begin{lemma} Let $p$ be a prime number.
 Let $S$ be a subring of $R$ and $x,y \in S$. 
 Then $(x +^{R} y)^{p,R} \equiv_{S} x^{p,R} +^{R} y^{p,R}$ mod $p^{[R]}$ within $R$.
@@ -2343,11 +2443,16 @@ $(x -^{R} y)^{p,R} \equiv_{S} x^{p,R} +^{R} (-^{R}y)^{p,R}$ mod $p^{[R]}$ within
 
 $(x -^{R} y)^{p,R} \equiv_{S} x^{p,R} -^{R} y^{p,R}$ mod $p^{[R]}$ within $R$.
 \end{proof}
+%[prove off][check off]
 \end{forthel}
 
 \section{Topological Spaces}
 
-We present some initial definitions of set-theoretic topology.
+We formalize some beginnings of set-theoretic topology. For
+simplicity, we do not work with a set-theoretic family of open sets, 
+but instead use a predicate ``is open in $T$''. We partially
+follow the presentation by Wedhorn 
+\cite{Wedhhorn2019}, 5.4.
 
 \subsection{Topological Axioms}
 
@@ -2381,10 +2486,8 @@ is an open subset of $T$. Then $\bigcup Z$ is open in $T$.
 \begin{proof} $\emptyset = \bigcup \emptyset$. \end{proof}
 
 \end{forthel}
-\subsection{Convergence}
 
-For the notions of convergence and completeness we follow Wedhorn 
-\cite{Wedhhorn2019}, 5.4.
+\subsection{Convergence}
 
 \begin{forthel}
 
@@ -2493,19 +2596,9 @@ to $x$ in $T$.
 \section{Topological Groups}
 
 A topological group requires its operations to be topologically continuous. 
-
+%
 \begin{forthel}
-
 Let $G$ denote a group that is a topological space.
-
-\end{forthel}
-
-Let us now hide the parameter $G$ as we did previously.
-\catcode`^\active
-\def^#1{\ifthenelse{\equal{#1}{G}} {\unskip} {\sp{#1}}}
-(Note that $R$ is no longer ``hidden'').
-
-\begin{forthel}
 
 \begin{definition}
 Let $x,x' \in G$. $G$ is additively continuous at $x$ and $x'$ iff
@@ -2612,11 +2705,10 @@ that is Cauchy in $G$ converges in $G$.
 A topological ring has continuous multiplication.
 
 \begin{forthel}
-
-
 Let $R$ denote a ring that is a topological space.
 \end{forthel}
-Let us hide \verb|^{R}| and \verb|,R}| as we have done before.
+%
+We hide \verb|^{R}| and \verb|,R}| as before.
 \catcode`^\active
 \def^#1{\ifthenelse{\equal{#1}{R}} {\unskip} 
        {{\IfEndWith{#1}{,R}{\sp{\StrBefore{#1}{,R}}}{\sp{#1}}}}}
@@ -2651,7 +2743,7 @@ and $R$ is multiplicatively continuous.
 This chapter corrresponds to parts of the file \verb+power_bounded.lean+
 in the Lean formalization of perfectoid spaces \cite{Lean} which contains
 the theory of topologically nilpotent, bounded, and power-bounded
-elements and subsets of topological rings. The line numbers ``L ...'' after
+elements and subsets of topological rings. The line numbers "L ..." after
 some definitions and theorems refer to that file.
 We also use material from \cite{Wedhhorn2019}.
 We omit those parts that depend on an adic topology on $R$, since this
@@ -3151,19 +3243,7 @@ $A \cap B = \emptyset$.
 \end{proof}
 [timelimit 3]
 
-[prove on][check on]
-\end{forthel}
-
-\begin{definition}
-Let $x,x' \in R$. $R$ is multiplicatively continuous at $x$ and $x'$ iff
-for every neighborhood $U$ of $x \cdot^{R} x'$ in $R$
-there are subsets $V,V'$ of $R$ such that 
-$V$ is a neighborhood of $x$ in $R$ and $V'$ is a neighborhood
-of $x'$ in $R$ and for all $v \in V$ for all $v' \in V'$ 
-$v \cdot^{R} v' \in U$.
-\end{definition}
-
-\begin{forthel}
+%%[prove on][check on]
 
 \begin{theorem}
 Let $r$ be an element of $R$ that is topologically nilpotent in $R$.
@@ -3247,6 +3327,8 @@ Then  $a \cdot^{R} b$ is topologically nilpotent in $R$.
 Contradiction.
 \end{proof}
 
+
+%[prove off][check off]
 \end{forthel}
 
 \section{Huber rings}
@@ -3316,7 +3398,7 @@ A Tate ring is a Huber ring that has a pseudouniformizer.
 \end{definition} 
 
 \end{forthel} 
-\section{Frobenius}
+\section{Frobenius maps}
 Normally we would use (set-theoretic) quotients by principal ideals in $R^o$
 for the definition of perfectoid rings, and then Frobenius-style maps on
 those quotient rings.
@@ -3325,11 +3407,11 @@ whether it induces maps between such quotients. This
 can be expressed by calculations modulo the generators of the ideals. 
 A complete formalization would have to prove certain well-definednesses
 which we assume for simplicity.
-
-We define the Frobenius Map as a function symbol of the logic, dependent
+We treat the Frobenius Map as a function symbol of the logic, dependent
 on the Ring and a fixed prime number $p$.
 
 \begin{forthel}
+
 Let $R$ denote a Huber ring.
 
 %24
@@ -3344,11 +3426,10 @@ Let $x \in R$. $\Phi^{R} (x) = x^{p,R}$.
 Let $x \in R^o$. Then $\Phi^{R}(x) \in R^o$.
 \end{lemma}
 
-\end{forthel} $\Phi^{R}$ is called a Frobenius map. 
+\end{forthel}
 
 $\Phi^{R}$ maps the subring of power-bounded elements into itself.
-To show further structural properties we use congruence properties that
-we have proved before:
+To show further structural properties we recall the following
 
 \begin{lemma*}
 Let $S$ be a subring of $R$ and $x,y$ be elements of $S$.
@@ -3388,7 +3469,7 @@ Indeed $(x -^{R} y)^{p,R} -^{R} t = x^{p,R} -^{R} y^{p,R}$.
 
 \end{forthel}
 
-We show that this map also respects the ring operations modulo 
+This map also respects the ring operations modulo 
 $\varpi$ and $\varpi^{p,R}$.
 
 \begin{forthel}
@@ -3418,6 +3499,8 @@ $\varpi^{p,R}$ divides $(x +^{R} y)^{p,R} -^{R}
 (x^{p,R} +^{R} y^{p,R})$ in $R^o$ within $R$.
 
 \end{proof}
+
+%[prove on][check on]
 
 \begin{lemma} 
 Let $\varpi$ be an element of $R^o$ such that
@@ -3455,17 +3538,18 @@ x^{p,R} \cdot^{R} y^{p,R} =
 \end{proof}
 
 \end{forthel}
-A perfectoid ring requires the Frobenius map to be an isomorphism
+A perfectoid ring requires the Frobenius map to induce an isomorphism
+of certain quotients.
 So far we have established that it is a homomorphism.
 To express the crucial isomorphism  property one would ordinarily 
 apply a general predicate for ring congruence to the rings
-$R^o/a$ and $R^o/b$. To cut things short, we do use the notation
+$R^o/a$ and $R^o/b$. To cut things short, we (miss-)use the notation
 $\Phi^{R} : S / a \cong T / b$ with 
-\LaTeX{} source 
+its \LaTeX{} source 
 \begin{quotation}
 \verb|$\Phi^{R} : S / a \cong T / b$|
 \end{quotation}
-but we define its meaning as a ``bijection'' in terms of congruences using the 
+by defining its meaning in terms of congruences using the 
 parameters $S,a,T,b$.
 \begin{forthel}
 
@@ -3484,10 +3568,12 @@ $z \equiv_{T} \Phi^{R}(w)$ mod $b$ within $R$).
 
 \section{Perfectoid rings}
 
-Now all ingredients are prepared and we are able to define
-perfectoid rings in \Naproche:
+Now all ingredients are prepared for defining
+perfectoid rings in \Naproche{}:
 
 \begin{forthel}
+
+%[prove off][check off]
 
 Let $R$ denote a Tate ring.
 
@@ -3497,10 +3583,10 @@ Then $\varpi, \varpi^{p,R}$ do not divide $1^{R}$ in $R^o$ within $R$.
 \end{lemma}
 \begin{proof}
 $\varpi$ does not divide $1^{R}$ in $R^o$ within $R$.
-
 Assume that $\varpi^{p,R}$ divides $1^{R}$ in $R^o$ within $R$.
 Take $b \in R^o$ such that $\varpi^{p,R} \cdot^{R} b = 1^{R}$.
-Let $q = p -1$. Then  $\varpi^{p,R} = \varpi \cdot^{R} \varpi^{q,R}$.
+Let $q = p -1$. $p = 1 + q$. Then  $\varpi^{p,R} = 
+\varpi^{1,R} \cdot^{R} \varpi^{q,R} = \varpi \cdot^{R} \varpi^{q,R}$.
 $ \varpi \cdot^{R} (\varpi^{q,R} \cdot^{R} b) =
 (\varpi \cdot^{R} \varpi^{q,R}) \cdot^{R} b =
 1^{R}$.
@@ -3512,28 +3598,24 @@ $\varpi^{q,R} \in R^o$.
 \end{forthel}
 
 In this case the quotients $R^o/\varpi$ and $R^o/\varpi^{p,R}$ are well-defined
-rings, and one can define:
+rings, and one can finally define:
 \begin{forthel}
 \begin{definition}
 $R$ is perfectoid iff $R$ is complete and uniform and there
 exists a pseudouniformizer $\varpi$ of $R$ such that    
 $\varpi^{p,R} | p^{[R]}$ in $R^o$ within $R$
 and 
-\[\Phi^{R} : R^o / \varpi \cong R^o / \varpi^{p,R}.\]
+$$\Phi^{R} : R^o / \varpi \cong R^o / \varpi^{p,R}.$$
 \end{definition}
 
 \end{forthel}
 
-For comparison we repeat P. Scholze's definition:
-
-\begin{quote}
-\textbf{Definition 3.1} A Tate ring $R$ is perfectoid if $R$ is complete, uniform,
-i.e. $R^o \subset R$ is bounded, and there exists a
-pseudo-uniformizer $\varpi \in R$ such that $\varpi^p | p$ in $R^o$ and the
-Frobenius map
-\[\Phi: R^o/\varpi \rightarrow R^o/\varpi^p : x \mapsto x^p\]
-is an isomorphism.
-\end{quote}
+The present formalization has solely been directed towards 
+the definition of perfectoid rings in a readable 
+and proof-checked mathematical language. 
+We do not pursue the theory of perfectoid rings any further
+and we do not consider examples. If one wanted to do so one would 
+have to refine and considerably expand the previous developments.
 
 \printbibliography
 
