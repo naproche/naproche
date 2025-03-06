@@ -75,8 +75,8 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
 
     The result is for the current repository version, and the underlying
     HW + OS platform. The following reference platforms (x86_64) are
-    used for Isabelle2024:
-    - Ubuntu Linux 18.04 LTS
+    used for Isabelle2025:
+    - Ubuntu Linux 24.04 LTS
     - macOS 11 Big Sur
     - Windows 10/11
 
@@ -190,20 +190,8 @@ Naproche [<options>] [<file>]
 
 ### Prerequisites
 
-* Make sure that an up-to-date version of [TeX Live][texlive] is in your `PATH`.
-
-* Add the directory `naproche/math/meta-inf/lib` to your `TEXINPUTS`
-  variable, e.g.:
-
-  ```shell
-  export TEXINPUTS="$(isabelle getenv -b NAPROCHE_FORMALIZATIONS)/meta-inf/lib//;$TEXINPUTS"
-  ```
-
-* Set the `MATHHUB` variable to `naproche/math`, e.g.:
-
-  ```shell
-  export MATHHUB="$(isabelle getenv -b NAPROCHE_FORMALIZATIONS)"
-  ```
+* Make sure that up-to-date versions of `pdflatex` and `bibtex` are in your
+  `PATH`.
 
 * (Optional – only required to render the formalizations as HTML.)
   Make sure that an up-to-date version of [RusTeX][rustex] is in your `PATH`.
@@ -212,10 +200,7 @@ Naproche [<options>] [<file>]
 ### Rendering as PDF
 
 ```shell
-pdflatex <filename>.ftl.tex
-bibtex <filename>.ftl
-pdflatex <filename>.ftl.tex
-pdflatex <filename>.ftl.tex
+Naproche --mode=render <filename>.ftl.tex
 ```
 
 
@@ -225,7 +210,7 @@ pdflatex <filename>.ftl.tex
 rustex -i <filename>.ftl.tex -o <filename>.ftl.xhtml
 bibtex <filename>.ftl
 
-sed -i "s|</style>|</style>\n    <link rel=\"stylesheet\" href=\"$(isabelle getenv -b NAPROCHE_FORMALIZATIONS)/meta-inf/lib/lib.css\"/>\;|g" <filename>.ftl.xhtml
+sed -i "s|</style>|</style>\n    <link rel=\"stylesheet\" href=\"$(isabelle getenv -b NAPROCHE_FORMALIZATIONS)/latex/lib/lib.css\"/>\;|g" <filename>.ftl.xhtml
 ```
 
 
