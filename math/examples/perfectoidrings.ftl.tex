@@ -1,14 +1,19 @@
-\documentclass[english,11pt]{article}
-\usepackage{../latex/lib/naproche}
-\addbibresource{../latex/lib/bibliography}
+\documentclass[11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+%\usepackage{amssymb, mathtools}
+%\usepackage{amsthm}
 
 \usepackage{ifthen}
 \usepackage{xstring}
 
-\title{A Natural Language Formalization of Perfectoid Rings in \Naproche}
+\usepackage{aux/naproche}
+
+\title{A Natural Language Formalization of Perfectoid Rings in 
+\Naproche{}}
 \author{Peter Koepke\\
 University of Bonn}
-\date{2025}
 
 
 \newcommand{\val}[2]{#1_{#2}}
@@ -21,21 +26,24 @@ University of Bonn}
 \newcommand{\FinSet}[3]{\{#1_{#2},\dots,#1_{#3}\}}
 \newcommand{\Prod}[3]{\prod^{#3}_{i=#2} {#1}_i}
 
+
+\newcommand{\mycomment}[1]{}
+
 \begin{document}
 
 \maketitle
 
 \abstract{The formalization of P. Scholze's {\em perfectoid spaces} 
-\cite{Scholze2012}
+\cite{perfectoid}
 in the Lean proof assistant \cite{Lean}
-by K. Buzzard, J. Commelin, and P. Massot \cite{BuzzardCommelinMassot2019} was a milestone in bringing 
+by K. Buzzard, J. Commelin, and P. Massot \cite{Buzzard} was a milestone in bringing 
 formal mathematics closer towards leading research-level mathematics. 
 The Lean formalization, however, is not ``readable'' by mathematicians, 
 since Lean resembles - and indeed is - a programming language 
 for building proofs from proof commands.
 
 The \Naproche{} proof system
-\cite{DeLonKoepkeLorenzenMartiSchuetzWenzel2021}, in contrast, accepts and checks 
+\cite{Naproche}, in contrast, accepts and checks 
 readable texts written in a 
 (controlled) natural mathematical language, with familiar proof structurings. 
 In this article we present a \Naproche{} formalization of perfectoid {\it rings} 
@@ -50,11 +58,11 @@ component of the Isabelle distribution.}
 
 \section*{Introduction}
 
-We define \textit{perfectoid rings} in the proof assistant \Naproche{} \cite{DeLonKoepkeLorenzenMartiSchuetzWenzel2021} 
+We define \textit{perfectoid rings} in the proof assistant \Naproche{} \cite{Naproche} 
 with the intention to closely approximate the mathematical 
 \textit{language} 
 of Definition 3.1 of
-P. Scholze's \cite{Scholze2012}:
+P. Scholze's \cite{Scholze}:
 \begin{quote}
 {\bf Definition 3.1} A Tate ring $R$ is perfectoid if $R$ is complete, uniform,
 i.e. $R^o \subset R$ is bounded, and there exists a
@@ -67,11 +75,11 @@ is an isomorphism.
 \Naproche{} (for Natural Proof Checking) uses the
 controlled natural language ForTheL (for Formula Theory Language)
 as its
-input language (see also \cite{Paskevich2007})
+input language (see also \cite{Paskevich})
 which is a subset of \LaTeX{}.
 \Naproche{} can be viewed as a system that
 transforms ForTheL statements into proof tasks that are sent out
-to an external automated theorem prover (ATP). We mostly use the E first-order prover \cite{Eprover} but also Vampire \cite{Vampire}.
+to an external automated theorem prover (ATP). We mostly use the E first-order prover \cite{Schulz} but also Vampire \cite{Vampire}.
 A ForTheL text is correct if
 all generated proof tasks can be discharged automatically.
 
@@ -180,7 +188,7 @@ a
 \section{Sets and Functions}
 Our foundations correspond to a system of Kelley-Morse set theory with atoms 
 but without the axiom of choice 
-(see \cite{Kelley1975}). The axiom of infinity will be stated after
+(see \cite{Kelley}). The axiom of infinity will be stated after
 the introduction of natural numbers.
 New notions and axioms will be \textit{conservative} over classical Kelley-Morse set theory and 
 could in principle be reduced to definitions and propositions within
@@ -727,7 +735,7 @@ We need that prime numbers are prime
 elements in the ring of integers, or the halfring of natural numbers.
 The following argument is taken over almost verbatim from 
 the Wikipedia article on Euclid's Lemma
-\cite{Wikipedia_EuclidsLemma}.
+\cite{wikipedia}.
 
 
 \begin{forthel}
@@ -2452,7 +2460,7 @@ We formalize some beginnings of set-theoretic topology. For
 simplicity, we do not work with a set-theoretic family of open sets, 
 but instead use a predicate ``is open in $T$''. We partially
 follow the presentation by Wedhorn 
-\cite{Wedhhorn2019}, 5.4.
+\cite{Wedhorn}, 5.4.
 
 \subsection{Topological Axioms}
 
@@ -2745,7 +2753,7 @@ in the Lean formalization of perfectoid spaces \cite{Lean} which contains
 the theory of topologically nilpotent, bounded, and power-bounded
 elements and subsets of topological rings. The line numbers "L ..." after
 some definitions and theorems refer to that file.
-We also use material from \cite{Wedhhorn2019}.
+We also use material from \cite{Wedhorn}.
 We omit those parts that depend on an adic topology on $R$, since this
 will not be needed in our definition of perfectoid rings.
 Initially we do not require a connection between the
@@ -3336,7 +3344,7 @@ Contradiction.
 
 Let $R$ denote a topological ring.
 \end{forthel}
-The following is the original definition of f-adic ring by R. Huber \cite{Huber1993}:
+The following is the original definition of f-adic ring by R. Huber \cite{Huber}:
 \begin{forthel}
 
 \begin{definition}
@@ -3615,9 +3623,61 @@ the definition of perfectoid rings in a readable
 and proof-checked mathematical language. 
 We do not pursue the theory of perfectoid rings any further
 and we do not consider examples. If one wanted to do so one would 
-have to refine and considerably expand the previous developments.
+have to refine and considerably expand the previous developments. 
 
-\printbibliography
+\begin{thebibliography}{1}
+
+\bibitem{Buzzard}
+Kevin Buzzard, Johan Commelin, and Patrick Massot:
+Formalising perfectoid spaces. CPP 2020: 299-312. arXiv:1910.12320.
+Also: 
+\url{https://leanprover-community.github.io/lean-perfectoid-spaces/}
+
+\bibitem{Naproche}
+Adrian De Lon, Peter Koepke, Anton Lorenzen, Adrian Marti, Marcel Schütz, 
+Makarius Wenzel: The Isabelle/Naproche Natural Language Proof Assistant.  
+In: André Platzer and Geoff Sutcliffe (eds.); Automated Deduction - CADE 28, 
+Lecture Notes in Computer Science, vol 12699. Springer, Cham, 2021.
+
+\bibitem{Huber}
+R. Huber: Continuous Valuations. Mathematische Zeitschrift, Springer-Verlag, 1993.
+\url{http://virtualmath1.stanford.edu/~conrad/Perfseminar/refs/Hubercontval.pdf}
+
+\bibitem{Isabelle}
+The Isabelle homepage: \url{https://isabelle.in.tum.de/}
+
+\bibitem{Kelley}
+John L. Kelley: General Topology, Springer Graduate
+Texts in Mathematics 27.
+
+
+\bibitem{Lean}
+The Lean homepage: \url{https://lean-lang.org/}
+
+\bibitem{Paskevich} 
+Andrei Paskevich: The syntax and semantics of the ForTheL language.
+\url{http://nevidal.org/download/forthel.pdf}, 2007.
+
+\bibitem{perfectoid} Peter Scholze: Perfectoid Spaces.
+Publications Mathématiques de l'IHÉS, Volume 116 (2012), pp. 245-313. 
+
+\bibitem{Scholze}
+Peter Scholze: Étale cohomology of diamonds, arXiv:1709.07343.
+
+\bibitem{Schulz}
+Stephan Schulz: The E Theorem Prover. 
+\url{http://wwwlehre.dhbw-stuttgart.de/~sschulz/E/E.html}
+
+\bibitem{Vampire}
+The Vampire homepage: \url{https://vprover.github.io/}
+
+\bibitem{Wedhorn}
+Torsten Wedhorn: Adic Spaces, arXiv 1910.05934v1.
+
+\bibitem{wikipedia}
+Wikipedia entry ``Euclid's Lemma'': \url{https://en.wikipedia.org/wiki/Euclid\%27s_lemma}
+
+\end{thebibliography}
 
 \end{document}
 

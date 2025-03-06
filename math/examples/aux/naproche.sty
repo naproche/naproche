@@ -1,0 +1,242 @@
+% This package provides basic support for typesetting Naproche formalizations
+% in LaTeX. It is used by almost all example files that ship with Naproche and
+% is the recommended one for custom formalizations.
+
+
+% Documentation (For End-Users)
+% =============================
+
+% Features
+% --------
+
+% * Content within the `forthel` environment is marked with a grey background.
+%
+% * Top-level environments for `axiom`, `definition`, `theorem`,
+%  `proposition`, `lemma`, `corollary`, `signature` and `proof`.
+%
+% * A length `ftlparskip` with which the space between paragraphs in proofs 
+%   within `forthel` environments can be controlled (default: 0.5em).
+%   Can be changed via `\setlength{\ftlparskip}{<new length>}`.
+%
+% * Alternative syntax for comprehension terms:
+%   `\class{... | ...}` behaves like `\{... \mid ...\}` with additional support
+%   for flexible sizes of the braces and the vertical bar.
+%
+% * `\classtext{...}` as an alternative for `\text{...}`. Can be used (in
+%   display math mode) in the RHS of `\class{... | ...}` to achieve automatic
+%   line breaks within a comprehension term.
+%
+% * Predefined symbols:
+%   - `\dom` for the domain of a map
+%   - `\fun` for lambda abstraction in low-level map definitions
+%
+% * `\Naproche`: The word "Naproche" with a 'blackbord N'
+
+
+% Additional Options
+% ------------------
+
+% `numberswithinsection`:     Reset theorem numbers for each section.
+% `numberswithinsubsection`:  Reset theorem numbers for each subsection.
+
+
+% Implementation (For Developers)
+% ===============================
+
+\NeedsTeXFormat{LaTeX2e}
+
+\RequirePackage{amsmath}
+\RequirePackage{amsthm}
+\RequirePackage{amsfonts}
+\RequirePackage{etoolbox}
+\RequirePackage{xspace}
+\RequirePackage{xcolor}
+\RequirePackage{mdframed}
+\RequirePackage{hyperref}
+\RequirePackage{cleveref}
+\RequirePackage[nolabel, inline]{showlabels}
+\RequirePackage{xurl}
+
+
+% Links
+% -----
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  urlcolor=blue
+}
+
+
+% Printable labels and references
+% -------------------------------
+
+% `\printlabel' behaves exactly as `\label' but its argument is printed in the
+% PDF.
+\showlabels{printlabel}
+\newcommand{\printlabel}[1]{\label{#1}}
+
+\newcommand{\printref}[1]{\path{#1}}
+
+
+% Top-level sections
+% ------------------
+
+% Numbered environments for top-level sections
+\newtheoremstyle{formalized}% name of the style to be used
+    {4pt}% measure of space to leave above the theorem. E.g.: 3pt
+    {4pt}% measure of space to leave below the theorem. E.g.: 3pt
+    {\normalfont} % name of font to use in the body of the theorem
+    {0pt}% measure of space to indent
+    {\bfseries}% name of head font
+    {}% punctuation between head and body
+    { }% space after theorem head; " " = normal inter-word space
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}.}
+
+% Unnumbered environments for top-level sections
+\newtheoremstyle{unnumbered}% name of the style to be used
+  {4pt}% measure of space to leave above the theorem. E.g.: 3pt
+  {4pt}% measure of space to leave below the theorem. E.g.: 3pt
+  {\normalfont} % name of font to use in the body of the theorem
+  {0pt}% measure of space to indent
+  {\bfseries}% name of head font
+  {}% punctuation between head and body
+  { }% space after theorem head; " " = normal inter-word space
+  {\thmname{#1}\thmnote{ (#3)}.}
+
+\theoremstyle{formalized}
+\newcounter{theoremcount}
+
+\newtheorem{axiom}[theoremcount]{Axiom}
+\newtheorem{corollary}[theoremcount]{Corollary}
+\newtheorem{definition}[theoremcount]{Definition}
+\newtheorem{fact}[theoremcount]{Fact}
+\newtheorem{lemma}[theoremcount]{Lemma}
+\newtheorem{proposition}[theoremcount]{Proposition}
+\newtheorem{remark}[theoremcount]{Remark}
+\newtheorem{signature}[theoremcount]{Signature}
+\newtheorem{theorem}[theoremcount]{Theorem}
+
+\newtheorem*{definition*}{Definition}
+\newtheorem*{signature*}{Signature}
+\newtheorem*{axiom*}{Axiom}
+\newtheorem*{theorem*}{Theorem}
+\newtheorem*{proposition*}{Proposition}
+\newtheorem*{lemma*}{Lemma}
+\newtheorem*{corollary*}{Corollary}
+
+
+% ForTheL environment
+% -------------------
+
+% Space between paragraphs in forthel environments
+\newlength{\ftlparskip}
+\setlength{\ftlparskip}{0.5em}
+
+% ForTheL environment
+\newenvironment{forthel}{%
+  \begin{mdframed}[backgroundcolor=lightgray!30, linecolor=lightgray!30]%
+  \rmfamily%
+  \setbool{forthel}{true}%
+  \setlength{\parindent}{0pt}%
+  \setlength{\parskip}{\ftlparskip}%
+}{%
+  \end{mdframed}%
+  \rmfamily%
+  \setbool{forthel}{false}%
+}
+
+% Wrapper for ForTheL environments. Warning: In the PDF it looks exactly like
+% an ordinary ForTheL environment, but its content is not checked by Naproche.
+% So use it wisely!
+\newenvironment{greybox}{
+  \begin{forthel}
+}{
+  \end{forthel}
+}
+
+
+% Comprehension terms
+% -------------------
+
+\RequirePackage{linegoal}
+
+% Gets the left-hand and right-hand side, resp., of an expression of the form
+% "foo|bar"
+\def\getfirst#1|#2\relax{#1}
+\def\getsecond#1|#2\relax{#2}
+
+% Comprehension term: "\class{... | ...}".
+% Naproche allows to enclose the RHS within "\text{...}", e.g.
+% "\class{x | \text{$x$ is greater than $y$}}".
+% Use "\classtext{...}" instead of "\text{...}" to enable automatic line breaks
+% in the RHS.
+\newcommand{\class}[1]{%
+  \left\{%
+  \getfirst#1\relax%
+  ~\middle\vert~%
+  \linebreak[1]%
+  \getsecond#1\relax%
+  \right\}%
+}
+
+\newcommand{\classtext}[1]{\parbox{\linegoal}{#1}}
+
+
+% More visible line breaks in proofs
+% ----------------------------------
+
+\newbool{forthel}
+
+% Set length of \parskip to \ftlparskip in proofs in ForTheL environments.
+%
+% NOTE: "\vspace*{-\parskip}" is necessary to avoid additional space between
+% theorem and proof
+\renewenvironment{proof}[1][\unskip]{%
+  \ifbool{forthel}{\setlength{\parskip}{\ftlparskip}\vspace*{-\parskip}}%
+  \noindent\textit{Proof\xspace#1. }%
+  \relax%
+}
+{%
+  \hfill\qed
+}
+
+
+% Predefined symbols
+% ------------------
+
+\newcommand{\dom}{\operatorname{dom}}
+\newcommand{\fun}{\mathrm{\lambda}}
+
+
+% Naproche logo
+% -------------
+
+\newcommand{\Naproche}{\ensuremath{\mathbb{N}}aproche\xspace}
+
+
+% Hide imports
+% ------------
+
+\usepackage{scontents}
+\newenvsc{imports}[store-env=imports,print-env=false]
+
+
+% Options
+% -------
+
+\DeclareOption{numberswithinsection}{%
+    \counterwithin{theoremcount}{section}
+}
+\DeclareOption{numberswithinsubsection}{%
+    \counterwithin{theoremcount}{subsection}
+}
+\DeclareOption{unmarked}{%
+  \renewenvironment{forthel}{%
+    \setbool{forthel}{true}%
+  }{%
+    \setbool{forthel}{false}%
+  }
+}
+\DeclareOption*{\PackageWarning{naproche}{Unknown ‘\CurrentOption’}}
+\ProcessOptions\relax
