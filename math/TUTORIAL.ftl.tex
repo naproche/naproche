@@ -1,9 +1,9 @@
 \documentclass[english,11pt]{article}
 
-% Switch between sTeX and simple LaTeX
+% Switch between sTeX and simple LaTeX:
 % sTeX:
 %\usepackage[example]{latex/lib/naproche}
-% Simple LaTeX
+% Simple LaTeX:
 \usepackage{examples/aux/naproche}
 
 \newenvironment{exercise}{\noindent\textbf{Exercise. }}{\par}
@@ -36,9 +36,8 @@ Ideally, a user edits a mathematical text in \LaTeX{}, and
 \Naproche{} automatically checks the correctness of those parts which are
 in \verb+\begin+\verb+{forthel}+ ... \verb+\end{forthel}+ 
 environments and gives
-feedback to the user, similar to a continuous spellchecker.
-Although that goal is still far away, the current \Naproche{} offers
-the possibility to write university-level mathematical texts 
+feedback to the user, similar to a continuous spellchecker. With
+the current \Naproche{} it is possible to write university-level mathematical texts 
 in a natural language and style whose ForTheL segments are logically
 verified by \Naproche{}. In this tutorial and in example texts
 which are distributed together with \Naproche{} these segments
@@ -251,20 +250,21 @@ What happens if one exchanges \verb+Definition+ by
 \section{ForTheL and \LaTeX}
 
 ForTheL is intended to be faithful to the mathematical
-language as found in mathematical books and papers.
-These are usually typeset in \LaTeX which in particular
+language found in mathematical books and papers.
+These are usually typeset in \LaTeX{} which in particular
 allows the rendering of complex symbolism. This motivates the
 integration of ForTheL into \LaTeX. Currently, \Naproche{}
 accepts two dialects of the Formula Theory Language:
-an ASCII-based one indicated by the .ftl file ending, as used above,
-and a LaTeX-oriented version with a .ftl.tex file ending.
+the ASCII-based legacy version indicated by the .ftl file ending, 
+as used above,
+and the LaTeX-oriented version with a .ftl.tex file ending.
 The latter can be immediately processed by \LaTeX{} for
 high-quality mathematical typesetting.
 
 The development of \Naproche{} is directed towards the \LaTeX-format,
 also because typesetting contains semantic information
 that may be exploited in the proof checking process.
-In \LaTeX, e.g., the variable $a$ is distinguished from the word ``a''
+In \LaTeX{}, e.g., the variable ``$a$'' is distinguished from the word ``a''
 by an italic font. One may also introduce custom \LaTeX{} environments
 to signal specific processing of parts of texts.
 Translating \verb+.ftl+-files to \verb+.ftl.tex+ is usually
@@ -408,7 +408,7 @@ are interpreted as comment).
 
 \subsection{Natural Language Processing}
 
-\Naproche interprets ForTheL input texts in first-order logic
+\Naproche{} interprets ForTheL input texts in first-order logic
 and also proposes proof methods to be used by the internal reasoner
 of \Naproche{} or by the external ATP.
 ForTheL leverages a number of natural language
