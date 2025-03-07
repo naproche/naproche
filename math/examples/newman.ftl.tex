@@ -1,11 +1,14 @@
 \documentclass[english]{article}
-\usepackage{../latex/lib/naproche}
+
+% Switch between sTeX and simple LaTeX
+% sTeX:
+%\usepackage{../latex/lib/naproche}
+% Simple LaTeX
+\usepackage{aux/naproche}
 
 \newcommand{\reduces}[1]{\to_{#1}}
 \newcommand{\reducesTC}[1]{\to_{#1}^{+}}
 \newcommand{\reducesTCR}[1]{\to_{#1}^{*}}
-
-
 
 \title{Newman's lemma}
 \author{Andrei Paskevich (2007), \\
@@ -19,7 +22,7 @@ Adrian De Lon (typesetting, 2021)}
   \maketitle
   
   \begin{forthel}
-    [read \path{examples/lang/vocabulary.ftl.tex}]
+    [read \path{aux/vocabulary.ftl.tex}]
   \end{forthel}
 
   \begin{forthel}
