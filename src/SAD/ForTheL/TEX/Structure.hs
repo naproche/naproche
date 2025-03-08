@@ -353,11 +353,12 @@ data TlsOption =
     TlsForthel      -- @forthel@
   | TlsTitle Text   -- @title=<title>@
   | TlsId Text      -- @id=<label>@
+  | TLsUnknown
 
 -- | Parse an environment label (TEX), i.e. a list of key-value pairs that
 -- might contain a pair with an @id@ key and return its value.
-tlsLabel :: FTL (Maybe Text)
-tlsLabel = do
+tlsOptions :: FTL (Maybe Text)
+tlsOptions = do
   symbolNotAfterSpace "["
   tlsOptions <- sepBy tlsOption (symbol ",")
   let mbLabelOption = find (\(key, val) -> key == "id") tlsOptions
@@ -371,7 +372,7 @@ tlsLabel = do
 -- section environment.
 tlsOption :: FTL (Text, TlsOption)
 tlsOption = do
-  key <- getTokenOf' ["forthel", "title", "id"]
+  key <- Text.fromStrict . tokensText <$> chainLL1 notReservedChar
   case key of
     "forthel" -> return (key, TlsForthel)
     "title" -> do
@@ -382,14 +383,17 @@ tlsOption = do
       symbol "="
       label <- identifier
       return (key, TlsId label)
-    _ -> failWithMessage "SAD.ForTheL.Structure.tlsOption" "Unknown key."
+    _ -> return ("", TLsUnknown)
   where
-    notReservedChar = tokenPrim $ \t -> guard (showToken t `notElem` [",", "]"]) >> return t
+    notReservedChar = tokenPrim $ \t -> guard (showToken t `notElem` [",", "]", "="]) >> return t
 
 
 -- | Parse an optional top-leve section environment label (TEX).
 optTlsLabel :: FTL (Maybe Text)
-optTlsLabel = optLLx Nothing tlsLabel
+optTlsLabel = do
+  mbLabel <- optLLx Nothing tlsOptions
+  mbLabel' <- optLLx Nothing (Just <$> texCommandWithArg "label" identifier)
+  return $ mbLabel `mplus` mbLabel'
 
 
 -- * Proofs
@@ -427,15 +431,21 @@ proofHeader = do
 -- | An option from the key-value list of the optional argument of a proof
 -- environment.
 proofOption :: FTL (Text, ProofOption)
-proofOption = do
-  key <- getTokenOf' ["forthel", "method"]
-  case key of
-    "forthel" -> return (key, ProofForthel)
-    "method" -> do
-      symbol "="
-      method <- optBraced proofMethod
-      return (key, ProofMethod method)
-    _ -> failWithMessage "SAD.ForTheL.Structure.proofOption" "Unknown key."
+proofOption = proofMethodKey </> proofMethodBy
+  where
+    proofMethodKey = do
+      key <- getTokenOf' ["forthel", "method"]
+      case key of
+        "forthel" -> return (key, ProofForthel)
+        "method" -> do
+          symbol "="
+          method <- optBraced proofMethod
+          return (key, ProofMethod method)
+        _ -> failWithMessage "SAD.ForTheL.Structure.proofOption" "Unknown key."
+    proofMethodBy = do
+      token' "by"
+      method <- proofMethod
+      return ("method", ProofMethod method)
 
 -- | Proof start:
 -- @"\\begin" "{" "proof" "}"@
