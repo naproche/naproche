@@ -84,7 +84,7 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
   
   - Open ForTheL examples in Isabelle/jEdit, e.g.
     ```shell
-    isabelle jedit examples/cantor.ftl
+    isabelle jedit math/examples/cantor.ftl
     ```
   - Open Isabelle development environment with ForTheL examples, e.g.
     ```shell
