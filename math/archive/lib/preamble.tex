@@ -3,4 +3,15 @@
 \libinput[libraries/lists]{preamble}
 \libinput[libraries/set-theory]{preamble}
 
-\addmhbibresource[latex]{bibliography}
+\libinput[latex]{license}
+
+\usepackage[backend=bibtex]{biblatex}
+\usepackage{csquotes}
+\addmhbibresource{bibliography}
+
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  urlcolor=blue
+}

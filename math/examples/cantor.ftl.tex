@@ -1,5 +1,6 @@
 \documentclass[english]{article}
-\usepackage{../latex/lib/naproche}
+\usepackage{aux/naproche}
+\input{aux/preamble}
 
 \title{Cantor's Theorem}
 \author{}
@@ -52,7 +53,7 @@ functions and the notion of powerset.
 On this basis Cantor's theorem and its proof can be formalized as follows.
 
 \begin{forthel}
-  \begin{theorem*}[title=Cantor]
+  \begin{theorem*}[Cantor]
     Let $M$ be a set.
     No function of $M$ surjects onto the powerset of $M$.
   \end{theorem*}

@@ -1,6 +1,7 @@
 \documentclass[english]{article}
-\usepackage{../../latex/lib/naproche}
-\addbibresource{../../latex/lib/bibliography}
+\usepackage{../aux/naproche}
+\input{../aux/preamble}
+\addbibresource{../aux/bibliography}
 
 \title{Russell's Paradox}
 \author{\Naproche formalization:\\[0.5em]Marcel Schütz}
@@ -17,7 +18,7 @@ $\{x\mid\varphi(x)\}$ cannot constitute a set -- or in other words:
 Not every class is a set.
 
 \begin{forthel}
-  \begin{theorem}[title=Russell's Paradox]
+  \begin{theorem}[Russell's Paradox]
     There exists a class that is not a set.
   \end{theorem}
   \begin{proof}[forthel]

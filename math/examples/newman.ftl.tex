@@ -1,10 +1,6 @@
 \documentclass[english]{article}
-
-% Switch between sTeX and simple LaTeX
-% sTeX:
-%\usepackage{../latex/lib/naproche}
-% Simple LaTeX
 \usepackage{aux/naproche}
+\input{aux/preamble}
 
 \newcommand{\reduces}[1]{\to_{#1}}
 \newcommand{\reducesTC}[1]{\to_{#1}^{+}}
@@ -39,7 +35,7 @@ Adrian De Lon (typesetting, 2021)}
 
     Let $R$ denote a rewriting system.
 
-    \begin{signature}[title=Reduct]
+    \begin{signature}[Reduct]
       A reduct of $x$ in $R$ is a term.
     \end{signature}
 
@@ -77,7 +73,7 @@ Adrian De Lon (typesetting, 2021)}
       there exists $d$ such that $b, c \reducesTCR{R} d$.
     \end{definition}
 
-    \begin{definition}[title=Terminating]
+    \begin{definition}[Terminating]
       $R$ is terminating iff
       for all $a, b$ such that $a \reducesTC{R} b$ we have $b \prec a$.
     \end{definition}
@@ -91,11 +87,11 @@ Adrian De Lon (typesetting, 2021)}
       Let $R$ be a terminating rewriting system.
       Every term $x$ has a normal form in $R$.
     \end{lemma}
-    \begin{proof}[method=induction]
+    \begin{proof}[by induction]
     \end{proof}
 
 
-    \begin{lemma}[title=Newman]
+    \begin{lemma}[Newman]
       Every locally confluent terminating rewriting system is confluent.
     \end{lemma}
     \begin{proof}

@@ -1,4 +1,4 @@
-[read examples/lang/vocabulary.ftl]
+[read examples/aux/vocabulary.ftl]
 
 Signature. A positive rational number is an object.
 

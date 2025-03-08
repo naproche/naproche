@@ -1,4 +1,4 @@
-[read examples/lang/vocabulary.ftl]
+[read examples/aux/vocabulary.ftl]
 
 Signature Rewriting system.  A rewriting system is a notion.
 Signature Term. A term is an object.

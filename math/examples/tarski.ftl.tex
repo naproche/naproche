@@ -1,10 +1,6 @@
 \documentclass[english]{article}
-
-% Switch between sTeX and simple LaTeX
-% sTeX:
-%\usepackage{../latex/lib/naproche}
-% Simple LaTeX
 \usepackage{aux/naproche}
+\input{aux/preamble}
 
 \title{Knaster-Tarski fixed point theorem}
 \author{\Naproche{} Formalization: Andrei Paskevich, Steffen Frerix,\\
@@ -119,7 +115,7 @@ Erik Sturzenhecker, and Peter Koepke}
   \begin{forthel}
     Let $f$ stand for a function.
 
-    \begin{theorem}[title=KnasterTarski]
+    \begin{theorem}[KnasterTarski]
       Let $U$ be a complete lattice.
       Let $f:U \rightarrow U$ and $f$ be monotone.
       Let $S$ be the class of fixed points of $f$.

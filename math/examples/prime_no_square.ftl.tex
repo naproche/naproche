@@ -1,10 +1,6 @@
-ample\documentclass[english]{article}
-
-% Switch between sTeX and simple LaTeX
-% sTeX:
-%\usepackage{../latex/lib/naproche}
-% Simple LaTeX
+\documentclass[english]{article}
 \usepackage{aux/naproche}
+\input{aux/preamble}
 
 \title{Square roots of primes are irrational}
 \author{}
@@ -104,7 +100,7 @@ ample\documentclass[english]{article}
     \begin{proposition}
       $q^{2} = p$ for no positive rational number $q$.
     \end{proposition}
-    \begin{proof}[method=contradiction]
+    \begin{proof}[by contradiction]
       Assume the contrary.
       Take a positive rational number $q$ such that $p = q^{2}$.
       Take coprime $m,n$ such that $m \cdot q = n$.

@@ -1,10 +1,6 @@
 \documentclass[english]{article}
-
-% Switch between sTeX and simple LaTeX
-% sTeX:
-%\usepackage{../latex/lib/naproche}
-% Simple LaTeX
 \usepackage{aux/naproche}
+\input{aux/preamble}
 
 \title{Maximum modulus principle}
 \author{\Naproche{} Formalization: Steffen Frerix (2018),\\
@@ -138,19 +134,19 @@ Let $f$ denote a holomorphic function.
 
 Let $f$ is constant stand for $f$ is constant on the domain of $f$.
 
-\begin{axiom}[title=Open Mapping Theorem]
+\begin{axiom}[Open Mapping Theorem]
   Assume $f$ is a holomorphic function and $\Ball{\varepsilon}{z}$ is a subset of the domain of $f$.
   If $f$ is not constant on $\Ball{\varepsilon}{z}$
   then $f[\Ball{\varepsilon}{z}]$ is open.
 \end{axiom}
 
-\begin{axiom}[title=Identity theorem]
+\begin{axiom}[Identity theorem]
   Assume $f$ is a holomorphic function and the domain of $f$ is a region.
   Assume that $\Ball{\varepsilon}{z}$ is a subset of the domain of $f$.
   If $f$ is constant on $\Ball{\varepsilon}{z}$ then $f$ is constant.
 \end{axiom}
 
-\begin{proposition}[title=Maximum modulus principle]
+\begin{proposition}[Maximum modulus principle]
   Assume $f$ is a holomorphic function and the domain of $f$ is a region.
   If $f$ has a local maximal point then $f$ is constant.
 \end{proposition}
@@ -160,8 +156,8 @@ Let $f$ is constant stand for $f$ is constant on the domain of $f$.
   $\Ball{\varepsilon}{z}$ is a subset of $\dom(f)$
   and $|f(w)| \leq |f(z)|$ for every element $w$ of $\Ball{\varepsilon}{z}$.
 
-  Let us show that $f$ is constant on $\Ball{\varepsilon}{z}$.
-  \begin{proof}[method=contradiction]
+  Let us show that $f$ is constant on $\Ball{\varepsilon}{z}$.\newline
+  Proof by contradiction.
     Assume the contrary.
     Then $f[\Ball{\varepsilon}{z}]$ is open.
     We can take $\delta$ such that
@@ -169,7 +165,7 @@ Let $f$ is constant stand for $f$ is constant on the domain of $f$.
     Therefore there exists an element $w$ of $\Ball{\varepsilon}{z}$ such that
     $|f(z)| < |f(w)|$.
     Contradiction.
-  \end{proof}
+  Qed.
 
   Hence $f$ is constant.
 \end{proof}

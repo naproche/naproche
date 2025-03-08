@@ -1,6 +1,7 @@
 \documentclass[english]{article}
-\usepackage{../../latex/lib/naproche}
-\addbibresource{../../latex/lib/bibliography}
+\usepackage{../aux/naproche}
+\input{../aux/preamble}
+\addbibresource{../aux/bibliography}
 
 \title{The Russell-Myhill Paradox}
 \author{\Naproche formalization:\\[0.5em]Marcel Schütz}
@@ -11,7 +12,7 @@
   \maketitle
 
   \begin{forthel}
-    [read \path{examples/lang/everyday-ontology.ftl.tex}]
+    [read \path{examples/aux/everyday-ontology.ftl.tex}]
   \end{forthel}
 
   \noindent The \emph{Russell-Myhill Paradox} is a paradox discovered by 
@@ -29,7 +30,7 @@
     
     Let $\sqcap P$ denote the logical product of $P$.
     
-    \begin{theorem*}[title=Russell-Myhill Paradox,id=russell_myhill_paradox]
+    \begin{theorem*}[Russell-Myhill Paradox]\label{russell_myhill_paradox}
       It is wrong that
       \[ \sqcap P = \sqcap Q \implies P = Q \]
       for all systems of propositions $P, Q$.

@@ -1,6 +1,7 @@
 \documentclass[english]{article}
-\usepackage{../latex/lib/naproche}
-\addbibresource{../latex/lib/bibliography}
+\usepackage{aux/naproche}
+\input{aux/preamble}
+\addbibresource{aux/bibliography}
 
 \newcommand{\Prod}[3]{#1_{#2} \cdots #1_{#3}}
 \newcommand{\Seq}[2]{\{#1,\dots,#2\}}
@@ -190,7 +191,7 @@ Let $X$ be a class. Let $x$ be an element of $X$.
 Then $x$ is an object.
 \end{proposition}
 
-\begin{lemma}[title=Extensionality Axiom]
+\begin{lemma}[Extensionality Axiom]
     Let $X, Y$ be classes.
     Assume that every element of $X$ is an element of $Y$ and every element of
     $Y$ is an element of $X$.
@@ -213,7 +214,7 @@ domains and an application operator $\_ ( \_ )$.
     Then $F(x)$ is an object.
   \end{lemma}
 
-  \begin{lemma}[title=Map Extensionality]
+  \begin{lemma}[Map Extensionality]
     Let $F, G$ be maps.
     Assume $\dom(F) = \dom(G)$ and for all elements $x$ of $\dom(F)$ we have
     $F(x) = G(x)$.
@@ -557,7 +558,7 @@ The proof is based on the important {\em diagonal argument}.
 \begin{forthel}
 Let $S$ denote a class.
 
-\begin{theorem}[title=Russell]
+\begin{theorem}[Russell]
 There is a class that is not a set.
 \end{theorem}
 \begin{proof}
@@ -583,27 +584,27 @@ We begin by restating
 the axiom of extensionality.
 
 \begin{forthel}
-\begin{lemma}[title=Extensionality Axiom]
+\begin{lemma}[Extensionality Axiom]
     Let $X, Y$ be classes.
     Assume that every element of $X$ is an element of $Y$ and every element of
     $Y$ is an element of $X$.
     Then $X = Y$.
 \end{lemma}
 
-\begin{axiom}[title=Set Existence Axiom]
+\begin{axiom}[Set Existence Axiom]
 The empty class is a set.
 \end{axiom}
 
-\begin{axiom}[title=Pairing Axiom]
+\begin{axiom}[Pairing Axiom]
 Let $a,b$ be objects. Let $P = \{a,b\}$. Then $P$  is a set.
 \end{axiom}
 
-\begin{axiom}[title=Union Axiom]
+\begin{axiom}[Union Axiom]
 Let $F$ be a set that is a family of sets. Then
 $\bigcup F$ is a set.
 \end{axiom}
 
-\begin{axiom}[title=Separation Axiom]
+\begin{axiom}[Separation Axiom]
     Assume that $X$ is a set and $T$ is a subclass of $X$.
     Then $T$ is a set.
 \end{axiom}
@@ -619,11 +620,11 @@ A subset of $S$ is a set $X$ such that $X \subseteq S$.
 
 Let $\pow(X)$ denote the powerset of $X$.
 
-\begin{axiom}[title=Powerset Axiom]
+\begin{axiom}[Powerset Axiom]
   The powerset of any set is a set.
 \end{axiom}
 
-\begin{axiom}[title=Replacement Axiom]
+\begin{axiom}[Replacement Axiom]
 Let $F$ be a function.
 Let $X$ be a subset of the domain of $F$.
 Then $F[X]$ is a set.
@@ -696,7 +697,7 @@ its proof has become a powerful and standard proof principle mainly
 in foundational theories.
 
 \begin{forthel}
-    \begin{theorem*}[title=Cantor]
+    \begin{theorem*}[Cantor]
       Let $M$ be a set. Then there is
       no surjection from $M$ onto the powerset of $M$.
     \end{theorem*}
@@ -738,7 +739,7 @@ Let $h$ be a map between families of sets.
     \end{definition*}
 
 
-    \begin{theorem*}[title=Knaster-Tarski,id=KT]
+    \begin{theorem*}[Knaster-Tarski]\label{KT}
       Let $x$ be a set.
       Let $h$ be a map from $\pow(x)$ to $\pow(x)$ that preserves subsets.
       Then $h$ has a fixed point.
@@ -781,7 +782,7 @@ We base the proof on the Tarski-Knaster theorem, following
 
  \begin{forthel}
 
-   \begin{theorem*}[title=Cantor-Schröder-Bernstein,id=CSB]
+   \begin{theorem*}[Cantor-Schröder-Bernstein]\label{CSB}
       Let $x,y$ be sets.
       $x$ and $y$ are equinumerous iff there exists a injective map from $x$ to
       $y$ and there exists an injective map from $y$ to $x$.
@@ -1233,7 +1234,7 @@ The order makes $\mathbb{R}$ an ordered field:
 If $y \leq z$ then $x + y \leq x + z$ and $y + x \leq z + x$.
 \end{axiom}
 
-\begin{axiom}[title=1 17 ii]
+\begin{axiom}[1 17 ii]
 If $x \geq 0$ and $y \leq z$ then $x \cdot y \leq x \cdot z$.
 \end{axiom}
 \end{forthel}
@@ -1319,7 +1320,7 @@ If $0 < y$ then $0 < 1/y$.
 
 \begin{lemma} 0=0. \end{lemma}
 
-\begin{lemma}[title=syz]
+\begin{lemma}[syz]
 If not $x \leq y$ then $x \geq y$.
 \end{lemma}
 
@@ -1327,7 +1328,7 @@ If not $x \leq y$ then $x \geq y$.
 Assume $0 < x \leq y$.
 Then $1/y \leq 1/x$.
 \end{proposition}
-\begin{proof}[method=contradiction]
+\begin{proof}[by contradiction]
 Assume the contrary.
 Then not $1/y \leq 1/x$. Let $u = 1/y$ and $v = 1/x$.
 Then $1/y \geq 1/x$.
@@ -1576,7 +1577,7 @@ of $\mathbb{R}$, it is somehow "large" in $\mathbb{R}$.
 %
 \begin{forthel}
 
-\begin{theorem}[title=Archimedes 1]
+\begin{theorem}[Archimedes 1]
 $\mathbb{Z}$ is not bounded above.
 \end{theorem}
 \begin{proof}
@@ -1601,11 +1602,11 @@ Then $-x$ is an upper bound of $\mathbb{Z}$.
 Contradiction.
 \end{proof}
 
-\begin{theorem}[title=Archimedes 2]
+\begin{theorem}[Archimedes 2]
 Let $x$ be a real number.
 Then there is an integer $a$
 such that $x < a$.\end{theorem}
-\begin{proof}[method=contradiction]
+\begin{proof}[by contradiction]
 Assume the contrary.
 Then $x$ is an upper bound of $\mathbb{Z}$.
 Contradiction.
@@ -1639,7 +1640,7 @@ in other set theoretic approaches is equivalent to
 the Axiom of Infinity.
 %
 \begin{forthel}
-\begin{theorem}[title=Axiom of Infinity]
+\begin{theorem}[Axiom of Infinity]
 $\mathbb{N}$ is a set.
 \end{theorem}
 \end{forthel}
@@ -1794,7 +1795,7 @@ the implication $P(n) \rightarrow P(n+1)$.
 %
 \begin{forthel}
 
-\begin{theorem}[title=Induction Theorem]
+\begin{theorem}[Induction Theorem]
 Assume $A \subseteq \mathbb{N}$
 and $0 \in A$ and for all $n \in A$ $n + 1 \in A$.
 Then $A = \mathbb{N}$.
@@ -1862,7 +1863,7 @@ Assume that $P(0)$ and for all natural numbers
 $n$ if $P(n)$ then  $P(n+1)$.
 Then $P(n)$ for all natural numbers $n$.
 \end{theorem}
-\begin{proof}[method=induction]
+\begin{proof}[by induction]
 Let $n$ be a natural number.
 
 Case $n = 0$. Trivial.
@@ -1922,7 +1923,7 @@ $\sumarith{a}{d}{n}$ is a real number.
 $\sumarith{a}{d}{1} = a + d$.
 \end{axiom}
 
-\begin{axiom}[title=1]
+\begin{axiom}[1]
 $\sumarith{a}{d}{n+1} = \sumarith{a}{d}{n} + (a + (d \cdot (n + 1)))$.
 \end{axiom}
 
@@ -1934,7 +1935,7 @@ $\frac{a}{b} \cdot d = a \cdot \frac{d}{b}$.
 \begin{theorem} For all nonzero natural numbers $n$
 $$\sumarith{a}{d}{n} = n \cdot ( a + \frac{(n + 1) \cdot d}{2}).$$
 \end{theorem}
-\begin{proof}[method=induction on $n$]
+\begin{proof}[by induction on $n$]
 Let $n$ be a nonzero natural number.
 
 Case $n = 1$.
@@ -2025,7 +2026,7 @@ $x \cdot x^{i} = x^{i+1}$.
 Let $m$ be a natural number.
 For all natural numbers $n$ $m^{n}$ is a natural number.
 \end{lemma}
-\begin{proof}[method=induction on $n$]
+\begin{proof}[by induction on $n$]
 Let $n$ be a natural number.
 
 Case $n = 0$. $m^{0} = 1 \in \mathbb{N}$. End.
@@ -2038,7 +2039,7 @@ $m^{k}$ is a natural number. $m \cdot m^{k} = m^{k + 1} = m^{n}$. Thus $m^{n}$ i
 Let $m$ be a nonzero natural number.
 For all natural numbers $n$ $1 \leq m^{n}$.
 \end{lemma}
-\begin{proof}[method=induction on $n$]
+\begin{proof}[by induction on $n$]
 Let $n$ be a natural number.
 
 Case $n = 0$. $m^{0} = 1$. $1 \leq 1$. End.
@@ -2106,7 +2107,7 @@ $\sumgeom{x}{n+1} = (\sumgeom{x}{n}) + x^{n}$.
 $$\sumgeom{x}{n} = \frac{1 - x^{n}}{1 - x}$$
 for all natural numbers $n$.
 \end{theorem}
-\begin{proof}[method=induction on $n$]
+\begin{proof}[by induction on $n$]
 
 $1 - x \neq 0$.
 
@@ -2244,7 +2245,7 @@ just calling the method of induction, without further details.
 \begin{theorem}
 Every nontrivial natural number $m$ has a prime divisor.
 \end{theorem}
-\begin{proof}[method=induction on $m$]
+\begin{proof}[by induction on $m$]
 \end{proof}
 [timelimit 3]
 \end{forthel}
@@ -2393,7 +2394,7 @@ If $m = n$ then $\gcd(m,n) = \gcd(m-n,n)$.
 \begin{proposition}
 For all natural numbers $m,n$ the greatest common divisor of $m$ and $n$ is $\gcd(m,n)$.
 \end{proposition}
-\begin{proof}[method=induction on $m+n$]
+\begin{proof}[by induction on $m+n$]
 Let $m,n$ be natural numbers.
 Then $m+n$ is a natural number.
 
@@ -2444,7 +2445,7 @@ Let $a$ be nonzero natural number.
 For every natural number $m$ there exist
 a natural number $k$ such that $0 \leq m - (k \cdot a) < a$.
 \end{proposition}
-\begin{proof}[method=induction on $m$]
+\begin{proof}[by induction on $m$]
 Let $m$ be a natural number.
 
 Case $m = 0$.
@@ -2510,7 +2511,7 @@ $\kappa$ is an integer and $0 \leq m - (\kappa \cdot a) < a$. End.
 
 
 
-\begin{theorem}[title=Bezout]
+\begin{theorem}[Bezout]
 Let $a,b$ be integers and $\delta$ be the greatest common divisor of $a$ and $b$.
 Then there exist integer $x$ and integer $y$ such that
 $\delta = (a \cdot x) + (b \cdot y)$.
@@ -2670,10 +2671,10 @@ $q = \frac{n}{m}$ and $m \cdot q = n$.
     \end{proof}
 
 
-    \begin{theorem}[title=Pythagoras]
+    \begin{theorem}[Pythagoras]
       $q^{2} = p$ for no positive rational number $q$.
     \end{theorem}
-    \begin{proof}[method=contradiction]
+    \begin{proof}[by contradiction]
       Assume the contrary.
       Take a positive rational number $q$ such that $p = q^{2}$.
       Take coprime natural numbers $m,n$ such that $m \cdot q = n$.
@@ -2758,7 +2759,7 @@ $q = \frac{n}{m}$ and $m \cdot q = n$.
   for all injective maps $f$ from
   $\Seq{1}{m}$ to $\Seq{1}{n}$ we have $m \leq n$.
   \end{lemma}
-  \begin{proof}[method=induction on $n$]
+  \begin{proof}[by induction on $n$]
   Let $n$ be a natural number.
   Let $m$ be a natural number.
   Let $f$ be an injective map from $\Seq{1}{m}$ to $\Seq{1}{n}$.
@@ -2966,7 +2967,7 @@ Then $m' \leq n'$ and $m \leq n$.
   For all finite sets $X$ and all natural numbers $n$ if $|X| = n$ then
   $\pow(X)$ is finite and $|\pow(X)| = 2^{n}$.
   \end{theorem}
-  \begin{proof}[method=induction on $n$]
+  \begin{proof}[by induction on $n$]
   Let $X$ be a finite set and $n$ be a natural number. Assume $|X| = n$.
 
   Case $n = 0$. $\Seq{1}{0} = \emptyset$. Thus $X = \emptyset$.
@@ -3063,7 +3064,7 @@ such that $\FinSet{F}{1}{n} \subseteq \mathbb{N}$.
 $\Prod{F}{1}{n}$ is a natural number.
 \end{signature}
 
-\begin{axiom}[title=Factorproperty]
+\begin{axiom}[Factorproperty]
 Let $F$ be a sequence of length $n$
 such that $F(i)$ is a nonzero natural number for every $i \in \dom(F)$.
 Then $\Prod{F}{1}{n}$ is nonzero and
@@ -3080,10 +3081,10 @@ $F(i)$ divides $\Prod{F}{1}{n}$ for every $i \in \dom(F)$.
 $\Primes$ is the collection of prime natural numbers.
 \end{signature}
 
-\begin{theorem}[title=Euclid]
+\begin{theorem}[Euclid]
 $\Primes$ is infinite.
 \end{theorem}
-\begin{proof}[method=contradiction]
+\begin{proof}[by contradiction]
 Assume that $\Primes$ is finite.
 Take a natural number $r$ such that $\Seq{1}{r}$ and $\Primes$ are equinumerous.
 Take a bijection $p$ between $\Seq{1}{r}$ and $\Primes$.

@@ -1,10 +1,6 @@
 \documentclass[english,11pt]{article}
-
-% Switch between sTeX and simple LaTeX
-% sTeX:
-%\usepackage{../latex/lib/naproche}
-% Simple LaTeX
 \usepackage{aux/naproche}
+\input{aux/preamble}
 
 \author{Peter Koepke, University of Bonn}
 
@@ -91,7 +87,7 @@ facts so that they can directly be accessed by the ATP.
   Let a proper subclass of $S$ stand for a subclass $T$ of $S$ such that $T \neq
   S$.
 
-  \begin{lemma}[title=Class Extensionality]
+  \begin{lemma}[Class Extensionality]
     If $S$ is a subclass of $T$ and $T$ is a subclass of $S$ then $S = T$.
   \end{lemma}
 
@@ -101,7 +97,7 @@ facts so that they can directly be accessed by the ATP.
 
   Let a proper subset of $S$ stand for a subset $X$ of $S$ such that $X \neq S$.
 
-  \begin{axiom}[title=Separation Axiom]
+  \begin{axiom}[Separation Axiom]
     Assume that $X$ is a set.
     Let $T$ be a subclass of $X$.
     Then $T$ is a set.
@@ -201,7 +197,7 @@ of sets and classes.
   Let $f : S \rightarrow T$ stand for $f$ maps elements of $S$ to elements of
   $T$.
 
-  \begin{axiom}[title=Replacement Axiom]
+  \begin{axiom}[Replacement Axiom]
     Let $X$ be a set.
     Assume that $X$ is a subset of the domain of $f$.
     Then $f[X]$ is a set.

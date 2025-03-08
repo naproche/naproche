@@ -1,5 +1,6 @@
 \documentclass[english]{article}
-\usepackage{../latex/lib/naproche}
+\usepackage{aux/naproche}
+\input{aux/preamble}
 
 \newcommand{\gauss}{\mathcal{G}}
 
@@ -8,7 +9,6 @@
 \date{2024}
 
 \begin{document}
-\begin{smodule}{gauss.ftl}
 \pagenumbering{gobble}
 \maketitle
 
@@ -32,7 +32,7 @@ for all $n \in \mathbb{N}$.
     $\mathbb{N}$ is the class of all natural numbers.
   \end{definition}
 
-  \begin{axiom}[title=Infinity Axiom]
+  \begin{axiom}[Infinity Axiom]
     $\mathbb{N}$ is a set.
   \end{axiom}
 
@@ -55,19 +55,19 @@ for all $n \in \mathbb{N}$.
     $n + m$ is a natural number.
   \end{signature}
 
-  \begin{axiom}[title=Addition Axiom I]
+  \begin{axiom}[Addition Axiom I]
     $n + 0 = n$.
   \end{axiom}
 
-  \begin{axiom}[title=Addition Axiom II]
+  \begin{axiom}[Addition Axiom II]
     $n + (m + 1) = (n + m) + 1$.
   \end{axiom}
 
-  \begin{axiom}[title=Commutativity of Addition]
+  \begin{axiom}[Commutativity of Addition]
     $n + m = m + n$.
   \end{axiom}
 
-  \begin{axiom}[title=Associativity of Addition]
+  \begin{axiom}[Associativity of Addition]
     $n + (m + k) = (n + m) + k$.
   \end{axiom}
 \end{forthel}
@@ -88,19 +88,19 @@ for all $n \in \mathbb{N}$.
     $n \cdot (m + 1) = (n \cdot m) + n$.
   \end{axiom}
 
-  \begin{axiom}[title=Commutativity of Multiplication]
+  \begin{axiom}[Commutativity of Multiplication]
     $n \cdot m = m \cdot n$.
   \end{axiom}
 
-  \begin{axiom}[title=Associativity of Multiplication]
+  \begin{axiom}[Associativity of Multiplication]
     $n \cdot (m \cdot k) = (n \cdot m) \cdot k$.
   \end{axiom}
 
-  \begin{axiom}[title=Left Distributivity]
+  \begin{axiom}[Left Distributivity]
     $n \cdot (m + k) = (n \cdot m) + (n \cdot k)$.
   \end{axiom}
 
-  \begin{axiom}[title=Right Distributivity]
+  \begin{axiom}[Right Distributivity]
     $(n + m) \cdot k = (n \cdot k) + (m \cdot k)$.
   \end{axiom}
 \end{forthel}
@@ -109,19 +109,19 @@ for all $n \in \mathbb{N}$.
 \subsection{The Peano Axioms}
 
 \begin{forthel}
-  \begin{axiom}[title=Peano Axiom I]
+  \begin{axiom}[Peano Axiom I]
     If $n + 1 =  m + 1$ then $n = m$.
   \end{axiom}
 
-  \begin{axiom}[title=Peano Axiom II]
+  \begin{axiom}[Peano Axiom II]
     There exists no natural number $n$ such that $n + 1 = 0$.
   \end{axiom}
 
-  \begin{axiom}[title=Peano Axiom III]
+  \begin{axiom}[Peano Axiom III]
     $n = 0$ or $n = m + 1$ for some natural number $m$.
   \end{axiom}
 
-  \begin{axiom}[title=Induction Axiom]
+  \begin{axiom}[Induction Axiom]
     $n \prec n + 1$.
   \end{axiom}
 \end{forthel}
@@ -161,16 +161,16 @@ $\gauss(n + 1) = \gauss(n) + (n + 1)$:
 \noindent Then the theorem can be stated as follows.
 
 \begin{forthel}
-  \begin{theorem*}[title=Little Gauß,id=little_gauss]
+  \begin{theorem*}[Little Gauß]\label{little_gauss}
     For all natural numbers $n$ we have
     \[2 \cdot \gauss(n) = n \cdot (n + 1).\]
   \end{theorem*}
-  \begin{proof}[method=induction on $n$]
+  \begin{proof}[by induction on $n$]
     Let $n$ be a natural number.
 
-    \begin{case}{$n = 0$.} \end{case}
+    Case $n = 0$. Obvious.
 
-    \begin{case}{$n \neq 0$.}
+    Case $n \neq 0$.
       Take a $m \in \mathbb{N}$ such that $n = m + 1$.
       Then $2 \cdot \gauss(m) = m \cdot n$.
       Hence
@@ -182,10 +182,9 @@ $\gauss(n + 1) = \gauss(n) + (n + 1)$:
         & = (m + 2) \cdot n                   \\
         & = n \cdot (n + 1)
       \end{align*}.
-    \end{case}
+    End.
   \end{proof}
 \end{forthel}
 
 \printlicense[CcByNcSa]{2024}{Christian Schöner, Marcel Schütz}
-\end{smodule}
 \end{document}

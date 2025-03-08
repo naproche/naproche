@@ -1,6 +1,7 @@
 \documentclass[english]{article}
-\usepackage{../../latex/lib/naproche}
-\addbibresource{../../latex/lib/bibliography}
+\usepackage{../aux/naproche}
+\input{../aux/preamble}
+\addbibresource{../aux/bibliography}
 
 \title{The Drinker Paradox}
 \author{\Naproche formalization:\\[0.5em]Marcel Schütz}
@@ -11,7 +12,7 @@
   \maketitle
 
   \begin{forthel}
-    [read \path{examples/lang/everyday-ontology.ftl.tex}]
+    [read \path{examples/aux/everyday-ontology.ftl.tex}]
   \end{forthel}
 
   \noindent The \emph{Drinker Paradox} is a principle of classical predicate 
@@ -29,21 +30,21 @@
       The pub is an object.
     \end{signature*}
     
-    \begin{theorem*}[title=Drinker Paradox,id=drinker_paradox]
+    \begin{theorem*}[Drinker Paradox]\label{drinker_paradox}
       Assume that there is a person inside the pub.
       Then there is a person $P$ inside the pub such that if $P$ is drinking then every person inside the pub is drinking.
     \end{theorem*}
-    \begin{proof}[method=case analysis]
-      \begin{case}{every person inside the pub is drinking.}
+    \begin{proof}[by case analysis]
+      Case every person inside the pub is drinking.
         Choose a person $P$ inside the pub.
         Then $P$ is drinking and every person inside the pub is drinking.
         Hence if $P$ is drinking then every person inside the pub is drinking.
-      \end{case}
+      End.
     
-      \begin{case}{there is a person inside the pub that is not drinking.}
+      Case there is a person inside the pub that is not drinking.
         Consider a person $P$ inside the pub that is not drinking.
         Then if $P$ is drinking then every person inside the pub is drinking.
-      \end{case}
+      End.
     \end{proof}
   \end{forthel}
 

@@ -1,4 +1,4 @@
-[read examples/lang/vocabulary.ftl]
+[read examples/aux/vocabulary.ftl]
 
 Let a,b,c,x,y,z,u,v,w denote elements.
 

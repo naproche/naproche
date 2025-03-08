@@ -1,128 +1,56 @@
-% This package provides basic support for typesetting Naproche formalizations
-% in LaTeX. It is used by almost all example files that ship with Naproche and
-% is the recommended one for custom formalizations.
-
-
-% Documentation (For End-Users)
-% =============================
-
-% Features
-% --------
-
-% * Content within the `forthel` environment is marked with a grey background.
-%
-% * Top-level environments for `axiom`, `definition`, `theorem`,
-%  `proposition`, `lemma`, `corollary`, `signature` and `proof`.
-%
-% * A length `ftlparskip` with which the space between paragraphs in proofs 
-%   within `forthel` environments can be controlled (default: 0.5em).
-%   Can be changed via `\setlength{\ftlparskip}{<new length>}`.
-%
-% * Alternative syntax for comprehension terms:
-%   `\class{... | ...}` behaves like `\{... \mid ...\}` with additional support
-%   for flexible sizes of the braces and the vertical bar.
-%
-% * `\classtext{...}` as an alternative for `\text{...}`. Can be used (in
-%   display math mode) in the RHS of `\class{... | ...}` to achieve automatic
-%   line breaks within a comprehension term.
-%
-% * Predefined symbols:
-%   - `\dom` for the domain of a map
-%   - `\fun` for lambda abstraction in low-level map definitions
-%
-% * `\Naproche`: The word "Naproche" with a 'blackbord N'
-
-
-% Additional Options
-% ------------------
-
-% `numberswithinsection`:     Reset theorem numbers for each section.
-% `numberswithinsubsection`:  Reset theorem numbers for each subsection.
-
-
-% Implementation (For Developers)
-% ===============================
-
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{naproche}[2025/01/03 package naproche]
+\ProvidesPackage{naproche}[2025/03/08 package naproche]
 
-\IfFileExists{stex.sty}{\RequirePackage{stex}}{}
+\RequirePackage{stex}
 \RequirePackage{amsmath,amssymb,amsfonts}
 \RequirePackage{etoolbox}
-\RequirePackage{xspace}
 \RequirePackage{xcolor}
-\RequirePackage{hyperref}
-\RequirePackage{cleveref}
 \RequirePackage{xurl}
 \RequirePackage{keyval}
 \RequirePackage{environ}
-\IfFileExists{marginnote.sty}{\RequirePackage{marginnote}}{}
-\IfFileExists{mdframed.sty}{\RequirePackage{mdframed}}{}
+\RequirePackage{marginnote}
+\RequirePackage{mdframed}
 
 
-% Bibliography
-% ------------
+% Predefined symbols
+% ------------------
 
-\usepackage[backend=bibtex]{biblatex}
-\usepackage{csquotes}
+\newcommand{\dom}{\operatorname{dom}}
+\newcommand{\fun}{\mathrm{\lambda}}
 
 
-% Licenses
-% --------
+% Naproche logo
+% -------------
 
-\RequirePackage{xstring}
+\RequirePackage{xspace}
+\newcommand{\Naproche}{\mbox{\ensuremath{\mathbb{N}}aproche}\xspace}
 
-\newcommand\printlicense[3][CcZero]{\section*{License}
-  \textcopyright\,#2, #3. This work is licensed under a
-  \IfStrEqCase{#1}{
-    {CcZero}{\href
-      {https://creativecommons.org/publicdomain/zero/1.0/}
-      {Creative Commons ``CC0 1.0 Universal''}
-      (CC0 1.0)
-    }
-    {CcBy}{\href
-      {https://creativecommons.org/licenses/by/4.0/}
-      {Creative Commons ``Attribution 4.0 International''}
-      (CC BY 4.0)
-    }
-    {CcBySa}{\href
-      {https://creativecommons.org/licenses/by-sa/4.0/}
-      {Creative Commons ``Attribution-ShareAlike 4.0 International''}
-      (CC BY-SA 4.0)
-    }
-    {CcByNc}{\href
-      {https://creativecommons.org/licenses/by-nc/4.0/}
-      {Creative Commons ``Attribution-NonCommercial 4.0 International''}
-      (CC BY-NC 4.0)
-    }
-    {CcByNcSa}{\href
-      {https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en}
-      {Creative Commons ``Attribution-NonCommercial-ShareAlike 4.0 International''}
-      (CC BY-NC-SA 4.0)
-    }
-    {CcByNd}{\href
-      {https://creativecommons.org/licenses/by-nd/4.0/}
-      {Creative Commons ``Attribution-NoDerivatives 4.0 International''}
-      (CC BY-ND 4.0)
-    }
-    {CcByNcNd}{\href
-      {https://creativecommons.org/licenses/by-nc-nd/4.0/}
-      {Creative Commons ``Attribution-NonCommercial-NoDerivatives 4.0 International''}
-      (CC BY-NC-ND 4.0)
-    }
-  }
-  license.
+
+% Comprehension terms
+% -------------------
+
+\RequirePackage{linegoal}
+
+% Gets the left-hand and right-hand side, resp., of an expression of the form
+% "foo|bar"
+\def\getfirst#1|#2\relax{#1}
+\def\getsecond#1|#2\relax{#2}
+
+% Comprehension term: "\class{... | ...}".
+% Naproche allows to enclose the RHS within "\text{...}", e.g.
+% "\class{x | \text{$x$ is greater than $y$}}".
+% Use "\classtext{...}" instead of "\text{...}" to enable automatic line breaks
+% in the RHS.
+\newcommand{\class}[1]{%
+  \left\{%
+  \getfirst#1\relax%
+  ~\middle\vert~%
+  \linebreak[1]%
+  \getsecond#1\relax%
+  \right\}%
 }
 
-
-% Links
-% -----
-
-\hypersetup{
-  colorlinks=true,
-  linkcolor=blue,
-  urlcolor=blue
-}
+\newcommand{\classtext}[1]{\parbox{\linegoal}{#1}}
 
 
 % Printing labels
@@ -179,9 +107,7 @@
   \ifbool{forthelBeforeEnv}{}{\ifbool{forthel}{\begin{forthel}}{\par\addvspace{\baselineskip}}}%
   \if\relax\tlsid\else\tlsidlabel\fi%
   \noindent\textbf{#2\if\relax\tlstitle\else{ (\tlstitle)}\fi. }%
-  \IfFileExists{marginnote.sty}{%
-    \ifbool{printid}{\if\relax\tlsid\else\marginnote{\footnotesize\tlsidname}\fi}{}%
-  }{}%
+  \ifbool{printid}{\if\relax\tlsid\else\marginnote{\footnotesize\tlsidname}\fi}{}%
 }{%
   \ifbool{forthelBeforeEnv}{\par}{\ifbool{forthel}{\end{forthel}}{\par\addvspace{\baselineskip}}}%
   \setbool{forthel}{\ifbool{forthelBeforeEnv}{true}{false}}% Reset the `forthel' variable
@@ -197,9 +123,7 @@
   \refstepcounter{theoremcount}%
   \if\relax\tlsid\else\tlsidlabel\fi%
   \noindent\textbf{#2\ifbool{showtlsnumber}{ \thetheoremcount}{}\if\relax\tlstitle\else{ (\tlstitle)}\fi. }%
-  \IfFileExists{marginnote.sty}{%
-    \ifbool{printid}{\if\relax\tlsid\else\marginnote{\footnotesize\tlsidname}\fi}{}%
-  }{}%
+  \ifbool{printid}{\if\relax\tlsid\else\marginnote{\footnotesize\tlsidname}\fi}{}%
 }{%
   \ifbool{forthelBeforeEnv}{\par}{\ifbool{forthel}{\end{forthel}}{\par\addvspace{\baselineskip}}}%
   \setbool{forthel}{\ifbool{forthelBeforeEnv}{true}{false}}% Reset the `forthel' variable
@@ -272,291 +196,67 @@
 % ForTheL environment
 \newenvironment{forthel}{%
   \par\addvspace{\baselineskip}
-  \IfFileExists{stex.sty}{%
   \ifstexhtml
     \begin{stex_annotate_env}{style:class=forthel,rustex:block=true,rustex:sized=-20}
   \else
-    \IfFileExists{mdframed.sty}{%
-      \begin{mdframed}[backgroundcolor=forthelgray,linecolor=forthelgray]%
-    }{%
-      \PackageWarning{naproche}{%
-        Package mdframed not installed,\MessageBreak
-        therefore using verbatim fallback for\MessageBreak
-        forthel environment%
-      }%
-      \noindent\texttt{\char`\\begin\char`\{forthel\char`\}}\\%
-    }%
+    \begin{mdframed}[backgroundcolor=forthelgray,linecolor=forthelgray]%
   \fi
-  }{%
-    \IfFileExists{mdframed.sty}{%
-      \begin{mdframed}[backgroundcolor=forthelgray,linecolor=forthelgray]%
-    }{%
-      \PackageWarning{naproche}{%
-        Package mdframed not installed,\MessageBreak
-        therefore using verbatim fallback for\MessageBreak
-        forthel environment%
-      }%
-      \noindent\texttt{\char`\\begin\char`\{forthel\char`\}}\\%
-    }
-  }%
   \rmfamily%
   \setbool{forthel}{true}%
   \setlength{\parindent}{0pt}%
   \setlength{\parskip}{\ftlparskip}%
 }{%
-  \IfFileExists{stex.sty}{%
-    \ifstexhtml
-      \end{stex_annotate_env}%
-    \else
-      \IfFileExists{mdframed.sty}{%
-        \end{mdframed}
-      }{%
-        \\\noindent\texttt{\char`\\end\char`\{forthel\char`\}}\\[\parskip]%
-      }
-    \fi
-    }{%
-    \IfFileExists{mdframed.sty}{%
-      \end{mdframed}
-    }{%
-      \\\noindent\texttt{\char`\\end\char`\{forthel\char`\}}\\[\parskip]%
-    }
-  }
+  \ifstexhtml
+    \end{stex_annotate_env}%
+  \else
+    \end{mdframed}
+  \fi
   \rmfamily%
   \setbool{forthel}{false}%
   \par\addvspace{\baselineskip}
-}
-
-% Wrapper for ForTheL environments. Warning: In the PDF/HTML it looks exactly
-% like an ordinary ForTheL environment, but its content is not checked by
-% Naproche. So use it wisely!
-\newenvironment{greybox}{
-  \IfFileExists{stex.sty}{
-    \ifstexhtml
-        \begin{stex_annotate_env}{style:class=forthel,rustex:block=true,rustex:sized=-20}
-      \else
-        \IfFileExists{mdframed.sty}{%
-          \begin{mdframed}[backgroundcolor=forthelgray,linecolor=forthelgray]
-        }{%
-          \PackageWarning{naproche}{%
-            Package mdframed not installed,\MessageBreak
-            therefore using verbatim fallback for\MessageBreak
-            forthel environment%
-          }%
-          \noindent\texttt{\char`\\begin\char`\{forthel\char`\}}\\%
-        }
-      \fi
-  }{%
-    \IfFileExists{mdframed.sty}{%
-      \begin{mdframed}[backgroundcolor=forthelgray,linecolor=forthelgray]%
-    }{%
-      \PackageWarning{naproche}{%
-        Package mdframed not installed,\MessageBreak
-        therefore using verbatim fallback for\MessageBreak
-        forthel environment%
-      }%
-      \noindent\texttt{\char`\\begin\char`\{forthel\char`\}}\\%
-    }%
-  }%
-  \setlength{\parindent}{0pt}
-}{
-  \IfFileExists{stex.sty}{%
-    \ifstexhtml
-      \end{stex_annotate_env}%
-    \else
-      \IfFileExists{mdframed.sty}{%
-        \end{mdframed}
-      }{%
-        \\\noindent\texttt{\char`\\end\char`\{forthel\char`\}}\\[\parskip]%
-      }
-    \fi
-  }{%
-    \IfFileExists{mdframed.sty}{%
-      \end{mdframed}
-    }{%
-      \\\noindent\texttt{\char`\\end\char`\{forthel\char`\}}\\[\parskip]%
-    }
-  }
 }
 
 
 % Inline ForTheL Command
 % ----------------------
 
-\IfFileExists{tcolorbox.sty}{
-  \RequirePackage{tcolorbox}
-}{}
+\RequirePackage{tcolorbox}
+\RequirePackage{soulpos}
 
-\IfFileExists{soulpos.sty}{
-  \RequirePackage{soulpos}
-}{}
+\newtcbox\ftlbox{
+  on line,
+  arc=0pt,
+  outer arc=0pt,
+  colback=forthelgray,
+  colframe=forthelgray,
+  boxsep=0pt,
+  left=.2em,
+  right=.2em,
+  top=.2em,
+  bottom=.4em,
+  boxrule=0pt,
+  height=1.4em    
+}
 
-\IfFileExists{tcolorbox.sty}{
-  %\AtBeginDocument{
-    \newtcbox\ftlbox{
-      on line,
-      arc=0pt,
-      outer arc=0pt,
-      colback=forthelgray,
-      colframe=forthelgray,
-      boxsep=0pt,
-      left=.2em,
-      right=.2em,
-      top=.2em,
-      bottom=.4em,
-      boxrule=0pt,
-      height=1.4em    
-    }
-  %}
-}{}
-
-\IfFileExists{tcolorbox.sty}{
-  \IfFileExists{soulpos.sty}{
-    \ulposdef\inlineforthelbox[xoffset-start=.2em]{%
-      \ftlbox{\rule\ulwidth{0pt}}%
-    }
-  }{}
-}{}
+\ulposdef\inlineforthelbox[xoffset-start=.2em]{%
+  \ftlbox{\rule\ulwidth{0pt}}%
+}
 
 \newcommand\inlineforthel[1]{%
   \setbool{forthel}{true}%
-  \IfFileExists{tcolorbox.sty}{\IfFileExists{soulpos.sty}{%
-    \inlineforthelbox{#1}}{}%
-  }{%
-  \PackageWarning{naproche}{%
-    Package tcolorbox or soulpos not installed,\MessageBreak
-    therefore using verbatim fallback for\MessageBreak
-    \protect\inlineforthel\space command%
-  }%
-    \texttt{\char`\\inlineforthel\char`\{}#1\texttt{\char`\}}%
-  }%
+  \inlineforthelbox{#1}%
   \setbool{forthel}{false}%
 }
-
-
-% Comprehension terms
-% -------------------
-
-\IfFileExists{linegoal.sty}{
-  \RequirePackage{linegoal}
-}{}
-
-% Gets the left-hanqd and right-hand side, resp., of an expression of the form
-% "foo|bar"
-\def\getfirst#1|#2\relax{#1}
-\def\getsecond#1|#2\relax{#2}
-
-% Comprehension term: "\class{... | ...}".
-% Naproche allows to enclose the RHS within "\text{...}", e.g.
-% "\class{x | \text{$x$ is greater than $y$}}".
-% Use "\classtext{...}" instead of "\text{...}" to enable automatic line breaks
-% in the RHS.
-\newcommand{\class}[1]{%
-  \left\{%
-  \getfirst#1\relax%
-  ~\middle\vert~%
-  \linebreak[1]%
-  \getsecond#1\relax%
-  \right\}%
-}
-
-\newcommand{\classtext}[1]{%
-  \IfFileExists{linegoal.sty}{%
-    \parbox{\linegoal}{#1}%
-  }{%
-    \PackageWarning{naproche}{%
-      Package linegoal not installed, therefore\MessageBreak
-      using verbatim fallback for \protect\classtext\space\MessageBreak
-      command%
-    }%
-    \texttt{\char`\\classtext\char`\{}#1\texttt{\char`\}}%
-  }%
-}
-
-
-% Predefined symbols
-% ------------------
-
-\newcommand{\dom}{\operatorname{dom}}
-\newcommand{\fun}{\mathrm{\lambda}}
-
-
-% Naproche logo
-% -------------
-
-\newcommand{\Naproche}{\mbox{\ensuremath{\mathbb{N}}aproche}\xspace}
 
 
 % Options
 % -------
 
 \DeclareOption{numberswithinsection}{%
-    \counterwithin{theoremcount}{section}
+  \counterwithin{theoremcount}{section}
 }
 \DeclareOption{numberswithinsubsection}{%
-    \counterwithin{theoremcount}{subsection}
-}
-\DeclareOption{puzzle}{%
-  \let\signature\relax
-  \let\endsignature\relax
-  \let\axiom\relax
-  \let\endaxiom\relax
-  \let\definition\relax
-  \let\enddefinition\relax
-  \let\theorem\relax
-  \let\endtheorem\relax
-  \newenvironment{signature}{\unskip}{\unskip}
-  \newenvironment{axiom}{\unskip}{\unskip}
-  \newenvironment{definition}{\unskip}{\unskip}
-  \newenvironment{theorem}{\unskip Therefore:}{}
-
-  \renewenvironment{forthel}{
-    \IfFileExists{stex.sty}{
-      \ifstexhtml
-        \begin{stex_annotate_env}{style:class=forthel,rustex:block=true,rustex:sized=-20}
-      \else
-        \IfFileExists{mdframed.sty}{%
-          \begin{mdframed}[backgroundcolor=forthelgray,linecolor=forthelgray]
-        }{%
-          \PackageWarning{naproche}{%
-            Package mdframed not installed,\MessageBreak
-            therefore using verbatim fallback for\MessageBreak
-            forthel environment%
-          }%
-          \noindent\texttt{\char`\\begin\char`\{forthel\char`\}}\\%
-        }
-      \fi
-    }{%
-      \IfFileExists{mdframed.sty}{%
-        \begin{mdframed}[backgroundcolor=forthelgray,linecolor=forthelgray]
-      }{%
-        \PackageWarning{naproche}{%
-          Package mdframed not installed,\MessageBreak
-          therefore using verbatim fallback for\MessageBreak
-          forthel environment%
-        }%
-        \noindent\texttt{\char`\\begin\char`\{forthel\char`\}}\\%
-      }
-    }
-    \setlength{\parindent}{0pt}
-  }{
-    \IfFileExists{stex.sty}{%
-      \ifstexhtml
-        \end{stex_annotate_env}%
-      \else
-        \IfFileExists{mdframed.sty}{%
-          \end{mdframed}
-        }{%
-          \\\noindent\texttt{\char`\\end\char`\{forthel\char`\}}\\[\parskip]%
-        }
-      \fi
-    }{%
-      \IfFileExists{mdframed.sty}{%
-        \end{mdframed}
-      }{%
-        \\\noindent\texttt{\char`\\end\char`\{forthel\char`\}}\\[\parskip]%
-      }
-    }
-  }
+  \counterwithin{theoremcount}{subsection}
 }
 \DeclareOption*{\PackageWarning{naproche}{Unknown ‘\CurrentOption’}}
 \ProcessOptions\relax

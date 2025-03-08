@@ -22,7 +22,7 @@ math .................................... Naproche formalizations
 │
 ├── TUTORIAL ............................ Naproche tutorial
 │
-├── archive ............................. Formalizations based on Naproche libraries and sTeX
+├── archive ............................. Formalizations based on sTeX and the formalizations in math/libraries
 │   │
 │   ├── burali-forti-paradox ............ Burali-Forti's paradox
 │   │
@@ -46,13 +46,7 @@ math .................................... Naproche formalizations
 │
 ├── examples ............................ Stand-alone formalizations
 │   │
-│   ├── lang ............................ language preliminaries
-│   │   │
-│   │   ├── everyday-ontology ........... a simple ontology of notions used in every-day language
-│   │   │
-│   │   ├── macros ...................... additional macros for symbols that are hard-coded into Naproche
-│   │   │
-│   │   └── vocabulary .................. singular/plural pairs of terms used in Naproche formalizations
+│   ├── aux ............................. ForTheL and LaTeX files used in math/examples and math/TUTORIAL
 │   │
 │   ├── paradoxes ....................... mathematical paradoxes
 │   │   │
@@ -112,7 +106,7 @@ math .................................... Naproche formalizations
 │   │
 │   └── tarski .......................... Tarski's fixpoint theorem for lattices
 │
-├── latex ............................... LaTeX style and bibliography files used in Naproche formalizations
+├── latex ............................... LaTeX files used in math/archive and math/libraries
 │
 └── libraries ........................... Naproche libraries based on sTeX
     │

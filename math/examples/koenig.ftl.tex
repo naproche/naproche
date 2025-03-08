@@ -1,7 +1,8 @@
 \documentclass[english]{article}
-\usepackage{../latex/lib/naproche}
+\usepackage{aux/naproche}
 \usepackage{mathtools} % for \bigtimes
-\addbibresource{../latex/lib/bibliography}
+\input{aux/preamble}
+\addbibresource{aux/bibliography}
 
 \title{König's Theorem}
 \author{Steffen Frerix and Peter Koepke\\
@@ -88,7 +89,7 @@ On an older laptop with an Intel Pentium N3710 processor \Naproche takes around
     Then $M \setminus N$ has an element.
   \end{axiom}
 
-  \begin{axiom}[id=function_existence]
+  \begin{axiom}\label{function_existence}
     Assume $\card{M} \leq \card{N}$.
     Assume $M$ has an element.
     There exists a function $f$ such that $N$ is the domain of $f$ and $M$ is
@@ -150,7 +151,7 @@ The axiom of choice is also required to show that products of non-empty factors
 are themselves non-empty:
 
 \begin{forthel}
-  \begin{lemma}[title=Choice]
+  \begin{lemma}[Choice]
     Let $\lambda$ be a sequence of cardinals on $D$.
     Assume that $\lambda_{i}$ has an element for every element $i$ of $D$.
     Then $\ProdSet{\lambda}{D}$ has an element.
@@ -173,7 +174,7 @@ are themselves non-empty:
     Assume that for every element $i$ of $D$ $\kappa_{i} < \lambda_{i}$.
     Then \[ \Sum{\kappa}{D} < \Prod{\lambda}{D}. \]
   \end{theorem}
-  \begin{proof}[method=contradiction]
+  \begin{proof}[by contradiction]
     Assume the contrary.
     Then \[ \Prod{\lambda}{D} \leq \Sum{\kappa}{D}. \]
     [unfoldlow off][prover vampire]

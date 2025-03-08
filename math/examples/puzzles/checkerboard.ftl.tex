@@ -1,5 +1,6 @@
 \documentclass[english]{article}
-\usepackage{../../latex/lib/naproche}
+\usepackage{../aux/naproche}
+\input{../aux/preamble}
 
 \title{The mutilated checkerboard}
 \author{Naproche formalization and commentary:\\ Adrian De Lon, Peter Koepke, Anton Lorenzen}
@@ -475,7 +476,7 @@ derived from the definition of \textit{a domino tiling of\,[...]}.
     \begin{theorem}
         The mutilated checkerboard has no domino tiling.
     \end{theorem}
-    \begin{proof}[method=contradiction]
+    \begin{proof}[by contradiction]
         Assume $T$ is a domino tiling of $\Mutilated$.
         $\Mutilated \cap \Black$ is equinumerous with $\Mutilated \cap \White$.
         $\Mutilated \cap \Black$ is equinumerous with $\White$.

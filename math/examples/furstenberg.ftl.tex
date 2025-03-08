@@ -1,6 +1,6 @@
 \documentclass[english]{article}
-\usepackage{../latex/lib/naproche}
-\addbibresource{../latex/lib/bibliography}
+\usepackage{aux/naproche}
+\input{aux/preamble}
 
 \renewcommand{\mod}{\text{mod }}
 \newcommand{\Int}{\mathbb{Z}}
@@ -29,29 +29,29 @@
   \begin{forthel}
     [read \path{examples/preliminaries.ftl.tex}]
 
-    \begin{signature}[id=Integers]
+    \begin{signature}\label{Integers}
       An integer is an object.
     \end{signature}
 
     Let $a,b,c,d,i,j,k,l,m,n$ stand for integers.
 
-    \begin{signature}[id=IntZero]
+    \begin{signature}\label{IntZero}
       $0$ is an integer.
     \end{signature}
 
-    \begin{signature}[id=IntOne]
+    \begin{signature}\label{IntOne}
       $1$ is an integer.
     \end{signature}
 
-    \begin{signature}[id=IntNeg]
+    \begin{signature}\label{IntNeg}
       $-a$ is an integer.
     \end{signature}
 
-    \begin{signature}[id=IntPlus]
+    \begin{signature}\label{IntPlus}
       $a + b$ is an integer.
     \end{signature}
 
-    \begin{signature}[id=IntMult]
+    \begin{signature}\label{IntMult}
       $a \cdot b$ is an integer.
     \end{signature}
 
@@ -62,46 +62,46 @@
   commutative monoid which satisfy the distribution laws.
 
   \begin{forthel}
-    \begin{axiom}[id=AddAsso]
+    \begin{axiom}\label{AddAsso}
       $a + (b + c) = (a + b) + c$.
     \end{axiom}
 
-    \begin{axiom}[id=AddComm]
+    \begin{axiom}\label{AddComm}
       $a + b = b + a$.
     \end{axiom}
 
-    \begin{axiom}[id=AddZero]
+    \begin{axiom}\label{AddZero}
       $a + 0 = a = 0 + a$.
     \end{axiom}
 
-    \begin{axiom}[id=AddNeg]
+    \begin{axiom}\label{AddNeg}
       $a - a = 0 = -a + a$.
     \end{axiom}
 
-    \begin{axiom}[id=MulAsso]
+    \begin{axiom}\label{MulAsso}
       $a \cdot (b \cdot c) = (a \cdot b) \cdot c$.
     \end{axiom}
 
-    \begin{axiom}[id=MulComm]
+    \begin{axiom}\label{MulComm}
       $a \cdot b = b \cdot a$.
     \end{axiom}
 
-    \begin{axiom}[id=MulOne]
+    \begin{axiom}\label{MulOne}
       $a \cdot 1 = a = 1 \cdot a$.
     \end{axiom}
 
-    \begin{axiom}[id=Distrib]
+    \begin{axiom}\label{Distrib}
       $a \cdot (b + c) = (a \cdot b) + (a \cdot c)$ and$ (a + b) \cdot c = (a \cdot c) + (b \cdot c)$.
     \end{axiom}
 
-    \begin{lemma}[id=MulZero]
+    \begin{lemma}\label{MulZero}
       $a \cdot 0 = 0 = 0 \cdot a$.
     \end{lemma}
     \begin{proof}
       $a \cdot 0 = a \cdot (1 - 1) = a - a = 0$.
     \end{proof}
 
-    \begin{lemma}[id=MulMinOne]
+    \begin{lemma}\label{MulMinOne}
       $-1 \cdot a = -a = a \cdot -1$.
     \end{lemma}
     \begin{proof}
@@ -113,11 +113,11 @@
   divisors.
 
   \begin{forthel}
-    \begin{axiom}[id=NonTriv]
+    \begin{axiom}\label{NonTriv}
       $0 \neq 1$.
     \end{axiom}
 
-    \begin{axiom}[id=ZeroDiv]
+    \begin{axiom}\label{ZeroDiv}
       $a \neq 0 \wedge b \neq 0 \implies a \cdot b \neq 0$.
     \end{axiom}
 
@@ -132,22 +132,22 @@
     Let $a$ is nonzero stand for $a \neq 0$.
     Let $p,q$ stand for nonzero integers.
 
-    \begin{definition}[id=Divisor]
+    \begin{definition}\label{Divisor}
       A divisor of $b$ is a nonzero integer $a$ such that for some $n$ $(a \cdot n = b)$.
     \end{definition}
 
     Let $a$ divides $b$ stand for $a$ is a divisor of $b$.
     Let $a \mid b$ stand for $a$ is a divisor of $b$.
 
-    \begin{definition}[id=EquMod]
+    \begin{definition}\label{EquMod}
       $a = b ~(\mod q)$ iff $q \mid a-b$.
     \end{definition}
 
-    \begin{lemma}[id=EquModRef]
+    \begin{lemma}\label{EquModRef}
       $a = a ~(\mod q)$.
     \end{lemma}
 
-    \begin{lemma}[id=EquModSym]
+    \begin{lemma}\label{EquModSym}
       $a = b ~(\mod q) \implies b = a ~(\mod q)$.
     \end{lemma}
     \begin{proof}
@@ -158,7 +158,7 @@
       $q \cdot (-n) .= (-1) \cdot (q \cdot n)$ (by MulMinOne, MulAsso, MulComm) $.= (-1) \cdot (a - b)$ (by 1).
     \end{proof}
 
-    \begin{lemma}[id=EquModTrn]
+    \begin{lemma}\label{EquModTrn}
       $a = b ~(\mod q) \wedge b = c ~(\mod q) \implies a = c ~(\mod q)$.
     \end{lemma}
     \begin{proof}
@@ -168,7 +168,7 @@
       We have $q \cdot (n + m) = a - c$.
     \end{proof}
 
-    \begin{lemma}[id=EquModMul]
+    \begin{lemma}\label{EquModMul}
       $a = b ~(\mod p \cdot q) \implies a = b ~(\mod p) \wedge a = b ~(\mod q)$.
     \end{lemma}
     \begin{proof}
@@ -186,13 +186,13 @@
   Furstenberg's proof is that every integer $n$ has a prime divisor iff $n \neq 1$ and $n \neq -1$.
 
   \begin{forthel}
-    \begin{signature}[id=Prime]
+    \begin{signature}\label{Prime}
       $a$ is prime is an atom.
     \end{signature}
 
     Let a prime stand for a prime nonzero integer.
 
-    \begin{axiom}[id=PrimeDivisor]
+    \begin{axiom}\label{PrimeDivisor}
       $n$ has a prime divisor iff $n \neq 1 \wedge n \neq -1$.
     \end{axiom}
   \end{forthel}
@@ -217,7 +217,7 @@
   \begin{forthel}
     Let $S,T$ stand for classes.
 
-    \begin{signature}[id=FinSet]
+    \begin{signature}\label{FinSet}
       $S$ is finite is an atom.
     \end{signature}
 
@@ -241,11 +241,11 @@
 
     Let $A,B,C,D$ stand for subclasses of $\Int$.
 
-    \begin{definition}[id=IntegerSets]
+    \begin{definition}\label{IntegerSets}
       A family of integer sets is a class $S$ such that every element of $S$ is a subset of $\Int$.
     \end{definition}
 
-    \begin{definition}[id=UnionSet]
+    \begin{definition}\label{UnionSet}
       Let $S$ be a family of integer sets.
       $\bigcup S = \{ x \in \Int \mid x \text{ belongs to some element of } S \}$.
     \end{definition}
@@ -255,7 +255,7 @@
       $\bigcup S$ is a subset of $\Int$.
     \end{lemma}
 
-    \begin{definition}[id=Complement]
+    \begin{definition}\label{Complement}
       $\overline{A} = \{ x \in \Int \mid x \text{ does not belong to } A \}$.
     \end{definition}
 
@@ -275,7 +275,7 @@
     Let $p,q$ stand for nonzero integers.
     Let $A,B,C$ stand for subsets of $\Int$.
 
-    \begin{definition}[id=ArSeq]
+    \begin{definition}\label{ArSeq}
       $q \Int + a = \{ b \in \Int \mid b = a ~(\mod q) \}$.
     \end{definition}
 
@@ -288,7 +288,7 @@
   are defined as follows:
 
   \begin{forthel}
-    \begin{definition}[id=Open]
+    \begin{definition}\label{Open}
       $A$ is open iff $A = \Int$ or for any $a \in A$ there exists $q$ such that
       $q \Int + a \subseteq A$.
     \end{definition}
@@ -298,11 +298,11 @@
   open since $0 \Int + a = \{ a \} \subseteq A$ for every $a \in A$.
 
   \begin{forthel}
-    \begin{definition}[id=Closed]
+    \begin{definition}\label{Closed}
       $A$ is closed iff $\overline{A}$ is open.
     \end{definition}
 
-    \begin{definition}[id=OpenIntegerSets]
+    \begin{definition}\label{OpenIntegerSets}
       An family of open sets is a family of integer sets $S$ such that every element of $S$ is open.
     \end{definition}
   \end{forthel}
@@ -310,7 +310,7 @@
   We can easily check that the open sets really form a topology on $\Int$.
 
   \begin{forthel}
-    \begin{lemma}[id=UnionOpen]
+    \begin{lemma}\label{UnionOpen}
       Let $S$ be an family of open sets.
       $\bigcup S$ is open.
     \end{lemma}
@@ -321,7 +321,7 @@
       Then $q \Int + x \subseteq \bigcup S$.
     \end{proof}
 
-    \begin{lemma}[id=InterOpen]
+    \begin{lemma}\label{InterOpen}
       Let $A,B$ be open subsets of $\Int$.
       Then $A \cap B$ is a subset of $\Int$ and $A \cap B$ is open.
     \end{lemma}
@@ -347,7 +347,7 @@
       End.
     \end{proof}
 
-    \begin{lemma}[id=UnionClosed]
+    \begin{lemma}\label{UnionClosed}
       Let $A,B$ be closed subsets of $\Int$.
       $A \cup B$ is closed.
     \end{lemma}
@@ -360,7 +360,7 @@
   Now we state a consequence of finiteness:
 
   \begin{forthel}
-    \begin{axiom}[id=UnionSClosed]
+    \begin{axiom}\label{UnionSClosed}
       Let $S$ be a finite family of integer sets such that all elements of $S$ are closed subsets of $\Int$.
       $\bigcup S$ is closed.
     \end{axiom}
@@ -373,10 +373,10 @@
   prove that any $r \Int$ -- or more general any $q \Int + a$ -- is closed.
 
   \begin{forthel}
-    \begin{lemma}[id=ArSeqClosed]
+    \begin{lemma}\label{ArSeqClosed}
       $q \Int + a$ is a closed subset of $\Int$.
     \end{lemma}
-    \begin{proof}[method=contradiction]
+    \begin{proof}[by contradiction]
       $q \Int + a$ is a subset of $\Int$.
       Let $b \in \overline{q \Int + a}$.
 
@@ -399,11 +399,11 @@
   $p \Int + 1$ (where $p$ is non-zero) is contained in $\{ 1, -1 \}$ which obviously cannot be.
 
   \begin{forthel}
-    \begin{theorem}[title=Fuerstenberg]
+    \begin{theorem}[Fuerstenberg]
       Let $S = \{ r \Int + 0 \mid r \text{ is a prime} \}$.
       $S$ is infinite.
     \end{theorem}
-    \begin{proof}[method=contradiction]
+    \begin{proof}[by contradiction]
       $S$ is a family of integer sets.
 
       We have $\overline{\bigcup S} = \{ 1, -1 \}$. \newline
