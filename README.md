@@ -76,9 +76,12 @@ in the PATH, but it is convenient to put it into a standard place once, e.g.:
     The result is for the current repository version, and the underlying
     HW + OS platform. The following reference platforms (x86_64) are
     used for Isabelle2025:
-    - Ubuntu Linux 24.04 LTS with packages `texlive-latex-extra` and `texlive-bibtex-extra`
+    - Ubuntu Linux 18.04 LTS
     - macOS 11 Big Sur
     - Windows 10/11
+
+    The Isabelle component with its PDF documents has been produced on:
+    - Ubuntu Linux 24.04 LTS with packages `texlive-latex-extra` and `texlive-bibtex-extra`
 
 * Isabelle Prover IDE
   
