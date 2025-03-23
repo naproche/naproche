@@ -1,6 +1,6 @@
 # The implicational propositional calculus
 
-[read examples/aux/vocabulary.ftl]
+[read examples/lang/vocabulary.ftl]
 
 Signature. 
     A formula is an object.
