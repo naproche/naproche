@@ -1,12 +1,30 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{naproche}[2025/03/08 package naproche]
 
+\RequirePackage[english]{babel}
 \RequirePackage{amsmath,amssymb,amsthm,amsfonts}
 \RequirePackage{etoolbox}
 \RequirePackage{xspace}
 \RequirePackage{xcolor}
 \RequirePackage{mdframed}
-\RequirePackage{xurl}
+
+
+% Hyperref
+% --------
+
+\RequirePackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  urlcolor=blue
+}
+
+
+% BibTeX
+% ------
+
+\usepackage[backend=bibtex]{biblatex}
+\usepackage{xurl} % Must be loaded after biblatex!
 
 
 % Predefined symbols

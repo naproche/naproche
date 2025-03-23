@@ -6,8 +6,9 @@
 \libinput[latex]{license}
 
 \usepackage[backend=bibtex]{biblatex}
-\usepackage{csquotes}
-\addmhbibresource{bibliography}
+\addmhbibresource[latex]{bibliography}
+
+\usepackage{xurl} % Must be loaded after biblatex!
 
 \usepackage{hyperref}
 \hypersetup{

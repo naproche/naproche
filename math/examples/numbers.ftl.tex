@@ -1,7 +1,10 @@
 \documentclass[english]{article}
 \usepackage{lang/naproche}
-\input{lang/preamble}
-\addbibresource{lang/bibliography}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\usepackage[backend=bibtex]{biblatex}
+\addbibresource{../latex/lib/bibliography}
+\usepackage{xurl} % Must be loaded after biblatex!
 
 \begin{document}
 
