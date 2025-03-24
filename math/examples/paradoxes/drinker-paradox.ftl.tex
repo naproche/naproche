@@ -11,11 +11,7 @@
   \pagenumbering{gobble}
   \maketitle
 
-  \begin{forthel}
-    [read \path{examples/lang/everyday-ontology.ftl.tex}]
-  \end{forthel}
-
-  \noindent The \emph{Drinker Paradox} is a principle of classical predicate 
+  The \emph{Drinker Paradox} is a principle of classical predicate 
   logic popularised by the logician Raymond Smullyan in his 1978 book
   \textit{What Is the Name of this Book?} \cite{Smullyan1978} which can be 
   stated as:
@@ -27,7 +23,25 @@
 
   \begin{forthel}
     \begin{signature*}
-      The pub is an object.
+      A place is a notion.
+      Let $p$ denote a place.
+    \end{signature*}
+
+    \begin{signature*}
+      The pub is a place.
+    \end{signature*}
+
+    \begin{signature*}
+      A person is a notion.
+      Let $P$ denote a person.
+    \end{signature*}
+    
+    \begin{signature*}
+      $P$ is inside $p$ is a relation.
+    \end{signature*}
+    
+    \begin{signature*}
+      $P$ is drinking is a relation.
     \end{signature*}
     
     \begin{theorem*}[Drinker Paradox]\label{drinker_paradox}

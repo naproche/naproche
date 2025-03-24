@@ -11,11 +11,7 @@
   \pagenumbering{gobble}
   \maketitle
 
-  \begin{forthel}
-    [read \path{examples/lang/everyday-ontology.ftl.tex}]
-  \end{forthel}
-
-  \noindent The \emph{Barber Paradox} is a puzzle illustrating Russell's
+  The \emph{Barber Paradox} is a puzzle illustrating Russell's
   Paradox, formulated by Bertrand Russell in 1919 \cite[p. 355]{Russell1919}:
 
   \begin{quotation}
@@ -27,8 +23,22 @@
   \noindent In \Naproche we can formalize this paradox as follows.
 
   \begin{forthel}
+    [synonym person/-s]
+
     \begin{signature*}
-      The barber is a man such that for any man $M$ the barber shaves $M$ iff $M$ does not shave himself.
+      A person is an object.
+    \end{signature*}
+  
+    [synonym shave/-s]
+
+    \begin{signature*}
+      Let $P, P'$ be persons.
+      $P$ shaves $P'$ is a relation.
+      Let $P$ shaves himself stand for $P$ shaves $P$.
+    \end{signature*}
+
+    \begin{signature*}
+      The barber is a person such that for any person $P$ the barber shaves $P$ iff $P$ does not shave himself.
     \end{signature*}
     
     \begin{theorem*}[Barber Paradox]\label{barber_paradox}
