@@ -2,13 +2,12 @@
 \usepackage{naproche}
 \libinput{preamble}
 
-\title{Cantor's Paradoxes}
-\author{\Naproche formalization: \\[0.5em]Marcel Schütz}
-\date{2024}
+\title{Cantor's Paradoxes in \Naproche}
+\author{Marcel Schütz}
+\date{2024--2025}
 
 \begin{document}
 \begin{smodule}{cantor-paradox.ftl}
-\pagenumbering{gobble}
 \maketitle
 
 \importmodule[libraries/set-theory]{infinite-cardinals.ftl}
@@ -51,14 +50,13 @@ powerset \cite[chapter 163]{Cantor1991}.
 \end{theorem}
 \begin{proof}[forthel]
   Assume the contrary.
-  Then $\SETpow(\Set)$ is a set.
-  Hence $\SETpow(\Set)$ is a subset of $\Set$.
-  Thus $\SETcard{\SETpow(\Set)} \ORDleq \SETcard{\Set}$.
+  Then $\SETpow(\Set)$ is a subset of $\Set$.
+  Hence $\SETcard{\SETpow(\Set)} \ORDleq \SETcard{\Set}$.
   Contradiction.
   Indeed $\SETcard{x} \ORDless \SETcard{\SETpow(x)}$ for any set $x$.
 \end{proof}
 
 \printbibliography
-\printlicense[CcByNcSa]{2024}{Marcel Schütz}
+\printlicense[CcByNcSa]{2024--2025}{Marcel Schütz}
 \end{smodule}
 \end{document}

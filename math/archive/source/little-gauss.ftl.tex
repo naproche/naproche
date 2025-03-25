@@ -4,9 +4,9 @@
 
 \newcommand{\gauss}{\mathcal{G}}
 
-\title{Little Gauß' Theorem}
-\author{\Naproche formalization:\\[0.5em]Christian Schöner, Marcel Schütz}
-\date{2024}
+\title{``Little Gauß''' Theorem in \Naproche}
+\author{Christian Schöner (2024), Marcel Schütz (2024--2025)}
+\date{}
 
 \begin{document}
 \begin{smodule}{little-gauss.ftl}
@@ -14,7 +14,7 @@
 
 \importmodule[libraries/arithmetics]{multiplication.ftl}
 
-\noindent This is a formalization of ``Little Gauß' Theorem'', i.e. of
+\noindent This is a formalization of ``Little Gauß''' Theorem, i.e. of
 the assertion that
 \[\sum_{k = \NATzero}^n k \eq \frac{k(k \NATplus \NATone)}\NATtwo\]
 for all $n \SETin \Nat$.
@@ -69,6 +69,6 @@ $\gauss(n \NATplus \NATone) = \gauss(n) \NATplus (n \NATplus \NATone)$:
 \end{forthel}
 
 \printbibliography
-\printlicense[CcByNcSa]{2024}{Christian Schöner, Marcel Schütz}
+\printlicense[CcByNcSa]{2024--2025}{Christian Schöner, Marcel Schütz}
 \end{smodule}
 \end{document}
