@@ -1,0 +1,42 @@
+\documentclass[numberswithinsection]{naproche-library}
+
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+
+\libinput[libraries/lists]{preamble}
+\libinput[latex]{license}
+
+\title{Everyday Ontology}
+\author{Marcel Schütz}
+\date{2025}
+
+\stexstylemodule{\begin{sfragment}{\thistitle}\texttt{\footnotesize\thismoduleuri}\par}{\end{sfragment}}
+
+\begin{document}
+  \maketitle
+  \tableofcontents
+  \setsectionlevel{section}
+  \begin{sfragment}{Classes}
+    \inputref[libraries/everyday-ontology]{classes/being.ftl.tex}
+    \inputref[libraries/everyday-ontology]{classes/animal.ftl.tex}
+    \inputref[libraries/everyday-ontology]{classes/human.ftl.tex}
+    \inputref[libraries/everyday-ontology]{classes/person.ftl.tex}
+    \inputref[libraries/everyday-ontology]{classes/place.ftl.tex}
+  \end{sfragment}
+  \begin{sfragment}{Individuals}
+    \inputref[libraries/everyday-ontology]{individuals/socrates.ftl.tex}
+  \end{sfragment}
+  \begin{sfragment}{Properties}
+    \inputref[libraries/everyday-ontology]{properties/human.ftl.tex}
+    \inputref[libraries/everyday-ontology]{properties/mortal.ftl.tex}
+    \inputref[libraries/everyday-ontology]{properties/inside.ftl.tex}
+    \inputref[libraries/everyday-ontology]{properties/drinking.ftl.tex}
+  \end{sfragment}
+  \begin{sfragment}{Actions}
+    \inputref[libraries/everyday-ontology]{actions/shave.ftl.tex}
+  \end{sfragment}
+  \begin{sfragment}{Axioms}
+    \inputref[libraries/everyday-ontology]{axioms/all-humans-are-mortal.ftl.tex}
+  \end{sfragment}
+  \printlicense[CcByNcSa]{2025}{Marcel Schütz}
+\end{document}

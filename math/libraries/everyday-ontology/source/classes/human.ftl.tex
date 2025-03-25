@@ -1,0 +1,14 @@
+\documentclass{naproche-library}
+\begin{document}
+\begin{smodule}[title=Human]{human.ftl}
+  \importmodule[libraries/everyday-ontology]{properties?human.ftl}
+
+  \inlineforthel{[synonym human/-s]}
+
+  \begin{definition}[forthel]
+    A \emph{human} is a human being $B$.
+    % We need the variable $B$ because of the bug describen in
+    % <https://github.com/naproche/naproche/issues/23>.
+  \end{definition}
+\end{smodule}
+\end{document}
