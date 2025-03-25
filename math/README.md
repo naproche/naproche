@@ -24,6 +24,8 @@ math .................................... Naproche formalizations
 │
 ├── archive ............................. Formalizations based on sTeX and the formalizations in math/libraries
 │   │
+│   ├── barber-paradox .................. the barber paradox
+│   │
 │   ├── burali-forti-paradox ............ Burali-Forti's paradox
 │   │
 │   ├── cantor-paradox .................. Cantor's paradoxes
@@ -31,6 +33,10 @@ math .................................... Naproche formalizations
 │   ├── cantor-schroeder-bernstein ...... classical result in cardinality theory
 │   │
 │   ├── cantor .......................... Cantor's diagonal argument
+│   │
+│   ├── curry-paradox ................... Curry's paradox
+│   │
+│   ├── drinker-paradox ................. the drinker paradox
 │   │
 │   ├── furstenberg ..................... Furstenberg's topological proof of infinity of primes
 │   │
@@ -40,25 +46,19 @@ math .................................... Naproche formalizations
 │   │
 │   ├── koenig .......................... Kőnig's theorem about sequences of cardinals
 │   │
+│   ├── little-gauss .................... sum of the first *n* positive integers
+│   │
+│   ├── russell-myhill-paradox .......... the Russell-Myhill paradox
+│   │
+│   └── russell-paradox ................. Russell's paradox
+│   │
 │   ├── transfinite-recursion ........... the transfinite recursion theorem
 │   │
 │   └── zermelo ......................... Zermelo's well-ordering theorem
 │
 ├── examples ............................ Stand-alone formalizations
 │   │
-│   ├── aux ............................. ForTheL and LaTeX files used in math/examples and math/TUTORIAL
-│   │
-│   ├── paradoxes ....................... mathematical paradoxes
-│   │   │
-│   │   ├── barber-paradox .............. the barber paradox
-│   │   │
-│   │   ├── curry-paradox ............... Curry's paradox
-│   │   │
-│   │   ├── drinker-paradox ............. the drinker paradox
-│   │   │
-│   │   ├── russell-myhill-paradox ...... the Russell-Myhill paradox
-│   │   │
-│   │   └── russell-paradox ............. Russell's paradox
+│   ├── lang............................. ForTheL and LaTeX files used in math/examples and math/TUTORIAL
 │   │
 │   ├── puzzles ......................... logic puzzles
 │   │   │
@@ -79,8 +79,6 @@ math .................................... Naproche formalizations
 │   ├── euclid_primes ................... classical proof of infinity of primes
 │   │
 │   ├── furstenberg ..................... Furstenberg's topological proof of infinity of primes
-│   │
-│   ├── gauss ........................... sum of the first *n* positive integers
 │   │
 │   ├── geometry ........................ beginnings of Tarski geometry
 │   │
@@ -111,6 +109,8 @@ math .................................... Naproche formalizations
 └── libraries ........................... Naproche libraries based on sTeX
     │
     ├── arithmetics ..................... basic notions and results concerning natural numbers
+    │
+    ├── everyday-ontology................ an basic ontology for concepts from everyday language
     │
     ├── foundations ..................... basic notions and results concerning sets and functions
     │
