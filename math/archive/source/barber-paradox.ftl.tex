@@ -1,0 +1,40 @@
+\documentclass{article}
+\usepackage{naproche}
+\libinput{preamble}
+
+\title{The Barber Paradox in \Naproche}
+\author{Marcel Schütz}
+\date{2024--2025}
+
+\begin{document}
+\begin{smodule}{barber-paradox.ftl}
+\maketitle
+
+\importmodule[libraries/everyday-ontology]{classes?person.ftl}
+\importmodule[libraries/everyday-ontology]{actions?shave.ftl}
+
+\noindent The \emph{Barber Paradox} is a puzzle illustrating Russell's
+Paradox, formulated by Bertrand Russell in 1919 \cite[p. 355]{Russell1919}:
+
+\begin{quotation}
+  \noindent You can define the barber as ``one who shaves all those, and 
+  those only, who do not shave themselves''.
+  The question is, does the barber shave himself?
+\end{quotation}
+
+\noindent In \Naproche we can formalize this paradox as follows.
+
+\begin{forthel}
+  \begin{signature*}
+    The barber is a person such that for any person $P$ the barber shaves $P$ iff $P$ does not shave himself.
+  \end{signature*}
+  
+  \begin{theorem*}[title=Barber Paradox,id=barber_paradox]
+    The barber shaves himself iff the barber does not shave himself.
+  \end{theorem*}
+\end{forthel}
+
+\printbibliography
+\printlicense[CcByNcSa]{2024--2025}{Marcel Schütz}
+\end{smodule}
+\end{document}

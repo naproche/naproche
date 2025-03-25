@@ -1,0 +1,61 @@
+\documentclass{article}
+\usepackage{naproche}
+\libinput{preamble}
+
+\title{The Russell-Myhill Paradox in \Naproche}
+\author{Marcel Schütz}
+\date{2024--2025}
+
+\begin{document}
+\begin{smodule}{russell-myhill-paradox.ftl}
+\maketitle
+
+\noindent The \emph{Russell-Myhill Paradox} is a paradox discovered by 
+Bertrand Russell which states that two systems of propositions with the same 
+\emph{logical product} are not necessarily equal.
+It was discussed in Russell's 1903 \emph{Principles of Mathematics}
+\cite[Appendix B]{Russell1903} and rediscovered in 1958 by John Myhill
+\cite{Myhill1958}.
+
+\begin{forthel}
+  \begin{signature*}
+    A proposition is an object.
+  \end{signature*}
+
+  \begin{signature*}
+    Let $p$ be a proposition.
+    $p$ is true is an atom.
+  \end{signature*}
+
+  [synonym system/-s]
+
+  \begin{definition*}
+    A system of propositions is a class $P$ such that every element of $P$ is a proposition.
+  \end{definition*}
+
+  \begin{signature*}
+    Let $P$ be a system of propositions.
+    The logical product of $P$ is a proposition $p$ such that $p$ is true iff every element of $P$ is true.
+  \end{signature*}
+  
+  Let $\sqcap P$ denote the logical product of $P$.
+  
+  \begin{theorem*}[title=Russell-Myhill Paradox,id=russell_myhill_paradox]
+    It is wrong that
+    \[ \sqcap P = \sqcap Q \implies P = Q \]
+    for all systems of propositions $P, Q$.
+  \end{theorem*}
+  \begin{proof}
+    Assume the contrary.
+    Define $Q = \{q \mid$ there exists a system of propositions $P$ such that $q = \sqcap P$ and $q \notin P\}$.
+    Consider $q = \sqcap Q$.
+    Then for any system of propositions $P$ such that $\sqcap P = q$ we have $P = Q$.
+    Hence $q \in Q$ iff $q \notin Q$.
+    Contradiction.
+  \end{proof}
+\end{forthel}
+
+\printbibliography
+\printlicense[CcByNcSa]{2024--2025}{Marcel Schütz}
+\end{smodule}
+\end{document}
