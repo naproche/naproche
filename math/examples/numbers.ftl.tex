@@ -1,10 +1,5 @@
 \documentclass[english]{article}
 \usepackage{lang/naproche}
-\usepackage{hyperref}
-\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
-\usepackage[backend=bibtex]{biblatex}
-\addbibresource{../latex/lib/bibliography}
-\usepackage{xurl} % Must be loaded after biblatex!
 
 \begin{document}
 
@@ -16,7 +11,8 @@
 
 \maketitle
 
-The \Naproche{} system (Natural Proof Checking) \cite{DeLonKoepkeLorenzenMartiSchuetzWenzel2021, NaprocheWeb} checks the logical correctness of texts
+The \Naproche{} system (Natural Proof Checking)
+\cite{DeLonKoepkeLorenzenMartiSchuetzWenzel2021, KoepkeLorenzenShminke2022} checks the logical correctness of texts
 written in an input language which ideally reads
 like common mathematical language. Proof structures should resemble the
 style of undergraduate textbooks. To test this
@@ -720,6 +716,27 @@ Take $p = \frac{m}{n}$. Then $p \in \mathbb{Q}$ and $x < p < y$.
 
 \end{forthel}
 
-\printbibliography
+\begin{thebibliography}{9}
+  \bibitem{KoepkeLorenzenShminke2022}
+  Peter Koepke, Anton Lorenzen, and Boris Shminke.
+  ``CICM'22 System Entries''.
+  In: \textit{Intelligent Computer Mathematics} (2022).
+  Ed. by Kevin Buzzard and Temur Kutsia,
+  pp. 344--348.
 
+  \bibitem{DeLonKoepkeLorenzenMartiSchuetzWenzel2021}
+  Adrian De Lon et al.
+  ``The Isabelle/Naproche Natural Language Proof Assistant''.
+  In: \textit{Automated Deduction -- CADE 28, Lecture Notes in Computer Science} 12699 (2021).
+  Ed. by André Platzer and Geoff Sutcliffe.
+
+  \bibitem{Rudin1953}
+  Walter Rudin.
+  \textit{Principles of Mathematical Analysis}.
+  McGraw Hill, 1953.
+
+  \bibitem{Eprover}
+  \textit{The E Theorem Prover}.
+  \textsc{url}: \url{https://eprover.org}.
+\end{thebibliography}
 \end{document}
