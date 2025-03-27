@@ -1,19 +1,13 @@
-\documentclass[english]{article}
-\usepackage{../aux/puzzles}
-\input{../aux/preamble}
+\documentclass{article}
+\usepackage{../lang/puzzles}
 
 \title{Dwarfs and Hats}
-\author{\Naproche Formalization: Steffen Frerix and Peter Koepke}
-\date{2018 and 2021}
+\author{\Naproche Formalization: Steffen Frerix (2018) and Peter Koepke (2021)}
+\date{}
 
 \begin{document}
 
 \maketitle
-
-\begin{forthel}
-  [read \path{examples/aux/everyday-ontology.ftl.tex}]
-\end{forthel}
-
 
 \section{Introduction}
 
@@ -34,21 +28,74 @@ We present a formalized solution in \Naproche of a simple ``hat problem'':
 \section{Dwarf Ontology}
 
 \begin{forthel}
+  [synonym dwarf/-s]
+
+  \begin{signature}
+    A dwarf is a notion.
+  \end{signature}
+  
   \begin{signature}
     Sigbert is a dwarf.
   \end{signature}
+
   \begin{signature}
     Tormund is a dwarf.
   \end{signature}
+
+  \begin{signature}
+    A hat is a notion.
+  \end{signature}
+
+  \begin{signature}
+    A color is a notion.
+    Let $C$ denote a color.
+  \end{signature}
+
+  \begin{signature}
+    White is a color.
+  \end{signature}
+
+  \begin{signature}
+    Black is a color.
+  \end{signature}
+
+  \begin{signature}
+    Let $D$ be a dwarf.
+    The hat of $D$ is a hat.
+  \end{signature}
+
+  \begin{signature}
+    Let $H$ be a hat.
+    The color of $H$ is a color.
+  \end{signature}
+
+  \begin{signature}
+    The opposite color of $C$ is a color.
+  \end{signature}
+
   \begin{axiom}
     For any color $C$ of the hat of any dwarf $C$ is White or $C$ is Black.
   \end{axiom}
+
   \begin{axiom}
     The opposite color of White is Black.
   \end{axiom}
+
   \begin{axiom}
     The opposite color of Black is White.
   \end{axiom}
+
+  \begin{signature}
+    Let $D$ be a dwarf and $C$ be a color.
+    $D$ names $C$ is a relation.
+  \end{signature}
+
+  [synonym get/-s]
+
+  \begin{signature}
+    Let $D$ be a dwarf.
+    $D$ gets released is a relation.
+  \end{signature}
 \end{forthel}
 
 

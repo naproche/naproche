@@ -1,11 +1,9 @@
-\documentclass[english]{article}
-\usepackage{../aux/puzzles}
-\input{../aux/preamble}
-\addbibresource{../aux/bibliography}
+\documentclass{article}
+\usepackage{../lang/puzzles}
 
 \title{Murder at Dreadsbury Mansion (Pelletier Problem 55)}
-\author{\Naproche Formalization: Steffen Frerix and Peter Koepke}
-\date{2018 and 2021}
+\author{\Naproche Formalization: Steffen Frerix (2018) and Peter Koepke (2021)}
+\date{}
 
 \begin{document}
 
@@ -52,10 +50,50 @@ achieved by redefining the printout of signature, axiom and theorem environments
 \section{The Language of Dreadsbury}
 
 \begin{forthel}
-  [read \path{examples/aux/everyday-ontology.ftl.tex}]
-\end{forthel}
+  [synonym person/-s]
 
-\begin{forthel}
+  \begin{signature}
+    A person is a notion.
+  \end{signature}
+
+  Let $P, P'$ denote persons.
+
+  \begin{signature}
+    $P$ killed $P'$ is a relation.
+    Let $P$ killed herself stand for $P$ killed $P$.
+    Let $Q$ was killed by $P$ stand for $P$ killed $Q$.
+  \end{signature}
+
+  \begin{definition}
+    A victim of $P$ is a person that was killed by $P$.
+  \end{definition}
+
+  \begin{definition}
+    A killer is a person that killed some person.
+  \end{definition}
+
+  \begin{signature}
+    Let $P, P'$ be persons.
+    $P$ hates $P'$ is a relation.
+    Let $Q$ is hated by $P$ stand for $P$ hates $Q$.
+  \end{signature}
+
+  \begin{signature}
+    A place is a notion.
+  \end{signature}
+
+  [synonym live/-s]
+
+  \begin{signature}
+    Let $P$ be a person and $A$ be a place.
+    $P$ lives in $A$ is a relation.
+  \end{signature}
+
+  \begin{signature}
+    Let $P, P'$ be persons.
+    $P$ is richer than $P'$ is a relation.
+  \end{signature}
+
   \begin{signature}
     Aunt Agatha is a person.
   \end{signature}
@@ -100,10 +138,10 @@ We juxtapose the original text of the puzzle with our formalization:
     Some person that lives in Dreadsbury Mansion killed Aunt Agatha.
   \end{axiom}
   \begin{axiom}
-    Agatha, the butler and Charles live in Dreadsbury Mansion and for every person $X$ that lives in Dreadsbury Mansion $X$ is Aunt Agatha or $X$ is the butler or $X$ is Charles.
+    Agatha, the butler and Charles live in Dreadsbury Mansion and for every person $P$ that lives in Dreadsbury Mansion $P$ is Aunt Agatha or $P$ is the butler or $P$ is Charles.
   \end{axiom}
   \begin{axiom}
-    Every killer $X$ hates every victim of $X$ and is not richer than any victim of $X$.
+    Every killer $P$ hates every victim of $P$ and is not richer than any victim of $P$.
   \end{axiom}
   \begin{axiom}
     Charles hates no person that is hated by Aunt Agatha.
@@ -134,5 +172,11 @@ We juxtapose the original text of the puzzle with our formalization:
   \end{theorem}
 \end{forthel}
 
-\printbibliography
+\begin{thebibliography}{9}
+  \bibitem{Pelletier1986}
+  Francis Jeffry Pelletier.
+  ``Seventy-five problems for Testing Automatic Theorem Provers''.
+  In: \textit{Journal of Automated Reasoning} 2 (1986),
+  pp. 191--216.
+\end{thebibliography}
 \end{document}

@@ -1,4 +1,5 @@
 \libinput[libraries/arithmetics]{preamble}
+\libinput[libraries/everyday-ontology]{preamble}
 \libinput[libraries/foundations]{preamble}
 \libinput[libraries/lists]{preamble}
 \libinput[libraries/set-theory]{preamble}
@@ -6,8 +7,9 @@
 \libinput[latex]{license}
 
 \usepackage[backend=bibtex]{biblatex}
-\usepackage{csquotes}
-\addmhbibresource{bibliography}
+\addmhbibresource[archive]{bibliography}
+
+\usepackage{xurl} % Must be loaded after biblatex!
 
 \usepackage{hyperref}
 \hypersetup{
@@ -15,3 +17,12 @@
   linkcolor=blue,
   urlcolor=blue
 }
+
+\RequirePackage{stex-highlighting}
+\newbool{emph}
+\setbool{emph}{false}
+\colorlet{emphcolor}{violet}
+\let\oldemph\emph
+\renewcommand\emph[1]{\setbool{emph}{true}\ifbool{forthel}{\textcolor{emphcolor}{\ifmmode#1\else\itshape#1\fi}}{\oldemph{#1}}\setbool{emph}{false}}
+\renewcommand\varemph[1]{\ifbool{emph}{\textcolor{emphcolor}{#1}}{\textcolor{teal}{#1}}}
+\renewcommand\compemph[1]{\ifbool{emph}{\textcolor{emphcolor}{#1}}{\textcolor{teal}{#1}}}

@@ -1,13 +1,11 @@
-\documentclass[english]{article}
-\usepackage{aux/naproche}
+\documentclass{article}
+\usepackage{lang/naproche}
 \usepackage{mathtools} % for \bigtimes
-\input{aux/preamble}
-\addbibresource{aux/bibliography}
 
-\title{König's Theorem}
-\author{Steffen Frerix and Peter Koepke\\
+\title{Kőnig's Theorem}
+\author{Steffen Frerix (2018--2019) and Peter Koepke (2018--2021)\\
 University of Bonn}
-\date{2018 - 2021}
+\date{}
 
 \newcommand{\card}[1]{\operatorname{card}(#1)}
 \newcommand{\SumSet}[2]{\bigsqcup_{i \in #2} #1_{i}}
@@ -20,9 +18,9 @@ University of Bonn}
 
 \maketitle
 
-König's Theorem is an important set-theoretical result about the arithmetic of
+Kőnig's Theorem is an important set-theoretical result about the arithmetic of
 cardinals.
-It was proved by Julius König in \cite{Koenig1905}.
+It was proved by Julius Kőnig in \cite{Koenig1905}.
 The proof is reminiscent of Cantor's diagonal argument for proving that $\kappa
 < 2^\kappa$.
 
@@ -143,7 +141,7 @@ On an older laptop with an Intel Pentium N3710 processor \Naproche takes around
   \end{definition}
 \end{forthel}
 
-König's Theorem requires some form of the axiom of choice.
+Kőnig's Theorem requires some form of the axiom of choice.
 Currently choice is built into Naproche by the \emph{choose} construct in
 function definitions.
 
@@ -164,7 +162,7 @@ are themselves non-empty:
 \end{forthel}
 
 
-\section{König's theorem}
+\section{Kőnig's theorem}
 
 \begin{forthel}
   Let $D$ denote a set.
@@ -212,5 +210,10 @@ are themselves non-empty:
   \end{proof}
 \end{forthel}
 
-\printbibliography
+\begin{thebibliography}{9}
+  \bibitem{Koenig1905}
+  Gyula Kőnig.
+  ``Zum Kontinuumsproblem''.
+  In: \textit{Mathematische Annalen} 60 (1905).
+\end{thebibliography}
 \end{document}

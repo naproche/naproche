@@ -1,14 +1,13 @@
-\documentclass[english]{article}
-\usepackage{../aux/naproche}
-\input{../aux/preamble}
-\addbibresource{../aux/bibliography}
+\documentclass{article}
+\usepackage{naproche}
+\libinput{preamble}
 
-\title{Russell's Paradox}
-\author{\Naproche formalization:\\[0.5em]Marcel Schütz}
-\date{2024}
+\title{Russell's Paradox in \Naproche}
+\author{Marcel Schütz}
+\date{2024--2025}
 
 \begin{document}
-\pagenumbering{gobble}
+\begin{smodule}{russell-paradox.ftl}
 \maketitle
 
 \noindent \emph{Russell's Paradox} is a set-theoretical paradox discovered by
@@ -18,7 +17,7 @@ $\{x\mid\varphi(x)\}$ cannot constitute a set -- or in other words:
 Not every class is a set.
 
 \begin{forthel}
-  \begin{theorem}[Russell's Paradox]
+  \begin{theorem}[title=Russell's Paradox]
     There exists a class that is not a set.
   \end{theorem}
   \begin{proof}[forthel]
@@ -31,5 +30,6 @@ Not every class is a set.
 \end{forthel}
 
 \printbibliography
-\printlicense[CcByNcSa]{2024}{Marcel Schütz}
+\printlicense[CcByNcSa]{2024--2025}{Marcel Schütz}
+\end{smodule}
 \end{document}

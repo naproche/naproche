@@ -3,6 +3,7 @@
 \LoadClass{article}
 
 \RequirePackage{naproche}
+\RequirePackage{xurl} % for proper linebreaks of IDs
 
 \setbool{printid}{true} % Print top-level section IDs on the document margin
 

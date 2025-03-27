@@ -1,5 +1,5 @@
-[read examples/aux/vocabulary.ftl]
-[read examples/aux/macros.ftl]
+[read examples/lang/vocabulary.ftl]
+[read examples/lang/macros.ftl]
 
 
 ### Sets and Classes
