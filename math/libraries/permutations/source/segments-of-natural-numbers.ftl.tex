@@ -4,15 +4,18 @@
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Segments of the Natural Numbers]{segments-of-natural-numbers.ftl}
 \importmodule[libraries/arithmetics]{ordering.ftl}
+\importmodule[libraries/set-theory]{zfc.ftl}
 \symdef{NATsegment}[args=2]{\comp{\{}#1\comp{,\dots,}#2\comp{\}}}
 
-\begin{definition}[forthel,id=FOUNDATIONS_14_3625613501923328]
-  Let $n, m$ be natural numbers.
+\begin{convention}[forthel]
+  Let $n,m$ denote natural numbers.
+\end{convention}
+
+\begin{definition}[forthel,id=NatSegDef]
   $\emph{\NATsegment{n}{m}} = \{ k \in \Nat \mid n \NATleq k \NATleq m \}$.
 \end{definition}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_14_145331933151232]
-  Let $n, m$ be natural numbers.
+\begin{proposition}[forthel,id=NatSegEqProp]
   If $\NATsegment{\NATone}{n} \eq \NATsegment{\NATone}{m}$ then $n \eq m$.
 \end{proposition}
 \begin{proof}[forthel]
@@ -59,13 +62,49 @@
   \end{case}
 \end{proof}
 
-\begin{proposition}[forthel,id=FOUNDATIONS_14_658708738605056]
-  Let $n$ be a natural number.
-  Then $\NATsegment{\NATone}{n \NATplus \NATone} \eq \NATsegment{\NATone}{n} \SETunion \SETsingleton{n \NATplus \NATone}$.
+\begin{proposition}[forthel,id=NatSegSuccProp]
+  Assume $m\NATgeq n$.
+  Then $\NATsegment{n}{m \NATplus \NATone} \eq \NATsegment{n}{m} \SETunion \SETsingleton{m \NATplus \NATone}$.
 \end{proposition}
 \begin{proof}[forthel]
-  We have
-  $\NATsegment{\NATone}{n \NATplus \NATone} \SETinclude \NATsegment{\NATone}{n} \SETunion \SETsingleton{n \NATplus \NATone}$ and $\NATsegment{\NATone}{n} \SETunion \SETsingleton{n \NATplus \NATone} \SETinclude \NATsegment{\NATone}{n \NATplus \NATone}$.
+  We have $\NATsegment{n}{m \NATplus \NATone} \SETinclude \NATsegment{n}{m} \SETunion \SETsingleton{m \NATplus \NATone}$
+  and $\NATsegment{n}{m} \SETunion \SETsingleton{m \NATplus \NATone} \SETinclude \NATsegment{n}{m \NATplus \NATone}$.
 \end{proof}
+
+\begin{proposition}[forthel,id=NatSegFinProp]
+  $\NATsegment{n}{m}$ is a set.
+\end{proposition}
+\begin{proof}[forthel]
+  \begin{case}{$m\NATless n$.}
+    Then $\NATsegment{n}{m}\eq\SETempty$.
+  \end{case}
+
+  \begin{case}{$m\NATgeq n$.}
+    Then $m\eq n\NATplus k$ for some $k\SETin\Nat$.
+    Define $\Phi=\{k\in\Nat\mid\text{for all }m'\SETin\Nat\text{ if }m'\eq n\NATplus k\text{ then }\NATsegment{n}{m'}\text{ is a set}\}$.
+    
+    (1) $\Phi$ contains $\NATzero$.
+    Indeed $\NATsegment{n}{n}\eq\SETsingleton{n}$.
+
+    (2) For all $k\SETin\Phi$ we have $k\NATplus\NATone\SETin\Phi$.
+    \begin{proof}
+      Let $k\SETin\Phi$.
+
+      Let us show that for all $m'\SETin\Nat$ if $m'\eq n\NATplus(k\NATplus\NATone)$ then $\NATsegment{n}{m'}$ is a set.
+      \begin{proof}
+        Let $m'\SETin\Nat$.
+        Assume $m'\eq n\NATplus(k\NATplus\NATone)$.
+        Then $\NATsegment{n}{n\NATplus k}$ is a set.
+        $\NATsegment{n}{m'}\eq\NATsegment{n}{n\NATplus k}\SETunion\SETsingleton{n\NATplus(k\NATplus\NATone)}$.
+      \end{proof}
+    \end{proof}
+
+    Hence $\Phi$ contains every natural number (by \printref{ARITHMETIC_01_4764664342773760}).
+  \end{case}
+\end{proof}
+
+\begin{proposition}[forthel,id=MapOfNatSegIsFunProp]
+  Any map of $\NATsegment{n}{m}$ is a function.
+\end{proposition}
 \end{smodule}
 \end{document}

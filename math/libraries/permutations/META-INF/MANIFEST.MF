@@ -1,0 +1,3 @@
+id: libraries/permutations
+ns: https://naproche.github.io/math/libraries/permutations
+narration-base: https://naproche.github.io/math/libraries/permutations

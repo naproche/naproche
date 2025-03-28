@@ -1,0 +1,53 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Permutations]{permutations.ftl}
+  \importmodule[libraries/foundations]{invertible-maps.ftl}
+  \importmodule[libraries/permutations]{segments-of-natural-numbers.ftl}
+  \symdef{Sym}[args=1]{\comp{\mathfrak{S}}_{#1}}
+  \symdef{SYMid}[args=1]{\comp{\textrm{id}}_{#1}}
+
+  \begin{convention}[forthel]
+    Let $n$ denote a natural number.
+  \end{convention}
+
+  \begin{definition}[forthel,id=ClassOfPermsDef]
+    $\emph{\Sym{n}}$ is the class of all permutations of $\NATsegment{\NATone}{n}$.
+  \end{definition}
+
+  \begin{proposition}[forthel,id=SymIsSetProp]
+    $\Sym{n}$ is a set.
+  \end{proposition}
+  \begin{proof}[forthel]
+    $\Sym{n}\SETinclude\FUNfunspace{\NATsegment{\NATone}{n}}{\NATsegment{\NATone}{n}}$.
+  \end{proof}
+
+  \begin{definition}[forthel,id=IdPermDef]
+    $\emph{\SYMid{n}}=\FUNid{\NATsegment{\NATone}{n}}$.
+  \end{definition}
+
+  \begin{proposition}[forthel,id=IdIsPermProp]
+    $\SYMid{n}\SETin\Sym{n}$.
+  \end{proposition}
+
+  \noindent\inlineforthel{[check off]}
+  \hspace{5pt}Naproche refuses to check the assertions of the following two propositions :(
+  
+  \begin{proposition}[forthel,id=CompOfPermsIsPermProp]
+    Let $\pi,\tau\SETin\Sym{n}$.
+    Then $\pi\FUNcomp\tau\SETin\Sym{n}$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    $\pi\FUNcomp\tau$ is a permutation of $\NATsegment{\NATone}{n}$.
+  \end{proof}
+
+  \begin{proposition}[forthel,id=InvOfPermIsPermProp]
+    Let $\pi\SETin\Sym{n}$.
+    Then $\FUNinv{\pi}\SETin\Sym{n}$.
+  \end{proposition}
+  \begin{proof}[forthel]
+    $\FUNinv{\pi}$ is a permutation of $\NATsegment{\NATone}{n}$.
+  \end{proof}
+\end{smodule}
+\end{document}
