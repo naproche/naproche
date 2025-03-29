@@ -248,6 +248,48 @@
 }
 
 
+% Highlighting Components
+% =======================
+
+\newbool{highlight}
+\newbool{emph}
+\setbool{emph}{false}
+
+% Default colors for highhlighting definienda and components of symbolic expressions:
+\colorlet{defemphcolor}{violet}
+\colorlet{refemphcolor}{teal}
+
+\let\oldemph\emph
+
+% In forthel environments, color the argument of \emph commands with
+% defemphcolor and set its shape to italics. Outside of forthel environments,
+% \emph behaves as usual.
+\renewcommand\emph[1]{%
+\colorlet{currentcolor}{.}%
+  \setbool{emph}{true}%
+  \ifbool{forthel}%
+    {\ifbool{highlight}%
+      {\color{defemphcolor}{\ifmmode#1\else\itshape#1\fi}\color{currentcolor}}%
+      {\ifmmode#1\else\itshape#1\fi}%
+    }%
+    {\oldemph{#1}}%
+  \setbool{emph}{false}%
+}
+
+% Components of symbolic expressions that are wrapped in \highlight are colored
+% with refemphcolor or, if the expression occurs as the argument of an \emph
+% command within a forthel environment, with defemphcolor.
+\newcommand\highlight[1]{%
+  \colorlet{currentcolor}{.}%
+  \ifbool{highlight}%
+    {\ifbool{emph}{\color{defemphcolor}#1\color{currentcolor}}{\color{refemphcolor}#1\color{currentcolor}}}%
+    {#1}%
+}
+
+% Disable highlighting of definienda and components of symbolic expressions by default.
+\setbool{highlight}{false}
+
+
 % Options
 % -------
 

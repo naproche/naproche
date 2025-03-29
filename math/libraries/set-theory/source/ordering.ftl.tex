@@ -4,14 +4,14 @@
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=The Standard Ordering of the Ordinals]{ordering.ftl}
 \importmodule[libraries/set-theory]{limit-ordinals.ftl}
-\symdef{ORDless}{\;<\;}
-\symdef{ORDnless}{\;\not<\;}
-\symdef{ORDleq}{\;\leq\;}
-\symdef{ORDnleq}{\;\not\leq\;}
-\symdef{ORDgtr}{\;>\;}
-\symdef{ORDngtr}{\;\not>\;}
-\symdef{ORDgeq}{\;\geq\;}
-\symdef{ORDngeq}{\;\not\geq\;}
+\symdef{ORDless}{\mathrel{\highlight<}}
+\symdef{ORDnless}{\mathrel{\highlight{\not<}}}
+\symdef{ORDleq}{\mathrel{\highlight\leq}}
+\symdef{ORDnleq}{\mathrel{\highlight{\not\leq}}}
+\symdef{ORDgtr}{\mathrel{\highlight>}}
+\symdef{ORDngtr}{\mathrel{\highlight{\not>}}}
+\symdef{ORDgeq}{\mathrel{\highlight\geq}}
+\symdef{ORDngeq}{\mathrel{\highlight{\not\geq}}}
 
 \begin{definition}[forthel,id=SET_THEORY_02_6654252130762752]
   Let $\alpha, \beta$ be ordinals.

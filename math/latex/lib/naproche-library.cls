@@ -5,16 +5,8 @@
 \RequirePackage{naproche}
 \RequirePackage{xurl} % for proper linebreaks of IDs
 
-\setbool{printid}{true} % Print top-level section IDs on the document margin
-
-\RequirePackage{stex-highlighting}
-\newbool{emph}
-\setbool{emph}{false}
-\colorlet{emphcolor}{violet}
-\let\oldemph\emph
-\renewcommand\emph[1]{\setbool{emph}{true}\ifbool{forthel}{\textcolor{emphcolor}{\ifmmode#1\else\itshape#1\fi}}{\oldemph{#1}}\setbool{emph}{false}}
-\renewcommand\varemph[1]{\ifbool{emph}{\textcolor{emphcolor}{#1}}{\textcolor{teal}{#1}}}
-\renewcommand\compemph[1]{\ifbool{emph}{\textcolor{emphcolor}{#1}}{\textcolor{teal}{#1}}}
+\setbool{printid}{true}     % Print top-level section IDs on the document margin
+\setbool{highlight}{true}   % Highlight definienda and components of symbolic expressions
 
 \RequirePackage[right=6cm,left=3cm,bottom=3cm,marginparwidth=5cm]{geometry}
 

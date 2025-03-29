@@ -4,8 +4,8 @@
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Lists]{lists.ftl}
   \importmodule[libraries/foundations]{classes.ftl}
-\symdef{LISTlist}[args=a,op=[\,]]{\comp[\argsep{#1}{\comp,}\comp]}
-\symdef{LISTcons}[op=::]{\,{::}\,}
+\symdef{LISTlist}[args=a,op=[\,]]{\highlight[\argsep{#1}{\highlight,}\highlight]}
+\symdef{LISTcons}[op=::]{\mathbin{\highlight{::}}}
 
 \inlineforthel{[synonym list/-s]}
 

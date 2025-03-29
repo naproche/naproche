@@ -4,18 +4,18 @@
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=The Standard Ordering of the Natural Numbers]{ordering.ftl}
 \importmodule[libraries/arithmetics]{natural-numbers.ftl}
-\symdef{NATless}{\;<\;}
-\symdef{NATnless}{\;\not<\;}
-\symdef{NATgtr}{\;>\;}
-\symdef{NATngtr}{\;\not>\;}
-\symdef{NATleq}{\;\leq\;}
-\symdef{NATnleq}{\;\not\leq\;}
-\symdef{NATgeq}{\;\geq\;}
-\symdef{NATngeq}{\;\not\geq\;}
-\symdef{Natlessthan}[args=1]{\comp{\mathbb{N}}_{\comp<#1}}
-\symdef{Natgtrthan}[args=1]{\comp[\mathbb{N}]_{\comp>#1}}
-\symdef{Natleqthan}[args=1]{\comp{\mathbb{N}}_{\comp\leq#1}}
-\symdef{Natgeqthan}[args=1]{\comp{\mathbb{N}}_{\comp\geq#1}}
+\symdef{NATless}{\mathrel{\highlight<}}
+\symdef{NATnless}{\mathrel{\highlight{\not<}}}
+\symdef{NATgtr}{\mathrel{\highlight>}}
+\symdef{NATngtr}{\mathrel{\highlight{\not>}}}
+\symdef{NATleq}{\mathrel{\highlight\leq}}
+\symdef{NATnleq}{\mathrel{\highlight{\not\leq}}}
+\symdef{NATgeq}{\mathrel{\highlight\geq}}
+\symdef{NATngeq}{\mathrel{\highlight{\not\geq}}}
+\symdef{Natlessthan}[args=1]{\highlight{\mathbb{N}}_{\highlight<#1}}
+\symdef{Natgtrthan}[args=1]{\highlight{\mathbb{N}}_{\highlight>#1}}
+\symdef{Natleqthan}[args=1]{\highlight{\mathbb{N}}_{\highlight\leq#1}}
+\symdef{Natgeqthan}[args=1]{\highlight{\mathbb{N}}_{\highlight\geq#1}}
 
 \begin{sfragment}{Definitions and Immediate Consequences}
   \begin{definition}[forthel,id=ARITHMETIC_04_1926295512416256]

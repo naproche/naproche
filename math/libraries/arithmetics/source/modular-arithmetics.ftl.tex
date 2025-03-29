@@ -4,9 +4,9 @@
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Modular Arithmetics]{modular-arithmetics.ftl}
 \importmodule[libraries/arithmetics]{multiplication-and-ordering.ftl}
-\symdef{NATdiv}{\,\textrm{div}\,}
-\symdef{NATmod}{\,\textrm{mod}\,}
-\symdef{NATcong}[args=3]{#1\mathrel{\comp\equiv}#2\;\comp{(\textrm{mod}}\,#3\comp)}
+\symdef{NATdiv}{\mathbin{\highlight{\textrm{div}}}}
+\symdef{NATmod}{\mathbin{\highlight{\textrm{mod}}}}
+\symdef{NATcong}[args=3]{#1\mathrel{\highlight\equiv}#2\;\highlight{(\textrm{mod}}\,#3\highlight)}
 
 \begin{sfragment}{Quotients and Remainders}
   \begin{definition}[forthel,id=ARITHMETIC_08_8621463798022144]

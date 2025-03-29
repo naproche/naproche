@@ -4,19 +4,19 @@
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Maps]{maps.ftl}
 \importmodule[libraries/foundations]{classes.ftl}
-\symdef{FUNdom}{\textrm{dom}}
-\symdef{FUNid}[args=1]{\comp{\textrm{id}}_{#1}}
-\symdef{FUNrange}{\textrm{range}}
-\symdef{FUNcomp}{\,\circ\,}
-\symdef{FUNrest}{\,\restriction\,}
-\symdef{FUNim}[args=2]{#1\comp[#2\comp]}
-\notation{FUNim}[parens]{#1\dobrackets{#2}}
-\notation{FUNim}[star]{#1_{\comp*}\dobrackets{#2}}
-\symdef{FUNpreim}[args=2]{#1^{\comp{-1}}\comp[#2\comp]}
-\notation{FUNpreim}[parens]{#1^{\comp{-1}}\dobrackets{#2}}
-\notation{FUNpreim}[star]{#1^{\comp*}\dobrackets{#2}}
-\symdef{FUNfromto}[args=2]{\mathbin{\comp:}#1\mathbin{\comp\rightarrow}#2}
-\symdef{FUNfunspace}[args=2]{\comp[#1\mathbin{\comp\rightarrow}#2\comp]}
+\symdef{FUNdom}{\highlight{\textrm{dom}}}
+\symdef{FUNid}[args=1]{\highlight{\textrm{id}}_{#1}}
+\symdef{FUNrange}{\highlight{\textrm{range}}}
+\symdef{FUNcomp}{\mathbin{\highlight\circ}}
+\symdef{FUNrest}{\mathbin{\highlight\restriction}}
+\symdef{FUNim}[args=2]{#1\highlight[#2\highlight]}
+\notation{FUNim}[parens]{#1\highlight(#2\highlight)}
+\notation{FUNim}[star]{#1_{\highlight*}\highlight(#2\highlight)}
+\symdef{FUNpreim}[args=2]{#1^{\highlight{-1}}\highlight[#2\highlight]}
+\notation{FUNpreim}[parens]{#1^{\highlight{-1}}\highlight(#2\highlight)}
+\notation{FUNpreim}[star]{#1^{\highlight*}\highlight(#2\highlight)}
+\symdef{FUNfromto}[args=2]{\mathbin{\highlight:}#1\mathbin{\highlight\rightarrow}#2}
+\symdef{FUNfunspace}[args=2]{\highlight[#1\mathbin{\highlight\rightarrow}#2\highlight]}
 
 \begin{sfragment}{Domain}
   \STEXinvisible{\inlineforthel{Let $\FUNdom(f)$ stand for $\dom(f)$.}}
@@ -159,7 +159,7 @@
     Then $f \eq g$.
   \end{proposition}
 
-  \begin{proposition}
+  \begin{proposition}[forthel,id=FOUNDATIONS_06_7023948574102873]
     Let $A, B$ be classes and $f$ be a map of $A$.
     Assume that $f(a) \SETin B$ for all $a \SETin A$.
     Then $f$ is a map from $A$ to $B$ iff $\FUNrange(f) \SETinclude B$.
