@@ -1,4 +1,12 @@
 \usepackage{xstring}
+\usepackage{hyperref}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  urlcolor=blue
+}
+
 \newcommand\printlicense[3][CcZero]{\section*{License}
   \textcopyright\,#2, #3. This work is licensed under a
   \IfStrEqCase{#1}{
