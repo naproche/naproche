@@ -1,0 +1,3 @@
+id: libraries/meta-inf
+ns: https://naproche.github.io/math/libraries/meta-inf
+narration-base: https://naproche.github.io/math/libraries/meta-inf

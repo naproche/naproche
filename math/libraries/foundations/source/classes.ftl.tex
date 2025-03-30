@@ -3,6 +3,7 @@
 \begin{document}
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Classes]{classes.ftl}
+\importmodule[libraries/meta-inf]{vocabulary.ftl}
 \symdef{eq}{\mathrel{\highlight=}}
 \symdef{neq}{\mathrel{\highlight{\not=}}}
 \symdef{SETin}{\mathrel{\highlight\in}}
@@ -21,8 +22,6 @@
 \symdef{SETdiff}{\mathbin{\highlight\setminus}}
 
 \begin{sfragment}{Equality}
-  \inlineforthel{[synonym agree/-s]}
-
   \begin{convention}[forthel]
     Let $\emph{x\eq y}$ stand for $x$ is equal to $y$.
     Let $x$ and $y$ \emph{agree} stand for $x \eq y$.
@@ -32,8 +31,6 @@
 \end{sfragment}
 
 \begin{sfragment}{Membership}
-  \inlineforthel{[synonym member/-s][synonym belong/-s][synonym contain/-s][synonym lie/-s]}
-
   \begin{convention}[forthel]
     Let $\emph{x\SETin y}$ stand for $x$ is an element of $y$.
     Let $\emph{x\SETnotin y}$ stand for $x$ is not an element of $y$.
@@ -47,8 +44,6 @@
 \end{sfragment}
 
 \begin{sfragment}{Sub- and Superclasses}
-  \inlineforthel{[synonym subclass/-es][synonym superclass/-es][synonym include/-s]}
-
   \begin{definition}[forthel,id=FOUNDATIONS_01_3275578358628352]
     Let $A$ be a class.
     A \emph{subclass of $A$} is a class $B$ such that every element of $B$ is an
@@ -147,8 +142,6 @@
     Let the \emph{unordered pair of $a$ and $b$} stand for $\SETpair{a}{b}$.
   \end{definition}
 
-  \inlineforthel{[synonym pair/-s]}
-
   \begin{definition}[forthel,id=FOUNDATIONS_01_605432672419840]
     An \emph{unordered pair} is a class $A$ such that $A \eq \SETpair{a}{b}$ for some distinct objects $a, b$.
   \end{definition}
@@ -159,8 +152,6 @@
 
     Let the \emph{singleton class of $a$} stand for $\SETsingleton{a}$.
   \end{definition}
-
-  \inlineforthel{[synonym class/-es]}
 
   \begin{definition}[forthel,id=FOUNDATIONS_01_6786618161627136]
     A \emph{singleton class} is a class $A$ such that $A \eq \SETsingleton{a}$ for some object $a$.
@@ -182,8 +173,6 @@
     Let $a, a'$ be objects.
     If $\SETsingleton{a} \eq \SETsingleton{a'}$ then $a \eq a'$.
   \end{corollary}
-
-  \inlineforthel{[synonym element/-s]}
 
   \begin{definition}[forthel,id=FOUNDATIONS_01_29867480293464351]
     Let $A$ be a class.

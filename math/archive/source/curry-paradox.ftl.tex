@@ -15,6 +15,8 @@
 \begin{smodule}{curry-paradox.ftl}
 \maketitle
 
+\importmodule[libraries/meta-inf]{vocabulary.ftl}
+
 \noindent \emph{Curry's Paradox} is a paradox described by Haskell Curry in 
 1942 \cite{Curry1942}.
 It allows the derivation of an arbitrary statement from a self-referential 
@@ -26,8 +28,6 @@ expression that presupposes its own validity.
 untyped $\lambda$-calculus:
 
 \begin{forthel}
-  [synonym expression/-s]
-
   \begin{signature*}
     An expression is a notion.
   \end{signature*}
