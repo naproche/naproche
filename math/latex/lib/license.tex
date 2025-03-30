@@ -7,8 +7,8 @@
   urlcolor=blue
 }
 
-\newcommand\printlicense[3][CcZero]{\section*{License}
-  \textcopyright\,#2, #3. This work is licensed under a
+\newcommand\printlicense[2][CcZero]{\section*{License}
+  \textcopyright\,#2. This work is licensed under a
   \IfStrEqCase{#1}{
     {CcZero}{\href
       {https://creativecommons.org/publicdomain/zero/1.0/}
@@ -48,6 +48,6 @@
   }
   license.
 }
-\newcommand\printcopyright[2]{\section*{Copyright}
-  \textcopyright\,#1, #2.
+\newcommand\printcopyright[1]{\section*{Copyright}
+  \textcopyright\,#1.
 }
