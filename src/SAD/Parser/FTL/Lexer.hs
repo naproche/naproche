@@ -29,7 +29,7 @@ type Lexeme = FTL.Lexeme Position.T
 lex :: Position.T -> Bytes.Bytes -> IO [Lexeme]
 lex pos bytes = do
   text <- pideDecode bytes
-  FTL.runLexer pos text (FTL.initState pos codeBlocks)
+  FTL.runLexer pos text (FTL.initState pos)
 
 -- | Render a list of lexemes.
 renderLexemes :: [Lexeme] -> String

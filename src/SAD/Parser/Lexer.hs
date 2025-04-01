@@ -10,12 +10,10 @@
 
 module SAD.Parser.Lexer where
 
-import FTLex.Base
 import FTLex.Position qualified as Pos
 import FTLex.Message qualified as Msg
 import Data.Text (Text)
 import Data.Text qualified as Text
-import Data.Set qualified as Set
 
 import SAD.Core.Message qualified as Message
 
@@ -50,15 +48,6 @@ instance Msg.Msg Position.T IO where
 
 
 -- * Misc
-
--- | Supported Unicode code blocks
-codeBlocks :: Set.Set UnicodeBlock
-codeBlocks = Set.fromList [
-    BasicLatin,
-    Latin1Supplement,
-    LatinExtendedA,
-    LatinExtendedB
-  ]
 
 -- | Decode a "PIDE-encoded" byte string.
 pideDecode :: Bytes.Bytes -> IO Text
