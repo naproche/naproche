@@ -29,7 +29,7 @@ type Lexeme = TEX.Lexeme Position.T
 lex :: Position.T -> Bytes.Bytes -> IO [Lexeme]
 lex pos bytes = do
   text <- pideDecode bytes
-  TEX.runLexer pos text (TEX.initState pos)
+  TEX.runLexer pos text (TEX.initState TEX.FtlTexMode pos)
 
 -- | Render a list of lexemes.
 renderLexemes :: [Lexeme] -> String
