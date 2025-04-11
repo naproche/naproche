@@ -3,8 +3,8 @@
 \begin{document}
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Concatenation with Cons on the Right-Hand Side]{concatenation-with-cons-on-rhs.ftl}
-\importmodule[libraries/lists]{concatenation-is-associative.ftl}
-\importmodule[libraries/lists]{snoc.ftl}
+\importmodule[libraries/lists]{theorems?concatenation-is-associative.ftl}
+\importmodule[libraries/lists]{definitions?snoc.ftl}
 
 \begin{proposition}[forthel,id=RightConcatConsProp]
   $L \concat (a \cons L') \eq (L \snoc a) \concat L'$ for all lists $L,L'$ and all objects $a$.

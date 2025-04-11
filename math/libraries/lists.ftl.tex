@@ -12,17 +12,23 @@
   \maketitle
   \tableofcontents
   \setsectionlevel{section}
-  \inputref[libraries/lists]{lists.ftl.tex}
-  \inputref[libraries/lists]{length.ftl.tex}
-  \inputref[libraries/lists]{concatenation.ftl.tex}
-  \inputref[libraries/lists]{snoc.ftl.tex}
-  \inputref[libraries/lists]{concatenation-is-associative.ftl.tex}
-  \inputref[libraries/lists]{concatenation-with-nil-on-rhs.ftl.tex}
-  \inputref[libraries/lists]{concatenation-with-cons-on-rhs.ftl.tex}
-  \inputref[libraries/lists]{length-of-concatenation.ftl.tex}
-  \inputref[libraries/lists]{reversion.ftl.tex}
-  \inputref[libraries/lists]{reversion-of-concatenation.ftl.tex}
-  \inputref[libraries/lists]{reversion-is-involution.ftl.tex}
-  \inputref[libraries/lists]{length-of-reversion.ftl.tex}
+  \begin{sfragment}{Types}
+    \inputref[libraries/lists]{types/lists.ftl.tex}
+  \end{sfragment}
+  \begin{sfragment}{Definitions}
+    \inputref[libraries/lists]{definitions/length.ftl.tex}
+    \inputref[libraries/lists]{definitions/concatenation.ftl.tex}
+    \inputref[libraries/lists]{definitions/snoc.ftl.tex}
+    \inputref[libraries/lists]{definitions/reversion.ftl.tex}
+  \end{sfragment}
+  \begin{sfragment}{Theorems}
+    \inputref[libraries/lists]{theorems/concatenation-is-associative.ftl.tex}
+    \inputref[libraries/lists]{theorems/concatenation-with-nil-on-rhs.ftl.tex}
+    \inputref[libraries/lists]{theorems/concatenation-with-cons-on-rhs.ftl.tex}
+    \inputref[libraries/lists]{theorems/length-of-concatenation.ftl.tex}
+    \inputref[libraries/lists]{theorems/reversion-of-concatenation.ftl.tex}
+    \inputref[libraries/lists]{theorems/reversion-is-involution.ftl.tex}
+    \inputref[libraries/lists]{theorems/length-of-reversion.ftl.tex}
+  \end{sfragment}
   \printlicense[CcByNcSa]{Christian Schöner (2024), Marcel Schütz (2024--2025)}
 \end{document}

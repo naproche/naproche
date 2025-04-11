@@ -3,10 +3,10 @@
 \begin{document}
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Reversion of Concatenation]{reversion-of-concatenation.ftl}
-\importmodule[libraries/lists]{concatenation-is-associative.ftl}
-\importmodule[libraries/lists]{concatenation-with-nil-on-rhs.ftl}
-\importmodule[libraries/lists]{reversion.ftl}
-\importmodule[libraries/lists]{snoc.ftl}
+\importmodule[libraries/lists]{theorems?concatenation-is-associative.ftl}
+\importmodule[libraries/lists]{theorems?concatenation-with-nil-on-rhs.ftl}
+\importmodule[libraries/lists]{definitions?reversion.ftl}
+\importmodule[libraries/lists]{definitions?snoc.ftl}
 
 \begin{proposition}[forthel,id=RevOfConcatProp]
   $\rev(L \concat L') \eq \rev(L') \concat \rev(L)$ for any lists $L, L'$.
