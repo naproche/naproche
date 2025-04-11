@@ -4,21 +4,21 @@
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Reversion]{reversion.ftl}
 \importmodule[libraries/lists]{concatenation.ftl}
-\symdef{LISTrev}{\highlight{\textsf{rev}}}
+\symdef{rev}{\highlight{\textsf{rev}}}
 
 \begin{signature}[forthel,id=RevSig]
   Let $L$ be a list.
-  $\emph{\LISTrev(L)}$ is a list.
+  $\emph{\rev(L)}$ is a list.
 \end{signature}
 
 \begin{axiom}[forthel,id=RevOfNilAx]
   Let $L$ be a list.
-  Then $\LISTrev(\LISTlist{}) \eq \LISTlist{}$.
+  Then $\rev(\list{}) \eq \list{}$.
 \end{axiom}
 
 \begin{axiom}[forthel,id=RevOfConsAx]
   Let $a$ be an object and $L$ be a list.
-  Then $\LISTrev(a \LISTcons L) \eq \LISTrev(L) \LISTconcat \LISTlist{a}$.
+  Then $\rev(a \cons L) \eq \rev(L) \concat \list{a}$.
 \end{axiom}
 \end{smodule}
 \end{document}

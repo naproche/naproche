@@ -7,24 +7,24 @@
 \importmodule[libraries/lists]{reversion-of-concatenation.ftl}
 
 \begin{proposition}[forthel,id=RevIsInvolutionProp]
-  $\LISTrev(\LISTrev(L)) \eq L$ for every list $L$.
+  $\rev(\rev(L)) \eq L$ for every list $L$.
 \end{proposition}
 \begin{proof}[forthel,method=induction on $L$]
   Let $L$ be a list.
 
-  \begin{case}{$L \eq \LISTlist{}$.} \end{case}
+  \begin{case}{$L \eq \list{}$.} \end{case}
 
-  \begin{case}{$L \eq a \LISTcons L'$ for some object $a$ and some list $L'$.}
-    Take an object $a$ and a list $L'$ such that $L \eq a \LISTcons L'$.
+  \begin{case}{$L \eq a \cons L'$ for some object $a$ and some list $L'$.}
+    Take an object $a$ and a list $L'$ such that $L \eq a \cons L'$.
     Then $L' \prec L$.
-    Hence $\LISTrev(\LISTrev(L')) \eq L'$.
+    Hence $\rev(\rev(L')) \eq L'$.
     Thus
     \begin{align*}
-      \LISTrev(\LISTrev(L))
-        &\eq \LISTrev(\LISTrev(a \LISTcons L'))\\
-        &\eq \LISTrev(\LISTrev(L') \LISTsnoc a)\\
-        &\eq a \LISTcons \LISTrev(\LISTrev(L'))\\
-        &\eq a \LISTcons L'\\
+      \rev(\rev(L))
+        &\eq \rev(\rev(a \cons L'))\\
+        &\eq \rev(\rev(L') \snoc a)\\
+        &\eq a \cons \rev(\rev(L'))\\
+        &\eq a \cons L'\\
         &\eq L
     \end{align*}.
   \end{case}

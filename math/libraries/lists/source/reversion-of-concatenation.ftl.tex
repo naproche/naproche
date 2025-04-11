@@ -9,43 +9,43 @@
 \importmodule[libraries/lists]{snoc.ftl}
 
 \begin{proposition}[forthel,id=RevOfConcatProp]
-  $\LISTrev(L \LISTconcat L') \eq \LISTrev(L') \LISTconcat \LISTrev(L)$ for any lists $L, L'$.
+  $\rev(L \concat L') \eq \rev(L') \concat \rev(L)$ for any lists $L, L'$.
 \end{proposition}
 \begin{proof}[forthel,method=induction on $L$]
   Let $L,L'$ be lists.
 
-  \begin{case}{$L \eq \LISTlist{}$.} \end{case}
+  \begin{case}{$L \eq \list{}$.} \end{case}
 
-  \begin{case}{$L \eq a \LISTcons L''$ for some object $a$ and some list $L''$.}
-    Take an object $a$ and a list $L''$ such that $L \eq a \LISTcons L''$.
+  \begin{case}{$L \eq a \cons L''$ for some object $a$ and some list $L''$.}
+    Take an object $a$ and a list $L''$ such that $L \eq a \cons L''$.
     Then $L'' \prec L$.
-    Hence $\LISTrev(L'' \LISTconcat L') \eq \LISTrev(L') \LISTconcat \LISTrev(L'')$.
+    Hence $\rev(L'' \concat L') \eq \rev(L') \concat \rev(L'')$.
     Thus
     \begin{align*}
-      \LISTrev(L \LISTconcat L')
-        &\eq \LISTrev((a \LISTcons L'') \LISTconcat L')\\
-        &\eq \LISTrev(a \LISTcons (L'' \LISTconcat L'))\\
-        &\eq \LISTrev(L'' \LISTconcat L') \LISTsnoc a\\
-        &\eq (\LISTrev(L') \LISTconcat \LISTrev(L'')) \LISTsnoc a\\
-        &\eq \LISTrev(L') \LISTconcat (\LISTrev(L'') \LISTsnoc a)\\
-        &\eq \LISTrev(L') \LISTconcat \LISTrev(a \LISTcons L'')\\
-        &\eq \LISTrev(L') \LISTconcat \LISTrev(L)
+      \rev(L \concat L')
+        &\eq \rev((a \cons L'') \concat L')\\
+        &\eq \rev(a \cons (L'' \concat L'))\\
+        &\eq \rev(L'' \concat L') \snoc a\\
+        &\eq (\rev(L') \concat \rev(L'')) \snoc a\\
+        &\eq \rev(L') \concat (\rev(L'') \snoc a)\\
+        &\eq \rev(L') \concat \rev(a \cons L'')\\
+        &\eq \rev(L') \concat \rev(L)
     \end{align*}.
   \end{case}
 \end{proof}
 
 \begin{proposition}[forthel,id=RevOfSnoc]
-  $\LISTrev(L \LISTsnoc a) \eq a \LISTcons \LISTrev(L)$ for any lists $L$ and any object $a$.
+  $\rev(L \snoc a) \eq a \cons \rev(L)$ for any lists $L$ and any object $a$.
 \end{proposition}
 \begin{proof}[forthel]
   Let $L$ be a list and $a$ be an object.
   Then
   \begin{align*}
-    \LISTrev(L \LISTsnoc a)
-      &\eq \LISTrev(L \LISTconcat \LISTlist{a})\\
-      &\eq \LISTrev(\LISTlist{a}) \LISTconcat \LISTrev(L)\\
-      &\eq \LISTlist{a} \LISTconcat \LISTrev(L)\\
-      &\eq a \LISTcons \LISTrev(L)
+    \rev(L \snoc a)
+      &\eq \rev(L \concat \list{a})\\
+      &\eq \rev(\list{a}) \concat \rev(L)\\
+      &\eq \list{a} \concat \rev(L)\\
+      &\eq a \cons \rev(L)
   \end{align*}.
 \end{proof}
 \end{smodule}

@@ -4,11 +4,11 @@
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Snoc]{snoc.ftl}
 \importmodule[libraries/lists]{concatenation-is-associative.ftl}
-\symdef{LISTsnoc}{\mathbin{\highlight{::}}}
+\symdef{snoc}{\mathbin{\highlight{::}}}
 
 \begin{definition}[forthel,id=SnocDef]
   Let $L$ be a list and $a$ be an object.
-  $\emph{L \LISTsnoc a} = L \LISTconcat \LISTlist{a}$.
+  $\emph{L \snoc a} = L \concat \list{a}$.
 \end{definition}
 \end{smodule}
 \end{document}

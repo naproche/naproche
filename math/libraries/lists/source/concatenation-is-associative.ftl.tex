@@ -6,27 +6,27 @@
 \importmodule[libraries/lists]{concatenation.ftl}
 
 \begin{proposition}[forthel,id=ConcatIsAssociativeProp]
-  $L \LISTconcat (L' \LISTconcat L'') \eq (L \LISTconcat L') \LISTconcat L''$ for any lists $L, L', L''$.
+  $L \concat (L' \concat L'') \eq (L \concat L') \concat L''$ for any lists $L, L', L''$.
 \end{proposition}
 \begin{proof}[forthel,method=induction on $L$]
   Let $L$ be a list.
 
-  \begin{case}{$L \eq \LISTlist{}$.} \end{case}
+  \begin{case}{$L \eq \list{}$.} \end{case}
 
-  \begin{case}{$L \eq a \LISTcons L'''$ for some object $a$ and some list $L'''$.}
-    Consider an object $a$ and a list $L'''$ such that $L \eq a \LISTcons L'''$.
+  \begin{case}{$L \eq a \cons L'''$ for some object $a$ and some list $L'''$.}
+    Consider an object $a$ and a list $L'''$ such that $L \eq a \cons L'''$.
     Then $L''' \prec L$.
     Let $L',L''$ be lists.
-    Then $L''' \LISTconcat (L' \LISTconcat L'') \eq (L''' \LISTconcat L') \LISTconcat L''$.
+    Then $L''' \concat (L' \concat L'') \eq (L''' \concat L') \concat L''$.
     Thus
     \begin{align*}
-      L \LISTconcat (L' \LISTconcat L'') 
-        &\eq (a \LISTcons L''') \LISTconcat (L' \LISTconcat L'')\\
-        &\eq a \LISTcons (L''' \LISTconcat (L' \LISTconcat L''))\\
-        &\eq a \LISTcons ((L''' \LISTconcat L') \LISTconcat L'')\\
-        &\eq (a \LISTcons (L''' \LISTconcat L')) \LISTconcat L''\\
-        &\eq ((a \LISTcons L''') \LISTconcat L') \LISTconcat L''\\
-        &\eq (L \LISTconcat L') \LISTconcat L''
+      L \concat (L' \concat L'') 
+        &\eq (a \cons L''') \concat (L' \concat L'')\\
+        &\eq a \cons (L''' \concat (L' \concat L''))\\
+        &\eq a \cons ((L''' \concat L') \concat L'')\\
+        &\eq (a \cons (L''' \concat L')) \concat L''\\
+        &\eq ((a \cons L''') \concat L') \concat L''\\
+        &\eq (L \concat L') \concat L''
     \end{align*}.
   \end{case}
 \end{proof}

@@ -7,27 +7,27 @@
 \importmodule[libraries/lists]{snoc.ftl}
 
 \begin{proposition}[forthel,id=RightConcatConsProp]
-  $L \LISTconcat (a \LISTcons L') \eq (L \LISTsnoc a) \LISTconcat L'$ for all lists $L,L'$ and all objects $a$.
+  $L \concat (a \cons L') \eq (L \snoc a) \concat L'$ for all lists $L,L'$ and all objects $a$.
 \end{proposition}
 \begin{proof}[forthel,method=induction on $L$]
   Let $L,L'$ be lists and $a$ be an object.
 
-  \begin{case}{$L \eq \LISTlist{}$.} \end{case}
+  \begin{case}{$L \eq \list{}$.} \end{case}
 
-  \begin{case}{$L \eq b \LISTcons L''$ for some object $b$ and some list $L''$.}
-    Consider an object $b$ and a list $L''$ such that $L \eq b \LISTcons L''$.
+  \begin{case}{$L \eq b \cons L''$ for some object $b$ and some list $L''$.}
+    Consider an object $b$ and a list $L''$ such that $L \eq b \cons L''$.
     Then $L'' \prec L$.
-    Hence $L'' \LISTconcat (a \LISTcons L') \eq (L'' \LISTsnoc a) \LISTconcat L'$.
+    Hence $L'' \concat (a \cons L') \eq (L'' \snoc a) \concat L'$.
     Thus
     \begin{align*}
-      L \LISTconcat (a \LISTcons L')
-        &\eq (b \LISTcons L'') \LISTconcat (a \LISTcons L')\\
-        &\eq b \LISTcons (L'' \LISTconcat (a \LISTcons L'))\\
-        &\eq b \LISTcons ((L'' \LISTsnoc a) \LISTconcat L')\\
-        &\eq b \LISTcons (L'' \LISTconcat (a \LISTcons L'))\\
-        &\eq (b \LISTcons L'') \LISTconcat (a \LISTcons L')\\
-        &\eq L \LISTconcat (a \LISTcons L')\\
-        &\eq (L \LISTsnoc a) \LISTconcat L'
+      L \concat (a \cons L')
+        &\eq (b \cons L'') \concat (a \cons L')\\
+        &\eq b \cons (L'' \concat (a \cons L'))\\
+        &\eq b \cons ((L'' \snoc a) \concat L')\\
+        &\eq b \cons (L'' \concat (a \cons L'))\\
+        &\eq (b \cons L'') \concat (a \cons L')\\
+        &\eq L \concat (a \cons L')\\
+        &\eq (L \snoc a) \concat L'
     \end{align*}.
   \end{case}
 \end{proof}

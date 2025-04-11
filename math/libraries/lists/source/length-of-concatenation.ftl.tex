@@ -7,27 +7,27 @@
 \importmodule[libraries/lists]{concatenation.ftl}
 
 \begin{proposition}[forthel,id=LengthOfConcatProp]
-  $\LISTlength(L \LISTconcat L') \eq \LISTlength(L) \NATplus \LISTlength(L')$ for all lists $L, L'$.
+  $\length(L \concat L') \eq \length(L) \NATplus \length(L')$ for all lists $L, L'$.
 \end{proposition}
 \begin{proof}[forthel,method=induction on $L$]
   Let $L$ be a list.
 
-  \begin{case}{$L \eq \LISTlist{}$.} \end{case}
+  \begin{case}{$L \eq \list{}$.} \end{case}
 
-  \begin{case}{$L \eq a \LISTcons L''$ for some object $a$ and some list $L''$.}
-    Take an object $a$ and a list $L''$ such that $L \eq a \LISTcons L''$.
+  \begin{case}{$L \eq a \cons L''$ for some object $a$ and some list $L''$.}
+    Take an object $a$ and a list $L''$ such that $L \eq a \cons L''$.
     Then $L'' \prec L$.
-    Hence $\LISTlength(L'' \LISTconcat L') \eq \LISTlength(L'') \NATplus \LISTlength(L')$ for every list $L'$.
+    Hence $\length(L'' \concat L') \eq \length(L'') \NATplus \length(L')$ for every list $L'$.
     Thus
     \begin{align*}
-      \LISTlength(L \LISTconcat L')
-        &\eq \LISTlength((a \LISTcons L'') \LISTconcat L')\\
-        &\eq \LISTlength(a \LISTcons (L'' \LISTconcat L'))\\
-        &\eq \LISTlength(L'' \LISTconcat L') \NATplus \NATone\\
-        &\eq (\LISTlength(L'') \NATplus \LISTlength(L')) \NATplus \NATone\\
-        &\eq (\LISTlength(L'') \NATplus \NATone) \NATplus \LISTlength(L')\\
-        &\eq \LISTlength(a \LISTcons L'') \NATplus \LISTlength(L')\\
-        &\eq \LISTlength(L) \NATplus \LISTlength(L')
+      \length(L \concat L')
+        &\eq \length((a \cons L'') \concat L')\\
+        &\eq \length(a \cons (L'' \concat L'))\\
+        &\eq \length(L'' \concat L') \NATplus \NATone\\
+        &\eq (\length(L'') \NATplus \length(L')) \NATplus \NATone\\
+        &\eq (\length(L'') \NATplus \NATone) \NATplus \length(L')\\
+        &\eq \length(a \cons L'') \NATplus \length(L')\\
+        &\eq \length(L) \NATplus \length(L')
     \end{align*}
     for every list $L'$.
   \end{case}
