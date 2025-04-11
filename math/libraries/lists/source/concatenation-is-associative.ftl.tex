@@ -1,0 +1,34 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Concatenation is Associative]{concatenation-is-associative.ftl}
+\importmodule[libraries/lists]{concatenation.ftl}
+
+\begin{proposition}[forthel,id=ConcatIsAssociativeProp]
+  $L \LISTconcat (L' \LISTconcat L'') \eq (L \LISTconcat L') \LISTconcat L''$ for any lists $L, L', L''$.
+\end{proposition}
+\begin{proof}[forthel,method=induction on $L$]
+  Let $L$ be a list.
+
+  \begin{case}{$L \eq \LISTlist{}$.} \end{case}
+
+  \begin{case}{$L \eq a \LISTcons L'''$ for some object $a$ and some list $L'''$.}
+    Consider an object $a$ and a list $L'''$ such that $L \eq a \LISTcons L'''$.
+    Then $L''' \prec L$.
+    Let $L',L''$ be lists.
+    Then $L''' \LISTconcat (L' \LISTconcat L'') \eq (L''' \LISTconcat L') \LISTconcat L''$.
+    Thus
+    \begin{align*}
+      L \LISTconcat (L' \LISTconcat L'') 
+        &\eq (a \LISTcons L''') \LISTconcat (L' \LISTconcat L'')\\
+        &\eq a \LISTcons (L''' \LISTconcat (L' \LISTconcat L''))\\
+        &\eq a \LISTcons ((L''' \LISTconcat L') \LISTconcat L'')\\
+        &\eq (a \LISTcons (L''' \LISTconcat L')) \LISTconcat L''\\
+        &\eq ((a \LISTcons L''') \LISTconcat L') \LISTconcat L''\\
+        &\eq (L \LISTconcat L') \LISTconcat L''
+    \end{align*}.
+  \end{case}
+\end{proof}
+\end{smodule}
+\end{document}

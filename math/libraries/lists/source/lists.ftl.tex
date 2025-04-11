@@ -4,18 +4,18 @@
 \IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Lists]{lists.ftl}
 \importmodule[libraries/foundations]{classes.ftl}
-\symdef{LISTlist}[args=a,op=[\,]]{\highlight[\argsep{#1}{\highlight,}\highlight]}
-\symdef{LISTcons}[op=::]{\mathbin{\highlight{::}}}
+\symdef{LISTlist}[args=a]{\highlight[\argsep{#1}{\highlight,}\highlight]}
+\symdef{LISTcons}{\mathbin{\highlight{::}}}
 
-\begin{signature}[forthel,id=LISTS_LISTS_4578620297183232]
+\begin{signature}[forthel,id=ListSig]
   A \emph{list} is an object.
 \end{signature}
 
-\begin{signature}[forthel,id=LISTS_LISTS_3703161885818880]
+\begin{signature}[forthel,id=NilSig]
   $\emph{\LISTlist{}}$ is a list.
 \end{signature}
 
-\begin{signature}[forthel,id=LISTS_LISTS_8050301789536256]
+\begin{signature}[forthel,id=ConsSig]
   Let $a$ be an object and $L$ be a list.
   $\emph{a \LISTcons L}$ is a list.
 
@@ -26,12 +26,12 @@
   Let $\emph{\LISTlist{a,b,c}}$ stand for $a \LISTcons \LISTlist{b,c}$.
 \end{signature}
 
-\begin{axiom}[forthel,id=LISTS_LISTS_4512036658964875]
+\begin{axiom}[forthel,id=ListExhaustionAx]
   Let $L$ be a list.
   Then $L \eq \LISTlist{}$ or $L \eq a \LISTcons L'$ for some object $a$ and some list $L'$.
 \end{axiom}
 
-\begin{axiom}[forthel,id=LISTS_LISTS_1021563255448756]
+\begin{axiom}[forthel,id=ListInductionAx]
   Let $a$ be an object and $L$ be a list.
   Then $L \prec a \LISTcons L$.
 \end{axiom}

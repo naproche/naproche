@@ -1,0 +1,33 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Reversion is an Involution]{reversion-is-involution.ftl}
+\importmodule[libraries/lists]{reversion.ftl}
+\importmodule[libraries/lists]{reversion-of-concatenation.ftl}
+
+\begin{proposition}[forthel,id=RevIsInvolutionProp]
+  $\LISTrev(\LISTrev(L)) \eq L$ for every list $L$.
+\end{proposition}
+\begin{proof}[forthel,method=induction on $L$]
+  Let $L$ be a list.
+
+  \begin{case}{$L \eq \LISTlist{}$.} \end{case}
+
+  \begin{case}{$L \eq a \LISTcons L'$ for some object $a$ and some list $L'$.}
+    Take an object $a$ and a list $L'$ such that $L \eq a \LISTcons L'$.
+    Then $L' \prec L$.
+    Hence $\LISTrev(\LISTrev(L')) \eq L'$.
+    Thus
+    \begin{align*}
+      \LISTrev(\LISTrev(L))
+        &\eq \LISTrev(\LISTrev(a \LISTcons L'))\\
+        &\eq \LISTrev(\LISTrev(L') \LISTsnoc a)\\
+        &\eq a \LISTcons \LISTrev(\LISTrev(L'))\\
+        &\eq a \LISTcons L'\\
+        &\eq L
+    \end{align*}.
+  \end{case}
+\end{proof}
+\end{smodule}
+\end{document}

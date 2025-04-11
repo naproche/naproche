@@ -1,0 +1,14 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Snoc]{snoc.ftl}
+\importmodule[libraries/lists]{concatenation-is-associative.ftl}
+\symdef{LISTsnoc}{\mathbin{\highlight{::}}}
+
+\begin{definition}[forthel,id=SnocDef]
+  Let $L$ be a list and $a$ be an object.
+  $\emph{L \LISTsnoc a} = L \LISTconcat \LISTlist{a}$.
+\end{definition}
+\end{smodule}
+\end{document}

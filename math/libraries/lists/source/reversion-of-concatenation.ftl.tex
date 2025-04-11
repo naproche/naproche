@@ -1,0 +1,52 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Reversion of Concatenation]{reversion-of-concatenation.ftl}
+\importmodule[libraries/lists]{concatenation-is-associative.ftl}
+\importmodule[libraries/lists]{concatenation-with-nil-on-rhs.ftl}
+\importmodule[libraries/lists]{reversion.ftl}
+\importmodule[libraries/lists]{snoc.ftl}
+
+\begin{proposition}[forthel,id=RevOfConcatProp]
+  $\LISTrev(L \LISTconcat L') \eq \LISTrev(L') \LISTconcat \LISTrev(L)$ for any lists $L, L'$.
+\end{proposition}
+\begin{proof}[forthel,method=induction on $L$]
+  Let $L,L'$ be lists.
+
+  \begin{case}{$L \eq \LISTlist{}$.} \end{case}
+
+  \begin{case}{$L \eq a \LISTcons L''$ for some object $a$ and some list $L''$.}
+    Take an object $a$ and a list $L''$ such that $L \eq a \LISTcons L''$.
+    Then $L'' \prec L$.
+    Hence $\LISTrev(L'' \LISTconcat L') \eq \LISTrev(L') \LISTconcat \LISTrev(L'')$.
+    Thus
+    \begin{align*}
+      \LISTrev(L \LISTconcat L')
+        &\eq \LISTrev((a \LISTcons L'') \LISTconcat L')\\
+        &\eq \LISTrev(a \LISTcons (L'' \LISTconcat L'))\\
+        &\eq \LISTrev(L'' \LISTconcat L') \LISTsnoc a\\
+        &\eq (\LISTrev(L') \LISTconcat \LISTrev(L'')) \LISTsnoc a\\
+        &\eq \LISTrev(L') \LISTconcat (\LISTrev(L'') \LISTsnoc a)\\
+        &\eq \LISTrev(L') \LISTconcat \LISTrev(a \LISTcons L'')\\
+        &\eq \LISTrev(L') \LISTconcat \LISTrev(L)
+    \end{align*}.
+  \end{case}
+\end{proof}
+
+\begin{proposition}[forthel,id=RevOfSnoc]
+  $\LISTrev(L \LISTsnoc a) \eq a \LISTcons \LISTrev(L)$ for any lists $L$ and any object $a$.
+\end{proposition}
+\begin{proof}[forthel]
+  Let $L$ be a list and $a$ be an object.
+  Then
+  \begin{align*}
+    \LISTrev(L \LISTsnoc a)
+      &\eq \LISTrev(L \LISTconcat \LISTlist{a})\\
+      &\eq \LISTrev(\LISTlist{a}) \LISTconcat \LISTrev(L)\\
+      &\eq \LISTlist{a} \LISTconcat \LISTrev(L)\\
+      &\eq a \LISTcons \LISTrev(L)
+  \end{align*}.
+\end{proof}
+\end{smodule}
+\end{document}

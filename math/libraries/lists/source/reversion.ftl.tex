@@ -6,71 +6,19 @@
 \importmodule[libraries/lists]{concatenation.ftl}
 \symdef{LISTrev}{\highlight{\textsf{rev}}}
 
-\begin{signature}[forthel,id=LISTS_REV_4578620297183232]
+\begin{signature}[forthel,id=RevSig]
   Let $L$ be a list.
   $\emph{\LISTrev(L)}$ is a list.
 \end{signature}
 
-\begin{axiom}[forthel,id=LISTS_REV_3703161885818880]
+\begin{axiom}[forthel,id=RevOfNilAx]
   Let $L$ be a list.
   Then $\LISTrev(\LISTlist{}) \eq \LISTlist{}$.
 \end{axiom}
 
-\begin{axiom}[forthel,id=LISTS_REV_8050301789536256]
+\begin{axiom}[forthel,id=RevOfConsAx]
   Let $a$ be an object and $L$ be a list.
   Then $\LISTrev(a \LISTcons L) \eq \LISTrev(L) \LISTconcat \LISTlist{a}$.
 \end{axiom}
-
-\begin{proposition}[forthel,id=LISTS_REV_4512036658964875]
-  $\LISTrev(L \LISTconcat L') \eq \LISTrev(L') \LISTconcat \LISTrev(L)$ for any lists $L, L'$.
-\end{proposition}
-\begin{proof}[forthel,method=induction on $L$]
-  Let $L,L'$ be lists.
-
-  \begin{case}{$L \eq \LISTlist{}$.} \end{case}
-
-  \begin{case}{$L \eq a \LISTcons L''$ for some object $a$ and some list $L''$.}
-    Take an object $a$ and a list $L''$ such that $L \eq a \LISTcons L''$.
-    Then $L'' \prec L$.
-    Hence $\LISTrev(L'' \LISTconcat L') \eq \LISTrev(L') \LISTconcat \LISTrev(L'')$.
-    Thus
-    \begin{align*}
-      \LISTrev(L \LISTconcat L')
-        &\eq \LISTrev((a \LISTcons L'') \LISTconcat L')\\
-        &\eq \LISTrev(a \LISTcons (L'' \LISTconcat L'))\\
-        &\eq \LISTrev(L'' \LISTconcat L') \LISTconcat \LISTlist{a}\\
-        &\eq (\LISTrev(L') \LISTconcat \LISTrev(L'')) \LISTconcat \LISTlist{a}\\
-        &\eq \LISTrev(L') \LISTconcat (\LISTrev(L'') \LISTconcat \LISTlist{a})\\
-        &\eq \LISTrev(L') \LISTconcat \LISTrev(a \LISTcons L'')\\
-        &\eq \LISTrev(L') \LISTconcat \LISTrev(L)
-    \end{align*}.
-    Indeed $(\LISTrev(L') \LISTconcat \LISTrev(L'')) \LISTconcat \LISTlist{a} \eq \LISTrev(L') \LISTconcat (\LISTrev(L'') \LISTconcat \LISTlist{a})$ (by \printref{LISTS_CONCAT_1021563255448756}).
-  \end{case}
-\end{proof}
-
-\begin{proposition}[forthel,id=LISTS_REV_1021563255448756]
-  $\LISTrev(\LISTrev(L)) \eq L$ for every list $L$.
-\end{proposition}
-\begin{proof}[forthel,method=induction on $L$]
-  Let $L$ be a list.
-
-  \begin{case}{$L \eq \LISTlist{}$.}\end{case}
-
-  \begin{case}{$L \eq a \LISTcons L'$ for some object $a$ and some list $L'$.}
-    Take an object $a$ and a list $L'$ such that $L \eq a \LISTcons L'$.
-    Then $L' \prec L$.
-    Hence $\LISTrev(\LISTrev(L')) \eq L'$.
-    Thus
-    \begin{align*}
-      \LISTrev(\LISTrev(L))
-        &\eq \LISTrev(\LISTrev(a \LISTcons L'))\\
-        &\eq \LISTrev(\LISTrev(L') \LISTconcat \LISTlist{a})\\
-        &\eq \LISTrev(\LISTlist{a}) \LISTconcat \LISTrev(\LISTrev(L'))\\
-        &\eq a \LISTcons \LISTrev(\LISTrev(L'))\\
-        &\eq a \LISTcons L'\\
-        &\eq L
-    \end{align*}.
-  \end{case}
-\end{proof}
 \end{smodule}
 \end{document}

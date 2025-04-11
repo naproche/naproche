@@ -1,0 +1,31 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Concatenation with Nil on the Right-Hand Side]{concatenation-with-nil-on-rhs.ftl}
+\importmodule[libraries/lists]{concatenation.ftl}
+
+\begin{proposition}[forthel,id=RightConcatNilProp]
+  $L \LISTconcat \LISTlist{} \eq L$ for every list $L$.
+\end{proposition}
+\begin{proof}[forthel,method=induction on $L$]
+  Let $L$ be a list.
+
+  \begin{case}{$L \eq \LISTlist{}$.} \end{case}
+  
+  \begin{case}{$L \eq a \LISTcons L'$ for some object $a$ and some list $L'$.}
+    Consider an object $a$ and a list $L'$ such that $L \eq a \LISTcons L'$.
+    Then $L' \prec L$.
+    Hence $L' \LISTconcat \LISTlist{} \eq L'$.
+    Thus
+    \begin{align*}
+      L \LISTconcat \LISTlist{}
+        &\eq (a \LISTcons L') \LISTconcat \LISTlist{}\\
+        &\eq a \LISTcons (L' \LISTconcat \LISTlist{})\\
+        &\eq a \LISTcons L'\\
+        &\eq L
+    \end{align*}.
+  \end{case}
+\end{proof}
+\end{smodule}
+\end{document}
