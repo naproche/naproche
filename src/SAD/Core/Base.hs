@@ -366,7 +366,8 @@ initGuards = foldr (`DisTree.insert` True) DisTree.empty [
 initContext :: [Context]
 initContext = [
     setContext,
-    functionContext,
+    functionContext1,
+    functionContext2,
     domainContext,
     elementContext,
     applicationContext,
@@ -376,11 +377,13 @@ initContext = [
 makeInitContext :: Formula -> Context
 makeInitContext f = Context f [makeBlock f [] Block.Definition "" [] []] []
 
-setContext, functionContext, domainContext, elementContext, applicationContext, pairContext :: Context
+setContext, functionContext1, functionContext2, domainContext, elementContext, applicationContext, pairContext :: Context
 setContext = makeInitContext $
   mkAll (VarHole "0") (mkSet v0 `Iff` (mkClass v0 `And` mkObject v0))
-functionContext = makeInitContext $
+functionContext1 = makeInitContext $
   mkAll (VarHole "0") (mkFunction v0 `Iff` (mkMap v0 `And` mkObject v0))
+functionContext2 = makeInitContext $
+  mkAll (VarHole "0") ((mkMap v0 `And` mkSet (mkDom v0)) `Imp` mkFunction v0)
 domainContext = makeInitContext $
   mkAll (VarHole "0") (mkMap v0 `Imp` mkClass (mkDom v0))
 elementContext = makeInitContext $

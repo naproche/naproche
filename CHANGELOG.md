@@ -32,6 +32,12 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
   * **New:** Isabelle symbols (e.g. `\<in>`) are now allowed in ForTheL texts.
 
 
+### Changes on the Naproche Ontology
+
+  * **New:** The axiom that every map with a set-sized domain is a function that
+    has been provided by the libraries is now hard-coded in Naproche.
+
+
 ### Misc
 
   * **Removed:** The file `CONTRIBUTING.md` was removed. Its content is now
