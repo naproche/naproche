@@ -217,6 +217,12 @@ sed -i "s|</style>|</style>\n    <link rel=\"stylesheet\" href=\"$(isabelle gete
 ```
 
 
+## Wiki
+
+Have a look at the [Naproche Wiki](https://github.com/naproche/naproche/wiki)
+for more information on how to contribute to or develop Naproche.
+
+
 ## Changelog
 
 See [CHANGELOG.md](CHAMGELOG.md) for a changelog of Naproche.
@@ -232,7 +238,6 @@ details.
 
 Naproche is based on the [System for Automated Deduction (SAD)][sad] by
 [Andrei Paskevich][andrei-paskevich].
-You can find more resources in our [CONTRIBUTING.md](CONTRIBUTING.md).
 
 
 [isabelle]: <https://isabelle.in.tum.de/>

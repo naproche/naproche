@@ -32,6 +32,12 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
   * **New:** Isabelle symbols (e.g. `\<in>`) are now allowed in ForTheL texts.
 
 
+### Misc
+
+  * **Removed:** The file `CONTRIBUTING.md` was removed. Its content is now
+  available in the [Naproche Wiki](https://github.com/naproche/naproche/wiki).
+
+
 --------------------------------------------------------------------------------
 
 ## naproche-20250328 (Isabelle_Naproche-20250328)
