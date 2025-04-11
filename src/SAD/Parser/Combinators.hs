@@ -156,6 +156,13 @@ texEnd :: Parser st a -> Parser st a
 texEnd = texCommandWithArg "end"
 
 
+-- ** Isabelle symbols
+
+-- | @isabelleSymbol name@ parses @"\\<" <name> ">"@.
+isabelleSymbol :: Text -> Parser st ()
+isabelleSymbol name = label ("\"\\<" <> name <> ">\"") $ token ("\\<" <> name <> ">")
+
+
 -- ** Brackets
 
 -- | @parenthesised p@ parses @"(" <p> ")".

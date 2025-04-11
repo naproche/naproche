@@ -70,6 +70,7 @@ filterTokens tokens warnings = do
 data Error =
     NestedForthel Position.T
   | Unexpected Position.T Text Text
+  | InvalidIsabelleSymbol Position.T Text
   deriving (Eq, Ord)
 
 -- | Turn an error into a located error 
@@ -79,6 +80,9 @@ makeErrMsg (NestedForthel pos) =
   in (msg, pos)
 makeErrMsg (Unexpected pos unexp exp) =
   let msg = "Unexpected " <> unexp <> ". Expected " <> exp <> "."
+  in (msg, pos)
+makeErrMsg (InvalidIsabelleSymbol pos text) =
+  let msg = "Invalid Isabelle symbol " <> text <> "."
   in (msg, pos)
 
 
@@ -126,7 +130,8 @@ token = choice [
     anyControlWordExcept ["begin", "end"] >>= skipOutsideForthel',
     anyControlSymbol >>= skipOutsideForthel',
     anyWord >>= skipOutsideForthel',
-    symbol >>= skipOutsideForthel
+    symbol >>= skipOutsideForthel,
+    isabelleSymbol >>= skipOutsideForthel
   ]
 
 -- | Parse a space.
@@ -179,6 +184,18 @@ symbol = do
       ActiveCat
     ]
   return (tokens, [])
+
+-- | Parse a single symbol.
+isabelleSymbol :: Tokenizer ([Token], [Warning])
+isabelleSymbol = do
+  isabelleSymbolLexeme <- satisfy isIsabelleSymbolLexeme
+  let identifier = isabelleSymbolContent isabelleSymbolLexeme
+      text = "\\<" <> identifier <> ">"
+      pos = sourcePos isabelleSymbolLexeme
+      token = Token text pos
+  unless (identifier `elem` isabelleSymbols) $
+    customFailure (InvalidIsabelleSymbol pos text)
+  return ([token], [])
 
 -- | Parse a TeX group (depending on a parser @p@ for the content of the group).
 -- If we are currently inside a ForTheL group, the tokens given by the

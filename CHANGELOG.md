@@ -27,6 +27,15 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
 
 ## Current development version
 
+### Changes on ForTheL
+
+  * **New:** Isabelle symbols (e.g. `\<in>`) are now allowed in ForTheL texts.
+
+
+--------------------------------------------------------------------------------
+
+## naproche-20250328 (Isabelle_Naproche-20250328)
+
 ### Changes on the parser
 
   * **Changed:** A separate lexing stage was added to the parser before its

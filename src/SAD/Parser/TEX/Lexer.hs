@@ -21,6 +21,7 @@ import SAD.Helpers (failureMessage)
 
 import Isabelle.Position qualified as Position
 import Isabelle.Bytes qualified as Bytes
+import Isabelle.Library qualified as Library
 
 
 type Lexeme = TEX.Lexeme Position.T
@@ -28,7 +29,7 @@ type Lexeme = TEX.Lexeme Position.T
 -- | @lexTex pos text@ lexes a TEX document @text@ with initial position @pos@.
 lex :: Position.T -> Bytes.Bytes -> IO [Lexeme]
 lex pos bytes = do
-  text <- pideDecode bytes
+  let text = Library.make_text bytes
   TEX.runLexer pos text (TEX.initState TEX.FtlTexMode pos)
 
 -- | Render a list of lexemes.
@@ -68,6 +69,11 @@ renderLexeme (TEX.Skipped sourceText sourcePos) =
   renderPosition sourcePos
 renderLexeme (TEX.Comment content sourceText sourcePos) =
   "Comment:\n" ++
+  renderContent content ++ "\n" ++
+  renderSourceText sourceText ++ "\n" ++
+  renderPosition sourcePos
+renderLexeme (TEX.IsabelleSymbol content sourceText sourcePos) =
+  "Isabelle Symbol:\n" ++
   renderContent content ++ "\n" ++
   renderSourceText sourceText ++ "\n" ++
   renderPosition sourcePos

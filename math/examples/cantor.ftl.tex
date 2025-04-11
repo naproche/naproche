@@ -1,9 +1,10 @@
 \documentclass{article}
 \usepackage{lang/naproche}
+\usepackage{lang/isabelle-naproche}
 
 \title{Cantor's Theorem}
-\author{Steffen Frerix}
-\date{2018}
+\author{Steffen Frerix (2018), Marcel Schütz (2021)}
+\date{}
 
 \begin{document}
 \pagenumbering{gobble}
@@ -34,7 +35,7 @@ functions and the notion of powerset.
 
   \begin{definition*}
     Let $f$ be a function and $Y$ be a set.
-    $f$ surjects onto $Y$ iff $Y = \class{f(x) | x \in \dom(f)}$.
+    $f$ surjects onto $Y$ iff $Y = \class{f(x) | x \<in> \dom(f)}$.
   \end{definition*}
 
   Let a surjective function from $X$ to $Y$ stand for a function of $X$ that
@@ -60,10 +61,9 @@ On this basis Cantor's theorem and its proof can be formalized as follows.
     Assume the contrary.
     Take a surjective function $f$ from $M$ to the powerset of $M$.
     The value of $f$ at any element of $M$ is a set.
-    Define \[ N = \class{x \in M | x \text{ is not an element of } f(x)}. \]
-    $N$ is a subset of $M$.
-    Consider an element $z$ of $M$ such that $f(z) = N$.
-    Then \[ z \in N \iff z \notin f(z) = N. \]
+    Define \[ N = \{x \<in> M | x \<notin> f(x)\}. \]
+    Consider a $z \<in> M$ such that $f(z) = N$.
+    Then \[ z \<in> N \<Longleftrightarrow> z \<notin> f(z) = N. \]
     Contradiction.
   \end{proof}
 \end{forthel}

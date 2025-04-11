@@ -100,7 +100,12 @@ data FState = FState {
 --  * @"=" ...@ (notion expression)
 --  * @... "=" ...@ (predicate expression)
 --  * @"(" ... "," ... ")"@ (function expression)
---  * @"...(...)@" (function expression)
+--  * @... "(" ... ")"@ (function expression)
+--  * @... "\<noteq>" ...@ (predicate expression)
+--  * @... "\<in>" ...@ (predicate expression)
+--  * @... "\<notin>" ...@ (predicate expression)
+--  * @"\<in>" ...@ (notion expression)
+--  * @... "\<prec>" ...@ (predicate expression)
 --
 initFState :: Program.Context -> FState
 initFState = FState
@@ -121,8 +126,17 @@ initFState = FState
         mathObjectNotion,
         elementOfNotion
       ]
-    primSymbNotions = [equalSymbNotion]
-    primInfixPredicates = [equalityPredicate]
+    primSymbNotions = [
+        equalSymbNotion,
+        isabelleElementOfSymbNotion
+      ]
+    primInfixPredicates = [
+        equalityPredicate,
+        isabelleEqualityPredicate,
+        isabelleInPredicate,
+        isabelleNotinPredicate,
+        isabelleInductionPredicate
+      ]
     circFunctions = [pairFunction]
     rightFunctions = [applicationFunction]
 
@@ -152,6 +166,16 @@ initFState = FState
     pairFunction = ([Symbol "(", Vr, Symbol ",", Vr, Symbol ")"], \(x:y:_) -> mkPair x y)
     -- "f(x)"
     applicationFunction = ([Symbol "(", Vr, Symbol ")"], \(f:x:_) -> mkApp f x)
+    -- "x \<noteq> y"
+    isabelleEqualityPredicate = ([Symbol "\\<neq>"], mkTrm EqualityId TermEquality)
+    -- "x \<in> X"
+    isabelleInPredicate = ([Symbol "\\<in>"], \(x:m:_) -> mkElem x m)
+    -- "x \<notin> X"
+    isabelleNotinPredicate = ([Symbol "\\<notin>"], \(x:m:_) -> Not $ mkElem x m)
+    -- "\<in> X"
+    isabelleElementOfSymbNotion = ([Symbol "\\<in>", Vr], \(x:m:_) -> mkElem x m)
+    -- "x \<prec> y"
+    isabelleInductionPredicate = ([Symbol "\\<prec>"], mkTrm LessId TermLess)
 
 
 -- | Add primitive expressions to the state (without creating duplicates)

@@ -21,6 +21,8 @@ module SAD.Parser.Token (
   handleError,
   unknownError,
 
+  isabelleSymbols,
+
   tokensRange,
   tokensPos,
   tokensText,
@@ -130,6 +132,93 @@ fancyError errorHandler err = case err of
   ErrorFail{} -> unknownError
   ErrorIndentation{} -> unknownError
   ErrorCustom err -> errorHandler err
+
+
+-- * Isabelle Symbols
+
+-- | Identifiers of "Isabelle symbols" (e.g. @\<in>@).
+isabelleSymbols :: [Text]
+isabelleSymbols = [
+    -- digit:
+    "zero", "one", "two", "three", "four", "five", "six", "seven", "eight",
+    "nine", "onequarter", "onehalf", "threequarters",
+    -- letter:
+    "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
+    "P", "Q", "R", "S",  "T", "U", "V", "W", "X", "Y", "Z",
+    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o",
+    "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+    "AA", "BB", "CC", "DD", "EE", "FF", "GG", "HH", "II", "JJ", "KK", "LL",
+    "MM", "NN", "OO", "PP", "QQ", "RR", "SS", "TT", "UU", "VV", "WW", "XX",
+    "YY", "ZZ",
+    "aa", "bb", "cc", "dd", "ee", "ff", "gg", "hh", "ii", "jj", "kk", "ll",
+    "mm", "nn", "oo", "pp", "qq", "rr", "ss", "tt", "uu", "vv", "ww", "xx",
+    "yy", "zz",
+    "alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta",
+    "iota", "kappa", "lambda", "mu", "nu", "xi", "pi", "rho", "sigma", "tau",
+    "upsilon", "phi", "chi", "psi", "omega",
+    "Gamma", "Delta", "Theta", "Lambda", "Xi", "Pi", "Sigma", "Upsilon", "Phi",
+    "Psi", "Omega",
+    "bbbA", "bool", "complex", "bbbD", "bbbE", "bbbF", "bbbG", "bbbH", "bbbI",
+    "bbbJ", "bbbK", "bbbL", "bbbM", "nat", "bbbO", "bbbP", "rat", "real",
+    "bbbS", "bbbT", "bbbU", "bbbV", "bbbW", "bbbX", "bbbY","int",
+    -- arrow:
+    "leftarrow", "longleftarrow", "longlongleftarrow", "longlonglongleftarrow",
+    "rightarrow", "longrightarrow", "longlongrightarrow",
+    "longlonglongrightarrow", "Leftarrow", "Longleftarrow", "Lleftarrow",
+    "Rightarrow", "Longrightarrow", "Rrightarrow", "leftrightarrow",
+    "longleftrightarrow", "Leftrightarrow", "Longleftrightarrow", "mapsto",
+    "longmapsto", "midarrow", "Midarrow", "hookleftarrow", "hookrightarrow",
+    "leftharpoondown", "rightharpoondown", "leftharpoonup", "rightharpoonup",
+    "rightleftharpoons", "leadsto", "downharpoonleft", "downharpoonright",
+    "upharpoonleft", "upharpoonright", "restriction", "up", "Up", "down",
+    "Down", "updown", "Updown",
+    -- punctuation:
+    "Colon", "bar", "bbar", "langle", "rangle", "llangle", "rrangle", "lceil",
+    "rceil", "lfloor", "rfloor", "lparr", "rparr", "lbrakk", "rbrakk", "lbrace",
+    "rbrace", "lblot", "rblot", "guillemotleft", "guillemotright", "dots",
+    "cdots", "hyphen", "sqdot", "open", "close",
+    -- logic:
+    "bottom", "top", "and", "And", "or", "Or", "forall", "exists", "nexists",
+    "not", "circle", "box", "diamond",
+    -- relation:
+    "turnstile", "Turnstile", "tturnstile", "TTurnstile", "stileturn", "surd",
+    "le", "ge", "lless", "ggreater", "lesssim", "greatersim", "lessapprox",
+    "greaterapprox", "in", "notin", "subset", "supset", "subseteq", "supseteq",
+    "sqsubset", "sqsupset", "sqsubseteq", "sqsupseteq", "noteq", "sim", "doteq",
+    "simeq", "approx", "asymp", "cong", "smile", "equiv", "frown", "prec",
+    "succ", "preceq", "succeq", "parallel", "Parallel", "interleave", "sslash",
+    "lhd", "rhd", "unlhd", "unrhd", "triangleleft", "triangleright", "triangle",
+    "triangleq", "wrong",
+    -- operator:
+    "diamondop", "inter", "Inter", "union", "Union", "squnion", "Squnion",
+    "sqinter", "Sqinter", "setminus", "propto", "uplus", "Uplus", "plusminus",
+    "minusplus", "times", "div", "cdot", "star", "bullet", "circ", "oplus",
+    "Oplus", "otimes", "Otimes", "odot", "Odot", "ominus", "oslash", "Sum",
+    "Prod", "Coprod", "integral", "ointegral", "inverse", "amalg", "mho",
+    "bind", "then",
+    -- unsorted:
+    "Join", "bowtie", "dagger", "ddagger", "infinity", "clubsuit",
+    "diamondsuit", "heartsuit", "spadesuit", "aleph", "emptyset", "nabla",
+    "partial", "flat", "natural", "angle", "copyright", "registered",
+    "ordfeminine", "ordmasculine", "section", "paragraph", "exclamdown",
+    "questiondown", "euro", "pounds", "yen", "cent", "currency", "degree",
+    "lozenge", "wp", "acute", "index", "dieresis", "cedilla", "hungarumlaut",
+    "some", "hole", "newline", "checkmark", "crossmark", "^here", "^undefined",
+    -- z-notation:
+    "sharp", "Zcomp", "Zinj", "Zpinj", "Zfinj", "Zsurj", "Zpsurj", "Zbij",
+    "Zpfun", "Zffun", "Zdres", "Zndres", "Zrres", "Znrres", "Zspot", "Zsemi",
+    "Zproject", "Ztypecolon", "Zhide", "Zcat", "Zinbag", "Zprime",
+    -- document:
+    "comment", "^cancel", "^marker", "^noindent", "^smallskip", "^medskip",
+    "^bigskip", "^item", "^enum", "^descr", "^footnote", "^verbatim",
+    "^theory_text", "^emph", "^bold",
+    -- control:
+    "^sub", "^sup",
+    -- control block:
+    "^bsub", "^esub", "^bsup", "^esup",
+    -- icon:
+    "^file", "^dir", "^url", "^doc", "^action"
+  ]
 
 
 -- * Legacy Dependencies

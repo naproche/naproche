@@ -126,14 +126,13 @@ word = satisfy $ \tk -> Text.all isAsciiLetter tk
 digit :: Parser st Text
 digit = satisfy (\tk -> Text.length tk == 1 && isAsciiDigit (Text.head tk))
 
--- | Parse a symbolic token, i.e. a TeX command or a single symbolic character
+-- | Parse a symbolic token, i.e. a TeX command, an Isabelle symbol or a single
+-- symbolic character.
 symb :: Parser st Text
 symb = tokenPrim $ \tok ->
   let t = showToken tok
   in case Text.uncons t of
-    Just ('\\', rest)
-      | Text.all isAsciiLetter rest -> Just t
-      | Text.length rest == 1 && Text.all isAsciiSymbol rest -> Just t
+    Just ('\\', rest) -> Just t
     Just (c, "") | isAsciiSymbol c && not (isAsciiPeriod c) -> Just t
     _ -> Nothing
 

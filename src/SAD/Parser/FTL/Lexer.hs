@@ -21,6 +21,7 @@ import SAD.Helpers (failureMessage)
 
 import Isabelle.Position qualified as Position
 import Isabelle.Bytes qualified as Bytes
+import Isabelle.Library qualified as Library
 
 
 type Lexeme = FTL.Lexeme Position.T
@@ -28,7 +29,7 @@ type Lexeme = FTL.Lexeme Position.T
 -- | @lex pos text@ lexes an FTL document @text@ with initial position @pos@.
 lex :: Position.T -> Bytes.Bytes -> IO [Lexeme]
 lex pos bytes = do
-  text <- pideDecode bytes
+  let text = Library.make_text bytes
   FTL.runLexer pos text (FTL.initState pos)
 
 -- | Render a list of lexemes.
@@ -53,6 +54,11 @@ renderLexeme (FTL.Space sourceText sourcePos) =
   renderPosition sourcePos
 renderLexeme (FTL.Comment content sourceText sourcePos) =
   "Comment:\n" ++
+  renderContent content ++ "\n" ++
+  renderSourceText sourceText ++ "\n" ++
+  renderPosition sourcePos
+renderLexeme (FTL.IsabelleSymbol content sourceText sourcePos) =
+  "Isabelle symbol:\n" ++
   renderContent content ++ "\n" ++
   renderSourceText sourceText ++ "\n" ++
   renderPosition sourcePos

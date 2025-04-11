@@ -337,13 +337,13 @@ symbolicFormula  = label "a symbolic formula" $ biimplication
 
     binary op p f = optLL1 f $ fmap (op f) p
 
-    symbolicIff = symbol "<=>" <|> token "\\iff"
-    symbolicImp = symbol "=>" <|> token "\\implies"
-    symbolicOr = symbol "\\/" <|> token "\\vee"
-    symbolicAnd = symbol "/\\" <|> token "\\wedge"
-    symbolicAll = token' "forall" <|> token "\\forall"
-    symbolicExists = token' "exists" <|> token "\\exists"
-    symbolicNot = token' "not" <|> token "\\neg"
+    symbolicIff = symbol "<=>" <|> texCommand "iff" <|> isabelleSymbol "Longleftrightarrow"
+    symbolicImp = symbol "=>" <|> texCommand "implies" <|> isabelleSymbol "Longrightarrow"
+    symbolicOr = symbol "\\/" <|> texCommand "vee" <|> isabelleSymbol "or"
+    symbolicAnd = symbol "/\\" <|> texCommand "wedge" <|> isabelleSymbol "and"
+    symbolicAll = token' "forall" <|> texCommand "forall" <|> isabelleSymbol "forall"
+    symbolicExists = token' "exists" <|> texCommand "exists" <|> isabelleSymbol "exists"
+    symbolicNot = token' "not" <|> texCommand "neg" <|> isabelleSymbol "not"
 
     atomic = relation -|- parenthesised statement
       where
@@ -510,7 +510,7 @@ symbClassNotation = texClass </> cndClass </> finiteSet
 
     classSep = do
       t <- sTerm
-      token' "in" <|> texCommand "in"
+      token' "in" <|> texCommand "in" <|> isabelleSymbol "in"
       clssTrm <- (Left <$> sTerm) </> (Right <$> symbClassNotation)
       case clssTrm of
         Left s -> pure (id, flip mkElem s, t, \v -> mkClass v `And` (mkSet s `Imp` mkSet v))

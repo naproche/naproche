@@ -1,0 +1,1371 @@
+\RequirePackage[T1]{fontenc}
+\RequirePackage{amsmath}
+\RequirePackage{amsfonts}
+\RequirePackage{amssymb}
+\RequirePackage{xparse}
+\RequirePackage{xstring}
+\RequirePackage{mathabx}
+\RequirePackage{stmaryrd}
+\RequirePackage{textcomp}
+
+\makeatletter
+
+\newcommand\@IsabelleSymbolUndefined[2]{%
+  \texttt{\char`\\<#1>}%
+  \PackageWarningNoLine{isabelle-naproche}{%
+    No non-verbatim representation\MessageBreak
+    for Isabelle symbol\MessageBreak
+    "\<#1>"\MessageBreak
+    available. Consider redefining\MessageBreak
+    "\protect#2"\MessageBreak
+    to provide one%
+  }%
+}
+
+\newcommand\@IsabelleCaretSymbolUndefined[2]{%
+  \texttt{\char`\\<\char`^#1>}%
+  \PackageWarningNoLine{isabelle-naproche}{%
+    No non-verbatim representation\MessageBreak
+    for Isabelle symbol\MessageBreak
+    "\<^#1>"\MessageBreak
+    available. Consider redefining\MessageBreak
+    "\protect#2"\MessageBreak
+    to provide one%
+  }%
+}
+
+\newcommand\@InvalidIsabelleSymbol[1]{%
+  \PackageError{isabelle-naproche}{Invalid Isabelle symbol "\<#1>"}{%
+    Only the following Isabelle symbols are allowed:\MessageBreak
+    \<zero>\MessageBreak
+    \<one>\MessageBreak
+    \<two>\MessageBreak
+    \<three>\MessageBreak
+    \<four>\MessageBreak
+    \<five>\MessageBreak
+    \<six>\MessageBreak
+    \<seven>\MessageBreak
+    \<eight>\MessageBreak
+    \<nine>\MessageBreak
+    \<A>\MessageBreak
+    \<B>\MessageBreak
+    \<C>\MessageBreak
+    \<D>\MessageBreak
+    \<E>\MessageBreak
+    \<F>\MessageBreak
+    \<G>\MessageBreak
+    \<H>\MessageBreak
+    \<I>\MessageBreak
+    \<J>\MessageBreak
+    \<K>\MessageBreak
+    \<L>\MessageBreak
+    \<M>\MessageBreak
+    \<N>\MessageBreak
+    \<O>\MessageBreak
+    \<P>\MessageBreak
+    \<Q>\MessageBreak
+    \<R>\MessageBreak
+    \<S>\MessageBreak
+    \<T>\MessageBreak
+    \<U>\MessageBreak
+    \<V>\MessageBreak
+    \<W>\MessageBreak
+    \<X>\MessageBreak
+    \<Y>\MessageBreak
+    \<Z>\MessageBreak
+    \<a>\MessageBreak
+    \<b>\MessageBreak
+    \<c>\MessageBreak
+    \<d>\MessageBreak
+    \<e>\MessageBreak
+    \<f>\MessageBreak
+    \<g>\MessageBreak
+    \<h>\MessageBreak
+    \<i>\MessageBreak
+    \<j>\MessageBreak
+    \<k>\MessageBreak
+    \<l>\MessageBreak
+    \<m>\MessageBreak
+    \<n>\MessageBreak
+    \<o>\MessageBreak
+    \<p>\MessageBreak
+    \<q>\MessageBreak
+    \<r>\MessageBreak
+    \<s>\MessageBreak
+    \<t>\MessageBreak
+    \<u>\MessageBreak
+    \<v>\MessageBreak
+    \<w>\MessageBreak
+    \<x>\MessageBreak
+    \<y>\MessageBreak
+    \<z>\MessageBreak
+    \<AA>\MessageBreak
+    \<BB>\MessageBreak
+    \<CC>\MessageBreak
+    \<DD>\MessageBreak
+    \<EE>\MessageBreak
+    \<FF>\MessageBreak
+    \<GG>\MessageBreak
+    \<HH>\MessageBreak
+    \<II>\MessageBreak
+    \<JJ>\MessageBreak
+    \<KK>\MessageBreak
+    \<LL>\MessageBreak
+    \<MM>\MessageBreak
+    \<NN>\MessageBreak
+    \<OO>\MessageBreak
+    \<PP>\MessageBreak
+    \<QQ>\MessageBreak
+    \<RR>\MessageBreak
+    \<SS>\MessageBreak
+    \<TT>\MessageBreak
+    \<UU>\MessageBreak
+    \<VV>\MessageBreak
+    \<WW>\MessageBreak
+    \<XX>\MessageBreak
+    \<YY>\MessageBreak
+    \<ZZ>\MessageBreak
+    \<aa>\MessageBreak
+    \<bb>\MessageBreak
+    \<cc>\MessageBreak
+    \<dd>\MessageBreak
+    \<ee>\MessageBreak
+    \<ff>\MessageBreak
+    \<gg>\MessageBreak
+    \<hh>\MessageBreak
+    \<ii>\MessageBreak
+    \<jj>\MessageBreak
+    \<kk>\MessageBreak
+    \<ll>\MessageBreak
+    \<mm>\MessageBreak
+    \<nn>\MessageBreak
+    \<oo>\MessageBreak
+    \<pp>\MessageBreak
+    \<qq>\MessageBreak
+    \<rr>\MessageBreak
+    \<ss>\MessageBreak
+    \<tt>\MessageBreak
+    \<uu>\MessageBreak
+    \<vv>\MessageBreak
+    \<ww>\MessageBreak
+    \<xx>\MessageBreak
+    \<yy>\MessageBreak
+    \<zz>\MessageBreak
+    \<alpha>\MessageBreak
+    \<beta>\MessageBreak
+    \<gamma>\MessageBreak
+    \<delta>\MessageBreak
+    \<epsilon>\MessageBreak
+    \<zeta>\MessageBreak
+    \<eta>\MessageBreak
+    \<theta>\MessageBreak
+    \<iota>\MessageBreak
+    \<kappa>\MessageBreak
+    \<lambda>\MessageBreak
+    \<mu>\MessageBreak
+    \<nu>\MessageBreak
+    \<xi>\MessageBreak
+    \<pi>\MessageBreak
+    \<rho>\MessageBreak
+    \<sigma>\MessageBreak
+    \<tau>\MessageBreak
+    \<upsilon>\MessageBreak
+    \<phi>\MessageBreak
+    \<chi>\MessageBreak
+    \<psi>\MessageBreak
+    \<omega>\MessageBreak
+    \<Gamma>\MessageBreak
+    \<Delta>\MessageBreak
+    \<Theta>\MessageBreak
+    \<Lambda>\MessageBreak
+    \<Xi>\MessageBreak
+    \<Pi>\MessageBreak
+    \<Sigma>\MessageBreak
+    \<Upsilon>\MessageBreak
+    \<Phi>\MessageBreak
+    \<Psi>\MessageBreak
+    \<Omega>\MessageBreak
+    \<bbbA>\MessageBreak
+    \<bool>\MessageBreak
+    \<complex>\MessageBreak
+    \<bbbD>\MessageBreak
+    \<bbbE>\MessageBreak
+    \<bbbF>\MessageBreak
+    \<bbbG>\MessageBreak
+    \<bbbH>\MessageBreak
+    \<bbbI>\MessageBreak
+    \<bbbJ>\MessageBreak
+    \<bbbK>\MessageBreak
+    \<bbbL>\MessageBreak
+    \<bbbM>\MessageBreak
+    \<nat>\MessageBreak
+    \<bbbO>\MessageBreak
+    \<bbbP>\MessageBreak
+    \<rat>\MessageBreak
+    \<real>\MessageBreak
+    \<bbbS>\MessageBreak
+    \<bbbT>\MessageBreak
+    \<bbbU>\MessageBreak
+    \<bbbV>\MessageBreak
+    \<bbbW>\MessageBreak
+    \<bbbX>\MessageBreak
+    \<bbbY>\MessageBreak
+    \<int>\MessageBreak
+    \<leftarrow>\MessageBreak
+    \<longleftarrow>\MessageBreak
+    \<longlongleftarrow>\MessageBreak
+    \<longlonglongleftarrow>\MessageBreak
+    \<rightarrow>\MessageBreak
+    \<longrightarrow>\MessageBreak
+    \<longlongrightarrow>\MessageBreak
+    \<longlonglongrightarrow>\MessageBreak
+    \<Leftarrow>\MessageBreak
+    \<Longleftarrow>\MessageBreak
+    \<Lleftarrow>\MessageBreak
+    \<Rightarrow>\MessageBreak
+    \<Longrightarrow>\MessageBreak
+    \<Rrightarrow>\MessageBreak
+    \<leftrightarrow>\MessageBreak
+    \<longleftrightarrow>\MessageBreak
+    \<Leftrightarrow>\MessageBreak
+    \<Longleftrightarrow>\MessageBreak
+    \<mapsto>\MessageBreak
+    \<longmapsto>\MessageBreak
+    \<midarrow>\MessageBreak
+    \<Midarrow>\MessageBreak
+    \<hookleftarrow>\MessageBreak
+    \<hookrightarrow>\MessageBreak
+    \<leftharpoondown>\MessageBreak
+    \<rightharpoondown>\MessageBreak
+    \<leftharpoonup>\MessageBreak
+    \<rightharpoonup>\MessageBreak
+    \<rightleftharpoons>\MessageBreak
+    \<leadsto>\MessageBreak
+    \<downharpoonleft>\MessageBreak
+    \<downharpoonright>\MessageBreak
+    \<upharpoonleft>\MessageBreak
+    \<upharpoonright>\MessageBreak
+    \<restriction>\MessageBreak
+    \<Colon>\MessageBreak
+    \<up>\MessageBreak
+    \<Up>\MessageBreak
+    \<down>\MessageBreak
+    \<Down>\MessageBreak
+    \<updown>\MessageBreak
+    \<Updown>\MessageBreak
+    \<langle>\MessageBreak
+    \<rangle>\MessageBreak
+    \<llangle>\MessageBreak
+    \<rrangle>\MessageBreak
+    \<lceil>\MessageBreak
+    \<rceil>\MessageBreak
+    \<lfloor>\MessageBreak
+    \<rfloor>\MessageBreak
+    \<lparr>\MessageBreak
+    \<rparr>\MessageBreak
+    \<lbrakk>\MessageBreak
+    \<rbrakk>\MessageBreak
+    \<lbrace>\MessageBreak
+    \<rbrace>\MessageBreak
+    \<lblot>\MessageBreak
+    \<rblot>\MessageBreak
+    \<guillemotleft>\MessageBreak
+    \<guillemotright>\MessageBreak
+    \<bottom>\MessageBreak
+    \<top>\MessageBreak
+    \<and>\MessageBreak
+    \<And>\MessageBreak
+    \<or>\MessageBreak
+    \<Or>\MessageBreak
+    \<forall>\MessageBreak
+    \<exists>\MessageBreak
+    \<nexists>\MessageBreak
+    \<not>\MessageBreak
+    \<circle>\MessageBreak
+    \<box>\MessageBreak
+    \<diamond>\MessageBreak
+    \<diamondop>\MessageBreak
+    \<turnstile>\MessageBreak
+    \<Turnstile>\MessageBreak
+    \<tturnstile>\MessageBreak
+    \<TTurnstile>\MessageBreak
+    \<stileturn>\MessageBreak
+    \<surd>\MessageBreak
+    \<le>\MessageBreak
+    \<ge>\MessageBreak
+    \<lless>\MessageBreak
+    \<ggreater>\MessageBreak
+    \<lesssim>\MessageBreak
+    \<greatersim>\MessageBreak
+    \<lessapprox>\MessageBreak
+    \<greaterapprox>\MessageBreak
+    \<in>\MessageBreak
+    \<notin>\MessageBreak
+    \<subset>\MessageBreak
+    \<supset>\MessageBreak
+    \<subseteq>\MessageBreak
+    \<supseteq>\MessageBreak
+    \<sqsubset>\MessageBreak
+    \<sqsupset>\MessageBreak
+    \<sqsubseteq>\MessageBreak
+    \<sqsupseteq>\MessageBreak
+    \<inter>\MessageBreak
+    \<Inter>\MessageBreak
+    \<union>\MessageBreak
+    \<Union>\MessageBreak
+    \<squnion>\MessageBreak
+    \<Squnion>\MessageBreak
+    \<sqinter>\MessageBreak
+    \<Sqinter>\MessageBreak
+    \<setminus>\MessageBreak
+    \<propto>\MessageBreak
+    \<uplus>\MessageBreak
+    \<Uplus>\MessageBreak
+    \<noteq>\MessageBreak
+    \<sim>\MessageBreak
+    \<doteq>\MessageBreak
+    \<simeq>\MessageBreak
+    \<approx>\MessageBreak
+    \<asymp>\MessageBreak
+    \<cong>\MessageBreak
+    \<smile>\MessageBreak
+    \<equiv>\MessageBreak
+    \<frown>\MessageBreak
+    \<Join>\MessageBreak
+    \<bowtie>\MessageBreak
+    \<prec>\MessageBreak
+    \<succ>\MessageBreak
+    \<preceq>\MessageBreak
+    \<succeq>\MessageBreak
+    \<parallel>\MessageBreak
+    \<Parallel>\MessageBreak
+    \<interleave>\MessageBreak
+    \<sslash>\MessageBreak
+    \<bar>\MessageBreak
+    \<bbar>\MessageBreak
+    \<plusminus>\MessageBreak
+    \<minusplus>\MessageBreak
+    \<times>\MessageBreak
+    \<div>\MessageBreak
+    \<cdot>\MessageBreak
+    \<star>\MessageBreak
+    \<bullet>\MessageBreak
+    \<circ>\MessageBreak
+    \<dagger>\MessageBreak
+    \<ddagger>\MessageBreak
+    \<lhd>\MessageBreak
+    \<rhd>\MessageBreak
+    \<unlhd>\MessageBreak
+    \<unrhd>\MessageBreak
+    \<triangleleft>\MessageBreak
+    \<triangleright>\MessageBreak
+    \<triangle>\MessageBreak
+    \<triangleq>\MessageBreak
+    \<oplus>\MessageBreak
+    \<Oplus>\MessageBreak
+    \<otimes>\MessageBreak
+    \<Otimes>\MessageBreak
+    \<odot>\MessageBreak
+    \<Odot>\MessageBreak
+    \<ominus>\MessageBreak
+    \<oslash>\MessageBreak
+    \<dots>\MessageBreak
+    \<cdots>\MessageBreak
+    \<Sum>\MessageBreak
+    \<Prod>\MessageBreak
+    \<Coprod>\MessageBreak
+    \<infinity>\MessageBreak
+    \<integral>\MessageBreak
+    \<ointegral>\MessageBreak
+    \<clubsuit>\MessageBreak
+    \<diamondsuit>\MessageBreak
+    \<heartsuit>\MessageBreak
+    \<spadesuit>\MessageBreak
+    \<aleph>\MessageBreak
+    \<emptyset>\MessageBreak
+    \<nabla>\MessageBreak
+    \<partial>\MessageBreak
+    \<flat>\MessageBreak
+    \<natural>\MessageBreak
+    \<sharp>\MessageBreak
+    \<angle>\MessageBreak
+    \<copyright>\MessageBreak
+    \<registered>\MessageBreak
+    \<hyphen>\MessageBreak
+    \<inverse>\MessageBreak
+    \<sqdot>\MessageBreak
+    \<onequarter>\MessageBreak
+    \<onehalf>\MessageBreak
+    \<threequarters>\MessageBreak
+    \<ordfeminine>\MessageBreak
+    \<ordmasculine>\MessageBreak
+    \<section>\MessageBreak
+    \<paragraph>\MessageBreak
+    \<exclamdown>\MessageBreak
+    \<questiondown>\MessageBreak
+    \<euro>\MessageBreak
+    \<pounds>\MessageBreak
+    \<yen>\MessageBreak
+    \<cent>\MessageBreak
+    \<currency>\MessageBreak
+    \<degree>\MessageBreak
+    \<amalg>\MessageBreak
+    \<mho>\MessageBreak
+    \<lozenge>\MessageBreak
+    \<wp>\MessageBreak
+    \<wrong>\MessageBreak
+    \<acute>\MessageBreak
+    \<index>\MessageBreak
+    \<dieresis>\MessageBreak
+    \<cedilla>\MessageBreak
+    \<hungarumlaut>\MessageBreak
+    \<bind>\MessageBreak
+    \<then>\MessageBreak
+    \<some>\MessageBreak
+    \<Zcomp>\MessageBreak
+    \<Zinj>\MessageBreak
+    \<Zpinj>\MessageBreak
+    \<Zfinj>\MessageBreak
+    \<Zsurj>\MessageBreak
+    \<Zpsurj>\MessageBreak
+    \<Zbij>\MessageBreak
+    \<Zpfun>\MessageBreak
+    \<Zffun>\MessageBreak
+    \<Zdres>\MessageBreak
+    \<Zndres>\MessageBreak
+    \<Zrres>\MessageBreak
+    \<Znrres>\MessageBreak
+    \<Zspot>\MessageBreak
+    \<Zsemi>\MessageBreak
+    \<Zproject>\MessageBreak
+    \<Ztypecolon>\MessageBreak
+    \<Zhide>\MessageBreak
+    \<Zcat>\MessageBreak
+    \<Zinbag>\MessageBreak
+    \<Zprime>\MessageBreak
+    \<hole>\MessageBreak
+    \<newline>\MessageBreak
+    \<comment>\MessageBreak
+    \<^cancel>\MessageBreak
+    \<^marker>\MessageBreak
+    \<checkmark>\MessageBreak
+    \<crossmark>\MessageBreak
+    \<open>\MessageBreak
+    \<close>\MessageBreak
+    \<^here>\MessageBreak
+    \<^undefined>\MessageBreak
+    \<^noindent>\MessageBreak
+    \<^smallskip>\MessageBreak
+    \<^medskip>\MessageBreak
+    \<^bigskip>\MessageBreak
+    \<^item>\MessageBreak
+    \<^enum>\MessageBreak
+    \<^descr>\MessageBreak
+    \<^footnote>\MessageBreak
+    \<^verbatim>\MessageBreak
+    \<^theory_text>\MessageBreak
+    \<^emph>\MessageBreak
+    \<^bold>\MessageBreak
+    \<^sub>\MessageBreak
+    \<^sup>\MessageBreak
+    \<^bsub>\MessageBreak
+    \<^esub>\MessageBreak
+    \<^bsup>\MessageBreak
+    \<^esup>\MessageBreak
+    \<^file>\MessageBreak
+    \<^dir>\MessageBreak
+    \<^url>\MessageBreak
+    \<^doc>\MessageBreak
+    \<^action>
+  }%
+}
+
+\newcommand\isabelle@zero{0}
+\newcommand\isabelle@one{1}
+\newcommand\isabelle@two{2}
+\newcommand\isabelle@three{3}
+\newcommand\isabelle@four{4}
+\newcommand\isabelle@five{5}
+\newcommand\isabelle@six{6}
+\newcommand\isabelle@seven{7}
+\newcommand\isabelle@eight{8}
+\newcommand\isabelle@nine{9}
+\newcommand\isabelle@A{\mathcal A}
+\newcommand\isabelle@B{\mathcal B}
+\newcommand\isabelle@C{\mathcal C}
+\newcommand\isabelle@D{\mathcal D}
+\newcommand\isabelle@E{\mathcal E}
+\newcommand\isabelle@F{\mathcal F}
+\newcommand\isabelle@G{\mathcal G}
+\newcommand\isabelle@H{\mathcal H}
+\newcommand\isabelle@I{\mathcal I}
+\newcommand\isabelle@J{\mathcal J}
+\newcommand\isabelle@K{\mathcal K}
+\newcommand\isabelle@L{\mathcal L}
+\newcommand\isabelle@M{\mathcal M}
+\newcommand\isabelle@N{\mathcal N}
+\newcommand\isabelle@O{\mathcal O}
+\newcommand\isabelle@P{\mathcal P}
+\newcommand\isabelle@Q{\mathcal Q}
+\newcommand\isabelle@R{\mathcal R}
+\newcommand\isabelle@S{\mathcal S}
+\newcommand\isabelle@T{\mathcal T}
+\newcommand\isabelle@U{\mathcal U}
+\newcommand\isabelle@V{\mathcal V}
+\newcommand\isabelle@W{\mathcal W}
+\newcommand\isabelle@X{\mathcal X}
+\newcommand\isabelle@Y{\mathcal Y}
+\newcommand\isabelle@Z{\mathcal Z}
+\newcommand\isabelle@a{a}
+\newcommand\isabelle@b{b}
+\newcommand\isabelle@c{c}
+\newcommand\isabelle@d{d}
+\newcommand\isabelle@e{e}
+\newcommand\isabelle@f{f}
+\newcommand\isabelle@g{g}
+\newcommand\isabelle@h{h}
+\newcommand\isabelle@i{i}
+\newcommand\isabelle@j{j}
+\newcommand\isabelle@k{k}
+\newcommand\isabelle@l{l}
+\newcommand\isabelle@m{m}
+\newcommand\isabelle@n{n}
+\newcommand\isabelle@o{o}
+\newcommand\isabelle@p{p}
+\newcommand\isabelle@q{q}
+\newcommand\isabelle@r{r}
+\newcommand\isabelle@s{s}
+\newcommand\isabelle@t{t}
+\newcommand\isabelle@u{u}
+\newcommand\isabelle@v{v}
+\newcommand\isabelle@w{w}
+\newcommand\isabelle@x{x}
+\newcommand\isabelle@y{y}
+\newcommand\isabelle@z{z}
+\newcommand\isabelle@AA{\mathfrak A}
+\newcommand\isabelle@BB{\mathfrak B}
+\newcommand\isabelle@CC{\mathfrak C}
+\newcommand\isabelle@DD{\mathfrak D}
+\newcommand\isabelle@EE{\mathfrak E}
+\newcommand\isabelle@FF{\mathfrak F}
+\newcommand\isabelle@GG{\mathfrak G}
+\newcommand\isabelle@HH{\mathfrak H}
+\newcommand\isabelle@II{\mathfrak I}
+\newcommand\isabelle@JJ{\mathfrak J}
+\newcommand\isabelle@KK{\mathfrak K}
+\newcommand\isabelle@LL{\mathfrak L}
+\newcommand\isabelle@MM{\mathfrak M}
+\newcommand\isabelle@NN{\mathfrak N}
+\newcommand\isabelle@OO{\mathfrak O}
+\newcommand\isabelle@PP{\mathfrak P}
+\newcommand\isabelle@QQ{\mathfrak Q}
+\newcommand\isabelle@RR{\mathfrak R}
+\newcommand\isabelle@SS{\mathfrak S}
+\newcommand\isabelle@TT{\mathfrak T}
+\newcommand\isabelle@UU{\mathfrak U}
+\newcommand\isabelle@VV{\mathfrak V}
+\newcommand\isabelle@WW{\mathfrak W}
+\newcommand\isabelle@XX{\mathfrak X}
+\newcommand\isabelle@YY{\mathfrak Y}
+\newcommand\isabelle@ZZ{\mathfrak Z}
+\newcommand\isabelle@aa{\mathfrak a}
+\newcommand\isabelle@bb{\mathfrak b}
+\newcommand\isabelle@cc{\mathfrak c}
+\newcommand\isabelle@dd{\mathfrak d}
+\newcommand\isabelle@ee{\mathfrak e}
+\newcommand\isabelle@ff{\mathfrak f}
+\newcommand\isabelle@gg{\mathfrak g}
+\newcommand\isabelle@hh{\mathfrak h}
+\newcommand\isabelle@ii{\mathfrak i}
+\newcommand\isabelle@jj{\mathfrak j}
+\newcommand\isabelle@kk{\mathfrak k}
+\newcommand\isabelle@ll{\mathfrak l}
+\newcommand\isabelle@mm{\mathfrak m}
+\newcommand\isabelle@nn{\mathfrak n}
+\newcommand\isabelle@oo{\mathfrak o}
+\newcommand\isabelle@pp{\mathfrak p}
+\newcommand\isabelle@qq{\mathfrak q}
+\newcommand\isabelle@rr{\mathfrak r}
+\newcommand\isabelle@ss{\mathfrak s}
+\newcommand\isabelle@tt{\mathfrak t}
+\newcommand\isabelle@uu{\mathfrak u}
+\newcommand\isabelle@vv{\mathfrak v}
+\newcommand\isabelle@ww{\mathfrak w}
+\newcommand\isabelle@xx{\mathfrak x}
+\newcommand\isabelle@yy{\mathfrak y}
+\newcommand\isabelle@zz{\mathfrak z}
+\newcommand\isabelle@alpha{\alpha}
+\newcommand\isabelle@beta{\beta}
+\newcommand\isabelle@gamma{\gamma}
+\newcommand\isabelle@delta{\delta}
+\newcommand\isabelle@epsilon{\varepsilon}
+\newcommand\isabelle@zeta{\zeta}
+\newcommand\isabelle@eta{\eta}
+\newcommand\isabelle@theta{\theta}
+\newcommand\isabelle@iota{\iota}
+\newcommand\isabelle@kappa{\kappa}
+\newcommand\isabelle@lambda{\lambda}
+\newcommand\isabelle@mu{\mu}
+\newcommand\isabelle@nu{\nu}
+\newcommand\isabelle@xi{\xi}
+\newcommand\isabelle@pi{\pi}
+\newcommand\isabelle@rho{\varrho}
+\newcommand\isabelle@sigma{\sigma}
+\newcommand\isabelle@tau{\tau}
+\newcommand\isabelle@upsilon{\upsilon}
+\newcommand\isabelle@phi{\varphi}
+\newcommand\isabelle@chi{\chi}
+\newcommand\isabelle@psi{\psi}
+\newcommand\isabelle@omega{\omega}
+\newcommand\isabelle@Gamma{\Gamma}
+\newcommand\isabelle@Delta{\Delta}
+\newcommand\isabelle@Theta{\Theta}
+\newcommand\isabelle@Lambda{\Lambda}
+\newcommand\isabelle@Xi{\Xi}
+\newcommand\isabelle@Pi{\Pi}
+\newcommand\isabelle@Sigma{\Sigma}
+\newcommand\isabelle@Upsilon{\Upsilon}
+\newcommand\isabelle@Phi{\Phi}
+\newcommand\isabelle@Psi{\Psi}
+\newcommand\isabelle@Omega{\Omega}
+\newcommand\isabelle@bbbA{\mathbb A}
+\newcommand\isabelle@bool{\mathbb B}
+\newcommand\isabelle@complex{\mathbb C}
+\newcommand\isabelle@bbbD{\mathbb D}
+\newcommand\isabelle@bbbE{\mathbb E}
+\newcommand\isabelle@bbbF{\mathbb F}
+\newcommand\isabelle@bbbG{\mathbb G}
+\newcommand\isabelle@bbbH{\mathbb H}
+\newcommand\isabelle@bbbI{\mathbb I}
+\newcommand\isabelle@bbbJ{\mathbb J}
+\newcommand\isabelle@bbbK{\mathbb K}
+\newcommand\isabelle@bbbL{\mathbb L}
+\newcommand\isabelle@bbbM{\mathbb M}
+\newcommand\isabelle@nat{\mathbb N}
+\newcommand\isabelle@bbbO{\mathbb O}
+\newcommand\isabelle@bbbP{\mathbb P}
+\newcommand\isabelle@rat{\mathbb Q}
+\newcommand\isabelle@real{\mathbb R}
+\newcommand\isabelle@bbbS{\mathbb S}
+\newcommand\isabelle@bbbT{\mathbb T}
+\newcommand\isabelle@bbbU{\mathbb U}
+\newcommand\isabelle@bbbV{\mathbb V}
+\newcommand\isabelle@bbbW{\mathbb W}
+\newcommand\isabelle@bbbX{\mathbb X}
+\newcommand\isabelle@bbbY{\mathbb Y}
+\newcommand\isabelle@int{\mathbb Z}
+\newcommand\isabelle@leftarrow{\leftarrow}
+\newcommand\isabelle@longleftarrow{\longleftarrow}
+\newcommand\isabelle@longlongleftarrow{\@IsabelleSymbolUndefined{longlongleftarrow}{\isabelle@longlongleftarrow}}
+\newcommand\isabelle@longlonglongleftarrow{\@IsabelleSymbolUndefined{longlonglongleftarrow}{\isabelle@longlonglongleftarrow}}
+\newcommand\isabelle@rightarrow{\rightarrow}
+\newcommand\isabelle@longrightarrow{\longrightarrow}
+\newcommand\isabelle@longlongrightarrow{\@IsabelleSymbolUndefined{longlongrightarrow}{\isabelle@longlongrightarrow}}
+\newcommand\isabelle@longlonglongrightarrow{\@IsabelleSymbolUndefined{longlonglongrightarrow}{\isabelle@longlonglongrightarrow}}
+\newcommand\isabelle@Leftarrow{\Leftarrow}
+\newcommand\isabelle@Longleftarrow{\Longleftarrow}
+\newcommand\isabelle@Lleftarrow{\Lleftarrow}
+\newcommand\isabelle@Rightarrow{\Rightarrow}
+\newcommand\isabelle@Longrightarrow{\Longrightarrow}
+\newcommand\isabelle@Rrightarrow{\Rrightarrow}
+\newcommand\isabelle@leftrightarrow{\leftrightarrow}
+\newcommand\isabelle@longleftrightarrow{\longleftrightarrow}
+\newcommand\isabelle@Leftrightarrow{\Leftrightarrow}
+\newcommand\isabelle@Longleftrightarrow{\Longleftrightarrow}
+\newcommand\isabelle@mapsto{\mapsto}
+\newcommand\isabelle@longmapsto{\longmapsto}
+\newcommand\isabelle@midarrow{\@IsabelleSymbolUndefined{midarrow}{\isabelle@midarrow}}
+\newcommand\isabelle@Midarrow{\@IsabelleSymbolUndefined{Midarrow}{\isabelle@Midarrow}}
+\newcommand\isabelle@hookleftarrow{\hookleftarrow}
+\newcommand\isabelle@hookrightarrow{\hookrightarrow}
+\newcommand\isabelle@leftharpoondown{\leftharpoondown}
+\newcommand\isabelle@rightharpoondown{\rightharpoondown}
+\newcommand\isabelle@leftharpoonup{\leftharpoonup}
+\newcommand\isabelle@rightharpoonup{\rightharpoonup}
+\newcommand\isabelle@rightleftharpoons{\rightleftharpoons}
+\newcommand\isabelle@leadsto{\leadsto}
+\newcommand\isabelle@downharpoonleft{\downharpoonleft}
+\newcommand\isabelle@downharpoonright{\downharpoonright}
+\newcommand\isabelle@upharpoonleft{\upharpoonleft}
+\newcommand\isabelle@upharpoonright{\upharpoonright}
+\newcommand\isabelle@restriction{\restriction}
+\newcommand\isabelle@Colon{::}
+\newcommand\isabelle@up{\uparrow}
+\newcommand\isabelle@Up{\Uparrow}
+\newcommand\isabelle@down{\downarrow}
+\newcommand\isabelle@Down{\Downarrow}
+\newcommand\isabelle@updown{\updownarrow}
+\newcommand\isabelle@Updown{\Updownarrow}
+\newcommand\isabelle@langle{\langle}
+\newcommand\isabelle@rangle{\rangle}
+\newcommand\isabelle@llangle{\@IsabelleSymbolUndefined{llangle}{\isabelle@llangle}}
+\newcommand\isabelle@rrangle{\@IsabelleSymbolUndefined{rrangle}{\isabelle@rrangle}}
+\newcommand\isabelle@lceil{\lceil}
+\newcommand\isabelle@rceil{\rceil}
+\newcommand\isabelle@lfloor{\lfloor}
+\newcommand\isabelle@rfloor{\rfloor}
+\newcommand\isabelle@lparr{\llparenthesis}
+\newcommand\isabelle@rparr{\rrparenthesis}
+\newcommand\isabelle@lbrakk{\llbracket}
+\newcommand\isabelle@rbrakk{\rrbracket}
+\newcommand\isabelle@lbrace{\@IsabelleSymbolUndefined{lbrace}{\isabelle@lbrace}}
+\newcommand\isabelle@rbrace{\@IsabelleSymbolUndefined{rbrace}{\isabelle@rbrace}}
+\newcommand\isabelle@lblot{\@IsabelleSymbolUndefined{lblot}{\isabelle@lblot}}
+\newcommand\isabelle@rblot{\@IsabelleSymbolUndefined{rblot}{\isabelle@rblot}}
+\newcommand\isabelle@guillemotleft{\text{\guillemetleft}}
+\newcommand\isabelle@guillemotright{\text{\guillemetright}}
+\newcommand\isabelle@bottom{\bot}
+\newcommand\isabelle@top{\top}
+\newcommand\isabelle@and{\wedge}
+\newcommand\isabelle@And{\bigwedge}
+\newcommand\isabelle@or{\vee}
+\newcommand\isabelle@Or{\bigvee}
+\newcommand\isabelle@forall{\forall}
+\newcommand\isabelle@exists{\exists}
+\newcommand\isabelle@nexists{\nexists}
+\newcommand\isabelle@not{\neg}
+\newcommand\isabelle@circle{\bigcirc}
+\newcommand\isabelle@box{\square}
+\newcommand\isabelle@diamond{\Diamond}
+\newcommand\isabelle@diamondop{\diamond}
+\newcommand\isabelle@turnstile{\vdash}
+\newcommand\isabelle@Turnstile{\vDash}
+\newcommand\isabelle@tturnstile{\Vdash}
+\newcommand\isabelle@TTurnstile{\VDash}
+\newcommand\isabelle@stileturn{\dashv}
+\newcommand\isabelle@surd{\surd}
+\newcommand\isabelle@le{\leq}
+\newcommand\isabelle@ge{\geq}
+\newcommand\isabelle@lless{\ll}
+\newcommand\isabelle@ggreater{\gg}
+\newcommand\isabelle@lesssim{\lesssim}
+\newcommand\isabelle@greatersim{\gtrsim}
+\newcommand\isabelle@lessapprox{\lessapprox}
+\newcommand\isabelle@greaterapprox{\gtrapprox}
+\newcommand\isabelle@in{\in}
+\newcommand\isabelle@notin{\notin}
+\newcommand\isabelle@subset{\subset}
+\newcommand\isabelle@supset{\supset}
+\newcommand\isabelle@subseteq{\subseteq}
+\newcommand\isabelle@supseteq{\supseteq}
+\newcommand\isabelle@sqsubset{\sqsubset}
+\newcommand\isabelle@sqsupset{\sqsupset}
+\newcommand\isabelle@sqsubseteq{\sqsubseteq}
+\newcommand\isabelle@sqsupseteq{\sqsupseteq}
+\newcommand\isabelle@inter{\cap}
+\newcommand\isabelle@Inter{\bigcap}
+\newcommand\isabelle@union{\cup}
+\newcommand\isabelle@Union{\bigcup}
+\newcommand\isabelle@squnion{\sqcup}
+\newcommand\isabelle@Squnion{\bigsqcup}
+\newcommand\isabelle@sqinter{\sqcap}
+\newcommand\isabelle@Sqinter{\bigsqcap}
+\newcommand\isabelle@setminus{\setminus}
+\newcommand\isabelle@propto{\propto}
+\newcommand\isabelle@uplus{\uplus}
+\newcommand\isabelle@Uplus{\biguplus}
+\newcommand\isabelle@noteq{\neq}
+\newcommand\isabelle@sim{\sim}
+\newcommand\isabelle@doteq{\doteq}
+\newcommand\isabelle@simeq{\simeq}
+\newcommand\isabelle@approx{\approx}
+\newcommand\isabelle@asymp{\asymp}
+\newcommand\isabelle@cong{\cong}
+\newcommand\isabelle@smile{\smile}
+\newcommand\isabelle@equiv{\equiv}
+\newcommand\isabelle@frown{\frown}
+\newcommand\isabelle@Join{\Join}
+\newcommand\isabelle@bowtie{\bowtie}
+\newcommand\isabelle@prec{\prec}
+\newcommand\isabelle@succ{\succ}
+\newcommand\isabelle@preceq{\preceq}
+\newcommand\isabelle@succeq{\succeq}
+\newcommand\isabelle@parallel{\parallel}
+\newcommand\isabelle@Parallel{\@IsabelleSymbolUndefined{Parallel}{\isabelle@Parallel}}
+\newcommand\isabelle@interleave{\interleave}
+\newcommand\isabelle@sslash{\sslash}
+\newcommand\isabelle@bar{\text{\textbrokenbar}}
+\newcommand\isabelle@bbar{\@IsabelleSymbolUndefined{bbar}{\isabelle@bbar}}
+\newcommand\isabelle@plusminus{\pm}
+\newcommand\isabelle@minusplus{\mp}
+\newcommand\isabelle@times{\times}
+\newcommand\isabelle@div{\div}
+\newcommand\isabelle@cdot{\cdot}
+\newcommand\isabelle@star{\star}
+\newcommand\isabelle@bullet{\bullet}
+\newcommand\isabelle@circ{\circ}
+\newcommand\isabelle@dagger{\dagger}
+\newcommand\isabelle@ddagger{\ddagger}
+\newcommand\isabelle@lhd{\lhd}
+\newcommand\isabelle@rhd{\rhd}
+\newcommand\isabelle@unlhd{\unlhd}
+\newcommand\isabelle@unrhd{\unrhd}
+\newcommand\isabelle@triangleleft{\triangleleft}
+\newcommand\isabelle@triangleright{\triangleright}
+\newcommand\isabelle@triangle{\triangle}
+\newcommand\isabelle@triangleq{\triangleq}
+\newcommand\isabelle@oplus{\oplus}
+\newcommand\isabelle@Oplus{\bigoplus}
+\newcommand\isabelle@otimes{\otimes}
+\newcommand\isabelle@Otimes{\bigotimes}
+\newcommand\isabelle@odot{\odot}
+\newcommand\isabelle@Odot{\bigodot}
+\newcommand\isabelle@ominus{\ominus}
+\newcommand\isabelle@oslash{\oslash}
+\newcommand\isabelle@dots{\dots}
+\newcommand\isabelle@cdots{\cdots}
+\newcommand\isabelle@Sum{\sum}
+\newcommand\isabelle@Prod{\prod}
+\newcommand\isabelle@Coprod{\coprod}
+\newcommand\isabelle@infinity{\infty}
+\newcommand\isabelle@integral{\int}
+\newcommand\isabelle@ointegral{\oint}
+\newcommand\isabelle@clubsuit{\clubsuit}
+\newcommand\isabelle@diamondsuit{\diamondsuit}
+\newcommand\isabelle@heartsuit{\heartsuit}
+\newcommand\isabelle@spadesuit{\spadesuit}
+\newcommand\isabelle@aleph{\aleph}
+\newcommand\isabelle@emptyset{\emptyset}
+\newcommand\isabelle@nabla{\nabla}
+\newcommand\isabelle@partial{\partial}
+\newcommand\isabelle@flat{\flat}
+\newcommand\isabelle@natural{\natural}
+\newcommand\isabelle@sharp{\sharp}
+\newcommand\isabelle@angle{\angle}
+\newcommand\isabelle@copyright{\text{\textcopyright}}
+\newcommand\isabelle@registered{\text{\textregistered}}
+\newcommand\isabelle@hyphen{\text{\-}}
+\newcommand\isabelle@inverse{^{-1}}
+\newcommand\isabelle@sqdot{\@IsabelleSymbolUndefined{sqdot}{\isabelle@sqdot}}
+\newcommand\isabelle@onequarter{\text{\textonequarter}}
+\newcommand\isabelle@onehalf{\text{\textonehalf}}
+\newcommand\isabelle@threequarters{\text{\textthreequarters}}
+\newcommand\isabelle@ordfeminine{\text{\textordfeminine}}
+\newcommand\isabelle@ordmasculine{\text{\textordmasculine}}
+\newcommand\isabelle@section{\text{\S}}
+\newcommand\isabelle@paragraph{\text{\P}}
+\newcommand\isabelle@exclamdown{\text{!`}}
+\newcommand\isabelle@questiondown{\text{?`}}
+\newcommand\isabelle@euro{\text{\texteuro}}
+\newcommand\isabelle@pounds{\text{\pounds}}
+\newcommand\isabelle@yen{\text{\textyen}}
+\newcommand\isabelle@cent{\text{\textcent}}
+\newcommand\isabelle@currency{\text{\textcurrency}}
+\newcommand\isabelle@degree{\text{\textdegree}}
+\newcommand\isabelle@amalg{\amalg}
+\newcommand\isabelle@mho{\mho}
+\newcommand\isabelle@lozenge{\lozenge}
+\newcommand\isabelle@wp{\wp}
+\newcommand\isabelle@wrong{\wr}
+\newcommand\isabelle@acute{\text{\textasciiacute}}
+\newcommand\isabelle@index{\@IsabelleSymbolUndefined{index}{\isabelle@index}}
+\newcommand\isabelle@dieresis{\text{\textasciidieresis}}
+\newcommand\isabelle@cedilla{\text{\c{}}}
+\newcommand\isabelle@hungarumlaut{\text{\H{}}}
+\newcommand\isabelle@bind{\@IsabelleSymbolUndefined{bind}{\isabelle@bind}}
+\newcommand\isabelle@then{\@IsabelleSymbolUndefined{then}{\isabelle@then}}
+\newcommand\isabelle@some{\epsilon}
+\newcommand\isabelle@Zcomp{\@IsabelleSymbolUndefined{Zcomp}{\isabelle@Zcomp}}
+\newcommand\isabelle@Zinj{\rightarrowtail}
+\newcommand\isabelle@Zpinj{\@IsabelleSymbolUndefined{Zpinj}{\isabelle@Zpinj}}
+\newcommand\isabelle@Zfinj{\@IsabelleSymbolUndefined{Zfinj}{\isabelle@Zfinj}}
+\newcommand\isabelle@Zsurj{\twoheadrightarrow}
+\newcommand\isabelle@Zpsurj{\@IsabelleSymbolUndefined{Zpsurj}{\isabelle@Zpsurj}}
+\newcommand\isabelle@Zbij{\@IsabelleSymbolUndefined{Zbij}{\isabelle@Zbij}}
+\newcommand\isabelle@Zpfun{\@IsabelleSymbolUndefined{Zpfun}{\isabelle@Zpfun}}
+\newcommand\isabelle@Zffun{\@IsabelleSymbolUndefined{Zffun}{\isabelle@Zffun}}
+\newcommand\isabelle@Zdres{\@IsabelleSymbolUndefined{Zdres}{\isabelle@Zdres}}
+\newcommand\isabelle@Zndres{\@IsabelleSymbolUndefined{Zndres}{\isabelle@Zndres}}
+\newcommand\isabelle@Zrres{\@IsabelleSymbolUndefined{Zrres}{\isabelle@Zrres}}
+\newcommand\isabelle@Znrres{\@IsabelleSymbolUndefined{Znrres}{\isabelle@Znrres}}
+\newcommand\isabelle@Zspot{\@IsabelleSymbolUndefined{Zspot}{\isabelle@Zspot}}
+\newcommand\isabelle@Zsemi{\@IsabelleSymbolUndefined{Zsemi}{\isabelle@Zsemi}}
+\newcommand\isabelle@Zproject{\@IsabelleSymbolUndefined{Zproject}{\isabelle@Zproject}}
+\newcommand\isabelle@Ztypecolon{\@IsabelleSymbolUndefined{Ztypecolon}{\isabelle@Ztypecolon}}
+\newcommand\isabelle@Zhide{\@IsabelleSymbolUndefined{Zhide}{\isabelle@Zhide}}
+\newcommand\isabelle@Zcat{\@IsabelleSymbolUndefined{Zcat}{\isabelle@Zcat}}
+\newcommand\isabelle@Zinbag{\@IsabelleSymbolUndefined{Zinbag}{\isabelle@Zinbag}}
+\newcommand\isabelle@Zprime{\@IsabelleSymbolUndefined{Zprime}{\isabelle@Zprime}}
+\newcommand\isabelle@hole{\@IsabelleSymbolUndefined{hole}{\isabelle@hole}}
+\newcommand\isabelle@newline{\@IsabelleSymbolUndefined{newline}{\isabelle@newline}}
+\newcommand\isabelle@comment{\@IsabelleSymbolUndefined{comment}{\isabelle@comment}}
+\newcommand\isabelle@caret@cancel{\@IsabelleCaretSymbolUndefined{cancel}{\isabelle@caret@cancel}}
+\newcommand\isabelle@caret@marker{\@IsabelleCaretSymbolUndefined{marker}{\isabelle@caret@marker}}
+\newcommand\isabelle@checkmark{\checkmark}
+\newcommand\isabelle@crossmark{\@IsabelleSymbolUndefined{crossmark}{\isabelle@crossmark}}
+\newcommand\isabelle@open{\text{\guilsinglleft}}
+\newcommand\isabelle@close{\text{\guilsinglright}}
+\newcommand\isabelle@caret@here{\@IsabelleCaretSymbolUndefined{here}{\isabelle@caret@here}}
+\newcommand\isabelle@caret@undefined{\@IsabelleCaretSymbolUndefined{undefined}{\isabelle@caret@undefined}}
+\newcommand\isabelle@caret@noindent{\@IsabelleCaretSymbolUndefined{noindent}{\isabelle@caret@noindent}}
+\newcommand\isabelle@caret@smallskip{\@IsabelleCaretSymbolUndefined{smallskip}{\isabelle@caret@smallskip}}
+\newcommand\isabelle@caret@medskip{\@IsabelleCaretSymbolUndefined{medskip}{\isabelle@caret@medskip}}
+\newcommand\isabelle@caret@bigskip{\@IsabelleCaretSymbolUndefined{bigskip}{\isabelle@caret@bigskip}}
+\newcommand\isabelle@caret@item{\@IsabelleCaretSymbolUndefined{item}{\isabelle@caret@item}}
+\newcommand\isabelle@caret@enum{\@IsabelleCaretSymbolUndefined{enum}{\isabelle@caret@enum}}
+\newcommand\isabelle@caret@descr{\@IsabelleCaretSymbolUndefined{descr}{\isabelle@caret@descr}}
+\newcommand\isabelle@caret@footnote{\@IsabelleCaretSymbolUndefined{footnote}{\isabelle@caret@footnote}}
+\newcommand\isabelle@caret@verbatim{\@IsabelleCaretSymbolUndefined{verbatim}{\isabelle@caret@verbatim}}
+\newcommand\isabelle@caret@theorytext{\@IsabelleCaretSymbolUndefined{theorytext}{\isabelle@caret@theorytext}}
+\newcommand\isabelle@caret@emph{\@IsabelleCaretSymbolUndefined{emph}{\isabelle@caret@emph}}
+\newcommand\isabelle@caret@bold{\@IsabelleCaretSymbolUndefined{bold}{\isabelle@caret@bold}}
+\newcommand\isabelle@caret@sub{\@IsabelleCaretSymbolUndefined{sub}{\isabelle@caret@sub}}
+\newcommand\isabelle@caret@sup{\@IsabelleCaretSymbolUndefined{sup}{\isabelle@caret@sup}}
+\newcommand\isabelle@caret@bsub{\@IsabelleCaretSymbolUndefined{bsub}{\isabelle@caret@bsub}}
+\newcommand\isabelle@caret@esub{\@IsabelleCaretSymbolUndefined{esub}{\isabelle@caret@esub}}
+\newcommand\isabelle@caret@bsup{\@IsabelleCaretSymbolUndefined{bsup}{\isabelle@caret@bsup}}
+\newcommand\isabelle@caret@esup{\@IsabelleCaretSymbolUndefined{esup}{\isabelle@caret@esup}}
+\newcommand\isabelle@caret@file{\@IsabelleCaretSymbolUndefined{file}{\isabelle@caret@file}}
+\newcommand\isabelle@caret@dir{\@IsabelleCaretSymbolUndefined{dir}{\isabelle@caret@dir}}
+\newcommand\isabelle@caret@url{\@IsabelleCaretSymbolUndefined{url}{\isabelle@caret@url}}
+\newcommand\isabelle@caret@doc{\@IsabelleCaretSymbolUndefined{doc}{\isabelle@caret@doc}}
+\newcommand\isabelle@caret@action{\@IsabelleCaretSymbolUndefined{action}{\isabelle@caret@action}}
+
+% Isabelle symbols, e.g. `\<eq>`. Throws an error if the part between `<` and
+% `>` does not match any predefined identifier.
+\NewDocumentCommand{\<}{u{>}}{%
+  \IfStrEqCase{#1}{%
+    {zero}{\isabelle@zero}%
+    {one}{\isabelle@one}%
+    {two}{\isabelle@two}%
+    {three}{\isabelle@three}%
+    {four}{\isabelle@four}%
+    {five}{\isabelle@five}%
+    {six}{\isabelle@six}%
+    {seven}{\isabelle@seven}%
+    {eight}{\isabelle@eight}%
+    {nine}{\isabelle@nine}%
+    {A}{\isabelle@A}%
+    {B}{\isabelle@B}%
+    {C}{\isabelle@C}%
+    {D}{\isabelle@D}%
+    {E}{\isabelle@E}%
+    {F}{\isabelle@F}%
+    {G}{\isabelle@G}%
+    {H}{\isabelle@H}%
+    {I}{\isabelle@I}%
+    {J}{\isabelle@J}%
+    {K}{\isabelle@K}%
+    {L}{\isabelle@L}%
+    {M}{\isabelle@M}%
+    {N}{\isabelle@N}%
+    {O}{\isabelle@O}%
+    {P}{\isabelle@P}%
+    {Q}{\isabelle@Q}%
+    {R}{\isabelle@R}%
+    {S}{\isabelle@S}%
+    {T}{\isabelle@T}%
+    {U}{\isabelle@U}%
+    {V}{\isabelle@V}%
+    {W}{\isabelle@W}%
+    {X}{\isabelle@X}%
+    {Y}{\isabelle@Y}%
+    {Z}{\isabelle@Z}%
+    {a}{\isabelle@a}%
+    {b}{\isabelle@b}%
+    {c}{\isabelle@c}%
+    {d}{\isabelle@d}%
+    {e}{\isabelle@e}%
+    {f}{\isabelle@f}%
+    {g}{\isabelle@g}%
+    {h}{\isabelle@h}%
+    {i}{\isabelle@i}%
+    {j}{\isabelle@j}%
+    {k}{\isabelle@k}%
+    {l}{\isabelle@l}%
+    {m}{\isabelle@m}%
+    {n}{\isabelle@n}%
+    {o}{\isabelle@o}%
+    {p}{\isabelle@p}%
+    {q}{\isabelle@q}%
+    {r}{\isabelle@r}%
+    {s}{\isabelle@s}%
+    {t}{\isabelle@t}%
+    {u}{\isabelle@u}%
+    {v}{\isabelle@v}%
+    {w}{\isabelle@w}%
+    {x}{\isabelle@x}%
+    {y}{\isabelle@y}%
+    {z}{\isabelle@z}%
+    {AA}{\isabelle@AA}%
+    {BB}{\isabelle@BB}%
+    {CC}{\isabelle@CC}%
+    {DD}{\isabelle@DD}%
+    {EE}{\isabelle@EE}%
+    {FF}{\isabelle@FF}%
+    {GG}{\isabelle@GG}%
+    {HH}{\isabelle@HH}%
+    {II}{\isabelle@II}%
+    {JJ}{\isabelle@JJ}%
+    {KK}{\isabelle@KK}%
+    {LL}{\isabelle@LL}%
+    {MM}{\isabelle@MM}%
+    {NN}{\isabelle@NN}%
+    {OO}{\isabelle@OO}%
+    {PP}{\isabelle@PP}%
+    {QQ}{\isabelle@QQ}%
+    {RR}{\isabelle@RR}%
+    {SS}{\isabelle@SS}%
+    {TT}{\isabelle@TT}%
+    {UU}{\isabelle@UU}%
+    {VV}{\isabelle@VV}%
+    {WW}{\isabelle@WW}%
+    {XX}{\isabelle@XX}%
+    {YY}{\isabelle@YY}%
+    {ZZ}{\isabelle@ZZ}%
+    {aa}{\isabelle@aa}%
+    {bb}{\isabelle@bb}%
+    {cc}{\isabelle@cc}%
+    {dd}{\isabelle@dd}%
+    {ee}{\isabelle@ee}%
+    {ff}{\isabelle@ff}%
+    {gg}{\isabelle@gg}%
+    {hh}{\isabelle@hh}%
+    {ii}{\isabelle@ii}%
+    {jj}{\isabelle@jj}%
+    {kk}{\isabelle@kk}%
+    {ll}{\isabelle@ll}%
+    {mm}{\isabelle@mm}%
+    {nn}{\isabelle@nn}%
+    {oo}{\isabelle@oo}%
+    {pp}{\isabelle@pp}%
+    {qq}{\isabelle@qq}%
+    {rr}{\isabelle@rr}%
+    {ss}{\isabelle@ss}%
+    {tt}{\isabelle@tt}%
+    {uu}{\isabelle@uu}%
+    {vv}{\isabelle@vv}%
+    {ww}{\isabelle@ww}%
+    {xx}{\isabelle@xx}%
+    {yy}{\isabelle@yy}%
+    {zz}{\isabelle@zz}%
+    {alpha}{\isabelle@alpha}%
+    {beta}{\isabelle@beta}%
+    {gamma}{\isabelle@gamma}%
+    {delta}{\isabelle@delta}%
+    {epsilon}{\isabelle@epsilon}%
+    {zeta}{\isabelle@zeta}%
+    {eta}{\isabelle@eta}%
+    {theta}{\isabelle@theta}%
+    {iota}{\isabelle@iota}%
+    {kappa}{\isabelle@kappa}%
+    {lambda}{\isabelle@lambda}%
+    {mu}{\isabelle@mu}%
+    {nu}{\isabelle@nu}%
+    {xi}{\isabelle@xi}%
+    {pi}{\isabelle@pi}%
+    {rho}{\isabelle@rho}%
+    {sigma}{\isabelle@sigma}%
+    {tau}{\isabelle@tau}%
+    {upsilon}{\isabelle@upsilon}%
+    {phi}{\isabelle@phi}%
+    {chi}{\isabelle@chi}%
+    {psi}{\isabelle@psi}%
+    {omega}{\isabelle@omega}%
+    {Gamma}{\isabelle@Gamma}%
+    {Delta}{\isabelle@Delta}%
+    {Theta}{\isabelle@Theta}%
+    {Lambda}{\isabelle@Lambda}%
+    {Xi}{\isabelle@Xi}%
+    {Pi}{\isabelle@Pi}%
+    {Sigma}{\isabelle@Sigma}%
+    {Upsilon}{\isabelle@Upsilon}%
+    {Phi}{\isabelle@Phi}%
+    {Psi}{\isabelle@Psi}%
+    {Omega}{\isabelle@Omega}%
+    {bbbA}{\isabelle@bbbA}%
+    {bool}{\isabelle@bool}%
+    {complex}{\isabelle@complex}%
+    {bbbD}{\isabelle@bbbD}%
+    {bbbE}{\isabelle@bbbE}%
+    {bbbF}{\isabelle@bbbF}%
+    {bbbG}{\isabelle@bbbG}%
+    {bbbH}{\isabelle@bbbH}%
+    {bbbI}{\isabelle@bbbI}%
+    {bbbJ}{\isabelle@bbbJ}%
+    {bbbK}{\isabelle@bbbK}%
+    {bbbL}{\isabelle@bbbL}%
+    {bbbM}{\isabelle@bbbM}%
+    {nat}{\isabelle@nat}%
+    {bbbO}{\isabelle@bbbO}%
+    {bbbP}{\isabelle@bbbP}%
+    {rat}{\isabelle@rat}%
+    {real}{\isabelle@real}%
+    {bbbS}{\isabelle@bbbS}%
+    {bbbT}{\isabelle@bbbT}%
+    {bbbU}{\isabelle@bbbU}%
+    {bbbV}{\isabelle@bbbV}%
+    {bbbW}{\isabelle@bbbW}%
+    {bbbX}{\isabelle@bbbX}%
+    {bbbY}{\isabelle@bbbY}%
+    {int}{\isabelle@int}%
+    {leftarrow}{\isabelle@leftarrow}%
+    {longleftarrow}{\isabelle@longleftarrow}%
+    {longlongleftarrow}{\isabelle@longlongleftarrow}%
+    {longlonglongleftarrow}{\isabelle@longlonglongleftarrow}%
+    {rightarrow}{\isabelle@rightarrow}%
+    {longrightarrow}{\isabelle@longrightarrow}%
+    {longlongrightarrow}{\isabelle@longlongrightarrow}%
+    {longlonglongrightarrow}{\isabelle@longlonglongrightarrow}%
+    {Leftarrow}{\isabelle@Leftarrow}%
+    {Longleftarrow}{\isabelle@Longleftarrow}%
+    {Lleftarrow}{\isabelle@Lleftarrow}%
+    {Rightarrow}{\isabelle@Rightarrow}%
+    {Longrightarrow}{\isabelle@Longrightarrow}%
+    {Rrightarrow}{\isabelle@Rrightarrow}%
+    {leftrightarrow}{\isabelle@leftrightarrow}%
+    {longleftrightarrow}{\isabelle@longleftrightarrow}%
+    {Leftrightarrow}{\isabelle@Leftrightarrow}%
+    {Longleftrightarrow}{\isabelle@Longleftrightarrow}%
+    {mapsto}{\isabelle@mapsto}%
+    {longmapsto}{\isabelle@longmapsto}%
+    {midarrow}{\isabelle@midarrow}%
+    {Midarrow}{\isabelle@Midarrow}%
+    {hookleftarrow}{\isabelle@hookleftarrow}%
+    {hookrightarrow}{\isabelle@hookrightarrow}%
+    {leftharpoondown}{\isabelle@leftharpoondown}%
+    {rightharpoondown}{\isabelle@rightharpoondown}%
+    {leftharpoonup}{\isabelle@leftharpoonup}%
+    {rightharpoonup}{\isabelle@rightharpoonup}%
+    {rightleftharpoons}{\isabelle@rightleftharpoons}%
+    {leadsto}{\isabelle@leadsto}%
+    {downharpoonleft}{\isabelle@downharpoonleft}%
+    {downharpoonright}{\isabelle@downharpoonright}%
+    {upharpoonleft}{\isabelle@upharpoonleft}%
+    {upharpoonright}{\isabelle@upharpoonright}%
+    {restriction}{\isabelle@restriction}%
+    {Colon}{\isabelle@Colon}%
+    {up}{\isabelle@up}%
+    {Up}{\isabelle@Up}%
+    {down}{\isabelle@down}%
+    {Down}{\isabelle@Down}%
+    {updown}{\isabelle@updown}%
+    {Updown}{\isabelle@Updown}%
+    {langle}{\isabelle@langle}%
+    {rangle}{\isabelle@rangle}%
+    {llangle}{\isabelle@llangle}%
+    {rrangle}{\isabelle@rrangle}%
+    {lceil}{\isabelle@lceil}%
+    {rceil}{\isabelle@rceil}%
+    {lfloor}{\isabelle@lfloor}%
+    {rfloor}{\isabelle@rfloor}%
+    {lparr}{\isabelle@lparr}%
+    {rparr}{\isabelle@rparr}%
+    {lbrakk}{\isabelle@lbrakk}%
+    {rbrakk}{\isabelle@rbrakk}%
+    {lbrace}{\isabelle@lbrace}%
+    {rbrace}{\isabelle@rbrace}%
+    {lblot}{\isabelle@lblot}%
+    {rblot}{\isabelle@rblot}%
+    {guillemotleft}{\isabelle@guillemotleft}%
+    {guillemotright}{\isabelle@guillemotright}%
+    {bottom}{\isabelle@bottom}%
+    {top}{\isabelle@top}%
+    {and}{\isabelle@and}%
+    {And}{\isabelle@And}%
+    {or}{\isabelle@or}%
+    {Or}{\isabelle@Or}%
+    {forall}{\isabelle@forall}%
+    {exists}{\isabelle@exists}%
+    {nexists}{\isabelle@nexists}%
+    {not}{\isabelle@not}%
+    {circle}{\isabelle@circle}%
+    {box}{\isabelle@box}%
+    {diamond}{\isabelle@diamond}%
+    {diamondop}{\isabelle@diamondop}%
+    {turnstile}{\isabelle@turnstile}%
+    {Turnstile}{\isabelle@Turnstile}%
+    {tturnstile}{\isabelle@tturnstile}%
+    {TTurnstile}{\isabelle@TTurnstile}%
+    {stileturn}{\isabelle@stileturn}%
+    {surd}{\isabelle@surd}%
+    {le}{\isabelle@le}%
+    {ge}{\isabelle@ge}%
+    {lless}{\isabelle@lless}%
+    {ggreater}{\isabelle@ggreater}%
+    {lesssim}{\isabelle@lesssim}%
+    {greatersim}{\isabelle@greatersim}%
+    {lessapprox}{\isabelle@lessapprox}%
+    {greaterapprox}{\isabelle@greaterapprox}%
+    {in}{\isabelle@in}%
+    {notin}{\isabelle@notin}%
+    {subset}{\isabelle@subset}%
+    {supset}{\isabelle@supset}%
+    {subseteq}{\isabelle@subseteq}%
+    {supseteq}{\isabelle@supseteq}%
+    {sqsubset}{\isabelle@sqsubset}%
+    {sqsupset}{\isabelle@sqsupset}%
+    {sqsubseteq}{\isabelle@sqsubseteq}%
+    {sqsupseteq}{\isabelle@sqsupseteq}%
+    {inter}{\isabelle@inter}%
+    {Inter}{\isabelle@Inter}%
+    {union}{\isabelle@union}%
+    {Union}{\isabelle@Union}%
+    {squnion}{\isabelle@squnion}%
+    {Squnion}{\isabelle@Squnion}%
+    {sqinter}{\isabelle@sqinter}%
+    {Sqinter}{\isabelle@Sqinter}%
+    {setminus}{\isabelle@setminus}%
+    {propto}{\isabelle@propto}%
+    {uplus}{\isabelle@uplus}%
+    {Uplus}{\isabelle@Uplus}%
+    {noteq}{\isabelle@noteq}%
+    {sim}{\isabelle@sim}%
+    {doteq}{\isabelle@doteq}%
+    {simeq}{\isabelle@simeq}%
+    {approx}{\isabelle@approx}%
+    {asymp}{\isabelle@asymp}%
+    {cong}{\isabelle@cong}%
+    {smile}{\isabelle@smile}%
+    {equiv}{\isabelle@equiv}%
+    {frown}{\isabelle@frown}%
+    {Join}{\isabelle@Join}%
+    {bowtie}{\isabelle@bowtie}%
+    {prec}{\isabelle@prec}%
+    {succ}{\isabelle@succ}%
+    {preceq}{\isabelle@preceq}%
+    {succeq}{\isabelle@succeq}%
+    {parallel}{\isabelle@parallel}%
+    {Parallel}{\isabelle@Parallel}%
+    {interleave}{\isabelle@interleave}%
+    {sslash}{\isabelle@sslash}%
+    {bar}{\isabelle@bar}%
+    {bbar}{\isabelle@bbar}%
+    {plusminus}{\isabelle@plusminus}%
+    {minusplus}{\isabelle@minusplus}%
+    {times}{\isabelle@times}%
+    {div}{\isabelle@div}%
+    {cdot}{\isabelle@cdot}%
+    {star}{\isabelle@star}%
+    {bullet}{\isabelle@bullet}%
+    {circ}{\isabelle@circ}%
+    {dagger}{\isabelle@dagger}%
+    {ddagger}{\isabelle@ddagger}%
+    {lhd}{\isabelle@lhd}%
+    {rhd}{\isabelle@rhd}%
+    {unlhd}{\isabelle@unlhd}%
+    {unrhd}{\isabelle@unrhd}%
+    {triangleleft}{\isabelle@triangleleft}%
+    {triangleright}{\isabelle@triangleright}%
+    {triangle}{\isabelle@triangle}%
+    {triangleq}{\isabelle@triangleq}%
+    {oplus}{\isabelle@oplus}%
+    {Oplus}{\isabelle@Oplus}%
+    {otimes}{\isabelle@otimes}%
+    {Otimes}{\isabelle@Otimes}%
+    {odot}{\isabelle@odot}%
+    {Odot}{\isabelle@Odot}%
+    {ominus}{\isabelle@ominus}%
+    {oslash}{\isabelle@oslash}%
+    {dots}{\isabelle@dots}%
+    {cdots}{\isabelle@cdots}%
+    {Sum}{\isabelle@Sum}%
+    {Prod}{\isabelle@Prod}%
+    {Coprod}{\isabelle@Coprod}%
+    {infinity}{\isabelle@infinity}%
+    {integral}{\isabelle@integral}%
+    {ointegral}{\isabelle@ointegral}%
+    {clubsuit}{\isabelle@clubsuit}%
+    {diamondsuit}{\isabelle@diamondsuit}%
+    {heartsuit}{\isabelle@heartsuit}%
+    {spadesuit}{\isabelle@spadesuit}%
+    {aleph}{\isabelle@aleph}%
+    {emptyset}{\isabelle@emptyset}%
+    {nabla}{\isabelle@nabla}%
+    {partial}{\isabelle@partial}%
+    {flat}{\isabelle@flat}%
+    {natural}{\isabelle@natural}%
+    {sharp}{\isabelle@sharp}%
+    {angle}{\isabelle@angle}%
+    {copyright}{\isabelle@copyright}%
+    {registered}{\isabelle@registered}%
+    {hyphen}{\isabelle@hyphen}%
+    {inverse}{\isabelle@inverse}%
+    {sqdot}{\isabelle@sqdot}%
+    {onequarter}{\isabelle@onequarter}%
+    {onehalf}{\isabelle@onehalf}%
+    {threequarters}{\isabelle@threequarters}%
+    {ordfeminine}{\isabelle@ordfeminine}%
+    {ordmasculine}{\isabelle@ordmasculine}%
+    {section}{\isabelle@section}%
+    {paragraph}{\isabelle@paragraph}%
+    {exclamdown}{\isabelle@exclamdown}%
+    {questiondown}{\isabelle@questiondown}%
+    {euro}{\isabelle@euro}%
+    {pounds}{\isabelle@pounds}%
+    {yen}{\isabelle@yen}%
+    {cent}{\isabelle@cent}%
+    {currency}{\isabelle@currency}%
+    {degree}{\isabelle@degree}%
+    {amalg}{\isabelle@amalg}%
+    {mho}{\isabelle@mho}%
+    {lozenge}{\isabelle@lozenge}%
+    {wp}{\isabelle@wp}%
+    {wrong}{\isabelle@wrong}%
+    {acute}{\isabelle@acute}%
+    {index}{\isabelle@index}%
+    {dieresis}{\isabelle@dieresis}%
+    {cedilla}{\isabelle@cedilla}%
+    {hungarumlaut}{\isabelle@hungarumlaut}%
+    {bind}{\isabelle@bind}%
+    {then}{\isabelle@then}%
+    {some}{\isabelle@some}%
+    {Zcomp}{\isabelle@Zcomp}%
+    {Zinj}{\isabelle@Zinj}%
+    {Zpinj}{\isabelle@Zpinj}%
+    {Zfinj}{\isabelle@Zfinj}%
+    {Zsurj}{\isabelle@Zsurj}%
+    {Zpsurj}{\isabelle@Zpsurj}%
+    {Zbij}{\isabelle@Zbij}%
+    {Zpfun}{\isabelle@Zpfun}%
+    {Zffun}{\isabelle@Zffun}%
+    {Zdres}{\isabelle@Zdres}%
+    {Zndres}{\isabelle@Zndres}%
+    {Zrres}{\isabelle@Zrres}%
+    {Znrres}{\isabelle@Znrres}%
+    {Zspot}{\isabelle@Zspot}%
+    {Zsemi}{\isabelle@Zsemi}%
+    {Zproject}{\isabelle@Zproject}%
+    {Ztypecolon}{\isabelle@Ztypecolon}%
+    {Zhide}{\isabelle@Zhide}%
+    {Zcat}{\isabelle@Zcat}%
+    {Zinbag}{\isabelle@Zinbag}%
+    {Zprime}{\isabelle@Zprime}%
+    {hole}{\isabelle@hole}%
+    {newline}{\isabelle@newline}%
+    {comment}{\isabelle@comment}%
+    {^cancel}{\isabelle@caret@cancel}%
+    {^marker}{\isabelle@caret@marker}%
+    {checkmark}{\isabelle@checkmark}%
+    {crossmark}{\isabelle@crossmark}%
+    {open}{\isabelle@open}%
+    {close}{\isabelle@close}%
+    {^here}{\isabelle@caret@here}%
+    {^undefined}{\isabelle@caret@undefined}%
+    {^noindent}{\isabelle@caret@noindent}%
+    {^smallskip}{\isabelle@caret@smallskip}%
+    {^medskip}{\isabelle@caret@medskip}%
+    {^bigskip}{\isabelle@caret@bigskip}%
+    {^item}{\isabelle@caret@item}%
+    {^enum}{\isabelle@caret@enum}%
+    {^descr}{\isabelle@caret@descr}%
+    {^footnote}{\isabelle@caret@footnote}%
+    {^verbatim}{\isabelle@caret@verbatim}%
+    {^theory_text}{\isabelle@caret@theorytext}%
+    {^emph}{\isabelle@caret@emph}%
+    {^bold}{\isabelle@caret@bold}%
+    {^sub}{\isabelle@caret@sub}%
+    {^sup}{\isabelle@caret@sup}%
+    {^bsub}{\isabelle@caret@bsub}%
+    {^esub}{\isabelle@caret@esub}%
+    {^bsup}{\isabelle@caret@bsup}%
+    {^esup}{\isabelle@caret@esup}%
+    {^file}{\isabelle@caret@file}%
+    {^dir}{\isabelle@caret@dir}%
+    {^url}{\isabelle@caret@url}%
+    {^doc}{\isabelle@caret@doc}%
+    {^action}{\isabelle@caret@action}%
+  }[\@InvalidIsabelleSymbol{#1}]%
+}
+
+\makeatother
