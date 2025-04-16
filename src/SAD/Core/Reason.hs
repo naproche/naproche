@@ -343,10 +343,7 @@ unfoldAtomic sign f = do
       liftM2 (++) (subtermLocalProperties h) (localProperties h)
     localProperties (Tag GenericMark _) = return []
     localProperties Trm {trmName = TermEquality, trmArgs = [l,r]} =
-      liftM3 (\a b c -> a ++ b ++ c)
-             (definitionalProperties l r)
-             (definitionalProperties r l)
-             (extensionalities l r)
+      liftM2 (++) (definitionalProperties l r) (definitionalProperties r l)
   -- we combine definitional information for l, for r and if
   -- we have set/class equality we also throw in extensionality for sets/classes
   -- and if we have maps we throw in map extensionality
@@ -372,33 +369,6 @@ unfoldAtomic sign f = do
         unless (null definingFormula) (lift $ W.tell 1) >>
         return definingFormula
         -- increase the counter by 1 and return what we got
-
-    extensionalities f g =
-      let extensionalityFormula =
-            -- set extensionality
-            (guard (setType f && setType g) >> return (classExtensionality f g))
-            `mplus`
-            -- class extensionality
-            (guard (classType f && classType g) >> return (classExtensionality f g))
-            `mplus`
-            -- function extensionality
-            (guard (functionType f && functionType g) >> return (mapExtensionality f g))
-            `mplus`
-            -- map extensionality
-            (guard (mapType f && mapType g) >> return (mapExtensionality f g))
-      in  lift (W.tell 1) >> return extensionalityFormula
-
-    classExtensionality f g =
-      let v = mkVar VarEmpty in mkAll VarEmpty $ Iff (mkElem v f) (mkElem v g)
-    mapExtensionality f g =
-      let v = mkVar VarEmpty
-      in domainEquality (mkDom f) (mkDom g) `And`
-         mkAll VarEmpty (Imp (mkElem v $ mkDom f) $ mkEquality (mkApp f v) (mkApp g v))
-
-    -- depending on the sign we choose the more convenient form of class equality
-    domainEquality =
-      let v = mkVar VarEmpty; sEqu x y = mkAll VarEmpty (Iff (mkElem v x) (mkElem v y))
-      in  if sign then mkEquality else sEqu
 
     setFunDefinitionalProperties t = do
       evaluations <- asks evals

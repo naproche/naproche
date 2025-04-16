@@ -37,6 +37,13 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
   * **New:** The axiom that every map with a set-sized domain is a function that
     has been provided by the libraries is now hard-coded in Naproche.
 
+  * **New:** An extensionality axiom for pairs is now hard-coded in Naproche:
+    `(a,b) = (a',b')` if `a = a'` and `b = b'`.
+
+  * **Changed:** The hard-coded extensionality axioms for classes and maps are
+    now passed to the ATPs as regular axioms instead of being part of the
+    unfolding mechanism for atomic formulas.
+
 
 ### Misc
 

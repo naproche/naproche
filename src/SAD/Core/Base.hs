@@ -308,9 +308,11 @@ initDefinitions = Map.fromList [
   (PairId, pair),
   (ObjectId, object) ]
 
-v0, v1 :: Formula
+v0, v1, v2, v3 :: Formula
 v0 = mkVar $ VarHole "0"
 v1 = mkVar $ VarHole "1"
+v2 = mkVar $ VarHole "2"
+v3 = mkVar $ VarHole "3"
 
 signature_, definition :: [Formula] -> Formula -> Formula -> [Formula] -> [[Formula]] -> DefEntry
 signature_ g f = DefEntry g f Signature
@@ -365,33 +367,84 @@ initGuards = foldr (`DisTree.insert` True) DisTree.empty [
 
 initContext :: [Context]
 initContext = [
-    setContext,
-    functionContext1,
-    functionContext2,
-    domainContext,
-    elementContext,
-    applicationContext,
-    pairContext
+    pairExtensionality,
+    mapExtensionality,
+    classExtensionality,
+    functionCondition,
+    functionDefinition,
+    setDefinition,
+    pairSignature,
+    applicationSignature,
+    domainSignature,
+    elementSignature
   ]
 
-makeInitContext :: Formula -> Context
-makeInitContext f = Context f [makeBlock f [] Block.Definition "" [] []] []
+makeInitDefinition :: Formula -> Context
+makeInitDefinition f = Context f [makeBlock f [] Block.Definition "" [] []] []
 
-setContext, functionContext1, functionContext2, domainContext, elementContext, applicationContext, pairContext :: Context
-setContext = makeInitContext $
-  mkAll (VarHole "0") (mkSet v0 `Iff` (mkClass v0 `And` mkObject v0))
-functionContext1 = makeInitContext $
-  mkAll (VarHole "0") (mkFunction v0 `Iff` (mkMap v0 `And` mkObject v0))
-functionContext2 = makeInitContext $
+makeInitSignature :: Formula -> Context
+makeInitSignature f = Context f [makeBlock f [] Block.Signature "" [] []] []
+
+makeInitAxiom :: Formula -> Context
+makeInitAxiom f = Context f [makeBlock f [] Block.Axiom "" [] []] []
+
+
+elementSignature :: Context
+elementSignature = makeInitSignature $
+  mkAll (VarHole "0") (mkClass v0 `Imp` mkAll (VarHole "1") (Tag HeadTerm (mkElem v1 v0) `Imp` mkObject v1))
+
+domainSignature :: Context
+domainSignature = makeInitSignature $
+  mkAll (VarHole "0") (mkMap v0 `Imp` mkAll (VarHole "1") (Tag HeadTerm (mkEquality v1 (mkDom v0)) `Imp` mkClass v1))
+
+applicationSignature :: Context
+applicationSignature = makeInitSignature $
+  mkAll (VarHole "0") (mkAll (VarHole "1") ((mkMap v0 `And` mkElem v1 (mkDom v0)) `Imp`
+  mkAll (VarHole "2") (Tag HeadTerm (mkEquality v2 (mkApp v0 v1)) `Imp` mkObject v2)))
+
+pairSignature :: Context
+pairSignature = makeInitSignature $
+ mkAll (VarHole "0") (mkAll (VarHole "1") ((mkObject v0 `And` mkObject v1) `Imp`
+ mkAll (VarHole "2") (Tag HeadTerm (mkEquality v2 (mkPair v0 v1)) `Imp` mkObject v2)))
+
+
+setDefinition :: Context
+setDefinition = makeInitDefinition $
+  mkAll (VarHole "0") (Tag HeadTerm (mkSet v0) `Iff` (mkClass v0 `And` mkObject v0))
+
+functionDefinition :: Context
+functionDefinition = makeInitDefinition $
+  mkAll (VarHole "0") (Tag HeadTerm (mkFunction v0) `Iff` (mkMap v0 `And` mkObject v0))
+
+
+functionCondition :: Context
+functionCondition = makeInitAxiom $
   mkAll (VarHole "0") ((mkMap v0 `And` mkSet (mkDom v0)) `Imp` mkFunction v0)
-domainContext = makeInitContext $
-  mkAll (VarHole "0") (mkMap v0 `Imp` mkClass (mkDom v0))
-elementContext = makeInitContext $
-  mkAll (VarHole "0") (mkAll (VarHole "1") ((mkClass v0 `And` mkElem v1 v0) `Imp` mkObject v1))
-applicationContext = makeInitContext $
-  mkAll (VarHole "0") (mkAll (VarHole "1") ((mkMap v0 `And` mkElem v1 (mkDom v0)) `Imp` mkObject (mkApp v0 v1)))
-pairContext = makeInitContext $
- mkAll (VarHole "0") (mkAll (VarHole "1") ((mkObject v0 `And` mkObject v1) `Imp` mkObject (mkPair v0 v1)))
+
+classExtensionality :: Context
+classExtensionality = makeInitAxiom $
+  mkAll (VarHole "0") (mkAll (VarHole "1")
+    ((mkClass v0 `And` mkClass v1)
+    `Imp` ((mkAll (VarHole "2") (mkElem v2 v0 `Imp` mkElem v2 v1)
+    `And` mkAll (VarHole "2") (mkElem v2 v1 `Imp` mkElem v2 v0))
+    `Imp` mkEquality v0 v1)))
+
+mapExtensionality :: Context
+mapExtensionality = makeInitAxiom $
+  mkAll (VarHole "0") (mkAll (VarHole "1")
+  ((mkMap v0 `And` mkMap v1
+  `And` mkEquality (mkDom v0) (mkDom v1)
+  `And` mkAll (VarHole "2") (mkElem v2 (mkDom v0) `Imp` mkEquality (mkApp v0 v2) (mkApp v1 v2)))
+  `Imp` mkEquality v0 v1))
+
+pairExtensionality :: Context
+pairExtensionality = makeInitAxiom $
+  mkAll (VarHole "0") (mkAll (VarHole "1") (mkAll (VarHole "2") (mkAll (VarHole "3")
+    (((mkObject v0 `And` mkObject v1 `And` mkObject v2 `And` mkObject v3)
+    `And` mkEquality v0 v2
+    `And` mkEquality v1 v3)
+    `Imp` mkEquality (mkPair v0 v1) (mkPair v2 v3)))))
+
 
 -- retrieve definitional formula of a term
 defForm :: Definitions -> Formula -> Maybe Formula
