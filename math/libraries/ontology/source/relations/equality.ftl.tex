@@ -1,0 +1,24 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Equality]{equality.ftl}
+\importmodule[libraries/meta-inf]{macros.ftl}
+
+\begin{fakeforthel}
+  \begin{signature}
+    Let $x,y$ be arbitrary entities.
+    \emph{$x$ is equal to $y$} is a relation.
+
+    Let $\emph{x \eq y}$ stand for $x$ is equal to $y$.
+    Let $\emph{x \neq y}$ stand for $x$ is not equal to $y$.
+  \end{signature}
+\end{fakeforthel}
+
+\begin{convention}[forthel]
+  Let $x$ and $y$ \emph{agree} stand for $x$ is equal to $y$.
+  Let $x$ \emph{agrees with $y$} stand for $x$ is equal to $y$.
+  Let $x$ and $y$ are \emph{distinct} stand for $x \neq y$.
+\end{convention}
+\end{smodule}
+\end{document}

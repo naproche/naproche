@@ -1,0 +1,31 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Induction Schema]{induction.ftl}
+\importmodule[libraries/ontology]{relations?induction-order.ftl}
+
+\begin{fakeforthel}
+  \begin{axiom}[title=Induction Schema]
+    Let $\tau$ be a term.
+    Let $\nu_1,\dots,\nu_n$ denote the free variables of $\tau$.
+    Let $\psi_1,\dots,\psi_n$ and $\varphi$ be formulas.
+    Assume that the following holds for all entities $x_1,\dots,x_n$ with $\psi_i[x_1/\nu_1,\dots,x_i/\nu_i]$ for all $i \eq 1,\dots,n$:
+    If $\tau[y_1/\nu_1,\dots,y_n/\nu_n] \iless \tau[x_1/\nu_1,\dots,x_n/\nu_n]$
+    for all entities $y_1,\dots,y_n$ with $\psi_i[y_1/\nu_1,\dots,y_i/\nu_i]$ for all $i \eq 1,\dots,n$
+    then $\varphi[x_1/\nu_1,\dots,x_n/\nu_n]$.
+    Then $\varphi[x_1/\nu_1,\dots,x_n/\nu_n]$
+    for all entities $x_1,\dots,x_n$ with $\psi_i[x_1/\nu_1,\dots,x_i/\nu_i]$ for all $i \eq 1,\dots,n$.
+  \end{axiom}
+\end{fakeforthel}
+
+\begin{fakeforthel}
+  \begin{corollary}
+    Let $A$ be a class, $\nu$ be a variable and $\varphi$ be formulas.
+    Assume that the following holds for all $x \elem A$:
+    If $\varphi[y/\nu]$ for for all $y \elem A$ with $y \iless x$ then $\varphi[x/\nu]$.
+    Then $\varphi[x/\nu]$ for all $x \elem A$.
+  \end{corollary}
+\end{fakeforthel}
+\end{smodule}
+\end{document}

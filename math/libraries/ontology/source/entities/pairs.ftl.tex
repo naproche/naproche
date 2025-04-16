@@ -1,0 +1,15 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Pairs]{pairs.ftl}
+\importmodule[libraries/ontology]{entities?objects.ftl}
+
+\begin{fakeforthel}
+  \begin{signature}
+    Let $a,b$ be objects.
+    $\emph{(a,b)}$ is an object.
+  \end{signature}
+\end{fakeforthel}
+\end{smodule}
+\end{document}

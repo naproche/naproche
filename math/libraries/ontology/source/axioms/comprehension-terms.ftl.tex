@@ -1,0 +1,49 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Comprehension Terms]{comprehension-terms.ftl}
+\importmodule[libraries/ontology]{entities?comprehension-terms.ftl}
+\importmodule[libraries/ontology]{relations?equality.ftl}
+\importmodule[libraries/ontology]{entities?elements.ftl}
+
+\begin{fakeforthel}
+  \begin{axiom}
+    Let $a_1,\dots,a_n$ be objects and $x$ be an arbitrary entity.
+    Then $x \elem \enumclass{a_1,\dots,a_n}$ iff $x \eq a_1$ or \dots or $x \eq a_n$.
+  \end{axiom}
+\end{fakeforthel}
+
+\begin{fakeforthel}
+  \begin{axiom}
+    Let $\tau$ be a term, $\varphi$ be a formula and $x$ be an arbitrary entity.
+    Let $\nu_1,\dots,\nu_n$ denote the free variables of $\tau$.
+    Then  $x \elem \compclass{\tau}{\varphi}$ iff $x$ is an object and there exist entities $y_1,\dots,y_n$ such that
+    $\varphi[y_1/\nu_1,\dots,y_n/\nu_n]$ and $x \eq \tau[y_1/\nu_1,\dots,y_n/\nu_n]$.
+  \end{axiom}
+\end{fakeforthel}
+
+\begin{fakeforthel}
+  \begin{corollary}
+    Let $v$ be a variable, $\varphi$ be a formula and $x$ be an arbitrary entity.
+    Then $x \elem \compclass{\nu}{\varphi}$ iff $x$ is an object and $\varphi[x/\nu]$.
+  \end{corollary}
+\end{fakeforthel}
+
+\begin{fakeforthel}
+  \begin{axiom}
+    Let $\tau$ be a term, $A$ be a class, $\varphi$ be a formula and $x$ be an arbitrary entity.
+    Let $\nu_1,\dots,\nu_n$ denote the free variables of $\tau$.
+    Then $x \elem \sepclass{\tau}{A}{\varphi}$ iff $x \elem A$ and there exist entities $y_1,\dots,y_n$ such that
+    $\varphi[y_1/\nu_1,\dots,y_n/\nu_n]$ and $x \eq \tau[y_1/\nu_1,\dots,y_n/\nu_n]$.
+  \end{axiom}
+\end{fakeforthel}
+
+\begin{fakeforthel}
+  \begin{corollary}
+    Let $\nu$ be a variable, $A$ be a class, $\varphi$ be a formula and $x$ be an arbitrary entity.
+    Then $x \elem \sepclass{\nu}{A}{\varphi}$ iff $x \elem A$ and $\varphi[x/\nu]$.
+  \end{corollary}
+\end{fakeforthel}
+\end{smodule}
+\end{document}

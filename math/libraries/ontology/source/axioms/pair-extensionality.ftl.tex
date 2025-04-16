@@ -1,0 +1,16 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Pair Extensionality]{pair-extensionality.ftl}
+\importmodule[libraries/ontology]{entities?pairs.ftl}
+\importmodule[libraries/ontology]{relations?equality.ftl}
+
+\begin{fakeforthel}
+  \begin{axiom}[title=Pair Extensionality]
+    Let $a,a',b,b'$ be objects.
+    If $(a, b) \eq (a', b')$ then $a \eq a'$ and $b \eq b'$.
+  \end{axiom}
+\end{fakeforthel}
+\end{smodule}
+\end{document}

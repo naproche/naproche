@@ -32,7 +32,7 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
   * **New:** Isabelle symbols (e.g. `\<in>`) are now allowed in ForTheL texts.
 
 
-### Changes on the Naproche Ontology
+### Changes on the Naproche ontology
 
   * **New:** The axiom that every map with a set-sized domain is a function that
     has been provided by the libraries is now hard-coded in Naproche.
@@ -43,6 +43,12 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
   * **Changed:** The hard-coded extensionality axioms for classes and maps are
     now passed to the ATPs as regular axioms instead of being part of the
     unfolding mechanism for atomic formulas.
+
+
+### Changes on the formalizations
+
+  * **New:** A new library `math/libraries/ontology` that describes the
+    hard-coded object-level ontology of Naproche.
 
 
 ### Misc

@@ -1,0 +1,16 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Class Extensionality]{class-extensionality.ftl}
+\importmodule[libraries/ontology]{entities?elements.ftl}
+\importmodule[libraries/ontology]{relations?equality.ftl}
+
+\begin{fakeforthel}
+  \begin{axiom}[title=Class Extensionality]
+    Let $A,B$ be classes.
+    If every element of $A$ is an element of $B$ and every element of $B$ is an element of $A$ then $A \eq B$.
+  \end{axiom}
+\end{fakeforthel}
+\end{smodule}
+\end{document}

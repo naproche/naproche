@@ -1,0 +1,41 @@
+\documentclass[numberswithinsection]{naproche-library}
+\libinput[libraries/ontology]{preamble}
+\libinput[latex]{license}
+
+\title{The Object-Level Ontology of Naproche}
+\author{Marcel Schütz (2025)}
+\date{}
+
+\stexstylemodule{\begin{sfragment}{\thistitle}\texttt{\footnotesize\thismoduleuri}}{\end{sfragment}}
+
+\begin{document}
+  \maketitle
+  \tableofcontents
+  \setsectionlevel{section}
+  \begin{sfragment}{Entities}
+    \inputref[libraries/ontology]{entities/objects.ftl.tex}
+    \inputref[libraries/ontology]{entities/classes.ftl.tex}
+    \inputref[libraries/ontology]{entities/maps.ftl.tex}
+    \inputref[libraries/ontology]{entities/elements.ftl.tex}
+    \inputref[libraries/ontology]{entities/functions.ftl.tex}
+    \inputref[libraries/ontology]{entities/sets.ftl.tex}
+    \inputref[libraries/ontology]{entities/domain.ftl.tex}
+    \inputref[libraries/ontology]{entities/application.ftl.tex}
+    \inputref[libraries/ontology]{entities/pairs.ftl.tex}
+    \inputref[libraries/ontology]{entities/comprehension-terms.ftl.tex}
+  \end{sfragment}
+  \begin{sfragment}{Relations}
+    \inputref[libraries/ontology]{relations/equality.ftl.tex}
+    \inputref[libraries/ontology]{relations/induction-order.ftl.tex}
+  \end{sfragment}
+  \begin{sfragment}{Axioms}
+    \inputref[libraries/ontology]{axioms/function-condition.ftl.tex}
+    \inputref[libraries/ontology]{axioms/class-extensionality.ftl.tex}
+    \inputref[libraries/ontology]{axioms/map-extensionality.ftl.tex}
+    \inputref[libraries/ontology]{axioms/pair-extensionality.ftl.tex}
+    \inputref[libraries/ontology]{axioms/induction.ftl.tex}
+    \inputref[libraries/ontology]{axioms/comprehension-terms.ftl.tex}
+    \inputref[libraries/ontology]{axioms/separation.ftl.tex}
+  \end{sfragment}
+  \printlicense[CcByNcSa]{Marcel Schütz (2025)}
+\end{document}

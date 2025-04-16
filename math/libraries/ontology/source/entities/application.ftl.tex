@@ -1,0 +1,17 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Application of a Map]{application.ftl}
+\importmodule[libraries/ontology]{entities?domain.ftl}
+\importmodule[libraries/ontology]{entities?elements.ftl}
+\importmodule[libraries/ontology]{entities?objects.ftl}
+
+\begin{fakeforthel}
+  \begin{signature}
+    Let $f$ be a map and $a \elem \dom(f)$.
+    $\emph{f(a)}$ is an object.
+  \end{signature}
+\end{fakeforthel}
+\end{smodule}
+\end{document}

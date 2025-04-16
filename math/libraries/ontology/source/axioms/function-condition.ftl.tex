@@ -1,0 +1,17 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Condition of a Map to be a Function]{function-condition.ftl}
+\importmodule[libraries/ontology]{entities?functions.ftl}
+\importmodule[libraries/ontology]{entities?domain.ftl}
+\importmodule[libraries/ontology]{entities?sets.ftl}
+
+\begin{fakeforthel}
+  \begin{axiom}[title=Function Condition]
+    Let $f$ be a maps.
+    If $\dom(f)$ is a set then $f$ is a function.
+  \end{axiom}
+\end{fakeforthel}
+\end{smodule}
+\end{document}

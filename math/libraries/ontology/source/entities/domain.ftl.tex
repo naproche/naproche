@@ -1,0 +1,17 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=The Domain of a Map]{domain.ftl}
+\importmodule[libraries/meta-inf]{macros.ftl}
+\importmodule[libraries/ontology]{entities?maps.ftl}
+\importmodule[libraries/ontology]{entities?classes.ftl}
+
+\begin{fakeforthel}
+  \begin{signature}
+    Let $f$ be a map.
+    $\emph{\dom(f)}$ is an class.
+  \end{signature}
+\end{fakeforthel}
+\end{smodule}
+\end{document}

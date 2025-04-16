@@ -1,0 +1,20 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Elements of Classes]{elements.ftl}
+\importmodule[libraries/meta-inf]{macros.ftl}
+\importmodule[libraries/ontology]{entities?classes.ftl}
+\importmodule[libraries/ontology]{entities?objects.ftl}
+
+\begin{fakeforthel}
+  \begin{signature}
+    Let $A$ be a class.
+    A \emph{element of $A$} is an object.
+
+    Let \emph{$a \elem A$} stand for $a$ is an element of $A$.
+    Let \emph{$a \nelem A$} stand for $a$ is not an element of $A$.
+  \end{signature}
+\end{fakeforthel}
+\end{smodule}
+\end{document}

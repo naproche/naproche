@@ -1,0 +1,15 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\IfInputref{}{\setsectionlevel{section}}
+\begin{smodule}[title=Sets]{sets.ftl}
+\importmodule[libraries/ontology]{entities?classes.ftl}
+\importmodule[libraries/ontology]{entities?objects.ftl}
+
+\begin{fakeforthel}
+  \begin{definition}
+    A \emph{set} is a class that is an object.
+  \end{definition}
+\end{fakeforthel}
+\end{smodule}
+\end{document}

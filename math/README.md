@@ -116,6 +116,8 @@ math .................................... Naproche formalizations
     │
     ├── lists ........................... basic notions and results concerning lists
     │
+    ├── ontology ........................ presentation of the hard-coded object-level ontology of Naproche
+    │
     └── set-theory ...................... basic notions and results concerning ordinal and cardinal numbers
 ```
 

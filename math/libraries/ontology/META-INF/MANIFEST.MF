@@ -1,0 +1,3 @@
+id: libraries/ontology
+ns: https://naproche.github.io/math/libraries/ontology
+narration-base: https://naproche.github.io/math/libraries/ontology
