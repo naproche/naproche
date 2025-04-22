@@ -179,7 +179,7 @@ mainPIDE initInstrs = do
   -- Initialize MESON and prover cache:
   mesonCache <- MESON.init_cache
   proverCache <- Prover.init_cache
-  Server.server (Server.publish_stdout "Naproche-SAD") $ pideServer mesonCache proverCache initInstrs
+  Server.server (Server.publish_stdout "Naproche") $ pideServer mesonCache proverCache initInstrs
 
 pideServer :: MESON.Cache -> Prover.Cache -> [Instr] -> Socket -> IO ()
 pideServer mesonCache proverCache initInstrs socket =
