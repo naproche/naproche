@@ -1,7 +1,5 @@
 # General
 
-* Discontinue used TermEmpty!?
-
 * Prefer compact Isabelle.Bytes (ShortByteString) for symbolic names,
   instead of String, Text, Lazy.Text!?
 
@@ -45,8 +43,3 @@
 * Handle math mode delimiters during parsing instead of during tokenizing.
 
 * Add TeX commands for instructions.
-
-* Add a variant of the `read` instructions that reads a file without
-  checking it.
-
-* Add LaTeX environments for subproofs, cases etc.
