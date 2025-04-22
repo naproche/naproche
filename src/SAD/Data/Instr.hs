@@ -20,7 +20,7 @@ module SAD.Data.Instr (
   printsimpParam, printthesisParam, unfoldParam, unfoldsfParam, unfoldlowParam, unfoldlowsfParam,
   translationParam, texParam,
   helpParam, serverParam, onlytranslateParam, onlytokenizeParam,
-  modeParam, proverParam, initParam, theoryParam,
+  modeParam, proverParam,
   keywordsCommand, keywordsSynonym, keywordsLimit, keywordsFlag, keywordsArgument, keywordsModule,
   keywordsDropLimit, keywordsDropFlag
 ) where
@@ -151,10 +151,6 @@ modeParam, proverParam :: Param.T Bytes
 textArgs@[modeParam, proverParam] =
    [Param.bytes "mode" "run Naproche in mode MODE" "verify",
     Param.bytes "prover" "use prover NAME" (Prover.get_name Prover.eprover)]
-
-initParam, theoryParam :: Param.T Bytes
-initParam = Param.bytes "init" "init file, empty to skip" "init.opt"
-theoryParam = Param.bytes "theory" "choose the underlying theory" "fol"
 
 verboseFlags :: [Param.T Bool]
 verboseFlags =

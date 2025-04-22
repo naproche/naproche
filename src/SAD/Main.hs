@@ -104,6 +104,9 @@ mainTerminal initInstrs nonInstrArgs = do
           "render-file" -> case nonInstrArgs of
             [] -> putStrLn "Unable to render document: No file given." >> return 1
             filePath : _ -> renderFile context filePath
+          "render-archive" -> case nonInstrArgs of
+            [] -> putStrLn "Unable to render archive: No archive ID given." >> return 1
+            archiveId : _ -> renderArchive context archiveId
           modeArg -> putStrLn ("Invalid mode: " ++ make_string modeArg) >> return 1)
         `catch` (\Exception.UserInterrupt -> do
           Program.exit_thread
@@ -367,6 +370,14 @@ renderFile context filePath = do
 
   return 0
 
+-- | Render all TeX files in the @source@ directory of an sTeX archive to one
+-- single PDF.
+renderArchive :: Program.Context -> FilePath -> IO Int
+renderArchive context archiveId = do
+  putStrLn "[Warning] This is an experimental feature. Please be gentle.\n"
+  -- TODO
+  return 0
+
 
 -- * Arguments
 
@@ -405,7 +416,6 @@ optArgument chars p a = optParam chars p arg s
 options :: [GetOpt.OptDescr Instr]
 options = [
   optSwitch "h" helpParam True "",
-  optArgument "" initParam "FILE",
   optArgument "M" modeParam "MODE",
   optFlag "" translationParam,
   optSwitch "" serverParam True "",
@@ -418,7 +428,6 @@ options = [
   optSwitch "n" proveParam False "cursory mode (equivalent to --prove=off)",
   optSwitch "r" checkParam False "raw mode (equivalent to --check=off)",
   optFlag "" proveParam,
-  optArgument "" theoryParam "THEORY",
   optFlag "" checkParam,
   optFlag "" symsignParam,
   optFlag "" infoParam,
