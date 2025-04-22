@@ -26,9 +26,7 @@ module SAD.Helpers (
   failWithMessage,
 
   getNaprocheDirectoryPath,
-  getFormalizationsDirectoryPath,
-  getTexDirectoryPath,
-  getTexliveDirectoryPath
+  getFormalizationsDirectoryPath
 ) where
 
 import Control.Arrow
@@ -167,8 +165,8 @@ failWithMessage functionId message = error $ failureMessage functionId message
 -- | Get the path to the naproche directory.
 getNaprocheDirectoryPath :: Program.Context -> IO FilePath
 getNaprocheDirectoryPath context = if Program.is_pide context
-   then make_string <$> getenv (make_bytes "NAPROCHE_HOME")
-   else do
+  then make_string <$> getenv (make_bytes "NAPROCHE_HOME")
+  else do
     executablePath <- getExecutablePath
     let executablePathComps = splitPath executablePath -- e.g. ".../naproche/x86_64-linux/Naproche"
         naprocheHomePathComps = dropEnd 2 executablePathComps
@@ -177,21 +175,7 @@ getNaprocheDirectoryPath context = if Program.is_pide context
 -- | Get the path to the formalizations directory.
 getFormalizationsDirectoryPath :: Program.Context -> IO FilePath
 getFormalizationsDirectoryPath context = if Program.is_pide context
-   then make_string <$> getenv (make_bytes "NAPROCHE_FORMALIZATIONS")
-   else do
-        naprocheDirectoryPath <- getNaprocheDirectoryPath context
-        return $ naprocheDirectoryPath </> "math"
-
--- | Get the path to the TeX directory.
-getTexDirectoryPath :: Program.Context -> IO FilePath
-getTexDirectoryPath context = if Program.is_pide context
-   then make_string <$> getenv (make_bytes "NAPROCHE_TEX")
-   else do
-        naprocheDirectoryPath <- getNaprocheDirectoryPath context
-        return $ naprocheDirectoryPath </> "tex"
-
--- | Get the path to the TeX Live directory.
-getTexliveDirectoryPath :: Program.Context -> IO FilePath
-getTexliveDirectoryPath context = do
-    texDirectoryPath <- getTexDirectoryPath context
-    return $ texDirectoryPath </> "texlive"
+  then make_string <$> getenv (make_bytes "NAPROCHE_FORMALIZATIONS")
+  else do
+    naprocheDirectoryPath <- getNaprocheDirectoryPath context
+    return $ naprocheDirectoryPath </> "math"
