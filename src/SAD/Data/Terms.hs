@@ -31,7 +31,6 @@ data TermName
   | TermEquality
   | TermLess
   | TermThesis
-  | TermEmpty
   deriving (Eq, Ord, Show)
 
 termFunction :: TermName
@@ -71,7 +70,6 @@ instance Representation TermName where
   represent TermEquality = "="
   represent TermLess  = "iLess"
   represent TermThesis = "#TH#"
-  represent TermEmpty = ""
 
 data TermId
   = EqualityId

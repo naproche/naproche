@@ -87,7 +87,6 @@ term_name (TermTask n) = "tsk " <> Value.print_int n
 term_name TermEquality = undefined
 term_name TermLess  = undefined
 term_name TermThesis = undefined
-term_name TermEmpty = ""
 
 consts :: Map TermName Bytes
 consts =
