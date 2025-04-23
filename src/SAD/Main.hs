@@ -108,10 +108,24 @@ mainTerminal initInstrs nonInstrArgs = do
             [] -> putStrLn "Unable to render archive: No archive ID given." >> return 1
             archiveId : _ -> renderArchive context archiveId
           modeArg -> putStrLn ("Invalid mode: " ++ make_string modeArg) >> return 1)
-        `catch` (\Exception.UserInterrupt -> do
-          Program.exit_thread
-          Console.stderr ("Interrupt" :: String)
-          return Process_Result.interrupt_rc)
+        `catch` (\case
+            Exception.UserInterrupt -> do
+              Program.exit_thread
+              Console.stderr ("User Interrupt" :: String)
+              return Process_Result.interrupt_rc
+            Exception.StackOverflow -> do
+              Program.exit_thread
+              Console.stderr ("Stack Overflow" :: String)
+              return Process_Result.error_rc
+            Exception.HeapOverflow -> do
+              Program.exit_thread
+              Console.stderr ("Heap Overflow" :: String)
+              return Process_Result.error_rc
+            Exception.ThreadKilled -> do
+              Program.exit_thread
+              Console.stderr ("Thread Killed" :: String)
+              return 137 -- kill signal
+            )
         `catch` (\(err :: Exception.SomeException) -> do
           Program.exit_thread
           Console.stderr (Exception.displayException err)
