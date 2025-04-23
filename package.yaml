@@ -90,6 +90,7 @@ library:
     - SAD.Parser.Combinators
     - SAD.Parser.Primitives
     - SAD.Parser.Token
+    - SAD.Render.PDF
 
 executables:
   Naproche:

@@ -24,8 +24,6 @@ import System.Console.GetOpt qualified as GetOpt
 import System.Environment qualified as Environment
 import System.IO
 import System.FilePath
-import System.Directory
-import System.Process (callCommand)
 import Network.Socket (Socket)
 
 import SAD.Prove.MESON qualified as MESON
@@ -37,7 +35,7 @@ import SAD.Parser.TEX.Lexer qualified as TEX
 import SAD.Parser.FTL.Token qualified as FTL
 import SAD.Parser.TEX.Token qualified as TEX
 import SAD.Parser.Token (renderTokens)
-import SAD.Helpers (getFormalizationsDirectoryPath)
+import SAD.Render.PDF
 
 import Isabelle.Bytes qualified as Bytes
 import Isabelle.Bytes (Bytes)
@@ -352,45 +350,6 @@ verifyInputText dialect mesonCache proverCache proofTexts = do
   return $ if success
     then 0
     else 1
-
-
--- * Rendering ForTheL Files and Archives
-
--- | Render a TeX file to PDF.
-renderFile :: Program.Context -> FilePath -> IO Int
-renderFile context filePath = do
-  putStrLn "[Warning] This is an experimental feature. Please be gentle.\n"
-  formalizationsDirectoryPath <- getFormalizationsDirectoryPath context
-
-  -- Set the paths to pdflatex and bibtex, and the MATHHUB and TEXINPUTS variable:
-  let pdflatexBin = "pdflatex"
-      bibtexBin = "bibtex"
-      mathhubVar = formalizationsDirectoryPath
-      texinputsVar = formalizationsDirectoryPath </> "latex" </> "lib//;" 
-  putStrLn $ "[Info] Path to pdflatex:   " ++ pdflatexBin
-  putStrLn $ "[Info] Path to bibtex:     " ++ bibtexBin
-  putStrLn $ "[Info] MATHHUB variable:   " ++ mathhubVar
-  putStrLn $ "[Info] TEXINPUTS variable: " ++ texinputsVar
-
-  -- Render the input file as PDF:
-  let inputDir = takeDirectory filePath
-      inputFile = takeFileName filePath
-      inputFileBase = takeBaseName inputFile
-  setCurrentDirectory inputDir
-  callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_WRITESMS=true " ++ pdflatexBin ++ " " ++ inputFile
-  callCommand $ bibtexBin ++ " " ++ inputFileBase ++ " | true" -- succeed even if bibtex fails
-  callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
-  callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
-
-  return 0
-
--- | Render all TeX files in the @source@ directory of an sTeX archive to one
--- single PDF.
-renderArchive :: Program.Context -> FilePath -> IO Int
-renderArchive context archiveId = do
-  putStrLn "[Warning] This is an experimental feature. Please be gentle.\n"
-  -- TODO
-  return 0
 
 
 -- * Arguments

@@ -53,8 +53,27 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
 
 ### Misc
 
+  * **Changed:** In the command line interface, the mode `render` was
+    renamed to `render-file`.
+
+  * **New:** In the command line interface, there is a new mode `render-archive`
+    in which all `.ftl.tex` files in the `source` directory of an sTeX archive
+    in the `math` directory are rendered as one PDF file.
+
+    For instance,
+
+    ```sh
+    Naproche --mode=render-archive libraries/lists
+    ```
+
+    generates two files `math/libraries/lists/source/lists.ftl.tex` and
+    `math/libraries/lists/source/lists.ftl.pdf` which present the contents of
+    all `.ftl.tex` files in `math/libraries/lists/source` (except the file
+    `math/libraries/lists/source/lists.ftl.tex` itself) and its
+    subdirectories.
+
   * **Removed:** The file `CONTRIBUTING.md` was removed. Its content is now
-  available in the [Naproche Wiki](https://github.com/naproche/naproche/wiki).
+    available in the [Naproche Wiki](https://github.com/naproche/naproche/wiki).
 
 
 --------------------------------------------------------------------------------

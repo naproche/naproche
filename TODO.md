@@ -43,3 +43,7 @@
 * Handle math mode delimiters during parsing instead of during tokenizing.
 
 * Add TeX commands for instructions.
+
+* In the `render-archive` mode, sort the `inputref` commands topologically
+  (relative to the `importmodule` and `usemodule` dependencies between the
+  `inputref`ed files).
