@@ -160,7 +160,7 @@ failWithMessage :: String -> String -> a
 failWithMessage functionId message = error $ failureMessage functionId message
 
 
--- *
+-- * Getting Directory Paths
 
 -- | Get the path to the naproche directory.
 getNaprocheDirectoryPath :: Program.Context -> IO FilePath
