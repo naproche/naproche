@@ -214,7 +214,7 @@ multiPredicate p = (token' "not" >> mNegative) <|> mPositive
 --- Notions
 
 baseNotion :: FTL (Formula -> Formula, Formula, Set PosVar)
-baseNotion = fmap digadd $ cm <|> symEqnt <|> (collection </> primNotion term)
+baseNotion = fmap digadd $ cm <|> symEqnt <|> (entity </> collection </> primNotion term)
   where
     cm = token' "common" >> primCommonNotion term terms
     symEqnt = do
@@ -473,6 +473,12 @@ collection = label "class definition" $ symbClass <|> classOf
       return (id, setFormula mkColl nmDecl $ cnd $ pVar nm, Set.singleton h)
     setFormula mkColl dcl = let nm = PosVar (declName dcl) (declPosition dcl) in
       And (mkColl (mkVar (VarHole ""))) . dAll dcl . Iff (mkElem (pVar nm) (mkVar (VarHole "")))
+
+entity :: FTL MNotion
+entity = do
+  token' "entity"
+  nm <- var -|- hidden
+  return (id, Top , Set.singleton nm)
 
 
 symbClassNotation :: FTL (Formula -> Formula, (PosVar, Formula -> Formula))

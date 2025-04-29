@@ -31,6 +31,18 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
 
   * **New:** Isabelle symbols (e.g. `\<in>`) are now allowed in ForTheL texts.
 
+  * **New:** There is a new kind of notion `entity` that captures everything in
+    the universe of discourse, i.e. in particular objects, classes, maps and
+    everything whose type has been introduced via `Signature. A ... is a
+    notion`. This can be useful to refer to terms of an unspecified type.
+    
+    E.g. to define an ordered pair we can now write `Definition. An ordered pair
+    is an entity x such that x = (a,b) for some objects a,b.` which is
+    translated to
+    `∀x(aOrderedPair(x) ⟺ (⊤ ∧ ∃a∃b(aObject(a) ∧ aObject(b) ∧ x = (a,b))))`.
+    Note that `an entity x` is translated to `⊤` which allow us not to
+    commit to a specific type of `x`.
+
 
 ### Changes on the Naproche ontology
 
