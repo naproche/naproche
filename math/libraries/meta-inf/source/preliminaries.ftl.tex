@@ -1,0 +1,44 @@
+\documentclass{article}
+\usepackage{naproche}
+\libinput{preamble}
+
+\title{Preliminaries}
+\author{}
+\date{}
+
+\begin{document}
+\begin{smodule}[title=Preliminaries]{preliminaries.ftl}
+
+\maketitle
+
+% Import the vocabulary:
+\importmodule[libraries/meta-inf]{vocabulary.ftl}
+
+% Import all modules from libraries/ontology:
+\importmodule[libraries/ontology]{axioms?class-extensionality.ftl}
+\importmodule[libraries/ontology]{axioms?comprehension-terms.ftl}
+\importmodule[libraries/ontology]{axioms?function-condition.ftl}
+\importmodule[libraries/ontology]{axioms?induction.ftl}
+\importmodule[libraries/ontology]{axioms?map-extensionality.ftl}
+\importmodule[libraries/ontology]{axioms?pair-extensionality.ftl}
+\importmodule[libraries/ontology]{axioms?separation.ftl}
+\importmodule[libraries/ontology]{entities?application.ftl}
+\importmodule[libraries/ontology]{entities?classes.ftl}
+\importmodule[libraries/ontology]{entities?comprehension-terms.ftl}
+\importmodule[libraries/ontology]{entities?domain.ftl}
+\importmodule[libraries/ontology]{entities?elements.ftl}
+\importmodule[libraries/ontology]{entities?functions.ftl}
+\importmodule[libraries/ontology]{entities?maps.ftl}
+\importmodule[libraries/ontology]{entities?objects.ftl}
+\importmodule[libraries/ontology]{entities?pairs.ftl}
+\importmodule[libraries/ontology]{entities?sets.ftl}
+\importmodule[libraries/ontology]{relations?equality.ftl}
+\importmodule[libraries/ontology]{relations?induction-order.ftl}
+
+\noindent This document exports some preliminary vocabulary and macro
+declarations and is intended to be imported by every \sTeX-based Naproche
+formalization or library module that does not depend on any (other) library
+modules.
+
+\end{smodule}
+\end{document}
