@@ -1,10 +1,11 @@
 \documentclass{naproche-library}
 \libinput{preamble}
 \begin{document}
-\IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Comprehension Terms]{comprehension-terms.ftl}
+
 \importmodule[libraries/ontology]{entities?classes.ftl}
 \importmodule[libraries/ontology]{entities?objects.ftl}
+
 \symdef{enumclass}[args=a]{\highlight\{\argsep{#1}{\highlight,}\highlight\}}
 \symdef{compclass}[args=2]{\highlight\{#1\highlight\mid#2\highlight\}}
 \symdef{sepclass}[args=3]{\highlight\{#1\highlight\in#2\highlight\mid#3\highlight\}}
@@ -29,5 +30,6 @@
     $\emph{\sepclass{\tau}{A}{\varphi}}$ is a class.
   \end{signature}
 \end{fakeforthel}
+
 \end{smodule}
 \end{document}

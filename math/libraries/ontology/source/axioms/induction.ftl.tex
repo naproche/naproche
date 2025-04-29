@@ -1,8 +1,10 @@
 \documentclass{naproche-library}
 \libinput{preamble}
 \begin{document}
-\IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Induction Schema]{induction.ftl}
+
+\importmodule[libraries/ontology]{entities?elements.ftl}
+\importmodule[libraries/ontology]{relations?equality.ftl}
 \importmodule[libraries/ontology]{relations?induction-order.ftl}
 
 \begin{fakeforthel}
@@ -27,5 +29,6 @@
     Then $\varphi[x/\nu]$ for all $x \elem A$.
   \end{corollary}
 \end{fakeforthel}
+
 \end{smodule}
 \end{document}

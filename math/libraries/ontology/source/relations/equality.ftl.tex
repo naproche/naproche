@@ -1,9 +1,12 @@
 \documentclass{naproche-library}
 \libinput{preamble}
 \begin{document}
-\IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Equality]{equality.ftl}
-\importmodule[libraries/meta-inf]{macros.ftl}
+
+\symdef{eq}{\mathrel{\highlight=}}
+\symdef{neq}{\mathrel{\highlight{\not=}}}
+
+\STEXinvisible{\inlineforthel{Let $x \eq y$ stand for $x = y$.}}
 
 \begin{fakeforthel}
   \begin{signature}
@@ -15,10 +18,13 @@
   \end{signature}
 \end{fakeforthel}
 
-\begin{convention}[forthel]
-  Let $x$ and $y$ \emph{agree} stand for $x$ is equal to $y$.
-  Let $x$ \emph{agrees with $y$} stand for $x$ is equal to $y$.
-  Let $x$ and $y$ are \emph{distinct} stand for $x \neq y$.
-\end{convention}
+\begin{forthel}
+  \begin{convention}
+    Let $x$ and $y$ \emph{agree} stand for $x$ is equal to $y$.
+    Let $x$ \emph{agrees with $y$} stand for $x$ is equal to $y$.
+    Let $x$ and $y$ are \emph{distinct} stand for $x \neq y$.
+  \end{convention}
+\end{forthel}
+
 \end{smodule}
 \end{document}

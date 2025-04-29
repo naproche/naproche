@@ -1,20 +1,34 @@
 \documentclass{naproche-library}
 \libinput{preamble}
 \begin{document}
-\IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Elements of Classes]{elements.ftl}
-\importmodule[libraries/meta-inf]{macros.ftl}
+
 \importmodule[libraries/ontology]{entities?classes.ftl}
 \importmodule[libraries/ontology]{entities?objects.ftl}
+
+\symdef{elem}{\mathrel{\highlight\in}}
+\symdef{nelem}{\mathrel{\highlight{\not\in}}}
 
 \begin{fakeforthel}
   \begin{signature}
     Let $A$ be a class.
     A \emph{element of $A$} is an object.
-
-    Let \emph{$a \elem A$} stand for $a$ is an element of $A$.
-    Let \emph{$a \nelem A$} stand for $a$ is not an element of $A$.
   \end{signature}
 \end{fakeforthel}
+
+\begin{forthel}
+  \begin{convention}
+    Let \emph{$a \elem A$} stand for $a$ is an element of $A$.
+    Let \emph{$a \nelem A$} stand for $a$ is not an element of $A$.
+
+    Let a \emph{member of $X$} stand for an element of $X$.
+    Let $x$ \emph{belongs to $X$} stand for $x$ is an element of $X$.
+    Let $X$ \emph{contains $x$} stand for $x$ is an element of $X$.
+    Let $x$ is \emph{contained in $X$} stand for $x$ is an element of $X$.
+    Let $x$ \emph{lies in $X$} stand for $x$ is an element of $X$.
+    Let $x$ is \emph{in $X$} stand for $x$ is an element of $X$.
+  \end{convention}
+\end{forthel}
+
 \end{smodule}
 \end{document}

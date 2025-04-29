@@ -1,8 +1,8 @@
 \documentclass{naproche-library}
 \libinput{preamble}
 \begin{document}
-\IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Comprehension Terms]{comprehension-terms.ftl}
+
 \importmodule[libraries/ontology]{entities?comprehension-terms.ftl}
 \importmodule[libraries/ontology]{relations?equality.ftl}
 \importmodule[libraries/ontology]{entities?elements.ftl}
@@ -45,5 +45,6 @@
     Then $x \elem \sepclass{\nu}{A}{\varphi}$ iff $x \elem A$ and $\varphi[x/\nu]$.
   \end{corollary}
 \end{fakeforthel}
+
 \end{smodule}
 \end{document}

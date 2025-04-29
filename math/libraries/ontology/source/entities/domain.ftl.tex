@@ -1,11 +1,12 @@
 \documentclass{naproche-library}
 \libinput{preamble}
 \begin{document}
-\IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=The Domain of a Map]{domain.ftl}
-\importmodule[libraries/meta-inf]{macros.ftl}
+
 \importmodule[libraries/ontology]{entities?maps.ftl}
 \importmodule[libraries/ontology]{entities?classes.ftl}
+
+\symdef{dom}{\highlight{\textrm{dom}}}
 
 \begin{fakeforthel}
   \begin{signature}
@@ -13,5 +14,13 @@
     $\emph{\dom(f)}$ is an class.
   \end{signature}
 \end{fakeforthel}
+
+\begin{forthel}
+  \begin{convention}
+    Let the \emph{domain of $f$} stand for $\dom(f)$.
+    Let $f$ is \emph{defined on $X$} stand for $\dom(f) = X$.
+  \end{convention}
+\end{forthel}
+
 \end{smodule}
 \end{document}

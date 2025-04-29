@@ -1,8 +1,8 @@
 \documentclass{naproche-library}
 \libinput{preamble}
 \begin{document}
-\IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Application of a Map]{application.ftl}
+
 \importmodule[libraries/ontology]{entities?domain.ftl}
 \importmodule[libraries/ontology]{entities?elements.ftl}
 \importmodule[libraries/ontology]{entities?objects.ftl}
@@ -13,5 +13,13 @@
     $\emph{f(a)}$ is an object.
   \end{signature}
 \end{fakeforthel}
+
+\begin{forthel}
+  \begin{convention}
+    Let the \emph{value of $f$ at $x$} stand for $f(x)$.
+    Let $\emph{f(x,y)}$ stand for $f((x,y))$.
+  \end{convention}
+\end{forthel}
+
 \end{smodule}
 \end{document}

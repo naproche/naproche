@@ -1,3 +1,6 @@
 id: libraries/ontology
 ns: https://naproche.github.io/math/libraries/ontology
 narration-base: https://naproche.github.io/math/libraries/ontology
+title: The Object-Level Ontology of Naproche
+authors: Marcel Schütz (2025)
+license: CcByNcSa

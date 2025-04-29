@@ -1,9 +1,11 @@
 \documentclass{naproche-library}
 \libinput{preamble}
 \begin{document}
-\IfInputref{}{\setsectionlevel{section}}
 \begin{smodule}[title=Induction Order]{induction-order.ftl}
-\importmodule[libraries/meta-inf]{macros.ftl}
+
+\symdef{iless}{\mathrel{\highlight\prec}}
+
+\STEXinvisible{\inlineforthel{Let $x \iless y$ stand for $x \prec y$.}}
 
 \begin{fakeforthel}
   \begin{signature}
@@ -12,8 +14,11 @@
   \end{signature}
 \end{fakeforthel}
 
-\begin{convention}[forthel]
-  Let $x$ is \emph{inductively smaller than $y$} stand for $x \iless y$.
-\end{convention}
+\begin{forthel}
+  \begin{convention}
+    Let $x$ is \emph{inductively smaller than $y$} stand for $x \iless y$.
+  \end{convention}
+\end{forthel}
+
 \end{smodule}
 \end{document}
