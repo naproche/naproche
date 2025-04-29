@@ -43,22 +43,38 @@ renderFile context filePath = do
       bibtexBin = "bibtex"
       mathhubVar = formalizationsDirectoryPath
       texinputsVar = formalizationsDirectoryPath </> "latex" </> "lib//;" 
-  putStrLn $ "[Info] Path to pdflatex:   " ++ pdflatexBin
-  putStrLn $ "[Info] Path to bibtex:     " ++ bibtexBin
-  putStrLn $ "[Info] MATHHUB variable:   " ++ mathhubVar
-  putStrLn $ "[Info] TEXINPUTS variable: " ++ texinputsVar
+  putStrLn $ "[Info] pdflatex executable: " ++ pdflatexBin
+  putStrLn $ "[Info] bibtex executable:   " ++ bibtexBin
+  putStrLn $ "[Info] MATHHUB variable:    " ++ mathhubVar
+  putStrLn $ "[Info] TEXINPUTS variable:  " ++ texinputsVar
 
-  -- Render the input file as PDF:
-  let inputDir = takeDirectory filePath
-      inputFile = takeFileName filePath
-      inputFileBase = takeBaseName inputFile
-  setCurrentDirectory inputDir
-  callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_WRITESMS=true " ++ pdflatexBin ++ " " ++ inputFile
-  callCommand $ bibtexBin ++ " " ++ inputFileBase ++ " | true" -- succeed even if bibtex fails
-  callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
-  callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
+  putStrLn ""
+  putStrLn $ "Ready to render \"" ++ filePath ++ "\" to PDF."
+  putStrLn "Do you want to continue? (Y/n)"
+  answer <- getLine
 
-  return 0
+  if answer `elem` ["Y", "y", ""]
+    -- Render the input file as PDF:
+    then do
+      let inputDir = takeDirectory filePath
+          inputFile = takeFileName filePath
+          inputFileBase = takeBaseName inputFile
+      setCurrentDirectory inputDir
+      callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_WRITESMS=true " ++ pdflatexBin ++ " " ++ inputFile
+      callCommand $ bibtexBin ++ " " ++ inputFileBase ++ " | true" -- succeed even if bibtex fails
+      callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
+      callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
+      
+      let pdfFilePath = inputDir </> inputFileBase <.> "pdf"
+      putStrLn ""
+      putStrLn $ "[Info] Generated PDF file: " ++ pdfFilePath
+      return 0
+
+    -- Abort:
+    else do
+      putStrLn ""
+      putStrLn "Aborted."
+      return 1
 
 
 -- | Render all TeX files in the @source@ directory of an sTeX archive as one
@@ -160,27 +176,44 @@ renderLibrary context archiveId = do
           bibtexBin = "bibtex"
           mathhubVar = formalizationsDirectoryPath
           texinputsVar = formalizationsDirectoryPath </> "latex" </> "lib//;" 
-      putStrLn $ "[Info] Path to pdflatex:   " ++ pdflatexBin
-      putStrLn $ "[Info] Path to bibtex:     " ++ bibtexBin
-      putStrLn $ "[Info] MATHHUB variable:   " ++ mathhubVar
-      putStrLn $ "[Info] TEXINPUTS variable: " ++ texinputsVar
+      putStrLn $ "[Info] pdflatex executable: " ++ pdflatexBin
+      putStrLn $ "[Info] bibtex executable:   " ++ bibtexBin
+      putStrLn $ "[Info] MATHHUB variable:    " ++ mathhubVar
+      putStrLn $ "[Info] TEXINPUTS variable:  " ++ texinputsVar
 
-      -- Render the TeX file as PDF:
-      let inputDir = takeDirectory texFilePath
-          inputFile = takeFileName texFilePath
-          inputFileBase = takeBaseName inputFile
-      setCurrentDirectory inputDir
-      callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_WRITESMS=true " ++ pdflatexBin ++ " " ++ inputFile
-      callCommand $ bibtexBin ++ " " ++ inputFileBase ++ " | true" -- succeed even if bibtex fails
-      callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
-      callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
-      
-      let pdfFilePath = sourceDirPath </> archiveName <.> "ftl" <.> "pdf"
-      putStrLn $ "[Info] Generated PDF file: " ++ pdfFilePath
-      return 0
+      putStrLn ""
+      putStrLn $ "Ready to render \"" ++ texFilePath ++ "\" to PDF."
+      putStrLn "Do you want to continue? (Y/n)"
+      answer <- getLine
+
+      if answer `elem` ["Y", "y", ""]
+        -- Render the input file as PDF:
+        then do
+          -- Render the TeX file as PDF:
+          let inputDir = takeDirectory texFilePath
+              inputFile = takeFileName texFilePath
+              inputFileBase = takeBaseName inputFile
+          setCurrentDirectory inputDir
+          callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_WRITESMS=true " ++ pdflatexBin ++ " " ++ inputFile
+          callCommand $ bibtexBin ++ " " ++ inputFileBase ++ " | true" -- succeed even if bibtex fails
+          callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
+          callCommand $ "MATHHUB=\"" ++ mathhubVar ++ "\" TEXINPUTS=\"" ++ texinputsVar ++ "\" STEX_USESMS=true " ++ pdflatexBin ++ " " ++ inputFile
+          
+          let pdfFilePath = inputDir </> inputFileBase <.> "pdf"
+          putStrLn ""
+          putStrLn $ "[Info] Generated PDF file: " ++ pdfFilePath
+          return 0
+        
+        -- Abort:
+        else do
+          putStrLn ""
+          putStrLn "Aborted."
+          return 1
+
     else do
       putStrLn $ "[Error] File \"" ++ manifestFilePath ++ "\" not found."
       return 1
+      
 
 
 -- | Collect all TeX files in a directory and, recursively, all its
