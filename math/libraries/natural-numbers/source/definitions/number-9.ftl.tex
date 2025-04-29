@@ -1,0 +1,17 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Number $9$]{number-9.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?number-8.ftl}
+
+\symdef{nine}{\highlight9}
+
+\begin{definition}[forthel,id=NineDef]
+  $\emph{\nine} = \succ(\eight)$.
+
+  Let \emph{nine} stand for $\nine$.
+\end{definition}
+
+\end{smodule}
+\end{document}

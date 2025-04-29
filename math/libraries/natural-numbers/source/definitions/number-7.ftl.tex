@@ -1,0 +1,17 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Number $7$]{number-7.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?number-6.ftl}
+
+\symdef{seven}{\highlight7}
+
+\begin{definition}[forthel,id=SevenDef]
+  $\emph{\seven} = \succ(\six)$.
+
+  Let \emph{seven} stand for $\seven$.
+\end{definition}
+
+\end{smodule}
+\end{document}

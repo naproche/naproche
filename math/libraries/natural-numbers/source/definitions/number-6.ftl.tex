@@ -1,0 +1,17 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Number $6$]{number-6.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?number-5.ftl}
+
+\symdef{six}{\highlight6}
+
+\begin{definition}[forthel,id=SixDef]
+  $\emph{\six} = \succ(\five)$.
+
+  Let \emph{six} stand for $\six$.
+\end{definition}
+
+\end{smodule}
+\end{document}

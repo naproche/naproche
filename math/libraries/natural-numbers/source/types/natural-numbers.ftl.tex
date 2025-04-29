@@ -1,0 +1,45 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Natural Numbers]{natural-numbers.ftl}
+
+\importmodule[libraries/meta-inf]{preliminaries.ftl}
+
+\symdef{Nat}{\highlight{\mathbb N}}
+\symdef{succ}{\mathop{\highlight{\textrm{succ}}}}
+\symdef{zero}{\highlight0}
+
+\begin{signature}[forthel,id=NatNumberSig]
+  A \emph{natural number} is an object.
+\end{signature}
+
+\begin{definition}[forthel,id=ClassOfAllNatNumbersDef]
+  $\Nat$ is the class of all natural numbers.
+\end{definition}
+
+\begin{signature}[forthel,id=ZeroSig]
+  $\emph{\zero}$ is a natural number.
+
+  Let \emph{zero} stand for $\zero$.
+  Let $n$ is \emph{nonzero} stand for $n \neq \zero$.
+\end{signature}
+
+\begin{signature}[forthel,id=SuccSig]
+  Let $n$ be a natural number.
+  $\succ(n)$ is a natural number.
+
+  Let the \emph{direct successor of $n$} stand for $\succ(n)$.
+\end{signature}
+
+\begin{axiom}[forthel,id=InductionAx]
+  Let $n$ be a natural number.
+  Then $n \iless \succ(n)$.
+\end{axiom}
+
+\begin{axiom}[forthel,id=ExhaustionAx]
+  Let $n$ be a natural number.
+  Then $n \eq \zero$ or $n \eq \succ(m)$ for some natural number $m$.
+\end{axiom}
+
+\end{smodule}
+\end{document}

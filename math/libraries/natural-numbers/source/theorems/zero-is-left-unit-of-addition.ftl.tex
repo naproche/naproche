@@ -1,0 +1,14 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=$0$ is Left-Unit of Addition]{zero-is-left-unit-of-plus.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?addition.ftl}
+
+\begin{proposition}[forthel,id=ZeroIsLeftUnitOfAddProp]
+  For all $n \in \Nat$ we have $\zero \plus n \eq n$.
+\end{proposition}
+\begin{proof}[forthel,method=induction on $n$]\end{proof}
+
+\end{smodule}
+\end{document}

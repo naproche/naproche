@@ -1,0 +1,17 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Number $3$]{number-3.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?number-2.ftl}
+
+\symdef{three}{\highlight3}
+
+\begin{definition}[forthel,id=ThreeDef]
+  $\emph{\three} = \succ(\two)$.
+
+  Let \emph{three} stand for $\three$.
+\end{definition}
+
+\end{smodule}
+\end{document}

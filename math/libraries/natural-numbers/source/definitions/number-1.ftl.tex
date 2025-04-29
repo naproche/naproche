@@ -1,0 +1,17 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Number $1$]{number-1.ftl}
+
+\importmodule[libraries/natural-numbers]{types?natural-numbers.ftl}
+
+\symdef{one}{\highlight1}
+
+\begin{definition}[forthel,id=OneDef]
+  $\emph{\one} = \succ(\zero)$.
+
+  Let \emph{one} stand for $\one$.
+\end{definition}
+
+\end{smodule}
+\end{document}

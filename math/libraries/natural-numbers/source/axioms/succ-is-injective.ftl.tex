@@ -1,0 +1,14 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Successor Function is Injective]{succ-is-injective.ftl}
+
+\importmodule[libraries/natural-numbers]{types?natural-numbers.ftl}
+
+\begin{axiom}[forthel,id=SuccInInjectAx]
+  Let $n, m$ be natural numbers.
+  If $\succ(n) \eq \succ(m)$ then $n \eq m$.
+\end{axiom}
+
+\end{smodule}
+\end{document}

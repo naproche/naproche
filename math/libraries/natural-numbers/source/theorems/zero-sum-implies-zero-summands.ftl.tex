@@ -1,0 +1,15 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=$0$-Sums Have $0$-Summands]{zero-sum-implies-zero-summands.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?addition.ftl}
+\importmodule[libraries/natural-numbers]{axioms?zero-is-no-successor.ftl}
+
+\begin{proposition}[forthel,id=ZeroSumImpliesZeroSummandsProp]
+  Let $n, m$ be natural numbers.
+  If $n \plus m \eq \zero$ then $n \eq \zero$ and $m \eq \zero$.
+\end{proposition}
+
+\end{smodule}
+\end{document}

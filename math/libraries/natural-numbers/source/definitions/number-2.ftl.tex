@@ -1,0 +1,17 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Number $2$]{number-2.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?number-1.ftl}
+
+\symdef{two}{\highlight2}
+
+\begin{definition}[forthel,id=TwoDef]
+  $\emph{\two} = \succ(\one)$.
+
+  Let \emph{two} stand for $\two$.
+\end{definition}
+
+\end{smodule}
+\end{document}

@@ -1,0 +1,6 @@
+id: libraries/natural-numbers
+ns: https://naproche.github.io/math/libraries/natural-numbers
+narration-base: https://naproche.github.io/math/libraries/natural-numbers
+title: Natural Numbers
+authors: Marcel Schütz (2021–2025)
+license: CcByNcSa

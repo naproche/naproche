@@ -1,0 +1,41 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Addition is Commutative]{addition-is-commutative.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?number-1.ftl}
+\importmodule[libraries/natural-numbers]{theorems?addition-is-associative.ftl}
+
+\begin{proposition}[forthel,id=AddIsCommutativeProp]
+  For all $n,m\in\Nat$ we have $n\plus m\eq m\plus n$.
+\end{proposition}
+\begin{proof}[forthel,method=induction on $m$]
+  We can show by induction on $n$ that for all $n \in \Nat$ we have $n \plus \zero \eq \zero \plus n$.
+  Obvious.
+
+  We can show by induction on $n$ that for all $n \in \Nat$ we have $n \plus \one \eq \one \plus n$.
+  Obvious.
+
+  Let $m \in \Nat$.
+
+  \begin{case}{$m \eq \zero$.} \end{case}
+
+  \begin{case}{$m \neq \zero$.}
+    Let $n \in \Nat$.
+    Take $m' \in \Nat$ such that $m \eq m' \plus \one$.
+    Then $n \plus m' \eq m' \plus n$.
+    Hence
+    \begin{align*}
+      n \plus m
+        &\eq n \plus(m' \plus \one)\\
+        &\eq (n \plus m') \plus \one\\
+        &\eq (m' \plus n) \plus \one\\
+        &\eq m' \plus (n \plus \one)\\
+        &\eq m' \plus (\one \plus n)\\
+        &\eq (m' \plus \one) \plus n
+    \end{align*}.
+  \end{case}
+\end{proof}
+
+\end{smodule}
+\end{document}

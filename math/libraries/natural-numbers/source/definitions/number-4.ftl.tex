@@ -1,0 +1,17 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Number $4$]{number-4.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?number-3.ftl}
+
+\symdef{four}{\highlight4}
+
+\begin{definition}[forthel,id=FourDef]
+  $\emph{\four} = \succ(\three)$.
+
+  Let \emph{four} stand for $\four$.
+\end{definition}
+
+\end{smodule}
+\end{document}

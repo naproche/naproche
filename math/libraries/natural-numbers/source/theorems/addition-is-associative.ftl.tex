@@ -1,0 +1,35 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Addition is Associative]{addition-is-associative.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?addition.ftl}
+\importmodule[libraries/natural-numbers]{definitions?number-1.ftl}
+
+\begin{proposition}[forthel,id=AddIsAssociativeProp]
+  Let $n, m$ be natural numbers.
+  For all $k \in \Nat$ we have $n \plus (m \plus k) \eq (n \plus m) \plus k$.
+\end{proposition}
+\begin{proof}[forthel,method=induction on $k$]
+  Let $k \in \Nat$.
+
+  \begin{case}{$k \eq \zero$.} \end{case}
+
+  \begin{case}{$k \neq \zero$.}
+    Take $k' \in \Nat$ such that $k \eq k' \plus \one$.
+    Then $k' \prec k$.
+    Hence $n \plus (m \plus k') \eq (n \plus m) \plus k'$.
+    Thus
+    \begin{align*}
+      n \plus (m \plus k)
+        &\eq n \plus (m \plus (k' \plus \one))\\
+        &\eq n \plus ((m \plus k') \plus \one)\\
+        &\eq (n \plus (m \plus k')) \plus \one\\
+        &\eq ((n \plus m) \plus k') \plus \one\\
+        &\eq (n \plus m) \plus(k' \plus \one)
+    \end{align*}.
+  \end{case}
+\end{proof}
+
+\end{smodule}
+\end{document}

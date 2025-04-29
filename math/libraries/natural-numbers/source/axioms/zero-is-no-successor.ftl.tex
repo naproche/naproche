@@ -1,0 +1,13 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=$0$ is no Successor]{zero-is-no-successor.ftl}
+
+\importmodule[libraries/natural-numbers]{types?natural-numbers.ftl}
+
+\begin{axiom}[forthel,id=ZeroIsNoSuccAx]
+  There exists no natural number $n$ such that $\succ(n) \eq \zero$.
+\end{axiom}
+
+\end{smodule}
+\end{document}

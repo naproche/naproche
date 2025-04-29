@@ -1,0 +1,17 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=The Number $5$]{number-5.ftl}
+
+\importmodule[libraries/natural-numbers]{definitions?number-4.ftl}
+
+\symdef{five}{\highlight5}
+
+\begin{definition}[forthel,id=FiveDef]
+  $\emph{\five} = \succ(\four)$.
+
+  Let \emph{five} stand for $\five$.
+\end{definition}
+
+\end{smodule}
+\end{document}

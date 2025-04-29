@@ -1,0 +1,21 @@
+\documentclass{naproche-library}
+\libinput{preamble}
+\begin{document}
+\begin{smodule}[title=Addition is Left-Cancellative]{addition-is-left-cancellative.ftl}
+
+\importmodule[libraries/natural-numbers]{theorems?addition-is-commutative.ftl}
+\importmodule[libraries/natural-numbers]{theorems?addition-is-right-cancellative.ftl}
+
+\begin{corollary}[forthel,id=AddIsLeftCancellativeProp]
+  Let $n, m, k$ be natural numbers.
+  If $k \plus n \eq k \plus m$ then $n \eq m$.
+\end{corollary}
+\begin{proof}[forthel]
+  Assume $k \plus n \eq k \plus m$.
+  We have $k \plus n \eq n \plus k$ and $k \plus m \eq m \plus k$.
+  Hence $n \plus k \eq m \plus k$.
+  Thus $n \eq m$.
+\end{proof}
+
+\end{smodule}
+\end{document}
