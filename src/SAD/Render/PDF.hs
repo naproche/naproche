@@ -142,7 +142,6 @@ renderLibrary context archiveId = do
             "\\author{" <> author <> "}" <> "\n" <>
             "\\date{}" <> "\n" <>
             "\n" <>
-            "\\renewcommand\\libarchive{" <> title <>"}\n" <>
             "\\begin{document}\n" <>
             "  \\maketitle\n" <>
             "  \\tableofcontents\n" <>

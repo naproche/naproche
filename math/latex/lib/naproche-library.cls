@@ -4,28 +4,23 @@
 
 \RequirePackage{naproche}
 \RequirePackage{xurl} % for proper linebreaks of IDs
+\RequirePackage{titling}
 
 \setbool{printid}{true}     % Print top-level section IDs on the document margin
 \setbool{highlight}{true}   % Highlight definienda and components of symbolic expressions
 
 \RequirePackage[right=6cm,left=3cm,bottom=3cm,marginparwidth=5cm]{geometry}
 
-\RequirePackage{fancyhdr}
-\renewcommand{\sectionmark}[1]{\markboth{#1}{}} 
-\providecommand\libarchive{}
-\pagestyle{fancy}
-\fancyhead[L]{\libarchive}
-\fancyhead[C]{\nouppercase\leftmark}  % section title
-\fancyhead[R]{\thepage}               % page number
-\fancyfoot[C]{}                       % No page number in footer
-
 \RequirePackage[nobottomtitles]{titlesec}
 \titlespacing*{\section}{0pt}{30pt}{0pt}
 \titlespacing*{\subsection}{0pt}{30pt}{0pt}
 \titlespacing*{\subsubsection}{0pt}{30pt}{0pt}
 
-\IfInputref{}{\setsectionlevel{section}}
-\stexstylemodule{\begin{sfragment}{\thistitle}\texttt{\footnotesize\thismoduleuri}}{\end{sfragment}}
+\stexstylemodule{%
+\IfInputref{}{\setsectionlevel{section}}%
+    \begin{sfragment}{\thistitle}%
+    \texttt{\footnotesize\thismoduleuri}%
+}{\end{sfragment}}
 
 
 % Rendering a Library Archive
