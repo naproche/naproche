@@ -56,14 +56,14 @@ A complete listing of all changes on Naproche since naproche-20211211 (Isabelle
   * **Changed:** In the command line interface, the mode `render` was
     renamed to `render-file`.
 
-  * **New:** In the command line interface, there is a new mode `render-archive`
-    in which all `.ftl.tex` files in the `source` directory of an sTeX archive
-    in the `math` directory are rendered as one PDF file.
+  * **New:** In the command line interface, there is a new mode `render-library`
+    in which all `.ftl.tex` files in the `source` directory of a library archive
+    in the `math/libraries` directory are rendered as one PDF file.
 
     For instance,
 
     ```sh
-    Naproche --mode=render-archive libraries/lists
+    Naproche --mode=render-library libraries/lists
     ```
 
     generates two files `math/libraries/lists/source/lists.ftl.tex` and

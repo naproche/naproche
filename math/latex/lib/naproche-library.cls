@@ -12,7 +12,7 @@
 
 \RequirePackage{fancyhdr}
 \renewcommand{\sectionmark}[1]{\markboth{#1}{}} 
-\def\libarchive{}
+\providecommand\libarchive{}
 \pagestyle{fancy}
 \fancyhead[L]{\libarchive}
 \fancyhead[C]{\nouppercase\leftmark}  % section title
@@ -23,6 +23,26 @@
 \titlespacing*{\section}{0pt}{30pt}{0pt}
 \titlespacing*{\subsection}{0pt}{30pt}{0pt}
 \titlespacing*{\subsubsection}{0pt}{30pt}{0pt}
+
+\IfInputref{}{\setsectionlevel{section}}
+\stexstylemodule{\begin{sfragment}{\thistitle}\texttt{\footnotesize\thismoduleuri}}{\end{sfragment}}
+
+
+% Rendering a Library Archive
+% ---------------------------
+
+\RequirePackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue
+}
+
+\libinput[latex]{license}
+
+
+% Class Options
+% -------------
 
 \DeclareOption{numberswithinsection}{%
     \counterwithin{theoremcount}{section}

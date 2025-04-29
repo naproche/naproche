@@ -10,7 +10,7 @@
 
 module SAD.Render.PDF (
   renderFile,
-  renderArchive
+  renderLibrary
 ) where
 
 import Control.Monad (filterM)
@@ -63,8 +63,8 @@ renderFile context filePath = do
 
 -- | Render all TeX files in the @source@ directory of an sTeX archive as one
 -- single PDF.
-renderArchive :: Program.Context -> String -> IO Int
-renderArchive context archiveId = do
+renderLibrary :: Program.Context -> String -> IO Int
+renderLibrary context archiveId = do
   putStrLn "[Warning] This is an experimental feature. Please be gentle.\n"
   formalizationsDirectoryPath <- getFormalizationsDirectoryPath context
   let archiveComponents = splitOn "/" archiveId
@@ -81,22 +81,21 @@ renderArchive context archiveId = do
           mbAuthor = Map.lookup "authors" manifestEntries
           mbLicense = Map.lookup "license" manifestEntries
       title <- case mbTitle of
-        Just title -> pure $ "\\title{" <> title <> "}"
+        Just title -> pure title
         Nothing -> do
           putStrLn $
             "[Warning] No \"title\" entry provided in\n" ++
             "          \"" ++ manifestFilePath ++ "\".\n" ++
             "          Therefore, no title will be printed."
-          return "\\title{}"
+          return ""
       author <- case mbAuthor of
-        Just author -> pure $ "\\author{" <> author <> "}"
+        Just author -> pure author
         Nothing -> do
           putStrLn $
             "[Warning] No \"authors\" entry provided in\n" ++
             "          \"" ++ manifestFilePath ++ "\".\n" ++
             "          Therefore, no author names will be printed."
-          return "\\author{}"
-      let date = "\\date{}"
+          return ""
       license <- case mbAuthor of
         Nothing -> do
           putStrLn $
@@ -137,13 +136,13 @@ renderArchive context archiveId = do
             "\n" <>
             "\\documentclass[numberswithinsection]{naproche-library}\n" <>
             "\n" <>
-            "\\libinput[latex]{archive}\n" <>
-            "\\libinput[" <> Text.pack archiveId <> "]{preamble}\n" <>
+            "\\libinput{preamble}\n" <>
             "\n" <>
-            title <> "\n" <>
-            author <> "\n" <>
-            date <> "\n" <>
+            "\\title{" <> title <> "}" <> "\n" <>
+            "\\author{" <> author <> "}" <> "\n" <>
+            "\\date{}" <> "\n" <>
             "\n" <>
+            "\\renewcommand\\libarchive{" <> title <>"}\n" <>
             "\\begin{document}\n" <>
             "  \\maketitle\n" <>
             "  \\tableofcontents\n" <>

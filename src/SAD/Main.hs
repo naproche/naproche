@@ -102,9 +102,9 @@ mainTerminal initInstrs nonInstrArgs = do
           "render-file" -> case nonInstrArgs of
             [] -> putStrLn "Unable to render document: No file given." >> return 1
             filePath : _ -> renderFile context filePath
-          "render-archive" -> case nonInstrArgs of
-            [] -> putStrLn "Unable to render archive: No archive ID given." >> return 1
-            archiveId : _ -> renderArchive context archiveId
+          "render-library" -> case nonInstrArgs of
+            [] -> putStrLn "Unable to render library: No library ID given." >> return 1
+            libraryId : _ -> renderLibrary context libraryId
           modeArg -> putStrLn ("Invalid mode: " ++ make_string modeArg) >> return 1)
         `catch` (\case
             Exception.UserInterrupt -> do
